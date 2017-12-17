@@ -961,7 +961,7 @@ void TilesetEditor::setWangColorImage(Tile *tile, bool isEdge, int index)
                                                                         mWangDock->wangColorModel()));
 }
 
-void TilesetEditor::setWangColorColor(QColor color, bool isEdge, int index)
+void TilesetEditor::setWangColorColor(const QColor &color, bool isEdge, int index)
 {
     mCurrentTilesetDocument->undoStack()->push(new ChangeWangColorColor(color,
                                                                         index,

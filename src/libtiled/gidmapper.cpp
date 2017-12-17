@@ -36,11 +36,11 @@
 using namespace Tiled;
 
 // Bits on the far end of the 32-bit global tile ID are used for tile flags
-const int FlippedHorizontallyFlag   = 0x80000000;
-const int FlippedVerticallyFlag     = 0x40000000;
-const int FlippedAntiDiagonallyFlag = 0x20000000;
+const unsigned FlippedHorizontallyFlag   = 0x80000000;
+const unsigned FlippedVerticallyFlag     = 0x40000000;
+const unsigned FlippedAntiDiagonallyFlag = 0x20000000;
 
-const int RotatedHexagonal120Flag   = 0x10000000;
+const unsigned RotatedHexagonal120Flag   = 0x10000000;
 
 /**
  * Default constructor. Use \l insert to initialize the gid mapper
@@ -59,7 +59,7 @@ GidMapper::GidMapper(const QVector<SharedTileset> &tilesets)
 {
     unsigned firstGid = 1;
     for (const SharedTileset &tileset : tilesets) {
-        insert(firstGid, tileset.data());
+        insert(firstGid, tileset);
         firstGid += tileset->nextTileId();
     }
 }
@@ -91,16 +91,16 @@ Cell GidMapper::gidToCell(unsigned gid, bool &ok) const
         ok = false;
     } else {
         // Find the tileset containing this tile
-        QMap<unsigned, Tileset*>::const_iterator i = mFirstGidToTileset.upperBound(gid);
+        QMap<unsigned, SharedTileset>::const_iterator i = mFirstGidToTileset.upperBound(gid);
         if (i == mFirstGidToTileset.begin()) {
             // Invalid global tile ID, since it lies before the first tileset
             ok = false;
         } else {
             --i; // Navigate one tileset back since upper bound finds the next
             int tileId = gid - i.key();
-            Tileset *tileset = i.value();
+            const SharedTileset &tileset = i.value();
 
-            result.setTile(tileset, tileId);
+            result.setTile(tileset.data(), tileId);
 
             ok = true;
         }
@@ -121,8 +121,8 @@ unsigned GidMapper::cellToGid(const Cell &cell) const
     const Tileset *tileset = cell.tileset();
 
     // Find the first GID for the tileset
-    QMap<unsigned, Tileset*>::const_iterator i = mFirstGidToTileset.begin();
-    QMap<unsigned, Tileset*>::const_iterator i_end = mFirstGidToTileset.end();
+    QMap<unsigned, SharedTileset>::const_iterator i = mFirstGidToTileset.begin();
+    QMap<unsigned, SharedTileset>::const_iterator i_end = mFirstGidToTileset.end();
     while (i != i_end && i.value() != tileset)
         ++i;
 
@@ -163,10 +163,10 @@ QByteArray GidMapper::encodeLayerData(const TileLayer &tileLayer,
     for (int y = bounds.top(); y <= bounds.bottom(); ++y) {
         for (int x = bounds.left(); x <= bounds.right(); ++x) {
             const unsigned gid = cellToGid(tileLayer.cellAt(x, y));
-            tileData.append((char) (gid));
-            tileData.append((char) (gid >> 8));
-            tileData.append((char) (gid >> 16));
-            tileData.append((char) (gid >> 24));
+            tileData.append(static_cast<char>(gid));
+            tileData.append(static_cast<char>(gid >> 8));
+            tileData.append(static_cast<char>(gid >> 16));
+            tileData.append(static_cast<char>(gid >> 24));
         }
     }
 

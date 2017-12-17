@@ -167,31 +167,31 @@ bool TsxTilesetFormat::supportsFile(const QString &fileName) const
     return false;
 }
 
-TgxTemplateGroupFormat::TgxTemplateGroupFormat(QObject *parent)
-    : TemplateGroupFormat(parent)
+XmlObjectTemplateFormat::XmlObjectTemplateFormat(QObject *parent)
+    : ObjectTemplateFormat(parent)
 {
 }
 
-TemplateGroup *TgxTemplateGroupFormat::read(const QString &fileName)
+ObjectTemplate *XmlObjectTemplateFormat::read(const QString &fileName)
 {
     mError.clear();
 
     MapReader reader;
-    TemplateGroup *templateGroup = reader.readTemplateGroup(fileName);
-    if (!templateGroup)
+    ObjectTemplate *objectTemplate = reader.readObjectTemplate(fileName);
+    if (!objectTemplate)
         mError = reader.errorString();
 
-    return templateGroup;
+    return objectTemplate;
 }
 
-bool TgxTemplateGroupFormat::write(const TemplateGroup *templateGroup, const QString &fileName)
+bool XmlObjectTemplateFormat::write(const ObjectTemplate *objectTemplate, const QString &fileName)
 {
     Preferences *prefs = Preferences::instance();
 
     MapWriter writer;
     writer.setDtdEnabled(prefs->dtdEnabled());
 
-    bool result = writer.writeTemplateGroup(templateGroup, fileName);
+    bool result = writer.writeObjectTemplate(objectTemplate, fileName);
     if (!result)
         mError = writer.errorString();
     else
@@ -200,9 +200,9 @@ bool TgxTemplateGroupFormat::write(const TemplateGroup *templateGroup, const QSt
     return result;
 }
 
-bool TgxTemplateGroupFormat::supportsFile(const QString &fileName) const
+bool XmlObjectTemplateFormat::supportsFile(const QString &fileName) const
 {
-    if (fileName.endsWith(QLatin1String(".tgx"), Qt::CaseInsensitive))
+    if (fileName.endsWith(QLatin1String(".tx"), Qt::CaseInsensitive))
         return true;
 
     if (fileName.endsWith(QLatin1String(".xml"), Qt::CaseInsensitive)) {
@@ -212,7 +212,7 @@ bool TgxTemplateGroupFormat::supportsFile(const QString &fileName) const
             QXmlStreamReader xml;
             xml.setDevice(&file);
 
-            if (xml.readNextStartElement() && xml.name() == QLatin1String("templategroup"))
+            if (xml.readNextStartElement() && xml.name() == QLatin1String("template"))
                 return true;
         }
     }

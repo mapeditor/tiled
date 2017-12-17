@@ -43,17 +43,14 @@
 #include "utils.h"
 #include "zoomable.h"
 
-#include <QApplication>
-#include <QClipboard>
+#include <QCoreApplication>
 #include <QDialogButtonBox>
-#include <QDir>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMenu>
 #include <QMessageBox>
-#include <QProcess>
 #include <QScrollBar>
 #include <QStackedLayout>
 #include <QTabBar>
@@ -64,39 +61,6 @@
 
 using namespace Tiled;
 using namespace Tiled::Internal;
-
-/*
- * Code based on FileUtils::showInGraphicalShell from Qt Creator
- * Copyright (C) 2016 The Qt Company Ltd.
- * Used under the terms of the GNU General Public License version 3
- */
-static void showInFileManager(const QString &fileName)
-{
-    // Mac, Windows support folder or file.
-#if defined(Q_OS_WIN)
-    QStringList param;
-    if (!QFileInfo(fileName).isDir())
-        param += QLatin1String("/select,");
-    param += QDir::toNativeSeparators(fileName);
-    QProcess::startDetached(QLatin1String("explorer.exe"), param);
-#elif defined(Q_OS_MAC)
-    QStringList scriptArgs;
-    scriptArgs << QLatin1String("-e")
-               << QString::fromLatin1("tell application \"Finder\" to reveal POSIX file \"%1\"")
-                                     .arg(fileName);
-    QProcess::execute(QLatin1String("/usr/bin/osascript"), scriptArgs);
-    scriptArgs.clear();
-    scriptArgs << QLatin1String("-e")
-               << QLatin1String("tell application \"Finder\" to activate");
-    QProcess::execute(QLatin1String("/usr/bin/osascript"), scriptArgs);
-#else
-    // We cannot select a file here, because xdg-open would open the file
-    // instead of the file browser...
-    QProcess::startDetached(QString(QLatin1String("xdg-open \"%1\""))
-                            .arg(QFileInfo(fileName).absolutePath()));
-#endif
-}
-
 
 
 DocumentManager *DocumentManager::mInstance;
@@ -158,8 +122,8 @@ DocumentManager::DocumentManager(QObject *parent)
             this, &DocumentManager::documentCloseRequested);
     connect(mTabBar, &QTabBar::tabMoved,
             this, &DocumentManager::documentTabMoved);
-    connect(mTabBar, SIGNAL(customContextMenuRequested(QPoint)),
-            SLOT(tabContextMenuRequested(QPoint)));
+    connect(mTabBar, &QWidget::customContextMenuRequested,
+            this, &DocumentManager::tabContextMenuRequested);
 
     connect(mFileSystemWatcher, &FileSystemWatcher::fileChanged,
             this, &DocumentManager::fileChanged);
@@ -462,30 +426,31 @@ bool DocumentManager::saveDocumentAs(Document *document)
             fileName += defaultFileName;
         }
 
-        fileName = QFileDialog::getSaveFileName(mWidget->window(), QString(),
-                                                fileName,
-                                                filter,
-                                                &selectedFilter);
+        while (true) {
+            fileName = QFileDialog::getSaveFileName(mWidget->window(), QString(),
+                                                    fileName,
+                                                    filter,
+                                                    &selectedFilter);
 
-        if (!fileName.isEmpty() &&
-            !Utils::fileNameMatchesNameFilter(QFileInfo(fileName).fileName(), selectedFilter))
-        {
-            QMessageBox messageBox(QMessageBox::Warning,
-                                   QCoreApplication::translate("Tiled::Internal::MainWindow", "Extension Mismatch"),
-                                   QCoreApplication::translate("Tiled::Internal::MainWindow", "The file extension does not match the chosen file type."),
-                                   QMessageBox::Yes | QMessageBox::No,
-                                   mWidget->window());
+            if (!fileName.isEmpty() &&
+                !Utils::fileNameMatchesNameFilter(QFileInfo(fileName).fileName(), selectedFilter))
+            {
+                QMessageBox messageBox(QMessageBox::Warning,
+                                       QCoreApplication::translate("Tiled::Internal::MainWindow", "Extension Mismatch"),
+                                       QCoreApplication::translate("Tiled::Internal::MainWindow", "The file extension does not match the chosen file type."),
+                                       QMessageBox::Yes | QMessageBox::No,
+                                       mWidget->window());
 
-            messageBox.setInformativeText(QCoreApplication::translate("Tiled::Internal::MainWindow",
-                                                                      "Tiled may not automatically recognize your file when loading. "
-                                                                      "Are you sure you want to save with this extension?"));
+                messageBox.setInformativeText(QCoreApplication::translate("Tiled::Internal::MainWindow",
+                                                                          "Tiled may not automatically recognize your file when loading. "
+                                                                          "Are you sure you want to save with this extension?"));
 
-            int answer = messageBox.exec();
-            if (answer != QMessageBox::Yes)
-                return QString();
+                int answer = messageBox.exec();
+                if (answer != QMessageBox::Yes)
+                    continue;
+            }
+            return fileName;
         }
-
-        return fileName;
     };
 
     if (auto mapDocument = qobject_cast<MapDocument*>(document)) {
@@ -495,7 +460,10 @@ bool DocumentManager::saveDocumentAs(Document *document)
         FormatHelper<MapFormat> helper(FileFormat::ReadWrite);
         filter = helper.filter();
 
-        fileName = getSaveFileName(QCoreApplication::translate("Tiled::Internal::MainWindow", "untitled.tmx"));
+        auto suggestedFileName = QCoreApplication::translate("Tiled::Internal::MainWindow", "untitled");
+        suggestedFileName.append(QLatin1String(".tmx"));
+
+        fileName = getSaveFileName(suggestedFileName);
         if (fileName.isEmpty())
             return false;
 
@@ -510,7 +478,12 @@ bool DocumentManager::saveDocumentAs(Document *document)
         FormatHelper<TilesetFormat> helper(FileFormat::ReadWrite);
         filter = helper.filter();
 
-        fileName = getSaveFileName(QCoreApplication::translate("Tiled::Internal::MainWindow", "untitled.tsx"));
+        auto suggestedFileName = tilesetDocument->tileset()->name().trimmed();
+        if (suggestedFileName.isEmpty())
+            suggestedFileName = QCoreApplication::translate("Tiled::Internal::MainWindow", "untitled");
+        suggestedFileName.append(QLatin1String(".tsx"));
+
+        fileName = getSaveFileName(suggestedFileName);
         if (fileName.isEmpty())
             return false;
 
@@ -740,18 +713,7 @@ void DocumentManager::tabContextMenuRequested(const QPoint &pos)
 
     QMenu menu(mTabBar->window());
 
-    QString fileName = mDocuments.at(index)->fileName();
-
-    QAction *copyPath = menu.addAction(tr("Copy File Path"));
-    connect(copyPath, &QAction::triggered, [fileName] {
-        QClipboard *clipboard = QApplication::clipboard();
-        clipboard->setText(QDir::toNativeSeparators(fileName));
-    });
-
-    QAction *openFolder = menu.addAction(tr("Open Containing Folder..."));
-    connect(openFolder, &QAction::triggered, [fileName] {
-        showInFileManager(fileName);
-    });
+    Utils::addFileManagerActions(menu, mDocuments.at(index)->fileName());
 
     menu.addSeparator();
 
@@ -872,7 +834,8 @@ TilesetDocument *DocumentManager::findTilesetDocument(const QString &fileName) c
 void DocumentManager::openTileset(const SharedTileset &tileset)
 {
     auto tilesetDocument = findTilesetDocument(tileset);
-    Q_ASSERT(tilesetDocument);
+    if (!tilesetDocument)
+        tilesetDocument = new TilesetDocument(tileset);
 
     if (!switchToDocument(tilesetDocument))
         addDocument(tilesetDocument);

@@ -233,7 +233,7 @@ void WangTile::translate(int map[])
 {
     int mask = (mFlippedHorizontally << 2)
             | (mFlippedVertically << 1)
-            | (mFlippedAntiDiagonally);
+            | (mFlippedAntiDiagonally << 0);
 
     mask = map[mask];
 
@@ -286,6 +286,22 @@ Cell WangTile::makeCell() const
 
     return cell;
 }
+
+
+WangColor::WangColor()
+    : WangColor(0, true, QString(), Qt::red, -1)
+{}
+
+WangColor::WangColor(int colorIndex, bool isEdge, const QString &name, const QColor &color, int imageId, float probability)
+    : Object(WangColorType)
+    , mColorIndex(colorIndex)
+    , mIsEdge(isEdge)
+    , mName(name)
+    , mColor(color)
+    , mImageId(imageId)
+    , mProbability(probability)
+{}
+
 
 static const QColor defaultWangColors[] =  {
     QColor(255, 0, 0),
@@ -569,16 +585,6 @@ void WangSet::removeWangTile(const WangTile &wangTile)
         --mUniqueFullWangIdCount;
 }
 
-WangTile WangSet::findMatchingWangTile(WangId wangId) const
-{
-    auto potentials = findMatchingWangTiles(wangId);
-
-    if (potentials.length() > 0)
-        return potentials[qrand() % potentials.length()];
-    else
-        return WangTile();
-}
-
 QList<WangTile> WangSet::wangTiles() const
 {
     QList<WangTile> wangTiles = mWangIdToWangTile.values();
@@ -670,9 +676,10 @@ WangId WangSet::wangIdOfCell(const Cell &cell) const
         return 0;
 }
 
-float WangSet::wangIdProbability(WangId wangId) const
+float WangSet::wangTileProbability(const WangTile &wangTile) const
 {
-    float probability = 1;
+    float probability = 1.0f;
+    WangId wangId = wangTile.wangId();
 
     if (edgeColorCount() > 1) {
         for (int i = 0; i < 4; ++i) {
@@ -687,6 +694,9 @@ float WangSet::wangIdProbability(WangId wangId) const
                 probability *= cornerColorAt(color)->probability();
         }
     }
+
+    if (Tile *tile = wangTile.tile())
+        probability *= tile->probability();
 
     return probability;
 }

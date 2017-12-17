@@ -40,11 +40,11 @@ class QUndoStack;
 namespace Tiled {
 
 class Map;
+class MapFormat;
 class MapObject;
 class MapRenderer;
-class MapFormat;
+class ObjectTemplate;
 class Terrain;
-class TemplateGroup;
 class Tile;
 class WangSet;
 
@@ -81,10 +81,9 @@ public:
      */
     MapDocument(Map *map, const QString &fileName = QString());
 
-    ~MapDocument();
+    ~MapDocument() override;
 
     bool save(const QString &fileName, QString *error = nullptr) override;
-    void saveSelectedObject(const QString &name, int groupIndex);
 
     /**
      * Loads a map and returns a MapDocument instance on success. Returns null
@@ -158,7 +157,8 @@ public:
     void removeTilesetAt(int index);
     SharedTileset replaceTileset(int index, const SharedTileset &tileset);
 
-    TemplateGroup *replaceTemplateGroup(int index, TemplateGroup *templateGroup);
+    void replaceObjectTemplate(const ObjectTemplate *oldObjectTemplate,
+                               const ObjectTemplate *newObjectTemplate);
 
     void duplicateObjects(const QList<MapObject*> &objects);
     void removeObjects(const QList<MapObject*> &objects);
@@ -216,8 +216,6 @@ public:
 
     void emitEditLayerNameRequested();
 
-    void addNonEmbeddedTemplateGroup(TemplateGroup *templateGroup);
-
 signals:
     /**
      * Emitted when the selected tile region changes. Sends the currently
@@ -253,10 +251,10 @@ signals:
     void currentLayerChanged(Layer *layer);
 
     /**
-     * Emitted when a certain region of the map changes. The region is given in
-     * tile coordinates.
+     * Emitted when a certain \a region of a \a tileLayer changes. The region
+     * is given in tile coordinates.
      */
-    void regionChanged(const QRegion &region, Layer *layer);
+    void regionChanged(const QRegion &region, TileLayer *tileLayer);
 
     /**
      * Emitted when a certain region of the map was edited by user input.
@@ -284,7 +282,9 @@ signals:
     void tilesetAboutToBeRemoved(int index);
     void tilesetRemoved(Tileset *tileset);
     void tilesetReplaced(int index, Tileset *tileset, Tileset *oldTileset);
-    void templateGroupReplaced(int index, TemplateGroup *templateGroup, TemplateGroup *oldTemplateGroup);
+
+    void objectTemplateReplaced(const ObjectTemplate *newObjectTemplate,
+                                const ObjectTemplate *oldObjectTemplate);
 
     void objectsAdded(const QList<MapObject*> &objects);
     void objectsInserted(ObjectGroup *objectGroup, int first, int last);
@@ -312,8 +312,8 @@ private slots:
     void onLayerRemoved(Layer *layer);
 
 public slots:
-    void updateTemplateInstances(const MapObject *mapObject);
-    void selectAllInstances(const MapObject *mapObject);
+    void updateTemplateInstances(const ObjectTemplate *objectTemplate);
+    void selectAllInstances(const ObjectTemplate *objectTemplate);
 
 private:
     void deselectObjects(const QList<MapObject*> &objects);
@@ -335,7 +335,6 @@ private:
     MapRenderer *mRenderer;
     Layer* mCurrentLayer;
     MapObjectModel *mMapObjectModel;
-    QList<TemplateGroup*> mNonEmbeddedTemplateGroups;
 };
 
 
@@ -347,11 +346,6 @@ inline QString MapDocument::lastExportFileName() const
 inline void MapDocument::setLastExportFileName(const QString &fileName)
 {
     mLastExportFileName = fileName;
-}
-
-inline void MapDocument::addNonEmbeddedTemplateGroup(TemplateGroup *templateGroup)
-{
-    mNonEmbeddedTemplateGroups.append(templateGroup);
 }
 
 } // namespace Internal

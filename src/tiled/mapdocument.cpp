@@ -44,7 +44,6 @@
 #include "movemapobject.h"
 #include "movemapobjecttogroup.h"
 #include "objectgroup.h"
-#include "objecttemplatemodel.h"
 #include "offsetlayer.h"
 #include "orthogonalrenderer.h"
 #include "painttilelayer.h"
@@ -55,8 +54,6 @@
 #include "resizetilelayer.h"
 #include "rotatemapobject.h"
 #include "staggeredrenderer.h"
-#include "templategroup.h"
-#include "templategroupdocument.h"
 #include "terrain.h"
 #include "tile.h"
 #include "tilelayer.h"
@@ -124,25 +121,8 @@ MapDocument::~MapDocument()
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->removeReferences(mMap->tilesets());
 
-    qDeleteAll(mNonEmbeddedTemplateGroups);
     delete mRenderer;
     delete mMap;
-}
-
-void MapDocument::saveSelectedObject(const QString &name, int groupIndex)
-{
-    if (mSelectedObjects.size() != 1)
-        return;
-
-    ObjectTemplateModel* model = ObjectTemplateModel::instance();
-    MapObject *object = mSelectedObjects.first();
-
-    if (ObjectTemplate *objectTemplate = model->saveObjectToDocument(object, name, groupIndex)) {
-        // Convert the saved object into an instance and clear the changed properties flags
-        object->setTemplateRef({objectTemplate->templateGroup(), objectTemplate->id()});
-        object->setChangedProperties(0);
-        emit objectsChanged(mSelectedObjects);
-    }
 }
 
 bool MapDocument::save(const QString &fileName, QString *error)
@@ -359,7 +339,7 @@ void MapDocument::autocropMap()
 {
     if (!mCurrentLayer || !mCurrentLayer->isTileLayer())
         return;
-    
+
     TileLayer *tileLayer = static_cast<TileLayer*>(mCurrentLayer);
 
     const QRect bounds = tileLayer->region().boundingRect();
@@ -678,17 +658,14 @@ SharedTileset MapDocument::replaceTileset(int index, const SharedTileset &tilese
     return oldTileset;
 }
 
-TemplateGroup *MapDocument::replaceTemplateGroup(int index, TemplateGroup *templateGroup)
+void MapDocument::replaceObjectTemplate(const ObjectTemplate *oldObjectTemplate,
+                                        const ObjectTemplate *newObjectTemplate)
 {
-    TemplateGroup *oldTemplateGroup = mMap->templateGroups().at(index);
-    auto changedObjects = mMap->replaceTemplateGroup(oldTemplateGroup, templateGroup);
+    auto changedObjects = mMap->replaceObjectTemplate(oldObjectTemplate, newObjectTemplate);
 
     // Update the objects in the map scene
     emit objectsChanged(changedObjects);
-
-    emit templateGroupReplaced(index, templateGroup, oldTemplateGroup);
-
-    return oldTemplateGroup;
+    emit objectTemplateReplaced(newObjectTemplate, oldObjectTemplate);
 }
 
 void MapDocument::setSelectedArea(const QRegion &selection)
@@ -935,12 +912,12 @@ void MapDocument::onLayerRemoved(Layer *layer)
     emit layerRemoved(layer);
 }
 
-void MapDocument::updateTemplateInstances(const MapObject *mapObject)
+void MapDocument::updateTemplateInstances(const ObjectTemplate *objectTemplate)
 {
     QList<MapObject*> objectList;
     for (ObjectGroup *group : mMap->objectGroups()) {
         for (auto object : group->objects()) {
-            if (object->isTemplateInstance() && object->templateObject() == mapObject) {
+            if (object->objectTemplate() == objectTemplate) {
                 object->syncWithTemplate();
                 objectList.append(object);
             }
@@ -949,16 +926,13 @@ void MapDocument::updateTemplateInstances(const MapObject *mapObject)
     emit objectsChanged(objectList);
 }
 
-void MapDocument::selectAllInstances(const MapObject *mapObject)
+void MapDocument::selectAllInstances(const ObjectTemplate *objectTemplate)
 {
     QList<MapObject*> objectList;
-    for (ObjectGroup *group : mMap->objectGroups()) {
-        for (auto object : group->objects()) {
-            if (object->isTemplateInstance() && object->templateObject() == mapObject) {
+    for (ObjectGroup *group : mMap->objectGroups())
+        for (auto object : group->objects())
+            if (object->objectTemplate() == objectTemplate)
                 objectList.append(object);
-            }
-        }
-    }
     setSelectedObjects(objectList);
 }
 

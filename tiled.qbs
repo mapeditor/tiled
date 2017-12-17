@@ -5,7 +5,7 @@ Project {
     name: "Tiled"
 
     qbsSearchPaths: "qbs"
-    minimumQbsVersion: "1.6"
+    minimumQbsVersion: "1.8"
 
     property string version: Environment.getEnv("TILED_VERSION") || "1.0.3";
     property bool sparkleEnabled: Environment.getEnv("TILED_SPARKLE")

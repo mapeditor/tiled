@@ -24,8 +24,8 @@
 #include "json_global.h"
 
 #include "mapformat.h"
+#include "objecttemplateformat.h"
 #include "plugin.h"
-#include "templategroupformat.h"
 #include "tilesetformat.h"
 
 #include <QObject>
@@ -96,18 +96,18 @@ protected:
     QString mError;
 };
 
-class JSONSHARED_EXPORT JsonTemplateGroupFormat : public Tiled::TemplateGroupFormat
+class JSONSHARED_EXPORT JsonObjectTemplateFormat : public Tiled::ObjectTemplateFormat
 {
     Q_OBJECT
-    Q_INTERFACES(Tiled::TemplateGroupFormat)
+    Q_INTERFACES(Tiled::ObjectTemplateFormat)
 
 public:
-    JsonTemplateGroupFormat(QObject *parent = nullptr);
+    JsonObjectTemplateFormat(QObject *parent = nullptr);
 
-    Tiled::TemplateGroup *read(const QString &fileName) override;
+    Tiled::ObjectTemplate *read(const QString &fileName) override;
     bool supportsFile(const QString &fileName) const override;
 
-    bool write(const Tiled::TemplateGroup *templateGroup, const QString &fileName) override;
+    bool write(const Tiled::ObjectTemplate *objectTemplate, const QString &fileName) override;
 
     QString nameFilter() const override;
     QString shortName() const override;

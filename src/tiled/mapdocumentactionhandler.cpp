@@ -227,6 +227,8 @@ void MapDocumentActionHandler::setMapDocument(MapDocument *mapDocument)
                 this, &MapDocumentActionHandler::updateActions);
         connect(mapDocument, &MapDocument::selectedObjectsChanged,
                 this, &MapDocumentActionHandler::updateActions);
+        connect(mapDocument, &MapDocument::mapChanged,
+                this, &MapDocumentActionHandler::updateActions);
     }
 
     emit mapDocumentChanged(mMapDocument);
@@ -635,10 +637,10 @@ void MapDocumentActionHandler::moveObjectsToGroup(ObjectGroup *objectGroup)
     }
 }
 
-void MapDocumentActionHandler::selectAllInstances(const MapObject *mapObject)
+void MapDocumentActionHandler::selectAllInstances(const ObjectTemplate *objectTemplate)
 {
     if (mMapDocument)
-        mMapDocument->selectAllInstances(mapObject);
+        mMapDocument->selectAllInstances(objectTemplate);
 }
 
 void MapDocumentActionHandler::updateActions()

@@ -29,6 +29,7 @@
 namespace Tiled {
 
 class MapObject;
+class ObjectTemplate;
 class Tile;
 
 namespace Internal {
@@ -128,7 +129,7 @@ public:
 private:
     MapDocument *mMapDocument;
     const QList<MapObject*> mMapObjects;
-    QVector<TemplateRef> mTemplateRefs;
+    QVector<const ObjectTemplate*> mObjectTemplates;
     QVector<Properties> mProperties;
 };
 
@@ -139,7 +140,7 @@ public:
                    const QList<MapObject *> &mapObjects,
                    QUndoCommand *parent = nullptr);
 
-    ~ResetInstances();
+    ~ResetInstances() override;
 
     void redo() override;
     void undo() override;
@@ -148,6 +149,29 @@ private:
     MapDocument *mMapDocument;
     const QList<MapObject*> mMapObjects;
     QList<MapObject*> mOldMapObjects;
+};
+
+class ReplaceObjectsWithTemplate : public QUndoCommand
+{
+public:
+    /**
+     * Creates an undo command that replaces the given objects with a template
+     */
+    ReplaceObjectsWithTemplate(MapDocument *mapDocument,
+                               const QList<MapObject *> &mapObjects,
+                               ObjectTemplate *objectTemplate,
+                               QUndoCommand *parent = nullptr);
+
+    ~ReplaceObjectsWithTemplate() override;
+
+    void redo() override;
+    void undo() override;
+
+private:
+    MapDocument *mMapDocument;
+    const QList<MapObject*> mMapObjects;
+    QList<MapObject*> mOldMapObjects;
+    ObjectTemplate *mObjectTemplate;
 };
 
 } // namespace Internal

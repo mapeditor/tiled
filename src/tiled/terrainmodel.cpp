@@ -202,6 +202,10 @@ void TerrainModel::onTilesetRowsInserted(const QModelIndex &parent, int first, i
                 this, &TerrainModel::onTerrainAboutToBeRemoved);
         connect(tilesetTerrainModel, &TilesetTerrainModel::terrainRemoved,
                 this, &TerrainModel::onTerrainRemoved);
+        connect(tilesetTerrainModel, &TilesetTerrainModel::terrainAboutToBeSwapped,
+                this, &TerrainModel::onTerrainAboutToBeSwapped);
+        connect(tilesetTerrainModel, &TilesetTerrainModel::terrainSwapped,
+                this, &TerrainModel::onTerrainSwapped);
     }
     endInsertRows();
 }
@@ -294,4 +298,15 @@ void TerrainModel::onTerrainRemoved(Terrain *terrain)
     // for the TerrainFilterModel
     const QModelIndex index = TerrainModel::index(terrain->tileset());
     emit dataChanged(index, index);
+}
+
+void TerrainModel::onTerrainAboutToBeSwapped(Tileset *tileset, int terrainId, int swapTerrainId)
+{
+    QModelIndex parent = index(tileset);
+    beginMoveRows(parent, terrainId, terrainId, parent, swapTerrainId);
+}
+
+void TerrainModel::onTerrainSwapped()
+{
+    endMoveRows();
 }

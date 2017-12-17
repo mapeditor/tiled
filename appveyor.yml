@@ -5,10 +5,10 @@ environment:
   my_secret:
     secure: +3IhWT10lCSC4GE4gGfWt8WiZdIXuMUfaImgvQUullg=
   matrix:
-    - QTDIR: C:\Qt\5.8\msvc2013_64
+    - QTDIR: C:\Qt\5.9\msvc2013_64
       PUSH_RELEASE: true
       TILED_ITCH_CHANNEL: windows-64bit
-    - QTDIR: C:\Qt\5.8\mingw53_32
+    - QTDIR: C:\Qt\5.9\mingw53_32
       MINGW: C:\Qt\Tools\mingw530_32
       PUSH_RELEASE: true
       TILED_ITCH_CHANNEL: windows-32bit
@@ -20,7 +20,7 @@ environment:
 configuration: Release
 
 install:
-  - choco install -y qbs --version 1.7.2
+  - choco install -y qbs --version 1.9.1
   - nuget install secure-file -ExcludeVersion
   - set PATH=%PATH%;%QTDIR%\bin;%MINGW%\bin
 
@@ -40,8 +40,8 @@ build_script:
   - if defined TILED_RELEASE (set TILED_ITCH_VERSION=%TILED_VERSION%) else (set TILED_ITCH_VERSION=%VERSION_DATE%)
   - if defined TILED_SNAPSHOT (set TILED_ITCH_CHANNEL=%TILED_ITCH_CHANNEL%-snapshot)
   - if not defined APPVEYOR_PULL_REQUEST_NUMBER if [%APPVEYOR_REPO_BRANCH%]==[snapshot] set PUSH_TO_ITCH=true
-  - qbs build --all-products release Tiled.windowsInstaller:true
-  - qbs build --all-products itch qbs.buildVariant:release Tiled.sparkleEnabled:false Tiled.version:%TILED_ITCH_VERSION%
+  - qbs build --all-products release projects.Tiled.windowsInstaller:true
+  - qbs build --all-products itch qbs.buildVariant:release projects.Tiled.sparkleEnabled:false projects.Tiled.version:%TILED_ITCH_VERSION%
   - cd util\java
   - mvn --version
   - mvn clean install
@@ -52,7 +52,8 @@ after_build:
   - cd installer*
   - move tiled-*.msi %APPVEYOR_BUILD_FOLDER%
   - if defined TILED_SNAPSHOT move appcast-win*-snapshots.xml %APPVEYOR_BUILD_FOLDER%
-  - cd ..
+  - cd ..\..
+  - cd itch
   - cd archive*
   - move tiled-*.7z %APPVEYOR_BUILD_FOLDER%
   - cd ..\..

@@ -88,6 +88,13 @@ QRectF IsometricRenderer::boundingRect(const MapObject *object) const
     if (object->shape() == MapObject::Text) {
         const QPointF topLeft = pixelToScreenCoords(object->position());
         return QRectF(topLeft, object->size());
+    } else if (object->shape() == MapObject::Point) {
+        const qreal extraSpace = qMax(objectLineWidth() / 2, qreal(1));
+        return shape(object).boundingRect()
+                            .adjusted(-extraSpace,
+                                      -extraSpace,
+                                      extraSpace,
+                                      extraSpace);
     } else if (!object->cell().isEmpty()) {
         const QSizeF objectSize { object->size() };
 
@@ -143,6 +150,9 @@ QPainterPath IsometricRenderer::shape(const MapObject *object) const
         case MapObject::Ellipse:
         case MapObject::Rectangle:
             path.addPolygon(pixelRectToScreenPolygon(object->bounds()));
+            break;
+        case MapObject::Point:
+            path = pointShape(object);
             break;
         case MapObject::Polygon:
         case MapObject::Polyline: {
@@ -425,6 +435,10 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             }
             break;
         }
+        case MapObject::Point:
+            painter->translate(pixelToScreenCoords(object->position()));
+            drawPointObject(painter, color);
+            break;
         case MapObject::Rectangle: {
             QPolygonF polygon = pixelRectToScreenPolygon(object->bounds());
             painter->drawPolygon(polygon);

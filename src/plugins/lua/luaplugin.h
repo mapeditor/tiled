@@ -67,6 +67,9 @@ private:
                      Tiled::Map::LayerDataFormat format);
     void writeTileLayer(LuaTableWriter &, const Tiled::TileLayer *,
                         Tiled::Map::LayerDataFormat);
+    void writeTileLayerData(LuaTableWriter &, const Tiled::TileLayer *,
+                            Tiled::Map::LayerDataFormat format,
+                            QRect bounds);
     void writeObjectGroup(LuaTableWriter &, const Tiled::ObjectGroup *,
                           const QByteArray &key = QByteArray());
     void writeImageLayer(LuaTableWriter &, const Tiled::ImageLayer *);

@@ -27,7 +27,7 @@
 </source>
         <translation>&lt;p align="center"&gt;&lt;font size="+2"&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Версия %1&lt;/i&gt;&lt;/p&gt;
 &lt;p align="center"&gt;Copyright 2008-2017 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(смотрите файл AUTHORS с полным списком участников)&lt;/p&gt;
-&lt;p align="center"&gt;Вы можете модифицировать и распространять программу в рамках условий лицензии GPL (версии 2 и выше). Копия текста лицензии GPL находится в файле 'COPYING' поставляемым с Tiled.&lt;/p&gt;
+&lt;p align="center"&gt;Вы можете модифицировать и распространять программу в рамках условий лицензии GPL (версии 2 и выше). Копия текста лицензии GPL находится в файле 'COPYING', поставляемым с Tiled.&lt;/p&gt;
 &lt;p align="center"&gt;&lt;a href="http://www.mapeditor.org/"&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </translation>
     </message>
@@ -50,7 +50,7 @@
     <message>
         <location filename="../src/tiled/main.cpp" line="+239"/>
         <source>Export syntax is --export-map [format] &lt;tmx file&gt; &lt;target file&gt;</source>
-        <translation>Синтакс экспорта --export-map [format] &lt;tmx файл&gt; &lt;целевой файл&gt;</translation>
+        <translation>Синтаксис экспорта --export-map [format] &lt;tmx файл&gt; &lt;целевой файл&gt;</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -207,7 +207,7 @@
     <message>
         <location filename="../src/automappingconverter/converterwindow.cpp" line="+36"/>
         <source>Save all as %1</source>
-        <translation>Сохранить всё как %1</translation>
+        <translation>Сохранить все как %1</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -370,7 +370,7 @@
     <message>
         <location filename="../src/plugins/gmx/gmxplugin.cpp" line="+82"/>
         <source>Could not open file for writing.</source>
-        <translation>Не удалось открыть файл для записи.</translation>
+        <translation>Не удается открыть файл для записи.</translation>
     </message>
     <message>
         <location line="+294"/>
@@ -536,7 +536,7 @@
     <message>
         <location line="+14"/>
         <source>AutoMap</source>
-        <translation>Авто карта</translation>
+        <translation>Автокарта</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -596,7 +596,7 @@
     <message>
         <location line="+5"/>
         <source>Save All</source>
-        <translation>Сохранить всё</translation>
+        <translation>Сохранить все</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -616,7 +616,7 @@
     <message>
         <location line="+8"/>
         <source>AutoMap While Drawing</source>
-        <translation>Авто карта во время рисования</translation>
+        <translation>Автокарта во время рисования</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -657,7 +657,7 @@
     <message>
         <location line="+3"/>
         <source>Offsets everything in a layer</source>
-        <translation>Смещается всё, что на слое</translation>
+        <translation>Смещается все, что на слое</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -702,7 +702,7 @@
     <message>
         <location line="+71"/>
         <source>Snapping</source>
-        <translation>'Прилипание' объектов</translation>
+        <translation>Привязка объектов</translation>
     </message>
     <message>
         <location line="+24"/>
@@ -732,12 +732,12 @@
     <message>
         <location line="+13"/>
         <source>&amp;Snap to Grid</source>
-        <translation>&amp;Прилипать к сетке</translation>
+        <translation>&amp;Привязать к сетке</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>C&amp;lose All</source>
-        <translation>&amp;Закрыть всё</translation>
+        <translation>&amp;Закрыть все</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -772,7 +772,7 @@
     <message>
         <location line="+8"/>
         <source>Snap to &amp;Fine Grid</source>
-        <translation>&amp;Прилипать к мелкой сетке</translation>
+        <translation>&amp;Привязать к мелкой сетке</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -792,7 +792,7 @@
     <message>
         <location line="+70"/>
         <source>Snap to &amp;Pixels</source>
-        <translation>Прилипать к пикселам</translation>
+        <translation>Привязать к пикселам</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -802,7 +802,7 @@
     <message>
         <location line="+11"/>
         <source>No Snapping</source>
-        <translation>Деактивировать</translation>
+        <translation>Отключить привязку</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -822,12 +822,12 @@
     <message>
         <location filename="../src/automappingconverter/converterwindow.ui" line="+14"/>
         <source>Tiled Automapping Rule Files Converter</source>
-        <translation>Конвертер файлов правил авто-карты</translation>
+        <translation>Конвертер файлов правил автокарты</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Add new Automapping rules</source>
-        <translation>Добавить правило Авто-карты</translation>
+        <translation>Добавить правило автокарты</translation>
     </message>
     <message>
         <location filename="../src/tiled/propertybrowser.cpp" line="+751"/>
@@ -878,7 +878,7 @@ Line %1, column %2</source>
         <location line="+32"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+59"/>
         <source>Unsupported map orientation: "%1"</source>
-        <translation>Не поддерживаемая ориентация карты: "%1"</translation>
+        <translation>Неподдерживаемая ориентация карты: "%1"</translation>
     </message>
     <message>
         <location line="+98"/>
@@ -1271,7 +1271,7 @@ Line %1, column %2</source>
     <message>
         <location line="+9"/>
         <source>Thanks for using Tiled! Please consider supporting further development with a small monthly donation.</source>
-        <translation>Благодарим за использование Tiled! Пожалуйста поддержите небольшим ежемесячным пожертвованием разработку проекта.</translation>
+        <translation>Благодарим за использование Tiled! Пожалуйста, поддержите небольшим ежемесячным пожертвованием разработку проекта.</translation>
     </message>
     <message>
         <location line="+25"/>
@@ -1286,7 +1286,7 @@ Line %1, column %2</source>
     <message>
         <location line="+7"/>
         <source>Maybe later</source>
-        <translation>Возможно позже</translation>
+        <translation>Возможно, позже</translation>
     </message>
 </context>
 <context>
@@ -1433,7 +1433,7 @@ Line %1, column %2</source>
         <location filename="../src/tiled/preferencesdialog.cpp" line="+60"/>
         <location line="+131"/>
         <source>Native</source>
-        <translation>Нативный</translation>
+        <translation>Системный</translation>
     </message>
     <message>
         <location line="-130"/>
@@ -1470,7 +1470,7 @@ Line %1, column %2</source>
     <message>
         <location line="+10"/>
         <source>Automatically check for updates</source>
-        <translation>Проверять обновления автоматически</translation>
+        <translation>Автоматически проверять обновления</translation>
     </message>
     <message>
         <location line="+47"/>
@@ -1498,7 +1498,7 @@ Line %1, column %2</source>
     <message>
         <location line="+12"/>
         <source>Uncaught exception in script. Please check console.</source>
-        <translation>Неопределённое исключение в скрипте. Пожалуйста, проверьте консоль.</translation>
+        <translation>Неопределенное исключение в скрипте. Пожалуйста, проверьте консоль.</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1592,7 +1592,7 @@ Line %1, column %2</source>
     <message>
         <location line="+8"/>
         <source>Green</source>
-        <translation>Зелёный</translation>
+        <translation>Зеленый</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -1854,7 +1854,7 @@ Line %1, column %2</source>
     <message>
         <location line="+8"/>
         <source>Width</source>
-        <translation>Длина</translation>
+        <translation>Ширина</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -1882,7 +1882,7 @@ Line %1, column %2</source>
     <message>
         <location line="+7"/>
         <source>Width</source>
-        <translation>Длина</translation>
+        <translation>Ширина</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -1900,7 +1900,7 @@ Line %1, column %2</source>
     <message>
         <location line="+130"/>
         <source>Width</source>
-        <translation>Длина</translation>
+        <translation>Ширина</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -1952,7 +1952,7 @@ Line %1, column %2</source>
     <message>
         <location line="+96"/>
         <source>Width</source>
-        <translation>Длина</translation>
+        <translation>Ширина</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -1983,12 +1983,12 @@ Line %1, column %2</source>
     <message>
         <location line="+11"/>
         <source>Can't parse file header!</source>
-        <translation>Не удается распарсить заголовок файла!</translation>
+        <translation>Не удается разобрать заголовок файла!</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>Can't parse layer header!</source>
-        <translation>Не удается распарсить заголовок слоя!</translation>
+        <translation>Не удается разобрать заголовок слоя!</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -2023,7 +2023,7 @@ Line %1, column %2</source>
     <message>
         <location line="+8"/>
         <source>Can't save non-tile layer!</source>
-        <translation>Не удается сохранить не тайловый слой!</translation>
+        <translation>Не удается сохранить нетайловый слой!</translation>
     </message>
     <message>
         <location line="+24"/>
@@ -2133,7 +2133,7 @@ Line %1, column %2</source>
         <location filename="../src/tiled/abstractobjecttool.cpp" line="+186"/>
         <location line="+70"/>
         <source>Reset Tile Size</source>
-        <translation>Сбросить размер плитки</translation>
+        <translation>Сбросить размер тайла</translation>
     </message>
     <message numerus="yes">
         <location line="-13"/>
@@ -2156,7 +2156,7 @@ Line %1, column %2</source>
     <message>
         <location line="+18"/>
         <source>Flip Horizontally</source>
-        <translation>Перевернуть по горизонтали</translation>
+        <translation>Отразить по горизонтали</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -2166,7 +2166,7 @@ Line %1, column %2</source>
     <message>
         <location line="+1"/>
         <source>Flip Vertically</source>
-        <translation>Перевернуть по вертикали</translation>
+        <translation>Отразить по вертикали</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -2246,12 +2246,12 @@ Line %1, column %2</source>
     <message>
         <location line="+59"/>
         <source>Did you forget an underscore in layer '%1'?</source>
-        <translation>Возможно вы забыли подчеркивание в слое '%1'?</translation>
+        <translation>Возможно, вы забыли подчеркивание в слое '%1'?</translation>
     </message>
     <message>
         <location line="+67"/>
         <source>Layer '%1' is not recognized as a valid layer for Automapping.</source>
-        <translation>Слой '%1' не является действительным слоем для Авто-карты.</translation>
+        <translation>Слой '%1' не является действительным слоем для автокарты.</translation>
     </message>
     <message>
         <location line="-99"/>
@@ -2295,7 +2295,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/automappingmanager.cpp" line="+103"/>
         <source>Apply AutoMap rules</source>
-        <translation>Применить правила авто-карты</translation>
+        <translation>Применить правила автокарты</translation>
     </message>
     <message>
         <location line="+24"/>
@@ -2368,7 +2368,7 @@ Line %1, column %2</source>
     <message>
         <location line="+1"/>
         <source>One or more referenced files could not be found. You can help locate them below.</source>
-        <translation>Один или несколько файлов не возможно найти. Ниже вы можете указать их расположение.</translation>
+        <translation>Один или несколько файлов невозможно найти. Ниже вы можете указать их расположение.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2726,7 +2726,7 @@ Line %1, column %2</source>
     <message>
         <location line="+1"/>
         <source>The number of tile columns in the tileset '%1' appears to have changed from %2 to %3. Do you want to adjust tile references?</source>
-        <translation>Число столбцов в наборе тайлов '%1', возможно, были изменены с %2 по %3. Хотите настроить ссылки тайлов?</translation>
+        <translation>Число столбцов в наборе тайлов '%1', возможно, было изменено с %2 до %3. Хотите настроить ссылки тайлов?</translation>
     </message>
 </context>
 <context>
@@ -2871,7 +2871,7 @@ Do you want to replace it?</source>
     <message>
         <location line="+1"/>
         <source>Opacity:</source>
-        <translation>Прозрачность:</translation>
+        <translation>Непрозрачность:</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2912,7 +2912,7 @@ Do you want to replace it?</source>
         <location filename="../src/tiled/layeroffsettool.cpp" line="+39"/>
         <location line="+86"/>
         <source>Offset Layers</source>
-        <translation>Смещение слоёв</translation>
+        <translation>Смещение слоев</translation>
     </message>
     <message>
         <location line="-84"/>
@@ -3096,12 +3096,12 @@ Do you want to replace it?</source>
     <message>
         <location line="+53"/>
         <source>Unsaved Changes</source>
-        <translation>Не сохраненные изменения</translation>
+        <translation>Несохраненные изменения</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>There are unsaved changes. Do you want to save now?</source>
-        <translation>Имеются не сохраненные изменения. Сохранить сейчас?</translation>
+        <translation>Имеются несохраненные изменения. Сохранить сейчас?</translation>
     </message>
     <message>
         <location line="+41"/>
@@ -3174,7 +3174,7 @@ Please select specific format.</source>
     <message>
         <location line="-321"/>
         <source>Automatic Mapping Warning</source>
-        <translation>Предупреждение авто-карты</translation>
+        <translation>Предупреждение автокарты</translation>
     </message>
     <message>
         <location line="-964"/>
@@ -3212,7 +3212,7 @@ Please select specific format.</source>
     <message>
         <location line="+97"/>
         <source>Automatic Mapping Error</source>
-        <translation>Ошибка авто-карты</translation>
+        <translation>Ошибка автокарты</translation>
     </message>
 </context>
 <context>
@@ -3265,12 +3265,12 @@ Please select specific format.</source>
     <message>
         <location line="+4"/>
         <source>Group Layer</source>
-        <translation>Сгруппировать слой</translation>
+        <translation>Группа слоев</translation>
     </message>
     <message>
         <location line="+32"/>
         <source>Ungroup Layer</source>
-        <translation>Отменить группировку слоя</translation>
+        <translation>Разгруппировать слой</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -3388,7 +3388,7 @@ Please select specific format.</source>
     <message>
         <location line="+57"/>
         <source>Select &amp;All</source>
-        <translation>Выделить вс&amp;ё</translation>
+        <translation>Выделить вс&amp;е</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3408,7 +3408,7 @@ Please select specific format.</source>
     <message>
         <location line="+2"/>
         <source>&amp;Tile Layer</source>
-        <translation>Слой &amp;плиток</translation>
+        <translation>Слой &amp;тайлов</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3977,7 +3977,7 @@ Please select specific format.</source>
     <message>
         <location line="+23"/>
         <source>Thanks!</source>
-        <translation>Пасипки!</translation>
+        <translation>Спасибо!</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4211,7 +4211,7 @@ Please select specific format.</source>
         <location line="+70"/>
         <location line="+167"/>
         <source>Width</source>
-        <translation>Длина</translation>
+        <translation>Ширина</translation>
     </message>
     <message>
         <location line="-236"/>
@@ -4224,7 +4224,7 @@ Please select specific format.</source>
         <location line="-236"/>
         <location line="+208"/>
         <source>Tile Width</source>
-        <translation>Длина тайла</translation>
+        <translation>Ширина тайла</translation>
     </message>
     <message>
         <location line="-207"/>
@@ -4280,7 +4280,7 @@ Please select specific format.</source>
     <message>
         <location line="+13"/>
         <source>Opacity</source>
-        <translation>Прозрачность</translation>
+        <translation>Непрозрачность</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -4448,7 +4448,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Erase Terrain</source>
-        <translation>Стирание участка</translation>
+        <translation>Очистка участка</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -4696,7 +4696,7 @@ Please select specific format.</source>
     <message>
         <location line="+4"/>
         <source>Add anyway?</source>
-        <translation>Всеравно добавить?</translation>
+        <translation>Все равно добавить?</translation>
     </message>
     <message>
         <location line="+14"/>
@@ -4845,7 +4845,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/plugins/tmw/tmwplugin.cpp" line="+47"/>
         <source>Multiple collision layers found!</source>
-        <translation>Обнаружены несколько слоёв столкновений!</translation>
+        <translation>Обнаружено несколько слоев столкновений!</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -4855,7 +4855,7 @@ Please select specific format.</source>
     <message>
         <location line="+6"/>
         <source>Could not open file for writing.</source>
-        <translation>Не удаётся открыть файл для записи.</translation>
+        <translation>Не удается открыть файл для записи.</translation>
     </message>
     <message>
         <location line="+30"/>
@@ -5009,7 +5009,7 @@ Please select specific format.</source>
     <message>
         <location line="+20"/>
         <source>Change Drawing Offset</source>
-        <translation>Изменить свещение отображения</translation>
+        <translation>Изменить смещение отображения</translation>
     </message>
     <message>
         <location line="+48"/>
@@ -5264,7 +5264,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/utils.cpp" line="+39"/>
         <source>Image files</source>
-        <translation>Графические файлы</translation>
+        <translation>Файлы изображений</translation>
     </message>
 </context>
 </TS>

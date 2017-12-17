@@ -29,6 +29,7 @@
 #include "maprenderer.h"
 
 #include "imagelayer.h"
+#include "mapobject.h"
 #include "tile.h"
 #include "tilelayer.h"
 
@@ -55,6 +56,62 @@ void MapRenderer::drawImageLayer(QPainter *painter,
     Q_UNUSED(exposed)
 
     painter->drawPixmap(QPointF(), imageLayer->image());
+}
+
+void MapRenderer::drawPointObject(QPainter *painter, const QColor &color) const
+{
+    const qreal lineWidth = objectLineWidth();
+    const qreal scale = painterScale();
+    const qreal shadowDist = (lineWidth == 0 ? 1 : lineWidth) / scale;
+    const QPointF shadowOffset = QPointF(shadowDist * 0.5,
+                                         shadowDist * 0.5);
+
+    QPen linePen(color, lineWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+    linePen.setCosmetic(true);
+    QPen shadowPen(linePen);
+    shadowPen.setColor(Qt::black);
+
+    QColor brushColor = color;
+    brushColor.setAlpha(50);
+    const QBrush fillBrush(brushColor);
+
+    painter->setPen(Qt::NoPen);
+    painter->setBrush(fillBrush);
+
+    QPainterPath path;
+
+    const float radius = 10.f;
+    const float sweep = 235.f;
+    const float startAngle = 90.f - sweep / 2;
+    QRectF rectangle(-radius, -radius, radius * 2, radius * 2);
+    path.moveTo(radius * cos(startAngle * M_PI / 180.0), -radius * sin(startAngle * M_PI / 180.0));
+    path.arcTo(rectangle, startAngle, sweep);
+    path.lineTo(0, 2 * radius);
+    path.closeSubpath();
+
+    painter->translate(0, -2 * radius);
+
+    painter->setPen(shadowPen);
+    painter->setBrush(Qt::NoBrush);
+    painter->drawPath(path.translated(shadowOffset));
+
+    painter->setPen(linePen);
+    painter->setBrush(fillBrush);
+    painter->drawPath(path);
+
+    const QBrush opaqueBrush(color);
+    painter->setBrush(opaqueBrush);
+    const float smallRadius = radius / 3;
+    painter->drawEllipse(-smallRadius, -smallRadius, smallRadius * 2, smallRadius * 2);
+}
+
+QPainterPath MapRenderer::pointShape(const MapObject *object) const
+{
+    Q_ASSERT(object->shape() == MapObject::Point);
+    QPainterPath path;
+    path.addRect(QRect(-10, -30, 20, 30));
+    path.translate(pixelToScreenCoords(object->position()));
+    return path;
 }
 
 void MapRenderer::setFlag(RenderFlag flag, bool enabled)
@@ -189,7 +246,7 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &si
     fragment.scaleY = flippedVertically ? -1 : 1;
     fragment.rotation = 0;
     fragment.opacity = 1;
-    
+
     if (origin == BottomCenter)
         fragment.x -= sizeHalf.x();
 
@@ -204,7 +261,7 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &si
     } else if (cell.flippedAntiDiagonally()) {
         Q_ASSERT(mCellType == OrthogonalCells);
         fragment.rotation = 90;
-        
+
         flippedHorizontally = cell.flippedVertically();
         flippedVertically = !cell.flippedHorizontally();
 
@@ -214,7 +271,7 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &si
         if (origin != BottomCenter)
             fragment.x += halfDiff;
     }
-    
+
     fragment.scaleX = scale.width() * (flippedHorizontally ? -1 : 1);
     fragment.scaleY = scale.height() * (flippedVertically ? -1 : 1);
 

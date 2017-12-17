@@ -154,7 +154,7 @@ inline bool Cell::refersTile(const Tile *tile) const
 /**
  * A Chunk is a grid of cells of size CHUNK_SIZExCHUNK_SIZE.
  */
-class Chunk
+class TILEDSHARED_EXPORT Chunk
 {
 public:
     Chunk() :
@@ -499,6 +499,8 @@ public:
     iterator end() { return iterator(mChunks.end(), mChunks.end()); }
     const_iterator begin() const { return const_iterator(mChunks.begin(), mChunks.end()); }
     const_iterator end() const { return const_iterator(mChunks.end(), mChunks.end()); }
+
+    QVector<QRect> sortedChunksToWrite() const;
 
 protected:
     TileLayer *initializeClone(TileLayer *clone) const;

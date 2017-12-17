@@ -13,19 +13,12 @@ Tiled 1.1
    ``height`` attributes.
 
 -  :doc:`Templates </manual/using-templates>` were added, a
-   :ref:`template group <tmx-templategroup>` is an external file
-   referenced by maps:
+   template is an :ref:`external file <tmx-template-files>` referenced
+   by template instance objects:
 
    .. code:: xml
 
-      <templategroup firsttid="1" source="platforms.tgx"/>
-
--  An object can be a template instance, by referring to a template by a
-   template id (the :ref:`tid attribute <tmx-object>`):
-
-   .. code:: xml
-
-      <object id="1363" tid="14" x="20" y="55"/>
+      <object id="3" template="diamond.tx" x="200" y="100"/>
 
 -  Tilesets can now contain :doc:`Wang tiles </manual/using-wang-tiles>`.
    They are saved in the new :ref:`tmx-wangsets` element.

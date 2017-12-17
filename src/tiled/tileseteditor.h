@@ -126,7 +126,7 @@ private slots:
     void removeWangSet();
     void setWangSetImage(Tile *tile);
     void setWangColorImage(Tile *tile, bool isEdge, int index);
-    void setWangColorColor(QColor color, bool isEdge, int index);
+    void setWangColorColor(const QColor &color, bool isEdge, int index);
 
     void onAnimationEditorClosed();
 

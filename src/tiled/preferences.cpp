@@ -64,8 +64,8 @@ Preferences::Preferences()
     mSafeSavingEnabled = boolValue("SafeSavingEnabled", true);
     mReloadTilesetsOnChange = boolValue("ReloadTilesets", true);
     mStampsDirectory = stringValue("StampsDirectory");
+    mTemplatesDirectory = stringValue("TemplatesDirectory");
     mObjectTypesFile = stringValue("ObjectTypesFile");
-    mTemplateDocumentsFile = stringValue("TemplateDocumentsFile");
     mSettings->endGroup();
 
     SaveFile::setSafeSavingEnabled(mSafeSavingEnabled);
@@ -447,8 +447,8 @@ static QString lastPathKey(Preferences::FileType fileType)
     case Preferences::ObjectTypesFile:
         key.append(QLatin1String("ObjectTypes"));
         break;
-    case Preferences::TemplateDocumentsFile:
-        key.append(QLatin1String("TemplateDocuments"));
+    case Preferences::ObjectTemplateFile:
+        key.append(QLatin1String("ObjectTemplates"));
         break;
     case Preferences::ImageFile:
         key.append(QLatin1String("Images"));
@@ -614,7 +614,7 @@ void Preferences::setCheckForUpdates(bool on)
 void Preferences::setOpenLastFilesOnStartup(bool open)
 {
     if (mOpenLastFilesOnStartup == open)
-    	return;
+        return;
 
     mOpenLastFilesOnStartup = open;
     mSettings->setValue(QLatin1String("Startup/OpenLastFiles"), open);
@@ -713,6 +713,25 @@ void Preferences::setStampsDirectory(const QString &stampsDirectory)
     emit stampsDirectoryChanged(stampsDirectory);
 }
 
+QString Preferences::templatesDirectory() const
+{
+    if (mTemplatesDirectory.isEmpty())
+        return dataLocation() + QLatin1String("/templates");
+
+    return mTemplatesDirectory;
+}
+
+void Preferences::setTemplatesDirectory(const QString &templatesDirectory)
+{
+    if (mTemplatesDirectory == templatesDirectory)
+        return;
+
+    mTemplatesDirectory = templatesDirectory;
+    mSettings->setValue(QLatin1String("Storage/TemplatesDirectory"), templatesDirectory);
+
+    emit templatesDirectoryChanged(templatesDirectory);
+}
+
 QString Preferences::objectTypesFile() const
 {
     if (mObjectTypesFile.isEmpty())
@@ -730,21 +749,4 @@ void Preferences::setObjectTypesFile(const QString &fileName)
     mSettings->setValue(QLatin1String("Storage/ObjectTypesFile"), fileName);
 
     emit stampsDirectoryChanged(fileName);
-}
-
-QString Preferences::templateDocumentsFile() const
-{
-    if (mTemplateDocumentsFile.isEmpty())
-        return dataLocation() + QLatin1String("/templategroups.xml");
-
-    return mTemplateDocumentsFile;
-}
-
-void Preferences::setTemplateDocumentsFile(const QString &fileName)
-{
-    if (mTemplateDocumentsFile == fileName)
-        return;
-
-    mTemplateDocumentsFile = fileName;
-    mSettings->setValue(QLatin1String("Storage/TemplateDocumentsFile"), fileName);
 }

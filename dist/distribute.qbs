@@ -74,16 +74,8 @@ Product {
                 );
             }
 
-            if (Qt.core.versionMinor < 4) {
-                list.push("Qt5OpenGL" + postfix);
-            }
-
             if (qbs.targetOS.contains("windows")) {
-                if (Qt.core.versionMinor <= 4) {
-                    list.push("icuin53.dll",
-                              "icuuc53.dll",
-                              "icudt53.dll");
-                } else if (Qt.core.versionMinor < 7) {
+                if (Qt.core.versionMinor < 7) {
                     list.push("icuin54.dll",
                               "icuuc54.dll",
                               "icudt54.dll");

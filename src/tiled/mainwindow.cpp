@@ -53,7 +53,6 @@
 #include "newtilesetdialog.h"
 #include "objectgroup.h"
 #include "objecttypeseditor.h"
-#include "objecttemplatemodel.h"
 #include "offsetmapdialog.h"
 #include "patreondialog.h"
 #include "pluginmanager.h"
@@ -109,15 +108,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mObjectTypesEditor(new ObjectTypesEditor(this))
     , mAutomappingManager(new AutomappingManager(this))
     , mDocumentManager(DocumentManager::instance())
-    , mTmxMapFormat(new TmxMapFormat(this))
-    , mTsxTilesetFormat(new TsxTilesetFormat(this))
-    , mTgxTemplateGroupFormat(new TgxTemplateGroupFormat(this))
 {
     mUi->setupUi(this);
-
-    PluginManager::addObject(mTmxMapFormat);
-    PluginManager::addObject(mTsxTilesetFormat);
-    PluginManager::addObject(mTgxTemplateGroupFormat);
 
     ActionManager::registerAction(mUi->actionNewMap, "file.new_map");
     ActionManager::registerAction(mUi->actionNewTileset, "file.new_tileset");
@@ -467,12 +459,9 @@ MainWindow::~MainWindow()
     mDocumentManager->deleteEditor(Document::MapDocumentType);
     mDocumentManager->deleteEditor(Document::TilesetDocumentType);
 
-    PluginManager::removeObject(mTmxMapFormat);
-    PluginManager::removeObject(mTsxTilesetFormat);
-
     DocumentManager::deleteInstance();
-    TilesetManager::deleteInstance();
     TemplateManager::deleteInstance();
+    TilesetManager::deleteInstance();
     Preferences::deleteInstance();
     LanguageManager::deleteInstance();
     PluginManager::deleteInstance();
@@ -620,35 +609,8 @@ bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
 
     mDocumentManager->addDocument(document);
 
-    if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document)) {
+    if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document))
         mDocumentManager->checkTilesetColumns(mapDocument);
-
-        // When opening a map using new template groups, ask whether to load it into Tiled or not.
-        bool embedTemplateGroups = false;
-        for (auto templateGroup : mapDocument->map()->templateGroups()) {
-            if (!templateGroup->embedded()) {
-                const QMessageBox::StandardButton reply = QMessageBox::question(
-                    this,
-                    tr("Load Template Groups"),
-                    tr("Some Template Groups used in this map aren't loaded into Tiled. Would you like to load them?"),
-                    QMessageBox::Yes | QMessageBox::No,
-                    QMessageBox::Yes);
-                embedTemplateGroups = reply == QMessageBox::Yes;
-                break;
-            }
-        }
-
-        auto model = ObjectTemplateModel::instance();
-        for (auto templateGroup : mapDocument->map()->templateGroups()) {
-            if (!templateGroup->embedded()) {
-                if (embedTemplateGroups) {
-                    model->addTemplateGroup(templateGroup);
-                } else {
-                    mapDocument->addNonEmbeddedTemplateGroup(templateGroup);
-                }
-            }
-        }
-    }
 
     Preferences::instance()->addRecentFile(fileName);
     return true;
@@ -701,7 +663,7 @@ void MainWindow::openFile()
                                      selectedFilter).toString();
 
     auto preferences = Preferences::instance();
-    const auto fileNames = QFileDialog::getOpenFileNames(this, tr("Open Map"),
+    const auto fileNames = QFileDialog::getOpenFileNames(this, tr("Open File"),
                                                          preferences->fileDialogStartLocation(),
                                                          helper.filter(),
                                                          &selectedFilter);
@@ -1227,10 +1189,11 @@ void MainWindow::resizeMap()
     if (map->orientation() == Map::Orthogonal && map->tileWidth() == map->tileHeight()) {
         resizeDialog.setMiniMapRenderer([mapDocument](QSize size){
             QImage image(size, QImage::Format_ARGB32_Premultiplied);
-            MiniMapRenderer(mapDocument).renderToImage(image, MiniMapRenderer::DrawObjects
-                                                       | MiniMapRenderer::DrawImages
-                                                       | MiniMapRenderer::DrawTiles
-                                                       | MiniMapRenderer::IgnoreInvisibleLayer);
+            MiniMapRenderer(mapDocument->map()).renderToImage(image, MiniMapRenderer::DrawMapObjects
+                                                              | MiniMapRenderer::DrawImageLayers
+                                                              | MiniMapRenderer::DrawTileLayers
+                                                              | MiniMapRenderer::IgnoreInvisibleLayer
+                                                              | MiniMapRenderer::SmoothPixmapTransform);
             return image;
         });
     }

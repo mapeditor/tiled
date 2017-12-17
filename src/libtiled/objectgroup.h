@@ -60,20 +60,10 @@ public:
         IndexOrder
     };
 
-    /**
-     * Default constructor.
-     */
     ObjectGroup();
-
-    /**
-     * Constructor with some parameters.
-     */
     ObjectGroup(const QString &name, int x, int y);
 
-    /**
-     * Destructor.
-     */
-    ~ObjectGroup();
+    ~ObjectGroup() override;
 
     /**
      * Returns a pointer to the list of objects in this object group.

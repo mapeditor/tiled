@@ -38,7 +38,7 @@ class QToolButton;
 
 namespace Tiled {
 
-class MapObject;
+class ObjectTemplate;
 class Terrain;
 
 namespace Internal {
@@ -65,7 +65,7 @@ class TileStamp;
 class TileStampManager;
 class ToolManager;
 class TreeViewComboBox;
-class UncheckableItemsModel;
+class ComboBoxProxyModel;
 class UndoDock;
 class WangBrush;
 class WangDock;
@@ -125,7 +125,7 @@ public slots:
     void addExternalTilesets(const QStringList &fileNames);
     void filesDroppedOnTilesetDock(const QStringList &fileNames);
 
-    void updateTemplateInstances(const MapObject *mapObject);
+    void updateTemplateInstances(const ObjectTemplate *objectTemplate);
 
 private slots:
     void currentWidgetChanged();
@@ -165,7 +165,7 @@ private:
     QDockWidget *mTileStampsDock;
 
     TreeViewComboBox *mLayerComboBox;
-    UncheckableItemsModel *mUncheckableProxyModel;
+    ComboBoxProxyModel *mComboBoxProxyModel;
     ReversingProxyModel *mReversingProxyModel;
 
     Zoomable *mZoomable;

@@ -56,9 +56,6 @@ class MapDocumentActionHandler;
 class MapScene;
 class MapView;
 class ObjectTypesEditor;
-class TmxMapFormat;
-class TsxTilesetFormat;
-class TgxTemplateGroupFormat;
 class Zoomable;
 
 /**
@@ -215,10 +212,6 @@ private:
 
     AutomappingManager *mAutomappingManager;
     DocumentManager *mDocumentManager;
-
-    TmxMapFormat *mTmxMapFormat;
-    TsxTilesetFormat *mTsxTilesetFormat;
-    TgxTemplateGroupFormat *mTgxTemplateGroupFormat;
 
     QPointer<PreferencesDialog> mPreferencesDialog;
 

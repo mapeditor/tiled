@@ -45,8 +45,7 @@ macx {
 
         APP_RESOURCES.path = Contents/Resources
         APP_RESOURCES.files = \
-            ../../dist/dsa_pub.pem \
-            images/tmx-icon-mac.icns
+            ../../dist/dsa_pub.pem
 
         SPARKLE_FRAMEWORK.path = Contents/Frameworks
         SPARKLE_FRAMEWORK.files = $${SPARKLE_DIR}/Sparkle.framework
@@ -124,6 +123,7 @@ SOURCES += aboutdialog.cpp \
     createellipseobjecttool.cpp \
     createmultipointobjecttool.cpp \
     createobjecttool.cpp \
+    createpointobjecttool.cpp \
     createpolygonobjecttool.cpp \
     createpolylineobjecttool.cpp \
     createrectangleobjecttool.cpp \
@@ -160,6 +160,7 @@ SOURCES += aboutdialog.cpp \
     mapdocumentactionhandler.cpp \
     mapdocument.cpp \
     mapeditor.cpp \
+    mapitem.cpp \
     mapobjectitem.cpp \
     mapobjectmodel.cpp \
     mapscene.cpp \
@@ -171,8 +172,8 @@ SOURCES += aboutdialog.cpp \
     movelayer.cpp \
     movemapobject.cpp \
     movemapobjecttogroup.cpp \
+    moveterrain.cpp \
     newmapdialog.cpp \
-    newtemplatedialog.cpp \
     newtilesetdialog.cpp \
     noeditorwidget.cpp \
     objectgroupitem.cpp \
@@ -214,7 +215,6 @@ SOURCES += aboutdialog.cpp \
     standardautoupdater.cpp \
     stylehelper.cpp \
     swaptiles.cpp \
-    templategroupdocument.cpp \
     templatesdock.cpp \
     terrainbrush.cpp \
     terraindock.cpp \
@@ -222,7 +222,6 @@ SOURCES += aboutdialog.cpp \
     terrainview.cpp \
     texteditordialog.cpp \
     textpropertyedit.cpp \
-    thumbnailrenderer.cpp \
     tileanimationeditor.cpp \
     tilecollisiondock.cpp \
     tiledapplication.cpp \
@@ -320,6 +319,7 @@ HEADERS += aboutdialog.h \
     createellipseobjecttool.h \
     createmultipointobjecttool.h \
     createobjecttool.h \
+    createpointobjecttool.h \
     createpolygonobjecttool.h \
     createpolylineobjecttool.h \
     createrectangleobjecttool.h \
@@ -356,6 +356,7 @@ HEADERS += aboutdialog.h \
     mapdocumentactionhandler.h \
     mapdocument.h \
     mapeditor.h \
+    mapitem.h \
     mapobjectitem.h \
     mapobjectmodel.h \
     mapscene.h \
@@ -367,8 +368,8 @@ HEADERS += aboutdialog.h \
     movelayer.h \
     movemapobject.h \
     movemapobjecttogroup.h \
+    moveterrain.h \
     newmapdialog.h \
-    newtemplatedialog.h \
     newtilesetdialog.h \
     noeditorwidget.h \
     objectgroupitem.h \
@@ -413,7 +414,6 @@ HEADERS += aboutdialog.h \
     standardautoupdater.h \
     stylehelper.h \
     swaptiles.h \
-    templategroupdocument.h \
     templatesdock.h \
     terrainbrush.h \
     terraindock.h \
@@ -421,7 +421,6 @@ HEADERS += aboutdialog.h \
     terrainview.h \
     texteditordialog.h \
     textpropertyedit.h \
-    thumbnailrenderer.h \
     tileanimationeditor.h \
     tilecollisiondock.h \
     tiledapplication.h \
@@ -470,7 +469,6 @@ FORMS += aboutdialog.ui \
     imagecolorpickerwidget.ui \
     mainwindow.ui \
     newmapdialog.ui \
-    newtemplatedialog.ui \
     newtilesetdialog.ui \
     noeditorwidget.ui \
     objecttypeseditor.ui \
@@ -529,7 +527,8 @@ RESOURCES += tiled.qrc
 macx {
     TARGET = Tiled
     QMAKE_INFO_PLIST = Info.plist
-    ICON = images/tiled-icon-mac.icns
+    QMAKE_ASSET_CATALOGS += images/tiled.xcassets
+    QMAKE_ASSET_CATALOGS_APP_ICON = tiled-icon-mac
 }
 win32 {
     RC_FILE = tiled.rc.in

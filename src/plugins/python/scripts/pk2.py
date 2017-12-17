@@ -47,7 +47,7 @@ class PK2(Plugin):
     t = Tiled.Tileset.create('Tiles', 32,32, 0, 0)
     t.data().setTransparentColor(QColor(img.color(255)))
     t.data().loadFromImage(img, imgfile)
-    
+
     # find common bounding box for the layers
     bb = ['','',10,10]
     for l in [lay1,lay2,lay3]:

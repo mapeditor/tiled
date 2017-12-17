@@ -45,7 +45,7 @@ class TilesetDocument : public Document
 
 public:
     TilesetDocument(const SharedTileset &tileset, const QString &fileName = QString());
-    ~TilesetDocument();
+    ~TilesetDocument() override;
 
     bool save(const QString &fileName, QString *error = nullptr) override;
 

@@ -411,6 +411,31 @@ Terrain *Tileset::takeTerrainAt(int index)
 }
 
 /**
+ * Swaps a terrain type at \a index with another index.
+ */
+void Tileset::swapTerrains(int index, int swapIndex)
+{
+    mTerrainTypes.swap(index, swapIndex);
+
+    // Reassign terrain IDs
+    mTerrainTypes.at(index)->mId = index;
+    mTerrainTypes.at(swapIndex)->mId = swapIndex;
+
+    // Clear and adjust tile terrain references
+    for (Tile *tile : mTiles) {
+        for (int corner = 0; corner < 4; ++corner) {
+            const int terrainId = tile->cornerTerrainId(corner);
+            if (terrainId == index)
+                tile->setCornerTerrainId(corner, swapIndex);
+            else if (terrainId == swapIndex)
+                tile->setCornerTerrainId(corner, index);
+        }
+    }
+
+    mTerrainDistancesDirty = true;
+}
+
+/**
  * Returns the transition penalty(/distance) between 2 terrains. -1 if no
  * transition is possible.
  */
@@ -756,13 +781,10 @@ void Tileset::updateTileSize()
 QString Tileset::orientationToString(Tileset::Orientation orientation)
 {
     switch (orientation) {
-    default:
     case Tileset::Orthogonal:
         return QLatin1String("orthogonal");
-        break;
     case Tileset::Isometric:
         return QLatin1String("isometric");
-        break;
     }
 }
 

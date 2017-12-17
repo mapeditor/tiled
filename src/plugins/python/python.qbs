@@ -17,10 +17,10 @@ TiledPlugin {
             return File.exists("C:/Python27") &&
                     qbs.toolchain.contains("mingw") &&
                     !qbs.debugInformation;
+        } else if (qbs.targetOS.contains("darwin")) {
+            return true;
         }
 
-        // Not sure how to properly support Python on Mac OS X yet
-        // (possibly requires using python-config)
         return false;
     }
 
@@ -44,6 +44,13 @@ TiledPlugin {
         cpp.includePaths: ["C:/Python27/include"]
         cpp.libraryPaths: ["C:/Python27/libs"]
         cpp.dynamicLibraries: ["python27"]
+    }
+
+    Properties {
+        condition: qbs.targetOS.contains("darwin")
+        cpp.includePaths: ["/System/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7"]
+        cpp.libraryPaths: ["/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/config"]
+        cpp.dynamicLibraries: ["python2.7"]
     }
 
     files: [

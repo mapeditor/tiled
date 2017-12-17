@@ -49,7 +49,7 @@ class TileCollisionDock : public QDockWidget
 
 public:
     explicit TileCollisionDock(QWidget *parent = nullptr);
-    ~TileCollisionDock();
+    ~TileCollisionDock() override;
 
     void setTilesetDocument(TilesetDocument *tilesetDocument);
 

@@ -16,31 +16,36 @@ Map
 +-------------------+----------+----------------------------------------------------------+
 | Field             | Type     | Description                                              |
 +===================+==========+==========================================================+
-| version           | number   | The JSON format version                                  |
-+-------------------+----------+----------------------------------------------------------+
-| tiledversion      | string   | The Tiled version used to save the file                  |
-+-------------------+----------+----------------------------------------------------------+
-| width             | int      | Number of tile columns                                   |
+| backgroundcolor   | string   | Hex-formatted color (#RRGGBB or #AARRGGBB) (optional)    |
 +-------------------+----------+----------------------------------------------------------+
 | height            | int      | Number of tile rows                                      |
 +-------------------+----------+----------------------------------------------------------+
-| tilewidth         | int      | Map grid width.                                          |
+| infinite          | bool     | Whether the map has infinite dimensions                  |
 +-------------------+----------+----------------------------------------------------------+
-| tileheight        | int      | Map grid height.                                         |
+| layers            | array    | Array of :ref:`layers <json-layer>`                      |
 +-------------------+----------+----------------------------------------------------------+
-| orientation       | string   | Orthogonal, isometric, or staggered                      |
+| nextobjectid      | int      | Auto-increments for each placed object                   |
 +-------------------+----------+----------------------------------------------------------+
-| layers            | array    | Array of `Layers <#layer>`__                             |
-+-------------------+----------+----------------------------------------------------------+
-| tilesets          | array    | Array of `Tilesets <#tileset>`__                         |
-+-------------------+----------+----------------------------------------------------------+
-| backgroundcolor   | string   | Hex-formatted color (#RRGGBB or #AARRGGBB) (optional)    |
-+-------------------+----------+----------------------------------------------------------+
-| renderorder       | string   | Rendering direction (orthogonal maps only)               |
+| orientation       | string   | ``orthogonal``, ``isometric``, ``staggered`` or          |
+|                   |          | ``hexagonal``                                            |
 +-------------------+----------+----------------------------------------------------------+
 | properties        | object   | String key-value pairs                                   |
 +-------------------+----------+----------------------------------------------------------+
-| nextobjectid      | int      | Auto-increments for each placed object                   |
+| renderorder       | string   | Rendering direction (orthogonal maps only)               |
++-------------------+----------+----------------------------------------------------------+
+| tiledversion      | string   | The Tiled version used to save the file                  |
++-------------------+----------+----------------------------------------------------------+
+| tileheight        | int      | Map grid height                                          |
++-------------------+----------+----------------------------------------------------------+
+| tilesets          | array    | Array of :ref:`tilesets <json-tileset>`                  |
++-------------------+----------+----------------------------------------------------------+
+| tilewidth         | int      | Map grid width                                           |
++-------------------+----------+----------------------------------------------------------+
+| type              | string   | ``map`` (since 1.0)                                      |
++-------------------+----------+----------------------------------------------------------+
+| version           | number   | The JSON format version                                  |
++-------------------+----------+----------------------------------------------------------+
+| width             | int      | Number of tile columns                                   |
 +-------------------+----------+----------------------------------------------------------+
 
 Map Example
@@ -68,36 +73,40 @@ Map Example
       "width":4
     }
 
+.. _json-layer:
+
 Layer
 -----
 
-+--------------+----------+---------------------------------------------------------+
-| Field        | Type     | Description                                             |
-+==============+==========+=========================================================+
-| width        | int      | Column count. Same as map width for fixed-size maps.    |
-+--------------+----------+---------------------------------------------------------+
-| height       | int      | Row count. Same as map height for fixed-size maps.      |
-+--------------+----------+---------------------------------------------------------+
-| name         | string   | Name assigned to this layer                             |
-+--------------+----------+---------------------------------------------------------+
-| type         | string   | "tilelayer", "objectgroup", or "imagelayer"             |
-+--------------+----------+---------------------------------------------------------+
-| visible      | bool     | Whether layer is shown or hidden in editor              |
-+--------------+----------+---------------------------------------------------------+
-| x            | int      | Horizontal layer offset in tiles. Always 0.             |
-+--------------+----------+---------------------------------------------------------+
-| y            | int      | Vertical layer offset in tiles. Always 0.               |
-+--------------+----------+---------------------------------------------------------+
-| data         | int      | Array of GIDs. ``tilelayer`` only.                      |
-+--------------+----------+---------------------------------------------------------+
-| objects      | object   | Array of `Objects <#object>`__. ``objectgroup`` only.   |
-+--------------+----------+---------------------------------------------------------+
-| properties   | object   | string key-value pairs.                                 |
-+--------------+----------+---------------------------------------------------------+
-| opacity      | float    | Value between 0 and 1                                   |
-+--------------+----------+---------------------------------------------------------+
-| draworder    | string   | "topdown" (default) or "index". ``objectgroup`` only.   |
-+--------------+----------+---------------------------------------------------------+
++--------------+----------+---------------------------------------------------------------+
+| Field        | Type     | Description                                                   |
++==============+==========+===============================================================+
+| data         | int      | Array of GIDs. ``tilelayer`` only.                            |
++--------------+----------+---------------------------------------------------------------+
+| draworder    | string   | ``topdown`` (default) or ``index``. ``objectgroup`` only.     |
++--------------+----------+---------------------------------------------------------------+
+| height       | int      | Row count. Same as map height for fixed-size maps.            |
++--------------+----------+---------------------------------------------------------------+
+| layers       | array    | Array of :ref:`layers <json-layer>`. ``group`` on             |
++--------------+----------+---------------------------------------------------------------+
+| name         | string   | Name assigned to this layer                                   |
++--------------+----------+---------------------------------------------------------------+
+| objects      | object   | Array of :ref:`objects <json-object>`. ``objectgroup`` only.  |
++--------------+----------+---------------------------------------------------------------+
+| opacity      | float    | Value between 0 and 1                                         |
++--------------+----------+---------------------------------------------------------------+
+| properties   | object   | string key-value pairs.                                       |
++--------------+----------+---------------------------------------------------------------+
+| type         | string   | ``tilelayer``, ``objectgroup``, ``imagelayer`` or ``group``   |
++--------------+----------+---------------------------------------------------------------+
+| visible      | bool     | Whether layer is shown or hidden in editor                    |
++--------------+----------+---------------------------------------------------------------+
+| width        | int      | Column count. Same as map width for fixed-size maps.          |
++--------------+----------+---------------------------------------------------------------+
+| x            | int      | Horizontal layer offset in tiles. Always 0.                   |
++--------------+----------+---------------------------------------------------------------+
+| y            | int      | Vertical layer offset in tiles. Always 0.                     |
++--------------+----------+---------------------------------------------------------------+
 
 Tile Layer Example
 ~~~~~~~~~~~~~~~~~~
@@ -142,41 +151,45 @@ Object Layer Example
       "y":0
     }
 
+.. _json-object:
+
 Object
 ------
 
 +--------------+----------+----------------------------------------------+
 | Field        | Type     | Description                                  |
 +==============+==========+==============================================+
-| id           | int      | Incremental id - unique across all objects   |
-+--------------+----------+----------------------------------------------+
-| width        | int      | Width in pixels. Ignored if using a gid.     |
-+--------------+----------+----------------------------------------------+
-| height       | int      | Height in pixels. Ignored if using a gid.    |
-+--------------+----------+----------------------------------------------+
-| name         | string   | String assigned to name field in editor      |
-+--------------+----------+----------------------------------------------+
-| type         | string   | String assigned to type field in editor      |
-+--------------+----------+----------------------------------------------+
-| properties   | object   | String key-value pairs                       |
-+--------------+----------+----------------------------------------------+
-| visible      | bool     | Whether object is shown in editor.           |
-+--------------+----------+----------------------------------------------+
-| x            | int      | x coordinate in pixels                       |
-+--------------+----------+----------------------------------------------+
-| y            | int      | y coordinate in pixels                       |
-+--------------+----------+----------------------------------------------+
-| rotation     | float    | Angle in degrees clockwise                   |
+| ellipse      | bool     | Used to mark an object as an ellipse         |
 +--------------+----------+----------------------------------------------+
 | gid          | int      | GID, only if object comes from a Tilemap     |
 +--------------+----------+----------------------------------------------+
-| ellipse      | bool     | Used to mark an object as an ellipse         |
+| height       | int      | Height in pixels. Ignored if using a gid.    |
++--------------+----------+----------------------------------------------+
+| id           | int      | Incremental id - unique across all objects   |
++--------------+----------+----------------------------------------------+
+| name         | string   | String assigned to name field in editor      |
++--------------+----------+----------------------------------------------+
+| point        | bool     | Used to mark an object as a point            |
 +--------------+----------+----------------------------------------------+
 | polygon      | array    | A list of x,y coordinates in pixels          |
 +--------------+----------+----------------------------------------------+
 | polyline     | array    | A list of x,y coordinates in pixels          |
 +--------------+----------+----------------------------------------------+
+| properties   | object   | String key-value pairs                       |
++--------------+----------+----------------------------------------------+
+| rotation     | float    | Angle in degrees clockwise                   |
++--------------+----------+----------------------------------------------+
 | text         | object   | String key-value pairs                       |
++--------------+----------+----------------------------------------------+
+| type         | string   | String assigned to type field in editor      |
++--------------+----------+----------------------------------------------+
+| visible      | bool     | Whether object is shown in editor.           |
++--------------+----------+----------------------------------------------+
+| width        | int      | Width in pixels. Ignored if using a gid.     |
++--------------+----------+----------------------------------------------+
+| x            | int      | x coordinate in pixels                       |
++--------------+----------+----------------------------------------------+
+| y            | int      | y coordinate in pixels                       |
 +--------------+----------+----------------------------------------------+
 
 Object Example
@@ -234,6 +247,24 @@ Rectangle Example
       "width":368,
       "x":576,
       "y":584
+    }
+
+Point Example
+~~~~~~~~~~~~~~~~~
+
+.. code:: json
+
+    {
+      "point":true,
+      "height":0,
+      "id":20,
+      "name":"",
+      "rotation":0,
+      "type":"",
+      "visible":true,
+      "width":0,
+      "x":220,
+      "y":350
     }
 
 Polygon Example
@@ -338,43 +369,52 @@ Text Example
       "y":136
     }
 
+.. _json-tileset:
+
 Tileset
 -------
 
 +------------------+----------+-----------------------------------------------------+
 | Field            | Type     | Description                                         |
 +==================+==========+=====================================================+
+| columns          | int      | The number of tile columns in the tileset           |
++------------------+----------+-----------------------------------------------------+
 | firstgid         | int      | GID corresponding to the first tile in the set      |
 +------------------+----------+-----------------------------------------------------+
+| grid             | object   | See :ref:`tmx-grid` (optional)                      |
++------------------+----------+-----------------------------------------------------+
 | image            | string   | Image used for tiles in this set                    |
-+------------------+----------+-----------------------------------------------------+
-| name             | string   | Name given to this tileset                          |
-+------------------+----------+-----------------------------------------------------+
-| tilewidth        | int      | Maximum width of tiles in this set                  |
-+------------------+----------+-----------------------------------------------------+
-| tileheight       | int      | Maximum height of tiles in this set                 |
 +------------------+----------+-----------------------------------------------------+
 | imagewidth       | int      | Width of source image in pixels                     |
 +------------------+----------+-----------------------------------------------------+
 | imageheight      | int      | Height of source image in pixels                    |
 +------------------+----------+-----------------------------------------------------+
+| margin           | int      | Buffer between image edge and first tile (pixels)   |
++------------------+----------+-----------------------------------------------------+
+| name             | string   | Name given to this tileset                          |
++------------------+----------+-----------------------------------------------------+
 | properties       | object   | String key-value pairs                              |
 +------------------+----------+-----------------------------------------------------+
 | propertytypes    | object   | String key-value pairs                              |
 +------------------+----------+-----------------------------------------------------+
-| margin           | int      | Buffer between image edge and first tile (pixels)   |
-+------------------+----------+-----------------------------------------------------+
 | spacing          | int      | Spacing between adjacent tiles in image (pixels)    |
 +------------------+----------+-----------------------------------------------------+
-| tileproperties   | object   | Per-tile properties, indexed by gid as string       |
-+------------------+----------+-----------------------------------------------------+
-| terrains         | array    | Array of `Terrains <#terrain>`__ (optional)         |
-+------------------+----------+-----------------------------------------------------+
-| columns          | int      | The number of tile columns in the tileset           |
+| terrains         | array    | Array of :ref:`terrains <json-terrain>` (optional)  |
 +------------------+----------+-----------------------------------------------------+
 | tilecount        | int      | The number of tiles in this tileset                 |
 +------------------+----------+-----------------------------------------------------+
-| tiles            | object   | Gid-indexed `Tiles <#tiles>`__ (optional)           |
+| tileheight       | int      | Maximum height of tiles in this set                 |
++------------------+----------+-----------------------------------------------------+
+| tileoffset       | object   | See :ref:`tmx-tileoffset` (optional)                |
++------------------+----------+-----------------------------------------------------+
+| tileproperties   | object   | Per-tile properties, indexed by gid as string       |
++------------------+----------+-----------------------------------------------------+
+| tiles            | object   | Mapping from tile ID to :ref:`tile <json-tile>`     |
+|                  |          | (optional)                                          |
++------------------+----------+-----------------------------------------------------+
+| tilewidth        | int      | Maximum width of tiles in this set                  |
++------------------+----------+-----------------------------------------------------+
+| type             | string   | ``tileset`` (for tileset files, since 1.0)          |
 +------------------+----------+-----------------------------------------------------+
 
 Tileset Example
@@ -404,8 +444,10 @@ Tileset Example
              "tilewidth":32
             }
 
-Tiles
-~~~~~
+.. _json-tile:
+
+Tile (Definition)
+~~~~~~~~~~~~~~~~~
 
 +-----------+---------+--------------------------------------------+
 | Field     | Type    | Description                                |
@@ -413,11 +455,14 @@ Tiles
 | terrain   | array   | index of terrain for each corner of tile   |
 +-----------+---------+--------------------------------------------+
 
-A tilemap with terrain definitions may include a "tiles" JSON object.
-Each key is a local ID of a tile within the tileset. Each value is an
-length-4 array where each element is the index of a
-`terrain <#terrain>`__ on one corner of the tile. The order of indices
-is: top-left, top-right, bottom-left, bottom-right.
+A tileset that associates information with each tile, like its image
+path or terrain type, may include a "tiles" JSON object. Each key
+is a local ID of a tile within the tileset.
+
+For the terrain information, each value is a length-4 array where each
+element is the index of a :ref:`terrain <json-terrain>` on one corner
+of the tile. The order of indices is: top-left, top-right, bottom-left,
+bottom-right.
 
 Example:
 
@@ -438,6 +483,8 @@ Example:
         "terrain":[1, 1, 1, 1]
       }
     }
+
+.. _json-terrain:
 
 Terrain
 ~~~~~~~

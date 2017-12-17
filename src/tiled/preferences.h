@@ -27,7 +27,6 @@
 
 #include "map.h"
 #include "objecttypes.h"
-#include "templategroupdocument.h"
 
 class QSettings;
 
@@ -108,7 +107,7 @@ public:
 
     enum FileType {
         ObjectTypesFile,
-        TemplateDocumentsFile,
+        ObjectTemplateFile,
         ImageFile,
         ExportedFile,
         ExternalTileset
@@ -125,11 +124,11 @@ public:
     QString stampsDirectory() const;
     void setStampsDirectory(const QString &stampsDirectory);
 
+    QString templatesDirectory() const;
+    void setTemplatesDirectory(const QString &path);
+
     QString objectTypesFile() const;
     void setObjectTypesFile(const QString &filePath);
-
-    QString templateDocumentsFile() const;
-    void setTemplateDocumentsFile(const QString &filePath);
 
     QDate firstRun() const;
     int runCount() const;
@@ -203,6 +202,7 @@ signals:
 
     void mapsDirectoryChanged();
     void stampsDirectoryChanged(const QString &stampsDirectory);
+    void templatesDirectoryChanged(const QString &templatesDirectory);
 
     void isPatronChanged();
 
@@ -251,8 +251,8 @@ private:
 
     QString mMapsDirectory;
     QString mStampsDirectory;
+    QString mTemplatesDirectory;
     QString mObjectTypesFile;
-    QString mTemplateDocumentsFile;
 
     QDate mFirstRun;
     QDate mPatreonDialogTime;

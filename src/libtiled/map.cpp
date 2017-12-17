@@ -32,7 +32,7 @@
 
 #include "layer.h"
 #include "objectgroup.h"
-#include "templategroup.h"
+#include "objecttemplate.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "mapobject.h"
@@ -291,32 +291,23 @@ bool Map::isTilesetUsed(const Tileset *tileset) const
     return false;
 }
 
-bool Map::addTemplateGroup(TemplateGroup *templateGroup)
+QList<MapObject*> Map::replaceObjectTemplate(const ObjectTemplate *oldObjectTemplate,
+                                             const ObjectTemplate *newObjectTemplate)
 {
-    if (mTemplateGroups.contains(templateGroup))
-        return false;
-
-    mTemplateGroups.append(templateGroup);
-    return true;
-}
-
-QList<MapObject*> Map::replaceTemplateGroup(TemplateGroup *oldTemplateGroup, TemplateGroup *newTemplateGroup)
-{
-    Q_ASSERT(oldTemplateGroup != newTemplateGroup);
+    Q_ASSERT(oldObjectTemplate != newObjectTemplate);
 
     QList<MapObject*> changedObjects;
-    const int index = mTemplateGroups.indexOf(oldTemplateGroup);
+
     for (auto group : objectGroups()) {
         for (auto o : group->objects()){
-            if (o->templateRef().templateGroup == oldTemplateGroup) {
-                o->setTemplateRef({newTemplateGroup, o->templateRef().templateId});
+            if (o->objectTemplate() == oldObjectTemplate) {
+                o->setObjectTemplate(newObjectTemplate);
                 o->syncWithTemplate();
                 changedObjects.append(o);
             }
         }
     }
 
-    mTemplateGroups.replace(index, newTemplateGroup);
     return changedObjects;
 }
 
@@ -334,10 +325,8 @@ QString Tiled::staggerAxisToString(Map::StaggerAxis staggerAxis)
     default:
     case Map::StaggerY:
         return QLatin1String("y");
-        break;
     case Map::StaggerX:
         return QLatin1String("x");
-        break;
     }
 }
 
@@ -355,10 +344,8 @@ QString Tiled::staggerIndexToString(Map::StaggerIndex staggerIndex)
     default:
     case Map::StaggerOdd:
         return QLatin1String("odd");
-        break;
     case Map::StaggerEven:
         return QLatin1String("even");
-        break;
     }
 }
 
@@ -376,19 +363,14 @@ QString Tiled::orientationToString(Map::Orientation orientation)
     default:
     case Map::Unknown:
         return QLatin1String("unknown");
-        break;
     case Map::Orthogonal:
         return QLatin1String("orthogonal");
-        break;
     case Map::Isometric:
         return QLatin1String("isometric");
-        break;
     case Map::Staggered:
         return QLatin1String("staggered");
-        break;
     case Map::Hexagonal:
         return QLatin1String("hexagonal");
-        break;
     }
 }
 
@@ -413,16 +395,12 @@ QString Tiled::renderOrderToString(Map::RenderOrder renderOrder)
     default:
     case Map::RightDown:
         return QLatin1String("right-down");
-        break;
     case Map::RightUp:
         return QLatin1String("right-up");
-        break;
     case Map::LeftDown:
         return QLatin1String("left-down");
-        break;
     case Map::LeftUp:
         return QLatin1String("left-up");
-        break;
     }
 }
 

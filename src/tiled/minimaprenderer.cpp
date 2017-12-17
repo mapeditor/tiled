@@ -22,13 +22,16 @@
 
 #include "minimaprenderer.h"
 
+#include "hexagonalrenderer.h"
 #include "imagelayer.h"
-#include "mapdocument.h"
+#include "isometricrenderer.h"
 #include "mapobject.h"
 #include "mapobjectitem.h"
 #include "maprenderer.h"
 #include "objectgroup.h"
+#include "orthogonalrenderer.h"
 #include "preferences.h"
+#include "staggeredrenderer.h"
 #include "tilelayer.h"
 
 #include <QPainter>
@@ -36,9 +39,38 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-MiniMapRenderer::MiniMapRenderer(MapDocument *mapDocument)
-    : mMapDocument(mapDocument)
+MiniMapRenderer::MiniMapRenderer(Map *map)
+    : mMap(map)
 {
+    switch (map->orientation()) {
+    case Map::Isometric:
+        mRenderer = new IsometricRenderer(map);
+        break;
+    case Map::Staggered:
+        mRenderer = new StaggeredRenderer(map);
+        break;
+    case Map::Hexagonal:
+        mRenderer = new HexagonalRenderer(map);
+        break;
+    case Map::Orthogonal:
+    case Map::Unknown:
+        mRenderer = new OrthogonalRenderer(map);
+        break;
+    }
+
+    mRenderer->setFlag(ShowTileObjectOutlines, false);
+}
+
+MiniMapRenderer::~MiniMapRenderer()
+{
+    delete mRenderer;
+}
+
+QImage MiniMapRenderer::render(QSize size, RenderFlags renderFlags) const
+{
+    QImage image(size, QImage::Format_ARGB32_Premultiplied);
+    renderToImage(image, renderFlags);
+    return image;
 }
 
 static bool objectLessThan(const MapObject *a, const MapObject *b)
@@ -46,45 +78,110 @@ static bool objectLessThan(const MapObject *a, const MapObject *b)
     return a->y() < b->y();
 }
 
+static QRectF cellRect(const MapRenderer &renderer,
+                       const Cell &cell,
+                       const QPointF &tileCoords)
+{
+    const Tile *tile = cell.tile();
+    if (!tile)
+        return QRectF();
+
+    QPointF pixelCoords = renderer.tileToScreenCoords(tileCoords);
+    QPointF offset = tile->offset();
+    QSize size = tile->size();
+
+    if (cell.flippedAntiDiagonally())
+        std::swap(size.rwidth(), size.rheight());
+
+    // This is a correction needed because tileToScreenCoords does not return
+    // the bottom-left origin of the tile image, but rather the top-left
+    // corner of the cell.
+    pixelCoords.ry() += renderer.map()->tileHeight() - size.height();
+
+    return QRectF(pixelCoords, size).translated(offset);
+}
+
+static void extendMapRect(QRect &mapBoundingRect, const MapRenderer &renderer)
+{
+    // Start with the basic map size
+    QRectF rect(mapBoundingRect);
+
+    // Take into account large tiles extending beyond their cell
+    for (const Layer *layer : renderer.map()->layers()) {
+        if (layer->layerType() != Layer::TileLayerType)
+            continue;
+
+        const TileLayer *tileLayer = static_cast<const TileLayer*>(layer);
+        const QPointF offset = tileLayer->totalOffset();
+
+        for (int y = 0; y < tileLayer->height(); ++y) {
+            for (int x = 0; x < tileLayer->width(); ++x) {
+                const Cell &cell = tileLayer->cellAt(x, y);
+
+                if (!cell.isEmpty()) {
+                    QRectF r = cellRect(renderer, cell, QPointF(x, y));
+                    r.translate(offset);
+                    rect |= r;
+                }
+            }
+        }
+    }
+
+    mapBoundingRect = rect.toAlignedRect();
+}
+
 void MiniMapRenderer::renderToImage(QImage& image, RenderFlags renderFlags) const
 {
-    if (!mMapDocument)
+    if (!mMap)
+        return;
+    if (image.isNull())
         return;
 
-    MapRenderer *renderer = mMapDocument->renderer();
-
-    bool drawObjects = renderFlags.testFlag(RenderFlag::DrawObjects);
-    bool drawTiles = renderFlags.testFlag(RenderFlag::DrawTiles);
-    bool drawImages = renderFlags.testFlag(RenderFlag::DrawImages);
+    bool drawObjects = renderFlags.testFlag(RenderFlag::DrawMapObjects);
+    bool drawTileLayers = renderFlags.testFlag(RenderFlag::DrawTileLayers);
+    bool drawImageLayers = renderFlags.testFlag(RenderFlag::DrawImageLayers);
     bool drawTileGrid = renderFlags.testFlag(RenderFlag::DrawGrid);
     bool visibleLayersOnly = renderFlags.testFlag(RenderFlag::IgnoreInvisibleLayer);
 
-    // Remember the current render flags
-    const Tiled::RenderFlags rendererFlags = renderer->flags();
-    renderer->setFlag(ShowTileObjectOutlines, false);
+    QRect mapBoundingRect = mRenderer->mapBoundingRect();
 
-    QRect mapBoundingRect = renderer->mapBoundingRect();
+    if (renderFlags.testFlag(IncludeOverhangingTiles))
+        extendMapRect(mapBoundingRect, *mRenderer);
 
     QSize mapSize = mapBoundingRect.size();
-    QMargins margins = mMapDocument->map()->computeLayerOffsetMargins();
+    QMargins margins = mMap->computeLayerOffsetMargins();
     mapSize.setWidth(mapSize.width() + margins.left() + margins.right());
     mapSize.setHeight(mapSize.height() + margins.top() + margins.bottom());
 
     // Determine the largest possible scale
-    qreal scale = qMin((qreal) image.width() / mapSize.width(),
-                       (qreal) image.height() / mapSize.height());
+    qreal scale = qMin(static_cast<qreal>(image.width()) / mapSize.width(),
+                       static_cast<qreal>(image.height()) / mapSize.height());
 
-    image.fill(Qt::transparent);
+    if (renderFlags.testFlag(DrawBackground)) {
+        if (mMap->backgroundColor().isValid())
+            image.fill(mMap->backgroundColor());
+        else
+            image.fill(Qt::gray);
+    } else {
+        image.fill(Qt::transparent);
+    }
+
     QPainter painter(&image);
-    painter.setRenderHints(QPainter::SmoothPixmapTransform);
-    painter.setTransform(QTransform::fromScale(scale, scale));
+    painter.setRenderHints(QPainter::SmoothPixmapTransform, renderFlags.testFlag(SmoothPixmapTransform));
+
+    // Center the map in the requested size
+    QSize scaledMapSize = mapSize * scale;
+    QPointF centerOffset((image.width() - scaledMapSize.width()) / 2,
+                         (image.height() - scaledMapSize.height()) / 2);
+
+    painter.translate(centerOffset);
+    painter.scale(scale, scale);
     painter.translate(margins.left(), margins.top());
-    if (mMapDocument->map()->infinite())
-        painter.translate(-mapBoundingRect.topLeft());
+    painter.translate(-mapBoundingRect.topLeft());
 
-    renderer->setPainterScale(scale);
+    mRenderer->setPainterScale(scale);
 
-    LayerIterator iterator(mMapDocument->map());
+    LayerIterator iterator(mMap);
     while (const Layer *layer = iterator.next()) {
         if (visibleLayersOnly && layer->isHidden())
             continue;
@@ -94,37 +191,54 @@ void MiniMapRenderer::renderToImage(QImage& image, RenderFlags renderFlags) cons
         painter.setOpacity(layer->effectiveOpacity());
         painter.translate(offset);
 
-        const TileLayer *tileLayer = dynamic_cast<const TileLayer*>(layer);
-        const ObjectGroup *objGroup = dynamic_cast<const ObjectGroup*>(layer);
-        const ImageLayer *imageLayer = dynamic_cast<const ImageLayer*>(layer);
+        switch (layer->layerType()) {
+        case Layer::TileLayerType: {
+            if (drawTileLayers) {
+                const TileLayer *tileLayer = static_cast<const TileLayer*>(layer);
+                mRenderer->drawTileLayer(&painter, tileLayer);
+            }
+            break;
+        }
 
-        if (tileLayer && drawTiles) {
-            renderer->drawTileLayer(&painter, tileLayer);
-        } else if (objGroup && drawObjects) {
-            QList<MapObject*> objects = objGroup->objects();
+        case Layer::ObjectGroupType: {
+            if (drawObjects) {
+                const ObjectGroup *objectGroup = static_cast<const ObjectGroup*>(layer);
+                QList<MapObject*> objects = objectGroup->objects();
 
-            if (objGroup->drawOrder() == ObjectGroup::TopDownOrder)
-                qStableSort(objects.begin(), objects.end(), objectLessThan);
+                if (objectGroup->drawOrder() == ObjectGroup::TopDownOrder)
+                    qStableSort(objects.begin(), objects.end(), objectLessThan);
 
-            foreach (const MapObject *object, objects) {
-                if (object->isVisible()) {
-                    if (object->rotation() != qreal(0)) {
-                        QPointF origin = renderer->pixelToScreenCoords(object->position());
-                        painter.save();
-                        painter.translate(origin);
-                        painter.rotate(object->rotation());
-                        painter.translate(-origin);
+                foreach (const MapObject *object, objects) {
+                    if (object->isVisible()) {
+                        if (object->rotation() != qreal(0)) {
+                            QPointF origin = mRenderer->pixelToScreenCoords(object->position());
+                            painter.save();
+                            painter.translate(origin);
+                            painter.rotate(object->rotation());
+                            painter.translate(-origin);
+                        }
+
+                        const QColor color = MapObjectItem::objectColor(object);
+                        mRenderer->drawMapObject(&painter, object, color);
+
+                        if (object->rotation() != qreal(0))
+                            painter.restore();
                     }
-
-                    const QColor color = MapObjectItem::objectColor(object);
-                    renderer->drawMapObject(&painter, object, color);
-
-                    if (object->rotation() != qreal(0))
-                        painter.restore();
                 }
             }
-        } else if (imageLayer && drawImages) {
-            renderer->drawImageLayer(&painter, imageLayer);
+            break;
+        }
+        case Layer::ImageLayerType: {
+            if (drawImageLayers) {
+                const ImageLayer *imageLayer = static_cast<const ImageLayer*>(layer);
+                mRenderer->drawImageLayer(&painter, imageLayer);
+            }
+            break;
+        }
+
+        case Layer::GroupLayerType:
+            // Recursion handled by LayerIterator
+            break;
         }
 
         painter.translate(-offset);
@@ -132,8 +246,6 @@ void MiniMapRenderer::renderToImage(QImage& image, RenderFlags renderFlags) cons
 
     if (drawTileGrid) {
         Preferences *prefs = Preferences::instance();
-        renderer->drawGrid(&painter, mapBoundingRect, prefs->gridColor());
+        mRenderer->drawGrid(&painter, mapBoundingRect, prefs->gridColor());
     }
-
-    renderer->setFlags(rendererFlags);
 }

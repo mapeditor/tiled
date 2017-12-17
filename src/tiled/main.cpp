@@ -33,6 +33,7 @@
 #include "stylehelper.h"
 #include "tiledapplication.h"
 #include "tileset.h"
+#include "tmxmapformat.h"
 #include "winsparkleautoupdater.h"
 
 #include <QDebug>
@@ -160,12 +161,16 @@ void CommandLineHandler::showExportFormats()
 {
     PluginManager::instance()->loadPlugins();
 
-    qWarning().noquote() << tr("Export formats:");
-    const auto formats = PluginManager::objects<MapFormat>();
-    for (MapFormat *format : formats) {
+    QStringList formats;
+    for (MapFormat *format : PluginManager::objects<MapFormat>()) {
         if (format->hasCapabilities(MapFormat::Write))
-            qWarning(" %s", qUtf8Printable(format->shortName()));
+            formats.append(format->shortName());
     }
+    formats.sort(Qt::CaseSensitive);
+
+    qWarning().noquote() << tr("Export formats:");
+    for (const QString &name : formats)
+        qWarning(" %s", qUtf8Printable(name));
 
     quit = true;
 }
@@ -212,6 +217,16 @@ int main(int argc, char *argv[])
     LanguageManager *languageManager = LanguageManager::instance();
     languageManager->installTranslators();
 
+    // Add the built-in file formats
+    TmxMapFormat tmxMapFormat;
+    PluginManager::addObject(&tmxMapFormat);
+
+    TsxTilesetFormat tsxTilesetFormat;
+    PluginManager::addObject(&tsxTilesetFormat);
+
+    XmlObjectTemplateFormat xmlObjectTemplateFormat;
+    PluginManager::addObject(&xmlObjectTemplateFormat);
+
     CommandLineHandler commandLine;
 
     if (!commandLine.parse(QCoreApplication::arguments()))
@@ -226,7 +241,7 @@ int main(int argc, char *argv[])
     if (commandLine.exportMap) {
         // Get the path to the source file and target file
         if (commandLine.filesToOpen().length() < 2) {
-            qWarning().noquote() << QCoreApplication::translate("Command line", "Export syntax is --export-map [format] <tmx file> <target file>");
+            qWarning().noquote() << QCoreApplication::translate("Command line", "Export syntax is --export-map [format] <source> <target>");
             return 1;
         }
         int index = 0;
@@ -234,8 +249,8 @@ int main(int argc, char *argv[])
         const QString &sourceFile = commandLine.filesToOpen().at(index++);
         const QString &targetFile = commandLine.filesToOpen().at(index++);
 
-        MapFormat *chosenFormat = nullptr;
-        auto formats = PluginManager::objects<MapFormat>();
+        MapFormat *outputFormat = nullptr;
+        const auto formats = PluginManager::objects<MapFormat>();
 
         if (filter) {
             // Find the map format supporting the given filter
@@ -243,11 +258,11 @@ int main(int argc, char *argv[])
                 if (!format->hasCapabilities(MapFormat::Write))
                     continue;
                 if (format->shortName().compare(*filter, Qt::CaseInsensitive) == 0) {
-                    chosenFormat = format;
+                    outputFormat = format;
                     break;
                 }
             }
-            if (!chosenFormat) {
+            if (!outputFormat) {
                 qWarning().noquote() << QCoreApplication::translate("Command line", "Format not recognized (see --export-formats)");
                 return 1;
             }
@@ -258,29 +273,28 @@ int main(int argc, char *argv[])
                 if (!format->hasCapabilities(MapFormat::Write))
                     continue;
                 if (format->nameFilter().contains(suffix, Qt::CaseInsensitive)) {
-                    if (chosenFormat) {
+                    if (outputFormat) {
                         qWarning().noquote() << QCoreApplication::translate("Command line", "Non-unique file extension. Can't determine correct export format.");
                         return 1;
                     }
-                    chosenFormat = format;
+                    outputFormat = format;
                 }
             }
-            if (!chosenFormat) {
+            if (!outputFormat) {
                 qWarning().noquote() << QCoreApplication::translate("Command line", "No exporter found for target file.");
                 return 1;
             }
         }
 
         // Load the source file
-        MapReader reader;
-        QScopedPointer<Map> map(reader.readMap(sourceFile));
+        QScopedPointer<Map> map(readMap(sourceFile, nullptr));
         if (!map) {
             qWarning().noquote() << QCoreApplication::translate("Command line", "Failed to load source map.");
             return 1;
         }
 
         // Write out the file
-        bool success = chosenFormat->write(map.data(), targetFile);
+        bool success = outputFormat->write(map.data(), targetFile);
 
         if (!success) {
             qWarning().noquote() << QCoreApplication::translate("Command line", "Failed to export map to target file.");

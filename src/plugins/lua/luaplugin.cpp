@@ -153,7 +153,7 @@ void LuaPlugin::writeMap(LuaTableWriter &writer, const Map *map)
     unsigned firstGid = 1;
     for (const SharedTileset &tileset : map->tilesets()) {
         writeTileset(writer, tileset.data(), firstGid);
-        mGidMapper.insert(firstGid, tileset.data());
+        mGidMapper.insert(firstGid, tileset);
         firstGid += tileset->nextTileId();
     }
     writer.writeEndTable();
@@ -375,15 +375,6 @@ void LuaPlugin::writeTileLayer(LuaTableWriter &writer,
     case Map::XML:
     case Map::CSV:
         writer.writeKeyAndValue("encoding", "lua");
-        writer.writeStartTable("data");
-        for (int y = 0; y < tileLayer->height(); ++y) {
-            if (y > 0)
-                writer.prepareNewLine();
-
-            for (int x = 0; x < tileLayer->width(); ++x)
-                writer.writeValue(mGidMapper.cellToGid(tileLayer->cellAt(x, y)));
-        }
-        writer.writeEndTable();
         break;
 
     case Map::Base64:
@@ -396,13 +387,62 @@ void LuaPlugin::writeTileLayer(LuaTableWriter &writer,
         else if (format == Map::Base64Gzip)
             writer.writeKeyAndValue("compression", "gzip");
 
-        QByteArray layerData = mGidMapper.encodeLayerData(*tileLayer, format);
-        writer.writeKeyAndValue("data", layerData);
         break;
     }
     }
 
+    if (tileLayer->map()->infinite()) {
+        writer.writeStartTable("chunks");
+        for (const QRect &rect : tileLayer->sortedChunksToWrite()) {
+            writer.writeStartTable();
+
+            writer.writeKeyAndValue("x", rect.x());
+            writer.setSuppressNewlines(true);
+            writer.writeKeyAndValue("y", rect.y());
+            writer.writeKeyAndValue("width", rect.width());
+            writer.writeKeyAndValue("height", rect.height());
+            writer.setSuppressNewlines(false);
+
+            writeTileLayerData(writer, tileLayer, format, rect);
+
+            writer.writeEndTable();
+        }
+        writer.writeEndTable();
+    } else {
+        writeTileLayerData(writer, tileLayer, format,
+                           QRect(0, 0, tileLayer->width(), tileLayer->height()));
+    }
+
     writer.writeEndTable();
+}
+
+void LuaPlugin::writeTileLayerData(LuaTableWriter &writer,
+                                   const TileLayer *tileLayer,
+                                   Map::LayerDataFormat format,
+                                   QRect bounds)
+{
+    switch (format) {
+    case Map::XML:
+    case Map::CSV:
+        writer.writeStartTable("data");
+        for (int y = bounds.top(); y <= bounds.bottom(); ++y) {
+            if (y > bounds.top())
+                writer.prepareNewLine();
+
+            for (int x = bounds.left(); x <= bounds.right(); ++x)
+                writer.writeValue(mGidMapper.cellToGid(tileLayer->cellAt(x, y)));
+        }
+        writer.writeEndTable();
+        break;
+
+    case Map::Base64:
+    case Map::Base64Zlib:
+    case Map::Base64Gzip: {
+        QByteArray layerData = mGidMapper.encodeLayerData(*tileLayer, format, bounds);
+        writer.writeKeyAndValue("data", layerData);
+        break;
+    }
+    }
 }
 
 void LuaPlugin::writeObjectGroup(LuaTableWriter &writer,
@@ -497,6 +537,8 @@ static const char *toString(MapObject::Shape shape)
         return "ellipse";
     case MapObject::Text:
         return "text";
+    case MapObject::Point:
+        return "point";
     }
     return "unknown";
 }
@@ -524,6 +566,7 @@ void LuaPlugin::writeMapObject(LuaTableWriter &writer,
     switch (mapObject->shape()) {
     case MapObject::Rectangle:
     case MapObject::Ellipse:
+    case MapObject::Point:
         break;
     case MapObject::Polygon:
     case MapObject::Polyline:

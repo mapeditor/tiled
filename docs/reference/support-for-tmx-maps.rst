@@ -29,7 +29,7 @@ game engine or graphics library.
 C
 ~
 
--  `TMX <https://github.com/baylej/tmx/>`__ - XML and JSON map loader
+-  `TMX <https://github.com/baylej/tmx/>`__ - TMX map loader
    with Allegro5 and SDL2 examples (BSD).
 
 C++
@@ -37,10 +37,7 @@ C++
 
 -  `C++/Boost <http://www.catnapgames.com/blog/2011/10/10/simple-tmx-tilemap-parser.html>`__
    by Tomas Andrle (limited functionality, single cpp file)
--  `C++/TinyXML based
-   tmx-parser <https://github.com/andrewrk/tmxparser>`__ (BSD)
--  `Original version <http://code.google.com/p/tmx-parser/>`__ by KonoM
-   is discontinued.
+-  `C++/TinyXML based tmxparser <https://github.com/sainteos/tmxparser>`__ (BSD)
 -  C++/Qt based libtiled, used by Tiled itself and included at
    `src/libtiled <https://github.com/bjorn/tiled/tree/master/src/libtiled>`__
    (BSD)
@@ -107,8 +104,9 @@ Go
 Haskell
 ~~~~~~~
 
--  `htiled <http://hackage.haskell.org/package/htiled>`__ by `Christian
+-  `htiled <http://hackage.haskell.org/package/htiled>`__ (TMX) by `Christian
    Rødli Amble <https://github.com/chrra>`__.
+-  `aeson-tiled <https://hackage.haskell.org/package/aeson-tiled>`__ (JSON) by `Schell Scivally <https://github.com/schell>`__.
 
 Java
 ~~~~
@@ -435,9 +433,6 @@ Unity 3D
    Pro <http://www.wyrmtale.com/products/unity3d-components/orthello-pro>`__
    (2D framework) offers `Tiled map
    support <http://www.wyrmtale.com/orthello-pro/tilemaps>`__.
--  `Tiled Tilemaps <http://karnakgames.com/wp/unity-tiled-tilemaps/>`__
-   library by Karnak Games adds support for Orthogonal TMX maps to
-   Unity, with automatic collision detection.
 -  `Tiled To
    Unity <https://www.assetstore.unity3d.com/#/content/17260/>`__ is a
    3D pipeline for Tiled maps. It uses prefabs as tiles, and can place
@@ -448,8 +443,9 @@ Unity 3D
 -  `UniTMX <https://bitbucket.org/PolCPP/unitmx/overview>`__ imports TMX
    files into a mesh.
 -  `X-UniTMX <https://bitbucket.org/Chaoseiro/x-unitmx>`__ supports
-   almost all Tiled 0.10 features. Imports TMX/XML files into Sprite
+   almost all Tiled 0.11 features. Imports TMX/XML files into Sprite
    Objects or Meshes.
+-  `Tiled TMX Importer <https://www.assetstore.unity3d.com/en/#!/content/102928>`__, imports into Unity 2017.2's new native Tilemap system.
 
 Unreal Engine 4
 ~~~~~~~~~~~~~~~

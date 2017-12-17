@@ -1,5 +1,5 @@
 /*
- * templategroupformat.cpp
+ * objecttemplateformat.cpp
  * Copyright 2017, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2017, Mohamed Thabet <thabetx@gmail.com>
  *
@@ -19,46 +19,36 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "templategroupformat.h"
+#include "objecttemplateformat.h"
 
 #include "mapreader.h"
 
 namespace Tiled {
 
-TemplateGroup *readTemplateGroup(const QString &fileName, QString *error)
+ObjectTemplate *readObjectTemplate(const QString &fileName, QString *error)
 {
-    if (TemplateGroupFormat *format = findSupportingGroupFormat(fileName)) {
-        TemplateGroup *templateGroup = format->read(fileName);
+    if (ObjectTemplateFormat *format = findSupportingTemplateFormat(fileName)) {
+        ObjectTemplate *objectTemplate = format->read(fileName);
 
         if (error) {
-            if (!templateGroup)
+            if (!objectTemplate)
                 *error = format->errorString();
             else
                 *error = QString();
         }
 
-        if (templateGroup)
-            templateGroup->setFormat(format);
+        if (objectTemplate)
+            objectTemplate->setFormat(format);
 
-        return templateGroup;
+        return objectTemplate;
     }
 
-    MapReader reader;
-    TemplateGroup *templateGroup = reader.readTemplateGroup(fileName);
-
-    if (error) {
-        if (!templateGroup)
-            *error = reader.errorString();
-        else
-            *error = QString();
-    }
-
-    return templateGroup;
+    return nullptr;
 }
 
-TemplateGroupFormat *findSupportingGroupFormat(const QString &fileName)
+ObjectTemplateFormat *findSupportingTemplateFormat(const QString &fileName)
 {
-    for (TemplateGroupFormat *format : PluginManager::objects<TemplateGroupFormat>())
+    for (ObjectTemplateFormat *format : PluginManager::objects<ObjectTemplateFormat>())
         if (format->supportsFile(fileName))
             return format;
     return nullptr;
