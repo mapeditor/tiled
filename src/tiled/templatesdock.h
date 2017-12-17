@@ -62,7 +62,8 @@ signals:
     void templateTilesetReplaced();
 
 public slots:
-    void openTemplate(const ObjectTemplate *objectTemplate);
+    void openTemplate(const QString &path);
+    void bringToFront();
 
 private slots:
     void setSelectedTool(AbstractTool *tool);
@@ -107,6 +108,7 @@ class TemplatesView : public QTreeView
 public:
     QSize sizeHint() const override;
     TemplatesView(QWidget *parent = nullptr);
+    void setSelectedTemplate(const QString &path);
 
 signals:
     void currentTemplateChanged(ObjectTemplate *objectTemplate);

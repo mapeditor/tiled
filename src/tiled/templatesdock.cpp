@@ -115,10 +115,11 @@ TemplatesDock::TemplatesDock(QWidget *parent):
 
     editingToolBar->addAction(mUndoAction);
     editingToolBar->addAction(mRedoAction);
+    editingToolBar->addSeparator();
     editingToolBar->addAction(mToolManager->registerTool(objectSelectionTool));
     editingToolBar->addAction(mToolManager->registerTool(editPolygonTool));
 
-    mFixTilesetButton = new QPushButton(tr("Fix Tileset"), this);
+    mFixTilesetButton = new QPushButton(QString(), this);
     connect(mFixTilesetButton, &QPushButton::clicked, this, &TemplatesDock::fixTileset);
     mFixTilesetButton->setVisible(false);
 
@@ -187,9 +188,18 @@ TemplatesDock::~TemplatesDock()
     delete mDummyMapDocument;
 }
 
-void TemplatesDock::openTemplate(const ObjectTemplate *objectTemplate)
+void TemplatesDock::openTemplate(const QString &path)
 {
-    setTemplate(TemplateManager::instance()->loadObjectTemplate(objectTemplate->fileName()));
+    bringToFront();
+    setTemplate(TemplateManager::instance()->loadObjectTemplate(path));
+    mTemplatesView->setSelectedTemplate(path);
+}
+
+void TemplatesDock::bringToFront()
+{
+    show();
+    raise();
+    setFocus();
 }
 
 void TemplatesDock::setSelectedTool(AbstractTool *tool)
@@ -223,9 +233,8 @@ void TemplatesDock::setTemplate(ObjectTemplate *objectTemplate)
 
         checkTileset();
 
-        Cell cell = mObject->cell();
-        if (!cell.isEmpty()) {
-            map->addTileset(cell.tileset()->sharedPointer());
+        if (Tileset *tileset = mObject->cell().tileset()) {
+            map->addTileset(tileset->sharedPointer());
             mObject->setPosition({-mObject->width() / 2, mObject->height() / 2});
         } else {
             mObject->setPosition({-mObject->width() / 2, -mObject->height()  /2});
@@ -261,7 +270,7 @@ void TemplatesDock::setTemplate(ObjectTemplate *objectTemplate)
 
     if (previousDocument) {
         disconnect(previousDocument->undoStack(), &QUndoStack::indexChanged,
-                   this, &TemplatesDock::applyChanges);
+                   this, &TemplatesDock::checkTileset);
 
         delete previousDocument;
     }
@@ -289,7 +298,7 @@ void TemplatesDock::checkTileset()
         mFixTilesetButton->setToolTip(tileset->imageSource().fileName());
 
         mDescriptionLabel->setVisible(true);
-        mDescriptionLabel->setText(tr("%1 :Couldn't find \"%2\"").arg(templateName,
+        mDescriptionLabel->setText(tr("%1: Couldn't find \"%2\"").arg(templateName,
                                                                       tileset->imageSource().fileName()));
         mDescriptionLabel->setToolTip(tileset->imageSource().fileName());
     } else if (!tileset->fileName().isEmpty() && tileset->status() == LoadingError) {
@@ -298,7 +307,7 @@ void TemplatesDock::checkTileset()
         mFixTilesetButton->setToolTip(tileset->fileName());
 
         mDescriptionLabel->setVisible(true);
-        mDescriptionLabel->setText(tr("%1 :Couldn't find \"%2\"").arg(templateName,
+        mDescriptionLabel->setText(tr("%1: Couldn't find \"%2\"").arg(templateName,
                                                                       tileset->fileName()));
         mDescriptionLabel->setToolTip(tileset->fileName());
     } else {
@@ -374,25 +383,23 @@ void TemplatesDock::retranslateUi()
 void TemplatesDock::fixTileset()
 {
     Q_ASSERT(mObject);
+    Q_ASSERT(!mObject->cell().isEmpty());
 
-    Cell cell = mObject->cell();
-
-    if (cell.isEmpty())
-        return;
-
-    auto tileset = cell.tileset()->sharedPointer();
+    auto tileset = mObject->cell().tileset()->sharedPointer();
 
     if (tileset->imageStatus() == LoadingError) {
         // This code opens a new document even if there is a tileset document
         auto tilesetDocument = DocumentManager::instance()->findTilesetDocument(tileset);
+
         if (!tilesetDocument) {
             tilesetDocument = new TilesetDocument(tileset, tileset->fileName());
             DocumentManager::instance()->addDocument(tilesetDocument);
         } else {
             DocumentManager::instance()->openTileset(tileset);
         }
+
         connect(tilesetDocument, &TilesetDocument::tilesetChanged,
-                this, &TemplatesDock::applyChanges);
+                this, &TemplatesDock::checkTileset, Qt::UniqueConnection);
     } else if (!tileset->fileName().isEmpty() && tileset->status() == LoadingError) {
         FormatHelper<TilesetFormat> helper(FileFormat::Read, tr("All Files (*)"));
 
@@ -447,6 +454,13 @@ TemplatesView::TemplatesView(QWidget *parent)
 
     connect(selectionModel(), &QItemSelectionModel::currentChanged,
             this, &TemplatesView::onCurrentChanged);
+}
+
+void TemplatesView::setSelectedTemplate(const QString &path)
+{
+    auto index = mModel->index(path);
+    if (index.isValid())
+        setCurrentIndex(index);
 }
 
 void TemplatesView::contextMenuEvent(QContextMenuEvent *event)

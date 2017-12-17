@@ -268,7 +268,7 @@ MapEditor::MapEditor(QObject *parent)
             mTemplatesDock, &TemplatesDock::openTemplate);
 
     connect(mTemplatesDock, &TemplatesDock::templateTilesetReplaced,
-            DocumentManager::instance(), &DocumentManager::templateTilesetReplaceRequested);
+            DocumentManager::instance(), &DocumentManager::templateTilesetReplaced);
 
     connect(mStampBrush, &StampBrush::stampChanged, this, &MapEditor::setStamp);
     connect(mBucketFillTool, &BucketFillTool::stampChanged, this, &MapEditor::setStamp);

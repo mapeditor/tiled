@@ -208,8 +208,8 @@ signals:
     void fileOpenRequested();
     void fileOpenRequested(const QString &path);
     void fileSaveRequested();
-    void templateOpenRequested(const ObjectTemplate *objectTemplate);
-    void templateTilesetReplaceRequested();
+    void templateOpenRequested(const QString &path);
+    void templateTilesetReplaced();
 
     /**
      * Emitted when the current displayed map document changed.

@@ -130,7 +130,7 @@ void BrokenLinksModel::setDocument(Document *document)
             for (const SharedTileset &tileset : mapDocument->map()->tilesets())
                 connectToTileset(tileset);
 
-            connect(DocumentManager::instance(), &DocumentManager::templateTilesetReplaceRequested,
+            connect(DocumentManager::instance(), &DocumentManager::templateTilesetReplaced,
                     this, &BrokenLinksModel::refresh);
         } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(mDocument)) {
             connectToTileset(tilesetDocument->tileset());
@@ -192,20 +192,17 @@ void BrokenLinksModel::refresh()
             QSet<const ObjectTemplate*> brokenTemplates;
             QSet<const ObjectTemplate*> brokenTemplateTilesets;
 
-            auto handleObject = [&](const MapObject *mapObject){
-                if (const ObjectTemplate *objectTemplate = mapObject->objectTemplate()) {
-                    if (auto object = objectTemplate->object()) {
-                        auto cell = object->cell();
-
-                        auto tileset = cell.tileset();
-                        if (!cell.isEmpty() && (tileset->fileName().isEmpty() ||
-                                                tileset->status() == LoadingError ||
-                                                tileset->imageStatus() == LoadingError))
+            auto processTemplate = [&](const ObjectTemplate *objectTemplate){
+                if (auto object = objectTemplate->object()) {
+                    if (auto tileset = object->cell().tileset()->sharedPointer()) {
+                        if (!tileset->fileName().isEmpty() && tileset->status() == LoadingError) {
                             brokenTemplateTilesets.insert(objectTemplate);
-                    } else {
-                        brokenTemplates.insert(objectTemplate);
-                        return;
+                        } else {
+                            processTileset(tileset);
+                        }
                     }
+                } else {
+                    brokenTemplates.insert(objectTemplate);
                 }
             };
 
@@ -213,15 +210,8 @@ void BrokenLinksModel::refresh()
             while (Layer *layer = it.next()) {
                 if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
                     for (MapObject *mapObject : *objectGroup) {
-                        if (const ObjectTemplate *objectTemplate = mapObject->objectTemplate()) {
-                            if (const MapObject *mapObject = objectTemplate->object()) {
-                                if (Tileset *tileset = mapObject->cell().tileset())
-                                    processTileset(tileset->sharedPointer());
-                            } else {
-                                brokenTemplates.insert(objectTemplate);
-                            }
-                        }
-                        handleObject(mapObject);
+                        if (const ObjectTemplate *objectTemplate = mapObject->objectTemplate())
+                            processTemplate(objectTemplate);
                     }
                 }
             }
@@ -278,7 +268,7 @@ QVariant BrokenLinksModel::data(const QModelIndex &index, int role) const
             case MapTilesetReference:
                 return tr("Tileset");
             case ObjectTemplateTilesetReference:
-                return tr("Template Tileset");
+                return tr("Template tileset");
             case TilesetImageSource:
                 return tr("Tileset image");
             case TilesetTileImageSource:
@@ -612,7 +602,7 @@ void BrokenLinksWidget::tryFixLink(const BrokenLink &link)
         }
 
     } else if (link.type == ObjectTemplateTilesetReference) {
-        emit DocumentManager::instance()->templateOpenRequested(link.objectTemplate());
+        emit DocumentManager::instance()->templateOpenRequested(link.objectTemplate()->fileName());
     } else if (link.type == MapTilesetReference) {
         FormatHelper<TilesetFormat> helper(FileFormat::Read, tr("All Files (*)"));
 
