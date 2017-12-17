@@ -243,6 +243,12 @@ void MapDocument::setCurrentLayer(Layer *layer)
             setCurrentObject(mCurrentLayer);
 }
 
+void MapDocument::setSelectedLayers(const QList<Layer *> &layers)
+{
+    mSelectedLayers = layers;
+    emit selectedLayersChanged();
+}
+
 /**
  * Custom intersects check necessary because QRectF::intersects wants a
  * non-empty area of overlap, but we should also consider overlap with empty
