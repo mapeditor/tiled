@@ -264,8 +264,9 @@ inline QPointF Layer::offset() const
 
 
 /**
- * An iterator for iterating over the layers of a map. When iterating forward,
- * group layers are traversed after their children.
+ * An iterator for iterating over the layers of a map, in the order in which
+ * they are drawn. When iterating forward, group layers are traversed after
+ * their children.
  *
  * Modifying the layer hierarchy while an iterator is active will lead to
  * undefined results!

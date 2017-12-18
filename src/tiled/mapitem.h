@@ -65,8 +65,6 @@ private:
      */
     void repaintRegion(const QRegion &region, TileLayer *tileLayer);
 
-    void currentLayerChanged();
-
     void mapChanged();
     void tileLayerChanged(TileLayer *tileLayer);
 
