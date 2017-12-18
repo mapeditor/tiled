@@ -30,4 +30,20 @@
 
 namespace Tiled {
 
+FileFormat::FileFormat(QObject *parent)
+    : QObject(parent)
+{
+
 }
+
+FileFormat::Capabilities FileFormat::capabilities() const
+{
+    return ReadWrite;
+}
+
+bool FileFormat::hasCapabilities(Capabilities caps) const
+{
+    return (capabilities() & caps) == caps;
+}
+
+} // namespace Tiled

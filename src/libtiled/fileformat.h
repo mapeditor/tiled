@@ -49,20 +49,17 @@ public:
     };
     Q_DECLARE_FLAGS(Capabilities, Capability)
 
-    explicit FileFormat(QObject *parent = nullptr)
-        : QObject(parent)
-    {}
+    explicit FileFormat(QObject *parent = nullptr);
 
     /**
      * Returns whether this format has Read and/or Write capabilities.
      */
-    virtual Capabilities capabilities() const { return ReadWrite; }
+    virtual Capabilities capabilities() const;
 
     /**
      * Returns whether this format has all given capabilities.
      */
-    bool hasCapabilities(Capabilities caps) const
-    { return (capabilities() & caps) == caps; }
+    bool hasCapabilities(Capabilities caps) const;
 
     /**
      * Returns name filter for files in this map format.

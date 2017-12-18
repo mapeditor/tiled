@@ -28,8 +28,8 @@
 
 #pragma once
 
-#include "pluginmanager.h"
 #include "fileformat.h"
+#include "pluginmanager.h"
 
 #include <QObject>
 #include <QStringList>
