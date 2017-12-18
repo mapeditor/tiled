@@ -25,6 +25,9 @@
 #include <QTreeView>
 #include <QAction>
 
+class QPushButton;
+class QLabel;
+
 namespace Tiled {
 
 class ObjectTemplate;
@@ -56,10 +59,16 @@ signals:
     void currentTemplateChanged(ObjectTemplate *objectTemplate);
     void templateEdited(const ObjectTemplate *objectTemplate);
     void setTile(Tile *tile);
+    void templateTilesetReplaced();
+
+public slots:
+    void openTemplate(const QString &path);
+    void bringToFront();
 
 private slots:
     void setSelectedTool(AbstractTool *tool);
     void setTemplate(ObjectTemplate *objectTemplate);
+    void checkTileset();
 
     void undo();
     void redo();
@@ -73,12 +82,15 @@ protected:
 
 private:
     void retranslateUi();
+    void fixTileset();
 
     TemplatesView *mTemplatesView;
 
     QAction *mChooseDirectory;
     QAction *mUndoAction;
     QAction *mRedoAction;
+    QPushButton *mFixTilesetButton;
+    QLabel *mDescriptionLabel;
 
     MapDocument *mDummyMapDocument;
     MapScene *mMapScene;
@@ -96,6 +108,7 @@ class TemplatesView : public QTreeView
 public:
     QSize sizeHint() const override;
     TemplatesView(QWidget *parent = nullptr);
+    void setSelectedTemplate(const QString &path);
 
 signals:
     void currentTemplateChanged(ObjectTemplate *objectTemplate);

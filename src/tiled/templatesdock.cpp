@@ -21,6 +21,7 @@
 
 #include "templatesdock.h"
 
+#include "documentmanager.h"
 #include "editpolygontool.h"
 #include "mapdocument.h"
 #include "mapdocumentactionhandler.h"
@@ -31,6 +32,10 @@
 #include "objectselectiontool.h"
 #include "preferences.h"
 #include "propertiesdock.h"
+#include "replacetileset.h"
+#include "templatemanager.h"
+#include "tilesetmanager.h"
+#include "tilesetdocument.h"
 #include "tmxmapformat.h"
 #include "toolmanager.h"
 #include "utils.h"
@@ -38,8 +43,10 @@
 #include <QBoxLayout>
 #include <QFileDialog>
 #include <QHeaderView>
+#include <QLabel>
 #include <QMenu>
 #include <QMessageBox>
+#include <QPushButton>
 #include <QSplitter>
 #include <QToolBar>
 #include <QUndoStack>
@@ -85,12 +92,10 @@ TemplatesDock::TemplatesDock(QWidget *parent):
     mUndoAction->setIcon(QIcon(QLatin1String(":/images/16x16/edit-undo.png")));
     Utils::setThemeIcon(mUndoAction, "edit-undo");
     connect(mUndoAction, &QAction::triggered, this, &TemplatesDock::undo);
-    toolBar->addAction(mUndoAction);
 
     mRedoAction->setIcon(QIcon(QLatin1String(":/images/16x16/edit-redo.png")));
     Utils::setThemeIcon(mRedoAction, "edit-redo");
     connect(mRedoAction, &QAction::triggered, this, &TemplatesDock::redo);
-    toolBar->addAction(mRedoAction);
 
     // Initially disabled until a change happens
     mUndoAction->setDisabled(true);
@@ -108,24 +113,40 @@ TemplatesDock::TemplatesDock(QWidget *parent):
     objectSelectionTool->setShortcut(QKeySequence());
     editPolygonTool->setShortcut(QKeySequence());
 
+    editingToolBar->addAction(mUndoAction);
+    editingToolBar->addAction(mRedoAction);
+    editingToolBar->addSeparator();
     editingToolBar->addAction(mToolManager->registerTool(objectSelectionTool));
     editingToolBar->addAction(mToolManager->registerTool(editPolygonTool));
 
+    mFixTilesetButton = new QPushButton(QString(), this);
+    connect(mFixTilesetButton, &QPushButton::clicked, this, &TemplatesDock::fixTileset);
+    mFixTilesetButton->setVisible(false);
+
+    mDescriptionLabel = new QLabel;
+    mDescriptionLabel->setWordWrap(true);
+
     // Construct the UI
-    QVBoxLayout *editorLayout = new QVBoxLayout;
-    editorLayout->addWidget(editingToolBar);
+    auto toolsLayout = new QHBoxLayout;
+    toolsLayout->addWidget(editingToolBar);
+    toolsLayout->addWidget(mFixTilesetButton);
+
+    auto *editorLayout = new QVBoxLayout;
+    editorLayout->addLayout(toolsLayout);
+    editorLayout->addWidget(mDescriptionLabel);
     editorLayout->addWidget(mMapView);
     editorLayout->setMargin(0);
     editorLayout->setSpacing(0);
 
-    QWidget *editorWidget = new QWidget;
+
+    auto *editorWidget = new QWidget;
     editorWidget->setLayout(editorLayout);
 
-    QSplitter *splitter = new QSplitter;
+    auto *splitter = new QSplitter;
     splitter->addWidget(mTemplatesView);
     splitter->addWidget(editorWidget);
 
-    QVBoxLayout *layout = new QVBoxLayout(widget);
+    auto *layout = new QVBoxLayout(widget);
     layout->setMargin(0);
     layout->setSpacing(0);
     layout->addWidget(splitter);
@@ -167,6 +188,20 @@ TemplatesDock::~TemplatesDock()
     delete mDummyMapDocument;
 }
 
+void TemplatesDock::openTemplate(const QString &path)
+{
+    bringToFront();
+    setTemplate(TemplateManager::instance()->loadObjectTemplate(path));
+    mTemplatesView->setSelectedTemplate(path);
+}
+
+void TemplatesDock::bringToFront()
+{
+    show();
+    raise();
+    setFocus();
+}
+
 void TemplatesDock::setSelectedTool(AbstractTool *tool)
 {
     mMapScene->disableSelectedTool();
@@ -196,8 +231,10 @@ void TemplatesDock::setTemplate(ObjectTemplate *objectTemplate)
         mObject = objectTemplate->object()->clone();
         mObject->markAsTemplateBase();
 
-        if (Tile *tile = mObject->cell().tile()) {
-            map->addTileset(tile->sharedTileset());
+        checkTileset();
+
+        if (Tileset *tileset = mObject->cell().tileset()) {
+            map->addTileset(tileset->sharedPointer());
             mObject->setPosition({-mObject->width() / 2, mObject->height() / 2});
         } else {
             mObject->setPosition({-mObject->width() / 2, -mObject->height()  /2});
@@ -233,9 +270,49 @@ void TemplatesDock::setTemplate(ObjectTemplate *objectTemplate)
 
     if (previousDocument) {
         disconnect(previousDocument->undoStack(), &QUndoStack::indexChanged,
-                   this, &TemplatesDock::applyChanges);
+                   this, &TemplatesDock::checkTileset);
 
         delete previousDocument;
+    }
+}
+
+void TemplatesDock::checkTileset()
+{
+    Q_ASSERT(mObject);
+
+    Cell cell = mObject->cell();
+
+    if (cell.isEmpty()) {
+        mFixTilesetButton->setVisible(false);
+        mDescriptionLabel->setVisible(false);
+        return;
+    }
+
+    auto tileset = cell.tileset();
+
+    QString templateName = QFileInfo(mObjectTemplate->fileName()).fileName();
+
+    if (tileset->imageStatus() == LoadingError) {
+        mFixTilesetButton->setVisible(true);
+        mFixTilesetButton->setText(tr("Open Tileset"));
+        mFixTilesetButton->setToolTip(tileset->imageSource().fileName());
+
+        mDescriptionLabel->setVisible(true);
+        mDescriptionLabel->setText(tr("%1: Couldn't find \"%2\"").arg(templateName,
+                                                                      tileset->imageSource().fileName()));
+        mDescriptionLabel->setToolTip(tileset->imageSource().fileName());
+    } else if (!tileset->fileName().isEmpty() && tileset->status() == LoadingError) {
+        mFixTilesetButton->setVisible(true);
+        mFixTilesetButton->setText(tr("Locate Tileset"));
+        mFixTilesetButton->setToolTip(tileset->fileName());
+
+        mDescriptionLabel->setVisible(true);
+        mDescriptionLabel->setText(tr("%1: Couldn't find \"%2\"").arg(templateName,
+                                                                      tileset->fileName()));
+        mDescriptionLabel->setToolTip(tileset->fileName());
+    } else {
+        mFixTilesetButton->setVisible(false);
+        mDescriptionLabel->setVisible(false);
     }
 }
 
@@ -265,6 +342,9 @@ void TemplatesDock::applyChanges()
 
     mUndoAction->setEnabled(mDummyMapDocument->undoStack()->canUndo());
     mRedoAction->setEnabled(mDummyMapDocument->undoStack()->canRedo());
+
+    checkTileset();
+
     emit templateEdited(mObjectTemplate);
 }
 
@@ -300,6 +380,52 @@ void TemplatesDock::retranslateUi()
     mChooseDirectory->setText(tr("Choose Templates Directory"));
 }
 
+void TemplatesDock::fixTileset()
+{
+    Q_ASSERT(mObject);
+    Q_ASSERT(!mObject->cell().isEmpty());
+
+    auto tileset = mObject->cell().tileset()->sharedPointer();
+
+    if (tileset->imageStatus() == LoadingError) {
+        // This code opens a new document even if there is a tileset document
+        auto tilesetDocument = DocumentManager::instance()->findTilesetDocument(tileset);
+
+        if (!tilesetDocument) {
+            tilesetDocument = new TilesetDocument(tileset, tileset->fileName());
+            DocumentManager::instance()->addDocument(tilesetDocument);
+        } else {
+            DocumentManager::instance()->openTileset(tileset);
+        }
+
+        connect(tilesetDocument, &TilesetDocument::tilesetChanged,
+                this, &TemplatesDock::checkTileset, Qt::UniqueConnection);
+    } else if (!tileset->fileName().isEmpty() && tileset->status() == LoadingError) {
+        FormatHelper<TilesetFormat> helper(FileFormat::Read, tr("All Files (*)"));
+
+        Preferences *prefs = Preferences::instance();
+        QString start = prefs->lastPath(Preferences::ExternalTileset);
+        QString fileName = QFileDialog::getOpenFileName(this, tr("Locate External Tileset"),
+                                                        start,
+                                                        helper.filter());
+
+        if (!fileName.isEmpty()) {
+            prefs->setLastPath(Preferences::ExternalTileset, QFileInfo(fileName).path());
+
+            QString error;
+            auto newTileset = TilesetManager::instance()->loadTileset(fileName, &error);
+            if (!newTileset || newTileset->status() == LoadingError) {
+                QMessageBox::critical(window(), tr("Error Reading Tileset"), error);
+                return;
+            }
+            // Replace with the first (and only) tileset.
+            mDummyMapDocument->undoStack()->push(new ReplaceTileset(mDummyMapDocument, 0, newTileset));
+
+            emit templateTilesetReplaced();
+        }
+    }
+}
+
 TemplatesView::TemplatesView(QWidget *parent)
     : QTreeView(parent)
 {
@@ -328,6 +454,13 @@ TemplatesView::TemplatesView(QWidget *parent)
 
     connect(selectionModel(), &QItemSelectionModel::currentChanged,
             this, &TemplatesView::onCurrentChanged);
+}
+
+void TemplatesView::setSelectedTemplate(const QString &path)
+{
+    auto index = mModel->index(path);
+    if (index.isValid())
+        setCurrentIndex(index);
 }
 
 void TemplatesView::contextMenuEvent(QContextMenuEvent *event)
