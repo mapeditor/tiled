@@ -93,6 +93,7 @@ public:
 Q_DECLARE_INTERFACE(Tiled::FileFormat, "org.mapeditor.FileFormat")
 
 namespace Tiled {
+
 /**
  * Convenience class that can be used when implementing file dialogs.
  */

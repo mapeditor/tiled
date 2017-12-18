@@ -2,6 +2,7 @@ INCLUDEPATH += $$PWD
 
 SOURCES += $$PWD/compression.cpp \
     $$PWD/filesystemwatcher.cpp \
+    $$PWD/fileformat.cpp \
     $$PWD/gidmapper.cpp \
     $$PWD/grouplayer.cpp \
     $$PWD/hex.cpp \
