@@ -91,7 +91,7 @@ bool LuaMapFormat::write(const Map *map, const QString &fileName)
 
     LuaTableWriter writer(file.device());
     writer.writeStartDocument();
-    writeMapLua(writer, map);
+    writeMap(writer, map);
     writer.writeEndDocument();
 
     if (file.error() != QFileDevice::NoError) {
@@ -129,31 +129,31 @@ bool LuaTilesetFormat::supportsFile(const QString &fileName) const
 
 bool LuaTilesetFormat::write(const Tileset &tileset, const QString &fileName)
 {
-  SaveFile file(fileName);
+    SaveFile file(fileName);
 
-  if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-      mError = tr("Could not open file for writing.");
-      return false;
-  }
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        mError = tr("Could not open file for writing.");
+        return false;
+    }
 
-  mMapDir = QFileInfo(fileName).path();
+    mMapDir = QFileInfo(fileName).path();
 
-  LuaTableWriter writer(file.device());
-  writer.writeStartDocument();
-  writeTilesetLua(writer, tileset, 0, false);
-  writer.writeEndDocument();
+    LuaTableWriter writer(file.device());
+    writer.writeStartDocument();
+    writeTileset(writer, tileset, 0, false);
+    writer.writeEndDocument();
 
-  if (file.error() != QFileDevice::NoError) {
-      mError = file.errorString();
-      return false;
-  }
+    if (file.error() != QFileDevice::NoError) {
+        mError = file.errorString();
+        return false;
+    }
 
-  if (!file.commit()) {
-      mError = file.errorString();
-      return false;
-  }
+    if (!file.commit()) {
+        mError = file.errorString();
+        return false;
+    }
 
-  return true;
+    return true;
 }
 
 QString LuaTilesetFormat::nameFilter() const
@@ -172,7 +172,7 @@ QString LuaTilesetFormat::errorString() const
 }
 
 
-void LuaUtilWriter::writeMapLua(LuaTableWriter &writer, const Map *map)
+void LuaUtilWriter::writeMap(LuaTableWriter &writer, const Map *map)
 {
     writer.writeStartReturnTable();
 
@@ -212,7 +212,7 @@ void LuaUtilWriter::writeMapLua(LuaTableWriter &writer, const Map *map)
     mGidMapper.clear();
     unsigned firstGid = 1;
     for (const SharedTileset &tileset : map->tilesets()) {
-        writeTilesetLua(writer, *tileset, firstGid);
+        writeTileset(writer, *tileset, firstGid);
         mGidMapper.insert(firstGid, tileset);
         firstGid += tileset->nextTileId();
     }
@@ -258,7 +258,7 @@ static bool includeTile(const Tile *tile)
     return false;
 }
 
-void LuaUtilWriter::writeTilesetLua(LuaTableWriter &writer, const Tileset &tileset,
+void LuaUtilWriter::writeTileset(LuaTableWriter &writer, const Tileset &tileset,
                                     unsigned firstGid, bool standalone)
 {
     if (standalone) {

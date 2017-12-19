@@ -102,3 +102,4 @@ TILEDSHARED_EXPORT SharedTileset readTileset(const QString &fileName,
 TILEDSHARED_EXPORT TilesetFormat *findSupportingTilesetFormat(const QString &fileName);
 
 } // namespace Tiled
+

@@ -50,9 +50,9 @@ class LuaTableWriter;
 class LuaUtilWriter
 {
 public:
-    void writeMapLua(LuaTableWriter &, const Tiled::Map *);
+    void writeMap(LuaTableWriter &, const Tiled::Map *);
     void writeProperties(LuaTableWriter &, const Tiled::Properties &);
-    void writeTilesetLua(LuaTableWriter &, const Tiled::Tileset &, unsigned firstGid, bool standalone=true);
+    void writeTileset(LuaTableWriter &, const Tiled::Tileset &, unsigned firstGid, bool standalone=true);
     void writeLayers(LuaTableWriter &,
                      const QList<Tiled::Layer*> &layers,
                      Tiled::Map::LayerDataFormat format);
@@ -90,7 +90,6 @@ public:
 class LUASHARED_EXPORT LuaMapFormat : public Tiled::WritableMapFormat, public LuaUtilWriter
 {
     Q_OBJECT
-//    Q_INTERFACES(Tiled::MapFormat)
 
 public:
     LuaMapFormat(QObject *parent = nullptr) : Tiled::WritableMapFormat(parent) {}
@@ -112,7 +111,6 @@ protected:
 class LUASHARED_EXPORT LuaTilesetFormat : public Tiled::WritableTilesetFormat, public LuaUtilWriter
 {
     Q_OBJECT
-//    Q_INTERFACES(Tiled::WritableTilesetFormat)
 
 public:
     LuaTilesetFormat(QObject *parent = nullptr) : Tiled::WritableTilesetFormat(parent) {}
