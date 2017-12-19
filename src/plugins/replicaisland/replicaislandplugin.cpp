@@ -48,7 +48,7 @@ ReplicaIslandPlugin::ReplicaIslandPlugin()
 {
 }
 
-Tiled::Map *ReplicaIslandPlugin::readMap(const QString &fileName)
+Tiled::Map *ReplicaIslandPlugin::read(const QString &fileName)
 {
     using namespace Tiled;
 
@@ -234,7 +234,7 @@ QString ReplicaIslandPlugin::errorString() const
 }
 
 // Writer
-bool ReplicaIslandPlugin::writeMap(const Tiled::Map *map, const QString &fileName)
+bool ReplicaIslandPlugin::write(const Tiled::Map *map, const QString &fileName)
 {
     using namespace Tiled;
 

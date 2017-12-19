@@ -36,7 +36,7 @@ DroidcraftPlugin::DroidcraftPlugin()
 }
 
 // Reader
-Tiled::Map *DroidcraftPlugin::readMap(const QString &fileName)
+Tiled::Map *DroidcraftPlugin::read(const QString &fileName)
 {
     using namespace Tiled;
 
@@ -91,7 +91,7 @@ bool DroidcraftPlugin::supportsFile(const QString &fileName) const
 }
 
 // Writer
-bool DroidcraftPlugin::writeMap(const Tiled::Map *map, const QString &fileName)
+bool DroidcraftPlugin::write(const Tiled::Map *map, const QString &fileName)
 {
     using namespace Tiled;
 

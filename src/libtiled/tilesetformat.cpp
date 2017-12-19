@@ -36,7 +36,7 @@ SharedTileset readTileset(const QString &fileName, QString *error)
 {
     // Try the first registered tileset format that claims to support the file
     if (TilesetFormat *format = findSupportingTilesetFormat(fileName)) {
-        SharedTileset tileset = format->readTileset(fileName);
+        SharedTileset tileset = format->read(fileName);
 
         if (error) {
             if (!tileset)

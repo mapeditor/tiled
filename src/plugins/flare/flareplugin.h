@@ -39,10 +39,10 @@ class FLARESHARED_EXPORT FlarePlugin : public Tiled::MapFormat
 public:
     FlarePlugin();
 
-    Tiled::Map *readMap(const QString &fileName) override;
+    Tiled::Map *read(const QString &fileName) override;
     bool supportsFile(const QString &fileName) const override;
 
-    bool writeMap(const Tiled::Map *map, const QString &fileName) override;
+    bool write(const Tiled::Map *map, const QString &fileName) override;
     QString nameFilter() const override;
     QString shortName() const override;
     QString errorString() const override;

@@ -67,7 +67,7 @@ public:
     /**
      * Reads the map and returns a new Map instance, or 0 if reading failed.
      */
-    virtual Map *readMap(const QString &fileName) = 0;
+    virtual Map *read(const QString &fileName) = 0;
 
     /**
      * Writes the given \a map based on the suggested \a fileName.
@@ -79,7 +79,7 @@ public:
      * @return <code>true</code> on success, <code>false</code> when an error
      *         occurred. The error can be retrieved by errorString().
      */
-    virtual bool writeMap(const Map *map, const QString &fileName) = 0;
+    virtual bool write(const Map *map, const QString &fileName) = 0;
 };
 
 } // namespace Tiled
@@ -99,7 +99,7 @@ class TILEDSHARED_EXPORT ReadableMapFormat : public MapFormat
 public:
     using MapFormat::MapFormat;
     Capabilities capabilities() const override { return Read; }
-    bool writeMap(const Map *, const QString &) override { return false; }
+    bool write(const Map *, const QString &) override { return false; }
 };
 
 
@@ -115,7 +115,7 @@ public:
     using MapFormat::MapFormat;
 
     Capabilities capabilities() const override { return Write; }
-    Map *readMap(const QString &) override { return nullptr; }
+    Map *read(const QString &) override { return nullptr; }
     bool supportsFile(const QString &) const override { return false; }
 };
 

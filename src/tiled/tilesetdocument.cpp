@@ -104,7 +104,7 @@ bool TilesetDocument::save(const QString &fileName, QString *error)
     // todo: workaround to avoid writing the tileset like an external tileset reference
     mTileset->setFileName(QString());
 
-    if (!tilesetFormat->writeTileset(tileset().data(), fileName)) {
+    if (!tilesetFormat->write(tileset().data(), fileName)) {
         if (error)
             *error = tilesetFormat->errorString();
         return false;
@@ -133,7 +133,7 @@ bool TilesetDocument::reload(QString *error)
 
     auto format = mTileset->format();
 
-    SharedTileset tileset = format->readTileset(fileName());
+    SharedTileset tileset = format->read(fileName());
 
     if (tileset.isNull()) {
         if (error)
@@ -154,7 +154,7 @@ TilesetDocument *TilesetDocument::load(const QString &fileName,
                                        TilesetFormat *format,
                                        QString *error)
 {
-    SharedTileset tileset = format->readTileset(fileName);
+    SharedTileset tileset = format->read(fileName);
 
     if (tileset.isNull()) {
         if (error)

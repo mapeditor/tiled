@@ -261,7 +261,7 @@ PythonMapFormat::PythonMapFormat(const QString &scriptFile,
     setPythonClass(class_);
 }
 
-Tiled::Map *PythonMapFormat::readMap(const QString &fileName)
+Tiled::Map *PythonMapFormat::read(const QString &fileName)
 {
     mError = QString();
 
@@ -289,7 +289,7 @@ Tiled::Map *PythonMapFormat::readMap(const QString &fileName)
     return ret;
 }
 
-bool PythonMapFormat::writeMap(const Tiled::Map *map, const QString &fileName)
+bool PythonMapFormat::write(const Tiled::Map *map, const QString &fileName)
 {
     mError = QString();
 

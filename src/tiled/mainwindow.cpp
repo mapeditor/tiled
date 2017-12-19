@@ -889,7 +889,7 @@ void MainWindow::export_()
         if (!exportFormat)
             exportFormat = &tmxFormat;
 
-        if (exportFormat->writeMap(mapDocument->map(), exportFileName)) {
+        if (exportFormat->write(mapDocument->map(), exportFileName)) {
             auto *editor = static_cast<MapEditor*>(mDocumentManager->editor(Document::MapDocumentType));
             editor->showMessage(tr("Exported to %1").arg(exportFileName), 3000);
             return;
@@ -1548,7 +1548,7 @@ void MainWindow::exportMapAs(MapDocument *mapDocument)
     pref->setLastPath(Preferences::ExportedFile, QFileInfo(exportDetails.mFileName).path());
     mSettings.setValue(QLatin1String("lastUsedExportFilter"), selectedFilter);
 
-    auto exportResult = exportDetails.mFormat->writeMap(mapDocument->map(), exportDetails.mFileName);
+    auto exportResult = exportDetails.mFormat->write(mapDocument->map(), exportDetails.mFileName);
     if (!exportResult)
     {
         QMessageBox::critical(this, tr("Error Exporting Map!"),
@@ -1578,7 +1578,7 @@ void MainWindow::exportTilesetAs(TilesetDocument *tilesetDocument)
     pref->setLastPath(Preferences::ExportedFile, QFileInfo(exportDetails.mFileName).path());
     mSettings.setValue(QLatin1String("lastUsedExportFilter"), selectedFilter);
 
-    auto exportResult = exportDetails.mFormat->writeTileset(tilesetDocument->tileset().data(), exportDetails.mFileName);
+    auto exportResult = exportDetails.mFormat->write(tilesetDocument->tileset().data(), exportDetails.mFileName);
     if ( ! exportResult )
     {
         QMessageBox::critical(this, tr("Error Exporting Map!"),

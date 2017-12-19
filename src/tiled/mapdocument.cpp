@@ -133,7 +133,7 @@ bool MapDocument::save(const QString &fileName, QString *error)
     if (!mapFormat)
         mapFormat = &tmxMapFormat;
 
-    if (!mapFormat->writeMap(map(), fileName)) {
+    if (!mapFormat->write(map(), fileName)) {
         if (error)
             *error = mapFormat->errorString();
         return false;
@@ -159,7 +159,7 @@ MapDocument *MapDocument::load(const QString &fileName,
                                MapFormat *format,
                                QString *error)
 {
-    Map *map = format->readMap(fileName);
+    Map *map = format->read(fileName);
 
     if (!map) {
         if (error)

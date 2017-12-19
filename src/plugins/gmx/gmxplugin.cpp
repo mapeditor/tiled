@@ -98,7 +98,7 @@ GmxPlugin::GmxPlugin()
 {
 }
 
-bool GmxPlugin::writeMap(const Map *map, const QString &fileName)
+bool GmxPlugin::write(const Map *map, const QString &fileName)
 {
     SaveFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {

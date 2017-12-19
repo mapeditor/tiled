@@ -38,7 +38,7 @@ TmxMapFormat::TmxMapFormat(QObject *parent)
 {
 }
 
-Map *TmxMapFormat::readMap(const QString &fileName)
+Map *TmxMapFormat::read(const QString &fileName)
 {
     mError.clear();
 
@@ -50,7 +50,7 @@ Map *TmxMapFormat::readMap(const QString &fileName)
     return map;
 }
 
-bool TmxMapFormat::writeMap(const Map *map, const QString &fileName)
+bool TmxMapFormat::write(const Map *map, const QString &fileName)
 {
     Preferences *prefs = Preferences::instance();
 
@@ -119,7 +119,7 @@ TsxTilesetFormat::TsxTilesetFormat(QObject *parent)
 {
 }
 
-SharedTileset TsxTilesetFormat::readTileset(const QString &fileName)
+SharedTileset TsxTilesetFormat::read(const QString &fileName)
 {
     mError.clear();
 
@@ -131,7 +131,7 @@ SharedTileset TsxTilesetFormat::readTileset(const QString &fileName)
     return tileset;
 }
 
-bool TsxTilesetFormat::writeTileset(const Tileset *tileset, const QString &fileName)
+bool TsxTilesetFormat::write(const Tileset *tileset, const QString &fileName)
 {
     Preferences *prefs = Preferences::instance();
 

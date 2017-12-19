@@ -52,7 +52,7 @@ public:
      * Reads the tileset and returns a new Tileset instance, or a null shared
      * pointer if reading failed.
      */
-    virtual SharedTileset readTileset(const QString &fileName) = 0;
+    virtual SharedTileset read(const QString &fileName) = 0;
 
     /**
      * Writes the given \a tileset based on the suggested \a fileName.
@@ -60,7 +60,7 @@ public:
      * @return <code>true</code> on success, <code>false</code> when an error
      *         occurred. The error can be retrieved by errorString().
      */
-    virtual bool writeTileset(const Tileset *tileset, const QString &fileName) = 0;
+    virtual bool write(const Tileset *tileset, const QString &fileName) = 0;
 
 private:
     QPointer<TilesetFormat> mExportFormat;
@@ -85,7 +85,7 @@ public:
     using TilesetFormat::TilesetFormat;
 
     Capabilities capabilities() const override { return Write; }
-    SharedTileset readTileset(const QString &) override { return nullptr; }
+    SharedTileset read(const QString &) override { return nullptr; }
     bool supportsFile(const QString &) const override { return false; }
 };
 

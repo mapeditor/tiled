@@ -49,7 +49,7 @@ JsonMapFormat::JsonMapFormat(SubFormat subFormat, QObject *parent)
     , mSubFormat(subFormat)
 {}
 
-Tiled::Map *JsonMapFormat::readMap(const QString &fileName)
+Tiled::Map *JsonMapFormat::read(const QString &fileName)
 {
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -87,7 +87,7 @@ Tiled::Map *JsonMapFormat::readMap(const QString &fileName)
     return map;
 }
 
-bool JsonMapFormat::writeMap(const Tiled::Map *map, const QString &fileName)
+bool JsonMapFormat::write(const Tiled::Map *map, const QString &fileName)
 {
     Tiled::SaveFile file(fileName);
 
@@ -208,7 +208,7 @@ JsonTilesetFormat::JsonTilesetFormat(QObject *parent)
 {
 }
 
-Tiled::SharedTileset JsonTilesetFormat::readTileset(const QString &fileName)
+Tiled::SharedTileset JsonTilesetFormat::read(const QString &fileName)
 {
     QFile file(fileName);
 
@@ -262,7 +262,7 @@ bool JsonTilesetFormat::supportsFile(const QString &fileName) const
     return false;
 }
 
-bool JsonTilesetFormat::writeTileset(const Tiled::Tileset *tileset,
+bool JsonTilesetFormat::write(const Tiled::Tileset *tileset,
                                      const QString &fileName)
 {
     Tiled::SaveFile file(fileName);

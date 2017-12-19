@@ -52,10 +52,10 @@ class TBINSHARED_EXPORT TbinMapFormat : public Tiled::MapFormat
 public:
     TbinMapFormat(QObject *parent = nullptr);
 
-    Tiled::Map *readMap(const QString &fileName) override;
+    Tiled::Map *read(const QString &fileName) override;
     bool supportsFile(const QString &fileName) const override;
 
-    bool writeMap(const Tiled::Map *map, const QString &fileName) override;
+    bool write(const Tiled::Map *map, const QString &fileName) override;
 
     QString nameFilter() const override;
     QString shortName() const override;

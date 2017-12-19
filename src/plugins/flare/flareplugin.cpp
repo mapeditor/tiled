@@ -46,7 +46,7 @@ FlarePlugin::FlarePlugin()
 {
 }
 
-Tiled::Map *FlarePlugin::readMap(const QString &fileName)
+Tiled::Map *FlarePlugin::read(const QString &fileName)
 {
     QFile file(fileName);
 
@@ -290,7 +290,7 @@ QString FlarePlugin::errorString() const
     return mError;
 }
 
-bool FlarePlugin::writeMap(const Tiled::Map *map, const QString &fileName)
+bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
 {
     SaveFile file(fileName);
 

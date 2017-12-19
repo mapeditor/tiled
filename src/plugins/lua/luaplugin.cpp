@@ -78,7 +78,7 @@ bool LuaMapFormat::supportsFile(const QString &fileName) const
     return true;
 }
 
-bool LuaMapFormat::writeMap(const Map *map, const QString &fileName)
+bool LuaMapFormat::write(const Map *map, const QString &fileName)
 {
     SaveFile file(fileName);
 
@@ -127,7 +127,7 @@ bool LuaTilesetFormat::supportsFile(const QString &fileName) const
     return true;
 }
 
-bool LuaTilesetFormat::writeTileset(const Tileset *tileset, const QString &fileName)
+bool LuaTilesetFormat::write(const Tileset *tileset, const QString &fileName)
 {
   SaveFile file(fileName);
 

@@ -38,10 +38,10 @@ class DROIDCRAFTSHARED_EXPORT DroidcraftPlugin : public Tiled::MapFormat
 public:
     DroidcraftPlugin();
 
-    Tiled::Map *readMap(const QString &fileName) override;
+    Tiled::Map *read(const QString &fileName) override;
     bool supportsFile(const QString &fileName) const override;
 
-    bool writeMap(const Tiled::Map *map, const QString &fileName) override;
+    bool write(const Tiled::Map *map, const QString &fileName) override;
     QString nameFilter() const override;
     QString shortName() const override;
     QString errorString() const override;

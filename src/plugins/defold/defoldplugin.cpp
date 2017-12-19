@@ -93,7 +93,7 @@ QString DefoldPlugin::errorString() const
     return mError;
 }
 
-bool DefoldPlugin::writeMap(const Tiled::Map *map, const QString &fileName)
+bool DefoldPlugin::write(const Tiled::Map *map, const QString &fileName)
 {
     QVariantHash map_h;
 
