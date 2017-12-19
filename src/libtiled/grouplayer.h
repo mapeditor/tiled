@@ -30,7 +30,7 @@ class TILEDSHARED_EXPORT GroupLayer : public Layer
 {
 public:
     GroupLayer(const QString &name, int x, int y);
-    ~GroupLayer();
+    ~GroupLayer() override;
 
     int layerCount() const;
     Layer *layerAt(int index) const;

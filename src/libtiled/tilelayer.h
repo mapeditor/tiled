@@ -39,9 +39,9 @@
 #include <QHash>
 #include <QMargins>
 #include <QPoint>
+#include <QSharedPointer>
 #include <QString>
 #include <QVector>
-#include <QSharedPointer>
 
 #include <functional>
 
@@ -325,6 +325,8 @@ public:
      */
     TileLayer(const QString &name, int x, int y, int width, int height);
 
+    TileLayer(const QString &name, QPoint position, QSize size);
+
     /**
      * Returns the width of this layer.
      */
@@ -358,16 +360,7 @@ public:
 
     const Chunk *findChunk(int x, int y) const;
 
-    /**
-     * Calculates the region of cells in this tile layer for which the given
-     * \a condition returns true.
-     */
     QRegion region(std::function<bool (const Cell &)> condition) const;
-
-    /**
-     * Calculates the region occupied by the tiles of this layer. Similar to
-     * Layer::bounds(), but leaves out the regions without tiles.
-     */
     QRegion region() const;
 
     const Cell &cellAt(int x, int y) const;
@@ -601,6 +594,10 @@ inline const Chunk* TileLayer::findChunk(int x, int y) const
     return it != mChunks.end() ? &it.value() : nullptr;
 }
 
+/**
+ * Calculates the region occupied by the tiles of this layer. Similar to
+ * Layer::bounds(), but leaves out the regions without tiles.
+ */
 inline QRegion TileLayer::region() const
 {
     return region([] (const Cell &cell) { return !cell.isEmpty(); });

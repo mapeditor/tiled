@@ -36,19 +36,13 @@ PaintTileLayer::PaintTileLayer(MapDocument *mapDocument,
                                int y,
                                const TileLayer *source,
                                QUndoCommand *parent)
-    : QUndoCommand(parent)
-    , mMapDocument(mapDocument)
-    , mTarget(target)
-    , mSource(source->clone())
-    , mX(x)
-    , mY(y)
-    , mPaintedRegion(source->region().translated(QPoint(x, y) - source->position()))
-    , mMergeable(false)
+    : PaintTileLayer(mapDocument,
+                     target,
+                     x, y,
+                     source,
+                     source->region().translated(QPoint(x, y) - source->position()),
+                     parent)
 {
-    mErased = mTarget->copy(mX - mTarget->x(),
-                            mY - mTarget->y(),
-                            mSource->width(), mSource->height());
-    setText(QCoreApplication::translate("Undo Commands", "Paint"));
 }
 
 PaintTileLayer::PaintTileLayer(MapDocument *mapDocument,
@@ -60,29 +54,38 @@ PaintTileLayer::PaintTileLayer(MapDocument *mapDocument,
                                QUndoCommand *parent)
     : QUndoCommand(parent)
     , mMapDocument(mapDocument)
-    , mTarget(target)
-    , mSource(source->clone())
-    , mX(x)
-    , mY(y)
-    , mPaintedRegion(paintRegion)
     , mMergeable(false)
 {
-    mErased = mTarget->copy(mX - mTarget->x(),
-                            mY - mTarget->y(),
-                            mSource->width(), mSource->height());
+    auto &data = mTargetData[target];
+
+    data.mSource = source->clone();
+    data.mErased = target->copy(x - target->x(),
+                                y - target->y(),
+                                source->width(), source->height());
+    data.mX = x;
+    data.mY = y;
+    data.mPaintedRegion = paintRegion;
+
     setText(QCoreApplication::translate("Undo Commands", "Paint"));
 }
 
 PaintTileLayer::~PaintTileLayer()
 {
-    delete mSource;
-    delete mErased;
+    for (TargetData &data : mTargetData) {
+        delete data.mSource;
+        delete data.mErased;
+    }
 }
 
 void PaintTileLayer::undo()
 {
-    TilePainter painter(mMapDocument, mTarget);
-    painter.setCells(mX, mY, mErased, mPaintedRegion);
+    QHashIterator<TileLayer*, TargetData> it(mTargetData);
+    while (it.hasNext()) {
+        it.next();
+        const TargetData &data = it.value();
+        TilePainter painter(mMapDocument, it.key());
+        painter.setCells(data.mX, data.mY, data.mErased, data.mPaintedRegion);
+    }
 
     QUndoCommand::undo(); // undo child commands
 }
@@ -91,20 +94,19 @@ void PaintTileLayer::redo()
 {
     QUndoCommand::redo(); // redo child commands
 
-    TilePainter painter(mMapDocument, mTarget);
-    painter.setCells(mX, mY, mSource, mPaintedRegion);
+    QHashIterator<TileLayer*, TargetData> it(mTargetData);
+    while (it.hasNext()) {
+        it.next();
+        const TargetData &data = it.value();
+        TilePainter painter(mMapDocument, it.key());
+        painter.setCells(data.mX, data.mY, data.mSource, data.mPaintedRegion);
+    }
 }
 
-bool PaintTileLayer::mergeWith(const QUndoCommand *other)
+void PaintTileLayer::TargetData::mergeWith(const PaintTileLayer::TargetData &o)
 {
-    const PaintTileLayer *o = static_cast<const PaintTileLayer*>(other);
-    if (!(mMapDocument == o->mMapDocument &&
-          mTarget == o->mTarget &&
-          o->mMergeable))
-        return false;
-
-    const QRegion newRegion = o->mPaintedRegion.subtracted(mPaintedRegion);
-    const QRegion combinedRegion = mPaintedRegion.united(o->mPaintedRegion);
+    const QRegion newRegion = o.mPaintedRegion.subtracted(mPaintedRegion);
+    const QRegion combinedRegion = mPaintedRegion.united(o.mPaintedRegion);
     const QRect bounds = QRect(mX, mY, mSource->width(), mSource->height());
     const QRect combinedBounds = combinedRegion.boundingRect();
 
@@ -120,16 +122,47 @@ bool PaintTileLayer::mergeWith(const QUndoCommand *other)
     mPaintedRegion = combinedRegion;
 
     // Copy the painted tiles from the other command over
-    const QPoint pos = QPoint(o->mX, o->mY) - combinedBounds.topLeft();
-    mSource->merge(pos, o->mSource);
+    const QPoint pos = QPoint(o.mX, o.mY) - combinedBounds.topLeft();
+    mSource->merge(pos, o.mSource);
 
     // Copy the newly erased tiles from the other command over
-    foreach (const QRect &rect, newRegion.rects())
+#if QT_VERSION >= 0x050800
+    for (const QRect &rect : newRegion)
+#else
+    const auto rects = newRegion.rects();
+    for (const QRect &rect : rects)
+#endif
         for (int y = rect.top(); y <= rect.bottom(); ++y)
             for (int x = rect.left(); x <= rect.right(); ++x)
                 mErased->setCell(x - mX,
                                  y - mY,
-                                 o->mErased->cellAt(x - o->mX, y - o->mY));
+                                 o.mErased->cellAt(x - o.mX, y - o.mY));
+}
+
+bool PaintTileLayer::mergeWith(const QUndoCommand *other)
+{
+    const PaintTileLayer *o = static_cast<const PaintTileLayer*>(other);
+    if (!(mMapDocument == o->mMapDocument && o->mMergeable))
+        return false;
+
+    QHashIterator<TileLayer*, TargetData> it(o->mTargetData);
+    while (it.hasNext()) {
+        it.next();
+
+        TileLayer *targetLayer = it.key();
+        const TargetData &o = it.value();
+
+        if (mTargetData.contains(targetLayer)) {
+            mTargetData[targetLayer].mergeWith(it.value());
+        } else {
+            TargetData &data = mTargetData[targetLayer];
+            data.mSource = o.mSource->clone();
+            data.mErased = o.mErased->clone();
+            data.mX = o.mX;
+            data.mY = o.mY;
+            data.mPaintedRegion = o.mPaintedRegion;
+        }
+    }
 
     return true;
 }

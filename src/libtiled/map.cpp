@@ -37,7 +37,7 @@
 #include "tilelayer.h"
 #include "mapobject.h"
 
-#include <cmath>
+#include <QtMath>
 
 using namespace Tiled;
 
@@ -57,6 +57,15 @@ Map::Map(Orientation orientation,
     mDrawMarginsDirty(true),
     mLayerDataFormat(Base64Zlib),
     mNextObjectId(1)
+{
+}
+
+Map::Map(Orientation orientation,
+         QSize size, QSize tileSize, bool infinite)
+    : Map(orientation,
+          size.width(), size.height(),
+          tileSize.width(), tileSize.height(),
+          infinite)
 {
 }
 
@@ -118,10 +127,10 @@ QMargins Map::computeLayerOffsetMargins() const
 
     for (const Layer *layer : mLayers) {
         const QPointF offset = layer->offset();
-        offsetMargins = maxMargins(QMargins(std::ceil(-offset.x()),
-                                            std::ceil(-offset.y()),
-                                            std::ceil(offset.x()),
-                                            std::ceil(offset.y())),
+        offsetMargins = maxMargins(QMargins(qCeil(-offset.x()),
+                                            qCeil(-offset.y()),
+                                            qCeil(offset.x()),
+                                            qCeil(offset.y())),
                                    offsetMargins);
     }
 
@@ -171,6 +180,11 @@ int Map::layerCount(Layer::TypeFlag type) const
     return count;
 }
 
+/**
+ * Returns the list of all object groups.
+ *
+ * @deprecated Use the LayerIterator instead.
+ */
 QList<ObjectGroup*> Map::objectGroups() const
 {
     QList<ObjectGroup*> layers;
@@ -181,6 +195,11 @@ QList<ObjectGroup*> Map::objectGroups() const
     return layers;
 }
 
+/**
+ * Returns the list of all tile layers.
+ *
+ * @deprecated Use the LayerIterator instead.
+ */
 QList<TileLayer*> Map::tileLayers() const
 {
     QList<TileLayer*> layers;
@@ -197,7 +216,7 @@ void Map::addLayer(Layer *layer)
     mLayers.append(layer);
 }
 
-int Map::indexOfLayer(const QString &layerName, unsigned layertypes) const
+int Map::indexOfLayer(const QString &layerName, int layertypes) const
 {
     for (int index = 0; index < mLayers.size(); index++)
         if (layerAt(index)->name() == layerName
@@ -205,6 +224,15 @@ int Map::indexOfLayer(const QString &layerName, unsigned layertypes) const
             return index;
 
     return -1;
+}
+
+Layer *Map::findLayer(const QString &name, int layerTypes) const
+{
+    LayerIterator it(this, layerTypes);
+    while (Layer *layer = it.next())
+        if (layer->name() == name)
+            return layer;
+    return nullptr;
 }
 
 void Map::insertLayer(int index, Layer *layer)
@@ -282,6 +310,18 @@ bool Map::replaceTileset(const SharedTileset &oldTileset,
     }
 }
 
+QSet<SharedTileset> Map::usedTilesets() const
+{
+    QSet<SharedTileset> tilesets;
+
+    // Only top-level layers need to be considered, since GroupLayer goes over
+    // its children
+    for (const Layer *layer : mLayers)
+        tilesets |= layer->usedTilesets();
+
+    return tilesets;
+}
+
 bool Map::isTilesetUsed(const Tileset *tileset) const
 {
     for (const Layer *layer : mLayers)
@@ -319,10 +359,18 @@ void Map::initializeObjectIds(ObjectGroup &objectGroup)
     }
 }
 
+QRegion Map::tileRegion() const
+{
+    QRegion region;
+    LayerIterator it(this, Layer::TileLayerType);
+    while (auto tileLayer = static_cast<TileLayer*>(it.next()))
+        region |= tileLayer->region();
+    return region;
+}
+
 QString Tiled::staggerAxisToString(Map::StaggerAxis staggerAxis)
 {
     switch (staggerAxis) {
-    default:
     case Map::StaggerY:
         return QLatin1String("y");
     case Map::StaggerX:
@@ -342,7 +390,6 @@ Map::StaggerAxis Tiled::staggerAxisFromString(const QString &string)
 QString Tiled::staggerIndexToString(Map::StaggerIndex staggerIndex)
 {
     switch (staggerIndex) {
-    default:
     case Map::StaggerOdd:
         return QLatin1String("odd");
     case Map::StaggerEven:
@@ -362,7 +409,6 @@ Map::StaggerIndex Tiled::staggerIndexFromString(const QString &string)
 QString Tiled::orientationToString(Map::Orientation orientation)
 {
     switch (orientation) {
-    default:
     case Map::Unknown:
         return QLatin1String("unknown");
     case Map::Orthogonal:
@@ -395,7 +441,6 @@ Map::Orientation Tiled::orientationFromString(const QString &string)
 QString Tiled::renderOrderToString(Map::RenderOrder renderOrder)
 {
     switch (renderOrder) {
-    default:
     case Map::RightDown:
         return QLatin1String("right-down");
     case Map::RightUp:

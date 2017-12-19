@@ -21,6 +21,7 @@
 
 #include "stampbrush.h"
 
+#include "addremovelayer.h"
 #include "addremovetileset.h"
 #include "brushitem.h"
 #include "geometry.h"
@@ -86,19 +87,23 @@ void StampBrush::tilePositionChanged(const QPoint &pos)
         // first point, since it was painted when the mouse was pressed, or the
         // last time the mouse was moved.
         QVector<QPoint> points = pointsOnLine(mPrevTilePosition, pos);
-        QRegion editedRegion;
+        QHash<TileLayer*, QRegion> paintedRegions;
 
         for (int i = 1; i < points.size(); ++i) {
             drawPreviewLayer(QVector<QPoint>() << points.at(i));
 
             // Only update the brush item for the last drawn piece
             if (i == points.size() - 1)
-                brushItem()->setTileLayer(mPreviewLayer);
+                brushItem()->setMap(mPreviewMap);
 
-            editedRegion |= doPaint(Mergeable | SuppressRegionEdited);
+            doPaint(Mergeable | SuppressRegionEdited, &paintedRegions);
         }
 
-        emit mapDocument()->regionEdited(editedRegion, currentTileLayer());
+        QHashIterator<TileLayer*, QRegion> ri(paintedRegions);
+        while (ri.hasNext()) {
+            ri.next();
+            emit mapDocument()->regionEdited(ri.value(), ri.key());
+        }
     } else {
         updatePreview();
     }
@@ -294,7 +299,7 @@ void StampBrush::endCapture()
 
     mBrushBehavior = Free;
 
-    TileStamp stamp = mCaptureStampHelper.endCapture(currentTileLayer(), tilePosition());
+    TileStamp stamp = mCaptureStampHelper.endCapture(*mapDocument(), tilePosition());
     if (!stamp.isEmpty())
         emit stampChanged(TileStamp(stamp));
     else
@@ -306,60 +311,119 @@ void StampBrush::endCapture()
  *
  * \a flags can be set to Mergeable, which applies to the undo command.
  *
- * \a offsetX and \a offsetY give an offset where to merge the brush items tile
- * layer into the current map.
- *
- * Returns the edited region.
+ * \a paintedRegions is an optional argument that can be used to accumilate
+ * the regions touched for each tile layer.
  */
-QRegion StampBrush::doPaint(int flags)
+void StampBrush::doPaint(int flags, QHash<TileLayer*, QRegion> *paintedRegions)
 {
     // local reference to avoid issues when member gets cleared
-    SharedTileLayer preview = mPreviewLayer;
+    SharedMap preview = mPreviewMap;
     if (!preview)
-        return QRegion();
+        return;
 
     // This method shouldn't be called when current layer is not a tile layer
-    TileLayer *tileLayer = currentTileLayer();
-    Q_ASSERT(tileLayer);
+    TileLayer *currentTileLayer = this->currentTileLayer();
+    Q_ASSERT(currentTileLayer);
 
-    if (!tileLayer->isUnlocked())
-        return QRegion();
+    Map *targetMap = mapDocument()->map();
 
-    if (!tileLayer->rect().intersects(preview->bounds()) && !tileLayer->map()->infinite())
-        return QRegion();
+    LayerIterator it(preview.data(), Layer::TileLayerType);
+    bool isMultiLayer = it.next() && it.next();
 
-    PaintTileLayer *paint = new PaintTileLayer(mapDocument(),
-                                               tileLayer,
-                                               preview->x(),
-                                               preview->y(),
-                                               preview.data());
+    it.toFront();
+    while (auto tileLayer = static_cast<TileLayer*>(it.next())) {
+        TileLayer *targetLayer = currentTileLayer;
+        bool addLayer = false;
 
-    if (!mMissingTilesets.isEmpty()) {
-        for (const SharedTileset &tileset : mMissingTilesets) {
-            if (!mapDocument()->map()->tilesets().contains(tileset))
-                new AddTileset(mapDocument(), tileset, paint);
+        // When the preview contains only a single layer, always paint it into
+        // the current layer. This makes sure you can still take pieces from
+        // one layer and draw them into another.
+        if (isMultiLayer && !tileLayer->name().isEmpty()) {
+            targetLayer = static_cast<TileLayer*>(targetMap->findLayer(tileLayer->name(), Layer::TileLayerType));
+            if (!targetLayer) {
+                // Create a layer with this name
+                targetLayer = new TileLayer(tileLayer->name(), 0, 0,
+                                            targetMap->width(),
+                                            targetMap->height());
+                addLayer = true;
+            }
         }
 
-        mMissingTilesets.clear();
+        if (!targetLayer->isUnlocked())
+            continue;
+        if (!targetLayer->rect().intersects(tileLayer->bounds()) && !targetMap->infinite())
+            continue;
+
+        PaintTileLayer *paint = new PaintTileLayer(mapDocument(),
+                                                   targetLayer,
+                                                   tileLayer->x(),
+                                                   tileLayer->y(),
+                                                   tileLayer);
+
+        if (!mMissingTilesets.isEmpty()) {
+            for (const SharedTileset &tileset : mMissingTilesets) {
+                if (!targetMap->tilesets().contains(tileset))
+                    new AddTileset(mapDocument(), tileset, paint);
+            }
+
+            mMissingTilesets.clear();
+        }
+
+        if (addLayer) {
+            new AddLayer(mapDocument(),
+                         targetMap->layerCount(), targetLayer, nullptr,
+                         paint);
+        }
+
+        paint->setMergeable(flags & Mergeable);
+        mapDocument()->undoStack()->push(paint);
+
+        QRegion editedRegion = tileLayer->region();
+        if (! (flags & SuppressRegionEdited))
+            emit mapDocument()->regionEdited(editedRegion, targetLayer);
+        else if (paintedRegions)
+            (*paintedRegions)[targetLayer] |= editedRegion;
+
+        flags |= Mergeable; // further paints are always mergeable
     }
-
-    paint->setMergeable(flags & Mergeable);
-    mapDocument()->undoStack()->push(paint);
-
-    QRegion editedRegion = preview->region();
-    if (! (flags & SuppressRegionEdited))
-        emit mapDocument()->regionEdited(editedRegion, tileLayer);
-    return editedRegion;
 }
 
-struct PaintOperation {
+struct PaintOperation
+{
     QPoint pos;
-    TileLayer *stamp;
+    Map *stamp;
 };
+
+static TileLayer *findTileLayerByName(const Map *map, const QString &name)
+{
+    return static_cast<TileLayer*>(map->findLayer(name, Layer::TileLayerType));
+}
+
+static void shiftRows(TileLayer *tileLayer, Map::StaggerIndex staggerIndex)
+{
+    tileLayer->resize(QSize(tileLayer->width() + 1, tileLayer->height()), QPoint());
+
+    for (int y = (staggerIndex + 1) & 1; y < tileLayer->height(); y += 2) {
+        for (int x = tileLayer->width() - 2; x >= 0; --x)
+            tileLayer->setCell(x + 1, y, tileLayer->cellAt(x, y));
+        tileLayer->setCell(0, y, Cell());
+    }
+}
+
+static void shiftColumns(TileLayer *tileLayer, Map::StaggerIndex staggerIndex)
+{
+    tileLayer->resize(QSize(tileLayer->width(), tileLayer->height() + 1), QPoint());
+
+    for (int x = (staggerIndex + 1) & 1; x < tileLayer->width(); x += 2) {
+        for (int y = tileLayer->height() - 2; y >= 0; --y)
+            tileLayer->setCell(x, y + 1, tileLayer->cellAt(x, y));
+        tileLayer->setCell(x, 0, Cell());
+    }
+}
 
 void StampBrush::drawPreviewLayer(const QVector<QPoint> &points)
 {
-    mPreviewLayer.clear();
+    mPreviewMap.clear();
 
     if (mStamp.isEmpty() && !mIsWangFill)
         return;
@@ -372,18 +436,24 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &points)
         for (const QPoint &p : points)
             bounds |= QRect(p, p);
 
-        SharedTileLayer preview = SharedTileLayer::create(QString(),
-                                                          bounds.x(), bounds.y(),
-                                                          bounds.width(), bounds.height());
+        SharedMap preview = SharedMap::create(mapDocument()->map()->orientation(),
+                                              bounds.size(),
+                                              mapDocument()->map()->tileSize());
+
+        TileLayer *previewLayer = new TileLayer(QString(),
+                                                bounds.topLeft(),
+                                                bounds.size());
 
         for (const QPoint &p : points) {
             const Cell &cell = mRandomCellPicker.pick();
-            preview->setCell(p.x() - bounds.left(),
-                             p.y() - bounds.top(),
-                             cell);
+            previewLayer->setCell(p.x() - bounds.left(),
+                                  p.y() - bounds.top(),
+                                  cell);
         }
 
-        mPreviewLayer = preview;
+        preview->addLayer(previewLayer);
+        preview->addTilesets(preview->usedTilesets());
+        mPreviewMap = preview;
     } else if (mIsWangFill) {
         if (!mWangSet)
             return;
@@ -397,9 +467,13 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &points)
             paintedRegion += QRect(p, p);
 
         QRect bounds = paintedRegion.boundingRect();
-        SharedTileLayer preview = SharedTileLayer::create(QString(),
-                                                          bounds.x(), bounds.y(),
-                                                          bounds.width(), bounds.height());
+        SharedMap preview = SharedMap::create(mapDocument()->map()->orientation(),
+                                              bounds.size(),
+                                              mapDocument()->map()->tileSize());
+
+        TileLayer *previewLayer = new TileLayer(QString(),
+                                                bounds.topLeft(),
+                                                bounds.size());
 
         WangFiller wangFiller(mWangSet,
                               dynamic_cast<StaggeredRenderer *>(mapDocument()->renderer()),
@@ -407,109 +481,112 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &points)
 
         for (const QPoint &p : points) {
             Cell cell = wangFiller.findFittingCell(*tileLayer,
-                                                   *preview.data(),
+                                                   *previewLayer,
                                                    paintedRegion,
                                                    p);
 
-            preview->setCell(p.x() - bounds.left(),
-                             p.y() - bounds.top(),
-                             cell);
+            previewLayer->setCell(p.x() - bounds.left(),
+                                  p.y() - bounds.top(),
+                                  cell);
         }
 
-        mPreviewLayer = preview;
+        preview->addLayer(previewLayer);
+        preview->addTileset(mWangSet->tileset()->sharedPointer());
+        mPreviewMap = preview;
     } else {
         QRegion paintedRegion;
         QVector<PaintOperation> operations;
-        QHash<TileLayer *, QRegion> regionCache;
-        QHash<TileLayer *, TileLayer *> shiftedCopies;
+        QHash<const Map *, QRegion> regionCache;
+        QHash<const Map *, Map *> shiftedCopies;
 
         for (const QPoint &p : points) {
-            const TileStampVariation variation = mStamp.randomVariation();
-            mapDocument()->unifyTilesets(variation.map, mMissingTilesets);
-
-            TileLayer *stamp = variation.tileLayer();
+            Map *map = mStamp.randomVariation().map;
+            mapDocument()->unifyTilesets(map, mMissingTilesets);
 
             Map::StaggerAxis mapStaggerAxis = mapDocument()->map()->staggerAxis();
-            Map::StaggerIndex mapStaggerIndex = mapDocument()->map()->staggerIndex();
-            Map::StaggerIndex stampStaggerIndex = variation.map->staggerIndex();
 
-            //if staggered map, makes sure stamp stays the same
+            // if staggered map, makes sure stamp stays the same
             if (mapDocument()->map()->isStaggered()
-                    && ((mapStaggerAxis == Map::StaggerY)? stamp->height() > 1 : stamp->width() > 1)) {
+                    && ((mapStaggerAxis == Map::StaggerY) ? map->height() > 1 : map->width() > 1)) {
+
+                Map::StaggerIndex mapStaggerIndex = mapDocument()->map()->staggerIndex();
+                Map::StaggerIndex stampStaggerIndex = map->staggerIndex();
 
                 if (mapStaggerAxis == Map::StaggerY) {
-                    bool topIsOdd = (p.y() - stamp->height() / 2) & 1;
+                    bool topIsOdd = (p.y() - map->height() / 2) & 1;
 
                     if ((stampStaggerIndex == mapStaggerIndex) == topIsOdd) {
-                        TileLayer *shiftedStamp = shiftedCopies.value(stamp);
-                        if (!shiftedStamp) {
-                            shiftedStamp = stamp->clone();
-                            shiftedCopies.insert(stamp, shiftedStamp);
+                        Map *shiftedMap = shiftedCopies.value(map);
+                        if (!shiftedMap) {
+                            shiftedMap = new Map(*map);
+                            shiftedCopies.insert(map, shiftedMap);
 
-                            shiftedStamp->resize(QSize(shiftedStamp->width() + 1, shiftedStamp->height()), QPoint());
-
-                            for (int y = (stampStaggerIndex + 1) & 1; y < shiftedStamp->height(); y += 2) {
-                                for (int x = shiftedStamp->width() - 2; x >= 0; --x)
-                                    shiftedStamp->setCell(x + 1, y, shiftedStamp->cellAt(x, y));
-                                shiftedStamp->setCell(0, y, Cell());
-                            }
+                            LayerIterator it(shiftedMap, Layer::TileLayerType);
+                            while (auto tileLayer = static_cast<TileLayer*>(it.next()))
+                                shiftRows(tileLayer, stampStaggerIndex);
                         }
-                        stamp = shiftedStamp;
+                        map = shiftedMap;
                     }
                 } else {
-                    bool leftIsOdd = (p.x() - stamp->width() / 2) & 1;
+                    bool leftIsOdd = (p.x() - map->width() / 2) & 1;
 
                     if ((stampStaggerIndex == mapStaggerIndex) == leftIsOdd) {
-                        TileLayer *shiftedStamp = shiftedCopies.value(stamp);
-                        if (!shiftedStamp) {
-                            shiftedStamp = stamp->clone();
-                            shiftedCopies.insert(stamp, shiftedStamp);
+                        Map *shiftedMap = shiftedCopies.value(map);
+                        if (!shiftedMap) {
+                            shiftedMap = new Map(*map);
+                            shiftedCopies.insert(map, shiftedMap);
 
-                            shiftedStamp->resize(QSize(shiftedStamp->width(), shiftedStamp->height() + 1), QPoint());
-
-                            for (int x = (stampStaggerIndex + 1) & 1; x < shiftedStamp->width(); x += 2) {
-                                for (int y = shiftedStamp->height() - 2; y >= 0; --y)
-                                    shiftedStamp->setCell(x, y + 1, shiftedStamp->cellAt(x, y));
-                                shiftedStamp->setCell(x, 0, Cell());
-                            }
+                            LayerIterator it(shiftedMap, Layer::TileLayerType);
+                            while (auto tileLayer = static_cast<TileLayer*>(it.next()))
+                                shiftColumns(tileLayer, stampStaggerIndex);
                         }
-                        stamp = shiftedStamp;
+                        map = shiftedMap;
                     }
                 }
             }
 
             QRegion stampRegion;
-            if (regionCache.contains(stamp)) {
-                stampRegion = regionCache.value(stamp);
+            if (regionCache.contains(map)) {
+                stampRegion = regionCache.value(map);
             } else {
-                stampRegion = stamp->region();
-                regionCache.insert(stamp, stampRegion);
+                stampRegion = map->tileRegion();
+                regionCache.insert(map, stampRegion);
             }
 
-            QPoint centered(p.x() - stamp->width() / 2,
-                            p.y() - stamp->height() / 2);
+            QPoint centered(p.x() - map->width() / 2,
+                            p.y() - map->height() / 2);
 
             const QRegion region = stampRegion.translated(centered.x(),
                                                           centered.y());
             if (!paintedRegion.intersects(region)) {
                 paintedRegion += region;
 
-                PaintOperation op = { centered, stamp };
+                PaintOperation op = { centered, map };
                 operations.append(op);
             }
         }
 
         QRect bounds = paintedRegion.boundingRect();
-        SharedTileLayer preview = SharedTileLayer::create(QString(),
-                                                          bounds.x(), bounds.y(),
-                                                          bounds.width(), bounds.height());
+        SharedMap preview = SharedMap::create(mapDocument()->map()->orientation(),
+                                              bounds.size(),
+                                              mapDocument()->map()->tileSize());
 
-        for (const PaintOperation &op : operations)
-            preview->merge(op.pos - bounds.topLeft(), op.stamp);
+        for (const PaintOperation &op : operations) {
+            LayerIterator layerIterator(op.stamp, Layer::TileLayerType);
+            while (auto tileLayer = static_cast<TileLayer*>(layerIterator.next())) {
+                TileLayer *target = findTileLayerByName(preview.data(), tileLayer->name());
+                if (!target) {
+                    target = new TileLayer(tileLayer->name(), bounds.topLeft(), bounds.size());
+                    preview->addLayer(target);
+                }
+                target->merge(op.pos - bounds.topLeft() + tileLayer->position(), tileLayer);
+            }
+        }
 
         qDeleteAll(shiftedCopies);
 
-        mPreviewLayer = preview;
+        preview->addTilesets(preview->usedTilesets());
+        mPreviewMap = preview;
     }
 }
 
@@ -529,10 +606,10 @@ void StampBrush::updatePreview(QPoint tilePos)
     QRegion tileRegion;
 
     if (mBrushBehavior == Capture) {
-        mPreviewLayer.clear();
+        mPreviewMap.clear();
         tileRegion = mCaptureStampHelper.capturedArea(tilePos);
     } else if (mStamp.isEmpty() && !mIsWangFill) {
-        mPreviewLayer.clear();
+        mPreviewMap.clear();
         tileRegion = QRect(tilePos, tilePos);
     } else {
         switch (mBrushBehavior) {
@@ -548,7 +625,7 @@ void StampBrush::updatePreview(QPoint tilePos)
         case Circle:
             // while finding the mid point, there is no need to show
             // the (maybe bigger than 1x1) stamp
-            mPreviewLayer.clear();
+            mPreviewMap.clear();
             tileRegion = QRect(tilePos, tilePos);
             break;
         case Line:
@@ -559,7 +636,7 @@ void StampBrush::updatePreview(QPoint tilePos)
         }
     }
 
-    brushItem()->setTileLayer(mPreviewLayer);
+    brushItem()->setMap(mPreviewMap);
     if (!tileRegion.isEmpty())
         brushItem()->setTileRegion(tileRegion);
 }

@@ -79,7 +79,7 @@ void AbstractTileFillTool::mouseReleased(QGraphicsSceneMouseEvent *event)
     if (event->button() == Qt::RightButton && mCaptureStampHelper.isActive()) {
         clearOverlay();
 
-        TileStamp stamp = mCaptureStampHelper.endCapture(currentTileLayer(), tilePosition());
+        TileStamp stamp = mCaptureStampHelper.endCapture(*mapDocument(), tilePosition());
         if (!stamp.isEmpty())
             emit stampChanged(stamp);
 

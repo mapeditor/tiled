@@ -1,6 +1,6 @@
 /*
  * brushitem.cpp
- * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2017, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -56,6 +56,19 @@ void BrushItem::setMapDocument(MapDocument *mapDocument)
 }
 
 /**
+ * Clears the tile layer, map and region set on this item.
+ */
+void BrushItem::clear()
+{
+    mTileLayer.clear();
+    mMap.clear();
+    mRegion = QRegion();
+
+    updateBoundingRect();
+    update();
+}
+
+/**
  * Sets a tile layer representing this brush. When no tile layer is set,
  * the brush only draws the selection color.
  */
@@ -78,6 +91,15 @@ void BrushItem::setTileLayer(const SharedTileLayer &tileLayer,
 {
     mTileLayer = tileLayer;
     mRegion = region;
+
+    updateBoundingRect();
+    update();
+}
+
+void BrushItem::setMap(const SharedMap &map)
+{
+    mMap = map;
+    mRegion = map->tileRegion();
 
     updateBoundingRect();
     update();
@@ -134,19 +156,18 @@ void BrushItem::paint(QPainter *painter,
     insideMapHighlight.setAlpha(64);
     QColor outsideMapHighlight = QColor(255, 0, 0, 64);
 
-    int mapWidth = mMapDocument->map()->width();
-    int mapHeight = mMapDocument->map()->height();
-    QRegion mapRegion = QRegion(0, 0, mapWidth, mapHeight);
+    QRegion insideMapRegion = mRegion;
+    QRegion outsideMapRegion;
 
-    if (!mMapDocument->currentLayer()->isUnlocked())
-        mapRegion = QRegion();
+    if (!mMapDocument->currentLayer()->isUnlocked()) {
+        qSwap(insideMapRegion, outsideMapRegion);
+    } else if (!mMapDocument->map()->infinite()) {
+        int mapWidth = mMapDocument->map()->width();
+        int mapHeight = mMapDocument->map()->height();
+        QRegion mapRegion = QRegion(0, 0, mapWidth, mapHeight);
 
-    QRegion insideMapRegion = mRegion.intersected(mapRegion);
-    QRegion outsideMapRegion = mRegion.subtracted(mapRegion);
-
-    if (mMapDocument->map()->infinite()) {
-        insideMapRegion = mRegion;
-        outsideMapRegion = QRegion();
+        insideMapRegion = mRegion.intersected(mapRegion);
+        outsideMapRegion = mRegion.subtracted(mapRegion);
     }
 
     const MapRenderer *renderer = mMapDocument->renderer();
@@ -154,6 +175,13 @@ void BrushItem::paint(QPainter *painter,
         const qreal opacity = painter->opacity();
         painter->setOpacity(0.75);
         renderer->drawTileLayer(painter, mTileLayer.data(), option->exposedRect);
+        painter->setOpacity(opacity);
+    } else if (mMap) {
+        const qreal opacity = painter->opacity();
+        painter->setOpacity(0.75);
+        LayerIterator it(mMap.data(), Layer::TileLayerType);
+        while (auto tileLayer = static_cast<TileLayer*>(it.next()))
+            renderer->drawTileLayer(painter, tileLayer, option->exposedRect);
         painter->setOpacity(opacity);
     }
 
@@ -177,19 +205,25 @@ void BrushItem::updateBoundingRect()
     const QRect bounds = mRegion.boundingRect();
     mBoundingRect = mMapDocument->renderer()->boundingRect(bounds);
 
+    QMargins drawMargins;
+
     // Adjust for amount of pixels tiles extend at the top and to the right
     if (mTileLayer) {
-        QSize tileSize = mMapDocument->map()->tileSize();
+        drawMargins = mTileLayer->drawMargins();
 
-        QMargins drawMargins = mTileLayer->drawMargins();
+        QSize tileSize = mMapDocument->map()->tileSize();;
         drawMargins.setTop(drawMargins.top() - tileSize.height());
         drawMargins.setRight(drawMargins.right() - tileSize.width());
-
-        // Since we're also drawing a tile selection, we should not apply
-        // negative margins
-        mBoundingRect.adjust(qMin(0, -drawMargins.left()),
-                             qMin(0, -drawMargins.top()),
-                             qMax(0, drawMargins.right()),
-                             qMax(0, drawMargins.bottom()));
+    } else if (mMap) {
+        drawMargins = mMap->drawMargins();
+    } else {
+        return;
     }
+
+    // Since we're also drawing a tile selection, we should not apply
+    // negative margins
+    mBoundingRect.adjust(qMin(0, -drawMargins.left()),
+                         qMin(0, -drawMargins.top()),
+                         qMax(0, drawMargins.right()),
+                         qMax(0, drawMargins.bottom()));
 }

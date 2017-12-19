@@ -37,6 +37,7 @@
 #include <QColor>
 #include <QList>
 #include <QMargins>
+#include <QSharedPointer>
 #include <QSize>
 
 namespace Tiled {
@@ -118,15 +119,17 @@ public:
         int tileWidth, int tileHeight,
         bool infinite = false);
 
+    Map(Orientation orientation,
+        QSize size,
+        QSize tileSize,
+        bool infinite = false);
+
     /**
      * Copy constructor. Makes sure that a deep-copy of the layers is created.
      */
     Map(const Map &map);
 
-    /**
-     * Destructor.
-     */
-    ~Map();
+    ~Map() override;
 
     /**
      * Returns the orientation of the map.
@@ -254,8 +257,7 @@ public:
     { return mLayers.at(index); }
 
     /**
-     * Returns the list of layers of this map. This is useful when you want to
-     * use foreach.
+     * Returns the list of layers of this map.
      */
     const QList<Layer*> &layers() const { return mLayers; }
 
@@ -273,9 +275,21 @@ public:
      *
      * The second optional parameter specifies the layer types which are
      * searched.
+     *
+     * @deprecated Does not support group layers. Use findLayer() instead.
      */
     int indexOfLayer(const QString &layerName,
-                     unsigned layerTypes = Layer::AnyLayerType) const;
+                     int layerTypes = Layer::AnyLayerType) const;
+
+    /**
+     * Returns the first layer with the given \a name, or nullptr if no
+     * layer with that name is found.
+     *
+     * The second optional parameter specifies the layer types which are
+     * searched.
+     */
+    Layer *findLayer(const QString &name,
+                     int layerTypes = Layer::AnyLayerType) const;
 
     /**
      * Adds a layer to this map, inserting it at the given index.
@@ -345,9 +359,14 @@ public:
     SharedTileset tilesetAt(int index) const { return mTilesets.at(index); }
 
     /**
-     * Returns the tilesets that the tiles on this map are using.
+     * Returns the tilesets that have been added to this map.
      */
     const QVector<SharedTileset> &tilesets() const { return mTilesets; }
+
+    /**
+     * Computes the tilesets that are used by this map.
+     */
+    QSet<SharedTileset> usedTilesets() const;
 
     /**
      * Returns a list of MapObjects to be updated in the map scene
@@ -386,6 +405,8 @@ public:
     int nextObjectId() const;
     int takeNextObjectId();
     void initializeObjectIds(ObjectGroup &objectGroup);
+
+    QRegion tileRegion() const;
 
 private:
     friend class GroupLayer;    // so it can call adoptLayer
@@ -505,6 +526,8 @@ TILEDSHARED_EXPORT Map::Orientation orientationFromString(const QString &);
 
 TILEDSHARED_EXPORT QString renderOrderToString(Map::RenderOrder renderOrder);
 TILEDSHARED_EXPORT Map::RenderOrder renderOrderFromString(const QString &);
+
+typedef QSharedPointer<Map> SharedMap;
 
 } // namespace Tiled
 

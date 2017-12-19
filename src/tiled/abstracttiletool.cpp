@@ -28,7 +28,7 @@
 #include "tile.h"
 #include "tilelayer.h"
 
-#include <cmath>
+#include <QtMath>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -90,8 +90,8 @@ void AbstractTileTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers)
     if (mTilePositionMethod == BetweenTiles)
         tilePos = tilePosF.toPoint();
     else
-        tilePos = QPoint((int) std::floor(tilePosF.x()),
-                         (int) std::floor(tilePosF.y()));
+        tilePos = QPoint(qFloor(tilePosF.x()),
+                         qFloor(tilePosF.y()));
 
     if (mTilePosition != tilePos) {
         mTilePosition = tilePos;
@@ -176,8 +176,8 @@ void AbstractTileTool::updateBrushVisibility()
 
 TileLayer *AbstractTileTool::currentTileLayer() const
 {
-    if (!mapDocument())
-        return nullptr;
-
-    return dynamic_cast<TileLayer*>(mapDocument()->currentLayer());
+    if (mapDocument())
+        if (auto currentLayer = mapDocument()->currentLayer())
+            return currentLayer->asTileLayer();
+    return nullptr;
 }

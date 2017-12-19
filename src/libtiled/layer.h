@@ -274,7 +274,7 @@ inline QPointF Layer::offset() const
 class TILEDSHARED_EXPORT LayerIterator
 {
 public:
-    LayerIterator(const Map *map);
+    LayerIterator(const Map *map, int layerTypes = Layer::AnyLayerType);
     LayerIterator(Layer *start);
 
     Layer *currentLayer() const;
@@ -294,16 +294,18 @@ private:
     const Map *mMap;
     Layer *mCurrentLayer;
     int mSiblingIndex;
+    int mLayerTypes;
 };
 
 
 /**
  * Iterate the given map, starting from the first layer.
  */
-inline LayerIterator::LayerIterator(const Map *map)
+inline LayerIterator::LayerIterator(const Map *map, int layerTypes)
     : mMap(map)
     , mCurrentLayer(nullptr)
     , mSiblingIndex(-1)
+    , mLayerTypes(layerTypes)
 {}
 
 /**
@@ -313,6 +315,7 @@ inline LayerIterator::LayerIterator(Layer *start)
     : mMap(start ? start->map() : nullptr)
     , mCurrentLayer(start)
     , mSiblingIndex(start ? start->siblingIndex() : -1)
+    , mLayerTypes(Layer::AnyLayerType)
 {}
 
 inline Layer *LayerIterator::currentLayer() const

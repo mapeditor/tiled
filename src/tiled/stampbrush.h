@@ -102,7 +102,8 @@ private:
     };
 
     void beginPaint();
-    QRegion doPaint(int flags = 0);
+    void doPaint(int flags = 0,
+                 QHash<TileLayer *, QRegion> *paintedRegions = nullptr);
 
     void beginCapture();
     void endCapture();
@@ -111,7 +112,7 @@ private:
     void updatePreview(QPoint tilePos);
 
     TileStamp mStamp;
-    SharedTileLayer mPreviewLayer;
+    SharedMap mPreviewMap;
     QVector<SharedTileset> mMissingTilesets;
 
     CaptureStampHelper mCaptureStampHelper;

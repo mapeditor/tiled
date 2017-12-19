@@ -20,7 +20,6 @@
 
 #pragma once
 
-#include <QCoreApplication>
 #include <QUndoCommand>
 
 namespace Tiled {
@@ -39,7 +38,8 @@ class AddRemoveLayer : public QUndoCommand
 {
 public:
     AddRemoveLayer(MapDocument *mapDocument, int index, Layer *layer,
-                   GroupLayer *parentLayer);
+                   GroupLayer *parentLayer,
+                   QUndoCommand *parent = nullptr);
 
     ~AddRemoveLayer();
 
@@ -64,11 +64,9 @@ public:
      * Creates an undo command that adds the \a layer to \a parentLayer at
      * \a index.
      */
-    AddLayer(MapDocument *mapDocument, int index, Layer *layer, GroupLayer *parentLayer)
-        : AddRemoveLayer(mapDocument, index, layer, parentLayer)
-    {
-        setText(QCoreApplication::translate("Undo Commands", "Add Layer"));
-    }
+    AddLayer(MapDocument *mapDocument,
+             int index, Layer *layer, GroupLayer *parentLayer,
+             QUndoCommand *parent = nullptr);
 
     void undo() override
     { removeLayer(); }
@@ -86,11 +84,9 @@ public:
     /**
      * Creates an undo command that removes the layer at \a index.
      */
-    RemoveLayer(MapDocument *mapDocument, int index, GroupLayer *parentLayer)
-        : AddRemoveLayer(mapDocument, index, nullptr, parentLayer)
-    {
-        setText(QCoreApplication::translate("Undo Commands", "Remove Layer"));
-    }
+    RemoveLayer(MapDocument *mapDocument,
+                int index, GroupLayer *parentLayer,
+                QUndoCommand *parent = nullptr);
 
     void undo() override
     { addLayer(); }

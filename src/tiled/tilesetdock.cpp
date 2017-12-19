@@ -707,10 +707,8 @@ void TilesetDock::setCurrentTiles(TileLayer *tiles)
         // Create a tile stamp with these tiles
         Map *map = mMapDocument->map();
         Map *stamp = new Map(map->orientation(),
-                             tiles->width(),
-                             tiles->height(),
-                             map->tileWidth(),
-                             map->tileHeight());
+                             tiles->size(),
+                             map->tileSize());
         stamp->addLayer(tiles->clone());
         stamp->addTilesets(tiles->usedTilesets());
 
