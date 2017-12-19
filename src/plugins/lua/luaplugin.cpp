@@ -127,7 +127,7 @@ bool LuaTilesetFormat::supportsFile(const QString &fileName) const
     return true;
 }
 
-bool LuaTilesetFormat::write(const Tileset *tileset, const QString &fileName)
+bool LuaTilesetFormat::write(const Tileset &tileset, const QString &fileName)
 {
   SaveFile file(fileName);
 
@@ -212,7 +212,7 @@ void LuaUtilWriter::writeMapLua(LuaTableWriter &writer, const Map *map)
     mGidMapper.clear();
     unsigned firstGid = 1;
     for (const SharedTileset &tileset : map->tilesets()) {
-        writeTilesetLua(writer, tileset.data(), firstGid);
+        writeTilesetLua(writer, *tileset, firstGid);
         mGidMapper.insert(firstGid, tileset);
         firstGid += tileset->nextTileId();
     }
@@ -258,7 +258,7 @@ static bool includeTile(const Tile *tile)
     return false;
 }
 
-void LuaUtilWriter::writeTilesetLua(LuaTableWriter &writer, const Tileset *tileset,
+void LuaUtilWriter::writeTilesetLua(LuaTableWriter &writer, const Tileset &tileset,
                                     unsigned firstGid, bool standalone)
 {
     if (standalone) {
@@ -267,58 +267,58 @@ void LuaUtilWriter::writeTilesetLua(LuaTableWriter &writer, const Tileset *tiles
       writer.writeStartReturnTable();
     }
 
-    writer.writeKeyAndValue("name", tileset->name());
+    writer.writeKeyAndValue("name", tileset.name());
     if (standalone) {
       writer.writeKeyAndValue("firstgid", firstGid);
     }
 
-    if (!tileset->fileName().isEmpty() && standalone) {
-        const QString rel = mMapDir.relativeFilePath(tileset->fileName());
+    if (!tileset.fileName().isEmpty() && standalone) {
+        const QString rel = mMapDir.relativeFilePath(tileset.fileName());
         writer.writeKeyAndValue("filename", rel);
     }
 
     /* Include all tileset information even for external tilesets, since the
      * external reference is generally a .tsx file (in XML format).
      */
-    writer.writeKeyAndValue("tilewidth", tileset->tileWidth());
-    writer.writeKeyAndValue("tileheight", tileset->tileHeight());
-    writer.writeKeyAndValue("spacing", tileset->tileSpacing());
-    writer.writeKeyAndValue("margin", tileset->margin());
+    writer.writeKeyAndValue("tilewidth", tileset.tileWidth());
+    writer.writeKeyAndValue("tileheight", tileset.tileHeight());
+    writer.writeKeyAndValue("spacing", tileset.tileSpacing());
+    writer.writeKeyAndValue("margin", tileset.margin());
 
-    if (!tileset->imageSource().isEmpty()) {
-        const QString rel = toFileReference(tileset->imageSource(), mMapDir);
+    if (!tileset.imageSource().isEmpty()) {
+        const QString rel = toFileReference(tileset.imageSource(), mMapDir);
         writer.writeKeyAndValue("image", rel);
-        writer.writeKeyAndValue("imagewidth", tileset->imageWidth());
-        writer.writeKeyAndValue("imageheight", tileset->imageHeight());
+        writer.writeKeyAndValue("imagewidth", tileset.imageWidth());
+        writer.writeKeyAndValue("imageheight", tileset.imageHeight());
     }
 
-    if (tileset->transparentColor().isValid()) {
+    if (tileset.transparentColor().isValid()) {
         writer.writeKeyAndValue("transparentcolor",
-                                tileset->transparentColor().name());
+                                tileset.transparentColor().name());
     }
 
-    const QColor &backgroundColor = tileset->backgroundColor();
+    const QColor &backgroundColor = tileset.backgroundColor();
     if (backgroundColor.isValid())
         writeColor(writer, "backgroundcolor", backgroundColor);
 
-    const QPoint offset = tileset->tileOffset();
+    const QPoint offset = tileset.tileOffset();
     writer.writeStartTable("tileoffset");
     writer.writeKeyAndValue("x", offset.x());
     writer.writeKeyAndValue("y", offset.y());
     writer.writeEndTable();
 
-    const QSize gridSize = tileset->gridSize();
+    const QSize gridSize = tileset.gridSize();
     writer.writeStartTable("grid");
-    writer.writeKeyAndValue("orientation", Tileset::orientationToString(tileset->orientation()));
+    writer.writeKeyAndValue("orientation", Tileset::orientationToString(tileset.orientation()));
     writer.writeKeyAndValue("width", gridSize.width());
     writer.writeKeyAndValue("height", gridSize.height());
     writer.writeEndTable();
 
-    writeProperties(writer, tileset->properties());
+    writeProperties(writer, tileset.properties());
 
     writer.writeStartTable("terrains");
-    for (int i = 0; i < tileset->terrainCount(); ++i) {
-        const Terrain *t = tileset->terrain(i);
+    for (int i = 0; i < tileset.terrainCount(); ++i) {
+        const Terrain *t = tileset.terrain(i);
         writer.writeStartTable();
 
         writer.writeKeyAndValue("name", t->name());
@@ -330,9 +330,9 @@ void LuaUtilWriter::writeTilesetLua(LuaTableWriter &writer, const Tileset *tiles
     }
     writer.writeEndTable();
 
-    writer.writeKeyAndValue("tilecount", tileset->tileCount());
+    writer.writeKeyAndValue("tilecount", tileset.tileCount());
     writer.writeStartTable("tiles");
-    for (const Tile *tile : tileset->tiles()) {
+    for (const Tile *tile : tileset.tiles()) {
         // For brevity only write tiles with interesting properties
         if (!includeTile(tile))
             continue;

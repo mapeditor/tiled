@@ -86,7 +86,7 @@ public:
     Tiled::SharedTileset read(const QString &fileName) override;
     bool supportsFile(const QString &fileName) const override;
 
-    bool write(const Tiled::Tileset *tileset, const QString &fileName) override;
+    bool write(const Tiled::Tileset &tileset, const QString &fileName) override;
 
     QString nameFilter() const override;
     QString shortName() const override;

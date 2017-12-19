@@ -104,7 +104,7 @@ bool TilesetDocument::save(const QString &fileName, QString *error)
     // todo: workaround to avoid writing the tileset like an external tileset reference
     mTileset->setFileName(QString());
 
-    if (!tilesetFormat->write(tileset().data(), fileName)) {
+    if (!tilesetFormat->write(*tileset(), fileName)) {
         if (error)
             *error = tilesetFormat->errorString();
         return false;

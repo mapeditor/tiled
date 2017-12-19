@@ -262,8 +262,8 @@ bool JsonTilesetFormat::supportsFile(const QString &fileName) const
     return false;
 }
 
-bool JsonTilesetFormat::write(const Tiled::Tileset *tileset,
-                                     const QString &fileName)
+bool JsonTilesetFormat::write(const Tiled::Tileset &tileset,
+                              const QString &fileName)
 {
     Tiled::SaveFile file(fileName);
 
@@ -273,7 +273,7 @@ bool JsonTilesetFormat::write(const Tiled::Tileset *tileset,
     }
 
     Tiled::MapToVariantConverter converter;
-    QVariant variant = converter.toVariant(*tileset, QFileInfo(fileName).dir());
+    QVariant variant = converter.toVariant(tileset, QFileInfo(fileName).dir());
 
     JsonWriter writer;
     writer.setAutoFormatting(true);

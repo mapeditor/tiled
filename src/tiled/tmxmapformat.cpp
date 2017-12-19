@@ -131,7 +131,7 @@ SharedTileset TsxTilesetFormat::read(const QString &fileName)
     return tileset;
 }
 
-bool TsxTilesetFormat::write(const Tileset *tileset, const QString &fileName)
+bool TsxTilesetFormat::write(const Tileset &tileset, const QString &fileName)
 {
     Preferences *prefs = Preferences::instance();
 

@@ -1578,7 +1578,7 @@ void MainWindow::exportTilesetAs(TilesetDocument *tilesetDocument)
     pref->setLastPath(Preferences::ExportedFile, QFileInfo(exportDetails.mFileName).path());
     mSettings.setValue(QLatin1String("lastUsedExportFilter"), selectedFilter);
 
-    auto exportResult = exportDetails.mFormat->write(tilesetDocument->tileset().data(), exportDetails.mFileName);
+    auto exportResult = exportDetails.mFormat->write(*tilesetDocument->tileset(), exportDetails.mFileName);
     if ( ! exportResult )
     {
         QMessageBox::critical(this, tr("Error Exporting Map!"),
