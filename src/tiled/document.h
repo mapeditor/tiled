@@ -103,7 +103,7 @@ public:
     QString lastExportFileName() const;
     void setLastExportFileName(const QString &fileName);
 
-    virtual FileFormat* exportFormat() const = 0;
+    virtual FileFormat *exportFormat() const = 0;
     virtual void setExportFormat(FileFormat *format) = 0;
 
 signals:

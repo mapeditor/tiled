@@ -74,7 +74,7 @@ public:
     void writeMap(const Map *map, QIODevice *device,
                   const QString &path);
 
-    void writeTileset(const Tileset &tileset, QIODevice *device,
+    void writeTileset(const Tileset *tileset, QIODevice *device,
                       const QString &path);
 
     void writeObjectTemplate(const ObjectTemplate *objectTemplate, QIODevice *device,
@@ -88,7 +88,7 @@ public:
 
 private:
     void writeMap(QXmlStreamWriter &w, const Map &map);
-    void writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
+    void writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
                       unsigned firstGid);
     void writeLayers(QXmlStreamWriter &w, const QList<Layer *> &layers);
     void writeTileLayer(QXmlStreamWriter &w, const TileLayer &tileLayer);
@@ -163,7 +163,7 @@ void MapWriterPrivate::writeMap(const Map *map, QIODevice *device,
     writer.writeEndDocument();
 }
 
-void MapWriterPrivate::writeTileset(const Tileset &tileset, QIODevice *device,
+void MapWriterPrivate::writeTileset(const Tileset *tileset, QIODevice *device,
                                     const QString &path)
 {
     mMapDir = QDir(path);
@@ -196,7 +196,7 @@ void MapWriterPrivate::writeObjectTemplate(const ObjectTemplate *objectTemplate,
     if (Tileset *tileset = objectTemplate->object()->cell().tileset()) {
         unsigned firstGid = 1;
         mGidMapper.insert(firstGid, tileset->sharedPointer());
-        writeTileset(writer, *tileset, firstGid);
+        writeTileset(writer, tileset, firstGid);
     }
 
     writeObject(writer, *objectTemplate->object());
@@ -250,7 +250,7 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
     mGidMapper.clear();
     unsigned firstGid = 1;
     for (const SharedTileset &tileset : map.tilesets()) {
-        writeTileset(w, *tileset, firstGid);
+        writeTileset(w, tileset.data(), firstGid);
         mGidMapper.insert(firstGid, tileset);
         firstGid += tileset->nextTileId();
     }
@@ -293,14 +293,14 @@ static bool includeTile(const Tile *tile)
     return false;
 }
 
-void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
+void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
                                     unsigned firstGid)
 {
     w.writeStartElement(QLatin1String("tileset"));
     if (firstGid > 0)
         w.writeAttribute(QLatin1String("firstgid"), QString::number(firstGid));
 
-    const QString &fileName = tileset.fileName();
+    const QString &fileName = tileset->fileName();
     if (!fileName.isEmpty()) {
         QString source = fileName;
         if (!mUseAbsolutePaths)
@@ -312,13 +312,13 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
         return;
     }
 
-    w.writeAttribute(QLatin1String("name"), tileset.name());
+    w.writeAttribute(QLatin1String("name"), tileset->name());
     w.writeAttribute(QLatin1String("tilewidth"),
-                     QString::number(tileset.tileWidth()));
+                     QString::number(tileset->tileWidth()));
     w.writeAttribute(QLatin1String("tileheight"),
-                     QString::number(tileset.tileHeight()));
-    const int tileSpacing = tileset.tileSpacing();
-    const int margin = tileset.margin();
+                     QString::number(tileset->tileHeight()));
+    const int tileSpacing = tileset->tileSpacing();
+    const int margin = tileset->margin();
     if (tileSpacing != 0)
         w.writeAttribute(QLatin1String("spacing"),
                          QString::number(tileSpacing));
@@ -326,16 +326,16 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
         w.writeAttribute(QLatin1String("margin"), QString::number(margin));
 
     w.writeAttribute(QLatin1String("tilecount"),
-                     QString::number(tileset.tileCount()));
+                     QString::number(tileset->tileCount()));
     w.writeAttribute(QLatin1String("columns"),
-                     QString::number(tileset.columnCount()));
+                     QString::number(tileset->columnCount()));
 
-    if (tileset.backgroundColor().isValid()) {
+    if (tileset->backgroundColor().isValid()) {
         w.writeAttribute(QLatin1String("backgroundcolor"),
-                         colorToString(tileset.backgroundColor()));
+                         colorToString(tileset->backgroundColor()));
     }
 
-    const QPoint offset = tileset.tileOffset();
+    const QPoint offset = tileset->tileOffset();
     if (!offset.isNull()) {
         w.writeStartElement(QLatin1String("tileoffset"));
         w.writeAttribute(QLatin1String("x"), QString::number(offset.x()));
@@ -343,19 +343,19 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
         w.writeEndElement();
     }
 
-    if (tileset.orientation() != Tileset::Orthogonal || tileset.gridSize() != tileset.tileSize()) {
+    if (tileset->orientation() != Tileset::Orthogonal || tileset->gridSize() != tileset->tileSize()) {
         w.writeStartElement(QLatin1String("grid"));
-        w.writeAttribute(QLatin1String("orientation"), Tileset::orientationToString(tileset.orientation()));
-        w.writeAttribute(QLatin1String("width"), QString::number(tileset.gridSize().width()));
-        w.writeAttribute(QLatin1String("height"), QString::number(tileset.gridSize().height()));
+        w.writeAttribute(QLatin1String("orientation"), Tileset::orientationToString(tileset->orientation()));
+        w.writeAttribute(QLatin1String("width"), QString::number(tileset->gridSize().width()));
+        w.writeAttribute(QLatin1String("height"), QString::number(tileset->gridSize().height()));
         w.writeEndElement();
     }
 
     // Write the tileset properties
-    writeProperties(w, tileset.properties());
+    writeProperties(w, tileset->properties());
 
     // Write the image element
-    const QUrl &imageSource = tileset.imageSource();
+    const QUrl &imageSource = tileset->imageSource();
     if (!imageSource.isEmpty()) {
         w.writeStartElement(QLatin1String("image"));
         QString source;
@@ -365,25 +365,25 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
             source = toFileReference(imageSource, mMapDir);
         w.writeAttribute(QLatin1String("source"), source);
 
-        const QColor transColor = tileset.transparentColor();
+        const QColor transColor = tileset->transparentColor();
         if (transColor.isValid())
             w.writeAttribute(QLatin1String("trans"), transColor.name().mid(1));
 
-        if (tileset.imageWidth() > 0)
+        if (tileset->imageWidth() > 0)
             w.writeAttribute(QLatin1String("width"),
-                             QString::number(tileset.imageWidth()));
-        if (tileset.imageHeight() > 0)
+                             QString::number(tileset->imageWidth()));
+        if (tileset->imageHeight() > 0)
             w.writeAttribute(QLatin1String("height"),
-                             QString::number(tileset.imageHeight()));
+                             QString::number(tileset->imageHeight()));
 
         w.writeEndElement();
     }
 
     // Write the terrain types
-    if (tileset.terrainCount() > 0) {
+    if (tileset->terrainCount() > 0) {
         w.writeStartElement(QLatin1String("terraintypes"));
-        for (int i = 0; i < tileset.terrainCount(); ++i) {
-            const Terrain *t = tileset.terrain(i);
+        for (int i = 0; i < tileset->terrainCount(); ++i) {
+            const Terrain *t = tileset->terrain(i);
             w.writeStartElement(QLatin1String("terrain"));
 
             w.writeAttribute(QLatin1String("name"), t->name());
@@ -397,7 +397,7 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
     }
 
     // Write the properties for those tiles that have them
-    for (const Tile *tile : tileset.tiles()) {
+    for (const Tile *tile : tileset->tiles()) {
         if (imageSource.isEmpty() || includeTile(tile)) {
             w.writeStartElement(QLatin1String("tile"));
             w.writeAttribute(QLatin1String("id"), QString::number(tile->id()));
@@ -462,9 +462,9 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
     }
 
     // Write the wangsets
-    if (tileset.wangSetCount() > 0) {
+    if (tileset->wangSetCount() > 0) {
         w.writeStartElement(QLatin1String("wangsets"));
-        for (const WangSet *ws : tileset.wangSets()) {
+        for (const WangSet *ws : tileset->wangSets()) {
             w.writeStartElement(QLatin1String("wangset"));
 
             w.writeAttribute(QLatin1String("name"), ws->name());
@@ -969,13 +969,13 @@ bool MapWriter::writeMap(const Map *map, const QString &fileName)
     return true;
 }
 
-void MapWriter::writeTileset(const Tileset &tileset, QIODevice *device,
+void MapWriter::writeTileset(const Tileset *tileset, QIODevice *device,
                              const QString &path)
 {
     d->writeTileset(tileset, device, path);
 }
 
-bool MapWriter::writeTileset(const Tileset &tileset, const QString &fileName)
+bool MapWriter::writeTileset(const Tileset *tileset, const QString &fileName)
 {
     SaveFile file(fileName);
     if (!d->openFile(&file))

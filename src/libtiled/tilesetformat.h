@@ -57,17 +57,10 @@ public:
     /**
      * Writes the given \a tileset based on the suggested \a fileName.
      *
-     * This function may write to a different file name or may even write to
-     * multiple files. The actual files that will be written to can be
-     * determined by calling outputFiles().
-     *
      * @return <code>true</code> on success, <code>false</code> when an error
      *         occurred. The error can be retrieved by errorString().
      */
-    virtual bool writeTileset(const Tileset &tileset, const QString &fileName) = 0;
-
-//    void setExportFormat(FileFormat *format) override
-//    { mExportFormat = format; }
+    virtual bool writeTileset(const Tileset *tileset, const QString &fileName) = 0;
 
 private:
     QPointer<TilesetFormat> mExportFormat;

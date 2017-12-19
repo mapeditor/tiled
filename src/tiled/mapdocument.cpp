@@ -208,7 +208,7 @@ QString MapDocument::displayName() const
     return displayName;
 }
 
-FileFormat *MapDocument::exportFormat() const
+MapFormat *MapDocument::exportFormat() const
 {
     return mExportFormat;
 }
@@ -216,6 +216,7 @@ FileFormat *MapDocument::exportFormat() const
 void MapDocument::setExportFormat(FileFormat *format)
 {
     mExportFormat = qobject_cast<MapFormat*>(format);
+    Q_ASSERT(mExportFormat);
 }
 
 /**

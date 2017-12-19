@@ -196,8 +196,6 @@ private:
     void exportMapAs(MapDocument *mapDocument);
     void exportTilesetAs(TilesetDocument *tilesetDocument);
 
-    MapFormat *getFormatFromUser(const Document *document);
-
     ActionManager *mActionManager;
     Ui::MainWindow *mUi;
     Document *mDocument = nullptr;
@@ -225,6 +223,7 @@ private:
 
     QMap<QMainWindow*, QByteArray> mMainWindowStates;
 };
+
 
 } // namespace Internal
 } // namespace Tiled

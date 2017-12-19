@@ -24,9 +24,9 @@
 
 #include "document.h"
 #include "layer.h"
+#include "mapformat.h"
 #include "tiled.h"
 #include "tileset.h"
-#include "fileformat.h"
 
 #include <QList>
 #include <QPointer>
@@ -41,7 +41,6 @@ class QUndoStack;
 namespace Tiled {
 
 class Map;
-class MapFormat;
 class MapObject;
 class MapRenderer;
 class ObjectTemplate;
@@ -101,7 +100,7 @@ public:
     void setWriterFormat(MapFormat *format);
 
     QString displayName() const override;
-    FileFormat* exportFormat() const override;
+    MapFormat* exportFormat() const override;
     void setExportFormat(FileFormat *format) override;
 
     /**

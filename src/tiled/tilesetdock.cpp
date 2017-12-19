@@ -908,7 +908,7 @@ void TilesetDock::exportTileset()
     if (!format)
         return;     // can't happen
 
-    if (!format->writeTileset(*externalTileset, fileName)) {
+    if (!format->writeTileset(externalTileset.data(), fileName)) {
         QString error = format->errorString();
         QMessageBox::critical(window(),
                               tr("Export Tileset"),

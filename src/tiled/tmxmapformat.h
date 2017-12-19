@@ -89,7 +89,7 @@ public:
 
     SharedTileset readTileset(const QString &fileName) override;
 
-    bool writeTileset(const Tileset &tileset, const QString &fileName) override;
+    bool writeTileset(const Tileset *tileset, const QString &fileName) override;
 
     QString nameFilter() const override { return tr("Tiled tileset files (*.tsx *.xml)"); }
 

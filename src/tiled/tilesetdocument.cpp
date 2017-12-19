@@ -104,7 +104,7 @@ bool TilesetDocument::save(const QString &fileName, QString *error)
     // todo: workaround to avoid writing the tileset like an external tileset reference
     mTileset->setFileName(QString());
 
-    if (!tilesetFormat->writeTileset(*tileset(), fileName)) {
+    if (!tilesetFormat->writeTileset(tileset().data(), fileName)) {
         if (error)
             *error = tilesetFormat->errorString();
         return false;
@@ -195,7 +195,7 @@ QString TilesetDocument::displayName() const
     return displayName;
 }
 
-FileFormat *TilesetDocument::exportFormat() const
+TilesetFormat* TilesetDocument::exportFormat() const
 {
     return mExportFormat;
 }
@@ -203,6 +203,7 @@ FileFormat *TilesetDocument::exportFormat() const
 void TilesetDocument::setExportFormat(FileFormat *format)
 {
     mExportFormat = qobject_cast<TilesetFormat*>(format);
+    Q_ASSERT(mExportFormat);
 }
 
 /**
