@@ -127,7 +127,7 @@ bool LuaTilesetFormat::supportsFile(const QString &fileName) const
     return true;
 }
 
-bool LuaTilesetFormat::writeTileset(const Tileset &tileset, const QString &fileName)
+bool LuaTilesetFormat::writeTileset(const Tileset *tileset, const QString &fileName)
 {
   SaveFile file(fileName);
 
@@ -140,7 +140,7 @@ bool LuaTilesetFormat::writeTileset(const Tileset &tileset, const QString &fileN
 
   LuaTableWriter writer(file.device());
   writer.writeStartDocument();
-  writeTilesetLua(writer, &tileset, 0, false);
+  writeTilesetLua(writer, tileset, 0, false);
   writer.writeEndDocument();
 
   if (file.error() != QFileDevice::NoError) {
