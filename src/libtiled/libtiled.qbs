@@ -32,6 +32,8 @@ DynamicLibrary {
     files: [
         "compression.cpp",
         "compression.h",
+        "fileformat.cpp",
+        "fileformat.h",
         "filesystemwatcher.cpp",
         "filesystemwatcher.h",
         "gidmapper.cpp",

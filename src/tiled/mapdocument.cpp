@@ -200,9 +200,10 @@ MapFormat *MapDocument::exportFormat() const
     return mExportFormat;
 }
 
-void MapDocument::setExportFormat(MapFormat *format)
+void MapDocument::setExportFormat(FileFormat *format)
 {
-    mExportFormat = format;
+    mExportFormat = qobject_cast<MapFormat*>(format);
+    Q_ASSERT(mExportFormat);
 }
 
 /**

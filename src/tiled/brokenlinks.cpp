@@ -22,6 +22,7 @@
 
 #include "changetileimagesource.h"
 #include "documentmanager.h"
+#include "fileformat.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "objectgroup.h"
