@@ -23,7 +23,7 @@
 #include "addremovetileset.h"
 #include "changemapobject.h"
 #include "documentmanager.h"
-#include "fileformat.h"
+//#include "fileformat.h"
 #include "mapdocument.h"
 #include "map.h"
 #include "mapobject.h"

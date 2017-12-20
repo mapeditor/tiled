@@ -99,7 +99,7 @@ public:
     FileFormat *writerFormat() const override;
     void setWriterFormat(MapFormat *format);
 
-    MapFormat* exportFormat() const override;
+    MapFormat *exportFormat() const override;
     void setExportFormat(FileFormat *format) override;
 
     QString displayName() const override;

@@ -62,7 +62,7 @@ public:
     FileFormat *writerFormat() const override;
     void setWriterFormat(TilesetFormat *format);
 
-    TilesetFormat* exportFormat() const override;
+    TilesetFormat *exportFormat() const override;
     void setExportFormat(FileFormat *format) override;
 
     QString displayName() const override;

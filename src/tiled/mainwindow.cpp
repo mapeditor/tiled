@@ -113,7 +113,7 @@ struct ExportDetails
         , mFileName(fileName)
     {}
 
-    bool isValid() { return mFormat != nullptr; }
+    bool isValid() const { return mFormat != nullptr; }
 };
 
 template <typename Format>
@@ -1545,8 +1545,7 @@ void MainWindow::exportMapAs(MapDocument *mapDocument)
     mSettings.setValue(QLatin1String("lastUsedExportFilter"), selectedFilter);
 
     auto exportResult = exportDetails.mFormat->write(mapDocument->map(), exportDetails.mFileName);
-    if (!exportResult)
-    {
+    if (!exportResult) {
         QMessageBox::critical(this, tr("Error Exporting Map!"),
                               exportDetails.mFormat->errorString());
     } else {
@@ -1574,8 +1573,7 @@ void MainWindow::exportTilesetAs(TilesetDocument *tilesetDocument)
     mSettings.setValue(QLatin1String("lastUsedExportFilter"), selectedFilter);
 
     auto exportResult = exportDetails.mFormat->write(*tilesetDocument->tileset(), exportDetails.mFileName);
-    if ( ! exportResult )
-    {
+    if (!exportResult) {
         QMessageBox::critical(this, tr("Error Exporting Map!"),
                               exportDetails.mFormat->errorString());
     } else {

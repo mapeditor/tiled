@@ -69,7 +69,6 @@ private:
 } // namespace Tiled
 
 Q_DECLARE_INTERFACE(Tiled::TilesetFormat, "org.mapeditor.TilesetFormat")
-Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::FileFormat::Capabilities)
 
 namespace Tiled {
 

@@ -20,7 +20,6 @@
 
 #include "document.h"
 
-#include "fileformat.h"
 #include "object.h"
 #include "tile.h"
 
@@ -112,7 +111,6 @@ void Document::setIgnoreBrokenLinks(bool ignoreBrokenLinks)
     mIgnoreBrokenLinks = ignoreBrokenLinks;
     emit ignoreBrokenLinksChanged(ignoreBrokenLinks);
 }
-
 
 } // namespace Internal
 } // namespace Tiled

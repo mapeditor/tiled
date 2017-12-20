@@ -47,12 +47,12 @@ class LuaTableWriter;
 /**
  * This plugin allows exporting maps as Lua files.
  */
-class LuaUtilWriter
+class LuaWriter
 {
 public:
     void writeMap(LuaTableWriter &, const Tiled::Map *);
     void writeProperties(LuaTableWriter &, const Tiled::Properties &);
-    void writeTileset(LuaTableWriter &, const Tiled::Tileset &, unsigned firstGid, bool standalone=true);
+    void writeTileset(LuaTableWriter &, const Tiled::Tileset &, unsigned firstGid, bool embedded = true);
     void writeLayers(LuaTableWriter &,
                      const QList<Tiled::Layer*> &layers,
                      Tiled::Map::LayerDataFormat format);
@@ -70,7 +70,10 @@ public:
     void writePolygon(LuaTableWriter &, const Tiled::MapObject *);
     void writeTextProperties(LuaTableWriter &, const Tiled::MapObject *);
 
-    void mapDir(const QString& dir);
+    void setMapDir(const QString& dir);
+
+public:
+    static void writeColor(Lua::LuaTableWriter &writer, const char *name, const QColor &color);
 
 private:
     QDir mMapDir;
@@ -98,8 +101,6 @@ public:
         : WritableMapFormat(parent)
     {}
 
-    bool supportsFile(const QString &fileName) const override;
-
     bool write(const Tiled::Map *map, const QString &fileName) override;
 
     QString nameFilter() const override;
@@ -107,7 +108,7 @@ public:
     QString errorString() const override;
 
 protected:
-    LuaUtilWriter mLuaWriter;
+    LuaWriter mLuaWriter;
     QString mError;
 
 };
@@ -122,8 +123,6 @@ public:
         : WritableTilesetFormat(parent)
     {}
 
-    bool supportsFile(const QString &fileName) const override;
-
     bool write(const Tiled::Tileset &tileset, const QString &fileName) override;
 
     QString nameFilter() const override;
@@ -131,7 +130,7 @@ public:
     QString errorString() const override;
 
 protected:
-    LuaUtilWriter mLuaWriter;
+    LuaWriter mLuaWriter;
     QString mError;
 
 };
