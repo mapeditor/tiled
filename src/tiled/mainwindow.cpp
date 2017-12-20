@@ -461,6 +461,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mViewsAndToolbarsMenu = new QMenu(this);
     mViewsAndToolbarsAction = new QAction(tr("Views and Toolbars"), this);
     mViewsAndToolbarsAction->setMenu(mViewsAndToolbarsMenu);
+
+    mResetToDefaultLayout = new QAction(tr("Reset to Default Layout"), this);
+
     mShowObjectTypesEditor = new QAction(tr("Object Types Editor"), this);
     mShowObjectTypesEditor->setCheckable(true);
     mUi->menuView->insertAction(mUi->actionShowGrid, mViewsAndToolbarsAction);
@@ -496,6 +499,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             this, SLOT(closeDocument(int)));
     connect(mDocumentManager, SIGNAL(reloadError(QString)),
             this, SLOT(reloadError(QString)));
+
+    connect(mResetToDefaultLayout, &QAction::triggered, this, &MainWindow::resetToDefaultLayout);
 
     QShortcut *switchToLeftDocument = new QShortcut(tr("Alt+Left"), this);
     connect(switchToLeftDocument, SIGNAL(activated()),
@@ -1312,6 +1317,19 @@ void MainWindow::updateRecentFilesMenu()
     mUi->menuRecentFiles->setEnabled(numRecentFiles > 0);
 }
 
+void MainWindow::resetToDefaultLayout()
+{
+    // Make sure we're not in Clear View mode
+    mUi->actionClearView->setChecked(false);
+
+    // Reset the Console dock
+    addDockWidget(Qt::BottomDockWidgetArea, mConsoleDock);
+    mConsoleDock->setVisible(false);
+
+    // Reset the layout of the current editor
+    mDocumentManager->currentEditor()->resetLayout();
+}
+
 void MainWindow::updateViewsAndToolbarsMenu()
 {
     mViewsAndToolbarsMenu->clear();
@@ -1320,16 +1338,17 @@ void MainWindow::updateViewsAndToolbarsMenu()
 
     if (Editor *editor = mDocumentManager->currentEditor()) {
         mViewsAndToolbarsMenu->addSeparator();
-
         const auto dockWidgets = editor->dockWidgets();
         for (auto dockWidget : dockWidgets)
             mViewsAndToolbarsMenu->addAction(dockWidget->toggleViewAction());
 
         mViewsAndToolbarsMenu->addSeparator();
-
         const auto toolBars = editor->toolBars();
         for (auto toolBar : toolBars)
             mViewsAndToolbarsMenu->addAction(toolBar->toggleViewAction());
+
+        mViewsAndToolbarsMenu->addSeparator();
+        mViewsAndToolbarsMenu->addAction(mResetToDefaultLayout);
     }
 }
 
