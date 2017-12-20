@@ -82,7 +82,9 @@ class TILEDSHARED_EXPORT WritableTilesetFormat : public TilesetFormat
     Q_INTERFACES(Tiled::TilesetFormat)
 
 public:
-    using TilesetFormat::TilesetFormat;
+    explicit WritableTilesetFormat(QObject *parent = nullptr)
+        : TilesetFormat(parent)
+    {}
 
     Capabilities capabilities() const override { return Write; }
     SharedTileset read(const QString &) override { return SharedTileset(); }
