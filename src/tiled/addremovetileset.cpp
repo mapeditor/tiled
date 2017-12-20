@@ -66,6 +66,13 @@ AddTileset::AddTileset(MapDocument *mapDocument, const SharedTileset &tileset,
     setText(QCoreApplication::translate("Undo Commands", "Add Tileset"));
 }
 
+AddTileset *AddTileset::clone(QUndoCommand *parent) const
+{
+    auto c = new AddTileset(mMapDocument, mTileset, parent);
+    c->mIndex = mIndex;
+    return c;
+}
+
 
 RemoveTileset::RemoveTileset(MapDocument *mapDocument, int index)
     : AddRemoveTileset(mapDocument,

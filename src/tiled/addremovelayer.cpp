@@ -66,6 +66,15 @@ AddLayer::AddLayer(MapDocument *mapDocument,
     setText(QCoreApplication::translate("Undo Commands", "Add Layer"));
 }
 
+AddLayer *AddLayer::clone(QUndoCommand *parent) const
+{
+    return new AddLayer(mMapDocument,
+                        mIndex,
+                        mLayer ? mLayer->clone() : nullptr,
+                        mParentLayer,
+                        parent);
+}
+
 RemoveLayer::RemoveLayer(MapDocument *mapDocument,
                          int index, GroupLayer *parentLayer,
                          QUndoCommand *parent)

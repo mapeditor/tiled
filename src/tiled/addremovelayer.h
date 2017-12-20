@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include "undocommands.h"
+
 #include <QUndoCommand>
 
 namespace Tiled {
@@ -47,7 +49,6 @@ protected:
     void addLayer();
     void removeLayer();
 
-private:
     MapDocument *mMapDocument;
     Layer *mLayer;
     GroupLayer *mParentLayer;
@@ -57,7 +58,7 @@ private:
 /**
  * Undo command that adds a layer to a map.
  */
-class AddLayer : public AddRemoveLayer
+class AddLayer : public AddRemoveLayer, public ClonableUndoCommand
 {
 public:
     /**
@@ -73,6 +74,8 @@ public:
 
     void redo() override
     { addLayer(); }
+
+    AddLayer *clone(QUndoCommand *parent = nullptr) const override;
 };
 
 /**

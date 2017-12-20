@@ -144,6 +144,8 @@ bool PaintTileLayer::mergeWith(const QUndoCommand *other)
     const PaintTileLayer *o = static_cast<const PaintTileLayer*>(other);
     if (!(mMapDocument == o->mMapDocument && o->mMergeable))
         return false;
+    if (!cloneChildren(other, this))
+        return false;
 
     QHashIterator<TileLayer*, TargetData> it(o->mTargetData);
     while (it.hasNext()) {

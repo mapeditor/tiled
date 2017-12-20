@@ -454,6 +454,7 @@ QtGuiApplication {
         "toolmanager.h",
         "treeviewcombobox.cpp",
         "treeviewcombobox.h",
+        "undocommands.cpp",
         "undocommands.h",
         "undodock.cpp",
         "undodock.h",

@@ -247,6 +247,7 @@ SOURCES += aboutdialog.cpp \
     tmxmapformat.cpp \
     toolmanager.cpp \
     treeviewcombobox.cpp \
+    undocommands.cpp \
     undodock.cpp \
     utils.cpp \
     varianteditorfactory.cpp \
