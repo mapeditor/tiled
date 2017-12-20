@@ -85,7 +85,7 @@ public:
     using TilesetFormat::TilesetFormat;
 
     Capabilities capabilities() const override { return Write; }
-    SharedTileset read(const QString &) override { return nullptr; }
+    SharedTileset read(const QString &) override { return SharedTileset(); }
     bool supportsFile(const QString &) const override { return false; }
 };
 
