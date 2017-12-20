@@ -87,11 +87,11 @@ bool LuaMapFormat::write(const Map *map, const QString &fileName)
         return false;
     }
 
-    mMapDir = QFileInfo(fileName).path();
+    mLuaWriter.mapDir(QFileInfo(fileName).path());
 
     LuaTableWriter writer(file.device());
     writer.writeStartDocument();
-    writeMap(writer, map);
+    mLuaWriter.writeMap(writer, map);
     writer.writeEndDocument();
 
     if (file.error() != QFileDevice::NoError) {
@@ -136,11 +136,11 @@ bool LuaTilesetFormat::write(const Tileset &tileset, const QString &fileName)
         return false;
     }
 
-    mMapDir = QFileInfo(fileName).path();
+    mLuaWriter.mapDir(QFileInfo(fileName).path());
 
     LuaTableWriter writer(file.device());
     writer.writeStartDocument();
-    writeTileset(writer, tileset, 0, false);
+    mLuaWriter.writeTileset(writer, tileset, 0, false);
     writer.writeEndDocument();
 
     if (file.error() != QFileDevice::NoError) {
@@ -761,6 +761,11 @@ void LuaUtilWriter::writeTextProperties(LuaTableWriter &writer, const MapObject 
         else if (textData.alignment.testFlag(Qt::AlignBottom))
             writer.writeKeyAndValue("valign", "bottom");
     }
+}
+
+void LuaUtilWriter::mapDir(const QString &dir)
+{
+    mMapDir = dir;
 }
 
 

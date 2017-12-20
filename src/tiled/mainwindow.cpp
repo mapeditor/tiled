@@ -91,8 +91,6 @@
 #include <QUndoStack>
 #include <QUndoView>
 
-#include <tuple>
-
 #ifdef Q_OS_WIN
 #include <QtPlatformHeaders\QWindowsWindowFunctions>
 #endif
@@ -107,16 +105,16 @@ namespace {
 template <typename Format>
 struct ExportDetails
 {
-   Format* mFormat;
-   QString mFileName;
+    Format *mFormat = nullptr;
+    QString mFileName;
 
-   ExportDetails() {}
-   ExportDetails(Format* format, const QString& fileName)
-     : mFormat(format)
-     , mFileName(fileName)
-   {}
+    ExportDetails() {}
+    ExportDetails(Format *format, const QString& fileName)
+        : mFormat(format)
+        , mFileName(fileName)
+    {}
 
-   bool valid() { return static_cast<bool>(mFormat); }
+    bool isValid() { return mFormat != nullptr; }
 };
 
 template <typename Format>
@@ -125,7 +123,7 @@ ExportDetails<Format> chooseExportDetails(const QString &fileName,
                                           const QString &lastExportFilter,
                                           QWidget* window)
 {
-    FormatHelper<Format> helper(FileFormat::Write, window->tr("All Files (*)"));
+    FormatHelper<Format> helper(FileFormat::Write, MainWindow::tr("All Files (*)"));
 
     Preferences *pref = Preferences::instance();
 
@@ -148,7 +146,7 @@ ExportDetails<Format> chooseExportDetails(const QString &fileName,
     }
 
     // No need to confirm overwrite here since it'll be prompted below
-    QString exportToFileName = QFileDialog::getSaveFileName(window, window->tr("Export As..."),
+    QString exportToFileName = QFileDialog::getSaveFileName(window, MainWindow::tr("Export As..."),
                                                     suggestedFilename,
                                                     helper.filter(),
                                                     &selectedFilter,
@@ -167,8 +165,8 @@ ExportDetails<Format> chooseExportDetails(const QString &fileName,
         for (Format *format : helper.formats()) {
             if (format->nameFilter().contains(suffix, Qt::CaseInsensitive)) {
                 if (chosenFormat) {
-                    QMessageBox::warning(window, window->tr("Non-unique file extension"),
-                                         window->tr("Non-unique file extension.\n"
+                    QMessageBox::warning(window, MainWindow::tr("Non-unique file extension"),
+                                         MainWindow::tr("Non-unique file extension.\n"
                                                     "Please select specific format."));
                     return chooseExportDetails<Format>(exportToFileName, lastExportName, lastExportFilter, window);
                 } else {
@@ -179,8 +177,8 @@ ExportDetails<Format> chooseExportDetails(const QString &fileName,
     }
 
     if (!chosenFormat) {
-        QMessageBox::critical(window, window->tr("Unknown File Format"),
-                              window->tr("The given filename does not have any known "
+        QMessageBox::critical(window, MainWindow::tr("Unknown File Format"),
+                              MainWindow::tr("The given filename does not have any known "
                                          "file extension."));
         return ExportDetails<Format>();
     }
@@ -883,7 +881,7 @@ void MainWindow::export_()
     QString exportFileName = mapDocument->lastExportFileName();
 
     if (!exportFileName.isEmpty()) {
-        MapFormat *exportFormat = qobject_cast<MapFormat*>(mapDocument->exportFormat());
+        MapFormat *exportFormat = mapDocument->exportFormat();
         TmxMapFormat tmxFormat;
 
         if (!exportFormat)
@@ -907,8 +905,7 @@ void MainWindow::exportAs()
 {
     if (auto mapDocument = qobject_cast<MapDocument*>(mDocument)) {
         exportMapAs(mapDocument);
-    }
-    else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(mDocument)) {
+    } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(mDocument)) {
         exportTilesetAs(tilesetDocument);
     }
 }
@@ -1506,7 +1503,7 @@ void MainWindow::exportMapAs(MapDocument *mapDocument)
                                                         mapDocument->lastExportFileName(),
                                                         selectedFilter,
                                                         this);
-    if (!exportDetails.valid()) {
+    if (!exportDetails.isValid()) {
         return;
     }
 
@@ -1569,9 +1566,8 @@ void MainWindow::exportTilesetAs(TilesetDocument *tilesetDocument)
                                                     tilesetDocument->lastExportFileName(),
                                                     selectedFilter,
                                                     this);
-    if (!exportDetails.valid()) {
+    if (!exportDetails.isValid())
         return;
-    }
 
     Preferences *pref = Preferences::instance();
 

@@ -70,7 +70,9 @@ public:
     void writePolygon(LuaTableWriter &, const Tiled::MapObject *);
     void writeTextProperties(LuaTableWriter &, const Tiled::MapObject *);
 
-protected:
+    void mapDir(const QString& dir);
+
+private:
     QDir mMapDir;
     Tiled::GidMapper mGidMapper;
 
@@ -87,7 +89,7 @@ public:
 };
 
 
-class LUASHARED_EXPORT LuaMapFormat : public Tiled::WritableMapFormat, public LuaUtilWriter
+class LUASHARED_EXPORT LuaMapFormat : public Tiled::WritableMapFormat
 {
     Q_OBJECT
 
@@ -103,12 +105,13 @@ public:
     QString errorString() const override;
 
 protected:
+    LuaUtilWriter mLuaWriter;
     QString mError;
 
 };
 
 
-class LUASHARED_EXPORT LuaTilesetFormat : public Tiled::WritableTilesetFormat, public LuaUtilWriter
+class LUASHARED_EXPORT LuaTilesetFormat : public Tiled::WritableTilesetFormat
 {
     Q_OBJECT
 
@@ -124,6 +127,7 @@ public:
     QString errorString() const override;
 
 protected:
+    LuaUtilWriter mLuaWriter;
     QString mError;
 
 };

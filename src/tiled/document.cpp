@@ -114,11 +114,6 @@ void Document::setIgnoreBrokenLinks(bool ignoreBrokenLinks)
     emit ignoreBrokenLinksChanged(ignoreBrokenLinks);
 }
 
-//FileFormat* Document::exportFormat() const
-//{
-//  return mExportFormat;
-//}
-
 
 } // namespace Internal
 } // namespace Tiled
