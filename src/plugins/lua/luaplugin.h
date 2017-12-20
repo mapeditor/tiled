@@ -22,65 +22,15 @@
 
 #include "lua_global.h"
 
-#include "gidmapper.h"
-#include "map.h"
 #include "plugin.h"
 #include "mapformat.h"
 #include "tilesetformat.h"
 
-#include <QDir>
-#include <QObject>
-
-namespace Tiled {
-class GroupLayer;
-class MapObject;
-class ObjectGroup;
-class Properties;
-class TileLayer;
-class Tileset;
-}
-
 namespace Lua {
-
-class LuaTableWriter;
 
 /**
  * This plugin allows exporting maps as Lua files.
  */
-class LuaWriter
-{
-public:
-    void writeMap(LuaTableWriter &, const Tiled::Map *);
-    void writeProperties(LuaTableWriter &, const Tiled::Properties &);
-    void writeTileset(LuaTableWriter &, const Tiled::Tileset &, unsigned firstGid, bool embedded = true);
-    void writeLayers(LuaTableWriter &,
-                     const QList<Tiled::Layer*> &layers,
-                     Tiled::Map::LayerDataFormat format);
-    void writeTileLayer(LuaTableWriter &, const Tiled::TileLayer *,
-                        Tiled::Map::LayerDataFormat);
-    void writeTileLayerData(LuaTableWriter &, const Tiled::TileLayer *,
-                            Tiled::Map::LayerDataFormat format,
-                            QRect bounds);
-    void writeObjectGroup(LuaTableWriter &, const Tiled::ObjectGroup *,
-                          const QByteArray &key = QByteArray());
-    void writeImageLayer(LuaTableWriter &, const Tiled::ImageLayer *);
-    void writeGroupLayer(LuaTableWriter &, const Tiled::GroupLayer *,
-                         Tiled::Map::LayerDataFormat);
-    void writeMapObject(LuaTableWriter &, const Tiled::MapObject *);
-    void writePolygon(LuaTableWriter &, const Tiled::MapObject *);
-    void writeTextProperties(LuaTableWriter &, const Tiled::MapObject *);
-
-    void setMapDir(const QString& dir);
-
-public:
-    static void writeColor(Lua::LuaTableWriter &writer, const char *name, const QColor &color);
-
-private:
-    QDir mMapDir;
-    Tiled::GidMapper mGidMapper;
-
-};
-
 class LUASHARED_EXPORT LuaPlugin : public Tiled::Plugin
 {
     Q_OBJECT
@@ -108,9 +58,7 @@ public:
     QString errorString() const override;
 
 protected:
-    LuaWriter mLuaWriter;
     QString mError;
-
 };
 
 
@@ -130,11 +78,7 @@ public:
     QString errorString() const override;
 
 protected:
-    LuaWriter mLuaWriter;
     QString mError;
-
 };
-
-
 
 } // namespace Lua
