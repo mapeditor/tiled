@@ -99,9 +99,10 @@ public:
     FileFormat *writerFormat() const override;
     void setWriterFormat(MapFormat *format);
 
-    QString displayName() const override;
     MapFormat* exportFormat() const override;
     void setExportFormat(FileFormat *format) override;
+
+    QString displayName() const override;
 
     /**
      * Returns the map instance. Be aware that directly modifying the map will
@@ -321,6 +322,7 @@ private:
      */
     QPointer<MapFormat> mReaderFormat;
     QPointer<MapFormat> mWriterFormat;
+    QPointer<MapFormat> mExportFormat;
     Map *mMap;
     LayerModel *mLayerModel;
     QRegion mSelectedArea;
@@ -328,7 +330,6 @@ private:
     MapRenderer *mRenderer;
     Layer* mCurrentLayer;
     MapObjectModel *mMapObjectModel;
-    QPointer<MapFormat> mExportFormat;
 };
 
 } // namespace Internal

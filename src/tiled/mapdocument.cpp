@@ -195,6 +195,17 @@ void MapDocument::setWriterFormat(MapFormat *format)
     mWriterFormat = format;
 }
 
+MapFormat *MapDocument::exportFormat() const
+{
+    return mExportFormat;
+}
+
+void MapDocument::setExportFormat(FileFormat *format)
+{
+    mExportFormat = qobject_cast<MapFormat*>(format);
+    Q_ASSERT(mExportFormat);
+}
+
 /**
  * Returns the name with which to display this map. It is the file name without
  * its path, or 'untitled.tmx' when the map has no file name.
@@ -206,17 +217,6 @@ QString MapDocument::displayName() const
         displayName = tr("untitled.tmx");
 
     return displayName;
-}
-
-MapFormat *MapDocument::exportFormat() const
-{
-    return mExportFormat;
-}
-
-void MapDocument::setExportFormat(FileFormat *format)
-{
-    mExportFormat = qobject_cast<MapFormat*>(format);
-    Q_ASSERT(mExportFormat);
 }
 
 /**

@@ -20,7 +20,6 @@
 
 #include "tilesetdocument.h"
 
-#include "fileformat.h"
 #include "mapdocument.h"
 #include "map.h"
 #include "terrain.h"
@@ -177,6 +176,17 @@ void TilesetDocument::setWriterFormat(TilesetFormat *format)
     mTileset->setFormat(format);
 }
 
+TilesetFormat* TilesetDocument::exportFormat() const
+{
+    return mExportFormat;
+}
+
+void TilesetDocument::setExportFormat(FileFormat *format)
+{
+    mExportFormat = qobject_cast<TilesetFormat*>(format);
+    Q_ASSERT(mExportFormat);
+}
+
 QString TilesetDocument::displayName() const
 {
     QString displayName;
@@ -195,20 +205,9 @@ QString TilesetDocument::displayName() const
     return displayName;
 }
 
-TilesetFormat* TilesetDocument::exportFormat() const
-{
-    return mExportFormat;
-}
-
-void TilesetDocument::setExportFormat(FileFormat *format)
-{
-    mExportFormat = qobject_cast<TilesetFormat*>(format);
-    Q_ASSERT(mExportFormat);
-}
-
 /**
  * Exchanges the tileset data of the tileset wrapped by this document with the
- * data in the given \a tileset, and vica-versa.
+ * data in the given \a tileset, and vice-versa.
  */
 void TilesetDocument::swapTileset(SharedTileset &tileset)
 {
