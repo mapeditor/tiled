@@ -37,7 +37,6 @@
 #include "consoledock.h"
 #include "documentmanager.h"
 #include "exportasimagedialog.h"
-#include "fileformat.h"
 #include "languagemanager.h"
 #include "layer.h"
 #include "mapdocumentactionhandler.h"

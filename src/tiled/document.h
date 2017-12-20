@@ -35,7 +35,6 @@ namespace Tiled {
 class FileFormat;
 class Object;
 class Tile;
-class MapFormat;
 
 namespace Internal {
 

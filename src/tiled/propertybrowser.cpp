@@ -32,7 +32,6 @@
 #include "changetileprobability.h"
 #include "changewangsetdata.h"
 #include "changewangcolordata.h"
-#include "fileformat.h"
 #include "flipmapobjects.h"
 #include "imagelayer.h"
 #include "map.h"

@@ -34,7 +34,6 @@
 #include <QSessionManager>
 #include <QSettings>
 
-
 class QComboBox;
 class QLabel;
 
@@ -223,7 +222,6 @@ private:
 
     QMap<QMainWindow*, QByteArray> mMainWindowStates;
 };
-
 
 } // namespace Internal
 } // namespace Tiled

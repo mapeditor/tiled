@@ -21,7 +21,6 @@
 #include "document.h"
 
 #include "fileformat.h"
-#include "mapformat.h"
 #include "object.h"
 #include "tile.h"
 

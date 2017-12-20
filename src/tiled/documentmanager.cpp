@@ -25,7 +25,6 @@
 #include "adjusttileindexes.h"
 #include "brokenlinks.h"
 #include "editor.h"
-#include "fileformat.h"
 #include "filechangedwarning.h"
 #include "filesystemwatcher.h"
 #include "mapdocument.h"
