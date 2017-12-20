@@ -116,7 +116,7 @@ class LUASHARED_EXPORT LuaTilesetFormat : public Tiled::WritableTilesetFormat
     Q_OBJECT
 
 public:
-    LuaTilesetFormat(QObject *parent = nullptr) : Tiled::WritableTilesetFormat(parent) {}
+    using Tiled::WritableTilesetFormat::WritableTilesetFormat;
 
     bool supportsFile(const QString &fileName) const override;
 
