@@ -94,7 +94,7 @@ class LUASHARED_EXPORT LuaMapFormat : public Tiled::WritableMapFormat
     Q_OBJECT
 
 public:
-    LuaMapFormat(QObject *parent = nullptr) : Tiled::WritableMapFormat(parent) {}
+    using Tiled::WritableMapFormat::WritableMapFormat;
 
     bool supportsFile(const QString &fileName) const override;
 
