@@ -77,7 +77,7 @@ class MapEditor : public Editor
 
 public:
     explicit MapEditor(QObject *parent = nullptr);
-    ~MapEditor();
+    ~MapEditor() override;
 
     void saveState() override;
     void restoreState() override;
@@ -96,13 +96,13 @@ public:
     StandardActions enabledStandardActions() const override;
     void performStandardAction(StandardAction action) override;
 
+    void resetLayout() override;
+
     MapView *viewForDocument(MapDocument *mapDocument) const;
     MapView *currentMapView() const;
     Zoomable *zoomable() const override;
 
     void showMessage(const QString &text, int timeout = 0);
-
-    void resetLayout();
 
 public slots:
     void setSelectedTool(AbstractTool *tool);

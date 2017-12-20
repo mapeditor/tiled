@@ -215,7 +215,7 @@ MapEditor::MapEditor(QObject *parent)
     mTemplatesDock->setPropertiesDock(mPropertiesDock);
     mTileStampsDock = new TileStampsDock(mTileStampManager, mMainWindow);
 
-    resetLayout(); //Adds the dock widgets and toolbars into their default position
+    resetLayout();
 
     mComboBoxProxyModel->setSourceModel(mReversingProxyModel);
     mLayerComboBox->setModel(mComboBoxProxyModel);
@@ -529,53 +529,46 @@ void MapEditor::performStandardAction(StandardAction action)
     }
 }
 
-Zoomable *MapEditor::zoomable() const
-{
-    if (auto view = currentMapView())
-        return view->zoomable();
-    return nullptr;
-}
-
-void MapEditor::showMessage(const QString &text, int timeout)
-{
-    mMainWindow->statusBar()->showMessage(text, timeout);
-}
-
+/**
+ * Arranges views and toolbars to default layout.
+ */
 void MapEditor::resetLayout()
 {
-    // Arranges dockWidgets and toolBars to default layout
-
-    QList<QDockWidget*> docks = this->dockWidgets();
-    QList<QToolBar*> toolBars = this->toolBars();
-
-    for(auto dock : docks){
-        mMainWindow->removeDockWidget(dock);
-    }
-    for(auto toolBar : toolBars){
-        mMainWindow->removeToolBar(toolBar);
+    // Remove dock widgets and set them to visible
+    const QList<QDockWidget*> dockWidgets = this->dockWidgets();
+    for (auto dockWidget : dockWidgets) {
+        mMainWindow->removeDockWidget(dockWidget);
+        dockWidget->setVisible(true);
     }
 
-    // Adding Dock Widgets and ToolBars in their Default Position
-    mMainWindow->addToolBar(Qt::TopToolBarArea, mMainToolBar);
-    mMainWindow->addToolBar(Qt::TopToolBarArea, mToolsToolBar);
-    mMainWindow->addToolBar(Qt::TopToolBarArea, mToolSpecificToolBar);
+    // Make sure all toolbars are visible
+    const QList<QToolBar*> toolBars = this->toolBars();
+    for (auto toolBar : toolBars)
+        toolBar->setVisible(true);
 
-    mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mLayerDock);
+    // Adding dock widgets and toolbars in their default position
+    mMainWindow->addToolBar(mMainToolBar);
+    mMainWindow->addToolBar(mToolsToolBar);
+    mMainWindow->addToolBar(mToolSpecificToolBar);
+
     mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mPropertiesDock);
     mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mMapsDock);
     mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mUndoDock);
-    mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mObjectsDock);
+    mMainWindow->tabifyDockWidget(mUndoDock, mMapsDock);
+
     mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mTemplatesDock);
+    mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mTileStampsDock);
+    mMainWindow->tabifyDockWidget(mTemplatesDock, mTileStampsDock);
+
+    mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mLayerDock);
+    mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mObjectsDock);
     mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mMiniMapDock);
+    mMainWindow->tabifyDockWidget(mMiniMapDock, mObjectsDock);
+    mMainWindow->tabifyDockWidget(mObjectsDock, mLayerDock);
+
     mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mTerrainDock);
     mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mWangDock);
     mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mTilesetDock);
-    mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mTileStampsDock);
-
-    mMainWindow->tabifyDockWidget(mUndoDock, mMapsDock);
-    mMainWindow->tabifyDockWidget(mTemplatesDock, mTileStampsDock);
-    mMainWindow->tabifyDockWidget(mMiniMapDock, mObjectsDock);
-    mMainWindow->tabifyDockWidget(mObjectsDock, mLayerDock);
     mMainWindow->tabifyDockWidget(mTerrainDock, mWangDock);
     mMainWindow->tabifyDockWidget(mWangDock, mTilesetDock);
 
@@ -586,20 +579,18 @@ void MapEditor::resetLayout()
     mTemplatesDock->setVisible(false);
     mWangDock->setVisible(false);
     mTileStampsDock->setVisible(false);
+}
 
-    // Toolbars and dockwidgets are required to be set visible
-    // otherwise they won't be visible if "Reset To Default Layout" is clicked
-    mMainToolBar->setVisible(true);
-    mToolsToolBar->setVisible(true);
-    mToolSpecificToolBar->setVisible(true);
+Zoomable *MapEditor::zoomable() const
+{
+    if (auto view = currentMapView())
+        return view->zoomable();
+    return nullptr;
+}
 
-    mMiniMapDock->setVisible(true);
-    mPropertiesDock->setVisible(true);
-    mLayerDock->setVisible(true);
-    mObjectsDock->setVisible(true);
-    mTerrainDock->setVisible(true);
-    mTilesetDock->setVisible(true);
-
+void MapEditor::showMessage(const QString &text, int timeout)
+{
+    mMainWindow->statusBar()->showMessage(text, timeout);
 }
 
 void MapEditor::setSelectedTool(AbstractTool *tool)

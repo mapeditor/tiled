@@ -1319,14 +1319,15 @@ void MainWindow::updateRecentFilesMenu()
 
 void MainWindow::resetToDefaultLayout()
 {
-    //uncheck actionClearView if in case its already checked
+    // Make sure we're not in Clear View mode
     mUi->actionClearView->setChecked(false);
 
-    //reset mapEditor layout
-    auto *mapEditor = static_cast<MapEditor*>(mDocumentManager->editor(Document::MapDocumentType));
-    mapEditor->resetLayout();
+    // Reset the Console dock
+    addDockWidget(Qt::BottomDockWidgetArea, mConsoleDock);
+    mConsoleDock->setVisible(false);
 
-    updateViewsAndToolbarsMenu();//this is to gaurantee that this sub-menu is up-to-date
+    // Reset the layout of the current editor
+    mDocumentManager->currentEditor()->resetLayout();
 }
 
 void MainWindow::updateViewsAndToolbarsMenu()
@@ -1337,7 +1338,6 @@ void MainWindow::updateViewsAndToolbarsMenu()
 
     if (Editor *editor = mDocumentManager->currentEditor()) {
         mViewsAndToolbarsMenu->addSeparator();
-
         const auto dockWidgets = editor->dockWidgets();
         for (auto dockWidget : dockWidgets)
             mViewsAndToolbarsMenu->addAction(dockWidget->toggleViewAction());
@@ -1346,7 +1346,6 @@ void MainWindow::updateViewsAndToolbarsMenu()
         const auto toolBars = editor->toolBars();
         for (auto toolBar : toolBars)
             mViewsAndToolbarsMenu->addAction(toolBar->toggleViewAction());
-
 
         mViewsAndToolbarsMenu->addSeparator();
         mViewsAndToolbarsMenu->addAction(mResetToDefaultLayout);
