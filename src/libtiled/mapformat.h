@@ -97,7 +97,9 @@ class TILEDSHARED_EXPORT ReadableMapFormat : public MapFormat
     Q_INTERFACES(Tiled::MapFormat)
 
 public:
-    using MapFormat::MapFormat;
+    explicit ReadableMapFormat(QObject *parent = nullptr)
+        : MapFormat(parent)
+    {}
     Capabilities capabilities() const override { return Read; }
     bool write(const Map *, const QString &) override { return false; }
 };
@@ -112,7 +114,9 @@ class TILEDSHARED_EXPORT WritableMapFormat : public MapFormat
     Q_INTERFACES(Tiled::MapFormat)
 
 public:
-    using MapFormat::MapFormat;
+    explicit WritableMapFormat(QObject *parent = nullptr)
+        : MapFormat(parent)
+    {}
 
     Capabilities capabilities() const override { return Write; }
     Map *read(const QString &) override { return nullptr; }
