@@ -24,3 +24,11 @@
   status: Inactive since 2012
   features: Reads TMX
   notes: Depends on [RapidXml](http://rapidxml.sourceforge.net/)
+
+- language: JavaScript
+  name: Phaser
+  url: https://github.com/photonstorm/phaser
+  updated: 21-12-2017
+  status: Active
+  Features: Supports Tilemaps and Tile Sprites
+  notes: Can't read TMX, must be exported to csv or json.
