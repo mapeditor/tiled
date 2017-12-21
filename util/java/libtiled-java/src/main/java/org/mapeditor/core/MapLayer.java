@@ -196,6 +196,15 @@ public class MapLayer extends LayerData implements Cloneable {
         rect.height = this.height;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public Properties getProperties() {
+        if (properties == null) {
+            properties = new Properties();
+        }
+        return super.getProperties();
+    }
+
     /**
      * A convenience method to check if a point in tile-space is within the
      * layer boundaries.
