@@ -8,20 +8,21 @@ msgstr ""
 "Project-Id-Version: Tiled 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-12-21 14:31+0100\n"
-"PO-Revision-Date: 2017-10-11 14:16+0000\n"
-"Last-Translator: Bastien LABOUCHE <bastien.labouche@live.fr>\n"
-"Language: fr\n"
+"PO-Revision-Date: 2017-12-21 15:03+0000\n"
+"Last-Translator: Rhenaud Dubois <rhen33390@gmail.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/tiled"
 "/documentation-index/fr/>\n"
-"Plural-Forms: nplurals=2; plural=n > 1\n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 2.19-dev\n"
 "Generated-By: Babel 2.5.1\n"
 
 #: ../../index.rst:2
 msgid "Tiled Documentation"
-msgstr ""
+msgstr "Documentation de Tiled"
 
 #: ../../index.rst:5
 msgid ""
@@ -34,13 +35,12 @@ msgstr ""
 "<http://discourse.mapeditor.org >\" _."
 
 #: ../../index.rst:8
-#, fuzzy
 msgid "User Manual"
-msgstr "Manuel d'utilisation de Tiled"
+msgstr "Manuel d'utilisation"
 
 #: ../../index.rst:29
 msgid "Reference"
-msgstr ""
+msgstr "Manuel de référence"
 
 #~ msgid ""
 #~ "This documentation is currently work-"
@@ -63,4 +63,3 @@ msgstr ""
 
 #~ msgid "Contents"
 #~ msgstr "Table des matières"
-
