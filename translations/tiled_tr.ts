@@ -2327,17 +2327,17 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+16"/>
         <source>Replace Tile</source>
-        <translation>Deseni Yer Değiştir</translation>
+        <translation>Deseni Değiştir</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Replace With Template</source>
-        <translation>Şablonla Yer Değiştir</translation>
+        <translation>Şablonla Değiştir</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Replace With Template &quot;%1&quot;</source>
-        <translation>&quot;%1&quot; Şablonuyla Yer Değiştir</translation>
+        <translation>&quot;%1&quot; Şablonuyla Değiştir</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -2431,7 +2431,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location filename="../src/tiled/abstracttileselectiontool.cpp" line="+136"/>
         <source>Replace Selection</source>
-        <translation>Seçimi Yer Değiştir</translation>
+        <translation>Seçimi Değiştir</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -5656,7 +5656,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message numerus="yes">
         <location line="+46"/>
         <source>Replace %n Object(s) With Template</source>
-        <translation><numerusform>Nesneyi Şablonla Yer Değiştir</numerusform>
+        <translation><numerusform>Nesneyi Şablonla Değiştir</numerusform>
         <numerusform>%n Nesneyi Şablonla Yer Değiştir</numerusform>
         </translation></message>
     <message>
@@ -5790,7 +5790,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location filename="../src/tiled/replacetileset.cpp" line="+34"/>
         <source>Replace Tileset</source>
-        <translation>Deseni Yer Değiştir</translation>
+        <translation>Desen Setini Değiştir</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/tiled/flipmapobjects.cpp" line="+40"/>
@@ -5868,7 +5868,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location filename="../src/tiled/replacetemplate.cpp" line="+35"/>
         <source>Replace Template</source>
-        <translation>Şablonu Yer Değiştir</translation>
+        <translation>Şablonu Değiştir</translation>
     </message>
     <message>
         <location filename="../src/tiled/shapefilltool.cpp" line="-33"/>
