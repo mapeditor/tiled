@@ -181,7 +181,7 @@ public class MapLayer extends LayerData implements Cloneable {
      * @return the layer bounds in tiles
      */
     public Rectangle getBounds() {
-        return new Rectangle(x, y, width, height);
+        return new Rectangle(x == null ? 0 : x, y == null ? 0 : y, width, height);
     }
 
     /**

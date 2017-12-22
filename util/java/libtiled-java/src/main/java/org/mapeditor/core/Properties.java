@@ -72,12 +72,23 @@ public class Properties extends PropertiesData implements Cloneable {
      * @return a {@link java.lang.String} object.
      */
     public String getProperty(String name) {
+        return getProperty(name, null);
+    }
+
+    /**
+     * Gets a property with a default value if this property is not found
+     *
+     * @param name a {@link java.lang.String} object.
+     * @param defaultValue the string value to return if property is not found
+     * @return a {@link java.lang.String} object.
+     */
+    public String getProperty(String name, String defaultValue) {
         for (Property property : properties) {
             if (name.equals(property.getName())) {
                 return property.getValue();
             }
         }
-        return null;
+        return defaultValue;
     }
 
     /**

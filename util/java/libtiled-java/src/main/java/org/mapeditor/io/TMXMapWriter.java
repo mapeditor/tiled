@@ -217,7 +217,7 @@ public class TMXMapWriter {
         w.endElement();
     }
 
-    private static void writeProperties(Properties props, XMLWriter w) throws
+    private void writeProperties(Properties props, XMLWriter w) throws
             IOException {
         if (props != null && !props.isEmpty()) {
             final Set<Object> propertyKeys = new TreeSet<>();
@@ -347,30 +347,43 @@ public class TMXMapWriter {
         w.endElement();
     }
 
-    private static void writeObjectGroup(ObjectGroup o, XMLWriter w, String wp)
+    private void writeObjectGroup(ObjectGroup o, XMLWriter w, String wp)
             throws IOException {
+        w.startElement("objectgroup");
+
+        if (o.getColor() != null && o.getColor().isEmpty()) {
+            w.writeAttribute("color", o.getColor());
+        }
+        if (o.getDraworder() != null && !o.getDraworder().equalsIgnoreCase("topdown")) {
+            w.writeAttribute("draworder", o.getDraworder());
+        }
+        writeLayerAttributes(o, w);
+        writeProperties(o.getProperties(), w);
+
         Iterator<MapObject> itr = o.getObjects().iterator();
         while (itr.hasNext()) {
             writeMapObject(itr.next(), w, wp);
         }
+
+        w.endElement();
     }
 
     /**
-     * Writes this layer to an XMLWriter. This should be done <b>after</b> the
-     * first global ids for the tilesets are determined, in order for the right
-     * gids to be written to the layer data.
+     * Writes all the standard layer attributes to the XML writer.
+     * @param l the map layer to write attributes
+     * @param w the {@code XMLWriter} instance to write to.
+     * @throws IOException if an error occurs while writing.
      */
-    private void writeMapLayer(TileLayer l, XMLWriter w, String wp) throws IOException {
+    private void writeLayerAttributes(MapLayer l, XMLWriter w) throws IOException {
         Rectangle bounds = l.getBounds();
-
-        w.startElement("layer");
-
         w.writeAttribute("name", l.getName());
-        if (bounds.width != 0) {
-            w.writeAttribute("width", bounds.width);
-        }
-        if (bounds.height != 0) {
-            w.writeAttribute("height", bounds.height);
+        if (l instanceof TileLayer) {
+            if (bounds.width != 0) {
+                w.writeAttribute("width", bounds.width);
+            }
+            if (bounds.height != 0) {
+                w.writeAttribute("height", bounds.height);
+            }
         }
         if (bounds.x != 0) {
             w.writeAttribute("x", bounds.x);
@@ -388,6 +401,25 @@ public class TMXMapWriter {
             w.writeAttribute("opacity", opacity);
         }
 
+        if (l.getOffsetX() != null && l.getOffsetX() != 0) {
+            w.writeAttribute("offsetx", l.getOffsetX());
+        }
+        if (l.getOffsetY() != null && l.getOffsetY() != 0) {
+            w.writeAttribute("offsety", l.getOffsetY());
+        }
+    }
+
+    /**
+     * Writes this layer to an XMLWriter. This should be done <b>after</b> the
+     * first global ids for the tilesets are determined, in order for the right
+     * gids to be written to the layer data.
+     */
+    private void writeMapLayer(TileLayer l, XMLWriter w, String wp) throws IOException {
+        Rectangle bounds = l.getBounds();
+
+        w.startElement("layer");
+
+        writeLayerAttributes(l, w);
         writeProperties(l.getProperties(), w);
 
         final TileLayer tl = l;
@@ -535,7 +567,7 @@ public class TMXMapWriter {
         w.endElement();
     }
 
-    private static void writeMapObject(MapObject mapObject, XMLWriter w, String wp)
+    private void writeMapObject(MapObject mapObject, XMLWriter w, String wp)
             throws IOException {
         w.startElement("object");
         w.writeAttribute("name", mapObject.getName());
@@ -552,6 +584,13 @@ public class TMXMapWriter {
         }
         if (mapObject.getHeight() != 0) {
             w.writeAttribute("height", mapObject.getHeight());
+        }
+
+        if (mapObject.getTile() != null) {
+            Tile t = mapObject.getTile();
+            w.writeAttribute("gid", firstGidPerTileset.get(t.getTileSet()) + t.getId());
+        } else if (mapObject.getGid() != null) {
+            w.writeAttribute("gid", mapObject.getGid());
         }
 
         writeProperties(mapObject.getProperties(), w);

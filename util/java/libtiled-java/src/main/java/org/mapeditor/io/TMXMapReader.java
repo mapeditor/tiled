@@ -801,7 +801,8 @@ public class TMXMapReader {
      * @throws java.lang.Exception if any.
      */
     public Map readMap(InputStream in) throws Exception {
-        xmlPath = makeUrl(".");
+        //xmlPath = makeUrl(".");
+        xmlPath = System.getProperty("user.dir") + File.separatorChar;
 
         Map unmarshalledMap = unmarshal(in);
 
