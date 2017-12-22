@@ -46,7 +46,7 @@
     <message>
         <location filename="../src/tiled/main.cpp" line="+244"/>
         <source>Export syntax is --export-map [format] &lt;source&gt; &lt;target&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Export syntax is --export-map [format] &lt;source&gt; &lt;target&gt;</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -110,17 +110,17 @@
     <message>
         <location line="+20"/>
         <source>Arguments:</source>
-        <translation type="unfinished"></translation>
+        <translation>Arguments:</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Working Directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>Working Directory:</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Show output in Debug Console</source>
-        <translation type="unfinished"></translation>
+        <translation>Show output in Debug Console</translation>
     </message>
     <message>
         <location line="+33"/>
@@ -428,28 +428,29 @@
     <message>
         <location line="+178"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished"></translation>
+        <translation>Could not open file for reading.</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Error parsing file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Error parsing file.</translation>
     </message>
     <message>
         <location line="+37"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">Could not open file for writing.</translation>
+        <translation>Could not open file for writing.</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Error while writing file:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Error while writing file:
+%1</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Json template files (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Json template files (*.json)</translation>
     </message>
 </context>
 <context>
@@ -486,12 +487,12 @@
     <message>
         <location filename="../src/plugins/lua/luaplugin.cpp" line="+103"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">Could not open file for writing.</translation>
+        <translation>Could not open file for writing.</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>Lua files (*.lua)</source>
-        <translation type="unfinished"></translation>
+        <translation>Lua files (*.lua)</translation>
     </message>
 </context>
 <context>
@@ -499,12 +500,12 @@
     <message>
         <location line="+18"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">Could not open file for writing.</translation>
+        <translation>Could not open file for writing.</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>Lua files (*.lua)</source>
-        <translation type="unfinished"></translation>
+        <translation>Lua files (*.lua)</translation>
     </message>
 </context>
 <context>
@@ -652,7 +653,7 @@
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+L</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+L</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -913,7 +914,7 @@
     <message>
         <location line="+17"/>
         <source>Not a template file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Not a template file.</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1050,7 +1051,7 @@ Line %1, column %2</source>
     <message>
         <location line="-38"/>
         <source>Fixed</source>
-        <translation type="unfinished"></translation>
+        <translation>Fixed</translation>
     </message>
     <message>
         <location line="+54"/>
@@ -1061,7 +1062,7 @@ Line %1, column %2</source>
     <message>
         <location line="-42"/>
         <source>Infinite</source>
-        <translation type="unfinished"></translation>
+        <translation>Infinite</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1209,7 +1210,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/tilesetdock.cpp" line="+86"/>
         <source>New Tileset...</source>
-        <translation type="unfinished">New Tileset...</translation>
+        <translation>New Tileset...</translation>
     </message>
 </context>
 <context>
@@ -1500,7 +1501,7 @@ Line %1, column %2</source>
     <message>
         <location line="+49"/>
         <source>Mouse wheel &amp;zooms by default</source>
-        <translation type="unfinished"></translation>
+        <translation>Mouse wheel &amp;zooms by default</translation>
     </message>
     <message>
         <location line="+24"/>
@@ -2176,47 +2177,47 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/plugins/tbin/tbinplugin.cpp" line="+109"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished"></translation>
+        <translation>Could not open file for reading.</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Tilesheet must have equal spacings.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tilesheet must have equal spacings.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Tilesheet must have equal margins.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tilesheet must have equal margins.</translation>
     </message>
     <message>
         <location line="+34"/>
         <source>Different tile sizes per layer are not supported.</source>
-        <translation type="unfinished"></translation>
+        <translation>Different tile sizes per layer are not supported.</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Invalid animation frame.</source>
-        <translation type="unfinished"></translation>
+        <translation>Invalid animation frame.</translation>
     </message>
     <message>
         <location line="+112"/>
         <source>Only object and tile layers supported.</source>
-        <translation type="unfinished"></translation>
+        <translation>Only object and tile layers supported.</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>Could not open file for writing</source>
-        <translation type="unfinished"></translation>
+        <translation>Could not open file for writing</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Exception: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Exception: %1</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Tbin map files (*.tbin)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tbin map files (*.tbin)</translation>
     </message>
 </context>
 <context>
@@ -2225,33 +2226,33 @@ Line %1, column %2</source>
         <location filename="../src/plugins/tbin/tbin/Map.cpp" line="+99"/>
         <location line="+23"/>
         <source>Bad property type</source>
-        <translation type="unfinished"></translation>
+        <translation>Bad property type</translation>
     </message>
     <message>
         <location line="+69"/>
         <location line="+68"/>
         <source>Bad layer tile data</source>
-        <translation type="unfinished"></translation>
+        <translation>Bad layer tile data</translation>
     </message>
     <message>
         <location line="+72"/>
         <source>Failed to open file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Failed to open file.</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>File is not a tbin file.</source>
-        <translation type="unfinished"></translation>
+        <translation>File is not a tbin file.</translation>
     </message>
     <message>
         <location line="+35"/>
         <source>Failed to open file</source>
-        <translation type="unfinished"></translation>
+        <translation>Failed to open file</translation>
     </message>
     <message>
         <location filename="../src/plugins/tbin/tbinplugin.cpp" line="-255"/>
         <source>Unsupported property type</source>
-        <translation type="unfinished"></translation>
+        <translation>Unsupported property type</translation>
     </message>
 </context>
 <context>
@@ -2316,27 +2317,27 @@ Line %1, column %2</source>
     <message>
         <location line="+16"/>
         <source>Replace Tile</source>
-        <translation type="unfinished"></translation>
+        <translation>Replace Tile</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Replace With Template</source>
-        <translation type="unfinished"></translation>
+        <translation>Replace With Template</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Replace With Template &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Replace With Template &quot;%1&quot;</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Save As Template</source>
-        <translation type="unfinished"></translation>
+        <translation>Save As Template</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Detach</source>
-        <translation type="unfinished"></translation>
+        <translation>Detach</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2981,7 +2982,7 @@ Line %1, column %2</source>
     <message>
         <location line="+112"/>
         <source>Close</source>
-        <translation type="unfinished">Close</translation>
+        <translation>Close</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -4748,13 +4749,13 @@ Please select specific format.</source>
         <location filename="../src/tiled/stampactions.cpp" line="+48"/>
         <location line="+29"/>
         <source>Random Mode</source>
-        <translation type="unfinished">Random Mode</translation>
+        <translation>Random Mode</translation>
     </message>
     <message>
         <location line="-28"/>
         <location line="+35"/>
         <source>D</source>
-        <translation type="unfinished">D</translation>
+        <translation>D</translation>
     </message>
     <message>
         <location line="-30"/>
@@ -4785,22 +4786,22 @@ Please select specific format.</source>
     <message>
         <location line="+3"/>
         <source>X</source>
-        <translation type="unfinished">X</translation>
+        <translation>X</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Y</source>
-        <translation type="unfinished">Y</translation>
+        <translation>Y</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Shift+Z</source>
-        <translation type="unfinished">Shift+Z</translation>
+        <translation>Shift+Z</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Z</source>
-        <translation type="unfinished">Z</translation>
+        <translation>Z</translation>
     </message>
 </context>
 <context>
@@ -4854,17 +4855,17 @@ Please select specific format.</source>
     <message>
         <location line="+24"/>
         <source>All Files (*)</source>
-        <translation type="unfinished">All Files (*)</translation>
+        <translation>All Files (*)</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Locate External Tileset</source>
-        <translation type="unfinished">Locate External Tileset</translation>
+        <translation>Locate External Tileset</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Error Reading Tileset</source>
-        <translation type="unfinished">Error Reading Tileset</translation>
+        <translation>Error Reading Tileset</translation>
     </message>
 </context>
 <context>
@@ -4952,12 +4953,12 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tilecollisiondock.cpp" line="-39"/>
         <source>Delete</source>
-        <translation type="unfinished">Delete</translation>
+        <translation>Delete</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Cut</source>
-        <translation type="unfinished">Cut</translation>
+        <translation>Cut</translation>
     </message>
 </context>
 <context>
@@ -5916,12 +5917,12 @@ Please select specific format.</source>
     <message>
         <location line="+223"/>
         <source>Copy File Path</source>
-        <translation type="unfinished">Copy File Path</translation>
+        <translation>Copy File Path</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Open Containing Folder...</source>
-        <translation type="unfinished">Open Containing Folder...</translation>
+        <translation>Open Containing Folder...</translation>
     </message>
 </context>
 </TS>
