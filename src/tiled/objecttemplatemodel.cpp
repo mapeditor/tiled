@@ -69,7 +69,8 @@ ObjectTemplate *ObjectTemplateModel::toObjectTemplate(const QModelIndex &index) 
     if (info.isDir())
         return nullptr;
 
-    ObjectTemplate *objectTemplate = TemplateManager::instance()->loadObjectTemplate(info.filePath());
+    QString fileName = info.absoluteFilePath();
+    ObjectTemplate *objectTemplate = TemplateManager::instance()->loadObjectTemplate(fileName);
     return objectTemplate->object() ? objectTemplate : nullptr;
 }
 

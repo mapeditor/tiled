@@ -76,6 +76,8 @@ namespace {
 
 class NoTilesetWidget : public QWidget
 {
+    Q_OBJECT
+
 public:
     explicit NoTilesetWidget(QWidget *parent = nullptr)
         : QWidget(parent)
@@ -1024,3 +1026,5 @@ void TilesetDock::swapTiles(Tile *tileA, Tile *tileB)
     QUndoStack *undoStack = mMapDocument->undoStack();
     undoStack->push(new SwapTiles(mMapDocument, tileA, tileB));
 }
+
+#include "tilesetdock.moc"

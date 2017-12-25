@@ -38,6 +38,7 @@ class QTabBar;
 namespace Tiled {
 
 class FileSystemWatcher;
+class ObjectTemplate;
 
 namespace Internal {
 
@@ -207,6 +208,8 @@ signals:
     void fileOpenRequested();
     void fileOpenRequested(const QString &path);
     void fileSaveRequested();
+    void templateOpenRequested(const QString &path);
+    void templateTilesetReplaced();
 
     /**
      * Emitted when the current displayed map document changed.

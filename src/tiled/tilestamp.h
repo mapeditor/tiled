@@ -42,7 +42,7 @@ struct TileStampVariation
     TileStampVariation(Map *map, qreal probability = 1.0)
         : map(map), probability(probability)
     {
-        Q_ASSERT(map->layerCount() == 1);
+        Q_ASSERT(map->layerCount() >= 1);
         Q_ASSERT(map->layerAt(0)->isTileLayer());
     }
 

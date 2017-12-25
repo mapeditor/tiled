@@ -24,6 +24,7 @@
 
 #include "document.h"
 #include "layer.h"
+#include "mapformat.h"
 #include "tiled.h"
 #include "tileset.h"
 
@@ -40,7 +41,6 @@ class QUndoStack;
 namespace Tiled {
 
 class Map;
-class MapFormat;
 class MapObject;
 class MapRenderer;
 class ObjectTemplate;
@@ -93,17 +93,14 @@ public:
                              MapFormat *format,
                              QString *error = nullptr);
 
-    QString lastExportFileName() const;
-    void setLastExportFileName(const QString &fileName);
-
     MapFormat *readerFormat() const;
     void setReaderFormat(MapFormat *format);
 
     FileFormat *writerFormat() const override;
     void setWriterFormat(MapFormat *format);
 
-    MapFormat *exportFormat() const;
-    void setExportFormat(MapFormat *format);
+    MapFormat *exportFormat() const override;
+    void setExportFormat(FileFormat *format) override;
 
     QString displayName() const override;
 
@@ -319,8 +316,6 @@ private:
     void deselectObjects(const QList<MapObject*> &objects);
     void moveObjectIndex(const MapObject *object, int count);
 
-    QString mLastExportFileName;
-
     /*
      * QPointer is used since the formats referenced here may be dynamically
      * added by a plugin, and can also be removed again.
@@ -336,17 +331,6 @@ private:
     Layer* mCurrentLayer;
     MapObjectModel *mMapObjectModel;
 };
-
-
-inline QString MapDocument::lastExportFileName() const
-{
-    return mLastExportFileName;
-}
-
-inline void MapDocument::setLastExportFileName(const QString &fileName)
-{
-    mLastExportFileName = fileName;
-}
 
 } // namespace Internal
 } // namespace Tiled

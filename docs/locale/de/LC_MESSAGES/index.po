@@ -8,17 +8,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tiled 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-03 17:16+0200\n"
+"POT-Creation-Date: 2017-12-21 14:31+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.4.0\n"
+"Generated-By: Babel 2.5.1\n"
 
 #: ../../index.rst:2
-msgid "Tiled Manual"
+msgid "Tiled Documentation"
 msgstr ""
 
 #: ../../index.rst:5
@@ -28,15 +28,28 @@ msgid ""
 "<http://discourse.mapeditor.org>`_."
 msgstr ""
 
-#: ../../index.rst:9
-msgid ""
-"This documentation is currently work-in-progress. Initially the relevant "
-"pages from the wiki have been ported over, providing a limited amount of "
-"documentation for specific Tiled features. Over time, this should become "
-"the place to refer to for any details about using Tiled."
+#: ../../index.rst:8
+msgid "User Manual"
 msgstr ""
 
-#: ../../index.rst:15
-msgid "Contents"
+#: ../../index.rst:29
+msgid "Reference"
 msgstr ""
+
+#~ msgid "Tiled Manual"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "This documentation is currently work-"
+#~ "in-progress. Initially the relevant pages"
+#~ " from the wiki have been ported "
+#~ "over, providing a limited amount of "
+#~ "documentation for specific Tiled features. "
+#~ "Over time, this should become the "
+#~ "place to refer to for any details"
+#~ " about using Tiled."
+#~ msgstr ""
+
+#~ msgid "Contents"
+#~ msgstr ""
 

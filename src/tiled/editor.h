@@ -66,6 +66,8 @@ public:
     virtual StandardActions enabledStandardActions() const = 0;
     virtual void performStandardAction(StandardAction action) = 0;
 
+    virtual void resetLayout() = 0;
+
 signals:
     void enabledStandardActionsChanged();
 };

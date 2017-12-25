@@ -8,12 +8,11 @@ msgstr ""
 "Project-Id-Version: Tiled 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-12-21 14:31+0100\n"
-"PO-Revision-Date: 2017-10-26 08:22+0000\n"
-"Last-Translator: Bastien LABOUCHE <bastien.labouche@live.fr>\n"
-"Language: fr\n"
-"Language-Team: French "
-"<https://hosted.weblate.org/projects/tiled/reference/fr/>\n"
-"Plural-Forms: nplurals=2; plural=n > 1\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Automatically generated\n"
+"Language: nb_NO\n"
+"Language-Team: none\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -700,57 +699,41 @@ msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:2
 msgid "Libraries and Frameworks"
-msgstr "Bibliothèques et Frameworks"
+msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:4
-#, fuzzy
 msgid ""
 "There are many libraries available for reading and/or writing Tiled maps "
 "(either stored in the :doc:`tmx-map-format` or the :doc:`json-map-"
 "format`) as well as many development frameworks that include support for "
 "Tiled maps. This list is divided into two sections:"
 msgstr ""
-"Il y a beaucoup de bibliothèques disponibles pour lire et/ou écrire des "
-"cartes stockées au :doc:`tmx-map-format` ainsi que de nombreux framework "
-"de développement qui incluent un support pour les cartes au format TMX. "
-"Cette liste est divisée en deux sections :"
 
 #: ../../reference/support-for-tmx-maps.rst:9
 msgid "`Support by Language <#support-by-language>`__"
-msgstr "`Supportées par le Langage <#support-by-language>`__"
+msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:10
 msgid "`Support by Framework <#support-by-framework>`__"
-msgstr "`Supportées par le Framework <#support-by-framework>`__"
+msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:12
-#, fuzzy
 msgid ""
 "The first list is for developers who plan on implementing their own "
 "renderer. The second list is for developers already using (or "
 "considering) a particular game engine / graphics library who would rather"
 " pass on having to write their own tile map renderer."
 msgstr ""
-"La première liste est pour les développeurs qui ont planifié "
-"d'implémenter leur propre générateur de rendu. La seconde liste est pour "
-"les développeurs qui ont utilisent déjà (ou envisagent) un moteur de jeu "
-"particulier / des bibliothèques graphiques et qui voudraient plutôt "
-"éviter de devoir écrire leur propre générateur de rendu de carte de "
-"tuile."
 
 #: ../../reference/support-for-tmx-maps.rst:19
-#, fuzzy
 msgid ""
 "For updates to this page please open a pull request or issue `on GitHub "
 "<https://github.com/bjorn/tiled/issues>`__, thanks!"
 msgstr ""
-"*Pour des mises à jours sur cette page, s'il-vous-plaît ouvrez une "
-"requête d'implémentation ou un rapport de bug `sur github "
-"<https://github.com/bjorn/tiled/issues>`__, merci !*"
 
 #: ../../reference/support-for-tmx-maps.rst:23
 msgid "Support by Language"
-msgstr "Support par Langage"
+msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:25
 msgid ""
@@ -758,64 +741,45 @@ msgid ""
 "support. They can be used universally and should not require a specific "
 "game engine or graphics library."
 msgstr ""
-"Typiquement ces librairies incluent seulement un analyseur TMX, mais "
-"aucun support de rendu. Elles peuvent être utilisées universellement et "
-"ne devraient pas nécessiter de moteur de jeu particulier ou de librairie "
-"graphique."
 
 #: ../../reference/support-for-tmx-maps.rst:30
 msgid "C"
-msgstr "C"
+msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:32
-#, fuzzy
 msgid ""
 "`TMX <https://github.com/baylej/tmx/>`__ - TMX map loader with Allegro5 "
 "and SDL2 examples (BSD)."
 msgstr ""
-"`TMX <https://github.com/baylej/tmx/>`__ - Exemples de chargeurs de carte"
-" TMX et JSON avec Allegro5 et SDL2 (BSD)."
 
 #: ../../reference/support-for-tmx-maps.rst:36
 msgid "C++"
-msgstr "C++"
+msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:38
-#, fuzzy
 msgid ""
 "`C++/Boost <http://www.catnapgames.com/blog/2011/10/10/simple-tmx-"
 "tilemap-parser.html>`__ by Tomas Andrle (limited functionality, single "
 "cpp file)"
 msgstr ""
-"`C++/Boost <http://www.catnapgames.com/blog/2011/10/10/simple-tmx-"
-"tilemap-parser.html>`__ par Tomas Andrle (fonctionnalités limitées, "
-"simple fichier cpp)"
 
 #: ../../reference/support-for-tmx-maps.rst:40
-#, fuzzy
 msgid ""
 "`C++/TinyXML based tmxparser <https://github.com/sainteos/tmxparser>`__ "
 "(BSD)"
 msgstr ""
-"`C++/TinyXML basé sur l'analyseur tmx "
-"<https://github.com/andrewrk/tmxparser>`__ (BSD)"
 
 #: ../../reference/support-for-tmx-maps.rst:41
 msgid ""
 "C++/Qt based libtiled, used by Tiled itself and included at `src/libtiled"
 " <https://github.com/bjorn/tiled/tree/master/src/libtiled>`__ (BSD)"
 msgstr ""
-"C++/Qt basé sur libtiled, utilisé par Tiled lui-même et inclue dans "
-"`src/libtiled "
-"<https://github.com/bjorn/tiled/tree/master/src/libtiled>`__ (BSD)"
 
 #: ../../reference/support-for-tmx-maps.rst:44
 msgid ""
 "`C++11x/TinyXml2 libtmx-parser <https://github.com/halsafar/libtmx-"
 "parser>`__ by halsafar. (zlib/tinyxml2)"
 msgstr ""
-"`C++11x/TinyXml2 analyseur libtmx <https://github.com/halsafar/libtmx-"
-"parser>`__ par halsafar. (zlib/tinyxml2)"
 
 #: ../../reference/support-for-tmx-maps.rst:47
 msgid ""
@@ -823,9 +787,6 @@ msgid ""
 "reading only (ISC licence). See `documentation "
 "<http://jube.github.io/libtmx/index.html>`__."
 msgstr ""
-"`C++11/TinyXml2 libtmx <https://github.com/jube/libtmx>`__ par jube, "
-"uniquement pour lire (licence ISC). voire `documentation "
-"<http://jube.github.io/libtmx/index.html>`__."
 
 #: ../../reference/support-for-tmx-maps.rst:50
 msgid ""
@@ -833,19 +794,12 @@ msgid ""
 "\\*.tmx tileset data loader. Intended to be used with TSXParser for "
 "external tileset loading. (No internal tileset support)"
 msgstr ""
-"`TMXParser <https://github.com/solar-storm-studios/TMXParser>`__ Général "
-"\\*.tmx chargeur de données de tileset.Prévu pour être utilisé avec "
-"TSXParser pour un chargement extérieur de tileset. (Pas de support "
-"interne de tileset)."
 
 #: ../../reference/support-for-tmx-maps.rst:53
 msgid ""
 "`TSXParser <https://github.com/solar-storm-studios/TSXParser>`__ General "
 "\\*.tsx tileset data loader. Intended to be used with TMXParser."
 msgstr ""
-"`TSXParser <https://github.com/solar-storm-studios/TSXParser>`__ Général "
-"\\*.tsx charger de données de tileset. Prévu pour être utilisé avec "
-"TMXParser."
 
 #: ../../reference/support-for-tmx-maps.rst:56
 msgid ""
@@ -854,10 +808,6 @@ msgid ""
 "(check the `website <http://www.midnightpacific.com/portfolio/tmxloader-"
 "for-tiled-map-editor/>`__ for details)."
 msgstr ""
-"`TMXLoader <https://bitbucket.org/martingrant/tmxloader>`__ basé sur "
-"`RapidXml <http://rapidxml.sourceforge.net/>`__. Fonctionnalités limitées"
-" (allez sur le `site web <http://www.midnightpacific.com/portfolio"
-"/tmxloader-for-tiled-map-editor/>`__ pour plus de détails)."
 
 #: ../../reference/support-for-tmx-maps.rst:61
 msgid ""
@@ -866,14 +816,10 @@ msgid ""
 "examples for SFML and SDL2 rendering. Currently has full tmx support up "
 "to 0.16. (Zlib/libpng)"
 msgstr ""
-"`tmxlite <https://github.com/fallahn/tmxlite>`__ C++14 analyseur de carte"
-" avec support pour cartes compressées mais aucun lien extérieur n'est "
-"requis. Inclut des exemples pour du rendus SFML et SDL2. Actuellement il "
-"y a un support complet pour tmx à jour jusqu'à la 0.16. (Zlib/libpng)"
 
 #: ../../reference/support-for-tmx-maps.rst:67
 msgid "C#/.NET"
-msgstr "C#/.NET"
+msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:69
 msgid ""
@@ -882,11 +828,6 @@ msgid ""
 "loader and renderer that works with MonoGame on all platforms that "
 "support portable class libraries."
 msgstr ""
-"`MonoGame.Extended "
-"<https://github.com/craftworkgames/MonoGame.Extended>`__ Possède un "
-"chargeur de map Tiled et un générateur de rendu qui fonctionne avec "
-"MonoGame sur toutes les plate-formes supportant les classes de "
-"bibliothèques portables."
 
 #: ../../reference/support-for-tmx-maps.rst:72
 msgid ""
@@ -894,9 +835,6 @@ msgid ""
 "extended by Stephen Belanger and Zach Musgrave (has dependency on XNA but"
 " supposedly can be turned into a standalone parser easily)"
 msgstr ""
-"`XNA map loader <https://github.com/zachmu/tiled-xna>`__ par Kevin Gadd, "
-"étendus par Stephen Belanger et Zach Musgrave (a des dépendances sur XNA "
-"mais peut supposément être facilement modifié en un analyseur autonome)"
 
 #: ../../reference/support-for-tmx-maps.rst:75
 msgid ""
@@ -905,33 +843,20 @@ msgid ""
 " parser which can be used in any framework, but it cannot be used to "
 "render the maps. Available via NuGet."
 msgstr ""
-"`TiledSharp <https://github.com/marshallward/TiledSharp>`__: Encore une "
-"autre bibliothèque d'importation TMX en C#, avec support de Tiled 0.11 . "
-"TiledSharp est un analyseur générique qui peut être utilisé dans "
-"n'importe quel framework, mais qui ne peut pas être utilisé pour générer "
-"des rendus de cartes. Disponible via NuGet."
 
 #: ../../reference/support-for-tmx-maps.rst:79
 msgid ""
 "`NTiled <https://github.com/patriksvensson/ntiled>`__: Generic parser for"
 " 0.9.1 tiled maps. Available via NuGet."
 msgstr ""
-"`NTiled <https://github.com/patriksvensson/ntiled>`__: Analyseur "
-"générique pour cartes de Tiled 0.9.1. Disponible via NuGet."
 
 #: ../../reference/support-for-tmx-maps.rst:81
-#, fuzzy
 msgid ""
 "`TmxCSharp <https://github.com/gwicksted/TmxCSharp>`__: Useful for multi-"
 "layer orthographic tile engines. No framework dependencies, used with a "
 "custom OpenTK tile engine soon to be open source, tested with Tiled 0.8.1"
 " (multiple output formats). MIT license."
 msgstr ""
-"`TmxCSharp <https://github.com/gwicksted/TmxCSharp>`__: Très utile pour "
-"des moteurs de tuiles orthographiques à niveaux multiples. Aucune "
-"dépendance de framework, utilisé avec un moteur de tuile OpenTK "
-"personnalisé qui sera bientôt open source, testé avec Tiled 0.8.1 "
-"(multiples formats de sortie). Licence MIT."
 
 #: ../../reference/support-for-tmx-maps.rst:85
 msgid ""
@@ -939,14 +864,10 @@ msgid ""
 "library for parsing Tiled map TMX files. This library could be used with "
 "MonoGame and Windows Runtime Universal apps."
 msgstr ""
-"`tmx-mapper-pcl <https://github.com/aalmik/tmx-mapper-pcl>`__: "
-"Bibliothèque PCL pour l'analyse de cartes Tiled au format de fichier TMX."
-" Cette bibliothèque peut être utilisée avec MonoGame et les applications "
-"Windows Runtime Universal."
 
 #: ../../reference/support-for-tmx-maps.rst:90
 msgid "D"
-msgstr "D"
+msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:92
 msgid ""
@@ -955,11 +876,6 @@ msgid ""
 "language <http://dlang.org/>`__. It also contains basic rendering logic "
 "using `DSFML <https://github.com/Jebbs/DSFML/>`__"
 msgstr ""
-"`tiledMap.d <https://gist.github.com/gdm85/9896961>`__ un exemple simple "
-"d'une seule couche et d'un seul tileset pour charger une carte et ses "
-"tileset en `langage D <http://dlang.org/>`__. Il contient aussi un rendu "
-"logique et basique en utilisant `DSFML "
-"<https://github.com/Jebbs/DSFML/>`__"
 
 #: ../../reference/support-for-tmx-maps.rst:96
 msgid ""
@@ -970,37 +886,31 @@ msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:100
 msgid "Go"
-msgstr "Go"
+msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:102
 msgid "`github.com/salviati/go-tmx/tmx <https://github.com/salviati/go-tmx>`__"
-msgstr "`github.com/salviati/go-tmx/tmx <https://github.com/salviati/go-tmx>`__"
+msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:105
 msgid "Haskell"
-msgstr "Haskell"
+msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:107
-#, fuzzy
 msgid ""
 "`htiled <http://hackage.haskell.org/package/htiled>`__ (TMX) by "
 "`Christian Rødli Amble <https://github.com/chrra>`__."
 msgstr ""
-"`htiled <http://hackage.haskell.org/package/htiled>`__ par `Christian "
-"Rødli Amble <https://github.com/chrra>`__."
 
 #: ../../reference/support-for-tmx-maps.rst:109
-#, fuzzy
 msgid ""
 "`aeson-tiled <https://hackage.haskell.org/package/aeson-tiled>`__ (JSON) "
 "by `Schell Scivally <https://github.com/schell>`__."
 msgstr ""
-"`htiled <http://hackage.haskell.org/package/htiled>`__ par `Christian "
-"Rødli Amble <https://github.com/chrra>`__."
 
 #: ../../reference/support-for-tmx-maps.rst:112
 msgid "Java"
-msgstr "Java"
+msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:114
 msgid ""
@@ -1008,14 +918,10 @@ msgid ""
 "/libtiled-java <https://github.com/bjorn/tiled/tree/master/util/java"
 "/libtiled-java>`__."
 msgstr ""
-"Une bibliothèque pour charger des fichiers TMX est inclue avec Tiled à "
-"`util/java/libtiled-java "
-"<https://github.com/bjorn/tiled/tree/master/util/java/libtiled-java>`__."
 
 #: ../../reference/support-for-tmx-maps.rst:116
-#, fuzzy
 msgid "Android-Specific:"
-msgstr "Spécificités Android :"
+msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:118
 msgid ""
@@ -1023,103 +929,81 @@ msgid ""
 "loads TMX data into an object and renders to an Android Bitmap (limited "
 "functionality)"
 msgstr ""
-"`AndroidTMXLoader <https://github.com/davidmi/Android-TMX-"
-"Loader>`__charge des données TMX dans un objet et génère un rendu pour "
-"une Bitmap Android (fonctionnalités limitées)"
 
 #: ../../reference/support-for-tmx-maps.rst:121
-#, fuzzy
 msgid ""
 "`libtiled-java port <http://chiselapp.com/user/devnewton/repository"
 "/libtiled-android/index>`__ is a port of the libtiled-java to be used on "
 "Android phones."
 msgstr ""
-"`déclinaison de la libtiled-java "
-"<http://chiselapp.com/user/devnewton/repository/libtiled-"
-"android/index>`__  est une déclinaison de la libtiled-java pour être "
-"utilisé sur les téléphones Android."
 
 #: ../../reference/support-for-tmx-maps.rst:126
 msgid "PHP"
-msgstr "PHP"
+msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:128
 msgid ""
 "`PHP TMX Viewer <https://github.com/sebbu2/php-tmx-viewer>`__ by sebbu : "
 "render the map as an image (allow some modifications as well)"
 msgstr ""
-"`PHP TMX Viewer <https://github.com/sebbu2/php-tmx-viewer>`__ par sebbu: "
-"rendu de la carte comme une image (autorise aussi quelques modifications)"
 
 #: ../../reference/support-for-tmx-maps.rst:132
 msgid "Pike"
-msgstr "Pike"
+msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:134
 msgid ""
 "`TMX parser <https://gitlab.com/tmx-parser/tmx-parser>`__: a simple "
 "loader for TMX maps (CSV format only)."
 msgstr ""
-"`TMX parser <https://gitlab.com/tmx-parser/tmx-parser>`__: un simple "
-"chargeur pour les cartes TMX (format CSV uniquement)."
 
 #: ../../reference/support-for-tmx-maps.rst:138
 msgid "Processing"
-msgstr "Processing"
+msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:140
-#, fuzzy
 msgid ""
 "`linux-man/ptmx <https://github.com/linux-man/ptmx>`__: Add Tiled maps to"
 " your Processing sketch."
 msgstr ""
-"`linux-man/ptmx <https://github.com/linux-man/ptmx>`__: Ajout de cartes "
-"Tiled pour votre dessin de transformations."
 
 #: ../../reference/support-for-tmx-maps.rst:144
 msgid "Python"
-msgstr "Python"
+msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:146
 msgid ""
 "`pytmxlib <http://pytmxlib.readthedocs.org/en/latest/>`__: library for "
 "programmatic manipulation of TMX maps"
 msgstr ""
-"`pytmxlib <http://pytmxlib.readthedocs.org/en/latest/>`__: bibliothèque "
-"pour des manipulations programmées de cartes TMX"
 
 #: ../../reference/support-for-tmx-maps.rst:148
 msgid ""
 "`python-tmx <http://python-tmx.nongnu.org>`__: a simple library for "
 "reading and writing TMX files."
 msgstr ""
-"`python-tmx <http://python-tmx.nongnu.org>`__: une bibliothèque simple "
-"pour lire et écrire des fichiers TMX."
 
 #: ../../reference/support-for-tmx-maps.rst:152
 msgid "Ruby"
-msgstr "Ruby"
+msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:154
 msgid "`tmx gem <https://github.com/shawn42/tmx>`__ by erisdiscord"
-msgstr "`tmx gem <https://github.com/shawn42/tmx>`__ par erisdiscord"
+msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:157
 msgid "Vala"
-msgstr "Vala"
+msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:159
 msgid ""
 "`librpg <https://github.com/JumpLink/librpg>`__ A library to load and "
 "handle spritesets (own format) and orthogonal TMX maps."
 msgstr ""
-"`librpg <https://github.com/JumpLink/librpg>`__ Une bibliothèque pour "
-"charger et gérer les spritesets (format propre) et des cartes TMX "
-"orthogonales."
 
 #: ../../reference/support-for-tmx-maps.rst:163
 msgid "Support by Framework"
-msgstr "Supportées par le Framework"
+msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:165
 msgid ""
@@ -1127,13 +1011,10 @@ msgid ""
 "They are typically of little to no use if you're not using said game "
 "engine."
 msgstr ""
-"Les entrées suivantes sont des solutions intégrées pour des moteurs de "
-"jeux spécifiques. En gros, cela n'a pas ou peu d'importance si vous "
-"n'utilisez pas ces moteurs de jeu."
 
 #: ../../reference/support-for-tmx-maps.rst:170
 msgid "AndEngine"
-msgstr "AndEngine"
+msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:172
 msgid ""
@@ -1141,25 +1022,20 @@ msgid ""
 "`rendering TMX maps <http://www.andengine.org/blog/2010/07/andengine-"
 "tiledmaps-in-the-tmx-format/>`__"
 msgstr ""
-"`AndEngine <http://www.andengine.org/>`__ supporté par Nicolas Gramlich "
-"`rendus de cartes TMX <http://www.andengine.org/blog/2010/07/andengine-"
-"tiledmaps-in-the-tmx-format/>`__"
 
 #: ../../reference/support-for-tmx-maps.rst:177
 msgid "Allegro"
-msgstr "Allegro"
+msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:179
 msgid ""
 "`allegro\\_tiled <https://github.com/dradtke/allegro_tiled>`__ integrates"
 " Tiled support with `Allegro 5 <http://alleg.sourceforge.net/>`__."
 msgstr ""
-"`allegro\\_tiled <https://github.com/dradtke/allegro_tiled>`__ intègre "
-"les supports de Tiled avec `Allegro 5 <http://alleg.sourceforge.net/>`__."
 
 #: ../../reference/support-for-tmx-maps.rst:184
 msgid "cocos2d"
-msgstr "cocos2d"
+msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:186
 msgid ""
@@ -1167,10 +1043,6 @@ msgid ""
 " maps <http://python.cocos2d.org/doc/programming_guide/tiled_map.html>`__"
 " through its ``cocos.tiles`` module."
 msgstr ""
-"`cocos2d (Python) <http://python.cocos2d.org/>`__ supporte le chargement "
-"de `cartes Tiled "
-"<http://python.cocos2d.org/doc/programming_guide/tiled_map.html>`__ à "
-"travers le module ``cocos.tiles``."
 
 #: ../../reference/support-for-tmx-maps.rst:190
 msgid ""
@@ -1178,10 +1050,6 @@ msgid ""
 " through the `CCTMXTiledMap <http://www.cocos2d-x.org/reference/native-"
 "cpp/V2.1.4/da/d68/classcocos2d_1_1_c_c_t_m_x_tiled_map.html>`__ class."
 msgstr ""
-"`cocos2d-x (C++) <http://www.cocos2d-x.org/>`__ supporte le chargement de"
-" cartes TMX à travers la classe `CCTMXTiledMap "
-"<http://www.cocos2d-x.org/reference/native-"
-"cpp/V2.1.4/da/d68/classcocos2d_1_1_c_c_t_m_x_tiled_map.html>`__ ."
 
 #: ../../reference/support-for-tmx-maps.rst:194
 msgid ""
@@ -1190,26 +1058,17 @@ msgid ""
 "spritebuilder) supports loading TMX maps through `CCTiledMap "
 "<http://cocos2d.spritebuilder.com/docs/api/Classes/CCTiledMap.html>`__"
 msgstr ""
-"`cocos2d-objc (Objective-C, Swift) <http://www.cocos2d-objc.org/>`__ "
-"(précédemment connu comme: cocos2d-iphone, cocos2d-swift, cocos2d-"
-"spritebuilder) supporte le chargement de cartes TMX à travers `CCTiledMap"
-" <http://cocos2d.spritebuilder.com/docs/api/Classes/CCTiledMap.html>`__"
 
 #: ../../reference/support-for-tmx-maps.rst:198
-#, fuzzy
 msgid ""
 "`TilemapKit <http://tilemapkit.com>`__ is a tilemapping framework for "
 "Cocos2D. It supports all TMX tilemap types, including staggered iso and "
 "all hex variations. No longer in development."
 msgstr ""
-"`TilemapKit <http://tilemapkit.com>`__ est un cadriciel d'association de "
-"tuiles pour Cocos2D. Il supporte tous les types de cartes de tuiles, cela"
-" inclue les iso échelonnés et toutes les variations hexadécimales. Plus "
-"en développement désormais."
 
 #: ../../reference/support-for-tmx-maps.rst:203
 msgid "Construct 2 - Scirra"
-msgstr "Construct 2 - Scirra"
+msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:205
 msgid ""
@@ -1218,39 +1077,28 @@ msgid ""
 "file inside the editor. `Official Note "
 "<https://www.scirra.com/construct2/releases/r149>`__"
 msgstr ""
-"`Construct 2 <http://www.scirra.com>`__, depuis la version Beta 149, "
-"supporte officiellement les cartes TMX et l'import par un simple dépôt du"
-" fichier dans l'éditeur. `Note Officielle "
-"<https://www.scirra.com/construct2/releases/r149>`__"
 
 #: ../../reference/support-for-tmx-maps.rst:211
 msgid "Corona SDK"
-msgstr "Corona SDK"
+msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:213
-#, fuzzy
 msgid ""
 "`ponytiled <https://github.com/ponywolf/ponytiled>`__ is a simple Tiled "
 "Map Loader for Corona SDK (`forum announcement "
 "<http://discourse.mapeditor.org/t/new-lua-coronasdk-framework-"
 "ponytiled/1826>`__)"
 msgstr ""
-"`PonyTiled <https://github.com/ponywolf/ponytiled>`__ est un simple "
-"Chargeur de Cartes Tiled pour Corona SDK (`annonce sur le forum "
-"<http://discourse.mapeditor.org/t/new-lua-coronasdk-framework-"
-"ponytiled/1826>`__)"
 
 #: ../../reference/support-for-tmx-maps.rst:216
 msgid ""
 "`Dusk Engine <https://github.com/GymbylCoding/Dusk-Engine>`__ is a fully "
 "featured Tiled map game engine for Corona SDK"
 msgstr ""
-"`Dusk Engine <https://github.com/GymbylCoding/Dusk-Engine>`__ est un "
-"moteur de cartes Tiled plein de fonctionnalités pour Corona SDK"
 
 #: ../../reference/support-for-tmx-maps.rst:220
 msgid "Flixel"
-msgstr "Flixel"
+msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:222
 msgid ""
@@ -3187,12 +3035,61 @@ msgid ""
 msgstr ""
 
 #~ msgid ""
+#~ "There are many libraries available for"
+#~ " reading and/or writing maps stored "
+#~ "in the :doc:`tmx-map-format` as "
+#~ "well as many development frameworks that"
+#~ " include support for TMX maps. This"
+#~ " list is divided into two sections:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "First list is for developers who "
+#~ "plan on implementing their own renderer."
+#~ " Second list is for developers "
+#~ "already using (or considering) a "
+#~ "particular game engine / graphics "
+#~ "library who would rather pass on "
+#~ "having to write their own tilemap "
+#~ "renderer."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "*For updates to this page please "
+#~ "open a pull request or issue `on"
+#~ " github <https://github.com/bjorn/tiled/issues>`__, "
+#~ "thanks!*"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "`TMX <https://github.com/baylej/tmx/>`__ - XML "
+#~ "and JSON map loader with Allegro5 "
+#~ "and SDL2 examples (BSD)."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "`C++/TinyXML based tmx-parser "
+#~ "<https://github.com/andrewrk/tmxparser>`__ (BSD)"
+#~ msgstr ""
+
+#~ msgid ""
 #~ "`Original version <http://code.google.com/p/tmx-"
 #~ "parser/>`__ by KonoM is discontinued."
 #~ msgstr ""
-#~ "`La version originale <http://code.google.com/p"
-#~ "/tmx-parser/>`__ par KonoM n'est plus "
-#~ "développée."
+
+#~ msgid ""
+#~ "`htiled <http://hackage.haskell.org/package/htiled>`__ by"
+#~ " `Christian Rødli Amble "
+#~ "<https://github.com/chrra>`__."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "`PonyTiled <https://github.com/ponywolf/ponytiled>`__ is"
+#~ " a simple Tiled Map Loader for "
+#~ "Corona SDK (`forum announcement "
+#~ "<http://discourse.mapeditor.org/t/new-lua-coronasdk-"
+#~ "framework-ponytiled/1826>`__)"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "`Tiled Tilemaps <http://karnakgames.com/wp/unity-"

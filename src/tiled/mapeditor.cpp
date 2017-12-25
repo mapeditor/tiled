@@ -211,40 +211,11 @@ MapEditor::MapEditor(QObject *parent)
 
     mToolManager->createShortcuts(mMainWindow);
 
-    mMainWindow->addToolBar(mMainToolBar);
-    mMainWindow->addToolBar(mToolsToolBar);
-    mMainWindow->addToolBar(mToolSpecificToolBar);
-
     mPropertiesDock = new PropertiesDock(mMainWindow);
     mTemplatesDock->setPropertiesDock(mPropertiesDock);
     mTileStampsDock = new TileStampsDock(mTileStampManager, mMainWindow);
 
-    mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mLayerDock);
-    mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mPropertiesDock);
-    mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mMapsDock);
-    mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mUndoDock);
-    mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mObjectsDock);
-    mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mTemplatesDock);
-    mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mMiniMapDock);
-    mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mTerrainDock);
-    mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mWangDock);
-    mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mTilesetDock);
-    mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mTileStampsDock);
-
-    mMainWindow->tabifyDockWidget(mUndoDock, mMapsDock);
-    mMainWindow->tabifyDockWidget(mTemplatesDock, mTileStampsDock);
-    mMainWindow->tabifyDockWidget(mMiniMapDock, mObjectsDock);
-    mMainWindow->tabifyDockWidget(mObjectsDock, mLayerDock);
-    mMainWindow->tabifyDockWidget(mTerrainDock, mWangDock);
-    mMainWindow->tabifyDockWidget(mWangDock, mTilesetDock);
-
-    // These dock widgets may not be immediately useful to many people, so
-    // they are hidden by default.
-    mMapsDock->setVisible(false);
-    mUndoDock->setVisible(false);
-    mTemplatesDock->setVisible(false);
-    mWangDock->setVisible(false);
-    mTileStampsDock->setVisible(false);
+    resetLayout();
 
     mComboBoxProxyModel->setSourceModel(mReversingProxyModel);
     mLayerComboBox->setModel(mComboBoxProxyModel);
@@ -264,6 +235,11 @@ MapEditor::MapEditor(QObject *parent)
     connect(mTilesetDock, &TilesetDock::stampCaptured, this, &MapEditor::setStamp);
     connect(mTilesetDock, &TilesetDock::localFilesDropped, this, &MapEditor::filesDroppedOnTilesetDock);
     connect(mTemplatesDock, &TemplatesDock::currentTemplateChanged, mToolManager, &ToolManager::setObjectTemplate);
+    connect(DocumentManager::instance(), &DocumentManager::templateOpenRequested,
+            mTemplatesDock, &TemplatesDock::openTemplate);
+
+    connect(mTemplatesDock, &TemplatesDock::templateTilesetReplaced,
+            DocumentManager::instance(), &DocumentManager::templateTilesetReplaced);
 
     connect(mStampBrush, &StampBrush::stampChanged, this, &MapEditor::setStamp);
     connect(mBucketFillTool, &BucketFillTool::stampChanged, this, &MapEditor::setStamp);
@@ -551,6 +527,58 @@ void MapEditor::performStandardAction(StandardAction action)
             MapDocumentActionHandler::instance()->delete_();
         break;
     }
+}
+
+/**
+ * Arranges views and toolbars to default layout.
+ */
+void MapEditor::resetLayout()
+{
+    // Remove dock widgets and set them to visible
+    const QList<QDockWidget*> dockWidgets = this->dockWidgets();
+    for (auto dockWidget : dockWidgets) {
+        mMainWindow->removeDockWidget(dockWidget);
+        dockWidget->setVisible(true);
+    }
+
+    // Make sure all toolbars are visible
+    const QList<QToolBar*> toolBars = this->toolBars();
+    for (auto toolBar : toolBars)
+        toolBar->setVisible(true);
+
+    // Adding dock widgets and toolbars in their default position
+    mMainWindow->addToolBar(mMainToolBar);
+    mMainWindow->addToolBar(mToolsToolBar);
+    mMainWindow->addToolBar(mToolSpecificToolBar);
+
+    mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mPropertiesDock);
+    mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mMapsDock);
+    mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mUndoDock);
+    mMainWindow->tabifyDockWidget(mUndoDock, mMapsDock);
+
+    mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mTemplatesDock);
+    mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mTileStampsDock);
+    mMainWindow->tabifyDockWidget(mTemplatesDock, mTileStampsDock);
+
+    mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mLayerDock);
+    mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mObjectsDock);
+    mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mMiniMapDock);
+    mMainWindow->tabifyDockWidget(mMiniMapDock, mObjectsDock);
+    mMainWindow->tabifyDockWidget(mObjectsDock, mLayerDock);
+
+    mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mTerrainDock);
+    mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mWangDock);
+    mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mTilesetDock);
+    mMainWindow->tabifyDockWidget(mTerrainDock, mWangDock);
+    mMainWindow->tabifyDockWidget(mWangDock, mTilesetDock);
+
+    // These dock widgets may not be immediately useful to many people, so
+    // they are hidden by default.
+    mMapsDock->setVisible(false);
+    mUndoDock->setVisible(false);
+    mTemplatesDock->setVisible(false);
+    mWangDock->setVisible(false);
+    mTileStampsDock->setVisible(false);
 }
 
 Zoomable *MapEditor::zoomable() const

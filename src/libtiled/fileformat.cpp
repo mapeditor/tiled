@@ -1,7 +1,6 @@
 /*
- * objecttemplateformat.h
- * Copyright 2017, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright 2017, Mohamed Thabet <thabetx@gmail.com>
+ * fileformat.cpp
+ * Copyright 2017, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of libtiled.
  *
@@ -27,31 +26,24 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#pragma once
-
 #include "fileformat.h"
-#include "objecttemplate.h"
 
 namespace Tiled {
 
-class TILEDSHARED_EXPORT ObjectTemplateFormat : public FileFormat
+FileFormat::FileFormat(QObject *parent)
+    : QObject(parent)
 {
-    Q_OBJECT
 
-public:
-    explicit ObjectTemplateFormat(QObject *parent = nullptr)
-        : FileFormat(parent)
-    {}
+}
 
-    virtual ObjectTemplate* read(const QString &fileName) = 0;
-    virtual bool write(const ObjectTemplate *objectTemplate, const QString &fileName) = 0;
-};
+FileFormat::Capabilities FileFormat::capabilities() const
+{
+    return ReadWrite;
+}
 
-TILEDSHARED_EXPORT ObjectTemplate *readObjectTemplate(const QString &fileName,
-                                                      QString *error = nullptr);
-
-TILEDSHARED_EXPORT ObjectTemplateFormat *findSupportingTemplateFormat(const QString &fileName);
+bool FileFormat::hasCapabilities(Capabilities caps) const
+{
+    return (capabilities() & caps) == caps;
+}
 
 } // namespace Tiled
-
-Q_DECLARE_INTERFACE(Tiled::ObjectTemplateFormat, "org.mapeditor.ObjectTemplateFormat")

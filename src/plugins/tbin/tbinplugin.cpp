@@ -84,7 +84,7 @@ namespace
                 prop.type = tbin::PropertyValue::String;
                 prop.dataStr = it.value().toString().toStdString();
             }
-            else throw std::invalid_argument(QT_TR_NOOP("Unsupported property type"));
+            else throw std::invalid_argument(QT_TRANSLATE_NOOP("TbinMapFormat", "Unsupported property type"));
             props.insert(std::make_pair(it.key().toStdString(), prop));
         }
     }
