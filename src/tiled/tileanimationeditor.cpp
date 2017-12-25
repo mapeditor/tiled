@@ -264,8 +264,8 @@ const QVector<Frame> &FrameListModel::frames() const
 void FrameListModel::setDefaultFrameTime(int duration)
 {
     DEFAULT_DURATION = duration;
-    for(Frame &F:mFrames)
-        F.duration=duration;
+    for(Frame &frame : mFrames)
+        frame.duration = duration;
 }
 
 
@@ -276,6 +276,7 @@ TileAnimationEditor::TileAnimationEditor(QWidget *parent)
     , mTile(nullptr)
     , mFrameListModel(new FrameListModel(this))
     , mApplyingChanges(false)
+    , mSuppressUndo(false)
     , mPreviewAnimationDriver(new TileAnimationDriver(this))
     , mPreviewFrameIndex(0)
     , mPreviewUnusedTime(0)
@@ -304,8 +305,6 @@ TileAnimationEditor::TileAnimationEditor(QWidget *parent)
 
     connect(mUi->setFrameTimeButton, SIGNAL(clicked(bool)),
             SLOT(setFrameTime()));
-
-
 
     QShortcut *undoShortcut = new QShortcut(QKeySequence::Undo, this);
     QShortcut *redoShortcut = new QShortcut(QKeySequence::Redo, this);
@@ -398,6 +397,10 @@ void TileAnimationEditor::hideEvent(QHideEvent *)
 
 void TileAnimationEditor::framesEdited()
 {
+
+    if (mSuppressUndo)
+        return;
+
     QUndoStack *undoStack = mTilesetDocument->undoStack();
 
     mApplyingChanges = true;
@@ -410,15 +413,19 @@ void TileAnimationEditor::framesEdited()
 void TileAnimationEditor::setFrameTime()
 {
     QItemSelectionModel *selectionModel = mUi->frameList->selectionModel();
-    QModelIndexList indexes = selectionModel->selectedIndexes();
+    const QModelIndexList indexes = selectionModel->selectedIndexes();
+
     if (indexes.isEmpty()) {
         mFrameListModel->setDefaultFrameTime(mUi->frameTime->value());
-        mUi->frameList->setFocus();
-        framesEdited();
-        return;
+        mUi->frameList->setFocus(); // This is necessary for the UI, It does not get updates without this
     }
+
+    mSuppressUndo = true;
+
     for (const QModelIndex &index : indexes)
-        mFrameListModel->setData(index,mUi->frameTime->value(),Qt::EditRole);
+        mFrameListModel->setData(index, mUi->frameTime->value(), Qt::EditRole);
+
+    mSuppressUndo = false;
 
     framesEdited();
 }

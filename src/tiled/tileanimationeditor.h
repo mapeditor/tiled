@@ -84,6 +84,7 @@ private:
     Tile *mTile;
     FrameListModel *mFrameListModel;
     bool mApplyingChanges;
+    bool mSuppressUndo;
 
     TileAnimationDriver *mPreviewAnimationDriver;
     int mPreviewFrameIndex;
