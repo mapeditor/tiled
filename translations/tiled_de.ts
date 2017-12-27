@@ -50,7 +50,7 @@
     <message>
         <location filename="../src/tiled/main.cpp" line="+244"/>
         <source>Export syntax is --export-map [format] &lt;source&gt; &lt;target&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Export Syntax ist --export map [Format] &lt;Quelle&gt; &lt;Ziel&gt;</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -114,17 +114,17 @@
     <message>
         <location line="+20"/>
         <source>Arguments:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Argumente:</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Working Directory:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Arbeitsverzeichnis:</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Show output in Debug Console</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zeige Ausgabe in Debugger Konsole</translation>
     </message>
     <message>
         <location line="+33"/>
@@ -434,7 +434,7 @@
     <message>
         <location line="+178"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zu lesende Datei konnte nicht geöffnet werden.</translation>
     </message>
     <message>
         <location line="+10"/>
