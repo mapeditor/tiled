@@ -55,6 +55,11 @@ static bool isTileObject(MapObject *mapObject)
     return !mapObject->cell().isEmpty();
 }
 
+static bool isTemplateInstance(MapObject *mapObject)
+{
+    return mapObject->isTemplateInstance();
+}
+
 static bool isResizedTileObject(MapObject *mapObject)
 {
     if (const auto tile = mapObject->cell().tile())
@@ -398,7 +403,8 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
                                                     isResizedTileObject));
 
         auto changeTileAction = menu.addAction(tr("Replace Tile"), this, SLOT(changeTile()));
-        changeTileAction->setEnabled(tile());
+        changeTileAction->setEnabled(tile() && (!selectedObjects.first()->isTemplateBase() ||
+                                                tile()->tileset()->isExternal()));
     }
 
     // Create action for replacing an object with a template
@@ -429,11 +435,11 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
         }
     }
 
-    bool anyIsTemplateInstance = std::any_of(selectedObjects.begin(),
-                                             selectedObjects.end(),
-                                             [](MapObject *object) { return object->isTemplateInstance(); });
+    bool anyTemplateInstanceSelected = std::any_of(selectedObjects.begin(),
+                                                   selectedObjects.end(),
+                                                   isTemplateInstance);
 
-    if (anyIsTemplateInstance) {
+    if (anyTemplateInstanceSelected) {
         menu.addAction(tr("Detach"), this, SLOT(detachSelectedObjects()));
 
         auto resetToTemplateAction = menu.addAction(tr("Reset Template Instance(s)"), this, SLOT(resetInstances()));
