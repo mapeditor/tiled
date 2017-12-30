@@ -2342,7 +2342,7 @@ Line %1, column %2</source>
     <message>
         <location line="+2"/>
         <source>Reset Template Instance(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Reset Template Instance(s)</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -2423,22 +2423,22 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/abstracttileselectiontool.cpp" line="+136"/>
         <source>Replace Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Replace Selection</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Add Selection</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Subtract Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Subtract Selection</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Intersect Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Intersect Selection</translation>
     </message>
 </context>
 <context>
@@ -2550,7 +2550,7 @@ Line %1, column %2</source>
     <message>
         <location line="+2"/>
         <source>Template tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Template tileset</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -2560,7 +2560,7 @@ Line %1, column %2</source>
     <message>
         <location line="+2"/>
         <source>Template</source>
-        <translation type="unfinished"></translation>
+        <translation>Template</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -2600,7 +2600,7 @@ Line %1, column %2</source>
     <message>
         <location line="-5"/>
         <source>Open Template...</source>
-        <translation type="unfinished"></translation>
+        <translation>Open Template...</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -2616,7 +2616,7 @@ Line %1, column %2</source>
     <message>
         <location line="+50"/>
         <source>Locate Object Template</source>
-        <translation type="unfinished"></translation>
+        <translation>Locate Object Template</translation>
     </message>
     <message>
         <location line="+25"/>
@@ -2626,7 +2626,7 @@ Line %1, column %2</source>
     <message>
         <location line="+48"/>
         <source>Error Reading Object Template</source>
-        <translation type="unfinished"></translation>
+        <translation>Error Reading Object Template</translation>
     </message>
     <message>
         <location line="-89"/>
@@ -2790,7 +2790,7 @@ Line %1, column %2</source>
     <message>
         <location line="+10"/>
         <source>Select Working Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Select Working Directory</translation>
     </message>
 </context>
 <context>
@@ -2816,7 +2816,7 @@ Line %1, column %2</source>
     <message>
         <location line="+20"/>
         <source>Executing: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Executing: %1</translation>
     </message>
     <message>
         <location line="+29"/>
@@ -2878,12 +2878,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/createpointobjecttool.cpp" line="+45"/>
         <source>Insert Point</source>
-        <translation type="unfinished"></translation>
+        <translation>Insert Point</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>I</source>
-        <translation type="unfinished"></translation>
+        <translation>I</translation>
     </message>
 </context>
 <context>
@@ -2930,12 +2930,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/createtemplatetool.cpp" line="+82"/>
         <source>Insert Template</source>
-        <translation type="unfinished"></translation>
+        <translation>Insert Template</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>V</source>
-        <translation type="unfinished"></translation>
+        <translation>V</translation>
     </message>
 </context>
 <context>
@@ -2948,7 +2948,7 @@ Line %1, column %2</source>
     <message>
         <location line="+1"/>
         <source>E</source>
-        <translation type="unfinished"></translation>
+        <translation>E</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -2987,12 +2987,12 @@ Line %1, column %2</source>
     <message>
         <location line="+7"/>
         <source>Close Other Tabs</source>
-        <translation type="unfinished"></translation>
+        <translation>Close Other Tabs</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Close Tabs to the Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Close Tabs to the Right</translation>
     </message>
     <message>
         <location line="+246"/>
@@ -3017,7 +3017,7 @@ Line %1, column %2</source>
         <location line="-218"/>
         <location line="+219"/>
         <source>O</source>
-        <translation type="unfinished"></translation>
+        <translation>O</translation>
     </message>
     <message numerus="yes">
         <location line="+220"/>
@@ -3052,7 +3052,7 @@ Line %1, column %2</source>
         <location line="-269"/>
         <location line="+324"/>
         <source>Delete Segment</source>
-        <translation type="unfinished"></translation>
+        <translation>Delete Segment</translation>
     </message>
 </context>
 <context>
@@ -3168,12 +3168,12 @@ Do you want to replace it?</source>
     <message>
         <location line="+1"/>
         <source>Visible</source>
-        <translation type="unfinished"></translation>
+        <translation>Visible</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Locked</source>
-        <translation type="unfinished"></translation>
+        <translation>Locked</translation>
     </message>
     <message numerus="yes">
         <location line="+74"/>
@@ -3300,12 +3300,12 @@ Do you want to replace it?</source>
     <message>
         <location line="-1042"/>
         <source>Reset to Default Layout</source>
-        <translation type="unfinished"></translation>
+        <translation>Reset to Default Layout</translation>
     </message>
     <message>
         <location line="+295"/>
         <source>Open File</source>
-        <translation type="unfinished"></translation>
+        <translation>Open File</translation>
     </message>
     <message>
         <location line="+748"/>
@@ -3451,7 +3451,7 @@ Please select specific format.</source>
         <location line="+59"/>
         <location line="+28"/>
         <source>Error Exporting Map!</source>
-        <translation type="unfinished"></translation>
+        <translation>Error Exporting Map!</translation>
     </message>
     <message>
         <location line="+48"/>
@@ -3499,17 +3499,17 @@ Please select specific format.</source>
         <location filename="../src/tiled/documentmanager.cpp" line="+19"/>
         <location line="+20"/>
         <source>untitled</source>
-        <translation type="unfinished"></translation>
+        <translation>untitled</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Save Template</source>
-        <translation type="unfinished"></translation>
+        <translation>Save Template</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Error Saving Template</source>
-        <translation type="unfinished"></translation>
+        <translation>Error Saving Template</translation>
     </message>
 </context>
 <context>
@@ -3699,7 +3699,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Autocrop</source>
-        <translation type="unfinished"></translation>
+        <translation>Autocrop</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3865,7 +3865,7 @@ Please select specific format.</source>
     <message>
         <location line="+71"/>
         <source>Tool Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Tool Options</translation>
     </message>
     <message>
         <location line="-1"/>
@@ -4039,7 +4039,7 @@ Please select specific format.</source>
     <message>
         <location line="+11"/>
         <source>Open File...</source>
-        <translation type="unfinished"></translation>
+        <translation>Open File...</translation>
     </message>
 </context>
 <context>
@@ -4461,27 +4461,27 @@ Please select specific format.</source>
     <message>
         <location line="-991"/>
         <source>WangSet</source>
-        <translation type="unfinished"></translation>
+        <translation>WangSet</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Edge Count</source>
-        <translation type="unfinished"></translation>
+        <translation>Edge Count</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Corner Count</source>
-        <translation type="unfinished"></translation>
+        <translation>Corner Count</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Wang Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Wang Colour</translation>
     </message>
     <message>
         <location line="+40"/>
         <source>Change Infinite Property</source>
-        <translation type="unfinished"></translation>
+        <translation>Change Infinite Property</translation>
     </message>
     <message>
         <location line="+934"/>
@@ -4528,7 +4528,7 @@ Please select specific format.</source>
     <message>
         <location line="-229"/>
         <source>Infinite</source>
-        <translation type="unfinished"></translation>
+        <translation>Infinite</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -4548,7 +4548,7 @@ Please select specific format.</source>
     <message>
         <location line="+57"/>
         <source>Template</source>
-        <translation type="unfinished"></translation>
+        <translation>Template</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -4583,7 +4583,7 @@ Please select specific format.</source>
     <message>
         <location line="+11"/>
         <source>Locked</source>
-        <translation type="unfinished"></translation>
+        <translation>Locked</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -4724,23 +4724,23 @@ Please select specific format.</source>
         <location filename="../src/tiled/shapefilltool.cpp" line="+38"/>
         <location line="+105"/>
         <source>Shape Fill Tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Shape Fill Tool</translation>
     </message>
     <message>
         <location line="-102"/>
         <location line="+103"/>
         <source>P</source>
-        <translation type="unfinished"></translation>
+        <translation>P</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Rectangle Fill</source>
-        <translation type="unfinished"></translation>
+        <translation>Rectangle Fill</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Circle Fill</source>
-        <translation type="unfinished"></translation>
+        <translation>Circle Fill</translation>
     </message>
 </context>
 <context>
@@ -4761,27 +4761,27 @@ Please select specific format.</source>
         <location line="-30"/>
         <location line="+24"/>
         <source>Wang Fill Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Wang Fill Mode</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Flip Horizontally</source>
-        <translation type="unfinished"></translation>
+        <translation>Flip Horizontally</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Flip Vertically</source>
-        <translation type="unfinished"></translation>
+        <translation>Flip Vertically</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Rotate Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Rotate Left</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Rotate Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Rotate Right</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -4824,33 +4824,33 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/templatesdock.cpp" line="+297"/>
         <source>Open Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Open Tileset</translation>
     </message>
     <message>
         <location line="+4"/>
         <location line="+9"/>
         <source>%1: Couldn&apos;t find &quot;%2&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: Couldn&apos;t find &quot;%2&quot;</translation>
     </message>
     <message>
         <location line="-4"/>
         <source>Locate Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Locate Tileset</translation>
     </message>
     <message>
         <location line="+49"/>
         <source>Choose the Templates Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Choose the Templates Folder</translation>
     </message>
     <message>
         <location line="+24"/>
         <source>Templates</source>
-        <translation type="unfinished"></translation>
+        <translation>Templates</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Choose Templates Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Choose Templates Directory</translation>
     </message>
     <message>
         <location line="+24"/>
@@ -4873,7 +4873,7 @@ Please select specific format.</source>
     <message>
         <location line="+60"/>
         <source>Select All Instances</source>
-        <translation type="unfinished"></translation>
+        <translation>Select All Instances</translation>
     </message>
 </context>
 <context>
@@ -4916,12 +4916,12 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Move Terrain Type Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Move Terrain Type Up</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Move Terrain Type Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Move Terrain Type Down</translation>
     </message>
 </context>
 <context>
@@ -5139,7 +5139,7 @@ Please select specific format.</source>
     <message>
         <location line="-173"/>
         <source>Tile Animation Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Tile Animation Editor</translation>
     </message>
     <message>
         <location line="+49"/>
@@ -5179,7 +5179,7 @@ Please select specific format.</source>
     <message>
         <location line="+89"/>
         <source>New Wang Set</source>
-        <translation type="unfinished"></translation>
+        <translation>New Wang Set</translation>
     </message>
 </context>
 <context>
@@ -5205,12 +5205,12 @@ Please select specific format.</source>
     <message>
         <location line="+9"/>
         <source>Set Wang Set Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Set Wang Set Image</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Set Wang Color Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Set Wang Colour Image</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -5233,7 +5233,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tmxmapformat.h" line="+66"/>
         <source>Tiled map files (*.tmx *.xml)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiled map files (*.tmx *.xml)</translation>
     </message>
 </context>
 <context>
@@ -5241,7 +5241,7 @@ Please select specific format.</source>
     <message>
         <location line="+28"/>
         <source>Tiled tileset files (*.tsx *.xml)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiled tileset files (*.tsx *.xml)</translation>
     </message>
 </context>
 <context>
@@ -5314,18 +5314,18 @@ Please select specific format.</source>
         <location filename="../src/tiled/wangbrush.cpp" line="+108"/>
         <location line="+65"/>
         <source>Wang Brush</source>
-        <translation type="unfinished"></translation>
+        <translation>Wang Brush</translation>
     </message>
     <message>
         <location line="-62"/>
         <location line="+63"/>
         <source>G</source>
-        <translation type="unfinished"></translation>
+        <translation>G</translation>
     </message>
     <message>
         <location line="+152"/>
         <source>Missing wang tile transition</source>
-        <translation type="unfinished"></translation>
+        <translation>Missing wang tile transition</translation>
     </message>
 </context>
 <context>
@@ -5333,7 +5333,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/wangcolorview.cpp" line="+184"/>
         <source>Pick Custom Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Pick Custom Colour</translation>
     </message>
 </context>
 <context>
@@ -5342,48 +5342,48 @@ Please select specific format.</source>
         <location filename="../src/tiled/wangdock.cpp" line="+228"/>
         <location line="+324"/>
         <source>Patterns</source>
-        <translation type="unfinished"></translation>
+        <translation>Patterns</translation>
     </message>
     <message>
         <location line="-323"/>
         <location line="+324"/>
         <source>Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Colours</translation>
     </message>
     <message>
         <location line="-10"/>
         <source>Wang Sets</source>
-        <translation type="unfinished"></translation>
+        <translation>Wang Sets</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Erase WangIds</source>
-        <translation type="unfinished"></translation>
+        <translation>Erase WangIds</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add Wang Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Add Wang Set</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Wang Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Remove Wang Set</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add Edge Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Add Edge Colour</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add Corner Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Add Corner Colour</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Remove Colour</translation>
     </message>
 </context>
 <context>
@@ -5391,7 +5391,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/wangsetview.cpp" line="+105"/>
         <source>Wang Set &amp;Properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>Wang Set &amp;Properties...</translation>
     </message>
 </context>
 <context>
@@ -5399,7 +5399,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tmxmapformat.h" line="+27"/>
         <source>Tiled template files (*.tx)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiled template files (*.tx)</translation>
     </message>
 </context>
 <context>
@@ -5584,12 +5584,12 @@ Please select specific format.</source>
     <message>
         <location line="+18"/>
         <source>Toggle Polygon/Polyline</source>
-        <translation type="unfinished"></translation>
+        <translation>Toggle Polygon/Polyline</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Split Polyline</source>
-        <translation type="unfinished"></translation>
+        <translation>Split Polyline</translation>
     </message>
     <message>
         <location filename="../src/tiled/addremoveterrain.cpp" line="+67"/>
@@ -5629,12 +5629,12 @@ Please select specific format.</source>
     <message>
         <location line="+19"/>
         <source>Lock Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lock Layer</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Unlock Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Unlock Layer</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -5667,27 +5667,21 @@ Please select specific format.</source>
     <message numerus="yes">
         <location line="+65"/>
         <source>Detach %n Template Instance(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Detach Template Instance</numerusform>
+        <numerusform>Detach %n Template Instances</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+45"/>
         <source>Reset %n Instances</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Reset Instance</numerusform>
+        <numerusform>Reset %n Instances</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+46"/>
         <source>Replace %n Object(s) With Template</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Replace Object With Template</numerusform>
+        <numerusform>Replace %n Objects With Template</numerusform>
+        </translation></message>
     <message>
         <location filename="../src/tiled/renameterrain.cpp" line="+36"/>
         <source>Change Terrain Name</source>
@@ -5760,7 +5754,7 @@ Please select specific format.</source>
     <message>
         <location line="+4"/>
         <source>Change Infinite Property</source>
-        <translation type="unfinished"></translation>
+        <translation>Change Infinite Property</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -5847,64 +5841,64 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/addremovewangset.cpp" line="+65"/>
         <source>Add Wang Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Add Wang Set</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Remove Wang Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Remove Wang Set</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetilewangid.cpp" line="+36"/>
         <location line="+9"/>
         <location line="+14"/>
         <source>Change Tile WangId</source>
-        <translation type="unfinished"></translation>
+        <translation>Change Tile WangId</translation>
     </message>
     <message>
         <location filename="../src/tiled/changewangsetdata.cpp" line="+36"/>
         <source>Change Wang Set edge count</source>
-        <translation type="unfinished"></translation>
+        <translation>Change Wang Set edge count</translation>
     </message>
     <message>
         <location line="+71"/>
         <source>Change Wang Set corner count</source>
-        <translation type="unfinished"></translation>
+        <translation>Change Wang Set corner count</translation>
     </message>
     <message>
         <location line="+68"/>
         <source>Remove Wang Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Remove Wang Colour</translation>
     </message>
     <message>
         <location line="+89"/>
         <source>Set Wang Set Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Set Wang Set Image</translation>
     </message>
     <message>
         <location filename="../src/tiled/moveterrain.cpp" line="+61"/>
         <source>Move Terrain Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Move Terrain Up</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Move Terrain Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Move Terrain Down</translation>
     </message>
     <message>
         <location filename="../src/tiled/renamewangset.cpp" line="+36"/>
         <source>Change Wang Set Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Change Wang Set Name</translation>
     </message>
     <message>
         <location filename="../src/tiled/replacetemplate.cpp" line="+35"/>
         <source>Replace Template</source>
-        <translation type="unfinished"></translation>
+        <translation>Replace Template</translation>
     </message>
     <message>
         <location filename="../src/tiled/shapefilltool.cpp" line="-33"/>
         <source>Shape Fill</source>
-        <translation type="unfinished"></translation>
+        <translation>Shape Fill</translation>
     </message>
 </context>
 <context>
