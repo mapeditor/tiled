@@ -220,7 +220,9 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &si
         return;
     }
 
-    if (mTile != tile)
+    // The USHRT_MAX limit is rather arbitrary but avoids a crash in
+    // drawPixmapFragments for a large number of fragments.
+    if (mTile != tile || mFragments.size() == USHRT_MAX)
         flush();
 
     const QPixmap &image = tile->image();
