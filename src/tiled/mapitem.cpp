@@ -134,7 +134,6 @@ void MapItem::mapChanged()
 
     for (MapObjectItem *item : mObjectItems)
         item->syncWithMapObject();
-
 }
 
 void MapItem::tileLayerChanged(TileLayer *tileLayer)
@@ -154,6 +153,22 @@ void MapItem::layerAdded(Layer *layer)
 
 void MapItem::layerRemoved(Layer *layer)
 {
+    switch (layer->layerType()) {
+    case Layer::TileLayerType:
+    case Layer::ImageLayerType:
+        break;
+    case Layer::ObjectGroupType:
+        // Delete any object items
+        for (auto object : static_cast<ObjectGroup*>(layer)->objects())
+            delete mObjectItems.take(object);
+        break;
+    case Layer::GroupLayerType:
+        // Recurse into group layers
+        for (auto childLayer : static_cast<GroupLayer*>(layer)->layers())
+            layerRemoved(childLayer);
+        break;
+    }
+
     delete mLayerItems.take(layer);
 }
 
