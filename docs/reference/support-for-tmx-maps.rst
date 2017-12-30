@@ -252,32 +252,33 @@ Haxe
 HTML5 (multiple engines)
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
--  `Canvas Engine <http://canvasengine.net>`__ A framework to create
+-  `Canvas Engine <https://github.com/RSamaium/CanvasEngine>`__ A framework to create
    video games in HTML5 Canvas
+-  `chem-tmx <https://github.com/andrewrk/chem-tmx>`__ Plugin for
+   `chem <https://github.com/andrewrk/chem/>`__ game engine.
 -  `chesterGL <https://github.com/funkaster/ChesterGL>`__ A simple
    WebGL/canvas game library
+-  `Crafty <http://craftyjs.com>`__ JavaScript HTML5 Game Engine;
+   supports loading Tiled maps through an external component
+   `TiledMapBuilder <https://github.com/Kibo/TiledMapBuilder>`__.
+-  `GameJs <http://gamejs.org>`__ JavaScript library for game
+   programming; a thin wrapper to draw on HTML5 canvas and other useful
+   modules for game development
 -  `KineticJs-Ext <https://github.com/Wappworks/kineticjs-ext>`__ A
    multi-canvas based game rendering library
 -  `melonJS <http://www.melonjs.org>`__ A lightweight HTML5 game engine
+-  `Panda 2 <https://www.panda2.io/>`__, a HTML5 Game Development Platform for Mac, Windows and Linux. Has `a plugin for rendering Tiled <https://www.panda2.io/plugins>`__ maps, both orthogonal and isometric.
+-  `Phaser <http://www.phaser.io>`__ A fast, free and fun open source
+   framework supporting both JavaScript and TypeScript (`Tiled
+   tutorial <http://www.gamedevacademy.org/html5-phaser-tutorial-top-down-games-with-tiled/>`__)
+-  `linux-man/p5.tiledmap <https://github.com/linux-man/p5.tiledmap>`__
+   adds Tiled maps to `p5.js <http://p5js.org/>`__.
 -  `Platypus Engine <https://github.com/PBS-KIDS/Platypus/>`__ A robust
    orthogonal tile game engine with game entity library.
 -  `sprite.js <https://github.com/batiste/sprite.js>`__ A game framework
    for image sprites.
 -  `TMXjs <https://github.com/cdmckay/tmxjs>`__ A JavaScript, jQuery and
    RequireJS-based TMX (Tile Map XML) parser and renderer.
--  `chem-tmx <https://github.com/andrewrk/chem-tmx>`__ Plugin for
-   `chem <https://github.com/andrewrk/chem/>`__ game engine.
--  `GameJs <http://gamejs.org>`__ JavaScript library for game
-   programming; a thin wrapper to draw on HTML5 canvas and other useful
-   modules for game development
--  `Crafty <http://craftyjs.com>`__ JavaScript HTML5 Game Engine;
-   supports loading Tiled maps through an external component
-   `TiledMapBuilder <https://github.com/Kibo/TiledMapBuilder>`__.
--  `Phaser <http://www.phaser.io>`__ A fast, free and fun open source
-   framework supporting both JavaScript and TypeScript (`Tiled
-   tutorial <http://www.gamedevacademy.org/html5-phaser-tutorial-top-down-games-with-tiled/>`__)
--  `linux-man/p5.tiledmap <https://github.com/linux-man/p5.tiledmap>`__
-   adds Tiled maps to `p5.js <http://p5js.org/>`__.
 
 indielib-crossplatform
 ~~~~~~~~~~~~~~~~~~~~~~
