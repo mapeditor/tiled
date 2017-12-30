@@ -53,7 +53,7 @@ class TerrainDock : public QDockWidget
 
 public:
     TerrainDock(QWidget *parent = nullptr);
-    ~TerrainDock();
+    ~TerrainDock() override;
 
     /**
      * Sets the document for which the terrains should be displayed. This can

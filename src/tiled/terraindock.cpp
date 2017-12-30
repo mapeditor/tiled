@@ -126,6 +126,8 @@ TerrainDock::TerrainDock(QWidget *parent)
             this, &TerrainDock::refreshCurrentTerrain);
     connect(mTerrainView, SIGNAL(pressed(QModelIndex)),
             SLOT(indexPressed(QModelIndex)));
+    connect(mTerrainView, &TerrainView::removeTerrainTypeRequested,
+            this, &TerrainDock::removeTerrainTypeRequested);
 
     connect(mProxyModel, SIGNAL(rowsInserted(QModelIndex,int,int)),
             this, SLOT(expandRows(QModelIndex,int,int)));

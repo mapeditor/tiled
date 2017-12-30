@@ -118,6 +118,23 @@ void TerrainView::contextMenuEvent(QContextMenuEvent *event)
     menu.exec(event->globalPos());
 }
 
+void TerrainView::keyPressEvent(QKeyEvent *event)
+{
+    if (mTilesetDocument) {
+        switch (event->key()) {
+        case Qt::Key_Delete:
+        case Qt::Key_Backspace:
+            if (Terrain *terrain = terrainAt(currentIndex())) {
+                emit removeTerrainTypeRequested();
+                return;
+            }
+            break;
+        }
+    }
+
+    QTreeView::keyPressEvent(event);
+}
+
 void TerrainView::editTerrainProperties()
 {
     Terrain *terrain = terrainAt(selectionModel()->currentIndex());
