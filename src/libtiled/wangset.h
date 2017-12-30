@@ -165,12 +165,7 @@ private:
 class TILEDSHARED_EXPORT WangTile
 {
 public:
-    WangTile():
-        mTile(nullptr),
-        mWangId(0),
-        mFlippedHorizontally(false),
-        mFlippedVertically(false),
-        mFlippedAntiDiagonally(false)
+    WangTile() : WangTile(nullptr, 0)
     {}
 
     WangTile(Tile *tile,
@@ -235,23 +230,13 @@ private:
 class WangColor : public Object
 {
 public:
-    WangColor()
-        : Object(Object::WangColorType)
-        , mColorIndex(0)
-        , mIsEdge(true)
-        , mName(QString())
-        , mColor(Qt::red)
-        , mImageId(-1)
-        , mProbability(1) {}
-
-    WangColor(int colorIndex, bool isEdge, QString name, QColor color, int imageId, float probability = 1)
-        : Object(WangColorType)
-        , mColorIndex(colorIndex)
-        , mIsEdge(isEdge)
-        , mName(name)
-        , mColor(color)
-        , mImageId(imageId)
-        , mProbability(probability) {}
+    WangColor();
+    WangColor(int colorIndex,
+              bool isEdge,
+              const QString &name,
+              const QColor &color,
+              int imageId,
+              float probability = 1);
 
     int colorIndex() const { return mColorIndex; }
     bool isEdge() const { return mIsEdge; }
@@ -262,8 +247,8 @@ public:
 
     void setColorIndex(int colorIndex) { mColorIndex = colorIndex; }
     void setIsEdge(bool isEdge) { mIsEdge = isEdge; }
-    void setName(QString name) { mName = name; }
-    void setColor(QColor color) { mColor = color; }
+    void setName(const QString &name) { mName = name; }
+    void setColor(const QColor &color) { mColor = color; }
     void setImageId(int imageId) { mImageId = imageId; }
     void setProbability(float probability) { mProbability = probability; }
 
@@ -342,12 +327,6 @@ public:
     void addCell(const Cell &cell, WangId wangId);
     void addWangTile(const WangTile &wangTile);
 
-    /* Finds a tile whos WangId matches with the one provided,
-     * where zeros in the id are treated as wild cards, and can be
-     * any color.
-     * */
-    WangTile findMatchingWangTile(WangId wangId) const;
-
     /* Finds all the tiles which match the given wangId,
      * where zeros in the id are treated as wild cards, and can be
      * any color.
@@ -385,9 +364,9 @@ public:
 
     WangId wangIdOfCell(const Cell &cell) const;
 
-    /* The probability of a given wangId of being selected
+    /* The probability of a given wang tile of being selected.
      * */
-    float wangIdProbability(WangId wangId) const;
+    float wangTileProbability(const WangTile &wangTile) const;
 
     /* Returns whether or not the given wangId is valid in the contex of the current wangSet
      * */
@@ -441,9 +420,9 @@ private:
     Tileset *mTileset;
     QString mName;
     int mImageTileId;
+    unsigned mUniqueFullWangIdCount;
     QVector<QSharedPointer<WangColor>> mEdgeColors;
     QVector<QSharedPointer<WangColor>> mCornerColors;
-    unsigned mUniqueFullWangIdCount;
     QMultiHash<WangId, WangTile> mWangIdToWangTile;
 
     //Tile info being the tileId, with the last three bits (32, 31, 30)

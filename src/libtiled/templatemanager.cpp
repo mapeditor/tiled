@@ -20,14 +20,11 @@
  */
 
 #include "templatemanager.h"
-#include "templategroupformat.h"
+
+#include "objecttemplate.h"
+#include "objecttemplateformat.h"
 
 using namespace Tiled;
-
-TemplateManager::TemplateManager(QObject *parent)
-    : QObject(parent)
-{
-}
 
 TemplateManager *TemplateManager::mInstance;
 
@@ -45,35 +42,29 @@ void TemplateManager::deleteInstance()
     mInstance = nullptr;
 }
 
-TemplateGroup *TemplateManager::findTemplateGroup(const QString &fileName)
+TemplateManager::TemplateManager(QObject *parent)
+    : QObject(parent)
 {
-    for (auto *group : mTemplateGroups) {
-        if (group->fileName() == fileName)
-            return group;
-    }
-
-    return nullptr;
 }
 
-TemplateGroup *TemplateManager::loadTemplateGroup(const QString &fileName, QString *error)
+TemplateManager::~TemplateManager()
 {
-    TemplateGroup *templateGroup = findTemplateGroup(fileName);
-
-    if (!templateGroup) {
-        templateGroup = readTemplateGroup(fileName, error);
-        // This templateGroup is specifically read for a certian map and is not part of the templates model
-        if (templateGroup)
-            templateGroup->setEmbedded(false);
-    }
-
-    return templateGroup;
+    qDeleteAll(mObjectTemplates);
 }
 
-const ObjectTemplate *TemplateManager::findTemplate(const QString &fileName, unsigned templateId)
+ObjectTemplate *TemplateManager::loadObjectTemplate(const QString &fileName, QString *error)
 {
-    TemplateGroup *group = findTemplateGroup(fileName);
-    if (!group)
-        return nullptr;
-    return group->findTemplate(templateId);;
-}
+    ObjectTemplate *objectTemplate = findObjectTemplate(fileName);
 
+    if (!objectTemplate)
+        objectTemplate = readObjectTemplate(fileName, error);
+
+    // This instance will not have an object. It is used to detect broken
+    // template references.
+    if (!objectTemplate)
+        objectTemplate = new ObjectTemplate(fileName);
+
+    mObjectTemplates.insert(fileName, objectTemplate);
+
+    return objectTemplate;
+}

@@ -52,13 +52,12 @@ namespace Internal {
 class ActionManager;
 class AutomappingManager;
 class DocumentManager;
+class MapDocument;
 class MapDocumentActionHandler;
 class MapScene;
 class MapView;
 class ObjectTypesEditor;
-class TmxMapFormat;
-class TsxTilesetFormat;
-class TgxTemplateGroupFormat;
+class TilesetDocument;
 class Zoomable;
 
 /**
@@ -134,6 +133,7 @@ private slots:
     void zoomNormal();
     void setFullScreen(bool fullScreen);
     void toggleClearView(bool clearView);
+    void resetToDefaultLayout();
 
     bool newTileset(const QString &path = QString());
     void reloadTilesetImages();
@@ -193,6 +193,9 @@ private:
 
     void retranslateUi();
 
+    void exportMapAs(MapDocument *mapDocument);
+    void exportTilesetAs(TilesetDocument *tilesetDocument);
+
     ActionManager *mActionManager;
     Ui::MainWindow *mUi;
     Document *mDocument = nullptr;
@@ -211,14 +214,12 @@ private:
     QAction *mViewsAndToolbarsAction;
     QAction *mShowObjectTypesEditor;
 
+    QAction *mResetToDefaultLayout;
+
     void setupQuickStamps();
 
     AutomappingManager *mAutomappingManager;
     DocumentManager *mDocumentManager;
-
-    TmxMapFormat *mTmxMapFormat;
-    TsxTilesetFormat *mTsxTilesetFormat;
-    TgxTemplateGroupFormat *mTgxTemplateGroupFormat;
 
     QPointer<PreferencesDialog> mPreferencesDialog;
 

@@ -30,63 +30,42 @@
 #pragma once
 
 #include "mapobject.h"
-#include "object.h"
+
+#include <QPointer>
 
 namespace Tiled {
 
-class TemplateGroup;
+class ObjectTemplateFormat;
 
 class TILEDSHARED_EXPORT ObjectTemplate : public Object
 {
 public:
     ObjectTemplate();
-    ObjectTemplate(unsigned id, QString name);
+    ObjectTemplate(const QString &fileName);
+    ~ObjectTemplate();
 
     const MapObject *object() const;
     void setObject(const MapObject *object);
 
-    unsigned id() const;
-    void setId(unsigned id);
+    const QString &fileName() const;
+    void setFileName(const QString &fileName);
 
-    const QString &name() const;
-    void setName(const QString &name);
-
-    TemplateGroup *templateGroup() const;
-    void setTemplateGroup(TemplateGroup *templateGroup);
+    void setFormat(ObjectTemplateFormat *format);
+    ObjectTemplateFormat *format() const;
 
 private:
+    QString mFileName;
+    QPointer<ObjectTemplateFormat> mFormat;
     MapObject *mObject;
-    unsigned mId;
-    QString mName;
-    TemplateGroup *mTemplateGroup;
 };
 
 inline const MapObject *ObjectTemplate::object() const
 { return mObject; }
 
-inline void ObjectTemplate::setObject(const MapObject *object)
-{
-    delete mObject;
-    mObject = object->clone();
-    mObject->markAsTemplateBase();
-}
+inline const QString &ObjectTemplate::fileName() const
+{ return mFileName; }
 
-inline unsigned ObjectTemplate::id() const
-{ return mId; }
-
-inline void ObjectTemplate::setId(unsigned id)
-{ mId = id; }
-
-inline const QString &ObjectTemplate::name() const
-{ return mName; }
-
-inline void ObjectTemplate::setName(const QString &name)
-{ mName = name; }
-
-inline TemplateGroup *ObjectTemplate::templateGroup() const
-{ return mTemplateGroup; }
-
-inline void ObjectTemplate::setTemplateGroup(TemplateGroup *templateGroup)
-{ mTemplateGroup = templateGroup; }
+inline void ObjectTemplate::setFileName(const QString &fileName)
+{ mFileName = fileName; }
 
 } // namespace Tiled

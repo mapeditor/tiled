@@ -34,7 +34,6 @@ using namespace Tiled::Internal;
 
 CreateTemplateTool::CreateTemplateTool(QObject *parent)
     : CreateObjectTool(parent)
-    , mObjectTemplate(nullptr)
 {
     QIcon icon(QLatin1String(":images/24x24/insert-template.png"));
     icon.addFile(QLatin1String(":images/48x48/insert-template.png"));
@@ -86,11 +85,13 @@ void CreateTemplateTool::languageChanged()
 
 MapObject *CreateTemplateTool::createNewMapObject()
 {
-    if (!mObjectTemplate)
+    auto newObjectTemplate = objectTemplate();
+
+    if (!newObjectTemplate)
         return nullptr;
 
     MapObject *newMapObject = new MapObject();
-    newMapObject->setTemplateRef({mObjectTemplate->templateGroup(), mObjectTemplate->id()});
+    newMapObject->setObjectTemplate(newObjectTemplate);
     newMapObject->syncWithTemplate();
     return newMapObject;
 }

@@ -10,9 +10,9 @@ instantiated elsewhere as objects that inherit the template's properties. This
 can save a lot of tedious work of setting up the object type and properties, or
 even just finding the right tile in the tileset.
 
-Templates are organized into template groups. Template groups can be part of
-your project and are referred to by the map. You can save them in either XML
-or JSON format, just like map and tileset files.
+Each template is stored in its own file and they can be organized in
+directories. You can save templates in either XML or JSON format, just
+like map and tileset files.
 
 .. figure:: images/templates/templates-overview.png
    :alt: Templates Overview
@@ -21,28 +21,25 @@ Creating Templates
 ------------------
 
 A template can be created by right clicking on any object in the map and
-selecting "Save as Template". You will be asked to choose the name and the
-template group to save the template to. If the object already has a name the
-name field will be auto-filled with it.
-
-Template groups can be created from the New Template Group button in the
-Templates view or from the New Template dialog.
+selecting "Save As Template". You will be asked to choose the file name
+and the format to save the template in. If the object already has a name
+the suggested file name will be based on that.
 
 .. figure:: images/templates/creating-templates.gif
    :alt: New Template Dialog
 
 .. note:: You can't create a template from a tile object that uses a
-   tile from an embedded tileset, because the
-   :ref:`template group format <templategroup-format>` does not support
+   tile from an embedded tileset, because
+   :ref:`template files <tmx-template-files>` do not support
    referring to such tilesets.
 
 The Templates View
 ------------------
 
-Working with templates is done through the Templates view. The Templates view
-is divided into two parts, the left part is a tree view that shows the loaded
-template groups and their templates, the right part shows a preview of the
-selected template.
+Working with templates is done through the Templates view. The Templates
+view is divided into two parts: the left part is a tree view that shows
+the template files in a selected directory and the right part shows a
+preview of the selected template.
 
 .. _creating-template-instances:
 
@@ -65,7 +62,7 @@ Editing Templates
 
 Selecting a template will show an editable preview in the Templates view and
 will show the template's properties in the Properties view where they can be
-edited.
+edited. Changes to the template are saved automatically.
 
 All template instances are linked to their template, so all edits will be
 immediately reflected upon all the template instances on the map.
@@ -90,5 +87,5 @@ To detach an instance, right click on it and select *Detach*.
     - Resetting overridden properties individually (`#1725 <https://github.com/bjorn/tiled/issues/1725>`__).
     - Locking template properties (`#1726 <https://github.com/bjorn/tiled/issues/1726>`__).
     - Handling wrong file paths (`#1732 <https://github.com/bjorn/tiled/issues/1732>`__).
-    - Managing template groups, e.g. removing a template or a template group
-      (`#1723 <https://github.com/bjorn/tiled/issues/1723>`__, `#1724 <https://github.com/bjorn/tiled/issues/1724>`__).
+    - Managing the templates folder, e.g. moving, renaming or deleting a template or a sub-folder
+      (`#1723 <https://github.com/bjorn/tiled/issues/1723>`__).

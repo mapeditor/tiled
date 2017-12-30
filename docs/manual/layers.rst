@@ -56,6 +56,7 @@ properties. There are many kinds of objects:
 
 -  **Rectangle** - for marking custom rectangular areas
 -  **Ellipse** - for marking custom ellipse or circular areas
+-  **Point** - for marking exact locations
 -  **Polygon** - for when a rectangle or ellipse doesn't cut it (often a
    collision area)
 -  **Polyline** - can be a path to follow or a wall to collide with
@@ -80,7 +81,7 @@ If you're using a different coordinate space for objects in your
 isometric game, you'll need to convert these coordinates accordingly.
 
 The object width and height is also mostly stored in pixels. For
-isometric maps, all shape objects (rectangle, ellipse, polygon and
+isometric maps, all shape objects (rectangle, point, ellipse, polygon and
 polyline) are projected into the same coordinate space described above.
 This is based on the assumption that these objects are generally used to
 mark areas on the map.

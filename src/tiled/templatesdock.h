@@ -25,7 +25,8 @@
 #include <QTreeView>
 #include <QAction>
 
-class QAbstractProxyModel;
+class QPushButton;
+class QLabel;
 
 namespace Tiled {
 
@@ -56,17 +57,24 @@ public:
 
 signals:
     void currentTemplateChanged(ObjectTemplate *objectTemplate);
-    void templateEdited(const MapObject *mapObject);
+    void templateEdited(const ObjectTemplate *objectTemplate);
     void setTile(Tile *tile);
+    void templateTilesetReplaced();
+
+public slots:
+    void openTemplate(const QString &path);
+    void bringToFront();
 
 private slots:
-    void setSelectedTool(AbstractTool*tool);
-    void openTemplateGroup();
+    void setSelectedTool(AbstractTool *tool);
     void setTemplate(ObjectTemplate *objectTemplate);
+    void checkTileset();
 
     void undo();
     void redo();
     void applyChanges();
+
+    void chooseDirectory();
 
 protected:
     void focusInEvent(QFocusEvent *event) override;
@@ -74,13 +82,15 @@ protected:
 
 private:
     void retranslateUi();
+    void fixTileset();
 
     TemplatesView *mTemplatesView;
 
-    QAction *mNewTemplateGroup;
-    QAction *mOpenTemplateGroup;
+    QAction *mChooseDirectory;
     QAction *mUndoAction;
     QAction *mRedoAction;
+    QPushButton *mFixTilesetButton;
+    QLabel *mDescriptionLabel;
 
     MapDocument *mDummyMapDocument;
     MapScene *mMapScene;
@@ -98,8 +108,7 @@ class TemplatesView : public QTreeView
 public:
     QSize sizeHint() const override;
     TemplatesView(QWidget *parent = nullptr);
-
-    void applyTemplateGroups();
+    void setSelectedTemplate(const QString &path);
 
 signals:
     void currentTemplateChanged(ObjectTemplate *objectTemplate);
@@ -110,12 +119,12 @@ protected:
     void contextMenuEvent(QContextMenuEvent *event) override;
 
 public slots:
-    void updateSelection(const QItemSelection &selected, const QItemSelection &deselected);
-    void selectAllInstances();
+    void onCurrentChanged(const QModelIndex &index);
 
 private:
-    QAction *mActionSelectAllInstances;
-    ObjectTemplate *mObjectTemplate;
+    void onTemplatesDirectoryChanged(const QString &templatesDirectory);
+
+    ObjectTemplateModel *mModel;
 };
 
 inline void TemplatesDock::setPropertiesDock(PropertiesDock *propertiesDock)

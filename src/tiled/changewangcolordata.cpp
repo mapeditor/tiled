@@ -25,7 +25,7 @@
 using namespace Tiled;
 using namespace Internal;
 
-ChangeWangColorName::ChangeWangColorName(QString newName,
+ChangeWangColorName::ChangeWangColorName(const QString &newName,
                                          int colorIndex,
                                          bool isEdge,
                                          WangColorModel *wangColorModel)
@@ -75,7 +75,7 @@ void ChangeWangColorImage::redo()
     mWangColorModel->setImage(mNewImageId, mIsEdge, mIndex);
 }
 
-ChangeWangColorColor::ChangeWangColorColor(QColor newColor,
+ChangeWangColorColor::ChangeWangColorColor(const QColor &newColor,
                                            int colorIndex,
                                            bool isEdge,
                                            WangColorModel *wangColorModel)

@@ -96,7 +96,7 @@ void WangColorDelegate::paint(QPainter *painter,
         painter->setPen(QPen(darkerColor));
         if (mWangColorView->selectionModel()->currentIndex() == index) {
             painter->setBrush(QBrush(darkerColor));
-            painter->setOpacity(0.5f);
+            painter->setOpacity(0.5);
         } else {
             painter->setBrush(Qt::NoBrush);
         }
@@ -163,23 +163,27 @@ WangColorView::WangColorView(QWidget *parent)
     setItemDelegate(new WangColorDelegate(this, this));
 }
 
+WangColorView::~WangColorView()
+{
+}
+
 void WangColorView::contextMenuEvent(QContextMenuEvent *event)
 {
-    const QModelIndex index = indexAt(event->pos());
-    const QSortFilterProxyModel *filterModel = (QSortFilterProxyModel *)model();
-    const WangColorModel *wangColorModel = (WangColorModel *)filterModel->sourceModel();
+    const QSortFilterProxyModel *filterModel = static_cast<QSortFilterProxyModel *>(model());
+    const WangColorModel *wangColorModel = static_cast<WangColorModel *>(filterModel->sourceModel());
+    const QModelIndex filterModelIndex = indexAt(event->pos());
 
-    if (!wangColorModel || !wangColorModel->hasTilesetDocument() || !index.isValid())
+    if (!wangColorModel || !wangColorModel->hasTilesetDocument() || !filterModelIndex.isValid())
         return;
+
+    const QModelIndex index = filterModel->mapToSource(filterModelIndex);
+    mClickedWangColor = wangColorModel->wangColorAt(index);
 
     QMenu menu;
 
     QAction *pickColor = menu.addAction(tr("Pick Custom Color"));
     connect(pickColor, &QAction::triggered,
             this, &WangColorView::pickColor);
-
-    mLastPickedForColorWasEdge = wangColorModel->isEdgeColorAt(filterModel->mapToSource(index));
-    mLastPickedForColorIndex = wangColorModel->colorAt(filterModel->mapToSource(index));
 
     menu.exec(event->globalPos());
 }
@@ -188,19 +192,23 @@ void WangColorView::pickColor()
 {
     QColorDialog *colorPicker = new QColorDialog(this);
     colorPicker->setAttribute(Qt::WA_DeleteOnClose);
+    colorPicker->setCurrentColor(mClickedWangColor->color());
     connect(colorPicker, &QColorDialog::colorSelected,
             this, &WangColorView::colorPicked);
 
     colorPicker->open();
 }
 
-void WangColorView::colorPicked(QColor color)
+void WangColorView::colorPicked(const QColor &color)
 {
-    if (!mLastPickedForColorIndex)
+    if (!mClickedWangColor)
         return;
 
-    emit wangColorColorPicked(color, mLastPickedForColorWasEdge, mLastPickedForColorIndex);
+    if (mClickedWangColor->color() != color) {
+        emit wangColorColorPicked(color,
+                                  mClickedWangColor->isEdge(),
+                                  mClickedWangColor->colorIndex());
+    }
 
-    mLastPickedForColorIndex = 0;
-    mLastPickedForColorWasEdge = false;
+    mClickedWangColor.clear();
 }

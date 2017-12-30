@@ -34,16 +34,6 @@ A plugin for tiled which allows to write Python plugins.
 
 %define pluginwarning Warning: This plugin does not offer full compatibility with Tileds features.
 
-%package plugin-tmw
-Summary:        The Mana World plugin for Tiled
-License:        GPLv2+
-URL:            http://www.mapeditor.org
-Requires:       %{name} = %{epoch}:%{version}-%{release}
-%description plugin-tmw
-A plugin for tiled which allows to export maps as eAthena collision files.
-
-%{pluginwarning}
-
 %package plugin-droidcraft
 Summary:        Droidcraft plugin for Tiled
 License:        GPLv2+
@@ -183,9 +173,6 @@ fi
 
 %files plugin-python
 %{_libdir}/%{name}/plugins/libpython.so
-
-%files plugin-tmw
-%{_libdir}/%{name}/plugins/libtmw.so
 
 %files plugin-droidcraft
 %{_libdir}/%{name}/plugins/libdroidcraft.so

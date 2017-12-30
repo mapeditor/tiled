@@ -350,18 +350,17 @@ void LayerView::contextMenuEvent(QContextMenuEvent *event)
 
 void LayerView::keyPressEvent(QKeyEvent *event)
 {
-    if (!mMapDocument)
-        return;
-
-    const LayerModel *layerModel = mMapDocument->layerModel();
-    const QModelIndex index = mProxyModel->mapToSource(currentIndex());
-    auto layer = layerModel->toLayer(index);
-    if (!layer)
-        return;
-
-    if (event->key() == Qt::Key_Delete) {
-        mMapDocument->removeLayer(layer);
-        return;
+    switch (event->key()) {
+    case Qt::Key_Delete:
+    case Qt::Key_Backspace:
+        if (mMapDocument) {
+            const LayerModel *layerModel = mMapDocument->layerModel();
+            const QModelIndex index = mProxyModel->mapToSource(currentIndex());
+            if (auto layer = layerModel->toLayer(index))
+                mMapDocument->removeLayer(layer);
+            return;
+        }
+        break;
     }
 
     QTreeView::keyPressEvent(event);

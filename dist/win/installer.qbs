@@ -4,6 +4,7 @@ import qbs.File
 import qbs.TextFile
 
 WindowsInstallerPackage {
+    builtByDefault: false
     condition: {
         if (project.windowsInstaller) {
             if (!(qbs.toolchain.contains("mingw") || qbs.toolchain.contains("msvc"))) {
@@ -16,7 +17,7 @@ WindowsInstallerPackage {
     }
 
     Depends { productTypes: ["application", "dynamiclibrary"] }
-    type: base.concat(["installable","appcast"])
+    type: base.concat(["appcast"])
 
     Depends { name: "cpp" }
     Depends { name: "Qt.core" }
@@ -102,6 +103,35 @@ WindowsInstallerPackage {
             }
 
             return cmd;
+        }
+    }
+
+    // This is a clever hack to make the rule that compiles the installer
+    // depend on all installables, since that rule implicitly depends on
+    // any "wxi" tagged products.
+    Rule {
+        multiplex: true
+        inputsFromDependencies: ["installable"]
+
+        Artifact {
+            filePath: "dummy.wxi"
+            fileTags: ["wxi"]
+        }
+
+        prepare: {
+            var cmd = new JavaScriptCommand();
+            cmd.silent = true;
+            cmd.sourceCode = function() {
+                var tf;
+                try {
+                    tf = new TextFile(output.filePath, TextFile.WriteOnly);
+                    tf.writeLine("<Include/>");
+                } finally {
+                    if (tf)
+                        tf.close();
+                }
+            };
+            return [cmd];
         }
     }
 }

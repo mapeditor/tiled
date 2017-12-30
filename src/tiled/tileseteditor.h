@@ -77,6 +77,8 @@ public:
     StandardActions enabledStandardActions() const override;
     void performStandardAction(StandardAction action) override;
 
+    void resetLayout() override;
+
     TilesetView *currentTilesetView() const;
     Tileset *currentTileset() const;
     Zoomable *zoomable() const override;
@@ -126,7 +128,7 @@ private slots:
     void removeWangSet();
     void setWangSetImage(Tile *tile);
     void setWangColorImage(Tile *tile, bool isEdge, int index);
-    void setWangColorColor(QColor color, bool isEdge, int index);
+    void setWangColorColor(const QColor &color, bool isEdge, int index);
 
     void onAnimationEditorClosed();
 

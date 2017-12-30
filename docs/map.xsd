@@ -311,6 +311,8 @@
             <xs:sequence>
               <xs:element ref="properties" minOccurs="0"/>
               <xs:choice>
+                <xs:element name="point" minOccurs="0" maxOccurs="1">
+                </xs:element>
                 <xs:element name="ellipse" minOccurs="0" maxOccurs="1">
                 </xs:element>
                 <xs:element name="polygon" minOccurs="0" maxOccurs="1">

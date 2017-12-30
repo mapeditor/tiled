@@ -43,7 +43,7 @@ class EditPolygonTool : public AbstractObjectTool
 
 public:
     explicit EditPolygonTool(QObject *parent = nullptr);
-    ~EditPolygonTool();
+    ~EditPolygonTool() override;
 
     void activate(MapScene *scene) override;
     void deactivate(MapScene *scene) override;
@@ -105,7 +105,7 @@ private:
     Qt::KeyboardModifiers mModifiers;
 
     /// The list of handles associated with each selected map object
-    QMap<MapObjectItem*, QList<PointHandle*> > mHandles;
+    QMap<MapObject*, QList<PointHandle*> > mHandles;
     QSet<PointHandle*> mSelectedHandles;
 };
 

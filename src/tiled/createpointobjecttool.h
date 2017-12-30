@@ -1,7 +1,6 @@
 /*
- * newtemplatedialog.h
- * Copyright 2017, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright 2017, Mohamed Thabet <thabetx@gmail.com>
+ * createpointobjecttool.h
+ * Copyright 2014, Martin Ziel <martin.ziel.com>
  *
  * This file is part of Tiled.
  *
@@ -21,35 +20,27 @@
 
 #pragma once
 
-#include <QDialog>
-#include "objecttemplate.h"
-
-namespace Ui {
-class NewTemplateDialog;
-}
+#include "createobjecttool.h"
 
 namespace Tiled {
-
 namespace Internal {
 
-class NewTemplateDialog : public QDialog
+class CreatePointObjectTool : public CreateObjectTool
 {
     Q_OBJECT
 
 public:
-    explicit NewTemplateDialog(const QString &objectName, QWidget *parent = nullptr);
-    ~NewTemplateDialog();
-    static void newTemplateGroup();
+    CreatePointObjectTool(QObject *parent);
+    void languageChanged() override;
 
-    void createTemplate(QString &name, int &index);
+protected:
+    void mouseMovedWhileCreatingObject(const QPointF &pos,
+                                       Qt::KeyboardModifiers modifiers) override;
+    void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event) override;
+    void mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event) override;
 
-private slots:
-    void updateOkButton();
-    void createGroup();
-
-private:
-    Ui::NewTemplateDialog *mUi;
-    ObjectTemplate mNewObjectTemplate;
+    MapObject *createNewMapObject() override;
+    bool startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup) override;
 };
 
 } // namespace Internal

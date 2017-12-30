@@ -38,9 +38,6 @@ public:
 
     void languageChanged() override;
 
-public slots:
-    void setTemplate(ObjectTemplate *objectTemplate) { mObjectTemplate = objectTemplate; }
-
 protected:
     void mouseMovedWhileCreatingObject(const QPointF &pos,
                                        Qt::KeyboardModifiers modifiers) override;
@@ -49,9 +46,6 @@ protected:
 
     bool startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup) override;
     MapObject *createNewMapObject() override;
-
-private:
-    ObjectTemplate *mObjectTemplate;
 };
 
 } // namespace Internal

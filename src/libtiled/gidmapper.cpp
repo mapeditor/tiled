@@ -59,7 +59,7 @@ GidMapper::GidMapper(const QVector<SharedTileset> &tilesets)
 {
     unsigned firstGid = 1;
     for (const SharedTileset &tileset : tilesets) {
-        insert(firstGid, tileset.data());
+        insert(firstGid, tileset);
         firstGid += tileset->nextTileId();
     }
 }
@@ -91,16 +91,16 @@ Cell GidMapper::gidToCell(unsigned gid, bool &ok) const
         ok = false;
     } else {
         // Find the tileset containing this tile
-        QMap<unsigned, Tileset*>::const_iterator i = mFirstGidToTileset.upperBound(gid);
+        QMap<unsigned, SharedTileset>::const_iterator i = mFirstGidToTileset.upperBound(gid);
         if (i == mFirstGidToTileset.begin()) {
             // Invalid global tile ID, since it lies before the first tileset
             ok = false;
         } else {
             --i; // Navigate one tileset back since upper bound finds the next
             int tileId = gid - i.key();
-            Tileset *tileset = i.value();
+            const SharedTileset &tileset = i.value();
 
-            result.setTile(tileset, tileId);
+            result.setTile(tileset.data(), tileId);
 
             ok = true;
         }
@@ -121,8 +121,8 @@ unsigned GidMapper::cellToGid(const Cell &cell) const
     const Tileset *tileset = cell.tileset();
 
     // Find the first GID for the tileset
-    QMap<unsigned, Tileset*>::const_iterator i = mFirstGidToTileset.begin();
-    QMap<unsigned, Tileset*>::const_iterator i_end = mFirstGidToTileset.end();
+    QMap<unsigned, SharedTileset>::const_iterator i = mFirstGidToTileset.begin();
+    QMap<unsigned, SharedTileset>::const_iterator i_end = mFirstGidToTileset.end();
     while (i != i_end && i.value() != tileset)
         ++i;
 

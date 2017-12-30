@@ -183,6 +183,7 @@ public:
     Terrain *addTerrain(const QString &name, int imageTileId);
     void insertTerrain(int index, Terrain *terrain);
     Terrain *takeTerrainAt(int index);
+    void swapTerrains(int index, int swapIndex);
 
     int terrainTransitionPenalty(int terrainType0, int terrainType1) const;
     int maximumTerrainDistance() const;

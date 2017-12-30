@@ -39,6 +39,7 @@
 #include "mapobject.h"
 #include "movemapobject.h"
 #include "objectgroup.h"
+#include "objecttemplate.h"
 #include "preferences.h"
 #include "replacetileset.h"
 #include "resizemapobject.h"
@@ -74,6 +75,7 @@ namespace Internal {
 PropertyBrowser::PropertyBrowser(QWidget *parent)
     : QtTreePropertyBrowser(parent)
     , mUpdating(false)
+    , mMapObjectFlags(0)
     , mObject(nullptr)
     , mDocument(nullptr)
     , mMapDocument(nullptr)
@@ -89,36 +91,7 @@ PropertyBrowser::PropertyBrowser(QWidget *parent)
     setPropertiesWithoutValueMarked(true);
     setAllowMultiSelection(true);
 
-    mStaggerAxisNames.append(tr("X"));
-    mStaggerAxisNames.append(tr("Y"));
-
-    mStaggerIndexNames.append(tr("Odd"));
-    mStaggerIndexNames.append(tr("Even"));
-
-    mOrientationNames.append(QCoreApplication::translate("Tiled::Internal::NewMapDialog", "Orthogonal"));
-    mOrientationNames.append(QCoreApplication::translate("Tiled::Internal::NewMapDialog", "Isometric"));
-    mOrientationNames.append(QCoreApplication::translate("Tiled::Internal::NewMapDialog", "Isometric (Staggered)"));
-    mOrientationNames.append(QCoreApplication::translate("Tiled::Internal::NewMapDialog", "Hexagonal (Staggered)"));
-
-    mTilesetOrientationNames.append(mOrientationNames.at(0));
-    mTilesetOrientationNames.append(mOrientationNames.at(1));
-
-    mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "XML"));
-    mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "Base64 (uncompressed)"));
-    mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "Base64 (gzip compressed)"));
-    mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "Base64 (zlib compressed)"));
-    mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "CSV"));
-
-    mRenderOrderNames.append(QCoreApplication::translate("PreferencesDialog", "Right Down"));
-    mRenderOrderNames.append(QCoreApplication::translate("PreferencesDialog", "Right Up"));
-    mRenderOrderNames.append(QCoreApplication::translate("PreferencesDialog", "Left Down"));
-    mRenderOrderNames.append(QCoreApplication::translate("PreferencesDialog", "Left Up"));
-
-    mFlippingFlagNames.append(tr("Horizontal"));
-    mFlippingFlagNames.append(tr("Vertical"));
-
-    mDrawOrderNames.append(tr("Top Down"));
-    mDrawOrderNames.append(tr("Manual"));
+    retranslateUi();
 
     connect(mVariantManager, SIGNAL(valueChanged(QtProperty*,QVariant)),
             SLOT(valueChanged(QtProperty*,QVariant)));
@@ -162,18 +135,18 @@ void PropertyBrowser::setDocument(Document *document)
     mTilesetDocument = tilesetDocument;
 
     if (mapDocument) {
-        connect(mapDocument, SIGNAL(mapChanged()),
-                SLOT(mapChanged()));
-        connect(mapDocument, SIGNAL(objectsChanged(QList<MapObject*>)),
-                SLOT(objectsChanged(QList<MapObject*>)));
-        connect(mapDocument, SIGNAL(objectsTypeChanged(QList<MapObject*>)),
-                SLOT(objectsTypeChanged(QList<MapObject*>)));
+        connect(mapDocument, &MapDocument::mapChanged,
+                this, &PropertyBrowser::mapChanged);
+        connect(mapDocument, &MapDocument::objectsChanged,
+                this, &PropertyBrowser::objectsChanged);
+        connect(mapDocument, &MapDocument::objectsTypeChanged,
+                this, &PropertyBrowser::objectsTypeChanged);
         connect(mapDocument, &MapDocument::layerChanged,
                 this, &PropertyBrowser::layerChanged);
-        connect(mapDocument, SIGNAL(objectGroupChanged(ObjectGroup*)),
-                SLOT(objectGroupChanged(ObjectGroup*)));
-        connect(mapDocument, SIGNAL(imageLayerChanged(ImageLayer*)),
-                SLOT(imageLayerChanged(ImageLayer*)));
+        connect(mapDocument, &MapDocument::objectGroupChanged,
+                this, &PropertyBrowser::objectGroupChanged);
+        connect(mapDocument, &MapDocument::imageLayerChanged,
+                this, &PropertyBrowser::imageLayerChanged);
         connect(mapDocument, &MapDocument::tileTypeChanged,
                 this, &PropertyBrowser::tileTypeChanged);
 
@@ -375,7 +348,6 @@ static QVariant predefinedPropertyValue(Object *object, const QString &name)
     case Object::WangSetType:
     case Object::WangColorType:
     case Object::ObjectTemplateType:
-    case Object::TemplateGroupType:
         break;
     }
 
@@ -561,7 +533,6 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
     case Object::WangSetType:           applyWangSetValue(id, val); break;
     case Object::WangColorType:         applyWangColorValue(id, val); break;
     case Object::ObjectTemplateType:    break;
-    case Object::TemplateGroupType:     break;
     }
 }
 
@@ -642,13 +613,31 @@ static QStringList objectTypeNames()
     return names;
 }
 
+enum MapObjectFlags {
+    ObjectHasDimensions = 0x1,
+    ObjectHasTile = 0x2,
+    ObjectIsText = 0x4
+};
+
+static int mapObjectFlags(const MapObject *mapObject)
+{
+    int flags = 0;
+    if (mapObject->hasDimensions())
+        flags |= ObjectHasDimensions;
+    if (!mapObject->cell().isEmpty())
+        flags |= ObjectHasTile;
+    if (mapObject->shape() == MapObject::Text)
+        flags |= ObjectIsText;
+    return flags;
+}
+
 void PropertyBrowser::addMapObjectProperties()
 {
     // DEFAULT MAP OBJECT PROPERTIES
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Object"));
 
     addProperty(IdProperty, QVariant::Int, tr("ID"), groupProperty)->setEnabled(false);
-    addProperty(TemplateInstanceProperty, QVariant::Bool, tr("Template Instance"), groupProperty)->setEnabled(false);
+    addProperty(TemplateProperty, filePathTypeId(), tr("Template"), groupProperty)->setEnabled(false);
     addProperty(NameProperty, QVariant::String, tr("Name"), groupProperty);
 
     QtVariantProperty *typeProperty =
@@ -660,16 +649,17 @@ void PropertyBrowser::addMapObjectProperties()
     addProperty(YProperty, QVariant::Double, tr("Y"), groupProperty);
 
     auto mapObject = static_cast<const MapObject*>(mObject);
+    mMapObjectFlags = mapObjectFlags(mapObject);
 
-    if (!mapObject->isPolyShape()) {
+    if (mMapObjectFlags & ObjectHasDimensions) {
         addProperty(WidthProperty, QVariant::Double, tr("Width"), groupProperty);
         addProperty(HeightProperty, QVariant::Double, tr("Height"), groupProperty);
     }
 
-    addProperty(RotationProperty, QVariant::Double, tr("Rotation"), groupProperty);
+    bool isPoint = mapObject->shape() == MapObject::Point;
+    addProperty(RotationProperty, QVariant::Double, tr("Rotation"), groupProperty)->setEnabled(!isPoint);
 
-
-    if (!mapObject->cell().isEmpty()) {
+    if (mMapObjectFlags & ObjectHasTile) {
         QtVariantProperty *flippingProperty =
                 addProperty(FlippingProperty, VariantPropertyManager::flagTypeId(),
                                tr("Flipping"), groupProperty);
@@ -677,7 +667,7 @@ void PropertyBrowser::addMapObjectProperties()
         flippingProperty->setAttribute(QLatin1String("flagNames"), mFlippingFlagNames);
     }
 
-    if (mapObject->shape() == MapObject::Text) {
+    if (mMapObjectFlags & ObjectIsText) {
         addProperty(TextProperty, QVariant::String, tr("Text"), groupProperty)->setAttribute(QLatin1String("multiline"), true);
         addProperty(TextAlignmentProperty, VariantPropertyManager::alignmentTypeId(), tr("Alignment"), groupProperty);
         addProperty(FontProperty, QVariant::Font, tr("Font"), groupProperty);
@@ -928,7 +918,7 @@ void PropertyBrowser::applyMapValue(PropertyId id, const QVariant &val)
         undoStack->beginMacro(tr("Change Infinite Property"));
 
         if (!infinite) {
-            QRect mapBounds;
+            QRect mapBounds(QPoint(0, 0), mMapDocument->map()->size());
 
             LayerIterator iterator(mMapDocument->map());
             while (Layer *layer = iterator.next()) {
@@ -1036,12 +1026,13 @@ QUndoCommand *PropertyBrowser::applyMapObjectValueTo(PropertyId id, const QVaria
         command = new ResizeMapObject(mMapDocument, mapObject, newSize, oldSize);
         break;
     }
-    case RotationProperty: {
-        const qreal newRotation = val.toDouble();
-        const qreal oldRotation = mapObject->rotation();
-        command = new RotateMapObject(mMapDocument, mapObject, newRotation, oldRotation);
+    case RotationProperty:
+        if (mapObject->canRotate()) {
+            const qreal newRotation = val.toDouble();
+            const qreal oldRotation = mapObject->rotation();
+            command = new RotateMapObject(mMapDocument, mapObject, newRotation, oldRotation);
+        }
         break;
-    }
     case FlippingProperty: {
         const int flippingFlags = val.toInt();
         const bool flippedHorizontally = flippingFlags & 1;
@@ -1323,7 +1314,7 @@ void PropertyBrowser::applyWangSetValue(PropertyId id, const QVariant &val)
         mDocument->undoStack()->push(new RenameWangSet(mTilesetDocument,
                                                        mTilesetDocument->tileset()->wangSets().indexOf(wangSet),
                                                        val.toString()));
-        break; 
+        break;
     case EdgeCountProperty:
         mDocument->undoStack()->push(new ChangeWangSetEdges(mTilesetDocument,
                                                             mTilesetDocument->tileset()->wangSets().indexOf(wangSet),
@@ -1501,7 +1492,6 @@ void PropertyBrowser::addProperties()
     case Object::WangSetType:           addWangSetProperties(); break;
     case Object::WangColorType:         addWangColorProperties(); break;
     case Object::ObjectTemplateType:    break;
-    case Object::TemplateGroupType:     break;
     }
 
     // Make sure the color and font properties are collapsed, to save space
@@ -1557,13 +1547,24 @@ void PropertyBrowser::updateProperties()
     }
     case Object::MapObjectType: {
         const MapObject *mapObject = static_cast<const MapObject*>(mObject);
+        const int flags = mapObjectFlags(mapObject);
+
+        if (mMapObjectFlags != flags) {
+            removeProperties();
+            addProperties();
+            return;
+        }
 
         const QString &type = mapObject->effectiveType();
         const auto typeColorGroup = mapObject->type().isEmpty() ? QPalette::Disabled
                                                                 : QPalette::Active;
 
+        FilePath templateFilePath;
+        if (auto objectTemplate = mapObject->objectTemplate())
+            templateFilePath.url = QUrl::fromLocalFile(objectTemplate->fileName());
+
         mIdToProperty[IdProperty]->setValue(mapObject->id());
-        mIdToProperty[TemplateInstanceProperty]->setValue(mapObject->isTemplateInstance());
+        mIdToProperty[TemplateProperty]->setValue(QVariant::fromValue(templateFilePath));
         mIdToProperty[NameProperty]->setValue(mapObject->name());
         mIdToProperty[TypeProperty]->setValue(type);
         mIdToProperty[TypeProperty]->setValueColor(palette().color(typeColorGroup, QPalette::WindowText));
@@ -1571,23 +1572,23 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[XProperty]->setValue(mapObject->x());
         mIdToProperty[YProperty]->setValue(mapObject->y());
 
-        if (!mapObject->isPolyShape()) {
+        if (flags & ObjectHasDimensions) {
             mIdToProperty[WidthProperty]->setValue(mapObject->width());
             mIdToProperty[HeightProperty]->setValue(mapObject->height());
         }
 
         mIdToProperty[RotationProperty]->setValue(mapObject->rotation());
 
-        if (QtVariantProperty *property = mIdToProperty[FlippingProperty]) {
+        if (flags & ObjectHasTile) {
             int flippingFlags = 0;
             if (mapObject->cell().flippedHorizontally())
                 flippingFlags |= 1;
             if (mapObject->cell().flippedVertically())
                 flippingFlags |= 2;
-            property->setValue(flippingFlags);
+            mIdToProperty[FlippingProperty]->setValue(flippingFlags);
         }
 
-        if (mapObject->shape() == MapObject::Text) {
+        if (flags & ObjectIsText) {
             const auto& textData = mapObject->textData();
             mIdToProperty[TextProperty]->setValue(textData.text);
             mIdToProperty[FontProperty]->setValue(textData.font);
@@ -1687,7 +1688,6 @@ void PropertyBrowser::updateProperties()
         break;
     }
     case Object::ObjectTemplateType:
-    case Object::TemplateGroupType:
         break;
     }
 
@@ -1761,7 +1761,6 @@ void PropertyBrowser::updateCustomProperties()
     case Object::WangSetType:
     case Object::WangColorType:
     case Object::ObjectTemplateType:
-    case Object::TemplateGroupType:
         break;
     }
 
@@ -1834,6 +1833,52 @@ void PropertyBrowser::updateCustomPropertyColor(const QString &name)
 
     property->setNameColor(textColor);
     property->setValueColor(textColor);
+}
+
+void PropertyBrowser::retranslateUi()
+{
+    mStaggerAxisNames.clear();
+    mStaggerIndexNames.clear();
+    mOrientationNames.clear();
+    mTilesetOrientationNames.clear();
+    mLayerFormatNames.clear();
+    mRenderOrderNames.clear();
+    mFlippingFlagNames.clear();
+    mDrawOrderNames.clear();
+
+    mStaggerAxisNames.append(tr("X"));
+    mStaggerAxisNames.append(tr("Y"));
+
+    mStaggerIndexNames.append(tr("Odd"));
+    mStaggerIndexNames.append(tr("Even"));
+
+    mOrientationNames.append(QCoreApplication::translate("Tiled::Internal::NewMapDialog", "Orthogonal"));
+    mOrientationNames.append(QCoreApplication::translate("Tiled::Internal::NewMapDialog", "Isometric"));
+    mOrientationNames.append(QCoreApplication::translate("Tiled::Internal::NewMapDialog", "Isometric (Staggered)"));
+    mOrientationNames.append(QCoreApplication::translate("Tiled::Internal::NewMapDialog", "Hexagonal (Staggered)"));
+
+    mTilesetOrientationNames.append(mOrientationNames.at(0));
+    mTilesetOrientationNames.append(mOrientationNames.at(1));
+
+    mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "XML"));
+    mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "Base64 (uncompressed)"));
+    mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "Base64 (gzip compressed)"));
+    mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "Base64 (zlib compressed)"));
+    mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "CSV"));
+
+    mRenderOrderNames.append(QCoreApplication::translate("PreferencesDialog", "Right Down"));
+    mRenderOrderNames.append(QCoreApplication::translate("PreferencesDialog", "Right Up"));
+    mRenderOrderNames.append(QCoreApplication::translate("PreferencesDialog", "Left Down"));
+    mRenderOrderNames.append(QCoreApplication::translate("PreferencesDialog", "Left Up"));
+
+    mFlippingFlagNames.append(tr("Horizontal"));
+    mFlippingFlagNames.append(tr("Vertical"));
+
+    mDrawOrderNames.append(tr("Top Down"));
+    mDrawOrderNames.append(tr("Manual"));
+
+    removeProperties();
+    addProperties();
 }
 
 } // namespace Internal

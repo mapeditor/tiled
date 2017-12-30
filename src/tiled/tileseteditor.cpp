@@ -173,21 +173,9 @@ TilesetEditor::TilesetEditor(QObject *parent)
     , mCurrentTilesetDocument(nullptr)
     , mCurrentTile(nullptr)
 {
-    mTerrainDock->setVisible(false);
-    mTileCollisionDock->setVisible(false);
-    mWangDock->setVisible(false);
-
     mMainWindow->setDockOptions(mMainWindow->dockOptions() | QMainWindow::GroupedDragging);
     mMainWindow->setDockNestingEnabled(true);
     mMainWindow->setCentralWidget(mWidgetStack);
-    mMainWindow->addToolBar(mMainToolBar);
-    mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mPropertiesDock);
-    mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mUndoDock);
-    mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mTerrainDock);
-    mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mTileCollisionDock);
-    mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mWangDock);
-
-    mUndoDock->setVisible(false);
 
     QAction *editTerrain = mTerrainDock->toggleViewAction();
     QAction *editCollision = mTileCollisionDock->toggleViewAction();
@@ -219,6 +207,8 @@ TilesetEditor::TilesetEditor(QObject *parent)
     mTilesetToolBar->addAction(mShowAnimationEditor);
 
     mMainWindow->statusBar()->addPermanentWidget(mZoomComboBox);
+
+    resetLayout();
 
     connect(mMainWindow, &TilesetEditorWindow::urlsDropped, this, &TilesetEditor::addTiles);
 
@@ -457,6 +447,32 @@ void TilesetEditor::performStandardAction(StandardAction action)
         mTileCollisionDock->delete_();
         break;
     }
+}
+
+void TilesetEditor::resetLayout()
+{
+    // Remove dock widgets (this also hides them)
+    const QList<QDockWidget*> dockWidgets = this->dockWidgets();
+    for (auto dockWidget : dockWidgets)
+        mMainWindow->removeDockWidget(dockWidget);
+
+    // Show Properties dock by default
+    mPropertiesDock->setVisible(true);
+
+    // Make sure all toolbars are visible
+    const QList<QToolBar*> toolBars = this->toolBars();
+    for (auto toolBar : toolBars)
+        toolBar->setVisible(true);
+
+    mMainWindow->addToolBar(mMainToolBar);
+    mMainWindow->addToolBar(mTilesetToolBar);
+
+    mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mPropertiesDock);
+    mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mUndoDock);
+
+    mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mTerrainDock);
+    mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mTileCollisionDock);
+    mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mWangDock);
 }
 
 TilesetView *TilesetEditor::currentTilesetView() const
@@ -961,7 +977,7 @@ void TilesetEditor::setWangColorImage(Tile *tile, bool isEdge, int index)
                                                                         mWangDock->wangColorModel()));
 }
 
-void TilesetEditor::setWangColorColor(QColor color, bool isEdge, int index)
+void TilesetEditor::setWangColorColor(const QColor &color, bool isEdge, int index)
 {
     mCurrentTilesetDocument->undoStack()->push(new ChangeWangColorColor(color,
                                                                         index,

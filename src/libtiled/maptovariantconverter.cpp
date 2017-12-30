@@ -26,12 +26,12 @@
 #include "map.h"
 #include "mapobject.h"
 #include "objectgroup.h"
+#include "objecttemplate.h"
 #include "properties.h"
-#include "templategroup.h"
+#include "terrain.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
-#include "terrain.h"
 
 #include <QCoreApplication>
 
@@ -83,34 +83,10 @@ QVariant MapToVariantConverter::toVariant(const Map &map, const QDir &mapDir)
     unsigned firstGid = 1;
     for (const SharedTileset &tileset : map.tilesets()) {
         tilesetVariants << toVariant(*tileset, firstGid);
-        mGidMapper.insert(firstGid, tileset.data());
+        mGidMapper.insert(firstGid, tileset);
         firstGid += tileset->nextTileId();
     }
     mapVariant[QLatin1String("tilesets")] = tilesetVariants;
-
-    mTidMapper.clear();
-    unsigned firstTid = 1;
-
-    QSet<TemplateGroup*> templateGroups;
-    for (ObjectGroup *group : map.objectGroups())
-        for (MapObject *object : group->objects())
-            if (object->isTemplateInstance())
-                templateGroups.insert(object->templateGroup());
-
-    QVariantList templateGroupVariants;
-
-    for (TemplateGroup *templateGroup : templateGroups) {
-        templateGroupVariants << toVariant(*templateGroup, firstTid);
-        mTidMapper.insert(firstTid, templateGroup);
-
-        // When a template group is not loaded, reserve enough space
-        // to enable loading when the templateGroup is fixed
-        if (templateGroup->loaded())
-            firstTid += templateGroup->nextTemplateId();
-        else
-            firstTid += templateGroup->maxId() + 1;
-    }
-    mapVariant[QLatin1String("templategroups")] = templateGroupVariants;
 
     mapVariant[QLatin1String("layers")] = toVariant(map.layers(),
                                                     map.layerDataFormat());
@@ -125,36 +101,24 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
     return toVariant(tileset, 0);
 }
 
-QVariant MapToVariantConverter::toVariant(const TemplateGroup &templateGroup,
+QVariant MapToVariantConverter::toVariant(const ObjectTemplate &objectTemplate,
                                           const QDir &directory)
 {
     mMapDir = directory;
-    QVariantMap templateGroupVariant;
+    QVariantMap objectTemplateVariant;
 
-    templateGroupVariant[QLatin1String("type")] = QLatin1String("templategroup");
-    templateGroupVariant[QLatin1String("name")] = templateGroup.name();
-    templateGroupVariant[QLatin1String("nexttemplateid")] = templateGroup.nextTemplateId();
-
-    QVariantList tilesetVariants;
+    objectTemplateVariant[QLatin1String("type")] = QLatin1String("template");
 
     mGidMapper.clear();
-    unsigned firstGid = 1;
-    for (const SharedTileset &tileset : templateGroup.tilesets()) {
-        tilesetVariants << toVariant(*tileset, firstGid);
-        mGidMapper.insert(firstGid, tileset.data());
-        firstGid += tileset->nextTileId();
+    if (Tileset *tileset = objectTemplate.object()->cell().tileset()) {
+        unsigned firstGid = 1;
+        mGidMapper.insert(firstGid, tileset->sharedPointer());
+        objectTemplateVariant[QLatin1String("tileset")] = toVariant(*tileset, firstGid);
     }
 
-    templateGroupVariant[QLatin1String("tilesets")] = tilesetVariants;
+    objectTemplateVariant[QLatin1String("object")] = toVariant(*objectTemplate.object());
 
-    QVariantList templateVariants;
-
-    for (const ObjectTemplate *objectTemplate: templateGroup.templates())
-        templateVariants << toVariant(*objectTemplate);
-
-    templateGroupVariant[QLatin1String("templates")] = templateVariants;
-
-    return templateGroupVariant;
+    return objectTemplateVariant;
 }
 
 QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
@@ -294,19 +258,6 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
     }
 
     return tilesetVariant;
-}
-
-QVariant MapToVariantConverter::toVariant(const TemplateGroup &templateGroup, int firstTid) const
-{
-    QVariantMap templateGroupVariant;
-
-    templateGroupVariant[QLatin1String("firsttid")] = firstTid;
-
-    const QString &fileName = templateGroup.fileName();
-    QString source = mMapDir.relativeFilePath(fileName);
-    templateGroupVariant[QLatin1String("source")] = source;
-
-    return templateGroupVariant;
 }
 
 QVariant MapToVariantConverter::toVariant(const Properties &properties) const
@@ -449,12 +400,12 @@ QVariant MapToVariantConverter::toVariant(const MapObject &object) const
 
     addProperties(objectVariant, object.properties());
 
-    bool notTemplateInstance = !object.isTemplateInstance();
-
-    if (object.isTemplateInstance()) {
-        unsigned tid = mTidMapper.templateRefToTid(object.templateRef());
-        objectVariant[QLatin1String("tid")] = tid;
+    if (const ObjectTemplate *objectTemplate = object.objectTemplate()) {
+        QString relativeFileName = mMapDir.relativeFilePath(objectTemplate->fileName());
+        objectVariant[QLatin1String("template")] = relativeFileName;
     }
+
+    bool notTemplateInstance = !object.isTemplateInstance();
 
     int id = object.id();
     if (id != 0)
@@ -528,20 +479,13 @@ QVariant MapToVariantConverter::toVariant(const MapObject &object) const
                                     object.propertyChanged(MapObject::TextColorProperty)))
             objectVariant[QLatin1String("text")] = toVariant(object.textData());
         break;
+    case MapObject::Point:
+        if (notTemplateInstance || object.propertyChanged(MapObject::ShapeProperty))
+            objectVariant[QLatin1String("point")] = true;
+        break;
     }
 
     return objectVariant;
-}
-
-QVariant MapToVariantConverter::toVariant(const ObjectTemplate &objectTemplate) const
-{
-    QVariantMap templateVariant;
-
-    templateVariant[QLatin1String("name")] = objectTemplate.name();
-    templateVariant[QLatin1String("id")] = objectTemplate.id();
-    templateVariant[QLatin1String("object")] = toVariant(*objectTemplate.object());
-
-    return templateVariant;
 }
 
 QVariant MapToVariantConverter::toVariant(const TextData &textData) const

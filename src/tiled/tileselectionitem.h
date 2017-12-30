@@ -38,7 +38,8 @@ class TileSelectionItem : public QGraphicsObject
     Q_OBJECT
 
 public:
-    TileSelectionItem(MapDocument *mapDocument);
+    TileSelectionItem(MapDocument *mapDocument,
+                      QGraphicsItem *parent = nullptr);
 
     // QGraphicsItem
     QRectF boundingRect() const override;

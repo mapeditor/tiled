@@ -42,9 +42,9 @@
 namespace Tiled {
 
 class MapObject;
-class Tile;
 class ObjectGroup;
-class TemplateGroup;
+class ObjectTemplate;
+class Tile;
 
 /**
  * A tile map. Consists of a stack of layers, each can be either a TileLayer
@@ -344,21 +344,16 @@ public:
      */
     SharedTileset tilesetAt(int index) const { return mTilesets.at(index); }
 
-    TemplateGroup *templateAt(int index) const { return mTemplateGroups.at(index); }
-
     /**
      * Returns the tilesets that the tiles on this map are using.
      */
     const QVector<SharedTileset> &tilesets() const { return mTilesets; }
 
-    const QList<TemplateGroup*> &templateGroups() const { return mTemplateGroups; }
-
-    bool addTemplateGroup(TemplateGroup *templateGroup);
-
     /**
      * Returns a list of MapObjects to be updated in the map scene
      */
-    QList<MapObject*> replaceTemplateGroup(TemplateGroup *oldTemplateGroup, TemplateGroup *templateGroup);
+    QList<MapObject*> replaceObjectTemplate(const ObjectTemplate *oldObjectTemplate,
+                                            const ObjectTemplate *newObjectTemplate);
 
     /**
      * Returns the background color of this map.
@@ -414,7 +409,6 @@ private:
     mutable bool mDrawMarginsDirty;
     QList<Layer*> mLayers;
     QVector<SharedTileset> mTilesets;
-    QList<TemplateGroup*> mTemplateGroups;
     LayerDataFormat mLayerDataFormat;
     int mNextObjectId;
 };

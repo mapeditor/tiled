@@ -1,4 +1,54 @@
-### 1.0.3 (29 August 2017)
+### Tiled 1.1 (...)
+
+* Added support for infinite maps (by Ketan Gupta, #260)
+* Added support for Wang tiles and related tools (by Benjamin Trotter)
+* Added support for reusable object templates (by Mohamed Thabet)
+* Added working directory setting for custom commands (by Ketan Gupta, #1580)
+* Added output of custom commands in Debug Console (by Ketan Gupta, #1552)
+* Added autocrop action based on tile layers (by Ketan Gupta, #642)
+* Added tool bar with tool-specific actions and settings (by Ketan Gupta, #1084)
+* Added shape fill tool for filling rectangles or circles (by Benjamin Trotter, #1272)
+* Added option to lock/unlock a layer (by Ketan Gupta, #734)
+* Added .xml as possible file extension for TMX files
+* Added keyboard shortcut for Save All (by Thomas ten Cate)
+* Added actions to remove a segment from polygon or to split a polyline (by Ketan Gupta, #1685)
+* Added icon for animation editor in the tileset editor (by Ketan Gupta, #1706)
+* Added display of flip bits for hovered tile in status bar (#1707)
+* Added ability to capture tiles while using fill tools (#790)
+* Added option to have mouse wheel zoom by default (#1472)
+* Added tab closing actions to context menu, and close by middle-click (by Justin Jacobs, #1720)
+* Added ability to reorder terrain types (by Justin Jacobs, #1603)
+* Added a point object for marking locations (by Antoine Gersant, #1325)
+* Added 'New Tileset' button when no tileset is opened (by Rhenaud Dubois, #1789)
+* Added 'Open File' button when no file opened (by Rhenaud Dubois, #1818)
+* Added support for custom input formats and TMX output to the --export-map command-line option
+* Added island RPG example based on Beach tileset by finalbossblues
+* Added file-related context menu actions to tileset tabs
+* Added action to reset to default window layout (by Keshav Sharma, #1794)
+* Added support for exporting tilesets, including to Lua format (by Conrad Mercer, #1213)
+* Keep object types sorted alphabetically (by Antoine Gersant, #1679)
+* Fixed %executablepath variable for executables found in PATH (#1648)
+* Fixed Delete key to delete selected polygon nodes when appropriate (by Ketan Gupta, #1555)
+* Fixed Terrain Brush going wild in some scenarios (#1632)
+* Fixed the "Embed in Map" checkbox to be persistent (#1664)
+* Fixed crash when saving two new maps using the same file name (#1734)
+* Fixed issues caused by paths not being cleaned (#1713)
+* Fixed suggested file name for tilesets to match the tileset name (by killerasus, #1783)
+* Fixed selection rectangle's shadow offset when zooming (by Antoine Gersant, #1796)
+* Fixed save dialog to reopen after heeding the file extension warning (by Antoine Gersant, #1782)
+* Enabled building with Qbs on macOS, including the Python plugin (by Jake Petroules)
+* GMX plugin: Added support for defining views with objects (by William Taylor, #1621)
+* GMX plugin: Added support for setting scale and origin for instances (#1427)
+* GMX plugin: Added support for setting the creation code for instances and the map
+* GMX plugin: Start counting default tile layer depth from 1000000 (#1814)
+* tBIN plugin: Added read/write support for the tBIN map format (by Chase Warrington, #1560)
+* libtiled-java: Generate classes from XSD, some fixes and build with Maven (by Mike Thomas, #1637)
+* libtiled-java: Added support for manipulating non-consecutive tile IDs in a tileset (by Stéphane Seng)
+* Python plugin: Adjusted example scripts to API changes (by spiiin, #1769)
+* Flare plugin: Various changes (by Justin Jacobs, #1781)
+* TMW plugin: Removed since it is no longer needed
+
+### Tiled 1.0.3 (29 August 2017)
 
 * Fixed crash on reload map (#1659, #1694)
 * Fixed possible crash on undo/redo in collision editor (#1695)
@@ -8,7 +58,7 @@
 * JSON plugin: Fixed reading of tileset column count
 * JSON plugin: Fixed reading of custom properties on tile collision object group
 
-### 1.0.2 (27 June 2017)
+### Tiled 1.0.2 (27 June 2017)
 
 * Added read-only tile and terrain properties in map editor (#1615)
 * Fixed Terrains view to display all tilesets with terrain
@@ -18,10 +68,10 @@
 * Fixed rendering of tile object outlines for resized objects
 * Fixed labels shown on objects hidden via a group layer
 * Fixed updating of label positions when moving a group layer
-* GmxPlugin: Fixed tile type inheritance for tile objects
+* GMX plugin: Fixed tile type inheritance for tile objects
 * Restored Ctrl+N shortcut on "New Map" action
 
-### 1.0.1 (13 June 2017)
+### Tiled 1.0.1 (13 June 2017)
 
 * Made the zoom level used in Tilesets view persistent
 * Fixed mixed up polygon and polyline icons (by Ketan Gupta, #1588)
@@ -35,7 +85,7 @@
 * Added Korean translation (by miru2533 and SshipSunBee, #1604)
 * Updated Russian and Chinese translations
 
-### 1.0.0 (25 May 2017)
+### Tiled 1.0.0 (25 May 2017)
 
 * Added support for editing external tilesets (#242)
 * Added a text object with configurable font and wrapping (#1429)
@@ -101,16 +151,16 @@
 * Added Finnish translation (by ekeimaja)
 * Updated Bulgarian, Dutch, French, German, Russian, Spanish and Turkish translations
 
-### 0.18.2 (21 February 2017)
+### Tiled 0.18.2 (21 February 2017)
 
 * Fixed crash when deleting multiple selected objects
 * Fixed crash when moving multiple selected objects to another object layer
 * Fixed updating of values displayed in Objects and Layers views
-* GmxPlugin: Added support for image collection tilesets
+* GMX plugin: Added support for image collection tilesets
 * Object Types Editor: Improved behavior when adding new types
 * Linux: Fixed shipping of image format plugins in AppImage releases
 
-### 0.18.1 (23 January 2017)
+### Tiled 0.18.1 (23 January 2017)
 
 * Fixed terrain brush for isometric staggered maps (by Clyde)
 * Fixed crash when resizing map causes objects to get removed
@@ -119,14 +169,14 @@
 * Fixed the quality of the minimap on HiDpi displays
 * Fixed Alt-drag behavior to not override resize handles
 * When adding a new layer, insert it above the current one
-* GmxPlugin: Fixed positioning for non-tile objects and support scaling
-* GmxPlugin: Export tile objects without a type as tiles
-* GmxPlugin: Support horizontal and vertical flipping
+* GMX plugin: Fixed positioning for non-tile objects and support scaling
+* GMX plugin: Export tile objects without a type as tiles
+* GMX plugin: Support horizontal and vertical flipping
 * Windows: Fixed encoding problems with command-line output
 * Windows: Fixed the architecture of shipped MSVC DLLs
 * Updated Chinese translation (by Clyde)
 
-### 0.18.0 (20 December 2016)
+### Tiled 0.18.0 (20 December 2016)
 
 * Added Layer via Copy/Cut actions
 * Added support for Paste in Place action for tile layers
@@ -156,7 +206,7 @@
 * libtiled-java: Added a basic isometric renderer (by Mike Thomas)
 * Updated Brazilian Portuguese, Chinese, Czech, Dutch, Hebrew, Norwegian Bokmål and Spanish translations
 
-### 0.17.2 (28 November 2016)
+### Tiled 0.17.2 (28 November 2016)
 
 * Fixed bug with editing type and name for multiple objects
 * Fixed ability to change the image of a tile in an image collection tileset
@@ -164,7 +214,7 @@
 * Fixed possible crash when missing tileset images and using tile animations
 * Compiled against Qt 5.6.2 on macOS to avoid crashes with Qt 5.7
 
-### 0.17.1 (4 November 2016)
+### Tiled 0.17.1 (4 November 2016)
 
 * Fixed wrong alpha value when opening the color picker dialog
 * Fixed saving of object group color alpha value
@@ -182,7 +232,7 @@
 * Chinese translation updates (by endlesstravel and buckle2000)
 * French translation updated (by Yohann Ferreira)
 
-### 0.17.0 (15 August 2016)
+### Tiled 0.17.0 (15 August 2016)
 
 * Added a platform-independent theme, which can be dark (#786)
 * Added Paste in Place action for objects (#1257)
@@ -206,7 +256,7 @@
 * Fixed preservation of tile meta-data when tileset width is changed (#1315)
 * Updated Bulgarian, Dutch, German, Norwegian Bokmål, Russian, Spanish and Turkish translations
 
-### 0.16.2 (7 July 2016)
+### Tiled 0.16.2 (7 July 2016)
 
 * JSON plugin: Fixed loading of custom properties on terrains
 * Lua plugin: Fixed missing export of object layer drawing order
@@ -219,7 +269,7 @@
 * Fixed focus issue while typing predefined object types (Qt 5.6)
 * Fixed silent fail when saving to restricted location on Windows (Qt 5.6)
 
-### 0.16.1 (6 May 2016)
+### Tiled 0.16.1 (6 May 2016)
 
 * Fixed auto-updater not enabled for Windows release
 * Fixed saving of object IDs assigned to tile collision shapes
@@ -228,7 +278,7 @@
 * Added Norwegian Bokmål translation (by Peter André Johansen)
 * Updated Turkish translation
 
-### 0.16.0 (28 March 2016)
+### Tiled 0.16.0 (28 March 2016)
 
 * Added checking for updates, based on Sparkle and WinSparkle
 * Added default property definitions to object types (with Michael Bickel)
@@ -244,7 +294,7 @@
 * Fixed potential crash when having Terrain Brush selected and switching maps
 * Updated Dutch, French, German, Japanese, Russian and Spanish translations
 
-### 0.15.2 (6 March 2016)
+### Tiled 0.15.2 (6 March 2016)
 
 * Added Turkish translation (by Nuri Uzunoğlu)
 * Fixed hiding of object labels when deleting an object layer
@@ -252,7 +302,7 @@
 * TMX: Added image size attributes to image layer images
 * Updated Brazilian Portuguese translation
 
-### 0.15.1 (30 January 2016)
+### Tiled 0.15.1 (30 January 2016)
 
 * Fixed adding/removing object name labels when set to always visible
 * Fixed a problem with 'Execute in Terminal' on OS X
@@ -260,7 +310,7 @@
 * Fixed image layer offset handling
 * Update Czech translation
 
-### 0.15.0 (4 January 2016)
+### Tiled 0.15.0 (4 January 2016)
 
 * Allow loading maps with broken external references
 * Allow plugins to be enabled/disabled
@@ -283,7 +333,7 @@
 * Fixed isometric rendering bug with odd tile heights (by Ryan Schmitt)
 * Updated Bulgarian, Dutch, French, German, Japanese, Russian and Spanish translations
 
-### 0.14.2 (12 October 2015)
+### Tiled 0.14.2 (12 October 2015)
 
 * Added Polish translation (by Tomasz Kubiak)
 * Fixed layer offsets missing in the Lua export
@@ -292,12 +342,12 @@
 * Fixed an issue with copy/pasting when using image collection tilesets
 * Updated Brazilian Portuguese translation
 
-### 0.14.1 (28 September 2015)
+### Tiled 0.14.1 (28 September 2015)
 
 * Added missing 'renderorder' property to the Lua export
 * Fixed editing of properties of tiles captured from the map
 
-### 0.14.0 (21 September 2015)
+### Tiled 0.14.0 (21 September 2015)
 
 * Added support for custom external tileset formats (JSON format added)
 * Added support for shifting layers by some distance in pixels
@@ -313,12 +363,12 @@
 * Fixed tilesets view collapsing when switching maps on OS X
 * Updated Russian, Spanish, Czech, French, Japanese, German, Dutch and Bulgarian translations
 
-### 0.13.1 (6 September 2015)
+### Tiled 0.13.1 (6 September 2015)
 
 * Added Bulgarian translation (by Lyubomir Vasilev)
 * Updated Spanish, French and Dutch translations
 
-### 0.13.0 (10 August 2015)
+### Tiled 0.13.0 (10 August 2015)
 
 * Added persistent Tile Stamps with support for variations (#969)
 * Added Select Same Tile tool (by Mamed Ibrahimov)
@@ -345,7 +395,7 @@
 * Require compiler support for C++11
 * Updated Russian, German, Czech and Italian translations
 
-### 0.12.3 (1 June 2015)
+### Tiled 0.12.3 (1 June 2015)
 
 * Fixed updating of map view when rotating objects with Z key
 * Fixed updating of map view when joining, splitting or deleting polygon nodes
@@ -353,18 +403,18 @@
 * Fixed live automapping updates when moving the mouse fast
 * Made Backspace work for deleting collision objects and animation frames
 
-### 0.12.2 (22 May 2015)
+### Tiled 0.12.2 (22 May 2015)
 
 * Fixed updating of map view when moving objects with arrow keys
 * Fixed compatibility issue with tile objects affecting the JSON format
 
-### 0.12.1 (19 May 2015)
+### Tiled 0.12.1 (19 May 2015)
 
 * Fixed updating of map view when changing objects from properties view
 * Fixed updating of Properties view while objects are moved/resized
 * Fixed terrain information getting lost when reading JSON maps
 
-### 0.12.0 (14 May 2015)
+### Tiled 0.12.0 (14 May 2015)
 
 * Added support for resizing any object as well as multiselection (with mauve)
 * Added Control modifier for preserving aspect ratio while resizing
@@ -391,7 +441,7 @@
 * Added Arabic (Algeria) translation (by Damene Abdelkader)
 * Updated, Czech, Dutch, French, German, Italian, Japanese, Portuguese, Russian and Spanish translations
 
-### 0.11.0 (11 January 2015)
+### Tiled 0.11.0 (11 January 2015)
 
 * Added support for hexagonal maps (offset coordinates)
 * Added 'Export' action to repeat the last export
@@ -410,7 +460,7 @@
 * Fully support building and running Tiled with Qbs
 * Updated Czech, Dutch, French, German, Italian, Japanese, Portuguese and Spanish translations
 
-### 0.10.2 (23 October 2014)
+### Tiled 0.10.2 (23 October 2014)
 
 * Fixed hit area for polygon nodes when editing polygons while zoomed in or out
 * Fixed another possible crash in the orthogonal renderer
@@ -423,13 +473,13 @@
 * Lua plugin: Write out Image layer position
 * Small updates to the Italian translation (by Omnomnobot)
 
-### 0.10.1 (21 September 2014)
+### Tiled 0.10.1 (21 September 2014)
 
 * Fixed a crash that could happen when using the terrain tool
 * Fixed missing background color information from Lua export
 * Allow using up to 3 or 4 GB RAM on 32 or 64 bit Windows systems respectively
 
-### 0.10.0 (14 September 2014)
+### Tiled 0.10.0 (14 September 2014)
 
 * Added object rotation (sponsored by Ben Wales)
 * Added support for explicit object ordering (sponsored by Ben Wales)
@@ -471,11 +521,11 @@
 * Fixed console output of tmxrasterizer on Windows
 * Raise the Layers dock for editing a new layer's name
 * Avoid saving truncated files when compiled against Qt 5.1 or higher (by Erik Schilling)
-* Made Tiled registering *.tmx as MIME-type (by Erik Schilling)
+* Made Tiled registering \*.tmx as MIME-type (by Erik Schilling)
 * Added Traditional Chinese translation (by Yehnan Chiang)
 * Updated Czech, Dutch, French, German, Russian and Spanish translations
 
-### 0.9.1 (27 July 2013)
+### Tiled 0.9.1 (27 July 2013)
 
 * Added saving of map background to JSON format (by Petr Viktorin)
 * Added saving of terrain information to JSON format (by Petr Viktorin)
@@ -498,7 +548,7 @@
 * Fixed escaping of special characters in the Lua format
 * Fixed handling of relative paths for image layers in the JSON plugin
 
-### 0.9.0 (27 January 2013)
+### Tiled 0.9.0 (27 January 2013)
 
 * Added objects dock and per-object visibility toggle (by Tim Baker)
 * Added maps dock (by Tim Baker)
@@ -541,7 +591,7 @@
 * Updated Portuguese, Dutch, German, Spanish, Russian, French, Japanese,
   Chinese, Brazilian Portuguese, Hebrew and Czech translations
 
-### 0.8.1 (7 May 2012)
+### Tiled 0.8.1 (7 May 2012)
 
 * Added MacOS X Lion full screen support
 * Fixed crash that could happen when painting with a pasted stamp
@@ -554,7 +604,7 @@
 * Changed the license of libtiled-java from LGPL to BSD
 * Updated Italian and Hebrew translations
 
-### 0.8.0 (11 December 2011)
+### Tiled 0.8.0 (11 December 2011)
 
 * Added support for polygon and polyline objects
 * Added support for tile rotation
@@ -579,7 +629,7 @@
 * Updated the German, Japanese, Spanish, Chinese, Czech, Dutch, French and
   Brazilian Portuguese translations
 
-### 0.7.1 (27 September 2011)
+### Tiled 0.7.1 (27 September 2011)
 
 * Select stamp tool when selecting tiles in tileset view
 * Enable anti-aliasing for OpenGL mode
@@ -589,7 +639,7 @@
 * Fixed position of tile objects to center on the mouse on insertion
 * Updated the Czech translation
 
-### 0.7.0 (20 July 2011)
+### Tiled 0.7.0 (20 July 2011)
 
 * Added support for horizontal and vertical flipping of tiles
 * Added copy/paste support for objects
@@ -611,13 +661,13 @@
 * Updated Brazilian Portuguese, Chinese, German, Spanish, Japanese, Hebrew,
   Portuguese, Dutch and French translations
 
-### 0.6.2 (2 May 2011)
+### Tiled 0.6.2 (2 May 2011)
 
 * Fixed object layers losing their color when resizing the map
 * Fixed the tabs in the Tilesets dock to use scroll buttons on MacOS X
 * Fixed window title to update when saving a map with a different name
 
-### 0.6.1 (3 April 2011)
+### Tiled 0.6.1 (3 April 2011)
 
 * Added ability to open multiple files at once
 * Added Ctrl+PageUp/PageDown shortcuts to switch documents
@@ -631,7 +681,7 @@
 * Fixed problems with the tileset view after switching documents
 * Fixed tile objects to be removed when their tileset is removed
 
-### 0.6.0 (26 January 2011)
+### Tiled 0.6.0 (26 January 2011)
 
 * Added support for opening multiple maps in one session
 * Added support for placing tiles as objects
@@ -665,12 +715,12 @@
 * Updated Czech, Spanish, German, Brazilian Portuguese, Dutch and French
   translations
 
-### 0.5.1 (2 September 2010)
+### Tiled 0.5.1 (2 September 2010)
 
 * Fixed saving of objects when tile width is different from tile height
 * Updated Czech translation
 
-### 0.5.0 (30 June 2010)
+### Tiled 0.5.0 (30 June 2010)
 
 * Added support for import and export plugins
 * Added support for external tilesets
@@ -691,16 +741,16 @@
 * Updated Japanese, Dutch, German, Brazilian Portuguese, French, Portuguese
   and Spanish translations
 
-### 0.4.1 (14 April 2010)
+### Tiled 0.4.1 (14 April 2010)
 
 * Added support for saving tile layer data as CSV
 * Added shift modifier to bucket fill tool for filling the selection
-* Added Brazilian Portugese, Japanese, French, Italian and Czech translations
+* Added Brazilian Portuguese, Japanese, French, Italian and Czech translations
 * Made values used in the New Map and New Tileset dialogs persistent
 * Fixed drawing selection highlight where brush is not painting
 * Fixed an incompatibility with Tiled Java in 'trans' attribute
 
-### 0.4.0 (30 January 2010)
+### Tiled 0.4.0 (30 January 2010)
 
 * Added support for isometric maps
 * Added automatic reloading of tileset images when they change
@@ -715,7 +765,7 @@
 * Made translations functional
 * Updated Dutch, Portuguese, Spanish and German translations
 
-### 0.3.1 (22 November 2009)
+### Tiled 0.3.1 (22 November 2009)
 
 * Enabled undo command compression for stamp brush and eraser
 * Fixed reading of maps with non-binary-encoded layer data
@@ -723,7 +773,7 @@
 * Fixed a crash when loading a map while holding Ctrl
 * Confirm overwrite on the right moment for 'Save as Image' dialog
 
-### 0.3.0 (13 November 2009)
+### Tiled 0.3.0 (13 November 2009)
 
 * Added a tile selection tool
 * Added support for cut, copy and paste
@@ -732,7 +782,7 @@
 * Added scrolling the map view with middle mouse button
 * Snap objects to the grid when Ctrl is pressed
 
-### 0.2.0 (1 October 2009)
+### Tiled 0.2.0 (1 October 2009)
 
 * Added support for zooming the map view
 * Added an eraser tool that allows you to erase tiles
@@ -742,4 +792,4 @@
 * Fixed the minimum row and column size in the tileset view
 * Fixed stamp creation when not dragging topleft to bottomright
 
-### 0.1.0 (1 September 2009)
+### Tiled 0.1.0 (1 September 2009)

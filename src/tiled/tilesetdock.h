@@ -147,6 +147,7 @@ private:
     void onTilesetDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
 
     void onTabMoved(int from, int to);
+    void tabContextMenuRequested(const QPoint &pos);
 
     Tileset *currentTileset() const;
     TilesetView *currentTilesetView() const;
@@ -165,6 +166,7 @@ private:
     TilesetDocumentsFilterModel *mTilesetDocumentsFilterModel;
 
     QTabBar *mTabBar;
+    QStackedWidget *mSuperViewStack;
     QStackedWidget *mViewStack;
     QToolBar *mToolBar;
     Tile *mCurrentTile;

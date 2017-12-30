@@ -30,27 +30,25 @@ namespace Tiled {
 namespace Internal {
 
 ReplaceTemplate::ReplaceTemplate(MapDocument *mapDocument,
-                                 int index,
-                                 TemplateGroup *templateGroup)
+                                 const ObjectTemplate *oldObjectTemplate,
+                                 const ObjectTemplate *newObjectTemplate)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
-                                               "Replace Template Group"))
+                                               "Replace Template"))
     , mMapDocument(mapDocument)
-    , mIndex(index)
-    , mTemplateGroup(templateGroup)
+    , mOldObjectTemplate(oldObjectTemplate)
+    , mNewObjectTemplate(newObjectTemplate)
 {
-    Q_ASSERT(mMapDocument->map()->templateAt(index) != templateGroup);
 }
 
 ReplaceTemplate::~ReplaceTemplate()
 {
-    // Delete mTemplateGroup if it has no owner
-    if (!(mTemplateGroup->embedded() || mMapDocument->map()->templateGroups().contains(mTemplateGroup)))
-        delete mTemplateGroup;
 }
 
 void ReplaceTemplate::swap()
 {
-    mTemplateGroup = mMapDocument->replaceTemplateGroup(mIndex, mTemplateGroup);
+    mMapDocument->replaceObjectTemplate(mOldObjectTemplate,
+                                        mNewObjectTemplate);
+    std::swap(mOldObjectTemplate, mNewObjectTemplate);
 }
 
 } // namespace Internal

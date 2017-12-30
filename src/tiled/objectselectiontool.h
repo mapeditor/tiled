@@ -44,7 +44,7 @@ class ObjectSelectionTool : public AbstractObjectTool
 
 public:
     explicit ObjectSelectionTool(QObject *parent = nullptr);
-    ~ObjectSelectionTool();
+    ~ObjectSelectionTool() override;
 
     void activate(MapScene *scene) override;
     void deactivate(MapScene *scene) override;
@@ -120,8 +120,8 @@ private:
 
     struct MovingObject
     {
-        MapObjectItem *item;
-        QPointF oldItemPosition;
+        MapObject *mapObject;
+        QPointF oldScreenPosition;
 
         QPointF oldPosition;
         QSizeF oldSize;

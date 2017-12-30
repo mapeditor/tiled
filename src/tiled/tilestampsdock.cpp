@@ -152,10 +152,9 @@ void TileStampsDock::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key()) {
     case Qt::Key_Delete:
-    case Qt::Key_Backspace: {
+    case Qt::Key_Backspace:
         delete_();
         return;
-    }
     }
 
     QDockWidget::keyPressEvent(event);

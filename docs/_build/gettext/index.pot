@@ -1,14 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2017, Thorbjørn Lindeijer
+# Copyright (C) 2017, Tiled Documentation Writers
 # This file is distributed under the same license as the Tiled package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Tiled 1.0\n"
+"Project-Id-Version: Tiled 1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-03 17:25+0200\n"
+"POT-Creation-Date: 2017-12-21 14:31+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,15 +24,11 @@ msgstr ""
 msgid "If you're not finding what you're looking for in these pages, please don't hesitate to ask questions on the `Tiled Forum <http://discourse.mapeditor.org>`_."
 msgstr ""
 
-#: ../../index.rst:9
-msgid "This documentation is currently work-in-progress. Initially the relevant pages from the wiki have been ported over, providing a limited amount of documentation for specific Tiled features. Over time, this should become the place to refer to for any details about using Tiled."
+#: ../../index.rst:8
+msgid "User Manual"
 msgstr ""
 
-#: ../../index.rst:15
-msgid "Manual"
-msgstr ""
-
-#: ../../index.rst:30
+#: ../../index.rst:29
 msgid "Reference"
 msgstr ""
 

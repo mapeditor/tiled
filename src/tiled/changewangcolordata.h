@@ -32,7 +32,7 @@ class WangColorModel;
 class ChangeWangColorName : public QUndoCommand
 {
 public:
-    ChangeWangColorName(QString newName,
+    ChangeWangColorName(const QString &newName,
                         int colorIndex,
                         bool isEdge,
                         WangColorModel *wangColorModel);
@@ -70,7 +70,7 @@ private:
 class ChangeWangColorColor : public QUndoCommand
 {
 public:
-    ChangeWangColorColor(QColor newColor,
+    ChangeWangColorColor(const QColor &newColor,
                          int colorIndex,
                          bool isEdge,
                          WangColorModel *wangColorModel);
@@ -105,5 +105,5 @@ private:
     float mNewProbability;
 };
 
-}
-}
+} // namespace Internal
+} // namespace Tiled

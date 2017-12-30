@@ -53,6 +53,11 @@ static QString toString(bool b)
     return QString::number(b ? -1 : 0);
 }
 
+static QString toString(const QString &string)
+{
+    return string;
+}
+
 template <typename T>
 static void writeProperty(QXmlStreamWriter &writer,
                           const Object *object,
@@ -121,6 +126,7 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
     writeProperty(stream, map, "persistent", false);
     writeProperty(stream, map, "clearDisplayBuffer", true);
     writeProperty(stream, map, "clearViewBackground", false);
+    writeProperty(stream, map, "code", QString());
 
     // Check if views are defined
     bool enableViews = checkIfViewsDefined(map);
@@ -262,6 +268,7 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
                 stream.writeAttribute("name", name);
             }
 
+            stream.writeAttribute("code", optionalProperty(object, "code", QString()));
             stream.writeAttribute("scaleX", QString::number(scaleX));
             stream.writeAttribute("scaleY", QString::number(scaleY));
             stream.writeAttribute("rotation", QString::number(-object->rotation()));
@@ -280,7 +287,9 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
     // Write out tile instances
     iterator.toFront();
     while (const Layer *layer = iterator.next()) {
-        QString depth = QString::number(optionalProperty(layer, QLatin1String("depth"), layerCount));
+        --layerCount;
+        QString depth = QString::number(optionalProperty(layer, QLatin1String("depth"),
+                                                         layerCount + 1000000));
 
         switch (layer->layerType()) {
         case Layer::TileLayerType: {
@@ -427,8 +436,6 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
             // Recursion handled by LayerIterator
             break;
         }
-
-        --layerCount;
     }
 
     stream.writeEndElement();

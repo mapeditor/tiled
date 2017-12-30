@@ -65,8 +65,8 @@ protected:
 
     MapScene *mapScene() const { return mMapScene; }
     ObjectGroup *currentObjectGroup() const;
-    QList<MapObjectItem*> objectItemsAt(QPointF pos) const;
-    MapObjectItem *topMostObjectItemAt(QPointF pos) const;
+    QList<MapObjectItem*> objectItemsAt(const QPointF &pos) const;
+    MapObjectItem *topMostObjectItemAt(const QPointF &pos) const;
 
 private slots:
     void duplicateObjects();
@@ -74,6 +74,7 @@ private slots:
     void resetTileSize();
     void saveSelectedObject();
     void detachSelectedObjects();
+    void replaceObjectsWithTemplate();
     void resetInstances();
     void changeTile();
 

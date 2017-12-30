@@ -152,7 +152,7 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
                     if (list.size() > 4)
                         tileset->setTileOffset(QPoint(list[3].toInt(),list[4].toInt()));
 
-                    gidMapper.insert(gid, tileset.data());
+                    gidMapper.insert(gid, tileset);
                     if (list.size() > 5) {
                         gid += list[5].toInt();
                     } else {
