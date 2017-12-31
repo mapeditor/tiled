@@ -411,7 +411,7 @@ void AutoMapper::autoMap(QRegion *where)
     if (mAutoMappingRadius) {
         QRegion region;
 #if QT_VERSION < 0x050800
-        foreach (const QRect &r : where->rects()) {
+        foreach (const QRect &r, where->rects()) {
 #else
         for (const QRect &r : *where) {
 #endif
