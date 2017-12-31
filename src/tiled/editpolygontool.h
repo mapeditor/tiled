@@ -53,6 +53,7 @@ public:
                     Qt::KeyboardModifiers modifiers) override;
     void mousePressed(QGraphicsSceneMouseEvent *event) override;
     void mouseReleased(QGraphicsSceneMouseEvent *event) override;
+    void mouseDoubleClicked(QGraphicsSceneMouseEvent *event) override;
     void modifiersChanged(Qt::KeyboardModifiers modifiers) override;
 
     void languageChanged() override;
@@ -92,6 +93,9 @@ private:
 
     void showHandleContextMenu(PointHandle *clickedHandle, QPoint screenPos);
 
+    void selectEdge(const QPointF &pos,
+                    Qt::KeyboardModifiers modifiers);
+
     SelectionRectangle *mSelectionRectangle;
     bool mMousePressed;
     PointHandle *mClickedHandle;
@@ -103,7 +107,7 @@ private:
     QPointF mStart;
     QPoint mScreenStart;
     Qt::KeyboardModifiers mModifiers;
-
+    bool mSplit;
     /// The list of handles associated with each selected map object
     QMap<MapObject*, QList<PointHandle*> > mHandles;
     QSet<PointHandle*> mSelectedHandles;

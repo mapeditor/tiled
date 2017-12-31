@@ -139,6 +139,11 @@ public:
     virtual void mouseReleased(QGraphicsSceneMouseEvent *event) = 0;
 
     /**
+     * Called when a mouse button is doubled clicked on the scene.
+     */
+    virtual void mouseDoubleClicked(QGraphicsSceneMouseEvent*) {}
+
+    /**
      * Called when the user presses or releases a modifier key resulting
      * in a change of modifier status, and when the tool is enabled with
      * a modifier key pressed.

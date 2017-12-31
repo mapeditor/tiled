@@ -43,6 +43,7 @@
 #include <QMenu>
 #include <QPainter>
 #include <QPalette>
+#include <QtCore/QtMath>
 #include <QUndoStack>
 
 #include <cstdlib>
@@ -126,6 +127,7 @@ EditPolygonTool::EditPolygonTool(QObject *parent)
     , mClickedHandle(nullptr)
     , mClickedObjectItem(nullptr)
     , mMode(NoMode)
+    , mSplit(false)
 {
 }
 
@@ -227,6 +229,8 @@ void EditPolygonTool::mousePressed(QGraphicsSceneMouseEvent *event)
     if (mMode != NoMode) // Ignore additional presses during select/move
         return;
 
+    mSplit = false;
+
     switch (event->button()) {
     case Qt::LeftButton: {
         mMousePressed = true;
@@ -248,6 +252,10 @@ void EditPolygonTool::mousePressed(QGraphicsSceneMouseEvent *event)
             }
         }
         mClickedHandle = first<PointHandle>(items);
+
+        if (!mClickedHandle)
+            selectEdge(mStart, event->modifiers());
+
         break;
     }
     case Qt::RightButton: {
@@ -328,6 +336,12 @@ void EditPolygonTool::mouseReleased(QGraphicsSceneMouseEvent *event)
 
     mMousePressed = false;
     mClickedHandle = nullptr;
+}
+
+void EditPolygonTool::mouseDoubleClicked(QGraphicsSceneMouseEvent*)
+{
+    if (mSplit)
+        splitSegments();
 }
 
 void EditPolygonTool::modifiersChanged(Qt::KeyboardModifiers modifiers)
@@ -919,5 +933,96 @@ void EditPolygonTool::deleteSegment()
         mapDocument()->undoStack()->push(new ChangePolygon(mapDocument(), mapObject, newPolygon, polygon));
         mapDocument()->undoStack()->push(new TogglePolygonPolyline(mapObject));
         mapDocument()->undoStack()->endMacro();
+    }
+}
+
+/**
+ * Returns the distance between QPointF a and QLineF(a, b)
+ * Returns infinite if the closest position to the line does
+ * not lie within the line
+ */
+static qreal distanceOfPointToLine(const QPointF &point, const QLineF &line)
+{
+    const QLineF &normal = line.normalVector();
+    const QLineF &normalInOrigin = normal.translated(-normal.p1());
+    const QLineF &shortestLineToLine = normalInOrigin.translated(point);
+
+    QPointF intersectionPoint;
+    QLineF::IntersectType intersectionType = shortestLineToLine.intersect(line, &intersectionPoint);
+    Q_ASSERT(intersectionType != QLineF::NoIntersection);
+
+    if (intersectionType == QLineF::UnboundedIntersection) {
+        qreal dx = intersectionPoint.x() - line.p1().x();
+        qreal dy = intersectionPoint.y() - line.p1().y();
+        qreal factorOfDx = dx / line.dx();
+        qreal factorOfdY = dy / line.dy();
+
+        if (factorOfDx < 0 || factorOfDx > 1 || factorOfdY < 0 || factorOfdY > 1) {
+            return std::numeric_limits<qreal>::max();
+        }
+    }
+
+    return QLineF(point, intersectionPoint).length();
+}
+
+void EditPolygonTool::selectEdge(const QPointF &pos, Qt::KeyboardModifiers modifiers)
+{
+    MapRenderer *renderer = mapDocument()->renderer();
+    QPointF pixelCoords = renderer->screenToPixelCoords(pos);
+
+    SnapHelper(renderer, modifiers).snap(pixelCoords);
+
+    const QSet<MapObjectItem*> &selection = mapScene()->selectedObjectItems();
+
+    qreal minDistance = INT_MAX;
+    int selectedStartIndex = -1;
+    int selectedEndIndex = -1;
+    MapObjectItem *selectedItem = nullptr;
+
+    for (MapObjectItem *item : selection) {
+        const MapObject *object = item->mapObject();
+        if (!object->cell().isEmpty())
+            continue;
+
+        if (object->shape() != MapObject::Polygon && object->shape() != MapObject::Polyline)
+            continue;
+
+        QPolygonF polygon = object->polygon();
+        QPointF point = pixelCoords - object->position();
+
+        bool isEndConnectedToStart = object->shape() == MapObject::Polygon;
+        int lastIndex = isEndConnectedToStart ? polygon.size() : polygon.size() - 1;
+
+        for (int edgeStartIndex = 0; edgeStartIndex < lastIndex; ++edgeStartIndex) {
+            int edgeEndIndex = (edgeStartIndex + 1) % polygon.size();
+            const QLineF lineToTest(polygon.at(edgeStartIndex), polygon.at(edgeEndIndex));
+            qreal distance = distanceOfPointToLine(point, lineToTest);
+            if (distance < minDistance) {
+                minDistance = distance;
+                selectedStartIndex = edgeStartIndex;
+                selectedEndIndex = edgeEndIndex;
+                selectedItem = item;
+            }
+        }
+    }
+
+    if (minDistance < QApplication::startDragDistance() / 2) {
+        QSet<PointHandle*> selectedHandles;
+
+        for (PointHandle *handle : mHandles[selectedItem]) {
+            if (handle->pointIndex() == selectedStartIndex ||
+                    handle->pointIndex() == selectedEndIndex) {
+                selectedHandles.insert(handle);
+            }
+        }
+
+        if (modifiers & (Qt::ControlModifier | Qt::ShiftModifier))
+            selectedHandles |= mSelectedHandles;
+
+        setSelectedHandles(selectedHandles);
+
+        mSplit = true;
+    } else {
+        mSplit = false;
     }
 }

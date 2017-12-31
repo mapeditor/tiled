@@ -375,6 +375,18 @@ void MapScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
     }
 }
 
+void MapScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
+{
+    QGraphicsScene::mouseDoubleClickEvent(mouseEvent);
+    if (mouseEvent->isAccepted())
+        return;
+
+    if (mActiveTool) {
+        mouseEvent->accept();
+        mActiveTool->mouseDoubleClicked(mouseEvent);
+    }
+}
+
 /**
  * Override to ignore drag enter events except for templates.
  */
