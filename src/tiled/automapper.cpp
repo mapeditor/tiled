@@ -127,6 +127,30 @@ bool AutoMapper::setupRuleMapProperties()
     return true;
 }
 
+void AutoMapper::setupInputLayerProperties(InputLayer &inputLayer)
+{
+    inputLayer.strictEmpty = false;
+
+    QMapIterator<QString, QVariant> it(inputLayer.tileLayer->properties());
+    while (it.hasNext()) {
+        it.next();
+
+        const QString &name = it.key();
+        const QVariant &value = it.value();
+
+        if (name.compare(QLatin1String("strictempty"), Qt::CaseInsensitive) == 0) {
+            if (value.canConvert(QVariant::Bool)) {
+                inputLayer.strictEmpty = value.toBool();
+                continue;
+            }
+        }
+
+        mWarning += tr("'%1': Property '%2' = '%3' on layer '%4' does not make sense. "
+                       "Ignoring this property.")
+                .arg(mRulePath, name, value.toString(), inputLayer.tileLayer->name()) + QLatin1Char('\n');
+    }
+}
+
 bool AutoMapper::setupRuleMapTileLayers()
 {
     Q_ASSERT(mLayerList.isEmpty());
@@ -212,10 +236,15 @@ bool AutoMapper::setupRuleMapTileLayers()
             if (!mInputRules[index].contains(name))
                 mInputRules[index].insert(name, InputConditions());
 
+            InputLayer inputLayer;
+            inputLayer.tileLayer = tileLayer;
+            setupInputLayerProperties(inputLayer);
+
+            InputConditions &conditions = mInputRules[index][name];
             if (isNotList)
-                mInputRules[index][name].listNo.append(tileLayer);
+                conditions.listNo.append(inputLayer);
             else
-                mInputRules[index][name].listYes.append(tileLayer);
+                conditions.listYes.append(inputLayer);
 
             continue;
         }
@@ -478,11 +507,11 @@ QRegion AutoMapper::computeSetLayersRegion() const
  * Fills \a cells with the list of all cells which can be found within all
  * tile layers within the given region.
  */
-static void collectCellsInRegion(const QVector<TileLayer*> &list,
+static void collectCellsInRegion(const QVector<InputLayer> &list,
                                  const QRegion &r,
                                  QVarLengthArray<Cell, 8> &cells)
 {
-    for (const TileLayer *tilelayer : list) {
+    for (const InputLayer &inputLayer : list) {
 #if QT_VERSION < 0x050800
         foreach (const QRect &rect, r.rects()) {
 #else
@@ -490,7 +519,7 @@ static void collectCellsInRegion(const QVector<TileLayer*> &list,
 #endif
             for (int x = rect.left(); x <= rect.right(); ++x) {
                 for (int y = rect.top(); y <= rect.bottom(); ++y) {
-                    const Cell &cell = tilelayer->cellAt(x, y);
+                    const Cell &cell = inputLayer.tileLayer->cellAt(x, y);
                     if (!cells.contains(cell))
                         cells.append(cell);
                 }
@@ -555,18 +584,21 @@ static void collectCellsInRegion(const QVector<TileLayer*> &list,
  *      (need of less layers.)
  *      It was not added to the case, when having only listNo layers to
  *      avoid total symmetry between those lists.
+ *      It can be turned off by setting the StrictEmpty property on the input
+ *      layer.
  *
  * If all positions are considered good, return true.
  * return false otherwise.
  *
  * @return bool, if the tile layer matches the given list of layers.
  */
-static bool compareLayerTo(const TileLayer *setLayer,
-                           const InputConditions &conditions,
-                           const QRegion &ruleRegion, const QPoint &offset)
+static bool layerMatchesConditions(const TileLayer &setLayer,
+                                   const InputConditions &conditions,
+                                   const QRegion &ruleRegion,
+                                   const QPoint &offset)
 {
-    const QVector<TileLayer*> &listYes = conditions.listYes;
-    const QVector<TileLayer*> &listNo = conditions.listNo;
+    const auto &listYes = conditions.listYes;
+    const auto &listNo = conditions.listNo;
     if (listYes.isEmpty() && listNo.isEmpty())
         return false;
 
@@ -581,14 +613,14 @@ static bool compareLayerTo(const TileLayer *setLayer,
 #endif
         for (int x = rect.left(); x <= rect.right(); ++x) {
             for (int y = rect.top(); y <= rect.bottom(); ++y) {
-                const Cell &setCell = setLayer->cellAt(x + offset.x(),
-                                                       y + offset.y());
+                const Cell &setCell = setLayer.cellAt(x + offset.x(),
+                                                      y + offset.y());
 
                 // First check listNo. If any tile matches there, we can
                 // immediately know there is no match.
-                for (const TileLayer *comparedTileLayer : listNo) {
-                    const Cell &noCell = comparedTileLayer->cellAt(x, y);
-                    if (!noCell.isEmpty() && setCell == noCell)
+                for (const InputLayer &inputNotLayer : listNo) {
+                    const Cell &noCell = inputNotLayer.tileLayer->cellAt(x, y);
+                    if ((inputNotLayer.strictEmpty || !noCell.isEmpty()) && setCell == noCell)
                         return false;
                 }
 
@@ -600,9 +632,9 @@ static bool compareLayerTo(const TileLayer *setLayer,
                 bool ruleDefinedListYes = false;
                 bool matchListYes = false;
 
-                for (const TileLayer *comparedTileLayer : listYes) {
-                    const Cell &yesCell = comparedTileLayer->cellAt(x, y);
-                    if (!yesCell.isEmpty()) {
+                for (const InputLayer &inputLayer : listYes) {
+                    const Cell &yesCell = inputLayer.tileLayer->cellAt(x, y);
+                    if (inputLayer.strictEmpty || !yesCell.isEmpty()) {
                         ruleDefinedListYes = true;
                         if (setCell == yesCell) {
                             matchListYes = true;
@@ -670,11 +702,9 @@ QRect AutoMapper::applyRule(int ruleIndex, const QRect &where)
                 const InputConditions &conditions = inputIndexIterator.value();
 
                 const int i = mMapWork->indexOfLayer(name, Layer::TileLayerType);
-                const TileLayer *setLayer = (i >= 0) ? mMapWork->layerAt(i)->asTileLayer() : &dummy;
-                if (!compareLayerTo(setLayer,
-                                    conditions,
-                                    ruleInputRegion,
-                                    QPoint(x, y))) {
+                const TileLayer &setLayer = (i >= 0) ? *mMapWork->layerAt(i)->asTileLayer() : dummy;
+
+                if (!layerMatchesConditions(setLayer, conditions, ruleInputRegion, QPoint(x, y))) {
                     allLayerNamesMatch = false;
                     break;
                 }
@@ -691,43 +721,41 @@ QRect AutoMapper::applyRule(int ruleIndex, const QRect &where)
             const int r = qrand() % mLayerList.size();
             const RuleOutput &translationTable = mLayerList.at(r);
 
-            if (!mNoOverlappingRules) {
-                copyMapRegion(ruleOutputRegion, QPoint(x, y), translationTable);
-                ret = ret.united(rbr.translated(QPoint(x, y)));
-                continue;
-            }
+            if (mNoOverlappingRules) {
+                bool overlap = false;
+                const QList<Layer*> layers = translationTable.keys();
 
-            bool missmatch = false;
-            const QList<Layer*> layers = translationTable.keys();
+                // check if there are no overlaps within this rule.
+                QVector<QRegion> ruleRegionInLayer;
+                for (int i = 0; i < layers.size(); ++i) {
+                    Layer *layer = layers.at(i);
 
-            // check if there are no overlaps within this rule.
-            QVector<QRegion> ruleRegionInLayer;
-            for (int i = 0; i < layers.size(); ++i) {
-                Layer *layer = layers.at(i);
+                    QRegion appliedPlace;
 
-                QRegion appliedPlace;
+                    if (TileLayer *tileLayer = layer->asTileLayer())
+                        appliedPlace = tileLayer->region();
+                    else if (ObjectGroup *objectGroup = layer->asObjectGroup())
+                        appliedPlace = tileRegionOfObjectGroup(objectGroup);
+                    else
+                        continue;
 
-                if (TileLayer *tileLayer = layer->asTileLayer())
-                    appliedPlace = tileLayer->region();
-                else if (ObjectGroup *objectGroup = layer->asObjectGroup())
-                    appliedPlace = tileRegionOfObjectGroup(objectGroup);
-                else
+                    ruleRegionInLayer.append(appliedPlace.intersected(ruleOutputRegion));
+
+                    if (appliedRegions.at(i).intersects(ruleRegionInLayer.at(i).translated(x, y))) {
+                        overlap = true;
+                        break;
+                    }
+                }
+
+                if (overlap)
                     continue;
 
-                ruleRegionInLayer.append(appliedPlace.intersected(ruleOutputRegion));
-
-                if (appliedRegions.at(i).intersects(ruleRegionInLayer.at(i).translated(x, y))) {
-                    missmatch = true;
-                    break;
-                }
+                for (int i = 0; i < translationTable.size(); ++i)
+                    appliedRegions[i] += ruleRegionInLayer.at(i).translated(x, y);
             }
-            if (missmatch)
-                continue;
 
             copyMapRegion(ruleOutputRegion, QPoint(x, y), translationTable);
             ret = ret.united(rbr.translated(QPoint(x, y)));
-            for (int i = 0; i < translationTable.size(); ++i)
-                appliedRegions[i] += ruleRegionInLayer[i].translated(x, y);
         }
     }
 

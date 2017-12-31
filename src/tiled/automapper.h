@@ -41,11 +41,17 @@ namespace Internal {
 
 class MapDocument;
 
+struct InputLayer
+{
+    TileLayer *tileLayer;
+    bool strictEmpty;
+};
+
 class InputConditions
 {
 public:
-    QVector<TileLayer*> listYes;    // "input"
-    QVector<TileLayer*> listNo;     // "inputnot"
+    QVector<InputLayer> listYes;    // "input"
+    QVector<InputLayer> listNo;     // "inputnot"
 };
 
 // Maps layer names to their conditions
@@ -143,6 +149,7 @@ private:
      * @return returns true when anything is ok, false when errors occurred.
      */
     bool setupRuleMapProperties();
+    void setupInputLayerProperties(InputLayer &inputLayer);
 
     void cleanUpRulesMap();
 
