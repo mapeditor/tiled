@@ -503,6 +503,8 @@ QRect AutoMapper::applyRule(const int ruleIndex, const QRect &where)
     if (mNoOverlappingRules)
         appliedRegions.resize(mMapWork->layerCount());
 
+    const TileLayer dummy(QString(), 0, 0, 0, 0);
+
     for (int y = minY; y <= maxY; ++y)
     for (int x = minX; x <= maxX; ++x) {
         bool anyMatch = false;
@@ -519,17 +521,17 @@ QRect AutoMapper::applyRule(const int ruleIndex, const QRect &where)
                 const InputConditions &conditions = inputIndexIterator.value();
 
                 const int i = mMapWork->indexOfLayer(name, Layer::TileLayerType);
-                if (i == -1) {
+                const TileLayer *setLayer = (i >= 0) ? mMapWork->layerAt(i)->asTileLayer() : &dummy;
+                if (!compareLayerTo(setLayer,
+                                    conditions.listYes,
+                                    conditions.listNo,
+                                    ruleInputRegion,
+                                    QPoint(x, y))) {
                     allLayerNamesMatch = false;
-                } else {
-                    const TileLayer *setLayer = mMapWork->layerAt(i)->asTileLayer();
-                    allLayerNamesMatch &= compareLayerTo(setLayer,
-                                                         conditions.listYes,
-                                                         conditions.listNo,
-                                                         ruleInputRegion,
-                                                         QPoint(x, y));
+                    break;
                 }
             }
+
             if (allLayerNamesMatch) {
                 anyMatch = true;
                 break;
