@@ -312,7 +312,6 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
         incY = -1;
         break;
     case Map::RightDown:
-    default:
         break;
     }
 

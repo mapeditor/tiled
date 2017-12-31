@@ -159,7 +159,8 @@ Map Properties
 There are three different map properties, which can be used to add
 additional information to a **rulefile**:
 
--  **DeleteTiles** - This map property is a boolean property: it can be
+DeleteTiles
+   This map property is a boolean property: it can be
    true or false. If rules of this rulefile get applied at some location
    in your map, this map property determines if all other tiles are
    deleted before applying the rules. Consider a map where you have
@@ -169,11 +170,13 @@ additional information to a **rulefile**:
    tiles are cleared before, you will have still tiles from before at
    these places, which are not covered by any tile.
 
--  **AutomappingRadius** - This map property is a number: 1, 2, 3 ... It
+AutomappingRadius
+   This map property is a number: 1, 2, 3 ... It
    determines how many tiles around your changes will be checked as well
    for redoing the Automapping at live Automapping.
 
--  **NoOverlappingRules** - This map property is a boolean property:
+NoOverlappingRules
+   This map property is a boolean property:
    A rule is not allowed to overlap on itself.
 
 These properties are map wide, meaning it applies to all rules which are

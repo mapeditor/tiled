@@ -39,6 +39,8 @@
 
 #include <QDebug>
 
+#include "qtcompat_p.h"
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
@@ -94,37 +96,33 @@ bool AutoMapper::ruleLayerNameUsed(QString ruleLayerName) const
 
 bool AutoMapper::setupRuleMapProperties()
 {
-    QMapIterator<QString,QVariant> it(mMapRules->properties());
+    QMapIterator<QString, QVariant> it(mMapRules->properties());
     while (it.hasNext()) {
         it.next();
 
         const QString &name = it.key();
         const QVariant &value = it.value();
 
-        bool raiseWarning = true;
-
         if (name.compare(QLatin1String("deletetiles"), Qt::CaseInsensitive) == 0) {
             if (value.canConvert(QVariant::Bool)) {
                 mDeleteTiles = value.toBool();
-                raiseWarning = false;
+                continue;
             }
         } else if (name.compare(QLatin1String("automappingradius"), Qt::CaseInsensitive) == 0) {
             if (value.canConvert(QVariant::Int)) {
                 mAutoMappingRadius = value.toInt();
-                raiseWarning = false;
+                continue;
             }
         } else if (name.compare(QLatin1String("nooverlappingrules"), Qt::CaseInsensitive) == 0) {
             if (value.canConvert(QVariant::Bool)) {
                 mNoOverlappingRules = value.toBool();
-                raiseWarning = false;
+                continue;
             }
         }
 
-        if (raiseWarning) {
-            mWarning += tr("'%1': Property '%2' = '%3' does not make sense. "
-                           "Ignoring this property.")
-                    .arg(mRulePath, name, value.toString()) + QLatin1Char('\n');
-        }
+        mWarning += tr("'%1': Property '%2' = '%3' does not make sense. "
+                       "Ignoring this property.")
+                .arg(mRulePath, name, value.toString()) + QLatin1Char('\n');
     }
     return true;
 }
@@ -400,8 +398,7 @@ bool AutoMapper::setupTilesets()
 
     mMapDocument->unifyTilesets(mMapRules, mAddedTilesets);
 
-    const auto &addedTilesets = mAddedTilesets;
-    for (const SharedTileset &tileset : addedTilesets)
+    for (const SharedTileset &tileset : qAsConst(mAddedTilesets))
         mMapDocument->undoStack()->push(new AddTileset(mMapDocument, tileset));
 
     return true;
@@ -413,21 +410,24 @@ void AutoMapper::autoMap(QRegion *where)
     // first resize the active area
     if (mAutoMappingRadius) {
         QRegion region;
-        for (const QRect &r : where->rects()) {
+#if QT_VERSION < 0x050800
+        foreach (const QRect &r : where->rects()) {
+#else
+        for (const QRect &r : *where) {
+#endif
             region += r.adjusted(- mAutoMappingRadius,
                                  - mAutoMappingRadius,
                                  + mAutoMappingRadius,
                                  + mAutoMappingRadius);
         }
-        *where += region;
+        where->swap(region);
     }
 
     // delete all the relevant area, if the property "DeleteTiles" is set
     if (mDeleteTiles) {
-        const QRegion setLayersRegion = getSetLayersRegion();
-        for (RuleOutput &translationTable : mLayerList) {
-            foreach (Layer *layer, translationTable.keys()) {
-                const int index = translationTable.value(layer);
+        const QRegion setLayersRegion = computeSetLayersRegion();
+        for (const RuleOutput &translationTable : mLayerList) {
+            for (const int index : translationTable) {
                 Layer *dstLayer = mMapWork->layerAt(index);
                 const QRegion region = setLayersRegion.intersected(*where);
                 TileLayer *dstTileLayer = dstLayer->asTileLayer();
@@ -446,7 +446,11 @@ void AutoMapper::autoMap(QRegion *where)
     // This needs to be done, so you can rely on the order of the rules at all
     // locations
     QRegion ret;
+#if QT_VERSION < 0x050800
     foreach (const QRect &rect, where->rects()) {
+#else
+    for (const QRect &rect : *where) {
+#endif
         for (int i = 0; i < mRulesInput.size(); ++i) {
             // at the moment the parallel execution does not work yet
             // TODO: make multithreading available!
@@ -457,10 +461,10 @@ void AutoMapper::autoMap(QRegion *where)
     *where = where->united(ret);
 }
 
-QRegion AutoMapper::getSetLayersRegion() const
+QRegion AutoMapper::computeSetLayersRegion() const
 {
     QRegion result;
-    for (const QString &name : mInputRules.names) {
+    for (const QString &name : qAsConst(mInputRules.names)) {
         const int index = mMapWork->indexOfLayer(name, Layer::TileLayerType);
         if (index == -1)
             continue;
@@ -475,7 +479,7 @@ static bool compareLayerTo(const TileLayer *setLayer,
                            const QVector<TileLayer*> &listNo,
                            const QRegion &ruleRegion, const QPoint &offset);
 
-QRect AutoMapper::applyRule(const int ruleIndex, const QRect &where)
+QRect AutoMapper::applyRule(int ruleIndex, const QRect &where)
 {
     QRect ret;
 
@@ -484,7 +488,7 @@ QRect AutoMapper::applyRule(const int ruleIndex, const QRect &where)
 
     const QRegion &ruleInputRegion = mRulesInput.at(ruleIndex);
     const QRegion &ruleOutputRegion = mRulesOutput.at(ruleIndex);
-    QRect rbr = ruleInputRegion.boundingRect();
+    const QRect rbr = ruleInputRegion.boundingRect();
 
     // Since the rule itself is translated, we need to adjust the borders of the
     // loops. Decrease the size at all sides by one: There must be at least one
@@ -509,8 +513,7 @@ QRect AutoMapper::applyRule(const int ruleIndex, const QRect &where)
     for (int x = minX; x <= maxX; ++x) {
         bool anyMatch = false;
 
-        const auto &inputRules = mInputRules;
-        for (const InputIndex &inputIndex : inputRules) {
+        for (const InputIndex &inputIndex : qAsConst(mInputRules)) {
             bool allLayerNamesMatch = true;
 
             QMapIterator<QString, InputConditions> inputIndexIterator(inputIndex);
@@ -587,15 +590,19 @@ QRect AutoMapper::applyRule(const int ruleIndex, const QRect &where)
 }
 
 /**
- * Returns a list of all cells which can be found within all tile layers
- * within the given region.
+ * Fills \a cells with the list of all cells which can be found within all
+ * tile layers within the given region.
  */
-static QVector<Cell> cellsInRegion(const QVector<TileLayer*> &list,
-                                   const QRegion &r)
+static void collectCellsInRegion(const QVector<TileLayer*> &list,
+                                 const QRegion &r,
+                                 QVarLengthArray<Cell, 8> &cells)
 {
-    QVector<Cell> cells;
     for (const TileLayer *tilelayer : list) {
+#if QT_VERSION < 0x050800
         foreach (const QRect &rect, r.rects()) {
+#else
+        for (const QRect &rect : r) {
+#endif
             for (int x = rect.left(); x <= rect.right(); ++x) {
                 for (int y = rect.top(); y <= rect.bottom(); ++y) {
                     const Cell &cell = tilelayer->cellAt(x, y);
@@ -605,7 +612,6 @@ static QVector<Cell> cellsInRegion(const QVector<TileLayer*> &list,
             }
         }
     }
-    return cells;
 }
 
 /**
@@ -678,78 +684,58 @@ static bool compareLayerTo(const TileLayer *setLayer,
     if (listYes.isEmpty() && listNo.isEmpty())
         return false;
 
-    QVector<Cell> cells;
+    QVarLengthArray<Cell, 8> cells;
     if (listNo.isEmpty())
-        cells = cellsInRegion(listYes, ruleRegion);
+        collectCellsInRegion(listYes, ruleRegion, cells);
 
+#if QT_VERSION < 0x050800
     foreach (const QRect &rect, ruleRegion.rects()) {
+#else
+    for (const QRect &rect : ruleRegion) {
+#endif
         for (int x = rect.left(); x <= rect.right(); ++x) {
             for (int y = rect.top(); y <= rect.bottom(); ++y) {
-                // this is only used in the case where only one list has layers
-                // it is needed for the exception mentioned above
+                const Cell &setCell = setLayer->cellAt(x + offset.x(),
+                                                       y + offset.y());
+
+                // First check listNo. If any tile matches there, we can
+                // immediately know there is no match.
+                for (const TileLayer *comparedTileLayer : listNo) {
+                    const Cell &noCell = comparedTileLayer->cellAt(x, y);
+                    if (!noCell.isEmpty() && setCell == noCell)
+                        return false;
+                }
+
+                // ruleDefinedListYes will be set when there is a tile in at
+                // least one layer. If there is a tile in at least one layer,
+                // only the given tiles in the different listYes layers are
+                // valid. Otherwise, consider all tiles not used elsewhere in
+                // the input as valid.
                 bool ruleDefinedListYes = false;
-
                 bool matchListYes = false;
-                bool matchListNo  = false;
-
-                const Cell &c1 = setLayer->cellAt(x + offset.x(),
-                                                  y + offset.y());
-
-                // ruleDefined will be set when there is a tile in at least
-                // one layer. if there is a tile in at least one layer, only
-                // the given tiles in the different listYes layers are valid.
-                // if there is given no tile at all in the listYes layers,
-                // consider all tiles valid.
 
                 for (const TileLayer *comparedTileLayer : listYes) {
-                    if (!comparedTileLayer->contains(x, y))
-                        return false;
-
-                    const Cell &c2 = comparedTileLayer->cellAt(x, y);
-                    if (!c2.isEmpty())
+                    const Cell &yesCell = comparedTileLayer->cellAt(x, y);
+                    if (!yesCell.isEmpty()) {
                         ruleDefinedListYes = true;
-
-                    if (!c2.isEmpty() && c1 == c2)
-                        matchListYes = true;
+                        if (setCell == yesCell) {
+                            matchListYes = true;
+                            break;
+                        }
+                    }
                 }
-                for (const TileLayer *comparedTileLayer : listNo) {
-                    if (!comparedTileLayer->contains(x, y))
+
+                if (!ruleDefinedListYes) {
+                    // if there were only layers in the listYes, check the exception
+                    if (listNo.isEmpty() && cells.contains(setCell))
                         return false;
-
-                    const Cell &c2 = comparedTileLayer->cellAt(x, y);
-
-                    if (!c2.isEmpty() && c1 == c2)
-                        matchListNo = true;
-                }
-
-                // when there are only layers in the listNo
-                // check only if these layers are unmatched
-                // no need to check explicitly the exception in this case.
-                if (listYes.isEmpty()) {
-                    if (matchListNo)
-                        return false;
-                    else
-                        continue;
-                }
-                // when there are only layers in the listYes
-                // check if these layers are matched, or if the exception works
-                if (listNo.isEmpty()) {
-                    if (matchListYes)
-                        continue;
-                    if (!ruleDefinedListYes && !cells.contains(c1))
-                        continue;
+                } else if (!matchListYes) {
                     return false;
                 }
-
-                // there are layers in both lists:
-                // no need to consider ruleDefinedListXXX
-                if ((matchListYes || !ruleDefinedListYes) && !matchListNo)
-                    continue;
-                else
-                    return false;
             }
         }
     }
+
     return true;
 }
 
@@ -760,7 +746,11 @@ void AutoMapper::copyMapRegion(const QRegion &region, QPoint offset,
         Layer *from = it.key();
         Layer *to = mMapWork->layerAt(it.value());
 
+#if QT_VERSION < 0x050800
         foreach (const QRect &rect, region.rects()) {
+#else
+        for (const QRect &rect : region) {
+#endif
             if (TileLayer *fromTileLayer = from->asTileLayer()) {
                 TileLayer *toTileLayer = to->asTileLayer();
                 Q_ASSERT(toTileLayer); //TODO check this before in prepareAutomap or such!
@@ -856,8 +846,7 @@ void AutoMapper::cleanTilesets()
 {
     QUndoStack *undoStack = mMapDocument->undoStack();
 
-    const auto &addedTilesets = mAddedTilesets;
-    for (const SharedTileset &tileset : addedTilesets) {
+    for (const SharedTileset &tileset : qAsConst(mAddedTilesets)) {
         if (mMapWork->isTilesetUsed(tileset.data()))
             continue;
 
@@ -875,8 +864,7 @@ void AutoMapper::cleanTileLayers()
 {
     QUndoStack *undoStack = mMapDocument->undoStack();
 
-    const auto &addedLayers = mAddedLayers;
-    for (Layer *layer : addedLayers) {
+    for (Layer *layer : qAsConst(mAddedLayers)) {
         if (!layer->isEmpty())
             continue;
 
