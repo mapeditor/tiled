@@ -163,6 +163,12 @@ void MapScene::updateSceneRect()
                      margins.right(),
                      margins.bottom());
 
+    QMargins drawMargins = mMapDocument->map()->drawMargins();
+    sceneRect.adjust(qMin(0, -drawMargins.left()),
+                     qMin(0, -drawMargins.top()),
+                     qMax(0, drawMargins.right()),
+                     qMax(0, drawMargins.bottom()));
+
     setSceneRect(sceneRect);
 }
 
