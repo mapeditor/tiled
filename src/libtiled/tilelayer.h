@@ -93,18 +93,18 @@ public:
     Tileset *tileset() const { return _tileset; }
     int tileId() const { return _tileId; }
 
-    bool flippedHorizontally() const { return _flippedHorizontally; }
-    bool flippedVertically() const { return _flippedVertically; }
-    bool flippedAntiDiagonally() const { return _flippedAntiDiagonally; }
-    bool rotatedHexagonal120() const { return _rotatedHexagonal120; }
+    bool flippedHorizontally() const { return f._flippedHorizontally; }
+    bool flippedVertically() const { return f._flippedVertically; }
+    bool flippedAntiDiagonally() const { return f._flippedAntiDiagonally; }
+    bool rotatedHexagonal120() const { return f._rotatedHexagonal120; }
 
-    void setFlippedHorizontally(bool f) { _flippedHorizontally = f; }
-    void setFlippedVertically(bool f) { _flippedVertically = f; }
-    void setFlippedAntiDiagonally(bool f) { _flippedAntiDiagonally = f; }
-    void setRotatedHexagonal120(bool f) { _rotatedHexagonal120 = f; }
+    void setFlippedHorizontally(bool v) { f._flippedHorizontally = v; }
+    void setFlippedVertically(bool v) { f._flippedVertically = v; }
+    void setFlippedAntiDiagonally(bool v) { f._flippedAntiDiagonally = v; }
+    void setRotatedHexagonal120(bool v) { f._rotatedHexagonal120 = v; }
 
-    bool checked() const { return _checked; }
-    void setChecked(bool checked) { _checked = checked; }
+    bool checked() const { return f._checked; }
+    void setChecked(bool checked) { f._checked = checked; }
 
     Tile *tile() const;
     void setTile(Tile *tile);
@@ -114,15 +114,18 @@ public:
 private:
     Tileset *_tileset;
     int _tileId;
+
+    struct Flags {
+        bool _flippedHorizontally : 1;
+        bool _flippedVertically : 1;
+        bool _flippedAntiDiagonally : 1;
+        bool _rotatedHexagonal120 : 1;
+        bool _checked : 1;
+    };
+
     union {
-        int _flags;
-        struct {
-            bool _flippedHorizontally : 1;
-            bool _flippedVertically : 1;
-            bool _flippedAntiDiagonally : 1;
-            bool _rotatedHexagonal120 : 1;
-            bool _checked : 1;
-        };
+        unsigned _flags;
+        Flags f;
     };
 };
 
