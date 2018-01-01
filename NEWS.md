@@ -27,6 +27,7 @@
 * Added action to reset to default window layout (by Keshav Sharma, #1794)
 * Added support for exporting tilesets, including to Lua format (by Conrad Mercer, #1213)
 * Keep object types sorted alphabetically (by Antoine Gersant, #1679)
+* Improved polygon node handles and drag behavior
 * Fixed %executablepath variable for executables found in PATH (#1648)
 * Fixed Delete key to delete selected polygon nodes when appropriate (by Ketan Gupta, #1555)
 * Fixed Terrain Brush going wild in some scenarios (#1632)
@@ -38,6 +39,7 @@
 * Fixed save dialog to reopen after heeding the file extension warning (by Antoine Gersant, #1782)
 * Fixed potential crash when zooming out too much (#1824)
 * Fixed potential crash after deleting object or group layers
+* Fixed Object Selection tool clearing selection on double-click
 * Enabled building with Qbs on macOS, including the Python plugin (by Jake Petroules)
 * Automapping: Don't fail if an input/inputnot layer isn't found
 * Automapping: Added a "StrictEmpty" flag to input layers

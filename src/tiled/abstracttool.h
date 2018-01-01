@@ -142,7 +142,7 @@ public:
      * Called when a mouse button is pressed a second time on the scene, after
      * a short interval.
      *
-     * My default, this function calls mousePressed.
+     * By default, this function calls mousePressed.
      */
     virtual void mouseDoubleClicked(QGraphicsSceneMouseEvent *event);
 
