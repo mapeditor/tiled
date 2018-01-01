@@ -139,6 +139,14 @@ public:
     virtual void mouseReleased(QGraphicsSceneMouseEvent *event) = 0;
 
     /**
+     * Called when a mouse button is pressed a second time on the scene, after
+     * a short interval.
+     *
+     * My default, this function calls mousePressed.
+     */
+    virtual void mouseDoubleClicked(QGraphicsSceneMouseEvent *event);
+
+    /**
      * Called when the user presses or releases a modifier key resulting
      * in a change of modifier status, and when the tool is enabled with
      * a modifier key pressed.

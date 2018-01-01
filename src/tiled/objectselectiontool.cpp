@@ -247,9 +247,9 @@ class ResizeHandle : public Handle
 public:
     ResizeHandle(AnchorPosition anchorPosition, QGraphicsItem *parent = nullptr)
         : Handle(parent)
-        , mAnchorPosition(anchorPosition)
         , mResizingLimitHorizontal(false)
         , mResizingLimitVertical(false)
+        , mAnchorPosition(anchorPosition)
         , mArrow(createResizeArrow(anchorPosition > BottomRightAnchor))
     {
         // The bottom right anchor takes precedence
@@ -284,10 +284,10 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override;
 
 private:
-    AnchorPosition mAnchorPosition;
-    QPointF mResizingOrigin;
     bool mResizingLimitHorizontal;
     bool mResizingLimitVertical;
+    AnchorPosition mAnchorPosition;
+    QPointF mResizingOrigin;
     QPainterPath mArrow;
 };
 

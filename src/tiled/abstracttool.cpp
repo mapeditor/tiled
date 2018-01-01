@@ -77,6 +77,11 @@ void AbstractTool::keyPressed(QKeyEvent *event)
     event->ignore();
 }
 
+void AbstractTool::mouseDoubleClicked(QGraphicsSceneMouseEvent *event)
+{
+    mousePressed(event);
+}
+
 void AbstractTool::setMapDocument(MapDocument *mapDocument)
 {
     if (mMapDocument == mapDocument)
