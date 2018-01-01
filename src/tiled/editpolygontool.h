@@ -77,6 +77,8 @@ private:
         Moving
     };
 
+    void updateHover(const QPointF &pos);
+
     void setSelectedHandles(const QSet<PointHandle*> &handles);
     void setSelectedHandle(PointHandle *handle)
     { setSelectedHandles(QSet<PointHandle*>() << handle); }
@@ -94,6 +96,7 @@ private:
 
     SelectionRectangle *mSelectionRectangle;
     bool mMousePressed;
+    PointHandle *mHoveredHandle;
     PointHandle *mClickedHandle;
     MapObjectItem *mClickedObjectItem;
     QVector<QPointF> mOldHandlePositions;

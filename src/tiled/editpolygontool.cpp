@@ -64,11 +64,11 @@ public:
         , mMapObject(mapObject)
         , mPointIndex(pointIndex)
         , mSelected(false)
+        , mUnderMouse(false)
     {
         setFlags(QGraphicsItem::ItemIgnoresTransformations |
                  QGraphicsItem::ItemIgnoresParentOpacity);
         setZValue(10000);
-        setCursor(Qt::SizeAllCursor);
     }
 
     enum { Type = UserType + 2 };
@@ -79,8 +79,10 @@ public:
     int pointIndex() const { return mPointIndex; }
 
     // These hide the QGraphicsItem members
-    void setSelected(bool selected) { mSelected = selected; update(); }
+    void setSelected(bool selected);
     bool isSelected() const { return mSelected; }
+
+    void setUnderMouse(bool underMouse);
 
     QRectF boundingRect() const override;
     void paint(QPainter *painter,
@@ -91,28 +93,54 @@ private:
     MapObject *mMapObject;
     int mPointIndex;
     bool mSelected;
+    bool mUnderMouse;
 };
 
 } // namespace Internal
 } // namespace Tiled
 
+void PointHandle::setSelected(bool selected)
+{
+    if (mSelected != selected) {
+        mSelected = selected;
+        update();
+    }
+}
+
+void PointHandle::setUnderMouse(bool underMouse)
+{
+    if (mUnderMouse != underMouse) {
+        mUnderMouse = underMouse;
+        update();
+    }
+}
+
 QRectF PointHandle::boundingRect() const
 {
-    return QRectF(-5, -5, 10 + 1, 10 + 1);
+    return Utils::dpiScaled(QRectF(-7, -7, 14, 14));
 }
 
 void PointHandle::paint(QPainter *painter,
                         const QStyleOptionGraphicsItem *,
                         QWidget *)
 {
-    painter->setPen(Qt::black);
-    if (mSelected) {
-        painter->setBrush(QApplication::palette().highlight());
-        painter->drawRect(QRectF(-4, -4, 8, 8));
-    } else {
-        painter->setBrush(Qt::lightGray);
-        painter->drawRect(QRectF(-3, -3, 6, 6));
-    }
+    QPen pen(Qt::black);
+    QColor brush(Qt::lightGray);
+
+    if (mSelected)
+        brush = QApplication::palette().highlight().color();
+    if (mUnderMouse)
+        brush = brush.lighter();
+
+    painter->scale(Utils::defaultDpiScale(), Utils::defaultDpiScale());
+    painter->setRenderHint(QPainter::Antialiasing);
+    painter->setPen(pen);
+    painter->setBrush(brush);
+
+    if (mSelected)
+        painter->drawEllipse(QRectF(-5, -5, 10, 10));
+    else
+        painter->drawEllipse(QRectF(-4, -4, 8, 8));
 }
 
 
@@ -123,6 +151,7 @@ EditPolygonTool::EditPolygonTool(QObject *parent)
           parent)
     , mSelectionRectangle(new SelectionRectangle)
     , mMousePressed(false)
+    , mHoveredHandle(nullptr)
     , mClickedHandle(nullptr)
     , mClickedObjectItem(nullptr)
     , mMode(NoMode)
@@ -180,6 +209,8 @@ void EditPolygonTool::mouseMoved(const QPointF &pos,
                                  Qt::KeyboardModifiers modifiers)
 {
     AbstractObjectTool::mouseMoved(pos, modifiers);
+
+    updateHover(pos);
 
     if (mMode == NoMode && mMousePressed) {
         QPoint screenPos = QCursor::pos();
@@ -328,6 +359,8 @@ void EditPolygonTool::mouseReleased(QGraphicsSceneMouseEvent *event)
 
     mMousePressed = false;
     mClickedHandle = nullptr;
+
+    updateHover(event->scenePos());
 }
 
 void EditPolygonTool::modifiersChanged(Qt::KeyboardModifiers modifiers)
@@ -362,17 +395,21 @@ void EditPolygonTool::updateHandles()
 {
     const QList<MapObject*> &selection = mapDocument()->selectedObjects();
 
+    auto deleteHandle = [this](PointHandle *handle) {
+        if (handle->isSelected())
+            mSelectedHandles.remove(handle);
+        if (handle == mHoveredHandle)
+            mHoveredHandle = nullptr;
+        delete handle;
+    };
+
     // First destroy the handles for objects that are no longer selected
     QMutableMapIterator<MapObject*, QList<PointHandle*> > i(mHandles);
     while (i.hasNext()) {
         i.next();
         if (!selection.contains(i.key())) {
-            const auto &handles = i.value();
-            for (PointHandle *handle : handles) {
-                if (handle->isSelected())
-                    mSelectedHandles.remove(handle);
-                delete handle;
-            }
+            for (PointHandle *handle : i.value())
+                deleteHandle(handle);
 
             i.remove();
         }
@@ -396,12 +433,8 @@ void EditPolygonTool::updateHandles()
         }
 
         // Remove superfluous handles
-        while (pointHandles.size() > polygon.size()) {
-            PointHandle *handle = pointHandles.takeLast();
-            if (handle->isSelected())
-                mSelectedHandles.remove(handle);
-            delete handle;
-        }
+        while (pointHandles.size() > polygon.size())
+            deleteHandle(pointHandles.takeLast());
 
         // Update the position of all handles
         for (int i = 0; i < pointHandles.size(); ++i) {
@@ -919,5 +952,25 @@ void EditPolygonTool::deleteSegment()
         mapDocument()->undoStack()->push(new ChangePolygon(mapDocument(), mapObject, newPolygon, polygon));
         mapDocument()->undoStack()->push(new TogglePolygonPolyline(mapObject));
         mapDocument()->undoStack()->endMacro();
+    }
+}
+
+void EditPolygonTool::updateHover(const QPointF &pos)
+{
+    PointHandle *hoveredHandle = nullptr;
+
+    if (mClickedHandle) {
+        hoveredHandle = mClickedHandle;
+    } else if (QGraphicsView *view = mapScene()->views().first()) {
+        QGraphicsItem *hoveredItem = mapScene()->itemAt(pos, view->transform());
+        hoveredHandle = qgraphicsitem_cast<PointHandle*>(hoveredItem);
+    }
+
+    if (mHoveredHandle != hoveredHandle) {
+        if (mHoveredHandle)
+            mHoveredHandle->setUnderMouse(false);
+        if (hoveredHandle)
+            hoveredHandle->setUnderMouse(true);
+        mHoveredHandle = hoveredHandle;
     }
 }
