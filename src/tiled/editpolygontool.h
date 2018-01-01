@@ -87,7 +87,7 @@ private:
 
     void startSelecting();
 
-    void startMoving();
+    void startMoving(const QPointF &pos);
     void updateMovingItems(const QPointF &pos,
                            Qt::KeyboardModifiers modifiers);
     void finishMoving(const QPointF &pos);

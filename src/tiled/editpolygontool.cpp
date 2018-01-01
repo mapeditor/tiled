@@ -215,9 +215,11 @@ void EditPolygonTool::mouseMoved(const QPointF &pos,
     if (mMode == NoMode && mMousePressed) {
         QPoint screenPos = QCursor::pos();
         const int dragDistance = (mScreenStart - screenPos).manhattanLength();
-        if (dragDistance >= QApplication::startDragDistance()) {
+
+        // Use a reduced start drag distance to increase the responsiveness
+        if (dragDistance >= QApplication::startDragDistance() / 2) {
             if (mClickedHandle)
-                startMoving();
+                startMoving(pos);
             else
                 startSelecting();
         }
@@ -510,13 +512,14 @@ void EditPolygonTool::startSelecting()
     mapScene()->addItem(mSelectionRectangle);
 }
 
-void EditPolygonTool::startMoving()
+void EditPolygonTool::startMoving(const QPointF &pos)
 {
     // Move only the clicked handle, if it was not part of the selection
     if (!mSelectedHandles.contains(mClickedHandle))
         setSelectedHandle(mClickedHandle);
 
     mMode = Moving;
+    mStart = pos;
 
     MapRenderer *renderer = mapDocument()->renderer();
 
