@@ -36,7 +36,11 @@
 * Fixed suggested file name for tilesets to match the tileset name (by killerasus, #1783)
 * Fixed selection rectangle's shadow offset when zooming (by Antoine Gersant, #1796)
 * Fixed save dialog to reopen after heeding the file extension warning (by Antoine Gersant, #1782)
+* Fixed potential crash when zooming out too much (#1824)
+* Fixed potential crash after deleting object or group layers
 * Enabled building with Qbs on macOS, including the Python plugin (by Jake Petroules)
+* Automapping: Don't fail if an input/inputnot layer isn't found
+* Automapping: Added a "StrictEmpty" flag to input layers
 * GMX plugin: Added support for defining views with objects (by William Taylor, #1621)
 * GMX plugin: Added support for setting scale and origin for instances (#1427)
 * GMX plugin: Added support for setting the creation code for instances and the map
@@ -47,6 +51,7 @@
 * Python plugin: Adjusted example scripts to API changes (by spiiin, #1769)
 * Flare plugin: Various changes (by Justin Jacobs, #1781)
 * TMW plugin: Removed since it is no longer needed
+* Updated Dutch, English, French, German, Korean, Norwegian Bokmål, Spanish and Turkish translations
 
 ### Tiled 1.0.3 (29 August 2017)
 
