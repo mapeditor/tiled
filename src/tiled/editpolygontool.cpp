@@ -45,6 +45,8 @@
 #include <QPalette>
 #include <QUndoStack>
 
+#include "qtcompat_p.h"
+
 #include <cstdlib>
 
 using namespace Tiled;
@@ -215,11 +217,15 @@ void EditPolygonTool::mouseMoved(const QPointF &pos,
     if (mMode == NoMode && mMousePressed) {
         QPoint screenPos = QCursor::pos();
         const int dragDistance = (mScreenStart - screenPos).manhattanLength();
+        const bool hasSelection = !mSelectedHandles.isEmpty();
 
         // Use a reduced start drag distance to increase the responsiveness
         if (dragDistance >= QApplication::startDragDistance() / 2) {
-            if (mClickedHandle)
-                startMoving(pos);
+            // Holding Alt forces moving current selection
+            // Holding Shift forces selection rectangle
+            if ((mClickedHandle || ((modifiers & Qt::AltModifier) && hasSelection)) &&
+                    !(modifiers & Qt::ShiftModifier))
+                startMoving(pos, modifiers);
             else
                 startSelecting();
         }
@@ -378,7 +384,7 @@ void EditPolygonTool::languageChanged()
 
 void EditPolygonTool::setSelectedHandles(const QSet<PointHandle *> &handles)
 {
-    for (PointHandle *handle : mSelectedHandles)
+    for (PointHandle *handle : qAsConst(mSelectedHandles))
         if (!handles.contains(handle))
             handle->setSelected(false);
 
@@ -512,11 +518,13 @@ void EditPolygonTool::startSelecting()
     mapScene()->addItem(mSelectionRectangle);
 }
 
-void EditPolygonTool::startMoving(const QPointF &pos)
+void EditPolygonTool::startMoving(const QPointF &pos,
+                                  Qt::KeyboardModifiers modifiers)
 {
     // Move only the clicked handle, if it was not part of the selection
-    if (!mSelectedHandles.contains(mClickedHandle))
-        setSelectedHandle(mClickedHandle);
+    if (mClickedHandle && !(modifiers & Qt::AltModifier))
+        if (!mSelectedHandles.contains(mClickedHandle))
+            setSelectedHandle(mClickedHandle);
 
     mMode = Moving;
     mStart = pos;
@@ -528,8 +536,7 @@ void EditPolygonTool::startMoving(const QPointF &pos)
     mOldPolygons.clear();
     mAlignPosition = renderer->screenToPixelCoords((*mSelectedHandles.begin())->pos());
 
-    const auto &selectedHandles = mSelectedHandles;
-    for (PointHandle *handle : selectedHandles) {
+    for (PointHandle *handle : qAsConst(mSelectedHandles)) {
         const QPointF pos = renderer->screenToPixelCoords(handle->pos());
         mOldHandlePositions.append(handle->pos());
         if (pos.x() < mAlignPosition.x())
@@ -561,10 +568,8 @@ void EditPolygonTool::updateMovingItems(const QPointF &pos,
         diff = renderer->pixelToScreenCoords(newAlignPixelPos) - alignScreenPos;
     }
 
-    const auto &selectedHandles = mSelectedHandles;
-
     int i = 0;
-    for (PointHandle *handle : selectedHandles) {
+    for (PointHandle *handle : qAsConst(mSelectedHandles)) {
         // update handle position
         QPointF newScreenPos = mOldHandlePositions.at(i) + diff;
         handle->setPos(newScreenPos);
@@ -962,11 +967,19 @@ void EditPolygonTool::updateHover(const QPointF &pos)
 {
     PointHandle *hoveredHandle = nullptr;
 
-    if (mClickedHandle) {
-        hoveredHandle = mClickedHandle;
-    } else if (QGraphicsView *view = mapScene()->views().first()) {
-        QGraphicsItem *hoveredItem = mapScene()->itemAt(pos, view->transform());
-        hoveredHandle = qgraphicsitem_cast<PointHandle*>(hoveredItem);
+    switch (mMode) {
+    case Moving:    // while moving, optionally keep clicked handle hovered
+        if (mClickedHandle && mClickedHandle->isSelected())
+            hoveredHandle = mClickedHandle;
+        break;
+    case NoMode:
+        if (QGraphicsView *view = mapScene()->views().first()) {
+            QGraphicsItem *hoveredItem = mapScene()->itemAt(pos, view->transform());
+            hoveredHandle = qgraphicsitem_cast<PointHandle*>(hoveredItem);
+        }
+        break;
+    case Selecting:
+        break;      // no hover while selecting
     }
 
     if (mHoveredHandle != hoveredHandle) {
