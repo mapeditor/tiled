@@ -5344,7 +5344,7 @@ Por favor seleccione un formato específico.</translation>
     <message>
         <location line="+152"/>
         <source>Missing wang tile transition</source>
-        <translation>Transición de patrón wang perdida</translation>
+        <translation>Transición de patrón Wang perdida</translation>
     </message>
 </context>
 <context>

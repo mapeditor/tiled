@@ -5304,7 +5304,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+152"/>
         <source>Missing wang tile transition</source>
-        <translation>Eksik wang desen geçişi</translation>
+        <translation>Eksik Wang desen geçişi</translation>
     </message>
 </context>
 <context>

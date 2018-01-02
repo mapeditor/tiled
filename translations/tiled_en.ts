@@ -5325,7 +5325,7 @@ Please select specific format.</source>
     <message>
         <location line="+152"/>
         <source>Missing wang tile transition</source>
-        <translation>Missing wang tile transition</translation>
+        <translation>Missing Wang tile transition</translation>
     </message>
 </context>
 <context>

@@ -5377,17 +5377,17 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+2"/>
         <source>Erase WangIds</source>
-        <translation>Slett wang-IDer</translation>
+        <translation>Slett Wang-IDer</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add Wang Set</source>
-        <translation>Legg til wang-sett</translation>
+        <translation>Legg til Wang-sett</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Wang Set</source>
-        <translation>Fjern wang-sett</translation>
+        <translation>Fjern Wang-sett</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -5866,12 +5866,12 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location filename="../src/tiled/addremovewangset.cpp" line="+65"/>
         <source>Add Wang Set</source>
-        <translation>Legg til wang-sett</translation>
+        <translation>Legg til Wang-sett</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Remove Wang Set</source>
-        <translation>Fjern wang-sett</translation>
+        <translation>Fjern Wang-sett</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetilewangid.cpp" line="+36"/>
@@ -5893,7 +5893,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+68"/>
         <source>Remove Wang Color</source>
-        <translation>Fjern wang-farge</translation>
+        <translation>Fjern Wang-farge</translation>
     </message>
     <message>
         <location line="+89"/>
@@ -5913,7 +5913,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location filename="../src/tiled/renamewangset.cpp" line="+36"/>
         <source>Change Wang Set Name</source>
-        <translation>Endre navn på wang-sett</translation>
+        <translation>Endre navn på Wang-sett</translation>
     </message>
     <message>
         <location filename="../src/tiled/replacetemplate.cpp" line="+35"/>
