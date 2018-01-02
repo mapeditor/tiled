@@ -94,6 +94,7 @@ void StampActions::populateToolBar(QToolBar *toolBar, bool isRandom, bool isWang
     mWangFill->setChecked(isWangFill);
     toolBar->addAction(mRandom);
     toolBar->addAction(mWangFill);
+    toolBar->addSeparator();
     toolBar->addAction(mFlipHorizontal);
     toolBar->addAction(mFlipVertical);
     toolBar->addAction(mRotateLeft);

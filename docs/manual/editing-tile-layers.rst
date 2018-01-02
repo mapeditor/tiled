@@ -120,6 +120,19 @@ Tools <#selection-tools>`__.
 You can also flip and rotate the current stamp as described for the
 :ref:`stamp-tool`.
 
+.. _shape-fill-tool:
+
+Shape Fill Tool
+---------------
+
+Shortcut: ``P``
+
+This tool provides a quick way to fill rectangles or ellipses with a certain
+tile or pattern. Hold ``Shift`` to fill an exact square or circle.
+
+You can also flip and rotate the current stamp as described for the
+:ref:`stamp-tool`.
+
 .. _eraser-tool:
 
 Eraser

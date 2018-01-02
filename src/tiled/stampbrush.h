@@ -49,7 +49,7 @@ class StampBrush : public AbstractTileTool
 
 public:
     StampBrush(QObject *parent = nullptr);
-    ~StampBrush();
+    ~StampBrush() override;
 
     void deactivate(MapScene *scene) override;
 
