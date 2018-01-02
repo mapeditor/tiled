@@ -53,7 +53,7 @@
 * Python plugin: Adjusted example scripts to API changes (by spiiin, #1769)
 * Flare plugin: Various changes (by Justin Jacobs, #1781)
 * TMW plugin: Removed since it is no longer needed
-* Updated Dutch, English, French, German, Korean, Norwegian Bokmål, Spanish and Turkish translations
+* Updated Dutch, Bulgarian, English, French, German, Korean, Norwegian Bokmål, Spanish and Turkish translations
 
 ### Tiled 1.0.3 (29 August 2017)
 
