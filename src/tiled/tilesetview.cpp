@@ -224,7 +224,7 @@ static QTransform tilesetGridTransform(const Tileset &tileset, QPoint tileCenter
 
         transform.translate(tileCenter.x(), tileCenter.y());
 
-        const auto ratio = (double) gridSize.height() / gridSize.width();
+        const auto ratio = (qreal) gridSize.height() / gridSize.width();
         const auto scaleX = 1.0 / sqrt(2.0);
         const auto scaleY = scaleX * ratio;
         transform.scale(scaleX, scaleY);
@@ -1028,9 +1028,9 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
             const auto t = tilesetGridTransform(*tilesetDocument()->tileset(), tileRect.center());
             const auto mappedPos = t.inverted().map(pos);
             QPoint tileLocalPos = mappedPos - tileRect.topLeft();
-            QPointF tileLocalPosF((float) tileLocalPos.x() / tileRect.width(),
-                                  (float) tileLocalPos.y() / tileRect.height());
-            tileLocalPosF -= QPointF(0.5f, 0.5f);
+            QPointF tileLocalPosF((qreal) tileLocalPos.x() / tileRect.width(),
+                                  (qreal) tileLocalPos.y() / tileRect.height());
+            tileLocalPosF -= QPointF(0.5, 0.5);
 
             wangId = 0;
             if (mWangBehavior == Edge) {

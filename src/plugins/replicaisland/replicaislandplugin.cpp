@@ -56,7 +56,7 @@ Tiled::Map *ReplicaIslandPlugin::read(const QString &fileName)
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly)) {
         mError = tr("Cannot open Replica Island map file!");
-        return 0;
+        return nullptr;
     }
     QDataStream in(&file);
     in.setByteOrder(QDataStream::LittleEndian);
@@ -67,7 +67,7 @@ Tiled::Map *ReplicaIslandPlugin::read(const QString &fileName)
     in >> mapSignature >> layerCount >> backgroundIndex;
     if (in.status() == QDataStream::ReadPastEnd || mapSignature != 96) {
         mError = tr("Can't parse file header!");
-        return 0;
+        return nullptr;
     }
 
     // Create our map, setting width and height to 0 until we load a layer.
@@ -89,7 +89,7 @@ Tiled::Map *ReplicaIslandPlugin::read(const QString &fileName)
         if (in.status() == QDataStream::ReadPastEnd || levelSignature != 42) {
             delete map;
             mError = tr("Can't parse layer header!");
-            return 0;
+            return nullptr;
         }
 
         // Make sure our width and height are consistent.
@@ -100,7 +100,7 @@ Tiled::Map *ReplicaIslandPlugin::read(const QString &fileName)
         if (map->width() != width || map->height() != height) {
             delete map;
             mError = tr("Inconsistent layer sizes!");
-            return 0;
+            return nullptr;
         }
 
         // Create a layer object.
@@ -121,7 +121,7 @@ Tiled::Map *ReplicaIslandPlugin::read(const QString &fileName)
         if (bytesRead != tileData.size()) {
             delete map;
             mError = tr("File ended in middle of layer!");
-            return 0;
+            return nullptr;
         }
         quint8 *tp = reinterpret_cast<quint8 *>(tileData.data());
 
@@ -141,7 +141,7 @@ Tiled::Map *ReplicaIslandPlugin::read(const QString &fileName)
     if (in.status() != QDataStream::Ok || !in.atEnd()) {
         delete map;
         mError = tr("Unexpected data at end of file!");
-        return 0;
+        return nullptr;
     }
 
     return map;

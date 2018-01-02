@@ -281,7 +281,7 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
             }
         }
 
-        float probability = tileVar[QLatin1String("probability")].toFloat(&ok);
+        qreal probability = tileVar[QLatin1String("probability")].toDouble(&ok);
         if (ok)
             tile->setProbability(probability);
 

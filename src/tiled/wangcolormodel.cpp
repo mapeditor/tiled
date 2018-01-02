@@ -267,7 +267,7 @@ void WangColorModel::setColor(const QColor &color, bool isEdge, int index)
     emit dataChanged(i, i);
 }
 
-void WangColorModel::setProbability(float probability, bool isEdge, int index)
+void WangColorModel::setProbability(qreal probability, bool isEdge, int index)
 {
     if (isEdge)
         mWangSet->edgeColorAt(index)->setProbability(probability);

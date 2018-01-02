@@ -148,7 +148,7 @@ private:
     QPoint mStampReference;
 
     bool mIsRandom;
-    RandomPicker<Cell, float> mRandomCellPicker;
+    RandomPicker<Cell> mRandomCellPicker;
 
     bool mIsWangFill;
     WangSet *mWangSet;

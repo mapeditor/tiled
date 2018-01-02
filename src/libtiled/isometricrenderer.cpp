@@ -34,7 +34,7 @@
 #include "tilelayer.h"
 #include "tileset.h"
 
-#include <cmath>
+#include <QtMath>
 
 using namespace Tiled;
 
@@ -193,10 +193,10 @@ void IsometricRenderer::drawGrid(QPainter *painter, const QRectF &rect,
     int endY = screenToTileCoords(r.bottomLeft()).y();
 
     if (!map()->infinite()) {
-        startX = qMax(qreal(0), qreal(startX));
-        startY = qMax(qreal(0), qreal(startY));
-        endX = qMin(qreal(map()->width()), qreal(endX));
-        endY = qMin(qreal(map()->height()), qreal(endY));
+        startX = qMax(0, startX);
+        startY = qMax(0, startY);
+        endX = qMin(map()->width(), endX);
+        endY = qMin(map()->height(), endY);
     }
 
     QPen gridPen = makeGridPen(painter->device(), gridColor);
@@ -239,8 +239,8 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
 
     // Determine the tile and pixel coordinates to start at
     QPointF tilePos = screenToTileCoords(rect.x(), rect.y());
-    QPoint rowItr = QPoint((int) std::floor(tilePos.x()),
-                           (int) std::floor(tilePos.y()));
+    QPoint rowItr = QPoint(qFloor(tilePos.x()),
+                           qFloor(tilePos.y()));
     QPointF startPos = tileToScreenCoords(rowItr);
     startPos.rx() -= tileWidth / 2;
     startPos.ry() += tileHeight;
@@ -282,7 +282,7 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
             if (!cell.isEmpty()) {
                 Tile *tile = cell.tile();
                 QSize size = tile ? tile->size() : map()->tileSize();
-                renderer.render(cell, QPointF(x, (float)y / 2), size,
+                renderer.render(cell, QPointF(x, (qreal)y / 2), size,
                                 CellRenderer::BottomLeft);
             }
 
@@ -374,7 +374,7 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
 
         pen.setJoinStyle(Qt::RoundJoin);
         pen.setCapStyle(Qt::RoundCap);
-        pen.setWidth(lineWidth);
+        pen.setWidthF(lineWidth);
 
         QPen colorPen(pen);
         colorPen.setColor(color);
@@ -388,8 +388,8 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
         case MapObject::Ellipse: {
             QPolygonF polygon = pixelRectToScreenPolygon(object->bounds());
 
-            float tw = map()->tileWidth();
-            float th = map()->tileHeight();
+            qreal tw = map()->tileWidth();
+            qreal th = map()->tileHeight();
             QPointF transformScale(1, 1);
             if (tw > th)
                 transformScale = QPointF(1, th/tw);

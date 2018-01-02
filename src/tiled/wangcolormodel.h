@@ -84,7 +84,7 @@ public:
 
     void setColor(const QColor &color, bool isEdge, int index);
 
-    void setProbability(float probability, bool isEdge, int index);
+    void setProbability(qreal probability, bool isEdge, int index);
 
 private:
     TilesetDocument *mTilesetDocument;

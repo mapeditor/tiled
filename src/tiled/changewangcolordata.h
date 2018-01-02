@@ -89,7 +89,7 @@ private:
 class ChangeWangColorProbability : public QUndoCommand
 {
 public:
-    ChangeWangColorProbability(float newProbability,
+    ChangeWangColorProbability(qreal newProbability,
                                int colorIndex,
                                bool isEdge,
                                WangColorModel *wangColorModel);
@@ -101,8 +101,8 @@ private:
     WangColorModel *mWangColorModel;
     int mIndex;
     bool mIsEdge;
-    float mOldProbability;
-    float mNewProbability;
+    qreal mOldProbability;
+    qreal mNewProbability;
 };
 
 } // namespace Internal

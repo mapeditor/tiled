@@ -443,7 +443,7 @@ void MapReaderPrivate::readTilesetTile(Tileset &tileset)
     // Read tile probability
     QStringRef probability = atts.value(QLatin1String("probability"));
     if (!probability.isEmpty())
-        tile->setProbability(probability.toFloat());
+        tile->setProbability(probability.toDouble());
 
     while (xml.readNextStartElement()) {
         if (xml.name() == QLatin1String("properties")) {
@@ -663,7 +663,7 @@ void MapReaderPrivate::readTilesetWangSets(Tileset &tileset)
                     QString name = wangColorAtts.value(QLatin1String("name")).toString();
                     QColor color = wangColorAtts.value(QLatin1String("color")).toString();
                     int imageId = wangColorAtts.value(QLatin1String("tile")).toInt();
-                    float probability = wangColorAtts.value(QLatin1String("probability")).toFloat();
+                    qreal probability = wangColorAtts.value(QLatin1String("probability")).toDouble();
 
                     QSharedPointer<WangColor> wc(new WangColor(0,
                                                                xml.name() == QLatin1String("wangedgecolor"),
@@ -692,7 +692,7 @@ static void readLayerAttributes(Layer &layer,
     const QStringRef lockedRef = atts.value(QLatin1String("locked"));
 
     bool ok;
-    const float opacity = opacityRef.toFloat(&ok);
+    const qreal opacity = opacityRef.toDouble(&ok);
     if (ok)
         layer.setOpacity(opacity);
 
@@ -1149,7 +1149,7 @@ TextData MapReaderPrivate::readObjectText()
     if (!colorString.isEmpty())
         textData.color = QColor(colorString.toString());
 
-    Qt::Alignment alignment = 0;
+    Qt::Alignment alignment;
 
     QStringRef hAlignString = atts.value(QLatin1String("halign"));
     if (hAlignString == QLatin1String("center"))

@@ -292,7 +292,7 @@ WangColor::WangColor()
     : WangColor(0, true, QString(), Qt::red, -1)
 {}
 
-WangColor::WangColor(int colorIndex, bool isEdge, const QString &name, const QColor &color, int imageId, float probability)
+WangColor::WangColor(int colorIndex, bool isEdge, const QString &name, const QColor &color, int imageId, qreal probability)
     : Object(WangColorType)
     , mColorIndex(colorIndex)
     , mIsEdge(isEdge)
@@ -676,9 +676,9 @@ WangId WangSet::wangIdOfCell(const Cell &cell) const
         return 0;
 }
 
-float WangSet::wangTileProbability(const WangTile &wangTile) const
+qreal WangSet::wangTileProbability(const WangTile &wangTile) const
 {
-    float probability = 1.0f;
+    qreal probability = 1.0;
     WangId wangId = wangTile.wangId();
 
     if (edgeColorCount() > 1) {

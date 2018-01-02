@@ -250,7 +250,7 @@ static Tile *findBestTile(const Tileset &tileset, unsigned terrain, unsigned con
     // we should have hooked 0xFFFFFFFF terrains outside this function
     Q_ASSERT(terrain != 0xFFFFFFFF);
 
-    RandomPicker<Tile*, float> matches;
+    RandomPicker<Tile*> matches;
     int penalty = INT_MAX;
 
     // TODO: this is a slow linear search, perhaps we could use a better find algorithm...

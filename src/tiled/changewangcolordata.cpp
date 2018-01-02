@@ -100,7 +100,7 @@ void ChangeWangColorColor::redo()
     mWangColorModel->setColor(mNewColor, mIsEdge, mIndex);
 }
 
-ChangeWangColorProbability::ChangeWangColorProbability(float newProbability,
+ChangeWangColorProbability::ChangeWangColorProbability(qreal newProbability,
                                                        int colorIndex,
                                                        bool isEdge,
                                                        WangColorModel *wangColorModel)

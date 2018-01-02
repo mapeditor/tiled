@@ -236,21 +236,21 @@ public:
               const QString &name,
               const QColor &color,
               int imageId,
-              float probability = 1);
+              qreal probability = 1);
 
     int colorIndex() const { return mColorIndex; }
     bool isEdge() const { return mIsEdge; }
     QString name() const { return mName; }
     QColor color() const { return mColor; }
     int imageId() const { return mImageId; }
-    float probability() const { return mProbability; }
+    qreal probability() const { return mProbability; }
 
     void setColorIndex(int colorIndex) { mColorIndex = colorIndex; }
     void setIsEdge(bool isEdge) { mIsEdge = isEdge; }
     void setName(const QString &name) { mName = name; }
     void setColor(const QColor &color) { mColor = color; }
     void setImageId(int imageId) { mImageId = imageId; }
-    void setProbability(float probability) { mProbability = probability; }
+    void setProbability(qreal probability) { mProbability = probability; }
 
 private:
     int mColorIndex;
@@ -258,7 +258,7 @@ private:
     QString mName;
     QColor mColor;
     int mImageId;
-    float mProbability;
+    qreal mProbability;
 };
 
 /**
@@ -366,7 +366,7 @@ public:
 
     /* The probability of a given wang tile of being selected.
      * */
-    float wangTileProbability(const WangTile &wangTile) const;
+    qreal wangTileProbability(const WangTile &wangTile) const;
 
     /* Returns whether or not the given wangId is valid in the contex of the current wangSet
      * */

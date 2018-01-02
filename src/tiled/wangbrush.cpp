@@ -452,7 +452,7 @@ static WangTile findMatchingWangTile(const WangSet *wangSet, WangId wangId)
     if (potentials.isEmpty())
         return WangTile();
 
-    RandomPicker<WangTile, float> wangTiles;
+    RandomPicker<WangTile> wangTiles;
     for (const WangTile &wangTile : potentials)
         wangTiles.add(wangTile, wangSet->wangTileProbability(wangTile));
     return wangTiles.pick();

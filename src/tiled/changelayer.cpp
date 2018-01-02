@@ -77,7 +77,7 @@ void SetLayerLocked::swap()
 
 SetLayerOpacity::SetLayerOpacity(MapDocument *mapDocument,
                                  Layer *layer,
-                                 float opacity)
+                                 qreal opacity)
     : mMapDocument(mapDocument)
     , mLayer(layer)
     , mOldOpacity(layer->opacity())
@@ -98,7 +98,7 @@ bool SetLayerOpacity::mergeWith(const QUndoCommand *other)
     return true;
 }
 
-void SetLayerOpacity::setOpacity(float opacity)
+void SetLayerOpacity::setOpacity(qreal opacity)
 {
     mMapDocument->layerModel()->setLayerOpacity(mLayer, opacity);
 }
