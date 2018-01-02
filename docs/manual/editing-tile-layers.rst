@@ -120,6 +120,10 @@ Tools <#selection-tools>`__.
 You can also flip and rotate the current stamp as described for the
 :ref:`stamp-tool`.
 
+.. raw:: html
+
+   <div class="new">New in Tiled 1.1</div>
+
 .. _shape-fill-tool:
 
 Shape Fill Tool

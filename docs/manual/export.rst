@@ -38,8 +38,8 @@ tilesets.
 Lua
 ---
 
-Maps can be exported to Lua code. This export option supports most of
-Tiled's features and is useful when using a Lua-based framework like
+Maps and tilesets can be exported to Lua code. This export option supports
+most of Tiled's features and is useful when using a Lua-based framework like
 `LÖVE`_ (with `Simple Tiled Implementation`_), `Corona`_ (with
 `ponytiled`_ or `Dusk Engine`_) or `Defold`_.
 
