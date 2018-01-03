@@ -242,12 +242,11 @@ TilesetEditor::TilesetEditor(QObject *parent)
             mTileCollisionDock, &TileCollisionDock::setTile);
 
     connect(mTileCollisionDock, &TileCollisionDock::dummyMapDocumentChanged,
-            this, [this](MapDocument *mapDocument) {
-        if (mTileCollisionDock->isVisible())
-            mPropertiesDock->setDocument(mapDocument);
+            this, [this]() {
+        mPropertiesDock->setDocument(mCurrentTilesetDocument);
     });
-    connect(mTileCollisionDock, &TileCollisionDock::canCopyChanged,
-            this, &Editor::enabledStandardActionsChanged);
+    connect(mTileCollisionDock, &TileCollisionDock::hasSelectedObjectsChanged,
+            this, &TilesetEditor::hasSelectedCollisionObjectsChanged);
     connect(mTileCollisionDock, &TileCollisionDock::visibilityChanged,
             this, &Editor::enabledStandardActionsChanged);
 
@@ -418,7 +417,7 @@ Editor::StandardActions TilesetEditor::enabledStandardActions() const
     StandardActions standardActions;
 
     if (mCurrentTile && mTileCollisionDock->isVisible()) {
-        if (mTileCollisionDock->canCopy())
+        if (mTileCollisionDock->hasSelectedObjects())
             standardActions |= CutAction | CopyAction | DeleteAction;
 
         if (ClipboardManager::instance()->hasMap())
@@ -812,12 +811,23 @@ void TilesetEditor::currentTerrainChanged(const Terrain *terrain)
 void TilesetEditor::setEditCollision(bool editCollision)
 {
     if (editCollision) {
-        mPropertiesDock->setDocument(mTileCollisionDock->dummyMapDocument());
+        if (mTileCollisionDock->hasSelectedObjects())
+            mPropertiesDock->setDocument(mTileCollisionDock->dummyMapDocument());
         mTerrainDock->setVisible(false);
         mWangDock->setVisible(false);
     } else {
         mPropertiesDock->setDocument(mCurrentTilesetDocument);
     }
+}
+
+void TilesetEditor::hasSelectedCollisionObjectsChanged()
+{
+    if (mTileCollisionDock->hasSelectedObjects())
+        mPropertiesDock->setDocument(mTileCollisionDock->dummyMapDocument());
+    else
+        mPropertiesDock->setDocument(mCurrentTilesetDocument);
+
+    emit enabledStandardActionsChanged();
 }
 
 void TilesetEditor::setEditWang(bool editWang)

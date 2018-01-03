@@ -52,7 +52,7 @@ public:
                          const QKeySequence &shortcut,
                          BrushItem *brushItem = nullptr,
                          QObject *parent = nullptr);
-    ~AbstractTileFillTool();
+    ~AbstractTileFillTool() override;
 
     void deactivate(MapScene *scene) override;
 

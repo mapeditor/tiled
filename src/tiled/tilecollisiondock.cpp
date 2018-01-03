@@ -66,7 +66,7 @@ TileCollisionDock::TileCollisionDock(QWidget *parent)
     , mToolManager(new ToolManager(this))
     , mApplyingChanges(false)
     , mSynchronizing(false)
-    , mCanCopy(false)
+    , mHasSelectedObjects(false)
 {
     setObjectName(QLatin1String("tileCollisionDock"));
 
@@ -178,7 +178,6 @@ void TileCollisionDock::setTile(Tile *tile)
 
         mDummyMapDocument = new MapDocument(map);
         mDummyMapDocument->setCurrentLayer(objectGroup);
-        mDummyMapDocument->setCurrentObject(objectGroup);
 
         mMapScene->setMapDocument(mDummyMapDocument);
         mToolManager->setMapDocument(mDummyMapDocument);
@@ -199,7 +198,7 @@ void TileCollisionDock::setTile(Tile *tile)
 
     emit dummyMapDocumentChanged(mDummyMapDocument);
 
-    setCanCopy(false);
+    setHasSelectedObjects(false);
 
     if (previousDocument) {
         // Explicitly disconnect early from this signal, since it can get fired
@@ -334,18 +333,14 @@ void TileCollisionDock::delete_(Operation operation)
 
 void TileCollisionDock::selectedObjectsChanged()
 {
-    bool hasSelectedObjects = !mDummyMapDocument->selectedObjects().isEmpty();
-    if (!hasSelectedObjects)
-        mDummyMapDocument->setCurrentObject(mDummyMapDocument->map()->layerAt(1));
-
-    setCanCopy(hasSelectedObjects);
+    setHasSelectedObjects(!mDummyMapDocument->selectedObjects().isEmpty());
 }
 
-void TileCollisionDock::setCanCopy(bool canCopy)
+void TileCollisionDock::setHasSelectedObjects(bool hasSelectedObjects)
 {
-    if (mCanCopy != canCopy) {
-        mCanCopy = canCopy;
-        emit canCopyChanged();
+    if (mHasSelectedObjects != hasSelectedObjects) {
+        mHasSelectedObjects = hasSelectedObjects;
+        emit hasSelectedObjectsChanged();
     }
 }
 
