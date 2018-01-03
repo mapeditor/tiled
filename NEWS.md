@@ -1,4 +1,4 @@
-### Tiled 1.1 (...)
+### Tiled 1.1.0 (3 January 2018)
 
 * Added support for infinite maps (by Ketan Gupta, #260)
 * Added support for Wang tiles and related tools (by Benjamin Trotter)
