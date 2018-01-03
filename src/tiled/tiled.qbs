@@ -30,13 +30,21 @@ QtGuiApplication {
     }
 
     cpp.includePaths: ["."]
-    cpp.frameworks: ["Foundation"]
+    cpp.frameworks: {
+        var frameworks = [];
+        if (qbs.targetOS.contains("macos")) {
+            frameworks.push("Foundation");
+            if (project.sparkleEnabled)
+                frameworks.push("Sparkle", "AppKit");
+        }
+        return frameworks;
+    }
     cpp.useRPaths: project.useRPaths
     cpp.rpaths: {
         if (qbs.targetOS.contains("darwin"))
             return ["@loader_path/../Frameworks"];
         else if (project.linuxArchive)
-            return ["$ORIGIN/lib"]
+            return ["$ORIGIN/lib"];
         else
             return ["$ORIGIN/../lib"];
     }
@@ -510,7 +518,6 @@ QtGuiApplication {
 
     Properties {
         condition: macSparkleEnabled
-        cpp.frameworks: ["Sparkle", "AppKit"]
         cpp.systemFrameworkPaths: outer.concat("/Library/Frameworks")
     }
     Group {
@@ -523,6 +530,16 @@ QtGuiApplication {
         files: ["../../dist/dsa_pub.pem"]
         qbs.install: true
         qbs.installDir: "Tiled.app/Contents/Resources"
+    }
+    Group {
+        condition: macSparkleEnabled
+        name: "Sparkle framework"
+        prefix: sparkleDir + "/"
+        files: "**"
+        fileTags: []    // files should only be copied
+        qbs.install: true
+        qbs.installDir: "Tiled.app/Contents/Frameworks/Sparkle.framework"
+        qbs.installSourceBase: prefix
     }
 
     Properties {
