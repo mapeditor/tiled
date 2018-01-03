@@ -195,11 +195,11 @@ void BrokenLinksModel::refresh()
 
             auto processTemplate = [&](const ObjectTemplate *objectTemplate){
                 if (auto object = objectTemplate->object()) {
-                    if (auto tileset = object->cell().tileset()->sharedPointer()) {
+                    if (auto tileset = object->cell().tileset()) {
                         if (!tileset->fileName().isEmpty() && tileset->status() == LoadingError) {
                             brokenTemplateTilesets.insert(objectTemplate);
                         } else {
-                            processTileset(tileset);
+                            processTileset(tileset->sharedPointer());
                         }
                     }
                 } else {
