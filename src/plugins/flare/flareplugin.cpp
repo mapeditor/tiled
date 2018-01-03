@@ -229,11 +229,11 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
                     mapobject->setType(value);
                 } else if (key == QLatin1String("location")) {
                     QStringList loc = value.split(QChar(','));
-                    float x,y;
-                    int w,h;
+                    qreal x,y;
+                    qreal w,h;
                     if (map->orientation() == Map::Orthogonal) {
-                        x = loc[0].toFloat() * map->tileWidth();
-                        y = loc[1].toFloat() * map->tileHeight();
+                        x = loc[0].toDouble() * map->tileWidth();
+                        y = loc[1].toDouble() * map->tileHeight();
                         if (loc.size() > 3) {
                             w = loc[2].toInt() * map->tileWidth();
                             h = loc[3].toInt() * map->tileHeight();
@@ -242,8 +242,8 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
                             h = map->tileHeight();
                         }
                     } else {
-                        x = loc[0].toFloat() * map->tileHeight();
-                        y = loc[1].toFloat() * map->tileHeight();
+                        x = loc[0].toDouble() * map->tileHeight();
+                        y = loc[1].toDouble() * map->tileHeight();
                         if (loc.size() > 3) {
                             w = loc[2].toInt() * map->tileHeight();
                             h = loc[3].toInt() * map->tileHeight();
