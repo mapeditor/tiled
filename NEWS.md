@@ -1,6 +1,7 @@
 ### Tiled 1.1.1 (4 January 2018)
 
 * Fixed crash on load for template instances of non-tile objects
+* Windows Installer: Include the Qt SVG image plugin
 
 ### Tiled 1.1.0 (3 January 2018)
 

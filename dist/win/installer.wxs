@@ -86,6 +86,7 @@
             <File Id="Qt5Core_dll" Source="$(var.QtDir)\bin\Qt5Core.dll"/>
             <File Id="Qt5Gui_dll" Source="$(var.QtDir)\bin\Qt5Gui.dll"/>
             <File Id="Qt5Network_dll" Source="$(var.QtDir)\bin\Qt5Network.dll"/>
+            <File Id="Qt5Svg_dll" Source="$(var.QtDir)\bin\Qt5Svg.dll"/>
             <File Id="Qt5Widgets_dll" Source="$(var.QtDir)\bin\Qt5Widgets.dll"/>
 
             <?ifdef MingwDir ?>
@@ -150,6 +151,7 @@
               <Component Id="ImageFormatPlugins" Guid="{C655A440-9F24-4489-8DB9-5A4EFF6EB5D7}">
                 <File Id="qgif_dll" Source="$(var.QtDir)\plugins\imageformats\qgif.dll"/>
                 <File Id="qjpeg_dll" Source="$(var.QtDir)\plugins\imageformats\qjpeg.dll"/>
+                <File Id="qsvg_dll" Source="$(var.QtDir)\plugins\imageformats\qsvg.dll"/>
                 <File Id="qtga_dll" Source="$(var.QtDir)\plugins\imageformats\qtga.dll"/>
                 <File Id="qtiff_dll" Source="$(var.QtDir)\plugins\imageformats\qtiff.dll"/>
                 <File Id="qwbmp_dll" Source="$(var.QtDir)\plugins\imageformats\qwbmp.dll"/>
