@@ -6,16 +6,18 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Tiled 1.0\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: bjorn@lindeijer.nl\n"
 "POT-Creation-Date: 2017-12-21 14:31+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
+"PO-Revision-Date: 2018-01-04 22:04+0000\n"
+"Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
+"Language-Team: Norwegian Bokmål "
+"<https://hosted.weblate.org/projects/tiled/manual/nb_NO/>\n"
 "Language: nb_NO\n"
-"Language-Team: none\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 2.19-dev\n"
 "Generated-By: Babel 2.5.1\n"
 
 #: ../../manual/automapping.rst:3
@@ -1536,7 +1538,7 @@ msgstr ""
 
 #: ../../manual/editing-tilesets.rst:101
 msgid "Type"
-msgstr ""
+msgstr "Type"
 
 #: ../../manual/editing-tilesets.rst:100
 msgid ""
@@ -4994,4 +4996,3 @@ msgstr ""
 #~ "complicated way of automatic tile "
 #~ "placement, check out [[Automapping]]."
 #~ msgstr ""
-
