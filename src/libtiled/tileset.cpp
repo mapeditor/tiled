@@ -786,6 +786,7 @@ QString Tileset::orientationToString(Tileset::Orientation orientation)
     case Tileset::Isometric:
         return QLatin1String("isometric");
     }
+    return QString();
 }
 
 Tileset::Orientation Tileset::orientationFromString(const QString &string)
