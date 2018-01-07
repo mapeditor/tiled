@@ -31,12 +31,16 @@
 #include "tilesetdocument.h"
 #include "utils.h"
 #include "zoomable.h"
+#include "preferences.h"
 
 #include <QAbstractListModel>
 #include <QCloseEvent>
 #include <QShortcut>
 #include <QUndoStack>
 #include <QMimeData>
+#include <QSettings>
+
+static const char * const FRAME_DURATION_KEY = "Animation/FrameDuration";
 
 namespace Tiled {
 namespace Internal {
@@ -49,8 +53,13 @@ public:
     explicit FrameListModel(QObject *parent = nullptr)
         : QAbstractListModel(parent)
         , mTileset(nullptr)
-    {}
+    {
+        // Restore previously used FrameDuration
+        QSettings *s = Preferences::instance()->settings();
+        mDefaultDuration = s->value(QLatin1String(FRAME_DURATION_KEY), 100).toInt();
+    }
 
+    int defaultDuration() const;
     int rowCount(const QModelIndex &parent) const override;
     QVariant data(const QModelIndex &index, int role) const override;
     bool setData(const QModelIndex &index, const QVariant &value, int role) override;
@@ -67,11 +76,11 @@ public:
 
     void setFrames(const Tileset *tileset, const QVector<Frame> &frames);
     void addTileIdAsFrame(int id);
-    static void setDefaultFrameTime(int duration);
+    void setDefaultFrameTime(int duration);
     const QVector<Frame> &frames() const;
 
 private:
-    static int mDefaultDuration;
+    int mDefaultDuration;
 
     void addFrame(const Frame &frame);
 
@@ -79,11 +88,14 @@ private:
     QVector<Frame> mFrames;
 };
 
-int FrameListModel::mDefaultDuration = 100;
-
 int FrameListModel::rowCount(const QModelIndex &parent) const
 {
     return parent.isValid() ? 0 : mFrames.size();
+}
+
+int FrameListModel::defaultDuration() const
+{
+    return mDefaultDuration;
 }
 
 QVariant FrameListModel::data(const QModelIndex &index, int role) const
@@ -264,6 +276,7 @@ const QVector<Frame> &FrameListModel::frames() const
 void FrameListModel::setDefaultFrameTime(int duration)
 {
     mDefaultDuration = duration;
+    Preferences::instance()->settings()->setValue(QLatin1String(FRAME_DURATION_KEY), duration);
 }
 
 
@@ -285,6 +298,7 @@ TileAnimationEditor::TileAnimationEditor(QWidget *parent)
     mUi->frameList->setModel(mFrameListModel);
     mUi->tilesetView->setMarkAnimatedTiles(false);
     mUi->tilesetView->zoomable()->setComboBox(mUi->zoomComboBox);
+    mUi->frameTime->setValue(mFrameListModel->defaultDuration());
 
     connect(mUi->tilesetView, SIGNAL(doubleClicked(QModelIndex)),
             SLOT(addFrameForTileAt(QModelIndex)));
@@ -413,7 +427,7 @@ void TileAnimationEditor::framesEdited()
 
 void TileAnimationEditor::setDefaultFrameTime(int duration)
 {
-    FrameListModel::setDefaultFrameTime(duration);
+    mFrameListModel->setDefaultFrameTime(duration);
 }
 
 void TileAnimationEditor::setFrameTime()
