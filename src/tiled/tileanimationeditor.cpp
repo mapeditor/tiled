@@ -67,11 +67,11 @@ public:
 
     void setFrames(const Tileset *tileset, const QVector<Frame> &frames);
     void addTileIdAsFrame(int id);
-    void setDefaultFrameTime(int duration);
+    static void setDefaultFrameTime(int duration);
     const QVector<Frame> &frames() const;
 
 private:
-    static int DEFAULT_DURATION;
+    static int mDefaultDuration;
 
     void addFrame(const Frame &frame);
 
@@ -79,7 +79,7 @@ private:
     QVector<Frame> mFrames;
 };
 
-int FrameListModel::DEFAULT_DURATION = 100;
+int FrameListModel::mDefaultDuration = 100;
 
 int FrameListModel::rowCount(const QModelIndex &parent) const
 {
@@ -213,7 +213,7 @@ bool FrameListModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
         while (!stream.atEnd()) {
             Frame frame;
             stream >> frame.tileId;
-            frame.duration = DEFAULT_DURATION;
+            frame.duration = mDefaultDuration;
             newFrames.append(frame);
         }
     }
@@ -245,7 +245,7 @@ void FrameListModel::addTileIdAsFrame(int id)
 {
     Frame frame;
     frame.tileId = id;
-    frame.duration = DEFAULT_DURATION;
+    frame.duration = mDefaultDuration;
     addFrame(frame);
 }
 
@@ -263,9 +263,7 @@ const QVector<Frame> &FrameListModel::frames() const
 
 void FrameListModel::setDefaultFrameTime(int duration)
 {
-    DEFAULT_DURATION = duration;
-    for(Frame &frame : mFrames)
-        frame.duration = duration;
+    mDefaultDuration = duration;
 }
 
 
@@ -302,6 +300,9 @@ TileAnimationEditor::TileAnimationEditor(QWidget *parent)
 
     connect(mPreviewAnimationDriver, SIGNAL(update(int)),
             SLOT(advancePreviewAnimation(int)));
+
+    connect(mUi->frameTime, SIGNAL(valueChanged(int)),
+            SLOT(setDefaultFrameTime(int)));
 
     connect(mUi->setFrameTimeButton, SIGNAL(clicked(bool)),
             SLOT(setFrameTime()));
@@ -410,15 +411,18 @@ void TileAnimationEditor::framesEdited()
     mApplyingChanges = false;
 }
 
+void TileAnimationEditor::setDefaultFrameTime(int duration)
+{
+    FrameListModel::setDefaultFrameTime(duration);
+}
+
 void TileAnimationEditor::setFrameTime()
 {
     QItemSelectionModel *selectionModel = mUi->frameList->selectionModel();
     const QModelIndexList indexes = selectionModel->selectedIndexes();
 
-    if (indexes.isEmpty()) {
-        mFrameListModel->setDefaultFrameTime(mUi->frameTime->value());
-        mUi->frameList->setFocus(); // This is necessary for the UI, It does not get updates without this
-    }
+    if (indexes.isEmpty())
+        return;
 
     mSuppressUndo = true;
 

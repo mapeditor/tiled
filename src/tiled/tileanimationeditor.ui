@@ -22,7 +22,7 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Frame-Duration: </string>
+        <string>Frame Duration: </string>
        </property>
       </widget>
      </item>
