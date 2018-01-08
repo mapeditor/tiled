@@ -72,6 +72,7 @@ TileCollisionDock::TileCollisionDock(QWidget *parent)
 
     mMapView->setScene(mMapScene);
 
+    mMapView->setResizeAnchor(QGraphicsView::AnchorViewCenter);
     mMapView->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     mMapView->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
