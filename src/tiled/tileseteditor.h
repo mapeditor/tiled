@@ -30,6 +30,7 @@
 
 class QAction;
 class QComboBox;
+class QLabel;
 class QMainWindow;
 class QStackedWidget;
 class QToolBar;
@@ -153,6 +154,7 @@ private:
     TileCollisionDock *mTileCollisionDock;
     WangDock *mWangDock;
     QComboBox *mZoomComboBox;
+    QLabel *mStatusInfoLabel;
     TileAnimationEditor *mTileAnimationEditor;
 
     QHash<TilesetDocument*, TilesetView*> mViewForTileset;

@@ -109,8 +109,10 @@ TileCollisionDock::TileCollisionDock(QWidget *parent)
     setWidget(widget);
 
     mMapScene->setSelectedTool(mToolManager->selectedTool());
-    connect(mToolManager, SIGNAL(selectedToolChanged(AbstractTool*)),
-            SLOT(setSelectedTool(AbstractTool*)));
+    connect(mToolManager, &ToolManager::selectedToolChanged,
+            this, &TileCollisionDock::setSelectedTool);
+    connect(mToolManager, &ToolManager::statusInfoChanged,
+            this, &TileCollisionDock::statusInfoChanged);
 
     QComboBox *zoomComboBox = new QComboBox;
     horizontal->addWidget(zoomComboBox);

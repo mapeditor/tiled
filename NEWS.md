@@ -1,3 +1,8 @@
+### Tiled 1.1.2 (...)
+
+* Tile Collision Editor: Keep tile centered when resizing view
+* Tile Collision Editor: Display tool info text in status bar
+
 ### Tiled 1.1.1 (4 January 2018)
 
 * Fixed crash on load for template instances of non-tile objects

@@ -60,6 +60,7 @@ public:
 signals:
     void dummyMapDocumentChanged(MapDocument *mapDocument);
     void hasSelectedObjectsChanged();
+    void statusInfoChanged(const QString &info);
 
 public slots:
     void setTile(Tile *tile);
