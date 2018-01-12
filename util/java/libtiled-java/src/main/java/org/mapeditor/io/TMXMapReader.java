@@ -499,19 +499,16 @@ public class TMXMapReader {
         final int offsetY = getAttribute(t, "y", 0);
         og.setOffset(offsetX, offsetY);
 
-        // Add all objects from the objects group
-        NodeList children = t.getChildNodes();
+        // Manually parse the objects in object group
+        og.getObjects().clear();
 
+        NodeList children = t.getChildNodes();
         for (int i = 0; i < children.getLength(); i++) {
             Node child = children.item(i);
             if ("object".equalsIgnoreCase(child.getNodeName())) {
                 og.addObject(readMapObject(child));
             }
         }
-
-        Properties props = new Properties();
-        readProperties(children, props);
-        og.setProperties(props);
 
         return og;
     }
@@ -710,10 +707,9 @@ public class TMXMapReader {
             throw new Exception("Couldn't load map.");
         }
 
-        // Load properties
-        readProperties(mapNode.getChildNodes(), map.getProperties());
+        // Don't need to load properties again.
 
-        // Clear untl they are loaded correctly
+        // We need to load layers and tilesets manually so that they are loaded correctly
         map.getTileSets().clear();
         map.getLayers().clear();
 
@@ -805,7 +801,8 @@ public class TMXMapReader {
      * @throws java.lang.Exception if any.
      */
     public Map readMap(InputStream in) throws Exception {
-        xmlPath = makeUrl(".");
+        //xmlPath = makeUrl(".");
+        xmlPath = System.getProperty("user.dir") + File.separatorChar;
 
         Map unmarshalledMap = unmarshal(in);
 

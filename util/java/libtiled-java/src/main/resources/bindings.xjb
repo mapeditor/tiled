@@ -114,11 +114,11 @@
                     </jxb:javadoc>
                 </jxb:property>
             </jxb:bindings>
-            <jxb:bindings node="xs:attribute[@name='offsetx']">
-                <jxb:property name="offsetX"/>
-            </jxb:bindings>
-            <jxb:bindings node="xs:attribute[@name='offsety']">
-                <jxb:property name="offsetY"/>
+            <jxb:bindings node="xs:attribute[@name='offsetx']">		
+                <jxb:property name="offsetX"/>		
+            </jxb:bindings>		
+            <jxb:bindings node="xs:attribute[@name='offsety']">		
+                <jxb:property name="offsetY"/>		
             </jxb:bindings>
         </jxb:bindings>
 

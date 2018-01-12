@@ -181,7 +181,7 @@ public class MapLayer extends LayerData implements Cloneable {
      * @return the layer bounds in tiles
      */
     public Rectangle getBounds() {
-        return new Rectangle(x, y, width, height);
+        return new Rectangle(x == null ? 0 : x, y == null ? 0 : y, width, height);
     }
 
     /**
@@ -194,6 +194,15 @@ public class MapLayer extends LayerData implements Cloneable {
         rect.y = this.y;
         rect.width = this.width;
         rect.height = this.height;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Properties getProperties() {
+        if (properties == null) {
+            properties = new Properties();
+        }
+        return super.getProperties();
     }
 
     /**
