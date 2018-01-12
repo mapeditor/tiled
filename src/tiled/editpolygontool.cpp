@@ -198,6 +198,7 @@ void EditPolygonTool::deactivate(MapScene *scene)
 
     mHandles.clear();
     mSelectedHandles.clear();
+    mHoveredHandle = nullptr;
     mClickedHandle = nullptr;
 
     AbstractObjectTool::deactivate(scene);
