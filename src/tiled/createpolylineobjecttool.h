@@ -31,7 +31,7 @@ class CreatePolylineObjectTool: public CreateMultipointObjectTool
 public:
     CreatePolylineObjectTool(QObject *parent);
     void languageChanged() override;
-    void extend(MapObjectItem *mapObjectItem, bool extendingFirst);
+    void extend(MapObject *mapObject, bool extendingFirst);
 protected:
     MapObject *createNewMapObject() override;
     void finishNewMapObject() override;

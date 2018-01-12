@@ -59,9 +59,10 @@ cls_tile.add_method('width', 'int', [])
 cls_tile.add_method('height', 'int', [])
 #cls_tile.add_method('size', 'QSize', [])
 
-cls_sharedtileset = tiled.add_class('SharedTileset')
-
 cls_tileset = tiled.add_class('Tileset', cls_object)
+cls_sharedtileset = tiled.add_class('SharedTileset')
+cls_sharedtileset.add_method('data', retval('Tiled::Tileset*',reference_existing_object=True), [])
+
 cls_tileset.add_method('create', 'Tiled::SharedTileset',
                        [('QString','name'), ('int','tileWidth'), ('int','tileHeight'), ('int','tileSpacing'), ('int','margin')],
                        is_static=True)
@@ -122,7 +123,7 @@ cls_map.add_method('removeTilesetAt', None, [('int','pos')])
 cls_map.add_method('replaceTileset', None,
     [param('SharedTileset','oldTileset'),
      param('SharedTileset','newTileset')])
-cls_map.add_method('tilesetAt', 
+cls_map.add_method('tilesetAt',
     retval('Tiled::SharedTileset'),
     [('int','idx')])
 cls_map.add_method('tilesetCount', 'int', [])
@@ -161,15 +162,15 @@ cls_mapobject.add_constructor([('QString','name'), ('QString','type'),
     ('QPointF','pos'), ('QSizeF','size') ])
 cls_mapobject.add_enum('Shape', ('Rectangle','Polygon','Polyline'))
 cls_mapobject.add_method('setPosition', None, [('QPointF','pos')])
-cls_mapobject.add_method('x', 'float', [])
-cls_mapobject.add_method('setX', None, [('float','x')])
-cls_mapobject.add_method('y', 'float', [])
-cls_mapobject.add_method('setY', None, [('float','y')])
+cls_mapobject.add_method('x', 'double', [])
+cls_mapobject.add_method('setX', None, [('double','x')])
+cls_mapobject.add_method('y', 'double', [])
+cls_mapobject.add_method('setY', None, [('double','y')])
 cls_mapobject.add_method('setSize', None, [param('QSizeF','size')])
-cls_mapobject.add_method('width', 'float', [])
-cls_mapobject.add_method('setWidth', None, [('float','w')])
-cls_mapobject.add_method('height', 'float', [])
-cls_mapobject.add_method('setHeight', None, [('float','h')])
+cls_mapobject.add_method('width', 'double', [])
+cls_mapobject.add_method('setWidth', None, [('double','w')])
+cls_mapobject.add_method('height', 'double', [])
+cls_mapobject.add_method('setHeight', None, [('double','h')])
 #cls_mapobject.add_method('setPolygon', None, [param('QPolygonF','pol')])
 #cls_mapobject.add_method('polygon', 'QPolygonF', [])
 cls_mapobject.add_method('setShape', None, [param('Shape','s')])
@@ -179,8 +180,8 @@ cls_mapobject.add_method('setCell', None, [param('const Tiled::Cell','c',)])
 cls_mapobject.add_method('cell', retval('const Tiled::Cell'), [])
 #cls_mapobject.add_method('setObjectGroup', 'ObjectGroup*', [])
 #cls_mapobject.add_method('objectGroup', 'ObjectGroup*', [])
-cls_mapobject.add_method('rotation', 'float', [])
-cls_mapobject.add_method('setRotation', None, [('float','r')])
+cls_mapobject.add_method('rotation', 'double', [])
+cls_mapobject.add_method('setRotation', None, [('double','r')])
 cls_mapobject.add_method('isVisible', 'bool', [])
 cls_mapobject.add_method('setVisible', None, [('bool','v')])
 cls_mapobject.add_method('name', 'QString', [])
@@ -218,8 +219,8 @@ cls_map.add_method('layerAt',
 
 cls_layer.add_method('name', 'QString', [])
 cls_layer.add_method('setName', None, [('QString','name')])
-cls_layer.add_method('opacity', 'float', [])
-cls_layer.add_method('setOpacity', None, [('float','opacity')])
+cls_layer.add_method('opacity', 'double', [])
+cls_layer.add_method('setOpacity', None, [('double','opacity')])
 cls_layer.add_method('isVisible', 'bool', [])
 cls_layer.add_method('setVisible', None, [('bool','visible')])
 cls_layer.add_method('map', retval('Tiled::Map*',reference_existing_object=True), [])
@@ -294,7 +295,7 @@ cls_pp = mod.add_class('PythonScript',
 """
 cls_logi = tiled.add_class('LoggingInterface', destructor_visibility='private')
 cls_logi.add_enum('OutputType', ('INFO','ERROR'))
-cls_logi.add_method('log', 'void', [('OutputType','type'),('const QString','msg')], 
+cls_logi.add_method('log', 'void', [('OutputType','type'),('const QString','msg')],
     is_virtual=True)
 
 
@@ -315,7 +316,7 @@ PyObject* _wrap_convert_c2py__Tiled__LoggingInterface(Tiled::LoggingInterface *c
 {
         PyObject *py_retval;
         PyTiledLoggingInterface *py_LoggingInterface;
-        
+
         py_LoggingInterface = PyObject_New(PyTiledLoggingInterface, &PyTiledLoggingInterface_Type);
         py_LoggingInterface->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
         py_LoggingInterface->obj = cvalue;

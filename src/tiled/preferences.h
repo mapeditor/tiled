@@ -27,7 +27,6 @@
 
 #include "map.h"
 #include "objecttypes.h"
-#include "templategroupdocument.h"
 
 class QSettings;
 
@@ -104,12 +103,11 @@ public:
     bool useOpenGL() const { return mUseOpenGL; }
     void setUseOpenGL(bool useOpenGL);
 
-    const ObjectTypes &objectTypes() const { return mObjectTypes; }
     void setObjectTypes(const ObjectTypes &objectTypes);
 
     enum FileType {
         ObjectTypesFile,
-        TemplateDocumentsFile,
+        ObjectTemplateFile,
         ImageFile,
         ExportedFile,
         ExternalTileset
@@ -126,11 +124,11 @@ public:
     QString stampsDirectory() const;
     void setStampsDirectory(const QString &stampsDirectory);
 
+    QString templatesDirectory() const;
+    void setTemplatesDirectory(const QString &path);
+
     QString objectTypesFile() const;
     void setObjectTypesFile(const QString &filePath);
-
-    QString templateDocumentsFile() const;
-    void setTemplateDocumentsFile(const QString &filePath);
 
     QDate firstRun() const;
     int runCount() const;
@@ -150,6 +148,8 @@ public:
 
     bool checkForUpdates() const;
     void setCheckForUpdates(bool on);
+
+    bool wheelZoomsByDefault() const;
 
     /**
      * Provides access to the QSettings instance to allow storing/retrieving
@@ -172,6 +172,7 @@ public slots:
     void setAutomappingDrawing(bool enabled);
     void setOpenLastFilesOnStartup(bool load);
     void setPluginEnabled(const QString &fileName, bool enabled);
+    void setWheelZoomsByDefault(bool mode);
 
     void clearRecentFiles();
 
@@ -201,6 +202,7 @@ signals:
 
     void mapsDirectoryChanged();
     void stampsDirectoryChanged(const QString &stampsDirectory);
+    void templatesDirectoryChanged(const QString &templatesDirectory);
 
     void isPatronChanged();
 
@@ -244,20 +246,20 @@ private:
     QString mLanguage;
     bool mReloadTilesetsOnChange;
     bool mUseOpenGL;
-    ObjectTypes mObjectTypes;
 
     bool mAutoMapDrawing;
 
     QString mMapsDirectory;
     QString mStampsDirectory;
+    QString mTemplatesDirectory;
     QString mObjectTypesFile;
-    QString mTemplateDocumentsFile;
 
     QDate mFirstRun;
     QDate mPatreonDialogTime;
     int mRunCount;
     bool mIsPatron;
     bool mCheckForUpdates;
+    bool mWheelZoomsByDefault;
 
     static Preferences *mInstance;
 };
@@ -311,6 +313,11 @@ inline bool Preferences::checkForUpdates() const
 inline bool Preferences::openLastFilesOnStartup() const
 {
     return mOpenLastFilesOnStartup;
+}
+
+inline bool Preferences::wheelZoomsByDefault() const
+{
+    return mWheelZoomsByDefault;
 }
 
 } // namespace Internal

@@ -227,6 +227,8 @@ void MapDocumentActionHandler::setMapDocument(MapDocument *mapDocument)
                 this, &MapDocumentActionHandler::updateActions);
         connect(mapDocument, &MapDocument::selectedObjectsChanged,
                 this, &MapDocumentActionHandler::updateActions);
+        connect(mapDocument, &MapDocument::mapChanged,
+                this, &MapDocumentActionHandler::updateActions);
     }
 
     emit mapDocumentChanged(mMapDocument);
@@ -635,6 +637,12 @@ void MapDocumentActionHandler::moveObjectsToGroup(ObjectGroup *objectGroup)
     }
 }
 
+void MapDocumentActionHandler::selectAllInstances(const ObjectTemplate *objectTemplate)
+{
+    if (mMapDocument)
+        mMapDocument->selectAllInstances(objectTemplate);
+}
+
 void MapDocumentActionHandler::updateActions()
 {
     Map *map = nullptr;
@@ -661,6 +669,7 @@ void MapDocumentActionHandler::updateActions()
     }
 
     mActionSelectAll->setEnabled(map);
+    mActionSelectInverse->setEnabled(map);
 
     if (currentLayer) {
         if (currentLayer->asTileLayer()) {

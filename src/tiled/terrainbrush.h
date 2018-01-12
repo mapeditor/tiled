@@ -48,7 +48,7 @@ public:
     };
 
     TerrainBrush(QObject *parent = nullptr);
-    ~TerrainBrush();
+    ~TerrainBrush() override;
 
     void activate(MapScene *scene) override;
     void deactivate(MapScene *scene) override;

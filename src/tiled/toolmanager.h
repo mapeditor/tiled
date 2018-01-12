@@ -28,6 +28,7 @@ class QActionGroup;
 namespace Tiled {
 
 class Tile;
+class ObjectTemplate;
 
 namespace Internal {
 
@@ -47,7 +48,7 @@ class ToolManager : public QObject
 
 public:
     ToolManager(QObject *parent = nullptr);
-    ~ToolManager();
+    ~ToolManager() override;
 
     void setMapDocument(MapDocument *mapDocument);
 
@@ -58,12 +59,15 @@ public:
 
     void retranslateTools();
 
+    void createShortcuts(QWidget *parent);
+
 public slots:
     /**
      * Sets the tile that will be used when the creation mode is
      * CreateTileObjects or when replacing a tile of a tile object.
      */
     void setTile(Tile *tile);
+    void setObjectTemplate(ObjectTemplate *objectTemplate);
 
 signals:
     void selectedToolChanged(AbstractTool *tool);
@@ -91,6 +95,7 @@ private:
     AbstractTool *mPreviouslyDisabledTool;
     MapDocument *mMapDocument;
     Tile *mTile;
+    ObjectTemplate *mObjectTemplate;
 
     bool mSelectEnabledToolPending;
 };

@@ -44,7 +44,7 @@ public:
     GidMapper();
     GidMapper(const QVector<SharedTileset> &tilesets);
 
-    void insert(unsigned firstGid, Tileset *tileset);
+    void insert(unsigned firstGid, const SharedTileset &tileset);
     void clear();
     bool isEmpty() const;
 
@@ -52,7 +52,8 @@ public:
     unsigned cellToGid(const Cell &cell) const;
 
     QByteArray encodeLayerData(const TileLayer &tileLayer,
-                               Map::LayerDataFormat format) const;
+                               Map::LayerDataFormat format,
+                               QRect bounds = QRect()) const;
 
     enum DecodeError {
         NoError = 0,
@@ -64,12 +65,12 @@ public:
     DecodeError decodeLayerData(TileLayer &tileLayer,
                                 const QByteArray &layerData,
                                 Map::LayerDataFormat format,
-                                int startX, int startY) const;
+                                QRect bounds = QRect()) const;
 
     unsigned invalidTile() const;
 
 private:
-    QMap<unsigned, Tileset*> mFirstGidToTileset;
+    QMap<unsigned, SharedTileset> mFirstGidToTileset;
 
     mutable unsigned mInvalidTile;
 };
@@ -78,7 +79,7 @@ private:
 /**
  * Insert the given \a tileset with \a firstGid as its first global ID.
  */
-inline void GidMapper::insert(unsigned firstGid, Tileset *tileset)
+inline void GidMapper::insert(unsigned firstGid, const SharedTileset &tileset)
 {
     mFirstGidToTileset.insert(firstGid, tileset);
 }

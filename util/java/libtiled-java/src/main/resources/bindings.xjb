@@ -238,7 +238,7 @@
                     </jxb:property>
                 </jxb:bindings>
                 <jxb:bindings node="xs:element[@name='tile']">
-                    <jxb:property name="tiles">
+                    <jxb:property name="internalTiles">
                         <jxb:baseType name="Tile"/>
                     </jxb:property>
                 </jxb:bindings>

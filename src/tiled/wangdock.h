@@ -51,7 +51,7 @@ class WangDock : public QDockWidget
 
 public:
     WangDock(QWidget *parent = nullptr);
-    ~WangDock();
+    ~WangDock() override;
 
     void setDocument(Document *document);
 

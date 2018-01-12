@@ -22,6 +22,7 @@
 
 #include "mapdocument.h"
 #include "mapobjectmodel.h"
+#include "objecttemplate.h"
 
 #include <QCoreApplication>
 
@@ -157,4 +158,136 @@ void ChangeMapObjectsTile::changeTiles()
     }
 
     emit mMapDocument->mapObjectModel()->objectsChanged(mMapObjects);
+}
+
+DetachObjects::DetachObjects(MapDocument *mapDocument,
+                             const QList<MapObject *> &mapObjects,
+                             QUndoCommand *parent)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands",
+                                               "Detach %n Template Instance(s)",
+                                               nullptr, mapObjects.size()), parent)
+    , mMapDocument(mapDocument)
+    , mMapObjects(mapObjects)
+{
+    for (const MapObject *object : mapObjects) {
+        mObjectTemplates.append(object->objectTemplate());
+        mProperties.append(object->properties());
+    }
+}
+
+void DetachObjects::redo()
+{
+    QUndoCommand::redo(); // redo child commands
+
+    for (int i = 0; i < mMapObjects.size(); ++i) {
+        // Merge the instance properties into the template properties
+        MapObject *object = mMapObjects.at(i);
+        Properties newProperties = object->templateObject()->properties();
+        newProperties.merge(object->properties());
+        object->setProperties(newProperties);
+        object->setObjectTemplate(nullptr);
+    }
+
+    emit mMapDocument->mapObjectModel()->objectsChanged(mMapObjects);
+}
+
+void DetachObjects::undo()
+{
+    for (int i = 0; i < mMapObjects.size(); ++i) {
+        MapObject *object = mMapObjects.at(i);
+        object->setObjectTemplate(mObjectTemplates.at(i));
+        object->setProperties(mProperties.at(i));
+        object->syncWithTemplate();
+    }
+
+    QUndoCommand::undo(); // undo child commands
+
+    emit mMapDocument->mapObjectModel()->objectsChanged(mMapObjects);
+}
+
+ResetInstances::ResetInstances(MapDocument *mapDocument,
+                               const QList<MapObject *> &mapObjects,
+                               QUndoCommand *parent)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands",
+                                               "Reset %n Instances",
+                                               nullptr, mapObjects.size()), parent)
+    , mMapDocument(mapDocument)
+    , mMapObjects(mapObjects)
+{
+    for (const MapObject *object : mapObjects)
+        mOldMapObjects.append(object->clone());
+}
+
+ResetInstances::~ResetInstances()
+{
+    qDeleteAll(mOldMapObjects);
+}
+
+void ResetInstances::redo()
+{
+    for (auto object : mMapObjects) {
+        // Template instances initially don't hold any custom properties
+        object->clearProperties();
+
+        // Reset built-in properties
+        object->setChangedProperties(MapObject::ChangedProperties());
+        object->syncWithTemplate();
+    }
+
+    emit mMapDocument->objectsChanged(mMapObjects);
+
+    // This signal forces updating custom properties in the properties dock
+    emit mMapDocument->selectedObjectsChanged();
+}
+
+void ResetInstances::undo()
+{
+    for (int i = 0; i < mMapObjects.size(); ++i)
+        mMapObjects.at(i)->copyPropertiesFrom(mOldMapObjects.at(i));
+
+    emit mMapDocument->objectsChanged(mMapObjects);
+    emit mMapDocument->selectedObjectsChanged();
+}
+
+
+ReplaceObjectsWithTemplate::ReplaceObjectsWithTemplate(MapDocument *mapDocument,
+                                                       const QList<MapObject *> &mapObjects,
+                                                       ObjectTemplate *objectTemplate,
+                                                       QUndoCommand *parent)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands",
+                                               "Replace %n Object(s) With Template",
+                                               nullptr, mapObjects.size()), parent)
+    , mMapDocument(mapDocument)
+    , mMapObjects(mapObjects)
+    , mObjectTemplate(objectTemplate)
+{
+    for (const MapObject *object : mapObjects)
+        mOldMapObjects.append(object->clone());
+}
+
+ReplaceObjectsWithTemplate::~ReplaceObjectsWithTemplate()
+{
+    qDeleteAll(mOldMapObjects);
+}
+
+void ReplaceObjectsWithTemplate::redo()
+{
+    for (auto object : mMapObjects) {
+        object->clearProperties();
+        object->setChangedProperties(MapObject::ChangedProperties());
+        object->setObjectTemplate(mObjectTemplate);
+        object->syncWithTemplate();
+    }
+
+    emit mMapDocument->objectsChanged(mMapObjects);
+    emit mMapDocument->selectedObjectsChanged();
+}
+
+void ReplaceObjectsWithTemplate::undo()
+{
+    for (int i = 0; i < mMapObjects.size(); ++i)
+        mMapObjects.at(i)->copyPropertiesFrom(mOldMapObjects.at(i));
+
+    emit mMapDocument->objectsChanged(mMapObjects);
+    emit mMapDocument->selectedObjectsChanged();
 }

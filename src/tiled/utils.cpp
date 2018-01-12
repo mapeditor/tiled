@@ -23,7 +23,9 @@
 #include "preferences.h"
 
 #include <QAction>
-#include <QCoreApplication>
+#include <QApplication>
+#include <QClipboard>
+#include <QDir>
 #include <QFileInfo>
 #include <QGuiApplication>
 #include <QImageReader>
@@ -31,6 +33,7 @@
 #include <QKeyEvent>
 #include <QMainWindow>
 #include <QMenu>
+#include <QProcess>
 #include <QRegExp>
 #include <QScreen>
 #include <QSettings>
@@ -224,6 +227,52 @@ bool isResetZoomShortcut(QKeyEvent *event)
         return true;
 
     return false;
+}
+
+/*
+ * Code based on FileUtils::showInGraphicalShell from Qt Creator
+ * Copyright (C) 2016 The Qt Company Ltd.
+ * Used under the terms of the GNU General Public License version 3
+ */
+static void showInFileManager(const QString &fileName)
+{
+    // Mac, Windows support folder or file.
+#if defined(Q_OS_WIN)
+    QStringList param;
+    if (!QFileInfo(fileName).isDir())
+        param += QLatin1String("/select,");
+    param += QDir::toNativeSeparators(fileName);
+    QProcess::startDetached(QLatin1String("explorer.exe"), param);
+#elif defined(Q_OS_MAC)
+    QStringList scriptArgs;
+    scriptArgs << QLatin1String("-e")
+               << QString::fromLatin1("tell application \"Finder\" to reveal POSIX file \"%1\"")
+                                     .arg(fileName);
+    QProcess::execute(QLatin1String("/usr/bin/osascript"), scriptArgs);
+    scriptArgs.clear();
+    scriptArgs << QLatin1String("-e")
+               << QLatin1String("tell application \"Finder\" to activate");
+    QProcess::execute(QLatin1String("/usr/bin/osascript"), scriptArgs);
+#else
+    // We cannot select a file here, because xdg-open would open the file
+    // instead of the file browser...
+    QProcess::startDetached(QString(QLatin1String("xdg-open \"%1\""))
+                            .arg(QFileInfo(fileName).absolutePath()));
+#endif
+}
+
+void addFileManagerActions(QMenu &menu, const QString &fileName)
+{
+    QAction *copyPath = menu.addAction(QCoreApplication::translate("Utils", "Copy File Path"));
+    QObject::connect(copyPath, &QAction::triggered, [fileName] {
+        QClipboard *clipboard = QApplication::clipboard();
+        clipboard->setText(QDir::toNativeSeparators(fileName));
+    });
+
+    QAction *openFolder = menu.addAction(QCoreApplication::translate("Utils", "Open Containing Folder..."));
+    QObject::connect(openFolder, &QAction::triggered, [fileName] {
+        showInFileManager(fileName);
+    });
 }
 
 } // namespace Utils

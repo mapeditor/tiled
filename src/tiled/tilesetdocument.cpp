@@ -97,7 +97,7 @@ bool TilesetDocument::save(const QString &fileName, QString *error)
 {
     TilesetFormat *tilesetFormat = mTileset->format();
 
-    if (!tilesetFormat || !(tilesetFormat->capabilities() & MapFormat::Write))
+    if (!tilesetFormat || !(tilesetFormat->capabilities() & FileFormat::Write))
         return false;
 
     // todo: workaround to avoid writing the tileset like an external tileset reference
@@ -176,6 +176,17 @@ void TilesetDocument::setWriterFormat(TilesetFormat *format)
     mTileset->setFormat(format);
 }
 
+TilesetFormat* TilesetDocument::exportFormat() const
+{
+    return mExportFormat;
+}
+
+void TilesetDocument::setExportFormat(FileFormat *format)
+{
+    mExportFormat = qobject_cast<TilesetFormat*>(format);
+    Q_ASSERT(mExportFormat);
+}
+
 QString TilesetDocument::displayName() const
 {
     QString displayName;
@@ -196,7 +207,7 @@ QString TilesetDocument::displayName() const
 
 /**
  * Exchanges the tileset data of the tileset wrapped by this document with the
- * data in the given \a tileset, and vica-versa.
+ * data in the given \a tileset, and vice-versa.
  */
 void TilesetDocument::swapTileset(SharedTileset &tileset)
 {

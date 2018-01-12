@@ -41,11 +41,17 @@ namespace Internal {
 
 class MapDocument;
 
+struct InputLayer
+{
+    TileLayer *tileLayer;
+    bool strictEmpty;
+};
+
 class InputConditions
 {
 public:
-    QVector<TileLayer*> listYes;    // "input"
-    QVector<TileLayer*> listNo;     // "inputnot"
+    QVector<InputLayer> listYes;    // "input"
+    QVector<InputLayer> listNo;     // "inputnot"
 };
 
 // Maps layer names to their conditions
@@ -143,6 +149,7 @@ private:
      * @return returns true when anything is ok, false when errors occurred.
      */
     bool setupRuleMapProperties();
+    void setupInputLayerProperties(InputLayer &inputLayer);
 
     void cleanUpRulesMap();
 
@@ -182,34 +189,34 @@ private:
     /**
      * Returns the conjunction of all regions of all setlayers.
      */
-    QRegion getSetLayersRegion() const;
+    QRegion computeSetLayersRegion() const;
 
     /**
      * This copies all Tiles from TileLayer src to TileLayer dst
      *
      * In src the Tiles are taken from the rectangle given by
-     * src_x, src_y, width and height.
+     * srcX, srcY, width and height.
      * In dst they get copied to a rectangle given by
-     * dst_x, dst_y, width, height .
+     * dstX, dstY, width, height .
      * if there is no tile in src TileLayer, there will nothing be copied,
      * so the maybe existing tile in dst will not be overwritten.
      *
      */
-    void copyTileRegion(const TileLayer *src_lr, int src_x, int src_y,
-                        int width, int height, TileLayer *dst_lr,
-                        int dst_x, int dst_y);
+    void copyTileRegion(const TileLayer *srcLayer, int srcX, int srcY,
+                        int width, int height, TileLayer *dstLayer,
+                        int dstX, int dstY);
 
     /**
      * This copies all objects from the \a src_lr ObjectGroup to the \a dst_lr
      * in the given rectangle.
      *
-     * The rectangle is described by the upper left corner \a src_x \a src_y
-     * and its \a width and \a height. The parameter \a dst_x and \a dst_y
+     * The rectangle is described by the upper left corner \a srcX \a srcY
+     * and its \a width and \a height. The parameter \a dstX and \a dstY
      * offset the copied objects in the destination object group.
      */
-    void copyObjectRegion(const ObjectGroup *src_lr, int src_x, int src_y,
-                          int width, int height, ObjectGroup *dst_lr,
-                          int dst_x, int dst_y);
+    void copyObjectRegion(const ObjectGroup *srcLayer, int srcX, int srcY,
+                          int width, int height, ObjectGroup *dstLayer,
+                          int dstX, int dstY);
 
 
     /**
@@ -230,7 +237,7 @@ private:
      *              of mMapWork will be looked up in mRulesInput and mRulesOutput
      * @return where: an rectangle where the rule actually got applied
      */
-    QRect applyRule(const int ruleIndex, const QRect &where);
+    QRect applyRule(int ruleIndex, const QRect &where);
 
     /**
      * Cleans up the data structures filled by setupRuleMapLayers(),

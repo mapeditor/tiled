@@ -25,6 +25,7 @@
 #include "addremovemapobject.h"
 #include "addremovetileset.h"
 #include "changelayer.h"
+#include "changemapobject.h"
 #include "changemapobjectsorder.h"
 #include "changeproperties.h"
 #include "changeselectedarea.h"
@@ -43,7 +44,6 @@
 #include "movemapobject.h"
 #include "movemapobjecttogroup.h"
 #include "objectgroup.h"
-#include "objecttemplatemodel.h"
 #include "offsetlayer.h"
 #include "orthogonalrenderer.h"
 #include "painttilelayer.h"
@@ -54,8 +54,6 @@
 #include "resizetilelayer.h"
 #include "rotatemapobject.h"
 #include "staggeredrenderer.h"
-#include "templategroup.h"
-#include "templategroupdocument.h"
 #include "terrain.h"
 #include "tile.h"
 #include "tilelayer.h"
@@ -123,18 +121,8 @@ MapDocument::~MapDocument()
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->removeReferences(mMap->tilesets());
 
-    qDeleteAll(mNonEmbeddedTemplateGroups);
     delete mRenderer;
     delete mMap;
-}
-
-void MapDocument::saveSelectedObject(const QString &name, int groupIndex)
-{
-    if (mSelectedObjects.size() != 1)
-        return;
-
-    auto model = ObjectTemplateModel::instance();
-    model->saveObjectToDocument(mSelectedObjects.first(), name, groupIndex);
 }
 
 bool MapDocument::save(const QString &fileName, QString *error)
@@ -212,9 +200,10 @@ MapFormat *MapDocument::exportFormat() const
     return mExportFormat;
 }
 
-void MapDocument::setExportFormat(MapFormat *format)
+void MapDocument::setExportFormat(FileFormat *format)
 {
-    mExportFormat = format;
+    mExportFormat = qobject_cast<MapFormat*>(format);
+    Q_ASSERT(mExportFormat);
 }
 
 /**
@@ -351,7 +340,7 @@ void MapDocument::autocropMap()
 {
     if (!mCurrentLayer || !mCurrentLayer->isTileLayer())
         return;
-    
+
     TileLayer *tileLayer = static_cast<TileLayer*>(mCurrentLayer);
 
     const QRect bounds = tileLayer->region().boundingRect();
@@ -670,17 +659,14 @@ SharedTileset MapDocument::replaceTileset(int index, const SharedTileset &tilese
     return oldTileset;
 }
 
-TemplateGroup *MapDocument::replaceTemplateGroup(int index, TemplateGroup *templateGroup)
+void MapDocument::replaceObjectTemplate(const ObjectTemplate *oldObjectTemplate,
+                                        const ObjectTemplate *newObjectTemplate)
 {
-    TemplateGroup *oldTemplateGroup = mMap->templateGroups().at(index);
-    auto changedObjects = mMap->replaceTemplateGroup(oldTemplateGroup, templateGroup);
+    auto changedObjects = mMap->replaceObjectTemplate(oldObjectTemplate, newObjectTemplate);
 
     // Update the objects in the map scene
     emit objectsChanged(changedObjects);
-
-    emit templateGroupReplaced(index, templateGroup, oldTemplateGroup);
-
-    return oldTemplateGroup;
+    emit objectTemplateReplaced(newObjectTemplate, oldObjectTemplate);
 }
 
 void MapDocument::setSelectedArea(const QRegion &selection)
@@ -903,8 +889,6 @@ static void collectObjects(Layer *layer, QList<MapObject*> &objects)
 void MapDocument::onLayerAboutToBeRemoved(GroupLayer *groupLayer, int index)
 {
     Layer *layer = groupLayer ? groupLayer->layerAt(index) : mMap->layerAt(index);
-    if (layer == mCurrentObject)
-        setCurrentObject(nullptr);
 
     // Deselect any objects on this layer when necessary
     if (layer->isObjectGroup() || layer->isGroupLayer()) {
@@ -918,24 +902,39 @@ void MapDocument::onLayerAboutToBeRemoved(GroupLayer *groupLayer, int index)
 
 void MapDocument::onLayerRemoved(Layer *layer)
 {
-    if (mCurrentLayer && mCurrentLayer->isParentOrSelf(layer))
+    if (mCurrentLayer && mCurrentLayer->isParentOrSelf(layer)) {
+        // Assumption: the current object is either not a layer, or it is the current layer.
+        if (mCurrentObject == mCurrentLayer)
+            setCurrentObject(nullptr);
+
         setCurrentLayer(nullptr);
+    }
 
     emit layerRemoved(layer);
 }
 
-void MapDocument::updateTemplateInstances(const MapObject *mapObject)
+void MapDocument::updateTemplateInstances(const ObjectTemplate *objectTemplate)
 {
     QList<MapObject*> objectList;
     for (ObjectGroup *group : mMap->objectGroups()) {
         for (auto object : group->objects()) {
-            if (object->isTemplateInstance() && object->templateObject() == mapObject) {
+            if (object->objectTemplate() == objectTemplate) {
                 object->syncWithTemplate();
                 objectList.append(object);
             }
         }
     }
     emit objectsChanged(objectList);
+}
+
+void MapDocument::selectAllInstances(const ObjectTemplate *objectTemplate)
+{
+    QList<MapObject*> objectList;
+    for (ObjectGroup *group : mMap->objectGroups())
+        for (auto object : group->objects())
+            if (object->objectTemplate() == objectTemplate)
+                objectList.append(object);
+    setSelectedObjects(objectList);
 }
 
 void MapDocument::deselectObjects(const QList<MapObject *> &objects)
@@ -1093,6 +1092,14 @@ void MapDocument::moveObjectsDown(const QList<MapObject *> &objects)
 
     if (command->childCount() > 0)
         mUndoStack->push(command.take());
+}
+
+void MapDocument::detachObjects(const QList<MapObject *> &objects)
+{
+    if (objects.isEmpty())
+        return;
+
+    mUndoStack->push(new DetachObjects(this, objects));
 }
 
 void MapDocument::createRenderer()

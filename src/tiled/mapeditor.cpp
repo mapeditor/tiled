@@ -25,6 +25,7 @@
 #include "bucketfilltool.h"
 #include "createellipseobjecttool.h"
 #include "createobjecttool.h"
+#include "createpointobjecttool.h"
 #include "createpolygonobjecttool.h"
 #include "createpolylineobjecttool.h"
 #include "createrectangleobjecttool.h"
@@ -48,6 +49,7 @@
 #include "minimapdock.h"
 #include "newtilesetdialog.h"
 #include "objectsdock.h"
+#include "objecttemplate.h"
 #include "templatesdock.h"
 #include "objectselectiontool.h"
 #include "painttilelayer.h"
@@ -55,6 +57,7 @@
 #include "propertiesdock.h"
 #include "reversingproxymodel.h"
 #include "selectsametiletool.h"
+#include "shapefilltool.h"
 #include "stampbrush.h"
 #include "terrain.h"
 #include "terrainbrush.h"
@@ -99,32 +102,38 @@ namespace Tiled {
 namespace Internal {
 
 /**
- * A proxy model that makes sure no items are checked or checkable.
+ * A proxy model that makes sure no items are checked or checkable and that
+ * there is only one column.
  *
  * Used in the layer combo box, since the checkboxes can't be used in that
  * context but are otherwise anyway rendered there on Windows.
  */
-class UncheckableItemsModel : public QIdentityProxyModel
+class ComboBoxProxyModel : public QIdentityProxyModel
 {
 public:
-    UncheckableItemsModel(QObject *parent = nullptr)
+    explicit ComboBoxProxyModel(QObject *parent = nullptr)
         : QIdentityProxyModel(parent)
     {}
 
-    QVariant data(const QModelIndex &index, int role) const override
-    {
-        if (role == Qt::CheckStateRole)
-            return QVariant();
-
-        return QIdentityProxyModel::data(index, role);
-    }
-
-    Qt::ItemFlags flags(const QModelIndex &index) const override
-    {
-        Qt::ItemFlags rc = QIdentityProxyModel::flags(index);
-        return rc & ~Qt::ItemIsUserCheckable;
-    }
+    int columnCount(const QModelIndex &) const override { return 1; }
+    QVariant data(const QModelIndex &index, int role) const override;
+    Qt::ItemFlags flags(const QModelIndex &index) const override;
 };
+
+QVariant ComboBoxProxyModel::data(const QModelIndex &index, int role) const
+{
+    if (role == Qt::CheckStateRole)
+        return QVariant();
+
+    return QIdentityProxyModel::data(index, role);
+}
+
+Qt::ItemFlags ComboBoxProxyModel::flags(const QModelIndex &index) const
+{
+    Qt::ItemFlags rc = QIdentityProxyModel::flags(index);
+    return rc & ~Qt::ItemIsUserCheckable;
+}
+
 
 
 MapEditor::MapEditor(QObject *parent)
@@ -142,7 +151,7 @@ MapEditor::MapEditor(QObject *parent)
     , mWangDock(new WangDock(mMainWindow))
     , mMiniMapDock(new MiniMapDock(mMainWindow))
     , mLayerComboBox(new TreeViewComboBox)
-    , mUncheckableProxyModel(new UncheckableItemsModel(this))
+    , mComboBoxProxyModel(new ComboBoxProxyModel(this))
     , mReversingProxyModel(new ReversingProxyModel(this))
     , mZoomable(nullptr)
     , mZoomComboBox(new QComboBox)
@@ -153,9 +162,7 @@ MapEditor::MapEditor(QObject *parent)
     , mViewWithTool(nullptr)
     , mTileStampManager(new TileStampManager(*mToolManager, this))
 {
-#if QT_VERSION >= 0x050600
     mMainWindow->setDockOptions(mMainWindow->dockOptions() | QMainWindow::GroupedDragging);
-#endif
     mMainWindow->setDockNestingEnabled(true);
     mMainWindow->setCentralWidget(mWidgetStack);
 
@@ -170,9 +177,11 @@ MapEditor::MapEditor(QObject *parent)
     mWangBrush = new WangBrush(this);
     mBucketFillTool = new BucketFillTool(this);
     mEditPolygonTool = new EditPolygonTool(this);
+    mShapeFillTool = new ShapeFillTool(this);
     CreateObjectTool *tileObjectsTool = new CreateTileObjectTool(this);
     CreateTemplateTool *templatesTool = new CreateTemplateTool(this);
     CreateObjectTool *rectangleObjectsTool = new CreateRectangleObjectTool(this);
+    CreateObjectTool *pointObjectsTool = new CreatePointObjectTool(this);
     CreateObjectTool *ellipseObjectsTool = new CreateEllipseObjectTool(this);
     CreateObjectTool *polygonObjectsTool = new CreatePolygonObjectTool(this);
     mPolylineObjectsTool = new CreatePolylineObjectTool(this);
@@ -182,6 +191,7 @@ MapEditor::MapEditor(QObject *parent)
     mToolsToolBar->addAction(mToolManager->registerTool(mTerrainBrush));
     mToolsToolBar->addAction(mToolManager->registerTool(mWangBrush));
     mToolsToolBar->addAction(mToolManager->registerTool(mBucketFillTool));
+    mToolsToolBar->addAction(mToolManager->registerTool(mShapeFillTool));
     mToolsToolBar->addAction(mToolManager->registerTool(new Eraser(this)));
     mToolsToolBar->addAction(mToolManager->registerTool(new TileSelectionTool(this)));
     mToolsToolBar->addAction(mToolManager->registerTool(new MagicWandTool(this)));
@@ -190,6 +200,7 @@ MapEditor::MapEditor(QObject *parent)
     mToolsToolBar->addAction(mToolManager->registerTool(new ObjectSelectionTool(this)));
     mToolsToolBar->addAction(mToolManager->registerTool(mEditPolygonTool));
     mToolsToolBar->addAction(mToolManager->registerTool(rectangleObjectsTool));
+    mToolsToolBar->addAction(mToolManager->registerTool(pointObjectsTool));
     mToolsToolBar->addAction(mToolManager->registerTool(ellipseObjectsTool));
     mToolsToolBar->addAction(mToolManager->registerTool(polygonObjectsTool));
     mToolsToolBar->addAction(mToolManager->registerTool(mPolylineObjectsTool));
@@ -199,40 +210,16 @@ MapEditor::MapEditor(QObject *parent)
     mToolsToolBar->addSeparator();
     mToolsToolBar->addAction(mToolManager->registerTool(new LayerOffsetTool(this)));
 
-    mMainWindow->addToolBar(mMainToolBar);
-    mMainWindow->addToolBar(mToolsToolBar);
-    mMainWindow->addToolBar(mToolSpecificToolBar);
+    mToolManager->createShortcuts(mMainWindow);
 
     mPropertiesDock = new PropertiesDock(mMainWindow);
     mTemplatesDock->setPropertiesDock(mPropertiesDock);
     mTileStampsDock = new TileStampsDock(mTileStampManager, mMainWindow);
 
-    mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mLayerDock);
-    mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mPropertiesDock);
-    mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mMapsDock);
-    mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mUndoDock);
-    mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mObjectsDock);
-    mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mTemplatesDock);
-    mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mMiniMapDock);
-    mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mTerrainDock);
-    mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mWangDock);
-    mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mTilesetDock);
-    mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mTileStampsDock);
+    resetLayout();
 
-    mMainWindow->tabifyDockWidget(mUndoDock, mMapsDock);
-    mMainWindow->tabifyDockWidget(mMiniMapDock, mObjectsDock);
-    mMainWindow->tabifyDockWidget(mObjectsDock, mLayerDock);
-    mMainWindow->tabifyDockWidget(mTerrainDock, mTilesetDock);
-    mMainWindow->tabifyDockWidget(mWangDock, mTilesetDock);
-
-    // These dock widgets may not be immediately useful to many people, so
-    // they are hidden by default.
-    mMapsDock->setVisible(false);
-    mUndoDock->setVisible(false);
-    mTileStampsDock->setVisible(false);
-
-    mUncheckableProxyModel->setSourceModel(mReversingProxyModel);
-    mLayerComboBox->setModel(mUncheckableProxyModel);
+    mComboBoxProxyModel->setSourceModel(mReversingProxyModel);
+    mLayerComboBox->setModel(mComboBoxProxyModel);
     mLayerComboBox->setMinimumContentsLength(10);
     mLayerComboBox->setSizeAdjustPolicy(QComboBox::AdjustToContents);
     connect(mLayerComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::activated),
@@ -248,14 +235,22 @@ MapEditor::MapEditor(QObject *parent)
     connect(mTilesetDock, &TilesetDock::currentTileChanged, mTemplatesDock, &TemplatesDock::setTile);
     connect(mTilesetDock, &TilesetDock::stampCaptured, this, &MapEditor::setStamp);
     connect(mTilesetDock, &TilesetDock::localFilesDropped, this, &MapEditor::filesDroppedOnTilesetDock);
-    connect(mTemplatesDock, &TemplatesDock::currentTemplateChanged, templatesTool, &CreateTemplateTool::setTemplate);
+    connect(mTemplatesDock, &TemplatesDock::currentTemplateChanged, mToolManager, &ToolManager::setObjectTemplate);
+    connect(DocumentManager::instance(), &DocumentManager::templateOpenRequested,
+            mTemplatesDock, &TemplatesDock::openTemplate);
+
+    connect(mTemplatesDock, &TemplatesDock::templateTilesetReplaced,
+            DocumentManager::instance(), &DocumentManager::templateTilesetReplaced);
 
     connect(mStampBrush, &StampBrush::stampChanged, this, &MapEditor::setStamp);
     connect(mBucketFillTool, &BucketFillTool::stampChanged, this, &MapEditor::setStamp);
+    connect(mShapeFillTool, &ShapeFillTool::stampChanged, this, &MapEditor::setStamp);
     connect(mStampBrush, &StampBrush::randomChanged, this, &MapEditor::setRandom);
     connect(mBucketFillTool, &BucketFillTool::randomChanged, this, &MapEditor::setRandom);
+    connect(mShapeFillTool, &ShapeFillTool::randomChanged, this, &MapEditor::setRandom);
     connect(mStampBrush, &StampBrush::wangFillChanged, this, &MapEditor::setWangFill);
     connect(mBucketFillTool, &BucketFillTool::wangFillChanged, this, &MapEditor::setWangFill);
+    connect(mShapeFillTool, &ShapeFillTool::wangFillChanged, this, &MapEditor::setWangFill);
 
     connect(mEditPolygonTool, &EditPolygonTool::extend, this, &MapEditor::extend);
     connect(mPolylineObjectsTool, &CreatePolylineObjectTool::extendingFinished, this, &MapEditor::extendingFinished);
@@ -269,6 +264,8 @@ MapEditor::MapEditor(QObject *parent)
 
     connect(mWangDock, &WangDock::currentWangSetChanged,
             mBucketFillTool, &BucketFillTool::setWangSet);
+    connect(mWangDock, &WangDock::currentWangSetChanged,
+            mShapeFillTool, &ShapeFillTool::setWangSet);
     connect(mWangDock, &WangDock::currentWangSetChanged,
             mStampBrush, &StampBrush::setWangSet);
     connect(mWangDock, &WangDock::currentWangSetChanged,
@@ -536,6 +533,58 @@ void MapEditor::performStandardAction(StandardAction action)
     }
 }
 
+/**
+ * Arranges views and toolbars to default layout.
+ */
+void MapEditor::resetLayout()
+{
+    // Remove dock widgets and set them to visible
+    const QList<QDockWidget*> dockWidgets = this->dockWidgets();
+    for (auto dockWidget : dockWidgets) {
+        mMainWindow->removeDockWidget(dockWidget);
+        dockWidget->setVisible(true);
+    }
+
+    // Make sure all toolbars are visible
+    const QList<QToolBar*> toolBars = this->toolBars();
+    for (auto toolBar : toolBars)
+        toolBar->setVisible(true);
+
+    // Adding dock widgets and toolbars in their default position
+    mMainWindow->addToolBar(mMainToolBar);
+    mMainWindow->addToolBar(mToolsToolBar);
+    mMainWindow->addToolBar(mToolSpecificToolBar);
+
+    mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mPropertiesDock);
+    mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mMapsDock);
+    mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mUndoDock);
+    mMainWindow->tabifyDockWidget(mUndoDock, mMapsDock);
+
+    mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mTemplatesDock);
+    mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mTileStampsDock);
+    mMainWindow->tabifyDockWidget(mTemplatesDock, mTileStampsDock);
+
+    mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mLayerDock);
+    mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mObjectsDock);
+    mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mMiniMapDock);
+    mMainWindow->tabifyDockWidget(mMiniMapDock, mObjectsDock);
+    mMainWindow->tabifyDockWidget(mObjectsDock, mLayerDock);
+
+    mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mTerrainDock);
+    mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mWangDock);
+    mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mTilesetDock);
+    mMainWindow->tabifyDockWidget(mTerrainDock, mWangDock);
+    mMainWindow->tabifyDockWidget(mWangDock, mTilesetDock);
+
+    // These dock widgets may not be immediately useful to many people, so
+    // they are hidden by default.
+    mMapsDock->setVisible(false);
+    mUndoDock->setVisible(false);
+    mTemplatesDock->setVisible(false);
+    mWangDock->setVisible(false);
+    mTileStampsDock->setVisible(false);
+}
+
 Zoomable *MapEditor::zoomable() const
 {
     if (auto view = currentMapView())
@@ -668,19 +717,29 @@ void MapEditor::rotate(RotateDirection direction)
 void MapEditor::setRandom(bool value)
 {
     mStampBrush->setRandom(value);
-    mBucketFillTool->setRandom(value);
+
+    auto fillMethod = value ? AbstractTileFillTool::RandomFill :
+                              AbstractTileFillTool::TileFill;
+
+    mBucketFillTool->setFillMethod(fillMethod);
+    mShapeFillTool->setFillMethod(fillMethod);
 }
 
 void MapEditor::setWangFill(bool value)
 {
     mStampBrush->setWangFill(value);
-    mBucketFillTool->setWangFill(value);
+
+    auto fillMethod = value ? AbstractTileFillTool::WangFill :
+                              AbstractTileFillTool::TileFill;
+
+    mBucketFillTool->setFillMethod(fillMethod);
+    mShapeFillTool->setFillMethod(fillMethod);
 }
 
-void MapEditor::extend(MapObjectItem *mapObjectItem, bool extendingFirst)
+void MapEditor::extend(MapObject *mapObject, bool extendingFirst)
 {
     mToolManager->selectTool(mPolylineObjectsTool);
-    mPolylineObjectsTool->extend(mapObjectItem, extendingFirst);
+    mPolylineObjectsTool->extend(mapObject, extendingFirst);
 }
 
 void MapEditor::extendingFinished()
@@ -699,10 +758,13 @@ void MapEditor::setStamp(const TileStamp &stamp)
 
     mStampBrush->setStamp(stamp);
     mBucketFillTool->setStamp(stamp);
+    mShapeFillTool->setStamp(stamp);
 
     // When selecting a new stamp, it makes sense to switch to a stamp tool
     AbstractTool *selectedTool = mToolManager->selectedTool();
-    if (selectedTool != mStampBrush && selectedTool != mBucketFillTool)
+    if (selectedTool != mStampBrush
+            && selectedTool != mBucketFillTool
+            && selectedTool != mShapeFillTool)
         mToolManager->selectTool(mStampBrush);
 
     mTilesetDock->selectTilesInStamp(stamp);
@@ -754,7 +816,7 @@ void MapEditor::layerComboActivated()
         return;
 
     const QModelIndex comboIndex = mLayerComboBox->currentModelIndex();
-    const QModelIndex reversedIndex = mUncheckableProxyModel->mapToSource(comboIndex);
+    const QModelIndex reversedIndex = mComboBoxProxyModel->mapToSource(comboIndex);
     const QModelIndex sourceIndex = mReversingProxyModel->mapToSource(reversedIndex);
     Layer *layer = mCurrentMapDocument->layerModel()->toLayer(sourceIndex);
     if (!layer)
@@ -771,7 +833,7 @@ void MapEditor::updateLayerComboIndex()
         const auto currentLayer = mCurrentMapDocument->currentLayer();
         const QModelIndex sourceIndex = mCurrentMapDocument->layerModel()->index(currentLayer);
         const QModelIndex reversedIndex = mReversingProxyModel->mapFromSource(sourceIndex);
-        index = mUncheckableProxyModel->mapFromSource(reversedIndex);
+        index = mComboBoxProxyModel->mapFromSource(reversedIndex);
     }
 
     mLayerComboBox->setCurrentModelIndex(index);
@@ -787,12 +849,12 @@ void MapEditor::filesDroppedOnTilesetDock(const QStringList &fileNames)
     handleExternalTilesetsAndImages(fileNames, true);
 }
 
-void MapEditor::updateTemplateInstances(const MapObject *mapObject)
+void MapEditor::updateTemplateInstances(const ObjectTemplate *objectTemplate)
 {
     QHashIterator<MapDocument*, MapView*> mapDocumentIterator(mWidgetForMap);
     while (mapDocumentIterator.hasNext()) {
         mapDocumentIterator.next();
-        mapDocumentIterator.key()->updateTemplateInstances(mapObject);
+        mapDocumentIterator.key()->updateTemplateInstances(objectTemplate);
     }
 }
 
@@ -816,7 +878,7 @@ void MapEditor::handleExternalTilesetsAndImages(const QStringList &fileNames,
         }
 
         // Check if the file is has a supported tileset format
-        TilesetFormat *tilesetFormat = findSupportingFormat(fileName);
+        TilesetFormat *tilesetFormat = findSupportingTilesetFormat(fileName);
         if (tilesetFormat) {
             tileset = tilesetFormat->read(fileName);
             if (tileset) {

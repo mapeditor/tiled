@@ -95,7 +95,7 @@ Cell WangFiller::findFittingCell(const TileLayer &back,
     RandomPicker<WangTile> wangTiles;
 
     for (const WangTile &wangTile : wangTilesList)
-        wangTiles.add(wangTile, mWangSet->wangIdProbability(wangTile.wangId()));
+        wangTiles.add(wangTile, mWangSet->wangTileProbability(wangTile));
 
     WangTile wangTile;
     if (!mWangSet->isComplete()) {
@@ -189,14 +189,13 @@ TileLayer *WangFiller::fillRegion(const TileLayer &back,
                 RandomPicker<WangTile> wangTiles;
 
                 for (const WangTile &wangTile : wangTilesList)
-                    wangTiles.add(wangTile, mWangSet->wangIdProbability(wangTile.wangId()));
+                    wangTiles.add(wangTile, mWangSet->wangTileProbability(wangTile));
 
                 while (!wangTiles.isEmpty()) {
                     WangTile wangTile = wangTiles.take();
 
                     bool fill = true;
                     if (!mWangSet->isComplete()) {
-
                         QPoint adjacentPoints[8];
                         getSurroundingPoints(currentPoint, mStaggeredRenderer, mStaggerAxis, adjacentPoints);
 
@@ -222,7 +221,6 @@ TileLayer *WangFiller::fillRegion(const TileLayer &back,
                         tileLayer->setCell(currentPoint.x() - tileLayer->x(),
                                            currentPoint.y() - tileLayer->y(),
                                            wangTile.makeCell());
-
                         QPoint adjacentPoints[8];
                         getSurroundingPoints(currentPoint, mStaggeredRenderer, mStaggerAxis, adjacentPoints);
                         for (int i = 0; i < 8; ++i) {
@@ -261,7 +259,6 @@ WangId WangFiller::wangIdFromSurroundings(const TileLayer &back,
                                           QPoint point) const
 {
     Cell surroundingCells[8];
-
     QPoint adjacentPoints[8];
     getSurroundingPoints(point, mStaggeredRenderer, mStaggerAxis, adjacentPoints);
 

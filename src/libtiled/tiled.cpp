@@ -41,11 +41,14 @@ QUrl Tiled::toUrl(const QString &filePathOrUrl, const QDir &dir)
     if (filePathOrUrl.isEmpty())
         return QUrl();
 
-    const QUrl url(filePathOrUrl, QUrl::StrictMode);
-    if (!url.isRelative())
-        return url;
+    // What appears to be a relative path may be a non-relative URL
+    if (QDir::isRelativePath(filePathOrUrl)) {
+        const QUrl url(filePathOrUrl, QUrl::StrictMode);
+        if (!url.isRelative())
+            return url;
+    }
 
     // Resolve possible relative file reference
-    QString absolutePath = dir.filePath(filePathOrUrl);
+    QString absolutePath = QDir::cleanPath(dir.filePath(filePathOrUrl));
     return QUrl::fromLocalFile(absolutePath);
 }

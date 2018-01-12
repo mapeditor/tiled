@@ -1,0 +1,56 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2017, Thorbjørn Lindeijer
+# This file is distributed under the same license as the Tiled package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2017.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Tiled 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-12-21 14:31+0100\n"
+"PO-Revision-Date: 2017-12-21 14:32+0000\n"
+"Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
+"Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/tiled"
+"/documentation-index/nb_NO/>\n"
+"Language: nb_NO\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 2.19-dev\n"
+"Generated-By: Babel 2.5.1\n"
+
+#: ../../index.rst:2
+msgid "Tiled Documentation"
+msgstr "Tiled-dokumentasjon"
+
+#: ../../index.rst:5
+msgid ""
+"If you're not finding what you're looking for in these pages, please "
+"don't hesitate to ask questions on the `Tiled Forum "
+"<http://discourse.mapeditor.org>`_."
+msgstr ""
+"Hvis du ikke finner det du leter etter her, ikke nøl med å stille spørsmål i "
+"Tiled for"
+
+#: ../../index.rst:8
+msgid "User Manual"
+msgstr "Brukermanual"
+
+#: ../../index.rst:29
+msgid "Reference"
+msgstr "Referanse"
+
+#~ msgid ""
+#~ "This documentation is currently work-"
+#~ "in-progress. Initially the relevant pages"
+#~ " from the wiki have been ported "
+#~ "over, providing a limited amount of "
+#~ "documentation for specific Tiled features. "
+#~ "Over time, this should become the "
+#~ "place to refer to for any details"
+#~ " about using Tiled."
+#~ msgstr ""
+
+#~ msgid "Manual"
+#~ msgstr ""

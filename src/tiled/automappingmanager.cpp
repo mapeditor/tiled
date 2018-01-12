@@ -52,10 +52,23 @@ void AutomappingManager::autoMap()
         return;
 
     Map *map = mMapDocument->map();
-    int w = map->width();
-    int h = map->height();
 
-    autoMapInternal(QRect(0, 0, w, h), nullptr);
+    QRect bounds;
+
+    if (map->infinite()) {
+        LayerIterator iterator(map);
+
+        while (Layer *layer = iterator.next()) {
+            if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer))
+                bounds = bounds.united(tileLayer->bounds());
+        }
+    } else {
+        int w = map->width();
+        int h = map->height();
+        bounds = QRect(0, 0, w, h);
+    }
+
+    autoMapInternal(bounds, nullptr);
 }
 
 void AutomappingManager::autoMap(const QRegion &where, Layer *touchedLayer)
@@ -167,7 +180,7 @@ bool AutomappingManager::loadFile(const QString &filePath)
             AutoMapper *autoMapper = new AutoMapper(mMapDocument, rules.take(), rulePath);
 
             mWarning += autoMapper->warningString();
-            const QString error = autoMapper->errorString(); 
+            const QString error = autoMapper->errorString();
             if (error.isEmpty()) {
                 mAutoMappers.append(autoMapper);
             } else {

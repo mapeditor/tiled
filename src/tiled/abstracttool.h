@@ -37,6 +37,7 @@ namespace Tiled {
 
 class Layer;
 class Tile;
+class ObjectTemplate;
 
 namespace Internal {
 
@@ -94,6 +95,8 @@ public:
 
     Tile *tile() const;
 
+    ObjectTemplate *objectTemplate() const;
+
     /**
      * Activates this tool. If the tool plans to add any items to the scene, it
      * probably wants to do it here.
@@ -136,6 +139,14 @@ public:
     virtual void mouseReleased(QGraphicsSceneMouseEvent *event) = 0;
 
     /**
+     * Called when a mouse button is pressed a second time on the scene, after
+     * a short interval.
+     *
+     * By default, this function calls mousePressed.
+     */
+    virtual void mouseDoubleClicked(QGraphicsSceneMouseEvent *event);
+
+    /**
      * Called when the user presses or releases a modifier key resulting
      * in a change of modifier status, and when the tool is enabled with
      * a modifier key pressed.
@@ -152,6 +163,7 @@ public:
 public slots:
     void setMapDocument(MapDocument *mapDocument);
     void setTile(Tile *tile);
+    void setObjectTemplate(ObjectTemplate *objectTemplate);
 
 protected:
     /**
@@ -191,6 +203,7 @@ private:
     QCursor mCursor;
     bool mEnabled;
     Tile *mTile;
+    ObjectTemplate *mObjectTemplate;
 
     MapDocument *mMapDocument;
 };
@@ -249,6 +262,16 @@ inline Tile *AbstractTool::tile() const
 inline void AbstractTool::setTile(Tile *tile)
 {
     mTile = tile;
+}
+
+inline ObjectTemplate *AbstractTool::objectTemplate() const
+{
+    return mObjectTemplate;
+}
+
+inline void AbstractTool::setObjectTemplate(ObjectTemplate *objectTemplate)
+{
+    mObjectTemplate = objectTemplate;
 }
 
 } // namespace Internal

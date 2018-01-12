@@ -52,13 +52,12 @@ namespace Internal {
 class ActionManager;
 class AutomappingManager;
 class DocumentManager;
+class MapDocument;
 class MapDocumentActionHandler;
 class MapScene;
 class MapView;
 class ObjectTypesEditor;
-class TmxMapFormat;
-class TsxTilesetFormat;
-class TtxTemplateGroupFormat;
+class TilesetDocument;
 class Zoomable;
 
 /**
@@ -134,6 +133,7 @@ private slots:
     void zoomNormal();
     void setFullScreen(bool fullScreen);
     void toggleClearView(bool clearView);
+    void resetToDefaultLayout();
 
     bool newTileset(const QString &path = QString());
     void reloadTilesetImages();
@@ -161,7 +161,6 @@ private slots:
     void autoMappingWarning(bool automatic);
 
     void onObjectTypesEditorClosed();
-    void onAnimationEditorClosed();
 
     void ensureHasBorderInFullScreen();
 
@@ -194,6 +193,9 @@ private:
 
     void retranslateUi();
 
+    void exportMapAs(MapDocument *mapDocument);
+    void exportTilesetAs(TilesetDocument *tilesetDocument);
+
     ActionManager *mActionManager;
     Ui::MainWindow *mUi;
     Document *mDocument = nullptr;
@@ -211,16 +213,13 @@ private:
     QMenu *mViewsAndToolbarsMenu;
     QAction *mViewsAndToolbarsAction;
     QAction *mShowObjectTypesEditor;
-    QAction *mShowTileAnimationEditor;
+
+    QAction *mResetToDefaultLayout;
 
     void setupQuickStamps();
 
     AutomappingManager *mAutomappingManager;
     DocumentManager *mDocumentManager;
-
-    TmxMapFormat *mTmxMapFormat;
-    TsxTilesetFormat *mTsxTilesetFormat;
-    TtxTemplateGroupFormat *mTtxTemplateGroupFormat;
 
     QPointer<PreferencesDialog> mPreferencesDialog;
 

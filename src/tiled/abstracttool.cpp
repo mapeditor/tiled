@@ -36,6 +36,7 @@ AbstractTool::AbstractTool(const QString &name, const QIcon &icon,
     , mShortcut(shortcut)
     , mEnabled(false)
     , mTile(nullptr)
+    , mObjectTemplate(nullptr)
     , mMapDocument(nullptr)
 {
 }
@@ -74,6 +75,11 @@ void AbstractTool::setEnabled(bool enabled)
 void AbstractTool::keyPressed(QKeyEvent *event)
 {
     event->ignore();
+}
+
+void AbstractTool::mouseDoubleClicked(QGraphicsSceneMouseEvent *event)
+{
+    mousePressed(event);
 }
 
 void AbstractTool::setMapDocument(MapDocument *mapDocument)

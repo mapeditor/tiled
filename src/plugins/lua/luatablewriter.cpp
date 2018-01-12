@@ -168,7 +168,9 @@ void LuaTableWriter::writeKeyAndUnquotedValue(const QByteArray &key,
  */
 QString LuaTableWriter::quote(const QString &str)
 {
-    QString quoted("\"");
+    QString quoted;
+    quoted.reserve(str.length() + 2);   // most likely scenario
+    quoted.append(QLatin1Char('"'));
 
     for (const QChar c : str) {
         switch (c.unicode()) {

@@ -32,7 +32,7 @@
 
 #include "map.h"
 #include "objectgroup.h"
-#include "templategroup.h"
+#include "objecttemplate.h"
 #include "tile.h"
 
 #include <QFontMetricsF>
@@ -88,12 +88,19 @@ MapObject::MapObject(const QString &name, const QString &type,
     mPos(pos),
     mSize(size),
     mShape(Rectangle),
-    mTemplateRef({nullptr, 0}),
+    mObjectTemplate(nullptr),
     mObjectGroup(nullptr),
-    mRotation(0.0f),
+    mRotation(0.0),
     mVisible(true),
-    mChangedProperties(0)
+    mTemplateBase(false)
 {
+}
+
+int MapObject::index() const
+{
+    if (mObjectGroup)
+        return mObjectGroup->objects().indexOf(const_cast<MapObject*>(this));
+    return -1;
 }
 
 /**
@@ -250,20 +257,30 @@ MapObject *MapObject::clone() const
     o->setRotation(mRotation);
     o->setVisible(mVisible);
     o->setChangedProperties(mChangedProperties);
-    o->setTemplateRef(templateRef());
+    o->setObjectTemplate(mObjectTemplate);
     return o;
+}
+
+void MapObject::copyPropertiesFrom(const MapObject *object)
+{
+    setName(object->name());
+    setSize(object->size());
+    setType(object->type());
+    setTextData(object->textData());
+    setPolygon(object->polygon());
+    setShape(object->shape());
+    setCell(object->cell());
+    setRotation(object->rotation());
+    setVisible(object->isVisible());
+    setProperties(object->properties());
+    setChangedProperties(object->changedProperties());
+    setObjectTemplate(object->objectTemplate());
 }
 
 const MapObject *MapObject::templateObject() const
 {
-    if (!mTemplateRef.templateGroup)
-        return nullptr;
-
-    auto objectTemplate = mTemplateRef.templateGroup->findTemplate(mTemplateRef.templateId);
-
-    if (objectTemplate)
-        return objectTemplate->object();
-
+    if (mObjectTemplate)
+        return mObjectTemplate->object();
     return nullptr;
 }
 
@@ -299,16 +316,6 @@ void MapObject::syncWithTemplate()
 
     if (!propertyChanged(MapObject::VisibleProperty))
         setVisible(base->isVisible());
-}
-
-bool MapObject::isTemplateInstance() const
-{
-    return templateRef().templateGroup;
-}
-
-TemplateGroup *MapObject::templateGroup() const
-{
-    return templateRef().templateGroup;
 }
 
 void MapObject::flipRectObject(const QTransform &flipTransform)

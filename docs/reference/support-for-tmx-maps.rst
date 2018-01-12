@@ -1,20 +1,23 @@
 Libraries and Frameworks
 ========================
 
-There are many libraries available for reading and/or writing maps stored in the
-:doc:`tmx-map-format` as well as many development frameworks that include
-support for TMX maps. This list is divided into two sections:
+There are many libraries available for reading and/or writing Tiled maps (either stored in the
+:doc:`tmx-map-format` or the :doc:`json-map-format`) as well as many
+development frameworks that include support for Tiled maps. This list is
+divided into two sections:
 
 -  `Support by Language <#support-by-language>`__
 -  `Support by Framework <#support-by-framework>`__
 
-First list is for developers who plan on implementing their own
-renderer. Second list is for developers already using (or considering) a
-particular game engine / graphics library who would rather pass on
-having to write their own tilemap renderer.
+The first list is for developers who plan on implementing their own
+renderer. The second list is for developers already using (or
+considering) a particular game engine / graphics library who would
+rather pass on having to write their own tile map renderer.
 
-*For updates to this page please open a pull request or issue `on
-github <https://github.com/bjorn/tiled/issues>`__, thanks!*
+.. note::
+
+   For updates to this page please open a pull request or issue
+   `on GitHub <https://github.com/bjorn/tiled/issues>`__, thanks!
 
 Support by Language
 -------------------
@@ -26,7 +29,7 @@ game engine or graphics library.
 C
 ~
 
--  `TMX <https://github.com/baylej/tmx/>`__ - XML and JSON map loader
+-  `TMX <https://github.com/baylej/tmx/>`__ - TMX map loader
    with Allegro5 and SDL2 examples (BSD).
 
 C++
@@ -34,10 +37,7 @@ C++
 
 -  `C++/Boost <http://www.catnapgames.com/blog/2011/10/10/simple-tmx-tilemap-parser.html>`__
    by Tomas Andrle (limited functionality, single cpp file)
--  `C++/TinyXML based
-   tmx-parser <https://github.com/andrewrk/tmxparser>`__ (BSD)
--  `Original version <http://code.google.com/p/tmx-parser/>`__ by KonoM
-   is discontinued.
+-  `C++/TinyXML based tmxparser <https://github.com/sainteos/tmxparser>`__ (BSD)
 -  C++/Qt based libtiled, used by Tiled itself and included at
    `src/libtiled <https://github.com/bjorn/tiled/tree/master/src/libtiled>`__
    (BSD)
@@ -93,6 +93,8 @@ D
    single-layer and single-tileset example to load a map and its tileset
    in `D language <http://dlang.org/>`__. It also contains basic
    rendering logic using `DSFML <https://github.com/Jebbs/DSFML/>`__
+-  `dtiled <https://github.com/rcorre/dtiled>`__ can load JSON-formatted Tiled
+   maps. It also provides general tilemap-related functions and algorithms.
 
 Go
 ~~
@@ -102,8 +104,9 @@ Go
 Haskell
 ~~~~~~~
 
--  `htiled <http://hackage.haskell.org/package/htiled>`__ by `Christian
+-  `htiled <http://hackage.haskell.org/package/htiled>`__ (TMX) by `Christian
    Rødli Amble <https://github.com/chrra>`__.
+-  `aeson-tiled <https://hackage.haskell.org/package/aeson-tiled>`__ (JSON) by `Schell Scivally <https://github.com/schell>`__.
 
 Java
 ~~~~
@@ -207,7 +210,7 @@ Construct 2 - Scirra
 Corona SDK
 ~~~~~~~~~~
 
--  `PonyTiled <https://github.com/ponywolf/ponytiled>`__ is a simple
+-  `ponytiled <https://github.com/ponywolf/ponytiled>`__ is a simple
    Tiled Map Loader for Corona SDK (`forum
    announcement <http://discourse.mapeditor.org/t/new-lua-coronasdk-framework-ponytiled/1826>`__)
 -  `Dusk Engine <https://github.com/GymbylCoding/Dusk-Engine>`__ is a
@@ -222,9 +225,8 @@ Flixel
 Game Maker
 ~~~~~~~~~~
 
--  `Tiled2GM
-   Converter <http://gmc.yoyogames.com/index.php?showtopic=539494>`__ by
-   Dmi7ry
+-  Tiled ships with a plug-in that can :ref:`export a map to a GameMaker: Studio 1.4 room file <gamemaker-export>`
+-  `Tiled2GM Converter <http://gmc.yoyogames.com/index.php?showtopic=539494>`__ by Dmi7ry
 
 Godot
 ~~~~~
@@ -250,32 +252,33 @@ Haxe
 HTML5 (multiple engines)
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
--  `Canvas Engine <http://canvasengine.net>`__ A framework to create
+-  `Canvas Engine <https://github.com/RSamaium/CanvasEngine>`__ A framework to create
    video games in HTML5 Canvas
+-  `chem-tmx <https://github.com/andrewrk/chem-tmx>`__ Plugin for
+   `chem <https://github.com/andrewrk/chem/>`__ game engine.
 -  `chesterGL <https://github.com/funkaster/ChesterGL>`__ A simple
    WebGL/canvas game library
+-  `Crafty <http://craftyjs.com>`__ JavaScript HTML5 Game Engine;
+   supports loading Tiled maps through an external component
+   `TiledMapBuilder <https://github.com/Kibo/TiledMapBuilder>`__.
+-  `GameJs <http://gamejs.org>`__ JavaScript library for game
+   programming; a thin wrapper to draw on HTML5 canvas and other useful
+   modules for game development
 -  `KineticJs-Ext <https://github.com/Wappworks/kineticjs-ext>`__ A
    multi-canvas based game rendering library
 -  `melonJS <http://www.melonjs.org>`__ A lightweight HTML5 game engine
+-  `Panda 2 <https://www.panda2.io/>`__, a HTML5 Game Development Platform for Mac, Windows and Linux. Has `a plugin for rendering Tiled <https://www.panda2.io/plugins>`__ maps, both orthogonal and isometric.
+-  `Phaser <http://www.phaser.io>`__ A fast, free and fun open source
+   framework supporting both JavaScript and TypeScript (`Tiled
+   tutorial <http://www.gamedevacademy.org/html5-phaser-tutorial-top-down-games-with-tiled/>`__)
+-  `linux-man/p5.tiledmap <https://github.com/linux-man/p5.tiledmap>`__
+   adds Tiled maps to `p5.js <http://p5js.org/>`__.
 -  `Platypus Engine <https://github.com/PBS-KIDS/Platypus/>`__ A robust
    orthogonal tile game engine with game entity library.
 -  `sprite.js <https://github.com/batiste/sprite.js>`__ A game framework
    for image sprites.
 -  `TMXjs <https://github.com/cdmckay/tmxjs>`__ A JavaScript, jQuery and
    RequireJS-based TMX (Tile Map XML) parser and renderer.
--  `chem-tmx <https://github.com/andrewrk/chem-tmx>`__ Plugin for
-   `chem <https://github.com/andrewrk/chem/>`__ game engine.
--  `GameJs <http://gamejs.org>`__ JavaScript library for game
-   programming; a thin wrapper to draw on HTML5 canvas and other useful
-   modules for game development
--  `Crafty <http://craftyjs.com>`__ JavaScript HTML5 Game Engine;
-   supports loading Tiled maps through an external component
-   `TiledMapBuilder <https://github.com/Kibo/TiledMapBuilder>`__.
--  `Phaser <http://www.phaser.io>`__ A fast, free and fun open source
-   framework supporting both JavaScript and TypeScript (`Tiled
-   tutorial <http://www.gamedevacademy.org/html5-phaser-tutorial-top-down-games-with-tiled/>`__)
--  `linux-man/p5.tiledmap <https://github.com/linux-man/p5.tiledmap>`__
-   adds Tiled maps to `p5.js <http://p5js.org/>`__.
 
 indielib-crossplatform
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -328,6 +331,12 @@ Node.js
 
 -  `node-tmx-parser <https://github.com/andrewrk/node-tmx-parser>`__ -
    loads the TMX file into a JavaScript object
+
+Oak Nut Engine (onut)
+~~~~~~~~~~~~~~~~~~~~~
+
+-  `Oak Nut Engine <http://daivuk.github.io/onut/>`__ supports Tiled maps
+   through Javascript and C++. (see TiledMap `Javascript <https://github.com/Daivuk/onut/tree/master/samplesJS/TiledMap>`__ or `C++ <https://github.com/Daivuk/onut/tree/master/samples/TiledMap>`__ samples)
 
 Orx Portable Game Engine
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -425,9 +434,6 @@ Unity 3D
    Pro <http://www.wyrmtale.com/products/unity3d-components/orthello-pro>`__
    (2D framework) offers `Tiled map
    support <http://www.wyrmtale.com/orthello-pro/tilemaps>`__.
--  `Tiled Tilemaps <http://karnakgames.com/wp/unity-tiled-tilemaps/>`__
-   library by Karnak Games adds support for Orthogonal TMX maps to
-   Unity, with automatic collision detection.
 -  `Tiled To
    Unity <https://www.assetstore.unity3d.com/#/content/17260/>`__ is a
    3D pipeline for Tiled maps. It uses prefabs as tiles, and can place
@@ -438,8 +444,9 @@ Unity 3D
 -  `UniTMX <https://bitbucket.org/PolCPP/unitmx/overview>`__ imports TMX
    files into a mesh.
 -  `X-UniTMX <https://bitbucket.org/Chaoseiro/x-unitmx>`__ supports
-   almost all Tiled 0.10 features. Imports TMX/XML files into Sprite
+   almost all Tiled 0.11 features. Imports TMX/XML files into Sprite
    Objects or Meshes.
+-  `Tiled TMX Importer <https://www.assetstore.unity3d.com/en/#!/content/102928>`__, imports into Unity 2017.2's new native Tilemap system.
 
 Unreal Engine 4
 ~~~~~~~~~~~~~~~

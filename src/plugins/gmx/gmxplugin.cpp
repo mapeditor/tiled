@@ -38,7 +38,7 @@ using namespace Gmx;
 template <typename T>
 static T optionalProperty(const Object *object, const QString &name, const T &def)
 {
-    const QVariant var = object->property(name);
+    const QVariant var = object->inheritedProperty(name);
     return var.isValid() ? var.value<T>() : def;
 }
 
@@ -51,6 +51,11 @@ static QString toString(T number)
 static QString toString(bool b)
 {
     return QString::number(b ? -1 : 0);
+}
+
+static QString toString(const QString &string)
+{
+    return string;
 }
 
 template <typename T>
@@ -69,16 +74,6 @@ static QString sanitizeName(QString name)
     return name.replace(regexp, QLatin1String("_"));
 }
 
-static QString effectiveObjectType(const MapObject *object)
-{
-    if (!object->type().isEmpty())
-        return object->type();
-    if (Tile *tile = object->cell().tile())
-        return tile->type();
-
-    return QString();
-}
-
 static bool checkIfViewsDefined(const Map *map)
 {
     LayerIterator iterator(map);
@@ -90,7 +85,7 @@ static bool checkIfViewsDefined(const Map *map)
         const ObjectGroup *objectLayer = static_cast<const ObjectGroup*>(layer);
 
         for (const MapObject *object : objectLayer->objects()) {
-            const QString type = effectiveObjectType(object);
+            const QString type = object->effectiveType();
             if (type == "view")
                 return true;
         }
@@ -131,6 +126,7 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
     writeProperty(stream, map, "persistent", false);
     writeProperty(stream, map, "clearDisplayBuffer", true);
     writeProperty(stream, map, "clearViewBackground", false);
+    writeProperty(stream, map, "code", QString());
 
     // Check if views are defined
     bool enableViews = checkIfViewsDefined(map);
@@ -152,7 +148,7 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
             const ObjectGroup *objectLayer = static_cast<const ObjectGroup*>(layer);
 
             for (const MapObject *object : objectLayer->objects()) {
-                const QString type = effectiveObjectType(object);
+                const QString type = object->effectiveType();
                 if (type != "view")
                     continue;
 
@@ -205,7 +201,7 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
         const ObjectGroup *objectLayer = static_cast<const ObjectGroup*>(layer);
 
         for (const MapObject *object : objectLayer->objects()) {
-            const QString type = effectiveObjectType(object);
+            const QString type = object->effectiveType();
             if (type.isEmpty())
                 continue;
             if (type == "view")
@@ -220,15 +216,10 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
             qreal scaleX = 1;
             qreal scaleY = 1;
 
+            QPointF origin(optionalProperty(object, "originX", 0.0),
+                           optionalProperty(object, "originY", 0.0));
+
             if (!object->cell().isEmpty()) {
-                // Tile objects have bottom-left origin in Tiled, so the
-                // position needs to be translated for top-left origin in
-                // GameMaker, taking into account the rotation.
-                QTransform transform;
-                transform.rotate(object->rotation());
-
-                pos += transform.map(QPointF(0, -object->height()));
-
                 // For tile objects we can support scaling and flipping, though
                 // flipping in combination with rotation doesn't work in GameMaker.
                 if (auto tile = object->cell().tile()) {
@@ -238,14 +229,28 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
 
                     if (object->cell().flippedHorizontally()) {
                         scaleX *= -1;
-                        pos += transform.map(QPointF(object->width(), 0));
+                        origin += QPointF(object->width() - 2 * origin.x(), 0);
                     }
                     if (object->cell().flippedVertically()) {
                         scaleY *= -1;
-                        pos += transform.map(QPointF(0, object->height()));
+                        origin += QPointF(0, object->height() - 2 * origin.y());
                     }
                 }
+
+                // Tile objects have bottom-left origin in Tiled, so the
+                // position needs to be translated for top-left origin in
+                // GameMaker, taking into account the rotation.
+                origin += QPointF(0, -object->height());
             }
+
+            // Allow overriding the scale using custom properties
+            scaleX = optionalProperty(object, "scaleX", scaleX);
+            scaleY = optionalProperty(object, "scaleY", scaleY);
+
+            // Adjust the position based on the origin
+            QTransform transform;
+            transform.rotate(object->rotation());
+            pos += transform.map(origin);
 
             stream.writeAttribute("x", QString::number(qRound(pos.x())));
             stream.writeAttribute("y", QString::number(qRound(pos.y())));
@@ -263,6 +268,7 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
                 stream.writeAttribute("name", name);
             }
 
+            stream.writeAttribute("code", optionalProperty(object, "code", QString()));
             stream.writeAttribute("scaleX", QString::number(scaleX));
             stream.writeAttribute("scaleY", QString::number(scaleY));
             stream.writeAttribute("rotation", QString::number(-object->rotation()));
@@ -281,7 +287,9 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
     // Write out tile instances
     iterator.toFront();
     while (const Layer *layer = iterator.next()) {
-        QString depth = QString::number(optionalProperty(layer, QLatin1String("depth"), layerCount));
+        --layerCount;
+        QString depth = QString::number(optionalProperty(layer, QLatin1String("depth"),
+                                                         layerCount + 1000000));
 
         switch (layer->layerType()) {
         case Layer::TileLayerType: {
@@ -358,7 +366,7 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
 
             foreach (const MapObject *object, objects) {
                 // Objects with types are already exported as instances
-                if (!effectiveObjectType(object).isEmpty())
+                if (!object->effectiveType().isEmpty())
                     continue;
 
                 // Non-typed tile objects are exported as tiles. Rotation is
@@ -393,7 +401,7 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
                         bgName = tileset->name();
 
                         int xInTilesetGrid = tile->id() % tileset->columnCount();
-                        int yInTilesetGrid = (int)(tile->id() / tileset->columnCount());
+                        int yInTilesetGrid = tile->id() / tileset->columnCount();
 
                         xo = tileset->margin() + (tileset->tileSpacing() + tileset->tileWidth()) * xInTilesetGrid;
                         yo = tileset->margin() + (tileset->tileSpacing() + tileset->tileHeight()) * yInTilesetGrid;
@@ -428,8 +436,6 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
             // Recursion handled by LayerIterator
             break;
         }
-
-        --layerCount;
     }
 
     stream.writeEndElement();

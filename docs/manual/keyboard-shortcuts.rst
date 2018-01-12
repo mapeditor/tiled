@@ -17,14 +17,12 @@ General
 -  ``Ctrl + Object Resize`` - Keep aspect ratio
 -  ``Alt + Object Resize`` - Toggles "Snap to Grid" temporarily
 -  ``Middle Click`` or ``Space Bar`` - Hold to pan the map view
--  ``F5`` - Run the :doc:`first custom command <using-commands>`
 -  ``Ctrl + X`` - Cut (tiles, objects or properties)
 -  ``Ctrl + C`` - Copy (tiles, objects or properties)
 -  ``Ctrl + V`` - Paste (tiles, objects or properties)
 -  ``Del`` - Delete (tiles or objects)
 -  ``H`` - Toggle highlighting of the current layer
--  ``A`` - Invokes
-   `Automapping <https://github.com/bjorn/tiled/wiki/Automapping>`__
+-  ``A`` - Invokes :doc:`automapping`
 -  ``Alt + C`` - Copy current position of mouse cursor to clipboard (in
    tile coordinates)
 -  ``Ctrl + D`` - Duplicate selected objects (since Tiled 1.0, before it
@@ -55,21 +53,39 @@ When a tile layer is selected
 -----------------------------
 
 -  ``D`` - Toggle Random Mode
--  ``B`` - Activate Stamp Brush tool
--  ``T`` - Activate :doc:`Terrain Brush <using-the-terrain-tool>` tool
--  ``F`` - Activate Bucket Fill tool
--  ``E`` - Activate Eraser tool
--  ``R`` - Activate Rectangular Select tool
--  ``W`` - Activate Magic Wand tool
--  ``S`` - Activate Select Same Tile tool
+-  ``B`` - Activate :ref:`stamp-tool`
+
+   -  ``Shift + Click`` - Line mode, places tiles on a line between two
+      clicked locations
+   -  ``Ctrl + Shift + Click`` - Circle mode, places tiles around the
+      clicked center
+
+-  ``T`` - Activate :ref:`terrain-tool`
+-  ``G`` - Activate :ref:`wang-tool` (since Tiled 1.1)
+-  ``F`` - Activate :ref:`bucket-fill-tool`
+-  ``P`` - Activate :ref:`shape-fill-tool`
+-  ``E`` - Activate :ref:`eraser-tool`
+-  ``R`` - Activate Rectangular Select
+-  ``W`` - Activate Magic Wand
+-  ``S`` - Activate Select Same Tile
 -  ``Ctrl + 1-9`` - Store current tile selection (similar to
    ``Ctrl + C``)
 -  ``1-9`` recall the previous selection (similar to ``Ctrl + V``)
+-  ``Ctrl + A`` - Select the whole layer
+-  ``Ctrl + Shift + A`` - Select nothing
+
+Changing the active stamp:
+
+-  ``X`` - Flip active stamp horizontally
+-  ``Y`` - Flip active stamp vertically
+-  ``Z`` - Rotate active stamp clockwise
+-  ``Shift + Z`` - Rotate active stamp counterclockwise
+
 
 When an object layer is selected
 --------------------------------
 
--  ``S`` - Activate Select Objects tool
+-  ``S`` - Activate :ref:`select-objects-tool`
 
    -  ``PgUp`` - Raise selected objects (with Manual object drawing
       order)
@@ -80,36 +96,23 @@ When an object layer is selected
    -  ``End`` - Move selected objects to Bottom (with Manual object
       drawing order)
 
--  ``O`` - Activate Edit Polygons tool (was ``E`` until Tiled 1.0)
--  ``R`` - Activate Insert Rectangle tool
--  ``C`` - Activate Insert Ellipse tool
--  ``P`` - Activate Insert Polygon tool
--  ``L`` - Activate Insert Polyline tool
+-  ``O`` - Activate :ref:`edit-polygons-tool` (was ``E`` until Tiled 1.0)
+-  ``R`` - Activate :ref:`insert-rectangle-tool`
+-  ``I`` - Activate :ref:`insert-point-tool`
+-  ``C`` - Activate :ref:`insert-ellipse-tool`
+-  ``P`` - Activate :ref:`insert-polygon-tool`
+-  ``L`` - Activate :ref:`insert-polyline-tool`
 
    -  ``Enter`` - Finish creating object
    -  ``Escape`` - Cancel creating object
 
--  ``T`` - Activate Insert Tile tool
--  ``E`` - Activate Insert Text tool (since Tiled 1.0)
+-  ``T`` - Activate :ref:`insert-tile-tool`
+-  ``V`` - Activate :ref:`insert-template-tool` (since Tiled 1.1)
+-  ``E`` - Activate :ref:`insert-text-tool` (since Tiled 1.0)
+-  ``Ctrl + A`` - Select all objects in the current object layer
+-  ``Ctrl + Shift + A`` - Clear object selection
 
-When using the brush tool
--------------------------
-
--  ``Shift + Click`` - Line Tool, auto place tiles between two cells
--  ``Ctrl + Shift + Click`` - Circle Tool, auto place tiles around a
-   radius
--  ``X`` - Flip selection horizontally
--  ``Y`` - Flip selection vertically
--  ``Z`` - Rotate selection clockwise
--  ``Shift + Z`` - Rotate selection counterclockwise
-
-When using the Rectangular Select tool
---------------------------------------
-
--  ``Ctrl + A`` - Select the whole layer
--  ``Ctrl + Shift + A`` - Select nothing
-
-In the properties dialog
+In the Properties dialog
 ------------------------
 
 -  ``Del`` or ``Backspace`` - Deletes a property

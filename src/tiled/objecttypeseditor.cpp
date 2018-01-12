@@ -44,7 +44,7 @@ namespace Internal {
 class ColorDelegate : public QStyledItemDelegate
 {
 public:
-    ColorDelegate(QObject *parent = nullptr)
+    explicit ColorDelegate(QObject *parent = nullptr)
         : QStyledItemDelegate(parent)
     { }
 
@@ -191,8 +191,7 @@ ObjectTypesEditor::ObjectTypesEditor(QWidget *parent)
     connect(mUi->propertiesView, &QtTreePropertyBrowser::currentItemChanged,
             this, &ObjectTypesEditor::currentItemChanged);
 
-    Preferences *prefs = Preferences::instance();
-    mObjectTypesModel->setObjectTypes(prefs->objectTypes());
+    mObjectTypesModel->setObjectTypes(Object::objectTypes());
 
     retranslateUi();
 }
@@ -234,12 +233,10 @@ void ObjectTypesEditor::retranslateUi()
 
 void ObjectTypesEditor::addObjectType()
 {
-    const int newRow = mObjectTypesModel->objectTypes().size();
-    mObjectTypesModel->appendNewObjectType();
+    const QModelIndex newIndex = mObjectTypesModel->addNewObjectType();
 
     // Select and focus the new row and ensure it is visible
     QItemSelectionModel *sm = mUi->objectTypesTable->selectionModel();
-    const QModelIndex newIndex = mObjectTypesModel->index(newRow, 0);
     sm->select(newIndex,
                QItemSelectionModel::ClearAndSelect |
                QItemSelectionModel::Rows);
@@ -413,7 +410,7 @@ void ObjectTypesEditor::exportObjectTypes()
     prefs->setLastPath(Preferences::ObjectTypesFile, fileName);
 
     ObjectTypesSerializer serializer;
-    if (!serializer.writeObjectTypes(fileName, prefs->objectTypes())) {
+    if (!serializer.writeObjectTypes(fileName, Object::objectTypes())) {
         QMessageBox::critical(this, tr("Error Writing Object Types"),
                               serializer.errorString());
     }

@@ -151,7 +151,7 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
 
     // Adjust tile meta data
     QList<Tile*> tilesChangingProbability;
-    QList<float> tileProbabilities;
+    QList<qreal> tileProbabilities;
     ChangeTileTerrain::Changes terrainChanges;
     QSet<Tile*> tilesToReset;
 
@@ -169,7 +169,7 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
     auto applyMetaData = [&](Tile *toTile,
                              const Properties &properties,
                              unsigned terrain,
-                             float probability,
+                             qreal probability,
                              ObjectGroup *objectGroup,
                              const QVector<Frame> &frames)
     {
@@ -241,7 +241,7 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
     QSetIterator<Tile*> resetIterator(tilesToReset);
     while (resetIterator.hasNext()) {
         applyMetaData(resetIterator.next(),
-                      Properties(), -1, 1.0f, nullptr, QVector<Frame>());
+                      Properties(), -1, 1.0, nullptr, QVector<Frame>());
     }
 
     if (!tilesChangingProbability.isEmpty()) {

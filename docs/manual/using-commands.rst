@@ -16,9 +16,10 @@ It is located on the main toolbar to the right of the redo button.
 Clicking on it will run the default command (the first command in the
 command list). Clicking the arrow next to it will bring down a menu that
 allows you to run any command you have set up, as well as an option to
-open the Edit Commands dialog.
+open the Edit Commands dialog. You can also find all the commands in the
+File menu.
 
-You can press F5 as a shortcut to clicking the button to run the default
+Apart from this, you can set up custom keyboard shortcuts for each
 command.
 
 Editing Commands
@@ -27,32 +28,67 @@ Editing Commands
 The 'Edit Commands' dialog contains a list of commands. Each command has
 several properties:
 
--  **Name**: The name of the command as it will be shown in the drop
-   down list, so you can easily identify it.
--  **Command**: The actual shell command to execute. This usually starts
-   with an executable program followed by arguments. You can use the
-   following variables:
+Name
+    The name of the command as it will be shown in the drop
+    down list, so you can easily identify it.
 
-   -  ``%mapfile`` is replaced with the current maps full path.
-   -  ``%mappath`` is replaced with the full folder path in which the
-      map is located. (since Tiled 0.18)
-   -  ``%objecttype`` is replaced with the type of the currently
-      selected object, if any. (since Tiled 0.12)
-   -  ``%objectid`` is replaced with the ID of the currently selected
-      object, if any. (since Tiled 0.17)
-   -  ``%layername`` is replaced with the name of the currently selected
-      layer. (since Tiled 0.17)
+Executable
+    The executable to run. It should either be a full
+    path or the name of an executable in the system PATH.
 
--  **Enabled**: A quick way to disable commands and remove them from the
-   drop down list.
+Arguments
+    The arguments for running the executable.
 
-   -  The default command is the first enabled command.
+Working directory
+    The path to the working directory.
 
-You can also change whether or not it should save the current map before
-running commands.
+Shortcut
+    A custom key sequence to trigger the command. You can use 'Clear'
+    to reset the shortcut.
 
-Note that if the program or any of its arguments contain spaces, these
-parts need to be quoted.
+Output in Debug Console
+    If this is enabled, then the output (stdout and stderr) of this
+    command will be displayed in the Debug Console. You can find the
+    Debug Console in *View > Views and Toolbars > Debug Console*.
+
+Save map before executing
+    If this is enabled, then the current map will be saved before
+    executing the command.
+
+Enabled
+    A quick way to disable commands and remove them from the drop down list.
+    The default command is the first enabled command.
+
+Note that if the executable or any of its arguments contain spaces,
+these parts need to be quoted.
+
+Substituted Variables
+~~~~~~~~~~~~~~~~~~~~~
+
+In the executable, arguments and working directory fields, you can use
+the following variables:
+
+``%mapfile``
+    the current maps full path.
+
+``%mappath``
+    the full folder path in which the map is located. (since Tiled 0.18)
+
+``%objecttype``
+    the type of the currently selected object, if any. (since Tiled 0.12)
+
+``%objectid``
+    the ID of the currently selected object, if any. (since Tiled 0.17)
+
+``%layername``
+    the name of the currently selected layer. (since Tiled 0.17)
+
+For the working directory field, you can additionally use the following
+variable:
+
+``%executablepath``
+    the path to the executable.
+
 
 Example Commands
 ----------------

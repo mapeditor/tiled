@@ -17,6 +17,8 @@ Placement Tools
 
 Each type of object has its own placement tool.
 
+.. _insert-rectangle-tool:
+
 Insert Rectangle
 ~~~~~~~~~~~~~~~~
 
@@ -33,9 +35,20 @@ tile size.
 
 If the rectangle is empty (width and height are both 0), it is rendered
 as a small square around its position. This is mainly to keep it visible
-and selectable. Empty rectangles can be used for placing point objects,
-at least as long as no explicit support for point objects is available
-(`#1325 <https://github.com/bjorn/tiled/issues/1325>`__).
+and selectable.
+
+.. _insert-point-tool:
+
+Insert Point
+~~~~~~~~~~~~~~
+
+Shortcut: ``I``
+
+Points are the simplest objects you can place on a map. They only represent a
+location, and cannot be resized or rotated. Simply click on the map to position
+a point object.
+
+.. _insert-ellipse-tool:
 
 Insert Ellipse
 ~~~~~~~~~~~~~~
@@ -45,6 +58,8 @@ Shortcut: ``C``
 Ellipses work the same way as `rectangles <#insert-rectangle>`__, except
 that they are rendered as an ellipse. Useful for when your area or
 collision shape needs to represent a circle or ellipse.
+
+.. _insert-polygon-tool:
 
 Insert Polygon
 ~~~~~~~~~~~~~~
@@ -62,7 +77,9 @@ needs to have at least three points. You can press ``Escape`` to cancel
 the creation of the polygon.
 
 When you want to change a polygon after it has been placed, you need to
-use the `Edit Polygons <#edit-polygons>`__ tool.
+use the :ref:`edit-polygons-tool` tool.
+
+.. _insert-polyline-tool:
 
 Insert Polyline
 ~~~~~~~~~~~~~~~
@@ -74,8 +91,10 @@ that they are rendered as a line and require only two points. While they
 can represent collision walls, they are also often used to represent
 paths to be followed.
 
-Despite its name, the `Edit Polygons <#edit-polygons>`__ tool is also
-used to edit polylines.
+Despite its name, the :ref:`edit-polygons-tool` tool is also used to
+edit polylines.
+
+.. _insert-tile-tool:
 
 Insert Tile
 ~~~~~~~~~~~
@@ -96,28 +115,28 @@ to finish placing the object.
 
 .. raw:: html
 
-   <div class="new">
-
-New in Tiled 1.0
-
-.. raw:: html
-
-   </div>
+   <div class="new new-prev">New in Tiled 1.0</div>
 
 To change the tile used by existing tile objects, select all the objects
-you want to change using the `Select Objects <#select-objects>`__ tool
-and then right-click on a tile in the Tilesets view, and choose *Replace
-Tile of Selected Objects*.
+you want to change using the :ref:`select-objects-tool` tool and then
+right-click on a tile in the Tilesets view, and choose *Replace Tile of
+Selected Objects*.
 
 .. raw:: html
 
-   <div class="new">
+   <div class="new">New in Tiled 1.1</div>
 
-New in Tiled 1.0
+.. _insert-template-tool:
 
-.. raw:: html
+Insert Template
+~~~~~~~~~~~~~~~
 
-   </div>
+Shortcut: ``V``
+
+Can be used to quickly insert multiple instances of the template
+selected in the Templates view. See :ref:`creating-template-instances`.
+
+.. _insert-text-tool:
 
 Insert Text
 ~~~~~~~~~~~
@@ -128,6 +147,8 @@ Text objects can be used to add arbitrary multi-line text to your maps.
 You can configure various font properties and the wrapping / clipping
 area, making them useful for both quick notes as well as text used in
 the game.
+
+.. _select-objects-tool:
 
 Select Objects
 --------------
@@ -151,13 +172,7 @@ can hold ``Shift`` to force the selection rectangle.
 
 .. raw:: html
 
-   <div class="new">
-
-New in Tiled 1.0
-
-.. raw:: html
-
-   </div>
+   <div class="new new-prev">New in Tiled 1.0</div>
 
 By default you interact with the top-most object. When you need to
 select an object below another object, first select the higher object
@@ -228,6 +243,8 @@ You can flip the selected objects horizontally by pressing ``X`` or
 vertically by pressing ``Y``. For tile objects, this also flips their
 images.
 
+.. _edit-polygons-tool:
+
 Edit Polygons
 -------------
 
@@ -239,39 +256,32 @@ their nodes. You can select and move the nodes of multiple polygons at
 the same time.
 
 Nodes can be deleted by selecting them and choosing "Delete Nodes" from
-the context menu. Careful with the ``Delete`` key, because that will
-delete the entire polygon
-(`#1555 <https://github.com/bjorn/tiled/issues/1555>`__).
+the context menu. The ``Delete`` key can also be used to delete the
+selected nodes, or the selected objects if no nodes are selected.
 
 When you have selected multiple consecutive nodes of the same polygon,
 you can join them together by choosing "Join Nodes" from the context
 menu. You can also split the segments in between the nodes by choosing
 "Split Segments", which is currently the only way to extend an existing
-polygon.
+polygon. You can also delete a segment when two consecutive nodes are
+selected in a polygon by choosing "Delete Segment" in the context menu.
+This will convert a polygon into a polyline.
 
-.. raw:: html
+.. topic:: Future Extensions
+   :class: future
 
-   <div class="future">
+   Here are some ideas about improvements that could be made to the above
+   tools:
 
-Future Extensions
------------------
+   -  For the `Insert Tile <#insert-tile>`__ tool, show the preview already
+      before pressing the left mouse button
+      (`#537 <https://github.com/bjorn/tiled/issues/537>`__)
 
-Here are some ideas about improvements that could be made to the above
-tools:
+   -  Many improvements could be made to the support for editing polygons
+      and polylines, like allowing to rotate and scale the selected nodes
+      (`#1487 <https://github.com/bjorn/tiled/issues/1487>`__).
 
--  For the `Insert Tile <#insert-tile>`__ tool, show the preview already
-   before pressing the left mouse button
-   (`#537 <https://github.com/bjorn/tiled/issues/537>`__)
-
--  Many improvements could be made to the support for editing polygons
-   and polylines, like allowing to rotate and scale the selected nodes
-   (`#1487 <https://github.com/bjorn/tiled/issues/1487>`__).
-
-If you like any of these plans, please help me getting around to it
-faster by `becoming a patron <https://www.patreon.com/bjorn>`__. The
-more support I receive the more time I can afford to spend improving
-Tiled!
-
-.. raw:: html
-
-   </div>
+   If you like any of these plans, please help me getting around to it
+   faster by `becoming a patron <https://www.patreon.com/bjorn>`__. The
+   more support I receive the more time I can afford to spend improving
+   Tiled!

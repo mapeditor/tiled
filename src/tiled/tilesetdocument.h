@@ -22,12 +22,11 @@
 
 #include "document.h"
 #include "tileset.h"
+#include "tilesetformat.h"
 
 #include <QList>
 
 namespace Tiled {
-
-class TilesetFormat;
 
 namespace Internal {
 
@@ -45,7 +44,7 @@ class TilesetDocument : public Document
 
 public:
     TilesetDocument(const SharedTileset &tileset, const QString &fileName = QString());
-    ~TilesetDocument();
+    ~TilesetDocument() override;
 
     bool save(const QString &fileName, QString *error = nullptr) override;
 
@@ -62,6 +61,9 @@ public:
 
     FileFormat *writerFormat() const override;
     void setWriterFormat(TilesetFormat *format);
+
+    TilesetFormat *exportFormat() const override;
+    void setExportFormat(FileFormat *format) override;
 
     QString displayName() const override;
 
@@ -157,6 +159,7 @@ private:
     WangColorModel *mWangColorModel;
 
     QList<Tile*> mSelectedTiles;
+    QPointer<TilesetFormat> mExportFormat;
 };
 
 

@@ -140,9 +140,8 @@ void WangId::flipHorizontally()
     newWangId.setEdgeColor(1, edgeColor(3));
     newWangId.setEdgeColor(3, edgeColor(1));
 
-    for (int i = 0; i < 4; ++i) {
+    for (int i = 0; i < 4; ++i)
         newWangId.setCornerColor(i, cornerColor(3-i));
-    }
 
     mId = newWangId;
 }
@@ -234,7 +233,7 @@ void WangTile::translate(int map[])
 {
     int mask = (mFlippedHorizontally << 2)
             | (mFlippedVertically << 1)
-            | (mFlippedAntiDiagonally);
+            | (mFlippedAntiDiagonally << 0);
 
     mask = map[mask];
 
@@ -287,6 +286,22 @@ Cell WangTile::makeCell() const
 
     return cell;
 }
+
+
+WangColor::WangColor()
+    : WangColor(0, true, QString(), Qt::red, -1)
+{}
+
+WangColor::WangColor(int colorIndex, bool isEdge, const QString &name, const QColor &color, int imageId, qreal probability)
+    : Object(WangColorType)
+    , mColorIndex(colorIndex)
+    , mIsEdge(isEdge)
+    , mName(name)
+    , mColor(color)
+    , mImageId(imageId)
+    , mProbability(probability)
+{}
+
 
 static const QColor defaultWangColors[] =  {
     QColor(255, 0, 0),
@@ -370,7 +385,7 @@ void WangSet::setCornerColorCount(int n)
     } else {
         while (mCornerColors.size() != n) {
             mCornerColors.append(QSharedPointer<WangColor>(new WangColor(mCornerColors.size() + 1,
-                                                                         true,
+                                                                         false,
                                                                          QString(),
                                                                          defaultWangColors[mCornerColors.size()],
                                                                          -1)));
@@ -570,16 +585,6 @@ void WangSet::removeWangTile(const WangTile &wangTile)
         --mUniqueFullWangIdCount;
 }
 
-WangTile WangSet::findMatchingWangTile(WangId wangId) const
-{
-    auto potentials = findMatchingWangTiles(wangId);
-
-    if (potentials.length() > 0)
-        return potentials[qrand() % potentials.length()];
-    else
-        return WangTile();
-}
-
 QList<WangTile> WangSet::wangTiles() const
 {
     QList<WangTile> wangTiles = mWangIdToWangTile.values();
@@ -671,9 +676,10 @@ WangId WangSet::wangIdOfCell(const Cell &cell) const
         return 0;
 }
 
-float WangSet::wangIdProbability(WangId wangId) const
+qreal WangSet::wangTileProbability(const WangTile &wangTile) const
 {
-    float probability = 1;
+    qreal probability = 1.0;
+    WangId wangId = wangTile.wangId();
 
     if (edgeColorCount() > 1) {
         for (int i = 0; i < 4; ++i) {
@@ -688,6 +694,9 @@ float WangSet::wangIdProbability(WangId wangId) const
                 probability *= cornerColorAt(color)->probability();
         }
     }
+
+    if (Tile *tile = wangTile.tile())
+        probability *= tile->probability();
 
     return probability;
 }

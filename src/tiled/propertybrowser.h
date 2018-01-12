@@ -83,6 +83,8 @@ public:
      */
     void editCustomProperty(const QString &name);
 
+    QSize sizeHint() const override;
+
 protected:
     bool event(QEvent *event) override;
 
@@ -157,7 +159,8 @@ private:
         CornerCountProperty,
         WangColorProbabilityProperty,
         CustomProperty,
-        InfiniteProperty
+        InfiniteProperty,
+        TemplateProperty
     };
 
     void addMapProperties();
@@ -205,11 +208,12 @@ private:
     void removeProperties();
     void updateProperties();
     void updateCustomProperties();
-    void retranslateUi();
-    bool mUpdating;
-
     void updateCustomPropertyColor(const QString &name);
 
+    void retranslateUi();
+
+    bool mUpdating;
+    int mMapObjectFlags;
     Object *mObject;
     Document *mDocument;
     MapDocument *mMapDocument;
@@ -238,12 +242,6 @@ private:
 inline Object *PropertyBrowser::object() const
 {
     return mObject;
-}
-
-inline void PropertyBrowser::retranslateUi()
-{
-    removeProperties();
-    addProperties();
 }
 
 } // namespace Internal

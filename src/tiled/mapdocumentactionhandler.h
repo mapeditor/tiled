@@ -22,6 +22,7 @@
 #pragma once
 
 #include <QObject>
+#include "mapobject.h"
 
 class QAction;
 class QMenu;
@@ -29,6 +30,7 @@ class QMenu;
 namespace Tiled {
 
 class ObjectGroup;
+class MapObject;
 
 namespace Internal {
 
@@ -129,6 +131,8 @@ public slots:
     void duplicateObjects();
     void removeObjects();
     void moveObjectsToGroup(ObjectGroup *);
+
+    void selectAllInstances(const ObjectTemplate *objectTemplate);
 
 private slots:
     void updateActions();

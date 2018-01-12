@@ -53,14 +53,12 @@
 #include "newtilesetdialog.h"
 #include "objectgroup.h"
 #include "objecttypeseditor.h"
-#include "objecttemplatemodel.h"
 #include "offsetmapdialog.h"
 #include "patreondialog.h"
 #include "pluginmanager.h"
 #include "resizedialog.h"
 #include "templatemanager.h"
 #include "terrain.h"
-#include "tileanimationeditor.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tilesetdocument.h"
@@ -92,13 +90,102 @@
 #include <QUndoStack>
 #include <QUndoView>
 
-#if defined(Q_OS_WIN) && QT_VERSION >= 0x050600
+#ifdef Q_OS_WIN
 #include <QtPlatformHeaders\QWindowsWindowFunctions>
 #endif
 
 using namespace Tiled;
 using namespace Tiled::Internal;
 using namespace Tiled::Utils;
+
+
+namespace {
+
+template <typename Format>
+struct ExportDetails
+{
+    Format *mFormat = nullptr;
+    QString mFileName;
+
+    ExportDetails() {}
+    ExportDetails(Format *format, const QString& fileName)
+        : mFormat(format)
+        , mFileName(fileName)
+    {}
+
+    bool isValid() const { return mFormat != nullptr; }
+};
+
+template <typename Format>
+ExportDetails<Format> chooseExportDetails(const QString &fileName,
+                                          const QString &lastExportName,
+                                          const QString &lastExportFilter,
+                                          QWidget* window)
+{
+    FormatHelper<Format> helper(FileFormat::Write, MainWindow::tr("All Files (*)"));
+
+    Preferences *pref = Preferences::instance();
+
+    QString selectedFilter = lastExportFilter;
+    QString suggestedFilename = lastExportName;
+
+    if (suggestedFilename.isEmpty()) {
+        QFileInfo baseNameInfo = QFileInfo(fileName);
+        QString baseName = baseNameInfo.baseName();
+
+        QRegExp extensionFinder(QLatin1String("\\(\\*\\.([^\\)\\s]*)"));
+        extensionFinder.indexIn(selectedFilter);
+        const QString extension = extensionFinder.cap(1);
+
+        QString lastExportedFilePath = pref->lastPath(Preferences::ExportedFile);
+
+        suggestedFilename = lastExportedFilePath
+                            + QLatin1String("/") + baseName
+                            + QLatin1Char('.') + extension;
+    }
+
+    // No need to confirm overwrite here since it'll be prompted below
+    QString exportToFileName = QFileDialog::getSaveFileName(window, MainWindow::tr("Export As..."),
+                                                    suggestedFilename,
+                                                    helper.filter(),
+                                                    &selectedFilter,
+                                                    QFileDialog::DontConfirmOverwrite);
+    if (exportToFileName.isEmpty())
+        return ExportDetails<Format>();
+
+    // If a specific filter was selected, use that format
+    Format *chosenFormat = helper.formatByNameFilter(selectedFilter);
+
+    // If not, try to find the file extension among the name filters
+    QString suffix = QFileInfo(exportToFileName).completeSuffix();
+    if (!chosenFormat && !suffix.isEmpty()) {
+        suffix.prepend(QLatin1String("*."));
+
+        for (Format *format : helper.formats()) {
+            if (format->nameFilter().contains(suffix, Qt::CaseInsensitive)) {
+                if (chosenFormat) {
+                    QMessageBox::warning(window, MainWindow::tr("Non-unique file extension"),
+                                         MainWindow::tr("Non-unique file extension.\n"
+                                                    "Please select specific format."));
+                    return chooseExportDetails<Format>(exportToFileName, lastExportName, lastExportFilter, window);
+                } else {
+                    chosenFormat = format;
+                }
+            }
+        }
+    }
+
+    if (!chosenFormat) {
+        QMessageBox::critical(window, MainWindow::tr("Unknown File Format"),
+                              MainWindow::tr("The given filename does not have any known "
+                                         "file extension."));
+        return ExportDetails<Format>();
+    }
+
+    return ExportDetails<Format>(chosenFormat, exportToFileName);
+}
+
+} // namespace
 
 
 MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
@@ -110,15 +197,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mObjectTypesEditor(new ObjectTypesEditor(this))
     , mAutomappingManager(new AutomappingManager(this))
     , mDocumentManager(DocumentManager::instance())
-    , mTmxMapFormat(new TmxMapFormat(this))
-    , mTsxTilesetFormat(new TsxTilesetFormat(this))
-    , mTtxTemplateGroupFormat(new TtxTemplateGroupFormat(this))
 {
     mUi->setupUi(this);
-
-    PluginManager::addObject(mTmxMapFormat);
-    PluginManager::addObject(mTsxTilesetFormat);
-    PluginManager::addObject(mTtxTemplateGroupFormat);
 
     ActionManager::registerAction(mUi->actionNewMap, "file.new_map");
     ActionManager::registerAction(mUi->actionNewTileset, "file.new_tileset");
@@ -138,9 +218,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     MacSupport::addFullscreen(this);
 #endif
 
-#if QT_VERSION >= 0x050600
     setDockOptions(dockOptions() | QMainWindow::GroupedDragging);
-#endif
 
     Preferences *preferences = Preferences::instance();
 
@@ -383,15 +461,16 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mViewsAndToolbarsMenu = new QMenu(this);
     mViewsAndToolbarsAction = new QAction(tr("Views and Toolbars"), this);
     mViewsAndToolbarsAction->setMenu(mViewsAndToolbarsMenu);
+
+    mResetToDefaultLayout = new QAction(tr("Reset to Default Layout"), this);
+
     mShowObjectTypesEditor = new QAction(tr("Object Types Editor"), this);
     mShowObjectTypesEditor->setCheckable(true);
     mUi->menuView->insertAction(mUi->actionShowGrid, mViewsAndToolbarsAction);
     mUi->menuView->insertAction(mUi->actionShowGrid, mShowObjectTypesEditor);
     mUi->menuView->insertSeparator(mUi->actionShowGrid);
 
-    mShowTileAnimationEditor = new QAction(tr("Tile Animation Editor"), this);
-    mShowTileAnimationEditor->setCheckable(true);
-    mUi->menuTileset->insertAction(mUi->actionTilesetProperties, mShowTileAnimationEditor);
+    mUi->menuTileset->insertAction(mUi->actionTilesetProperties, tilesetEditor->showAnimationEditor());
     mUi->menuTileset->insertAction(mUi->actionTilesetProperties, tilesetEditor->editCollisionAction());
     mUi->menuTileset->insertAction(mUi->actionTilesetProperties, tilesetEditor->editTerrainAction());
     mUi->menuTileset->insertSeparator(mUi->actionTilesetProperties);
@@ -405,11 +484,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mShowObjectTypesEditor, SIGNAL(toggled(bool)),
             mObjectTypesEditor, SLOT(setVisible(bool)));
     connect(mObjectTypesEditor, SIGNAL(closed()), SLOT(onObjectTypesEditorClosed()));
-
-    connect(mShowTileAnimationEditor, &QAction::toggled,
-            tilesetEditor->tileAnimationEditor(), &TileAnimationEditor::setVisible);
-    connect(tilesetEditor->tileAnimationEditor(), &TileAnimationEditor::closed,
-            this, &MainWindow::onAnimationEditorClosed);
 
     connect(ClipboardManager::instance(), SIGNAL(hasMapChanged()), SLOT(updateActions()));
 
@@ -425,6 +499,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             this, SLOT(closeDocument(int)));
     connect(mDocumentManager, SIGNAL(reloadError(QString)),
             this, SLOT(reloadError(QString)));
+
+    connect(mResetToDefaultLayout, &QAction::triggered, this, &MainWindow::resetToDefaultLayout);
 
     QShortcut *switchToLeftDocument = new QShortcut(tr("Alt+Left"), this);
     connect(switchToLeftDocument, SIGNAL(activated()),
@@ -455,7 +531,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mAutomappingManager, SIGNAL(errorsOccurred(bool)),
             this, SLOT(autoMappingError(bool)));
 
-#if defined(Q_OS_WIN) && QT_VERSION >= 0x050600
+#ifdef Q_OS_WIN
     connect(preferences, &Preferences::useOpenGLChanged, this, &MainWindow::ensureHasBorderInFullScreen);
 #endif
 
@@ -477,12 +553,9 @@ MainWindow::~MainWindow()
     mDocumentManager->deleteEditor(Document::MapDocumentType);
     mDocumentManager->deleteEditor(Document::TilesetDocumentType);
 
-    PluginManager::removeObject(mTmxMapFormat);
-    PluginManager::removeObject(mTsxTilesetFormat);
-
     DocumentManager::deleteInstance();
-    TilesetManager::deleteInstance();
     TemplateManager::deleteInstance();
+    TilesetManager::deleteInstance();
     Preferences::deleteInstance();
     LanguageManager::deleteInstance();
     PluginManager::deleteInstance();
@@ -630,35 +703,8 @@ bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
 
     mDocumentManager->addDocument(document);
 
-    if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document)) {
+    if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document))
         mDocumentManager->checkTilesetColumns(mapDocument);
-
-        // When opening a map using new template groups, ask whether to load it into Tiled or not.
-        bool embedTemplateGroups = false;
-        for (auto templateGroup : mapDocument->map()->templateGroups()) {
-            if (!templateGroup->embedded()) {
-                const QMessageBox::StandardButton reply = QMessageBox::question(
-                    this,
-                    tr("Load Template Groups"),
-                    tr("Some Template Groups used in this map aren't loaded into Tiled. Would you like to load them?"),
-                    QMessageBox::Yes | QMessageBox::No,
-                    QMessageBox::Yes);
-                embedTemplateGroups = reply == QMessageBox::Yes;
-                break;
-            }
-        }
-
-        auto model = ObjectTemplateModel::instance();
-        for (auto templateGroup : mapDocument->map()->templateGroups()) {
-            if (!templateGroup->embedded()) {
-                if (embedTemplateGroups) {
-                    model->addTemplateGroup(templateGroup);
-                } else {
-                    mapDocument->addNonEmbeddedTemplateGroup(templateGroup);
-                }
-            }
-        }
-    }
 
     Preferences::instance()->addRecentFile(fileName);
     return true;
@@ -711,7 +757,7 @@ void MainWindow::openFile()
                                      selectedFilter).toString();
 
     auto preferences = Preferences::instance();
-    const auto fileNames = QFileDialog::getOpenFileNames(this, tr("Open Map"),
+    const auto fileNames = QFileDialog::getOpenFileNames(this, tr("Open File"),
                                                          preferences->fileDialogStartLocation(),
                                                          helper.filter(),
                                                          &selectedFilter);
@@ -813,6 +859,7 @@ bool MainWindow::confirmSave(Document *document)
     case QMessageBox::Discard: return true;
     case QMessageBox::Cancel:
     default:
+        mDocumentManager->abortMultiDocumentClose();
         return false;
     }
 }
@@ -860,115 +907,10 @@ void MainWindow::export_()
 
 void MainWindow::exportAs()
 {
-    auto mapDocument = qobject_cast<MapDocument*>(mDocument);
-    if (!mapDocument)
-        return;
-
-    FormatHelper<MapFormat> helper(FileFormat::Write, tr("All Files (*)"));
-
-    Preferences *pref = Preferences::instance();
-
-    QString selectedFilter =
-            mSettings.value(QLatin1String("lastUsedExportFilter")).toString();
-    QString suggestedFilename = mapDocument->lastExportFileName();
-
-    if (suggestedFilename.isEmpty()) {
-        QFileInfo baseNameInfo = QFileInfo(mapDocument->fileName());
-        QString baseName = baseNameInfo.baseName();
-
-        QRegExp extensionFinder(QLatin1String("\\(\\*\\.([^\\)\\s]*)"));
-        extensionFinder.indexIn(selectedFilter);
-        const QString extension = extensionFinder.cap(1);
-
-        QString lastExportedFilePath = pref->lastPath(Preferences::ExportedFile);
-
-        suggestedFilename = lastExportedFilePath
-                + QLatin1String("/") + baseName
-                + QLatin1Char('.') + extension;
-    }
-
-    // No need to confirm overwrite here since it'll be prompted below
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Export As..."),
-                                                    suggestedFilename,
-                                                    helper.filter(),
-                                                    &selectedFilter,
-                                                    QFileDialog::DontConfirmOverwrite);
-    if (fileName.isEmpty())
-        return;
-
-    // If a specific filter was selected, use that format
-    MapFormat *chosenFormat = helper.formatByNameFilter(selectedFilter);
-
-    // If not, try to find the file extension among the name filters
-    QString suffix = QFileInfo(fileName).completeSuffix();
-    if (!chosenFormat && !suffix.isEmpty()) {
-        suffix.prepend(QLatin1String("*."));
-
-        for (MapFormat *format : helper.formats()) {
-            if (format->nameFilter().contains(suffix, Qt::CaseInsensitive)) {
-                if (chosenFormat) {
-                    QMessageBox::warning(this, tr("Non-unique file extension"),
-                                         tr("Non-unique file extension.\n"
-                                            "Please select specific format."));
-                    return exportAs();
-                } else {
-                    chosenFormat = format;
-                }
-            }
-        }
-    }
-
-    if (!chosenFormat) {
-        QMessageBox::critical(this, tr("Unknown File Format"),
-                              tr("The given filename does not have any known "
-                                 "file extension."));
-        return;
-    }
-
-    // Check if writer will overwrite existing files here because some writers
-    // could save to multiple files at the same time. For example CSV saves
-    // each layer into a separate file.
-    QStringList outputFiles = chosenFormat->outputFiles(mapDocument->map(),
-                                                        fileName);
-    if (outputFiles.size() > 0) {
-        // Check if any output file already exists
-        QString message =
-                tr("Some export files already exist:") + QLatin1String("\n\n");
-
-        bool overwriteHappens = false;
-
-        for (const QString &outputFile : outputFiles) {
-            if (QFile::exists(outputFile)) {
-                overwriteHappens = true;
-                message += outputFile + QLatin1Char('\n');
-            }
-        }
-        message += QLatin1Char('\n') + tr("Do you want to replace them?");
-
-        // If overwrite happens, warn the user and get confirmation before exporting
-        if (overwriteHappens) {
-            const QMessageBox::StandardButton reply = QMessageBox::warning(
-                this,
-                tr("Overwrite Files"),
-                message,
-                QMessageBox::Yes | QMessageBox::No,
-                QMessageBox::No);
-
-            if (reply != QMessageBox::Yes)
-                return;
-        }
-    }
-
-    pref->setLastPath(Preferences::ExportedFile, QFileInfo(fileName).path());
-    mSettings.setValue(QLatin1String("lastUsedExportFilter"), selectedFilter);
-
-    if (!chosenFormat->write(mapDocument->map(), fileName)) {
-        QMessageBox::critical(this, tr("Error Exporting Map"),
-                              chosenFormat->errorString());
-    } else {
-        // Remember export parameters, so subsequent exports can be done faster
-        mapDocument->setLastExportFileName(fileName);
-        mapDocument->setExportFormat(chosenFormat);
+    if (auto mapDocument = qobject_cast<MapDocument*>(mDocument)) {
+        exportMapAs(mapDocument);
+    } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(mDocument)) {
+        exportTilesetAs(tilesetDocument);
     }
 }
 
@@ -1236,10 +1178,11 @@ void MainWindow::resizeMap()
     if (map->orientation() == Map::Orthogonal && map->tileWidth() == map->tileHeight()) {
         resizeDialog.setMiniMapRenderer([mapDocument](QSize size){
             QImage image(size, QImage::Format_ARGB32_Premultiplied);
-            MiniMapRenderer(mapDocument).renderToImage(image, MiniMapRenderer::DrawObjects
-                                                       | MiniMapRenderer::DrawImages
-                                                       | MiniMapRenderer::DrawTiles
-                                                       | MiniMapRenderer::IgnoreInvisibleLayer);
+            MiniMapRenderer(mapDocument->map()).renderToImage(image, MiniMapRenderer::DrawMapObjects
+                                                              | MiniMapRenderer::DrawImageLayers
+                                                              | MiniMapRenderer::DrawTileLayers
+                                                              | MiniMapRenderer::IgnoreInvisibleLayer
+                                                              | MiniMapRenderer::SmoothPixmapTransform);
             return image;
         });
     }
@@ -1323,14 +1266,9 @@ void MainWindow::onObjectTypesEditorClosed()
     mShowObjectTypesEditor->setChecked(false);
 }
 
-void MainWindow::onAnimationEditorClosed()
-{
-    mShowTileAnimationEditor->setChecked(false);
-}
-
 void MainWindow::ensureHasBorderInFullScreen()
 {
-#if defined(Q_OS_WIN) && QT_VERSION >= 0x050600
+#ifdef Q_OS_WIN
     // Workaround issue #1576
     static bool hasBorderInFullScreen = false;
 
@@ -1379,6 +1317,19 @@ void MainWindow::updateRecentFilesMenu()
     mUi->menuRecentFiles->setEnabled(numRecentFiles > 0);
 }
 
+void MainWindow::resetToDefaultLayout()
+{
+    // Make sure we're not in Clear View mode
+    mUi->actionClearView->setChecked(false);
+
+    // Reset the Console dock
+    addDockWidget(Qt::BottomDockWidgetArea, mConsoleDock);
+    mConsoleDock->setVisible(false);
+
+    // Reset the layout of the current editor
+    mDocumentManager->currentEditor()->resetLayout();
+}
+
 void MainWindow::updateViewsAndToolbarsMenu()
 {
     mViewsAndToolbarsMenu->clear();
@@ -1387,16 +1338,17 @@ void MainWindow::updateViewsAndToolbarsMenu()
 
     if (Editor *editor = mDocumentManager->currentEditor()) {
         mViewsAndToolbarsMenu->addSeparator();
-
         const auto dockWidgets = editor->dockWidgets();
         for (auto dockWidget : dockWidgets)
             mViewsAndToolbarsMenu->addAction(dockWidget->toggleViewAction());
 
         mViewsAndToolbarsMenu->addSeparator();
-
         const auto toolBars = editor->toolBars();
         for (auto toolBar : toolBars)
             mViewsAndToolbarsMenu->addAction(toolBar->toggleViewAction());
+
+        mViewsAndToolbarsMenu->addSeparator();
+        mViewsAndToolbarsMenu->addAction(mResetToDefaultLayout);
     }
 }
 
@@ -1417,7 +1369,7 @@ void MainWindow::updateActions()
 
     mUi->actionExportAsImage->setEnabled(mapDocument);
     mUi->actionExport->setEnabled(mapDocument);
-    mUi->actionExportAs->setEnabled(mapDocument);
+    mUi->actionExportAs->setEnabled(mapDocument || tilesetDocument);
     mUi->actionReload->setEnabled(mapDocument || (tilesetDocument && tilesetDocument->canReload()));
     mUi->actionClose->setEnabled(document);
     mUi->actionCloseAll->setEnabled(document);
@@ -1556,8 +1508,98 @@ void MainWindow::retranslateUi()
     mNewLayerMenu->setTitle(tr("&New"));
     mGroupLayerMenu->setTitle(tr("&Group"));
     mViewsAndToolbarsAction->setText(tr("Views and Toolbars"));
-    mShowTileAnimationEditor->setText(tr("Tile Animation Editor"));
     mActionHandler->retranslateUi();
+    CommandManager::instance()->retranslateUi();
+}
+
+void MainWindow::exportMapAs(MapDocument *mapDocument)
+{
+    QString fileName = mapDocument->fileName();
+    QString selectedFilter =
+            mSettings.value(QLatin1String("lastUsedExportFilter")).toString();
+    auto exportDetails = chooseExportDetails<MapFormat>(fileName,
+                                                        mapDocument->lastExportFileName(),
+                                                        selectedFilter,
+                                                        this);
+    if (!exportDetails.isValid()) {
+        return;
+    }
+
+    // Check if writer will overwrite existing files here because some writers
+    // could save to multiple files at the same time. For example CSV saves
+    // each layer into a separate file.
+    QStringList outputFiles = exportDetails.mFormat->outputFiles(mapDocument->map(), exportDetails.mFileName);
+    if (outputFiles.size() > 0) {
+        // Check if any output file already exists
+        QString message =
+                tr("Some export files already exist:") + QLatin1String("\n\n");
+
+        bool overwriteHappens = false;
+
+        for (const QString &outputFile : outputFiles) {
+            if (QFile::exists(outputFile)) {
+                overwriteHappens = true;
+                message += outputFile + QLatin1Char('\n');
+            }
+        }
+        message += QLatin1Char('\n') + tr("Do you want to replace them?");
+
+        // If overwrite happens, warn the user and get confirmation before exporting
+        if (overwriteHappens) {
+            const QMessageBox::StandardButton reply = QMessageBox::warning(
+                                                          this,
+                                                          tr("Overwrite Files"),
+                                                          message,
+                                                          QMessageBox::Yes | QMessageBox::No,
+                                                          QMessageBox::No);
+
+            if (reply != QMessageBox::Yes)
+                return;
+        }
+    }
+
+    Preferences *pref = Preferences::instance();
+
+    pref->setLastPath(Preferences::ExportedFile, QFileInfo(exportDetails.mFileName).path());
+    mSettings.setValue(QLatin1String("lastUsedExportFilter"), selectedFilter);
+
+    auto exportResult = exportDetails.mFormat->write(mapDocument->map(), exportDetails.mFileName);
+    if (!exportResult) {
+        QMessageBox::critical(this, tr("Error Exporting Map!"),
+                              exportDetails.mFormat->errorString());
+    } else {
+        // Remember export parameters, so subsequent exports can be done faster
+        mapDocument->setLastExportFileName(exportDetails.mFileName);
+        mapDocument->setExportFormat(exportDetails.mFormat);
+    }
+}
+
+void MainWindow::exportTilesetAs(TilesetDocument *tilesetDocument)
+{
+    QString fileName = tilesetDocument->fileName();
+    QString selectedFilter =
+            mSettings.value(QLatin1String("lastUsedExportFilter")).toString();
+    auto exportDetails = chooseExportDetails<TilesetFormat>(fileName,
+                                                    tilesetDocument->lastExportFileName(),
+                                                    selectedFilter,
+                                                    this);
+    if (!exportDetails.isValid())
+        return;
+
+    Preferences *pref = Preferences::instance();
+
+    pref->setLastPath(Preferences::ExportedFile, QFileInfo(exportDetails.mFileName).path());
+    mSettings.setValue(QLatin1String("lastUsedExportFilter"), selectedFilter);
+
+    auto exportResult = exportDetails.mFormat->write(*tilesetDocument->tileset(), exportDetails.mFileName);
+    if (!exportResult) {
+        QMessageBox::critical(this, tr("Error Exporting Map!"),
+                              exportDetails.mFormat->errorString());
+    } else {
+        // Remember export parameters, so subsequent exports can be done faster
+        tilesetDocument->setLastExportFileName(exportDetails.mFileName);
+        tilesetDocument->setExportFormat(exportDetails.mFormat);
+    }
 }
 
 void MainWindow::documentChanged(Document *document)

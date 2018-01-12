@@ -43,7 +43,7 @@ class EditPolygonTool : public AbstractObjectTool
 
 public:
     explicit EditPolygonTool(QObject *parent = nullptr);
-    ~EditPolygonTool();
+    ~EditPolygonTool() override;
 
     void activate(MapScene *scene) override;
     void deactivate(MapScene *scene) override;
@@ -60,7 +60,7 @@ public:
     bool hasSelectedHandles() const { return !mSelectedHandles.isEmpty(); }
 
 signals:
-    void extend(MapObjectItem *mapObjectItem, bool extendingFirst);
+    void extend(MapObject *mapObject, bool extendingFirst);
 
 public slots:
     void deleteNodes();
@@ -81,6 +81,8 @@ private:
         Moving
     };
 
+    void updateHover(const QPointF &pos);
+
     void setSelectedHandles(const QSet<PointHandle*> &handles);
     void setSelectedHandle(PointHandle *handle)
     { setSelectedHandles(QSet<PointHandle*>() << handle); }
@@ -89,7 +91,7 @@ private:
 
     void startSelecting();
 
-    void startMoving();
+    void startMoving(const QPointF &pos, Qt::KeyboardModifiers modifiers);
     void updateMovingItems(const QPointF &pos,
                            Qt::KeyboardModifiers modifiers);
 
@@ -99,6 +101,7 @@ private:
 
     SelectionRectangle *mSelectionRectangle;
     bool mMousePressed;
+    PointHandle *mHoveredHandle;
     PointHandle *mClickedHandle;
     MapObjectItem *mClickedObjectItem;
     QVector<QPointF> mOldHandlePositions;
@@ -110,7 +113,7 @@ private:
     Qt::KeyboardModifiers mModifiers;
 
     /// The list of handles associated with each selected map object
-    QMap<MapObjectItem*, QList<PointHandle*> > mHandles;
+    QMap<MapObject*, QList<PointHandle*> > mHandles;
     QSet<PointHandle*> mSelectedHandles;
 };
 

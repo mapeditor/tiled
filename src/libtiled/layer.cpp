@@ -43,7 +43,7 @@ Layer::Layer(TypeFlag type, const QString &name, int x, int y) :
     mLayerType(type),
     mX(x),
     mY(y),
-    mOpacity(1.0f),
+    mOpacity(1.0),
     mVisible(true),
     mMap(nullptr),
     mParentLayer(nullptr),
@@ -55,7 +55,7 @@ Layer::Layer(TypeFlag type, const QString &name, int x, int y) :
  * Returns the effective opacity, which is the opacity multiplied by the
  * opacity of any parent layers.
  */
-float Layer::effectiveOpacity() const
+qreal Layer::effectiveOpacity() const
 {
     auto opacity = mOpacity;
     const Layer *layer = this;

@@ -128,8 +128,8 @@ public:
     inline unsigned terrain() const;
     void setTerrain(unsigned terrain);
 
-    float probability() const;
-    void setProbability(float probability);
+    qreal probability() const;
+    void setProbability(qreal probability);
 
     ObjectGroup *objectGroup() const;
     void setObjectGroup(ObjectGroup *objectGroup);
@@ -155,7 +155,7 @@ private:
     LoadingStatus mImageStatus;
     QString mType;
     unsigned mTerrain;
-    float mProbability;
+    qreal mProbability;
     ObjectGroup *mObjectGroup;
 
     QVector<Frame> mFrames;
@@ -283,7 +283,7 @@ inline unsigned Tile::terrain() const
 /**
  * Returns the relative probability of this tile appearing while painting.
  */
-inline float Tile::probability() const
+inline qreal Tile::probability() const
 {
     return mProbability;
 }
@@ -291,7 +291,7 @@ inline float Tile::probability() const
 /**
  * Set the relative probability of this tile appearing while painting.
  */
-inline void Tile::setProbability(float probability)
+inline void Tile::setProbability(qreal probability)
 {
     mProbability = probability;
 }

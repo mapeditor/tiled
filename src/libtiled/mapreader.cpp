@@ -40,7 +40,6 @@
 #include "mapobject.h"
 #include "templatemanager.h"
 #include "tile.h"
-#include "tidmapper.h"
 #include "tilelayer.h"
 #include "tilesetmanager.h"
 #include "terrain.h"
@@ -66,14 +65,14 @@ class MapReaderPrivate
     friend class Tiled::MapReader;
 
 public:
-    MapReaderPrivate(MapReader *mapReader):
+    explicit MapReaderPrivate(MapReader *mapReader):
         p(mapReader),
         mReadingExternalTileset(false)
     {}
 
     Map *readMap(QIODevice *device, const QString &path);
     SharedTileset readTileset(QIODevice *device, const QString &path);
-    TemplateGroup *readTemplateGroup(QIODevice *device, const QString &path);
+    ObjectTemplate *readObjectTemplate(QIODevice *device, const QString &path);
 
     bool openFile(QFile *file);
 
@@ -92,22 +91,23 @@ private:
     void readTilesetWangSets(Tileset &tileset);
     ImageReference readImage();
 
-    TemplateGroup *readTemplateGroup();
-    ObjectTemplate *readTemplate();
+    ObjectTemplate *readObjectTemplate();
 
     Layer *tryReadLayer();
 
     TileLayer *readTileLayer();
-    void readTileLayerData(TileLayer &tileLayer, const int startX, const int startY);
+    void readTileLayerData(TileLayer &tileLayer);
+    void readTileLayerRect(TileLayer &tileLayer,
+                           Map::LayerDataFormat layerDataFormat,
+                           QStringRef encoding,
+                           QRect bounds);
     void decodeBinaryLayerData(TileLayer &tileLayer,
                                const QByteArray &data,
                                Map::LayerDataFormat format,
-                               const int startX,
-                               const int startY);
+                               QRect bounds);
     void decodeCSVLayerData(TileLayer &tileLayer,
                             QStringRef text,
-                            const int startX,
-                            const int startY);
+                            QRect bounds);
 
     /**
      * Returns the cell for the given global tile ID. Errors are raised with
@@ -118,7 +118,6 @@ private:
      *         empty cell if not found
      */
     Cell cellForGid(unsigned gid);
-    TemplateRef templateRefForTid(unsigned tid);
 
     ImageLayer *readImageLayer();
     void readImageLayerImage(ImageLayer &imageLayer);
@@ -141,7 +140,6 @@ private:
     QDir mPath;
     QScopedPointer<Map> mMap;
     GidMapper mGidMapper;
-    TidMapper mTidMapper;
     bool mReadingExternalTileset;
 
     QXmlStreamReader xml;
@@ -186,20 +184,20 @@ SharedTileset MapReaderPrivate::readTileset(QIODevice *device, const QString &pa
     return tileset;
 }
 
-TemplateGroup *MapReaderPrivate::readTemplateGroup(QIODevice *device, const QString &path)
+ObjectTemplate *MapReaderPrivate::readObjectTemplate(QIODevice *device, const QString &path)
 {
     mError.clear();
     mPath = path;
-    TemplateGroup *templateGroup = nullptr;
+    ObjectTemplate *objectTemplate = nullptr;
 
     xml.setDevice(device);
 
-    if (xml.readNextStartElement() && xml.name() == QLatin1String("templategroup"))
-        templateGroup = readTemplateGroup();
+    if (xml.readNextStartElement() && xml.name() == QLatin1String("template"))
+        objectTemplate = readObjectTemplate();
     else
         xml.raiseError(tr("Not a template file."));
 
-    return templateGroup;
+    return objectTemplate;
 }
 
 QString MapReaderPrivate::errorString() const
@@ -294,8 +292,6 @@ Map *MapReaderPrivate::readMap()
             mMap->mergeProperties(readProperties());
         else if (xml.name() == QLatin1String("tileset"))
             mMap->addTileset(readTileset());
-        else if (xml.name() == QLatin1String("templategroup"))
-            mMap->addTemplateGroup(readTemplateGroup());
         else
             readUnknownElement();
     }
@@ -411,7 +407,7 @@ SharedTileset MapReaderPrivate::readTileset()
     }
 
     if (tileset && !mReadingExternalTileset)
-        mGidMapper.insert(firstGid, tileset.data());
+        mGidMapper.insert(firstGid, tileset);
 
     return tileset;
 }
@@ -447,7 +443,7 @@ void MapReaderPrivate::readTilesetTile(Tileset &tileset)
     // Read tile probability
     QStringRef probability = atts.value(QLatin1String("probability"));
     if (!probability.isEmpty())
-        tile->setProbability(probability.toFloat());
+        tile->setProbability(probability.toDouble());
 
     while (xml.readNextStartElement()) {
         if (xml.name() == QLatin1String("properties")) {
@@ -561,68 +557,19 @@ ImageReference MapReaderPrivate::readImage()
     return image;
 }
 
-TemplateGroup *MapReaderPrivate::readTemplateGroup()
-{
-    Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("templategroup"));
-
-    const QXmlStreamAttributes atts = xml.attributes();
-    const QString source = atts.value(QLatin1String("source")).toString();
-    const unsigned firstTid = atts.value(QLatin1String("firsttid")).toUInt();
-    const unsigned nextTemplateId = atts.value(QLatin1String("nexttemplateid")).toUInt();
-    const QString name = atts.value(QLatin1String("name")).toString();
-
-    TemplateGroup *templateGroup;
-
-    if (source.isEmpty()) {
-        templateGroup = new TemplateGroup(name);
-
-        templateGroup->setNextTemplateId(nextTemplateId);
-
-        while (xml.readNextStartElement()) {
-            if (xml.name() == QLatin1String("template"))
-                templateGroup->addTemplate(readTemplate());
-            else if (xml.name() == QLatin1String("tileset"))
-                templateGroup->addTileset(readTileset());
-            else
-                readUnknownElement();
-        }
-    } else {
-        const QString absoluteSource = p->resolveReference(source, mPath);
-
-        QString error;
-        templateGroup = p->loadTemplateGroup(absoluteSource, &error);
-
-        if (!templateGroup) { // Couldn't open the file
-            templateGroup = new TemplateGroup();
-            templateGroup->setFileName(absoluteSource);
-            templateGroup->setLoaded(false);
-        }
-
-        xml.skipCurrentElement();
-    }
-
-    if (templateGroup)
-        mTidMapper.insert(firstTid, templateGroup);
-
-    return templateGroup;
-}
-
-ObjectTemplate *MapReaderPrivate::readTemplate()
+ObjectTemplate *MapReaderPrivate::readObjectTemplate()
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("template"));
-    const QXmlStreamAttributes atts = xml.attributes();
 
-    const QString name = atts.value(QLatin1String("name")).toString();
-    const int id = atts.value(QLatin1String("id")).toInt();
-
-    ObjectTemplate *objectTemplate = new ObjectTemplate(id, name);
+    ObjectTemplate *objectTemplate = new ObjectTemplate;
 
     while (xml.readNextStartElement()) {
-        if (xml.name() == QLatin1String("object")) {
+        if (xml.name() == QLatin1String("object"))
             objectTemplate->setObject(readObject());
-        } else {
+        else if (xml.name() == QLatin1String("tileset"))
+            readTileset();
+        else
             readUnknownElement();
-        }
     }
 
     return objectTemplate;
@@ -716,7 +663,7 @@ void MapReaderPrivate::readTilesetWangSets(Tileset &tileset)
                     QString name = wangColorAtts.value(QLatin1String("name")).toString();
                     QColor color = wangColorAtts.value(QLatin1String("color")).toString();
                     int imageId = wangColorAtts.value(QLatin1String("tile")).toInt();
-                    float probability = wangColorAtts.value(QLatin1String("probability")).toFloat();
+                    qreal probability = wangColorAtts.value(QLatin1String("probability")).toDouble();
 
                     QSharedPointer<WangColor> wc(new WangColor(0,
                                                                xml.name() == QLatin1String("wangedgecolor"),
@@ -745,7 +692,7 @@ static void readLayerAttributes(Layer &layer,
     const QStringRef lockedRef = atts.value(QLatin1String("locked"));
 
     bool ok;
-    const float opacity = opacityRef.toFloat(&ok);
+    const qreal opacity = opacityRef.toDouble(&ok);
     if (ok)
         layer.setOpacity(opacity);
 
@@ -773,8 +720,6 @@ TileLayer *MapReaderPrivate::readTileLayer()
     const int y = atts.value(QLatin1String("y")).toInt();
     const int width = atts.value(QLatin1String("width")).toInt();
     const int height = atts.value(QLatin1String("height")).toInt();
-    const int startX = atts.value(QLatin1String("startx")).toInt();
-    const int startY = atts.value(QLatin1String("starty")).toInt();
 
     TileLayer *tileLayer = new TileLayer(name, x, y, width, height);
     readLayerAttributes(*tileLayer, atts);
@@ -783,7 +728,7 @@ TileLayer *MapReaderPrivate::readTileLayer()
         if (xml.name() == QLatin1String("properties"))
             tileLayer->mergeProperties(readProperties());
         else if (xml.name() == QLatin1String("data"))
-            readTileLayerData(*tileLayer, startX, startY);
+            readTileLayerData(*tileLayer);
         else
             readUnknownElement();
     }
@@ -791,9 +736,7 @@ TileLayer *MapReaderPrivate::readTileLayer()
     return tileLayer;
 }
 
-void MapReaderPrivate::readTileLayerData(TileLayer &tileLayer,
-                                         const int startX,
-                                         const int startY)
+void MapReaderPrivate::readTileLayerData(TileLayer &tileLayer)
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("data"));
 
@@ -825,26 +768,52 @@ void MapReaderPrivate::readTileLayerData(TileLayer &tileLayer,
 
     mMap->setLayerDataFormat(layerDataFormat);
 
-    int x = 0;
-    int y = 0;
+    if (mMap->infinite()) {
+        while (xml.readNext() != QXmlStreamReader::Invalid) {
+            if (xml.isEndElement()) {
+                break;
+            } else if (xml.isStartElement()) {
+                if (xml.name() == QLatin1String("chunk")) {
+                    const QXmlStreamAttributes atts = xml.attributes();
+                    int x = atts.value(QLatin1String("x")).toInt();
+                    int y = atts.value(QLatin1String("y")).toInt();
+                    int width = atts.value(QLatin1String("width")).toInt();
+                    int height = atts.value(QLatin1String("height")).toInt();
+
+                    readTileLayerRect(tileLayer, layerDataFormat, encoding, QRect(x, y, width, height));
+                }
+            }
+        }
+    } else {
+        readTileLayerRect(tileLayer, layerDataFormat, encoding, QRect(0, 0, tileLayer.width(), tileLayer.height()));
+    }
+}
+
+void MapReaderPrivate::readTileLayerRect(TileLayer &tileLayer,
+                                         Map::LayerDataFormat layerDataFormat,
+                                         QStringRef encoding,
+                                         QRect bounds)
+{
+    int x = bounds.x();
+    int y = bounds.y();
 
     while (xml.readNext() != QXmlStreamReader::Invalid) {
         if (xml.isEndElement()) {
             break;
         } else if (xml.isStartElement()) {
             if (xml.name() == QLatin1String("tile")) {
-                if (y >= tileLayer.height()) {
+                if (y >= bounds.bottom() + 1) {
                     xml.raiseError(tr("Too many <tile> elements"));
                     continue;
                 }
 
                 const QXmlStreamAttributes atts = xml.attributes();
                 unsigned gid = atts.value(QLatin1String("gid")).toUInt();
-                tileLayer.setCell(x + startX, y + startY, cellForGid(gid));
+                tileLayer.setCell(x, y, cellForGid(gid));
 
                 x++;
-                if (x >= tileLayer.width()) {
-                    x = 0;
+                if (x >= bounds.right() + 1) {
+                    x = bounds.x();
                     y++;
                 }
 
@@ -857,10 +826,9 @@ void MapReaderPrivate::readTileLayerData(TileLayer &tileLayer,
                 decodeBinaryLayerData(tileLayer,
                                       xml.text().toLatin1(),
                                       layerDataFormat,
-                                      startX,
-                                      startY);
+                                      bounds);
             } else if (encoding == QLatin1String("csv")) {
-                decodeCSVLayerData(tileLayer, xml.text(), startX, startY);
+                decodeCSVLayerData(tileLayer, xml.text(), bounds);
             }
         }
     }
@@ -869,10 +837,11 @@ void MapReaderPrivate::readTileLayerData(TileLayer &tileLayer,
 void MapReaderPrivate::decodeBinaryLayerData(TileLayer &tileLayer,
                                              const QByteArray &data,
                                              Map::LayerDataFormat format,
-                                             const int startX,
-                                             const int startY)
+                                             QRect bounds)
 {
-    GidMapper::DecodeError error = mGidMapper.decodeLayerData(tileLayer, data, format, startX, startY);
+    GidMapper::DecodeError error;
+
+    error = mGidMapper.decodeLayerData(tileLayer, data, format, bounds);
 
     switch (error) {
     case GidMapper::CorruptLayerData:
@@ -891,30 +860,34 @@ void MapReaderPrivate::decodeBinaryLayerData(TileLayer &tileLayer,
 
 void MapReaderPrivate::decodeCSVLayerData(TileLayer &tileLayer,
                                           QStringRef text,
-                                          const int startX,
-                                          const int startY)
+                                          QRect bounds)
 {
     QString trimText = text.trimmed().toString();
     QStringList tiles = trimText.split(QLatin1Char(','));
 
-    if (tiles.length() != tileLayer.width() * tileLayer.height()) {
+    int lengthCheck = bounds.width() * bounds.height();
+
+    if (tiles.length() != lengthCheck) {
         xml.raiseError(tr("Corrupt layer data for layer '%1'")
                        .arg(tileLayer.name()));
         return;
     }
 
-    for (int y = 0; y < tileLayer.height(); y++) {
-        for (int x = 0; x < tileLayer.width(); x++) {
+    int currentTile = 0;
+
+    for (int y = bounds.top(); y <= bounds.bottom(); y++) {
+        for (int x = bounds.left(); x <= bounds.right(); x++) {
             bool conversionOk;
-            const unsigned gid = tiles.at(y * tileLayer.width() + x)
-                    .toUInt(&conversionOk);
+            const unsigned gid = tiles.at(currentTile++).toUInt(&conversionOk);
+
             if (!conversionOk) {
                 xml.raiseError(
                         tr("Unable to parse tile at (%1,%2) on layer '%3'")
                                .arg(x + 1).arg(y + 1).arg(tileLayer.name()));
                 return;
             }
-            tileLayer.setCell(x + startX, y + startY, cellForGid(gid));
+
+            tileLayer.setCell(x, y, cellForGid(gid));
         }
     }
 }
@@ -929,21 +902,6 @@ Cell MapReaderPrivate::cellForGid(unsigned gid)
             xml.raiseError(tr("Tile used but no tilesets specified"));
         else
             xml.raiseError(tr("Invalid tile: %1").arg(gid));
-    }
-
-    return result;
-}
-
-TemplateRef MapReaderPrivate::templateRefForTid(unsigned tid)
-{
-    bool ok;
-    TemplateRef result = mTidMapper.tidToTemplateRef(tid, ok);
-
-    if (!ok) {
-        if (mTidMapper.isEmpty())
-            xml.raiseError(tr("Template used but no template groups specified"));
-        else
-            xml.raiseError(tr("Invalid template: %1").arg(tid));
     }
 
     return result;
@@ -1046,7 +1004,7 @@ MapObject *MapReaderPrivate::readObject()
     const int id = atts.value(QLatin1String("id")).toInt();
     const QString name = atts.value(QLatin1String("name")).toString();
     const unsigned gid = atts.value(QLatin1String("gid")).toUInt();
-    const unsigned tid = atts.value(QLatin1String("tid")).toUInt();
+    const QString templateFileName = atts.value(QLatin1String("template")).toString();
     const qreal x = atts.value(QLatin1String("x")).toDouble();
     const qreal y = atts.value(QLatin1String("y")).toDouble();
     const qreal width = atts.value(QLatin1String("width")).toDouble();
@@ -1059,8 +1017,11 @@ MapObject *MapReaderPrivate::readObject()
 
     MapObject *object = new MapObject(name, type, pos, size);
 
-    if (tid) // This object is a template instance
-        object->setTemplateRef(templateRefForTid(tid));
+    if (!templateFileName.isEmpty()) { // This object is a template instance
+        const QString absoluteFileName = p->resolveReference(templateFileName, mPath);
+        auto objectTemplate = TemplateManager::instance()->loadObjectTemplate(absoluteFileName);
+        object->setObjectTemplate(objectTemplate);
+    }
 
     object->setId(id);
 
@@ -1105,6 +1066,10 @@ MapObject *MapReaderPrivate::readObject()
             object->setTextData(readObjectText());
             object->setShape(MapObject::Text);
             object->setPropertyChanged(MapObject::TextProperty);
+        } else if (xml.name() == QLatin1String("point")) {
+            xml.skipCurrentElement();
+            object->setShape(MapObject::Point);
+            object->setPropertyChanged(MapObject::ShapeProperty);
         } else {
             readUnknownElement();
         }
@@ -1184,7 +1149,7 @@ TextData MapReaderPrivate::readObjectText()
     if (!colorString.isEmpty())
         textData.color = QColor(colorString.toString());
 
-    Qt::Alignment alignment = 0;
+    Qt::Alignment alignment;
 
     QStringRef hAlignString = atts.value(QLatin1String("halign"));
     if (hAlignString == QLatin1String("center"))
@@ -1350,25 +1315,23 @@ SharedTileset MapReader::readTileset(const QString &fileName)
     return tileset;
 }
 
-TemplateGroup *MapReader::readTemplateGroup(QIODevice *device, const QString &path)
+ObjectTemplate *MapReader::readObjectTemplate(QIODevice *device, const QString &path)
 {
-    TemplateGroup *templateGroup = d->readTemplateGroup(device, path);
-
-    return templateGroup;
+    return d->readObjectTemplate(device, path);
 }
 
-TemplateGroup *MapReader::readTemplateGroup(const QString &fileName)
+ObjectTemplate *MapReader::readObjectTemplate(const QString &fileName)
 {
     QFile file(fileName);
     if (!d->openFile(&file))
         return nullptr;
 
-    TemplateGroup *templateGroup = readTemplateGroup(&file, QFileInfo(fileName).absolutePath());
+    ObjectTemplate *objectTemplate = readObjectTemplate(&file, QFileInfo(fileName).absolutePath());
 
-    if (templateGroup)
-        templateGroup->setFileName(fileName);
+    if (objectTemplate)
+        objectTemplate->setFileName(fileName);
 
-    return templateGroup;
+    return objectTemplate;
 }
 
 QString MapReader::errorString() const
@@ -1388,10 +1351,4 @@ SharedTileset MapReader::readExternalTileset(const QString &source,
                                              QString *error)
 {
     return TilesetManager::instance()->loadTileset(source, error);
-}
-
-TemplateGroup *MapReader::loadTemplateGroup(const QString &source,
-                                            QString *error)
-{
-    return TemplateManager::instance()->loadTemplateGroup(source, error);
 }

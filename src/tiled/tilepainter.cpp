@@ -44,9 +44,18 @@ public:
 
     ~TileLayerChangeWatcher()
     {
-        if (mTileLayer->map() == mMapDocument->map())
-            if (mTileLayer->drawMargins() != mDrawMargins || mTileLayer->bounds() != mBounds)
-                emit mMapDocument->tileLayerDrawMarginsChanged(mTileLayer);
+        if (mTileLayer->map() != mMapDocument->map())
+            return;
+
+        MapDocument::TileLayerChangeFlags flags;
+
+        if (mTileLayer->drawMargins() != mDrawMargins)
+            flags |= MapDocument::LayerDrawMarginsChanged;
+        if (mTileLayer->bounds() != mBounds)
+            flags |= MapDocument::LayerBoundsChanged;
+
+        if (flags)
+            emit mMapDocument->tileLayerChanged(mTileLayer, flags);
     }
 
 private:

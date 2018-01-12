@@ -5,29 +5,46 @@ import qbs.TextFile
 QtGuiApplication {
     name: "tiled"
     targetName: name
+    version: project.version
 
     Depends { name: "libtiled" }
     Depends { name: "translations" }
     Depends { name: "qtpropertybrowser" }
     Depends { name: "qtsingleapplication" }
-    Depends { name: "Qt"; submodules: ["core", "widgets"]; versionAtLeast: "5.4" }
+    Depends { name: "ib"; condition: qbs.targetOS.contains("macos") }
+    Depends { name: "Qt"; submodules: ["core", "widgets"]; versionAtLeast: "5.6" }
 
     property bool qtcRunnable: true
+    property bool macSparkleEnabled: qbs.targetOS.contains("macos") && project.sparkleEnabled
+    property bool winSparkleEnabled: qbs.targetOS.contains("windows") && project.sparkleEnabled
 
     property string sparkleDir: {
-        if (qbs.architecture === "x86_64")
-            return "winsparkle/x64"
-        else
-            return "winsparkle/x86"
+        if (qbs.targetOS.contains("windows")) {
+            if (qbs.architecture === "x86_64")
+                return "winsparkle/x64"
+            else
+                return "winsparkle/x86"
+        } else if (qbs.targetOS.contains("macos")) {
+            return "/Library/Frameworks/Sparkle.framework"
+        }
     }
 
     cpp.includePaths: ["."]
+    cpp.frameworks: {
+        var frameworks = [];
+        if (qbs.targetOS.contains("macos")) {
+            frameworks.push("Foundation");
+            if (project.sparkleEnabled)
+                frameworks.push("Sparkle", "AppKit");
+        }
+        return frameworks;
+    }
     cpp.useRPaths: project.useRPaths
     cpp.rpaths: {
         if (qbs.targetOS.contains("darwin"))
             return ["@loader_path/../Frameworks"];
         else if (project.linuxArchive)
-            return ["$ORIGIN/lib"]
+            return ["$ORIGIN/lib"];
         else
             return ["$ORIGIN/../lib"];
     }
@@ -36,10 +53,11 @@ QtGuiApplication {
 
     cpp.defines: {
         var defs = [
-            "TILED_VERSION=" + project.version,
+            "TILED_VERSION=" + version,
             "QT_NO_CAST_FROM_ASCII",
             "QT_NO_CAST_TO_ASCII",
-            "QT_NO_URL_CAST_FROM_STRING"
+            "QT_NO_URL_CAST_FROM_STRING",
+            "_USE_MATH_DEFINES"
         ];
         if (project.snapshot)
             defs.push("TILED_SNAPSHOT");
@@ -62,6 +80,8 @@ QtGuiApplication {
         "aboutdialog.ui",
         "abstractobjecttool.cpp",
         "abstractobjecttool.h",
+        "abstracttilefilltool.cpp",
+        "abstracttilefilltool.h",
         "abstracttileselectiontool.cpp",
         "abstracttileselectiontool.h",
         "abstracttiletool.cpp",
@@ -103,6 +123,8 @@ QtGuiApplication {
         "brushitem.h",
         "bucketfilltool.cpp",
         "bucketfilltool.h",
+        "capturestamphelper.cpp",
+        "capturestamphelper.h",
         "changeimagelayerposition.cpp",
         "changeimagelayerposition.h",
         "changeimagelayerproperties.cpp",
@@ -167,6 +189,8 @@ QtGuiApplication {
         "createmultipointobjecttool.h",
         "createobjecttool.cpp",
         "createobjecttool.h",
+        "createpointobjecttool.cpp",
+        "createpointobjecttool.h",
         "createpolygonobjecttool.cpp",
         "createpolygonobjecttool.h",
         "createpolylineobjecttool.cpp",
@@ -243,6 +267,8 @@ QtGuiApplication {
         "mapdocument.h",
         "mapeditor.cpp",
         "mapeditor.h",
+        "mapitem.cpp",
+        "mapitem.h",
         "mapobjectitem.cpp",
         "mapobjectitem.h",
         "mapobjectmodel.cpp",
@@ -265,12 +291,11 @@ QtGuiApplication {
         "movemapobject.h",
         "movemapobjecttogroup.cpp",
         "movemapobjecttogroup.h",
+        "moveterrain.cpp",
+        "moveterrain.h",
         "newmapdialog.cpp",
         "newmapdialog.h",
         "newmapdialog.ui",
-        "newtemplatedialog.cpp",
-        "newtemplatedialog.h",
-        "newtemplatedialog.ui",
         "newtilesetdialog.cpp",
         "newtilesetdialog.h",
         "newtilesetdialog.ui",
@@ -287,8 +312,6 @@ QtGuiApplication {
         "objectselectiontool.h",
         "objecttemplatemodel.cpp",
         "objecttemplatemodel.h",
-        "objecttypes.cpp",
-        "objecttypes.h",
         "objecttypeseditor.cpp",
         "objecttypeseditor.h",
         "objecttypeseditor.ui",
@@ -350,6 +373,8 @@ QtGuiApplication {
         "selectionrectangle.h",
         "selectsametiletool.cpp",
         "selectsametiletool.h",
+        "shapefilltool.cpp",
+        "shapefilltool.h",
         "snaphelper.cpp",
         "snaphelper.h",
         "stampactions.cpp",
@@ -362,8 +387,6 @@ QtGuiApplication {
         "stylehelper.h",
         "swaptiles.cpp",
         "swaptiles.h",
-        "templategroupdocument.cpp",
-        "templategroupdocument.h",
         "templatesdock.cpp",
         "templatesdock.h",
         "terrainbrush.cpp",
@@ -379,8 +402,6 @@ QtGuiApplication {
         "texteditordialog.ui",
         "textpropertyedit.cpp",
         "textpropertyedit.h",
-        "thumbnailrenderer.cpp",
-        "thumbnailrenderer.h",
         "tileanimationeditor.cpp",
         "tileanimationeditor.h",
         "tileanimationeditor.ui",
@@ -466,9 +487,9 @@ QtGuiApplication {
 
     Properties {
         condition: qbs.targetOS.contains("macos")
-        cpp.frameworks: "Foundation"
         cpp.cxxFlags: ["-Wno-unknown-pragmas"]
-        bundle.infoPlistFile: "Info.plist"
+        bundle.identifierPrefix: "org.mapeditor"
+        ib.appIconName: "tiled-icon-mac"
         targetName: "Tiled"
     }
     Group {
@@ -482,28 +503,54 @@ QtGuiApplication {
     }
 
     Group {
+        condition: !qbs.targetOS.contains("darwin")
         qbs.install: true
         qbs.installDir: {
             if (qbs.targetOS.contains("windows")
-                    || qbs.targetOS.contains("macos")
                     || project.linuxArchive)
                 return ""
             else
                 return "bin"
         }
         qbs.installSourceBase: product.buildDirectory
-        fileTagsFilter: product.type.concat(["aggregate_infoplist", "pkginfo"])
+        fileTagsFilter: product.type
     }
 
     Properties {
-        condition: project.sparkleEnabled
+        condition: macSparkleEnabled
+        cpp.systemFrameworkPaths: outer.concat("/Library/Frameworks")
+    }
+    Group {
+        condition: macSparkleEnabled
+        name: "SparkleAutoUpdater"
+        files: ["sparkleautoupdater.mm"]
+    }
+    Group {
+        name: "Public DSA Key File"
+        files: ["../../dist/dsa_pub.pem"]
+        qbs.install: true
+        qbs.installDir: "Tiled.app/Contents/Resources"
+    }
+    Group {
+        condition: macSparkleEnabled
+        name: "Sparkle framework"
+        prefix: sparkleDir + "/"
+        files: "**"
+        fileTags: []    // files should only be copied
+        qbs.install: true
+        qbs.installDir: "Tiled.app/Contents/Frameworks/Sparkle.framework"
+        qbs.installSourceBase: prefix
+    }
+
+    Properties {
+        condition: winSparkleEnabled
         cpp.includePaths: [".", "winsparkle/include"]
         cpp.libraryPaths: [sparkleDir]
         cpp.dynamicLibraries: ["WinSparkle"]
     }
     Group {
         name: "WinSparkle"
-        condition: qbs.targetOS.contains("windows") && project.sparkleEnabled
+        condition: winSparkleEnabled
         files: [
             "winsparkleautoupdater.cpp",
             "winsparkleautoupdater.h",
@@ -511,7 +558,7 @@ QtGuiApplication {
     }
     Group {
         name: "WinSparkle DLL"
-        condition: qbs.targetOS.contains("windows") && project.sparkleEnabled
+        condition: winSparkleEnabled
         qbs.install: true
         qbs.installDir: ""
         files: [
@@ -522,9 +569,7 @@ QtGuiApplication {
     Group {
         name: "macOS (icons)"
         condition: qbs.targetOS.contains("macos")
-        qbs.install: true
-        qbs.installDir: "Tiled.app/Contents/Resources"
-        files: ["images/*.icns"]
+        files: ["images/tiled.xcassets"]
     }
 
     Group {
@@ -533,6 +578,14 @@ QtGuiApplication {
         qbs.install: true
         qbs.installDir: "share/applications"
         files: [ "../../tiled.desktop" ]
+    }
+
+    Group {
+        name: "AppData file (Linux)"
+        condition: qbs.targetOS.contains("linux")
+        qbs.install: true
+        qbs.installDir: "share/metainfo"
+        files: [ "../../tiled.appdata.xml" ]
     }
 
     Group {
@@ -605,6 +658,14 @@ QtGuiApplication {
         qbs.install: true
         qbs.installDir: "share/icons/hicolor/scalable/mimetypes"
         files: [ "images/scalable/application-x-tiled.svg" ]
+    }
+
+    // This is necessary to install the app bundle (OS X)
+    Group {
+        fileTagsFilter: ["bundle.content"]
+        qbs.install: true
+        qbs.installDir: "."
+        qbs.installSourceBase: product.buildDirectory
     }
 
     // Generate the tiled.rc file in order to dynamically specify the version

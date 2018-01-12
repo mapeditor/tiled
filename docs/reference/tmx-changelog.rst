@@ -4,6 +4,25 @@ TMX Changelog
 Below are described the changes/additions that were made to the
 :doc:`tmx-map-format` for recent versions of Tiled.
 
+Tiled 1.1
+---------
+
+-  A new :ref:`tmx-chunk` element was added for infinite maps which
+   contains the similar content as :ref:`tmx-data`, except it stores
+   the data of the area specified by its ``x``, ``y``, ``width`` and
+   ``height`` attributes.
+
+-  :doc:`Templates </manual/using-templates>` were added, a
+   template is an :ref:`external file <tmx-template-files>` referenced
+   by template instance objects:
+
+   .. code:: xml
+
+      <object id="3" template="diamond.tx" x="200" y="100"/>
+
+-  Tilesets can now contain :doc:`Wang tiles </manual/using-wang-tiles>`.
+   They are saved in the new :ref:`tmx-wangsets` element.
+
 Tiled 1.0
 ---------
 

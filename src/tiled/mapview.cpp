@@ -31,8 +31,8 @@
 #include <QGesture>
 #include <QGestureEvent>
 #include <QPinchGesture>
-#include <QWheelEvent>
 #include <QScrollBar>
+#include <QWheelEvent>
 
 #ifndef QT_NO_OPENGL
 #include <QOpenGLWidget>
@@ -79,12 +79,19 @@ MapView::MapView(QWidget *parent, Mode mode)
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
-    connect(mZoomable, SIGNAL(scaleChanged(qreal)), SLOT(adjustScale(qreal)));
+    connect(mZoomable, &Zoomable::scaleChanged, this, &MapView::adjustScale);
 }
 
 MapView::~MapView()
 {
     setHandScrolling(false); // Just in case we didn't get a hide event
+}
+
+void MapView::setScene(MapScene *scene)
+{
+    QGraphicsView::setScene(scene);
+    if (scene)
+        updateSceneRect(scene->sceneRect());
 }
 
 MapScene *MapView::mapScene() const
@@ -94,7 +101,20 @@ MapScene *MapView::mapScene() const
 
 void MapView::adjustScale(qreal scale)
 {
-    setTransform(QTransform::fromScale(scale, scale));
+    const QTransform newTransform = QTransform::fromScale(scale, scale);
+
+    bool sceneRectUpdated = false;
+    if (scale < transform().m11()) {
+        // When zooming out, we first need to expand the scene rect
+        updateSceneRect(scene()->sceneRect(), newTransform);
+        sceneRectUpdated = true;
+    }
+
+    setTransform(newTransform);
+
+    if (!sceneRectUpdated)
+        updateSceneRect(scene()->sceneRect());
+
     setRenderHint(QPainter::SmoothPixmapTransform,
                   mZoomable->smoothTransform());
 }
@@ -124,6 +144,26 @@ void MapView::setUseOpenGL(bool useOpenGL)
 #else
     Q_UNUSED(useOpenGL)
 #endif
+}
+
+void MapView::updateSceneRect(const QRectF &sceneRect)
+{
+    updateSceneRect(sceneRect, transform());
+}
+
+void MapView::updateSceneRect(const QRectF &sceneRect, const QTransform &transform)
+{
+    // Calculate a scene rect that includes a margin on the edge of the map,
+    // taking into account the scale
+    const QSize maxSize = maximumViewportSize();
+    const qreal marginWidth = maxSize.width() * 0.9;
+    const qreal marginHeight = maxSize.height() * 0.9;
+
+    QRectF viewRect = transform.mapRect(sceneRect);
+    viewRect.adjust(-marginWidth, -marginHeight, marginWidth, marginHeight);
+    const QRectF expandedSceneRect = transform.inverted().mapRect(viewRect);
+
+    setSceneRect(expandedSceneRect);
 }
 
 void MapView::setHandScrolling(bool handScrolling)
@@ -171,7 +211,7 @@ void MapView::forceCenterOn(const QPointF &pos)
             horizontal += hBar->minimum();
             horizontal += hBar->maximum();
             horizontal -= int(viewPoint.x() - width / 2.0);
-            hBar->forceSetValue(horizontal);
+            hBar->forceSetValue(static_cast<int>(horizontal));
         } else {
             hBar->forceSetValue(int(viewPoint.x() - width / 2.0));
         }
@@ -215,6 +255,14 @@ void MapView::hideEvent(QHideEvent *event)
     QGraphicsView::hideEvent(event);
 }
 
+void MapView::resizeEvent(QResizeEvent *event)
+{
+    if (QGraphicsScene *s = scene())
+        updateSceneRect(s->sceneRect());
+
+    QGraphicsView::resizeEvent(event);
+}
+
 void MapView::keyPressEvent(QKeyEvent *event)
 {
     if (Utils::isZoomInShortcut(event)) {
@@ -240,19 +288,14 @@ void MapView::wheelEvent(QWheelEvent *event)
     auto *hBar = static_cast<FlexibleScrollBar*>(horizontalScrollBar());
     auto *vBar = static_cast<FlexibleScrollBar*>(verticalScrollBar());
 
-    if (event->modifiers() & Qt::ControlModifier
-        && event->orientation() == Qt::Vertical)
-    {
+    bool wheelZoomsByDefault = Preferences::instance()->wheelZoomsByDefault();
+    bool control = event->modifiers() & Qt::ControlModifier;
+
+    if ((wheelZoomsByDefault != control) && event->orientation() == Qt::Vertical) {
         // No automatic anchoring since we'll do it manually
         setTransformationAnchor(QGraphicsView::NoAnchor);
 
-        // This works around problems with automatic alignment of scenes that
-        // are smaller than the view, which seems to be impossible to disable.
-        hBar->allowNextRangeChange();
-        vBar->allowNextRangeChange();
-
         mZoomable->handleWheelDelta(event->delta());
-
         adjustCenterFromMousePosition(mLastMousePos);
 
         // Restore the centering anchor
@@ -266,7 +309,6 @@ void MapView::wheelEvent(QWheelEvent *event)
     //
     // This also disables QGraphicsSceneWheelEvent, but Tiled does not rely
     // on that event.
-
     QPoint pixels = event->pixelDelta();
 
     if (pixels.isNull()) {

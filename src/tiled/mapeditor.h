@@ -39,6 +39,7 @@ class QToolButton;
 namespace Tiled {
 
 class MapObject;
+class ObjectTemplate;
 class Terrain;
 
 namespace Internal {
@@ -50,7 +51,6 @@ class EditPolygonTool;
 class LayerDock;
 class MapDocument;
 class MapDocumentActionHandler;
-class MapObjectItem;
 class MapsDock;
 class MapView;
 class MiniMapDock;
@@ -58,6 +58,7 @@ class ObjectsDock;
 class TemplatesDock;
 class PropertiesDock;
 class ReversingProxyModel;
+class ShapeFillTool;
 class StampBrush;
 class TerrainBrush;
 class TerrainDock;
@@ -66,7 +67,7 @@ class TileStamp;
 class TileStampManager;
 class ToolManager;
 class TreeViewComboBox;
-class UncheckableItemsModel;
+class ComboBoxProxyModel;
 class UndoDock;
 class WangBrush;
 class WangDock;
@@ -78,7 +79,7 @@ class MapEditor : public Editor
 
 public:
     explicit MapEditor(QObject *parent = nullptr);
-    ~MapEditor();
+    ~MapEditor() override;
 
     void saveState() override;
     void restoreState() override;
@@ -96,6 +97,8 @@ public:
 
     StandardActions enabledStandardActions() const override;
     void performStandardAction(StandardAction action) override;
+
+    void resetLayout() override;
 
     MapView *viewForDocument(MapDocument *mapDocument) const;
     MapView *currentMapView() const;
@@ -126,9 +129,9 @@ public slots:
     void addExternalTilesets(const QStringList &fileNames);
     void filesDroppedOnTilesetDock(const QStringList &fileNames);
 
-    void updateTemplateInstances(const MapObject *mapObject);
+    void updateTemplateInstances(const ObjectTemplate *objectTemplate);
 
-    void extend(MapObjectItem *mapObjectItem, bool extendingFirst);
+    void extend(MapObject *mapObject, bool extendingFirst);
     void extendingFinished();
 
 private slots:
@@ -169,7 +172,7 @@ private:
     QDockWidget *mTileStampsDock;
 
     TreeViewComboBox *mLayerComboBox;
-    UncheckableItemsModel *mUncheckableProxyModel;
+    ComboBoxProxyModel *mComboBoxProxyModel;
     ReversingProxyModel *mReversingProxyModel;
 
     Zoomable *mZoomable;
@@ -178,6 +181,7 @@ private:
 
     StampBrush *mStampBrush;
     BucketFillTool *mBucketFillTool;
+    ShapeFillTool *mShapeFillTool;
     TerrainBrush *mTerrainBrush;
     WangBrush *mWangBrush;
     EditPolygonTool *mEditPolygonTool;

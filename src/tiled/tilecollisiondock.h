@@ -49,17 +49,18 @@ class TileCollisionDock : public QDockWidget
 
 public:
     explicit TileCollisionDock(QWidget *parent = nullptr);
-    ~TileCollisionDock();
+    ~TileCollisionDock() override;
 
     void setTilesetDocument(TilesetDocument *tilesetDocument);
 
     MapDocument *dummyMapDocument() const;
 
-    bool canCopy() const;
+    bool hasSelectedObjects() const;
 
 signals:
     void dummyMapDocumentChanged(MapDocument *mapDocument);
-    void canCopyChanged();
+    void hasSelectedObjectsChanged();
+    void statusInfoChanged(const QString &info);
 
 public slots:
     void setTile(Tile *tile);
@@ -80,7 +81,7 @@ private slots:
     void tileObjectGroupChanged(Tile*);
 
     void selectedObjectsChanged();
-    void setCanCopy(bool canCopy);
+    void setHasSelectedObjects(bool hasSelectedObjects);
 
 private:
     void retranslateUi();
@@ -93,7 +94,7 @@ private:
     ToolManager *mToolManager;
     bool mApplyingChanges;
     bool mSynchronizing;
-    bool mCanCopy;
+    bool mHasSelectedObjects;
 };
 
 inline MapDocument *TileCollisionDock::dummyMapDocument() const
@@ -101,9 +102,9 @@ inline MapDocument *TileCollisionDock::dummyMapDocument() const
     return mDummyMapDocument;
 }
 
-inline bool TileCollisionDock::canCopy() const
+inline bool TileCollisionDock::hasSelectedObjects() const
 {
-    return mCanCopy;
+    return mHasSelectedObjects;
 }
 
 } // namespace Internal

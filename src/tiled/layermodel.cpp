@@ -447,7 +447,7 @@ void LayerModel::setLayerLocked(Layer *layer, bool locked)
 /**
  * Sets the opacity of the layer at the given index.
  */
-void LayerModel::setLayerOpacity(Layer *layer, float opacity)
+void LayerModel::setLayerOpacity(Layer *layer, qreal opacity)
 {
     if (layer->opacity() == opacity)
         return;

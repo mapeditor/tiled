@@ -41,8 +41,7 @@ POSSIBILITY OF SUCH DAMAGE.
 <xs:schema version="1.0"
            targetNamespace="http://www.mapeditor.org"
            xmlns="http://www.mapeditor.org"
-           xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           elementFormDefault="qualified">
+           xmlns:xs="http://www.w3.org/2001/XMLSchema">
     <xs:annotation>
         <xs:documentation source="http://doc.mapeditor.org/reference/tmx-map-format/">
             The TMX (Tile Map XML) map format used by

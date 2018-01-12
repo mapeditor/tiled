@@ -8,9 +8,15 @@ There is also an `Image Layer <#image-layers>`__ for including simple
 foreground or background graphics. The order of the layers determines
 the rendering order of your content.
 
-Layers can be hidden or made only partially visible. Layers also have an
-offset, which can be used to position them independently of each other,
-for example to fake depth.
+Layers can be hidden, made only partially visible and can be locked.
+Layers also have an offset, which can be used to position them
+independently of each other, for example to fake depth.
+
+.. figure:: images/layers/lock-visibility-toggle.png
+   :alt: Layers View
+
+   The eye and lock icon toggle the visibility and locked state of a
+   layer respectively.
 
 You use `Group Layers <#group-layers>`__ to organize the layers into a
 hierarchy. This makes it more comfortable to work with a large amount of
@@ -50,6 +56,7 @@ properties. There are many kinds of objects:
 
 -  **Rectangle** - for marking custom rectangular areas
 -  **Ellipse** - for marking custom ellipse or circular areas
+-  **Point** - for marking exact locations
 -  **Polygon** - for when a rectangle or ellipse doesn't cut it (often a
    collision area)
 -  **Polyline** - can be a path to follow or a wall to collide with
@@ -74,7 +81,7 @@ If you're using a different coordinate space for objects in your
 isometric game, you'll need to convert these coordinates accordingly.
 
 The object width and height is also mostly stored in pixels. For
-isometric maps, all shape objects (rectangle, ellipse, polygon and
+isometric maps, all shape objects (rectangle, point, ellipse, polygon and
 polyline) are projected into the same coordinate space described above.
 This is based on the assumption that these objects are generally used to
 mark areas on the map.
@@ -84,23 +91,17 @@ Image Layers
 
 Image layers provide a way to quickly include a single image as
 foreground or background of your map. They are currently not so useful,
-because if you instead add the image as a Tileset and place it as a Tile
-Object, you gain the ability to freely scale and rotate the image.
+because if you instead add the image as a Tileset and place it as a :ref:`Tile Object <insert-tile-tool>`,
+you gain the ability to freely scale and rotate the image.
 
 The only advantage of using an image layer is that it avoids selecting /
-dragging the image while using the Select Objects tool, which is mainly
-due to the lack of layer locking
-(`#734 <https://github.com/bjorn/tiled/issues/734>`__).
+dragging the image while using the Select Objects tool. However, since Tiled
+1.1 this can also be achieved by locking the object layer containing the tile
+object you'd like to avoid interacting with.
 
 .. raw:: html
 
-   <div class="new">
-
-New in Tiled 1.0
-
-.. raw:: html
-
-   </div>
+   <div class="new new-prev">New in Tiled 1.0</div>
 
 Group Layers
 ------------
@@ -109,38 +110,26 @@ Group layers work like folders and can be used for organizing the layers
 into a hierarchy. This is mainly useful when your map contains a large
 amount of layers.
 
-The visibility, opacity and offset of a group layer affects all child
+The visibility, opacity, offset and lock of a group layer affects all child
 layers.
 
 Layers can be easily dragged in and out of groups with the mouse. The
 Raise Layer / Lower Layer actions also allow moving layers in and out of
 groups.
 
-.. raw:: html
+.. topic:: Future Extensions
+   :class: future
 
-   <div class="future">
+   There are many ways in which the layers can be made more powerful:
 
-Future Extensions
------------------
+   -  Ability to lock individual objects
+      (`#828 <https://github.com/bjorn/tiled/issues/828>`__).
+   -  Moving certain map-global properties to the Tile Layer
+      (`#149 <https://github.com/bjorn/tiled/issues/149>`__). It would be
+      useful if one map could accommodate layers of different tile sizes
+      and maybe even of different orientation.
 
-There are many ways in which the layers can be made more powerful:
-
--  Ability to lock layers
-   (`#734 <https://github.com/bjorn/tiled/issues/734>`__) or even
-   individual objects
-   (`#828 <https://github.com/bjorn/tiled/issues/828>`__).
--  Moving certain map-global properties to the Tile Layer
-   (`#149 <https://github.com/bjorn/tiled/issues/149>`__). It would be
-   useful if one map could accommodate layers of different tile sizes
-   and maybe even of different orientation.
--  "Infinite" tile layers that grow automatically
-   (`#260 <https://github.com/bjorn/tiled/issues/260>`__).
-
-If you like any of these plans, please help me getting around to it
-faster by `becoming a patron <https://www.patreon.com/bjorn>`__. The
-more support I receive the more time I can afford to spend improving
-Tiled!
-
-.. raw:: html
-
-   </div>
+   If you like any of these plans, please help me getting around to it
+   faster by `becoming a patron <https://www.patreon.com/bjorn>`__. The
+   more support I receive the more time I can afford to spend improving
+   Tiled!

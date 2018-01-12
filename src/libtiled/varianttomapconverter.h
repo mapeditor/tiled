@@ -22,7 +22,6 @@
 #pragma once
 
 #include "gidmapper.h"
-#include "tidmapper.h"
 #include "mapobject.h"
 
 #include <QCoreApplication>
@@ -35,6 +34,7 @@ class GroupLayer;
 class Layer;
 class Map;
 class ObjectGroup;
+class ObjectTemplate;
 class Properties;
 class Tileset;
 
@@ -71,7 +71,13 @@ public:
      * errorString().
      */
     SharedTileset toTileset(const QVariant &variant, const QDir &directory);
-    TemplateGroup *toTemplateGroup(const QVariant &variant, const QDir &directory);
+
+    /**
+     * Tries to convert the given \a variant to an ObjectTemplate instance. The
+     * \a directory is necessary to resolve any relative references to external
+     * tilesets.
+     */
+    ObjectTemplate *toObjectTemplate(const QVariant &variant, const QDir &directory);
 
     /**
      * Returns the last error, if any.
@@ -82,12 +88,11 @@ private:
     Properties toProperties(const QVariant &propertiesVariant,
                             const QVariant &propertyTypesVariant) const;
     SharedTileset toTileset(const QVariant &variant);
-    TemplateGroup *toTemplateGroup(const QVariant &variant);
+    ObjectTemplate *toObjectTemplate(const QVariant &variant);
     Layer *toLayer(const QVariant &variant);
     TileLayer *toTileLayer(const QVariantMap &variantMap);
     ObjectGroup *toObjectGroup(const QVariantMap &variantMap);
     MapObject *toMapObject(const QVariantMap &variantMap);
-    ObjectTemplate *toObjectTemplate(const QVariantMap &variantMap);
     ImageLayer *toImageLayer(const QVariantMap &variantMap);
     GroupLayer *toGroupLayer(const QVariantMap &variantMap);
 
@@ -100,7 +105,6 @@ private:
     QDir mMapDir;
     bool mReadingExternalTileset;
     GidMapper mGidMapper;
-    TidMapper mTidMapper;
     QString mError;
 };
 

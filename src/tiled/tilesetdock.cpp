@@ -57,6 +57,7 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QMimeData>
+#include <QPushButton>
 #include <QSettings>
 #include <QSignalMapper>
 #include <QStackedWidget>
@@ -73,10 +74,30 @@ using namespace Tiled::Internal;
 
 namespace {
 
+class NoTilesetWidget : public QWidget
+{
+    Q_OBJECT
+
+public:
+    explicit NoTilesetWidget(QWidget *parent = nullptr)
+        : QWidget(parent)
+    {
+        QPushButton *newTilesetButton = new QPushButton(this);
+        newTilesetButton->setText(tr("New Tileset..."));
+
+        QGridLayout *gridLayout = new QGridLayout(this);
+        gridLayout->addWidget(newTilesetButton, 0, 0, Qt::AlignCenter);
+
+        connect(newTilesetButton, &QPushButton::clicked, [] {
+            ActionManager::action("file.new_tileset")->trigger();
+        });
+    }
+};
+
 class TilesetMenuButton : public QToolButton
 {
 public:
-    TilesetMenuButton(QWidget *parent = nullptr)
+    explicit TilesetMenuButton(QWidget *parent = nullptr)
         : QToolButton(parent)
     {
         setArrowType(Qt::DownArrow);
@@ -111,7 +132,7 @@ protected:
 class WheelEnabledTabBar : public QTabBar
 {
 public:
-    WheelEnabledTabBar(QWidget *parent = nullptr)
+    explicit WheelEnabledTabBar(QWidget *parent = nullptr)
        : QTabBar(parent)
     {}
 
@@ -154,6 +175,7 @@ TilesetDock::TilesetDock(QWidget *parent)
     , mMapDocument(nullptr)
     , mTilesetDocumentsFilterModel(new TilesetDocumentsFilterModel(this))
     , mTabBar(new WheelEnabledTabBar)
+    , mSuperViewStack(new QStackedWidget)
     , mViewStack(new QStackedWidget)
     , mToolBar(new QToolBar)
     , mCurrentTile(nullptr)
@@ -174,9 +196,12 @@ TilesetDock::TilesetDock(QWidget *parent)
 
     mTabBar->setUsesScrollButtons(true);
     mTabBar->setExpanding(false);
+    mTabBar->setContextMenuPolicy(Qt::CustomContextMenu);
 
     connect(mTabBar, &QTabBar::currentChanged, this, &TilesetDock::updateActions);
     connect(mTabBar, &QTabBar::tabMoved, this, &TilesetDock::onTabMoved);
+    connect(mTabBar, &QWidget::customContextMenuRequested,
+            this, &TilesetDock::tabContextMenuRequested);
 
     QWidget *w = new QWidget(this);
 
@@ -189,7 +214,10 @@ TilesetDock::TilesetDock(QWidget *parent)
     vertical->setSpacing(0);
     vertical->setMargin(0);
     vertical->addLayout(horizontal);
-    vertical->addWidget(mViewStack);
+    vertical->addWidget(mSuperViewStack);
+
+    mSuperViewStack->insertWidget(0, new NoTilesetWidget(this));
+    mSuperViewStack->insertWidget(1, mViewStack);
 
     horizontal = new QHBoxLayout;
     horizontal->setSpacing(0);
@@ -508,6 +536,9 @@ void TilesetDock::createTilesetView(int index, TilesetDocument *tilesetDocument)
 
     TilesetView *view = new TilesetView;
 
+    // Hides the "New Tileset..." special view if it is shown.
+    mSuperViewStack->setCurrentIndex(1);
+
     // Insert view before the tab to make sure it is there when the tab index
     // changes (happens when first tab is inserted).
     mViewStack->insertWidget(index, view);
@@ -552,6 +583,10 @@ void TilesetDock::deleteTilesetView(int index)
     mTilesetDocuments.removeAt(index);
     delete view;                    // view needs to go before the tab
     mTabBar->removeTab(index);
+
+    // Make the "New Tileset..." special tab reappear if there is no tileset open
+    if (mTilesets.isEmpty())
+        mSuperViewStack->setCurrentIndex(0);
 
     // Make sure we don't reference this tileset anymore
     if (mCurrentTiles && mCurrentTiles->referencesTileset(tileset)) {
@@ -760,11 +795,7 @@ void TilesetDock::onTilesetDataChanged(const QModelIndex &topLeft, const QModelI
 
 void TilesetDock::onTabMoved(int from, int to)
 {
-#if QT_VERSION >= 0x050600
     mTilesets.move(from, to);
-#else
-    mTilesets.insert(to, mTilesets.takeAt(from));
-#endif
     mTilesetDocuments.move(from, to);
 
     // Move the related tileset view
@@ -772,6 +803,21 @@ void TilesetDock::onTabMoved(int from, int to)
     QWidget *widget = mViewStack->widget(from);
     mViewStack->removeWidget(widget);
     mViewStack->insertWidget(to, widget);
+}
+
+void TilesetDock::tabContextMenuRequested(const QPoint &pos)
+{
+    int index = mTabBar->tabAt(pos);
+    if (index == -1)
+        return;
+
+    QMenu menu;
+
+    QString fileName = mTilesetDocuments.at(index)->fileName();
+    if (!fileName.isEmpty())
+        Utils::addFileManagerActions(menu, fileName);
+
+    menu.exec(mTabBar->mapToGlobal(pos));
 }
 
 Tileset *TilesetDock::currentTileset() const
@@ -980,3 +1026,5 @@ void TilesetDock::swapTiles(Tile *tileA, Tile *tileB)
     QUndoStack *undoStack = mMapDocument->undoStack();
     undoStack->push(new SwapTiles(mMapDocument, tileA, tileB));
 }
+
+#include "tilesetdock.moc"

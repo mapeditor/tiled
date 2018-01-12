@@ -22,7 +22,7 @@
 
 #include "mapformat.h"
 #include "tilesetformat.h"
-#include "templategroupformat.h"
+#include "objecttemplateformat.h"
 
 namespace Tiled {
 
@@ -104,23 +104,23 @@ private:
 };
 
 /**
- * A reader and writer for Tiled's .ttx template format.
+ * A reader and writer for Tiled's .tgx template format.
  */
-class TtxTemplateGroupFormat : public TemplateGroupFormat
+class XmlObjectTemplateFormat : public ObjectTemplateFormat
 {
     Q_OBJECT
-    Q_INTERFACES(Tiled::TemplateGroupFormat)
+    Q_INTERFACES(Tiled::ObjectTemplateFormat)
 
 public:
-    TtxTemplateGroupFormat(QObject *parent = nullptr);
+    XmlObjectTemplateFormat(QObject *parent = nullptr);
 
-    TemplateGroup *read(const QString &fileName) override;
+    ObjectTemplate *read(const QString &fileName) override;
 
-    bool write(const TemplateGroup *templateGroup, const QString &fileName) override;
+    bool write(const ObjectTemplate *objectTemplate, const QString &fileName) override;
 
-    QString nameFilter() const override { return tr("Tiled template group files (*.ttx)"); }
+    QString nameFilter() const override { return tr("Tiled template files (*.tx)"); }
 
-    QString shortName() const override { return QLatin1String("ttx"); }
+    QString shortName() const override { return QLatin1String("tx"); }
 
     bool supportsFile(const QString &fileName) const override;
 

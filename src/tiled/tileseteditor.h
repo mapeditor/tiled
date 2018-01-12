@@ -30,6 +30,7 @@
 
 class QAction;
 class QComboBox;
+class QLabel;
 class QMainWindow;
 class QStackedWidget;
 class QToolBar;
@@ -77,6 +78,8 @@ public:
     StandardActions enabledStandardActions() const override;
     void performStandardAction(StandardAction action) override;
 
+    void resetLayout() override;
+
     TilesetView *currentTilesetView() const;
     Tileset *currentTileset() const;
     Zoomable *zoomable() const override;
@@ -85,6 +88,7 @@ public:
     QAction *removeTilesAction() const;
     QAction *editTerrainAction() const;
     QAction *editCollisionAction() const;
+    QAction *showAnimationEditor() const;
 
     TileAnimationEditor *tileAnimationEditor() const;
 
@@ -109,6 +113,7 @@ private slots:
     void currentTerrainChanged(const Terrain *terrain);
 
     void setEditCollision(bool editCollision);
+    void hasSelectedCollisionObjectsChanged();
 
     void setEditWang(bool editWang);
 
@@ -125,7 +130,9 @@ private slots:
     void removeWangSet();
     void setWangSetImage(Tile *tile);
     void setWangColorImage(Tile *tile, bool isEdge, int index);
-    void setWangColorColor(QColor color, bool isEdge, int index);
+    void setWangColorColor(const QColor &color, bool isEdge, int index);
+
+    void onAnimationEditorClosed();
 
 private:
     void setCurrentTile(Tile *tile);
@@ -139,6 +146,7 @@ private:
 
     QAction *mAddTiles;
     QAction *mRemoveTiles;
+    QAction *mShowAnimationEditor;
 
     PropertiesDock *mPropertiesDock;
     UndoDock *mUndoDock;
@@ -146,6 +154,7 @@ private:
     TileCollisionDock *mTileCollisionDock;
     WangDock *mWangDock;
     QComboBox *mZoomComboBox;
+    QLabel *mStatusInfoLabel;
     TileAnimationEditor *mTileAnimationEditor;
 
     QHash<TilesetDocument*, TilesetView*> mViewForTileset;
@@ -162,6 +171,11 @@ inline QAction *TilesetEditor::addTilesAction() const
 inline QAction *TilesetEditor::removeTilesAction() const
 {
     return mRemoveTiles;
+}
+
+inline QAction *TilesetEditor::showAnimationEditor() const
+{
+    return mShowAnimationEditor;
 }
 
 inline TileAnimationEditor *TilesetEditor::tileAnimationEditor() const

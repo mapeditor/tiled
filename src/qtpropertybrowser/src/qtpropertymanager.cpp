@@ -392,7 +392,7 @@ class QtMetaEnumWrapper : public QObject
 public:
     QSizePolicy::Policy policy() const { return QSizePolicy::Ignored; }
 private:
-    QtMetaEnumWrapper(QObject *parent) : QObject(parent) {}
+    explicit QtMetaEnumWrapper(QObject *parent) : QObject(parent) {}
 };
 
 class QtMetaEnumProvider

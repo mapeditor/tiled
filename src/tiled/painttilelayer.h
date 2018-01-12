@@ -71,7 +71,7 @@ public:
                    const QRegion &paintRegion,
                    QUndoCommand *parent = nullptr);
 
-    ~PaintTileLayer();
+    ~PaintTileLayer() override;
 
     /**
      * Sets whether this undo command can be merged with an existing command.

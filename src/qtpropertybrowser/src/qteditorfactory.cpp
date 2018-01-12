@@ -1653,7 +1653,7 @@ class QtCharEdit : public QWidget
 {
     Q_OBJECT
 public:
-    QtCharEdit(QWidget *parent = 0);
+    explicit QtCharEdit(QWidget *parent = 0);
 
     QChar value() const;
     bool eventFilter(QObject *o, QEvent *e);
@@ -2283,7 +2283,7 @@ class QtColorEditWidget : public QWidget {
     Q_OBJECT
 
 public:
-    QtColorEditWidget(QWidget *parent);
+    explicit QtColorEditWidget(QWidget *parent);
 
     bool eventFilter(QObject *obj, QEvent *ev);
 
@@ -2492,7 +2492,7 @@ class QtFontEditWidget : public QWidget {
     Q_OBJECT
 
 public:
-    QtFontEditWidget(QWidget *parent);
+    explicit QtFontEditWidget(QWidget *parent);
 
     bool eventFilter(QObject *obj, QEvent *ev);
 

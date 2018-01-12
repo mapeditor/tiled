@@ -43,14 +43,13 @@ void CreatePolylineObjectTool::languageChanged()
     setShortcut(QKeySequence(tr("L")));
 }
 
-void CreatePolylineObjectTool::extend(MapObjectItem *mapObjectItem, bool extendingFirst)
+void CreatePolylineObjectTool::extend(MapObject *mapObject, bool extendingFirst)
 {
     mExtending = true;
     mExtendingFirst = extendingFirst;
 
-    mNewMapObjectItem = mapObjectItem;
+    mNewMapObjectItem = new MapObjectItem(mapObject, mapDocument(), mObjectGroupItem);
 
-    MapObject *mapObject = mapObjectItem->mapObject();
     QPolygonF next = mapObject->polygon();
 
     if (extendingFirst)

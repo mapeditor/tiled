@@ -84,14 +84,14 @@ public:
     /**
      * Returns the opacity of this layer.
      */
-    float opacity() const { return mOpacity; }
+    qreal opacity() const { return mOpacity; }
 
     /**
      * Sets the opacity of this layer.
      */
-    void setOpacity(float opacity) { mOpacity = opacity; }
+    void setOpacity(qreal opacity) { mOpacity = opacity; }
 
-    float effectiveOpacity() const;
+    qreal effectiveOpacity() const;
 
     /**
      * Returns the visibility of this layer.
@@ -235,7 +235,7 @@ protected:
     int mX;
     int mY;
     QPointF mOffset;
-    float mOpacity;
+    qreal mOpacity;
     bool mVisible;
     Map *mMap;
     GroupLayer *mParentLayer;

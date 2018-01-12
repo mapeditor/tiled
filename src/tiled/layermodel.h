@@ -87,7 +87,7 @@ public:
 
     void setLayerVisible(Layer *layer, bool visible);
     void setLayerLocked(Layer *layer, bool locked);
-    void setLayerOpacity(Layer *layer, float opacity);
+    void setLayerOpacity(Layer *layer, qreal opacity);
     void setLayerOffset(Layer *layer, const QPointF &offset);
 
     void renameLayer(Layer *layer, const QString &name);
