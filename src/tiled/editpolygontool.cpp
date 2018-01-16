@@ -215,11 +215,8 @@ void EditPolygonTool::keyPressed(QKeyEvent *event)
         if (!mSelectedHandles.isEmpty()) {
             // First clear the handle selection
             setSelectedHandles(QSet<PointHandle*>());
-        } else if (!mapDocument()->selectedObjects().isEmpty()) {
-            // If there is no handle selection, clear the object selection
-            mapDocument()->setSelectedObjects(QList<MapObject*>());
         } else {
-            // If there is also no object selection, switch to object selection tool
+            // If there is no handle selection, switch to object selection tool
             toolManager()->selectTool(toolManager()->findTool<ObjectSelectionTool>());
         }
         return;
@@ -339,6 +336,8 @@ void EditPolygonTool::mouseReleased(QGraphicsSceneMouseEvent *event)
 {
     if (event->button() != Qt::LeftButton)
         return;
+    if (!mMousePressed)
+        return; // we didn't receive press so we should ignore this release
 
     switch (mMode) {
     case NoMode:

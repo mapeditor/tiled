@@ -55,6 +55,7 @@ public:
                     Qt::KeyboardModifiers modifiers) override;
     void mousePressed(QGraphicsSceneMouseEvent *event) override;
     void mouseReleased(QGraphicsSceneMouseEvent *event) override;
+    void mouseDoubleClicked(QGraphicsSceneMouseEvent *event) override;
     void modifiersChanged(Qt::KeyboardModifiers modifiers) override;
 
     void languageChanged() override;

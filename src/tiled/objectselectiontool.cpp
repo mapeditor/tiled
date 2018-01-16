@@ -21,6 +21,7 @@
 #include "objectselectiontool.h"
 
 #include "changepolygon.h"
+#include "editpolygontool.h"
 #include "geometry.h"
 #include "layer.h"
 #include "map.h"
@@ -40,6 +41,7 @@
 #include "snaphelper.h"
 #include "tile.h"
 #include "tileset.h"
+#include "toolmanager.h"
 #include "utils.h"
 
 #include <QApplication>
@@ -384,6 +386,9 @@ void ObjectSelectionTool::deactivate(MapScene *scene)
     disconnect(mapDocument(), &MapDocument::objectsRemoved,
                this, &ObjectSelectionTool::objectsRemoved);
 
+    mMousePressed = false;
+    mHoveredObject = nullptr;
+
     mapDocument()->setHoveredMapObject(nullptr);
 
     AbstractObjectTool::deactivate(scene);
@@ -602,6 +607,8 @@ void ObjectSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
 {
     if (event->button() != Qt::LeftButton)
         return;
+    if (!mMousePressed)
+        return; // we didn't receive press so we should ignore this release
 
     switch (mAction) {
     case NoAction: {
@@ -694,6 +701,16 @@ void ObjectSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
 
     updateHover(event->scenePos());
     refreshCursor();
+}
+
+void ObjectSelectionTool::mouseDoubleClicked(QGraphicsSceneMouseEvent *event)
+{
+    mousePressed(event);
+
+    if (mClickedObject && (mClickedObject->shape() == MapObject::Polygon ||
+                           mClickedObject->shape() == MapObject::Polyline)) {
+        toolManager()->selectTool(toolManager()->findTool<EditPolygonTool>());
+    }
 }
 
 void ObjectSelectionTool::modifiersChanged(Qt::KeyboardModifiers modifiers)
