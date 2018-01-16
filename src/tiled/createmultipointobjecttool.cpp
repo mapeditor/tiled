@@ -21,6 +21,7 @@
 #include "createmultipointobjecttool.h"
 
 #include "changepolygon.h"
+#include "editpolygontool.h"
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "mapobjectitem.h"
@@ -28,6 +29,7 @@
 #include "mapscene.h"
 #include "objectgroup.h"
 #include "snaphelper.h"
+#include "toolmanager.h"
 #include "utils.h"
 
 #include <QApplication>
@@ -125,20 +127,10 @@ void CreateMultipointObjectTool::mousePressedWhileCreatingObject(QGraphicsSceneM
 
 void CreateMultipointObjectTool::cancelNewMapObject()
 {
-    if (mExtending) {
-        mExtending = false;
-        mExtendingFirst = false;
-
-        delete mNewMapObjectItem;
-        mNewMapObjectItem = nullptr;
-
-        delete mOverlayPolygonItem;
-        mOverlayPolygonItem = nullptr;
-
-        emit extendingFinished();
-    } else {
+    if (mExtending)
+        finishExtendingMapObject();
+    else
         CreateObjectTool::cancelNewMapObject();
-    }
 }
 
 void CreateMultipointObjectTool::finishNewMapObject()
@@ -152,21 +144,26 @@ void CreateMultipointObjectTool::finishNewMapObject()
 
         MapObject *newMapObject = mNewMapObjectItem->mapObject();
 
-        mExtending = false;
-        mExtendingFirst = false;
-
-        delete mNewMapObjectItem;
-        mNewMapObjectItem = nullptr;
-
-        delete mOverlayPolygonItem;
-        mOverlayPolygonItem = nullptr;
-
-        emit extendingFinished();
+        finishExtendingMapObject();
 
         mapDocument()->setSelectedObjects(QList<MapObject*>() << newMapObject);
     } else {
         CreateObjectTool::finishNewMapObject();
     }
+}
+
+void CreateMultipointObjectTool::finishExtendingMapObject()
+{
+    mExtending = false;
+    mExtendingFirst = false;
+
+    delete mNewMapObjectItem;
+    mNewMapObjectItem = nullptr;
+
+    delete mOverlayPolygonItem;
+    mOverlayPolygonItem = nullptr;
+
+    toolManager()->selectTool(toolManager()->findTool<EditPolygonTool>());
 }
 
 bool CreateMultipointObjectTool::startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup)

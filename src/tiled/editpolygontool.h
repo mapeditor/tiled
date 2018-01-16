@@ -59,9 +59,6 @@ public:
 
     bool hasSelectedHandles() const { return !mSelectedHandles.isEmpty(); }
 
-signals:
-    void extend(MapObject *mapObject, bool extendingFirst);
-
 public slots:
     void deleteNodes();
 

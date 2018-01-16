@@ -184,7 +184,7 @@ MapEditor::MapEditor(QObject *parent)
     CreateObjectTool *pointObjectsTool = new CreatePointObjectTool(this);
     CreateObjectTool *ellipseObjectsTool = new CreateEllipseObjectTool(this);
     CreateObjectTool *polygonObjectsTool = new CreatePolygonObjectTool(this);
-    mPolylineObjectsTool = new CreatePolylineObjectTool(this);
+    CreateObjectTool *polylineObjectsTool = new CreatePolylineObjectTool(this);
     CreateObjectTool *textObjectsTool = new CreateTextObjectTool(this);
 
     mToolsToolBar->addAction(mToolManager->registerTool(mStampBrush));
@@ -203,7 +203,7 @@ MapEditor::MapEditor(QObject *parent)
     mToolsToolBar->addAction(mToolManager->registerTool(pointObjectsTool));
     mToolsToolBar->addAction(mToolManager->registerTool(ellipseObjectsTool));
     mToolsToolBar->addAction(mToolManager->registerTool(polygonObjectsTool));
-    mToolsToolBar->addAction(mToolManager->registerTool(mPolylineObjectsTool));
+    mToolsToolBar->addAction(mToolManager->registerTool(polylineObjectsTool));
     mToolsToolBar->addAction(mToolManager->registerTool(tileObjectsTool));
     mToolsToolBar->addAction(mToolManager->registerTool(templatesTool));
     mToolsToolBar->addAction(mToolManager->registerTool(textObjectsTool));
@@ -251,9 +251,6 @@ MapEditor::MapEditor(QObject *parent)
     connect(mStampBrush, &StampBrush::wangFillChanged, this, &MapEditor::setWangFill);
     connect(mBucketFillTool, &BucketFillTool::wangFillChanged, this, &MapEditor::setWangFill);
     connect(mShapeFillTool, &ShapeFillTool::wangFillChanged, this, &MapEditor::setWangFill);
-
-    connect(mEditPolygonTool, &EditPolygonTool::extend, this, &MapEditor::extend);
-    connect(mPolylineObjectsTool, &CreatePolylineObjectTool::extendingFinished, this, &MapEditor::extendingFinished);
 
     connect(mTerrainDock, &TerrainDock::currentTerrainChanged,
             mTerrainBrush, &TerrainBrush::setTerrain);
@@ -734,17 +731,6 @@ void MapEditor::setWangFill(bool value)
 
     mBucketFillTool->setFillMethod(fillMethod);
     mShapeFillTool->setFillMethod(fillMethod);
-}
-
-void MapEditor::extend(MapObject *mapObject, bool extendingFirst)
-{
-    mToolManager->selectTool(mPolylineObjectsTool);
-    mPolylineObjectsTool->extend(mapObject, extendingFirst);
-}
-
-void MapEditor::extendingFinished()
-{
-    mToolManager->selectTool(mEditPolygonTool);
 }
 
 /**

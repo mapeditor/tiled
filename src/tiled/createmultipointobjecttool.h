@@ -32,14 +32,11 @@ class CreateMultipointObjectTool : public CreateObjectTool
 
 public:
     CreateMultipointObjectTool(QObject *parent);
-    ~CreateMultipointObjectTool();
+    ~CreateMultipointObjectTool() override;
 
     void keyPressed(QKeyEvent *event) override;
 
     bool startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup) override;
-
-signals:
-    void extendingFinished();
 
 protected:
     void mouseMovedWhileCreatingObject(const QPointF &pos,
@@ -54,6 +51,8 @@ protected:
     bool mExtendingFirst;
 
 private:
+    void finishExtendingMapObject();
+
     ObjectGroup *mOverlayObjectGroup;
 };
 

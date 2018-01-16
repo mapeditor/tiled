@@ -20,10 +20,10 @@
 
 #pragma once
 
+#include <QActionGroup>
 #include <QObject>
 
 class QAction;
-class QActionGroup;
 
 namespace Tiled {
 
@@ -54,8 +54,11 @@ public:
 
     QAction *registerTool(AbstractTool *tool);
 
-    void selectTool(AbstractTool *tool);
+    bool selectTool(AbstractTool *tool);
     AbstractTool *selectedTool() const;
+
+    template<typename Tool>
+    Tool *findTool();
 
     void retranslateTools();
 
@@ -100,6 +103,20 @@ private:
     bool mSelectEnabledToolPending;
 };
 
+/**
+ * Selects the tool that matches the specified type.
+ */
+template<class Tool>
+Tool *ToolManager::findTool()
+{
+    const auto actions = mActionGroup->actions();
+    for (QAction *action : actions) {
+        AbstractTool *abstractTool = action->data().value<AbstractTool*>();
+        if (Tool *tool = qobject_cast<Tool*>(abstractTool))
+            return tool;
+    }
+    return nullptr;
+}
 
 /**
  * Returns the selected tool.

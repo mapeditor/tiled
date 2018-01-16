@@ -22,6 +22,7 @@
 
 #include "addremovemapobject.h"
 #include "changepolygon.h"
+#include "createpolylineobjecttool.h"
 #include "geometry.h"
 #include "layer.h"
 #include "map.h"
@@ -35,6 +36,7 @@
 #include "rangeset.h"
 #include "selectionrectangle.h"
 #include "snaphelper.h"
+#include "toolmanager.h"
 #include "utils.h"
 
 #include <QApplication>
@@ -640,12 +642,12 @@ void EditPolygonTool::showHandleContextMenu(PointHandle *clickedHandle,
     joinNodesAction->setEnabled(n > 1);
     splitSegmentsAction->setEnabled(n > 1);
 
-    const PointHandle *firstHandle = *mSelectedHandles.begin();
+    const PointHandle *firstHandle = *mSelectedHandles.constBegin();
     const MapObject *mapObject = firstHandle->mapObject();
 
     bool canDeleteSegment = false;
     if (n == 2) {
-        const PointHandle *secondHandle = *(mSelectedHandles.begin() + 1);
+        const PointHandle *secondHandle = *(mSelectedHandles.constBegin() + 1);
         const MapObject *secondMapObject = secondHandle->mapObject();
 
         int indexDifference = std::abs(firstHandle->pointIndex() - secondHandle->pointIndex());
@@ -663,14 +665,14 @@ void EditPolygonTool::showHandleContextMenu(PointHandle *clickedHandle,
     connect(splitSegmentsAction, &QAction::triggered, this, &EditPolygonTool::splitSegments);
     connect(deleteSegment, &QAction::triggered, this, &EditPolygonTool::deleteSegment);
 
-    if (mapObject->shape() == MapObject::Polyline) {
+    if (mapObject->shape() == MapObject::Polyline && toolManager()->findTool<CreatePolylineObjectTool>()) {
         QAction *extendPolyline = menu.addAction(tr("Extend Polyline"));
 
         bool handleCanBeExtended = (firstHandle->pointIndex() == 0)
                                    || (firstHandle->pointIndex() == mapObject->polygon().size() - 1);
 
         extendPolyline->setEnabled(n == 1 && handleCanBeExtended);
-        connect(extendPolyline, SIGNAL(triggered()), SLOT(extendPolyline()));
+        connect(extendPolyline, &QAction::triggered, this, &EditPolygonTool::extendPolyline);
     }
 
     menu.exec(screenPos);
@@ -928,10 +930,14 @@ void EditPolygonTool::splitSegments()
 
 void EditPolygonTool::extendPolyline()
 {
-    auto &selectedHandle = *mSelectedHandles.begin();
+    // Handle is going to be deleted when switching tools
+    PointHandle *selectedHandle = *mSelectedHandles.constBegin();
     MapObject *mapObject = selectedHandle->mapObject();
+    bool extendingFirst = selectedHandle->pointIndex() == 0;
 
-    emit extend(mapObject, (selectedHandle->pointIndex() == 0));
+    CreatePolylineObjectTool *polylineObjectsTool = toolManager()->findTool<CreatePolylineObjectTool>();
+    if (toolManager()->selectTool(polylineObjectsTool))
+        polylineObjectsTool->extend(mapObject, extendingFirst);
 }
 
 void EditPolygonTool::deleteSegment()

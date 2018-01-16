@@ -131,9 +131,6 @@ public slots:
 
     void updateTemplateInstances(const ObjectTemplate *objectTemplate);
 
-    void extend(MapObject *mapObject, bool extendingFirst);
-    void extendingFinished();
-
 private slots:
     void currentWidgetChanged();
 
@@ -185,7 +182,6 @@ private:
     TerrainBrush *mTerrainBrush;
     WangBrush *mWangBrush;
     EditPolygonTool *mEditPolygonTool;
-    CreatePolylineObjectTool *mPolylineObjectsTool;
 
     QToolBar *mMainToolBar;
     QToolBar *mToolsToolBar;

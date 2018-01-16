@@ -43,8 +43,16 @@ void CreatePolylineObjectTool::languageChanged()
     setShortcut(QKeySequence(tr("L")));
 }
 
+/**
+ * Starts extending the given polyline \a mapObject.
+ *
+ * \a extendingFirst determines whether it should extend from the first or
+ * the last point of the polyline.
+ */
 void CreatePolylineObjectTool::extend(MapObject *mapObject, bool extendingFirst)
 {
+    Q_ASSERT(mapObject->shape() == MapObject::Polyline);
+
     mExtending = true;
     mExtendingFirst = extendingFirst;
 
