@@ -42,7 +42,6 @@
 #include <QApplication>
 #include <QGraphicsItem>
 #include <QGraphicsView>
-#include <QKeyEvent>
 #include <QMenu>
 #include <QPainter>
 #include <QPalette>
