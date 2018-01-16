@@ -34,6 +34,8 @@ public:
     CreateMultipointObjectTool(QObject *parent);
     ~CreateMultipointObjectTool() override;
 
+    void deactivate(MapScene *scene) override;
+
     void keyPressed(QKeyEvent *event) override;
 
     bool startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup) override;

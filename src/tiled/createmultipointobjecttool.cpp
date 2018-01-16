@@ -58,6 +58,13 @@ CreateMultipointObjectTool::~CreateMultipointObjectTool()
     delete mOverlayObjectGroup;
 }
 
+void CreateMultipointObjectTool::deactivate(MapScene *scene)
+{
+    if (mNewMapObjectItem && mExtending)
+        finishExtendingMapObject();
+    CreateObjectTool::deactivate(scene);
+}
+
 void CreateMultipointObjectTool::keyPressed(QKeyEvent *event)
 {
     switch (event->key()) {
@@ -127,10 +134,12 @@ void CreateMultipointObjectTool::mousePressedWhileCreatingObject(QGraphicsSceneM
 
 void CreateMultipointObjectTool::cancelNewMapObject()
 {
-    if (mExtending)
+    if (mExtending) {
         finishExtendingMapObject();
-    else
+        toolManager()->selectTool(toolManager()->findTool<EditPolygonTool>());
+    } else {
         CreateObjectTool::cancelNewMapObject();
+    }
 }
 
 void CreateMultipointObjectTool::finishNewMapObject()
@@ -146,6 +155,7 @@ void CreateMultipointObjectTool::finishNewMapObject()
 
         finishExtendingMapObject();
 
+        toolManager()->selectTool(toolManager()->findTool<EditPolygonTool>());
         mapDocument()->setSelectedObjects(QList<MapObject*>() << newMapObject);
     } else {
         CreateObjectTool::finishNewMapObject();
@@ -162,8 +172,6 @@ void CreateMultipointObjectTool::finishExtendingMapObject()
 
     delete mOverlayPolygonItem;
     mOverlayPolygonItem = nullptr;
-
-    toolManager()->selectTool(toolManager()->findTool<EditPolygonTool>());
 }
 
 bool CreateMultipointObjectTool::startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup)
