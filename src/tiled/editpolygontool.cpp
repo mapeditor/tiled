@@ -157,7 +157,7 @@ EditPolygonTool::EditPolygonTool(QObject *parent)
     , mMousePressed(false)
     , mHoveredHandle(nullptr)
     , mClickedHandle(nullptr)
-    , mClickedObjectItem(nullptr)
+    , mClickedObject(nullptr)
     , mMode(NoMode)
 {
 }
@@ -280,11 +280,11 @@ void EditPolygonTool::mousePressed(QGraphicsSceneMouseEvent *event)
                                                                Qt::DescendingOrder,
                                                                viewTransform(event));
 
-        mClickedObjectItem = nullptr;
+        mClickedObject = nullptr;
         for (int i = 0; i < items.size(); ++i) {
             if (auto mapObjectItem = qgraphicsitem_cast<MapObjectItem*>(items.at(i))) {
                 if (mapObjectItem->mapObject()->objectGroup()->isUnlocked()) {
-                    mClickedObjectItem = mapObjectItem;
+                    mClickedObject = mapObjectItem->mapObject();
                     break;
                 }
             }
@@ -320,22 +320,21 @@ void EditPolygonTool::mouseReleased(QGraphicsSceneMouseEvent *event)
 
     switch (mMode) {
     case NoMode:
-        if (mClickedHandle) {
+        if (PointHandle *clickedHandle = mClickedHandle) {
             QSet<PointHandle*> selection = mSelectedHandles;
             const Qt::KeyboardModifiers modifiers = event->modifiers();
             if (modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) {
-                if (selection.contains(mClickedHandle))
-                    selection.remove(mClickedHandle);
+                if (selection.contains(clickedHandle))
+                    selection.remove(clickedHandle);
                 else
-                    selection.insert(mClickedHandle);
+                    selection.insert(clickedHandle);
             } else {
                 selection.clear();
-                selection.insert(mClickedHandle);
+                selection.insert(clickedHandle);
             }
             setSelectedHandles(selection);
-        } else if (mClickedObjectItem) {
+        } else if (MapObject *clickedObject = mClickedObject) {
             QList<MapObject*> selection = mapDocument()->selectedObjects();
-            MapObject *clickedObject = mClickedObjectItem->mapObject();
             const Qt::KeyboardModifiers modifiers = event->modifiers();
             if (modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) {
                 int index = selection.indexOf(clickedObject);

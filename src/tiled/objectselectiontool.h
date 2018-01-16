@@ -32,7 +32,6 @@ namespace Tiled {
 namespace Internal {
 
 class Handle;
-class MapObjectItem;
 class OriginIndicator;
 class ResizeHandle;
 class RotateHandle;
@@ -137,10 +136,10 @@ private:
     ResizeHandle *mResizeHandles[8];
     bool mMousePressed;
 
-    MapObjectItem *mHoveredObjectItem;
+    MapObject *mHoveredObject;
     Handle *mHoveredHandle;
 
-    MapObjectItem *mClickedObjectItem;
+    MapObject *mClickedObject;
     OriginIndicator *mClickedOriginIndicator;
     RotateHandle *mClickedRotateHandle;
     ResizeHandle *mClickedResizeHandle;

@@ -30,7 +30,6 @@ class QGraphicsItem;
 namespace Tiled {
 namespace Internal {
 
-class MapObjectItem;
 class PointHandle;
 class SelectionRectangle;
 
@@ -99,7 +98,7 @@ private:
     bool mMousePressed;
     PointHandle *mHoveredHandle;
     PointHandle *mClickedHandle;
-    MapObjectItem *mClickedObjectItem;
+    MapObject *mClickedObject;
     QVector<QPointF> mOldHandlePositions;
     QMap<MapObject*, QPolygonF> mOldPolygons;
     QPointF mAlignPosition;
