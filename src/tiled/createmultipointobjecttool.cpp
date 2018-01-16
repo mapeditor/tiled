@@ -65,20 +65,6 @@ void CreateMultipointObjectTool::deactivate(MapScene *scene)
     CreateObjectTool::deactivate(scene);
 }
 
-void CreateMultipointObjectTool::keyPressed(QKeyEvent *event)
-{
-    switch (event->key()) {
-    case Qt::Key_Escape:
-        if (mNewMapObjectItem && mExtending) {
-            finishNewMapObject();
-            return;
-        }
-        break;
-    }
-
-    CreateObjectTool::keyPressed(event);
-}
-
 void CreateMultipointObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos,
                                                                Qt::KeyboardModifiers modifiers)
 {
@@ -145,18 +131,8 @@ void CreateMultipointObjectTool::cancelNewMapObject()
 void CreateMultipointObjectTool::finishNewMapObject()
 {
     if (mExtending) {
-        ObjectGroup *objectGroup = currentObjectGroup();
-        if (!objectGroup) {
-            cancelNewMapObject();
-            return;
-        }
-
-        MapObject *newMapObject = mNewMapObjectItem->mapObject();
-
         finishExtendingMapObject();
-
         toolManager()->selectTool(toolManager()->findTool<EditPolygonTool>());
-        mapDocument()->setSelectedObjects(QList<MapObject*>() << newMapObject);
     } else {
         CreateObjectTool::finishNewMapObject();
     }
@@ -164,6 +140,9 @@ void CreateMultipointObjectTool::finishNewMapObject()
 
 void CreateMultipointObjectTool::finishExtendingMapObject()
 {
+    MapObject *newMapObject = mNewMapObjectItem->mapObject();
+    mapDocument()->setSelectedObjects(QList<MapObject*>() << newMapObject);
+
     mExtending = false;
     mExtendingFirst = false;
 
