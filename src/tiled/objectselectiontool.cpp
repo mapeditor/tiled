@@ -403,6 +403,10 @@ void ObjectSelectionTool::keyPressed(QKeyEvent *event)
     case Qt::Key_Down:  moveBy = QPointF(0, 1); break;
     case Qt::Key_Left:  moveBy = QPointF(-1, 0); break;
     case Qt::Key_Right: moveBy = QPointF(1, 0); break;
+    case Qt::Key_Escape:
+        if (!mapDocument()->selectedObjects().isEmpty())
+            mapDocument()->setSelectedObjects(QList<MapObject*>());
+        return;
     default:
         AbstractObjectTool::keyPressed(event);
         return;

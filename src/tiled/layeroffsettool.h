@@ -55,7 +55,7 @@ private:
     bool mMousePressed;
     bool mDragging;
     bool mApplyingChange;
-    QPointF mMouseScreenStart;
+    QPoint mMouseScreenStart;
     QPointF mMouseSceneStart;
     QPointF mOldOffset;
 };

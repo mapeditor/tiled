@@ -50,7 +50,7 @@ public:
                 bool xWrap,
                 bool yWrap);
 
-    ~OffsetLayer();
+    ~OffsetLayer() override;
 
     void undo() override;
     void redo() override;

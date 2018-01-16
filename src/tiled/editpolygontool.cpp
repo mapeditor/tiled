@@ -33,6 +33,7 @@
 #include "maprenderer.h"
 #include "mapscene.h"
 #include "objectgroup.h"
+#include "objectselectiontool.h"
 #include "rangeset.h"
 #include "selectionrectangle.h"
 #include "snaphelper.h"
@@ -42,6 +43,7 @@
 #include <QApplication>
 #include <QGraphicsItem>
 #include <QGraphicsView>
+#include <QKeyEvent>
 #include <QMenu>
 #include <QPainter>
 #include <QPalette>
@@ -206,6 +208,26 @@ void EditPolygonTool::deactivate(MapScene *scene)
     AbstractObjectTool::deactivate(scene);
 }
 
+void EditPolygonTool::keyPressed(QKeyEvent *event)
+{
+    switch (event->key()) {
+    case Qt::Key_Escape:
+        if (!mSelectedHandles.isEmpty()) {
+            // First clear the handle selection
+            setSelectedHandles(QSet<PointHandle*>());
+        } else if (!mapDocument()->selectedObjects().isEmpty()) {
+            // If there is no handle selection, clear the object selection
+            mapDocument()->setSelectedObjects(QList<MapObject*>());
+        } else {
+            // If there is also no object selection, switch to object selection tool
+            toolManager()->selectTool(toolManager()->findTool<ObjectSelectionTool>());
+        }
+        return;
+    }
+
+    AbstractObjectTool::keyPressed(event);
+}
+
 void EditPolygonTool::mouseEntered()
 {
 }
@@ -347,14 +369,12 @@ void EditPolygonTool::mouseReleased(QGraphicsSceneMouseEvent *event)
                 selection.append(clickedObject);
             }
             mapDocument()->setSelectedObjects(selection);
-            updateHandles();
         } else if (!mSelectedHandles.isEmpty()) {
             // First clear the handle selection
             setSelectedHandles(QSet<PointHandle*>());
-        } else {
+        } else if (!mapDocument()->selectedObjects().isEmpty()) {
             // If there is no handle selection, clear the object selection
             mapDocument()->setSelectedObjects(QList<MapObject*>());
-            updateHandles();
         }
         break;
     case Selecting:
@@ -497,7 +517,6 @@ void EditPolygonTool::updateSelection(QGraphicsSceneMouseEvent *event)
         }
 
         mapDocument()->setSelectedObjects(selectedObjects);
-        updateHandles();
     } else {
         // Update the selected handles
         QSet<PointHandle*> selectedHandles;

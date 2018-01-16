@@ -47,6 +47,8 @@ public:
     void activate(MapScene *scene) override;
     void deactivate(MapScene *scene) override;
 
+    void keyPressed(QKeyEvent *event) override;
+
     void mouseEntered() override;
     void mouseMoved(const QPointF &pos,
                     Qt::KeyboardModifiers modifiers) override;
