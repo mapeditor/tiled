@@ -91,7 +91,6 @@ private:
     void startMoving(const QPointF &pos, Qt::KeyboardModifiers modifiers);
     void updateMovingItems(const QPointF &pos,
                            Qt::KeyboardModifiers modifiers);
-
     void finishMoving(const QPointF &pos);
 
     void showHandleContextMenu(PointHandle *clickedHandle, QPoint screenPos);

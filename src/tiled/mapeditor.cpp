@@ -42,7 +42,6 @@
 #include "magicwandtool.h"
 #include "maintoolbar.h"
 #include "mapdocumentactionhandler.h"
-#include "mapobjectitem.h"
 #include "mapscene.h"
 #include "mapsdock.h"
 #include "mapview.h"

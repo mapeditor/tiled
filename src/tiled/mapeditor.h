@@ -38,7 +38,6 @@ class QToolButton;
 
 namespace Tiled {
 
-class MapObject;
 class ObjectTemplate;
 class Terrain;
 
@@ -46,7 +45,6 @@ namespace Internal {
 
 class AbstractTool;
 class BucketFillTool;
-class CreatePolylineObjectTool;
 class EditPolygonTool;
 class LayerDock;
 class MapDocument;

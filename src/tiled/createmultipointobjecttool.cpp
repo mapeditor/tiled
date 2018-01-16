@@ -33,7 +33,6 @@
 #include "utils.h"
 
 #include <QApplication>
-#include <QKeyEvent>
 #include <QPalette>
 #include <QUndoStack>
 
