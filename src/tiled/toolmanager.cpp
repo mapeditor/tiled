@@ -23,7 +23,6 @@
 #include "abstracttool.h"
 
 #include <QAction>
-#include <QActionGroup>
 #include <QShortcut>
 
 using namespace Tiled;
@@ -74,6 +73,9 @@ void ToolManager::setMapDocument(MapDocument *mapDocument)
  */
 QAction *ToolManager::registerTool(AbstractTool *tool)
 {
+    Q_ASSERT(!tool->mToolManager);
+    tool->mToolManager = this;
+
     tool->setMapDocument(mMapDocument);
 
     QAction *toolAction = new QAction(tool->icon(), tool->name(), this);
@@ -105,20 +107,22 @@ QAction *ToolManager::registerTool(AbstractTool *tool)
 
 /**
  * Selects the given tool. It should be previously added using registerTool().
+ *
+ * Returns whether the tool was succesfully selected.
  */
-void ToolManager::selectTool(AbstractTool *tool)
+bool ToolManager::selectTool(AbstractTool *tool)
 {
     if (mSelectedTool == tool)
-        return;
+        return true;
 
     if (tool && !tool->isEnabled()) // Refuse to select disabled tools
-        return;
+        return false;
 
     const auto actions = mActionGroup->actions();
     for (QAction *action : actions) {
         if (action->data().value<AbstractTool*>() == tool) {
             action->trigger();
-            return;
+            return true;
         }
     }
 
@@ -126,6 +130,7 @@ void ToolManager::selectTool(AbstractTool *tool)
     for (QAction *action : actions)
         action->setChecked(false);
     setSelectedTool(nullptr);
+    return tool == nullptr;
 }
 
 void ToolManager::actionTriggered(QAction *action)

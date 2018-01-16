@@ -20,6 +20,8 @@
 
 #include "createmultipointobjecttool.h"
 
+#include "changepolygon.h"
+#include "editpolygontool.h"
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "mapobjectitem.h"
@@ -27,10 +29,12 @@
 #include "mapscene.h"
 #include "objectgroup.h"
 #include "snaphelper.h"
+#include "toolmanager.h"
 #include "utils.h"
 
 #include <QApplication>
 #include <QPalette>
+#include <QUndoStack>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -38,6 +42,8 @@ using namespace Tiled::Internal;
 CreateMultipointObjectTool::CreateMultipointObjectTool(QObject *parent)
     : CreateObjectTool(parent)
     , mOverlayPolygonObject(new MapObject)
+    , mExtending(false)
+    , mExtendingFirst(false)
     , mOverlayObjectGroup(new ObjectGroup)
 {
     mOverlayObjectGroup->addObject(mOverlayPolygonObject);
@@ -51,6 +57,13 @@ CreateMultipointObjectTool::~CreateMultipointObjectTool()
     delete mOverlayObjectGroup;
 }
 
+void CreateMultipointObjectTool::deactivate(MapScene *scene)
+{
+    if (mNewMapObjectItem && mExtending)
+        finishExtendingMapObject();
+    CreateObjectTool::deactivate(scene);
+}
+
 void CreateMultipointObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos,
                                                                Qt::KeyboardModifiers modifiers)
 {
@@ -62,7 +75,12 @@ void CreateMultipointObjectTool::mouseMovedWhileCreatingObject(const QPointF &po
     pixelCoords -= mNewMapObjectItem->mapObject()->position();
 
     QPolygonF polygon = mOverlayPolygonObject->polygon();
-    polygon.last() = pixelCoords;
+
+    if (mExtendingFirst)
+        polygon.first() = pixelCoords;
+    else
+        polygon.last() = pixelCoords;
+
     mOverlayPolygonItem->setPolygon(polygon);
 }
 
@@ -74,17 +92,64 @@ void CreateMultipointObjectTool::mousePressedWhileCreatingObject(QGraphicsSceneM
         QPolygonF current = mNewMapObjectItem->mapObject()->polygon();
         QPolygonF next = mOverlayPolygonObject->polygon();
 
-        // If the last position is still the same, ignore the click
-        if (next.last() == current.last())
+        if (mExtendingFirst && next.first() == current.first())
+            return;
+
+        if (!mExtendingFirst && next.last() == current.last())
             return;
 
         // Assign current overlay polygon to the new object
         mNewMapObjectItem->setPolygon(next);
 
         // Add a new editable point to the overlay
-        next.append(next.last());
+        if (mExtendingFirst)
+            next.prepend(next.first());
+        else
+            next.append(next.last());
+
         mOverlayPolygonItem->setPolygon(next);
+
+        if (mExtending) {
+            mapDocument()->undoStack()->push(new ChangePolygon(mapDocument(),
+                                                               mNewMapObjectItem->mapObject(),
+                                                               current));
+        }
     }
+}
+
+void CreateMultipointObjectTool::cancelNewMapObject()
+{
+    if (mExtending) {
+        finishExtendingMapObject();
+        toolManager()->selectTool(toolManager()->findTool<EditPolygonTool>());
+    } else {
+        CreateObjectTool::cancelNewMapObject();
+    }
+}
+
+void CreateMultipointObjectTool::finishNewMapObject()
+{
+    if (mExtending) {
+        finishExtendingMapObject();
+        toolManager()->selectTool(toolManager()->findTool<EditPolygonTool>());
+    } else {
+        CreateObjectTool::finishNewMapObject();
+    }
+}
+
+void CreateMultipointObjectTool::finishExtendingMapObject()
+{
+    MapObject *newMapObject = mNewMapObjectItem->mapObject();
+    mapDocument()->setSelectedObjects(QList<MapObject*>() << newMapObject);
+
+    mExtending = false;
+    mExtendingFirst = false;
+
+    delete mNewMapObjectItem;
+    mNewMapObjectItem = nullptr;
+
+    delete mOverlayPolygonItem;
+    mOverlayPolygonItem = nullptr;
 }
 
 bool CreateMultipointObjectTool::startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup)

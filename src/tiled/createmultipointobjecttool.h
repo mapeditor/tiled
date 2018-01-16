@@ -32,7 +32,9 @@ class CreateMultipointObjectTool : public CreateObjectTool
 
 public:
     CreateMultipointObjectTool(QObject *parent);
-    ~CreateMultipointObjectTool();
+    ~CreateMultipointObjectTool() override;
+
+    void deactivate(MapScene *scene) override;
 
     bool startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup) override;
 
@@ -41,8 +43,16 @@ protected:
                                        Qt::KeyboardModifiers modifiers) override;
     void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event) override;
 
-private:
+    void cancelNewMapObject() override;
+    void finishNewMapObject() override;
+
     MapObject *mOverlayPolygonObject;
+    bool mExtending;
+    bool mExtendingFirst;
+
+private:
+    void finishExtendingMapObject();
+
     ObjectGroup *mOverlayObjectGroup;
 };
 

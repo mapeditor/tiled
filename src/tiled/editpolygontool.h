@@ -69,6 +69,7 @@ private slots:
     void joinNodes();
     void splitSegments();
     void deleteSegment();
+    void extendPolyline();
 
 private:
     enum Mode {

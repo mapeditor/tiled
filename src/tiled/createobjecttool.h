@@ -37,7 +37,7 @@ class CreateObjectTool : public AbstractObjectTool
 
 public:
     CreateObjectTool(QObject *parent = nullptr);
-    ~CreateObjectTool();
+    ~CreateObjectTool() override;
 
     void activate(MapScene *scene) override;
     void deactivate(MapScene *scene) override;
