@@ -30,6 +30,13 @@ mod.add_include('"imagelayer.h"')
 mod.add_include('"tilelayer.h"')
 mod.add_include('"objectgroup.h"')
 mod.add_include('"tileset.h"')
+mod.add_include('"wangset.h"');
+mod.add_include('"grouplayer.h"');
+mod.add_include('"objecttypes.h"');
+mod.add_include('"templatemanager.h"');
+mod.add_include('"gidmapper.h"');
+mod.add_include('"tileanimationdriver.h"');
+
 
 mod.header.writeln('#pragma GCC diagnostic ignored "-Wmissing-field-initializers"')
 
