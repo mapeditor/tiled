@@ -54,6 +54,7 @@ public:
                     Qt::KeyboardModifiers modifiers) override;
     void mousePressed(QGraphicsSceneMouseEvent *event) override;
     void mouseReleased(QGraphicsSceneMouseEvent *event) override;
+    void mouseDoubleClicked(QGraphicsSceneMouseEvent *event) override;
     void modifiersChanged(Qt::KeyboardModifiers modifiers) override;
 
     void languageChanged() override;
@@ -85,6 +86,8 @@ private:
     void setSelectedHandle(PointHandle *handle)
     { setSelectedHandles(QSet<PointHandle*>() << handle); }
 
+    void setHighlightedHandles(const QSet<PointHandle*> &handles);
+
     void updateSelection(QGraphicsSceneMouseEvent *event);
 
     void startSelecting();
@@ -98,9 +101,10 @@ private:
 
     QSet<PointHandle*> clickedHandles() const;
 
-    struct Segment {
+    struct InteractedSegment {
         MapObject *object = nullptr;
         int index = 0;
+        QPointF nearestPointOnLine;
 
         explicit operator bool() const { return object != nullptr; }
         void clear() { object = nullptr; }
@@ -109,9 +113,9 @@ private:
     SelectionRectangle *mSelectionRectangle;
     bool mMousePressed;
     PointHandle *mHoveredHandle;
-    Segment mHoveredSegment;
+    InteractedSegment mHoveredSegment;
     PointHandle *mClickedHandle;
-    Segment mClickedSegment;
+    InteractedSegment mClickedSegment;
     MapObject *mClickedObject;
     QVector<QPointF> mOldHandlePositions;
     QMap<MapObject*, QPolygonF> mOldPolygons;

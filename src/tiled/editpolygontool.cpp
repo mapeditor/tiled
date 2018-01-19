@@ -399,6 +399,33 @@ void EditPolygonTool::mouseReleased(QGraphicsSceneMouseEvent *event)
     updateHover(event->scenePos(), event);
 }
 
+void EditPolygonTool::mouseDoubleClicked(QGraphicsSceneMouseEvent *event)
+{
+    mousePressed(event);
+
+    if (mMode == NoMode && mClickedSegment) {
+        // Split the segment at the location nearest to the mouse
+        QPolygonF oldPolygon = mClickedSegment.object->polygon();
+        QPolygonF newPolygon = oldPolygon;
+        newPolygon.insert(mClickedSegment.index + 1, mClickedSegment.nearestPointOnLine);
+
+        auto splitSegment = new ChangePolygon(mapDocument(),
+                                              mClickedSegment.object,
+                                              newPolygon,
+                                              oldPolygon);
+        splitSegment->setText(tr("Split Segment"));
+
+        mapDocument()->undoStack()->push(splitSegment);
+
+        auto newNodeHandle = mHandles.value(mClickedSegment.object).at(mClickedSegment.index + 1);
+        setSelectedHandle(newNodeHandle);
+        setHighlightedHandles(mSelectedHandles);
+        mHoveredHandle = newNodeHandle;
+        mClickedSegment.clear();
+        mClickedHandle = newNodeHandle;
+    }
+}
+
 void EditPolygonTool::modifiersChanged(Qt::KeyboardModifiers modifiers)
 {
     mModifiers = modifiers;
@@ -421,6 +448,19 @@ void EditPolygonTool::setSelectedHandles(const QSet<PointHandle *> &handles)
             handle->setSelected(true);
 
     mSelectedHandles = handles;
+}
+
+void EditPolygonTool::setHighlightedHandles(const QSet<PointHandle *> &handles)
+{
+    for (PointHandle *handle : mHighlightedHandles)
+        if (!handles.contains(handle))
+            handle->setHighlighted(false);
+
+    for (PointHandle *handle : handles)
+        if (!mHighlightedHandles.contains(handle))
+            handle->setHighlighted(true);
+
+    mHighlightedHandles = handles;
 }
 
 /**
@@ -1032,25 +1072,27 @@ void EditPolygonTool::deleteSegment()
 /**
  * Returns the shortest distance between \a point and \a line.
  */
-static qreal distanceOfPointToLine(const QLineF &line, QPointF point)
+static qreal distanceOfPointToLine(const QLineF &line, QPointF point, QPointF &nearestPointOnLine)
 {
     // implementation is based on QLineF::intersect
     const QPointF d = line.p2() - line.p1();
     const qreal denominator = d.x() * d.x() + d.y() * d.y();
-    if (denominator == 0)
+    if (denominator == 0) {
+        nearestPointOnLine = line.p1();
         return QLineF(point, line.p1()).length();
+    }
 
     const QPointF c = point - line.p1();
     const qreal na = qBound<qreal>(0, (d.x() * c.x() + d.y() * c.y()) / denominator, 1);
-    const QPointF nearestPointOnLine = line.p1() + d * na;
 
+    nearestPointOnLine = line.p1() + d * na;
     return QLineF(point, nearestPointOnLine).length();
 }
 
 void EditPolygonTool::updateHover(const QPointF &scenePos, QGraphicsSceneMouseEvent *event)
 {
     PointHandle *hoveredHandle = nullptr;
-    Segment hoveredSegment;
+    InteractedSegment hoveredSegment;
 
     switch (mMode) {
     case Moving:    // while moving, optionally keep clicked handle hovered
@@ -1091,11 +1133,13 @@ void EditPolygonTool::updateHover(const QPointF &scenePos, QGraphicsSceneMouseEv
 
                 for (int i = 0; i < end; ++i) {
                     const QLineF line(polygon.at(i), polygon.at((i + 1) % polygon.size()));
-                    const qreal distance = distanceOfPointToLine(line, localMousePixelCoords);
+                    QPointF nearestPointOnLine;
+                    const qreal distance = distanceOfPointToLine(line, localMousePixelCoords, nearestPointOnLine);
                     if (distance < hoverDistance && distance < minDistance) {
                         minDistance = distance;
                         hoveredSegment.object = object;
                         hoveredSegment.index = i;
+                        hoveredSegment.nearestPointOnLine = nearestPointOnLine;
                     }
                 }
             }
@@ -1116,15 +1160,8 @@ void EditPolygonTool::updateHover(const QPointF &scenePos, QGraphicsSceneMouseEv
         highlightedHandles.insert(handles.at((hoveredSegment.index + 1) % handles.size()));
     }
 
-    for (PointHandle *handle : mHighlightedHandles)
-        if (!highlightedHandles.contains(handle))
-            handle->setHighlighted(false);
-
-    for (PointHandle *handle : highlightedHandles)
-        if (!mHighlightedHandles.contains(handle))
-            handle->setHighlighted(true);
+    setHighlightedHandles(highlightedHandles);
 
     mHoveredHandle = hoveredHandle;
     mHoveredSegment = hoveredSegment;
-    mHighlightedHandles = highlightedHandles;
 }
