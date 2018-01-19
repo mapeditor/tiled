@@ -79,7 +79,7 @@ private:
         Moving
     };
 
-    void updateHover(const QPointF &pos);
+    void updateHover(const QPointF &scenePos, QGraphicsSceneMouseEvent *event = nullptr);
 
     void setSelectedHandles(const QSet<PointHandle*> &handles);
     void setSelectedHandle(PointHandle *handle)
@@ -89,17 +89,29 @@ private:
 
     void startSelecting();
 
-    void startMoving(const QPointF &pos, Qt::KeyboardModifiers modifiers);
+    void startMoving(const QPointF &pos);
     void updateMovingItems(const QPointF &pos,
                            Qt::KeyboardModifiers modifiers);
     void finishMoving(const QPointF &pos);
 
-    void showHandleContextMenu(PointHandle *clickedHandle, QPoint screenPos);
+    void showHandleContextMenu(QPoint screenPos);
+
+    QSet<PointHandle*> clickedHandles() const;
+
+    struct Segment {
+        MapObject *object = nullptr;
+        int index = 0;
+
+        explicit operator bool() const { return object != nullptr; }
+        void clear() { object = nullptr; }
+    };
 
     SelectionRectangle *mSelectionRectangle;
     bool mMousePressed;
     PointHandle *mHoveredHandle;
+    Segment mHoveredSegment;
     PointHandle *mClickedHandle;
+    Segment mClickedSegment;
     MapObject *mClickedObject;
     QVector<QPointF> mOldHandlePositions;
     QMap<MapObject*, QPolygonF> mOldPolygons;
@@ -112,6 +124,7 @@ private:
     /// The list of handles associated with each selected map object
     QMap<MapObject*, QList<PointHandle*> > mHandles;
     QSet<PointHandle*> mSelectedHandles;
+    QSet<PointHandle*> mHighlightedHandles;
 };
 
 } // namespace Internal
