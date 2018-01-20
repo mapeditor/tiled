@@ -33,6 +33,7 @@ CreateEllipseObjectTool::CreateEllipseObjectTool(QObject *parent)
     icon.addFile(QLatin1String(":images/48x48/insert-ellipse.png"));
     setIcon(icon);
     Utils::setThemeIcon(this, "insert-ellipse");
+    mtoolInfo = tr("Place an ellipse by clicking-and-dragging in any direction. Holding <b>Shift</b> makes it circle and holding <b>Ctrl</b> snaps its size to the tile size.");
     languageChanged();
 }
 

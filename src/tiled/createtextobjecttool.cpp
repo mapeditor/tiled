@@ -37,6 +37,7 @@ CreateTextObjectTool::CreateTextObjectTool(QObject *parent)
     icon.addFile(QLatin1String(":images/48x48/insert-text.png"));
     setIcon(icon);
     Utils::setThemeIcon(this, "insert-text");
+    mtoolInfo = tr("<b>Click</b> anywhere on the map to insert text. You can also hold <b>Left mouse button</b> to see default text while placing it on the map, release <b>Left mouse button</b> to place text on the map.");
     languageChanged();
 }
 
