@@ -88,7 +88,7 @@
     <message>
         <location line="+42"/>
         <source>Executable:</source>
-        <translation type="unfinished">Виконуваний файл:</translation>
+        <translation>Виконуваний файл:</translation>
     </message>
     <message>
         <location line="+14"/>
@@ -99,12 +99,12 @@
     <message>
         <location line="-61"/>
         <source>Shortcut:</source>
-        <translation type="unfinished"></translation>
+        <translation>Комбінація клавіш:</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>Очистити</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -114,12 +114,12 @@
     <message>
         <location line="+20"/>
         <source>Arguments:</source>
-        <translation type="unfinished"></translation>
+        <translation>Аргументи:</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Working Directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>Робоча тека:</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -434,28 +434,29 @@
     <message>
         <location line="+178"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished">Не вдалося відкрити файл для читання.</translation>
+        <translation>Не вдалося відкрити файл для читання.</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Error parsing file.</source>
-        <translation type="unfinished">Помилка обробки файлу.</translation>
+        <translation>Помилка обробки файлу.</translation>
     </message>
     <message>
         <location line="+37"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося відкрити файл для запису.</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Error while writing file:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка під час запису файлу:
+%1</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Json template files (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Файли шаблонів Json (*.json)</translation>
     </message>
 </context>
 <context>
@@ -493,12 +494,12 @@
     <message>
         <location filename="../src/plugins/lua/luaplugin.cpp" line="+103"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося відкрити файл для запису.</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>Lua files (*.lua)</source>
-        <translation type="unfinished">Файли Lua (*.lua)</translation>
+        <translation>Файли Lua (*.lua)</translation>
     </message>
 </context>
 <context>
@@ -506,12 +507,12 @@
     <message>
         <location line="+18"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося відкрити файл для запису.</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>Lua files (*.lua)</source>
-        <translation type="unfinished">Файли Lua (*.lua)</translation>
+        <translation>Файли Lua (*.lua)</translation>
     </message>
 </context>
 <context>
@@ -659,7 +660,7 @@
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+L</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+L</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -764,7 +765,7 @@
     <message>
         <location line="+71"/>
         <source>Snapping</source>
-        <translation type="unfinished"></translation>
+        <translation>Прив&apos;язка об&apos;єктів</translation>
     </message>
     <message>
         <location line="+24"/>
@@ -874,7 +875,7 @@
     <message>
         <location line="+8"/>
         <source>Clear View</source>
-        <translation type="unfinished"></translation>
+        <translation>Очистити вид</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1141,7 +1142,7 @@ Line %1, column %2</source>
     <message>
         <location line="+60"/>
         <source>Embed in map</source>
-        <translation type="unfinished"></translation>
+        <translation>Вбудувати до карти</translation>
     </message>
     <message>
         <location line="+25"/>
@@ -1218,7 +1219,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/tilesetdock.cpp" line="+86"/>
         <source>New Tileset...</source>
-        <translation type="unfinished">Новий набір плиток...</translation>
+        <translation>Новий набір плиток...</translation>
     </message>
 </context>
 <context>
@@ -1366,7 +1367,7 @@ Line %1, column %2</source>
     <message>
         <location line="+7"/>
         <source>I&apos;m already a supporter!</source>
-        <translation type="unfinished">Я вже надав підтримку!</translation>
+        <translation>Я вже підтримую!</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -2187,7 +2188,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/plugins/tbin/tbinplugin.cpp" line="+109"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished">Не вдалося відкрити файл для читання.</translation>
+        <translation>Не вдалося відкрити файл для читання.</translation>
     </message>
     <message>
         <location line="+20"/>
