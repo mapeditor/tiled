@@ -52,7 +52,7 @@ QVariant MapToVariantConverter::toVariant(const Map &map, const QDir &mapDir)
     QVariantMap mapVariant;
 
     mapVariant[QLatin1String("type")] = QLatin1String("map");
-    mapVariant[QLatin1String("version")] = 2.0;
+    mapVariant[QLatin1String("version")] = 1.2;
     mapVariant[QLatin1String("tiledversion")] = QCoreApplication::applicationVersion();
     mapVariant[QLatin1String("orientation")] = orientationToString(map.orientation());
     mapVariant[QLatin1String("renderorder")] = renderOrderToString(map.renderOrder());
@@ -126,6 +126,7 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
 {
     QVariantMap tilesetVariant;
 
+    tilesetVariant[QLatin1String("version")] = 1.2;
     if (firstGid > 0)
         tilesetVariant[QLatin1String("firstgid")] = firstGid;
 
@@ -189,19 +190,15 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
 
     // Write the properties, terrain, external image, object group and
     // animation for those tiles that have them.
-    QVariantList tilePropertiesVariant;
-    QVariantList tilePropertyTypesVariant;
     QVariantList tilesVariant;
     for (const Tile *tile  : tileset.tiles()) {
         const Properties properties = tile->properties();
-        const int tileid = tile->id();
+        QVariantMap tileVariant;
 
         if (!properties.isEmpty()) {
-            tilePropertiesVariant << toVariant(tileid, properties);
-            tilePropertyTypesVariant << propertyTypesToVariant(tileid, properties);
+            tileVariant[QLatin1String("properties")] = toVariant(properties);
         }
 
-        QVariantMap tileVariant;
         if (!tile->type().isEmpty())
             tileVariant[QLatin1String("type")] = tile->type();
         if (tile->terrain() != 0xFFFFFFFF) {
@@ -236,13 +233,9 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
         }
 
         if (!tileVariant.empty()) {
-            tileVariant[QLatin1String("tile")] = tileid;
+            tileVariant[QLatin1String("tile")] = tile->id();
             tilesVariant << tileVariant;
         }
-    }
-    if (!tilePropertiesVariant.empty()) {
-        tilesetVariant[QLatin1String("tileproperties")] = tilePropertiesVariant;
-        tilesetVariant[QLatin1String("tilepropertytypes")] = tilePropertyTypesVariant;
     }
     if (!tilesVariant.empty())
         tilesetVariant[QLatin1String("tiles")] = tilesVariant;
@@ -265,40 +258,22 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
     return tilesetVariant;
 }
 
-QVariant MapToVariantConverter::toVariant(const int tileid, const Properties &properties) const
+QVariant MapToVariantConverter::toVariant(const Properties &properties) const
 {
-    QVariantMap variantMap;
-
-    Properties::const_iterator it = properties.constBegin();
-    Properties::const_iterator it_end = properties.constEnd();
-    for (; it != it_end; ++it) {
-        const QVariant value = toExportValue(it.value(), mMapDir);
-        variantMap[it.key()] = value;
-    }
-
-    variantMap[QLatin1String("tile")] = tileid;
-
-    return variantMap;
-}
-
-QVariant MapToVariantConverter::propertyTypesToVariant(const int tileid, const Properties &properties) const
-{
-    QVariantList propertyTypeVariants;
-    QVariantMap variantMap;
+    QVariantList propertyListVariant;
 
     Properties::const_iterator it = properties.constBegin();
     Properties::const_iterator it_end = properties.constEnd();
     for (; it != it_end; ++it) {
         QVariantMap propertyTypeVariantMap;
         propertyTypeVariantMap[QLatin1String("name")] = it.key();
+        const QVariant value = toExportValue(it.value(), mMapDir);
+        propertyTypeVariantMap[QLatin1String("value")] = value;
         propertyTypeVariantMap[QLatin1String("type")] = typeToName(it.value().userType());
-        propertyTypeVariants << propertyTypeVariantMap;
+        propertyListVariant << propertyTypeVariantMap;
     }
 
-    variantMap[QLatin1String("properties")] = propertyTypeVariants;
-    variantMap[QLatin1String("tile")] = tileid;
-
-    return variantMap;
+    return propertyListVariant;
 }
 
 QVariant MapToVariantConverter::toVariant(const QList<Layer *> &layers,
