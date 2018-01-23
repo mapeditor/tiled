@@ -99,6 +99,10 @@ public class IsometricRenderer implements MapRenderer {
         drawLoc.x -= tileWidth / 2;
         drawLoc.y -= tileHeight / 2;
 
+        // Add offset from tile layer property
+        drawLoc.x += layer.getOffsetX() != null ? layer.getOffsetX() : 0;
+        drawLoc.y += layer.getOffsetY() != null ? layer.getOffsetY() : 0;
+        
         // Determine area to draw from clipping rectangle
         int tileStepY = tileHeight / 2 == 0 ? 1 : tileHeight / 2;
         int columns = clip.width / tileWidth + 3;
@@ -116,6 +120,10 @@ public class IsometricRenderer implements MapRenderer {
                     if (image == null) {
                         continue;
                     }
+
+                    // Add offset from tileset property
+                    drawLoc.x += tile.getTileSet().getTileoffset() != null ? tile.getTileSet().getTileoffset().getX() : 0;
+                    drawLoc.y += tile.getTileSet().getTileoffset() != null ? tile.getTileSet().getTileoffset().getY() : 0;
 
                     g.drawImage(image, drawLoc.x, drawLoc.y, null);
                 }
