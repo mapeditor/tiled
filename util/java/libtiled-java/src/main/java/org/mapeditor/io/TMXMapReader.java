@@ -64,10 +64,10 @@ import org.mapeditor.core.ObjectGroup;
 import org.mapeditor.core.Properties;
 import org.mapeditor.core.Tile;
 import org.mapeditor.core.TileLayer;
+import org.mapeditor.core.TileOffset;
 import org.mapeditor.core.TileSet;
 import org.mapeditor.util.BasicTileCutter;
 import org.mapeditor.util.ImageHelper;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -324,6 +324,11 @@ public class TMXMapReader {
                         //TODO: there is the possibility here of overlaying images,
                         //      which some people may want
                     }
+                } else if (child.getNodeName().equalsIgnoreCase("tileoffset")) {
+                   TileOffset tileoffset = new TileOffset();
+                   tileoffset.setX(Integer.valueOf(getAttributeValue(child, "x")));
+                   tileoffset.setY(Integer.valueOf(getAttributeValue(child, "y")));
+                   set.setTileoffset(tileoffset);
                 }
             }
 

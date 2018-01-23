@@ -34,6 +34,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
@@ -105,11 +106,17 @@ public class OrthogonalRenderer implements MapRenderer {
                     continue;
                 }
 
-                g.drawImage(
-                        image,
-                        x * tileWidth,
-                        (y + 1) * tileHeight - image.getHeight(null),
-                        null);
+                Point drawLoc = new Point(x * tileWidth, (y + 1) * tileHeight - image.getHeight(null));
+
+                // Add offset from tile layer property
+                drawLoc.x += layer.getOffsetX() != null ? layer.getOffsetX() : 0;
+                drawLoc.y += layer.getOffsetY() != null ? layer.getOffsetY() : 0;
+
+                // Add offset from tileset property
+                drawLoc.x += tile.getTileSet().getTileoffset() != null ? tile.getTileSet().getTileoffset().getX() : 0;
+                drawLoc.y += tile.getTileSet().getTileoffset() != null ? tile.getTileSet().getTileoffset().getY() : 0;
+
+                g.drawImage(image, drawLoc.x, drawLoc.y, null);
             }
         }
 
