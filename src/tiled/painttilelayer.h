@@ -86,9 +86,9 @@ public:
     bool mergeWith(const QUndoCommand *other) override;
 
 private:
-    struct TargetData
+    struct LayerData
     {
-        void mergeWith(const TargetData &o);
+        void mergeWith(const LayerData &o);
 
         TileLayer *mSource = nullptr;
         TileLayer *mErased = nullptr;
@@ -97,7 +97,7 @@ private:
     };
 
     MapDocument *mMapDocument;
-    QHash<TileLayer*, TargetData> mTargetData;
+    QHash<TileLayer*, LayerData> mLayerData;
     bool mMergeable;
 };
 
