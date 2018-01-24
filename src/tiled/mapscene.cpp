@@ -451,20 +451,21 @@ void MapScene::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
 
 bool MapScene::eventFilter(QObject *, QEvent *event)
 {
-    switch (event->type()) {
-    case QEvent::KeyPress:
-    case QEvent::KeyRelease: {
-            QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
-            Qt::KeyboardModifiers newModifiers = keyEvent->modifiers();
+    if (mActiveTool) {
+        switch (event->type()) {
+        case QEvent::KeyPress:
+        case QEvent::KeyRelease: {
+            Qt::KeyboardModifiers newModifiers = qGuiApp->queryKeyboardModifiers();
 
-            if (mActiveTool && newModifiers != mCurrentModifiers) {
+            if (newModifiers != mCurrentModifiers) {
                 mActiveTool->modifiersChanged(newModifiers);
                 mCurrentModifiers = newModifiers;
             }
         }
-        break;
-    default:
-        break;
+            break;
+        default:
+            break;
+        }
     }
 
     return false;
