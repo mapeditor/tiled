@@ -185,8 +185,7 @@ void MapScene::enableSelectedTool()
     mActiveTool->activate(this);
 
     mCurrentModifiers = QApplication::keyboardModifiers();
-    if (mCurrentModifiers != Qt::NoModifier)
-        mActiveTool->modifiersChanged(mCurrentModifiers);
+    mActiveTool->modifiersChanged(mCurrentModifiers);
 
     if (mUnderMouse) {
         mActiveTool->mouseEntered();
