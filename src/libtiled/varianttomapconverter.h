@@ -85,6 +85,7 @@ public:
     QString errorString() const { return mError; }
 
 private:
+    QVariant toType(const QVariant &type, const QVariant &value);
     Properties toProperties(const QVariant &propertiesVariant,
                             const QVariant &propertyTypesVariant) const;
     SharedTileset toTileset(const QVariant &variant);
