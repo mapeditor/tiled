@@ -37,6 +37,9 @@ namespace Orx {
         if (dlg_res == QDialog::Accepted)
         {
             m_ImagesFolder = dlg.m_ImagesFolder.replace('\\', '/');
+
+            m_AbsoluteImagesFolder = QFileInfo(fileName).dir().absolutePath() + QDir::separator() + m_ImagesFolder;
+
             m_Optimize = dlg.m_Optimize;
             m_OptimizeHV = dlg.m_OptimizeHV;
             m_SelectedLayers = dlg.m_SelectedLayers;
@@ -66,8 +69,8 @@ namespace Orx {
         m_progress->setWindowModality(Qt::WindowModal);
 
         // get all tilesets and convert to orx object prefabs with graphic
-        m_progress->setLabelText("Processing tilesets...");
-        ret = process_tilesets(map);
+//        m_progress->setLabelText("Processing tilesets...");
+//        ret = process_tilesets(map);
 
         // get all layers and build the map object
         if (ret)
@@ -103,6 +106,17 @@ namespace Orx {
                 inc_progress();
             }
 
+            m_progress->setLabelText("Generating graphics...");
+            for (auto obj : m_graphics)
+            {
+                if (m_progress->wasCanceled())
+                    break;
+
+                obj->serialize(ss);
+
+                inc_progress();
+            }
+
             m_progress->setLabelText("Generating objects...");
             int map_offset = map->height() * map->tileHeight();
             for (auto obj : m_objects)
@@ -113,6 +127,18 @@ namespace Orx {
                 obj->m_Position.m_Y -= map_offset;
 
                 obj->serialize(ss);
+                inc_progress();
+            }
+
+            m_progress->setLabelText("Generating binary maps...");
+            for (std::pair<QString, QImagePtr> kvp : m_binaryMaps)
+            {
+                if (m_progress->wasCanceled())
+                    break;
+
+                QImagePtr img = kvp.second;
+                img->save(kvp.first);
+
                 inc_progress();
             }
 
@@ -173,14 +199,37 @@ namespace Orx {
     }
 
     ///////////////////////////////////////////////////////////////////////////////
-    Orx::ImagePtr orxExporter::get_image(QString image_name, QString image_file)
+    Orx::GraphicPtr orxExporter::build_graphic(Tiled::Tile * tile, Orx::ImagePtr image, int index, int row, int col, int src_x, int src_y)
+    {
+        QString base_name = Orx::NameGenerator::Generate(m_NamingRule, image->m_ImageName, index, col, row);
+        QString graphic_name = base_name + "_" + GRAPHIC_POSTFIX;
+
+        Orx::GraphicPtr obj = std::make_shared<Orx::Graphic>(graphic_name, image->m_Name);
+        obj->m_Origin.m_X = src_x;
+        obj->m_Origin.m_Y = src_y;
+
+        return obj;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    Orx::ImagePtr orxExporter::get_image(QString image_name)
     {
         Orx::ImagePtr ptr;
 
         auto it = std::find_if(m_images.begin(), m_images.end(), [=] (Orx::ImagePtr obj) { return (obj->m_ImageName == image_name); });
         if (it != m_images.end())
             ptr = *it;
-        else
+
+        return ptr;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    Orx::ImagePtr orxExporter::add_image(QString image_name, QString image_file)
+    {
+        Orx::ImagePtr ptr;
+
+        auto it = std::find_if(m_images.begin(), m_images.end(), [=] (Orx::ImagePtr obj) { return (obj->m_ImageName == image_name); });
+        if (it == m_images.end())
         {
             ptr = std::make_shared<Orx::Image>(image_name, image_file);
             m_images.push_back(ptr);
@@ -274,10 +323,14 @@ namespace Orx {
     }
 
     ///////////////////////////////////////////////////////////////////////////////
-    Orx::ImagePtr orxExporter::process_tileset(const Tiled::SharedTileset tset)
+    Orx::ImagePtr orxExporter::process_tileset(const Tiled::SharedTileset tset, bool create_prefab)
     {
         // generate a single atlas and use it for all tiles
-        Orx::ImagePtr image = get_image(tset->name(), tset->imageSource().toLocalFile());
+        Orx::ImagePtr image = get_image(tset->name());
+
+        if (!image)
+            image = add_image(tset->name(), tset->imageSource().toLocalFile());
+
         image->m_UseCount++;
 
         image->m_Size.m_X = tset->tileWidth();
@@ -304,8 +357,16 @@ namespace Orx {
             int tile_x = margin + (col * (tile_w + spacing));
             int tile_y = margin + (row * (tile_h + spacing));
 
-            Orx::PrefabPtr tile_obj = build_prefab(tile, image, index++, row, col, tile_x, tile_y);
-            m_prefabs.push_back(tile_obj);
+            if (create_prefab)
+            {
+                Orx::PrefabPtr tile_obj = build_prefab(tile, image, index++, row, col, tile_x, tile_y);
+                m_prefabs.push_back(tile_obj);
+            }
+            else
+            {
+                Orx::GraphicPtr graphic_obj = build_graphic(tile, image, index++, row, col, tile_x, tile_y);
+                m_graphics.push_back(graphic_obj);
+            }
         }
 
         return image;
@@ -351,10 +412,23 @@ namespace Orx {
     {
         bool ret = true;
 
+        QSet<Tiled::SharedTileset> tileset_set = layer->usedTilesets();
+        Q_FOREACH(Tiled::SharedTileset tset,tileset_set)
+        {
+            inc_progress();
+            // check if the tileset is a collection of images or uses a single image as atlas
+            if (tset->isCollection())
+                process_collection_tileset(tset);
+            else
+                process_tileset(tset);
+        }
+
         // crate layer object, add to objects object and add as child of map object
         QString name = OrxObject::normalize_name(layer->name());
         Orx::GroupObjectPtr layer_object = std::make_shared<Orx::GroupObject>(name);
 
+        // since orx does not support more than MAX_OBJECT_CHILDREN children, we create n containers
+        // as child of layer object and each target will keep up to MAX_OBJECT_CHILDREN children
         std::list<Orx::GroupObjectPtr> targets;
 
         // compute number of needed object containers as ORX can't hold more than 255 child objects per object
@@ -388,7 +462,6 @@ namespace Orx {
 
         // build a vector of optimized objects
         Grid2D<OptimizedCell> cell_map(width, height);
-
         OptimizeMode optimize_mode;
 
         if (m_Optimize)
@@ -466,14 +539,18 @@ namespace Orx {
         Q_FOREACH(Tiled::SharedTileset tset, layer->usedTilesets())
         {
             used_tilesets.push_back(tset);
-            ImagePtr imgptr = process_tileset(tset);
+            ImagePtr imgptr = process_tileset(tset, false);
             imgptr->m_Pivot = "top left";
             layer_object->m_Images.push_back(imgptr);
             layer_object->m_SetSizes.push_back(Vector3i(tset->rowCount(), tset->columnCount(), 0));
         }
 
         // generate binary map in format tileset_index - tile_index
-        layer_object->m_BinMap = generate_binary_map(layer, used_tilesets);
+        QString map_name = layer_object->m_Name + "BinMap.png";
+        QImagePtr map_obj = generate_binary_map(layer, used_tilesets);
+        layer_object->m_Texture = map_name;
+
+        m_binaryMaps[m_AbsoluteImagesFolder + QDir::separator() + map_name] = map_obj;
 
         Orx::ObjectPtr objptr = std::static_pointer_cast<Orx::Object>(layer_object);
 
@@ -584,7 +661,7 @@ namespace Orx {
     }
 
     ///////////////////////////////////////////////////////////////////////////////
-    QImage * orxExporter::generate_binary_map(const Tiled::TileLayer * layer, QVector<Tiled::SharedTileset> & used_tilesets)
+    QImagePtr orxExporter::generate_binary_map(const Tiled::TileLayer * layer, QVector<Tiled::SharedTileset> & used_tilesets)
     {
         // we use 16 indexes so 1 nibble for the tileset index (0...15) and the rest for tile index (0..4095 tiles per tileset)
 
@@ -598,7 +675,7 @@ namespace Orx {
 
         int binary_map_height = height;
 
-        QImage * image = new QImage(binary_map_width, binary_map_height, QImage::Format_RGBA8888);
+        QImagePtr image = std::make_shared<QImage>(binary_map_width, binary_map_height, QImage::Format_RGBA8888);
         for (int y = 0; y < height; ++y)
         {
             int cnt = 0;
@@ -610,10 +687,16 @@ namespace Orx {
                 int tile_index = tile->id();
                 int tileset_index = get_tileset_index(used_tilesets, tileset);
 
-                uint16_t comp_value = (tileset_index << 12) | tile_index;
+                // the composed value is:
+                // xxxx yyyy yyyy yyyy
+                //   |  \____________/
+                //   |      |__________ tileset index (no more than 16 tilesets)
+                //   |_________________ tile index in the tilesets (no more than 4095 tiles per tileset)
+
+                uint16_t comp_value = (tileset_index << 12) | (tile_index & 0x0FFF);
 
                 QColor color = image->pixelColor(x / 2, y);
-                if (cnt % 0)
+                if (!(cnt % 2)) // even
                 {
                     color.setRed((comp_value >> 8) & 0xFF);
                     color.setGreen(comp_value & 0xFF);

@@ -191,7 +191,6 @@ public:
 public:
     // Image this graphic refers to
     QString             m_Texture;
-    QImage *            m_BinMap;
     ImagePtrs           m_Images;
 
     QString             m_Graphic;

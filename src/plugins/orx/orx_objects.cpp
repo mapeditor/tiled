@@ -78,15 +78,9 @@ namespace Orx
     {
         serialize_name(ss);
 
-        serialize_value(ss, "Graphic", "@");
+        serialize_value(ss, "ShaderLayer", "true");
         serialize_value(ss, "Texture", m_Texture);
-        serialize_value(ss, "ShaderList", "@");
-        serialize_value(ss, "UseParentSpace", "both");
-        serialize_value(ss, "ParentCamera", "Camera");
         serialize_value(ss, "Scale", m_Scale);
-        serialize_value(ss, "Code", "@MapShader");
-        serialize_value(ss, "ParamList", "@MapShader");
-
         serialize_value(ss, "RelativeSize", m_RelativeSize);
         serialize_value(ss, "Position", m_Position);
         serialize_value(ss, "TileSize", m_TileSize);
@@ -95,13 +89,19 @@ namespace Orx
         serialize_value(ss, "Highlight", m_Highlight);
 
         QString set;
+        QString tilesets;
         for (int a=0; a<m_Images.size(); ++a)
         {
             set += "@" + m_Images[a]->m_Name + ".Texture";
+            tilesets += m_Images[a]->m_Name;
             if (a<(m_Images.size() - 1))
+            {
                 set += " # ";
+                tilesets += " # ";
+            }
         }
-        serialize_value(ss, "Set", set);
+        serialize_value(ss, "Tilesets", tilesets);
+        serialize_value(ss, "Sets", set);
 
         set = "";
         for (int a=0; a<m_SetSizes.size(); ++a)
@@ -155,7 +155,7 @@ namespace Orx
     {
         serialize_name(ss);
 
-        serialize_value(ss, "Code", "void main()\n"
+        serialize_value(ss, "Code", "\"void main()\n"
                                            "{\n"
                                            "  // Gets correction ratio based on camera's frustum size and display resolution\n"
                                            "  vec2  ratio = CameraSize.xy / Resolution.xy;\n"
@@ -207,9 +207,9 @@ namespace Orx
                                            "\n"
                                            "  // Updates fragment\n"
                                            "  gl_FragColor = color.rgba;\n"
-                                           "}\n");
+                                           "}\"\n");
 
-        serialize_value(ss, "ParamList", "ileSize # SetSizes # MapSize # Map # Set # Resolution # CameraPos # CameraSize # Highlight");
+        serialize_value(ss, "ParamList", "TileSize # SetSizes # MapSize # Map # Sets # Resolution # CameraPos # CameraSize # Highlight");
 
         ss << endl;
         }

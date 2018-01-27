@@ -22,6 +22,9 @@
 
 namespace Orx {
 
+typedef std::shared_ptr<QImage>         QImagePtr;
+typedef std::map<QString, QImagePtr>    QImagePtrsMap;
+
 class orxExporter
 {
 public:
@@ -34,8 +37,12 @@ private:
     bool do_export(const Tiled::Map *map, const QString &fileName);
     // builds a prefab object from a Tile in the tileset.
     Orx::PrefabPtr build_prefab(Tiled::Tile * tile, Orx::ImagePtr image, int index, int row, int col, int src_x, int src_y);
-    // returns an new or existing image shared pointer (a Texture object) from the file name
-    Orx::ImagePtr get_image(QString image_name, QString image_file);
+    // builds a graphic object
+    Orx::GraphicPtr build_graphic(Tiled::Tile * tile, Orx::ImagePtr image, int index, int row, int col, int src_x, int src_y);
+    // returns an existing image shared pointer (a Texture object) from the file name
+    Orx::ImagePtr get_image(QString image_name);
+    // returns an new image shared pointer (a Texture object) from the file name
+    Orx::ImagePtr add_image(QString image_name, QString image_file);
     // gets a prefab by its tile id
     Orx::PrefabPtr get_prefab(int tile_id);
     // gets a graphic by its tile id
@@ -49,7 +56,7 @@ private:
     // now does nothing...:)
     bool process_collection_tileset(const Tiled::SharedTileset tset);
     // generated prefabs from a tilesed
-    Orx::ImagePtr process_tileset(const Tiled::SharedTileset tset);
+    Orx::ImagePtr process_tileset(const Tiled::SharedTileset tset, bool create_prefab = true);
     // processes a tile layer and generates objects
     bool process_tile_layer(const Tiled::TileLayer * layer, Orx::ObjectPtr parent, bool normal_mode);
     // processes a tile layer and generates objects
@@ -67,7 +74,7 @@ private:
     // increments the progress indication in progress dlg
     void inc_progress();
     // generates a binary map into a QPixmap
-    QImage * generate_binary_map(const Tiled::TileLayer * layer, QVector<Tiled::SharedTileset> & used_tilesets);
+    QImagePtr generate_binary_map(const Tiled::TileLayer * layer, QVector<Tiled::SharedTileset> & used_tilesets);
     // gets the index of the tileset in the given array
     int get_tileset_index(QVector<Tiled::SharedTileset> & used_tilesets, Tiled::Tileset * tset);
     // get num of tilesets used in one layer
@@ -87,10 +94,15 @@ private:
     Orx::ShaderLayerPtrs    m_ShaderLayers;
     // the map shader entity
     Orx::MapShaderPtr       m_MapShader;
+    // binary maps
+    QImagePtrsMap           m_binaryMaps;
+    // graphic objects
+    Orx::GraphicPtrs        m_graphics;
 
     QProgressDialog *       m_progress;
     int                     m_progressCounter;
     QString                 m_ImagesFolder;
+    QString                 m_AbsoluteImagesFolder;
     QVector<OptionsDialog::SelectedLayer> m_SelectedLayers;
     bool                    m_Optimize;
     bool                    m_OptimizeHV;
