@@ -24,8 +24,8 @@ public:
 public:
     struct SelectedLayer
     {
-        Tiled::Layer *  m_layer;
-        bool            m_normalExport;
+        Tiled::Layer *      m_layer;
+        bool                m_normalExport;
     };
 
     QString                 m_ImagesFolder;
@@ -47,10 +47,6 @@ private slots:
     void on_buttonBox_accepted();
 
     void on_buttonBox_rejected();
-
-    void on_rdUseWnidowsSeparator_clicked();
-
-    void on_rdUseUnixSeparator_clicked();
 
     void on_txtNameExpression_textChanged(const QString &arg1);
 

@@ -12,6 +12,8 @@
 #include "mapobject.h"
 
 #include "orx_objects.h"
+#include "orx_utility.h"
+#include "orx_cell_optimizer.h"
 
 #include "optionsdialog.h"
 
@@ -30,10 +32,6 @@ public:
 private:
     // perform the export
     bool do_export(const Tiled::Map *map, const QString &fileName);
-    // converts the given absolute filename to a filename relative to destination save directory
-    QString get_relative_filename(const QString & filename);
-    // returns the name of the given tile
-    QString get_tile_name(const Tiled::Tile * tile);
     // builds a prefab object from a Tile in the tileset.
     Orx::PrefabPtr build_prefab(Tiled::Tile * tile, Orx::ImagePtr image, int index, int row, int col, int src_x, int src_y);
     // returns an new or existing image shared pointer (a Texture object) from the file name
@@ -51,7 +49,7 @@ private:
     // now does nothing...:)
     bool process_collection_tileset(const Tiled::SharedTileset tset);
     // generated prefabs from a tilesed
-    bool process_tileset(const Tiled::SharedTileset tset);
+    Orx::ImagePtr process_tileset(const Tiled::SharedTileset tset);
     // processes a tile layer and generates objects
     bool process_tile_layer(const Tiled::TileLayer * layer, Orx::ObjectPtr parent, bool normal_mode);
     // processes a tile layer and generates objects
@@ -68,30 +66,37 @@ private:
     int get_num_entities(const Tiled::Map *map, QVector<OptionsDialog::SelectedLayer> & selected);
     // increments the progress indication in progress dlg
     void inc_progress();
-    // computes the number of times a cell is repeated horizontally starting from given coords
-    int get_h_repetitions(const Tiled::TileLayer * layer, int x, int y, const Tiled::Cell * value, int max_x);
-    // computes the number of times a cell is repeated vertically starting from given coords
-    int get_v_repetitions(const Tiled::TileLayer * layer, int x, int y, const Tiled::Cell * value, int max_y);
-    // build the cell_map unoptimized
-    void no_optimize(int width, int height, Grid2D<OptimizedCell> & call_map, const Tiled::TileLayer * layer);
-    // optimizes cells of layer, first horizontally then vertically
-    void optimize_h_v(int width, int height, Grid2D<OptimizedCell> & call_map, const Tiled::TileLayer * layer);
-    // optimizes cells of layer, first vertically then horizontally
-    void optimize_v_h(int width, int height, Grid2D<OptimizedCell> & call_map, const Tiled::TileLayer * layer);
+    // generates a binary map into a QPixmap
+    QImage * generate_binary_map(const Tiled::TileLayer * layer, QVector<Tiled::SharedTileset> & used_tilesets);
+    // gets the index of the tileset in the given array
+    int get_tileset_index(QVector<Tiled::SharedTileset> & used_tilesets, Tiled::Tileset * tset);
+    // get num of tilesets used in one layer
+    int count_used_tilesets(const Tiled::TileLayer * layer) { return layer->usedTilesets().size(); }
+
 
 private:
-    QString             m_filename;
-    Orx::ImagePtrs      m_images;
-    Orx::PrefabPtrs     m_prefabs;
-    Orx::ObjectPtrs     m_objects;
-    QProgressDialog *   m_progress;
-    int                 m_progressCounter;
-    QString             m_ImagesFolder;
+    // destination filename
+    QString                 m_filename;
+    // collection of images/textures
+    Orx::ImagePtrs          m_images;
+    // collection of prefabs (tile model)
+    Orx::PrefabPtrs         m_prefabs;
+    // collection of game objects (tile instance)
+    Orx::ObjectPtrs         m_objects;
+    // collection of level layers
+    Orx::ShaderLayerPtrs    m_ShaderLayers;
+    // the map shader entity
+    Orx::MapShaderPtr       m_MapShader;
+
+    QProgressDialog *       m_progress;
+    int                     m_progressCounter;
+    QString                 m_ImagesFolder;
     QVector<OptionsDialog::SelectedLayer> m_SelectedLayers;
-    bool                m_Optimize;
-    bool                m_OptimizeHV;
-    QString             m_NamingRule;
-    bool                m_GenerateShaderCode;
+    bool                    m_Optimize;
+    bool                    m_OptimizeHV;
+    QString                 m_NamingRule;
+    bool                    m_GenerateShaderCode;
+
 
 };
 

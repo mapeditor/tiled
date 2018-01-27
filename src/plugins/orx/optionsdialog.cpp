@@ -159,16 +159,6 @@ void OptionsDialog::on_buttonBox_rejected()
 
 }
 
-void OptionsDialog::on_rdUseWnidowsSeparator_clicked()
-{
-    ui->rdUseUnixSeparator->setChecked(!ui->rdUseWnidowsSeparator->isChecked());
-}
-
-void OptionsDialog::on_rdUseUnixSeparator_clicked()
-{
-    ui->rdUseWnidowsSeparator->setChecked(!ui->rdUseUnixSeparator->isChecked());
-}
-
 void OptionsDialog::on_txtNameExpression_textChanged(const QString &arg1)
 {
     ui->lblNamePreview->setText(Orx::NameGenerator::Generate(arg1, "Preview", 43, 16, 8));

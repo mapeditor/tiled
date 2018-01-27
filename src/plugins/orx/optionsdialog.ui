@@ -106,47 +106,6 @@
             </layout>
            </item>
            <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_5">
-             <item>
-              <spacer name="horizontalSpacer_5">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeType">
-                <enum>QSizePolicy::Fixed</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item>
-              <layout class="QVBoxLayout" name="verticalLayout_6" stretch="0,1">
-               <item>
-                <widget class="QRadioButton" name="rdUseWnidowsSeparator">
-                 <property name="text">
-                  <string>Use Windows folder separator</string>
-                 </property>
-                 <property name="checked">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QRadioButton" name="rdUseUnixSeparator">
-                 <property name="text">
-                  <string>Use UNIX folder separator</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-            </layout>
-           </item>
-           <item>
             <layout class="QFormLayout" name="formLayout">
              <item row="2" column="0">
               <spacer name="horizontalSpacer_6">

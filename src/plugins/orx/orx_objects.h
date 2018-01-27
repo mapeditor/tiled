@@ -41,6 +41,13 @@ class Graphic;
 typedef std::shared_ptr<Graphic>        GraphicPtr;
 typedef std::vector<GraphicPtr>         GraphicPtrs;
 
+class ShaderLayer;
+typedef std::shared_ptr<ShaderLayer>    ShaderLayerPtr;
+typedef std::vector<ShaderLayer>        ShaderLayerPtrs;
+
+class MapShader;
+typedef std::shared_ptr<MapShader>      MapShaderPtr;
+
 class Image;
 typedef std::shared_ptr<Image>          ImagePtr;
 typedef std::vector<ImagePtr>           ImagePtrs;
@@ -52,6 +59,7 @@ class Image : public OrxObject, public IndexGenerator
 public:
     // trivial c.tor
     Image(const QString & image_name, const QString & filename);
+    Image(const QString & image_name, const QString & filename, QString pivot);
 
 public:
     // Texture filename (absolute)
@@ -59,6 +67,7 @@ public:
     QString         m_Texture;
     int             m_UseCount;
     Vector2i        m_Size;
+    QString         m_Pivot;
 
 public:
     // serializes the element into the given stream
@@ -96,6 +105,17 @@ public:
     QString         m_BaseName;
     int             m_TiledId;
     int             m_UseCount;
+
+public:
+    virtual void serialize(QTextStream & ss);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+// Prefab is an OBJECT with a GRAPHIC, a BODY but no transformations
+class MapShader : public OrxObject
+{
+public:
+    MapShader();
 
 public:
     virtual void serialize(QTextStream & ss);
@@ -155,6 +175,42 @@ class GroupObject : public Object
 public:
     GroupObject();
     GroupObject(const QString & name);
+
+public:
+    virtual void serialize(QTextStream & ss);
+};
+
+///////////////////////////////////////////////////////////////////////////////
+// Binary map used in shader based export
+class ShaderLayer : public Object
+{
+public:
+    ShaderLayer();
+    ShaderLayer(const QString & name, Vector3i tile_size, Vector3i map_size);
+    void init(Vector3i tile_size, Vector3i map_size);
+public:
+    // Image this graphic refers to
+    QString             m_Texture;
+    QImage *            m_BinMap;
+    ImagePtrs           m_Images;
+
+    QString             m_Graphic;
+    QString             m_ShaderList;
+    QString             m_UseParentSpace;
+    QString             m_ParentCamera;
+    Vector3i            m_Scale;
+    Vector3i            m_RelativeSize;
+    Vector3i            m_Position;
+    QString             m_Pivot;
+    QString             m_Code;
+    QString             m_ParamList;
+    Vector3i            m_TileSize;
+    QVector<Vector3i>   m_SetSizes;
+    Vector3i            m_MapSize;
+    QString             m_Resolution;
+    Vector3i            m_CameraPos;
+    Vector3i            m_CameraSize;
+    Vector3i            m_Highlight;
 
 public:
     virtual void serialize(QTextStream & ss);
