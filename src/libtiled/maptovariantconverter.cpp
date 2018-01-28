@@ -195,9 +195,7 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
         const Properties properties = tile->properties();
         QVariantMap tileVariant;
 
-        if (!properties.isEmpty()) {
-            tileVariant[QLatin1String("properties")] = toVariant(properties);
-        }
+        addProperties(tileVariant, properties);
 
         if (!tile->type().isEmpty())
             tileVariant[QLatin1String("type")] = tile->type();
@@ -256,24 +254,6 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
     }
 
     return tilesetVariant;
-}
-
-QVariant MapToVariantConverter::toVariant(const Properties &properties) const
-{
-    QVariantList propertyListVariant;
-
-    Properties::const_iterator it = properties.constBegin();
-    Properties::const_iterator it_end = properties.constEnd();
-    for (; it != it_end; ++it) {
-        QVariantMap propertyTypeVariantMap;
-        propertyTypeVariantMap[QLatin1String("name")] = it.key();
-        const QVariant value = toExportValue(it.value(), mMapDir);
-        propertyTypeVariantMap[QLatin1String("value")] = value;
-        propertyTypeVariantMap[QLatin1String("type")] = typeToName(it.value().userType());
-        propertyListVariant << propertyTypeVariantMap;
-    }
-
-    return propertyListVariant;
 }
 
 QVariant MapToVariantConverter::toVariant(const QList<Layer *> &layers,
@@ -601,8 +581,7 @@ void MapToVariantConverter::addProperties(QVariantMap &variantMap,
     if (properties.isEmpty())
         return;
 
-    QVariantMap propertiesMap;
-    QVariantMap propertyTypesMap;
+    QVariantList propertyListVariant;
 
     Properties::const_iterator it = properties.constBegin();
     Properties::const_iterator it_end = properties.constEnd();
@@ -610,10 +589,12 @@ void MapToVariantConverter::addProperties(QVariantMap &variantMap,
         int type = it.value().userType();
         const QVariant value = toExportValue(it.value(), mMapDir);
 
-        propertiesMap[it.key()] = value;
-        propertyTypesMap[it.key()] = typeToName(type);
+        QVariantMap propertyTypeVariantMap;
+        propertyTypeVariantMap[QLatin1String("name")] = it.key();
+        propertyTypeVariantMap[QLatin1String("value")] = value;
+        propertyTypeVariantMap[QLatin1String("type")] = typeToName(type);
+        propertyListVariant << propertyTypeVariantMap;
     }
 
-    variantMap[QLatin1String("properties")] = propertiesMap;
-    variantMap[QLatin1String("propertytypes")] = propertyTypesMap;
+    variantMap[QLatin1String("properties")] = propertyListVariant;
 }

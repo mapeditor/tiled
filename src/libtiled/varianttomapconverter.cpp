@@ -161,6 +161,7 @@ Properties VariantToMapConverter::toProperties(const QVariant &propertiesVariant
 
     Properties properties;
 
+    // original format
     QVariantMap::const_iterator it = propertiesMap.constBegin();
     QVariantMap::const_iterator it_end = propertiesMap.constEnd();
     for (; it != it_end; ++it) {
@@ -170,6 +171,19 @@ Properties VariantToMapConverter::toProperties(const QVariant &propertiesVariant
 
         const QVariant value = fromExportValue(it.value(), type, mMapDir);
         properties[it.key()] = value;
+    }
+
+    // version 1.2 format
+    QVariantList propertiesVariantList = propertiesVariant.toList();
+    for (int i = 0; i < propertiesVariantList.count(); ++i) {
+        const QVariantMap propertyVariantMap = propertiesVariantList[i].toMap();
+        const QString propertyName = propertyVariantMap[QLatin1String("name")].toString();
+        const QString propertyType = propertyVariantMap[QLatin1String("type")].toString();
+        const QVariant propertyValue = propertyVariantMap[QLatin1String("value")];
+        int type = nameToType(propertyType);
+        if (type == QVariant::Invalid)
+            type = QVariant::String;
+        properties[propertyName] = fromExportValue(propertyValue, type, mMapDir);
     }
 
     return properties;
@@ -349,18 +363,8 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
             Tile *tile = tileset->findOrCreateTile(tileId);
             tile->setType(tileVar[QLatin1String("type")].toString());
 
-            Properties properties;
-            QVariantList propertiesVariantList = tileVar[QLatin1String("properties")].toList();
-            if (!propertiesVariantList.isEmpty()) {
-                for (int j = 0; j < propertiesVariantList.count(); ++j) {
-                    const QVariantMap propertyVariantMap = propertiesVariantList[j].toMap();
-                    const QVariant propertyName = propertyVariantMap[QLatin1String("name")].toString();
-                    const QVariant propertyType = propertyVariantMap[QLatin1String("type")].toString();
-                    const QVariant propertyValue = propertyVariantMap[QLatin1String("value")];
-                    properties[propertyName.toString()] = toType(propertyType, propertyValue);
-                }
-                tile->setProperties(properties);
-            }
+            tile->setProperties(extractProperties(tileVar));
+
             bool ok;
             QList<QVariant> terrains = tileVar[QLatin1String("terrain")].toList();
             if (terrains.count() == 4) {
