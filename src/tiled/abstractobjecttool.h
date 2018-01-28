@@ -65,8 +65,8 @@ protected:
 
     MapScene *mapScene() const { return mMapScene; }
     ObjectGroup *currentObjectGroup() const;
-    QList<MapObjectItem*> objectItemsAt(const QPointF &pos) const;
-    MapObjectItem *topMostObjectItemAt(const QPointF &pos) const;
+    QList<MapObject*> mapObjectsAt(const QPointF &pos) const;
+    MapObject *topMostMapObjectAt(const QPointF &pos) const;
 
 private slots:
     void duplicateObjects();
@@ -87,7 +87,7 @@ private slots:
     void lowerToBottom();
 
 private:
-    void showContextMenu(MapObjectItem *clickedObject,
+    void showContextMenu(MapObject *clickedObject,
                          QPoint screenPos);
 
     MapScene *mMapScene;

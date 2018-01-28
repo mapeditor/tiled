@@ -30,8 +30,10 @@
 #include "mapscene.h"
 #include "objectgroup.h"
 #include "objectgroupitem.h"
+#include "objectselectiontool.h"
 #include "snaphelper.h"
 #include "tile.h"
+#include "toolmanager.h"
 #include "utils.h"
 
 #include <QApplication>
@@ -88,9 +90,11 @@ void CreateObjectTool::keyPressed(QKeyEvent *event)
     case Qt::Key_Escape:
         if (mNewMapObjectItem) {
             cancelNewMapObject();
-            return;
+        } else {
+            // If we're not currently creating a new object, switch to object selection tool
+            toolManager()->selectTool(toolManager()->findTool<ObjectSelectionTool>());
         }
-        break;
+        return;
     }
 
     AbstractObjectTool::keyPressed(event);

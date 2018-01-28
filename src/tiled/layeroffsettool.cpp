@@ -28,9 +28,10 @@
 #include "snaphelper.h"
 
 #include <QApplication>
+#include <QKeyEvent>
 #include <QUndoStack>
 
-#include <cmath>
+#include <QtMath>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -74,8 +75,8 @@ void LayerOffsetTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modif
         offsetPos -= layer->totalOffset();
 
     const QPointF tilePosF = mapDocument()->renderer()->screenToTileCoords(offsetPos);
-    const int x = (int) std::floor(tilePosF.x());
-    const int y = (int) std::floor(tilePosF.y());
+    const int x = qFloor(tilePosF.x());
+    const int y = qFloor(tilePosF.y());
     setStatusInfo(QString(QLatin1String("%1, %2")).arg(x).arg(y));
 
     if (!mMousePressed)
@@ -84,7 +85,7 @@ void LayerOffsetTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modif
         return;
 
     if (!mDragging) {
-        QPoint screenPos = QCursor::pos();
+        const QPoint screenPos = QCursor::pos();
         const int dragDistance = (mMouseScreenStart - screenPos).manhattanLength();
 
         // Use a reduced start drag distance to increase the responsiveness

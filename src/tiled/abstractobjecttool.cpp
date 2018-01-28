@@ -138,7 +138,7 @@ void AbstractObjectTool::mouseMoved(const QPointF &pos,
 void AbstractObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
     if (event->button() == Qt::RightButton) {
-        showContextMenu(topMostObjectItemAt(event->scenePos()),
+        showContextMenu(topMostMapObjectAt(event->scenePos()),
                         event->screenPos());
     }
 }
@@ -156,27 +156,27 @@ ObjectGroup *AbstractObjectTool::currentObjectGroup() const
     return dynamic_cast<ObjectGroup*>(mapDocument()->currentLayer());
 }
 
-QList<MapObjectItem*> AbstractObjectTool::objectItemsAt(const QPointF &pos) const
+QList<MapObject*> AbstractObjectTool::mapObjectsAt(const QPointF &pos) const
 {
     const QList<QGraphicsItem *> &items = mMapScene->items(pos);
 
-    QList<MapObjectItem*> objectList;
+    QList<MapObject*> objectList;
     for (auto item : items) {
         MapObjectItem *objectItem = qgraphicsitem_cast<MapObjectItem*>(item);
         if (objectItem && objectItem->mapObject()->objectGroup()->isUnlocked())
-            objectList.append(objectItem);
+            objectList.append(objectItem->mapObject());
     }
     return objectList;
 }
 
-MapObjectItem *AbstractObjectTool::topMostObjectItemAt(const QPointF &pos) const
+MapObject *AbstractObjectTool::topMostMapObjectAt(const QPointF &pos) const
 {
     const QList<QGraphicsItem *> &items = mMapScene->items(pos);
 
     for (QGraphicsItem *item : items) {
         MapObjectItem *objectItem = qgraphicsitem_cast<MapObjectItem*>(item);
         if (objectItem && objectItem->mapObject()->objectGroup()->isUnlocked())
-            return objectItem;
+            return objectItem->mapObject();
     }
     return nullptr;
 }
@@ -372,13 +372,13 @@ void AbstractObjectTool::lowerToBottom()
  * Shows the context menu for map objects. The menu allows you to duplicate and
  * remove the map objects, or to edit their properties.
  */
-void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
+void AbstractObjectTool::showContextMenu(MapObject *clickedObject,
                                          QPoint screenPos)
 {
     const QList<MapObject*> &selectedObjects = mapDocument()->selectedObjects();
 
-    if (clickedObjectItem && !selectedObjects.contains(clickedObjectItem->mapObject()))
-        mapDocument()->setSelectedObjects({ clickedObjectItem->mapObject() });
+    if (clickedObject && !selectedObjects.contains(clickedObject))
+        mapDocument()->setSelectedObjects({ clickedObject });
 
     if (selectedObjects.isEmpty())
         return;

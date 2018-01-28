@@ -135,6 +135,8 @@
      <addaction name="actionNoLabels"/>
      <addaction name="actionLabelsForSelectedObjects"/>
      <addaction name="actionLabelsForAllObjects"/>
+     <addaction name="separator"/>
+     <addaction name="actionLabelForHoveredObject"/>
     </widget>
     <widget class="QMenu" name="menuSnapping">
      <property name="title">
@@ -604,6 +606,14 @@
    </property>
    <property name="shortcut">
     <string>Tab</string>
+   </property>
+  </action>
+  <action name="actionLabelForHoveredObject">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>For Hovered Object</string>
    </property>
   </action>
  </widget>

@@ -54,16 +54,16 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-TemplatesDock::TemplatesDock(QWidget *parent):
-    QDockWidget(parent),
-    mTemplatesView(new TemplatesView),
-    mChooseDirectory(new QAction(this)),
-    mUndoAction(new QAction(this)),
-    mRedoAction(new QAction(this)),
-    mDummyMapDocument(nullptr),
-    mMapScene(new MapScene(this)),
-    mMapView(new MapView(this, MapView::NoStaticContents)),
-    mToolManager(new ToolManager(this))
+TemplatesDock::TemplatesDock(QWidget *parent)
+    : QDockWidget(parent)
+    , mTemplatesView(new TemplatesView)
+    , mChooseDirectory(new QAction(this))
+    , mUndoAction(new QAction(this))
+    , mRedoAction(new QAction(this))
+    , mDummyMapDocument(nullptr)
+    , mMapScene(new MapScene(this))
+    , mMapView(new MapView(this, MapView::NoStaticContents))
+    , mToolManager(new ToolManager(this))
 {
     setObjectName(QLatin1String("TemplatesDock"));
 
@@ -73,6 +73,7 @@ TemplatesDock::TemplatesDock(QWidget *parent):
     mMapView->setAcceptDrops(false);
     mMapView->setScene(mMapScene);
 
+    mMapView->setResizeAnchor(QGraphicsView::AnchorViewCenter);
     mMapView->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     mMapView->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 

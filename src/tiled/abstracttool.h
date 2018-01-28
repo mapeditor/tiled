@@ -43,6 +43,7 @@ namespace Internal {
 
 class MapDocument;
 class MapScene;
+class ToolManager;
 
 /**
  * An abstraction of any kind of tool used to edit the map.
@@ -92,6 +93,8 @@ public:
 
     bool isEnabled() const;
     void setEnabled(bool enabled);
+
+    ToolManager *toolManager() const;
 
     Tile *tile() const;
 
@@ -196,12 +199,15 @@ signals:
     void enabledChanged(bool enabled);
 
 private:
+    friend class ToolManager;
+
     QString mName;
     QIcon mIcon;
     QKeySequence mShortcut;
     QString mStatusInfo;
     QCursor mCursor;
     bool mEnabled;
+    ToolManager *mToolManager;
     Tile *mTile;
     ObjectTemplate *mObjectTemplate;
 
@@ -252,6 +258,14 @@ inline QCursor AbstractTool::cursor() const
 inline bool AbstractTool::isEnabled() const
 {
     return mEnabled;
+}
+
+/**
+ * Returns the ToolManager with which this tool is registered, if any.
+ */
+inline ToolManager *AbstractTool::toolManager() const
+{
+    return mToolManager;
 }
 
 inline Tile *AbstractTool::tile() const

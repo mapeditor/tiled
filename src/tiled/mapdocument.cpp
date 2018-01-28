@@ -72,6 +72,7 @@ MapDocument::MapDocument(Map *map, const QString &fileName)
     : Document(MapDocumentType, fileName)
     , mMap(map)
     , mLayerModel(new LayerModel(this))
+    , mHoveredMapObject(nullptr)
     , mRenderer(nullptr)
     , mMapObjectModel(new MapObjectModel(this))
 {
@@ -716,6 +717,16 @@ QList<Object*> MapDocument::currentObjects() const
     return Document::currentObjects();
 }
 
+void MapDocument::setHoveredMapObject(MapObject *object)
+{
+    if (mHoveredMapObject == object)
+        return;
+
+    MapObject *previous = mHoveredMapObject;
+    mHoveredMapObject = object;
+    emit hoveredMapObjectChanged(object, previous);
+}
+
 /**
  * Makes sure the all tilesets which are used at the given \a map will be
  * present in the map document.
@@ -816,6 +827,9 @@ void MapDocument::unifyTilesets(Map *map, QVector<SharedTileset> &missingTileset
  */
 void MapDocument::onObjectsRemoved(const QList<MapObject*> &objects)
 {
+    if (mHoveredMapObject && objects.contains(mHoveredMapObject))
+        setHoveredMapObject(nullptr);
+
     deselectObjects(objects);
     emit objectsRemoved(objects);
 }
@@ -895,6 +909,9 @@ void MapDocument::onLayerAboutToBeRemoved(GroupLayer *groupLayer, int index)
         QList<MapObject*> objects;
         collectObjects(layer, objects);
         deselectObjects(objects);
+
+        if (mHoveredMapObject && objects.contains(mHoveredMapObject))
+            setHoveredMapObject(nullptr);
     }
 
     emit layerAboutToBeRemoved(groupLayer, index);

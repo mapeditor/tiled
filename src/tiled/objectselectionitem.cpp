@@ -349,6 +349,9 @@ ObjectSelectionItem::ObjectSelectionItem(MapDocument *mapDocument,
     connect(mapDocument, &MapDocument::objectsChanged,
             this, &ObjectSelectionItem::syncOverlayItems);
 
+    connect(mapDocument, &MapDocument::hoveredMapObjectChanged,
+            this, &ObjectSelectionItem::hoveredMapObjectChanged);
+
     connect(mapDocument, &MapDocument::objectsAdded,
             this, &ObjectSelectionItem::objectsAdded);
 
@@ -374,6 +377,35 @@ void ObjectSelectionItem::selectedObjectsChanged()
 {
     addRemoveObjectLabels();
     addRemoveObjectOutlines();
+}
+
+void ObjectSelectionItem::hoveredMapObjectChanged(MapObject *object,
+                                                  MapObject *previous)
+{
+    Preferences *prefs = Preferences::instance();
+    auto visibility = prefs->objectLabelVisibility();
+
+    if (visibility == Preferences::AllObjectLabels)
+        return;
+
+    bool labelForHoveredObject = prefs->labelForHoveredObject();
+
+    // Make sure any newly hovered object has a label
+    if (object && labelForHoveredObject && !mObjectLabels.contains(object)) {
+        MapObjectLabel *labelItem = new MapObjectLabel(object, this);
+        labelItem->syncWithMapObject(mMapDocument->renderer());
+        mObjectLabels.insert(object, labelItem);
+    }
+
+    // Maybe remove the label from the previous object
+    if (MapObjectLabel *label = mObjectLabels.value(previous)) {
+        if (visibility == Preferences::SelectedObjectLabels)
+            if (mMapDocument->selectedObjects().contains(previous))
+                return;
+
+        delete label;
+        mObjectLabels.remove(previous);
+    }
 }
 
 void ObjectSelectionItem::mapChanged()
@@ -528,6 +560,11 @@ void ObjectSelectionItem::addRemoveObjectLabels()
 
         labelItems.insert(object, labelItem);
     };
+
+    Preferences *prefs = Preferences::instance();
+    if (prefs->labelForHoveredObject())
+        if (MapObject *object = mMapDocument->hoveredMapObject())
+            ensureLabel(object);
 
     switch (objectLabelVisibility()) {
     case Preferences::AllObjectLabels: {
