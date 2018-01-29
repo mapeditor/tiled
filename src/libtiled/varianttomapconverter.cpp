@@ -144,15 +144,6 @@ ObjectTemplate *VariantToMapConverter::toObjectTemplate(const QVariant &variant,
     return toObjectTemplate(variant);
 }
 
-QVariant VariantToMapConverter::toType(const QVariant &propertyType, const QVariant &propertyValue)
-{
-    int type = nameToType(propertyType.toString());
-    if (type == QVariant::Invalid)
-        type = QVariant::String;
-    const QVariant value = fromExportValue(propertyValue, type, mMapDir);
-    return value;
-}
-
 Properties VariantToMapConverter::toProperties(const QVariant &propertiesVariant,
                                                const QVariant &propertyTypesVariant) const
 {
