@@ -126,9 +126,10 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
 {
     QVariantMap tilesetVariant;
 
-    tilesetVariant[QLatin1String("version")] = 1.2;
     if (firstGid > 0)
         tilesetVariant[QLatin1String("firstgid")] = firstGid;
+    else
+        tilesetVariant[QLatin1String("version")] = 1.2; // external tileset
 
     const QString &fileName = tileset.fileName();
     if (!fileName.isEmpty()) {
