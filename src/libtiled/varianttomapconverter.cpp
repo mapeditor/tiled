@@ -346,7 +346,7 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
     const QVariantList tilesVariantList = tilesVariant.toList();
     for (int i = 0; i < tilesVariantList.count(); ++i) {
         const QVariantMap tileVar = tilesVariantList[i].toMap();
-        const int tileId  = tileVar[QLatin1String("tile")].toInt();
+        const int tileId  = tileVar[QLatin1String("id")].toInt();
         if (tileId < 0) {
             mError = tr("Invalid (negative) tile id: %1").arg(tileId);
             return SharedTileset();

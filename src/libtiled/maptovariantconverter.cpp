@@ -232,7 +232,7 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
         }
 
         if (!tileVariant.empty()) {
-            tileVariant[QLatin1String("tile")] = tile->id();
+            tileVariant[QLatin1String("id")] = tile->id();
             tilesVariant << tileVariant;
         }
     }
