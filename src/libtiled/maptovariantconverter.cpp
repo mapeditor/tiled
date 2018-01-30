@@ -582,7 +582,7 @@ void MapToVariantConverter::addProperties(QVariantMap &variantMap,
     if (properties.isEmpty())
         return;
 
-    QVariantList propertyListVariant;
+    QVariantList propertiesVariantList;
 
     Properties::const_iterator it = properties.constBegin();
     Properties::const_iterator it_end = properties.constEnd();
@@ -590,12 +590,12 @@ void MapToVariantConverter::addProperties(QVariantMap &variantMap,
         int type = it.value().userType();
         const QVariant value = toExportValue(it.value(), mMapDir);
 
-        QVariantMap propertyTypeVariantMap;
-        propertyTypeVariantMap[QLatin1String("name")] = it.key();
-        propertyTypeVariantMap[QLatin1String("value")] = value;
-        propertyTypeVariantMap[QLatin1String("type")] = typeToName(type);
-        propertyListVariant << propertyTypeVariantMap;
+        QVariantMap propertyVariantMap;
+        propertyVariantMap[QLatin1String("name")] = it.key();
+        propertyVariantMap[QLatin1String("value")] = value;
+        propertyVariantMap[QLatin1String("type")] = typeToName(type);
+        propertiesVariantList << propertyVariantMap;
     }
 
-    variantMap[QLatin1String("properties")] = propertyListVariant;
+    variantMap[QLatin1String("properties")] = propertiesVariantList;
 }
