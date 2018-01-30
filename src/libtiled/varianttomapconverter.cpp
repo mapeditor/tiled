@@ -414,65 +414,23 @@ TileLayer *VariantToMapConverter::toTileLayer(const QVariantMap &variantMap)
     }
     mMap->setLayerDataFormat(layerDataFormat);
 
-    switch (layerDataFormat) {
-    case Map::XML:
-    case Map::CSV: {
-        const QVariantList dataVariantList = dataVariant.toList();
-
-        if (dataVariantList.size() != width * height) {
-            mError = tr("Corrupt layer data for layer '%1'").arg(name);
+    if (dataVariant.isValid()) {
+        if (!readTileLayerData(*tileLayer, dataVariant, layerDataFormat,
+                               QRect(startX, startY, tileLayer->width(), tileLayer->height()))) {
             return nullptr;
         }
+    } else {
+        const QVariantList chunks = variantMap[QLatin1String("chunks")].toList();
+        for (const QVariant &chunkVariant : chunks) {
+            const QVariantMap chunkVariantMap = chunkVariant.toMap();
+            const QVariant chunkData = chunkVariantMap[QLatin1String("data")];
+            int x = chunkVariantMap[QLatin1String("x")].toInt();
+            int y = chunkVariantMap[QLatin1String("y")].toInt();
+            int width = chunkVariantMap[QLatin1String("width")].toInt();
+            int height = chunkVariantMap[QLatin1String("height")].toInt();
 
-        int x = 0;
-        int y = 0;
-        bool ok;
-
-        for (const QVariant &gidVariant : dataVariantList) {
-            const unsigned gid = gidVariant.toUInt(&ok);
-            if (!ok) {
-                mError = tr("Unable to parse tile at (%1,%2) on layer '%3'")
-                        .arg(x).arg(y).arg(tileLayer->name());
-                return nullptr;
-            }
-
-            const Cell cell = mGidMapper.gidToCell(gid, ok);
-
-            tileLayer->setCell(x + startX, y + startY, cell);
-
-            x++;
-            if (x >= tileLayer->width()) {
-                x = 0;
-                y++;
-            }
+            readTileLayerData(*tileLayer, chunkData, layerDataFormat, QRect(x, y, width, height));
         }
-        break;
-    }
-
-    case Map::Base64:
-    case Map::Base64Zlib:
-    case Map::Base64Gzip: {
-        const QByteArray data = dataVariant.toByteArray();
-        GidMapper::DecodeError error = mGidMapper.decodeLayerData(*tileLayer,
-                                                                  data,
-                                                                  layerDataFormat);
-
-        switch (error) {
-        case GidMapper::CorruptLayerData:
-            mError = tr("Corrupt layer data for layer '%1'").arg(name);
-            return nullptr;
-        case GidMapper::TileButNoTilesets:
-            mError = tr("Tile used but no tilesets specified");
-            return nullptr;
-        case GidMapper::InvalidTile:
-            mError = tr("Invalid tile: %1").arg(mGidMapper.invalidTile());
-            return nullptr;
-        case GidMapper::NoError:
-            break;
-        }
-
-        break;
-    }
     }
 
     return tileLayer.take();
@@ -713,6 +671,76 @@ TextData VariantToMapConverter::toTextData(const QVariantMap &variant) const
     textData.text = variant[QLatin1String("text")].toString();
 
     return textData;
+}
+
+bool VariantToMapConverter::readTileLayerData(TileLayer &tileLayer,
+                                              const QVariant &dataVariant,
+                                              Map::LayerDataFormat layerDataFormat,
+                                              QRect bounds)
+{
+    switch (layerDataFormat) {
+    case Map::XML:
+    case Map::CSV: {
+        const QVariantList dataVariantList = dataVariant.toList();
+
+        if (dataVariantList.size() != bounds.width() * bounds.height()) {
+            mError = tr("Corrupt layer data for layer '%1'").arg(tileLayer.name());
+            return false;
+        }
+
+        int x = bounds.x();
+        int y = bounds.y();
+        bool ok;
+
+        for (const QVariant &gidVariant : dataVariantList) {
+            const unsigned gid = gidVariant.toUInt(&ok);
+            if (!ok) {
+                mError = tr("Unable to parse tile at (%1,%2) on layer '%3'")
+                        .arg(x).arg(y).arg(tileLayer.name());
+                return false;
+            }
+
+            const Cell cell = mGidMapper.gidToCell(gid, ok);
+
+            tileLayer.setCell(x + bounds.x(), y + bounds.y(), cell);
+
+            x++;
+            if (x > bounds.right()) {
+                x = bounds.x();
+                y++;
+            }
+        }
+        break;
+    }
+
+    case Map::Base64:
+    case Map::Base64Zlib:
+    case Map::Base64Gzip: {
+        const QByteArray data = dataVariant.toByteArray();
+        GidMapper::DecodeError error = mGidMapper.decodeLayerData(tileLayer,
+                                                                  data,
+                                                                  layerDataFormat,
+                                                                  bounds);
+
+        switch (error) {
+        case GidMapper::CorruptLayerData:
+            mError = tr("Corrupt layer data for layer '%1'").arg(tileLayer.name());
+            return false;
+        case GidMapper::TileButNoTilesets:
+            mError = tr("Tile used but no tilesets specified");
+            return false;
+        case GidMapper::InvalidTile:
+            mError = tr("Invalid tile: %1").arg(mGidMapper.invalidTile());
+            return false;
+        case GidMapper::NoError:
+            break;
+        }
+
+        break;
+    }
+    }
+
+    return true;
 }
 
 Properties VariantToMapConverter::extractProperties(const QVariantMap &variantMap) const

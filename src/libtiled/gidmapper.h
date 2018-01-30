@@ -65,7 +65,7 @@ public:
     DecodeError decodeLayerData(TileLayer &tileLayer,
                                 const QByteArray &layerData,
                                 Map::LayerDataFormat format,
-                                QRect bounds = QRect()) const;
+                                QRect bounds) const;
 
     unsigned invalidTile() const;
 
