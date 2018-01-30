@@ -69,8 +69,6 @@ private slots:
 
     void addFrameForTileAt(const QModelIndex &index);
 
-    void setFrameTime();
-    void setDefaultFrameTime(int duration);
     void undo();
     void redo();
     void delete_();
@@ -85,7 +83,6 @@ private:
     Tile *mTile;
     FrameListModel *mFrameListModel;
     bool mApplyingChanges;
-    bool mSuppressUndo;
 
     TileAnimationDriver *mPreviewAnimationDriver;
     int mPreviewFrameIndex;
