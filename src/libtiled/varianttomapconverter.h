@@ -99,6 +99,11 @@ private:
     QPolygonF toPolygon(const QVariant &variant) const;
     TextData toTextData(const QVariantMap &variant) const;
 
+    bool readTileLayerData(TileLayer &tileLayer,
+                           const QVariant &dataVariant,
+                           Map::LayerDataFormat layerDataFormat,
+                           QRect bounds);
+
     Properties extractProperties(const QVariantMap &variantMap) const;
 
     Map *mMap;

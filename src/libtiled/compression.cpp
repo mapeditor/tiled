@@ -37,6 +37,8 @@
 #include <QByteArray>
 #include <QDebug>
 
+#include "qtcompat_p.h"
+
 #ifdef Z_PREFIX
 #undef compress
 #endif
@@ -65,6 +67,9 @@ static void logZlibError(int error)
 
 QByteArray Tiled::decompress(const QByteArray &data, int expectedSize)
 {
+    if (data.isEmpty())
+        return QByteArray();
+
     QByteArray out;
     out.resize(expectedSize);
     z_stream strm;
@@ -86,11 +91,12 @@ QByteArray Tiled::decompress(const QByteArray &data, int expectedSize)
 
     do {
         ret = inflate(&strm, Z_SYNC_FLUSH);
+        Q_ASSERT(ret != Z_STREAM_ERROR);
 
         switch (ret) {
             case Z_NEED_DICT:
-            case Z_STREAM_ERROR:
                 ret = Z_DATA_ERROR;
+                Q_FALLTHROUGH();
             case Z_DATA_ERROR:
             case Z_MEM_ERROR:
                 inflateEnd(&strm);
@@ -100,7 +106,7 @@ QByteArray Tiled::decompress(const QByteArray &data, int expectedSize)
 
         if (ret != Z_STREAM_END) {
             int oldSize = out.size();
-            out.resize(out.size() * 2);
+            out.resize(oldSize * 2);
 
             strm.next_out = (Bytef *)(out.data() + oldSize);
             strm.avail_out = oldSize;
@@ -122,6 +128,9 @@ QByteArray Tiled::decompress(const QByteArray &data, int expectedSize)
 
 QByteArray Tiled::compress(const QByteArray &data, CompressionMethod method)
 {
+    if (data.isEmpty())
+        return QByteArray();
+
     QByteArray out;
     out.resize(1024);
     int err;

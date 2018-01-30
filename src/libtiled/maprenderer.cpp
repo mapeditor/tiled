@@ -148,7 +148,7 @@ QPen MapRenderer::makeGridPen(const QPaintDevice *device, QColor color) const
     const qreal devicePixelRatio = device->devicePixelRatioF();
 
 #ifdef Q_OS_MAC
-    const qreal dpiScale = 1.0f;
+    const qreal dpiScale = 1.0;
 #else
     const qreal dpiScale = device->logicalDpiX() / 96.0;
 #endif
