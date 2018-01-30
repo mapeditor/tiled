@@ -457,9 +457,11 @@ Tile (Definition)
 +------------+---------+--------------------------------------------+
 | Field      | Type    | Description                                |
 +============+=========+============================================+
-| terrain    | array   | index of terrain for each corner of tile   |
+| id         | int     | Local ID of the tile                       |
 +------------+---------+--------------------------------------------+
 | properties | array   | A list of properties (name, value, type).  |
++------------+---------+--------------------------------------------+
+| terrain    | array   | index of terrain for each corner of tile   |
 +------------+---------+--------------------------------------------+
 
 A tileset that associates information with each tile, like its image
@@ -478,34 +480,34 @@ Example:
     "tiles":
     {
       {
-        "terrain":[0, 0, 0, 0],
+        "id":0,
         "properties":[
           {
             "name":"myProperty1",
             "type":"string",
             "value":"myProperty1_value"
           }],
-        "tile":0
+        "terrain":[0, 0, 0, 0]
       },
       {
-        "terrain":[0, 1, 0, 1],
+        "id":11,
         "properties":[
           {
             "name":"myProperty2",
             "type":"string",
             "value":"myProperty2_value"
           }],
-        "tile":11
+        "terrain":[0, 1, 0, 1]
       },
       {
-        "terrain":[1, 1, 1, 1],
+        "id":12,
         "properties":[
           {
             "name":"myProperty3",
             "type":"string",
             "value":"myProperty3_value"
           }],
-        "tile":12
+        "terrain":[1, 1, 1, 1]
       }
     }
 
