@@ -56,8 +56,6 @@ public:
 
 private:
     QVariant toVariant(const Tileset &tileset, int firstGid) const;
-    QVariant toVariant(const Properties &properties) const;
-    QVariant propertyTypesToVariant(const Properties &properties) const;
     QVariant toVariant(const QList<Layer*> &layers, Map::LayerDataFormat format) const;
     QVariant toVariant(const TileLayer &tileLayer, Map::LayerDataFormat format) const;
     QVariant toVariant(const ObjectGroup &objectGroup) const;
