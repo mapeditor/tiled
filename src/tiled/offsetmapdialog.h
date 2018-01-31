@@ -58,7 +58,7 @@ private:
     enum LayerSelection {
         AllVisibleLayers,
         AllLayers,
-        SelectedLayer
+        SelectedLayers
     };
 
     enum BoundsSelection {

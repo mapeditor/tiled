@@ -72,8 +72,10 @@ QList<Layer *> OffsetMapDialog::affectedLayers() const
             if (!layer->isGroupLayer())
                 layers.append(layer);
         break;
-    case SelectedLayer:
-        layers.append(mMapDocument->currentLayer());
+    case SelectedLayers:
+        for (Layer *layer : mMapDocument->selectedLayers())
+            if (!layer->isGroupLayer())
+                layers.append(layer);
         break;
     }
 
@@ -118,7 +120,7 @@ OffsetMapDialog::LayerSelection OffsetMapDialog::layerSelection() const
     case 1:
         return AllLayers;
     default:
-        return SelectedLayer;
+        return SelectedLayers;
     }
 }
 
