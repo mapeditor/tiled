@@ -159,19 +159,24 @@ void ObjectGroup::offsetObjects(const QPointF &offset,
                                 const QRectF &bounds,
                                 bool wrapX, bool wrapY)
 {
+    if (offset.isNull())
+        return;
+
+    const bool boundsValid = bounds.isValid();
+
     for (MapObject *object : mObjects) {
         const QPointF objectCenter = object->bounds().center();
-        if (!bounds.contains(objectCenter))
+        if (boundsValid && !bounds.contains(objectCenter))
             continue;
 
         QPointF newCenter(objectCenter + offset);
 
-        if (wrapX && bounds.width() > 0) {
+        if (wrapX && boundsValid) {
             qreal nx = std::fmod(newCenter.x() - bounds.left(), bounds.width());
             newCenter.setX(bounds.left() + (nx < 0 ? bounds.width() + nx : nx));
         }
 
-        if (wrapY && bounds.height() > 0) {
+        if (wrapY && boundsValid) {
             qreal ny = std::fmod(newCenter.y() - bounds.top(), bounds.height());
             newCenter.setY(bounds.top() + (ny < 0 ? bounds.height() + ny : ny));
         }
