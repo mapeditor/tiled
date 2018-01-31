@@ -574,10 +574,20 @@ void TileLayer::resize(const QSize &size, const QPoint &offset)
     setSize(size);
 }
 
+static int clampWrap(int value, int min, int max)
+{
+    int v = value - min;
+    int d = max - min;
+    return (v < 0 ? (v + 1) % d + d - 1 : v % d) + min;
+}
+
 void TileLayer::offsetTiles(const QPoint &offset,
                             const QRect &bounds,
                             bool wrapX, bool wrapY)
 {
+    if (offset.isNull())
+        return;
+
     QScopedPointer<TileLayer> newLayer(clone());
 
     for (int y = bounds.top(); y <= bounds.bottom(); ++y) {
@@ -587,26 +597,46 @@ void TileLayer::offsetTiles(const QPoint &offset,
             int oldY = y - offset.y();
 
             // Wrap x value that will be pulled from
-            if (wrapX && bounds.width() > 0) {
-                while (oldX < bounds.left())
-                    oldX += bounds.width();
-                while (oldX > bounds.right())
-                    oldX -= bounds.width();
-            }
+            if (wrapX)
+                oldX = clampWrap(oldX, bounds.left(), bounds.right() + 1);
 
             // Wrap y value that will be pulled from
-            if (wrapY && bounds.height() > 0) {
-                while (oldY < bounds.top())
-                    oldY += bounds.height();
-                while (oldY > bounds.bottom())
-                    oldY -= bounds.height();
-            }
+            if (wrapY)
+                oldY = clampWrap(oldY, bounds.top(), bounds.bottom() + 1);
 
             // Set the new tile
             if (bounds.contains(oldX, oldY))
                 newLayer->setCell(x, y, cellAt(oldX, oldY));
             else
                 newLayer->setCell(x, y, Cell());
+        }
+    }
+
+    mChunks = newLayer->mChunks;
+    mBounds = newLayer->mBounds;
+}
+
+void TileLayer::offsetTiles(const QPoint &offset)
+{
+    QScopedPointer<TileLayer> newLayer(new TileLayer(QString(), 0, 0, 0, 0));
+
+    // Process only the allocated chunks
+    QHashIterator<QPoint, Chunk> it(mChunks);
+    while (it.hasNext()) {
+        it.next();
+
+        const QPoint p = it.key();
+        const Chunk &chunk = it.value();
+        const QRect r(p.x() * CHUNK_SIZE,
+                      p.y() * CHUNK_SIZE,
+                      CHUNK_SIZE, CHUNK_SIZE);
+
+        for (int y = r.top(); y <= r.bottom(); ++y) {
+            for (int x = r.left(); x <= r.right(); ++x) {
+                int newX = x + offset.x();
+                int newY = y + offset.y();
+                newLayer->setCell(newX, newY, chunk.cellAt(x - r.left(), y - r.top()));
+            }
         }
     }
 

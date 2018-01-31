@@ -358,17 +358,12 @@ void MapDocument::offsetMap(const QList<Layer*> &layers,
     if (layers.empty())
         return;
 
-    if (layers.size() == 1) {
-        mUndoStack->push(new OffsetLayer(this, layers.first(), offset,
+    mUndoStack->beginMacro(tr("Offset Map"));
+    for (auto layer : layers) {
+        mUndoStack->push(new OffsetLayer(this, layer, offset,
                                          bounds, wrapX, wrapY));
-    } else {
-        mUndoStack->beginMacro(tr("Offset Map"));
-        for (auto layer : layers) {
-            mUndoStack->push(new OffsetLayer(this, layer, offset,
-                                             bounds, wrapX, wrapY));
-        }
-        mUndoStack->endMacro();
     }
+    mUndoStack->endMacro();
 }
 
 /**

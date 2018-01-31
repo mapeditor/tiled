@@ -481,6 +481,13 @@ public:
                      const QRect &bounds,
                      bool wrapX, bool wrapY);
 
+    /**
+     * Offsets the tiles in this layer by \a offset.
+     *
+     * \sa ObjectGroup::offsetObjects()
+     */
+    void offsetTiles(const QPoint &offset);
+
     bool canMergeWith(Layer *other) const override;
     Layer *mergedWith(Layer *other) const override;
 
