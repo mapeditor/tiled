@@ -328,6 +328,7 @@ QString Tiled::staggerAxisToString(Map::StaggerAxis staggerAxis)
     case Map::StaggerX:
         return QLatin1String("x");
     }
+    return QString();
 }
 
 Map::StaggerAxis Tiled::staggerAxisFromString(const QString &string)
@@ -347,6 +348,7 @@ QString Tiled::staggerIndexToString(Map::StaggerIndex staggerIndex)
     case Map::StaggerEven:
         return QLatin1String("even");
     }
+    return QString();
 }
 
 Map::StaggerIndex Tiled::staggerIndexFromString(const QString &string)
@@ -372,6 +374,7 @@ QString Tiled::orientationToString(Map::Orientation orientation)
     case Map::Hexagonal:
         return QLatin1String("hexagonal");
     }
+    return QString();
 }
 
 Map::Orientation Tiled::orientationFromString(const QString &string)
@@ -402,6 +405,7 @@ QString Tiled::renderOrderToString(Map::RenderOrder renderOrder)
     case Map::LeftUp:
         return QLatin1String("left-up");
     }
+    return QString();
 }
 
 Map::RenderOrder Tiled::renderOrderFromString(const QString &string)
