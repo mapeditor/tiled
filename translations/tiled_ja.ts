@@ -655,7 +655,7 @@
     <message>
         <location line="+5"/>
         <source>New Map...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">新しいマップ...</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -700,12 +700,12 @@
     <message>
         <location line="-332"/>
         <source>&amp;New</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">新規(&amp;N)</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Commands</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">コマンド</translation>
     </message>
     <message>
         <location line="+71"/>
@@ -1513,7 +1513,7 @@ Line %1, column %2</source>
     <message>
         <location line="+49"/>
         <source>Mouse wheel &amp;zooms by default</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">マウスホイールで拡大縮小(&amp;Z)</translation>
     </message>
     <message>
         <location line="+24"/>
@@ -3169,7 +3169,7 @@ Do you want to replace it?</source>
     <message>
         <location line="+1"/>
         <source>New Layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">新しいレイヤー</translation>
     </message>
 </context>
 <context>
@@ -3259,17 +3259,17 @@ Do you want to replace it?</source>
     <message>
         <location line="-4"/>
         <source>New</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">新規</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Open</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">開く</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">保存</translation>
     </message>
 </context>
 <context>
@@ -3434,7 +3434,7 @@ Please select specific format.</source>
     <message>
         <location line="+295"/>
         <source>Open File</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ファイルを開く</translation>
     </message>
     <message>
         <location line="+775"/>
@@ -3942,7 +3942,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/newmapdialog.cpp" line="-19"/>
         <source>Save As...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ファイル名をつけて保存...</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -4021,7 +4021,7 @@ Please select specific format.</source>
     <message>
         <location line="-2"/>
         <source>&amp;Save As...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ファイル名をつけて保存(&amp;S)...</translation>
     </message>
 </context>
 <context>
@@ -4034,17 +4034,17 @@ Please select specific format.</source>
     <message>
         <location line="+28"/>
         <source>New Map...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">新しいマップ...</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>New Tileset...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">新しいタイルセット...</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Open File...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ファイルを開く...</translation>
     </message>
 </context>
 <context>
@@ -5080,7 +5080,7 @@ Please select specific format.</source>
     <message>
         <location line="+2"/>
         <source>Edit Tile&amp;set</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">タイルセットを編集(&amp;S)</translation>
     </message>
     <message>
         <location line="-1"/>
