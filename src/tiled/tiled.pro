@@ -504,7 +504,7 @@ mimeiconscalable.files += images/scalable/application-x-tiled.svg
 INSTALLS += mimeiconscalable
 
 mimeinfofile.path = $${PREFIX}/share/mime/packages/
-mimeinfofile.files += ../../mime/tiled.xml
+mimeinfofile.files += ../../mime/org.mapeditor.Tiled.xml
 INSTALLS += mimeinfofile
 
 thumbnailgenerator.path = $${PREFIX}/share/thumbnailers/
@@ -512,7 +512,7 @@ thumbnailgenerator.files += ../../mime/tiled.thumbnailer
 INSTALLS += thumbnailgenerator
 
 desktopfile.path = $${PREFIX}/share/applications/
-desktopfile.files += ../../tiled.desktop
+desktopfile.files += ../../org.mapeditor.Tiled.desktop
 INSTALLS += desktopfile
 
 appdatafile.path = $${PREFIX}/share/metainfo/
