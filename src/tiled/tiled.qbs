@@ -585,7 +585,7 @@ QtGuiApplication {
         condition: qbs.targetOS.contains("linux")
         qbs.install: true
         qbs.installDir: "share/metainfo"
-        files: [ "../../tiled.appdata.xml" ]
+        files: [ "../../org.mapeditor.Tiled.appdata.xml" ]
     }
 
     Group {
