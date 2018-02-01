@@ -515,7 +515,7 @@ desktopfile.files += ../../tiled.desktop
 INSTALLS += desktopfile
 
 appdatafile.path = $${PREFIX}/share/metainfo/
-appdatafile.files += ../../tiled.appdata.xml
+appdatafile.files += ../../org.mapeditor.Tiled.appdata.xml
 INSTALLS += appdatafile
 
 manpage.path = $${PREFIX}/share/man/man1/

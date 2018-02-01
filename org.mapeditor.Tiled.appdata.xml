@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<application>
- <id type="desktop">tiled.desktop</id>
+<component type="desktop">
+ <id>org.mapeditor.Tiled.desktop</id>
  <metadata_license>CC-BY-3.0 and GPL-2.0</metadata_license>
  <project_license>GPL-2.0+ and BSD-2-Clause</project_license>
  <name>Tiled</name>
@@ -27,10 +27,22 @@
  </description>
  <screenshots>
   <!-- GPL 2 by TMW -->
-  <screenshot type="default" width="800" height="600">http://www.mapeditor.org/img/appdata/screenshot_objects.png</screenshot>
+  <screenshot type="default" width="800" height="600">
+    <image>http://www.mapeditor.org/img/appdata/screenshot_objects.png</image>
+  </screenshot>
   <!-- CC BY SA 3.0 By Clint Bellanger -->
-  <screenshot width="800" height="600">http://www.mapeditor.org/img/appdata/screenshot_terrain.png</screenshot>
+  <screenshot width="800" height="600">
+    <image>http://www.mapeditor.org/img/appdata/screenshot_terrain.png</image>
+  </screenshot>
  </screenshots>
+ <kudos>
+   <kudo>ModernToolkit</kudo>
+   <kudo>UserDocs</kudo>
+ </kudos>
  <url type="homepage">http://www.mapeditor.org/</url>
- <updatecontact>ablu@fedoraproject.org</updatecontact>
-</application>
+ <launchable type="desktop-id">tiled.desktop</launchable>
+ <provides>
+   <id>tiled.desktop</id>
+ </provides>
+ <update_contact>tingping@fedoraproject.org</update_contact>
+</component>
