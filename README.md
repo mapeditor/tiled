@@ -12,7 +12,7 @@ be set on the map, its layers, the tiles or on the objects. Its map format
 (TMX) is relatively easy to understand and allows a map to use multiple
 tilesets while also allowing each tileset to grow or shrink as necessary later.
 
-[![Build Status](https://travis-ci.org/bjorn/tiled.svg?branch=master)](https://travis-ci.org/bjorn/tiled)
+[![Backers on Open Collective](https://opencollective.com/tiled/backers/badge.svg)](#backers) [![Sponsors on Open Collective](https://opencollective.com/tiled/sponsors/badge.svg)](#sponsors) [![Build Status](https://travis-ci.org/bjorn/tiled.svg?branch=master)](https://travis-ci.org/bjorn/tiled)
 [![Build status](https://ci.appveyor.com/api/projects/status/ceb79jn5cf99y3qd/branch/master?svg=true)](https://ci.appveyor.com/project/bjorn/tiled/branch/master)
 [![Bountysource](https://www.bountysource.com/badge/tracker?tracker_id=52019)](https://www.bountysource.com/trackers/52019-tiled?utm_source=52019&utm_medium=shield&utm_campaign=TRACKER_BADGE)
 [![Translation status](https://hosted.weblate.org/widgets/tiled/-/shields-badge.svg)](https://hosted.weblate.org/engage/tiled/?utm_source=widget)
@@ -77,3 +77,33 @@ By default, Tiled and its plugins are compiled with an Rpath so that they can
 find the shared libtiled library when running it straight after compile. When
 packaging for a distribution, this Rpath should generally be disabled by
 appending `RPATH=no` to the qmake command.
+
+## Contributors
+
+This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
+<a href="graphs/contributors"><img src="https://opencollective.com/tiled/contributors.svg?width=890" /></a>
+
+
+## Backers
+
+Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com/tiled#backer)]
+
+<a href="https://opencollective.com/tiled#backers" target="_blank"><img src="https://opencollective.com/tiled/backers.svg?width=890"></a>
+
+
+## Sponsors
+
+Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [[Become a sponsor](https://opencollective.com/tiled#sponsor)]
+
+<a href="https://opencollective.com/tiled/sponsor/0/website" target="_blank"><img src="https://opencollective.com/tiled/sponsor/0/avatar.svg"></a>
+<a href="https://opencollective.com/tiled/sponsor/1/website" target="_blank"><img src="https://opencollective.com/tiled/sponsor/1/avatar.svg"></a>
+<a href="https://opencollective.com/tiled/sponsor/2/website" target="_blank"><img src="https://opencollective.com/tiled/sponsor/2/avatar.svg"></a>
+<a href="https://opencollective.com/tiled/sponsor/3/website" target="_blank"><img src="https://opencollective.com/tiled/sponsor/3/avatar.svg"></a>
+<a href="https://opencollective.com/tiled/sponsor/4/website" target="_blank"><img src="https://opencollective.com/tiled/sponsor/4/avatar.svg"></a>
+<a href="https://opencollective.com/tiled/sponsor/5/website" target="_blank"><img src="https://opencollective.com/tiled/sponsor/5/avatar.svg"></a>
+<a href="https://opencollective.com/tiled/sponsor/6/website" target="_blank"><img src="https://opencollective.com/tiled/sponsor/6/avatar.svg"></a>
+<a href="https://opencollective.com/tiled/sponsor/7/website" target="_blank"><img src="https://opencollective.com/tiled/sponsor/7/avatar.svg"></a>
+<a href="https://opencollective.com/tiled/sponsor/8/website" target="_blank"><img src="https://opencollective.com/tiled/sponsor/8/avatar.svg"></a>
+<a href="https://opencollective.com/tiled/sponsor/9/website" target="_blank"><img src="https://opencollective.com/tiled/sponsor/9/avatar.svg"></a>
+
+
