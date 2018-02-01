@@ -40,7 +40,7 @@
    <kudo>UserDocs</kudo>
  </kudos>
  <url type="homepage">http://www.mapeditor.org/</url>
- <launchable type="desktop-id">tiled.desktop</launchable>
+ <launchable type="desktop-id">org.mapeditor.Tiled.desktop</launchable>
  <provides>
    <id>tiled.desktop</id>
  </provides>

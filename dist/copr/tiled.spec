@@ -112,7 +112,7 @@ make install INSTALL_ROOT=%{buildroot}
 find -name ".uic" -or -name ".moc" -or -name ".rcc" | xargs rm -rf
 
 # Validate desktop file
-desktop-file-validate %{buildroot}/%{_datadir}/applications/%{name}.desktop
+desktop-file-validate %{buildroot}/%{_datadir}/applications/%{app_id}.desktop
 
 # Appdata
 install -D -p -m644 %{app_id}.appdata.xml %{buildroot}/%{_datadir}/appdata/%{app_id}.appdata.xml
@@ -150,10 +150,10 @@ fi
 %{_bindir}/terraingenerator
 %{_bindir}/tmxrasterizer
 %{_bindir}/tmxviewer
-%{_datadir}/applications/%{name}.desktop
+%{_datadir}/applications/%{app_id}.desktop
 %{_datadir}/icons/hicolor/*/apps/*%{name}*
 %{_datadir}/icons/hicolor/*/mimetypes/*%{name}*
-%{_datadir}/mime/packages/%{name}.xml
+%{_datadir}/mime/packages/%{app_id}.xml
 %{_datadir}/thumbnailers/%{name}.thumbnailer
 %{_datadir}/appdata/%{app_id}.appdata.xml
 %dir %{_datadir}/%{name}/

@@ -578,7 +578,7 @@ QtGuiApplication {
         condition: qbs.targetOS.contains("linux")
         qbs.install: true
         qbs.installDir: "share/applications"
-        files: [ "../../tiled.desktop" ]
+        files: [ "../../org.mapeditor.Tiled.desktop" ]
     }
 
     Group {
@@ -602,7 +602,7 @@ QtGuiApplication {
         condition: qbs.targetOS.contains("linux")
         qbs.install: true
         qbs.installDir: "share/mime/packages"
-        files: [ "../../mime/tiled.xml" ]
+        files: [ "../../mime/org.mapeditor.Tiled.xml" ]
     }
 
     Group {
