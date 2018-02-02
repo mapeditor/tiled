@@ -33,12 +33,12 @@
     <message>
         <location filename="../src/tiled/addpropertydialog.ui" line="+14"/>
         <source>Add Property</source>
-        <translation type="unfinished"></translation>
+        <translation>添加属性</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Property name</source>
-        <translation type="unfinished"></translation>
+        <translation>属性名称</translation>
     </message>
 </context>
 <context>
@@ -51,7 +51,7 @@
     <message>
         <location line="+22"/>
         <source>Format not recognized (see --export-formats)</source>
-        <translation type="unfinished"></translation>
+        <translation>格式不正确 (参见 --导出-格式)</translation>
     </message>
     <message>
         <location line="+11"/>
