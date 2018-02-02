@@ -64,6 +64,17 @@ class CommandLineHandler : public CommandLineParser
 public:
     CommandLineHandler();
 
+    const char *errorString() const { return mError; }
+
+    /**
+     * Used during file export, attempt to determine the output file format
+     * from the command line parameters.
+     * Query errorString if result is null.
+     */
+    template <typename T>
+    T *findExportFormat(const QString *filter,
+                        const QString &targetFile);
+
     bool quit;
     bool showedVersion;
     bool disableOpenGL;
@@ -91,6 +102,8 @@ private:
                                                            longName,
                                                            help);
     }
+
+    const char *mError;
 };
 
 } // anonymous namespace
@@ -103,6 +116,7 @@ CommandLineHandler::CommandLineHandler()
     , exportMap(false)
     , exportTileset(false)
     , newInstance(false)
+    , mError(nullptr)
 {
     option<&CommandLineHandler::showVersion>(
                 QLatin1Char('v'),
@@ -204,6 +218,49 @@ void CommandLineHandler::startNewInstance()
     newInstance = true;
 }
 
+template <typename T>
+inline T *CommandLineHandler::findExportFormat(const QString *filter,
+                                               const QString &targetFile)
+{
+    T *outputFormat = nullptr;
+    const auto formats = PluginManager::objects<T>();
+
+    if (filter) {
+        // Find the format supporting the given filter
+        for (T *format : formats) {
+            if (!format->hasCapabilities(T::Write))
+                continue;
+            if (format->shortName().compare(*filter, Qt::CaseInsensitive) == 0) {
+                outputFormat = format;
+                break;
+            }
+        }
+        if (!outputFormat) {
+            mError = "Format not recognized (see --export-formats)";
+            return nullptr;
+        }
+    } else {
+        // Find the format based on target file extension
+        QString suffix = QFileInfo(targetFile).completeSuffix();
+        for (T *format : formats) {
+            if (!format->hasCapabilities(T::Write))
+                continue;
+            if (format->nameFilter().contains(suffix, Qt::CaseInsensitive)) {
+                if (outputFormat) {
+                    mError = "Non-unique file extension. Can't determine correct export format.";
+                    return nullptr;
+                }
+                outputFormat = format;
+            }
+        }
+        if (!outputFormat) {
+            mError = "No exporter found for target file.";
+            return nullptr;
+        }
+    }
+
+    return outputFormat;
+}
 
 int main(int argc, char *argv[])
 {
@@ -273,41 +330,10 @@ int main(int argc, char *argv[])
         const QString &sourceFile = commandLine.filesToOpen().at(index++);
         const QString &targetFile = commandLine.filesToOpen().at(index++);
 
-        MapFormat *outputFormat = nullptr;
-        const auto formats = PluginManager::objects<MapFormat>();
-
-        if (filter) {
-            // Find the map format supporting the given filter
-            for (MapFormat *format : formats) {
-                if (!format->hasCapabilities(MapFormat::Write))
-                    continue;
-                if (format->shortName().compare(*filter, Qt::CaseInsensitive) == 0) {
-                    outputFormat = format;
-                    break;
-                }
-            }
-            if (!outputFormat) {
-                qWarning().noquote() << QCoreApplication::translate("Command line", "Format not recognized (see --export-formats)");
-                return 1;
-            }
-        } else {
-            // Find the map format based on target file extension
-            QString suffix = QFileInfo(targetFile).completeSuffix();
-            for (MapFormat *format : formats) {
-                if (!format->hasCapabilities(MapFormat::Write))
-                    continue;
-                if (format->nameFilter().contains(suffix, Qt::CaseInsensitive)) {
-                    if (outputFormat) {
-                        qWarning().noquote() << QCoreApplication::translate("Command line", "Non-unique file extension. Can't determine correct export format.");
-                        return 1;
-                    }
-                    outputFormat = format;
-                }
-            }
-            if (!outputFormat) {
-                qWarning().noquote() << QCoreApplication::translate("Command line", "No exporter found for target file.");
-                return 1;
-            }
+        MapFormat *outputFormat = commandLine.findExportFormat<MapFormat>(filter, targetFile);
+        if (!outputFormat) {
+            qWarning().noquote() << QCoreApplication::translate("Command line", commandLine.errorString());
+            return 1;
         }
 
         // Load the source file
@@ -338,47 +364,16 @@ int main(int argc, char *argv[])
         const QString &sourceFile = commandLine.filesToOpen().at(index++);
         const QString &targetFile = commandLine.filesToOpen().at(index++);
 
-        TilesetFormat *outputFormat = nullptr;
-        const auto formats = PluginManager::objects<TilesetFormat>();
-
-        if (filter) {
-            // Find the map format supporting the given filter
-            for (TilesetFormat *format : formats) {
-                if (!format->hasCapabilities(TilesetFormat::Write))
-                    continue;
-                if (format->shortName().compare(*filter, Qt::CaseInsensitive) == 0) {
-                    outputFormat = format;
-                    break;
-                }
-            }
-            if (!outputFormat) {
-                qWarning().noquote() << QCoreApplication::translate("Command line", "Format not recognized (see --export-formats)");
-                return 1;
-            }
-        } else {
-            // Find the map format based on target file extension
-            QString suffix = QFileInfo(targetFile).completeSuffix();
-            for (TilesetFormat *format : formats) {
-                if (!format->hasCapabilities(TilesetFormat::Write))
-                    continue;
-                if (format->nameFilter().contains(suffix, Qt::CaseInsensitive)) {
-                    if (outputFormat) {
-                        qWarning().noquote() << QCoreApplication::translate("Command line", "Non-unique file extension. Can't determine correct export format.");
-                        return 1;
-                    }
-                    outputFormat = format;
-                }
-            }
-            if (!outputFormat) {
-                qWarning().noquote() << QCoreApplication::translate("Command line", "No exporter found for target file.");
-                return 1;
-            }
+        TilesetFormat *outputFormat = commandLine.findExportFormat<TilesetFormat>(filter, targetFile);
+        if (!outputFormat) {
+            qWarning().noquote() << QCoreApplication::translate("Command line", commandLine.errorString());
+            return 1;
         }
 
         // Load the source file
         SharedTileset tileset(readTileset(sourceFile, nullptr));
         if (!tileset) {
-            qWarning().noquote() << QCoreApplication::translate("Command line", "Failed to load source map.");
+            qWarning().noquote() << QCoreApplication::translate("Command line", "Failed to load source tileset.");
             return 1;
         }
 
