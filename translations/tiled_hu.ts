@@ -3191,10 +3191,9 @@ Le szeretné cserélni?</translation>
     <message numerus="yes">
         <location line="+74"/>
         <source>Drag Layer(s)</source>
-        <translation>
-            <numerusform>Réteg húzása</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Réteg húzása</numerusform>
+        <numerusform>Rétegek húzása</numerusform>
+        </translation></message>
     <message>
         <location line="+215"/>
         <source>Show Other Layers</source>
