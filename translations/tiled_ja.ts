@@ -3143,7 +3143,7 @@ Do you want to replace it?</source>
     <message>
         <location line="+1"/>
         <source>Ignore</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">無視する</translation>
     </message>
 </context>
 <context>
