@@ -135,12 +135,14 @@ def generate(parent_mod):
   cls_sizef.add_method('setHeight', None, [('int','h')])
 
   cls_qrgb = mod.add_class('QRgb')
+  cls_qrgb.add_copy_constructor()
   mod.add_container('QVector<QRgb>', retval('QRgb'), 'vector')
 
   cls_color = mod.add_class('QColor')
   cls_color.add_constructor([('QRgb','col')])
   cls_color.add_constructor([('int','r'), ('int','g'), ('int','b')])
   cls_color.add_constructor([('int','r'), ('int','g'), ('int','b'),('int','a')])
+  cls_color.add_copy_constructor()
   cls_color.add_method('rgb', 'QRgb', [])
   cls_color.add_method('rgba', 'QRgb', [])
 
@@ -154,6 +156,7 @@ def generate(parent_mod):
     'Format_ARGB4444_Premultiplied'))
   cls_qimage.add_constructor([])
   cls_qimage.add_constructor([('int','w'), ('int','h'), ('Format','f')])
+  cls_qimage.add_copy_constructor()
   cls_qimage.add_method('color', 'QRgb', [('int','i')])
   cls_qimage.add_method('colorTable', 'QVector<QRgb>', [])
   cls_qimage.add_method('fill', None, [('int','color')])
@@ -168,6 +171,7 @@ def generate(parent_mod):
     ('QRgb','color')])
   cls_qimage.add_method('setColorTable', None, [('QVector<QRgb>','colors')])
   cls_qpixmap = mod.add_class('QPixmap')
+  cls_qpixmap.add_copy_constructor()
   cls_qpixmap.add_method('toImage', retval('const QImage&'), [])
   cls_qpixmap.add_method('fromImage', None, [('const QImage&','image')])
   cls_qpixmap.add_method('convertFromImage', None, [('const QImage&','image')])
