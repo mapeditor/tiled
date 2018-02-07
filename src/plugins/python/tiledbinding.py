@@ -42,6 +42,7 @@ qtbinding.generate(mod)
 tiled = mod.add_cpp_namespace('Tiled')
 
 cls_props = tiled.add_class('Properties')
+cls_props.add_copy_constructor()
 cls_props.add_method('keys', 'QList<QString>', [])
 #cls_propsc = tiled.add_container('QMap<QString,QString>', ('QString','QString'), 'map', cls_props)
 
@@ -61,6 +62,7 @@ cls_tile.add_method('height', 'int', [])
 
 cls_tileset = tiled.add_class('Tileset', cls_object)
 cls_sharedtileset = tiled.add_class('SharedTileset')
+cls_sharedtileset.add_copy_constructor()
 cls_sharedtileset.add_method('data', retval('Tiled::Tileset*',reference_existing_object=True), [])
 
 cls_tileset.add_method('create', 'Tiled::SharedTileset',
@@ -152,8 +154,8 @@ cls_map.add_method('nextObjectId', 'int', [])
 cls_map.add_method('takeNextObjectId', 'int', [])
 
 cls_cell = tiled.add_class('Cell')
-cls_cell.add_constructor([param('Tiled::Tile*','tile',
-    transfer_ownership=False)])
+cls_cell.add_constructor([param('Tiled::Tile*','tile',transfer_ownership=False)])
+cls_cell.add_copy_constructor()
 cls_cell.add_method('isEmpty', 'bool', [])
 cls_cell.add_method('tile', retval('Tiled::Tile*',reference_existing_object=True), [])
 

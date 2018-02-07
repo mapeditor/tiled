@@ -1,7 +1,16 @@
-### Tiled 1.1.2 (...)
+### Tiled 1.1.2 (31 January 2018)
 
+* Fixed possible crash while editing polygons
+* Fixed hang when loading map file with empty compressed layer data
+* Fixed selection of tile stamp to work on mouse click
+* Fixed tools not being up to date on modifier keys after activation
+* Fixed "Offset Map" action for infinite maps (#1866)
+* Templates view: Keep template centered when resizing view
 * Tile Collision Editor: Keep tile centered when resizing view
 * Tile Collision Editor: Display tool info text in status bar
+* JSON plugin: Fixed reading of infinite maps (#1858)
+* libtiled-java: Fixed some bugs (by Henry Wang, #1840)
+* libtiled-java: Fixed tile offset value not being considered (by digitalhoax, #1863)
 
 ### Tiled 1.1.1 (4 January 2018)
 

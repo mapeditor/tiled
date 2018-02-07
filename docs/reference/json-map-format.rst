@@ -29,7 +29,7 @@ Map
 | orientation       | string   | ``orthogonal``, ``isometric``, ``staggered`` or          |
 |                   |          | ``hexagonal``                                            |
 +-------------------+----------+----------------------------------------------------------+
-| properties        | object   | String key-value pairs                                   |
+| properties        | array    | A list of properties (name, value, type).                |
 +-------------------+----------+----------------------------------------------------------+
 | renderorder       | string   | Rendering direction (orthogonal maps only)               |
 +-------------------+----------+----------------------------------------------------------+
@@ -59,11 +59,17 @@ Map Example
       "layers":[ ],
       "nextobjectid":1,
       "orientation":"orthogonal",
-      "properties":
-      {
-        "mapProperty1":"one",
-        "mapProperty2":"two"
-      },
+      "properties":[
+        {
+          "name":"mapProperty1",
+          "type":"one",
+          "value":"string"
+        },
+        {
+          "name":"mapProperty2",
+          "type":"two",
+          "value":"string"
+        }],
       "renderorder":"right-down",
       "tileheight":32,
       "tilesets":[ ],
@@ -95,7 +101,7 @@ Layer
 +--------------+----------+---------------------------------------------------------------+
 | opacity      | float    | Value between 0 and 1                                         |
 +--------------+----------+---------------------------------------------------------------+
-| properties   | object   | string key-value pairs.                                       |
+| properties   | array    | A list of properties (name, value, type).                     |
 +--------------+----------+---------------------------------------------------------------+
 | type         | string   | ``tilelayer``, ``objectgroup``, ``imagelayer`` or ``group``   |
 +--------------+----------+---------------------------------------------------------------+
@@ -118,10 +124,12 @@ Tile Layer Example
       "height":4,
       "name":"ground",
       "opacity":1,
-      "properties":
-         {
-          "tileLayerProp":"1"
-         },
+      "properties":[
+        {
+          "name":"tileLayerProp",
+          "type":"int",
+          "value":1
+        }],
       "type":"tilelayer",
       "visible":true,
       "width":4,
@@ -140,10 +148,12 @@ Object Layer Example
       "name":"people",
       "objects":[ ],
       "opacity":1,
-      "properties":
-      {
-        "layerProp1": "someStringValue"
-      },
+      "properties":[
+        {
+          "name":"layerProp1",
+          "type":"string",
+          "value":"someStringValue"
+        }],
       "type":"objectgroup",
       "visible":true,
       "width":0,
@@ -175,7 +185,7 @@ Object
 +--------------+----------+----------------------------------------------+
 | polyline     | array    | A list of x,y coordinates in pixels          |
 +--------------+----------+----------------------------------------------+
-| properties   | object   | String key-value pairs                       |
+| properties   | array    | A list of properties (name, value, type).    |
 +--------------+----------+----------------------------------------------+
 | rotation     | float    | Angle in degrees clockwise                   |
 +--------------+----------+----------------------------------------------+
@@ -202,10 +212,12 @@ Object Example
       "height":0,
       "id":1,
       "name":"villager",
-      "properties":
-      {
-        "hp":"12"
-      },
+      "properties":[
+        {
+          "name":"hp",
+          "type":"int",
+          "value":12
+        }],
       "rotation":0,
       "type":"npc",
       "visible":true,
@@ -393,9 +405,7 @@ Tileset
 +------------------+----------+-----------------------------------------------------+
 | name             | string   | Name given to this tileset                          |
 +------------------+----------+-----------------------------------------------------+
-| properties       | object   | String key-value pairs                              |
-+------------------+----------+-----------------------------------------------------+
-| propertytypes    | object   | String key-value pairs                              |
+| properties       | array    | A list of properties (name, value, type).           |
 +------------------+----------+-----------------------------------------------------+
 | spacing          | int      | Spacing between adjacent tiles in image (pixels)    |
 +------------------+----------+-----------------------------------------------------+
@@ -407,10 +417,7 @@ Tileset
 +------------------+----------+-----------------------------------------------------+
 | tileoffset       | object   | See :ref:`tmx-tileoffset` (optional)                |
 +------------------+----------+-----------------------------------------------------+
-| tileproperties   | object   | Per-tile properties, indexed by gid as string       |
-+------------------+----------+-----------------------------------------------------+
-| tiles            | object   | Mapping from tile ID to :ref:`tile <json-tile>`     |
-|                  |          | (optional)                                          |
+| tiles            | array    | List of :ref:`tile <json-tile>` (optional)          |
 +------------------+----------+-----------------------------------------------------+
 | tilewidth        | int      | Maximum width of tiles in this set                  |
 +------------------+----------+-----------------------------------------------------+
@@ -430,14 +437,12 @@ Tileset Example
              "imagewidth":640,
              "margin":3,
              "name":"",
-             "properties":
+             "properties":[
                {
-                 "myProperty1":"myProperty1_value"
-               },
-             "propertytypes":
-               {
-                 "myProperty1":"string"
-               },
+                 "name":"myProperty1",
+                 "type":"string",
+                 "value":"myProperty1_value"
+               }],
              "spacing":1,
              "tilecount":266,
              "tileheight":32,
@@ -449,11 +454,15 @@ Tileset Example
 Tile (Definition)
 ~~~~~~~~~~~~~~~~~
 
-+-----------+---------+--------------------------------------------+
-| Field     | Type    | Description                                |
-+===========+=========+============================================+
-| terrain   | array   | index of terrain for each corner of tile   |
-+-----------+---------+--------------------------------------------+
++------------+---------+--------------------------------------------+
+| Field      | Type    | Description                                |
++============+=========+============================================+
+| id         | int     | Local ID of the tile                       |
++------------+---------+--------------------------------------------+
+| properties | array   | A list of properties (name, value, type).  |
++------------+---------+--------------------------------------------+
+| terrain    | array   | index of terrain for each corner of tile   |
++------------+---------+--------------------------------------------+
 
 A tileset that associates information with each tile, like its image
 path or terrain type, may include a "tiles" JSON object. Each key
@@ -470,16 +479,34 @@ Example:
 
     "tiles":
     {
-      "0":
       {
+        "id":0,
+        "properties":[
+          {
+            "name":"myProperty1",
+            "type":"string",
+            "value":"myProperty1_value"
+          }],
         "terrain":[0, 0, 0, 0]
       },
-      "11":
       {
+        "id":11,
+        "properties":[
+          {
+            "name":"myProperty2",
+            "type":"string",
+            "value":"myProperty2_value"
+          }],
         "terrain":[0, 1, 0, 1]
       },
-      "12":
       {
+        "id":12,
+        "properties":[
+          {
+            "name":"myProperty3",
+            "type":"string",
+            "value":"myProperty3_value"
+          }],
         "terrain":[1, 1, 1, 1]
       }
     }
@@ -504,7 +531,7 @@ Example:
     "terrains":[
     {
       "name":"ground",
-        "tile":0
+      "tile":0
     },
     {
       "name":"chasm",
