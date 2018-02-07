@@ -4053,18 +4053,203 @@ int _wrap_PyTiledMap__tp_init(PyTiledMap *self, PyObject *args, PyObject *kwargs
 
 
 PyObject *
-_wrap_PyTiledMap_setOrientation(PyTiledMap *self, PyObject *args, PyObject *kwargs)
+_wrap_PyTiledMap_removeTilesetAt(PyTiledMap *self, PyObject *args, PyObject *kwargs)
 {
     PyObject *py_retval;
-    Tiled::Map::Orientation o;
-    const char *keywords[] = {"o", NULL};
+    int pos;
+    const char *keywords[] = {"pos", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "i", (char **) keywords, &o)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "i", (char **) keywords, &pos)) {
         return NULL;
     }
-    self->obj->setOrientation(o);
+    self->obj->removeTilesetAt(pos);
     Py_INCREF(Py_None);
     py_retval = Py_None;
+    return py_retval;
+}
+
+
+PyObject *
+_wrap_PyTiledMap_orientation(PyTiledMap *self)
+{
+    PyObject *py_retval;
+    Tiled::Map::Orientation retval;
+
+    retval = self->obj->orientation();
+    py_retval = Py_BuildValue((char *) "i", retval);
+    return py_retval;
+}
+
+
+PyObject *
+_wrap_PyTiledMap_height(PyTiledMap *self)
+{
+    PyObject *py_retval;
+    int retval;
+
+    retval = self->obj->height();
+    py_retval = Py_BuildValue((char *) "i", retval);
+    return py_retval;
+}
+
+
+PyObject *
+_wrap_PyTiledMap_addTileset(PyTiledMap *self, PyObject *args, PyObject *kwargs)
+{
+    PyObject *py_retval;
+    PyTiledSharedTileset *tileset;
+    const char *keywords[] = {"tileset", NULL};
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, &PyTiledSharedTileset_Type, &tileset)) {
+        return NULL;
+    }
+    self->obj->addTileset(*((PyTiledSharedTileset *) tileset)->obj);
+    Py_INCREF(Py_None);
+    py_retval = Py_None;
+    return py_retval;
+}
+
+
+PyObject *
+_wrap_PyTiledMap_layerCount(PyTiledMap *self)
+{
+    PyObject *py_retval;
+    int retval;
+
+    retval = self->obj->layerCount();
+    py_retval = Py_BuildValue((char *) "i", retval);
+    return py_retval;
+}
+
+
+PyObject *
+_wrap_PyTiledMap_setWidth(PyTiledMap *self, PyObject *args, PyObject *kwargs)
+{
+    PyObject *py_retval;
+    int w;
+    const char *keywords[] = {"w", NULL};
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "i", (char **) keywords, &w)) {
+        return NULL;
+    }
+    self->obj->setWidth(w);
+    Py_INCREF(Py_None);
+    py_retval = Py_None;
+    return py_retval;
+}
+
+
+PyObject *
+_wrap_PyTiledMap_setNextObjectId(PyTiledMap *self, PyObject *args, PyObject *kwargs)
+{
+    PyObject *py_retval;
+    int nextId;
+    const char *keywords[] = {"nextId", NULL};
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "i", (char **) keywords, &nextId)) {
+        return NULL;
+    }
+    self->obj->setNextObjectId(nextId);
+    Py_INCREF(Py_None);
+    py_retval = Py_None;
+    return py_retval;
+}
+
+
+PyObject *
+_wrap_PyTiledMap_hexSideLength(PyTiledMap *self)
+{
+    PyObject *py_retval;
+    int retval;
+
+    retval = self->obj->hexSideLength();
+    py_retval = Py_BuildValue((char *) "i", retval);
+    return py_retval;
+}
+
+
+PyObject *
+_wrap_PyTiledMap_tileLayerCount(PyTiledMap *self)
+{
+    PyObject *py_retval;
+    int retval;
+
+    retval = self->obj->tileLayerCount();
+    py_retval = Py_BuildValue((char *) "i", retval);
+    return py_retval;
+}
+
+
+PyObject *
+_wrap_PyTiledMap_insertTileset(PyTiledMap *self, PyObject *args, PyObject *kwargs)
+{
+    PyObject *py_retval;
+    int pos;
+    PyTiledSharedTileset *tileset;
+    const char *keywords[] = {"pos", "tileset", NULL};
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "iO!", (char **) keywords, &pos, &PyTiledSharedTileset_Type, &tileset)) {
+        return NULL;
+    }
+    self->obj->insertTileset(pos, *((PyTiledSharedTileset *) tileset)->obj);
+    Py_INCREF(Py_None);
+    py_retval = Py_None;
+    return py_retval;
+}
+
+
+PyObject *
+_wrap_PyTiledMap_width(PyTiledMap *self)
+{
+    PyObject *py_retval;
+    int retval;
+
+    retval = self->obj->width();
+    py_retval = Py_BuildValue((char *) "i", retval);
+    return py_retval;
+}
+
+
+PyObject *
+_wrap_PyTiledMap_invertStaggerIndex(PyTiledMap *self)
+{
+    PyObject *py_retval;
+
+    self->obj->invertStaggerIndex();
+    Py_INCREF(Py_None);
+    py_retval = Py_None;
+    return py_retval;
+}
+
+
+PyObject *
+_wrap_PyTiledMap_tilesetAt(PyTiledMap *self, PyObject *args, PyObject *kwargs)
+{
+    PyObject *py_retval;
+    int idx;
+    const char *keywords[] = {"idx", NULL};
+    PyTiledSharedTileset *py_SharedTileset;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "i", (char **) keywords, &idx)) {
+        return NULL;
+    }
+    Tiled::SharedTileset retval = self->obj->tilesetAt(idx);
+    py_SharedTileset = PyObject_New(PyTiledSharedTileset, &PyTiledSharedTileset_Type);
+    py_SharedTileset->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
+    py_SharedTileset->obj = new Tiled::SharedTileset(retval);
+    py_retval = Py_BuildValue((char *) "N", py_SharedTileset);
+    return py_retval;
+}
+
+
+PyObject *
+_wrap_PyTiledMap_nextObjectId(PyTiledMap *self)
+{
+    PyObject *py_retval;
+    int retval;
+
+    retval = self->obj->nextObjectId();
+    py_retval = Py_BuildValue((char *) "i", retval);
     return py_retval;
 }
 
@@ -4087,20 +4272,13 @@ _wrap_PyTiledMap_setHeight(PyTiledMap *self, PyObject *args, PyObject *kwargs)
 
 
 PyObject *
-_wrap_PyTiledMap_isTilesetUsed(PyTiledMap *self, PyObject *args, PyObject *kwargs)
+_wrap_PyTiledMap_tileHeight(PyTiledMap *self)
 {
     PyObject *py_retval;
-    bool retval;
-    PyTiledTileset *tileset;
-    Tiled::Tileset *tileset_ptr;
-    const char *keywords[] = {"tileset", NULL};
+    int retval;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, &PyTiledTileset_Type, &tileset)) {
-        return NULL;
-    }
-    tileset_ptr = (tileset ? tileset->obj : NULL);
-    retval = self->obj->isTilesetUsed(tileset_ptr);
-    py_retval = Py_BuildValue((char *) "N", PyBool_FromLong(retval));
+    retval = self->obj->tileHeight();
+    py_retval = Py_BuildValue((char *) "i", retval);
     return py_retval;
 }
 
@@ -4131,16 +4309,83 @@ _wrap_PyTiledMap_layerAt(PyTiledMap *self, PyObject *args, PyObject *kwargs)
 
 
 PyObject *
-_wrap_PyTiledMap_removeTilesetAt(PyTiledMap *self, PyObject *args, PyObject *kwargs)
+_wrap_PyTiledMap_renderOrder(PyTiledMap *self)
 {
     PyObject *py_retval;
-    int pos;
-    const char *keywords[] = {"pos", NULL};
+    Tiled::Map::RenderOrder retval;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "i", (char **) keywords, &pos)) {
+    retval = self->obj->renderOrder();
+    py_retval = Py_BuildValue((char *) "i", retval);
+    return py_retval;
+}
+
+
+PyObject *
+_wrap_PyTiledMap_imageLayerCount(PyTiledMap *self)
+{
+    PyObject *py_retval;
+    int retval;
+
+    retval = self->obj->imageLayerCount();
+    py_retval = Py_BuildValue((char *) "i", retval);
+    return py_retval;
+}
+
+
+PyObject *
+_wrap_PyTiledMap_isTilesetUsed(PyTiledMap *self, PyObject *args, PyObject *kwargs)
+{
+    PyObject *py_retval;
+    bool retval;
+    PyTiledTileset *tileset;
+    Tiled::Tileset *tileset_ptr;
+    const char *keywords[] = {"tileset", NULL};
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, &PyTiledTileset_Type, &tileset)) {
         return NULL;
     }
-    self->obj->removeTilesetAt(pos);
+    tileset_ptr = (tileset ? tileset->obj : NULL);
+    retval = self->obj->isTilesetUsed(tileset_ptr);
+    py_retval = Py_BuildValue((char *) "N", PyBool_FromLong(retval));
+    return py_retval;
+}
+
+
+PyObject *
+_wrap_PyTiledMap_objectGroupCount(PyTiledMap *self)
+{
+    PyObject *py_retval;
+    int retval;
+
+    retval = self->obj->objectGroupCount();
+    py_retval = Py_BuildValue((char *) "i", retval);
+    return py_retval;
+}
+
+
+PyObject *
+_wrap_PyTiledMap_groupLayerCount(PyTiledMap *self)
+{
+    PyObject *py_retval;
+    int retval;
+
+    retval = self->obj->groupLayerCount();
+    py_retval = Py_BuildValue((char *) "i", retval);
+    return py_retval;
+}
+
+
+PyObject *
+_wrap_PyTiledMap_setOrientation(PyTiledMap *self, PyObject *args, PyObject *kwargs)
+{
+    PyObject *py_retval;
+    Tiled::Map::Orientation o;
+    const char *keywords[] = {"o", NULL};
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "i", (char **) keywords, &o)) {
+        return NULL;
+    }
+    self->obj->setOrientation(o);
     Py_INCREF(Py_None);
     py_retval = Py_None;
     return py_retval;
@@ -4148,53 +4393,16 @@ _wrap_PyTiledMap_removeTilesetAt(PyTiledMap *self, PyObject *args, PyObject *kwa
 
 
 PyObject *
-_wrap_PyTiledMap_orientation(PyTiledMap *self)
+_wrap_PyTiledMap_setHexSideLength(PyTiledMap *self, PyObject *args, PyObject *kwargs)
 {
     PyObject *py_retval;
-    Tiled::Map::Orientation retval;
+    int hexSideLength;
+    const char *keywords[] = {"hexSideLength", NULL};
 
-    retval = self->obj->orientation();
-    py_retval = Py_BuildValue((char *) "i", retval);
-    return py_retval;
-}
-
-
-PyObject *
-_wrap_PyTiledMap_tileLayerCount(PyTiledMap *self)
-{
-    PyObject *py_retval;
-    int retval;
-
-    retval = self->obj->tileLayerCount();
-    py_retval = Py_BuildValue((char *) "i", retval);
-    return py_retval;
-}
-
-
-PyObject *
-_wrap_PyTiledMap_tileHeight(PyTiledMap *self)
-{
-    PyObject *py_retval;
-    int retval;
-
-    retval = self->obj->tileHeight();
-    py_retval = Py_BuildValue((char *) "i", retval);
-    return py_retval;
-}
-
-
-PyObject *
-_wrap_PyTiledMap_insertTileset(PyTiledMap *self, PyObject *args, PyObject *kwargs)
-{
-    PyObject *py_retval;
-    int pos;
-    PyTiledSharedTileset *tileset;
-    const char *keywords[] = {"pos", "tileset", NULL};
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "iO!", (char **) keywords, &pos, &PyTiledSharedTileset_Type, &tileset)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "i", (char **) keywords, &hexSideLength)) {
         return NULL;
     }
-    self->obj->insertTileset(pos, *((PyTiledSharedTileset *) tileset)->obj);
+    self->obj->setHexSideLength(hexSideLength);
     Py_INCREF(Py_None);
     py_retval = Py_None;
     return py_retval;
@@ -4214,24 +4422,12 @@ _wrap_PyTiledMap_tileWidth(PyTiledMap *self)
 
 
 PyObject *
-_wrap_PyTiledMap_height(PyTiledMap *self)
+_wrap_PyTiledMap_takeNextObjectId(PyTiledMap *self)
 {
     PyObject *py_retval;
     int retval;
 
-    retval = self->obj->height();
-    py_retval = Py_BuildValue((char *) "i", retval);
-    return py_retval;
-}
-
-
-PyObject *
-_wrap_PyTiledMap_width(PyTiledMap *self)
-{
-    PyObject *py_retval;
-    int retval;
-
-    retval = self->obj->width();
+    retval = self->obj->takeNextObjectId();
     py_retval = Py_BuildValue((char *) "i", retval);
     return py_retval;
 }
@@ -4273,30 +4469,18 @@ _wrap_PyTiledMap_indexOfTileset(PyTiledMap *self, PyObject *args, PyObject *kwar
 
 
 PyObject *
-_wrap_PyTiledMap_addTileset(PyTiledMap *self, PyObject *args, PyObject *kwargs)
+_wrap_PyTiledMap_setRenderOrder(PyTiledMap *self, PyObject *args, PyObject *kwargs)
 {
     PyObject *py_retval;
-    PyTiledSharedTileset *tileset;
-    const char *keywords[] = {"tileset", NULL};
+    Tiled::Map::RenderOrder ro;
+    const char *keywords[] = {"ro", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, &PyTiledSharedTileset_Type, &tileset)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "i", (char **) keywords, &ro)) {
         return NULL;
     }
-    self->obj->addTileset(*((PyTiledSharedTileset *) tileset)->obj);
+    self->obj->setRenderOrder(ro);
     Py_INCREF(Py_None);
     py_retval = Py_None;
-    return py_retval;
-}
-
-
-PyObject *
-_wrap_PyTiledMap_layerCount(PyTiledMap *self)
-{
-    PyObject *py_retval;
-    int retval;
-
-    retval = self->obj->layerCount();
-    py_retval = Py_BuildValue((char *) "i", retval);
     return py_retval;
 }
 
@@ -4417,55 +4601,6 @@ PyObject * _wrap_PyTiledMap_addLayer(PyTiledMap *self, PyObject *args, PyObject 
 
 
 PyObject *
-_wrap_PyTiledMap_tilesetAt(PyTiledMap *self, PyObject *args, PyObject *kwargs)
-{
-    PyObject *py_retval;
-    int idx;
-    const char *keywords[] = {"idx", NULL};
-    PyTiledSharedTileset *py_SharedTileset;
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "i", (char **) keywords, &idx)) {
-        return NULL;
-    }
-    Tiled::SharedTileset retval = self->obj->tilesetAt(idx);
-    py_SharedTileset = PyObject_New(PyTiledSharedTileset, &PyTiledSharedTileset_Type);
-    py_SharedTileset->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
-    py_SharedTileset->obj = new Tiled::SharedTileset(retval);
-    py_retval = Py_BuildValue((char *) "N", py_SharedTileset);
-    return py_retval;
-}
-
-
-PyObject *
-_wrap_PyTiledMap_objectGroupCount(PyTiledMap *self)
-{
-    PyObject *py_retval;
-    int retval;
-
-    retval = self->obj->objectGroupCount();
-    py_retval = Py_BuildValue((char *) "i", retval);
-    return py_retval;
-}
-
-
-PyObject *
-_wrap_PyTiledMap_setWidth(PyTiledMap *self, PyObject *args, PyObject *kwargs)
-{
-    PyObject *py_retval;
-    int w;
-    const char *keywords[] = {"w", NULL};
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "i", (char **) keywords, &w)) {
-        return NULL;
-    }
-    self->obj->setWidth(w);
-    Py_INCREF(Py_None);
-    py_retval = Py_None;
-    return py_retval;
-}
-
-
-PyObject *
 _wrap_PyTiledMap_tilesetCount(PyTiledMap *self)
 {
     PyObject *py_retval;
@@ -4489,26 +4624,36 @@ _wrap_PyTiledMap__copy__(PyTiledMap *self)
 }
 
 static PyMethodDef PyTiledMap_methods[] = {
-    {(char *) "setOrientation", (PyCFunction) _wrap_PyTiledMap_setOrientation, METH_KEYWORDS|METH_VARARGS, NULL },
-    {(char *) "setHeight", (PyCFunction) _wrap_PyTiledMap_setHeight, METH_KEYWORDS|METH_VARARGS, NULL },
-    {(char *) "isTilesetUsed", (PyCFunction) _wrap_PyTiledMap_isTilesetUsed, METH_KEYWORDS|METH_VARARGS, NULL },
-    {(char *) "layerAt", (PyCFunction) _wrap_PyTiledMap_layerAt, METH_KEYWORDS|METH_VARARGS, NULL },
     {(char *) "removeTilesetAt", (PyCFunction) _wrap_PyTiledMap_removeTilesetAt, METH_KEYWORDS|METH_VARARGS, NULL },
     {(char *) "orientation", (PyCFunction) _wrap_PyTiledMap_orientation, METH_NOARGS, NULL },
-    {(char *) "tileLayerCount", (PyCFunction) _wrap_PyTiledMap_tileLayerCount, METH_NOARGS, NULL },
-    {(char *) "tileHeight", (PyCFunction) _wrap_PyTiledMap_tileHeight, METH_NOARGS, NULL },
-    {(char *) "insertTileset", (PyCFunction) _wrap_PyTiledMap_insertTileset, METH_KEYWORDS|METH_VARARGS, NULL },
-    {(char *) "tileWidth", (PyCFunction) _wrap_PyTiledMap_tileWidth, METH_NOARGS, NULL },
     {(char *) "height", (PyCFunction) _wrap_PyTiledMap_height, METH_NOARGS, NULL },
-    {(char *) "width", (PyCFunction) _wrap_PyTiledMap_width, METH_NOARGS, NULL },
-    {(char *) "replaceTileset", (PyCFunction) _wrap_PyTiledMap_replaceTileset, METH_KEYWORDS|METH_VARARGS, NULL },
-    {(char *) "indexOfTileset", (PyCFunction) _wrap_PyTiledMap_indexOfTileset, METH_KEYWORDS|METH_VARARGS, NULL },
     {(char *) "addTileset", (PyCFunction) _wrap_PyTiledMap_addTileset, METH_KEYWORDS|METH_VARARGS, NULL },
     {(char *) "layerCount", (PyCFunction) _wrap_PyTiledMap_layerCount, METH_NOARGS, NULL },
-    {(char *) "addLayer", (PyCFunction) _wrap_PyTiledMap_addLayer, METH_KEYWORDS|METH_VARARGS, NULL },
-    {(char *) "tilesetAt", (PyCFunction) _wrap_PyTiledMap_tilesetAt, METH_KEYWORDS|METH_VARARGS, NULL },
-    {(char *) "objectGroupCount", (PyCFunction) _wrap_PyTiledMap_objectGroupCount, METH_NOARGS, NULL },
     {(char *) "setWidth", (PyCFunction) _wrap_PyTiledMap_setWidth, METH_KEYWORDS|METH_VARARGS, NULL },
+    {(char *) "setNextObjectId", (PyCFunction) _wrap_PyTiledMap_setNextObjectId, METH_KEYWORDS|METH_VARARGS, NULL },
+    {(char *) "hexSideLength", (PyCFunction) _wrap_PyTiledMap_hexSideLength, METH_NOARGS, NULL },
+    {(char *) "tileLayerCount", (PyCFunction) _wrap_PyTiledMap_tileLayerCount, METH_NOARGS, NULL },
+    {(char *) "insertTileset", (PyCFunction) _wrap_PyTiledMap_insertTileset, METH_KEYWORDS|METH_VARARGS, NULL },
+    {(char *) "width", (PyCFunction) _wrap_PyTiledMap_width, METH_NOARGS, NULL },
+    {(char *) "invertStaggerIndex", (PyCFunction) _wrap_PyTiledMap_invertStaggerIndex, METH_NOARGS, NULL },
+    {(char *) "tilesetAt", (PyCFunction) _wrap_PyTiledMap_tilesetAt, METH_KEYWORDS|METH_VARARGS, NULL },
+    {(char *) "nextObjectId", (PyCFunction) _wrap_PyTiledMap_nextObjectId, METH_NOARGS, NULL },
+    {(char *) "setHeight", (PyCFunction) _wrap_PyTiledMap_setHeight, METH_KEYWORDS|METH_VARARGS, NULL },
+    {(char *) "tileHeight", (PyCFunction) _wrap_PyTiledMap_tileHeight, METH_NOARGS, NULL },
+    {(char *) "layerAt", (PyCFunction) _wrap_PyTiledMap_layerAt, METH_KEYWORDS|METH_VARARGS, NULL },
+    {(char *) "renderOrder", (PyCFunction) _wrap_PyTiledMap_renderOrder, METH_NOARGS, NULL },
+    {(char *) "imageLayerCount", (PyCFunction) _wrap_PyTiledMap_imageLayerCount, METH_NOARGS, NULL },
+    {(char *) "isTilesetUsed", (PyCFunction) _wrap_PyTiledMap_isTilesetUsed, METH_KEYWORDS|METH_VARARGS, NULL },
+    {(char *) "objectGroupCount", (PyCFunction) _wrap_PyTiledMap_objectGroupCount, METH_NOARGS, NULL },
+    {(char *) "groupLayerCount", (PyCFunction) _wrap_PyTiledMap_groupLayerCount, METH_NOARGS, NULL },
+    {(char *) "setOrientation", (PyCFunction) _wrap_PyTiledMap_setOrientation, METH_KEYWORDS|METH_VARARGS, NULL },
+    {(char *) "setHexSideLength", (PyCFunction) _wrap_PyTiledMap_setHexSideLength, METH_KEYWORDS|METH_VARARGS, NULL },
+    {(char *) "tileWidth", (PyCFunction) _wrap_PyTiledMap_tileWidth, METH_NOARGS, NULL },
+    {(char *) "takeNextObjectId", (PyCFunction) _wrap_PyTiledMap_takeNextObjectId, METH_NOARGS, NULL },
+    {(char *) "replaceTileset", (PyCFunction) _wrap_PyTiledMap_replaceTileset, METH_KEYWORDS|METH_VARARGS, NULL },
+    {(char *) "indexOfTileset", (PyCFunction) _wrap_PyTiledMap_indexOfTileset, METH_KEYWORDS|METH_VARARGS, NULL },
+    {(char *) "setRenderOrder", (PyCFunction) _wrap_PyTiledMap_setRenderOrder, METH_KEYWORDS|METH_VARARGS, NULL },
+    {(char *) "addLayer", (PyCFunction) _wrap_PyTiledMap_addLayer, METH_KEYWORDS|METH_VARARGS, NULL },
     {(char *) "tilesetCount", (PyCFunction) _wrap_PyTiledMap_tilesetCount, METH_NOARGS, NULL },
     {(char *) "__copy__", (PyCFunction) _wrap_PyTiledMap__copy__, METH_NOARGS, NULL},
     {NULL, NULL, 0, NULL}
@@ -6050,6 +6195,8 @@ PyTypeObject PyTiledLoggingInterface_Type = {
 
 
 
+
+
 #if PY_VERSION_HEX >= 0x03000000
 static struct PyModuleDef Tiled_moduledef = {
     PyModuleDef_HEAD_INIT,
@@ -6158,6 +6305,25 @@ inittiled_Tiled(void)
          // Tiled::Map::Isometric
         tmp_value = PyLong_FromLong(Tiled::Map::Isometric);
         PyDict_SetItemString((PyObject*) PyTiledMap_Type.tp_dict, "Isometric", tmp_value);
+        Py_DECREF(tmp_value);
+    }
+    {
+        PyObject *tmp_value;
+         // Tiled::Map::RightDown
+        tmp_value = PyLong_FromLong(Tiled::Map::RightDown);
+        PyDict_SetItemString((PyObject*) PyTiledMap_Type.tp_dict, "RightDown", tmp_value);
+        Py_DECREF(tmp_value);
+         // Tiled::Map::RightUp
+        tmp_value = PyLong_FromLong(Tiled::Map::RightUp);
+        PyDict_SetItemString((PyObject*) PyTiledMap_Type.tp_dict, "RightUp", tmp_value);
+        Py_DECREF(tmp_value);
+         // Tiled::Map::LeftDown
+        tmp_value = PyLong_FromLong(Tiled::Map::LeftDown);
+        PyDict_SetItemString((PyObject*) PyTiledMap_Type.tp_dict, "LeftDown", tmp_value);
+        Py_DECREF(tmp_value);
+         // Tiled::Map::LeftUp
+        tmp_value = PyLong_FromLong(Tiled::Map::LeftUp);
+        PyDict_SetItemString((PyObject*) PyTiledMap_Type.tp_dict, "LeftUp", tmp_value);
         Py_DECREF(tmp_value);
     }
     {
