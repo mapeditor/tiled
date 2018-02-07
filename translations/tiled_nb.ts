@@ -2194,12 +2194,12 @@ Linje %1, kolonne %2</translation>
     <message>
         <location line="+20"/>
         <source>Tilesheet must have equal spacings.</source>
-        <translation>Flissett må ha lik</translation>
+        <translation type="unfinished">Flissett må ha like mellomrom.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Tilesheet must have equal margins.</source>
-        <translation>Flissett må la like</translation>
+        <translation type="unfinished">Flissett må la like marginer.</translation>
     </message>
     <message>
         <location line="+34"/>
@@ -3197,7 +3197,7 @@ Do you want to replace it?</source>
         <location line="+74"/>
         <source>Drag Layer(s)</source>
         <translation><numerusform>Dra lag</numerusform>
-        <numerusform></numerusform>
+        <numerusform>Dra lag</numerusform>
         </translation></message>
     <message>
         <location line="+215"/>
@@ -4307,7 +4307,7 @@ Vennligst velgt et spesifikt format.</translation>
         <location line="-252"/>
         <source>Paste Property/Properties</source>
         <translation><numerusform>Lim inn egenskap</numerusform>
-        <numerusform></numerusform>
+        <numerusform>Lim inn egenskaper</numerusform>
         </translation></message>
     <message numerus="yes">
         <location line="+50"/>
@@ -4684,7 +4684,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+17"/>
         <source>Margin</source>
-        <translation>Margin</translation>
+        <translation type="unfinished">Margin</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -5686,14 +5686,14 @@ Vennligst velgt et spesifikt format.</translation>
     <message numerus="yes">
         <location line="+45"/>
         <source>Reset %n Instances</source>
-        <translation><numerusform>Tilbakestill %n instanser</numerusform>
-        <numerusform></numerusform>
+        <translation><numerusform>Tilbakestill instans</numerusform>
+        <numerusform>Tilbakestill %n instanser</numerusform>
         </translation></message>
     <message numerus="yes">
         <location line="+46"/>
         <source>Replace %n Object(s) With Template</source>
-        <translation><numerusform>Erstatt %n objekt med mal</numerusform>
-        <numerusform></numerusform>
+        <translation type="unfinished"><numerusform>Erstatt ett objekt med mal</numerusform>
+        <numerusform>Erstatt %n objekter med mal</numerusform>
         </translation></message>
     <message>
         <location filename="../src/tiled/renameterrain.cpp" line="+36"/>
