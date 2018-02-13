@@ -20,6 +20,7 @@
 
 #include "mapeditor.h"
 
+#include "addremovelayer.h"
 #include "addremovetileset.h"
 #include "brokenlinks.h"
 #include "bucketfilltool.h"
@@ -47,10 +48,10 @@
 #include "mapview.h"
 #include "minimapdock.h"
 #include "newtilesetdialog.h"
+#include "objectgroup.h"
 #include "objectsdock.h"
-#include "objecttemplate.h"
-#include "templatesdock.h"
 #include "objectselectiontool.h"
+#include "objecttemplate.h"
 #include "painttilelayer.h"
 #include "preferences.h"
 #include "propertiesdock.h"
@@ -58,6 +59,7 @@
 #include "selectsametiletool.h"
 #include "shapefilltool.h"
 #include "stampbrush.h"
+#include "templatesdock.h"
 #include "terrain.h"
 #include "terrainbrush.h"
 #include "terraindock.h"
@@ -490,12 +492,10 @@ Editor::StandardActions MapEditor::enabledStandardActions() const
 
     if (mCurrentMapDocument) {
         Layer *currentLayer = mCurrentMapDocument->currentLayer();
-
-        bool tileLayerSelected = currentLayer && currentLayer->isTileLayer();
         bool objectsSelected = !mCurrentMapDocument->selectedObjects().isEmpty();
-        QRegion selection = mCurrentMapDocument->selectedArea();
+        bool areaSelected = !mCurrentMapDocument->selectedArea().isEmpty();
 
-        if ((tileLayerSelected && !selection.isEmpty()) || objectsSelected)
+        if ((currentLayer && areaSelected) || objectsSelected)
             standardActions |= CutAction | CopyAction | DeleteAction;
 
         if (ClipboardManager::instance()->hasMap())
@@ -629,13 +629,28 @@ void MapEditor::setSelectedTool(AbstractTool *tool)
     }
 }
 
+static void normalizeTileLayerPositionsAndMapSize(Map *map)
+{
+    LayerIterator it(map, Layer::TileLayerType);
+
+    QRect contentRect;
+    while (auto tileLayer = static_cast<TileLayer*>(it.next()))
+        contentRect |= tileLayer->region().boundingRect();
+
+    if (!contentRect.isEmpty()) {
+        QPoint offset = contentRect.topLeft();
+        it.toFront();
+        while (auto tileLayer = static_cast<TileLayer*>(it.next()))
+            tileLayer->setPosition(tileLayer->position() - offset);
+
+        map->setWidth(contentRect.width());
+        map->setHeight(contentRect.height());
+    }
+}
+
 void MapEditor::paste(ClipboardManager::PasteFlags flags)
 {
     if (!mCurrentMapDocument)
-        return;
-
-    Layer *currentLayer = mCurrentMapDocument->currentLayer();
-    if (!currentLayer)
         return;
 
     ClipboardManager *clipboardManager = ClipboardManager::instance();
@@ -643,41 +658,79 @@ void MapEditor::paste(ClipboardManager::PasteFlags flags)
     if (!map)
         return;
 
-    // We can currently only handle maps with a single layer
-    if (map->layerCount() != 1)
-        return;
-
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->addReferences(map->tilesets());
 
     mCurrentMapDocument->unifyTilesets(map.data());
-    Layer *layer = map->layerAt(0);
 
-    if (layer->isTileLayer()) {
+    LayerIterator objectGroupIterator(map.data(), Layer::ObjectGroupType);
+    LayerIterator tileLayerIterator(map.data(), Layer::TileLayerType);
+
+    const Map *targetMap = mCurrentMapDocument->map();
+
+    if (tileLayerIterator.next()) {
         if (flags & ClipboardManager::PasteInPlace) {
-            TileLayer *source = static_cast<TileLayer*>(layer);
-            TileLayer *target = currentLayer->asTileLayer();
+            // todo: share this code with StampBrush::doPaint
+            Layer *currentLayer = mCurrentMapDocument->currentLayer();
+            TileLayer *currentTileLayer = currentLayer ? currentLayer->asTileLayer() : nullptr;
+            const bool isMultiLayer = tileLayerIterator.next();
+            tileLayerIterator.toFront();
 
-            if (target) {
-                // Paste onto the current layer, using the same position as where
-                // the copied piece came from.
-                auto undoStack = mCurrentMapDocument->undoStack();
-                undoStack->push(new PaintTileLayer(mCurrentMapDocument,
-                                                   target,
-                                                   source->x(),
-                                                   source->y(),
-                                                   source));
+            bool mergeable = false;
+
+            while (auto tileLayer = static_cast<TileLayer*>(tileLayerIterator.next())) {
+                TileLayer *targetLayer = currentTileLayer;
+                bool addLayer = false;
+
+                // When the map contains only a single layer, always paint it into
+                // the current layer. This makes sure you can still take pieces from
+                // one layer and draw them into another.
+                if (isMultiLayer && !tileLayer->name().isEmpty()) {
+                    targetLayer = static_cast<TileLayer*>(targetMap->findLayer(tileLayer->name(), Layer::TileLayerType));
+                    if (!targetLayer) {
+                        // Create a layer with this name
+                        targetLayer = new TileLayer(tileLayer->name(), 0, 0,
+                                                    targetMap->width(),
+                                                    targetMap->height());
+                        addLayer = true;
+                    }
+                }
+
+                if (!targetLayer->isUnlocked())
+                    continue;
+                if (!targetLayer->rect().intersects(tileLayer->bounds()) && !targetMap->infinite())
+                    continue;
+
+                PaintTileLayer *paint = new PaintTileLayer(mCurrentMapDocument,
+                                                           targetLayer,
+                                                           tileLayer->x(),
+                                                           tileLayer->y(),
+                                                           tileLayer);
+
+                if (addLayer) {
+                    new AddLayer(mCurrentMapDocument,
+                                 targetMap->layerCount(), targetLayer, nullptr,
+                                 paint);
+                }
+
+                paint->setMergeable(mergeable);
+                mCurrentMapDocument->undoStack()->push(paint);
+
+                mergeable = true; // further paints are always mergeable
             }
         } else {
             // Reset selection and paste into the stamp brush
             MapDocumentActionHandler::instance()->selectNone();
-            layer->setPosition(0, 0);   // Make sure the tile layer is at origin
             Map *stamp = map.take();    // TileStamp will take ownership
+            normalizeTileLayerPositionsAndMapSize(stamp);
             setStamp(TileStamp(stamp));
             tilesetManager->removeReferences(stamp->tilesets());
             mToolManager->selectTool(mStampBrush);
         }
-    } else if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
+    }
+
+    if (ObjectGroup *objectGroup = static_cast<ObjectGroup*>(objectGroupIterator.next())) {
+        // todo: Handle multiple object groups
         const MapView *view = currentMapView();
         clipboardManager->pasteObjectGroup(objectGroup, mCurrentMapDocument, view, flags);
     }

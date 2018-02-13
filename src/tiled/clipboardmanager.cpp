@@ -125,51 +125,70 @@ void ClipboardManager::setProperties(const Properties &properties)
 
 /**
  * Convenience method to copy the current selection to the clipboard.
- * Deals with either tile selection or object selection.
+ * Copies both tile selection and object selection.
+ *
+ * @returns whether anything was copied.
  */
-void ClipboardManager::copySelection(const MapDocument *mapDocument)
+bool ClipboardManager::copySelection(const MapDocument &mapDocument)
 {
-    const Layer *currentLayer = mapDocument->currentLayer();
-    if (!currentLayer)
-        return;
+    const Map *map = mapDocument.map();
+    const QRegion &selectedArea = mapDocument.selectedArea();
+    const QList<MapObject*> &selectedObjects = mapDocument.selectedObjects();
+    const QList<Layer*> &selectedLayers = mapDocument.selectedLayers();
 
-    const Map *map = mapDocument->map();
-    const QRegion &selectedArea = mapDocument->selectedArea();
-    const QList<MapObject*> &selectedObjects = mapDocument->selectedObjects();
-    const TileLayer *tileLayer = dynamic_cast<const TileLayer*>(currentLayer);
-    Layer *copyLayer = nullptr;
+    const QRect selectionBounds = selectedArea.boundingRect();
 
-    if (!selectedArea.isEmpty() && tileLayer) {
-        const QRegion area = selectedArea.intersected(tileLayer->bounds());
+    // Create a temporary map to write to the clipboard
+    Map copyMap(map->orientation(),
+                selectionBounds.width(),
+                selectionBounds.height(),
+                map->tileWidth(), map->tileHeight());
+    copyMap.setRenderOrder(map->renderOrder());
 
-        // Copy the selected part of the layer
-        copyLayer = tileLayer->copy(area.translated(-tileLayer->position()));
-        copyLayer->setPosition(area.boundingRect().topLeft());
+    LayerIterator layerIterator(map);
+    while (Layer *layer = layerIterator.next()) {
+        switch (layer->layerType()) {
+        case Layer::TileLayerType: {
+            if (!selectedLayers.contains(layer))    // ignore unselected tile layers
+                continue;
 
-    } else if (!selectedObjects.isEmpty()) {
+            const TileLayer *tileLayer = static_cast<const TileLayer*>(layer);
+            const QRegion area = selectedArea.intersected(tileLayer->bounds());
+            if (area.isEmpty())                     // nothing to copy
+                continue;
+
+            // Copy the selected part of the layer
+            TileLayer *copyLayer = tileLayer->copy(area.translated(-tileLayer->position()));
+            copyLayer->setName(tileLayer->name());
+            copyLayer->setPosition(area.boundingRect().topLeft());
+
+            copyMap.addLayer(copyLayer);
+            break;
+        }
+        case Layer::ObjectGroupType: // todo: maybe it makes to group selected objects by layer
+        case Layer::ImageLayerType:
+        case Layer::GroupLayerType:
+            break;  // nothing to do
+        }
+    }
+
+    if (!selectedObjects.isEmpty()) {
         // Create a new object group with clones of the selected objects
         ObjectGroup *objectGroup = new ObjectGroup;
         for (const MapObject *mapObject : selectedObjects)
             objectGroup->addObject(mapObject->clone());
-        copyLayer = objectGroup;
-    } else {
-        return;
+        copyMap.addLayer(objectGroup);
     }
 
-    // Create a temporary map to write to the clipboard
-    Map copyMap(map->orientation(),
-                0, 0,
-                map->tileWidth(), map->tileHeight());
+    if (copyMap.layerCount() > 0) {
+        // Resolve the set of tilesets used by the created map
+        copyMap.addTilesets(copyMap.usedTilesets());
 
-    copyMap.setRenderOrder(map->renderOrder());
+        setMap(copyMap);
+        return true;
+    }
 
-    // Resolve the set of tilesets used by this layer
-    foreach (const SharedTileset &tileset, copyLayer->usedTilesets())
-        copyMap.addTileset(tileset);
-
-    copyMap.addLayer(copyLayer);
-
-    setMap(copyMap);
+    return false;
 }
 
 /**

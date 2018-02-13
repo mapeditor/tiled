@@ -265,40 +265,44 @@ QMenu *MapDocumentActionHandler::createGroupLayerMenu(QWidget *parent) const
     return groupLayerMenu;
 }
 
+/**
+ * Used to check whether we can cut or delete the current tile selection.
+ */
+static bool isTileSelectionLocked(const MapDocument &mapDocument)
+{
+    if (!mapDocument.selectedArea().isEmpty())
+        for (Layer *layer : mapDocument.selectedLayers())
+            if (layer->isTileLayer() && !layer->isUnlocked())
+                return true;
+
+    return false;
+}
+
 void MapDocumentActionHandler::cut()
 {
     if (!mMapDocument)
         return;
 
-    Layer *currentLayer = mMapDocument->currentLayer();
-    if (!currentLayer || !currentLayer->isUnlocked())
+    if (isTileSelectionLocked(*mMapDocument))
         return;
 
-    TileLayer *tileLayer = dynamic_cast<TileLayer*>(currentLayer);
-    const QRegion &selectedArea = mMapDocument->selectedArea();
-    const QList<MapObject*> selectedObjects = mMapDocument->selectedObjects();
-
-    copy();
+    if (!copy())
+        return;
 
     QUndoStack *stack = mMapDocument->undoStack();
     stack->beginMacro(tr("Cut"));
-
-    if (tileLayer && !selectedArea.isEmpty()) {
-        stack->push(new EraseTiles(mMapDocument, tileLayer, selectedArea));
-    } else if (!selectedObjects.isEmpty()) {
-        for (MapObject *mapObject : selectedObjects)
-            stack->push(new RemoveMapObject(mMapDocument, mapObject));
-    }
-
-    selectNone();
-
+    delete_();
     stack->endMacro();
 }
 
-void MapDocumentActionHandler::copy()
+/**
+ * @returns whether anything was copied.
+ */
+bool MapDocumentActionHandler::copy()
 {
     if (mMapDocument)
-        ClipboardManager::instance()->copySelection(mMapDocument);
+        return ClipboardManager::instance()->copySelection(*mMapDocument);
+    return false;
 }
 
 void MapDocumentActionHandler::delete_()
@@ -306,26 +310,42 @@ void MapDocumentActionHandler::delete_()
     if (!mMapDocument)
         return;
 
-    Layer *currentLayer = mMapDocument->currentLayer();
-    if (!currentLayer || !currentLayer->isUnlocked())
+    if (isTileSelectionLocked(*mMapDocument))
         return;
 
-    TileLayer *tileLayer = dynamic_cast<TileLayer*>(currentLayer);
     const QRegion &selectedArea = mMapDocument->selectedArea();
-    const auto selectedObjects = mMapDocument->selectedObjects();
+
+    QList<QUndoCommand*> commands;
+
+    LayerIterator layerIterator(mMapDocument->map(), Layer::TileLayerType);
+    for (Layer *layer : mMapDocument->selectedLayers()) {
+        if (!layer->isTileLayer())
+            continue;
+
+        auto tileLayer = static_cast<TileLayer*>(layer);
+        const QRegion area = selectedArea.intersected(tileLayer->bounds());
+        if (area.isEmpty())                     // nothing to delete
+            continue;
+
+        // Delete the selected part of the layer
+        commands.append(new EraseTiles(mMapDocument, tileLayer, area));
+    }
+
+    for (MapObject *mapObject : mMapDocument->selectedObjects())
+        commands.append(new RemoveMapObject(mMapDocument, mapObject));
 
     QUndoStack *undoStack = mMapDocument->undoStack();
-    undoStack->beginMacro(tr("Delete"));
 
-    if (tileLayer && !selectedArea.isEmpty()) {
-        undoStack->push(new EraseTiles(mMapDocument, tileLayer, selectedArea));
-    } else if (!selectedObjects.isEmpty()) {
-        for (MapObject *mapObject : selectedObjects)
-            undoStack->push(new RemoveMapObject(mMapDocument, mapObject));
+    if (!commands.isEmpty()) {
+        undoStack->beginMacro(tr("Delete"));
+        for (QUndoCommand *command : commands)
+            undoStack->push(command);
     }
 
     selectNone();
-    undoStack->endMacro();
+
+    if (!commands.isEmpty())
+        undoStack->endMacro();
 }
 
 void MapDocumentActionHandler::selectAll()

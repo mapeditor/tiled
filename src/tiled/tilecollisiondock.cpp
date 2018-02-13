@@ -279,7 +279,7 @@ void TileCollisionDock::copy()
     if (!mDummyMapDocument)
         return;
 
-    ClipboardManager::instance()->copySelection(mDummyMapDocument);
+    ClipboardManager::instance()->copySelection(*mDummyMapDocument);
 }
 
 void TileCollisionDock::paste()
