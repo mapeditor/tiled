@@ -348,7 +348,8 @@ void MapDocumentActionHandler::selectAll()
         QUndoCommand *command = new ChangeSelectedArea(mMapDocument, all);
         mMapDocument->undoStack()->push(command);
     } else if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
-        mMapDocument->setSelectedObjects(objectGroup->objects());
+        if (objectGroup->isUnlocked())
+            mMapDocument->setSelectedObjects(objectGroup->objects());
     }
 }
 
