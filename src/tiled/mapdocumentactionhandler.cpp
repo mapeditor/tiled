@@ -333,24 +333,42 @@ void MapDocumentActionHandler::selectAll()
     if (!mMapDocument)
         return;
 
-    Layer *layer = mMapDocument->currentLayer();
-    if (!layer)
-        return;
+    const bool infinite = mMapDocument->map()->infinite();
 
-    if (TileLayer *tileLayer = layer->asTileLayer()) {
-        QRect all = tileLayer->rect();
-        if (mMapDocument->map()->infinite())
-            all = tileLayer->bounds();
+    QRect all;
+    QList<MapObject*> objects;
 
-        if (mMapDocument->selectedArea() == all)
-            return;
+    for (Layer *layer : mMapDocument->selectedLayers()) {
+        if (!layer->isUnlocked())
+            continue;
 
+        switch (layer->layerType()) {
+        case Layer::TileLayerType: {
+            auto tileLayer = static_cast<TileLayer*>(layer);
+            all |= infinite ? tileLayer->bounds() : tileLayer->rect();
+            break;
+        }
+        case Layer::ObjectGroupType: {
+            if (!layer->isUnlocked())
+                continue;
+
+            auto objectGroup = static_cast<ObjectGroup*>(layer);
+            objects.append(objectGroup->objects());
+            break;
+        }
+        case Layer::ImageLayerType:
+        case Layer::GroupLayerType:
+            break;
+        }
+    }
+
+    if (mMapDocument->selectedArea() != all) {
         QUndoCommand *command = new ChangeSelectedArea(mMapDocument, all);
         mMapDocument->undoStack()->push(command);
-    } else if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
-        if (objectGroup->isUnlocked())
-            mMapDocument->setSelectedObjects(objectGroup->objects());
     }
+
+    if (!objects.isEmpty())
+        mMapDocument->setSelectedObjects(objects);
 }
 
 void MapDocumentActionHandler::selectInverse()
@@ -387,19 +405,13 @@ void MapDocumentActionHandler::selectNone()
     if (!mMapDocument)
         return;
 
-    Layer *layer = mMapDocument->currentLayer();
-    if (!layer)
-        return;
-
-    if (layer->asTileLayer()) {
-        if (mMapDocument->selectedArea().isEmpty())
-            return;
-
+    if (!mMapDocument->selectedArea().isEmpty()) {
         QUndoCommand *command = new ChangeSelectedArea(mMapDocument, QRegion());
         mMapDocument->undoStack()->push(command);
-    } else if (layer->isObjectGroup()) {
-        mMapDocument->setSelectedObjects(QList<MapObject*>());
     }
+
+    if (!mMapDocument->selectedObjects().isEmpty())
+        mMapDocument->setSelectedObjects(QList<MapObject*>());
 }
 
 void MapDocumentActionHandler::copyPosition()
