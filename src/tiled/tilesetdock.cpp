@@ -151,21 +151,36 @@ public:
 static void removeTileReferences(MapDocument *mapDocument,
                                  std::function<bool(const Cell &)> condition)
 {
-    QUndoStack *undoStack = mapDocument->undoStack();
+    // Commands delayed to avoid invalidating object list iterator
+    QList<QUndoCommand*> commands;
 
-    for (Layer *layer : mapDocument->map()->layers()) {
-        if (TileLayer *tileLayer = layer->asTileLayer()) {
+    LayerIterator it(mapDocument->map());
+    while (Layer *layer = it.next()) {
+        switch (layer->layerType()) {
+        case Layer::TileLayerType: {
+            auto tileLayer = static_cast<TileLayer*>(layer);
             const QRegion refs = tileLayer->region(condition);
             if (!refs.isEmpty())
-                undoStack->push(new EraseTiles(mapDocument, tileLayer, refs));
-
-        } else if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
+                commands.append(new EraseTiles(mapDocument, tileLayer, refs));
+            break;
+        }
+        case Layer::ObjectGroupType: {
+            auto objectGroup = static_cast<ObjectGroup*>(layer);
             for (MapObject *object : *objectGroup) {
                 if (condition(object->cell()))
-                    undoStack->push(new RemoveMapObject(mapDocument, object));
+                    commands.append(new RemoveMapObject(mapDocument, object));
             }
+            break;
+        }
+        case Layer::ImageLayerType:
+        case Layer::GroupLayerType:
+            break;
         }
     }
+
+    QUndoStack *undoStack = mapDocument->undoStack();
+    for (QUndoCommand *command : commands)
+        undoStack->push(command);
 }
 
 } // anonymous namespace

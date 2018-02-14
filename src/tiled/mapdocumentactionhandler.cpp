@@ -348,7 +348,8 @@ void MapDocumentActionHandler::selectAll()
         QUndoCommand *command = new ChangeSelectedArea(mMapDocument, all);
         mMapDocument->undoStack()->push(command);
     } else if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
-        mMapDocument->setSelectedObjects(objectGroup->objects());
+        if (objectGroup->isUnlocked())
+            mMapDocument->setSelectedObjects(objectGroup->objects());
     }
 }
 
@@ -362,7 +363,9 @@ void MapDocumentActionHandler::selectInverse()
         return;
 
     if (TileLayer *tileLayer = layer->asTileLayer()) {
-        QRegion all(tileLayer->bounds());
+        QRegion all = tileLayer->rect();
+        if (mMapDocument->map()->infinite())
+            all = tileLayer->bounds();
 
         QUndoCommand *command = new ChangeSelectedArea(mMapDocument, all - mMapDocument->selectedArea());
         mMapDocument->undoStack()->push(command);
@@ -394,7 +397,7 @@ void MapDocumentActionHandler::selectNone()
 
         QUndoCommand *command = new ChangeSelectedArea(mMapDocument, QRegion());
         mMapDocument->undoStack()->push(command);
-    } else if (layer->asObjectGroup()) {
+    } else if (layer->isObjectGroup()) {
         mMapDocument->setSelectedObjects(QList<MapObject*>());
     }
 }

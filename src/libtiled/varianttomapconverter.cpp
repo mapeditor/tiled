@@ -735,7 +735,7 @@ bool VariantToMapConverter::readTileLayerData(TileLayer &tileLayer,
 
             const Cell cell = mGidMapper.gidToCell(gid, ok);
 
-            tileLayer.setCell(x + bounds.x(), y + bounds.y(), cell);
+            tileLayer.setCell(x, y, cell);
 
             x++;
             if (x > bounds.right()) {
