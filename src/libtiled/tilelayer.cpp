@@ -514,10 +514,10 @@ QSet<SharedTileset> TileLayer::usedTilesets() const
             for (const Cell &cell : chunk)
                 if (const Tile *tile = cell.tile())
                     tilesets.insert(tile->sharedTileset());
-
-            mUsedTilesets.swap(tilesets);
-            mUsedTilesetsDirty = false;
         }
+
+        mUsedTilesets.swap(tilesets);
+        mUsedTilesetsDirty = false;
     }
 
     return mUsedTilesets;
