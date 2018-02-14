@@ -65,6 +65,8 @@
 #include <QRect>
 #include <QUndoStack>
 
+#include "qtcompat_p.h"
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
