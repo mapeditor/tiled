@@ -736,20 +736,19 @@ void MapDocument::setHoveredMapObject(MapObject *object)
 void MapDocument::unifyTilesets(Map *map)
 {
     QList<QUndoCommand*> undoCommands;
-    const QVector<SharedTileset> &existingTilesets = mMap->tilesets();
-    QVector<SharedTileset> addedTilesets;
+    QVector<SharedTileset> availableTilesets = mMap->tilesets();
     TilesetManager *tilesetManager = TilesetManager::instance();
 
     // Iterate over a copy because map->replaceTileset may invalidate iterator
     const QVector<SharedTileset> tilesets = map->tilesets();
     for (const SharedTileset &tileset : tilesets) {
-        if (existingTilesets.contains(tileset))
+        if (availableTilesets.contains(tileset))
             continue;
 
-        SharedTileset replacement = tileset->findSimilarTileset(existingTilesets);
-        if (!replacement && !addedTilesets.contains(replacement)) {
+        SharedTileset replacement = tileset->findSimilarTileset(availableTilesets);
+        if (!replacement) {
             undoCommands.append(new AddTileset(this, tileset));
-            addedTilesets.append(replacement);
+            availableTilesets.append(tileset);
             continue;
         }
 
@@ -789,22 +788,26 @@ void MapDocument::unifyTilesets(Map *map)
  */
 void MapDocument::unifyTilesets(Map *map, QVector<SharedTileset> &missingTilesets)
 {
-    const QVector<SharedTileset> &existingTilesets = mMap->tilesets();
+    QVector<SharedTileset> availableTilesets = mMap->tilesets();
+    for (const SharedTileset &tileset : qAsConst(missingTilesets))
+        if (!availableTilesets.contains(tileset))
+            availableTilesets.append(tileset);
+
     TilesetManager *tilesetManager = TilesetManager::instance();
 
     // Iterate over a copy because map->replaceTileset may invalidate iterator
     const QVector<SharedTileset> tilesets = map->tilesets();
     for (const SharedTileset &tileset : tilesets) {
         // tileset already added
-        if (existingTilesets.contains(tileset))
+        if (availableTilesets.contains(tileset))
             continue;
 
-        SharedTileset replacement = tileset->findSimilarTileset(existingTilesets);
+        SharedTileset replacement = tileset->findSimilarTileset(availableTilesets);
 
         // tileset not present and no replacement tileset found
         if (!replacement) {
-            if (!missingTilesets.contains(tileset))
-                missingTilesets.append(tileset);
+            missingTilesets.append(tileset);
+            availableTilesets.append(tileset);
             continue;
         }
 
