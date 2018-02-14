@@ -725,20 +725,19 @@ QList<Object*> MapDocument::currentObjects() const
 void MapDocument::unifyTilesets(Map *map)
 {
     QList<QUndoCommand*> undoCommands;
-    const QVector<SharedTileset> &existingTilesets = mMap->tilesets();
-    QVector<SharedTileset> addedTilesets;
+    QVector<SharedTileset> availableTilesets = mMap->tilesets();
     TilesetManager *tilesetManager = TilesetManager::instance();
 
     // Iterate over a copy because map->replaceTileset may invalidate iterator
     const QVector<SharedTileset> tilesets = map->tilesets();
     for (const SharedTileset &tileset : tilesets) {
-        if (existingTilesets.contains(tileset))
+        if (availableTilesets.contains(tileset))
             continue;
 
-        SharedTileset replacement = tileset->findSimilarTileset(existingTilesets);
-        if (!replacement && !addedTilesets.contains(replacement)) {
+        SharedTileset replacement = tileset->findSimilarTileset(availableTilesets);
+        if (!replacement) {
             undoCommands.append(new AddTileset(this, tileset));
-            addedTilesets.append(replacement);
+            availableTilesets.append(tileset);
             continue;
         }
 
