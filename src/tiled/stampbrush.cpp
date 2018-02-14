@@ -96,7 +96,7 @@ void StampBrush::tilePositionChanged(const QPoint &pos)
             if (i == points.size() - 1)
                 brushItem()->setMap(mPreviewMap);
 
-            doPaint(Mergeable | SuppressRegionEdited, &paintedRegions);
+            doPaint(Mergeable, &paintedRegions);
         }
 
         QHashIterator<TileLayer*, QRegion> ri(paintedRegions);
@@ -322,70 +322,12 @@ void StampBrush::doPaint(int flags, QHash<TileLayer*, QRegion> *paintedRegions)
         return;
 
     // This method shouldn't be called when current layer is not a tile layer
-    TileLayer *currentTileLayer = this->currentTileLayer();
-    Q_ASSERT(currentTileLayer);
+    Q_ASSERT(currentTileLayer());
 
-    Map *targetMap = mapDocument()->map();
-
-    LayerIterator it(preview.data(), Layer::TileLayerType);
-    bool isMultiLayer = it.next() && it.next();
-
-    it.toFront();
-    while (auto tileLayer = static_cast<TileLayer*>(it.next())) {
-        TileLayer *targetLayer = currentTileLayer;
-        bool addLayer = false;
-
-        // When the preview contains only a single layer, always paint it into
-        // the current layer. This makes sure you can still take pieces from
-        // one layer and draw them into another.
-        if (isMultiLayer && !tileLayer->name().isEmpty()) {
-            targetLayer = static_cast<TileLayer*>(targetMap->findLayer(tileLayer->name(), Layer::TileLayerType));
-            if (!targetLayer) {
-                // Create a layer with this name
-                targetLayer = new TileLayer(tileLayer->name(), 0, 0,
-                                            targetMap->width(),
-                                            targetMap->height());
-                addLayer = true;
-            }
-        }
-
-        if (!targetLayer->isUnlocked())
-            continue;
-        if (!targetLayer->rect().intersects(tileLayer->bounds()) && !targetMap->infinite())
-            continue;
-
-        PaintTileLayer *paint = new PaintTileLayer(mapDocument(),
-                                                   targetLayer,
-                                                   tileLayer->x(),
-                                                   tileLayer->y(),
-                                                   tileLayer);
-
-        if (!mMissingTilesets.isEmpty()) {
-            for (const SharedTileset &tileset : mMissingTilesets) {
-                if (!targetMap->tilesets().contains(tileset))
-                    new AddTileset(mapDocument(), tileset, paint);
-            }
-
-            mMissingTilesets.clear();
-        }
-
-        if (addLayer) {
-            new AddLayer(mapDocument(),
-                         targetMap->layerCount(), targetLayer, nullptr,
-                         paint);
-        }
-
-        paint->setMergeable(flags & Mergeable);
-        mapDocument()->undoStack()->push(paint);
-
-        QRegion editedRegion = tileLayer->region();
-        if (! (flags & SuppressRegionEdited))
-            emit mapDocument()->regionEdited(editedRegion, targetLayer);
-        else if (paintedRegions)
-            (*paintedRegions)[targetLayer] |= editedRegion;
-
-        flags |= Mergeable; // further paints are always mergeable
-    }
+    mapDocument()->paintTileLayers(preview.data(),
+                                   (flags & Mergeable) == Mergeable,
+                                   &mMissingTilesets,
+                                   paintedRegions);
 }
 
 struct PaintOperation

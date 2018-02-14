@@ -157,6 +157,10 @@ public:
     void removeTilesetAt(int index);
     SharedTileset replaceTileset(int index, const SharedTileset &tileset);
 
+    void paintTileLayers(const Map *map, bool mergeable = false,
+                         QVector<SharedTileset> *missingTilesets = nullptr,
+                         QHash<TileLayer *, QRegion> *paintedRegions = nullptr);
+
     void replaceObjectTemplate(const ObjectTemplate *oldObjectTemplate,
                                const ObjectTemplate *newObjectTemplate);
 

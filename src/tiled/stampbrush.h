@@ -97,8 +97,7 @@ protected:
 
 private:
     enum PaintFlags {
-        Mergeable               = 0x1,
-        SuppressRegionEdited    = 0x2
+        Mergeable = 0x1
     };
 
     void beginPaint();

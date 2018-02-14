@@ -654,89 +654,50 @@ void MapEditor::paste(ClipboardManager::PasteFlags flags)
         return;
 
     ClipboardManager *clipboardManager = ClipboardManager::instance();
-    QScopedPointer<Map> map(clipboardManager->map());
+    Map *map = clipboardManager->map();
     if (!map)
         return;
+
+    QScopedPointer<Map> mapDeleter(map);
 
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->addReferences(map->tilesets());
 
-    mCurrentMapDocument->unifyTilesets(map.data());
+    bool tilesetsUnified = false;
 
-    LayerIterator objectGroupIterator(map.data(), Layer::ObjectGroupType);
-    LayerIterator tileLayerIterator(map.data(), Layer::TileLayerType);
+    if (flags & ClipboardManager::PasteInPlace)
+        mCurrentMapDocument->undoStack()->beginMacro(tr("Paste in Place"));
 
-    const Map *targetMap = mCurrentMapDocument->map();
-
+    LayerIterator tileLayerIterator(map, Layer::TileLayerType);
     if (tileLayerIterator.next()) {
         if (flags & ClipboardManager::PasteInPlace) {
-            // todo: share this code with StampBrush::doPaint
-            Layer *currentLayer = mCurrentMapDocument->currentLayer();
-            TileLayer *currentTileLayer = currentLayer ? currentLayer->asTileLayer() : nullptr;
-            const bool isMultiLayer = tileLayerIterator.next();
-            tileLayerIterator.toFront();
-
-            bool mergeable = false;
-
-            while (auto tileLayer = static_cast<TileLayer*>(tileLayerIterator.next())) {
-                TileLayer *targetLayer = currentTileLayer;
-                bool addLayer = false;
-
-                // When the map contains only a single layer, always paint it into
-                // the current layer. This makes sure you can still take pieces from
-                // one layer and draw them into another.
-                if (isMultiLayer && !tileLayer->name().isEmpty()) {
-                    targetLayer = static_cast<TileLayer*>(targetMap->findLayer(tileLayer->name(), Layer::TileLayerType));
-                    if (!targetLayer) {
-                        // Create a layer with this name
-                        targetLayer = new TileLayer(tileLayer->name(), 0, 0,
-                                                    targetMap->width(),
-                                                    targetMap->height());
-                        addLayer = true;
-                    }
-                }
-
-                if (!targetLayer->isUnlocked())
-                    continue;
-                if (!targetLayer->rect().intersects(tileLayer->bounds()) && !targetMap->infinite())
-                    continue;
-
-                PaintTileLayer *paint = new PaintTileLayer(mCurrentMapDocument,
-                                                           targetLayer,
-                                                           tileLayer->x(),
-                                                           tileLayer->y(),
-                                                           tileLayer);
-
-                if (addLayer) {
-                    new AddLayer(mCurrentMapDocument,
-                                 targetMap->layerCount(), targetLayer, nullptr,
-                                 paint);
-                }
-
-                paint->setMergeable(mergeable);
-                mCurrentMapDocument->undoStack()->push(paint);
-
-                mergeable = true; // further paints are always mergeable
-            }
+            QVector<SharedTileset> missingTilesets;
+            mCurrentMapDocument->unifyTilesets(map, missingTilesets);
+            mCurrentMapDocument->paintTileLayers(map, false, &missingTilesets);
+            tilesetsUnified = missingTilesets.isEmpty();
         } else {
             // Reset selection and paste into the stamp brush
             MapDocumentActionHandler::instance()->selectNone();
-            Map *stamp = map.take();    // TileStamp will take ownership
-            normalizeTileLayerPositionsAndMapSize(stamp);
-            setStamp(TileStamp(stamp));
-            tilesetManager->removeReferences(stamp->tilesets());
+            normalizeTileLayerPositionsAndMapSize(map);
+            setStamp(TileStamp(mapDeleter.take())); // TileStamp takes ownership
             mToolManager->selectTool(mStampBrush);
         }
     }
 
+    LayerIterator objectGroupIterator(map, Layer::ObjectGroupType);
     if (ObjectGroup *objectGroup = static_cast<ObjectGroup*>(objectGroupIterator.next())) {
+        if (!tilesetsUnified)
+            mCurrentMapDocument->unifyTilesets(map);
+
         // todo: Handle multiple object groups
         const MapView *view = currentMapView();
         clipboardManager->pasteObjectGroup(objectGroup, mCurrentMapDocument, view, flags);
     }
 
-    if (map)
-        tilesetManager->removeReferences(map->tilesets());
+    if (flags & ClipboardManager::PasteInPlace)
+        mCurrentMapDocument->undoStack()->endMacro();
+
+    tilesetManager->removeReferences(map->tilesets());
 }
 
 void MapEditor::flip(FlipDirection direction)
