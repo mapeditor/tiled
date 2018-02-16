@@ -93,6 +93,7 @@ LayerDock::LayerDock(QWidget *parent):
     buttonContainer->addAction(handler->actionRemoveLayer());
     buttonContainer->addSeparator();
     buttonContainer->addAction(handler->actionToggleOtherLayers());
+    buttonContainer->addAction(handler->actionToggleLockOtherLayers());
 
     QVBoxLayout *listAndToolBar = new QVBoxLayout;
     listAndToolBar->setSpacing(0);
@@ -398,6 +399,7 @@ void LayerView::contextMenuEvent(QContextMenuEvent *event)
         menu.addAction(handler->actionMoveLayerDown());
         menu.addSeparator();
         menu.addAction(handler->actionToggleOtherLayers());
+        menu.addAction(handler->actionToggleLockOtherLayers());
         menu.addSeparator();
         menu.addAction(handler->actionLayerProperties());
     }

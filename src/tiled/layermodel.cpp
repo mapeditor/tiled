@@ -534,3 +534,36 @@ void LayerModel::toggleOtherLayers(Layer *layer)
 
     undoStack->endMacro();
 }
+
+/**
+* Lock or unlock all other layers except the given \a layer.
+* If any other layer are unlocked then all layers will be locked, otherwise
+* the layers will be unlocked.
+*/
+void LayerModel::toggleLockOtherLayers(Layer *layer)
+{
+    const auto& otherLayers = collectAllSiblings(layer);
+    if (otherLayers.isEmpty())
+        return;
+
+    bool locked = true;
+    for (Layer *l : otherLayers) {
+        if (l->isLocked()) {
+            locked = false;
+            break;
+        }
+    }
+
+    QUndoStack *undoStack = mMapDocument->undoStack();
+    if (locked)
+        undoStack->beginMacro(tr("Lock Other Layers"));
+    else
+        undoStack->beginMacro(tr("Unlock Other Layers"));
+
+    for (Layer *l : otherLayers) {
+        if (locked != l->isLocked())
+            undoStack->push(new SetLayerLocked(mMapDocument, l, locked));
+    }
+
+    undoStack->endMacro();
+}

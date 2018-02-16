@@ -607,6 +607,17 @@ void MapDocument::toggleOtherLayers(Layer *layer)
 }
 
 /**
+* Lock or unlock all other layers except the given \a layer.
+* If any other layer is unlocked then all layers will be locked, otherwise
+* the layers will be unlocked.
+*/
+void MapDocument::toggleLockOtherLayers(Layer *layer)
+{
+    mLayerModel->toggleLockOtherLayers(layer);
+}
+
+
+/**
  * Adds a tileset to this map at the given \a index. Emits the appropriate
  * signal.
  */

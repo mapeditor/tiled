@@ -93,6 +93,7 @@ public:
     void renameLayer(Layer *layer, const QString &name);
 
     void toggleOtherLayers(Layer *layer);
+    void toggleLockOtherLayers(Layer *layer);
 
 signals:
     void layerAdded(Layer *layer);
