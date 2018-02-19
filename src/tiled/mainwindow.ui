@@ -489,7 +489,7 @@
     <string>Save All</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Shift+L</string>
+    <string>Ctrl+Shift+S</string>
    </property>
   </action>
   <action name="actionDocumentation">

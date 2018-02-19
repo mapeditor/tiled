@@ -126,7 +126,7 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
             QIcon(QLatin1String(":/images/16x16/show_hide_others.png")));
 
     mActionToggleLockOtherLayers = new QAction(this);
-    mActionToggleLockOtherLayers->setShortcut(tr("Ctrl+Shift+U"));
+    mActionToggleLockOtherLayers->setShortcut(tr("Ctrl+Shift+L"));
     mActionToggleLockOtherLayers->setIcon(
         QIcon(QLatin1String(":/images/16x16/locked.png")));
 
