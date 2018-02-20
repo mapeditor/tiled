@@ -537,7 +537,7 @@ void LayerModel::toggleOtherLayers(Layer *layer)
 
 /**
 * Lock or unlock all other layers except the given \a layer.
-* If any other layer are unlocked then all layers will be locked, otherwise
+* If any other layer is unlocked then all layers will be locked, otherwise
 * the layers will be unlocked.
 */
 void LayerModel::toggleLockOtherLayers(Layer *layer)
@@ -546,10 +546,10 @@ void LayerModel::toggleLockOtherLayers(Layer *layer)
     if (otherLayers.isEmpty())
         return;
 
-    bool locked = true;
+    bool locked = false;
     for (Layer *l : otherLayers) {
-        if (l->isLocked()) {
-            locked = false;
+        if (!l->isLocked()) {
+            locked = true;
             break;
         }
     }
