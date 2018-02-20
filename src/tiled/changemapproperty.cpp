@@ -194,6 +194,12 @@ void ChangeMapProperty::swap()
         mLayerDataFormat = layerDataFormat;
         break;
     }
+    case CompressionLevel: {
+        const unsigned int compressionLevel = map->compressionlevel();
+        map->setCompressionlevel(mCompressionLevel);
+        mCompressionLevel = compressionLevel;
+        break;
+    }
     }
 
     emit mMapDocument->mapChanged();

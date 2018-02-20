@@ -161,7 +161,8 @@ private:
         WangColorProbabilityProperty,
         CustomProperty,
         InfiniteProperty,
-        TemplateProperty
+        TemplateProperty,
+        CompressionLevelProperty
     };
 
     void addMapProperties();

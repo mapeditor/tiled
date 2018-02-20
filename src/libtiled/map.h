@@ -100,11 +100,12 @@ public:
      * The different formats in which the tile layer data can be stored.
      */
     enum LayerDataFormat {
-        XML        = 0,
-        Base64     = 1,
-        Base64Gzip = 2,
-        Base64Zlib = 3,
-        CSV        = 4
+        XML             = 0,
+        Base64          = 1,
+        Base64Gzip      = 2,
+        Base64Zlib      = 3,
+        CSV             = 4,
+        Base64Zstandard = 5
     };
     Q_ENUM(LayerDataFormat)
 
@@ -181,6 +182,16 @@ public:
      */
     void setRenderOrder(RenderOrder renderOrder)
     { mRenderOrder = renderOrder; }
+
+    /**
+     * Returns the compression level of this map.
+     */
+    unsigned int compressionlevel() const { return mCompressionlevel; }
+
+    /**
+     * Sets the compression level of this map.
+     */
+    void setCompressionlevel(int compressionlevel) { if(compressionlevel>=1 && compressionlevel<=99) mCompressionlevel = compressionlevel; }
 
     /**
      * Returns the width of this map in tiles.
@@ -461,6 +472,7 @@ private:
 
     Orientation mOrientation;
     RenderOrder mRenderOrder;
+    unsigned int mCompressionlevel;
     int mWidth;
     int mHeight;
     int mTileWidth;

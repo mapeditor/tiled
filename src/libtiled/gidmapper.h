@@ -53,7 +53,8 @@ public:
 
     QByteArray encodeLayerData(const TileLayer &tileLayer,
                                Map::LayerDataFormat format,
-                               QRect bounds = QRect()) const;
+                               QRect bounds = QRect(),
+                               const unsigned int compressionlevel = 6) const;
 
     enum DecodeError {
         NoError = 0,

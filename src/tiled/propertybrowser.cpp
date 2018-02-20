@@ -604,6 +604,8 @@ void PropertyBrowser::addMapProperties()
                         tr("Tile Render Order"),
                         groupProperty);
 
+    addProperty(CompressionLevelProperty, QVariant::Int, tr("Compression level"), groupProperty);
+
     renderOrderProperty->setAttribute(QLatin1String("enumNames"), mRenderOrderNames);
 
     addProperty(BackgroundColorProperty, QVariant::Color, tr("Background Color"), groupProperty);
@@ -977,6 +979,10 @@ void PropertyBrowser::applyMapValue(PropertyId id, const QVariant &val)
     case BackgroundColorProperty:
         command = new ChangeMapProperty(mMapDocument, val.value<QColor>());
         break;
+    case CompressionLevelProperty: {
+        command = new ChangeMapProperty(mMapDocument, val.toInt());
+        break;
+    }
     default:
         break;
     }
@@ -1574,6 +1580,7 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[StaggerAxisProperty]->setValue(map->staggerAxis());
         mIdToProperty[StaggerIndexProperty]->setValue(map->staggerIndex());
         mIdToProperty[LayerFormatProperty]->setValue(map->layerDataFormat());
+        mIdToProperty[CompressionLevelProperty]->setValue(map->compressionlevel());
         mIdToProperty[RenderOrderProperty]->setValue(map->renderOrder());
         mIdToProperty[BackgroundColorProperty]->setValue(map->backgroundColor());
         break;
@@ -1897,6 +1904,7 @@ void PropertyBrowser::retranslateUi()
     mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "Base64 (gzip compressed)"));
     mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "Base64 (zlib compressed)"));
     mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "CSV"));
+    mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "Base64 (Zstandard compressed)"));
 
     mRenderOrderNames.clear();
     mRenderOrderNames.append(QCoreApplication::translate("PreferencesDialog", "Right Down"));

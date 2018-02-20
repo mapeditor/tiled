@@ -443,6 +443,11 @@ QVariant MapToVariantConverter::toVariant(const TileLayer &tileLayer,
             tileLayerVariant[QLatin1String("compression")] = QLatin1String("gzip");
 
         break;
+    case Map::Base64Zstandard:
+        tileLayerVariant[QLatin1String("encoding")] = QLatin1String("base64");
+        tileLayerVariant[QLatin1String("compression")] = QLatin1String("zstd");
+
+        break;
     }
 
     if (tileLayer.map()->infinite()) {
@@ -457,7 +462,7 @@ QVariant MapToVariantConverter::toVariant(const TileLayer &tileLayer,
             chunkVariant[QLatin1String("width")] = rect.width();
             chunkVariant[QLatin1String("height")] = rect.height();
 
-            addTileLayerData(chunkVariant, tileLayer, format, rect);
+            addTileLayerData(chunkVariant, tileLayer, format, rect, tileLayer.map()->compressionlevel());
 
             chunkVariants.append(chunkVariant);
         }
@@ -465,7 +470,7 @@ QVariant MapToVariantConverter::toVariant(const TileLayer &tileLayer,
         tileLayerVariant[QLatin1String("chunks")] = chunkVariants;
     } else {
         addTileLayerData(tileLayerVariant, tileLayer, format,
-                         QRect(0, 0, tileLayer.width(), tileLayer.height()));
+                         QRect(0, 0, tileLayer.width(), tileLayer.height()), tileLayer.map()->compressionlevel());
     }
 
     return tileLayerVariant;
@@ -665,7 +670,8 @@ QVariant MapToVariantConverter::toVariant(const GroupLayer &groupLayer,
 void MapToVariantConverter::addTileLayerData(QVariantMap &variant,
                                              const TileLayer &tileLayer,
                                              Map::LayerDataFormat format,
-                                             const QRect &bounds) const
+                                             const QRect &bounds,
+                                             const unsigned int compressionlevel) const
 {
     switch (format) {
     case Map::XML:
@@ -680,8 +686,9 @@ void MapToVariantConverter::addTileLayerData(QVariantMap &variant,
     }
     case Map::Base64:
     case Map::Base64Zlib:
-    case Map::Base64Gzip: {
-        QByteArray layerData = mGidMapper.encodeLayerData(tileLayer, format, bounds);
+    case Map::Base64Gzip:
+    case Map::Base64Zstandard:{
+        QByteArray layerData = mGidMapper.encodeLayerData(tileLayer, format, bounds, compressionlevel);
         variant[QLatin1String("data")] = layerData;
         break;
     }

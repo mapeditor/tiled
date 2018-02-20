@@ -42,7 +42,8 @@ public:
         Orientation,
         RenderOrder,
         BackgroundColor,
-        LayerDataFormat
+        LayerDataFormat,
+        CompressionLevel
     };
 
     /**
@@ -119,6 +120,7 @@ private:
         Map::Orientation mOrientation;
         Map::RenderOrder mRenderOrder;
         Map::LayerDataFormat mLayerDataFormat;
+        unsigned int mCompressionLevel;
     };
 };
 

@@ -33,6 +33,9 @@
 #else
 #include <zlib.h>
 #endif
+#ifdef TILED_ZSTD_SUPPORT
+#include <zstd.h>      // presumes zstd library is installed
+#endif
 
 #include <QByteArray>
 #include <QDebug>
@@ -65,116 +68,163 @@ static void logZlibError(int error)
     }
 }
 
-QByteArray Tiled::decompress(const QByteArray &data, int expectedSize)
+QByteArray Tiled::decompress(const QByteArray &data, int expectedSize, CompressionMethod method)
 {
     if (data.isEmpty())
         return QByteArray();
 
     QByteArray out;
     out.resize(expectedSize);
-    z_stream strm;
+    if (method == Zlib || method == Gzip) {
+        z_stream strm;
 
-    strm.zalloc = Z_NULL;
-    strm.zfree = Z_NULL;
-    strm.opaque = Z_NULL;
-    strm.next_in = (Bytef *) data.data();
-    strm.avail_in = data.length();
-    strm.next_out = (Bytef *) out.data();
-    strm.avail_out = out.size();
+        strm.zalloc = Z_NULL;
+        strm.zfree = Z_NULL;
+        strm.opaque = Z_NULL;
+        strm.next_in = (Bytef *) data.data();
+        strm.avail_in = data.length();
+        strm.next_out = (Bytef *) out.data();
+        strm.avail_out = out.size();
 
-    int ret = inflateInit2(&strm, 15 + 32);
+        int ret = inflateInit2(&strm, 15 + 32);
 
-    if (ret != Z_OK) {
-        logZlibError(ret);
-        return QByteArray();
-    }
-
-    do {
-        ret = inflate(&strm, Z_SYNC_FLUSH);
-        Q_ASSERT(ret != Z_STREAM_ERROR);
-
-        switch (ret) {
-            case Z_NEED_DICT:
-                ret = Z_DATA_ERROR;
-                Q_FALLTHROUGH();
-            case Z_DATA_ERROR:
-            case Z_MEM_ERROR:
-                inflateEnd(&strm);
-                logZlibError(ret);
-                return QByteArray();
+        if (ret != Z_OK) {
+            logZlibError(ret);
+            return QByteArray();
         }
 
-        if (ret != Z_STREAM_END) {
-            int oldSize = out.size();
-            out.resize(oldSize * 2);
+        do {
+            ret = inflate(&strm, Z_SYNC_FLUSH);
+            Q_ASSERT(ret != Z_STREAM_ERROR);
 
-            strm.next_out = (Bytef *)(out.data() + oldSize);
-            strm.avail_out = oldSize;
+            switch (ret) {
+                case Z_NEED_DICT:
+                    ret = Z_DATA_ERROR;
+                    Q_FALLTHROUGH();
+                case Z_DATA_ERROR:
+                case Z_MEM_ERROR:
+                    inflateEnd(&strm);
+                    logZlibError(ret);
+                    return QByteArray();
+            }
+
+            if (ret != Z_STREAM_END) {
+                int oldSize = out.size();
+                out.resize(oldSize * 2);
+
+                strm.next_out = (Bytef *)(out.data() + oldSize);
+                strm.avail_out = oldSize;
+            }
         }
-    }
-    while (ret != Z_STREAM_END);
+        while (ret != Z_STREAM_END);
 
-    if (strm.avail_in != 0) {
-        logZlibError(Z_DATA_ERROR);
+        if (strm.avail_in != 0) {
+            logZlibError(Z_DATA_ERROR);
+            return QByteArray();
+        }
+
+        const int outLength = out.size() - strm.avail_out;
+        inflateEnd(&strm);
+
+        out.resize(outLength);
+        return out;
+    #ifdef TILED_ZSTD_SUPPORT
+    } else if (method == Zstandard) {
+        size_t const dSize = ZSTD_decompress(out.data(), out.size(), data.constData(), data.size());
+        if (ZSTD_isError(dSize)) {
+            qDebug() << "error decoding:" << ZSTD_getErrorName(dSize);
+            return QByteArray();
+        }
+        out.resize(dSize);
+        return out;
+    #endif
+    } else {
+        qDebug() << "compression not supported:" << method;
         return QByteArray();
     }
-
-    const int outLength = out.size() - strm.avail_out;
-    inflateEnd(&strm);
-
-    out.resize(outLength);
-    return out;
 }
 
-QByteArray Tiled::compress(const QByteArray &data, CompressionMethod method)
+QByteArray Tiled::compress(const QByteArray &data, CompressionMethod method, unsigned int compressionlevel)
 {
     if (data.isEmpty())
         return QByteArray();
 
-    QByteArray out;
-    out.resize(1024);
-    int err;
-    z_stream strm;
-    strm.zalloc = Z_NULL;
-    strm.zfree = Z_NULL;
-    strm.opaque = Z_NULL;
-    strm.next_in = (Bytef *) data.data();
-    strm.avail_in = data.length();
-    strm.next_out = (Bytef *) out.data();
-    strm.avail_out = out.size();
+    if (method == Zlib || method == Gzip) {
+        int compressionlevelZlib=Z_DEFAULT_COMPRESSION;
+        if(compressionlevel>=1 && compressionlevel<=9)
+            compressionlevelZlib=compressionlevel;
+        QByteArray out;
+        out.resize(1024);
+        int err;
+        z_stream strm;
+        strm.zalloc = Z_NULL;
+        strm.zfree = Z_NULL;
+        strm.opaque = Z_NULL;
+        strm.next_in = (Bytef *) data.data();
+        strm.avail_in = data.length();
+        strm.next_out = (Bytef *) out.data();
+        strm.avail_out = out.size();
 
-    const int windowBits = (method == Gzip) ? 15 + 16 : 15;
+        const int windowBits = (method == Gzip) ? 15 + 16 : 15;
 
-    err = deflateInit2(&strm, Z_DEFAULT_COMPRESSION, Z_DEFLATED, windowBits,
-                       8, Z_DEFAULT_STRATEGY);
-    if (err != Z_OK) {
-        logZlibError(err);
-        return QByteArray();
-    }
-
-    do {
-        err = deflate(&strm, Z_FINISH);
-        Q_ASSERT(err != Z_STREAM_ERROR);
-
-        if (err == Z_OK) {
-            // More output space needed
-            int oldSize = out.size();
-            out.resize(out.size() * 2);
-
-            strm.next_out = (Bytef *)(out.data() + oldSize);
-            strm.avail_out = oldSize;
+        err = deflateInit2(&strm, compressionlevelZlib, Z_DEFLATED, windowBits,
+                           8, Z_DEFAULT_STRATEGY);
+        if (err != Z_OK) {
+            logZlibError(err);
+            return QByteArray();
         }
-    } while (err == Z_OK);
 
-    if (err != Z_STREAM_END) {
-        logZlibError(err);
+        do {
+            err = deflate(&strm, Z_FINISH);
+            Q_ASSERT(err != Z_STREAM_ERROR);
+
+            if (err == Z_OK) {
+                // More output space needed
+                int oldSize = out.size();
+                out.resize(out.size() * 2);
+
+                strm.next_out = (Bytef *)(out.data() + oldSize);
+                strm.avail_out = oldSize;
+            }
+        } while (err == Z_OK);
+
+        if (err != Z_STREAM_END) {
+            logZlibError(err);
+            deflateEnd(&strm);
+            return QByteArray();
+        }
+
+        const int outLength = out.size() - strm.avail_out;
         deflateEnd(&strm);
+
+        out.resize(outLength);
+        return out;
+    #ifdef TILED_ZSTD_SUPPORT
+    } else if (method == Zstandard) {
+        int compressionlevelZstandard=6;
+        if(compressionlevel>=1 && compressionlevel<=22)
+            compressionlevelZstandard=compressionlevel;
+        size_t const cBuffSize = ZSTD_compressBound(data.size());
+
+        void* const cBuff = malloc(cBuffSize);
+        if (!cBuff)
+        {
+            qDebug() << "error to alloc" << cBuffSize;
+            return QByteArray();
+        }
+
+        size_t const cSize = ZSTD_compress(cBuff, cBuffSize, data.constData(), data.size(), compressionlevelZstandard);
+        if (ZSTD_isError(cSize)) {
+            qDebug() << "error compressing:" << ZSTD_getErrorName(cSize);
+            return QByteArray();
+        }
+
+        QByteArray data(static_cast<char *>(cBuff),cSize);
+        free(cBuff);
+        return data;
+    #endif
+    } else {
+        qDebug() << "compression not supported:" << method;
         return QByteArray();
     }
-
-    const int outLength = out.size() - strm.avail_out;
-    deflateEnd(&strm);
-
-    out.resize(outLength);
-    return out;
 }

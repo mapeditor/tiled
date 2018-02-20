@@ -90,6 +90,7 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "CSV"), QVariant::fromValue(Map::CSV));
     mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "Base64 (uncompressed)"), QVariant::fromValue(Map::Base64));
     mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "Base64 (zlib compressed)"), QVariant::fromValue(Map::Base64Zlib));
+    mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "Base64 (Zstandard compressed)"), QVariant::fromValue(Map::Base64Zstandard));
 
     mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Right Down"), QVariant::fromValue(Map::RightDown));
     mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Right Up"), QVariant::fromValue(Map::RightUp));
@@ -105,7 +106,7 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
         setComboBoxValue(mUi->orientation, Map::Orthogonal);
 
     if (!setComboBoxValue(mUi->layerFormat, prefs->layerDataFormat()))
-        setComboBoxValue(mUi->layerFormat, Map::CSV);
+        setComboBoxValue(mUi->layerFormat, Map::Base64Zstandard);
 
     setComboBoxValue(mUi->renderOrder, prefs->mapRenderOrder());
 
