@@ -294,6 +294,9 @@
    <property name="text">
     <string>Save &amp;As...</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+S</string>
+   </property>
   </action>
   <action name="actionNewTileset">
    <property name="text">
