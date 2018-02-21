@@ -54,6 +54,7 @@ QtGuiApplication {
     cpp.defines: {
         var defs = [
             "TILED_VERSION=" + version,
+            "QT_DISABLE_DEPRECATED_BEFORE=0x050700",
             "QT_NO_CAST_FROM_ASCII",
             "QT_NO_CAST_TO_ASCII",
             "QT_NO_URL_CAST_FROM_STRING",

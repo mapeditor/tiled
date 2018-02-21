@@ -206,7 +206,7 @@ void MiniMapRenderer::renderToImage(QImage& image, RenderFlags renderFlags) cons
                 QList<MapObject*> objects = objectGroup->objects();
 
                 if (objectGroup->drawOrder() == ObjectGroup::TopDownOrder)
-                    qStableSort(objects.begin(), objects.end(), objectLessThan);
+                    std::stable_sort(objects.begin(), objects.end(), objectLessThan);
 
                 foreach (const MapObject *object, objects) {
                     if (object->isVisible()) {

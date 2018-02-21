@@ -316,7 +316,7 @@ bool AutoMapper::setupRuleList()
     QVector<QRegion> combinedRegions = coherentRegions(mLayerInputRegions->region() +
                                                        mLayerOutputRegions->region());
 
-    qSort(combinedRegions.begin(), combinedRegions.end(), compareRuleRegion);
+    std::sort(combinedRegions.begin(), combinedRegions.end(), compareRuleRegion);
 
     const QVector<QRegion> rulesInput = coherentRegions(mLayerInputRegions->region());
     const QVector<QRegion> rulesOutput = coherentRegions(mLayerOutputRegions->region());
