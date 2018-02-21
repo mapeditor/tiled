@@ -510,8 +510,4 @@ inline void MapObject::markAsTemplateBase()
 
 } // namespace Tiled
 
-#if QT_VERSION < 0x050500
-Q_DECLARE_METATYPE(Qt::Alignment)
-#endif
-
 Q_DECLARE_METATYPE(Tiled::MapObject*)
