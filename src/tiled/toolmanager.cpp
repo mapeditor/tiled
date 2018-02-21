@@ -185,20 +185,6 @@ void ToolManager::createShortcuts(QWidget *parent)
     }
 }
 
-void ToolManager::setTile(Tile *tile)
-{
-    mTile = tile;
-    if (mSelectedTool)
-        mSelectedTool->setTile(mTile);
-}
-
-void ToolManager::setObjectTemplate(ObjectTemplate *objectTemplate)
-{
-    mObjectTemplate = objectTemplate;
-    if (mSelectedTool)
-        mSelectedTool->setObjectTemplate(mObjectTemplate);
-}
-
 void ToolManager::toolEnabledChanged(bool enabled)
 {
     AbstractTool *tool = qobject_cast<AbstractTool*>(sender());
@@ -273,7 +259,5 @@ void ToolManager::setSelectedTool(AbstractTool *tool)
         emit statusInfoChanged(mSelectedTool->statusInfo());
         connect(mSelectedTool, SIGNAL(statusInfoChanged(QString)),
                 this, SIGNAL(statusInfoChanged(QString)));
-        tool->setTile(mTile);
-        tool->setObjectTemplate(mObjectTemplate);
     }
 }

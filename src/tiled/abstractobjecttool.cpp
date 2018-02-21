@@ -408,10 +408,9 @@ void AbstractObjectTool::showContextMenu(MapObject *clickedObject,
     }
 
     // Create action for replacing an object with a template
-    auto selectedTemplate = objectTemplate();
     auto replaceTemplateAction = menu.addAction(tr("Replace With Template"), this, SLOT(replaceObjectsWithTemplate()));
 
-    if (selectedTemplate) {
+    if (auto selectedTemplate = objectTemplate()) {
         QString name = QFileInfo(selectedTemplate->fileName()).fileName();
         replaceTemplateAction->setText(tr("Replace With Template \"%1\"").arg(name));
     } else {

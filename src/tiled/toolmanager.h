@@ -64,6 +64,9 @@ public:
 
     void createShortcuts(QWidget *parent);
 
+    Tile *tile() const;
+    ObjectTemplate *objectTemplate() const;
+
 public slots:
     /**
      * Sets the tile that will be used when the creation mode is
@@ -124,6 +127,26 @@ Tool *ToolManager::findTool()
 inline AbstractTool *ToolManager::selectedTool() const
 {
     return mSelectedTool;
+}
+
+inline Tile *ToolManager::tile() const
+{
+    return mTile;
+}
+
+inline ObjectTemplate *ToolManager::objectTemplate() const
+{
+    return mObjectTemplate;
+}
+
+inline void ToolManager::setTile(Tile *tile)
+{
+    mTile = tile;
+}
+
+inline void ToolManager::setObjectTemplate(ObjectTemplate *objectTemplate)
+{
+    mObjectTemplate = objectTemplate;
 }
 
 } // namespace Internal
