@@ -22,13 +22,12 @@
 
 #include <QMenu>
 #include <QKeySequence>
-#include <QSignalMapper>
 #include <QMimeData>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-const char *commandMimeType = "application/x-tiled-commandptr";
+static const char *commandMimeType = "application/x-tiled-commandptr";
 
 CommandDataModel::CommandDataModel(QObject *parent)
     : QAbstractTableModel(parent)
@@ -278,51 +277,20 @@ QMenu *CommandDataModel::contextMenu(QWidget *parent, const QModelIndex &index)
     if (row >= 0 && row < mCommands.size()) {
         menu = new QMenu(parent);
 
-        if (row > 0) {
-            QAction *action = menu->addAction(tr("Move Up"));
-            QSignalMapper *mapper = new QSignalMapper(action);
-            mapper->setMapping(action, row);
-            connect(action, SIGNAL(triggered()), mapper, SLOT(map()));
-            connect(mapper, SIGNAL(mapped(int)), SLOT(moveUp(int)));
-        }
+        if (row > 0)
+            menu->addAction(tr("Move Up"), [=] { moveUp(row); });
 
-        if (row+1 < mCommands.size()) {
-            QAction *action = menu->addAction(tr("Move Down"));
-            QSignalMapper *mapper = new QSignalMapper(action);
-            mapper->setMapping(action, row + 1);
-            connect(action, SIGNAL(triggered()), mapper, SLOT(map()));
-            connect(mapper, SIGNAL(mapped(int)), SLOT(moveUp(int)));
-        }
+        if (row + 1 < mCommands.size())
+            menu->addAction(tr("Move Down"), [=] { moveUp(row + 1); });
 
         menu->addSeparator();
-
-        {
-            QAction *action = menu->addAction(tr("Execute"));
-            QSignalMapper *mapper = new QSignalMapper(action);
-            mapper->setMapping(action, row);
-            connect(action, SIGNAL(triggered()), mapper, SLOT(map()));
-            connect(mapper, SIGNAL(mapped(int)), SLOT(execute(int)));
-        }
-
+        menu->addAction(tr("Execute"), [=] { execute(row); });
 #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
-        {
-            QAction *action = menu->addAction(tr("Execute in Terminal"));
-            QSignalMapper *mapper = new QSignalMapper(action);
-            mapper->setMapping(action, row);
-            connect(action, SIGNAL(triggered()), mapper, SLOT(map()));
-            connect(mapper, SIGNAL(mapped(int)), SLOT(executeInTerminal(int)));
-        }
+        menu->addAction(tr("Execute in Terminal"), [=] { executeInTerminal(row); });
 #endif
 
         menu->addSeparator();
-
-        {
-            QAction *action = menu->addAction(tr("Delete"));
-            QSignalMapper *mapper = new QSignalMapper(action);
-            mapper->setMapping(action, row);
-            connect(action, SIGNAL(triggered()), mapper, SLOT(map()));
-            connect(mapper, SIGNAL(mapped(int)), SLOT(remove(int)));
-        }
+        menu->addAction(tr("Delete"), [=] { remove(row); });
     }
 
     return menu;

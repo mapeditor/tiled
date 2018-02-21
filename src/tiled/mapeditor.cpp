@@ -90,7 +90,6 @@
 #include <QScrollBar>
 #include <QSettings>
 #include <QShortcut>
-#include <QSignalMapper>
 #include <QStackedWidget>
 #include <QStatusBar>
 #include <QToolBar>
@@ -958,38 +957,24 @@ void MapEditor::setupQuickStamps()
 {
     QList<Qt::Key> keys = TileStampManager::quickStampKeys();
 
-    QSignalMapper *selectMapper = new QSignalMapper(this);
-    QSignalMapper *createMapper = new QSignalMapper(this);
-    QSignalMapper *extendMapper = new QSignalMapper(this);
-
     for (int i = 0; i < keys.length(); i++) {
         Qt::Key key = keys.at(i);
 
         // Set up shortcut for selecting this quick stamp
         QShortcut *selectStamp = new QShortcut(key, mMainWindow);
-        connect(selectStamp, SIGNAL(activated()), selectMapper, SLOT(map()));
-        selectMapper->setMapping(selectStamp, i);
+        connect(selectStamp, &QShortcut::activated, [=] { mTileStampManager->selectQuickStamp(i); });
 
         // Set up shortcut for creating this quick stamp
         QShortcut *createStamp = new QShortcut(Qt::CTRL + key, mMainWindow);
-        connect(createStamp, SIGNAL(activated()), createMapper, SLOT(map()));
-        createMapper->setMapping(createStamp, i);
+        connect(createStamp, &QShortcut::activated, [=] { mTileStampManager->createQuickStamp(i); });
 
         // Set up shortcut for extending this quick stamp
         QShortcut *extendStamp = new QShortcut(Qt::CTRL + Qt::SHIFT + key, mMainWindow);
-        connect(extendStamp, SIGNAL(activated()), extendMapper, SLOT(map()));
-        extendMapper->setMapping(extendStamp, i);
+        connect(extendStamp, &QShortcut::activated, [=] { mTileStampManager->extendQuickStamp(i); });
     }
 
-    connect(selectMapper, SIGNAL(mapped(int)),
-            mTileStampManager, SLOT(selectQuickStamp(int)));
-    connect(createMapper, SIGNAL(mapped(int)),
-            mTileStampManager, SLOT(createQuickStamp(int)));
-    connect(extendMapper, SIGNAL(mapped(int)),
-            mTileStampManager, SLOT(extendQuickStamp(int)));
-
-    connect(mTileStampManager, SIGNAL(setStamp(TileStamp)),
-            this, SLOT(setStamp(TileStamp)));
+    connect(mTileStampManager, &TileStampManager::setStamp,
+            this, &MapEditor::setStamp);
 }
 
 void MapEditor::retranslateUi()

@@ -59,7 +59,6 @@
 #include <QMimeData>
 #include <QPushButton>
 #include <QSettings>
-#include <QSignalMapper>
 #include <QStackedWidget>
 #include <QStylePainter>
 #include <QToolBar>
@@ -203,7 +202,6 @@ TilesetDock::TilesetDock(QWidget *parent)
     , mTilesetMenuButton(new TilesetMenuButton(this))
     , mTilesetMenu(new QMenu(this))
     , mTilesetActionGroup(new QActionGroup(this))
-    , mTilesetMenuMapper(nullptr)
     , mEmittingStampCaptured(false)
     , mSynchronizingSelection(false)
 {
@@ -1006,28 +1004,16 @@ void TilesetDock::refreshTilesetMenu()
 {
     mTilesetMenu->clear();
 
-    if (mTilesetMenuMapper) {
-        mTabBar->disconnect(mTilesetMenuMapper);
-        delete mTilesetMenuMapper;
-    }
-
-    mTilesetMenuMapper = new QSignalMapper(this);
-    connect(mTilesetMenuMapper, SIGNAL(mapped(int)),
-            mTabBar, SLOT(setCurrentIndex(int)));
-
     const int currentIndex = mTabBar->currentIndex();
 
     for (int i = 0; i < mTabBar->count(); ++i) {
-        QAction *action = new QAction(mTabBar->tabText(i), this);
-        action->setCheckable(true);
+        QAction *action = mTilesetMenu->addAction(mTabBar->tabText(i),
+                                                  [=] { mTabBar->setCurrentIndex(i); });
 
+        action->setCheckable(true);
         mTilesetActionGroup->addAction(action);
         if (i == currentIndex)
             action->setChecked(true);
-
-        mTilesetMenu->addAction(action);
-        connect(action, SIGNAL(triggered()), mTilesetMenuMapper, SLOT(map()));
-        mTilesetMenuMapper->setMapping(action, i);
     }
 }
 

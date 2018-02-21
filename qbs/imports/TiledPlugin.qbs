@@ -17,6 +17,7 @@ DynamicLibrary {
             return ["$ORIGIN/../.."];
     }
     cpp.defines: [
+        "QT_DEPRECATED_WARNINGS",
         "QT_DISABLE_DEPRECATED_BEFORE=0x050700",
         "QT_NO_URL_CAST_FROM_STRING"
     ]

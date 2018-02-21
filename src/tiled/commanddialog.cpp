@@ -213,8 +213,7 @@ void CommandTreeView::contextMenuEvent(QContextMenuEvent *event)
     QModelIndex index = indexAt(event->pos());
 
     // Generate a run a menu for the index
-    QMenu *menu = mModel->contextMenu(this, index);
-    if (menu)
+    if (QMenu *menu = mModel->contextMenu(this, index))
         menu->exec(event->globalPos());
 }
 
