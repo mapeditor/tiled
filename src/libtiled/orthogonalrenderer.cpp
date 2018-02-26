@@ -96,7 +96,7 @@ QRectF OrthogonalRenderer::boundingRect(const MapObject *object) const
 
         const QPointF bottomLeft = bounds.topLeft();
         boundingRect = QRectF(bottomLeft.x() + (tileOffset.x() * scale.width()),
-                              bottomLeft.y() + (tileOffset.y() * scale.height()) - objectSize.height(),
+                              bottomLeft.y() + (tileOffset.y() * scale.height()),
                               objectSize.width(),
                               objectSize.height()).adjusted(-1, -1, 1, 1);
     } else {
@@ -366,7 +366,7 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
 
     if (!cell.isEmpty()) {
         const QSizeF size = object->size();
-        CellRenderer(painter).render(cell, QPointF(), size,
+        CellRenderer(painter).render(cell, QPointF(0, size.height()), size,
                                      CellRenderer::BottomLeft);
 
         if (testFlag(ShowTileObjectOutlines)) {
@@ -388,7 +388,8 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
             painter->setPen(pen);
             painter->drawRect(rect);
         }
-    } else {
+    }
+    else {
         const qreal lineWidth = objectLineWidth();
         const qreal scale = painterScale();
         const qreal shadowDist = (lineWidth == 0 ? 1 : lineWidth) / scale;

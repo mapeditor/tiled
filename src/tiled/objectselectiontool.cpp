@@ -820,10 +820,11 @@ static QRectF objectBounds(const MapObject *object,
         // Tile objects can have a tile offset, which is scaled along with the image
         QSizeF imgSize;
         QPoint tileOffset;
-
+        qreal moveDown = 0;
         if (const Tile *tile = object->cell().tile()) {
             imgSize = tile->size();
             tileOffset = tile->offset();
+            moveDown = imgSize.height();
         } else {
             imgSize = object->size();
         }
@@ -834,7 +835,7 @@ static QRectF objectBounds(const MapObject *object,
         const qreal scaleY = imgSize.height() > 0 ? objectSize.height() / imgSize.height() : 0;
 
         QRectF bounds(position.x() + (tileOffset.x() * scaleX),
-                      position.y() + (tileOffset.y() * scaleY),
+                      position.y() + ((tileOffset.y() + moveDown) * scaleY),
                       objectSize.width(),
                       objectSize.height());
 
