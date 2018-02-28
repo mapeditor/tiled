@@ -41,16 +41,16 @@ matrix:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
       before_install:
         - eval "${MATRIX_EVAL}"
-        - sudo add-apt-repository --yes ppa:beineri/opt-qt594-trusty
+        - sudo add-apt-repository --yes ppa:beineri/opt-qt-5.10.1-trusty
         - sudo apt-get update -qq
-        - sudo apt-get -y install qt59base qt59script qt59svg qt59imageformats qt59tools binutils zlib1g-dev
-        - source /opt/qt59/bin/qt59-env.sh
+        - sudo apt-get -y install qt510base qt510script qt510svg qt510imageformats qt510tools binutils zlib1g-dev
+        - source /opt/qt510/bin/qt510-env.sh
         - source ./dist/linux/setup-qbs.sh
       script:
         - qbs --version
         - qbs setup-toolchains --detect
         - qbs setup-qt --detect
-        - qbs config defaultProfile qt-5-9-4
+        - qbs config defaultProfile qt-5-10-1
         - qbs install --install-root Tiled/usr release products.Tiled.version:$TILED_VERSION
         - cp LICENSE* COPYING *md Tiled/
       after_success:
@@ -58,7 +58,7 @@ matrix:
         - chmod a+x linuxdeployqt
         - unset QTDIR; unset QT_PLUGIN_PATH; unset LD_LIBRARY_PATH
         - mkdir -p Tiled/usr/plugins/imageformats
-        - cp /opt/qt59/plugins/imageformats/libqsvg.so Tiled/usr/plugins/imageformats/
+        - cp /opt/qt510/plugins/imageformats/libqsvg.so Tiled/usr/plugins/imageformats/
         - ./linuxdeployqt ./Tiled/usr/share/applications/tiled.desktop -bundle-non-qt-libs -verbose=2
         - ./linuxdeployqt ./Tiled/usr/share/applications/tiled.desktop -appimage
         - find ./Tiled -executable -type f -exec ldd {} \; | grep " => /usr" | cut -d " " -f 2-3 | sort | uniq
@@ -92,7 +92,7 @@ matrix:
         - QMAKESPEC=linux-clang
         - MAKEFLAGS=-j2
       before_install:
-        - sudo add-apt-repository --yes ppa:beineri/opt-qt562-trusty
+        - sudo add-apt-repository --yes ppa:beineri/opt-qt563-trusty
         - sudo apt-get update -qq
         - sudo apt-get -y install qt56base qt56svg qt56tools binutils zlib1g-dev cppcheck xvfb
         - source /opt/qt56/bin/qt56-env.sh
