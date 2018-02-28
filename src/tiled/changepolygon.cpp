@@ -67,6 +67,7 @@ void ChangePolygon::redo()
     mMapObject->setPropertyChanged(MapObject::ShapeProperty);
 }
 
+
 TogglePolygonPolyline::TogglePolygonPolyline(MapObject *mapObject)
     : mMapObject(mapObject)
 {
@@ -77,6 +78,7 @@ void TogglePolygonPolyline::toggle()
 {
     mMapObject->setShape((mMapObject->shape() == MapObject::Polygon) ? MapObject::Polyline : MapObject::Polygon);
 }
+
 
 SplitPolyline::SplitPolyline(MapDocument *mapDocument,
                              MapObject *mapObject,

@@ -22,7 +22,7 @@
 
 #include "addremovemapobject.h"
 #include "changepolygon.h"
-#include "createpolylineobjecttool.h"
+#include "createpolygonobjecttool.h"
 #include "geometry.h"
 #include "layer.h"
 #include "map.h"
@@ -34,6 +34,7 @@
 #include "mapscene.h"
 #include "objectgroup.h"
 #include "objectselectiontool.h"
+#include "pointhandle.h"
 #include "rangeset.h"
 #include "selectionrectangle.h"
 #include "snaphelper.h"
@@ -41,12 +42,9 @@
 #include "utils.h"
 
 #include <QApplication>
-#include <QGraphicsItem>
 #include <QGraphicsView>
 #include <QKeyEvent>
 #include <QMenu>
-#include <QPainter>
-#include <QPalette>
 #include <QUndoStack>
 
 #include "qtcompat_p.h"
@@ -55,101 +53,6 @@
 
 using namespace Tiled;
 using namespace Tiled::Internal;
-
-namespace Tiled {
-namespace Internal {
-
-/**
- * A handle that allows moving around a point of a polygon.
- */
-class PointHandle : public QGraphicsItem
-{
-public:
-    PointHandle(MapObject *mapObject, int pointIndex)
-        : QGraphicsItem()
-        , mMapObject(mapObject)
-        , mPointIndex(pointIndex)
-        , mSelected(false)
-        , mHighlighted(false)
-    {
-        setFlags(QGraphicsItem::ItemIgnoresTransformations |
-                 QGraphicsItem::ItemIgnoresParentOpacity);
-        setZValue(10000);
-    }
-
-    enum { Type = UserType + 2 };
-    int type() const override { return Type; }
-
-    MapObject *mapObject() const { return mMapObject; }
-
-    int pointIndex() const { return mPointIndex; }
-
-    // These hide the QGraphicsItem members
-    void setSelected(bool selected);
-    bool isSelected() const { return mSelected; }
-
-    void setHighlighted(bool highlighted);
-    bool isHighlighted() const { return mHighlighted; }
-
-    QRectF boundingRect() const override;
-    void paint(QPainter *painter,
-               const QStyleOptionGraphicsItem *option,
-               QWidget *widget = nullptr) override;
-
-private:
-    MapObject *mMapObject;
-    int mPointIndex;
-    bool mSelected;
-    bool mHighlighted;
-};
-
-} // namespace Internal
-} // namespace Tiled
-
-void PointHandle::setSelected(bool selected)
-{
-    if (mSelected != selected) {
-        mSelected = selected;
-        update();
-    }
-}
-
-void PointHandle::setHighlighted(bool highlighted)
-{
-    if (mHighlighted != highlighted) {
-        mHighlighted = highlighted;
-        update();
-    }
-}
-
-QRectF PointHandle::boundingRect() const
-{
-    return Utils::dpiScaled(QRectF(-7, -7, 14, 14));
-}
-
-void PointHandle::paint(QPainter *painter,
-                        const QStyleOptionGraphicsItem *,
-                        QWidget *)
-{
-    QPen pen(Qt::black);
-    QColor brush(Qt::lightGray);
-
-    if (mSelected)
-        brush = QApplication::palette().highlight().color();
-    if (mHighlighted)
-        brush = brush.lighter();
-
-    painter->scale(Utils::defaultDpiScale(), Utils::defaultDpiScale());
-    painter->setRenderHint(QPainter::Antialiasing);
-    painter->setPen(pen);
-    painter->setBrush(brush);
-
-    if (mSelected)
-        painter->drawEllipse(QRectF(-5, -5, 10, 10));
-    else
-        painter->drawEllipse(QRectF(-4, -4, 8, 8));
-}
-
 
 EditPolygonTool::EditPolygonTool(QObject *parent)
     : AbstractObjectTool(tr("Edit Polygons"),
@@ -185,6 +88,8 @@ void EditPolygonTool::activate(MapScene *scene)
             this, &EditPolygonTool::updateHandles);
     connect(mapDocument(), &MapDocument::objectsRemoved,
             this, &EditPolygonTool::objectsRemoved);
+    connect(mapDocument(), &MapDocument::layerChanged,          // layer offset
+            this, &EditPolygonTool::updateHandles);
 }
 
 void EditPolygonTool::deactivate(MapScene *scene)
@@ -195,6 +100,8 @@ void EditPolygonTool::deactivate(MapScene *scene)
                this, &EditPolygonTool::updateHandles);
     disconnect(mapDocument(), &MapDocument::objectsRemoved,
                this, &EditPolygonTool::objectsRemoved);
+    disconnect(mapDocument(), &MapDocument::layerChanged,
+               this, &EditPolygonTool::updateHandles);
 
     // Delete all handles
     QMapIterator<MapObject*, QList<PointHandle*> > i(mHandles);
@@ -520,16 +427,18 @@ void EditPolygonTool::updateHandles()
         while (pointHandles.size() > polygon.size())
             deleteHandle(pointHandles.takeLast());
 
+        if (pointHandles.isEmpty())
+            continue;
+
+        QPointF objectScreenPos = renderer->pixelToScreenCoords(object->position());
+        QTransform rotate = rotateAt(objectScreenPos, object->rotation());
+        QPointF totalOffset = object->objectGroup()->totalOffset();
+
         // Update the position of all handles
         for (int i = 0; i < pointHandles.size(); ++i) {
             QPointF pixelPos = polygon.at(i) + object->position();
             QPointF screenPos = renderer->pixelToScreenCoords(pixelPos);
-
-            QPointF objectScreenPos = renderer->pixelToScreenCoords(object->position());
-            QTransform rotate = rotateAt(objectScreenPos, object->rotation());
             screenPos = rotate.map(screenPos);
-
-            QPointF totalOffset = object->objectGroup()->totalOffset();
             pointHandles.at(i)->setPos(totalOffset + screenPos);
         }
     }
@@ -727,7 +636,7 @@ void EditPolygonTool::showHandleContextMenu(QPoint screenPos)
     connect(splitSegmentsAction, &QAction::triggered, this, &EditPolygonTool::splitSegments);
     connect(deleteSegment, &QAction::triggered, this, &EditPolygonTool::deleteSegment);
 
-    if (mapObject->shape() == MapObject::Polyline && toolManager()->findTool<CreatePolylineObjectTool>()) {
+    if (mapObject->shape() == MapObject::Polyline && toolManager()->findTool<CreatePolygonObjectTool>()) {
         QAction *extendPolyline = menu.addAction(tr("Extend Polyline"));
 
         bool handleCanBeExtended = (firstHandle->pointIndex() == 0)
@@ -1016,9 +925,9 @@ void EditPolygonTool::extendPolyline()
     MapObject *mapObject = selectedHandle->mapObject();
     bool extendingFirst = selectedHandle->pointIndex() == 0;
 
-    CreatePolylineObjectTool *polylineObjectsTool = toolManager()->findTool<CreatePolylineObjectTool>();
-    if (toolManager()->selectTool(polylineObjectsTool))
-        polylineObjectsTool->extend(mapObject, extendingFirst);
+    auto *polygonObjectsTool = toolManager()->findTool<CreatePolygonObjectTool>();
+    if (toolManager()->selectTool(polygonObjectsTool))
+        polygonObjectsTool->extend(mapObject, extendingFirst);
 }
 
 void EditPolygonTool::deleteSegment()

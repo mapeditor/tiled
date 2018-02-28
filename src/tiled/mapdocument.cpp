@@ -166,7 +166,7 @@ MapDocument *MapDocument::load(const QString &fileName,
 
     if (!map) {
         if (error)
-            *error = format->errorString();;
+            *error = format->errorString();
         return nullptr;
     }
 

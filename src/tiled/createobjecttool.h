@@ -60,12 +60,11 @@ protected:
     virtual MapObject *createNewMapObject() = 0;
     virtual void cancelNewMapObject();
     virtual void finishNewMapObject();
+    virtual MapObject *clearNewMapObjectItem();
 
-    MapObject *clearNewMapObjectItem();
     ObjectGroup *mNewMapObjectGroup;
     ObjectGroupItem *mObjectGroupItem;
     MapObjectItem *mNewMapObjectItem;
-    MapObjectItem *mOverlayPolygonItem;
 };
 
 } // namespace Internal

@@ -211,7 +211,7 @@ void BrushItem::updateBoundingRect()
     if (mTileLayer) {
         drawMargins = mTileLayer->drawMargins();
 
-        QSize tileSize = mMapDocument->map()->tileSize();;
+        QSize tileSize = mMapDocument->map()->tileSize();
         drawMargins.setTop(drawMargins.top() - tileSize.height());
         drawMargins.setRight(drawMargins.right() - tileSize.width());
     } else if (mMap) {

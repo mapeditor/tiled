@@ -28,7 +28,6 @@
 #include "createobjecttool.h"
 #include "createpointobjecttool.h"
 #include "createpolygonobjecttool.h"
-#include "createpolylineobjecttool.h"
 #include "createrectangleobjecttool.h"
 #include "createtemplatetool.h"
 #include "createtextobjecttool.h"
@@ -184,7 +183,6 @@ MapEditor::MapEditor(QObject *parent)
     CreateObjectTool *pointObjectsTool = new CreatePointObjectTool(this);
     CreateObjectTool *ellipseObjectsTool = new CreateEllipseObjectTool(this);
     CreateObjectTool *polygonObjectsTool = new CreatePolygonObjectTool(this);
-    CreateObjectTool *polylineObjectsTool = new CreatePolylineObjectTool(this);
     CreateObjectTool *textObjectsTool = new CreateTextObjectTool(this);
 
     mToolsToolBar->addAction(mToolManager->registerTool(mStampBrush));
@@ -203,7 +201,6 @@ MapEditor::MapEditor(QObject *parent)
     mToolsToolBar->addAction(mToolManager->registerTool(pointObjectsTool));
     mToolsToolBar->addAction(mToolManager->registerTool(ellipseObjectsTool));
     mToolsToolBar->addAction(mToolManager->registerTool(polygonObjectsTool));
-    mToolsToolBar->addAction(mToolManager->registerTool(polylineObjectsTool));
     mToolsToolBar->addAction(mToolManager->registerTool(tileObjectsTool));
     mToolsToolBar->addAction(mToolManager->registerTool(templatesTool));
     mToolsToolBar->addAction(mToolManager->registerTool(textObjectsTool));

@@ -185,7 +185,7 @@ QVariant MapObject::mapObjectProperty(Property property) const
     case SizeProperty:          return mSize;
     case RotationProperty:      return mRotation;
     case CellProperty:          Q_ASSERT(false); break;
-    case ShapeProperty:         Q_ASSERT(false); break;
+    case ShapeProperty:         return mShape;
     }
     return QVariant();
 }
@@ -197,16 +197,14 @@ void MapObject::setMapObjectProperty(Property property, const QVariant &value)
     case TypeProperty:          mType = value.toString(); break;
     case VisibleProperty:       mVisible = value.toBool(); break;
     case TextProperty:          mTextData.text = value.toString(); break;
-    case TextFontProperty:
-        mTextData.font = value.value<QFont>();
-        break;
+    case TextFontProperty:      mTextData.font = value.value<QFont>(); break;
     case TextAlignmentProperty: mTextData.alignment = value.value<Qt::Alignment>(); break;
     case TextWordWrapProperty:  mTextData.wordWrap = value.toBool(); break;
     case TextColorProperty:     mTextData.color = value.value<QColor>(); break;
     case SizeProperty:          mSize = value.toSizeF(); break;
     case RotationProperty:      mRotation = value.toReal(); break;
     case CellProperty:          Q_ASSERT(false); break;
-    case ShapeProperty:         Q_ASSERT(false); break;
+    case ShapeProperty:         mShape = value.value<Shape>(); break;
     }
 }
 

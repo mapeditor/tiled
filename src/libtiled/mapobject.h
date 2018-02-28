@@ -510,4 +510,5 @@ inline void MapObject::markAsTemplateBase()
 
 } // namespace Tiled
 
+Q_DECLARE_METATYPE(Tiled::MapObject::Shape)
 Q_DECLARE_METATYPE(Tiled::MapObject*)

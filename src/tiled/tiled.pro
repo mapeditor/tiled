@@ -121,11 +121,9 @@ SOURCES += aboutdialog.cpp \
     commandmanager.cpp \
     consoledock.cpp \
     createellipseobjecttool.cpp \
-    createmultipointobjecttool.cpp \
     createobjecttool.cpp \
     createpointobjecttool.cpp \
     createpolygonobjecttool.cpp \
-    createpolylineobjecttool.cpp \
     createrectangleobjecttool.cpp \
     createscalableobjecttool.cpp \
     createtemplatetool.cpp \
@@ -188,6 +186,7 @@ SOURCES += aboutdialog.cpp \
     painttilelayer.cpp \
     patreondialog.cpp \
     pluginlistmodel.cpp \
+    pointhandle.cpp \
     preferences.cpp \
     preferencesdialog.cpp \
     propertiesdock.cpp \
@@ -318,11 +317,9 @@ HEADERS += aboutdialog.h \
     consoledock.h \
     containerhelpers.h \
     createellipseobjecttool.h \
-    createmultipointobjecttool.h \
     createobjecttool.h \
     createpointobjecttool.h \
     createpolygonobjecttool.h \
-    createpolylineobjecttool.h \
     createrectangleobjecttool.h \
     createscalableobjecttool.h \
     createtemplatetool.h \
@@ -385,6 +382,7 @@ HEADERS += aboutdialog.h \
     painttilelayer.h \
     patreondialog.h \
     pluginlistmodel.h \
+    pointhandle.h \
     preferencesdialog.h \
     preferences.h \
     propertiesdock.h \
