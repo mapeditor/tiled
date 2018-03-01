@@ -21,6 +21,7 @@
 #pragma once
 
 #include "abstracttool.h"
+#include "invertYCoordinateHelper.h"
 
 namespace Tiled {
 

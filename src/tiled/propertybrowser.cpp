@@ -61,7 +61,7 @@
 #include "variantpropertymanager.h"
 #include "wangset.h"
 #include "wangcolormodel.h"
-
+#include "invertYCoordinateHelper.h"
 #include <QtGroupPropertyManager>
 
 #include <QCoreApplication>
@@ -101,6 +101,9 @@ PropertyBrowser::PropertyBrowser(QWidget *parent)
 
     connect(Preferences::instance(), &Preferences::objectTypesChanged,
             this, &PropertyBrowser::objectTypesChanged);
+    connect(Preferences::instance(), &Preferences::invertYCoordinatesChanged,
+            this, &PropertyBrowser::invertYCoordinatesChanged);
+
 }
 
 void PropertyBrowser::setObject(Object *object)
@@ -502,7 +505,11 @@ void PropertyBrowser::objectTypesChanged()
     if (mObject && mObject->typeId() == Object::MapObjectType)
         updateCustomProperties();
 }
-
+void PropertyBrowser::invertYCoordinatesChanged()
+{
+    if (mObject && mObject->typeId() == Object::MapObjectType)
+        updateProperties();
+}
 void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
 {
     if (mUpdating)
@@ -1010,7 +1017,7 @@ QUndoCommand *PropertyBrowser::applyMapObjectValueTo(PropertyId id, const QVaria
     }
     case YProperty: {
         const QPointF oldPos = mapObject->position();
-        const QPointF newPos(oldPos.x(), val.toReal());
+        const QPointF newPos(oldPos.x(), InvertYCoordinateHelper().getPixelY(val.toReal()));
         command = new MoveMapObject(mMapDocument, mapObject, newPos, oldPos);
         break;
     }
@@ -1570,7 +1577,7 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[TypeProperty]->setValueColor(palette().color(typeColorGroup, QPalette::WindowText));
         mIdToProperty[VisibleProperty]->setValue(mapObject->isVisible());
         mIdToProperty[XProperty]->setValue(mapObject->x());
-        mIdToProperty[YProperty]->setValue(mapObject->y());
+        mIdToProperty[YProperty]->setValue(InvertYCoordinateHelper().getGridY(mapObject->y()));
 
         if (flags & ObjectHasDimensions) {
             mIdToProperty[WidthProperty]->setValue(mapObject->width());

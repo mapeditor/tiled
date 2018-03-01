@@ -97,6 +97,8 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
             preferences, &Preferences::setUseOpenGL);
     connect(mUi->wheelZoomsByDefault, &QCheckBox::toggled,
             preferences, &Preferences::setWheelZoomsByDefault);
+    connect(mUi->invertYCoordinates, &QCheckBox::toggled,
+            preferences, &Preferences::setInvertYCoordinates);
 
     connect(mUi->styleCombo, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
             this, &PreferencesDialog::styleComboChanged);
@@ -151,7 +153,7 @@ void PreferencesDialog::fromPreferences()
     if (mUi->openGL->isEnabled())
         mUi->openGL->setChecked(prefs->useOpenGL());
     mUi->wheelZoomsByDefault->setChecked(prefs->wheelZoomsByDefault());
-
+    mUi->invertYCoordinates->setChecked(prefs->invertYCoordinates());
     // Not found (-1) ends up at index 0, system default
     int languageIndex = mUi->languageCombo->findData(prefs->language());
     if (languageIndex == -1)
@@ -222,3 +224,5 @@ void PreferencesDialog::checkForUpdates()
         // todo: do something with the last checked label
     }
 }
+
+

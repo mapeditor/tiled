@@ -153,6 +153,7 @@ public:
     void setCheckForUpdates(bool on);
 
     bool wheelZoomsByDefault() const;
+    bool invertYCoordinates() const;
 
     /**
      * Provides access to the QSettings instance to allow storing/retrieving
@@ -176,7 +177,7 @@ public slots:
     void setOpenLastFilesOnStartup(bool load);
     void setPluginEnabled(const QString &fileName, bool enabled);
     void setWheelZoomsByDefault(bool mode);
-
+    void setInvertYCoordinates(bool mode);
     void clearRecentFiles();
 
 signals:
@@ -209,7 +210,7 @@ signals:
     void templatesDirectoryChanged(const QString &templatesDirectory);
 
     void isPatronChanged();
-
+    void invertYCoordinatesChanged();
     void recentFilesChanged();
 
     void checkForUpdatesChanged();
@@ -232,6 +233,7 @@ private:
     bool mSnapToGrid;
     bool mSnapToFineGrid;
     bool mSnapToPixels;
+
     QColor mGridColor;
     int mGridFine;
     qreal mObjectLineWidth;
@@ -265,7 +267,7 @@ private:
     bool mIsPatron;
     bool mCheckForUpdates;
     bool mWheelZoomsByDefault;
-
+    bool mInvertYCoordinates;
     static Preferences *mInstance;
 };
 
@@ -330,5 +332,9 @@ inline bool Preferences::wheelZoomsByDefault() const
     return mWheelZoomsByDefault;
 }
 
+inline bool Preferences::invertYCoordinates() const
+{
+    return mInvertYCoordinates;
+}
 } // namespace Internal
 } // namespace Tiled

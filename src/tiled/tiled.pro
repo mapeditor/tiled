@@ -460,7 +460,9 @@ HEADERS += aboutdialog.h \
     wangfiller.h \
     wangtemplateview.h \
     wangtemplatemodel.h \
-    zoomable.h
+    zoomable.h \
+    coordinateInversionHelper.h \
+    invertYCoordinateHelper.h
 
 FORMS += aboutdialog.ui \
     addpropertydialog.ui \

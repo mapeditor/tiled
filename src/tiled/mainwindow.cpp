@@ -69,6 +69,7 @@
 #include "undodock.h"
 #include "utils.h"
 #include "zoomable.h"
+#include "invertYCoordinateHelper.h"
 
 #ifdef Q_OS_MAC
 #include "macsupport.h"
@@ -211,7 +212,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     mDocumentManager->setEditor(Document::MapDocumentType, mapEditor);
     mDocumentManager->setEditor(Document::TilesetDocumentType, tilesetEditor);
-
     setCentralWidget(mDocumentManager->widget());
 
 #ifdef Q_OS_MAC

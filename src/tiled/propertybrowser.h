@@ -109,6 +109,7 @@ private slots:
     void selectedTilesChanged();
 
     void objectTypesChanged();
+    void invertYCoordinatesChanged();
 
     void valueChanged(QtProperty *property, const QVariant &val);
 
