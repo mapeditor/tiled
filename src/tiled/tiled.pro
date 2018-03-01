@@ -260,7 +260,8 @@ SOURCES += aboutdialog.cpp \
     wangfiller.cpp \
     wangtemplateview.cpp \
     wangtemplatemodel.cpp \
-    zoomable.cpp
+    zoomable.cpp \
+    InvertYCoordinateHelper.cpp
 
 HEADERS += aboutdialog.h \
     abstractobjecttool.h \
