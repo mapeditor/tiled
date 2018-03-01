@@ -135,7 +135,7 @@ void ClipboardManager::copySelection(const MapDocument *mapDocument)
 
     const Map *map = mapDocument->map();
     const QRegion &selectedArea = mapDocument->selectedArea();
-    const QList<MapObject*> &selectedObjects = mapDocument->selectedObjects();
+    const QList<MapObject*> selectedObjects = mapDocument->selectedObjectsOrdered();
     const TileLayer *tileLayer = dynamic_cast<const TileLayer*>(currentLayer);
     Layer *copyLayer = nullptr;
 

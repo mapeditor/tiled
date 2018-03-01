@@ -200,6 +200,8 @@ public:
     const QList<MapObject*> &selectedObjects() const
     { return mSelectedObjects; }
 
+    QList<MapObject*> selectedObjectsOrdered() const;
+
     /**
      * Sets the list of selected objects, emitting the selectedObjectsChanged
      * signal.

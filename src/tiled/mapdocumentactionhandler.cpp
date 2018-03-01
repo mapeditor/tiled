@@ -492,7 +492,7 @@ void MapDocumentActionHandler::layerVia(MapDocumentActionHandler::LayerViaVarian
         break;
     }
     case Layer::ObjectGroupType: {
-        selectedObjects = mMapDocument->selectedObjects();
+        selectedObjects = mMapDocument->selectedObjectsOrdered();
         if (selectedObjects.isEmpty())
             return;
 
