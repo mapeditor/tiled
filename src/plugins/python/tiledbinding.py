@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
  Python Tiled Plugin
  Copyright 2012-2013, Samuli Tuomola <samuli@tuomola.net>
@@ -18,6 +19,8 @@
  this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
+from __future__ import print_function
+
 from pybindgen import *
 
 mod = Module('tiled')
@@ -31,7 +34,9 @@ mod.add_include('"tilelayer.h"')
 mod.add_include('"objectgroup.h"')
 mod.add_include('"tileset.h"')
 
+mod.header.writeln('#ifndef _MSC_VER')
 mod.header.writeln('#pragma GCC diagnostic ignored "-Wmissing-field-initializers"')
+mod.header.writeln('#endif')
 
 # one day PyQt/PySide could be considered
 import qtbinding
@@ -305,15 +310,15 @@ with open('pythonbind.cpp','w') as fh:
     import pybindgen.typehandlers.codesink as cs
     sink = cs.MemoryCodeSink()
 
-    print >>fh, """
+    print("""
 #ifdef __MINGW32__
 #include <cmath> // included before Python.h to fix ::hypot not declared issue
 #endif
-"""
+""", file=fh)
 
     mod.generate(fh)
 
-    print >>fh, """
+    print("""
 PyObject* _wrap_convert_c2py__Tiled__LoggingInterface(Tiled::LoggingInterface *cvalue)
 {
         PyObject *py_retval;
@@ -325,7 +330,7 @@ PyObject* _wrap_convert_c2py__Tiled__LoggingInterface(Tiled::LoggingInterface *c
         py_retval = Py_BuildValue((char *) "N", py_LoggingInterface);
         return py_retval;
 }
-"""
+""", file=fh)
     #mod.generate_c_to_python_type_converter(
     #  utils.eval_retval(retval("Tiled::LoggingInterface")),
     #  sink)
@@ -336,6 +341,6 @@ PyObject* _wrap_convert_c2py__Tiled__LoggingInterface(Tiled::LoggingInterface *c
         utils.eval_retval("const Tiled::Map"),
         sink)
 
-    print >>fh, sink.flush()
+    print(sink.flush(), file=fh)
 
 # vim: ai ts=4 sts=4 et sw=4 ft=python

@@ -71,11 +71,18 @@ void PythonPlugin::initialize()
         Py_NoSiteFlag = 1;
         Py_NoUserSiteDirectory = 1;
 
+        #if PY_VERSION_HEX >= 0x03000000
+        PyImport_AppendInittab("tiled", PyInit_tiled);
+        PyImport_AppendInittab("tiled.qt", PyInit_tiled);
+        PyImport_AppendInittab("tiled.Tiled", PyInit_tiled);
+        Py_Initialize();
+        #else
         Py_Initialize();
         inittiled();
+        #endif
 
-        // Get reference to base class to find its extensions later on
         PyObject *pmod = PyImport_ImportModule("tiled");
+
         if (pmod) {
             PyObject *tiledPlugin = PyObject_GetAttrString(pmod, "Plugin");
             Py_DECREF(pmod);
@@ -100,6 +107,7 @@ void PythonPlugin::initialize()
         PySys_SetObject((char *)"_tiledplugin",
                         _wrap_convert_c2py__Tiled__LoggingInterface(&mLogger));
 
+        // TODO: LoggingInterface isn't ready for output when plugins are first initialized
         PyRun_SimpleString("import sys\n"
                            "#from tiled.Tiled.LoggingInterface import INFO,ERROR\n"
                            "class _Catcher:\n"
@@ -133,6 +141,7 @@ void PythonPlugin::initialize()
 void PythonPlugin::log(Tiled::LoggingInterface::OutputType type,
                        const QString &msg)
 {
+    printf("%s\n", msg.toStdString().c_str());
     mLogger.log(type, msg);
 }
 
@@ -158,6 +167,8 @@ void PythonPlugin::reloadModules()
 
         ScriptEntry script = mScripts.take(name);
         script.name = name;
+
+        log(QString("loaded %1").arg(name));
 
         // Throw away any existing class reference
         if (script.mapFormat) {
@@ -353,7 +364,9 @@ QString PythonMapFormat::nameFilter() const
     if (!pinst) {
         PySys_WriteStderr("** Uncaught exception in script **\n");
     } else {
-        ret = PyString_AsString(pinst);
+        PyObject* pyStr = PyUnicode_AsEncodedString(pinst, "utf-8", "Error ~");
+        ret = PyBytes_AS_STRING(pyStr);
+        Py_XDECREF(pyStr);
         Py_DECREF(pinst);
     }
     handleError();
@@ -379,7 +392,9 @@ QString PythonMapFormat::shortName() const
     if (!pinst) {
         PySys_WriteStderr("** Uncaught exception in script **\n");
     } else {
-        ret = PyString_AsString(pinst);
+        PyObject* pyStr = PyUnicode_AsEncodedString(pinst, "utf-8", "Error ~");
+        ret = PyBytes_AS_STRING(pyStr);
+        Py_XDECREF(pyStr);
         Py_DECREF(pinst);
     }
     handleError();

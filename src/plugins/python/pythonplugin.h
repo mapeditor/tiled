@@ -133,7 +133,11 @@ private:
 
 } // namespace Python
 
+#if PY_VERSION_HEX >= 0x03000000
+PyMODINIT_FUNC PyInit_tiled(void);
+#else
 PyMODINIT_FUNC inittiled(void);
+#endif
 extern int _wrap_convert_py2c__Tiled__Map___star__(PyObject *obj, Tiled::Map * *address);
 extern PyObject* _wrap_convert_c2py__Tiled__Map_const(Tiled::Map const *cvalue);
 extern PyObject* _wrap_convert_c2py__Tiled__LoggingInterface(Tiled::LoggingInterface *cvalue);

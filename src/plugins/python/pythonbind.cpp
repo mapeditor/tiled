@@ -360,7 +360,9 @@ typedef struct {
 
 extern PyTypeObject PyTiledLoggingInterface_Type;
 
+#ifndef _MSC_VER
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
+#endif
 
 int _wrap_convert_py2c__QRgb(PyObject *value, QRgb *address);
 
