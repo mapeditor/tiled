@@ -120,20 +120,14 @@ void ChangeTilesetParameters::apply(const TilesetParameters &parameters)
 {
     Tileset &tileset = *mTilesetDocument->tileset();
 
-    const QUrl oldImageSource = tileset.imageSource();
-
     tileset.setImageSource(parameters.imageSource);
     tileset.setTransparentColor(parameters.transparentColor);
     tileset.setTileSize(parameters.tileSize);
     tileset.setTileSpacing(parameters.tileSpacing);
     tileset.setMargin(parameters.margin);
 
-    auto tilesetManager = TilesetManager::instance();
-
-    if (oldImageSource != tileset.imageSource())
-        tilesetManager->tilesetImageSourceChanged(tileset, oldImageSource);
     if (tileset.loadImage())
-        emit tilesetManager->tilesetImagesChanged(&tileset);
+        emit TilesetManager::instance()->tilesetImagesChanged(&tileset);
 
     emit mTilesetDocument->tilesetChanged(&tileset);
 }

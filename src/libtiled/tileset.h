@@ -89,13 +89,7 @@ public:
                                 int tileWidth,
                                 int tileHeight,
                                 int tileSpacing = 0,
-                                int margin = 0)
-    {
-        SharedTileset tileset(new Tileset(name, tileWidth, tileHeight,
-                                          tileSpacing, margin));
-        tileset->mWeakPointer = tileset;
-        return tileset;
-    }
+                                int margin = 0);
 
 private:
     /**

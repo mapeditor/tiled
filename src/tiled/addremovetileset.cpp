@@ -22,7 +22,6 @@
 
 #include "map.h"
 #include "mapdocument.h"
-#include "tilesetmanager.h"
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -36,13 +35,10 @@ AddRemoveTileset::AddRemoveTileset(MapDocument *mapDocument,
     , mTileset(tileset)
     , mIndex(index)
 {
-    // Make sure the tileset manager keeps watching this tileset
-    TilesetManager::instance()->addReference(mTileset);
 }
 
 AddRemoveTileset::~AddRemoveTileset()
 {
-    TilesetManager::instance()->removeReference(mTileset);
 }
 
 void AddRemoveTileset::removeTileset()

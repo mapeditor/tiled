@@ -213,7 +213,7 @@ bool TileStampModel::removeRows(int row, int count, const QModelIndex &parent)
 
         for (; count > 0; --count) {
             mThumbnailCache.remove(stamp.variations().at(row).map);
-            stamp.deleteVariation(row);
+            delete stamp.takeVariation(row);
         }
         endRemoveRows();
 

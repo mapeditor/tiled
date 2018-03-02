@@ -647,9 +647,6 @@ void MapEditor::paste(ClipboardManager::PasteFlags flags)
     if (map->layerCount() != 1)
         return;
 
-    TilesetManager *tilesetManager = TilesetManager::instance();
-    tilesetManager->addReferences(map->tilesets());
-
     mCurrentMapDocument->unifyTilesets(map.data());
     Layer *layer = map->layerAt(0);
 
@@ -671,19 +668,14 @@ void MapEditor::paste(ClipboardManager::PasteFlags flags)
         } else {
             // Reset selection and paste into the stamp brush
             MapDocumentActionHandler::instance()->selectNone();
-            layer->setPosition(0, 0);   // Make sure the tile layer is at origin
-            Map *stamp = map.take();    // TileStamp will take ownership
-            setStamp(TileStamp(stamp));
-            tilesetManager->removeReferences(stamp->tilesets());
+            layer->setPosition(0, 0);           // Make sure the tile layer is at origin
+            setStamp(TileStamp(map.take()));    // TileStamp will take ownership
             mToolManager->selectTool(mStampBrush);
         }
     } else if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
         const MapView *view = currentMapView();
         clipboardManager->pasteObjectGroup(objectGroup, mCurrentMapDocument, view, flags);
     }
-
-    if (map)
-        tilesetManager->removeReferences(map->tilesets());
 }
 
 void MapEditor::flip(FlipDirection direction)

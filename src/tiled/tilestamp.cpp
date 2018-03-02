@@ -23,7 +23,6 @@
 #include "maptovariantconverter.h"
 #include "randompicker.h"
 #include "tilelayer.h"
-#include "tilesetmanager.h"
 #include "varianttomapconverter.h"
 
 #include <QDebug>
@@ -63,24 +62,16 @@ TileStampData::TileStampData(const TileStampData &other)
     , fileName()                        // not copied
     , variations(other.variations)
 {
-    TilesetManager *tilesetManager = TilesetManager::instance();
-
     // deep-copy the map data
-    for (TileStampVariation &variation : variations) {
+    for (TileStampVariation &variation : variations)
         variation.map = new Map(*variation.map);
-        tilesetManager->addReferences(variation.map->tilesets());
-    }
 }
 
 TileStampData::~TileStampData()
 {
-    TilesetManager *tilesetManager = TilesetManager::instance();
-
     // decrease reference to tilesets and delete maps
-    for (const TileStampVariation &variation : variations) {
-        tilesetManager->removeReferences(variation.map->tilesets());
+    for (const TileStampVariation &variation : variations)
         delete variation.map;
-    }
 }
 
 
@@ -175,27 +166,16 @@ const QVector<TileStampVariation> &TileStamp::variations() const
 void TileStamp::addVariation(Map *map, qreal probability)
 {
     Q_ASSERT(map);
-
-    // increase tileset reference counts to keep watching them
-    TilesetManager::instance()->addReferences(map->tilesets());
-
     d->variations.append(TileStampVariation(map, probability));
 }
 
 /**
  * Takes the variation map at \a index. Ownership of the map is passed to the
- * caller, who also has to make sure to handle tileset reference counting.
+ * caller.
  */
 Map *TileStamp::takeVariation(int index)
 {
     return d->variations.takeAt(index).map;
-}
-
-void TileStamp::deleteVariation(int index)
-{
-    Map *map = takeVariation(index);
-    TilesetManager::instance()->removeReferences(map->tilesets());
-    delete map;
 }
 
 /**

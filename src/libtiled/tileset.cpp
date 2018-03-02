@@ -32,11 +32,21 @@
 #include "terrain.h"
 #include "tile.h"
 #include "tilesetformat.h"
+#include "tilesetmanager.h"
 #include "wangset.h"
 
 #include <QBitmap>
 
 using namespace Tiled;
+
+SharedTileset Tileset::create(const QString &name, int tileWidth, int tileHeight, int tileSpacing, int margin)
+{
+    SharedTileset tileset(new Tileset(name, tileWidth, tileHeight,
+                                      tileSpacing, margin));
+    tileset->mWeakPointer = tileset;
+    TilesetManager::instance()->addTileset(tileset.data());
+    return tileset;
+}
 
 Tileset::Tileset(QString name, int tileWidth, int tileHeight,
                  int tileSpacing, int margin):
@@ -62,6 +72,7 @@ Tileset::Tileset(QString name, int tileWidth, int tileHeight,
 
 Tileset::~Tileset()
 {
+    TilesetManager::instance()->removeTileset(this);
     qDeleteAll(mTiles);
     qDeleteAll(mTerrainTypes);
     qDeleteAll(mWangSets);
@@ -151,9 +162,14 @@ void Tileset::setTransparentColor(const QColor &c)
  */
 void Tileset::setImageReference(const ImageReference &reference)
 {
+    const QUrl oldImageSource = mImageReference.source;
+
     mImageReference = reference;
     mExpectedColumnCount = columnCountForWidth(mImageReference.size.width());
     mExpectedRowCount = rowCountForHeight(mImageReference.size.height());
+
+    if (mImageReference.source != oldImageSource)
+        TilesetManager::instance()->tilesetImageSourceChanged(*this, oldImageSource);
 }
 
 /**
@@ -172,7 +188,12 @@ void Tileset::setImageReference(const ImageReference &reference)
  */
 bool Tileset::loadFromImage(const QImage &image, const QUrl &source)
 {
+    const QUrl oldImageSource = mImageReference.source;
+
     mImageReference.source = source;
+
+    if (mImageReference.source != oldImageSource)
+        TilesetManager::instance()->tilesetImageSourceChanged(*this, oldImageSource);
 
     if (image.isNull()) {
         mImageReference.status = LoadingError;
@@ -309,7 +330,11 @@ SharedTileset Tileset::findSimilarTileset(const QVector<SharedTileset> &tilesets
  */
 void Tileset::setImageSource(const QUrl &imageSource)
 {
-    mImageReference.source = imageSource;
+    if (mImageReference.source != imageSource) {
+        const QUrl oldImageSource = mImageReference.source;
+        mImageReference.source = imageSource;
+        TilesetManager::instance()->tilesetImageSourceChanged(*this, oldImageSource);
+    }
 }
 
 /**
