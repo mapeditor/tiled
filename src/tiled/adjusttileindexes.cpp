@@ -108,7 +108,8 @@ AdjustTileIndexes::AdjustTileIndexes(MapDocument *mapDocument,
 
         case Layer::ObjectGroupType:
             for (MapObject *mapObject : *static_cast<ObjectGroup*>(layer)) {
-                if (isFromTileset(mapObject->cell())) {
+                if ((!mapObject->isTemplateInstance() || mapObject->propertyChanged(MapObject::CellProperty))
+                        && isFromTileset(mapObject->cell())) {
                     MapObjectCell change;
                     change.object = mapObject;
                     change.cell = adjustCell(mapObject->cell());

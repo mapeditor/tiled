@@ -87,13 +87,21 @@ static QList<MapObject*> objectList(const QVector<MapObjectCell> &changes)
 
 void ChangeMapObjectCells::swap()
 {
-    for (MapObjectCell &change : mChanges) {
+    for (int i = 0; i < mChanges.size(); ++i) {
+        MapObjectCell &change = mChanges[i];
+
         auto cell = change.object->cell();
         change.object->setCell(change.cell);
         change.cell = cell;
+
+        auto changed = change.object->propertyChanged(MapObject::CellProperty);
+        change.object->setPropertyChanged(MapObject::CellProperty, change.propertyChanged);
+        change.propertyChanged = changed;
     }
+
     emit mMapObjectModel->objectsChanged(objectList(mChanges));
 }
+
 
 ChangeMapObjectsTile::ChangeMapObjectsTile(MapDocument *mapDocument,
                                            const QList<MapObject *> &mapObjects,

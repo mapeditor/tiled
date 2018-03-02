@@ -68,6 +68,7 @@ struct MapObjectCell
 {
     MapObject *object;
     Cell cell;
+    bool propertyChanged = true;
 };
 
 class ChangeMapObjectCells : public QUndoCommand
