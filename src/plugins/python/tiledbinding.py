@@ -20,10 +20,38 @@
 """
 
 from __future__ import print_function
-
+from functools import wraps
+from operator import attrgetter, itemgetter
 from pybindgen import *
+from collections import OrderedDict
+
+
+class SimpleSortedDict(OrderedDict):
+    "naive and ineffecient but adequate for this use"
+    def items(self):
+        return sorted([[k, self[k]] for k in self], key=itemgetter(0))
+
+
+def patch_a_prop(func, prop, value_factory):
+    """replace an object property after it's given method has executed
+    """
+    assert callable(value_factory)
+    def _decorate(obj, *args, **kwargs):
+        ret = func(obj, *args, **kwargs)
+        setattr(obj, prop, value_factory())
+        return ret
+
+    return wraps(func)(_decorate)
+
+
+# after a new pybindgen container is instantiated, replace it's methods dictionary
+Module.__init__ = patch_a_prop(Module.__init__, 'methods', lambda:SimpleSortedDict())
+CppClass.__init__ = patch_a_prop(CppClass.__init__, 'methods', lambda:SimpleSortedDict())
+
 
 mod = Module('tiled')
+mod.functions = SimpleSortedDict()
+
 mod.add_include('"pythonplugin.h"')
 mod.add_include('"map.h"')
 mod.add_include('"layer.h"')
