@@ -28,6 +28,7 @@
 #include "map.h"
 #include "mapobject.h"
 #include "objectgroup.h"
+#include "objecttemplate.h"
 #include "properties.h"
 #include "savefile.h"
 #include "terrain.h"
@@ -655,7 +656,13 @@ void LuaWriter::writeMapObject(LuaTableWriter &writer,
         break;
     }
 
-    writeProperties(writer, mapObject->properties());
+    Properties props;
+    if (const ObjectTemplate *objectTemplate = mapObject->objectTemplate()) {
+        props.merge(objectTemplate->object()->properties());
+    }
+    // Override template properties if they exist
+    props.merge(mapObject->properties());
+    writeProperties(writer, props);
 
     writer.writeEndTable();
 }
