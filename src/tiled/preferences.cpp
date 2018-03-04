@@ -85,7 +85,7 @@ Preferences::Preferences()
     mShowTilesetGrid = boolValue("ShowTilesetGrid", true);
     mLanguage = stringValue("Language");
     mUseOpenGL = boolValue("OpenGL");
-    mWheelZoomsByDefault = boolValue("WheelZoomsByDefault", true);
+    mWheelZoomsByDefault = boolValue("WheelZoomsByDefault");
     mObjectLabelVisibility = static_cast<ObjectLabelVisiblity>
             (intValue("ObjectLabelVisibility", AllObjectLabels));
 #if defined(Q_OS_MAC)
