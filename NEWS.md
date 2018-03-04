@@ -1,3 +1,15 @@
+### Tiled 1.1.3 (6 March 2018)
+
+* Fixed crash when removing a tileset referenced by multiple objects
+* Fixed crash on paste when it introduced more than one new tileset
+* Fixed Invert Selection for non-infinite maps
+* Fixed Select All to not select objects on locked layers
+* Fixed logic determining the tilesets used by a tile layer
+* Fixed copy/paste changing object order (#1896)
+* Fixed tileset getting loaded twice when used by the map and a template
+* JSON plugin: Fixed loading of infinite maps using CSV tile layer format (#1878)
+* Linux: Updated AppImage to Qt 5.9.4
+
 ### Tiled 1.1.2 (31 January 2018)
 
 * Fixed possible crash while editing polygons

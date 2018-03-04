@@ -58,7 +58,6 @@
 #include "tile.h"
 #include "tilelayer.h"
 #include "tilesetdocument.h"
-#include "tilesetmanager.h"
 #include "tmxmapformat.h"
 
 #include <QFileInfo>
@@ -112,18 +111,10 @@ MapDocument::MapDocument(Map *map, const QString &fileName)
             SLOT(onMapObjectModelRowsInsertedOrRemoved(QModelIndex,int,int)));
     connect(mMapObjectModel, SIGNAL(rowsMoved(QModelIndex,int,int,QModelIndex,int)),
             SLOT(onObjectsMoved(QModelIndex,int,int,QModelIndex,int)));
-
-    // Register tileset references
-    TilesetManager *tilesetManager = TilesetManager::instance();
-    tilesetManager->addReferences(mMap->tilesets());
 }
 
 MapDocument::~MapDocument()
 {
-    // Unregister tileset references
-    TilesetManager *tilesetManager = TilesetManager::instance();
-    tilesetManager->removeReferences(mMap->tilesets());
-
     delete mRenderer;
     delete mMap;
 }
@@ -625,8 +616,6 @@ void MapDocument::insertTileset(int index, const SharedTileset &tileset)
 {
     emit tilesetAboutToBeAdded(index);
     mMap->insertTileset(index, tileset);
-    TilesetManager *tilesetManager = TilesetManager::instance();
-    tilesetManager->addReference(tileset);
     emit tilesetAdded(index, tileset.data());
 }
 
@@ -644,9 +633,6 @@ void MapDocument::removeTilesetAt(int index)
     SharedTileset tileset = mMap->tilesets().at(index);
     mMap->removeTilesetAt(index);
     emit tilesetRemoved(tileset.data());
-
-    TilesetManager *tilesetManager = TilesetManager::instance();
-    tilesetManager->removeReference(tileset);
 }
 
 /**
@@ -660,11 +646,6 @@ SharedTileset MapDocument::replaceTileset(int index, const SharedTileset &tilese
     SharedTileset oldTileset = mMap->tilesetAt(index);
 
     bool added = mMap->replaceTileset(oldTileset, tileset);
-
-    TilesetManager *tilesetManager = TilesetManager::instance();
-    if (added)
-        tilesetManager->addReference(tileset);
-    tilesetManager->removeReference(oldTileset);
 
     if (added)
         emit tilesetReplaced(index, tileset.data(), oldTileset.data());
@@ -782,6 +763,34 @@ void MapDocument::setSelectedArea(const QRegion &selection)
     }
 }
 
+static QList<MapObject *> sortObjects(const Map *map, const QList<MapObject *> &objects)
+{
+    QList<MapObject *> sorted;
+    sorted.reserve(objects.size());
+
+    LayerIterator iterator(map);
+    while (Layer *layer = iterator.next()) {
+        if (layer->layerType() != Layer::ObjectGroupType)
+            continue;
+
+        for (MapObject *mapObject : static_cast<ObjectGroup*>(layer)->objects()) {
+            if (objects.contains(mapObject))
+                sorted.append(mapObject);
+        }
+    }
+
+    return sorted;
+}
+
+/**
+ * Returns the list of selected objects, in their display order (when
+ * ObjectGroup::IndexOrder is used).
+ */
+QList<MapObject *> MapDocument::selectedObjectsOrdered() const
+{
+    return sortObjects(mMap, mSelectedObjects);
+}
+
 void MapDocument::setSelectedObjects(const QList<MapObject *> &selectedObjects)
 {
     mSelectedObjects = selectedObjects;
@@ -837,15 +846,11 @@ void MapDocument::setHoveredMapObject(MapObject *object)
  * To reach the aim, all similar tilesets will be replaced by the version
  * in the current map document and all missing tilesets will be added to
  * the current map document.
- *
- * \warning This method assumes that the tilesets in \a map are managed by
- *          the TilesetManager!
  */
 void MapDocument::unifyTilesets(Map *map)
 {
     QList<QUndoCommand*> undoCommands;
     QVector<SharedTileset> availableTilesets = mMap->tilesets();
-    TilesetManager *tilesetManager = TilesetManager::instance();
 
     // Iterate over a copy because map->replaceTileset may invalidate iterator
     const QVector<SharedTileset> tilesets = map->tilesets();
@@ -872,9 +877,7 @@ void MapDocument::unifyTilesets(Map *map)
             }
         }
 
-        if (map->replaceTileset(tileset, replacement))
-            tilesetManager->addReference(replacement);
-        tilesetManager->removeReference(tileset);
+        map->replaceTileset(tileset, replacement);
     }
 
     if (!undoCommands.isEmpty()) {
@@ -890,9 +893,6 @@ void MapDocument::unifyTilesets(Map *map)
  * Replaces tilesets in \a map by similar tilesets in this map when possible,
  * and adds tilesets to \a missingTilesets whenever there is a tileset without
  * replacement in this map.
- *
- * \warning This method assumes that the tilesets in \a map are managed by
- *          the TilesetManager!
  */
 void MapDocument::unifyTilesets(Map *map, QVector<SharedTileset> &missingTilesets)
 {
@@ -900,8 +900,6 @@ void MapDocument::unifyTilesets(Map *map, QVector<SharedTileset> &missingTileset
     for (const SharedTileset &tileset : qAsConst(missingTilesets))
         if (!availableTilesets.contains(tileset))
             availableTilesets.append(tileset);
-
-    TilesetManager *tilesetManager = TilesetManager::instance();
 
     // Iterate over a copy because map->replaceTileset may invalidate iterator
     const QVector<SharedTileset> tilesets = map->tilesets();
@@ -920,9 +918,7 @@ void MapDocument::unifyTilesets(Map *map, QVector<SharedTileset> &missingTileset
         }
 
         // replacement tileset found, change given map
-        if (map->replaceTileset(tileset, replacement))
-            tilesetManager->addReference(replacement);
-        tilesetManager->removeReference(tileset);
+        map->replaceTileset(tileset, replacement);
     }
 }
 
@@ -1117,8 +1113,8 @@ void MapDocument::moveObjectsToGroup(const QList<MapObject *> &objects,
     mUndoStack->beginMacro(tr("Move %n Object(s) to Layer", "",
                               objects.size()));
 
-    const auto objectsCopy = objects;   // original list may get modified
-    for (MapObject *mapObject : objectsCopy) {
+    const auto objectsToMove = sortObjects(mMap, objects);
+    for (MapObject *mapObject : objectsToMove) {
         if (mapObject->objectGroup() == objectGroup)
             continue;
 

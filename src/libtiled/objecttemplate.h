@@ -30,6 +30,7 @@
 #pragma once
 
 #include "mapobject.h"
+#include "tileset.h"
 
 #include <QPointer>
 
@@ -57,6 +58,7 @@ private:
     QString mFileName;
     QPointer<ObjectTemplateFormat> mFormat;
     MapObject *mObject;
+    SharedTileset mTileset;
 };
 
 inline const MapObject *ObjectTemplate::object() const

@@ -656,9 +656,6 @@ void MapEditor::paste(ClipboardManager::PasteFlags flags)
 
     QScopedPointer<Map> mapDeleter(map);
 
-    TilesetManager *tilesetManager = TilesetManager::instance();
-    tilesetManager->addReferences(map->tilesets());
-
     bool tilesetsUnified = false;
 
     if (flags & ClipboardManager::PasteInPlace)
@@ -692,8 +689,6 @@ void MapEditor::paste(ClipboardManager::PasteFlags flags)
 
     if (flags & ClipboardManager::PasteInPlace)
         mCurrentMapDocument->undoStack()->endMacro();
-
-    tilesetManager->removeReferences(map->tilesets());
 }
 
 void MapEditor::flip(FlipDirection direction)

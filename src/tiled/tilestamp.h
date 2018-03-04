@@ -83,7 +83,6 @@ public:
     void addVariation(Map *map, qreal probability = 1.0);
     void addVariation(const TileStampVariation &variation);
     Map *takeVariation(int index);
-    void deleteVariation(int index);
     bool isEmpty() const;
 
     int quickStampIndex() const;
