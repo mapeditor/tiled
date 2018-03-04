@@ -59,8 +59,8 @@ matrix:
         - unset QTDIR; unset QT_PLUGIN_PATH; unset LD_LIBRARY_PATH
         - mkdir -p Tiled/usr/plugins/imageformats
         - cp /opt/qt510/plugins/imageformats/libqsvg.so Tiled/usr/plugins/imageformats/
-        - ./linuxdeployqt ./Tiled/usr/share/applications/tiled.desktop -bundle-non-qt-libs -verbose=2
-        - ./linuxdeployqt ./Tiled/usr/share/applications/tiled.desktop -appimage
+        - ./linuxdeployqt ./Tiled/usr/share/applications/org.mapeditor.Tiled.desktop -bundle-non-qt-libs -verbose=2
+        - ./linuxdeployqt ./Tiled/usr/share/applications/org.mapeditor.Tiled.desktop -appimage
         - find ./Tiled -executable -type f -exec ldd {} \; | grep " => /usr" | cut -d " " -f 2-3 | sort | uniq
         - mv Tiled-x86_64.AppImage Tiled-$TILED_VERSION-x86_64.AppImage
       deploy:
