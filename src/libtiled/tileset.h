@@ -250,11 +250,11 @@ private:
     int mColumnCount;
     int mExpectedColumnCount;
     int mExpectedRowCount;
-    QMap<int, Tile*> mTiles;
     int mNextTileId;
+    int mMaximumTerrainDistance;
+    QMap<int, Tile*> mTiles;
     QList<Terrain*> mTerrainTypes;
     QList<WangSet*> mWangSets;
-    int mMaximumTerrainDistance;
     bool mTerrainDistancesDirty;
     LoadingStatus mStatus;
     QColor mBackgroundColor;
