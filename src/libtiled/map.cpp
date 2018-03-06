@@ -234,6 +234,7 @@ bool Map::addTileset(const SharedTileset &tileset)
         return false;
 
     mTilesets.append(tileset);
+    invalidateDrawMargins();
     return true;
 }
 
@@ -247,6 +248,7 @@ void Map::insertTileset(int index, const SharedTileset &tileset)
 {
     Q_ASSERT(!mTilesets.contains(tileset));
     mTilesets.insert(index, tileset);
+    invalidateDrawMargins();
 }
 
 int Map::indexOfTileset(const SharedTileset &tileset) const
@@ -257,6 +259,7 @@ int Map::indexOfTileset(const SharedTileset &tileset) const
 void Map::removeTilesetAt(int index)
 {
     mTilesets.remove(index);
+    invalidateDrawMargins();
 }
 
 bool Map::replaceTileset(const SharedTileset &oldTileset,
@@ -272,6 +275,8 @@ bool Map::replaceTileset(const SharedTileset &oldTileset,
         layer->replaceReferencesToTileset(oldTileset.data(),
                                           newTileset.data());
     }
+
+    invalidateDrawMargins();
 
     if (mTilesets.contains(newTileset)) {
         mTilesets.remove(index);

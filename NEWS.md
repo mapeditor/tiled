@@ -7,6 +7,7 @@
 * Fixed logic determining the tilesets used by a tile layer
 * Fixed copy/paste changing object order (#1896)
 * Fixed tileset getting loaded twice when used by the map and a template
+* Fixed repainting issues on undo/redo for new maps (#1887)
 * JSON plugin: Fixed loading of infinite maps using CSV tile layer format (#1878)
 * Linux: Updated AppImage to Qt 5.9.4
 
