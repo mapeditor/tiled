@@ -10,6 +10,7 @@
 * Fixed repainting issues on undo/redo for new maps (#1887)
 * JSON plugin: Fixed loading of infinite maps using CSV tile layer format (#1878)
 * Linux: Updated AppImage to Qt 5.9.4
+* Updated Hungarian, Japanese, Norwegian Bokmål, Portuguese and Ukrainian translations
 
 ### Tiled 1.1.2 (31 January 2018)
 
