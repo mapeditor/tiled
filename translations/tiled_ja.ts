@@ -129,7 +129,7 @@
     <message>
         <location line="+33"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>閉じる</translation>
     </message>
 </context>
 <context>
@@ -655,7 +655,7 @@
     <message>
         <location line="+5"/>
         <source>New Map...</source>
-        <translation type="unfinished"></translation>
+        <translation>新しいマップ...</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -670,7 +670,7 @@
     <message>
         <location line="+8"/>
         <source>Full Screen</source>
-        <translation type="unfinished"></translation>
+        <translation>フルスクリーン</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -700,12 +700,12 @@
     <message>
         <location line="-332"/>
         <source>&amp;New</source>
-        <translation type="unfinished"></translation>
+        <translation>新規(&amp;N)</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Commands</source>
-        <translation type="unfinished"></translation>
+        <translation>コマンド</translation>
     </message>
     <message>
         <location line="+71"/>
@@ -720,7 +720,7 @@
     <message>
         <location line="+100"/>
         <source>Map &amp;Properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>マップのプロパティ(&amp;P)...</translation>
     </message>
     <message>
         <location line="+80"/>
@@ -805,7 +805,7 @@
     <message>
         <location line="+9"/>
         <source>Tileset &amp;Properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>タイルセットのプロパティ(&amp;P)...</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -1219,7 +1219,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/tilesetdock.cpp" line="+86"/>
         <source>New Tileset...</source>
-        <translation type="unfinished"></translation>
+        <translation>新しいタイルセット...</translation>
     </message>
 </context>
 <context>
@@ -1513,7 +1513,7 @@ Line %1, column %2</source>
     <message>
         <location line="+49"/>
         <source>Mouse wheel &amp;zooms by default</source>
-        <translation type="unfinished"></translation>
+        <translation>マウスホイールで拡大縮小(&amp;Z)</translation>
     </message>
     <message>
         <location line="+24"/>
@@ -2618,7 +2618,7 @@ Line %1, column %2</source>
     <message>
         <location line="+7"/>
         <source>Open Tileset...</source>
-        <translation type="unfinished"></translation>
+        <translation>タイルセットを開く...</translation>
     </message>
     <message>
         <location line="+31"/>
@@ -3143,7 +3143,7 @@ Do you want to replace it?</source>
     <message>
         <location line="+1"/>
         <source>Ignore</source>
-        <translation type="unfinished"></translation>
+        <translation>無視</translation>
     </message>
 </context>
 <context>
@@ -3169,7 +3169,7 @@ Do you want to replace it?</source>
     <message>
         <location line="+1"/>
         <source>New Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>新しいレイヤー</translation>
     </message>
 </context>
 <context>
@@ -3259,17 +3259,17 @@ Do you want to replace it?</source>
     <message>
         <location line="-4"/>
         <source>New</source>
-        <translation type="unfinished"></translation>
+        <translation>新規</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Open</source>
-        <translation type="unfinished"></translation>
+        <translation>開く</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation>保存</translation>
     </message>
 </context>
 <context>
@@ -3434,7 +3434,7 @@ Please select specific format.</source>
     <message>
         <location line="+295"/>
         <source>Open File</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイルを開く</translation>
     </message>
     <message>
         <location line="+775"/>
@@ -3805,7 +3805,7 @@ Please select specific format.</source>
     <message>
         <location line="+37"/>
         <source>&amp;New</source>
-        <translation type="unfinished"></translation>
+        <translation>新規(&amp;N)</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -3942,7 +3942,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/newmapdialog.cpp" line="-19"/>
         <source>Save As...</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイル名をつけて保存...</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -4021,7 +4021,7 @@ Please select specific format.</source>
     <message>
         <location line="-2"/>
         <source>&amp;Save As...</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイル名をつけて保存(&amp;S)...</translation>
     </message>
 </context>
 <context>
@@ -4029,22 +4029,22 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/noeditorwidget.ui" line="+19"/>
         <source>&lt;font size=&quot;+2&quot;&gt;No Open Files&lt;/font&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;font size=&quot;+2&quot;&gt;開いてるファイルが無い&lt;/font&gt;</translation>
     </message>
     <message>
         <location line="+28"/>
         <source>New Map...</source>
-        <translation type="unfinished"></translation>
+        <translation>新しいマップ...</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>New Tileset...</source>
-        <translation type="unfinished"></translation>
+        <translation>新しいタイルセット...</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Open File...</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイルを開く...</translation>
     </message>
 </context>
 <context>
@@ -4822,7 +4822,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/templatesdock.cpp" line="+297"/>
         <source>Open Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>タイルセットを開く</translation>
     </message>
     <message>
         <location line="+4"/>

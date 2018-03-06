@@ -114,17 +114,17 @@
     <message>
         <location line="+20"/>
         <source>Arguments:</source>
-        <translation type="unfinished"></translation>
+        <translation>Argumentumok:</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Working Directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>Munkakönyvtár:</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Show output in Debug Console</source>
-        <translation type="unfinished"></translation>
+        <translation>Kimenet megjelenítése a hibakeresési konzolban</translation>
     </message>
     <message>
         <location line="+33"/>
@@ -456,7 +456,7 @@
     <message>
         <location line="+14"/>
         <source>Json template files (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Json sablonfájlok (*.json)</translation>
     </message>
 </context>
 <context>
@@ -660,7 +660,7 @@
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+L</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+L</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -921,7 +921,7 @@
     <message>
         <location line="+17"/>
         <source>Not a template file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nem sablonfájl.</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1060,7 +1060,7 @@ Line %1, column %2</source>
     <message>
         <location line="-38"/>
         <source>Fixed</source>
-        <translation type="unfinished"></translation>
+        <translation>Rögzített</translation>
     </message>
     <message>
         <location line="+54"/>
@@ -1071,7 +1071,7 @@ Line %1, column %2</source>
     <message>
         <location line="-42"/>
         <source>Infinite</source>
-        <translation type="unfinished"></translation>
+        <translation>Végtelen</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -3181,20 +3181,19 @@ Le szeretné cserélni?</translation>
     <message>
         <location line="+1"/>
         <source>Visible</source>
-        <translation type="unfinished">Látható</translation>
+        <translation>Látható</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Locked</source>
-        <translation type="unfinished"></translation>
+        <translation>Zárolt</translation>
     </message>
     <message numerus="yes">
         <location line="+74"/>
         <source>Drag Layer(s)</source>
-        <translation>
-            <numerusform>Réteg húzása</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Réteg húzása</numerusform>
+        <numerusform>Rétegek húzása</numerusform>
+        </translation></message>
     <message>
         <location line="+215"/>
         <source>Show Other Layers</source>

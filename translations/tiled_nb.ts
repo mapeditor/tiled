@@ -457,7 +457,7 @@
     <message>
         <location line="+14"/>
         <source>Json template files (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>JSON-malfiler (*.json)</translation>
     </message>
 </context>
 <context>
@@ -2194,12 +2194,12 @@ Linje %1, kolonne %2</translation>
     <message>
         <location line="+20"/>
         <source>Tilesheet must have equal spacings.</source>
-        <translation>Flissett må ha lik</translation>
+        <translation type="unfinished">Flissett må ha like mellomrom.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Tilesheet must have equal margins.</source>
-        <translation>Flissett må la like</translation>
+        <translation type="unfinished">Flissett må la like marginer.</translation>
     </message>
     <message>
         <location line="+34"/>
@@ -2354,7 +2354,7 @@ Linje %1, kolonne %2</translation>
     <message>
         <location line="+2"/>
         <source>Reset Template Instance(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tilbakestill malinstans(er)</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -2894,7 +2894,7 @@ Linje %1, kolonne %2</translation>
     <message>
         <location filename="../src/tiled/createpointobjecttool.cpp" line="+45"/>
         <source>Insert Point</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Sett inn punkt</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3196,11 +3196,9 @@ Do you want to replace it?</source>
     <message numerus="yes">
         <location line="+74"/>
         <source>Drag Layer(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Dra lag</numerusform>
+        <numerusform>Dra lag</numerusform>
+        </translation></message>
     <message>
         <location line="+215"/>
         <source>Show Other Layers</source>
@@ -4092,7 +4090,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+2"/>
         <source>Instance of %1</source>
-        <translation type="unfinished"></translation>
+        <translation>%1-instansen</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -4308,19 +4306,15 @@ Vennligst velgt et spesifikt format.</translation>
     <message numerus="yes">
         <location line="-252"/>
         <source>Paste Property/Properties</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Lim inn egenskap</numerusform>
+        <numerusform>Lim inn egenskaper</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+50"/>
         <source>Remove Property/Properties</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Fjern egenskap</numerusform>
+        <numerusform>Fjern egenskaper</numerusform>
+        </translation></message>
     <message>
         <location line="+65"/>
         <source>Cu&amp;t</source>
@@ -4354,11 +4348,9 @@ Vennligst velgt et spesifikt format.</translation>
     <message numerus="yes">
         <location line="+69"/>
         <source>Convert Property/Properties</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Konverter egenskap</numerusform>
+        <numerusform>Konverter egenskaper</numerusform>
+        </translation></message>
     <message>
         <location line="+58"/>
         <source>Properties</source>
@@ -4495,7 +4487,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+16"/>
         <source>Wang Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Wang-farge</translation>
     </message>
     <message>
         <location line="+40"/>
@@ -4692,7 +4684,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+17"/>
         <source>Margin</source>
-        <translation>Margin</translation>
+        <translation type="unfinished">Margin</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4780,7 +4772,7 @@ Vennligst velgt et spesifikt format.</translation>
         <location line="-30"/>
         <location line="+24"/>
         <source>Wang Fill Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Wang-utfyllingsmodus</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4892,7 +4884,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+60"/>
         <source>Select All Instances</source>
-        <translation type="unfinished"></translation>
+        <translation>Velg alle instanser</translation>
     </message>
 </context>
 <context>
@@ -5198,7 +5190,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+89"/>
         <source>New Wang Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Nytt Wang-sett</translation>
     </message>
 </context>
 <context>
@@ -5333,18 +5325,18 @@ Vennligst velgt et spesifikt format.</translation>
         <location filename="../src/tiled/wangbrush.cpp" line="+108"/>
         <location line="+65"/>
         <source>Wang Brush</source>
-        <translation type="unfinished"></translation>
+        <translation>Wang-pensel</translation>
     </message>
     <message>
         <location line="-62"/>
         <location line="+63"/>
         <source>G</source>
-        <translation type="unfinished"></translation>
+        <translation>G</translation>
     </message>
     <message>
         <location line="+152"/>
         <source>Missing wang tile transition</source>
-        <translation type="unfinished"></translation>
+        <translation>Manglende Wang-flisovergang</translation>
     </message>
 </context>
 <context>
@@ -5694,19 +5686,15 @@ Vennligst velgt et spesifikt format.</translation>
     <message numerus="yes">
         <location line="+45"/>
         <source>Reset %n Instances</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Tilbakestill instans</numerusform>
+        <numerusform>Tilbakestill %n instanser</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+46"/>
         <source>Replace %n Object(s) With Template</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation type="unfinished"><numerusform>Erstatt ett objekt med mal</numerusform>
+        <numerusform>Erstatt %n objekter med mal</numerusform>
+        </translation></message>
     <message>
         <location filename="../src/tiled/renameterrain.cpp" line="+36"/>
         <source>Change Terrain Name</source>
