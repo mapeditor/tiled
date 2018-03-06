@@ -92,7 +92,6 @@ private slots:
 
     void mapChanged();
     void repaintTileset(Tileset *tileset);
-    void tileLayerChanged(TileLayer *, MapDocument::TileLayerChangeFlags flags);
 
     void layerChanged(Layer *);
 

@@ -21,6 +21,7 @@
 #pragma once
 
 #include "documentmanager.h"
+#include "mapdocument.h"
 
 #include <QGraphicsObject>
 #include <QMap>
@@ -39,7 +40,6 @@ class Tileset;
 namespace Internal {
 
 class LayerItem;
-class MapDocument;
 class MapObjectItem;
 
 /**
@@ -50,6 +50,8 @@ class MapObjectItem;
  */
 class MapItem : public QGraphicsObject
 {
+    Q_OBJECT
+
 public:
     enum DisplayMode {
         ReadOnly,
@@ -66,6 +68,9 @@ public:
     void paint(QPainter *, const QStyleOptionGraphicsItem *,
                QWidget *widget = nullptr) override;
 
+signals:
+    void boundingRectChanged();
+
 private:
     /**
      * Repaints the specified \a region of the given \a tileLayer. The region
@@ -74,7 +79,7 @@ private:
     void repaintRegion(const QRegion &region, TileLayer *tileLayer);
 
     void mapChanged();
-    void tileLayerChanged(TileLayer *tileLayer);
+    void tileLayerChanged(TileLayer *tileLayer, MapDocument::TileLayerChangeFlags flags);
 
     void layerAdded(Layer *layer);
     void layerRemoved(Layer *layer);
@@ -101,6 +106,7 @@ private:
     void createLayerItems(const QList<Layer *> &layers);
     LayerItem *createLayerItem(Layer *layer);
 
+    void updateBoundingRect();
     void updateCurrentLayerHighlight();
 
     MapDocumentRef mMapDocument;
@@ -108,6 +114,7 @@ private:
     QMap<Layer*, LayerItem*> mLayerItems;
     QMap<MapObject*, MapObjectItem*> mObjectItems;
     DisplayMode mDisplayMode;
+    QRectF mBoundingRect;
 };
 
 inline MapDocument *MapItem::mapDocument() const

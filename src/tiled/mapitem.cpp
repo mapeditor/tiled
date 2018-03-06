@@ -23,7 +23,6 @@
 #include "grouplayer.h"
 #include "grouplayeritem.h"
 #include "imagelayeritem.h"
-#include "mapdocument.h"
 #include "mapobject.h"
 #include "mapobjectitem.h"
 #include "maprenderer.h"
@@ -91,6 +90,8 @@ MapItem::MapItem(MapDocument *mapDocument, DisplayMode displayMode,
     connect(mapDocument, &MapDocument::objectsChanged, this, &MapItem::objectsChanged);
     connect(mapDocument, &MapDocument::objectsIndexChanged, this, &MapItem::objectsIndexChanged);
 
+    updateBoundingRect();
+
     mDarkRectangle->setPen(Qt::NoPen);
     mDarkRectangle->setBrush(Qt::black);
     mDarkRectangle->setOpacity(darkeningFactor);
@@ -101,7 +102,7 @@ MapItem::MapItem(MapDocument *mapDocument, DisplayMode displayMode,
 
 QRectF MapItem::boundingRect() const
 {
-    return QRectF();
+    return mBoundingRect;
 }
 
 void MapItem::paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *)
@@ -125,6 +126,9 @@ void MapItem::repaintRegion(const QRegion &region, TileLayer *tileLayer)
     }
 }
 
+/**
+ * Adapts the layers and objects to new map size or orientation.
+ */
 void MapItem::mapChanged()
 {
     for (QGraphicsItem *item : mLayerItems) {
@@ -134,12 +138,17 @@ void MapItem::mapChanged()
 
     for (MapObjectItem *item : mObjectItems)
         item->syncWithMapObject();
+
+    updateBoundingRect();
 }
 
-void MapItem::tileLayerChanged(TileLayer *tileLayer)
+void MapItem::tileLayerChanged(TileLayer *tileLayer, MapDocument::TileLayerChangeFlags flags)
 {
     TileLayerItem *item = static_cast<TileLayerItem*>(mLayerItems.value(tileLayer));
     item->syncWithTileLayer();
+
+    if (flags & MapDocument::LayerBoundsChanged)
+        updateBoundingRect();
 }
 
 void MapItem::layerAdded(Layer *layer)
@@ -227,6 +236,8 @@ void MapItem::layerChanged(Layer *layer)
 
     layerItem->setOpacity(layer->opacity() * multiplier);
     layerItem->setPos(layer->offset());
+
+    updateBoundingRect();   // possible layer offset change
 }
 
 /**
@@ -457,6 +468,29 @@ LayerItem *MapItem::createLayerItem(Layer *layer)
         createLayerItems(groupLayer->layers());
 
     return layerItem;
+}
+
+void MapItem::updateBoundingRect()
+{
+    QRectF boundingRect = mapDocument()->renderer()->mapBoundingRect();
+
+    const QMargins margins = mapDocument()->map()->computeLayerOffsetMargins();
+    boundingRect.adjust(-margins.left(),
+                        -margins.top(),
+                        margins.right(),
+                        margins.bottom());
+
+    const QMargins drawMargins = mapDocument()->map()->drawMargins();
+    boundingRect.adjust(qMin(0, -drawMargins.left()),
+                        qMin(0, -drawMargins.top()),
+                        qMax(0, drawMargins.right()),
+                        qMax(0, drawMargins.bottom()));
+
+    if (mBoundingRect != boundingRect) {
+        prepareGeometryChange();
+        mBoundingRect = boundingRect;
+        emit boundingRectChanged();
+    }
 }
 
 void MapItem::updateCurrentLayerHighlight()
