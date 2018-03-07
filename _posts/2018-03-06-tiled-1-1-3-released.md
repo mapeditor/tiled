@@ -20,3 +20,5 @@ This release bring a host of bug fixes and some translation updates. Upgrading i
 * JSON plugin: Fixed loading of infinite maps using CSV tile layer format ([#1878](https://github.com/bjorn/tiled/issues/1878))
 * Linux: Updated AppImage to Qt 5.9.4
 * Updated Hungarian, Japanese, Norwegian Bokmål, Portuguese and Ukrainian translations
+
+Many thanks to everybody who submitted bug reports and translation updates, as well as to all who [support me financially](https://www.patreon.com/bjorn) so that I can keep up Tiled development and maintenance!
