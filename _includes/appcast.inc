@@ -10,7 +10,7 @@
 {%       assign version = release.tag_name | remove_first:'v' %}
 {%         for asset in release.assets %}
 
-{%         if asset.name contains 'dmg' %}
+{%         if asset.name contains 'macos' %}
 {%           assign os = 'osx' %}
 {%         elsif asset.name contains 'win32' %}
 {%           assign os = 'windows-x86' %}
