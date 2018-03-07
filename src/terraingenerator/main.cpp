@@ -630,7 +630,6 @@ int main(int argc, char *argv[])
 
     // Save the target tileset
     MapWriter writer;
-    targetTileset->setFileName(QString());
     writer.writeTileset(*targetTileset, options.target);
 
     return 0;
