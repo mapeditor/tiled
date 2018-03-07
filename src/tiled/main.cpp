@@ -96,12 +96,12 @@ private:
 /**
  * Used during file export, attempt to determine the output file format
  * from the command line parameters.
- * Query errorString if result is null.
+ * Query errorMsg if result is null.
  */
 template <typename T>
 inline T *findExportFormat(const QString *filter,
                            const QString &targetFile,
-                           QString *errorMsg)
+                           QString &errorMsg)
 {
     T *outputFormat = nullptr;
     const auto formats = PluginManager::objects<T>();
@@ -117,7 +117,7 @@ inline T *findExportFormat(const QString *filter,
             }
         }
         if (!outputFormat) {
-            *errorMsg = QCoreApplication::translate("Command line", "Format not recognized (see --export-formats)");
+            errorMsg = QCoreApplication::translate("Command line", "Format not recognized (see --export-formats)");
             return nullptr;
         }
     } else {
@@ -128,14 +128,14 @@ inline T *findExportFormat(const QString *filter,
                 continue;
             if (format->nameFilter().contains(suffix, Qt::CaseInsensitive)) {
                 if (outputFormat) {
-                    *errorMsg = QCoreApplication::translate("Command line", "Non-unique file extension. Can't determine correct export format.");
+                    errorMsg = QCoreApplication::translate("Command line", "Non-unique file extension. Can't determine correct export format.");
                     return nullptr;
                 }
                 outputFormat = format;
             }
         }
         if (!outputFormat) {
-            *errorMsg = QCoreApplication::translate("Command line", "No exporter found for target file.");
+            errorMsg = QCoreApplication::translate("Command line", "No exporter found for target file.");
             return nullptr;
         }
     }
@@ -173,12 +173,12 @@ CommandLineHandler::CommandLineHandler()
     option<&CommandLineHandler::setExportMap>(
                 QChar(),
                 QLatin1String("--export-map"),
-                tr("Export the specified tmx file to target"));
+                tr("Export the specified map file to target"));
 
     option<&CommandLineHandler::setExportTileset>(
                 QChar(),
                 QLatin1String("--export-tileset"),
-                tr("Export the specified tsx file to target"));
+                tr("Export the specified tileset file to target"));
 
     option<&CommandLineHandler::showExportFormats>(
                 QChar(),
@@ -255,6 +255,7 @@ void CommandLineHandler::startNewInstance()
     newInstance = true;
 }
 
+
 int main(int argc, char *argv[])
 {
 #if defined(Q_OS_WIN) && (!defined(Q_CC_MINGW) || __MINGW32_MAJOR_VERSION >= 5)
@@ -324,7 +325,7 @@ int main(int argc, char *argv[])
         const QString &targetFile = commandLine.filesToOpen().at(index++);
 
         QString errorMsg;
-        MapFormat *outputFormat = findExportFormat<MapFormat>(filter, targetFile, &errorMsg);
+        MapFormat *outputFormat = findExportFormat<MapFormat>(filter, targetFile, errorMsg);
         if (!outputFormat) {
             Q_ASSERT(!errorMsg.isEmpty());
             qWarning().noquote() << errorMsg;
@@ -360,7 +361,7 @@ int main(int argc, char *argv[])
         const QString &targetFile = commandLine.filesToOpen().at(index++);
 
         QString errorMsg;
-        TilesetFormat *outputFormat = findExportFormat<TilesetFormat>(filter, targetFile, &errorMsg);
+        TilesetFormat *outputFormat = findExportFormat<TilesetFormat>(filter, targetFile, errorMsg);
         if (!outputFormat) {
             Q_ASSERT(!errorMsg.isEmpty());
             qWarning().noquote() << errorMsg;
@@ -374,13 +375,12 @@ int main(int argc, char *argv[])
             return 1;
         }
 
-        // MapReader::readTileset sets the fileName, marking it as an internal tileset.
-        // Clear the property to continue our external export
-        QString empty;
-        tileset->setFileName(empty);
+        // MapReader::readTileset sets the fileName, marking it as an external tileset.
+        // Clear the property to avoid writing an external tileset reference
+        tileset->setFileName(QString());
 
         // Write out the file
-        bool success = outputFormat->write(*tileset.data(), targetFile);
+        bool success = outputFormat->write(*tileset, targetFile);
 
         if (!success) {
             qWarning().noquote() << QCoreApplication::translate("Command line", "Failed to export tileset to target file.");
