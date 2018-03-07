@@ -132,7 +132,7 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
         tilesetVariant[QLatin1String("version")] = 1.2; // external tileset
 
     const QString &fileName = tileset.fileName();
-    if (!fileName.isEmpty()) {
+    if (!fileName.isEmpty() && firstGid > 0) {
         QString source = mMapDir.relativeFilePath(fileName);
         tilesetVariant[QLatin1String("source")] = source;
 

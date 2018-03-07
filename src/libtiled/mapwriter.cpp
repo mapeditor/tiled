@@ -301,7 +301,7 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
         w.writeAttribute(QLatin1String("firstgid"), QString::number(firstGid));
 
     const QString &fileName = tileset.fileName();
-    if (!fileName.isEmpty()) {
+    if (!fileName.isEmpty() && firstGid > 0) {
         QString source = fileName;
         if (!mUseAbsolutePaths)
             source = mMapDir.relativeFilePath(source);

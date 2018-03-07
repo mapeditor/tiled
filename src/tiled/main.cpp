@@ -375,10 +375,6 @@ int main(int argc, char *argv[])
             return 1;
         }
 
-        // MapReader::readTileset sets the fileName, marking it as an external tileset.
-        // Clear the property to avoid writing an external tileset reference
-        tileset->setFileName(QString());
-
         // Write out the file
         bool success = outputFormat->write(*tileset, targetFile);
 
