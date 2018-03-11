@@ -61,9 +61,9 @@
 #include "variantpropertymanager.h"
 #include "wangset.h"
 #include "wangcolormodel.h"
-#include "invertYCoordinateHelper.h"
-#include <QtGroupPropertyManager>
+#include "invertycoordinatehelper.h"
 
+#include <QtGroupPropertyManager>
 #include <QCoreApplication>
 #include <QDebug>
 #include <QKeyEvent>
@@ -103,7 +103,6 @@ PropertyBrowser::PropertyBrowser(QWidget *parent)
             this, &PropertyBrowser::objectTypesChanged);
     connect(Preferences::instance(), &Preferences::invertYCoordinatesChanged,
             this, &PropertyBrowser::invertYCoordinatesChanged);
-
 }
 
 void PropertyBrowser::setObject(Object *object)
@@ -505,11 +504,13 @@ void PropertyBrowser::objectTypesChanged()
     if (mObject && mObject->typeId() == Object::MapObjectType)
         updateCustomProperties();
 }
+
 void PropertyBrowser::invertYCoordinatesChanged()
 {
     if (mObject && mObject->typeId() == Object::MapObjectType)
         updateProperties();
 }
+
 void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
 {
     if (mUpdating)
@@ -1017,7 +1018,7 @@ QUndoCommand *PropertyBrowser::applyMapObjectValueTo(PropertyId id, const QVaria
     }
     case YProperty: {
         const QPointF oldPos = mapObject->position();
-        const QPointF newPos(oldPos.x(), InvertYCoordinateHelper().getPixelY(val.toReal()));
+        const QPointF newPos(oldPos.x(), InvertYCoordinateHelper().pixelY(val.toReal()));
         command = new MoveMapObject(mMapDocument, mapObject, newPos, oldPos);
         break;
     }
@@ -1577,7 +1578,7 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[TypeProperty]->setValueColor(palette().color(typeColorGroup, QPalette::WindowText));
         mIdToProperty[VisibleProperty]->setValue(mapObject->isVisible());
         mIdToProperty[XProperty]->setValue(mapObject->x());
-        mIdToProperty[YProperty]->setValue(InvertYCoordinateHelper().getGridY(mapObject->y()));
+        mIdToProperty[YProperty]->setValue(InvertYCoordinateHelper().tileY(mapObject->y()));
 
         if (flags & ObjectHasDimensions) {
             mIdToProperty[WidthProperty]->setValue(mapObject->width());

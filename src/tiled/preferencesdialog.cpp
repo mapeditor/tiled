@@ -154,6 +154,7 @@ void PreferencesDialog::fromPreferences()
         mUi->openGL->setChecked(prefs->useOpenGL());
     mUi->wheelZoomsByDefault->setChecked(prefs->wheelZoomsByDefault());
     mUi->invertYCoordinates->setChecked(prefs->invertYCoordinates());
+
     // Not found (-1) ends up at index 0, system default
     int languageIndex = mUi->languageCombo->findData(prefs->language());
     if (languageIndex == -1)

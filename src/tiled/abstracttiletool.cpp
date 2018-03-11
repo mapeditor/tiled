@@ -27,7 +27,7 @@
 #include "mapscene.h"
 #include "tile.h"
 #include "tilelayer.h"
-#include "invertYCoordinateHelper.h"
+#include "invertycoordinatehelper.h"
 
 #include <cmath>
 
@@ -145,7 +145,7 @@ void AbstractTileTool::updateStatusInfo()
 
         setStatusInfo(QString(QLatin1String("%1, %2 [%3]"))
                 .arg(mTilePosition.x())
-                .arg(InvertYCoordinateHelper().getPixelY((mTilePosition.y())))
+                .arg(InvertYCoordinateHelper().pixelY((mTilePosition.y())))
                 .arg(tileIdString));
     } else {
         setStatusInfo(QString());

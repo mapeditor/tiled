@@ -233,7 +233,6 @@ private:
     bool mSnapToGrid;
     bool mSnapToFineGrid;
     bool mSnapToPixels;
-
     QColor mGridColor;
     int mGridFine;
     qreal mObjectLineWidth;
@@ -336,5 +335,6 @@ inline bool Preferences::invertYCoordinates() const
 {
     return mInvertYCoordinates;
 }
+
 } // namespace Internal
 } // namespace Tiled

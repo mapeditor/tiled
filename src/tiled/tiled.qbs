@@ -241,6 +241,8 @@ QtGuiApplication {
         "imagecolorpickerwidget.ui",
         "imagelayeritem.cpp",
         "imagelayeritem.h",
+        "invertycoordinatehelper.cpp",
+        "invertycoordinatehelper.h",
         "clickablelabel.cpp",
         "clickablelabel.h",
         "languagemanager.cpp",

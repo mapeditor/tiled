@@ -148,6 +148,7 @@ SOURCES += aboutdialog.cpp \
     id.cpp \
     imagecolorpickerwidget.cpp \
     imagelayeritem.cpp \
+    invertycoordinatehelper.cpp \
     languagemanager.cpp \
     layerdock.cpp \
     layeritem.cpp \
@@ -261,7 +262,6 @@ SOURCES += aboutdialog.cpp \
     wangtemplateview.cpp \
     wangtemplatemodel.cpp \
     zoomable.cpp \
-    InvertYCoordinateHelper.cpp
 
 HEADERS += aboutdialog.h \
     abstractobjecttool.h \
@@ -345,6 +345,7 @@ HEADERS += aboutdialog.h \
     id.h \
     imagecolorpickerwidget.h \
     imagelayeritem.h \
+    invertycoordinatehelper.h \
     languagemanager.h \
     layerdock.h \
     layeritem.h \
@@ -462,7 +463,6 @@ HEADERS += aboutdialog.h \
     wangtemplateview.h \
     wangtemplatemodel.h \
     zoomable.h \
-    invertYCoordinateHelper.h
 
 FORMS += aboutdialog.ui \
     addpropertydialog.ui \
