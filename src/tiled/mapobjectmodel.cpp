@@ -30,6 +30,7 @@
 #include "objectgroup.h"
 #include "renamelayer.h"
 #include "invertycoordinatehelper.h"
+
 #include <QApplication>
 #include <QPalette>
 #include <QStyle>
@@ -129,7 +130,7 @@ QVariant MapObjectModel::data(const QModelIndex &index, int role) const
                 return QLatin1Char('(')
                         + QString::number(mapObject->x())
                         + QLatin1String(", ")
-                        + QString::number(InvertYCoordinateHelper().tileY(mapObject->y()))
+                        + QString::number(InvertYCoordinateHelper::tileY(mapObject->y()))
                         + QLatin1Char(')');
             }
             break;
