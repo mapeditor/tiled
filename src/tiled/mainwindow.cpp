@@ -69,7 +69,6 @@
 #include "undodock.h"
 #include "utils.h"
 #include "zoomable.h"
-#include "invertycoordinatehelper.h"
 
 #ifdef Q_OS_MAC
 #include "macsupport.h"

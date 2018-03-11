@@ -145,7 +145,7 @@ void AbstractTileTool::updateStatusInfo()
 
         setStatusInfo(QString(QLatin1String("%1, %2 [%3]"))
                 .arg(mTilePosition.x())
-                .arg(InvertYCoordinateHelper().pixelY((mTilePosition.y())))
+                .arg(InvertYCoordinateHelper::pixelY((mTilePosition.y())))
                 .arg(tileIdString));
     } else {
         setStatusInfo(QString());
