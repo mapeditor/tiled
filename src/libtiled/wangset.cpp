@@ -783,10 +783,16 @@ WangId WangSet::templateWangIdAt(unsigned n) const
 
 WangSet *WangSet::clone(Tileset *tileset) const
 {
-    WangSet *c = new WangSet(tileset, mName, mImageTileId);
+    WangSet *c = new WangSet(*this);
 
-    c->mWangIdToWangTile = mWangIdToWangTile;
-    c->mTileInfoToWangId = mTileInfoToWangId;
+    // Caller is responsible for adding the WangSet to this tileset
+    c->setTileset(tileset);
+
+    // Avoid sharing wang colors
+    for (QSharedPointer<WangColor> &wangColor : c->mEdgeColors)
+        wangColor.reset(new WangColor(*wangColor));
+    for (QSharedPointer<WangColor> &wangColor : c->mCornerColors)
+        wangColor.reset(new WangColor(*wangColor));
 
     return c;
 }
