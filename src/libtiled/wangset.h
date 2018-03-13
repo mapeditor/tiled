@@ -297,11 +297,10 @@ public:
      * For use in an undo command
      * Does not adjust currently assigned tiles.
      * */
-    void insertWangColor(QSharedPointer<WangColor> wangColor);
+    void insertWangColor(const QSharedPointer<WangColor> &wangColor);
 
-    // Adds a wangcolor to the set. The wangcolors color index may
-    // be changed
-    void addWangColor(QSharedPointer<WangColor> wangColor);
+    // Adds a wangcolor to the set. The wangcolors color index may be changed
+    void addWangColor(const QSharedPointer<WangColor> &wangColor);
 
     /* Removes a given color.
      * This can make wangIds invalid, so should only be used from
@@ -309,8 +308,8 @@ public:
      * */
     void removeWangColorAt(int color, bool isEdge);
 
-    QSharedPointer<WangColor> edgeColorAt(int index) const;
-    QSharedPointer<WangColor> cornerColorAt(int index) const;
+    const QSharedPointer<WangColor> &edgeColorAt(int index) const;
+    const QSharedPointer<WangColor> &cornerColorAt(int index) const;
 
     QList<Tile *> tilesChangedOnSetEdgeColors(int newEdgeColors) const;
     QList<Tile *> tilesChangedOnSetCornerColors(int newCornerColors) const;
@@ -411,8 +410,8 @@ public:
 private:
     void removeWangTile(const WangTile &wangTile);
 
-    void insertEdgeWangColor(QSharedPointer<WangColor> wangColor);
-    void insertCornerWangColor(QSharedPointer<WangColor> wangColor);
+    void insertEdgeWangColor(const QSharedPointer<WangColor> &wangColor);
+    void insertCornerWangColor(const QSharedPointer<WangColor> &wangColor);
 
     void removeEdgeWangColor(int color);
     void removeCornerWangColor(int color);

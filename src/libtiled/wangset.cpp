@@ -393,7 +393,7 @@ void WangSet::setCornerColorCount(int n)
     }
 }
 
-void WangSet::insertWangColor(QSharedPointer<WangColor> wangColor)
+void WangSet::insertWangColor(const QSharedPointer<WangColor> &wangColor)
 {
     if (wangColor->isEdge())
         insertEdgeWangColor(wangColor);
@@ -402,7 +402,7 @@ void WangSet::insertWangColor(QSharedPointer<WangColor> wangColor)
 }
 
 
-void WangSet::addWangColor(QSharedPointer<WangColor> wangColor)
+void WangSet::addWangColor(const QSharedPointer<WangColor> &wangColor)
 {
     if (wangColor->isEdge()) {
         wangColor->setColorIndex(mEdgeColors.size() + 1);
@@ -413,7 +413,7 @@ void WangSet::addWangColor(QSharedPointer<WangColor> wangColor)
     }
 }
 
-void WangSet::insertEdgeWangColor(QSharedPointer<WangColor> wangColor)
+void WangSet::insertEdgeWangColor(const QSharedPointer<WangColor> &wangColor)
 {
     Q_ASSERT(edgeColorCount() + 1 >= wangColor->colorIndex());
 
@@ -423,7 +423,7 @@ void WangSet::insertEdgeWangColor(QSharedPointer<WangColor> wangColor)
         mEdgeColors.at(i)->setColorIndex(i + 1);
 }
 
-void WangSet::insertCornerWangColor(QSharedPointer<WangColor> wangColor)
+void WangSet::insertCornerWangColor(const QSharedPointer<WangColor> &wangColor)
 {
     Q_ASSERT(cornerColorCount() + 1 >= wangColor->colorIndex());
 
@@ -461,14 +461,14 @@ void WangSet::removeCornerWangColor(int color)
         mCornerColors.at(i)->setColorIndex(i + 1);
 }
 
-QSharedPointer<WangColor> WangSet::edgeColorAt(int index) const
+const QSharedPointer<WangColor> &WangSet::edgeColorAt(int index) const
 {
     Q_ASSERT(index > 0 && index <= edgeColorCount());
 
     return mEdgeColors.at(index - 1);
 }
 
-QSharedPointer<WangColor> WangSet::cornerColorAt(int index) const
+const QSharedPointer<WangColor> &WangSet::cornerColorAt(int index) const
 {
     Q_ASSERT(index > 0 && index <= cornerColorCount());
 
