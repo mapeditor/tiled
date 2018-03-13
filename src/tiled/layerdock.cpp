@@ -104,8 +104,6 @@ LayerDock::LayerDock(QWidget *parent):
     connect(mOpacitySlider, SIGNAL(valueChanged(int)),
             this, SLOT(sliderValueChanged(int)));
     updateOpacitySlider();
-
-    mLayerView->header()->setStretchLastSection(false);
 }
 
 void LayerDock::setMapDocument(MapDocument *mapDocument)
@@ -132,8 +130,8 @@ void LayerDock::setMapDocument(MapDocument *mapDocument)
         mLayerView->header()->setSectionResizeMode(0, QHeaderView::Stretch);
         mLayerView->header()->setSectionResizeMode(1, QHeaderView::Fixed);
         mLayerView->header()->setSectionResizeMode(2, QHeaderView::Fixed);
-        mLayerView->header()->resizeSection(1, Utils::dpiScaled(22));
-        mLayerView->header()->resizeSection(2, Utils::dpiScaled(22));
+        mLayerView->header()->resizeSection(1, IconCheckDelegate::exclusiveSectionWidth());
+        mLayerView->header()->resizeSection(2, IconCheckDelegate::exclusiveSectionWidth());
     }
 
     updateOpacitySlider();
@@ -233,12 +231,14 @@ LayerView::LayerView(QWidget *parent)
     setHeaderHidden(true);
     setUniformRowHeights(true);
     setModel(mProxyModel);
-    setItemDelegateForColumn(1, new IconCheckDelegate(IconCheckDelegate::VisibilityIcon, this));
-    setItemDelegateForColumn(2, new IconCheckDelegate(IconCheckDelegate::LockedIcon, this));
+    setItemDelegateForColumn(1, new IconCheckDelegate(IconCheckDelegate::VisibilityIcon, true, this));
+    setItemDelegateForColumn(2, new IconCheckDelegate(IconCheckDelegate::LockedIcon, true, this));
     setDragDropMode(QAbstractItemView::InternalMove);
 
-    connect(this, SIGNAL(pressed(QModelIndex)),
-            SLOT(indexPressed(QModelIndex)));
+    header()->setStretchLastSection(false);
+
+    connect(this, &QAbstractItemView::pressed,
+            this, &LayerView::indexPressed);
 }
 
 QSize LayerView::sizeHint() const
