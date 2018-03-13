@@ -6,13 +6,16 @@ environment:
     secure: +3IhWT10lCSC4GE4gGfWt8WiZdIXuMUfaImgvQUullg=
   matrix:
     - QTDIR: C:\Qt\5.10.1\msvc2013_64
+      PYTHONHOME: C:\Python36-x64
       PUSH_RELEASE: true
       TILED_ITCH_CHANNEL: windows-64bit
     - QTDIR: C:\Qt\5.10.1\mingw53_32
+      PYTHONHOME: C:\Python36
       MINGW: C:\Qt\Tools\mingw530_32
       PUSH_RELEASE: true
       TILED_ITCH_CHANNEL: windows-32bit
     - QTDIR: C:\Qt\5.6\mingw49_32
+      PYTHONHOME: C:\Python36
       MINGW: C:\Qt\Tools\mingw492_32
       PUSH_RELEASE: false
       TILED_ITCH_CHANNEL: winxp-32bit

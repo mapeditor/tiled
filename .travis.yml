@@ -1,6 +1,7 @@
 language: cpp
 sudo: required
 dist: trusty
+python: 3.6
 
 env:
   global:
