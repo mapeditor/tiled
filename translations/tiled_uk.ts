@@ -921,7 +921,7 @@
     <message>
         <location line="+17"/>
         <source>Not a template file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл не є шаблоном.</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1060,7 +1060,7 @@ Line %1, column %2</source>
     <message>
         <location line="-38"/>
         <source>Fixed</source>
-        <translation type="unfinished"></translation>
+        <translation>Фіксовано</translation>
     </message>
     <message>
         <location line="+54"/>
@@ -1482,7 +1482,7 @@ Line %1, column %2</source>
     <message>
         <location line="+14"/>
         <source>Turn this off if you&apos;re having trouble saving your files.</source>
-        <translation>Вимкніть це, якщо маєте проблему зі збереженням файлів</translation>
+        <translation>Вимкніть це, якщо маєте проблему зі збереженням файлів.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2218,7 +2218,7 @@ Line %1, column %2</source>
     <message>
         <location line="+27"/>
         <source>Could not open file for writing</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося відкрити файл для запису</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -2803,7 +2803,7 @@ Line %1, column %2</source>
     <message>
         <location line="+121"/>
         <source>Select Executable</source>
-        <translation type="unfinished">Оберіть виконуваний файл</translation>
+        <translation>Оберіть виконуваний файл</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -2966,7 +2966,7 @@ Line %1, column %2</source>
     <message>
         <location line="+1"/>
         <source>E</source>
-        <translation type="unfinished">E</translation>
+        <translation>E</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -3002,7 +3002,7 @@ Line %1, column %2</source>
     <message>
         <location line="+112"/>
         <source>Close</source>
-        <translation type="unfinished">Закрити</translation>
+        <translation>Закрити</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -3037,7 +3037,7 @@ Line %1, column %2</source>
         <location line="-218"/>
         <location line="+219"/>
         <source>O</source>
-        <translation type="unfinished">O</translation>
+        <translation>O</translation>
     </message>
     <message numerus="yes">
         <location line="+220"/>
@@ -3191,7 +3191,7 @@ Do you want to replace it?</source>
     <message>
         <location line="+1"/>
         <source>Visible</source>
-        <translation type="unfinished">Видимість</translation>
+        <translation>Видимість</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4771,7 +4771,7 @@ Please select specific format.</source>
         <location line="-102"/>
         <location line="+103"/>
         <source>P</source>
-        <translation type="unfinished">P</translation>
+        <translation>P</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -4790,13 +4790,13 @@ Please select specific format.</source>
         <location filename="../src/tiled/stampactions.cpp" line="+48"/>
         <location line="+29"/>
         <source>Random Mode</source>
-        <translation type="unfinished">Випадковий режим</translation>
+        <translation>Випадковий режим</translation>
     </message>
     <message>
         <location line="-28"/>
         <location line="+35"/>
         <source>D</source>
-        <translation type="unfinished">D</translation>
+        <translation>D</translation>
     </message>
     <message>
         <location line="-30"/>
@@ -4807,12 +4807,12 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Flip Horizontally</source>
-        <translation type="unfinished">Обернути по горизонталі</translation>
+        <translation>Обернути по горизонталі</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Flip Vertically</source>
-        <translation type="unfinished">Обернути по вертикалі</translation>
+        <translation>Обернути по вертикалі</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4827,22 +4827,22 @@ Please select specific format.</source>
     <message>
         <location line="+3"/>
         <source>X</source>
-        <translation type="unfinished">X</translation>
+        <translation>X</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Y</source>
-        <translation type="unfinished">Y</translation>
+        <translation>Y</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Shift+Z</source>
-        <translation type="unfinished">Shift+Z</translation>
+        <translation>Shift+Z</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Z</source>
-        <translation type="unfinished">Z</translation>
+        <translation>Z</translation>
     </message>
 </context>
 <context>
@@ -4896,17 +4896,17 @@ Please select specific format.</source>
     <message>
         <location line="+24"/>
         <source>All Files (*)</source>
-        <translation type="unfinished">Всі файли (*)</translation>
+        <translation>Всі файли (*)</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Locate External Tileset</source>
-        <translation type="unfinished">Розташування зовнішнього набору плиток</translation>
+        <translation>Розташування зовнішнього набору плиток</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Error Reading Tileset</source>
-        <translation type="unfinished">Помилка читання набору плиток</translation>
+        <translation>Помилка читання набору плиток</translation>
     </message>
 </context>
 <context>
@@ -4994,12 +4994,12 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tilecollisiondock.cpp" line="-39"/>
         <source>Delete</source>
-        <translation type="unfinished">Видалити</translation>
+        <translation>Видалити</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Cut</source>
-        <translation type="unfinished">Вирізати</translation>
+        <translation>Вирізати</translation>
     </message>
 </context>
 <context>
@@ -5700,12 +5700,10 @@ Please select specific format.</source>
     <message numerus="yes">
         <location line="+51"/>
         <source>Change %n Object/s Tile</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Змінити %n плитку об&apos;єкта</numerusform>
+        <numerusform>Змінити %n плитки об&apos;єкта</numerusform>
+        <numerusform>Змінити %n плиток об&apos;єкта</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+65"/>
         <source>Detach %n Template Instance(s)</source>
@@ -5963,12 +5961,12 @@ Please select specific format.</source>
     <message>
         <location line="+223"/>
         <source>Copy File Path</source>
-        <translation type="unfinished">Копіювати шлях до файлу</translation>
+        <translation>Копіювати шлях до файлу</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Open Containing Folder...</source>
-        <translation type="unfinished">Відкрити теку...</translation>
+        <translation>Відкрити теку...</translation>
     </message>
 </context>
 </TS>
