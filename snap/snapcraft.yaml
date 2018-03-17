@@ -1,5 +1,6 @@
 name: tiled
-version: '1.0.3'
+version: git
+version-script: git describe | cut -c 2-
 summary: Your free, easy to use and flexible tile map editor.
 description: |
   Tiled is a free software level editor. It supports editing tile maps in
@@ -13,7 +14,7 @@ confinement: strict
 apps:
   tiled:
     command: desktop-launch ${SNAP}/usr/bin/tiled
-    desktop: usr/share/applications/tiled.desktop
+    desktop: usr/share/applications/org.mapeditor.Tiled.desktop
     plugs: [home, opengl, unity7]
   tmxviewer:
     command: desktop-launch ${SNAP}/usr/bin/tmxviewer
@@ -32,12 +33,10 @@ parts:
   tiled:
     plugin: qmake
     qt-version: qt5
-    project-files:
-      - tiled-1.0.3/tiled.pro
     options:
       - PREFIX=/usr
       - CONFIG+=release
-    source: https://github.com/bjorn/tiled/archive/v1.0.3.zip
+    source: .
     build-packages:
     # FIXME: Python plugin compiles and loads, but can't find platform libraries
     #  - pkg-config
