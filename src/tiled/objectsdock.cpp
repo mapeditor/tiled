@@ -261,7 +261,7 @@ ObjectsView::ObjectsView(QWidget *parent)
 {
     setUniformRowHeights(true);
     setModel(mProxyModel);
-    setItemDelegate(new IconCheckDelegate(IconCheckDelegate::VisibilityIcon, this));
+    setItemDelegate(new IconCheckDelegate(IconCheckDelegate::VisibilityIcon, false, this));
 
     setSelectionBehavior(QAbstractItemView::SelectRows);
     setSelectionMode(QAbstractItemView::ExtendedSelection);

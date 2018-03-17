@@ -155,7 +155,7 @@ bool LayerModel::setData(const QModelIndex &index, const QVariant &value,
 
     if (role == Qt::CheckStateRole) {
         if (index.column() == 1) {
-            Qt::CheckState c = static_cast<Qt::CheckState>(value.toInt());
+            Qt::CheckState c = value.value<Qt::CheckState>();
             const bool visible = (c == Qt::Checked);
             if (visible != layer->isVisible()) {
                 QUndoCommand *command = new SetLayerVisible(mMapDocument,
@@ -165,7 +165,7 @@ bool LayerModel::setData(const QModelIndex &index, const QVariant &value,
             }
         }
         if (index.column() == 2) {
-            Qt::CheckState c = static_cast<Qt::CheckState>(value.toInt());
+            Qt::CheckState c = value.value<Qt::CheckState>();
             const bool locked = (c == Qt::Checked);
             if (locked != layer->isLocked()) {
                 QUndoCommand *command = new SetLayerLocked(mMapDocument,

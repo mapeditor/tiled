@@ -145,7 +145,11 @@ QPolygonF MapRenderer::lineToPolygon(const QPointF &start, const QPointF &end)
 
 QPen MapRenderer::makeGridPen(const QPaintDevice *device, QColor color) const
 {
+#if QT_VERSION >= 0x050600
     const qreal devicePixelRatio = device->devicePixelRatioF();
+#else
+    const int devicePixelRatio = device->devicePixelRatio();
+#endif
 
 #ifdef Q_OS_MAC
     const qreal dpiScale = 1.0;

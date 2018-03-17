@@ -176,7 +176,13 @@ static void paintCorners(QPainter *painter,
 
 static void setCosmeticPen(QPainter *painter, const QBrush &brush, qreal width)
 {
-    QPen pen(brush, width * painter->device()->devicePixelRatioF());
+#if QT_VERSION >= 0x050600
+    const qreal devicePixelRatio = painter->device()->devicePixelRatioF();
+#else
+    const int devicePixelRatio = painter->device()->devicePixelRatio();
+#endif
+
+    QPen pen(brush, width * devicePixelRatio);
     pen.setCosmetic(true);
     painter->setPen(pen);
 }
