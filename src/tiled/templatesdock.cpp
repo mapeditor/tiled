@@ -476,7 +476,8 @@ void TemplatesView::contextMenuEvent(QContextMenuEvent *event)
 
     if (ObjectTemplate *objectTemplate = mModel->toObjectTemplate(index)) {
         menu.addSeparator();
-        menu.addAction(tr("Select All Instances"), [objectTemplate] {
+        QAction *action = menu.addAction(tr("Select All Instances"));
+        connect(action, &QAction::triggered, [objectTemplate] {
             MapDocumentActionHandler *handler = MapDocumentActionHandler::instance();
             handler->selectAllInstances(objectTemplate);
         });
