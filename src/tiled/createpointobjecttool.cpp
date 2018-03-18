@@ -37,6 +37,7 @@ CreatePointObjectTool::CreatePointObjectTool(QObject *parent)
     icon.addFile(QLatin1String(":images/48x48/insert-point.png"));
     setIcon(icon);
     Utils::setThemeIcon(this, "insert-point");
+    mtoolInfo = tr("<b>Click</b> on the map to position a point object.");
     languageChanged();
 }
 
