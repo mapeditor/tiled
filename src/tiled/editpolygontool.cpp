@@ -66,7 +66,7 @@ EditPolygonTool::EditPolygonTool(QObject *parent)
     , mClickedObject(nullptr)
     , mMode(NoMode)
 {
-    mtoolInfo=tr("<b>Click</b> on a node to select it, hold <b>Shift</b> to select multiple nodes and holding <b>Alt</b> forces moving current selection. Press <b>Delete key</b> to remove currently selected node(s)");
+    mToolInfo = tr("<b>Click</b> on a node to select it, hold <b>Shift</b> to select multiple nodes and holding <b>Alt</b> forces moving current selection.");
 }
 
 EditPolygonTool::~EditPolygonTool()

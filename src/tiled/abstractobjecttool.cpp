@@ -132,7 +132,7 @@ void AbstractObjectTool::mouseMoved(const QPointF &pos,
     const QPointF tilePosF = mapDocument()->renderer()->screenToTileCoords(offsetPos);
     const int x = qFloor(tilePosF.x());
     const int y = qFloor(tilePosF.y());
-    setStatusInfo(QString(QLatin1String("%1, %2 (%3, %4)    %5 ")).arg(x).arg(y).arg(pixelPos.x()).arg(pixelPos.y()).arg(mtoolInfo));
+    setStatusInfo(QString(QLatin1String("%1, %2 (%3, %4)    %5 ")).arg(x).arg(y).arg(pixelPos.x()).arg(pixelPos.y()).arg(mToolInfo));
 }
 
 void AbstractObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
