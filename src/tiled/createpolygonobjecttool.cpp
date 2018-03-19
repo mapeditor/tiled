@@ -53,6 +53,8 @@ CreatePolygonObjectTool::CreatePolygonObjectTool(QObject *parent)
     , mOverlayPolygonItem(nullptr)
     , mMode(NoMode)
     , mFinishAsPolygon(false)
+    , mHoveredHandle(nullptr)
+    , mClickedHandle(nullptr)
 {
     mOverlayObjectGroup->addObject(mOverlayPolygonObject);
 

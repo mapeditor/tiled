@@ -54,7 +54,7 @@ namespace Lua {
 class LuaWriter
 {
 public:
-    LuaWriter(const QDir &dir)
+    explicit LuaWriter(const QDir &dir)
         : mDir(dir)
     {}
 

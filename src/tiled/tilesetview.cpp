@@ -1089,7 +1089,6 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
         const QModelIndex previousHoveredIndex = mHoveredIndex;
         mHoveredIndex = hoveredIndex;
         int previousHoverCorner = mHoveredCorner;
-        int hoveredCorner = 0;
 
         if (mHoveredIndex.isValid()) {
             const QPoint center = visualRect(hoveredIndex).center();
@@ -1097,6 +1096,7 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
             const auto t = tilesetGridTransform(*tilesetDocument()->tileset(), center);
             const auto mappedPos = t.inverted().map(pos);
 
+            int hoveredCorner = 0;
             if (mappedPos.x() > center.x())
                 hoveredCorner += 1;
             if (mappedPos.y() > center.y())

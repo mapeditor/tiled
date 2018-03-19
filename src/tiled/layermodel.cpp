@@ -272,6 +272,8 @@ Qt::DropActions LayerModel::supportedDropActions() const
 bool LayerModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
                               int row, int column, const QModelIndex &parent)
 {
+    Q_UNUSED(column);
+
     if (!data || action != Qt::MoveAction)
         return false;
     if (!data->hasFormat(QLatin1String(LAYERS_MIMETYPE)))
@@ -301,8 +303,6 @@ bool LayerModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
         row = rowCount(parent);
     if (row == -1)
         row = groupLayer ? groupLayer->layerCount() : 0;
-    if (column == -1)
-        column = 0;
 
     // NOTE: QAbstractItemView::dropEvent already makes sure that we're not
     // dropping onto ourselves (like putting a group layer into itself).

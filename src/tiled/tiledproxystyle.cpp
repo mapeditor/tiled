@@ -742,7 +742,7 @@ void TiledProxyStyle::drawControl(ControlElement element,
             painter->setRenderHint(QPainter::Antialiasing, true);
             painter->translate(0.5, 0.5);
 
-            QColor tabFrameColor = tab->features & QStyleOptionTab::HasFrame ?
+            QColor tabFrameColor = (tab->features & QStyleOptionTab::HasFrame) ?
                         getTabFrameColor(option->palette) :
                         option->palette.window().color();
 

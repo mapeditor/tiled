@@ -101,10 +101,6 @@ class TILEDSHARED_EXPORT AggregatedProperties : public QMap<QString, AggregatedP
 {
 public:
     void aggregate(const Properties &properties);
-    int aggregatedCount() { return mAggregatedCount; }
-
-private:
-    int mAggregatedCount;
 };
 
 

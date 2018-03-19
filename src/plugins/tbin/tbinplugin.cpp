@@ -164,9 +164,9 @@ Tiled::Map *TbinMapFormat::read(const QString &fileName)
             if (tlayer.tileSize.x != tmap.layers[0].tileSize.x || tlayer.tileSize.y != tmap.layers[0].tileSize.y)
                 throw std::invalid_argument(QT_TR_NOOP("Different tile sizes per layer are not supported."));
 
-            Tiled::TileLayer* layer = new Tiled::TileLayer(tlayer.id.c_str(), 0, 0, tlayer.layerSize.x, tlayer.layerSize.y);
-            tbinToTiledProperties(tlayer.props, layer);
-            Tiled::ObjectGroup* objects = new Tiled::ObjectGroup(tlayer.id.c_str(), 0, 0);
+            QScopedPointer<Tiled::TileLayer> layer(new Tiled::TileLayer(tlayer.id.c_str(), 0, 0, tlayer.layerSize.x, tlayer.layerSize.y));
+            tbinToTiledProperties(tlayer.props, layer.data());
+            QScopedPointer<Tiled::ObjectGroup> objects(new Tiled::ObjectGroup(tlayer.id.c_str(), 0, 0));
             for (std::size_t i = 0; i < tlayer.tiles.size(); ++i) {
                 const tbin::Tile& ttile = tlayer.tiles[i];
                 int ix = i % tlayer.layerSize.x;
@@ -204,8 +204,8 @@ Tiled::Map *TbinMapFormat::read(const QString &fileName)
                     objects->addObject(obj);
                 }
             }
-            map->addLayer(layer);
-            map->addLayer(objects);
+            map->addLayer(layer.take());
+            map->addLayer(objects.take());
         }
     }
     catch (std::exception& e) {

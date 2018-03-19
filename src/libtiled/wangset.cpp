@@ -194,7 +194,7 @@ WangIdVariations::iterator &WangIdVariations::iterator::operator ++()
     while (true) {
         mCurrent.setIndexColor(currentSpot, mCurrent.indexColor(currentSpot) + 1);
 
-        if (mCurrent.indexColor(currentSpot) > (currentSpot & 1? mCornerColors : mEdgeColors)) {
+        if (mCurrent.indexColor(currentSpot) > ((currentSpot & 1) ? mCornerColors : mEdgeColors)) {
             mCurrent.setIndexColor(currentSpot, 0);
             if (++index >= mZeroSpots.size())
                 break;
