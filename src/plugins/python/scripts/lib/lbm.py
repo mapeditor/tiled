@@ -65,8 +65,7 @@ def uncomp(dat):
   i = 0
   ret = bytearray()
   while i < len(dat):
-    #v = struct.unpack('b', dat[i:i+1])[0]
-    v = (256-dat[i])*-1 if dat[i] > 127 else dat[i]
+    v = struct.unpack('b', dat[i:i+1])[0]
     i += 1
     if v >= 0:
       for n in range(v+1):

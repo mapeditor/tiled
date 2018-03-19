@@ -71,15 +71,10 @@ void PythonPlugin::initialize()
         Py_NoSiteFlag = 1;
         Py_NoUserSiteDirectory = 1;
 
-        #if PY_VERSION_HEX >= 0x03000000
         PyImport_AppendInittab("tiled", PyInit_tiled);
         PyImport_AppendInittab("tiled.qt", PyInit_tiled);
         PyImport_AppendInittab("tiled.Tiled", PyInit_tiled);
         Py_Initialize();
-        #else
-        Py_Initialize();
-        inittiled();
-        #endif
 
         PyObject *pmod = PyImport_ImportModule("tiled");
 
