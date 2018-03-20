@@ -29,7 +29,7 @@ External Links
 Setting it Up
 =============
 
-The Automapping feature is looking for a text file called 'rules.txt' in
+The Automapping feature looks for a text file called 'rules.txt' in
 the folder where the current map is located. Each line in this text file
 is either
 
@@ -39,7 +39,7 @@ is either
 -  or is a comment which is indicated by **#** or **//**
 
 A **rulefile** is a standard map file, which can be read and written by
-tiled (\*.tmx). In one rulefile there can be defined multiple rules.
+tiled (\*.tmx). In one rulefile there can be multiple defined rules.
 
 An automapping **rulefile** consists of 4 major parts:
 
@@ -55,13 +55,13 @@ An automapping **rulefile** consists of 4 major parts:
 Defining the Regions
 --------------------
 
-There must be either a tile layer called **regions** or there must be the
+There must be either a tile layer called **regions** or there must be
 both tile layers **regions\_input** and **regions\_output**. Using the
 **regions** layer, the region defined for input and output is the same.
 Using the different layers **regions\_input** and **regions\_output**
 delivers the possibility to have different regions for the input section
 and the output section. The region layer(s) are only used to mark
-regions, where an Automapping rule exists. Therefore it does not matter
+regions where an Automapping rule exists. Therefore, it does not matter
 which tiles are used in this layer, since these tiles are just used to
 define a region. So either use any tile or no tile at a coordinate to
 indicate if that coordinate belongs to a rule or if it doesn't.
@@ -74,14 +74,14 @@ regions are interpreted as one rule.
 Multiple Rules in One Rulefile
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Of course multiple rules are possible in one rulemap. If you want to
+Multiple rules are possible in one rulemap. However, if you want to
 have the rules applied in a certain sequence, you should use multiple
 **rulefiles** and define the sequence within the **rules.txt** file. As
 of now there also is a certain sequence within one rulemapfile.
 Generally speaking the regions with small y value come first. If there
 are regions at the same y value, then the x value is taken into account.
 On orthogonal maps this ordering scheme is the same as for reading in
-most western countries. (Left to right, top to down). The order within
+most western countries (Left to right, top to bottom). The order within
 one rulemap may be changed later, once tiled is capable of utilizing
 multiple threads/processors. So if you want to rely on a certain
 sequence, use different rulemaps and order these in the rules.txt
