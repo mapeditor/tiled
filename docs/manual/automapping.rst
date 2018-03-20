@@ -7,17 +7,16 @@ What is Automapping?
 
 Automapping is an advanced tool to automatically search certain
 combinations of tiles across layers in a map and to replace these parts
-by other combination. This allows the user to draw structures with a
-minimum of time spent and the Automapping will be able to generate a
-rather complex scenario, which would need lots more time if manually
-crafted.
+with another combination. This allows the user to draw structures quickly
+and Automapping will generate a complex scenario from them, which would have
+taken much more time if manually crafted.
 
-So the goal of Automapping is that you only need to draw within one
+The goal of Automapping is that you only need to draw within one
 layer and everything else is setup for you. This brings some advantages:
 
 -  **Working speed** - you need less time to setup a map.
 -  **Less errors** - the main reason is to reduce the error rate. If you
-   have setup the rules properly, there is no hidden error.
+   have setup the rules properly, there are no hidden errors.
 
 External Links
 --------------
