@@ -38,12 +38,14 @@
 
 namespace Tiled {
 
-struct World
+struct TILEDSHARED_EXPORT World
 {
     struct Pattern
     {
         QRegularExpression regexp;
-        int multiplier;
+        int multiplierX;
+        int multiplierY;
+        QPoint offset;
     };
 
     struct MapEntry
@@ -52,8 +54,13 @@ struct World
         QPoint position;
     };
 
+    QString fileName;
     QVector<MapEntry> maps;
     QVector<Pattern> patterns;
+
+    bool containsMap(const QString &fileName) const;
+    QPoint position(const QString &fileName) const;
+    QVector<MapEntry> allMaps() const;
 };
 
 class TILEDSHARED_EXPORT WorldManager

@@ -135,19 +135,15 @@ void MapScene::refreshScene()
     WorldManager &worldManager = WorldManager::instance();
 
     if (const World *world = worldManager.worldForMap(mMapDocument->fileName())) {
-        QPoint currentMapPosition;
+        const QPoint currentMapPosition = world->position(mMapDocument->fileName());
+        auto const allMaps = world->allMaps();
 
-        for (const World::MapEntry &mapEntry : world->maps) {
-            if (mapEntry.fileName == mMapDocument->fileName())
-                currentMapPosition = mapEntry.position;
-        }
-
-        for (const World::MapEntry &mapEntry : world->maps) {
+        for (const World::MapEntry &mapEntry : allMaps) {
             MapDocument *mapDocument = nullptr;
 
-            if (mapEntry.fileName == mMapDocument->fileName())
+            if (mapEntry.fileName == mMapDocument->fileName()) {
                 mapDocument = mMapDocument;
-            else {
+            } else {
                 Document *doc = DocumentManager::instance()->loadDocument(mapEntry.fileName);
                 if (doc && qobject_cast<MapDocument*>(doc) == nullptr)
                     delete doc;

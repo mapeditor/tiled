@@ -80,6 +80,8 @@ void WorldManager::loadWorld(const QString &fileName)
     QDir dir = QFileInfo(fileName).dir();
     QScopedPointer<World> world(new World);
 
+    world->fileName = QFileInfo(fileName).canonicalFilePath();
+
     const QJsonArray maps = object.value(QLatin1String("maps")).toArray();
     for (const QJsonValue &value : maps) {
         const QJsonObject mapObject = value.toObject();
@@ -98,12 +100,17 @@ void WorldManager::loadWorld(const QString &fileName)
 
         World::Pattern pattern;
         pattern.regexp.setPattern(patternObject.value(QLatin1String("regexp")).toString());
-        pattern.multiplier = patternObject.value(QLatin1String("multiplier")).toInt(1);
+        pattern.multiplierX = patternObject.value(QLatin1String("multiplierX")).toInt(1);
+        pattern.multiplierY = patternObject.value(QLatin1String("multiplierY")).toInt(1);
+        pattern.offset = QPoint(patternObject.value(QLatin1String("offsetX")).toInt(1),
+                                patternObject.value(QLatin1String("offsetY")).toInt(1));
 
-        if (pattern.regexp.captureCount() == 2)
+        if (pattern.regexp.captureCount() != 2)
             qWarning() << "Invalid number of captures in" << pattern.regexp;
-        else if (pattern.multiplier <= 0)
-            qWarning() << "Invalid multiplier:" << pattern.multiplier;
+        else if (pattern.multiplierX == 0)
+            qWarning() << "Invalid multiplierX:" << pattern.multiplierX;
+        else if (pattern.multiplierY == 0)
+            qWarning() << "Invalid multiplierY:" << pattern.multiplierY;
         else
             world->patterns.append(pattern);
     }
@@ -118,14 +125,76 @@ void WorldManager::unloadWorld(const QString &fileName)
 
 const World *WorldManager::worldForMap(const QString &fileName) const
 {
-    for (const World *world : mWorlds) {
-        for (const World::MapEntry &mapEntry : world->maps) {
-            // todo: support matching by patterns
-            if (mapEntry.fileName == fileName)
-                return world;
+    for (const World *world : mWorlds)
+        if (world->containsMap(fileName))
+            return world;
+
+    return nullptr;
+}
+
+bool World::containsMap(const QString &fileName) const
+{
+    for (const World::MapEntry &mapEntry : maps) {
+        if (mapEntry.fileName == fileName)
+            return true;
+    }
+
+    for (const World::Pattern &pattern : patterns) {
+        QRegularExpressionMatch match = pattern.regexp.match(fileName);
+        if (match.hasMatch())
+            return true;
+    }
+
+    return false;
+}
+
+QPoint World::position(const QString &fileName) const
+{
+    for (const World::MapEntry &mapEntry : maps) {
+        if (mapEntry.fileName == fileName)
+            return mapEntry.position;
+    }
+
+    for (const World::Pattern &pattern : patterns) {
+        QRegularExpressionMatch match = pattern.regexp.match(fileName);
+        if (match.hasMatch()) {
+            const int x = match.capturedRef(1).toInt();
+            const int y = match.capturedRef(2).toInt();
+
+            return QPoint(x * pattern.multiplierX,
+                          y * pattern.multiplierY) + pattern.offset;
         }
     }
-    return nullptr;
+
+    return QPoint();
+}
+
+QVector<World::MapEntry> World::allMaps() const
+{
+    QVector<World::MapEntry> all(maps);
+
+    if (!patterns.isEmpty()) {
+        const QDir dir(QFileInfo(fileName).dir());
+        const QStringList entries = dir.entryList(QDir::Files | QDir::Readable);
+
+        for (const World::Pattern &pattern : patterns) {
+            for (const QString &fileName : entries) {
+                QRegularExpressionMatch match = pattern.regexp.match(fileName);
+                if (match.hasMatch()) {
+                    const int x = match.capturedRef(1).toInt();
+                    const int y = match.capturedRef(2).toInt();
+
+                    MapEntry entry;
+                    entry.fileName = dir.filePath(fileName);
+                    entry.position = QPoint(x * pattern.multiplierX,
+                                            y * pattern.multiplierY) + pattern.offset;
+                    all.append(entry);
+                }
+            }
+        }
+    }
+
+    return all;
 }
 
 } // namespace Tiled
