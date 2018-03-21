@@ -23,6 +23,7 @@
 
 #include "layerdock.h"
 
+#include "changelayer.h"
 #include "layer.h"
 #include "layermodel.h"
 #include "map.h"
@@ -409,14 +410,24 @@ void LayerView::contextMenuEvent(QContextMenuEvent *event)
 
 void LayerView::keyPressEvent(QKeyEvent *event)
 {
+    Layer *layer = mMapDocument ? mMapDocument->currentLayer() : nullptr;
+
     switch (event->key()) {
     case Qt::Key_Delete:
     case Qt::Key_Backspace:
-        if (mMapDocument) {
-            const LayerModel *layerModel = mMapDocument->layerModel();
-            const QModelIndex index = mProxyModel->mapToSource(currentIndex());
-            if (auto layer = layerModel->toLayer(index))
-                mMapDocument->removeLayer(layer);
+        if (layer) {
+            mMapDocument->removeLayer(layer);
+            return;
+        }
+        break;
+    case Qt::Key_Space:
+        if (layer) {
+            QUndoCommand *command = nullptr;
+            if (event->modifiers() & Qt::ControlModifier)
+                command = new SetLayerLocked(mMapDocument, layer, !layer->isLocked());
+            else
+                command = new SetLayerVisible(mMapDocument, layer, !layer->isVisible());
+            mMapDocument->undoStack()->push(command);
             return;
         }
         break;
