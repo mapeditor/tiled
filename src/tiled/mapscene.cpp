@@ -135,10 +135,10 @@ void MapScene::refreshScene()
     WorldManager &worldManager = WorldManager::instance();
 
     if (const World *world = worldManager.worldForMap(mMapDocument->fileName())) {
-        const QPoint currentMapPosition = world->position(mMapDocument->fileName());
-        auto const allMaps = world->allMaps();
+        const QPoint currentMapPosition = world->mapRect(mMapDocument->fileName()).topLeft();
+        auto const contextMaps = world->contextMaps(mMapDocument->fileName());
 
-        for (const World::MapEntry &mapEntry : allMaps) {
+        for (const World::MapEntry &mapEntry : contextMaps) {
             MapDocument *mapDocument = nullptr;
 
             if (mapEntry.fileName == mMapDocument->fileName()) {
@@ -157,7 +157,7 @@ void MapScene::refreshScene()
                     displayMode = MapItem::Editable;
 
                 auto mapItem = new MapItem(mapDocument, displayMode);
-                mapItem->setPos(mapEntry.position - currentMapPosition);
+                mapItem->setPos(mapEntry.rect.topLeft() - currentMapPosition);
                 connect(mapItem, &MapItem::boundingRectChanged, this, &MapScene::updateSceneRect);
                 mMapItems.insert(mapDocument, mapItem);
                 addItem(mapItem);

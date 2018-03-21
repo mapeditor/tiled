@@ -88,8 +88,10 @@ void WorldManager::loadWorld(const QString &fileName)
 
         World::MapEntry map;
         map.fileName = QDir::cleanPath(dir.filePath(mapObject.value(QLatin1String("fileName")).toString()));
-        map.position.setX(mapObject.value(QLatin1String("x")).toInt());
-        map.position.setY(mapObject.value(QLatin1String("y")).toInt());
+        map.rect = QRect(mapObject.value(QLatin1String("x")).toInt(),
+                         mapObject.value(QLatin1String("y")).toInt(),
+                         mapObject.value(QLatin1String("width")).toInt(),
+                         mapObject.value(QLatin1String("height")).toInt());
 
         world->maps.append(map);
     }
@@ -102,8 +104,10 @@ void WorldManager::loadWorld(const QString &fileName)
         pattern.regexp.setPattern(patternObject.value(QLatin1String("regexp")).toString());
         pattern.multiplierX = patternObject.value(QLatin1String("multiplierX")).toInt(1);
         pattern.multiplierY = patternObject.value(QLatin1String("multiplierY")).toInt(1);
-        pattern.offset = QPoint(patternObject.value(QLatin1String("offsetX")).toInt(1),
-                                patternObject.value(QLatin1String("offsetY")).toInt(1));
+        pattern.offset = QPoint(patternObject.value(QLatin1String("offsetX")).toInt(),
+                                patternObject.value(QLatin1String("offsetY")).toInt());
+        pattern.mapSize = QSize(patternObject.value(QLatin1String("mapWidth")).toInt(pattern.multiplierX),
+                                patternObject.value(QLatin1String("mapHeight")).toInt(pattern.multiplierY));
 
         if (pattern.regexp.captureCount() != 2)
             qWarning() << "Invalid number of captures in" << pattern.regexp;
@@ -111,9 +115,15 @@ void WorldManager::loadWorld(const QString &fileName)
             qWarning() << "Invalid multiplierX:" << pattern.multiplierX;
         else if (pattern.multiplierY == 0)
             qWarning() << "Invalid multiplierY:" << pattern.multiplierY;
+        else if (pattern.mapSize.width() <= 0)
+            qWarning() << "Invalid mapWidth:" << pattern.mapSize.width();
+        else if (pattern.mapSize.height() <= 0)
+            qWarning() << "Invalid mapHeight:" << pattern.mapSize.height();
         else
             world->patterns.append(pattern);
     }
+
+    world->onlyShowAdjacentMaps = object.value(QLatin1String("onlyShowAdjacentMaps")).toBool();
 
     mWorlds.insert(fileName, world.take());
 }
@@ -148,11 +158,11 @@ bool World::containsMap(const QString &fileName) const
     return false;
 }
 
-QPoint World::position(const QString &fileName) const
+QRect World::mapRect(const QString &fileName) const
 {
     for (const World::MapEntry &mapEntry : maps) {
         if (mapEntry.fileName == fileName)
-            return mapEntry.position;
+            return mapEntry.rect;
     }
 
     for (const World::Pattern &pattern : patterns) {
@@ -161,12 +171,13 @@ QPoint World::position(const QString &fileName) const
             const int x = match.capturedRef(1).toInt();
             const int y = match.capturedRef(2).toInt();
 
-            return QPoint(x * pattern.multiplierX,
-                          y * pattern.multiplierY) + pattern.offset;
+            return QRect(QPoint(x * pattern.multiplierX,
+                                y * pattern.multiplierY) + pattern.offset,
+                         pattern.mapSize);
         }
     }
 
-    return QPoint();
+    return QRect();
 }
 
 QVector<World::MapEntry> World::allMaps() const
@@ -186,8 +197,9 @@ QVector<World::MapEntry> World::allMaps() const
 
                     MapEntry entry;
                     entry.fileName = dir.filePath(fileName);
-                    entry.position = QPoint(x * pattern.multiplierX,
-                                            y * pattern.multiplierY) + pattern.offset;
+                    entry.rect = QRect(QPoint(x * pattern.multiplierX,
+                                              y * pattern.multiplierY) + pattern.offset,
+                                       pattern.mapSize);
                     all.append(entry);
                 }
             }
@@ -195,6 +207,27 @@ QVector<World::MapEntry> World::allMaps() const
     }
 
     return all;
+}
+
+QVector<World::MapEntry> World::mapsInRect(const QRect &rect) const
+{
+    const QVector<World::MapEntry> all(allMaps());
+
+    QVector<World::MapEntry> maps;
+
+    for (const World::MapEntry &mapEntry : all) {
+        if (mapEntry.rect.intersects(rect))
+            maps.append(mapEntry);
+    }
+
+    return maps;
+}
+
+QVector<World::MapEntry> World::contextMaps(const QString &fileName) const
+{
+    if (onlyShowAdjacentMaps)
+        return mapsInRect(mapRect(fileName).adjusted(-1, -1, 1, 1));
+    return allMaps();
 }
 
 } // namespace Tiled

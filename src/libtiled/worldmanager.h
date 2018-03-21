@@ -33,7 +33,9 @@
 
 #include <QHash>
 #include <QPoint>
+#include <QRect>
 #include <QRegularExpression>
+#include <QSize>
 #include <QVector>
 
 namespace Tiled {
@@ -46,21 +48,25 @@ struct TILEDSHARED_EXPORT World
         int multiplierX;
         int multiplierY;
         QPoint offset;
+        QSize mapSize;
     };
 
     struct MapEntry
     {
         QString fileName;
-        QPoint position;
+        QRect rect;
     };
 
     QString fileName;
     QVector<MapEntry> maps;
     QVector<Pattern> patterns;
+    bool onlyShowAdjacentMaps;
 
     bool containsMap(const QString &fileName) const;
-    QPoint position(const QString &fileName) const;
+    QRect mapRect(const QString &fileName) const;
     QVector<MapEntry> allMaps() const;
+    QVector<MapEntry> mapsInRect(const QRect &rect) const;
+    QVector<MapEntry> contextMaps(const QString &fileName) const;
 };
 
 class TILEDSHARED_EXPORT WorldManager
