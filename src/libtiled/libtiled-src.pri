@@ -7,6 +7,7 @@ SOURCES += $$PWD/compression.cpp \
     $$PWD/grouplayer.cpp \
     $$PWD/hex.cpp \
     $$PWD/hexagonalrenderer.cpp \
+    $$PWD/imagecache.cpp \
     $$PWD/imagelayer.cpp \
     $$PWD/imagereference.cpp \
     $$PWD/isometricrenderer.cpp \
@@ -47,6 +48,7 @@ HEADERS += $$PWD/compression.h \
     $$PWD/grouplayer.h \
     $$PWD/hex.h \
     $$PWD/hexagonalrenderer.h \
+    $$PWD/imagecache.h \
     $$PWD/imagelayer.h \
     $$PWD/imagereference.h \
     $$PWD/isometricrenderer.h \

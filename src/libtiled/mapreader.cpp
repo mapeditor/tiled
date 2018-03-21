@@ -451,13 +451,12 @@ void MapReaderPrivate::readTilesetTile(Tileset &tileset)
         } else if (xml.name() == QLatin1String("image")) {
             ImageReference imageReference = readImage();
             if (imageReference.hasImage()) {
-                QImage image = imageReference.create();
+                QPixmap image = imageReference.create();
                 if (image.isNull()) {
                     if (imageReference.source.isEmpty())
                         xml.raiseError(tr("Error reading embedded image for tile %1").arg(id));
                 }
-                tileset.setTileImage(tile, QPixmap::fromImage(image),
-                                     imageReference.source);
+                tileset.setTileImage(tile, image, imageReference.source);
             }
         } else if (xml.name() == QLatin1String("objectgroup")) {
             tile->setObjectGroup(readObjectGroup());
@@ -991,7 +990,7 @@ void MapReaderPrivate::readImageLayerImage(ImageLayer &imageLayer)
 
     QUrl sourceUrl = toUrl(source, mPath);
 
-    imageLayer.loadFromImage(QImage(sourceUrl.toLocalFile()), sourceUrl);
+    imageLayer.loadFromImage(sourceUrl);
 
     xml.skipCurrentElement();
 }

@@ -44,6 +44,8 @@ DynamicLibrary {
         "hex.h",
         "hexagonalrenderer.cpp",
         "hexagonalrenderer.h",
+        "imagecache.cpp",
+        "imagecache.h",
         "imagelayer.cpp",
         "imagelayer.h",
         "imagereference.cpp",
