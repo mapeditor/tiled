@@ -3,7 +3,7 @@ Tiled Map Editor - http://www.mapeditor.org/
 About Tiled
 -------------------------------------------------------------------------------
 
-Tiled is a general purpose tile map editor for all tile-based games, such as 
+Tiled is a general purpose tile map editor for all tile-based games, such as
 RPGs, platformers or Breakout clones.
 
 Tiled is highly flexible. It can be used to create maps of any size, with no
@@ -22,8 +22,8 @@ About the Qt Version
 -------------------------------------------------------------------------------
 
 Tiled was originally written in Java. In 2008, work began to develop a faster,
-better looking, and easier-to-use version of Tiled based on the QT framework.
-This decision was made as the QT framework has a greater feature set than is 
+better looking, and easier-to-use version of Tiled based on the Qt framework.
+This decision was made as the Qt framework has a greater feature set than is
 offered by the standard Java libraries.
 
 
@@ -60,7 +60,7 @@ Installing
 -------------------------------------------------------------------------------
 
 To install Tiled, run `make install` from the terminal. By default, Tiled will
-install itself to `/usr/local`. 
+install itself to `/usr/local`.
 
 The installation prefix can be changed when running qmake, or by changing the
 install root when running `make install`. For example, to use an installation
