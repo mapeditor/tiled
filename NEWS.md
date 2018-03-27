@@ -7,6 +7,7 @@
 * macOS: Fixed eye/lock icon display in Layers view
 * Re-enabled Space for toggling layer visibility
 * Migrate properties set on tile collision layer to the tile (#1912)
+* Don't reset stamp brush state when pressing Alt
 * Automapping: Apply rules to selected area when there is one
 * Windows and Linux: Updated builds to Qt 5.10.1
 * Linux: Indicate Tiled can open multiple files at once in desktop file
