@@ -403,6 +403,8 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
             w.writeAttribute(QLatin1String("id"), QString::number(tile->id()));
             if (!tile->type().isEmpty())
                 w.writeAttribute(QLatin1String("type"), tile->type());
+            if (tile->scaleFactor() != 1.0)
+                w.writeAttribute(QLatin1String("scalefactor"), QString::number(tile->scaleFactor()));
             if (tile->terrain() != 0xFFFFFFFF)
                 w.writeAttribute(QLatin1String("terrain"), makeTerrainAttribute(tile));
             if (tile->probability() != 1.0)

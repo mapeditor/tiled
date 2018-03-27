@@ -68,6 +68,7 @@
 #include <QDebug>
 #include <QKeyEvent>
 #include <QMessageBox>
+#include "changetilescalefactor.h"
 
 namespace Tiled {
 namespace Internal {
@@ -824,6 +825,9 @@ void PropertyBrowser::addTileProperties()
     addProperty(WidthProperty, QVariant::Int, tr("Width"), groupProperty)->setEnabled(false);
     addProperty(HeightProperty, QVariant::Int, tr("Height"), groupProperty)->setEnabled(false);
 
+    QtVariantProperty *scaleFactorProperty =  addProperty(TileScaleFactorProperty, QVariant::Double, tr("ScaleFactor"), groupProperty);
+    scaleFactorProperty->setEnabled(mTilesetDocument);
+
     QtVariantProperty *probabilityProperty = addProperty(TileProbabilityProperty,
                                                          QVariant::Double,
                                                          tr("Probability"),
@@ -1278,6 +1282,11 @@ void PropertyBrowser::applyTileValue(PropertyId id, const QVariant &val)
                                                   mTilesetDocument->selectedTiles(),
                                                   val.toFloat()));
         break;
+    case TileScaleFactorProperty:
+        undoStack->push(new ChangeTileScaleFactor(mTilesetDocument,
+                                                  mTilesetDocument->selectedTiles(),
+                                                  val.toFloat()));
+        break;
     case ImageSourceProperty: {
         const FilePath filePath = val.value<FilePath>();
         undoStack->push(new ChangeTileImageSource(mTilesetDocument,
@@ -1663,6 +1672,7 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[TypeProperty]->setValue(tile->type());
         mIdToProperty[WidthProperty]->setValue(tileSize.width());
         mIdToProperty[HeightProperty]->setValue(tileSize.height());
+        mIdToProperty[TileScaleFactorProperty]->setValue(tile->scaleFactor());
         mIdToProperty[TileProbabilityProperty]->setValue(tile->probability());
         if (QtVariantProperty *imageSourceProperty = mIdToProperty.value(ImageSourceProperty))
             imageSourceProperty->setValue(QVariant::fromValue(FilePath { tile->imageSource() }));

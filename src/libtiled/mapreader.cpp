@@ -427,6 +427,9 @@ void MapReaderPrivate::readTilesetTile(Tileset &tileset)
     Tile *tile = tileset.findOrCreateTile(id);
 
     tile->setType(atts.value(QLatin1String("type")).toString());
+    QStringRef scaleFactor = atts.value(QLatin1String("scalefactor"));
+    if(!scaleFactor.isEmpty())
+        tile->setScaleFactor(scaleFactor.toDouble());
 
     // Read tile quadrant terrain ids
     QString terrain = atts.value(QLatin1String("terrain")).toString();
