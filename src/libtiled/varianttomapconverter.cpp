@@ -294,9 +294,22 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
         QVariantMap objectGroupVariant = tileVar[QLatin1String("objectgroup")].toMap();
         if (!objectGroupVariant.isEmpty()) {
             ObjectGroup *objectGroup = toObjectGroup(objectGroupVariant);
-            if (objectGroup)
+            if (objectGroup) {
                 objectGroup->setProperties(extractProperties(objectGroupVariant));
-            tile->setObjectGroup(objectGroup);
+
+                // Migrate properties from the object group to the tile. Since
+                // Tiled 1.1, it is no longer possible to edit the properties
+                // of this implicit object group, but some users may have set
+                // them in previous versions.
+                Properties p = objectGroup->properties();
+                if (!p.isEmpty()) {
+                    p.merge(tile->properties());
+                    tile->setProperties(p);
+                    objectGroup->setProperties(Properties());
+                }
+
+                tile->setObjectGroup(objectGroup);
+            }
         }
 
         QVariantList frameList = tileVar[QLatin1String("animation")].toList();

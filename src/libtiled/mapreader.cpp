@@ -460,7 +460,21 @@ void MapReaderPrivate::readTilesetTile(Tileset &tileset)
                                      imageReference.source);
             }
         } else if (xml.name() == QLatin1String("objectgroup")) {
-            tile->setObjectGroup(readObjectGroup());
+            ObjectGroup *objectGroup = readObjectGroup();
+            if (objectGroup) {
+                // Migrate properties from the object group to the tile. Since
+                // Tiled 1.1, it is no longer possible to edit the properties
+                // of this implicit object group, but some users may have set
+                // them in previous versions.
+                Properties p = objectGroup->properties();
+                if (!p.isEmpty()) {
+                    p.merge(tile->properties());
+                    tile->setProperties(p);
+                    objectGroup->setProperties(Properties());
+                }
+
+                tile->setObjectGroup(objectGroup);
+            }
         } else if (xml.name() == QLatin1String("animation")) {
             tile->setFrames(readAnimationFrames());
         } else {
