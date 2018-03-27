@@ -323,6 +323,7 @@ void VariantPropertyManager::uninitializeProperty(QtProperty *property)
 {
     mValues.remove(property);
     mStringAttributes.remove(property);
+    m_alignValues.remove(property);
 
     QtProperty *alignH = m_propertyToAlignH.value(property);
     if (alignH) {
