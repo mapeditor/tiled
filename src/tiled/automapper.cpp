@@ -283,6 +283,9 @@ bool AutoMapper::setupRuleMapTileLayers()
     if (mInputRules.isEmpty())
         error += tr("No input_<name> layer found!") + QLatin1Char('\n');
 
+    if (mTouchedTileLayers.isEmpty() && mTouchedObjectGroups.isEmpty())
+        error += tr("No output_<name> layer found!") + QLatin1Char('\n');
+
     // no need to check for mInputNotRules.size() == 0 here.
     // these layers are not necessary.
 
