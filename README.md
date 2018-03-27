@@ -3,14 +3,14 @@ Tiled Map Editor - http://www.mapeditor.org/
 About Tiled
 -------------------------------------------------------------------------------
 
-Tiled is a general purpose tile map editor. It is meant to be used for editing
-maps of any tile-based game, be it an RPG, a platformer or a Breakout clone.
+Tiled is a general purpose tile map editor for all tile-based games, such as
+RPGs, platformers or Breakout clones.
 
-Tiled is very flexible, for example there are no restrictions on map size, tile
-size or the number of layers or tiles. Also, it allows arbitrary properties to
-be set on the map, its layers, the tiles or on the objects. Its map format
-(TMX) is relatively easy to understand and allows a map to use multiple
-tilesets while also allowing each tileset to grow or shrink as necessary later.
+Tiled is highly flexible. It can be used to create maps of any size, with no
+restrictions on tile size, or the number of layers or tiles that can be used.
+Maps, layers, tiles, and objects can all be assigned arbitrary properties.
+Tiled's map format (TMX) is easy to understand and allows multiple tilesets to
+be used in any map. Tilesets can be modified at any time.
 
 [![Build Status](https://travis-ci.org/bjorn/tiled.svg?branch=master)](https://travis-ci.org/bjorn/tiled)
 [![Build status](https://ci.appveyor.com/api/projects/status/ceb79jn5cf99y3qd/branch/master?svg=true)](https://ci.appveyor.com/project/bjorn/tiled/branch/master)
@@ -21,59 +21,61 @@ tilesets while also allowing each tileset to grow or shrink as necessary later.
 About the Qt Version
 -------------------------------------------------------------------------------
 
-Tiled was originally written in Java. In 2008 the Qt version was started with
-the goal to replace the Java version with a faster, better looking and even
-easier to use map editor. Qt offered many opportunities to improve the
-performance and usability of the user interface, and has a more extensive
-feature set than the standard Java libraries.
+Tiled was originally written in Java. In 2008, work began to develop a faster,
+better looking, and easier-to-use version of Tiled based on the Qt framework.
+This decision was made as the Qt framework has a greater feature set than is
+offered by the standard Java libraries.
+
 
 Compiling
 -------------------------------------------------------------------------------
 
-Make sure the Qt (>= 5.6) development libraries are installed:
+Before you can compile Tiled, you must ensure the Qt (>= 5.6) development
+libraries have been installed:
 
-* In Ubuntu/Debian: `apt-get install qt5-default qttools5-dev-tools zlib1g-dev`
-* In Fedora:        `sudo dnf builddep tiled`
-* In Arch Linux:    `pacman -S qt`
-* In Mac OS X with [Homebrew](http://brew.sh/):
+* On Ubuntu/Debian: `apt-get install qt5-default qttools5-dev-tools zlib1g-dev`
+* On Fedora:        `sudo dnf builddep tiled`
+* On Arch Linux:    `pacman -S qt`
+* On Mac OS X with [Homebrew](http://brew.sh/):
   + `brew install qt5`
   + `brew link qt5 --force`
-* Or you can download Qt from: https://www.qt.io/download-open-source/
+* Alternatively, you can [download Qt here](https://www.qt.io/download-qt-installer)
 
-Now you can compile by running:
+Next, compile by running:
 
     $ qmake (or qmake-qt5 on some systems)
     $ make
 
-To do a shadow build, you can run qmake from a different directory and refer
-it to tiled.pro, for example:
+To perform a shadow build, run qmake from a different directory and refer
+it to tiled.pro. For example:
 
     $ mkdir build
     $ cd build
     $ qmake ../tiled.pro
     $ make
 
-You can now simply run Tiled using bin/tiled.
+You can now run Tiled using the executable in `bin/tiled`.
 
 Installing
 -------------------------------------------------------------------------------
 
-For installing Tiled you can run `make install`. By default Tiled will install
-to `/usr/local`. You can change this prefix when running qmake, and/or you can
-change the install root when running make install, as follows:
+To install Tiled, run `make install` from the terminal. By default, Tiled will
+install itself to `/usr/local`.
 
-Use `/usr` instead of `/usr/local`:
+The installation prefix can be changed when running qmake, or by changing the
+install root when running `make install`. For example, to use an installation
+prefix of  `/usr` instead of `/usr/local`:
 
     $ qmake -r PREFIX=/usr
 
-(Recursive needed when it's not the first time that you're running qmake, since
-this affects nested pro files)
+Note: The -r recursive flag is required if you've run qmake before, as this
+command will affect nested pro files)
 
-Install to some packaging directory:
+To install Tiled to a packaging directory:
 
     $ make install INSTALL_ROOT=/tmp/tiled-pkg
 
-By default, Tiled and its plugins are compiled with an Rpath so that they can
-find the shared libtiled library when running it straight after compile. When
-packaging for a distribution, this Rpath should generally be disabled by
+By default, Tiled and its plugins are compiled with an Rpath that allows them
+to find the shared *libtiled* library immediately after being compiled. When
+packaging a Tiled map for distribution, the Rpath should be disabled by
 appending `RPATH=no` to the qmake command.
