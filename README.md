@@ -39,7 +39,7 @@ libraries have been installed:
 * On Mac OS X with [Homebrew](http://brew.sh/):
   + `brew install qt5`
   + `brew link qt5 --force`
-* Alternatively, you can [download Qt here](https://www.qt.io/download-open-source/)
+* Alternatively, you can [download Qt here](https://www.qt.io/download-qt-installer)
 
 Next, compile by running:
 
