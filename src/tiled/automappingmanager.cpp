@@ -52,23 +52,26 @@ void AutomappingManager::autoMap()
         return;
 
     Map *map = mMapDocument->map();
+    QRegion region = mMapDocument->selectedArea();
 
-    QRect bounds;
+    if (region.isEmpty()) {
+        if (map->infinite()) {
+            LayerIterator iterator(map);
 
-    if (map->infinite()) {
-        LayerIterator iterator(map);
-
-        while (Layer *layer = iterator.next()) {
-            if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer))
-                bounds = bounds.united(tileLayer->bounds());
+            QRect bounds;
+            while (Layer *layer = iterator.next()) {
+                if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer))
+                    bounds = bounds.united(tileLayer->bounds());
+            }
+            region = bounds;
+        } else {
+            int w = map->width();
+            int h = map->height();
+            region = QRect(0, 0, w, h);
         }
-    } else {
-        int w = map->width();
-        int h = map->height();
-        bounds = QRect(0, 0, w, h);
     }
 
-    autoMapInternal(bounds, nullptr);
+    autoMapInternal(region, nullptr);
 }
 
 void AutomappingManager::autoMap(const QRegion &where, Layer *touchedLayer)

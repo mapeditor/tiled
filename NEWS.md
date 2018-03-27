@@ -1,3 +1,17 @@
+### Tiled 1.1.4 (28 March 2018)
+
+* Fixed exporting of external tilesets to JSON or TSX formats
+* Fixed problem with embedding or exporting tilesets with Wang sets
+* Fixed tiles placed by the terrain tool being considered different (#1913)
+* Fixed text alignment values appearing at random in Properties view (#1767)
+* macOS: Fixed eye/lock icon display in Layers view
+* Re-enabled Space for toggling layer visibility
+* Migrate properties set on tile collision layer to the tile (#1912)
+* Automapping: Apply rules to selected area when there is one
+* Windows and Linux: Updated builds to Qt 5.10.1
+* Linux: Indicate Tiled can open multiple files at once in desktop file
+* Lowered the minimum supported version of Qt to 5.5
+
 ### Tiled 1.1.3 (6 March 2018)
 
 * Fixed crash when removing a tileset referenced by multiple objects

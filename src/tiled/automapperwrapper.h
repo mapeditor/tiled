@@ -43,7 +43,7 @@ class AutoMapperWrapper : public QUndoCommand
 public:
     AutoMapperWrapper(MapDocument *mapDocument, QVector<AutoMapper*> autoMapper,
                       QRegion *where);
-    ~AutoMapperWrapper();
+    ~AutoMapperWrapper() override;
 
     void undo() override;
     void redo() override;

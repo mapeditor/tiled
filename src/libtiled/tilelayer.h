@@ -80,31 +80,29 @@ public:
     {
         return _tileset == other._tileset
                 && _tileId == other._tileId
-                && _flags == other._flags;
+                && (_flags & VisualFlags) == (other._flags & VisualFlags);
     }
 
     bool operator != (const Cell &other) const
     {
-        return _tileset != other._tileset
-                || _tileId != other._tileId
-                || _flags != other._flags;
+        return !(*this == other);
     }
 
     Tileset *tileset() const { return _tileset; }
     int tileId() const { return _tileId; }
 
-    bool flippedHorizontally() const { return f._flippedHorizontally; }
-    bool flippedVertically() const { return f._flippedVertically; }
-    bool flippedAntiDiagonally() const { return f._flippedAntiDiagonally; }
-    bool rotatedHexagonal120() const { return f._rotatedHexagonal120; }
+    bool flippedHorizontally() const { return _flags & FlippedHorizontally; }
+    bool flippedVertically() const { return _flags & FlippedVertically; }
+    bool flippedAntiDiagonally() const { return _flags & FlippedAntiDiagonally; }
+    bool rotatedHexagonal120() const { return _flags & RotatedHexagonal120; }
 
-    void setFlippedHorizontally(bool v) { f._flippedHorizontally = v; }
-    void setFlippedVertically(bool v) { f._flippedVertically = v; }
-    void setFlippedAntiDiagonally(bool v) { f._flippedAntiDiagonally = v; }
-    void setRotatedHexagonal120(bool v) { f._rotatedHexagonal120 = v; }
+    void setFlippedHorizontally(bool v) { v ? _flags |= FlippedHorizontally : _flags &= ~FlippedHorizontally; }
+    void setFlippedVertically(bool v) { v ? _flags |= FlippedVertically : _flags &= ~FlippedVertically; }
+    void setFlippedAntiDiagonally(bool v) { v ? _flags |= FlippedAntiDiagonally : _flags &= ~FlippedAntiDiagonally; }
+    void setRotatedHexagonal120(bool v) { v ? _flags |= RotatedHexagonal120 : _flags &= ~RotatedHexagonal120; }
 
-    bool checked() const { return f._checked; }
-    void setChecked(bool checked) { f._checked = checked; }
+    bool checked() const { return _flags & Checked; }
+    void setChecked(bool checked) { checked ? _flags |= Checked : _flags &= ~Checked; }
 
     Tile *tile() const;
     void setTile(Tile *tile);
@@ -112,21 +110,18 @@ public:
     bool refersTile(const Tile *tile) const;
 
 private:
+    enum Flags {
+        FlippedHorizontally     = 0x01,
+        FlippedVertically       = 0x02,
+        FlippedAntiDiagonally   = 0x04,
+        RotatedHexagonal120     = 0x08,
+        Checked                 = 0x10,
+        VisualFlags             = FlippedHorizontally | FlippedVertically | FlippedAntiDiagonally | RotatedHexagonal120
+    };
+
     Tileset *_tileset;
     int _tileId;
-
-    struct Flags {
-        bool _flippedHorizontally : 1;
-        bool _flippedVertically : 1;
-        bool _flippedAntiDiagonally : 1;
-        bool _rotatedHexagonal120 : 1;
-        bool _checked : 1;
-    };
-
-    union {
-        unsigned _flags;
-        Flags f;
-    };
+    int _flags;
 };
 
 inline Tile *Cell::tile() const
