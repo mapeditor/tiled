@@ -69,7 +69,8 @@ signals:
 
 public slots:
     /**
-     * This triggers an automapping on the whole current map document.
+     * This triggers an automapping on the current map document. Starts with
+     * the currently selected area, or the entire map if there is no selection.
      */
     void autoMap();
 
