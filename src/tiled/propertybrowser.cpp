@@ -656,6 +656,7 @@ void PropertyBrowser::addMapObjectProperties()
         addProperty(WidthProperty, QVariant::Double, tr("Width"), groupProperty);
         addProperty(HeightProperty, QVariant::Double, tr("Height"), groupProperty);
     }
+    addProperty(TileScaleFactorProperty, QVariant::Double, tr("ScaleFactor"), groupProperty)->setEnabled(false);
 
     bool isPoint = mapObject->shape() == MapObject::Point;
     addProperty(RotationProperty, QVariant::Double, tr("Rotation"), groupProperty)->setEnabled(!isPoint);
@@ -1585,7 +1586,7 @@ void PropertyBrowser::updateProperties()
             mIdToProperty[WidthProperty]->setValue(mapObject->width());
             mIdToProperty[HeightProperty]->setValue(mapObject->height());
         }
-
+        mIdToProperty[TileScaleFactorProperty]->setValue(mapObject->cell().tile()->scaleFactor());
         mIdToProperty[RotationProperty]->setValue(mapObject->rotation());
 
         if (flags & ObjectHasTile) {
