@@ -5,7 +5,7 @@ author: Thorbjørn Lindeijer
 tags: release
 ---
 
-This release bring a host of bug fixes and some translation updates. Upgrading is recommended!
+This release brings a host of bug fixes and some translation updates. Upgrading is recommended!
 
 ### Changelog
 
