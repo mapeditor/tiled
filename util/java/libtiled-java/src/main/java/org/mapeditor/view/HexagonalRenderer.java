@@ -2,9 +2,9 @@
  * #%L
  * This file is part of libtiled-java.
  * %%
- * Copyright (C) 2004 - 2017 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright (C) 2004 - 2017 Adam Turk <aturk@biggeruniverse.com>
- * Copyright (C) 2016 - 2017 Mike Thomas <mikepthomas@outlook.com>
+ * Copyright (C) 2004 - 2018 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright (C) 2004 - 2018 Adam Turk <aturk@biggeruniverse.com>
+ * Copyright (C) 2016 - 2018 Mike Thomas <mikepthomas@outlook.com>
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -81,13 +81,17 @@ import org.mapeditor.core.Polygon;
  * @author Thorbjørn Lindeijer
  * @author Adam Turk
  * @author Mike Thomas
- * @version 1.0.2
+ * @version 1.1.3
  */
 public class HexagonalRenderer implements MapRenderer {
 
+    /** Constant <code>ALIGN_TOP=1</code> */
     public static final int ALIGN_TOP = 1;
+    /** Constant <code>ALIGN_BOTTOM=2</code> */
     public static final int ALIGN_BOTTOM = 2;
+    /** Constant <code>ALIGN_RIGHT=3</code> */
     public static final int ALIGN_RIGHT = 3;
+    /** Constant <code>ALIGN_LEFT=4</code> */
     public static final int ALIGN_LEFT = 4;
 
     private final Map map;
