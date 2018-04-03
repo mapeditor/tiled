@@ -171,7 +171,7 @@ QRegion TileLayer::region(std::function<bool (const Cell &)> condition) const
 void Tiled::TileLayer::setCell(int x, int y, const Cell &cell)
 {
     if (!findChunk(x, y)) {
-        if (cell == mEmptyCell) {
+        if (cell == mEmptyCell && !cell.checked()) {
             return;
         } else {
             mBounds = mBounds.united(QRect(x - (x & CHUNK_MASK),
