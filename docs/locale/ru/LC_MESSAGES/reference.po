@@ -8,33 +8,46 @@ msgstr ""
 "Project-Id-Version: Tiled 1.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-12-21 14:31+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2018-04-06 09:24+0000\n"
+"Last-Translator: Tripolis777 <tripolis777@gmail.com>\n"
+"Language-Team: Russian <https://hosted.weblate.org/projects/tiled/reference/"
+"ru/>\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<="
+"4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 2.20\n"
 
 #: ../../reference/json-map-format.rst:2
 msgid "JSON Map Format"
-msgstr ""
+msgstr "Формат JSON карты"
 
 #: ../../reference/json-map-format.rst:4
+#, fuzzy
 msgid "Tiled can export maps as JSON files. To do so, simply select \"File > Export As\" and select the JSON file type. You can export json from the command line with the ``--export-map`` option."
 msgstr ""
+"Tiled умеет экспортировать карты в JSON файлы. Для этого необходимо в меню "
+"выбрать \"Файл > Экспортировать как\" и выбрать тип фала JSON. Вы так же "
+"можете экспортировать свою карту в JSON формат из консоли, используя "
+"параметр ``--export-map``."
 
 #: ../../reference/json-map-format.rst:8
+#, fuzzy
 msgid "The fields found in the JSON format differ slightly from those in the :doc:`tmx-map-format`, but the meanings should remain the same."
 msgstr ""
+"Несмотря на то, что имена полей, используемые в формате JSON незначительно "
+"отличаются от тех, что в :doc:`tmx-map-format`, их смысл остается неизменным."
 
 #: ../../reference/json-map-format.rst:11
+#, fuzzy
 msgid "The following fields can be found in a Tiled JSON file:"
-msgstr ""
+msgstr "Данные поля можно встретить в JSON файле Tiled:"
 
 #: ../../reference/json-map-format.rst:14
 msgid "Map"
-msgstr ""
+msgstr "Карта"
 
 #: ../../reference/json-map-format.rst:17
 #: ../../reference/json-map-format.rst:82
@@ -43,7 +56,7 @@ msgstr ""
 #: ../../reference/json-map-format.rst:453
 #: ../../reference/json-map-format.rst:493
 msgid "Field"
-msgstr ""
+msgstr "Поле"
 
 #: ../../reference/json-map-format.rst:17
 #: ../../reference/json-map-format.rst:82
@@ -52,7 +65,7 @@ msgstr ""
 #: ../../reference/json-map-format.rst:453
 #: ../../reference/json-map-format.rst:493
 msgid "Type"
-msgstr ""
+msgstr "Тип"
 
 #: ../../reference/json-map-format.rst:17
 #: ../../reference/json-map-format.rst:82
@@ -61,11 +74,11 @@ msgstr ""
 #: ../../reference/json-map-format.rst:453
 #: ../../reference/json-map-format.rst:493
 msgid "Description"
-msgstr ""
+msgstr "Описание"
 
 #: ../../reference/json-map-format.rst:19
 msgid "backgroundcolor"
-msgstr ""
+msgstr "backgroundcolor"
 
 #: ../../reference/json-map-format.rst:19
 #: ../../reference/json-map-format.rst:29
@@ -82,17 +95,18 @@ msgstr ""
 #: ../../reference/json-map-format.rst:417
 #: ../../reference/json-map-format.rst:495
 msgid "string"
-msgstr ""
+msgstr "string"
 
 #: ../../reference/json-map-format.rst:19
+#, fuzzy
 msgid "Hex-formatted color (#RRGGBB or #AARRGGBB) (optional)"
-msgstr ""
+msgstr "Hex-формат цвета (#RRGGBB или #AARRGGBB) (опционально)"
 
 #: ../../reference/json-map-format.rst:21
 #: ../../reference/json-map-format.rst:88
 #: ../../reference/json-map-format.rst:166
 msgid "height"
-msgstr ""
+msgstr "height"
 
 #: ../../reference/json-map-format.rst:21
 #: ../../reference/json-map-format.rst:27
@@ -121,15 +135,16 @@ msgstr ""
 #: ../../reference/json-map-format.rst:415
 #: ../../reference/json-map-format.rst:497
 msgid "int"
-msgstr ""
+msgstr "int"
 
 #: ../../reference/json-map-format.rst:21
+#, fuzzy
 msgid "Number of tile rows"
-msgstr ""
+msgstr "Количество строк в тайле"
 
 #: ../../reference/json-map-format.rst:23
 msgid "infinite"
-msgstr ""
+msgstr "infinite"
 
 #: ../../reference/json-map-format.rst:23
 #: ../../reference/json-map-format.rst:102
@@ -137,16 +152,17 @@ msgstr ""
 #: ../../reference/json-map-format.rst:172
 #: ../../reference/json-map-format.rst:186
 msgid "bool"
-msgstr ""
+msgstr "bool"
 
 #: ../../reference/json-map-format.rst:23
+#, fuzzy
 msgid "Whether the map has infinite dimensions"
-msgstr ""
+msgstr "Будет ли карта имеет бесконечные размеры"
 
 #: ../../reference/json-map-format.rst:25
 #: ../../reference/json-map-format.rst:90
 msgid "layers"
-msgstr ""
+msgstr "layers"
 
 #: ../../reference/json-map-format.rst:25
 #: ../../reference/json-map-format.rst:40
@@ -156,34 +172,34 @@ msgstr ""
 #: ../../reference/json-map-format.rst:402
 #: ../../reference/json-map-format.rst:455
 msgid "array"
-msgstr ""
+msgstr "array"
 
 #: ../../reference/json-map-format.rst:25
 msgid "Array of :ref:`layers <json-layer>`"
-msgstr ""
+msgstr "Массив :ref:`layers <json-layer>`"
 
 #: ../../reference/json-map-format.rst:27
 msgid "nextobjectid"
-msgstr ""
+msgstr "nextobjectid"
 
 #: ../../reference/json-map-format.rst:27
 msgid "Auto-increments for each placed object"
-msgstr ""
+msgstr "Счетчик, автоматически увеличивающийся за каждый размещенный объект"
 
 #: ../../reference/json-map-format.rst:29
 msgid "orientation"
-msgstr ""
+msgstr "orientation"
 
 #: ../../reference/json-map-format.rst:29
 msgid "``orthogonal``, ``isometric``, ``staggered`` or ``hexagonal``"
-msgstr ""
+msgstr "``orthogonal``, ``isometric``, ``staggered`` или ``hexagonal``"
 
 #: ../../reference/json-map-format.rst:32
 #: ../../reference/json-map-format.rst:98
 #: ../../reference/json-map-format.rst:178
 #: ../../reference/json-map-format.rst:396
 msgid "properties"
-msgstr ""
+msgstr "properties"
 
 #: ../../reference/json-map-format.rst:32
 #: ../../reference/json-map-format.rst:94
@@ -197,233 +213,251 @@ msgstr ""
 #: ../../reference/json-map-format.rst:410
 #: ../../reference/json-map-format.rst:412
 msgid "object"
-msgstr ""
+msgstr "object"
 
 #: ../../reference/json-map-format.rst:32
 #: ../../reference/json-map-format.rst:178
 #: ../../reference/json-map-format.rst:182
 #: ../../reference/json-map-format.rst:396
 #: ../../reference/json-map-format.rst:398
+#, fuzzy
 msgid "String key-value pairs"
-msgstr ""
+msgstr "Пара строковых ключ-значения"
 
 #: ../../reference/json-map-format.rst:34
 msgid "renderorder"
-msgstr ""
+msgstr "renderorder"
 
 #: ../../reference/json-map-format.rst:34
+#, fuzzy
 msgid "Rendering direction (orthogonal maps only)"
-msgstr ""
+msgstr "Направления отрисовки (только для ортогональных карт)"
 
 #: ../../reference/json-map-format.rst:36
 msgid "tiledversion"
-msgstr ""
+msgstr "tiledversion"
 
 #: ../../reference/json-map-format.rst:36
+#, fuzzy
 msgid "The Tiled version used to save the file"
-msgstr ""
+msgstr "Версия Tiled, в которой был сохранен файл"
 
 #: ../../reference/json-map-format.rst:38
 #: ../../reference/json-map-format.rst:406
 msgid "tileheight"
-msgstr ""
+msgstr "tileheight"
 
 #: ../../reference/json-map-format.rst:38
+#, fuzzy
 msgid "Map grid height"
-msgstr ""
+msgstr "Высота карты сетки"
 
 #: ../../reference/json-map-format.rst:40
 msgid "tilesets"
-msgstr ""
+msgstr "tilesets"
 
 #: ../../reference/json-map-format.rst:40
 msgid "Array of :ref:`tilesets <json-tileset>`"
-msgstr ""
+msgstr "Массив :ref:`tilesets <json-tileset>`"
 
 #: ../../reference/json-map-format.rst:42
 #: ../../reference/json-map-format.rst:415
 msgid "tilewidth"
-msgstr ""
+msgstr "tilewidth"
 
 #: ../../reference/json-map-format.rst:42
+#, fuzzy
 msgid "Map grid width"
-msgstr ""
+msgstr "Ширина карты сетки"
 
 #: ../../reference/json-map-format.rst:44
 #: ../../reference/json-map-format.rst:100
 #: ../../reference/json-map-format.rst:184
 #: ../../reference/json-map-format.rst:417
 msgid "type"
-msgstr ""
+msgstr "type"
 
 #: ../../reference/json-map-format.rst:44
 msgid "``map`` (since 1.0)"
-msgstr ""
+msgstr "``map`` (начиная с версии 1.0)"
 
 #: ../../reference/json-map-format.rst:46
 msgid "version"
-msgstr ""
+msgstr "version"
 
 #: ../../reference/json-map-format.rst:46
 msgid "number"
-msgstr ""
+msgstr "number"
 
 #: ../../reference/json-map-format.rst:46
 msgid "The JSON format version"
-msgstr ""
+msgstr "Версия формата JSON"
 
 #: ../../reference/json-map-format.rst:48
 #: ../../reference/json-map-format.rst:104
 #: ../../reference/json-map-format.rst:188
 msgid "width"
-msgstr ""
+msgstr "width"
 
 #: ../../reference/json-map-format.rst:48
+#, fuzzy
 msgid "Number of tile columns"
-msgstr ""
+msgstr "Количество колонок в тайле"
 
 #: ../../reference/json-map-format.rst:52
 msgid "Map Example"
-msgstr ""
+msgstr "Пример карты"
 
 #: ../../reference/json-map-format.rst:79
 msgid "Layer"
-msgstr ""
+msgstr "Слой"
 
 #: ../../reference/json-map-format.rst:84
 msgid "data"
-msgstr ""
+msgstr "data"
 
 #: ../../reference/json-map-format.rst:84
 msgid "Array of GIDs. ``tilelayer`` only."
-msgstr ""
+msgstr "Массив GIDs. Только для ``tilelayer``."
 
 #: ../../reference/json-map-format.rst:86
 msgid "draworder"
-msgstr ""
+msgstr "draworder"
 
 #: ../../reference/json-map-format.rst:86
 msgid "``topdown`` (default) or ``index``. ``objectgroup`` only."
-msgstr ""
+msgstr "``topdown`` (по умолчанию) или ``index``. Только для ``objectgroup``."
 
 #: ../../reference/json-map-format.rst:88
+#, fuzzy
 msgid "Row count. Same as map height for fixed-size maps."
 msgstr ""
+"Количество строк. Тоже самое, что и высота карты для карт с фиксированным "
+"размером."
 
 #: ../../reference/json-map-format.rst:90
+#, fuzzy
 msgid "Array of :ref:`layers <json-layer>`. ``group`` on"
-msgstr ""
+msgstr "Массив :ref:`layers <json-layer>`. Для``group``"
 
 #: ../../reference/json-map-format.rst:92
 #: ../../reference/json-map-format.rst:170
 #: ../../reference/json-map-format.rst:394
 #: ../../reference/json-map-format.rst:495
 msgid "name"
-msgstr ""
+msgstr "name"
 
 #: ../../reference/json-map-format.rst:92
+#, fuzzy
 msgid "Name assigned to this layer"
-msgstr ""
+msgstr "Имя, принадлежащее данному слою"
 
 #: ../../reference/json-map-format.rst:94
 msgid "objects"
-msgstr ""
+msgstr "objects"
 
 #: ../../reference/json-map-format.rst:94
 msgid "Array of :ref:`objects <json-object>`. ``objectgroup`` only."
-msgstr ""
+msgstr "Массив :ref:`objects <json-object>`. Только для ``objectgroup``."
 
 #: ../../reference/json-map-format.rst:96
 msgid "opacity"
-msgstr ""
+msgstr "opacity"
 
 #: ../../reference/json-map-format.rst:96
 #: ../../reference/json-map-format.rst:180
 msgid "float"
-msgstr ""
+msgstr "float"
 
 #: ../../reference/json-map-format.rst:96
 msgid "Value between 0 and 1"
-msgstr ""
+msgstr "Значение от 0 до 1"
 
 #: ../../reference/json-map-format.rst:98
+#, fuzzy
 msgid "string key-value pairs."
-msgstr ""
+msgstr "строка, содержащая пары ключ-значения"
 
 #: ../../reference/json-map-format.rst:100
 msgid "``tilelayer``, ``objectgroup``, ``imagelayer`` or ``group``"
-msgstr ""
+msgstr "``tilelayer``, ``objectgroup``, ``imagelayer`` или ``group``"
 
 #: ../../reference/json-map-format.rst:102
 #: ../../reference/json-map-format.rst:186
 msgid "visible"
-msgstr ""
+msgstr "visible"
 
 #: ../../reference/json-map-format.rst:102
+#, fuzzy
 msgid "Whether layer is shown or hidden in editor"
-msgstr ""
+msgstr "Определяет, будет слой виден или скрыт в редакторе"
 
 #: ../../reference/json-map-format.rst:104
+#, fuzzy
 msgid "Column count. Same as map width for fixed-size maps."
 msgstr ""
+"Количество столбцов. Тоже, что и ширина карты для карт фиксированного "
+"размера."
 
 #: ../../reference/json-map-format.rst:106
 #: ../../reference/json-map-format.rst:190
 msgid "x"
-msgstr ""
+msgstr "x"
 
 #: ../../reference/json-map-format.rst:106
 msgid "Horizontal layer offset in tiles. Always 0."
-msgstr ""
+msgstr "Горизонтальное смещение слоя в тайлах. Всегда равно 0."
 
 #: ../../reference/json-map-format.rst:108
 #: ../../reference/json-map-format.rst:192
 msgid "y"
-msgstr ""
+msgstr "y"
 
 #: ../../reference/json-map-format.rst:108
 msgid "Vertical layer offset in tiles. Always 0."
-msgstr ""
+msgstr "Вертикальное смещение слоя в тайлах. Всегда равно 0."
 
 #: ../../reference/json-map-format.rst:112
 msgid "Tile Layer Example"
-msgstr ""
+msgstr "Пример Tile слоя"
 
 #: ../../reference/json-map-format.rst:133
+#, fuzzy
 msgid "Object Layer Example"
-msgstr ""
+msgstr "Пример слоя Объекта"
 
 #: ../../reference/json-map-format.rst:157
 msgid "Object"
-msgstr ""
+msgstr "Объект"
 
 #: ../../reference/json-map-format.rst:162
 msgid "ellipse"
-msgstr ""
+msgstr "ellipse"
 
 #: ../../reference/json-map-format.rst:162
+#, fuzzy
 msgid "Used to mark an object as an ellipse"
-msgstr ""
+msgstr "Используется, чтобы пометить объект как эллипс"
 
 #: ../../reference/json-map-format.rst:164
 msgid "gid"
-msgstr ""
+msgstr "gid"
 
 #: ../../reference/json-map-format.rst:164
 msgid "GID, only if object comes from a Tilemap"
-msgstr ""
+msgstr "GID, используется только если объект приходит от Tilemap"
 
 #: ../../reference/json-map-format.rst:166
 msgid "Height in pixels. Ignored if using a gid."
-msgstr ""
+msgstr "Высота в пикселях. Игнорируется, если используется gid."
 
 #: ../../reference/json-map-format.rst:168
 msgid "id"
-msgstr ""
+msgstr "id"
 
 #: ../../reference/json-map-format.rst:168
 msgid "Incremental id - unique across all objects"
-msgstr ""
+msgstr "Инкрементный идентификатор - уникальный для всех объектов"
 
 #: ../../reference/json-map-format.rst:170
 msgid "String assigned to name field in editor"
