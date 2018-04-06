@@ -51,7 +51,7 @@ matrix:
         - qbs setup-toolchains --detect
         - qbs setup-qt --detect
         - qbs config defaultProfile qt-5-10-1
-        - qbs install --install-root Tiled/usr release products.Tiled.version:$TILED_VERSION
+        - qbs install --install-root Tiled/usr config:release projects.Tiled.version:$TILED_VERSION
         - cp LICENSE* COPYING *md Tiled/
       after_success:
         - wget -c "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" -O linuxdeployqt
@@ -117,7 +117,7 @@ matrix:
         - qbs setup-qt /usr/local/opt/qt/bin/qmake qt-brew
         - qbs config profiles.qt-brew.baseProfile xcode-macosx-x86_64
         - qbs config defaultProfile qt-brew
-        - qbs install --install-root install release projects.Tiled.version:$TILED_VERSION
+        - qbs install --install-root install config:release projects.Tiled.version:$TILED_VERSION
         - /usr/local/opt/qt/bin/macdeployqt install/Tiled.app
       deploy:
         - provider: script
