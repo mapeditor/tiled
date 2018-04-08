@@ -27,6 +27,7 @@
 #include "createrectangleobjecttool.h"
 #include "createellipseobjecttool.h"
 #include "createpolygonobjecttool.h"
+#include "createtemplatetool.h"
 #include "layermodel.h"
 #include "map.h"
 #include "mapdocument.h"
@@ -77,6 +78,7 @@ TileCollisionDock::TileCollisionDock(QWidget *parent)
     CreateObjectTool *rectangleObjectsTool = new CreateRectangleObjectTool(this);
     CreateObjectTool *ellipseObjectsTool = new CreateEllipseObjectTool(this);
     CreateObjectTool *polygonObjectsTool = new CreatePolygonObjectTool(this);
+    CreateObjectTool *templatesTool = new CreateTemplateTool(this);
 
     QToolBar *toolBar = new QToolBar(this);
     toolBar->setObjectName(QLatin1String("TileCollisionDockToolBar"));
@@ -90,6 +92,7 @@ TileCollisionDock::TileCollisionDock(QWidget *parent)
     toolBar->addAction(mToolManager->registerTool(rectangleObjectsTool));
     toolBar->addAction(mToolManager->registerTool(ellipseObjectsTool));
     toolBar->addAction(mToolManager->registerTool(polygonObjectsTool));
+    toolBar->addAction(mToolManager->registerTool(templatesTool));
 
     auto widget = new QWidget(this);
     auto vertical = new QVBoxLayout(widget);

@@ -23,7 +23,6 @@
 
 #include "documentmanager.h"
 #include "editpolygontool.h"
-#include "mapdocument.h"
 #include "mapdocumentactionhandler.h"
 #include "mapscene.h"
 #include "mapview.h"
@@ -60,7 +59,6 @@ TemplatesDock::TemplatesDock(QWidget *parent)
     , mChooseDirectory(new QAction(this))
     , mUndoAction(new QAction(this))
     , mRedoAction(new QAction(this))
-    , mDummyMapDocument(nullptr)
     , mMapScene(new MapScene(this))
     , mMapView(new MapView(this, MapView::NoStaticContents))
     , mToolManager(new ToolManager(this))
@@ -85,8 +83,6 @@ TemplatesDock::TemplatesDock(QWidget *parent)
     mChooseDirectory->setIcon(QIcon(QLatin1String(":/images/16x16/document-open.png")));
     Utils::setThemeIcon(mChooseDirectory, "document-open");
     connect(mChooseDirectory, &QAction::triggered, this, &TemplatesDock::chooseDirectory);
-
-    connect(this, &TemplatesDock::setTile, mToolManager, &ToolManager::setTile);
 
     toolBar->addAction(mChooseDirectory);
 
@@ -182,10 +178,13 @@ TemplatesDock::~TemplatesDock()
 {
     mMapScene->disableSelectedTool();
 
-    if (mDummyMapDocument) {
+    if (mDummyMapDocument)
         mDummyMapDocument->undoStack()->disconnect(this);
-        delete mDummyMapDocument;
-    }
+}
+
+void TemplatesDock::setTile(Tile *tile)
+{
+    mToolManager->setTile(tile);
 }
 
 void TemplatesDock::openTemplate(const QString &path)
@@ -217,7 +216,7 @@ void TemplatesDock::setTemplate(ObjectTemplate *objectTemplate)
     mObjectTemplate = objectTemplate;
 
     mMapScene->disableSelectedTool();
-    MapDocument *previousDocument = mDummyMapDocument;
+    MapDocumentPtr previousDocument = mDummyMapDocument;
 
     mMapView->setEnabled(objectTemplate);
 
@@ -245,19 +244,19 @@ void TemplatesDock::setTemplate(ObjectTemplate *objectTemplate)
 
         map->addLayer(objectGroup);
 
-        mDummyMapDocument = new MapDocument(map);
+        mDummyMapDocument = MapDocumentPtr::create(map);
         mDummyMapDocument->setCurrentLayer(objectGroup);
 
-        mMapScene->setMapDocument(mDummyMapDocument);
+        mMapScene->setMapDocument(mDummyMapDocument.data());
 
         mMapScene->enableSelectedTool();
-        mToolManager->setMapDocument(mDummyMapDocument);
+        mToolManager->setMapDocument(mDummyMapDocument.data());
 
-        mPropertiesDock->setDocument(mDummyMapDocument);
+        mPropertiesDock->setDocument(mDummyMapDocument.data());
         mDummyMapDocument->setCurrentObject(mObject);
 
-        mUndoAction->setDisabled(true);
-        mRedoAction->setDisabled(true);
+        mUndoAction->setEnabled(false);
+        mRedoAction->setEnabled(false);
 
         connect(mDummyMapDocument->undoStack(), &QUndoStack::indexChanged,
                 this, &TemplatesDock::applyChanges);
@@ -268,10 +267,8 @@ void TemplatesDock::setTemplate(ObjectTemplate *objectTemplate)
         mToolManager->setMapDocument(nullptr);
     }
 
-    if (previousDocument) {
+    if (previousDocument)
         previousDocument->undoStack()->disconnect(this);
-        delete previousDocument;
-    }
 }
 
 void TemplatesDock::checkTileset()
@@ -343,7 +340,7 @@ void TemplatesDock::applyChanges()
 
     checkTileset();
 
-    emit templateEdited(mObjectTemplate);
+    emit TemplateManager::instance()->objectTemplateChanged(mObjectTemplate);
 }
 
 void TemplatesDock::chooseDirectory()
@@ -359,7 +356,7 @@ void TemplatesDock::chooseDirectory()
 void TemplatesDock::focusInEvent(QFocusEvent *event)
 {
     Q_UNUSED(event);
-    mPropertiesDock->setDocument(mDummyMapDocument);
+    mPropertiesDock->setDocument(mDummyMapDocument.data());
 }
 
 void TemplatesDock::focusOutEvent(QFocusEvent *event)
@@ -418,7 +415,7 @@ void TemplatesDock::fixTileset()
                 return;
             }
             // Replace with the first (and only) tileset.
-            mDummyMapDocument->undoStack()->push(new ReplaceTileset(mDummyMapDocument, 0, newTileset));
+            mDummyMapDocument->undoStack()->push(new ReplaceTileset(mDummyMapDocument.data(), 0, newTileset));
 
             emit templateTilesetReplaced();
         }

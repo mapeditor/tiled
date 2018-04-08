@@ -53,6 +53,7 @@
 #include "resizetilelayer.h"
 #include "rotatemapobject.h"
 #include "staggeredrenderer.h"
+#include "templatemanager.h"
 #include "terrain.h"
 #include "tile.h"
 #include "tilelayer.h"
@@ -110,6 +111,9 @@ MapDocument::MapDocument(Map *map, const QString &fileName)
             this, &MapDocument::onMapObjectModelRowsInsertedOrRemoved);
     connect(mMapObjectModel, &QAbstractItemModel::rowsMoved,
             this, &MapDocument::onObjectsMoved);
+
+    connect(TemplateManager::instance(), &TemplateManager::objectTemplateChanged,
+            this, &MapDocument::updateTemplateInstances);
 }
 
 MapDocument::~MapDocument()
