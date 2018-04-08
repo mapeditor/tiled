@@ -182,11 +182,9 @@ TemplatesDock::~TemplatesDock()
     mMapScene->disableSelectedTool();
 
     if (mDummyMapDocument) {
-        disconnect(mDummyMapDocument->undoStack(), &QUndoStack::indexChanged,
-                   this, &TemplatesDock::applyChanges);
+        mDummyMapDocument->undoStack()->disconnect(this);
+        delete mDummyMapDocument;
     }
-
-    delete mDummyMapDocument;
 }
 
 void TemplatesDock::openTemplate(const QString &path)
@@ -270,9 +268,7 @@ void TemplatesDock::setTemplate(ObjectTemplate *objectTemplate)
     }
 
     if (previousDocument) {
-        disconnect(previousDocument->undoStack(), &QUndoStack::indexChanged,
-                   this, &TemplatesDock::checkTileset);
-
+        previousDocument->undoStack()->disconnect(this);
         delete previousDocument;
     }
 }
