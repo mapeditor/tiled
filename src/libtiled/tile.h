@@ -120,6 +120,9 @@ public:
     const QString &type() const;
     void setType(const QString &type);
 
+    qreal scaleFactor() const;
+    void setScaleFactor(qreal scaleFactor);
+
     Terrain *terrainAtCorner(int corner) const;
 
     int cornerTerrainId(int corner) const;
@@ -149,6 +152,7 @@ public:
 
 private:
     int mId;
+    qreal mScaleFactor;
     Tileset *mTileset;
     QPixmap mImage;
     QUrl mImageSource;
@@ -230,6 +234,14 @@ inline int Tile::height() const
 }
 
 /**
+* Returns the scale which the tile gets applied when placed.
+*/
+inline qreal Tile::scaleFactor() const
+{
+    return mScaleFactor;
+}
+
+/**
  * Returns the size of this tile.
  */
 inline QSize Tile::size() const
@@ -254,6 +266,15 @@ inline const QString &Tile::type() const
 inline void Tile::setType(const QString &type)
 {
     mType = type;
+}
+
+/**
+ * Sets the scale factor for this tile
+ * \sa scaleFactor()
+ */
+inline void Tile::setScaleFactor(qreal scaleFactor)
+{
+    mScaleFactor = scaleFactor;
 }
 
 /**

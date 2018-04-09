@@ -157,6 +157,8 @@ QtGuiApplication {
         "changetileobjectgroup.h",
         "changetileprobability.cpp",
         "changetileprobability.h",
+        "changetilescalefactor.cpp",
+        "changetilescalefactor.h",
         "changetileterrain.cpp",
         "changetileterrain.h",
         "changetilewangid.cpp",

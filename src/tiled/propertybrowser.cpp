@@ -68,6 +68,7 @@
 #include <QDebug>
 #include <QKeyEvent>
 #include <QMessageBox>
+#include "changetilescalefactor.h"
 
 namespace Tiled {
 namespace Internal {
@@ -655,6 +656,7 @@ void PropertyBrowser::addMapObjectProperties()
         addProperty(WidthProperty, QVariant::Double, tr("Width"), groupProperty);
         addProperty(HeightProperty, QVariant::Double, tr("Height"), groupProperty);
     }
+    addProperty(TileScaleFactorProperty, QVariant::Double, tr("ScaleFactor"), groupProperty)->setEnabled(false);
 
     bool isPoint = mapObject->shape() == MapObject::Point;
     addProperty(RotationProperty, QVariant::Double, tr("Rotation"), groupProperty)->setEnabled(!isPoint);
@@ -823,6 +825,9 @@ void PropertyBrowser::addTileProperties()
 
     addProperty(WidthProperty, QVariant::Int, tr("Width"), groupProperty)->setEnabled(false);
     addProperty(HeightProperty, QVariant::Int, tr("Height"), groupProperty)->setEnabled(false);
+
+    QtVariantProperty *scaleFactorProperty =  addProperty(TileScaleFactorProperty, QVariant::Double, tr("ScaleFactor"), groupProperty);
+    scaleFactorProperty->setEnabled(mTilesetDocument);
 
     QtVariantProperty *probabilityProperty = addProperty(TileProbabilityProperty,
                                                          QVariant::Double,
@@ -1278,6 +1283,11 @@ void PropertyBrowser::applyTileValue(PropertyId id, const QVariant &val)
                                                   mTilesetDocument->selectedTiles(),
                                                   val.toFloat()));
         break;
+    case TileScaleFactorProperty:
+        undoStack->push(new ChangeTileScaleFactor(mTilesetDocument,
+                                                  mTilesetDocument->selectedTiles(),
+                                                  val.toFloat()));
+        break;
     case ImageSourceProperty: {
         const FilePath filePath = val.value<FilePath>();
         undoStack->push(new ChangeTileImageSource(mTilesetDocument,
@@ -1576,7 +1586,7 @@ void PropertyBrowser::updateProperties()
             mIdToProperty[WidthProperty]->setValue(mapObject->width());
             mIdToProperty[HeightProperty]->setValue(mapObject->height());
         }
-
+        mIdToProperty[TileScaleFactorProperty]->setValue(mapObject->cell().tile()->scaleFactor());
         mIdToProperty[RotationProperty]->setValue(mapObject->rotation());
 
         if (flags & ObjectHasTile) {
@@ -1663,6 +1673,7 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[TypeProperty]->setValue(tile->type());
         mIdToProperty[WidthProperty]->setValue(tileSize.width());
         mIdToProperty[HeightProperty]->setValue(tileSize.height());
+        mIdToProperty[TileScaleFactorProperty]->setValue(tile->scaleFactor());
         mIdToProperty[TileProbabilityProperty]->setValue(tile->probability());
         if (QtVariantProperty *imageSourceProperty = mIdToProperty.value(ImageSourceProperty))
             imageSourceProperty->setValue(QVariant::fromValue(FilePath { tile->imageSource() }));

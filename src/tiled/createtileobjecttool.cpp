@@ -31,7 +31,7 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-CreateTileObjectTool::CreateTileObjectTool(QObject *parent)
+CreateTileObjectTool::CreateTileObjectTool(QObject* parent)
     : CreateObjectTool(parent)
 {
     QIcon icon(QLatin1String(":images/24x24/insert-image.png"));
@@ -41,11 +41,13 @@ CreateTileObjectTool::CreateTileObjectTool(QObject *parent)
     languageChanged();
 }
 
-void CreateTileObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt::KeyboardModifiers modifiers)
+void CreateTileObjectTool::mouseMovedWhileCreatingObject(const QPointF& pos, Qt::KeyboardModifiers modifiers)
 {
-    const MapRenderer *renderer = mapDocument()->renderer();
+    const MapRenderer* renderer = mapDocument()->renderer();
 
-    const QSize imgSize = mNewMapObjectItem->mapObject()->cell().tile()->size();
+    const QSize imgSize = mNewMapObjectItem->mapObject()->cell().tile()->size() * mNewMapObjectItem
+                                                                                  ->mapObject()->cell().tile()->
+                                                                                  scaleFactor();
     const QPointF diff(-imgSize.width() / 2, imgSize.height() / 2);
     QPointF pixelCoords = renderer->screenToPixelCoords(pos + diff);
 
@@ -57,19 +59,19 @@ void CreateTileObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt:
     mNewMapObjectItem->setOpacity(0.75);
 }
 
-void CreateTileObjectTool::mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event)
+void CreateTileObjectTool::mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent* event)
 {
     if (event->button() == Qt::RightButton)
         cancelNewMapObject();
 }
 
-void CreateTileObjectTool::mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event)
+void CreateTileObjectTool::mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent* event)
 {
     if (event->button() == Qt::LeftButton)
         finishNewMapObject();
 }
 
-bool CreateTileObjectTool::startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup)
+bool CreateTileObjectTool::startNewMapObject(const QPointF& pos, ObjectGroup* objectGroup)
 {
     if (!CreateObjectTool::startNewMapObject(pos, objectGroup))
         return false;
@@ -84,14 +86,14 @@ void CreateTileObjectTool::languageChanged()
     setShortcut(QKeySequence(tr("T")));
 }
 
-MapObject *CreateTileObjectTool::createNewMapObject()
+MapObject* CreateTileObjectTool::createNewMapObject()
 {
     if (!tile())
         return nullptr;
 
-    MapObject *newMapObject = new MapObject;
+    MapObject* newMapObject = new MapObject;
     newMapObject->setShape(MapObject::Rectangle);
     newMapObject->setCell(Cell(tile()));
-    newMapObject->setSize(tile()->size());
+    newMapObject->setSize(tile()->size() * tile()->scaleFactor());
     return newMapObject;
 }

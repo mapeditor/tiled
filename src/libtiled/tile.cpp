@@ -39,6 +39,7 @@ Tile::Tile(int id, Tileset *tileset):
     mTileset(tileset),
     mImageStatus(LoadingReady),
     mTerrain(-1),
+    mScaleFactor(1.0),
     mProbability(1.0),
     mObjectGroup(nullptr),
     mCurrentFrameIndex(0),
