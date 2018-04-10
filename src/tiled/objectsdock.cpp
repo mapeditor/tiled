@@ -342,6 +342,7 @@ void ObjectsView::mousePressEvent(QMouseEvent *event)
             DocumentManager::instance()->centerMapViewOn(center + offset);
         }
     } else if (Layer *layer = mapObjectModel()->toLayer(index)) {
+        mMapDocument->setCurrentObject(layer);
         mMapDocument->setCurrentLayer(layer);
     }
 
