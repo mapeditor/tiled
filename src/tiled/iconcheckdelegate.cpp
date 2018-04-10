@@ -59,7 +59,7 @@ IconCheckDelegate::IconCheckDelegate(IconType icon,
 
 int IconCheckDelegate::exclusiveSectionWidth()
 {
-    return Utils::dpiScaled(22);
+    return qRound(Utils::dpiScaled(22));
 }
 
 /**
@@ -108,7 +108,7 @@ bool IconCheckDelegate::editorEvent(QEvent *event,
 
     Qt::CheckState state = static_cast<Qt::CheckState>(value.toInt());
     if (flags & Qt::ItemIsUserTristate)
-        state = ((Qt::CheckState)((state + 1) % 3));
+        state = static_cast<Qt::CheckState>((state + 1) % 3);
     else
         state = (state == Qt::Checked) ? Qt::Unchecked : Qt::Checked;
     return model->setData(index, state, Qt::CheckStateRole);
@@ -128,6 +128,17 @@ void IconCheckDelegate::drawCheck(QPainter *painter,
     targetRect.moveCenter(r.center());
 
     painter->drawPixmap(targetRect, pixmap);
+}
+
+void IconCheckDelegate::drawDisplay(QPainter *painter,
+                                    const QStyleOptionViewItem &option,
+                                    const QRect &rect,
+                                    const QString &text) const
+{
+    if (mExclusive) // suppress rendering of selection on top of icon
+        return;
+
+    QItemDelegate::drawDisplay(painter, option, rect, text);
 }
 
 QSize IconCheckDelegate::sizeHint(const QStyleOptionViewItem &option,
