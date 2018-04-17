@@ -633,7 +633,6 @@ static int mapObjectFlags(const MapObject *mapObject)
 
 void PropertyBrowser::addMapObjectProperties()
 {
-    // DEFAULT MAP OBJECT PROPERTIES
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Object"));
 
     addProperty(IdProperty, QVariant::Int, tr("ID"), groupProperty)->setEnabled(false);
@@ -644,7 +643,9 @@ void PropertyBrowser::addMapObjectProperties()
             addProperty(TypeProperty, QVariant::String, tr("Type"), groupProperty);
     typeProperty->setAttribute(QLatin1String("suggestions"), objectTypeNames());
 
-    addProperty(VisibleProperty, QVariant::Bool, tr("Visible"), groupProperty);
+    if (mMapDocument->allowHidingObjects())
+        addProperty(VisibleProperty, QVariant::Bool, tr("Visible"), groupProperty);
+
     addProperty(XProperty, QVariant::Double, tr("X"), groupProperty);
     addProperty(YProperty, QVariant::Double, tr("Y"), groupProperty);
 
@@ -1568,7 +1569,8 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[NameProperty]->setValue(mapObject->name());
         mIdToProperty[TypeProperty]->setValue(type);
         mIdToProperty[TypeProperty]->setValueColor(palette().color(typeColorGroup, QPalette::WindowText));
-        mIdToProperty[VisibleProperty]->setValue(mapObject->isVisible());
+        if (auto visibleProperty = mIdToProperty[VisibleProperty])
+            visibleProperty->setValue(mapObject->isVisible());
         mIdToProperty[XProperty]->setValue(mapObject->x());
         mIdToProperty[YProperty]->setValue(mapObject->y());
 
