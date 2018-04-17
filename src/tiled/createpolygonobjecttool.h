@@ -28,12 +28,18 @@ namespace Internal {
 class CreatePolygonObjectTool: public CreateMultipointObjectTool
 {
     Q_OBJECT
+
 public:
     CreatePolygonObjectTool(QObject *parent);
+
     void languageChanged() override;
+
 protected:
     MapObject *createNewMapObject() override;
     void finishNewMapObject() override;
+
+private:
+    void languageChangedImpl();
 };
 
 } // namespace Internal

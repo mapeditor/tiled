@@ -32,7 +32,7 @@ class CreateMultipointObjectTool : public CreateObjectTool
 
 public:
     CreateMultipointObjectTool(QObject *parent);
-    ~CreateMultipointObjectTool();
+    ~CreateMultipointObjectTool() override;
 
     bool startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup) override;
 

@@ -34,7 +34,6 @@ class StampActions : public QObject
 
 public:
     StampActions(QObject *parent = nullptr);
-    ~StampActions();
 
     void languageChanged();
 

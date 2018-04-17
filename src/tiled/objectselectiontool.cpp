@@ -46,9 +46,9 @@
 #include <QGraphicsItem>
 #include <QGraphicsView>
 #include <QKeyEvent>
+#include <QMenu>
 #include <QTransform>
 #include <QUndoStack>
-#include <QMenu>
 
 #include "qtcompat_p.h"
 
@@ -693,6 +693,8 @@ void ObjectSelectionTool::modifiersChanged(Qt::KeyboardModifiers modifiers)
 
 void ObjectSelectionTool::languageChanged()
 {
+    AbstractObjectTool::languageChanged();
+
     setName(tr("Select Objects"));
     setShortcut(QKeySequence(tr("S")));
 }

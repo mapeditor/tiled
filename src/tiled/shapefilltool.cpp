@@ -61,7 +61,7 @@ ShapeFillTool::ShapeFillTool(QObject *parent)
     connect(mCircleFill, &QAction::triggered,
             [this] { setCurrentShape(Circle); });
 
-    languageChanged();
+    ShapeFillTool::languageChanged();
 }
 
 void ShapeFillTool::mousePressed(QGraphicsSceneMouseEvent *event)

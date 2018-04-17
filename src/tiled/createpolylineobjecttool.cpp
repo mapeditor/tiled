@@ -33,10 +33,16 @@ CreatePolylineObjectTool::CreatePolylineObjectTool(QObject *parent)
     QIcon icon(QLatin1String(":images/24x24/insert-polyline.png"));
     icon.addFile(QLatin1String(":images/48x48/insert-polyline.png"));
     setIcon(icon);
-    languageChanged();
+    languageChangedImpl();
 }
 
 void CreatePolylineObjectTool::languageChanged()
+{
+    CreateMultipointObjectTool::languageChanged();
+    languageChangedImpl();
+}
+
+void CreatePolylineObjectTool::languageChangedImpl()
 {
     setName(tr("Insert Polyline"));
     setShortcut(QKeySequence(tr("L")));

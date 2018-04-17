@@ -46,6 +46,9 @@ protected:
 
     bool startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup) override;
     MapObject *createNewMapObject() override;
+
+private:
+    void languageChangedImpl();
 };
 
 } // namespace Internal

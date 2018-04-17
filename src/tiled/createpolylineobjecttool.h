@@ -28,12 +28,18 @@ namespace Internal {
 class CreatePolylineObjectTool: public CreateMultipointObjectTool
 {
     Q_OBJECT
+
 public:
     CreatePolylineObjectTool(QObject *parent);
+
     void languageChanged() override;
+
 protected:
     MapObject *createNewMapObject() override;
     void finishNewMapObject() override;
+
+private:
+    void languageChangedImpl();
 };
 
 } // namespace Internal

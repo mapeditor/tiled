@@ -73,8 +73,6 @@ public:
                  const QKeySequence &shortcut,
                  QObject *parent = nullptr);
 
-    virtual ~AbstractTool() {}
-
     QString name() const;
     void setName(const QString &name);
 
