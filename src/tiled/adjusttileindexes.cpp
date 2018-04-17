@@ -171,7 +171,7 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
                              const Properties &properties,
                              unsigned terrain,
                              qreal probability,
-                             ObjectGroup *objectGroup,
+                             std::unique_ptr<ObjectGroup> objectGroup,
                              const QVector<Frame> &frames)
     {
         if (properties != toTile->properties()) {
@@ -192,8 +192,8 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
             tileProbabilities.append(probability);
         }
 
-        if (objectGroup != toTile->objectGroup())
-            new ChangeTileObjectGroup(tilesetDocument, toTile, objectGroup, this);
+        if (objectGroup.get() != toTile->objectGroup())
+            new ChangeTileObjectGroup(tilesetDocument, toTile, std::move(objectGroup), this);
 
         if (frames != toTile->frames())
             new ChangeTileAnimation(tilesetDocument, toTile, frames, this);
@@ -213,15 +213,15 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
 
         // Copy meta data from "fromTile" to "toTile"
 
-        ObjectGroup *objectGroup = nullptr;
+        std::unique_ptr<ObjectGroup> objectGroup;
         if (fromTile->objectGroup())
-            objectGroup = fromTile->objectGroup()->clone();
+            objectGroup.reset(fromTile->objectGroup()->clone());
 
         applyMetaData(toTile,
                       fromTile->properties(),
                       fromTile->terrain(),
                       fromTile->probability(),
-                      objectGroup,
+                      std::move(objectGroup),
                       adjustAnimationFrames(fromTile->frames()));
     };
 
