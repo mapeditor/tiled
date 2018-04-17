@@ -104,7 +104,7 @@ private slots:
     void showCustomMenu(const QPoint &point);
 
 private:
-    void restoreVisibleSections();
+    void restoreVisibleColumns();
     void synchronizeSelectedItems();
 
     MapDocument *mMapDocument;

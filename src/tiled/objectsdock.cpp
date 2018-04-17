@@ -44,8 +44,8 @@
 #include <QToolButton>
 #include <QUrl>
 
-static const char FIRST_SECTION_SIZE_KEY[] = "ObjectsDock/FirstSectionSize";
-static const char VISIBLE_SECTIONS_KEY[] = "ObjectsDock/VisibleSections";
+static const char FIRST_COLUMN_WIDTH_KEY[] = "ObjectsDock/FirstSectionSize";
+static const char VISIBLE_COLUMNS_KEY[] = "ObjectsDock/VisibleSections";
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -296,14 +296,14 @@ void ObjectsView::setMapDocument(MapDocument *mapDoc)
         mProxyModel->setSourceModel(mMapDocument->mapObjectModel());
 
         const QSettings *settings = Preferences::instance()->settings();
-        const int firstSectionSize =
-                settings->value(QLatin1String(FIRST_SECTION_SIZE_KEY), 200).toInt();
-        header()->resizeSection(0, firstSectionSize);
+        const int firstColumnWidth =
+                settings->value(QLatin1String(FIRST_COLUMN_WIDTH_KEY), 200).toInt();
+        setColumnWidth(0, firstColumnWidth);
 
         connect(mMapDocument, SIGNAL(selectedObjectsChanged()),
                 this, SLOT(selectedObjectsChanged()));
 
-        restoreVisibleSections();
+        restoreVisibleColumns();
         synchronizeSelectedItems();
     } else {
         mProxyModel->setSourceModel(nullptr);
@@ -355,8 +355,8 @@ void ObjectsView::onSectionResized(int logicalIndex)
         return;
 
     QSettings *settings = Preferences::instance()->settings();
-    settings->setValue(QLatin1String(FIRST_SECTION_SIZE_KEY),
-                       header()->sectionSize(0));
+    settings->setValue(QLatin1String(FIRST_COLUMN_WIDTH_KEY),
+                       columnWidth(0));
 }
 
 void ObjectsView::selectionChanged(const QItemSelection &selected,
@@ -411,15 +411,15 @@ void ObjectsView::setColumnVisibility(bool visible)
         return;
 
     int column = action->data().toInt();
-    header()->setSectionHidden(column, !visible);
+    setColumnHidden(column, !visible);
 
     QSettings *settings = Preferences::instance()->settings();
-    QVariantList visibleSections;
+    QVariantList visibleColumns;
     for (int i = 0; i < mProxyModel->columnCount(); i++) {
-        if (!header()->isSectionHidden(i))
-            visibleSections.append(i);
+        if (!isColumnHidden(i))
+            visibleColumns.append(i);
     }
-    settings->setValue(QLatin1String(VISIBLE_SECTIONS_KEY), visibleSections);
+    settings->setValue(QLatin1String(VISIBLE_COLUMNS_KEY), visibleColumns);
 }
 
 void ObjectsView::showCustomMenu(const QPoint &point)
@@ -432,7 +432,7 @@ void ObjectsView::showCustomMenu(const QPoint &point)
             continue;
         QAction *action = new QAction(model->headerData(i, Qt::Horizontal).toString(), &contextMenu);
         action->setCheckable(true);
-        action->setChecked(!header()->isSectionHidden(i));
+        action->setChecked(!isColumnHidden(i));
         action->setData(i);
         connect(action, &QAction::triggered, this, &ObjectsView::setColumnVisibility);
         contextMenu.addAction(action);
@@ -440,14 +440,14 @@ void ObjectsView::showCustomMenu(const QPoint &point)
     contextMenu.exec(QCursor::pos());
 }
 
-void ObjectsView::restoreVisibleSections()
+void ObjectsView::restoreVisibleColumns()
 {
     QSettings *settings = Preferences::instance()->settings();
-    QVariantList visibleSections = settings->value(QLatin1String(VISIBLE_SECTIONS_KEY),
-                                                 QVariantList() << MapObjectModel::Name << MapObjectModel::Type).toList();
-    for (int i = 0; i < mProxyModel->columnCount(); i++) {
-        header()->setSectionHidden(i, !visibleSections.contains(i));
-    }
+    QVariantList visibleColumns = settings->value(QLatin1String(VISIBLE_COLUMNS_KEY),
+                                                  QVariantList() << MapObjectModel::Name << MapObjectModel::Type).toList();
+
+    for (int i = 0; i < mProxyModel->columnCount(); i++)
+        setColumnHidden(i, !visibleColumns.contains(i));
 }
 
 void ObjectsView::synchronizeSelectedItems()
