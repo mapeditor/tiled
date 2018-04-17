@@ -55,19 +55,28 @@ representing the terrain.
 
 Give each of the terrains an appropriate name. Once you're done, select
 the Sand terrain and mark all corners in the tileset with this type of
-terrain. When you're done it should look like this:
+terrain. The result should look like this:
 
 .. figure:: images/terraintool/03-editterraindialog-edit.png
    :alt: Sand Terrain Marked
 
    Sand Terrain Marked
 
+To understand how we did this, we take a look at a single tile that
+transitions between Sand and Dirt. With the Sand terrain selected, we clicked
+and dragged to mark the top-left, top-right and bottom-left corners of this
+tile as "Sand". The bottom-right corner is not yet marked, we'll get to that
+one once we're marking all Dirt corners.
+
+.. figure:: images/terraintool/07-terrain-marked-tile.png
+   :alt: Marked Tile With Sand and Dirt
+
 If you make a mistake, just use Undo (or press ``Ctrl+Z``). Or if you
 notice a mistake later, either use *Erase Terrain* to clear a terrain type
 from a corner or select the correct terrain type and paint over it. Each
 corner can only have one type of terrain associated with it.
 
-Do the same for each of the other terrain types. Eventually you'll have
+Now do the same for each of the other terrain types. Eventually you'll have
 marked all tiles apart from the special objects.
 
 .. figure:: images/terraintool/04-editterraindialog-done.png
