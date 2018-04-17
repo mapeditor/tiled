@@ -38,6 +38,7 @@ CreateTileObjectTool::CreateTileObjectTool(QObject *parent)
     icon.addFile(QLatin1String(":images/48x48/insert-image.png"));
     setIcon(icon);
     Utils::setThemeIcon(this, "insert-image");
+    mToolInfo = tr("First select the tile to place in the Tilesets view. Hold <b>Left mouse button</b> on the map to move the object and release it to place object. Holding <b>Ctrl</b> snaps the object to grid.");
     languageChanged();
 }
 

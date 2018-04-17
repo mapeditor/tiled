@@ -62,7 +62,7 @@ protected:
      * an object group.
      */
     void updateEnabledState() override;
-
+    QString mToolInfo;
     MapScene *mapScene() const { return mMapScene; }
     ObjectGroup *currentObjectGroup() const;
     QList<MapObject*> mapObjectsAt(const QPointF &pos) const;
