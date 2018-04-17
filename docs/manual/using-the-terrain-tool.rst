@@ -64,7 +64,8 @@ terrain. When you're done it should look like this:
 
 If you make a mistake, just use Undo (or press ``Ctrl+Z``). Or if you
 notice a mistake later, either use *Erase Terrain* to clear a terrain type
-from a corner or select the correct terrain type and paint over it.
+from a corner or select the correct terrain type and paint over it. Each
+corner can only have one type of terrain associated with it.
 
 Do the same for each of the other terrain types. Eventually you'll have
 marked all tiles apart from the special objects.
@@ -74,8 +75,8 @@ marked all tiles apart from the special objects.
 
    Done Marking Terrain
 
-Now you can disable the *Terrains* mode by clicking the tool bar button
-again.
+Now you can disable the *Terrains* |terrain| mode by clicking the tool bar
+button again.
 
 Editing with the Terrain Brush
 ------------------------------
