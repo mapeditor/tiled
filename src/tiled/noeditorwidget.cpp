@@ -24,6 +24,8 @@
 #include "actionmanager.h"
 #include "documentmanager.h"
 
+#include <QAction>
+
 namespace Tiled {
 namespace Internal {
 
