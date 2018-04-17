@@ -741,19 +741,6 @@ void MapEditor::currentWidgetChanged()
     setCurrentDocument(mapView ? mapView->mapScene()->mapDocument() : nullptr);
 }
 
-//void MapEditor::changeEvent(QEvent *event)
-//{
-//    QMainWindow::changeEvent(event);
-//    switch (event->type()) {
-//    case QEvent::LanguageChange:
-//        mToolManager->retranslateTools();
-//        retranslateUi();
-//        break;
-//    default:
-//        break;
-//    }
-//}
-
 void MapEditor::cursorChanged(const QCursor &cursor)
 {
     if (mViewWithTool)
@@ -952,6 +939,7 @@ void MapEditor::retranslateUi()
 {
     mToolsToolBar->setWindowTitle(tr("Tools"));
     mToolSpecificToolBar->setWindowTitle(tr("Tool Options"));
+    mToolManager->retranslateTools();
 }
 
 } // namespace Internal
