@@ -1,3 +1,18 @@
+### Tiled 1.1.5 (.. April 2018)
+
+* Fixed erasing mode of the Terrain Brush
+* Fixed crash after editing a template
+* Fixed rendering of eye/lock icons in Layers view
+* Fixed object index when undoing Move Object to Layer action (#1932)
+* Fixed shortcuts for flipping and rotating objects (#1926)
+* Fixed dynamic retranslation of tools and tool actions
+* Fixed possible crash when undoing/redoing Wang color changes
+* Adjust Wang tile data when tileset column count changes (#1851)
+* Improved fill behavior in case of selection on infinite map (#1921)
+* Removed ability to hide tile collision objects (#1929)
+* Remove tile collision layer along with the last object (#1230)
+* JSON plugin: Made the reader more strict about object types (#1922)
+
 ### Tiled 1.1.4 (28 March 2018)
 
 * Fixed exporting of external tilesets to JSON or TSX formats
