@@ -319,6 +319,9 @@ public:
     QSharedPointer<WangColor> edgeColorAt(int index) const;
     QSharedPointer<WangColor> cornerColorAt(int index) const;
 
+    const QVector<QSharedPointer<WangColor>> &edgeColors() const { return mEdgeColors; }
+    const QVector<QSharedPointer<WangColor>> &cornerColors() const { return mCornerColors; }
+
     QList<Tile *> tilesChangedOnSetEdgeColors(int newEdgeColors) const;
     QList<Tile *> tilesChangedOnSetCornerColors(int newCornerColors) const;
     QList<Tile *> tilesChangedOnRemoveColor(int color, bool isEdge) const;
@@ -339,6 +342,8 @@ public:
      * any color.
      */
     QList<WangTile> findMatchingWangTiles(WangId wangId) const;
+
+    const QMultiHash<WangId, WangTile> &wangTilesByWangId() const { return mWangIdToWangTile; }
 
     /* Returns a sorted list of the wangTiles in this set.
      * Sorted by tileId.

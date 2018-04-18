@@ -175,6 +175,7 @@ public:
     void closeAllDocuments();
 
     void checkTilesetColumns(MapDocument *mapDocument);
+    bool checkTilesetColumns(TilesetDocument *tilesetDocument);
 
     /**
      * Returns all open map documents.
@@ -265,7 +266,7 @@ private slots:
 
 private:
     DocumentManager(QObject *parent = nullptr);
-    ~DocumentManager();
+    ~DocumentManager() override;
 
     bool askForAdjustment(const Tileset &tileset);
 
