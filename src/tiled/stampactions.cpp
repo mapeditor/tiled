@@ -68,10 +68,6 @@ StampActions::StampActions(QObject *parent) : QObject(parent)
     languageChanged();
 }
 
-StampActions::~StampActions()
-{
-}
-
 void StampActions::languageChanged()
 {
     mRandom->setToolTip(tr("Random Mode"));

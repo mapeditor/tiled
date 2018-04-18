@@ -59,6 +59,8 @@
 #include <QUndoStack>
 #include <QVBoxLayout>
 
+#include "qtcompat_p.h"
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
@@ -904,40 +906,26 @@ void DocumentManager::tilesetImagesChanged(Tileset *tileset)
         return;
 
     SharedTileset sharedTileset = tileset->sharedPointer();
+    QList<Document*> affectedDocuments;
 
-    bool anyRelevantMap = false;
     for (Document *document : mDocuments) {
-        if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document)) {
-            if (mapDocument->map()->tilesets().contains(sharedTileset)) {
-                anyRelevantMap = true;
-                break;
-            }
+        if (auto mapDocument = qobject_cast<MapDocument*>(document)) {
+            if (mapDocument->map()->tilesets().contains(sharedTileset))
+                affectedDocuments.append(document);
         }
     }
 
-    if (anyRelevantMap && askForAdjustment(*tileset)) {
-        bool tilesetAdjusted = false;
+    if (TilesetDocument *tilesetDocument = findTilesetDocument(sharedTileset))
+        affectedDocuments.append(tilesetDocument);
 
-        for (Document *document : mDocuments) {
-            if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document)) {
-                Map *map = mapDocument->map();
-
-                if (map->tilesets().contains(sharedTileset)) {
-                    auto command1 = new AdjustTileIndexes(mapDocument, *tileset);
-                    mapDocument->undoStack()->beginMacro(command1->text());
-                    mapDocument->undoStack()->push(command1);
-
-                    if (!tilesetAdjusted) {
-                        TilesetDocument *tilesetDocument = findTilesetDocument(sharedTileset);
-                        Q_ASSERT(tilesetDocument);
-
-                        auto command2 = new AdjustTileMetaData(tilesetDocument);
-                        tilesetAdjusted = true;
-                        mapDocument->undoStack()->push(command2);
-                    }
-
-                    mapDocument->undoStack()->endMacro();
-                }
+    if (!affectedDocuments.isEmpty() && askForAdjustment(*tileset)) {
+        for (Document *document : qAsConst(affectedDocuments)) {
+            if (auto mapDocument = qobject_cast<MapDocument*>(document)) {
+                auto command = new AdjustTileIndexes(mapDocument, *tileset);
+                document->undoStack()->push(command);
+            } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
+                auto command = new AdjustTileMetaData(tilesetDocument);
+                document->undoStack()->push(command);
             }
         }
     }
@@ -952,24 +940,30 @@ void DocumentManager::tilesetImagesChanged(Tileset *tileset)
 void DocumentManager::checkTilesetColumns(MapDocument *mapDocument)
 {
     for (const SharedTileset &tileset : mapDocument->map()->tilesets()) {
-        if (!mayNeedColumnCountAdjustment(*tileset))
-            continue;
+        TilesetDocument *tilesetDocument = findTilesetDocument(tileset);
+        Q_ASSERT(tilesetDocument);
 
-        if (askForAdjustment(*tileset)) {
-            auto command1 = new AdjustTileIndexes(mapDocument, *tileset);
-
-            TilesetDocument *tilesetDocument = findTilesetDocument(tileset);
-            Q_ASSERT(tilesetDocument);
-            auto command2 = new AdjustTileMetaData(tilesetDocument);
-
-            mapDocument->undoStack()->beginMacro(command1->text());
-            mapDocument->undoStack()->push(command1);
-            mapDocument->undoStack()->push(command2);
-            mapDocument->undoStack()->endMacro();
+        if (checkTilesetColumns(tilesetDocument)) {
+            auto command = new AdjustTileIndexes(mapDocument, *tileset);
+            mapDocument->undoStack()->push(command);
         }
 
         tileset->syncExpectedColumnsAndRows();
     }
+}
+
+bool DocumentManager::checkTilesetColumns(TilesetDocument *tilesetDocument)
+{
+    if (!mayNeedColumnCountAdjustment(*tilesetDocument->tileset()))
+        return false;
+
+    if (askForAdjustment(*tilesetDocument->tileset())) {
+        auto command = new AdjustTileMetaData(tilesetDocument);
+        tilesetDocument->undoStack()->push(command);
+        return true;
+    }
+
+    return false;
 }
 
 bool DocumentManager::askForAdjustment(const Tileset &tileset)

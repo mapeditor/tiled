@@ -42,8 +42,8 @@ public:
     };
 
     explicit TilesetWangSetModel(TilesetDocument *mapDocument,
-                        QObject *parent = nullptr);
-    ~TilesetWangSetModel();
+                                 QObject *parent = nullptr);
+    ~TilesetWangSetModel() override;
 
     using QAbstractListModel::index;
     QModelIndex index(WangSet *wangSet);
@@ -67,12 +67,12 @@ public:
 
     void insertWangSet(int index, WangSet *wangSet);
     WangSet *takeWangSetAt(int index);
-    void setWangSetName(int index, const QString &name);
-    void setWangSetEdges(int index, int value);
-    void setWangSetCorners(int index, int value);
-    void setWangSetImage(int index, int tileId);
-    void insertWangColor(int index, QSharedPointer<WangColor> wangColor);
-    void removeWangColorAt(int index, int color, bool isEdge);
+    void setWangSetName(WangSet *wangSet, const QString &name);
+    void setWangSetEdges(WangSet *wangSet, int value);
+    void setWangSetCorners(WangSet *wangSet, int value);
+    void setWangSetImage(WangSet *wangSet, int tileId);
+    void insertWangColor(WangSet *wangSet, const QSharedPointer<WangColor> &wangColor);
+    void removeWangColorAt(WangSet *wangSet, int color, bool isEdge);
 
 signals:
     void wangSetAboutToBeAdded(Tileset *tileset);

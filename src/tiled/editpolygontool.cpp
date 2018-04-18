@@ -340,6 +340,8 @@ void EditPolygonTool::modifiersChanged(Qt::KeyboardModifiers modifiers)
 
 void EditPolygonTool::languageChanged()
 {
+    AbstractObjectTool::languageChanged();
+
     setName(tr("Edit Polygons"));
     setShortcut(QKeySequence(tr("O")));
 }

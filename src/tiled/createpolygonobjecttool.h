@@ -77,6 +77,8 @@ private:
         ExtendingAtEnd,
     };
 
+    void languageChangedImpl();
+
     void finishExtendingMapObject();
     void abortExtendingMapObject();
 

@@ -74,8 +74,6 @@ public:
                  const QKeySequence &shortcut,
                  QObject *parent = nullptr);
 
-    ~AbstractTool() override {}
-
     QString name() const;
     void setName(const QString &name);
 

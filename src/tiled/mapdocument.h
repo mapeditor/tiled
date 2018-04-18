@@ -224,7 +224,8 @@ public:
     void unifyTilesets(Map *map);
     void unifyTilesets(Map *map, QVector<SharedTileset> &missingTilesets);
 
-    void emitEditLayerNameRequested();
+    bool allowHidingObjects() const { return mAllowHidingObjects; }
+    void setAllowHidingObjects(bool value) { mAllowHidingObjects = value; }
 
 signals:
     /**
@@ -350,8 +351,9 @@ private:
     QList<MapObject*> mSelectedObjects;
     MapObject *mHoveredMapObject;       /**< Map object with mouse on top. */
     MapRenderer *mRenderer;
-    Layer* mCurrentLayer;
+    Layer *mCurrentLayer;
     MapObjectModel *mMapObjectModel;
+    bool mAllowHidingObjects = true;
 };
 
 } // namespace Internal

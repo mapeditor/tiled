@@ -177,6 +177,7 @@ void TileCollisionDock::setTile(Tile *tile)
         map->addLayer(objectGroup);
 
         mDummyMapDocument = new MapDocument(map);
+        mDummyMapDocument->setAllowHidingObjects(false);
         mDummyMapDocument->setCurrentLayer(objectGroup);
 
         mMapScene->setMapDocument(mDummyMapDocument);
@@ -223,11 +224,13 @@ void TileCollisionDock::applyChanges()
         return;
 
     ObjectGroup *objectGroup = static_cast<ObjectGroup*>(mDummyMapDocument->map()->layerAt(1));
-    ObjectGroup *clonedGroup = objectGroup->clone();
+    std::unique_ptr<ObjectGroup> clonedGroup;
+    if (!objectGroup->isEmpty())
+        clonedGroup.reset(objectGroup->clone());
 
     QUndoStack *undoStack = mTilesetDocument->undoStack();
     mApplyingChanges = true;
-    undoStack->push(new ChangeTileObjectGroup(mTilesetDocument, mTile, clonedGroup));
+    undoStack->push(new ChangeTileObjectGroup(mTilesetDocument, mTile, std::move(clonedGroup)));
     mApplyingChanges = false;
 }
 

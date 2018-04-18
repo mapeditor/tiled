@@ -69,5 +69,5 @@ private:
     void updateFillOverlay();
 };
 
-}
-}
+} // namespace Internal
+} // namespace Tiled

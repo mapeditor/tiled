@@ -22,6 +22,8 @@
 
 #include "abstracttool.h"
 
+class QAction;
+
 namespace Tiled {
 
 class MapObject;
@@ -56,6 +58,10 @@ public:
     void mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers) override;
     void mousePressed(QGraphicsSceneMouseEvent *event) override;
 
+    void languageChanged() override;
+
+    void populateToolBar(QToolBar*) override;
+
 protected:
     /**
      * Overridden to only enable this tool when the currently selected layer is
@@ -80,6 +86,8 @@ private slots:
 
     void flipHorizontally();
     void flipVertically();
+    void rotateLeft();
+    void rotateRight();
 
     void raise();
     void lower();
@@ -91,6 +99,11 @@ private:
                          QPoint screenPos);
 
     MapScene *mMapScene;
+
+    QAction *mFlipHorizontal;
+    QAction *mFlipVertical;
+    QAction *mRotateLeft;
+    QAction *mRotateRight;
 };
 
 } // namespace Internal

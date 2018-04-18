@@ -65,7 +65,7 @@ CreatePolygonObjectTool::CreatePolygonObjectTool(QObject *parent)
     icon.addFile(QLatin1String(":images/48x48/insert-polygon.png"));
     setIcon(icon);
 
-    languageChanged();
+    languageChangedImpl();
 }
 
 CreatePolygonObjectTool::~CreatePolygonObjectTool()
@@ -148,6 +148,12 @@ void CreatePolygonObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
 }
 
 void CreatePolygonObjectTool::languageChanged()
+{
+    CreateObjectTool::languageChanged();
+    languageChangedImpl();
+}
+
+void CreatePolygonObjectTool::languageChangedImpl()
 {
     setName(tr("Insert Polygon"));
     setShortcut(QKeySequence(tr("P")));

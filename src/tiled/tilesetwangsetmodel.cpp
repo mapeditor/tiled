@@ -91,7 +91,7 @@ bool TilesetWangSetModel::setData(const QModelIndex &index,
         WangSet *wangSet = wangSetAt(index);
         if (wangSet->name() != newName) {
             RenameWangSet *rename = new RenameWangSet(mTilesetDocument,
-                                                      mTilesetDocument->tileset()->wangSets().indexOf(wangSet),
+                                                      wangSet,
                                                       newName);
             mTilesetDocument->undoStack()->push(rename);
         }
@@ -146,50 +146,44 @@ WangSet *TilesetWangSetModel::takeWangSetAt(int index)
     return wangSet;
 }
 
-void TilesetWangSetModel::setWangSetName(int index, const QString &name)
+void TilesetWangSetModel::setWangSetName(WangSet *wangSet, const QString &name)
 {
-    Tileset *tileset = mTilesetDocument->tileset().data();
-    WangSet *wangSet = tileset->wangSet(index);
+    Q_ASSERT(wangSet->tileset() == mTilesetDocument->tileset().data());
     wangSet->setName(name);
     emitWangSetChange(wangSet);
 }
 
-void TilesetWangSetModel::setWangSetEdges(int index, int value)
+void TilesetWangSetModel::setWangSetEdges(WangSet *wangSet, int value)
 {
-    Tileset *tileset = mTilesetDocument->tileset().data();
-    WangSet *wangSet = tileset->wangSet(index);
+    Q_ASSERT(wangSet->tileset() == mTilesetDocument->tileset().data());
     wangSet->setEdgeColorCount(value);
     emitWangSetChange(wangSet);
 }
 
-void TilesetWangSetModel::setWangSetCorners(int index, int value)
+void TilesetWangSetModel::setWangSetCorners(WangSet *wangSet, int value)
 {
-    Tileset *tileset = mTilesetDocument->tileset().data();
-    WangSet *wangSet = tileset->wangSet(index);
+    Q_ASSERT(wangSet->tileset() == mTilesetDocument->tileset().data());
     wangSet->setCornerColorCount(value);
     emitWangSetChange(wangSet);
 }
 
-void TilesetWangSetModel::setWangSetImage(int index, int tileId)
+void TilesetWangSetModel::setWangSetImage(WangSet *wangSet, int tileId)
 {
-    Tileset *tileset = mTilesetDocument->tileset().data();
-    WangSet *wangSet = tileset->wangSet(index);
+    Q_ASSERT(wangSet->tileset() == mTilesetDocument->tileset().data());
     wangSet->setImageTileId(tileId);
     emitWangSetChange(wangSet);
 }
 
-void TilesetWangSetModel::insertWangColor(int index, QSharedPointer<WangColor> wangColor)
+void TilesetWangSetModel::insertWangColor(WangSet *wangSet, const QSharedPointer<WangColor> &wangColor)
 {
-    Tileset *tileset = mTilesetDocument->tileset().data();
-    WangSet *wangSet = tileset->wangSet(index);
+    Q_ASSERT(wangSet->tileset() == mTilesetDocument->tileset().data());
     wangSet->insertWangColor(wangColor);
     emitWangSetChange(wangSet);
 }
 
-void TilesetWangSetModel::removeWangColorAt(int index, int color, bool isEdge)
+void TilesetWangSetModel::removeWangColorAt(WangSet *wangSet, int color, bool isEdge)
 {
-    Tileset *tileset = mTilesetDocument->tileset().data();
-    WangSet *wangSet = tileset->wangSet(index);
+    Q_ASSERT(wangSet->tileset() == mTilesetDocument->tileset().data());
 
     if (isEdge && wangSet->edgeColorCount() == 2)
         wangSet->setEdgeColorCount(1);

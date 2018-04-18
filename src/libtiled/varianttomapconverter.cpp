@@ -573,28 +573,29 @@ MapObject *VariantToMapConverter::toMapObject(const QVariantMap &variantMap)
 
     const QVariant polylineVariant = variantMap[QLatin1String("polyline")];
     const QVariant polygonVariant = variantMap[QLatin1String("polygon")];
-    const QVariant textVariant = variantMap[QLatin1String("text")];
+    const QVariant ellipseVariant = variantMap[QLatin1String("ellipse")];
     const QVariant pointVariant = variantMap[QLatin1String("point")];
+    const QVariant textVariant = variantMap[QLatin1String("text")];
 
-    if (polygonVariant.isValid()) {
+    if (polygonVariant.type() == QVariant::List) {
         object->setShape(MapObject::Polygon);
         object->setPolygon(toPolygon(polygonVariant));
         object->setPropertyChanged(MapObject::ShapeProperty);
     }
-    if (polylineVariant.isValid()) {
+    if (polylineVariant.type() == QVariant::List) {
         object->setShape(MapObject::Polyline);
         object->setPolygon(toPolygon(polylineVariant));
         object->setPropertyChanged(MapObject::ShapeProperty);
     }
-    if (variantMap.contains(QLatin1String("ellipse"))) {
+    if (ellipseVariant.toBool()) {
         object->setShape(MapObject::Ellipse);
         object->setPropertyChanged(MapObject::ShapeProperty);
     }
-    if (variantMap.contains(QLatin1String("point"))) {
+    if (pointVariant.toBool()) {
         object->setShape(MapObject::Point);
         object->setPropertyChanged(MapObject::ShapeProperty);
     }
-    if (textVariant.isValid()) {
+    if (textVariant.type() == QVariant::Map) {
         object->setTextData(toTextData(textVariant.toMap()));
         object->setShape(MapObject::Text);
         object->setPropertyChanged(MapObject::TextProperty);

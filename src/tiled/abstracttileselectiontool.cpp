@@ -76,7 +76,7 @@ AbstractTileSelectionTool::AbstractTileSelectionTool(const QString &name,
     connect(mIntersect, &QAction::triggered,
             [this]() { mSelectionMode = mDefaultMode = Intersect; });
 
-    languageChanged();
+    AbstractTileSelectionTool::languageChanged();
 }
 
 void AbstractTileSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)

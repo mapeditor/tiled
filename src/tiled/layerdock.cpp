@@ -136,8 +136,11 @@ void LayerDock::setMapDocument(MapDocument *mapDocument)
         mLayerView->header()->setSectionResizeMode(0, QHeaderView::Stretch);
         mLayerView->header()->setSectionResizeMode(1, QHeaderView::Fixed);
         mLayerView->header()->setSectionResizeMode(2, QHeaderView::Fixed);
-        mLayerView->header()->resizeSection(1, IconCheckDelegate::exclusiveSectionWidth());
-        mLayerView->header()->resizeSection(2, IconCheckDelegate::exclusiveSectionWidth());
+
+        const int iconSectionWidth = IconCheckDelegate::exclusiveSectionWidth();
+        mLayerView->header()->setMinimumSectionSize(iconSectionWidth);
+        mLayerView->header()->resizeSection(1, iconSectionWidth);
+        mLayerView->header()->resizeSection(2, iconSectionWidth);
     }
 
     updateOpacitySlider();
@@ -166,7 +169,7 @@ void LayerDock::updateOpacitySlider()
     mUpdatingSlider = true;
     if (enabled) {
         qreal opacity = mMapDocument->currentLayer()->opacity();
-        mOpacitySlider->setValue((int) (opacity * 100));
+        mOpacitySlider->setValue(qRound(opacity * 100));
     } else {
         mOpacitySlider->setValue(100);
     }

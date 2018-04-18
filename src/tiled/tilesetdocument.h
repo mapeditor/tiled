@@ -26,6 +26,9 @@
 
 #include <QList>
 
+#include <memory>
+#include <unordered_map>
+
 namespace Tiled {
 
 namespace Internal {
@@ -91,8 +94,7 @@ public:
     TilesetTerrainModel *terrainModel() const { return mTerrainModel; }
     TilesetWangSetModel *wangSetModel() const { return mWangSetModel; }
 
-    WangColorModel *wangColorModel() const { return mWangColorModel; }
-    void setWangColorModel(WangColorModel *wangColorModel) { mWangColorModel = wangColorModel; }
+    WangColorModel *wangColorModel(WangSet *wangSet);
 
     void setTileType(Tile *tile, const QString &type);
     void setTileImage(Tile *tile, const QPixmap &image, const QUrl &source);
@@ -157,6 +159,7 @@ private:
     TilesetTerrainModel *mTerrainModel;
     TilesetWangSetModel *mWangSetModel;
     WangColorModel *mWangColorModel;
+    std::unordered_map<WangSet*, std::unique_ptr<WangColorModel>> mWangColorModels;
 
     QList<Tile*> mSelectedTiles;
     QPointer<TilesetFormat> mExportFormat;
