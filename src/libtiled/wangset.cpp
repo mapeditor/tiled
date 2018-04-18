@@ -359,11 +359,12 @@ void WangSet::setEdgeColorCount(int n)
         mEdgeColors.resize(n);
     } else {
         while (mEdgeColors.size() != n) {
-            mEdgeColors.append(QSharedPointer<WangColor>(new WangColor(mEdgeColors.size() + 1,
-                                                                       true,
-                                                                       QString(),
-                                                                       defaultWangColors[mEdgeColors.size()],
-                                                                       -1)));
+            const QColor &color = defaultWangColors[mEdgeColors.size()];
+            mEdgeColors.append(QSharedPointer<WangColor>::create(mEdgeColors.size() + 1,
+                                                                 true,
+                                                                 QString(),
+                                                                 color));
+            mEdgeColors.last()->mWangSet = this;
         }
     }
 }
@@ -384,11 +385,12 @@ void WangSet::setCornerColorCount(int n)
         mCornerColors.resize(n);
     } else {
         while (mCornerColors.size() != n) {
-            mCornerColors.append(QSharedPointer<WangColor>(new WangColor(mCornerColors.size() + 1,
-                                                                         false,
-                                                                         QString(),
-                                                                         defaultWangColors[mCornerColors.size()],
-                                                                         -1)));
+            const QColor &color = defaultWangColors[mCornerColors.size()];
+            mCornerColors.append(QSharedPointer<WangColor>::create(mCornerColors.size() + 1,
+                                                                   false,
+                                                                   QString(),
+                                                                   color));
+            mCornerColors.last()->mWangSet = this;
         }
     }
 }
@@ -417,6 +419,7 @@ void WangSet::insertEdgeWangColor(QSharedPointer<WangColor> wangColor)
 {
     Q_ASSERT(edgeColorCount() + 1 >= wangColor->colorIndex());
 
+    wangColor->mWangSet = this;
     mEdgeColors.insert(wangColor->colorIndex() - 1, wangColor);
 
     for (int i = wangColor->colorIndex(); i < edgeColorCount(); ++i)
@@ -427,6 +430,7 @@ void WangSet::insertCornerWangColor(QSharedPointer<WangColor> wangColor)
 {
     Q_ASSERT(cornerColorCount() + 1 >= wangColor->colorIndex());
 
+    wangColor->mWangSet = this;
     mCornerColors.insert(wangColor->colorIndex() - 1, wangColor);
 
     for (int i = wangColor->colorIndex(); i < cornerColorCount(); ++i)
@@ -445,6 +449,7 @@ void WangSet::removeEdgeWangColor(int color)
 {
     Q_ASSERT(edgeColorCount() > 1 && color <= edgeColorCount() - 1);
 
+    mEdgeColors.at(color - 1)->mWangSet = nullptr;
     mEdgeColors.removeAt(color - 1);
 
     for (int i = color - 1; i < edgeColorCount(); ++i)
@@ -455,6 +460,7 @@ void WangSet::removeCornerWangColor(int color)
 {
     Q_ASSERT(cornerColorCount() > 1 && color <= cornerColorCount() - 1);
 
+    mCornerColors.at(color - 1)->mWangSet = nullptr;
     mCornerColors.removeAt(color - 1);
 
     for (int i = color - 1; i < cornerColorCount(); ++i)
@@ -585,10 +591,9 @@ void WangSet::removeWangTile(const WangTile &wangTile)
         --mUniqueFullWangIdCount;
 }
 
-QList<WangTile> WangSet::wangTiles() const
+QList<WangTile> WangSet::sortedWangTiles() const
 {
     QList<WangTile> wangTiles = mWangIdToWangTile.values();
-
     qStableSort(wangTiles.begin(), wangTiles.end());
     return wangTiles;
 }
@@ -649,12 +654,9 @@ WangId WangSet::wangIdFromSurrounding(const Cell surroundingCells[]) const
 
 QList<Tile *> WangSet::tilesWithWangId() const
 {
-    if (!mTileset)
-        return QList<Tile *>();
-
     QList<Tile *> tiles;
 
-    for (WangTile wangTile : mWangIdToWangTile)
+    for (const WangTile &wangTile : mWangIdToWangTile)
         tiles.append(wangTile.tile());
 
     return tiles;
@@ -665,7 +667,7 @@ WangId WangSet::wangIdOfTile(const Tile *tile) const
     if (tile->tileset() == mTileset)
         return mTileInfoToWangId.value(tile->id());
     else
-        return 0;
+        return WangId();
 }
 
 WangId WangSet::wangIdOfCell(const Cell &cell) const
@@ -673,7 +675,7 @@ WangId WangSet::wangIdOfCell(const Cell &cell) const
     if (cell.tileset() == mTileset)
         return mTileInfoToWangId.value(cellToTileInfo(cell));
     else
-        return 0;
+        return WangId();
 }
 
 qreal WangSet::wangTileProbability(const WangTile &wangTile) const
@@ -788,11 +790,15 @@ WangSet *WangSet::clone(Tileset *tileset) const
     // Caller is responsible for adding the WangSet to this tileset
     c->setTileset(tileset);
 
-    // Avoid sharing wang colors
-    for (QSharedPointer<WangColor> &wangColor : c->mEdgeColors)
-        wangColor.reset(new WangColor(*wangColor));
-    for (QSharedPointer<WangColor> &wangColor : c->mCornerColors)
-        wangColor.reset(new WangColor(*wangColor));
+    // Avoid sharing Wang colors
+    for (QSharedPointer<WangColor> &wangColor : c->mEdgeColors) {
+        wangColor = QSharedPointer<WangColor>::create(*wangColor);
+        wangColor->mWangSet = c;
+    }
+    for (QSharedPointer<WangColor> &wangColor : c->mCornerColors) {
+        wangColor = QSharedPointer<WangColor>::create(*wangColor);
+        wangColor->mWangSet = c;
+    }
 
     return c;
 }

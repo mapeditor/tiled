@@ -500,7 +500,7 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
                 }
             }
 
-            for (const WangTile &wangTile : ws->wangTiles()) {
+            for (const WangTile &wangTile : ws->sortedWangTiles()) {
                 w.writeStartElement(QLatin1String("wangtile"));
                 w.writeAttribute(QLatin1String("tileid"), QString::number(wangTile.tile()->id()));
                 w.writeAttribute(QLatin1String("wangid"),

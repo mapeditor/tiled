@@ -1313,18 +1313,18 @@ void PropertyBrowser::applyWangSetValue(PropertyId id, const QVariant &val)
     switch (id) {
     case NameProperty:
         mDocument->undoStack()->push(new RenameWangSet(mTilesetDocument,
-                                                       mTilesetDocument->tileset()->wangSets().indexOf(wangSet),
+                                                       wangSet,
                                                        val.toString()));
         break;
     case EdgeCountProperty:
-        mDocument->undoStack()->push(new ChangeWangSetEdges(mTilesetDocument,
-                                                            mTilesetDocument->tileset()->wangSets().indexOf(wangSet),
-                                                            val.toInt()));
+        mDocument->undoStack()->push(new ChangeWangSetEdgeCount(mTilesetDocument,
+                                                                wangSet,
+                                                                val.toInt()));
         break;
     case CornerCountProperty:
-        mDocument->undoStack()->push(new ChangeWangSetCorners(mTilesetDocument,
-                                                              mTilesetDocument->tileset()->wangSets().indexOf(wangSet),
-                                                              val.toInt()));
+        mDocument->undoStack()->push(new ChangeWangSetCornerCount(mTilesetDocument,
+                                                                  wangSet,
+                                                                  val.toInt()));
         break;
     default:
         break;
@@ -1336,27 +1336,22 @@ void PropertyBrowser::applyWangColorValue(PropertyId id, const QVariant &val)
     Q_ASSERT(mTilesetDocument);
 
     WangColor *wangColor = static_cast<WangColor*>(mObject);
-    WangColorModel *wangColorModel = mTilesetDocument->wangColorModel();
-    Q_ASSERT(wangColorModel);
 
     switch (id) {
     case NameProperty:
-        mDocument->undoStack()->push(new ChangeWangColorName(val.toString(),
-                                                             wangColor->colorIndex(),
-                                                             wangColor->isEdge(),
-                                                             wangColorModel));
+        mDocument->undoStack()->push(new ChangeWangColorName(mTilesetDocument,
+                                                             wangColor,
+                                                             val.toString()));
         break;
     case ColorProperty:
-        mDocument->undoStack()->push(new ChangeWangColorColor(val.value<QColor>(),
-                                                              wangColor->colorIndex(),
-                                                              wangColor->isEdge(),
-                                                              wangColorModel));
+        mDocument->undoStack()->push(new ChangeWangColorColor(mTilesetDocument,
+                                                              wangColor,
+                                                              val.value<QColor>()));
         break;
     case WangColorProbabilityProperty:
-        mDocument->undoStack()->push(new ChangeWangColorProbability(val.toDouble(),
-                                                                    wangColor->colorIndex(),
-                                                                    wangColor->isEdge(),
-                                                                    wangColorModel));
+        mDocument->undoStack()->push(new ChangeWangColorProbability(mTilesetDocument,
+                                                                    wangColor,
+                                                                    val.toDouble()));
         break;
     default:
         break;

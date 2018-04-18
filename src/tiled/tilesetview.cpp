@@ -711,7 +711,7 @@ TilesetView::TilesetView(QWidget *parent)
     , mTerrain(nullptr)
     , mWangSet(nullptr)
     , mWangId(0)
-    , mWangColor(0)
+    , mWangColorIndex(0)
     , mHoveredCorner(0)
     , mTerrainChanged(false)
     , mWangIdChanged(false)
@@ -934,7 +934,7 @@ void TilesetView::setWangSet(WangSet *wangSet)
 void TilesetView::setWangId(WangId wangId)
 {
     mWangBehavior = WholeId;
-    mWangColor = 0;
+    mWangColorIndex = 0;
 
     if (!mWangSet || wangId == mWangId)
         return;
@@ -956,7 +956,7 @@ void TilesetView::setWangEdgeColor(int color)
 
     Q_ASSERT(color <= mWangSet->edgeColorCount());
 
-    mWangColor = color;
+    mWangColorIndex = color;
 }
 
 void TilesetView::setWangCornerColor(int color)
@@ -968,7 +968,7 @@ void TilesetView::setWangCornerColor(int color)
 
     Q_ASSERT(color <= mWangSet->cornerColorCount());
 
-    mWangColor = color;
+    mWangColorIndex = color;
 }
 
 QIcon TilesetView::imageMissingIcon() const
@@ -1042,26 +1042,26 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
             if (mWangBehavior == Edge) {
                 if (tileLocalPosF.x() < tileLocalPosF.y()) {
                     if (tileLocalPosF.x() > -tileLocalPosF.y())
-                        wangId.setEdgeColor(2, mWangColor);
+                        wangId.setEdgeColor(2, mWangColorIndex);
                     else
-                        wangId.setEdgeColor(3, mWangColor);
+                        wangId.setEdgeColor(3, mWangColorIndex);
                 } else {
                     if (tileLocalPosF.x() > -tileLocalPosF.y())
-                        wangId.setEdgeColor(1, mWangColor);
+                        wangId.setEdgeColor(1, mWangColorIndex);
                     else
-                        wangId.setEdgeColor(0, mWangColor);
+                        wangId.setEdgeColor(0, mWangColorIndex);
                 }
             } else {
                 if (tileLocalPosF.x() > 0) {
                     if (tileLocalPosF.y() > 0)
-                        wangId.setCornerColor(1, mWangColor);
+                        wangId.setCornerColor(1, mWangColorIndex);
                     else
-                        wangId.setCornerColor(0, mWangColor);
+                        wangId.setCornerColor(0, mWangColorIndex);
                 } else {
                     if (tileLocalPosF.y() > 0)
-                        wangId.setCornerColor(2, mWangColor);
+                        wangId.setCornerColor(2, mWangColorIndex);
                     else
-                        wangId.setCornerColor(3, mWangColor);
+                        wangId.setCornerColor(3, mWangColorIndex);
                 }
             }
         }
@@ -1223,7 +1223,7 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
                 QAction *setImage = menu.addAction(tr("Set Wang Set Image"));
                 connect(setImage, SIGNAL(triggered()), SLOT(selectWangSetImage()));
             }
-            if (mWangBehavior != WholeId && mWangColor) {
+            if (mWangBehavior != WholeId && mWangColorIndex) {
                 QAction *setImage = menu.addAction(tr("Set Wang Color Image"));
                 connect(setImage, SIGNAL(triggered()), SLOT(selectWangColorImage()));
             }
@@ -1281,7 +1281,7 @@ void TilesetView::selectWangSetImage()
 void TilesetView::selectWangColorImage()
 {
     if (Tile *tile = currentTile())
-        emit wangColorImageSelected(tile, mWangBehavior == Edge, mWangColor);
+        emit wangColorImageSelected(tile, mWangBehavior == Edge, mWangColorIndex);
 }
 
 void TilesetView::editTileProperties()

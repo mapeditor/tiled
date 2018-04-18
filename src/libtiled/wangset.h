@@ -65,7 +65,7 @@ public:
 
     /* These return the color of the edge/corner of the wangId.
      * 0 being the top right corner, or top edge
-     * */
+     */
     int edgeColor(int index) const;
     int cornerColor(int index) const;
 
@@ -73,7 +73,7 @@ public:
      * 7|0|1
      * 6|X|2
      * 5|4|3
-     * */
+     */
     int indexColor(int index) const;
 
     void setEdgeColor(int index, unsigned value);
@@ -83,7 +83,7 @@ public:
      * 7|0|1
      * 6|X|2
      * 5|4|3
-     * */
+     */
     void setIndexColor(int index, unsigned value);
 
     /* Matches this wangId's edges/corners with an adjacent one.
@@ -91,33 +91,33 @@ public:
      * 7|0|1
      * 6|X|2
      * 5|4|3
-     * */
+     */
     void updateToAdjacent(WangId adjacent, int position);
 
     /* Returns true if one or more edges are zero
-     * */
+     */
     bool hasEdgeWildCards() const;
     /* Returns true if one or more corners are zero
-     * */
+     */
     bool hasCornerWildCards() const;
 
     /* Gives a list of wangId variations of this one
      * where every 0 is a wildCard (can be 0 - edgeColors or cornerColors)
-     * */
+     */
     WangIdVariations variations(int edgeColors, int cornerColors) const;
 
     /* Rotates the wang Id clockwise by (90 * rotations) degrees.
      * Meaning with one rotation, the top edge becomes the right edge,
      * and the top right corner, becomes the top bottom.
-     * */
+     */
     void rotate(int rotations);
 
     /* Flips the wang Id horizontally
-     * */
+     */
     void flipHorizontally();
 
     /* Flips the wang Id vertically
-     * */
+     */
     void flipVertically();
 
 private:
@@ -161,7 +161,7 @@ private:
     int mCornerColors;
 };
 
-//Class for holding info about rotation and flipping
+// Class for holding info about rotation and flipping
 class TILEDSHARED_EXPORT WangTile
 {
 public:
@@ -216,8 +216,8 @@ public:
     { return mTile->id() < other.mTile->id(); }
 
 private:
-    //performs a translation (either flipping or rotating) based on a one to one
-    //map of size 8 (from 0 - 7)
+    // performs a translation (either flipping or rotating) based on a one to
+    // one map of size 8 (from 0 - 7)
     void translate(int map[]);
 
     Tile *mTile;
@@ -235,7 +235,7 @@ public:
               bool isEdge,
               const QString &name,
               const QColor &color,
-              int imageId,
+              int imageId = -1,
               qreal probability = 1);
 
     int colorIndex() const { return mColorIndex; }
@@ -245,14 +245,20 @@ public:
     int imageId() const { return mImageId; }
     qreal probability() const { return mProbability; }
 
-    void setColorIndex(int colorIndex) { mColorIndex = colorIndex; }
     void setIsEdge(bool isEdge) { mIsEdge = isEdge; }
     void setName(const QString &name) { mName = name; }
     void setColor(const QColor &color) { mColor = color; }
     void setImageId(int imageId) { mImageId = imageId; }
     void setProbability(qreal probability) { mProbability = probability; }
 
+    WangSet *wangSet() const { return mWangSet; }
+
 private:
+    friend class WangSet;
+
+    void setColorIndex(int colorIndex) { mColorIndex = colorIndex; }
+
+    WangSet *mWangSet = nullptr;
     int mColorIndex;
     bool mIsEdge;
     QString mName;
@@ -262,7 +268,7 @@ private:
 };
 
 /**
- * Represents a wang set.
+ * Represents a Wang set.
  */
 class TILEDSHARED_EXPORT WangSet : public Object
 {
@@ -288,7 +294,7 @@ public:
     /* Sets the edge/corner color count
      * This can make wangIds already in the set invalid, so should only be used from
      * ChangeWangSet(Edges/Corners)
-     * */
+     */
     void setEdgeColorCount(int n);
     void setCornerColorCount(int n);
 
@@ -296,17 +302,18 @@ public:
      * If the color is greater than current count, it must only be one greater.
      * For use in an undo command
      * Does not adjust currently assigned tiles.
-     * */
+     */
     void insertWangColor(QSharedPointer<WangColor> wangColor);
 
-    // Adds a wangcolor to the set. The wangcolors color index may
-    // be changed
+    /* Adds a wangcolor to the set. The wangcolors color index may
+     * be changed
+     */
     void addWangColor(QSharedPointer<WangColor> wangColor);
 
     /* Removes a given color.
      * This can make wangIds invalid, so should only be used from
      * changewangsetdata.h
-     * */
+     */
     void removeWangColorAt(int color, bool isEdge);
 
     QSharedPointer<WangColor> edgeColorAt(int index) const;
@@ -322,7 +329,7 @@ public:
      * replaced with the new wangId. If the wangId provided is zero
      * then the wangTile is removed if already in the set.
      * Updates the UniqueFullWangIdCount
-     * */
+     */
     void addTile(Tile *tile, WangId wangId);
     void addCell(const Cell &cell, WangId wangId);
     void addWangTile(const WangTile &wangTile);
@@ -330,20 +337,20 @@ public:
     /* Finds all the tiles which match the given wangId,
      * where zeros in the id are treated as wild cards, and can be
      * any color.
-     * */
+     */
     QList<WangTile> findMatchingWangTiles(WangId wangId) const;
 
     /* Returns a sorted list of the wangTiles in this set.
      * Sorted by tileId.
-     * */
-    QList<WangTile> wangTiles() const;
+     */
+    QList<WangTile> sortedWangTiles() const;
 
     /* Returns a wangId matching that of the provided surrounding wangIds.
      * This is based off a provided array, {a, b, c, d, e, f, g, h},
      * which corrisponds to  h|a|b
      *                       g|X|c
      *                       f|e|d
-     * */
+     */
     WangId wangIdFromSurrounding(WangId surroundingWangIds[]) const;
 
     /* Returns a wangId matching that of the provided surrounding tiles.
@@ -351,36 +358,36 @@ public:
      * which corrisponds to  h|a|b
      *                       g|X|c
      *                       f|e|d
-     * */
+     */
     WangId wangIdFromSurrounding(const Cell surroundingCells[]) const;
 
     /* Returns a list of all the tiles with a wangId.
-     * */
+     */
     QList<Tile *> tilesWithWangId() const;
 
     /* Returns the wangId of a given Tile.
-     * */
+     */
     WangId wangIdOfTile(const Tile *tile) const;
 
     WangId wangIdOfCell(const Cell &cell) const;
 
     /* The probability of a given wang tile of being selected.
-     * */
+     */
     qreal wangTileProbability(const WangTile &wangTile) const;
 
     /* Returns whether or not the given wangId is valid in the contex of the current wangSet
-     * */
+     */
     bool wangIdIsValid(WangId wangId) const;
 
     static bool wangIdIsValid(WangId wangId, int edgeCount, int cornerCount);
 
     /* Returns whether the given wangId is assigned to a WangTile.
-     * */
+     */
     bool wangIdIsUsed(WangId wangId) const;
 
     /* Returns true if the given wangId is assigned to a tile,
      * or any variations of the 0 spots are.
-     * */
+     */
     bool wildWangIdIsUsed(WangId wangId) const;
 
     bool isEmpty() const { return mWangIdToWangTile.isEmpty(); }
@@ -401,11 +408,11 @@ public:
      * ending at 0xCECECECE
      *
      * Note this does NOT include wildcards (no zeros)
-     * */
+     */
     WangId templateWangIdAt(unsigned n) const;
 
     /* Returns a clone of this wangset
-     * */
+     */
     WangSet *clone(Tileset *tileset) const;
 
 private:
@@ -425,8 +432,8 @@ private:
     QVector<QSharedPointer<WangColor>> mCornerColors;
     QMultiHash<WangId, WangTile> mWangIdToWangTile;
 
-    //Tile info being the tileId, with the last three bits (32, 31, 30)
-    //being info on flip (horizontal, vertical, and antidiagonal)
+    // Tile info being the tileId, with the last three bits (32, 31, 30)
+    // being info on flip (horizontal, vertical, and antidiagonal)
     QHash<unsigned, WangId> mTileInfoToWangId;
 };
 
