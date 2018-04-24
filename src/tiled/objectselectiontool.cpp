@@ -978,6 +978,11 @@ void ObjectSelectionTool::updateHandleVisibility()
 
 void ObjectSelectionTool::objectsRemoved(const QList<MapObject *> &objects)
 {
+    if (mClickedObjectItem && objects.contains(mClickedObjectItem->mapObject()))
+        mClickedObjectItem = nullptr;
+    if (mHoveredObjectItem && objects.contains(mHoveredObjectItem->mapObject()))
+        mHoveredObjectItem = nullptr;
+
     if (mAction != Moving && mAction != Rotating && mAction != Resizing)
         return;
 
