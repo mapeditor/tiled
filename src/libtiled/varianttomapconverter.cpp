@@ -427,7 +427,7 @@ TileLayer *VariantToMapConverter::toTileLayer(const QVariantMap &variantMap)
     }
     mMap->setLayerDataFormat(layerDataFormat);
 
-    if (dataVariant.isValid()) {
+    if (dataVariant.isValid() && !dataVariant.isNull()) {
         if (!readTileLayerData(*tileLayer, dataVariant, layerDataFormat,
                                QRect(startX, startY, tileLayer->width(), tileLayer->height()))) {
             return nullptr;
