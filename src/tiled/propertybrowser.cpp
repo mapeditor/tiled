@@ -93,8 +93,8 @@ PropertyBrowser::PropertyBrowser(QWidget *parent)
 
     retranslateUi();
 
-    connect(mVariantManager, SIGNAL(valueChanged(QtProperty*,QVariant)),
-            SLOT(valueChanged(QtProperty*,QVariant)));
+    connect(mVariantManager, &QtVariantPropertyManager::valueChanged,
+            this, &PropertyBrowser::valueChanged);
 
     connect(variantEditorFactory, &VariantEditorFactory::resetProperty,
             this, &PropertyBrowser::resetProperty);

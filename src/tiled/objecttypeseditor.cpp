@@ -462,6 +462,8 @@ void ObjectTypesEditor::propertyValueChanged(QtProperty *property,
 {
     if (mUpdating)
         return;
+    if (!mUi->propertiesView->topLevelItem(property))
+        return;
 
     applyProperty(property->propertyName(), value);
 }
