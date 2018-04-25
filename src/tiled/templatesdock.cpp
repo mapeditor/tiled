@@ -126,6 +126,7 @@ TemplatesDock::TemplatesDock(QWidget *parent)
 
     mDescriptionLabel = new QLabel;
     mDescriptionLabel->setWordWrap(true);
+    mDescriptionLabel->setVisible(false);
 
     // Construct the UI
     auto toolsLayout = new QHBoxLayout;
