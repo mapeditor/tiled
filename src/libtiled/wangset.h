@@ -274,7 +274,7 @@ class TILEDSHARED_EXPORT WangSet : public Object
 {
 public:
     WangSet(Tileset *tileset,
-            QString name,
+            const QString &name,
             int imageTileId);
 
     Tileset *tileset() const { return mTileset; }

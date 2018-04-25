@@ -30,6 +30,8 @@ namespace Tiled {
 
 class GroupLayer;
 class ObjectTemplate;
+class WangColor;
+class WangSet;
 struct TextData;
 
 /**
@@ -56,6 +58,8 @@ public:
 
 private:
     QVariant toVariant(const Tileset &tileset, int firstGid) const;
+    QVariant toVariant(const WangSet &wangSet) const;
+    QVariant toVariant(const WangColor &wangColor) const;
     QVariant toVariant(const Properties &properties) const;
     QVariant propertyTypesToVariant(const Properties &properties) const;
     QVariant toVariant(const QList<Layer*> &layers, Map::LayerDataFormat format) const;

@@ -76,9 +76,8 @@ void WangId::setCornerColor(int index, unsigned value)
 
 void WangId::setIndexColor(int index, unsigned value)
 {
-    value &= 0xf;
     mId &= ~(0xf << (index * 4));
-    mId |= value << (index * 4);
+    mId |= (value & 0xf) << (index * 4);
 }
 
 void WangId::updateToAdjacent(WangId adjacent, int position)
@@ -322,11 +321,11 @@ static const QColor defaultWangColors[] =  {
 };
 
 WangSet::WangSet(Tileset *tileset,
-                 QString name,
+                 const QString &name,
                  int imageTileId):
     Object(Object::WangSetType),
     mTileset(tileset),
-    mName(std::move(name)),
+    mName(name),
     mImageTileId(imageTileId),
     mUniqueFullWangIdCount(0)
 {
