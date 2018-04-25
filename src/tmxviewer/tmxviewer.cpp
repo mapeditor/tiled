@@ -175,9 +175,7 @@ public:
 
 TmxViewer::TmxViewer(QWidget *parent) :
     QGraphicsView(parent),
-    mScene(new QGraphicsScene(this)),
-    mMap(nullptr),
-    mRenderer(nullptr)
+    mScene(new QGraphicsScene(this))
 {
     setWindowTitle(tr("TMX Viewer"));
 
@@ -192,22 +190,17 @@ TmxViewer::TmxViewer(QWidget *parent) :
     viewport()->setAttribute(Qt::WA_StaticContents);
 }
 
-TmxViewer::~TmxViewer()
-{
-    delete mMap;
-    delete mRenderer;
-}
+TmxViewer::~TmxViewer() = default;
 
 bool TmxViewer::viewMap(const QString &fileName)
 {
-    delete mRenderer;
-    mRenderer = nullptr;
-
     mScene->clear();
     centerOn(0, 0);
 
+    mRenderer.reset();
+
     MapReader reader;
-    mMap = reader.readMap(fileName);
+    mMap.reset(reader.readMap(fileName));
     if (!mMap) {
         qWarning().noquote() << "Error:" << reader.errorString();
         return false;
@@ -215,21 +208,21 @@ bool TmxViewer::viewMap(const QString &fileName)
 
     switch (mMap->orientation()) {
     case Map::Isometric:
-        mRenderer = new IsometricRenderer(mMap);
+        mRenderer.reset(new IsometricRenderer(mMap.get()));
         break;
     case Map::Staggered:
-        mRenderer = new StaggeredRenderer(mMap);
+        mRenderer.reset(new StaggeredRenderer(mMap.get()));
         break;
     case Map::Hexagonal:
-        mRenderer = new HexagonalRenderer(mMap);
+        mRenderer.reset(new HexagonalRenderer(mMap.get()));
         break;
     case Map::Orthogonal:
     default:
-        mRenderer = new OrthogonalRenderer(mMap);
+        mRenderer.reset(new OrthogonalRenderer(mMap.get()));
         break;
     }
 
-    mScene->addItem(new MapItem(mMap, mRenderer));
+    mScene->addItem(new MapItem(mMap.get(), mRenderer.get()));
 
     return true;
 }
