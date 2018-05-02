@@ -109,7 +109,7 @@ private:
     void updateBoundingRect();
     void updateCurrentLayerHighlight();
 
-    MapDocumentRef mMapDocument;
+    MapDocumentPtr mMapDocument;
     QGraphicsRectItem *mDarkRectangle;
     QMap<Layer*, LayerItem*> mLayerItems;
     QMap<MapObject*, MapObjectItem*> mObjectItems;
@@ -119,7 +119,7 @@ private:
 
 inline MapDocument *MapItem::mapDocument() const
 {
-    return mMapDocument.document();
+    return mMapDocument.data();
 }
 
 } // namespace Internal

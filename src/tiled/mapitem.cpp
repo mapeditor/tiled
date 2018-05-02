@@ -44,7 +44,7 @@ static const qreal opacityFactor = 0.4;
 MapItem::MapItem(MapDocument *mapDocument, DisplayMode displayMode,
                  QGraphicsItem *parent)
     : QGraphicsObject(parent)
-    , mMapDocument(mapDocument)
+    , mMapDocument(mapDocument->sharedFromThis())
     , mDarkRectangle(new QGraphicsRectItem(this))
     , mDisplayMode(displayMode)
 {

@@ -21,14 +21,14 @@
 
 #pragma once
 
-#include "document.h"
-#include "tileset.h"
+#include "mapdocument.h"
+#include "tilesetdocument.h"
 
 #include <QHash>
 #include <QList>
 #include <QObject>
 #include <QPointF>
-#include <QSet>
+#include <QVector>
 
 class QTabWidget;
 class QUndoGroup;
@@ -85,21 +85,19 @@ public:
     MapView *currentMapView() const;
     MapView *viewForDocument(MapDocument *mapDocument) const;
 
-    int documentCount() const;
-
     int findDocument(const QString &fileName) const;
+    int findDocument(Document *document) const;
 
     void switchToDocument(int index);
     bool switchToDocument(Document *document);
 
-    void addDocument(Document *document);
+    void addDocument(const DocumentPtr &document);
 
     bool isDocumentModified(Document *document) const;
-    bool isDocumentChangedOnDisk(Document *document) const;
 
-    Document *loadDocument(const QString &fileName,
-                           FileFormat *fileFormat = nullptr,
-                           QString *error = nullptr);
+    DocumentPtr loadDocument(const QString &fileName,
+                             FileFormat *fileFormat = nullptr,
+                             QString *error = nullptr);
 
     bool saveDocument(Document *document, const QString &fileName);
     bool saveDocumentAs(Document *document);
@@ -116,7 +114,7 @@ public:
 
     void checkTilesetColumns(MapDocument *mapDocument);
 
-    const QList<Document*> &documents() const;
+    const QVector<DocumentPtr> &documents() const;
 
     TilesetDocumentsModel *tilesetDocumentsModel() const;
 
@@ -130,9 +128,6 @@ public:
     { centerMapViewOn(pos.x(), pos.y()); }
 
     void abortMultiDocumentClose();
-
-    void addReference(Document *document);
-    void removeReference(Document *document);
 
 signals:
     void fileOpenRequested();
@@ -204,9 +199,7 @@ private:
 
     bool eventFilter(QObject *object, QEvent *event) override;
 
-    QHash<Document*, int> mReferencedDocuments;
-
-    QList<Document*> mDocuments;
+    QVector<DocumentPtr> mDocuments;
     TilesetDocumentsModel *mTilesetDocumentsModel;
 
     QWidget *mWidget;
@@ -222,9 +215,6 @@ private:
 
     QUndoGroup *mUndoGroup;
     FileSystemWatcher *mFileSystemWatcher;
-    QSet<Document*> mDocumentsChangedOnDisk;
-
-    QMap<SharedTileset, TilesetDocument*> mTilesetToDocument;
 
     static DocumentManager *mInstance;
 
@@ -243,17 +233,9 @@ inline QUndoGroup *DocumentManager::undoGroup() const
 }
 
 /**
- * Returns the number of open documents.
- */
-inline int DocumentManager::documentCount() const
-{
-    return mDocuments.size();
-}
-
-/**
  * Returns all open documents.
  */
-inline const QList<Document *> &DocumentManager::documents() const
+inline const QVector<DocumentPtr> &DocumentManager::documents() const
 {
     return mDocuments;
 }
@@ -262,46 +244,6 @@ inline TilesetDocumentsModel *DocumentManager::tilesetDocumentsModel() const
 {
     return mTilesetDocumentsModel;
 }
-
-
-template <typename DocumentType>
-class DocumentRef
-{
-public:
-    DocumentRef(DocumentType *document)
-        : mDocument(document)
-    {
-        Q_ASSERT(document);
-        DocumentManager::instance()->addReference(mDocument);
-    }
-
-    DocumentRef(const DocumentRef &ref)
-        : mDocument(ref.mDocument)
-    {
-        DocumentManager::instance()->addReference(mDocument);
-    }
-
-    ~DocumentRef()
-    {
-        DocumentManager::instance()->removeReference(mDocument);
-    }
-
-    DocumentRef &operator=(const DocumentRef &ref)
-    {
-        DocumentManager::instance()->addReference(ref.mDocument);
-        DocumentManager::instance()->removeReference(mDocument);
-        mDocument = ref.mDocument;
-        return *this;
-    }
-
-    DocumentType *document() const { return mDocument; }
-
-private:
-    DocumentType *mDocument;
-};
-
-typedef DocumentRef<MapDocument> MapDocumentRef;
-typedef DocumentRef<TilesetDocument> TilesetDocumentRef;
 
 } // namespace Tiled::Internal
 } // namespace Tiled

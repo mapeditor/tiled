@@ -126,6 +126,7 @@ void MapScene::setSelectedTool(AbstractTool *tool)
 void MapScene::refreshScene()
 {
     clear();
+    mMapItems.clear();
 
     if (!mMapDocument) {
         setSceneRect(QRectF());
@@ -139,16 +140,13 @@ void MapScene::refreshScene()
         auto const contextMaps = world->contextMaps(mMapDocument->fileName());
 
         for (const World::MapEntry &mapEntry : contextMaps) {
-            MapDocument *mapDocument = nullptr;
+            MapDocumentPtr mapDocument;
 
             if (mapEntry.fileName == mMapDocument->fileName()) {
-                mapDocument = mMapDocument;
+                mapDocument = mMapDocument->sharedFromThis();
             } else {
-                Document *doc = DocumentManager::instance()->loadDocument(mapEntry.fileName);
-                if (doc && qobject_cast<MapDocument*>(doc) == nullptr)
-                    delete doc;
-                else
-                    mapDocument = static_cast<MapDocument*>(doc);
+                auto doc = DocumentManager::instance()->loadDocument(mapEntry.fileName);
+                mapDocument = doc.objectCast<MapDocument>();
             }
 
             if (mapDocument) {
@@ -156,10 +154,10 @@ void MapScene::refreshScene()
                 if (mapDocument == mMapDocument)
                     displayMode = MapItem::Editable;
 
-                auto mapItem = new MapItem(mapDocument, displayMode);
+                auto mapItem = new MapItem(mapDocument.data(), displayMode);
                 mapItem->setPos(mapEntry.rect.topLeft() - currentMapPosition);
                 connect(mapItem, &MapItem::boundingRectChanged, this, &MapScene::updateSceneRect);
-                mMapItems.insert(mapDocument, mapItem);
+                mMapItems.insert(mapDocument.data(), mapItem);
                 addItem(mapItem);
 
                 if (mapDocument != mMapDocument) {

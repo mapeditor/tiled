@@ -359,7 +359,7 @@ void BrokenLinksModel::tilesetReplaced(int index, Tileset *newTileset, Tileset *
 
 void BrokenLinksModel::connectToTileset(const SharedTileset &tileset)
 {
-    auto tilesetDocument = DocumentManager::instance()->findTilesetDocument(tileset);
+    auto tilesetDocument = TilesetDocument::findDocumentForTileset(tileset);
     if (tilesetDocument) {
         connect(tilesetDocument, &TilesetDocument::tileImageSourceChanged,
                 this, &BrokenLinksModel::tileImageSourceChanged);
@@ -370,7 +370,7 @@ void BrokenLinksModel::connectToTileset(const SharedTileset &tileset)
 
 void BrokenLinksModel::disconnectFromTileset(const SharedTileset &tileset)
 {
-    auto tilesetDocument = DocumentManager::instance()->findTilesetDocument(tileset->sharedPointer());
+    auto tilesetDocument = TilesetDocument::findDocumentForTileset(tileset);
     if (tilesetDocument)
         tilesetDocument->disconnect(this);
 }

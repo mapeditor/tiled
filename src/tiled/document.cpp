@@ -29,6 +29,8 @@
 namespace Tiled {
 namespace Internal {
 
+QList<Document*> Document::sDocumentInstances;
+
 Document::Document(DocumentType type, const QString &fileName,
                    QObject *parent)
     : QObject(parent)
@@ -36,10 +38,18 @@ Document::Document(DocumentType type, const QString &fileName,
     , mFileName(fileName)
     , mUndoStack(new QUndoStack(this))
     , mCurrentObject(nullptr)
+    , mChangedOnDisk(false)
     , mIgnoreBrokenLinks(false)
 {
     connect(mUndoStack, &QUndoStack::cleanChanged,
             this, &Document::modifiedChanged);
+
+    sDocumentInstances.append(this);
+}
+
+Document::~Document()
+{
+    sDocumentInstances.removeOne(this);
 }
 
 void Document::setFileName(const QString &fileName)
@@ -110,6 +120,11 @@ void Document::setIgnoreBrokenLinks(bool ignoreBrokenLinks)
 
     mIgnoreBrokenLinks = ignoreBrokenLinks;
     emit ignoreBrokenLinksChanged(ignoreBrokenLinks);
+}
+
+void Document::setChangedOnDisk(bool changedOnDisk)
+{
+    mChangedOnDisk = changedOnDisk;
 }
 
 } // namespace Internal

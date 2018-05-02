@@ -673,7 +673,7 @@ void MainWindow::dropEvent(QDropEvent *e)
 void MainWindow::newMap()
 {
     NewMapDialog newMapDialog(this);
-    QScopedPointer<MapDocument> mapDocument(newMapDialog.createMap());
+    auto mapDocument = newMapDialog.createMap();
 
     if (!mapDocument)
         return;
@@ -681,7 +681,7 @@ void MainWindow::newMap()
     if (!mDocumentManager->saveDocumentAs(mapDocument.data()))
         return;
 
-    mDocumentManager->addDocument(mapDocument.take());
+    mDocumentManager->addDocument(mapDocument);
 }
 
 bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
@@ -697,7 +697,7 @@ bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
     }
 
     QString error;
-    Document *document = mDocumentManager->loadDocument(fileName, fileFormat, &error);
+    auto document = mDocumentManager->loadDocument(fileName, fileFormat, &error);
 
     if (!document) {
         QMessageBox::critical(this, tr("Error Opening File"), error);
@@ -706,7 +706,7 @@ bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
 
     mDocumentManager->addDocument(document);
 
-    if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document))
+    if (auto mapDocument = qobject_cast<MapDocument*>(document.data()))
         mDocumentManager->checkTilesetColumns(mapDocument);
 
     Preferences::instance()->addRecentFile(fileName);
@@ -820,23 +820,23 @@ static bool isEmbeddedTilesetDocument(Document *document)
 
 void MainWindow::saveAll()
 {
-    for (Document *document : mDocumentManager->documents()) {
-        if (!mDocumentManager->isDocumentModified(document))
+    for (const auto &document : mDocumentManager->documents()) {
+        if (!mDocumentManager->isDocumentModified(document.data()))
             continue;
 
         // Skip embedded tilesets, they will be saved when their map is checked
-        if (isEmbeddedTilesetDocument((document)))
+        if (isEmbeddedTilesetDocument((document.data())))
             continue;
 
         QString fileName(document->fileName());
         QString error;
 
         if (fileName.isEmpty()) {
-            mDocumentManager->switchToDocument(document);
-            if (!mDocumentManager->saveDocumentAs(document))
+            mDocumentManager->switchToDocument(document.data());
+            if (!mDocumentManager->saveDocumentAs(document.data()))
                 return;
         } else if (!document->save(fileName, &error)) {
-            mDocumentManager->switchToDocument(document);
+            mDocumentManager->switchToDocument(document.data());
             QMessageBox::critical(this, tr("Error Saving File"), error);
             return;
         }
@@ -869,10 +869,10 @@ bool MainWindow::confirmSave(Document *document)
 
 bool MainWindow::confirmAllSave()
 {
-    for (Document *document : mDocumentManager->documents()) {
-        if (isEmbeddedTilesetDocument((document)))
+    for (const auto &document : mDocumentManager->documents()) {
+        if (isEmbeddedTilesetDocument((document.data())))
             continue;
-        if (!confirmSave(document))
+        if (!confirmSave(document.data()))
             return false;
     }
 
@@ -1089,10 +1089,10 @@ bool MainWindow::newTileset(const QString &path)
         mapDocument->undoStack()->push(new AddTileset(mapDocument, tileset));
     } else {
         // Save new external tileset and open it
-        QScopedPointer<TilesetDocument> tilesetDocument(new TilesetDocument(tileset));
+        auto tilesetDocument = TilesetDocumentPtr::create(tileset);
         if (!mDocumentManager->saveDocumentAs(tilesetDocument.data()))
             return false;
-        mDocumentManager->addDocument(tilesetDocument.take());
+        mDocumentManager->addDocument(tilesetDocument);
     }
     return true;
 }
@@ -1452,10 +1452,9 @@ void MainWindow::writeSettings()
         mSettings.setValue(QLatin1String("lastActive"), document->fileName());
 
     QStringList fileList;
-    for (int i = 0; i < mDocumentManager->documentCount(); i++) {
-        Document *document = mDocumentManager->documents().at(i);
+    for (const auto &document : mDocumentManager->documents())
         fileList.append(document->fileName());
-    }
+
     mSettings.setValue(QLatin1String("lastOpenFiles"), fileList);
     mSettings.endGroup();
 
@@ -1644,7 +1643,7 @@ void MainWindow::documentChanged(Document *document)
 
 void MainWindow::closeDocument(int index)
 {
-    if (confirmSave(mDocumentManager->documents().at(index)))
+    if (confirmSave(mDocumentManager->documents().at(index).data()))
         mDocumentManager->closeDocumentAt(index);
 }
 

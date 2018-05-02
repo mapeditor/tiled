@@ -30,7 +30,6 @@
 #include "changeproperties.h"
 #include "changeselectedarea.h"
 #include "containerhelpers.h"
-#include "documentmanager.h"
 #include "flipmapobjects.h"
 #include "grouplayer.h"
 #include "hexagonalrenderer.h"
@@ -138,9 +137,8 @@ bool MapDocument::save(const QString &fileName, QString *error)
     mLastSaved = QFileInfo(fileName).lastModified();
 
     // Mark TilesetDocuments for embedded tilesets as saved
-    auto documentManager = DocumentManager::instance();
     for (const SharedTileset &tileset : mMap->tilesets()) {
-        if (TilesetDocument *tilesetDocument = documentManager->findTilesetDocument(tileset))
+        if (TilesetDocument *tilesetDocument = TilesetDocument::findDocumentForTileset(tileset))
             if (tilesetDocument->isEmbedded())
                 tilesetDocument->setClean();
     }
@@ -149,9 +147,9 @@ bool MapDocument::save(const QString &fileName, QString *error)
     return true;
 }
 
-MapDocument *MapDocument::load(const QString &fileName,
-                               MapFormat *format,
-                               QString *error)
+MapDocumentPtr MapDocument::load(const QString &fileName,
+                                 MapFormat *format,
+                                 QString *error)
 {
     Map *map = format->read(fileName);
 
@@ -161,7 +159,7 @@ MapDocument *MapDocument::load(const QString &fileName,
         return nullptr;
     }
 
-    MapDocument *document = new MapDocument(map, fileName);
+    MapDocumentPtr document = MapDocumentPtr::create(map, fileName);
     document->setReaderFormat(format);
     if (format->hasCapabilities(MapFormat::Write))
         document->setWriterFormat(format);
