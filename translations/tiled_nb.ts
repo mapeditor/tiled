@@ -1192,7 +1192,7 @@ Linje %1, kolonne %2</translation>
     <message>
         <location line="+3"/>
         <source>Margin:</source>
-        <translation>Margin:</translation>
+        <translation>Marg:</translation>
     </message>
     <message>
         <location line="-45"/>
@@ -3196,7 +3196,7 @@ Do you want to replace it?</source>
     <message numerus="yes">
         <location line="+74"/>
         <source>Drag Layer(s)</source>
-        <translation><numerusform>Dra lag</numerusform>
+        <translation type="unfinished"><numerusform>Dra lag</numerusform>
         <numerusform>Dra lag</numerusform>
         </translation></message>
     <message>
@@ -5216,12 +5216,12 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+9"/>
         <source>Set Wang Set Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Velg bilde for Wang-sett</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Set Wang Color Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Velg farge for Wang-bilde</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -5595,12 +5595,12 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+18"/>
         <source>Toggle Polygon/Polyline</source>
-        <translation type="unfinished"></translation>
+        <translation>Veksle polygon/polylinje</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Split Polyline</source>
-        <translation type="unfinished"></translation>
+        <translation>Del polylinje</translation>
     </message>
     <message>
         <location filename="../src/tiled/addremoveterrain.cpp" line="+67"/>
@@ -5670,19 +5670,15 @@ Vennligst velgt et spesifikt format.</translation>
     <message numerus="yes">
         <location line="+51"/>
         <source>Change %n Object/s Tile</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Endre %n objekts fil</numerusform>
+        <numerusform>Endre %n objekters fil</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+65"/>
         <source>Detach %n Template Instance(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Løsne %n malinstans</numerusform>
+        <numerusform>Løsne %n malinstanser</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+45"/>
         <source>Reset %n Instances</source>
@@ -5871,12 +5867,12 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location filename="../src/tiled/changewangsetdata.cpp" line="+36"/>
         <source>Change Wang Set edge count</source>
-        <translation type="unfinished"></translation>
+        <translation>Endre kantantall for Wang-sett</translation>
     </message>
     <message>
         <location line="+71"/>
         <source>Change Wang Set corner count</source>
-        <translation type="unfinished"></translation>
+        <translation>Endre hjørneantall for Wang-sett</translation>
     </message>
     <message>
         <location line="+68"/>
@@ -5886,7 +5882,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+89"/>
         <source>Set Wang Set Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Valg bilde for Wang-sett</translation>
     </message>
     <message>
         <location filename="../src/tiled/moveterrain.cpp" line="+61"/>
