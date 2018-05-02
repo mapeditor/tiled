@@ -158,7 +158,7 @@ TilesetDocumentPtr TilesetDocument::load(const QString &fileName,
     if (tileset.isNull()) {
         if (error)
             *error = format->errorString();
-        return nullptr;
+        return TilesetDocumentPtr();
     }
 
     tileset->setFormat(format);

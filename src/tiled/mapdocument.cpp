@@ -156,7 +156,7 @@ MapDocumentPtr MapDocument::load(const QString &fileName,
     if (!map) {
         if (error)
             *error = format->errorString();
-        return nullptr;
+        return MapDocumentPtr();
     }
 
     MapDocumentPtr document = MapDocumentPtr::create(map, fileName);
