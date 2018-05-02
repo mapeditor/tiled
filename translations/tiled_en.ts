@@ -335,7 +335,7 @@
     <message>
         <location line="+7"/>
         <source>&amp;Include background color</source>
-        <translation>&amp;Include background colour</translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -1143,7 +1143,7 @@ Line %1, column %2</source>
     <message>
         <location line="+20"/>
         <source>Use transparent color:</source>
-        <translation>Use transparent colour:</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+129"/>
@@ -1153,7 +1153,7 @@ Line %1, column %2</source>
     <message>
         <location line="+38"/>
         <source>Pick color from image</source>
-        <translation>Pick colour from image</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="-138"/>
@@ -1481,7 +1481,7 @@ Line %1, column %2</source>
     <message>
         <location line="+39"/>
         <source>Grid color:</source>
-        <translation>Grid colour:</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+46"/>
@@ -1524,7 +1524,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/preferencesdialog.ui" line="+22"/>
         <source>Selection color:</source>
-        <translation>Selection colour:</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1534,7 +1534,7 @@ Line %1, column %2</source>
     <message>
         <location line="+26"/>
         <source>Base color:</source>
-        <translation>Base colour:</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+27"/>
@@ -4187,7 +4187,7 @@ Please select specific format.</source>
     <message>
         <location line="+2"/>
         <source>Color</source>
-        <translation>Colour</translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -4417,7 +4417,7 @@ Please select specific format.</source>
         <location line="+5"/>
         <location line="+163"/>
         <source>Background Color</source>
-        <translation>Background Colour</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="-130"/>
@@ -4476,7 +4476,7 @@ Please select specific format.</source>
     <message>
         <location line="+16"/>
         <source>Wang Color</source>
-        <translation>Wang Colour</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+40"/>
@@ -4615,7 +4615,7 @@ Please select specific format.</source>
         <location line="+34"/>
         <location line="+176"/>
         <source>Color</source>
-        <translation>Colour</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="-171"/>
@@ -4638,7 +4638,7 @@ Please select specific format.</source>
         <location line="-105"/>
         <location line="+66"/>
         <source>Transparent Color</source>
-        <translation>Transparent Colour</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="-59"/>
@@ -5210,7 +5210,7 @@ Please select specific format.</source>
     <message>
         <location line="+4"/>
         <source>Set Wang Color Image</source>
-        <translation>Set Wang Colour Image</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+5"/>
@@ -5333,7 +5333,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/wangcolorview.cpp" line="+184"/>
         <source>Pick Custom Color</source>
-        <translation>Pick Custom Colour</translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -5348,7 +5348,7 @@ Please select specific format.</source>
         <location line="-323"/>
         <location line="+324"/>
         <source>Colors</source>
-        <translation>Colours</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="-10"/>
@@ -5373,17 +5373,17 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Add Edge Color</source>
-        <translation>Add Edge Colour</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add Corner Color</source>
-        <translation>Add Corner Colour</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Color</source>
-        <translation>Remove Colour</translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -5765,7 +5765,7 @@ Please select specific format.</source>
         <location line="+10"/>
         <location filename="../src/tiled/tilesetchanges.cpp" line="-40"/>
         <source>Change Background Color</source>
-        <translation>Change Background Colour</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+10"/>
@@ -5868,7 +5868,7 @@ Please select specific format.</source>
     <message>
         <location line="+68"/>
         <source>Remove Wang Color</source>
-        <translation>Remove Wang Colour</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+89"/>
