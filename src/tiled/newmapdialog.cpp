@@ -140,7 +140,7 @@ NewMapDialog::~NewMapDialog()
 MapDocumentPtr NewMapDialog::createMap()
 {
     if (exec() != QDialog::Accepted)
-        return nullptr;
+        return MapDocumentPtr();
 
     const bool fixedSize = mUi->fixedSize->isChecked();
     const int mapWidth = mUi->mapWidth->value();
