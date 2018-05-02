@@ -33,12 +33,13 @@ using namespace Tiled;
 using namespace Internal;
 
 WangColorModel::WangColorModel(TilesetDocument *tilesetDocument,
+                               WangSet *wangSet,
                                QObject *parent)
     : QAbstractItemModel(parent)
     , mTilesetDocument(tilesetDocument)
-    , mWangSet(nullptr)
+    , mWangSet(wangSet)
     , mEdgeText(new QString(QLatin1String("Edge Colors")))
-    , mCornerText(new QString(QLatin1String("CornerColors")))
+    , mCornerText(new QString(QLatin1String("Corner Colors")))
 {
 }
 
@@ -47,9 +48,9 @@ QModelIndex WangColorModel::index(int row, int column, const QModelIndex &parent
     if (!parent.isValid())
         return createIndex(row, column);
 
-    if (parent.row() == 0) {
+    if (parent.row() == 0)
         return createIndex(row, column, mEdgeText);
-    }
+
     if (parent.row() == 1)
         return createIndex(row, column, mCornerText);
 
@@ -165,14 +166,11 @@ QVariant WangColorModel::data(const QModelIndex &index, int role) const
 
 bool WangColorModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    if (!mTilesetDocument)
-        return false;
-
     if (role == Qt::EditRole) {
         const QString newName = value.toString();
         WangColor *wangColor = wangColorAt(index).data();
         if (wangColor->name() != newName) {
-            QUndoCommand *command = new ChangeWangColorName(newName, colorAt(index), isEdgeColorAt(index), this);
+            auto command = new ChangeWangColorName(mTilesetDocument, wangColor, newName);
             mTilesetDocument->undoStack()->push(command);
         }
 
@@ -188,17 +186,10 @@ Qt::ItemFlags WangColorModel::flags(const QModelIndex &index) const
 
     if (!index.parent().isValid())
         defaultFlags &= ~Qt::ItemIsSelectable;
-    else if (mTilesetDocument)
+    else
         defaultFlags |= Qt::ItemIsEditable;
 
     return defaultFlags;
-}
-
-void WangColorModel::setWangSet(WangSet *wangSet)
-{
-    beginResetModel();
-    mWangSet = wangSet;
-    endResetModel();
 }
 
 void WangColorModel::resetModel()
@@ -209,7 +200,7 @@ void WangColorModel::resetModel()
 
 bool WangColorModel::isEdgeColorAt(const QModelIndex &index) const
 {
-    //Shouldn't use on invalid index
+    // Shouldn't use on invalid index
     Q_ASSERT(index.isValid());
 
     return index.parent().row() == 0;
@@ -234,43 +225,33 @@ QSharedPointer<WangColor> WangColorModel::wangColorAt(const QModelIndex &index) 
         return mWangSet->cornerColorAt(colorAt(index));
 }
 
-void WangColorModel::setName(const QString &name, bool isEdge, int index)
+void WangColorModel::setName(WangColor *wangColor, const QString &name)
 {
-    if (isEdge)
-        mWangSet->edgeColorAt(index)->setName(name);
-    else
-        mWangSet->cornerColorAt(index)->setName(name);
-
-    QModelIndex i = isEdge? edgeIndex(index) : cornerIndex(index);
-    emit dataChanged(i, i);
+    wangColor->setName(name);
+    emitDataChanged(wangColor);
 }
 
-void WangColorModel::setImage(int imageId, bool isEdge, int index)
+void WangColorModel::setImage(WangColor *wangColor, int imageId)
 {
-    if (isEdge)
-        mWangSet->edgeColorAt(index)->setImageId(imageId);
-    else
-        mWangSet->cornerColorAt(index)->setImageId(imageId);
-
-    QModelIndex i = isEdge ? edgeIndex(index) : cornerIndex(index);
-    emit dataChanged(i, i);
+    wangColor->setImageId(imageId);
+    emitDataChanged(wangColor);
 }
 
-void WangColorModel::setColor(const QColor &color, bool isEdge, int index)
+void WangColorModel::setColor(WangColor *wangColor, const QColor &color)
 {
-    if (isEdge)
-        mWangSet->edgeColorAt(index)->setColor(color);
-    else
-        mWangSet->cornerColorAt(index)->setColor(color);
-
-    QModelIndex i = isEdge ? edgeIndex(index) : cornerIndex(index);
-    emit dataChanged(i, i);
+    wangColor->setColor(color);
+    emitDataChanged(wangColor);
 }
 
-void WangColorModel::setProbability(qreal probability, bool isEdge, int index)
+void WangColorModel::setProbability(WangColor *wangColor, qreal probability)
 {
-    if (isEdge)
-        mWangSet->edgeColorAt(index)->setProbability(probability);
-    else
-        mWangSet->cornerColorAt(index)->setProbability(probability);
+    wangColor->setProbability(probability);
+    // no data changed signal because probability not exposed by model
+}
+
+void WangColorModel::emitDataChanged(WangColor *wangColor)
+{
+    QModelIndex i = wangColor->isEdge() ? edgeIndex(wangColor->colorIndex()) :
+                                          cornerIndex(wangColor->colorIndex());
+    emit dataChanged(i, i);
 }

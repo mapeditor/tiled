@@ -219,7 +219,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     MacSupport::addFullscreen(this);
 #endif
 
+#if QT_VERSION >= 0x050600
     setDockOptions(dockOptions() | QMainWindow::GroupedDragging);
+#endif
 
     Preferences *preferences = Preferences::instance();
 
@@ -706,8 +708,12 @@ bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
 
     mDocumentManager->addDocument(document);
 
-    if (auto mapDocument = qobject_cast<MapDocument*>(document.data()))
+    if (auto mapDocument = qobject_cast<MapDocument*>(document.data())) {
         mDocumentManager->checkTilesetColumns(mapDocument);
+    } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document.data())) {
+        mDocumentManager->checkTilesetColumns(tilesetDocument);
+        tilesetDocument->tileset()->syncExpectedColumnsAndRows();
+    }
 
     Preferences::instance()->addRecentFile(fileName);
     return true;

@@ -29,62 +29,12 @@
 #include "tmxviewer.h"
 
 #include <QApplication>
+#include <QCommandLineParser>
 #include <QDebug>
 
 #ifdef Q_OS_WIN
 #include <windows.h>
 #endif
-
-namespace {
-
-struct CommandLineOptions {
-    CommandLineOptions()
-        : showHelp(false)
-        , showVersion(false)
-    {}
-
-    bool showHelp;
-    bool showVersion;
-    QString fileToOpen;
-};
-
-} // anonymous namespace
-
-static void showHelp()
-{
-    // TODO: Make translatable
-    qWarning() <<
-            "Usage: tmxviewer [option] [file]\n\n"
-            "Options:\n"
-            "  -h --help    : Display this help\n"
-            "  -v --version : Display the version";
-}
-
-static void showVersion()
-{
-    qWarning().noquote() << "TMX Map Viewer"
-                         << QApplication::applicationVersion();
-}
-
-static void parseCommandLineArguments(CommandLineOptions &options)
-{
-    const QStringList arguments = QCoreApplication::arguments();
-
-    for (int i = 1; i < arguments.size(); ++i) {
-        const QString &arg = arguments.at(i);
-        if (arg == QLatin1String("--help") || arg == QLatin1String("-h")) {
-            options.showHelp = true;
-        } else if (arg == QLatin1String("--version")
-                || arg == QLatin1String("-v")) {
-            options.showVersion = true;
-        } else if (arg.at(0) == QLatin1Char('-')) {
-            qWarning() << "Unknown option" << arg;
-            options.showHelp = true;
-        } else if (options.fileToOpen.isEmpty()) {
-            options.fileToOpen = arg;
-        }
-    }
-}
 
 int main(int argc, char *argv[])
 {
@@ -103,21 +53,19 @@ int main(int argc, char *argv[])
     a.setApplicationName(QLatin1String("TmxViewer"));
     a.setApplicationVersion(QLatin1String("1.0"));
 
-    CommandLineOptions options;
-    parseCommandLineArguments(options);
+    QCommandLineParser parser;
+    parser.setApplicationDescription(QCoreApplication::translate("main", "Displays a Tiled map (TMX format)."));
+    parser.addHelpOption();
+    parser.addVersionOption();
+    parser.addPositionalArgument("file", QCoreApplication::translate("main", "Map file to display."));
+    parser.process(a);
 
-    if (options.showVersion)
-        showVersion();
-    if (options.showHelp || (options.fileToOpen.isEmpty()
-                             && !options.showVersion))
-        showHelp();
-    if (options.showVersion
-            || options.showHelp
-            || options.fileToOpen.isEmpty())
-        return 0;
+    const QStringList args = parser.positionalArguments();
+    if (args.size() != 1)
+        parser.showHelp(1);
 
     TmxViewer w;
-    if (!w.viewMap(options.fileToOpen))
+    if (!w.viewMap(args.first()))
         return 1;
 
     w.show();

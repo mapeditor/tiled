@@ -366,7 +366,8 @@
     <xs:attribute name="staggeraxis" type="staggeraxisT" use="optional"/>
     <xs:attribute name="staggerindex" type="staggerindexT" use="optional"/>
     <xs:attribute name="backgroundcolor" type="hexColorAlphaT" use="optional"/>
-    <xs:attribute name="nextobjectid" type="xs:nonNegativeInteger" use="required"/>
+    <xs:attribute name="nextlayerid" type="xs:nonNegativeInteger" use="optional"/>
+    <xs:attribute name="nextobjectid" type="xs:nonNegativeInteger" use="optional"/>
   </xs:attributeGroup>
 
   <xs:attributeGroup name="tileset">

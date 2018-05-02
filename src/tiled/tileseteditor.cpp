@@ -175,7 +175,9 @@ TilesetEditor::TilesetEditor(QObject *parent)
     , mCurrentTilesetDocument(nullptr)
     , mCurrentTile(nullptr)
 {
+#if QT_VERSION >= 0x050600
     mMainWindow->setDockOptions(mMainWindow->dockOptions() | QMainWindow::GroupedDragging);
+#endif
     mMainWindow->setDockNestingEnabled(true);
     mMainWindow->setCentralWidget(mWidgetStack);
 
@@ -980,24 +982,24 @@ void TilesetEditor::setWangSetImage(Tile *tile)
         return;
 
     mCurrentTilesetDocument->undoStack()->push(new SetWangSetImage(mCurrentTilesetDocument,
-                                                                   mCurrentTilesetDocument->tileset()->wangSets().indexOf(wangSet),
+                                                                   wangSet,
                                                                    tile->id()));
 }
 
 void TilesetEditor::setWangColorImage(Tile *tile, bool isEdge, int index)
 {
-    mCurrentTilesetDocument->undoStack()->push(new ChangeWangColorImage(tile->id(),
-                                                                        index,
-                                                                        isEdge,
-                                                                        mWangDock->wangColorModel()));
+    WangSet *wangSet = mWangDock->currentWangSet();
+    WangColor *wangColor = isEdge ? wangSet->edgeColorAt(index).data() : wangSet->cornerColorAt(index).data();
+    mCurrentTilesetDocument->undoStack()->push(new ChangeWangColorImage(mCurrentTilesetDocument,
+                                                                        wangColor,
+                                                                        tile->id()));
 }
 
-void TilesetEditor::setWangColorColor(const QColor &color, bool isEdge, int index)
+void TilesetEditor::setWangColorColor(WangColor *wangColor, const QColor &color)
 {
-    mCurrentTilesetDocument->undoStack()->push(new ChangeWangColorColor(color,
-                                                                        index,
-                                                                        isEdge,
-                                                                        mWangDock->wangColorModel()));
+    mCurrentTilesetDocument->undoStack()->push(new ChangeWangColorColor(mCurrentTilesetDocument,
+                                                                        wangColor,
+                                                                        color));
 }
 
 void TilesetEditor::onAnimationEditorClosed()

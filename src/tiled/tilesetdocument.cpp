@@ -23,11 +23,12 @@
 #include "mapdocument.h"
 #include "map.h"
 #include "terrain.h"
-#include "wangset.h"
 #include "tile.h"
 #include "tilesetformat.h"
 #include "tilesetterrainmodel.h"
 #include "tilesetwangsetmodel.h"
+#include "wangcolormodel.h"
+#include "wangset.h"
 
 #include <QCoreApplication>
 #include <QFileInfo>
@@ -99,9 +100,6 @@ bool TilesetDocument::save(const QString &fileName, QString *error)
 
     if (!tilesetFormat || !(tilesetFormat->capabilities() & FileFormat::Write))
         return false;
-
-    // todo: workaround to avoid writing the tileset like an external tileset reference
-    mTileset->setFileName(QString());
 
     if (!tilesetFormat->write(*tileset(), fileName)) {
         if (error)
@@ -303,6 +301,20 @@ QList<Object *> TilesetDocument::currentObjects() const
     return Document::currentObjects();
 }
 
+/**
+ * Returns the WangColorModel instance for the given \a wangSet.
+ * The model instances are created on-demand and owned by the document.
+ */
+WangColorModel *TilesetDocument::wangColorModel(WangSet *wangSet)
+{
+    Q_ASSERT(wangSet->tileset() == mTileset.data());
+
+    std::unique_ptr<WangColorModel> &model = mWangColorModels[wangSet];
+    if (!model)
+        model.reset(new WangColorModel(this, wangSet));
+    return model.get();
+}
+
 void TilesetDocument::setTileType(Tile *tile, const QString &type)
 {
     Q_ASSERT(tile->tileset() == mTileset.data());
@@ -365,6 +377,8 @@ void TilesetDocument::onWangSetRemoved(WangSet *wangSet)
 {
     if (wangSet == mCurrentObject)
         setCurrentObject(nullptr);
+
+    mWangColorModels.erase(wangSet);
 }
 
 } // namespace Internal

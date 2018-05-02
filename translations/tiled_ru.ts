@@ -114,17 +114,17 @@
     <message>
         <location line="+20"/>
         <source>Arguments:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Аргументы:</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Working Directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>Рабочая директория:</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Show output in Debug Console</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Показывать вывод в Консоли Отладки</translation>
     </message>
     <message>
         <location line="+33"/>
@@ -660,7 +660,7 @@
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+L</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+L</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -1060,7 +1060,7 @@ Line %1, column %2</source>
     <message>
         <location line="-38"/>
         <source>Fixed</source>
-        <translation type="unfinished"></translation>
+        <translation>Исправлено</translation>
     </message>
     <message>
         <location line="+54"/>
@@ -2228,7 +2228,7 @@ Line %1, column %2</source>
     <message>
         <location line="+9"/>
         <source>Tbin map files (*.tbin)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Файлы Tbin карт (*.tbin)</translation>
     </message>
 </context>
 <context>
@@ -2237,7 +2237,7 @@ Line %1, column %2</source>
         <location filename="../src/plugins/tbin/tbin/Map.cpp" line="+99"/>
         <location line="+23"/>
         <source>Bad property type</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Неверный тип свойства</translation>
     </message>
     <message>
         <location line="+69"/>
@@ -2248,22 +2248,22 @@ Line %1, column %2</source>
     <message>
         <location line="+72"/>
         <source>Failed to open file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось открыть файл.</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>File is not a tbin file.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Файл не является файлом tbin.</translation>
     </message>
     <message>
         <location line="+35"/>
         <source>Failed to open file</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось открыть файл</translation>
     </message>
     <message>
         <location filename="../src/plugins/tbin/tbinplugin.cpp" line="-255"/>
         <source>Unsupported property type</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Данный тип свойства не поддерживается</translation>
     </message>
 </context>
 <context>
@@ -2330,7 +2330,7 @@ Line %1, column %2</source>
     <message>
         <location line="+16"/>
         <source>Replace Tile</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Заменить Tile</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -2345,17 +2345,17 @@ Line %1, column %2</source>
     <message>
         <location line="+12"/>
         <source>Save As Template</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Сохранить как Шаблон</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Detach</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Отсоединить</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Reset Template Instance(s)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Сбросить Шаблон(ы)</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -2577,7 +2577,7 @@ Line %1, column %2</source>
     <message>
         <location line="+2"/>
         <source>Template</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Шаблон</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -2617,7 +2617,7 @@ Line %1, column %2</source>
     <message>
         <location line="-5"/>
         <source>Open Template...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Открыть Шаблон..</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -2807,7 +2807,7 @@ Line %1, column %2</source>
     <message>
         <location line="+10"/>
         <source>Select Working Directory</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Выбрать рабочую директорию</translation>
     </message>
 </context>
 <context>
@@ -2833,7 +2833,7 @@ Line %1, column %2</source>
     <message>
         <location line="+20"/>
         <source>Executing: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Выполняется: %1</translation>
     </message>
     <message>
         <location line="+29"/>
@@ -2895,12 +2895,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/createpointobjecttool.cpp" line="+45"/>
         <source>Insert Point</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Вставить точку</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>I</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">I</translation>
     </message>
 </context>
 <context>
@@ -2947,12 +2947,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/createtemplatetool.cpp" line="+82"/>
         <source>Insert Template</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Вставить шаблон</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>V</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">V</translation>
     </message>
 </context>
 <context>
@@ -2965,7 +2965,7 @@ Line %1, column %2</source>
     <message>
         <location line="+1"/>
         <source>E</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">E</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -3006,12 +3006,12 @@ Line %1, column %2</source>
     <message>
         <location line="+7"/>
         <source>Close Other Tabs</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Закрыть другие вкладки</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Close Tabs to the Right</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Закрыть вкладки справа</translation>
     </message>
     <message>
         <location line="+246"/>
@@ -3036,7 +3036,7 @@ Line %1, column %2</source>
         <location line="-218"/>
         <location line="+219"/>
         <source>O</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">O</translation>
     </message>
     <message numerus="yes">
         <location line="+220"/>
@@ -3073,7 +3073,7 @@ Line %1, column %2</source>
         <location line="-269"/>
         <location line="+324"/>
         <source>Delete Segment</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить сегмент</translation>
     </message>
 </context>
 <context>
@@ -3195,7 +3195,7 @@ Do you want to replace it?</source>
     <message>
         <location line="+1"/>
         <source>Locked</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Заблокировать</translation>
     </message>
     <message numerus="yes">
         <location line="+74"/>
@@ -3328,7 +3328,7 @@ Do you want to replace it?</source>
     <message>
         <location line="+295"/>
         <source>Open File</source>
-        <translation type="unfinished"></translation>
+        <translation>Открыть файл</translation>
     </message>
     <message>
         <location line="+748"/>
@@ -3475,7 +3475,7 @@ Please select specific format.</source>
         <location line="+59"/>
         <location line="+28"/>
         <source>Error Exporting Map!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ошибка экспорта карты!</translation>
     </message>
     <message>
         <location line="+48"/>
@@ -3523,17 +3523,17 @@ Please select specific format.</source>
         <location filename="../src/tiled/documentmanager.cpp" line="+19"/>
         <location line="+20"/>
         <source>untitled</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">безымянный</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Save Template</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить шаблон</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Error Saving Template</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка сохранения шаблона</translation>
     </message>
 </context>
 <context>
@@ -3898,7 +3898,7 @@ Please select specific format.</source>
     <message>
         <location line="+71"/>
         <source>Tool Options</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Настройки инструмента</translation>
     </message>
     <message>
         <location line="-1"/>
@@ -4072,7 +4072,7 @@ Please select specific format.</source>
     <message>
         <location line="+11"/>
         <source>Open File...</source>
-        <translation type="unfinished"></translation>
+        <translation>Открыть файл...</translation>
     </message>
 </context>
 <context>
@@ -4588,7 +4588,7 @@ Please select specific format.</source>
     <message>
         <location line="+57"/>
         <source>Template</source>
-        <translation type="unfinished"></translation>
+        <translation>Шаблон</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -4770,7 +4770,7 @@ Please select specific format.</source>
         <location line="-102"/>
         <location line="+103"/>
         <source>P</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">P</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -4816,12 +4816,12 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Rotate Left</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Вращать влево</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Rotate Right</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Вращать вправо</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -4864,13 +4864,13 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/templatesdock.cpp" line="+297"/>
         <source>Open Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Открыть набор тайлов</translation>
     </message>
     <message>
         <location line="+4"/>
         <location line="+9"/>
         <source>%1: Couldn&apos;t find &quot;%2&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%1: Не удалось найти &quot;%2&quot;</translation>
     </message>
     <message>
         <location line="-4"/>
@@ -4885,12 +4885,12 @@ Please select specific format.</source>
     <message>
         <location line="+24"/>
         <source>Templates</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Шаблоны</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Choose Templates Directory</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Выбрать директорию для шаблонов</translation>
     </message>
     <message>
         <location line="+24"/>
@@ -5273,7 +5273,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tmxmapformat.h" line="+66"/>
         <source>Tiled map files (*.tmx *.xml)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Файлы Tiled карт (*.tmx *.xml)</translation>
     </message>
 </context>
 <context>
@@ -5281,7 +5281,7 @@ Please select specific format.</source>
     <message>
         <location line="+28"/>
         <source>Tiled tileset files (*.tsx *.xml)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Файлы набора тайлов Tiled (*.tsx *.xml)</translation>
     </message>
 </context>
 <context>
@@ -5360,7 +5360,7 @@ Please select specific format.</source>
         <location line="-62"/>
         <location line="+63"/>
         <source>G</source>
-        <translation type="unfinished"></translation>
+        <translation>G</translation>
     </message>
     <message>
         <location line="+152"/>
@@ -5373,7 +5373,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/wangcolorview.cpp" line="+184"/>
         <source>Pick Custom Color</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Выбрать случайный цвет</translation>
     </message>
 </context>
 <context>
@@ -5382,13 +5382,13 @@ Please select specific format.</source>
         <location filename="../src/tiled/wangdock.cpp" line="+228"/>
         <location line="+324"/>
         <source>Patterns</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Паттерны</translation>
     </message>
     <message>
         <location line="-323"/>
         <location line="+324"/>
         <source>Colors</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Цвета</translation>
     </message>
     <message>
         <location line="-10"/>
@@ -5423,7 +5423,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Remove Color</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Удалить цвет</translation>
     </message>
 </context>
 <context>
@@ -5439,7 +5439,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tmxmapformat.h" line="+27"/>
         <source>Tiled template files (*.tx)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Файлы шаблонов Tiled (*.tx)</translation>
     </message>
 </context>
 <context>
@@ -5669,12 +5669,12 @@ Please select specific format.</source>
     <message>
         <location line="+19"/>
         <source>Lock Layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Закрепить слой</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Unlock Layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Открепить слой</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -5929,12 +5929,12 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/moveterrain.cpp" line="+61"/>
         <source>Move Terrain Up</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Поднять участок</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Move Terrain Down</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Опустить участок</translation>
     </message>
     <message>
         <location filename="../src/tiled/renamewangset.cpp" line="+36"/>
@@ -5944,7 +5944,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/replacetemplate.cpp" line="+35"/>
         <source>Replace Template</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Заменить шаблон</translation>
     </message>
     <message>
         <location filename="../src/tiled/shapefilltool.cpp" line="-33"/>

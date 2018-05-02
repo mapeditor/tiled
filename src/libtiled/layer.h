@@ -67,6 +67,13 @@ public:
     Layer(TypeFlag type, const QString &name, int x, int y);
 
     /**
+     * The layer ID can be used to unique identify this layer of the map. It
+     * stays the same regardless of whether the layer is moved or renamed.
+     */
+    int id() const { return mId; }
+    void setId(int id) { mId = id; }
+
+    /**
      * Returns the type of this layer.
      */
     TypeFlag layerType() const { return mLayerType; }
@@ -231,6 +238,7 @@ protected:
     Layer *initializeClone(Layer *clone) const;
 
     QString mName;
+    int mId;
     TypeFlag mLayerType;
     int mX;
     int mY;

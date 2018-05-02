@@ -184,7 +184,7 @@ private:
     const Terrain *mTerrain;
     WangSet *mWangSet;
     WangId mWangId;
-    int mWangColor;
+    int mWangColorIndex;
     QModelIndex mHoveredIndex;
     int mHoveredCorner;
     bool mTerrainChanged;

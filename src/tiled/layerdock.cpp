@@ -23,6 +23,7 @@
 
 #include "layerdock.h"
 
+#include "changelayer.h"
 #include "layer.h"
 #include "layermodel.h"
 #include "map.h"
@@ -109,8 +110,6 @@ LayerDock::LayerDock(QWidget *parent):
     connect(mOpacitySlider, SIGNAL(valueChanged(int)),
             this, SLOT(sliderValueChanged(int)));
     updateOpacitySlider();
-
-    mLayerView->header()->setStretchLastSection(false);
 }
 
 void LayerDock::setMapDocument(MapDocument *mapDocument)
@@ -137,8 +136,11 @@ void LayerDock::setMapDocument(MapDocument *mapDocument)
         mLayerView->header()->setSectionResizeMode(0, QHeaderView::Stretch);
         mLayerView->header()->setSectionResizeMode(1, QHeaderView::Fixed);
         mLayerView->header()->setSectionResizeMode(2, QHeaderView::Fixed);
-        mLayerView->header()->resizeSection(1, Utils::dpiScaled(22));
-        mLayerView->header()->resizeSection(2, Utils::dpiScaled(22));
+
+        const int iconSectionWidth = IconCheckDelegate::exclusiveSectionWidth();
+        mLayerView->header()->setMinimumSectionSize(iconSectionWidth);
+        mLayerView->header()->resizeSection(1, iconSectionWidth);
+        mLayerView->header()->resizeSection(2, iconSectionWidth);
     }
 
     updateOpacitySlider();
@@ -167,7 +169,7 @@ void LayerDock::updateOpacitySlider()
     mUpdatingSlider = true;
     if (enabled) {
         qreal opacity = mMapDocument->currentLayer()->opacity();
-        mOpacitySlider->setValue((int) (opacity * 100));
+        mOpacitySlider->setValue(qRound(opacity * 100));
     } else {
         mOpacitySlider->setValue(100);
     }
@@ -270,8 +272,10 @@ LayerView::LayerView(QWidget *parent)
 
     setModel(mProxyModel);
     setItemDelegateForColumn(0, new BoldCurrentItemDelegate(selectionModel(), this));
-    setItemDelegateForColumn(1, new IconCheckDelegate(IconCheckDelegate::VisibilityIcon, this));
-    setItemDelegateForColumn(2, new IconCheckDelegate(IconCheckDelegate::LockedIcon, this));
+    setItemDelegateForColumn(1, new IconCheckDelegate(IconCheckDelegate::VisibilityIcon, true, this));
+    setItemDelegateForColumn(2, new IconCheckDelegate(IconCheckDelegate::LockedIcon, true, this));
+
+    header()->setStretchLastSection(false);
 
     connect(selectionModel(), &QItemSelectionModel::currentRowChanged, this, &LayerView::currentRowChanged);
 
@@ -409,14 +413,24 @@ void LayerView::contextMenuEvent(QContextMenuEvent *event)
 
 void LayerView::keyPressEvent(QKeyEvent *event)
 {
+    Layer *layer = mMapDocument ? mMapDocument->currentLayer() : nullptr;
+
     switch (event->key()) {
     case Qt::Key_Delete:
     case Qt::Key_Backspace:
-        if (mMapDocument) {
-            const LayerModel *layerModel = mMapDocument->layerModel();
-            const QModelIndex index = mProxyModel->mapToSource(currentIndex());
-            if (auto layer = layerModel->toLayer(index))
-                mMapDocument->removeLayer(layer);
+        if (layer) {
+            mMapDocument->removeLayer(layer);
+            return;
+        }
+        break;
+    case Qt::Key_Space:
+        if (layer) {
+            QUndoCommand *command = nullptr;
+            if (event->modifiers() & Qt::ControlModifier)
+                command = new SetLayerLocked(mMapDocument, layer, !layer->isLocked());
+            else
+                command = new SetLayerVisible(mMapDocument, layer, !layer->isVisible());
+            mMapDocument->undoStack()->push(command);
             return;
         }
         break;

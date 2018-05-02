@@ -30,6 +30,8 @@
 
 #include <QGraphicsView>
 
+#include <memory>
+
 namespace Tiled {
 class Map;
 class MapRenderer;
@@ -47,6 +49,6 @@ public:
 
 private:
     QGraphicsScene *mScene;
-    Tiled::Map *mMap;
-    Tiled::MapRenderer *mRenderer;
+    std::unique_ptr<Tiled::Map> mMap;
+    std::unique_ptr<Tiled::MapRenderer> mRenderer;
 };

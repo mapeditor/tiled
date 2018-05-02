@@ -4,7 +4,7 @@ DynamicLibrary {
     targetName: "tiled"
 
     Depends { name: "cpp" }
-    Depends { name: "Qt"; submodules: "gui"; versionAtLeast: "5.6" }
+    Depends { name: "Qt"; submodules: "gui"; versionAtLeast: "5.5" }
 
     Properties {
         condition: !qbs.toolchain.contains("msvc")

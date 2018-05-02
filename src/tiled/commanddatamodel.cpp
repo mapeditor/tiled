@@ -277,20 +277,27 @@ QMenu *CommandDataModel::contextMenu(QWidget *parent, const QModelIndex &index)
     if (row >= 0 && row < mCommands.size()) {
         menu = new QMenu(parent);
 
-        if (row > 0)
-            menu->addAction(tr("Move Up"), [=] { moveUp(row); });
+        if (row > 0) {
+            connect(menu->addAction(tr("Move Up")), &QAction::triggered,
+                    [=] { moveUp(row); });
+        }
 
-        if (row + 1 < mCommands.size())
-            menu->addAction(tr("Move Down"), [=] { moveUp(row + 1); });
+        if (row + 1 < mCommands.size()) {
+            connect(menu->addAction(tr("Move Down")), &QAction::triggered,
+                    [=] { moveUp(row + 1); });
+        }
 
         menu->addSeparator();
-        menu->addAction(tr("Execute"), [=] { execute(row); });
+        connect(menu->addAction(tr("Execute")), &QAction::triggered,
+                [=] { execute(row); });
 #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
-        menu->addAction(tr("Execute in Terminal"), [=] { executeInTerminal(row); });
+        connect(menu->addAction(tr("Execute in Terminal")), &QAction::triggered,
+                [=] { executeInTerminal(row); });
 #endif
 
         menu->addSeparator();
-        menu->addAction(tr("Delete"), [=] { remove(row); });
+        connect(menu->addAction(tr("Delete")), &QAction::triggered,
+                [=] { remove(row); });
     }
 
     return menu;

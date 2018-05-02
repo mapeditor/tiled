@@ -236,14 +236,11 @@ public class TMXMapReader {
     private TileSet unmarshalTileset(Node t) throws Exception {
         TileSet set = unmarshalClass(t, TileSet.class);
 
-        int firstGid = getAttribute(t, "firstgid", 1);
-
         String source = set.getSource();
         if (source != null) {
             String filename = xmlPath + source;
             InputStream in = new URL(makeUrl(filename)).openStream();
             TileSet ext = unmarshalTilesetFile(in, filename);
-            setFirstGidForTileset(ext, firstGid);
 
             if (ext == null) {
                 error = "Tileset " + source + " was not loaded correctly!";
@@ -261,10 +258,9 @@ public class TMXMapReader {
 
             if (settings.reuseCachedTilesets) {
                 set = cachedTilesets.get(name);
-                if (set != null) {
-                    setFirstGidForTileset(set, firstGid);
+                if (set != null)
                     return set;
-                }
+
                 set = new TileSet();
                 cachedTilesets.put(name, set);
             } else {
@@ -272,7 +268,6 @@ public class TMXMapReader {
             }
 
             set.setName(name);
-            setFirstGidForTileset(set, firstGid);
 
             boolean hasTilesetImage = false;
             NodeList children = t.getChildNodes();
@@ -722,7 +717,10 @@ public class TMXMapReader {
         tilesetPerFirstGid = new TreeMap<>();
         NodeList l = doc.getElementsByTagName("tileset");
         for (int i = 0; (item = l.item(i)) != null; i++) {
-            map.addTileset(unmarshalTileset(item));
+            int firstGid = getAttribute(item, "firstgid", 1);
+            TileSet tileset = unmarshalTileset(item);
+            tilesetPerFirstGid.put(firstGid, tileset);
+            map.addTileset(tileset);
         }
 
         // Load the layers and objectgroups
@@ -913,9 +911,5 @@ public class TMXMapReader {
      */
     private Entry<Integer, TileSet> findTileSetForTileGID(int gid) {
         return tilesetPerFirstGid.floorEntry(gid);
-    }
-
-    private void setFirstGidForTileset(TileSet tileset, int firstGid) {
-        tilesetPerFirstGid.put(firstGid, tileset);
     }
 }

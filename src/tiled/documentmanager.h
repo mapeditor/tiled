@@ -114,6 +114,7 @@ public:
     bool reloadDocumentAt(int index);
 
     void checkTilesetColumns(MapDocument *mapDocument);
+    bool checkTilesetColumns(TilesetDocument *tilesetDocument);
 
     const QVector<DocumentPtr> &documents() const;
 

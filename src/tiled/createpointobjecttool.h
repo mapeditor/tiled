@@ -31,6 +31,7 @@ class CreatePointObjectTool : public CreateObjectTool
 
 public:
     CreatePointObjectTool(QObject *parent);
+
     void languageChanged() override;
 
 protected:
@@ -41,6 +42,9 @@ protected:
 
     MapObject *createNewMapObject() override;
     bool startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup) override;
+
+private:
+    void languageChangedImpl();
 };
 
 } // namespace Internal

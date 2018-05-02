@@ -109,13 +109,6 @@ public slots:
 
     void paste(ClipboardManager::PasteFlags flags);
 
-    void flipHorizontally() { flip(FlipHorizontally); }
-    void flipVertically() { flip(FlipVertically); }
-    void rotateLeft() { rotate(RotateLeft); }
-    void rotateRight() { rotate(RotateRight); }
-
-    void flip(FlipDirection direction);
-    void rotate(RotateDirection direction);
     void setRandom(bool value);
     void setWangFill(bool value);
 

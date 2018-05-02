@@ -23,18 +23,23 @@
 #include "createscalableobjecttool.h"
 
 namespace Tiled {
-
 namespace Internal {
 
 class CreateEllipseObjectTool : public CreateScalableObjectTool
 {
     Q_OBJECT
+
 public:
     CreateEllipseObjectTool(QObject *parent);
+
     void languageChanged() override;
+
 protected:
     MapObject *createNewMapObject() override;
+
+private:
+    void languageChangedImpl();
 };
 
-}
-}
+} // namespace Internal
+} // namespace Tiled

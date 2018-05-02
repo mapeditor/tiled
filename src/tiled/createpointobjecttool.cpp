@@ -37,10 +37,16 @@ CreatePointObjectTool::CreatePointObjectTool(QObject *parent)
     icon.addFile(QLatin1String(":images/48x48/insert-point.png"));
     setIcon(icon);
     Utils::setThemeIcon(this, "insert-point");
-    languageChanged();
+    languageChangedImpl();
 }
 
 void CreatePointObjectTool::languageChanged()
+{
+    CreateObjectTool::languageChanged();
+    languageChangedImpl();
+}
+
+void CreatePointObjectTool::languageChangedImpl()
 {
     setName(tr("Insert Point"));
     setShortcut(QKeySequence(tr("I")));

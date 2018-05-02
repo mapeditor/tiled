@@ -23,7 +23,6 @@
 #include "addremovetileset.h"
 #include "changemapobject.h"
 #include "documentmanager.h"
-//#include "fileformat.h"
 #include "mapdocument.h"
 #include "map.h"
 #include "mapobject.h"
@@ -43,6 +42,7 @@
 #include <QKeyEvent>
 #include <QMenu>
 #include <QMessageBox>
+#include <QToolBar>
 #include <QUndoStack>
 
 #include <QtMath>
@@ -84,6 +84,34 @@ AbstractObjectTool::AbstractObjectTool(const QString &name,
     : AbstractTool(name, icon, shortcut, parent)
     , mMapScene(nullptr)
 {
+    QIcon flipHorizontalIcon(QLatin1String(":images/24x24/flip-horizontal.png"));
+    QIcon flipVerticalIcon(QLatin1String(":images/24x24/flip-vertical.png"));
+    QIcon rotateLeftIcon(QLatin1String(":images/24x24/rotate-left.png"));
+    QIcon rotateRightIcon(QLatin1String(":images/24x24/rotate-right.png"));
+
+    flipHorizontalIcon.addFile(QLatin1String(":images/32x32/flip-horizontal.png"));
+    flipVerticalIcon.addFile(QLatin1String(":images/32x32/flip-vertical.png"));
+    rotateLeftIcon.addFile(QLatin1String(":images/32x32/rotate-left.png"));
+    rotateRightIcon.addFile(QLatin1String(":images/32x32/rotate-right.png"));
+
+    mFlipHorizontal = new QAction(this);
+    mFlipHorizontal->setIcon(flipHorizontalIcon);
+
+    mFlipVertical = new QAction(this);
+    mFlipVertical->setIcon(flipVerticalIcon);
+
+    mRotateLeft = new QAction(this);
+    mRotateLeft->setIcon(rotateLeftIcon);
+
+    mRotateRight = new QAction(this);
+    mRotateRight->setIcon(rotateRightIcon);
+
+    connect(mFlipHorizontal, &QAction::triggered, this, &AbstractObjectTool::flipHorizontally);
+    connect(mFlipVertical, &QAction::triggered, this, &AbstractObjectTool::flipVertically);
+    connect(mRotateLeft, &QAction::triggered, this, &AbstractObjectTool::rotateLeft);
+    connect(mRotateRight, &QAction::triggered, this, &AbstractObjectTool::rotateRight);
+
+    AbstractObjectTool::languageChanged();
 }
 
 void AbstractObjectTool::activate(MapScene *scene)
@@ -141,6 +169,27 @@ void AbstractObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
         showContextMenu(topMostMapObjectAt(event->scenePos()),
                         event->screenPos());
     }
+}
+
+void AbstractObjectTool::languageChanged()
+{
+    mFlipHorizontal->setToolTip(tr("Flip Horizontally"));
+    mFlipVertical->setToolTip(tr("Flip Vertically"));
+    mRotateLeft->setToolTip(QCoreApplication::translate("Tiled::Internal::StampActions", "Rotate Left"));
+    mRotateRight->setToolTip(QCoreApplication::translate("Tiled::Internal::StampActions", "Rotate Right"));
+
+    mFlipHorizontal->setShortcut(QKeySequence(QCoreApplication::translate("Tiled::Internal::StampActions", "X")));
+    mFlipVertical->setShortcut(QKeySequence(QCoreApplication::translate("Tiled::Internal::StampActions", "Y")));
+    mRotateLeft->setShortcut(QKeySequence(QCoreApplication::translate("Tiled::Internal::StampActions", "Shift+Z")));
+    mRotateRight->setShortcut(QKeySequence(QCoreApplication::translate("Tiled::Internal::StampActions", "Z")));
+}
+
+void AbstractObjectTool::populateToolBar(QToolBar *toolBar)
+{
+    toolBar->addAction(mFlipHorizontal);
+    toolBar->addAction(mFlipVertical);
+    toolBar->addAction(mRotateLeft);
+    toolBar->addAction(mRotateRight);
 }
 
 void AbstractObjectTool::updateEnabledState()
@@ -352,6 +401,16 @@ void AbstractObjectTool::flipHorizontally()
 void AbstractObjectTool::flipVertically()
 {
     mapDocument()->flipSelectedObjects(FlipVertically);
+}
+
+void AbstractObjectTool::rotateLeft()
+{
+    mapDocument()->rotateSelectedObjects(RotateLeft);
+}
+
+void AbstractObjectTool::rotateRight()
+{
+    mapDocument()->rotateSelectedObjects(RotateRight);
 }
 
 void AbstractObjectTool::raise()

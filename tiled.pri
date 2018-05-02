@@ -1,5 +1,5 @@
 # Initialize the version
-isEmpty(TILED_VERSION):TILED_VERSION = "1.1.3"
+isEmpty(TILED_VERSION):TILED_VERSION = "1.1.5"
 
 # See the README file for instructions about setting the install prefix.
 isEmpty(PREFIX):PREFIX = /usr/local

@@ -39,7 +39,7 @@ CreateTemplateTool::CreateTemplateTool(QObject *parent)
     icon.addFile(QLatin1String(":images/48x48/insert-template.png"));
     setIcon(icon);
     Utils::setThemeIcon(this, "insert-template");
-    languageChanged();
+    languageChangedImpl();
 }
 
 void CreateTemplateTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt::KeyboardModifiers modifiers)
@@ -78,6 +78,12 @@ bool CreateTemplateTool::startNewMapObject(const QPointF &pos, ObjectGroup *obje
 }
 
 void CreateTemplateTool::languageChanged()
+{
+    CreateObjectTool::languageChanged();
+    languageChangedImpl();
+}
+
+void CreateTemplateTool::languageChangedImpl()
 {
     setName(tr("Insert Template"));
     setShortcut(QKeySequence(tr("V")));

@@ -48,9 +48,9 @@
 #include <QGraphicsItem>
 #include <QGraphicsView>
 #include <QKeyEvent>
+#include <QMenu>
 #include <QTransform>
 #include <QUndoStack>
-#include <QMenu>
 
 #include "qtcompat_p.h"
 
@@ -722,6 +722,8 @@ void ObjectSelectionTool::modifiersChanged(Qt::KeyboardModifiers modifiers)
 
 void ObjectSelectionTool::languageChanged()
 {
+    AbstractObjectTool::languageChanged();
+
     setName(tr("Select Objects"));
     setShortcut(QKeySequence(tr("S")));
 }
@@ -1005,6 +1007,11 @@ void ObjectSelectionTool::updateHandleVisibility()
 
 void ObjectSelectionTool::objectsRemoved(const QList<MapObject *> &objects)
 {
+    if (mClickedObject && objects.contains(mClickedObject))
+        mClickedObject = nullptr;
+    if (mHoveredObject && objects.contains(mHoveredObject))
+        mHoveredObject = nullptr;
+
     if (mAction != Moving && mAction != Rotating && mAction != Resizing)
         return;
 

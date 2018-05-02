@@ -45,7 +45,7 @@ class ObjectTypesEditor : public QMainWindow
 
 public:
     explicit ObjectTypesEditor(QWidget *parent = nullptr);
-    ~ObjectTypesEditor();
+    ~ObjectTypesEditor() override;
 
 signals:
     void closed();

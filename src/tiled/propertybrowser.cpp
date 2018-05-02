@@ -93,8 +93,8 @@ PropertyBrowser::PropertyBrowser(QWidget *parent)
 
     retranslateUi();
 
-    connect(mVariantManager, SIGNAL(valueChanged(QtProperty*,QVariant)),
-            SLOT(valueChanged(QtProperty*,QVariant)));
+    connect(mVariantManager, &QtVariantPropertyManager::valueChanged,
+            this, &PropertyBrowser::valueChanged);
 
     connect(variantEditorFactory, &VariantEditorFactory::resetProperty,
             this, &PropertyBrowser::resetProperty);
@@ -633,7 +633,6 @@ static int mapObjectFlags(const MapObject *mapObject)
 
 void PropertyBrowser::addMapObjectProperties()
 {
-    // DEFAULT MAP OBJECT PROPERTIES
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Object"));
 
     addProperty(IdProperty, QVariant::Int, tr("ID"), groupProperty)->setEnabled(false);
@@ -644,7 +643,9 @@ void PropertyBrowser::addMapObjectProperties()
             addProperty(TypeProperty, QVariant::String, tr("Type"), groupProperty);
     typeProperty->setAttribute(QLatin1String("suggestions"), objectTypeNames());
 
-    addProperty(VisibleProperty, QVariant::Bool, tr("Visible"), groupProperty);
+    if (mMapDocument->allowHidingObjects())
+        addProperty(VisibleProperty, QVariant::Bool, tr("Visible"), groupProperty);
+
     addProperty(XProperty, QVariant::Double, tr("X"), groupProperty);
     addProperty(YProperty, QVariant::Double, tr("Y"), groupProperty);
 
@@ -680,6 +681,7 @@ void PropertyBrowser::addMapObjectProperties()
 
 void PropertyBrowser::addLayerProperties(QtProperty *parent)
 {
+    addProperty(IdProperty, QVariant::Int, tr("ID"), parent)->setEnabled(false);
     addProperty(NameProperty, QVariant::String, tr("Name"), parent);
     addProperty(VisibleProperty, QVariant::Bool, tr("Visible"), parent);
     addProperty(LockedProperty, QVariant::Bool, tr("Locked"), parent);
@@ -1312,18 +1314,18 @@ void PropertyBrowser::applyWangSetValue(PropertyId id, const QVariant &val)
     switch (id) {
     case NameProperty:
         mDocument->undoStack()->push(new RenameWangSet(mTilesetDocument,
-                                                       mTilesetDocument->tileset()->wangSets().indexOf(wangSet),
+                                                       wangSet,
                                                        val.toString()));
         break;
     case EdgeCountProperty:
-        mDocument->undoStack()->push(new ChangeWangSetEdges(mTilesetDocument,
-                                                            mTilesetDocument->tileset()->wangSets().indexOf(wangSet),
-                                                            val.toInt()));
+        mDocument->undoStack()->push(new ChangeWangSetEdgeCount(mTilesetDocument,
+                                                                wangSet,
+                                                                val.toInt()));
         break;
     case CornerCountProperty:
-        mDocument->undoStack()->push(new ChangeWangSetCorners(mTilesetDocument,
-                                                              mTilesetDocument->tileset()->wangSets().indexOf(wangSet),
-                                                              val.toInt()));
+        mDocument->undoStack()->push(new ChangeWangSetCornerCount(mTilesetDocument,
+                                                                  wangSet,
+                                                                  val.toInt()));
         break;
     default:
         break;
@@ -1335,27 +1337,22 @@ void PropertyBrowser::applyWangColorValue(PropertyId id, const QVariant &val)
     Q_ASSERT(mTilesetDocument);
 
     WangColor *wangColor = static_cast<WangColor*>(mObject);
-    WangColorModel *wangColorModel = mTilesetDocument->wangColorModel();
-    Q_ASSERT(wangColorModel);
 
     switch (id) {
     case NameProperty:
-        mDocument->undoStack()->push(new ChangeWangColorName(val.toString(),
-                                                             wangColor->colorIndex(),
-                                                             wangColor->isEdge(),
-                                                             wangColorModel));
+        mDocument->undoStack()->push(new ChangeWangColorName(mTilesetDocument,
+                                                             wangColor,
+                                                             val.toString()));
         break;
     case ColorProperty:
-        mDocument->undoStack()->push(new ChangeWangColorColor(val.value<QColor>(),
-                                                              wangColor->colorIndex(),
-                                                              wangColor->isEdge(),
-                                                              wangColorModel));
+        mDocument->undoStack()->push(new ChangeWangColorColor(mTilesetDocument,
+                                                              wangColor,
+                                                              val.value<QColor>()));
         break;
     case WangColorProbabilityProperty:
-        mDocument->undoStack()->push(new ChangeWangColorProbability(val.toDouble(),
-                                                                    wangColor->colorIndex(),
-                                                                    wangColor->isEdge(),
-                                                                    wangColorModel));
+        mDocument->undoStack()->push(new ChangeWangColorProbability(mTilesetDocument,
+                                                                    wangColor,
+                                                                    val.toDouble()));
         break;
     default:
         break;
@@ -1568,7 +1565,8 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[NameProperty]->setValue(mapObject->name());
         mIdToProperty[TypeProperty]->setValue(type);
         mIdToProperty[TypeProperty]->setValueColor(palette().color(typeColorGroup, QPalette::WindowText));
-        mIdToProperty[VisibleProperty]->setValue(mapObject->isVisible());
+        if (auto visibleProperty = mIdToProperty[VisibleProperty])
+            visibleProperty->setValue(mapObject->isVisible());
         mIdToProperty[XProperty]->setValue(mapObject->x());
         mIdToProperty[YProperty]->setValue(mapObject->y());
 
@@ -1601,6 +1599,7 @@ void PropertyBrowser::updateProperties()
     case Object::LayerType: {
         const Layer *layer = static_cast<const Layer*>(mObject);
 
+        mIdToProperty[IdProperty]->setValue(layer->id());
         mIdToProperty[NameProperty]->setValue(layer->name());
         mIdToProperty[VisibleProperty]->setValue(layer->isVisible());
         mIdToProperty[LockedProperty]->setValue(layer->isLocked());

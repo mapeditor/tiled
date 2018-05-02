@@ -26,6 +26,9 @@
 #include "changetileobjectgroup.h"
 #include "changetileprobability.h"
 #include "changetileterrain.h"
+#include "changetilewangid.h"
+#include "changewangcolordata.h"
+#include "changewangsetdata.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapobject.h"
@@ -34,6 +37,7 @@
 #include "tile.h"
 #include "tilelayer.h"
 #include "tilesetdocument.h"
+#include "wangset.h"
 
 #include <QCoreApplication>
 
@@ -171,7 +175,7 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
                              const Properties &properties,
                              unsigned terrain,
                              qreal probability,
-                             ObjectGroup *objectGroup,
+                             std::unique_ptr<ObjectGroup> objectGroup,
                              const QVector<Frame> &frames)
     {
         if (properties != toTile->properties()) {
@@ -192,8 +196,8 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
             tileProbabilities.append(probability);
         }
 
-        if (objectGroup != toTile->objectGroup())
-            new ChangeTileObjectGroup(tilesetDocument, toTile, objectGroup, this);
+        if (objectGroup.get() != toTile->objectGroup())
+            new ChangeTileObjectGroup(tilesetDocument, toTile, std::move(objectGroup), this);
 
         if (frames != toTile->frames())
             new ChangeTileAnimation(tilesetDocument, toTile, frames, this);
@@ -213,15 +217,15 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
 
         // Copy meta data from "fromTile" to "toTile"
 
-        ObjectGroup *objectGroup = nullptr;
+        std::unique_ptr<ObjectGroup> objectGroup;
         if (fromTile->objectGroup())
-            objectGroup = fromTile->objectGroup()->clone();
+            objectGroup.reset(fromTile->objectGroup()->clone());
 
         applyMetaData(toTile,
                       fromTile->properties(),
                       fromTile->terrain(),
                       fromTile->probability(),
-                      objectGroup,
+                      std::move(objectGroup),
                       adjustAnimationFrames(fromTile->frames()));
     };
 
@@ -243,6 +247,57 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
     while (resetIterator.hasNext()) {
         applyMetaData(resetIterator.next(),
                       Properties(), -1, 1.0, nullptr, QVector<Frame>());
+    }
+
+    // Translate tile references in Wang sets and Wang colors
+    for (WangSet *wangSet : tileset.wangSets()) {
+        // WangSet tile image
+        if (Tile *fromTile = tileset.findTile(wangSet->imageTileId())) {
+            if (Tile *newTile = adjustTile(fromTile))
+                if (fromTile != newTile)
+                    new SetWangSetImage(tilesetDocument, wangSet, newTile->id(), this);
+        }
+
+        // WangColor tile images
+        for (const QSharedPointer<WangColor> &wangColor : wangSet->edgeColors()) {
+            if (Tile *fromTile = tileset.findTile(wangColor->imageId()))
+                if (Tile *newTile = adjustTile(fromTile))
+                    if (fromTile != newTile)
+                        new ChangeWangColorImage(tilesetDocument, wangColor.data(), newTile->id(), this);
+        }
+        for (const QSharedPointer<WangColor> &wangColor : wangSet->cornerColors()) {
+            if (Tile *fromTile = tileset.findTile(wangColor->imageId()))
+                if (Tile *newTile = adjustTile(fromTile))
+                    if (fromTile != newTile)
+                        new ChangeWangColorImage(tilesetDocument, wangColor.data(), newTile->id(), this);
+        }
+
+        QVector<ChangeTileWangId::WangIdChange> changes;
+
+        // Move all WangIds to their new tiles
+        for (const WangTile &wangTile : wangSet->wangTilesByWangId()) {
+            if (Tile *fromTile = wangTile.tile()) {
+                if (Tile *newTile = adjustTile(fromTile)) {
+                    WangId fromWangId = wangSet->wangIdOfTile(newTile);
+                    WangId toWangId = wangTile.wangId();
+                    changes.append(ChangeTileWangId::WangIdChange(fromWangId, toWangId, newTile));
+                }
+            }
+        }
+
+        // Clear WangIds from other tiles
+        for (const WangTile &wangTile : wangSet->wangTilesByWangId()) {
+            if (Tile *fromTile = wangTile.tile()) {
+                auto matchesTile = [fromTile](const ChangeTileWangId::WangIdChange &change) {
+                    return change.tile == fromTile;
+                };
+                if (!std::any_of(changes.begin(), changes.end(), matchesTile))
+                    changes.append(ChangeTileWangId::WangIdChange(wangTile.wangId(), WangId(), fromTile));
+            }
+        }
+
+        if (!changes.isEmpty())
+            new ChangeTileWangId(tilesetDocument, wangSet, changes, this);
     }
 
     if (!tilesChangingProbability.isEmpty()) {

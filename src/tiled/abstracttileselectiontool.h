@@ -64,7 +64,6 @@ protected:
     void setSelectedRegion(QRegion region) { mSelectedRegion = region; }
 
 private:
-
     SelectionMode mSelectionMode;
     SelectionMode mDefaultMode;
 

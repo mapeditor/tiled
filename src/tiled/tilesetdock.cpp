@@ -806,7 +806,11 @@ void TilesetDock::onTilesetDataChanged(const QModelIndex &topLeft, const QModelI
 
 void TilesetDock::onTabMoved(int from, int to)
 {
+#if QT_VERSION >= 0x050600
     mTilesets.move(from, to);
+#else
+    mTilesets.insert(to, mTilesets.takeAt(from));
+#endif
     mTilesetDocuments.move(from, to);
 
     // Move the related tileset view
@@ -1007,8 +1011,8 @@ void TilesetDock::refreshTilesetMenu()
     const int currentIndex = mTabBar->currentIndex();
 
     for (int i = 0; i < mTabBar->count(); ++i) {
-        QAction *action = mTilesetMenu->addAction(mTabBar->tabText(i),
-                                                  [=] { mTabBar->setCurrentIndex(i); });
+        QAction *action = mTilesetMenu->addAction(mTabBar->tabText(i));
+        connect(action, &QAction::triggered, [=] { mTabBar->setCurrentIndex(i); });
 
         action->setCheckable(true);
         mTilesetActionGroup->addAction(action);

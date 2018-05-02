@@ -270,14 +270,16 @@ Map *MapReaderPrivate::readMap()
     const Map::RenderOrder renderOrder =
             renderOrderFromString(renderOrderString);
 
-    const int nextObjectId =
-            atts.value(QLatin1String("nextobjectid")).toInt();
+    const int nextLayerId = atts.value(QLatin1String("nextlayerid")).toInt();
+    const int nextObjectId = atts.value(QLatin1String("nextobjectid")).toInt();
 
     mMap.reset(new Map(orientation, mapWidth, mapHeight, tileWidth, tileHeight, infinite));
     mMap->setHexSideLength(hexSideLength);
     mMap->setStaggerAxis(staggerAxis);
     mMap->setStaggerIndex(staggerIndex);
     mMap->setRenderOrder(renderOrder);
+    if (nextLayerId)
+        mMap->setNextLayerId(nextLayerId);
     if (nextObjectId)
         mMap->setNextObjectId(nextObjectId);
 
@@ -459,7 +461,21 @@ void MapReaderPrivate::readTilesetTile(Tileset &tileset)
                 tileset.setTileImage(tile, image, imageReference.source);
             }
         } else if (xml.name() == QLatin1String("objectgroup")) {
-            tile->setObjectGroup(readObjectGroup());
+            ObjectGroup *objectGroup = readObjectGroup();
+            if (objectGroup) {
+                // Migrate properties from the object group to the tile. Since
+                // Tiled 1.1, it is no longer possible to edit the properties
+                // of this implicit object group, but some users may have set
+                // them in previous versions.
+                Properties p = objectGroup->properties();
+                if (!p.isEmpty()) {
+                    p.merge(tile->properties());
+                    tile->setProperties(p);
+                    objectGroup->setProperties(Properties());
+                }
+
+                tile->setObjectGroup(objectGroup);
+            }
         } else if (xml.name() == QLatin1String("animation")) {
             tile->setFrames(readAnimationFrames());
         } else {
@@ -635,7 +651,7 @@ void MapReaderPrivate::readTilesetWangSets(Tileset &tileset)
                 } else if (xml.name() == QLatin1String("wangtile")) {
                     const QXmlStreamAttributes tileAtts = xml.attributes();
                     int tileId = tileAtts.value(QLatin1String("tileid")).toInt();
-                    unsigned wangId = tileAtts.value(QLatin1String("wangid")).toUInt(nullptr, 16);
+                    WangId wangId = tileAtts.value(QLatin1String("wangid")).toUInt(nullptr, 16);
 
                     if (!wangSet->wangIdIsValid(wangId)) {
                         xml.raiseError(QLatin1String("Invalid wangId given for tileId: ") + QString::number(tileId));
@@ -659,17 +675,18 @@ void MapReaderPrivate::readTilesetWangSets(Tileset &tileset)
                 } else if (xml.name() == QLatin1String("wangedgecolor")
                            || xml.name() == QLatin1String("wangcornercolor")) {
                     const QXmlStreamAttributes wangColorAtts = xml.attributes();
+                    bool isEdge = xml.name() == QLatin1String("wangedgecolor");
                     QString name = wangColorAtts.value(QLatin1String("name")).toString();
                     QColor color = wangColorAtts.value(QLatin1String("color")).toString();
                     int imageId = wangColorAtts.value(QLatin1String("tile")).toInt();
                     qreal probability = wangColorAtts.value(QLatin1String("probability")).toDouble();
 
-                    QSharedPointer<WangColor> wc(new WangColor(0,
-                                                               xml.name() == QLatin1String("wangedgecolor"),
-                                                               name,
-                                                               color,
-                                                               imageId,
-                                                               probability));
+                    auto wc = QSharedPointer<WangColor>::create(0,
+                                                                isEdge,
+                                                                name,
+                                                                color,
+                                                                imageId,
+                                                                probability);
                     wangSet->addWangColor(wc);
 
                     xml.skipCurrentElement();
@@ -686,11 +703,16 @@ void MapReaderPrivate::readTilesetWangSets(Tileset &tileset)
 static void readLayerAttributes(Layer &layer,
                                 const QXmlStreamAttributes &atts)
 {
+    const QStringRef idRef = atts.value(QLatin1String("id"));
     const QStringRef opacityRef = atts.value(QLatin1String("opacity"));
     const QStringRef visibleRef = atts.value(QLatin1String("visible"));
     const QStringRef lockedRef = atts.value(QLatin1String("locked"));
 
     bool ok;
+    const int id = idRef.toInt(&ok);
+    if (ok)
+        layer.setId(id);
+
     const qreal opacity = opacityRef.toDouble(&ok);
     if (ok)
         layer.setOpacity(opacity);

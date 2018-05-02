@@ -605,7 +605,7 @@
     <message>
         <location line="+9"/>
         <source>Map &amp;Properties...</source>
-        <translation>&amp;Karteneigenschaften</translation>
+        <translation>&amp;Karteneigenschaften …</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -921,7 +921,7 @@
     <message>
         <location line="+17"/>
         <source>Not a template file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine Vorlagendatei</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -2218,7 +2218,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+27"/>
         <source>Could not open file for writing</source>
-        <translation>Konnte Datei nicht zum Schreiben öffnen.</translation>
+        <translation>Datei konnte nicht zum Schreiben geöffnet werden</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -2258,7 +2258,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+35"/>
         <source>Failed to open file</source>
-        <translation>Konnte Datei nicht öffnen.</translation>
+        <translation>Öffnen der Datei fehlgeschlagen</translation>
     </message>
     <message>
         <location filename="../src/plugins/tbin/tbinplugin.cpp" line="-255"/>

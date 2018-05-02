@@ -175,25 +175,30 @@ void StampBrush::modifiersChanged(Qt::KeyboardModifiers modifiers)
     if (mStamp.isEmpty() && !mIsWangFill)
         return;
 
+    BrushBehavior brushBehavior = mBrushBehavior;
+
     if (modifiers & Qt::ShiftModifier) {
         if (modifiers & Qt::ControlModifier) {
-            if (mBrushBehavior == LineStartSet) {
-                mBrushBehavior = CircleMidSet;
-            } else {
-                mBrushBehavior = Circle;
+            if (brushBehavior == LineStartSet) {
+                brushBehavior = CircleMidSet;
+            } else if (brushBehavior != CircleMidSet) {
+                brushBehavior = Circle;
             }
         } else {
-            if (mBrushBehavior == CircleMidSet) {
-                mBrushBehavior = LineStartSet;
-            } else {
-                mBrushBehavior = Line;
+            if (brushBehavior == CircleMidSet) {
+                brushBehavior = LineStartSet;
+            } else if (brushBehavior != LineStartSet) {
+                brushBehavior = Line;
             }
         }
-    } else {
-        mBrushBehavior = Free;
+    } else if (brushBehavior != Paint && brushBehavior != Capture) {
+        brushBehavior = Free;
     }
 
-    updatePreview();
+    if (mBrushBehavior != brushBehavior) {
+        mBrushBehavior = brushBehavior;
+        updatePreview();
+    }
 }
 
 void StampBrush::languageChanged()

@@ -37,7 +37,7 @@ CreateTextObjectTool::CreateTextObjectTool(QObject *parent)
     icon.addFile(QLatin1String(":images/48x48/insert-text.png"));
     setIcon(icon);
     Utils::setThemeIcon(this, "insert-text");
-    languageChanged();
+    languageChangedImpl();
 }
 
 void CreateTextObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt::KeyboardModifiers modifiers)
@@ -68,6 +68,12 @@ void CreateTextObjectTool::mouseReleasedWhileCreatingObject(QGraphicsSceneMouseE
 }
 
 void CreateTextObjectTool::languageChanged()
+{
+    CreateObjectTool::languageChanged();
+    languageChangedImpl();
+}
+
+void CreateTextObjectTool::languageChangedImpl()
 {
     setName(tr("Insert Text"));
     setShortcut(QKeySequence(tr("E")));

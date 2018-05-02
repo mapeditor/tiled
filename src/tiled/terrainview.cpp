@@ -124,7 +124,7 @@ void TerrainView::keyPressEvent(QKeyEvent *event)
         switch (event->key()) {
         case Qt::Key_Delete:
         case Qt::Key_Backspace:
-            if (Terrain *terrain = terrainAt(currentIndex())) {
+            if (terrainAt(currentIndex())) {
                 emit removeTerrainTypeRequested();
                 return;
             }

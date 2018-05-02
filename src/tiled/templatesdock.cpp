@@ -126,6 +126,7 @@ TemplatesDock::TemplatesDock(QWidget *parent)
 
     mDescriptionLabel = new QLabel;
     mDescriptionLabel->setWordWrap(true);
+    mDescriptionLabel->setVisible(false);
 
     // Construct the UI
     auto toolsLayout = new QHBoxLayout;
@@ -182,11 +183,9 @@ TemplatesDock::~TemplatesDock()
     mMapScene->disableSelectedTool();
 
     if (mDummyMapDocument) {
-        disconnect(mDummyMapDocument->undoStack(), &QUndoStack::indexChanged,
-                   this, &TemplatesDock::applyChanges);
+        mDummyMapDocument->undoStack()->disconnect(this);
+        delete mDummyMapDocument;
     }
-
-    delete mDummyMapDocument;
 }
 
 void TemplatesDock::openTemplate(const QString &path)
@@ -270,9 +269,7 @@ void TemplatesDock::setTemplate(ObjectTemplate *objectTemplate)
     }
 
     if (previousDocument) {
-        disconnect(previousDocument->undoStack(), &QUndoStack::indexChanged,
-                   this, &TemplatesDock::checkTileset);
-
+        previousDocument->undoStack()->disconnect(this);
         delete previousDocument;
     }
 }
@@ -477,7 +474,8 @@ void TemplatesView::contextMenuEvent(QContextMenuEvent *event)
 
     if (ObjectTemplate *objectTemplate = mModel->toObjectTemplate(index)) {
         menu.addSeparator();
-        menu.addAction(tr("Select All Instances"), [objectTemplate] {
+        QAction *action = menu.addAction(tr("Select All Instances"));
+        connect(action, &QAction::triggered, [objectTemplate] {
             MapDocumentActionHandler *handler = MapDocumentActionHandler::instance();
             handler->selectAllInstances(objectTemplate);
         });

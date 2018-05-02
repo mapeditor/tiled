@@ -161,7 +161,9 @@ MapEditor::MapEditor(QObject *parent)
     , mViewWithTool(nullptr)
     , mTileStampManager(new TileStampManager(*mToolManager, this))
 {
+#if QT_VERSION >= 0x050600
     mMainWindow->setDockOptions(mMainWindow->dockOptions() | QMainWindow::GroupedDragging);
+#endif
     mMainWindow->setDockNestingEnabled(true);
     mMainWindow->setCentralWidget(mWidgetStack);
 
@@ -691,30 +693,6 @@ void MapEditor::paste(ClipboardManager::PasteFlags flags)
         mCurrentMapDocument->undoStack()->endMacro();
 }
 
-void MapEditor::flip(FlipDirection direction)
-{
-    if (mStampBrush->isEnabled()) {
-        const TileStamp &stamp = mStampBrush->stamp();
-        if (!stamp.isEmpty())
-            setStamp(stamp.flipped(direction));
-
-    } else if (mCurrentMapDocument) {
-        mCurrentMapDocument->flipSelectedObjects(direction);
-    }
-}
-
-void MapEditor::rotate(RotateDirection direction)
-{
-    if (mStampBrush->isEnabled()) {
-        const TileStamp &stamp = mStampBrush->stamp();
-        if (!stamp.isEmpty())
-            setStamp(stamp.rotated(direction));
-
-    } else if (mCurrentMapDocument) {
-        mCurrentMapDocument->rotateSelectedObjects(direction);
-    }
-}
-
 void MapEditor::setRandom(bool value)
 {
     mStampBrush->setRandom(value);
@@ -775,19 +753,6 @@ void MapEditor::currentWidgetChanged()
     auto mapView = static_cast<MapView*>(mWidgetStack->currentWidget());
     setCurrentDocument(mapView ? mapView->mapScene()->mapDocument() : nullptr);
 }
-
-//void MapEditor::changeEvent(QEvent *event)
-//{
-//    QMainWindow::changeEvent(event);
-//    switch (event->type()) {
-//    case QEvent::LanguageChange:
-//        mToolManager->retranslateTools();
-//        retranslateUi();
-//        break;
-//    default:
-//        break;
-//    }
-//}
 
 void MapEditor::cursorChanged(const QCursor &cursor)
 {

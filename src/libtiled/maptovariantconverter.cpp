@@ -32,6 +32,7 @@
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
+#include "wangset.h"
 
 #include <QCoreApplication>
 
@@ -61,6 +62,7 @@ QVariant MapToVariantConverter::toVariant(const Map &map, const QDir &mapDir)
     mapVariant[QLatin1String("tilewidth")] = map.tileWidth();
     mapVariant[QLatin1String("tileheight")] = map.tileHeight();
     mapVariant[QLatin1String("infinite")] = map.infinite();
+    mapVariant[QLatin1String("nextlayerid")] = map.nextLayerId();
     mapVariant[QLatin1String("nextobjectid")] = map.nextObjectId();
 
     addProperties(mapVariant, map.properties());
@@ -132,7 +134,7 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
         tilesetVariant[QLatin1String("version")] = 1.2; // external tileset
 
     const QString &fileName = tileset.fileName();
-    if (!fileName.isEmpty()) {
+    if (!fileName.isEmpty() && firstGid > 0) {
         QString source = mMapDir.relativeFilePath(fileName);
         tilesetVariant[QLatin1String("source")] = source;
 
@@ -254,7 +256,75 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
         tilesetVariant[QLatin1String("terrains")] = terrainsVariant;
     }
 
+    // Write the Wang sets
+    if (tileset.wangSetCount() > 0) {
+        QVariantList wangSetVariants;
+
+        for (const WangSet *wangSet : tileset.wangSets())
+            wangSetVariants.append(toVariant(*wangSet));
+
+        tilesetVariant[QLatin1String("wangsets")] = wangSetVariants;
+    }
+
     return tilesetVariant;
+}
+
+QVariant MapToVariantConverter::toVariant(const WangSet &wangSet) const
+{
+    QVariantMap wangSetVariant;
+
+    wangSetVariant[QLatin1String("name")] = wangSet.name();
+    wangSetVariant[QLatin1String("tile")] = wangSet.imageTileId();
+
+    QVariantList edgeColorVariants;
+    if (wangSet.edgeColorCount() > 1) {
+        for (int i = 1; i <= wangSet.edgeColorCount(); ++i) {
+            if (WangColor *wc = wangSet.edgeColorAt(i).data())
+                edgeColorVariants.append(toVariant(*wc));
+        }
+    }
+    wangSetVariant[QLatin1String("edgecolors")] = edgeColorVariants;
+
+    QVariantList cornerColorVariants;
+    if (wangSet.cornerColorCount() > 1) {
+        for (int i = 1; i <= wangSet.cornerColorCount(); ++i) {
+            if (WangColor *wc = wangSet.cornerColorAt(i).data())
+                cornerColorVariants.append(toVariant(*wc));
+        }
+    }
+    wangSetVariant[QLatin1String("cornercolors")] = cornerColorVariants;
+
+    QVariantList wangTileVariants;
+    for (const WangTile &wangTile : wangSet.sortedWangTiles()) {
+        QVariantMap wangTileVariant;
+
+        QVariantList wangIdVariant;
+        for (int i = 0; i < 8; ++i)
+            wangIdVariant.append(QVariant(wangTile.wangId().indexColor(i)));
+
+        wangTileVariant[QLatin1String("wangid")] = wangIdVariant;
+        wangTileVariant[QLatin1String("tileid")] = wangTile.tile()->id();
+        wangTileVariant[QLatin1String("hflip")] = wangTile.flippedHorizontally();
+        wangTileVariant[QLatin1String("vflip")] = wangTile.flippedVertically();
+        wangTileVariant[QLatin1String("dflip")] = wangTile.flippedAntiDiagonally();
+
+        wangTileVariants.append(wangTileVariant);
+    }
+    wangSetVariant[QLatin1String("wangtiles")] = wangTileVariants;
+
+    addProperties(wangSetVariant, wangSet.properties());
+
+    return wangSetVariant;
+}
+
+QVariant MapToVariantConverter::toVariant(const WangColor &wangColor) const
+{
+    QVariantMap colorVariant;
+    colorVariant[QLatin1String("color")] = colorToString(wangColor.color());
+    colorVariant[QLatin1String("name")] = wangColor.name();
+    colorVariant[QLatin1String("probability")] = wangColor.probability();
+    colorVariant[QLatin1String("tile")] = wangColor.imageId();
+    return colorVariant;
 }
 
 QVariant MapToVariantConverter::toVariant(const QList<Layer *> &layers,
@@ -561,6 +631,9 @@ void MapToVariantConverter::addTileLayerData(QVariantMap &variant,
 void MapToVariantConverter::addLayerAttributes(QVariantMap &layerVariant,
                                                const Layer &layer) const
 {
+    if (layer.id() != 0)
+        layerVariant[QLatin1String("id")] = layer.id();
+
     layerVariant[QLatin1String("name")] = layer.name();
     layerVariant[QLatin1String("x")] = layer.x();
     layerVariant[QLatin1String("y")] = layer.y();

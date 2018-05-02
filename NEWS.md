@@ -1,3 +1,36 @@
+### Tiled 1.1.5 (25 April 2018)
+
+* Fixed erasing mode of the Terrain Brush
+* Fixed crash after editing a template
+* Fixed rendering of eye/lock icons in Layers view
+* Fixed object index when undoing Move Object to Layer action (#1932)
+* Fixed shortcuts for flipping and rotating objects (#1926)
+* Fixed dynamic retranslation of tools and tool actions
+* Fixed possible crash when undoing/redoing Wang color changes
+* Fixed handling of sub-properties in Object Type Editor (#1936)
+* Fixed crash when deleting an object right before dragging it (#1933)
+* Adjust Wang tile data when tileset column count changes (#1851)
+* Improved fill behavior in case of selection on infinite map (#1921)
+* Removed ability to hide tile collision objects (#1929)
+* Remove tile collision layer along with the last object (#1230)
+* JSON plugin: Made the reader more strict about object types (#1922)
+* JSON plugin: Added support for Wang sets
+
+### Tiled 1.1.4 (28 March 2018)
+
+* Fixed exporting of external tilesets to JSON or TSX formats
+* Fixed problem with embedding or exporting tilesets with Wang sets
+* Fixed tiles placed by the terrain tool being considered different (#1913)
+* Fixed text alignment values appearing at random in Properties view (#1767)
+* macOS: Fixed eye/lock icon display in Layers view
+* Re-enabled Space for toggling layer visibility
+* Migrate properties set on tile collision layer to the tile (#1912)
+* Don't reset stamp brush state when pressing Alt
+* Automapping: Apply rules to selected area when there is one
+* Windows and Linux: Updated builds to Qt 5.10.1
+* Linux: Indicate Tiled can open multiple files at once in desktop file
+* Lowered the minimum supported version of Qt to 5.5
+
 ### Tiled 1.1.3 (6 March 2018)
 
 * Fixed crash when removing a tileset referenced by multiple objects
