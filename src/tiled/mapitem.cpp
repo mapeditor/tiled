@@ -26,14 +26,19 @@
 #include "mapobject.h"
 #include "mapobjectitem.h"
 #include "maprenderer.h"
+#include "mapview.h"
 #include "objectgroupitem.h"
 #include "objectselectionitem.h"
 #include "preferences.h"
 #include "tilelayer.h"
 #include "tilelayeritem.h"
 #include "tileselectionitem.h"
+#include "zoomable.h"
 
+#include <QCursor>
+#include <QGraphicsSceneMouseEvent>
 #include <QPen>
+#include <QWidget>
 
 namespace Tiled {
 namespace Internal {
@@ -50,7 +55,10 @@ MapItem::MapItem(MapDocument *mapDocument, DisplayMode displayMode,
 {
     // Since we don't do any painting, we can spare us the call to paint()
     setFlag(QGraphicsItem::ItemHasNoContents);
-    setEnabled(displayMode == Editable);
+
+    // In read-only display mode, we are a link to the editable view for our map
+    if (displayMode == ReadOnly)
+        setCursor(Qt::PointingHandCursor);
 
     createLayerItems(mapDocument->map()->layers());
 
@@ -107,6 +115,27 @@ QRectF MapItem::boundingRect() const
 
 void MapItem::paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *)
 {
+}
+
+void MapItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+    if (mDisplayMode != ReadOnly)
+        QGraphicsItem::mousePressEvent(event);
+}
+
+void MapItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
+    if (mDisplayMode == ReadOnly && isUnderMouse()) {
+        MapView *view = static_cast<MapView*>(event->widget()->parent());
+        QRectF viewRect { view->viewport()->rect() };
+        QRectF sceneViewRect = view->viewportTransform().inverted().mapRect(viewRect);
+        DocumentManager::instance()->switchToDocument(mMapDocument.data(),
+                                                      sceneViewRect.center() - pos(),
+                                                      view->zoomable()->scale());
+        return;
+    }
+
+    QGraphicsItem::mouseReleaseEvent(event);
 }
 
 void MapItem::repaintRegion(const QRegion &region, TileLayer *tileLayer)
@@ -461,6 +490,7 @@ LayerItem *MapItem::createLayerItem(Layer *layer)
     Q_ASSERT(layerItem);
 
     layerItem->setVisible(layer->isVisible());
+    layerItem->setEnabled(mDisplayMode == Editable);
 
     mLayerItems.insert(layer, layerItem);
 

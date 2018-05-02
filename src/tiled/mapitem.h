@@ -71,6 +71,10 @@ public:
 signals:
     void boundingRectChanged();
 
+protected:
+    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
+
 private:
     /**
      * Repaints the specified \a region of the given \a tileLayer. The region

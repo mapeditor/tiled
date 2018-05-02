@@ -269,6 +269,10 @@ void DocumentManager::switchToDocument(int index)
     mTabBar->setCurrentIndex(index);
 }
 
+/**
+ * Switches to the given \a document, if there is already a tab open for it.
+ * \return whether the switch was succesful
+ */
 bool DocumentManager::switchToDocument(Document *document)
 {
     const int index = findDocument(document);
@@ -278,6 +282,22 @@ bool DocumentManager::switchToDocument(Document *document)
     }
 
     return false;
+}
+
+/**
+ * Switches to the given \a mapDocument, centering the view on \a viewCenter
+ * (scene coordinates) at the given \a scale.
+ *
+ * If the given map document is not open yet, a tab will be created for it.
+ */
+void DocumentManager::switchToDocument(MapDocument *mapDocument, QPointF viewCenter, qreal scale)
+{
+    if (!switchToDocument(mapDocument))
+        addDocument(mapDocument->sharedFromThis());
+
+    MapView *view = currentMapView();
+    view->zoomable()->setScale(scale);
+    view->forceCenterOn(viewCenter);
 }
 
 void DocumentManager::switchToLeftDocument()
@@ -905,7 +925,7 @@ void DocumentManager::hideChangedWarning()
 }
 
 /**
- * Centers the current map on the tile coordinates \a x, \a y.
+ * Centers the current map on the pixel coordinates \a x, \a y.
  */
 void DocumentManager::centerMapViewOn(qreal x, qreal y)
 {

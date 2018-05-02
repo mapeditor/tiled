@@ -90,6 +90,7 @@ public:
 
     void switchToDocument(int index);
     bool switchToDocument(Document *document);
+    void switchToDocument(MapDocument *mapDocument, QPointF viewCenter, qreal scale);
 
     void addDocument(const DocumentPtr &document);
 
