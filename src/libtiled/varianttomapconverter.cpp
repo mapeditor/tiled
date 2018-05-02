@@ -73,6 +73,7 @@ Map *VariantToMapConverter::toMap(const QVariant &variant,
     const QString renderOrderString = variantMap[QLatin1String("renderorder")].toString();
     Map::RenderOrder renderOrder = renderOrderFromString(renderOrderString);
 
+    const int nextLayerId = variantMap[QLatin1String("nextlayerid")].toInt();
     const int nextObjectId = variantMap[QLatin1String("nextobjectid")].toInt();
 
     QScopedPointer<Map> map(new Map(orientation,
@@ -85,6 +86,8 @@ Map *VariantToMapConverter::toMap(const QVariant &variant,
     map->setStaggerAxis(staggerAxis);
     map->setStaggerIndex(staggerIndex);
     map->setRenderOrder(renderOrder);
+    if (nextLayerId)
+        map->setNextLayerId(nextLayerId);
     if (nextObjectId)
         map->setNextObjectId(nextObjectId);
 
@@ -483,6 +486,7 @@ Layer *VariantToMapConverter::toLayer(const QVariant &variant)
         layer = toGroupLayer(variantMap);
 
     if (layer) {
+        layer->setId(variantMap[QLatin1String("id")].toInt());
         layer->setProperties(extractProperties(variantMap));
 
         const QPointF offset(variantMap[QLatin1String("offsetx")].toDouble(),

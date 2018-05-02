@@ -40,6 +40,7 @@ namespace Tiled {
 Layer::Layer(TypeFlag type, const QString &name, int x, int y) :
     Object(LayerType),
     mName(name),
+    mId(0),
     mLayerType(type),
     mX(x),
     mY(y),
@@ -160,6 +161,7 @@ QPointF Layer::totalOffset() const
  */
 Layer *Layer::initializeClone(Layer *clone) const
 {
+    // mId is not copied, will be assigned when layer is added to a map
     clone->mOffset = mOffset;
     clone->mOpacity = mOpacity;
     clone->mVisible = mVisible;

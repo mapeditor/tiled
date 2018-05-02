@@ -401,6 +401,10 @@ public:
     void setLayerDataFormat(LayerDataFormat format)
     { mLayerDataFormat = format; }
 
+    void setNextLayerId(int nextId);
+    int nextLayerId() const;
+    int takeNextLayerId();
+
     void setNextObjectId(int nextId);
     int nextObjectId() const;
     int takeNextObjectId();
@@ -431,6 +435,7 @@ private:
     QList<Layer*> mLayers;
     QVector<SharedTileset> mTilesets;
     LayerDataFormat mLayerDataFormat;
+    int mNextLayerId;
     int mNextObjectId;
 };
 
@@ -473,6 +478,31 @@ inline void Map::invertStaggerIndex()
 inline void Map::invalidateDrawMargins()
 {
     mDrawMarginsDirty = true;
+}
+
+/**
+ * Sets the next id to be used for layers of this map.
+ */
+inline void Map::setNextLayerId(int nextId)
+{
+    Q_ASSERT(nextId > 0);
+    mNextLayerId = nextId;
+}
+
+/**
+ * Returns the next layer id for this map.
+ */
+inline int Map::nextLayerId() const
+{
+    return mNextLayerId;
+}
+
+/**
+ * Returns the next layer id for this map and allocates a new one.
+ */
+inline int Map::takeNextLayerId()
+{
+    return mNextLayerId++;
 }
 
 /**

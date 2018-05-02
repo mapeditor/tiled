@@ -62,6 +62,7 @@ QVariant MapToVariantConverter::toVariant(const Map &map, const QDir &mapDir)
     mapVariant[QLatin1String("tilewidth")] = map.tileWidth();
     mapVariant[QLatin1String("tileheight")] = map.tileHeight();
     mapVariant[QLatin1String("infinite")] = map.infinite();
+    mapVariant[QLatin1String("nextlayerid")] = map.nextLayerId();
     mapVariant[QLatin1String("nextobjectid")] = map.nextObjectId();
 
     addProperties(mapVariant, map.properties());
@@ -630,6 +631,9 @@ void MapToVariantConverter::addTileLayerData(QVariantMap &variant,
 void MapToVariantConverter::addLayerAttributes(QVariantMap &layerVariant,
                                                const Layer &layer) const
 {
+    if (layer.id() != 0)
+        layerVariant[QLatin1String("id")] = layer.id();
+
     layerVariant[QLatin1String("name")] = layer.name();
     layerVariant[QLatin1String("x")] = layer.x();
     layerVariant[QLatin1String("y")] = layer.y();

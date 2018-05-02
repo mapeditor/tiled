@@ -681,6 +681,7 @@ void PropertyBrowser::addMapObjectProperties()
 
 void PropertyBrowser::addLayerProperties(QtProperty *parent)
 {
+    addProperty(IdProperty, QVariant::Int, tr("ID"), parent)->setEnabled(false);
     addProperty(NameProperty, QVariant::String, tr("Name"), parent);
     addProperty(VisibleProperty, QVariant::Bool, tr("Visible"), parent);
     addProperty(LockedProperty, QVariant::Bool, tr("Locked"), parent);
@@ -1598,6 +1599,7 @@ void PropertyBrowser::updateProperties()
     case Object::LayerType: {
         const Layer *layer = static_cast<const Layer*>(mObject);
 
+        mIdToProperty[IdProperty]->setValue(layer->id());
         mIdToProperty[NameProperty]->setValue(layer->name());
         mIdToProperty[VisibleProperty]->setValue(layer->isVisible());
         mIdToProperty[LockedProperty]->setValue(layer->isLocked());

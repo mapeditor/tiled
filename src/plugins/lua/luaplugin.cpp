@@ -203,6 +203,7 @@ void LuaWriter::writeMap(LuaTableWriter &writer, const Map *map)
     writer.writeKeyAndValue("height", map->height());
     writer.writeKeyAndValue("tilewidth", map->tileWidth());
     writer.writeKeyAndValue("tileheight", map->tileHeight());
+    writer.writeKeyAndValue("nextlayerid", map->nextLayerId());
     writer.writeKeyAndValue("nextobjectid", map->nextObjectId());
 
     if (map->orientation() == Map::Hexagonal)
@@ -435,6 +436,7 @@ void LuaWriter::writeTileLayer(LuaTableWriter &writer,
     writer.writeStartTable();
 
     writer.writeKeyAndValue("type", "tilelayer");
+    writer.writeKeyAndValue("id", tileLayer->id());
     writer.writeKeyAndValue("name", tileLayer->name());
     writer.writeKeyAndValue("x", tileLayer->x());
     writer.writeKeyAndValue("y", tileLayer->y());
@@ -533,6 +535,8 @@ void LuaWriter::writeObjectGroup(LuaTableWriter &writer,
         writer.writeStartTable(key);
 
     writer.writeKeyAndValue("type", "objectgroup");
+    if (objectGroup->id() != 0)
+        writer.writeKeyAndValue("id", objectGroup->id());
     writer.writeKeyAndValue("name", objectGroup->name());
     writer.writeKeyAndValue("visible", objectGroup->isVisible());
     writer.writeKeyAndValue("opacity", objectGroup->opacity());
@@ -559,6 +563,7 @@ void LuaWriter::writeImageLayer(LuaTableWriter &writer,
     writer.writeStartTable();
 
     writer.writeKeyAndValue("type", "imagelayer");
+    writer.writeKeyAndValue("id", imageLayer->id());
     writer.writeKeyAndValue("name", imageLayer->name());
     writer.writeKeyAndValue("visible", imageLayer->isVisible());
     writer.writeKeyAndValue("opacity", imageLayer->opacity());
@@ -587,6 +592,7 @@ void LuaWriter::writeGroupLayer(LuaTableWriter &writer,
     writer.writeStartTable();
 
     writer.writeKeyAndValue("type", "group");
+    writer.writeKeyAndValue("id", groupLayer->id());
     writer.writeKeyAndValue("name", groupLayer->name());
     writer.writeKeyAndValue("visible", groupLayer->isVisible());
     writer.writeKeyAndValue("opacity", groupLayer->opacity());

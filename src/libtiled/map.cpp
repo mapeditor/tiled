@@ -56,6 +56,7 @@ Map::Map(Orientation orientation,
     mStaggerIndex(StaggerOdd),
     mDrawMarginsDirty(true),
     mLayerDataFormat(Base64Zlib),
+    mNextLayerId(1),
     mNextObjectId(1)
 {
 }
@@ -243,6 +244,9 @@ void Map::insertLayer(int index, Layer *layer)
 
 void Map::adoptLayer(Layer *layer)
 {
+    if (layer->id() == 0)
+        layer->setId(takeNextLayerId());
+
     layer->setMap(this);
 
     if (ObjectGroup *group = layer->asObjectGroup())
