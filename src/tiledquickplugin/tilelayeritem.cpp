@@ -165,6 +165,8 @@ static void drawOrthogonalTileLayer(QSGNode *parent,
             data.y = (y + 1) * tileHeight - tileset->tileHeight() + offset.y();
             data.width = size.width();
             data.height = size.height();
+            data.flippedHorizontally = cell.flippedHorizontally();
+            data.flippedVertically = cell.flippedVertically();
             helper.setTextureCoordinates(data, cell);
             tileData.append(data);
         }
