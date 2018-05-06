@@ -244,6 +244,8 @@ void IsometricRenderHelper::appendTileData(int x, int y)
     const QSize size = cell.tile()->size();
     data.width = size.width();
     data.height = size.height();
+    data.flippedHorizontally = cell.flippedHorizontally();
+    data.flippedVertically = cell.flippedVertically();
     mTilesetHelper.setTextureCoordinates(data, cell);
     mTileData.append(data);
 }
