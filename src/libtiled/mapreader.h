@@ -28,6 +28,7 @@
 
 #pragma once
 
+#include "objecttemplate.h"
 #include "tiled_global.h"
 #include "tileset.h"
 
@@ -94,14 +95,17 @@ public:
      */
     QString errorString() const;
 
+    ObjectTemplate *readObjectTemplate(QIODevice *device, const QString &path = QString());
+    ObjectTemplate *readObjectTemplate(const QString &fileName);
+
 protected:
     /**
      * Called for each \a reference to an external file. Should return the path
-     * to be used when loading this file. \a mapPath contains the path to the
+     * to be used when loading this file. \a mapDir contains the path to the
      * map or tileset that is currently being loaded.
      */
     QString resolveReference(const QString &reference,
-                             const QString &mapPath);
+                             const QDir &mapDir);
 
     /**
      * Called when an external tileset is encountered while a map is loaded.

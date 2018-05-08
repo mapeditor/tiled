@@ -38,7 +38,7 @@ using namespace Gmx;
 template <typename T>
 static T optionalProperty(const Object *object, const QString &name, const T &def)
 {
-    const QVariant var = object->property(name);
+    const QVariant var = object->inheritedProperty(name);
     return var.isValid() ? var.value<T>() : def;
 }
 
@@ -53,6 +53,11 @@ static QString toString(bool b)
     return QString::number(b ? -1 : 0);
 }
 
+static QString toString(const QString &string)
+{
+    return string;
+}
+
 template <typename T>
 static void writeProperty(QXmlStreamWriter &writer,
                           const Object *object,
@@ -63,12 +68,30 @@ static void writeProperty(QXmlStreamWriter &writer,
     writer.writeTextElement(name, toString(value));
 }
 
-static QString sanitizeName(const QString &name)
+static QString sanitizeName(QString name)
 {
-    QString sanitized = name;
-    sanitized.replace(QRegularExpression(QLatin1String("[^a-zA-Z0-9]")),
-                      QLatin1String("_"));
-    return sanitized;
+    static const QRegularExpression regexp(QLatin1String("[^a-zA-Z0-9]"));
+    return name.replace(regexp, QLatin1String("_"));
+}
+
+static bool checkIfViewsDefined(const Map *map)
+{
+    LayerIterator iterator(map);
+    while (const Layer *layer = iterator.next()) {
+
+        if (layer->layerType() != Layer::ObjectGroupType)
+            continue;
+
+        const ObjectGroup *objectLayer = static_cast<const ObjectGroup*>(layer);
+
+        for (const MapObject *object : objectLayer->objects()) {
+            const QString type = object->effectiveType();
+            if (type == "view")
+                return true;
+        }
+    }
+
+    return false;
 }
 
 GmxPlugin::GmxPlugin()
@@ -102,8 +125,65 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
     writeProperty(stream, map, "speed", 30);
     writeProperty(stream, map, "persistent", false);
     writeProperty(stream, map, "clearDisplayBuffer", true);
+    writeProperty(stream, map, "clearViewBackground", false);
+    writeProperty(stream, map, "code", QString());
+
+    // Check if views are defined
+    bool enableViews = checkIfViewsDefined(map);
+    writeProperty(stream, map, "enableViews", enableViews);
 
     stream.writeTextElement("isometric", toString(map->orientation() == Map::Orientation::Isometric));
+
+    // Write out views
+    // Last view in Object layer is the first view in the room
+    LayerIterator iterator(map);
+    if (enableViews) {
+        stream.writeStartElement("views");
+        int viewCount = 0;
+        while (const Layer *layer = iterator.next()) {
+
+            if (layer->layerType() != Layer::ObjectGroupType)
+                continue;
+
+            const ObjectGroup *objectLayer = static_cast<const ObjectGroup*>(layer);
+
+            for (const MapObject *object : objectLayer->objects()) {
+                const QString type = object->effectiveType();
+                if (type != "view")
+                    continue;
+
+                // GM only has 8 views so drop anything more than that
+                if (viewCount > 7)
+                    break;
+
+                viewCount++;
+                stream.writeStartElement("view");
+
+                stream.writeAttribute("visible", toString(object->isVisible()));
+                stream.writeAttribute("objName", QString(optionalProperty(object, "objName", QString())));
+                QPointF pos = object->position();
+                // Note: GM only supports ints for positioning
+                // so views could be off if user doesn't align to whole number
+                stream.writeAttribute("xview", QString::number(qRound(pos.x())));
+                stream.writeAttribute("yview", QString::number(qRound(pos.y())));
+                stream.writeAttribute("wview", QString::number(qRound(object->width())));
+                stream.writeAttribute("hview", QString::number(qRound(object->height())));
+                // Round these incase user adds properties as floats and not ints
+                stream.writeAttribute("xport", QString::number(qRound(optionalProperty(object, "xport", 0.0))));
+                stream.writeAttribute("yport", QString::number(qRound(optionalProperty(object, "yport", 0.0))));
+                stream.writeAttribute("wport", QString::number(qRound(optionalProperty(object, "wport", 1024.0))));
+                stream.writeAttribute("hport", QString::number(qRound(optionalProperty(object, "hport", 768.0))));
+                stream.writeAttribute("hborder", QString::number(qRound(optionalProperty(object, "hborder", 32.0))));
+                stream.writeAttribute("vborder", QString::number(qRound(optionalProperty(object, "vborder", 32.0))));
+                stream.writeAttribute("hspeed", QString::number(qRound(optionalProperty(object, "hspeed", -1.0))));
+                stream.writeAttribute("vspeed", QString::number(qRound(optionalProperty(object, "vspeed", -1.0))));
+
+                stream.writeEndElement();
+            }
+        }
+
+        stream.writeEndElement();
+    }
 
     stream.writeStartElement("instances");
 
@@ -111,7 +191,7 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
     int layerCount = 0;
 
     // Write out object instances
-    LayerIterator iterator(map);
+    iterator.toFront();
     while (const Layer *layer = iterator.next()) {
         ++layerCount;
 
@@ -121,27 +201,25 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
         const ObjectGroup *objectLayer = static_cast<const ObjectGroup*>(layer);
 
         for (const MapObject *object : objectLayer->objects()) {
-            if (object->type().isEmpty())
+            const QString type = object->effectiveType();
+            if (type.isEmpty())
+                continue;
+            if (type == "view")
                 continue;
 
             stream.writeStartElement("instance");
 
             // The type is used to refer to the name of the object
-            stream.writeAttribute("objName", sanitizeName(object->type()));
+            stream.writeAttribute("objName", sanitizeName(type));
 
             QPointF pos = object->position();
             qreal scaleX = 1;
             qreal scaleY = 1;
 
+            QPointF origin(optionalProperty(object, "originX", 0.0),
+                           optionalProperty(object, "originY", 0.0));
+
             if (!object->cell().isEmpty()) {
-                // Tile objects have bottom-left origin in Tiled, so the
-                // position needs to be translated for top-left origin in
-                // GameMaker, taking into account the rotation.
-                QTransform transform;
-                transform.rotate(object->rotation());
-
-                pos += transform.map(QPointF(0, -object->height()));
-
                 // For tile objects we can support scaling and flipping, though
                 // flipping in combination with rotation doesn't work in GameMaker.
                 if (auto tile = object->cell().tile()) {
@@ -151,14 +229,28 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
 
                     if (object->cell().flippedHorizontally()) {
                         scaleX *= -1;
-                        pos += transform.map(QPointF(object->width(), 0));
+                        origin += QPointF(object->width() - 2 * origin.x(), 0);
                     }
                     if (object->cell().flippedVertically()) {
                         scaleY *= -1;
-                        pos += transform.map(QPointF(0, object->height()));
+                        origin += QPointF(0, object->height() - 2 * origin.y());
                     }
                 }
+
+                // Tile objects have bottom-left origin in Tiled, so the
+                // position needs to be translated for top-left origin in
+                // GameMaker, taking into account the rotation.
+                origin += QPointF(0, -object->height());
             }
+
+            // Allow overriding the scale using custom properties
+            scaleX = optionalProperty(object, "scaleX", scaleX);
+            scaleY = optionalProperty(object, "scaleY", scaleY);
+
+            // Adjust the position based on the origin
+            QTransform transform;
+            transform.rotate(object->rotation());
+            pos += transform.map(origin);
 
             stream.writeAttribute("x", QString::number(qRound(pos.x())));
             stream.writeAttribute("y", QString::number(qRound(pos.y())));
@@ -176,6 +268,7 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
                 stream.writeAttribute("name", name);
             }
 
+            stream.writeAttribute("code", optionalProperty(object, "code", QString()));
             stream.writeAttribute("scaleX", QString::number(scaleX));
             stream.writeAttribute("scaleY", QString::number(scaleY));
             stream.writeAttribute("rotation", QString::number(-object->rotation()));
@@ -194,7 +287,9 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
     // Write out tile instances
     iterator.toFront();
     while (const Layer *layer = iterator.next()) {
-        QString depth = QString::number(optionalProperty(layer, QLatin1String("depth"), layerCount));
+        --layerCount;
+        QString depth = QString::number(optionalProperty(layer, QLatin1String("depth"),
+                                                         layerCount + 1000000));
 
         switch (layer->layerType()) {
         case Layer::TileLayerType: {
@@ -226,7 +321,7 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
                         int yo = 0;
 
                         if (tileset->isCollection()) {
-                            bgName = QFileInfo(tile->imageSource()).baseName();
+                            bgName = QFileInfo(tile->imageSource().path()).baseName();
                         } else {
                             bgName = tileset->name();
 
@@ -271,7 +366,7 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
 
             foreach (const MapObject *object, objects) {
                 // Objects with types are already exported as instances
-                if (!object->type().isEmpty())
+                if (!object->effectiveType().isEmpty())
                     continue;
 
                 // Non-typed tile objects are exported as tiles. Rotation is
@@ -301,12 +396,12 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
                     int yo = 0;
 
                     if (tileset->isCollection()) {
-                        bgName = QFileInfo(tile->imageSource()).baseName();
+                        bgName = QFileInfo(tile->imageSource().path()).baseName();
                     } else {
                         bgName = tileset->name();
 
                         int xInTilesetGrid = tile->id() % tileset->columnCount();
-                        int yInTilesetGrid = (int)(tile->id() / tileset->columnCount());
+                        int yInTilesetGrid = tile->id() / tileset->columnCount();
 
                         xo = tileset->margin() + (tileset->tileSpacing() + tileset->tileWidth()) * xInTilesetGrid;
                         yo = tileset->margin() + (tileset->tileSpacing() + tileset->tileHeight()) * yInTilesetGrid;
@@ -341,8 +436,6 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
             // Recursion handled by LayerIterator
             break;
         }
-
-        --layerCount;
     }
 
     stream.writeEndElement();

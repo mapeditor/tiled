@@ -37,7 +37,9 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     , mLanguages(LanguageManager::instance()->availableLanguages())
 {
     mUi->setupUi(this);
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+#endif
 
 #if defined(QT_NO_OPENGL)
     mUi->openGL->setEnabled(false);
@@ -58,8 +60,10 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
 
     mUi->styleCombo->addItems(QStringList()
                               << QApplication::translate("PreferencesDialog", "Native")
-                              << QApplication::translate("PreferencesDialog", "Fusion")
                               << QApplication::translate("PreferencesDialog", "Tiled Fusion"));
+
+    mUi->styleCombo->setItemData(0, Preferences::SystemDefaultStyle);
+    mUi->styleCombo->setItemData(1, Preferences::TiledStyle);
 
     PluginListModel *pluginListModel = new PluginListModel(this);
     QSortFilterProxyModel *pluginProxyModel = new QSortFilterProxyModel(this);
@@ -93,6 +97,8 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
             preferences, SLOT(setObjectLineWidth(qreal)));
     connect(mUi->openGL, &QCheckBox::toggled,
             preferences, &Preferences::setUseOpenGL);
+    connect(mUi->wheelZoomsByDefault, &QCheckBox::toggled,
+            preferences, &Preferences::setWheelZoomsByDefault);
 
     connect(mUi->styleCombo, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
             this, &PreferencesDialog::styleComboChanged);
@@ -146,6 +152,7 @@ void PreferencesDialog::fromPreferences()
     mUi->safeSaving->setChecked(prefs->safeSavingEnabled());
     if (mUi->openGL->isEnabled())
         mUi->openGL->setChecked(prefs->useOpenGL());
+    mUi->wheelZoomsByDefault->setChecked(prefs->wheelZoomsByDefault());
 
     // Not found (-1) ends up at index 0, system default
     int languageIndex = mUi->languageCombo->findData(prefs->language());
@@ -156,7 +163,11 @@ void PreferencesDialog::fromPreferences()
     mUi->gridFine->setValue(prefs->gridFine());
     mUi->objectLineWidth->setValue(prefs->objectLineWidth());
 
-    mUi->styleCombo->setCurrentIndex(prefs->applicationStyle());
+    int styleComboIndex = mUi->styleCombo->findData(prefs->applicationStyle());
+    if (styleComboIndex == -1)
+        styleComboIndex = 1;
+
+    mUi->styleCombo->setCurrentIndex(styleComboIndex);
     mUi->baseColor->setColor(prefs->baseColor());
     mUi->selectionColor->setColor(prefs->selectionColor());
     bool systemStyle = prefs->applicationStyle() == Preferences::SystemDefaultStyle;
@@ -183,15 +194,15 @@ void PreferencesDialog::retranslateUi()
     mUi->languageCombo->setItemText(0, tr("System default"));
 
     mUi->styleCombo->setItemText(0, QApplication::translate("PreferencesDialog", "Native"));
-    mUi->styleCombo->setItemText(1, QApplication::translate("PreferencesDialog", "Fusion"));
-    mUi->styleCombo->setItemText(2, QApplication::translate("PreferencesDialog", "Tiled Fusion"));
+    mUi->styleCombo->setItemText(1, QApplication::translate("PreferencesDialog", "Tiled Fusion"));
 }
 
-void PreferencesDialog::styleComboChanged(int index)
+void PreferencesDialog::styleComboChanged()
 {
     Preferences *prefs = Preferences::instance();
+    int style = mUi->styleCombo->currentData().toInt();
 
-    prefs->setApplicationStyle(static_cast<Preferences::ApplicationStyle>(index));
+    prefs->setApplicationStyle(static_cast<Preferences::ApplicationStyle>(style));
 
     bool systemStyle = prefs->applicationStyle() == Preferences::SystemDefaultStyle;
     mUi->baseColor->setEnabled(!systemStyle);

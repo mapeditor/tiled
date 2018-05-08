@@ -22,6 +22,7 @@
 #include "abstracttool.h"
 
 #include "mapdocument.h"
+#include "toolmanager.h"
 
 #include <QKeyEvent>
 
@@ -35,6 +36,7 @@ AbstractTool::AbstractTool(const QString &name, const QIcon &icon,
     , mIcon(icon)
     , mShortcut(shortcut)
     , mEnabled(false)
+    , mToolManager(nullptr)
     , mMapDocument(nullptr)
 {
 }
@@ -70,9 +72,24 @@ void AbstractTool::setEnabled(bool enabled)
     emit enabledChanged(enabled);
 }
 
+Tile *AbstractTool::tile() const
+{
+    return toolManager()->tile();
+}
+
+ObjectTemplate *AbstractTool::objectTemplate() const
+{
+    return toolManager()->objectTemplate();
+}
+
 void AbstractTool::keyPressed(QKeyEvent *event)
 {
     event->ignore();
+}
+
+void AbstractTool::mouseDoubleClicked(QGraphicsSceneMouseEvent *event)
+{
+    mousePressed(event);
 }
 
 void AbstractTool::setMapDocument(MapDocument *mapDocument)

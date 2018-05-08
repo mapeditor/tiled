@@ -50,6 +50,7 @@ private:
     MapObject *mMapObject;
     qreal mOldRotation;
     qreal mNewRotation;
+    bool mOldChangeState;
 };
 
 } // namespace Internal

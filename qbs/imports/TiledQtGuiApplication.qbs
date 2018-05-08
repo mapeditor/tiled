@@ -11,6 +11,10 @@ QtGuiApplication {
             return ["$ORIGIN/../lib"];
     }
     cpp.cxxLanguageVersion: "c++11"
+    cpp.defines: [
+        "QT_DEPRECATED_WARNINGS",
+        "QT_DISABLE_DEPRECATED_BEFORE=0x050700"
+    ]
 
     Properties {
         condition: qbs.targetOS.contains("macos")
@@ -18,6 +22,14 @@ QtGuiApplication {
     }
 
     Group {
+        condition: qbs.targetOS.contains("darwin") && bundle.isBundle
+        qbs.install: true
+        qbs.installSourceBase: product.buildDirectory
+        fileTagsFilter: ["bundle.content"]
+    }
+
+    Group {
+        condition: !qbs.targetOS.contains("darwin") || !bundle.isBundle
         qbs.install: true
         qbs.installDir: {
             if (qbs.targetOS.contains("windows") || project.linuxArchive)

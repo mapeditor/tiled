@@ -20,12 +20,16 @@
 
 #pragma once
 
+#include <QActionGroup>
 #include <QObject>
 
 class QAction;
-class QActionGroup;
 
 namespace Tiled {
+
+class Tile;
+class ObjectTemplate;
+
 namespace Internal {
 
 class AbstractTool;
@@ -44,16 +48,32 @@ class ToolManager : public QObject
 
 public:
     ToolManager(QObject *parent = nullptr);
-    ~ToolManager();
+    ~ToolManager() override;
 
     void setMapDocument(MapDocument *mapDocument);
 
     QAction *registerTool(AbstractTool *tool);
 
-    void selectTool(AbstractTool *tool);
+    bool selectTool(AbstractTool *tool);
     AbstractTool *selectedTool() const;
 
+    template<typename Tool>
+    Tool *findTool();
+
     void retranslateTools();
+
+    void createShortcuts(QWidget *parent);
+
+    Tile *tile() const;
+    ObjectTemplate *objectTemplate() const;
+
+public slots:
+    /**
+     * Sets the tile that will be used when the creation mode is
+     * CreateTileObjects or when replacing a tile of a tile object.
+     */
+    void setTile(Tile *tile);
+    void setObjectTemplate(ObjectTemplate *objectTemplate);
 
 signals:
     void selectedToolChanged(AbstractTool *tool);
@@ -80,10 +100,26 @@ private:
     AbstractTool *mDisabledTool;
     AbstractTool *mPreviouslyDisabledTool;
     MapDocument *mMapDocument;
+    Tile *mTile;
+    ObjectTemplate *mObjectTemplate;
 
     bool mSelectEnabledToolPending;
 };
 
+/**
+ * Selects the tool that matches the specified type.
+ */
+template<class Tool>
+Tool *ToolManager::findTool()
+{
+    const auto actions = mActionGroup->actions();
+    for (QAction *action : actions) {
+        AbstractTool *abstractTool = action->data().value<AbstractTool*>();
+        if (Tool *tool = qobject_cast<Tool*>(abstractTool))
+            return tool;
+    }
+    return nullptr;
+}
 
 /**
  * Returns the selected tool.
@@ -91,6 +127,26 @@ private:
 inline AbstractTool *ToolManager::selectedTool() const
 {
     return mSelectedTool;
+}
+
+inline Tile *ToolManager::tile() const
+{
+    return mTile;
+}
+
+inline ObjectTemplate *ToolManager::objectTemplate() const
+{
+    return mObjectTemplate;
+}
+
+inline void ToolManager::setTile(Tile *tile)
+{
+    mTile = tile;
+}
+
+inline void ToolManager::setObjectTemplate(ObjectTemplate *objectTemplate)
+{
+    mObjectTemplate = objectTemplate;
 }
 
 } // namespace Internal

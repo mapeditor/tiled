@@ -34,9 +34,11 @@ using namespace Tiled::Internal;
 CreateTileObjectTool::CreateTileObjectTool(QObject *parent)
     : CreateObjectTool(parent)
 {
-    setIcon(QIcon(QLatin1String(":images/24x24/insert-image.png")));
+    QIcon icon(QLatin1String(":images/24x24/insert-image.png"));
+    icon.addFile(QLatin1String(":images/48x48/insert-image.png"));
+    setIcon(icon);
     Utils::setThemeIcon(this, "insert-image");
-    languageChanged();
+    languageChangedImpl();
 }
 
 void CreateTileObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt::KeyboardModifiers modifiers)
@@ -78,18 +80,24 @@ bool CreateTileObjectTool::startNewMapObject(const QPointF &pos, ObjectGroup *ob
 
 void CreateTileObjectTool::languageChanged()
 {
+    CreateObjectTool::languageChanged();
+    languageChangedImpl();
+}
+
+void CreateTileObjectTool::languageChangedImpl()
+{
     setName(tr("Insert Tile"));
     setShortcut(QKeySequence(tr("T")));
 }
 
 MapObject *CreateTileObjectTool::createNewMapObject()
 {
-    if (!mTile)
+    if (!tile())
         return nullptr;
 
     MapObject *newMapObject = new MapObject;
     newMapObject->setShape(MapObject::Rectangle);
-    newMapObject->setCell(Cell(mTile));
-    newMapObject->setSize(mTile->size());
+    newMapObject->setCell(Cell(tile()));
+    newMapObject->setSize(tile()->size());
     return newMapObject;
 }

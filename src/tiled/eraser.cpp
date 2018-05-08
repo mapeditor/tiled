@@ -36,6 +36,7 @@ Eraser::Eraser(QObject *parent)
                        QIcon(QLatin1String(
                                ":images/22x22/stock-tool-eraser.png")),
                        QKeySequence(tr("E")),
+                       nullptr,
                        parent)
     , mMode(Nothing)
 {
@@ -94,25 +95,36 @@ void Eraser::languageChanged()
 
 void Eraser::doErase(bool continuation)
 {
-    TileLayer *tileLayer = currentTileLayer();
-    QRegion eraseRegion(eraseArea());
+    QRegion globalEraseRegion(eraseArea());
+    QPoint tilePos = tilePosition();
 
     if (continuation) {
-        const QPoint tilePos = tilePosition();
         const QVector<QPoint> points = pointsOnLine(mLastTilePos, tilePos);
         for (const QPoint &p : points)
-            eraseRegion |= QRegion(p.x(), p.y(), 1, 1);
+            globalEraseRegion |= QRegion(p.x(), p.y(), 1, 1);
     }
-    mLastTilePos = tilePosition();
+    mLastTilePos = tilePos;
 
-    if (!tileLayer->bounds().intersects(eraseRegion.boundingRect()))
-        return;
+    for (Layer *layer : mapDocument()->selectedLayers()) {
+        if (!layer->isTileLayer())
+            continue;
+        if (!layer->isUnlocked())
+            continue;
 
-    EraseTiles *erase = new EraseTiles(mapDocument(), tileLayer, eraseRegion);
-    erase->setMergeable(continuation);
+        auto tileLayer = static_cast<TileLayer*>(layer);
 
-    mapDocument()->undoStack()->push(erase);
-    emit mapDocument()->regionEdited(eraseRegion, tileLayer);
+        QRegion eraseRegion = globalEraseRegion.intersected(tileLayer->bounds());
+        if (eraseRegion.isEmpty())
+            continue;
+
+        EraseTiles *erase = new EraseTiles(mapDocument(), tileLayer, eraseRegion);
+        erase->setMergeable(continuation);
+
+        mapDocument()->undoStack()->push(erase);
+        emit mapDocument()->regionEdited(eraseRegion, tileLayer);
+
+        continuation = true;    // further erases are always continuations
+    }
 }
 
 QRect Eraser::eraseArea() const

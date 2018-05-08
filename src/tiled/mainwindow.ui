@@ -41,7 +41,7 @@
      <x>0</x>
      <y>0</y>
      <width>553</width>
-     <height>21</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -135,6 +135,8 @@
      <addaction name="actionNoLabels"/>
      <addaction name="actionLabelsForSelectedObjects"/>
      <addaction name="actionLabelsForAllObjects"/>
+     <addaction name="separator"/>
+     <addaction name="actionLabelForHoveredObject"/>
     </widget>
     <widget class="QMenu" name="menuSnapping">
      <property name="title">
@@ -291,6 +293,9 @@
    </property>
    <property name="text">
     <string>Save &amp;As...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+S</string>
    </property>
   </action>
   <action name="actionNewTileset">
@@ -486,10 +491,13 @@
    <property name="text">
     <string>Save All</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+S</string>
+   </property>
   </action>
   <action name="actionDocumentation">
    <property name="text">
-    <string>Documentation</string>
+    <string>User Manual</string>
    </property>
   </action>
   <action name="actionNoLabels">
@@ -601,6 +609,14 @@
    </property>
    <property name="shortcut">
     <string>Tab</string>
+   </property>
+  </action>
+  <action name="actionLabelForHoveredObject">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>For Hovered Object</string>
    </property>
   </action>
  </widget>

@@ -36,6 +36,7 @@ ResizeMapObject::ResizeMapObject(MapDocument *mapDocument,
     , mMapObject(mapObject)
     , mOldSize(oldSize)
     , mNewSize(mapObject->size())
+    , mOldChangeState(mapObject->propertyChanged(MapObject::SizeProperty))
 {
     setText(QCoreApplication::translate("Undo Commands", "Resize Object"));
 }
@@ -48,6 +49,7 @@ ResizeMapObject::ResizeMapObject(MapDocument *mapDocument,
     , mMapObject(mapObject)
     , mOldSize(oldSize)
     , mNewSize(newSize)
+    , mOldChangeState(mapObject->propertyChanged(MapObject::SizeProperty))
 {
     setText(QCoreApplication::translate("Undo Commands", "Resize Object"));
 }
@@ -55,9 +57,11 @@ ResizeMapObject::ResizeMapObject(MapDocument *mapDocument,
 void ResizeMapObject::undo()
 {
     mMapDocument->mapObjectModel()->setObjectSize(mMapObject, mOldSize);
+    mMapObject->setPropertyChanged(MapObject::SizeProperty, mOldChangeState);
 }
 
 void ResizeMapObject::redo()
 {
     mMapDocument->mapObjectModel()->setObjectSize(mMapObject, mNewSize);
+    mMapObject->setPropertyChanged(MapObject::SizeProperty);
 }

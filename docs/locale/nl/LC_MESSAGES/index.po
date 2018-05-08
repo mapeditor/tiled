@@ -1,0 +1,64 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2017, Thorbjørn Lindeijer
+# This file is distributed under the same license as the Tiled package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2017.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Tiled 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-12-21 14:31+0100\n"
+"PO-Revision-Date: 2017-12-21 13:42+0000\n"
+"Last-Translator: Thorbjørn Lindeijer <bjorn@lindeijer.nl>\n"
+"Language-Team: Dutch <https://hosted.weblate.org/projects/tiled"
+"/documentation-index/nl/>\n"
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 2.19-dev\n"
+"Generated-By: Babel 2.5.1\n"
+
+#: ../../index.rst:2
+msgid "Tiled Documentation"
+msgstr "Tiled Documentatie"
+
+#: ../../index.rst:5
+msgid ""
+"If you're not finding what you're looking for in these pages, please "
+"don't hesitate to ask questions on the `Tiled Forum "
+"<http://discourse.mapeditor.org>`_."
+msgstr ""
+"Als u op deze pagina's niet vindt wat u zoekt, aarzel dan niet om te "
+"vragen op het `Tiled Forum <http://discourse.mapeditor.org>`_."
+
+#: ../../index.rst:8
+msgid "User Manual"
+msgstr "Handleiding"
+
+#: ../../index.rst:29
+msgid "Reference"
+msgstr "Referentie"
+
+#~ msgid ""
+#~ "This documentation is currently work-"
+#~ "in-progress. Initially the relevant pages"
+#~ " from the wiki have been ported "
+#~ "over, providing a limited amount of "
+#~ "documentation for specific Tiled features. "
+#~ "Over time, this should become the "
+#~ "place to refer to for any details"
+#~ " about using Tiled."
+#~ msgstr ""
+#~ "Er wordt momenteel aan deze documentatie"
+#~ " gewerkt. In eerste instantie zijn de"
+#~ " relevante pagina's van de wiki "
+#~ "overgezet, die een uitleg bieden over"
+#~ " een perperkt aantal functies. Uiteindelijk"
+#~ " moet dit de plek worden om "
+#~ "naar te verwijzen voor alles over "
+#~ "Tiled."
+
+#~ msgid "Manual"
+#~ msgstr "Handleiding"

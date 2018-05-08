@@ -51,6 +51,7 @@ private:
     MapObject *mMapObject;
     QSizeF mOldSize;
     QSizeF mNewSize;
+    bool mOldChangeState;
 };
 
 } // namespace Internal

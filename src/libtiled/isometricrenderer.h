@@ -44,7 +44,7 @@ class TILEDSHARED_EXPORT IsometricRenderer : public MapRenderer
 public:
     IsometricRenderer(const Map *map) : MapRenderer(map) {}
 
-    QSize mapSize() const override;
+    QRect mapBoundingRect() const override;
 
     QRect boundingRect(const QRect &rect) const override;
 

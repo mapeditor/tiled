@@ -80,9 +80,6 @@ MainToolBar::MainToolBar(QWidget *parent)
     Utils::setThemeIcon(mRedoAction, "edit-redo");
     Utils::setThemeIcon(mUndoAction, "edit-undo");
 
-#if QT_VERSION == 0x050500
-    mUndoAction->setPriority(QAction::LowPriority);
-#endif
     mRedoAction->setPriority(QAction::LowPriority);
 
     addWidget(mNewButton);

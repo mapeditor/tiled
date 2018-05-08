@@ -1,6 +1,6 @@
 /*
  * undodock.h
- * Copyright 2009, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2009-2017, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2010, Petr Viktorin <encukou@gmail.com>
  *
  * This file is part of Tiled.
@@ -23,7 +23,7 @@
 
 #include <QDockWidget>
 
-class QUndoGroup;
+class QUndoStack;
 class QUndoView;
 
 namespace Tiled {
@@ -38,7 +38,9 @@ class UndoDock : public QDockWidget
     Q_OBJECT
 
 public:
-    UndoDock(QUndoGroup *undoGroup, QWidget *parent = nullptr);
+    UndoDock(QWidget *parent = nullptr);
+
+    void setStack(QUndoStack *stack);
 
 protected:
     void changeEvent(QEvent *e) override;

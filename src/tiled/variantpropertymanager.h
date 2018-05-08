@@ -49,6 +49,7 @@ public:
                             const QString &attribute) const override;
 
     static int tilesetParametersTypeId();
+    static int alignmentTypeId();
 
 public slots:
     void setValue(QtProperty *property, const QVariant &val) override;
@@ -62,6 +63,10 @@ protected:
     void initializeProperty(QtProperty *property) override;
     void uninitializeProperty(QtProperty *property) override;
 
+private slots:
+    void slotValueChanged(QtProperty *property, const QVariant &value);
+    void slotPropertyDestroyed(QtProperty *property);
+
 private:
     struct Data {
         QVariant value;
@@ -74,6 +79,19 @@ private:
         bool multiline = false;
     };
     QMap<const QtProperty *, StringAttributes> mStringAttributes;
+
+    int alignToIndexH(Qt::Alignment align) const;
+    int alignToIndexV(Qt::Alignment align) const;
+    Qt::Alignment indexHToAlign(int idx) const;
+    Qt::Alignment indexVToAlign(int idx) const;
+    QString indexHToString(int idx) const;
+    QString indexVToString(int idx) const;
+    QMap<const QtProperty *, Qt::Alignment> m_alignValues;
+    typedef QMap<QtProperty *, QtProperty *> PropertyToPropertyMap;
+    PropertyToPropertyMap m_propertyToAlignH;
+    PropertyToPropertyMap m_propertyToAlignV;
+    PropertyToPropertyMap m_alignHToProperty;
+    PropertyToPropertyMap m_alignVToProperty;
 
     const QString mSuggestionsAttribute;
     const QString mMultilineAttribute;

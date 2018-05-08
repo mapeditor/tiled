@@ -1,0 +1,1317 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="xs3p.xsl"?>
+<!--
+  #%L
+  TMX version 1.1 by
+    Tiled Developers (mapeditor.org)
+  documented in xsd form by
+    Mike Thomas <mikepthomas@outlook.com>
+  documented in dtd form originally by
+    Olivier.Beaton@quadir.net
+    Creative Commons Attribution 3.0
+    http://creativecommons.org/licenses/by/3.0/
+  last updated on
+    2017-06-20
+  %%
+  Copyright (C) 2004 - 2017 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+  Copyright (C) 2017 Mike Thomas <mikepthomas@outlook.com>
+  %%
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions are met:
+  
+  1. Redistributions of source code must retain the above copyright notice,
+     this list of conditions and the following disclaimer.
+  2. Redistributions in binary form must reproduce the above copyright notice,
+     this list of conditions and the following disclaimer in the documentation
+     and/or other materials provided with the distribution.
+  
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+#L%
+-->
+<xs:schema version="1.0"
+           targetNamespace="http://www.mapeditor.org"
+           xmlns="http://www.mapeditor.org"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:annotation>
+        <xs:documentation source="http://doc.mapeditor.org/reference/tmx-map-format/">
+            The TMX (Tile Map XML) map format used by
+            [Tiled](http://www.mapeditor.org) is a flexible way to describe a
+            tile based map. It can describe maps with any tile size, any amount
+            of layers, any number of tile sets and it allows custom properties
+            to be set on most elements. Beside tile layers, it can also contain
+            groups of objects that can be placed freely.
+        </xs:documentation>
+    </xs:annotation>
+
+    <xs:element name="map" type="Map"/>
+    <xs:element name="tileset" type="TileSet"/>
+
+    <xs:complexType name="Animation">
+        <xs:annotation>
+            <xs:documentation source="http://doc.mapeditor.org/reference/tmx-map-format/#animation">
+                Contains a list of animation frames.
+
+                As of Tiled 0.10, each tile can have exactly one animation
+                associated with it. In the future, there could be support for
+                multiple named animations on a tile.
+            </xs:documentation>
+        </xs:annotation>
+
+        <xs:sequence>
+            <xs:element name="frame" type="Frame" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="Data">
+        <xs:annotation>
+            <xs:documentation source="http://doc.mapeditor.org/reference/tmx-map-format/#data">
+                When no encoding or compression is given, the tiles are stored
+                as individual XML `tile` elements. Next to that, the easiest
+                format to parse is the "csv" (comma separated values) format.
+
+                The base64-encoded and optionally compressed layer data is
+                somewhat more complicated to parse. First you need to
+                base64-decode it, then you may need to decompress it. Now you
+                have an array of bytes, which should be interpreted as an array
+                of unsigned 32-bit integers using little-endian byte ordering.
+
+                Whatever format you choose for your layer data, you will always
+                end up with so called "global tile IDs" (gids). They are global,
+                since they may refer to a tile from any of the tilesets used by
+                the map. In order to find out from which tileset the tile is you
+                need to find the tileset with the highest `firstgid` that is
+                still lower or equal than the gid. The tilesets are always
+                stored with increasing `firstgid`s.
+            </xs:documentation>
+        </xs:annotation>
+
+        <xs:simpleContent>
+            <xs:extension base="xs:token">
+                <xs:attribute name="encoding" type="Encoding">
+                    <xs:annotation>
+                        <xs:documentation>
+                            The encoding used to encode the tile layer data.
+                            When used, it can be "base64" and "csv" at the
+                            moment.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="compression" type="Compression">
+                    <xs:annotation>
+                        <xs:documentation>
+                            The compression used to compress the tile layer
+                            data. Tiled Qt supports "gzip" and "zlib".
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="Ellipse">
+        <xs:annotation>
+            <xs:documentation source="http://doc.mapeditor.org/reference/tmx-map-format/#ellipse">
+                Used to mark an object as an ellipse. The existing `x`, `y`,
+                `width` and `height` attributes are used to determine the size
+                of the ellipse.
+
+                @since 0.9
+            </xs:documentation>
+        </xs:annotation>
+    </xs:complexType>
+
+    <xs:complexType name="Frame">
+        <xs:annotation>
+            <xs:documentation source="http://doc.mapeditor.org/reference/tmx-map-format/#frame"/>
+        </xs:annotation>
+
+        <xs:attribute name="tileid" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    The local ID of a tile within the parent tileset.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="duration" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    How long (in milliseconds) this frame should be displayed
+                    before advancing to the next frame.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="Group">
+        <xs:annotation>
+            <xs:documentation source="http://doc.mapeditor.org/reference/tmx-map-format/#group">
+                A group layer, used to organize the layers of the map in a
+                hierarchy. Its attributes `offsetx`, `offsety`, `opacity` and
+                `visible` recursively affect child layers.
+            </xs:documentation>
+        </xs:annotation>
+
+        <xs:sequence>
+            <xs:element name="properties" type="Properties"/>
+            <xs:element name="layer" type="TileLayer" maxOccurs="unbounded"/>
+            <xs:element name="objectgroup" type="ObjectGroup" maxOccurs="unbounded"/>
+            <xs:element name="imagelayer" type="ImageLayer" maxOccurs="unbounded"/>
+            <xs:element name="group" type="Group" maxOccurs="unbounded"/>
+        </xs:sequence>
+
+        <xs:attribute name="name" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    The name of the group layer.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="offsetx" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    Rendering offset of the group layer in pixels.
+                    Defaults to 0.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="offsety" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    Rendering offset of the group layer in pixels.
+                    Defaults to 0.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="x" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    The x position of the group layer in pixels.
+
+                    @deprecated since 0.15
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="y" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    The y position of the group layer in pixels.
+
+                    @deprecated since 0.15
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="opacity" type="xs:double">
+            <xs:annotation>
+                <xs:documentation>
+                    The opacity of the layer as a value from 0 to 1.
+                    Defaults to 1.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="visible" type="xs:boolean">
+            <xs:annotation>
+                <xs:documentation>
+                    Whether the layer is shown (1) or hidden (0).
+                    Defaults to 1.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="Image">
+        <xs:annotation>
+            <xs:documentation source="http://doc.mapeditor.org/reference/tmx-map-format/#image">
+                Note that it is not currently possible to use Tiled to create
+                maps with embedded image data, even though the TMX format
+                supports this. It is possible to create such maps using
+                `libtiled` (Qt/C++) or
+                [tmxlib](https://pypi.python.org/pypi/tmxlib) (Python).
+            </xs:documentation>
+        </xs:annotation>
+
+        <xs:all>
+            <xs:element name="data" type="Data">
+                <xs:annotation>
+                    <xs:documentation>
+                        @since 0.9
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:all>
+
+        <xs:attribute name="format" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Used for embedded images, in combination with a `data` child
+                    element. Valid values are file extensions like `png`, `gif`,
+                    `jpg`, `bmp`, etc.
+
+                    @since 0.9
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="id" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    Used by some versions of Tiled Java.
+
+                    @deprecated and unsupported by Tiled Qt.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="source" type="xs:anyURI">
+            <xs:annotation>
+                <xs:documentation>
+                    The reference to the tileset image file
+                    (Tiled supports most common image formats).
+
+                    @since 0.9
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="trans" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Defines a specific color that is treated as transparent
+                    (example value: "#FF00FF" for magenta). Up until Tiled 0.12,
+                    this value is written out without a `#` but this is planned
+                    to change.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="width" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    The image width in pixels (optional, used for tile index
+                    correction when the image changes)
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="height" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    The image height in pixels (optional)
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="ImageLayer">
+        <xs:annotation>
+            <xs:documentation source="http://doc.mapeditor.org/reference/tmx-map-format/#imagelayer">
+                A layer consisting of a single image.
+            </xs:documentation>
+        </xs:annotation>
+
+        <xs:complexContent>
+            <xs:extension base="Layer">
+                <xs:sequence>
+                    <xs:element name="image" type="Image" maxOccurs="1"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="Layer" abstract="true">
+        <xs:sequence>
+            <xs:element name="properties" type="Properties" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+
+        <xs:attribute name="name" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    The name of the layer.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="x" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    The x coordinate of the layer in tiles. Defaults to 0 and
+                    can no longer be changed in Tiled Qt.
+
+                    @deprecated
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="y" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    The y coordinate of the layer in tiles. Defaults to 0 and
+                    can no longer be changed in Tiled Qt.
+
+                    @deprecated
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="width" type="xs:int" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    The width of the layer in tiles. Traditionally required, but
+                    as of Tiled Qt always the same as the map width.
+
+                    @deprecated
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="height" type="xs:int" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    The height of the layer in tiles. Traditionally required,
+                    but as of Tiled Qt always the same as the map height.
+
+                    @deprecated
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="opacity" type="xs:float">
+            <xs:annotation>
+                <xs:documentation>
+                    The opacity of the layer as a value from 0 to 1. Defaults to
+                    1.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="visible" type="xs:boolean">
+            <xs:annotation>
+                <xs:documentation>
+                    Whether the layer is shown (1) or hidden (0). Defaults to 1.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="offsetx" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    Rendering offset for this layer in pixels. Defaults to 0.
+
+                    @since 0.14
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="offsety" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    Rendering offset for this layer in pixels. Defaults to 0.
+
+                    @since 0.14
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="Map">
+        <xs:annotation>
+            <xs:documentation source="http://doc.mapeditor.org/reference/tmx-map-format/#map">
+                The `tilewidth` and `tileheight` properties determine the
+                general grid size of the map. The individual tiles may have
+                different sizes. Larger tiles will extend at the top and right
+                (anchored to the bottom left).
+
+                A map contains three different kinds of layers. Tile layers were
+                once the only type, and are simply called layer, object layers
+                have the objectgroup tag and image layers use the imagelayer
+                tag. The order in which these layers appear is the order in
+                which the layers are rendered by Tiled.
+            </xs:documentation>
+        </xs:annotation>
+
+        <xs:sequence>
+            <xs:element name="properties" type="Properties"/>
+            <xs:element name="tileset" type="TileSet" maxOccurs="unbounded"/>
+            <xs:choice>
+                <xs:element name="layer" type="TileLayer" maxOccurs="unbounded"/>
+                <xs:element name="objectgroup" type="ObjectGroup" maxOccurs="unbounded"/>
+                <xs:element name="imagelayer" type="ImageLayer" maxOccurs="unbounded"/>
+            </xs:choice>
+            <xs:element name="group" type="Group" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>
+                        @since 1.0
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+
+        <xs:attribute name="version" type="xs:string" fixed="1.0">
+            <xs:annotation>
+                <xs:documentation>
+                    The TMX format version. Was "1.0" so far, and will be
+                    incremented to match minor Tiled releases.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="tiledversion" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    The Tiled version used to save the file.
+                    May be a date (for snapshot builds).
+
+                    @since 1.0.1
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="orientation" type="Orientation" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Map orientation. Tiled supports "orthogonal", "isometric",
+                    "staggered" (since 0.9) and "hexagonal" (since 0.11).
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="renderorder" type="RenderOrder" default="right-down">
+            <xs:annotation>
+                <xs:documentation>
+                    The order in which tiles on tile layers are rendered. Valid
+                    values are `right-down` (the default), `right-up`,
+                    `left-down` and `left-up`. In all cases, the map is drawn
+                    row-by-row. (since 0.10, but only supported for orthogonal
+                    maps at the moment)
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="width" type="xs:int" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    The map width in tiles.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="height" type="xs:int" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    The map height in tiles.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="tilewidth" type="xs:int" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    The width of a tile.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="tileheight" type="xs:int" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    The height of a tile.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="hexsidelength" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    Only for hexagonal maps. Determines the width or height
+                    (depending on the staggered axis) of the tile's edge, in
+                    pixels.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="staggeraxis" type="StaggerAxis">
+            <xs:annotation>
+                <xs:documentation>
+                    For staggered and hexagonal maps, determines which axis
+                    ("x" or "y") is staggered.
+
+                    @since 0.11
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="staggerindex" type="StaggerIndex">
+            <xs:annotation>
+                <xs:documentation>
+                    For staggered and hexagonal maps, determines whether the
+                    "even" or "odd" indexes along the staggered axis are
+                    shifted.
+
+                    @since 0.11
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="backgroundcolor" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    The background color of the map. (optional, may include
+                    alpha value since 0.15 in the form `#AARRGGBB`)
+
+                    @since 0.9
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="nextobjectid" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    Stores the next available ID for new objects. This number
+                    is stored to prevent reuse of the same ID after objects
+                    have been removed.
+
+                    @since 0.11
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="Object">
+        <xs:annotation>
+            <xs:documentation source="http://doc.mapeditor.org/reference/tmx-map-format/#object">
+                While tile layers are very suitable for anything repetitive
+                aligned to the tile grid, sometimes you want to annotate your
+                map with other information, not necessarily aligned to the grid.
+                Hence the objects have their coordinates and size in pixels, but
+                you can still easily align that to the grid when you want to.
+
+                You generally use objects to add custom information to your tile
+                map, such as spawn points, warps, exits, etc.
+
+                When the object has a `gid` set, then it is represented by the
+                image of the tile with that global ID. The image alignment
+                currently depends on the map orientation. In orthogonal
+                orientation it's aligned to the bottom-left while in isometric
+                it's aligned to the bottom-center.
+            </xs:documentation>
+        </xs:annotation>
+
+        <xs:sequence>
+            <xs:element name="properties" type="Properties"/>
+            <xs:element name="ellipse" type="Ellipse">
+                <xs:annotation>
+                    <xs:documentation>
+                        @since 0.9
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="polygon" type="Polygon"/>
+            <xs:element name="polyline" type="Polyline"/>
+            <xs:element name="text" type="Text">
+                <xs:annotation>
+                    <xs:documentation>
+                        @since 1.0
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="image" type="Image"/>
+        </xs:sequence>
+
+        <xs:attribute name="id" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    Unique ID of the object. Each object that is placed on a map
+                    gets a unique id. Even if an object was deleted, no object
+                    gets the same ID. Can not be changed in Tiled Qt.
+
+                    @since 0.11
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="name" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    The name of the object. An arbitrary string.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="type" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    The type of the object. An arbitrary string.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="x" type="xs:double" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    The x coordinate of the object in pixels.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="y" type="xs:double" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    The y coordinate of the object in pixels.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="width" type="xs:double">
+            <xs:annotation>
+                <xs:documentation>
+                    The width of the object in pixels (defaults to 0).
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="height" type="xs:double">
+            <xs:annotation>
+                <xs:documentation>
+                    The height of the object in pixels (defaults to 0).
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="rotation" type="xs:double" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    The rotation of the object in degrees clockwise (defaults to
+                    0).
+
+                    @since 0.10
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="gid" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    An reference to a tile (optional).
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="visible" type="xs:boolean">
+            <xs:annotation>
+                <xs:documentation>
+                    Whether the object is shown (1) or hidden (0). Defaults to
+                    1.
+
+                    @since 0.9
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="ObjectGroup">
+        <xs:annotation>
+            <xs:documentation source="http://doc.mapeditor.org/reference/tmx-map-format/#objectgroup">
+                The object group is in fact a map layer, and is hence called
+                "object layer" in Tiled Qt.
+            </xs:documentation>
+        </xs:annotation>
+
+        <xs:complexContent>
+            <xs:extension base="Layer">
+                <xs:sequence>
+                    <xs:element name="object" type="Object" maxOccurs="unbounded"/>
+                </xs:sequence>
+
+                <xs:attribute name="color" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>
+                            The color used to display the objects in this group.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="draworder" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Whether the objects are drawn according to the order
+                            of appearance ("index") or sorted by their
+                            y-coordinate ("topdown"). Defaults to "topdown".
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="Polygon">
+        <xs:annotation>
+            <xs:documentation source="http://doc.mapeditor.org/reference/tmx-map-format/#polygon">
+                Each `polygon` object is made up of a space-delimited list of
+                x,y coordinates. The origin for these coordinates is the
+                location of the parent `object`. By default, the first point is
+                created as 0,0 denoting that the point will originate exactly
+                where the `object` is placed.
+            </xs:documentation>
+        </xs:annotation>
+
+        <xs:attribute name="points" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    A list of x,y coordinates in pixels.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="Polyline">
+        <xs:annotation>
+            <xs:documentation source="http://doc.mapeditor.org/reference/tmx-map-format/#polyline">
+                A `polyline` follows the same placement definition as a
+                `polygon` object.
+            </xs:documentation>
+        </xs:annotation>
+
+        <xs:attribute name="points" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    A list of x,y coordinates in pixels.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="Properties">
+        <xs:annotation>
+            <xs:documentation source="http://doc.mapeditor.org/reference/tmx-map-format/#properties">
+                Wraps any number of custom properties. Can be used as a child of
+                the `map`, `tileset`, `tile` (when part of a `tileset`),
+                `terrain`, `layer`, `objectgroup`, `object`, `imagelayer` and
+                `group` elements.
+            </xs:documentation>
+        </xs:annotation>
+
+        <xs:sequence>
+            <xs:element name="property" type="Property" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="Property">
+        <xs:annotation>
+            <xs:documentation source="http://doc.mapeditor.org/reference/tmx-map-format/#property"/>
+        </xs:annotation>
+
+        <xs:attribute name="name" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    The name of the property.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="type" type="PropertyType">
+            <xs:annotation>
+                <xs:documentation>
+                    The type of the property. Can be `string` (default), `int`,
+                    `float`, `bool`, `color` or `file` (since 0.16, with `color`
+                    and `file` added in 0.17).
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="value" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    The value of the property.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="Terrain">
+        <xs:annotation>
+            <xs:documentation source="http://doc.mapeditor.org/reference/tmx-map-format/#terrain"/>
+        </xs:annotation>
+
+        <xs:sequence>
+            <xs:element name="properties" type="Properties"/>
+        </xs:sequence>
+
+        <xs:attribute name="name" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    The name of the terrain type.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="tile" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    The local tile-id of the tile that represents the terrain
+                    visually.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="TerrainTypes">
+        <xs:annotation>
+            <xs:documentation source="http://doc.mapeditor.org/reference/tmx-map-format/#terraintypes">
+                This element defines an array of terrain types, which can be
+                referenced from the `terrain` attribute of the `tile` element.
+            </xs:documentation>
+        </xs:annotation>
+
+        <xs:sequence>
+            <xs:element name="terrain" type="Terrain" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="Text">
+        <xs:annotation>
+            <xs:documentation source="http://doc.mapeditor.org/reference/tmx-map-format/#text">
+                Used to mark an object as a text object. Contains the actual
+                text as character data.
+            </xs:documentation>
+        </xs:annotation>
+
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="fontfamily" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>
+                            The font family used (default: "sand-serif")
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="pixelsize" type="xs:int">
+                    <xs:annotation>
+                        <xs:documentation>
+                            The size of the font in pixels (not using points,
+                            because other sizes in the TMX format are also using
+                            pixels) (default: 16)
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="wrap" type="xs:boolean">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Whether word wrapping is enabled (1) or disabled
+                            (0). Defaults to 0.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="color" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Color of the text in `#AARRGGBB` or `#RRGGBB` format
+                            (default: #000000)
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="bold" type="xs:boolean">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Whether the font is bold (1) or not (0). Defaults to
+                            0.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="italic" type="xs:boolean">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Whether the font is italic (1) or not (0). Defaults
+                            to 0.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="underline" type="xs:boolean">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Whether a line should be drawn below the text (1) or
+                            not (0). Defaults to 0.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="strikeout" type="xs:boolean">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Whether a line should be drawn through the text (1)
+                            or not (0). Defaults to 0.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="kerning" type="xs:boolean">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Whether kerning should be used while rendering the
+                            text (1) or not (0). Default to 1.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="halign" type="HorizontalAlignment">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Horizontal alignment of the text within the object
+                            (`left` (default), `center` or `right`)
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="valign" type="VerticalAlignment">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Vertical alignment of the text within the object
+                            (`left` (default), `center` or `right`)
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="Tile">
+        <xs:annotation>
+            <xs:documentation source="http://doc.mapeditor.org/reference/tmx-map-format/#tile"/>
+        </xs:annotation>
+
+        <xs:sequence>
+            <xs:element name="properties" type="Properties"/>
+            <xs:element name="image" type="Image">
+                <xs:annotation>
+                    <xs:documentation>
+                        @since 0.9
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="objectgroup" type="ObjectGroup" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>
+                        @since 0.10
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="animation" type="Animation" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        @since 0.10
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+
+        <xs:attribute name="id" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    The local tile ID within its tileset.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="type" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    The type of the tile. Refers to an object type and is used
+                    by tile objects. (optional)
+
+                    @since 1.0
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="terrain" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Defines the terrain type of each corner of the tile, given
+                    as comma-separated indexes in the terrain types array in the
+                    order top-left, top-right, bottom-left, bottom-right.
+                    Leaving out a value means that corner has no terrain.
+                    (optional)
+
+                    @since 0.9
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="probability" type="xs:double">
+            <xs:annotation>
+                <xs:documentation>
+                    A percentage indicating the probability that this tile is
+                    chosen when it competes with others while editing with the
+                    terrain tool. (optional)
+
+                    @since 0.9
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="TileLayer">
+        <xs:annotation>
+            <xs:documentation source="http://doc.mapeditor.org/reference/tmx-map-format/#layer">
+                All `tileset` tags shall occur before the first `layer` tag so
+                that parsers may rely on having the tilesets before needing to
+                resolve tiles.
+            </xs:documentation>
+        </xs:annotation>
+
+        <xs:complexContent>
+            <xs:extension base="Layer">
+                <xs:sequence>
+                    <xs:element name="data" type="Data"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="TileOffset">
+        <xs:annotation>
+            <xs:documentation source="http://doc.mapeditor.org/reference/tmx-map-format/#tileoffset">
+                This element is used to specify an offset in pixels, to be
+                applied when drawing a tile from the related tileset. When not
+                present, no offset is applied.
+            </xs:documentation>
+        </xs:annotation>
+
+        <xs:attribute name="x" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    Horizontal offset in pixels
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="y" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    Vertical offset in pixels (positive is down)
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="TileSet">
+        <xs:annotation>
+            <xs:documentation source="http://doc.mapeditor.org/reference/tmx-map-format/#tileset">
+                If there are multiple `tileset` elements, they are in ascending
+                order of their `firstgid` attribute. The first tileset always
+                has a `firstgid` value of 1\. Since Tiled 0.15, image collection
+                tilesets do not necessarily number their tiles consecutively
+                since gaps can occur when removing tiles.
+            </xs:documentation>
+        </xs:annotation>
+
+        <xs:sequence>
+            <xs:element name="tileoffset" type="TileOffset">
+                <xs:annotation>
+                    <xs:documentation>
+                        @since 0.8
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="properties" type="Properties">
+                <xs:annotation>
+                    <xs:documentation>
+                        @since 0.8
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="image" type="Image"/>
+            <xs:element name="terraintypes" type="TerrainTypes" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        @since 0.9
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="tile" type="Tile" maxOccurs="unbounded"/>
+        </xs:sequence>
+
+        <xs:attribute name="firstgid" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    The first global tile ID of this tileset (this global ID
+                    maps to the first tile in this tileset).
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="name" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    The name of this tileset.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="source" type="xs:anyURI">
+            <xs:annotation>
+                <xs:documentation>
+                    If this tileset is stored in an external TSX (Tile Set XML)
+                    file, this attribute refers to that file. That TSX file has
+                    the same structure as the element described here. (There is
+                    the **firstgid** attribute missing and this source attribute
+                    is also not there. These two attributes are kept in the TMX
+                    map, since they are map specific.)
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="tilewidth" type="xs:int" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    The (maximum) width of the tiles in this tileset.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="tileheight" type="xs:int" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    The (maximum) height of the tiles in this tileset.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="spacing" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    The spacing in pixels between the tiles in this tileset
+                    (applies to the tileset image).
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="margin" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    The margin around the tiles in this tileset (applies to the
+                    tileset image).
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="tilecount" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    The number of tiles in this tileset
+
+                    @since 0.13
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="columns" type="xs:int" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    The number of tile columns in the tileset. For image
+                    collection tilesets it is editable and is used when
+                    displaying the tileset.
+
+                    @since 0.15
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:simpleType name="Compression">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="gzip">
+                <xs:annotation>
+                    <xs:documentation>
+                        @deprecated since 0.15
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="zlib"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="Encoding">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="base64"/>
+            <xs:enumeration value="csv"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="HorizontalAlignment">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="left"/>
+            <xs:enumeration value="center"/>
+            <xs:enumeration value="right"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="Orientation">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="orthogonal"/>
+            <xs:enumeration value="isometric"/>
+            <xs:enumeration value="staggered">
+                <xs:annotation>
+                    <xs:documentation>
+                        @since 0.9
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="hexagonal">
+                <xs:annotation>
+                    <xs:documentation>
+                        @since 0.11
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="PropertyType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="string">
+                <xs:annotation>
+                    <xs:documentation>
+                        When a string property contains newlines, the current
+                        version of Tiled will write out the value as characters
+                        contained inside the `property` element rather than as
+                        the `value` attribute. It is possible that a future
+                        version of the TMX format will switch to always saving
+                        property values inside the element rather than as an
+                        attribute.
+
+                        @since 0.16
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="int">
+                <xs:annotation>
+                    <xs:documentation>
+                        @since 0.16
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="float">
+                <xs:annotation>
+                    <xs:documentation>
+                        @since 0.16
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="bool">
+                <xs:annotation>
+                    <xs:documentation>
+                        Boolean properties have a value of either "true"
+                        or "false".
+
+                        @since 0.16
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="color">
+                <xs:annotation>
+                    <xs:documentation>
+                        Color properties are stored in the format `#AARRGGBB`.
+
+                        @since 0.17
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="file">
+                <xs:annotation>
+                    <xs:documentation>
+                        File properties are stored as paths relative from
+                        the location of the map file.
+
+                        @since 0.17
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="RenderOrder">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="right-down"/>
+            <xs:enumeration value="right-up"/>
+            <xs:enumeration value="left-down"/>
+            <xs:enumeration value="left-up"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="StaggerAxis">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="x"/>
+            <xs:enumeration value="y"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="StaggerIndex">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="even"/>
+            <xs:enumeration value="odd"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="VerticalAlignment">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="top"/>
+            <xs:enumeration value="center"/>
+            <xs:enumeration value="bottom"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>

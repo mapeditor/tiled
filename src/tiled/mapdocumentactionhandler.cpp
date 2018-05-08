@@ -44,6 +44,7 @@
 #include <QCursor>
 #include <QMenu>
 #include <QtCore/qmath.h>
+#include <QStyle>
 
 namespace Tiled {
 namespace Internal {
@@ -65,6 +66,7 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     mActionSelectNone->setShortcut(tr("Ctrl+Shift+A"));
 
     mActionCropToSelection = new QAction(this);
+    mActionAutocrop = new QAction(this);
 
     QIcon addTileLayerIcon(QLatin1String(":/images/16x16/layer-tile.png"));
     QIcon addObjectLayerIcon(QLatin1String(":/images/16x16/layer-object.png"));
@@ -80,6 +82,7 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     mActionAddImageLayer = new QAction(this);
     mActionAddImageLayer->setIcon(addImageLayerIcon);
     mActionAddGroupLayer = new QAction(this);
+    mActionAddGroupLayer->setIcon(QApplication::style()->standardIcon(QStyle::SP_DirIcon));
 
     mActionLayerViaCopy = new QAction(this);
     mActionLayerViaCopy->setShortcut(tr("Ctrl+J"));
@@ -122,6 +125,11 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     mActionToggleOtherLayers->setIcon(
             QIcon(QLatin1String(":/images/16x16/show_hide_others.png")));
 
+    mActionToggleLockOtherLayers = new QAction(this);
+    mActionToggleLockOtherLayers->setShortcut(tr("Ctrl+Shift+L"));
+    mActionToggleLockOtherLayers->setIcon(
+        QIcon(QLatin1String(":/images/16x16/locked.png")));
+
     mActionLayerProperties = new QAction(this);
     mActionLayerProperties->setIcon(
             QIcon(QLatin1String(":images/16x16/document-properties.png")));
@@ -142,6 +150,7 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     connect(mActionSelectInverse, &QAction::triggered, this, &MapDocumentActionHandler::selectInverse);
     connect(mActionSelectNone, &QAction::triggered, this, &MapDocumentActionHandler::selectNone);
     connect(mActionCropToSelection, &QAction::triggered, this, &MapDocumentActionHandler::cropToSelection);
+    connect(mActionAutocrop, &QAction::triggered, this, &MapDocumentActionHandler::autocrop);
     connect(mActionAddTileLayer, &QAction::triggered, this, &MapDocumentActionHandler::addTileLayer);
     connect(mActionAddObjectGroup, &QAction::triggered, this, &MapDocumentActionHandler::addObjectGroup);
     connect(mActionAddImageLayer, &QAction::triggered, this, &MapDocumentActionHandler::addImageLayer);
@@ -159,6 +168,7 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     connect(mActionMoveLayerUp, &QAction::triggered, this, &MapDocumentActionHandler::moveLayerUp);
     connect(mActionMoveLayerDown, &QAction::triggered, this, &MapDocumentActionHandler::moveLayerDown);
     connect(mActionToggleOtherLayers, &QAction::triggered, this, &MapDocumentActionHandler::toggleOtherLayers);
+    connect(mActionToggleLockOtherLayers, &QAction::triggered, this, &MapDocumentActionHandler::toggleLockOtherLayers);
     connect(mActionLayerProperties, &QAction::triggered, this, &MapDocumentActionHandler::layerProperties);
 
     connect(mActionDuplicateObjects, &QAction::triggered, this, &MapDocumentActionHandler::duplicateObjects);
@@ -179,6 +189,7 @@ void MapDocumentActionHandler::retranslateUi()
     mActionSelectInverse->setText(tr("Invert S&election"));
     mActionSelectNone->setText(tr("Select &None"));
     mActionCropToSelection->setText(tr("&Crop to Selection"));
+    mActionAutocrop->setText(tr("Autocrop"));
 
     mActionAddTileLayer->setText(tr("&Tile Layer"));
     mActionAddObjectGroup->setText(tr("&Object Layer"));
@@ -197,6 +208,7 @@ void MapDocumentActionHandler::retranslateUi()
     mActionMoveLayerUp->setText(tr("R&aise Layer"));
     mActionMoveLayerDown->setText(tr("&Lower Layer"));
     mActionToggleOtherLayers->setText(tr("Show/&Hide all Other Layers"));
+    mActionToggleLockOtherLayers->setText(tr("Lock/&Unlock all Other Layers"));
     mActionLayerProperties->setText(tr("Layer &Properties..."));
 }
 
@@ -221,6 +233,8 @@ void MapDocumentActionHandler::setMapDocument(MapDocument *mapDocument)
         connect(mapDocument, &MapDocument::selectedAreaChanged,
                 this, &MapDocumentActionHandler::updateActions);
         connect(mapDocument, &MapDocument::selectedObjectsChanged,
+                this, &MapDocumentActionHandler::updateActions);
+        connect(mapDocument, &MapDocument::mapChanged,
                 this, &MapDocumentActionHandler::updateActions);
     }
 
@@ -258,40 +272,44 @@ QMenu *MapDocumentActionHandler::createGroupLayerMenu(QWidget *parent) const
     return groupLayerMenu;
 }
 
+/**
+ * Used to check whether we can cut or delete the current tile selection.
+ */
+static bool isTileSelectionLocked(const MapDocument &mapDocument)
+{
+    if (!mapDocument.selectedArea().isEmpty())
+        for (Layer *layer : mapDocument.selectedLayers())
+            if (layer->isTileLayer() && !layer->isUnlocked())
+                return true;
+
+    return false;
+}
+
 void MapDocumentActionHandler::cut()
 {
     if (!mMapDocument)
         return;
 
-    Layer *currentLayer = mMapDocument->currentLayer();
-    if (!currentLayer)
+    if (isTileSelectionLocked(*mMapDocument))
         return;
 
-    TileLayer *tileLayer = dynamic_cast<TileLayer*>(currentLayer);
-    const QRegion &selectedArea = mMapDocument->selectedArea();
-    const QList<MapObject*> selectedObjects = mMapDocument->selectedObjects();
-
-    copy();
+    if (!copy())
+        return;
 
     QUndoStack *stack = mMapDocument->undoStack();
     stack->beginMacro(tr("Cut"));
-
-    if (tileLayer && !selectedArea.isEmpty()) {
-        stack->push(new EraseTiles(mMapDocument, tileLayer, selectedArea));
-    } else if (!selectedObjects.isEmpty()) {
-        for (MapObject *mapObject : selectedObjects)
-            stack->push(new RemoveMapObject(mMapDocument, mapObject));
-    }
-
-    selectNone();
-
+    delete_();
     stack->endMacro();
 }
 
-void MapDocumentActionHandler::copy()
+/**
+ * @returns whether anything was copied.
+ */
+bool MapDocumentActionHandler::copy()
 {
     if (mMapDocument)
-        ClipboardManager::instance()->copySelection(mMapDocument);
+        return ClipboardManager::instance()->copySelection(*mMapDocument);
+    return false;
 }
 
 void MapDocumentActionHandler::delete_()
@@ -299,26 +317,42 @@ void MapDocumentActionHandler::delete_()
     if (!mMapDocument)
         return;
 
-    Layer *currentLayer = mMapDocument->currentLayer();
-    if (!currentLayer)
+    if (isTileSelectionLocked(*mMapDocument))
         return;
 
-    TileLayer *tileLayer = dynamic_cast<TileLayer*>(currentLayer);
     const QRegion &selectedArea = mMapDocument->selectedArea();
-    const auto selectedObjects = mMapDocument->selectedObjects();
+
+    QList<QUndoCommand*> commands;
+
+    LayerIterator layerIterator(mMapDocument->map(), Layer::TileLayerType);
+    for (Layer *layer : mMapDocument->selectedLayers()) {
+        if (!layer->isTileLayer())
+            continue;
+
+        auto tileLayer = static_cast<TileLayer*>(layer);
+        const QRegion area = selectedArea.intersected(tileLayer->bounds());
+        if (area.isEmpty())                     // nothing to delete
+            continue;
+
+        // Delete the selected part of the layer
+        commands.append(new EraseTiles(mMapDocument, tileLayer, area));
+    }
+
+    for (MapObject *mapObject : mMapDocument->selectedObjects())
+        commands.append(new RemoveMapObject(mMapDocument, mapObject));
 
     QUndoStack *undoStack = mMapDocument->undoStack();
-    undoStack->beginMacro(tr("Delete"));
 
-    if (tileLayer && !selectedArea.isEmpty()) {
-        undoStack->push(new EraseTiles(mMapDocument, tileLayer, selectedArea));
-    } else if (!selectedObjects.isEmpty()) {
-        for (MapObject *mapObject : selectedObjects)
-            undoStack->push(new RemoveMapObject(mMapDocument, mapObject));
+    if (!commands.isEmpty()) {
+        undoStack->beginMacro(tr("Delete"));
+        for (QUndoCommand *command : commands)
+            undoStack->push(command);
     }
 
     selectNone();
-    undoStack->endMacro();
+
+    if (!commands.isEmpty())
+        undoStack->endMacro();
 }
 
 void MapDocumentActionHandler::selectAll()
@@ -326,22 +360,42 @@ void MapDocumentActionHandler::selectAll()
     if (!mMapDocument)
         return;
 
-    Layer *layer = mMapDocument->currentLayer();
-    if (!layer)
-        return;
+    const bool infinite = mMapDocument->map()->infinite();
 
-    if (TileLayer *tileLayer = layer->asTileLayer()) {
-        QRect all(tileLayer->x(), tileLayer->y(),
-                  tileLayer->width(), tileLayer->height());
+    QRect all;
+    QList<MapObject*> objects;
 
-        if (mMapDocument->selectedArea() == all)
-            return;
+    for (Layer *layer : mMapDocument->selectedLayers()) {
+        if (!layer->isUnlocked())
+            continue;
 
+        switch (layer->layerType()) {
+        case Layer::TileLayerType: {
+            auto tileLayer = static_cast<TileLayer*>(layer);
+            all |= infinite ? tileLayer->bounds() : tileLayer->rect();
+            break;
+        }
+        case Layer::ObjectGroupType: {
+            if (!layer->isUnlocked())
+                continue;
+
+            auto objectGroup = static_cast<ObjectGroup*>(layer);
+            objects.append(objectGroup->objects());
+            break;
+        }
+        case Layer::ImageLayerType:
+        case Layer::GroupLayerType:
+            break;
+        }
+    }
+
+    if (mMapDocument->selectedArea() != all) {
         QUndoCommand *command = new ChangeSelectedArea(mMapDocument, all);
         mMapDocument->undoStack()->push(command);
-    } else if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
-        mMapDocument->setSelectedObjects(objectGroup->objects());
     }
+
+    if (!objects.isEmpty())
+        mMapDocument->setSelectedObjects(objects);
 }
 
 void MapDocumentActionHandler::selectInverse()
@@ -354,7 +408,9 @@ void MapDocumentActionHandler::selectInverse()
         return;
 
     if (TileLayer *tileLayer = layer->asTileLayer()) {
-        QRegion all(tileLayer->bounds());
+        QRegion all = tileLayer->rect();
+        if (mMapDocument->map()->infinite())
+            all = tileLayer->bounds();
 
         QUndoCommand *command = new ChangeSelectedArea(mMapDocument, all - mMapDocument->selectedArea());
         mMapDocument->undoStack()->push(command);
@@ -376,19 +432,13 @@ void MapDocumentActionHandler::selectNone()
     if (!mMapDocument)
         return;
 
-    Layer *layer = mMapDocument->currentLayer();
-    if (!layer)
-        return;
-
-    if (layer->asTileLayer()) {
-        if (mMapDocument->selectedArea().isEmpty())
-            return;
-
+    if (!mMapDocument->selectedArea().isEmpty()) {
         QUndoCommand *command = new ChangeSelectedArea(mMapDocument, QRegion());
         mMapDocument->undoStack()->push(command);
-    } else if (layer->asObjectGroup()) {
-        mMapDocument->setSelectedObjects(QList<MapObject*>());
     }
+
+    if (!mMapDocument->selectedObjects().isEmpty())
+        mMapDocument->setSelectedObjects(QList<MapObject*>());
 }
 
 void MapDocumentActionHandler::copyPosition()
@@ -421,6 +471,12 @@ void MapDocumentActionHandler::cropToSelection()
         return;
 
     mMapDocument->resizeMap(bounds.size(), -bounds.topLeft(), true);
+}
+
+void MapDocumentActionHandler::autocrop()
+{
+    if (mMapDocument)
+        mMapDocument->autocropMap();
 }
 
 void MapDocumentActionHandler::addTileLayer()
@@ -475,7 +531,7 @@ void MapDocumentActionHandler::layerVia(MapDocumentActionHandler::LayerViaVarian
         break;
     }
     case Layer::ObjectGroupType: {
-        selectedObjects = mMapDocument->selectedObjects();
+        selectedObjects = mMapDocument->selectedObjectsOrdered();
         if (selectedObjects.isEmpty())
             return;
 
@@ -595,6 +651,12 @@ void MapDocumentActionHandler::toggleOtherLayers()
         mMapDocument->toggleOtherLayers(mMapDocument->currentLayer());
 }
 
+void MapDocumentActionHandler::toggleLockOtherLayers()
+{
+    if (mMapDocument)
+        mMapDocument->toggleLockOtherLayers(mMapDocument->currentLayer());
+}
+
 void MapDocumentActionHandler::layerProperties()
 {
     if (mMapDocument) {
@@ -623,6 +685,12 @@ void MapDocumentActionHandler::moveObjectsToGroup(ObjectGroup *objectGroup)
     }
 }
 
+void MapDocumentActionHandler::selectAllInstances(const ObjectTemplate *objectTemplate)
+{
+    if (mMapDocument)
+        mMapDocument->selectAllInstances(objectTemplate);
+}
+
 void MapDocumentActionHandler::updateActions()
 {
     Map *map = nullptr;
@@ -649,6 +717,7 @@ void MapDocumentActionHandler::updateActions()
     }
 
     mActionSelectAll->setEnabled(map);
+    mActionSelectInverse->setEnabled(map);
 
     if (currentLayer) {
         if (currentLayer->asTileLayer()) {
@@ -664,6 +733,8 @@ void MapDocumentActionHandler::updateActions()
 
 
     mActionCropToSelection->setEnabled(!selection.isEmpty());
+
+    mActionAutocrop->setEnabled(currentLayer && currentLayer->isTileLayer() && !map->infinite());
 
     mActionAddTileLayer->setEnabled(map);
     mActionAddObjectGroup->setEnabled(map);
@@ -689,6 +760,7 @@ void MapDocumentActionHandler::updateActions()
     mActionMoveLayerUp->setEnabled(canMoveLayerUp);
     mActionMoveLayerDown->setEnabled(canMoveLayerDown);
     mActionToggleOtherLayers->setEnabled(currentLayer && (hasNextLayer || hasPreviousLayer));
+    mActionToggleLockOtherLayers->setEnabled(currentLayer && (hasNextLayer || hasPreviousLayer));
     mActionRemoveLayer->setEnabled(currentLayer);
     mActionLayerProperties->setEnabled(currentLayer);
 

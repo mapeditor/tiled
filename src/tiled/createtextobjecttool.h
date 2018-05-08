@@ -41,6 +41,9 @@ protected:
     void mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event) override;
 
     MapObject *createNewMapObject() override;
+
+private:
+    void languageChangedImpl();
 };
 
 } // namespace Internal

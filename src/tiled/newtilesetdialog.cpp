@@ -33,8 +33,10 @@
 #include <QMessageBox>
 #include <QScopedPointer>
 #include <QSettings>
+#include <QCheckBox>
 
 static const char * const TYPE_KEY = "Tileset/Type";
+static const char * const EMBED_KEY = "Tileset/EmbedInMap";
 static const char * const COLOR_ENABLED_KEY = "Tileset/UseTransparentColor";
 static const char * const COLOR_KEY = "Tileset/TransparentColor";
 static const char * const TILE_SIZE_KEY = "Tileset/TileSize";
@@ -66,12 +68,15 @@ NewTilesetDialog::NewTilesetDialog(QWidget *parent) :
     mNameWasEdited(false)
 {
     mUi->setupUi(this);
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+#endif
 
     // Restore previously used settings
     QSettings *s = Preferences::instance()->settings();
 
     int tilesetType = s->value(QLatin1String(TYPE_KEY)).toInt();
+    bool embedded = s->value(QLatin1String(EMBED_KEY)).toBool();
     bool colorEnabled = s->value(QLatin1String(COLOR_ENABLED_KEY)).toBool();
     QString colorName = s->value(QLatin1String(COLOR_KEY)).toString();
     QColor color = QColor::isValidColor(colorName) ? QColor(colorName) : Qt::magenta;
@@ -80,6 +85,7 @@ NewTilesetDialog::NewTilesetDialog(QWidget *parent) :
     int margin = s->value(QLatin1String(MARGIN_KEY)).toInt();
 
     mUi->tilesetType->setCurrentIndex(tilesetType);
+    mUi->embedded->setChecked(embedded);
     mUi->useTransparentColor->setChecked(colorEnabled);
     mUi->colorButton->setColor(color);
     if (tileSize.isValid()) {
@@ -167,8 +173,9 @@ bool NewTilesetDialog::editTilesetParameters(TilesetParameters &parameters)
 {
     setMode(EditTilesetParameters);
 
-    mPath = parameters.imageSource;
-    mUi->image->setText(parameters.imageSource);
+    // todo: support remote files
+    mPath = parameters.imageSource.toLocalFile();
+    mUi->image->setText(parameters.imageSource.toString(QUrl::PreferLocalFile));
 
     QColor transparentColor = parameters.transparentColor;
     mUi->useTransparentColor->setChecked(transparentColor.isValid());
@@ -242,8 +249,10 @@ void NewTilesetDialog::tryAccept()
         tileset = Tileset::create(name, 1, 1);
     }
 
-    if (mMode == CreateTileset)
+    if (mMode == CreateTileset) {
         s->setValue(QLatin1String(TYPE_KEY), mUi->tilesetType->currentIndex());
+        s->setValue(QLatin1String(EMBED_KEY), mUi->embedded->isChecked());
+    }
 
     mNewTileset = tileset;
     accept();

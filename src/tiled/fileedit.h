@@ -39,14 +39,14 @@ class FileEdit : public QWidget
 public:
     explicit FileEdit(QWidget *parent = nullptr);
 
-    void setFilePath(const QString &filePath);
-    QString filePath() const;
+    void setFileUrl(const QUrl &url);
+    QUrl fileUrl() const;
 
     void setFilter(const QString &filter) { mFilter = filter; }
     QString filter() const { return mFilter; }
 
 signals:
-    void filePathChanged(const QString &filePath);
+    void fileUrlChanged(const QUrl &url);
 
 protected:
     void focusInEvent(QFocusEvent *e) override;
@@ -55,7 +55,8 @@ protected:
     void keyReleaseEvent(QKeyEvent *e) override;
 
 private slots:
-    void validate(const QString &);
+    void textEdited();
+    void validate();
     void buttonClicked();
 
 private:

@@ -35,8 +35,9 @@ MoveMapObjectToGroup::MoveMapObjectToGroup(MapDocument *mapDocument,
                                            ObjectGroup *objectGroup)
     : mMapDocument(mapDocument)
     , mMapObject(mapObject)
-    , mOldObjectGroup(mapObject->objectGroup())
+    , mOldObjectGroup(nullptr)
     , mNewObjectGroup(objectGroup)
+    , mOldIndex(-1)
 {
     setText(QCoreApplication::translate("Undo Commands",
                                         "Move Object to Layer"));
@@ -45,11 +46,14 @@ MoveMapObjectToGroup::MoveMapObjectToGroup(MapDocument *mapDocument,
 void MoveMapObjectToGroup::undo()
 {
     mMapDocument->mapObjectModel()->removeObject(mNewObjectGroup, mMapObject);
-    mMapDocument->mapObjectModel()->insertObject(mOldObjectGroup, -1, mMapObject);
+    mMapDocument->mapObjectModel()->insertObject(mOldObjectGroup, mOldIndex, mMapObject);
 }
 
 void MoveMapObjectToGroup::redo()
 {
+    mOldObjectGroup = mMapObject->objectGroup();
+    mOldIndex = mOldObjectGroup->objects().indexOf(mMapObject);
+
     mMapDocument->mapObjectModel()->removeObject(mOldObjectGroup, mMapObject);
     mMapDocument->mapObjectModel()->insertObject(mNewObjectGroup, -1, mMapObject);
 }

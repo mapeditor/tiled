@@ -36,6 +36,7 @@ namespace Tiled {
 
 class Tile;
 class Tileset;
+class ObjectTemplate;
 
 namespace Internal {
 
@@ -44,8 +45,10 @@ class TilesetDocument;
 
 enum BrokenLinkType {
     MapTilesetReference,
+    ObjectTemplateTilesetReference,
     TilesetTileImageSource,
     TilesetImageSource,
+    ObjectTemplateReference,
 };
 
 struct BrokenLink {
@@ -54,10 +57,12 @@ struct BrokenLink {
     union {
         Tileset *_tileset;
         Tile *_tile;
+        const ObjectTemplate *_objectTemplate;
     };
 
     QString filePath() const;
     Tileset *tileset() const;
+    const ObjectTemplate *objectTemplate() const;
 };
 
 
@@ -132,10 +137,12 @@ signals:
 
 private slots:
     void clicked(QAbstractButton *button);
-    void selectionChanged(const QItemSelection &selected);
+    void selectionChanged();
 
 private:
+    void tryFixLinks(const QVector<BrokenLink> &links);
     void tryFixLink(const BrokenLink &link);
+    bool tryFixLink(const BrokenLink &link, const QString &newFilePath);
 
     BrokenLinksModel *mBrokenLinksModel;
     QSortFilterProxyModel *mProxyModel;

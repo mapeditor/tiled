@@ -26,6 +26,7 @@
 #include <QObject>
 #include <QString>
 #include <QVariant>
+#include <QPointer>
 
 class QUndoStack;
 
@@ -98,6 +99,12 @@ public:
     bool ignoreBrokenLinks() const;
     void setIgnoreBrokenLinks(bool ignoreBrokenLinks);
 
+    QString lastExportFileName() const;
+    void setLastExportFileName(const QString &fileName);
+
+    virtual FileFormat *exportFormat() const = 0;
+    virtual void setExportFormat(FileFormat *format) = 0;
+
 signals:
     void saved();
 
@@ -130,6 +137,8 @@ protected:
     Object *mCurrentObject;             /**< Current properties object. */
 
     bool mIgnoreBrokenLinks;
+
+    QString mLastExportFileName;
 };
 
 
@@ -151,6 +160,17 @@ inline bool Document::ignoreBrokenLinks() const
 {
     return mIgnoreBrokenLinks;
 }
+
+inline QString Document::lastExportFileName() const
+{
+    return mLastExportFileName;
+}
+
+inline void Document::setLastExportFileName(const QString &fileName)
+{
+    mLastExportFileName = fileName;
+}
+
 
 } // namespace Internal
 } // namespace Tiled

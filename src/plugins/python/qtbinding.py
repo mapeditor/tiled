@@ -119,31 +119,33 @@ def generate(parent_mod):
   mod.add_include('<QWidget>')
   mod.add_include('<QFlags>')
   #mod.add_include('"qtbind.h"')
-  
+
   cls_qpointf = mod.add_class('QPointF')
   cls_qpointf.add_constructor([('float','x'),('float','y')])
   cls_qpointf.add_method('x', 'int', [])
   cls_qpointf.add_method('setX', None, [('int','x')])
   cls_qpointf.add_method('y', 'int', [])
   cls_qpointf.add_method('setY', None, [('int','y')])
-  
+
   cls_sizef = mod.add_class('QSizeF')
   cls_sizef.add_constructor([('float','w'),('float','h')])
   cls_sizef.add_method('width', 'int', [])
   cls_sizef.add_method('setWidth', None, [('int','w')])
   cls_sizef.add_method('height', 'int', [])
   cls_sizef.add_method('setHeight', None, [('int','h')])
-  
+
   cls_qrgb = mod.add_class('QRgb')
+  cls_qrgb.add_copy_constructor()
   mod.add_container('QVector<QRgb>', retval('QRgb'), 'vector')
-  
+
   cls_color = mod.add_class('QColor')
   cls_color.add_constructor([('QRgb','col')])
   cls_color.add_constructor([('int','r'), ('int','g'), ('int','b')])
   cls_color.add_constructor([('int','r'), ('int','g'), ('int','b'),('int','a')])
+  cls_color.add_copy_constructor()
   cls_color.add_method('rgb', 'QRgb', [])
   cls_color.add_method('rgba', 'QRgb', [])
-  
+
   cls_qimage = mod.add_class('QImage')
   cls_qimage.add_enum('Format', ('Format_Invalid','Format_Mono','Format_MonoLSB',
     'Format_Indexed8','Format_RGB32','Format_ARGB32',
@@ -154,6 +156,7 @@ def generate(parent_mod):
     'Format_ARGB4444_Premultiplied'))
   cls_qimage.add_constructor([])
   cls_qimage.add_constructor([('int','w'), ('int','h'), ('Format','f')])
+  cls_qimage.add_copy_constructor()
   cls_qimage.add_method('color', 'QRgb', [('int','i')])
   cls_qimage.add_method('colorTable', 'QVector<QRgb>', [])
   cls_qimage.add_method('fill', None, [('int','color')])
@@ -168,12 +171,13 @@ def generate(parent_mod):
     ('QRgb','color')])
   cls_qimage.add_method('setColorTable', None, [('QVector<QRgb>','colors')])
   cls_qpixmap = mod.add_class('QPixmap')
+  cls_qpixmap.add_copy_constructor()
   cls_qpixmap.add_method('toImage', retval('const QImage&'), [])
   cls_qpixmap.add_method('fromImage', None, [('const QImage&','image')])
   cls_qpixmap.add_method('convertFromImage', None, [('const QImage&','image')])
   cls_qpixmap.add_method('width', 'int', [])
   cls_qpixmap.add_method('height', 'int', [])
-  
+
   cls_qwidget = mod.add_class('QWidget')
   cls_qfiledialog = mod.add_class('QFileDialog')
   cls_qfiledialog.add_enum('Option', ('ShowDirsOnly','DontResolveSymlinks','DontConfirmOverwrite','DontUseNativeDialog',
@@ -184,7 +188,7 @@ def generate(parent_mod):
     param('QString*','selectedFilter',default_value='new QString("")'),
     param('QFlags<QFileDialog::Option>','options', direction=Parameter.DIRECTION_IN, default_value='0')
     ], is_static=True)
-  
+
   mod.add_container('QList<QString>', retval('QString'), 'list')
 """
   with open('qtbind.h','w') as fh:

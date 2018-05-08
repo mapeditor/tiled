@@ -29,12 +29,14 @@
 #include "preferences.h"
 #include "staggeredrenderer.h"
 #include "tilelayer.h"
+#include "utils.h"
 
 #include <QMessageBox>
 #include <QPushButton>
 #include <QSettings>
 
 static const char * const ORIENTATION_KEY = "Map/Orientation";
+static const char * const FIXED_SIZE_KEY = "Map/FixedSize";
 static const char * const MAP_WIDTH_KEY = "Map/Width";
 static const char * const MAP_HEIGHT_KEY = "Map/Height";
 static const char * const TILE_WIDTH_KEY = "Map/TileWidth";
@@ -65,7 +67,12 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     mUi(new Ui::NewMapDialog)
 {
     mUi->setupUi(this);
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+#endif
+
+    mUi->fixedSizeSpacer->changeSize(qRound(Utils::dpiScaled(mUi->fixedSizeSpacer->sizeHint().width())), 0,
+                                     mUi->fixedSizeSpacer->sizePolicy().horizontalPolicy());
 
     mUi->buttonBox->button(QDialogButtonBox::Save)->setText(tr("Save As..."));
 
@@ -73,6 +80,7 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     Preferences *prefs = Preferences::instance();
     QSettings *s = prefs->settings();
     const auto orientation = static_cast<Map::Orientation>(s->value(QLatin1String(ORIENTATION_KEY)).toInt());
+    const bool fixedSize = s->value(QLatin1String(FIXED_SIZE_KEY), true).toBool();
     const int mapWidth = s->value(QLatin1String(MAP_WIDTH_KEY), 100).toInt();
     const int mapHeight = s->value(QLatin1String(MAP_HEIGHT_KEY), 100).toInt();
     const int tileWidth = s->value(QLatin1String(TILE_WIDTH_KEY), 32).toInt();
@@ -116,6 +124,13 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     connect(mUi->tileWidth, SIGNAL(valueChanged(int)), SLOT(refreshPixelSize()));
     connect(mUi->tileHeight, SIGNAL(valueChanged(int)), SLOT(refreshPixelSize()));
     connect(mUi->orientation, SIGNAL(currentIndexChanged(int)), SLOT(refreshPixelSize()));
+    connect(mUi->fixedSize, SIGNAL(toggled(bool)), SLOT(updateWidgets(bool)));
+
+    if (fixedSize)
+        mUi->fixedSize->setChecked(true);
+    else
+        mUi->mapInfinite->setChecked(true);
+
     refreshPixelSize();
 }
 
@@ -129,6 +144,7 @@ MapDocument *NewMapDialog::createMap()
     if (exec() != QDialog::Accepted)
         return nullptr;
 
+    const bool fixedSize = mUi->fixedSize->isChecked();
     const int mapWidth = mUi->mapWidth->value();
     const int mapHeight = mUi->mapHeight->value();
     const int tileWidth = mUi->tileWidth->value();
@@ -140,12 +156,13 @@ MapDocument *NewMapDialog::createMap()
 
     Map *map = new Map(orientation,
                        mapWidth, mapHeight,
-                       tileWidth, tileHeight);
+                       tileWidth, tileHeight,
+                       !fixedSize);
 
     map->setLayerDataFormat(layerFormat);
     map->setRenderOrder(renderOrder);
 
-    const size_t gigabyte = 1073741824;
+    const size_t gigabyte = 1073741824u;
     const size_t memory = size_t(mapWidth) * size_t(mapHeight) * sizeof(Cell);
 
     // Add a tile layer to new maps of reasonable size
@@ -153,7 +170,7 @@ MapDocument *NewMapDialog::createMap()
         map->addLayer(new TileLayer(tr("Tile Layer 1"), 0, 0,
                                     mapWidth, mapHeight));
     } else {
-        const double gigabytes = (double) memory / gigabyte;
+        const double gigabytes = static_cast<double>(memory) / gigabyte;
         QMessageBox::warning(this, tr("Memory Usage Warning"),
                              tr("Tile layers for this map will consume %L1 GB "
                                 "of memory each. Not creating one by default.")
@@ -166,6 +183,7 @@ MapDocument *NewMapDialog::createMap()
     prefs->setMapRenderOrder(renderOrder);
     QSettings *s = Preferences::instance()->settings();
     s->setValue(QLatin1String(ORIENTATION_KEY), orientation);
+    s->setValue(QLatin1String(FIXED_SIZE_KEY), fixedSize);
     s->setValue(QLatin1String(MAP_WIDTH_KEY), mapWidth);
     s->setValue(QLatin1String(MAP_HEIGHT_KEY), mapHeight);
     s->setValue(QLatin1String(TILE_WIDTH_KEY), tileWidth);
@@ -186,20 +204,29 @@ void NewMapDialog::refreshPixelSize()
 
     switch (map.orientation()) {
     case Map::Isometric:
-        size = IsometricRenderer(&map).mapSize();
+        size = IsometricRenderer(&map).mapBoundingRect().size();
         break;
     case Map::Staggered:
-        size = StaggeredRenderer(&map).mapSize();
+        size = StaggeredRenderer(&map).mapBoundingRect().size();
         break;
     case Map::Hexagonal:
-        size = HexagonalRenderer(&map).mapSize();
+        size = HexagonalRenderer(&map).mapBoundingRect().size();
         break;
     default:
-        size = OrthogonalRenderer(&map).mapSize();
+        size = OrthogonalRenderer(&map).mapBoundingRect().size();
         break;
     }
 
     mUi->pixelSizeLabel->setText(tr("%1 x %2 pixels")
                                  .arg(size.width())
                                  .arg(size.height()));
+}
+
+void NewMapDialog::updateWidgets(bool checked)
+{
+    mUi->mapHeight->setEnabled(checked);
+    mUi->mapWidth->setEnabled(checked);
+    mUi->pixelSizeLabel->setEnabled(checked);
+    mUi->heightLabel->setEnabled(checked);
+    mUi->widthLabel->setEnabled(checked);
 }

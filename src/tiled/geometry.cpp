@@ -20,6 +20,8 @@
 
 #include "geometry.h"
 
+#include <QTransform>
+
 namespace Tiled {
 
 /**
@@ -94,6 +96,71 @@ QVector<QPoint> pointsOnEllipse(int x0, int y0, int x1, int y1)
     }
 
     return ret;
+}
+
+/**
+ * returns an elliptical region centered at x0,y0 with radius determinded by x1,y1
+ */
+QRegion ellipseRegion(int x0, int y0, int x1, int y1)
+{
+    QRegion ret;
+    int x, y;
+    int xChange, yChange;
+    int ellipseError;
+    int twoXSquare, twoYSquare;
+    int stoppingX, stoppingY;
+    int radiusX = x0 > x1 ? x0 - x1 : x1 - x0;
+    int radiusY = y0 > y1 ? y0 - y1 : y1 - y0;
+
+    if (radiusX == 0 && radiusY == 0)
+        return ret;
+
+    twoXSquare = 2 * radiusX * radiusX;
+    twoYSquare = 2 * radiusY * radiusY;
+    x = radiusX;
+    y = 0;
+    xChange = radiusY * radiusY * (1 - 2 * radiusX);
+    yChange = radiusX * radiusX;
+    ellipseError = 0;
+    stoppingX = twoYSquare*radiusX;
+    stoppingY = 0;
+    while (stoppingX >= stoppingY) {
+        ret += QRect(-x, y, x * 2, 1);
+        ret += QRect(-x, -y, x * 2, 1);
+        y++;
+        stoppingY += twoXSquare;
+        ellipseError += yChange;
+        yChange += twoXSquare;
+        if ((2 * ellipseError + xChange) > 0) {
+            x--;
+            stoppingX -= twoYSquare;
+            ellipseError += xChange;
+            xChange += twoYSquare;
+        }
+    }
+    x = 0;
+    y = radiusY;
+    xChange = radiusY * radiusY;
+    yChange = radiusX * radiusX * (1 - 2 * radiusY);
+    ellipseError = 0;
+    stoppingX = 0;
+    stoppingY = twoXSquare * radiusY;
+    while (stoppingX <= stoppingY) {
+        ret += QRect(-x, y, x * 2, 1);
+        ret += QRect(-x, -y, x * 2, 1);
+        x++;
+        stoppingX += twoYSquare;
+        ellipseError += xChange;
+        xChange += twoYSquare;
+        if ((2 * ellipseError + yChange) > 0) {
+            y--;
+            stoppingY -= twoXSquare;
+            ellipseError += yChange;
+            yChange += twoXSquare;
+        }
+    }
+
+    return ret.translated(x0, y0);
 }
 
 /**
@@ -195,6 +262,19 @@ QVector<QRegion> coherentRegions(const QRegion &region)
         result += newCoherentRegion;
     }
     return result;
+}
+
+/**
+ * Returns a transform that rotates by \a rotation degrees around the given
+ * \a position.
+ */
+QTransform rotateAt(const QPointF &position, qreal rotation)
+{
+    QTransform transform;
+    transform.translate(position.x(), position.y());
+    transform.rotate(rotation);
+    transform.translate(-position.x(), -position.y());
+    return transform;
 }
 
 } // namespace Tiled

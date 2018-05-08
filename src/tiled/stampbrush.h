@@ -22,6 +22,7 @@
 #pragma once
 
 #include "abstracttiletool.h"
+#include "capturestamphelper.h"
 #include "randompicker.h"
 #include "tilelayer.h"
 #include "tilestamp.h"
@@ -29,10 +30,13 @@
 namespace Tiled {
 
 class Tile;
+class WangSet;
 
 namespace Internal {
 
 class MapDocument;
+class StampActions;
+class WangFiller;
 
 /**
  * Implements a tile brush that acts like a stamp. It is able to paint a block
@@ -45,7 +49,9 @@ class StampBrush : public AbstractTileTool
 
 public:
     StampBrush(QObject *parent = nullptr);
-    ~StampBrush();
+    ~StampBrush() override;
+
+    void deactivate(MapScene *scene) override;
 
     void mousePressed(QGraphicsSceneMouseEvent *event) override;
     void mouseReleased(QGraphicsSceneMouseEvent *event) override;
@@ -64,8 +70,12 @@ public:
      */
     const TileStamp &stamp() const { return mStamp; }
 
+    void populateToolBar(QToolBar *toolBar) override;
+
 public slots:
     void setRandom(bool value);
+    void setWangFill(bool value);
+    void setWangSet(WangSet *wangSet);
 
 signals:
     /**
@@ -73,7 +83,11 @@ signals:
      * this signal instead of setting its stamp directly so that the fill tool
      * also gets the new stamp.
      */
-    void stampCaptured(const TileStamp &stamp);
+    void stampChanged(const TileStamp &stamp);
+
+    void randomChanged(bool value);
+
+    void wangFillChanged(bool value);
 
 protected:
     void tilePositionChanged(const QPoint &tilePos) override;
@@ -83,28 +97,27 @@ protected:
 
 private:
     enum PaintFlags {
-        Mergeable               = 0x1,
-        SuppressRegionEdited    = 0x2
+        Mergeable = 0x1
     };
 
     void beginPaint();
-    QRegion doPaint(int flags = 0);
+    void doPaint(int flags = 0,
+                 QHash<TileLayer *, QRegion> *paintedRegions = nullptr);
 
     void beginCapture();
     void endCapture();
-    QRect capturedArea() const;
 
     void updatePreview();
     void updatePreview(QPoint tilePos);
 
     TileStamp mStamp;
-    SharedTileLayer mPreviewLayer;
+    SharedMap mPreviewMap;
     QVector<SharedTileset> mMissingTilesets;
 
-    QPoint mCaptureStart;
+    CaptureStampHelper mCaptureStampHelper;
     QPoint mPrevTilePosition;
 
-    void drawPreviewLayer(const QVector<QPoint> &list);
+    void drawPreviewLayer(const QVector<QPoint> &points);
 
     /**
      * There are several options how the stamp utility can be used.
@@ -137,7 +150,12 @@ private:
     bool mIsRandom;
     RandomPicker<Cell> mRandomCellPicker;
 
+    bool mIsWangFill;
+    WangSet *mWangSet;
+
     void updateRandomList();
+
+    StampActions *mStampActions;
 };
 
 } // namespace Internal

@@ -22,6 +22,7 @@
 
 #include "commanddatamodel.h"
 #include "commanddialog.h"
+#include "logginginterface.h"
 #include "utils.h"
 
 #include <QApplication>
@@ -36,6 +37,7 @@ CommandManager *CommandManager::mInstance;
 
 CommandManager::CommandManager()
     : mModel(new CommandDataModel(this))
+    , mLogger(new LoggingInterface())
 {
     updateActions();
 }
@@ -107,17 +109,22 @@ void CommandManager::updateActions()
 
     mActions.append(mSeparator);
 
-    QAction *mEditCommands = new QAction(this);
+    mEditCommands = new QAction(this);
     mEditCommands->setIcon(
             QIcon(QLatin1String(":/images/24x24/system-run.png")));
-    mEditCommands->setText(tr("Edit Commands..."));
     Utils::setThemeIcon(mEditCommands, "system-run");
 
     connect(mEditCommands, &QAction::triggered, this, &CommandManager::showDialog);
 
     mActions.append(mEditCommands);
 
+    retranslateUi();
     populateMenus();
+}
+
+void CommandManager::retranslateUi()
+{
+    mEditCommands->setText(tr("Edit Commands..."));
 }
 
 } // namespace Internal

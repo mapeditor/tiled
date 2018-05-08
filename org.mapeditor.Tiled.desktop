@@ -1,0 +1,13 @@
+[Desktop Entry]
+Name=Tiled
+GenericName=Map Editor
+Comment=Tile Map Editor
+TryExec=tiled
+Exec=tiled %F
+Terminal=false
+Type=Application
+Icon=tiled
+Categories=Graphics;2DGraphics;
+StartupNotify=true
+X-Desktop-File-Install-Version=0.1
+MimeType=application/x-tiled-tmx;application/x-tiled-tsx;

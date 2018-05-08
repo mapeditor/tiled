@@ -58,6 +58,41 @@ private:
 
     QPolygonF mOldPolygon;
     QPolygonF mNewPolygon;
+    bool mOldChangeState;
+};
+
+class TogglePolygonPolyline : public QUndoCommand
+{
+public:
+    TogglePolygonPolyline(MapObject *mapObject);
+
+    void undo() override { toggle(); }
+    void redo() override { toggle(); }
+
+private:
+    void toggle();
+
+    MapObject *mMapObject;
+};
+
+class SplitPolyline : public QUndoCommand
+{
+public:
+    SplitPolyline(MapDocument *mapDocument,
+                  MapObject *mapObject,
+                  int edgeIndex);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    MapDocument *mMapDocument;
+    MapObject *mFirstPolyline;
+    MapObject *mSecondPolyline;
+
+    int mEdgeIndex;
+    int mObjectIndex;
+    bool mOldChangeState;
 };
 
 } // namespace Internal

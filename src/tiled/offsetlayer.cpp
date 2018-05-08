@@ -31,9 +31,18 @@
 
 #include <QCoreApplication>
 
+#include "qtcompat_p.h"
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
+/**
+ * Creates an undo command that offsets the layer at \a index by \a offset,
+ * within \a bounds, and can optionally wrap on the x or y axis.
+ *
+ * If \a bounds is empty, the \a offset is applied everywhere and the wrapping
+ * is ignored.
+ */
 OffsetLayer::OffsetLayer(MapDocument *mapDocument,
                          Layer *layer,
                          const QPoint &offset,
@@ -50,11 +59,14 @@ OffsetLayer::OffsetLayer(MapDocument *mapDocument,
     switch (mOriginalLayer->layerType()) {
     case Layer::TileLayerType:
         mOffsetLayer = layer->clone();
-        static_cast<TileLayer*>(mOffsetLayer)->offsetTiles(offset, bounds, wrapX, wrapY);
+        if (bounds.isEmpty())
+            static_cast<TileLayer*>(mOffsetLayer)->offsetTiles(offset);
+        else
+            static_cast<TileLayer*>(mOffsetLayer)->offsetTiles(offset, bounds, wrapX, wrapY);
         break;
     case Layer::ObjectGroupType:
         mOffsetLayer = layer->clone();
-        // fall through
+        Q_FALLTHROUGH();
     case Layer::ImageLayerType:
     case Layer::GroupLayerType: {
         // These layers need offset and bounds converted to pixel units

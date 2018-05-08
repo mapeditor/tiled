@@ -39,6 +39,8 @@ class QIODevice;
 namespace Tiled {
 
 class Map;
+class MapObject;
+class ObjectTemplate;
 class Tileset;
 
 namespace Internal {
@@ -91,6 +93,11 @@ public:
      * \overload
      */
     bool writeTileset(const Tileset &tileset, const QString &fileName);
+
+    void writeObjectTemplate(const ObjectTemplate *objectTemplate, QIODevice *device,
+                             const QString &path = QString());
+
+    bool writeObjectTemplate(const ObjectTemplate *objectTemplate, const QString &fileName);
 
     /**
      * Returns the error message for the last occurred error.

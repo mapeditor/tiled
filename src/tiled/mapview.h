@@ -55,8 +55,9 @@ public:
     };
 
     MapView(QWidget *parent = nullptr, Mode mode = StaticContents);
-    ~MapView();
+    ~MapView() override;
 
+    void setScene(MapScene *scene);
     MapScene *mapScene() const;
 
     Zoomable *zoomable() const { return mZoomable; }
@@ -70,6 +71,9 @@ protected:
     bool event(QEvent *event) override;
 
     void hideEvent(QHideEvent *) override;
+    void resizeEvent(QResizeEvent *event) override;
+
+    void keyPressEvent(QKeyEvent *event) override;
 
     void wheelEvent(QWheelEvent *event) override;
 
@@ -77,13 +81,20 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
 
+    void focusInEvent(QFocusEvent *event) override;
+
     void handlePinchGesture(QPinchGesture *pinch);
 
     void adjustCenterFromMousePosition(QPoint &mousePos);
 
+signals:
+    void focused();
+
 private slots:
     void adjustScale(qreal scale);
     void setUseOpenGL(bool useOpenGL);
+    void updateSceneRect(const QRectF &sceneRect);
+    void updateSceneRect(const QRectF &sceneRect, const QTransform &transform);
 
 private:
     QPoint mLastMousePos;

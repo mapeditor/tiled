@@ -34,8 +34,10 @@ class GroupLayer;
 class Layer;
 class Map;
 class ObjectGroup;
+class ObjectTemplate;
 class Properties;
 class Tileset;
+class WangColor;
 
 /**
  * Converts a QVariant to a Map instance. Meant to be used together with
@@ -72,6 +74,13 @@ public:
     SharedTileset toTileset(const QVariant &variant, const QDir &directory);
 
     /**
+     * Tries to convert the given \a variant to an ObjectTemplate instance. The
+     * \a directory is necessary to resolve any relative references to external
+     * tilesets.
+     */
+    ObjectTemplate *toObjectTemplate(const QVariant &variant, const QDir &directory);
+
+    /**
      * Returns the last error, if any.
      */
     QString errorString() const { return mError; }
@@ -80,14 +89,23 @@ private:
     Properties toProperties(const QVariant &propertiesVariant,
                             const QVariant &propertyTypesVariant) const;
     SharedTileset toTileset(const QVariant &variant);
+    WangSet *toWangSet(const QVariantMap &variantMap, Tileset *tileset);
+    QSharedPointer<WangColor> toWangColor(const QVariantMap &variantMap, bool isEdge);
+    ObjectTemplate *toObjectTemplate(const QVariant &variant);
     Layer *toLayer(const QVariant &variant);
     TileLayer *toTileLayer(const QVariantMap &variantMap);
     ObjectGroup *toObjectGroup(const QVariantMap &variantMap);
+    MapObject *toMapObject(const QVariantMap &variantMap);
     ImageLayer *toImageLayer(const QVariantMap &variantMap);
     GroupLayer *toGroupLayer(const QVariantMap &variantMap);
 
     QPolygonF toPolygon(const QVariant &variant) const;
     TextData toTextData(const QVariantMap &variant) const;
+
+    bool readTileLayerData(TileLayer &tileLayer,
+                           const QVariant &dataVariant,
+                           Map::LayerDataFormat layerDataFormat,
+                           QRect bounds);
 
     Properties extractProperties(const QVariantMap &variantMap) const;
 

@@ -36,7 +36,7 @@ public:
         : hash(0)
     {}
 
-    StringHash(const QByteArray &s)
+    explicit StringHash(const QByteArray &s)
         : string(s)
         , hash(qHash(s))
     {}

@@ -24,6 +24,7 @@
 #include "json_global.h"
 
 #include "mapformat.h"
+#include "objecttemplateformat.h"
 #include "plugin.h"
 #include "tilesetformat.h"
 
@@ -86,6 +87,27 @@ public:
     bool supportsFile(const QString &fileName) const override;
 
     bool write(const Tiled::Tileset &tileset, const QString &fileName) override;
+
+    QString nameFilter() const override;
+    QString shortName() const override;
+    QString errorString() const override;
+
+protected:
+    QString mError;
+};
+
+class JSONSHARED_EXPORT JsonObjectTemplateFormat : public Tiled::ObjectTemplateFormat
+{
+    Q_OBJECT
+    Q_INTERFACES(Tiled::ObjectTemplateFormat)
+
+public:
+    JsonObjectTemplateFormat(QObject *parent = nullptr);
+
+    Tiled::ObjectTemplate *read(const QString &fileName) override;
+    bool supportsFile(const QString &fileName) const override;
+
+    bool write(const Tiled::ObjectTemplate *objectTemplate, const QString &fileName) override;
 
     QString nameFilter() const override;
     QString shortName() const override;

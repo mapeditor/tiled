@@ -45,9 +45,10 @@ public:
     AbstractTileTool(const QString &name,
                      const QIcon &icon,
                      const QKeySequence &shortcut,
+                     BrushItem *brushItem = nullptr,
                      QObject *parent = nullptr);
 
-    ~AbstractTileTool();
+    ~AbstractTileTool() override;
 
     void activate(MapScene *scene) override;
     void deactivate(MapScene *scene) override;

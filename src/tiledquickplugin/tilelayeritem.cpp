@@ -48,7 +48,7 @@ static inline QSGTexture *tilesetTexture(Tileset *tileset,
 
     QSGTexture *texture = cache.value(tileset);
     if (!texture) {
-        texture = window->createTextureFromImage(QImage(tileset->imageSource()));
+        texture = window->createTextureFromImage(QImage(tileset->imageSource().toLocalFile()));
         cache.insert(tileset, texture);
     }
     return texture;

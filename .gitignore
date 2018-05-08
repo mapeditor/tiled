@@ -13,6 +13,7 @@ ui_*.h
 qrc_*
 *.qmlc
 default/
+moc_predefs.h
 
 # Build artifacts on Windows
 *.dll
@@ -27,6 +28,7 @@ default/
 *uic_wrapper.bat
 
 # Build artifacts on Mac
+.qmake.stash
 translations/phony_target.app
 
 # IDE files
@@ -39,9 +41,18 @@ tests/staggeredrenderer/staggeredrenderer
 # Ronn html outputs
 man/*.1.html
 
-# mkdocs and Doxygen
-site/
+# Doxygen and Sphinx
 html/
+docs/_build/html/
+docs/_build/gettext/.doctrees
+docs/_build/doctrees/
+*.mo
 
 # Work-in-progress worktrees
 wip/
+util/java/tmxviewer-java/target
+util/java/libtiled-java/target
+/util/java/target/
+
+# Linux perf/debugging
+gmon.out

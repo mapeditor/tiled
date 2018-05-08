@@ -21,9 +21,11 @@
 #include "raiselowerhelper.h"
 
 #include "changemapobjectsorder.h"
+#include "geometry.h"
+#include "mapdocument.h"
 #include "mapobject.h"
 #include "mapobjectitem.h"
-#include "mapdocument.h"
+#include "maprenderer.h"
 #include "mapscene.h"
 #include "objectgroup.h"
 #include "rangeset.h"
@@ -53,11 +55,11 @@ void RaiseLowerHelper::raise()
         if (it.last() == mRelatedObjects.size() - 1)
             continue;
 
-        MapObjectItem *movingItem = mRelatedObjects.at(it.last());
-        MapObjectItem *targetItem = mRelatedObjects.at(it.last() + 1);
+        MapObject *movingObject = mRelatedObjects.at(it.last());
+        MapObject *targetObject = mRelatedObjects.at(it.last() + 1);
 
-        const int from = static_cast<int>(movingItem->zValue());
-        const int to = static_cast<int>(targetItem->zValue()) + 1;
+        const int from = movingObject->index();
+        const int to = targetObject->index() + 1;
 
         commands.append(new ChangeMapObjectsOrder(mMapDocument, mObjectGroup,
                                                   from, to, 1));
@@ -82,11 +84,11 @@ void RaiseLowerHelper::lower()
         if (it.first() == 0)
             continue;
 
-        MapObjectItem *movingItem = mRelatedObjects.at(it.first());
-        MapObjectItem *targetItem = mRelatedObjects.at(it.first() - 1);
+        MapObject *movingObject = mRelatedObjects.at(it.first());
+        MapObject *targetObject = mRelatedObjects.at(it.first() - 1);
 
-        const int from = static_cast<int>(movingItem->zValue());
-        const int to = static_cast<int>(targetItem->zValue());
+        const int from = movingObject->index();
+        const int to = targetObject->index();
 
         commands.append(new ChangeMapObjectsOrder(mMapDocument, mObjectGroup,
                                                   from, to, 1));
@@ -98,16 +100,16 @@ void RaiseLowerHelper::lower()
 
 void RaiseLowerHelper::raiseToTop()
 {
-    const QSet<MapObjectItem*> &selectedItems = mMapScene->selectedObjectItems();
-    ObjectGroup *objectGroup = sameObjectGroup(selectedItems);
+    const QList<MapObject*> &selectedObjects = mMapDocument->selectedObjects();
+    ObjectGroup *objectGroup = sameObjectGroup(selectedObjects);
     if (!objectGroup)
         return;
     if (objectGroup->drawOrder() != ObjectGroup::IndexOrder)
         return;
 
     RangeSet<int> ranges;
-    for (MapObjectItem *item : selectedItems)
-        ranges.insert(static_cast<int>(item->zValue()));
+    for (MapObject *object : selectedObjects)
+        ranges.insert(object->index());
 
     // Iterate backwards over the ranges in order to keep the indexes valid
     RangeSet<int>::Range firstRange = ranges.begin();
@@ -141,16 +143,16 @@ void RaiseLowerHelper::raiseToTop()
 
 void RaiseLowerHelper::lowerToBottom()
 {
-    const QSet<MapObjectItem*> &selectedItems = mMapScene->selectedObjectItems();
-    ObjectGroup *objectGroup = sameObjectGroup(selectedItems);
+    const QList<MapObject*> &selectedObjects = mMapDocument->selectedObjects();
+    ObjectGroup *objectGroup = sameObjectGroup(selectedObjects);
     if (!objectGroup)
         return;
     if (objectGroup->drawOrder() != ObjectGroup::IndexOrder)
         return;
 
     RangeSet<int> ranges;
-    for (MapObjectItem *item : selectedItems)
-        ranges.insert(static_cast<int>(item->zValue()));
+    for (MapObject *object : selectedObjects)
+        ranges.insert(object->index());
 
     RangeSet<int>::Range it = ranges.begin();
     RangeSet<int>::Range it_end = ranges.end();
@@ -176,16 +178,16 @@ void RaiseLowerHelper::lowerToBottom()
          QCoreApplication::translate("Undo Commands", "Lower Object To Bottom"));
 }
 
-ObjectGroup *RaiseLowerHelper::sameObjectGroup(const QSet<MapObjectItem *> &items)
+ObjectGroup *RaiseLowerHelper::sameObjectGroup(const QList<MapObject *> &objects)
 {
-    if (items.isEmpty())
+    if (objects.isEmpty())
         return nullptr;
 
     // All selected objects need to be in the same group
-    ObjectGroup *group = (*items.begin())->mapObject()->objectGroup();
+    ObjectGroup *group = objects.first()->objectGroup();
 
-    for (const MapObjectItem *item : items)
-        if (item->mapObject()->objectGroup() != group)
+    for (const MapObject *object : objects)
+        if (object->objectGroup() != group)
             return nullptr;
 
     return group;
@@ -204,39 +206,45 @@ bool RaiseLowerHelper::initContext()
     mRelatedObjects.clear();
     mSelectionRanges.clear();
 
-    const QSet<MapObjectItem*> &selectedItems = mMapScene->selectedObjectItems();
-    if (selectedItems.isEmpty())
+    const auto &selectedObjects = mMapDocument->selectedObjects();
+    if (selectedObjects.isEmpty())
         return false;
 
     // All selected objects need to be in the same group
-    mObjectGroup = (*selectedItems.begin())->mapObject()->objectGroup();
+    mObjectGroup = selectedObjects.first()->objectGroup();
     if (mObjectGroup->drawOrder() != ObjectGroup::IndexOrder)
         return false;
 
     QPainterPath shape;
+    MapRenderer *renderer = mMapDocument->renderer();
 
-    for (const MapObjectItem *item : selectedItems) {
-        if (item->mapObject()->objectGroup() != mObjectGroup)
+    for (const MapObject *object : selectedObjects) {
+        if (object->objectGroup() != mObjectGroup)
             return false;
 
-        shape |= item->mapToScene(item->shape());
+        QPainterPath path = renderer->shape(object);
+        QPointF screenPos = renderer->pixelToScreenCoords(object->position());
+        path = rotateAt(screenPos, object->rotation()).map(path);
+        path.translate(object->objectGroup()->totalOffset());
+
+        shape |= path;
     }
 
     // The list of related items are all items from the same object group
     // that share space with the selected items.
-    const QList<QGraphicsItem*> items = mMapScene->items(shape,
-                                                         Qt::IntersectsItemShape,
-                                                         Qt::AscendingOrder);
+    const auto items = mMapScene->items(shape,
+                                        Qt::IntersectsItemShape,
+                                        Qt::AscendingOrder);
 
     for (QGraphicsItem *item : items) {
-        if (MapObjectItem *mapObjectItem = dynamic_cast<MapObjectItem*>(item)) {
+        if (MapObjectItem *mapObjectItem = qgraphicsitem_cast<MapObjectItem*>(item)) {
             if (mapObjectItem->mapObject()->objectGroup() == mObjectGroup)
-                mRelatedObjects.append(mapObjectItem);
+                mRelatedObjects.append(mapObjectItem->mapObject());
         }
     }
 
-    for (MapObjectItem *item : selectedItems) {
-        int index = mRelatedObjects.indexOf(item);
+    for (MapObject *object : selectedObjects) {
+        int index = mRelatedObjects.indexOf(object);
         Q_ASSERT(index != -1);
         mSelectionRanges.insert(index);
     }

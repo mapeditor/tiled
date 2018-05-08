@@ -79,12 +79,41 @@ int ReversingProxyModel::columnCount(const QModelIndex &parent) const
     return sourceModel()->columnCount(mapToSource(parent));
 }
 
+bool ReversingProxyModel::canDropMimeData(const QMimeData *data, Qt::DropAction action,
+                                          int row, int column, const QModelIndex &parent) const
+{
+    int sourceDestinationRow;
+    QModelIndex sourceParent;
+    mapDropCoordinatesToSource(row, parent, &sourceDestinationRow, &sourceParent);
+    return sourceModel()->canDropMimeData(data, action, sourceDestinationRow, column, sourceParent);
+}
+
+bool ReversingProxyModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
+                                       int row, int column, const QModelIndex &parent)
+{
+    int sourceDestinationRow;
+    QModelIndex sourceParent;
+    mapDropCoordinatesToSource(row, parent, &sourceDestinationRow, &sourceParent);
+    return sourceModel()->dropMimeData(data, action, sourceDestinationRow, column, sourceParent);
+}
+
+void ReversingProxyModel::mapDropCoordinatesToSource(int row, const QModelIndex &parent,
+                                                     int *sourceRow, QModelIndex *sourceParent) const
+{
+    *sourceParent = mapToSource(parent);
+
+    if (row == -1)
+        *sourceRow = -1;
+    else
+        *sourceRow = sourceModel()->rowCount(*sourceParent) - row;
+}
+
 QModelIndex ReversingProxyModel::mapToSource(const QModelIndex &proxyIndex) const
 {
     if (!sourceModel() || !proxyIndex.isValid())
         return QModelIndex();
 
-    // This relies on the fact that the parent and its rowCount are the same for each subling.
+    // This relies on the fact that the parent and its rowCount are the same for each sibling.
     const QModelIndex sourceSiblingIndex = static_cast<FriendModel*>(sourceModel())->createIndex(proxyIndex.row(),
                                                                                                  proxyIndex.column(),
                                                                                                  proxyIndex.internalId());

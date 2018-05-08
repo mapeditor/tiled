@@ -29,6 +29,7 @@
 namespace Tiled {
 
 class MapObject;
+class ObjectTemplate;
 class Tile;
 
 namespace Internal {
@@ -58,6 +59,8 @@ private:
     MapObject *mMapObject;
     MapObject::Property mProperty;
     QVariant mValue;
+    bool mOldChangeState;
+    bool mNewChangeState;
 };
 
 
@@ -65,6 +68,7 @@ struct MapObjectCell
 {
     MapObject *object;
     Cell cell;
+    bool propertyChanged = true;
 };
 
 class ChangeMapObjectCells : public QUndoCommand
@@ -85,6 +89,90 @@ private:
 
     MapObjectModel *mMapObjectModel;
     QVector<MapObjectCell> mChanges;
+};
+
+class ChangeMapObjectsTile : public QUndoCommand
+{
+public:
+    ChangeMapObjectsTile(MapDocument *mapDocument,
+                         const QList<MapObject *> &mapObjects,
+                         Tile *tile);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    void changeTiles();
+    void restoreTiles();
+
+    MapDocument *mMapDocument;
+    const QList<MapObject *> mMapObjects;
+    Tile * const mTile;
+    QVector<Cell> mOldCells;
+    QVector<bool> mUpdateSize;
+    QVector<bool> mOldChangeStates;
+};
+
+class DetachObjects : public QUndoCommand
+{
+public:
+    /**
+     * Creates an undo command that detaches the given template instances
+     * from their templates.
+     */
+    DetachObjects(MapDocument *mapDocument,
+                  const QList<MapObject *> &mapObjects,
+                  QUndoCommand *parent = nullptr);
+
+    void redo() override;
+    void undo() override;
+
+private:
+    MapDocument *mMapDocument;
+    const QList<MapObject*> mMapObjects;
+    QVector<const ObjectTemplate*> mObjectTemplates;
+    QVector<Properties> mProperties;
+};
+
+class ResetInstances : public QUndoCommand
+{
+public:
+    ResetInstances(MapDocument *mapDocument,
+                   const QList<MapObject *> &mapObjects,
+                   QUndoCommand *parent = nullptr);
+
+    ~ResetInstances() override;
+
+    void redo() override;
+    void undo() override;
+
+private:
+    MapDocument *mMapDocument;
+    const QList<MapObject*> mMapObjects;
+    QList<MapObject*> mOldMapObjects;
+};
+
+class ReplaceObjectsWithTemplate : public QUndoCommand
+{
+public:
+    /**
+     * Creates an undo command that replaces the given objects with a template
+     */
+    ReplaceObjectsWithTemplate(MapDocument *mapDocument,
+                               const QList<MapObject *> &mapObjects,
+                               ObjectTemplate *objectTemplate,
+                               QUndoCommand *parent = nullptr);
+
+    ~ReplaceObjectsWithTemplate() override;
+
+    void redo() override;
+    void undo() override;
+
+private:
+    MapDocument *mMapDocument;
+    const QList<MapObject*> mMapObjects;
+    QList<MapObject*> mOldMapObjects;
+    ObjectTemplate *mObjectTemplate;
 };
 
 } // namespace Internal

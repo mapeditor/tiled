@@ -34,20 +34,17 @@ public:
 
     void forceSetValue(int value);
 
-    void allowNextRangeChange();
-
 protected:
     void sliderChange(SliderChange change) override;
 
 private:
-    void setOverrideMinimum(int min);
-    void setOverrideMaximum(int max);
+    void setOverrideRange(int min, int max);
 
     int mOverrideMinimum;
     int mOverrideMaximum;
     int mDesiredMinimum;
     int mDesiredMaximum;
-    bool mAllowRangeChange;
+    bool mInternalRangeChange;
 };
 
 } // namespace Internal

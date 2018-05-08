@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0.0" orientation="orthogonal" renderorder="right-down" width="1" height="1" tilewidth="48" tileheight="48" nextobjectid="11">
+ <tileset firstgid="1" name="icon-parts" tilewidth="48" tileheight="48" tilecount="1" columns="0">
+  <grid orientation="orthogonal" width="1" height="1"/>
+  <tile id="0">
+   <image width="48" height="48" source="insert-icon-arrow.png"/>
+  </tile>
+ </tileset>
+ <layer name="insert-arrow" width="1" height="1">
+  <data encoding="base64" compression="zlib">
+   eJxjZGBgAAAACAAC
+  </data>
+ </layer>
+ <objectgroup color="#00aaff" name="tile-collision-editor" visible="0">
+  <object id="1" x="5" y="18" width="30" height="23"/>
+  <object id="2" x="21" y="5" width="23" height="23">
+   <ellipse/>
+  </object>
+ </objectgroup>
+ <objectgroup color="#00aaff" name="insert-rectangle">
+  <object id="3" x="7" y="6" width="33" height="23"/>
+ </objectgroup>
+ <objectgroup color="#00aaff" name="insert-ellipse" visible="0">
+  <object id="6" x="7" y="6" width="33" height="23">
+   <ellipse/>
+  </object>
+ </objectgroup>
+ <objectgroup color="#00aaff" name="insert-polyline" visible="0">
+  <object id="9" x="8" y="17">
+   <polygon points="-1,4 20,-11 33,12"/>
+  </object>
+ </objectgroup>
+ <objectgroup color="#00aaff" name="insert-polygon" visible="0">
+  <object id="10" x="8" y="14">
+   <polyline points="-1,1 10,-6 15,12 27,0 32,11"/>
+  </object>
+ </objectgroup>
+</map>

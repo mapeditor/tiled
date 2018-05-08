@@ -34,7 +34,7 @@ class NoEditorWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit NoEditorWidget(QWidget *parent = 0);
+    explicit NoEditorWidget(QWidget *parent = nullptr);
     ~NoEditorWidget();
 
 protected:
@@ -43,6 +43,7 @@ protected:
 private slots:
     void newMap();
     void newTileset();
+    void openFile();
 
 private:
     Ui::NoEditorWidget *ui;

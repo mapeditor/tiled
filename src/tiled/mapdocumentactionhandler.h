@@ -22,6 +22,7 @@
 #pragma once
 
 #include <QObject>
+#include "mapobject.h"
 
 class QAction;
 class QMenu;
@@ -29,6 +30,7 @@ class QMenu;
 namespace Tiled {
 
 class ObjectGroup;
+class MapObject;
 
 namespace Internal {
 
@@ -49,7 +51,7 @@ class MapDocumentActionHandler : public QObject
 
 public:
     explicit MapDocumentActionHandler(QObject *parent = nullptr);
-    ~MapDocumentActionHandler();
+    ~MapDocumentActionHandler() override;
 
     static MapDocumentActionHandler *instance() { return mInstance; }
 
@@ -62,6 +64,7 @@ public:
     QAction *actionSelectInverse() const { return mActionSelectInverse; }
     QAction *actionSelectNone() const { return mActionSelectNone; }
     QAction *actionCropToSelection() const { return mActionCropToSelection; }
+    QAction *actionAutocrop() const { return mActionAutocrop; }
 
     QAction *actionAddTileLayer() const { return mActionAddTileLayer; }
     QAction *actionAddObjectGroup() const { return mActionAddObjectGroup; }
@@ -80,6 +83,7 @@ public:
     QAction *actionMoveLayerUp() const { return mActionMoveLayerUp; }
     QAction *actionMoveLayerDown() const { return mActionMoveLayerDown; }
     QAction *actionToggleOtherLayers() const { return mActionToggleOtherLayers; }
+    QAction *actionToggleLockOtherLayers() const { return mActionToggleLockOtherLayers; }
     QAction *actionLayerProperties() const { return mActionLayerProperties; }
 
     QAction *actionDuplicateObjects() const { return mActionDuplicateObjects; }
@@ -93,7 +97,7 @@ signals:
 
 public slots:
     void cut();
-    void copy();
+    bool copy();
     void delete_(); // 'delete' is a reserved word
 
     void selectAll();
@@ -103,6 +107,7 @@ public slots:
     void copyPosition();
 
     void cropToSelection();
+    void autocrop();
 
     void addTileLayer();
     void addObjectGroup();
@@ -122,11 +127,14 @@ public slots:
     void moveLayerDown();
     void removeLayer();
     void toggleOtherLayers();
+    void toggleLockOtherLayers();
     void layerProperties();
 
     void duplicateObjects();
     void removeObjects();
     void moveObjectsToGroup(ObjectGroup *);
+
+    void selectAllInstances(const ObjectTemplate *objectTemplate);
 
 private slots:
     void updateActions();
@@ -138,6 +146,7 @@ private:
     QAction *mActionSelectInverse;
     QAction *mActionSelectNone;
     QAction *mActionCropToSelection;
+    QAction *mActionAutocrop;
 
     QAction *mActionAddTileLayer;
     QAction *mActionAddObjectGroup;
@@ -156,6 +165,7 @@ private:
     QAction *mActionMoveLayerUp;
     QAction *mActionMoveLayerDown;
     QAction *mActionToggleOtherLayers;
+    QAction *mActionToggleLockOtherLayers;
     QAction *mActionLayerProperties;
 
     QAction *mActionDuplicateObjects;

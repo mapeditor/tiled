@@ -28,7 +28,7 @@
 #include "savefile.h"
 #include "tilesetmanager.h"
 
-#include <QDebug>
+#include <QDir>
 #include <QFileInfo>
 #include <QSettings>
 #include <QStandardPaths>
@@ -64,6 +64,7 @@ Preferences::Preferences()
     mSafeSavingEnabled = boolValue("SafeSavingEnabled", true);
     mReloadTilesetsOnChange = boolValue("ReloadTilesets", true);
     mStampsDirectory = stringValue("StampsDirectory");
+    mTemplatesDirectory = stringValue("TemplatesDirectory");
     mObjectTypesFile = stringValue("ObjectTypesFile");
     mSettings->endGroup();
 
@@ -84,8 +85,10 @@ Preferences::Preferences()
     mShowTilesetGrid = boolValue("ShowTilesetGrid", true);
     mLanguage = stringValue("Language");
     mUseOpenGL = boolValue("OpenGL");
+    mWheelZoomsByDefault = boolValue("WheelZoomsByDefault");
     mObjectLabelVisibility = static_cast<ObjectLabelVisiblity>
             (intValue("ObjectLabelVisibility", AllObjectLabels));
+    mLabelForHoveredObject = boolValue("LabelForHoveredObject", false);
 #if defined(Q_OS_MAC)
     mApplicationStyle = static_cast<ApplicationStyle>
             (intValue("ApplicationStyle", SystemDefaultStyle));
@@ -93,16 +96,23 @@ Preferences::Preferences()
     mApplicationStyle = static_cast<ApplicationStyle>
             (intValue("ApplicationStyle", TiledStyle));
 #endif
+
+    // Backwards compatibility check since 'FusionStyle' was removed from the
+    // preferences dialog.
+    if (mApplicationStyle == FusionStyle)
+        mApplicationStyle = TiledStyle;
+
     mBaseColor = colorValue("BaseColor", Qt::lightGray);
     mSelectionColor = colorValue("SelectionColor", QColor(48, 140, 198));
     mSettings->endGroup();
 
     // Retrieve defined object types
-    ObjectTypesReader objectTypesReader;
-    mObjectTypes = objectTypesReader.readObjectTypes(objectTypesFile());
+    ObjectTypesSerializer objectTypesSerializer;
+    ObjectTypes objectTypes;
+    bool success = objectTypesSerializer.readObjectTypes(objectTypesFile(), objectTypes);
 
     // For backwards compatibilty, read in object types from settings
-    if (!objectTypesReader.errorString().isEmpty()) {
+    if (!success) {
         mSettings->beginGroup(QLatin1String("ObjectTypes"));
         const QStringList names = mSettings->value(QLatin1String("Names")).toStringList();
         const QStringList colors = mSettings->value(QLatin1String("Colors")).toStringList();
@@ -111,12 +121,13 @@ Preferences::Preferences()
         if (!names.isEmpty()) {
             const int count = qMin(names.size(), colors.size());
             for (int i = 0; i < count; ++i)
-                mObjectTypes.append(ObjectType(names.at(i), QColor(colors.at(i))));
+                objectTypes.append(ObjectType(names.at(i), QColor(colors.at(i))));
         }
     } else {
         mSettings->remove(QLatin1String("ObjectTypes"));
     }
 
+    Object::setObjectTypes(objectTypes);
 
     mSettings->beginGroup(QLatin1String("Automapping"));
     mAutoMapDrawing = boolValue("WhileDrawing");
@@ -143,12 +154,20 @@ Preferences::Preferences()
     // Keeping track of some usage information
     mSettings->beginGroup(QLatin1String("Install"));
     mFirstRun = mSettings->value(QLatin1String("FirstRun")).toDate();
+    mPatreonDialogTime = mSettings->value(QLatin1String("PatreonDialogTime")).toDate();
     mRunCount = intValue("RunCount", 0) + 1;
     mIsPatron = boolValue("IsPatron");
     mCheckForUpdates = boolValue("CheckForUpdates");
     if (!mFirstRun.isValid()) {
         mFirstRun = QDate::currentDate();
         mSettings->setValue(QLatin1String("FirstRun"), mFirstRun.toString(Qt::ISODate));
+    }
+    if (!mSettings->contains(QLatin1String("PatreonDialogTime"))) {
+        mPatreonDialogTime = mFirstRun.addMonths(1);
+        const QDate today(QDate::currentDate());
+        if (mPatreonDialogTime.daysTo(today) >= 0)
+            mPatreonDialogTime = today.addDays(2);
+        mSettings->setValue(QLatin1String("PatreonDialogTime"), mPatreonDialogTime.toString(Qt::ISODate));
     }
     mSettings->setValue(QLatin1String("RunCount"), mRunCount);
     mSettings->endGroup();
@@ -171,6 +190,16 @@ void Preferences::setObjectLabelVisibility(ObjectLabelVisiblity visibility)
     mObjectLabelVisibility = visibility;
     mSettings->setValue(QLatin1String("Interface/ObjectLabelVisibility"), visibility);
     emit objectLabelVisibilityChanged(visibility);
+}
+
+void Preferences::setLabelForHoveredObject(bool enabled)
+{
+    if (mLabelForHoveredObject == enabled)
+        return;
+
+    mLabelForHoveredObject = enabled;
+    mSettings->setValue(QLatin1String("Interface/LabelForHoveredObject"), enabled);
+    emit labelForHoveredObjectChanged(enabled);
 }
 
 void Preferences::setApplicationStyle(ApplicationStyle style)
@@ -417,7 +446,7 @@ void Preferences::setUseOpenGL(bool useOpenGL)
 
 void Preferences::setObjectTypes(const ObjectTypes &objectTypes)
 {
-    mObjectTypes = objectTypes;
+    Object::setObjectTypes(objectTypes);
     emit objectTypesChanged();
 }
 
@@ -428,6 +457,9 @@ static QString lastPathKey(Preferences::FileType fileType)
     switch (fileType) {
     case Preferences::ObjectTypesFile:
         key.append(QLatin1String("ObjectTypes"));
+        break;
+    case Preferences::ObjectTemplateFile:
+        key.append(QLatin1String("ObjectTemplates"));
         break;
     case Preferences::ImageFile:
         key.append(QLatin1String("Images"));
@@ -516,6 +548,69 @@ void Preferences::setPatron(bool isPatron)
     emit isPatronChanged();
 }
 
+bool Preferences::shouldShowPatreonDialog() const
+{
+    if (mIsPatron)
+        return false;
+    if (mRunCount < 7)
+        return false;
+    if (!mPatreonDialogTime.isValid())
+        return false;
+
+    return mPatreonDialogTime.daysTo(QDate::currentDate()) >= 0;
+}
+
+void Preferences::setPatreonDialogReminder(const QDate &date)
+{
+    if (date.isValid())
+        setPatron(false);
+    mPatreonDialogTime = date;
+    mSettings->setValue(QLatin1String("Install/PatreonDialogTime"), mPatreonDialogTime.toString(Qt::ISODate));
+}
+
+QStringList Preferences::recentFiles() const
+{
+    QVariant v = mSettings->value(QLatin1String("recentFiles/fileNames"));
+    return v.toStringList();
+}
+
+QString Preferences::fileDialogStartLocation() const
+{
+    QStringList files = recentFiles();
+    return (!files.isEmpty()) ? QFileInfo(files.first()).path() : QString();
+}
+
+/**
+ * Adds the given file to the recent files list.
+ */
+void Preferences::addRecentFile(const QString &fileName)
+{
+    // Remember the file by its absolute file path (not the canonical one,
+    // which avoids unexpected paths when symlinks are involved).
+    const QString absoluteFilePath = QDir::cleanPath(QFileInfo(fileName).absoluteFilePath());
+
+    if (absoluteFilePath.isEmpty())
+        return;
+
+    QStringList files = recentFiles();
+    files.removeAll(absoluteFilePath);
+    files.prepend(absoluteFilePath);
+    while (files.size() > MaxRecentFiles)
+        files.removeLast();
+
+    mSettings->beginGroup(QLatin1String("recentFiles"));
+    mSettings->setValue(QLatin1String("fileNames"), files);
+    mSettings->endGroup();
+
+    emit recentFilesChanged();
+}
+
+void Preferences::clearRecentFiles()
+{
+    mSettings->remove(QLatin1String("recentFiles/fileNames"));
+    emit recentFilesChanged();
+}
+
 void Preferences::setCheckForUpdates(bool on)
 {
     if (mCheckForUpdates == on)
@@ -530,7 +625,7 @@ void Preferences::setCheckForUpdates(bool on)
 void Preferences::setOpenLastFilesOnStartup(bool open)
 {
     if (mOpenLastFilesOnStartup == open)
-    	return;
+        return;
 
     mOpenLastFilesOnStartup = open;
     mSettings->setValue(QLatin1String("Startup/OpenLastFiles"), open);
@@ -564,6 +659,15 @@ void Preferences::setPluginEnabled(const QString &fileName, bool enabled)
 
     mSettings->setValue(QLatin1String("Plugins/Disabled"), disabledPlugins);
     mSettings->setValue(QLatin1String("Plugins/Enabled"), enabledPlugins);
+}
+
+void Preferences::setWheelZoomsByDefault(bool mode)
+{
+    if (mWheelZoomsByDefault == mode)
+        return;
+
+    mWheelZoomsByDefault = mode;
+    mSettings->setValue(QLatin1String("Interface/WheelZoomsByDefault"), mode);
 }
 
 bool Preferences::boolValue(const char *key, bool defaultValue) const
@@ -618,6 +722,25 @@ void Preferences::setStampsDirectory(const QString &stampsDirectory)
     mSettings->setValue(QLatin1String("Storage/StampsDirectory"), stampsDirectory);
 
     emit stampsDirectoryChanged(stampsDirectory);
+}
+
+QString Preferences::templatesDirectory() const
+{
+    if (mTemplatesDirectory.isEmpty())
+        return dataLocation() + QLatin1String("/templates");
+
+    return mTemplatesDirectory;
+}
+
+void Preferences::setTemplatesDirectory(const QString &templatesDirectory)
+{
+    if (mTemplatesDirectory == templatesDirectory)
+        return;
+
+    mTemplatesDirectory = templatesDirectory;
+    mSettings->setValue(QLatin1String("Storage/TemplatesDirectory"), templatesDirectory);
+
+    emit templatesDirectoryChanged(templatesDirectory);
 }
 
 QString Preferences::objectTypesFile() const

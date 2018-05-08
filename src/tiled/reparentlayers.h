@@ -33,7 +33,7 @@ namespace Internal {
 class MapDocument;
 
 /**
- * Undo command that changes the parent of a given set of layers.
+ * Undo command that changes the parent or index of a given set of layers.
  */
 class ReparentLayers : public QUndoCommand
 {
@@ -56,7 +56,6 @@ private:
     struct UndoInfo {
         GroupLayer *parent;
         int oldIndex;
-        int newIndex;
     };
     QVector<UndoInfo> mUndoInfo;
 };

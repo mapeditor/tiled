@@ -40,10 +40,10 @@ class TmxRasterizer
 
 public:
     TmxRasterizer();
-    ~TmxRasterizer();
 
     qreal scale() const { return mScale; }
     int tileSize() const { return mTileSize; }
+    int size() const { return mSize; }
     bool useAntiAliasing() const { return mUseAntiAliasing; }
     bool smoothImages() const { return mSmoothImages; }
     bool IgnoreVisibility() const { return mIgnoreVisibility; }
@@ -68,6 +68,5 @@ private:
     bool mIgnoreVisibility;
     QStringList mLayersToHide;
 
-    bool shouldDrawLayer(const Layer *layer);
-
+    bool shouldDrawLayer(const Layer *layer) const;
 };

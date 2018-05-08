@@ -14,6 +14,7 @@ DLLDESTDIR = ../..
 
 win32 {
     QMAKE_PROJECT_NAME = libtiled
+    DEFINES += _USE_MATH_DEFINES
 } else {
     # On other platforms it is necessary to link to zlib explicitly
     LIBS += -lz
@@ -22,8 +23,6 @@ win32 {
 DEFINES += QT_NO_CAST_FROM_ASCII \
     QT_NO_CAST_TO_ASCII
 DEFINES += TILED_LIBRARY
-
-!isEmpty(TILED_LINUX_ARCHIVE):DEFINES += TILED_LINUX_ARCHIVE
 
 contains(QT_CONFIG, reduce_exports): CONFIG += hide_symbols
 

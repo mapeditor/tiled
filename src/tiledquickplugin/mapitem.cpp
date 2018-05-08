@@ -87,7 +87,7 @@ QRectF MapItem::boundingRect() const
     if (!mRenderer)
         return QRectF();
 
-    return QRectF(QPointF(), mRenderer->mapSize());
+    return mRenderer->mapBoundingRect();
 }
 
 QPointF MapItem::screenToTileCoords(qreal x, qreal y) const
@@ -197,6 +197,6 @@ void MapItem::refresh()
         }
     }
 
-    const QSize size = mRenderer->mapSize();
-    setImplicitSize(size.width(), size.height());
+    const QRect rect = mRenderer->mapBoundingRect();
+    setImplicitSize(rect.width(), rect.height());
 }

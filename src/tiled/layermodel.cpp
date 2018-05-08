@@ -26,9 +26,11 @@
 #include "mapdocument.h"
 #include "layer.h"
 #include "renamelayer.h"
+#include "reparentlayers.h"
 #include "tilelayer.h"
 
 #include <QApplication>
+#include <QMimeData>
 #include <QStyle>
 
 using namespace Tiled;
@@ -91,7 +93,7 @@ int LayerModel::rowCount(const QModelIndex &parent) const
 int LayerModel::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
-    return 1;
+    return 3;
 }
 
 /**
@@ -108,25 +110,36 @@ QVariant LayerModel::data(const QModelIndex &index, int role) const
     switch (role) {
     case Qt::DisplayRole:
     case Qt::EditRole:
-        return layer->name();
+        if (index.column() == 0)
+            return layer->name();
+        break;
     case Qt::DecorationRole:
-        switch (layer->layerType()) {
-        case Layer::TileLayerType:
-            return mTileLayerIcon;
-        case Layer::ObjectGroupType:
-            return mObjectGroupIcon;
-        case Layer::ImageLayerType:
-            return mImageLayerIcon;
-        case Layer::GroupLayerType:
-            return QApplication::style()->standardIcon(QStyle::SP_DirIcon);
+        if (index.column() == 0) {
+            switch (layer->layerType()) {
+            case Layer::TileLayerType:
+                return mTileLayerIcon;
+            case Layer::ObjectGroupType:
+                return mObjectGroupIcon;
+            case Layer::ImageLayerType:
+                return mImageLayerIcon;
+            case Layer::GroupLayerType:
+                return QApplication::style()->standardIcon(QStyle::SP_DirIcon);
+            }
         }
+        break;
     case Qt::CheckStateRole:
-        return layer->isVisible() ? Qt::Checked : Qt::Unchecked;
+        if (index.column() == 1)
+            return layer->isVisible() ? Qt::Checked : Qt::Unchecked;
+        if (index.column() == 2)
+            return layer->isLocked() ? Qt::Checked : Qt::Unchecked;
+        break;
     case OpacityRole:
         return layer->opacity();
     default:
         return QVariant();
     }
+
+    return QVariant();
 }
 
 /**
@@ -141,13 +154,25 @@ bool LayerModel::setData(const QModelIndex &index, const QVariant &value,
     Layer *layer = toLayer(index);
 
     if (role == Qt::CheckStateRole) {
-        Qt::CheckState c = static_cast<Qt::CheckState>(value.toInt());
-        const bool visible = (c == Qt::Checked);
-        if (visible != layer->isVisible()) {
-            QUndoCommand *command = new SetLayerVisible(mMapDocument,
-                                                        layer,
-                                                        visible);
-            mMapDocument->undoStack()->push(command);
+        if (index.column() == 1) {
+            Qt::CheckState c = static_cast<Qt::CheckState>(value.toInt());
+            const bool visible = (c == Qt::Checked);
+            if (visible != layer->isVisible()) {
+                QUndoCommand *command = new SetLayerVisible(mMapDocument,
+                                                            layer,
+                                                            visible);
+                mMapDocument->undoStack()->push(command);
+            }
+        }
+        if (index.column() == 2) {
+            Qt::CheckState c = static_cast<Qt::CheckState>(value.toInt());
+            const bool locked = (c == Qt::Checked);
+            if (locked != layer->isLocked()) {
+                QUndoCommand *command = new SetLayerLocked(mMapDocument,
+                                                           layer,
+                                                           locked);
+                mMapDocument->undoStack()->push(command);
+            }
         }
         return true;
     } else if (role == OpacityRole) {
@@ -181,8 +206,21 @@ bool LayerModel::setData(const QModelIndex &index, const QVariant &value,
 Qt::ItemFlags LayerModel::flags(const QModelIndex &index) const
 {
     Qt::ItemFlags rc = QAbstractItemModel::flags(index);
+
+    if (index.column() == 1 || index.column() == 2)
+        rc |= Qt::ItemIsUserCheckable;
+
     if (index.column() == 0)
-        rc |= Qt::ItemIsUserCheckable | Qt::ItemIsEditable;
+        rc |= Qt::ItemIsEditable;
+
+    Layer *layer = toLayer(index);
+
+    if (layer)                              // can drag any layer
+        rc |= Qt::ItemIsDragEnabled;
+
+    if (!layer || layer->isGroupLayer())    // can drop on map or group layer
+        rc |= Qt::ItemIsDropEnabled;
+
     return rc;
 }
 
@@ -195,12 +233,89 @@ QVariant LayerModel::headerData(int section, Qt::Orientation orientation,
     if (role == Qt::DisplayRole && orientation == Qt::Horizontal) {
         switch (section) {
         case 0: return tr("Layer");
+        case 1: return tr("Visible");
+        case 2: return tr("Locked");
         }
     }
     return QVariant();
 }
 
-QModelIndex LayerModel::index(Layer *layer) const
+QStringList LayerModel::mimeTypes() const
+{
+    return QStringList {
+        QLatin1String(LAYERS_MIMETYPE)
+    };
+}
+
+QMimeData *LayerModel::mimeData(const QModelIndexList &indexes) const
+{
+    if (indexes.isEmpty())
+        return nullptr;
+
+    QMimeData *mimeData = new QMimeData;
+    QByteArray encodedData;
+    QDataStream stream(&encodedData, QIODevice::WriteOnly);
+
+    for (const QModelIndex &index : indexes)
+        if (Layer *layer = toLayer(index))
+            stream << globalIndex(layer);
+
+    mimeData->setData(QLatin1String(LAYERS_MIMETYPE), encodedData);
+    return mimeData;
+}
+
+Qt::DropActions LayerModel::supportedDropActions() const
+{
+    return Qt::MoveAction;
+}
+
+bool LayerModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
+                              int row, int column, const QModelIndex &parent)
+{
+    Q_UNUSED(column);
+
+    if (!data || action != Qt::MoveAction)
+        return false;
+    if (!data->hasFormat(QLatin1String(LAYERS_MIMETYPE)))
+        return false;
+
+    Layer *parentLayer = toLayer(parent);
+    if (parentLayer && !parentLayer->isGroupLayer())
+        return false;
+
+    GroupLayer *groupLayer = static_cast<GroupLayer*>(parentLayer);
+
+    QByteArray encodedData = data->data(QLatin1String(LAYERS_MIMETYPE));
+    QDataStream stream(&encodedData, QIODevice::ReadOnly);
+    QList<Layer*> layers;
+
+    while (!stream.atEnd()) {
+        int globalIndex;
+        stream >> globalIndex;
+        if (Layer *layer = layerAtGlobalIndex(mMap, globalIndex))
+            layers.append(layer);
+    }
+
+    if (layers.isEmpty())
+        return false;
+
+    if (row > rowCount(parent))
+        row = rowCount(parent);
+    if (row == -1)
+        row = groupLayer ? groupLayer->layerCount() : 0;
+
+    // NOTE: QAbstractItemView::dropEvent already makes sure that we're not
+    // dropping onto ourselves (like putting a group layer into itself).
+
+    auto command = new ReparentLayers(mMapDocument, layers, groupLayer, row);
+    command->setText(tr("Drag Layer(s)", nullptr, layers.size()));
+
+    mMapDocument->undoStack()->push(command);
+
+    return true;
+}
+
+QModelIndex LayerModel::index(Layer *layer, int column) const
 {
     if (!layer)
         return QModelIndex();
@@ -210,12 +325,12 @@ QModelIndex LayerModel::index(Layer *layer) const
     if (auto parentLayer = layer->parentLayer()) {
         int row = parentLayer->layers().indexOf(layer);
         Q_ASSERT(row != -1);
-        return createIndex(row, 0, parentLayer);
+        return createIndex(row, column, parentLayer);
     }
 
     int row = mMap->layers().indexOf(layer);
     Q_ASSERT(row != -1);
-    return createIndex(row, 0, nullptr);
+    return createIndex(row, column, nullptr);
 }
 
 Layer *LayerModel::toLayer(const QModelIndex &index) const
@@ -312,7 +427,19 @@ void LayerModel::setLayerVisible(Layer *layer, bool visible)
 
     layer->setVisible(visible);
 
-    const QModelIndex modelIndex = index(layer);
+    const QModelIndex modelIndex = index(layer, 1);
+    emit dataChanged(modelIndex, modelIndex);
+    emit layerChanged(layer);
+}
+
+void LayerModel::setLayerLocked(Layer *layer, bool locked)
+{
+    if (layer->isLocked() == locked)
+        return;
+
+    layer->setLocked(locked);
+
+    const QModelIndex modelIndex = index(layer, 2);
     emit dataChanged(modelIndex, modelIndex);
     emit layerChanged(layer);
 }
@@ -320,7 +447,7 @@ void LayerModel::setLayerVisible(Layer *layer, bool visible)
 /**
  * Sets the opacity of the layer at the given index.
  */
-void LayerModel::setLayerOpacity(Layer *layer, float opacity)
+void LayerModel::setLayerOpacity(Layer *layer, qreal opacity)
 {
     if (layer->opacity() == opacity)
         return;
@@ -403,6 +530,39 @@ void LayerModel::toggleOtherLayers(Layer *layer)
     for (Layer *l : otherLayers) {
         if (visibility != l->isVisible())
             undoStack->push(new SetLayerVisible(mMapDocument, l, visibility));
+    }
+
+    undoStack->endMacro();
+}
+
+/**
+* Lock or unlock all other layers except the given \a layer.
+* If any other layer is unlocked then all layers will be locked, otherwise
+* the layers will be unlocked.
+*/
+void LayerModel::toggleLockOtherLayers(Layer *layer)
+{
+    const auto& otherLayers = collectAllSiblings(layer);
+    if (otherLayers.isEmpty())
+        return;
+
+    bool locked = false;
+    for (Layer *l : otherLayers) {
+        if (!l->isLocked()) {
+            locked = true;
+            break;
+        }
+    }
+
+    QUndoStack *undoStack = mMapDocument->undoStack();
+    if (locked)
+        undoStack->beginMacro(tr("Lock Other Layers"));
+    else
+        undoStack->beginMacro(tr("Unlock Other Layers"));
+
+    for (Layer *l : otherLayers) {
+        if (locked != l->isLocked())
+            undoStack->push(new SetLayerLocked(mMapDocument, l, locked));
     }
 
     undoStack->endMacro();

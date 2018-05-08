@@ -38,7 +38,9 @@ AddPropertyDialog::AddPropertyDialog(QWidget *parent)
     : QDialog(parent)
     , mUi(new Ui::AddPropertyDialog)
 {
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+#endif
 
     mUi->setupUi(this);
     resize(Utils::dpiScaled(size()));

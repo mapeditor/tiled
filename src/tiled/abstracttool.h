@@ -31,15 +31,19 @@
 
 class QEvent;
 class QKeyEvent;
+class QToolBar;
 
 namespace Tiled {
 
 class Layer;
+class Tile;
+class ObjectTemplate;
 
 namespace Internal {
 
 class MapDocument;
 class MapScene;
+class ToolManager;
 
 /**
  * An abstraction of any kind of tool used to edit the map.
@@ -70,8 +74,6 @@ public:
                  const QKeySequence &shortcut,
                  QObject *parent = nullptr);
 
-    virtual ~AbstractTool() {}
-
     QString name() const;
     void setName(const QString &name);
 
@@ -89,6 +91,10 @@ public:
 
     bool isEnabled() const;
     void setEnabled(bool enabled);
+
+    ToolManager *toolManager() const;
+    Tile *tile() const;
+    ObjectTemplate *objectTemplate() const;
 
     /**
      * Activates this tool. If the tool plans to add any items to the scene, it
@@ -132,6 +138,14 @@ public:
     virtual void mouseReleased(QGraphicsSceneMouseEvent *event) = 0;
 
     /**
+     * Called when a mouse button is pressed a second time on the scene, after
+     * a short interval.
+     *
+     * By default, this function calls mousePressed.
+     */
+    virtual void mouseDoubleClicked(QGraphicsSceneMouseEvent *event);
+
+    /**
      * Called when the user presses or releases a modifier key resulting
      * in a change of modifier status, and when the tool is enabled with
      * a modifier key pressed.
@@ -142,6 +156,8 @@ public:
      * Called when the application language changed.
      */
     virtual void languageChanged() = 0;
+
+    virtual void populateToolBar(QToolBar*) {}
 
 public slots:
     void setMapDocument(MapDocument *mapDocument);
@@ -177,6 +193,8 @@ signals:
     void enabledChanged(bool enabled);
 
 private:
+    friend class ToolManager;
+
     QString mName;
     QIcon mIcon;
     QKeySequence mShortcut;
@@ -184,6 +202,7 @@ private:
     QCursor mCursor;
     bool mEnabled;
 
+    ToolManager *mToolManager;
     MapDocument *mMapDocument;
 };
 
@@ -231,6 +250,14 @@ inline QCursor AbstractTool::cursor() const
 inline bool AbstractTool::isEnabled() const
 {
     return mEnabled;
+}
+
+/**
+ * Returns the ToolManager with which this tool is registered, if any.
+ */
+inline ToolManager *AbstractTool::toolManager() const
+{
+    return mToolManager;
 }
 
 } // namespace Internal

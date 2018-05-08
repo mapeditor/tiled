@@ -32,6 +32,8 @@ class Document;
 
 class MainToolBar : public QToolBar
 {
+    Q_OBJECT
+
 public:
     MainToolBar(QWidget *parent = nullptr);
 

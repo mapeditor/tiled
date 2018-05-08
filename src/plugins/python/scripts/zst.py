@@ -61,10 +61,10 @@ class ZST(Plugin):
         img.setColorTable(cmap[pal*colors:pal*colors+colors])
         fh.seek(tilemapbase+tilebase)
         readTileset(fh, img)
- 
-        tsets.append(Tiled.Tileset('Pal%i'%pal, 8,8, 0, 0))
-        tsets[pal].setTransparentColor(QColor(img.color(0)))
-        tsets[pal].loadFromImage(img, 'script')
+
+        tsets.append(Tiled.Tileset.create('Pal%i'%pal, 8,8, 0, 0))
+        tsets[pal].data().setTransparentColor(QColor(img.color(0)))
+        tsets[pal].data().loadFromImage(img, 'script')
 
       la = Tiled.TileLayer('Back', 0,0, 64,32)
       fh.seek(tilemapbase)
@@ -73,7 +73,7 @@ class ZST(Plugin):
         for x in range(32):
           t = parseTile(unpack('H', fh.read(2))[0])
           try:
-            tile = tsets[t.pal].tileAt(t.idx)
+            tile = tsets[t.pal].data().tileAt(t.idx)
             pix = tile.image()
             tile.setImage(pix)
             """ overriding tile gfx could be an alternative to palgroup layers
@@ -90,7 +90,7 @@ class ZST(Plugin):
           for x in range(32, la.width()):
             t = parseTile(unpack('H', fh.read(2))[0])
             try:
-              tile = tsets[t.pal].tileAt(t.idx)
+              tile = tsets[t.pal].data().tileAt(t.idx)
               la.setCell(x, y, Tiled.Cell(tile))
             except:
               print 'out of range %i,%i: %i' % (x,y,t.idx)

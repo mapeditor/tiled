@@ -68,7 +68,14 @@ public:
     QVariant headerData(int section, Qt::Orientation orientation,
                         int role = Qt::DisplayRole) const override;
 
-    QModelIndex index(Layer *layer) const;
+    QStringList mimeTypes() const override;
+    QMimeData *mimeData(const QModelIndexList &indexes) const override;
+    Qt::DropActions supportedDropActions() const override;
+    bool dropMimeData(const QMimeData *data, Qt::DropAction action,
+                      int row, int column,
+                      const QModelIndex &parent) override;
+
+    QModelIndex index(Layer *layer, int column = 0) const;
     Layer *toLayer(const QModelIndex &index) const;
 
     MapDocument *mapDocument() const;
@@ -79,12 +86,14 @@ public:
     void replaceLayer(Layer *layer, Layer *replacement);
 
     void setLayerVisible(Layer *layer, bool visible);
-    void setLayerOpacity(Layer *layer, float opacity);
+    void setLayerLocked(Layer *layer, bool locked);
+    void setLayerOpacity(Layer *layer, qreal opacity);
     void setLayerOffset(Layer *layer, const QPointF &offset);
 
     void renameLayer(Layer *layer, const QString &name);
 
     void toggleOtherLayers(Layer *layer);
+    void toggleLockOtherLayers(Layer *layer);
 
 signals:
     void layerAdded(Layer *layer);

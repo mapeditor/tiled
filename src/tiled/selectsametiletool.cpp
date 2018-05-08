@@ -21,20 +21,18 @@
 #include "selectsametiletool.h"
 
 #include "brushitem.h"
+#include "map.h"
 #include "mapdocument.h"
-#include "changeselectedarea.h"
-
-#include <QApplication>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
 
 SelectSameTileTool::SelectSameTileTool(QObject *parent)
-    : AbstractTileTool(tr("Select Same Tile"),
-                       QIcon(QLatin1String(
-                               ":images/22x22/stock-tool-by-color-select.png")),
-                       QKeySequence(tr("S")),
-                       parent)
+    : AbstractTileSelectionTool(tr("Select Same Tile"),
+                                QIcon(QLatin1String(
+                                      ":images/22x22/stock-tool-by-color-select.png")),
+                                QKeySequence(tr("S")),
+                                parent)
 {
 }
 
@@ -46,52 +44,18 @@ void SelectSameTileTool::tilePositionChanged(const QPoint &tilePos)
         return;
 
     QRegion resultRegion;
-    if (tileLayer->contains(tilePos)) {
+    if (mapDocument()->map()->infinite() || tileLayer->contains(tilePos)) {
         const Cell &matchCell = tileLayer->cellAt(tilePos);
         resultRegion = tileLayer->region([&] (const Cell &cell) { return cell == matchCell; });
     }
-    mSelectedRegion = resultRegion;
-    brushItem()->setTileRegion(mSelectedRegion);
-}
-
-void SelectSameTileTool::mousePressed(QGraphicsSceneMouseEvent *event)
-{
-    const Qt::MouseButton button = event->button();
-    const Qt::KeyboardModifiers modifiers = event->modifiers();
-
-    if (button != Qt::LeftButton && button != Qt::RightButton)
-        return;
-
-    MapDocument *document = mapDocument();
-
-    QRegion selection;
-
-    // Left button modifies selection, right button clears selection
-    if (button == Qt::LeftButton) {
-        selection = document->selectedArea();
-
-        if (modifiers == Qt::ShiftModifier)
-            selection += mSelectedRegion;
-        else if (modifiers == Qt::ControlModifier)
-            selection -= mSelectedRegion;
-        else if (modifiers == (Qt::ControlModifier | Qt::ShiftModifier))
-            selection &= mSelectedRegion;
-        else
-            selection = mSelectedRegion;
-    }
-
-    if (selection != document->selectedArea()) {
-        QUndoCommand *cmd = new ChangeSelectedArea(document, selection);
-        document->undoStack()->push(cmd);
-    }
-}
-
-void SelectSameTileTool::mouseReleased(QGraphicsSceneMouseEvent *)
-{
+    setSelectedRegion(resultRegion);
+    brushItem()->setTileRegion(selectedRegion());
 }
 
 void SelectSameTileTool::languageChanged()
 {
     setName(tr("Select Same Tile"));
     setShortcut(QKeySequence(tr("S")));
+
+    AbstractTileSelectionTool::languageChanged();
 }

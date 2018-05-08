@@ -4,26 +4,22 @@ DynamicLibrary {
     targetName: "tiled"
 
     Depends { name: "cpp" }
-    Depends { name: "Qt"; submodules: "gui"; versionAtLeast: "5.4" }
+    Depends { name: "Qt"; submodules: "gui"; versionAtLeast: "5.5" }
 
     Properties {
-        condition: !(qbs.toolchain.contains("msvc") ||
-                     (qbs.toolchain.contains("mingw") && Qt.core.versionMinor < 6))
+        condition: !qbs.toolchain.contains("msvc")
         cpp.dynamicLibraries: base.concat(["z"])
     }
 
     cpp.cxxLanguageVersion: "c++11"
     cpp.visibility: "minimal"
-    cpp.defines: {
-        var defs = [
-            "TILED_LIBRARY",
-            "QT_NO_CAST_FROM_ASCII",
-            "QT_NO_CAST_TO_ASCII"
-        ];
-        if (project.linuxArchive)
-            defs.push("TILED_LINUX_ARCHIVE");
-        return defs;
-    }
+    cpp.defines: [
+        "TILED_LIBRARY",
+        "QT_NO_CAST_FROM_ASCII",
+        "QT_NO_CAST_TO_ASCII",
+        "QT_NO_URL_CAST_FROM_STRING",
+        "_USE_MATH_DEFINES"
+    ]
 
     Properties {
         condition: qbs.targetOS.contains("macos")
@@ -36,6 +32,8 @@ DynamicLibrary {
     files: [
         "compression.cpp",
         "compression.h",
+        "fileformat.cpp",
+        "fileformat.h",
         "filesystemwatcher.cpp",
         "filesystemwatcher.h",
         "gidmapper.cpp",
@@ -57,6 +55,7 @@ DynamicLibrary {
         "logginginterface.h",
         "map.cpp",
         "map.h",
+        "mapformat.cpp",
         "mapformat.h",
         "mapobject.cpp",
         "mapobject.h",
@@ -68,9 +67,16 @@ DynamicLibrary {
         "maptovariantconverter.h",
         "mapwriter.cpp",
         "mapwriter.h",
+        "object.cpp",
+        "object.h",
         "objectgroup.cpp",
         "objectgroup.h",
-        "object.h",
+        "objecttemplate.cpp",
+        "objecttemplate.h",
+        "objecttemplateformat.cpp",
+        "objecttemplateformat.h",
+        "objecttypes.cpp",
+        "objecttypes.h",
         "orthogonalrenderer.cpp",
         "orthogonalrenderer.h",
         "plugin.cpp",
@@ -83,10 +89,13 @@ DynamicLibrary {
         "savefile.h",
         "staggeredrenderer.cpp",
         "staggeredrenderer.h",
+        "templatemanager.cpp",
+        "templatemanager.h",
         "terrain.h",
         "tile.cpp",
         "tileanimationdriver.cpp",
         "tileanimationdriver.h",
+        "tiled.cpp",
         "tiled_global.h",
         "tiled.h",
         "tile.h",
@@ -100,6 +109,8 @@ DynamicLibrary {
         "tilesetmanager.h",
         "varianttomapconverter.cpp",
         "varianttomapconverter.h",
+        "wangset.cpp",
+        "wangset.h",
     ]
 
     Group {

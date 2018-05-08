@@ -96,7 +96,7 @@ def readbody(bd, ch):
 
 def parselbm(f):
   for id,dat in list(IFFchunk.parsefile(f)):
-    if id == 'BMHD': 
+    if id == 'BMHD':
       ch = BMHD(dat)
       yield id, ch
     elif id == 'CMAP':

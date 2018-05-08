@@ -24,8 +24,11 @@
 #include "tiledproxystyle.h"
 #include "utils.h"
 
+#include <QAbstractTextDocumentLayout>
 #include <QApplication>
 #include <QDesktopServices>
+
+#include <cmath>
 
 using namespace Tiled::Internal;
 
@@ -33,8 +36,14 @@ AboutDialog::AboutDialog(QWidget *parent): QDialog(parent)
 {
     setupUi(this);
     logo->setMinimumWidth(Utils::dpiScaled(logo->minimumWidth()));
-    textBrowser->setMinimumHeight(Utils::dpiScaled(160));
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+#endif
+
+    connect(textBrowser->document()->documentLayout(), &QAbstractTextDocumentLayout::documentSizeChanged,
+            this, [this](const QSizeF &size) {
+        textBrowser->setMinimumHeight(int(std::ceil(size.height() + textBrowser->document()->documentMargin())));
+    });
 
     const QString html = QCoreApplication::translate(
             "AboutDialog",

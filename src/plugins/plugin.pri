@@ -5,7 +5,7 @@ isEmpty(TARGET) {
 TEMPLATE = lib
 CONFIG += plugin
 contains(QT_CONFIG, reduce_exports): CONFIG += hide_symbols
-win32|!isEmpty(TILED_LINUX_ARCHIVE) {
+win32 {
     DESTDIR = $$OUT_PWD/../../../plugins/tiled
 } else:macx {
     DESTDIR = $$OUT_PWD/../../../bin/Tiled.app/Contents/PlugIns

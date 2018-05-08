@@ -30,9 +30,11 @@
 #pragma once
 
 #include "object.h"
+#include "tiled.h"
 
 #include <QPixmap>
 #include <QSharedPointer>
+#include <QUrl>
 
 namespace Tiled {
 
@@ -108,8 +110,8 @@ public:
 
     const Tile *currentFrameTile() const;
 
-    const QString &imageSource() const;
-    void setImageSource(const QString &imageSource);
+    const QUrl &imageSource() const;
+    void setImageSource(const QUrl &imageSource);
 
     int width() const;
     int height() const;
@@ -128,8 +130,8 @@ public:
     inline unsigned terrain() const;
     void setTerrain(unsigned terrain);
 
-    float probability() const;
-    void setProbability(float probability);
+    qreal probability() const;
+    void setProbability(qreal probability);
 
     ObjectGroup *objectGroup() const;
     void setObjectGroup(ObjectGroup *objectGroup);
@@ -142,7 +144,8 @@ public:
     bool resetAnimation();
     bool advanceAnimation(int ms);
 
-    bool imageLoaded() const;
+    LoadingStatus imageStatus() const;
+    void setImageStatus(LoadingStatus status);
 
     Tile *clone(Tileset *tileset) const;
 
@@ -150,10 +153,11 @@ private:
     int mId;
     Tileset *mTileset;
     QPixmap mImage;
-    QString mImageSource;
+    QUrl mImageSource;
+    LoadingStatus mImageStatus;
     QString mType;
     unsigned mTerrain;
-    float mProbability;
+    qreal mProbability;
     ObjectGroup *mObjectGroup;
 
     QVector<Frame> mFrames;
@@ -193,19 +197,20 @@ inline const QPixmap &Tile::image() const
 inline void Tile::setImage(const QPixmap &image)
 {
     mImage = image;
+    mImageStatus = image.isNull() ? LoadingError : LoadingReady;
 }
 
 /**
- * Returns the file name of the external image that represents this tile.
- * When this tile doesn't refer to an external image, an empty string is
+ * Returns the URL of the external image that represents this tile.
+ * When this tile doesn't refer to an external image, an empty URL is
  * returned.
  */
-inline const QString &Tile::imageSource() const
+inline const QUrl &Tile::imageSource() const
 {
     return mImageSource;
 }
 
-inline void Tile::setImageSource(const QString &imageSource)
+inline void Tile::setImageSource(const QUrl &imageSource)
 {
     mImageSource = imageSource;
 }
@@ -280,7 +285,7 @@ inline unsigned Tile::terrain() const
 /**
  * Returns the relative probability of this tile appearing while painting.
  */
-inline float Tile::probability() const
+inline qreal Tile::probability() const
 {
     return mProbability;
 }
@@ -288,7 +293,7 @@ inline float Tile::probability() const
 /**
  * Set the relative probability of this tile appearing while painting.
  */
-inline void Tile::setProbability(float probability)
+inline void Tile::setProbability(qreal probability)
 {
     mProbability = probability;
 }
@@ -318,11 +323,16 @@ inline int Tile::currentFrameIndex() const
 }
 
 /**
- * Returns whether the image referenced by this tile was loaded.
+ * Returns the loading status of the image referenced by this tile.
  */
-inline bool Tile::imageLoaded() const
+inline LoadingStatus Tile::imageStatus() const
 {
-    return !mImage.isNull();
+    return mImageStatus;
+}
+
+inline void Tile::setImageStatus(LoadingStatus status)
+{
+    mImageStatus = status;
 }
 
 } // namespace Tiled

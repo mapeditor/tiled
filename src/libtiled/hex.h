@@ -41,9 +41,11 @@ class Hex
 public:
     Hex(int x, int y, int z);
 
-    Hex(QPoint staggerPoint,
+    Hex(QPoint point,
         Map::StaggerIndex staggerIndex,
-        Map::StaggerAxis staggerAxis);
+        Map::StaggerAxis staggerAxis)
+        : Hex(point.x(), point.y(), staggerIndex, staggerAxis)
+    {}
 
     Hex(int col, int row,
         Map::StaggerIndex staggerIndex,

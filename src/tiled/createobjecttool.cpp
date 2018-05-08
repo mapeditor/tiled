@@ -21,6 +21,7 @@
 #include "createobjecttool.h"
 
 #include "addremovemapobject.h"
+#include "addremovetileset.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapobject.h"
@@ -29,8 +30,10 @@
 #include "mapscene.h"
 #include "objectgroup.h"
 #include "objectgroupitem.h"
+#include "objectselectiontool.h"
 #include "snaphelper.h"
 #include "tile.h"
+#include "toolmanager.h"
 #include "utils.h"
 
 #include <QApplication>
@@ -42,14 +45,12 @@ using namespace Tiled::Internal;
 
 CreateObjectTool::CreateObjectTool(QObject *parent)
     : AbstractObjectTool(QString(),
-                         QIcon(QLatin1String(":images/24x24/insert-rectangle.png")),
-                         QKeySequence(tr("O")),
+                         QIcon(),
+                         QKeySequence(),
                          parent)
     , mNewMapObjectGroup(new ObjectGroup)
     , mObjectGroupItem(new ObjectGroupItem(mNewMapObjectGroup))
     , mNewMapObjectItem(nullptr)
-    , mOverlayPolygonItem(nullptr)
-    , mTile(nullptr)
 {
     mObjectGroupItem->setZValue(10000); // same as the BrushItem
 }
@@ -88,9 +89,11 @@ void CreateObjectTool::keyPressed(QKeyEvent *event)
     case Qt::Key_Escape:
         if (mNewMapObjectItem) {
             cancelNewMapObject();
-            return;
+        } else {
+            // If we're not currently creating a new object, switch to object selection tool
+            toolManager()->selectTool(toolManager()->findTool<ObjectSelectionTool>());
         }
-        break;
+        return;
     }
 
     AbstractObjectTool::keyPressed(event);
@@ -148,6 +151,9 @@ bool CreateObjectTool::startNewMapObject(const QPointF &pos,
 {
     Q_ASSERT(!mNewMapObjectItem);
 
+    if (!objectGroup->isUnlocked())
+        return false;
+
     MapObject *newMapObject = createNewMapObject();
     if (!newMapObject)
         return false;
@@ -166,6 +172,9 @@ bool CreateObjectTool::startNewMapObject(const QPointF &pos,
     return true;
 }
 
+/**
+ * Deletes the new map object item, and returns its map object.
+ */
 MapObject *CreateObjectTool::clearNewMapObjectItem()
 {
     Q_ASSERT(mNewMapObjectItem);
@@ -176,9 +185,6 @@ MapObject *CreateObjectTool::clearNewMapObjectItem()
 
     delete mNewMapObjectItem;
     mNewMapObjectItem = nullptr;
-
-    delete mOverlayPolygonItem;
-    mOverlayPolygonItem = nullptr;
 
     return newMapObject;
 }
@@ -199,12 +205,21 @@ void CreateObjectTool::finishNewMapObject()
         return;
     }
 
-    MapObject *newMapObject = mNewMapObjectItem->mapObject();
-    clearNewMapObjectItem();
+    MapObject *newMapObject = clearNewMapObjectItem();
 
-    mapDocument()->undoStack()->push(new AddMapObject(mapDocument(),
-                                                      objectGroup,
-                                                      newMapObject));
+    auto addObjectCommand = new AddMapObject(mapDocument(),
+                                             objectGroup,
+                                             newMapObject);
+
+    if (Tileset *tileset = newMapObject->cell().tileset()) {
+        SharedTileset sharedTileset = tileset->sharedPointer();
+
+        // Make sure this tileset is part of the map
+        if (!mapDocument()->map()->tilesets().contains(sharedTileset))
+            new AddTileset(mapDocument(), sharedTileset, addObjectCommand);
+    }
+
+    mapDocument()->undoStack()->push(addObjectCommand);
 
     mapDocument()->setSelectedObjects(QList<MapObject*>() << newMapObject);
 }

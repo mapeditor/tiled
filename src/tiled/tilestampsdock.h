@@ -51,6 +51,7 @@ protected:
     void keyPressEvent(QKeyEvent *) override;
 
 private slots:
+    void indexPressed(const QModelIndex &index);
     void currentRowChanged(const QModelIndex &index);
     void showContextMenu(QPoint pos);
 
@@ -64,6 +65,7 @@ private slots:
 
 private:
     void retranslateUi();
+    void setStampAtIndex(const QModelIndex &index);
 
     TileStampManager *mTileStampManager;
     TileStampModel *mTileStampModel;
@@ -91,6 +93,9 @@ public:
     explicit TileStampView(QWidget *parent = nullptr);
 
     QSize sizeHint() const override;
+
+protected:
+    bool event(QEvent *event) override;
 };
 
 } // namespace Internal

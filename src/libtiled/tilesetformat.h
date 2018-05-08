@@ -28,7 +28,7 @@
 
 #pragma once
 
-#include "mapformat.h"
+#include "fileformat.h"
 #include "tileset.h"
 
 namespace Tiled {
@@ -41,6 +41,7 @@ namespace Tiled {
 class TILEDSHARED_EXPORT TilesetFormat : public FileFormat
 {
     Q_OBJECT
+    Q_INTERFACES(Tiled::FileFormat)
 
 public:
     explicit TilesetFormat(QObject *parent = nullptr)
@@ -56,14 +57,37 @@ public:
     /**
      * Writes the given \a tileset based on the suggested \a fileName.
      *
-     * This function may write to a different file name or may even write to
-     * multiple files. The actual files that will be written to can be
-     * determined by calling outputFiles().
-     *
      * @return <code>true</code> on success, <code>false</code> when an error
      *         occurred. The error can be retrieved by errorString().
      */
     virtual bool write(const Tileset &tileset, const QString &fileName) = 0;
+
+private:
+    QPointer<TilesetFormat> mExportFormat;
+};
+
+} // namespace Tiled
+
+Q_DECLARE_INTERFACE(Tiled::TilesetFormat, "org.mapeditor.TilesetFormat")
+
+namespace Tiled {
+
+/**
+ * Convenience class for adding a format that can only be written.
+ */
+class TILEDSHARED_EXPORT WritableTilesetFormat : public TilesetFormat
+{
+    Q_OBJECT
+    Q_INTERFACES(Tiled::TilesetFormat)
+
+public:
+    explicit WritableTilesetFormat(QObject *parent = nullptr)
+        : TilesetFormat(parent)
+    {}
+
+    Capabilities capabilities() const override { return Write; }
+    SharedTileset read(const QString &) override { return SharedTileset(); }
+    bool supportsFile(const QString &) const override { return false; }
 };
 
 /**
@@ -73,6 +97,10 @@ public:
 TILEDSHARED_EXPORT SharedTileset readTileset(const QString &fileName,
                                              QString *error = nullptr);
 
+/**
+ * Attempts to find a tileset format supporting the given file.
+ */
+TILEDSHARED_EXPORT TilesetFormat *findSupportingTilesetFormat(const QString &fileName);
+
 } // namespace Tiled
 
-Q_DECLARE_INTERFACE(Tiled::TilesetFormat, "org.mapeditor.TilesetFormat")

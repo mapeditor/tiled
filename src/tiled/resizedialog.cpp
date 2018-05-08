@@ -37,7 +37,9 @@ ResizeDialog::ResizeDialog(QWidget *parent)
 {
     mUi->setupUi(this);
     resize(Utils::dpiScaled(size()));
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+#endif
 
     Preferences *prefs = Preferences::instance();
     QSettings *s = prefs->settings();
@@ -74,12 +76,12 @@ void ResizeDialog::setOldSize(const QSize &size)
     mUi->heightSpinBox->setValue(size.height());
 }
 
-const QSize &ResizeDialog::newSize() const
+QSize ResizeDialog::newSize() const
 {
     return mUi->resizeHelper->newSize();
 }
 
-const QPoint &ResizeDialog::offset() const
+QPoint ResizeDialog::offset() const
 {
     return mUi->resizeHelper->offset();
 }
@@ -87,6 +89,11 @@ const QPoint &ResizeDialog::offset() const
 bool ResizeDialog::removeObjects() const
 {
     return mUi->removeObjectsCheckBox->isChecked();
+}
+
+void ResizeDialog::setMiniMapRenderer(std::function<QImage (QSize)> renderer)
+{
+    mUi->resizeHelper->setMiniMapRenderer(renderer);
 }
 
 void ResizeDialog::removeObjectsToggled(bool removeObjects)

@@ -37,8 +37,13 @@ ChangeProperties::ChangeProperties(Document *document,
     , mObject(object)
     , mNewProperties(newProperties)
 {
-    setText(QCoreApplication::translate("Undo Commands",
-                                        "Change %1 Properties").arg(kind));
+    if (kind.isEmpty()) {
+        setText(QCoreApplication::translate("Undo Commands",
+                                            "Change Properties"));
+    } else {
+        setText(QCoreApplication::translate("Undo Commands",
+                                            "Change %1 Properties").arg(kind));
+    }
 }
 
 void ChangeProperties::redo()

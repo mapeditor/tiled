@@ -32,13 +32,19 @@
 #include "filesystemwatcher.h"
 #include "tileanimationdriver.h"
 #include "tile.h"
+#include "tilesetformat.h"
 
 #include <QImage>
+
+#include "qtcompat_p.h"
 
 namespace Tiled {
 
 TilesetManager *TilesetManager::mInstance;
 
+/**
+ * Constructor. Only used by the tileset manager itself.
+ */
 TilesetManager::TilesetManager():
     mWatcher(new FileSystemWatcher(this)),
     mAnimationDriver(new TileAnimationDriver(this)),
@@ -59,11 +65,14 @@ TilesetManager::TilesetManager():
 
 TilesetManager::~TilesetManager()
 {
-    // Since all MapDocuments should be deleted first, we assert that there are
-    // no remaining tileset references.
+    // Assert that there are no remaining tileset instances
     Q_ASSERT(mTilesets.isEmpty());
 }
 
+/**
+ * Requests the tileset manager. When the manager doesn't exist yet, it
+ * will be created.
+ */
 TilesetManager *TilesetManager::instance()
 {
     if (!mInstance)
@@ -72,78 +81,92 @@ TilesetManager *TilesetManager::instance()
     return mInstance;
 }
 
+/**
+ * Deletes the tileset manager instance, when it exists.
+ */
 void TilesetManager::deleteInstance()
 {
     delete mInstance;
     mInstance = nullptr;
 }
 
+/**
+ * Loads the tileset with the given \a fileName. If the tileset is already
+ * loaded, returns that instance.
+ *
+ * When an error occurs during loading it is assigned to the optional \a error
+ * parameter.
+ */
+SharedTileset TilesetManager::loadTileset(const QString &fileName, QString *error)
+{
+    SharedTileset tileset = findTileset(fileName);
+    if (!tileset)
+        tileset = readTileset(fileName, error);
+
+    return tileset;
+}
+
+/**
+ * Searches for a tileset matching the given file name.
+ * @return a tileset matching the given file name, or 0 if none exists
+ */
 SharedTileset TilesetManager::findTileset(const QString &fileName) const
 {
-    const QList<SharedTileset> &_tilesets = tilesets();
-
-    for (const SharedTileset &tileset : _tilesets)
+    for (Tileset *tileset : mTilesets)
         if (tileset->fileName() == fileName)
-            return tileset;
+            return tileset->sharedPointer();
 
     return SharedTileset();
 }
 
-void TilesetManager::addReference(const SharedTileset &tileset)
+/**
+ * Adds a tileset reference. This will make sure the tileset is watched for
+ * changes and can be found using findTileset().
+ */
+void TilesetManager::addTileset(Tileset *tileset)
 {
-    if (mTilesets.contains(tileset)) {
-        mTilesets[tileset]++;
-    } else {
-        mTilesets.insert(tileset, 1);
-        if (!tileset->imageSource().isEmpty())
-            mWatcher->addPath(tileset->imageSource());
-    }
+    Q_ASSERT(!mTilesets.contains(tileset));
+    mTilesets.append(tileset);
 }
 
-void TilesetManager::removeReference(const SharedTileset &tileset)
+/**
+ * Removes a tileset reference. When the last reference has been removed,
+ * the tileset is no longer watched for changes.
+ */
+void TilesetManager::removeTileset(Tileset *tileset)
 {
-    Q_ASSERT(mTilesets.value(tileset) > 0);
-    mTilesets[tileset]--;
+    Q_ASSERT(mTilesets.contains(tileset));
+    mTilesets.removeOne(tileset);
 
-    if (mTilesets.value(tileset) == 0) {
-        mTilesets.remove(tileset);
-        if (!tileset->imageSource().isEmpty())
-            mWatcher->removePath(tileset->imageSource());
-    }
+    if (tileset->imageSource().isLocalFile())
+        mWatcher->removePath(tileset->imageSource().toLocalFile());
 }
 
-void TilesetManager::addReferences(const QVector<SharedTileset> &tilesets)
-{
-    for (const SharedTileset &tileset : tilesets)
-        addReference(tileset);
-}
-
-void TilesetManager::removeReferences(const QVector<SharedTileset> &tilesets)
-{
-    for (const SharedTileset &tileset : tilesets)
-        removeReference(tileset);
-}
-
-QList<SharedTileset> TilesetManager::tilesets() const
-{
-    return mTilesets.keys();
-}
-
-void TilesetManager::reloadImages(const SharedTileset &tileset)
+/**
+ * Forces a tileset to reload.
+ */
+void TilesetManager::reloadImages(Tileset *tileset)
 {
     if (!mTilesets.contains(tileset))
         return;
 
     if (tileset->isCollection()) {
-        for (Tile *tile : tileset->tiles())
-            tile->setImage(QPixmap(tile->imageSource()));
-        emit tilesetImagesChanged(tileset.data());
+        for (Tile *tile : tileset->tiles()) {
+            // todo: trigger reload of remote files
+            if (tile->imageSource().isLocalFile())
+                tile->setImage(QPixmap(tile->imageSource().toLocalFile()));
+        }
+        emit tilesetImagesChanged(tileset);
     } else {
         if (tileset->loadImage())
-            emit tilesetImagesChanged(tileset.data());
+            emit tilesetImagesChanged(tileset);
     }
 }
 
+/**
+ * Sets whether tilesets are automatically reloaded when their tileset
+ * image changes.
+ */
 void TilesetManager::setReloadTilesetsOnChange(bool enabled)
 {
     mReloadTilesetsOnChange = enabled;
@@ -168,14 +191,15 @@ bool TilesetManager::animateTiles() const
 }
 
 void TilesetManager::tilesetImageSourceChanged(const Tileset &tileset,
-                                               const QString &oldImageSource)
+                                               const QUrl &oldImageSource)
 {
-    Q_ASSERT(mTilesets.contains(tileset.sharedPointer()));
-    Q_ASSERT(!oldImageSource.isEmpty());
-    Q_ASSERT(!tileset.imageSource().isEmpty());
+    Q_ASSERT(mTilesets.contains(const_cast<Tileset*>(&tileset)));
 
-    mWatcher->removePath(oldImageSource);
-    mWatcher->addPath(tileset.imageSource());
+    if (oldImageSource.isLocalFile())
+        mWatcher->removePath(oldImageSource.toLocalFile());
+
+    if (tileset.imageSource().isLocalFile())
+        mWatcher->addPath(tileset.imageSource().toLocalFile());
 }
 
 void TilesetManager::fileChanged(const QString &path)
@@ -194,11 +218,11 @@ void TilesetManager::fileChanged(const QString &path)
 
 void TilesetManager::fileChangedTimeout()
 {
-    for (SharedTileset &tileset : tilesets()) {
-        QString fileName = tileset->imageSource();
+    for (Tileset *tileset : qAsConst(mTilesets)) {
+        const QString fileName = tileset->imageSource().toLocalFile();
         if (mChangedFiles.contains(fileName))
             if (tileset->loadFromImage(fileName))
-                emit tilesetImagesChanged(tileset.data());
+                emit tilesetImagesChanged(tileset);
     }
 
     mChangedFiles.clear();
@@ -210,35 +234,33 @@ void TilesetManager::fileChangedTimeout()
  */
 void TilesetManager::resetTileAnimations()
 {
-    const QList<SharedTileset> &_tilesets = tilesets();
-
     // TODO: This could be more optimal by keeping track of the list of
     // actually animated tiles
-    for (const SharedTileset &tileset : _tilesets) {
+
+    for (Tileset *tileset : qAsConst(mTilesets)) {
         bool imageChanged = false;
 
         for (Tile *tile : tileset->tiles())
             imageChanged |= tile->resetAnimation();
 
         if (imageChanged)
-            emit repaintTileset(tileset.data());
+            emit repaintTileset(tileset);
     }
 }
 
 void TilesetManager::advanceTileAnimations(int ms)
 {
-    const QList<SharedTileset> &_tilesets = tilesets();
-
     // TODO: This could be more optimal by keeping track of the list of
     // actually animated tiles
-    for (const SharedTileset &tileset : _tilesets) {
+
+    for (Tileset *tileset : qAsConst(mTilesets)) {
         bool imageChanged = false;
 
         for (Tile *tile : tileset->tiles())
             imageChanged |= tile->advanceAnimation(ms);
 
         if (imageChanged)
-            emit repaintTileset(tileset.data());
+            emit repaintTileset(tileset);
     }
 }
 

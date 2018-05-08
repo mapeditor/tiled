@@ -20,12 +20,17 @@
 
 #pragma once
 
+#include "clipboardmanager.h"
 #include "editor.h"
+#include "wangset.h"
 
 #include <QHash>
+#include <QList>
+#include <QUrl>
 
 class QAction;
 class QComboBox;
+class QLabel;
 class QMainWindow;
 class QStackedWidget;
 class QToolBar;
@@ -40,10 +45,13 @@ namespace Internal {
 
 class PropertiesDock;
 class TerrainDock;
-class TilesetDocument;
-class TilesetView;
 class TileAnimationEditor;
-class TileCollisionEditor;
+class TileCollisionDock;
+class TilesetDocument;
+class TilesetEditorWindow;
+class TilesetView;
+class UndoDock;
+class WangDock;
 class Zoomable;
 
 class TilesetEditor : public Editor
@@ -67,6 +75,11 @@ public:
     QList<QToolBar *> toolBars() const override;
     QList<QDockWidget *> dockWidgets() const override;
 
+    StandardActions enabledStandardActions() const override;
+    void performStandardAction(StandardAction action) override;
+
+    void resetLayout() override;
+
     TilesetView *currentTilesetView() const;
     Tileset *currentTileset() const;
     Zoomable *zoomable() const override;
@@ -74,9 +87,10 @@ public:
     QAction *addTilesAction() const;
     QAction *removeTilesAction() const;
     QAction *editTerrainAction() const;
+    QAction *editCollisionAction() const;
+    QAction *showAnimationEditor() const;
 
     TileAnimationEditor *tileAnimationEditor() const;
-    TileCollisionEditor *tileCollisionEditor() const;
 
 signals:
     void currentTileChanged(Tile *tile);
@@ -91,11 +105,17 @@ private slots:
     void tilesetChanged();
     void updateTilesetView(Tileset *tileset);
 
-    void addTiles();
+    void openAddTilesDialog();
+    void addTiles(const QList<QUrl> &urls);
     void removeTiles();
 
     void setEditTerrain(bool editTerrain);
     void currentTerrainChanged(const Terrain *terrain);
+
+    void setEditCollision(bool editCollision);
+    void hasSelectedCollisionObjectsChanged();
+
+    void setEditWang(bool editWang);
 
     void updateAddRemoveActions();
 
@@ -103,25 +123,39 @@ private slots:
     void removeTerrainType();
     void setTerrainImage(Tile *tile);
 
+    void currentWangSetChanged(WangSet *wangSet);
+    void currentWangIdChanged(WangId wangId);
+    void wangColorChanged(int color, bool edge);
+    void addWangSet();
+    void removeWangSet();
+    void setWangSetImage(Tile *tile);
+    void setWangColorImage(Tile *tile, bool isEdge, int index);
+    void setWangColorColor(WangColor *wangColor, const QColor &color);
+
+    void onAnimationEditorClosed();
+
 private:
     void setCurrentTile(Tile *tile);
 
     void retranslateUi();
 
-    QMainWindow *mMainWindow;
+    TilesetEditorWindow *mMainWindow;
     QToolBar *mMainToolBar;
     QStackedWidget *mWidgetStack;
     QToolBar *mTilesetToolBar;
 
     QAction *mAddTiles;
     QAction *mRemoveTiles;
-    QAction *mEditTerrain;
+    QAction *mShowAnimationEditor;
 
     PropertiesDock *mPropertiesDock;
+    UndoDock *mUndoDock;
     TerrainDock *mTerrainDock;
+    TileCollisionDock *mTileCollisionDock;
+    WangDock *mWangDock;
     QComboBox *mZoomComboBox;
+    QLabel *mStatusInfoLabel;
     TileAnimationEditor *mTileAnimationEditor;
-    TileCollisionEditor *mTileCollisionEditor;
 
     QHash<TilesetDocument*, TilesetView*> mViewForTileset;
     TilesetDocument *mCurrentTilesetDocument;
@@ -139,19 +173,14 @@ inline QAction *TilesetEditor::removeTilesAction() const
     return mRemoveTiles;
 }
 
-inline QAction *TilesetEditor::editTerrainAction() const
+inline QAction *TilesetEditor::showAnimationEditor() const
 {
-    return mEditTerrain;
+    return mShowAnimationEditor;
 }
 
 inline TileAnimationEditor *TilesetEditor::tileAnimationEditor() const
 {
     return mTileAnimationEditor;
-}
-
-inline TileCollisionEditor *TilesetEditor::tileCollisionEditor() const
-{
-    return mTileCollisionEditor;
 }
 
 } // namespace Internal

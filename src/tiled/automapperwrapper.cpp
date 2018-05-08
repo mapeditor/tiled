@@ -63,8 +63,15 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
         TileLayer *before = mLayersBefore.at(beforeIndex);
         TileLayer *after = static_cast<TileLayer*>(map->layerAt(layerIndex));
 
+        MapDocument::TileLayerChangeFlags flags;
+
         if (before->drawMargins() != after->drawMargins())
-            emit mMapDocument->tileLayerDrawMarginsChanged(after);
+            flags |= MapDocument::LayerDrawMarginsChanged;
+        if (before->bounds() != after->bounds())
+            flags |= MapDocument::LayerBoundsChanged;
+
+        if (flags)
+            emit mMapDocument->tileLayerChanged(after, flags);
 
         // reduce memory usage by saving only diffs
         QRect diffRegion = before->computeDiffRegion(after).boundingRect();
@@ -115,7 +122,7 @@ void AutoMapperWrapper::redo()
 void AutoMapperWrapper::patchLayer(int layerIndex, TileLayer *layer)
 {
     Map *map = mMapDocument->map();
-    QRect b = layer->bounds();
+    QRect b = layer->rect();
 
     Q_ASSERT(map->layerAt(layerIndex)->asTileLayer());
     TileLayer *t = static_cast<TileLayer*>(map->layerAt(layerIndex));

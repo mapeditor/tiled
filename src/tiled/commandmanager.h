@@ -26,6 +26,9 @@ class QAction;
 class QMenu;
 
 namespace Tiled {
+
+class LoggingInterface;
+
 namespace Internal {
 
 class CommandDataModel;
@@ -52,6 +55,10 @@ public:
 
     void updateActions();
 
+    LoggingInterface *logger() { return mLogger; }
+
+    void retranslateUi();
+
 public slots:
 
     /**
@@ -73,6 +80,9 @@ private:
     CommandDataModel *mModel;
     QList<QMenu*> mMenus;
     QList<QAction*> mActions;
+    QAction *mEditCommands;
+
+    LoggingInterface *mLogger;
 };
 
 } // namespace Internal

@@ -8,7 +8,7 @@ INSTALLS += target
 CONFIG += console
 TEMPLATE = app
 
-win32|!isEmpty(TILED_LINUX_ARCHIVE) {
+win32 {
     DESTDIR = ../..
 } else {
     DESTDIR = ../../bin

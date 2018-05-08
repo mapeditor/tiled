@@ -44,9 +44,9 @@ class PK2(Plugin):
     img = QImage()
     imgfile = dirname(f)+'/../../gfx/tiles/'+str(lvl.tileFile)
     img.load(imgfile, 'BMP')
-    t = Tiled.Tileset('Tiles', 32,32, 0, 0)
-    t.setTransparentColor(QColor(img.color(255)))
-    t.loadFromImage(img, imgfile)
+    t = Tiled.Tileset.create('Tiles', 32,32, 0, 0)
+    t.data().setTransparentColor(QColor(img.color(255)))
+    t.data().loadFromImage(img, imgfile)
 
     # find common bounding box for the layers
     bb = ['','',10,10]
@@ -63,7 +63,7 @@ class PK2(Plugin):
     maps.append(m)
 
     # -- background image
-    lai = Tiled.ImageLayer('Scenery', 0,0, bb[2], bb[3])
+    lai = Tiled.ImageLayer('Scenery', bb[2], bb[3])
     img = QImage()
     imgfile = dirname(f)+'/../../gfx/scenery/'+str(lvl.fieldFile)
     img.load(imgfile, 'BMP')
@@ -91,9 +91,9 @@ class PK2(Plugin):
         img = QImage()
         img.load(sprdir+sprfile, 'BMP')
         print 'loading', sprdir+sprfile
-        sprts = Tiled.Tileset(sprfile, 32,32, 0, 0)
-        sprts.setTransparentColor(QColor(img.color(255)))
-        sprts.loadFromImage(img, sprdir+sprfile)
+        sprts = Tiled.Tileset.create(sprfile, 32,32, 0, 0)
+        sprts.data().setTransparentColor(QColor(img.color(255)))
+        sprts.data().loadFromImage(img, sprdir+sprfile)
         lay3.spriteGfx[str(spr.kuvatiedosto)] = sprts
 
       #sprgfx[(str(spr.kuvatiedosto]
@@ -101,9 +101,8 @@ class PK2(Plugin):
 
       #print spr
 
-    la3 = Tiled.ObjectGroup('Sprites', 0,0, bb[2], bb[3])
+    la3 = Tiled.ObjectGroup('Sprites', bb[2], bb[3])
     lay3.doSprites(la3, bb)
-
     m.addLayer(lai)
     m.addTileset(t)
     for sprts in lay3.spriteGfx.values():
@@ -237,7 +236,7 @@ class PK2MAPLAYER(cpystruct.CpyStruct("asciinum lx, ly, w, h;")):
           spr = self.sprites[sprite]
           obj = Tiled.MapObject(str(spr.kuvatiedosto), '', QPointF(rx, ry), QSizeF(1, 1)) #spr.width, spr.height))
           # 0 should point to the actual sprite but how?
-          obj.setCell(Tiled.Cell(self.spriteGfx[str(spr.kuvatiedosto)].tileAt(0)))
+          obj.setCell(Tiled.Cell(self.spriteGfx[str(spr.kuvatiedosto)].data().tileAt(0)))
           la.addObject(obj)
 
   def doTiles(self, ts, la, bb):
@@ -249,7 +248,7 @@ class PK2MAPLAYER(cpystruct.CpyStruct("asciinum lx, ly, w, h;")):
           ry = self.ly.num + y - bb[1]
           if tile == 149: print 'start @',rx,ry
           if tile == 150: print 'end @',rx,ry
-          ti = ts.tileAt(tile)
+          ti = ts.data().tileAt(tile)
           if ti != None and rx < bb[2] and ry < bb[3]:
             # app should check that coords are within layer
             #print rx,ry,self.ly,y

@@ -8,6 +8,7 @@ TiledQtGuiApplication {
     Depends { name: "libtiled" }
 
     cpp.includePaths: ["."]
+    cpp.defines: ["QT_NO_FOREACH"]
 
     files: [
         "main.cpp",

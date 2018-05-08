@@ -44,6 +44,7 @@
 namespace Tiled {
 
 class ObjectGroup;
+class ObjectTemplate;
 class Tile;
 
 struct TILEDSHARED_EXPORT TextData
@@ -94,22 +95,29 @@ public:
         Polygon,
         Polyline,
         Ellipse,
-        Text
+        Text,
+        Point,
     };
 
     /**
      * Can be used to get/set property values using QVariant.
      */
     enum Property {
-        NameProperty,
-        TypeProperty,
-        VisibleProperty,
-        TextProperty,
-        TextFontProperty,
-        TextAlignmentProperty,
-        TextWordWrapProperty,
-        TextColorProperty
+        NameProperty             = 1 << 0,
+        TypeProperty             = 1 << 1,
+        VisibleProperty          = 1 << 2,
+        TextProperty             = 1 << 3,
+        TextFontProperty         = 1 << 4,
+        TextAlignmentProperty    = 1 << 5,
+        TextWordWrapProperty     = 1 << 6,
+        TextColorProperty        = 1 << 7,
+        SizeProperty             = 1 << 8,
+        RotationProperty         = 1 << 9,
+        CellProperty             = 1 << 10,
+        ShapeProperty            = 1 << 11
     };
+
+    Q_DECLARE_FLAGS(ChangedProperties, Property)
 
     MapObject();
 
@@ -120,6 +128,8 @@ public:
     int id() const;
     void setId(int id);
     void resetId();
+
+    int index() const;
 
     const QString &name() const;
     void setName(const QString &name);
@@ -159,13 +169,18 @@ public:
     Shape shape() const;
     void setShape(Shape shape);
 
-    bool isPolyShape() const;
+    bool hasDimensions() const;
+    bool canRotate() const;
+    bool isTileObject() const;
 
     QRectF bounds() const;
     QRectF boundsUseTile() const;
 
     const Cell &cell() const;
     void setCell(const Cell &cell);
+
+    const ObjectTemplate *objectTemplate() const;
+    void setObjectTemplate(const ObjectTemplate *objectTemplate);
 
     ObjectGroup *objectGroup() const;
     void setObjectGroup(ObjectGroup *objectGroup);
@@ -181,9 +196,25 @@ public:
     QVariant mapObjectProperty(Property property) const;
     void setMapObjectProperty(Property property, const QVariant &value);
 
+    void setChangedProperties(ChangedProperties changedProperties);
+    MapObject::ChangedProperties changedProperties() const;
+
+    void setPropertyChanged(Property property, bool state = true);
+    bool propertyChanged(Property property) const;
+
     void flip(FlipDirection direction, const QPointF &origin);
 
     MapObject *clone() const;
+    void copyPropertiesFrom(const MapObject *object);
+
+    const MapObject *templateObject() const;
+
+    void syncWithTemplate();
+
+    bool isTemplateInstance() const;
+
+    bool isTemplateBase() const;
+    void markAsTemplateBase();
 
 private:
     void flipRectObject(const QTransform &flipTransform);
@@ -191,17 +222,20 @@ private:
     void flipTileObject(const QTransform &flipTransform);
 
     int mId;
+    Shape mShape;
     QString mName;
     QString mType;
     QPointF mPos;
     QSizeF mSize;
     TextData mTextData;
     QPolygonF mPolygon;
-    Shape mShape;
     Cell mCell;
+    const ObjectTemplate *mObjectTemplate;
     ObjectGroup *mObjectGroup;
     qreal mRotation;
     bool mVisible;
+    bool mTemplateBase;
+    ChangedProperties mChangedProperties;
 };
 
 /**
@@ -369,10 +403,28 @@ inline void MapObject::setShape(MapObject::Shape shape)
 { mShape = shape; }
 
 /**
- * Returns true if this is a Polygon or a Polyline.
+ * Returns true if this object has a width and height.
  */
-inline bool MapObject::isPolyShape() const
-{ return mShape == Polygon || mShape == Polyline; }
+inline bool MapObject::hasDimensions() const
+{
+    switch (mShape) {
+        case Polygon:
+        case Polyline:
+        case Point:
+            return false;
+        default:
+            return true;
+    }
+}
+
+/**
+ * Returns true if this object can be rotated.
+ */
+inline bool MapObject::canRotate() const
+{ return mShape != Point; }
+
+inline bool MapObject::isTileObject() const
+{ return !mCell.isEmpty(); }
 
 /**
  * Shortcut to getting a QRectF from position() and size().
@@ -394,6 +446,12 @@ inline const Cell &MapObject::cell() const
  */
 inline void MapObject::setCell(const Cell &cell)
 { mCell = cell; }
+
+inline const ObjectTemplate *MapObject::objectTemplate() const
+{ return mObjectTemplate; }
+
+inline void MapObject::setObjectTemplate(const ObjectTemplate *objectTemplate)
+{ mObjectTemplate = objectTemplate; }
 
 /**
  * Returns the object group this object belongs to.
@@ -426,8 +484,33 @@ inline bool MapObject::isVisible() const
 inline void MapObject::setVisible(bool visible)
 { mVisible = visible; }
 
+inline void MapObject::setChangedProperties(ChangedProperties changedProperties)
+{ mChangedProperties = changedProperties; }
+
+inline MapObject::ChangedProperties MapObject::changedProperties() const
+{ return mChangedProperties; }
+
+inline void MapObject::setPropertyChanged(Property property, bool state)
+{
+    if (state)
+        mChangedProperties |= property;
+    else
+        mChangedProperties &= ~property;
+}
+
+inline bool MapObject::propertyChanged(Property property) const
+{ return mChangedProperties.testFlag(property); }
+
+inline bool MapObject::isTemplateInstance() const
+{ return mObjectTemplate != nullptr; }
+
+inline bool MapObject::isTemplateBase() const
+{ return mTemplateBase; }
+
+inline void MapObject::markAsTemplateBase()
+{ mTemplateBase = true; }
+
 } // namespace Tiled
 
-#if QT_VERSION < 0x050500
-Q_DECLARE_METATYPE(Qt::Alignment)
-#endif
+Q_DECLARE_METATYPE(Tiled::MapObject::Shape)
+Q_DECLARE_METATYPE(Tiled::MapObject*)

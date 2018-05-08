@@ -55,6 +55,28 @@ private:
 };
 
 /**
+ * Used for changing layer lock.
+ */
+class SetLayerLocked : public QUndoCommand
+{
+public:
+    SetLayerLocked(MapDocument *mapDocument,
+                   Layer *layer,
+                   bool locked);
+
+    void undo() override { swap(); }
+    void redo() override { swap(); }
+
+private:
+    void swap();
+
+    MapDocument *mMapDocument;
+    Layer *mLayer;
+    bool mLocked;
+};
+
+
+/**
  * Used for changing layer opacity.
  */
 class SetLayerOpacity : public QUndoCommand
@@ -62,7 +84,7 @@ class SetLayerOpacity : public QUndoCommand
 public:
     SetLayerOpacity(MapDocument *mapDocument,
                     Layer *layer,
-                    float opacity);
+                    qreal opacity);
 
     void undo() override { setOpacity(mOldOpacity); }
     void redo() override { setOpacity(mNewOpacity); }
@@ -72,12 +94,12 @@ public:
     bool mergeWith(const QUndoCommand *other) override;
 
 private:
-    void setOpacity(float opacity);
+    void setOpacity(qreal opacity);
 
     MapDocument *mMapDocument;
     Layer *mLayer;
-    float mOldOpacity;
-    float mNewOpacity;
+    qreal mOldOpacity;
+    qreal mNewOpacity;
 };
 
 /**

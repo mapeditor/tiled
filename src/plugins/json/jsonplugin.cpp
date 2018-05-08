@@ -40,6 +40,7 @@ void JsonPlugin::initialize()
     addObject(new JsonMapFormat(JsonMapFormat::Json, this));
     addObject(new JsonMapFormat(JsonMapFormat::JavaScript, this));
     addObject(new JsonTilesetFormat(this));
+    addObject(new JsonObjectTemplateFormat(this));
 }
 
 
@@ -127,7 +128,6 @@ bool JsonMapFormat::write(const Tiled::Map *map, const QString &fileName)
     if (mSubFormat == JavaScript) {
         out << ");";
     }
-    out.flush();
 
     if (file.error() != QFileDevice::NoError) {
         mError = tr("Error while writing file:\n%1").arg(file.errorString());
@@ -218,9 +218,7 @@ Tiled::SharedTileset JsonTilesetFormat::read(const QString &fileName)
     }
 
     JsonReader reader;
-    QByteArray contents = file.readAll();
-
-    reader.parse(contents);
+    reader.parse(file.readAll());
 
     const QVariant variant = reader.result();
 
@@ -288,7 +286,6 @@ bool JsonTilesetFormat::write(const Tiled::Tileset &tileset,
 
     QTextStream out(file.device());
     out << writer.result();
-    out.flush();
 
     if (file.error() != QFileDevice::NoError) {
         mError = tr("Error while writing file:\n%1").arg(file.errorString());
@@ -314,6 +311,110 @@ QString JsonTilesetFormat::shortName() const
 }
 
 QString JsonTilesetFormat::errorString() const
+{
+    return mError;
+}
+
+JsonObjectTemplateFormat::JsonObjectTemplateFormat(QObject *parent)
+    : Tiled::ObjectTemplateFormat(parent)
+{
+}
+
+Tiled::ObjectTemplate *JsonObjectTemplateFormat::read(const QString &fileName)
+{
+    QFile file(fileName);
+
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        mError = tr("Could not open file for reading.");
+        return nullptr;
+    }
+
+    JsonReader reader;
+    reader.parse(file.readAll());
+
+    const QVariant variant = reader.result();
+
+    if (!variant.isValid()) {
+        mError = tr("Error parsing file.");
+        return nullptr;
+    }
+
+    Tiled::VariantToMapConverter converter;
+    Tiled::ObjectTemplate *objectTemplate = converter.toObjectTemplate(variant,
+                                                                       QFileInfo(fileName).dir());
+
+    if (!objectTemplate)
+        mError = converter.errorString();
+    else
+        objectTemplate->setFileName(fileName);
+
+    return objectTemplate;
+}
+
+bool JsonObjectTemplateFormat::supportsFile(const QString &fileName) const
+{
+    if (fileName.endsWith(QLatin1String(".json"), Qt::CaseInsensitive)) {
+        QFile file(fileName);
+
+        if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            const QJsonObject object = QJsonDocument::fromJson(file.readAll()).object();
+
+            if (object.value(QLatin1String("type")).toString() == QLatin1String("template"))
+                return true;
+        }
+    }
+
+    return false;
+}
+
+bool JsonObjectTemplateFormat::write(const Tiled::ObjectTemplate *objectTemplate, const QString &fileName)
+{
+    Tiled::SaveFile file(fileName);
+
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        mError = tr("Could not open file for writing.");
+        return false;
+    }
+
+    Tiled::MapToVariantConverter converter;
+    QVariant variant = converter.toVariant(*objectTemplate, QFileInfo(fileName).dir());
+
+    JsonWriter writer;
+    writer.setAutoFormatting(true);
+
+    if (!writer.stringify(variant)) {
+        // This can only happen due to coding error
+        mError = writer.errorString();
+        return false;
+    }
+
+    QTextStream out(file.device());
+    out << writer.result();
+
+    if (file.error() != QFileDevice::NoError) {
+        mError = tr("Error while writing file:\n%1").arg(file.errorString());
+        return false;
+    }
+
+    if (!file.commit()) {
+        mError = file.errorString();
+        return false;
+    }
+
+    return true;
+}
+
+QString JsonObjectTemplateFormat::nameFilter() const
+{
+    return tr("Json template files (*.json)");
+}
+
+QString JsonObjectTemplateFormat::shortName() const
+{
+    return QLatin1String("json");
+}
+
+QString JsonObjectTemplateFormat::errorString() const
 {
     return mError;
 }

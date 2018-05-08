@@ -27,6 +27,7 @@
 #include "clipboardmanager.h"
 #include "editor.h"
 #include "tiled.h"
+#include "tileset.h"
 
 class QComboBox;
 class QLabel;
@@ -37,12 +38,14 @@ class QToolButton;
 
 namespace Tiled {
 
+class ObjectTemplate;
 class Terrain;
 
 namespace Internal {
 
 class AbstractTool;
 class BucketFillTool;
+class EditPolygonTool;
 class LayerDock;
 class MapDocument;
 class MapDocumentActionHandler;
@@ -50,8 +53,10 @@ class MapsDock;
 class MapView;
 class MiniMapDock;
 class ObjectsDock;
+class TemplatesDock;
 class PropertiesDock;
 class ReversingProxyModel;
+class ShapeFillTool;
 class StampBrush;
 class TerrainBrush;
 class TerrainDock;
@@ -60,7 +65,10 @@ class TileStamp;
 class TileStampManager;
 class ToolManager;
 class TreeViewComboBox;
-class UncheckableItemsModel;
+class ComboBoxProxyModel;
+class UndoDock;
+class WangBrush;
+class WangDock;
 class Zoomable;
 
 class MapEditor : public Editor
@@ -69,7 +77,7 @@ class MapEditor : public Editor
 
 public:
     explicit MapEditor(QObject *parent = nullptr);
-    ~MapEditor();
+    ~MapEditor() override;
 
     void saveState() override;
     void restoreState() override;
@@ -85,6 +93,11 @@ public:
     QList<QToolBar *> toolBars() const override;
     QList<QDockWidget *> dockWidgets() const override;
 
+    StandardActions enabledStandardActions() const override;
+    void performStandardAction(StandardAction action) override;
+
+    void resetLayout() override;
+
     MapView *viewForDocument(MapDocument *mapDocument) const;
     MapView *currentMapView() const;
     Zoomable *zoomable() const override;
@@ -96,16 +109,18 @@ public slots:
 
     void paste(ClipboardManager::PasteFlags flags);
 
-    void flipHorizontally() { flip(FlipHorizontally); }
-    void flipVertically() { flip(FlipVertically); }
-    void rotateLeft() { rotate(RotateLeft); }
-    void rotateRight() { rotate(RotateRight); }
-
-    void flip(FlipDirection direction);
-    void rotate(RotateDirection direction);
+    void setRandom(bool value);
+    void setWangFill(bool value);
 
     void setStamp(const TileStamp &stamp);
     void selectTerrainBrush();
+
+    void selectWangBrush();
+
+    void addExternalTilesets(const QStringList &fileNames);
+    void filesDroppedOnTilesetDock(const QStringList &fileNames);
+
+    void updateTemplateInstances(const ObjectTemplate *objectTemplate);
 
 private slots:
     void currentWidgetChanged();
@@ -121,6 +136,11 @@ private:
     void setupQuickStamps();
     void retranslateUi();
 
+    void handleExternalTilesetsAndImages(const QStringList &fileNames,
+                                         bool handleImages);
+
+    SharedTileset newTileset(const QString &fileName, const QImage &image);
+
     QMainWindow *mMainWindow;
 
     LayerDock *mLayerDock;
@@ -128,18 +148,19 @@ private:
     QHash<MapDocument*, MapView*> mWidgetForMap;
     MapDocument *mCurrentMapDocument;
 
-    QToolButton *mRandomButton;
-
     PropertiesDock *mPropertiesDock;
     MapsDock *mMapsDock;
+    UndoDock *mUndoDock;
     ObjectsDock *mObjectsDock;
+    TemplatesDock *mTemplatesDock;
     TilesetDock *mTilesetDock;
     TerrainDock *mTerrainDock;
+    WangDock *mWangDock;
     MiniMapDock* mMiniMapDock;
     QDockWidget *mTileStampsDock;
 
     TreeViewComboBox *mLayerComboBox;
-    UncheckableItemsModel *mUncheckableProxyModel;
+    ComboBoxProxyModel *mComboBoxProxyModel;
     ReversingProxyModel *mReversingProxyModel;
 
     Zoomable *mZoomable;
@@ -148,17 +169,21 @@ private:
 
     StampBrush *mStampBrush;
     BucketFillTool *mBucketFillTool;
+    ShapeFillTool *mShapeFillTool;
     TerrainBrush *mTerrainBrush;
+    WangBrush *mWangBrush;
+    EditPolygonTool *mEditPolygonTool;
 
     QToolBar *mMainToolBar;
     QToolBar *mToolsToolBar;
+    QToolBar *mToolSpecificToolBar;
     ToolManager *mToolManager;
     AbstractTool *mSelectedTool;
     MapView *mViewWithTool;
 
     TileStampManager *mTileStampManager;
 
-    QMap<QString, QVariant> mMapStates;
+    QVariantMap mMapStates;
 };
 
 

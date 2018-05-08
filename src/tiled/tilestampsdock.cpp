@@ -129,8 +129,10 @@ TileStampsDock::TileStampsDock(TileStampManager *stampManager, QWidget *parent)
     layout->addLayout(listAndToolBar);
 
     QItemSelectionModel *selectionModel = mTileStampView->selectionModel();
-    connect(selectionModel, SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
-            this, SLOT(currentRowChanged(QModelIndex)));
+    connect(selectionModel, &QItemSelectionModel::currentRowChanged,
+            this, &TileStampsDock::currentRowChanged);
+    connect(mTileStampView, &QAbstractItemView::pressed,
+            this, &TileStampsDock::indexPressed);
 
     setWidget(widget);
     retranslateUi();
@@ -152,13 +154,18 @@ void TileStampsDock::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key()) {
     case Qt::Key_Delete:
-    case Qt::Key_Backspace: {
+    case Qt::Key_Backspace:
         delete_();
         return;
     }
-    }
 
     QDockWidget::keyPressEvent(event);
+}
+
+void TileStampsDock::indexPressed(const QModelIndex &index)
+{
+    const QModelIndex sourceIndex = mProxyModel->mapToSource(index);
+    setStampAtIndex(sourceIndex);
 }
 
 void TileStampsDock::currentRowChanged(const QModelIndex &index)
@@ -170,12 +177,7 @@ void TileStampsDock::currentRowChanged(const QModelIndex &index)
     mDelete->setEnabled(sourceIndex.isValid());
     mAddVariation->setEnabled(isStamp);
 
-    if (isStamp) {
-        emit setStamp(mTileStampModel->stampAt(sourceIndex));
-    } else if (const TileStampVariation *variation = mTileStampModel->variationAt(sourceIndex)) {
-        // single variation clicked, use it specifically
-        emit setStamp(TileStamp(variation->map->clone()));
-    }
+    setStampAtIndex(sourceIndex);
 }
 
 void TileStampsDock::showContextMenu(QPoint pos)
@@ -298,6 +300,18 @@ void TileStampsDock::retranslateUi()
     mFilterEdit->setPlaceholderText(tr("Filter"));
 }
 
+void TileStampsDock::setStampAtIndex(const QModelIndex &index)
+{
+    const bool isStamp = mTileStampModel->isStamp(index);
+
+    if (isStamp) {
+        emit setStamp(mTileStampModel->stampAt(index));
+    } else if (const TileStampVariation *variation = mTileStampModel->variationAt(index)) {
+        // single variation clicked, use it specifically
+        emit setStamp(TileStamp(variation->map->clone()));
+    }
+}
+
 
 TileStampView::TileStampView(QWidget *parent)
     : QTreeView(parent)
@@ -306,7 +320,21 @@ TileStampView::TileStampView(QWidget *parent)
 
 QSize TileStampView::sizeHint() const
 {
-    return Utils::dpiScaled(QSize(130, 200));
+    return Utils::dpiScaled(QSize(200, 200));
+}
+
+bool TileStampView::event(QEvent *event)
+{
+    if (event->type() == QEvent::ShortcutOverride) {
+        if (static_cast<QKeyEvent *>(event)->key() == Qt::Key_Tab) {
+            if (indexWidget(currentIndex())) {
+                event->accept();
+                return true;
+            }
+        }
+    }
+
+    return QTreeView::event(event);
 }
 
 } // namespace Internal

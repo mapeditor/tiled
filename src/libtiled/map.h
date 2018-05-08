@@ -37,12 +37,15 @@
 #include <QColor>
 #include <QList>
 #include <QMargins>
+#include <QSharedPointer>
 #include <QSize>
 
 namespace Tiled {
 
-class Tile;
+class MapObject;
 class ObjectGroup;
+class ObjectTemplate;
+class Tile;
 
 /**
  * A tile map. Consists of a stack of layers, each can be either a TileLayer
@@ -128,7 +131,13 @@ public:
      */
     Map(Orientation orientation,
         int width, int height,
-        int tileWidth, int tileHeight);
+        int tileWidth, int tileHeight,
+        bool infinite = false);
+
+    Map(Orientation orientation,
+        QSize size,
+        QSize tileSize,
+        bool infinite = false);
 
     /**
      * Destructor.
@@ -202,6 +211,10 @@ public:
      */
     void setTileHeight(int height);
 
+    bool infinite() const { return mInfinite; }
+
+    void setInfinite(bool infinite) { mInfinite = infinite; }
+
     /**
      * Returns the size of one tile. Provided for convenience.
      */
@@ -257,8 +270,7 @@ public:
     { return mLayers.at(index); }
 
     /**
-     * Returns the list of layers of this map. This is useful when you want to
-     * use foreach.
+     * Returns the list of layers of this map.
      */
     const QList<Layer*> &layers() const { return mLayers; }
 
@@ -276,9 +288,21 @@ public:
      *
      * The second optional parameter specifies the layer types which are
      * searched.
+     *
+     * @deprecated Does not support group layers. Use findLayer() instead.
      */
     int indexOfLayer(const QString &layerName,
-                     unsigned layerTypes = Layer::AnyLayerType) const;
+                     int layerTypes = Layer::AnyLayerType) const;
+
+    /**
+     * Returns the first layer with the given \a name, or nullptr if no
+     * layer with that name is found.
+     *
+     * The second optional parameter specifies the layer types which are
+     * searched.
+     */
+    Layer *findLayer(const QString &name,
+                     int layerTypes = Layer::AnyLayerType) const;
 
     /**
      * Adds a layer to this map, inserting it at the given index.
@@ -348,9 +372,20 @@ public:
     SharedTileset tilesetAt(int index) const { return mTilesets.at(index); }
 
     /**
-     * Returns the tilesets that the tiles on this map are using.
+     * Returns the tilesets that have been added to this map.
      */
     const QVector<SharedTileset> &tilesets() const { return mTilesets; }
+
+    /**
+     * Computes the tilesets that are used by this map.
+     */
+    QSet<SharedTileset> usedTilesets() const;
+
+    /**
+     * Returns a list of MapObjects to be updated in the map scene
+     */
+    QList<MapObject*> replaceObjectTemplate(const ObjectTemplate *oldObjectTemplate,
+                                            const ObjectTemplate *newObjectTemplate);
 
     /**
      * Returns the background color of this map.
@@ -381,10 +416,16 @@ public:
     void setLayerDataFormat(LayerDataFormat format)
     { mLayerDataFormat = format; }
 
+    void setNextLayerId(int nextId);
+    int nextLayerId() const;
+    int takeNextLayerId();
+
     void setNextObjectId(int nextId);
     int nextObjectId() const;
     int takeNextObjectId();
     void initializeObjectIds(ObjectGroup &objectGroup);
+
+    QRegion tileRegion() const;
 
 signals:
     void widthChanged();
@@ -406,6 +447,7 @@ private:
     int mHeight;
     int mTileWidth;
     int mTileHeight;
+    bool mInfinite;
     int mHexSideLength;
     StaggerAxis mStaggerAxis;
     StaggerIndex mStaggerIndex;
@@ -415,6 +457,7 @@ private:
     QList<Layer*> mLayers;
     QVector<SharedTileset> mTilesets;
     LayerDataFormat mLayerDataFormat;
+    int mNextLayerId;
     int mNextObjectId;
 };
 
@@ -457,6 +500,31 @@ inline void Map::invertStaggerIndex()
 inline void Map::invalidateDrawMargins()
 {
     mDrawMarginsDirty = true;
+}
+
+/**
+ * Sets the next id to be used for layers of this map.
+ */
+inline void Map::setNextLayerId(int nextId)
+{
+    Q_ASSERT(nextId > 0);
+    mNextLayerId = nextId;
+}
+
+/**
+ * Returns the next layer id for this map.
+ */
+inline int Map::nextLayerId() const
+{
+    return mNextLayerId;
+}
+
+/**
+ * Returns the next layer id for this map and allocates a new one.
+ */
+inline int Map::takeNextLayerId()
+{
+    return mNextLayerId++;
 }
 
 /**
@@ -510,6 +578,8 @@ TILEDSHARED_EXPORT Map::Orientation orientationFromString(const QString &);
 
 TILEDSHARED_EXPORT QString renderOrderToString(Map::RenderOrder renderOrder);
 TILEDSHARED_EXPORT Map::RenderOrder renderOrderFromString(const QString &);
+
+typedef QSharedPointer<Map> SharedMap;
 
 } // namespace Tiled
 

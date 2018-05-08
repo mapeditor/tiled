@@ -32,7 +32,6 @@ namespace Tiled {
 namespace Internal {
 
 class Handle;
-class MapObjectItem;
 class OriginIndicator;
 class ResizeHandle;
 class RotateHandle;
@@ -44,17 +43,19 @@ class ObjectSelectionTool : public AbstractObjectTool
 
 public:
     explicit ObjectSelectionTool(QObject *parent = nullptr);
-    ~ObjectSelectionTool();
+    ~ObjectSelectionTool() override;
 
     void activate(MapScene *scene) override;
     void deactivate(MapScene *scene) override;
 
     void keyPressed(QKeyEvent *) override;
     void mouseEntered() override;
+    void mouseLeft() override;
     void mouseMoved(const QPointF &pos,
                     Qt::KeyboardModifiers modifiers) override;
     void mousePressed(QGraphicsSceneMouseEvent *event) override;
     void mouseReleased(QGraphicsSceneMouseEvent *event) override;
+    void mouseDoubleClicked(QGraphicsSceneMouseEvent *event) override;
     void modifiersChanged(Qt::KeyboardModifiers modifiers) override;
 
     void languageChanged() override;
@@ -111,6 +112,7 @@ private:
     void setMode(Mode mode);
     void saveSelectionState();
 
+    void updateHoveredItem(const QPointF &pos);
     void refreshCursor();
 
     QPointF snapToGrid(const QPointF &pos,
@@ -120,8 +122,8 @@ private:
 
     struct MovingObject
     {
-        MapObjectItem *item;
-        QPointF oldItemPosition;
+        MapObject *mapObject;
+        QPointF oldScreenPosition;
 
         QPointF oldPosition;
         QSizeF oldSize;
@@ -135,10 +137,10 @@ private:
     ResizeHandle *mResizeHandles[8];
     bool mMousePressed;
 
-    MapObjectItem *mHoveredObjectItem;
+    MapObject *mHoveredObject;
     Handle *mHoveredHandle;
 
-    MapObjectItem *mClickedObjectItem;
+    MapObject *mClickedObject;
     OriginIndicator *mClickedOriginIndicator;
     RotateHandle *mClickedRotateHandle;
     ResizeHandle *mClickedResizeHandle;

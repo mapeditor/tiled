@@ -33,16 +33,18 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-TileSelectionItem::TileSelectionItem(MapDocument *mapDocument)
-    : mMapDocument(mapDocument)
+TileSelectionItem::TileSelectionItem(MapDocument *mapDocument,
+                                     QGraphicsItem *parent)
+    : QGraphicsObject(parent)
+    , mMapDocument(mapDocument)
 {
     setFlag(QGraphicsItem::ItemUsesExtendedStyleOption);
 
-    connect(mMapDocument, &MapDocument::selectedAreaChanged,
+    connect(mapDocument, &MapDocument::selectedAreaChanged,
             this, &TileSelectionItem::selectionChanged);
     connect(mapDocument, &MapDocument::layerChanged,
             this, &TileSelectionItem::layerChanged);
-    connect(mMapDocument, &MapDocument::currentLayerChanged,
+    connect(mapDocument, &MapDocument::currentLayerChanged,
             this, &TileSelectionItem::currentLayerChanged);
 
     updateBoundingRect();

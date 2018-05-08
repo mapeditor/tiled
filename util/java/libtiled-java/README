@@ -15,9 +15,6 @@ Adam Turk <aturk@biggeruniverse.com>
 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
 Mike Thomas <mikepthomas@outlook.com>
 
-This library includes MiGBase64, a BSD licensed base64 encoder & decoder
-by Mikael Grev. See src/tiled/util/Base64.java for licensing details.
-
 http://www.mapeditor.org/
 
 ----------
@@ -29,7 +26,7 @@ following command:
 $ mvn clean install
 
 To run all unit-tests, run the following command:
-$ mvn test
+$ mvn test -P release-profile
 
 To generate reports and documentation, run:
 $ mvn site
