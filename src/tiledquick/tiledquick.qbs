@@ -11,7 +11,7 @@ QtGuiApplication {
     }
 
     cpp.includePaths: ["."]
-    cpp.rpaths: ["$ORIGIN/../lib"]
+    cpp.rpaths: qbs.targetOS.contains("darwin") ? ["@loader_path/../Frameworks"] : ["$ORIGIN/../lib"]
     cpp.cxxLanguageVersion: "c++11"
 
     files: [
@@ -27,9 +27,10 @@ QtGuiApplication {
     property string installBase: qbs.targetOS.contains("osx") ? "Tiled Quick.app/Contents/" : ""
 
     Group {
+        condition: !qbs.targetOS.contains("darwin")
         qbs.install: true
         qbs.installDir: {
-            if (qbs.targetOS.contains("windows") || qbs.targetOS.contains("osx"))
+            if (qbs.targetOS.contains("windows"))
                 return ""
             else
                 return "bin"
