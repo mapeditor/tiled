@@ -237,6 +237,8 @@ bool RaiseLowerHelper::initContext()
                                         Qt::AscendingOrder);
 
     for (QGraphicsItem *item : items) {
+        if (!item->isEnabled())
+            continue;
         if (MapObjectItem *mapObjectItem = qgraphicsitem_cast<MapObjectItem*>(item)) {
             if (mapObjectItem->mapObject()->objectGroup() == mObjectGroup)
                 mRelatedObjects.append(mapObjectItem->mapObject());

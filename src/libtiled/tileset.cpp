@@ -29,6 +29,7 @@
 
 #include "tileset.h"
 
+#include "imagecache.h"
 #include "terrain.h"
 #include "tile.h"
 #include "tilesetformat.h"
@@ -37,7 +38,7 @@
 
 #include <QBitmap>
 
-using namespace Tiled;
+namespace Tiled {
 
 SharedTileset Tileset::create(const QString &name, int tileWidth, int tileHeight, int tileSpacing, int margin)
 {
@@ -262,6 +263,19 @@ bool Tileset::loadFromImage(const QImage &image, const QString &source)
 }
 
 /**
+ * Convenience override that loads the image via the ImageCache.
+ */
+bool Tileset::loadFromImage(const QString &fileName)
+{
+    const QUrl oldImageSource = mImageReference.source;
+    mImageReference.source = QUrl::fromLocalFile(fileName);
+    if (mImageReference.source != oldImageSource)
+        TilesetManager::instance()->tilesetImageSourceChanged(*this, oldImageSource);
+
+    return loadImage();
+}
+
+/**
  * Tries to load the image this tileset is referring to.
  *
  * @return <code>true</code> if loading was successful, otherwise
@@ -269,7 +283,50 @@ bool Tileset::loadFromImage(const QImage &image, const QString &source)
  */
 bool Tileset::loadImage()
 {
-    return loadFromImage(mImageReference.create(), mImageReference.source);
+    TilesheetParameters p;
+    p.fileName = mImageReference.source.toLocalFile();
+    p.tileWidth = mTileWidth;
+    p.tileHeight = mTileHeight;
+    p.spacing = mTileSpacing;
+    p.margin = mMargin;
+    p.transparentColor = mImageReference.transparentColor;
+
+    auto image = ImageCache::loadImage(p.fileName);
+    if (image.isNull()) {
+        mImageReference.status = LoadingError;
+        return false;
+    }
+
+    auto tiles = ImageCache::cutTiles(p);
+
+    for (int tileNum = 0; tileNum < tiles.size(); ++tileNum) {
+        auto it = mTiles.find(tileNum);
+        if (it != mTiles.end())
+            it.value()->setImage(tiles.at(tileNum));
+        else
+            mTiles.insert(tileNum, new Tile(tiles.at(tileNum), tileNum, this));
+    }
+
+    QScopedPointer<QPixmap> blank;
+
+    // Blank out any remaining tiles to avoid confusion (todo: could be more clear)
+    for (Tile *tile : mTiles) {
+        if (tile->id() >= tiles.size()) {
+            if (!blank) {
+                blank.reset(new QPixmap(mTileWidth, mTileHeight));
+                blank->fill();
+            }
+            tile->setImage(*blank);
+        }
+    }
+
+    mNextTileId = std::max(mNextTileId, tiles.size());
+
+    mImageReference.size = image.size();
+    mColumnCount = columnCountForWidth(mImageReference.size.width());
+    mImageReference.status = LoadingReady;
+
+    return true;
 }
 
 /**
@@ -821,3 +878,5 @@ Tileset::Orientation Tileset::orientationFromString(const QString &string)
         orientation = Isometric;
     return orientation;
 }
+
+} // namespace Tiled

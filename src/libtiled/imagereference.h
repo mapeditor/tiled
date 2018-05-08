@@ -41,7 +41,7 @@ public:
     LoadingStatus status;
 
     bool hasImage() const;
-    QImage create() const;
+    QPixmap create() const;
 };
 
 } // namespace Tiled

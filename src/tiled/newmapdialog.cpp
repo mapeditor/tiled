@@ -139,10 +139,10 @@ NewMapDialog::~NewMapDialog()
     delete mUi;
 }
 
-MapDocument *NewMapDialog::createMap()
+MapDocumentPtr NewMapDialog::createMap()
 {
     if (exec() != QDialog::Accepted)
-        return nullptr;
+        return MapDocumentPtr();
 
     const bool fixedSize = mUi->fixedSize->isChecked();
     const int mapWidth = mUi->mapWidth->value();
@@ -154,10 +154,10 @@ MapDocument *NewMapDialog::createMap()
     const auto layerFormat = comboBoxValue<Map::LayerDataFormat>(mUi->layerFormat);
     const auto renderOrder = comboBoxValue<Map::RenderOrder>(mUi->renderOrder);
 
-    Map *map = new Map(orientation,
-                       mapWidth, mapHeight,
-                       tileWidth, tileHeight,
-                       !fixedSize);
+    QScopedPointer<Map> map { new Map(orientation,
+                                      mapWidth, mapHeight,
+                                      tileWidth, tileHeight,
+                                      !fixedSize) };
 
     map->setLayerDataFormat(layerFormat);
     map->setRenderOrder(renderOrder);
@@ -189,7 +189,7 @@ MapDocument *NewMapDialog::createMap()
     s->setValue(QLatin1String(TILE_WIDTH_KEY), tileWidth);
     s->setValue(QLatin1String(TILE_HEIGHT_KEY), tileHeight);
 
-    return new MapDocument(map);
+    return MapDocumentPtr::create(map.take());
 }
 
 void NewMapDialog::refreshPixelSize()

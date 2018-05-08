@@ -59,7 +59,6 @@ TileCollisionDock::TileCollisionDock(QWidget *parent)
     : QDockWidget(parent)
     , mTile(nullptr)
     , mTilesetDocument(nullptr)
-    , mDummyMapDocument(nullptr)
     , mMapScene(new MapScene(this))
     , mMapView(new MapView(this, MapView::NoStaticContents))
     , mToolManager(new ToolManager(this))
@@ -146,7 +145,7 @@ void TileCollisionDock::setTile(Tile *tile)
     mTile = tile;
 
     mMapScene->disableSelectedTool();
-    MapDocument *previousDocument = mDummyMapDocument;
+    auto previousDocument = mDummyMapDocument;
 
     mMapView->setEnabled(tile);
 
@@ -159,7 +158,7 @@ void TileCollisionDock::setTile(Tile *tile)
             tileSize = tile->tileset()->gridSize();
         }
 
-        Map *map = new Map(orientation, 1, 1, tileSize.width(), tileSize.height());
+        QScopedPointer<Map> map { new Map(orientation, 1, 1, tileSize.width(), tileSize.height()) };
         map->addTileset(tile->sharedTileset());
 
         TileLayer *tileLayer = new TileLayer(QString(), 0, 0, 1, 1);
@@ -176,28 +175,28 @@ void TileCollisionDock::setTile(Tile *tile)
         map->setNextObjectId(objectGroup->highestObjectId() + 1);
         map->addLayer(objectGroup);
 
-        mDummyMapDocument = new MapDocument(map);
+        mDummyMapDocument = MapDocumentPtr::create(map.take());
         mDummyMapDocument->setAllowHidingObjects(false);
         mDummyMapDocument->setCurrentLayer(objectGroup);
 
-        mMapScene->setMapDocument(mDummyMapDocument);
-        mToolManager->setMapDocument(mDummyMapDocument);
+        mMapScene->setMapDocument(mDummyMapDocument.data());
+        mToolManager->setMapDocument(mDummyMapDocument.data());
 
         mMapScene->enableSelectedTool();
 
         connect(mDummyMapDocument->undoStack(), &QUndoStack::indexChanged,
                 this, &TileCollisionDock::applyChanges);
 
-        connect(mDummyMapDocument, &MapDocument::selectedObjectsChanged,
+        connect(mDummyMapDocument.data(), &MapDocument::selectedObjectsChanged,
                 this, &TileCollisionDock::selectedObjectsChanged);
 
     } else {
-        mDummyMapDocument = nullptr;
+        mDummyMapDocument.clear();
         mMapScene->setMapDocument(nullptr);
         mToolManager->setMapDocument(nullptr);
     }
 
-    emit dummyMapDocumentChanged(mDummyMapDocument);
+    emit dummyMapDocumentChanged(mDummyMapDocument.data());
 
     setHasSelectedObjects(false);
 
@@ -206,8 +205,6 @@ void TileCollisionDock::setTile(Tile *tile)
         // from the QUndoStack destructor.
         disconnect(previousDocument->undoStack(), &QUndoStack::indexChanged,
                    this, &TileCollisionDock::applyChanges);
-
-        delete previousDocument;
     }
 }
 
@@ -329,7 +326,7 @@ void TileCollisionDock::delete_(Operation operation)
     undoStack->beginMacro(operation == Delete ? tr("Delete") : tr("Cut"));
 
     for (MapObject *mapObject : selectedObjects)
-        undoStack->push(new RemoveMapObject(mDummyMapDocument, mapObject));
+        undoStack->push(new RemoveMapObject(mDummyMapDocument.data(), mapObject));
 
     undoStack->endMacro();
 }

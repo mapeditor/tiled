@@ -61,13 +61,14 @@
 #include "terrain.h"
 #include "tile.h"
 #include "tilelayer.h"
+#include "tileset.h"
 #include "tilesetdocument.h"
 #include "tileseteditor.h"
-#include "tileset.h"
 #include "tilesetmanager.h"
 #include "tmxmapformat.h"
 #include "undodock.h"
 #include "utils.h"
+#include "worldmanager.h"
 #include "zoomable.h"
 
 #ifdef Q_OS_MAC
@@ -365,6 +366,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     menuBar()->insertMenu(mUi->menuHelp->menuAction(), mLayerMenu);
 
     connect(mUi->actionNewMap, SIGNAL(triggered()), SLOT(newMap()));
+    connect(mUi->actionNewTileset, SIGNAL(triggered()), SLOT(newTileset()));
     connect(mUi->actionOpen, SIGNAL(triggered()), SLOT(openFile()));
     connect(mUi->actionClearRecentFiles, &QAction::triggered,
             preferences, &Preferences::clearRecentFiles);
@@ -409,9 +411,31 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     CommandManager::instance()->registerMenu(mUi->menuCommand);
 
-    connect(mUi->actionNewTileset, SIGNAL(triggered()), SLOT(newTileset()));
     connect(mUi->actionAddExternalTileset, SIGNAL(triggered()),
             SLOT(addExternalTileset()));
+    connect(mUi->actionLoadWorld, &QAction::triggered, this, [this,preferences]{
+        QString lastPath = preferences->lastPath(Preferences::WorldFile);
+        QString worldFile = QFileDialog::getOpenFileName(this, tr("Open world"), lastPath);
+        if (worldFile.isEmpty())
+            return;
+
+        preferences->setLastPath(Preferences::WorldFile, QFileInfo(worldFile).path());
+        WorldManager::instance().loadWorld(worldFile);
+        mSettings.setValue(QLatin1String("LoadedWorlds"),
+                           QVariant(WorldManager::instance().worlds().keys()));
+        mUi->menuUnloadWorld->setEnabled(!WorldManager::instance().worlds().isEmpty());
+    });
+    connect(mUi->menuUnloadWorld, &QMenu::aboutToShow, this, [this]{
+        mUi->menuUnloadWorld->clear();
+        for (const QString &fileName : WorldManager::instance().worlds().keys()) {
+            mUi->menuUnloadWorld->addAction(fileName, this, [this,fileName]{
+                WorldManager::instance().unloadWorld(fileName);
+                mSettings.setValue(QLatin1String("LoadedWorlds"),
+                                   QVariant(WorldManager::instance().worlds().keys()));
+                mUi->menuUnloadWorld->setEnabled(!WorldManager::instance().worlds().isEmpty());
+            });
+        }
+    });
     connect(mUi->actionResizeMap, SIGNAL(triggered()), SLOT(resizeMap()));
     connect(mUi->actionOffsetMap, SIGNAL(triggered()), SLOT(offsetMap()));
     connect(mUi->actionAutoMap, SIGNAL(triggered()),
@@ -427,6 +451,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionDocumentation, SIGNAL(triggered()), SLOT(openDocumentation()));
     connect(mUi->actionBecomePatron, SIGNAL(triggered()), SLOT(becomePatron()));
     connect(mUi->actionAbout, SIGNAL(triggered()), SLOT(aboutTiled()));
+
+    mUi->menuUnloadWorld->setEnabled(!WorldManager::instance().worlds().isEmpty());
 
     // Add recent file actions to the recent files menu
     for (auto &action : mRecentFiles) {
@@ -649,7 +675,7 @@ void MainWindow::dropEvent(QDropEvent *e)
 void MainWindow::newMap()
 {
     NewMapDialog newMapDialog(this);
-    QScopedPointer<MapDocument> mapDocument(newMapDialog.createMap());
+    auto mapDocument = newMapDialog.createMap();
 
     if (!mapDocument)
         return;
@@ -657,7 +683,7 @@ void MainWindow::newMap()
     if (!mDocumentManager->saveDocumentAs(mapDocument.data()))
         return;
 
-    mDocumentManager->addDocument(mapDocument.take());
+    mDocumentManager->addDocument(mapDocument);
 }
 
 bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
@@ -672,35 +698,8 @@ bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
         return true;
     }
 
-    if (!fileFormat) {
-        // Try to find a plugin that implements support for this format
-        const auto formats = PluginManager::objects<FileFormat>();
-        for (FileFormat *format : formats) {
-            if (format->supportsFile(fileName)) {
-                fileFormat = format;
-                break;
-            }
-        }
-    }
-
-    if (!fileFormat) {
-        QMessageBox::critical(this, tr("Error Opening File"), tr("Unrecognized file format."));
-        return false;
-    }
-
     QString error;
-    Document *document = nullptr;
-
-    if (MapFormat *mapFormat = qobject_cast<MapFormat*>(fileFormat)) {
-        document = MapDocument::load(fileName, mapFormat, &error);
-    } else if (TilesetFormat *tilesetFormat = qobject_cast<TilesetFormat*>(fileFormat)) {
-        // It could be, that we have already loaded this tileset while loading some map.
-        if (TilesetDocument *tilesetDocument = mDocumentManager->findTilesetDocument(fileName)) {
-            document = tilesetDocument;
-        } else {
-            document = TilesetDocument::load(fileName, tilesetFormat, &error);
-        }
-    }
+    auto document = mDocumentManager->loadDocument(fileName, fileFormat, &error);
 
     if (!document) {
         QMessageBox::critical(this, tr("Error Opening File"), error);
@@ -709,9 +708,9 @@ bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
 
     mDocumentManager->addDocument(document);
 
-    if (auto mapDocument = qobject_cast<MapDocument*>(document)) {
+    if (auto mapDocument = qobject_cast<MapDocument*>(document.data())) {
         mDocumentManager->checkTilesetColumns(mapDocument);
-    } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
+    } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document.data())) {
         mDocumentManager->checkTilesetColumns(tilesetDocument);
         tilesetDocument->tileset()->syncExpectedColumnsAndRows();
     }
@@ -827,23 +826,23 @@ static bool isEmbeddedTilesetDocument(Document *document)
 
 void MainWindow::saveAll()
 {
-    for (Document *document : mDocumentManager->documents()) {
-        if (!mDocumentManager->isDocumentModified(document))
+    for (const auto &document : mDocumentManager->documents()) {
+        if (!mDocumentManager->isDocumentModified(document.data()))
             continue;
 
         // Skip embedded tilesets, they will be saved when their map is checked
-        if (isEmbeddedTilesetDocument((document)))
+        if (isEmbeddedTilesetDocument((document.data())))
             continue;
 
         QString fileName(document->fileName());
         QString error;
 
         if (fileName.isEmpty()) {
-            mDocumentManager->switchToDocument(document);
-            if (!mDocumentManager->saveDocumentAs(document))
+            mDocumentManager->switchToDocument(document.data());
+            if (!mDocumentManager->saveDocumentAs(document.data()))
                 return;
         } else if (!document->save(fileName, &error)) {
-            mDocumentManager->switchToDocument(document);
+            mDocumentManager->switchToDocument(document.data());
             QMessageBox::critical(this, tr("Error Saving File"), error);
             return;
         }
@@ -876,10 +875,10 @@ bool MainWindow::confirmSave(Document *document)
 
 bool MainWindow::confirmAllSave()
 {
-    for (Document *document : mDocumentManager->documents()) {
-        if (isEmbeddedTilesetDocument((document)))
+    for (const auto &document : mDocumentManager->documents()) {
+        if (isEmbeddedTilesetDocument((document.data())))
             continue;
-        if (!confirmSave(document))
+        if (!confirmSave(document.data()))
             return false;
     }
 
@@ -1096,10 +1095,10 @@ bool MainWindow::newTileset(const QString &path)
         mapDocument->undoStack()->push(new AddTileset(mapDocument, tileset));
     } else {
         // Save new external tileset and open it
-        QScopedPointer<TilesetDocument> tilesetDocument(new TilesetDocument(tileset));
+        auto tilesetDocument = TilesetDocumentPtr::create(tileset);
         if (!mDocumentManager->saveDocumentAs(tilesetDocument.data()))
             return false;
-        mDocumentManager->addDocument(tilesetDocument.take());
+        mDocumentManager->addDocument(tilesetDocument);
     }
     return true;
 }
@@ -1459,10 +1458,9 @@ void MainWindow::writeSettings()
         mSettings.setValue(QLatin1String("lastActive"), document->fileName());
 
     QStringList fileList;
-    for (int i = 0; i < mDocumentManager->documentCount(); i++) {
-        Document *document = mDocumentManager->documents().at(i);
+    for (const auto &document : mDocumentManager->documents())
         fileList.append(document->fileName());
-    }
+
     mSettings.setValue(QLatin1String("lastOpenFiles"), fileList);
     mSettings.endGroup();
 
@@ -1481,6 +1479,12 @@ void MainWindow::readSettings()
                                  QByteArray()).toByteArray());
     mSettings.endGroup();
     updateRecentFilesMenu();
+
+    auto &worldManager = WorldManager::instance();
+    const QStringList worldFiles = mSettings.value(QLatin1String("LoadedWorlds")).toStringList();
+    for (const QString &fileName : worldFiles)
+        worldManager.loadWorld(fileName);
+    mUi->menuUnloadWorld->setEnabled(!worldManager.worlds().isEmpty());
 
     mDocumentManager->restoreState();
 }
@@ -1645,7 +1649,7 @@ void MainWindow::documentChanged(Document *document)
 
 void MainWindow::closeDocument(int index)
 {
-    if (confirmSave(mDocumentManager->documents().at(index)))
+    if (confirmSave(mDocumentManager->documents().at(index).data()))
         mDocumentManager->closeDocumentAt(index);
 }
 

@@ -20,6 +20,9 @@
 
 #pragma once
 
+#include "documentmanager.h"
+#include "mapdocument.h"
+
 #include <QGraphicsObject>
 #include <QMap>
 #include <QSet>
@@ -37,7 +40,6 @@ class Tileset;
 namespace Internal {
 
 class LayerItem;
-class MapDocument;
 class MapObjectItem;
 
 /**
@@ -48,8 +50,16 @@ class MapObjectItem;
  */
 class MapItem : public QGraphicsObject
 {
+    Q_OBJECT
+
 public:
-    MapItem(MapDocument *mapDocument, QGraphicsItem *parent = nullptr);
+    enum DisplayMode {
+        ReadOnly,
+        Editable
+    };
+
+    MapItem(MapDocument *mapDocument, DisplayMode displayMode,
+            QGraphicsItem *parent = nullptr);
 
     MapDocument *mapDocument() const;
 
@@ -57,6 +67,13 @@ public:
     QRectF boundingRect() const override;
     void paint(QPainter *, const QStyleOptionGraphicsItem *,
                QWidget *widget = nullptr) override;
+
+signals:
+    void boundingRectChanged();
+
+protected:
+    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
 private:
     /**
@@ -66,7 +83,7 @@ private:
     void repaintRegion(const QRegion &region, TileLayer *tileLayer);
 
     void mapChanged();
-    void tileLayerChanged(TileLayer *tileLayer);
+    void tileLayerChanged(TileLayer *tileLayer, MapDocument::TileLayerChangeFlags flags);
 
     void layerAdded(Layer *layer);
     void layerRemoved(Layer *layer);
@@ -93,17 +110,20 @@ private:
     void createLayerItems(const QList<Layer *> &layers);
     LayerItem *createLayerItem(Layer *layer);
 
+    void updateBoundingRect();
     void updateCurrentLayerHighlight();
 
-    MapDocument *mMapDocument;
+    MapDocumentPtr mMapDocument;
     QGraphicsRectItem *mDarkRectangle;
     QMap<Layer*, LayerItem*> mLayerItems;
     QMap<MapObject*, MapObjectItem*> mObjectItems;
+    DisplayMode mDisplayMode;
+    QRectF mBoundingRect;
 };
 
 inline MapDocument *MapItem::mapDocument() const
 {
-    return mMapDocument;
+    return mMapDocument.data();
 }
 
 } // namespace Internal

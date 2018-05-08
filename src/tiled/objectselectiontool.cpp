@@ -146,6 +146,7 @@ public:
         : QGraphicsItem(parent)
         , mUnderMouse(false)
     {
+        setAcceptedMouseButtons(Qt::MouseButtons());
         setFlags(QGraphicsItem::ItemIgnoresTransformations |
                  QGraphicsItem::ItemIgnoresParentOpacity);
     }
@@ -1082,6 +1083,8 @@ void ObjectSelectionTool::updateSelection(const QPointF &pos,
 
     const QList<QGraphicsItem *> &items = mapScene()->items(rect);
     for (QGraphicsItem *item : items) {
+        if (!item->isEnabled())
+            continue;
         MapObjectItem *mapObjectItem = qgraphicsitem_cast<MapObjectItem*>(item);
         if (mapObjectItem && mapObjectItem->mapObject()->objectGroup()->isUnlocked())
             selectedObjects.append(mapObjectItem->mapObject());

@@ -28,6 +28,8 @@
  */
 
 #include "imagelayer.h"
+
+#include "imagecache.h"
 #include "map.h"
 
 #include <QBitmap>
@@ -58,6 +60,7 @@ bool ImageLayer::loadFromImage(const QImage &image, const QUrl &source)
         return false;
     }
 
+    // todo: allow caching of this QPixmap in the ImageCache
     mImage = QPixmap::fromImage(image);
 
     if (mTransparentColor.isValid()) {
@@ -77,6 +80,11 @@ bool ImageLayer::loadFromImage(const QImage &image, const QString &source)
 {
     const QUrl url(source);
     return loadFromImage(image, url.isRelative() ? QUrl::fromLocalFile(source) : url);
+}
+
+bool ImageLayer::loadFromImage(const QUrl &url)
+{
+    return loadFromImage(ImageCache::loadImage(url.toLocalFile()), url);
 }
 
 bool ImageLayer::isEmpty() const

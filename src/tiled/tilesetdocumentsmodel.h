@@ -21,6 +21,8 @@
 #ifndef TILESETDOCUMENTSMODEL_H
 #define TILESETDOCUMENTSMODEL_H
 
+#include "tilesetdocument.h"
+
 #include <QAbstractListModel>
 #include <QList>
 #include <QSortFilterProxyModel>
@@ -32,12 +34,13 @@ class Tileset;
 namespace Internal {
 
 class MapDocument;
-class TilesetDocument;
 
 /**
  * This model exposes the list of tileset documents. This includes opened
  * tileset files, as well as both internal and external tilesets loaded as part
  * of a map.
+ *
+ * It also owns the TilesetDocument instances.
  */
 class TilesetDocumentsModel : public QAbstractListModel
 {
@@ -52,7 +55,7 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role) const override;
 
-    const QList<TilesetDocument *> &tilesetDocuments() const;
+    const QVector<TilesetDocumentPtr> &tilesetDocuments() const;
 
     bool contains(TilesetDocument *tilesetDocument) const;
     void append(TilesetDocument *tilesetDocument);
@@ -64,18 +67,20 @@ private:
     void tilesetNameChanged(Tileset *tileset);
     void tilesetFileNameChanged();
 
-    QList<TilesetDocument *> mTilesetDocuments;
+    QVector<TilesetDocumentPtr> mTilesetDocuments;
 };
 
 
-inline const QList<TilesetDocument *> &TilesetDocumentsModel::tilesetDocuments() const
+inline const QVector<TilesetDocumentPtr> &TilesetDocumentsModel::tilesetDocuments() const
 {
     return mTilesetDocuments;
 }
 
 inline bool TilesetDocumentsModel::contains(TilesetDocument *tilesetDocument) const
 {
-    return mTilesetDocuments.contains(tilesetDocument);
+    return std::find(mTilesetDocuments.begin(),
+                     mTilesetDocuments.end(),
+                     tilesetDocument) != mTilesetDocuments.end();
 }
 
 inline void TilesetDocumentsModel::append(TilesetDocument *tilesetDocument)
@@ -85,7 +90,7 @@ inline void TilesetDocumentsModel::append(TilesetDocument *tilesetDocument)
 
 inline void TilesetDocumentsModel::remove(TilesetDocument *tilesetDocument)
 {
-    remove(mTilesetDocuments.indexOf(tilesetDocument));
+    remove(mTilesetDocuments.indexOf(tilesetDocument->sharedFromThis()));
 }
 
 
