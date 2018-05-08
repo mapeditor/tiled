@@ -273,6 +273,9 @@ int main(int argc, char *argv[])
 
     // Enable support for highres images (added in Qt 5.1, but off by default)
     QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
+    QGuiApplication::setAttribute(Qt::AA_DisableWindowContextHelpButton);
+#endif
 
     TiledApplication a(argc, argv);
 

@@ -41,7 +41,9 @@ CommandDialog::CommandDialog(QWidget *parent)
 {
     mUi->setupUi(this);
     resize(Utils::dpiScaled(size()));
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+#endif
 
     setWindowTitle(tr("Edit Commands"));
     Utils::restoreGeometry(this);

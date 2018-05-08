@@ -67,7 +67,9 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     mUi(new Ui::NewMapDialog)
 {
     mUi->setupUi(this);
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+#endif
 
     mUi->fixedSizeSpacer->changeSize(qRound(Utils::dpiScaled(mUi->fixedSizeSpacer->sizeHint().width())), 0,
                                      mUi->fixedSizeSpacer->sizePolicy().horizontalPolicy());
