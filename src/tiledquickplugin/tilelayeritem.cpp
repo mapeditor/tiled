@@ -165,6 +165,8 @@ static void drawOrthogonalTileLayer(QSGNode *parent,
             data.y = (y + 1) * tileHeight - tileset->tileHeight() + offset.y();
             data.width = size.width();
             data.height = size.height();
+            data.flippedHorizontally = cell.flippedHorizontally();
+            data.flippedVertically = cell.flippedVertically();
             helper.setTextureCoordinates(data, cell);
             tileData.append(data);
         }
@@ -244,6 +246,8 @@ void IsometricRenderHelper::appendTileData(int x, int y)
     const QSize size = cell.tile()->size();
     data.width = size.width();
     data.height = size.height();
+    data.flippedHorizontally = cell.flippedHorizontally();
+    data.flippedVertically = cell.flippedVertically();
     mTilesetHelper.setTextureCoordinates(data, cell);
     mTileData.append(data);
 }

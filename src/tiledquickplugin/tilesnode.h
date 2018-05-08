@@ -33,6 +33,8 @@ struct TileData {
     float height;
     float tx;
     float ty;
+    bool flippedHorizontally;
+    bool flippedVertically;
 };
 
 class TilesNode : public QSGGeometryNode

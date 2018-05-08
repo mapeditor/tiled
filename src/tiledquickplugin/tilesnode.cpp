@@ -94,6 +94,17 @@ void TilesNode::processTileData(const QVector<TileData> &tileData)
         v[3].tx = s_tx;                 v[4].tx = s_tx + s_width;
         v[3].ty = s_ty + s_height;      v[4].ty = s_ty + s_height;
 
+        if (data.flippedHorizontally) {
+            std::swap(v[0].tx, v[4].tx);
+            std::swap(v[1].tx, v[5].tx);
+            std::swap(v[2].tx, v[3].tx);
+        }
+        if (data.flippedVertically) {
+            std::swap(v[0].ty, v[4].ty);
+            std::swap(v[1].ty, v[5].ty);
+            std::swap(v[2].ty, v[3].ty);
+        }
+
         v += 6;
     }
 
