@@ -46,6 +46,11 @@ PythonPlugin::PythonPlugin()
     mReloadTimer.setSingleShot(true);
     mReloadTimer.setInterval(1000);
 
+    connect(&mFileSystemWatcher, SIGNAL(directoryChanged(QString)),
+            &mReloadTimer, SLOT(start()));
+    connect(&mFileSystemWatcher, SIGNAL(fileChanged(QString)),
+            &mReloadTimer, SLOT(start()));
+
     connect(&mReloadTimer, &QTimer::timeout,
             this, &PythonPlugin::reloadModules);
 }
@@ -124,12 +129,8 @@ void PythonPlugin::initialize()
 
     reloadModules();
 
-    if (QFile::exists(mScriptDir)) {
+    if (QFile::exists(mScriptDir))
         mFileSystemWatcher.addPath(mScriptDir);
-
-        connect(&mFileSystemWatcher, SIGNAL(directoryChanged(QString)),
-                &mReloadTimer, SLOT(start()));
-    }
 }
 
 void PythonPlugin::log(Tiled::LoggingInterface::OutputType type,
@@ -150,14 +151,22 @@ void PythonPlugin::reloadModules()
 {
     log(tr("Reloading Python scripts"));
 
+    // Remove any currently watched script files
+    const QStringList files = mFileSystemWatcher.files();
+    if (!files.isEmpty())
+        mFileSystemWatcher.removePaths(files);
+
     const QStringList pyfilter("*.py");
     QDirIterator iter(mScriptDir, pyfilter, QDir::Files | QDir::Readable);
+
+    QStringList filesToWatch;
 
     while (iter.hasNext()) {
         iter.next();
 
-        QString name = iter.fileInfo().baseName();
+        filesToWatch.append(iter.filePath());
 
+        const QString name = iter.fileInfo().baseName();
         ScriptEntry script = mScripts.take(name);
         script.name = name;
 
@@ -182,6 +191,9 @@ void PythonPlugin::reloadModules()
             }
         }
     }
+
+    if (!filesToWatch.isEmpty())
+        mFileSystemWatcher.addPaths(filesToWatch);
 }
 
 /**
