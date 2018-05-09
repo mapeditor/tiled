@@ -425,10 +425,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
                            QVariant(WorldManager::instance().worlds().keys()));
         mUi->menuUnloadWorld->setEnabled(!WorldManager::instance().worlds().isEmpty());
     });
-    connect(mUi->menuUnloadWorld, &QMenu::aboutToShow, this, [this]{
+    connect(mUi->menuUnloadWorld, &QMenu::aboutToShow, this, [this] {
         mUi->menuUnloadWorld->clear();
         for (const QString &fileName : WorldManager::instance().worlds().keys()) {
-            mUi->menuUnloadWorld->addAction(fileName, this, [this,fileName]{
+            QAction *unloadAction = mUi->menuUnloadWorld->addAction(fileName);
+            connect(unloadAction, &QAction::triggered, this, [this,fileName] {
                 WorldManager::instance().unloadWorld(fileName);
                 mSettings.setValue(QLatin1String("LoadedWorlds"),
                                    QVariant(WorldManager::instance().worlds().keys()));
