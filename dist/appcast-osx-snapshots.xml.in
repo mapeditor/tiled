@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
   <channel>
     <title>Tiled Development Snapshots</title>
-    <link>http://update.mapeditor.org/appcast-snapshots.xml</link>
+    <link>https://update.mapeditor.org/appcast-snapshots.xml</link>
     <language>en</language>
     <item>
       <title>Tiled @VERSION@</title>

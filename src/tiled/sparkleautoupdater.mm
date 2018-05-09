@@ -17,9 +17,9 @@
 #include <Sparkle/Sparkle.h>
 
 #ifdef TILED_SNAPSHOT
-static const char appcastUrl[] = "http://update.mapeditor.org/appcast-osx-snapshots.xml";
+static const char appcastUrl[] = "https://update.mapeditor.org/appcast-osx-snapshots.xml";
 #else
-static const char appcastUrl[] = "http://update.mapeditor.org/appcast-osx.xml";
+static const char appcastUrl[] = "https://update.mapeditor.org/appcast-osx.xml";
 #endif
 
 
