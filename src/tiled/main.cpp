@@ -316,14 +316,15 @@ int main(int argc, char *argv[])
     if (commandLine.disableOpenGL)
         Preferences::instance()->setUseOpenGL(false);
 
-    PluginManager::instance()->loadPlugins();
-
     if (commandLine.exportMap) {
         // Get the path to the source file and target file
         if (commandLine.exportTileset || commandLine.filesToOpen().length() < 2) {
             qWarning().noquote() << QCoreApplication::translate("Command line", "Export syntax is --export-map [format] <source> <target>");
             return 1;
         }
+
+        PluginManager::instance()->loadPlugins();
+
         int index = 0;
         const QString *filter = commandLine.filesToOpen().length() > 2 ? &commandLine.filesToOpen().at(index++) : nullptr;
         const QString &sourceFile = commandLine.filesToOpen().at(index++);
@@ -360,6 +361,9 @@ int main(int argc, char *argv[])
             qWarning().noquote() << QCoreApplication::translate("Command line", "Export syntax is --export-tileset [format] <source> <target>");
             return 1;
         }
+
+        PluginManager::instance()->loadPlugins();
+
         int index = 0;
         const QString *filter = commandLine.filesToOpen().length() > 2 ? &commandLine.filesToOpen().at(index++) : nullptr;
         const QString &sourceFile = commandLine.filesToOpen().at(index++);
@@ -420,6 +424,8 @@ int main(int argc, char *argv[])
 
     QObject::connect(&a, SIGNAL(fileOpenRequest(QString)),
                      &w, SLOT(openFile(QString)));
+
+    PluginManager::instance()->loadPlugins();
 
     if (!commandLine.filesToOpen().isEmpty()) {
         for (const QString &fileName : commandLine.filesToOpen())

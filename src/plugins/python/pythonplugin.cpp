@@ -102,7 +102,6 @@ void PythonPlugin::initialize()
         PySys_SetObject((char *)"_tiledplugin",
                         _wrap_convert_c2py__Tiled__LoggingInterface(&mLogger));
 
-        // TODO: LoggingInterface isn't ready for output when plugins are first initialized
         PyRun_SimpleString("import sys\n"
                            "#from tiled.Tiled.LoggingInterface import INFO,ERROR\n"
                            "class _Catcher:\n"
@@ -136,7 +135,6 @@ void PythonPlugin::initialize()
 void PythonPlugin::log(Tiled::LoggingInterface::OutputType type,
                        const QString &msg)
 {
-    printf("%s\n", msg.toStdString().c_str());
     mLogger.log(type, msg);
 }
 
@@ -163,8 +161,6 @@ void PythonPlugin::reloadModules()
         ScriptEntry script = mScripts.take(name);
         script.name = name;
 
-        log(QString("loaded %1").arg(name));
-
         // Throw away any existing class reference
         if (script.mapFormat) {
             PyObject *pluginClass = script.mapFormat->pythonClass();
@@ -189,7 +185,7 @@ void PythonPlugin::reloadModules()
 }
 
 /**
- * Finds the first python class that extends tiled.Plugin
+ * Finds the first Python class that extends tiled.Plugin
  */
 PyObject *PythonPlugin::findPluginSubclass(PyObject *module)
 {

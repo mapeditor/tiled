@@ -63,7 +63,7 @@ class Q_DECL_EXPORT PythonPlugin : public Tiled::Plugin
 
 public:
     PythonPlugin();
-    ~PythonPlugin();
+    ~PythonPlugin() override;
 
     void initialize() override;
 
@@ -88,7 +88,7 @@ private:
 };
 
 
-// Class exposed for python scripts to extend
+// Class exposed for Python scripts to extend
 class PythonScript {
 public:
     // perhaps provide default that throws NotImplementedError
