@@ -24,7 +24,6 @@ The bugfixing continues in this release, to keep Tiled 1.1 from misbehaving as I
 * Remove tile collision layer along with the last object ([#1230](https://github.com/bjorn/tiled/issues/1230))
 * JSON plugin: Made the reader more strict about object types ([#1922](https://github.com/bjorn/tiled/issues/1922))
 * JSON plugin: Added support for Wang sets
-* Many thanks to all who submitted bug reports, as well as to those who support me financially so that I can keep up Tiled development and maintenance!
 
 Many thanks to all who submitted bug reports, as well as to those who [support me financially](https://www.patreon.com/bjorn) so that I can keep up Tiled development and maintenance!
 
