@@ -34,6 +34,8 @@ QPixmap ImageReference::create() const
 {
     if (source.isLocalFile())
         return ImageCache::loadPixmap(source.toLocalFile());
+    else if (source.scheme() == QLatin1String("qrc"))
+        return ImageCache::loadPixmap(QLatin1Char(':') + source.path());
     else if (!data.isEmpty())
         return QPixmap::fromImage(QImage::fromData(data, format));
 
