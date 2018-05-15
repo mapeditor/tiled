@@ -55,9 +55,10 @@ QtGuiApplication {
         var defs = [
             "TILED_VERSION=" + version,
             "QT_DEPRECATED_WARNINGS",
-            "QT_DISABLE_DEPRECATED_BEFORE=0x050700",
+            "QT_DISABLE_DEPRECATED_BEFORE=0x050900",
             "QT_NO_CAST_FROM_ASCII",
             "QT_NO_CAST_TO_ASCII",
+            "QT_NO_FOREACH",
             "QT_NO_URL_CAST_FROM_STRING",
             "_USE_MATH_DEFINES"
         ];

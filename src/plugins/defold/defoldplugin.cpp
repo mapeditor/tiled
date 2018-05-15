@@ -98,7 +98,8 @@ bool DefoldPlugin::write(const Tiled::Map *map, const QString &fileName)
     QVariantHash map_h;
 
     QString layers;
-    foreach (Tiled::TileLayer *tileLayer, map->tileLayers()) {
+    Tiled::LayerIterator it(map, Tiled::Layer::TileLayerType);
+    while (auto tileLayer = static_cast<Tiled::TileLayer*>(it.next())) {
         QVariantHash layer_h;
         layer_h["id"] = tileLayer->name();
         layer_h["z"] = 0;

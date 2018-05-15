@@ -262,7 +262,6 @@ public:
     const QList<Layer*> &layers() const { return mLayers; }
 
     QList<ObjectGroup*> objectGroups() const;
-    QList<TileLayer*> tileLayers() const;
 
     /**
      * Adds a layer to this map.

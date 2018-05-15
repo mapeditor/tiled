@@ -18,7 +18,8 @@ DynamicLibrary {
     }
     cpp.defines: [
         "QT_DEPRECATED_WARNINGS",
-        "QT_DISABLE_DEPRECATED_BEFORE=0x050700",
+        "QT_DISABLE_DEPRECATED_BEFORE=0x050900",
+        "QT_NO_FOREACH",
         "QT_NO_URL_CAST_FROM_STRING"
     ]
     bundle.isBundle: false

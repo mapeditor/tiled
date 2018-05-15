@@ -13,7 +13,8 @@ QtGuiApplication {
     cpp.cxxLanguageVersion: "c++11"
     cpp.defines: [
         "QT_DEPRECATED_WARNINGS",
-        "QT_DISABLE_DEPRECATED_BEFORE=0x050700"
+        "QT_DISABLE_DEPRECATED_BEFORE=0x050900",
+        "QT_NO_FOREACH"
     ]
 
     Properties {

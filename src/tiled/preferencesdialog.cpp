@@ -28,6 +28,8 @@
 
 #include <QSortFilterProxyModel>
 
+#include "qtcompat_p.h"
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
@@ -47,7 +49,7 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     mUi->openGL->setEnabled(true);
 #endif
 
-    foreach (const QString &name, mLanguages) {
+    for (const QString &name : qAsConst(mLanguages)) {
         QLocale locale(name);
         QString string = QString(QLatin1String("%1 (%2)"))
             .arg(QLocale::languageToString(locale.language()))

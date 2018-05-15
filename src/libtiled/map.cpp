@@ -196,21 +196,6 @@ QList<ObjectGroup*> Map::objectGroups() const
     return layers;
 }
 
-/**
- * Returns the list of all tile layers.
- *
- * @deprecated Use the LayerIterator instead.
- */
-QList<TileLayer*> Map::tileLayers() const
-{
-    QList<TileLayer*> layers;
-    LayerIterator iterator(this);
-    while (Layer *layer = iterator.next())
-        if (TileLayer *tl = layer->asTileLayer())
-            layers.append(tl);
-    return layers;
-}
-
 void Map::addLayer(Layer *layer)
 {
     adoptLayer(layer);

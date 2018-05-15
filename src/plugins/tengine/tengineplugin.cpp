@@ -32,7 +32,7 @@
 #include <QHash>
 #include <QList>
 
-#include <math.h>
+#include <QtMath>
 
 using namespace Tengine;
 
@@ -53,7 +53,7 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
 
     // Write the header
     QString header = map->property("header").toString();
-    foreach (const QString &line, header.split("\\n")) {
+    for (const QString &line : header.split("\\n")) {
         out << line << endl;
     }
 
@@ -71,7 +71,7 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
     propertyOrder.append("spot");
     // Ability to handle overflow and strings for display
     bool outputLists = false;
-    int asciiDisplay = ASCII_MIN;
+    char asciiDisplay = ASCII_MIN;
     int overflowDisplay = 1;
     QHash<QString, Tiled::Properties>::const_iterator i;
     // Add the empty tile
@@ -197,10 +197,10 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
 
     // Check for an ObjectGroup named AddSpot
     out << endl << "-- addSpot section" << endl;
-    foreach (Layer *layer, map->layers()) {
+    for (Layer *layer : map->layers()) {
         ObjectGroup *objectLayer = layer->asObjectGroup();
         if (objectLayer && objectLayer->name().startsWith("addspot", Qt::CaseInsensitive)) {
-            foreach (const MapObject *obj, objectLayer->objects()) {
+            for (const MapObject *obj : objectLayer->objects()) {
                 QList<QString> propertyOrder;
                 propertyOrder.append("type");
                 propertyOrder.append("subtype");
@@ -209,8 +209,8 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
                 if (!args.isEmpty()) {
                     args = QString(", %1").arg(args);
                 }
-                for (int y = floor(obj->y()); y <= floor(obj->y() + obj->height()); ++y) {
-                    for (int x = floor(obj->x()); x <= floor(obj->x() + obj->width()); ++x) {
+                for (int y = qFloor(obj->y()); y <= qFloor(obj->y() + obj->height()); ++y) {
+                    for (int x = qFloor(obj->x()); x <= qFloor(obj->x() + obj->width()); ++x) {
                         out << QString("addSpot({%1, %2}%3)").arg(x).arg(y).arg(args) << endl;
                     }
                 }
@@ -220,10 +220,10 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
 
     // Check for an ObjectGroup named AddZone
     out << endl << "-- addZone section" << endl;
-    foreach (Layer *layer, map->layers()) {
+    for (Layer *layer : map->layers()) {
         ObjectGroup *objectLayer = layer->asObjectGroup();
         if (objectLayer && objectLayer->name().startsWith("addzone", Qt::CaseInsensitive)) {
-            foreach (MapObject *obj, objectLayer->objects()) {
+            for (MapObject *obj : objectLayer->objects()) {
                 QList<QString> propertyOrder;
                 propertyOrder.append("type");
                 propertyOrder.append("subtype");
@@ -232,10 +232,10 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
                 if (!args.isEmpty()) {
                     args = QString(", %1").arg(args);
                 }
-                int top_left_x = floor(obj->x());
-                int top_left_y = floor(obj->y());
-                int bottom_right_x = floor(obj->x() + obj->width());
-                int bottom_right_y = floor(obj->y() + obj->height());
+                int top_left_x = qFloor(obj->x());
+                int top_left_y = qFloor(obj->y());
+                int bottom_right_x = qFloor(obj->x() + obj->width());
+                int bottom_right_y = qFloor(obj->y() + obj->height());
                 out << QString("addZone({%1, %2, %3, %4}%5)").arg(top_left_x).arg(top_left_y).arg(bottom_right_x).arg(bottom_right_y).arg(args) << endl;
             }
         }

@@ -102,14 +102,14 @@ public:
      * Checks if the passed \a ruleLayerName is used in this instance
      * of Automapper.
      */
-    bool ruleLayerNameUsed(QString ruleLayerName) const;
+    bool ruleLayerNameUsed(const QString &ruleLayerName) const;
 
     /**
      * Call prepareLoad first! Returns a set of strings describing the tile
      * layers, which could be touched considering the given layers of the
      * rule map.
      */
-    QSet<QString> getTouchedTileLayers() const;
+    QSet<QString> touchedTileLayers() const;
 
     /**
      * This needs to be called directly before the autoMap call.

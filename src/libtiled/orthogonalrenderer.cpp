@@ -343,7 +343,12 @@ void OrthogonalRenderer::drawTileSelection(QPainter *painter,
                                            const QColor &color,
                                            const QRectF &exposed) const
 {
-    foreach (const QRect &r, region.rects()) {
+#if QT_VERSION < 0x050800
+    const auto rects = region.rects();
+    for (const QRect &r : rects) {
+#else
+    for (const QRect &r : region) {
+#endif
         const QRectF toFill = QRectF(boundingRect(r)).intersected(exposed);
         if (!toFill.isEmpty())
             painter->fillRect(toFill, color);

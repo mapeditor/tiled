@@ -31,6 +31,8 @@
 #include <QScopedPointer>
 #include <QTextStream>
 
+#include "qtcompat_p.h"
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
@@ -103,7 +105,7 @@ void AutomappingManager::autoMapInternal(const QRegion &where,
 
     QVector<AutoMapper*> passedAutoMappers;
     if (touchedLayer) {
-        foreach (AutoMapper *a, mAutoMappers) {
+        for (AutoMapper *a : qAsConst(mAutoMappers)) {
             if (a->ruleLayerNameUsed(touchedLayer->name()))
                 passedAutoMappers.append(a);
         }
@@ -121,7 +123,7 @@ void AutomappingManager::autoMapInternal(const QRegion &where,
         undoStack->push(aw);
         undoStack->endMacro();
     }
-    foreach (AutoMapper *automapper, mAutoMappers) {
+    for (AutoMapper *automapper : qAsConst(mAutoMappers)) {
         mWarning += automapper->warningString();
         mError += automapper->errorString();
     }
