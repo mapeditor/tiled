@@ -1,7 +1,7 @@
 import qbs 1.0
 
 TiledPlugin {
-    cpp.defines: ["REPLICAISLAND_LIBRARY"]
+    cpp.defines: base.concat(["REPLICAISLAND_LIBRARY"])
 
     files: [
         "plugin.json",
