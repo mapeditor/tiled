@@ -130,7 +130,12 @@ void TilePainter::drawCells(int x, int y, TileLayer *tileLayer)
 
     TileLayerChangeWatcher watcher(mMapDocument, mTileLayer);
 
-    for (const QRect &rect : region.rects()) {
+#if QT_VERSION < 0x050800
+    const auto rects = region.rects();
+    for (const QRect &rect : rects) {
+#else
+    for (const QRect &rect : region) {
+#endif
         for (int _y = rect.top(); _y <= rect.bottom(); ++_y) {
             for (int _x = rect.left(); _x <= rect.right(); ++_x) {
                 const Cell &cell = tileLayer->cellAt(_x - x, _y - y);
@@ -164,7 +169,12 @@ void TilePainter::drawStamp(const TileLayer *stamp,
     const int h = stamp->height();
     const QRect regionBounds = region.boundingRect();
 
-    for (const QRect &rect : region.rects()) {
+#if QT_VERSION < 0x050800
+    const auto rects = region.rects();
+    for (const QRect &rect : rects) {
+#else
+    for (const QRect &rect : region) {
+#endif
         for (int _y = rect.top(); _y <= rect.bottom(); ++_y) {
             for (int _x = rect.left(); _x <= rect.right(); ++_x) {
                 const int stampX = (_x - regionBounds.left()) % w;

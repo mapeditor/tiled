@@ -214,12 +214,18 @@ TileLayer *TileLayer::copy(const QRegion &region) const
                                       0, 0,
                                       areaBounds.width(), areaBounds.height());
 
-    for (const QRect &rect : region.rects())
+#if QT_VERSION < 0x050800
+    const auto rects = region.rects();
+    for (const QRect &rect : rects) {
+#else
+    for (const QRect &rect : region) {
+#endif
         for (int x = rect.left(); x <= rect.right(); ++x)
             for (int y = rect.top(); y <= rect.bottom(); ++y)
                 copied->setCell(x - areaBounds.x(),
                                 y - areaBounds.y(),
                                 cellAt(x, y));
+    }
 
     return copied;
 }
@@ -248,7 +254,12 @@ void TileLayer::setCells(int x, int y, TileLayer *layer,
     if (!mask.isEmpty())
         area &= mask;
 
-    for (const QRect &rect : area.rects())
+#if QT_VERSION < 0x050800
+    const auto rects = area.rects();
+    for (const QRect &rect : rects)
+#else
+    for (const QRect &rect : area)
+#endif
         for (int _x = rect.left(); _x <= rect.right(); ++_x)
             for (int _y = rect.top(); _y <= rect.bottom(); ++_y)
                 setCell(_x, _y, layer->cellAt(_x - x, _y - y));
@@ -262,7 +273,12 @@ void TileLayer::setTiles(const QRegion &area, Tile *tile)
 {
     Q_ASSERT(area.subtracted(QRegion(0, 0, mWidth, mHeight)).isEmpty());
 
-    for (const QRect &rect : area.rects()) {
+#if QT_VERSION < 0x050800
+    const auto rects = area.rects();
+    for (const QRect &rect : rects) {
+#else
+    for (const QRect &rect : area) {
+#endif
         for (int x = rect.left(); x <= rect.right(); ++x) {
             for (int y = rect.top(); y <= rect.bottom(); ++y) {
                 Cell cell = cellAt(x, y);
@@ -275,11 +291,15 @@ void TileLayer::setTiles(const QRegion &area, Tile *tile)
 
 void TileLayer::erase(const QRegion &area)
 {
-    const Cell emptyCell;
-    for (const QRect &rect : area.rects())
+#if QT_VERSION < 0x050800
+    const auto rects = area.rects();
+    for (const QRect &rect : rects)
+#else
+    for (const QRect &rect : area)
+#endif
         for (int x = rect.left(); x <= rect.right(); ++x)
             for (int y = rect.top(); y <= rect.bottom(); ++y)
-                setCell(x, y, emptyCell);
+                setCell(x, y, mEmptyCell);
 }
 
 void TileLayer::flip(FlipDirection direction)

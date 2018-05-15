@@ -144,7 +144,12 @@ void MapItem::repaintRegion(const QRegion &region, TileLayer *tileLayer)
     const QMargins margins = mapDocument()->map()->drawMargins();
     TileLayerItem *tileLayerItem = static_cast<TileLayerItem*>(mLayerItems.value(tileLayer));
 
-    for (const QRect &r : region.rects()) {
+#if QT_VERSION < 0x050800
+    const auto rects = region.rects();
+    for (const QRect &r : rects) {
+#else
+    for (const QRect &r : region) {
+#endif
         QRectF boundingRect = renderer->boundingRect(r);
         boundingRect.adjust(-margins.left(),
                             -margins.top(),
