@@ -748,7 +748,7 @@ TilesetView::TilesetView(QWidget *parent)
     connect(StyleHelper::instance(), &StyleHelper::styleApplied,
             this, &TilesetView::updateBackgroundColor);
 
-    connect(mZoomable, SIGNAL(scaleChanged(qreal)), SLOT(adjustScale()));
+    connect(mZoomable, &Zoomable::scaleChanged, this, &TilesetView::adjustScale);
 }
 
 void TilesetView::setTilesetDocument(TilesetDocument *tilesetDocument)
@@ -1208,11 +1208,11 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
                                               QItemSelectionModel::Clear);
 
             QAction *addTerrain = menu.addAction(tr("Add Terrain Type"));
-            connect(addTerrain, SIGNAL(triggered()), SLOT(addTerrainType()));
+            connect(addTerrain, &QAction::triggered, this, &TilesetView::addTerrainType);
 
             if (mTerrain) {
                 QAction *setImage = menu.addAction(tr("Set Terrain Image"));
-                connect(setImage, SIGNAL(triggered()), SLOT(selectTerrainImage()));
+                connect(setImage, &QAction::triggered, this, &TilesetView::selectTerrainImage);
             }
         } else if (mEditWangSet) {
             selectionModel()->setCurrentIndex(index,
@@ -1221,18 +1221,17 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
 
             if (mWangSet) {
                 QAction *setImage = menu.addAction(tr("Set Wang Set Image"));
-                connect(setImage, SIGNAL(triggered()), SLOT(selectWangSetImage()));
+                connect(setImage, &QAction::triggered, this, &TilesetView::selectWangSetImage);
             }
             if (mWangBehavior != WholeId && mWangColorIndex) {
                 QAction *setImage = menu.addAction(tr("Set Wang Color Image"));
-                connect(setImage, SIGNAL(triggered()), SLOT(selectWangColorImage()));
+                connect(setImage, &QAction::triggered, this, &TilesetView::selectWangColorImage);
             }
         } else if (mTilesetDocument) {
             QAction *tileProperties = menu.addAction(propIcon,
                                                      tr("Tile &Properties..."));
             Utils::setThemeIcon(tileProperties, "document-properties");
-            connect(tileProperties, SIGNAL(triggered()),
-                    SLOT(editTileProperties()));
+            connect(tileProperties, &QAction::triggered, this, &TilesetView::editTileProperties);
         } else {
             // Assuming we're used in the MapEditor
 
@@ -1242,8 +1241,7 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
 
             QAction *swapTilesAction = menu.addAction(tr("&Swap Tiles"));
             swapTilesAction->setEnabled(exactlyTwoTilesSelected);
-            connect(swapTilesAction, SIGNAL(triggered()),
-                    SLOT(swapTiles()));
+            connect(swapTilesAction, &QAction::triggered, this, &TilesetView::swapTiles);
         }
 
         menu.addSeparator();
@@ -1254,8 +1252,8 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
     toggleGrid->setChecked(mDrawGrid);
 
     Preferences *prefs = Preferences::instance();
-    connect(toggleGrid, SIGNAL(toggled(bool)),
-            prefs, SLOT(setShowTilesetGrid(bool)));
+    connect(toggleGrid, &QAction::toggled,
+            prefs, &Preferences::setShowTilesetGrid);
 
     menu.exec(event->globalPos());
 }

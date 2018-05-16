@@ -97,8 +97,8 @@ QAction *ToolManager::registerTool(AbstractTool *tool)
 
     mActionGroup->addAction(toolAction);
 
-    connect(tool, SIGNAL(enabledChanged(bool)),
-            this, SLOT(toolEnabledChanged(bool)));
+    connect(tool, &AbstractTool::enabledChanged,
+            this, &ToolManager::toolEnabledChanged);
 
     // Select the first added tool
     if (!mSelectedTool && tool->isEnabled()) {
@@ -258,8 +258,8 @@ void ToolManager::setSelectedTool(AbstractTool *tool)
         return;
 
     if (mSelectedTool) {
-        disconnect(mSelectedTool, SIGNAL(statusInfoChanged(QString)),
-                   this, SIGNAL(statusInfoChanged(QString)));
+        disconnect(mSelectedTool, &AbstractTool::statusInfoChanged,
+                   this, &ToolManager::statusInfoChanged);
     }
 
     mSelectedTool = tool;
@@ -267,7 +267,7 @@ void ToolManager::setSelectedTool(AbstractTool *tool)
 
     if (mSelectedTool) {
         emit statusInfoChanged(mSelectedTool->statusInfo());
-        connect(mSelectedTool, SIGNAL(statusInfoChanged(QString)),
-                this, SIGNAL(statusInfoChanged(QString)));
+        connect(mSelectedTool, &AbstractTool::statusInfoChanged,
+                this, &ToolManager::statusInfoChanged);
     }
 }

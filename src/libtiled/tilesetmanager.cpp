@@ -49,8 +49,8 @@ TilesetManager::TilesetManager():
     mAnimationDriver(new TileAnimationDriver(this)),
     mReloadTilesetsOnChange(false)
 {
-    connect(mWatcher, SIGNAL(fileChanged(QString)),
-            this, SLOT(fileChanged(QString)));
+    connect(mWatcher, &FileSystemWatcher::fileChanged,
+            this, &TilesetManager::fileChanged);
 
     mChangedFilesTimer.setInterval(500);
     mChangedFilesTimer.setSingleShot(true);

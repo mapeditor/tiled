@@ -41,7 +41,7 @@ class ImageColorPickerWidget : public QFrame
 
 public:
     ImageColorPickerWidget(QWidget *parent = nullptr);
-    ~ImageColorPickerWidget();
+    ~ImageColorPickerWidget() override;
 
     bool selectColor(const QString &image);
 

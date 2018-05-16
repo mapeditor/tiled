@@ -352,14 +352,14 @@ void ObjectSelectionTool::activate(MapScene *scene)
 {
     AbstractObjectTool::activate(scene);
 
-    updateHandles();
+    updateHandlesAndOrigin();
 
-    connect(mapDocument(), SIGNAL(objectsChanged(QList<MapObject*>)),
-            this, SLOT(updateHandles()));
-    connect(mapDocument(), SIGNAL(mapChanged()),
-            this, SLOT(updateHandles()));
-    connect(mapDocument(), SIGNAL(selectedObjectsChanged()),
-            this, SLOT(updateHandles()));
+    connect(mapDocument(), &MapDocument::objectsChanged,
+            this, &ObjectSelectionTool::updateHandlesAndOrigin);
+    connect(mapDocument(), &MapDocument::mapChanged,
+            this, &ObjectSelectionTool::updateHandlesAndOrigin);
+    connect(mapDocument(), &MapDocument::selectedObjectsChanged,
+            this, &ObjectSelectionTool::updateHandlesAndOrigin);
     connect(mapDocument(), &MapDocument::objectsRemoved,
             this, &ObjectSelectionTool::objectsRemoved);
 
@@ -378,12 +378,12 @@ void ObjectSelectionTool::deactivate(MapScene *scene)
     for (ResizeHandle *handle : mResizeHandles)
         scene->removeItem(handle);
 
-    disconnect(mapDocument(), SIGNAL(objectsChanged(QList<MapObject*>)),
-               this, SLOT(updateHandles()));
-    disconnect(mapDocument(), SIGNAL(mapChanged()),
-               this, SLOT(updateHandles()));
-    disconnect(mapDocument(), SIGNAL(selectedObjectsChanged()),
-               this, SLOT(updateHandles()));
+    disconnect(mapDocument(), &MapDocument::objectsChanged,
+               this, &ObjectSelectionTool::updateHandlesAndOrigin);
+    disconnect(mapDocument(), &MapDocument::mapChanged,
+               this, &ObjectSelectionTool::updateHandlesAndOrigin);
+    disconnect(mapDocument(), &MapDocument::selectedObjectsChanged,
+               this, &ObjectSelectionTool::updateHandlesAndOrigin);
     disconnect(mapDocument(), &MapDocument::objectsRemoved,
                this, &ObjectSelectionTool::objectsRemoved);
 
@@ -728,6 +728,16 @@ void ObjectSelectionTool::languageChanged()
     setShortcut(QKeySequence(tr("S")));
 }
 
+void ObjectSelectionTool::updateHandles()
+{
+    updateHandlesImpl(false);
+}
+
+void ObjectSelectionTool::updateHandlesAndOrigin()
+{
+    updateHandlesImpl(true);
+}
+
 static QPointF alignmentOffset(const QRectF &r, Alignment alignment)
 {
     switch (alignment) {
@@ -890,7 +900,7 @@ static QTransform objectTransform(MapObject *object, MapRenderer *renderer)
     return transform;
 }
 
-void ObjectSelectionTool::updateHandles(bool resetOriginIndicator)
+void ObjectSelectionTool::updateHandlesImpl(bool resetOriginIndicator)
 {
     if (mAction == Moving || mAction == Rotating || mAction == Resizing)
         return;
@@ -1156,7 +1166,7 @@ void ObjectSelectionTool::finishMoving(const QPointF &pos)
 {
     Q_ASSERT(mAction == Moving);
     mAction = NoAction;
-    updateHandles(false);
+    updateHandles();
 
     if (mStart == pos) // Move is a no-op
         return;
@@ -1245,7 +1255,7 @@ void ObjectSelectionTool::finishRotating(const QPointF &pos)
 {
     Q_ASSERT(mAction == Rotating);
     mAction = NoAction;
-    updateHandles(false);
+    updateHandles();
 
     if (mStart == pos) // No rotation at all
         return;
@@ -1514,7 +1524,7 @@ void ObjectSelectionTool::finishResizing(const QPointF &pos)
 {
     Q_ASSERT(mAction == Resizing);
     mAction = NoAction;
-    updateHandles();
+    updateHandlesAndOrigin();
 
     if (mStart == pos) // No scaling at all
         return;
@@ -1541,7 +1551,7 @@ void ObjectSelectionTool::setMode(Mode mode)
 {
     if (mMode != mode) {
         mMode = mode;
-        updateHandles(false);
+        updateHandles();
     }
 }
 

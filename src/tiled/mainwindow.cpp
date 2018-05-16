@@ -239,7 +239,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     QAction *redoAction = undoGroup->createRedoAction(this, tr("Redo"));
     redoAction->setIcon(redoIcon);
     undoAction->setIcon(undoIcon);
-    connect(undoGroup, SIGNAL(cleanChanged(bool)), SLOT(updateWindowTitle()));
+    connect(undoGroup, &QUndoGroup::cleanChanged, this, &MainWindow::updateWindowTitle);
 
     addDockWidget(Qt::BottomDockWidgetArea, mConsoleDock);
 
@@ -315,8 +315,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             preferences, &Preferences::setLabelForHoveredObject);
 
     QShortcut *reloadTilesetsShortcut = new QShortcut(QKeySequence(tr("Ctrl+T")), this);
-    connect(reloadTilesetsShortcut, SIGNAL(activated()),
-            this, SLOT(reloadTilesetImages()));
+    connect(reloadTilesetsShortcut, &QShortcut::activated,
+            this, &MainWindow::reloadTilesetImages);
 
     // Make sure Ctrl+= also works for zooming in
     QList<QKeySequence> keys = QKeySequence::keyBindings(QKeySequence::ZoomIn);
@@ -365,54 +365,52 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     menuBar()->insertMenu(mUi->menuHelp->menuAction(), mLayerMenu);
 
-    connect(mUi->actionNewMap, SIGNAL(triggered()), SLOT(newMap()));
-    connect(mUi->actionNewTileset, SIGNAL(triggered()), SLOT(newTileset()));
-    connect(mUi->actionOpen, SIGNAL(triggered()), SLOT(openFile()));
-    connect(mUi->actionClearRecentFiles, &QAction::triggered,
-            preferences, &Preferences::clearRecentFiles);
-    connect(mUi->actionSave, SIGNAL(triggered()), SLOT(saveFile()));
-    connect(mUi->actionSaveAs, SIGNAL(triggered()), SLOT(saveFileAs()));
-    connect(mUi->actionSaveAll, SIGNAL(triggered()), SLOT(saveAll()));
-    connect(mUi->actionExportAsImage, SIGNAL(triggered()), SLOT(exportAsImage()));
-    connect(mUi->actionExport, SIGNAL(triggered()), SLOT(export_()));
-    connect(mUi->actionExportAs, SIGNAL(triggered()), SLOT(exportAs()));
-    connect(mUi->actionReload, SIGNAL(triggered()), SLOT(reload()));
-    connect(mUi->actionClose, SIGNAL(triggered()), SLOT(closeFile()));
-    connect(mUi->actionCloseAll, SIGNAL(triggered()), SLOT(closeAllFiles()));
-    connect(mUi->actionQuit, SIGNAL(triggered()), SLOT(close()));
+    connect(mUi->actionNewMap, &QAction::triggered, this, &MainWindow::newMap);
+    connect(mUi->actionNewTileset, &QAction::triggered, this, [this] { newTileset(); });
+    connect(mUi->actionOpen, &QAction::triggered, this, &MainWindow::openFileDialog);
+    connect(mUi->actionClearRecentFiles, &QAction::triggered, preferences, &Preferences::clearRecentFiles);
+    connect(mUi->actionSave, &QAction::triggered, this, &MainWindow::saveFile);
+    connect(mUi->actionSaveAs, &QAction::triggered, this, &MainWindow::saveFileAs);
+    connect(mUi->actionSaveAll, &QAction::triggered, this, &MainWindow::saveAll);
+    connect(mUi->actionExportAsImage, &QAction::triggered, this, &MainWindow::exportAsImage);
+    connect(mUi->actionExport, &QAction::triggered, this, &MainWindow::export_);
+    connect(mUi->actionExportAs, &QAction::triggered, this, &MainWindow::exportAs);
+    connect(mUi->actionReload, &QAction::triggered, this, &MainWindow::reload);
+    connect(mUi->actionClose, &QAction::triggered, this, &MainWindow::closeFile);
+    connect(mUi->actionCloseAll, &QAction::triggered, this, &MainWindow::closeAllFiles);
+    connect(mUi->actionQuit, &QAction::triggered, this, &QWidget::close);
 
     connect(mUi->actionCut, &QAction::triggered, this, &MainWindow::cut);
     connect(mUi->actionCopy, &QAction::triggered, this, &MainWindow::copy);
     connect(mUi->actionPaste, &QAction::triggered, this, &MainWindow::paste);
     connect(mUi->actionPasteInPlace, &QAction::triggered, this, &MainWindow::pasteInPlace);
     connect(mUi->actionDelete, &QAction::triggered, this, &MainWindow::delete_);
-    connect(mUi->actionPreferences, SIGNAL(triggered()),
-            SLOT(openPreferences()));
+    connect(mUi->actionPreferences, &QAction::triggered, this, &MainWindow::openPreferences);
 
-    connect(mUi->actionShowGrid, SIGNAL(toggled(bool)),
-            preferences, SLOT(setShowGrid(bool)));
-    connect(mUi->actionShowTileObjectOutlines, SIGNAL(toggled(bool)),
-            preferences, SLOT(setShowTileObjectOutlines(bool)));
-    connect(mUi->actionShowTileAnimations, SIGNAL(toggled(bool)),
-            preferences, SLOT(setShowTileAnimations(bool)));
-    connect(mUi->actionSnapToGrid, SIGNAL(toggled(bool)),
-            preferences, SLOT(setSnapToGrid(bool)));
-    connect(mUi->actionSnapToFineGrid, SIGNAL(toggled(bool)),
-            preferences, SLOT(setSnapToFineGrid(bool)));
-    connect(mUi->actionSnapToPixels, SIGNAL(toggled(bool)),
-            preferences, SLOT(setSnapToPixels(bool)));
-    connect(mUi->actionHighlightCurrentLayer, SIGNAL(toggled(bool)),
-            preferences, SLOT(setHighlightCurrentLayer(bool)));
-    connect(mUi->actionZoomIn, SIGNAL(triggered()), SLOT(zoomIn()));
-    connect(mUi->actionZoomOut, SIGNAL(triggered()), SLOT(zoomOut()));
-    connect(mUi->actionZoomNormal, SIGNAL(triggered()), SLOT(zoomNormal()));
+    connect(mUi->actionShowGrid, &QAction::toggled,
+            preferences, &Preferences::setShowGrid);
+    connect(mUi->actionShowTileObjectOutlines, &QAction::toggled,
+            preferences, &Preferences::setShowTileObjectOutlines);
+    connect(mUi->actionShowTileAnimations, &QAction::toggled,
+            preferences, &Preferences::setShowTileAnimations);
+    connect(mUi->actionSnapToGrid, &QAction::toggled,
+            preferences, &Preferences::setSnapToGrid);
+    connect(mUi->actionSnapToFineGrid, &QAction::toggled,
+            preferences, &Preferences::setSnapToFineGrid);
+    connect(mUi->actionSnapToPixels, &QAction::toggled,
+            preferences, &Preferences::setSnapToPixels);
+    connect(mUi->actionHighlightCurrentLayer, &QAction::toggled,
+            preferences, &Preferences::setHighlightCurrentLayer);
+    connect(mUi->actionZoomIn, &QAction::triggered, this, &MainWindow::zoomIn);
+    connect(mUi->actionZoomOut, &QAction::triggered, this, &MainWindow::zoomOut);
+    connect(mUi->actionZoomNormal, &QAction::triggered, this, &MainWindow::zoomNormal);
     connect(mUi->actionFullScreen, &QAction::toggled, this, &MainWindow::setFullScreen);
     connect(mUi->actionClearView, &QAction::toggled, this, &MainWindow::toggleClearView);
 
     CommandManager::instance()->registerMenu(mUi->menuCommand);
 
-    connect(mUi->actionAddExternalTileset, SIGNAL(triggered()),
-            SLOT(addExternalTileset()));
+    connect(mUi->actionAddExternalTileset, &QAction::triggered,
+            this, &MainWindow::addExternalTileset);
     connect(mUi->actionLoadWorld, &QAction::triggered, this, [this,preferences]{
         QString lastPath = preferences->lastPath(Preferences::WorldFile);
         QString worldFile = QFileDialog::getOpenFileName(this, tr("Open world"), lastPath);
@@ -437,21 +435,21 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             });
         }
     });
-    connect(mUi->actionResizeMap, SIGNAL(triggered()), SLOT(resizeMap()));
-    connect(mUi->actionOffsetMap, SIGNAL(triggered()), SLOT(offsetMap()));
-    connect(mUi->actionAutoMap, SIGNAL(triggered()),
-            mAutomappingManager, SLOT(autoMap()));
+    connect(mUi->actionResizeMap, &QAction::triggered, this, &MainWindow::resizeMap);
+    connect(mUi->actionOffsetMap, &QAction::triggered, this, &MainWindow::offsetMap);
+    connect(mUi->actionAutoMap, &QAction::triggered,
+            mAutomappingManager, &AutomappingManager::autoMap);
     connect(mUi->actionAutoMapWhileDrawing, &QAction::toggled,
             preferences, &Preferences::setAutomappingDrawing);
-    connect(mUi->actionMapProperties, SIGNAL(triggered()),
-            SLOT(editMapProperties()));
+    connect(mUi->actionMapProperties, &QAction::triggered,
+            this, &MainWindow::editMapProperties);
 
     connect(mUi->actionTilesetProperties, &QAction::triggered,
             this, &MainWindow::editTilesetProperties);
 
-    connect(mUi->actionDocumentation, SIGNAL(triggered()), SLOT(openDocumentation()));
-    connect(mUi->actionBecomePatron, SIGNAL(triggered()), SLOT(becomePatron()));
-    connect(mUi->actionAbout, SIGNAL(triggered()), SLOT(aboutTiled()));
+    connect(mUi->actionDocumentation, &QAction::triggered, this, &MainWindow::openDocumentation);
+    connect(mUi->actionBecomePatron, &QAction::triggered, this, &MainWindow::becomePatron);
+    connect(mUi->actionAbout, &QAction::triggered, this, &MainWindow::aboutTiled);
 
     mUi->menuUnloadWorld->setEnabled(!WorldManager::instance().worlds().isEmpty());
 
@@ -461,8 +459,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
          mUi->menuRecentFiles->insertAction(mUi->actionClearRecentFiles,
                                             action);
          action->setVisible(false);
-         connect(action, SIGNAL(triggered()),
-                 this, SLOT(openRecentFile()));
+         connect(action, &QAction::triggered,
+                 this, &MainWindow::openRecentFile);
     }
     mUi->menuRecentFiles->insertSeparator(mUi->actionClearRecentFiles);
 
@@ -514,55 +512,57 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mViewsAndToolbarsMenu, &QMenu::aboutToShow,
             this, &MainWindow::updateViewsAndToolbarsMenu);
 
-    connect(mShowObjectTypesEditor, SIGNAL(toggled(bool)),
-            mObjectTypesEditor, SLOT(setVisible(bool)));
-    connect(mObjectTypesEditor, SIGNAL(closed()), SLOT(onObjectTypesEditorClosed()));
+    connect(mShowObjectTypesEditor, &QAction::toggled,
+            mObjectTypesEditor, &QWidget::setVisible);
+    connect(mObjectTypesEditor, &ObjectTypesEditor::closed,
+            this, &MainWindow::onObjectTypesEditorClosed);
 
-    connect(ClipboardManager::instance(), SIGNAL(hasMapChanged()), SLOT(updateActions()));
+    connect(ClipboardManager::instance(), &ClipboardManager::hasMapChanged,
+            this, &MainWindow::updateActions);
 
-    connect(mDocumentManager, SIGNAL(fileOpenRequested(QString)),
-            this, SLOT(openFile(QString)));
-    connect(mDocumentManager, SIGNAL(fileOpenRequested()),
-            this, SLOT(openFile()));
-    connect(mDocumentManager, SIGNAL(fileSaveRequested()),
-            this, SLOT(saveFile()));
+    connect(mDocumentManager, &DocumentManager::fileOpenRequested,
+            this, [this] (const QString &path) { openFile(path); });
+    connect(mDocumentManager, &DocumentManager::fileOpenDialogRequested,
+            this, &MainWindow::openFileDialog);
+    connect(mDocumentManager, &DocumentManager::fileSaveRequested,
+            this, &MainWindow::saveFile);
     connect(mDocumentManager, &DocumentManager::currentDocumentChanged,
             this, &MainWindow::documentChanged);
-    connect(mDocumentManager, SIGNAL(documentCloseRequested(int)),
-            this, SLOT(closeDocument(int)));
-    connect(mDocumentManager, SIGNAL(reloadError(QString)),
-            this, SLOT(reloadError(QString)));
+    connect(mDocumentManager, &DocumentManager::documentCloseRequested,
+            this, &MainWindow::closeDocument);
+    connect(mDocumentManager, &DocumentManager::reloadError,
+            this, &MainWindow::reloadError);
 
     connect(mResetToDefaultLayout, &QAction::triggered, this, &MainWindow::resetToDefaultLayout);
 
     QShortcut *switchToLeftDocument = new QShortcut(tr("Alt+Left"), this);
-    connect(switchToLeftDocument, SIGNAL(activated()),
-            mDocumentManager, SLOT(switchToLeftDocument()));
+    connect(switchToLeftDocument, &QShortcut::activated,
+            mDocumentManager, &DocumentManager::switchToLeftDocument);
     QShortcut *switchToLeftDocument1 = new QShortcut(tr("Ctrl+Shift+Tab"), this);
-    connect(switchToLeftDocument1, SIGNAL(activated()),
-            mDocumentManager, SLOT(switchToLeftDocument()));
+    connect(switchToLeftDocument1, &QShortcut::activated,
+            mDocumentManager, &DocumentManager::switchToLeftDocument);
 
     QShortcut *switchToRightDocument = new QShortcut(tr("Alt+Right"), this);
-    connect(switchToRightDocument, SIGNAL(activated()),
-            mDocumentManager, SLOT(switchToRightDocument()));
+    connect(switchToRightDocument, &QShortcut::activated,
+            mDocumentManager, &DocumentManager::switchToRightDocument);
     QShortcut *switchToRightDocument1 = new QShortcut(tr("Ctrl+Tab"), this);
-    connect(switchToRightDocument1, SIGNAL(activated()),
-            mDocumentManager, SLOT(switchToRightDocument()));
+    connect(switchToRightDocument1, &QShortcut::activated,
+            mDocumentManager, &DocumentManager::switchToRightDocument);
 
     connect(qApp, &QApplication::commitDataRequest, this, &MainWindow::commitData);
 
     QShortcut *copyPositionShortcut = new QShortcut(tr("Alt+C"), this);
-    connect(copyPositionShortcut, SIGNAL(activated()),
-            mActionHandler, SLOT(copyPosition()));
+    connect(copyPositionShortcut, &QShortcut::activated,
+            mActionHandler, &MapDocumentActionHandler::copyPosition);
 
     updateActions();
     updateZoomActions();
     readSettings();
 
-    connect(mAutomappingManager, SIGNAL(warningsOccurred(bool)),
-            this, SLOT(autoMappingWarning(bool)));
-    connect(mAutomappingManager, SIGNAL(errorsOccurred(bool)),
-            this, SLOT(autoMappingError(bool)));
+    connect(mAutomappingManager, &AutomappingManager::warningsOccurred,
+            this, &MainWindow::autoMappingWarning);
+    connect(mAutomappingManager, &AutomappingManager::errorsOccurred,
+            this, &MainWindow::autoMappingError);
 
 #ifdef Q_OS_WIN
     connect(preferences, &Preferences::useOpenGLChanged, this, &MainWindow::ensureHasBorderInFullScreen);
@@ -720,11 +720,6 @@ bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
     return true;
 }
 
-bool MainWindow::openFile(const QString &fileName)
-{
-    return openFile(fileName, nullptr);
-}
-
 void MainWindow::openLastFiles()
 {
     mSettings.beginGroup(QLatin1String("recentFiles"));
@@ -756,7 +751,7 @@ void MainWindow::openLastFiles()
     mSettings.endGroup();
 }
 
-void MainWindow::openFile()
+void MainWindow::openFileDialog()
 {
     QString filter = tr("All Files (*)");
     QString selectedFilter = filter;
@@ -1625,8 +1620,8 @@ void MainWindow::documentChanged(Document *document)
     mDocument = document;
 
     if (document) {
-        connect(document, SIGNAL(fileNameChanged(QString,QString)),
-                SLOT(updateWindowTitle()));
+        connect(document, &Document::fileNameChanged,
+                this, &MainWindow::updateWindowTitle);
     }
 
     MapDocument *mapDocument = qobject_cast<MapDocument*>(document);

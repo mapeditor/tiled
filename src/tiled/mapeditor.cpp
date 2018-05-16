@@ -273,8 +273,8 @@ MapEditor::MapEditor(QObject *parent)
     connect(mWangBrush, &WangBrush::colorCaptured,
             mWangDock, &WangDock::onColorCaptured);
 
-    connect(mTileStampsDock, SIGNAL(setStamp(TileStamp)),
-            this, SLOT(setStamp(TileStamp)));
+    connect(mTileStampsDock, &TileStampsDock::setStamp,
+            this, &MapEditor::setStamp);
 
     setSelectedTool(mToolManager->selectedTool());
     connect(mToolManager, &ToolManager::selectedToolChanged,
@@ -403,10 +403,10 @@ void MapEditor::setCurrentDocument(Document *document)
     if (mapDocument) {
         connect(mapDocument, &MapDocument::currentLayerChanged,
                 this, &MapEditor::updateLayerComboIndex);
-//        connect(mapDocument, SIGNAL(selectedAreaChanged(QRegion,QRegion)),
-//                SLOT(updateActions()));
-//        connect(mapDocument, SIGNAL(selectedObjectsChanged()),
-//                SLOT(updateActions()));
+//        connect(mapDocument, &MapDocument::selectedAreaChanged,
+//                this, &MapEditor::updateActions);
+//        connect(mapDocument, &MapDocument::selectedObjectsChanged,
+//                this, &MapEditor::updateActions);
 
         if (mapView) {
             mZoomable = mapView->zoomable();

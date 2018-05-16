@@ -46,10 +46,10 @@ PythonPlugin::PythonPlugin()
     mReloadTimer.setSingleShot(true);
     mReloadTimer.setInterval(1000);
 
-    connect(&mFileSystemWatcher, SIGNAL(directoryChanged(QString)),
-            &mReloadTimer, SLOT(start()));
-    connect(&mFileSystemWatcher, SIGNAL(fileChanged(QString)),
-            &mReloadTimer, SLOT(start()));
+    connect(&mFileSystemWatcher, &QFileSystemWatcher::directoryChanged,
+            this, [this] { mReloadTimer.start(); });
+    connect(&mFileSystemWatcher, &QFileSystemWatcher::fileChanged,
+            this, [this] { mReloadTimer.start(); });
 
     connect(&mReloadTimer, &QTimer::timeout,
             this, &PythonPlugin::reloadModules);

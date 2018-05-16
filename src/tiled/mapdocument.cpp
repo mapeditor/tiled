@@ -95,21 +95,21 @@ MapDocument::MapDocument(Map *map, const QString &fileName)
 
     // Forward signals emitted from the map object model
     mMapObjectModel->setMapDocument(this);
-    connect(mMapObjectModel, SIGNAL(objectsAdded(QList<MapObject*>)),
-            SIGNAL(objectsAdded(QList<MapObject*>)));
-    connect(mMapObjectModel, SIGNAL(objectsChanged(QList<MapObject*>)),
-            SIGNAL(objectsChanged(QList<MapObject*>)));
-    connect(mMapObjectModel, SIGNAL(objectsTypeChanged(QList<MapObject*>)),
-            SIGNAL(objectsTypeChanged(QList<MapObject*>)));
-    connect(mMapObjectModel, SIGNAL(objectsRemoved(QList<MapObject*>)),
-            SLOT(onObjectsRemoved(QList<MapObject*>)));
+    connect(mMapObjectModel, &MapObjectModel::objectsAdded,
+            this, &MapDocument::objectsAdded);
+    connect(mMapObjectModel, &MapObjectModel::objectsChanged,
+            this, &MapDocument::objectsChanged);
+    connect(mMapObjectModel, &MapObjectModel::objectsTypeChanged,
+            this, &MapDocument::objectsTypeChanged);
+    connect(mMapObjectModel, &MapObjectModel::objectsRemoved,
+            this, &MapDocument::onObjectsRemoved);
 
-    connect(mMapObjectModel, SIGNAL(rowsInserted(QModelIndex,int,int)),
-            SLOT(onMapObjectModelRowsInserted(QModelIndex,int,int)));
-    connect(mMapObjectModel, SIGNAL(rowsRemoved(QModelIndex,int,int)),
-            SLOT(onMapObjectModelRowsInsertedOrRemoved(QModelIndex,int,int)));
-    connect(mMapObjectModel, SIGNAL(rowsMoved(QModelIndex,int,int,QModelIndex,int)),
-            SLOT(onObjectsMoved(QModelIndex,int,int,QModelIndex,int)));
+    connect(mMapObjectModel, &QAbstractItemModel::rowsInserted,
+            this, &MapDocument::onMapObjectModelRowsInserted);
+    connect(mMapObjectModel, &QAbstractItemModel::rowsRemoved,
+            this, &MapDocument::onMapObjectModelRowsInsertedOrRemoved);
+    connect(mMapObjectModel, &QAbstractItemModel::rowsMoved,
+            this, &MapDocument::onObjectsMoved);
 }
 
 MapDocument::~MapDocument()

@@ -60,7 +60,7 @@ AboutDialog::AboutDialog(QWidget *parent): QDialog(parent)
         if (style->isDark())
             logo->setPixmap(QPixmap(QString::fromUtf8(":/images/about-tiled-logo-white.png")));
 
-    connect(donateButton, SIGNAL(clicked()), SLOT(donate()));
+    connect(donateButton, &QAbstractButton::clicked, this, &AboutDialog::donate);
 }
 
 void AboutDialog::donate()

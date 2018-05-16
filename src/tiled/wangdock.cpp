@@ -129,11 +129,11 @@ WangDock::WangDock(QWidget *parent)
     mWangSetView->setModel(mProxyModel);
     connect(mWangSetView->selectionModel(), &QItemSelectionModel::currentRowChanged,
             this, &WangDock::refreshCurrentWangSet);
-    connect(mWangSetView, SIGNAL(pressed(QModelIndex)),
-            SLOT(indexPressed(QModelIndex)));
+    connect(mWangSetView, &QAbstractItemView::pressed,
+            this, &WangDock::indexPressed);
 
-    connect(mProxyModel, SIGNAL(rowsInserted(QModelIndex,int,int)),
-            this, SLOT(expandRows(QModelIndex,int,int)));
+    connect(mProxyModel, &QAbstractItemModel::rowsInserted,
+            this, &WangDock::expandRows);
 
     mAddWangSet->setIcon(QIcon(QStringLiteral(":/images/22x22/add.png")));
     mRemoveWangSet->setIcon(QIcon(QStringLiteral(":/images/22x22/remove.png")));

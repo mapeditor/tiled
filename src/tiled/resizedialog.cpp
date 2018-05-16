@@ -55,8 +55,8 @@ ResizeDialog::ResizeDialog(QWidget *parent)
     mUi->resizeHelper->setNewSize(QSize(mUi->widthSpinBox->value(),
                                         mUi->heightSpinBox->value()));
 
-    connect(mUi->resizeHelper, SIGNAL(offsetBoundsChanged(QRect)),
-                               SLOT(updateOffsetBounds(QRect)));
+    connect(mUi->resizeHelper, &ResizeHelper::offsetBoundsChanged,
+            this, &ResizeDialog::updateOffsetBounds);
 
     Utils::restoreGeometry(this);
 }

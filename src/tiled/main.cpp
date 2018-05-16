@@ -422,8 +422,8 @@ int main(int argc, char *argv[])
     QWindowsWindowFunctions::setWindowActivationBehavior(QWindowsWindowFunctions::AlwaysActivateWindow);
 #endif
 
-    QObject::connect(&a, SIGNAL(fileOpenRequest(QString)),
-                     &w, SLOT(openFile(QString)));
+    QObject::connect(&a, &TiledApplication::fileOpenRequest,
+                     &w, [&] (const QString &file) { w.openFile(file); });
 
     PluginManager::instance()->loadPlugins();
 

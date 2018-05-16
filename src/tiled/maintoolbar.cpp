@@ -92,8 +92,8 @@ MainToolBar::MainToolBar(QWidget *parent)
     addWidget(mCommandButton);
 
     DocumentManager *documentManager = DocumentManager::instance();
-    connect(mOpenAction, SIGNAL(triggered(bool)), documentManager, SLOT(openFile()));
-    connect(mSaveAction, SIGNAL(triggered(bool)), documentManager, SLOT(saveFile()));
+    connect(mOpenAction, &QAction::triggered, documentManager, &DocumentManager::openFileDialog);
+    connect(mSaveAction, &QAction::triggered, documentManager, &DocumentManager::saveFile);
 
     connect(documentManager, &DocumentManager::currentDocumentChanged,
             this, &MainToolBar::currentDocumentChanged);

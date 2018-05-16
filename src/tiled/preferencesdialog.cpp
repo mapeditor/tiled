@@ -89,14 +89,14 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     connect(mUi->safeSaving, &QCheckBox::toggled,
             preferences, &Preferences::setSafeSavingEnabled);
 
-    connect(mUi->languageCombo, SIGNAL(currentIndexChanged(int)),
-            SLOT(languageSelected(int)));
-    connect(mUi->gridColor, SIGNAL(colorChanged(QColor)),
-            preferences, SLOT(setGridColor(QColor)));
-    connect(mUi->gridFine, SIGNAL(valueChanged(int)),
-            preferences, SLOT(setGridFine(int)));
-    connect(mUi->objectLineWidth, SIGNAL(valueChanged(double)),
-            preferences, SLOT(setObjectLineWidth(qreal)));
+    connect(mUi->languageCombo, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+            this, &PreferencesDialog::languageSelected);
+    connect(mUi->gridColor, &ColorButton::colorChanged,
+            preferences, &Preferences::setGridColor);
+    connect(mUi->gridFine, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+            preferences, &Preferences::setGridFine);
+    connect(mUi->objectLineWidth, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+            preferences, &Preferences::setObjectLineWidth);
     connect(mUi->openGL, &QCheckBox::toggled,
             preferences, &Preferences::setUseOpenGL);
     connect(mUi->wheelZoomsByDefault, &QCheckBox::toggled,

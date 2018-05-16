@@ -35,9 +35,9 @@ ConverterWindow::ConverterWindow(QWidget *parent) :
     ui->setupUi(this);
     ui->saveButton->setText(tr("Save all as %1").arg(mControl->version2()));
 
-    connect(ui->addbutton, SIGNAL(clicked()), this, SLOT(addRule()));
-    connect(ui->saveButton, SIGNAL(clicked()),
-            mDataModel, SLOT(updateVersions()));
+    connect(ui->addbutton, &QAbstractButton::clicked, this, &ConverterWindow::addRule);
+    connect(ui->saveButton, &QAbstractButton::clicked,
+            mDataModel, &ConverterDataModel::updateVersions);
 
     ui->treeView->setModel(mDataModel);
 

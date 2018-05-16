@@ -132,7 +132,7 @@ public:
     void abortMultiDocumentClose();
 
 signals:
-    void fileOpenRequested();
+    void fileOpenDialogRequested();
     void fileOpenRequested(const QString &path);
     void fileSaveRequested();
     void templateOpenRequested(const QString &path);
@@ -165,7 +165,7 @@ public slots:
     void switchToLeftDocument();
     void switchToRightDocument();
 
-    void openFile();
+    void openFileDialog();
     void openFile(const QString &path);
     void saveFile();
 

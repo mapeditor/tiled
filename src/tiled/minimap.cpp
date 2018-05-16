@@ -57,8 +57,8 @@ MiniMap::MiniMap(QWidget *parent)
     setMouseTracking(true);
 
     mMapImageUpdateTimer.setSingleShot(true);
-    connect(&mMapImageUpdateTimer, SIGNAL(timeout()),
-            SLOT(redrawTimeout()));
+    connect(&mMapImageUpdateTimer, &QTimer::timeout,
+            this, &MiniMap::redrawTimeout);
 }
 
 void MiniMap::setMapDocument(MapDocument *map)
@@ -78,13 +78,13 @@ void MiniMap::setMapDocument(MapDocument *map)
     mMapDocument = map;
 
     if (mMapDocument) {
-        connect(mMapDocument->undoStack(), SIGNAL(indexChanged(int)),
-                this, SLOT(scheduleMapImageUpdate()));
+        connect(mMapDocument->undoStack(), &QUndoStack::indexChanged,
+                this, &MiniMap::scheduleMapImageUpdate);
 
         if (MapView *mapView = dm->viewForDocument(mMapDocument)) {
-            connect(mapView->horizontalScrollBar(), SIGNAL(valueChanged(int)), SLOT(update()));
-            connect(mapView->verticalScrollBar(), SIGNAL(valueChanged(int)), SLOT(update()));
-            connect(mapView->zoomable(), SIGNAL(scaleChanged(qreal)), SLOT(update()));
+            connect(mapView->horizontalScrollBar(), &QAbstractSlider::valueChanged, this, [this] { update(); });
+            connect(mapView->verticalScrollBar(), &QAbstractSlider::valueChanged, this, [this] { update(); });
+            connect(mapView->zoomable(), &Zoomable::scaleChanged, this, [this] { update(); });
         }
     }
 

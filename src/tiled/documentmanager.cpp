@@ -322,9 +322,9 @@ void DocumentManager::switchToRightDocument()
     switchToDocument((currentIndex + 1) % tabCount);
 }
 
-void DocumentManager::openFile()
+void DocumentManager::openFileDialog()
 {
-    emit fileOpenRequested();
+    emit fileOpenDialogRequested();
 }
 
 void DocumentManager::openFile(const QString &path)

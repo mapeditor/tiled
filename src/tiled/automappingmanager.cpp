@@ -76,7 +76,7 @@ void AutomappingManager::autoMap()
     autoMapInternal(region, nullptr);
 }
 
-void AutomappingManager::autoMap(const QRegion &where, Layer *touchedLayer)
+void AutomappingManager::onRegionEdited(const QRegion &where, Layer *touchedLayer)
 {
     if (Preferences::instance()->automappingDrawing())
         autoMapInternal(where, touchedLayer);
@@ -210,8 +210,8 @@ void AutomappingManager::setMapDocument(MapDocument *mapDocument)
     mMapDocument = mapDocument;
 
     if (mMapDocument) {
-        connect(mMapDocument, SIGNAL(regionEdited(QRegion,Layer*)),
-                this, SLOT(autoMap(QRegion,Layer*)));
+        connect(mMapDocument, &MapDocument::regionEdited,
+                this, &AutomappingManager::onRegionEdited);
     }
 
     mLoaded = false;

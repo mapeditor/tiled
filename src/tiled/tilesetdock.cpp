@@ -249,11 +249,11 @@ TilesetDock::TilesetDock(QWidget *parent)
     Utils::setThemeIcon(mEditTileset, "document-properties");
     Utils::setThemeIcon(mDeleteTileset, "edit-delete");
 
-    connect(mNewTileset, SIGNAL(triggered()), SLOT(newTileset()));
-    connect(mEmbedTileset, SIGNAL(triggered()), SLOT(embedTileset()));
-    connect(mExportTileset, SIGNAL(triggered()), SLOT(exportTileset()));
-    connect(mEditTileset, SIGNAL(triggered()), SLOT(editTileset()));
-    connect(mDeleteTileset, SIGNAL(triggered()), SLOT(removeTileset()));
+    connect(mNewTileset, &QAction::triggered, this, &TilesetDock::newTileset);
+    connect(mEmbedTileset, &QAction::triggered, this, &TilesetDock::embedTileset);
+    connect(mExportTileset, &QAction::triggered, this, &TilesetDock::exportTileset);
+    connect(mEditTileset, &QAction::triggered, this, &TilesetDock::editTileset);
+    connect(mDeleteTileset, &QAction::triggered, this, &TilesetDock::removeTileset);
 
     mToolBar->addAction(mNewTileset);
     mToolBar->setIconSize(Utils::smallIconSize());
@@ -285,7 +285,7 @@ TilesetDock::TilesetDock(QWidget *parent)
             this, &TilesetDock::onTilesetDataChanged);
 
     mTilesetMenuButton->setMenu(mTilesetMenu);
-    connect(mTilesetMenu, SIGNAL(aboutToShow()), SLOT(refreshTilesetMenu()));
+    connect(mTilesetMenu, &QMenu::aboutToShow, this, &TilesetDock::refreshTilesetMenu);
 
     setWidget(w);
     retranslateUi();
@@ -638,14 +638,14 @@ void TilesetDock::removeTileset()
 {
     const int currentIndex = mViewStack->currentIndex();
     if (currentIndex != -1)
-        removeTileset(mViewStack->currentIndex());
+        removeTilesetAt(mViewStack->currentIndex());
 }
 
 /**
  * Removes the tileset at the given index. Prompting the user when the tileset
  * is in use by the map.
  */
-void TilesetDock::removeTileset(int index)
+void TilesetDock::removeTilesetAt(int index)
 {
     auto &sharedTileset = mTilesets.at(index);
 

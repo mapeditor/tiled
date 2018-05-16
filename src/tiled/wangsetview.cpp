@@ -49,7 +49,7 @@ WangSetView::WangSetView(QWidget *parent)
     setItemsExpandable(false);
     setHeaderHidden(true);
 
-    connect(mZoomable, SIGNAL(scaleChanged(qreal)), SLOT(adjustScale()));
+    connect(mZoomable, &Zoomable::scaleChanged, this, &WangSetView::adjustScale);
 }
 
 void WangSetView::setTilesetDocument(TilesetDocument *tilesetDocument)
@@ -105,8 +105,8 @@ void WangSetView::contextMenuEvent(QContextMenuEvent *event)
                                              tr("Wang Set &Properties..."));
     Utils::setThemeIcon(wangSetProperties, "document-properties");
 
-    connect(wangSetProperties, SIGNAL(triggered()),
-            SLOT(editWangSetProperties()));
+    connect(wangSetProperties, &QAction::triggered,
+            this, &WangSetView::editWangSetProperties);
 
     menu.exec(event->globalPos());
 }
@@ -125,4 +125,3 @@ void WangSetView::editWangSetProperties()
 void WangSetView::adjustScale()
 {
 }
-

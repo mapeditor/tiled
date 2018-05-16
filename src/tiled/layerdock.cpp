@@ -107,8 +107,8 @@ LayerDock::LayerDock(QWidget *parent):
     setWidget(widget);
     retranslateUi();
 
-    connect(mOpacitySlider, SIGNAL(valueChanged(int)),
-            this, SLOT(sliderValueChanged(int)));
+    connect(mOpacitySlider, &QAbstractSlider::valueChanged,
+            this, &LayerDock::sliderValueChanged);
     updateOpacitySlider();
 }
 

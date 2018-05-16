@@ -69,7 +69,7 @@ void NoEditorWidget::newTileset()
 
 void NoEditorWidget::openFile()
 {
-    DocumentManager::instance()->openFile();
+    DocumentManager::instance()->openFileDialog();
 }
 
 } // namespace Internal

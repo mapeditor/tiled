@@ -104,9 +104,9 @@ ExportAsImageDialog::ExportAsImageDialog(MapDocument *mapDocument,
     mUi->drawTileGrid->setChecked(drawTileGrid);
     mUi->includeBackgroundColor->setChecked(includeBackgroundColor);
 
-    connect(mUi->browseButton, SIGNAL(clicked()), SLOT(browse()));
-    connect(mUi->fileNameEdit, SIGNAL(textChanged(QString)),
-            this, SLOT(updateAcceptEnabled()));
+    connect(mUi->browseButton, &QAbstractButton::clicked, this, &ExportAsImageDialog::browse);
+    connect(mUi->fileNameEdit, &QLineEdit::textChanged,
+            this, &ExportAsImageDialog::updateAcceptEnabled);
 
 
     Utils::restoreGeometry(this);

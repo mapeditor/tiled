@@ -168,7 +168,7 @@ CommandProcess::CommandProcess(const Command &command, bool inTerminal, bool sho
 {
     // Give an error if the command is empty or just whitespace
     if (mFinalCommand.trimmed().isEmpty()) {
-        handleError(QProcess::FailedToStart);
+        handleProcessError(QProcess::FailedToStart);
         return;
     }
 
@@ -192,7 +192,7 @@ CommandProcess::CommandProcess(const Command &command, bool inTerminal, bool sho
         // Create and write the command to a .command file
 
         if (!mFile.open()) {
-            handleError(tr("Unable to create/open %1").arg(mFile.fileName()));
+            reportErrorAndDelete(tr("Unable to create/open %1").arg(mFile.fileName()));
             return;
         }
         mFile.write(mFinalCommand.toLocal8Bit());
@@ -202,8 +202,8 @@ CommandProcess::CommandProcess(const Command &command, bool inTerminal, bool sho
         int chmodRet = QProcess::execute(QString(QLatin1String(
                                      "chmod +x \"%1\"")).arg(mFile.fileName()));
         if (chmodRet != 0) {
-            handleError(tr("Unable to add executable permissions to %1")
-                                                        .arg(mFile.fileName()));
+            reportErrorAndDelete(tr("Unable to add executable permissions to %1")
+                                 .arg(mFile.fileName()));
             return;
         }
 
@@ -215,10 +215,16 @@ CommandProcess::CommandProcess(const Command &command, bool inTerminal, bool sho
 #endif
     }
 
-    connect(this, SIGNAL(error(QProcess::ProcessError)),
-            SLOT(handleError(QProcess::ProcessError)));
+#if QT_VERSION < 0x050600
+    connect(this, static_cast<void(QProcess::*)(QProcess::ProcessError)>(&QProcess::error),
+            this, &CommandProcess::handleProcessError);
+#else
+    connect(this, &QProcess::errorOccurred,
+            this, &CommandProcess::handleProcessError);
+#endif
 
-    connect(this, SIGNAL(finished(int)), SLOT(deleteLater()));
+    connect(this, static_cast<void(QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished),
+            this, &QObject::deleteLater);
 
     if (showOutput) {
         CommandManager::instance()->logger()->log(LoggingInterface::INFO,
@@ -246,7 +252,7 @@ void CommandProcess::consoleError()
                                               QString::fromLocal8Bit(readAllStandardError()));
 }
 
-void CommandProcess::handleError(QProcess::ProcessError error)
+void CommandProcess::handleProcessError(QProcess::ProcessError error)
 {
     QString errorStr;
     switch (error) {
@@ -263,14 +269,13 @@ void CommandProcess::handleError(QProcess::ProcessError error)
         errorStr = tr("An unknown error occurred.");
     }
 
-    handleError(errorStr);
+    reportErrorAndDelete(errorStr);
 }
 
-void CommandProcess::handleError(const QString &error)
+void CommandProcess::reportErrorAndDelete(const QString &error)
 {
-    QString title = tr("Error Executing %1").arg(mName);
-
-    QString message = error + QLatin1String("\n\n") + mFinalCommand;
+    const QString title = tr("Error Executing %1").arg(mName);
+    const QString message = error + QLatin1String("\n\n") + mFinalCommand;
 
     QWidget *parent = DocumentManager::instance()->widget();
     QMessageBox::warning(parent, title, message);
