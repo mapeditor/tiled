@@ -78,7 +78,11 @@ QDateTime WinSparkleAutoUpdater::lastUpdateCheckDate()
     if (lastUpdate == -1)
         return QDateTime(); // never checked yet
 
+#if QT_VERSION < 0x050800
     return QDateTime::fromTime_t(lastUpdate);
+#else
+    return QDateTime::fromSecsSinceEpoch(lastUpdate);
+#endif
 }
 
 } // namespace Internal
