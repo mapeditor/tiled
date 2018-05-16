@@ -1,7 +1,7 @@
 Python Scripts
 ==============
 
-Tiled ships with a plugin that enables you to use Python 2.7 to add
+Tiled ships with a plugin that enables you to use Python 3 to add
 support for custom map formats. This is nice especially since you don't
 need to compile Tiled yourself and the scripts are easy to deploy to any
 platform.
@@ -16,7 +16,7 @@ There are several `example scripts`_ available in the repository.
 .. warning::
 
     On Windows, Python is not installed by default. For the Tiled Python
-    plugin to work, you'll need to install Python 2.7 (get it from
+    plugin to work, you'll need to install Python 3 (get it from
     https://www.python.org/). On Linux you may also need to install the
     appropriate package.
 
@@ -75,7 +75,8 @@ the scripts directory:
                                 line += ';'
                             else:
                                 line += ','
-                            print >>fileHandle, line
+                            print(line, file=fileHandle)
+
 
             return True
 

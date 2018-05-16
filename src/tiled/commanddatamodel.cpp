@@ -24,6 +24,8 @@
 #include <QKeySequence>
 #include <QMimeData>
 
+#include "qtcompat_p.h"
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
@@ -68,7 +70,7 @@ void CommandDataModel::commit()
 {
     // Save command list
     QList<QVariant> commands;
-    foreach (const Command &command, mCommands)
+    for (const Command &command : qAsConst(mCommands))
         commands.append(command.toQVariant());
     mSettings.setValue(QLatin1String("commandList"), commands);
 }

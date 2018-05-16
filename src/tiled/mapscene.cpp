@@ -32,10 +32,11 @@
 #include "maprenderer.h"
 #include "objectgroup.h"
 #include "preferences.h"
-#include "templatemanager.h"
 #include "stylehelper.h"
-#include "toolmanager.h"
+#include "templatemanager.h"
 #include "tilesetmanager.h"
+#include "toolmanager.h"
+#include "worldmanager.h"
 
 #include <QApplication>
 #include <QGraphicsSceneMouseEvent>
@@ -43,13 +44,14 @@
 #include <QMimeData>
 #include <QPalette>
 
+#include "qtcompat_p.h"
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
 MapScene::MapScene(QObject *parent):
     QGraphicsScene(parent),
     mMapDocument(nullptr),
-    mMapItem(nullptr),
     mSelectedTool(nullptr),
     mActiveTool(nullptr),
     mUnderMouse(false),
@@ -95,8 +97,6 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument) {
         connect(mMapDocument, &MapDocument::mapChanged,
                 this, &MapScene::mapChanged);
-        connect(mMapDocument, &MapDocument::tileLayerChanged,
-                this, &MapScene::tileLayerChanged);
         connect(mMapDocument, &MapDocument::layerChanged,
                 this, &MapScene::layerChanged);
         connect(mMapDocument, &MapDocument::currentLayerChanged,
@@ -126,14 +126,52 @@ void MapScene::setSelectedTool(AbstractTool *tool)
 void MapScene::refreshScene()
 {
     clear();
+    mMapItems.clear();
 
     if (!mMapDocument) {
         setSceneRect(QRectF());
         return;
     }
 
-    mMapItem = new MapItem(mMapDocument);
-    addItem(mMapItem);
+    WorldManager &worldManager = WorldManager::instance();
+
+    if (const World *world = worldManager.worldForMap(mMapDocument->fileName())) {
+        const QPoint currentMapPosition = world->mapRect(mMapDocument->fileName()).topLeft();
+        auto const contextMaps = world->contextMaps(mMapDocument->fileName());
+
+        for (const World::MapEntry &mapEntry : contextMaps) {
+            MapDocumentPtr mapDocument;
+
+            if (mapEntry.fileName == mMapDocument->fileName()) {
+                mapDocument = mMapDocument->sharedFromThis();
+            } else {
+                auto doc = DocumentManager::instance()->loadDocument(mapEntry.fileName);
+                mapDocument = doc.objectCast<MapDocument>();
+            }
+
+            if (mapDocument) {
+                MapItem::DisplayMode displayMode = MapItem::ReadOnly;
+                if (mapDocument == mMapDocument)
+                    displayMode = MapItem::Editable;
+
+                auto mapItem = new MapItem(mapDocument.data(), displayMode);
+                mapItem->setPos(mapEntry.rect.topLeft() - currentMapPosition);
+                connect(mapItem, &MapItem::boundingRectChanged, this, &MapScene::updateSceneRect);
+                mMapItems.insert(mapDocument.data(), mapItem);
+                addItem(mapItem);
+
+                if (mapDocument != mMapDocument) {
+                    mapItem->setOpacity(0.5);
+                    mapItem->setZValue(-1);
+                }
+            }
+        }
+    } else {
+        auto mapItem = new MapItem(mMapDocument, MapItem::Editable);
+        connect(mapItem, &MapItem::boundingRectChanged, this, &MapScene::updateSceneRect);
+        mMapItems.insert(mMapDocument, mapItem);
+        addItem(mapItem);
+    }
 
     updateSceneRect();
 
@@ -155,19 +193,10 @@ void MapScene::updateDefaultBackgroundColor()
 
 void MapScene::updateSceneRect()
 {
-    QRectF sceneRect = mMapDocument->renderer()->mapBoundingRect();
+    QRectF sceneRect;
 
-    QMargins margins = mMapDocument->map()->computeLayerOffsetMargins();
-    sceneRect.adjust(-margins.left(),
-                     -margins.top(),
-                     margins.right(),
-                     margins.bottom());
-
-    QMargins drawMargins = mMapDocument->map()->drawMargins();
-    sceneRect.adjust(qMin(0, -drawMargins.left()),
-                     qMin(0, -drawMargins.top()),
-                     qMax(0, drawMargins.right()),
-                     qMax(0, drawMargins.bottom()));
+    for (MapItem *mapItem : qAsConst(mMapItems))
+        sceneRect |= mapItem->boundingRect().translated(mapItem->pos());
 
     setSceneRect(sceneRect);
 }
@@ -212,13 +241,10 @@ void MapScene::currentLayerChanged()
 }
 
 /**
- * Adapts the scene, layers and objects to new map size, orientation or
- * background color.
+ * Updates the possibly changed background color.
  */
 void MapScene::mapChanged()
 {
-    updateSceneRect();
-
     const Map *map = mMapDocument->map();
     if (map->backgroundColor().isValid())
         setBackgroundBrush(map->backgroundColor());
@@ -228,17 +254,12 @@ void MapScene::mapChanged()
 
 void MapScene::repaintTileset(Tileset *tileset)
 {
-    if (!mMapDocument)
-        return;
-
-    if (contains(mMapDocument->map()->tilesets(), tileset))
-        update();
-}
-
-void MapScene::tileLayerChanged(TileLayer *, MapDocument::TileLayerChangeFlags flags)
-{
-    if (flags & MapDocument::LayerBoundsChanged)
-        updateSceneRect();
+    for (MapItem *mapItem : qAsConst(mMapItems)) {
+        if (contains(mapItem->mapDocument()->map()->tilesets(), tileset)) {
+            update();
+            return;
+        }
+    }
 }
 
 /**
@@ -247,8 +268,7 @@ void MapScene::tileLayerChanged(TileLayer *, MapDocument::TileLayerChangeFlags f
  */
 void MapScene::layerChanged(Layer *)
 {
-    // Layer offset may have changed, affecting the scene rect and grid
-    updateSceneRect();
+    // Layer offset may have changed, affecting the grid
     if (mGridVisible)
         update();
 }

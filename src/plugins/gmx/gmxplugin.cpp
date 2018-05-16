@@ -32,6 +32,8 @@
 #include <QRegularExpression>
 #include <QXmlStreamWriter>
 
+#include "qtcompat_p.h"
+
 using namespace Tiled;
 using namespace Gmx;
 
@@ -360,11 +362,11 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
 
             // Make sure the objects export in the rendering order
             if (objectGroup->drawOrder() == ObjectGroup::TopDownOrder) {
-                qStableSort(objects.begin(), objects.end(),
-                            [](const MapObject *a, const MapObject *b) { return a->y() < b->y(); });
+                std::stable_sort(objects.begin(), objects.end(),
+                                 [](const MapObject *a, const MapObject *b) { return a->y() < b->y(); });
             }
 
-            foreach (const MapObject *object, objects) {
+            for (const MapObject *object : qAsConst(objects)) {
                 // Objects with types are already exported as instances
                 if (!object->effectiveType().isEmpty())
                     continue;

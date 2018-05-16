@@ -51,8 +51,11 @@ class WangSet;
 namespace Internal {
 
 class LayerModel;
+class MapDocument;
 class MapObjectModel;
 class TileSelectionModel;
+
+using MapDocumentPtr = QSharedPointer<MapDocument>;
 
 /**
  * Represents an editable map. The purpose of this class is to make sure that
@@ -83,15 +86,17 @@ public:
 
     ~MapDocument() override;
 
+    MapDocumentPtr sharedFromThis() { return qSharedPointerCast<MapDocument>(Document::sharedFromThis()); }
+
     bool save(const QString &fileName, QString *error = nullptr) override;
 
     /**
      * Loads a map and returns a MapDocument instance on success. Returns null
      * on error and sets the \a error message.
      */
-    static MapDocument *load(const QString &fileName,
-                             MapFormat *format,
-                             QString *error = nullptr);
+    static MapDocumentPtr load(const QString &fileName,
+                               MapFormat *format,
+                               QString *error = nullptr);
 
     MapFormat *readerFormat() const;
     void setReaderFormat(MapFormat *format);

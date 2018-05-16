@@ -72,7 +72,7 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow(QWidget *parent = nullptr, Qt::WindowFlags flags = 0);
-    ~MainWindow();
+    ~MainWindow() override;
 
     void commitData(QSessionManager &manager);
 
@@ -85,15 +85,12 @@ public:
      *
      * @return whether the file was successfully opened
      */
-    bool openFile(const QString &fileName, FileFormat *fileFormat);
+    bool openFile(const QString &fileName, FileFormat *fileFormat = nullptr);
 
     /**
      * Attempt to open the previously opened file.
      */
     void openLastFiles();
-
-public slots:
-    bool openFile(const QString &fileName);
 
 protected:
     bool event(QEvent *event) override;
@@ -109,7 +106,7 @@ protected:
 
 private slots:
     void newMap();
-    void openFile();
+    void openFileDialog();
     bool saveFile();
     bool saveFileAs();
     void saveAll();

@@ -79,7 +79,7 @@ AdjustTileIndexes::AdjustTileIndexes(MapDocument *mapDocument,
         switch (layer->layerType()) {
         case Layer::TileLayerType: {
             TileLayer *tileLayer = static_cast<TileLayer*>(layer);
-            QRegion region = tileLayer->region(isFromTileset).translated(-layer->position());
+            const QRegion region = tileLayer->region(isFromTileset).translated(-layer->position());
 
             if (!region.isEmpty()) {
                 const QRect boundingRect(region.boundingRect());
@@ -87,7 +87,12 @@ AdjustTileIndexes::AdjustTileIndexes(MapDocument *mapDocument,
                                                   boundingRect.width(),
                                                   boundingRect.height());
 
-                for (const QRect &rect : region.rects()) {
+#if QT_VERSION < 0x050800
+                const auto rects = region.rects();
+                for (const QRect &rect : rects) {
+#else
+                for (const QRect &rect : region) {
+#endif
                     for (int x = rect.left(); x <= rect.right(); ++x) {
                         for (int y = rect.top(); y <= rect.bottom(); ++y) {
                             Cell cell = adjustCell(tileLayer->cellAt(x, y));

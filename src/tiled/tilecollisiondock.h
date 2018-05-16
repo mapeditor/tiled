@@ -22,6 +22,7 @@
 #define TILECOLLISIONDOCK_H
 
 #include "clipboardmanager.h"
+#include "mapdocument.h"
 
 #include <QDockWidget>
 
@@ -88,7 +89,7 @@ private:
 
     Tile *mTile;
     TilesetDocument *mTilesetDocument;
-    MapDocument *mDummyMapDocument;
+    MapDocumentPtr mDummyMapDocument;
     MapScene *mMapScene;
     MapView *mMapView;
     ToolManager *mToolManager;
@@ -99,7 +100,7 @@ private:
 
 inline MapDocument *TileCollisionDock::dummyMapDocument() const
 {
-    return mDummyMapDocument;
+    return mDummyMapDocument.data();
 }
 
 inline bool TileCollisionDock::hasSelectedObjects() const

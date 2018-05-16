@@ -36,6 +36,8 @@
 
 #include <QPainter>
 
+#include "qtcompat_p.h"
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
@@ -208,7 +210,7 @@ void MiniMapRenderer::renderToImage(QImage& image, RenderFlags renderFlags) cons
                 if (objectGroup->drawOrder() == ObjectGroup::TopDownOrder)
                     std::stable_sort(objects.begin(), objects.end(), objectLessThan);
 
-                foreach (const MapObject *object, objects) {
+                for (const MapObject *object : qAsConst(objects)) {
                     if (object->isVisible()) {
                         if (object->rotation() != qreal(0)) {
                             QPointF origin = mRenderer->pixelToScreenCoords(object->position());

@@ -2,13 +2,13 @@
 <rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
   <channel>
     <title>Tiled Development Snapshots</title>
-    <link>http://update.mapeditor.org/@APPCAST_FILENAME@</link>
+    <link>https://update.mapeditor.org/@APPCAST_FILENAME@</link>
     <language>en</language>
     <item>
       <title>Tiled @VERSION@</title>
       <pubDate>@DATE@</pubDate>
       <sparkle:releaseNotesLink>https://github.com/bjorn/tiled/commits/snapshot</sparkle:releaseNotesLink>
-      <enclosure url="http://update.mapeditor.org/snapshots-win/@FILENAME@"
+      <enclosure url="https://update.mapeditor.org/snapshots-win/@FILENAME@"
                  sparkle:version="@VERSION@"
                  type="application/octet-stream"/>
     </item>

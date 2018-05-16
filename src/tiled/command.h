@@ -94,14 +94,12 @@ public:
     CommandProcess(const Command &command, bool inTerminal = false, bool showOutput = true);
 
 private slots:
-    void handleError(QProcess::ProcessError);
-
     void consoleOutput();
-
     void consoleError();
+    void handleProcessError(QProcess::ProcessError);
 
 private:
-    void handleError(const QString &);
+    void reportErrorAndDelete(const QString &);
 
     QString mName;
     QString mFinalCommand;

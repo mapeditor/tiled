@@ -200,7 +200,14 @@ void AbstractTileFillTool::randomFill(TileLayer &tileLayer, const QRegion &regio
     if (region.isEmpty() || mRandomCellPicker.isEmpty())
         return;
 
-    for (const QRect &rect : region.translated(-tileLayer.position()).rects()) {
+    const auto localRegion = region.translated(-tileLayer.position());
+
+#if QT_VERSION < 0x050800
+    const auto rects = localRegion.rects();
+    for (const QRect &rect : rects) {
+#else
+    for (const QRect &rect : localRegion) {
+#endif
         for (int y = rect.top(); y <= rect.bottom(); ++y) {
             for (int x = rect.left(); x <= rect.right(); ++x) {
                 tileLayer.setCell(x, y,

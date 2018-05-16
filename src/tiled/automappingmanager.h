@@ -75,7 +75,7 @@ public slots:
     void autoMap();
 
 private slots:
-    void autoMap(const QRegion &where, Layer *touchedLayer);
+    void onRegionEdited(const QRegion &where, Layer *touchedLayer);
 
 private:
     Q_DISABLE_COPY(AutomappingManager)

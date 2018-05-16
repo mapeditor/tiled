@@ -1,5 +1,5 @@
 
-from cpystruct import *
+from .cpystruct import *
 
 """
 #define AN_END -1     /* Animation types, AN_END = end of anims */

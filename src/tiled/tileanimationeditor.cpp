@@ -300,42 +300,42 @@ TileAnimationEditor::TileAnimationEditor(QWidget *parent)
     mUi->tilesetView->zoomable()->setComboBox(mUi->zoomComboBox);
     mUi->frameTime->setValue(mFrameListModel->defaultDuration());
 
-    connect(mUi->tilesetView, SIGNAL(doubleClicked(QModelIndex)),
-            SLOT(addFrameForTileAt(QModelIndex)));
+    connect(mUi->tilesetView, &QAbstractItemView::doubleClicked,
+            this, &TileAnimationEditor::addFrameForTileAt);
 
-    connect(mFrameListModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
-            SLOT(framesEdited()));
-    connect(mFrameListModel, SIGNAL(rowsInserted(QModelIndex,int,int)),
-            SLOT(framesEdited()));
-    connect(mFrameListModel, SIGNAL(rowsRemoved(QModelIndex,int,int)),
-            SLOT(framesEdited()));
-    connect(mFrameListModel, SIGNAL(rowsMoved(QModelIndex,int,int,QModelIndex,int)),
-            SLOT(framesEdited()));
+    connect(mFrameListModel, &QAbstractItemModel::dataChanged,
+            this, &TileAnimationEditor::framesEdited);
+    connect(mFrameListModel, &QAbstractItemModel::rowsInserted,
+            this, &TileAnimationEditor::framesEdited);
+    connect(mFrameListModel, &QAbstractItemModel::rowsRemoved,
+            this, &TileAnimationEditor::framesEdited);
+    connect(mFrameListModel, &QAbstractItemModel::rowsMoved,
+            this, &TileAnimationEditor::framesEdited);
 
-    connect(mPreviewAnimationDriver, SIGNAL(update(int)),
-            SLOT(advancePreviewAnimation(int)));
+    connect(mPreviewAnimationDriver, &TileAnimationDriver::update,
+            this, &TileAnimationEditor::advancePreviewAnimation);
 
-    connect(mUi->frameTime, SIGNAL(valueChanged(int)),
-            SLOT(setDefaultFrameTime(int)));
+    connect(mUi->frameTime, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+            this, &TileAnimationEditor::setDefaultFrameTime);
 
-    connect(mUi->setFrameTimeButton, SIGNAL(clicked(bool)),
-            SLOT(setFrameTime()));
+    connect(mUi->setFrameTimeButton, &QAbstractButton::clicked,
+            this, &TileAnimationEditor::setFrameTime);
 
     QShortcut *undoShortcut = new QShortcut(QKeySequence::Undo, this);
     QShortcut *redoShortcut = new QShortcut(QKeySequence::Redo, this);
     QShortcut *deleteShortcut = new QShortcut(QKeySequence::Delete, this);
     QShortcut *deleteShortcut2 = new QShortcut(QKeySequence(Qt::Key_Backspace), this);
 
-    connect(undoShortcut, SIGNAL(activated()), SLOT(undo()));
-    connect(redoShortcut, SIGNAL(activated()), SLOT(redo()));
-    connect(deleteShortcut, SIGNAL(activated()), SLOT(delete_()));
-    connect(deleteShortcut2, SIGNAL(activated()), SLOT(delete_()));
+    connect(undoShortcut, &QShortcut::activated, this, &TileAnimationEditor::undo);
+    connect(redoShortcut, &QShortcut::activated, this, &TileAnimationEditor::redo);
+    connect(deleteShortcut, &QShortcut::activated, this, &TileAnimationEditor::delete_);
+    connect(deleteShortcut2, &QShortcut::activated, this, &TileAnimationEditor::delete_);
 
     Utils::restoreGeometry(this);
 
     mUi->horizontalSplitter->setSizes(QList<int>()
-                                      << Utils::dpiScaled(128)
-                                      << Utils::dpiScaled(512));
+                                      << qRound(Utils::dpiScaled(128))
+                                      << qRound(Utils::dpiScaled(512)));
 }
 
 TileAnimationEditor::~TileAnimationEditor()

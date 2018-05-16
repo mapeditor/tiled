@@ -68,8 +68,8 @@ TileStampsDock::TileStampsDock(TileStampManager *stampManager, QWidget *parent)
     mTileStampView->header()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
 
     mTileStampView->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(mTileStampView, SIGNAL(customContextMenuRequested(QPoint)),
-            SLOT(showContextMenu(QPoint)));
+    connect(mTileStampView, &QWidget::customContextMenuRequested,
+            this, &TileStampsDock::showContextMenu);
 
     mNewStamp->setIcon(QIcon(QLatin1String(":images/16x16/document-new.png")));
     mAddVariation->setIcon(QIcon(QLatin1String(":/images/16x16/add.png")));
@@ -195,8 +195,8 @@ void TileStampsDock::showContextMenu(QPoint pos)
         QAction *deleteStamp = new QAction(mDelete->icon(),
                                            tr("Delete Stamp"), &menu);
 
-        connect(deleteStamp, SIGNAL(triggered(bool)), SLOT(delete_()));
-        connect(addStampVariation, SIGNAL(triggered(bool)), SLOT(addVariation()));
+        connect(deleteStamp, &QAction::triggered, this, &TileStampsDock::delete_);
+        connect(addStampVariation, &QAction::triggered, this, &TileStampsDock::addVariation);
 
         menu.addAction(addStampVariation);
         menu.addSeparator();
@@ -208,7 +208,7 @@ void TileStampsDock::showContextMenu(QPoint pos)
 
         Utils::setThemeIcon(removeVariation, "remove");
 
-        connect(removeVariation, SIGNAL(triggered(bool)), SLOT(delete_()));
+        connect(removeVariation, &QAction::triggered, this, &TileStampsDock::delete_);
 
         menu.addAction(removeVariation);
     }

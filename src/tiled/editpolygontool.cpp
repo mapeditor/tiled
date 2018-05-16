@@ -216,8 +216,10 @@ void EditPolygonTool::mousePressed(QGraphicsSceneMouseEvent *event)
                                                                viewTransform(event));
 
         mClickedObject = nullptr;
-        for (int i = 0; i < items.size(); ++i) {
-            if (auto mapObjectItem = qgraphicsitem_cast<MapObjectItem*>(items.at(i))) {
+        for (QGraphicsItem *item : items) {
+            if (!item->isEnabled())
+                continue;
+            if (auto mapObjectItem = qgraphicsitem_cast<MapObjectItem*>(item)) {
                 if (mapObjectItem->mapObject()->objectGroup()->isUnlocked()) {
                     mClickedObject = mapObjectItem->mapObject();
                     break;
@@ -476,6 +478,8 @@ void EditPolygonTool::updateSelection(QGraphicsSceneMouseEvent *event)
         QList<MapObject*> selectedObjects;
 
         for (QGraphicsItem *item : intersectedItems) {
+            if (!item->isEnabled())
+                continue;
             auto mapObjectItem = qgraphicsitem_cast<MapObjectItem*>(item);
             if (mapObjectItem && mapObjectItem->mapObject()->objectGroup()->isUnlocked())
                 selectedObjects.append(mapObjectItem->mapObject());

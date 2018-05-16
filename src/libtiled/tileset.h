@@ -514,14 +514,6 @@ inline void Tileset::setBackgroundColor(QColor color)
 }
 
 /**
- * Convenience override that loads the image using the QImage constructor.
- */
-inline bool Tileset::loadFromImage(const QString &fileName)
-{
-    return loadFromImage(QImage(fileName), QUrl::fromLocalFile(fileName));
-}
-
-/**
  * Returns the URL of the external image that contains the tiles in
  * this tileset. Is an empty string when this tileset doesn't have a
  * tileset image.

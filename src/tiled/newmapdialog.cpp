@@ -119,12 +119,12 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     font.setPointSizeF(size - 1);
     mUi->pixelSizeLabel->setFont(font);
 
-    connect(mUi->mapWidth, SIGNAL(valueChanged(int)), SLOT(refreshPixelSize()));
-    connect(mUi->mapHeight, SIGNAL(valueChanged(int)), SLOT(refreshPixelSize()));
-    connect(mUi->tileWidth, SIGNAL(valueChanged(int)), SLOT(refreshPixelSize()));
-    connect(mUi->tileHeight, SIGNAL(valueChanged(int)), SLOT(refreshPixelSize()));
-    connect(mUi->orientation, SIGNAL(currentIndexChanged(int)), SLOT(refreshPixelSize()));
-    connect(mUi->fixedSize, SIGNAL(toggled(bool)), SLOT(updateWidgets(bool)));
+    connect(mUi->mapWidth, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &NewMapDialog::refreshPixelSize);
+    connect(mUi->mapHeight, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &NewMapDialog::refreshPixelSize);
+    connect(mUi->tileWidth, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &NewMapDialog::refreshPixelSize);
+    connect(mUi->tileHeight, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &NewMapDialog::refreshPixelSize);
+    connect(mUi->orientation, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &NewMapDialog::refreshPixelSize);
+    connect(mUi->fixedSize, &QAbstractButton::toggled, this, &NewMapDialog::updateWidgets);
 
     if (fixedSize)
         mUi->fixedSize->setChecked(true);
@@ -139,10 +139,10 @@ NewMapDialog::~NewMapDialog()
     delete mUi;
 }
 
-MapDocument *NewMapDialog::createMap()
+MapDocumentPtr NewMapDialog::createMap()
 {
     if (exec() != QDialog::Accepted)
-        return nullptr;
+        return MapDocumentPtr();
 
     const bool fixedSize = mUi->fixedSize->isChecked();
     const int mapWidth = mUi->mapWidth->value();
@@ -154,10 +154,10 @@ MapDocument *NewMapDialog::createMap()
     const auto layerFormat = comboBoxValue<Map::LayerDataFormat>(mUi->layerFormat);
     const auto renderOrder = comboBoxValue<Map::RenderOrder>(mUi->renderOrder);
 
-    Map *map = new Map(orientation,
-                       mapWidth, mapHeight,
-                       tileWidth, tileHeight,
-                       !fixedSize);
+    QScopedPointer<Map> map { new Map(orientation,
+                                      mapWidth, mapHeight,
+                                      tileWidth, tileHeight,
+                                      !fixedSize) };
 
     map->setLayerDataFormat(layerFormat);
     map->setRenderOrder(renderOrder);
@@ -189,7 +189,7 @@ MapDocument *NewMapDialog::createMap()
     s->setValue(QLatin1String(TILE_WIDTH_KEY), tileWidth);
     s->setValue(QLatin1String(TILE_HEIGHT_KEY), tileHeight);
 
-    return new MapDocument(map);
+    return MapDocumentPtr::create(map.take());
 }
 
 void NewMapDialog::refreshPixelSize()

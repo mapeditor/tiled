@@ -154,7 +154,12 @@ TileLayer *WangFiller::fillRegion(const TileLayer &back,
                                          boundingRect.height());
 
     QVector<WangId> wangIds(tileLayer->width() * tileLayer->height(), 0);
-    for (const QRect &rect : fillRegion.rects()) {
+#if QT_VERSION < 0x050800
+    const auto rects = fillRegion.rects();
+    for (const QRect &rect : rects) {
+#else
+    for (const QRect &rect : fillRegion) {
+#endif
         for (int x = rect.left(); x <= rect.right(); ++x) {
             int index = x - tileLayer->x() + (rect.top() - tileLayer->y()) * tileLayer->width();
             wangIds[index] = wangIdFromSurroundings(back,
@@ -179,7 +184,11 @@ TileLayer *WangFiller::fillRegion(const TileLayer &back,
         }
     }
 
-    for (const QRect &rect : fillRegion.rects()) {
+#if QT_VERSION < 0x050800
+    for (const QRect &rect : rects) {
+#else
+    for (const QRect &rect : fillRegion) {
+#endif
         for (int y = rect.top(); y <= rect.bottom(); ++y) {
             for (int x = rect.left(); x <= rect.right(); ++x) {
                 QPoint currentPoint(x, y);

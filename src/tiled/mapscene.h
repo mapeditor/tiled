@@ -27,8 +27,7 @@
 
 #include <QColor>
 #include <QGraphicsScene>
-#include <QMap>
-#include <QSet>
+#include <QHash>
 
 namespace Tiled {
 
@@ -93,7 +92,6 @@ private slots:
 
     void mapChanged();
     void repaintTileset(Tileset *tileset);
-    void tileLayerChanged(TileLayer *, MapDocument::TileLayerChangeFlags flags);
 
     void layerChanged(Layer *);
 
@@ -109,7 +107,7 @@ private:
     bool eventFilter(QObject *object, QEvent *event) override;
 
     MapDocument *mMapDocument;
-    MapItem *mMapItem;
+    QHash<MapDocument*, MapItem*> mMapItems;
     AbstractTool *mSelectedTool;
     AbstractTool *mActiveTool;
     bool mGridVisible;

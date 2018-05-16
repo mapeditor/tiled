@@ -1,7 +1,7 @@
 import qbs 1.0
 
 TiledPlugin {
-    cpp.defines: ["JSON_LIBRARY"]
+    cpp.defines: base.concat(["JSON_LIBRARY"])
 
     files: [
         "json_global.h",

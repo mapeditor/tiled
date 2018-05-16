@@ -31,6 +31,8 @@
 #include <QScopedPointer>
 #include <QTextStream>
 
+#include "qtcompat_p.h"
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
@@ -74,7 +76,7 @@ void AutomappingManager::autoMap()
     autoMapInternal(region, nullptr);
 }
 
-void AutomappingManager::autoMap(const QRegion &where, Layer *touchedLayer)
+void AutomappingManager::onRegionEdited(const QRegion &where, Layer *touchedLayer)
 {
     if (Preferences::instance()->automappingDrawing())
         autoMapInternal(where, touchedLayer);
@@ -103,7 +105,7 @@ void AutomappingManager::autoMapInternal(const QRegion &where,
 
     QVector<AutoMapper*> passedAutoMappers;
     if (touchedLayer) {
-        foreach (AutoMapper *a, mAutoMappers) {
+        for (AutoMapper *a : qAsConst(mAutoMappers)) {
             if (a->ruleLayerNameUsed(touchedLayer->name()))
                 passedAutoMappers.append(a);
         }
@@ -121,7 +123,7 @@ void AutomappingManager::autoMapInternal(const QRegion &where,
         undoStack->push(aw);
         undoStack->endMacro();
     }
-    foreach (AutoMapper *automapper, mAutoMappers) {
+    for (AutoMapper *automapper : qAsConst(mAutoMappers)) {
         mWarning += automapper->warningString();
         mError += automapper->errorString();
     }
@@ -208,8 +210,8 @@ void AutomappingManager::setMapDocument(MapDocument *mapDocument)
     mMapDocument = mapDocument;
 
     if (mMapDocument) {
-        connect(mMapDocument, SIGNAL(regionEdited(QRegion,Layer*)),
-                this, SLOT(autoMap(QRegion,Layer*)));
+        connect(mMapDocument, &MapDocument::regionEdited,
+                this, &AutomappingManager::onRegionEdited);
     }
 
     mLoaded = false;

@@ -8,7 +8,6 @@ TiledQtGuiApplication {
     Depends { name: "Qt"; submodules: ["widgets"] }
 
     cpp.includePaths: ["."]
-    cpp.defines: ["QT_NO_FOREACH"]
 
     consoleApplication: false
 

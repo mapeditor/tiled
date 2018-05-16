@@ -84,7 +84,8 @@ void TerrainBrush::tilePositionChanged(const QPoint &pos)
     case Paint: {
         int x = mPaintX;
         int y = mPaintY;
-        foreach (const QPoint &p, pointsOnLine(x, y, pos.x(), pos.y())) {
+        const auto points = pointsOnLine(x, y, pos.x(), pos.y());
+        for (const QPoint &p : points) {
             updateBrush(p);
             doPaint(true);
         }

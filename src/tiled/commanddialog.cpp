@@ -204,10 +204,10 @@ CommandTreeView::CommandTreeView(QWidget *parent)
     // Allow deletion via keyboard
     QShortcut *d = new QShortcut(QKeySequence::Delete, this);
     d->setContext(Qt::WidgetShortcut);
-    connect(d, SIGNAL(activated()), SLOT(removeSelectedCommands()));
+    connect(d, &QShortcut::activated, this, &CommandTreeView::removeSelectedCommands);
 
-    connect(mModel, SIGNAL(rowsRemoved(QModelIndex, int, int)),
-                    SLOT(handleRowsRemoved(QModelIndex, int, int)));
+    connect(mModel, &QAbstractItemModel::rowsRemoved,
+            this, &CommandTreeView::handleRowsRemoved);
 }
 
 void CommandTreeView::contextMenuEvent(QContextMenuEvent *event)

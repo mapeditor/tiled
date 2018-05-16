@@ -24,25 +24,16 @@
 
 #include "mapdocument.h"
 #include "mapobject.h"
-#include "mapobjectmodel.h"
 #include "maprenderer.h"
 #include "mapscene.h"
 #include "mapview.h"
 #include "objectgroup.h"
 #include "objectgroupitem.h"
 #include "preferences.h"
-#include "resizemapobject.h"
 #include "tile.h"
 #include "zoomable.h"
 
-#include <QApplication>
-#include <QGraphicsSceneMouseEvent>
 #include <QPainter>
-#include <QPalette>
-#include <QStyleOptionGraphicsItem>
-#include <QVector2D>
-
-#include <cmath>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -53,6 +44,7 @@ MapObjectItem::MapObjectItem(MapObject *object, MapDocument *mapDocument,
     mObject(object),
     mMapDocument(mapDocument)
 {
+    setAcceptedMouseButtons(Qt::MouseButtons());
     syncWithMapObject();
 }
 

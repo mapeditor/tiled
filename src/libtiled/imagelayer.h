@@ -115,7 +115,6 @@ public:
      */
     bool loadFromImage(const QImage &image, const QUrl &source);
     bool loadFromImage(const QImage &image, const QString &source);
-
     bool loadFromImage(const QUrl &url);
 
     /**
@@ -133,11 +132,5 @@ private:
     QColor mTransparentColor;
     QPixmap mImage;
 };
-
-
-inline bool ImageLayer::loadFromImage(const QUrl &url)
-{
-    return loadFromImage(QImage(url.toLocalFile()), url);
-}
 
 } // namespace Tiled

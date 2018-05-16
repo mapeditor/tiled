@@ -61,7 +61,8 @@ public:
     void languageChanged() override;
 
 private slots:
-    void updateHandles(bool resetOriginIndicator = true);
+    void updateHandles();
+    void updateHandlesAndOrigin();
     void updateHandleVisibility();
 
     void objectsRemoved(const QList<MapObject *> &);
@@ -80,6 +81,8 @@ private:
         Resize,
         Rotate,
     };
+
+    void updateHandlesImpl(bool resetOriginIndicator);
 
     void updateHover(const QPointF &pos);
     void updateSelection(const QPointF &pos,

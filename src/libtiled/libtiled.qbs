@@ -44,6 +44,8 @@ DynamicLibrary {
         "hex.h",
         "hexagonalrenderer.cpp",
         "hexagonalrenderer.h",
+        "imagecache.cpp",
+        "imagecache.h",
         "imagelayer.cpp",
         "imagelayer.h",
         "imagereference.cpp",
@@ -111,6 +113,8 @@ DynamicLibrary {
         "varianttomapconverter.h",
         "wangset.cpp",
         "wangset.h",
+        "worldmanager.cpp",
+        "worldmanager.h",
     ]
 
     Group {
