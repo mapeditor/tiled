@@ -7,6 +7,8 @@ import qbs.FileInfo
 TiledPlugin {
     Depends { name: "Qt"; submodules: ["widgets"] }
 
+    cpp.defines: base.concat(["Py_LIMITED_API=0x03040000"])
+
     condition: {
         if (qbs.targetOS.contains("windows"))
             return File.exists(Environment.getEnv("PYTHONHOME"));

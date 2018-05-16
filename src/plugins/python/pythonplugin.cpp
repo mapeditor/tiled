@@ -72,10 +72,6 @@ void PythonPlugin::initialize()
     addObject(&mLogger);
 
     if (!Py_IsInitialized()) {
-        // PEP370
-        Py_NoSiteFlag = 1;
-        Py_NoUserSiteDirectory = 1;
-
         PyImport_AppendInittab("tiled", PyInit_tiled);
         PyImport_AppendInittab("tiled.qt", PyInit_tiled);
         PyImport_AppendInittab("tiled.Tiled", PyInit_tiled);
@@ -368,7 +364,7 @@ QString PythonMapFormat::nameFilter() const
         PySys_WriteStderr("** Uncaught exception in script **\n");
     } else {
         PyObject* pyStr = PyUnicode_AsEncodedString(pinst, "utf-8", "Error ~");
-        ret = PyBytes_AS_STRING(pyStr);
+        ret = PyBytes_AsString(pyStr);
         Py_XDECREF(pyStr);
         Py_DECREF(pinst);
     }
@@ -396,7 +392,7 @@ QString PythonMapFormat::shortName() const
         PySys_WriteStderr("** Uncaught exception in script **\n");
     } else {
         PyObject* pyStr = PyUnicode_AsEncodedString(pinst, "utf-8", "Error ~");
-        ret = PyBytes_AS_STRING(pyStr);
+        ret = PyBytes_AsString(pyStr);
         Py_XDECREF(pyStr);
         Py_DECREF(pinst);
     }
