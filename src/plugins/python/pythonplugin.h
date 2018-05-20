@@ -71,13 +71,15 @@ public:
     void log(const QString &msg);
 
 private slots:
-    void reloadModules();
+    void reloadUserModules();
 
 private:
     bool loadOrReloadModule(ScriptEntry &script);
+    void reloadModules(QString path);
     PyObject *findPluginSubclass(PyObject *module);
 
-    QString mScriptDir;
+    QString mSysScriptDir;
+    QString mUserScriptDir;
     QMap<QString,ScriptEntry> mScripts;
     PyObject *mPluginClass;
 

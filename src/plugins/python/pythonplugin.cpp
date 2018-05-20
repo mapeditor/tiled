@@ -1,6 +1,6 @@
 /*
  * Python Tiled Plugin
- * Copyright 2012-2013, Samuli Tuomola <samuli@tuomola.net>
+ * Copyright 2012-2018, Samuli Tuomola <samuli@tuomola.net>
  *
  * This file is part of Tiled.
  *
@@ -18,6 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#define Py_LIMITED_API 0x03040000
 #include "pythonplugin.h"
 
 #include "map.h"
@@ -25,6 +26,7 @@
 #include <QDateTime>
 #include <QDir>
 #include <QDirIterator>
+#include <QCoreApplication>
 
 namespace Python {
 
@@ -40,7 +42,8 @@ static void handleError()
 }
 
 PythonPlugin::PythonPlugin()
-    : mScriptDir(QDir::homePath() + "/.tiled")
+    : mSysScriptDir(QCoreApplication::applicationDirPath() + "/scripts")
+    , mUserScriptDir(QDir::homePath() + "/.tiled")
     , mPluginClass(nullptr)
 {
     mReloadTimer.setSingleShot(true);
@@ -52,7 +55,7 @@ PythonPlugin::PythonPlugin()
             this, [this] { mReloadTimer.start(); });
 
     connect(&mReloadTimer, &QTimer::timeout,
-            this, &PythonPlugin::reloadModules);
+            this, &PythonPlugin::reloadUserModules);
 }
 
 PythonPlugin::~PythonPlugin()
@@ -72,9 +75,9 @@ void PythonPlugin::initialize()
     addObject(&mLogger);
 
     if (!Py_IsInitialized()) {
-        // PEP370
-        Py_NoSiteFlag = 1;
-        Py_NoUserSiteDirectory = 1;
+        QString scriptPath = mSysScriptDir + ":" + mUserScriptDir + ":" + QString::fromWCharArray(Py_GetPath());
+        log(tr("Python paths: %1").arg(scriptPath));
+        Py_SetPath(scriptPath.toStdWString().c_str());
 
         PyImport_AppendInittab("tiled", PyInit_tiled);
         PyImport_AppendInittab("tiled.qt", PyInit_tiled);
@@ -102,35 +105,20 @@ void PythonPlugin::initialize()
             return;
         }
 
-        // w/o differentiating error messages could just rename "log"
-        // to "write" in the binding and assign plugin directly to stdout/stderr
-        PySys_SetObject((char *)"_tiledplugin",
+        // this is written to by stdout/stderr redirection in _preload.py
+        PySys_SetObject((char *)"_logger",
                         _wrap_convert_c2py__Tiled__LoggingInterface(&mLogger));
-
-        PyRun_SimpleString("import sys\n"
-                           "#from tiled.Tiled.LoggingInterface import INFO,ERROR\n"
-                           "class _Catcher:\n"
-                           "   def __init__(self, type):\n"
-                           "      self.buffer = ''\n"
-                           "      self.type = type\n"
-                           "   def write(self, msg):\n"
-                           "      self.buffer += msg\n"
-                           "      if self.buffer.endswith('\\n'):\n"
-                           "         sys._tiledplugin.log(self.type, self.buffer)\n"
-                           "         self.buffer = ''\n"
-                           "sys.stdout = _Catcher(0)\n"
-                           "sys.stderr = _Catcher(1)\n");
-
-        PyRun_SimpleString(QString("import sys; sys.path.insert(0, \"%1\")")
-                           .arg(mScriptDir).toUtf8().constData());
-
-        log(QString("-- Added %1 to path\n").arg(mScriptDir));
     }
 
-    reloadModules();
+    reloadModules(mSysScriptDir);
+    reloadModules(mUserScriptDir);
 
-    if (QFile::exists(mScriptDir))
-        mFileSystemWatcher.addPath(mScriptDir);
+    if (QFile::exists(mUserScriptDir)) {
+        mFileSystemWatcher.addPath(mUserScriptDir);
+
+        connect(&mFileSystemWatcher, SIGNAL(directoryChanged(QString)),
+                &mReloadTimer, SLOT(start()));
+    }
 }
 
 void PythonPlugin::log(Tiled::LoggingInterface::OutputType type,
@@ -144,12 +132,17 @@ void PythonPlugin::log(const QString &msg)
     log(Tiled::LoggingInterface::INFO, msg);
 }
 
+void PythonPlugin::reloadUserModules()
+{
+    reloadModules(mUserScriptDir);
+}
+
 /**
  * (Re)load modules in the script directory
  */
-void PythonPlugin::reloadModules()
+void PythonPlugin::reloadModules(QString path)
 {
-    log(tr("Reloading Python scripts"));
+    log(tr("Reloading Python scripts in %1").arg(path));
 
     // Remove any currently watched script files
     const QStringList files = mFileSystemWatcher.files();
@@ -157,7 +150,7 @@ void PythonPlugin::reloadModules()
         mFileSystemWatcher.removePaths(files);
 
     const QStringList pyfilter("*.py");
-    QDirIterator iter(mScriptDir, pyfilter, QDir::Files | QDir::Readable);
+    QDirIterator iter(path, pyfilter, QDir::Files | QDir::Readable);
 
     QStringList filesToWatch;
 
@@ -368,7 +361,7 @@ QString PythonMapFormat::nameFilter() const
         PySys_WriteStderr("** Uncaught exception in script **\n");
     } else {
         PyObject* pyStr = PyUnicode_AsEncodedString(pinst, "utf-8", "Error ~");
-        ret = PyBytes_AS_STRING(pyStr);
+        ret = PyBytes_AsString(pyStr);
         Py_XDECREF(pyStr);
         Py_DECREF(pinst);
     }
@@ -396,7 +389,7 @@ QString PythonMapFormat::shortName() const
         PySys_WriteStderr("** Uncaught exception in script **\n");
     } else {
         PyObject* pyStr = PyUnicode_AsEncodedString(pinst, "utf-8", "Error ~");
-        ret = PyBytes_AS_STRING(pyStr);
+        ret = PyBytes_AsString(pyStr);
         Py_XDECREF(pyStr);
         Py_DECREF(pinst);
     }
