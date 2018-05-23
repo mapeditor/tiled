@@ -285,7 +285,6 @@ const MapObject *MapObject::templateObject() const
 void MapObject::syncWithTemplate()
 {
     const MapObject *base = templateObject();
-
     if (!base)
         return;
 

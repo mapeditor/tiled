@@ -924,6 +924,16 @@ void MapDocument::unifyTilesets(Map *map, QVector<SharedTileset> &missingTileset
     }
 }
 
+bool MapDocument::templateAllowed(const ObjectTemplate *objectTemplate) const
+{
+    if (!objectTemplate->object())
+        return false;
+    if (objectTemplate->object()->isTileObject() && !mAllowTileObjects)
+        return false;
+
+    return true;
+}
+
 /**
  * Before forwarding the signal, the objects are removed from the list of
  * selected objects, triggering a selectedObjectsChanged signal when

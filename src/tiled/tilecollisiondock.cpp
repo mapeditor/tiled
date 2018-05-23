@@ -180,6 +180,7 @@ void TileCollisionDock::setTile(Tile *tile)
 
         mDummyMapDocument = MapDocumentPtr::create(map.take());
         mDummyMapDocument->setAllowHidingObjects(false);
+        mDummyMapDocument->setAllowTileObjects(false);
         mDummyMapDocument->setCurrentLayer(objectGroup);
 
         mMapScene->setMapDocument(mDummyMapDocument.data());

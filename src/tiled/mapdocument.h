@@ -232,6 +232,11 @@ public:
     bool allowHidingObjects() const { return mAllowHidingObjects; }
     void setAllowHidingObjects(bool value) { mAllowHidingObjects = value; }
 
+    bool allowTileObjects() const { return mAllowTileObjects; }
+    void setAllowTileObjects(bool value) { mAllowTileObjects = value; }
+
+    bool templateAllowed(const ObjectTemplate *objectTemplate) const;
+
 signals:
     /**
      * Emitted when the selected tile region changes. Sends the currently
@@ -359,6 +364,7 @@ private:
     Layer *mCurrentLayer;
     MapObjectModel *mMapObjectModel;
     bool mAllowHidingObjects = true;
+    bool mAllowTileObjects = true;
 };
 
 } // namespace Internal

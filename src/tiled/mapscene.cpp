@@ -31,6 +31,7 @@
 #include "mapobject.h"
 #include "maprenderer.h"
 #include "objectgroup.h"
+#include "objecttemplate.h"
 #include "preferences.h"
 #include "stylehelper.h"
 #include "templatemanager.h"
@@ -412,13 +413,39 @@ void MapScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
     }
 }
 
+static const ObjectTemplate *readObjectTemplate(const QMimeData *mimeData)
+{
+    if (!mimeData->hasFormat(QLatin1String(TEMPLATES_MIMETYPE)))
+        return nullptr;
+
+    QByteArray encodedData = mimeData->data(QLatin1String(TEMPLATES_MIMETYPE));
+    QDataStream stream(&encodedData, QIODevice::ReadOnly);
+
+    QString fileName;
+    stream >> fileName;
+
+    return TemplateManager::instance()->findObjectTemplate(fileName);
+}
+
 /**
  * Override to ignore drag enter events except for templates.
  */
 void MapScene::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
 {
-    if (!event->mimeData()->hasFormat(QLatin1String(TEMPLATES_MIMETYPE)))
-        event->ignore();
+    event->ignore();    // ignore, because events start out accepted
+
+    if (!mapDocument())
+        return;
+
+    ObjectGroup *objectGroup = dynamic_cast<ObjectGroup*>(mapDocument()->currentLayer());
+    if (!objectGroup)
+        return;
+
+    const ObjectTemplate *objectTemplate = readObjectTemplate(event->mimeData());
+    if (!objectTemplate || !mapDocument()->templateAllowed(objectTemplate))
+        return;
+
+    QGraphicsScene::dragEnterEvent(event);  // accepts the event
 }
 
 /**
@@ -426,25 +453,18 @@ void MapScene::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
  */
 void MapScene::dropEvent(QGraphicsSceneDragDropEvent *event)
 {
-    const QMimeData *mimeData = event->mimeData();
+    if (!mapDocument())
+        return;
 
     ObjectGroup *objectGroup = dynamic_cast<ObjectGroup*>(mapDocument()->currentLayer());
-    if (!objectGroup || !mimeData->hasFormat(QLatin1String(TEMPLATES_MIMETYPE)))
+    if (!objectGroup)
         return;
 
-    QByteArray encodedData = mimeData->data(QLatin1String(TEMPLATES_MIMETYPE));
-    QDataStream stream(&encodedData, QIODevice::ReadOnly);
-
-    TemplateManager *templateManager = TemplateManager::instance();
-
-    QString fileName;
-    stream >> fileName;
-
-    const ObjectTemplate *objectTemplate = templateManager->findObjectTemplate(fileName);
-    if (!objectTemplate)
+    const ObjectTemplate *objectTemplate = readObjectTemplate(event->mimeData());
+    if (!objectTemplate || !mapDocument()->templateAllowed(objectTemplate))
         return;
 
-    MapObject *newMapObject = new MapObject();
+    MapObject *newMapObject = new MapObject;
     newMapObject->setObjectTemplate(objectTemplate);
     newMapObject->syncWithTemplate();
     newMapObject->setPosition(event->scenePos());

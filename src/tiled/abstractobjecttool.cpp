@@ -474,13 +474,14 @@ void AbstractObjectTool::showContextMenu(MapObject *clickedObject,
 
     // Create action for replacing an object with a template
     auto replaceTemplateAction = menu.addAction(tr("Replace With Template"), this, SLOT(replaceObjectsWithTemplate()));
+    auto selectedTemplate = objectTemplate();
 
-    if (auto selectedTemplate = objectTemplate()) {
+    if (selectedTemplate) {
         QString name = QFileInfo(selectedTemplate->fileName()).fileName();
         replaceTemplateAction->setText(tr("Replace With Template \"%1\"").arg(name));
-    } else {
-        replaceTemplateAction->setEnabled(false);
     }
+    if (!selectedTemplate || !mapDocument()->templateAllowed(selectedTemplate))
+        replaceTemplateAction->setEnabled(false);
 
     if (selectedObjects.size() == 1) {
         MapObject *currentObject = selectedObjects.first();
