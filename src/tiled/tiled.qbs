@@ -528,6 +528,7 @@ QtGuiApplication {
         files: ["sparkleautoupdater.mm"]
     }
     Group {
+        condition: qbs.targetOS.contains("macos")
         name: "Public DSA Key File"
         files: ["../../dist/dsa_pub.pem"]
         qbs.install: true
