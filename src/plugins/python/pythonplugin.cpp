@@ -18,7 +18,6 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#define Py_LIMITED_API 0x03040000
 #include "pythonplugin.h"
 
 #include "map.h"

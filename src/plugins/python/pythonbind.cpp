@@ -10,7 +10,7 @@
 
 
 #if PY_VERSION_HEX >= 0x03000000
-#if PY_VERSION_HEX >= 0x03050000
+#if PY_VERSION_HEX >= 0x03050000 && 0   // <- TODO: this is not Py_LIMITED_API compatible?
 typedef PyAsyncMethods* cmpfunc;
 #else
 typedef void* cmpfunc;
@@ -63,10 +63,9 @@ typedef struct {
 } PyPythonPythonScript;
 
 
-extern PyTypeObject PyPythonPythonScript_Type;
+extern PyTypeObject *PyPythonPythonScript_Type;
 
 /* --- forward declarations --- */
-
 
 typedef struct {
     PyObject_HEAD
@@ -75,7 +74,7 @@ typedef struct {
 } PyQPointF;
 
 
-extern PyTypeObject PyQPointF_Type;
+extern PyTypeObject *PyQPointF_Type;
 
 
 typedef struct {
@@ -85,7 +84,7 @@ typedef struct {
 } PyQSizeF;
 
 
-extern PyTypeObject PyQSizeF_Type;
+extern PyTypeObject *PyQSizeF_Type;
 
 
 typedef struct {
@@ -95,7 +94,7 @@ typedef struct {
 } PyQRgb;
 
 
-extern PyTypeObject PyQRgb_Type;
+extern PyTypeObject *PyQRgb_Type;
 
 
 typedef struct {
@@ -105,7 +104,7 @@ typedef struct {
 } PyQColor;
 
 
-extern PyTypeObject PyQColor_Type;
+extern PyTypeObject *PyQColor_Type;
 
 
 typedef struct {
@@ -115,7 +114,7 @@ typedef struct {
 } PyQImage;
 
 
-extern PyTypeObject PyQImage_Type;
+extern PyTypeObject *PyQImage_Type;
 
 
 typedef struct {
@@ -125,7 +124,7 @@ typedef struct {
 } PyQPixmap;
 
 
-extern PyTypeObject PyQPixmap_Type;
+extern PyTypeObject *PyQPixmap_Type;
 
 
 typedef struct {
@@ -135,7 +134,7 @@ typedef struct {
 } PyQWidget;
 
 
-extern PyTypeObject PyQWidget_Type;
+extern PyTypeObject *PyQWidget_Type;
 
 
 typedef struct {
@@ -145,7 +144,7 @@ typedef struct {
 } PyQFileDialog;
 
 
-extern PyTypeObject PyQFileDialog_Type;
+extern PyTypeObject *PyQFileDialog_Type;
 
 
 typedef struct {
@@ -161,8 +160,8 @@ typedef struct {
 } PyQVector__lt__QRgb__gt__Iter;
 
 
-extern PyTypeObject PyQVector__lt__QRgb__gt___Type;
-extern PyTypeObject PyQVector__lt__QRgb__gt__Iter_Type;
+extern PyTypeObject *PyQVector__lt__QRgb__gt___Type;
+extern PyTypeObject *PyQVector__lt__QRgb__gt__Iter_Type;
 
 int _wrap_convert_py2c__QVector__lt___QRgb___gt__(PyObject *arg, QVector<QRgb> *container);
 
@@ -179,8 +178,8 @@ typedef struct {
 } PyQList__lt__QString__gt__Iter;
 
 
-extern PyTypeObject PyQList__lt__QString__gt___Type;
-extern PyTypeObject PyQList__lt__QString__gt__Iter_Type;
+extern PyTypeObject *PyQList__lt__QString__gt___Type;
+extern PyTypeObject *PyQList__lt__QString__gt__Iter_Type;
 
 int _wrap_convert_py2c__QList__lt___QString___gt__(PyObject *arg, QList<QString> *container);
 /* --- forward declarations --- */
@@ -193,7 +192,7 @@ typedef struct {
 } PyTiledProperties;
 
 
-extern PyTypeObject PyTiledProperties_Type;
+extern PyTypeObject *PyTiledProperties_Type;
 
 
 typedef struct {
@@ -203,7 +202,7 @@ typedef struct {
 } PyTiledObject;
 
 
-extern PyTypeObject PyTiledObject_Type;
+extern PyTypeObject *PyTiledObject_Type;
 
 
 typedef struct {
@@ -213,7 +212,7 @@ typedef struct {
 } PyTiledTile;
 
 
-extern PyTypeObject PyTiledTile_Type;
+extern PyTypeObject *PyTiledTile_Type;
 
 
 typedef struct {
@@ -223,7 +222,7 @@ typedef struct {
 } PyTiledTileset;
 
 
-extern PyTypeObject PyTiledTileset_Type;
+extern PyTypeObject *PyTiledTileset_Type;
 
 
 typedef struct {
@@ -233,7 +232,7 @@ typedef struct {
 } PyTiledSharedTileset;
 
 
-extern PyTypeObject PyTiledSharedTileset_Type;
+extern PyTypeObject *PyTiledSharedTileset_Type;
 
 
 typedef struct {
@@ -243,7 +242,7 @@ typedef struct {
 } PyTiledLayer;
 
 
-extern PyTypeObject PyTiledLayer_Type;
+extern PyTypeObject *PyTiledLayer_Type;
 
 
 typedef struct {
@@ -253,7 +252,7 @@ typedef struct {
 } PyTiledMap;
 
 
-extern PyTypeObject PyTiledMap_Type;
+extern PyTypeObject *PyTiledMap_Type;
 
 
 typedef struct {
@@ -263,7 +262,7 @@ typedef struct {
 } PyTiledCell;
 
 
-extern PyTypeObject PyTiledCell_Type;
+extern PyTypeObject *PyTiledCell_Type;
 
 
 typedef struct {
@@ -273,7 +272,7 @@ typedef struct {
 } PyTiledTileLayer;
 
 
-extern PyTypeObject PyTiledTileLayer_Type;
+extern PyTypeObject *PyTiledTileLayer_Type;
 
 
 typedef struct {
@@ -283,7 +282,7 @@ typedef struct {
 } PyTiledImageLayer;
 
 
-extern PyTypeObject PyTiledImageLayer_Type;
+extern PyTypeObject *PyTiledImageLayer_Type;
 
 
 typedef struct {
@@ -293,7 +292,7 @@ typedef struct {
 } PyTiledMapObject;
 
 
-extern PyTypeObject PyTiledMapObject_Type;
+extern PyTypeObject *PyTiledMapObject_Type;
 
 
 typedef struct {
@@ -303,7 +302,7 @@ typedef struct {
 } PyTiledObjectGroup;
 
 
-extern PyTypeObject PyTiledObjectGroup_Type;
+extern PyTypeObject *PyTiledObjectGroup_Type;
 
 
 typedef struct {
@@ -313,7 +312,7 @@ typedef struct {
 } PyTiledLoggingInterface;
 
 
-extern PyTypeObject PyTiledLoggingInterface_Type;
+extern PyTypeObject *PyTiledLoggingInterface_Type;
 
 #ifndef _MSC_VER
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
@@ -420,14 +419,14 @@ _wrap_PyQPointF__tp_dealloc(PyQPointF *self)
         if (!(self->flags&PYBINDGEN_WRAPPER_FLAG_OBJECT_NOT_OWNED)) {
             delete tmp;
         }
-    Py_TYPE(self)->tp_free((PyObject*)self);
+    PyObject_DEL(self);
 }
 
 static PyObject*
 _wrap_PyQPointF__tp_richcompare (PyQPointF *PYBINDGEN_UNUSED(self), PyQPointF *other, int opid)
 {
 
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyQPointF_Type)) {
+    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) PyQPointF_Type)) {
         Py_INCREF(Py_NotImplemented);
         return Py_NotImplemented;
     }
@@ -456,61 +455,24 @@ _wrap_PyQPointF__tp_richcompare (PyQPointF *PYBINDGEN_UNUSED(self), PyQPointF *o
     return Py_NotImplemented;
 }
 
-PyTypeObject PyQPointF_Type = {
-    PyVarObject_HEAD_INIT(NULL, 0)
-    (char *) "tiled.qt.QPointF",            /* tp_name */
-    sizeof(PyQPointF),                  /* tp_basicsize */
-    0,                                 /* tp_itemsize */
-    /* methods */
-    (destructor)_wrap_PyQPointF__tp_dealloc,        /* tp_dealloc */
-    (printfunc)0,                      /* tp_print */
-    (getattrfunc)NULL,       /* tp_getattr */
-    (setattrfunc)NULL,       /* tp_setattr */
-#if PY_MAJOR_VERSION >= 3
-    NULL,
-#else
-    (cmpfunc)NULL,           /* tp_compare */
-#endif
-    (reprfunc)NULL,             /* tp_repr */
-    (PyNumberMethods*)NULL,     /* tp_as_number */
-    (PySequenceMethods*)NULL, /* tp_as_sequence */
-    (PyMappingMethods*)NULL,   /* tp_as_mapping */
-    (hashfunc)NULL,             /* tp_hash */
-    (ternaryfunc)NULL,          /* tp_call */
-    (reprfunc)NULL,              /* tp_str */
-    (getattrofunc)NULL,     /* tp_getattro */
-    (setattrofunc)NULL,     /* tp_setattro */
-    (PyBufferProcs*)NULL,  /* tp_as_buffer */
-    Py_TPFLAGS_DEFAULT,                      /* tp_flags */
-    "QPointF(x, y)",                        /* Documentation string */
-    (traverseproc)NULL,     /* tp_traverse */
-    (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyQPointF__tp_richcompare,   /* tp_richcompare */
-    0,             /* tp_weaklistoffset */
-    (getiterfunc)NULL,          /* tp_iter */
-    (iternextfunc)NULL,     /* tp_iternext */
-    (struct PyMethodDef*)PyQPointF_methods, /* tp_methods */
-    (struct PyMemberDef*)0,              /* tp_members */
-    0,                     /* tp_getset */
-    NULL,                              /* tp_base */
-    NULL,                              /* tp_dict */
-    (descrgetfunc)NULL,    /* tp_descr_get */
-    (descrsetfunc)NULL,    /* tp_descr_set */
-    0,                 /* tp_dictoffset */
-    (initproc)_wrap_PyQPointF__tp_init,             /* tp_init */
-    (allocfunc)PyType_GenericAlloc,           /* tp_alloc */
-    (newfunc)PyType_GenericNew,               /* tp_new */
-    (freefunc)0,             /* tp_free */
-    (inquiry)NULL,             /* tp_is_gc */
-    NULL,                              /* tp_bases */
-    NULL,                              /* tp_mro */
-    NULL,                              /* tp_cache */
-    NULL,                              /* tp_subclasses */
-    NULL,                              /* tp_weaklist */
-    (destructor) NULL                  /* tp_del */
+static PyType_Slot PyQPointF_Type_slots[] = {
+    {Py_tp_dealloc, (void*)_wrap_PyQPointF__tp_dealloc},
+    {Py_tp_richcompare, (void*)_wrap_PyQPointF__tp_richcompare},
+    {Py_tp_methods, (struct PyMethodDef*)PyQPointF_methods},
+    {Py_tp_init, (void*)_wrap_PyQPointF__tp_init},
+    {Py_tp_alloc, (void*)PyType_GenericAlloc},
+    {Py_tp_new, (void*)PyType_GenericNew},
+    {0, 0}
+};
+static PyType_Spec PyQPointF_Type_spec = {
+    (char *) "tiled.qt.QPointF",
+    sizeof(PyQPointF),
+    0,
+    Py_TPFLAGS_DEFAULT,
+    PyQPointF_Type_slots,
 };
 
-
+PyTypeObject *PyQPointF_Type;
 
 
 static int
@@ -602,14 +564,14 @@ _wrap_PyQSizeF__tp_dealloc(PyQSizeF *self)
         if (!(self->flags&PYBINDGEN_WRAPPER_FLAG_OBJECT_NOT_OWNED)) {
             delete tmp;
         }
-    Py_TYPE(self)->tp_free((PyObject*)self);
+    PyObject_DEL(self);
 }
 
 static PyObject*
 _wrap_PyQSizeF__tp_richcompare (PyQSizeF *PYBINDGEN_UNUSED(self), PyQSizeF *other, int opid)
 {
 
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyQSizeF_Type)) {
+    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) PyQSizeF_Type)) {
         Py_INCREF(Py_NotImplemented);
         return Py_NotImplemented;
     }
@@ -638,59 +600,25 @@ _wrap_PyQSizeF__tp_richcompare (PyQSizeF *PYBINDGEN_UNUSED(self), PyQSizeF *othe
     return Py_NotImplemented;
 }
 
-PyTypeObject PyQSizeF_Type = {
-    PyVarObject_HEAD_INIT(NULL, 0)
-    (char *) "tiled.qt.QSizeF",            /* tp_name */
-    sizeof(PyQSizeF),                  /* tp_basicsize */
-    0,                                 /* tp_itemsize */
-    /* methods */
-    (destructor)_wrap_PyQSizeF__tp_dealloc,        /* tp_dealloc */
-    (printfunc)0,                      /* tp_print */
-    (getattrfunc)NULL,       /* tp_getattr */
-    (setattrfunc)NULL,       /* tp_setattr */
-#if PY_MAJOR_VERSION >= 3
-    NULL,
-#else
-    (cmpfunc)NULL,           /* tp_compare */
-#endif
-    (reprfunc)NULL,             /* tp_repr */
-    (PyNumberMethods*)NULL,     /* tp_as_number */
-    (PySequenceMethods*)NULL, /* tp_as_sequence */
-    (PyMappingMethods*)NULL,   /* tp_as_mapping */
-    (hashfunc)NULL,             /* tp_hash */
-    (ternaryfunc)NULL,          /* tp_call */
-    (reprfunc)NULL,              /* tp_str */
-    (getattrofunc)NULL,     /* tp_getattro */
-    (setattrofunc)NULL,     /* tp_setattro */
-    (PyBufferProcs*)NULL,  /* tp_as_buffer */
-    Py_TPFLAGS_DEFAULT,                      /* tp_flags */
-    "QSizeF(w, h)",                        /* Documentation string */
-    (traverseproc)NULL,     /* tp_traverse */
-    (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyQSizeF__tp_richcompare,   /* tp_richcompare */
-    0,             /* tp_weaklistoffset */
-    (getiterfunc)NULL,          /* tp_iter */
-    (iternextfunc)NULL,     /* tp_iternext */
-    (struct PyMethodDef*)PyQSizeF_methods, /* tp_methods */
-    (struct PyMemberDef*)0,              /* tp_members */
-    0,                     /* tp_getset */
-    NULL,                              /* tp_base */
-    NULL,                              /* tp_dict */
-    (descrgetfunc)NULL,    /* tp_descr_get */
-    (descrsetfunc)NULL,    /* tp_descr_set */
-    0,                 /* tp_dictoffset */
-    (initproc)_wrap_PyQSizeF__tp_init,             /* tp_init */
-    (allocfunc)PyType_GenericAlloc,           /* tp_alloc */
-    (newfunc)PyType_GenericNew,               /* tp_new */
-    (freefunc)0,             /* tp_free */
-    (inquiry)NULL,             /* tp_is_gc */
-    NULL,                              /* tp_bases */
-    NULL,                              /* tp_mro */
-    NULL,                              /* tp_cache */
-    NULL,                              /* tp_subclasses */
-    NULL,                              /* tp_weaklist */
-    (destructor) NULL                  /* tp_del */
+static PyType_Slot PyQSizeF_Type_slots[] = {
+    {Py_tp_dealloc, (void*)_wrap_PyQSizeF__tp_dealloc},
+    {Py_tp_richcompare, (void*)_wrap_PyQSizeF__tp_richcompare},
+    {Py_tp_methods, (struct PyMethodDef*)PyQSizeF_methods},
+    {Py_tp_init, (void*)_wrap_PyQSizeF__tp_init},
+    {Py_tp_alloc, (void*)PyType_GenericAlloc},
+    {Py_tp_new, (void*)PyType_GenericNew},
+    {0, 0}
 };
+static PyType_Spec PyQSizeF_Type_spec = {
+    (char *) "tiled.qt.QSizeF",
+    sizeof(PyQSizeF),
+    0,
+    Py_TPFLAGS_DEFAULT,
+    PyQSizeF_Type_slots,
+};
+
+PyTypeObject *PyQSizeF_Type;
+
 
 
 
@@ -701,7 +629,7 @@ _wrap_PyQRgb__tp_init(PyQRgb *self, PyObject *args, PyObject *kwargs)
     PyQRgb *ctor_arg;
     const char *keywords[] = {"ctor_arg", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, &PyQRgb_Type, &ctor_arg)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, PyQRgb_Type, &ctor_arg)) {
         return -1;
     }
     self->obj = new QRgb(*((PyQRgb *) ctor_arg)->obj);
@@ -715,7 +643,7 @@ _wrap_PyQRgb__copy__(PyQRgb *self)
 {
 
     PyQRgb *py_copy;
-    py_copy = PyObject_New(PyQRgb, &PyQRgb_Type);
+    py_copy = PyObject_New(PyQRgb, PyQRgb_Type);
     py_copy->obj = new QRgb(*self->obj);
     py_copy->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
     return (PyObject*) py_copy;
@@ -734,14 +662,14 @@ _wrap_PyQRgb__tp_dealloc(PyQRgb *self)
         if (!(self->flags&PYBINDGEN_WRAPPER_FLAG_OBJECT_NOT_OWNED)) {
             delete tmp;
         }
-    Py_TYPE(self)->tp_free((PyObject*)self);
+    PyObject_DEL(self);
 }
 
 static PyObject*
 _wrap_PyQRgb__tp_richcompare (PyQRgb *PYBINDGEN_UNUSED(self), PyQRgb *other, int opid)
 {
 
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyQRgb_Type)) {
+    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) PyQRgb_Type)) {
         Py_INCREF(Py_NotImplemented);
         return Py_NotImplemented;
     }
@@ -770,60 +698,25 @@ _wrap_PyQRgb__tp_richcompare (PyQRgb *PYBINDGEN_UNUSED(self), PyQRgb *other, int
     return Py_NotImplemented;
 }
 
-PyTypeObject PyQRgb_Type = {
-    PyVarObject_HEAD_INIT(NULL, 0)
-    (char *) "tiled.qt.QRgb",            /* tp_name */
-    sizeof(PyQRgb),                  /* tp_basicsize */
-    0,                                 /* tp_itemsize */
-    /* methods */
-    (destructor)_wrap_PyQRgb__tp_dealloc,        /* tp_dealloc */
-    (printfunc)0,                      /* tp_print */
-    (getattrfunc)NULL,       /* tp_getattr */
-    (setattrfunc)NULL,       /* tp_setattr */
-#if PY_MAJOR_VERSION >= 3
-    NULL,
-#else
-    (cmpfunc)NULL,           /* tp_compare */
-#endif
-    (reprfunc)NULL,             /* tp_repr */
-    (PyNumberMethods*)NULL,     /* tp_as_number */
-    (PySequenceMethods*)NULL, /* tp_as_sequence */
-    (PyMappingMethods*)NULL,   /* tp_as_mapping */
-    (hashfunc)NULL,             /* tp_hash */
-    (ternaryfunc)NULL,          /* tp_call */
-    (reprfunc)NULL,              /* tp_str */
-    (getattrofunc)NULL,     /* tp_getattro */
-    (setattrofunc)NULL,     /* tp_setattro */
-    (PyBufferProcs*)NULL,  /* tp_as_buffer */
-    Py_TPFLAGS_DEFAULT,                      /* tp_flags */
-    "QRgb(ctor_arg)",                        /* Documentation string */
-    (traverseproc)NULL,     /* tp_traverse */
-    (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyQRgb__tp_richcompare,   /* tp_richcompare */
-    0,             /* tp_weaklistoffset */
-    (getiterfunc)NULL,          /* tp_iter */
-    (iternextfunc)NULL,     /* tp_iternext */
-    (struct PyMethodDef*)PyQRgb_methods, /* tp_methods */
-    (struct PyMemberDef*)0,              /* tp_members */
-    0,                     /* tp_getset */
-    NULL,                              /* tp_base */
-    NULL,                              /* tp_dict */
-    (descrgetfunc)NULL,    /* tp_descr_get */
-    (descrsetfunc)NULL,    /* tp_descr_set */
-    0,                 /* tp_dictoffset */
-    (initproc)_wrap_PyQRgb__tp_init,             /* tp_init */
-    (allocfunc)PyType_GenericAlloc,           /* tp_alloc */
-    (newfunc)PyType_GenericNew,               /* tp_new */
-    (freefunc)0,             /* tp_free */
-    (inquiry)NULL,             /* tp_is_gc */
-    NULL,                              /* tp_bases */
-    NULL,                              /* tp_mro */
-    NULL,                              /* tp_cache */
-    NULL,                              /* tp_subclasses */
-    NULL,                              /* tp_weaklist */
-    (destructor) NULL                  /* tp_del */
+static PyType_Slot PyQRgb_Type_slots[] = {
+    {Py_tp_dealloc, (void*)_wrap_PyQRgb__tp_dealloc},
+    {Py_tp_richcompare, (void*)_wrap_PyQRgb__tp_richcompare},
+    {Py_tp_methods, (struct PyMethodDef*)PyQRgb_methods},
+    {Py_tp_init, (void*)_wrap_PyQRgb__tp_init},
+    {Py_tp_alloc, (void*)PyType_GenericAlloc},
+    {Py_tp_new, (void*)PyType_GenericNew},
+    {0, 0}
+};
+static PyType_Spec PyQRgb_Type_spec = {
+    (char *) "tiled.qt.QRgb",
+    sizeof(PyQRgb),
+    0,
+    Py_TPFLAGS_DEFAULT,
+    PyQRgb_Type_slots,
 };
 
+
+PyTypeObject *PyQRgb_Type;
 
 
 
@@ -834,7 +727,7 @@ _wrap_PyQColor__tp_init__0(PyQColor *self, PyObject *args, PyObject *kwargs, PyO
     PyQRgb *col;
     const char *keywords[] = {"col", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, &PyQRgb_Type, &col)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, PyQRgb_Type, &col)) {
         {
             PyObject *exc_type, *traceback;
             PyErr_Fetch(&exc_type, return_exception, &traceback);
@@ -899,7 +792,7 @@ _wrap_PyQColor__tp_init__3(PyQColor *self, PyObject *args, PyObject *kwargs, PyO
     PyQColor *ctor_arg;
     const char *keywords[] = {"ctor_arg", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, &PyQColor_Type, &ctor_arg)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, PyQColor_Type, &ctor_arg)) {
         {
             PyObject *exc_type, *traceback;
             PyErr_Fetch(&exc_type, return_exception, &traceback);
@@ -941,13 +834,13 @@ int _wrap_PyQColor__tp_init(PyQColor *self, PyObject *args, PyObject *kwargs)
         return retval;
     }
     error_list = PyList_New(4);
-    PyList_SET_ITEM(error_list, 0, PyObject_Str(exceptions[0]));
+    PyList_SetItem(error_list, 0, PyObject_Str(exceptions[0]));
     Py_DECREF(exceptions[0]);
-    PyList_SET_ITEM(error_list, 1, PyObject_Str(exceptions[1]));
+    PyList_SetItem(error_list, 1, PyObject_Str(exceptions[1]));
     Py_DECREF(exceptions[1]);
-    PyList_SET_ITEM(error_list, 2, PyObject_Str(exceptions[2]));
+    PyList_SetItem(error_list, 2, PyObject_Str(exceptions[2]));
     Py_DECREF(exceptions[2]);
-    PyList_SET_ITEM(error_list, 3, PyObject_Str(exceptions[3]));
+    PyList_SetItem(error_list, 3, PyObject_Str(exceptions[3]));
     Py_DECREF(exceptions[3]);
     PyErr_SetObject(PyExc_TypeError, error_list);
     Py_DECREF(error_list);
@@ -962,7 +855,7 @@ _wrap_PyQColor_rgb(PyQColor *self)
     PyQRgb *py_QRgb;
 
     QRgb retval = self->obj->rgb();
-    py_QRgb = PyObject_New(PyQRgb, &PyQRgb_Type);
+    py_QRgb = PyObject_New(PyQRgb, PyQRgb_Type);
     py_QRgb->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
     py_QRgb->obj = new QRgb(retval);
     py_retval = Py_BuildValue((char *) "N", py_QRgb);
@@ -977,7 +870,7 @@ _wrap_PyQColor_rgba(PyQColor *self)
     PyQRgb *py_QRgb;
 
     QRgb retval = self->obj->rgba();
-    py_QRgb = PyObject_New(PyQRgb, &PyQRgb_Type);
+    py_QRgb = PyObject_New(PyQRgb, PyQRgb_Type);
     py_QRgb->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
     py_QRgb->obj = new QRgb(retval);
     py_retval = Py_BuildValue((char *) "N", py_QRgb);
@@ -990,7 +883,7 @@ _wrap_PyQColor__copy__(PyQColor *self)
 {
 
     PyQColor *py_copy;
-    py_copy = PyObject_New(PyQColor, &PyQColor_Type);
+    py_copy = PyObject_New(PyQColor, PyQColor_Type);
     py_copy->obj = new QColor(*self->obj);
     py_copy->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
     return (PyObject*) py_copy;
@@ -1011,14 +904,14 @@ _wrap_PyQColor__tp_dealloc(PyQColor *self)
         if (!(self->flags&PYBINDGEN_WRAPPER_FLAG_OBJECT_NOT_OWNED)) {
             delete tmp;
         }
-    Py_TYPE(self)->tp_free((PyObject*)self);
+    PyObject_DEL(self);
 }
 
 static PyObject*
 _wrap_PyQColor__tp_richcompare (PyQColor *PYBINDGEN_UNUSED(self), PyQColor *other, int opid)
 {
 
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyQColor_Type)) {
+    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) PyQColor_Type)) {
         Py_INCREF(Py_NotImplemented);
         return Py_NotImplemented;
     }
@@ -1047,60 +940,25 @@ _wrap_PyQColor__tp_richcompare (PyQColor *PYBINDGEN_UNUSED(self), PyQColor *othe
     return Py_NotImplemented;
 }
 
-PyTypeObject PyQColor_Type = {
-    PyVarObject_HEAD_INIT(NULL, 0)
-    (char *) "tiled.qt.QColor",            /* tp_name */
-    sizeof(PyQColor),                  /* tp_basicsize */
-    0,                                 /* tp_itemsize */
-    /* methods */
-    (destructor)_wrap_PyQColor__tp_dealloc,        /* tp_dealloc */
-    (printfunc)0,                      /* tp_print */
-    (getattrfunc)NULL,       /* tp_getattr */
-    (setattrfunc)NULL,       /* tp_setattr */
-#if PY_MAJOR_VERSION >= 3
-    NULL,
-#else
-    (cmpfunc)NULL,           /* tp_compare */
-#endif
-    (reprfunc)NULL,             /* tp_repr */
-    (PyNumberMethods*)NULL,     /* tp_as_number */
-    (PySequenceMethods*)NULL, /* tp_as_sequence */
-    (PyMappingMethods*)NULL,   /* tp_as_mapping */
-    (hashfunc)NULL,             /* tp_hash */
-    (ternaryfunc)NULL,          /* tp_call */
-    (reprfunc)NULL,              /* tp_str */
-    (getattrofunc)NULL,     /* tp_getattro */
-    (setattrofunc)NULL,     /* tp_setattro */
-    (PyBufferProcs*)NULL,  /* tp_as_buffer */
-    Py_TPFLAGS_DEFAULT,                      /* tp_flags */
-    "QColor(r, g, b, a)\nQColor(ctor_arg)\nQColor(r, g, b)\nQColor(col)",                        /* Documentation string */
-    (traverseproc)NULL,     /* tp_traverse */
-    (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyQColor__tp_richcompare,   /* tp_richcompare */
-    0,             /* tp_weaklistoffset */
-    (getiterfunc)NULL,          /* tp_iter */
-    (iternextfunc)NULL,     /* tp_iternext */
-    (struct PyMethodDef*)PyQColor_methods, /* tp_methods */
-    (struct PyMemberDef*)0,              /* tp_members */
-    0,                     /* tp_getset */
-    NULL,                              /* tp_base */
-    NULL,                              /* tp_dict */
-    (descrgetfunc)NULL,    /* tp_descr_get */
-    (descrsetfunc)NULL,    /* tp_descr_set */
-    0,                 /* tp_dictoffset */
-    (initproc)_wrap_PyQColor__tp_init,             /* tp_init */
-    (allocfunc)PyType_GenericAlloc,           /* tp_alloc */
-    (newfunc)PyType_GenericNew,               /* tp_new */
-    (freefunc)0,             /* tp_free */
-    (inquiry)NULL,             /* tp_is_gc */
-    NULL,                              /* tp_bases */
-    NULL,                              /* tp_mro */
-    NULL,                              /* tp_cache */
-    NULL,                              /* tp_subclasses */
-    NULL,                              /* tp_weaklist */
-    (destructor) NULL                  /* tp_del */
+static PyType_Slot PyQColor_Type_slots[] = {
+    {Py_tp_dealloc, (void*)_wrap_PyQColor__tp_dealloc},
+    {Py_tp_richcompare, (void*)_wrap_PyQColor__tp_richcompare},
+    {Py_tp_methods, (struct PyMethodDef*)PyQColor_methods},
+    {Py_tp_init, (void*)_wrap_PyQColor__tp_init},
+    {Py_tp_alloc, (void*)PyType_GenericAlloc},
+    {Py_tp_new, (void*)PyType_GenericNew},
+    {0, 0}
+};
+static PyType_Spec PyQColor_Type_spec = {
+    (char *) "tiled.qt.QColor",
+    sizeof(PyQColor),
+    0,
+    Py_TPFLAGS_DEFAULT,
+    PyQColor_Type_slots,
 };
 
+
+PyTypeObject *PyQColor_Type;
 
 
 
@@ -1152,7 +1010,7 @@ _wrap_PyQImage__tp_init__2(PyQImage *self, PyObject *args, PyObject *kwargs, PyO
     PyQImage *ctor_arg;
     const char *keywords[] = {"ctor_arg", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, &PyQImage_Type, &ctor_arg)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, PyQImage_Type, &ctor_arg)) {
         {
             PyObject *exc_type, *traceback;
             PyErr_Fetch(&exc_type, return_exception, &traceback);
@@ -1187,11 +1045,11 @@ int _wrap_PyQImage__tp_init(PyQImage *self, PyObject *args, PyObject *kwargs)
         return retval;
     }
     error_list = PyList_New(3);
-    PyList_SET_ITEM(error_list, 0, PyObject_Str(exceptions[0]));
+    PyList_SetItem(error_list, 0, PyObject_Str(exceptions[0]));
     Py_DECREF(exceptions[0]);
-    PyList_SET_ITEM(error_list, 1, PyObject_Str(exceptions[1]));
+    PyList_SetItem(error_list, 1, PyObject_Str(exceptions[1]));
     Py_DECREF(exceptions[1]);
-    PyList_SET_ITEM(error_list, 2, PyObject_Str(exceptions[2]));
+    PyList_SetItem(error_list, 2, PyObject_Str(exceptions[2]));
     Py_DECREF(exceptions[2]);
     PyErr_SetObject(PyExc_TypeError, error_list);
     Py_DECREF(error_list);
@@ -1211,7 +1069,7 @@ _wrap_PyQImage_color(PyQImage *self, PyObject *args, PyObject *kwargs)
         return NULL;
     }
     QRgb retval = self->obj->color(i);
-    py_QRgb = PyObject_New(PyQRgb, &PyQRgb_Type);
+    py_QRgb = PyObject_New(PyQRgb, PyQRgb_Type);
     py_QRgb->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
     py_QRgb->obj = new QRgb(retval);
     py_retval = Py_BuildValue((char *) "N", py_QRgb);
@@ -1227,7 +1085,7 @@ _wrap_PyQImage_colorTable(PyQImage *self)
     PyQVector__lt__QRgb__gt__ *py_QVector__lt__QRgb__gt__;
 
     retval = self->obj->colorTable();
-    py_QVector__lt__QRgb__gt__ = PyObject_New(PyQVector__lt__QRgb__gt__, &PyQVector__lt__QRgb__gt___Type);
+    py_QVector__lt__QRgb__gt__ = PyObject_New(PyQVector__lt__QRgb__gt__, PyQVector__lt__QRgb__gt___Type);
     py_QVector__lt__QRgb__gt__->obj = new QVector<QRgb>(retval);
     py_retval = Py_BuildValue((char *) "N", py_QVector__lt__QRgb__gt__);
     return py_retval;
@@ -1299,7 +1157,7 @@ _wrap_PyQImage_mirrored(PyQImage *self, PyObject *args, PyObject *kwargs)
     horiz = (bool) PyObject_IsTrue(py_horiz);
     vert = (bool) PyObject_IsTrue(py_vert);
     QImage const & retval = self->obj->mirrored(horiz, vert);
-    py_QImage = PyObject_New(PyQImage, &PyQImage_Type);
+    py_QImage = PyObject_New(PyQImage, PyQImage_Type);
     py_QImage->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
     py_QImage->obj = new QImage(retval);
     py_retval = Py_BuildValue((char *) "N", py_QImage);
@@ -1315,7 +1173,7 @@ _wrap_PyQImage_setColor(PyQImage *self, PyObject *args, PyObject *kwargs)
     PyQRgb *c;
     const char *keywords[] = {"i", "c", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "iO!", (char **) keywords, &i, &PyQRgb_Type, &c)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "iO!", (char **) keywords, &i, PyQRgb_Type, &c)) {
         return NULL;
     }
     self->obj->setColor(i, *((PyQRgb *) c)->obj);
@@ -1376,7 +1234,7 @@ _wrap_PyQImage_setPixel__1(PyQImage *self, PyObject *args, PyObject *kwargs, PyO
     PyQRgb *color;
     const char *keywords[] = {"x", "y", "color", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "iiO!", (char **) keywords, &x, &y, &PyQRgb_Type, &color)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "iiO!", (char **) keywords, &x, &y, PyQRgb_Type, &color)) {
         {
             PyObject *exc_type, *traceback;
             PyErr_Fetch(&exc_type, return_exception, &traceback);
@@ -1406,9 +1264,9 @@ PyObject * _wrap_PyQImage_setPixel(PyQImage *self, PyObject *args, PyObject *kwa
         return retval;
     }
     error_list = PyList_New(2);
-    PyList_SET_ITEM(error_list, 0, PyObject_Str(exceptions[0]));
+    PyList_SetItem(error_list, 0, PyObject_Str(exceptions[0]));
     Py_DECREF(exceptions[0]);
-    PyList_SET_ITEM(error_list, 1, PyObject_Str(exceptions[1]));
+    PyList_SetItem(error_list, 1, PyObject_Str(exceptions[1]));
     Py_DECREF(exceptions[1]);
     PyErr_SetObject(PyExc_TypeError, error_list);
     Py_DECREF(error_list);
@@ -1433,7 +1291,7 @@ _wrap_PyQImage__copy__(PyQImage *self)
 {
 
     PyQImage *py_copy;
-    py_copy = PyObject_New(PyQImage, &PyQImage_Type);
+    py_copy = PyObject_New(PyQImage, PyQImage_Type);
     py_copy->obj = new QImage(*self->obj);
     py_copy->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
     return (PyObject*) py_copy;
@@ -1462,14 +1320,14 @@ _wrap_PyQImage__tp_dealloc(PyQImage *self)
         if (!(self->flags&PYBINDGEN_WRAPPER_FLAG_OBJECT_NOT_OWNED)) {
             delete tmp;
         }
-    Py_TYPE(self)->tp_free((PyObject*)self);
+    PyObject_DEL(self);
 }
 
 static PyObject*
 _wrap_PyQImage__tp_richcompare (PyQImage *PYBINDGEN_UNUSED(self), PyQImage *other, int opid)
 {
 
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyQImage_Type)) {
+    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) PyQImage_Type)) {
         Py_INCREF(Py_NotImplemented);
         return Py_NotImplemented;
     }
@@ -1498,60 +1356,25 @@ _wrap_PyQImage__tp_richcompare (PyQImage *PYBINDGEN_UNUSED(self), PyQImage *othe
     return Py_NotImplemented;
 }
 
-PyTypeObject PyQImage_Type = {
-    PyVarObject_HEAD_INIT(NULL, 0)
-    (char *) "tiled.qt.QImage",            /* tp_name */
-    sizeof(PyQImage),                  /* tp_basicsize */
-    0,                                 /* tp_itemsize */
-    /* methods */
-    (destructor)_wrap_PyQImage__tp_dealloc,        /* tp_dealloc */
-    (printfunc)0,                      /* tp_print */
-    (getattrfunc)NULL,       /* tp_getattr */
-    (setattrfunc)NULL,       /* tp_setattr */
-#if PY_MAJOR_VERSION >= 3
-    NULL,
-#else
-    (cmpfunc)NULL,           /* tp_compare */
-#endif
-    (reprfunc)NULL,             /* tp_repr */
-    (PyNumberMethods*)NULL,     /* tp_as_number */
-    (PySequenceMethods*)NULL, /* tp_as_sequence */
-    (PyMappingMethods*)NULL,   /* tp_as_mapping */
-    (hashfunc)NULL,             /* tp_hash */
-    (ternaryfunc)NULL,          /* tp_call */
-    (reprfunc)NULL,              /* tp_str */
-    (getattrofunc)NULL,     /* tp_getattro */
-    (setattrofunc)NULL,     /* tp_setattro */
-    (PyBufferProcs*)NULL,  /* tp_as_buffer */
-    Py_TPFLAGS_DEFAULT,                      /* tp_flags */
-    "QImage(ctor_arg)\nQImage(w, h, f)\nQImage()",                        /* Documentation string */
-    (traverseproc)NULL,     /* tp_traverse */
-    (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyQImage__tp_richcompare,   /* tp_richcompare */
-    0,             /* tp_weaklistoffset */
-    (getiterfunc)NULL,          /* tp_iter */
-    (iternextfunc)NULL,     /* tp_iternext */
-    (struct PyMethodDef*)PyQImage_methods, /* tp_methods */
-    (struct PyMemberDef*)0,              /* tp_members */
-    0,                     /* tp_getset */
-    NULL,                              /* tp_base */
-    NULL,                              /* tp_dict */
-    (descrgetfunc)NULL,    /* tp_descr_get */
-    (descrsetfunc)NULL,    /* tp_descr_set */
-    0,                 /* tp_dictoffset */
-    (initproc)_wrap_PyQImage__tp_init,             /* tp_init */
-    (allocfunc)PyType_GenericAlloc,           /* tp_alloc */
-    (newfunc)PyType_GenericNew,               /* tp_new */
-    (freefunc)0,             /* tp_free */
-    (inquiry)NULL,             /* tp_is_gc */
-    NULL,                              /* tp_bases */
-    NULL,                              /* tp_mro */
-    NULL,                              /* tp_cache */
-    NULL,                              /* tp_subclasses */
-    NULL,                              /* tp_weaklist */
-    (destructor) NULL                  /* tp_del */
+static PyType_Slot PyQImage_Type_slots[] = {
+    {Py_tp_dealloc, (void*)_wrap_PyQImage__tp_dealloc},
+    {Py_tp_richcompare, (void*)_wrap_PyQImage__tp_richcompare},
+    {Py_tp_methods, (struct PyMethodDef*)PyQImage_methods},
+    {Py_tp_init, (void*)_wrap_PyQImage__tp_init},
+    {Py_tp_alloc, (void*)PyType_GenericAlloc},
+    {Py_tp_new, (void*)PyType_GenericNew},
+    {0, 0}
+};
+static PyType_Spec PyQImage_Type_spec = {
+    (char *) "tiled.qt.QImage",
+    sizeof(PyQImage),
+    0,
+    Py_TPFLAGS_DEFAULT,
+    PyQImage_Type_slots,
 };
 
+
+PyTypeObject *PyQImage_Type;
 
 
 
@@ -1561,7 +1384,7 @@ _wrap_PyQPixmap__tp_init(PyQPixmap *self, PyObject *args, PyObject *kwargs)
     PyQPixmap *ctor_arg;
     const char *keywords[] = {"ctor_arg", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, &PyQPixmap_Type, &ctor_arg)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, PyQPixmap_Type, &ctor_arg)) {
         return -1;
     }
     self->obj = new QPixmap(*((PyQPixmap *) ctor_arg)->obj);
@@ -1577,7 +1400,7 @@ _wrap_PyQPixmap_convertFromImage(PyQPixmap *self, PyObject *args, PyObject *kwar
     PyQImage *image;
     const char *keywords[] = {"image", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, &PyQImage_Type, &image)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, PyQImage_Type, &image)) {
         return NULL;
     }
     self->obj->convertFromImage(*((PyQImage *) image)->obj);
@@ -1594,7 +1417,7 @@ _wrap_PyQPixmap_fromImage(PyQPixmap *self, PyObject *args, PyObject *kwargs)
     PyQImage *image;
     const char *keywords[] = {"image", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, &PyQImage_Type, &image)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, PyQImage_Type, &image)) {
         return NULL;
     }
     self->obj->fromImage(*((PyQImage *) image)->obj);
@@ -1623,7 +1446,7 @@ _wrap_PyQPixmap_toImage(PyQPixmap *self)
     PyQImage *py_QImage;
 
     QImage const & retval = self->obj->toImage();
-    py_QImage = PyObject_New(PyQImage, &PyQImage_Type);
+    py_QImage = PyObject_New(PyQImage, PyQImage_Type);
     py_QImage->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
     py_QImage->obj = new QImage(retval);
     py_retval = Py_BuildValue((char *) "N", py_QImage);
@@ -1648,7 +1471,7 @@ _wrap_PyQPixmap__copy__(PyQPixmap *self)
 {
 
     PyQPixmap *py_copy;
-    py_copy = PyObject_New(PyQPixmap, &PyQPixmap_Type);
+    py_copy = PyObject_New(PyQPixmap, PyQPixmap_Type);
     py_copy->obj = new QPixmap(*self->obj);
     py_copy->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
     return (PyObject*) py_copy;
@@ -1672,14 +1495,14 @@ _wrap_PyQPixmap__tp_dealloc(PyQPixmap *self)
         if (!(self->flags&PYBINDGEN_WRAPPER_FLAG_OBJECT_NOT_OWNED)) {
             delete tmp;
         }
-    Py_TYPE(self)->tp_free((PyObject*)self);
+    PyObject_DEL(self);
 }
 
 static PyObject*
 _wrap_PyQPixmap__tp_richcompare (PyQPixmap *PYBINDGEN_UNUSED(self), PyQPixmap *other, int opid)
 {
 
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyQPixmap_Type)) {
+    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) PyQPixmap_Type)) {
         Py_INCREF(Py_NotImplemented);
         return Py_NotImplemented;
     }
@@ -1708,60 +1531,25 @@ _wrap_PyQPixmap__tp_richcompare (PyQPixmap *PYBINDGEN_UNUSED(self), PyQPixmap *o
     return Py_NotImplemented;
 }
 
-PyTypeObject PyQPixmap_Type = {
-    PyVarObject_HEAD_INIT(NULL, 0)
-    (char *) "tiled.qt.QPixmap",            /* tp_name */
-    sizeof(PyQPixmap),                  /* tp_basicsize */
-    0,                                 /* tp_itemsize */
-    /* methods */
-    (destructor)_wrap_PyQPixmap__tp_dealloc,        /* tp_dealloc */
-    (printfunc)0,                      /* tp_print */
-    (getattrfunc)NULL,       /* tp_getattr */
-    (setattrfunc)NULL,       /* tp_setattr */
-#if PY_MAJOR_VERSION >= 3
-    NULL,
-#else
-    (cmpfunc)NULL,           /* tp_compare */
-#endif
-    (reprfunc)NULL,             /* tp_repr */
-    (PyNumberMethods*)NULL,     /* tp_as_number */
-    (PySequenceMethods*)NULL, /* tp_as_sequence */
-    (PyMappingMethods*)NULL,   /* tp_as_mapping */
-    (hashfunc)NULL,             /* tp_hash */
-    (ternaryfunc)NULL,          /* tp_call */
-    (reprfunc)NULL,              /* tp_str */
-    (getattrofunc)NULL,     /* tp_getattro */
-    (setattrofunc)NULL,     /* tp_setattro */
-    (PyBufferProcs*)NULL,  /* tp_as_buffer */
-    Py_TPFLAGS_DEFAULT,                      /* tp_flags */
-    "QPixmap(ctor_arg)",                        /* Documentation string */
-    (traverseproc)NULL,     /* tp_traverse */
-    (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyQPixmap__tp_richcompare,   /* tp_richcompare */
-    0,             /* tp_weaklistoffset */
-    (getiterfunc)NULL,          /* tp_iter */
-    (iternextfunc)NULL,     /* tp_iternext */
-    (struct PyMethodDef*)PyQPixmap_methods, /* tp_methods */
-    (struct PyMemberDef*)0,              /* tp_members */
-    0,                     /* tp_getset */
-    NULL,                              /* tp_base */
-    NULL,                              /* tp_dict */
-    (descrgetfunc)NULL,    /* tp_descr_get */
-    (descrsetfunc)NULL,    /* tp_descr_set */
-    0,                 /* tp_dictoffset */
-    (initproc)_wrap_PyQPixmap__tp_init,             /* tp_init */
-    (allocfunc)PyType_GenericAlloc,           /* tp_alloc */
-    (newfunc)PyType_GenericNew,               /* tp_new */
-    (freefunc)0,             /* tp_free */
-    (inquiry)NULL,             /* tp_is_gc */
-    NULL,                              /* tp_bases */
-    NULL,                              /* tp_mro */
-    NULL,                              /* tp_cache */
-    NULL,                              /* tp_subclasses */
-    NULL,                              /* tp_weaklist */
-    (destructor) NULL                  /* tp_del */
+static PyType_Slot PyQPixmap_Type_slots[] = {
+    {Py_tp_dealloc, (void*)_wrap_PyQPixmap__tp_dealloc},
+    {Py_tp_richcompare, (void*)_wrap_PyQPixmap__tp_richcompare},
+    {Py_tp_methods, (struct PyMethodDef*)PyQPixmap_methods},
+    {Py_tp_init, (void*)_wrap_PyQPixmap__tp_init},
+    {Py_tp_alloc, (void*)PyType_GenericAlloc},
+    {Py_tp_new, (void*)PyType_GenericNew},
+    {0, 0}
+};
+static PyType_Spec PyQPixmap_Type_spec = {
+    (char *) "tiled.qt.QPixmap",
+    sizeof(PyQPixmap),
+    0,
+    Py_TPFLAGS_DEFAULT,
+    PyQPixmap_Type_slots,
 };
 
+
+PyTypeObject *PyQPixmap_Type;
 
 
 
@@ -1784,14 +1572,14 @@ _wrap_PyQWidget__tp_dealloc(PyQWidget *self)
         if (!(self->flags&PYBINDGEN_WRAPPER_FLAG_OBJECT_NOT_OWNED)) {
             delete tmp;
         }
-    Py_TYPE(self)->tp_free((PyObject*)self);
+    PyObject_DEL(self);
 }
 
 static PyObject*
 _wrap_PyQWidget__tp_richcompare (PyQWidget *PYBINDGEN_UNUSED(self), PyQWidget *other, int opid)
 {
 
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyQWidget_Type)) {
+    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) PyQWidget_Type)) {
         Py_INCREF(Py_NotImplemented);
         return Py_NotImplemented;
     }
@@ -1820,60 +1608,25 @@ _wrap_PyQWidget__tp_richcompare (PyQWidget *PYBINDGEN_UNUSED(self), PyQWidget *o
     return Py_NotImplemented;
 }
 
-PyTypeObject PyQWidget_Type = {
-    PyVarObject_HEAD_INIT(NULL, 0)
-    (char *) "tiled.qt.QWidget",            /* tp_name */
-    sizeof(PyQWidget),                  /* tp_basicsize */
-    0,                                 /* tp_itemsize */
-    /* methods */
-    (destructor)_wrap_PyQWidget__tp_dealloc,        /* tp_dealloc */
-    (printfunc)0,                      /* tp_print */
-    (getattrfunc)NULL,       /* tp_getattr */
-    (setattrfunc)NULL,       /* tp_setattr */
-#if PY_MAJOR_VERSION >= 3
-    NULL,
-#else
-    (cmpfunc)NULL,           /* tp_compare */
-#endif
-    (reprfunc)NULL,             /* tp_repr */
-    (PyNumberMethods*)NULL,     /* tp_as_number */
-    (PySequenceMethods*)NULL, /* tp_as_sequence */
-    (PyMappingMethods*)NULL,   /* tp_as_mapping */
-    (hashfunc)NULL,             /* tp_hash */
-    (ternaryfunc)NULL,          /* tp_call */
-    (reprfunc)NULL,              /* tp_str */
-    (getattrofunc)NULL,     /* tp_getattro */
-    (setattrofunc)NULL,     /* tp_setattro */
-    (PyBufferProcs*)NULL,  /* tp_as_buffer */
-    Py_TPFLAGS_DEFAULT,                      /* tp_flags */
-    "",                        /* Documentation string */
-    (traverseproc)NULL,     /* tp_traverse */
-    (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyQWidget__tp_richcompare,   /* tp_richcompare */
-    0,             /* tp_weaklistoffset */
-    (getiterfunc)NULL,          /* tp_iter */
-    (iternextfunc)NULL,     /* tp_iternext */
-    (struct PyMethodDef*)PyQWidget_methods, /* tp_methods */
-    (struct PyMemberDef*)0,              /* tp_members */
-    0,                     /* tp_getset */
-    NULL,                              /* tp_base */
-    NULL,                              /* tp_dict */
-    (descrgetfunc)NULL,    /* tp_descr_get */
-    (descrsetfunc)NULL,    /* tp_descr_set */
-    0,                 /* tp_dictoffset */
-    (initproc)_wrap_PyQWidget__tp_init,             /* tp_init */
-    (allocfunc)PyType_GenericAlloc,           /* tp_alloc */
-    (newfunc)PyType_GenericNew,               /* tp_new */
-    (freefunc)0,             /* tp_free */
-    (inquiry)NULL,             /* tp_is_gc */
-    NULL,                              /* tp_bases */
-    NULL,                              /* tp_mro */
-    NULL,                              /* tp_cache */
-    NULL,                              /* tp_subclasses */
-    NULL,                              /* tp_weaklist */
-    (destructor) NULL                  /* tp_del */
+static PyType_Slot PyQWidget_Type_slots[] = {
+    {Py_tp_dealloc, (void*)_wrap_PyQWidget__tp_dealloc},
+    {Py_tp_richcompare, (void*)_wrap_PyQWidget__tp_richcompare},
+    {Py_tp_methods, (struct PyMethodDef*)PyQWidget_methods},
+    {Py_tp_init, (void*)_wrap_PyQWidget__tp_init},
+    {Py_tp_alloc, (void*)PyType_GenericAlloc},
+    {Py_tp_new, (void*)PyType_GenericNew},
+    {0, 0}
+};
+static PyType_Spec PyQWidget_Type_spec = {
+    (char *) "tiled.qt.QWidget",
+    sizeof(PyQWidget),
+    0,
+    Py_TPFLAGS_DEFAULT,
+    PyQWidget_Type_slots,
 };
 
+
+PyTypeObject *PyQWidget_Type;
 
 
 
@@ -1905,7 +1658,7 @@ _wrap_PyQFileDialog_getOpenFileName(PyQFileDialog *PYBINDGEN_UNUSED(dummy), PyOb
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "Os#s#s#|si", (char **) keywords, &parent, &caption, &caption_len, &dir, &dir_len, &filter, &filter_len, &selectedFilter, &options)) {
         return NULL;
     }
-    if (parent && ((PyObject *) parent != Py_None) && !PyObject_IsInstance((PyObject *) parent, (PyObject *) &PyQWidget_Type)) {
+    if (parent && ((PyObject *) parent != Py_None) && !PyObject_IsInstance((PyObject *) parent, (PyObject *) PyQWidget_Type)) {
         PyErr_SetString(PyExc_TypeError, "Parameter 1 must be of type QWidget");
         return NULL;
     }
@@ -1935,14 +1688,14 @@ _wrap_PyQFileDialog__tp_dealloc(PyQFileDialog *self)
         if (!(self->flags&PYBINDGEN_WRAPPER_FLAG_OBJECT_NOT_OWNED)) {
             delete tmp;
         }
-    Py_TYPE(self)->tp_free((PyObject*)self);
+    PyObject_DEL(self);
 }
 
 static PyObject*
 _wrap_PyQFileDialog__tp_richcompare (PyQFileDialog *PYBINDGEN_UNUSED(self), PyQFileDialog *other, int opid)
 {
 
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyQFileDialog_Type)) {
+    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) PyQFileDialog_Type)) {
         Py_INCREF(Py_NotImplemented);
         return Py_NotImplemented;
     }
@@ -1971,59 +1724,24 @@ _wrap_PyQFileDialog__tp_richcompare (PyQFileDialog *PYBINDGEN_UNUSED(self), PyQF
     return Py_NotImplemented;
 }
 
-PyTypeObject PyQFileDialog_Type = {
-    PyVarObject_HEAD_INIT(NULL, 0)
-    (char *) "tiled.qt.QFileDialog",            /* tp_name */
-    sizeof(PyQFileDialog),                  /* tp_basicsize */
-    0,                                 /* tp_itemsize */
-    /* methods */
-    (destructor)_wrap_PyQFileDialog__tp_dealloc,        /* tp_dealloc */
-    (printfunc)0,                      /* tp_print */
-    (getattrfunc)NULL,       /* tp_getattr */
-    (setattrfunc)NULL,       /* tp_setattr */
-#if PY_MAJOR_VERSION >= 3
-    NULL,
-#else
-    (cmpfunc)NULL,           /* tp_compare */
-#endif
-    (reprfunc)NULL,             /* tp_repr */
-    (PyNumberMethods*)NULL,     /* tp_as_number */
-    (PySequenceMethods*)NULL, /* tp_as_sequence */
-    (PyMappingMethods*)NULL,   /* tp_as_mapping */
-    (hashfunc)NULL,             /* tp_hash */
-    (ternaryfunc)NULL,          /* tp_call */
-    (reprfunc)NULL,              /* tp_str */
-    (getattrofunc)NULL,     /* tp_getattro */
-    (setattrofunc)NULL,     /* tp_setattro */
-    (PyBufferProcs*)NULL,  /* tp_as_buffer */
-    Py_TPFLAGS_DEFAULT,                      /* tp_flags */
-    "",                        /* Documentation string */
-    (traverseproc)NULL,     /* tp_traverse */
-    (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyQFileDialog__tp_richcompare,   /* tp_richcompare */
-    0,             /* tp_weaklistoffset */
-    (getiterfunc)NULL,          /* tp_iter */
-    (iternextfunc)NULL,     /* tp_iternext */
-    (struct PyMethodDef*)PyQFileDialog_methods, /* tp_methods */
-    (struct PyMemberDef*)0,              /* tp_members */
-    0,                     /* tp_getset */
-    NULL,                              /* tp_base */
-    NULL,                              /* tp_dict */
-    (descrgetfunc)NULL,    /* tp_descr_get */
-    (descrsetfunc)NULL,    /* tp_descr_set */
-    0,                 /* tp_dictoffset */
-    (initproc)_wrap_PyQFileDialog__tp_init,             /* tp_init */
-    (allocfunc)PyType_GenericAlloc,           /* tp_alloc */
-    (newfunc)PyType_GenericNew,               /* tp_new */
-    (freefunc)0,             /* tp_free */
-    (inquiry)NULL,             /* tp_is_gc */
-    NULL,                              /* tp_bases */
-    NULL,                              /* tp_mro */
-    NULL,                              /* tp_cache */
-    NULL,                              /* tp_subclasses */
-    NULL,                              /* tp_weaklist */
-    (destructor) NULL                  /* tp_del */
+static PyType_Slot PyQFileDialog_Type_slots[] = {
+    {Py_tp_dealloc, (void*)_wrap_PyQFileDialog__tp_dealloc},
+    {Py_tp_richcompare, (void*)_wrap_PyQFileDialog__tp_richcompare},
+    {Py_tp_methods, (struct PyMethodDef*)PyQFileDialog_methods},
+    {Py_tp_init, (void*)_wrap_PyQFileDialog__tp_init},
+    {Py_tp_alloc, (void*)PyType_GenericAlloc},
+    {Py_tp_new, (void*)PyType_GenericNew},
+    {0, 0}
 };
+static PyType_Spec PyQFileDialog_Type_spec = {
+    (char *) "tiled.qt.QFileDialog",
+    sizeof(PyQFileDialog),
+    0,
+    Py_TPFLAGS_DEFAULT,
+    PyQFileDialog_Type_slots,
+};
+
+PyTypeObject *PyQFileDialog_Type;
 
 
 /* --- containers --- */
@@ -2054,7 +1772,7 @@ _wrap_PyQVector__lt__QRgb__gt____tp_dealloc(PyQVector__lt__QRgb__gt__ *self)
     delete self->obj;
     self->obj = NULL;
 
-    Py_TYPE(self)->tp_free((PyObject*)self);
+    PyObject_DEL(self);
 }
 
 
@@ -2065,14 +1783,14 @@ _wrap_PyQVector__lt__QRgb__gt__Iter__tp_dealloc(PyQVector__lt__QRgb__gt__Iter *s
     delete self->iterator;
     self->iterator = NULL;
 
-    Py_TYPE(self)->tp_free((PyObject*)self);
+    PyObject_DEL(self);
 }
 
 
 static PyObject*
 _wrap_PyQVector__lt__QRgb__gt____tp_iter(PyQVector__lt__QRgb__gt__ *self)
 {
-    PyQVector__lt__QRgb__gt__Iter *iter = PyObject_GC_New(PyQVector__lt__QRgb__gt__Iter, &PyQVector__lt__QRgb__gt__Iter_Type);
+    PyQVector__lt__QRgb__gt__Iter *iter = PyObject_GC_New(PyQVector__lt__QRgb__gt__Iter, PyQVector__lt__QRgb__gt__Iter_Type);
     Py_INCREF(self);
     iter->container = self;
     iter->iterator = new QVector<QRgb>::iterator(self->obj->begin());
@@ -2099,7 +1817,7 @@ static PyObject* _wrap_PyQVector__lt__QRgb__gt__Iter__tp_iternext(PyQVector__lt_
         return NULL;
     }
     ++(*self->iterator);
-    py_QRgb = PyObject_New(PyQRgb, &PyQRgb_Type);
+    py_QRgb = PyObject_New(PyQRgb, PyQRgb_Type);
     py_QRgb->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
     py_QRgb->obj = new QRgb((*iter));
     py_retval = Py_BuildValue((char *) "N", py_QRgb);
@@ -2112,7 +1830,7 @@ int _wrap_convert_py2c__QRgb(PyObject *value, QRgb *address)
     PyQRgb *tmp_QRgb;
 
     py_retval = Py_BuildValue((char *) "(O)", value);
-    if (!PyArg_ParseTuple(py_retval, (char *) "O!", &PyQRgb_Type, &tmp_QRgb)) {
+    if (!PyArg_ParseTuple(py_retval, (char *) "O!", PyQRgb_Type, &tmp_QRgb)) {
         Py_DECREF(py_retval);
         return 0;
     }
@@ -2124,14 +1842,18 @@ int _wrap_convert_py2c__QRgb(PyObject *value, QRgb *address)
 
 int _wrap_convert_py2c__QVector__lt___QRgb___gt__(PyObject *arg, QVector<QRgb> *container)
 {
+    /* TODO: this doesn't work, why?
     if (PyObject_IsInstance(arg, (PyObject*) &PyQVector__lt__QRgb__gt___Type)) {
+        // PyQVector__lt__QRgb__gt__* arg2 = reinterpret_cast<PyQVector__lt__QRgb__gt__*>(arg);
+        // *container = *(arg2->obj);
         *container = *((PyQVector__lt__QRgb__gt__*)arg)->obj;
-    } else if (PyList_Check(arg)) {
+    } else*/
+    if (PyList_Check(arg)) {
         container->clear();
         Py_ssize_t size = PyList_Size(arg);
         for (Py_ssize_t i = 0; i < size; i++) {
             QRgb item;
-            if (!_wrap_convert_py2c__QRgb(PyList_GET_ITEM(arg, i), &item)) {
+            if (!_wrap_convert_py2c__QRgb(PyList_GetItem(arg, i), &item)) {
                 return 0;
             }
             container->push_back(item);
@@ -2154,6 +1876,7 @@ _wrap_PyQVector__lt__QRgb__gt____tp_init(PyQVector__lt__QRgb__gt__ *self, PyObje
         return -1;
     }
 
+    printf("ASKDOSAD \n");
     self->obj = new QVector<QRgb>;
 
     if (arg == NULL)
@@ -2167,113 +1890,43 @@ _wrap_PyQVector__lt__QRgb__gt____tp_init(PyQVector__lt__QRgb__gt__ *self, PyObje
     return 0;
 }
 
-PyTypeObject PyQVector__lt__QRgb__gt___Type = {
-    PyVarObject_HEAD_INIT(NULL, 0)
-    (char *) "tiled.qt.QVector__lt__QRgb__gt__",            /* tp_name */
-    sizeof(PyQVector__lt__QRgb__gt__),                  /* tp_basicsize */
-    0,                                 /* tp_itemsize */
-    /* methods */
-    (destructor)_wrap_PyQVector__lt__QRgb__gt____tp_dealloc,        /* tp_dealloc */
-    (printfunc)0,                      /* tp_print */
-    (getattrfunc)NULL,       /* tp_getattr */
-    (setattrfunc)NULL,       /* tp_setattr */
-#if PY_MAJOR_VERSION >= 3
-    NULL,
-#else
-    (cmpfunc)NULL,           /* tp_compare */
-#endif
-    (reprfunc)NULL,             /* tp_repr */
-    (PyNumberMethods*)NULL,     /* tp_as_number */
-    (PySequenceMethods*)NULL, /* tp_as_sequence */
-    (PyMappingMethods*)NULL,   /* tp_as_mapping */
-    (hashfunc)NULL,             /* tp_hash */
-    (ternaryfunc)NULL,          /* tp_call */
-    (reprfunc)NULL,              /* tp_str */
-    (getattrofunc)NULL,     /* tp_getattro */
-    (setattrofunc)NULL,     /* tp_setattro */
-    (PyBufferProcs*)NULL,  /* tp_as_buffer */
-    Py_TPFLAGS_DEFAULT,                      /* tp_flags */
-    NULL,                        /* Documentation string */
-    (traverseproc)NULL,     /* tp_traverse */
-    (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)NULL,   /* tp_richcompare */
-    0,             /* tp_weaklistoffset */
-    (getiterfunc)_wrap_PyQVector__lt__QRgb__gt____tp_iter,          /* tp_iter */
-    (iternextfunc)NULL,     /* tp_iternext */
-    (struct PyMethodDef*)NULL, /* tp_methods */
-    (struct PyMemberDef*)0,              /* tp_members */
-    NULL,                     /* tp_getset */
-    NULL,                              /* tp_base */
-    NULL,                              /* tp_dict */
-    (descrgetfunc)NULL,    /* tp_descr_get */
-    (descrsetfunc)NULL,    /* tp_descr_set */
-    0,                 /* tp_dictoffset */
-    (initproc)_wrap_PyQVector__lt__QRgb__gt____tp_init,             /* tp_init */
-    (allocfunc)PyType_GenericAlloc,           /* tp_alloc */
-    (newfunc)PyType_GenericNew,               /* tp_new */
-    (freefunc)0,             /* tp_free */
-    (inquiry)NULL,             /* tp_is_gc */
-    NULL,                              /* tp_bases */
-    NULL,                              /* tp_mro */
-    NULL,                              /* tp_cache */
-    NULL,                              /* tp_subclasses */
-    NULL,                              /* tp_weaklist */
-    (destructor) NULL                  /* tp_del */
+static PyType_Slot PyQVector__lt__QRgb__gt___Type_slots[] = {
+    {Py_tp_dealloc, (void*)_wrap_PyQVector__lt__QRgb__gt____tp_dealloc},
+    {Py_tp_iter, (void*)_wrap_PyQVector__lt__QRgb__gt____tp_iter},
+    {Py_tp_init, (void*)_wrap_PyQVector__lt__QRgb__gt____tp_init},
+    {Py_tp_alloc, (void*)PyType_GenericAlloc},
+    {Py_tp_new, (void*)PyType_GenericNew},
+    {0, 0}
+};
+static PyType_Spec PyQVector__lt__QRgb__gt___Type_spec = {
+    (char *) "tiled.qt.QVector__lt__QRgb__gt__",
+    sizeof(PyQVector__lt__QRgb__gt__),
+    0,
+    Py_TPFLAGS_DEFAULT,
+    PyQVector__lt__QRgb__gt___Type_slots,
 };
 
-PyTypeObject PyQVector__lt__QRgb__gt__Iter_Type = {
-    PyVarObject_HEAD_INIT(NULL, 0)
-    (char *) "tiled.qt.QVector__lt__QRgb__gt__Iter",            /* tp_name */
-    sizeof(PyQVector__lt__QRgb__gt__Iter),                  /* tp_basicsize */
-    0,                                 /* tp_itemsize */
-    /* methods */
-    (destructor)_wrap_PyQVector__lt__QRgb__gt__Iter__tp_dealloc,        /* tp_dealloc */
-    (printfunc)0,                      /* tp_print */
-    (getattrfunc)NULL,       /* tp_getattr */
-    (setattrfunc)NULL,       /* tp_setattr */
-#if PY_MAJOR_VERSION >= 3
-    NULL,
-#else
-    (cmpfunc)NULL,           /* tp_compare */
-#endif
-    (reprfunc)NULL,             /* tp_repr */
-    (PyNumberMethods*)NULL,     /* tp_as_number */
-    (PySequenceMethods*)NULL, /* tp_as_sequence */
-    (PyMappingMethods*)NULL,   /* tp_as_mapping */
-    (hashfunc)NULL,             /* tp_hash */
-    (ternaryfunc)NULL,          /* tp_call */
-    (reprfunc)NULL,              /* tp_str */
-    (getattrofunc)NULL,     /* tp_getattro */
-    (setattrofunc)NULL,     /* tp_setattro */
-    (PyBufferProcs*)NULL,  /* tp_as_buffer */
-    Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_GC,                      /* tp_flags */
-    NULL,                        /* Documentation string */
-    (traverseproc)PyQVector__lt__QRgb__gt__Iter__tp_traverse,     /* tp_traverse */
-    (inquiry)PyQVector__lt__QRgb__gt__Iter__tp_clear,             /* tp_clear */
-    (richcmpfunc)NULL,   /* tp_richcompare */
-    0,             /* tp_weaklistoffset */
-    (getiterfunc)_wrap_PyQVector__lt__QRgb__gt__Iter__tp_iter,          /* tp_iter */
-    (iternextfunc)_wrap_PyQVector__lt__QRgb__gt__Iter__tp_iternext,     /* tp_iternext */
-    (struct PyMethodDef*)NULL, /* tp_methods */
-    (struct PyMemberDef*)0,              /* tp_members */
-    NULL,                     /* tp_getset */
-    NULL,                              /* tp_base */
-    NULL,                              /* tp_dict */
-    (descrgetfunc)NULL,    /* tp_descr_get */
-    (descrsetfunc)NULL,    /* tp_descr_set */
-    0,                 /* tp_dictoffset */
-    (initproc)NULL,             /* tp_init */
-    (allocfunc)PyType_GenericAlloc,           /* tp_alloc */
-    (newfunc)PyType_GenericNew,               /* tp_new */
-    (freefunc)0,             /* tp_free */
-    (inquiry)NULL,             /* tp_is_gc */
-    NULL,                              /* tp_bases */
-    NULL,                              /* tp_mro */
-    NULL,                              /* tp_cache */
-    NULL,                              /* tp_subclasses */
-    NULL,                              /* tp_weaklist */
-    (destructor) NULL                  /* tp_del */
+PyTypeObject *PyQVector__lt__QRgb__gt___Type;
+
+static PyType_Slot PyQVector__lt__QRgb__gt__Iter_Type_slots[] = {
+    {Py_tp_dealloc, (void*)_wrap_PyQVector__lt__QRgb__gt__Iter__tp_dealloc},
+    {Py_tp_traverse, (void*)PyQVector__lt__QRgb__gt__Iter__tp_traverse},
+    {Py_tp_clear, (void*)PyQVector__lt__QRgb__gt__Iter__tp_clear},
+    {Py_tp_iter, (void*)_wrap_PyQVector__lt__QRgb__gt__Iter__tp_iter},
+    {Py_tp_iternext, (void*)_wrap_PyQVector__lt__QRgb__gt__Iter__tp_iternext},
+    {Py_tp_alloc, (void*)PyType_GenericAlloc},
+    {Py_tp_new, (void*)PyType_GenericNew},
+    {0, 0}
 };
+static PyType_Spec PyQVector__lt__QRgb__gt__Iter_Type_spec = {
+    (char *) "tiled.qt.QVector__lt__QRgb__gt__Iter",
+    sizeof(PyQVector__lt__QRgb__gt__Iter),
+    0,
+    Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_GC,
+    PyQVector__lt__QRgb__gt__Iter_Type_slots,
+};
+
+PyTypeObject *PyQVector__lt__QRgb__gt__Iter_Type;
 
 
 
@@ -2302,7 +1955,7 @@ _wrap_PyQList__lt__QString__gt____tp_dealloc(PyQList__lt__QString__gt__ *self)
     delete self->obj;
     self->obj = NULL;
 
-    Py_TYPE(self)->tp_free((PyObject*)self);
+    PyObject_DEL(self);
 }
 
 
@@ -2313,14 +1966,14 @@ _wrap_PyQList__lt__QString__gt__Iter__tp_dealloc(PyQList__lt__QString__gt__Iter 
     delete self->iterator;
     self->iterator = NULL;
 
-    Py_TYPE(self)->tp_free((PyObject*)self);
+    PyObject_DEL(self);
 }
 
 
 static PyObject*
 _wrap_PyQList__lt__QString__gt____tp_iter(PyQList__lt__QString__gt__ *self)
 {
-    PyQList__lt__QString__gt__Iter *iter = PyObject_GC_New(PyQList__lt__QString__gt__Iter, &PyQList__lt__QString__gt__Iter_Type);
+    PyQList__lt__QString__gt__Iter *iter = PyObject_GC_New(PyQList__lt__QString__gt__Iter, PyQList__lt__QString__gt__Iter_Type);
     Py_INCREF(self);
     iter->container = self;
     iter->iterator = new QList<QString>::iterator(self->obj->begin());
@@ -2376,7 +2029,7 @@ int _wrap_convert_py2c__QList__lt___QString___gt__(PyObject *arg, QList<QString>
         Py_ssize_t size = PyList_Size(arg);
         for (Py_ssize_t i = 0; i < size; i++) {
             QString item;
-            if (!_wrap_convert_py2c__QString(PyList_GET_ITEM(arg, i), &item)) {
+            if (!_wrap_convert_py2c__QString(PyList_GetItem(arg, i), &item)) {
                 return 0;
             }
             container->push_back(item);
@@ -2412,114 +2065,44 @@ _wrap_PyQList__lt__QString__gt____tp_init(PyQList__lt__QString__gt__ *self, PyOb
     return 0;
 }
 
-PyTypeObject PyQList__lt__QString__gt___Type = {
-    PyVarObject_HEAD_INIT(NULL, 0)
-    (char *) "tiled.qt.QList__lt__QString__gt__",            /* tp_name */
-    sizeof(PyQList__lt__QString__gt__),                  /* tp_basicsize */
-    0,                                 /* tp_itemsize */
-    /* methods */
-    (destructor)_wrap_PyQList__lt__QString__gt____tp_dealloc,        /* tp_dealloc */
-    (printfunc)0,                      /* tp_print */
-    (getattrfunc)NULL,       /* tp_getattr */
-    (setattrfunc)NULL,       /* tp_setattr */
-#if PY_MAJOR_VERSION >= 3
-    NULL,
-#else
-    (cmpfunc)NULL,           /* tp_compare */
-#endif
-    (reprfunc)NULL,             /* tp_repr */
-    (PyNumberMethods*)NULL,     /* tp_as_number */
-    (PySequenceMethods*)NULL, /* tp_as_sequence */
-    (PyMappingMethods*)NULL,   /* tp_as_mapping */
-    (hashfunc)NULL,             /* tp_hash */
-    (ternaryfunc)NULL,          /* tp_call */
-    (reprfunc)NULL,              /* tp_str */
-    (getattrofunc)NULL,     /* tp_getattro */
-    (setattrofunc)NULL,     /* tp_setattro */
-    (PyBufferProcs*)NULL,  /* tp_as_buffer */
-    Py_TPFLAGS_DEFAULT,                      /* tp_flags */
-    NULL,                        /* Documentation string */
-    (traverseproc)NULL,     /* tp_traverse */
-    (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)NULL,   /* tp_richcompare */
-    0,             /* tp_weaklistoffset */
-    (getiterfunc)_wrap_PyQList__lt__QString__gt____tp_iter,          /* tp_iter */
-    (iternextfunc)NULL,     /* tp_iternext */
-    (struct PyMethodDef*)NULL, /* tp_methods */
-    (struct PyMemberDef*)0,              /* tp_members */
-    NULL,                     /* tp_getset */
-    NULL,                              /* tp_base */
-    NULL,                              /* tp_dict */
-    (descrgetfunc)NULL,    /* tp_descr_get */
-    (descrsetfunc)NULL,    /* tp_descr_set */
-    0,                 /* tp_dictoffset */
-    (initproc)_wrap_PyQList__lt__QString__gt____tp_init,             /* tp_init */
-    (allocfunc)PyType_GenericAlloc,           /* tp_alloc */
-    (newfunc)PyType_GenericNew,               /* tp_new */
-    (freefunc)0,             /* tp_free */
-    (inquiry)NULL,             /* tp_is_gc */
-    NULL,                              /* tp_bases */
-    NULL,                              /* tp_mro */
-    NULL,                              /* tp_cache */
-    NULL,                              /* tp_subclasses */
-    NULL,                              /* tp_weaklist */
-    (destructor) NULL                  /* tp_del */
+static PyType_Slot PyQList__lt__QString__gt___Type_slots[] = {
+    {Py_tp_dealloc, (void*)_wrap_PyQList__lt__QString__gt____tp_dealloc},
+    {Py_tp_iter, (void*)_wrap_PyQList__lt__QString__gt____tp_iter},
+    {Py_tp_init, (void*)_wrap_PyQList__lt__QString__gt____tp_init},
+    {Py_tp_alloc, (void*)PyType_GenericAlloc},
+    {Py_tp_new, (void*)PyType_GenericNew},
+    {0, 0}
+};
+static PyType_Spec PyQList__lt__QString__gt___Type_spec = {
+    (char *) "tiled.qt.QList__lt__QString__gt__",
+    sizeof(PyQList__lt__QString__gt__),
+    0,
+    Py_TPFLAGS_DEFAULT,
+    PyQList__lt__QString__gt___Type_slots,
 };
 
-PyTypeObject PyQList__lt__QString__gt__Iter_Type = {
-    PyVarObject_HEAD_INIT(NULL, 0)
-    (char *) "tiled.qt.QList__lt__QString__gt__Iter",            /* tp_name */
-    sizeof(PyQList__lt__QString__gt__Iter),                  /* tp_basicsize */
-    0,                                 /* tp_itemsize */
-    /* methods */
-    (destructor)_wrap_PyQList__lt__QString__gt__Iter__tp_dealloc,        /* tp_dealloc */
-    (printfunc)0,                      /* tp_print */
-    (getattrfunc)NULL,       /* tp_getattr */
-    (setattrfunc)NULL,       /* tp_setattr */
-#if PY_MAJOR_VERSION >= 3
-    NULL,
-#else
-    (cmpfunc)NULL,           /* tp_compare */
-#endif
-    (reprfunc)NULL,             /* tp_repr */
-    (PyNumberMethods*)NULL,     /* tp_as_number */
-    (PySequenceMethods*)NULL, /* tp_as_sequence */
-    (PyMappingMethods*)NULL,   /* tp_as_mapping */
-    (hashfunc)NULL,             /* tp_hash */
-    (ternaryfunc)NULL,          /* tp_call */
-    (reprfunc)NULL,              /* tp_str */
-    (getattrofunc)NULL,     /* tp_getattro */
-    (setattrofunc)NULL,     /* tp_setattro */
-    (PyBufferProcs*)NULL,  /* tp_as_buffer */
-    Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_GC,                      /* tp_flags */
-    NULL,                        /* Documentation string */
-    (traverseproc)PyQList__lt__QString__gt__Iter__tp_traverse,     /* tp_traverse */
-    (inquiry)PyQList__lt__QString__gt__Iter__tp_clear,             /* tp_clear */
-    (richcmpfunc)NULL,   /* tp_richcompare */
-    0,             /* tp_weaklistoffset */
-    (getiterfunc)_wrap_PyQList__lt__QString__gt__Iter__tp_iter,          /* tp_iter */
-    (iternextfunc)_wrap_PyQList__lt__QString__gt__Iter__tp_iternext,     /* tp_iternext */
-    (struct PyMethodDef*)NULL, /* tp_methods */
-    (struct PyMemberDef*)0,              /* tp_members */
-    NULL,                     /* tp_getset */
-    NULL,                              /* tp_base */
-    NULL,                              /* tp_dict */
-    (descrgetfunc)NULL,    /* tp_descr_get */
-    (descrsetfunc)NULL,    /* tp_descr_set */
-    0,                 /* tp_dictoffset */
-    (initproc)NULL,             /* tp_init */
-    (allocfunc)PyType_GenericAlloc,           /* tp_alloc */
-    (newfunc)PyType_GenericNew,               /* tp_new */
-    (freefunc)0,             /* tp_free */
-    (inquiry)NULL,             /* tp_is_gc */
-    NULL,                              /* tp_bases */
-    NULL,                              /* tp_mro */
-    NULL,                              /* tp_cache */
-    NULL,                              /* tp_subclasses */
-    NULL,                              /* tp_weaklist */
-    (destructor) NULL                  /* tp_del */
+PyTypeObject *PyQList__lt__QString__gt___Type;
+
+static PyType_Slot PyQList__lt__QString__gt__Iter_Type_slots[] = {
+    {Py_tp_dealloc, (void*)_wrap_PyQList__lt__QString__gt__Iter__tp_dealloc},
+    {Py_tp_traverse, (void*)PyQList__lt__QString__gt__Iter__tp_traverse},
+    {Py_tp_clear, (void*)PyQList__lt__QString__gt__Iter__tp_clear},
+    {Py_tp_iter, (void*)_wrap_PyQList__lt__QString__gt__Iter__tp_iter},
+    {Py_tp_iternext, (void*)_wrap_PyQList__lt__QString__gt__Iter__tp_iternext},
+    {Py_tp_alloc, (void*)PyType_GenericAlloc},
+    {Py_tp_new, (void*)PyType_GenericNew},
+    {0, 0}
+};
+static PyType_Spec PyQList__lt__QString__gt__Iter_Type_spec = {
+    (char *) "tiled.qt.QList__lt__QString__gt__Iter",
+    sizeof(PyQList__lt__QString__gt__Iter),
+    0,
+    Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_GC,
+    PyQList__lt__QString__gt__Iter_Type_slots,
 };
 
+
+PyTypeObject *PyQList__lt__QString__gt__Iter_Type;
 
 /* --- enumerations --- */
 
@@ -2563,180 +2146,6 @@ static struct PyModuleDef tiled_qt_moduledef = {
     tiled_qt_functions,
 };
 #endif
-
-static PyObject *
-inittiled_qt(void)
-{
-    PyObject *m;
-    #if PY_VERSION_HEX >= 0x03000000
-    m = PyModule_Create(&tiled_qt_moduledef);
-    #else
-    m = Py_InitModule3((char *) "tiled.qt", tiled_qt_functions, NULL);
-    #endif
-    if (m == NULL) {
-        return NULL;
-    }
-    /* Register the 'QPointF' class */
-    if (PyType_Ready(&PyQPointF_Type)) {
-        return NULL;
-    }
-    PyModule_AddObject(m, (char *) "QPointF", (PyObject *) &PyQPointF_Type);
-    /* Register the 'QSizeF' class */
-    if (PyType_Ready(&PyQSizeF_Type)) {
-        return NULL;
-    }
-    PyModule_AddObject(m, (char *) "QSizeF", (PyObject *) &PyQSizeF_Type);
-    /* Register the 'QRgb' class */
-    if (PyType_Ready(&PyQRgb_Type)) {
-        return NULL;
-    }
-    PyModule_AddObject(m, (char *) "QRgb", (PyObject *) &PyQRgb_Type);
-    /* Register the 'QColor' class */
-    if (PyType_Ready(&PyQColor_Type)) {
-        return NULL;
-    }
-    PyModule_AddObject(m, (char *) "QColor", (PyObject *) &PyQColor_Type);
-    /* Register the 'QImage' class */
-    if (PyType_Ready(&PyQImage_Type)) {
-        return NULL;
-    }
-    PyModule_AddObject(m, (char *) "QImage", (PyObject *) &PyQImage_Type);
-    /* Register the 'QPixmap' class */
-    if (PyType_Ready(&PyQPixmap_Type)) {
-        return NULL;
-    }
-    PyModule_AddObject(m, (char *) "QPixmap", (PyObject *) &PyQPixmap_Type);
-    /* Register the 'QWidget' class */
-    if (PyType_Ready(&PyQWidget_Type)) {
-        return NULL;
-    }
-    PyModule_AddObject(m, (char *) "QWidget", (PyObject *) &PyQWidget_Type);
-    /* Register the 'QFileDialog' class */
-    if (PyType_Ready(&PyQFileDialog_Type)) {
-        return NULL;
-    }
-    PyModule_AddObject(m, (char *) "QFileDialog", (PyObject *) &PyQFileDialog_Type);
-    /* Register the 'QVector<QRgb>' class */
-    if (PyType_Ready(&PyQVector__lt__QRgb__gt___Type)) {
-        return NULL;
-    }
-    if (PyType_Ready(&PyQVector__lt__QRgb__gt__Iter_Type)) {
-        return NULL;
-    }
-    PyModule_AddObject(m, (char *) "QVector__lt__QRgb__gt__", (PyObject *) &PyQVector__lt__QRgb__gt___Type);
-    PyModule_AddObject(m, (char *) "QVector__lt__QRgb__gt__Iter", (PyObject *) &PyQVector__lt__QRgb__gt__Iter_Type);
-    /* Register the 'QList<QString>' class */
-    if (PyType_Ready(&PyQList__lt__QString__gt___Type)) {
-        return NULL;
-    }
-    if (PyType_Ready(&PyQList__lt__QString__gt__Iter_Type)) {
-        return NULL;
-    }
-    PyModule_AddObject(m, (char *) "QList__lt__QString__gt__", (PyObject *) &PyQList__lt__QString__gt___Type);
-    PyModule_AddObject(m, (char *) "QList__lt__QString__gt__Iter", (PyObject *) &PyQList__lt__QString__gt__Iter_Type);
-    {
-        PyObject *tmp_value;
-         // QImage::Format_Invalid
-        tmp_value = PyLong_FromLong(QImage::Format_Invalid);
-        PyDict_SetItemString((PyObject*) PyQImage_Type.tp_dict, "Format_Invalid", tmp_value);
-        Py_DECREF(tmp_value);
-         // QImage::Format_Mono
-        tmp_value = PyLong_FromLong(QImage::Format_Mono);
-        PyDict_SetItemString((PyObject*) PyQImage_Type.tp_dict, "Format_Mono", tmp_value);
-        Py_DECREF(tmp_value);
-         // QImage::Format_MonoLSB
-        tmp_value = PyLong_FromLong(QImage::Format_MonoLSB);
-        PyDict_SetItemString((PyObject*) PyQImage_Type.tp_dict, "Format_MonoLSB", tmp_value);
-        Py_DECREF(tmp_value);
-         // QImage::Format_Indexed8
-        tmp_value = PyLong_FromLong(QImage::Format_Indexed8);
-        PyDict_SetItemString((PyObject*) PyQImage_Type.tp_dict, "Format_Indexed8", tmp_value);
-        Py_DECREF(tmp_value);
-         // QImage::Format_RGB32
-        tmp_value = PyLong_FromLong(QImage::Format_RGB32);
-        PyDict_SetItemString((PyObject*) PyQImage_Type.tp_dict, "Format_RGB32", tmp_value);
-        Py_DECREF(tmp_value);
-         // QImage::Format_ARGB32
-        tmp_value = PyLong_FromLong(QImage::Format_ARGB32);
-        PyDict_SetItemString((PyObject*) PyQImage_Type.tp_dict, "Format_ARGB32", tmp_value);
-        Py_DECREF(tmp_value);
-         // QImage::Format_ARGB32_Premultiplied
-        tmp_value = PyLong_FromLong(QImage::Format_ARGB32_Premultiplied);
-        PyDict_SetItemString((PyObject*) PyQImage_Type.tp_dict, "Format_ARGB32_Premultiplied", tmp_value);
-        Py_DECREF(tmp_value);
-         // QImage::Format_RGB16
-        tmp_value = PyLong_FromLong(QImage::Format_RGB16);
-        PyDict_SetItemString((PyObject*) PyQImage_Type.tp_dict, "Format_RGB16", tmp_value);
-        Py_DECREF(tmp_value);
-         // QImage::Format_ARGB8565_Premultiplied
-        tmp_value = PyLong_FromLong(QImage::Format_ARGB8565_Premultiplied);
-        PyDict_SetItemString((PyObject*) PyQImage_Type.tp_dict, "Format_ARGB8565_Premultiplied", tmp_value);
-        Py_DECREF(tmp_value);
-         // QImage::Format_RGB666
-        tmp_value = PyLong_FromLong(QImage::Format_RGB666);
-        PyDict_SetItemString((PyObject*) PyQImage_Type.tp_dict, "Format_RGB666", tmp_value);
-        Py_DECREF(tmp_value);
-         // QImage::Format_ARGB6666_Premultiplied
-        tmp_value = PyLong_FromLong(QImage::Format_ARGB6666_Premultiplied);
-        PyDict_SetItemString((PyObject*) PyQImage_Type.tp_dict, "Format_ARGB6666_Premultiplied", tmp_value);
-        Py_DECREF(tmp_value);
-         // QImage::Format_RGB555
-        tmp_value = PyLong_FromLong(QImage::Format_RGB555);
-        PyDict_SetItemString((PyObject*) PyQImage_Type.tp_dict, "Format_RGB555", tmp_value);
-        Py_DECREF(tmp_value);
-         // QImage::Format_ARGB8555_Premultiplied
-        tmp_value = PyLong_FromLong(QImage::Format_ARGB8555_Premultiplied);
-        PyDict_SetItemString((PyObject*) PyQImage_Type.tp_dict, "Format_ARGB8555_Premultiplied", tmp_value);
-        Py_DECREF(tmp_value);
-         // QImage::Format_RGB888
-        tmp_value = PyLong_FromLong(QImage::Format_RGB888);
-        PyDict_SetItemString((PyObject*) PyQImage_Type.tp_dict, "Format_RGB888", tmp_value);
-        Py_DECREF(tmp_value);
-         // QImage::Format_RGB444
-        tmp_value = PyLong_FromLong(QImage::Format_RGB444);
-        PyDict_SetItemString((PyObject*) PyQImage_Type.tp_dict, "Format_RGB444", tmp_value);
-        Py_DECREF(tmp_value);
-         // QImage::Format_ARGB4444_Premultiplied
-        tmp_value = PyLong_FromLong(QImage::Format_ARGB4444_Premultiplied);
-        PyDict_SetItemString((PyObject*) PyQImage_Type.tp_dict, "Format_ARGB4444_Premultiplied", tmp_value);
-        Py_DECREF(tmp_value);
-    }
-    {
-        PyObject *tmp_value;
-         // QFileDialog::ShowDirsOnly
-        tmp_value = PyLong_FromLong(QFileDialog::ShowDirsOnly);
-        PyDict_SetItemString((PyObject*) PyQFileDialog_Type.tp_dict, "ShowDirsOnly", tmp_value);
-        Py_DECREF(tmp_value);
-         // QFileDialog::DontResolveSymlinks
-        tmp_value = PyLong_FromLong(QFileDialog::DontResolveSymlinks);
-        PyDict_SetItemString((PyObject*) PyQFileDialog_Type.tp_dict, "DontResolveSymlinks", tmp_value);
-        Py_DECREF(tmp_value);
-         // QFileDialog::DontConfirmOverwrite
-        tmp_value = PyLong_FromLong(QFileDialog::DontConfirmOverwrite);
-        PyDict_SetItemString((PyObject*) PyQFileDialog_Type.tp_dict, "DontConfirmOverwrite", tmp_value);
-        Py_DECREF(tmp_value);
-         // QFileDialog::DontUseNativeDialog
-        tmp_value = PyLong_FromLong(QFileDialog::DontUseNativeDialog);
-        PyDict_SetItemString((PyObject*) PyQFileDialog_Type.tp_dict, "DontUseNativeDialog", tmp_value);
-        Py_DECREF(tmp_value);
-         // QFileDialog::ReadOnly
-        tmp_value = PyLong_FromLong(QFileDialog::ReadOnly);
-        PyDict_SetItemString((PyObject*) PyQFileDialog_Type.tp_dict, "ReadOnly", tmp_value);
-        Py_DECREF(tmp_value);
-         // QFileDialog::HideNameFilterDetails
-        tmp_value = PyLong_FromLong(QFileDialog::HideNameFilterDetails);
-        PyDict_SetItemString((PyObject*) PyQFileDialog_Type.tp_dict, "HideNameFilterDetails", tmp_value);
-        Py_DECREF(tmp_value);
-         // QFileDialog::DontUseSheet
-        tmp_value = PyLong_FromLong(QFileDialog::DontUseSheet);
-        PyDict_SetItemString((PyObject*) PyQFileDialog_Type.tp_dict, "DontUseSheet", tmp_value);
-        Py_DECREF(tmp_value);
-    }
-    return m;
-}
-static PyMethodDef tiled_Tiled_functions[] = {
-    {NULL, NULL, 0, NULL}
-};
 /* --- classes --- */
 
 
@@ -2747,7 +2156,7 @@ _wrap_PyTiledProperties__tp_init(PyTiledProperties *self, PyObject *args, PyObje
     PyTiledProperties *ctor_arg;
     const char *keywords[] = {"ctor_arg", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, &PyTiledProperties_Type, &ctor_arg)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, PyTiledProperties_Type, &ctor_arg)) {
         return -1;
     }
     self->obj = new Tiled::Properties(*((PyTiledProperties *) ctor_arg)->obj);
@@ -2764,7 +2173,7 @@ _wrap_PyTiledProperties_keys(PyTiledProperties *self)
     PyQList__lt__QString__gt__ *py_QList__lt__QString__gt__;
 
     retval = self->obj->keys();
-    py_QList__lt__QString__gt__ = PyObject_New(PyQList__lt__QString__gt__, &PyQList__lt__QString__gt___Type);
+    py_QList__lt__QString__gt__ = PyObject_New(PyQList__lt__QString__gt__, PyQList__lt__QString__gt___Type);
     py_QList__lt__QString__gt__->obj = new QList<QString>(retval);
     py_retval = Py_BuildValue((char *) "N", py_QList__lt__QString__gt__);
     return py_retval;
@@ -2776,7 +2185,7 @@ _wrap_PyTiledProperties__copy__(PyTiledProperties *self)
 {
 
     PyTiledProperties *py_copy;
-    py_copy = PyObject_New(PyTiledProperties, &PyTiledProperties_Type);
+    py_copy = PyObject_New(PyTiledProperties, PyTiledProperties_Type);
     py_copy->obj = new Tiled::Properties(*self->obj);
     py_copy->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
     return (PyObject*) py_copy;
@@ -2796,14 +2205,14 @@ _wrap_PyTiledProperties__tp_dealloc(PyTiledProperties *self)
         if (!(self->flags&PYBINDGEN_WRAPPER_FLAG_OBJECT_NOT_OWNED)) {
             delete tmp;
         }
-    Py_TYPE(self)->tp_free((PyObject*)self);
+    PyObject_DEL(self);
 }
 
 static PyObject*
 _wrap_PyTiledProperties__tp_richcompare (PyTiledProperties *PYBINDGEN_UNUSED(self), PyTiledProperties *other, int opid)
 {
 
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyTiledProperties_Type)) {
+    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) PyTiledProperties_Type)) {
         Py_INCREF(Py_NotImplemented);
         return Py_NotImplemented;
     }
@@ -2832,60 +2241,25 @@ _wrap_PyTiledProperties__tp_richcompare (PyTiledProperties *PYBINDGEN_UNUSED(sel
     return Py_NotImplemented;
 }
 
-PyTypeObject PyTiledProperties_Type = {
-    PyVarObject_HEAD_INIT(NULL, 0)
-    (char *) "tiled.Tiled.Properties",            /* tp_name */
-    sizeof(PyTiledProperties),                  /* tp_basicsize */
-    0,                                 /* tp_itemsize */
-    /* methods */
-    (destructor)_wrap_PyTiledProperties__tp_dealloc,        /* tp_dealloc */
-    (printfunc)0,                      /* tp_print */
-    (getattrfunc)NULL,       /* tp_getattr */
-    (setattrfunc)NULL,       /* tp_setattr */
-#if PY_MAJOR_VERSION >= 3
-    NULL,
-#else
-    (cmpfunc)NULL,           /* tp_compare */
-#endif
-    (reprfunc)NULL,             /* tp_repr */
-    (PyNumberMethods*)NULL,     /* tp_as_number */
-    (PySequenceMethods*)NULL, /* tp_as_sequence */
-    (PyMappingMethods*)NULL,   /* tp_as_mapping */
-    (hashfunc)NULL,             /* tp_hash */
-    (ternaryfunc)NULL,          /* tp_call */
-    (reprfunc)NULL,              /* tp_str */
-    (getattrofunc)NULL,     /* tp_getattro */
-    (setattrofunc)NULL,     /* tp_setattro */
-    (PyBufferProcs*)NULL,  /* tp_as_buffer */
-    Py_TPFLAGS_DEFAULT,                      /* tp_flags */
-    "Properties(ctor_arg)",                        /* Documentation string */
-    (traverseproc)NULL,     /* tp_traverse */
-    (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyTiledProperties__tp_richcompare,   /* tp_richcompare */
-    0,             /* tp_weaklistoffset */
-    (getiterfunc)NULL,          /* tp_iter */
-    (iternextfunc)NULL,     /* tp_iternext */
-    (struct PyMethodDef*)PyTiledProperties_methods, /* tp_methods */
-    (struct PyMemberDef*)0,              /* tp_members */
-    0,                     /* tp_getset */
-    NULL,                              /* tp_base */
-    NULL,                              /* tp_dict */
-    (descrgetfunc)NULL,    /* tp_descr_get */
-    (descrsetfunc)NULL,    /* tp_descr_set */
-    0,                 /* tp_dictoffset */
-    (initproc)_wrap_PyTiledProperties__tp_init,             /* tp_init */
-    (allocfunc)PyType_GenericAlloc,           /* tp_alloc */
-    (newfunc)PyType_GenericNew,               /* tp_new */
-    (freefunc)0,             /* tp_free */
-    (inquiry)NULL,             /* tp_is_gc */
-    NULL,                              /* tp_bases */
-    NULL,                              /* tp_mro */
-    NULL,                              /* tp_cache */
-    NULL,                              /* tp_subclasses */
-    NULL,                              /* tp_weaklist */
-    (destructor) NULL                  /* tp_del */
+static PyType_Slot PyTiledProperties_Type_slots[] = {
+    {Py_tp_dealloc, (void*)_wrap_PyTiledProperties__tp_dealloc},
+    {Py_tp_richcompare, (void*)_wrap_PyTiledProperties__tp_richcompare},
+    {Py_tp_methods, (struct PyMethodDef*)PyTiledProperties_methods},
+    {Py_tp_init, (void*)_wrap_PyTiledProperties__tp_init},
+    {Py_tp_alloc, (void*)PyType_GenericAlloc},
+    {Py_tp_new, (void*)PyType_GenericNew},
+    {0, 0}
+};
+static PyType_Spec PyTiledProperties_Type_spec = {
+    (char *) "tiled.Tiled.Properties",
+    sizeof(PyTiledProperties),
+    0,
+    Py_TPFLAGS_DEFAULT,
+    PyTiledProperties_Type_slots,
 };
 
+
+PyTypeObject *PyTiledProperties_Type;
 
 
 
@@ -2904,7 +2278,7 @@ _wrap_PyTiledObject_properties(PyTiledObject *self)
     PyTiledProperties *py_Properties;
 
     Tiled::Properties const retval = self->obj->properties();
-    py_Properties = PyObject_New(PyTiledProperties, &PyTiledProperties_Type);
+    py_Properties = PyObject_New(PyTiledProperties, PyTiledProperties_Type);
     py_Properties->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
     py_Properties->obj = new Tiled::Properties(retval);
     py_retval = Py_BuildValue((char *) "N", py_Properties);
@@ -2964,14 +2338,14 @@ _wrap_PyTiledObject__tp_dealloc(PyTiledObject *self)
         if (!(self->flags&PYBINDGEN_WRAPPER_FLAG_OBJECT_NOT_OWNED)) {
             delete tmp;
         }
-    Py_TYPE(self)->tp_free((PyObject*)self);
+    PyObject_DEL(self);
 }
 
 static PyObject*
 _wrap_PyTiledObject__tp_richcompare (PyTiledObject *PYBINDGEN_UNUSED(self), PyTiledObject *other, int opid)
 {
 
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyTiledObject_Type)) {
+    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) PyTiledObject_Type)) {
         Py_INCREF(Py_NotImplemented);
         return Py_NotImplemented;
     }
@@ -3000,60 +2374,25 @@ _wrap_PyTiledObject__tp_richcompare (PyTiledObject *PYBINDGEN_UNUSED(self), PyTi
     return Py_NotImplemented;
 }
 
-PyTypeObject PyTiledObject_Type = {
-    PyVarObject_HEAD_INIT(NULL, 0)
-    (char *) "tiled.Tiled.Object",            /* tp_name */
-    sizeof(PyTiledObject),                  /* tp_basicsize */
-    0,                                 /* tp_itemsize */
-    /* methods */
-    (destructor)_wrap_PyTiledObject__tp_dealloc,        /* tp_dealloc */
-    (printfunc)0,                      /* tp_print */
-    (getattrfunc)NULL,       /* tp_getattr */
-    (setattrfunc)NULL,       /* tp_setattr */
-#if PY_MAJOR_VERSION >= 3
-    NULL,
-#else
-    (cmpfunc)NULL,           /* tp_compare */
-#endif
-    (reprfunc)NULL,             /* tp_repr */
-    (PyNumberMethods*)NULL,     /* tp_as_number */
-    (PySequenceMethods*)NULL, /* tp_as_sequence */
-    (PyMappingMethods*)NULL,   /* tp_as_mapping */
-    (hashfunc)NULL,             /* tp_hash */
-    (ternaryfunc)NULL,          /* tp_call */
-    (reprfunc)NULL,              /* tp_str */
-    (getattrofunc)NULL,     /* tp_getattro */
-    (setattrofunc)NULL,     /* tp_setattro */
-    (PyBufferProcs*)NULL,  /* tp_as_buffer */
-    Py_TPFLAGS_DEFAULT,                      /* tp_flags */
-    "",                        /* Documentation string */
-    (traverseproc)NULL,     /* tp_traverse */
-    (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyTiledObject__tp_richcompare,   /* tp_richcompare */
-    0,             /* tp_weaklistoffset */
-    (getiterfunc)NULL,          /* tp_iter */
-    (iternextfunc)NULL,     /* tp_iternext */
-    (struct PyMethodDef*)PyTiledObject_methods, /* tp_methods */
-    (struct PyMemberDef*)0,              /* tp_members */
-    0,                     /* tp_getset */
-    NULL,                              /* tp_base */
-    NULL,                              /* tp_dict */
-    (descrgetfunc)NULL,    /* tp_descr_get */
-    (descrsetfunc)NULL,    /* tp_descr_set */
-    0,                 /* tp_dictoffset */
-    (initproc)_wrap_PyTiledObject__tp_init,             /* tp_init */
-    (allocfunc)PyType_GenericAlloc,           /* tp_alloc */
-    (newfunc)PyType_GenericNew,               /* tp_new */
-    (freefunc)0,             /* tp_free */
-    (inquiry)NULL,             /* tp_is_gc */
-    NULL,                              /* tp_bases */
-    NULL,                              /* tp_mro */
-    NULL,                              /* tp_cache */
-    NULL,                              /* tp_subclasses */
-    NULL,                              /* tp_weaklist */
-    (destructor) NULL                  /* tp_del */
+static PyType_Slot PyTiledObject_Type_slots[] = {
+    {Py_tp_dealloc, (void*)_wrap_PyTiledObject__tp_dealloc},
+    {Py_tp_richcompare, (void*)_wrap_PyTiledObject__tp_richcompare},
+    {Py_tp_methods, (struct PyMethodDef*)PyTiledObject_methods},
+    {Py_tp_init, (void*)_wrap_PyTiledObject__tp_init},
+    {Py_tp_alloc, (void*)PyType_GenericAlloc},
+    {Py_tp_new, (void*)PyType_GenericNew},
+    {0, 0}
+};
+static PyType_Spec PyTiledObject_Type_spec = {
+    (char *) "tiled.Tiled.Object",
+    sizeof(PyTiledObject),
+    0,
+    Py_TPFLAGS_DEFAULT,
+    PyTiledObject_Type_slots,
 };
 
+
+PyTypeObject *PyTiledObject_Type;
 
 
 
@@ -3066,7 +2405,7 @@ _wrap_PyTiledTile__tp_init(PyTiledTile *self, PyObject *args, PyObject *kwargs)
     Tiled::Tileset *tileset_ptr;
     const char *keywords[] = {"image", "id", "tileset", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!iO!", (char **) keywords, &PyQPixmap_Type, &image, &id, &PyTiledTileset_Type, &tileset)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!iO!", (char **) keywords, PyQPixmap_Type, &image, &id, PyTiledTileset_Type, &tileset)) {
         return -1;
     }
     tileset_ptr = (tileset ? tileset->obj : NULL);
@@ -3107,7 +2446,7 @@ _wrap_PyTiledTile_image(PyTiledTile *self)
     PyQPixmap *py_QPixmap;
 
     QPixmap const & retval = self->obj->image();
-    py_QPixmap = PyObject_New(PyQPixmap, &PyQPixmap_Type);
+    py_QPixmap = PyObject_New(PyQPixmap, PyQPixmap_Type);
     py_QPixmap->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
     py_QPixmap->obj = new QPixmap(retval);
     py_retval = Py_BuildValue((char *) "N", py_QPixmap);
@@ -3122,7 +2461,7 @@ _wrap_PyTiledTile_setImage(PyTiledTile *self, PyObject *args, PyObject *kwargs)
     PyQPixmap *image;
     const char *keywords[] = {"image", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, &PyQPixmap_Type, &image)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, PyQPixmap_Type, &image)) {
         return NULL;
     }
     self->obj->setImage(*((PyQPixmap *) image)->obj);
@@ -3144,7 +2483,7 @@ _wrap_PyTiledTile_tileset(PyTiledTile *self)
         Py_INCREF(Py_None);
         return Py_None;
     }
-    py_Tileset = PyObject_New(PyTiledTileset, &PyTiledTileset_Type);
+    py_Tileset = PyObject_New(PyTiledTileset, PyTiledTileset_Type);
     py_Tileset->obj = retval;
     py_Tileset->flags = PYBINDGEN_WRAPPER_FLAG_OBJECT_NOT_OWNED;
     py_retval = Py_BuildValue((char *) "N", py_Tileset);
@@ -3181,14 +2520,14 @@ _wrap_PyTiledTile__tp_dealloc(PyTiledTile *self)
         if (!(self->flags&PYBINDGEN_WRAPPER_FLAG_OBJECT_NOT_OWNED)) {
             delete tmp;
         }
-    Py_TYPE(self)->tp_free((PyObject*)self);
+    PyObject_DEL(self);
 }
 
 static PyObject*
 _wrap_PyTiledTile__tp_richcompare (PyTiledTile *PYBINDGEN_UNUSED(self), PyTiledTile *other, int opid)
 {
 
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyTiledTile_Type)) {
+    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) PyTiledTile_Type)) {
         Py_INCREF(Py_NotImplemented);
         return Py_NotImplemented;
     }
@@ -3217,60 +2556,25 @@ _wrap_PyTiledTile__tp_richcompare (PyTiledTile *PYBINDGEN_UNUSED(self), PyTiledT
     return Py_NotImplemented;
 }
 
-PyTypeObject PyTiledTile_Type = {
-    PyVarObject_HEAD_INIT(NULL, 0)
-    (char *) "tiled.Tiled.Tile",            /* tp_name */
-    sizeof(PyTiledTile),                  /* tp_basicsize */
-    0,                                 /* tp_itemsize */
-    /* methods */
-    (destructor)_wrap_PyTiledTile__tp_dealloc,        /* tp_dealloc */
-    (printfunc)0,                      /* tp_print */
-    (getattrfunc)NULL,       /* tp_getattr */
-    (setattrfunc)NULL,       /* tp_setattr */
-#if PY_MAJOR_VERSION >= 3
-    NULL,
-#else
-    (cmpfunc)NULL,           /* tp_compare */
-#endif
-    (reprfunc)NULL,             /* tp_repr */
-    (PyNumberMethods*)NULL,     /* tp_as_number */
-    (PySequenceMethods*)NULL, /* tp_as_sequence */
-    (PyMappingMethods*)NULL,   /* tp_as_mapping */
-    (hashfunc)NULL,             /* tp_hash */
-    (ternaryfunc)NULL,          /* tp_call */
-    (reprfunc)NULL,              /* tp_str */
-    (getattrofunc)NULL,     /* tp_getattro */
-    (setattrofunc)NULL,     /* tp_setattro */
-    (PyBufferProcs*)NULL,  /* tp_as_buffer */
-    Py_TPFLAGS_DEFAULT,                      /* tp_flags */
-    "Tile(image, id, tileset)",                        /* Documentation string */
-    (traverseproc)NULL,     /* tp_traverse */
-    (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyTiledTile__tp_richcompare,   /* tp_richcompare */
-    0,             /* tp_weaklistoffset */
-    (getiterfunc)NULL,          /* tp_iter */
-    (iternextfunc)NULL,     /* tp_iternext */
-    (struct PyMethodDef*)PyTiledTile_methods, /* tp_methods */
-    (struct PyMemberDef*)0,              /* tp_members */
-    0,                     /* tp_getset */
-    NULL,                              /* tp_base */
-    NULL,                              /* tp_dict */
-    (descrgetfunc)NULL,    /* tp_descr_get */
-    (descrsetfunc)NULL,    /* tp_descr_set */
-    0,                 /* tp_dictoffset */
-    (initproc)_wrap_PyTiledTile__tp_init,             /* tp_init */
-    (allocfunc)PyType_GenericAlloc,           /* tp_alloc */
-    (newfunc)PyType_GenericNew,               /* tp_new */
-    (freefunc)0,             /* tp_free */
-    (inquiry)NULL,             /* tp_is_gc */
-    NULL,                              /* tp_bases */
-    NULL,                              /* tp_mro */
-    NULL,                              /* tp_cache */
-    NULL,                              /* tp_subclasses */
-    NULL,                              /* tp_weaklist */
-    (destructor) NULL                  /* tp_del */
+static PyType_Slot PyTiledTile_Type_slots[] = {
+    {Py_tp_dealloc, (void*)_wrap_PyTiledTile__tp_dealloc},
+    {Py_tp_richcompare, (void*)_wrap_PyTiledTile__tp_richcompare},
+    {Py_tp_methods, (struct PyMethodDef*)PyTiledTile_methods},
+    {Py_tp_init, (void*)_wrap_PyTiledTile__tp_init},
+    {Py_tp_alloc, (void*)PyType_GenericAlloc},
+    {Py_tp_new, (void*)PyType_GenericNew},
+    {0, 0}
+};
+static PyType_Spec PyTiledTile_Type_spec = {
+    (char *) "tiled.Tiled.Tile",
+    sizeof(PyTiledTile),
+    0,
+    Py_TPFLAGS_DEFAULT,
+    PyTiledTile_Type_slots,
 };
 
+
+PyTypeObject *PyTiledTile_Type;
 
 
 
@@ -3311,7 +2615,7 @@ _wrap_PyTiledTileset_create(PyTiledTileset *PYBINDGEN_UNUSED(dummy), PyObject *a
         return NULL;
     }
     Tiled::SharedTileset retval = Tiled::Tileset::create(QString::fromUtf8(name), tileWidth, tileHeight, tileSpacing, margin);
-    py_SharedTileset = PyObject_New(PyTiledSharedTileset, &PyTiledSharedTileset_Type);
+    py_SharedTileset = PyObject_New(PyTiledSharedTileset, PyTiledSharedTileset_Type);
     py_SharedTileset->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
     py_SharedTileset->obj = new Tiled::SharedTileset(retval);
     py_retval = Py_BuildValue((char *) "N", py_SharedTileset);
@@ -3377,7 +2681,7 @@ _wrap_PyTiledTileset_loadFromImage(PyTiledTileset *self, PyObject *args, PyObjec
     Py_ssize_t file_len;
     const char *keywords[] = {"img", "file", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!s#", (char **) keywords, &PyQImage_Type, &img, &file, &file_len)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!s#", (char **) keywords, PyQImage_Type, &img, &file, &file_len)) {
         return NULL;
     }
     retval = self->obj->loadFromImage(*((PyQImage *) img)->obj, QString::fromUtf8(file));
@@ -3453,7 +2757,7 @@ _wrap_PyTiledTileset_setTransparentColor(PyTiledTileset *self, PyObject *args, P
     PyQColor *col;
     const char *keywords[] = {"col", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, &PyQColor_Type, &col)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, PyQColor_Type, &col)) {
         return NULL;
     }
     self->obj->setTransparentColor(*((PyQColor *) col)->obj);
@@ -3480,7 +2784,7 @@ _wrap_PyTiledTileset_tileAt(PyTiledTileset *self, PyObject *args, PyObject *kwar
         Py_INCREF(Py_None);
         return Py_None;
     }
-    py_Tile = PyObject_New(PyTiledTile, &PyTiledTile_Type);
+    py_Tile = PyObject_New(PyTiledTile, PyTiledTile_Type);
     py_Tile->obj = retval;
     py_Tile->flags = PYBINDGEN_WRAPPER_FLAG_OBJECT_NOT_OWNED;
     py_retval = Py_BuildValue((char *) "N", py_Tile);
@@ -3543,7 +2847,7 @@ _wrap_PyTiledTileset_transparentColor(PyTiledTileset *self)
     PyQColor *py_QColor;
 
     QColor retval = self->obj->transparentColor();
-    py_QColor = PyObject_New(PyQColor, &PyQColor_Type);
+    py_QColor = PyObject_New(PyQColor, PyQColor_Type);
     py_QColor->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
     py_QColor->obj = new QColor(retval);
     py_retval = Py_BuildValue((char *) "N", py_QColor);
@@ -3580,14 +2884,14 @@ _wrap_PyTiledTileset__tp_dealloc(PyTiledTileset *self)
         if (!(self->flags&PYBINDGEN_WRAPPER_FLAG_OBJECT_NOT_OWNED)) {
             delete tmp;
         }
-    Py_TYPE(self)->tp_free((PyObject*)self);
+    PyObject_DEL(self);
 }
 
 static PyObject*
 _wrap_PyTiledTileset__tp_richcompare (PyTiledTileset *PYBINDGEN_UNUSED(self), PyTiledTileset *other, int opid)
 {
 
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyTiledTileset_Type)) {
+    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) PyTiledTileset_Type)) {
         Py_INCREF(Py_NotImplemented);
         return Py_NotImplemented;
     }
@@ -3616,60 +2920,25 @@ _wrap_PyTiledTileset__tp_richcompare (PyTiledTileset *PYBINDGEN_UNUSED(self), Py
     return Py_NotImplemented;
 }
 
-PyTypeObject PyTiledTileset_Type = {
-    PyVarObject_HEAD_INIT(NULL, 0)
-    (char *) "tiled.Tiled.Tileset",            /* tp_name */
-    sizeof(PyTiledTileset),                  /* tp_basicsize */
-    0,                                 /* tp_itemsize */
-    /* methods */
-    (destructor)_wrap_PyTiledTileset__tp_dealloc,        /* tp_dealloc */
-    (printfunc)0,                      /* tp_print */
-    (getattrfunc)NULL,       /* tp_getattr */
-    (setattrfunc)NULL,       /* tp_setattr */
-#if PY_MAJOR_VERSION >= 3
-    NULL,
-#else
-    (cmpfunc)NULL,           /* tp_compare */
-#endif
-    (reprfunc)NULL,             /* tp_repr */
-    (PyNumberMethods*)NULL,     /* tp_as_number */
-    (PySequenceMethods*)NULL, /* tp_as_sequence */
-    (PyMappingMethods*)NULL,   /* tp_as_mapping */
-    (hashfunc)NULL,             /* tp_hash */
-    (ternaryfunc)NULL,          /* tp_call */
-    (reprfunc)NULL,              /* tp_str */
-    (getattrofunc)NULL,     /* tp_getattro */
-    (setattrofunc)NULL,     /* tp_setattro */
-    (PyBufferProcs*)NULL,  /* tp_as_buffer */
-    Py_TPFLAGS_DEFAULT,                      /* tp_flags */
-    "",                        /* Documentation string */
-    (traverseproc)NULL,     /* tp_traverse */
-    (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyTiledTileset__tp_richcompare,   /* tp_richcompare */
-    0,             /* tp_weaklistoffset */
-    (getiterfunc)NULL,          /* tp_iter */
-    (iternextfunc)NULL,     /* tp_iternext */
-    (struct PyMethodDef*)PyTiledTileset_methods, /* tp_methods */
-    (struct PyMemberDef*)0,              /* tp_members */
-    0,                     /* tp_getset */
-    NULL,                              /* tp_base */
-    NULL,                              /* tp_dict */
-    (descrgetfunc)NULL,    /* tp_descr_get */
-    (descrsetfunc)NULL,    /* tp_descr_set */
-    0,                 /* tp_dictoffset */
-    (initproc)_wrap_PyTiledTileset__tp_init,             /* tp_init */
-    (allocfunc)PyType_GenericAlloc,           /* tp_alloc */
-    (newfunc)PyType_GenericNew,               /* tp_new */
-    (freefunc)0,             /* tp_free */
-    (inquiry)NULL,             /* tp_is_gc */
-    NULL,                              /* tp_bases */
-    NULL,                              /* tp_mro */
-    NULL,                              /* tp_cache */
-    NULL,                              /* tp_subclasses */
-    NULL,                              /* tp_weaklist */
-    (destructor) NULL                  /* tp_del */
+static PyType_Slot PyTiledTileset_Type_slots[] = {
+    {Py_tp_dealloc, (void*)_wrap_PyTiledTileset__tp_dealloc},
+    {Py_tp_richcompare, (void*)_wrap_PyTiledTileset__tp_richcompare},
+    {Py_tp_methods, (struct PyMethodDef*)PyTiledTileset_methods},
+    {Py_tp_init, (void*)_wrap_PyTiledTileset__tp_init},
+    {Py_tp_alloc, (void*)PyType_GenericAlloc},
+    {Py_tp_new, (void*)PyType_GenericNew},
+    {0, 0}
+};
+static PyType_Spec PyTiledTileset_Type_spec = {
+    (char *) "tiled.Tiled.Tileset",
+    sizeof(PyTiledTileset),
+    0,
+    Py_TPFLAGS_DEFAULT,
+    PyTiledTileset_Type_slots,
 };
 
+
+PyTypeObject *PyTiledTileset_Type;
 
 
 
@@ -3679,7 +2948,7 @@ _wrap_PyTiledSharedTileset__tp_init(PyTiledSharedTileset *self, PyObject *args, 
     PyTiledSharedTileset *ctor_arg;
     const char *keywords[] = {"ctor_arg", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, &PyTiledSharedTileset_Type, &ctor_arg)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, PyTiledSharedTileset_Type, &ctor_arg)) {
         return -1;
     }
     self->obj = new Tiled::SharedTileset(*((PyTiledSharedTileset *) ctor_arg)->obj);
@@ -3700,7 +2969,7 @@ _wrap_PyTiledSharedTileset_data(PyTiledSharedTileset *self)
         Py_INCREF(Py_None);
         return Py_None;
     }
-    py_Tileset = PyObject_New(PyTiledTileset, &PyTiledTileset_Type);
+    py_Tileset = PyObject_New(PyTiledTileset, PyTiledTileset_Type);
     py_Tileset->obj = retval;
     py_Tileset->flags = PYBINDGEN_WRAPPER_FLAG_OBJECT_NOT_OWNED;
     py_retval = Py_BuildValue((char *) "N", py_Tileset);
@@ -3713,7 +2982,7 @@ _wrap_PyTiledSharedTileset__copy__(PyTiledSharedTileset *self)
 {
 
     PyTiledSharedTileset *py_copy;
-    py_copy = PyObject_New(PyTiledSharedTileset, &PyTiledSharedTileset_Type);
+    py_copy = PyObject_New(PyTiledSharedTileset, PyTiledSharedTileset_Type);
     py_copy->obj = new Tiled::SharedTileset(*self->obj);
     py_copy->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
     return (PyObject*) py_copy;
@@ -3733,14 +3002,14 @@ _wrap_PyTiledSharedTileset__tp_dealloc(PyTiledSharedTileset *self)
         if (!(self->flags&PYBINDGEN_WRAPPER_FLAG_OBJECT_NOT_OWNED)) {
             delete tmp;
         }
-    Py_TYPE(self)->tp_free((PyObject*)self);
+    PyObject_DEL(self);
 }
 
 static PyObject*
 _wrap_PyTiledSharedTileset__tp_richcompare (PyTiledSharedTileset *PYBINDGEN_UNUSED(self), PyTiledSharedTileset *other, int opid)
 {
 
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyTiledSharedTileset_Type)) {
+    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) PyTiledSharedTileset_Type)) {
         Py_INCREF(Py_NotImplemented);
         return Py_NotImplemented;
     }
@@ -3769,60 +3038,25 @@ _wrap_PyTiledSharedTileset__tp_richcompare (PyTiledSharedTileset *PYBINDGEN_UNUS
     return Py_NotImplemented;
 }
 
-PyTypeObject PyTiledSharedTileset_Type = {
-    PyVarObject_HEAD_INIT(NULL, 0)
-    (char *) "tiled.Tiled.SharedTileset",            /* tp_name */
-    sizeof(PyTiledSharedTileset),                  /* tp_basicsize */
-    0,                                 /* tp_itemsize */
-    /* methods */
-    (destructor)_wrap_PyTiledSharedTileset__tp_dealloc,        /* tp_dealloc */
-    (printfunc)0,                      /* tp_print */
-    (getattrfunc)NULL,       /* tp_getattr */
-    (setattrfunc)NULL,       /* tp_setattr */
-#if PY_MAJOR_VERSION >= 3
-    NULL,
-#else
-    (cmpfunc)NULL,           /* tp_compare */
-#endif
-    (reprfunc)NULL,             /* tp_repr */
-    (PyNumberMethods*)NULL,     /* tp_as_number */
-    (PySequenceMethods*)NULL, /* tp_as_sequence */
-    (PyMappingMethods*)NULL,   /* tp_as_mapping */
-    (hashfunc)NULL,             /* tp_hash */
-    (ternaryfunc)NULL,          /* tp_call */
-    (reprfunc)NULL,              /* tp_str */
-    (getattrofunc)NULL,     /* tp_getattro */
-    (setattrofunc)NULL,     /* tp_setattro */
-    (PyBufferProcs*)NULL,  /* tp_as_buffer */
-    Py_TPFLAGS_DEFAULT,                      /* tp_flags */
-    "SharedTileset(ctor_arg)",                        /* Documentation string */
-    (traverseproc)NULL,     /* tp_traverse */
-    (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyTiledSharedTileset__tp_richcompare,   /* tp_richcompare */
-    0,             /* tp_weaklistoffset */
-    (getiterfunc)NULL,          /* tp_iter */
-    (iternextfunc)NULL,     /* tp_iternext */
-    (struct PyMethodDef*)PyTiledSharedTileset_methods, /* tp_methods */
-    (struct PyMemberDef*)0,              /* tp_members */
-    0,                     /* tp_getset */
-    NULL,                              /* tp_base */
-    NULL,                              /* tp_dict */
-    (descrgetfunc)NULL,    /* tp_descr_get */
-    (descrsetfunc)NULL,    /* tp_descr_set */
-    0,                 /* tp_dictoffset */
-    (initproc)_wrap_PyTiledSharedTileset__tp_init,             /* tp_init */
-    (allocfunc)PyType_GenericAlloc,           /* tp_alloc */
-    (newfunc)PyType_GenericNew,               /* tp_new */
-    (freefunc)0,             /* tp_free */
-    (inquiry)NULL,             /* tp_is_gc */
-    NULL,                              /* tp_bases */
-    NULL,                              /* tp_mro */
-    NULL,                              /* tp_cache */
-    NULL,                              /* tp_subclasses */
-    NULL,                              /* tp_weaklist */
-    (destructor) NULL                  /* tp_del */
+static PyType_Slot PyTiledSharedTileset_Type_slots[] = {
+    {Py_tp_dealloc, (void*)_wrap_PyTiledSharedTileset__tp_dealloc},
+    {Py_tp_richcompare, (void*)_wrap_PyTiledSharedTileset__tp_richcompare},
+    {Py_tp_methods, (struct PyMethodDef*)PyTiledSharedTileset_methods},
+    {Py_tp_init, (void*)_wrap_PyTiledSharedTileset__tp_init},
+    {Py_tp_alloc, (void*)PyType_GenericAlloc},
+    {Py_tp_new, (void*)PyType_GenericNew},
+    {0, 0}
+};
+static PyType_Spec PyTiledSharedTileset_Type_spec = {
+    (char *) "tiled.Tiled.SharedTileset",
+    sizeof(PyTiledSharedTileset),
+    0,
+    Py_TPFLAGS_DEFAULT,
+    PyTiledSharedTileset_Type_slots,
 };
 
+
+PyTypeObject *PyTiledSharedTileset_Type;
 
 
 
@@ -3846,7 +3080,7 @@ _wrap_PyTiledLayer_asObjectGroup(PyTiledLayer *self)
         Py_INCREF(Py_None);
         return Py_None;
     }
-    py_ObjectGroup = PyObject_New(PyTiledObjectGroup, &PyTiledObjectGroup_Type);
+    py_ObjectGroup = PyObject_New(PyTiledObjectGroup, PyTiledObjectGroup_Type);
     py_ObjectGroup->obj = retval;
     py_ObjectGroup->flags = PYBINDGEN_WRAPPER_FLAG_OBJECT_NOT_OWNED;
     py_retval = Py_BuildValue((char *) "N", py_ObjectGroup);
@@ -3866,7 +3100,7 @@ _wrap_PyTiledLayer_asTileLayer(PyTiledLayer *self)
         Py_INCREF(Py_None);
         return Py_None;
     }
-    py_TileLayer = PyObject_New(PyTiledTileLayer, &PyTiledTileLayer_Type);
+    py_TileLayer = PyObject_New(PyTiledTileLayer, PyTiledTileLayer_Type);
     py_TileLayer->obj = retval;
     py_TileLayer->flags = PYBINDGEN_WRAPPER_FLAG_OBJECT_NOT_OWNED;
     py_retval = Py_BuildValue((char *) "N", py_TileLayer);
@@ -3898,7 +3132,7 @@ _wrap_PyTiledLayer_map(PyTiledLayer *self)
         Py_INCREF(Py_None);
         return Py_None;
     }
-    py_Map = PyObject_New(PyTiledMap, &PyTiledMap_Type);
+    py_Map = PyObject_New(PyTiledMap, PyTiledMap_Type);
     py_Map->obj = retval;
     py_Map->flags = PYBINDGEN_WRAPPER_FLAG_OBJECT_NOT_OWNED;
     py_retval = Py_BuildValue((char *) "N", py_Map);
@@ -4085,14 +3319,14 @@ _wrap_PyTiledLayer__tp_dealloc(PyTiledLayer *self)
         if (!(self->flags&PYBINDGEN_WRAPPER_FLAG_OBJECT_NOT_OWNED)) {
             delete tmp;
         }
-    Py_TYPE(self)->tp_free((PyObject*)self);
+    PyObject_DEL(self);
 }
 
 static PyObject*
 _wrap_PyTiledLayer__tp_richcompare (PyTiledLayer *PYBINDGEN_UNUSED(self), PyTiledLayer *other, int opid)
 {
 
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyTiledLayer_Type)) {
+    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) PyTiledLayer_Type)) {
         Py_INCREF(Py_NotImplemented);
         return Py_NotImplemented;
     }
@@ -4121,60 +3355,25 @@ _wrap_PyTiledLayer__tp_richcompare (PyTiledLayer *PYBINDGEN_UNUSED(self), PyTile
     return Py_NotImplemented;
 }
 
-PyTypeObject PyTiledLayer_Type = {
-    PyVarObject_HEAD_INIT(NULL, 0)
-    (char *) "tiled.Tiled.Layer",            /* tp_name */
-    sizeof(PyTiledLayer),                  /* tp_basicsize */
-    0,                                 /* tp_itemsize */
-    /* methods */
-    (destructor)_wrap_PyTiledLayer__tp_dealloc,        /* tp_dealloc */
-    (printfunc)0,                      /* tp_print */
-    (getattrfunc)NULL,       /* tp_getattr */
-    (setattrfunc)NULL,       /* tp_setattr */
-#if PY_MAJOR_VERSION >= 3
-    NULL,
-#else
-    (cmpfunc)NULL,           /* tp_compare */
-#endif
-    (reprfunc)NULL,             /* tp_repr */
-    (PyNumberMethods*)NULL,     /* tp_as_number */
-    (PySequenceMethods*)NULL, /* tp_as_sequence */
-    (PyMappingMethods*)NULL,   /* tp_as_mapping */
-    (hashfunc)NULL,             /* tp_hash */
-    (ternaryfunc)NULL,          /* tp_call */
-    (reprfunc)NULL,              /* tp_str */
-    (getattrofunc)NULL,     /* tp_getattro */
-    (setattrofunc)NULL,     /* tp_setattro */
-    (PyBufferProcs*)NULL,  /* tp_as_buffer */
-    Py_TPFLAGS_DEFAULT,                      /* tp_flags */
-    "",                        /* Documentation string */
-    (traverseproc)NULL,     /* tp_traverse */
-    (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyTiledLayer__tp_richcompare,   /* tp_richcompare */
-    0,             /* tp_weaklistoffset */
-    (getiterfunc)NULL,          /* tp_iter */
-    (iternextfunc)NULL,     /* tp_iternext */
-    (struct PyMethodDef*)PyTiledLayer_methods, /* tp_methods */
-    (struct PyMemberDef*)0,              /* tp_members */
-    0,                     /* tp_getset */
-    NULL,                              /* tp_base */
-    NULL,                              /* tp_dict */
-    (descrgetfunc)NULL,    /* tp_descr_get */
-    (descrsetfunc)NULL,    /* tp_descr_set */
-    0,                 /* tp_dictoffset */
-    (initproc)_wrap_PyTiledLayer__tp_init,             /* tp_init */
-    (allocfunc)PyType_GenericAlloc,           /* tp_alloc */
-    (newfunc)PyType_GenericNew,               /* tp_new */
-    (freefunc)0,             /* tp_free */
-    (inquiry)NULL,             /* tp_is_gc */
-    NULL,                              /* tp_bases */
-    NULL,                              /* tp_mro */
-    NULL,                              /* tp_cache */
-    NULL,                              /* tp_subclasses */
-    NULL,                              /* tp_weaklist */
-    (destructor) NULL                  /* tp_del */
+static PyType_Slot PyTiledLayer_Type_slots[] = {
+    {Py_tp_dealloc, (void*)_wrap_PyTiledLayer__tp_dealloc},
+    {Py_tp_richcompare, (void*)_wrap_PyTiledLayer__tp_richcompare},
+    {Py_tp_methods, (struct PyMethodDef*)PyTiledLayer_methods},
+    {Py_tp_init, (void*)_wrap_PyTiledLayer__tp_init},
+    {Py_tp_alloc, (void*)PyType_GenericAlloc},
+    {Py_tp_new, (void*)PyType_GenericNew},
+    {0, 0}
+};
+static PyType_Spec PyTiledLayer_Type_spec = {
+    (char *) "tiled.Tiled.Layer",
+    sizeof(PyTiledLayer),
+    0,
+    Py_TPFLAGS_DEFAULT,
+    PyTiledLayer_Type_slots,
 };
 
+
+PyTypeObject *PyTiledLayer_Type;
 
 
 
@@ -4185,7 +3384,7 @@ _wrap_PyTiledMap__tp_init__0(PyTiledMap *self, PyObject *args, PyObject *kwargs,
     PyTiledMap *ctor_arg;
     const char *keywords[] = {"ctor_arg", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, &PyTiledMap_Type, &ctor_arg)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, PyTiledMap_Type, &ctor_arg)) {
         {
             PyObject *exc_type, *traceback;
             PyErr_Fetch(&exc_type, return_exception, &traceback);
@@ -4238,9 +3437,9 @@ int _wrap_PyTiledMap__tp_init(PyTiledMap *self, PyObject *args, PyObject *kwargs
         return retval;
     }
     error_list = PyList_New(2);
-    PyList_SET_ITEM(error_list, 0, PyObject_Str(exceptions[0]));
+    PyList_SetItem(error_list, 0, PyObject_Str(exceptions[0]));
     Py_DECREF(exceptions[0]);
-    PyList_SET_ITEM(error_list, 1, PyObject_Str(exceptions[1]));
+    PyList_SetItem(error_list, 1, PyObject_Str(exceptions[1]));
     Py_DECREF(exceptions[1]);
     PyErr_SetObject(PyExc_TypeError, error_list);
     Py_DECREF(error_list);
@@ -4257,7 +3456,7 @@ _wrap_PyTiledMap_addLayer__0(PyTiledMap *self, PyObject *args, PyObject *kwargs,
     Tiled::ImageLayer *l_ptr;
     const char *keywords[] = {"l", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, &PyTiledImageLayer_Type, &l)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, PyTiledImageLayer_Type, &l)) {
         {
             PyObject *exc_type, *traceback;
             PyErr_Fetch(&exc_type, return_exception, &traceback);
@@ -4284,7 +3483,7 @@ _wrap_PyTiledMap_addLayer__1(PyTiledMap *self, PyObject *args, PyObject *kwargs,
     Tiled::TileLayer *l_ptr;
     const char *keywords[] = {"l", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, &PyTiledTileLayer_Type, &l)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, PyTiledTileLayer_Type, &l)) {
         {
             PyObject *exc_type, *traceback;
             PyErr_Fetch(&exc_type, return_exception, &traceback);
@@ -4311,7 +3510,7 @@ _wrap_PyTiledMap_addLayer__2(PyTiledMap *self, PyObject *args, PyObject *kwargs,
     Tiled::ObjectGroup *l_ptr;
     const char *keywords[] = {"l", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, &PyTiledObjectGroup_Type, &l)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, PyTiledObjectGroup_Type, &l)) {
         {
             PyObject *exc_type, *traceback;
             PyErr_Fetch(&exc_type, return_exception, &traceback);
@@ -4351,11 +3550,11 @@ PyObject * _wrap_PyTiledMap_addLayer(PyTiledMap *self, PyObject *args, PyObject 
         return retval;
     }
     error_list = PyList_New(3);
-    PyList_SET_ITEM(error_list, 0, PyObject_Str(exceptions[0]));
+    PyList_SetItem(error_list, 0, PyObject_Str(exceptions[0]));
     Py_DECREF(exceptions[0]);
-    PyList_SET_ITEM(error_list, 1, PyObject_Str(exceptions[1]));
+    PyList_SetItem(error_list, 1, PyObject_Str(exceptions[1]));
     Py_DECREF(exceptions[1]);
-    PyList_SET_ITEM(error_list, 2, PyObject_Str(exceptions[2]));
+    PyList_SetItem(error_list, 2, PyObject_Str(exceptions[2]));
     Py_DECREF(exceptions[2]);
     PyErr_SetObject(PyExc_TypeError, error_list);
     Py_DECREF(error_list);
@@ -4370,7 +3569,7 @@ _wrap_PyTiledMap_addTileset(PyTiledMap *self, PyObject *args, PyObject *kwargs)
     PyTiledSharedTileset *tileset;
     const char *keywords[] = {"tileset", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, &PyTiledSharedTileset_Type, &tileset)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, PyTiledSharedTileset_Type, &tileset)) {
         return NULL;
     }
     self->obj->addTileset(*((PyTiledSharedTileset *) tileset)->obj);
@@ -4400,7 +3599,7 @@ _wrap_PyTiledMap_indexOfTileset(PyTiledMap *self, PyObject *args, PyObject *kwar
     PyTiledSharedTileset *tileset;
     const char *keywords[] = {"tileset", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, &PyTiledSharedTileset_Type, &tileset)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, PyTiledSharedTileset_Type, &tileset)) {
         return NULL;
     }
     retval = self->obj->indexOfTileset(*((PyTiledSharedTileset *) tileset)->obj);
@@ -4417,7 +3616,7 @@ _wrap_PyTiledMap_insertTileset(PyTiledMap *self, PyObject *args, PyObject *kwarg
     PyTiledSharedTileset *tileset;
     const char *keywords[] = {"pos", "tileset", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "iO!", (char **) keywords, &pos, &PyTiledSharedTileset_Type, &tileset)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "iO!", (char **) keywords, &pos, PyTiledSharedTileset_Type, &tileset)) {
         return NULL;
     }
     self->obj->insertTileset(pos, *((PyTiledSharedTileset *) tileset)->obj);
@@ -4436,7 +3635,7 @@ _wrap_PyTiledMap_isTilesetUsed(PyTiledMap *self, PyObject *args, PyObject *kwarg
     Tiled::Tileset *tileset_ptr;
     const char *keywords[] = {"tileset", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, &PyTiledTileset_Type, &tileset)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, PyTiledTileset_Type, &tileset)) {
         return NULL;
     }
     tileset_ptr = (tileset ? tileset->obj : NULL);
@@ -4463,7 +3662,7 @@ _wrap_PyTiledMap_layerAt(PyTiledMap *self, PyObject *args, PyObject *kwargs)
         Py_INCREF(Py_None);
         return Py_None;
     }
-    py_Layer = PyObject_New(PyTiledLayer, &PyTiledLayer_Type);
+    py_Layer = PyObject_New(PyTiledLayer, PyTiledLayer_Type);
     py_Layer->obj = retval;
     py_Layer->flags = PYBINDGEN_WRAPPER_FLAG_OBJECT_NOT_OWNED;
     py_retval = Py_BuildValue((char *) "N", py_Layer);
@@ -4532,7 +3731,7 @@ _wrap_PyTiledMap_replaceTileset(PyTiledMap *self, PyObject *args, PyObject *kwar
     PyTiledSharedTileset *newTileset;
     const char *keywords[] = {"oldTileset", "newTileset", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!O!", (char **) keywords, &PyTiledSharedTileset_Type, &oldTileset, &PyTiledSharedTileset_Type, &newTileset)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!O!", (char **) keywords, PyTiledSharedTileset_Type, &oldTileset, PyTiledSharedTileset_Type, &newTileset)) {
         return NULL;
     }
     self->obj->replaceTileset(*((PyTiledSharedTileset *) oldTileset)->obj, *((PyTiledSharedTileset *) newTileset)->obj);
@@ -4641,7 +3840,7 @@ _wrap_PyTiledMap_tilesetAt(PyTiledMap *self, PyObject *args, PyObject *kwargs)
         return NULL;
     }
     Tiled::SharedTileset retval = self->obj->tilesetAt(idx);
-    py_SharedTileset = PyObject_New(PyTiledSharedTileset, &PyTiledSharedTileset_Type);
+    py_SharedTileset = PyObject_New(PyTiledSharedTileset, PyTiledSharedTileset_Type);
     py_SharedTileset->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
     py_SharedTileset->obj = new Tiled::SharedTileset(retval);
     py_retval = Py_BuildValue((char *) "N", py_SharedTileset);
@@ -4678,7 +3877,7 @@ _wrap_PyTiledMap__copy__(PyTiledMap *self)
 {
 
     PyTiledMap *py_copy;
-    py_copy = PyObject_New(PyTiledMap, &PyTiledMap_Type);
+    py_copy = PyObject_New(PyTiledMap, PyTiledMap_Type);
     py_copy->obj = new Tiled::Map(*self->obj);
     py_copy->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
     return (PyObject*) py_copy;
@@ -4718,14 +3917,14 @@ _wrap_PyTiledMap__tp_dealloc(PyTiledMap *self)
         if (!(self->flags&PYBINDGEN_WRAPPER_FLAG_OBJECT_NOT_OWNED)) {
             delete tmp;
         }
-    Py_TYPE(self)->tp_free((PyObject*)self);
+    PyObject_DEL(self);
 }
 
 static PyObject*
 _wrap_PyTiledMap__tp_richcompare (PyTiledMap *PYBINDGEN_UNUSED(self), PyTiledMap *other, int opid)
 {
 
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyTiledMap_Type)) {
+    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) PyTiledMap_Type)) {
         Py_INCREF(Py_NotImplemented);
         return Py_NotImplemented;
     }
@@ -4754,60 +3953,26 @@ _wrap_PyTiledMap__tp_richcompare (PyTiledMap *PYBINDGEN_UNUSED(self), PyTiledMap
     return Py_NotImplemented;
 }
 
-PyTypeObject PyTiledMap_Type = {
-    PyVarObject_HEAD_INIT(NULL, 0)
-    (char *) "tiled.Tiled.Map",            /* tp_name */
-    sizeof(PyTiledMap),                  /* tp_basicsize */
-    0,                                 /* tp_itemsize */
-    /* methods */
-    (destructor)_wrap_PyTiledMap__tp_dealloc,        /* tp_dealloc */
-    (printfunc)0,                      /* tp_print */
-    (getattrfunc)NULL,       /* tp_getattr */
-    (setattrfunc)NULL,       /* tp_setattr */
-#if PY_MAJOR_VERSION >= 3
-    NULL,
-#else
-    (cmpfunc)NULL,           /* tp_compare */
-#endif
-    (reprfunc)NULL,             /* tp_repr */
-    (PyNumberMethods*)NULL,     /* tp_as_number */
-    (PySequenceMethods*)NULL, /* tp_as_sequence */
-    (PyMappingMethods*)NULL,   /* tp_as_mapping */
-    (hashfunc)NULL,             /* tp_hash */
-    (ternaryfunc)NULL,          /* tp_call */
-    (reprfunc)NULL,              /* tp_str */
-    (getattrofunc)NULL,     /* tp_getattro */
-    (setattrofunc)NULL,     /* tp_setattro */
-    (PyBufferProcs*)NULL,  /* tp_as_buffer */
-    Py_TPFLAGS_DEFAULT,                      /* tp_flags */
-    "Map(orient, w, h, tileW, tileH)\nMap(ctor_arg)",                        /* Documentation string */
-    (traverseproc)NULL,     /* tp_traverse */
-    (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyTiledMap__tp_richcompare,   /* tp_richcompare */
-    0,             /* tp_weaklistoffset */
-    (getiterfunc)NULL,          /* tp_iter */
-    (iternextfunc)NULL,     /* tp_iternext */
-    (struct PyMethodDef*)PyTiledMap_methods, /* tp_methods */
-    (struct PyMemberDef*)0,              /* tp_members */
-    0,                     /* tp_getset */
-    NULL,                              /* tp_base */
-    NULL,                              /* tp_dict */
-    (descrgetfunc)NULL,    /* tp_descr_get */
-    (descrsetfunc)NULL,    /* tp_descr_set */
-    0,                 /* tp_dictoffset */
-    (initproc)_wrap_PyTiledMap__tp_init,             /* tp_init */
-    (allocfunc)PyType_GenericAlloc,           /* tp_alloc */
-    (newfunc)PyType_GenericNew,               /* tp_new */
-    (freefunc)0,             /* tp_free */
-    (inquiry)NULL,             /* tp_is_gc */
-    NULL,                              /* tp_bases */
-    NULL,                              /* tp_mro */
-    NULL,                              /* tp_cache */
-    NULL,                              /* tp_subclasses */
-    NULL,                              /* tp_weaklist */
-    (destructor) NULL                  /* tp_del */
+static PyType_Slot PyTiledMap_Type_slots[] = {
+    {Py_tp_dealloc, (void*)_wrap_PyTiledMap__tp_dealloc},
+    {Py_tp_richcompare, (void*)_wrap_PyTiledMap__tp_richcompare},
+    {Py_tp_methods, (struct PyMethodDef*)PyTiledMap_methods},
+    {Py_tp_init, (void*)_wrap_PyTiledMap__tp_init},
+    {Py_tp_alloc, (void*)PyType_GenericAlloc},
+    {Py_tp_new, (void*)PyType_GenericNew},
+    {Py_tp_setattr, (void*)PyObject_GenericSetAttr},
+    {0, 0}
+};
+static PyType_Spec PyTiledMap_Type_spec = {
+    (char *) "tiled.Tiled.Map",
+    sizeof(PyTiledMap),
+    0,
+    Py_TPFLAGS_DEFAULT,
+    PyTiledMap_Type_slots,
 };
 
+
+PyTypeObject *PyTiledMap_Type;
 
 
 
@@ -4819,7 +3984,7 @@ _wrap_PyTiledCell__tp_init__0(PyTiledCell *self, PyObject *args, PyObject *kwarg
     Tiled::Tile *tile_ptr;
     const char *keywords[] = {"tile", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, &PyTiledTile_Type, &tile)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, PyTiledTile_Type, &tile)) {
         {
             PyObject *exc_type, *traceback;
             PyErr_Fetch(&exc_type, return_exception, &traceback);
@@ -4840,7 +4005,7 @@ _wrap_PyTiledCell__tp_init__1(PyTiledCell *self, PyObject *args, PyObject *kwarg
     PyTiledCell *ctor_arg;
     const char *keywords[] = {"ctor_arg", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, &PyTiledCell_Type, &ctor_arg)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, PyTiledCell_Type, &ctor_arg)) {
         {
             PyObject *exc_type, *traceback;
             PyErr_Fetch(&exc_type, return_exception, &traceback);
@@ -4869,9 +4034,9 @@ int _wrap_PyTiledCell__tp_init(PyTiledCell *self, PyObject *args, PyObject *kwar
         return retval;
     }
     error_list = PyList_New(2);
-    PyList_SET_ITEM(error_list, 0, PyObject_Str(exceptions[0]));
+    PyList_SetItem(error_list, 0, PyObject_Str(exceptions[0]));
     Py_DECREF(exceptions[0]);
-    PyList_SET_ITEM(error_list, 1, PyObject_Str(exceptions[1]));
+    PyList_SetItem(error_list, 1, PyObject_Str(exceptions[1]));
     Py_DECREF(exceptions[1]);
     PyErr_SetObject(PyExc_TypeError, error_list);
     Py_DECREF(error_list);
@@ -4903,7 +4068,7 @@ _wrap_PyTiledCell_tile(PyTiledCell *self)
         Py_INCREF(Py_None);
         return Py_None;
     }
-    py_Tile = PyObject_New(PyTiledTile, &PyTiledTile_Type);
+    py_Tile = PyObject_New(PyTiledTile, PyTiledTile_Type);
     py_Tile->obj = retval;
     py_Tile->flags = PYBINDGEN_WRAPPER_FLAG_OBJECT_NOT_OWNED;
     py_retval = Py_BuildValue((char *) "N", py_Tile);
@@ -4916,7 +4081,7 @@ _wrap_PyTiledCell__copy__(PyTiledCell *self)
 {
 
     PyTiledCell *py_copy;
-    py_copy = PyObject_New(PyTiledCell, &PyTiledCell_Type);
+    py_copy = PyObject_New(PyTiledCell, PyTiledCell_Type);
     py_copy->obj = new Tiled::Cell(*self->obj);
     py_copy->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
     return (PyObject*) py_copy;
@@ -4937,14 +4102,14 @@ _wrap_PyTiledCell__tp_dealloc(PyTiledCell *self)
         if (!(self->flags&PYBINDGEN_WRAPPER_FLAG_OBJECT_NOT_OWNED)) {
             delete tmp;
         }
-    Py_TYPE(self)->tp_free((PyObject*)self);
+    PyObject_DEL(self);
 }
 
 static PyObject*
 _wrap_PyTiledCell__tp_richcompare (PyTiledCell *PYBINDGEN_UNUSED(self), PyTiledCell *other, int opid)
 {
 
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyTiledCell_Type)) {
+    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) PyTiledCell_Type)) {
         Py_INCREF(Py_NotImplemented);
         return Py_NotImplemented;
     }
@@ -4973,60 +4138,25 @@ _wrap_PyTiledCell__tp_richcompare (PyTiledCell *PYBINDGEN_UNUSED(self), PyTiledC
     return Py_NotImplemented;
 }
 
-PyTypeObject PyTiledCell_Type = {
-    PyVarObject_HEAD_INIT(NULL, 0)
-    (char *) "tiled.Tiled.Cell",            /* tp_name */
-    sizeof(PyTiledCell),                  /* tp_basicsize */
-    0,                                 /* tp_itemsize */
-    /* methods */
-    (destructor)_wrap_PyTiledCell__tp_dealloc,        /* tp_dealloc */
-    (printfunc)0,                      /* tp_print */
-    (getattrfunc)NULL,       /* tp_getattr */
-    (setattrfunc)NULL,       /* tp_setattr */
-#if PY_MAJOR_VERSION >= 3
-    NULL,
-#else
-    (cmpfunc)NULL,           /* tp_compare */
-#endif
-    (reprfunc)NULL,             /* tp_repr */
-    (PyNumberMethods*)NULL,     /* tp_as_number */
-    (PySequenceMethods*)NULL, /* tp_as_sequence */
-    (PyMappingMethods*)NULL,   /* tp_as_mapping */
-    (hashfunc)NULL,             /* tp_hash */
-    (ternaryfunc)NULL,          /* tp_call */
-    (reprfunc)NULL,              /* tp_str */
-    (getattrofunc)NULL,     /* tp_getattro */
-    (setattrofunc)NULL,     /* tp_setattro */
-    (PyBufferProcs*)NULL,  /* tp_as_buffer */
-    Py_TPFLAGS_DEFAULT,                      /* tp_flags */
-    "Cell(ctor_arg)\nCell(tile)",                        /* Documentation string */
-    (traverseproc)NULL,     /* tp_traverse */
-    (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyTiledCell__tp_richcompare,   /* tp_richcompare */
-    0,             /* tp_weaklistoffset */
-    (getiterfunc)NULL,          /* tp_iter */
-    (iternextfunc)NULL,     /* tp_iternext */
-    (struct PyMethodDef*)PyTiledCell_methods, /* tp_methods */
-    (struct PyMemberDef*)0,              /* tp_members */
-    0,                     /* tp_getset */
-    NULL,                              /* tp_base */
-    NULL,                              /* tp_dict */
-    (descrgetfunc)NULL,    /* tp_descr_get */
-    (descrsetfunc)NULL,    /* tp_descr_set */
-    0,                 /* tp_dictoffset */
-    (initproc)_wrap_PyTiledCell__tp_init,             /* tp_init */
-    (allocfunc)PyType_GenericAlloc,           /* tp_alloc */
-    (newfunc)PyType_GenericNew,               /* tp_new */
-    (freefunc)0,             /* tp_free */
-    (inquiry)NULL,             /* tp_is_gc */
-    NULL,                              /* tp_bases */
-    NULL,                              /* tp_mro */
-    NULL,                              /* tp_cache */
-    NULL,                              /* tp_subclasses */
-    NULL,                              /* tp_weaklist */
-    (destructor) NULL                  /* tp_del */
+static PyType_Slot PyTiledCell_Type_slots[] = {
+    {Py_tp_dealloc, (void*)_wrap_PyTiledCell__tp_dealloc},
+    {Py_tp_richcompare, (void*)_wrap_PyTiledCell__tp_richcompare},
+    {Py_tp_methods, (struct PyMethodDef*)PyTiledCell_methods},
+    {Py_tp_init, (void*)_wrap_PyTiledCell__tp_init},
+    {Py_tp_alloc, (void*)PyType_GenericAlloc},
+    {Py_tp_new, (void*)PyType_GenericNew},
+    {0, 0}
+};
+static PyType_Spec PyTiledCell_Type_spec = {
+    (char *) "tiled.Tiled.Cell",
+    sizeof(PyTiledCell),
+    0,
+    Py_TPFLAGS_DEFAULT,
+    PyTiledCell_Type_slots,
 };
 
+
+PyTypeObject *PyTiledCell_Type;
 
 
 
@@ -5063,7 +4193,7 @@ _wrap_PyTiledTileLayer_cellAt(PyTiledTileLayer *self, PyObject *args, PyObject *
         return NULL;
     }
     Tiled::Cell retval = self->obj->cellAt(x, y);
-    py_Cell = PyObject_New(PyTiledCell, &PyTiledCell_Type);
+    py_Cell = PyObject_New(PyTiledCell, PyTiledCell_Type);
     py_Cell->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
     py_Cell->obj = new Tiled::Cell(retval);
     py_retval = Py_BuildValue((char *) "N", py_Cell);
@@ -5104,7 +4234,7 @@ _wrap_PyTiledTileLayer_referencesTileset(PyTiledTileLayer *self, PyObject *args,
     Tiled::Tileset *ts_ptr;
     const char *keywords[] = {"ts", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, &PyTiledTileset_Type, &ts)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, PyTiledTileset_Type, &ts)) {
         return NULL;
     }
     ts_ptr = (ts ? ts->obj : NULL);
@@ -5123,7 +4253,7 @@ _wrap_PyTiledTileLayer_setCell(PyTiledTileLayer *self, PyObject *args, PyObject 
     PyTiledCell *c;
     const char *keywords[] = {"x", "y", "c", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "iiO!", (char **) keywords, &x, &y, &PyTiledCell_Type, &c)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "iiO!", (char **) keywords, &x, &y, PyTiledCell_Type, &c)) {
         return NULL;
     }
     self->obj->setCell(x, y, *((PyTiledCell *) c)->obj);
@@ -5162,14 +4292,14 @@ _wrap_PyTiledTileLayer__tp_dealloc(PyTiledTileLayer *self)
         if (!(self->flags&PYBINDGEN_WRAPPER_FLAG_OBJECT_NOT_OWNED)) {
             delete tmp;
         }
-    Py_TYPE(self)->tp_free((PyObject*)self);
+    PyObject_DEL(self);
 }
 
 static PyObject*
 _wrap_PyTiledTileLayer__tp_richcompare (PyTiledTileLayer *PYBINDGEN_UNUSED(self), PyTiledTileLayer *other, int opid)
 {
 
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyTiledTileLayer_Type)) {
+    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) PyTiledTileLayer_Type)) {
         Py_INCREF(Py_NotImplemented);
         return Py_NotImplemented;
     }
@@ -5198,59 +4328,24 @@ _wrap_PyTiledTileLayer__tp_richcompare (PyTiledTileLayer *PYBINDGEN_UNUSED(self)
     return Py_NotImplemented;
 }
 
-PyTypeObject PyTiledTileLayer_Type = {
-    PyVarObject_HEAD_INIT(NULL, 0)
-    (char *) "tiled.Tiled.TileLayer",            /* tp_name */
-    sizeof(PyTiledTileLayer),                  /* tp_basicsize */
-    0,                                 /* tp_itemsize */
-    /* methods */
-    (destructor)_wrap_PyTiledTileLayer__tp_dealloc,        /* tp_dealloc */
-    (printfunc)0,                      /* tp_print */
-    (getattrfunc)NULL,       /* tp_getattr */
-    (setattrfunc)NULL,       /* tp_setattr */
-#if PY_MAJOR_VERSION >= 3
-    NULL,
-#else
-    (cmpfunc)NULL,           /* tp_compare */
-#endif
-    (reprfunc)NULL,             /* tp_repr */
-    (PyNumberMethods*)NULL,     /* tp_as_number */
-    (PySequenceMethods*)NULL, /* tp_as_sequence */
-    (PyMappingMethods*)NULL,   /* tp_as_mapping */
-    (hashfunc)NULL,             /* tp_hash */
-    (ternaryfunc)NULL,          /* tp_call */
-    (reprfunc)NULL,              /* tp_str */
-    (getattrofunc)NULL,     /* tp_getattro */
-    (setattrofunc)NULL,     /* tp_setattro */
-    (PyBufferProcs*)NULL,  /* tp_as_buffer */
-    Py_TPFLAGS_DEFAULT,                      /* tp_flags */
-    "TileLayer(name, x, y, w, h)",                        /* Documentation string */
-    (traverseproc)NULL,     /* tp_traverse */
-    (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyTiledTileLayer__tp_richcompare,   /* tp_richcompare */
-    0,             /* tp_weaklistoffset */
-    (getiterfunc)NULL,          /* tp_iter */
-    (iternextfunc)NULL,     /* tp_iternext */
-    (struct PyMethodDef*)PyTiledTileLayer_methods, /* tp_methods */
-    (struct PyMemberDef*)0,              /* tp_members */
-    0,                     /* tp_getset */
-    NULL,                              /* tp_base */
-    NULL,                              /* tp_dict */
-    (descrgetfunc)NULL,    /* tp_descr_get */
-    (descrsetfunc)NULL,    /* tp_descr_set */
-    0,                 /* tp_dictoffset */
-    (initproc)_wrap_PyTiledTileLayer__tp_init,             /* tp_init */
-    (allocfunc)PyType_GenericAlloc,           /* tp_alloc */
-    (newfunc)PyType_GenericNew,               /* tp_new */
-    (freefunc)0,             /* tp_free */
-    (inquiry)NULL,             /* tp_is_gc */
-    NULL,                              /* tp_bases */
-    NULL,                              /* tp_mro */
-    NULL,                              /* tp_cache */
-    NULL,                              /* tp_subclasses */
-    NULL,                              /* tp_weaklist */
-    (destructor) NULL                  /* tp_del */
+static PyType_Slot PyTiledTileLayer_Type_slots[] = {
+    {Py_tp_dealloc, (void*)_wrap_PyTiledTileLayer__tp_dealloc},
+    {Py_tp_richcompare, (void*)_wrap_PyTiledTileLayer__tp_richcompare},
+    {Py_tp_methods, (struct PyMethodDef*)PyTiledTileLayer_methods},
+    {Py_tp_init, (void*)_wrap_PyTiledTileLayer__tp_init},
+    {Py_tp_alloc, (void*)PyType_GenericAlloc},
+    {Py_tp_new, (void*)PyType_GenericNew},
+    {0, 0}
 };
+static PyType_Spec PyTiledTileLayer_Type_spec = {
+    (char *) "tiled.Tiled.TileLayer",
+    sizeof(PyTiledTileLayer),
+    0,
+    Py_TPFLAGS_DEFAULT,
+    PyTiledTileLayer_Type_slots,
+};
+
+PyTypeObject *PyTiledTileLayer_Type;
 
 
 
@@ -5280,7 +4375,7 @@ _wrap_PyTiledImageLayer_image(PyTiledImageLayer *self)
     PyQPixmap *py_QPixmap;
 
     QPixmap const & retval = self->obj->image();
-    py_QPixmap = PyObject_New(PyQPixmap, &PyQPixmap_Type);
+    py_QPixmap = PyObject_New(PyQPixmap, PyQPixmap_Type);
     py_QPixmap->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
     py_QPixmap->obj = new QPixmap(retval);
     py_retval = Py_BuildValue((char *) "N", py_QPixmap);
@@ -5298,7 +4393,7 @@ _wrap_PyTiledImageLayer_loadFromImage(PyTiledImageLayer *self, PyObject *args, P
     Py_ssize_t file_len;
     const char *keywords[] = {"img", "file", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!s#", (char **) keywords, &PyQImage_Type, &img, &file, &file_len)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!s#", (char **) keywords, PyQImage_Type, &img, &file, &file_len)) {
         return NULL;
     }
     retval = self->obj->loadFromImage(*((PyQImage *) img)->obj, QString::fromUtf8(file));
@@ -5314,7 +4409,7 @@ _wrap_PyTiledImageLayer_setImage(PyTiledImageLayer *self, PyObject *args, PyObje
     PyQPixmap *image;
     const char *keywords[] = {"image", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, &PyQPixmap_Type, &image)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, PyQPixmap_Type, &image)) {
         return NULL;
     }
     self->obj->setImage(*((PyQPixmap *) image)->obj);
@@ -5338,14 +4433,14 @@ _wrap_PyTiledImageLayer__tp_dealloc(PyTiledImageLayer *self)
         if (!(self->flags&PYBINDGEN_WRAPPER_FLAG_OBJECT_NOT_OWNED)) {
             delete tmp;
         }
-    Py_TYPE(self)->tp_free((PyObject*)self);
+    PyObject_DEL(self);
 }
 
 static PyObject*
 _wrap_PyTiledImageLayer__tp_richcompare (PyTiledImageLayer *PYBINDGEN_UNUSED(self), PyTiledImageLayer *other, int opid)
 {
 
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyTiledImageLayer_Type)) {
+    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) PyTiledImageLayer_Type)) {
         Py_INCREF(Py_NotImplemented);
         return Py_NotImplemented;
     }
@@ -5374,60 +4469,25 @@ _wrap_PyTiledImageLayer__tp_richcompare (PyTiledImageLayer *PYBINDGEN_UNUSED(sel
     return Py_NotImplemented;
 }
 
-PyTypeObject PyTiledImageLayer_Type = {
-    PyVarObject_HEAD_INIT(NULL, 0)
-    (char *) "tiled.Tiled.ImageLayer",            /* tp_name */
-    sizeof(PyTiledImageLayer),                  /* tp_basicsize */
-    0,                                 /* tp_itemsize */
-    /* methods */
-    (destructor)_wrap_PyTiledImageLayer__tp_dealloc,        /* tp_dealloc */
-    (printfunc)0,                      /* tp_print */
-    (getattrfunc)NULL,       /* tp_getattr */
-    (setattrfunc)NULL,       /* tp_setattr */
-#if PY_MAJOR_VERSION >= 3
-    NULL,
-#else
-    (cmpfunc)NULL,           /* tp_compare */
-#endif
-    (reprfunc)NULL,             /* tp_repr */
-    (PyNumberMethods*)NULL,     /* tp_as_number */
-    (PySequenceMethods*)NULL, /* tp_as_sequence */
-    (PyMappingMethods*)NULL,   /* tp_as_mapping */
-    (hashfunc)NULL,             /* tp_hash */
-    (ternaryfunc)NULL,          /* tp_call */
-    (reprfunc)NULL,              /* tp_str */
-    (getattrofunc)NULL,     /* tp_getattro */
-    (setattrofunc)NULL,     /* tp_setattro */
-    (PyBufferProcs*)NULL,  /* tp_as_buffer */
-    Py_TPFLAGS_DEFAULT,                      /* tp_flags */
-    "ImageLayer(name, x, y)",                        /* Documentation string */
-    (traverseproc)NULL,     /* tp_traverse */
-    (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyTiledImageLayer__tp_richcompare,   /* tp_richcompare */
-    0,             /* tp_weaklistoffset */
-    (getiterfunc)NULL,          /* tp_iter */
-    (iternextfunc)NULL,     /* tp_iternext */
-    (struct PyMethodDef*)PyTiledImageLayer_methods, /* tp_methods */
-    (struct PyMemberDef*)0,              /* tp_members */
-    0,                     /* tp_getset */
-    NULL,                              /* tp_base */
-    NULL,                              /* tp_dict */
-    (descrgetfunc)NULL,    /* tp_descr_get */
-    (descrsetfunc)NULL,    /* tp_descr_set */
-    0,                 /* tp_dictoffset */
-    (initproc)_wrap_PyTiledImageLayer__tp_init,             /* tp_init */
-    (allocfunc)PyType_GenericAlloc,           /* tp_alloc */
-    (newfunc)PyType_GenericNew,               /* tp_new */
-    (freefunc)0,             /* tp_free */
-    (inquiry)NULL,             /* tp_is_gc */
-    NULL,                              /* tp_bases */
-    NULL,                              /* tp_mro */
-    NULL,                              /* tp_cache */
-    NULL,                              /* tp_subclasses */
-    NULL,                              /* tp_weaklist */
-    (destructor) NULL                  /* tp_del */
+static PyType_Slot PyTiledImageLayer_Type_slots[] = {
+    {Py_tp_dealloc, (void*)_wrap_PyTiledImageLayer__tp_dealloc},
+    {Py_tp_richcompare, (void*)_wrap_PyTiledImageLayer__tp_richcompare},
+    {Py_tp_methods, (struct PyMethodDef*)PyTiledImageLayer_methods},
+    {Py_tp_init, (void*)_wrap_PyTiledImageLayer__tp_init},
+    {Py_tp_alloc, (void*)PyType_GenericAlloc},
+    {Py_tp_new, (void*)PyType_GenericNew},
+    {0, 0}
+};
+static PyType_Spec PyTiledImageLayer_Type_spec = {
+    (char *) "tiled.Tiled.ImageLayer",
+    sizeof(PyTiledImageLayer),
+    0,
+    Py_TPFLAGS_DEFAULT,
+    PyTiledImageLayer_Type_slots,
 };
 
+
+PyTypeObject *PyTiledImageLayer_Type;
 
 
 
@@ -5462,7 +4522,7 @@ _wrap_PyTiledMapObject__tp_init__1(PyTiledMapObject *self, PyObject *args, PyObj
     PyQSizeF *size;
     const char *keywords[] = {"name", "type", "pos", "size", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "s#s#O!O!", (char **) keywords, &name, &name_len, &type, &type_len, &PyQPointF_Type, &pos, &PyQSizeF_Type, &size)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "s#s#O!O!", (char **) keywords, &name, &name_len, &type, &type_len, PyQPointF_Type, &pos, PyQSizeF_Type, &size)) {
         {
             PyObject *exc_type, *traceback;
             PyErr_Fetch(&exc_type, return_exception, &traceback);
@@ -5491,9 +4551,9 @@ int _wrap_PyTiledMapObject__tp_init(PyTiledMapObject *self, PyObject *args, PyOb
         return retval;
     }
     error_list = PyList_New(2);
-    PyList_SET_ITEM(error_list, 0, PyObject_Str(exceptions[0]));
+    PyList_SetItem(error_list, 0, PyObject_Str(exceptions[0]));
     Py_DECREF(exceptions[0]);
-    PyList_SET_ITEM(error_list, 1, PyObject_Str(exceptions[1]));
+    PyList_SetItem(error_list, 1, PyObject_Str(exceptions[1]));
     Py_DECREF(exceptions[1]);
     PyErr_SetObject(PyExc_TypeError, error_list);
     Py_DECREF(error_list);
@@ -5508,7 +4568,7 @@ _wrap_PyTiledMapObject_cell(PyTiledMapObject *self)
     PyTiledCell *py_Cell;
 
     Tiled::Cell const retval = self->obj->cell();
-    py_Cell = PyObject_New(PyTiledCell, &PyTiledCell_Type);
+    py_Cell = PyObject_New(PyTiledCell, PyTiledCell_Type);
     py_Cell->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
     py_Cell->obj = new Tiled::Cell(retval);
     py_retval = Py_BuildValue((char *) "N", py_Cell);
@@ -5571,7 +4631,7 @@ _wrap_PyTiledMapObject_setCell(PyTiledMapObject *self, PyObject *args, PyObject 
     PyTiledCell *c;
     const char *keywords[] = {"c", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, &PyTiledCell_Type, &c)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, PyTiledCell_Type, &c)) {
         return NULL;
     }
     self->obj->setCell(*((PyTiledCell *) c)->obj);
@@ -5623,7 +4683,7 @@ _wrap_PyTiledMapObject_setPosition(PyTiledMapObject *self, PyObject *args, PyObj
     PyQPointF *pos;
     const char *keywords[] = {"pos", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, &PyQPointF_Type, &pos)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, PyQPointF_Type, &pos)) {
         return NULL;
     }
     self->obj->setPosition(*((PyQPointF *) pos)->obj);
@@ -5674,7 +4734,7 @@ _wrap_PyTiledMapObject_setSize(PyTiledMapObject *self, PyObject *args, PyObject 
     PyQSizeF *size;
     const char *keywords[] = {"size", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, &PyQSizeF_Type, &size)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, PyQSizeF_Type, &size)) {
         return NULL;
     }
     self->obj->setSize(*((PyQSizeF *) size)->obj);
@@ -5865,14 +4925,14 @@ _wrap_PyTiledMapObject__tp_dealloc(PyTiledMapObject *self)
         if (!(self->flags&PYBINDGEN_WRAPPER_FLAG_OBJECT_NOT_OWNED)) {
             delete tmp;
         }
-    Py_TYPE(self)->tp_free((PyObject*)self);
+    PyObject_DEL(self);
 }
 
 static PyObject*
 _wrap_PyTiledMapObject__tp_richcompare (PyTiledMapObject *PYBINDGEN_UNUSED(self), PyTiledMapObject *other, int opid)
 {
 
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyTiledMapObject_Type)) {
+    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) PyTiledMapObject_Type)) {
         Py_INCREF(Py_NotImplemented);
         return Py_NotImplemented;
     }
@@ -5901,59 +4961,24 @@ _wrap_PyTiledMapObject__tp_richcompare (PyTiledMapObject *PYBINDGEN_UNUSED(self)
     return Py_NotImplemented;
 }
 
-PyTypeObject PyTiledMapObject_Type = {
-    PyVarObject_HEAD_INIT(NULL, 0)
-    (char *) "tiled.Tiled.MapObject",            /* tp_name */
-    sizeof(PyTiledMapObject),                  /* tp_basicsize */
-    0,                                 /* tp_itemsize */
-    /* methods */
-    (destructor)_wrap_PyTiledMapObject__tp_dealloc,        /* tp_dealloc */
-    (printfunc)0,                      /* tp_print */
-    (getattrfunc)NULL,       /* tp_getattr */
-    (setattrfunc)NULL,       /* tp_setattr */
-#if PY_MAJOR_VERSION >= 3
-    NULL,
-#else
-    (cmpfunc)NULL,           /* tp_compare */
-#endif
-    (reprfunc)NULL,             /* tp_repr */
-    (PyNumberMethods*)NULL,     /* tp_as_number */
-    (PySequenceMethods*)NULL, /* tp_as_sequence */
-    (PyMappingMethods*)NULL,   /* tp_as_mapping */
-    (hashfunc)NULL,             /* tp_hash */
-    (ternaryfunc)NULL,          /* tp_call */
-    (reprfunc)NULL,              /* tp_str */
-    (getattrofunc)NULL,     /* tp_getattro */
-    (setattrofunc)NULL,     /* tp_setattro */
-    (PyBufferProcs*)NULL,  /* tp_as_buffer */
-    Py_TPFLAGS_DEFAULT,                      /* tp_flags */
-    "MapObject(name, type, pos, size)\nMapObject()",                        /* Documentation string */
-    (traverseproc)NULL,     /* tp_traverse */
-    (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyTiledMapObject__tp_richcompare,   /* tp_richcompare */
-    0,             /* tp_weaklistoffset */
-    (getiterfunc)NULL,          /* tp_iter */
-    (iternextfunc)NULL,     /* tp_iternext */
-    (struct PyMethodDef*)PyTiledMapObject_methods, /* tp_methods */
-    (struct PyMemberDef*)0,              /* tp_members */
-    0,                     /* tp_getset */
-    NULL,                              /* tp_base */
-    NULL,                              /* tp_dict */
-    (descrgetfunc)NULL,    /* tp_descr_get */
-    (descrsetfunc)NULL,    /* tp_descr_set */
-    0,                 /* tp_dictoffset */
-    (initproc)_wrap_PyTiledMapObject__tp_init,             /* tp_init */
-    (allocfunc)PyType_GenericAlloc,           /* tp_alloc */
-    (newfunc)PyType_GenericNew,               /* tp_new */
-    (freefunc)0,             /* tp_free */
-    (inquiry)NULL,             /* tp_is_gc */
-    NULL,                              /* tp_bases */
-    NULL,                              /* tp_mro */
-    NULL,                              /* tp_cache */
-    NULL,                              /* tp_subclasses */
-    NULL,                              /* tp_weaklist */
-    (destructor) NULL                  /* tp_del */
+static PyType_Slot PyTiledMapObject_Type_slots[] = {
+    {Py_tp_dealloc, (void*)_wrap_PyTiledMapObject__tp_dealloc},
+    {Py_tp_richcompare, (void*)_wrap_PyTiledMapObject__tp_richcompare},
+    {Py_tp_methods, (struct PyMethodDef*)PyTiledMapObject_methods},
+    {Py_tp_init, (void*)_wrap_PyTiledMapObject__tp_init},
+    {Py_tp_alloc, (void*)PyType_GenericAlloc},
+    {Py_tp_new, (void*)PyType_GenericNew},
+    {0, 0}
 };
+static PyType_Spec PyTiledMapObject_Type_spec = {
+    (char *) "tiled.Tiled.MapObject",
+    sizeof(PyTiledMapObject),
+    0,
+    Py_TPFLAGS_DEFAULT,
+    PyTiledMapObject_Type_slots,
+};
+
+PyTypeObject *PyTiledMapObject_Type;
 
 
 
@@ -5984,7 +5009,7 @@ _wrap_PyTiledObjectGroup_addObject(PyTiledObjectGroup *self, PyObject *args, PyO
     Tiled::MapObject *object_ptr;
     const char *keywords[] = {"object", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, &PyTiledMapObject_Type, &object)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, PyTiledMapObject_Type, &object)) {
         return NULL;
     }
     object_ptr = (object ? object->obj : NULL);
@@ -6007,7 +5032,7 @@ _wrap_PyTiledObjectGroup_insertObject(PyTiledObjectGroup *self, PyObject *args, 
     Tiled::MapObject *object_ptr;
     const char *keywords[] = {"idx", "object", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "iO!", (char **) keywords, &idx, &PyTiledMapObject_Type, &object)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "iO!", (char **) keywords, &idx, PyTiledMapObject_Type, &object)) {
         return NULL;
     }
     object_ptr = (object ? object->obj : NULL);
@@ -6035,7 +5060,7 @@ _wrap_PyTiledObjectGroup_objectAt(PyTiledObjectGroup *self, PyObject *args, PyOb
         Py_INCREF(Py_None);
         return Py_None;
     }
-    py_MapObject = PyObject_New(PyTiledMapObject, &PyTiledMapObject_Type);
+    py_MapObject = PyObject_New(PyTiledMapObject, PyTiledMapObject_Type);
     py_MapObject->obj = retval;
     py_MapObject->flags = PYBINDGEN_WRAPPER_FLAG_OBJECT_NOT_OWNED;
     py_retval = Py_BuildValue((char *) "N", py_MapObject);
@@ -6064,7 +5089,7 @@ _wrap_PyTiledObjectGroup_referencesTileset(PyTiledObjectGroup *self, PyObject *a
     Tiled::Tileset *ts_ptr;
     const char *keywords[] = {"ts", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, &PyTiledTileset_Type, &ts)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, PyTiledTileset_Type, &ts)) {
         return NULL;
     }
     ts_ptr = (ts ? ts->obj : NULL);
@@ -6083,7 +5108,7 @@ _wrap_PyTiledObjectGroup_removeObject(PyTiledObjectGroup *self, PyObject *args, 
     Tiled::MapObject *object_ptr;
     const char *keywords[] = {"object", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, &PyTiledMapObject_Type, &object)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, PyTiledMapObject_Type, &object)) {
         return NULL;
     }
     object_ptr = (object ? object->obj : NULL);
@@ -6110,14 +5135,14 @@ _wrap_PyTiledObjectGroup__tp_dealloc(PyTiledObjectGroup *self)
         if (!(self->flags&PYBINDGEN_WRAPPER_FLAG_OBJECT_NOT_OWNED)) {
             delete tmp;
         }
-    Py_TYPE(self)->tp_free((PyObject*)self);
+    PyObject_DEL(self);
 }
 
 static PyObject*
 _wrap_PyTiledObjectGroup__tp_richcompare (PyTiledObjectGroup *PYBINDGEN_UNUSED(self), PyTiledObjectGroup *other, int opid)
 {
 
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyTiledObjectGroup_Type)) {
+    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) PyTiledObjectGroup_Type)) {
         Py_INCREF(Py_NotImplemented);
         return Py_NotImplemented;
     }
@@ -6146,60 +5171,25 @@ _wrap_PyTiledObjectGroup__tp_richcompare (PyTiledObjectGroup *PYBINDGEN_UNUSED(s
     return Py_NotImplemented;
 }
 
-PyTypeObject PyTiledObjectGroup_Type = {
-    PyVarObject_HEAD_INIT(NULL, 0)
-    (char *) "tiled.Tiled.ObjectGroup",            /* tp_name */
-    sizeof(PyTiledObjectGroup),                  /* tp_basicsize */
-    0,                                 /* tp_itemsize */
-    /* methods */
-    (destructor)_wrap_PyTiledObjectGroup__tp_dealloc,        /* tp_dealloc */
-    (printfunc)0,                      /* tp_print */
-    (getattrfunc)NULL,       /* tp_getattr */
-    (setattrfunc)NULL,       /* tp_setattr */
-#if PY_MAJOR_VERSION >= 3
-    NULL,
-#else
-    (cmpfunc)NULL,           /* tp_compare */
-#endif
-    (reprfunc)NULL,             /* tp_repr */
-    (PyNumberMethods*)NULL,     /* tp_as_number */
-    (PySequenceMethods*)NULL, /* tp_as_sequence */
-    (PyMappingMethods*)NULL,   /* tp_as_mapping */
-    (hashfunc)NULL,             /* tp_hash */
-    (ternaryfunc)NULL,          /* tp_call */
-    (reprfunc)NULL,              /* tp_str */
-    (getattrofunc)NULL,     /* tp_getattro */
-    (setattrofunc)NULL,     /* tp_setattro */
-    (PyBufferProcs*)NULL,  /* tp_as_buffer */
-    Py_TPFLAGS_DEFAULT,                      /* tp_flags */
-    "ObjectGroup(name, x, y)",                        /* Documentation string */
-    (traverseproc)NULL,     /* tp_traverse */
-    (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyTiledObjectGroup__tp_richcompare,   /* tp_richcompare */
-    0,             /* tp_weaklistoffset */
-    (getiterfunc)NULL,          /* tp_iter */
-    (iternextfunc)NULL,     /* tp_iternext */
-    (struct PyMethodDef*)PyTiledObjectGroup_methods, /* tp_methods */
-    (struct PyMemberDef*)0,              /* tp_members */
-    0,                     /* tp_getset */
-    NULL,                              /* tp_base */
-    NULL,                              /* tp_dict */
-    (descrgetfunc)NULL,    /* tp_descr_get */
-    (descrsetfunc)NULL,    /* tp_descr_set */
-    0,                 /* tp_dictoffset */
-    (initproc)_wrap_PyTiledObjectGroup__tp_init,             /* tp_init */
-    (allocfunc)PyType_GenericAlloc,           /* tp_alloc */
-    (newfunc)PyType_GenericNew,               /* tp_new */
-    (freefunc)0,             /* tp_free */
-    (inquiry)NULL,             /* tp_is_gc */
-    NULL,                              /* tp_bases */
-    NULL,                              /* tp_mro */
-    NULL,                              /* tp_cache */
-    NULL,                              /* tp_subclasses */
-    NULL,                              /* tp_weaklist */
-    (destructor) NULL                  /* tp_del */
+static PyType_Slot PyTiledObjectGroup_Type_slots[] = {
+    {Py_tp_dealloc, (void*)_wrap_PyTiledObjectGroup__tp_dealloc},
+    {Py_tp_richcompare, (void*)_wrap_PyTiledObjectGroup__tp_richcompare},
+    {Py_tp_methods, (struct PyMethodDef*)PyTiledObjectGroup_methods},
+    {Py_tp_init, (void*)_wrap_PyTiledObjectGroup__tp_init},
+    {Py_tp_alloc, (void*)PyType_GenericAlloc},
+    {Py_tp_new, (void*)PyType_GenericNew},
+    {0, 0}
+};
+static PyType_Spec PyTiledObjectGroup_Type_spec = {
+    (char *) "tiled.Tiled.ObjectGroup",
+    sizeof(PyTiledObjectGroup),
+    0,
+    Py_TPFLAGS_DEFAULT,
+    PyTiledObjectGroup_Type_slots,
 };
 
+
+PyTypeObject *PyTiledObjectGroup_Type;
 
 
 
@@ -6239,14 +5229,14 @@ _wrap_PyTiledLoggingInterface__tp_dealloc(PyTiledLoggingInterface *self)
 {
         self->obj = NULL;
 
-    Py_TYPE(self)->tp_free((PyObject*)self);
+    PyObject_DEL(self);
 }
 
 static PyObject*
 _wrap_PyTiledLoggingInterface__tp_richcompare (PyTiledLoggingInterface *PYBINDGEN_UNUSED(self), PyTiledLoggingInterface *other, int opid)
 {
 
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyTiledLoggingInterface_Type)) {
+    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) PyTiledLoggingInterface_Type)) {
         Py_INCREF(Py_NotImplemented);
         return Py_NotImplemented;
     }
@@ -6275,65 +5265,33 @@ _wrap_PyTiledLoggingInterface__tp_richcompare (PyTiledLoggingInterface *PYBINDGE
     return Py_NotImplemented;
 }
 
-PyTypeObject PyTiledLoggingInterface_Type = {
-    PyVarObject_HEAD_INIT(NULL, 0)
-    (char *) "tiled.Tiled.LoggingInterface",            /* tp_name */
-    sizeof(PyTiledLoggingInterface),                  /* tp_basicsize */
-    0,                                 /* tp_itemsize */
-    /* methods */
-    (destructor)_wrap_PyTiledLoggingInterface__tp_dealloc,        /* tp_dealloc */
-    (printfunc)0,                      /* tp_print */
-    (getattrfunc)NULL,       /* tp_getattr */
-    (setattrfunc)NULL,       /* tp_setattr */
-#if PY_MAJOR_VERSION >= 3
-    NULL,
-#else
-    (cmpfunc)NULL,           /* tp_compare */
-#endif
-    (reprfunc)NULL,             /* tp_repr */
-    (PyNumberMethods*)NULL,     /* tp_as_number */
-    (PySequenceMethods*)NULL, /* tp_as_sequence */
-    (PyMappingMethods*)NULL,   /* tp_as_mapping */
-    (hashfunc)NULL,             /* tp_hash */
-    (ternaryfunc)NULL,          /* tp_call */
-    (reprfunc)NULL,              /* tp_str */
-    (getattrofunc)NULL,     /* tp_getattro */
-    (setattrofunc)NULL,     /* tp_setattro */
-    (PyBufferProcs*)NULL,  /* tp_as_buffer */
-    Py_TPFLAGS_DEFAULT,                      /* tp_flags */
-    "",                        /* Documentation string */
-    (traverseproc)NULL,     /* tp_traverse */
-    (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyTiledLoggingInterface__tp_richcompare,   /* tp_richcompare */
-    0,             /* tp_weaklistoffset */
-    (getiterfunc)NULL,          /* tp_iter */
-    (iternextfunc)NULL,     /* tp_iternext */
-    (struct PyMethodDef*)PyTiledLoggingInterface_methods, /* tp_methods */
-    (struct PyMemberDef*)0,              /* tp_members */
-    0,                     /* tp_getset */
-    NULL,                              /* tp_base */
-    NULL,                              /* tp_dict */
-    (descrgetfunc)NULL,    /* tp_descr_get */
-    (descrsetfunc)NULL,    /* tp_descr_set */
-    0,                 /* tp_dictoffset */
-    (initproc)_wrap_PyTiledLoggingInterface__tp_init,             /* tp_init */
-    (allocfunc)PyType_GenericAlloc,           /* tp_alloc */
-    (newfunc)PyType_GenericNew,               /* tp_new */
-    (freefunc)0,             /* tp_free */
-    (inquiry)NULL,             /* tp_is_gc */
-    NULL,                              /* tp_bases */
-    NULL,                              /* tp_mro */
-    NULL,                              /* tp_cache */
-    NULL,                              /* tp_subclasses */
-    NULL,                              /* tp_weaklist */
-    (destructor) NULL                  /* tp_del */
+static PyType_Slot PyTiledLoggingInterface_Type_slots[] = {
+    {Py_tp_dealloc, (void*)_wrap_PyTiledLoggingInterface__tp_dealloc},
+    {Py_tp_richcompare, (void*)_wrap_PyTiledLoggingInterface__tp_richcompare},
+    {Py_tp_methods, (struct PyMethodDef*)PyTiledLoggingInterface_methods},
+    {Py_tp_init, (void*)_wrap_PyTiledLoggingInterface__tp_init},
+    {Py_tp_alloc, (void*)PyType_GenericAlloc},
+    {Py_tp_new, (void*)PyType_GenericNew},
+    {0, 0}
+};
+static PyType_Spec PyTiledLoggingInterface_Type_spec = {
+    (char *) "tiled.Tiled.LoggingInterface",
+    sizeof(PyTiledLoggingInterface),
+    0,
+    Py_TPFLAGS_DEFAULT,
+    PyTiledLoggingInterface_Type_slots,
 };
 
+
+PyTypeObject *PyTiledLoggingInterface_Type;
 
 /* --- enumerations --- */
 
 
 
+static PyMethodDef tiled_Tiled_functions[] = {
+    {NULL, NULL, 0, NULL}
+};
 
 
 
@@ -6360,118 +5318,82 @@ inittiled_Tiled(void)
     if (m == NULL) {
         return NULL;
     }
+    PyTiledProperties_Type = reinterpret_cast<PyTypeObject*>(PyType_FromSpec(&PyTiledProperties_Type_spec));
+    PyTiledObject_Type = reinterpret_cast<PyTypeObject*>(PyType_FromSpec(&PyTiledObject_Type_spec));
+    PyTiledTile_Type = reinterpret_cast<PyTypeObject*>(PyType_FromSpec(&PyTiledTile_Type_spec));
+    PyTiledTileset_Type = reinterpret_cast<PyTypeObject*>(PyType_FromSpec(&PyTiledTileset_Type_spec));
+    PyTiledSharedTileset_Type = reinterpret_cast<PyTypeObject*>(PyType_FromSpec(&PyTiledSharedTileset_Type_spec));
+    PyTiledLayer_Type = reinterpret_cast<PyTypeObject*>(PyType_FromSpec(&PyTiledLayer_Type_spec));
+    PyTiledMap_Type = reinterpret_cast<PyTypeObject*>(PyType_FromSpec(&PyTiledMap_Type_spec));
+    PyTiledCell_Type = reinterpret_cast<PyTypeObject*>(PyType_FromSpec(&PyTiledCell_Type_spec));
+    PyTiledTileLayer_Type = reinterpret_cast<PyTypeObject*>(PyType_FromSpec(&PyTiledTileLayer_Type_spec));
+    PyTiledImageLayer_Type = reinterpret_cast<PyTypeObject*>(PyType_FromSpec(&PyTiledImageLayer_Type_spec));
+    PyTiledMapObject_Type = reinterpret_cast<PyTypeObject*>(PyType_FromSpec(&PyTiledMapObject_Type_spec));
+    PyTiledObjectGroup_Type = reinterpret_cast<PyTypeObject*>(PyType_FromSpec(&PyTiledObjectGroup_Type_spec));
+
     /* Register the 'Tiled::Properties' class */
-    if (PyType_Ready(&PyTiledProperties_Type)) {
-        return NULL;
-    }
-    PyModule_AddObject(m, (char *) "Properties", (PyObject *) &PyTiledProperties_Type);
+    PyModule_AddObject(m, (char *) "Properties", reinterpret_cast<PyObject*>(PyTiledProperties_Type));
     /* Register the 'Tiled::Object' class */
-    if (PyType_Ready(&PyTiledObject_Type)) {
-        return NULL;
-    }
-    PyModule_AddObject(m, (char *) "Object", (PyObject *) &PyTiledObject_Type);
+    PyModule_AddObject(m, (char *) "Object", reinterpret_cast<PyObject*>(PyTiledObject_Type));
     /* Register the 'Tiled::Tile' class */
-    PyTiledTile_Type.tp_base = &PyTiledObject_Type;
-    if (PyType_Ready(&PyTiledTile_Type)) {
-        return NULL;
-    }
-    PyModule_AddObject(m, (char *) "Tile", (PyObject *) &PyTiledTile_Type);
+    PyModule_AddObject(m, (char *) "Tile", reinterpret_cast<PyObject*>(PyTiledTile_Type));
     /* Register the 'Tiled::Tileset' class */
-    PyTiledTileset_Type.tp_base = &PyTiledObject_Type;
-    if (PyType_Ready(&PyTiledTileset_Type)) {
-        return NULL;
-    }
-    PyModule_AddObject(m, (char *) "Tileset", (PyObject *) &PyTiledTileset_Type);
+    PyModule_AddObject(m, (char *) "Tileset", reinterpret_cast<PyObject*>(PyTiledTileset_Type));
     /* Register the 'Tiled::SharedTileset' class */
-    if (PyType_Ready(&PyTiledSharedTileset_Type)) {
-        return NULL;
-    }
-    PyModule_AddObject(m, (char *) "SharedTileset", (PyObject *) &PyTiledSharedTileset_Type);
+    PyModule_AddObject(m, (char *) "SharedTileset", reinterpret_cast<PyObject*>(PyTiledSharedTileset_Type));
     /* Register the 'Tiled::Layer' class */
-    PyTiledLayer_Type.tp_base = &PyTiledObject_Type;
-    if (PyType_Ready(&PyTiledLayer_Type)) {
-        return NULL;
-    }
-    PyModule_AddObject(m, (char *) "Layer", (PyObject *) &PyTiledLayer_Type);
+    PyModule_AddObject(m, (char *) "Layer", reinterpret_cast<PyObject*>(PyTiledLayer_Type));
     /* Register the 'Tiled::Map' class */
-    PyTiledMap_Type.tp_base = &PyTiledObject_Type;
-    if (PyType_Ready(&PyTiledMap_Type)) {
-        return NULL;
-    }
-    PyModule_AddObject(m, (char *) "Map", (PyObject *) &PyTiledMap_Type);
+    PyModule_AddObject(m, (char *) "Map", reinterpret_cast<PyObject*>(PyTiledMap_Type));
     /* Register the 'Tiled::Cell' class */
-    if (PyType_Ready(&PyTiledCell_Type)) {
-        return NULL;
-    }
-    PyModule_AddObject(m, (char *) "Cell", (PyObject *) &PyTiledCell_Type);
+    PyModule_AddObject(m, (char *) "Cell", reinterpret_cast<PyObject*>(PyTiledCell_Type));
     /* Register the 'Tiled::TileLayer' class */
-    PyTiledTileLayer_Type.tp_base = &PyTiledLayer_Type;
-    if (PyType_Ready(&PyTiledTileLayer_Type)) {
-        return NULL;
-    }
-    PyModule_AddObject(m, (char *) "TileLayer", (PyObject *) &PyTiledTileLayer_Type);
+    PyModule_AddObject(m, (char *) "TileLayer", reinterpret_cast<PyObject*>(PyTiledTileLayer_Type));
     /* Register the 'Tiled::ImageLayer' class */
-    PyTiledImageLayer_Type.tp_base = &PyTiledLayer_Type;
-    if (PyType_Ready(&PyTiledImageLayer_Type)) {
-        return NULL;
-    }
-    PyModule_AddObject(m, (char *) "ImageLayer", (PyObject *) &PyTiledImageLayer_Type);
+    PyModule_AddObject(m, (char *) "ImageLayer", reinterpret_cast<PyObject*>(PyTiledImageLayer_Type));
     /* Register the 'Tiled::MapObject' class */
-    PyTiledMapObject_Type.tp_base = &PyTiledObject_Type;
-    if (PyType_Ready(&PyTiledMapObject_Type)) {
-        return NULL;
-    }
-    PyModule_AddObject(m, (char *) "MapObject", (PyObject *) &PyTiledMapObject_Type);
+    PyModule_AddObject(m, (char *) "MapObject", reinterpret_cast<PyObject*>(PyTiledMapObject_Type));
     /* Register the 'Tiled::ObjectGroup' class */
-    PyTiledObjectGroup_Type.tp_base = &PyTiledLayer_Type;
-    if (PyType_Ready(&PyTiledObjectGroup_Type)) {
-        return NULL;
-    }
-    PyModule_AddObject(m, (char *) "ObjectGroup", (PyObject *) &PyTiledObjectGroup_Type);
-    /* Register the 'Tiled::LoggingInterface' class */
-    if (PyType_Ready(&PyTiledLoggingInterface_Type)) {
-        return NULL;
-    }
-    PyModule_AddObject(m, (char *) "LoggingInterface", (PyObject *) &PyTiledLoggingInterface_Type);
+    PyModule_AddObject(m, (char *) "ObjectGroup", reinterpret_cast<PyObject*>(PyTiledObjectGroup_Type));
     {
         PyObject *tmp_value;
          // Tiled::Map::Unknown
         tmp_value = PyLong_FromLong(Tiled::Map::Unknown);
-        PyDict_SetItemString((PyObject*) PyTiledMap_Type.tp_dict, "Unknown", tmp_value);
+        PyObject_SetAttrString((PyObject*)PyTiledMap_Type, "Unknown", tmp_value);
         Py_DECREF(tmp_value);
          // Tiled::Map::Orthogonal
         tmp_value = PyLong_FromLong(Tiled::Map::Orthogonal);
-        PyDict_SetItemString((PyObject*) PyTiledMap_Type.tp_dict, "Orthogonal", tmp_value);
+        PyObject_SetAttrString((PyObject*)PyTiledMap_Type, "Orthogonal", tmp_value);
         Py_DECREF(tmp_value);
          // Tiled::Map::Isometric
         tmp_value = PyLong_FromLong(Tiled::Map::Isometric);
-        PyDict_SetItemString((PyObject*) PyTiledMap_Type.tp_dict, "Isometric", tmp_value);
+        PyObject_SetAttrString((PyObject*)PyTiledMap_Type, "Isometric", tmp_value);
         Py_DECREF(tmp_value);
     }
     {
         PyObject *tmp_value;
          // Tiled::MapObject::Rectangle
         tmp_value = PyLong_FromLong(Tiled::MapObject::Rectangle);
-        PyDict_SetItemString((PyObject*) PyTiledMapObject_Type.tp_dict, "Rectangle", tmp_value);
+        PyObject_SetAttrString((PyObject*)PyTiledMapObject_Type, "Rectangle", tmp_value);
         Py_DECREF(tmp_value);
          // Tiled::MapObject::Polygon
         tmp_value = PyLong_FromLong(Tiled::MapObject::Polygon);
-        PyDict_SetItemString((PyObject*) PyTiledMapObject_Type.tp_dict, "Polygon", tmp_value);
+        PyObject_SetAttrString((PyObject*)PyTiledMapObject_Type, "Polygon", tmp_value);
         Py_DECREF(tmp_value);
          // Tiled::MapObject::Polyline
         tmp_value = PyLong_FromLong(Tiled::MapObject::Polyline);
-        PyDict_SetItemString((PyObject*) PyTiledMapObject_Type.tp_dict, "Polyline", tmp_value);
+        PyObject_SetAttrString((PyObject*)PyTiledMapObject_Type, "Polyline", tmp_value);
         Py_DECREF(tmp_value);
     }
     {
         PyObject *tmp_value;
          // Tiled::LoggingInterface::INFO
         tmp_value = PyLong_FromLong(Tiled::LoggingInterface::INFO);
-        PyDict_SetItemString((PyObject*) PyTiledLoggingInterface_Type.tp_dict, "INFO", tmp_value);
+        PyObject_SetAttrString((PyObject*)PyTiledLoggingInterface_Type, "INFO", tmp_value);
         Py_DECREF(tmp_value);
          // Tiled::LoggingInterface::ERROR
         tmp_value = PyLong_FromLong(Tiled::LoggingInterface::ERROR);
-        PyDict_SetItemString((PyObject*) PyTiledLoggingInterface_Type.tp_dict, "ERROR", tmp_value);
+        PyObject_SetAttrString((PyObject*)PyTiledLoggingInterface_Type, "ERROR", tmp_value);
         Py_DECREF(tmp_value);
     }
     return m;
@@ -6489,7 +5411,7 @@ _wrap_tiled_isObjectGroupAt(PyObject * PYBINDGEN_UNUSED(dummy), PyObject *args, 
     int idx;
     const char *keywords[] = {"map", "idx", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!i", (char **) keywords, &PyTiledMap_Type, &map, &idx)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!i", (char **) keywords, PyTiledMap_Type, &map, &idx)) {
         return NULL;
     }
     map_ptr = (map ? map->obj : NULL);
@@ -6510,7 +5432,7 @@ _wrap_tiled_isTileLayerAt(PyObject * PYBINDGEN_UNUSED(dummy), PyObject *args, Py
     int idx;
     const char *keywords[] = {"map", "idx", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!i", (char **) keywords, &PyTiledMap_Type, &map, &idx)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!i", (char **) keywords, PyTiledMap_Type, &map, &idx)) {
         return NULL;
     }
     map_ptr = (map ? map->obj : NULL);
@@ -6532,7 +5454,7 @@ _wrap_tiled_loadTilesetFromFile(PyObject * PYBINDGEN_UNUSED(dummy), PyObject *ar
     Py_ssize_t file_len;
     const char *keywords[] = {"ts", "file", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!s#", (char **) keywords, &PyTiledTileset_Type, &ts, &file, &file_len)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!s#", (char **) keywords, PyTiledTileset_Type, &ts, &file, &file_len)) {
         return NULL;
     }
     ts_ptr = (ts ? ts->obj : NULL);
@@ -6554,7 +5476,7 @@ _wrap_tiled_objectGroupAt(PyObject * PYBINDGEN_UNUSED(dummy), PyObject *args, Py
     const char *keywords[] = {"map", "idx", NULL};
     PyTiledObjectGroup *py_ObjectGroup;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!i", (char **) keywords, &PyTiledMap_Type, &map, &idx)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!i", (char **) keywords, PyTiledMap_Type, &map, &idx)) {
         return NULL;
     }
     map_ptr = (map ? map->obj : NULL);
@@ -6563,7 +5485,7 @@ _wrap_tiled_objectGroupAt(PyObject * PYBINDGEN_UNUSED(dummy), PyObject *args, Py
         Py_INCREF(Py_None);
         return Py_None;
     }
-    py_ObjectGroup = PyObject_New(PyTiledObjectGroup, &PyTiledObjectGroup_Type);
+    py_ObjectGroup = PyObject_New(PyTiledObjectGroup, PyTiledObjectGroup_Type);
     py_ObjectGroup->obj = retval;
     py_ObjectGroup->flags = PYBINDGEN_WRAPPER_FLAG_OBJECT_NOT_OWNED;
     py_retval = Py_BuildValue((char *) "N", py_ObjectGroup);
@@ -6583,7 +5505,7 @@ _wrap_tiled_tileLayerAt(PyObject * PYBINDGEN_UNUSED(dummy), PyObject *args, PyOb
     const char *keywords[] = {"map", "idx", NULL};
     PyTiledTileLayer *py_TileLayer;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!i", (char **) keywords, &PyTiledMap_Type, &map, &idx)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!i", (char **) keywords, PyTiledMap_Type, &map, &idx)) {
         return NULL;
     }
     map_ptr = (map ? map->obj : NULL);
@@ -6592,7 +5514,7 @@ _wrap_tiled_tileLayerAt(PyObject * PYBINDGEN_UNUSED(dummy), PyObject *args, PyOb
         Py_INCREF(Py_None);
         return Py_None;
     }
-    py_TileLayer = PyObject_New(PyTiledTileLayer, &PyTiledTileLayer_Type);
+    py_TileLayer = PyObject_New(PyTiledTileLayer, PyTiledTileLayer_Type);
     py_TileLayer->obj = retval;
     py_TileLayer->flags = PYBINDGEN_WRAPPER_FLAG_OBJECT_NOT_OWNED;
     py_retval = Py_BuildValue((char *) "N", py_TileLayer);
@@ -6648,14 +5570,14 @@ static void
 _wrap_PyPythonPythonScript__tp_dealloc(PyPythonPythonScript *self)
 {
     PyPythonPythonScript__tp_clear(self);
-    Py_TYPE(self)->tp_free((PyObject*)self);
+    PyObject_DEL(self);
 }
 
 static PyObject*
 _wrap_PyPythonPythonScript__tp_richcompare (PyPythonPythonScript *PYBINDGEN_UNUSED(self), PyPythonPythonScript *other, int opid)
 {
 
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyPythonPythonScript_Type)) {
+    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) PyPythonPythonScript_Type)) {
         Py_INCREF(Py_NotImplemented);
         return Py_NotImplemented;
     }
@@ -6684,59 +5606,27 @@ _wrap_PyPythonPythonScript__tp_richcompare (PyPythonPythonScript *PYBINDGEN_UNUS
     return Py_NotImplemented;
 }
 
-PyTypeObject PyPythonPythonScript_Type = {
-    PyVarObject_HEAD_INIT(NULL, 0)
-    (char *) "tiled.PythonScript",            /* tp_name */
-    sizeof(PyPythonPythonScript),                  /* tp_basicsize */
-    0,                                 /* tp_itemsize */
-    /* methods */
-    (destructor)_wrap_PyPythonPythonScript__tp_dealloc,        /* tp_dealloc */
-    (printfunc)0,                      /* tp_print */
-    (getattrfunc)NULL,       /* tp_getattr */
-    (setattrfunc)NULL,       /* tp_setattr */
-#if PY_MAJOR_VERSION >= 3
-    NULL,
-#else
-    (cmpfunc)NULL,           /* tp_compare */
-#endif
-    (reprfunc)NULL,             /* tp_repr */
-    (PyNumberMethods*)NULL,     /* tp_as_number */
-    (PySequenceMethods*)NULL, /* tp_as_sequence */
-    (PyMappingMethods*)NULL,   /* tp_as_mapping */
-    (hashfunc)NULL,             /* tp_hash */
-    (ternaryfunc)NULL,          /* tp_call */
-    (reprfunc)NULL,              /* tp_str */
-    (getattrofunc)NULL,     /* tp_getattro */
-    (setattrofunc)NULL,     /* tp_setattro */
-    (PyBufferProcs*)NULL,  /* tp_as_buffer */
-    Py_TPFLAGS_BASETYPE|Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_GC,                      /* tp_flags */
-    "",                        /* Documentation string */
-    (traverseproc)PyPythonPythonScript__tp_traverse,     /* tp_traverse */
-    (inquiry)PyPythonPythonScript__tp_clear,             /* tp_clear */
-    (richcmpfunc)_wrap_PyPythonPythonScript__tp_richcompare,   /* tp_richcompare */
-    0,             /* tp_weaklistoffset */
-    (getiterfunc)NULL,          /* tp_iter */
-    (iternextfunc)NULL,     /* tp_iternext */
-    (struct PyMethodDef*)PyPythonPythonScript_methods, /* tp_methods */
-    (struct PyMemberDef*)0,              /* tp_members */
-    0,                     /* tp_getset */
-    NULL,                              /* tp_base */
-    NULL,                              /* tp_dict */
-    (descrgetfunc)NULL,    /* tp_descr_get */
-    (descrsetfunc)NULL,    /* tp_descr_set */
-    offsetof(PyPythonPythonScript, inst_dict),                 /* tp_dictoffset */
-    (initproc)_wrap_PyPythonPythonScript__tp_init,             /* tp_init */
-    (allocfunc)PyType_GenericAlloc,           /* tp_alloc */
-    (newfunc)PyType_GenericNew,               /* tp_new */
-    (freefunc)0,             /* tp_free */
-    (inquiry)NULL,             /* tp_is_gc */
-    NULL,                              /* tp_bases */
-    NULL,                              /* tp_mro */
-    NULL,                              /* tp_cache */
-    NULL,                              /* tp_subclasses */
-    NULL,                              /* tp_weaklist */
-    (destructor) NULL                  /* tp_del */
+static PyType_Slot PyPythonPythonScript_Type_slots[] = {
+    {Py_tp_dealloc, (void*)_wrap_PyPythonPythonScript__tp_dealloc},
+    {Py_tp_traverse, (void*)PyPythonPythonScript__tp_traverse},
+    {Py_tp_clear, (void*)PyPythonPythonScript__tp_clear},
+    {Py_tp_richcompare, (void*)_wrap_PyPythonPythonScript__tp_richcompare},
+    {Py_tp_methods, (struct PyMethodDef*)PyPythonPythonScript_methods},
+    //{Py_tp_dictoffset, offsetof(PyPythonPythonScript, inst_dict)},
+    {Py_tp_init, (void*)_wrap_PyPythonPythonScript__tp_init},
+    {Py_tp_alloc, (void*)PyType_GenericAlloc},
+    {Py_tp_new, (void*)PyType_GenericNew},
+    {0, 0}
 };
+static PyType_Spec PyPythonPythonScript_Type_spec = {
+    (char *) "tiled.PythonScript",
+    sizeof(PyPythonPythonScript),
+    0,
+    Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_GC,
+    PyPythonPythonScript_Type_slots,
+};
+
+PyTypeObject *PyPythonPythonScript_Type;
 
 
 #if PY_VERSION_HEX >= 0x03000000
@@ -6748,6 +5638,160 @@ static struct PyModuleDef tiled_moduledef = {
     tiled_functions,
 };
 #endif
+
+static PyObject *
+inittiled_qt(void)
+{
+    PyObject *m;
+    #if PY_VERSION_HEX >= 0x03000000
+    m = PyModule_Create(&tiled_qt_moduledef);
+    #else
+    m = Py_InitModule3((char *) "tiled.qt", tiled_qt_functions, NULL);
+    #endif
+    if (m == NULL) {
+        return NULL;
+    }
+    PyQPointF_Type = reinterpret_cast<PyTypeObject*>(PyType_FromSpec(&PyQPointF_Type_spec));
+    PyQSizeF_Type = reinterpret_cast<PyTypeObject*>(PyType_FromSpec(&PyQSizeF_Type_spec));
+    PyQRgb_Type = reinterpret_cast<PyTypeObject*>(PyType_FromSpec(&PyQRgb_Type_spec));
+    PyQColor_Type = reinterpret_cast<PyTypeObject*>(PyType_FromSpec(&PyQColor_Type_spec));
+    PyQImage_Type = reinterpret_cast<PyTypeObject*>(PyType_FromSpec(&PyQImage_Type_spec));
+    PyQPixmap_Type = reinterpret_cast<PyTypeObject*>(PyType_FromSpec(&PyQPixmap_Type_spec));
+    PyQWidget_Type = reinterpret_cast<PyTypeObject*>(PyType_FromSpec(&PyQWidget_Type_spec));
+    PyQFileDialog_Type = reinterpret_cast<PyTypeObject*>(PyType_FromSpec(&PyQFileDialog_Type_spec));
+    PyQVector__lt__QRgb__gt___Type = reinterpret_cast<PyTypeObject*>(PyType_FromSpec(&PyQVector__lt__QRgb__gt___Type_spec));
+    PyQVector__lt__QRgb__gt__Iter_Type = reinterpret_cast<PyTypeObject*>(PyType_FromSpec(&PyQVector__lt__QRgb__gt__Iter_Type_spec));
+    PyQList__lt__QString__gt___Type = reinterpret_cast<PyTypeObject*>(PyType_FromSpec(&PyQList__lt__QString__gt___Type_spec));
+    PyQList__lt__QString__gt__Iter_Type = reinterpret_cast<PyTypeObject*>(PyType_FromSpec(&PyQList__lt__QString__gt__Iter_Type_spec));
+
+    PyObject *temp = NULL;
+
+    /* Register the 'QPointF' class */
+    PyModule_AddObject(m, (char *) "QPointF", PyType_FromSpec(&PyQPointF_Type_spec));
+    /* Register the 'QSizeF' class */
+    PyModule_AddObject(m, (char *) "QSizeF", PyType_FromSpec(&PyQSizeF_Type_spec));
+    /* Register the 'QRgb' class */
+    PyModule_AddObject(m, (char *) "QRgb", PyType_FromSpec(&PyQRgb_Type_spec));
+    /* Register the 'QColor' class */
+    PyModule_AddObject(m, (char *) "QColor", PyType_FromSpec(&PyQColor_Type_spec));
+    /* Register the 'QPixmap' class */
+    PyModule_AddObject(m, (char *) "QPixmap", PyType_FromSpec(&PyQPixmap_Type_spec));
+    /* Register the 'QWidget' class */
+    PyModule_AddObject(m, (char *) "QWidget", PyType_FromSpec(&PyQWidget_Type_spec));
+    /* Register the 'QVector<QRgb>' class */
+    PyModule_AddObject(m, (char *) "QVector__lt__QRgb__gt__", PyType_FromSpec(&PyQVector__lt__QRgb__gt___Type_spec));
+    PyModule_AddObject(m, (char *) "QVector__lt__QRgb__gt__Iter", PyType_FromSpec(&PyQVector__lt__QRgb__gt__Iter_Type_spec));
+    /* Register the 'QList<QString>' class */
+    PyModule_AddObject(m, (char *) "QList__lt__QString__gt__", PyType_FromSpec(&PyQList__lt__QString__gt___Type_spec));
+    PyModule_AddObject(m, (char *) "QList__lt__QString__gt__Iter", PyType_FromSpec(&PyQList__lt__QString__gt__Iter_Type_spec));
+
+    /* Register the 'QImage' class */
+    if (PyModule_AddObject(m, "QImage", reinterpret_cast<PyObject*>(PyQImage_Type)) != 0) PyErr_Print();
+
+    {
+        PyObject *tmp_value;
+         // QImage::Format_Invalid
+        tmp_value = PyLong_FromLong(QImage::Format_Invalid);
+        PyObject_SetAttrString((PyObject*)PyQImage_Type, "Format_Invalid", tmp_value);
+        Py_DECREF(tmp_value);
+         // QImage::Format_Mono
+        tmp_value = PyLong_FromLong(QImage::Format_Mono);
+        PyObject_SetAttrString((PyObject*)PyQImage_Type, "Format_Mono", tmp_value);
+        Py_DECREF(tmp_value);
+         // QImage::Format_MonoLSB
+        tmp_value = PyLong_FromLong(QImage::Format_MonoLSB);
+        PyObject_SetAttrString((PyObject*)PyQImage_Type, "Format_MonoLSB", tmp_value);
+        Py_DECREF(tmp_value);
+         // QImage::Format_Indexed8
+        tmp_value = PyLong_FromLong(QImage::Format_Indexed8);
+        PyObject_SetAttrString((PyObject*)PyQImage_Type, "Format_Indexed8", tmp_value);
+        Py_DECREF(tmp_value);
+         // QImage::Format_RGB32
+        tmp_value = PyLong_FromLong(QImage::Format_RGB32);
+        PyObject_SetAttrString((PyObject*)PyQImage_Type, "Format_RGB32", tmp_value);
+        Py_DECREF(tmp_value);
+         // QImage::Format_ARGB32
+        tmp_value = PyLong_FromLong(QImage::Format_ARGB32);
+        PyObject_SetAttrString((PyObject*)PyQImage_Type, "Format_ARGB32", tmp_value);
+        Py_DECREF(tmp_value);
+         // QImage::Format_ARGB32_Premultiplied
+        tmp_value = PyLong_FromLong(QImage::Format_ARGB32_Premultiplied);
+        PyObject_SetAttrString((PyObject*)PyQImage_Type, "Format_ARGB32_Premultiplied", tmp_value);
+        Py_DECREF(tmp_value);
+         // QImage::Format_RGB16
+        tmp_value = PyLong_FromLong(QImage::Format_RGB16);
+        PyObject_SetAttrString((PyObject*)PyQImage_Type, "Format_RGB16", tmp_value);
+        Py_DECREF(tmp_value);
+         // QImage::Format_ARGB8565_Premultiplied
+        tmp_value = PyLong_FromLong(QImage::Format_ARGB8565_Premultiplied);
+        PyObject_SetAttrString((PyObject*)PyQImage_Type, "Format_ARGB8565_Premultiplied", tmp_value);
+        Py_DECREF(tmp_value);
+         // QImage::Format_RGB666
+        tmp_value = PyLong_FromLong(QImage::Format_RGB666);
+        PyObject_SetAttrString((PyObject*)PyQImage_Type, "Format_RGB666", tmp_value);
+        Py_DECREF(tmp_value);
+         // QImage::Format_ARGB6666_Premultiplied
+        tmp_value = PyLong_FromLong(QImage::Format_ARGB6666_Premultiplied);
+        PyObject_SetAttrString((PyObject*)PyQImage_Type, "Format_ARGB6666_Premultiplied", tmp_value);
+        Py_DECREF(tmp_value);
+         // QImage::Format_RGB555
+        tmp_value = PyLong_FromLong(QImage::Format_RGB555);
+        PyObject_SetAttrString((PyObject*)PyQImage_Type, "Format_RGB555", tmp_value);
+        Py_DECREF(tmp_value);
+         // QImage::Format_ARGB8555_Premultiplied
+        tmp_value = PyLong_FromLong(QImage::Format_ARGB8555_Premultiplied);
+        PyObject_SetAttrString((PyObject*)PyQImage_Type, "Format_ARGB8555_Premultiplied", tmp_value);
+        Py_DECREF(tmp_value);
+         // QImage::Format_RGB888
+        tmp_value = PyLong_FromLong(QImage::Format_RGB888);
+        PyObject_SetAttrString((PyObject*)PyQImage_Type, "Format_RGB888", tmp_value);
+        Py_DECREF(tmp_value);
+         // QImage::Format_RGB444
+        tmp_value = PyLong_FromLong(QImage::Format_RGB444);
+        PyObject_SetAttrString((PyObject*)PyQImage_Type, "Format_RGB444", tmp_value);
+        Py_DECREF(tmp_value);
+         // QImage::Format_ARGB4444_Premultiplied
+        tmp_value = PyLong_FromLong(QImage::Format_ARGB4444_Premultiplied);
+        PyObject_SetAttrString((PyObject*)PyQImage_Type, "Format_ARGB4444_Premultiplied", tmp_value);
+        Py_DECREF(tmp_value);
+    }
+    /* Register the 'QFileDialog' class */
+    temp = PyType_FromSpec(&PyQFileDialog_Type_spec);
+    if (PyModule_AddObject(m, "QFileDialog", temp) != 0) PyErr_Print();
+    //PyModule_AddObject(m, (char *) "QFileDialog", PyType_FromSpec(&PyQFileDialog_Type_spec));
+    {
+        PyObject *tmp_value;
+         // QFileDialog::ShowDirsOnly
+        tmp_value = PyLong_FromLong(QFileDialog::ShowDirsOnly);
+        PyObject_SetAttrString((PyObject*)PyQFileDialog_Type, "ShowDirsOnly", tmp_value);
+        Py_DECREF(tmp_value);
+         // QFileDialog::DontResolveSymlinks
+        tmp_value = PyLong_FromLong(QFileDialog::DontResolveSymlinks);
+        PyObject_SetAttrString((PyObject*)PyQFileDialog_Type, "DontResolveSymlinks", tmp_value);
+        Py_DECREF(tmp_value);
+         // QFileDialog::DontConfirmOverwrite
+        tmp_value = PyLong_FromLong(QFileDialog::DontConfirmOverwrite);
+        PyObject_SetAttrString((PyObject*)PyQFileDialog_Type, "DontConfirmOverwrite", tmp_value);
+        Py_DECREF(tmp_value);
+         // QFileDialog::DontUseNativeDialog
+        tmp_value = PyLong_FromLong(QFileDialog::DontUseNativeDialog);
+        PyObject_SetAttrString((PyObject*)PyQFileDialog_Type, "DontUseNativeDialog", tmp_value);
+        Py_DECREF(tmp_value);
+         // QFileDialog::ReadOnly
+        tmp_value = PyLong_FromLong(QFileDialog::ReadOnly);
+        PyObject_SetAttrString((PyObject*)PyQFileDialog_Type, "ReadOnly", tmp_value);
+        Py_DECREF(tmp_value);
+         // QFileDialog::HideNameFilterDetails
+        tmp_value = PyLong_FromLong(QFileDialog::HideNameFilterDetails);
+        PyObject_SetAttrString((PyObject*)PyQFileDialog_Type, "HideNameFilterDetails", tmp_value);
+        Py_DECREF(tmp_value);
+         // QFileDialog::DontUseSheet
+        tmp_value = PyLong_FromLong(QFileDialog::DontUseSheet);
+        PyObject_SetAttrString((PyObject*)PyQFileDialog_Type, "DontUseSheet", tmp_value);
+        Py_DECREF(tmp_value);
+    }
+    return m;
+}
 
 
 #if PY_VERSION_HEX >= 0x03000000
@@ -6780,10 +5824,11 @@ MOD_INIT(tiled)
         return MOD_ERROR;
     }
     /* Register the 'Python::PythonScript' class */
-    if (PyType_Ready(&PyPythonPythonScript_Type)) {
-        return MOD_ERROR;
-    }
-    PyModule_AddObject(m, (char *) "Plugin", (PyObject *) &PyPythonPythonScript_Type);
+    PyPythonPythonScript_Type = reinterpret_cast<PyTypeObject*>(PyType_FromSpec(&PyPythonPythonScript_Type_spec));
+    if (PyModule_AddObject(m, "Plugin", reinterpret_cast<PyObject*>(PyPythonPythonScript_Type)) != 0) PyErr_Print();
+    /* Register the 'Tiled::LoggingInterface' class */
+    PyTiledLoggingInterface_Type = reinterpret_cast<PyTypeObject*>(PyType_FromSpec(&PyTiledLoggingInterface_Type_spec));
+    if (PyModule_AddObject(m, "LoggingInterface", reinterpret_cast<PyObject*>(PyTiledLoggingInterface_Type)) != 0) PyErr_Print();
     submodule = inittiled_qt();
     if (submodule == NULL) {
         return MOD_ERROR;
@@ -6804,7 +5849,7 @@ PyObject* _wrap_convert_c2py__Tiled__LoggingInterface(Tiled::LoggingInterface *c
         PyObject *py_retval;
         PyTiledLoggingInterface *py_LoggingInterface;
 
-        py_LoggingInterface = PyObject_New(PyTiledLoggingInterface, &PyTiledLoggingInterface_Type);
+        py_LoggingInterface = PyObject_New(PyTiledLoggingInterface, PyTiledLoggingInterface_Type);
         py_LoggingInterface->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
         py_LoggingInterface->obj = cvalue;
         py_retval = Py_BuildValue((char *) "N", py_LoggingInterface);
@@ -6818,7 +5863,7 @@ int _wrap_convert_py2c__Tiled__Map___star__(PyObject *value, Tiled::Map * *addre
     PyTiledMap *tmp_Map;
     
     py_retval = Py_BuildValue((char *) "(O)", value);
-    if (!PyArg_ParseTuple(py_retval, (char *) "O!", &PyTiledMap_Type, &tmp_Map)) {
+    if (!PyArg_ParseTuple(py_retval, (char *) "O!", PyTiledMap_Type, &tmp_Map)) {
         Py_DECREF(py_retval);
         return 0;
     }
@@ -6833,7 +5878,7 @@ PyObject* _wrap_convert_c2py__Tiled__Map_const(Tiled::Map const *cvalue)
     PyObject *py_retval;
     PyTiledMap *py_Map;
     
-    py_Map = PyObject_New(PyTiledMap, &PyTiledMap_Type);
+    py_Map = PyObject_New(PyTiledMap, PyTiledMap_Type);
     py_Map->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
     py_Map->obj = new Tiled::Map(*cvalue);
     py_retval = Py_BuildValue((char *) "N", py_Map);
