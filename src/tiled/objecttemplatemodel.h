@@ -35,7 +35,6 @@ class ObjectTemplateModel : public QFileSystemModel
 
 public:
     ObjectTemplateModel(QObject *parent = nullptr);
-    ~ObjectTemplateModel();
 
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 

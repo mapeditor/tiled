@@ -23,9 +23,10 @@
 
 #include "mapdocument.h"
 
-#include <QDockWidget>
-#include <QTreeView>
 #include <QAction>
+#include <QDockWidget>
+#include <QSharedPointer>
+#include <QTreeView>
 
 class QPushButton;
 class QLabel;
@@ -122,9 +123,9 @@ public slots:
     void onCurrentChanged(const QModelIndex &index);
 
 private:
-    void onTemplatesDirectoryChanged(const QString &templatesDirectory);
+    void onTemplatesDirectoryChanged(const QString &rootPath);
 
-    ObjectTemplateModel *mModel;
+    QSharedPointer<ObjectTemplateModel> mModel;
 };
 
 inline void TemplatesDock::setPropertiesDock(PropertiesDock *propertiesDock)

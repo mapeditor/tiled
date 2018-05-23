@@ -423,27 +423,49 @@ void TemplatesDock::fixTileset()
     }
 }
 
+
+static QSharedPointer<ObjectTemplateModel> sharedTemplateModel()
+{
+    static QWeakPointer<ObjectTemplateModel> templateModel;
+    auto model = templateModel.lock();
+    if (model)
+        return model;
+
+    model = QSharedPointer<ObjectTemplateModel>::create();
+    templateModel = model;
+
+    Preferences *prefs = Preferences::instance();
+
+    // Set the initial root path
+    QDir templatesDir(prefs->templatesDirectory());
+    if (!templatesDir.exists())
+        templatesDir.setPath(QDir::currentPath());
+    model->setRootPath(templatesDir.absolutePath());
+
+    // Make sure the root path stays updated
+    ObjectTemplateModel *modelPointer = model.data();
+    QObject::connect(prefs, &Preferences::templatesDirectoryChanged,
+                     modelPointer, [modelPointer] (const QString &templatesDirectory) {
+        modelPointer->setRootPath(QDir(templatesDirectory).absolutePath());
+    });
+
+    return model;
+}
+
 TemplatesView::TemplatesView(QWidget *parent)
     : QTreeView(parent)
+    , mModel(sharedTemplateModel())
 {
     setUniformRowHeights(true);
     setHeaderHidden(true);
     setDragEnabled(true);
     setDragDropMode(QAbstractItemView::DragOnly);
 
-    Preferences *prefs = Preferences::instance();
-    connect(prefs, &Preferences::templatesDirectoryChanged,
+    setModel(mModel.data());
+    setRootIndex(mModel->index(mModel->rootPath()));
+
+    connect(mModel.data(), &QFileSystemModel::rootPathChanged,
             this, &TemplatesView::onTemplatesDirectoryChanged);
-
-    QDir templatesDir(prefs->templatesDirectory());
-    if (!templatesDir.exists())
-        templatesDir.setPath(QDir::currentPath());
-
-    mModel = new ObjectTemplateModel(this);
-    mModel->setRootPath(templatesDir.absolutePath());
-
-    setModel(mModel);
-    setRootIndex(mModel->index(templatesDir.absolutePath()));
 
     QHeaderView *headerView = header();
     headerView->setStretchLastSection(false);
@@ -496,8 +518,7 @@ void TemplatesView::onCurrentChanged(const QModelIndex &index)
     emit currentTemplateChanged(objectTemplate);
 }
 
-void TemplatesView::onTemplatesDirectoryChanged(const QString &templatesDirectory)
+void TemplatesView::onTemplatesDirectoryChanged(const QString &rootPath)
 {
-    mModel->setRootPath(templatesDirectory);
-    setRootIndex(mModel->index(QDir(templatesDirectory).absolutePath()));
+    setRootIndex(mModel->index(rootPath));
 }
