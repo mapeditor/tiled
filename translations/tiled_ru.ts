@@ -921,7 +921,7 @@
     <message>
         <location line="+17"/>
         <source>Not a template file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл не является файлом шаблона.</translation>
     </message>
     <message>
         <location line="+10"/>
