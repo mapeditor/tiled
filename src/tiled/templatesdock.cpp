@@ -245,6 +245,7 @@ void TemplatesDock::setTemplate(ObjectTemplate *objectTemplate)
         map->addLayer(objectGroup);
 
         mDummyMapDocument = MapDocumentPtr::create(map);
+        mDummyMapDocument->setAllowHidingObjects(false);
         mDummyMapDocument->setCurrentLayer(objectGroup);
 
         mMapScene->setMapDocument(mDummyMapDocument.data());
