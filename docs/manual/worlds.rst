@@ -12,6 +12,12 @@ from such a world could be seen within the same view, and to be able to
 quickly switch between editing different maps. Defining a world allows you to
 do exactly that.
 
+.. figure:: images/world-view.png
+   :alt: Many maps from The Mana World shown at once
+
+   Many maps from `The Mana World <https://www.themanaworld.org/>`__ shown at
+   once.
+
 Defining a World
 ----------------
 
@@ -58,8 +64,8 @@ same position.
 .. warning::
 
     Currently, a world is not reloaded when it changes on disk. To reload a
-    world, either unload it via *Map > Unload World* and then load it again,
-    or restart Tiled.
+    world, load it again via *Map > Load World...* (no need to first unload
+    it) or restart Tiled.
 
 Using Pattern Matching
 ----------------------
@@ -92,6 +98,9 @@ the second as ``y``. These will then be multiplied by ``multiplierX`` and
 added. The offset exists mainly to allow multiple sets of maps in the same
 world to be positioned relative to each other. The final value becomes the
 position (in pixels) of each map.
+
+A world definition can use a combination of manually defined maps and
+patterns.
 
 Showing Only Direct Neighbors
 -----------------------------
