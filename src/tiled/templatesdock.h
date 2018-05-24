@@ -25,6 +25,7 @@
 
 #include <QAction>
 #include <QDockWidget>
+#include <QHash>
 #include <QSharedPointer>
 #include <QTreeView>
 
@@ -85,6 +86,8 @@ private:
     void retranslateUi();
     void fixTileset();
 
+    MapObject *dummyObject() const;
+
     TemplatesView *mTemplatesView;
 
     QAction *mChooseDirectory;
@@ -97,9 +100,10 @@ private:
     MapScene *mMapScene;
     MapView *mMapView;
     ObjectTemplate *mObjectTemplate;
-    MapObject *mObject;
     PropertiesDock *mPropertiesDock;
     ToolManager *mToolManager;
+
+    static QHash<ObjectTemplate*, QWeakPointer<MapDocument>> ourDummyDocuments;
 };
 
 class TemplatesView : public QTreeView

@@ -53,6 +53,10 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
+// This references created dummy documents, to make sure they are shared if the
+// same template is open in the MapEditor and the TilesetEditor.
+QHash<ObjectTemplate*, QWeakPointer<MapDocument>> TemplatesDock::ourDummyDocuments;
+
 TemplatesDock::TemplatesDock(QWidget *parent)
     : QDockWidget(parent)
     , mTemplatesView(new TemplatesView)
@@ -116,7 +120,7 @@ TemplatesDock::TemplatesDock(QWidget *parent)
     editingToolBar->addAction(mToolManager->registerTool(objectSelectionTool));
     editingToolBar->addAction(mToolManager->registerTool(editPolygonTool));
 
-    mFixTilesetButton = new QPushButton(QString(), this);
+    mFixTilesetButton = new QPushButton(this);
     connect(mFixTilesetButton, &QPushButton::clicked, this, &TemplatesDock::fixTileset);
     mFixTilesetButton->setVisible(false);
 
@@ -124,7 +128,6 @@ TemplatesDock::TemplatesDock(QWidget *parent)
     mDescriptionLabel->setWordWrap(true);
     mDescriptionLabel->setVisible(false);
 
-    // Construct the UI
     auto toolsLayout = new QHBoxLayout;
     toolsLayout->addWidget(editingToolBar);
     toolsLayout->addWidget(mFixTilesetButton);
@@ -223,50 +226,52 @@ void TemplatesDock::setTemplate(ObjectTemplate *objectTemplate)
     if (objectTemplate) {
         Q_ASSERT(objectTemplate->object());
 
-        Map::Orientation orientation = Map::Orthogonal;
+        mDummyMapDocument = ourDummyDocuments.value(objectTemplate);
 
-        Map *map = new Map(orientation, 1, 1, 1, 1);
+        if (!mDummyMapDocument) {
+            Map::Orientation orientation = Map::Orthogonal;
+            Map *map = new Map(orientation, 1, 1, 1, 1);
 
-        mObject = objectTemplate->object()->clone();
-        mObject->markAsTemplateBase();
+            MapObject *dummyObject = objectTemplate->object()->clone();
+            dummyObject->markAsTemplateBase();
 
-        checkTileset();
+            if (Tileset *tileset = dummyObject->cell().tileset()) {
+                map->addTileset(tileset->sharedPointer());
+                dummyObject->setPosition({-dummyObject->width() / 2, dummyObject->height() / 2});
+            } else {
+                dummyObject->setPosition({-dummyObject->width() / 2, -dummyObject->height()  /2});
+            }
 
-        if (Tileset *tileset = mObject->cell().tileset()) {
-            map->addTileset(tileset->sharedPointer());
-            mObject->setPosition({-mObject->width() / 2, mObject->height() / 2});
-        } else {
-            mObject->setPosition({-mObject->width() / 2, -mObject->height()  /2});
+            ObjectGroup *objectGroup = new ObjectGroup;
+            objectGroup->addObject(dummyObject);
+
+            map->addLayer(objectGroup);
+
+            mDummyMapDocument = MapDocumentPtr::create(map);
+            mDummyMapDocument->setAllowHidingObjects(false);
+            mDummyMapDocument->setCurrentLayer(objectGroup);
+
+            ourDummyDocuments.insert(objectTemplate, mDummyMapDocument);
         }
 
-        ObjectGroup *objectGroup = new ObjectGroup;
-        objectGroup->addObject(mObject);
+        mDummyMapDocument->setCurrentObject(dummyObject());
 
-        map->addLayer(objectGroup);
-
-        mDummyMapDocument = MapDocumentPtr::create(map);
-        mDummyMapDocument->setAllowHidingObjects(false);
-        mDummyMapDocument->setCurrentLayer(objectGroup);
-
-        mMapScene->setMapDocument(mDummyMapDocument.data());
-
-        mMapScene->enableSelectedTool();
-        mToolManager->setMapDocument(mDummyMapDocument.data());
-
-        mPropertiesDock->setDocument(mDummyMapDocument.data());
-        mDummyMapDocument->setCurrentObject(mObject);
-
-        mUndoAction->setEnabled(false);
-        mRedoAction->setEnabled(false);
+        mUndoAction->setEnabled(mDummyMapDocument->undoStack()->canUndo());
+        mRedoAction->setEnabled(mDummyMapDocument->undoStack()->canRedo());
 
         connect(mDummyMapDocument->undoStack(), &QUndoStack::indexChanged,
                 this, &TemplatesDock::applyChanges);
+
+        checkTileset();
     } else {
-        mPropertiesDock->setDocument(nullptr);
-        mDummyMapDocument = nullptr;
-        mMapScene->setMapDocument(nullptr);
-        mToolManager->setMapDocument(nullptr);
+        mDummyMapDocument.reset();
     }
+
+    mMapScene->setMapDocument(mDummyMapDocument.data());
+    mToolManager->setMapDocument(mDummyMapDocument.data());
+    mPropertiesDock->setDocument(mDummyMapDocument.data());
+
+    mMapScene->enableSelectedTool();
 
     if (previousDocument)
         previousDocument->undoStack()->disconnect(this);
@@ -274,19 +279,14 @@ void TemplatesDock::setTemplate(ObjectTemplate *objectTemplate)
 
 void TemplatesDock::checkTileset()
 {
-    Q_ASSERT(mObject);
-
-    Cell cell = mObject->cell();
-
-    if (cell.isEmpty()) {
+    if (!mObjectTemplate || !mObjectTemplate->tileset()) {
         mFixTilesetButton->setVisible(false);
         mDescriptionLabel->setVisible(false);
         return;
     }
 
-    auto tileset = cell.tileset();
-
-    QString templateName = QFileInfo(mObjectTemplate->fileName()).fileName();
+    auto templateName = QFileInfo(mObjectTemplate->fileName()).fileName();
+    auto tileset = mObjectTemplate->tileset();
 
     if (tileset->imageStatus() == LoadingError) {
         mFixTilesetButton->setVisible(true);
@@ -330,7 +330,7 @@ void TemplatesDock::redo()
 
 void TemplatesDock::applyChanges()
 {
-    mObjectTemplate->setObject(mObject);
+    mObjectTemplate->setObject(dummyObject());
 
     // Write out the template file
     mObjectTemplate->format()->write(mObjectTemplate,
@@ -378,10 +378,12 @@ void TemplatesDock::retranslateUi()
 
 void TemplatesDock::fixTileset()
 {
-    Q_ASSERT(mObject);
-    Q_ASSERT(!mObject->cell().isEmpty());
+    if (mObjectTemplate)
+        return;
 
-    auto tileset = mObject->cell().tileset()->sharedPointer();
+    auto tileset = mObjectTemplate->tileset();
+    if (!tileset)
+        return;
 
     if (tileset->imageStatus() == LoadingError) {
         // This code opens a new document even if there is a tileset document
@@ -421,6 +423,14 @@ void TemplatesDock::fixTileset()
             emit templateTilesetReplaced();
         }
     }
+}
+
+MapObject *TemplatesDock::dummyObject() const
+{
+    if (!mDummyMapDocument)
+        return nullptr;
+
+    return mDummyMapDocument->map()->layerAt(0)->asObjectGroup()->objectAt(0);
 }
 
 
