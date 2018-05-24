@@ -19,6 +19,7 @@ Tiled Documentation
    manual/using-the-terrain-tool
    manual/using-wang-tiles
    manual/using-infinite-maps
+   manual/worlds
    manual/using-commands
    manual/automapping
    manual/export
