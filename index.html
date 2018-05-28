@@ -311,20 +311,19 @@
             <div class="my-box" style="border: 2px solid #ff945a; box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);">
               <div class="row" style="margin-bottom: 10px;">
                 <div class="col-md-12">
-                  <b>Please support my work on Tiled!</b> - <a href="https://www.patreon.com/bjorn">Read about my goals on Patreon</a>
+                  <b>Please support my work on Tiled!</b> - <a href="https://www.patreon.com/bjorn/overview">Read about my goals on Patreon</a>
                 </div>
               </div>
               <div class="row">
                 <div class="col-md-12">
-                  <a class="btn btn-default btn-sm btn-info" href="https://www.patreon.com/bePatron?u=90066" style="margin-left: 10px; margin-top: -6px; float: right; min-width: 100px;">Pledge Now</a>
+                  <a class="btn btn-default btn-sm btn-info" href="https://www.patreon.com/bjorn/memberships" style="margin-left: 10px; margin-top: -6px; float: right; min-width: 100px;">Pledge Now</a>
                   <div style="float: right; margin-left: 10px;"><b id="patreon-status"></b></div>
-                  <a href="https://www.patreon.com/bjorn" style="text-decoration: none">
-                    <div class="progress" style="margin-bottom: 0px;">
-                      <div class="progress-bar progress-bar-warning progress-bar-striped" id="first-goal-progressbar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 0%; background-image: linear-gradient(to bottom, #ffb68e 0px, #fe8d50 100%);"></div>
-                      <div class="progress-bar progress-bar-warning progress-bar-striped" id="second-goal-progressbar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 0%; background-image: linear-gradient(to bottom, #FF945A 0px, #FE5900 100%);"></div>
-                      <span style="color: gray; margin-left: 5px;" id="goal-percentage"></span>
-                    </div>
-                  </a>
+                  <div class="progress" style="margin-bottom: 0px;">
+                    <a href="https://thorbjorn.itch.io/tiled" ><div class="progress-bar progress-bar-warning progress-bar-striped" id="itch-progressbar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 0%; background-image: linear-gradient(to bottom, #fa5c5c 0px, #FE5900 100%);" data-toggle="tooltip" data-placement="bottom" title="itch"></div></a>
+                    <a href="https://www.liberapay.com/bjorn"><div class="progress-bar progress-bar-warning progress-bar-striped" id="liberapay-progressbar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 0%; background-image: linear-gradient(to bottom, #f6c915 0px, #FE5900 100%);" data-toggle="tooltip" data-placement="bottom" title="Liberapay"></div></a>
+                    <a href="https://www.patreon.com/bjorn"><div class="progress-bar progress-bar-warning progress-bar-striped" id="patreon-progressbar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 0%; background-image: linear-gradient(to bottom, #FF945A 0px, #FE5900 100%);" data-toggle="tooltip" data-placement="bottom" title="Patreon"></div></a>
+                    <span style="color: gray; margin-left: 5px;" id="goal-percentage"></span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -506,16 +505,33 @@
         //},
       })
       .done(function(data) {
-        var earnings = data.earnings;
-        var firstGoal = 600;
-        var nextGoal = data.next_goal;
-        var firstPercentage = Math.min(100, Math.round(500 / nextGoal * 100));
-        var secondPercentage = Math.min(100, Math.round(earnings / nextGoal * 100)) - firstPercentage;
+        var itchIncome = 600;
+        var itchPurchases = 90;
+        var liberapayIncome = data.liberapayEarnings_bjorn * 1.16 * 4;
+        var patreonIncome = data.earnings;
+        var totalIncome = itchIncome + liberapayIncome + patreonIncome;
+        var totalSupporters = itchPurchases + data.patrons + data.liberapayPatrons_Tiled + data.liberapayPatrons_bjorn;
 
-        $("#patreon-status").text("$" + earnings + " / $" + nextGoal);
-        $("#goal-percentage").text((firstPercentage + secondPercentage) + "%");
-        $("#first-goal-progressbar").css("width", firstPercentage + "%");
-        $("#second-goal-progressbar").css("width", secondPercentage + "%");
+        var twoDayGoal = 2300;
+        var twoDayPlusOfficeGoal = 2600;
+
+        var nextGoal = twoDayGoal;
+        if (totalIncome >= nextGoal)
+          nextGoal = twoDayPlusOfficeGoal;
+
+        var itchPercentage = Math.min(100, Math.round(itchIncome / nextGoal * 100));
+        var liberapayPercentage = Math.min(100, Math.round(liberapayIncome / nextGoal * 100));
+        var patreonPercentage = Math.min(100, Math.round(patreonIncome / nextGoal * 100));
+
+        var totalPercentage = itchPercentage + liberapayPercentage + patreonPercentage;
+
+        $("#patreon-status").text("$" + Math.round(totalIncome) + " / $" + nextGoal);
+        $("#goal-percentage").text(totalPercentage + "%");
+        $("#itch-progressbar").css("width", itchPercentage + "%").attr("title", "itch (~$" + Math.round(itchIncome) + " per month)");
+        $("#liberapay-progressbar").css("width", liberapayPercentage + "%").attr("title", "Liberapay ($" + Math.round(liberapayIncome) + " per month)");
+        $("#patreon-progressbar").css("width", patreonPercentage + "%").attr("title", "Patreon ($" + Math.round(patreonIncome) + " per month)");
+
+        $('[data-toggle="tooltip"]').tooltip();
       })
       //.always(function() {
       //});
