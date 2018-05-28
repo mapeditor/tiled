@@ -31,7 +31,7 @@ At the end of the GSoC, each student submits a link to a page detailing
 the work they have done. Here are the links to the pages submitted by
 our students, where they also included a few words about their experience:
 
-* [Ketan Gupta: General Improvements and Bug Fixes](http://ketangupta.in/blog/gsoc/development/2017/08/29/gsoc-final-report/) (mentored by Erik Schilling)
+* [Ketan Gupta: General Improvements and Bug Fixes](http://ketangupta.in/blog/gsoc/2017/08/29/gsoc-final-report/) (mentored by Erik Schilling)
 * [Mohamed Thabet: Reusable Object Templates](https://gist.github.com/thabetx/57cbf9c3fcb62ebe95c457678ba3f4b1) (mentored by me)
 * [Benjamin Trotter: Wang Tiles](https://github.com/bjorn/tiled/wiki/GSOC-2017:-Wang-Tiles) (mentored by Leon Moctezuma)
 
