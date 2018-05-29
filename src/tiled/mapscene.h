@@ -24,6 +24,7 @@
 #pragma once
 
 #include "mapdocument.h"
+#include "mapitem.h"
 
 #include <QColor>
 #include <QGraphicsScene>
@@ -45,7 +46,6 @@ class LayerItem;
 class MapDocument;
 class MapObjectItem;
 class MapScene;
-class MapItem;
 class ObjectGroupItem;
 
 /**
@@ -103,6 +103,9 @@ private slots:
 private:
     void updateDefaultBackgroundColor();
     void updateSceneRect();
+
+    MapItem *takeOrCreateMapItem(const MapDocumentPtr &mapDocument,
+                                 MapItem::DisplayMode displayMode);
 
     bool eventFilter(QObject *object, QEvent *event) override;
 

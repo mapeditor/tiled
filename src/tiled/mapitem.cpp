@@ -20,6 +20,7 @@
 
 #include "mapitem.h"
 
+#include "documentmanager.h"
 #include "grouplayer.h"
 #include "grouplayeritem.h"
 #include "imagelayeritem.h"
@@ -40,35 +41,25 @@
 #include <QPen>
 #include <QWidget>
 
+#include "qtcompat_p.h"
+
 namespace Tiled {
 namespace Internal {
 
 static const qreal darkeningFactor = 0.6;
 static const qreal opacityFactor = 0.4;
 
-MapItem::MapItem(MapDocument *mapDocument, DisplayMode displayMode,
+MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
                  QGraphicsItem *parent)
     : QGraphicsObject(parent)
-    , mMapDocument(mapDocument->sharedFromThis())
+    , mMapDocument(mapDocument)
     , mDarkRectangle(new QGraphicsRectItem(this))
-    , mDisplayMode(displayMode)
+    , mDisplayMode(Editable)
 {
     // Since we don't do any painting, we can spare us the call to paint()
     setFlag(QGraphicsItem::ItemHasNoContents);
 
-    // In read-only display mode, we are a link to the editable view for our map
-    if (displayMode == ReadOnly)
-        setCursor(Qt::PointingHandCursor);
-
     createLayerItems(mapDocument->map()->layers());
-
-    if (displayMode == Editable) {
-        auto tileSelectionItem = new TileSelectionItem(mapDocument, this);
-        tileSelectionItem->setZValue(10000 - 2);
-
-        auto objectSelectionItem = new ObjectSelectionItem(mapDocument, this);
-        objectSelectionItem->setZValue(10000 - 1);
-    }
 
     Preferences *prefs = Preferences::instance();
 
@@ -81,22 +72,22 @@ MapItem::MapItem(MapDocument *mapDocument, DisplayMode displayMode,
     connect(prefs, &Preferences::highlightCurrentLayerChanged, this, &MapItem::updateCurrentLayerHighlight);
     connect(prefs, &Preferences::objectTypesChanged, this, &MapItem::syncAllObjectItems);
 
-    connect(mapDocument, &MapDocument::mapChanged, this, &MapItem::mapChanged);
-    connect(mapDocument, &MapDocument::regionChanged, this, &MapItem::repaintRegion);
-    connect(mapDocument, &MapDocument::tileLayerChanged, this, &MapItem::tileLayerChanged);
-    connect(mapDocument, &MapDocument::layerAdded, this, &MapItem::layerAdded);
-    connect(mapDocument, &MapDocument::layerRemoved, this, &MapItem::layerRemoved);
-    connect(mapDocument, &MapDocument::layerChanged, this, &MapItem::layerChanged);
-    connect(mapDocument, &MapDocument::objectGroupChanged, this, &MapItem::objectGroupChanged);
-    connect(mapDocument, &MapDocument::imageLayerChanged, this, &MapItem::imageLayerChanged);
-    connect(mapDocument, &MapDocument::selectedLayersChanged, this, &MapItem::updateCurrentLayerHighlight);
-    connect(mapDocument, &MapDocument::tilesetTileOffsetChanged, this, &MapItem::adaptToTilesetTileSizeChanges);
-    connect(mapDocument, &MapDocument::tileImageSourceChanged, this, &MapItem::adaptToTileSizeChanges);
-    connect(mapDocument, &MapDocument::tilesetReplaced, this, &MapItem::tilesetReplaced);
-    connect(mapDocument, &MapDocument::objectsInserted, this, &MapItem::objectsInserted);
-    connect(mapDocument, &MapDocument::objectsRemoved, this, &MapItem::objectsRemoved);
-    connect(mapDocument, &MapDocument::objectsChanged, this, &MapItem::objectsChanged);
-    connect(mapDocument, &MapDocument::objectsIndexChanged, this, &MapItem::objectsIndexChanged);
+    connect(mapDocument.data(), &MapDocument::mapChanged, this, &MapItem::mapChanged);
+    connect(mapDocument.data(), &MapDocument::regionChanged, this, &MapItem::repaintRegion);
+    connect(mapDocument.data(), &MapDocument::tileLayerChanged, this, &MapItem::tileLayerChanged);
+    connect(mapDocument.data(), &MapDocument::layerAdded, this, &MapItem::layerAdded);
+    connect(mapDocument.data(), &MapDocument::layerRemoved, this, &MapItem::layerRemoved);
+    connect(mapDocument.data(), &MapDocument::layerChanged, this, &MapItem::layerChanged);
+    connect(mapDocument.data(), &MapDocument::objectGroupChanged, this, &MapItem::objectGroupChanged);
+    connect(mapDocument.data(), &MapDocument::imageLayerChanged, this, &MapItem::imageLayerChanged);
+    connect(mapDocument.data(), &MapDocument::selectedLayersChanged, this, &MapItem::updateCurrentLayerHighlight);
+    connect(mapDocument.data(), &MapDocument::tilesetTileOffsetChanged, this, &MapItem::adaptToTilesetTileSizeChanges);
+    connect(mapDocument.data(), &MapDocument::tileImageSourceChanged, this, &MapItem::adaptToTileSizeChanges);
+    connect(mapDocument.data(), &MapDocument::tilesetReplaced, this, &MapItem::tilesetReplaced);
+    connect(mapDocument.data(), &MapDocument::objectsInserted, this, &MapItem::objectsInserted);
+    connect(mapDocument.data(), &MapDocument::objectsRemoved, this, &MapItem::objectsRemoved);
+    connect(mapDocument.data(), &MapDocument::objectsChanged, this, &MapItem::objectsChanged);
+    connect(mapDocument.data(), &MapDocument::objectsIndexChanged, this, &MapItem::objectsIndexChanged);
 
     updateBoundingRect();
 
@@ -105,6 +96,48 @@ MapItem::MapItem(MapDocument *mapDocument, DisplayMode displayMode,
     mDarkRectangle->setOpacity(darkeningFactor);
     mDarkRectangle->setRect(QRect(INT_MIN / 512, INT_MIN / 512,
                                   INT_MAX / 256, INT_MAX / 256));
+
+    if (displayMode == ReadOnly)
+        setDisplayMode(displayMode);
+    else
+        updateCurrentLayerHighlight();
+}
+
+MapItem::~MapItem() = default;
+
+void MapItem::setDisplayMode(DisplayMode displayMode)
+{
+    if (mDisplayMode == displayMode)
+        return;
+
+    mDisplayMode = displayMode;
+
+    // Enabled state is checked by selection tools
+    for (LayerItem *layerItem : qAsConst(mLayerItems))
+        layerItem->setEnabled(displayMode == Editable);
+
+    if (displayMode == ReadOnly) {
+        // In read-only display mode, we are a link to the editable view for our map
+        setCursor(Qt::PointingHandCursor);
+
+        setOpacity(0.5);
+        setZValue(-1);
+
+        mTileSelectionItem.reset(new TileSelectionItem(mapDocument(), this));
+        mTileSelectionItem->setZValue(10000 - 2);
+
+        mObjectSelectionItem.reset(new ObjectSelectionItem(mapDocument(), this));
+        mObjectSelectionItem->setZValue(10000 - 1);
+    } else {
+        unsetCursor();
+
+        setOpacity(1.0);
+        setZValue(0);
+
+        mTileSelectionItem.reset();
+        mObjectSelectionItem.reset();
+    }
+
     updateCurrentLayerHighlight();
 }
 

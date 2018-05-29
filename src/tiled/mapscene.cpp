@@ -26,8 +26,8 @@
 #include "abstracttool.h"
 #include "addremovemapobject.h"
 #include "containerhelpers.h"
+#include "documentmanager.h"
 #include "map.h"
-#include "mapitem.h"
 #include "mapobject.h"
 #include "maprenderer.h"
 #include "objectgroup.h"
@@ -74,6 +74,9 @@ MapScene::MapScene(QObject *parent):
     connect(prefs, &Preferences::gridColorChanged, this, [this] { update(); });
 
     mGridVisible = prefs->showGrid();
+
+    WorldManager &worldManager = WorldManager::instance();
+    connect(&worldManager, &WorldManager::worldsChanged, this, &MapScene::refreshScene);
 
     // Install an event filter so that we can get key events on behalf of the
     // active tool without having to have the current focus.
@@ -126,11 +129,12 @@ void MapScene::setSelectedTool(AbstractTool *tool)
  */
 void MapScene::refreshScene()
 {
-    clear();
-    mMapItems.clear();
+    QHash<MapDocument*, MapItem*> mapItems;
 
     if (!mMapDocument) {
-        setSceneRect(QRectF());
+        mMapItems.swap(mapItems);
+        qDeleteAll(mapItems);
+        updateSceneRect();
         return;
     }
 
@@ -155,24 +159,18 @@ void MapScene::refreshScene()
                 if (mapDocument == mMapDocument)
                     displayMode = MapItem::Editable;
 
-                auto mapItem = new MapItem(mapDocument.data(), displayMode);
+                auto mapItem = takeOrCreateMapItem(mapDocument, displayMode);
                 mapItem->setPos(mapEntry.rect.topLeft() - currentMapPosition);
-                connect(mapItem, &MapItem::boundingRectChanged, this, &MapScene::updateSceneRect);
-                mMapItems.insert(mapDocument.data(), mapItem);
-                addItem(mapItem);
-
-                if (mapDocument != mMapDocument) {
-                    mapItem->setOpacity(0.5);
-                    mapItem->setZValue(-1);
-                }
+                mapItems.insert(mapDocument.data(), mapItem);
             }
         }
     } else {
-        auto mapItem = new MapItem(mMapDocument, MapItem::Editable);
-        connect(mapItem, &MapItem::boundingRectChanged, this, &MapScene::updateSceneRect);
-        mMapItems.insert(mMapDocument, mapItem);
-        addItem(mapItem);
+        auto mapItem = takeOrCreateMapItem(mMapDocument->sharedFromThis(), MapItem::Editable);
+        mapItems.insert(mMapDocument, mapItem);
     }
+
+    mMapItems.swap(mapItems);
+    qDeleteAll(mapItems);       // delete all map items that didn't get reused
 
     updateSceneRect();
 
@@ -200,6 +198,20 @@ void MapScene::updateSceneRect()
         sceneRect |= mapItem->boundingRect().translated(mapItem->pos());
 
     setSceneRect(sceneRect);
+}
+
+MapItem *MapScene::takeOrCreateMapItem(const MapDocumentPtr &mapDocument, MapItem::DisplayMode displayMode)
+{
+    // Try to reuse an existing map item
+    auto mapItem = mMapItems.take(mapDocument.data());
+    if (!mapItem) {
+        mapItem = new MapItem(mapDocument, displayMode);
+        connect(mapItem, &MapItem::boundingRectChanged, this, &MapScene::updateSceneRect);
+        addItem(mapItem);
+    } else {
+        mapItem->setDisplayMode(displayMode);
+    }
+    return mapItem;
 }
 
 /**

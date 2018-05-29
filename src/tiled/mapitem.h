@@ -20,12 +20,11 @@
 
 #pragma once
 
-#include "documentmanager.h"
 #include "mapdocument.h"
 
 #include <QGraphicsObject>
 #include <QMap>
-#include <QSet>
+#include <QScopedPointer>
 
 namespace Tiled {
 
@@ -41,6 +40,8 @@ namespace Internal {
 
 class LayerItem;
 class MapObjectItem;
+class ObjectSelectionItem;
+class TileSelectionItem;
 
 /**
  * A graphics item that represents the contents of a map.
@@ -58,10 +59,13 @@ public:
         Editable
     };
 
-    MapItem(MapDocument *mapDocument, DisplayMode displayMode,
+    MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
             QGraphicsItem *parent = nullptr);
+    ~MapItem() override;
 
     MapDocument *mapDocument() const;
+
+    void setDisplayMode(DisplayMode displayMode);
 
     // QGraphicsItem
     QRectF boundingRect() const override;
@@ -115,6 +119,8 @@ private:
 
     MapDocumentPtr mMapDocument;
     QGraphicsRectItem *mDarkRectangle;
+    QScopedPointer<TileSelectionItem> mTileSelectionItem;
+    QScopedPointer<ObjectSelectionItem> mObjectSelectionItem;
     QMap<Layer*, LayerItem*> mLayerItems;
     QMap<MapObject*, MapObjectItem*> mObjectItems;
     DisplayMode mDisplayMode;

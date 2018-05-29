@@ -31,7 +31,9 @@
 
 #include "tiled_global.h"
 
-#include <QHash>
+#include <QCoreApplication>
+#include <QMap>
+#include <QObject>
 #include <QPoint>
 #include <QRect>
 #include <QRegularExpression>
@@ -69,26 +71,30 @@ struct TILEDSHARED_EXPORT World
     QVector<MapEntry> contextMaps(const QString &fileName) const;
 };
 
-class TILEDSHARED_EXPORT WorldManager
+class TILEDSHARED_EXPORT WorldManager : public QObject
 {
-    Q_DISABLE_COPY(WorldManager)
+    Q_OBJECT
 
 public:
     static WorldManager &instance();
     static void deleteInstance();
 
-    void loadWorld(const QString &fileName);
+    bool loadWorld(const QString &fileName, QString *errorString = nullptr);
     void unloadWorld(const QString &fileName);
 
-    const QHash<QString, World*> &worlds() const { return mWorlds; }
+    const QMap<QString, World*> &worlds() const { return mWorlds; }
+    QStringList loadedWorldFiles() const { return mWorlds.keys(); }
 
     const World *worldForMap(const QString &fileName) const;
+
+signals:
+    void worldsChanged();
 
 private:
     WorldManager();
     ~WorldManager();
 
-    QHash<QString, World*> mWorlds;
+    QMap<QString, World*> mWorlds;
 
     static WorldManager *mInstance;
 };

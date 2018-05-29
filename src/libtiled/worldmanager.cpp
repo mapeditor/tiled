@@ -34,6 +34,7 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QScopedPointer>
 
 #include <QDebug>
 
@@ -41,9 +42,7 @@ namespace Tiled {
 
 WorldManager *WorldManager::mInstance;
 
-WorldManager::WorldManager()
-{
-}
+WorldManager::WorldManager() = default;
 
 WorldManager::~WorldManager()
 {
@@ -64,18 +63,30 @@ void WorldManager::deleteInstance()
     mInstance = nullptr;
 }
 
-void WorldManager::loadWorld(const QString &fileName)
+/**
+ * Loads the world with the given \a fileName.
+ *
+ * \returns whether the world was loaded succesfully, optionally setting
+ *          \a errorString when not.
+ */
+bool WorldManager::loadWorld(const QString &fileName, QString *errorString)
 {
     unloadWorld(fileName);  // unload possibly existing world
 
     QFile file(fileName);
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-        return;
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        if (errorString)
+            *errorString = tr("Could not open file for reading.");
+        return false;
+    }
 
     QJsonParseError error;
     const QJsonObject object = QJsonDocument::fromJson(file.readAll(), &error).object();
-    if (error.error != QJsonParseError::NoError)
-        return;
+    if (error.error != QJsonParseError::NoError) {
+        if (errorString)
+            *errorString = tr("JSON parse error at offset %1:\n%2.").arg(error.offset).arg(error.errorString());
+        return false;
+    }
 
     QDir dir = QFileInfo(fileName).dir();
     QScopedPointer<World> world(new World);
@@ -126,16 +137,24 @@ void WorldManager::loadWorld(const QString &fileName)
     world->onlyShowAdjacentMaps = object.value(QLatin1String("onlyShowAdjacentMaps")).toBool();
 
     mWorlds.insert(fileName, world.take());
+    emit worldsChanged();
+
+    return true;
 }
 
+/**
+ * Unloads the world with the given \a fileName.
+ */
 void WorldManager::unloadWorld(const QString &fileName)
 {
-    delete mWorlds.take(fileName);
+    QScopedPointer<World> world(mWorlds.take(fileName));
+    if (world)
+        emit worldsChanged();
 }
 
 const World *WorldManager::worldForMap(const QString &fileName) const
 {
-    for (const World *world : mWorlds)
+    for (auto world : mWorlds)
         if (world->containsMap(fileName))
             return world;
 
