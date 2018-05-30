@@ -152,13 +152,13 @@ void MapItem::paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *)
 
 void MapItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    if (mDisplayMode != ReadOnly)
+    if (mDisplayMode != ReadOnly || event->button() != Qt::LeftButton)
         QGraphicsItem::mousePressEvent(event);
 }
 
 void MapItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-    if (mDisplayMode == ReadOnly && isUnderMouse()) {
+    if (mDisplayMode == ReadOnly && event->button() == Qt::LeftButton && isUnderMouse()) {
         MapView *view = static_cast<MapView*>(event->widget()->parent());
         QRectF viewRect { view->viewport()->rect() };
         QRectF sceneViewRect = view->viewportTransform().inverted().mapRect(viewRect);
