@@ -198,10 +198,9 @@ void ObjectsDock::aboutToShowMoveToMenu()
 {
     mMoveToMenu->clear();
 
-    const auto &objectGroups = mMapDocument->map()->objectGroups();
-    for (ObjectGroup *objectGroup : objectGroups) {
-        QAction *action = mMoveToMenu->addAction(objectGroup->name());
-        action->setData(QVariant::fromValue(objectGroup));
+    for (Layer *layer : mMapDocument->map()->objectGroups()) {
+        QAction *action = mMoveToMenu->addAction(layer->name());
+        action->setData(QVariant::fromValue(static_cast<ObjectGroup*>(layer)));
     }
 }
 
@@ -225,21 +224,20 @@ void ObjectsDock::saveExpandedGroups()
     mExpandedGroups[mMapDocument].clear();
 
     const auto proxyModel = static_cast<QAbstractProxyModel*>(mObjectsView->model());
-    const auto &objectGroups = mMapDocument->map()->objectGroups();
 
-    for (ObjectGroup *og : objectGroups) {
-        const QModelIndex sourceIndex = mMapDocument->mapObjectModel()->index(og);
+    for (Layer *layer : mMapDocument->map()->objectGroups()) {
+        const QModelIndex sourceIndex = mMapDocument->mapObjectModel()->index(layer);
         const QModelIndex index = proxyModel->mapFromSource(sourceIndex);
         if (mObjectsView->isExpanded(index))
-            mExpandedGroups[mMapDocument].append(og);
+            mExpandedGroups[mMapDocument].append(layer);
     }
 }
 
 void ObjectsDock::restoreExpandedGroups()
 {
     const auto objectGroups = mExpandedGroups.take(mMapDocument);
-    for (ObjectGroup *og : objectGroups) {
-        const QModelIndex sourceIndex = mMapDocument->mapObjectModel()->index(og);
+    for (Layer *layer : objectGroups) {
+        const QModelIndex sourceIndex = mMapDocument->mapObjectModel()->index(layer);
         const QModelIndex index = static_cast<QAbstractProxyModel*>(mObjectsView->model())->mapFromSource(sourceIndex);
         mObjectsView->setExpanded(index, true);
     }

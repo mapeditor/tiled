@@ -526,12 +526,13 @@ void AbstractObjectTool::showContextMenu(MapObject *clickedObject,
         menu.addAction(tr("Lower Object to Bottom"), this, SLOT(lowerToBottom()), QKeySequence(tr("End")));
     }
 
-    const QList<ObjectGroup*> objectGroups = mapDocument()->map()->objectGroups();
-    if (objectGroups.size() > 1) {
+    auto objectGroups = mapDocument()->map()->objectGroups();
+    if (!objectGroups.isEmpty()) {
         menu.addSeparator();
         QMenu *moveToLayerMenu = menu.addMenu(tr("Move %n Object(s) to Layer",
                                                  "", selectedObjects.size()));
-        for (ObjectGroup *objectGroup : objectGroups) {
+        for (Layer *layer : objectGroups) {
+            ObjectGroup *objectGroup = static_cast<ObjectGroup*>(layer);
             QAction *action = moveToLayerMenu->addAction(objectGroup->name());
             action->setData(QVariant::fromValue(objectGroup));
         }

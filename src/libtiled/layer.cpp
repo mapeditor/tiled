@@ -214,7 +214,7 @@ Layer *LayerIterator::next()
         // Traverse to parent layer if last child
         if (index == siblings.size()) {
             layer = layer->parentLayer();
-            index = layer ? layer->siblingIndex() : -1;
+            index = layer ? layer->siblingIndex() : mMap->layerCount();
         } else {
             layer = siblings.at(index);
 
@@ -292,6 +292,14 @@ void LayerIterator::toBack()
 {
     mCurrentLayer = nullptr;
     mSiblingIndex = mMap ? mMap->layerCount() : -1;
+}
+
+bool LayerIterator::operator==(const LayerIterator &other) const
+{
+    return mMap == other.mMap &&
+            mCurrentLayer == other.mCurrentLayer &&
+            mSiblingIndex == other.mSiblingIndex &&
+            mLayerTypes == other.mLayerTypes;
 }
 
 

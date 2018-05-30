@@ -55,6 +55,20 @@ class Tile;
  */
 class TILEDSHARED_EXPORT Map : public Object
 {
+    class LayerIteratorHelper
+    {
+    public:
+        LayerIteratorHelper(const Map &map, int layerTypes);
+
+        LayerIterator begin() const;
+        LayerIterator end() const;
+        bool isEmpty() const;
+
+    private:
+        const Map &mMap;
+        const int mLayerTypes;
+    };
+
 public:
     /**
      * The orientation of the map determines how it should be rendered. An
@@ -251,17 +265,19 @@ public:
     { return layerCount(Layer::GroupLayerType); }
 
     /**
-     * Returns the layer at the specified index.
+     * Returns the top-level layer at the specified \a index.
      */
     Layer *layerAt(int index) const
     { return mLayers.at(index); }
 
     /**
-     * Returns the list of layers of this map.
+     * Returns the list of top-level layers of this map.
      */
     const QList<Layer*> &layers() const { return mLayers; }
 
-    QList<ObjectGroup*> objectGroups() const;
+    LayerIteratorHelper allLayers(int layerTypes = Layer::AnyLayerType) const;
+    LayerIteratorHelper tileLayers() const;
+    LayerIteratorHelper objectGroups() const;
 
     /**
      * Adds a layer to this map.
@@ -480,6 +496,31 @@ inline void Map::invalidateDrawMargins()
 }
 
 /**
+ * Returns a helper for iterating all tile layers of the given \a layerTypes
+ * in this map.
+ */
+inline Map::LayerIteratorHelper Map::allLayers(int layerTypes) const
+{
+    return LayerIteratorHelper { *this, layerTypes };
+}
+
+/**
+ * Returns a helper for iterating all tile layers in this map.
+ */
+inline Map::LayerIteratorHelper Map::tileLayers() const
+{
+    return allLayers(Layer::TileLayerType);
+}
+
+/**
+ * Returns a helper for iterating all object groups in this map.
+ */
+inline Map::LayerIteratorHelper Map::objectGroups() const
+{
+    return allLayers(Layer::ObjectGroupType);
+}
+
+/**
  * Sets the next id to be used for layers of this map.
  */
 inline void Map::setNextLayerId(int nextId)
@@ -527,6 +568,31 @@ inline int Map::nextObjectId() const
 inline int Map::takeNextObjectId()
 {
     return mNextObjectId++;
+}
+
+
+inline Map::LayerIteratorHelper::LayerIteratorHelper(const Map &map, int layerTypes)
+    : mMap(map)
+    , mLayerTypes(layerTypes)
+{}
+
+inline LayerIterator Map::LayerIteratorHelper::begin() const
+{
+    LayerIterator iterator(&mMap, mLayerTypes);
+    iterator.next();
+    return iterator;
+}
+
+inline LayerIterator Map::LayerIteratorHelper::end() const
+{
+    LayerIterator iterator(&mMap, mLayerTypes);
+    iterator.toBack();
+    return iterator;
+}
+
+inline bool Map::LayerIteratorHelper::isEmpty() const
+{
+    return LayerIterator(&mMap, mLayerTypes).next() == nullptr;
 }
 
 

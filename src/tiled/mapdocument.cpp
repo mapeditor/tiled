@@ -1047,8 +1047,8 @@ void MapDocument::onLayerRemoved(Layer *layer)
 void MapDocument::updateTemplateInstances(const ObjectTemplate *objectTemplate)
 {
     QList<MapObject*> objectList;
-    for (ObjectGroup *group : mMap->objectGroups()) {
-        for (auto object : group->objects()) {
+    for (Layer *layer : mMap->objectGroups()) {
+        for (auto object : static_cast<ObjectGroup*>(layer)->objects()) {
             if (object->objectTemplate() == objectTemplate) {
                 object->syncWithTemplate();
                 objectList.append(object);
@@ -1061,10 +1061,11 @@ void MapDocument::updateTemplateInstances(const ObjectTemplate *objectTemplate)
 void MapDocument::selectAllInstances(const ObjectTemplate *objectTemplate)
 {
     QList<MapObject*> objectList;
-    for (ObjectGroup *group : mMap->objectGroups())
-        for (auto object : group->objects())
+    for (Layer *layer : mMap->objectGroups()) {
+        for (auto object : static_cast<ObjectGroup*>(layer)->objects())
             if (object->objectTemplate() == objectTemplate)
                 objectList.append(object);
+    }
     setSelectedObjects(objectList);
 }
 

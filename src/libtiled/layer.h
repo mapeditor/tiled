@@ -298,6 +298,14 @@ public:
     void toFront();
     void toBack();
 
+    // Allow use as general iterator and in range-based for loops
+    bool operator==(const LayerIterator &other) const;
+    bool operator!=(const LayerIterator &other) const;
+    LayerIterator &operator++();
+    LayerIterator operator++(int);
+    Layer *operator*() const;
+    Layer *operator->() const;
+
 private:
     const Map *mMap;
     Layer *mCurrentLayer;
@@ -352,6 +360,34 @@ inline bool LayerIterator::hasPreviousSibling() const
 inline bool LayerIterator::hasParent() const
 {
     return mCurrentLayer && mCurrentLayer->parentLayer();
+}
+
+inline bool LayerIterator::operator!=(const LayerIterator &other) const
+{
+    return !(*this == other);
+}
+
+inline LayerIterator &LayerIterator::operator++()
+{
+    next();
+    return *this;
+}
+
+inline LayerIterator LayerIterator::operator++(int)
+{
+    LayerIterator it = *this;
+    next();
+    return it;
+}
+
+inline Layer *LayerIterator::operator*() const
+{
+    return mCurrentLayer;
+}
+
+inline Layer *LayerIterator::operator->() const
+{
+    return mCurrentLayer;
 }
 
 

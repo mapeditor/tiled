@@ -174,26 +174,10 @@ void Map::recomputeDrawMargins() const
 int Map::layerCount(Layer::TypeFlag type) const
 {
     int count = 0;
-    LayerIterator iterator(this);
-    while (Layer *layer = iterator.next())
-       if (layer->layerType() == type)
-           count++;
+    LayerIterator iterator(this, type);
+    while (iterator.next())
+       count++;
     return count;
-}
-
-/**
- * Returns the list of all object groups.
- *
- * @deprecated Use the LayerIterator instead.
- */
-QList<ObjectGroup*> Map::objectGroups() const
-{
-    QList<ObjectGroup*> layers;
-    LayerIterator iterator(this);
-    while (Layer *layer = iterator.next())
-        if (ObjectGroup *og = layer->asObjectGroup())
-            layers.append(og);
-    return layers;
 }
 
 void Map::addLayer(Layer *layer)
@@ -332,8 +316,8 @@ QList<MapObject*> Map::replaceObjectTemplate(const ObjectTemplate *oldObjectTemp
 
     QList<MapObject*> changedObjects;
 
-    for (auto group : objectGroups()) {
-        for (auto o : group->objects()){
+    for (auto layer : objectGroups()) {
+        for (auto o : static_cast<ObjectGroup*>(layer)->objects()) {
             if (o->objectTemplate() == oldObjectTemplate) {
                 o->setObjectTemplate(newObjectTemplate);
                 o->syncWithTemplate();
