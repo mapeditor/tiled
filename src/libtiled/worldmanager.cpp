@@ -37,6 +37,8 @@
 
 #include <QDebug>
 
+#include "qtcompat_p.h"
+
 namespace Tiled {
 
 WorldManager *WorldManager::mInstance;
