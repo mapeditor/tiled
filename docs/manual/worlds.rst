@@ -61,11 +61,7 @@ displayed alongside the opened map. You can click any of the other maps to
 open them for editing, which will switch files while keeping the view in the
 same position.
 
-.. warning::
-
-    Currently, a world is not reloaded when it changes on disk. To reload a
-    world, load it again via *Map > Load World...* (no need to first unload
-    it) or restart Tiled.
+Worlds are reloaded automatically when their file is changed on disk.
 
 Using Pattern Matching
 ----------------------

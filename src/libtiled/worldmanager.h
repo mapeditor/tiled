@@ -32,13 +32,17 @@
 #include "tiled_global.h"
 
 #include <QCoreApplication>
+#include <QFileSystemWatcher>
 #include <QMap>
 #include <QObject>
 #include <QPoint>
 #include <QRect>
 #include <QRegularExpression>
 #include <QSize>
+#include <QTimer>
 #include <QVector>
+
+#include <memory>
 
 namespace Tiled {
 
@@ -90,11 +94,21 @@ public:
 signals:
     void worldsChanged();
 
+private slots:
+    void reloadChangedWorldFiles();
+
 private:
     WorldManager();
     ~WorldManager();
 
+    std::unique_ptr<World> privateLoadWorld(const QString &fileName,
+                                            QString *errorString = nullptr);
+
     QMap<QString, World*> mWorlds;
+
+    QFileSystemWatcher mFileSystemWatcher;
+    QTimer mReloadTimer;
+    QStringList mChangedWorldFiles;
 
     static WorldManager *mInstance;
 };

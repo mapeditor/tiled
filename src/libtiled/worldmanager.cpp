@@ -34,7 +34,6 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QScopedPointer>
 
 #include <QDebug>
 
@@ -42,7 +41,21 @@ namespace Tiled {
 
 WorldManager *WorldManager::mInstance;
 
-WorldManager::WorldManager() = default;
+WorldManager::WorldManager()
+{
+    mReloadTimer.setSingleShot(true);
+    mReloadTimer.setInterval(250);
+
+    connect(&mFileSystemWatcher, &QFileSystemWatcher::fileChanged,
+            this, [this] (const QString &fileName) {
+        if (!mChangedWorldFiles.contains(fileName))
+            mChangedWorldFiles.append(fileName);
+        mReloadTimer.start();
+    });
+
+    connect(&mReloadTimer, &QTimer::timeout,
+            this, &WorldManager::reloadChangedWorldFiles);
+}
 
 WorldManager::~WorldManager()
 {
@@ -63,21 +76,36 @@ void WorldManager::deleteInstance()
     mInstance = nullptr;
 }
 
-/**
- * Loads the world with the given \a fileName.
- *
- * \returns whether the world was loaded succesfully, optionally setting
- *          \a errorString when not.
- */
-bool WorldManager::loadWorld(const QString &fileName, QString *errorString)
+void WorldManager::reloadChangedWorldFiles()
 {
-    unloadWorld(fileName);  // unload possibly existing world
+    bool changed = false;
 
+    for (const QString &fileName : qAsConst(mChangedWorldFiles)) {
+        if (mWorlds.contains(fileName)) {
+            auto world = privateLoadWorld(fileName);
+            if (world) {
+                delete mWorlds.take(fileName);
+                mWorlds.insert(fileName, world.release());
+
+                changed = true;
+            }
+        }
+    }
+
+    mChangedWorldFiles.clear();
+
+    if (changed)
+        emit worldsChanged();
+}
+
+std::unique_ptr<World> WorldManager::privateLoadWorld(const QString &fileName,
+                                                      QString *errorString)
+{
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         if (errorString)
             *errorString = tr("Could not open file for reading.");
-        return false;
+        return nullptr;
     }
 
     QJsonParseError error;
@@ -85,11 +113,11 @@ bool WorldManager::loadWorld(const QString &fileName, QString *errorString)
     if (error.error != QJsonParseError::NoError) {
         if (errorString)
             *errorString = tr("JSON parse error at offset %1:\n%2.").arg(error.offset).arg(error.errorString());
-        return false;
+        return nullptr;
     }
 
     QDir dir = QFileInfo(fileName).dir();
-    QScopedPointer<World> world(new World);
+    std::unique_ptr<World> world(new World);
 
     world->fileName = QFileInfo(fileName).canonicalFilePath();
 
@@ -136,7 +164,25 @@ bool WorldManager::loadWorld(const QString &fileName, QString *errorString)
 
     world->onlyShowAdjacentMaps = object.value(QLatin1String("onlyShowAdjacentMaps")).toBool();
 
-    mWorlds.insert(fileName, world.take());
+    return world;
+}
+
+/**
+ * Loads the world with the given \a fileName.
+ *
+ * \returns whether the world was loaded succesfully, optionally setting
+ *          \a errorString when not.
+ */
+bool WorldManager::loadWorld(const QString &fileName, QString *errorString)
+{
+    auto world = privateLoadWorld(fileName, errorString);
+
+    if (mWorlds.contains(fileName))
+        delete mWorlds.take(fileName);
+    else
+        mFileSystemWatcher.addPath(fileName);
+
+    mWorlds.insert(fileName, world.release());
     emit worldsChanged();
 
     return true;
@@ -147,9 +193,11 @@ bool WorldManager::loadWorld(const QString &fileName, QString *errorString)
  */
 void WorldManager::unloadWorld(const QString &fileName)
 {
-    QScopedPointer<World> world(mWorlds.take(fileName));
-    if (world)
+    std::unique_ptr<World> world { mWorlds.take(fileName) };
+    if (world) {
+        mFileSystemWatcher.removePath(fileName);
         emit worldsChanged();
+    }
 }
 
 const World *WorldManager::worldForMap(const QString &fileName) const
