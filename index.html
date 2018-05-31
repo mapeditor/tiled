@@ -15,6 +15,14 @@
     <link rel="me" href="https://plus.google.com/113047271137781766813" />
     <link rel="publisher" href="https://plus.google.com/104206952440491912596/" />
 {% seo %}
+    <style>
+      .goalmarker {
+        transition-delay: 0s;
+        transition-duration: 0.6s;
+        transition-property: margin-right;
+        transition-timing-function: ease;
+      }
+    </style>
   </head>
   <body>
     <nav id="navbar" class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0px">
@@ -324,19 +332,19 @@
                       <span style="color: gray; margin-left: 5px;" id="goal-percentage"></span>
                     </div>
                     <div style="margin-left: 4px;">
-                      <div style="height: 1em; margin-right: 55.77%; text-align: right; border-right: 2px solid #FE5900; line-height: 1;">
+                      <div id="goal1" class="goalmarker" style="height: 1em; margin-right: 55.77%; text-align: right; border-right: 2px solid #FE5900; line-height: 1.1;">
                         <small style="display: block; padding: 6px 4px;">
                           <strong>1 day/week</strong><br>
                           <small style="color: #777">$1150/month</small>
                         </small>
                       </div>
-                      <div style="height: 1em; margin-top: -1em; margin-right: 11.5%; text-align: right; border-right: 2px solid #FE5900; line-height: 1;">
+                      <div id="goal2" class="goalmarker" style="height: 1em; margin-top: -1em; margin-right: 11.5%; text-align: right; border-right: 2px solid #FE5900; line-height: 1.1;">
                         <small style="display: block; padding: 6px 4px;">
                           <strong>2 days/week</strong><br>
                           <small style="color: #777">$2300/month</small>
                         </small>
                       </div>
-                      <div style="height: 1em; margin-top: -1em; margin-right: 0%; text-align: right; border-right: 2px solid #FE5900; line-height: 1;">
+                      <div id="goal3" class="goalmarker" style="height: 1em; margin-top: -1em; margin-right: 0%; text-align: right; border-right: 2px solid #FE5900; line-height: 1.1;">
                         <small style="display: block; padding: 6px 4px;">
                           <strong>+ office</strong><br>
                           <small style="color: #777">$2600/month</small>
@@ -531,25 +539,22 @@
         var patreonIncome = data.earnings;
         var totalIncome = itchIncome + liberapayIncome + patreonIncome;
         var totalSupporters = itchPurchases + data.patrons + data.liberapayPatrons_Tiled + data.liberapayPatrons_bjorn;
-        var goal = 2600;
+        var goals = [1150, 2300, 2600];
+        var endOfProgressBar = Math.max(goals[goals.length - 1], totalIncome);
 
-        var itchPercentage = itchIncome / goal * 100;
-        var liberapayPercentage = liberapayIncome / goal * 100;
-        var patreonPercentage = patreonIncome / goal * 100;
+        var itchPercentage = itchIncome / endOfProgressBar * 100;
+        var liberapayPercentage = liberapayIncome / endOfProgressBar * 100;
+        var patreonPercentage = patreonIncome / endOfProgressBar * 100;
 
         var totalPercentage = itchPercentage + liberapayPercentage + patreonPercentage;
-
-        if (totalPercentage > 100) {
-          var factor = 100 / totalPercentage;
-          itchPercentage *= factor;
-          liberapayPercentage *= factor;
-          patreonPercentage *= factor;
-        }
 
         $("#goal-percentage").text(Math.round(totalPercentage) + "%");
         $("#itch-progressbar").css("width", itchPercentage + "%").attr("title", "itch (~$" + Math.round(itchIncome) + " per month)");
         $("#liberapay-progressbar").css("width", liberapayPercentage + "%").attr("title", "Liberapay ($" + Math.round(liberapayIncome) + " per month)");
         $("#patreon-progressbar").css("width", patreonPercentage + "%").attr("title", "Patreon ($" + Math.round(patreonIncome) + " per month)");
+        $("#goal1").css("margin-right", (1 - goals[0] / endOfProgressBar) * 100 + "%");
+        $("#goal2").css("margin-right", (1 - goals[1] / endOfProgressBar) * 100 + "%");
+        $("#goal3").css("margin-right", (1 - goals[2] / endOfProgressBar) * 100 + "%");
 
         $('[data-toggle="tooltip"]').tooltip();
       })
