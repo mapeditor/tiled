@@ -91,13 +91,15 @@ void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
             // If not holding shift, a region is computed from the current pos
             bool computeRegion = true;
 
-            // If the stamp is a single tile, ignore that tile when making the region
+            // If the stamp is a single layer with a single tile, ignore that tile when making the region
             if (mFillMethod != WangFill && mStamp.variations().size() == 1) {
                 const TileStampVariation &variation = mStamp.variations().first();
-                TileLayer *stampLayer = variation.tileLayer();
-                if (stampLayer->size() == QSize(1, 1) &&
-                        stampLayer->cellAt(0, 0) == regionComputer.cellAt(tilePos))
-                    computeRegion = false;
+                if (variation.map->layerCount() == 1) {
+                    auto stampLayer = static_cast<TileLayer*>(variation.map->layerAt(0));
+                    if (stampLayer->size() == QSize(1, 1) &&
+                            stampLayer->cellAt(0, 0) == regionComputer.cellAt(tilePos))
+                        computeRegion = false;
+                }
             }
 
             if (computeRegion)

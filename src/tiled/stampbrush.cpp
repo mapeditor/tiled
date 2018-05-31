@@ -235,14 +235,11 @@ void StampBrush::updateRandomList()
 
     for (const TileStampVariation &variation : mStamp.variations()) {
         mapDocument()->unifyTilesets(variation.map, mMissingTilesets);
-        TileLayer *tileLayer = variation.tileLayer();
-        for (int x = 0; x < tileLayer->width(); x++) {
-            for (int y = 0; y < tileLayer->height(); y++) {
-                const Cell &cell = tileLayer->cellAt(x, y);
+
+        for (auto layer : variation.map->tileLayers())
+            for (const Cell &cell : *static_cast<TileLayer*>(layer))
                 if (const Tile *tile = cell.tile())
                     mRandomCellPicker.add(cell, tile->probability());
-            }
-        }
     }
 }
 
