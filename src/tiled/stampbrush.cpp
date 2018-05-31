@@ -220,6 +220,41 @@ void StampBrush::mapDocumentChanged(MapDocument *oldDocument,
     }
 }
 
+static TileLayer *findTileLayerByName(const Map &map, const QString &name)
+{
+    return static_cast<TileLayer*>(map.findLayer(name, Layer::TileLayerType));
+}
+
+QList<Layer *> StampBrush::targetLayers() const
+{
+    if (mIsRandom || mIsWangFill || mStamp.isEmpty() || !mapDocument())
+        return AbstractTileTool::targetLayers();
+
+    const Map &map = *mapDocument()->map();
+    QList<Layer*> layers;
+
+    for (const TileStampVariation &variation : mStamp.variations()) {
+        LayerIterator it(variation.map, Layer::TileLayerType);
+        const Layer *firstLayer = it.next();
+        const bool isMultiLayer = firstLayer && it.next();
+
+        if (isMultiLayer && !firstLayer->name().isEmpty()) {
+            for (Layer *layer : variation.map->tileLayers()) {
+                auto tileLayer = static_cast<TileLayer*>(layer);
+                TileLayer *target = findTileLayerByName(map, tileLayer->name());
+                if (!layers.contains(target))
+                    layers.append(target);
+            }
+        } else {
+            if (TileLayer *tileLayer = currentTileLayer())
+                if (!layers.contains(tileLayer))
+                    layers.append(tileLayer);
+        }
+    }
+
+    return layers;
+}
+
 /**
  * Updates the list used random stamps.
  * This is done by taking all non-null tiles from the original stamp mStamp.
@@ -323,9 +358,6 @@ void StampBrush::doPaint(int flags, QHash<TileLayer*, QRegion> *paintedRegions)
     if (!preview)
         return;
 
-    // This method shouldn't be called when current layer is not a tile layer
-    Q_ASSERT(currentTileLayer());
-
     mapDocument()->paintTileLayers(preview.data(),
                                    (flags & Mergeable) == Mergeable,
                                    &mMissingTilesets,
@@ -337,11 +369,6 @@ struct PaintOperation
     QPoint pos;
     Map *stamp;
 };
-
-static TileLayer *findTileLayerByName(const Map *map, const QString &name)
-{
-    return static_cast<TileLayer*>(map->findLayer(name, Layer::TileLayerType));
-}
 
 static void shiftRows(TileLayer *tileLayer, Map::StaggerIndex staggerIndex)
 {
@@ -518,7 +545,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &points)
         for (const PaintOperation &op : operations) {
             LayerIterator layerIterator(op.stamp, Layer::TileLayerType);
             while (auto tileLayer = static_cast<TileLayer*>(layerIterator.next())) {
-                TileLayer *target = findTileLayerByName(preview.data(), tileLayer->name());
+                TileLayer *target = findTileLayerByName(*preview, tileLayer->name());
                 if (!target) {
                     target = new TileLayer(tileLayer->name(), bounds.topLeft(), bounds.size());
                     preview->addLayer(target);

@@ -115,9 +115,11 @@ protected:
      */
     TileLayer *currentTileLayer() const;
 
+    virtual void updateBrushVisibility();
+    virtual QList<Layer *> targetLayers() const;
+
 private:
     void setBrushVisible(bool visible);
-    void updateBrushVisibility();
 
     TilePositionMethod mTilePositionMethod;
     BrushItem *mBrushItem;
