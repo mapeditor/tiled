@@ -517,8 +517,8 @@ void AbstractObjectTool::showContextMenu(MapObject *clickedObject,
     menu.addAction(tr("Flip Horizontally"), this, SLOT(flipHorizontally()), QKeySequence(tr("X")));
     menu.addAction(tr("Flip Vertically"), this, SLOT(flipVertically()), QKeySequence(tr("Y")));
 
-    ObjectGroup *objectGroup = RaiseLowerHelper::sameObjectGroup(selectedObjects);
-    if (objectGroup && objectGroup->drawOrder() == ObjectGroup::IndexOrder) {
+    ObjectGroup *sameObjectGroup = RaiseLowerHelper::sameObjectGroup(selectedObjects);
+    if (sameObjectGroup && sameObjectGroup->drawOrder() == ObjectGroup::IndexOrder) {
         menu.addSeparator();
         menu.addAction(tr("Raise Object"), this, SLOT(raise()), QKeySequence(tr("PgUp")));
         menu.addAction(tr("Lower Object"), this, SLOT(lower()), QKeySequence(tr("PgDown")));
@@ -535,6 +535,7 @@ void AbstractObjectTool::showContextMenu(MapObject *clickedObject,
             ObjectGroup *objectGroup = static_cast<ObjectGroup*>(layer);
             QAction *action = moveToLayerMenu->addAction(objectGroup->name());
             action->setData(QVariant::fromValue(objectGroup));
+            action->setEnabled(objectGroup != sameObjectGroup);
         }
     }
 
@@ -557,6 +558,9 @@ void AbstractObjectTool::showContextMenu(MapObject *clickedObject,
         return;
     }
 
-    if (ObjectGroup *objectGroup = action->data().value<ObjectGroup*>())
+    if (ObjectGroup *objectGroup = action->data().value<ObjectGroup*>()) {
+        const auto selectedObjectsCopy = selectedObjects;
         mapDocument()->moveObjectsToGroup(selectedObjects, objectGroup);
+        mapDocument()->setSelectedObjects(selectedObjectsCopy);
+    }
 }

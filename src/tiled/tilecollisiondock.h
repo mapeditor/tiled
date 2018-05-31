@@ -30,6 +30,7 @@ namespace Tiled {
 
 class Object;
 class Tile;
+class Tileset;
 
 namespace Internal {
 
@@ -82,6 +83,7 @@ private slots:
     void setSelectedTool(AbstractTool*);
     void applyChanges();
     void tileObjectGroupChanged(Tile*);
+    void tilesetTileOffsetChanged(Tileset *tileset);
 
     void selectedObjectsChanged();
     void setHasSelectedObjects(bool hasSelectedObjects);

@@ -137,6 +137,8 @@ void TileCollisionDock::setTilesetDocument(TilesetDocument *tilesetDocument)
     if (mTilesetDocument) {
         connect(mTilesetDocument, &TilesetDocument::tileObjectGroupChanged,
                 this, &TileCollisionDock::tileObjectGroupChanged);
+        connect(mTilesetDocument, &TilesetDocument::tilesetTileOffsetChanged,
+                this, &TileCollisionDock::tilesetTileOffsetChanged);
     }
 }
 
@@ -166,6 +168,7 @@ void TileCollisionDock::setTile(Tile *tile)
 
         TileLayer *tileLayer = new TileLayer(QString(), 0, 0, 1, 1);
         tileLayer->setCell(0, 0, Cell(tile));
+        tileLayer->setOffset(-tile->offset());  // undo tile offset
         map->addLayer(tileLayer);
 
         ObjectGroup *objectGroup;
@@ -264,6 +267,16 @@ void TileCollisionDock::tileObjectGroupChanged(Tile *tile)
     mToolManager->selectTool(selectedTool);
 
     mSynchronizing = false;
+}
+
+void TileCollisionDock::tilesetTileOffsetChanged(Tileset *tileset)
+{
+    if (!mDummyMapDocument)
+        return;
+
+    auto tileLayer = mDummyMapDocument->map()->layerAt(0);
+    auto tileOffset = tileset->tileOffset();
+    mDummyMapDocument->layerModel()->setLayerOffset(tileLayer, -tileOffset);
 }
 
 void TileCollisionDock::cut()
