@@ -24,7 +24,8 @@
 
 #include <QGraphicsObject>
 #include <QMap>
-#include <QScopedPointer>
+
+#include <memory>
 
 namespace Tiled {
 
@@ -119,8 +120,8 @@ private:
 
     MapDocumentPtr mMapDocument;
     QGraphicsRectItem *mDarkRectangle;
-    QScopedPointer<TileSelectionItem> mTileSelectionItem;
-    QScopedPointer<ObjectSelectionItem> mObjectSelectionItem;
+    std::unique_ptr<TileSelectionItem> mTileSelectionItem;
+    std::unique_ptr<ObjectSelectionItem> mObjectSelectionItem;
     QMap<Layer*, LayerItem*> mLayerItems;
     QMap<MapObject*, MapObjectItem*> mObjectItems;
     DisplayMode mDisplayMode;

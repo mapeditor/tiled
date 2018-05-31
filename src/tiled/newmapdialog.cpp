@@ -35,6 +35,8 @@
 #include <QPushButton>
 #include <QSettings>
 
+#include <memory>
+
 static const char * const ORIENTATION_KEY = "Map/Orientation";
 static const char * const FIXED_SIZE_KEY = "Map/FixedSize";
 static const char * const MAP_WIDTH_KEY = "Map/Width";
@@ -154,10 +156,10 @@ MapDocumentPtr NewMapDialog::createMap()
     const auto layerFormat = comboBoxValue<Map::LayerDataFormat>(mUi->layerFormat);
     const auto renderOrder = comboBoxValue<Map::RenderOrder>(mUi->renderOrder);
 
-    QScopedPointer<Map> map { new Map(orientation,
-                                      mapWidth, mapHeight,
-                                      tileWidth, tileHeight,
-                                      !fixedSize) };
+    std::unique_ptr<Map> map { new Map(orientation,
+                                       mapWidth, mapHeight,
+                                       tileWidth, tileHeight,
+                                       !fixedSize) };
 
     map->setLayerDataFormat(layerFormat);
     map->setRenderOrder(renderOrder);
@@ -189,7 +191,7 @@ MapDocumentPtr NewMapDialog::createMap()
     s->setValue(QLatin1String(TILE_WIDTH_KEY), tileWidth);
     s->setValue(QLatin1String(TILE_HEIGHT_KEY), tileHeight);
 
-    return MapDocumentPtr::create(map.take());
+    return MapDocumentPtr::create(map.release());
 }
 
 void NewMapDialog::refreshPixelSize()

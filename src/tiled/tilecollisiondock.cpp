@@ -161,7 +161,7 @@ void TileCollisionDock::setTile(Tile *tile)
             tileSize = tile->tileset()->gridSize();
         }
 
-        QScopedPointer<Map> map { new Map(orientation, 1, 1, tileSize.width(), tileSize.height()) };
+        std::unique_ptr<Map> map { new Map(orientation, 1, 1, tileSize.width(), tileSize.height()) };
         map->addTileset(tile->sharedTileset());
 
         TileLayer *tileLayer = new TileLayer(QString(), 0, 0, 1, 1);
@@ -178,7 +178,7 @@ void TileCollisionDock::setTile(Tile *tile)
         map->setNextObjectId(objectGroup->highestObjectId() + 1);
         map->addLayer(objectGroup);
 
-        mDummyMapDocument = MapDocumentPtr::create(map.take());
+        mDummyMapDocument = MapDocumentPtr::create(map.release());
         mDummyMapDocument->setAllowHidingObjects(false);
         mDummyMapDocument->setAllowTileObjects(false);
         mDummyMapDocument->setCurrentLayer(objectGroup);
@@ -299,7 +299,7 @@ void TileCollisionDock::paste(ClipboardManager::PasteFlags flags)
         return;
 
     ClipboardManager *clipboardManager = ClipboardManager::instance();
-    QScopedPointer<Map> map(clipboardManager->map());
+    const std::unique_ptr<Map> map(clipboardManager->map());
     if (!map)
         return;
 

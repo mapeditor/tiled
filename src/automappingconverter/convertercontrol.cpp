@@ -21,15 +21,16 @@
 
 #include "convertercontrol.h"
 
-#include "map.h"
 #include "layer.h"
-#include "tileset.h"
-
+#include "map.h"
 #include "mapreader.h"
 #include "mapwriter.h"
+#include "tileset.h"
 
 #include <QDebug>
 #include <QSettings>
+
+#include <memory>
 
 using namespace Tiled;
 
@@ -86,7 +87,7 @@ QString ConverterControl::automappingRuleFileVersion(const QString &fileName)
 void ConverterControl::convertV1toV2(const QString &fileName)
 {
     Tiled::MapReader reader;
-    QScopedPointer<Tiled::Map> map(reader.readMap(fileName));
+    const std::unique_ptr<Tiled::Map> map(reader.readMap(fileName));
 
     if (!map) {
         qWarning() << "Error at conversion of " << fileName << ":\n"
@@ -111,5 +112,5 @@ void ConverterControl::convertV1toV2(const QString &fileName)
     }
 
     Tiled::MapWriter writer;
-    writer.writeMap(map.data(), fileName);
+    writer.writeMap(map.get(), fileName);
 }

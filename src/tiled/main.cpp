@@ -42,6 +42,8 @@
 #include <QJsonDocument>
 #include <QtPlugin>
 
+#include <memory>
+
 #ifdef Q_OS_WIN
 #include <windows.h>
 #if QT_VERSION >= 0x050700
@@ -339,14 +341,14 @@ int main(int argc, char *argv[])
         }
 
         // Load the source file
-        QScopedPointer<Map> map(readMap(sourceFile, nullptr));
+        const std::unique_ptr<Map> map(readMap(sourceFile, nullptr));
         if (!map) {
             qWarning().noquote() << QCoreApplication::translate("Command line", "Failed to load source map.");
             return 1;
         }
 
         // Write out the file
-        bool success = outputFormat->write(map.data(), targetFile);
+        bool success = outputFormat->write(map.get(), targetFile);
 
         if (!success) {
             qWarning().noquote() << QCoreApplication::translate("Command line", "Failed to export map to target file.");
@@ -405,7 +407,7 @@ int main(int argc, char *argv[])
             return 0;
     }
 
-    QScopedPointer<AutoUpdater> updater;
+    std::unique_ptr<AutoUpdater> updater;
 #ifdef TILED_SPARKLE
 #if defined(Q_OS_MAC)
     updater.reset(new SparkleAutoUpdater);

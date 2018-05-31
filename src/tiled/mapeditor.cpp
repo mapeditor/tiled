@@ -93,6 +93,8 @@
 #include <QStatusBar>
 #include <QToolBar>
 
+#include <memory>
+
 static const char SIZE_KEY[] = "MapEditor/Size";
 static const char STATE_KEY[] = "MapEditor/State";
 static const char MAPSTATES_KEY[] = "MapEditor/MapStates";
@@ -653,7 +655,7 @@ void MapEditor::paste(ClipboardManager::PasteFlags flags)
     if (!map)
         return;
 
-    QScopedPointer<Map> mapDeleter(map);
+    std::unique_ptr<Map> mapDeleter(map);
 
     bool tilesetsUnified = false;
 
@@ -671,7 +673,7 @@ void MapEditor::paste(ClipboardManager::PasteFlags flags)
             // Reset selection and paste into the stamp brush
             MapDocumentActionHandler::instance()->selectNone();
             normalizeTileLayerPositionsAndMapSize(map);
-            setStamp(TileStamp(mapDeleter.take())); // TileStamp takes ownership
+            setStamp(TileStamp(mapDeleter.release())); // TileStamp takes ownership
             mToolManager->selectTool(mStampBrush);
         }
     }
@@ -890,8 +892,8 @@ SharedTileset MapEditor::newTileset(const QString &path, const QImage &image)
 
     if (!newTileset.isEmbedded()) {
         // Save new external tileset
-        QScopedPointer<TilesetDocument> tilesetDocument(new TilesetDocument(tileset));
-        if (!DocumentManager::instance()->saveDocumentAs(tilesetDocument.data()))
+        const std::unique_ptr<TilesetDocument> tilesetDocument(new TilesetDocument(tileset));
+        if (!DocumentManager::instance()->saveDocumentAs(tilesetDocument.get()))
             return SharedTileset();
     }
 

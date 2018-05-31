@@ -39,9 +39,9 @@
 
 namespace
 {
-    void tbinToTiledProperties(const tbin::Properties& props, Tiled::Object* obj)
+    void tbinToTiledProperties(const tbin::Properties &props, Tiled::Object *obj)
     {
-        for (const std::pair< std::string, tbin::PropertyValue >& prop : props) {
+        for (const std::pair<std::string, tbin::PropertyValue> &prop : props) {
             if (prop.first[0] == '@')
                 continue;
             switch (prop.second.type) {
@@ -64,7 +64,7 @@ namespace
         }
     }
 
-    void tiledToTbinProperties(const Tiled::Object* obj, tbin::Properties& props)
+    void tiledToTbinProperties(const Tiled::Object *obj, tbin::Properties &props)
     {
         for (auto it = obj->properties().cbegin(); it != obj->properties().cend(); ++it) {
             tbin::PropertyValue prop;
@@ -164,9 +164,9 @@ Tiled::Map *TbinMapFormat::read(const QString &fileName)
             if (tlayer.tileSize.x != tmap.layers[0].tileSize.x || tlayer.tileSize.y != tmap.layers[0].tileSize.y)
                 throw std::invalid_argument(QT_TR_NOOP("Different tile sizes per layer are not supported."));
 
-            QScopedPointer<Tiled::TileLayer> layer(new Tiled::TileLayer(tlayer.id.c_str(), 0, 0, tlayer.layerSize.x, tlayer.layerSize.y));
-            tbinToTiledProperties(tlayer.props, layer.data());
-            QScopedPointer<Tiled::ObjectGroup> objects(new Tiled::ObjectGroup(tlayer.id.c_str(), 0, 0));
+            std::unique_ptr<Tiled::TileLayer> layer(new Tiled::TileLayer(tlayer.id.c_str(), 0, 0, tlayer.layerSize.x, tlayer.layerSize.y));
+            tbinToTiledProperties(tlayer.props, layer.get());
+            std::unique_ptr<Tiled::ObjectGroup> objects(new Tiled::ObjectGroup(tlayer.id.c_str(), 0, 0));
             for (std::size_t i = 0; i < tlayer.tiles.size(); ++i) {
                 const tbin::Tile& ttile = tlayer.tiles[i];
                 int ix = i % tlayer.layerSize.x;
@@ -204,8 +204,8 @@ Tiled::Map *TbinMapFormat::read(const QString &fileName)
                     objects->addObject(obj);
                 }
             }
-            map->addLayer(layer.take());
-            map->addLayer(objects.take());
+            map->addLayer(layer.release());
+            map->addLayer(objects.release());
         }
     }
     catch (std::exception& e) {
