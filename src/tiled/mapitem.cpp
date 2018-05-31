@@ -97,10 +97,17 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
     mDarkRectangle->setRect(QRect(INT_MIN / 512, INT_MIN / 512,
                                   INT_MAX / 256, INT_MAX / 256));
 
-    if (displayMode == ReadOnly)
+    if (displayMode == ReadOnly) {
         setDisplayMode(displayMode);
-    else
+    } else {
         updateCurrentLayerHighlight();
+
+        mTileSelectionItem.reset(new TileSelectionItem(mapDocument.data(), this));
+        mTileSelectionItem->setZValue(10000 - 2);
+
+        mObjectSelectionItem.reset(new ObjectSelectionItem(mapDocument.data(), this));
+        mObjectSelectionItem->setZValue(10000 - 1);
+    }
 }
 
 MapItem::~MapItem() = default;
@@ -123,19 +130,19 @@ void MapItem::setDisplayMode(DisplayMode displayMode)
         setOpacity(0.5);
         setZValue(-1);
 
-        mTileSelectionItem.reset(new TileSelectionItem(mapDocument(), this));
-        mTileSelectionItem->setZValue(10000 - 2);
-
-        mObjectSelectionItem.reset(new ObjectSelectionItem(mapDocument(), this));
-        mObjectSelectionItem->setZValue(10000 - 1);
+        mTileSelectionItem.reset();
+        mObjectSelectionItem.reset();
     } else {
         unsetCursor();
 
         setOpacity(1.0);
         setZValue(0);
 
-        mTileSelectionItem.reset();
-        mObjectSelectionItem.reset();
+        mTileSelectionItem.reset(new TileSelectionItem(mapDocument(), this));
+        mTileSelectionItem->setZValue(10000 - 2);
+
+        mObjectSelectionItem.reset(new ObjectSelectionItem(mapDocument(), this));
+        mObjectSelectionItem->setZValue(10000 - 1);
     }
 
     updateCurrentLayerHighlight();
