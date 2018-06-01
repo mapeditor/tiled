@@ -269,7 +269,7 @@ TileStamp TileStamp::rotated(RotateDirection direction) const
             else
                 tileLayer->rotate(direction);
 
-            rotatedSize - tileLayer->size();
+            rotatedSize = tileLayer->size();
         }
 
         variation.map->setWidth(rotatedSize.width());
