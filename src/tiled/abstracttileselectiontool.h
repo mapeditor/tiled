@@ -63,6 +63,8 @@ protected:
     QRegion selectedRegion() { return mSelectedRegion; }
     void setSelectedRegion(QRegion region) { mSelectedRegion = region; }
 
+    void updateBrushVisibility() override;
+
 private:
     SelectionMode mSelectionMode;
     SelectionMode mDefaultMode;
