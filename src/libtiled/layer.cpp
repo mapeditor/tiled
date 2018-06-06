@@ -196,17 +196,17 @@ Layer *LayerIterator::next()
     int index = mSiblingIndex;
 
     do {
+        Q_ASSERT(!layer || (index >= 0 && index < mMap->layerCount()));
+
+        // Traverse to next sibling
+        ++index;
+
         if (!layer) {
             // Traverse to the first layer of the map
-            if (mMap && index == -1 && mMap->layerCount() > 0) {
-                layer = mMap->layerAt(0);
-                index = 0;
-            } else {
-                return nullptr;
-            }
-        } else {
-            // Traverse to next sibling
-            ++index;
+            if (mMap && index < mMap->layerCount())
+                layer = mMap->layerAt(index);
+            else
+                break;
         }
 
         const auto siblings = layer->siblings();
@@ -240,24 +240,28 @@ Layer *LayerIterator::next()
 Layer *LayerIterator::previous()
 {
     Layer *layer = mCurrentLayer;
-    int index = mSiblingIndex - 1;
+    int index = mSiblingIndex;
 
     do {
+        Q_ASSERT(!layer || (index >= 0 && index < mMap->layerCount()));
+
+        // Traverse to previous sibling
+        --index;
+
         if (!layer) {
             // Traverse to the last layer of the map if at the end
-            if (mMap && index < mMap->layerCount() && mMap->layerCount() > 0) {
+            if (mMap && index >= 0 && index < mMap->layerCount())
                 layer = mMap->layerAt(index);
-            } else {
-                return nullptr;
-            }
+            else
+                break;
         } else {
             // Traverse down to last child if applicable
             if (layer->isGroupLayer()) {
                 auto groupLayer = static_cast<GroupLayer*>(layer);
                 if (groupLayer->layerCount() > 0) {
-                    mSiblingIndex = groupLayer->layerCount() - 1;
-                    mCurrentLayer = groupLayer->layerAt(mSiblingIndex);
-                    return mCurrentLayer;
+                    index = groupLayer->layerCount() - 1;
+                    layer = groupLayer->layerAt(index);
+                    continue;
                 }
             }
 
@@ -291,7 +295,7 @@ void LayerIterator::toFront()
 void LayerIterator::toBack()
 {
     mCurrentLayer = nullptr;
-    mSiblingIndex = mMap ? mMap->layerCount() : -1;
+    mSiblingIndex = mMap ? mMap->layerCount() : 0;
 }
 
 bool LayerIterator::operator==(const LayerIterator &other) const
