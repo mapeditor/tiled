@@ -27,6 +27,7 @@
 #include "mapscene.h"
 #include "tile.h"
 #include "tilelayer.h"
+#include "tilestamp.h"
 
 #include <QtMath>
 
@@ -182,6 +183,39 @@ QList<Layer *> AbstractTileTool::targetLayers() const
     QList<Layer *> layers;
     if (Layer *layer = currentTileLayer())
         layers.append(layer);
+    return layers;
+}
+
+/**
+ * A helper method that returns the possible target layers of a given \a stamp.
+ */
+QList<Layer *> AbstractTileTool::targetLayersForStamp(const TileStamp &stamp) const
+{
+    QList<Layer*> layers;
+
+    if (!mapDocument())
+        return layers;
+
+    const Map &map = *mapDocument()->map();
+
+    for (const TileStampVariation &variation : stamp.variations()) {
+        LayerIterator it(variation.map, Layer::TileLayerType);
+        const Layer *firstLayer = it.next();
+        const bool isMultiLayer = firstLayer && it.next();
+
+        if (isMultiLayer && !firstLayer->name().isEmpty()) {
+            for (Layer *layer : variation.map->tileLayers()) {
+                TileLayer *target = static_cast<TileLayer*>(map.findLayer(layer->name(), Layer::TileLayerType));
+                if (!layers.contains(target))
+                    layers.append(target);
+            }
+        } else {
+            if (TileLayer *tileLayer = currentTileLayer())
+                if (!layers.contains(tileLayer))
+                    layers.append(tileLayer);
+        }
+    }
+
     return layers;
 }
 

@@ -31,6 +31,8 @@
 #include <QActionGroup>
 #include <QToolBar>
 
+#include <memory>
+
 using namespace Tiled;
 using namespace Internal;
 
@@ -74,12 +76,7 @@ void ShapeFillTool::mousePressed(QGraphicsSceneMouseEvent *event)
         return;
 
     if (event->button() == Qt::LeftButton) {
-        QPoint pos = tilePosition();
-        TileLayer *tileLayer = currentTileLayer();
-        if (!tileLayer)
-            return;
-
-        mStartCorner = pos;
+        mStartCorner = tilePosition();
         mToolBehavior = MakingShape;
     }
 }
@@ -94,41 +91,18 @@ void ShapeFillTool::mouseReleased(QGraphicsSceneMouseEvent *event)
     if (event->button() == Qt::LeftButton) {
         mToolBehavior = Free;
 
-        TileLayer *tileLayer = currentTileLayer();
-        if (!tileLayer)
+        if (!brushItem()->isVisible())
             return;
 
-        if (!brushItem()->isVisible() || !tileLayer->isUnlocked())
-            return;
-
-        const TileLayer *preview = mFillOverlay.data();
+        auto preview = mPreviewMap;
         if (!preview)
             return;
 
-        PaintTileLayer *paint = new PaintTileLayer(mapDocument(),
-                                                   tileLayer,
-                                                   preview->x(),
-                                                   preview->y(),
-                                                   preview);
+        mapDocument()->undoStack()->beginMacro(QCoreApplication::translate("Undo Commands", "Shape Fill"));
+        mapDocument()->paintTileLayers(preview.data(), false, &mMissingTilesets);
+        mapDocument()->undoStack()->endMacro();
 
-        paint->setText(QCoreApplication::translate("Undo Commands", "Shape Fill"));
-
-        if (!mMissingTilesets.isEmpty()) {
-            for (const SharedTileset &tileset : mMissingTilesets) {
-                if (!mapDocument()->map()->tilesets().contains(tileset))
-                    new AddTileset(mapDocument(), tileset, paint);
-            }
-
-            mMissingTilesets.clear();
-        }
-
-        QRegion fillRegion(mFillRegion);
-        mapDocument()->undoStack()->push(paint);
-        emit mapDocument()->regionEdited(fillRegion, currentTileLayer());
-
-        mFillRegion = QRegion();
-        mFillOverlay.clear();
-        brushItem()->clear();
+        clearOverlay();
     }
 }
 
@@ -172,61 +146,33 @@ void ShapeFillTool::tilePositionChanged(const QPoint &tilePos)
 void ShapeFillTool::setCurrentShape(Shape shape)
 {
     mCurrentShape = shape;
-    return;
 }
 
 void ShapeFillTool::updateFillOverlay()
 {
-    TileLayer *tileLayer = currentTileLayer();
-    if (!tileLayer)
-        return;
-
     int width = tilePosition().x() - mStartCorner.x();
     int height = tilePosition().y() - mStartCorner.y();
 
     if (QApplication::keyboardModifiers() & Qt::ShiftModifier) {
-        int min = std::min(abs(width), abs(height));
-        width = ((width > 0) - (width < 0))*min;
-        height = ((height > 0) - (height < 0))*min;
+        int min = std::min(std::abs(width), std::abs(height));
+        width = ((width > 0) - (width < 0)) * min;
+        height = ((height > 0) - (height < 0)) * min;
     }
 
     int left = std::min(mStartCorner.x(), mStartCorner.x() + width);
     int top = std::min(mStartCorner.y(), mStartCorner.y() + height);
 
-    QRect boundingRect(left, top, abs(width), abs(height));
+    QRect boundingRect(left, top, std::abs(width), std::abs(height));
 
     switch (mCurrentShape) {
     case Rect:
-        mFillRegion = boundingRect;
+        updatePreview(boundingRect);
         break;
     case Circle:
-        mFillRegion = ellipseRegion(mStartCorner.x(),
+        updatePreview(ellipseRegion(mStartCorner.x(),
                                     mStartCorner.y(),
                                     mStartCorner.x() + width,
-                                    mStartCorner.y() + height);
+                                    mStartCorner.y() + height));
         break;
     }
-
-    const QRect fillBound = mFillRegion.boundingRect();
-    mFillOverlay = SharedTileLayer::create(QString(),
-                                           fillBound.x(),
-                                           fillBound.y(),
-                                           fillBound.width(),
-                                           fillBound.height());
-
-    switch (mFillMethod) {
-    case TileFill:
-        fillWithStamp(*mFillOverlay,
-                      mStamp,
-                      mFillRegion.translated(-mFillOverlay->position()));
-        break;
-    case RandomFill:
-        randomFill(*mFillOverlay, mFillRegion);
-        break;
-    case WangFill:
-        wangFill(*mFillOverlay, *tileLayer, mFillRegion);
-        break;
-    }
-
-    brushItem()->setTileLayer(mFillOverlay);
 }

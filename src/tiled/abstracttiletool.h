@@ -30,6 +30,7 @@ namespace Internal {
 
 class BrushItem;
 class MapDocument;
+class TileStamp;
 
 /**
  * A convenient base class for tile based tools.
@@ -117,6 +118,8 @@ protected:
 
     virtual void updateBrushVisibility();
     virtual QList<Layer *> targetLayers() const;
+
+    QList<Layer *> targetLayersForStamp(const TileStamp &stamp) const;
 
 private:
     void setBrushVisible(bool visible);

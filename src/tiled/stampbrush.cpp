@@ -36,10 +36,11 @@
 #include "wangset.h"
 #include "wangfiller.h"
 
-#include <math.h>
 #include <QAction>
 #include <QToolBar>
 #include <QVector>
+
+#include <memory>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -227,32 +228,10 @@ static TileLayer *findTileLayerByName(const Map &map, const QString &name)
 
 QList<Layer *> StampBrush::targetLayers() const
 {
-    if (mIsRandom || mIsWangFill || mStamp.isEmpty() || !mapDocument())
+    if (mIsRandom || mIsWangFill || mStamp.isEmpty())
         return AbstractTileTool::targetLayers();
 
-    const Map &map = *mapDocument()->map();
-    QList<Layer*> layers;
-
-    for (const TileStampVariation &variation : mStamp.variations()) {
-        LayerIterator it(variation.map, Layer::TileLayerType);
-        const Layer *firstLayer = it.next();
-        const bool isMultiLayer = firstLayer && it.next();
-
-        if (isMultiLayer && !firstLayer->name().isEmpty()) {
-            for (Layer *layer : variation.map->tileLayers()) {
-                auto tileLayer = static_cast<TileLayer*>(layer);
-                TileLayer *target = findTileLayerByName(map, tileLayer->name());
-                if (!layers.contains(target))
-                    layers.append(target);
-            }
-        } else {
-            if (TileLayer *tileLayer = currentTileLayer())
-                if (!layers.contains(tileLayer))
-                    layers.append(tileLayer);
-        }
-    }
-
-    return layers;
+    return targetLayersForStamp(mStamp);
 }
 
 /**
@@ -411,9 +390,9 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &points)
                                               bounds.size(),
                                               mapDocument()->map()->tileSize());
 
-        TileLayer *previewLayer = new TileLayer(QString(),
-                                                bounds.topLeft(),
-                                                bounds.size());
+        std::unique_ptr<TileLayer> previewLayer {
+            new TileLayer(QString(), bounds.topLeft(), bounds.size())
+        };
 
         for (const QPoint &p : points) {
             const Cell &cell = mRandomCellPicker.pick();
@@ -422,7 +401,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &points)
                                   cell);
         }
 
-        preview->addLayer(previewLayer);
+        preview->addLayer(previewLayer.release());
         preview->addTilesets(preview->usedTilesets());
         mPreviewMap = preview;
     } else if (mIsWangFill) {
@@ -437,14 +416,14 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &points)
         for (const QPoint &p : points)
             paintedRegion += QRect(p, p);
 
-        QRect bounds = paintedRegion.boundingRect();
+        const QRect bounds = paintedRegion.boundingRect();
         SharedMap preview = SharedMap::create(mapDocument()->map()->orientation(),
                                               bounds.size(),
                                               mapDocument()->map()->tileSize());
 
-        TileLayer *previewLayer = new TileLayer(QString(),
-                                                bounds.topLeft(),
-                                                bounds.size());
+        std::unique_ptr<TileLayer> previewLayer {
+            new TileLayer(QString(), bounds.topLeft(), bounds.size())
+        };
 
         WangFiller wangFiller(mWangSet,
                               dynamic_cast<StaggeredRenderer *>(mapDocument()->renderer()),
@@ -461,7 +440,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &points)
                                   cell);
         }
 
-        preview->addLayer(previewLayer);
+        preview->addLayer(previewLayer.release());
         preview->addTileset(mWangSet->tileset()->sharedPointer());
         mPreviewMap = preview;
     } else {
@@ -537,7 +516,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &points)
             }
         }
 
-        QRect bounds = paintedRegion.boundingRect();
+        const QRect bounds = paintedRegion.boundingRect();
         SharedMap preview = SharedMap::create(mapDocument()->map()->orientation(),
                                               bounds.size(),
                                               mapDocument()->map()->tileSize());
