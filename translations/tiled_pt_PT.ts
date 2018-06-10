@@ -27,7 +27,7 @@
 </source>
         <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled  Editor de Mapas&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;Copyright 2008-2017 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(ver o ficheiro AUTHORS para a lista completa de contribuitores)&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Pode modificar e redistribuir este programa sobre os termos GPL (versão 2 ou postrior). Uma cópia da GPL está contida no ficheiro &apos;COPYING&apos; distribuid com o Tiled.&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;Pode modificar e redistribuir este programa sobre os termos GPL (versão 2 ou postrior). Uma cópia da GPL está contida no ficheiro &apos;COPYING&apos; distribuido com o Tiled.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </translation>
     </message>
@@ -60,12 +60,12 @@
     <message>
         <location line="+11"/>
         <source>Non-unique file extension. Can&apos;t determine correct export format.</source>
-        <translation>Extensão de arquivo não-exclusivo. Não é possível determinar formato de exportação correto.</translation>
+        <translation>Extensão de ficheiro não-exclusivo. Não é possível determinar formato de exportação correto.</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>No exporter found for target file.</source>
-        <translation>Sem exportador encontrado para arquivo de destino.</translation>
+        <translation>Sem exportador encontrado para ficheiro de destino.</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -75,7 +75,7 @@
     <message>
         <location line="+8"/>
         <source>Failed to export map to target file.</source>
-        <translation>Falha ao exportar mapa para o arquivo de destino.</translation>
+        <translation>Falha ao exportar mapa para o ficheiro de destino.</translation>
     </message>
 </context>
 <context>
@@ -272,7 +272,7 @@
     <message>
         <location filename="../src/plugins/droidcraft/droidcraftplugin.cpp" line="+56"/>
         <source>This is not a valid Droidcraft map file!</source>
-        <translation>Este não é um arquivo de  Droidcraft mapa válido!</translation>
+        <translation>Este não é um ficheiro de mapa Droidcraft válido!</translation>
     </message>
     <message>
         <location line="+44"/>
@@ -3410,13 +3410,13 @@ Deseja substituí-lo?</translation>
     <message>
         <location line="+19"/>
         <source>Non-unique file extension</source>
-        <translation>Extensão de arquivo não única</translation>
+        <translation>Extensão de ficheiro não única</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Non-unique file extension.
 Please select specific format.</source>
-        <translation>Extensão de arquivo não única
+        <translation>Extensão de ficheiro não única
 Por favor, selecione um formato específico.</translation>
     </message>
     <message>
