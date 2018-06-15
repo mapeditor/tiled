@@ -253,6 +253,37 @@ void AbstractObjectTool::removeObjects()
     mapDocument()->removeObjects(mapDocument()->selectedObjects());
 }
 
+/**
+ * @brief AbstractObjectTool::applyCollisionsToSelection
+ *
+ * Add the selected collision masks for the currently selected tile - the last selected tile - to
+ * all selected tiles.
+ */
+void AbstractObjectTool::applyCollisionsToSelection()
+{
+    QList<MapObject*> selectedObjects = mapDocument()->selectedObjects();
+
+    if (auto document = DocumentManager::instance()->currentDocument()) {
+        if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
+            QList<Tile *>selectedTiles = tilesetDocument->selectedTiles();
+
+            // Add each collision object to each selected tile, as long as the tile is not the current one
+            for (Tile* tile : selectedTiles) {
+
+                // Create a group for collision objects if none exists
+                if (!tile->objectGroup())
+                    tile->setObjectGroup(std::make_unique<ObjectGroup>());
+
+                for (MapObject* object : selectedObjects) {
+                    MapObject* newObject = new MapObject;
+                    newObject->copyPropertiesFrom(object);
+                    tile->objectGroup()->addObject(newObject);
+                }
+            }
+        }
+    }
+}
+
 void AbstractObjectTool::resetTileSize()
 {
     QList<QUndoCommand*> commands;
@@ -462,6 +493,11 @@ void AbstractObjectTool::showContextMenu(MapObject *clickedObject,
                                               this, &AbstractObjectTool::duplicateObjects);
     QAction *removeAction = menu.addAction(tr("Remove %n Object(s)", "", selectedObjects.size()),
                                            this, &AbstractObjectTool::removeObjects);
+
+    // Allow the currently selected collision mask to be applied to all selected tiles in the tileset editor
+    if (auto document = DocumentManager::instance()->currentDocument())
+        if (document->type() == Document::TilesetDocumentType)
+            menu.addAction(tr("Apply Collision(s) to Selection"), this, &AbstractObjectTool::applyCollisionsToSelection);
 
     duplicateAction->setIcon(QIcon(QLatin1String(":/images/16/stock-duplicate-16.png")));
     removeAction->setIcon(QIcon(QLatin1String(":/images/16/edit-delete.png")));

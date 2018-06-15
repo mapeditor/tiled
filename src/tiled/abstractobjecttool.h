@@ -77,6 +77,7 @@ protected:
 private:
     void duplicateObjects();
     void removeObjects();
+    void applyCollisionsToSelection();
     void resetTileSize();
     void saveSelectedObject();
     void detachSelectedObjects();
