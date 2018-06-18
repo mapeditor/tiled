@@ -95,6 +95,13 @@ TileCollisionDock::TileCollisionDock(QWidget *parent)
     CreateObjectTool *polygonObjectsTool = new CreatePolygonObjectTool(this);
     CreateObjectTool *templatesTool = new CreateTemplateTool(this);
 
+    // Autodetection of tile extents
+    QIcon autoDetectMaskIcon(QLatin1String(":images/22/stock-tool-fuzzy-select-22.png"));
+    QAction *autoDetectMask = new QAction(this);
+    autoDetectMask->setText(tr("Detect Shape"));
+    autoDetectMask->setIcon(autoDetectMaskIcon);
+    connect(autoDetectMask, &QAction::triggered, this, &TileCollisionDock::autoDetectMask);
+
     QToolBar *toolsToolBar = new QToolBar(this);
     toolsToolBar->setObjectName(QLatin1String("TileCollisionDockToolBar"));
     toolsToolBar->setMovable(false);
@@ -109,6 +116,7 @@ TileCollisionDock::TileCollisionDock(QWidget *parent)
     toolsToolBar->addAction(mToolManager->registerTool(ellipseObjectsTool));
     toolsToolBar->addAction(mToolManager->registerTool(polygonObjectsTool));
     toolsToolBar->addAction(mToolManager->registerTool(templatesTool));
+    toolsToolBar->addAction(autoDetectMask);
 
     mActionDuplicateObjects = new QAction(this);
     mActionDuplicateObjects->setIcon(QIcon(QLatin1String(":/images/16/stock-duplicate-16.png")));
@@ -230,6 +238,50 @@ TileCollisionDock::TileCollisionDock(QWidget *parent)
 TileCollisionDock::~TileCollisionDock()
 {
     setTile(nullptr);
+}
+
+/**
+ * @brief TileCollisionDock::autoDetectMask
+ *
+ * Automatically detect the extents of the tile and append a simple rectanglular collision mask.
+ */
+void TileCollisionDock::autoDetectMask()
+{
+    // Iterate over the pixels, looking for empty rows
+    // sourced from: https://stackoverflow.com/a/3722160/2431627
+    QImage image = mTile->image().toImage();
+    int left = image.width(), right = 0, top = image.height(), bottom = 0;
+    for (int y = 0; y < image.height(); ++y) {
+        QRgb *row = (QRgb*)image.scanLine(y);
+        bool rowFilled = false;
+        for (int x = 0; x < image.width(); ++x) {
+            if (qAlpha(row[x])) {
+                rowFilled = true;
+                right = std::max(right, x);
+                if (left > x) {
+                    left = x;
+                    x = right; // shortcut to only search for new right bound from here
+                }
+            }
+        }
+        if (rowFilled) {
+            top = std::min(top, y);
+            bottom = y;
+        }
+    }
+
+    // Create a group for collision objects if none exists
+    if (!mTile->objectGroup())
+        mTile->setObjectGroup(std::make_unique<ObjectGroup>());
+
+    // Create the rectangular collision mask
+    MapObject* newObject = new MapObject;
+    newObject->setBounds(QRect(QPoint(left, top), QPoint(right, bottom)));
+    newObject->setShape(MapObject::Shape::Rectangle);
+    mTile->objectGroup()->addObject(newObject);
+
+    // Update the UI
+    tileObjectGroupChanged(mTile);
 }
 
 void TileCollisionDock::saveState()
