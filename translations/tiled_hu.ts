@@ -434,23 +434,23 @@
     <message>
         <location line="+178"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished">Nem sikerült megnyitni a fájlt olvasásra.</translation>
+        <translation>Nem sikerült megnyitni a fájlt olvasásra.</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Error parsing file.</source>
-        <translation type="unfinished">Hiba a fájl feldolgozásakor.</translation>
+        <translation>Hiba a fájl feldolgozásakor.</translation>
     </message>
     <message>
         <location line="+37"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">Nem sikerült megnyitni a fájlt írásra.</translation>
+        <translation>Nem sikerült megnyitni a fájlt írásra.</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Error while writing file:
 %1</source>
-        <translation type="unfinished">Hiba a fájl írása közben:
+        <translation>Hiba a fájl írása közben:
 %1</translation>
     </message>
     <message>
@@ -494,12 +494,12 @@
     <message>
         <location filename="../src/plugins/lua/luaplugin.cpp" line="+103"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">Nem sikerült megnyitni a fájlt írásra.</translation>
+        <translation>Nem sikerült megnyitni a fájlt írásra.</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>Lua files (*.lua)</source>
-        <translation type="unfinished">Lua fájlok (*.lua)</translation>
+        <translation>Lua fájlok (*.lua)</translation>
     </message>
 </context>
 <context>
@@ -507,12 +507,12 @@
     <message>
         <location line="+18"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">Nem sikerült megnyitni a fájlt írásra.</translation>
+        <translation>Nem sikerült megnyitni a fájlt írásra.</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>Lua files (*.lua)</source>
-        <translation type="unfinished">Lua fájlok (*.lua)</translation>
+        <translation>Lua fájlok (*.lua)</translation>
     </message>
 </context>
 <context>
@@ -1219,7 +1219,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/tilesetdock.cpp" line="+86"/>
         <source>New Tileset...</source>
-        <translation type="unfinished">Új csempekészlet…</translation>
+        <translation>Új csempekészlet…</translation>
     </message>
 </context>
 <context>
@@ -2188,7 +2188,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/plugins/tbin/tbinplugin.cpp" line="+109"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished">Nem sikerült megnyitni a fájlt olvasásra.</translation>
+        <translation>Nem sikerült megnyitni a fájlt olvasásra.</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -2223,7 +2223,7 @@ Line %1, column %2</source>
     <message>
         <location line="+8"/>
         <source>Exception: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Kivétel: %1</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -2312,17 +2312,15 @@ Line %1, column %2</source>
     <message numerus="yes">
         <location line="-13"/>
         <source>Duplicate %n Object(s)</source>
-        <translation>
-            <numerusform>Objektum kettőzése</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>%n objektum kettőzése</numerusform>
+        <numerusform>%n objektum kettőzése</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+2"/>
         <source>Remove %n Object(s)</source>
-        <translation>
-            <numerusform>Objektum eltávolítása</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>%n objektum eltávolítása</numerusform>
+        <numerusform>%n objektum eltávolítása</numerusform>
+        </translation></message>
     <message>
         <location line="+16"/>
         <source>Replace Tile</source>
@@ -2416,10 +2414,9 @@ Line %1, column %2</source>
     <message numerus="yes">
         <location line="+6"/>
         <source>Move %n Object(s) to Layer</source>
-        <translation>
-            <numerusform>Objektum áthelyezése rétegre</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>%n objektum áthelyezése rétegre</numerusform>
+        <numerusform>%n objektum áthelyezése rétegre</numerusform>
+        </translation></message>
     <message>
         <location line="+11"/>
         <source>Object &amp;Properties...</source>
@@ -2960,7 +2957,7 @@ Line %1, column %2</source>
     <message>
         <location line="+1"/>
         <source>E</source>
-        <translation type="unfinished">E</translation>
+        <translation>E</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -2996,7 +2993,7 @@ Line %1, column %2</source>
     <message>
         <location line="+112"/>
         <source>Close</source>
-        <translation type="unfinished">Bezárás</translation>
+        <translation>Bezárás</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -3031,23 +3028,21 @@ Line %1, column %2</source>
         <location line="-218"/>
         <location line="+219"/>
         <source>O</source>
-        <translation type="unfinished">O</translation>
+        <translation>O</translation>
     </message>
     <message numerus="yes">
         <location line="+220"/>
         <source>Move %n Point(s)</source>
-        <translation>
-            <numerusform>Pont áthelyezése</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>%n pont áthelyezése</numerusform>
+        <numerusform>%n pont áthelyezése</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+26"/>
         <location line="+65"/>
         <source>Delete %n Node(s)</source>
-        <translation>
-            <numerusform>Csomópont törlése</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>%n csomópont törlése</numerusform>
+        <numerusform>%n csomópont törlése</numerusform>
+        </translation></message>
     <message>
         <location line="-60"/>
         <location line="+235"/>
@@ -3544,10 +3539,9 @@ Válasszon egy adott formátumot.</translation>
     <message numerus="yes">
         <location line="+28"/>
         <source>Rotate %n Object(s)</source>
-        <translation>
-            <numerusform>Objektum forgatása</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>%n objektum forgatása</numerusform>
+        <numerusform>%n objektum forgatása</numerusform>
+        </translation></message>
     <message>
         <location line="+36"/>
         <source>Tile Layer %1</source>
@@ -3607,38 +3601,33 @@ Válasszon egy adott formátumot.</translation>
     <message numerus="yes">
         <location line="+192"/>
         <source>Duplicate %n Object(s)</source>
-        <translation>
-            <numerusform>Objektum kettőzése</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>%n objektum kettőzése</numerusform>
+        <numerusform>%n objektum kettőzése</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+21"/>
         <source>Remove %n Object(s)</source>
-        <translation>
-            <numerusform>Objektum eltávolítása</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>%n objektum eltávolítása</numerusform>
+        <numerusform>%n objektum eltávolítása</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+13"/>
         <source>Move %n Object(s) to Layer</source>
-        <translation>
-            <numerusform>Objektum áthelyezése rétegre</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>%n objektum áthelyezése rétegre</numerusform>
+        <numerusform>%n objektum áthelyezése rétegre</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+38"/>
         <source>Move %n Object(s) Up</source>
-        <translation>
-            <numerusform>Objektum mozgatása fel</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>%n objektum mozgatása fel</numerusform>
+        <numerusform>%n objektum mozgatása fel</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+36"/>
         <source>Move %n Object(s) Down</source>
-        <translation>
-            <numerusform>Objektum mozgatása le</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>%n objektum mozgatása le</numerusform>
+        <numerusform>%n objektum mozgatása le</numerusform>
+        </translation></message>
 </context>
 <context>
     <name>Tiled::Internal::MapDocumentActionHandler</name>
@@ -3793,17 +3782,15 @@ Válasszon egy adott formátumot.</translation>
     <message numerus="yes">
         <location line="+407"/>
         <source>Duplicate %n Object(s)</source>
-        <translation>
-            <numerusform>Objektum kettőzése</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>%n objektum kettőzése</numerusform>
+        <numerusform>%n objektum kettőzése</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+1"/>
         <source>Remove %n Object(s)</source>
-        <translation>
-            <numerusform>Objektum eltávolítása</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>%n objektum eltávolítása</numerusform>
+        <numerusform>%n objektum eltávolítása</numerusform>
+        </translation></message>
     <message>
         <location line="+2"/>
         <source>Duplicate Objects</source>
@@ -3861,10 +3848,9 @@ Válasszon egy adott formátumot.</translation>
     <message numerus="yes">
         <location line="+17"/>
         <source>Add %n Tileset(s)</source>
-        <translation>
-            <numerusform>Csempekészlet hozzáadása</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>%n csempekészlet hozzáadása</numerusform>
+        <numerusform>%n csempekészlet hozzáadása</numerusform>
+        </translation></message>
     <message>
         <location line="+71"/>
         <source>Tool Options</source>
@@ -4063,10 +4049,9 @@ Válasszon egy adott formátumot.</translation>
         <location line="-268"/>
         <location line="+696"/>
         <source>Move %n Object(s)</source>
-        <translation>
-            <numerusform>Objektum áthelyezése</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>%n objektum áthelyezése</numerusform>
+        <numerusform>%n objektum áthelyezése</numerusform>
+        </translation></message>
     <message>
         <location line="-577"/>
         <source>Unnamed object</source>
@@ -4090,17 +4075,15 @@ Válasszon egy adott formátumot.</translation>
     <message numerus="yes">
         <location line="+658"/>
         <source>Rotate %n Object(s)</source>
-        <translation>
-            <numerusform>Objektum forgatása</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>%n objektum forgatása</numerusform>
+        <numerusform>%n objektum forgatása</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+269"/>
         <source>Resize %n Object(s)</source>
-        <translation>
-            <numerusform>Objektum átméretezése</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>%n objektum átméretezése</numerusform>
+        <numerusform>%n objektum átméretezése</numerusform>
+        </translation></message>
 </context>
 <context>
     <name>Tiled::Internal::ObjectTypesEditor</name>
@@ -4220,10 +4203,9 @@ Válasszon egy adott formátumot.</translation>
     <message numerus="yes">
         <location line="+17"/>
         <source>Move %n Object(s) to Layer</source>
-        <translation>
-            <numerusform>Objektum áthelyezése rétegre</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>%n objektum áthelyezése rétegre</numerusform>
+        <numerusform>%n objektum áthelyezése rétegre</numerusform>
+        </translation></message>
 </context>
 <context>
     <name>Tiled::Internal::PatreonDialog</name>
@@ -4288,17 +4270,15 @@ Válasszon egy adott formátumot.</translation>
     <message numerus="yes">
         <location line="-252"/>
         <source>Paste Property/Properties</source>
-        <translation>
-            <numerusform>Tulajdonság beillesztése</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Tulajdonság beillesztése</numerusform>
+        <numerusform>Tulajdonságok beillesztése</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+50"/>
         <source>Remove Property/Properties</source>
-        <translation>
-            <numerusform>Tulajdonság eltávolítása</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Tulajdonság eltávolítása</numerusform>
+        <numerusform>Tulajdonságok eltávolítása</numerusform>
+        </translation></message>
     <message>
         <location line="+65"/>
         <source>Cu&amp;t</source>
@@ -4332,10 +4312,9 @@ Válasszon egy adott formátumot.</translation>
     <message numerus="yes">
         <location line="+69"/>
         <source>Convert Property/Properties</source>
-        <translation>
-            <numerusform>Tulajdonság átalakítása</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Tulajdonság átalakítása</numerusform>
+        <numerusform>Tulajdonságok átalakítása</numerusform>
+        </translation></message>
     <message>
         <location line="+58"/>
         <source>Properties</source>
@@ -4726,7 +4705,7 @@ Válasszon egy adott formátumot.</translation>
         <location line="-102"/>
         <location line="+103"/>
         <source>P</source>
-        <translation type="unfinished">P</translation>
+        <translation>P</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -4745,13 +4724,13 @@ Válasszon egy adott formátumot.</translation>
         <location filename="../src/tiled/stampactions.cpp" line="+48"/>
         <location line="+29"/>
         <source>Random Mode</source>
-        <translation type="unfinished">Véletlen mód</translation>
+        <translation>Véletlen mód</translation>
     </message>
     <message>
         <location line="-28"/>
         <location line="+35"/>
         <source>D</source>
-        <translation type="unfinished">D</translation>
+        <translation>D</translation>
     </message>
     <message>
         <location line="-30"/>
@@ -4762,12 +4741,12 @@ Válasszon egy adott formátumot.</translation>
     <message>
         <location line="+1"/>
         <source>Flip Horizontally</source>
-        <translation type="unfinished">Tükrözés vízszintesen</translation>
+        <translation>Tükrözés vízszintesen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Flip Vertically</source>
-        <translation type="unfinished">Tükrözés függőlegesen</translation>
+        <translation>Tükrözés függőlegesen</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4782,22 +4761,22 @@ Válasszon egy adott formátumot.</translation>
     <message>
         <location line="+3"/>
         <source>X</source>
-        <translation type="unfinished">X</translation>
+        <translation>X</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Y</source>
-        <translation type="unfinished">Y</translation>
+        <translation>Y</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Shift+Z</source>
-        <translation type="unfinished">Shift+Z</translation>
+        <translation>Shift+Z</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Z</source>
-        <translation type="unfinished">Z</translation>
+        <translation>Z</translation>
     </message>
 </context>
 <context>
@@ -4851,17 +4830,17 @@ Válasszon egy adott formátumot.</translation>
     <message>
         <location line="+24"/>
         <source>All Files (*)</source>
-        <translation type="unfinished">Minden fájl (*)</translation>
+        <translation>Minden fájl (*)</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Locate External Tileset</source>
-        <translation type="unfinished">Külső csempekészlet keresése</translation>
+        <translation>Külső csempekészlet keresése</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Error Reading Tileset</source>
-        <translation type="unfinished">Hiba a csempekészlet olvasásakor</translation>
+        <translation>Hiba a csempekészlet olvasásakor</translation>
     </message>
 </context>
 <context>
@@ -4949,12 +4928,12 @@ Válasszon egy adott formátumot.</translation>
     <message>
         <location filename="../src/tiled/tilecollisiondock.cpp" line="-39"/>
         <source>Delete</source>
-        <translation type="unfinished">Törlés</translation>
+        <translation>Törlés</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Cut</source>
-        <translation type="unfinished">Kivágás</translation>
+        <translation>Kivágás</translation>
     </message>
 </context>
 <context>
@@ -5135,7 +5114,7 @@ Válasszon egy adott formátumot.</translation>
     <message>
         <location line="-173"/>
         <source>Tile Animation Editor</source>
-        <translation type="unfinished">Csempeanimáció szerkesztő</translation>
+        <translation>Csempeanimáció szerkesztő</translation>
     </message>
     <message>
         <location line="+49"/>
@@ -5655,10 +5634,9 @@ Válasszon egy adott formátumot.</translation>
     <message numerus="yes">
         <location line="+51"/>
         <source>Change %n Object/s Tile</source>
-        <translation>
-            <numerusform>Objektum csempéjének megváltoztatása</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>%n objektum csempéjének megváltoztatása</numerusform>
+        <numerusform>%n objektum csempéjének megváltoztatása</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+65"/>
         <source>Detach %n Template Instance(s)</source>
@@ -5816,10 +5794,9 @@ Válasszon egy adott formátumot.</translation>
     <message numerus="yes">
         <location filename="../src/tiled/flipmapobjects.cpp" line="+40"/>
         <source>Flip %n Object(s)</source>
-        <translation>
-            <numerusform>Objektum tükrözése</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>%n objektum tükrözése</numerusform>
+        <numerusform>%n objektum tükrözése</numerusform>
+        </translation></message>
     <message>
         <location filename="../src/tiled/changetile.cpp" line="+34"/>
         <source>Change Tile Type</source>
@@ -5908,12 +5885,12 @@ Válasszon egy adott formátumot.</translation>
     <message>
         <location line="+223"/>
         <source>Copy File Path</source>
-        <translation type="unfinished">Fájl útvonalának másolása</translation>
+        <translation>Fájl útvonalának másolása</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Open Containing Folder...</source>
-        <translation type="unfinished">Tartalmazó mappa megnyitása…</translation>
+        <translation>Tartalmazó mappa megnyitása…</translation>
     </message>
 </context>
 </TS>
