@@ -31,6 +31,7 @@
 #include "mapobject.h"
 
 #include "map.h"
+#include "maprenderer.h"
 #include "objectgroup.h"
 #include "objecttemplate.h"
 #include "tile.h"
@@ -125,7 +126,10 @@ void MapObject::setTextData(const TextData &textData)
 }
 
 /**
- * Shortcut to getting a QRectF from position() and size() that uses cell tile if present.
+ * Shortcut to getting a QRectF from position() and size() that uses cell tile
+ * if present.
+ *
+ * \deprecated See problems in comment.
  */
 QRectF MapObject::boundsUseTile() const
 {
@@ -145,6 +149,75 @@ QRectF MapObject::boundsUseTile() const
 
     // No tile so just use regular bounds
     return bounds();
+}
+
+static void align(QRectF &r, Alignment alignment)
+{
+    r.translate(-alignmentOffset(r, alignment));
+}
+
+/**
+ * Returns the bounds of the object in screen space when using the given
+ * \a renderer. Does not take into account rotation!
+ *
+ * This is slightly different from the bounds that should be used when
+ * rendering the object, which are returned by the MapRenderer::boundingRect
+ * function.
+ *
+ * \todo Look into unduplicating this code, which is also present in
+ * objectselectiontool.cpp in very similar form (objectBounds).
+ */
+QRectF MapObject::screenBounds(const MapRenderer &renderer) const
+{
+    if (!mCell.isEmpty()) {
+        // Tile objects can have a tile offset, which is scaled along with the image
+        QSizeF imgSize;
+        QPoint tileOffset;
+
+        if (const Tile *tile = mCell.tile()) {
+            imgSize = tile->size();
+            tileOffset = tile->offset();
+        } else {
+            imgSize = size();
+        }
+
+        const QPointF position = renderer.pixelToScreenCoords(mPos);
+        const QSizeF objectSize = size();
+        const qreal scaleX = imgSize.width() > 0 ? objectSize.width() / imgSize.width() : 0;
+        const qreal scaleY = imgSize.height() > 0 ? objectSize.height() / imgSize.height() : 0;
+
+        QRectF bounds(position.x() + (tileOffset.x() * scaleX),
+                      position.y() + (tileOffset.y() * scaleY),
+                      objectSize.width(),
+                      objectSize.height());
+
+        align(bounds, alignment());
+
+        return bounds;
+    } else {
+        switch (mShape) {
+        case MapObject::Ellipse:
+        case MapObject::Rectangle: {
+            QRectF bounds(this->bounds());
+            align(bounds, alignment());
+            QPolygonF screenPolygon = renderer.pixelToScreenCoords(bounds);
+            return screenPolygon.boundingRect();
+        }
+        case MapObject::Point:
+            return renderer.shape(this).boundingRect();
+        case MapObject::Polygon:
+        case MapObject::Polyline: {
+            // Alignment is irrelevant for polygon objects since they have no size
+            const QPolygonF polygon = mPolygon.translated(mPos);
+            QPolygonF screenPolygon = renderer.pixelToScreenCoords(polygon);
+            return screenPolygon.boundingRect();
+        }
+        case MapObject::Text:
+            return renderer.boundingRect(this);
+        }
+    }
+
+    return QRectF();
 }
 
 /*

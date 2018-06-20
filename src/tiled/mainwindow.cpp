@@ -413,7 +413,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             this, &MainWindow::addExternalTileset);
     connect(mUi->actionLoadWorld, &QAction::triggered, this, [this,preferences]{
         QString lastPath = preferences->lastPath(Preferences::WorldFile);
-        QString worldFile = QFileDialog::getOpenFileName(this, tr("Open world"), lastPath);
+        QString worldFile = QFileDialog::getOpenFileName(this, tr("Load World"), lastPath);
         if (worldFile.isEmpty())
             return;
 
