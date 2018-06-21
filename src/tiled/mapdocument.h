@@ -32,6 +32,8 @@
 #include <QPointer>
 #include <QRegion>
 
+#include <memory>
+
 class QModelIndex;
 class QPoint;
 class QRect;
@@ -113,7 +115,7 @@ public:
      * Returns the map instance. Be aware that directly modifying the map will
      * not allow the GUI to update itself appropriately.
      */
-    Map *map() const { return mMap; }
+    Map *map() const { return mMap.get(); }
 
     int layerIndex(const Layer *layer) const;
 
@@ -189,7 +191,7 @@ public:
     /**
      * Returns the map renderer.
      */
-    MapRenderer *renderer() const { return mRenderer; }
+    MapRenderer *renderer() const { return mRenderer.get(); }
 
     /**
      * Creates the map renderer. Should be called after changing the map
@@ -354,13 +356,13 @@ private:
     QPointer<MapFormat> mReaderFormat;
     QPointer<MapFormat> mWriterFormat;
     QPointer<MapFormat> mExportFormat;
-    Map *mMap;
+    std::unique_ptr<Map> mMap;
     LayerModel *mLayerModel;
     QRegion mSelectedArea;
     QList<Layer*> mSelectedLayers;
     QList<MapObject*> mSelectedObjects;
     MapObject *mHoveredMapObject;       /**< Map object with mouse on top. */
-    MapRenderer *mRenderer;
+    std::unique_ptr<MapRenderer> mRenderer;
     Layer *mCurrentLayer;
     MapObjectModel *mMapObjectModel;
     bool mAllowHidingObjects = true;

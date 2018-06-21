@@ -74,7 +74,6 @@ MapDocument::MapDocument(Map *map, const QString &fileName)
     , mMap(map)
     , mLayerModel(new LayerModel(this))
     , mHoveredMapObject(nullptr)
-    , mRenderer(nullptr)
     , mMapObjectModel(new MapObjectModel(this))
 {
     mCurrentObject = map;
@@ -116,11 +115,7 @@ MapDocument::MapDocument(Map *map, const QString &fileName)
             this, &MapDocument::updateTemplateInstances);
 }
 
-MapDocument::~MapDocument()
-{
-    delete mRenderer;
-    delete mMap;
-}
+MapDocument::~MapDocument() = default;
 
 bool MapDocument::save(const QString &fileName, QString *error)
 {
@@ -260,13 +255,13 @@ static bool intersects(const QRectF &a, const QRectF &b)
 }
 
 static bool visibleIn(const QRectF &area, MapObject *object,
-                      MapRenderer *renderer)
+                      const MapRenderer &renderer)
 {
-    QRectF boundingRect = renderer->boundingRect(object);
+    QRectF boundingRect = renderer.boundingRect(object);
 
     if (object->rotation() != 0) {
         // Rotate around object position
-        QPointF pos = renderer->pixelToScreenCoords(object->position());
+        QPointF pos = renderer.pixelToScreenCoords(object->position());
         boundingRect.translate(-pos);
 
         QTransform transform;
@@ -292,7 +287,7 @@ void MapDocument::resizeMap(const QSize &size, const QPoint &offset, bool remove
     // Resize the map and each layer
     QUndoCommand *command = new QUndoCommand(tr("Resize Map"));
 
-    LayerIterator iterator(mMap);
+    LayerIterator iterator(mMap.get());
     while (Layer *layer = iterator.next()) {
         switch (layer->layerType()) {
         case Layer::TileLayerType: {
@@ -304,7 +299,7 @@ void MapDocument::resizeMap(const QSize &size, const QPoint &offset, bool remove
             ObjectGroup *objectGroup = static_cast<ObjectGroup*>(layer);
 
             for (MapObject *o : objectGroup->objects()) {
-                if (removeObjects && !visibleIn(visibleArea, o, mRenderer)) {
+                if (removeObjects && !visibleIn(visibleArea, o, *mRenderer)) {
                     // Remove objects that will fall outside of the map
                     new RemoveMapObject(this, o, command);
                 } else {
@@ -459,7 +454,7 @@ void MapDocument::groupLayer(Layer *layer)
     if (!layer)
         return;
 
-    Q_ASSERT(layer->map() == mMap);
+    Q_ASSERT(layer->map() == mMap.get());
 
     QString name = tr("Group %1").arg(mMap->groupLayerCount() + 1);
     auto groupLayer = new GroupLayer(name, 0, 0);
@@ -583,7 +578,7 @@ void MapDocument::moveLayerDown(Layer *layer)
  */
 void MapDocument::removeLayer(Layer *layer)
 {
-    Q_ASSERT(layer->map() == mMap);
+    Q_ASSERT(layer->map() == mMap.get());
     mUndoStack->push(new RemoveLayer(this,
                                      layer->siblingIndex(),
                                      layer->parentLayer()));
@@ -765,12 +760,12 @@ void MapDocument::setSelectedArea(const QRegion &selection)
     }
 }
 
-static QList<MapObject *> sortObjects(const Map *map, const QList<MapObject *> &objects)
+static QList<MapObject *> sortObjects(const Map &map, const QList<MapObject *> &objects)
 {
     QList<MapObject *> sorted;
     sorted.reserve(objects.size());
 
-    LayerIterator iterator(map);
+    LayerIterator iterator(&map);
     while (Layer *layer = iterator.next()) {
         if (layer->layerType() != Layer::ObjectGroupType)
             continue;
@@ -790,7 +785,7 @@ static QList<MapObject *> sortObjects(const Map *map, const QList<MapObject *> &
  */
 QList<MapObject *> MapDocument::selectedObjectsOrdered() const
 {
-    return sortObjects(mMap, mSelectedObjects);
+    return sortObjects(*mMap, mSelectedObjects);
 }
 
 void MapDocument::setSelectedObjects(const QList<MapObject *> &selectedObjects)
@@ -1126,7 +1121,7 @@ void MapDocument::moveObjectsToGroup(const QList<MapObject *> &objects,
     mUndoStack->beginMacro(tr("Move %n Object(s) to Layer", "",
                               objects.size()));
 
-    const auto objectsToMove = sortObjects(mMap, objects);
+    const auto objectsToMove = sortObjects(*mMap, objects);
     for (MapObject *mapObject : objectsToMove) {
         if (mapObject->objectGroup() == objectGroup)
             continue;
@@ -1236,21 +1231,18 @@ void MapDocument::detachObjects(const QList<MapObject *> &objects)
 
 void MapDocument::createRenderer()
 {
-    if (mRenderer)
-        delete mRenderer;
-
     switch (mMap->orientation()) {
     case Map::Isometric:
-        mRenderer = new IsometricRenderer(mMap);
+        mRenderer.reset(new IsometricRenderer(mMap.get()));
         break;
     case Map::Staggered:
-        mRenderer = new StaggeredRenderer(mMap);
+        mRenderer.reset(new StaggeredRenderer(mMap.get()));
         break;
     case Map::Hexagonal:
-        mRenderer = new HexagonalRenderer(mMap);
+        mRenderer.reset(new HexagonalRenderer(mMap.get()));
         break;
     default:
-        mRenderer = new OrthogonalRenderer(mMap);
+        mRenderer.reset(new OrthogonalRenderer(mMap.get()));
         break;
     }
 }
