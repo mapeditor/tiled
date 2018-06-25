@@ -11,6 +11,8 @@ DynamicLibrary {
 
     cpp.cxxLanguageVersion: "c++11"
 
+    bundle.isBundle: false
+
     files: [
         "mapitem.cpp",
         "mapitem.h",
