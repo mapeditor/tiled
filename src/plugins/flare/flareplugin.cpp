@@ -38,6 +38,8 @@
 #include <QStringList>
 #include <QTextStream>
 
+#include <memory>
+
 using namespace Tiled;
 
 namespace Flare {
@@ -56,7 +58,7 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
     }
 
     // default to values of the original flare alpha game.
-    QScopedPointer<Map> map(new Map(Map::Isometric, 256, 256, 64, 32));
+    std::unique_ptr<Map> map(new Map(Map::Isometric, 256, 256, 64, 32));
 
     QTextStream stream (&file);
     QString line;
@@ -267,7 +269,7 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
         return nullptr;
     }
 
-    return map.take();
+    return map.release();
 }
 
 bool FlarePlugin::supportsFile(const QString &fileName) const

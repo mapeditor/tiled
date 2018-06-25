@@ -26,11 +26,12 @@
 #include "abstracttool.h"
 #include "addremovemapobject.h"
 #include "containerhelpers.h"
+#include "documentmanager.h"
 #include "map.h"
-#include "mapitem.h"
 #include "mapobject.h"
 #include "maprenderer.h"
 #include "objectgroup.h"
+#include "objecttemplate.h"
 #include "preferences.h"
 #include "stylehelper.h"
 #include "templatemanager.h"
@@ -73,6 +74,9 @@ MapScene::MapScene(QObject *parent):
     connect(prefs, &Preferences::gridColorChanged, this, [this] { update(); });
 
     mGridVisible = prefs->showGrid();
+
+    WorldManager &worldManager = WorldManager::instance();
+    connect(&worldManager, &WorldManager::worldsChanged, this, &MapScene::refreshScene);
 
     // Install an event filter so that we can get key events on behalf of the
     // active tool without having to have the current focus.
@@ -125,11 +129,12 @@ void MapScene::setSelectedTool(AbstractTool *tool)
  */
 void MapScene::refreshScene()
 {
-    clear();
-    mMapItems.clear();
+    QHash<MapDocument*, MapItem*> mapItems;
 
     if (!mMapDocument) {
-        setSceneRect(QRectF());
+        mMapItems.swap(mapItems);
+        qDeleteAll(mapItems);
+        updateSceneRect();
         return;
     }
 
@@ -154,24 +159,18 @@ void MapScene::refreshScene()
                 if (mapDocument == mMapDocument)
                     displayMode = MapItem::Editable;
 
-                auto mapItem = new MapItem(mapDocument.data(), displayMode);
+                auto mapItem = takeOrCreateMapItem(mapDocument, displayMode);
                 mapItem->setPos(mapEntry.rect.topLeft() - currentMapPosition);
-                connect(mapItem, &MapItem::boundingRectChanged, this, &MapScene::updateSceneRect);
-                mMapItems.insert(mapDocument.data(), mapItem);
-                addItem(mapItem);
-
-                if (mapDocument != mMapDocument) {
-                    mapItem->setOpacity(0.5);
-                    mapItem->setZValue(-1);
-                }
+                mapItems.insert(mapDocument.data(), mapItem);
             }
         }
     } else {
-        auto mapItem = new MapItem(mMapDocument, MapItem::Editable);
-        connect(mapItem, &MapItem::boundingRectChanged, this, &MapScene::updateSceneRect);
-        mMapItems.insert(mMapDocument, mapItem);
-        addItem(mapItem);
+        auto mapItem = takeOrCreateMapItem(mMapDocument->sharedFromThis(), MapItem::Editable);
+        mapItems.insert(mMapDocument, mapItem);
     }
+
+    mMapItems.swap(mapItems);
+    qDeleteAll(mapItems);       // delete all map items that didn't get reused
 
     updateSceneRect();
 
@@ -199,6 +198,20 @@ void MapScene::updateSceneRect()
         sceneRect |= mapItem->boundingRect().translated(mapItem->pos());
 
     setSceneRect(sceneRect);
+}
+
+MapItem *MapScene::takeOrCreateMapItem(const MapDocumentPtr &mapDocument, MapItem::DisplayMode displayMode)
+{
+    // Try to reuse an existing map item
+    auto mapItem = mMapItems.take(mapDocument.data());
+    if (!mapItem) {
+        mapItem = new MapItem(mapDocument, displayMode);
+        connect(mapItem, &MapItem::boundingRectChanged, this, &MapScene::updateSceneRect);
+        addItem(mapItem);
+    } else {
+        mapItem->setDisplayMode(displayMode);
+    }
+    return mapItem;
 }
 
 /**
@@ -412,13 +425,39 @@ void MapScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
     }
 }
 
+static const ObjectTemplate *readObjectTemplate(const QMimeData *mimeData)
+{
+    if (!mimeData->hasFormat(QLatin1String(TEMPLATES_MIMETYPE)))
+        return nullptr;
+
+    QByteArray encodedData = mimeData->data(QLatin1String(TEMPLATES_MIMETYPE));
+    QDataStream stream(&encodedData, QIODevice::ReadOnly);
+
+    QString fileName;
+    stream >> fileName;
+
+    return TemplateManager::instance()->findObjectTemplate(fileName);
+}
+
 /**
  * Override to ignore drag enter events except for templates.
  */
 void MapScene::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
 {
-    if (!event->mimeData()->hasFormat(QLatin1String(TEMPLATES_MIMETYPE)))
-        event->ignore();
+    event->ignore();    // ignore, because events start out accepted
+
+    if (!mapDocument())
+        return;
+
+    ObjectGroup *objectGroup = dynamic_cast<ObjectGroup*>(mapDocument()->currentLayer());
+    if (!objectGroup)
+        return;
+
+    const ObjectTemplate *objectTemplate = readObjectTemplate(event->mimeData());
+    if (!objectTemplate || !mapDocument()->templateAllowed(objectTemplate))
+        return;
+
+    QGraphicsScene::dragEnterEvent(event);  // accepts the event
 }
 
 /**
@@ -426,25 +465,18 @@ void MapScene::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
  */
 void MapScene::dropEvent(QGraphicsSceneDragDropEvent *event)
 {
-    const QMimeData *mimeData = event->mimeData();
+    if (!mapDocument())
+        return;
 
     ObjectGroup *objectGroup = dynamic_cast<ObjectGroup*>(mapDocument()->currentLayer());
-    if (!objectGroup || !mimeData->hasFormat(QLatin1String(TEMPLATES_MIMETYPE)))
+    if (!objectGroup)
         return;
 
-    QByteArray encodedData = mimeData->data(QLatin1String(TEMPLATES_MIMETYPE));
-    QDataStream stream(&encodedData, QIODevice::ReadOnly);
-
-    TemplateManager *templateManager = TemplateManager::instance();
-
-    QString fileName;
-    stream >> fileName;
-
-    const ObjectTemplate *objectTemplate = templateManager->findObjectTemplate(fileName);
-    if (!objectTemplate)
+    const ObjectTemplate *objectTemplate = readObjectTemplate(event->mimeData());
+    if (!objectTemplate || !mapDocument()->templateAllowed(objectTemplate))
         return;
 
-    MapObject *newMapObject = new MapObject();
+    MapObject *newMapObject = new MapObject;
     newMapObject->setObjectTemplate(objectTemplate);
     newMapObject->syncWithTemplate();
     newMapObject->setPosition(event->scenePos());

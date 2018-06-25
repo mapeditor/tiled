@@ -27,6 +27,7 @@
 #include "mapscene.h"
 #include "tile.h"
 #include "tilelayer.h"
+#include "tilestamp.h"
 
 #include <QtMath>
 
@@ -111,6 +112,7 @@ void AbstractTileTool::mapDocumentChanged(MapDocument *oldDocument,
 void AbstractTileTool::updateEnabledState()
 {
     setEnabled(currentTileLayer() != nullptr);
+    updateBrushVisibility();
 }
 
 void AbstractTileTool::updateStatusInfo()
@@ -151,6 +153,72 @@ void AbstractTileTool::updateStatusInfo()
     }
 }
 
+TileLayer *AbstractTileTool::currentTileLayer() const
+{
+    if (mapDocument())
+        if (auto currentLayer = mapDocument()->currentLayer())
+            return currentLayer->asTileLayer();
+    return nullptr;
+}
+
+void AbstractTileTool::updateBrushVisibility()
+{
+    // Show the tile brush only when at least one target layer is visible
+    bool showBrush = false;
+    if (mBrushVisible) {
+        const auto layers = targetLayers();
+        for (auto layer : layers) {
+            if (!layer->isHidden()) {
+                showBrush = true;
+                break;
+            }
+        }
+    }
+    mBrushItem->setVisible(showBrush);
+}
+
+QList<Layer *> AbstractTileTool::targetLayers() const
+{
+    // By default, only a current tile layer is considered the target
+    QList<Layer *> layers;
+    if (Layer *layer = currentTileLayer())
+        layers.append(layer);
+    return layers;
+}
+
+/**
+ * A helper method that returns the possible target layers of a given \a stamp.
+ */
+QList<Layer *> AbstractTileTool::targetLayersForStamp(const TileStamp &stamp) const
+{
+    QList<Layer*> layers;
+
+    if (!mapDocument())
+        return layers;
+
+    const Map &map = *mapDocument()->map();
+
+    for (const TileStampVariation &variation : stamp.variations()) {
+        LayerIterator it(variation.map, Layer::TileLayerType);
+        const Layer *firstLayer = it.next();
+        const bool isMultiLayer = firstLayer && it.next();
+
+        if (isMultiLayer && !firstLayer->name().isEmpty()) {
+            for (Layer *layer : variation.map->tileLayers()) {
+                TileLayer *target = static_cast<TileLayer*>(map.findLayer(layer->name(), Layer::TileLayerType));
+                if (!layers.contains(target))
+                    layers.append(target);
+            }
+        } else {
+            if (TileLayer *tileLayer = currentTileLayer())
+                if (!layers.contains(tileLayer))
+                    layers.append(tileLayer);
+        }
+    }
+
+    return layers;
+}
+
 void AbstractTileTool::setBrushVisible(bool visible)
 {
     if (mBrushVisible == visible)
@@ -159,25 +227,4 @@ void AbstractTileTool::setBrushVisible(bool visible)
     mBrushVisible = visible;
     updateStatusInfo();
     updateBrushVisibility();
-}
-
-void AbstractTileTool::updateBrushVisibility()
-{
-    // Show the tile brush only when a visible tile layer is selected
-    bool showBrush = false;
-    if (mBrushVisible) {
-        if (Layer *layer = currentTileLayer()) {
-            if (layer->isVisible())
-                showBrush = true;
-        }
-    }
-    mBrushItem->setVisible(showBrush);
-}
-
-TileLayer *AbstractTileTool::currentTileLayer() const
-{
-    if (mapDocument())
-        if (auto currentLayer = mapDocument()->currentLayer())
-            return currentLayer->asTileLayer();
-    return nullptr;
 }

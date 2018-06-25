@@ -50,10 +50,6 @@ ObjectTemplateModel::ObjectTemplateModel(QObject *parent):
     setNameFilterDisables(false); // hide filtered files
 }
 
-ObjectTemplateModel::~ObjectTemplateModel()
-{
-}
-
 int ObjectTemplateModel::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)

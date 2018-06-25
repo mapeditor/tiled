@@ -42,6 +42,17 @@ public:
     ObjectTemplate *loadObjectTemplate(const QString &fileName,
                                        QString *error = nullptr);
 
+signals:
+    /**
+     * Template has changed and instances need an update.
+     *
+     * Currently emitted from the TemplatesDock.
+     *
+     * TODO: Would make sense to watch template files for changes, and also use
+     * this signal after reloading the template.
+     */
+    void objectTemplateChanged(ObjectTemplate *objectTemplate);
+
 private:
     Q_DISABLE_COPY(TemplateManager)
 

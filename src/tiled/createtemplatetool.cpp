@@ -92,11 +92,12 @@ void CreateTemplateTool::languageChangedImpl()
 MapObject *CreateTemplateTool::createNewMapObject()
 {
     auto newObjectTemplate = objectTemplate();
-
     if (!newObjectTemplate)
         return nullptr;
+    if (!mapDocument()->templateAllowed(newObjectTemplate))
+        return nullptr;
 
-    MapObject *newMapObject = new MapObject();
+    MapObject *newMapObject = new MapObject;
     newMapObject->setObjectTemplate(newObjectTemplate);
     newMapObject->syncWithTemplate();
     return newMapObject;

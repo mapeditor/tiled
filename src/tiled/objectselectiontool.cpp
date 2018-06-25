@@ -738,22 +738,6 @@ void ObjectSelectionTool::updateHandlesAndOrigin()
     updateHandlesImpl(true);
 }
 
-static QPointF alignmentOffset(const QRectF &r, Alignment alignment)
-{
-    switch (alignment) {
-    case TopLeft:       break;
-    case Top:           return QPointF(r.width() / 2, 0);
-    case TopRight:      return QPointF(r.width(), 0);
-    case Left:          return QPointF(0, r.height() / 2);
-    case Center:        return QPointF(r.width() / 2, r.height() / 2);
-    case Right:         return QPointF(r.width(), r.height() / 2);
-    case BottomLeft:    return QPointF(0, r.height());
-    case Bottom:        return QPointF(r.width() / 2, r.height());
-    case BottomRight:   return QPointF(r.width(), r.height());
-    }
-    return QPointF();
-}
-
 // TODO: Check whether this function should be moved into MapObject::bounds
 static void align(QRectF &r, Alignment alignment)
 {

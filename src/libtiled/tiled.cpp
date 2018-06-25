@@ -22,6 +22,22 @@
 
 #include <QDir>
 
+QPointF Tiled::alignmentOffset(const QRectF &r, Tiled::Alignment alignment)
+{
+    switch (alignment) {
+    case TopLeft:       break;
+    case Top:           return QPointF(r.width() / 2, 0);
+    case TopRight:      return QPointF(r.width(), 0);
+    case Left:          return QPointF(0, r.height() / 2);
+    case Center:        return QPointF(r.width() / 2, r.height() / 2);
+    case Right:         return QPointF(r.width(), r.height() / 2);
+    case BottomLeft:    return QPointF(0, r.height());
+    case Bottom:        return QPointF(r.width() / 2, r.height());
+    case BottomRight:   return QPointF(r.width(), r.height());
+    }
+    return QPointF();
+}
+
 QString Tiled::toFileReference(const QUrl &url, const QDir &dir)
 {
     if (url.isEmpty())

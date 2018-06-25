@@ -30,6 +30,7 @@ namespace Tiled {
 
 class Object;
 class Tile;
+class Tileset;
 
 namespace Internal {
 
@@ -56,6 +57,8 @@ public:
 
     MapDocument *dummyMapDocument() const;
 
+    ToolManager *toolManager() const;
+
     bool hasSelectedObjects() const;
 
 signals:
@@ -80,6 +83,7 @@ private slots:
     void setSelectedTool(AbstractTool*);
     void applyChanges();
     void tileObjectGroupChanged(Tile*);
+    void tilesetTileOffsetChanged(Tileset *tileset);
 
     void selectedObjectsChanged();
     void setHasSelectedObjects(bool hasSelectedObjects);
@@ -101,6 +105,11 @@ private:
 inline MapDocument *TileCollisionDock::dummyMapDocument() const
 {
     return mDummyMapDocument.data();
+}
+
+inline ToolManager *TileCollisionDock::toolManager() const
+{
+    return mToolManager;
 }
 
 inline bool TileCollisionDock::hasSelectedObjects() const

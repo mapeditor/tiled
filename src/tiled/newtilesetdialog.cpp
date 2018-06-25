@@ -31,7 +31,6 @@
 #include <QFileInfo>
 #include <QImage>
 #include <QMessageBox>
-#include <QScopedPointer>
 #include <QSettings>
 #include <QCheckBox>
 

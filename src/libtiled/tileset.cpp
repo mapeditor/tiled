@@ -307,16 +307,16 @@ bool Tileset::loadImage()
             mTiles.insert(tileNum, new Tile(tiles.at(tileNum), tileNum, this));
     }
 
-    QScopedPointer<QPixmap> blank;
+    QPixmap blank;
 
     // Blank out any remaining tiles to avoid confusion (todo: could be more clear)
     for (Tile *tile : mTiles) {
         if (tile->id() >= tiles.size()) {
-            if (!blank) {
-                blank.reset(new QPixmap(mTileWidth, mTileHeight));
-                blank->fill();
+            if (blank.isNull()) {
+                blank = QPixmap(mTileWidth, mTileHeight);
+                blank.fill();
             }
-            tile->setImage(*blank);
+            tile->setImage(blank);
         }
     }
 

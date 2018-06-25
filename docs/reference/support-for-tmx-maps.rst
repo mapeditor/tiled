@@ -215,6 +215,8 @@ Corona SDK
    announcement <http://discourse.mapeditor.org/t/new-lua-coronasdk-framework-ponytiled/1826>`__)
 -  `Dusk Engine <https://github.com/GymbylCoding/Dusk-Engine>`__ is a
    fully featured Tiled map game engine for Corona SDK
+-  `Berry <https://github.com/ldurniat/Berry>`__ is a simple Tiled
+   Map Loader for Corona SDK.
 
 Flixel
 ~~~~~~

@@ -24,6 +24,8 @@
 #include "mapdocument.h"
 #include "tilelayer.h"
 
+#include <memory>
+
 namespace Tiled {
 namespace Internal {
 
@@ -43,11 +45,11 @@ TileStamp CaptureStampHelper::endCapture(const MapDocument &mapDocument, QPoint 
     mActive = false;
 
     QRect captured = capturedArea(tilePosition);
-    QScopedPointer<Map> stamp(new Map(mapDocument.map()->orientation(),
-                                      captured.width(),
-                                      captured.height(),
-                                      mapDocument.map()->tileWidth(),
-                                      mapDocument.map()->tileHeight()));
+    std::unique_ptr<Map> stamp(new Map(mapDocument.map()->orientation(),
+                                       captured.width(),
+                                       captured.height(),
+                                       mapDocument.map()->tileWidth(),
+                                       mapDocument.map()->tileHeight()));
 
     // Iterate all layers to make sure we're adding layers in the right order
     LayerIterator it(mapDocument.map(), Layer::TileLayerType);
@@ -85,7 +87,7 @@ TileStamp CaptureStampHelper::endCapture(const MapDocument &mapDocument, QPoint 
         // Add tileset references to map
         stamp->addTilesets(stamp->usedTilesets());
 
-        return TileStamp(stamp.take());
+        return TileStamp(stamp.release());
     }
 
     return TileStamp();

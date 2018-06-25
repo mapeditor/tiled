@@ -16,7 +16,6 @@ be used in any map. Tilesets can be modified at any time.
 [![Build status](https://ci.appveyor.com/api/projects/status/ceb79jn5cf99y3qd/branch/master?svg=true)](https://ci.appveyor.com/project/bjorn/tiled/branch/master)
 [![Bountysource](https://www.bountysource.com/badge/tracker?tracker_id=52019)](https://www.bountysource.com/trackers/52019-tiled?utm_source=52019&utm_medium=shield&utm_campaign=TRACKER_BADGE)
 [![Translation status](https://hosted.weblate.org/widgets/tiled/-/shields-badge.svg)](https://hosted.weblate.org/engage/tiled/?utm_source=widget)
-[![LiveEdu.tv](http://codiad-billauger.rhcloud.com/badges/?style=online-status-v1&channel=bjorn&offline=Follow%20to%20get%20notified)](https://www.liveedu.tv/bjorn/)
 
 About the Qt Version
 -------------------------------------------------------------------------------

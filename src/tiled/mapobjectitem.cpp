@@ -31,15 +31,18 @@
 #include "objectgroupitem.h"
 #include "preferences.h"
 #include "tile.h"
+#include "utils.h"
 #include "zoomable.h"
 
 #include <QPainter>
+
+#include <cmath>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
 
 MapObjectItem::MapObjectItem(MapObject *object, MapDocument *mapDocument,
-                             ObjectGroupItem *parent):
+                             QGraphicsItem *parent):
     QGraphicsItem(parent),
     mObject(object),
     mMapDocument(mapDocument)
@@ -88,6 +91,16 @@ void MapObjectItem::syncWithMapObject()
     setVisible(mObject->isVisible());
 }
 
+void MapObjectItem::setIsHoverIndicator(bool isHoverIndicator)
+{
+    if (mIsHoveredIndicator == isHoverIndicator)
+        return;
+
+    mIsHoveredIndicator = isHoverIndicator;
+    setOpacity(isHoverIndicator ? 0.5 : 1.0);
+    update();
+}
+
 QRectF MapObjectItem::boundingRect() const
 {
     return mBoundingRect;
@@ -107,7 +120,42 @@ void MapObjectItem::paint(QPainter *painter,
     qreal scale = static_cast<MapView*>(widget->parent())->zoomable()->scale();
     painter->translate(-pos());
     mMapDocument->renderer()->setPainterScale(scale);
-    mMapDocument->renderer()->drawMapObject(painter, mObject, mColor);
+    mMapDocument->renderer()->drawMapObject(painter, mObject, mIsHoveredIndicator ? mColor.lighter() : mColor);
+    painter->translate(pos());
+
+    if (mIsHoveredIndicator) {
+        // TODO: Code mostly duplicated in MapObjectOutline
+        const QPointF pixelPos = mMapDocument->renderer()->pixelToScreenCoords(mObject->position());
+        QRectF bounds = mObject->screenBounds(*mMapDocument->renderer());
+        bounds.translate(-pixelPos);
+
+        const QLineF lines[4] = {
+            QLineF(bounds.topLeft(), bounds.topRight()),
+            QLineF(bounds.bottomLeft(), bounds.bottomRight()),
+            QLineF(bounds.topLeft(), bounds.bottomLeft()),
+            QLineF(bounds.topRight(), bounds.bottomRight())
+        };
+
+        // Draw a solid white line
+        QPen pen(Qt::white, 1.0, Qt::SolidLine);
+        pen.setCosmetic(true);
+        painter->setPen(pen);
+        painter->drawLines(lines, 4);
+
+#if QT_VERSION >= 0x050600
+        const qreal devicePixelRatio = painter->device()->devicePixelRatioF();
+#else
+        const int devicePixelRatio = painter->device()->devicePixelRatio();
+#endif
+        const qreal dashLength = std::ceil(Utils::dpiScaled(3) * devicePixelRatio);
+
+        // Draw a black dashed line above the white line
+        pen.setColor(Qt::black);
+        pen.setCapStyle(Qt::FlatCap);
+        pen.setDashPattern({dashLength, dashLength});
+        painter->setPen(pen);
+        painter->drawLines(lines, 4);
+    }
 }
 
 void MapObjectItem::resizeObject(const QRectF &bounds)

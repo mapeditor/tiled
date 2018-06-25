@@ -56,6 +56,8 @@ public:
     void setFormat(ObjectTemplateFormat *format);
     ObjectTemplateFormat *format() const;
 
+    const SharedTileset &tileset() const;
+
 private:
     QString mFileName;
     QPointer<ObjectTemplateFormat> mFormat;
@@ -71,5 +73,8 @@ inline const QString &ObjectTemplate::fileName() const
 
 inline void ObjectTemplate::setFileName(const QString &fileName)
 { mFileName = fileName; }
+
+inline const SharedTileset &ObjectTemplate::tileset() const
+{ return mTileset; }
 
 } // namespace Tiled

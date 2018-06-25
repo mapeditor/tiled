@@ -23,6 +23,8 @@
 #include <QGraphicsObject>
 #include <QHash>
 
+#include <memory>
+
 namespace Tiled {
 
 class GroupLayer;
@@ -33,6 +35,7 @@ class Tile;
 namespace Internal {
 
 class MapDocument;
+class MapObjectItem;
 class MapObjectLabel;
 class MapObjectOutline;
 
@@ -49,11 +52,11 @@ class ObjectSelectionItem : public QGraphicsObject
 public:
     ObjectSelectionItem(MapDocument *mapDocument,
                         QGraphicsItem *parent = nullptr);
+    ~ObjectSelectionItem() override;
 
     // QGraphicsItem interface
     QRectF boundingRect() const override { return QRectF(); }
     void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *) override {}
-
 
 private slots:
     void selectedObjectsChanged();
@@ -77,6 +80,7 @@ private:
     MapDocument *mMapDocument;
     QHash<MapObject*, MapObjectLabel*> mObjectLabels;
     QHash<MapObject*, MapObjectOutline*> mObjectOutlines;
+    std::unique_ptr<MapObjectItem> mHoveredMapObjectItem;
 };
 
 } // namespace Internal

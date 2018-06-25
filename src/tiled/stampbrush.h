@@ -95,6 +95,8 @@ protected:
     void mapDocumentChanged(MapDocument *oldDocument,
                             MapDocument *newDocument) override;
 
+    QList<Layer *> targetLayers() const override;
+
 private:
     enum PaintFlags {
         Mergeable = 0x1

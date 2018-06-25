@@ -36,10 +36,11 @@
 #include "wangset.h"
 #include "wangfiller.h"
 
-#include <math.h>
 #include <QAction>
 #include <QToolBar>
 #include <QVector>
+
+#include <memory>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -220,6 +221,19 @@ void StampBrush::mapDocumentChanged(MapDocument *oldDocument,
     }
 }
 
+static TileLayer *findTileLayerByName(const Map &map, const QString &name)
+{
+    return static_cast<TileLayer*>(map.findLayer(name, Layer::TileLayerType));
+}
+
+QList<Layer *> StampBrush::targetLayers() const
+{
+    if (mIsRandom || mIsWangFill || mStamp.isEmpty())
+        return AbstractTileTool::targetLayers();
+
+    return targetLayersForStamp(mStamp);
+}
+
 /**
  * Updates the list used random stamps.
  * This is done by taking all non-null tiles from the original stamp mStamp.
@@ -235,14 +249,11 @@ void StampBrush::updateRandomList()
 
     for (const TileStampVariation &variation : mStamp.variations()) {
         mapDocument()->unifyTilesets(variation.map, mMissingTilesets);
-        TileLayer *tileLayer = variation.tileLayer();
-        for (int x = 0; x < tileLayer->width(); x++) {
-            for (int y = 0; y < tileLayer->height(); y++) {
-                const Cell &cell = tileLayer->cellAt(x, y);
+
+        for (auto layer : variation.map->tileLayers())
+            for (const Cell &cell : *static_cast<TileLayer*>(layer))
                 if (const Tile *tile = cell.tile())
                     mRandomCellPicker.add(cell, tile->probability());
-            }
-        }
     }
 }
 
@@ -326,9 +337,6 @@ void StampBrush::doPaint(int flags, QHash<TileLayer*, QRegion> *paintedRegions)
     if (!preview)
         return;
 
-    // This method shouldn't be called when current layer is not a tile layer
-    Q_ASSERT(currentTileLayer());
-
     mapDocument()->paintTileLayers(preview.data(),
                                    (flags & Mergeable) == Mergeable,
                                    &mMissingTilesets,
@@ -340,11 +348,6 @@ struct PaintOperation
     QPoint pos;
     Map *stamp;
 };
-
-static TileLayer *findTileLayerByName(const Map *map, const QString &name)
-{
-    return static_cast<TileLayer*>(map->findLayer(name, Layer::TileLayerType));
-}
 
 static void shiftRows(TileLayer *tileLayer, Map::StaggerIndex staggerIndex)
 {
@@ -387,9 +390,9 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &points)
                                               bounds.size(),
                                               mapDocument()->map()->tileSize());
 
-        TileLayer *previewLayer = new TileLayer(QString(),
-                                                bounds.topLeft(),
-                                                bounds.size());
+        std::unique_ptr<TileLayer> previewLayer {
+            new TileLayer(QString(), bounds.topLeft(), bounds.size())
+        };
 
         for (const QPoint &p : points) {
             const Cell &cell = mRandomCellPicker.pick();
@@ -398,7 +401,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &points)
                                   cell);
         }
 
-        preview->addLayer(previewLayer);
+        preview->addLayer(previewLayer.release());
         preview->addTilesets(preview->usedTilesets());
         mPreviewMap = preview;
     } else if (mIsWangFill) {
@@ -413,14 +416,14 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &points)
         for (const QPoint &p : points)
             paintedRegion += QRect(p, p);
 
-        QRect bounds = paintedRegion.boundingRect();
+        const QRect bounds = paintedRegion.boundingRect();
         SharedMap preview = SharedMap::create(mapDocument()->map()->orientation(),
                                               bounds.size(),
                                               mapDocument()->map()->tileSize());
 
-        TileLayer *previewLayer = new TileLayer(QString(),
-                                                bounds.topLeft(),
-                                                bounds.size());
+        std::unique_ptr<TileLayer> previewLayer {
+            new TileLayer(QString(), bounds.topLeft(), bounds.size())
+        };
 
         WangFiller wangFiller(mWangSet,
                               dynamic_cast<StaggeredRenderer *>(mapDocument()->renderer()),
@@ -437,7 +440,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &points)
                                   cell);
         }
 
-        preview->addLayer(previewLayer);
+        preview->addLayer(previewLayer.release());
         preview->addTileset(mWangSet->tileset()->sharedPointer());
         mPreviewMap = preview;
     } else {
@@ -513,7 +516,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &points)
             }
         }
 
-        QRect bounds = paintedRegion.boundingRect();
+        const QRect bounds = paintedRegion.boundingRect();
         SharedMap preview = SharedMap::create(mapDocument()->map()->orientation(),
                                               bounds.size(),
                                               mapDocument()->map()->tileSize());
@@ -521,7 +524,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &points)
         for (const PaintOperation &op : operations) {
             LayerIterator layerIterator(op.stamp, Layer::TileLayerType);
             while (auto tileLayer = static_cast<TileLayer*>(layerIterator.next())) {
-                TileLayer *target = findTileLayerByName(preview.data(), tileLayer->name());
+                TileLayer *target = findTileLayerByName(*preview, tileLayer->name());
                 if (!target) {
                     target = new TileLayer(tileLayer->name(), bounds.topLeft(), bounds.size());
                     preview->addLayer(target);

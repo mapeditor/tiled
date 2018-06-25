@@ -58,10 +58,8 @@ matrix:
         - wget -c "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" -O linuxdeployqt
         - chmod a+x linuxdeployqt
         - unset QTDIR; unset QT_PLUGIN_PATH; unset LD_LIBRARY_PATH
-        - mkdir -p Tiled/usr/plugins/imageformats
-        - cp /opt/qt510/plugins/imageformats/libqsvg.so Tiled/usr/plugins/imageformats/
-        - ./linuxdeployqt ./Tiled/usr/share/applications/org.mapeditor.Tiled.desktop -bundle-non-qt-libs -verbose=2
-        - ./linuxdeployqt ./Tiled/usr/share/applications/org.mapeditor.Tiled.desktop -appimage
+        - ./linuxdeployqt ./Tiled/usr/share/applications/org.mapeditor.Tiled.desktop -bundle-non-qt-libs -extra-plugins=imageformats/libqsvg.so -exclude-libs=libpython3.4m.so.1.0 -verbose=2
+        - ./linuxdeployqt ./Tiled/usr/share/applications/org.mapeditor.Tiled.desktop -exclude-libs=libpython3.4m.so.1.0 -appimage
         - find ./Tiled -executable -type f -exec ldd {} \; | grep " => /usr" | cut -d " " -f 2-3 | sort | uniq
         - mv Tiled-x86_64.AppImage Tiled-$TILED_VERSION-x86_64.AppImage
       deploy:

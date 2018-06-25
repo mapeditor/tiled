@@ -474,13 +474,14 @@ void AbstractObjectTool::showContextMenu(MapObject *clickedObject,
 
     // Create action for replacing an object with a template
     auto replaceTemplateAction = menu.addAction(tr("Replace With Template"), this, SLOT(replaceObjectsWithTemplate()));
+    auto selectedTemplate = objectTemplate();
 
-    if (auto selectedTemplate = objectTemplate()) {
+    if (selectedTemplate) {
         QString name = QFileInfo(selectedTemplate->fileName()).fileName();
         replaceTemplateAction->setText(tr("Replace With Template \"%1\"").arg(name));
-    } else {
-        replaceTemplateAction->setEnabled(false);
     }
+    if (!selectedTemplate || !mapDocument()->templateAllowed(selectedTemplate))
+        replaceTemplateAction->setEnabled(false);
 
     if (selectedObjects.size() == 1) {
         MapObject *currentObject = selectedObjects.first();
@@ -516,8 +517,8 @@ void AbstractObjectTool::showContextMenu(MapObject *clickedObject,
     menu.addAction(tr("Flip Horizontally"), this, SLOT(flipHorizontally()), QKeySequence(tr("X")));
     menu.addAction(tr("Flip Vertically"), this, SLOT(flipVertically()), QKeySequence(tr("Y")));
 
-    ObjectGroup *objectGroup = RaiseLowerHelper::sameObjectGroup(selectedObjects);
-    if (objectGroup && objectGroup->drawOrder() == ObjectGroup::IndexOrder) {
+    ObjectGroup *sameObjectGroup = RaiseLowerHelper::sameObjectGroup(selectedObjects);
+    if (sameObjectGroup && sameObjectGroup->drawOrder() == ObjectGroup::IndexOrder) {
         menu.addSeparator();
         menu.addAction(tr("Raise Object"), this, SLOT(raise()), QKeySequence(tr("PgUp")));
         menu.addAction(tr("Lower Object"), this, SLOT(lower()), QKeySequence(tr("PgDown")));
@@ -525,14 +526,16 @@ void AbstractObjectTool::showContextMenu(MapObject *clickedObject,
         menu.addAction(tr("Lower Object to Bottom"), this, SLOT(lowerToBottom()), QKeySequence(tr("End")));
     }
 
-    const QList<ObjectGroup*> objectGroups = mapDocument()->map()->objectGroups();
-    if (objectGroups.size() > 1) {
+    auto objectGroups = mapDocument()->map()->objectGroups();
+    if (!objectGroups.isEmpty()) {
         menu.addSeparator();
         QMenu *moveToLayerMenu = menu.addMenu(tr("Move %n Object(s) to Layer",
                                                  "", selectedObjects.size()));
-        for (ObjectGroup *objectGroup : objectGroups) {
+        for (Layer *layer : objectGroups) {
+            ObjectGroup *objectGroup = static_cast<ObjectGroup*>(layer);
             QAction *action = moveToLayerMenu->addAction(objectGroup->name());
             action->setData(QVariant::fromValue(objectGroup));
+            action->setEnabled(objectGroup != sameObjectGroup);
         }
     }
 
@@ -555,6 +558,9 @@ void AbstractObjectTool::showContextMenu(MapObject *clickedObject,
         return;
     }
 
-    if (ObjectGroup *objectGroup = action->data().value<ObjectGroup*>())
+    if (ObjectGroup *objectGroup = action->data().value<ObjectGroup*>()) {
+        const auto selectedObjectsCopy = selectedObjects;
         mapDocument()->moveObjectsToGroup(selectedObjects, objectGroup);
+        mapDocument()->setSelectedObjects(selectedObjectsCopy);
+    }
 }

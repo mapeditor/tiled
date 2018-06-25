@@ -39,6 +39,7 @@
 #include <QHeaderView>
 #include <QLabel>
 #include <QMenu>
+#include <QPainter>
 #include <QSettings>
 #include <QToolBar>
 #include <QToolButton>
@@ -198,10 +199,9 @@ void ObjectsDock::aboutToShowMoveToMenu()
 {
     mMoveToMenu->clear();
 
-    const auto &objectGroups = mMapDocument->map()->objectGroups();
-    for (ObjectGroup *objectGroup : objectGroups) {
-        QAction *action = mMoveToMenu->addAction(objectGroup->name());
-        action->setData(QVariant::fromValue(objectGroup));
+    for (Layer *layer : mMapDocument->map()->objectGroups()) {
+        QAction *action = mMoveToMenu->addAction(layer->name());
+        action->setData(QVariant::fromValue(static_cast<ObjectGroup*>(layer)));
     }
 }
 
@@ -225,21 +225,20 @@ void ObjectsDock::saveExpandedGroups()
     mExpandedGroups[mMapDocument].clear();
 
     const auto proxyModel = static_cast<QAbstractProxyModel*>(mObjectsView->model());
-    const auto &objectGroups = mMapDocument->map()->objectGroups();
 
-    for (ObjectGroup *og : objectGroups) {
-        const QModelIndex sourceIndex = mMapDocument->mapObjectModel()->index(og);
+    for (Layer *layer : mMapDocument->map()->objectGroups()) {
+        const QModelIndex sourceIndex = mMapDocument->mapObjectModel()->index(layer);
         const QModelIndex index = proxyModel->mapFromSource(sourceIndex);
         if (mObjectsView->isExpanded(index))
-            mExpandedGroups[mMapDocument].append(og);
+            mExpandedGroups[mMapDocument].append(layer);
     }
 }
 
 void ObjectsDock::restoreExpandedGroups()
 {
     const auto objectGroups = mExpandedGroups.take(mMapDocument);
-    for (ObjectGroup *og : objectGroups) {
-        const QModelIndex sourceIndex = mMapDocument->mapObjectModel()->index(og);
+    for (Layer *layer : objectGroups) {
+        const QModelIndex sourceIndex = mMapDocument->mapObjectModel()->index(layer);
         const QModelIndex index = static_cast<QAbstractProxyModel*>(mObjectsView->model())->mapFromSource(sourceIndex);
         mObjectsView->setExpanded(index, true);
     }
@@ -253,12 +252,39 @@ void ObjectsDock::documentAboutToClose(Document *document)
 
 ///// ///// ///// ///// /////
 
+class ObjectsViewport : public QWidget
+{
+    Q_OBJECT
+
+public:
+    ObjectsViewport(QWidget *parent = nullptr)
+        : QWidget(parent)
+    {}
+
+signals:
+    void mouseLeft();
+
+protected:
+    void leaveEvent(QEvent *) override { emit mouseLeft(); }
+};
+
+
 ObjectsView::ObjectsView(QWidget *parent)
     : QTreeView(parent)
     , mMapDocument(nullptr)
     , mProxyModel(new ReversingProxyModel(this))
     , mSynching(false)
 {
+    auto objectsViewport = new ObjectsViewport;
+
+    connect(objectsViewport, &ObjectsViewport::mouseLeft, this, [this] {
+        if (mMapDocument)
+            mMapDocument->setHoveredMapObject(nullptr);
+    });
+
+    setViewport(objectsViewport);
+    setMouseTracking(true);
+
     setUniformRowHeights(true);
     setModel(mProxyModel);
     setItemDelegate(new IconCheckDelegate(IconCheckDelegate::VisibilityIcon, false, this));
@@ -301,6 +327,9 @@ void ObjectsView::setMapDocument(MapDocument *mapDoc)
 
         connect(mMapDocument, &MapDocument::selectedObjectsChanged,
                 this, &ObjectsView::selectedObjectsChanged);
+
+        connect(mMapDocument, &MapDocument::hoveredMapObjectChanged,
+                this, &ObjectsView::hoveredObjectChanged);
 
         restoreVisibleColumns();
         synchronizeSelectedItems();
@@ -347,6 +376,18 @@ void ObjectsView::mousePressEvent(QMouseEvent *event)
     }
 
     QTreeView::mousePressEvent(event);
+}
+
+void ObjectsView::mouseMoveEvent(QMouseEvent *event)
+{
+    if (!mMapDocument)
+        return;
+
+    const QModelIndex proxyIndex = indexAt(event->pos());
+    const QModelIndex index = mProxyModel->mapToSource(proxyIndex);
+
+    MapObject *mapObject = mapObjectModel()->toMapObject(index);
+    mMapDocument->setHoveredMapObject(mapObject);
 }
 
 void ObjectsView::onActivated(const QModelIndex &proxyIndex)
@@ -397,6 +438,22 @@ void ObjectsView::selectionChanged(const QItemSelection &selected,
     }
 }
 
+void ObjectsView::drawRow(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &proxyIndex) const
+{
+    if (mMapDocument) {
+        const QModelIndex index = mProxyModel->mapToSource(proxyIndex);
+        const MapObject *mapObject = mapObjectModel()->toMapObject(index);
+
+        if (mapObject && mapObject == mMapDocument->hoveredMapObject()) {
+            QColor hoverColor = QGuiApplication::palette().highlight().color();
+            hoverColor.setAlpha(64);
+            painter->fillRect(option.rect, hoverColor);
+        }
+    }
+
+    QTreeView::drawRow(painter, option, proxyIndex);
+}
+
 void ObjectsView::selectedObjectsChanged()
 {
     if (mSynching)
@@ -409,6 +466,12 @@ void ObjectsView::selectedObjectsChanged()
         MapObject *o = selectedObjects.first();
         scrollTo(mProxyModel->mapFromSource(mapObjectModel()->index(o)));
     }
+}
+
+void ObjectsView::hoveredObjectChanged(MapObject *object, MapObject *previous)
+{
+    updateRow(object);
+    updateRow(previous);
 }
 
 void ObjectsView::setColumnVisibility(bool visible)
@@ -476,3 +539,17 @@ void ObjectsView::synchronizeSelectedItems()
                              QItemSelectionModel::Clear);
     mSynching = false;
 }
+
+void ObjectsView::updateRow(MapObject *object)
+{
+    if (!object)
+        return;
+
+    const QModelIndex index = mapObjectModel()->index(object);
+    const QModelIndex proxyIndex = mProxyModel->mapFromSource(index);
+    const QRect rect = visualRect(proxyIndex);
+
+    viewport()->update(QRect(0, rect.y(), viewport()->width(), rect.height()));
+}
+
+#include "objectsdock.moc"

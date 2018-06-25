@@ -28,10 +28,11 @@
 #include "preferences.h"
 
 #include <QFileInfo>
-#include <QScopedPointer>
 #include <QTextStream>
 
 #include "qtcompat_p.h"
+
+#include <memory>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -173,7 +174,7 @@ bool AutomappingManager::loadFile(const QString &filePath)
         if (rulePath.endsWith(QLatin1String(".tmx"), Qt::CaseInsensitive)) {
             TmxMapFormat tmxFormat;
 
-            QScopedPointer<Map> rules(tmxFormat.read(rulePath));
+            std::unique_ptr<Map> rules(tmxFormat.read(rulePath));
 
             if (!rules) {
                 mError += tr("Opening rules map failed:\n%1").arg(
@@ -182,7 +183,7 @@ bool AutomappingManager::loadFile(const QString &filePath)
                 continue;
             }
 
-            AutoMapper *autoMapper = new AutoMapper(mMapDocument, rules.take(), rulePath);
+            AutoMapper *autoMapper = new AutoMapper(mMapDocument, rules.release(), rulePath);
 
             mWarning += autoMapper->warningString();
             const QString error = autoMapper->errorString();

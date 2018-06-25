@@ -33,6 +33,7 @@
 #include "hex.h"
 
 #include <algorithm>
+#include <memory>
 
 using namespace Tiled;
 
@@ -208,22 +209,23 @@ void Tiled::TileLayer::setCell(int x, int y, const Cell &cell)
 
 TileLayer *TileLayer::copy(const QRegion &region) const
 {
-    const QRect areaBounds = region.boundingRect();
+    const QRect regionBounds = region.boundingRect();
+    const QRegion regionWithContents = region.intersected(mBounds);
 
     TileLayer *copied = new TileLayer(QString(),
                                       0, 0,
-                                      areaBounds.width(), areaBounds.height());
+                                      regionBounds.width(), regionBounds.height());
 
 #if QT_VERSION < 0x050800
-    const auto rects = region.rects();
+    const auto rects = regionWithContents.rects();
     for (const QRect &rect : rects) {
 #else
-    for (const QRect &rect : region) {
+    for (const QRect &rect : regionWithContents) {
 #endif
         for (int x = rect.left(); x <= rect.right(); ++x)
             for (int y = rect.top(); y <= rect.bottom(); ++y)
-                copied->setCell(x - areaBounds.x(),
-                                y - areaBounds.y(),
+                copied->setCell(x - regionBounds.x(),
+                                y - regionBounds.y(),
                                 cellAt(x, y));
     }
 
@@ -289,13 +291,15 @@ void TileLayer::setTiles(const QRegion &area, Tile *tile)
     }
 }
 
-void TileLayer::erase(const QRegion &area)
+void TileLayer::erase(const QRegion &region)
 {
+    const QRegion regionWithContents = region.intersected(mBounds);
+
 #if QT_VERSION < 0x050800
-    const auto rects = area.rects();
+    const auto rects = regionWithContents.rects();
     for (const QRect &rect : rects)
 #else
-    for (const QRect &rect : area)
+    for (const QRect &rect : regionWithContents)
 #endif
         for (int x = rect.left(); x <= rect.right(); ++x)
             for (int y = rect.top(); y <= rect.bottom(); ++y)
@@ -304,7 +308,7 @@ void TileLayer::erase(const QRegion &area)
 
 void TileLayer::flip(FlipDirection direction)
 {
-    QScopedPointer<TileLayer> newLayer(new TileLayer(QString(), 0, 0, mWidth, mHeight));
+    const std::unique_ptr<TileLayer> newLayer(new TileLayer(QString(), 0, 0, mWidth, mHeight));
 
     Q_ASSERT(direction == FlipHorizontally || direction == FlipVertically);
 
@@ -333,19 +337,20 @@ void TileLayer::flip(FlipDirection direction)
     }
 
     mChunks = newLayer->mChunks;
+    mBounds = newLayer->mBounds;
 }
 
 void TileLayer::flipHexagonal(FlipDirection direction)
 {
-    QScopedPointer<TileLayer> newLayer(new TileLayer(QString(), 0, 0, mWidth, mHeight));
+    const std::unique_ptr<TileLayer> newLayer(new TileLayer(QString(), 0, 0, mWidth, mHeight));
 
     Q_ASSERT(direction == FlipHorizontally || direction == FlipVertically);
 
     // for more info see impl "void TileLayer::rotateHexagonal(RotateDirection direction)"
-    static const char flipMaskH[16] = { 8, 6, 5, 4, 12, 2, 1, 0, 0, 14, 13, 12, 4, 10, 9, 8 }; // [0,15]<=>[8,7]; 2<=>5; 1<=>6; [12,3]<=>[4,11]; 14<=>9; 13<=>10;
-    static const char flipMaskV[16] = { 4, 10, 9, 8, 0, 14, 13, 12, 12, 2, 1, 0, 8, 6, 5, 4 }; // [0,15]<=>[4,11]; 2<=>9; 1<=>10; [12,3]<=>[8,7]; 14<=>5; 13<=>6;
+    static const unsigned char flipMaskH[16] = { 8, 6, 5, 4, 12, 2, 1, 0, 0, 14, 13, 12, 4, 10, 9, 8 }; // [0,15]<=>[8,7]; 2<=>5; 1<=>6; [12,3]<=>[4,11]; 14<=>9; 13<=>10;
+    static const unsigned char flipMaskV[16] = { 4, 10, 9, 8, 0, 14, 13, 12, 12, 2, 1, 0, 8, 6, 5, 4 }; // [0,15]<=>[4,11]; 2<=>9; 1<=>10; [12,3]<=>[8,7]; 14<=>5; 13<=>6;
 
-    const char (&flipMask)[16] = (direction == FlipHorizontally ? flipMaskH : flipMaskV);
+    const unsigned char (&flipMask)[16] = (direction == FlipHorizontally ? flipMaskH : flipMaskV);
 
     QHashIterator<QPoint, Chunk> it(mChunks);
     while (it.hasNext()) {
@@ -382,19 +387,20 @@ void TileLayer::flipHexagonal(FlipDirection direction)
     }
 
     mChunks = newLayer->mChunks;
+    mBounds = newLayer->mBounds;
 }
 
 void TileLayer::rotate(RotateDirection direction)
 {
-    static const char rotateRightMask[8] = { 5, 4, 1, 0, 7, 6, 3, 2 };
-    static const char rotateLeftMask[8]  = { 3, 2, 7, 6, 1, 0, 5, 4 };
+    static const unsigned char rotateRightMask[8] = { 5, 4, 1, 0, 7, 6, 3, 2 };
+    static const unsigned char rotateLeftMask[8]  = { 3, 2, 7, 6, 1, 0, 5, 4 };
 
-    const char (&rotateMask)[8] =
+    const unsigned char (&rotateMask)[8] =
             (direction == RotateRight) ? rotateRightMask : rotateLeftMask;
 
     int newWidth = mHeight;
     int newHeight = mWidth;
-    QScopedPointer<TileLayer> newLayer(new TileLayer(QString(), 0, 0, newWidth, newHeight));
+    const std::unique_ptr<TileLayer> newLayer(new TileLayer(QString(), 0, 0, newWidth, newHeight));
 
     QHashIterator<QPoint, Chunk> it(mChunks);
     while (it.hasNext()) {
@@ -431,6 +437,7 @@ void TileLayer::rotate(RotateDirection direction)
     mWidth = newWidth;
     mHeight = newHeight;
     mChunks = newLayer->mChunks;
+    mBounds = newLayer->mBounds;
 }
 
 void TileLayer::rotateHexagonal(RotateDirection direction, Map *map)
@@ -450,7 +457,7 @@ void TileLayer::rotateHexagonal(RotateDirection direction, Map *map)
 
     int newWidth = topRight.toStaggered(staggerIndex, staggerAxis).x() * 2 + 2;
     int newHeight = bottomRight.toStaggered(staggerIndex, staggerAxis).y() * 2 + 2;
-    QScopedPointer<TileLayer> newLayer(new TileLayer(QString(), 0, 0, newWidth, newHeight));
+    const std::unique_ptr<TileLayer> newLayer(new TileLayer(QString(), 0, 0, newWidth, newHeight));
 
     Hex newCenter(newWidth / 2, newHeight / 2, staggerIndex, staggerAxis);
 
@@ -472,10 +479,10 @@ void TileLayer::rotateHexagonal(RotateDirection direction, Map *map)
 
     */
 
-    static const char rotateRightMask[16] = { 2, 12, 1, 14, 6, 8, 5, 10, 10,  4, 9, 0, 14,  0, 13,  2 }; // [0,15]->2->1->[12,3]->14->13; [8,7]->10->9->[4,11]->6->5;
-    static const char rotateLeftMask[16]  = { 13, 2, 0,  1, 9, 6, 4,  5,  5, 10, 8, 9,  1, 14, 12, 13 }; // [0,15]->13->14->[12,3]->1->2; [8,7]->5->6->[4,11]->9->10;
+    static const unsigned char rotateRightMask[16] = { 2, 12, 1, 14, 6, 8, 5, 10, 10,  4, 9, 0, 14,  0, 13,  2 }; // [0,15]->2->1->[12,3]->14->13; [8,7]->10->9->[4,11]->6->5;
+    static const unsigned char rotateLeftMask[16]  = { 13, 2, 0,  1, 9, 6, 4,  5,  5, 10, 8, 9,  1, 14, 12, 13 }; // [0,15]->13->14->[12,3]->1->2; [8,7]->5->6->[4,11]->9->10;
 
-    const char (&rotateMask)[16] =
+    const unsigned char (&rotateMask)[16] =
             (direction == RotateRight) ? rotateRightMask : rotateLeftMask;
 
     QHashIterator<QPoint, Chunk> it(mChunks);
@@ -519,6 +526,7 @@ void TileLayer::rotateHexagonal(RotateDirection direction, Map *map)
     mWidth = newWidth;
     mHeight = newHeight;
     mChunks = newLayer->mChunks;
+    mBounds = newLayer->mBounds;
 
     QRect filledRect = region().boundingRect();
 
@@ -590,7 +598,7 @@ void TileLayer::resize(const QSize &size, const QPoint &offset)
     if (this->size() == size && offset.isNull())
         return;
 
-    QScopedPointer<TileLayer> newLayer(new TileLayer(QString(), 0, 0, size.width(), size.height()));
+    const std::unique_ptr<TileLayer> newLayer(new TileLayer(QString(), 0, 0, size.width(), size.height()));
 
     // Copy over the preserved part
     QRect area = mBounds.translated(offset).intersected(newLayer->rect());
@@ -617,7 +625,7 @@ void TileLayer::offsetTiles(const QPoint &offset,
     if (offset.isNull())
         return;
 
-    QScopedPointer<TileLayer> newLayer(clone());
+    const std::unique_ptr<TileLayer> newLayer(clone());
 
     for (int y = bounds.top(); y <= bounds.bottom(); ++y) {
         for (int x = bounds.left(); x <= bounds.right(); ++x) {
@@ -647,7 +655,7 @@ void TileLayer::offsetTiles(const QPoint &offset,
 
 void TileLayer::offsetTiles(const QPoint &offset)
 {
-    QScopedPointer<TileLayer> newLayer(new TileLayer(QString(), 0, 0, 0, 0));
+    const std::unique_ptr<TileLayer> newLayer(new TileLayer(QString(), 0, 0, 0, 0));
 
     // Process only the allocated chunks
     QHashIterator<QPoint, Chunk> it(mChunks);

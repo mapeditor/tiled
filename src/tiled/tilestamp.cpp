@@ -31,13 +31,6 @@
 namespace Tiled {
 namespace Internal {
 
-TileLayer *TileStampVariation::tileLayer() const
-{
-    Q_ASSERT(map);
-    return static_cast<TileLayer*>(map->layerAt(0));
-}
-
-
 class TileStampData : public QSharedData
 {
 public:
@@ -69,7 +62,6 @@ TileStampData::TileStampData(const TileStampData &other)
 
 TileStampData::~TileStampData()
 {
-    // decrease reference to tilesets and delete maps
     for (const TileStampVariation &variation : variations)
         delete variation.map;
 }
@@ -146,9 +138,8 @@ QSize TileStamp::maxSize() const
 {
     QSize size;
     for (const TileStampVariation &variation : d->variations) {
-        const QSize variationSize = variation.tileLayer()->size();
-        size.setWidth(qMax(size.width(), variationSize.width()));
-        size.setHeight(qMax(size.height(), variationSize.height()));
+        size.setWidth(qMax(size.width(), variation.map->width()));
+        size.setHeight(qMax(size.height(), variation.map->height()));
     }
     return size;
 }
@@ -196,7 +187,7 @@ void TileStamp::setQuickStampIndex(int quickStampIndex)
     d->quickStampIndex = quickStampIndex;
 }
 
-TileStampVariation TileStamp::randomVariation() const
+const TileStampVariation &TileStamp::randomVariation() const
 {
     Q_ASSERT(!d->variations.isEmpty());
 
@@ -204,7 +195,7 @@ TileStampVariation TileStamp::randomVariation() const
     for (const TileStampVariation &variation : d->variations)
         randomPicker.add(&variation, variation.probability);
 
-    return randomPicker.pick()->map;
+    return *randomPicker.pick();
 }
 
 /**
@@ -217,25 +208,35 @@ TileStamp TileStamp::flipped(FlipDirection direction) const
     flipped.d.detach();
 
     for (const TileStampVariation &variation : flipped.variations()) {
-        TileLayer *layer = variation.tileLayer();
+        const QRect mapRect(QPoint(), variation.map->size());
+
+        for (auto layer : variation.map->tileLayers()) {
+            TileLayer *tileLayer = static_cast<TileLayer*>(layer);
+
+            // Synchronize tile layer size to map size (assumes map contains all layers)
+            if (tileLayer->rect() != mapRect) {
+                tileLayer->resize(mapRect.size(), tileLayer->position());
+                tileLayer->setPosition(0, 0);
+            }
+
+            if (variation.map->orientation() == Map::Hexagonal)
+                tileLayer->flipHexagonal(direction);
+            else
+                tileLayer->flip(direction);
+        }
 
         if (variation.map->isStaggered()) {
             Map::StaggerAxis staggerAxis = variation.map->staggerAxis();
 
             if (staggerAxis == Map::StaggerY) {
-                if ((direction == FlipVertically && !(layer->height() & 1)) || direction == FlipHorizontally)
+                if ((direction == FlipVertically && !(variation.map->height() & 1)) || direction == FlipHorizontally)
                     variation.map->invertStaggerIndex();
 
             } else {
-                if ((direction == FlipHorizontally && !(layer->width() & 1)) || direction == FlipVertically)
+                if ((direction == FlipHorizontally && !(variation.map->width() & 1)) || direction == FlipVertically)
                     variation.map->invertStaggerIndex();
             }
         }
-
-        if (variation.map->orientation() == Map::Hexagonal)
-            layer->flipHexagonal(direction);
-        else
-            layer->flip(direction);
     }
 
     return flipped;
@@ -251,14 +252,28 @@ TileStamp TileStamp::rotated(RotateDirection direction) const
     rotated.d.detach();
 
     for (const TileStampVariation &variation : rotated.variations()) {
-        TileLayer *layer = variation.tileLayer();
-        if (variation.map->orientation() == Map::Hexagonal)
-            layer->rotateHexagonal(direction, variation.map);
-        else
-            layer->rotate(direction);
+        const QRect mapRect(QPoint(), variation.map->size());
+        QSize rotatedSize;
 
-        variation.map->setWidth(layer->width());
-        variation.map->setHeight(layer->height());
+        for (auto layer : variation.map->tileLayers()) {
+            TileLayer *tileLayer = static_cast<TileLayer*>(layer);
+
+            // Synchronize tile layer size to map size (assumes map contains all layers)
+            if (tileLayer->rect() != mapRect) {
+                tileLayer->resize(mapRect.size(), tileLayer->position());
+                tileLayer->setPosition(0, 0);
+            }
+
+            if (variation.map->orientation() == Map::Hexagonal)
+                tileLayer->rotateHexagonal(direction, variation.map);
+            else
+                tileLayer->rotate(direction);
+
+            rotatedSize = tileLayer->size();
+        }
+
+        variation.map->setWidth(rotatedSize.width());
+        variation.map->setHeight(rotatedSize.height());
     }
 
     return rotated;

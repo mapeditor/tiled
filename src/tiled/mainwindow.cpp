@@ -413,25 +413,31 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             this, &MainWindow::addExternalTileset);
     connect(mUi->actionLoadWorld, &QAction::triggered, this, [this,preferences]{
         QString lastPath = preferences->lastPath(Preferences::WorldFile);
-        QString worldFile = QFileDialog::getOpenFileName(this, tr("Open world"), lastPath);
+        QString worldFile = QFileDialog::getOpenFileName(this, tr("Load World"), lastPath);
         if (worldFile.isEmpty())
             return;
 
         preferences->setLastPath(Preferences::WorldFile, QFileInfo(worldFile).path());
-        WorldManager::instance().loadWorld(worldFile);
-        mSettings.setValue(QLatin1String("LoadedWorlds"),
-                           QVariant(WorldManager::instance().worlds().keys()));
-        mUi->menuUnloadWorld->setEnabled(!WorldManager::instance().worlds().isEmpty());
+        QString errorString;
+        if (!WorldManager::instance().loadWorld(worldFile, &errorString)) {
+            QMessageBox::critical(this, tr("Error Loading World"), errorString);
+        } else {
+            const auto worldFiles = WorldManager::instance().loadedWorldFiles();
+            mSettings.setValue(QLatin1String("LoadedWorlds"), QVariant(worldFiles));
+            mUi->menuUnloadWorld->setEnabled(!worldFiles.isEmpty());
+        }
     });
     connect(mUi->menuUnloadWorld, &QMenu::aboutToShow, this, [this] {
         mUi->menuUnloadWorld->clear();
-        for (const QString &fileName : WorldManager::instance().worlds().keys()) {
+
+        const auto worldFiles = WorldManager::instance().loadedWorldFiles();
+        for (const QString &fileName : worldFiles) {
             QAction *unloadAction = mUi->menuUnloadWorld->addAction(fileName);
             connect(unloadAction, &QAction::triggered, this, [this,fileName] {
                 WorldManager::instance().unloadWorld(fileName);
-                mSettings.setValue(QLatin1String("LoadedWorlds"),
-                                   QVariant(WorldManager::instance().worlds().keys()));
-                mUi->menuUnloadWorld->setEnabled(!WorldManager::instance().worlds().isEmpty());
+                const auto worldFiles = WorldManager::instance().loadedWorldFiles();
+                mSettings.setValue(QLatin1String("LoadedWorlds"), QVariant(worldFiles));
+                mUi->menuUnloadWorld->setEnabled(!worldFiles.isEmpty());
             });
         }
     });

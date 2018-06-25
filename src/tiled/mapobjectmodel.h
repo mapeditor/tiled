@@ -57,6 +57,7 @@ public:
         Type,
         Id,
         Position,
+        LastColumn = Position,
         ColumnCount
     };
 
@@ -97,7 +98,9 @@ public:
     void setObjectRotation(MapObject *o, qreal rotation);
 
     void setObjectProperty(MapObject *o, MapObject::Property property, const QVariant &value);
-    void emitObjectsChanged(const QList<MapObject *> &objects, const QList<Column> &columns = QList<Column>());
+    void emitObjectsChanged(const QList<MapObject *> &objects,
+                            const QList<Column> &columns = QList<Column>(),
+                            const QVector<int> &roles = QVector<int>());
     void emitObjectsChanged(const QList<MapObject*> &objects, Column column);
 
 signals:

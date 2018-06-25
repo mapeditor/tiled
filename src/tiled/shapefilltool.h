@@ -49,13 +49,13 @@ protected:
 
 private:
     enum ToolBehavior {
-        Free, //nothing has been started
+        Free,   // nothing has been started
         MakingShape
     };
 
     enum Shape {
-        Rect,   //making a rectangle
-        Circle //making a circle
+        Rect,   // making a rectangle
+        Circle  // making a circle
     };
 
     ToolBehavior mToolBehavior;

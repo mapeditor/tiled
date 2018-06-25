@@ -43,6 +43,7 @@
 
 namespace Tiled {
 
+class MapRenderer;
 class ObjectGroup;
 class ObjectTemplate;
 class Tile;
@@ -175,6 +176,7 @@ public:
 
     QRectF bounds() const;
     QRectF boundsUseTile() const;
+    QRectF screenBounds(const MapRenderer &renderer) const;
 
     const Cell &cell() const;
     void setCell(const Cell &cell);
