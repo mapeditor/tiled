@@ -20,11 +20,9 @@ QtGuiApplication {
     ]
 
     Properties {
-        condition: qbs.targetOS.contains("osx")
+        condition: qbs.targetOS.contains("darwin")
         targetName: "Tiled Quick"
     }
-
-    property string installBase: qbs.targetOS.contains("osx") ? "Tiled Quick.app/Contents/" : ""
 
     Group {
         condition: !qbs.targetOS.contains("darwin")
@@ -36,5 +34,13 @@ QtGuiApplication {
                 return "bin"
         }
         fileTagsFilter: product.type
+    }
+
+    // This is necessary to install the app bundle (OS X)
+    Group {
+        fileTagsFilter: ["bundle.content"]
+        qbs.install: true
+        qbs.installDir: "."
+        qbs.installSourceBase: product.buildDirectory
     }
 }

@@ -26,7 +26,7 @@ DynamicLibrary {
         "tilesnode.h",
     ]
 
-    property string installBase: qbs.targetOS.contains("osx") ? "Tiled Quick.app/Contents/" : ""
+    property string installBase: qbs.targetOS.contains("darwin") ? "Tiled Quick.app/Contents/" : ""
 
     Group {
         name: "qmldir"
