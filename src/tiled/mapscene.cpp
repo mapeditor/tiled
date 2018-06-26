@@ -69,12 +69,6 @@ MapScene::MapScene(QObject *parent):
     connect(tilesetManager, &TilesetManager::repaintTileset,
             this, &MapScene::repaintTileset);
 
-    Preferences *prefs = Preferences::instance();
-    connect(prefs, &Preferences::showGridChanged, this, &MapScene::setGridVisible);
-    connect(prefs, &Preferences::gridColorChanged, this, [this] { update(); });
-
-    mGridVisible = prefs->showGrid();
-
     WorldManager &worldManager = WorldManager::instance();
     connect(&worldManager, &WorldManager::worldsChanged, this, &MapScene::refreshScene);
 
@@ -101,10 +95,6 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument) {
         connect(mMapDocument, &MapDocument::mapChanged,
                 this, &MapScene::mapChanged);
-        connect(mMapDocument, &MapDocument::layerChanged,
-                this, &MapScene::layerChanged);
-        connect(mMapDocument, &MapDocument::currentLayerChanged,
-                this, &MapScene::currentLayerChanged);
         connect(mMapDocument, &MapDocument::tilesetTileOffsetChanged,
                 this, &MapScene::adaptToTilesetTileSizeChanges);
         connect(mMapDocument, &MapDocument::tileImageSourceChanged,
@@ -246,13 +236,6 @@ void MapScene::disableSelectedTool()
     mActiveTool = nullptr;
 }
 
-void MapScene::currentLayerChanged()
-{
-    // New layer may have a different offset, affecting the grid
-    if (mGridVisible)
-        update();
-}
-
 /**
  * Updates the possibly changed background color.
  */
@@ -276,17 +259,6 @@ void MapScene::repaintTileset(Tileset *tileset)
 }
 
 /**
- * A layer has changed. This can mean that the layer visibility, opacity or
- * offset changed.
- */
-void MapScene::layerChanged(Layer *)
-{
-    // Layer offset may have changed, affecting the grid
-    if (mGridVisible)
-        update();
-}
-
-/**
  * This function should be called when any tiles in the given tileset may have
  * changed their size or offset or image.
  */
@@ -303,40 +275,6 @@ void MapScene::adaptToTileSizeChanges()
 void MapScene::tilesetReplaced()
 {
     adaptToTilesetTileSizeChanges();
-}
-
-/**
- * Sets whether the tile grid is visible.
- */
-void MapScene::setGridVisible(bool visible)
-{
-    if (mGridVisible == visible)
-        return;
-
-    mGridVisible = visible;
-    update();
-}
-
-/**
- * QGraphicsScene::drawForeground override that draws the tile grid.
- */
-void MapScene::drawForeground(QPainter *painter, const QRectF &rect)
-{
-    if (!mMapDocument || !mGridVisible)
-        return;
-
-    QPointF offset;
-
-    // Take into account the offset of the current layer
-    if (Layer *layer = mMapDocument->currentLayer()) {
-        offset = layer->totalOffset();
-        painter->translate(offset);
-    }
-
-    Preferences *prefs = Preferences::instance();
-    mMapDocument->renderer()->drawGrid(painter,
-                                       rect.translated(-offset),
-                                       prefs->gridColor());
 }
 
 /**

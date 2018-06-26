@@ -39,6 +39,7 @@
 #include <QCursor>
 #include <QGraphicsSceneMouseEvent>
 #include <QPen>
+#include <QStyleOptionGraphicsItem>
 #include <QWidget>
 
 #include "qtcompat_p.h"
@@ -48,6 +49,62 @@ namespace Internal {
 
 static const qreal darkeningFactor = 0.6;
 static const qreal opacityFactor = 0.4;
+
+class TileGridItem : public QGraphicsObject
+{
+    Q_OBJECT
+
+public:
+    TileGridItem(MapDocument *mapDocument, QGraphicsItem *parent)
+        : QGraphicsObject(parent)
+        , mMapDocument(mapDocument)
+    {
+        Q_ASSERT(mapDocument);
+
+        setFlag(QGraphicsItem::ItemUsesExtendedStyleOption);
+
+        Preferences *prefs = Preferences::instance();
+        connect(prefs, &Preferences::showGridChanged, this, [this] (bool visible) { setVisible(visible); });
+        connect(prefs, &Preferences::gridColorChanged, this, [this] { update(); });
+
+        // New layer may have a different offset
+        connect(mapDocument, &MapDocument::currentLayerChanged,
+                this, [this] { update(); });
+
+        // Offset of current layer may have changed
+        connect(mapDocument, &MapDocument::layerChanged,
+                this, [this] (Layer *layer) {
+            if (Layer *currentLayer = mMapDocument->currentLayer())
+                if (currentLayer->isParentOrSelf(layer))
+                    update();
+        });
+    }
+
+    QRectF boundingRect() const override
+    {
+        return QRectF(INT_MIN / 512, INT_MIN / 512,
+                      INT_MAX / 256, INT_MAX / 256);
+    }
+
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *) override
+    {
+        QPointF offset;
+
+        // Take into account the offset of the current layer
+        if (Layer *layer = mMapDocument->currentLayer()) {
+            offset = layer->totalOffset();
+            painter->translate(offset);
+        }
+
+        Preferences *prefs = Preferences::instance();
+        mMapDocument->renderer()->drawGrid(painter,
+                                           QRectF(option->rect).translated(-offset),
+                                           prefs->gridColor());
+    }
+
+private:
+    MapDocument *mMapDocument;
+};
 
 MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
                  QGraphicsItem *parent)
@@ -94,8 +151,8 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
     mDarkRectangle->setPen(Qt::NoPen);
     mDarkRectangle->setBrush(Qt::black);
     mDarkRectangle->setOpacity(darkeningFactor);
-    mDarkRectangle->setRect(QRect(INT_MIN / 512, INT_MIN / 512,
-                                  INT_MAX / 256, INT_MAX / 256));
+    mDarkRectangle->setRect(QRectF(INT_MIN / 512, INT_MIN / 512,
+                                   INT_MAX / 256, INT_MAX / 256));
 
     if (displayMode == ReadOnly) {
         setDisplayMode(displayMode);
@@ -105,12 +162,17 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
         mTileSelectionItem.reset(new TileSelectionItem(mapDocument.data(), this));
         mTileSelectionItem->setZValue(10000 - 2);
 
+        mTileGridItem.reset(new TileGridItem(mapDocument.data(), this));
+        mTileGridItem->setZValue(10000 - 2);
+
         mObjectSelectionItem.reset(new ObjectSelectionItem(mapDocument.data(), this));
         mObjectSelectionItem->setZValue(10000 - 1);
     }
 }
 
-MapItem::~MapItem() = default;
+MapItem::~MapItem()
+{
+}
 
 void MapItem::setDisplayMode(DisplayMode displayMode)
 {
@@ -131,6 +193,7 @@ void MapItem::setDisplayMode(DisplayMode displayMode)
         setZValue(-1);
 
         mTileSelectionItem.reset();
+        mTileGridItem.reset();
         mObjectSelectionItem.reset();
     } else {
         unsetCursor();
@@ -139,7 +202,10 @@ void MapItem::setDisplayMode(DisplayMode displayMode)
         setZValue(0);
 
         mTileSelectionItem.reset(new TileSelectionItem(mapDocument(), this));
-        mTileSelectionItem->setZValue(10000 - 2);
+        mTileSelectionItem->setZValue(10000 - 3);
+
+        mTileGridItem.reset(new TileGridItem(mapDocument(), this));
+        mTileGridItem->setZValue(10000 - 2);
 
         mObjectSelectionItem.reset(new ObjectSelectionItem(mapDocument(), this));
         mObjectSelectionItem->setZValue(10000 - 1);
@@ -624,3 +690,5 @@ void MapItem::updateCurrentLayerHighlight()
 
 } // namespace Internal
 } // namespace Tiled
+
+#include "mapitem.moc"

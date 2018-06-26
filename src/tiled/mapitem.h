@@ -42,6 +42,7 @@ namespace Internal {
 class LayerItem;
 class MapObjectItem;
 class ObjectSelectionItem;
+class TileGridItem;
 class TileSelectionItem;
 
 /**
@@ -121,6 +122,7 @@ private:
     MapDocumentPtr mMapDocument;
     QGraphicsRectItem *mDarkRectangle;
     std::unique_ptr<TileSelectionItem> mTileSelectionItem;
+    std::unique_ptr<TileGridItem> mTileGridItem;
     std::unique_ptr<ObjectSelectionItem> mObjectSelectionItem;
     QMap<Layer*, LayerItem*> mLayerItems;
     QMap<MapObject*, MapObjectItem*> mObjectItems;

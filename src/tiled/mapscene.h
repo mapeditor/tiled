@@ -68,8 +68,6 @@ public:
     void setSelectedTool(AbstractTool *tool);
 
 protected:
-    void drawForeground(QPainter *painter, const QRectF &rect) override;
-
     bool event(QEvent *event) override;
 
     void keyPressEvent(QKeyEvent *event) override;
@@ -84,16 +82,10 @@ protected:
     void dragMoveEvent(QGraphicsSceneDragDropEvent *event) override;
 
 private slots:
-    void setGridVisible(bool visible);
-
     void refreshScene();
-
-    void currentLayerChanged();
 
     void mapChanged();
     void repaintTileset(Tileset *tileset);
-
-    void layerChanged(Layer *);
 
     void adaptToTilesetTileSizeChanges();
     void adaptToTileSizeChanges();
@@ -113,7 +105,6 @@ private:
     QHash<MapDocument*, MapItem*> mMapItems;
     AbstractTool *mSelectedTool;
     AbstractTool *mActiveTool;
-    bool mGridVisible;
     bool mUnderMouse;
     Qt::KeyboardModifiers mCurrentModifiers;
     QPointF mLastMousePos;
