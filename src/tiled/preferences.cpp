@@ -82,6 +82,7 @@ Preferences::Preferences()
     mGridFine = intValue("GridFine", 4);
     mObjectLineWidth = realValue("ObjectLineWidth", 2);
     mHighlightCurrentLayer = boolValue("HighlightCurrentLayer");
+    mHighlightHoveredObject = boolValue("HighlightHoveredObject", true);
     mShowTilesetGrid = boolValue("ShowTilesetGrid", true);
     mLanguage = stringValue("Language");
     mUseOpenGL = boolValue("OpenGL");
@@ -335,6 +336,17 @@ void Preferences::setHighlightCurrentLayer(bool highlight)
     mSettings->setValue(QLatin1String("Interface/HighlightCurrentLayer"),
                         mHighlightCurrentLayer);
     emit highlightCurrentLayerChanged(mHighlightCurrentLayer);
+}
+
+void Preferences::setHighlightHoveredObject(bool highlight)
+{
+    if (mHighlightHoveredObject == highlight)
+        return;
+
+    mHighlightHoveredObject = highlight;
+    mSettings->setValue(QLatin1String("Interface/HighlightHoveredObject"),
+                        mHighlightHoveredObject);
+    emit highlightHoveredObjectChanged(mHighlightHoveredObject);
 }
 
 void Preferences::setShowTilesetGrid(bool showTilesetGrid)

@@ -160,6 +160,7 @@
     <addaction name="menuShowObjectNames"/>
     <addaction name="actionShowTileAnimations"/>
     <addaction name="actionHighlightCurrentLayer"/>
+    <addaction name="actionHighlightHoveredObject"/>
     <addaction name="separator"/>
     <addaction name="menuSnapping"/>
     <addaction name="separator"/>
@@ -630,6 +631,14 @@
   <action name="actionLoadWorld">
    <property name="text">
     <string>Load World...</string>
+   </property>
+  </action>
+  <action name="actionHighlightHoveredObject">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Highlight Hovered Object</string>
    </property>
   </action>
  </widget>

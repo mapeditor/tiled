@@ -284,6 +284,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->actionSnapToFineGrid->setChecked(preferences->snapToFineGrid());
     mUi->actionSnapToPixels->setChecked(preferences->snapToPixels());
     mUi->actionHighlightCurrentLayer->setChecked(preferences->highlightCurrentLayer());
+    mUi->actionHighlightHoveredObject->setChecked(preferences->highlightHoveredObject());
     mUi->actionAutoMapWhileDrawing->setChecked(preferences->automappingDrawing());
 
 #ifdef Q_OS_MAC
@@ -401,6 +402,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             preferences, &Preferences::setSnapToPixels);
     connect(mUi->actionHighlightCurrentLayer, &QAction::toggled,
             preferences, &Preferences::setHighlightCurrentLayer);
+    connect(mUi->actionHighlightHoveredObject, &QAction::toggled,
+            preferences, &Preferences::setHighlightHoveredObject);
     connect(mUi->actionZoomIn, &QAction::triggered, this, &MainWindow::zoomIn);
     connect(mUi->actionZoomOut, &QAction::triggered, this, &MainWindow::zoomOut);
     connect(mUi->actionZoomNormal, &QAction::triggered, this, &MainWindow::zoomNormal);

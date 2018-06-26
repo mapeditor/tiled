@@ -292,7 +292,9 @@ ObjectSelectionItem::ObjectSelectionItem(MapDocument *mapDocument,
         addRemoveObjectLabels();
 }
 
-ObjectSelectionItem::~ObjectSelectionItem() = default;
+ObjectSelectionItem::~ObjectSelectionItem()
+{
+}
 
 void ObjectSelectionItem::selectedObjectsChanged()
 {
@@ -327,11 +329,11 @@ void ObjectSelectionItem::hoveredMapObjectChanged(MapObject *object,
         }
     }
 
-    if (object) {
+    if (object && prefs->highlightHoveredObject()) {
         mHoveredMapObjectItem.reset(new MapObjectItem(object, mMapDocument, this));
         mHoveredMapObjectItem->setEnabled(false);
         mHoveredMapObjectItem->setIsHoverIndicator(true);
-        mHoveredMapObjectItem->setZValue(-1.0);
+        mHoveredMapObjectItem->setZValue(-1.0);     // show below selection outlines
     } else {
         mHoveredMapObjectItem.reset();
     }
