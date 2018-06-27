@@ -98,7 +98,7 @@ public:
 
         Preferences *prefs = Preferences::instance();
         mMapDocument->renderer()->drawGrid(painter,
-                                           QRectF(option->rect).translated(-offset),
+                                           option->exposedRect.translated(-offset),
                                            prefs->gridColor());
     }
 
