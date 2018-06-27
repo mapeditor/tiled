@@ -252,37 +252,12 @@ void ObjectsDock::documentAboutToClose(Document *document)
 
 ///// ///// ///// ///// /////
 
-class ObjectsViewport : public QWidget
-{
-    Q_OBJECT
-
-public:
-    ObjectsViewport(QWidget *parent = nullptr)
-        : QWidget(parent)
-    {}
-
-signals:
-    void mouseLeft();
-
-protected:
-    void leaveEvent(QEvent *) override { emit mouseLeft(); }
-};
-
-
 ObjectsView::ObjectsView(QWidget *parent)
     : QTreeView(parent)
     , mMapDocument(nullptr)
     , mProxyModel(new ReversingProxyModel(this))
     , mSynching(false)
 {
-    auto objectsViewport = new ObjectsViewport;
-
-    connect(objectsViewport, &ObjectsViewport::mouseLeft, this, [this] {
-        if (mMapDocument)
-            mMapDocument->setHoveredMapObject(nullptr);
-    });
-
-    setViewport(objectsViewport);
     setMouseTracking(true);
 
     setUniformRowHeights(true);
@@ -388,6 +363,16 @@ void ObjectsView::mouseMoveEvent(QMouseEvent *event)
 
     MapObject *mapObject = mapObjectModel()->toMapObject(index);
     mMapDocument->setHoveredMapObject(mapObject);
+}
+
+bool ObjectsView::viewportEvent(QEvent *event)
+{
+    if (event->type() == QEvent::Leave) {
+        if (mMapDocument)
+            mMapDocument->setHoveredMapObject(nullptr);
+    }
+
+    return QTreeView::viewportEvent(event);
 }
 
 void ObjectsView::onActivated(const QModelIndex &proxyIndex)
@@ -551,5 +536,3 @@ void ObjectsView::updateRow(MapObject *object)
 
     viewport()->update(QRect(0, rect.y(), viewport()->width(), rect.height()));
 }
-
-#include "objectsdock.moc"

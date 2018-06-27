@@ -94,6 +94,7 @@ protected:
     bool event(QEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
+    bool viewportEvent(QEvent *event) override;
     void selectionChanged(const QItemSelection &selected,
                           const QItemSelection &deselected) override;
 
