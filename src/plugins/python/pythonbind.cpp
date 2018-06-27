@@ -9,6 +9,51 @@
 #include <stddef.h>
 
 
+#if PY_VERSION_HEX < 0x020400F0
+
+#define PyEval_ThreadsInitialized() 1
+
+#define Py_CLEAR(op)				\
+        do {                            	\
+                if (op) {			\
+                        PyObject *tmp = (PyObject *)(op);	\
+                        (op) = NULL;		\
+                        Py_DECREF(tmp);		\
+                }				\
+        } while (0)
+
+
+#define Py_VISIT(op)							\
+        do { 								\
+                if (op) {						\
+                        int vret = visit((PyObject *)(op), arg);	\
+                        if (vret)					\
+                                return vret;				\
+                }							\
+        } while (0)
+
+#endif
+
+
+
+#if PY_VERSION_HEX < 0x020500F0
+
+typedef int Py_ssize_t;
+# define PY_SSIZE_T_MAX INT_MAX
+# define PY_SSIZE_T_MIN INT_MIN
+typedef inquiry lenfunc;
+typedef intargfunc ssizeargfunc;
+typedef intobjargproc ssizeobjargproc;
+
+#endif
+
+
+#ifndef PyVarObject_HEAD_INIT
+#define PyVarObject_HEAD_INIT(type, size) \
+        PyObject_HEAD_INIT(type) size,
+#endif
+
+
 #if PY_VERSION_HEX >= 0x03000000
 #if PY_VERSION_HEX >= 0x03050000
 typedef PyAsyncMethods* cmpfunc;
@@ -4810,6 +4855,159 @@ PyTypeObject PyTiledMap_Type = {
 
 
 
+static PyObject* _wrap_PyTiledCell__get_flippedHorizontally(PyTiledCell *self, void * PYBINDGEN_UNUSED(closure))
+{
+    PyObject *py_retval;
+
+    py_retval = Py_BuildValue((char *) "N", PyBool_FromLong(self->obj->flippedHorizontally()));
+    return py_retval;
+}
+static int _wrap_PyTiledCell__set_flippedHorizontally(PyTiledCell *self, PyObject *value, void * PYBINDGEN_UNUSED(closure))
+{
+    PyObject *py_retval;
+    bool tmp_value;
+    PyObject *py_boolretval;
+
+    py_retval = Py_BuildValue((char *) "(O)", value);
+    if (!PyArg_ParseTuple(py_retval, (char *) "O", &py_boolretval)) {
+        Py_DECREF(py_retval);
+        return -1;
+    }
+    tmp_value = PyObject_IsTrue(py_boolretval);
+    self->obj->setFlippedHorizontally(tmp_value);
+    Py_DECREF(py_retval);
+    return 0;
+}
+static PyObject* _wrap_PyTiledCell__get_flippedVertically(PyTiledCell *self, void * PYBINDGEN_UNUSED(closure))
+{
+    PyObject *py_retval;
+
+    py_retval = Py_BuildValue((char *) "N", PyBool_FromLong(self->obj->flippedVertically()));
+    return py_retval;
+}
+static int _wrap_PyTiledCell__set_flippedVertically(PyTiledCell *self, PyObject *value, void * PYBINDGEN_UNUSED(closure))
+{
+    PyObject *py_retval;
+    bool tmp_value;
+    PyObject *py_boolretval;
+
+    py_retval = Py_BuildValue((char *) "(O)", value);
+    if (!PyArg_ParseTuple(py_retval, (char *) "O", &py_boolretval)) {
+        Py_DECREF(py_retval);
+        return -1;
+    }
+    tmp_value = PyObject_IsTrue(py_boolretval);
+    self->obj->setFlippedVertically(tmp_value);
+    Py_DECREF(py_retval);
+    return 0;
+}
+static PyObject* _wrap_PyTiledCell__get_flippedAntiDiagonally(PyTiledCell *self, void * PYBINDGEN_UNUSED(closure))
+{
+    PyObject *py_retval;
+
+    py_retval = Py_BuildValue((char *) "N", PyBool_FromLong(self->obj->flippedAntiDiagonally()));
+    return py_retval;
+}
+static int _wrap_PyTiledCell__set_flippedAntiDiagonally(PyTiledCell *self, PyObject *value, void * PYBINDGEN_UNUSED(closure))
+{
+    PyObject *py_retval;
+    bool tmp_value;
+    PyObject *py_boolretval;
+
+    py_retval = Py_BuildValue((char *) "(O)", value);
+    if (!PyArg_ParseTuple(py_retval, (char *) "O", &py_boolretval)) {
+        Py_DECREF(py_retval);
+        return -1;
+    }
+    tmp_value = PyObject_IsTrue(py_boolretval);
+    self->obj->setFlippedAntiDiagonally(tmp_value);
+    Py_DECREF(py_retval);
+    return 0;
+}
+static PyObject* _wrap_PyTiledCell__get_rotatedHexagonal120(PyTiledCell *self, void * PYBINDGEN_UNUSED(closure))
+{
+    PyObject *py_retval;
+
+    py_retval = Py_BuildValue((char *) "N", PyBool_FromLong(self->obj->rotatedHexagonal120()));
+    return py_retval;
+}
+static int _wrap_PyTiledCell__set_rotatedHexagonal120(PyTiledCell *self, PyObject *value, void * PYBINDGEN_UNUSED(closure))
+{
+    PyObject *py_retval;
+    bool tmp_value;
+    PyObject *py_boolretval;
+
+    py_retval = Py_BuildValue((char *) "(O)", value);
+    if (!PyArg_ParseTuple(py_retval, (char *) "O", &py_boolretval)) {
+        Py_DECREF(py_retval);
+        return -1;
+    }
+    tmp_value = PyObject_IsTrue(py_boolretval);
+    self->obj->setRotatedHexagonal120(tmp_value);
+    Py_DECREF(py_retval);
+    return 0;
+}
+static PyObject* _wrap_PyTiledCell__get_checked(PyTiledCell *self, void * PYBINDGEN_UNUSED(closure))
+{
+    PyObject *py_retval;
+
+    py_retval = Py_BuildValue((char *) "N", PyBool_FromLong(self->obj->checked()));
+    return py_retval;
+}
+static int _wrap_PyTiledCell__set_checked(PyTiledCell *self, PyObject *value, void * PYBINDGEN_UNUSED(closure))
+{
+    PyObject *py_retval;
+    bool tmp_value;
+    PyObject *py_boolretval;
+
+    py_retval = Py_BuildValue((char *) "(O)", value);
+    if (!PyArg_ParseTuple(py_retval, (char *) "O", &py_boolretval)) {
+        Py_DECREF(py_retval);
+        return -1;
+    }
+    tmp_value = PyObject_IsTrue(py_boolretval);
+    self->obj->setChecked(tmp_value);
+    Py_DECREF(py_retval);
+    return 0;
+}
+static PyGetSetDef PyTiledCell__getsets[] = {
+    {
+        (char*) "flippedVertically", /* attribute name */
+        (getter) _wrap_PyTiledCell__get_flippedVertically, /* C function to get the attribute */
+        (setter) _wrap_PyTiledCell__set_flippedVertically, /* C function to set the attribute */
+        NULL, /* optional doc string */
+        NULL /* optional additional data for getter and setter */
+    },
+    {
+        (char*) "rotatedHexagonal120", /* attribute name */
+        (getter) _wrap_PyTiledCell__get_rotatedHexagonal120, /* C function to get the attribute */
+        (setter) _wrap_PyTiledCell__set_rotatedHexagonal120, /* C function to set the attribute */
+        NULL, /* optional doc string */
+        NULL /* optional additional data for getter and setter */
+    },
+    {
+        (char*) "checked", /* attribute name */
+        (getter) _wrap_PyTiledCell__get_checked, /* C function to get the attribute */
+        (setter) _wrap_PyTiledCell__set_checked, /* C function to set the attribute */
+        NULL, /* optional doc string */
+        NULL /* optional additional data for getter and setter */
+    },
+    {
+        (char*) "flippedAntiDiagonally", /* attribute name */
+        (getter) _wrap_PyTiledCell__get_flippedAntiDiagonally, /* C function to get the attribute */
+        (setter) _wrap_PyTiledCell__set_flippedAntiDiagonally, /* C function to set the attribute */
+        NULL, /* optional doc string */
+        NULL /* optional additional data for getter and setter */
+    },
+    {
+        (char*) "flippedHorizontally", /* attribute name */
+        (getter) _wrap_PyTiledCell__get_flippedHorizontally, /* C function to get the attribute */
+        (setter) _wrap_PyTiledCell__set_flippedHorizontally, /* C function to set the attribute */
+        NULL, /* optional doc string */
+        NULL /* optional additional data for getter and setter */
+    },
+    { NULL, NULL, NULL, NULL, NULL }
+};
 
 
 static int
@@ -4892,6 +5090,25 @@ _wrap_PyTiledCell_isEmpty(PyTiledCell *self)
 
 
 PyObject *
+_wrap_PyTiledCell_setTile(PyTiledCell *self, PyObject *args, PyObject *kwargs)
+{
+    PyObject *py_retval;
+    PyTiledTile *tile;
+    Tiled::Tile *tile_ptr;
+    const char *keywords[] = {"tile", NULL};
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, &PyTiledTile_Type, &tile)) {
+        return NULL;
+    }
+    tile_ptr = (tile ? tile->obj : NULL);
+    self->obj->setTile(tile_ptr);
+    Py_INCREF(Py_None);
+    py_retval = Py_None;
+    return py_retval;
+}
+
+
+PyObject *
 _wrap_PyTiledCell_tile(PyTiledCell *self)
 {
     PyObject *py_retval;
@@ -4911,6 +5128,26 @@ _wrap_PyTiledCell_tile(PyTiledCell *self)
 }
 
 
+PyObject *
+_wrap_PyTiledCell_tileset(PyTiledCell *self)
+{
+    PyObject *py_retval;
+    Tiled::Tileset *retval;
+    PyTiledTileset *py_Tileset;
+
+    retval = self->obj->tileset();
+    if (!(retval)) {
+        Py_INCREF(Py_None);
+        return Py_None;
+    }
+    py_Tileset = PyObject_New(PyTiledTileset, &PyTiledTileset_Type);
+    py_Tileset->obj = retval;
+    py_Tileset->flags = PYBINDGEN_WRAPPER_FLAG_OBJECT_NOT_OWNED;
+    py_retval = Py_BuildValue((char *) "N", py_Tileset);
+    return py_retval;
+}
+
+
 static PyObject*
 _wrap_PyTiledCell__copy__(PyTiledCell *self)
 {
@@ -4924,7 +5161,9 @@ _wrap_PyTiledCell__copy__(PyTiledCell *self)
 
 static PyMethodDef PyTiledCell_methods[] = {
     {(char *) "isEmpty", (PyCFunction) _wrap_PyTiledCell_isEmpty, METH_NOARGS, "isEmpty()\n\n" },
+    {(char *) "setTile", (PyCFunction) _wrap_PyTiledCell_setTile, METH_KEYWORDS|METH_VARARGS, "setTile(tile)\n\ntype: tile: Tiled::Tile *" },
     {(char *) "tile", (PyCFunction) _wrap_PyTiledCell_tile, METH_NOARGS, "tile()\n\n" },
+    {(char *) "tileset", (PyCFunction) _wrap_PyTiledCell_tileset, METH_NOARGS, "tileset()\n\n" },
     {(char *) "__copy__", (PyCFunction) _wrap_PyTiledCell__copy__, METH_NOARGS, NULL},
     {NULL, NULL, 0, NULL}
 };
@@ -4957,11 +5196,21 @@ _wrap_PyTiledCell__tp_richcompare (PyTiledCell *PYBINDGEN_UNUSED(self), PyTiledC
         Py_INCREF(Py_NotImplemented);
         return Py_NotImplemented;
     case Py_EQ:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
+        if (*self->obj == *other->obj) {
+            Py_INCREF(Py_True);
+            return Py_True;
+        } else {
+            Py_INCREF(Py_False);
+            return Py_False;
+        }
     case Py_NE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
+        if (*self->obj != *other->obj) {
+            Py_INCREF(Py_True);
+            return Py_True;
+        } else {
+            Py_INCREF(Py_False);
+            return Py_False;
+        }
     case Py_GE:
         Py_INCREF(Py_NotImplemented);
         return Py_NotImplemented;
@@ -5008,7 +5257,7 @@ PyTypeObject PyTiledCell_Type = {
     (iternextfunc)NULL,     /* tp_iternext */
     (struct PyMethodDef*)PyTiledCell_methods, /* tp_methods */
     (struct PyMemberDef*)0,              /* tp_members */
-    0,                     /* tp_getset */
+    PyTiledCell__getsets,                     /* tp_getset */
     NULL,                              /* tp_base */
     NULL,                              /* tp_dict */
     (descrgetfunc)NULL,    /* tp_descr_get */

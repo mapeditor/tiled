@@ -20,6 +20,7 @@
 
 #include "objectselectionitem.h"
 
+#include "geometry.h"
 #include "grouplayer.h"
 #include "map.h"
 #include "mapdocument.h"
@@ -41,8 +42,8 @@
 namespace Tiled {
 namespace Internal {
 
-static const qreal labelMargin = 3;
-static const qreal labelDistance = 12;
+static const qreal labelMargin = 2;
+static const qreal labelDistance = 4;
 
 static Preferences::ObjectLabelVisiblity objectLabelVisibility()
 {
@@ -168,6 +169,7 @@ public:
 
 private:
     QRectF mBoundingRect;
+    QPointF mTextPos;
     MapObject *mObject;
     QColor mColor;
 };
@@ -182,18 +184,22 @@ void MapObjectLabel::syncWithMapObject(const MapRenderer &renderer)
 
     const QFontMetricsF metrics(QGuiApplication::font());
     QRectF boundingRect = metrics.boundingRect(mObject->name());
-    boundingRect.translate(-boundingRect.width() / 2, -labelDistance);
-    boundingRect.adjust(-labelMargin*2, -labelMargin, labelMargin*2, labelMargin);
+
+    const qreal margin = Utils::dpiScaled(labelMargin);
+    const qreal distance = Utils::dpiScaled(labelDistance);
+    const qreal textY = -boundingRect.bottom() - margin - distance;
+
+    boundingRect.translate(-boundingRect.width() / 2, textY);
+
+    mTextPos = QPointF(boundingRect.left(), textY);
+
+    boundingRect.adjust(-margin*2, -margin, margin*2, margin);
 
     QPointF pixelPos = renderer.pixelToScreenCoords(mObject->position());
     QRectF bounds = mObject->screenBounds(renderer);
 
     // Adjust the bounding box for object rotation
-    QTransform transform;
-    transform.translate(pixelPos.x(), pixelPos.y());
-    transform.rotate(mObject->rotation());
-    transform.translate(-pixelPos.x(), -pixelPos.y());
-    bounds = transform.mapRect(bounds);
+    bounds = rotateAt(pixelPos, mObject->rotation()).mapRect(bounds);
 
     // Center the object name on the object bounding box
     QPointF pos((bounds.left() + bounds.right()) / 2, bounds.top());
@@ -233,13 +239,11 @@ void MapObjectLabel::paint(QPainter *painter,
     painter->setBrush(mColor);
     painter->drawRoundedRect(mBoundingRect, 4, 4);
 
-    QPointF textPos(-(mBoundingRect.width() - labelMargin*4) / 2, -labelDistance);
-
     painter->drawRoundedRect(mBoundingRect, 4, 4);
     painter->setPen(Qt::black);
-    painter->drawText(textPos + QPointF(1,1), mObject->name());
+    painter->drawText(mTextPos + QPointF(1,1), mObject->name());
     painter->setPen(Qt::white);
-    painter->drawText(textPos, mObject->name());
+    painter->drawText(mTextPos, mObject->name());
 }
 
 

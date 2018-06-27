@@ -1015,6 +1015,10 @@ int TiledProxyStyle::pixelMetric(QStyle::PixelMetric metric,
     case PM_TabBarTabShiftHorizontal:
     case PM_TabBarTabShiftVertical:
         return 0;                   // no shifting of tabs
+    case PM_TabBarTabOverlap:
+        return 1;                   // should not get DPI scaled
+    case PM_TabBarBaseOverlap:
+        return 2;                   // should not get DPI scaled
     default:
         return QProxyStyle::pixelMetric(metric, option, widget);
     }

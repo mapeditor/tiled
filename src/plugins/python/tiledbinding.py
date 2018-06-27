@@ -168,8 +168,17 @@ cls_map.add_method('isTilesetUsed', 'bool',
 cls_cell = tiled.add_class('Cell')
 cls_cell.add_constructor([param('Tiled::Tile*','tile',transfer_ownership=False)])
 cls_cell.add_copy_constructor()
+cls_cell.add_binary_comparison_operator('==')
+cls_cell.add_binary_comparison_operator('!=')
 cls_cell.add_method('isEmpty', 'bool', [])
+cls_cell.add_instance_attribute('flippedHorizontally', 'bool', getter='flippedHorizontally', setter='setFlippedHorizontally')
+cls_cell.add_instance_attribute('flippedVertically', 'bool', getter='flippedVertically', setter='setFlippedVertically')
+cls_cell.add_instance_attribute('flippedAntiDiagonally', 'bool', getter='flippedAntiDiagonally', setter='setFlippedAntiDiagonally')
+cls_cell.add_instance_attribute('rotatedHexagonal120', 'bool', getter='rotatedHexagonal120', setter='setRotatedHexagonal120')
+cls_cell.add_instance_attribute('checked', 'bool', getter='checked', setter='setChecked')
 cls_cell.add_method('tile', retval('Tiled::Tile*',reference_existing_object=True), [])
+cls_cell.add_method('tileset', retval('Tiled::Tileset*',reference_existing_object=True), [])
+cls_cell.add_method('setTile', None, [param('Tiled::Tile*','tile',transfer_ownership=False)])
 
 cls_tilelayer = tiled.add_class('TileLayer', cls_layer)
 cls_tilelayer.add_constructor([('QString','name'), ('int','x'), ('int','y'),
