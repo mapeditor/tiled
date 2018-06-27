@@ -324,12 +324,11 @@ void ObjectSelectionItem::hoveredMapObjectChanged(MapObject *object,
 
         // Maybe remove the label from the previous object
         if (MapObjectLabel *label = mObjectLabels.value(previous)) {
-            if (visibility == Preferences::SelectedObjectLabels)
-                if (mMapDocument->selectedObjects().contains(previous))
-                    return;
-
-            delete label;
-            mObjectLabels.remove(previous);
+            if (!(visibility == Preferences::SelectedObjectLabels &&
+                  mMapDocument->selectedObjects().contains(previous))) {
+                delete label;
+                mObjectLabels.remove(previous);
+            }
         }
     }
 
@@ -430,6 +429,8 @@ void ObjectSelectionItem::syncOverlayItems(const QList<MapObject*> &objects)
             outlineItem->syncWithMapObject(renderer);
         if (MapObjectLabel *labelItem = mObjectLabels.value(object))
             labelItem->syncWithMapObject(renderer);
+        if (mHoveredMapObjectItem && mHoveredMapObjectItem->mapObject() == object)
+            mHoveredMapObjectItem->syncWithMapObject();
     }
 }
 

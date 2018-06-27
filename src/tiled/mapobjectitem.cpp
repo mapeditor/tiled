@@ -78,9 +78,15 @@ void MapObjectItem::syncWithMapObject()
     setPos(pixelPos);
     setRotation(mObject->rotation());
 
-    if (ObjectGroup *objectGroup = mObject->objectGroup())
+    if (ObjectGroup *objectGroup = mObject->objectGroup()) {
         if (objectGroup->drawOrder() == ObjectGroup::TopDownOrder)
             setZValue(pixelPos.y());
+
+        if (mIsHoveredIndicator) {
+            auto totalOffset = objectGroup->totalOffset();
+            setTransform(QTransform::fromTranslate(totalOffset.x(), totalOffset.y()));
+        }
+    }
 
     if (mBoundingRect != bounds) {
         // Notify the graphics scene about the geometry change in advance
@@ -97,7 +103,16 @@ void MapObjectItem::setIsHoverIndicator(bool isHoverIndicator)
         return;
 
     mIsHoveredIndicator = isHoverIndicator;
-    setOpacity(isHoverIndicator ? 0.5 : 1.0);
+
+    if (isHoverIndicator) {
+        auto totalOffset = mObject->objectGroup()->totalOffset();
+        setOpacity(0.5);
+        setTransform(QTransform::fromTranslate(totalOffset.x(), totalOffset.y()));
+    } else {
+        setOpacity(1.0);
+        setTransform(QTransform());
+    }
+
     update();
 }
 
