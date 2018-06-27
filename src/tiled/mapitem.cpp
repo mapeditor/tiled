@@ -271,14 +271,12 @@ void MapItem::repaintRegion(const QRegion &region, TileLayer *tileLayer)
  */
 void MapItem::mapChanged()
 {
-    for (QGraphicsItem *item : mLayerItems) {
+    for (QGraphicsItem *item : qAsConst(mLayerItems)) {
         if (TileLayerItem *tli = dynamic_cast<TileLayerItem*>(item))
             tli->syncWithTileLayer();
     }
 
-    for (MapObjectItem *item : mObjectItems)
-        item->syncWithMapObject();
-
+    syncAllObjectItems();
     updateBoundingRect();
 }
 
@@ -407,11 +405,11 @@ void MapItem::imageLayerChanged(ImageLayer *imageLayer)
  */
 void MapItem::adaptToTilesetTileSizeChanges(Tileset *tileset)
 {
-    for (QGraphicsItem *item : mLayerItems)
+    for (QGraphicsItem *item : qAsConst(mLayerItems))
         if (TileLayerItem *tli = dynamic_cast<TileLayerItem*>(item))
             tli->syncWithTileLayer();
 
-    for (MapObjectItem *item : mObjectItems) {
+    for (MapObjectItem *item : qAsConst(mObjectItems)) {
         const Cell &cell = item->mapObject()->cell();
         if (cell.tileset() == tileset)
             item->syncWithMapObject();
@@ -420,11 +418,11 @@ void MapItem::adaptToTilesetTileSizeChanges(Tileset *tileset)
 
 void MapItem::adaptToTileSizeChanges(Tile *tile)
 {
-    for (QGraphicsItem *item : mLayerItems)
+    for (QGraphicsItem *item : qAsConst(mLayerItems))
         if (TileLayerItem *tli = dynamic_cast<TileLayerItem*>(item))
             tli->syncWithTileLayer();
 
-    for (MapObjectItem *item : mObjectItems) {
+    for (MapObjectItem *item : qAsConst(mObjectItems)) {
         const Cell &cell = item->mapObject()->cell();
         if (cell.tile() == tile)
             item->syncWithMapObject();
@@ -442,18 +440,8 @@ void MapItem::tilesetReplaced(int index, Tileset *tileset)
  */
 void MapItem::objectsInserted(ObjectGroup *objectGroup, int first, int last)
 {
-    ObjectGroupItem *ogItem = nullptr;
-
     // Find the object group item for the object group
-    for (QGraphicsItem *item : mLayerItems) {
-        if (ObjectGroupItem *ogi = dynamic_cast<ObjectGroupItem*>(item)) {
-            if (ogi->objectGroup() == objectGroup) {
-                ogItem = ogi;
-                break;
-            }
-        }
-    }
-
+    auto ogItem = static_cast<ObjectGroupItem*>(mLayerItems.value(objectGroup));
     Q_ASSERT(ogItem);
 
     const ObjectGroup::DrawOrder drawOrder = objectGroup->drawOrder();
@@ -502,7 +490,7 @@ void MapItem::objectsChanged(const QList<MapObject*> &objects)
  * Updates the Z value of the objects when appropriate.
  */
 void MapItem::objectsIndexChanged(ObjectGroup *objectGroup,
-                                   int first, int last)
+                                  int first, int last)
 {
     if (objectGroup->drawOrder() != ObjectGroup::IndexOrder)
         return;
@@ -517,7 +505,7 @@ void MapItem::objectsIndexChanged(ObjectGroup *objectGroup,
 
 void MapItem::syncAllObjectItems()
 {
-    for (MapObjectItem *item : mObjectItems)
+    for (MapObjectItem *item : qAsConst(mObjectItems))
         item->syncWithMapObject();
 }
 
@@ -527,7 +515,7 @@ void MapItem::setObjectLineWidth(qreal lineWidth)
     mapDocument()->renderer()->setObjectLineWidth(lineWidth);
 
     // Changing the line width can change the size of the object items
-    for (MapObjectItem *item : mObjectItems) {
+    for (MapObjectItem *item : qAsConst(mObjectItems)) {
         if (item->mapObject()->cell().isEmpty()) {
             item->syncWithMapObject();
             item->update();
@@ -539,7 +527,7 @@ void MapItem::setShowTileObjectOutlines(bool enabled)
 {
     mapDocument()->renderer()->setFlag(ShowTileObjectOutlines, enabled);
 
-    for (MapObjectItem *item : mObjectItems) {
+    for (MapObjectItem *item : qAsConst(mObjectItems)) {
         if (!item->mapObject()->cell().isEmpty())
             item->update();
     }
@@ -644,8 +632,7 @@ void MapItem::updateCurrentLayerHighlight()
             mDarkRectangle->setVisible(false);
 
             // Restore opacity for all layers
-            const auto layerItems = mLayerItems;
-            for (auto layerItem : layerItems)
+            for (auto layerItem : qAsConst(mLayerItems))
                 layerItem->setOpacity(layerItem->layer()->opacity());
         }
 
