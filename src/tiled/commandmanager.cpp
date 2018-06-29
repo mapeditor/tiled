@@ -37,7 +37,7 @@ CommandManager *CommandManager::mInstance;
 
 CommandManager::CommandManager()
     : mModel(new CommandDataModel(this))
-    , mLogger(new LoggingInterface())
+    , mLogger(new LoggingInterface(this))
 {
     updateActions();
 }
