@@ -858,7 +858,7 @@ void PropertyBrowser::addTerrainProperties()
 
 void PropertyBrowser::addWangSetProperties()
 {
-    QtProperty *groupProperty = mGroupManager->addProperty(tr("WangSet"));
+    QtProperty *groupProperty = mGroupManager->addProperty(tr("Wang Set"));
     QtVariantProperty *nameProperty = addProperty(NameProperty, QVariant::String, tr("Name"), groupProperty);
     QtVariantProperty *edgeProperty = addProperty(EdgeCountProperty, QVariant::Int, tr("Edge Count"), groupProperty);
     QtVariantProperty *cornerProperty = addProperty(CornerCountProperty, QVariant::Int, tr("Corner Count"), groupProperty);

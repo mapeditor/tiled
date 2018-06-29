@@ -98,7 +98,8 @@ protected:
     void selectionChanged(const QItemSelection &selected,
                           const QItemSelection &deselected) override;
 
-    void drawRow(QPainter *painter, const QStyleOptionViewItem &option,
+    void drawRow(QPainter *painter,
+                 const QStyleOptionViewItem &option,
                  const QModelIndex &index) const override;
 
 private slots:

@@ -38,8 +38,6 @@ WangColorModel::WangColorModel(TilesetDocument *tilesetDocument,
     : QAbstractItemModel(parent)
     , mTilesetDocument(tilesetDocument)
     , mWangSet(wangSet)
-    , mEdgeText(new QString(QLatin1String("Edge Colors")))
-    , mCornerText(new QString(QLatin1String("Corner Colors")))
 {
 }
 
@@ -49,20 +47,20 @@ QModelIndex WangColorModel::index(int row, int column, const QModelIndex &parent
         return createIndex(row, column);
 
     if (parent.row() == 0)
-        return createIndex(row, column, mEdgeText);
+        return createIndex(row, column, EdgeIndexId);
 
     if (parent.row() == 1)
-        return createIndex(row, column, mCornerText);
+        return createIndex(row, column, CornerIndexId);
 
     return QModelIndex();
 }
 
 QModelIndex WangColorModel::parent(const QModelIndex &child) const
 {
-    if (child.internalPointer() == mEdgeText)
-        return index(0, 0, QModelIndex());
-    if (child.internalPointer() == mCornerText)
-        return index(1, 0, QModelIndex());
+    if (child.internalId() == EdgeIndexId)
+        return index(0, 0);
+    if (child.internalId() == CornerIndexId)
+        return index(1, 0);
 
     return QModelIndex();
 }
@@ -74,7 +72,7 @@ QModelIndex WangColorModel::edgeIndex(int color) const
     else
         return QModelIndex();
 
-    return createIndex(color - 1, 0, mEdgeText);
+    return createIndex(color - 1, 0, EdgeIndexId);
 }
 
 QModelIndex WangColorModel::cornerIndex(int color) const
@@ -84,7 +82,7 @@ QModelIndex WangColorModel::cornerIndex(int color) const
     else
         return QModelIndex();
 
-    return createIndex(color - 1, 0, mCornerText);
+    return createIndex(color - 1, 0, CornerIndexId);
 }
 
 int WangColorModel::rowCount(const QModelIndex &parent) const
@@ -143,9 +141,9 @@ QVariant WangColorModel::data(const QModelIndex &index, int role) const
         switch (role) {
         case Qt::DisplayRole:
             if (index.row() == 0)
-                return *mEdgeText;
+                return tr("Edge Colors");
             if (index.row() == 1)
-                return *mCornerText;
+                return tr("Corner Colors");
             break;
         case Qt::SizeHintRole:
             return QSize(1, 32);

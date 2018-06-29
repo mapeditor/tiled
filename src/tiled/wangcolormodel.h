@@ -81,12 +81,15 @@ public:
     void setProbability(WangColor *wangColor, qreal probability);
 
 private:
+    enum IndexTypeId {
+        CornerIndexId = 1,
+        EdgeIndexId = 2
+    };
+
     void emitDataChanged(WangColor *wangColor);
 
     TilesetDocument *mTilesetDocument;
     WangSet *mWangSet;
-    QString *mEdgeText;
-    QString *mCornerText;
 };
 
 } // namespace Internal

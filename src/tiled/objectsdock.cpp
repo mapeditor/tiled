@@ -423,7 +423,9 @@ void ObjectsView::selectionChanged(const QItemSelection &selected,
     }
 }
 
-void ObjectsView::drawRow(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &proxyIndex) const
+void ObjectsView::drawRow(QPainter *painter,
+                          const QStyleOptionViewItem &option,
+                          const QModelIndex &proxyIndex) const
 {
     if (mMapDocument) {
         const QModelIndex index = mProxyModel->mapToSource(proxyIndex);
