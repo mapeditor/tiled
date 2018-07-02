@@ -384,6 +384,16 @@ void ObjectSelectionTool::deactivate(MapScene *scene)
     disconnect(mapDocument(), &MapDocument::objectsRemoved,
                this, &ObjectSelectionTool::objectsRemoved);
 
+    mMousePressed = false;
+    mHoveredObjectItem = nullptr;
+    mClickedObjectItem = nullptr;
+
+    // This aborts any in-progress action, mainly to avoid crashing.
+    // TODO: This can leave the objects in a modified state without a proper
+    // undo command, so a proper "cancel" action should be implemented.
+    mAction = NoAction;
+    mMovingObjects.clear();
+
     AbstractObjectTool::deactivate(scene);
 }
 
