@@ -297,6 +297,7 @@ void LuaWriter::writeTileset(LuaTableWriter &writer, const Tileset &tileset,
     writer.writeKeyAndValue("tileheight", tileset.tileHeight());
     writer.writeKeyAndValue("spacing", tileset.tileSpacing());
     writer.writeKeyAndValue("margin", tileset.margin());
+    writer.writeKeyAndValue("columns", tileset.columnCount());
 
     if (!tileset.imageSource().isEmpty()) {
         const QString rel = toFileReference(tileset.imageSource(), mDir);
