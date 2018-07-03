@@ -257,6 +257,10 @@ signals:
      */
     void selectedObjectsChanged();
 
+    /**
+     * Emitted when the hovered object changes. Use \a previous with caution,
+     * because it may reference an object that was removed.
+     */
     void hoveredMapObjectChanged(MapObject *object, MapObject *previous);
 
     /**

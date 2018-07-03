@@ -529,7 +529,7 @@ void ObjectsView::synchronizeSelectedItems()
 
 void ObjectsView::updateRow(MapObject *object)
 {
-    if (!object)
+    if (!object || !object->objectGroup())
         return;
 
     const QModelIndex index = mapObjectModel()->index(object);
