@@ -110,14 +110,15 @@ matrix:
       before_install:
         - brew update
         - brew install qbs
+        - brew install qt@5.5
       script:
         - qbs --version
         - qbs setup-toolchains --detect
-        - qbs setup-qt /usr/local/opt/qt/bin/qmake qt-brew
+        - qbs setup-qt /usr/local/opt/qt@5.5/bin/qmake qt-brew
         - qbs config profiles.qt-brew.baseProfile xcode-macosx-x86_64
         - qbs config defaultProfile qt-brew
         - qbs install --install-root install config:release projects.Tiled.version:$TILED_VERSION
-        - /usr/local/opt/qt/bin/macdeployqt install/Tiled.app
+        - /usr/local/opt/qt@5.5/bin/macdeployqt install/Tiled.app
       deploy:
         - provider: script
           skip_cleanup: true
