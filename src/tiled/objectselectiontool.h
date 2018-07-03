@@ -26,6 +26,8 @@
 #include <QSet>
 #include <QVector>
 
+#include <memory>
+
 class QGraphicsItem;
 
 namespace Tiled {
@@ -115,7 +117,8 @@ private:
     void setMode(Mode mode);
     void saveSelectionState();
 
-    void updateHoveredItem(const QPointF &pos);
+    void abortCurrentAction(const QList<MapObject *> &removedObjects = QList<MapObject*>());
+
     void refreshCursor();
 
     QPointF snapToGrid(const QPointF &pos,
@@ -134,8 +137,8 @@ private:
         qreal oldRotation;
     };
 
-    SelectionRectangle *mSelectionRectangle;
-    QGraphicsItem *mOriginIndicator;
+    std::unique_ptr<SelectionRectangle> mSelectionRectangle;
+    std::unique_ptr<QGraphicsItem> mOriginIndicator;
     RotateHandle *mRotateHandles[4];
     ResizeHandle *mResizeHandles[8];
     bool mMousePressed;
@@ -150,16 +153,15 @@ private:
 
     QVector<MovingObject> mMovingObjects;
 
-    QPointF mOldOriginPosition;
-
     QPointF mAlignPosition;
-    QPointF mOrigin;
+    QPointF mOriginPos;
     bool mResizingLimitHorizontal;
     bool mResizingLimitVertical;
     Mode mMode;
     Action mAction;
     QPointF mStart;
     QPointF mStartOffset;
+    QPointF mLastMousePos;
     QPoint mScreenStart;
     Qt::KeyboardModifiers mModifiers;
 };
