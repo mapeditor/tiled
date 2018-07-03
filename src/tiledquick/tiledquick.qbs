@@ -1,4 +1,5 @@
 import qbs 1.0
+import qbs.File
 
 QtGuiApplication {
     name: "tiledquick"
@@ -42,5 +43,28 @@ QtGuiApplication {
         qbs.install: true
         qbs.installDir: "."
         qbs.installSourceBase: product.buildDirectory
+    }
+
+    // Include libtiled.dylib in the app bundle
+    Depends {
+        condition: qbs.targetOS.contains("darwin")
+        name: "libtiled"
+        cpp.link: false
+    }
+    Rule {
+        condition: qbs.targetOS.contains("darwin")
+        inputsFromDependencies: "dynamiclibrary"
+        prepare: {
+            var cmd = new JavaScriptCommand();
+            cmd.description = "preparing " + input.fileName + " for inclusion in " + product.targetName + ".app";
+            cmd.sourceCode = function() { File.copy(input.filePath, output.filePath); };
+            return cmd;
+        }
+
+        Artifact {
+            filePath: input.fileName
+            fileTags: "bundle.input"
+            bundle._bundleFilePath: product.destinationDirectory + "/" + product.targetName + ".app/Contents/Frameworks/" + input.fileName
+        }
     }
 }
