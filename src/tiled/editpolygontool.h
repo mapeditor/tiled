@@ -25,6 +25,8 @@
 #include <QMap>
 #include <QSet>
 
+#include <memory>
+
 class QGraphicsItem;
 
 namespace Tiled {
@@ -74,8 +76,8 @@ private slots:
     void extendPolyline();
 
 private:
-    enum Mode {
-        NoMode,
+    enum Action {
+        NoAction,
         Selecting,
         Moving
     };
@@ -97,6 +99,8 @@ private:
                            Qt::KeyboardModifiers modifiers);
     void finishMoving(const QPointF &pos);
 
+    void abortCurrentAction(const QList<MapObject *> &objects = QList<MapObject*>());
+
     void showHandleContextMenu(QPoint screenPos);
 
     QSet<PointHandle*> clickedHandles() const;
@@ -110,7 +114,7 @@ private:
         void clear() { object = nullptr; }
     };
 
-    SelectionRectangle *mSelectionRectangle;
+    std::unique_ptr<SelectionRectangle> mSelectionRectangle;
     bool mMousePressed;
     PointHandle *mHoveredHandle;
     InteractedSegment mHoveredSegment;
@@ -120,8 +124,9 @@ private:
     QVector<QPointF> mOldHandlePositions;
     QMap<MapObject*, QPolygonF> mOldPolygons;
     QPointF mAlignPosition;
-    Mode mMode;
+    Action mAction;
     QPointF mStart;
+    QPointF mLastMousePos;
     QPoint mScreenStart;
     Qt::KeyboardModifiers mModifiers;
 
