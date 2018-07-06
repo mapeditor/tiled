@@ -112,10 +112,15 @@ void CreateObjectTool::mouseMoved(const QPointF &pos,
     }
 }
 
+/**
+ * Default implementation starts a new object on left mouse button, and cancels
+ * object creation on right mouse button.
+ */
 void CreateObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
-    if (mNewMapObjectItem) {
-        mousePressedWhileCreatingObject(event);
+    if (event->button() == Qt::RightButton) {
+        if (mNewMapObjectItem)
+            cancelNewMapObject();
         return;
     }
 
@@ -138,10 +143,13 @@ void CreateObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
         mouseMovedWhileCreatingObject(offsetPos, event->modifiers());
 }
 
-void CreateObjectTool::mouseReleased(QGraphicsSceneMouseEvent *event)
+/**
+ * Default implementation finishes object placement upon release.
+ */
+void CreateObjectTool::mouseReleased(QGraphicsSceneMouseEvent *)
 {
     if (mNewMapObjectItem)
-        mouseReleasedWhileCreatingObject(event);
+        finishNewMapObject();
 }
 
 bool CreateObjectTool::startNewMapObject(const QPointF &pos,
@@ -222,17 +230,17 @@ void CreateObjectTool::finishNewMapObject()
     mapDocument()->setSelectedObjects(QList<MapObject*>() << newMapObject);
 }
 
-void CreateObjectTool::mouseMovedWhileCreatingObject(const QPointF &, Qt::KeyboardModifiers)
+/**
+ * Default implementation simply synchronizes the position of the new object
+ * with the mouse position.
+ */
+void CreateObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt::KeyboardModifiers modifiers)
 {
-    // optional override
-}
+    const MapRenderer *renderer = mapDocument()->renderer();
 
-void CreateObjectTool::mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *)
-{
-    // optional override
-}
+    QPointF pixelCoords = renderer->screenToPixelCoords(pos);
+    SnapHelper(renderer, modifiers).snap(pixelCoords);
 
-void CreateObjectTool::mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *)
-{
-    // optional override
+    mNewMapObjectItem->mapObject()->setPosition(pixelCoords);
+    mNewMapObjectItem->syncWithMapObject();
 }

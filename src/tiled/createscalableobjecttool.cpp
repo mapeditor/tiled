@@ -68,15 +68,3 @@ void CreateScalableObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos,
 
     mNewMapObjectItem->resizeObject(objectArea.normalized());
 }
-
-void CreateScalableObjectTool::mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event)
-{
-    if (event->button() == Qt::RightButton)
-        cancelNewMapObject();
-}
-
-void CreateScalableObjectTool::mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event)
-{
-    if (event->button() == Qt::LeftButton)
-        finishNewMapObject();
-}

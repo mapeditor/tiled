@@ -42,32 +42,6 @@ CreateTemplateTool::CreateTemplateTool(QObject *parent)
     languageChangedImpl();
 }
 
-void CreateTemplateTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt::KeyboardModifiers modifiers)
-{
-    const MapRenderer *renderer = mapDocument()->renderer();
-
-    QPointF pixelCoords = renderer->screenToPixelCoords(pos);
-
-    SnapHelper(renderer, modifiers).snap(pixelCoords);
-
-    mNewMapObjectItem->mapObject()->setPosition(pixelCoords);
-    mNewMapObjectItem->syncWithMapObject();
-    mNewMapObjectItem->setZValue(10000); // sync may change it
-    mNewMapObjectItem->setOpacity(0.75);
-}
-
-void CreateTemplateTool::mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event)
-{
-    if (event->button() == Qt::RightButton)
-        cancelNewMapObject();
-}
-
-void CreateTemplateTool::mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event)
-{
-    if (event->button() == Qt::LeftButton)
-        finishNewMapObject();
-}
-
 bool CreateTemplateTool::startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup)
 {
     if (!CreateObjectTool::startNewMapObject(pos, objectGroup))

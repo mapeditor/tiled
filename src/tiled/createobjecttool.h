@@ -54,9 +54,6 @@ public:
 protected:
     virtual void mouseMovedWhileCreatingObject(const QPointF &pos,
                                                Qt::KeyboardModifiers modifiers);
-    virtual void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event);
-    virtual void mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event);
-
 
     virtual bool startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup);
     virtual MapObject *createNewMapObject() = 0;

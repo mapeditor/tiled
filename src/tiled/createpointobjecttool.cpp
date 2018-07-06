@@ -52,30 +52,6 @@ void CreatePointObjectTool::languageChangedImpl()
     setShortcut(QKeySequence(tr("I")));
 }
 
-void CreatePointObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos,
-                                                          Qt::KeyboardModifiers modifiers)
-{
-    const MapRenderer *renderer = mapDocument()->renderer();
-
-    QPointF pixelCoords = renderer->screenToPixelCoords(pos);
-    SnapHelper(renderer, modifiers).snap(pixelCoords);
-
-    mNewMapObjectItem->mapObject()->setPosition(pixelCoords);
-    mNewMapObjectItem->syncWithMapObject();
-}
-
-void CreatePointObjectTool::mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event)
-{
-    if (event->button() == Qt::RightButton)
-        cancelNewMapObject();
-}
-
-void CreatePointObjectTool::mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event)
-{
-    if (event->button() == Qt::LeftButton)
-        finishNewMapObject();
-}
-
 MapObject *CreatePointObjectTool::createNewMapObject()
 {
     MapObject *newMapObject = new MapObject;

@@ -35,11 +35,6 @@ public:
     void languageChanged() override;
 
 protected:
-    void mouseMovedWhileCreatingObject(const QPointF &pos,
-                                       Qt::KeyboardModifiers modifiers) override;
-    void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event) override;
-    void mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event) override;
-
     MapObject *createNewMapObject() override;
     bool startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup) override;
 

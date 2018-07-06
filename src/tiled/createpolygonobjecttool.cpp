@@ -143,7 +143,20 @@ void CreatePolygonObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
         }
     }
 
+    if (mNewMapObjectItem) {
+        if (event->button() == Qt::RightButton)
+            finishNewMapObject();
+        else if (event->button() == Qt::LeftButton)
+            applySegment();
+        return;
+    }
+
     CreateObjectTool::mousePressed(event);
+}
+
+void CreatePolygonObjectTool::mouseReleased(QGraphicsSceneMouseEvent *)
+{
+    // Override since we don't want release to finish placing a polygon
 }
 
 void CreatePolygonObjectTool::languageChanged()
@@ -231,100 +244,96 @@ static QPolygonF joinPolygons(const QPolygonF &a, const QPolygonF &b, bool aAtEn
     return result;
 }
 
-void CreatePolygonObjectTool::mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event)
+void CreatePolygonObjectTool::applySegment()
 {
-    if (event->button() == Qt::RightButton) {
-        finishNewMapObject();
-    } else if (event->button() == Qt::LeftButton) {
-        MapObject *newObject = mNewMapObjectItem->mapObject();
+    MapObject *newObject = mNewMapObjectItem->mapObject();
 
-        if (mClickedHandle) {
-            MapObject *clickedObject = mClickedHandle->mapObject();
+    if (mClickedHandle) {
+        MapObject *clickedObject = mClickedHandle->mapObject();
 
-            if (clickedObject == newObject) {
-                // The handle at the other end was clicked: finish as polygon
-                mFinishAsPolygon = true;
-                finishNewMapObject();
-                return;
-            } else {
-                // A handle on another polyline was pressed: connect to it, creating a single polyline object
-                QPolygonF otherPolygon = clickedObject->polygon();
+        if (clickedObject == newObject) {
+            // The handle at the other end was clicked: finish as polygon
+            mFinishAsPolygon = true;
+            finishNewMapObject();
+            return;
+        } else {
+            // A handle on another polyline was pressed: connect to it, creating a single polyline object
+            QPolygonF otherPolygon = clickedObject->polygon();
 
-                // Translate the other polygon to the target object
-                {
-                    const MapRenderer *renderer = mapDocument()->renderer();
-                    otherPolygon.translate(clickedObject->position());
-                    otherPolygon = renderer->pixelToScreenCoords(otherPolygon);
+            // Translate the other polygon to the target object
+            {
+                const MapRenderer *renderer = mapDocument()->renderer();
+                otherPolygon.translate(clickedObject->position());
+                otherPolygon = renderer->pixelToScreenCoords(otherPolygon);
 
-                    QPointF clickedObjectScreenPos = renderer->pixelToScreenCoords(clickedObject->position());
-                    QTransform clickedObjectRotate = rotateAt(clickedObjectScreenPos, clickedObject->rotation());
-                    otherPolygon = clickedObjectRotate.map(otherPolygon);
-                    otherPolygon.translate(clickedObject->objectGroup()->totalOffset() - newObject->objectGroup()->totalOffset());
+                QPointF clickedObjectScreenPos = renderer->pixelToScreenCoords(clickedObject->position());
+                QTransform clickedObjectRotate = rotateAt(clickedObjectScreenPos, clickedObject->rotation());
+                otherPolygon = clickedObjectRotate.map(otherPolygon);
+                otherPolygon.translate(clickedObject->objectGroup()->totalOffset() - newObject->objectGroup()->totalOffset());
 
-                    QPointF objectScreenPos = renderer->pixelToScreenCoords(newObject->position());
-                    QTransform rotate = rotateAt(objectScreenPos, -newObject->rotation());
-                    otherPolygon = rotate.map(otherPolygon);
-                    otherPolygon = renderer->screenToPixelCoords(otherPolygon);
-                    otherPolygon.translate(-newObject->position());
-                }
-
-                bool atEnd = mMode != ExtendingAtBegin;
-                bool otherAtEnd = mClickedHandle->pointIndex() == otherPolygon.size() - 1;
-
-                QPolygonF newPolygon = joinPolygons(newObject->polygon(), otherPolygon, atEnd, otherAtEnd);
-
-                mapDocument()->undoStack()->beginMacro(tr("Connect Polylines"));
-
-                if (mMode == Creating) {
-                    mNewMapObjectItem->setPolygon(newPolygon);
-                    finishNewMapObject();
-                } else {
-                    mapDocument()->undoStack()->push(new ChangePolygon(mapDocument(),
-                                                                       newObject,
-                                                                       newPolygon, newObject->polygon()));
-                    finishExtendingMapObject();
-                }
-
-                mapDocument()->undoStack()->push(new RemoveMapObject(mapDocument(), clickedObject));
-                mapDocument()->undoStack()->endMacro();
-
-                return;
+                QPointF objectScreenPos = renderer->pixelToScreenCoords(newObject->position());
+                QTransform rotate = rotateAt(objectScreenPos, -newObject->rotation());
+                otherPolygon = rotate.map(otherPolygon);
+                otherPolygon = renderer->screenToPixelCoords(otherPolygon);
+                otherPolygon.translate(-newObject->position());
             }
+
+            bool atEnd = mMode != ExtendingAtBegin;
+            bool otherAtEnd = mClickedHandle->pointIndex() == otherPolygon.size() - 1;
+
+            QPolygonF newPolygon = joinPolygons(newObject->polygon(), otherPolygon, atEnd, otherAtEnd);
+
+            mapDocument()->undoStack()->beginMacro(tr("Connect Polylines"));
+
+            if (mMode == Creating) {
+                mNewMapObjectItem->setPolygon(newPolygon);
+                finishNewMapObject();
+            } else {
+                mapDocument()->undoStack()->push(new ChangePolygon(mapDocument(),
+                                                                   newObject,
+                                                                   newPolygon, newObject->polygon()));
+                finishExtendingMapObject();
+            }
+
+            mapDocument()->undoStack()->push(new RemoveMapObject(mapDocument(), clickedObject));
+            mapDocument()->undoStack()->endMacro();
+
+            return;
         }
-
-        QPolygonF current = newObject->polygon();
-        QPolygonF next = mOverlayPolygonObject->polygon();
-
-        // Ignore press when the mouse is still in the same place
-        if (mMode == ExtendingAtBegin) {
-            if (next.first() == current.first())
-                return;
-        } else {
-            if (next.last() == current.last())
-                return;
-        }
-
-        // Assign current overlay polygon to the new object
-        if (mMode == Creating) {
-            mNewMapObjectItem->setPolygon(next);
-
-            // Check if we reached the size at which we could close as polygon
-            if (next.size() > 2)
-                updateHandles();
-        } else {
-            mapDocument()->undoStack()->push(new ChangePolygon(mapDocument(),
-                                                               newObject,
-                                                               next, current));
-        }
-
-        // Add a new editable point to the overlay
-        if (mMode == ExtendingAtBegin)
-            next.prepend(next.first());
-        else
-            next.append(next.last());
-
-        mOverlayPolygonItem->setPolygon(next);
     }
+
+    QPolygonF current = newObject->polygon();
+    QPolygonF next = mOverlayPolygonObject->polygon();
+
+    // Ignore press when the mouse is still in the same place
+    if (mMode == ExtendingAtBegin) {
+        if (next.first() == current.first())
+            return;
+    } else {
+        if (next.last() == current.last())
+            return;
+    }
+
+    // Assign current overlay polygon to the new object
+    if (mMode == Creating) {
+        mNewMapObjectItem->setPolygon(next);
+
+        // Check if we reached the size at which we could close as polygon
+        if (next.size() > 2)
+            updateHandles();
+    } else {
+        mapDocument()->undoStack()->push(new ChangePolygon(mapDocument(),
+                                                           newObject,
+                                                           next, current));
+    }
+
+    // Add a new editable point to the overlay
+    if (mMode == ExtendingAtBegin)
+        next.prepend(next.first());
+    else
+        next.append(next.last());
+
+    mOverlayPolygonItem->setPolygon(next);
 }
 
 MapObject *CreatePolygonObjectTool::createNewMapObject()
@@ -509,7 +518,7 @@ void CreatePolygonObjectTool::synchronizeOverlayObject()
     // Add the point that is connected to the mouse
     if (mMode == ExtendingAtBegin)
         polygon.prepend(mLastPixelPos - mapObject->position());
-    else
+    else if (mMode == ExtendingAtEnd || mMode == Creating)
         polygon.append(mLastPixelPos - mapObject->position());
 
     mOverlayPolygonObject->setPolygon(polygon);
@@ -528,18 +537,15 @@ bool CreatePolygonObjectTool::startNewMapObject(const QPointF &pos, ObjectGroup 
 
     CreateObjectTool::startNewMapObject(pos, objectGroup);
     MapObject *newMapObject = mNewMapObjectItem->mapObject();
-    QPolygonF polygon;
-    polygon.append(QPointF());
-    newMapObject->setPolygon(polygon);
+    newMapObject->setPolygon(QPolygonF(1));
 
+    mMode = Creating;
     mLastPixelPos = pos;
     synchronizeOverlayObject();
 
     mOverlayPolygonItem = new MapObjectItem(mOverlayPolygonObject,
                                             mapDocument(),
                                             objectGroupItem());
-
-    mMode = Creating;
 
     return true;
 }

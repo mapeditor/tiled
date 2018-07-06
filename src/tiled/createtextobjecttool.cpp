@@ -52,19 +52,6 @@ void CreateTextObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt:
 
     mNewMapObjectItem->mapObject()->setPosition(pixelCoords);
     mNewMapObjectItem->syncWithMapObject();
-    mNewMapObjectItem->setZValue(10000); // sync may change it
-}
-
-void CreateTextObjectTool::mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event)
-{
-    if (event->button() == Qt::RightButton)
-        cancelNewMapObject();
-}
-
-void CreateTextObjectTool::mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event)
-{
-    if (event->button() == Qt::LeftButton)
-        finishNewMapObject();
 }
 
 void CreateTextObjectTool::languageChanged()
