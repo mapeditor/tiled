@@ -70,7 +70,6 @@ CreatePolygonObjectTool::CreatePolygonObjectTool(QObject *parent)
 
 CreatePolygonObjectTool::~CreatePolygonObjectTool()
 {
-    delete mOverlayObjectGroup;
 }
 
 void CreatePolygonObjectTool::activate(MapScene *scene)
@@ -538,7 +537,7 @@ bool CreatePolygonObjectTool::startNewMapObject(const QPointF &pos, ObjectGroup 
 
     mOverlayPolygonItem = new MapObjectItem(mOverlayPolygonObject,
                                             mapDocument(),
-                                            mObjectGroupItem);
+                                            objectGroupItem());
 
     mMode = Creating;
 
@@ -557,10 +556,10 @@ void CreatePolygonObjectTool::extend(MapObject *mapObject, bool extendingFirst)
 
     mMode = extendingFirst ? ExtendingAtBegin : ExtendingAtEnd;
 
-    mNewMapObjectGroup->setOffset(mapObject->objectGroup()->totalOffset());
-    mObjectGroupItem->setPos(mNewMapObjectGroup->offset());
+    newMapObjectGroup()->setOffset(mapObject->objectGroup()->totalOffset());
+    objectGroupItem()->setPos(newMapObjectGroup()->offset());
 
-    mNewMapObjectItem = new MapObjectItem(mapObject, mapDocument(), mObjectGroupItem);
+    mNewMapObjectItem = new MapObjectItem(mapObject, mapDocument(), objectGroupItem());
 
     const QPolygonF &polygon = mapObject->polygon();
     mLastPixelPos = (extendingFirst ? polygon.first() : polygon.last()) + mapObject->position();
@@ -569,7 +568,7 @@ void CreatePolygonObjectTool::extend(MapObject *mapObject, bool extendingFirst)
 
     mOverlayPolygonItem = new MapObjectItem(mOverlayPolygonObject,
                                             mapDocument(),
-                                            mObjectGroupItem);
+                                            objectGroupItem());
 
     updateHandles();
 }

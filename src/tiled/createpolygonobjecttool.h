@@ -86,9 +86,9 @@ private:
 
     void setHoveredHandle(PointHandle *handle);
 
-    MapObject *mOverlayPolygonObject;
-    ObjectGroup *mOverlayObjectGroup;
-    MapObjectItem *mOverlayPolygonItem;
+    MapObject *mOverlayPolygonObject;   // owned by mOverlayObjectGroup
+    std::unique_ptr<ObjectGroup> mOverlayObjectGroup;
+    MapObjectItem *mOverlayPolygonItem; // owned by mObjectGroupItem if set
     QPointF mLastPixelPos;
     Mode mMode;
     bool mFinishAsPolygon;

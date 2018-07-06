@@ -48,23 +48,21 @@ CreateObjectTool::CreateObjectTool(QObject *parent)
                          QIcon(),
                          QKeySequence(),
                          parent)
-    , mNewMapObjectGroup(new ObjectGroup)
-    , mObjectGroupItem(new ObjectGroupItem(mNewMapObjectGroup))
     , mNewMapObjectItem(nullptr)
+    , mNewMapObjectGroup(new ObjectGroup)
+    , mObjectGroupItem(new ObjectGroupItem(mNewMapObjectGroup.get()))
 {
     mObjectGroupItem->setZValue(10000); // same as the BrushItem
 }
 
 CreateObjectTool::~CreateObjectTool()
 {
-    delete mObjectGroupItem;
-    delete mNewMapObjectGroup;
 }
 
 void CreateObjectTool::activate(MapScene *scene)
 {
     AbstractObjectTool::activate(scene);
-    scene->addItem(mObjectGroupItem);
+    scene->addItem(mObjectGroupItem.get());
 }
 
 void CreateObjectTool::deactivate(MapScene *scene)
@@ -72,7 +70,7 @@ void CreateObjectTool::deactivate(MapScene *scene)
     if (mNewMapObjectItem)
         cancelNewMapObject();
 
-    scene->removeItem(mObjectGroupItem);
+    scene->removeItem(mObjectGroupItem.get());
     AbstractObjectTool::deactivate(scene);
 }
 
@@ -167,7 +165,7 @@ bool CreateObjectTool::startNewMapObject(const QPointF &pos,
 
     mObjectGroupItem->setPos(mNewMapObjectGroup->offset());
 
-    mNewMapObjectItem = new MapObjectItem(newMapObject, mapDocument(), mObjectGroupItem);
+    mNewMapObjectItem = new MapObjectItem(newMapObject, mapDocument(), mObjectGroupItem.get());
 
     return true;
 }

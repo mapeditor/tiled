@@ -22,6 +22,8 @@
 
 #include "abstractobjecttool.h"
 
+#include <memory>
+
 namespace Tiled {
 
 class Tile;
@@ -62,9 +64,14 @@ protected:
     virtual void finishNewMapObject();
     virtual MapObject *clearNewMapObjectItem();
 
-    ObjectGroup *mNewMapObjectGroup;
-    ObjectGroupItem *mObjectGroupItem;
-    MapObjectItem *mNewMapObjectItem;
+    ObjectGroup *newMapObjectGroup() { return mNewMapObjectGroup.get(); }
+    ObjectGroupItem *objectGroupItem() { return mObjectGroupItem.get(); }
+
+    MapObjectItem *mNewMapObjectItem;   // owned by mObjectGroupItem if set
+
+private:
+    std::unique_ptr<ObjectGroup> mNewMapObjectGroup;
+    std::unique_ptr<ObjectGroupItem> mObjectGroupItem;
 };
 
 } // namespace Internal
