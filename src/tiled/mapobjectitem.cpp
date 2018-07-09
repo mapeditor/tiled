@@ -56,14 +56,13 @@ void MapObjectItem::syncWithMapObject()
     const QColor color = objectColor(mObject);
 
     // Update the whole object when the name, polygon or color has changed
-    if (mName != mObject->name() || mPolygon != mObject->polygon() || mColor != color) {
-        mName = mObject->name();
+    if (mPolygon != mObject->polygon() || mColor != color) {
         mPolygon = mObject->polygon();
         mColor = color;
         update();
     }
 
-    QString toolTip = mName;
+    QString toolTip = mObject->name();
     const QString &type = mObject->type();
     if (!type.isEmpty())
         toolTip += QLatin1String(" (") + type + QLatin1String(")");
