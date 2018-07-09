@@ -127,7 +127,7 @@ void LayerOffsetTool::languageChanged()
 
 void LayerOffsetTool::updateEnabledState()
 {
-    setEnabled(mapDocument() && mapDocument()->currentLayer());
+    setEnabled(currentLayer());
 }
 
 void LayerOffsetTool::startDrag(const QPointF &pos)

@@ -221,7 +221,7 @@ void MapScene::enableSelectedTool()
 
     if (mUnderMouse) {
         mActiveTool->mouseEntered();
-        mActiveTool->mouseMoved(mLastMousePos, Qt::KeyboardModifiers());
+        mActiveTool->mouseMoved(mLastMousePos, mCurrentModifiers);
     }
 }
 

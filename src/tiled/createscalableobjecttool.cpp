@@ -49,10 +49,12 @@ static qreal sign(qreal value)
 void CreateScalableObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt::KeyboardModifiers modifiers)
 {
     const MapRenderer *renderer = mapDocument()->renderer();
-    const QPointF pixelCoords = renderer->screenToPixelCoords(pos);
+    QPointF pixelCoords = renderer->screenToPixelCoords(pos);
 
-    if (state() == Preview)
+    if (state() == Preview) {
+        SnapHelper(renderer, modifiers).snap(pixelCoords);
         mStartPos = pixelCoords;
+    }
 
     QRectF objectArea(mStartPos, pixelCoords);
 

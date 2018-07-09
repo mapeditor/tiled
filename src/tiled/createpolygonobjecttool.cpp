@@ -365,7 +365,7 @@ void CreatePolygonObjectTool::cancelNewMapObject()
 void CreatePolygonObjectTool::finishNewMapObject()
 {
     if (mNewMapObjectItem->mapObject()->polygon().size() < 2) {
-        CreatePolygonObjectTool::cancelNewMapObject();
+        cancelNewMapObject();
         return;
     }
 

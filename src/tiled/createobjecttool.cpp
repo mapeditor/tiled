@@ -114,6 +114,9 @@ void CreateObjectTool::mouseMoved(const QPointF &pos,
 {
     AbstractObjectTool::mouseMoved(pos, modifiers);
 
+    mLastScenePos = pos;
+    mLastModifiers = modifiers;
+
     if (mState == Idle)
         tryCreatePreview(pos, modifiers);
 
@@ -140,6 +143,9 @@ void CreateObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
         return;
     }
 
+    if (mState == Idle)
+        tryCreatePreview(event->scenePos(), event->modifiers());
+
     if (mState == Preview) {
         mState = CreatingObject;
         mNewMapObjectItem->setOpacity(1.0);
@@ -160,13 +166,70 @@ void CreateObjectTool::mouseReleased(QGraphicsSceneMouseEvent *event)
         tryCreatePreview(event->scenePos(), event->modifiers());
 }
 
+void CreateObjectTool::modifiersChanged(Qt::KeyboardModifiers modifiers)
+{
+    AbstractObjectTool::modifiersChanged(modifiers);
+
+    mLastModifiers = modifiers;
+
+    if (mState == Preview || mState == CreatingObject) {
+        // The mouse didn't actually move, but the modifiers do affect the snapping
+        QPointF offset = mNewMapObjectItem->mapObject()->objectGroup()->totalOffset();
+        mouseMovedWhileCreatingObject(mLastScenePos - offset, modifiers);
+    }
+}
+
+void CreateObjectTool::mapDocumentChanged(MapDocument *oldDocument,
+                                          MapDocument *newDocument)
+{
+    if (oldDocument) {
+        disconnect(oldDocument, &MapDocument::objectGroupChanged,
+                   this, &CreateObjectTool::objectGroupChanged);
+    }
+
+    if (newDocument) {
+        connect(newDocument, &MapDocument::objectGroupChanged,
+                this, &CreateObjectTool::objectGroupChanged);
+    }
+}
+
+void CreateObjectTool::updateEnabledState()
+{
+    AbstractObjectTool::updateEnabledState();
+
+    if (!isEnabled())
+        return;
+
+    ObjectGroup *objectGroup = currentObjectGroup();
+    bool canCreate = objectGroup && objectGroup->isVisible() && objectGroup->isUnlocked();
+
+    if (mState == Preview || mState == CreatingObject) {
+        if (!canCreate) {
+            // Make sure we disable the preview when conditions changed
+            cancelNewMapObject();
+        } else {
+            // Synchronize possibly changed object group properties
+            if (mNewMapObjectGroup->color() != objectGroup->color()) {
+                mNewMapObjectGroup->setColor(objectGroup->color());
+                mNewMapObjectItem->syncWithMapObject();
+            }
+
+            auto offset = objectGroup->totalOffset();
+            if (mNewMapObjectGroup->offset() != offset) {
+                mNewMapObjectGroup->setOffset(offset);
+                mObjectGroupItem->setPos(offset);
+
+                // The mouse didn't actually move, but the offset affects the position
+                mouseMovedWhileCreatingObject(mLastScenePos - offset, mLastModifiers);
+            }
+        }
+    }
+}
+
 bool CreateObjectTool::startNewMapObject(const QPointF &pos,
                                          ObjectGroup *objectGroup)
 {
     Q_ASSERT(!mNewMapObjectItem);
-
-    if (!objectGroup->isUnlocked())
-        return false;
 
     MapObject *newMapObject = createNewMapObject();
     if (!newMapObject)
@@ -196,7 +259,7 @@ std::unique_ptr<MapObject> CreateObjectTool::clearNewMapObjectItem()
 {
     Q_ASSERT(mNewMapObjectItem);
 
-    std::unique_ptr<MapObject> newMapObject(mNewMapObjectItem->mapObject());
+    std::unique_ptr<MapObject> newMapObject { mNewMapObjectItem->mapObject() };
 
     mNewMapObjectGroup->removeObject(newMapObject.get());
 
@@ -208,11 +271,24 @@ std::unique_ptr<MapObject> CreateObjectTool::clearNewMapObjectItem()
     return newMapObject;
 }
 
+void CreateObjectTool::objectGroupChanged(ObjectGroup *objectGroup)
+{
+    if (objectGroup != currentObjectGroup())
+        return;
+
+    if (mNewMapObjectGroup->color() != objectGroup->color()) {
+        mNewMapObjectGroup->setColor(objectGroup->color());
+
+        if (mNewMapObjectItem)
+            mNewMapObjectItem->syncWithMapObject();
+    }
+}
+
 void CreateObjectTool::tryCreatePreview(const QPointF &scenePos,
                                         Qt::KeyboardModifiers modifiers)
 {
     ObjectGroup *objectGroup = currentObjectGroup();
-    if (!objectGroup || !objectGroup->isVisible())
+    if (!objectGroup || !objectGroup->isVisible() || !objectGroup->isUnlocked())
         return;
 
     const MapRenderer *renderer = mapDocument()->renderer();

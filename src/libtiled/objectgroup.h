@@ -30,8 +30,6 @@
 
 #pragma once
 
-#include "tiled_global.h"
-
 #include "layer.h"
 
 #include <QColor>
