@@ -172,14 +172,6 @@ void MapObjectItem::paint(QPainter *painter,
     }
 }
 
-void MapObjectItem::resizeObject(const QRectF &bounds)
-{
-    // Not using the MapObjectModel because it is used during object creation,
-    // when the object is not actually part of the map yet.
-    mObject->setBounds(bounds);
-    syncWithMapObject();
-}
-
 void MapObjectItem::setPolygon(const QPolygonF &polygon)
 {
     // Not using the MapObjectModel because it is used during object creation,

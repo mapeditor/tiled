@@ -75,12 +75,6 @@ public:
                QWidget *widget = nullptr) override;
 
     /**
-     * Resizes the associated map object. The \a bounds are given in pixel
-     * coordinates.
-     */
-    void resizeObject(const QRectF &bounds);
-
-    /**
      * Sets a new polygon on the associated object.
      */
     void setPolygon(const QPolygonF &polygon);

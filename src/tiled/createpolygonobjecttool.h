@@ -60,7 +60,7 @@ protected:
     MapObject *createNewMapObject() override;
     void cancelNewMapObject() override;
     void finishNewMapObject() override;
-    MapObject *clearNewMapObjectItem() override;
+    std::unique_ptr<MapObject> clearNewMapObjectItem() override;
 
 private slots:
     void updateHover(const QPointF &scenePos, QGraphicsSceneMouseEvent *event = nullptr);

@@ -43,6 +43,8 @@
 #include <QPalette>
 #include <QUndoStack>
 
+#include "qtcompat_p.h"
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
@@ -135,7 +137,7 @@ void CreatePolygonObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
     mClickedHandle = mHoveredHandle;
 
     if (event->button() == Qt::LeftButton) {
-        if (mMode == NoMode && mClickedHandle) {
+        if (state() == Preview && mClickedHandle) {
             // Pressing on a handle starts extending the polyline at that side
             bool extendingFirst = mClickedHandle->pointIndex() == 0;
             extend(mClickedHandle->mapObject(), extendingFirst);
@@ -143,7 +145,7 @@ void CreatePolygonObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
         }
     }
 
-    if (mNewMapObjectItem) {
+    if (state() == CreatingObject) {
         if (event->button() == Qt::RightButton)
             finishNewMapObject();
         else if (event->button() == Qt::LeftButton)
@@ -204,6 +206,13 @@ void CreatePolygonObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos,
         SnapHelper(renderer, modifiers).snap(pixelCoords);
 
     mLastPixelPos = pixelCoords;
+
+    if (state() == Preview) {
+        mNewMapObjectItem->mapObject()->setPosition(mLastPixelPos);
+        mNewMapObjectItem->syncWithMapObject();
+        mOverlayPolygonItem->mapObject()->setPosition(mLastPixelPos);
+    }
+
     pixelCoords -= mNewMapObjectItem->mapObject()->position();
 
     QPolygonF polygon = mOverlayPolygonObject->polygon();
@@ -345,10 +354,12 @@ MapObject *CreatePolygonObjectTool::createNewMapObject()
 
 void CreatePolygonObjectTool::cancelNewMapObject()
 {
-    if (mMode != Creating)
+    if (mMode != Creating) {
         finishExtendingMapObject();
-    else
+    } else {
         CreateObjectTool::cancelNewMapObject();
+        updateHandles();
+    }
 }
 
 void CreatePolygonObjectTool::finishNewMapObject()
@@ -368,7 +379,7 @@ void CreatePolygonObjectTool::finishNewMapObject()
     }
 }
 
-MapObject *CreatePolygonObjectTool::clearNewMapObjectItem()
+std::unique_ptr<MapObject> CreatePolygonObjectTool::clearNewMapObjectItem()
 {
     delete mOverlayPolygonItem;
     mOverlayPolygonItem = nullptr;
@@ -468,8 +479,8 @@ void CreatePolygonObjectTool::objectsRemoved(const QList<MapObject *> &objects)
         abortExtendingMapObject();
 
     // Assert that no handles exist for the deleted objects
-    for (int i = mHandles.size() - 1; i > 0; --i)
-        Q_ASSERT(!objects.contains(mHandles.at(i)->mapObject()));
+    for (PointHandle *handle : qAsConst(mHandles))
+        Q_ASSERT(!objects.contains(handle->mapObject()));
 }
 
 void CreatePolygonObjectTool::layerRemoved(Layer *layer)
@@ -504,6 +515,8 @@ void CreatePolygonObjectTool::abortExtendingMapObject()
 
     delete mOverlayPolygonItem;
     mOverlayPolygonItem = nullptr;
+
+    setState(Idle);
 
     updateHandles();
 }
@@ -560,6 +573,9 @@ void CreatePolygonObjectTool::extend(MapObject *mapObject, bool extendingFirst)
 {
     Q_ASSERT(mapObject->shape() == MapObject::Polyline);
 
+    if (state() == Preview)
+        CreateObjectTool::cancelNewMapObject();
+
     mMode = extendingFirst ? ExtendingAtBegin : ExtendingAtEnd;
 
     newMapObjectGroup()->setOffset(mapObject->objectGroup()->totalOffset());
@@ -575,6 +591,8 @@ void CreatePolygonObjectTool::extend(MapObject *mapObject, bool extendingFirst)
     mOverlayPolygonItem = new MapObjectItem(mOverlayPolygonObject,
                                             mapDocument(),
                                             objectGroupItem());
+
+    setState(CreatingObject);
 
     updateHandles();
 }

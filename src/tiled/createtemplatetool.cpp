@@ -42,15 +42,6 @@ CreateTemplateTool::CreateTemplateTool(QObject *parent)
     languageChangedImpl();
 }
 
-bool CreateTemplateTool::startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup)
-{
-    if (!CreateObjectTool::startNewMapObject(pos, objectGroup))
-        return false;
-
-    mNewMapObjectItem->setOpacity(0.75);
-    return true;
-}
-
 void CreateTemplateTool::languageChanged()
 {
     CreateObjectTool::languageChanged();

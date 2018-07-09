@@ -36,7 +36,6 @@ public:
 
 protected:
     MapObject *createNewMapObject() override;
-    bool startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup) override;
 
 private:
     void languageChangedImpl();

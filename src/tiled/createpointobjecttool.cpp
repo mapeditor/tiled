@@ -58,10 +58,3 @@ MapObject *CreatePointObjectTool::createNewMapObject()
     newMapObject->setShape(MapObject::Point);
     return newMapObject;
 }
-
-bool CreatePointObjectTool::startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup)
-{
-    if (!CreateObjectTool::startNewMapObject(pos, objectGroup))
-        return false;
-    return true;
-}

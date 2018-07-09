@@ -55,15 +55,6 @@ void CreateTileObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt:
     mNewMapObjectItem->syncWithMapObject();
 }
 
-bool CreateTileObjectTool::startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup)
-{
-    if (!CreateObjectTool::startNewMapObject(pos, objectGroup))
-        return false;
-
-    mNewMapObjectItem->setOpacity(0.75);
-    return true;
-}
-
 void CreateTileObjectTool::languageChanged()
 {
     CreateObjectTool::languageChanged();

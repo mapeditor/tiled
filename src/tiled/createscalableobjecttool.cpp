@@ -51,6 +51,9 @@ void CreateScalableObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos,
     const MapRenderer *renderer = mapDocument()->renderer();
     const QPointF pixelCoords = renderer->screenToPixelCoords(pos);
 
+    if (state() == Preview)
+        mStartPos = pixelCoords;
+
     QRectF objectArea(mStartPos, pixelCoords);
 
     // Holding shift creates circle or square
@@ -66,5 +69,8 @@ void CreateScalableObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos,
     objectArea.setWidth(snapSize.x());
     objectArea.setHeight(snapSize.y());
 
-    mNewMapObjectItem->resizeObject(objectArea.normalized());
+    // Not using the MapObjectModel because the object is not actually part of
+    // the map yet
+    mNewMapObjectItem->mapObject()->setBounds(objectArea.normalized());
+    mNewMapObjectItem->syncWithMapObject();
 }

@@ -46,12 +46,19 @@ public:
 
     void keyPressed(QKeyEvent *event) override;
     void mouseEntered() override;
+    void mouseLeft() override;
     void mouseMoved(const QPointF &pos,
                     Qt::KeyboardModifiers modifiers) override;
     void mousePressed(QGraphicsSceneMouseEvent *event) override;
     void mouseReleased(QGraphicsSceneMouseEvent *event) override;
 
 protected:
+    enum State {
+        Idle,
+        Preview,
+        CreatingObject,
+    };
+
     virtual void mouseMovedWhileCreatingObject(const QPointF &pos,
                                                Qt::KeyboardModifiers modifiers);
 
@@ -59,7 +66,10 @@ protected:
     virtual MapObject *createNewMapObject() = 0;
     virtual void cancelNewMapObject();
     virtual void finishNewMapObject();
-    virtual MapObject *clearNewMapObjectItem();
+    virtual std::unique_ptr<MapObject> clearNewMapObjectItem();
+
+    State state() const { return mState; }
+    void setState(State state) { mState = state; }
 
     ObjectGroup *newMapObjectGroup() { return mNewMapObjectGroup.get(); }
     ObjectGroupItem *objectGroupItem() { return mObjectGroupItem.get(); }
@@ -67,6 +77,10 @@ protected:
     MapObjectItem *mNewMapObjectItem;   // owned by mObjectGroupItem if set
 
 private:
+    void tryCreatePreview(const QPointF &scenePos,
+                          Qt::KeyboardModifiers modifiers);
+
+    State mState = Idle;
     std::unique_ptr<ObjectGroup> mNewMapObjectGroup;
     std::unique_ptr<ObjectGroupItem> mObjectGroupItem;
 };
