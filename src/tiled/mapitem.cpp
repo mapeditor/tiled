@@ -78,6 +78,8 @@ public:
                 if (currentLayer->isParentOrSelf(layer))
                     update();
         });
+
+        setVisible(prefs->showGrid());
     }
 
     QRectF boundingRect() const override
