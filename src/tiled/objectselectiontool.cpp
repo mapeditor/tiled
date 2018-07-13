@@ -889,6 +889,23 @@ static QTransform objectTransform(MapObject *object, MapRenderer *renderer)
     return transform;
 }
 
+/**
+ * Like QRectF::united, but without the null checks at the start and based on
+ * the assumption that neither rect has negative sizes.
+ */
+static QRectF uniteBounds(const QRectF &a, const QRectF &b)
+{
+    Q_ASSERT(a.width() >= 0.0 && a.height() >= 0.0);
+    Q_ASSERT(b.width() >= 0.0 && b.height() >= 0.0);
+
+    const qreal left = qMin(a.left(), b.left());
+    const qreal right = qMax(a.right(), b.right());
+    const qreal top = qMin(a.top(), b.top());
+    const qreal bottom = qMax(a.bottom(), b.bottom());
+
+    return QRectF(left, top, right - left, bottom - top);
+}
+
 void ObjectSelectionTool::updateHandlesImpl(bool resetOriginIndicator)
 {
     if (mAction == Moving || mAction == Rotating || mAction == Resizing)
@@ -904,8 +921,9 @@ void ObjectSelectionTool::updateHandlesImpl(bool resetOriginIndicator)
 
         for (int i = 1; i < objects.size(); ++i) {
             MapObject *object = objects.at(i);
-            boundingRect |= objectBounds(object, renderer,
+            QRectF bounds = objectBounds(object, renderer,
                                          objectTransform(object, renderer));
+            boundingRect = uniteBounds(boundingRect, bounds);
         }
 
         QPointF topLeft = boundingRect.topLeft();
