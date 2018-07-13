@@ -85,44 +85,62 @@ SplitPolyline::SplitPolyline(MapDocument *mapDocument,
                              int index)
     : mMapDocument(mapDocument)
     , mFirstPolyline(mapObject)
+    , mSecondPolyline(nullptr)
     , mEdgeIndex(index)
+    , mObjectIndex(-1)
     , mOldChangeState(mapObject->propertyChanged(MapObject::ShapeProperty))
+    , mOwnsSecondPolyline(false)
 {
-    mObjectIndex = mapObject->objectGroup()->objects().indexOf(mapObject) + 1;
-    mSecondPolyline = mFirstPolyline->clone();
-    mSecondPolyline->resetId();
-
     setText(QCoreApplication::translate("Undo Commands", "Split Polyline"));
+}
+
+SplitPolyline::~SplitPolyline()
+{
+    if (mOwnsSecondPolyline)
+        delete mSecondPolyline;
 }
 
 void SplitPolyline::undo()
 {
-    mObjectIndex = mMapDocument->mapObjectModel()->removeObject(mFirstPolyline->objectGroup(),
-                                                                mSecondPolyline);
+    mMapDocument->mapObjectModel()->removeObject(mFirstPolyline->objectGroup(),
+                                                 mSecondPolyline);
+    mOwnsSecondPolyline = true;
 
-    QPolygonF firstPolygon = mFirstPolyline->polygon();
-    QPolygonF secondPolygon = mSecondPolyline->polygon();
+    QPolygonF polygon = mFirstPolyline->polygon() + mSecondPolyline->polygon();
 
-    firstPolygon += secondPolygon;
-    mSecondPolyline->setPolygon(firstPolygon);
-
-    mMapDocument->mapObjectModel()->setObjectPolygon(mFirstPolyline, firstPolygon);
+    mMapDocument->mapObjectModel()->setObjectPolygon(mFirstPolyline, polygon);
     mFirstPolyline->setPropertyChanged(MapObject::ShapeProperty, mOldChangeState);
 }
 
 void SplitPolyline::redo()
 {
-    mMapDocument->mapObjectModel()->insertObject(mFirstPolyline->objectGroup(), mObjectIndex,
-                                                 mSecondPolyline);
-
     QPolygonF firstPolygon = mFirstPolyline->polygon();
-    QPolygonF secondPolygon = mSecondPolyline->polygon();
-
     firstPolygon.erase(firstPolygon.begin() + mEdgeIndex + 1, firstPolygon.end());
-    secondPolygon.erase(secondPolygon.begin(), secondPolygon.begin() + mEdgeIndex + 1);
+
+    if (!mSecondPolyline) {
+        mObjectIndex = mFirstPolyline->objectGroup()->objects().indexOf(mFirstPolyline) + 1;
+
+        QPolygonF secondPolygon = mFirstPolyline->polygon();
+        secondPolygon.erase(secondPolygon.begin(), secondPolygon.begin() + mEdgeIndex + 1);
+
+        mSecondPolyline = mFirstPolyline->clone();
+        mSecondPolyline->resetId();
+        mSecondPolyline->setPolygon(secondPolygon);
+        mSecondPolyline->setPropertyChanged(MapObject::ShapeProperty);
+    }
+
+    mMapDocument->mapObjectModel()->insertObject(mFirstPolyline->objectGroup(),
+                                                 mObjectIndex,
+                                                 mSecondPolyline);
+    mOwnsSecondPolyline = false;
 
     mMapDocument->mapObjectModel()->setObjectPolygon(mFirstPolyline, firstPolygon);
-    mMapDocument->mapObjectModel()->setObjectPolygon(mSecondPolyline, secondPolygon);
     mFirstPolyline->setPropertyChanged(MapObject::ShapeProperty);
-    mSecondPolyline->setPropertyChanged(MapObject::ShapeProperty);
+
+    // If the first polyline is selected, select the second as well
+    QList<MapObject*> selection = mMapDocument->selectedObjects();
+    if (selection.contains(mFirstPolyline)) {
+        selection.append(mSecondPolyline);
+        mMapDocument->setSelectedObjects(selection);
+    }
 }
