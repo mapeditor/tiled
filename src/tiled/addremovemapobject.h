@@ -21,6 +21,7 @@
 #pragma once
 
 #include <QUndoCommand>
+#include <QVector>
 
 namespace Tiled {
 
@@ -34,55 +35,72 @@ class MapDocument;
 /**
  * Abstract base class for AddMapObject and RemoveMapObject.
  */
-class AddRemoveMapObject : public QUndoCommand
+class AddRemoveMapObjects : public QUndoCommand
 {
 public:
-    AddRemoveMapObject(MapDocument *mapDocument,
-                       ObjectGroup *objectGroup,
-                       MapObject *mapObject,
-                       bool ownObject,
-                       QUndoCommand *parent = nullptr);
-    ~AddRemoveMapObject();
+    struct Entry {
+        Entry() {}
+
+        Entry(MapObject *mapObject, ObjectGroup *objectGroup)
+            : mapObject(mapObject)
+            , objectGroup(objectGroup)
+        {}
+
+        MapObject *mapObject = nullptr;
+        ObjectGroup *objectGroup = nullptr;
+        int index = -1;
+    };
+
+    AddRemoveMapObjects(MapDocument *mapDocument,
+                        const QVector<Entry> &entries,
+                        bool ownObjects,
+                        QUndoCommand *parent = nullptr);
+    ~AddRemoveMapObjects();
+
+    static QVector<Entry> entries(const QList<MapObject *> &objects);
+    static QList<MapObject*> objects(const QVector<Entry> &entries);
 
 protected:
-    void addObject();
-    void removeObject();
-
-private:
     MapDocument *mMapDocument;
-    MapObject *mMapObject;
-    ObjectGroup *mObjectGroup;
-    int mIndex;
-    bool mOwnsObject;
+    QVector<Entry> mEntries;
+    bool mOwnsObjects;
 };
 
 /**
  * Undo command that adds an object to a map.
  */
-class AddMapObject : public AddRemoveMapObject
+class AddMapObjects : public AddRemoveMapObjects
 {
 public:
-    AddMapObject(MapDocument *mapDocument, ObjectGroup *objectGroup,
-                 MapObject *mapObject, QUndoCommand *parent = nullptr);
+    AddMapObjects(MapDocument *mapDocument,
+                  ObjectGroup *objectGroup,
+                  MapObject *mapObject,
+                  QUndoCommand *parent = nullptr);
+
+    AddMapObjects(MapDocument *mapDocument,
+                  const QVector<Entry> &entries,
+                  QUndoCommand *parent = nullptr);
 
     void undo() override;
     void redo() override;
 };
 
 /**
- * Undo command that removes an object from a map.
+ * Undo command that removes one or more objects from a map.
  */
-class RemoveMapObject : public AddRemoveMapObject
+class RemoveMapObjects : public AddRemoveMapObjects
 {
 public:
-    RemoveMapObject(MapDocument *mapDocument, MapObject *mapObject,
-                    QUndoCommand *parent = nullptr);
+    RemoveMapObjects(MapDocument *mapDocument,
+                     MapObject *mapObject,
+                     QUndoCommand *parent = nullptr);
 
-    void undo() override
-    { addObject(); }
+    RemoveMapObjects(MapDocument *mapDocument,
+                     const QList<MapObject *> &mapObjects,
+                     QUndoCommand *parent = nullptr);
 
-    void redo() override
-    { removeObject(); }
+    void undo() override;
+    void redo() override;
 };
 
 } // namespace Internal

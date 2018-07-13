@@ -229,11 +229,9 @@ void ClipboardManager::pasteObjectGroup(const ObjectGroup *objectGroup,
         SnapHelper(renderer).snap(insertPos);
     }
 
-    QUndoStack *undoStack = mapDocument->undoStack();
-    QList<MapObject*> pastedObjects;
-    pastedObjects.reserve(objectGroup->objectCount());
+    QVector<AddMapObjects::Entry> objectsToAdd;
+    objectsToAdd.reserve(objectGroup->objectCount());
 
-    undoStack->beginMacro(tr("Paste Objects"));
     for (const MapObject *mapObject : objectGroup->objects()) {
         if (flags & PasteNoTileObjects && !mapObject->cell().isEmpty())
             continue;
@@ -241,14 +239,14 @@ void ClipboardManager::pasteObjectGroup(const ObjectGroup *objectGroup,
         MapObject *objectClone = mapObject->clone();
         objectClone->resetId();
         objectClone->setPosition(objectClone->position() + insertPos);
-        pastedObjects.append(objectClone);
-        undoStack->push(new AddMapObject(mapDocument,
-                                         currentObjectGroup,
-                                         objectClone));
+        objectsToAdd.append(AddMapObjects::Entry { objectClone, currentObjectGroup });
     }
-    undoStack->endMacro();
 
-    mapDocument->setSelectedObjects(pastedObjects);
+    auto command = new AddMapObjects(mapDocument, objectsToAdd);
+    command->setText(tr("Paste Objects"));
+
+    mapDocument->undoStack()->push(command);
+    mapDocument->setSelectedObjects(AddMapObjects::objects(objectsToAdd));
 }
 
 void ClipboardManager::update()

@@ -318,9 +318,9 @@ void CreateObjectTool::finishNewMapObject()
 
     auto newMapObject = clearNewMapObjectItem();
 
-    auto addObjectCommand = new AddMapObject(mapDocument(),
-                                             objectGroup,
-                                             newMapObject.get());
+    auto addObjectCommand = new AddMapObjects(mapDocument(),
+                                              objectGroup,
+                                              newMapObject.get());
 
     if (Tileset *tileset = newMapObject.get()->cell().tileset()) {
         SharedTileset sharedTileset = tileset->sharedPointer();

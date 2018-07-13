@@ -60,7 +60,7 @@ void eraseRegionObjectGroup(MapDocument *mapDocument,
 
         const QRect objAlignedRect = objInTileSpace.toAlignedRect();
         if (where.intersects(objAlignedRect))
-            undo->push(new RemoveMapObject(mapDocument, obj));
+            undo->push(new RemoveMapObjects(mapDocument, obj));
     }
 }
 

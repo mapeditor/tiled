@@ -115,7 +115,9 @@ MapDocument::MapDocument(Map *map, const QString &fileName)
             this, &MapDocument::updateTemplateInstances);
 }
 
-MapDocument::~MapDocument() = default;
+MapDocument::~MapDocument()
+{
+}
 
 bool MapDocument::save(const QString &fileName, QString *error)
 {
@@ -287,6 +289,8 @@ void MapDocument::resizeMap(const QSize &size, const QPoint &offset, bool remove
     // Resize the map and each layer
     QUndoCommand *command = new QUndoCommand(tr("Resize Map"));
 
+    QList<MapObject *> objectsToRemove;
+
     LayerIterator iterator(mMap.get());
     while (Layer *layer = iterator.next()) {
         switch (layer->layerType()) {
@@ -301,7 +305,7 @@ void MapDocument::resizeMap(const QSize &size, const QPoint &offset, bool remove
             for (MapObject *o : objectGroup->objects()) {
                 if (removeObjects && !visibleIn(visibleArea, o, *mRenderer)) {
                     // Remove objects that will fall outside of the map
-                    new RemoveMapObject(this, o, command);
+                    objectsToRemove.append(o);
                 } else {
                     QPointF oldPos = o->position();
                     QPointF newPos = oldPos + pixelOffset;
@@ -324,6 +328,9 @@ void MapDocument::resizeMap(const QSize &size, const QPoint &offset, bool remove
         }
         }
     }
+
+    if (!objectsToRemove.isEmpty())
+        new RemoveMapObjects(this, objectsToRemove, command);
 
     new ResizeMap(this, size, command);
     new ChangeSelectedArea(this, movedSelection, command);
@@ -1064,6 +1071,12 @@ void MapDocument::selectAllInstances(const ObjectTemplate *objectTemplate)
     setSelectedObjects(objectList);
 }
 
+/**
+ * Deselects the given list of \a objects.
+ *
+ * If any of the given objects is the "current" object, the current object
+ * is reset as well.
+ */
 void MapDocument::deselectObjects(const QList<MapObject *> &objects)
 {
     // Unset the current object when it was part of this list of objects
@@ -1084,20 +1097,21 @@ void MapDocument::duplicateObjects(const QList<MapObject *> &objects)
     if (objects.isEmpty())
         return;
 
-    mUndoStack->beginMacro(tr("Duplicate %n Object(s)", "", objects.size()));
+    QVector<AddMapObjects::Entry> objectsToAdd;
+    objectsToAdd.reserve(objects.size());
 
-    QList<MapObject*> clones;
     for (const MapObject *mapObject : objects) {
         MapObject *clone = mapObject->clone();
         clone->resetId();
-        clones.append(clone);
-        mUndoStack->push(new AddMapObject(this,
-                                          mapObject->objectGroup(),
-                                          clone));
+        objectsToAdd.append(AddMapObjects::Entry { clone, mapObject->objectGroup() });
     }
 
-    mUndoStack->endMacro();
-    setSelectedObjects(clones);
+    auto command = new AddMapObjects(this, objectsToAdd);
+    command->setText(tr("Duplicate %n Object(s)", "", objects.size()));
+
+    mUndoStack->push(command);
+
+    setSelectedObjects(AddMapObjects::objects(objectsToAdd));
 }
 
 void MapDocument::removeObjects(const QList<MapObject *> &objects)
@@ -1105,11 +1119,10 @@ void MapDocument::removeObjects(const QList<MapObject *> &objects)
     if (objects.isEmpty())
         return;
 
-    mUndoStack->beginMacro(tr("Remove %n Object(s)", "", objects.size()));
-    const auto objectsCopy = objects;   // original list may get modified
-    for (MapObject *mapObject : objectsCopy)
-        mUndoStack->push(new RemoveMapObject(this, mapObject));
-    mUndoStack->endMacro();
+    auto command = new RemoveMapObjects(this, objects);
+    command->setText(tr("Remove %n Object(s)", "", objects.size()));
+
+    mUndoStack->push(command);
 }
 
 void MapDocument::moveObjectsToGroup(const QList<MapObject *> &objects,

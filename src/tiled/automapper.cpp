@@ -852,7 +852,6 @@ void AutoMapper::copyObjectRegion(const ObjectGroup *srcLayer, int srcX, int src
                                   int width, int height,
                                   ObjectGroup *dstLayer, int dstX, int dstY)
 {
-    QUndoStack *undo = mMapDocument->undoStack();
     const QRectF rect = QRectF(srcX, srcY, width, height);
     const QRectF pixelRect = mMapDocument->renderer()->tileToPixelCoords(rect);
     const QList<MapObject*> objects = objectsInRegion(srcLayer, pixelRect.toAlignedRect());
@@ -860,13 +859,18 @@ void AutoMapper::copyObjectRegion(const ObjectGroup *srcLayer, int srcX, int src
     QPointF pixelOffset = mMapDocument->renderer()->tileToPixelCoords(dstX, dstY);
     pixelOffset -= pixelRect.topLeft();
 
+    QVector<AddMapObjects::Entry> objectsToAdd;
+    objectsToAdd.reserve(objects.size());
+
     for (MapObject *obj : objects) {
         MapObject *clone = obj->clone();
         clone->resetId();
         clone->setX(clone->x() + pixelOffset.x());
         clone->setY(clone->y() + pixelOffset.y());
-        undo->push(new AddMapObject(mMapDocument, dstLayer, clone));
+        objectsToAdd.append(AddMapObjects::Entry { clone, dstLayer });
     }
+
+    mMapDocument->undoStack()->push(new AddMapObjects(mMapDocument, objectsToAdd));
 }
 
 void AutoMapper::cleanAll()

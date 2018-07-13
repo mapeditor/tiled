@@ -419,9 +419,9 @@ void MapScene::dropEvent(QGraphicsSceneDragDropEvent *event)
     newMapObject->syncWithTemplate();
     newMapObject->setPosition(event->scenePos());
 
-    auto addObjectCommand = new AddMapObject(mapDocument(),
-                                             objectGroup,
-                                             newMapObject);
+    auto addObjectCommand = new AddMapObjects(mapDocument(),
+                                              objectGroup,
+                                              newMapObject);
 
     mapDocument()->undoStack()->push(addObjectCommand);
 

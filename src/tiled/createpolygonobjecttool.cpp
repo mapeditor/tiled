@@ -304,7 +304,7 @@ void CreatePolygonObjectTool::applySegment()
                 finishExtendingMapObject();
             }
 
-            mapDocument()->undoStack()->push(new RemoveMapObject(mapDocument(), clickedObject));
+            mapDocument()->undoStack()->push(new RemoveMapObjects(mapDocument(), clickedObject));
             mapDocument()->undoStack()->endMacro();
 
             return;

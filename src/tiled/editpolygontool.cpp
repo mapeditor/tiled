@@ -765,7 +765,7 @@ void EditPolygonTool::deleteNodes()
 
         if (newPolygon.size() < 2) {
             // We've removed the entire object
-            undoStack->push(new RemoveMapObject(mapDocument(), object));
+            undoStack->push(new RemoveMapObjects(mapDocument(), object));
         } else {
             undoStack->push(new ChangePolygon(mapDocument(), object,
                                               newPolygon,

@@ -335,17 +335,14 @@ void TileCollisionDock::delete_(Operation operation)
     if (!mDummyMapDocument)
         return;
 
-    const QList<MapObject*> selectedObjects = mDummyMapDocument->selectedObjects();
+    const QList<MapObject*> &selectedObjects = mDummyMapDocument->selectedObjects();
     if (selectedObjects.isEmpty())
         return;
 
-    QUndoStack *undoStack = mDummyMapDocument->undoStack();
-    undoStack->beginMacro(operation == Delete ? tr("Delete") : tr("Cut"));
+    auto command = new RemoveMapObjects(mDummyMapDocument.data(), selectedObjects);
+    command->setText(operation == Delete ? tr("Delete") : tr("Cut"));
 
-    for (MapObject *mapObject : selectedObjects)
-        undoStack->push(new RemoveMapObject(mDummyMapDocument.data(), mapObject));
-
-    undoStack->endMacro();
+    mDummyMapDocument->undoStack()->push(command);
 }
 
 void TileCollisionDock::selectedObjectsChanged()

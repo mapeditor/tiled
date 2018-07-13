@@ -46,6 +46,8 @@
 #include <QtCore/qmath.h>
 #include <QStyle>
 
+#include "qtcompat_p.h"
+
 namespace Tiled {
 namespace Internal {
 
@@ -338,8 +340,7 @@ void MapDocumentActionHandler::delete_()
         commands.append(new EraseTiles(mMapDocument, tileLayer, area));
     }
 
-    for (MapObject *mapObject : mMapDocument->selectedObjects())
-        commands.append(new RemoveMapObject(mMapDocument, mapObject));
+    commands.append(new RemoveMapObjects(mMapDocument, mMapDocument->selectedObjects()));
 
     QUndoStack *undoStack = mMapDocument->undoStack();
 
@@ -540,7 +541,7 @@ void MapDocumentActionHandler::layerVia(MapDocumentActionHandler::LayerViaVarian
         newObjectGroup->setDrawOrder(currentObjectGroup->drawOrder());
         newObjectGroup->setColor(currentObjectGroup->color());
 
-        for (MapObject *mapObject : selectedObjects) {
+        for (MapObject *mapObject : qAsConst(selectedObjects)) {
             MapObject *clone = mapObject->clone();
             if (variant == ViaCopy)
                 clone->resetId();
@@ -574,8 +575,7 @@ void MapDocumentActionHandler::layerVia(MapDocumentActionHandler::LayerViaVarian
             break;
         }
         case Layer::ObjectGroupType:
-            for (MapObject *oldObject : selectedObjects)
-                undoStack->push(new RemoveMapObject(mMapDocument, oldObject));
+            undoStack->push(new RemoveMapObjects(mMapDocument, selectedObjects));
             break;
         default:
             Q_ASSERT(false);
