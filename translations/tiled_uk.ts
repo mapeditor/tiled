@@ -2228,7 +2228,7 @@ Line %1, column %2</source>
     <message>
         <location line="+9"/>
         <source>Tbin map files (*.tbin)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tbin файли карт (*.tbin)</translation>
     </message>
 </context>
 <context>
@@ -2248,17 +2248,17 @@ Line %1, column %2</source>
     <message>
         <location line="+72"/>
         <source>Failed to open file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося відкрити файл.</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>File is not a tbin file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл не є файлом tbin.</translation>
     </message>
     <message>
         <location line="+35"/>
         <source>Failed to open file</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося відкрити файл</translation>
     </message>
     <message>
         <location filename="../src/plugins/tbin/tbinplugin.cpp" line="-255"/>
@@ -2330,22 +2330,22 @@ Line %1, column %2</source>
     <message>
         <location line="+16"/>
         <source>Replace Tile</source>
-        <translation type="unfinished"></translation>
+        <translation>Замінити плитку</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Replace With Template</source>
-        <translation type="unfinished"></translation>
+        <translation>Замінити шаблоном</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Replace With Template &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Замінити шаблоном «%1»</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Save As Template</source>
-        <translation type="unfinished"></translation>
+        <translation>Зберегти як шаблон</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -2437,7 +2437,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/abstracttileselectiontool.cpp" line="+136"/>
         <source>Replace Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Замінити обране</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2568,7 +2568,7 @@ Line %1, column %2</source>
     <message>
         <location line="+2"/>
         <source>Template tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Шаблон набору плиток</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -2578,7 +2578,7 @@ Line %1, column %2</source>
     <message>
         <location line="+2"/>
         <source>Template</source>
-        <translation type="unfinished"></translation>
+        <translation>Шаблон</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -2606,7 +2606,7 @@ Line %1, column %2</source>
     <message>
         <location line="+1"/>
         <source>One or more referenced files could not be found. You can help locate them below.</source>
-        <translation type="unfinished"></translation>
+        <translation>Один чи декілька файлів не вдалося знайти. Нижче можете вказати їхнє розташування.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2618,7 +2618,7 @@ Line %1, column %2</source>
     <message>
         <location line="-5"/>
         <source>Open Template...</source>
-        <translation type="unfinished"></translation>
+        <translation>Відкрити шаблон...</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -2750,7 +2750,7 @@ Line %1, column %2</source>
     <message>
         <location line="+110"/>
         <source>Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>Комбінація клавіш</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2808,7 +2808,7 @@ Line %1, column %2</source>
     <message>
         <location line="+10"/>
         <source>Select Working Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Обрати робочу теку</translation>
     </message>
 </context>
 <context>
@@ -2834,7 +2834,7 @@ Line %1, column %2</source>
     <message>
         <location line="+20"/>
         <source>Executing: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Виконати: %1</translation>
     </message>
     <message>
         <location line="+29"/>
@@ -2896,12 +2896,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/createpointobjecttool.cpp" line="+45"/>
         <source>Insert Point</source>
-        <translation type="unfinished"></translation>
+        <translation>Вставити точку</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>I</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">I</translation>
     </message>
 </context>
 <context>
@@ -2948,12 +2948,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/createtemplatetool.cpp" line="+82"/>
         <source>Insert Template</source>
-        <translation type="unfinished"></translation>
+        <translation>Вставити шаблон</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>V</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">V</translation>
     </message>
 </context>
 <context>
@@ -3007,7 +3007,7 @@ Line %1, column %2</source>
     <message>
         <location line="+7"/>
         <source>Close Other Tabs</source>
-        <translation type="unfinished"></translation>
+        <translation>Закрити інші вкладки</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -3074,7 +3074,7 @@ Line %1, column %2</source>
         <location line="-269"/>
         <location line="+324"/>
         <source>Delete Segment</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалити сегмент</translation>
     </message>
 </context>
 <context>
@@ -3142,7 +3142,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/tiled/filechangedwarning.cpp" line="+40"/>
         <source>File change detected. Discard changes and reload the file?</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл було змінено. Скасувати зміні і перезавантажити наново?</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -3201,12 +3201,10 @@ Do you want to replace it?</source>
     <message numerus="yes">
         <location line="+74"/>
         <source>Drag Layer(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Перетягнути прошарок</numerusform>
+        <numerusform>Перетягнути прошарки</numerusform>
+        <numerusform>Перетягнути прошарків</numerusform>
+        </translation></message>
     <message>
         <location line="+215"/>
         <source>Show Other Layers</source>
@@ -3270,7 +3268,7 @@ Do you want to replace it?</source>
     <message>
         <location line="-4"/>
         <source>New</source>
-        <translation type="unfinished"></translation>
+        <translation>Новий</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3329,7 +3327,7 @@ Do you want to replace it?</source>
     <message>
         <location line="+295"/>
         <source>Open File</source>
-        <translation type="unfinished"></translation>
+        <translation>Відкрити файл</translation>
     </message>
     <message>
         <location line="+748"/>
@@ -3398,7 +3396,7 @@ Do you want to replace it?</source>
     <message>
         <location line="+4"/>
         <source>Tiled may not automatically recognize your file when loading. Are you sure you want to save with this extension?</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiled не може автоматично розпізнати тип файлу, який завантажується під час завантаження. Ви впевнені, що бажаєте зберегти файл з даним розширенням?</translation>
     </message>
     <message>
         <location filename="../src/tiled/mainwindow.cpp" line="+16"/>
@@ -3470,13 +3468,13 @@ Please select specific format.</source>
     <message>
         <location line="+28"/>
         <source>&amp;Group</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Група</translation>
     </message>
     <message>
         <location line="+59"/>
         <location line="+28"/>
         <source>Error Exporting Map!</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка експорту карти!</translation>
     </message>
     <message>
         <location line="+48"/>
@@ -3524,17 +3522,17 @@ Please select specific format.</source>
         <location filename="../src/tiled/documentmanager.cpp" line="+19"/>
         <location line="+20"/>
         <source>untitled</source>
-        <translation type="unfinished"></translation>
+        <translation>без назви</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Save Template</source>
-        <translation type="unfinished"></translation>
+        <translation>Зберегти шаблон</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Error Saving Template</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка збереження шаблону</translation>
     </message>
 </context>
 <context>
@@ -3582,17 +3580,17 @@ Please select specific format.</source>
         <location line="+4"/>
         <location line="+26"/>
         <source>Group %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Група %1</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Group Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Група прошарків</translation>
     </message>
     <message>
         <location line="+32"/>
         <source>Ungroup Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Розгрупувати прошарок</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -3715,7 +3713,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Invert S&amp;election</source>
-        <translation type="unfinished"></translation>
+        <translation>Інвертувати виб&amp;ір</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3730,7 +3728,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Autocrop</source>
-        <translation type="unfinished"></translation>
+        <translation>Авто-обтинання</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3751,7 +3749,7 @@ Please select specific format.</source>
         <location line="+1"/>
         <location line="+3"/>
         <source>&amp;Group Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Група прошарків</translation>
     </message>
     <message>
         <location line="-2"/>
@@ -3768,7 +3766,7 @@ Please select specific format.</source>
     <message>
         <location line="-280"/>
         <source>&amp;Ungroup Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Розгрупувати прошарок</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -3803,7 +3801,7 @@ Please select specific format.</source>
     <message>
         <location line="+18"/>
         <source>&amp;Group</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Групування</translation>
     </message>
     <message>
         <location line="+24"/>
@@ -4058,7 +4056,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/noeditorwidget.ui" line="+19"/>
         <source>&lt;font size=&quot;+2&quot;&gt;No Open Files&lt;/font&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;font size=&quot;+2&quot;&gt;Немає відкритих файлів&lt;/font&gt;</translation>
     </message>
     <message>
         <location line="+28"/>
@@ -4073,7 +4071,7 @@ Please select specific format.</source>
     <message>
         <location line="+11"/>
         <source>Open File...</source>
-        <translation type="unfinished"></translation>
+        <translation>Відкрити файл...</translation>
     </message>
 </context>
 <context>
@@ -4103,7 +4101,7 @@ Please select specific format.</source>
     <message>
         <location line="-577"/>
         <source>Unnamed object</source>
-        <translation type="unfinished"></translation>
+        <translation>Об&apos;єкт без назви</translation>
     </message>
     <message>
         <location line="+2"/>

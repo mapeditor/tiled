@@ -6,15 +6,18 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Tiled 1.1\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: bjorn@lindeijer.nl\n"
 "POT-Creation-Date: 2017-12-21 14:31+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2018-07-09 16:31+0000\n"
+"Last-Translator: Balázs Úr <urbalazs@gmail.com>\n"
+"Language-Team: Hungarian <https://hosted.weblate.org/projects/tiled/manual/"
+"hu/>\n"
 "Language: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.1-dev\n"
 
 #: ../../manual/automapping.rst:3
 msgid "Automapping"
@@ -1553,23 +1556,43 @@ msgstr ""
 
 #: ../../manual/introduction.rst:2
 msgid "Introduction"
-msgstr ""
+msgstr "Bevezetés"
 
 #: ../../manual/introduction.rst:5
 msgid "About Tiled"
-msgstr ""
+msgstr "A Tiled programról"
 
 #: ../../manual/introduction.rst:7
 msgid "**Tiled is a 2D level editor that helps you develop the content of your game. Its primary feature is to edit tile maps of various forms, but it also supports free image placement as well as powerful ways to annotate your level with extra information used by the game. Tiled focuses on general flexibility while trying to stay intuitive.**"
 msgstr ""
+"**A Tiled egy 2D-s szintszerkesztő, amely segít a játék tartalmának "
+"fejlesztésében. Elsődleges funkciója a csempetérképek szerkesztése különféle "
+"formátumokban, de támogatja a szabad képelhelyezést is, valamint a szintnek "
+"a játék által használt további információkkal történő ellátását hatékony "
+"módon. A Tiled az általános rugalmasságra összpontosít, miközben megpróbál "
+"intuitív maradni.**"
 
 #: ../../manual/introduction.rst:13
 msgid "In terms of tile maps, it supports straight rectangular tile layers, but also projected isometric, staggered isometric and staggered hexagonal layers. A tileset can be either a single image containing many tiles, or it can be a collection of individual images. In order to support certain depth faking techniques, tiles and layers can be offset by a custom distance and their rendering order can be configured."
 msgstr ""
+"A csempetérképek tekintetében nemcsak az egyenes négyszögletű "
+"csemperétegeket támogatja, hanem a vetített izometrikus, lépcsős izometrikus "
+"és lépcsős hatszögletű rétegeket is. Egy csempekészlet lehet egy több "
+"csempét tartalmazó önálló kép, vagy lehet egyedi képek gyűjteménye is. Annak "
+"érdekében, hogy támogasson bizonyos mélységi fakulási technikát, a csempék "
+"és a rétegek eltolhatók egy egyéni távolsággal, és a megjelenítési "
+"sorrendjük is beállítható."
 
 #: ../../manual/introduction.rst:20
 msgid "The primary tool for editing :ref:`tile layers <tile-layer-introduction>` is a stamp brush that allows efficient painting and copying of tile areas. It also supports drawing lines and circles. In addition, there are several selection tools and a tool that does :doc:`automatic terrain transitions <using-the-terrain-tool>`. Finally, it can apply changes based on :doc:`pattern-matching <automapping>` to automate parts of your work."
 msgstr ""
+"A :ref:`csemperétegek <tile-layer-introduction>`szerkesztésének elsődleges "
+"eszköze egy bélyegzőecset, amely lehetővé teszi a csempeterületek hatékony "
+"rajzolását és másolását. Támogatja a vonalak és körök rajzolást is. Létezik "
+"továbbá számos kijelölőeszköz és egy eszköz, amely :doc:`automatikus "
+"talajátmeneteket <using-the-terrain-tool>` csinál. Végül képes alkalmazni a "
+":doc:`mintaillesztésen <automapping>` alapuló változtatásokat a munka egyes "
+"részeinek automatizálásához."
 
 #: ../../manual/introduction.rst:27
 msgid "Tiled also supports :ref:`object layers <object-layer-introduction>`, which traditionally were only for annotating your map with information but more recently they can also be used to place images. You can add rectangle, point, ellipse, polygon, polyline and tile objects. Object placement is not limited to the tile grid and objects can also be scaled or rotated. Object layers offer a lot of flexibility to add almost any information to your level that your game needs."
