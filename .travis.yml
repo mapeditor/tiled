@@ -119,6 +119,8 @@ matrix:
         - qbs config defaultProfile qt-brew
         - qbs install --install-root install config:release projects.Tiled.version:$TILED_VERSION
         - /usr/local/opt/qt/bin/macdeployqt install/Tiled.app
+        - pushd install
+        - ruby ../dist/macos/fixup-install-names.rb
       deploy:
         - provider: script
           skip_cleanup: true

@@ -7,10 +7,12 @@
 * Fixed object labels to adjust properly to the font DPI
 * Fixed resize handle locations for multiple zero-sized objects
 * Fixed handling of arrow keys on focused layer combo box (#1973)
-* Objects view: Fixed column issues when moving objects up/down (#1928)
 * Tile Collision Editor: Fixed handling of tile offset (#1955)
 * Tile Collision Editor: Fixed potential crash on Undo (#1965)
 * Python plugin: Added some missing API to the Cell class
+* Windows and Linux: Downgraded builds to Qt 5.9 (fixes #1928)
+* macOS: Fixed library loading issues for tmxrasterizer and terraingenerator
+* macOS: Downgraded to Qt 5.6 (fixes resizing of undocked views and reduces minimum macOS version to 10.7)
 * Updates to German, Hungarian, Norwegian Bokmål, Polish, Portuguese (Portugal), Russian and Ukrainian translations
 
 ### Tiled 1.1.5 (25 April 2018)
