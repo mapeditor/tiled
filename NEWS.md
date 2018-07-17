@@ -1,3 +1,18 @@
+### Tiled 1.1.6 (17 July 2018)
+
+* Fixed Terrain Brush issue on staggered isometric maps (#1951)
+* Fixed objects to stay selected when moving them between layers
+* Fixed small tab bar rendering issue on high DPI displays
+* Fixed rendering of arrows on scroll bar buttons
+* Fixed object labels to adjust properly to the font DPI
+* Fixed resize handle locations for multiple zero-sized objects
+* Fixed handling of arrow keys on focused layer combo box (#1973)
+* Objects view: Fixed column issues when moving objects up/down (#1928)
+* Tile Collision Editor: Fixed handling of tile offset (#1955)
+* Tile Collision Editor: Fixed potential crash on Undo (#1965)
+* Python plugin: Added some missing API to the Cell class
+* Updates to German, Hungarian, Norwegian Bokmål, Polish, Portuguese (Portugal), Russian and Ukrainian translations
+
 ### Tiled 1.1.5 (25 April 2018)
 
 * Fixed erasing mode of the Terrain Brush
