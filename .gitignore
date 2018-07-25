@@ -31,6 +31,9 @@ moc_predefs.h
 .qmake.stash
 translations/phony_target.app
 
+# Mac stuff
+*.DS_Store
+
 # IDE files
 *.pro.user*
 *.qbs.user*
