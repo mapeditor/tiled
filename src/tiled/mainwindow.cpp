@@ -890,6 +890,110 @@ bool MainWindow::confirmAllSave()
     return true;
 }
 
+static const Map *prepareExportMap(const Map *map, std::unique_ptr<Map> &exportMap)
+{
+    const auto options = Preferences::instance()->exportOptions();
+
+    // If no export options are active, return the same map
+    if (!options)
+        return map;
+
+    // Make a copy to which export options are applied
+    exportMap.reset(new Map(*map));
+
+    auto tilesets = exportMap->tilesets();
+    for (const SharedTileset &tileset : tilesets) {
+        // We need to clone external tilesets when the option to embed tilesets
+        // is enabled, and we need to clone embedded tilesets when the option
+        // to detach templates or the option to resolve types and properties
+        // are enabled (due to use of objects as well as templates in tile
+        // collision layers).
+        if ((tileset->isExternal() && options.testFlag(Preferences::EmbedTilesets)) ||
+                (!tileset->isExternal() && (options & (Preferences::DetachTemplateInstances |
+                                                       Preferences::ResolveObjectTypesAndProperties)))) {
+            auto embeddedTileset = tileset->clone();
+            exportMap->replaceTileset(tileset, embeddedTileset);
+        }
+    }
+
+    if (options.testFlag(Preferences::DetachTemplateInstances)) {
+        // Detach template references in the map itself
+        for (Layer *layer : exportMap->objectGroups())
+            for (MapObject *object : *static_cast<ObjectGroup*>(layer))
+                if (object->isTemplateInstance())
+                    object->detachFromTemplate();
+
+        // Detach template references in collision layers for tiles in embedded
+        // tilesets
+        for (const SharedTileset &tileset : exportMap->tilesets()) {
+            if (tileset->isExternal())
+                continue;
+
+            for (Tile *tile : tileset->tiles()) {
+                if (!tile->objectGroup())
+                    continue;
+
+                for (MapObject *object : *tile->objectGroup())
+                    if (object->isTemplateInstance())
+                        object->detachFromTemplate();
+            }
+        }
+    }
+
+    if (options.testFlag(Preferences::ResolveObjectTypesAndProperties)) {
+        auto resolve = [] (MapObject *object) {
+            Tile *tile = object->cell().tile();
+
+            // Inherit type from tile if not set on object (not inheriting
+            // type from tile of tile object template here, for that the
+            // "Detach templates" option needs to be used as well)
+            if (object->type().isEmpty() && tile &&
+                    (!object->isTemplateInstance() || object->propertyChanged(MapObject::CellProperty)))
+                object->setType(tile->type());
+
+            Properties properties;
+
+            // Inherit properties from type
+            if (!object->type().isEmpty()) {
+                for (int i = Object::objectTypes().size() - 1; i >= 0; --i) {
+                    auto const &type = Object::objectTypes().at(i);
+                    if (type.name == object->type())
+                        properties.merge(type.defaultProperties);
+                }
+            }
+
+            // Inherit properties from tile
+            if (tile)
+                properties.merge(tile->properties());
+
+            // Override with own properties
+            properties.merge(object->properties());
+
+            object->setProperties(properties);
+        };
+
+        for (Layer *layer : exportMap->objectGroups())
+            for (MapObject *object : *static_cast<ObjectGroup*>(layer))
+                resolve(object);
+
+        for (const SharedTileset &tileset : exportMap->tilesets()) {
+            if (tileset->isExternal())
+                continue;
+
+            for (Tile *tile : tileset->tiles()) {
+                if (!tile->objectGroup())
+                    continue;
+
+                for (MapObject *object : *tile->objectGroup())
+                    resolve(object);
+            }
+        }
+    }
+
+    // Return a pointer to the copy
+    return exportMap.get();
+}
+
 void MainWindow::export_()
 {
     auto mapDocument = qobject_cast<MapDocument*>(mDocument);
@@ -905,7 +1009,10 @@ void MainWindow::export_()
         if (!exportFormat)
             exportFormat = &tmxFormat;
 
-        if (exportFormat->write(mapDocument->map(), exportFileName)) {
+        std::unique_ptr<Map> exportMap;
+        const Map *map = prepareExportMap(mapDocument->map(), exportMap);
+
+        if (exportFormat->write(map, exportFileName)) {
             auto *editor = static_cast<MapEditor*>(mDocumentManager->editor(Document::MapDocumentType));
             editor->showMessage(tr("Exported to %1").arg(exportFileName), 3000);
             return;
@@ -921,11 +1028,10 @@ void MainWindow::export_()
 
 void MainWindow::exportAs()
 {
-    if (auto mapDocument = qobject_cast<MapDocument*>(mDocument)) {
+    if (auto mapDocument = qobject_cast<MapDocument*>(mDocument))
         exportMapAs(mapDocument);
-    } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(mDocument)) {
+    else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(mDocument))
         exportTilesetAs(tilesetDocument);
-    }
 }
 
 void MainWindow::exportAsImage()
@@ -1540,14 +1646,16 @@ void MainWindow::exportMapAs(MapDocument *mapDocument)
                                                         mapDocument->lastExportFileName(),
                                                         selectedFilter,
                                                         this);
-    if (!exportDetails.isValid()) {
+    if (!exportDetails.isValid())
         return;
-    }
+
+    std::unique_ptr<Map> exportMap;
+    const Map *map = prepareExportMap(mapDocument->map(), exportMap);
 
     // Check if writer will overwrite existing files here because some writers
     // could save to multiple files at the same time. For example CSV saves
     // each layer into a separate file.
-    QStringList outputFiles = exportDetails.mFormat->outputFiles(mapDocument->map(), exportDetails.mFileName);
+    QStringList outputFiles = exportDetails.mFormat->outputFiles(map, exportDetails.mFileName);
     if (outputFiles.size() > 0) {
         // Check if any output file already exists
         QString message =
@@ -1582,7 +1690,7 @@ void MainWindow::exportMapAs(MapDocument *mapDocument)
     pref->setLastPath(Preferences::ExportedFile, QFileInfo(exportDetails.mFileName).path());
     mSettings.setValue(QLatin1String("lastUsedExportFilter"), selectedFilter);
 
-    auto exportResult = exportDetails.mFormat->write(mapDocument->map(), exportDetails.mFileName);
+    auto exportResult = exportDetails.mFormat->write(map, exportDetails.mFileName);
     if (!exportResult) {
         QMessageBox::critical(this, tr("Error Exporting Map!"),
                               exportDetails.mFormat->errorString());

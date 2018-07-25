@@ -26,6 +26,8 @@
 
 #include <QCoreApplication>
 
+#include "qtcompat_p.h"
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
@@ -187,14 +189,8 @@ void DetachObjects::redo()
 {
     QUndoCommand::redo(); // redo child commands
 
-    for (int i = 0; i < mMapObjects.size(); ++i) {
-        // Merge the instance properties into the template properties
-        MapObject *object = mMapObjects.at(i);
-        Properties newProperties = object->templateObject()->properties();
-        newProperties.merge(object->properties());
-        object->setProperties(newProperties);
-        object->setObjectTemplate(nullptr);
-    }
+    for (MapObject *object : qAsConst(mMapObjects))
+        object->detachFromTemplate();
 
     emit mMapDocument->mapObjectModel()->objectsChanged(mMapObjects);
 }

@@ -98,6 +98,17 @@ public:
     bool safeSavingEnabled() const;
     void setSafeSavingEnabled(bool enabled);
 
+    enum ExportOption {
+        EmbedTilesets                   = 0x1,
+        DetachTemplateInstances         = 0x2,
+        ResolveObjectTypesAndProperties = 0x4
+    };
+    Q_DECLARE_FLAGS(ExportOptions, ExportOption)
+
+    ExportOptions exportOptions() const;
+    void setExportOption(ExportOption option, bool value);
+    bool exportOption(ExportOption option) const;
+
     QString language() const;
     void setLanguage(const QString &language);
 
@@ -220,7 +231,7 @@ signals:
 
 private:
     Preferences();
-    ~Preferences();
+    ~Preferences() override;
 
     bool boolValue(const char *key, bool def = false) const;
     QColor colorValue(const char *key, const QColor &def = QColor()) const;
@@ -253,6 +264,7 @@ private:
     Map::RenderOrder mMapRenderOrder;
     bool mDtdEnabled;
     bool mSafeSavingEnabled;
+    ExportOptions mExportOptions;
     QString mLanguage;
     bool mReloadTilesetsOnChange;
     bool mUseOpenGL;
@@ -290,9 +302,49 @@ inline QColor Preferences::selectionColor() const
     return mSelectionColor;
 }
 
+inline Map::LayerDataFormat Preferences::layerDataFormat() const
+{
+    return mLayerDataFormat;
+}
+
+inline Map::RenderOrder Preferences::mapRenderOrder() const
+{
+    return mMapRenderOrder;
+}
+
+inline bool Preferences::dtdEnabled() const
+{
+    return mDtdEnabled;
+}
+
 inline bool Preferences::safeSavingEnabled() const
 {
     return mSafeSavingEnabled;
+}
+
+inline Preferences::ExportOptions Preferences::exportOptions() const
+{
+    return mExportOptions;
+}
+
+inline bool Preferences::exportOption(ExportOption option) const
+{
+    return mExportOptions.testFlag(option);
+}
+
+inline QString Preferences::language() const
+{
+    return mLanguage;
+}
+
+inline bool Preferences::reloadTilesetsOnChange() const
+{
+    return mReloadTilesetsOnChange;
+}
+
+inline QString Preferences::mapsDirectory() const
+{
+    return mMapsDirectory;
 }
 
 inline bool Preferences::highlightHoveredObject() const
@@ -342,3 +394,5 @@ inline bool Preferences::wheelZoomsByDefault() const
 
 } // namespace Internal
 } // namespace Tiled
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::Internal::Preferences::ExportOptions)

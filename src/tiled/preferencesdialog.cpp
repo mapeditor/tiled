@@ -89,6 +89,16 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     connect(mUi->safeSaving, &QCheckBox::toggled,
             preferences, &Preferences::setSafeSavingEnabled);
 
+    connect(mUi->embedTilesets, &QCheckBox::toggled, preferences, [preferences] (bool value) {
+        preferences->setExportOption(Preferences::EmbedTilesets, value);
+    });
+    connect(mUi->detachTemplateInstances, &QCheckBox::toggled, preferences, [preferences] (bool value) {
+        preferences->setExportOption(Preferences::DetachTemplateInstances, value);
+    });
+    connect(mUi->resolveObjectTypesAndProperties, &QCheckBox::toggled, preferences, [preferences] (bool value) {
+        preferences->setExportOption(Preferences::ResolveObjectTypesAndProperties, value);
+    });
+
     connect(mUi->languageCombo, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
             this, &PreferencesDialog::languageSelected);
     connect(mUi->gridColor, &ColorButton::colorChanged,
@@ -152,6 +162,11 @@ void PreferencesDialog::fromPreferences()
     mUi->enableDtd->setChecked(prefs->dtdEnabled());
     mUi->openLastFiles->setChecked(prefs->openLastFilesOnStartup());
     mUi->safeSaving->setChecked(prefs->safeSavingEnabled());
+
+    mUi->embedTilesets->setChecked(prefs->exportOption(Preferences::EmbedTilesets));
+    mUi->detachTemplateInstances->setChecked(prefs->exportOption(Preferences::DetachTemplateInstances));
+    mUi->resolveObjectTypesAndProperties->setChecked(prefs->exportOption(Preferences::ResolveObjectTypesAndProperties));
+
     if (mUi->openGL->isEnabled())
         mUi->openGL->setChecked(prefs->useOpenGL());
     mUi->wheelZoomsByDefault->setChecked(prefs->wheelZoomsByDefault());

@@ -116,10 +116,14 @@ QPainterPath MapRenderer::pointShape(const MapObject *object) const
 
 void MapRenderer::setFlag(RenderFlag flag, bool enabled)
 {
+#if QT_VERSION >= 0x050700
+    mFlags.setFlag(flag, enabled);
+#else
     if (enabled)
         mFlags |= flag;
     else
         mFlags &= ~flag;
+#endif
 }
 
 /**

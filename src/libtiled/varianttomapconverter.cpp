@@ -353,7 +353,7 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
     QVariantMap propertyTypesVariantMap = variantMap[QLatin1String("tilepropertytypes")].toMap();
     for (it = propertiesVariantMap.constBegin(); it != propertiesVariantMap.constEnd(); ++it) {
         const int tileId = it.key().toInt();
-        const QVariant propertiesVar = it.value();
+        const QVariant &propertiesVar = it.value();
         const QVariant propertyTypesVar = propertyTypesVariantMap.value(it.key());
         const Properties properties = toProperties(propertiesVar, propertyTypesVar);
         tileset->findOrCreateTile(tileId)->setProperties(properties);
@@ -776,7 +776,7 @@ TextData VariantToMapConverter::toTextData(const QVariantMap &variant) const
     if (!colorString.isEmpty())
         textData.color = QColor(colorString);
 
-    Qt::Alignment alignment = 0;
+    Qt::Alignment alignment;
 
     QString hAlignString = variant[QLatin1String("halign")].toString();
     if (hAlignString == QLatin1String("center"))

@@ -388,6 +388,22 @@ void MapObject::syncWithTemplate()
         setVisible(base->isVisible());
 }
 
+void MapObject::detachFromTemplate()
+{
+    // Can't detach when template object not loaded
+    const MapObject *base = templateObject();
+    if (!base)
+        return;
+
+    // All non-overridden properties are already synchronized, so we only need
+    // to merge the custom properties.
+    Properties newProperties = base->properties();
+    newProperties.merge(properties());
+    setProperties(newProperties);
+
+    setObjectTemplate(nullptr);
+}
+
 void MapObject::flipRectObject(const QTransform &flipTransform)
 {
     QPointF oldBottomLeftPoint = QPointF(cos(qDegreesToRadians(rotation() + 90)) * height() + x(),

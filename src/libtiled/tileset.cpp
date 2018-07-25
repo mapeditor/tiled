@@ -807,13 +807,10 @@ SharedTileset Tileset::clone() const
     c->setProperties(properties());
 
     // mFileName stays empty
-    c->mImageReference = mImageReference;
     c->mTileOffset = mTileOffset;
     c->mOrientation = mOrientation;
     c->mGridSize = mGridSize;
     c->mColumnCount = mColumnCount;
-    c->mExpectedColumnCount = mExpectedColumnCount;
-    c->mExpectedRowCount = mExpectedRowCount;
     c->mNextTileId = mNextTileId;
     c->mTerrainDistancesDirty = mTerrainDistancesDirty;
     c->mStatus = mStatus;
@@ -837,6 +834,10 @@ SharedTileset Tileset::clone() const
     c->mWangSets.reserve(mWangSets.size());
     for (WangSet *wangSet : mWangSets)
         c->mWangSets.append(wangSet->clone(c.data()));
+
+    // Call setter to please TilesetManager, which starts watching the image of
+    // the tileset when it calls TilesetManager::tilesetImageSourceChanged.
+    c->setImageReference(mImageReference);
 
     return c;
 }

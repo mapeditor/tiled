@@ -87,10 +87,12 @@ Map::Map(const Map &map):
     mDrawMarginsDirty(map.mDrawMarginsDirty),
     mTilesets(map.mTilesets),
     mLayerDataFormat(map.mLayerDataFormat),
-    mNextObjectId(1)
+    mNextLayerId(map.mNextLayerId),
+    mNextObjectId(map.mNextObjectId)
 {
     for (const Layer *layer : map.mLayers) {
         Layer *clone = layer->clone();
+        clone->setId(layer->id());
         clone->setMap(this);
         mLayers.append(clone);
     }
