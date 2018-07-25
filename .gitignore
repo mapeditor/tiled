@@ -2,7 +2,6 @@
 build/
 bin/
 lib/
-qml/
 Makefile*
 *.o
 *.qm
