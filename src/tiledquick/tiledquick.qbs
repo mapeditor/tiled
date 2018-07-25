@@ -16,6 +16,7 @@ QtGuiApplication {
     cpp.cxxLanguageVersion: "c++11"
 
     files: [
+        "fonts/fonts.qrc",
         "main.cpp",
         "qml/qml.qrc",
         "qml/qtquickcontrols2.conf",

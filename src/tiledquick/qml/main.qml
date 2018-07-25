@@ -5,18 +5,21 @@ import org.mapeditor.Tiled 1.0 as Tiled
 import Qt.labs.settings 1.0
 import Qt.labs.platform 1.0 as Platform
 
+// For access to FontAwesome Singleton
+import "."
+
 ApplicationWindow {
     id: window
-
-    visible: true
-
     width: 1024
     height: 720
-
     minimumWidth: 480
     minimumHeight: 320
-
     title: qsTr("Tiled Quick")
+    visible: true
+
+    FontLoader {
+        source: "fonts/fontawesome.ttf"
+    }
 
     Platform.FileDialog {
         id: fileDialog
@@ -92,6 +95,8 @@ ApplicationWindow {
             anchors.fill: parent
             ToolButton {
                 action: openAction
+                font.family: "FontAwesome"
+                text: FontAwesome.open
             }
         }
     }
