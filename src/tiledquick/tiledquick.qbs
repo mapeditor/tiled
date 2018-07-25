@@ -17,8 +17,8 @@ QtGuiApplication {
 
     files: [
         "main.cpp",
-        "qml.qrc",
-        "qtquickcontrols2.conf",
+        "qml/qml.qrc",
+        "qml/qtquickcontrols2.conf",
     ]
 
     Properties {
