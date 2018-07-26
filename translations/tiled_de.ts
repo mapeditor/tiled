@@ -640,7 +640,7 @@
     <message>
         <location line="+5"/>
         <source>User Manual</source>
-        <translation>Benutzerhanduch</translation>
+        <translation>Benutzerhandbuch</translation>
     </message>
     <message>
         <location line="+70"/>
