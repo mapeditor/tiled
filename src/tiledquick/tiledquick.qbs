@@ -10,6 +10,10 @@ QtGuiApplication {
         submodules: ["core", "quick", "widgets"]
         versionAtLeast: "5.4"
     }
+    Depends {
+        name: "tiledquickplugin"
+        cpp.link: false
+    }
 
     cpp.includePaths: ["."]
     cpp.rpaths: qbs.targetOS.contains("darwin") ? ["@loader_path/../Frameworks"] : ["$ORIGIN/../lib"]
