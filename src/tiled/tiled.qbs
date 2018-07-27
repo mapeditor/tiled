@@ -219,6 +219,8 @@ QtGuiApplication {
         "exportasimagedialog.cpp",
         "exportasimagedialog.h",
         "exportasimagedialog.ui",
+        "exporthelper.cpp",
+        "exporthelper.h",
         "filechangedwarning.cpp",
         "filechangedwarning.h",
         "fileedit.cpp",

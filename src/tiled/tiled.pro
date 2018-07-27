@@ -136,6 +136,7 @@ SOURCES += aboutdialog.cpp \
     eraser.cpp \
     erasetiles.cpp \
     exportasimagedialog.cpp \
+    exporthelper.cpp \
     filechangedwarning.cpp \
     fileedit.cpp \
     flexiblescrollbar.cpp \
@@ -332,6 +333,7 @@ HEADERS += aboutdialog.h \
     eraser.h \
     erasetiles.h \
     exportasimagedialog.h \
+    exporthelper.h \
     filechangedwarning.h \
     fileedit.h \
     flexiblescrollbar.h \
