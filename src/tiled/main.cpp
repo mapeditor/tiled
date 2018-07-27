@@ -21,6 +21,7 @@
  */
 
 #include "commandlineparser.h"
+#include "exporthelper.h"
 #include "languagemanager.h"
 #include "mainwindow.h"
 #include "mapdocument.h"
@@ -72,6 +73,7 @@ public:
     bool exportMap;
     bool exportTileset;
     bool newInstance;
+    Preferences::ExportOptions exportOptions;
 
 private:
     void showVersion();
@@ -79,6 +81,9 @@ private:
     void setDisableOpenGL();
     void setExportMap();
     void setExportTileset();
+    void setExportEmbedTilesets();
+    void setExportDetachTemplateInstances();
+    void setExportResolveObjectTypesAndProperties();
     void showExportFormats();
     void startNewInstance();
 
@@ -187,6 +192,21 @@ CommandLineHandler::CommandLineHandler()
                 QLatin1String("--export-formats"),
                 tr("Print a list of supported export formats"));
 
+    option<&CommandLineHandler::setExportEmbedTilesets>(
+                QChar(),
+                QLatin1String("--embed-tilesets"),
+                tr("Export the map with tilesets embedded"));
+
+    option<&CommandLineHandler::setExportDetachTemplateInstances>(
+                QChar(),
+                QLatin1String("--detach-templates"),
+                tr("Export the map or tileset with template instances detached"));
+
+    option<&CommandLineHandler::setExportResolveObjectTypesAndProperties>(
+                QChar(),
+                QLatin1String("--resolve-types-and-properties"),
+                tr("Export the map or tileset with types and properties resolved"));
+
     option<&CommandLineHandler::startNewInstance>(
                 QChar(),
                 QLatin1String("--new-instance"),
@@ -221,6 +241,21 @@ void CommandLineHandler::setExportMap()
 void CommandLineHandler::setExportTileset()
 {
     exportTileset = true;
+}
+
+void CommandLineHandler::setExportEmbedTilesets()
+{
+    exportOptions |= Preferences::EmbedTilesets;
+}
+
+void CommandLineHandler::setExportDetachTemplateInstances()
+{
+    exportOptions |= Preferences::DetachTemplateInstances;
+}
+
+void CommandLineHandler::setExportResolveObjectTypesAndProperties()
+{
+    exportOptions |= Preferences::ResolveObjectTypesAndProperties;
 }
 
 void CommandLineHandler::showExportFormats()
@@ -341,14 +376,18 @@ int main(int argc, char *argv[])
         }
 
         // Load the source file
-        const std::unique_ptr<Map> map(readMap(sourceFile, nullptr));
-        if (!map) {
+        const std::unique_ptr<Map> sourceMap(readMap(sourceFile, nullptr));
+        if (!sourceMap) {
             qWarning().noquote() << QCoreApplication::translate("Command line", "Failed to load source map.");
             return 1;
         }
 
+        // Apply export options
+        std::unique_ptr<Map> exportMap;
+        const Map *map = ExportHelper(commandLine.exportOptions).prepareExportMap(sourceMap.get(), exportMap);
+
         // Write out the file
-        bool success = outputFormat->write(map.get(), targetFile);
+        bool success = outputFormat->write(map, targetFile);
 
         if (!success) {
             qWarning().noquote() << QCoreApplication::translate("Command line", "Failed to export map to target file.");
@@ -380,14 +419,17 @@ int main(int argc, char *argv[])
         }
 
         // Load the source file
-        SharedTileset tileset(readTileset(sourceFile, nullptr));
-        if (!tileset) {
+        SharedTileset sourceTileset(readTileset(sourceFile, nullptr));
+        if (!sourceTileset) {
             qWarning().noquote() << QCoreApplication::translate("Command line", "Failed to load source tileset.");
             return 1;
         }
 
+        // Apply export options
+        SharedTileset exportTileset = ExportHelper(commandLine.exportOptions).prepareExportTileset(sourceTileset);
+
         // Write out the file
-        bool success = outputFormat->write(*tileset, targetFile);
+        bool success = outputFormat->write(*exportTileset, targetFile);
 
         if (!success) {
             qWarning().noquote() << QCoreApplication::translate("Command line", "Failed to export tileset to target file.");
