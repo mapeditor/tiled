@@ -25,6 +25,8 @@
 #include "mapdocument.h"
 #include "map.h"
 
+#include "qtcompat_p.h"
+
 namespace Tiled {
 namespace Internal {
 

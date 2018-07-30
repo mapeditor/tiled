@@ -168,7 +168,7 @@ ExportDetails<Format> chooseExportDetails(const QString &fileName,
                 if (chosenFormat) {
                     QMessageBox::warning(window, MainWindow::tr("Non-unique file extension"),
                                          MainWindow::tr("Non-unique file extension.\n"
-                                                    "Please select specific format."));
+                                                        "Please select specific format."));
                     return chooseExportDetails<Format>(exportToFileName, lastExportName, lastExportFilter, window);
                 } else {
                     chosenFormat = format;
@@ -180,7 +180,7 @@ ExportDetails<Format> chooseExportDetails(const QString &fileName,
     if (!chosenFormat) {
         QMessageBox::critical(window, MainWindow::tr("Unknown File Format"),
                               MainWindow::tr("The given filename does not have any known "
-                                         "file extension."));
+                                             "file extension."));
         return ExportDetails<Format>();
     }
 
