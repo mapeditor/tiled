@@ -453,23 +453,28 @@ Layer *MapDocument::addLayer(Layer::TypeFlag layerType)
     return layer;
 }
 
-/**
- * Creates a new group layer, putting the given \a layer inside the group.
- */
-void MapDocument::groupLayer(Layer *layer)
+void MapDocument::groupLayers(const QList<Layer *> &layers)
 {
-    if (!layer)
+    if (layers.isEmpty())
         return;
 
-    Q_ASSERT(layer->map() == mMap.get());
+    const auto parentLayer = layers.first()->parentLayer();
+    const int index = layers.first()->siblingIndex() + 1;
 
-    QString name = tr("Group %1").arg(mMap->groupLayerCount() + 1);
+    for (Layer *layer : layers) {
+        Q_ASSERT(layer->map() == mMap.get());
+
+        // If any of the layers to be grouped is a GroupLayer, make sure we
+        // do not try to move it into one of its own children.
+        if (layer->isGroupLayer() && parentLayer && parentLayer->isParentOrSelf(layer))
+            return;
+    }
+
+    const QString name = tr("Group %1").arg(mMap->groupLayerCount() + 1);
     auto groupLayer = new GroupLayer(name, 0, 0);
-    auto parentLayer = layer->parentLayer();
-    const int index = layer->siblingIndex() + 1;
-    mUndoStack->beginMacro(tr("Group Layer"));
+    mUndoStack->beginMacro(tr("Group %n Layer(s)", "", layers.size()));
     mUndoStack->push(new AddLayer(this, index, groupLayer, parentLayer));
-    mUndoStack->push(new ReparentLayers(this, QList<Layer*>() << layer, groupLayer, 0));
+    mUndoStack->push(new ReparentLayers(this, layers, groupLayer, 0));
     mUndoStack->endMacro();
 }
 

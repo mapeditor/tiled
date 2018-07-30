@@ -594,7 +594,7 @@ void MapDocumentActionHandler::layerVia(MapDocumentActionHandler::LayerViaVarian
 void MapDocumentActionHandler::groupLayers()
 {
     if (mMapDocument)
-        mMapDocument->groupLayer(mMapDocument->currentLayer());
+        mMapDocument->groupLayers(mMapDocument->selectedLayers());
 }
 
 void MapDocumentActionHandler::ungroupLayers()

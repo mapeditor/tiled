@@ -196,7 +196,7 @@ Layer *LayerIterator::next()
     int index = mSiblingIndex;
 
     do {
-        Q_ASSERT(!layer || (index >= 0 && index < mMap->layerCount()));
+        Q_ASSERT(!layer || (index >= 0 && index < layer->siblings().size()));
 
         // Traverse to next sibling
         ++index;
@@ -243,7 +243,7 @@ Layer *LayerIterator::previous()
     int index = mSiblingIndex;
 
     do {
-        Q_ASSERT(!layer || (index >= 0 && index < mMap->layerCount()));
+        Q_ASSERT(!layer || (index >= 0 && index < layer->siblings().size()));
 
         // Traverse to previous sibling
         --index;
