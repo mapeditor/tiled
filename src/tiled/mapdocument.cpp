@@ -599,14 +599,36 @@ void MapDocument::moveLayerDown(Layer *layer)
 }
 
 /**
- * Removes the given \a layer.
+ * Removes the given \a layers.
  */
-void MapDocument::removeLayer(Layer *layer)
+void MapDocument::removeLayers(const QList<Layer *> &layers)
 {
-    Q_ASSERT(layer->map() == mMap.get());
-    mUndoStack->push(new RemoveLayer(this,
-                                     layer->siblingIndex(),
-                                     layer->parentLayer()));
+    if (layers.isEmpty())
+        return;
+
+    mUndoStack->beginMacro(tr("Remove %n Layer(s)", "", layers.size()));
+
+    // Copy needed because while removing the original list may get modified
+    auto layersToRemove = layers;
+
+    while (!layersToRemove.isEmpty()) {
+        Layer *layer = layersToRemove.takeFirst();
+        Q_ASSERT(layer->map() == mMap.get());
+
+        mUndoStack->push(new RemoveLayer(this,
+                                         layer->siblingIndex(),
+                                         layer->parentLayer()));
+
+        // If a group layer gets removed, make sure any children are removed
+        // from the remaining list of layers to remove
+        if (layer->isGroupLayer()) {
+            for (int i = layersToRemove.size() - 1; i >= 0; --i)
+                if (layersToRemove.at(i)->isParentOrSelf(layer))
+                    layersToRemove.removeAt(i);
+        }
+    }
+
+    mUndoStack->endMacro();
 }
 
 /**

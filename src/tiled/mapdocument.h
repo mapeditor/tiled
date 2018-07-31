@@ -157,7 +157,7 @@ public:
     void mergeLayerDown();
     void moveLayerUp(Layer *layer);
     void moveLayerDown(Layer *layer);
-    void removeLayer(Layer *layer);
+    void removeLayers(const QList<Layer *> &layers);
     void toggleOtherLayers(Layer *layer);
     void toggleLockOtherLayers(Layer *layer);
 

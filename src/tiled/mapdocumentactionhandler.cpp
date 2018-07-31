@@ -102,8 +102,8 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
 
     mActionMergeLayerDown = new QAction(this);
 
-    mActionRemoveLayer = new QAction(this);
-    mActionRemoveLayer->setIcon(
+    mActionRemoveLayers = new QAction(this);
+    mActionRemoveLayers->setIcon(
             QIcon(QLatin1String(":/images/16x16/edit-delete.png")));
 
     mActionSelectPreviousLayer = new QAction(this);
@@ -142,7 +142,7 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     mActionRemoveObjects = new QAction(this);
     mActionRemoveObjects->setIcon(QIcon(QLatin1String(":/images/16x16/edit-delete.png")));
 
-    Utils::setThemeIcon(mActionRemoveLayer, "edit-delete");
+    Utils::setThemeIcon(mActionRemoveLayers, "edit-delete");
     Utils::setThemeIcon(mActionMoveLayerUp, "go-up");
     Utils::setThemeIcon(mActionMoveLayerDown, "go-down");
     Utils::setThemeIcon(mActionLayerProperties, "document-properties");
@@ -166,7 +166,7 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     connect(mActionMergeLayerDown, &QAction::triggered, this, &MapDocumentActionHandler::mergeLayerDown);
     connect(mActionSelectPreviousLayer, &QAction::triggered, this, &MapDocumentActionHandler::selectPreviousLayer);
     connect(mActionSelectNextLayer, &QAction::triggered, this, &MapDocumentActionHandler::selectNextLayer);
-    connect(mActionRemoveLayer, &QAction::triggered, this, &MapDocumentActionHandler::removeLayer);
+    connect(mActionRemoveLayers, &QAction::triggered, this, &MapDocumentActionHandler::removeLayers);
     connect(mActionMoveLayerUp, &QAction::triggered, this, &MapDocumentActionHandler::moveLayerUp);
     connect(mActionMoveLayerDown, &QAction::triggered, this, &MapDocumentActionHandler::moveLayerDown);
     connect(mActionToggleOtherLayers, &QAction::triggered, this, &MapDocumentActionHandler::toggleOtherLayers);
@@ -204,7 +204,7 @@ void MapDocumentActionHandler::retranslateUi()
 
     mActionDuplicateLayer->setText(tr("&Duplicate Layer"));
     mActionMergeLayerDown->setText(tr("&Merge Layer Down"));
-    mActionRemoveLayer->setText(tr("&Remove Layer"));
+    mActionRemoveLayers->setText(tr("&Remove Layers"));
     mActionSelectPreviousLayer->setText(tr("Select Pre&vious Layer"));
     mActionSelectNextLayer->setText(tr("Select &Next Layer"));
     mActionMoveLayerUp->setText(tr("R&aise Layer"));
@@ -641,10 +641,10 @@ void MapDocumentActionHandler::moveLayerDown()
         mMapDocument->moveLayerDown(mMapDocument->currentLayer());
 }
 
-void MapDocumentActionHandler::removeLayer()
+void MapDocumentActionHandler::removeLayers()
 {
     if (mMapDocument)
-        mMapDocument->removeLayer(mMapDocument->currentLayer());
+        mMapDocument->removeLayers(mMapDocument->selectedLayers());
 }
 
 void MapDocumentActionHandler::toggleOtherLayers()
@@ -766,7 +766,7 @@ void MapDocumentActionHandler::updateActions()
     mActionMoveLayerDown->setEnabled(canMoveLayerDown);
     mActionToggleOtherLayers->setEnabled(currentLayer && (hasNextLayer || hasPreviousLayer));
     mActionToggleLockOtherLayers->setEnabled(currentLayer && (hasNextLayer || hasPreviousLayer));
-    mActionRemoveLayer->setEnabled(currentLayer);
+    mActionRemoveLayers->setEnabled(!selectedLayers.isEmpty());
     mActionLayerProperties->setEnabled(currentLayer);
 
     mActionDuplicateObjects->setEnabled(selectedObjectsCount > 0);

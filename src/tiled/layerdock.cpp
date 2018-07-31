@@ -418,8 +418,8 @@ void LayerView::keyPressEvent(QKeyEvent *event)
     switch (event->key()) {
     case Qt::Key_Delete:
     case Qt::Key_Backspace:
-        if (layer) {
-            mMapDocument->removeLayer(layer);
+        if (mMapDocument && !mMapDocument->selectedLayers().isEmpty()) {
+            mMapDocument->removeLayers(mMapDocument->selectedLayers());
             return;
         }
         break;
