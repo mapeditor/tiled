@@ -199,8 +199,8 @@ void MapDocumentActionHandler::retranslateUi()
     mActionAddGroupLayer->setText(tr("&Group Layer"));
     mActionLayerViaCopy->setText(tr("Layer via Copy"));
     mActionLayerViaCut->setText(tr("Layer via Cut"));
-    mActionGroupLayers->setText(tr("&Group Layer"));
-    mActionUngroupLayers->setText(tr("&Ungroup Layer"));
+    mActionGroupLayers->setText(tr("&Group Layers"));
+    mActionUngroupLayers->setText(tr("&Ungroup Layers"));
 
     mActionDuplicateLayer->setText(tr("&Duplicate Layer"));
     mActionMergeLayerDown->setText(tr("&Merge Layer Down"));
@@ -231,6 +231,8 @@ void MapDocumentActionHandler::setMapDocument(MapDocument *mapDocument)
         connect(mapDocument, &MapDocument::layerRemoved,
                 this, &MapDocumentActionHandler::updateActions);
         connect(mapDocument, &MapDocument::currentLayerChanged,
+                this, &MapDocumentActionHandler::updateActions);
+        connect(mapDocument, &MapDocument::selectedLayersChanged,
                 this, &MapDocumentActionHandler::updateActions);
         connect(mapDocument, &MapDocument::selectedAreaChanged,
                 this, &MapDocumentActionHandler::updateActions);
@@ -600,7 +602,7 @@ void MapDocumentActionHandler::groupLayers()
 void MapDocumentActionHandler::ungroupLayers()
 {
     if (mMapDocument)
-        mMapDocument->ungroupLayer(mMapDocument->currentLayer());
+        mMapDocument->ungroupLayers(mMapDocument->selectedLayers());
 }
 
 void MapDocumentActionHandler::duplicateLayer()
@@ -695,6 +697,7 @@ void MapDocumentActionHandler::updateActions()
 {
     Map *map = nullptr;
     Layer *currentLayer = nullptr;
+    QList<Layer *> selectedLayers;
     QRegion selection;
     int selectedObjectsCount = 0;
     bool canMergeDown = false;
@@ -702,6 +705,7 @@ void MapDocumentActionHandler::updateActions()
     if (mMapDocument) {
         map = mMapDocument->map();
         currentLayer = mMapDocument->currentLayer();
+        selectedLayers = mMapDocument->selectedLayers();
         selection = mMapDocument->selectedArea();
         selectedObjectsCount = mMapDocument->selectedObjects().count();
 
@@ -745,8 +749,9 @@ void MapDocumentActionHandler::updateActions()
     mActionLayerViaCopy->setEnabled(usableSelection);
     mActionLayerViaCut->setEnabled(usableSelection);
 
-    mActionGroupLayers->setEnabled(currentLayer);
-    mActionUngroupLayers->setEnabled(currentLayer && (currentLayer->isGroupLayer() || currentLayer->parentLayer()));
+    mActionGroupLayers->setEnabled(!selectedLayers.isEmpty());
+    mActionUngroupLayers->setEnabled(std::any_of(selectedLayers.begin(), selectedLayers.end(),
+                                                 [] (Layer *layer) { return layer->isGroupLayer() || layer->parentLayer(); }));
 
     const bool hasPreviousLayer = LayerIterator(currentLayer).previous();
     const bool hasNextLayer = LayerIterator(currentLayer).next();

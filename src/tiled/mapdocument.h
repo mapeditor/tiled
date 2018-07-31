@@ -152,7 +152,7 @@ public:
 
     Layer *addLayer(Layer::TypeFlag layerType);
     void groupLayers(const QList<Layer *> &layers);
-    void ungroupLayer(Layer *layer);
+    void ungroupLayers(const QList<Layer *> &layers);
     void duplicateLayer();
     void mergeLayerDown();
     void moveLayerUp(Layer *layer);

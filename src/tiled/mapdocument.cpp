@@ -479,36 +479,49 @@ void MapDocument::groupLayers(const QList<Layer *> &layers)
 }
 
 /**
- * Ungroups the given \a layer. If the layer itself is a group layer, then this
- * group is ungrouped. Otherwise, if the layer is part of a group layer, then
- * it is removed from the group.
+ * Ungroups the given list of \a layers. If the layer itself is a group layer,
+ * then this group is ungrouped. Otherwise, if the layer is part of a group
+ * layer, then it is removed from the group.
  */
-void MapDocument::ungroupLayer(Layer *layer)
+void MapDocument::ungroupLayers(const QList<Layer *> &layers)
 {
-    if (!layer)
+    if (layers.isEmpty())
         return;
 
-    GroupLayer *groupLayer = layer->asGroupLayer();
-    QList<Layer *> layers;
+    mUndoStack->beginMacro(tr("Ungroup %n Layer(s)", "", layers.size()));
 
-    if (groupLayer) {
-        layers = groupLayer->layers();
-    } else if (layer->parentLayer()) {
-        layers.append(layer);
-        groupLayer = layer->parentLayer();
-    } else {
-        // No ungrouping possible
-        return;
+    // Copy needed because while ungrouping the original list may get modified.
+    // Also, we may need to remove group layers from this list if they get
+    // removed due to becoming empty.
+    auto layersToUngroup = layers;
+
+    while (!layersToUngroup.isEmpty()) {
+        Layer *layer = layersToUngroup.takeFirst();
+
+        GroupLayer *groupLayer = layer->asGroupLayer();
+        QList<Layer *> layersToReparent;
+
+        if (groupLayer) {
+            layersToReparent = groupLayer->layers();
+        } else if (layer->parentLayer()) {
+            layersToReparent.append(layer);
+            groupLayer = layer->parentLayer();
+        } else {
+            // No ungrouping possible
+            continue;
+        }
+
+        GroupLayer *targetParent = groupLayer->parentLayer();
+        int groupIndex = groupLayer->siblingIndex();
+
+        if (!layersToReparent.isEmpty())
+            mUndoStack->push(new ReparentLayers(this, layersToReparent, targetParent, groupIndex + 1));
+
+        if (groupLayer->layerCount() == 0) {
+            mUndoStack->push(new RemoveLayer(this, groupIndex, targetParent));
+            layersToUngroup.removeOne(groupLayer);
+        }
     }
-
-    GroupLayer *targetParent = groupLayer->parentLayer();
-    int groupIndex = groupLayer->siblingIndex();
-
-    mUndoStack->beginMacro(tr("Ungroup Layer"));
-    mUndoStack->push(new ReparentLayers(this, layers, targetParent, groupIndex + 1));
-
-    if (groupLayer->layerCount() == 0)
-        mUndoStack->push(new RemoveLayer(this, groupIndex, targetParent));
 
     mUndoStack->endMacro();
 }
