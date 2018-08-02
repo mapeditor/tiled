@@ -50,7 +50,7 @@
     <message>
         <location filename="../src/tiled/main.cpp" line="+244"/>
         <source>Export syntax is --export-map [format] &lt;source&gt; &lt;target&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Синтаксис команды экспорта такой:  --export-map [format] &lt;source&gt; &lt;target&gt;</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -83,7 +83,7 @@
     <message>
         <location filename="../src/tiled/commanddialog.ui" line="+20"/>
         <source>Properties</source>
-        <translation>Настройки</translation>
+        <translation>Свойства</translation>
     </message>
     <message>
         <location line="+42"/>
@@ -114,7 +114,7 @@
     <message>
         <location line="+20"/>
         <source>Arguments:</source>
-        <translation type="unfinished">Аргументы:</translation>
+        <translation>Параметры команды:</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -5726,12 +5726,10 @@ Please select specific format.</source>
     <message numerus="yes">
         <location line="+46"/>
         <source>Replace %n Object(s) With Template</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Замена %n объекта на шаблонное значение</numerusform>
+        <numerusform>Замена %n объектов на шаблонное значение</numerusform>
+        <numerusform>Замена %n объектов на шаблонное значение</numerusform>
+        </translation></message>
     <message>
         <location filename="../src/tiled/renameterrain.cpp" line="+36"/>
         <source>Change Terrain Name</source>
