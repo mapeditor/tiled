@@ -128,7 +128,7 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
 
     connect(prefs, &Preferences::objectLineWidthChanged, this, &MapItem::setObjectLineWidth);
     connect(prefs, &Preferences::showTileObjectOutlinesChanged, this, &MapItem::setShowTileObjectOutlines);
-    connect(prefs, &Preferences::highlightCurrentLayerChanged, this, &MapItem::updateCurrentLayerHighlight);
+    connect(prefs, &Preferences::highlightCurrentLayerChanged, this, &MapItem::updateSelectedLayersHighlight);
     connect(prefs, &Preferences::objectTypesChanged, this, &MapItem::syncAllObjectItems);
 
     connect(mapDocument.data(), &MapDocument::mapChanged, this, &MapItem::mapChanged);
@@ -139,7 +139,7 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
     connect(mapDocument.data(), &MapDocument::layerChanged, this, &MapItem::layerChanged);
     connect(mapDocument.data(), &MapDocument::objectGroupChanged, this, &MapItem::objectGroupChanged);
     connect(mapDocument.data(), &MapDocument::imageLayerChanged, this, &MapItem::imageLayerChanged);
-    connect(mapDocument.data(), &MapDocument::selectedLayersChanged, this, &MapItem::updateCurrentLayerHighlight);
+    connect(mapDocument.data(), &MapDocument::selectedLayersChanged, this, &MapItem::updateSelectedLayersHighlight);
     connect(mapDocument.data(), &MapDocument::tilesetTileOffsetChanged, this, &MapItem::adaptToTilesetTileSizeChanges);
     connect(mapDocument.data(), &MapDocument::tileImageSourceChanged, this, &MapItem::adaptToTileSizeChanges);
     connect(mapDocument.data(), &MapDocument::tilesetReplaced, this, &MapItem::tilesetReplaced);
@@ -159,7 +159,7 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
     if (displayMode == ReadOnly) {
         setDisplayMode(displayMode);
     } else {
-        updateCurrentLayerHighlight();
+        updateSelectedLayersHighlight();
 
         mTileSelectionItem.reset(new TileSelectionItem(mapDocument.data(), this));
         mTileSelectionItem->setZValue(10000 - 2);
@@ -213,7 +213,7 @@ void MapItem::setDisplayMode(DisplayMode displayMode)
         mObjectSelectionItem->setZValue(10000 - 1);
     }
 
-    updateCurrentLayerHighlight();
+    updateSelectedLayersHighlight();
 }
 
 QRectF MapItem::boundingRect() const
@@ -624,7 +624,7 @@ void MapItem::updateBoundingRect()
     }
 }
 
-void MapItem::updateCurrentLayerHighlight()
+void MapItem::updateSelectedLayersHighlight()
 {
     Preferences *prefs = Preferences::instance();
     const auto selectedLayers = mapDocument()->selectedLayers();
@@ -632,6 +632,7 @@ void MapItem::updateCurrentLayerHighlight()
     if (!prefs->highlightCurrentLayer() || selectedLayers.isEmpty() || mDisplayMode == ReadOnly) {
         if (mDarkRectangle->isVisible()) {
             mDarkRectangle->setVisible(false);
+            mDarkRectangle->setParentItem(this);    // avoid automatic deletion
 
             // Restore opacity for all layers
             for (auto layerItem : qAsConst(mLayerItems))

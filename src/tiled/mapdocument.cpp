@@ -1086,6 +1086,13 @@ void MapDocument::onLayerRemoved(Layer *layer)
         setCurrentLayer(nullptr);
     }
 
+    // Make sure affected layers are removed from the selection
+    auto selectedLayers = mSelectedLayers;
+    for (int i = selectedLayers.size() - 1; i >= 0; --i)
+        if (selectedLayers.at(i)->isParentOrSelf(layer))
+            selectedLayers.removeAt(i);
+    setSelectedLayers(selectedLayers);
+
     emit layerRemoved(layer);
 }
 

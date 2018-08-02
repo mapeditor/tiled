@@ -104,6 +104,7 @@ private slots:
     void indexPressed(const QModelIndex &proxyIndex);
     void currentLayerChanged(Layer *layer);
     void selectedLayersChanged();
+    void layerRemoved(Layer *layer);
 
 private:
     MapDocument *mMapDocument;

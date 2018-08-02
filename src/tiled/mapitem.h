@@ -117,7 +117,7 @@ private:
     LayerItem *createLayerItem(Layer *layer);
 
     void updateBoundingRect();
-    void updateCurrentLayerHighlight();
+    void updateSelectedLayersHighlight();
 
     MapDocumentPtr mMapDocument;
     QGraphicsRectItem *mDarkRectangle;

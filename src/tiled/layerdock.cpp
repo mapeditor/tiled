@@ -307,6 +307,8 @@ void LayerView::setMapDocument(MapDocument *mapDocument)
                 this, &LayerView::currentLayerChanged);
         connect(mMapDocument, &MapDocument::selectedLayersChanged,
                 this, &LayerView::selectedLayersChanged);
+        connect(mMapDocument, &MapDocument::layerRemoved,
+                this, &LayerView::layerRemoved);
 
         currentLayerChanged(mMapDocument->currentLayer());
     } else {
@@ -363,7 +365,16 @@ void LayerView::selectedLayersChanged()
         selection.select(index, index);
     }
 
-    selectionModel()->select(selection, QItemSelectionModel::ClearAndSelect);
+    selectionModel()->select(selection, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+}
+
+void LayerView::layerRemoved(Layer *layer)
+{
+    Q_UNUSED(layer);
+
+    // Select "current layer" after layer removal clears selection
+    if (mMapDocument->selectedLayers().isEmpty() && mMapDocument->currentLayer())
+        mMapDocument->setSelectedLayers({ mMapDocument->currentLayer() });
 }
 
 bool LayerView::event(QEvent *event)
