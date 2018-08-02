@@ -228,15 +228,18 @@ void MapDocument::setCurrentLayer(Layer *layer)
         return;
 
     mCurrentLayer = layer;
-    emit currentLayerChanged(mCurrentLayer);
+    emit currentLayerChanged(layer);
 
-    if (mCurrentLayer)
+    if (layer)
         if (!mCurrentObject || mCurrentObject->typeId() == Object::LayerType)
-            setCurrentObject(mCurrentLayer);
+            setCurrentObject(layer);
 }
 
 void MapDocument::setSelectedLayers(const QList<Layer *> &layers)
 {
+    if (mSelectedLayers == layers)
+        return;
+
     mSelectedLayers = layers;
     emit selectedLayersChanged();
 }

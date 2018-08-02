@@ -619,14 +619,24 @@ void MapDocumentActionHandler::mergeLayerDown()
 
 void MapDocumentActionHandler::selectPreviousLayer()
 {
-    if (mMapDocument)
-        mMapDocument->setCurrentLayer(LayerIterator(mMapDocument->currentLayer()).previous());
+    if (!mMapDocument)
+        return;
+
+    if (Layer *previousLayer = LayerIterator(mMapDocument->currentLayer()).previous()) {
+        mMapDocument->setCurrentLayer(previousLayer);
+        mMapDocument->setSelectedLayers({ previousLayer });
+    }
 }
 
 void MapDocumentActionHandler::selectNextLayer()
 {
-    if (mMapDocument)
-        mMapDocument->setCurrentLayer(LayerIterator(mMapDocument->currentLayer()).next());
+    if (!mMapDocument)
+        return;
+
+    if (Layer *nextLayer = LayerIterator(mMapDocument->currentLayer()).next()) {
+        mMapDocument->setCurrentLayer(nextLayer);
+        mMapDocument->setSelectedLayers({ nextLayer });
+    }
 }
 
 void MapDocumentActionHandler::moveLayerUp()
