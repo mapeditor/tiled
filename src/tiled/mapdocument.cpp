@@ -580,25 +580,61 @@ void MapDocument::mergeLayerDown()
 }
 
 /**
- * Moves the given \a layer up, when it is not already at the top of the map.
+ * Moves the given \a layers up, when it is not already at the top of the map.
  */
-void MapDocument::moveLayerUp(Layer *layer)
+void MapDocument::moveLayersUp(const QList<Layer *> &layers)
 {
-    if (!layer || !MoveLayer::canMoveUp(*layer))
+    QList<Layer *> layersToMove;
+    layersToMove.reserve(layers.size());
+
+    // Move layers in the right order, and abort if one of the layers can't be moved
+    // (iterating backwards because when moving layers up we need to start move the
+    // top-most layer first)
+    LayerIterator iterator(mMap.get());
+    iterator.toBack();
+    while (Layer *layer = iterator.previous()) {
+        if (layers.contains(layer)) {
+            if (!MoveLayer::canMoveUp(*layer))
+                return;
+
+            layersToMove.append(layer);
+        }
+    }
+
+    if (layersToMove.isEmpty())
         return;
 
-    mUndoStack->push(new MoveLayer(this, layer, MoveLayer::Up));
+    mUndoStack->beginMacro(QCoreApplication::translate("Undo Commands", "Raise %n Layer(s)", "", layersToMove.size()));
+    for (Layer *layer : qAsConst(layersToMove))
+        mUndoStack->push(new MoveLayer(this, layer, MoveLayer::Up));
+    mUndoStack->endMacro();
 }
 
 /**
- * Moves the given \a layer up, when it is not already at the bottom of the map.
+ * Moves the given \a layers up, when it is not already at the bottom of the map.
  */
-void MapDocument::moveLayerDown(Layer *layer)
+void MapDocument::moveLayersDown(const QList<Layer *> &layers)
 {
-    if (!layer || !MoveLayer::canMoveDown(*layer))
+    QList<Layer *> layersToMove;
+    layersToMove.reserve(layers.size());
+
+    // Move layers in the right order, and abort if one of the layers can't be moved
+    for (Layer *layer : mMap->allLayers()) {
+        if (layers.contains(layer)) {
+            if (!MoveLayer::canMoveDown(*layer))
+                return;
+
+            layersToMove.append(layer);
+        }
+    }
+
+    if (layersToMove.isEmpty())
         return;
 
-    mUndoStack->push(new MoveLayer(this, layer, MoveLayer::Down));
+    mUndoStack->beginMacro(QCoreApplication::translate("Undo Commands", "Lower %n Layer(s)", "", layersToMove.size()));
+    for (Layer *layer : qAsConst(layersToMove))
+        mUndoStack->push(new MoveLayer(this, layer, MoveLayer::Down));
+    mUndoStack->endMacro();
 }
 
 /**

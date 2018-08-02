@@ -417,6 +417,12 @@ void LayerModel::replaceLayer(Layer *layer, Layer *replacement)
         mMapDocument->setCurrentLayer(replacement);
 }
 
+void LayerModel::moveLayer(GroupLayer *parentLayer, int index, GroupLayer *toParentLayer, int toIndex)
+{
+    auto layer = takeLayerAt(parentLayer, index);
+    insertLayer(toParentLayer, toIndex, layer);
+}
+
 /**
  * Sets whether the layer at the given index is visible.
  */

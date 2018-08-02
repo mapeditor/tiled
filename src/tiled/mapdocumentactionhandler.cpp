@@ -112,14 +112,14 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     mActionSelectNextLayer = new QAction(this);
     mActionSelectNextLayer->setShortcut(tr("Ctrl+PgUp"));
 
-    mActionMoveLayerUp = new QAction(this);
-    mActionMoveLayerUp->setShortcut(tr("Ctrl+Shift+Up"));
-    mActionMoveLayerUp->setIcon(
+    mActionMoveLayersUp = new QAction(this);
+    mActionMoveLayersUp->setShortcut(tr("Ctrl+Shift+Up"));
+    mActionMoveLayersUp->setIcon(
             QIcon(QLatin1String(":/images/16x16/go-up.png")));
 
-    mActionMoveLayerDown = new QAction(this);
-    mActionMoveLayerDown->setShortcut(tr("Ctrl+Shift+Down"));
-    mActionMoveLayerDown->setIcon(
+    mActionMoveLayersDown = new QAction(this);
+    mActionMoveLayersDown->setShortcut(tr("Ctrl+Shift+Down"));
+    mActionMoveLayersDown->setIcon(
             QIcon(QLatin1String(":/images/16x16/go-down.png")));
 
     mActionToggleOtherLayers = new QAction(this);
@@ -143,8 +143,8 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     mActionRemoveObjects->setIcon(QIcon(QLatin1String(":/images/16x16/edit-delete.png")));
 
     Utils::setThemeIcon(mActionRemoveLayers, "edit-delete");
-    Utils::setThemeIcon(mActionMoveLayerUp, "go-up");
-    Utils::setThemeIcon(mActionMoveLayerDown, "go-down");
+    Utils::setThemeIcon(mActionMoveLayersUp, "go-up");
+    Utils::setThemeIcon(mActionMoveLayersDown, "go-down");
     Utils::setThemeIcon(mActionLayerProperties, "document-properties");
     Utils::setThemeIcon(mActionRemoveObjects, "edit-delete");
 
@@ -167,8 +167,8 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     connect(mActionSelectPreviousLayer, &QAction::triggered, this, &MapDocumentActionHandler::selectPreviousLayer);
     connect(mActionSelectNextLayer, &QAction::triggered, this, &MapDocumentActionHandler::selectNextLayer);
     connect(mActionRemoveLayers, &QAction::triggered, this, &MapDocumentActionHandler::removeLayers);
-    connect(mActionMoveLayerUp, &QAction::triggered, this, &MapDocumentActionHandler::moveLayerUp);
-    connect(mActionMoveLayerDown, &QAction::triggered, this, &MapDocumentActionHandler::moveLayerDown);
+    connect(mActionMoveLayersUp, &QAction::triggered, this, &MapDocumentActionHandler::moveLayersUp);
+    connect(mActionMoveLayersDown, &QAction::triggered, this, &MapDocumentActionHandler::moveLayersDown);
     connect(mActionToggleOtherLayers, &QAction::triggered, this, &MapDocumentActionHandler::toggleOtherLayers);
     connect(mActionToggleLockOtherLayers, &QAction::triggered, this, &MapDocumentActionHandler::toggleLockOtherLayers);
     connect(mActionLayerProperties, &QAction::triggered, this, &MapDocumentActionHandler::layerProperties);
@@ -207,8 +207,8 @@ void MapDocumentActionHandler::retranslateUi()
     mActionRemoveLayers->setText(tr("&Remove Layers"));
     mActionSelectPreviousLayer->setText(tr("Select Pre&vious Layer"));
     mActionSelectNextLayer->setText(tr("Select &Next Layer"));
-    mActionMoveLayerUp->setText(tr("R&aise Layer"));
-    mActionMoveLayerDown->setText(tr("&Lower Layer"));
+    mActionMoveLayersUp->setText(tr("R&aise Layers"));
+    mActionMoveLayersDown->setText(tr("&Lower Layers"));
     mActionToggleOtherLayers->setText(tr("Show/&Hide all Other Layers"));
     mActionToggleLockOtherLayers->setText(tr("Lock/&Unlock all Other Layers"));
     mActionLayerProperties->setText(tr("Layer &Properties..."));
@@ -639,16 +639,16 @@ void MapDocumentActionHandler::selectNextLayer()
     }
 }
 
-void MapDocumentActionHandler::moveLayerUp()
+void MapDocumentActionHandler::moveLayersUp()
 {
     if (mMapDocument)
-        mMapDocument->moveLayerUp(mMapDocument->currentLayer());
+        mMapDocument->moveLayersUp(mMapDocument->selectedLayers());
 }
 
-void MapDocumentActionHandler::moveLayerDown()
+void MapDocumentActionHandler::moveLayersDown()
 {
     if (mMapDocument)
-        mMapDocument->moveLayerDown(mMapDocument->currentLayer());
+        mMapDocument->moveLayersDown(mMapDocument->selectedLayers());
 }
 
 void MapDocumentActionHandler::removeLayers()
@@ -765,15 +765,15 @@ void MapDocumentActionHandler::updateActions()
 
     const bool hasPreviousLayer = LayerIterator(currentLayer).previous();
     const bool hasNextLayer = LayerIterator(currentLayer).next();
-    const bool canMoveLayerUp = currentLayer && MoveLayer::canMoveUp(*currentLayer);
-    const bool canMoveLayerDown = currentLayer && MoveLayer::canMoveDown(*currentLayer);
+    const bool canMoveLayersUp = !selectedLayers.isEmpty() && MoveLayer::canMoveUp(selectedLayers);
+    const bool canMoveLayersDown = !selectedLayers.isEmpty() && MoveLayer::canMoveDown(selectedLayers);
 
     mActionDuplicateLayer->setEnabled(currentLayer);
     mActionMergeLayerDown->setEnabled(canMergeDown);
     mActionSelectPreviousLayer->setEnabled(hasPreviousLayer);
     mActionSelectNextLayer->setEnabled(hasNextLayer);
-    mActionMoveLayerUp->setEnabled(canMoveLayerUp);
-    mActionMoveLayerDown->setEnabled(canMoveLayerDown);
+    mActionMoveLayersUp->setEnabled(canMoveLayersUp);
+    mActionMoveLayersDown->setEnabled(canMoveLayersDown);
     mActionToggleOtherLayers->setEnabled(currentLayer && (hasNextLayer || hasPreviousLayer));
     mActionToggleLockOtherLayers->setEnabled(currentLayer && (hasNextLayer || hasPreviousLayer));
     mActionRemoveLayers->setEnabled(!selectedLayers.isEmpty());

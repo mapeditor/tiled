@@ -84,6 +84,7 @@ public:
     void insertLayer(GroupLayer *parentLayer, int index, Layer *layer);
     Layer *takeLayerAt(GroupLayer *parentLayer, int index);
     void replaceLayer(Layer *layer, Layer *replacement);
+    void moveLayer(GroupLayer *parentLayer, int index, GroupLayer *toParentLayer, int toIndex);
 
     void setLayerVisible(Layer *layer, bool visible);
     void setLayerLocked(Layer *layer, bool locked);

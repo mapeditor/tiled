@@ -80,8 +80,8 @@ public:
     QAction *actionRemoveLayer() const { return mActionRemoveLayers; }
     QAction *actionSelectPreviousLayer() const { return mActionSelectPreviousLayer; }
     QAction *actionSelectNextLayer() const { return mActionSelectNextLayer; }
-    QAction *actionMoveLayerUp() const { return mActionMoveLayerUp; }
-    QAction *actionMoveLayerDown() const { return mActionMoveLayerDown; }
+    QAction *actionMoveLayersUp() const { return mActionMoveLayersUp; }
+    QAction *actionMoveLayersDown() const { return mActionMoveLayersDown; }
     QAction *actionToggleOtherLayers() const { return mActionToggleOtherLayers; }
     QAction *actionToggleLockOtherLayers() const { return mActionToggleLockOtherLayers; }
     QAction *actionLayerProperties() const { return mActionLayerProperties; }
@@ -123,8 +123,8 @@ public slots:
     void mergeLayerDown();
     void selectPreviousLayer();
     void selectNextLayer();
-    void moveLayerUp();
-    void moveLayerDown();
+    void moveLayersUp();
+    void moveLayersDown();
     void removeLayers();
     void toggleOtherLayers();
     void toggleLockOtherLayers();
@@ -162,8 +162,8 @@ private:
     QAction *mActionRemoveLayers;
     QAction *mActionSelectPreviousLayer;
     QAction *mActionSelectNextLayer;
-    QAction *mActionMoveLayerUp;
-    QAction *mActionMoveLayerDown;
+    QAction *mActionMoveLayersUp;
+    QAction *mActionMoveLayersDown;
     QAction *mActionToggleOtherLayers;
     QAction *mActionToggleLockOtherLayers;
     QAction *mActionLayerProperties;

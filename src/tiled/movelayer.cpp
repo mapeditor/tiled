@@ -28,6 +28,8 @@
 
 #include <QCoreApplication>
 
+#include <algorithm>
+
 namespace Tiled {
 namespace Internal {
 
@@ -49,6 +51,18 @@ bool MoveLayer::canMoveUp(const Layer &layer)
 bool MoveLayer::canMoveDown(const Layer &layer)
 {
     return layer.parentLayer() || layer.siblingIndex() > 0;
+}
+
+bool MoveLayer::canMoveUp(const QList<Layer *> &layers)
+{
+    return std::all_of(layers.begin(), layers.end(),
+                       [] (Layer *layer) { return canMoveUp(*layer); });
+}
+
+bool MoveLayer::canMoveDown(const QList<Layer *> &layers)
+{
+    return std::all_of(layers.begin(), layers.end(),
+                       [] (Layer *layer) { return canMoveDown(*layer); });
 }
 
 void MoveLayer::moveLayer()
@@ -86,15 +100,18 @@ void MoveLayer::moveLayer()
     }
 
     const auto currentLayer = mMapDocument->currentLayer();
+    const auto selectedLayers = mMapDocument->selectedLayers();
 
     LayerModel *layerModel = mMapDocument->layerModel();
-    layerModel->takeLayerAt(parent, index);
-    layerModel->insertLayer(insertionParent, insertionIndex, mLayer);
+    layerModel->moveLayer(parent, index, insertionParent, insertionIndex);
 
     // Change the direction
     mDirection = (mDirection == Down) ? Up : Down;
 
+    // Restore current layer and selected layers, which get broken due to the
+    // temporary removal of the layer from the map.
     mMapDocument->setCurrentLayer(currentLayer);
+    mMapDocument->setSelectedLayers(selectedLayers);
 }
 
 } // namespace Tiled

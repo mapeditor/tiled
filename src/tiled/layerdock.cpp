@@ -88,8 +88,8 @@ LayerDock::LayerDock(QWidget *parent):
     buttonContainer->setIconSize(Utils::smallIconSize());
 
     buttonContainer->addWidget(mNewLayerButton);
-    buttonContainer->addAction(handler->actionMoveLayerUp());
-    buttonContainer->addAction(handler->actionMoveLayerDown());
+    buttonContainer->addAction(handler->actionMoveLayersUp());
+    buttonContainer->addAction(handler->actionMoveLayersDown());
     buttonContainer->addAction(handler->actionDuplicateLayer());
     buttonContainer->addAction(handler->actionRemoveLayer());
     buttonContainer->addSeparator();
@@ -410,8 +410,8 @@ void LayerView::contextMenuEvent(QContextMenuEvent *event)
         menu.addAction(handler->actionMergeLayerDown());
         menu.addAction(handler->actionRemoveLayer());
         menu.addSeparator();
-        menu.addAction(handler->actionMoveLayerUp());
-        menu.addAction(handler->actionMoveLayerDown());
+        menu.addAction(handler->actionMoveLayersUp());
+        menu.addAction(handler->actionMoveLayersDown());
         menu.addSeparator();
         menu.addAction(handler->actionToggleOtherLayers());
         menu.addAction(handler->actionToggleLockOtherLayers());
