@@ -90,8 +90,8 @@ LayerDock::LayerDock(QWidget *parent):
     buttonContainer->addWidget(mNewLayerButton);
     buttonContainer->addAction(handler->actionMoveLayersUp());
     buttonContainer->addAction(handler->actionMoveLayersDown());
-    buttonContainer->addAction(handler->actionDuplicateLayer());
-    buttonContainer->addAction(handler->actionRemoveLayer());
+    buttonContainer->addAction(handler->actionDuplicateLayers());
+    buttonContainer->addAction(handler->actionRemoveLayers());
     buttonContainer->addSeparator();
     buttonContainer->addAction(handler->actionToggleOtherLayers());
     buttonContainer->addAction(handler->actionToggleLockOtherLayers());
@@ -406,9 +406,9 @@ void LayerView::contextMenuEvent(QContextMenuEvent *event)
 
     if (proxyIndex.isValid()) {
         menu.addMenu(handler->createGroupLayerMenu(&menu));
-        menu.addAction(handler->actionDuplicateLayer());
+        menu.addAction(handler->actionDuplicateLayers());
         menu.addAction(handler->actionMergeLayerDown());
-        menu.addAction(handler->actionRemoveLayer());
+        menu.addAction(handler->actionRemoveLayers());
         menu.addSeparator();
         menu.addAction(handler->actionMoveLayersUp());
         menu.addAction(handler->actionMoveLayersDown());

@@ -95,9 +95,9 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     mActionGroupLayers = new QAction(this);
     mActionUngroupLayers = new QAction(this);
 
-    mActionDuplicateLayer = new QAction(this);
-    mActionDuplicateLayer->setShortcut(tr("Ctrl+Shift+D"));
-    mActionDuplicateLayer->setIcon(
+    mActionDuplicateLayers = new QAction(this);
+    mActionDuplicateLayers->setShortcut(tr("Ctrl+Shift+D"));
+    mActionDuplicateLayers->setIcon(
             QIcon(QLatin1String(":/images/16x16/stock-duplicate-16.png")));
 
     mActionMergeLayerDown = new QAction(this);
@@ -162,7 +162,7 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     connect(mActionGroupLayers, &QAction::triggered, this, &MapDocumentActionHandler::groupLayers);
     connect(mActionUngroupLayers, &QAction::triggered, this, &MapDocumentActionHandler::ungroupLayers);
 
-    connect(mActionDuplicateLayer, &QAction::triggered, this, &MapDocumentActionHandler::duplicateLayer);
+    connect(mActionDuplicateLayers, &QAction::triggered, this, &MapDocumentActionHandler::duplicateLayers);
     connect(mActionMergeLayerDown, &QAction::triggered, this, &MapDocumentActionHandler::mergeLayerDown);
     connect(mActionSelectPreviousLayer, &QAction::triggered, this, &MapDocumentActionHandler::selectPreviousLayer);
     connect(mActionSelectNextLayer, &QAction::triggered, this, &MapDocumentActionHandler::selectNextLayer);
@@ -202,7 +202,7 @@ void MapDocumentActionHandler::retranslateUi()
     mActionGroupLayers->setText(tr("&Group Layers"));
     mActionUngroupLayers->setText(tr("&Ungroup Layers"));
 
-    mActionDuplicateLayer->setText(tr("&Duplicate Layer"));
+    mActionDuplicateLayers->setText(tr("&Duplicate Layers"));
     mActionMergeLayerDown->setText(tr("&Merge Layer Down"));
     mActionRemoveLayers->setText(tr("&Remove Layers"));
     mActionSelectPreviousLayer->setText(tr("Select Pre&vious Layer"));
@@ -605,10 +605,10 @@ void MapDocumentActionHandler::ungroupLayers()
         mMapDocument->ungroupLayers(mMapDocument->selectedLayers());
 }
 
-void MapDocumentActionHandler::duplicateLayer()
+void MapDocumentActionHandler::duplicateLayers()
 {
     if (mMapDocument)
-        mMapDocument->duplicateLayer();
+        mMapDocument->duplicateLayers(mMapDocument->selectedLayers());
 }
 
 void MapDocumentActionHandler::mergeLayerDown()
@@ -768,7 +768,7 @@ void MapDocumentActionHandler::updateActions()
     const bool canMoveLayersUp = !selectedLayers.isEmpty() && MoveLayer::canMoveUp(selectedLayers);
     const bool canMoveLayersDown = !selectedLayers.isEmpty() && MoveLayer::canMoveDown(selectedLayers);
 
-    mActionDuplicateLayer->setEnabled(currentLayer);
+    mActionDuplicateLayers->setEnabled(!selectedLayers.isEmpty());
     mActionMergeLayerDown->setEnabled(canMergeDown);
     mActionSelectPreviousLayer->setEnabled(hasPreviousLayer);
     mActionSelectNextLayer->setEnabled(hasNextLayer);

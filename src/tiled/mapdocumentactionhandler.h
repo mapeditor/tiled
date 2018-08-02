@@ -75,9 +75,9 @@ public:
     QAction *actionGroupLayers() const { return mActionGroupLayers; }
     QAction *actionUngroupLayers() const { return mActionUngroupLayers; }
 
-    QAction *actionDuplicateLayer() const { return mActionDuplicateLayer; }
+    QAction *actionDuplicateLayers() const { return mActionDuplicateLayers; }
     QAction *actionMergeLayerDown() const { return mActionMergeLayerDown; }
-    QAction *actionRemoveLayer() const { return mActionRemoveLayers; }
+    QAction *actionRemoveLayers() const { return mActionRemoveLayers; }
     QAction *actionSelectPreviousLayer() const { return mActionSelectPreviousLayer; }
     QAction *actionSelectNextLayer() const { return mActionSelectNextLayer; }
     QAction *actionMoveLayersUp() const { return mActionMoveLayersUp; }
@@ -119,7 +119,7 @@ public slots:
     void groupLayers();
     void ungroupLayers();
 
-    void duplicateLayer();
+    void duplicateLayers();
     void mergeLayerDown();
     void selectPreviousLayer();
     void selectNextLayer();
@@ -157,7 +157,7 @@ private:
     QAction *mActionGroupLayers;
     QAction *mActionUngroupLayers;
 
-    QAction *mActionDuplicateLayer;
+    QAction *mActionDuplicateLayers;
     QAction *mActionMergeLayerDown;
     QAction *mActionRemoveLayers;
     QAction *mActionSelectPreviousLayer;

@@ -351,9 +351,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mGroupLayerMenu = mActionHandler->createGroupLayerMenu(mLayerMenu);
     mLayerMenu->addMenu(mNewLayerMenu);
     mLayerMenu->addMenu(mGroupLayerMenu);
-    mLayerMenu->addAction(mActionHandler->actionDuplicateLayer());
+    mLayerMenu->addAction(mActionHandler->actionDuplicateLayers());
     mLayerMenu->addAction(mActionHandler->actionMergeLayerDown());
-    mLayerMenu->addAction(mActionHandler->actionRemoveLayer());
+    mLayerMenu->addAction(mActionHandler->actionRemoveLayers());
     mLayerMenu->addSeparator();
     mLayerMenu->addAction(mActionHandler->actionSelectPreviousLayer());
     mLayerMenu->addAction(mActionHandler->actionSelectNextLayer());

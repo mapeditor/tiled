@@ -530,25 +530,63 @@ void MapDocument::ungroupLayers(const QList<Layer *> &layers)
 }
 
 /**
- * Duplicates the currently selected layer.
+ * Duplicates the currently selected layers.
  */
-void MapDocument::duplicateLayer()
+void MapDocument::duplicateLayers(const QList<Layer *> &layers)
 {
-    if (!mCurrentLayer)
+    if (layers.isEmpty())
         return;
 
-    Layer *duplicate = mCurrentLayer->clone();
-    duplicate->setName(tr("Copy of %1").arg(duplicate->name()));
+    mUndoStack->beginMacro(tr("Duplicate %n Layer(s)", "", layers.size()));
 
-    if (duplicate->layerType() == Layer::ObjectGroupType)
-        static_cast<ObjectGroup*>(duplicate)->resetObjectIds();
+    QList<Layer *> layersToDuplicate;
 
-    auto parentLayer = mCurrentLayer ? mCurrentLayer->parentLayer() : nullptr;
-    const int index = layerIndex(mCurrentLayer) + 1;
-    QUndoCommand *cmd = new AddLayer(this, index, duplicate, parentLayer);
-    cmd->setText(tr("Duplicate Layer"));
-    mUndoStack->push(cmd);
-    setCurrentLayer(duplicate);
+    // Duplicate layers in the right order (groups before their children)
+    LayerIterator iterator(mMap.get());
+    iterator.toBack();
+    while (Layer *layer = iterator.previous())
+        if (layers.contains(layer))
+            layersToDuplicate.append(layer);
+
+    QList<Layer *> newLayers;
+    GroupLayer *previousParentLayer = nullptr;
+    int previousIndex = 0;
+
+    while (!layersToDuplicate.isEmpty()) {
+        Layer *layer = layersToDuplicate.takeFirst();
+
+        // If a group layer gets duplicated, make sure any children are removed
+        // from the remaining list of layers to duplicate
+        if (layer->isGroupLayer()) {
+            for (int i = layersToDuplicate.size() - 1; i >= 0; --i)
+                if (layersToDuplicate.at(i)->isParentOrSelf(layer))
+                    layersToDuplicate.removeAt(i);
+        }
+
+        Layer *duplicate = layer->clone();
+        duplicate->setName(tr("Copy of %1").arg(duplicate->name()));
+
+        if (duplicate->layerType() == Layer::ObjectGroupType)
+            static_cast<ObjectGroup*>(duplicate)->resetObjectIds();
+
+        auto parentLayer = layer->parentLayer();
+
+        int index = previousIndex;
+        if (newLayers.isEmpty() || previousParentLayer != parentLayer)
+            index = layer->siblingIndex() + 1;
+
+        mUndoStack->push(new AddLayer(this, index, duplicate, parentLayer));
+
+        previousParentLayer = parentLayer;
+        previousIndex = index;
+
+        newLayers.append(duplicate);
+    }
+
+    mUndoStack->endMacro();
+
+    setCurrentLayer(newLayers.first());
+    setSelectedLayers(newLayers);
 }
 
 /**
