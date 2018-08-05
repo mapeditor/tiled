@@ -158,8 +158,8 @@ public:
     void moveLayersUp(const QList<Layer *> &layers);
     void moveLayersDown(const QList<Layer *> &layers);
     void removeLayers(const QList<Layer *> &layers);
-    void toggleOtherLayers(Layer *layer);
-    void toggleLockOtherLayers(Layer *layer);
+    void toggleOtherLayers(const QList<Layer *> &layers);
+    void toggleLockOtherLayers(const QList<Layer *> &layers);
 
     void insertTileset(int index, const SharedTileset &tileset);
     void removeTilesetAt(int index);

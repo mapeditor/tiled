@@ -660,13 +660,13 @@ void MapDocumentActionHandler::removeLayers()
 void MapDocumentActionHandler::toggleOtherLayers()
 {
     if (mMapDocument)
-        mMapDocument->toggleOtherLayers(mMapDocument->currentLayer());
+        mMapDocument->toggleOtherLayers(mMapDocument->selectedLayers());
 }
 
 void MapDocumentActionHandler::toggleLockOtherLayers()
 {
     if (mMapDocument)
-        mMapDocument->toggleLockOtherLayers(mMapDocument->currentLayer());
+        mMapDocument->toggleLockOtherLayers(mMapDocument->selectedLayers());
 }
 
 void MapDocumentActionHandler::layerProperties()

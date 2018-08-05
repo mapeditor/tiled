@@ -709,23 +709,19 @@ void MapDocument::removeLayers(const QList<Layer *> &layers)
 }
 
 /**
-  * Show or hide all other layers except the given \a layer.
-  * If any other layer is visible then all layers will be hidden, otherwise
-  * the layers will be shown.
-  */
-void MapDocument::toggleOtherLayers(Layer *layer)
+ * \see LayerModel::toggleOtherLayers
+ */
+void MapDocument::toggleOtherLayers(const QList<Layer *> &layers)
 {
-    mLayerModel->toggleOtherLayers(layer);
+    mLayerModel->toggleOtherLayers(layers);
 }
 
 /**
-* Lock or unlock all other layers except the given \a layer.
-* If any other layer is unlocked then all layers will be locked, otherwise
-* the layers will be unlocked.
-*/
-void MapDocument::toggleLockOtherLayers(Layer *layer)
+ * \see LayerModel::toggleLockOtherLayers
+ */
+void MapDocument::toggleLockOtherLayers(const QList<Layer *> &layers)
 {
-    mLayerModel->toggleLockOtherLayers(layer);
+    mLayerModel->toggleLockOtherLayers(layers);
 }
 
 

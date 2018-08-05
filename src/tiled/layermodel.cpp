@@ -490,32 +490,49 @@ void LayerModel::renameLayer(Layer *layer, const QString &name)
 }
 
 /**
- * Collects sibling layers, including siblings of all parents.
+ * Collects siblings of \a layers, including siblings of all parents. None of
+ * the layers provided as input are returned.
  */
-static QList<Layer *> collectAllSiblings(Layer *layer)
+static QSet<Layer *> collectAllSiblings(const QList<Layer *> &layers)
 {
-    QList<Layer *> collected;
+    QList<Layer *> todo = layers;
+    QSet<Layer *> collected;
 
-    while (layer) {
+    // Collect all siblings and siblings of parents
+    while (!todo.isEmpty()) {
+        Layer *layer = todo.takeFirst();
+
         const auto& siblings = layer->siblings();
         for (Layer *sibling : siblings) {
-            if (sibling != layer)
-                collected.append(sibling);
+            collected.insert(sibling);
+            todo.removeOne(sibling);
         }
-        layer = layer->parentLayer();
+
+        Layer *parent = layer->parentLayer();
+        if (parent && !collected.contains(parent) && !todo.contains(parent))
+            todo.append(parent);
+    }
+
+    // Exclude input layers and their parents
+    for (Layer *layer : layers) {
+        while (layer) {
+            if (!collected.remove(layer))
+                break;
+            layer = layer->parentLayer();
+        }
     }
 
     return collected;
 }
 
 /**
-  * Show or hide all other layers except the given \a layer.
-  * If any other layer is visible then all layers will be hidden, otherwise
-  * the layers will be shown.
-  */
-void LayerModel::toggleOtherLayers(Layer *layer)
+ * Show or hide all other layers except the given \a layers.
+ * If any other layer is visible then all layers will be hidden, otherwise
+ * the layers will be shown.
+ */
+void LayerModel::toggleOtherLayers(const QList<Layer *> &layers)
 {
-    const auto& otherLayers = collectAllSiblings(layer);
+    const auto& otherLayers = collectAllSiblings(layers);
     if (otherLayers.isEmpty())
         return;
 
@@ -542,13 +559,13 @@ void LayerModel::toggleOtherLayers(Layer *layer)
 }
 
 /**
-* Lock or unlock all other layers except the given \a layer.
-* If any other layer is unlocked then all layers will be locked, otherwise
-* the layers will be unlocked.
-*/
-void LayerModel::toggleLockOtherLayers(Layer *layer)
+ * Lock or unlock all other layers except the given \a layers.
+ * If any other layer is unlocked then all layers will be locked, otherwise
+ * the layers will be unlocked.
+ */
+void LayerModel::toggleLockOtherLayers(const QList<Layer *> &layers)
 {
-    const auto& otherLayers = collectAllSiblings(layer);
+    const auto& otherLayers = collectAllSiblings(layers);
     if (otherLayers.isEmpty())
         return;
 
