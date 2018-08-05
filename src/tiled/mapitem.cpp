@@ -113,6 +113,7 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
     : QGraphicsObject(parent)
     , mMapDocument(mapDocument)
     , mDarkRectangle(new QGraphicsRectItem(this))
+    , mBorderRectangle(new QGraphicsRectItem(this))
     , mDisplayMode(Editable)
 {
     // Since we don't do any painting, we can spare us the call to paint()
@@ -156,6 +157,17 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
     mDarkRectangle->setRect(QRectF(INT_MIN / 512, INT_MIN / 512,
                                    INT_MAX / 256, INT_MAX / 256));
 
+    auto updateBorder = [this] (QColor color) {
+        QPen pen(color);
+        pen.setCosmetic(true);
+        mBorderRectangle->setPen(pen);
+    };
+
+    updateBorder(prefs->gridColor());
+    connect(prefs, &Preferences::gridColorChanged, this, updateBorder);
+
+    mBorderRectangle->setZValue(10000 - 3);
+
     if (displayMode == ReadOnly) {
         setDisplayMode(displayMode);
     } else {
@@ -183,6 +195,8 @@ void MapItem::setDisplayMode(DisplayMode displayMode)
 
     mDisplayMode = displayMode;
 
+    setAcceptHoverEvents(displayMode == ReadOnly);
+
     // Enabled state is checked by selection tools
     for (LayerItem *layerItem : qAsConst(mLayerItems))
         layerItem->setEnabled(displayMode == Editable);
@@ -191,8 +205,9 @@ void MapItem::setDisplayMode(DisplayMode displayMode)
         // In read-only display mode, we are a link to the editable view for our map
         setCursor(Qt::PointingHandCursor);
 
-        setOpacity(0.5);
         setZValue(-1);
+
+        mBorderRectangle->setBrush(QColor(0, 0, 0, 64));
 
         mTileSelectionItem.reset();
         mTileGridItem.reset();
@@ -200,8 +215,9 @@ void MapItem::setDisplayMode(DisplayMode displayMode)
     } else {
         unsetCursor();
 
-        setOpacity(1.0);
         setZValue(0);
+
+        mBorderRectangle->setBrush(Qt::NoBrush);
 
         mTileSelectionItem.reset(new TileSelectionItem(mapDocument(), this));
         mTileSelectionItem->setZValue(10000 - 3);
@@ -223,6 +239,16 @@ QRectF MapItem::boundingRect() const
 
 void MapItem::paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *)
 {
+}
+
+void MapItem::hoverEnterEvent(QGraphicsSceneHoverEvent *)
+{
+    mBorderRectangle->setBrush(QColor(0, 0, 0, 32));
+}
+
+void MapItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *)
+{
+    mBorderRectangle->setBrush(QColor(0, 0, 0, 64));
 }
 
 void MapItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
@@ -605,22 +631,12 @@ void MapItem::updateBoundingRect()
 {
     QRectF boundingRect = mapDocument()->renderer()->mapBoundingRect();
 
-    const QMargins margins = mapDocument()->map()->computeLayerOffsetMargins();
-    boundingRect.adjust(-margins.left(),
-                        -margins.top(),
-                        margins.right(),
-                        margins.bottom());
-
-    const QMargins drawMargins = mapDocument()->map()->drawMargins();
-    boundingRect.adjust(qMin(0, -drawMargins.left()),
-                        qMin(0, -drawMargins.top()),
-                        qMax(0, drawMargins.right()),
-                        qMax(0, drawMargins.bottom()));
-
     if (mBoundingRect != boundingRect) {
         prepareGeometryChange();
         mBoundingRect = boundingRect;
         emit boundingRectChanged();
+
+        mBorderRectangle->setRect(mBoundingRect);
     }
 }
 

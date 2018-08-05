@@ -39,6 +39,7 @@ class Tileset;
 
 namespace Internal {
 
+class BorderItem;
 class LayerItem;
 class MapObjectItem;
 class ObjectSelectionItem;
@@ -78,6 +79,8 @@ signals:
     void boundingRectChanged();
 
 protected:
+    void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
@@ -121,6 +124,7 @@ private:
 
     MapDocumentPtr mMapDocument;
     QGraphicsRectItem *mDarkRectangle;
+    QGraphicsRectItem *mBorderRectangle;
     std::unique_ptr<TileSelectionItem> mTileSelectionItem;
     std::unique_ptr<TileGridItem> mTileGridItem;
     std::unique_ptr<ObjectSelectionItem> mObjectSelectionItem;

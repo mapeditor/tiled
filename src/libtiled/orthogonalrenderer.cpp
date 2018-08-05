@@ -41,17 +41,16 @@ using namespace Tiled;
 QRect OrthogonalRenderer::mapBoundingRect() const
 {
     if (!map()->infinite()) {
-        return QRect(0, 0, map()->width() * map()->tileWidth(),
+        return QRect(0, 0,
+                     map()->width() * map()->tileWidth(),
                      map()->height() * map()->tileHeight());
     }
 
     QRect mapBounds;
 
-    LayerIterator iterator(map());
-    while (Layer *layer = iterator.next()) {
-        if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer))
-            mapBounds = mapBounds.united(tileLayer->bounds());
-    }
+    LayerIterator iterator(map(), Layer::TileLayerType);
+    while (TileLayer *tileLayer = static_cast<TileLayer*>(iterator.next()))
+        mapBounds = mapBounds.united(tileLayer->bounds());
 
     if (mapBounds.size() == QSize(0, 0))
         mapBounds.setSize(QSize(1, 1));
