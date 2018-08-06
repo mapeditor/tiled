@@ -18,7 +18,7 @@ Dir["Tiled.app/**/*.dylib",
         next if qtdependency.include? "@executable_path"
 
         #if we get here, this library has a dependency on a qtlib with a hard path on the build systems disk
-        puts "Fixing library #{library} dependency on #{qtlib}"
+        puts "Fixing #{library} dependency on #{qtlib}"
         `install_name_tool -change "#{qtdependency}" "@executable_path/../Frameworks/#{qtlib}.framework/Versions/5/#{qtlib}" "#{library}"`
         raise "install_name_tool error #{$?}" unless $? == 0
     end
