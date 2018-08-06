@@ -477,10 +477,6 @@ void CreatePolygonObjectTool::objectsRemoved(const QList<MapObject *> &objects)
     // Check whether the object being extended was removed
     if (mNewMapObjectItem && objects.contains(mNewMapObjectItem->mapObject()))
         abortExtendingMapObject();
-
-    // Assert that no handles exist for the deleted objects
-    for (PointHandle *handle : qAsConst(mHandles))
-        Q_ASSERT(!objects.contains(handle->mapObject()));
 }
 
 void CreatePolygonObjectTool::layerRemoved(Layer *layer)
