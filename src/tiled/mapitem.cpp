@@ -118,6 +118,7 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
 {
     // Since we don't do any painting, we can spare us the call to paint()
     setFlag(QGraphicsItem::ItemHasNoContents);
+    setAcceptHoverEvents(true);
 
     createLayerItems(mapDocument->map()->layers());
 
@@ -195,16 +196,11 @@ void MapItem::setDisplayMode(DisplayMode displayMode)
 
     mDisplayMode = displayMode;
 
-    setAcceptHoverEvents(displayMode == ReadOnly);
-
     // Enabled state is checked by selection tools
     for (LayerItem *layerItem : qAsConst(mLayerItems))
         layerItem->setEnabled(displayMode == Editable);
 
     if (displayMode == ReadOnly) {
-        // In read-only display mode, we are a link to the editable view for our map
-        setCursor(Qt::PointingHandCursor);
-
         setZValue(-1);
 
         mBorderRectangle->setBrush(QColor(0, 0, 0, 64));
@@ -243,17 +239,25 @@ void MapItem::paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *)
 
 void MapItem::hoverEnterEvent(QGraphicsSceneHoverEvent *)
 {
-    mBorderRectangle->setBrush(QColor(0, 0, 0, 32));
+    if (mDisplayMode == ReadOnly) {
+        mBorderRectangle->setBrush(QColor(0, 0, 0, 32));
+        setCursor(Qt::PointingHandCursor);
+        mIsHovered = true;
+    }
 }
 
 void MapItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *)
 {
-    mBorderRectangle->setBrush(QColor(0, 0, 0, 64));
+    if (mDisplayMode == ReadOnly) {
+        mBorderRectangle->setBrush(QColor(0, 0, 0, 64));
+        unsetCursor();
+        mIsHovered = false;
+    }
 }
 
 void MapItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    if (mDisplayMode != ReadOnly || event->button() != Qt::LeftButton)
+    if (mDisplayMode != ReadOnly || event->button() != Qt::LeftButton || !mIsHovered)
         QGraphicsItem::mousePressEvent(event);
 }
 

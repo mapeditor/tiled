@@ -48,6 +48,7 @@ MapObjectItem::MapObjectItem(MapObject *object, MapDocument *mapDocument,
     mMapDocument(mapDocument)
 {
     setAcceptedMouseButtons(Qt::MouseButtons());
+    setAcceptHoverEvents(true);
     syncWithMapObject();
 }
 

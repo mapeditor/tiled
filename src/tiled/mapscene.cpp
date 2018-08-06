@@ -317,8 +317,13 @@ void MapScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
         return;
 
     QGraphicsScene::mouseMoveEvent(mouseEvent);
-    if (mouseEvent->isAccepted())
-        return;
+
+    // Currently we always want to inform the active tool about mouse move
+    // events, regardless of whether this event was delived to a graphics item
+    // as a hover event. This is due to the behavior of MapItem, which needs
+    // to accept hover events but should not block them here.
+//    if (mouseEvent->isAccepted())
+//        return;
 
     if (mActiveTool) {
         mActiveTool->mouseMoved(mouseEvent->scenePos(),

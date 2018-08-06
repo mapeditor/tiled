@@ -147,6 +147,7 @@ public:
         , mUnderMouse(false)
     {
         setAcceptedMouseButtons(Qt::MouseButtons());
+        setAcceptHoverEvents(true);
         setFlags(QGraphicsItem::ItemIgnoresTransformations |
                  QGraphicsItem::ItemIgnoresParentOpacity);
     }

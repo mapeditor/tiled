@@ -132,6 +132,7 @@ private:
     QMap<MapObject*, MapObjectItem*> mObjectItems;
     DisplayMode mDisplayMode;
     QRectF mBoundingRect;
+    bool mIsHovered = false;
 };
 
 inline MapDocument *MapItem::mapDocument() const
