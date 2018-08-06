@@ -122,7 +122,8 @@ template <typename Format>
 ExportDetails<Format> chooseExportDetails(const QString &fileName,
                                           const QString &lastExportName,
                                           const QString &lastExportFilter,
-                                          QWidget* window)
+                                          QWidget* window,
+                                          QFileDialog::Options options = QFileDialog::Options())
 {
     FormatHelper<Format> helper(FileFormat::Write, MainWindow::tr("All Files (*)"));
 
@@ -151,7 +152,7 @@ ExportDetails<Format> chooseExportDetails(const QString &fileName,
                                                     suggestedFilename,
                                                     helper.filter(),
                                                     &selectedFilter,
-                                                    QFileDialog::DontConfirmOverwrite);
+                                                    options);
     if (exportToFileName.isEmpty())
         return ExportDetails<Format>();
 
@@ -169,7 +170,7 @@ ExportDetails<Format> chooseExportDetails(const QString &fileName,
                     QMessageBox::warning(window, MainWindow::tr("Non-unique file extension"),
                                          MainWindow::tr("Non-unique file extension.\n"
                                                         "Please select specific format."));
-                    return chooseExportDetails<Format>(exportToFileName, lastExportName, lastExportFilter, window);
+                    return chooseExportDetails<Format>(exportToFileName, lastExportName, lastExportFilter, window, options);
                 } else {
                     chosenFormat = format;
                 }
@@ -1546,7 +1547,8 @@ void MainWindow::exportMapAs(MapDocument *mapDocument)
     auto exportDetails = chooseExportDetails<MapFormat>(fileName,
                                                         mapDocument->lastExportFileName(),
                                                         selectedFilter,
-                                                        this);
+                                                        this,
+                                                        QFileDialog::DontConfirmOverwrite);
     if (!exportDetails.isValid())
         return;
 
@@ -1608,9 +1610,9 @@ void MainWindow::exportTilesetAs(TilesetDocument *tilesetDocument)
     QString selectedFilter =
             mSettings.value(QLatin1String("lastUsedExportFilter")).toString();
     auto exportDetails = chooseExportDetails<TilesetFormat>(fileName,
-                                                    tilesetDocument->lastExportFileName(),
-                                                    selectedFilter,
-                                                    this);
+                                                            tilesetDocument->lastExportFileName(),
+                                                            selectedFilter,
+                                                            this);
     if (!exportDetails.isValid())
         return;
 
