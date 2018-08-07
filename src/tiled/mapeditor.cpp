@@ -46,6 +46,8 @@
 #include "mapsdock.h"
 #include "mapview.h"
 #include "minimapdock.h"
+#include "newsbutton.h"
+#include "newsfeed.h"
 #include "newtilesetdialog.h"
 #include "objectgroup.h"
 #include "objectsdock.h"
@@ -80,11 +82,13 @@
 #include "zoomable.h"
 
 #include <QComboBox>
+#include <QDesktopServices>
 #include <QDialogButtonBox>
 #include <QHBoxLayout>
 #include <QIdentityProxyModel>
 #include <QLabel>
 #include <QMainWindow>
+#include <QMenu>
 #include <QMessageBox>
 #include <QScrollBar>
 #include <QSettings>
@@ -228,6 +232,7 @@ MapEditor::MapEditor(QObject *parent)
 
     mMainWindow->statusBar()->addPermanentWidget(mLayerComboBox);
     mMainWindow->statusBar()->addPermanentWidget(mZoomComboBox);
+    mMainWindow->statusBar()->addPermanentWidget(new NewsButton);
     mMainWindow->statusBar()->addWidget(mStatusInfoLabel);
 
     connect(mWidgetStack, &QStackedWidget::currentChanged, this, &MapEditor::currentWidgetChanged);

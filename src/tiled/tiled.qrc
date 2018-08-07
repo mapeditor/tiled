@@ -144,5 +144,7 @@
         <file>images/24x24/animation-edit.png</file>
         <file>images/22x22/rectangle-fill.png</file>
         <file>images/22x22/ellipse-fill.png</file>
+        <file>images/16x16/mail-read-symbolic.png</file>
+        <file>images/16x16/mail-unread-symbolic.png</file>
     </qresource>
 </RCC>

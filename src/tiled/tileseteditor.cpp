@@ -31,6 +31,7 @@
 #include "maintoolbar.h"
 #include "mapdocument.h"
 #include "mapobject.h"
+#include "newsbutton.h"
 #include "objectgroup.h"
 #include "objecttemplate.h"
 #include "preferences.h"
@@ -215,6 +216,7 @@ TilesetEditor::TilesetEditor(QObject *parent)
     mTilesetToolBar->addAction(mShowAnimationEditor);
 
     mMainWindow->statusBar()->addPermanentWidget(mZoomComboBox);
+    mMainWindow->statusBar()->addPermanentWidget(new NewsButton);
     mMainWindow->statusBar()->addWidget(mStatusInfoLabel);
 
     mTemplatesDock->setPropertiesDock(mPropertiesDock);
