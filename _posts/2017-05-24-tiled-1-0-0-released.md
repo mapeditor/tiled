@@ -45,7 +45,7 @@ views.
 ### Layer Hierarchy
 
 For those of you working with a large amount of map layers, there is now the
-option to organize layers in a [hierarchy of groups](http://doc.mapeditor.org/manual/layers/#group-layers).
+option to organize layers in a [hierarchy of groups](https://doc.mapeditor.org/manual/layers/#group-layers).
 Properties like the opacity and visibility will apply recursively to all layers
 in a group.
 
@@ -54,10 +54,10 @@ In addition, layers can now be reordered by using drag-n-drop.
 ### Typed Tiles and Tile Property Inheritance
 
 Using tile objects to place entities on the map is a common use-case. Now, you
-can also [associate a type with your tiles](http://doc.mapeditor.org/manual/custom-properties/#typed-tiles),
+can also [associate a type with your tiles](https://doc.mapeditor.org/manual/custom-properties/#typed-tiles),
 so that predefined custom properties are visible when selecting the tile or a tile object.
 Basic custom properties added to a tile are also
-[inherited by tile objects](http://doc.mapeditor.org/manual/custom-properties/#tile-property-inheritance).
+[inherited by tile objects](https://doc.mapeditor.org/manual/custom-properties/#tile-property-inheritance).
 These features can be a huge time-safer since you often no longer need to manually
 fill in the object type or manually add the custom properties for each instance.
 
@@ -65,7 +65,7 @@ Also, cut/copy/paste actions for custom properties have been implemented.
 
 ### Text Objects
 
-You can now [insert text objects](http://doc.mapeditor.org/manual/objects/#insert-text)
+You can now [insert text objects](https://doc.mapeditor.org/manual/objects/#insert-text)
 in your maps, either for visual or for annotation purposes. For each text
 object, you can control its font, color, alignment and word wrapping properties.
 
@@ -75,7 +75,7 @@ object, you can control its font, color, alignment and word wrapping properties.
 
 Apart from this new object type, other improvements have been made to handling
 objects, including an improved selection rectangle, the ability to
-[select objects below other objects](http://doc.mapeditor.org/manual/objects/#selecting-and-deselecting)
+[select objects below other objects](https://doc.mapeditor.org/manual/objects/#selecting-and-deselecting)
 and synchronizing the current layer to the currently selected object.
 
 ### Fixes for Hexagonal Maps
@@ -159,9 +159,9 @@ Thanks to everybody who contributed to this release with bug reports, suggestion
 ## A Look Ahead
 
 With Tiled 1.0 out, I aim to focus a bit of time on completing the
-[User Manual](http://doc.mapeditor.org) and also documenting the level of Tiled
+[User Manual](https://doc.mapeditor.org) and also documenting the level of Tiled
 map support by the various
-[libraries and frameworks](http://doc.mapeditor.org/reference/support-for-tmx-maps/)
+[libraries and frameworks](https://doc.mapeditor.org/reference/support-for-tmx-maps/)
 listed there.
 
 Of course, feature development will continue as usual as well! On May 30th

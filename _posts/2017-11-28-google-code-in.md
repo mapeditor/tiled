@@ -23,7 +23,7 @@ related to the open-source sandbox game [Terasology](http://terasology.org/).
 The [Tiled tasks](https://codein.withgoogle.com/tasks/?sp-organization=5693523175145472&sp-search=tiled)
 are about improving the documentation about
 the Tiled support in various
-[libraries and frameworks](http://doc.mapeditor.org/en/latest/reference/support-for-tmx-maps/),
+[libraries and frameworks](https://doc.mapeditor.org/en/latest/reference/support-for-tmx-maps/),
 by reading up on them and trying them out and eventually even contributing to them
 directly.
 
@@ -40,7 +40,7 @@ You can find us in the IRC channel, #tiled on chat.freenode.net
 (accessible in the browser
 [through riot.im](https://riot.im/app/#/room/#freenode_#tiled:matrix.org)).
 If we're not there (since we do work and sleep as well), post your question
-on [the community forum](http://discourse.mapeditor.org/) and we'll answer
+on [the community forum](https://discourse.mapeditor.org/) and we'll answer
 as soon as possible.
 
 Have fun!

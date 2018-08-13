@@ -37,7 +37,7 @@ tiles](https://en.wikipedia.org/wiki/Wang_tile) and how they could be used to
 automate tile placement in Tiled. Once a Wang set is defined, it can be used to
 fill areas or to automatically pick the right tiles while editing in similar
 fashion to the
-[Terrain tool](http://doc.mapeditor.org/manual/using-the-terrain-tool/). Ben
+[Terrain tool](https://doc.mapeditor.org/manual/using-the-terrain-tool/). Ben
 will work to unlock the full potential of this system.
 
 Leon Moctezuma (leonidax) will be the primary mentor for Ben and you can follow

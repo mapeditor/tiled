@@ -88,5 +88,5 @@ If you want to help shape the next release, please give feedback, contribute pat
   [5]: https://github.com/bjorn/tiled/issues/806
   [6]: https://github.com/bjorn/tiled/issues/892
   [7]: https://trello.com/b/yl3PAtN0/tiled-roadmap
-  [8]: http://doc.mapeditor.org
+  [8]: https://doc.mapeditor.org
   [9]: https://www.patreon.com/bjorn

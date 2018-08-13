@@ -220,27 +220,27 @@ like to rent a small office room so I can concentrate better on my work.
 
 [1]: {{ site.baseurl }}{% post_url 2017-05-24-tiled-1-0-0-released %}
 [2]: {{ site.baseurl }}{% post_url 2017-09-07-google-summer-of-code-2017-results %}
-[infinite]: http://doc.mapeditor.org/en/latest/manual/using-infinite-maps/
+[infinite]: https://doc.mapeditor.org/en/latest/manual/using-infinite-maps/
 [4]: https://en.wikipedia.org/wiki/Wang_tile
-[5]: http://docs.mapeditor.org/en/latest/manual/using-the-terrain-tool/
-[6]: http://docs.mapeditor.org/en/latest/manual/using-wang-tiles/
-[wangbrush]: http://docs.mapeditor.org/en/latest/manual/editing-tile-layers/#wang-brush
-[templates]: http://docs.mapeditor.org/en/latest/manual/using-templates/
-[point]: http://docs.mapeditor.org/en/latest/manual/objects/#insert-point
-[shapefill]: http://docs.mapeditor.org/en/latest/manual/editing-tile-layers/#shape-fill-tool
-[lua]: http://docs.mapeditor.org/en/latest/manual/export/#lua
-[gmx]: http://docs.mapeditor.org/en/latest/manual/export/#gamemaker-studio-1-4
-[tbin]: http://docs.mapeditor.org/en/latest/manual/export/#tbin
+[5]: https://doc.mapeditor.org/en/latest/manual/using-the-terrain-tool/
+[6]: https://doc.mapeditor.org/en/latest/manual/using-wang-tiles/
+[wangbrush]: https://doc.mapeditor.org/en/latest/manual/editing-tile-layers/#wang-brush
+[templates]: https://doc.mapeditor.org/en/latest/manual/using-templates/
+[point]: https://doc.mapeditor.org/en/latest/manual/objects/#insert-point
+[shapefill]: https://doc.mapeditor.org/en/latest/manual/editing-tile-layers/#shape-fill-tool
+[lua]: https://doc.mapeditor.org/en/latest/manual/export/#lua
+[gmx]: https://doc.mapeditor.org/en/latest/manual/export/#gamemaker-studio-1-4
+[tbin]: https://doc.mapeditor.org/en/latest/manual/export/#tbin
 [sv]: https://stardewvalleywiki.com/Modding:Maps
-[manual]: http://doc.mapeditor.org/en/latest/
+[manual]: https://doc.mapeditor.org/en/latest/
 [rtd]: https://readthedocs.org/
 [sphinx]: http://www.sphinx-doc.org/en/stable/
-[tileset]: http://doc.mapeditor.org/en/latest/manual/editing-tilesets/
-[export]: http://doc.mapeditor.org/en/latest/manual/export/
-[preferences]: http://doc.mapeditor.org/en/latest/manual/preferences/
-[python]: http://doc.mapeditor.org/en/latest/manual/python/
-[automapping]: http://doc.mapeditor.org/en/latest/manual/automapping/
-[json]: http://doc.mapeditor.org/en/latest/reference/json-map-format/
+[tileset]: https://doc.mapeditor.org/en/latest/manual/editing-tilesets/
+[export]: https://doc.mapeditor.org/en/latest/manual/export/
+[preferences]: https://doc.mapeditor.org/en/latest/manual/preferences/
+[python]: https://doc.mapeditor.org/en/latest/manual/python/
+[automapping]: https://doc.mapeditor.org/en/latest/manual/automapping/
+[json]: https://doc.mapeditor.org/en/latest/reference/json-map-format/
 [weblate]: https://hosted.weblate.org/engage/tiled/
 [patreon]: https://www.patreon.com/bjorn
 [itch]: https://thorbjorn.itch.io/tiled

@@ -10,7 +10,7 @@ I've just released [Tiled 0.16](https://thorbjorn.itch.io/tiled), bringing all t
 
 ## Improved Custom Properties
 
-Many improvements have been made related to [custom properties](http://doc.mapeditor.org/manual/custom-properties/). First off, if you were annoyed that you had to add each property individually to each object, you will really enjoy the new Object Types Editor, which allows you to predefine a set of properties for each object type.
+Many improvements have been made related to [custom properties](https://doc.mapeditor.org/manual/custom-properties/). First off, if you were annoyed that you had to add each property individually to each object, you will really enjoy the new Object Types Editor, which allows you to predefine a set of properties for each object type.
 
 <img src="http://discourse.mapeditor.org/uploads/default/original/1X/27763a0b286d522d994e06fa0a1d25bd6057f758.png" width="690" height="305">
 
@@ -24,7 +24,7 @@ Finally, the Properties view is now also available in the Tile Collision Editor.
 
 <img src="http://discourse.mapeditor.org/uploads/default/original/1X/5c8dc3d4c257b82a52df0d603d5d9090f74a5d79.png" width="690" height="410">
 
-The [usage of custom properties is now also documented](http://doc.mapeditor.org/manual/custom-properties/), being one of the first basic features in Tiled to see a proper section in the manual.
+The [usage of custom properties is now also documented](https://doc.mapeditor.org/manual/custom-properties/), being one of the first basic features in Tiled to see a proper section in the manual.
 
 ## Auto-Updates and New Installer
 
