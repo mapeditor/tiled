@@ -107,18 +107,26 @@ matrix:
       after_script:
         - cppcheck --enable=all -q -Isrc/libtiled `git ls-files src/\*.cpp`
     - os: osx
+      env:
+        - INSTALLER_NAME="qt-opensource-mac-x64-clang-5.6.3"
+        - QT_CI_PACKAGES="qt.563.clang_64"
       before_install:
         - brew update
         - brew install qbs
-        - brew install qt@5.5
+        - curl -L https://raw.githubusercontent.com/benlau/qtci/master/bin/extract-qt-installer --output extract-qt-installer
+        - chmod +x extract-qt-installer
+        - curl -L http://download.qt.io/official_releases/qt/5.6/5.6.3/${INSTALLER_NAME}.dmg --output ${INSTALLER_NAME}.dmg
+        - hdiutil attach ${INSTALLER_NAME}.dmg
+        - ./extract-qt-installer /Volumes/${INSTALLER_NAME}/${INSTALLER_NAME}.app/Contents/MacOS/${INSTALLER_NAME} $HOME/Qt
+        - hdiutil detach /Volumes/${INSTALLER_NAME}
       script:
         - qbs --version
         - qbs setup-toolchains --detect
-        - qbs setup-qt /usr/local/opt/qt@5.5/bin/qmake qt-brew
-        - qbs config profiles.qt-brew.baseProfile xcode-macosx-x86_64
-        - qbs config defaultProfile qt-brew
+        - qbs setup-qt $HOME/Qt/5.6.3/clang_64/bin/qmake qt
+        - qbs config profiles.qt.baseProfile xcode-macosx-x86_64
+        - qbs config defaultProfile qt
         - qbs install --install-root install config:release projects.Tiled.version:$TILED_VERSION
-        - /usr/local/opt/qt@5.5/bin/macdeployqt install/Tiled.app
+        - $HOME/Qt/5.6.3/clang_64/bin/macdeployqt install/Tiled.app
         - pushd install
         - ruby ../dist/macos/fixup-install-names.rb
         - popd
