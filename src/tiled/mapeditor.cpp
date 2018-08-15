@@ -47,7 +47,6 @@
 #include "mapview.h"
 #include "minimapdock.h"
 #include "newsbutton.h"
-#include "newsfeed.h"
 #include "newtilesetdialog.h"
 #include "objectgroup.h"
 #include "objectsdock.h"
@@ -82,13 +81,11 @@
 #include "zoomable.h"
 
 #include <QComboBox>
-#include <QDesktopServices>
 #include <QDialogButtonBox>
 #include <QHBoxLayout>
 #include <QIdentityProxyModel>
 #include <QLabel>
 #include <QMainWindow>
-#include <QMenu>
 #include <QMessageBox>
 #include <QScrollBar>
 #include <QSettings>
