@@ -276,10 +276,16 @@ static bool includeTile(const Tile *tile)
 void LuaWriter::writeTileset(LuaTableWriter &writer, const Tileset &tileset,
                              unsigned firstGid, bool embedded)
 {
-    if (embedded)
+    if (embedded) {
         writer.writeStartTable();
-    else
+    } else {
         writer.writeStartReturnTable();
+
+        // Include version in external tilesets
+        writer.writeKeyAndValue("version", "1.1");
+        writer.writeKeyAndValue("luaversion", "5.1");
+        writer.writeKeyAndValue("tiledversion", QCoreApplication::applicationVersion());
+    }
 
     writer.writeKeyAndValue("name", tileset.name());
     if (embedded)
