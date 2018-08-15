@@ -297,19 +297,25 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
                                     unsigned firstGid)
 {
     w.writeStartElement(QLatin1String("tileset"));
-    if (firstGid > 0)
+
+    if (firstGid > 0) {
         w.writeAttribute(QLatin1String("firstgid"), QString::number(firstGid));
 
-    const QString &fileName = tileset.fileName();
-    if (!fileName.isEmpty() && firstGid > 0) {
-        QString source = fileName;
-        if (!mUseAbsolutePaths)
-            source = mMapDir.relativeFilePath(source);
-        w.writeAttribute(QLatin1String("source"), source);
+        const QString &fileName = tileset.fileName();
+        if (!fileName.isEmpty()) {
+            QString source = fileName;
+            if (!mUseAbsolutePaths)
+                source = mMapDir.relativeFilePath(source);
+            w.writeAttribute(QLatin1String("source"), source);
 
-        // Tileset is external, so no need to write any of the stuff below
-        w.writeEndElement();
-        return;
+            // Tileset is external, so no need to write any of the stuff below
+            w.writeEndElement();
+            return;
+        }
+    } else {
+        // Include version in external tilesets
+        w.writeAttribute(QLatin1String("version"), QLatin1String("1.1"));
+        w.writeAttribute(QLatin1String("tiledversion"), QCoreApplication::applicationVersion());
     }
 
     w.writeAttribute(QLatin1String("name"), tileset.name());

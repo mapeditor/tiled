@@ -127,21 +127,26 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
 {
     QVariantMap tilesetVariant;
 
-    if (firstGid > 0)
+    if (firstGid > 0) {
         tilesetVariant[QLatin1String("firstgid")] = firstGid;
 
-    const QString &fileName = tileset.fileName();
-    if (!fileName.isEmpty() && firstGid > 0) {
-        QString source = mMapDir.relativeFilePath(fileName);
-        tilesetVariant[QLatin1String("source")] = source;
+        const QString &fileName = tileset.fileName();
+        if (!fileName.isEmpty()) {
+            QString source = mMapDir.relativeFilePath(fileName);
+            tilesetVariant[QLatin1String("source")] = source;
 
-        // Tileset is external, so no need to write any of the stuff below
-        return tilesetVariant;
+            // Tileset is external, so no need to write any of the stuff below
+            return tilesetVariant;
+        }
+    } else {
+        // Include a 'type' property if we are writing the tileset to its own file
+        tilesetVariant[QLatin1String("type")] = QLatin1String("tileset");
+
+        // Include version in external tilesets
+        tilesetVariant[QLatin1String("version")] = 1.1;
+        tilesetVariant[QLatin1String("tiledversion")] = QCoreApplication::applicationVersion();
     }
 
-    // Include a 'type' property if we are writing the tileset to its own file
-    if (firstGid == 0)
-        tilesetVariant[QLatin1String("type")] = QLatin1String("tileset");
 
     tilesetVariant[QLatin1String("name")] = tileset.name();
     tilesetVariant[QLatin1String("tilewidth")] = tileset.tileWidth();
