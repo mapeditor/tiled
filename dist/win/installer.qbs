@@ -54,9 +54,12 @@ WindowsInstallerPackage {
         if (project.sparkleEnabled)
             defs.push("Sparkle");
 
-        if (File.exists( Environment.getEnv("PYTHONHOME") )) {
+        if (File.exists(Environment.getEnv("PYTHONHOME")))
             defs.push("Python");
-        }
+
+        var openSslDir = "C:\\OpenSSL-Win" + bits;
+        if (File.exists(openSslDir))
+            defs.push("OpenSslDir=" + openSslDir);
 
         return defs;
     }
