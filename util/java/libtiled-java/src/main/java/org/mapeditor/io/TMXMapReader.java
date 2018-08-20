@@ -91,6 +91,9 @@ public class TMXMapReader {
     public long FLIPPED_VERTICALLY_FLAG = 0xFFFFFFFF40000000L;
     public long FLIPPED_DIAGONALLY_FLAG = 0xFFFFFFFF20000000L;
 
+    /** Used to remove all flipped flags */
+    public int GID_MASK = 0x1FFFFFFF;
+
     private Map map;
     private String xmlPath;
     private String error;
@@ -664,16 +667,24 @@ public class TMXMapReader {
         return ml;
     }
 
+
+
     /**
      * Helper method to set the tile based on its global id.
      *
      * @param ml tile layer
      * @param y y-coordinate
      * @param x x-coordinate
-     * @param tileId global id of the tile as read from the file
+     * @param tileGid global id of the tile as read from the file
      */
-    private void setTileAtFromTileId(TileLayer ml, int y, int x, int tileId) {
-        ml.setTileAt(x, y, getTileForTileGID(tileId));
+    private void setTileAtFromTileId(TileLayer ml, int y, int x, int tileGid) {
+        Tile tile = this.getTileForTileGID(tileGid & GID_MASK);
+        if (tile != null && tile.getGid() != (long)tileGid) {
+            tile = new Tile(tile);
+            tile.setGid((long)tileGid);
+        }
+
+        ml.setTileAt(x, y, tile);
     }
 
     /**

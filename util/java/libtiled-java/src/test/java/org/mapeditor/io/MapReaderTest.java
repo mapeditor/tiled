@@ -251,6 +251,26 @@ public class MapReaderTest {
         assertEquals(1, map.getLayerCount());
     }
 
+    @Test
+    public void testReadingFlippedTiles() throws Exception {
+        // Arrange
+        URL url = getUrlFromResources("flipped/flipped.tmx");
+
+        // Act
+        Map map = new TMXMapReader().readMap(url.getPath());
+
+        // Assert
+        assertEquals(Orientation.ORTHOGONAL, map.getOrientation());
+        assertEquals(1, map.getWidth());
+        assertEquals(1, map.getHeight());
+        assertEquals(32, map.getTileWidth());
+        assertEquals(32, map.getTileHeight());
+        assertEquals(1, map.getLayerCount());
+
+        TileLayer layer = (TileLayer) map.getLayer(0);
+        assertNotNull(layer.getTileAt(0, 0));
+    }
+
     private URL getUrlFromResources(String filename) {
         ClassLoader classLoader = this.getClass().getClassLoader();
         return classLoader.getResource(filename);

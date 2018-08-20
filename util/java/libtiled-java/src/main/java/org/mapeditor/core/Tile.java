@@ -51,6 +51,7 @@ public class Tile extends TileData {
     private BufferedImage image;
     private String source;
     private TileSet tileset;
+    private long gid;
 
     /**
      * <p>Constructor for Tile.</p>
@@ -76,7 +77,11 @@ public class Tile extends TileData {
      * @param t tile to copy
      */
     public Tile(Tile t) {
-        tileset = t.tileset;
+        this.tileset = t.tileset;
+        this.id = t.id;
+        this.image = t.image;
+        this.imageData = t.imageData;
+        this.source = t.source;
 
         Properties tileProperties = t.properties;
         if (tileProperties != null) {
@@ -86,6 +91,14 @@ public class Tile extends TileData {
                 Logger.getLogger(Tile.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+    }
+
+    public long getGid() {
+        return this.gid;
+    }
+
+    public void setGid(long gid) {
+        this.gid = gid;
     }
 
     /**
