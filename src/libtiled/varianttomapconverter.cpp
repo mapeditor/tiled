@@ -760,7 +760,7 @@ TextData VariantToMapConverter::toTextData(const QVariantMap &variant) const
     const int pixelSize = variant[QLatin1String("pixelsize")].toInt();
 
     if (!family.isEmpty())
-        textData.font = QFont(family);
+        textData.font.setFamily(family);
     if (pixelSize > 0)
         textData.font.setPixelSize(pixelSize);
 
