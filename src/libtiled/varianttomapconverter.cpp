@@ -723,7 +723,7 @@ TextData VariantToMapConverter::toTextData(const QVariantMap &variant) const
     const int pixelSize = variant[QLatin1String("pixelsize")].toInt();
 
     if (!family.isEmpty())
-        textData.font = QFont(family);
+        textData.font.setFamily(family);
     if (pixelSize > 0)
         textData.font.setPixelSize(pixelSize);
 
@@ -739,7 +739,7 @@ TextData VariantToMapConverter::toTextData(const QVariantMap &variant) const
     if (!colorString.isEmpty())
         textData.color = QColor(colorString);
 
-    Qt::Alignment alignment = 0;
+    Qt::Alignment alignment;
 
     QString hAlignString = variant[QLatin1String("halign")].toString();
     if (hAlignString == QLatin1String("center"))

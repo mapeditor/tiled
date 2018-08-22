@@ -1148,7 +1148,7 @@ TextData MapReaderPrivate::readObjectText()
     TextData textData;
 
     if (atts.hasAttribute(QLatin1String("fontfamily")))
-        textData.font = QFont(atts.value(QLatin1String("fontfamily")).toString());
+        textData.font.setFamily(atts.value(QLatin1String("fontfamily")).toString());
 
     if (atts.hasAttribute(QLatin1String("pixelsize")))
         textData.font.setPixelSize(atts.value(QLatin1String("pixelsize")).toInt());
