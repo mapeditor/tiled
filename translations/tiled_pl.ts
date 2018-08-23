@@ -50,7 +50,7 @@
     <message>
         <location filename="../src/tiled/main.cpp" line="+244"/>
         <source>Export syntax is --export-map [format] &lt;source&gt; &lt;target&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Składnia eksportu to --export-map [format] &lt;source&gt; &lt;target&gt;</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -259,7 +259,7 @@
     <message>
         <location filename="../src/plugins/defold/defoldplugin.cpp" line="+83"/>
         <source>Defold files (*.tilemap)</source>
-        <translation type="unfinished"></translation>
+        <translation>Pliki Defold (*.tilemap)</translation>
     </message>
     <message>
         <location line="+50"/>
@@ -880,7 +880,7 @@
     <message>
         <location line="+3"/>
         <source>Tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Zakładka</translation>
     </message>
     <message>
         <location filename="../src/automappingconverter/converterwindow.ui" line="+14"/>
@@ -2230,7 +2230,7 @@ Linia %1, kolumna %2</translation>
     <message>
         <location line="+9"/>
         <source>Tbin map files (*.tbin)</source>
-        <translation type="unfinished"></translation>
+        <translation>Pliki map Tbin (*.tbin)</translation>
     </message>
 </context>
 <context>
