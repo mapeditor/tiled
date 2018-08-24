@@ -57,15 +57,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.mapeditor.core.AnimatedTile;
-import org.mapeditor.core.Map;
-import org.mapeditor.core.MapObject;
-import org.mapeditor.core.ObjectGroup;
-import org.mapeditor.core.Properties;
-import org.mapeditor.core.Tile;
-import org.mapeditor.core.TileLayer;
-import org.mapeditor.core.TileOffset;
-import org.mapeditor.core.TileSet;
+import org.mapeditor.core.*;
 import org.mapeditor.util.BasicTileCutter;
 import org.mapeditor.util.ImageHelper;
 import org.w3c.dom.Document;
@@ -516,6 +508,18 @@ public class TMXMapReader {
         return og;
     }
 
+    private ImageLayer unmarshalImageLayer(Node t) throws Exception {
+        ImageLayer il = null;
+        try {
+            il = unmarshalClass(t, ImageLayer.class);
+        } catch (JAXBException e) {
+            // todo: replace with log message
+            e.printStackTrace();
+            return il;
+        }
+        return il;
+    }
+
     /**
      * Loads a map layer from a layer node.
      *
@@ -746,6 +750,11 @@ public class TMXMapReader {
                 ObjectGroup group = unmarshalObjectGroup(sibs);
                 if (group != null) {
                     map.addLayer(group);
+                }
+            } else if ("imagelayer".equals(sibs.getNodeName())) {
+                ImageLayer imageLayer = unmarshalImageLayer(sibs);
+                if (imageLayer != null) {
+                    map.addLayer(imageLayer);
                 }
             }
         }
