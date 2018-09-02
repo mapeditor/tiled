@@ -443,13 +443,14 @@ Unity 3D
    object layers).
 -  `Tiled2Unity <http://www.seanba.com/introtiled2unity.html>`__ exports
    TMX files to Unity with support for (non-simple) collisions.
+-  `UniTiled <https://yjaffal.itch.io/unitiled>`__, Native tmx importer for Unity
 -  `UniTMX <https://bitbucket.org/PolCPP/unitmx/overview>`__ imports TMX
    files into a mesh.
 -  `X-UniTMX <https://bitbucket.org/Chaoseiro/x-unitmx>`__ supports
    almost all Tiled 0.11 features. Imports TMX/XML files into Sprite
    Objects or Meshes.
 -  `Tiled TMX Importer <https://www.assetstore.unity3d.com/en/#!/content/102928>`__, imports into Unity 2017.2's new native Tilemap system.
--  `UniTiled <https://yjaffal.itch.io/unitiled>`__, Native tmx importer for Unity
+
 
 Unreal Engine 4
 ~~~~~~~~~~~~~~~
