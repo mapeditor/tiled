@@ -251,7 +251,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->actionOpen->setShortcuts(QKeySequence::Open);
     mUi->actionSave->setShortcuts(QKeySequence::Save);
     mUi->actionClose->setShortcuts(QKeySequence::Close);
-    mUi->actionQuit->setShortcuts(QKeySequence::Quit);
+    mUi->actionQuit->setShortcut(QKeySequence(tr("Ctrl+Q")));
     mUi->actionCut->setShortcuts(QKeySequence::Cut);
     mUi->actionCopy->setShortcuts(QKeySequence::Copy);
     mUi->actionPaste->setShortcuts(QKeySequence::Paste);
