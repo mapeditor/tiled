@@ -449,6 +449,7 @@ Unity 3D
    almost all Tiled 0.11 features. Imports TMX/XML files into Sprite
    Objects or Meshes.
 -  `Tiled TMX Importer <https://www.assetstore.unity3d.com/en/#!/content/102928>`__, imports into Unity 2017.2's new native Tilemap system.
+-  `UniTiled <https://yjaffal.itch.io/unitiled>`__, Native tmx importer for Unity
 
 Unreal Engine 4
 ~~~~~~~~~~~~~~~
