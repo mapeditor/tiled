@@ -443,6 +443,7 @@ Unity 3D
    object layers).
 -  `Tiled2Unity <http://www.seanba.com/introtiled2unity.html>`__ exports
    TMX files to Unity with support for (non-simple) collisions.
+-  `UniTiled <https://yjaffal.itch.io/unitiled>`__, a native TMX importer for Unity.
 -  `UniTMX <https://bitbucket.org/PolCPP/unitmx/overview>`__ imports TMX
    files into a mesh.
 -  `X-UniTMX <https://bitbucket.org/Chaoseiro/x-unitmx>`__ supports
