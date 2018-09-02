@@ -51,7 +51,7 @@ public:
         WangColorType
     };
 
-    Object(TypeId typeId) : mTypeId(typeId) {}
+    explicit Object(TypeId typeId) : mTypeId(typeId) {}
 
     /**
      * Virtual destructor.

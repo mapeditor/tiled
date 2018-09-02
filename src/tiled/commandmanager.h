@@ -55,7 +55,7 @@ public:
 
     void updateActions();
 
-    LoggingInterface *logger() { return mLogger; }
+    LoggingInterface *logger() const { return mLogger; }
 
     void retranslateUi();
 
@@ -67,7 +67,7 @@ public slots:
     void showDialog();
 
 private:
-    Q_DISABLE_COPY(CommandManager);
+    Q_DISABLE_COPY(CommandManager)
 
     CommandManager();
 
