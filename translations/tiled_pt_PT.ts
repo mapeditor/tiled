@@ -80,17 +80,17 @@
     <message>
         <location line="+9"/>
         <source>Export syntax is --export-tileset [format] &lt;source&gt; &lt;target&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Sintaxe de exportação é --export-tileset [format] &lt;source&gt; &lt;target&gt;</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>Failed to load source tileset.</source>
-        <translation type="unfinished"></translation>
+        <translation>Falha ao carregar tileset fonte.</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Failed to export tileset to target file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Falha ao exportar tileset para ficheiro alvo.</translation>
     </message>
 </context>
 <context>
@@ -167,22 +167,22 @@
     <message>
         <location line="+5"/>
         <source>Export the specified map file to target</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar o mapa específico para alvo</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export the specified tileset file to target</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar o tileset específico para alvo</translation>
     </message>
     <message>
         <location line="+84"/>
         <source>Map export formats:</source>
-        <translation type="unfinished"></translation>
+        <translation>Formatos de exportação de mapa:</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Tileset export formats:</source>
-        <translation type="unfinished"></translation>
+        <translation>Formatos de exportação de tileset:</translation>
     </message>
     <message>
         <location line="-90"/>
@@ -192,7 +192,7 @@
     <message>
         <location line="+5"/>
         <source>Export the map with tilesets embedded</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar o mapa com tilesets incluídos</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -590,7 +590,7 @@
     <message>
         <location line="+4"/>
         <source>Unload World</source>
-        <translation type="unfinished"></translation>
+        <translation>Descarregar Mundo</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -675,17 +675,17 @@
     <message>
         <location line="+333"/>
         <source>For Hovered Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Para Objetos Flutuantes</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Load World...</source>
-        <translation type="unfinished"></translation>
+        <translation>Carregar Mundo...</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Highlight Hovered Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Destacar Objetos Flutuantes</translation>
     </message>
     <message>
         <location line="-132"/>
@@ -740,7 +740,7 @@
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -810,7 +810,7 @@
     <message>
         <location line="-102"/>
         <source>Ctrl+Alt+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Alt+S</translation>
     </message>
     <message>
         <location line="+94"/>
@@ -1395,7 +1395,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+5"/>
         <source>Selected Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Camadas Selecionadas</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -1559,22 +1559,22 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+10"/>
         <source>Export Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opções de Exportação</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Resolve object types and properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Resolver tipos de objetos e propriedades</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Detach templates</source>
-        <translation type="unfinished"></translation>
+        <translation>Separar modelos</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Embed tilesets</source>
-        <translation type="unfinished"></translation>
+        <translation>Incorporar tilesets</translation>
     </message>
     <message>
         <location line="+59"/>
@@ -2383,17 +2383,17 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+11"/>
         <source>Frame Duration: </source>
-        <translation type="unfinished"></translation>
+        <translation>Duração do Frame: </translation>
     </message>
     <message>
         <location line="+7"/>
         <source> ms</source>
-        <translation type="unfinished"></translation>
+        <translation> ms</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>Apply</source>
-        <translation type="unfinished"></translation>
+        <translation>Aplicar</translation>
     </message>
     <message>
         <location line="+98"/>
@@ -2588,7 +2588,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="-25"/>
         <source>&apos;%1&apos;: Property &apos;%2&apos; = &apos;%3&apos; on layer &apos;%4&apos; does not make sense. Ignoring this property.</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1&apos;: Propriedade &apos;%2&apos; = &apos;%3&apos; na camada &apos;%4&apos; não faz sentido. A ignorar esta propriedade.</translation>
     </message>
     <message>
         <location line="+31"/>
@@ -2624,7 +2624,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+3"/>
         <source>No output_&lt;name&gt; layer found!</source>
-        <translation type="unfinished"></translation>
+        <translation>Camada output_&lt;name&gt; não encontrada!</translation>
     </message>
 </context>
 <context>
@@ -3021,12 +3021,12 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+122"/>
         <source>Connect Polylines</source>
-        <translation type="unfinished"></translation>
+        <translation>Ligar Polilinhas</translation>
     </message>
     <message>
         <location line="+202"/>
         <source>Create Polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Criar Polígono</translation>
     </message>
 </context>
 <context>
@@ -3091,7 +3091,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location filename="../src/tiled/documentmanager.cpp" line="+461"/>
         <source>Unrecognized file format.</source>
-        <translation type="unfinished">Formato de ficheiro não reconhecido.</translation>
+        <translation>Formato de ficheiro não reconhecido.</translation>
     </message>
     <message>
         <location line="+257"/>
@@ -3849,7 +3849,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+5"/>
         <source>Ctrl+Shift+L</source>
-        <translation type="unfinished">Ctrl+Shift+L</translation>
+        <translation>Ctrl+Shift+L</translation>
     </message>
     <message>
         <location line="+59"/>
@@ -5629,7 +5629,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location filename="../src/libtiled/worldmanager.cpp" line="+109"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished">Impossível abrir ficheiro para leitura.</translation>
+        <translation>Impossível abrir ficheiro para leitura.</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -5676,7 +5676,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+11"/>
         <source>Remove Objects</source>
-        <translation type="unfinished">Remover Objectos</translation>
+        <translation>Remover Objetos</translation>
     </message>
     <message>
         <location filename="../src/tiled/changemapobject.cpp" line="+38"/>
@@ -6278,7 +6278,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+3"/>
         <source>Map file to display.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapear ficheiro para ecrã.</translation>
     </message>
 </context>
 </TS>
