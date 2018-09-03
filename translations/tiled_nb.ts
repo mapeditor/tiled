@@ -85,12 +85,12 @@
     <message>
         <location line="+22"/>
         <source>Failed to load source tileset.</source>
-        <translation type="unfinished"></translation>
+        <translation>Klarte ikke å laste kildefilsett.</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Failed to export tileset to target file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Klarte ikke å eksportere filsett til målfil.</translation>
     </message>
 </context>
 <context>
@@ -167,22 +167,22 @@
     <message>
         <location line="+5"/>
         <source>Export the specified map file to target</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportert angitt kartfil til mål.</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export the specified tileset file to target</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksporter angitt flissettfil til mål.</translation>
     </message>
     <message>
         <location line="+84"/>
         <source>Map export formats:</source>
-        <translation type="unfinished"></translation>
+        <translation>Karteksportformater:</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Tileset export formats:</source>
-        <translation type="unfinished"></translation>
+        <translation>Flissetteksportformater:</translation>
     </message>
     <message>
         <location line="-90"/>
@@ -192,12 +192,12 @@
     <message>
         <location line="+5"/>
         <source>Export the map with tilesets embedded</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksport kartet med flissettene innbygd</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export the map or tileset with template instances detached</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Eksporter kartet eller flissettet med målinsansene avhektet</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -666,7 +666,7 @@
     <message>
         <location line="+3"/>
         <source>Ctrl+Alt+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Alt+S</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1396,7 +1396,7 @@ Linje %1, kolonne %2</translation>
     <message>
         <location line="+5"/>
         <source>Selected Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Valgte lag</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -1560,12 +1560,12 @@ Linje %1, kolonne %2</translation>
     <message>
         <location line="+10"/>
         <source>Export Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksporteringsvalg</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Resolve object types and properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Løs objekttyper og egenskaper</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -1575,7 +1575,7 @@ Linje %1, kolonne %2</translation>
     <message>
         <location line="+7"/>
         <source>Embed tilesets</source>
-        <translation type="unfinished"></translation>
+        <translation>Bygg inn flissett</translation>
     </message>
     <message>
         <location line="+59"/>
@@ -2389,12 +2389,12 @@ Linje %1, kolonne %2</translation>
     <message>
         <location line="+7"/>
         <source> ms</source>
-        <translation type="unfinished"></translation>
+        <translation> ms</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>Apply</source>
-        <translation type="unfinished"></translation>
+        <translation>Bruk</translation>
     </message>
     <message>
         <location line="+98"/>
@@ -2589,7 +2589,7 @@ Linje %1, kolonne %2</translation>
     <message>
         <location line="-25"/>
         <source>&apos;%1&apos;: Property &apos;%2&apos; = &apos;%3&apos; on layer &apos;%4&apos; does not make sense. Ignoring this property.</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1&apos;: Egenskap &apos;%2&apos; = &apos;%3&apos; på lag &apos;%4&apos; gir ingen mening. Ingorerer denne egenskapen.</translation>
     </message>
     <message>
         <location line="+31"/>
@@ -3147,7 +3147,7 @@ Linje %1, kolonne %2</translation>
     <message>
         <location line="-23"/>
         <source>Split Segment</source>
-        <translation type="unfinished"></translation>
+        <translation>Del opp segment</translation>
     </message>
     <message numerus="yes">
         <location line="+265"/>
@@ -3331,12 +3331,12 @@ Do you want to replace it?</source>
     <message>
         <location line="+31"/>
         <source>Lock Other Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Lås andre lag</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Unlock Other Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Lås opp andre lag</translation>
     </message>
 </context>
 <context>
@@ -3419,7 +3419,7 @@ Do you want to replace it?</source>
     <message>
         <location line="+13"/>
         <source>Ctrl+Q</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Q</translation>
     </message>
     <message>
         <location line="+66"/>
@@ -3450,12 +3450,12 @@ Do you want to replace it?</source>
     <message>
         <location line="-1113"/>
         <source>Load World</source>
-        <translation type="unfinished"></translation>
+        <translation>Last inn verden</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Error Loading World</source>
-        <translation type="unfinished"></translation>
+        <translation>Feil ved innlasting av verden</translation>
     </message>
     <message>
         <location line="+79"/>
@@ -3716,27 +3716,21 @@ Vennligst velgt et spesifikt format.</translation>
     <message numerus="yes">
         <location line="+2"/>
         <source>Group %n Layer(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Grupper %n lag</numerusform>
+        <numerusform>Grupper %n lag</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+16"/>
         <source>Ungroup %n Layer(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Avgrupper %n lag</numerusform>
+        <numerusform>Avgrupper %n lag</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+46"/>
         <source>Duplicate %n Layer(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Dupliser %n lag</numerusform>
+        <numerusform>Dupliser %n lag</numerusform>
+        </translation></message>
     <message>
         <location line="+27"/>
         <source>Copy of %1</source>
@@ -3750,11 +3744,9 @@ Vennligst velgt et spesifikt format.</translation>
     <message numerus="yes">
         <location line="+73"/>
         <source>Remove %n Layer(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Fjern %n lag</numerusform>
+        <numerusform>Fjern %n lag</numerusform>
+        </translation></message>
     <message>
         <location line="+305"/>
         <source>Tile</source>
@@ -3913,17 +3905,17 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="-313"/>
         <source>&amp;Remove Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>%Fjern lag</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>R&amp;aise Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>H&amp;ev lag</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Lower Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Senk lag</translation>
     </message>
     <message>
         <location line="-3"/>
@@ -3943,7 +3935,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+1"/>
         <source>Lock/&amp;Unlock all Other Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Lås/&amp;lås opp alle andre lag</translation>
     </message>
     <message>
         <location line="+40"/>
@@ -4004,17 +3996,17 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+92"/>
         <source>&amp;Group Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Grupper lag</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Ungroup Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Avgrupper lag</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Duplicate Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Dupliser lag</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4215,12 +4207,12 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location filename="../src/tiled/newsbutton.cpp" line="+45"/>
         <source>News</source>
-        <translation type="unfinished"></translation>
+        <translation>Nyheter</translation>
     </message>
     <message>
         <location line="+69"/>
         <source>News Archive</source>
-        <translation type="unfinished"></translation>
+        <translation>Nyhetsarkiv</translation>
     </message>
 </context>
 <context>
@@ -4595,7 +4587,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+27"/>
         <source>Wang Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Wang-sett</translation>
     </message>
     <message>
         <location line="+347"/>
@@ -5544,12 +5536,12 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location filename="../src/tiled/wangcolormodel.cpp" line="+144"/>
         <source>Edge Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Hjørnefarger</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Corner Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Hjørnefarger</translation>
     </message>
 </context>
 <context>
@@ -5631,7 +5623,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location filename="../src/libtiled/worldmanager.cpp" line="+109"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunne ikke åpne fil for lesning.</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -5668,7 +5660,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+11"/>
         <source>Add Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Legg til objekter</translation>
     </message>
     <message>
         <location line="+40"/>
@@ -6157,19 +6149,15 @@ Vennligst velgt et spesifikt format.</translation>
     <message numerus="yes">
         <location filename="../src/tiled/mapdocument.cpp" line="-683"/>
         <source>Raise %n Layer(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Hev %n lag</numerusform>
+        <numerusform>Hev %n lag</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+27"/>
         <source>Lower %n Layer(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Senk %n lag</numerusform>
+        <numerusform>Senk %n lag</numerusform>
+        </translation></message>
 </context>
 <context>
     <name>Utils</name>
@@ -6204,23 +6192,23 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+1"/>
         <source>scale</source>
-        <translation type="unfinished"></translation>
+        <translation>skala</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>The requested size in pixels at which a tile is rendered (overrides the --scale option).</source>
-        <translation type="unfinished"></translation>
+        <translation>Forespurt størrelse en flis tegnes (overstyrer --scale -valget).</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+3"/>
         <source>size</source>
-        <translation type="unfinished"></translation>
+        <translation>størrelse</translation>
     </message>
     <message>
         <location line="-1"/>
         <source>The output image fits within a SIZE x SIZE square (overrides the --scale and --tilesize options).</source>
-        <translation type="unfinished"></translation>
+        <translation>Utdatabildet passer i en STØRRELSE x STØRRELSE firkant (overstyrer --scale og --tilesize -valgene).</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -6230,47 +6218,47 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+2"/>
         <source>Use nearest neighbour instead of smooth blending of pixels.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bruk næreste nabo istedenfor myk pikselovergang.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Ignore all layer visibility flags in the map file, and render all layers in the output (default is to omit invisible layers).</source>
-        <translation type="unfinished"></translation>
+        <translation>Ignorer alle lagsynlighetsflagg i kartfilen, og tegn alle lag i utdataen (forvalget er å se bort fra usynlige lag).</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Specifies a layer to omit from the output image. Can be repeated to hide multiple layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Angir et lag å se bort fra i utdatabildet. Kan bli gjentatt for å skjule flere lag.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>name</source>
-        <translation type="unfinished"></translation>
+        <translation>navn</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Map file to render.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kartfil å tegne.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Image file to output.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bildefil å sende ut.</translation>
     </message>
     <message>
         <location line="+23"/>
         <source>Invalid size specified: &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Ugyldig størrelse angitt: &quot;%1&quot;</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Invalid tile size specified: &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Ugyldig filstørrelse angitt: &quot;%1&quot;</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Invalid scale specified: &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Ugyldig skala angitt: &quot;%1&quot;</translation>
     </message>
     <message>
         <location filename="../src/tmxviewer/main.cpp" line="+57"/>
@@ -6280,7 +6268,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+3"/>
         <source>Map file to display.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kartfil å vise.</translation>
     </message>
 </context>
 </TS>
