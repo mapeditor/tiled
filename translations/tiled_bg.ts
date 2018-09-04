@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="bg">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="bg" version="2.1">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -22,7 +20,7 @@
         <location filename="../src/tiled/aboutdialog.cpp" line="+48"/>
         <source>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;Copyright 2008-2017 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the 'COPYING' file distributed with Tiled.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
         <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Редактор за карти Tiled&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Версия %1&lt;/i&gt;&lt;/p&gt;
@@ -50,7 +48,7 @@
     <message>
         <location filename="../src/tiled/main.cpp" line="+359"/>
         <source>Export syntax is --export-map [format] &lt;source&gt; &lt;target&gt;</source>
-        <translation>Синтаксисът за извличане е: --export-map [формат] &lt;source&gt;&lt;target&gt;</translation>
+        <translation>Синтаксисът за изнасяне е: --export-map [формат] &lt;source&gt;&lt;target&gt;</translation>
     </message>
     <message>
         <location line="-232"/>
@@ -80,17 +78,17 @@
     <message>
         <location line="+9"/>
         <source>Export syntax is --export-tileset [format] &lt;source&gt; &lt;target&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Синтаксисът за изнасяне е: --export-tileset [формат] &lt;source&gt;&lt;target&gt;</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>Failed to load source tileset.</source>
-        <translation type="unfinished"></translation>
+        <translation>Неуспешно зареждане на изходния плочен набор.</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Failed to export tileset to target file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Неуспешно изнасяне на плочния набор в целевия файл.</translation>
     </message>
 </context>
 <context>
@@ -167,22 +165,22 @@
     <message>
         <location line="+5"/>
         <source>Export the specified map file to target</source>
-        <translation type="unfinished"></translation>
+        <translation>Изнася посочения файл с карта към зададената цел</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export the specified tileset file to target</source>
-        <translation type="unfinished"></translation>
+        <translation>Изнася посочения файл с плочен набор към зададената цел</translation>
     </message>
     <message>
         <location line="+84"/>
         <source>Map export formats:</source>
-        <translation type="unfinished"></translation>
+        <translation>Формати за изнасяне на карти:</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Tileset export formats:</source>
-        <translation type="unfinished"></translation>
+        <translation>Формати за изнасяне на плочни набори:</translation>
     </message>
     <message>
         <location line="-90"/>
@@ -192,17 +190,17 @@
     <message>
         <location line="+5"/>
         <source>Export the map with tilesets embedded</source>
-        <translation type="unfinished"></translation>
+        <translation>Изнасяне на картата с вградени плочни набори</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export the map or tileset with template instances detached</source>
-        <translation type="unfinished"></translation>
+        <translation>Изнасяне на картата или плочния набор с разкачени екземпляри на шаблоните</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export the map or tileset with types and properties resolved</source>
-        <translation type="unfinished"></translation>
+        <translation>Изнасяне на картата или плочния набор с изчислени типове и свойства</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -380,7 +378,7 @@
     <message>
         <location line="+7"/>
         <source>&amp;Include background color</source>
-        <translation>Включване на цвета на &amp;фона</translation>
+        <translation>Да се включи цвета на &amp;фона</translation>
     </message>
 </context>
 <context>
@@ -585,7 +583,7 @@
     <message>
         <location line="+4"/>
         <source>Unload World</source>
-        <translation type="unfinished"></translation>
+        <translation>Отзареждане на света</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -665,7 +663,7 @@
     <message>
         <location line="+3"/>
         <source>Ctrl+Alt+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Alt+S</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -710,17 +708,17 @@
     <message>
         <location line="+127"/>
         <source>For Hovered Object</source>
-        <translation type="unfinished"></translation>
+        <translation>За посочения обект</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Load World...</source>
-        <translation type="unfinished"></translation>
+        <translation>Зареждане на света…</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Highlight Hovered Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Открояване на посочения обект</translation>
     </message>
     <message>
         <location line="-124"/>
@@ -880,7 +878,7 @@
     <message>
         <location line="+8"/>
         <source>&amp;Highlight Current Layer</source>
-        <translation>&amp;Осветяване на текущия слой</translation>
+        <translation>&amp;Открояване на текущия слой</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -910,7 +908,7 @@
     <message>
         <location line="+24"/>
         <source>Ctrl+Shift+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1229,7 +1227,7 @@ Line %1, column %2</source>
     <message>
         <location line="+38"/>
         <source>Pick color from image</source>
-        <translation>Избор на цвят от изображението</translation>
+        <translation>Изберете цвят от изображението</translation>
     </message>
     <message>
         <location line="-138"/>
@@ -1396,7 +1394,7 @@ Line %1, column %2</source>
     <message>
         <location line="+5"/>
         <source>Selected Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Избрани слоеве</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -1560,22 +1558,22 @@ Line %1, column %2</source>
     <message>
         <location line="+10"/>
         <source>Export Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Настройки за изнасяне</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Resolve object types and properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Изчисляване на типовете и свойствата на обектите</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Detach templates</source>
-        <translation type="unfinished"></translation>
+        <translation>Разкачане на шаблоните</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Embed tilesets</source>
-        <translation type="unfinished"></translation>
+        <translation>Вграждане на плочните набори</translation>
     </message>
     <message>
         <location line="+59"/>
@@ -2384,17 +2382,17 @@ Line %1, column %2</source>
     <message>
         <location line="+11"/>
         <source>Frame Duration: </source>
-        <translation type="unfinished"></translation>
+        <translation>Продължителност на кадъра:</translation>
     </message>
     <message>
         <location line="+7"/>
         <source> ms</source>
-        <translation type="unfinished"></translation>
+        <translation>мсек</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>Apply</source>
-        <translation type="unfinished"></translation>
+        <translation>Прилагане</translation>
     </message>
     <message>
         <location line="+98"/>
@@ -2414,18 +2412,12 @@ Line %1, column %2</source>
     <message numerus="yes">
         <location line="-13"/>
         <source>Duplicate %n Object(s)</source>
-        <translation>
-            <numerusform>Копиране на обекта</numerusform>
-            <numerusform>Копиране на %n обекта</numerusform>
-        </translation>
+        <translation><numerusform>Копиране на обекта</numerusform><numerusform>Копиране на %n обекта</numerusform></translation>
     </message>
     <message numerus="yes">
         <location line="+2"/>
         <source>Remove %n Object(s)</source>
-        <translation>
-            <numerusform>Премахване на обекта</numerusform>
-            <numerusform>Премахване на %n обекта</numerusform>
-        </translation>
+        <translation><numerusform>Премахване на обекта</numerusform><numerusform>Премахване на %n обекта</numerusform></translation>
     </message>
     <message>
         <location line="+16"/>
@@ -2522,10 +2514,7 @@ Line %1, column %2</source>
     <message numerus="yes">
         <location line="+6"/>
         <source>Move %n Object(s) to Layer</source>
-        <translation>
-            <numerusform>Преместване на обекта в слой</numerusform>
-            <numerusform>Преместване на %n обекта в слой</numerusform>
-        </translation>
+        <translation><numerusform>Преместване на обекта в слой</numerusform><numerusform>Преместване на %n обекта в слой</numerusform></translation>
     </message>
     <message>
         <location line="+13"/>
@@ -2589,7 +2578,7 @@ Line %1, column %2</source>
     <message>
         <location line="-25"/>
         <source>&apos;%1&apos;: Property &apos;%2&apos; = &apos;%3&apos; on layer &apos;%4&apos; does not make sense. Ignoring this property.</source>
-        <translation type="unfinished"></translation>
+        <translation>„%1“: Свойство „%2“ = „%3“ на слой „%4“ няма смисъл. Това свойство се пренебрегва.</translation>
     </message>
     <message>
         <location line="+31"/>
@@ -2625,7 +2614,7 @@ Line %1, column %2</source>
     <message>
         <location line="+3"/>
         <source>No output_&lt;name&gt; layer found!</source>
-        <translation type="unfinished"></translation>
+        <translation>Не е открит слой „output_&lt;име&gt;“!</translation>
     </message>
 </context>
 <context>
@@ -3022,12 +3011,12 @@ Line %1, column %2</source>
     <message>
         <location line="+122"/>
         <source>Connect Polylines</source>
-        <translation type="unfinished"></translation>
+        <translation>Свързване на начупени линии</translation>
     </message>
     <message>
         <location line="+202"/>
         <source>Create Polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Създаване на многоъгълник</translation>
     </message>
 </context>
 <context>
@@ -3092,7 +3081,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/documentmanager.cpp" line="+461"/>
         <source>Unrecognized file format.</source>
-        <translation type="unfinished">Непознат формат на файла.</translation>
+        <translation>Непознат формат на файла.</translation>
     </message>
     <message>
         <location line="+257"/>
@@ -3147,24 +3136,18 @@ Line %1, column %2</source>
     <message>
         <location line="-23"/>
         <source>Split Segment</source>
-        <translation type="unfinished"></translation>
+        <translation>Разделяне на сегмента</translation>
     </message>
     <message numerus="yes">
         <location line="+265"/>
         <source>Move %n Point(s)</source>
-        <translation>
-            <numerusform>Преместване на точката</numerusform>
-            <numerusform>Преместване на %n точки</numerusform>
-        </translation>
+        <translation><numerusform>Преместване на точката</numerusform><numerusform>Преместване на %n точки</numerusform></translation>
     </message>
     <message numerus="yes">
         <location line="+58"/>
         <location line="+94"/>
         <source>Delete %n Node(s)</source>
-        <translation>
-            <numerusform>Изтриване на възела</numerusform>
-            <numerusform>Изтриване на %n възела</numerusform>
-        </translation>
+        <translation><numerusform>Изтриване на възела</numerusform><numerusform>Изтриване на %n възела</numerusform></translation>
     </message>
     <message>
         <location line="-89"/>
@@ -3187,7 +3170,7 @@ Line %1, column %2</source>
     <message>
         <location line="-334"/>
         <source>Extend Polyline</source>
-        <translation type="unfinished"></translation>
+        <translation>Удължаване на начупената ления</translation>
     </message>
 </context>
 <context>
@@ -3314,10 +3297,7 @@ Do you want to replace it?</source>
     <message numerus="yes">
         <location line="+74"/>
         <source>Drag Layer(s)</source>
-        <translation>
-            <numerusform>Влачене на слоя</numerusform>
-            <numerusform>Влачене на слоевете</numerusform>
-        </translation>
+        <translation><numerusform>Влачене на слоя</numerusform><numerusform>Влачене на слоевете</numerusform></translation>
     </message>
     <message>
         <location line="+238"/>
@@ -3332,12 +3312,12 @@ Do you want to replace it?</source>
     <message>
         <location line="+31"/>
         <source>Lock Other Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Заключване на другите слоеве</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Unlock Other Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Отключване на другите слоеве</translation>
     </message>
 </context>
 <context>
@@ -3420,7 +3400,7 @@ Do you want to replace it?</source>
     <message>
         <location line="+13"/>
         <source>Ctrl+Q</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Q</translation>
     </message>
     <message>
         <location line="+66"/>
@@ -3451,12 +3431,12 @@ Do you want to replace it?</source>
     <message>
         <location line="-1113"/>
         <source>Load World</source>
-        <translation type="unfinished"></translation>
+        <translation>Зареждане на света</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Error Loading World</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка при зареждане на света</translation>
     </message>
     <message>
         <location line="+79"/>
@@ -3688,10 +3668,7 @@ Please select specific format.</source>
     <message numerus="yes">
         <location line="+27"/>
         <source>Rotate %n Object(s)</source>
-        <translation>
-            <numerusform>Завъртане на обект</numerusform>
-            <numerusform>Завъртане на %n обекта</numerusform>
-        </translation>
+        <translation><numerusform>Завъртане на обект</numerusform><numerusform>Завъртане на %n обекта</numerusform></translation>
     </message>
     <message>
         <location line="+36"/>
@@ -3717,26 +3694,17 @@ Please select specific format.</source>
     <message numerus="yes">
         <location line="+2"/>
         <source>Group %n Layer(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation><numerusform>Групиране на %n слой</numerusform><numerusform>Групиране на %n слоя</numerusform></translation>
     </message>
     <message numerus="yes">
         <location line="+16"/>
         <source>Ungroup %n Layer(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation><numerusform>Разгрупиране на %n слой</numerusform><numerusform>Разгрупиране на %n слоя</numerusform></translation>
     </message>
     <message numerus="yes">
         <location line="+46"/>
         <source>Duplicate %n Layer(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation><numerusform>Копиране на %n слой</numerusform><numerusform>Копиране на %n слоя</numerusform></translation>
     </message>
     <message>
         <location line="+27"/>
@@ -3751,10 +3719,7 @@ Please select specific format.</source>
     <message numerus="yes">
         <location line="+73"/>
         <source>Remove %n Layer(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation><numerusform>Премахване на %n слой</numerusform><numerusform>Премахване на %n слоя</numerusform></translation>
     </message>
     <message>
         <location line="+305"/>
@@ -3769,42 +3734,27 @@ Please select specific format.</source>
     <message numerus="yes">
         <location line="+229"/>
         <source>Duplicate %n Object(s)</source>
-        <translation>
-            <numerusform>Копиране на обекта</numerusform>
-            <numerusform>Копиране на %n обекта</numerusform>
-        </translation>
+        <translation><numerusform>Копиране на обекта</numerusform><numerusform>Копиране на %n обекта</numerusform></translation>
     </message>
     <message numerus="yes">
         <location line="+13"/>
         <source>Remove %n Object(s)</source>
-        <translation>
-            <numerusform>Премахване на обекта</numerusform>
-            <numerusform>Премахване на %n обекта</numerusform>
-        </translation>
+        <translation><numerusform>Премахване на обекта</numerusform><numerusform>Премахване на %n обекта</numerusform></translation>
     </message>
     <message numerus="yes">
         <location line="+11"/>
         <source>Move %n Object(s) to Layer</source>
-        <translation>
-            <numerusform>Преместване на обекта в слой</numerusform>
-            <numerusform>Преместване на %n обекта в слой</numerusform>
-        </translation>
+        <translation><numerusform>Преместване на обекта в слой</numerusform><numerusform>Преместване на %n обекта в слой</numerusform></translation>
     </message>
     <message numerus="yes">
         <location line="+38"/>
         <source>Move %n Object(s) Up</source>
-        <translation>
-            <numerusform>Преместване на обект нагоре</numerusform>
-            <numerusform>Преместване на %n обекта нагоре</numerusform>
-        </translation>
+        <translation><numerusform>Преместване на обект нагоре</numerusform><numerusform>Преместване на %n обекта нагоре</numerusform></translation>
     </message>
     <message numerus="yes">
         <location line="+36"/>
         <source>Move %n Object(s) Down</source>
-        <translation>
-            <numerusform>Преместване на обект надолу</numerusform>
-            <numerusform>Преместване на %n обекта надолу</numerusform>
-        </translation>
+        <translation><numerusform>Преместване на обект надолу</numerusform><numerusform>Преместване на %n обекта надолу</numerusform></translation>
     </message>
 </context>
 <context>
@@ -3852,7 +3802,7 @@ Please select specific format.</source>
     <message>
         <location line="+5"/>
         <source>Ctrl+Shift+L</source>
-        <translation type="unfinished">Ctrl+Shift+L</translation>
+        <translation>Ctrl+Shift+L</translation>
     </message>
     <message>
         <location line="+59"/>
@@ -3914,17 +3864,17 @@ Please select specific format.</source>
     <message>
         <location line="-313"/>
         <source>&amp;Remove Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Према&amp;хване на слоевете</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>R&amp;aise Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Преместване на слоевете на&amp;горе</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Lower Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Преместване на слоевете на&amp;долу</translation>
     </message>
     <message>
         <location line="-3"/>
@@ -3944,7 +3894,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Lock/&amp;Unlock all Other Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Заключване/отключване на всички останали слоеве</translation>
     </message>
     <message>
         <location line="+40"/>
@@ -3969,18 +3919,12 @@ Please select specific format.</source>
     <message numerus="yes">
         <location line="+439"/>
         <source>Duplicate %n Object(s)</source>
-        <translation>
-            <numerusform>Копиране на обекта</numerusform>
-            <numerusform>Копиране на %n обекта</numerusform>
-        </translation>
+        <translation><numerusform>Копиране на обекта</numerusform><numerusform>Копиране на %n обекта</numerusform></translation>
     </message>
     <message numerus="yes">
         <location line="+1"/>
         <source>Remove %n Object(s)</source>
-        <translation>
-            <numerusform>Премахване на обекта</numerusform>
-            <numerusform>Премахване на %n обекта</numerusform>
-        </translation>
+        <translation><numerusform>Премахване на обекта</numerusform><numerusform>Премахване на %n обекта</numerusform></translation>
     </message>
     <message>
         <location line="+2"/>
@@ -4005,17 +3949,17 @@ Please select specific format.</source>
     <message>
         <location line="+92"/>
         <source>&amp;Group Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Групиране на слоевете</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Ungroup Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Разгрупиране на слоевете</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Duplicate Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Копиране на слоевете</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4033,7 +3977,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/mapeditor.cpp" line="+665"/>
         <source>Paste in Place</source>
-        <translation type="unfinished"></translation>
+        <translation>Поставяне в четката</translation>
     </message>
     <message>
         <location line="+187"/>
@@ -4049,10 +3993,7 @@ Please select specific format.</source>
     <message numerus="yes">
         <location line="+17"/>
         <source>Add %n Tileset(s)</source>
-        <translation>
-            <numerusform>Добавяне на плочен набор</numerusform>
-            <numerusform>Добавяне на %n плочни набора</numerusform>
-        </translation>
+        <translation><numerusform>Добавяне на плочен набор</numerusform><numerusform>Добавяне на %n плочни набора</numerusform></translation>
     </message>
     <message>
         <location line="+57"/>
@@ -4216,12 +4157,12 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/newsbutton.cpp" line="+45"/>
         <source>News</source>
-        <translation type="unfinished"></translation>
+        <translation>Новини</translation>
     </message>
     <message>
         <location line="+69"/>
         <source>News Archive</source>
-        <translation type="unfinished"></translation>
+        <translation>Архив на новините</translation>
     </message>
 </context>
 <context>
@@ -4265,10 +4206,7 @@ Please select specific format.</source>
         <location line="-289"/>
         <location line="+719"/>
         <source>Move %n Object(s)</source>
-        <translation>
-            <numerusform>Преместване на обекта</numerusform>
-            <numerusform>Преместване на %n обекта</numerusform>
-        </translation>
+        <translation><numerusform>Преместване на обекта</numerusform><numerusform>Преместване на %n обекта</numerusform></translation>
     </message>
     <message>
         <location line="-593"/>
@@ -4293,18 +4231,12 @@ Please select specific format.</source>
     <message numerus="yes">
         <location line="+673"/>
         <source>Rotate %n Object(s)</source>
-        <translation>
-            <numerusform>Завъртане на обект</numerusform>
-            <numerusform>Завъртане на %n обекта</numerusform>
-        </translation>
+        <translation><numerusform>Завъртане на обект</numerusform><numerusform>Завъртане на %n обекта</numerusform></translation>
     </message>
     <message numerus="yes">
         <location line="+267"/>
         <source>Resize %n Object(s)</source>
-        <translation>
-            <numerusform>Преоразмеряване на обект</numerusform>
-            <numerusform>Преоразмеряване на %n обекта</numerusform>
-        </translation>
+        <translation><numerusform>Преоразмеряване на обект</numerusform><numerusform>Преоразмеряване на %n обекта</numerusform></translation>
     </message>
 </context>
 <context>
@@ -4425,10 +4357,7 @@ Please select specific format.</source>
     <message numerus="yes">
         <location line="+17"/>
         <source>Move %n Object(s) to Layer</source>
-        <translation>
-            <numerusform>Преместване на обекта в слой</numerusform>
-            <numerusform>Преместване на %n обекта в слой</numerusform>
-        </translation>
+        <translation><numerusform>Преместване на обекта в слой</numerusform><numerusform>Преместване на %n обекта в слой</numerusform></translation>
     </message>
 </context>
 <context>
@@ -4494,18 +4423,12 @@ Please select specific format.</source>
     <message numerus="yes">
         <location line="-252"/>
         <source>Paste Property/Properties</source>
-        <translation>
-            <numerusform>Поставяне на свойството</numerusform>
-            <numerusform>Поставяне на свойствата</numerusform>
-        </translation>
+        <translation><numerusform>Поставяне на свойството</numerusform><numerusform>Поставяне на свойствата</numerusform></translation>
     </message>
     <message numerus="yes">
         <location line="+50"/>
         <source>Remove Property/Properties</source>
-        <translation>
-            <numerusform>Премахване на свойството</numerusform>
-            <numerusform>Премахване на свойствата</numerusform>
-        </translation>
+        <translation><numerusform>Премахване на свойството</numerusform><numerusform>Премахване на свойствата</numerusform></translation>
     </message>
     <message>
         <location line="+65"/>
@@ -4540,10 +4463,7 @@ Please select specific format.</source>
     <message numerus="yes">
         <location line="+69"/>
         <source>Convert Property/Properties</source>
-        <translation>
-            <numerusform>Преобразуване на свойството</numerusform>
-            <numerusform>Преобразуване на свойствата</numerusform>
-        </translation>
+        <translation><numerusform>Преобразуване на свойството</numerusform><numerusform>Преобразуване на свойствата</numerusform></translation>
     </message>
     <message>
         <location line="+58"/>
@@ -4596,7 +4516,7 @@ Please select specific format.</source>
     <message>
         <location line="+27"/>
         <source>Wang Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Набор на Ванг</translation>
     </message>
     <message>
         <location line="+347"/>
@@ -5545,12 +5465,12 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/wangcolormodel.cpp" line="+144"/>
         <source>Edge Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Цветове за ръбовете</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Corner Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Цветове за ъглите</translation>
     </message>
 </context>
 <context>
@@ -5632,13 +5552,14 @@ Please select specific format.</source>
     <message>
         <location filename="../src/libtiled/worldmanager.cpp" line="+109"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished">Неуспешно отваряне на файла за четене.</translation>
+        <translation>Неуспешно отваряне на файла за четене.</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>JSON parse error at offset %1:
 %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка при прочитането на JSON на място %1:
+%2.</translation>
     </message>
 </context>
 <context>
@@ -5669,7 +5590,7 @@ Please select specific format.</source>
     <message>
         <location line="+11"/>
         <source>Add Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавяне на обекти</translation>
     </message>
     <message>
         <location line="+40"/>
@@ -5679,7 +5600,7 @@ Please select specific format.</source>
     <message>
         <location line="+11"/>
         <source>Remove Objects</source>
-        <translation type="unfinished">Премахване на обектите</translation>
+        <translation>Премахване на обектите</translation>
     </message>
     <message>
         <location filename="../src/tiled/addremovetileset.cpp" line="+62"/>
@@ -5907,34 +5828,22 @@ Please select specific format.</source>
     <message numerus="yes">
         <location line="+59"/>
         <source>Change %n Object/s Tile</source>
-        <translation>
-            <numerusform>Промяна на обектна плочка</numerusform>
-            <numerusform>Промяна на %n обектни плочки</numerusform>
-        </translation>
+        <translation><numerusform>Промяна на обектна плочка</numerusform><numerusform>Промяна на %n обектни плочки</numerusform></translation>
     </message>
     <message numerus="yes">
         <location line="+65"/>
         <source>Detach %n Template Instance(s)</source>
-        <translation>
-            <numerusform>Разкачане на екземпляр на шаблона</numerusform>
-            <numerusform>Разкачане на %n екземпляра на шаблона</numerusform>
-        </translation>
+        <translation><numerusform>Разкачане на екземпляр на шаблона</numerusform><numerusform>Разкачане на %n екземпляра на шаблона</numerusform></translation>
     </message>
     <message numerus="yes">
         <location line="+39"/>
         <source>Reset %n Instances</source>
-        <translation>
-            <numerusform>Нулиране на екземпляр</numerusform>
-            <numerusform>Нулиране на %n екземпляра</numerusform>
-        </translation>
+        <translation><numerusform>Нулиране на екземпляр</numerusform><numerusform>Нулиране на %n екземпляра</numerusform></translation>
     </message>
     <message numerus="yes">
         <location line="+46"/>
         <source>Replace %n Object(s) With Template</source>
-        <translation>
-            <numerusform>Замяна на обект с шаблон</numerusform>
-            <numerusform>Замяна на %n обекта с шаблон</numerusform>
-        </translation>
+        <translation><numerusform>Замяна на обект с шаблон</numerusform><numerusform>Замяна на %n обекта с шаблон</numerusform></translation>
     </message>
     <message>
         <location filename="../src/tiled/renameterrain.cpp" line="+36"/>
@@ -6073,10 +5982,7 @@ Please select specific format.</source>
         <location filename="../src/tiled/flipmapobjects.cpp" line="+40"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+197"/>
         <source>Flip %n Object(s)</source>
-        <translation>
-            <numerusform>Обръщане на обект</numerusform>
-            <numerusform>Обръщане на %n обекта</numerusform>
-        </translation>
+        <translation><numerusform>Обръщане на обект</numerusform><numerusform>Обръщане на %n обекта</numerusform></translation>
     </message>
     <message>
         <location filename="../src/tiled/changetile.cpp" line="+34"/>
@@ -6158,18 +6064,12 @@ Please select specific format.</source>
     <message numerus="yes">
         <location filename="../src/tiled/mapdocument.cpp" line="-683"/>
         <source>Raise %n Layer(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation><numerusform>Преместване на %n слой нагоре</numerusform><numerusform>Преместване на %n слоя нагоре</numerusform></translation>
     </message>
     <message numerus="yes">
         <location line="+27"/>
         <source>Lower %n Layer(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation><numerusform>Преместване на %n слой надолу</numerusform><numerusform>Преместване на %n слоя надолу</numerusform></translation>
     </message>
 </context>
 <context>
@@ -6195,93 +6095,93 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tmxrasterizer/main.cpp" line="+52"/>
         <source>Renders a Tiled map (TMX format) to an image.</source>
-        <translation type="unfinished"></translation>
+        <translation>Изчертава карта на Tiled (във формат TMX) и я превръща в изображение.</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>The scale of the output image (default: 1).</source>
-        <translation type="unfinished"></translation>
+        <translation>Мащабиране на изображението (по подразбиране: 1).</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>scale</source>
-        <translation type="unfinished"></translation>
+        <translation>мащабиране</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>The requested size in pixels at which a tile is rendered (overrides the --scale option).</source>
-        <translation type="unfinished"></translation>
+        <translation>Нужният размер в пиксели, в който да се изчертава една плочка (няма да се зачита опцията--scale).</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+3"/>
         <source>size</source>
-        <translation type="unfinished"></translation>
+        <translation>размер</translation>
     </message>
     <message>
         <location line="-1"/>
         <source>The output image fits within a SIZE x SIZE square (overrides the --scale and --tilesize options).</source>
-        <translation type="unfinished"></translation>
+        <translation>Изображението ще се вмества в квадрат със страни РАЗМЕР х РАЗМЕР (няма да се зачитат опциите --scale и --tilesize).</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Antialias edges of primitives.</source>
-        <translation type="unfinished"></translation>
+        <translation>Заглаждане на ръбовете на формите.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Use nearest neighbour instead of smooth blending of pixels.</source>
-        <translation type="unfinished"></translation>
+        <translation>Използване на най-близкия съсед вместо гладко преливане на пикселите.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Ignore all layer visibility flags in the map file, and render all layers in the output (default is to omit invisible layers).</source>
-        <translation type="unfinished"></translation>
+        <translation>Пренебрегване на всички флагове за видимост на слоевете във файла на картата; всички слоеве ще бъдат изчертани (по подразбиране невидимите слоеве се пропускат).</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Specifies a layer to omit from the output image. Can be repeated to hide multiple layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Посочва слой, който да се пропусне при изчертаването на изображението. Може да се повтаря, за да се скрият повече слоеве.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>name</source>
-        <translation type="unfinished"></translation>
+        <translation>име</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Map file to render.</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл с картата за изчертаване.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Image file to output.</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл за създаденото изображение.</translation>
     </message>
     <message>
         <location line="+23"/>
         <source>Invalid size specified: &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Зададеният размер е неправилен: „%1“</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Invalid tile size specified: &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Зададеният размер на плочка е неправилен: „%1“</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Invalid scale specified: &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Зададеният мащаб е неправилен: „%1“</translation>
     </message>
     <message>
         <location filename="../src/tmxviewer/main.cpp" line="+57"/>
         <source>Displays a Tiled map (TMX format).</source>
-        <translation type="unfinished"></translation>
+        <translation>Показва карта на Tiled (във формат TMX).</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Map file to display.</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл с картата за показване.</translation>
     </message>
 </context>
 </TS>
