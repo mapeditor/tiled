@@ -155,8 +155,8 @@ true.
 Map Properties
 --------------
 
-There are three different map properties, which can be used to add
-additional information to a **rulefile**:
+The following map properties can be used to customize the behavior of
+the rules in a **rulefile**:
 
 DeleteTiles
    This map property is a boolean property: it can be
@@ -173,6 +173,20 @@ AutomappingRadius
    This map property is a number: 1, 2, 3 ... It
    determines how many tiles around your changes will be checked as well
    for redoing the Automapping at live Automapping.
+
+.. raw:: html
+
+   <div class="new">New in Tiled 1.2</div>
+
+MatchOutsideMap
+   This map property determines whether rules can match even when their input
+   region falls partially outside of a map. By default it is ``false`` for
+   bounded maps and ``true`` for infinite maps. In some cases it can be useful
+   to enable this also for bounded maps. Tiles outside of the map boundaries
+   are simply considered empty.
+
+   Tiled 1.0 and 1.1 behaved as if this property was ``true``, whereas older
+   versions of Tiled have behaved as if this property was ``false``.
 
 NoOverlappingRules
    This map property is a boolean property:

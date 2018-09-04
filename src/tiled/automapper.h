@@ -84,8 +84,36 @@ class AutoMapper : public QObject
     Q_OBJECT
 
 public:
+    struct Options
+    {
+        /**
+         * Determines if all tiles in all touched layers should be deleted first.
+         */
+        bool deleteTiles = false;
+
+        /**
+         * Whether rules can match when their input region is partially outside
+         * of the map.
+         */
+        bool matchOutsideMap = true;
+
+        /**
+         * Determines if a rule is allowed to overlap itself.
+         */
+        bool noOverlappingRules = false;
+
+        /**
+         * This variable determines, how many overlapping tiles should be used.
+         * The bigger the more area is remapped at an automapping operation.
+         * This can lead to higher latency, but provides a better behavior on
+         * interactive automapping.
+         */
+        int autoMappingRadius = 0;
+    };
+
     /**
      * Constructs an AutoMapper.
+     *
      * All data structures, which only rely on the rules map are setup
      * here.
      *
@@ -337,24 +365,7 @@ private:
      */
     QString mRulePath;
 
-    /**
-     * determines if all tiles in all touched layers should be deleted first.
-     */
-    bool mDeleteTiles;
-
-    /**
-     * This variable determines, how many overlapping tiles should be used.
-     * The bigger the more area is remapped at an automapping operation.
-     * This can lead to higher latency, but provides a better behavior on
-     * interactive automapping.
-     * It defaults to zero.
-     */
-    int mAutoMappingRadius;
-
-    /**
-     * Determines if a rule is allowed to overlap itself.
-     */
-    bool mNoOverlappingRules;
+    Options mOptions;
 
     QSet<QString> mTouchedTileLayers;
     QSet<QString> mTouchedObjectGroups;

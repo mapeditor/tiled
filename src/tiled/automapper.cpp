@@ -59,9 +59,6 @@ AutoMapper::AutoMapper(MapDocument *workingDocument, Map *rules,
     , mLayerInputRegions(nullptr)
     , mLayerOutputRegions(nullptr)
     , mRulePath(rulePath)
-    , mDeleteTiles(false)
-    , mAutoMappingRadius(0)
-    , mNoOverlappingRules(false)
 {
     Q_ASSERT(mMapRules);
 
@@ -92,6 +89,9 @@ bool AutoMapper::ruleLayerNameUsed(const QString &ruleLayerName) const
 
 bool AutoMapper::setupRuleMapProperties()
 {
+    // By default, only infinite maps match rules outside of their boundaries
+    mOptions.matchOutsideMap = mMapWork->infinite();
+
     QMapIterator<QString, QVariant> it(mMapRules->properties());
     while (it.hasNext()) {
         it.next();
@@ -99,19 +99,24 @@ bool AutoMapper::setupRuleMapProperties()
         const QString &name = it.key();
         const QVariant &value = it.value();
 
-        if (name.compare(QLatin1String("deletetiles"), Qt::CaseInsensitive) == 0) {
+        if (name.compare(QLatin1String("DeleteTiles"), Qt::CaseInsensitive) == 0) {
             if (value.canConvert(QVariant::Bool)) {
-                mDeleteTiles = value.toBool();
+                mOptions.deleteTiles = value.toBool();
                 continue;
             }
-        } else if (name.compare(QLatin1String("automappingradius"), Qt::CaseInsensitive) == 0) {
+        } else if (name.compare(QLatin1String("MatchOutsideMap"), Qt::CaseInsensitive) == 0) {
+            if (value.canConvert(QVariant::Bool)) {
+                mOptions.matchOutsideMap = value.toBool();
+                continue;
+            }
+        } else if (name.compare(QLatin1String("AutomappingRadius"), Qt::CaseInsensitive) == 0) {
             if (value.canConvert(QVariant::Int)) {
-                mAutoMappingRadius = value.toInt();
+                mOptions.autoMappingRadius = value.toInt();
                 continue;
             }
-        } else if (name.compare(QLatin1String("nooverlappingrules"), Qt::CaseInsensitive) == 0) {
+        } else if (name.compare(QLatin1String("NoOverlappingRules"), Qt::CaseInsensitive) == 0) {
             if (value.canConvert(QVariant::Bool)) {
-                mNoOverlappingRules = value.toBool();
+                mOptions.noOverlappingRules = value.toBool();
                 continue;
             }
         }
@@ -442,7 +447,7 @@ void AutoMapper::autoMap(QRegion *where)
 {
     Q_ASSERT(mRulesInput.size() == mRulesOutput.size());
     // first resize the active area
-    if (mAutoMappingRadius) {
+    if (mOptions.autoMappingRadius) {
         QRegion region;
 #if QT_VERSION < 0x050800
         const auto rects = where->rects();
@@ -450,16 +455,16 @@ void AutoMapper::autoMap(QRegion *where)
 #else
         for (const QRect &r : *where) {
 #endif
-            region += r.adjusted(- mAutoMappingRadius,
-                                 - mAutoMappingRadius,
-                                 + mAutoMappingRadius,
-                                 + mAutoMappingRadius);
+            region += r.adjusted(- mOptions.autoMappingRadius,
+                                 - mOptions.autoMappingRadius,
+                                 + mOptions.autoMappingRadius,
+                                 + mOptions.autoMappingRadius);
         }
         where->swap(region);
     }
 
     // delete all the relevant area, if the property "DeleteTiles" is set
-    if (mDeleteTiles) {
+    if (mOptions.deleteTiles) {
         const QRegion setLayersRegion = computeSetLayersRegion();
         for (const RuleOutput &translationTable : mLayerList) {
             for (const int index : translationTable) {
@@ -603,7 +608,8 @@ static void collectCellsInRegion(const QVector<InputLayer> &list,
 static bool layerMatchesConditions(const TileLayer &setLayer,
                                    const InputConditions &conditions,
                                    const QRegion &ruleRegion,
-                                   const QPoint &offset)
+                                   const QPoint &offset,
+                                   const AutoMapper::Options &options)
 {
     const auto &listYes = conditions.listYes;
     const auto &listNo = conditions.listNo;
@@ -622,6 +628,10 @@ static bool layerMatchesConditions(const TileLayer &setLayer,
 #endif
         for (int x = rect.left(); x <= rect.right(); ++x) {
             for (int y = rect.top(); y <= rect.bottom(); ++y) {
+                if (!options.matchOutsideMap &&
+                        !setLayer.contains(x + offset.x(), y + offset.y()))
+                    return false;
+
                 const Cell &setCell = setLayer.cellAt(x + offset.x(),
                                                       y + offset.y());
 
@@ -691,10 +701,10 @@ QRect AutoMapper::applyRule(int ruleIndex, const QRect &where)
     // make sure there are no overlaps of the same rule applied to
     // (neighbouring) places
     QVector<QRegion> appliedRegions;
-    if (mNoOverlappingRules)
+    if (mOptions.noOverlappingRules)
         appliedRegions.resize(mMapWork->layerCount());
 
-    const TileLayer dummy(QString(), 0, 0, 0, 0);
+    const TileLayer dummy(QString(), 0, 0, mMapWork->width(), mMapWork->height());
 
     for (int y = minY; y <= maxY; ++y)
     for (int x = minX; x <= maxX; ++x) {
@@ -713,7 +723,7 @@ QRect AutoMapper::applyRule(int ruleIndex, const QRect &where)
                 const int i = mMapWork->indexOfLayer(name, Layer::TileLayerType);
                 const TileLayer &setLayer = (i >= 0) ? *mMapWork->layerAt(i)->asTileLayer() : dummy;
 
-                if (!layerMatchesConditions(setLayer, conditions, ruleInputRegion, QPoint(x, y))) {
+                if (!layerMatchesConditions(setLayer, conditions, ruleInputRegion, QPoint(x, y), mOptions)) {
                     allLayerNamesMatch = false;
                     break;
                 }
@@ -730,7 +740,7 @@ QRect AutoMapper::applyRule(int ruleIndex, const QRect &where)
             const int r = qrand() % mLayerList.size();
             const RuleOutput &translationTable = mLayerList.at(r);
 
-            if (mNoOverlappingRules) {
+            if (mOptions.noOverlappingRules) {
                 bool overlap = false;
                 const QList<Layer*> layers = translationTable.keys();
 
