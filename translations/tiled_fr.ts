@@ -80,17 +80,17 @@
     <message>
         <location line="+9"/>
         <source>Export syntax is --export-tileset [format] &lt;source&gt; &lt;target&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>La syntaxe d&apos;exportation est --export-tileset [format] &lt;source&gt; &lt;cible&gt;</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>Failed to load source tileset.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le chargement du jeu de tuiles a échoué.</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Failed to export tileset to target file.</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;exportation du jeu de tuiles vers le fichier source a échoué.</translation>
     </message>
 </context>
 <context>
@@ -167,22 +167,22 @@
     <message>
         <location line="+5"/>
         <source>Export the specified map file to target</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter le fichier de carte spécifié vers la cible</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export the specified tileset file to target</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter le fichier de jeu de tuiles spécifié vers la cible</translation>
     </message>
     <message>
         <location line="+84"/>
         <source>Map export formats:</source>
-        <translation type="unfinished"></translation>
+        <translation>Formats d&apos;exportation de carte :</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Tileset export formats:</source>
-        <translation type="unfinished"></translation>
+        <translation>Formats d&apos;exportation de jeu de tuiles :</translation>
     </message>
     <message>
         <location line="-90"/>
@@ -192,17 +192,17 @@
     <message>
         <location line="+5"/>
         <source>Export the map with tilesets embedded</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter la carte avec les jeux de tuiles intégrés</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export the map or tileset with template instances detached</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter la carte ou le jeu de tuiles avec les instances de modèle détachées</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export the map or tileset with types and properties resolved</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter la carte ou le jeu de tuiles avec les types et propriétés résolues</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -585,7 +585,7 @@
     <message>
         <location line="+4"/>
         <source>Unload World</source>
-        <translation type="unfinished"></translation>
+        <translation>Décharger le monde</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -665,7 +665,7 @@
     <message>
         <location line="+3"/>
         <source>Ctrl+Alt+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Alt+S</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -710,17 +710,17 @@
     <message>
         <location line="+127"/>
         <source>For Hovered Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Pour les objets survolés</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Load World...</source>
-        <translation type="unfinished"></translation>
+        <translation>Charger le monde...</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Highlight Hovered Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Objets survolés en surbrillance</translation>
     </message>
     <message>
         <location line="-124"/>
@@ -910,7 +910,7 @@
     <message>
         <location line="+24"/>
         <source>Ctrl+Shift+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Maj+S</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1126,7 +1126,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="-38"/>
         <source>Fixed</source>
-        <translation type="unfinished">Fixe</translation>
+        <translation>Fixe</translation>
     </message>
     <message>
         <location line="+54"/>
@@ -1395,7 +1395,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+5"/>
         <source>Selected Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Calques sélectionnés</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -1559,22 +1559,22 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+10"/>
         <source>Export Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter les options</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Resolve object types and properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Résoudre les types et propriétés d&apos;objet</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Detach templates</source>
-        <translation type="unfinished"></translation>
+        <translation>Détacher les modèles</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Embed tilesets</source>
-        <translation type="unfinished"></translation>
+        <translation>Intégrer les jeux de tuiles</translation>
     </message>
     <message>
         <location line="+59"/>
@@ -1599,7 +1599,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+49"/>
         <source>Mouse wheel &amp;zooms by default</source>
-        <translation type="unfinished">La roulette de la souris &amp;zoome par défaut</translation>
+        <translation>La molette de la souris &amp;zoome par défaut</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -2383,17 +2383,17 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+11"/>
         <source>Frame Duration: </source>
-        <translation type="unfinished"></translation>
+        <translation>Durée de la trame : </translation>
     </message>
     <message>
         <location line="+7"/>
         <source> ms</source>
-        <translation type="unfinished"></translation>
+        <translation> ms</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>Apply</source>
-        <translation type="unfinished"></translation>
+        <translation>Appliquer</translation>
     </message>
     <message>
         <location line="+98"/>
@@ -2552,7 +2552,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+1"/>
         <source>Intersect Selection</source>
-        <translation type="unfinished">Intersectionner la sélection</translation>
+        <translation>Intersectionner la sélection</translation>
     </message>
 </context>
 <context>
@@ -2588,7 +2588,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="-25"/>
         <source>&apos;%1&apos;: Property &apos;%2&apos; = &apos;%3&apos; on layer &apos;%4&apos; does not make sense. Ignoring this property.</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1&apos;: La propriété &apos;%2&apos; = &apos;%3&apos; sur le calque &apos;%4&apos; n&apos;a aucun sens. Cette propriété est ignorée.</translation>
     </message>
     <message>
         <location line="+31"/>
@@ -2624,7 +2624,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+3"/>
         <source>No output_&lt;name&gt; layer found!</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucun calque du nom output_&lt;name&gt; trouvé !</translation>
     </message>
 </context>
 <context>
@@ -3020,12 +3020,12 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+122"/>
         <source>Connect Polylines</source>
-        <translation type="unfinished"></translation>
+        <translation>Connecter les polylignes</translation>
     </message>
     <message>
         <location line="+202"/>
         <source>Create Polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Créer un polygone</translation>
     </message>
 </context>
 <context>
@@ -3090,7 +3090,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location filename="../src/tiled/documentmanager.cpp" line="+461"/>
         <source>Unrecognized file format.</source>
-        <translation type="unfinished">Format de fichier non reconnu.</translation>
+        <translation>Format de fichier non reconnu.</translation>
     </message>
     <message>
         <location line="+257"/>
@@ -3145,7 +3145,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="-23"/>
         <source>Split Segment</source>
-        <translation type="unfinished"></translation>
+        <translation>Séparer les segments</translation>
     </message>
     <message numerus="yes">
         <location line="+265"/>
@@ -3185,7 +3185,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="-334"/>
         <source>Extend Polyline</source>
-        <translation type="unfinished"></translation>
+        <translation>Étendre les polylignes</translation>
     </message>
 </context>
 <context>
@@ -3312,11 +3312,9 @@ Voulez-vous le remplacer ?</translation>
     <message numerus="yes">
         <location line="+74"/>
         <source>Drag Layer(s)</source>
-        <translation>
-            <numerusform>Déplacer le calque</numerusform>
-            <numerusform>Déplacer les calques</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Déplacer le Calque(s)</numerusform>
+        <numerusform>Déplacer les Calques</numerusform>
+        </translation></message>
     <message>
         <location line="+238"/>
         <source>Show Other Layers</source>
@@ -3330,12 +3328,12 @@ Voulez-vous le remplacer ?</translation>
     <message>
         <location line="+31"/>
         <source>Lock Other Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Vérouiller les autres calques</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Unlock Other Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Dévérouiller les autres calques</translation>
     </message>
 </context>
 <context>
@@ -3418,7 +3416,7 @@ Voulez-vous le remplacer ?</translation>
     <message>
         <location line="+13"/>
         <source>Ctrl+Q</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Q</translation>
     </message>
     <message>
         <location line="+66"/>
@@ -3449,12 +3447,12 @@ Voulez-vous le remplacer ?</translation>
     <message>
         <location line="-1113"/>
         <source>Load World</source>
-        <translation type="unfinished"></translation>
+        <translation>Charger le monde</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Error Loading World</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur lors du chargement du monde</translation>
     </message>
     <message>
         <location line="+79"/>
@@ -3715,27 +3713,21 @@ Veuillez sélectionner un format spécifique.</translation>
     <message numerus="yes">
         <location line="+2"/>
         <source>Group %n Layer(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Grouper %n calque(s)</numerusform>
+        <numerusform>Grouper %n calques</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+16"/>
         <source>Ungroup %n Layer(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Séparer %n calque(s)</numerusform>
+        <numerusform>Séparer %n calques</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+46"/>
         <source>Duplicate %n Layer(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Dupliquer %n calque(s)</numerusform>
+        <numerusform>Dupliquer %n calques</numerusform>
+        </translation></message>
     <message>
         <location line="+27"/>
         <source>Copy of %1</source>
@@ -3749,11 +3741,9 @@ Veuillez sélectionner un format spécifique.</translation>
     <message numerus="yes">
         <location line="+73"/>
         <source>Remove %n Layer(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Supprimer %n calque(s)</numerusform>
+        <numerusform>Supprimer %n calques</numerusform>
+        </translation></message>
     <message>
         <location line="+305"/>
         <source>Tile</source>
@@ -3850,7 +3840,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+5"/>
         <source>Ctrl+Shift+L</source>
-        <translation type="unfinished">Ctrl+Maj+L</translation>
+        <translation>Ctrl+Maj+L</translation>
     </message>
     <message>
         <location line="+59"/>
@@ -3912,17 +3902,17 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="-313"/>
         <source>&amp;Remove Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer le calque (&amp;R)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>R&amp;aise Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Monter le calque (&amp;A)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Lower Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Descendre le calque (&amp;L)</translation>
     </message>
     <message>
         <location line="-3"/>
@@ -3942,7 +3932,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+1"/>
         <source>Lock/&amp;Unlock all Other Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Bloquer/Débloquer tous les autres calques (&amp;U)</translation>
     </message>
     <message>
         <location line="+40"/>
@@ -4003,17 +3993,17 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+92"/>
         <source>&amp;Group Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Grouper les calques</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Ungroup Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Dégrouper les calques (&amp;U)</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Duplicate Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Dupliquer les calques</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4031,7 +4021,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/tiled/mapeditor.cpp" line="+665"/>
         <source>Paste in Place</source>
-        <translation type="unfinished"></translation>
+        <translation>Coller sur place</translation>
     </message>
     <message>
         <location line="+187"/>
@@ -4214,12 +4204,12 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/tiled/newsbutton.cpp" line="+45"/>
         <source>News</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouvelles</translation>
     </message>
     <message>
         <location line="+69"/>
         <source>News Archive</source>
-        <translation type="unfinished"></translation>
+        <translation>Archive des nouvelles</translation>
     </message>
 </context>
 <context>
@@ -4594,7 +4584,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+27"/>
         <source>Wang Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Ensemble Wang</translation>
     </message>
     <message>
         <location line="+347"/>
@@ -4679,12 +4669,12 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+16"/>
         <source>Wang Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Couleur de Wang</translation>
     </message>
     <message>
         <location line="+40"/>
         <source>Change Infinite Property</source>
-        <translation type="unfinished">Changer la Propriété Infinie</translation>
+        <translation>Changer la Propriété Infinie</translation>
     </message>
     <message>
         <location line="+931"/>
@@ -4965,7 +4955,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <location line="-26"/>
         <location line="+20"/>
         <source>Wang Fill Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Mode de remplissage Wang</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -5389,7 +5379,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+89"/>
         <source>New Wang Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouvel ensemble Wang</translation>
     </message>
 </context>
 <context>
@@ -5415,12 +5405,12 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+9"/>
         <source>Set Wang Set Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Régler l&apos;image de l&apos;ensemble Wang</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Set Wang Color Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Régler la couleur de l&apos;image Wang</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -5524,7 +5514,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <location filename="../src/tiled/wangbrush.cpp" line="+108"/>
         <location line="+65"/>
         <source>Wang Brush</source>
-        <translation type="unfinished"></translation>
+        <translation>Pinceau Wang</translation>
     </message>
     <message>
         <location line="-62"/>
@@ -5535,7 +5525,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+152"/>
         <source>Missing wang tile transition</source>
-        <translation type="unfinished"></translation>
+        <translation>Transition de la tuile Wang manquante</translation>
     </message>
 </context>
 <context>
@@ -5543,12 +5533,12 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/tiled/wangcolormodel.cpp" line="+144"/>
         <source>Edge Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Couleurs de bord</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Corner Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Couleurs des coins</translation>
     </message>
 </context>
 <context>
@@ -5576,22 +5566,22 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="-10"/>
         <source>Wang Sets</source>
-        <translation type="unfinished"></translation>
+        <translation>Ensembles Wang</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Erase WangIds</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer les identifiants Wang</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add Wang Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter un ensemble Wang</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Wang Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer un ensemble Wang</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -5614,7 +5604,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/tiled/wangsetview.cpp" line="+105"/>
         <source>Wang Set &amp;Properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Propriétés de l&apos;ensemble Wang...</translation>
     </message>
 </context>
 <context>
@@ -5630,13 +5620,14 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/libtiled/worldmanager.cpp" line="+109"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier n&apos;a pas pu être ouvert en écriture.</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>JSON parse error at offset %1:
 %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur de traitement de JSON au décalage %1 :
+%2.</translation>
     </message>
 </context>
 <context>
@@ -5667,7 +5658,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+11"/>
         <source>Add Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter des Objets</translation>
     </message>
     <message>
         <location line="+40"/>
@@ -5677,7 +5668,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+11"/>
         <source>Remove Objects</source>
-        <translation type="unfinished">Effacer les objets</translation>
+        <translation>Supprimer les Objets</translation>
     </message>
     <message>
         <location filename="../src/tiled/addremovetileset.cpp" line="+62"/>
@@ -5830,7 +5821,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+19"/>
         <source>Toggle Polygon/Polyline</source>
-        <translation type="unfinished">Activer/Désactiver le Polygone/Polyligne</translation>
+        <translation>Activer/Désactiver le Polygone/Polyligne</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -6006,7 +5997,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+4"/>
         <source>Change Infinite Property</source>
-        <translation type="unfinished">Changer la Propriété Infinie</translation>
+        <translation>Changer la Propriété Infinie</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -6094,39 +6085,39 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/tiled/addremovewangset.cpp" line="+65"/>
         <source>Add Wang Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter un Ensemble Wang</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Remove Wang Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer un Ensemble Wang</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetilewangid.cpp" line="+36"/>
         <location line="+12"/>
         <location line="+14"/>
         <source>Change Tile WangId</source>
-        <translation type="unfinished"></translation>
+        <translation>Changer l&apos;Identifiant Wang de la Tuile</translation>
     </message>
     <message>
         <location filename="../src/tiled/changewangsetdata.cpp" line="+38"/>
         <source>Change Wang Set edge count</source>
-        <translation type="unfinished"></translation>
+        <translation>Changer le Nombre de Bords de l&apos;Ensemble Wang</translation>
     </message>
     <message>
         <location line="+66"/>
         <source>Change Wang Set corner count</source>
-        <translation type="unfinished"></translation>
+        <translation>Changer le Nombre de Coins de l&apos;Ensemble Wang</translation>
     </message>
     <message>
         <location line="+63"/>
         <source>Remove Wang Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer la Couleur Wang</translation>
     </message>
     <message>
         <location line="+90"/>
         <source>Set Wang Set Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Régler l&apos;Image de l&apos;Ensemble Wang</translation>
     </message>
     <message>
         <location filename="../src/tiled/moveterrain.cpp" line="+61"/>
@@ -6141,7 +6132,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/tiled/renamewangset.cpp" line="+35"/>
         <source>Change Wang Set Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Changer le Nom de l&apos;Ensemble Wang</translation>
     </message>
     <message>
         <location filename="../src/tiled/replacetemplate.cpp" line="+35"/>
@@ -6156,19 +6147,15 @@ Veuillez sélectionner un format spécifique.</translation>
     <message numerus="yes">
         <location filename="../src/tiled/mapdocument.cpp" line="-683"/>
         <source>Raise %n Layer(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Monter %n Calque(s)</numerusform>
+        <numerusform>Monter %n Calques</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+27"/>
         <source>Lower %n Layer(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Descendre %n Calque(s)</numerusform>
+        <numerusform>Descendre %n Calques</numerusform>
+        </translation></message>
 </context>
 <context>
     <name>Utils</name>
@@ -6193,93 +6180,93 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/tmxrasterizer/main.cpp" line="+52"/>
         <source>Renders a Tiled map (TMX format) to an image.</source>
-        <translation type="unfinished"></translation>
+        <translation>Créée un rendu d&apos;une carte Tiled (format TMX) en tant qu&apos;image.</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>The scale of the output image (default: 1).</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;échelle de l&apos;image de sortie (défaut : 1).</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>scale</source>
-        <translation type="unfinished"></translation>
+        <translation>échelle</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>The requested size in pixels at which a tile is rendered (overrides the --scale option).</source>
-        <translation type="unfinished"></translation>
+        <translation>La taille demandée en pixels à laquelle une tuile est rendue (remplace l&apos;option --scale).</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+3"/>
         <source>size</source>
-        <translation type="unfinished"></translation>
+        <translation>taille</translation>
     </message>
     <message>
         <location line="-1"/>
         <source>The output image fits within a SIZE x SIZE square (overrides the --scale and --tilesize options).</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;image de sortie rentre dans un carré de TAILLE x TAILLE (remplace les options --scale et --tilesize).</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Antialias edges of primitives.</source>
-        <translation type="unfinished"></translation>
+        <translation>Anti-repliement des bords des primitifs.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Use nearest neighbour instead of smooth blending of pixels.</source>
-        <translation type="unfinished"></translation>
+        <translation>Utiliser le voisin le plus proche au lieu de mélanger les pixels.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Ignore all layer visibility flags in the map file, and render all layers in the output (default is to omit invisible layers).</source>
-        <translation type="unfinished"></translation>
+        <translation>Ignorer toutes les valeurs de visibilités dans le fichier de carte, et affiche tous les calques dans la sortie (les calques invisibles sont omis par défaut).</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Specifies a layer to omit from the output image. Can be repeated to hide multiple layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Spécifie un calque à omettre pour l&apos;image de sortie. Peut être répété pour cacher plusieurs calques.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>name</source>
-        <translation type="unfinished"></translation>
+        <translation>nom</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Map file to render.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichier de carte à rendre.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Image file to output.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichier image de sortie.</translation>
     </message>
     <message>
         <location line="+23"/>
         <source>Invalid size specified: &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Taille invalide spécifiée : &quot;%1&quot;</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Invalid tile size specified: &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Taille de tuile invalide spécifiée : &quot;%1&quot;</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Invalid scale specified: &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Échelle invalide spécifiée : &quot;%1&quot;</translation>
     </message>
     <message>
         <location filename="../src/tmxviewer/main.cpp" line="+57"/>
         <source>Displays a Tiled map (TMX format).</source>
-        <translation type="unfinished"></translation>
+        <translation>Affiche une carte Tiled (format TMX).</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Map file to display.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichier de carte à afficher.</translation>
     </message>
 </context>
 </TS>
