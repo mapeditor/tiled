@@ -177,7 +177,7 @@
     <message>
         <location line="+84"/>
         <source>Map export formats:</source>
-        <translation type="unfinished"></translation>
+        <translation>Karten Export Formate:</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -192,7 +192,7 @@
     <message>
         <location line="+5"/>
         <source>Export the map with tilesets embedded</source>
-        <translation type="unfinished"></translation>
+        <translation>Karte mit eingebetteten Tilesets exportieren</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -496,7 +496,7 @@
     <message>
         <location line="+14"/>
         <source>Json template files (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Json Vorlagendateien (*.json)</translation>
     </message>
 </context>
 <context>
@@ -735,7 +735,7 @@
     <message>
         <location line="-5"/>
         <source>Ctrl+Alt+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Alt+S</translation>
     </message>
     <message>
         <location line="+14"/>
@@ -775,7 +775,7 @@
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -2289,17 +2289,17 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+34"/>
         <source>Different tile sizes per layer are not supported.</source>
-        <translation type="unfinished"></translation>
+        <translation>Unterschiedliche Kachelgrößen auf einer Ebene sind nicht unterstützt.</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Invalid animation frame.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ungültiger Animationsframe.</translation>
     </message>
     <message>
         <location line="+112"/>
         <source>Only object and tile layers supported.</source>
-        <translation type="unfinished"></translation>
+        <translation>Es werden nur Objekte und Kachelebenen unterstützt.</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -2309,7 +2309,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+8"/>
         <source>Exception: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: %1</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -2323,7 +2323,7 @@ Zeile %1, Spalte %2</translation>
         <location filename="../src/plugins/tbin/tbin/Map.cpp" line="+99"/>
         <location line="+23"/>
         <source>Bad property type</source>
-        <translation type="unfinished"></translation>
+        <translation>Falscher Eigenschaftstyp</translation>
     </message>
     <message>
         <location line="+69"/>
@@ -2339,7 +2339,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+14"/>
         <source>File is not a tbin file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei ist keine tbin Datei.</translation>
     </message>
     <message>
         <location line="+35"/>
@@ -2537,22 +2537,22 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location filename="../src/tiled/abstracttileselectiontool.cpp" line="+137"/>
         <source>Replace Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Auswahl ersetzen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Auswahl hinzufügen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Subtract Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Auswahl abziehen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Intersect Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Auswahl schneiden</translation>
     </message>
 </context>
 <context>
@@ -2588,7 +2588,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="-25"/>
         <source>&apos;%1&apos;: Property &apos;%2&apos; = &apos;%3&apos; on layer &apos;%4&apos; does not make sense. Ignoring this property.</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1&apos;: Eigenschaft &apos;%2&apos; = &apos;%3&apos; auf Ebene &apos;%4&apos; ergibt keinen Sinn. Eigenschaft wird ignoriert.</translation>
     </message>
     <message>
         <location line="+31"/>
@@ -2624,7 +2624,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+3"/>
         <source>No output_&lt;name&gt; layer found!</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine output_&lt;name&gt; Ebene gefunden!</translation>
     </message>
 </context>
 <context>
@@ -3026,7 +3026,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+202"/>
         <source>Create Polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Polygon erstellen</translation>
     </message>
 </context>
 <context>
@@ -3047,7 +3047,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location filename="../src/tiled/createtemplatetool.cpp" line="+53"/>
         <source>Insert Template</source>
-        <translation type="unfinished"></translation>
+        <translation>Vorlage einfügen</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3111,12 +3111,12 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+7"/>
         <source>Close Other Tabs</source>
-        <translation type="unfinished"></translation>
+        <translation>Andere Tabs schließen</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Close Tabs to the Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Rechte Tabs schließen</translation>
     </message>
     <message>
         <location line="+241"/>
@@ -3146,7 +3146,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="-23"/>
         <source>Split Segment</source>
-        <translation type="unfinished"></translation>
+        <translation>Segment teilen</translation>
     </message>
     <message numerus="yes">
         <location line="+265"/>
@@ -3181,7 +3181,7 @@ Zeile %1, Spalte %2</translation>
         <location line="-298"/>
         <location line="+365"/>
         <source>Delete Segment</source>
-        <translation type="unfinished"></translation>
+        <translation>Segment löschen</translation>
     </message>
     <message>
         <location line="-334"/>
@@ -3308,7 +3308,7 @@ Soll sie ersetzt werden?</translation>
     <message>
         <location line="+1"/>
         <source>Locked</source>
-        <translation type="unfinished"></translation>
+        <translation>Gesperrt</translation>
     </message>
     <message numerus="yes">
         <location line="+74"/>
@@ -3331,12 +3331,12 @@ Soll sie ersetzt werden?</translation>
     <message>
         <location line="+31"/>
         <source>Lock Other Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Andere Ebenen sperren</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Unlock Other Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Andere Ebenen entsperren</translation>
     </message>
 </context>
 <context>
@@ -3750,11 +3750,9 @@ Bitte Format angeben.</translation>
     <message numerus="yes">
         <location line="+73"/>
         <source>Remove %n Layer(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Ebene entfernen</numerusform>
+        <numerusform>%n Ebenen entfernen</numerusform>
+        </translation></message>
     <message>
         <location line="+305"/>
         <source>Tile</source>
@@ -3861,7 +3859,7 @@ Bitte Format angeben.</translation>
     <message>
         <location line="+5"/>
         <source>Ctrl+Shift+L</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+L</translation>
     </message>
     <message>
         <location line="+59"/>
@@ -3923,7 +3921,7 @@ Bitte Format angeben.</translation>
     <message>
         <location line="-318"/>
         <source>&amp;Group Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebenen &amp;gruppieren</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3933,7 +3931,7 @@ Bitte Format angeben.</translation>
     <message>
         <location line="+2"/>
         <source>&amp;Duplicate Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebenen &amp;duplizieren</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3943,7 +3941,7 @@ Bitte Format angeben.</translation>
     <message>
         <location line="+3"/>
         <source>R&amp;aise Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebenen &amp;anheben</translation>
     </message>
     <message>
         <location line="+1"/>
