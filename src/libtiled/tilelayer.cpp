@@ -681,16 +681,16 @@ void TileLayer::offsetTiles(const QPoint &offset)
     mBounds = newLayer->mBounds;
 }
 
-bool TileLayer::canMergeWith(Layer *other) const
+bool TileLayer::canMergeWith(const Layer *other) const
 {
     return other->isTileLayer();
 }
 
-Layer *TileLayer::mergedWith(Layer *other) const
+Layer *TileLayer::mergedWith(const Layer *other) const
 {
     Q_ASSERT(canMergeWith(other));
 
-    const TileLayer *o = static_cast<TileLayer*>(other);
+    const TileLayer *o = static_cast<const TileLayer*>(other);
     const QRect unitedRect = rect().united(o->rect());
     const QPoint offset = position() - unitedRect.topLeft();
 

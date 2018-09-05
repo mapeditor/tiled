@@ -353,7 +353,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mLayerMenu->addMenu(mNewLayerMenu);
     mLayerMenu->addMenu(mGroupLayerMenu);
     mLayerMenu->addAction(mActionHandler->actionDuplicateLayers());
-    mLayerMenu->addAction(mActionHandler->actionMergeLayerDown());
+    mLayerMenu->addAction(mActionHandler->actionMergeLayersDown());
     mLayerMenu->addAction(mActionHandler->actionRemoveLayers());
     mLayerMenu->addSeparator();
     mLayerMenu->addAction(mActionHandler->actionSelectPreviousLayer());

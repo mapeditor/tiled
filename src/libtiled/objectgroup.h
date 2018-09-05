@@ -155,8 +155,8 @@ public:
     void offsetObjects(const QPointF &offset, const QRectF &bounds,
                        bool wrapX, bool wrapY);
 
-    bool canMergeWith(Layer *other) const override;
-    Layer *mergedWith(Layer *other) const override;
+    bool canMergeWith(const Layer *other) const override;
+    Layer *mergedWith(const Layer *other) const override;
 
     const QColor &color() const;
     void setColor(const QColor &color);

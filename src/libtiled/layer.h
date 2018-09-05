@@ -175,6 +175,8 @@ public:
 
     QPointF totalOffset() const;
 
+    bool canMergeDown() const;
+
     virtual bool isEmpty() const = 0;
 
     /**
@@ -197,7 +199,7 @@ public:
     /**
      * Returns whether this layer can merge together with the \a other layer.
      */
-    virtual bool canMergeWith(Layer *other) const = 0;
+    virtual bool canMergeWith(const Layer *other) const = 0;
 
     /**
      * Returns a newly allocated layer that is the result of merging this layer
@@ -206,7 +208,7 @@ public:
      *
      * Should only be called when canMergeWith returns true.
      */
-    virtual Layer *mergedWith(Layer *other) const = 0;
+    virtual Layer *mergedWith(const Layer *other) const = 0;
 
     /**
      * Returns a duplicate of this layer. The caller is responsible for the

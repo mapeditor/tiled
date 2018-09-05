@@ -154,7 +154,7 @@ public:
     void groupLayers(const QList<Layer *> &layers);
     void ungroupLayers(const QList<Layer *> &layers);
     void duplicateLayers(const QList<Layer *> &layers);
-    void mergeLayerDown();
+    void mergeLayersDown(const QList<Layer *> &layers);
     void moveLayersUp(const QList<Layer *> &layers);
     void moveLayersDown(const QList<Layer *> &layers);
     void removeLayers(const QList<Layer *> &layers);

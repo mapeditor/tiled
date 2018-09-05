@@ -407,7 +407,7 @@ void LayerView::contextMenuEvent(QContextMenuEvent *event)
     if (proxyIndex.isValid()) {
         menu.addMenu(handler->createGroupLayerMenu(&menu));
         menu.addAction(handler->actionDuplicateLayers());
-        menu.addAction(handler->actionMergeLayerDown());
+        menu.addAction(handler->actionMergeLayersDown());
         menu.addAction(handler->actionRemoveLayers());
         menu.addSeparator();
         menu.addAction(handler->actionMoveLayersUp());

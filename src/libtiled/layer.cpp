@@ -149,6 +149,19 @@ QPointF Layer::totalOffset() const
 }
 
 /**
+ * Returns whether this layer can be merged down onto the layer below.
+ */
+bool Layer::canMergeDown() const
+{
+    const int index = siblingIndex();
+    if (index < 1)
+        return false;
+
+    Layer *lowerLayer = siblings().at(index - 1);
+    return lowerLayer->canMergeWith(this);
+}
+
+/**
  * A helper function for initializing the members of the given instance to
  * those of this layer. Used by subclasses when cloning.
  *

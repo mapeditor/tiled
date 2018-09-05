@@ -590,31 +590,53 @@ void MapDocument::duplicateLayers(const QList<Layer *> &layers)
 }
 
 /**
- * Merges the currently selected layer with the layer below. This only works
- * when the layers can be merged.
+ * Merges the given \a layers down, each to the layer directly below them.
+ * Layers that can't be merged down are skipped.
  *
- * \see Layer::canMergeWith
+ * \see Layer::canMergeDown
  */
-void MapDocument::mergeLayerDown()
+void MapDocument::mergeLayersDown(const QList<Layer *> &layers)
 {
-    auto parentLayer = mCurrentLayer ? mCurrentLayer->parentLayer() : nullptr;
-    const int index = layerIndex(mCurrentLayer);
+    QList<Layer *> layersToMerge;
 
-    if (index < 1)
+    for (Layer *layer : layers)
+        if (layer->canMergeDown())
+            layersToMerge.append(layer);
+
+    if (layersToMerge.isEmpty())
         return;
 
-    Layer *lowerLayer = mCurrentLayer->siblings().at(index - 1);
+    mUndoStack->beginMacro(tr("Merge Layer Down")); // todo: support plural after string-freeze
 
-    if (!lowerLayer->canMergeWith(mCurrentLayer))
-        return;
+    Layer *lastMergedLayer = nullptr;
 
-    Layer *merged = lowerLayer->mergedWith(mCurrentLayer);
+    while (!layersToMerge.isEmpty()) {
+        Layer *layer = layersToMerge.takeFirst();
 
-    mUndoStack->beginMacro(tr("Merge Layer Down"));
-    mUndoStack->push(new AddLayer(this, index - 1, merged, parentLayer));
-    mUndoStack->push(new RemoveLayer(this, index, parentLayer));
-    mUndoStack->push(new RemoveLayer(this, index, parentLayer));
+        const int index = layer->siblingIndex();
+        Q_ASSERT(index >= 1);
+
+        Layer *lowerLayer = layer->siblings().at(index - 1);
+        Layer *merged = lowerLayer->mergedWith(layer);
+        GroupLayer *parentLayer = layer->parentLayer();
+
+        mUndoStack->push(new AddLayer(this, index - 1, merged, parentLayer));
+        mUndoStack->push(new RemoveLayer(this, index, parentLayer));
+        mUndoStack->push(new RemoveLayer(this, index, parentLayer));
+
+        // If the layer we've merged with was also scheduled to get merged down,
+        // we need to update the pointer to the new layer.
+        int lowerLayerIndex = layersToMerge.indexOf(lowerLayer);
+        if (lowerLayerIndex != -1)
+            layersToMerge[lowerLayerIndex] = merged;
+
+        lastMergedLayer = merged;
+    }
+
     mUndoStack->endMacro();
+
+    setCurrentLayer(lastMergedLayer);
+    setSelectedLayers({ lastMergedLayer });
 }
 
 /**
@@ -625,9 +647,9 @@ void MapDocument::moveLayersUp(const QList<Layer *> &layers)
     QList<Layer *> layersToMove;
     layersToMove.reserve(layers.size());
 
-    // Move layers in the right order, and abort if one of the layers can't be moved
-    // (iterating backwards because when moving layers up we need to start move the
-    // top-most layer first)
+    // Move layers in the right order, and abort if one of the layers can't be
+    // moved (iterating backwards because when moving layers up we need to
+    // start moving the top-most layer first)
     LayerIterator iterator(mMap.get());
     iterator.toBack();
     while (Layer *layer = iterator.previous()) {

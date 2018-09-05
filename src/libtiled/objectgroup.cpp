@@ -185,16 +185,16 @@ void ObjectGroup::offsetObjects(const QPointF &offset,
     }
 }
 
-bool ObjectGroup::canMergeWith(Layer *other) const
+bool ObjectGroup::canMergeWith(const Layer *other) const
 {
     return other->isObjectGroup();
 }
 
-Layer *ObjectGroup::mergedWith(Layer *other) const
+Layer *ObjectGroup::mergedWith(const Layer *other) const
 {
     Q_ASSERT(canMergeWith(other));
 
-    const ObjectGroup *og = static_cast<ObjectGroup*>(other);
+    const ObjectGroup *og = static_cast<const ObjectGroup*>(other);
 
     ObjectGroup *merged = clone();
     for (const MapObject *mapObject : og->objects())

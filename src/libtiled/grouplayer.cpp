@@ -95,7 +95,7 @@ void GroupLayer::replaceReferencesToTileset(Tileset *oldTileset, Tileset *newTil
         layer->replaceReferencesToTileset(oldTileset, newTileset);
 }
 
-bool GroupLayer::canMergeWith(Layer *) const
+bool GroupLayer::canMergeWith(const Layer *) const
 {
     // Merging group layers would be possible, but duplicating all child layers
     // is not the right approach.
@@ -103,7 +103,7 @@ bool GroupLayer::canMergeWith(Layer *) const
     return false;
 }
 
-Layer *GroupLayer::mergedWith(Layer *) const
+Layer *GroupLayer::mergedWith(const Layer *) const
 {
     return nullptr;
 }

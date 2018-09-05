@@ -476,8 +476,8 @@ public:
      */
     void offsetTiles(const QPoint &offset);
 
-    bool canMergeWith(Layer *other) const override;
-    Layer *mergedWith(Layer *other) const override;
+    bool canMergeWith(const Layer *other) const override;
+    Layer *mergedWith(const Layer *other) const override;
 
     /**
      * Returns the region where this tile layer and the given tile layer
