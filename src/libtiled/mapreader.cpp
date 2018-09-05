@@ -791,25 +791,10 @@ void MapReaderPrivate::readTileLayerData(TileLayer &tileLayer)
 
     mMap->setLayerDataFormat(layerDataFormat);
 
-    if (mMap->infinite()) {
-        while (xml.readNext() != QXmlStreamReader::Invalid) {
-            if (xml.isEndElement()) {
-                break;
-            } else if (xml.isStartElement()) {
-                if (xml.name() == QLatin1String("chunk")) {
-                    const QXmlStreamAttributes atts = xml.attributes();
-                    int x = atts.value(QLatin1String("x")).toInt();
-                    int y = atts.value(QLatin1String("y")).toInt();
-                    int width = atts.value(QLatin1String("width")).toInt();
-                    int height = atts.value(QLatin1String("height")).toInt();
-
-                    readTileLayerRect(tileLayer, layerDataFormat, encoding, QRect(x, y, width, height));
-                }
-            }
-        }
-    } else {
-        readTileLayerRect(tileLayer, layerDataFormat, encoding, QRect(0, 0, tileLayer.width(), tileLayer.height()));
-    }
+    readTileLayerRect(tileLayer,
+                      layerDataFormat,
+                      encoding,
+                      QRect(0, 0, tileLayer.width(), tileLayer.height()));
 }
 
 void MapReaderPrivate::readTileLayerRect(TileLayer &tileLayer,
@@ -817,6 +802,9 @@ void MapReaderPrivate::readTileLayerRect(TileLayer &tileLayer,
                                          QStringRef encoding,
                                          QRect bounds)
 {
+    Q_ASSERT(xml.isStartElement() && (xml.name() == QLatin1String("data") ||
+                                      xml.name() == QLatin1String("chunk")));
+
     int x = bounds.x();
     int y = bounds.y();
 
@@ -841,6 +829,16 @@ void MapReaderPrivate::readTileLayerRect(TileLayer &tileLayer,
                 }
 
                 xml.skipCurrentElement();
+            } else if (xml.name() == QLatin1String("chunk")) {
+                const QXmlStreamAttributes atts = xml.attributes();
+                int x = atts.value(QLatin1String("x")).toInt();
+                int y = atts.value(QLatin1String("y")).toInt();
+                int width = atts.value(QLatin1String("width")).toInt();
+                int height = atts.value(QLatin1String("height")).toInt();
+
+                // Recursively call for reading this chunk of data
+                readTileLayerRect(tileLayer, layerDataFormat, encoding,
+                                  QRect(x, y, width, height));
             } else {
                 readUnknownElement();
             }
