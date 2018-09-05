@@ -35,6 +35,7 @@ public:
 
     void activate(MapScene *) override;
     void deactivate(MapScene *) override;
+    void keyPressed(QKeyEvent *) override;
     void mouseEntered() override;
     void mouseLeft() override;
     void mouseMoved(const QPointF &pos,
@@ -48,16 +49,26 @@ public:
 protected slots:
     void updateEnabledState() override;
 
+protected:
+    void mapDocumentChanged(MapDocument *oldDocument,
+                            MapDocument *newDocument) override;
+
 private:
     void startDrag(const QPointF &pos);
+    void abortDrag();
     void finishDrag();
+
+    struct DraggingLayer {
+        Layer *layer;
+        QPointF oldOffset;
+    };
 
     bool mMousePressed;
     bool mDragging;
     bool mApplyingChange;
     QPoint mMouseScreenStart;
     QPointF mMouseSceneStart;
-    QPointF mOldOffset;
+    QVector<DraggingLayer> mDraggingLayers;
 };
 
 } // namespace Internal

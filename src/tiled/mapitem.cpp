@@ -351,43 +351,6 @@ void MapItem::layerRemoved(Layer *layer)
     delete mLayerItems.take(layer);
 }
 
-// Returns whether layerB is drawn above layerA
-static bool isAbove(Layer *layerA, Layer *layerB)
-{
-    int depthA = layerA->depth();
-    int depthB = layerB->depth();
-
-    // Make sure to start comparing at a common depth
-    while (depthA > 0 && depthA > depthB) {
-        layerA = layerA->parentLayer();
-        --depthA;
-    }
-    while (depthB > 0 && depthB > depthA) {
-        layerB = layerB->parentLayer();
-        --depthB;
-    }
-
-    // One of the layers is a child of the other
-    if (layerA == layerB)
-        return false;
-
-    // Move upwards until the layers have the same parent
-    while (true) {
-        GroupLayer *parentA = layerA->parentLayer();
-        GroupLayer *parentB = layerB->parentLayer();
-
-        if (parentA == parentB) {
-            const auto &layers = layerA->siblings();
-            const int indexA = layers.indexOf(layerA);
-            const int indexB = layers.indexOf(layerB);
-            return indexB > indexA;
-        }
-
-        layerA = parentA;
-        layerB = parentB;
-    }
-}
-
 /**
  * A layer has changed. This can mean that the layer visibility, opacity or
  * offset changed.
@@ -401,8 +364,25 @@ void MapItem::layerChanged(Layer *layer)
     layerItem->setVisible(layer->isVisible());
 
     qreal multiplier = 1;
-    if (prefs->highlightCurrentLayer() && isAbove(mapDocument()->currentLayer(), layer))
-        multiplier = opacityFactor;
+
+    if (prefs->highlightCurrentLayer()) {
+        const auto &selectedLayers = mapDocument()->selectedLayers();
+        bool isAbove = false;
+
+        LayerIterator iterator(mapDocument()->map());
+        iterator.toBack();
+        while (Layer *l = iterator.previous()) {
+            if (selectedLayers.contains(l))
+                break;
+            if (l == layer) {
+                isAbove = true;
+                break;
+            }
+        }
+
+        if (isAbove)
+            multiplier = opacityFactor;
+    }
 
     layerItem->setOpacity(layer->opacity() * multiplier);
     layerItem->setPos(layer->offset());

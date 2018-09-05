@@ -22,6 +22,7 @@
 #include "layeroffsettool.h"
 
 #include "changelayer.h"
+#include "grouplayer.h"
 #include "layermodel.h"
 #include "mapdocument.h"
 #include "maprenderer.h"
@@ -64,6 +65,16 @@ void LayerOffsetTool::deactivate(MapScene *)
     finishDrag();
 }
 
+void LayerOffsetTool::keyPressed(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Escape) {
+        abortDrag();
+        return;
+    }
+
+    event->ignore();
+}
+
 void LayerOffsetTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers)
 {
     if (!mapDocument())
@@ -93,26 +104,30 @@ void LayerOffsetTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modif
             startDrag(pos);
     }
 
-    auto currentLayer = mapDocument()->currentLayer();
-    if (currentLayer && mDragging) {
-        QPointF newOffset = mOldOffset + (pos - mMouseSceneStart);
+    mApplyingChange = true;
+    for (const DraggingLayer &dragging : qAsConst(mDraggingLayers)) {
+        QPointF newOffset = dragging.oldOffset + (pos - mMouseSceneStart);
         SnapHelper(mapDocument()->renderer(), modifiers).snap(newOffset);
-        mApplyingChange = true;
-        mapDocument()->layerModel()->setLayerOffset(currentLayer, newOffset);
-        mApplyingChange = false;
+        mapDocument()->layerModel()->setLayerOffset(dragging.layer, newOffset);
     }
+    mApplyingChange = false;
 }
 
 void LayerOffsetTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
-    mMousePressed = true;
-    mMouseScreenStart = event->screenPos();
+    if (event->button() == Qt::RightButton) {
+        abortDrag();
+    } else if (event->button() == Qt::LeftButton) {
+        mMousePressed = true;
+        mMouseScreenStart = event->screenPos();
+        setCursor(Qt::SizeAllCursor);
+    }
 }
 
-void LayerOffsetTool::mouseReleased(QGraphicsSceneMouseEvent *)
+void LayerOffsetTool::mouseReleased(QGraphicsSceneMouseEvent *event)
 {
-    mMousePressed = false;
-    finishDrag();
+    if (event->button() == Qt::LeftButton)
+        finishDrag();
 }
 
 void LayerOffsetTool::modifiersChanged(Qt::KeyboardModifiers)
@@ -130,38 +145,101 @@ void LayerOffsetTool::updateEnabledState()
     setEnabled(currentLayer());
 }
 
+void LayerOffsetTool::mapDocumentChanged(MapDocument *oldDocument,
+                                         MapDocument *newDocument)
+{
+    // No changes should be happening while dragging, but there is currently
+    // no mechanism to stop it. Abort drag if any layers are going to be
+    // removed, to avoid crashing.
+
+    if (oldDocument) {
+        disconnect(oldDocument, &MapDocument::layerAboutToBeRemoved,
+                   this, &LayerOffsetTool::abortDrag);
+    }
+
+    if (newDocument) {
+        connect(newDocument, &MapDocument::layerAboutToBeRemoved,
+                this, &LayerOffsetTool::abortDrag);
+    }
+}
+
 void LayerOffsetTool::startDrag(const QPointF &pos)
 {
     if (!mapDocument())
         return;
 
-    Layer *layer = mapDocument()->currentLayer();
-    if (layer && layer->isUnlocked()) {
-        mDragging = true;
-        mMouseSceneStart = pos;
-        mOldOffset = layer->offset();
-    }
-}
+    const auto &layers = mapDocument()->selectedLayers();
 
-void LayerOffsetTool::finishDrag()
-{
-    if (!mDragging)
+    QVector<DraggingLayer> layersToDrag;
+
+    LayerIterator iterator(mapDocument()->map());
+    while (Layer *layer = iterator.next()) {
+        if (!layer->isUnlocked())
+            continue;
+        if (!layers.contains(layer))
+            continue;
+
+        // Before adding a group layer, make sure none of its children are in
+        // the list, to avoid applying the offset multiple times.
+        if (layer->isGroupLayer())
+            for (int i = layersToDrag.size() - 1; i >= 0; --i)
+                if (layersToDrag.at(i).layer->isParentOrSelf(layer))
+                    layersToDrag.removeAt(i);
+
+        layersToDrag.append({ layer, layer->offset() });
+    }
+
+    if (layersToDrag.isEmpty())
         return;
 
+    mDragging = true;
+    mMouseSceneStart = pos;
+    mDraggingLayers.swap(layersToDrag);
+}
+
+void LayerOffsetTool::abortDrag()
+{
+    QVector<DraggingLayer> draggedLayers;
+    mDraggingLayers.swap(draggedLayers);
     mDragging = false;
+
+    mMousePressed = false;  // require pressing the button again to restart the drag
+    setCursor(QCursor());
 
     if (!mapDocument())
         return;
 
-    if (Layer *layer = mapDocument()->currentLayer()) {
-        const QPointF newOffset = layer->offset();
-        auto currentLayer = mapDocument()->currentLayer();
-        mApplyingChange = true;
-        mapDocument()->layerModel()->setLayerOffset(currentLayer, mOldOffset);
-        mapDocument()->undoStack()->push(
-                    new SetLayerOffset(mapDocument(),
-                                       currentLayer,
-                                       newOffset));
-        mApplyingChange = false;
+    mApplyingChange = true;
+    for (const DraggingLayer &dragging : qAsConst(draggedLayers))
+        mapDocument()->layerModel()->setLayerOffset(dragging.layer, dragging.oldOffset);
+    mApplyingChange = false;
+}
+
+void LayerOffsetTool::finishDrag()
+{
+    QVector<DraggingLayer> draggedLayers;
+    mDraggingLayers.swap(draggedLayers);
+    mDragging = false;
+
+    mMousePressed = false;
+    setCursor(QCursor());
+
+    if (!mapDocument() || draggedLayers.isEmpty())
+        return;
+
+    auto undoStack = mapDocument()->undoStack();
+    undoStack->beginMacro(QCoreApplication::translate("Undo Commands",
+                                                      "Change Layer Offset"));
+
+    mApplyingChange = true;
+    for (const DraggingLayer &dragging : qAsConst(draggedLayers)) {
+        const QPointF newOffset = dragging.layer->offset();
+        mapDocument()->layerModel()->setLayerOffset(dragging.layer, dragging.oldOffset);
+        undoStack->push(new SetLayerOffset(mapDocument(),
+                                           dragging.layer,
+                                           newOffset));
     }
+    mApplyingChange = false;
+
+    undoStack->endMacro();
 }
