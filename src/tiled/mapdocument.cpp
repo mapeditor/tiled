@@ -936,11 +936,27 @@ void MapDocument::setSelectedObjects(const QList<MapObject *> &selectedObjects)
 
 QList<Object*> MapDocument::currentObjects() const
 {
-    if (mCurrentObject && mCurrentObject->typeId() == Object::MapObjectType && !mSelectedObjects.isEmpty()) {
-        QList<Object*> objects;
-        for (MapObject *mapObj : mSelectedObjects)
-            objects.append(mapObj);
-        return objects;
+    if (mCurrentObject) {
+        switch (mCurrentObject->typeId()) {
+        case Object::MapObjectType:
+            if (!mSelectedObjects.isEmpty()) {
+                QList<Object*> objects;
+                for (MapObject *mapObj : mSelectedObjects)
+                    objects.append(mapObj);
+                return objects;
+            }
+            break;
+        case Object::LayerType:
+            if (!mSelectedLayers.isEmpty()) {
+                QList<Object*> objects;
+                for (Layer *layer : mSelectedLayers)
+                    objects.append(layer);
+                return objects;
+            }
+            break;
+        default:
+            break;
+        }
     }
 
     return Document::currentObjects();
