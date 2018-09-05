@@ -656,13 +656,14 @@ void LuaWriter::writeMapObject(LuaTableWriter &writer,
         break;
     }
 
-    Properties props;
-    if (const ObjectTemplate *objectTemplate = mapObject->objectTemplate()) {
-        props.merge(objectTemplate->object()->properties());
+    if (const MapObject *base = mapObject->templateObject()) {
+        // Include template properties
+        Properties props = base->properties();
+        props.merge(mapObject->properties());
+        writeProperties(writer, props);
+    } else {
+        writeProperties(writer, mapObject->properties());
     }
-    // Override template properties if they exist
-    props.merge(mapObject->properties());
-    writeProperties(writer, props);
 
     writer.writeEndTable();
 }
