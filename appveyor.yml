@@ -87,10 +87,10 @@ deploy:
   - provider: FTP
     protocol: sftp
     host: update.mapeditor.org
-    username: bjorn
+    username: update
     password:
-      secure: Hx5YfCOtpeBbftD4qnVCRLUGmMU9nogJTlSxq0xNbJQ=
-    folder: sparkle/snapshots-win
+      secure: YPoSL+S82PCgS5PYbhtxQv0YD7uwZAX9LhjJBBbDGvk=
+    folder: update.mapeditor.org/snapshots-win
     artifact: /.*\.(msi|7z)/
     on:
         branch: snapshot
@@ -100,10 +100,10 @@ deploy:
   - provider: FTP
     protocol: sftp
     host: update.mapeditor.org
-    username: bjorn
+    username: update
     password:
-      secure: Hx5YfCOtpeBbftD4qnVCRLUGmMU9nogJTlSxq0xNbJQ=
-    folder: sparkle
+      secure: YPoSL+S82PCgS5PYbhtxQv0YD7uwZAX9LhjJBBbDGvk=
+    folder: update.mapeditor.org
     artifact: /appcast-win.*-snapshots\.xml/
     on:
         branch: snapshot
