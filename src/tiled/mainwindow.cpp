@@ -474,6 +474,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
                  this, &MainWindow::openRecentFile);
     }
     mUi->menuRecentFiles->insertSeparator(mUi->actionClearRecentFiles);
+    mUi->menuRecentFiles->setToolTipsVisible(true);
 
     setThemeIcon(mUi->menuNew, "document-new");
     setThemeIcon(mUi->actionOpen, "document-open");
@@ -1325,9 +1326,12 @@ void MainWindow::updateRecentFilesMenu()
     const int numRecentFiles = qMin<int>(files.size(), Preferences::MaxRecentFiles);
 
     for (int i = 0; i < numRecentFiles; ++i) {
-        mRecentFiles[i]->setText(QFileInfo(files[i]).fileName());
-        mRecentFiles[i]->setData(files[i]);
+        const auto& file = files[i];
+        const auto& fileInfo = QFileInfo(file);
+        mRecentFiles[i]->setText(fileInfo.fileName());
+        mRecentFiles[i]->setData(file);
         mRecentFiles[i]->setVisible(true);
+        mRecentFiles[i]->setToolTip(fileInfo.filePath());
     }
     for (int j = numRecentFiles; j < Preferences::MaxRecentFiles; ++j) {
         mRecentFiles[j]->setVisible(false);
