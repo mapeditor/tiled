@@ -1326,8 +1326,8 @@ void MainWindow::updateRecentFilesMenu()
     const int numRecentFiles = qMin<int>(files.size(), Preferences::MaxRecentFiles);
 
     for (int i = 0; i < numRecentFiles; ++i) {
-        const auto& file = files[i];
-        const auto& fileInfo = QFileInfo(file);
+        const auto &file = files[i];
+        const QFileInfo fileInfo(file);
         mRecentFiles[i]->setText(fileInfo.fileName());
         mRecentFiles[i]->setData(file);
         mRecentFiles[i]->setVisible(true);
