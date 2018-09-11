@@ -1,3 +1,50 @@
+### Tiled 1.2.0 (.. September 2018)
+
+* Added multi-layer selection, including multi-layer tile layer editing
+* Added support for multi-map worlds (#1669)
+* Added ability to extend existing polylines (with Ketan Gupta, #1683)
+* Added option to highlight the hovered object (#1190)
+* Added news from website to the status bar (#1898)
+* Added option to show object labels for hovered objects
+* Added option to embed tilesets on export (#1850)
+* Added option to detach templates on export (#1850)
+* Added option to resolve object types and properties on export (#1850)
+* Added Escape for switching to the Select Objects tool and for clearing the selection
+* Added Escape to cancel the current action in all object layer tools
+* Added double-click on polygon objects to switch to Edit Polygons tool
+* Added interaction with segments for polygons, for selection and dragging
+* Added double-clicking a polygon segment for inserting a new point at that location
+* Added action to lock/unlock all other layers (by kralle333, #1883)
+* Added --export-tileset command line argument (by Josh Bramlett, #1872)
+* Added unique persistent layer IDs (#1892)
+* Added 'version' and 'tiledversion' to external tileset files
+* Create Object Tools: Show preview already on hover (#537)
+* Objects view: Only center view on object on press or activation
+* Objects View: When clicking a layer, make it the current one (by kralle333, #1931)
+* Unified the Create Polygon and Create Polyline tools
+* JSON plugin: Made the JSON format easier to parse (by saeedakhter, #1868)
+* Tile Collision Editor: Allowed using object templates
+* Templates view: Don't allow hiding the template object
+* Python plugin: Updated to Python 3 (by Samuli Tuomola)
+* Python plugin: Fixed startup messages not appearing in debug console
+* Python plugin: Fixed file change watching for main script files
+* Lua plugin: Include properties from templates (#1901)
+* Lua plugin: Include tileset column count in export (by Matt Drollette, #1969)
+* tBIN plugin: Don't ignore objects that aren't perfectly aligned (#1985)
+* tBIN plugin: Fixed "Unsupported property type" error for newly added float properties
+* Automapping: Report error when no output layers are found
+* AutoMapping: Changed matching outside of map boundaries and added 'MatchOutsideMap' option
+* Linux: Modernized the appstream file (by Patrick Griffis)
+* libtiled: Allow qrc-based tileset images (#1947)
+* libtiled-java: Fixed loading maps with multiple external tilesets
+* Optimized deletion of many objects (#1972)
+* Make Ctrl+Q work for quitting also on Windows (#1998)
+* Fixed issue with default font size in combination with custom family (#1994)
+* Fixed the tile grid to render below labels, handles and selection indicators
+* Fixed confirming overwrite when exporting a tileset
+* Fixed reading of infinite maps that don't use chunked layer data
+* Updated Bulgarian, French, German, Norwegian Bokmål, Portuguese (Portugal) and Turkish translations
+
 ### Tiled 1.1.6 (17 July 2018)
 
 * Fixed Terrain Brush issue on staggered isometric maps (#1951)
