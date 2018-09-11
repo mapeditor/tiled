@@ -13,15 +13,15 @@ Probe {
 
     configure: {
         function printWarning(msg) {
-            console.warn(msg + " The python dumpers for cdb will not be available.");
+            console.warn(msg + " The Python plugin will not be available.");
         }
 
         if (!pythonDir) {
-            printWarning("PYTHON_INSTALL_DIR not set.");
+            printWarning("PYTHONHOME not set.");
             return;
         }
         if (!File.exists(pythonDir)) {
-            printWarning("The provided python installation directory '" + pythonDir
+            printWarning("The provided Python installation directory '" + pythonDir
                          + "' does not exist.");
             return;
         }
@@ -44,7 +44,7 @@ Probe {
                 return;
             }
             if (Utilities.versionCompare(versionNumberString, "3.5") < 0) {
-                printWarning("The python installation at '" + pythonDir
+                printWarning("The Python installation at '" + pythonDir
                              + "' has version " + versionNumberString + ", but 3.5 or higher "
                              + "is required.");
                 return;
