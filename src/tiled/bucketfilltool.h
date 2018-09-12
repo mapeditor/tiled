@@ -23,7 +23,6 @@
 #pragma once
 
 #include "abstracttilefilltool.h"
-#include "randompicker.h"
 #include "tilelayer.h"
 #include "tilestamp.h"
 
@@ -47,7 +46,7 @@ class BucketFillTool : public AbstractTileFillTool
 
 public:
     BucketFillTool(QObject *parent = nullptr);
-    ~BucketFillTool();
+    ~BucketFillTool() override;
 
     void mousePressed(QGraphicsSceneMouseEvent *event) override;
 
