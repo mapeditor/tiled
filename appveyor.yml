@@ -2,6 +2,7 @@ clone_depth: 200
 version: '1.1.{build}'
 
 cache:
+  - C:\Users\appveyor\.m2
   - C:\ProgramData\chocolatey\bin -> appveyor.yml
   - C:\ProgramData\chocolatey\lib -> appveyor.yml
 
@@ -73,9 +74,6 @@ artifacts:
     path: 'tiled-*.7z'
   - name: AppCast
     path: 'appcast-win*-snapshots.xml'
-
-cache:
-  - C:\Users\appveyor\.m2
 
 deploy:
   - provider: GitHub
