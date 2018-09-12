@@ -5,7 +5,7 @@ author: Thorbjørn Lindeijer
 tags: release
 ---
 
-The Tiled 1.2 Release Candidate is now available as the [latest development snapshot](https://thorbjorn.itch.io/tiled), bringing fixes, last-minute features as well some updated translations. Please give it a go and provide feedback! I expect to make the final release within a week from now.
+The Tiled 1.2 Release Candidate is now available as the [latest development snapshot](https://thorbjorn.itch.io/tiled), bringing fixes, last-minute features as well as some updated translations. Please give it a go and provide feedback! I expect to make the final release within a week from now.
 
 ## Changelog
 
