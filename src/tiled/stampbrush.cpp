@@ -428,6 +428,8 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &points)
         QHash<TileLayer *, QRegion> regionCache;
         QHash<TileLayer *, TileLayer *> shiftedCopies;
 
+        mMissingTilesets.clear();
+
         for (const QPoint &p : points) {
             const TileStampVariation variation = mStamp.randomVariation();
             mapDocument()->unifyTilesets(variation.map, mMissingTilesets);
