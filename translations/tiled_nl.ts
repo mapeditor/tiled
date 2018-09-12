@@ -81,17 +81,17 @@
     <message>
         <location line="+9"/>
         <source>Export syntax is --export-tileset [format] &lt;source&gt; &lt;target&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporteer syntax is --export-tileset [formaat] &lt;bron&gt; &lt;doel&gt;</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>Failed to load source tileset.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout bij het laden van de tileset.</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Failed to export tileset to target file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout tijdens het exporteren naar het doelbestand.</translation>
     </message>
 </context>
 <context>
@@ -168,22 +168,22 @@
     <message>
         <location line="+5"/>
         <source>Export the specified map file to target</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporteer een map naar het doelbestand</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export the specified tileset file to target</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporteer een tileset naar het doelbestand</translation>
     </message>
     <message>
         <location line="+84"/>
         <source>Map export formats:</source>
-        <translation type="unfinished"></translation>
+        <translation>Map export formaten:</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Tileset export formats:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tileset export formaten:</translation>
     </message>
     <message>
         <location line="-90"/>
@@ -193,17 +193,17 @@
     <message>
         <location line="+5"/>
         <source>Export the map with tilesets embedded</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporteer de map met tilesets ingebed</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export the map or tileset with template instances detached</source>
-        <translation type="unfinished"></translation>
+        <translation>Koppel sjablonen los bij het exporteren van map of tileset</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export the map or tileset with types and properties resolved</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporteer objecten met effectieve tiepen en eigenschappen</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -581,7 +581,7 @@
     <message>
         <location line="+4"/>
         <source>Unload World</source>
-        <translation type="unfinished"></translation>
+        <translation>Wereld Sluiten</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -641,7 +641,7 @@
     <message>
         <location line="+31"/>
         <source>Ctrl+Alt+S</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+52"/>
@@ -696,17 +696,17 @@
     <message>
         <location line="+127"/>
         <source>For Hovered Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Bij Object Onder Muis</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Load World...</source>
-        <translation type="unfinished"></translation>
+        <translation>Wereld Openen...</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Highlight Hovered Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Object Onder Muis Markeren</translation>
     </message>
     <message>
         <location line="-132"/>
@@ -751,7 +751,7 @@
     <message>
         <location line="-13"/>
         <source>Ctrl+Shift+S</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+24"/>
@@ -1396,7 +1396,7 @@ Regel %1, colom %2</translation>
     <message>
         <location line="+5"/>
         <source>Selected Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Geselecteerde Lagen</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -1560,22 +1560,22 @@ Regel %1, colom %2</translation>
     <message>
         <location line="+10"/>
         <source>Export Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporteer Opties</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Resolve object types and properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle effectieve types en eigenschappen schrijven</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Detach templates</source>
-        <translation type="unfinished"></translation>
+        <translation>Sjablonen loskoppelen</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Embed tilesets</source>
-        <translation type="unfinished"></translation>
+        <translation>Tilesets inbedden</translation>
     </message>
     <message>
         <location line="+59"/>
@@ -2384,17 +2384,17 @@ Regel %1, colom %2</translation>
     <message>
         <location line="+11"/>
         <source>Frame Duration: </source>
-        <translation type="unfinished"></translation>
+        <translation>Tijdsduur per frame:</translation>
     </message>
     <message>
         <location line="+7"/>
         <source> ms</source>
-        <translation type="unfinished"></translation>
+        <translation> ms</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>Apply</source>
-        <translation type="unfinished"></translation>
+        <translation>Toepassen</translation>
     </message>
     <message>
         <location line="+98"/>
@@ -2569,7 +2569,7 @@ Regel %1, colom %2</translation>
     <message>
         <location filename="../src/tiled/automapper.cpp" line="+119"/>
         <source>&apos;%1&apos;: Property &apos;%2&apos; = &apos;%3&apos; does not make sense. Ignoring this property.</source>
-        <translation>&apos;%1&apos;: Eigenschap &apos;%2&apos; = &apos;%3&apos; betekent niks. Deze eigenschap wordt genegeerd.</translation>
+        <translation>&apos;%1&apos;: Eigenschap &apos;%2&apos; = &apos;%3&apos; heeft geen betekenis. Deze eigenschap wordt genegeerd.</translation>
     </message>
     <message>
         <location line="+82"/>
@@ -2589,7 +2589,7 @@ Regel %1, colom %2</translation>
     <message>
         <location line="-25"/>
         <source>&apos;%1&apos;: Property &apos;%2&apos; = &apos;%3&apos; on layer &apos;%4&apos; does not make sense. Ignoring this property.</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1&apos;: Eigenschap &apos;%2&apos; = &apos;%3&apos; op laag &apos;%4&apos; heeft geen betekenis. Deze eigenschap wordt genegeerd.</translation>
     </message>
     <message>
         <location line="+31"/>
@@ -2625,7 +2625,7 @@ Regel %1, colom %2</translation>
     <message>
         <location line="+3"/>
         <source>No output_&lt;name&gt; layer found!</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen output_&lt;naam&gt; laag gevonden!</translation>
     </message>
 </context>
 <context>
@@ -3022,12 +3022,12 @@ Regel %1, colom %2</translation>
     <message>
         <location line="+122"/>
         <source>Connect Polylines</source>
-        <translation type="unfinished"></translation>
+        <translation>Polylijnen Verbinden</translation>
     </message>
     <message>
         <location line="+202"/>
         <source>Create Polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Polygon Maken</translation>
     </message>
 </context>
 <context>
@@ -3092,7 +3092,7 @@ Regel %1, colom %2</translation>
     <message>
         <location filename="../src/tiled/documentmanager.cpp" line="+461"/>
         <source>Unrecognized file format.</source>
-        <translation type="unfinished">Onbekend bestandsformaat.</translation>
+        <translation>Onbekend bestandsformaat.</translation>
     </message>
     <message>
         <location line="+257"/>
@@ -3147,7 +3147,7 @@ Regel %1, colom %2</translation>
     <message>
         <location line="-23"/>
         <source>Split Segment</source>
-        <translation type="unfinished"></translation>
+        <translation>Segment Splitten</translation>
     </message>
     <message numerus="yes">
         <location line="+265"/>
@@ -3187,7 +3187,7 @@ Regel %1, colom %2</translation>
     <message>
         <location line="-334"/>
         <source>Extend Polyline</source>
-        <translation type="unfinished"></translation>
+        <translation>Polylijn Uitbreiden</translation>
     </message>
 </context>
 <context>
@@ -3332,12 +3332,12 @@ Moet het bestand vervangen worden?</translation>
     <message>
         <location line="+31"/>
         <source>Lock Other Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Andere Lagen Op Slot</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Unlock Other Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Andere Lagen Van Slot</translation>
     </message>
 </context>
 <context>
@@ -3556,17 +3556,17 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location line="+71"/>
         <source>Ctrl+Q</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+167"/>
         <source>Load World</source>
-        <translation type="unfinished"></translation>
+        <translation>Wereld Openen</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Error Loading World</source>
-        <translation type="unfinished"></translation>
+        <translation>Fuit Bij Wereld Laden</translation>
     </message>
     <message>
         <location line="+79"/>
@@ -3717,25 +3717,25 @@ Kies een specifiek bestandsformaat.</translation>
     <message numerus="yes">
         <location line="+2"/>
         <source>Group %n Layer(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Laag Groeperen</numerusform>
+            <numerusform>%n Lagen Groeperen</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+16"/>
         <source>Ungroup %n Layer(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Groep Verwijderen</numerusform>
+            <numerusform>%n Lagen Uit Hun Groep Halen</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+46"/>
         <source>Duplicate %n Layer(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Laag Verdubbelen</numerusform>
+            <numerusform>%n Lagen Verdubbelen</numerusform>
         </translation>
     </message>
     <message>
@@ -3751,9 +3751,9 @@ Kies een specifiek bestandsformaat.</translation>
     <message numerus="yes">
         <location line="+73"/>
         <source>Remove %n Layer(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Laag Verwijderen</numerusform>
+            <numerusform>%n Lagen Verwijderen</numerusform>
         </translation>
     </message>
     <message>
@@ -3842,17 +3842,17 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location line="+9"/>
         <source>&amp;Group Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Lagen &amp;Groeperen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Ungroup Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Uit Groep Verwijderen</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Duplicate Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Lagen Verdubbelen</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3897,7 +3897,7 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location line="+10"/>
         <source>Ctrl+Shift+L</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+60"/>
@@ -3944,17 +3944,17 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location line="-313"/>
         <source>&amp;Remove Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Lagen Ver&amp;wijderen</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>R&amp;aise Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Lagen Om&amp;hoog</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Lower Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Lagen Om&amp;laag</translation>
     </message>
     <message>
         <location line="-3"/>
@@ -3974,7 +3974,7 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location line="+1"/>
         <source>Lock/&amp;Unlock all Other Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Slot Van Andere Lagen Omzetten</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4033,7 +4033,7 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location filename="../src/tiled/mapeditor.cpp" line="+665"/>
         <source>Paste in Place</source>
-        <translation type="unfinished"></translation>
+        <translation>Plakken op Dezelfde Plaats</translation>
     </message>
     <message>
         <location line="+187"/>
@@ -4217,12 +4217,12 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location filename="../src/tiled/newsbutton.cpp" line="+45"/>
         <source>News</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieuws</translation>
     </message>
     <message>
         <location line="+69"/>
         <source>News Archive</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieuws Archief</translation>
     </message>
 </context>
 <context>
@@ -4597,7 +4597,7 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location line="+27"/>
         <source>Wang Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Wang Set</translation>
     </message>
     <message>
         <location line="+347"/>
@@ -5546,12 +5546,12 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location filename="../src/tiled/wangcolormodel.cpp" line="+144"/>
         <source>Edge Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanten</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Corner Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Hoeken</translation>
     </message>
 </context>
 <context>
@@ -5633,13 +5633,14 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location filename="../src/libtiled/worldmanager.cpp" line="+109"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished">Kon het bestand niet lezen.</translation>
+        <translation>Kon het bestand niet lezen.</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>JSON parse error at offset %1:
 %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>JSON leesfout op positie %1:
+%2.</translation>
     </message>
 </context>
 <context>
@@ -5670,7 +5671,7 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location line="+11"/>
         <source>Add Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Objecten Toevoegen</translation>
     </message>
     <message>
         <location line="+40"/>
@@ -5680,7 +5681,7 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location line="+11"/>
         <source>Remove Objects</source>
-        <translation type="unfinished">Objecten Verwijderen</translation>
+        <translation>Objecten Verwijderen</translation>
     </message>
     <message>
         <location filename="../src/tiled/changemapobject.cpp" line="+38"/>
@@ -6159,17 +6160,17 @@ Kies een specifiek bestandsformaat.</translation>
     <message numerus="yes">
         <location filename="../src/tiled/mapdocument.cpp" line="-683"/>
         <source>Raise %n Layer(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Laag Omhoog</numerusform>
+            <numerusform>%n Lagen Omhoog</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+27"/>
         <source>Lower %n Layer(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Laag Omlaag</numerusform>
+            <numerusform>&amp;n Lagen Omlaag</numerusform>
         </translation>
     </message>
 </context>

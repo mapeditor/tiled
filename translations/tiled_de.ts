@@ -50,7 +50,7 @@
     <message>
         <location filename="../src/tiled/main.cpp" line="+359"/>
         <source>Export syntax is --export-map [format] &lt;source&gt; &lt;target&gt;</source>
-        <translation>Export Syntax ist --export map [Format] &lt;Quelle&gt; &lt;Ziel&gt;</translation>
+        <translation>Export Syntax ist --export-map [Format] &lt;Quelle&gt; &lt;Ziel&gt;</translation>
     </message>
     <message>
         <location line="-232"/>
@@ -80,7 +80,7 @@
     <message>
         <location line="+9"/>
         <source>Export syntax is --export-tileset [format] &lt;source&gt; &lt;target&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Export Syntax ist --export-tileset [Format] &lt;Quelle&gt; &lt;Ziel&gt;</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -3091,7 +3091,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location filename="../src/tiled/documentmanager.cpp" line="+461"/>
         <source>Unrecognized file format.</source>
-        <translation type="unfinished">Dateiformat nicht erkannt.</translation>
+        <translation>Dateiformat nicht erkannt.</translation>
     </message>
     <message>
         <location line="+257"/>
@@ -3750,9 +3750,11 @@ Bitte Format angeben.</translation>
     <message numerus="yes">
         <location line="+73"/>
         <source>Remove %n Layer(s)</source>
-        <translation><numerusform>Ebene entfernen</numerusform>
-        <numerusform>%n Ebenen entfernen</numerusform>
-        </translation></message>
+        <translation>
+            <numerusform>Ebene entfernen</numerusform>
+            <numerusform>%n Ebenen entfernen</numerusform>
+        </translation>
+    </message>
     <message>
         <location line="+305"/>
         <source>Tile</source>
@@ -4213,12 +4215,12 @@ Bitte Format angeben.</translation>
     <message>
         <location filename="../src/tiled/newsbutton.cpp" line="+45"/>
         <source>News</source>
-        <translation type="unfinished"></translation>
+        <translation>Neues</translation>
     </message>
     <message>
         <location line="+69"/>
         <source>News Archive</source>
-        <translation type="unfinished"></translation>
+        <translation>Ältere Nachrichten</translation>
     </message>
 </context>
 <context>
