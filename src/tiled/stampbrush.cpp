@@ -449,6 +449,8 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &points)
         QHash<const Map *, QRegion> regionCache;
         QHash<const Map *, Map *> shiftedCopies;
 
+        mMissingTilesets.clear();
+
         for (const QPoint &p : points) {
             Map *map = mStamp.randomVariation().map;
             mapDocument()->unifyTilesets(map, mMissingTilesets);
