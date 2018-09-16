@@ -62,6 +62,8 @@ public:
     MapDocument *mapDocument() const;
     void setMapDocument(MapDocument *map);
 
+    QRectF mapBoundingRect() const;
+
     void enableSelectedTool();
     void disableSelectedTool();
 

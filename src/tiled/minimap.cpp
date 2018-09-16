@@ -299,12 +299,12 @@ QRect MiniMap::viewportRect() const
     if (!mapView)
         return QRect(0, 0, 1, 1);
 
-    const QRectF sceneRect = mapView->mapScene()->sceneRect();
+    const QRectF mapRect = mapView->mapScene()->mapBoundingRect();
     const QRectF viewRect = mapView->mapToScene(mapView->viewport()->geometry()).boundingRect();
-    return QRect((viewRect.x() - sceneRect.x()) / sceneRect.width() * mImageRect.width() + mImageRect.x(),
-                 (viewRect.y() - sceneRect.y()) / sceneRect.height() * mImageRect.height() + mImageRect.y(),
-                 viewRect.width() / sceneRect.width() * mImageRect.width(),
-                 viewRect.height() / sceneRect.height() * mImageRect.height());
+    return QRect((viewRect.x() - mapRect.x()) / mapRect.width() * mImageRect.width() + mImageRect.x(),
+                 (viewRect.y() - mapRect.y()) / mapRect.height() * mImageRect.height() + mImageRect.y(),
+                 viewRect.width() / mapRect.width() * mImageRect.width(),
+                 viewRect.height() / mapRect.height() * mImageRect.height());
 }
 
 QPointF MiniMap::mapToScene(QPoint p) const
@@ -316,8 +316,8 @@ QPointF MiniMap::mapToScene(QPoint p) const
     if (!mapView)
         return QPointF();
 
-    const QRectF sceneRect = mapView->mapScene()->sceneRect();
+    const QRectF mapRect = mapView->mapScene()->mapBoundingRect();
     p -= mImageRect.topLeft();
-    return QPointF(p.x() * (sceneRect.width() / mImageRect.width()) + sceneRect.x(),
-                   p.y() * (sceneRect.height() / mImageRect.height()) + sceneRect.y());
+    return QPointF(p.x() * (mapRect.width() / mImageRect.width()) + mapRect.x(),
+                   p.y() * (mapRect.height() / mImageRect.height()) + mapRect.y());
 }

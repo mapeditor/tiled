@@ -107,6 +107,17 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
 }
 
 /**
+ * Returns the bounding rect of the map. This can be different from the
+ * sceneRect() when multiple maps are displayed.
+ */
+QRectF MapScene::mapBoundingRect() const
+{
+    if (auto mapItem = mMapItems.value(mMapDocument))
+        return mapItem->boundingRect();
+    return QRectF();
+}
+
+/**
  * Sets the currently selected tool.
  */
 void MapScene::setSelectedTool(AbstractTool *tool)
