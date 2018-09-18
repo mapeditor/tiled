@@ -1,7 +1,8 @@
 {% include header_small.html %}
 
 <div class="my-box">
-  <div style="max-width: 800px; margin-left: auto; margin-right: auto;">
+  <div class="row">
+    <div class="col-md-8">
 
 <header class="post-header">
   <h1>{{ page.title }}</h1>
@@ -25,6 +26,30 @@
   <div style="clear: both; display: block; text-align: center;"><a href="/news.html">News Archive</a></div>
 </div>
 
+    </div>
+    <div class="col-md-4" style="padding-top: 20px;">
+
+      <h4>Tiled Map Editor<br/><small>A <a href="https://www.gnu.org/philosophy/free-sw.html">free</a>, easy to use and flexible level&nbsp;editor</small></h4>
+      <div style="margin: 20px 0px 30px 0px;">
+        <a class="btn btn-success" href="https://thorbjorn.itch.io/tiled/purchase"><i class="icon-download-alt"></i> Download</a>&nbsp;<a class="btn btn-info" href="https://www.patreon.com/bjorn"><i class="icon-heart"></i> Support on Patreon</a>
+      </div>
+
+  <h4>Recent News</h4>
+  <ul style="list-style: none; padding: 0;">
+{% for post in site.posts limit:9 %}
+    <li class="news-item">
+{% if page.url != post.url %}
+     <h5><a href="{{ post.url }}" class="news-headline">{{ post.title }}</a><br/><small>{{ post.date | date_to_long_string }}</small></h5>
+{% endif %}
+    </li>
+{% endfor %}
+  </ul>
+
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-8">
+
 <hr/>
 {% if page.blogger_orig_url %}
 <p><i>This is an imported post. For comments see <a href="{{ page.blogger_orig_url }}">the original post on Blogger</a>.</i></p>
@@ -47,6 +72,7 @@
 </script>
 {% endif %}
 
+    </div>
   </div>
 </div>
 
