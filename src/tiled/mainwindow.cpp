@@ -1451,9 +1451,9 @@ void MainWindow::updateZoomActions()
 void MainWindow::openDocumentation()
 {
 #ifdef TILED_SNAPSHOT
-    QDesktopServices::openUrl(QUrl(QLatin1String("http://docs.mapeditor.org/en/latest/")));
+    QDesktopServices::openUrl(QUrl(QLatin1String("https://docs.mapeditor.org/en/latest/")));
 #else
-    QDesktopServices::openUrl(QUrl(QLatin1String("http://docs.mapeditor.org")));
+    QDesktopServices::openUrl(QUrl(QLatin1String("https://docs.mapeditor.org")));
 #endif
 }
 
