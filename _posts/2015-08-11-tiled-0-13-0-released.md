@@ -16,7 +16,7 @@ The main new feature I've been working on was to add support for persistent tile
 
 A new "Tile Stamps" view has been added where you can save an unlimited number of stamps. The quick stamp feature still works (and is now persistent), but you can also add arbitrary named stamps. It also displays a small preview of each stamp to make them easier to find back. You can choose the folder it uses to store the stamps, for example to use different sets for different projects or to share them with team members.
 
-<img src="http://discourse.mapeditor.org/uploads/default/original/1X/facf3ec11ec946c46802778f0b2a40c49cd1c762.png" width="690" height="326">
+<img src="http://discourse.mapeditor.org/uploads/mapeditor/original/1X/facf3ec11ec946c46802778f0b2a40c49cd1c762.png" width="690" height="326">
 
 In addition, tile stamps can have variations. Each time a stamp is used, a random variation will be chosen based on the probability. A random mode was available before, but it only worked for single-tile randomness. Stamp variations do the same thing, but also work for multi-tile pieces.
 
@@ -25,13 +25,13 @@ In addition, tile stamps can have variations. Each time a stamp is used, a rando
 
 A new contributor, [Mamed Ibrahimov][3], has made several nice improvements and the Select Same Tile tool is one of them. It allows to quickly select all occurrences of the same tile, for example to then use the fill tool to replace them with something else (holding Shift to make it apply to the whole selection).
 
-<img src="http://discourse.mapeditor.org/uploads/default/original/1X/34d71f3a1309fbb19c48fc0843254ff654e0e65b.png" width="575" height="41">
+<img src="http://discourse.mapeditor.org/uploads/mapeditor/original/1X/34d71f3a1309fbb19c48fc0843254ff654e0e65b.png" width="575" height="41">
 
 ### Object Selection Improvements
 
 The object selection outlines are now always drawn on top, rather than being overlapped by other objects. Also, improvements were made to the mouse cursor showing when you can drag an object around. Finally, newly added objects are now automatically selected.
 
-<img src="http://discourse.mapeditor.org/uploads/default/original/1X/b8d8b42efd651c865afb98c45126304a5ebb729d.png" width="690" height="191">
+<img src="http://discourse.mapeditor.org/uploads/mapeditor/original/1X/b8d8b42efd651c865afb98c45126304a5ebb729d.png" width="690" height="191">
 
 These are all more like bug fixes of course, but it wasn't until recently that I would actually have the time to care about these details.
 

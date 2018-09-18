@@ -177,4 +177,4 @@ basis as well as many people choosing to pay for
 [Tiled on itch.io](https://thorbjorn.itch.io/tiled). As of this writing I still
 need more support to reach my two-days-per-week funding goal.
 [Please chip in](https://www.patreon.com/bePatron?u=90066) if
-you can to ensure Tiled keeps getting better! <img src="https://cdn-standard.discourse.org/images/emoji/apple/heart.png?v=3" style="width: 1em;" title=":heart:" class="emoji" alt=":heart:">
+you can to ensure Tiled keeps getting better! <img src="/img/heart.png" style="width: 1em;" title=":heart:" class="emoji" alt=":heart:">

@@ -203,7 +203,7 @@ Tiled 1.2. These include:
 What else should be done? Help us decide by voicing your opinion or
 maybe even contributing to the development!
 
-## Support Tiled Development <img src="https://discourse-cdn-sjc1.com/standard/images/emoji/apple/heart.png?v=5" style="width: 1em;" title=":heart:" class="emoji" alt=":heart:">
+## Support Tiled Development <img src="/img/heart.png" style="width: 1em;" title=":heart:" class="emoji" alt=":heart:">
 
 Making all these improvements (and guiding others to contribute) was
 only possible thanks to [over 200 patrons][patreon] supporting me on a
