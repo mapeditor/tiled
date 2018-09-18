@@ -1,4 +1,4 @@
-### Tiled 1.2.0 (.. September 2018)
+### Tiled 1.2.0 (19 September 2018)
 
 * Added multi-layer selection, including multi-layer tile layer editing
 * Added support for multi-map worlds (#1669)
@@ -18,9 +18,10 @@
 * Added --export-tileset command line argument (by Josh Bramlett, #1872)
 * Added unique persistent layer IDs (#1892)
 * Added 'version' and 'tiledversion' to external tileset files
+* Added full paths to Recent Files menu as tool tips (by Gauthier Billot, #1992)
 * Create Object Tools: Show preview already on hover (#537)
 * Objects view: Only center view on object on press or activation
-* Objects View: When clicking a layer, make it the current one (by kralle333, #1931)
+* Objects view: When clicking a layer, make it the current one (by kralle333, #1931)
 * Unified the Create Polygon and Create Polyline tools
 * JSON plugin: Made the JSON format easier to parse (by saeedakhter, #1868)
 * Tile Collision Editor: Allowed using object templates
@@ -39,11 +40,13 @@
 * libtiled-java: Fixed loading maps with multiple external tilesets
 * Optimized deletion of many objects (#1972)
 * Make Ctrl+Q work for quitting also on Windows (#1998)
+* Fixed randomizing of terrain, Wang tiles and stamp variations (#1949)
+* Fixed tilesets getting added to maps when they shouldn't be (#2002)
 * Fixed issue with default font size in combination with custom family (#1994)
 * Fixed the tile grid to render below labels, handles and selection indicators
 * Fixed confirming overwrite when exporting a tileset
 * Fixed reading of infinite maps that don't use chunked layer data
-* Updated Bulgarian, French, German, Norwegian Bokmål, Portuguese (Portugal) and Turkish translations
+* Updated Bulgarian, Dutch, French, German, Norwegian Bokmål, Portuguese (Portugal) and Turkish translations
 
 ### Tiled 1.1.6 (17 July 2018)
 
