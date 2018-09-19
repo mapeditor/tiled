@@ -10,6 +10,8 @@ The fields found in the JSON format differ slightly from those in the
 
 The following fields can be found in a Tiled JSON file:
 
+.. _json-map:
+
 Map
 ---
 
@@ -24,7 +26,7 @@ Map
 +-------------------+----------+----------------------------------------------------------+
 | infinite          | bool     | Whether the map has infinite dimensions                  |
 +-------------------+----------+----------------------------------------------------------+
-| layers            | array    | Array of :ref:`layers <json-layer>`                      |
+| layers            | array    | Array of :ref:`Layers <json-layer>`                      |
 +-------------------+----------+----------------------------------------------------------+
 | nextlayerid       | int      | Auto-increments for each layer                           |
 +-------------------+----------+----------------------------------------------------------+
@@ -45,7 +47,7 @@ Map
 +-------------------+----------+----------------------------------------------------------+
 | tileheight        | int      | Map grid height                                          |
 +-------------------+----------+----------------------------------------------------------+
-| tilesets          | array    | Array of :ref:`tilesets <json-tileset>`                  |
+| tilesets          | array    | Array of :ref:`Tilesets <json-tileset>`                  |
 +-------------------+----------+----------------------------------------------------------+
 | tilewidth         | int      | Map grid width                                           |
 +-------------------+----------+----------------------------------------------------------+
@@ -192,7 +194,8 @@ Object Layer Example
 Chunk
 -----
 
-Chunks are used to store the tile layer data for infinite maps.
+Chunks are used to store the tile layer data for
+:doc:`infinite maps </manual/using-infinite-maps>`.
 
 +--------------+-----------------+----------------------------------------------+
 | Field        | Type            | Description                                  |
@@ -326,7 +329,7 @@ Rectangle Example
     }
 
 Point Example
-~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~
 
 .. code:: json
 
@@ -473,7 +476,7 @@ Tileset
 +------------------+----------+-----------------------------------------------------+
 | spacing          | int      | Spacing between adjacent tiles in image (pixels)    |
 +------------------+----------+-----------------------------------------------------+
-| terrains         | array    | Array of :ref:`terrains <json-terrain>` (optional)  |
+| terrains         | array    | Array of :ref:`Terrains <json-terrain>` (optional)  |
 +------------------+----------+-----------------------------------------------------+
 | tilecount        | int      | The number of tiles in this tileset                 |
 +------------------+----------+-----------------------------------------------------+
@@ -481,7 +484,7 @@ Tileset
 +------------------+----------+-----------------------------------------------------+
 | tileoffset       | object   | See :ref:`tmx-tileoffset` (optional)                |
 +------------------+----------+-----------------------------------------------------+
-| tiles            | array    | List of :ref:`tile <json-tile>` (optional)          |
+| tiles            | array    | Array of :ref:`Tiles <json-tile>` (optional)        |
 +------------------+----------+-----------------------------------------------------+
 | tilewidth        | int      | Maximum width of tiles in this set                  |
 +------------------+----------+-----------------------------------------------------+
@@ -526,7 +529,7 @@ Tile (Definition)
 +------------+---------------------+--------------------------------------------+
 | Field      | Type                | Description                                |
 +============+=====================+============================================+
-| animation  | array               | Array of frames                            |
+| animation  | array               | Array of :ref:`Frames <json-frame>`        |
 +------------+---------------------+--------------------------------------------+
 | id         | int                 | Local ID of the tile                       |
 +------------+---------------------+--------------------------------------------+
@@ -540,12 +543,14 @@ Tile (Definition)
 +------------+---------------------+--------------------------------------------+
 | properties | array               | A list of properties (name, value, type)   |
 +------------+---------------------+--------------------------------------------+
-| terrain    | array               | index of terrain for each corner of tile   |
+| terrain    | array               | Index of terrain for each corner of tile   |
++------------+---------------------+--------------------------------------------+
+| type       | string              | The type of the tile (optional)            |
 +------------+---------------------+--------------------------------------------+
 
 A tileset that associates information with each tile, like its image
-path or terrain type, may include a "tiles" JSON object. Each key
-is a local ID of a tile within the tileset.
+path or terrain type, may include a ``tiles`` array property. Each tile
+has an ``id`` property, which specifies the local ID within the tileset.
 
 For the terrain information, each value is a length-4 array where each
 element is the index of a :ref:`terrain <json-terrain>` on one corner
@@ -556,8 +561,7 @@ Example:
 
 .. code:: json
 
-    "tiles":
-    {
+    "tiles":[
       {
         "id":0,
         "properties":[
@@ -588,7 +592,7 @@ Example:
           }],
         "terrain":[1, 1, 1, 1]
       }
-    }
+    ]
 
 .. _json-frame:
 
@@ -717,6 +721,9 @@ Example:
 Object Template
 ---------------
 
+An object template is written to its own file and referenced by any
+instances of that template.
+
 +------------+---------------------+--------------------------------------------------+
 | Field      | Type                | Description                                      |
 +============+=====================+==================================================+
@@ -726,3 +733,41 @@ Object Template
 +------------+---------------------+--------------------------------------------------+
 | object     | :ref:`json-object`  | The object instantiated by this template         |
 +------------+---------------------+--------------------------------------------------+
+
+Changelog
+---------
+
+Tiled 1.2
+~~~~~~~~~
+
+* Added ``nextlayerid`` to the :ref:`json-map` object.
+
+* Added ``id`` to the :ref:`json-layer` object.
+
+* The tiles in a :ref:`json-tileset` are now stored as an array instead
+  of an object. Previously the tile IDs were stored as string keys of
+  the "tiles" object, now they are stored as ``id`` property of each
+  :ref:`Tile <json-tile>` object.
+
+* Custom tile properties are now stored within each
+  :ref:`Tile <json-tile>` instead of being included as
+  ``tileproperties`` in the :ref:`json-tileset` object.
+
+* Custom properties are now stored in an array instead of an object
+  where the property names were the keys. Each property is now an object
+  that stores the name, type and value of the property. The separate
+  ``propertytypes`` and ``tilepropertytypes`` attributes have been
+  removed.
+
+Tiled 1.1
+~~~~~~~~~
+
+* Added a :ref:`chunked data format <json-chunk>`, currently used for
+  :doc:`infinite maps </manual/using-infinite-maps>`.
+
+* :doc:`Templates </manual/using-templates>` were added. Templates can
+  be stored as JSON files with an :ref:`json-objecttemplate` object.
+
+* :ref:`Tilesets <json-tileset>` can now contain
+  :doc:`Wang tiles </manual/using-wang-tiles>`. They are saved in the
+  new :ref:`json-wangset` object (since Tiled 1.1.5).
