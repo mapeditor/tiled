@@ -87,8 +87,8 @@ options when exporting using the command-line.
 ### Compatibility Notes
 
 The [JSON map format][json] was simplified a bit, which will require
-adjustments in the map reader. See its changelog (todo) for more
-information.
+adjustments in the map reader. See [its changelog][json-changelog] for
+more information.
 
 The [Python plugin][python] was updated from Python 2 to Python 3, which will
 generally require changes to any custom Python plugins. Unfortunately,
@@ -190,6 +190,7 @@ of work in front of us, but your support makes it doable!
 [templates]: https://doc.mapeditor.org/en/stable/manual/using-templates/
 [alchemic]: https://alchemiccutie.com/
 [json]: https://doc.mapeditor.org/en/latest/reference/json-map-format/
+[json-changelog]: https://doc.mapeditor.org/en/stable/reference/json-map-format/#changelog
 [python]: https://doc.mapeditor.org/en/stable/manual/python/
 [roadmap]: https://github.com/bjorn/tiled/wiki/Roadmap
 [patreon]: https://www.patreon.com/bjorn
