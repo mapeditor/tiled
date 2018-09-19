@@ -191,7 +191,7 @@ void LuaWriter::writeMap(LuaTableWriter &writer, const Map *map)
 {
     writer.writeStartReturnTable();
 
-    writer.writeKeyAndValue("version", "1.1");
+    writer.writeKeyAndValue("version", "1.2");
     writer.writeKeyAndValue("luaversion", "5.1");
     writer.writeKeyAndValue("tiledversion", QCoreApplication::applicationVersion());
 
@@ -283,7 +283,7 @@ void LuaWriter::writeTileset(LuaTableWriter &writer, const Tileset &tileset,
         writer.writeStartReturnTable();
 
         // Include version in external tilesets
-        writer.writeKeyAndValue("version", "1.1");
+        writer.writeKeyAndValue("version", "1.2");
         writer.writeKeyAndValue("luaversion", "5.1");
         writer.writeKeyAndValue("tiledversion", QCoreApplication::applicationVersion());
     }

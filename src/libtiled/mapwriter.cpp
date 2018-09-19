@@ -212,7 +212,7 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
     const QString orientation = orientationToString(map.orientation());
     const QString renderOrder = renderOrderToString(map.renderOrder());
 
-    w.writeAttribute(QLatin1String("version"), QLatin1String("1.1"));
+    w.writeAttribute(QLatin1String("version"), QLatin1String("1.2"));
     w.writeAttribute(QLatin1String("tiledversion"), QCoreApplication::applicationVersion());
     w.writeAttribute(QLatin1String("orientation"), orientation);
     w.writeAttribute(QLatin1String("renderorder"), renderOrder);
@@ -316,7 +316,7 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
         }
     } else {
         // Include version in external tilesets
-        w.writeAttribute(QLatin1String("version"), QLatin1String("1.1"));
+        w.writeAttribute(QLatin1String("version"), QLatin1String("1.2"));
         w.writeAttribute(QLatin1String("tiledversion"), QCoreApplication::applicationVersion());
     }
 
