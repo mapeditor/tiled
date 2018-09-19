@@ -1,8 +1,11 @@
 ---
 layout: post
 title: Tiled 1.2 released
-author: Thorbjørn Lindeijer
+author:
+  name: Thorbjørn Lindeijer
+  twitter: thorbjorn81
 tags: release
+image: /img/posts/2018-09-world-view.png
 ---
 
 The focus with Tiled 1.2 was generally on improving productivity. It
@@ -94,8 +97,10 @@ The [Python plugin][python] was updated from Python 2 to Python 3, which will
 generally require changes to any custom Python plugins. Unfortunately,
 you also need to install the same minor Python version as the one Tiled
 was compiled against to be able to use this plugin, which may be a
-problem especially on Linux. We'll try to reach broader compatibility in
-the future.
+problem especially on Linux. In addition, the Python plugin is not
+available on macOS for now until we find out how to make it work, since
+macOS only ships with Python 2.7. We'll try to reach broader
+compatibility in the future.
 
 ### Changelog
 
