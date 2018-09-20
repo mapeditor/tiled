@@ -197,12 +197,12 @@
     <message>
         <location line="+5"/>
         <source>Export the map or tileset with template instances detached</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar o mapa ou tileset com instâncias de template independentes</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export the map or tileset with types and properties resolved</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar o mapa ou tileset com tipos e propriedades resolvidos</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1077,7 +1077,7 @@ Linha %1, coluna %2</translation>
         <location line="+14"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-29"/>
         <source>Unable to parse tile at (%1,%2) on layer &apos;%3&apos;</source>
-        <translation>Incapaz de intrepertar tile em (%1,%2) na camada &apos;%3&apos;</translation>
+        <translation>Incapaz de interpretar tile em (%1,%2) na camada &apos;%3&apos;</translation>
     </message>
     <message>
         <location line="-34"/>
@@ -1223,7 +1223,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+129"/>
         <source>Tile width:</source>
-        <translation>Largura:</translation>
+        <translation>Largura do Tile:</translation>
     </message>
     <message>
         <location line="+38"/>
@@ -1262,7 +1262,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="-45"/>
         <source>Tile height:</source>
-        <translation>Altura:</translation>
+        <translation>Altura do Tile:</translation>
     </message>
     <message>
         <location line="+91"/>
@@ -2160,12 +2160,12 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+11"/>
         <source>Can&apos;t parse file header!</source>
-        <translation>Impossivel analizar cabeçalho do ficheiro!</translation>
+        <translation>Impossível interpretar cabeçalho do ficheiro!</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>Can&apos;t parse layer header!</source>
-        <translation>Impossivel analizar cabeçalho da camada!</translation>
+        <translation>Impossível interpretar cabeçalho da camada!</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -2481,7 +2481,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+5"/>
         <source>Raise Object</source>
-        <translation>Levantar Objeto</translation>
+        <translation>Elevar Objeto</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -2501,7 +2501,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+1"/>
         <source>Raise Object to Top</source>
-        <translation>Levantar Objeto ao Topo</translation>
+        <translation>Elevar Objeto ao Topo</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -2599,7 +2599,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="-6"/>
         <source>&apos;regions_output&apos; layer must not occur more than once.</source>
-        <translation>camada &apos;regions_output&apos; não deve ocurrer mais que uma vez.</translation>
+        <translation>camada &apos;regions_output&apos; não deve ocorrer mais que uma vez.</translation>
     </message>
     <message>
         <location line="+40"/>
@@ -3144,7 +3144,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="-23"/>
         <source>Split Segment</source>
-        <translation type="unfinished"></translation>
+        <translation>Dividir Segmento</translation>
     </message>
     <message numerus="yes">
         <location line="+265"/>
@@ -3184,7 +3184,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="-334"/>
         <source>Extend Polyline</source>
-        <translation type="unfinished"></translation>
+        <translation>Estender Polilinha</translation>
     </message>
 </context>
 <context>
@@ -3329,12 +3329,12 @@ Deseja substituí-lo?</translation>
     <message>
         <location line="+31"/>
         <source>Lock Other Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Bloquear as outras Camadas</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Unlock Other Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Desbloquear as outras Camadas</translation>
     </message>
 </context>
 <context>
@@ -3553,17 +3553,17 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+71"/>
         <source>Ctrl+Q</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Q</translation>
     </message>
     <message>
         <location line="+167"/>
         <source>Load World</source>
-        <translation type="unfinished"></translation>
+        <translation>Carregar Mundo</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Error Loading World</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro ao Carregar Mundo</translation>
     </message>
     <message>
         <location line="+79"/>
@@ -3693,7 +3693,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+36"/>
         <source>Tile Layer %1</source>
-        <translation>Camade de Tiles %1</translation>
+        <translation>Camada de Tiles %1</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -3714,27 +3714,21 @@ Por favor, selecione um formato específico.</translation>
     <message numerus="yes">
         <location line="+2"/>
         <source>Group %n Layer(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Agrupar %n Camada</numerusform>
+        <numerusform>Agrupar %n Camadas</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+16"/>
         <source>Ungroup %n Layer(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Desagrupar %n Camada</numerusform>
+        <numerusform>Desagrupar %n Camadas</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+46"/>
         <source>Duplicate %n Layer(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Duplicar %n Camada</numerusform>
+        <numerusform>Duplicar %n Camadas</numerusform>
+        </translation></message>
     <message>
         <location line="+27"/>
         <source>Copy of %1</source>
@@ -3748,11 +3742,9 @@ Por favor, selecione um formato específico.</translation>
     <message numerus="yes">
         <location line="+73"/>
         <source>Remove %n Layer(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Remover %n Camada</numerusform>
+        <numerusform>Remover %n Camadas</numerusform>
+        </translation></message>
     <message>
         <location line="+305"/>
         <source>Tile</source>
@@ -3884,17 +3876,17 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+8"/>
         <source>&amp;Remove Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Remover Camadas</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>R&amp;aise Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Elev&amp;ar Camadas</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Lower Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Baixar Camadas</translation>
     </message>
     <message>
         <location line="-3"/>
@@ -3914,7 +3906,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+1"/>
         <source>Lock/&amp;Unlock all Other Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Bloq&amp;uear/Desbloquear todas as outras Camadas</translation>
     </message>
     <message>
         <location line="+40"/>
@@ -4002,17 +3994,17 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="-318"/>
         <source>&amp;Group Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>A&amp;grupar Camadas</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Ungroup Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Desagr&amp;upar Camadas</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Duplicate Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Duplicar Camadas</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4030,7 +4022,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location filename="../src/tiled/mapeditor.cpp" line="+665"/>
         <source>Paste in Place</source>
-        <translation type="unfinished"></translation>
+        <translation>Colar na Posição</translation>
     </message>
     <message>
         <location line="+187"/>
@@ -4165,7 +4157,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+1"/>
         <source>Tile layers for this map will consume %L1 GB of memory each. Not creating one by default.</source>
-        <translation>Camadas de Tile para este mapa irão consumir% L1 GB de memória cada. Não criando um por padrão.</translation>
+        <translation>Cada camada de Tile para este mapa irá consumir %L1 GB de memória. Nenhuma criada por padrão.</translation>
     </message>
     <message>
         <location line="+45"/>
@@ -4213,12 +4205,12 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location filename="../src/tiled/newsbutton.cpp" line="+45"/>
         <source>News</source>
-        <translation type="unfinished"></translation>
+        <translation>Notícias</translation>
     </message>
     <message>
         <location line="+69"/>
         <source>News Archive</source>
-        <translation type="unfinished"></translation>
+        <translation>Arquivo de Notícias</translation>
     </message>
 </context>
 <context>
@@ -4593,7 +4585,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+27"/>
         <source>Wang Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Conjunto Wang</translation>
     </message>
     <message>
         <location line="+347"/>
@@ -4618,7 +4610,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+8"/>
         <source>Tile Render Order</source>
-        <translation>Ordem de renderizar dos Tiles</translation>
+        <translation>Ordem de renderização dos Tiles</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -4860,7 +4852,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+11"/>
         <source>Drawing Offset</source>
-        <translation>Deslocamento</translation>
+        <translation>Deslocamento do Desenho</translation>
     </message>
     <message>
         <location line="+14"/>
@@ -5388,7 +5380,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+89"/>
         <source>New Wang Set</source>
-        <translation>Novo Wang Set</translation>
+        <translation>Novo Conjunto Wang</translation>
     </message>
 </context>
 <context>
@@ -5414,12 +5406,12 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+4"/>
         <source>Set Terrain Image</source>
-        <translation>Defenir Imagem de Terreno</translation>
+        <translation>Definir Imagem de Terreno</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Set Wang Set Image</source>
-        <translation>Definir Imagem do Wang Set</translation>
+        <translation>Definir Imagem do Conjunto Wang</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -5542,12 +5534,12 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location filename="../src/tiled/wangcolormodel.cpp" line="+144"/>
         <source>Edge Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Cores das Arestas</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Corner Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Cores dos Cantos</translation>
     </message>
 </context>
 <context>
@@ -5585,12 +5577,12 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+1"/>
         <source>Add Wang Set</source>
-        <translation>Adicionar Wang Set</translation>
+        <translation>Adicionar Conjunto Wang</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Wang Set</source>
-        <translation>Remover Wang Set</translation>
+        <translation>Remover Conjunto Wang</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -5613,7 +5605,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location filename="../src/tiled/wangsetview.cpp" line="+105"/>
         <source>Wang Set &amp;Properties...</source>
-        <translation>&amp;Propriedades Wang Set...</translation>
+        <translation>&amp;Propriedades do Conjunto Wang...</translation>
     </message>
 </context>
 <context>
@@ -5635,7 +5627,8 @@ Por favor, selecione um formato específico.</translation>
         <location line="+8"/>
         <source>JSON parse error at offset %1:
 %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro ao interpretar JSON no deslocamento %1:
+%2.</translation>
     </message>
 </context>
 <context>
@@ -5666,7 +5659,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+11"/>
         <source>Add Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Adicionar Objetos</translation>
     </message>
     <message>
         <location line="+40"/>
@@ -5788,7 +5781,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+20"/>
         <source>Change Drawing Offset</source>
-        <translation>Modificar Deslocamento</translation>
+        <translation>Modificar Deslocamento do Desenho</translation>
     </message>
     <message>
         <location line="+48"/>
@@ -5813,7 +5806,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+1"/>
         <source>Raise Layer</source>
-        <translation>Levantar Camada</translation>
+        <translation>Elevar Camada</translation>
     </message>
     <message>
         <location filename="../src/tiled/movemapobjecttogroup.cpp" line="+42"/>
@@ -5904,11 +5897,9 @@ Por favor, selecione um formato específico.</translation>
     <message numerus="yes">
         <location line="+59"/>
         <source>Change %n Object/s Tile</source>
-        <translation>
-            <numerusform>Mudar %n Tile do Objeto</numerusform>
-            <numerusform>Mudar %n Tiles do Objeto</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Mudar Tile de %n Objeto</numerusform>
+        <numerusform>Mudar Tile de %n Objetos</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+65"/>
         <source>Detach %n Template Instance(s)</source>
@@ -5958,7 +5949,7 @@ Por favor, selecione um formato específico.</translation>
         <location filename="../src/tiled/changemapobjectsorder.cpp" line="+46"/>
         <location filename="../src/tiled/raiselowerhelper.cpp" line="+69"/>
         <source>Raise Object</source>
-        <translation>Levantar Objeto</translation>
+        <translation>Elevar Objeto</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -5979,7 +5970,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location filename="../src/tiled/raiselowerhelper.cpp" line="+43"/>
         <source>Raise Object To Top</source>
-        <translation>Levantar Objeto ao Topo</translation>
+        <translation>Elevar Objeto ao Topo</translation>
     </message>
     <message>
         <location line="+37"/>
@@ -6048,7 +6039,7 @@ Por favor, selecione um formato específico.</translation>
         <location filename="../src/tiled/changetileprobability.cpp" line="+41"/>
         <location line="+14"/>
         <source>Change Tile Probability</source>
-        <translation>Mudar a Probabilidade do Tile</translation>
+        <translation>Mudar Probabilidade do Tile</translation>
     </message>
     <message>
         <location filename="../src/tiled/adjusttileindexes.cpp" line="-139"/>
@@ -6093,12 +6084,12 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location filename="../src/tiled/addremovewangset.cpp" line="+65"/>
         <source>Add Wang Set</source>
-        <translation>Adicionar Wang Set</translation>
+        <translation>Adicionar Conjunto Wang</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Remove Wang Set</source>
-        <translation>Remover Wang Set</translation>
+        <translation>Remover Conjunto Wang</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetilewangid.cpp" line="+36"/>
@@ -6110,12 +6101,12 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location filename="../src/tiled/changewangsetdata.cpp" line="+38"/>
         <source>Change Wang Set edge count</source>
-        <translation>Alterar contagem de arestas do Wang Set</translation>
+        <translation>Alterar contagem de arestas do Conjunto Wang</translation>
     </message>
     <message>
         <location line="+66"/>
         <source>Change Wang Set corner count</source>
-        <translation>Alterar contagem de cantos do Wang Set</translation>
+        <translation>Alterar contagem de cantos do Conjunto Wang</translation>
     </message>
     <message>
         <location line="+63"/>
@@ -6125,7 +6116,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+90"/>
         <source>Set Wang Set Image</source>
-        <translation>Definir Imagem do Wang Set</translation>
+        <translation>Definir Imagem do Conjunto Wang</translation>
     </message>
     <message>
         <location filename="../src/tiled/moveterrain.cpp" line="+61"/>
@@ -6140,7 +6131,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location filename="../src/tiled/renamewangset.cpp" line="+35"/>
         <source>Change Wang Set Name</source>
-        <translation>Alterar Nome do Wang Set</translation>
+        <translation>Alterar Nome do Conjunto Wang</translation>
     </message>
     <message>
         <location filename="../src/tiled/replacetemplate.cpp" line="+35"/>
@@ -6155,19 +6146,15 @@ Por favor, selecione um formato específico.</translation>
     <message numerus="yes">
         <location filename="../src/tiled/mapdocument.cpp" line="-683"/>
         <source>Raise %n Layer(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Elevar %n Camada</numerusform>
+        <numerusform>Elevar %n Camadas</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+27"/>
         <source>Lower %n Layer(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Baixar %n Camada</numerusform>
+        <numerusform>Baixar %n Camadas</numerusform>
+        </translation></message>
 </context>
 <context>
     <name>Utils</name>
@@ -6192,88 +6179,88 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location filename="../src/tmxrasterizer/main.cpp" line="+52"/>
         <source>Renders a Tiled map (TMX format) to an image.</source>
-        <translation type="unfinished"></translation>
+        <translation>Renderiza um mapa Tiled (formato TMX) para imagem.</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>The scale of the output image (default: 1).</source>
-        <translation type="unfinished"></translation>
+        <translation>Escala da imagem produzida (padrão: 1).</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>scale</source>
-        <translation type="unfinished"></translation>
+        <translation>escala</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>The requested size in pixels at which a tile is rendered (overrides the --scale option).</source>
-        <translation type="unfinished"></translation>
+        <translation>O tamanho em pixeis com que um tile é renderizado (substitui a opção --scale).</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+3"/>
         <source>size</source>
-        <translation type="unfinished"></translation>
+        <translation>tamanho</translation>
     </message>
     <message>
         <location line="-1"/>
         <source>The output image fits within a SIZE x SIZE square (overrides the --scale and --tilesize options).</source>
-        <translation type="unfinished"></translation>
+        <translation>A imagem produzida cabe num quadrado SIZE x SIZE (substitui as opções --scale e --tilesize).</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Antialias edges of primitives.</source>
-        <translation type="unfinished"></translation>
+        <translation>Antialias arestas das primitivas.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Use nearest neighbour instead of smooth blending of pixels.</source>
-        <translation type="unfinished"></translation>
+        <translation>Usar vizinho mais próximo em vez de mistura suave de pixeis.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Ignore all layer visibility flags in the map file, and render all layers in the output (default is to omit invisible layers).</source>
-        <translation type="unfinished"></translation>
+        <translation>Ignora todas marcas de visibilidade no ficheiro mapa, e renderiza todas as camadas (por padrão omitem-se as camadas invisíveis).</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Specifies a layer to omit from the output image. Can be repeated to hide multiple layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Especifica a camada a omitir na imagem a produzir. Pode ser repetido para esconder várias camadas.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>name</source>
-        <translation type="unfinished"></translation>
+        <translation>nome</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Map file to render.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ficheiro mapa a renderizar.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Image file to output.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ficheiro imagem a produzir.</translation>
     </message>
     <message>
         <location line="+23"/>
         <source>Invalid size specified: &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Tamanho inválido: &quot;%1&quot;</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Invalid tile size specified: &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Tamanho de tile inválido: &quot;%1&quot;</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Invalid scale specified: &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Escala inválida: &quot;%1&quot;</translation>
     </message>
     <message>
         <location filename="../src/tmxviewer/main.cpp" line="+57"/>
         <source>Displays a Tiled map (TMX format).</source>
-        <translation type="unfinished"></translation>
+        <translation>Exibe um mapa Tiled (formato TMX).</translation>
     </message>
     <message>
         <location line="+3"/>
