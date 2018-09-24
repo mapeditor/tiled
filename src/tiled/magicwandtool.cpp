@@ -24,7 +24,12 @@
 #include "magicwandtool.h"
 
 #include "brushitem.h"
+#include "map.h"
+#include "mapdocument.h"
 #include "tilepainter.h"
+
+#include <QAction>
+#include <QToolbar>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -34,8 +39,30 @@ MagicWandTool::MagicWandTool(QObject *parent)
                                 QIcon(QLatin1String(
                                       ":images/22x22/stock-tool-fuzzy-select-22.png")),
                                 QKeySequence(tr("W")),
-                                parent)
+                                parent),
+      mScope(Contiguous)
 {
+    QIcon contiguousScopeIcon(QLatin1String(":images/22x22/stock-tool-fuzzy-select-22.png"));
+    QIcon globalScopeIcon(QLatin1String(":images/22x22/stock-tool-by-color-select.png"));
+
+    mContiguousScope = new QAction(this);
+    mContiguousScope->setIcon(contiguousScopeIcon);
+    mContiguousScope->setCheckable(true);
+    mContiguousScope->setChecked(true);
+
+    mGlobalScope = new QAction(this);
+    mGlobalScope->setIcon(globalScopeIcon);
+    mGlobalScope->setCheckable(true);
+    mGlobalScope->setChecked(false);
+
+    mScopeActionGroup = new QActionGroup(this);
+    mScopeActionGroup->addAction(mContiguousScope);
+    mScopeActionGroup->addAction(mGlobalScope);
+
+    connect(mContiguousScope, &QAction::triggered,
+            [this]() { mScope = Contiguous; });
+    connect(mGlobalScope, &QAction::triggered,
+            [this]() { mScope = Global; });
 }
 
 void MagicWandTool::tilePositionChanged(const QPoint &tilePos)
@@ -45,8 +72,18 @@ void MagicWandTool::tilePositionChanged(const QPoint &tilePos)
     if (!tileLayer)
         return;
 
-    TilePainter regionComputer(mapDocument(), tileLayer);
-    setSelectedRegion(regionComputer.computeFillRegion(tilePos));
+    QRegion resultRegion;
+    if (mScope == Contiguous) {
+        TilePainter regionComputer(mapDocument(), tileLayer);
+        resultRegion = regionComputer.computeFillRegion(tilePos);
+    } else if (mScope == Global) {
+        if (mapDocument()->map()->infinite() || tileLayer->contains(tilePos)) {
+            const Cell &matchCell = tileLayer->cellAt(tilePos);
+            resultRegion = tileLayer->region([&] (const Cell &cell) { return cell == matchCell; });
+        }
+    }
+
+    setSelectedRegion(resultRegion);
     brushItem()->setTileRegion(selectedRegion());
 }
 
@@ -56,4 +93,12 @@ void MagicWandTool::languageChanged()
     setShortcut(QKeySequence(tr("W")));
 
     AbstractTileSelectionTool::languageChanged();
+}
+
+void MagicWandTool::populateToolBar(QToolBar *toolBar)
+{
+    AbstractTileSelectionTool::populateToolBar(toolBar);
+    toolBar->addSeparator();
+    toolBar->addAction(mContiguousScope);
+    toolBar->addAction(mGlobalScope);
 }

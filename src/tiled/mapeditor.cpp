@@ -56,7 +56,6 @@
 #include "preferences.h"
 #include "propertiesdock.h"
 #include "reversingproxymodel.h"
-#include "selectsametiletool.h"
 #include "shapefilltool.h"
 #include "stampbrush.h"
 #include "templatesdock.h"
@@ -198,7 +197,6 @@ MapEditor::MapEditor(QObject *parent)
     mToolsToolBar->addAction(mToolManager->registerTool(new Eraser(this)));
     mToolsToolBar->addAction(mToolManager->registerTool(new TileSelectionTool(this)));
     mToolsToolBar->addAction(mToolManager->registerTool(new MagicWandTool(this)));
-    mToolsToolBar->addAction(mToolManager->registerTool(new SelectSameTileTool(this)));
     mToolsToolBar->addSeparator();
     mToolsToolBar->addAction(mToolManager->registerTool(new ObjectSelectionTool(this)));
     mToolsToolBar->addAction(mToolManager->registerTool(mEditPolygonTool));
