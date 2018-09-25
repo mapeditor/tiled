@@ -1,6 +1,6 @@
 .. raw:: html
 
-   <div class="new">New in Tiled 1.1</div>
+   <div class="new new-prev">Since Tiled 1.1</div>
 
 Using Templates
 ===============

@@ -45,6 +45,7 @@ General
 -  ``Ctrl + Shift + W`` - Close all documents
 -  ``Ctrl + E`` - Export current document
 -  ``Ctrl + Shift + E`` - Export current document to another file
+-  ``Ctrl + Q`` - Quit Tiled
 -  ``Ctrl + R`` - Reload current document
 -  ``Ctrl + T`` - Force-reload all tilesets used by the current map
    (mainly useful when not using the automatic reloading)
@@ -101,7 +102,6 @@ When an object layer is selected
 -  ``I`` - Activate :ref:`insert-point-tool`
 -  ``C`` - Activate :ref:`insert-ellipse-tool`
 -  ``P`` - Activate :ref:`insert-polygon-tool`
--  ``L`` - Activate :ref:`insert-polyline-tool`
 
    -  ``Enter`` - Finish creating object
    -  ``Escape`` - Cancel creating object

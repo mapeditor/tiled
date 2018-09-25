@@ -17,6 +17,15 @@ Placement Tools
 
 Each type of object has its own placement tool.
 
+.. raw:: html
+
+   <div class="new">New in Tiled 1.2</div>
+
+A preview is shown of the object you're about to place when you hover
+over the map. While placing an object, you can press ``Escape`` or
+right-click to cancel placement of the object. Press ``Escape`` again
+to switch to the :ref:`select-objects-tool` tool.
+
 .. _insert-rectangle-tool:
 
 Insert Rectangle
@@ -36,6 +45,10 @@ tile size.
 If the rectangle is empty (width and height are both 0), it is rendered
 as a small square around its position. This is mainly to keep it visible
 and selectable.
+
+.. raw:: html
+
+   <div class="new new-prev">Since Tiled 1.1</div>
 
 .. _insert-point-tool:
 
@@ -72,27 +85,34 @@ They are most commonly used for defining collision shapes.
 When placing a polygon, the first click determines the location of the
 object as well as the location of the first point of the polygon.
 Subsequent clicks are used to add additional points to the polygon.
-Right click or press ``Enter`` to finish creating the polygon. Polygons
-needs to have at least three points. You can press ``Escape`` to cancel
+Polygons needs to have at least three points. Click the first point
+again to finish creating the polygon. You can press ``Escape`` to cancel
 the creation of the polygon.
 
 When you want to change a polygon after it has been placed, you need to
 use the :ref:`edit-polygons-tool` tool.
 
-.. _insert-polyline-tool:
+Polylines
+^^^^^^^^^
 
-Insert Polyline
-~~~~~~~~~~~~~~~
+Polylines are created by not closing a polygon. Right-click or press Enter
+while creating a polygon to finish it as a polyline.
 
-Shortcut: ``L``
-
-Polylines work very similar to `polygons <#insert-polygon>`__, except
-that they are rendered as a line and require only two points. While they
+Polylines are rendered as a line and require only two points. While they
 can represent collision walls, they are also often used to represent
 paths to be followed.
 
-Despite its name, the :ref:`edit-polygons-tool` tool is also used to
-edit polylines.
+.. raw:: html
+
+   <div class="new">New in Tiled 1.2</div>
+
+You can extend an existing polyline at either end when it is selected,
+by clicking on the displayed dots. It is also possible to finish the
+polyline by connecting it to either end of another existing polyline
+object. The other polyline object needs to be selected as well, since
+the interactive dots only show on selected polylines.
+
+The :ref:`edit-polygons-tool` tool is used to edit polylines as well.
 
 .. _insert-tile-tool:
 
@@ -115,7 +135,7 @@ to finish placing the object.
 
 .. raw:: html
 
-   <div class="new new-prev">New in Tiled 1.0</div>
+   <div class="new new-prev">Since Tiled 1.0</div>
 
 To change the tile used by existing tile objects, select all the objects
 you want to change using the :ref:`select-objects-tool` tool and then
@@ -124,7 +144,7 @@ Selected Objects*.
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.1</div>
+   <div class="new new-prev">Since Tiled 1.1</div>
 
 .. _insert-template-tool:
 
@@ -164,7 +184,7 @@ Selecting and Deselecting
 You can select objects by clicking them or by dragging a rectangular
 lasso, selecting any object that intersect with its area. By holding
 ``Shift`` or ``Ctrl`` while clicking, you can add/remove single objects
-to/from the selection.
+to/from the selection. Press ``Escape`` to deselect all objects.
 
 When pressing and dragging on an object, this object is selected and
 moved. When this prevents you from starting a rectangular selection, you
@@ -172,7 +192,7 @@ can hold ``Shift`` to force the selection rectangle.
 
 .. raw:: html
 
-   <div class="new new-prev">New in Tiled 1.0</div>
+   <div class="new new-prev">Since Tiled 1.0</div>
 
 By default you interact with the top-most object. When you need to
 select an object below another object, first select the higher object
@@ -180,6 +200,13 @@ and then hold ``Alt`` while clicking at the same location to select
 lower objects. You can also hold ``Alt`` while opening the context menu
 to get a list of all objects at the clicked location, so you may
 directly select the desired object.
+
+.. raw:: html
+
+   <div class="new">New in Tiled 1.2</div>
+
+You can quickly switch to the :ref:`edit-polygons-tool` tool by
+double-clicking on the polygon or polyline you want to edit.
 
 Moving
 ~~~~~~
@@ -253,7 +280,9 @@ Shortcut: ``E``
 Polygons and polylines have their own editing needs and as such are
 covered by a separate tool, which allows selecting and moving around
 their nodes. You can select and move the nodes of multiple polygons at
-the same time.
+the same time. Click a segment to select the nodes at both ends. Press
+``Escape`` to deselect all nodes, or to switch back to the
+:ref:`select-objects-tool` tool.
 
 Nodes can be deleted by selecting them and choosing "Delete Nodes" from
 the context menu. The ``Delete`` key can also be used to delete the
@@ -262,10 +291,23 @@ selected nodes, or the selected objects if no nodes are selected.
 When you have selected multiple consecutive nodes of the same polygon,
 you can join them together by choosing "Join Nodes" from the context
 menu. You can also split the segments in between the nodes by choosing
-"Split Segments", which is currently the only way to extend an existing
-polygon. You can also delete a segment when two consecutive nodes are
+"Split Segments". Alternatively, you can simply double-click a segment
+to split it at that location.
+
+You can also delete a segment when two consecutive nodes are
 selected in a polygon by choosing "Delete Segment" in the context menu.
-This will convert a polygon into a polyline.
+This will convert a polygon into a polyline, or turn one polyline
+object in two polyline objects.
+
+.. raw:: html
+
+   <div class="new">New in Tiled 1.2</div>
+
+It is possible to extend a polyline at either end, either by
+right-clicking those nodes and choosing "Extend Polyline", or by
+switching to the :ref:`insert-polygon-tool` tool and clicking on either
+end of an already selected polylines.
+
 
 .. topic:: Future Extensions
    :class: future
@@ -273,13 +315,13 @@ This will convert a polygon into a polyline.
    Here are some ideas about improvements that could be made to the above
    tools:
 
-   -  For the `Insert Tile <#insert-tile>`__ tool, show the preview already
-      before pressing the left mouse button
-      (`#537 <https://github.com/bjorn/tiled/issues/537>`__)
+   -  Some improvements could still be made to the support for editing
+      polygons and polylines, like allowing to rotate and scale the
+      selected nodes (`#1487 <https://github.com/bjorn/tiled/issues/1487>`__).
 
-   -  Many improvements could be made to the support for editing polygons
-      and polylines, like allowing to rotate and scale the selected nodes
-      (`#1487 <https://github.com/bjorn/tiled/issues/1487>`__).
+   -  The tools could put short usage instructions in the status bar,
+      to help new users without requiring them to carefully read the
+      manual (`#1855 <https://github.com/bjorn/tiled/issues/1855>`__).
 
    If you like any of these plans, please help me getting around to it
    faster by `becoming a patron <https://www.patreon.com/bjorn>`__. The

@@ -36,5 +36,6 @@
 
 .new-prev {
     background-color: unset;
-    color: rgb(254, 89, 0);
+    color: gray;
+    border-color: gray;
 }
