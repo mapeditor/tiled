@@ -141,7 +141,7 @@ the full list:
 * tBIN plugin: Don't ignore objects that aren't perfectly aligned ([#1985](https://github.com/bjorn/tiled/issues/1985))
 * tBIN plugin: Fixed "Unsupported property type" error for newly added float properties
 * Automapping: Report error when no output layers are found
-* AutoMapping: Changed matching outside of map boundaries and added '[MatchOutsideMap](MatchOutsideMap)' option
+* AutoMapping: Changed matching outside of map boundaries and added '[MatchOutsideMap][MatchOutsideMap]' option
 * Linux: Modernized the appstream file (by Patrick Griffis)
 * libtiled: Allow qrc-based tileset images ([#1947](https://github.com/bjorn/tiled/issues/1947))
 * libtiled-java: Fixed loading maps with multiple external tilesets
@@ -203,4 +203,4 @@ of work in front of us, but your support makes it doable!
 [itch]: https://thorbjorn.itch.io/tiled
 [liberapay]: https://liberapay.com/Tiled/
 [bountysource]: https://www.bountysource.com/teams/tiled
-[MatchOutsideMap]: http://docs.mapeditor.org/en/latest/manual/automapping/#map-properties
+[MatchOutsideMap]: https://docs.mapeditor.org/en/latest/manual/automapping/#map-properties
