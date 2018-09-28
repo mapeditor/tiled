@@ -80,7 +80,7 @@
     <message>
         <location line="+9"/>
         <source>Export syntax is --export-tileset [format] &lt;source&gt; &lt;target&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportsyntaksen er --export-tileset [format] &lt;kilde&gt; &lt;mål&gt;</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -202,7 +202,7 @@
     <message>
         <location line="+5"/>
         <source>Export the map or tileset with types and properties resolved</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksporter kart eller flissett med typer og egenskaper løst</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -586,7 +586,7 @@
     <message>
         <location line="+4"/>
         <source>Unload World</source>
-        <translation type="unfinished"></translation>
+        <translation>Last ut verden</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -711,17 +711,17 @@
     <message>
         <location line="+127"/>
         <source>For Hovered Object</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">For flytende objekt</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Load World...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Last verden…</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Highlight Hovered Object</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Framhev flytende objekt</translation>
     </message>
     <message>
         <location line="-124"/>
@@ -911,7 +911,7 @@
     <message>
         <location line="+24"/>
         <source>Ctrl+Shift+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1570,7 +1570,7 @@ Linje %1, kolonne %2</translation>
     <message>
         <location line="+7"/>
         <source>Detach templates</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Hekt av maler</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -2384,7 +2384,7 @@ Linje %1, kolonne %2</translation>
     <message>
         <location line="+11"/>
         <source>Frame Duration: </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Rammevariget: </translation>
     </message>
     <message>
         <location line="+7"/>
@@ -2625,7 +2625,7 @@ Linje %1, kolonne %2</translation>
     <message>
         <location line="+3"/>
         <source>No output_&lt;name&gt; layer found!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ingen utdata_&lt;navn&gt;-lag funnet!</translation>
     </message>
 </context>
 <context>
@@ -3022,12 +3022,12 @@ Linje %1, kolonne %2</translation>
     <message>
         <location line="+122"/>
         <source>Connect Polylines</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Knytt sammen polylinjer</translation>
     </message>
     <message>
         <location line="+202"/>
         <source>Create Polygon</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Opprett polygon</translation>
     </message>
 </context>
 <context>
@@ -3187,7 +3187,7 @@ Linje %1, kolonne %2</translation>
     <message>
         <location line="-334"/>
         <source>Extend Polyline</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Forleng polylinje</translation>
     </message>
 </context>
 <context>
@@ -4024,7 +4024,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location filename="../src/tiled/mapeditor.cpp" line="+665"/>
         <source>Paste in Place</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Lim inn på stedet</translation>
     </message>
     <message>
         <location line="+187"/>
@@ -5629,7 +5629,8 @@ Vennligst velgt et spesifikt format.</translation>
         <location line="+8"/>
         <source>JSON parse error at offset %1:
 %2.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">JSON-fortolkningsfeil i forskyvning %1:
+%2.</translation>
     </message>
 </context>
 <context>
@@ -6182,12 +6183,12 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location filename="../src/tmxrasterizer/main.cpp" line="+52"/>
         <source>Renders a Tiled map (TMX format) to an image.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tegner et Tiled-kart (TMX-format) til et bilde.</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>The scale of the output image (default: 1).</source>
-        <translation type="unfinished"></translation>
+        <translation>Skala for utdatabilde (forvalg: 1).</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -6213,7 +6214,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+3"/>
         <source>Antialias edges of primitives.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kanutjevning av kanter tilhørende primitiver.</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -6263,7 +6264,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location filename="../src/tmxviewer/main.cpp" line="+57"/>
         <source>Displays a Tiled map (TMX format).</source>
-        <translation type="unfinished"></translation>
+        <translation>Viser et Tiled-kart (TMX-format).</translation>
     </message>
     <message>
         <location line="+3"/>
