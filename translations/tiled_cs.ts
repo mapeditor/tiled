@@ -28,7 +28,8 @@
         <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Editor map Tiled&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Verze %1&lt;/i&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;Copyright 2008-2018 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(plný seznam přispěvatelů je v souboru AUTHORS)&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;Tento program můžete šířit a upravovat podle licence GPLicence (verze 2 nebo pozdější). Kopii GPLlicence najdete v souboru COPYING ve zdrojovém kódu programu Tiled.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;</translation>
+&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
+</translation>
     </message>
 </context>
 <context>
@@ -41,7 +42,7 @@
     <message>
         <location line="+12"/>
         <source>Property name</source>
-        <translation type="unfinished"></translation>
+        <translation>Název proměnné</translation>
     </message>
 </context>
 <context>
