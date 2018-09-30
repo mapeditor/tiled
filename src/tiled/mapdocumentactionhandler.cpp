@@ -721,19 +721,7 @@ void MapDocumentActionHandler::updateActions()
 
     mActionSelectAll->setEnabled(map);
     mActionSelectInverse->setEnabled(map);
-
-    if (currentLayer) {
-        if (currentLayer->asTileLayer()) {
-            mActionSelectNone->setEnabled(!selection.isEmpty());
-        } else if (currentLayer->asObjectGroup()) {
-            mActionSelectNone->setEnabled(selectedObjectsCount  > 0);
-        } else {
-            mActionSelectNone->setEnabled(false);
-        }
-    } else {
-        mActionSelectNone->setEnabled(false);
-    }
-
+    mActionSelectNone->setEnabled(!selection.isEmpty() || selectedObjectsCount  > 0);
 
     mActionCropToSelection->setEnabled(!selection.isEmpty());
 
