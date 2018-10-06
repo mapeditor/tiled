@@ -534,12 +534,12 @@
     <message>
         <location filename="../src/plugins/lua/luaplugin.cpp" line="+103"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">Не удалось открыть файл для записи.</translation>
+        <translation>Не удалось открыть файл для записи.</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>Lua files (*.lua)</source>
-        <translation type="unfinished">Lua файлы (*.lua)</translation>
+        <translation>Lua файлы (*.lua)</translation>
     </message>
 </context>
 <context>
@@ -547,12 +547,12 @@
     <message>
         <location line="+18"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">Не удалось открыть файл для записи.</translation>
+        <translation>Не удалось открыть файл для записи.</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>Lua files (*.lua)</source>
-        <translation type="unfinished">Lua файлы (*.lua)</translation>
+        <translation>Lua файлы (*.lua)</translation>
     </message>
 </context>
 <context>
@@ -585,7 +585,7 @@
     <message>
         <location line="+4"/>
         <source>Unload World</source>
-        <translation type="unfinished">Выгрузить Мир</translation>
+        <translation>Выгрузить Мир</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -665,7 +665,7 @@
     <message>
         <location line="+3"/>
         <source>Ctrl+Alt+S</source>
-        <translation type="unfinished">Ctrl+Alt+S</translation>
+        <translation>Ctrl+Alt+S</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -710,17 +710,17 @@
     <message>
         <location line="+127"/>
         <source>For Hovered Object</source>
-        <translation type="unfinished">Для объекта под курсором мыши</translation>
+        <translation>Для объекта под курсором мыши</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Load World...</source>
-        <translation type="unfinished">Загрузить Мир</translation>
+        <translation>Загрузить Мир...</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Highlight Hovered Object</source>
-        <translation type="unfinished">Подсвечивать объект под курсором мыши</translation>
+        <translation>Подсвечивать объект под курсором мыши</translation>
     </message>
     <message>
         <location line="-124"/>
@@ -910,7 +910,7 @@
     <message>
         <location line="+24"/>
         <source>Ctrl+Shift+S</source>
-        <translation type="unfinished">Ctrl+Shift+S</translation>
+        <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1046,7 +1046,7 @@ Line %1, column %2</source>
     <message>
         <location line="+183"/>
         <source>Invalid points data for polygon</source>
-        <translation>Неверные координаты для вершин полигона</translation>
+        <translation>Неверные координаты для вершин многоугольника</translation>
     </message>
     <message>
         <location line="-349"/>
@@ -1137,7 +1137,7 @@ Line %1, column %2</source>
     <message>
         <location line="-42"/>
         <source>Бесконечный</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1285,7 +1285,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/tilesetdock.cpp" line="+85"/>
         <source>New Tileset...</source>
-        <translation type="unfinished">Новый набор тайлов...</translation>
+        <translation>Новый набор тайлов...</translation>
     </message>
 </context>
 <context>
@@ -1395,7 +1395,7 @@ Line %1, column %2</source>
     <message>
         <location line="+5"/>
         <source>Selected Layers</source>
-        <translation type="unfinished">Выбранные слои</translation>
+        <translation>Выбранные слои</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -1559,22 +1559,22 @@ Line %1, column %2</source>
     <message>
         <location line="+10"/>
         <source>Export Options</source>
-        <translation type="unfinished">Параметры экспорта</translation>
+        <translation>Параметры экспорта</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Resolve object types and properties</source>
-        <translation type="unfinished">Определить типы и свойства объектов</translation>
+        <translation>Определить типы и свойства объектов</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Detach templates</source>
-        <translation type="unfinished">Отсоединить шаблоны</translation>
+        <translation>Отсоединить шаблоны</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Embed tilesets</source>
-        <translation type="unfinished">Встроить наборы тайлов</translation>
+        <translation>Встроить наборы тайлов</translation>
     </message>
     <message>
         <location line="+59"/>
@@ -1599,7 +1599,7 @@ Line %1, column %2</source>
     <message>
         <location line="+49"/>
         <source>Mouse wheel &amp;zooms by default</source>
-        <translation type="unfinished">По-умолчанию колесо мыши выполняет масштабирование</translation>
+        <translation>По-умолчанию колесо мыши выполняет масштабирование</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -2274,47 +2274,47 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/plugins/tbin/tbinplugin.cpp" line="+109"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished">Не удалось открыть файл для чтения.</translation>
+        <translation>Не удалось открыть файл для чтения.</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Tilesheet must have equal spacings.</source>
-        <translation type="unfinished">Лист тайлов должен иметь разбиение на равные промежутки.</translation>
+        <translation>Лист тайлов должен иметь разбиение на равные промежутки.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Tilesheet must have equal margins.</source>
-        <translation type="unfinished">Лист тайлов должен иметь равные отступы.</translation>
+        <translation>Лист тайлов должен иметь равные отступы.</translation>
     </message>
     <message>
         <location line="+34"/>
         <source>Different tile sizes per layer are not supported.</source>
-        <translation type="unfinished">Разные размеры тайлов на одном слое не поддерживаются.</translation>
+        <translation>Разные размеры тайлов на одном слое не поддерживаются.</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Invalid animation frame.</source>
-        <translation type="unfinished">Некорректный кадр анимации.</translation>
+        <translation>Некорректный кадр анимации.</translation>
     </message>
     <message>
         <location line="+112"/>
         <source>Only object and tile layers supported.</source>
-        <translation type="unfinished">Поддерживаются только объекты и слои тайлов.</translation>
+        <translation>Поддерживаются только объекты и слои тайлов.</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>Could not open file for writing</source>
-        <translation type="unfinished">Не удалось открыть файл для записи.</translation>
+        <translation>Не удалось открыть файл для записи</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Exception: %1</source>
-        <translation type="unfinished">Исключение: %1</translation>
+        <translation>Исключение: %1</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Tbin map files (*.tbin)</source>
-        <translation type="unfinished">Файлы Tbin карт (*.tbin)</translation>
+        <translation>Файлы Tbin карт (*.tbin)</translation>
     </message>
 </context>
 <context>
@@ -2323,13 +2323,13 @@ Line %1, column %2</source>
         <location filename="../src/plugins/tbin/tbin/Map.cpp" line="+99"/>
         <location line="+23"/>
         <source>Bad property type</source>
-        <translation type="unfinished">Неверный тип свойства</translation>
+        <translation>Неверный тип свойства</translation>
     </message>
     <message>
         <location line="+69"/>
         <location line="+68"/>
         <source>Bad layer tile data</source>
-        <translation type="unfinished">Некорректные данные в слое тайлов</translation>
+        <translation>Некорректные данные в слое тайлов</translation>
     </message>
     <message>
         <location line="+72"/>
@@ -2339,7 +2339,7 @@ Line %1, column %2</source>
     <message>
         <location line="+14"/>
         <source>File is not a tbin file.</source>
-        <translation type="unfinished">Файл не является файлом tbin.</translation>
+        <translation>Файл не является файлом tbin.</translation>
     </message>
     <message>
         <location line="+35"/>
@@ -2349,7 +2349,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/plugins/tbin/tbinplugin.cpp" line="-255"/>
         <source>Unsupported property type</source>
-        <translation type="unfinished">Данный тип свойства не поддерживается</translation>
+        <translation>Данный тип свойства не поддерживается</translation>
     </message>
 </context>
 <context>
@@ -2383,17 +2383,17 @@ Line %1, column %2</source>
     <message>
         <location line="+11"/>
         <source>Frame Duration: </source>
-        <translation type="unfinished">Длительность отображения кадра:</translation>
+        <translation>Длительность отображения кадра: </translation>
     </message>
     <message>
         <location line="+7"/>
         <source> ms</source>
-        <translation type="unfinished"> миллисекунд</translation>
+        <translation> миллисекунд</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>Apply</source>
-        <translation type="unfinished">Применить</translation>
+        <translation>Применить</translation>
     </message>
     <message>
         <location line="+98"/>
@@ -2431,32 +2431,32 @@ Line %1, column %2</source>
     <message>
         <location line="+16"/>
         <source>Replace Tile</source>
-        <translation type="unfinished">Заменить Tile</translation>
+        <translation>Заменить тайл</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Replace With Template</source>
-        <translation type="unfinished">Заменить на шаблон</translation>
+        <translation>Заменить на шаблон</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Replace With Template &quot;%1&quot;</source>
-        <translation type="unfinished">Заменить на шаблон %1</translation>
+        <translation>Заменить на шаблон &quot;%1&quot;</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Save As Template</source>
-        <translation type="unfinished">Сохранить как Шаблон</translation>
+        <translation>Сохранить как Шаблон</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Detach</source>
-        <translation type="unfinished">Отсоединить</translation>
+        <translation>Отсоединить</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Reset Template Instance(s)</source>
-        <translation type="unfinished">Сбросить Шаблон(ы)</translation>
+        <translation>Сбросить Шаблон(ы)</translation>
     </message>
     <message>
         <location line="-334"/>
@@ -2540,22 +2540,22 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/abstracttileselectiontool.cpp" line="+137"/>
         <source>Replace Selection</source>
-        <translation type="unfinished">Заменить выделенное</translation>
+        <translation>Заменить выделенное</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add Selection</source>
-        <translation type="unfinished">Добавить выделенное</translation>
+        <translation>Добавить выделенное</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Subtract Selection</source>
-        <translation type="unfinished">Исключить выделенное</translation>
+        <translation>Исключить выделенное</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Intersect Selection</source>
-        <translation type="unfinished">Пересечь выделенное</translation>
+        <translation>Пересечь выделенное</translation>
     </message>
 </context>
 <context>
@@ -2591,7 +2591,7 @@ Line %1, column %2</source>
     <message>
         <location line="-25"/>
         <source>&apos;%1&apos;: Property &apos;%2&apos; = &apos;%3&apos; on layer &apos;%4&apos; does not make sense. Ignoring this property.</source>
-        <translation type="unfinished">&apos;%1&apos;: Свойство &apos;%2&apos; = &apos;%3&apos; слоя &apos;%4&apos; не имеет смысла. Игнорируем это свойство.</translation>
+        <translation>&apos;%1&apos;: Свойство &apos;%2&apos; = &apos;%3&apos; слоя &apos;%4&apos; не имеет смысла. Игнорируем это свойство.</translation>
     </message>
     <message>
         <location line="+31"/>
@@ -2627,7 +2627,7 @@ Line %1, column %2</source>
     <message>
         <location line="+3"/>
         <source>No output_&lt;name&gt; layer found!</source>
-        <translation type="unfinished">Не найден слой output_&lt;name&gt;!</translation>
+        <translation>Не найден слой output_&lt;name&gt;!</translation>
     </message>
 </context>
 <context>
@@ -2680,7 +2680,7 @@ Line %1, column %2</source>
     <message>
         <location line="+2"/>
         <source>Template tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Шаблонный набор тайлов</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -2690,7 +2690,7 @@ Line %1, column %2</source>
     <message>
         <location line="+2"/>
         <source>Template</source>
-        <translation type="unfinished">Шаблон</translation>
+        <translation>Шаблон</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -2730,7 +2730,7 @@ Line %1, column %2</source>
     <message>
         <location line="-5"/>
         <source>Open Template...</source>
-        <translation type="unfinished">Открыть Шаблон..</translation>
+        <translation>Открыть Шаблон...</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -2746,7 +2746,7 @@ Line %1, column %2</source>
     <message>
         <location line="+50"/>
         <source>Locate Object Template</source>
-        <translation type="unfinished">Указать шаблон объекта</translation>
+        <translation>Указать шаблон объекта</translation>
     </message>
     <message>
         <location line="+25"/>
@@ -2756,7 +2756,7 @@ Line %1, column %2</source>
     <message>
         <location line="+48"/>
         <source>Error Reading Object Template</source>
-        <translation type="unfinished">Ошибка при чтении шаблона объекта</translation>
+        <translation>Ошибка при чтении шаблона объекта</translation>
     </message>
     <message>
         <location line="-89"/>
@@ -2920,7 +2920,7 @@ Line %1, column %2</source>
     <message>
         <location line="+10"/>
         <source>Select Working Directory</source>
-        <translation type="unfinished">Выбрать рабочую папку</translation>
+        <translation>Выбрать рабочую папку</translation>
     </message>
 </context>
 <context>
@@ -2946,7 +2946,7 @@ Line %1, column %2</source>
     <message>
         <location line="+26"/>
         <source>Executing: %1</source>
-        <translation type="unfinished">Выполняется: %1</translation>
+        <translation>Выполняется: %1</translation>
     </message>
     <message>
         <location line="+29"/>
@@ -3000,12 +3000,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/createpointobjecttool.cpp" line="+51"/>
         <source>Insert Point</source>
-        <translation type="unfinished">Вставить точку</translation>
+        <translation>Вставить точку</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>I</source>
-        <translation type="unfinished">I</translation>
+        <translation>I</translation>
     </message>
 </context>
 <context>
@@ -3013,7 +3013,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/createpolygonobjecttool.cpp" line="+172"/>
         <source>Insert Polygon</source>
-        <translation>Вставить полигон</translation>
+        <translation>Вставить многоугольник</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3023,12 +3023,12 @@ Line %1, column %2</source>
     <message>
         <location line="+122"/>
         <source>Connect Polylines</source>
-        <translation type="unfinished">Соединить ломаные линии</translation>
+        <translation>Соединить ломаные линии</translation>
     </message>
     <message>
         <location line="+202"/>
         <source>Create Polygon</source>
-        <translation type="unfinished">Создать полигон</translation>
+        <translation>Создать многоугольник</translation>
     </message>
 </context>
 <context>
@@ -3049,12 +3049,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/createtemplatetool.cpp" line="+53"/>
         <source>Insert Template</source>
-        <translation type="unfinished">Вставить шаблон</translation>
+        <translation>Вставить шаблон</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>V</source>
-        <translation type="unfinished">V</translation>
+        <translation>V</translation>
     </message>
 </context>
 <context>
@@ -3067,7 +3067,7 @@ Line %1, column %2</source>
     <message>
         <location line="+1"/>
         <source>E</source>
-        <translation type="unfinished">E</translation>
+        <translation>E</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -3085,7 +3085,7 @@ Line %1, column %2</source>
     <message>
         <location line="+1"/>
         <source>T</source>
-        <translation>T/translation>
+        <translation>T</translation>
     </message>
 </context>
 <context>
@@ -3093,7 +3093,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/documentmanager.cpp" line="+461"/>
         <source>Unrecognized file format.</source>
-        <translation type="unfinished">Неизвестный формат файла.</translation>
+        <translation>Неизвестный формат файла.</translation>
     </message>
     <message>
         <location line="+257"/>
@@ -3108,17 +3108,17 @@ Line %1, column %2</source>
     <message>
         <location line="+111"/>
         <source>Close</source>
-        <translation type="unfinished">Закрыть</translation>
+        <translation>Закрыть</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Close Other Tabs</source>
-        <translation type="unfinished">Закрыть другие вкладки</translation>
+        <translation>Закрыть другие вкладки</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Close Tabs to the Right</source>
-        <translation type="unfinished">Закрыть вкладки справа</translation>
+        <translation>Закрыть вкладки справа</translation>
     </message>
     <message>
         <location line="+241"/>
@@ -3137,18 +3137,18 @@ Line %1, column %2</source>
         <location filename="../src/tiled/editpolygontool.cpp" line="+58"/>
         <location line="+294"/>
         <source>Edit Polygons</source>
-        <translation>Редактировать полигоны</translation>
+        <translation>Редактировать многоугольники</translation>
     </message>
     <message>
         <location line="-292"/>
         <location line="+293"/>
         <source>O</source>
-        <translation type="unfinished">O</translation>
+        <translation>O</translation>
     </message>
     <message>
         <location line="-23"/>
         <source>Split Segment</source>
-        <translation type="unfinished">Разделить сегмент</translation>
+        <translation>Разделить сегмент</translation>
     </message>
     <message numerus="yes">
         <location line="+265"/>
@@ -3190,7 +3190,7 @@ Line %1, column %2</source>
     <message>
         <location line="-334"/>
         <source>Extend Polyline</source>
-        <translation type="unfinished">Продолжить ломаную линию</translation>
+        <translation>Продолжить ломаную линию</translation>
     </message>
 </context>
 <context>
@@ -3307,12 +3307,12 @@ Do you want to replace it?</source>
     <message>
         <location line="+1"/>
         <source>Visible</source>
-        <translation type="unfinished">Видимый</translation>
+        <translation>Видимый</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Locked</source>
-        <translation type="unfinished">Заблокированный</translation>
+        <translation>Заблокированный</translation>
     </message>
     <message numerus="yes">
         <location line="+74"/>
@@ -3336,12 +3336,12 @@ Do you want to replace it?</source>
     <message>
         <location line="+31"/>
         <source>Lock Other Layers</source>
-        <translation type="unfinished">Заблокировать другие слои</translation>
+        <translation>Заблокировать другие слои</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Unlock Other Layers</source>
-        <translation type="unfinished">Разблокировать другие слои</translation>
+        <translation>Разблокировать другие слои</translation>
     </message>
 </context>
 <context>
@@ -3424,7 +3424,7 @@ Do you want to replace it?</source>
     <message>
         <location line="+13"/>
         <source>Ctrl+Q</source>
-        <translation type="unfinished">Ctrl+Q</translation>
+        <translation>Ctrl+Q</translation>
     </message>
     <message>
         <location line="+66"/>
@@ -3455,17 +3455,17 @@ Do you want to replace it?</source>
     <message>
         <location line="-1113"/>
         <source>Load World</source>
-        <translation type="unfinished">Загрузить Мир</translation>
+        <translation>Загрузить Мир</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Error Loading World</source>
-        <translation type="unfinished">Ошибка при загрузке Мира</translation>
+        <translation>Ошибка при загрузке Мира</translation>
     </message>
     <message>
         <location line="+79"/>
         <source>Reset to Default Layout</source>
-        <translation type="unfinished">Сбросить расположение в состояние по-умолчанию</translation>
+        <translation>Сбросить расположение в состояние по-умолчанию</translation>
     </message>
     <message>
         <location line="+269"/>
@@ -3611,7 +3611,7 @@ Please select specific format.</source>
         <location line="+62"/>
         <location line="+30"/>
         <source>Error Exporting Map!</source>
-        <translation type="unfinished">Ошибка при экспорте карты!</translation>
+        <translation>Ошибка при экспорте карты!</translation>
     </message>
     <message>
         <location line="+48"/>
@@ -3659,7 +3659,7 @@ Please select specific format.</source>
         <location filename="../src/tiled/documentmanager.cpp" line="+19"/>
         <location line="+20"/>
         <source>untitled</source>
-        <translation type="unfinished">безымянный</translation>
+        <translation>безымянный</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -3722,7 +3722,7 @@ Please select specific format.</source>
     <message numerus="yes">
         <location line="+2"/>
         <source>Group %n Layer(s)</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Сгруппировать %n слой</numerusform>
             <numerusform>Сгруппировать %n слоя</numerusform>
             <numerusform>Сгруппировать %n слоёв</numerusform>
@@ -3731,7 +3731,7 @@ Please select specific format.</source>
     <message numerus="yes">
         <location line="+16"/>
         <source>Ungroup %n Layer(s)</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Разгруппировать %n слой</numerusform>
             <numerusform>Разгруппировать %n слоя</numerusform>
             <numerusform>Разгруппировать %n слоёв</numerusform>
@@ -3740,7 +3740,7 @@ Please select specific format.</source>
     <message numerus="yes">
         <location line="+46"/>
         <source>Duplicate %n Layer(s)</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Дублировать %n слой</numerusform>
             <numerusform>Дублировать %n слоя</numerusform>
             <numerusform>Дублировать %n слоёв</numerusform>
@@ -3759,7 +3759,7 @@ Please select specific format.</source>
     <message numerus="yes">
         <location line="+73"/>
         <source>Remove %n Layer(s)</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Удалить %n слой</numerusform>
             <numerusform>Удалить %n слоя</numerusform>
             <numerusform>Удалить %n слоёв</numerusform>
@@ -3866,7 +3866,7 @@ Please select specific format.</source>
     <message>
         <location line="+5"/>
         <source>Ctrl+Shift+L</source>
-        <translation type="unfinished">Ctrl+Shift+L</translation>
+        <translation>Ctrl+Shift+L</translation>
     </message>
     <message>
         <location line="+59"/>
@@ -3891,7 +3891,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Autocrop</source>
-        <translation type="unfinished">Автоматическая обрезка</translation>
+        <translation>Автоматическая обрезка</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3928,17 +3928,17 @@ Please select specific format.</source>
     <message>
         <location line="-313"/>
         <source>&amp;Remove Layers</source>
-        <translation type="unfinished">&amp;Удалить слои</translation>
+        <translation>&amp;Удалить слои</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>R&amp;aise Layers</source>
-        <translation type="unfinished">&amp;Поднять слои</translation>
+        <translation>&amp;Поднять слои</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Lower Layers</source>
-        <translation type="unfinished">&amp;Опустить слои</translation>
+        <translation>&amp;Опустить слои</translation>
     </message>
     <message>
         <location line="-3"/>
@@ -3958,7 +3958,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Lock/&amp;Unlock all Other Layers</source>
-        <translation type="unfinished">З&amp;аблокировать/Разблокировать другие слои</translation>
+        <translation>З&amp;аблокировать/Разблокировать другие слои</translation>
     </message>
     <message>
         <location line="+40"/>
@@ -4021,17 +4021,17 @@ Please select specific format.</source>
     <message>
         <location line="+92"/>
         <source>&amp;Group Layers</source>
-        <translation type="unfinished">&amp;Сгруппировать слои</translation>
+        <translation>&amp;Сгруппировать слои</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Ungroup Layers</source>
-        <translation type="unfinished">&amp;Разгруппировать слои</translation>
+        <translation>&amp;Разгруппировать слои</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Duplicate Layers</source>
-        <translation type="unfinished">&amp;Дублировать слои</translation>
+        <translation>&amp;Дублировать слои</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4049,7 +4049,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/mapeditor.cpp" line="+665"/>
         <source>Paste in Place</source>
-        <translation type="unfinished">Вставить в место</translation>
+        <translation>Вставить в место</translation>
     </message>
     <message>
         <location line="+187"/>
@@ -4074,7 +4074,7 @@ Please select specific format.</source>
     <message>
         <location line="+57"/>
         <source>Tool Options</source>
-        <translation type="unfinished">Настройки инструмента</translation>
+        <translation>Настройки инструмента</translation>
     </message>
     <message>
         <location line="-1"/>
@@ -4233,12 +4233,12 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/newsbutton.cpp" line="+45"/>
         <source>News</source>
-        <translation type="unfinished">Новости</translation>
+        <translation>Новости</translation>
     </message>
     <message>
         <location line="+69"/>
         <source>News Archive</source>
-        <translation type="unfinished">Архив новостей</translation>
+        <translation>Архив новостей</translation>
     </message>
 </context>
 <context>
@@ -4620,7 +4620,7 @@ Please select specific format.</source>
     <message>
         <location line="+27"/>
         <source>Wang Set</source>
-        <translation type="unfinished">Набор плиток Вана</translation>
+        <translation>Набор плиток Вана</translation>
     </message>
     <message>
         <location line="+347"/>
@@ -4695,22 +4695,22 @@ Please select specific format.</source>
     <message>
         <location line="-986"/>
         <source>Edge Count</source>
-        <translation type="unfinished">Количество граней</translation>
+        <translation>Количество граней</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Corner Count</source>
-        <translation type="unfinished">Количество углов</translation>
+        <translation>Количество углов</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Wang Color</source>
-        <translation type="unfinished">Цвет плиток Вана</translation>
+        <translation>Цвет плиток Вана</translation>
     </message>
     <message>
         <location line="+40"/>
         <source>Change Infinite Property</source>
-        <translation type="unfinished">Изменить значение для свойства бесконечности</translation>
+        <translation>Изменить значение для свойства бесконечности</translation>
     </message>
     <message>
         <location line="+931"/>
@@ -4757,7 +4757,7 @@ Please select specific format.</source>
     <message>
         <location line="-231"/>
         <source>Infinite</source>
-        <translation type="unfinished">Бесконечный</translation>
+        <translation>Бесконечный</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -4812,7 +4812,7 @@ Please select specific format.</source>
     <message>
         <location line="+12"/>
         <source>Locked</source>
-        <translation type="unfinished">Блокировка</translation>
+        <translation>Блокировка</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -4954,23 +4954,23 @@ Please select specific format.</source>
         <location filename="../src/tiled/shapefilltool.cpp" line="+40"/>
         <location line="+77"/>
         <source>Shape Fill Tool</source>
-        <translation type="unfinished">Инструмент заливки форм</translation>
+        <translation>Инструмент заливки форм</translation>
     </message>
     <message>
         <location line="-74"/>
         <location line="+75"/>
         <source>P</source>
-        <translation type="unfinished">P</translation>
+        <translation>P</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Rectangle Fill</source>
-        <translation type="unfinished">Заливка прямоугольника</translation>
+        <translation>Заливка прямоугольника</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Circle Fill</source>
-        <translation type="unfinished">Заливка окружности</translation>
+        <translation>Заливка окружности</translation>
     </message>
 </context>
 <context>
@@ -4979,65 +4979,65 @@ Please select specific format.</source>
         <location filename="../src/tiled/stampactions.cpp" line="+48"/>
         <location line="+25"/>
         <source>Random Mode</source>
-        <translation type="unfinished">Случайный режим</translation>
+        <translation>Случайный режим</translation>
     </message>
     <message>
         <location line="-24"/>
         <location line="+31"/>
         <source>D</source>
-        <translation type="unfinished">D</translation>
+        <translation>D</translation>
     </message>
     <message>
         <location line="-26"/>
         <location line="+20"/>
         <source>Wang Fill Mode</source>
-        <translation type="unfinished">Режим заливки плиток Вана</translation>
+        <translation>Режим заливки плиток Вана</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Flip Horizontally</source>
-        <translation type="unfinished">Отразить по горизонтали</translation>
+        <translation>Отразить по горизонтали</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Flip Vertically</source>
-        <translation type="unfinished">Отразить по вертикали</translation>
+        <translation>Отразить по вертикали</translation>
     </message>
     <message>
         <location filename="../src/tiled/abstractobjecttool.cpp" line="-125"/>
         <location filename="../src/tiled/stampactions.cpp" line="+1"/>
         <source>Rotate Left</source>
-        <translation type="unfinished">Вращать влево</translation>
+        <translation>Вращать влево</translation>
     </message>
     <message>
         <location line="+1"/>
         <location filename="../src/tiled/stampactions.cpp" line="+1"/>
         <source>Rotate Right</source>
-        <translation type="unfinished">Вращать вправо</translation>
+        <translation>Вращать вправо</translation>
     </message>
     <message>
         <location line="+2"/>
         <location filename="../src/tiled/stampactions.cpp" line="+3"/>
         <source>X</source>
-        <translation type="unfinished">X</translation>
+        <translation>X</translation>
     </message>
     <message>
         <location line="+1"/>
         <location filename="../src/tiled/stampactions.cpp" line="+1"/>
         <source>Y</source>
-        <translation type="unfinished">Y</translation>
+        <translation>Y</translation>
     </message>
     <message>
         <location line="+1"/>
         <location filename="../src/tiled/stampactions.cpp" line="+1"/>
         <source>Shift+Z</source>
-        <translation type="unfinished">Shift+Z</translation>
+        <translation>Shift+Z</translation>
     </message>
     <message>
         <location line="+1"/>
         <location filename="../src/tiled/stampactions.cpp" line="+1"/>
         <source>Z</source>
-        <translation type="unfinished">Z</translation>
+        <translation>Z</translation>
     </message>
 </context>
 <context>
@@ -5060,48 +5060,48 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/templatesdock.cpp" line="+293"/>
         <source>Open Tileset</source>
-        <translation type="unfinished">Открыть набор тайлов</translation>
+        <translation>Открыть набор тайлов</translation>
     </message>
     <message>
         <location line="+4"/>
         <location line="+9"/>
         <source>%1: Couldn&apos;t find &quot;%2&quot;</source>
-        <translation type="unfinished">%1: Не удалось найти &quot;%2&quot;</translation>
+        <translation>%1: Не удалось найти &quot;%2&quot;</translation>
     </message>
     <message>
         <location line="-4"/>
         <source>Locate Tileset</source>
-        <translation type="unfinished">Указать набор тайлов</translation>
+        <translation>Указать набор тайлов</translation>
     </message>
     <message>
         <location line="+49"/>
         <source>Choose the Templates Folder</source>
-        <translation type="unfinished">Выбрать папку с шаблонами</translation>
+        <translation>Выбрать папку с шаблонами</translation>
     </message>
     <message>
         <location line="+24"/>
         <source>Templates</source>
-        <translation type="unfinished">Шаблоны</translation>
+        <translation>Шаблоны</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Choose Templates Directory</source>
-        <translation type="unfinished">Выбрать папку для шаблонов</translation>
+        <translation>Выбрать папку для шаблонов</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>All Files (*)</source>
-        <translation type="unfinished">Все файлы (*)</translation>
+        <translation>Все файлы (*)</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Locate External Tileset</source>
-        <translation type="unfinished">Указать внешний набор тайлов</translation>
+        <translation>Указать внешний набор тайлов</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Error Reading Tileset</source>
-        <translation type="unfinished">Ошибка при чтении набора тайлов</translation>
+        <translation>Ошибка при чтении набора тайлов</translation>
     </message>
 </context>
 <context>
@@ -5109,7 +5109,7 @@ Please select specific format.</source>
     <message>
         <location line="+90"/>
         <source>Select All Instances</source>
-        <translation type="unfinished">Выбрать все экземпляры</translation>
+        <translation>Выбрать все экземпляры</translation>
     </message>
 </context>
 <context>
@@ -5152,12 +5152,12 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Move Terrain Type Up</source>
-        <translation type="unfinished">Передвинуть тип участка местности вверх</translation>
+        <translation>Передвинуть тип участка местности вверх</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Move Terrain Type Down</source>
-        <translation type="unfinished">Передвинуть тип участка местности вниз</translation>
+        <translation>Передвинуть тип участка местности вниз</translation>
     </message>
 </context>
 <context>
@@ -5189,12 +5189,12 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tilecollisiondock.cpp" line="-32"/>
         <source>Delete</source>
-        <translation type="unfinished">Удалить</translation>
+        <translation>Удалить</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Cut</source>
-        <translation type="unfinished">Вырезать</translation>
+        <translation>Вырезать</translation>
     </message>
 </context>
 <context>
@@ -5375,7 +5375,7 @@ Please select specific format.</source>
     <message>
         <location line="-188"/>
         <source>Tile Animation Editor</source>
-        <translation type="unfinished">Редактор анимации</translation>
+        <translation>Редактор анимации</translation>
     </message>
     <message>
         <location line="+49"/>
@@ -5415,7 +5415,7 @@ Please select specific format.</source>
     <message>
         <location line="+89"/>
         <source>New Wang Set</source>
-        <translation type="unfinished">Новый набор плиток Вана</translation>
+        <translation>Новый набор плиток Вана</translation>
     </message>
 </context>
 <context>
@@ -5446,12 +5446,12 @@ Please select specific format.</source>
     <message>
         <location line="+9"/>
         <source>Set Wang Set Image</source>
-        <translation type="unfinished">Задать изображение для набора плиток Вана</translation>
+        <translation>Задать изображение для набора плиток Вана</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Set Wang Color Image</source>
-        <translation type="unfinished">Задать изображение для цвета плиток Вана</translation>
+        <translation>Задать изображение для цвета плиток Вана</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -5469,7 +5469,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tmxmapformat.h" line="+66"/>
         <source>Tiled map files (*.tmx *.xml)</source>
-        <translation type="unfinished">Файлы Tiled карт (*.tmx *.xml)</translation>
+        <translation>Файлы Tiled карт (*.tmx *.xml)</translation>
     </message>
 </context>
 <context>
@@ -5477,7 +5477,7 @@ Please select specific format.</source>
     <message>
         <location line="+28"/>
         <source>Tiled tileset files (*.tsx *.xml)</source>
-        <translation type="unfinished">Файлы набора тайлов Tiled (*.tsx *.xml)</translation>
+        <translation>Файлы набора тайлов Tiled (*.tsx *.xml)</translation>
     </message>
 </context>
 <context>
@@ -5550,7 +5550,7 @@ Please select specific format.</source>
         <location filename="../src/tiled/wangbrush.cpp" line="+108"/>
         <location line="+65"/>
         <source>Wang Brush</source>
-        <translation type="unfinished">Кисть для рисования плиток Вана</translation>
+        <translation>Кисть для рисования плиток Вана</translation>
     </message>
     <message>
         <location line="-62"/>
@@ -5561,7 +5561,7 @@ Please select specific format.</source>
     <message>
         <location line="+152"/>
         <source>Missing wang tile transition</source>
-        <translation type="unfinished">Отстутствует переход для плиток Вана</translation>
+        <translation>Отстутствует переход для плиток Вана</translation>
     </message>
 </context>
 <context>
@@ -5569,12 +5569,12 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/wangcolormodel.cpp" line="+144"/>
         <source>Edge Colors</source>
-        <translation type="unfinished">Цвета граней</translation>
+        <translation>Цвета граней</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Corner Colors</source>
-        <translation type="unfinished">Цвета углов</translation>
+        <translation>Цвета углов</translation>
     </message>
 </context>
 <context>
@@ -5582,7 +5582,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/wangcolorview.cpp" line="+184"/>
         <source>Pick Custom Color</source>
-        <translation type="unfinished">Выбрать случайный цвет</translation>
+        <translation>Выбрать другой цвет</translation>
     </message>
 </context>
 <context>
@@ -5591,48 +5591,48 @@ Please select specific format.</source>
         <location filename="../src/tiled/wangdock.cpp" line="+227"/>
         <location line="+327"/>
         <source>Patterns</source>
-        <translation type="unfinished">Паттерны</translation>
+        <translation>Паттерны</translation>
     </message>
     <message>
         <location line="-326"/>
         <location line="+327"/>
         <source>Colors</source>
-        <translation type="unfinished">Цвета</translation>
+        <translation>Цвета</translation>
     </message>
     <message>
         <location line="-10"/>
         <source>Wang Sets</source>
-        <translation type="unfinished">Наборы плиток Вана</translation>
+        <translation>Наборы плиток Вана</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Erase WangIds</source>
-        <translation type="unfinished">Удалить идентификаторы плиток Вана</translation>
+        <translation>Очистить идентификаторы плиток Вана</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add Wang Set</source>
-        <translation type="unfinished">Добавить набор плиток Вана</translation>
+        <translation>Добавить набор плиток Вана</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Wang Set</source>
-        <translation type="unfinished">Удалить набор плиток Вана</translation>
+        <translation>Удалить набор плиток Вана</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add Edge Color</source>
-        <translation type="unfinished">Добавить цвет грани</translation>
+        <translation>Добавить цвет грани</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add Corner Color</source>
-        <translation type="unfinished">Добавить цвет угла</translation>
+        <translation>Добавить цвет угла</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Color</source>
-        <translation type="unfinished">Удалить цвет</translation>
+        <translation>Удалить цвет</translation>
     </message>
 </context>
 <context>
@@ -5640,7 +5640,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/wangsetview.cpp" line="+105"/>
         <source>Wang Set &amp;Properties...</source>
-        <translation type="unfinished">Свойства плиток &amp;Вана</translation>
+        <translation>Свойства плиток &amp;Вана...</translation>
     </message>
 </context>
 <context>
@@ -5648,7 +5648,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tmxmapformat.h" line="+27"/>
         <source>Tiled template files (*.tx)</source>
-        <translation type="unfinished">Файлы шаблонов Tiled (*.tx)</translation>
+        <translation>Файлы шаблонов Tiled (*.tx)</translation>
     </message>
 </context>
 <context>
@@ -5656,13 +5656,13 @@ Please select specific format.</source>
     <message>
         <location filename="../src/libtiled/worldmanager.cpp" line="+109"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished">Не удалось открыть файл для чтения.</translation>
+        <translation>Не удалось открыть файл для чтения.</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>JSON parse error at offset %1:
 %2.</source>
-        <translation type="unfinished">Ошибка разбора JSON по смещению %1:
+        <translation>Ошибка разбора JSON по смещению %1:
 %2.</translation>
     </message>
 </context>
@@ -5694,7 +5694,7 @@ Please select specific format.</source>
     <message>
         <location line="+11"/>
         <source>Add Objects</source>
-        <translation type="unfinished">Добавить объекты</translation>
+        <translation>Добавить объекты</translation>
     </message>
     <message>
         <location line="+40"/>
@@ -5704,7 +5704,7 @@ Please select specific format.</source>
     <message>
         <location line="+11"/>
         <source>Remove Objects</source>
-        <translation type="unfinished">Удалить объекты</translation>
+        <translation>Удалить объекты</translation>
     </message>
     <message>
         <location filename="../src/tiled/addremovetileset.cpp" line="+62"/>
@@ -5857,17 +5857,17 @@ Please select specific format.</source>
         <location filename="../src/tiled/changepolygon.cpp" line="+42"/>
         <location line="+13"/>
         <source>Change Polygon</source>
-        <translation>Изменить полигон</translation>
+        <translation>Изменить многоугольник</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>Toggle Polygon/Polyline</source>
-        <translation type="unfinished">Переключить режим многоугольник/ломаная линия</translation>
+        <translation>Переключить режим многоугольник/ломаная линия</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Split Polyline</source>
-        <translation type="unfinished">Разбить ломаную линию</translation>
+        <translation>Разбить ломаную линию</translation>
     </message>
     <message>
         <location filename="../src/tiled/addremoveterrain.cpp" line="+67"/>
@@ -5902,12 +5902,12 @@ Please select specific format.</source>
     <message>
         <location line="+19"/>
         <source>Lock Layer</source>
-        <translation type="unfinished">Закрепить слой</translation>
+        <translation>Закрепить слой</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Unlock Layer</source>
-        <translation type="unfinished">Открепить слой</translation>
+        <translation>Открепить слой</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -5941,7 +5941,7 @@ Please select specific format.</source>
     <message numerus="yes">
         <location line="+65"/>
         <source>Detach %n Template Instance(s)</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Отсоединить %n экземпляр шаблона</numerusform>
             <numerusform>Отсоединить %n экземпляра шаблонов</numerusform>
             <numerusform>Отсоединить %n экземпляров шаблонов</numerusform>
@@ -5950,7 +5950,7 @@ Please select specific format.</source>
     <message numerus="yes">
         <location line="+39"/>
         <source>Reset %n Instances</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Сбросить %n экземпляр</numerusform>
             <numerusform>Сбросить %n экземпляра</numerusform>
             <numerusform>Сбросить %n экземпляров</numerusform>
@@ -6037,7 +6037,7 @@ Please select specific format.</source>
     <message>
         <location line="+4"/>
         <source>Change Infinite Property</source>
-        <translation type="unfinished">Изменить значение для свойства бесконечности</translation>
+        <translation>Изменить значение для свойства бесконечности</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -6126,69 +6126,69 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/addremovewangset.cpp" line="+65"/>
         <source>Add Wang Set</source>
-        <translation type="unfinished">Добавить набор плиток Вана</translation>
+        <translation>Добавить набор плиток Вана</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Remove Wang Set</source>
-        <translation type="unfinished">Удалить набор плиток Вана</translation>
+        <translation>Удалить набор плиток Вана</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetilewangid.cpp" line="+36"/>
         <location line="+12"/>
         <location line="+14"/>
         <source>Change Tile WangId</source>
-        <translation type="unfinished">Изменить идентификатор плитки Вана для тайла</translation>
+        <translation>Изменить идентификатор плитки Вана для тайла</translation>
     </message>
     <message>
         <location filename="../src/tiled/changewangsetdata.cpp" line="+38"/>
         <source>Change Wang Set edge count</source>
-        <translation type="unfinished">Изменить количество граней для набора плиток Вана</translation>
+        <translation>Изменить количество граней для набора плиток Вана</translation>
     </message>
     <message>
         <location line="+66"/>
         <source>Change Wang Set corner count</source>
-        <translation type="unfinished">Изменить количество углов для набора плиток Вана</translation>
+        <translation>Изменить количество углов для набора плиток Вана</translation>
     </message>
     <message>
         <location line="+63"/>
         <source>Remove Wang Color</source>
-        <translation type="unfinished">Удалить цвет для набора плиток Вана</translation>
+        <translation>Удалить цвет для набора плиток Вана</translation>
     </message>
     <message>
         <location line="+90"/>
         <source>Set Wang Set Image</source>
-        <translation type="unfinished">Установить изображение для набора плиток Вана</translation>
+        <translation>Установить изображение для набора плиток Вана</translation>
     </message>
     <message>
         <location filename="../src/tiled/moveterrain.cpp" line="+61"/>
         <source>Move Terrain Up</source>
-        <translation type="unfinished">Поднять участок местности</translation>
+        <translation>Поднять участок местности</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Move Terrain Down</source>
-        <translation type="unfinished">Опустить участок местности</translation>
+        <translation>Опустить участок местности</translation>
     </message>
     <message>
         <location filename="../src/tiled/renamewangset.cpp" line="+35"/>
         <source>Change Wang Set Name</source>
-        <translation type="unfinished">Изменить название набора плиток Вана</translation>
+        <translation>Изменить название набора плиток Вана</translation>
     </message>
     <message>
         <location filename="../src/tiled/replacetemplate.cpp" line="+35"/>
         <source>Replace Template</source>
-        <translation type="unfinished">Заменить шаблон</translation>
+        <translation>Заменить шаблон</translation>
     </message>
     <message>
         <location filename="../src/tiled/shapefilltool.cpp" line="-20"/>
         <source>Shape Fill</source>
-        <translation type="unfinished">Заливка формы</translation>
+        <translation>Заливка формы</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/tiled/mapdocument.cpp" line="-683"/>
         <source>Raise %n Layer(s)</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Переместить вверх %n слой</numerusform>
             <numerusform>Переместить вверх %n слоя</numerusform>
             <numerusform>Переместить вверх %n слоёв</numerusform>
@@ -6197,7 +6197,7 @@ Please select specific format.</source>
     <message numerus="yes">
         <location line="+27"/>
         <source>Lower %n Layer(s)</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Переместить вниз %n слой</numerusform>
             <numerusform>Переместить вниз %n слоя</numerusform>
             <numerusform>Переместить вниз %n слоёв</numerusform>
@@ -6214,12 +6214,12 @@ Please select specific format.</source>
     <message>
         <location line="+223"/>
         <source>Copy File Path</source>
-        <translation type="unfinished">Копировать путь к файлу</translation>
+        <translation>Копировать путь к файлу</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Open Containing Folder...</source>
-        <translation type="unfinished">Открыть папку, содержащую карту...</translation>
+        <translation>Открыть папку, содержащую карту...</translation>
     </message>
 </context>
 <context>
@@ -6227,93 +6227,93 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tmxrasterizer/main.cpp" line="+52"/>
         <source>Renders a Tiled map (TMX format) to an image.</source>
-        <translation type="unfinished">Преобразовывает тайловую карту (в TMX формате) в изображение</translation>
+        <translation>Преобразовывает тайловую карту (в TMX формате) в изображение.</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>The scale of the output image (default: 1).</source>
-        <translation type="unfinished">Коэффициент масштабирования результирующего изображения (по-умолчанию: 1)</translation>
+        <translation>Коэффициент масштабирования результирующего изображения (по-умолчанию: 1).</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>scale</source>
-        <translation type="unfinished">коэффициент масштабирования</translation>
+        <translation>коэффициент масштабирования</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>The requested size in pixels at which a tile is rendered (overrides the --scale option).</source>
-        <translation type="unfinished">Запрашиваемый размер изображения в точках в котором будет отрисовываться тайл (переопределяет значение, заданное через --scale).</translation>
+        <translation>Запрашиваемый размер изображения в точках в котором будет отрисовываться тайл (переопределяет значение, заданное через --scale).</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+3"/>
         <source>size</source>
-        <translation type="unfinished">размер</translation>
+        <translation>размер</translation>
     </message>
     <message>
         <location line="-1"/>
         <source>The output image fits within a SIZE x SIZE square (overrides the --scale and --tilesize options).</source>
-        <translation type="unfinished">Результирующее изображение помещается в квадрат с размерами SIZE x SIZE (переопределяет значения, заданные через --scale и --tilesize).</translation>
+        <translation>Результирующее изображение помещается в квадрат с размерами SIZE x SIZE (переопределяет значения, заданные через --scale и --tilesize).</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Antialias edges of primitives.</source>
-        <translation type="unfinished">Сглаживание углов для графических примитивов</translation>
+        <translation>Сглаживание углов для графических примитивов.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Use nearest neighbour instead of smooth blending of pixels.</source>
-        <translation type="unfinished">Использовать принцип ближайшего соседа вместо плавного смешивания пикселей.</translation>
+        <translation>Использовать принцип ближайшего соседа вместо плавного смешивания пикселей.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Ignore all layer visibility flags in the map file, and render all layers in the output (default is to omit invisible layers).</source>
-        <translation type="unfinished">Игнорировать свойства видимости для всех слоёв в файле карты и отрисовать их все (по-умолчанию невидимые слои исключаются из отрисовки)</translation>
+        <translation>Игнорировать свойства видимости для всех слоёв в файле карты и отрисовать их все (по-умолчанию невидимые слои исключаются из отрисовки).</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Specifies a layer to omit from the output image. Can be repeated to hide multiple layers.</source>
-        <translation type="unfinished">Задаёт слой, который следует исключить из результирующего изображения. Может повторяться, чтобы скрыть множество слоёв.</translation>
+        <translation>Задаёт слой, который следует исключить из результирующего изображения. Может повторяться, чтобы скрыть множество слоёв.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>name</source>
-        <translation type="unfinished">имя</translation>
+        <translation>имя</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Map file to render.</source>
-        <translation type="unfinished">Файл карты для отрисовки.</translation>
+        <translation>Файл карты для отрисовки.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Image file to output.</source>
-        <translation type="unfinished">Результирующий файл изображения.</translation>
+        <translation>Результирующий файл изображения.</translation>
     </message>
     <message>
         <location line="+23"/>
         <source>Invalid size specified: &quot;%1&quot;</source>
-        <translation type="unfinished">Указан некорректный размер: &quot;%1&quot;</translation>
+        <translation>Указан некорректный размер: &quot;%1&quot;</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Invalid tile size specified: &quot;%1&quot;</source>
-        <translation type="unfinished">Указан некорректный размер тайла: &quot;%1&quot;</translation>
+        <translation>Указан некорректный размер тайла: &quot;%1&quot;</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Invalid scale specified: &quot;%1&quot;</source>
-        <translation type="unfinished">Указан некорректный коэффициент масштабирования: &quot;%1&quot;</translation>
+        <translation>Указан некорректный коэффициент масштабирования: &quot;%1&quot;</translation>
     </message>
     <message>
         <location filename="../src/tmxviewer/main.cpp" line="+57"/>
         <source>Displays a Tiled map (TMX format).</source>
-        <translation type="unfinished">Отображает тайловую карту (в TMX формате)</translation>
+        <translation>Отображает тайловую карту (в TMX формате).</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Map file to display.</source>
-        <translation type="unfinished">Файл карты для отображения.</translation>
+        <translation>Файл карты для отображения.</translation>
     </message>
 </context>
 </TS>
