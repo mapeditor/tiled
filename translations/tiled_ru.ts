@@ -139,7 +139,7 @@
     <message>
         <location line="+17"/>
         <source>Show output in Debug Console</source>
-        <translation type="unfinished">Показывать вывод в Консоли Отладки</translation>
+        <translation>Показывать вывод в Консоли Отладки</translation>
     </message>
     <message>
         <location line="+33"/>
@@ -167,22 +167,22 @@
     <message>
         <location line="+5"/>
         <source>Export the specified map file to target</source>
-        <translation type="unfinished">Экспортировать указанный файл с картой</translation>
+        <translation>Экспортировать указанный файл с картой</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export the specified tileset file to target</source>
-        <translation type="unfinished">Экспортировать указанный файл с набором тайлов</translation>
+        <translation>Экспортировать указанный файл с набором тайлов</translation>
     </message>
     <message>
         <location line="+84"/>
         <source>Map export formats:</source>
-        <translation type="unfinished">Форматы для экспорта карт:</translation>
+        <translation>Форматы для экспорта карт:</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Tileset export formats:</source>
-        <translation type="unfinished">Форматы для экспорта набора тайлов:</translation>
+        <translation>Форматы для экспорта набора тайлов:</translation>
     </message>
     <message>
         <location line="-90"/>
@@ -192,17 +192,17 @@
     <message>
         <location line="+5"/>
         <source>Export the map with tilesets embedded</source>
-        <translation type="unfinished">Экспортировать карту с включённым в неё набором тайлов</translation>
+        <translation>Экспортировать карту с включённым в неё набором тайлов</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export the map or tileset with template instances detached</source>
-        <translation type="unfinished">Экспортировать карту или набор тайлов с отсоединёнными от них шаблонами</translation>
+        <translation>Экспортировать карту или набор тайлов с отсоединёнными от них шаблонами</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export the map or tileset with types and properties resolved</source>
-        <translation type="unfinished">Экспортировать карту или набор тайлов с определёнными для них типами и свойствами</translation>
+        <translation>Экспортировать карту или набор тайлов с определёнными для них типами и свойствами</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -286,7 +286,7 @@
     <message>
         <location filename="../src/plugins/csv/csvplugin.cpp" line="+54"/>
         <source>Could not open file for writing.</source>
-        <translation>Не удается открыть файл для записи.</translation>
+        <translation>Не удалось открыть файл для записи.</translation>
     </message>
     <message>
         <location line="+80"/>
@@ -304,7 +304,7 @@
     <message>
         <location line="+51"/>
         <source>Could not open file for writing.</source>
-        <translation>Не удается открыть файл для записи.</translation>
+        <translation>Не удалось открыть файл для записи.</translation>
     </message>
 </context>
 <context>
@@ -327,7 +327,7 @@
     <message>
         <location line="+22"/>
         <source>Could not open file for writing.</source>
-        <translation>Не удается открыть файл для записи.</translation>
+        <translation>Не удалось открыть файл для записи.</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -388,7 +388,7 @@
     <message>
         <location filename="../src/plugins/flare/flareplugin.cpp" line="+56"/>
         <source>Could not open file for reading.</source>
-        <translation>Не удается открыть файл для чтения.</translation>
+        <translation>Не удалось открыть файл для чтения.</translation>
     </message>
     <message>
         <location line="+94"/>
@@ -418,7 +418,7 @@
     <message>
         <location line="+18"/>
         <source>Could not open file for writing.</source>
-        <translation>Не удается открыть файл для записи.</translation>
+        <translation>Не удалось открыть файл для записи.</translation>
     </message>
 </context>
 <context>
@@ -426,7 +426,7 @@
     <message>
         <location filename="../src/plugins/gmx/gmxplugin.cpp" line="+107"/>
         <source>Could not open file for writing.</source>
-        <translation>Не удается открыть файл для записи.</translation>
+        <translation>Не удалось открыть файл для записи.</translation>
     </message>
     <message>
         <location line="+364"/>
@@ -439,7 +439,7 @@
     <message>
         <location filename="../src/plugins/json/jsonplugin.cpp" line="+56"/>
         <source>Could not open file for reading.</source>
-        <translation>Не удается открыть файл для чтения.</translation>
+        <translation>Не удалось открыть файл для чтения.</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -449,7 +449,7 @@
     <message>
         <location line="+18"/>
         <source>Could not open file for writing.</source>
-        <translation>Не удается открыть файл для записи.</translation>
+        <translation>Не удалось открыть файл для записи.</translation>
     </message>
     <message>
         <location line="+38"/>
@@ -474,29 +474,29 @@
     <message>
         <location line="+178"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished">Не удается открыть файл для чтения.</translation>
+        <translation>Не удалось открыть файл для чтения.</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Error parsing file.</source>
-        <translation type="unfinished">Ошибка при разборе содержимого файла.</translation>
+        <translation>Ошибка при разборе содержимого файла.</translation>
     </message>
     <message>
         <location line="+37"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">Не удается открыть файл для записи.</translation>
+        <translation>Не удалось открыть файл для записи.</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Error while writing file:
 %1</source>
-        <translation type="unfinished">Ошибка во время записи файла:
+        <translation>Ошибка во время записи файла:
 %1</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Json template files (*.json)</source>
-        <translation type="unfinished">Json файлы шаблонов (*.json)</translation>
+        <translation>Json файлы шаблонов (*.json)</translation>
     </message>
 </context>
 <context>
@@ -504,7 +504,7 @@
     <message>
         <location line="-193"/>
         <source>Could not open file for reading.</source>
-        <translation>Не удается открыть файл для чтения.</translation>
+        <translation>Не удалось открыть файл для чтения.</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -514,7 +514,7 @@
     <message>
         <location line="+45"/>
         <source>Could not open file for writing.</source>
-        <translation>Не удается открыть файл для записи.</translation>
+        <translation>Не удалось открыть файл для записи.</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -534,7 +534,7 @@
     <message>
         <location filename="../src/plugins/lua/luaplugin.cpp" line="+103"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">Не удается открыть файл для записи.</translation>
+        <translation type="unfinished">Не удалось открыть файл для записи.</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -547,7 +547,7 @@
     <message>
         <location line="+18"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">Не удается открыть файл для записи.</translation>
+        <translation type="unfinished">Не удалось открыть файл для записи.</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -1005,7 +1005,7 @@ Line %1, column %2</source>
     <message>
         <location line="+3"/>
         <source>Unable to read file: %1</source>
-        <translation>Не удается прочитать файл: %1</translation>
+        <translation>Не удалось прочитать файл: %1</translation>
     </message>
     <message>
         <location line="+33"/>
@@ -1077,7 +1077,7 @@ Line %1, column %2</source>
         <location line="+14"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-29"/>
         <source>Unable to parse tile at (%1,%2) on layer &apos;%3&apos;</source>
-        <translation>Не удается обработать тайл по координатам (%1, %2) на слое &apos;%3&apos;</translation>
+        <translation>Не удалось обработать тайл по координатам (%1, %2) на слое &apos;%3&apos;</translation>
     </message>
     <message>
         <location line="-34"/>
@@ -1089,7 +1089,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/libtiled/mapwriter.cpp" line="+124"/>
         <source>Could not open file for writing.</source>
-        <translation>Не удается открыть файл для записи.</translation>
+        <translation>Не удалось открыть файл для записи.</translation>
     </message>
     <message>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-517"/>
@@ -1293,12 +1293,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/libtiled/objecttypes.cpp" line="+251"/>
         <source>Could not open file for writing.</source>
-        <translation>Не удается открыть файл для записи.</translation>
+        <translation>Не удалось открыть файл для записи.</translation>
     </message>
     <message>
         <location line="+33"/>
         <source>Could not open file.</source>
-        <translation>Не удается открыть файл.</translation>
+        <translation>Не удалось открыть файл.</translation>
     </message>
     <message>
         <location line="-89"/>
@@ -2190,7 +2190,7 @@ Line %1, column %2</source>
     <message>
         <location line="+37"/>
         <source>Could not open file for writing.</source>
-        <translation>Не удается открыть файл для записи.</translation>
+        <translation>Не удалось открыть файл для записи.</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -2274,7 +2274,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/plugins/tbin/tbinplugin.cpp" line="+109"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished">Не удается открыть файл для чтения.</translation>
+        <translation type="unfinished">Не удалось открыть файл для чтения.</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -5656,7 +5656,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/libtiled/worldmanager.cpp" line="+109"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished">Не удается открыть файл для чтения.</translation>
+        <translation type="unfinished">Не удалось открыть файл для чтения.</translation>
     </message>
     <message>
         <location line="+8"/>
