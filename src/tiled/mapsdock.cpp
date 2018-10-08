@@ -168,20 +168,10 @@ MapsView::MapsView(QWidget *parent)
 
     mFileSystemModel = new FileSystemModel(this);
     mFileSystemModel->setRootPath(mapsDir.absolutePath());
-
-    QStringList nameFilters;
-
-    for (MapFormat *format : PluginManager::objects<MapFormat>()) {
-        if (!(format->capabilities() & MapFormat::Read))
-            continue;
-
-        const QString filter = format->nameFilter();
-        nameFilters.append(Utils::cleanFilterList(filter));
-    }
-
     mFileSystemModel->setFilter(QDir::AllDirs | QDir::Files | QDir::NoDot);
-    mFileSystemModel->setNameFilters(nameFilters);
     mFileSystemModel->setNameFilterDisables(false); // hide filtered files
+
+    updateNameFilters();
 
     setModel(mFileSystemModel);
 
@@ -197,6 +187,11 @@ MapsView::MapsView(QWidget *parent)
 
     connect(this, &QAbstractItemView::activated,
             this, &MapsView::onActivated);
+
+    connect(PluginManager::instance(), &PluginManager::objectAdded,
+            this, &MapsView::pluginObjectAddedOrRemoved);
+    connect(PluginManager::instance(), &PluginManager::objectRemoved,
+            this, &MapsView::pluginObjectAddedOrRemoved);
 }
 
 QSize MapsView::sizeHint() const
@@ -236,4 +231,26 @@ void MapsView::onActivated(const QModelIndex &index)
     }
 
     DocumentManager::instance()->openFile(path);
+}
+
+void MapsView::pluginObjectAddedOrRemoved(QObject *object)
+{
+    if (auto format = qobject_cast<MapFormat*>(object))
+        if (format->capabilities() & FileFormat::Read)
+            updateNameFilters();
+}
+
+void MapsView::updateNameFilters()
+{
+    QStringList nameFilters;
+
+    for (MapFormat *format : PluginManager::objects<MapFormat>()) {
+        if (!(format->capabilities() & MapFormat::Read))
+            continue;
+
+        const QString filter = format->nameFilter();
+        nameFilters.append(Utils::cleanFilterList(filter));
+    }
+
+    mFileSystemModel->setNameFilters(nameFilters);
 }
