@@ -25,6 +25,8 @@
 
 #include <memory>
 
+#include "objectgroup.h"
+
 namespace Tiled {
 
 class GroupLayer;
@@ -65,6 +67,7 @@ private slots:
     void layerAdded(Layer *layer);
     void layerAboutToBeRemoved(GroupLayer *parentLayer, int index);
     void layerChanged(Layer *layer);
+    void objectGroupChanged(ObjectGroup * objectGroup);
     void syncOverlayItems(const QList<MapObject *> &objects);
     void updateObjectLabelColors();
     void objectsAdded(const QList<MapObject*> &objects);

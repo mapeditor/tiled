@@ -272,6 +272,9 @@ ObjectSelectionItem::ObjectSelectionItem(MapDocument *mapDocument,
     connect(mapDocument, &MapDocument::objectsChanged,
             this, &ObjectSelectionItem::syncOverlayItems);
 
+    connect(mapDocument, &MapDocument::objectGroupChanged,
+            this, &ObjectSelectionItem::objectGroupChanged);
+
     connect(mapDocument, &MapDocument::hoveredMapObjectChanged,
             this, &ObjectSelectionItem::hoveredMapObjectChanged);
 
@@ -418,6 +421,10 @@ void ObjectSelectionItem::layerChanged(Layer *layer)
         collectObjects(*groupLayer, affectedObjects);
         syncOverlayItems(affectedObjects);
     }
+}
+
+void ObjectSelectionItem::objectGroupChanged(ObjectGroup * objectGroup) {
+    updateObjectLabelColors();
 }
 
 void ObjectSelectionItem::syncOverlayItems(const QList<MapObject*> &objects)
