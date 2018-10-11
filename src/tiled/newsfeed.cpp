@@ -22,6 +22,7 @@
 
 #include "preferences.h"
 
+#include <QDebug>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QSettings>
