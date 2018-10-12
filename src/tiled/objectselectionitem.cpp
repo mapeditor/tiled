@@ -27,7 +27,6 @@
 #include "mapobject.h"
 #include "mapobjectitem.h"
 #include "maprenderer.h"
-#include "objectgroup.h"
 #include "preferences.h"
 #include "tile.h"
 #include "utils.h"
@@ -273,7 +272,7 @@ ObjectSelectionItem::ObjectSelectionItem(MapDocument *mapDocument,
             this, &ObjectSelectionItem::syncOverlayItems);
 
     connect(mapDocument, &MapDocument::objectGroupChanged,
-            this, &ObjectSelectionItem::objectGroupChanged);
+            this, &ObjectSelectionItem::updateObjectLabelColors);
 
     connect(mapDocument, &MapDocument::hoveredMapObjectChanged,
             this, &ObjectSelectionItem::hoveredMapObjectChanged);
@@ -421,10 +420,6 @@ void ObjectSelectionItem::layerChanged(Layer *layer)
         collectObjects(*groupLayer, affectedObjects);
         syncOverlayItems(affectedObjects);
     }
-}
-
-void ObjectSelectionItem::objectGroupChanged(ObjectGroup * objectGroup) {
-    updateObjectLabelColors();
 }
 
 void ObjectSelectionItem::syncOverlayItems(const QList<MapObject*> &objects)
