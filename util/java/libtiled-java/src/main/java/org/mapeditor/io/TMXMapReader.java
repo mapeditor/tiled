@@ -79,12 +79,13 @@ import org.xml.sax.SAXException;
  */
 public class TMXMapReader {
 
-    public long FLIPPED_HORIZONTALLY_FLAG = 0xFFFFFFFF80000000L;
-    public long FLIPPED_VERTICALLY_FLAG = 0xFFFFFFFF40000000L;
-    public long FLIPPED_DIAGONALLY_FLAG = 0xFFFFFFFF20000000L;
+    public static long FLIPPED_HORIZONTALLY_FLAG = 0xFFFFFFFF80000000L;
+    public static long FLIPPED_VERTICALLY_FLAG = 0xFFFFFFFF40000000L;
+    public static long FLIPPED_DIAGONALLY_FLAG = 0xFFFFFFFF20000000L;
 
-    /** Used to remove all flipped flags */
-    public int GID_MASK = 0x1FFFFFFF;
+    public static long ALL_FLAGS = FLIPPED_HORIZONTALLY_FLAG
+            | FLIPPED_VERTICALLY_FLAG
+            | FLIPPED_DIAGONALLY_FLAG;
 
     private Map map;
     private String xmlPath;
@@ -682,13 +683,11 @@ public class TMXMapReader {
      * @param tileGid global id of the tile as read from the file
      */
     private void setTileAtFromTileId(TileLayer ml, int y, int x, int tileGid) {
-        Tile tile = this.getTileForTileGID(tileGid & GID_MASK);
-        if (tile != null && tile.getGid() != (long)tileGid) {
-            tile = new Tile(tile);
-            tile.setGid((long)tileGid);
-        }
+        Tile tile = this.getTileForTileGID( (tileGid & (int)~ALL_FLAGS));
 
+        long flags = tileGid &  ALL_FLAGS;
         ml.setTileAt(x, y, tile);
+        ml.setFlagsAt(x, y, (int)flags);
     }
 
     /**
