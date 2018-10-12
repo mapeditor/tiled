@@ -25,8 +25,6 @@
 
 #include <memory>
 
-#include "objectgroup.h"
-
 namespace Tiled {
 
 class GroupLayer;

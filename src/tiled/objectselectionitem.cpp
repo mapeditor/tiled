@@ -27,6 +27,7 @@
 #include "mapobject.h"
 #include "mapobjectitem.h"
 #include "maprenderer.h"
+#include "objectgroup.h"
 #include "preferences.h"
 #include "tile.h"
 #include "utils.h"
