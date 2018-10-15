@@ -178,6 +178,8 @@ std::unique_ptr<World> WorldManager::privateLoadWorld(const QString &fileName,
 bool WorldManager::loadWorld(const QString &fileName, QString *errorString)
 {
     auto world = privateLoadWorld(fileName, errorString);
+    if (!world)
+        return false;
 
     if (mWorlds.contains(fileName))
         delete mWorlds.take(fileName);
