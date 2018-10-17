@@ -76,6 +76,7 @@ public slots:
     void setRandom(bool value);
     void setWangFill(bool value);
     void setWangSet(WangSet *wangSet);
+    void updateRandomList();
 
 signals:
     /**
@@ -154,8 +155,6 @@ private:
 
     bool mIsWangFill;
     WangSet *mWangSet;
-
-    void updateRandomList();
 
     StampActions *mStampActions;
 };

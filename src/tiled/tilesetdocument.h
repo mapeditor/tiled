@@ -158,6 +158,7 @@ private slots:
     void onPropertiesChanged(Object *object);
 
     void onTerrainRemoved(Terrain *terrain);
+    void onTileProbabilityChanged(Tile *tile);
     void onWangSetRemoved(WangSet *wangSet);
 
 private:

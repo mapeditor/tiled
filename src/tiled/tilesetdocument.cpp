@@ -81,6 +81,8 @@ TilesetDocument::TilesetDocument(const SharedTileset &tileset, const QString &fi
             this, &TilesetDocument::onPropertyChanged);
     connect(this, &TilesetDocument::propertiesChanged,
             this, &TilesetDocument::onPropertiesChanged);
+    connect(this, &TilesetDocument::tileProbabilityChanged,
+            this, &TilesetDocument::onTileProbabilityChanged);
 
     connect(mTerrainModel, &TilesetTerrainModel::terrainRemoved,
             this, &TilesetDocument::onTerrainRemoved);
@@ -371,6 +373,11 @@ void TilesetDocument::onTerrainRemoved(Terrain *terrain)
 {
     if (terrain == mCurrentObject)
         setCurrentObject(nullptr);
+}
+
+void TilesetDocument::onTileProbabilityChanged(Tile *tile) {
+    for (MapDocument *mapDocument : mapDocuments())
+        emit mapDocument->tileProbabilityChanged(tile);
 }
 
 void TilesetDocument::onWangSetRemoved(WangSet *wangSet)
