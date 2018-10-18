@@ -299,7 +299,7 @@ signals:
 
     void tileLayerChanged(TileLayer *layer, TileLayerChangeFlags flags);
 
-    void tileProbabilityChanged(Tile * tile);
+    void tileProbabilityChanged(Tile *tile);
 
     /**
      * Should be emitted when changing the color or drawing order of an object

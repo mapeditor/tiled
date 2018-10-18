@@ -337,6 +337,12 @@ void StampBrush::doPaint(int flags, QHash<TileLayer*, QRegion> *paintedRegions)
     if (!preview)
         return;
 
+    if(!mRandomCacheValid) {
+        updateRandomList();
+        mRandomCacheValid = true;
+        updatePreview();
+    }
+
     mapDocument()->paintTileLayers(preview.data(),
                                    (flags & Mergeable) == Mergeable,
                                    &mMissingTilesets,
@@ -582,6 +588,7 @@ void StampBrush::updatePreview(QPoint tilePos)
             break;
         case Line:
         case Free:
+            drawPreviewLayer(QVector<QPoint>() << tilePos);
         case Paint:
             drawPreviewLayer(QVector<QPoint>() << tilePos);
             break;

@@ -375,7 +375,8 @@ void TilesetDocument::onTerrainRemoved(Terrain *terrain)
         setCurrentObject(nullptr);
 }
 
-void TilesetDocument::onTileProbabilityChanged(Tile *tile) {
+void TilesetDocument::onTileProbabilityChanged(Tile *tile)
+{
     for (MapDocument *mapDocument : mapDocuments())
         emit mapDocument->tileProbabilityChanged(tile);
 }

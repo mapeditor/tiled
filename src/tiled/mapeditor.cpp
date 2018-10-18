@@ -404,8 +404,6 @@ void MapEditor::setCurrentDocument(Document *document)
     if (mapDocument) {
         connect(mapDocument, &MapDocument::currentLayerChanged,
                 this, &MapEditor::updateLayerComboIndex);
-        connect(mapDocument, &MapDocument::tileProbabilityChanged,
-                mStampBrush, &StampBrush::updateRandomList);
 //        connect(mapDocument, &MapDocument::selectedAreaChanged,
 //                this, &MapEditor::updateActions);
 //        connect(mapDocument, &MapDocument::selectedObjectsChanged,
