@@ -104,6 +104,7 @@ public:
 
     void setTileType(Tile *tile, const QString &type);
     void setTileImage(Tile *tile, const QPixmap &image, const QUrl &source);
+    void setTileProbability(Tile *tile, qreal probability);
 
     static TilesetDocument* findDocumentForTileset(const SharedTileset &tileset);
 
@@ -158,7 +159,6 @@ private slots:
     void onPropertiesChanged(Object *object);
 
     void onTerrainRemoved(Terrain *terrain);
-    void onTileProbabilityChanged(Tile *tile);
     void onWangSetRemoved(WangSet *wangSet);
 
 private:

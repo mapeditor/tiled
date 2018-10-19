@@ -81,8 +81,6 @@ TilesetDocument::TilesetDocument(const SharedTileset &tileset, const QString &fi
             this, &TilesetDocument::onPropertyChanged);
     connect(this, &TilesetDocument::propertiesChanged,
             this, &TilesetDocument::onPropertiesChanged);
-    connect(this, &TilesetDocument::tileProbabilityChanged,
-            this, &TilesetDocument::onTileProbabilityChanged);
 
     connect(mTerrainModel, &TilesetTerrainModel::terrainRemoved,
             this, &TilesetDocument::onTerrainRemoved);
@@ -333,11 +331,21 @@ void TilesetDocument::setTileImage(Tile *tile, const QPixmap &image, const QUrl 
     Q_ASSERT(tile->tileset() == mTileset.data());
 
     mTileset->setTileImage(tile, image, source);
-
     emit tileImageSourceChanged(tile);
 
     for (MapDocument *mapDocument : mapDocuments())
         emit mapDocument->tileImageSourceChanged(tile);
+}
+
+void TilesetDocument::setTileProbability(Tile *tile, qreal probability)
+{
+    Q_ASSERT(tile->tileset() == mTileset.data());
+
+    tile->setProbability(probability);
+    emit tileProbabilityChanged(tile);
+
+    for (MapDocument *mapDocument : mapDocuments())
+        emit mapDocument->tileProbabilityChanged(tile);
 }
 
 TilesetDocument *TilesetDocument::findDocumentForTileset(const SharedTileset &tileset)
@@ -373,12 +381,6 @@ void TilesetDocument::onTerrainRemoved(Terrain *terrain)
 {
     if (terrain == mCurrentObject)
         setCurrentObject(nullptr);
-}
-
-void TilesetDocument::onTileProbabilityChanged(Tile *tile)
-{
-    for (MapDocument *mapDocument : mapDocuments())
-        emit mapDocument->tileProbabilityChanged(tile);
 }
 
 void TilesetDocument::onWangSetRemoved(WangSet *wangSet)

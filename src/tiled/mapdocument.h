@@ -299,8 +299,6 @@ signals:
 
     void tileLayerChanged(TileLayer *layer, TileLayerChangeFlags flags);
 
-    void tileProbabilityChanged(Tile *tile);
-
     /**
      * Should be emitted when changing the color or drawing order of an object
      * group.
@@ -334,6 +332,7 @@ signals:
     void tilesetTileOffsetChanged(Tileset *tileset);
     void tileTypeChanged(Tile *tile);
     void tileImageSourceChanged(Tile *tile);
+    void tileProbabilityChanged(Tile *tile);
 
 private slots:
     void onObjectsRemoved(const QList<MapObject*> &objects);
