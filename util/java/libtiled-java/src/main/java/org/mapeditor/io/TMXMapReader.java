@@ -203,6 +203,7 @@ public class TMXMapReader {
             Document tsDoc = builder.parse(in, ".");
 
             String xmlPathSave = xmlPath;
+            filename = replacePathSeparator(filename);
             if (filename.indexOf(File.separatorChar) >= 0) {
                 xmlPath = filename.substring(0,
                         filename.lastIndexOf(File.separatorChar) + 1);
@@ -234,6 +235,7 @@ public class TMXMapReader {
 
         String source = set.getSource();
         if (source != null) {
+            source = replacePathSeparator(source);
             String filename = xmlPath + source;
             InputStream in = new URL(makeUrl(filename)).openStream();
             TileSet ext = unmarshalTilesetFile(in, filename);
@@ -793,6 +795,7 @@ public class TMXMapReader {
      * @throws java.lang.Exception if any.
      */
     public Map readMap(String filename) throws Exception {
+        filename = replacePathSeparator(filename);
         xmlPath = filename.substring(0,
                 filename.lastIndexOf(File.separatorChar) + 1);
 
@@ -841,6 +844,7 @@ public class TMXMapReader {
      * @throws java.lang.Exception if any.
      */
     public TileSet readTileset(String filename) throws Exception {
+        filename = replacePathSeparator(filename);
         String xmlFile = filename;
 
         xmlPath = filename.substring(0,
@@ -930,5 +934,18 @@ public class TMXMapReader {
      */
     private Entry<Integer, TileSet> findTileSetForTileGID(int gid) {
         return tilesetPerFirstGid.floorEntry(gid);
+    }
+
+    /**
+     * Tile map can be assembled on UNIX system, but read on Microsoft Windows system.
+     * @param path path to imageSource, tileSet, etc.
+     * @return path with the correct {@link File#separator}
+     */
+    private String replacePathSeparator(String path) {
+        if (path == null)
+            throw new IllegalArgumentException("path cannot be null.");
+        if (path.isEmpty() || path.lastIndexOf(File.separatorChar) >= 0)
+            return path;
+        return path.replace("/", File.separator);
     }
 }
