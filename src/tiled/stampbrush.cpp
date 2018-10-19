@@ -56,7 +56,7 @@ StampBrush::StampBrush(QObject *parent)
     , mIsRandom(false)
     , mIsWangFill(false)
     , mWangSet(nullptr)
-    , mRandomCacheValid(false)
+    , mRandomCacheValid(true)
     , mStampActions(new StampActions(this))
 {
     connect(mStampActions->random(), &QAction::toggled, this, &StampBrush::randomChanged);
@@ -217,7 +217,7 @@ void StampBrush::mapDocumentChanged(MapDocument *oldDocument,
     AbstractTileTool::mapDocumentChanged(oldDocument, newDocument);
 
     if (newDocument) {
-        updateRandomList();
+        invalidateRandomCache();
         updatePreview();
         connect(newDocument, &MapDocument::tileProbabilityChanged,
                 this, &StampBrush::invalidateRandomCache);
@@ -272,7 +272,7 @@ void StampBrush::setStamp(const TileStamp &stamp)
 
     mStamp = stamp;
 
-    updateRandomList();
+    invalidateRandomCache();
     updatePreview();
 }
 
@@ -618,7 +618,7 @@ void StampBrush::setRandom(bool value)
         mStampActions->wangFill()->setChecked(false);
     }
 
-    updateRandomList();
+    invalidateRandomCache();
     updatePreview();
 }
 
