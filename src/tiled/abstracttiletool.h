@@ -121,9 +121,6 @@ protected:
 
     QList<Layer *> targetLayersForStamp(const TileStamp &stamp) const;
 
-    bool mRandomCacheValid;
-    void invalidateRandomCache();
-
 private:
     void setBrushVisible(bool visible);
 

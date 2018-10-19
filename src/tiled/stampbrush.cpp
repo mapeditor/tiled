@@ -56,6 +56,7 @@ StampBrush::StampBrush(QObject *parent)
     , mIsRandom(false)
     , mIsWangFill(false)
     , mWangSet(nullptr)
+    , mRandomCacheValid(false)
     , mStampActions(new StampActions(this))
 {
     connect(mStampActions->random(), &QAction::toggled, this, &StampBrush::randomChanged);
@@ -218,6 +219,13 @@ void StampBrush::mapDocumentChanged(MapDocument *oldDocument,
     if (newDocument) {
         updateRandomList();
         updatePreview();
+        connect(newDocument, &MapDocument::tileProbabilityChanged,
+                this, &StampBrush::invalidateRandomCache);
+    }
+
+    if (oldDocument) {
+        disconnect(oldDocument, &MapDocument::tileProbabilityChanged,
+                   this, &StampBrush::invalidateRandomCache);
     }
 }
 
@@ -337,12 +345,6 @@ void StampBrush::doPaint(int flags, QHash<TileLayer*, QRegion> *paintedRegions)
     if (!preview)
         return;
 
-    if(!mRandomCacheValid) {
-        updateRandomList();
-        mRandomCacheValid = true;
-        updatePreview();
-    }
-
     mapDocument()->paintTileLayers(preview.data(),
                                    (flags & Mergeable) == Mergeable,
                                    &mMissingTilesets,
@@ -385,6 +387,11 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &points)
         return;
 
     if (mIsRandom) {
+        if (!mRandomCacheValid) {
+            updateRandomList();
+            mRandomCacheValid = true;
+        }
+
         if (mRandomCellPicker.isEmpty())
             return;
 
@@ -588,7 +595,6 @@ void StampBrush::updatePreview(QPoint tilePos)
             break;
         case Line:
         case Free:
-            drawPreviewLayer(QVector<QPoint>() << tilePos);
         case Paint:
             drawPreviewLayer(QVector<QPoint>() << tilePos);
             break;
@@ -629,4 +635,9 @@ void StampBrush::setWangFill(bool value)
     }
 
     updatePreview();
+}
+
+void StampBrush::invalidateRandomCache()
+{
+    mRandomCacheValid = false;
 }

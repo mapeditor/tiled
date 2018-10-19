@@ -40,7 +40,6 @@ AbstractTileTool::AbstractTileTool(const QString &name,
                                    BrushItem *brushItem,
                                    QObject *parent)
     : AbstractTool(name, icon, shortcut, parent)
-    , mRandomCacheValid(false)
     , mTilePositionMethod(OnTiles)
     , mBrushItem(brushItem)
     , mBrushVisible(false)
@@ -106,16 +105,8 @@ void AbstractTileTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers)
 void AbstractTileTool::mapDocumentChanged(MapDocument *oldDocument,
                                           MapDocument *newDocument)
 {
+    Q_UNUSED(oldDocument)
     mBrushItem->setMapDocument(newDocument);
-
-    if (oldDocument) {
-        disconnect(oldDocument, &MapDocument::tileProbabilityChanged,
-                   this, &AbstractTileTool::invalidateRandomCache);
-    }
-    if (newDocument) {
-        connect(newDocument, &MapDocument::tileProbabilityChanged,
-                this, &AbstractTileTool::invalidateRandomCache);
-    }
 }
 
 void AbstractTileTool::updateEnabledState()
@@ -236,9 +227,4 @@ void AbstractTileTool::setBrushVisible(bool visible)
     mBrushVisible = visible;
     updateStatusInfo();
     updateBrushVisibility();
-}
-
-void AbstractTileTool::invalidateRandomCache()
-{
-    mRandomCacheValid = false;
 }
