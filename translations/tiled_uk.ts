@@ -50,7 +50,7 @@
     <message>
         <location filename="../src/tiled/main.cpp" line="+359"/>
         <source>Export syntax is --export-map [format] &lt;source&gt; &lt;target&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Синтаксис команди експорту: --export-map [формат] &lt;джерело&gt; &lt;призначення&gt;</translation>
     </message>
     <message>
         <location line="-232"/>
@@ -85,12 +85,12 @@
     <message>
         <location line="+22"/>
         <source>Failed to load source tileset.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося завантажити джерельний набір плиток.</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Failed to export tileset to target file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося експортувати набір плиток до файлу призначення.</translation>
     </message>
 </context>
 <context>
@@ -139,7 +139,7 @@
     <message>
         <location line="+17"/>
         <source>Show output in Debug Console</source>
-        <translation type="unfinished"></translation>
+        <translation>Показати вивід в консоль зневадження</translation>
     </message>
     <message>
         <location line="+33"/>
@@ -167,22 +167,22 @@
     <message>
         <location line="+5"/>
         <source>Export the specified map file to target</source>
-        <translation type="unfinished"></translation>
+        <translation>Експорт вказаної карти до файлу призначення</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export the specified tileset file to target</source>
-        <translation type="unfinished"></translation>
+        <translation>Експорт вказаного набору плиток до файлу призначення</translation>
     </message>
     <message>
         <location line="+84"/>
         <source>Map export formats:</source>
-        <translation type="unfinished"></translation>
+        <translation>Формат експорту карти:</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Tileset export formats:</source>
-        <translation type="unfinished"></translation>
+        <translation>Формат експорту набору плиток:</translation>
     </message>
     <message>
         <location line="-90"/>
@@ -192,7 +192,7 @@
     <message>
         <location line="+5"/>
         <source>Export the map with tilesets embedded</source>
-        <translation type="unfinished"></translation>
+        <translation>Експорт карти з вбудованим набором плиток</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -665,7 +665,7 @@
     <message>
         <location line="+3"/>
         <source>Ctrl+Alt+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Alt+S</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -715,7 +715,7 @@
     <message>
         <location line="+5"/>
         <source>Load World...</source>
-        <translation type="unfinished"></translation>
+        <translation>Завантажити світ...</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -910,7 +910,7 @@
     <message>
         <location line="+24"/>
         <source>Ctrl+Shift+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1395,7 +1395,7 @@ Line %1, column %2</source>
     <message>
         <location line="+5"/>
         <source>Selected Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Обрані прошарки</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -1559,7 +1559,7 @@ Line %1, column %2</source>
     <message>
         <location line="+10"/>
         <source>Export Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметри експорту</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -2383,17 +2383,17 @@ Line %1, column %2</source>
     <message>
         <location line="+11"/>
         <source>Frame Duration: </source>
-        <translation type="unfinished"></translation>
+        <translation>Тривалість кадру: </translation>
     </message>
     <message>
         <location line="+7"/>
         <source> ms</source>
-        <translation type="unfinished"></translation>
+        <translation> мс</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>Apply</source>
-        <translation type="unfinished"></translation>
+        <translation>Застосувати</translation>
     </message>
     <message>
         <location line="+98"/>
@@ -3006,7 +3006,7 @@ Line %1, column %2</source>
     <message>
         <location line="+1"/>
         <source>I</source>
-        <translation type="unfinished">I</translation>
+        <translation>I</translation>
     </message>
 </context>
 <context>
@@ -3055,7 +3055,7 @@ Line %1, column %2</source>
     <message>
         <location line="+1"/>
         <source>V</source>
-        <translation type="unfinished">V</translation>
+        <translation>V</translation>
     </message>
 </context>
 <context>
@@ -3094,7 +3094,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/documentmanager.cpp" line="+461"/>
         <source>Unrecognized file format.</source>
-        <translation type="unfinished">Невідомий формат файлу.</translation>
+        <translation>Невідомий формат файлу.</translation>
     </message>
     <message>
         <location line="+257"/>
@@ -3867,7 +3867,7 @@ Please select specific format.</source>
     <message>
         <location line="+5"/>
         <source>Ctrl+Shift+L</source>
-        <translation type="unfinished">Ctrl+Shift+L</translation>
+        <translation>Ctrl+Shift+L</translation>
     </message>
     <message>
         <location line="+59"/>
@@ -4478,7 +4478,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Thanks a lot for your support! With your help Tiled will keep getting better.</source>
-        <translation type="unfinished"></translation>
+        <translation>Дякуємо Вам за підтримку! З Вашою допомогою Tiled стає кращим.</translation>
     </message>
 </context>
 <context>
@@ -4516,12 +4516,10 @@ Please select specific format.</source>
     <message numerus="yes">
         <location line="-252"/>
         <source>Paste Property/Properties</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Вставити властивість</numerusform>
+        <numerusform>Вставити властивості</numerusform>
+        <numerusform>Вставити властивості</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+50"/>
         <source>Remove Property/Properties</source>
@@ -4778,7 +4776,7 @@ Please select specific format.</source>
     <message>
         <location line="+56"/>
         <source>Template</source>
-        <translation type="unfinished">Шаблон</translation>
+        <translation>Шаблон</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -4798,7 +4796,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Alignment</source>
-        <translation type="unfinished"></translation>
+        <translation>Вирівнювання</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4873,7 +4871,7 @@ Please select specific format.</source>
     <message>
         <location line="-59"/>
         <source>Group Layer</source>
-        <translation type="unfinished">Група прошарків</translation>
+        <translation>Група прошарків</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -4893,12 +4891,12 @@ Please select specific format.</source>
     <message>
         <location line="+14"/>
         <source>Grid Width</source>
-        <translation type="unfinished"></translation>
+        <translation>Ширина сітки</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Grid Height</source>
-        <translation type="unfinished"></translation>
+        <translation>Висота сітки</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -5008,13 +5006,13 @@ Please select specific format.</source>
         <location filename="../src/tiled/abstractobjecttool.cpp" line="-125"/>
         <location filename="../src/tiled/stampactions.cpp" line="+1"/>
         <source>Rotate Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Обертати ліворуч</translation>
     </message>
     <message>
         <location line="+1"/>
         <location filename="../src/tiled/stampactions.cpp" line="+1"/>
         <source>Rotate Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Обертати праворуч</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -5061,7 +5059,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/templatesdock.cpp" line="+293"/>
         <source>Open Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Відкрити набір плиток</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -5082,12 +5080,12 @@ Please select specific format.</source>
     <message>
         <location line="+24"/>
         <source>Templates</source>
-        <translation type="unfinished"></translation>
+        <translation>Шаблони</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Choose Templates Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Оберіть теку шаблонів</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -5271,7 +5269,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Delete Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалити обране</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -5314,12 +5312,12 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>&amp;Embed Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Вбудований набір плиток</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Edit Tile&amp;set</source>
-        <translation type="unfinished"></translation>
+        <translation>Редагувати набір плиток</translation>
     </message>
     <message>
         <location line="-1"/>
@@ -5376,22 +5374,22 @@ Please select specific format.</source>
     <message>
         <location line="-188"/>
         <source>Tile Animation Editor</source>
-        <translation type="unfinished">Редактор плиткової анімації</translation>
+        <translation>Редактор плиток анімації</translation>
     </message>
     <message>
         <location line="+49"/>
         <source>Apply this action to all tiles</source>
-        <translation type="unfinished"></translation>
+        <translation>Застосувати дану дію до всіх плиток</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Tile &quot;%1&quot; already exists in the tileset!</source>
-        <translation type="unfinished"></translation>
+        <translation>Плитка «%1» вже є в даному наборі!</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Add anyway?</source>
-        <translation type="unfinished"></translation>
+        <translation>Все одно додати?</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -5401,7 +5399,7 @@ Please select specific format.</source>
     <message>
         <location line="+118"/>
         <source>Tiles to be removed are in use by open maps!</source>
-        <translation type="unfinished"></translation>
+        <translation>Плитки що видаляються використовуються в одній з відкрити карт!</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -5515,34 +5513,34 @@ Please select specific format.</source>
         <location line="+114"/>
         <location line="+6"/>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Ліворуч</translation>
     </message>
     <message>
         <location line="-5"/>
         <location line="+12"/>
         <location line="+4"/>
         <source>Center</source>
-        <translation type="unfinished"></translation>
+        <translation>Центр</translation>
     </message>
     <message>
         <location line="-15"/>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Праворуч</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Justify</source>
-        <translation type="unfinished"></translation>
+        <translation>Вирівнювання</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Top</source>
-        <translation type="unfinished"></translation>
+        <translation>Зверху</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>Знизу</translation>
     </message>
 </context>
 <context>
@@ -5557,7 +5555,7 @@ Please select specific format.</source>
         <location line="-62"/>
         <location line="+63"/>
         <source>G</source>
-        <translation type="unfinished"></translation>
+        <translation>G</translation>
     </message>
     <message>
         <location line="+152"/>
@@ -5598,7 +5596,7 @@ Please select specific format.</source>
         <location line="-326"/>
         <location line="+327"/>
         <source>Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Кольори</translation>
     </message>
     <message>
         <location line="-10"/>
@@ -5657,13 +5655,14 @@ Please select specific format.</source>
     <message>
         <location filename="../src/libtiled/worldmanager.cpp" line="+109"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished">Не вдалося відкрити файл для читання.</translation>
+        <translation>Не вдалося відкрити файл для читання.</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>JSON parse error at offset %1:
 %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка розбору JSON на зсуві %1:
+%2.</translation>
     </message>
 </context>
 <context>
@@ -5694,7 +5693,7 @@ Please select specific format.</source>
     <message>
         <location line="+11"/>
         <source>Add Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати об&apos;єкти</translation>
     </message>
     <message>
         <location line="+40"/>
@@ -5704,7 +5703,7 @@ Please select specific format.</source>
     <message>
         <location line="+11"/>
         <source>Remove Objects</source>
-        <translation type="unfinished">Видалити об&apos;єкти</translation>
+        <translation>Видалити об&apos;єкти</translation>
     </message>
     <message>
         <location filename="../src/tiled/addremovetileset.cpp" line="+62"/>
@@ -5857,7 +5856,7 @@ Please select specific format.</source>
     <message>
         <location line="+19"/>
         <source>Toggle Polygon/Polyline</source>
-        <translation type="unfinished"></translation>
+        <translation>Перемкнути полігон/полі-лінія</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -5902,12 +5901,12 @@ Please select specific format.</source>
     <message>
         <location line="+19"/>
         <source>Lock Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Заблокувати прошарок</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Unlock Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Розблокувати прошарок</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -6121,7 +6120,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tilesetdocument.cpp" line="-153"/>
         <source>Reload Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Перезавантажити набори плиток</translation>
     </message>
     <message>
         <location filename="../src/tiled/addremovewangset.cpp" line="+65"/>
@@ -6237,7 +6236,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>scale</source>
-        <translation type="unfinished"></translation>
+        <translation>масштаб</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -6248,7 +6247,7 @@ Please select specific format.</source>
         <location line="+1"/>
         <location line="+3"/>
         <source>size</source>
-        <translation type="unfinished"></translation>
+        <translation>розмір</translation>
     </message>
     <message>
         <location line="-1"/>
@@ -6278,7 +6277,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>name</source>
-        <translation type="unfinished"></translation>
+        <translation>назва</translation>
     </message>
     <message>
         <location line="+2"/>
