@@ -125,6 +125,9 @@ private:
 
     CaptureStampHelper mCaptureStampHelper;
 
+    bool mRandomAndMissingCacheValid;
+    void invalidateRandomAndMissingCache();
+
     /**
      * Updates the list of random cells.
      * This is done by taking all non-null tiles from the original stamp mStamp.
