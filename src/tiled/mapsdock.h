@@ -79,7 +79,11 @@ private slots:
     void onMapsDirectoryChanged();
     void onActivated(const QModelIndex &index);
 
+    void pluginObjectAddedOrRemoved(QObject *object);
+
 private:
+    void updateNameFilters();
+
     QFileSystemModel *mFileSystemModel;
 };
 
