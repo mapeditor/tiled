@@ -1208,7 +1208,7 @@ Line %1, column %2</source>
     <message>
         <location line="+60"/>
         <source>Embed in map</source>
-        <translation>Вбудувати до карти</translation>
+        <translation>Вбудувати в карту</translation>
     </message>
     <message>
         <location line="+25"/>
