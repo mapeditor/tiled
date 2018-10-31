@@ -24,6 +24,7 @@
 #include <QRegion>
 #include <QString>
 #include <QVector>
+#include <QFileSystemWatcher>
 
 namespace Tiled {
 
@@ -76,6 +77,7 @@ public slots:
 
 private slots:
     void onRegionEdited(const QRegion &where, Layer *touchedLayer);
+    void onFileChanged();
 
 private:
     Q_DISABLE_COPY(AutomappingManager)
@@ -134,6 +136,10 @@ private:
      * behavior.
      */
     QString mWarning;
+
+    QFileSystemWatcher *mWatcher;
+
+    QString getRulesFileName();
 };
 
 } // namespace Internal
