@@ -2785,7 +2785,7 @@ Línea %1, columna %2</translation>
         <location line="-132"/>
         <location line="+133"/>
         <source>F</source>
-        <translation>R</translation>
+        <translation>F</translation>
     </message>
 </context>
 <context>
@@ -3201,7 +3201,7 @@ Línea %1, columna %2</translation>
         <location line="-54"/>
         <location line="+55"/>
         <source>E</source>
-        <translation>G</translation>
+        <translation>E</translation>
     </message>
 </context>
 <context>
