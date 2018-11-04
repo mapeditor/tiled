@@ -1,3 +1,13 @@
+### Tiled 1.2.1 (. November 2018)
+
+* Fixed JSON templates not being visible in Templates view (#2009)
+* Fixed Maps view to show all readable map formats
+* Fixed crash when deleting a command using the context menu (#2014)
+* Fixed crash after a world file failed to load
+* Fixed Select None action to be enabled when there is any selection
+* Fixed disappearing of tile types on export/import of a tileset (#2023)
+* Fixed tool shortcuts when using Spanish translation
+
 ### Tiled 1.2.0 (19 September 2018)
 
 * Added multi-layer selection, including multi-layer tile layer editing
