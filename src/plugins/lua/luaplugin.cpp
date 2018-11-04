@@ -786,6 +786,8 @@ void LuaWriter::writeTextProperties(LuaTableWriter &writer, const MapObject *map
             writer.writeKeyAndValue("halign", "center");
         else if (textData.alignment.testFlag(Qt::AlignRight))
             writer.writeKeyAndValue("halign", "right");
+        else if (textData.alignment.testFlag(Qt::AlignJustify))
+            writer.writeKeyAndValue("halign", "justify");
     }
 
     if (!textData.alignment.testFlag(Qt::AlignTop)) {

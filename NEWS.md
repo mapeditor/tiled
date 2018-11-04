@@ -7,6 +7,7 @@
 * Fixed Select None action to be enabled when there is any selection
 * Fixed disappearing of tile types on export/import of a tileset (#2023)
 * Fixed tool shortcuts when using Spanish translation
+* Fixed saving of the "Justify" alignment option for text objects (#2026)
 
 ### Tiled 1.2.0 (19 September 2018)
 

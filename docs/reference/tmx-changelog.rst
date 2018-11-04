@@ -4,6 +4,12 @@ TMX Changelog
 Below are described the changes/additions that were made to the
 :doc:`tmx-map-format` for recent versions of Tiled.
 
+Tiled 1.2.1
+-----------
+
+-  Text objects can now get their horizontal alignment saved as ``justify``.
+   This option existed in the UI before but wasn't saved properly.
+
 Tiled 1.2
 ---------
 

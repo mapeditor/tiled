@@ -1177,6 +1177,8 @@ TextData MapReaderPrivate::readObjectText()
         alignment |= Qt::AlignHCenter;
     else if (hAlignString == QLatin1String("right"))
         alignment |= Qt::AlignRight;
+    else if (hAlignString == QLatin1String("justify"))
+        alignment |= Qt::AlignJustify;
     else
         alignment |= Qt::AlignLeft;
 

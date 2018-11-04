@@ -577,7 +577,7 @@ object.
 -  **kerning:** Whether kerning should be used while rendering the text
    (1) or not (0). Default to 1.
 -  **halign:** Horizontal alignment of the text within the object
-   (``left`` (default), ``center`` or ``right``)
+   (``left`` (default), ``center``, ``right`` or ``justify`` (since Tiled 1.2.1))
 -  **valign:** Vertical alignment of the text within the object (``top``
    (default), ``center`` or ``bottom``)
 

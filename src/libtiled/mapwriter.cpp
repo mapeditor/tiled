@@ -846,6 +846,8 @@ void MapWriterPrivate::writeObjectText(QXmlStreamWriter &w, const TextData &text
             w.writeAttribute(QLatin1String("halign"), QLatin1String("center"));
         else if (textData.alignment.testFlag(Qt::AlignRight))
             w.writeAttribute(QLatin1String("halign"), QLatin1String("right"));
+        else if (textData.alignment.testFlag(Qt::AlignJustify))
+            w.writeAttribute(QLatin1String("halign"), QLatin1String("justify"));
     }
 
     if (!textData.alignment.testFlag(Qt::AlignTop)) {

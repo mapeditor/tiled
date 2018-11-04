@@ -562,6 +562,8 @@ QVariant MapToVariantConverter::toVariant(const TextData &textData) const
             textVariant[QLatin1String("halign")] = QLatin1String("center");
         else if (textData.alignment.testFlag(Qt::AlignRight))
             textVariant[QLatin1String("halign")] = QLatin1String("right");
+        else if (textData.alignment.testFlag(Qt::AlignJustify))
+            textVariant[QLatin1String("halign")] = QLatin1String("justify");
     }
 
     if (!textData.alignment.testFlag(Qt::AlignTop)) {
