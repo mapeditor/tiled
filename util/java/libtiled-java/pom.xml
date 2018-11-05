@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>org.mapeditor</groupId>
         <artifactId>tiled-parent</artifactId>
-        <version>1.1-SNAPSHOT</version>
+        <version>1.0-SNAPSHOT</version>
     </parent>
 
+    <groupId>org.mapeditor</groupId>
     <artifactId>libtiled</artifactId>
     <packaging>jar</packaging>
 
@@ -27,6 +25,12 @@
     </scm>
 
     <dependencies>
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-jaxb-annotations</artifactId>
+            <version>2.8.8</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -53,21 +57,9 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>org.jvnet.jaxb2.maven2</groupId>
                 <artifactId>maven-jaxb2-plugin</artifactId>
-                <version>0.13.3</version>
+                <version>0.14.0</version>
                 <configuration>
                     <args>
                         <arg>-Xannotate</arg>
@@ -80,12 +72,12 @@
                         <plugin>
                             <groupId>fr.pinguet62.xjc</groupId>
                             <artifactId>xjc-javadoc-plugin</artifactId>
-                            <version>2.0</version>
+                            <version>1.2</version>
                         </plugin>
                         <plugin>
                             <groupId>org.jvnet.jaxb2_commons</groupId>
                             <artifactId>jaxb2-basics-annotate</artifactId>
-                            <version>1.0.4</version>
+                            <version>1.1.0</version>
                         </plugin>
                         <plugin>
                             <groupId>org.jvnet.jaxb2_commons</groupId>
@@ -107,9 +99,7 @@
                 <artifactId>license-maven-plugin</artifactId>
                 <configuration>
                     <addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
-                    <excludes>
-                        <exclude>src/main/resources/xs3p.xsl</exclude>
-                    </excludes>
+                    <excludes>src/main/resources/xs3p.xsl</excludes>
                     <extraExtensions>
                         <xjb>xml</xjb>
                     </extraExtensions>
@@ -140,6 +130,14 @@
                         <phase>prepare-package</phase>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
             </plugin>
         </plugins>
     </build>
