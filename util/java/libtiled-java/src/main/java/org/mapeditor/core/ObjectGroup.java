@@ -2,8 +2,8 @@
  * #%L
  * This file is part of libtiled-java.
  * %%
- * Copyright (C) 2004 - 2016 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright (C) 2004 - 2016 Adam Turk <aturk@biggeruniverse.com>
+ * Copyright (C) 2004 - 2018 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright (C) 2004 - 2018 Adam Turk <aturk@biggeruniverse.com>
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -33,10 +33,8 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Iterator;
-import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -47,7 +45,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
  * @author Thorbjørn Lindeijer
  * @author Adam Turk
  * @author Mike Thomas
- * @version 1.0.2
+ * @version 1.1.3
  */
 @XmlAccessorType(XmlAccessType.NONE)
 public class ObjectGroup extends ObjectGroupData implements Cloneable, Iterable<MapObject> {

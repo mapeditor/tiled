@@ -2,9 +2,9 @@
  * #%L
  * This file is part of libtiled-java.
  * %%
- * Copyright (C) 2004 - 2017 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright (C) 2004 - 2017 Adam Turk <aturk@biggeruniverse.com>
- * Copyright (C) 2016 - 2017 Mike Thomas <mikepthomas@outlook.com>
+ * Copyright (C) 2004 - 2018 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright (C) 2004 - 2018 Adam Turk <aturk@biggeruniverse.com>
+ * Copyright (C) 2016 - 2018 Mike Thomas <mikepthomas@outlook.com>
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -70,7 +70,7 @@ import org.mapeditor.io.xml.XMLWriter;
  * @author Thorbjørn Lindeijer
  * @author Adam Turk
  * @author Mike Thomas
- * @version 1.0.2
+ * @version 1.1.3
  */
 public class TMXMapWriter {
 
@@ -312,6 +312,7 @@ public class TMXMapWriter {
                 if (tile != null && !tile.getProperties().isEmpty()) {
                     w.startElement("tile");
                     w.writeAttribute("id", tile.getId());
+                    w.writeAttribute("type", tile.getType());
                     writeProperties(tile.getProperties(), w);
                     w.endElement();
                 }
@@ -526,6 +527,7 @@ public class TMXMapWriter {
     private void writeTile(Tile tile, XMLWriter w, String wp) throws IOException {
         w.startElement("tile");
         w.writeAttribute("id", tile.getId());
+        w.writeAttribute("type", tile.getType());
 
         if (!tile.getProperties().isEmpty()) {
             writeProperties(tile.getProperties(), w);
