@@ -775,16 +775,10 @@ public class TMXMapReader {
      */
     public Map readMap(String filename) throws Exception {
 
-        // File.separatorChar is being converted to %5c in URL.getPath()
-        // moreover, when we have constructed path: myfolder/myfile.tmx
-        // and File.separatorChar is \ (as in Windows system)
-        // then we have got file not found exception
-        // because xmlPath is not being correctly extracted and gets empty string value
-        // we can use / char for Linux and for Windows as well.
-	// it is temporary solution, that solves breaking tests on Windows (AppVeyor).
-	// the whole approach to path constructing should be redesigned to prevent
-	// such issues everywhere.
+        // it is a temporary solution, being used instead of
         // xmlPath = filename.substring(0, filename.lastIndexOf(File.separatorChar) + 1);
+        // because using File.separatorChar in windows, when path contains / symbols leads to exceptions.
+        // file path processing in all methods/classes should be checked and fixed
         xmlPath = filename.substring(0, filename.lastIndexOf('/') + 1);
 
         String xmlFile = makeUrl(filename);
