@@ -8,7 +8,6 @@
         <version>1.1-SNAPSHOT</version>
     </parent>
 
-    <groupId>org.mapeditor</groupId>
     <artifactId>tmxviewer</artifactId>
     <packaging>jar</packaging>
 
@@ -43,7 +42,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>2.4.3</version>
+                <version>3.1.0</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -52,7 +51,6 @@
                         </goals>
                         <configuration>
                             <minimizeJar>true</minimizeJar>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>TMXViewer</mainClass>
