@@ -137,9 +137,9 @@ private:
      */
     QString mWarning;
 
-    QFileSystemWatcher *mWatcher;
+    QFileSystemWatcher mWatcher;
 
-    QString getRulesFileName();
+    const QString rulesFileName();
 };
 
 } // namespace Internal
