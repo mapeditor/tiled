@@ -85,12 +85,12 @@
     <message>
         <location line="+22"/>
         <source>Failed to load source tileset.</source>
-        <translation type="unfinished"></translation>
+        <translation>Quell-Tileset konnte nicht geladen werden.</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Failed to export tileset to target file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tileset konnte nicht exportiert werden.</translation>
     </message>
 </context>
 <context>
@@ -167,12 +167,12 @@
     <message>
         <location line="+5"/>
         <source>Export the specified map file to target</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausgewählte Karte zum Ziel exportieren</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export the specified tileset file to target</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausgewählte Tileset-Datei zum Ziel exportieren</translation>
     </message>
     <message>
         <location line="+84"/>
@@ -182,7 +182,7 @@
     <message>
         <location line="+11"/>
         <source>Tileset export formats:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tileset Export Formate:</translation>
     </message>
     <message>
         <location line="-90"/>
@@ -197,7 +197,7 @@
     <message>
         <location line="+5"/>
         <source>Export the map or tileset with template instances detached</source>
-        <translation type="unfinished"></translation>
+        <translation>Karte oder Tileset mit separaten Vorlagen exportieren</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -685,7 +685,7 @@
     <message>
         <location line="+5"/>
         <source>Load World...</source>
-        <translation type="unfinished"></translation>
+        <translation>Welt laden...</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -3948,7 +3948,7 @@ Bitte Format angeben.</translation>
     <message>
         <location line="+1"/>
         <source>&amp;Lower Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebenen absenken</translation>
     </message>
     <message>
         <location line="-5"/>
