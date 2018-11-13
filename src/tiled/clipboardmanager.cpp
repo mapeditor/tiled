@@ -125,7 +125,8 @@ void ClipboardManager::setProperties(const Properties &properties)
 
 /**
  * Convenience method to copy the current selection to the clipboard.
- * Copies both tile selection and object selection.
+ * Copies selected tiles when any tile layer is selected and selected objects
+ * when any object layer is selected.
  *
  * @returns whether anything was copied.
  */
@@ -145,39 +146,49 @@ bool ClipboardManager::copySelection(const MapDocument &mapDocument)
                 map->tileWidth(), map->tileHeight());
     copyMap.setRenderOrder(map->renderOrder());
 
-    LayerIterator layerIterator(map);
-    while (Layer *layer = layerIterator.next()) {
-        switch (layer->layerType()) {
-        case Layer::TileLayerType: {
-            if (!selectedLayers.contains(layer))    // ignore unselected tile layers
-                continue;
+    bool tileLayerSelected = std::any_of(selectedLayers.begin(), selectedLayers.end(),
+                                         [] (Layer *layer) { return layer->isTileLayer(); });
 
-            const TileLayer *tileLayer = static_cast<const TileLayer*>(layer);
-            const QRegion area = selectedArea.intersected(tileLayer->bounds());
-            if (area.isEmpty())                     // nothing to copy
-                continue;
+    if (tileLayerSelected) {
+        LayerIterator layerIterator(map);
+        while (Layer *layer = layerIterator.next()) {
+            switch (layer->layerType()) {
+            case Layer::TileLayerType: {
+                if (!selectedLayers.contains(layer))    // ignore unselected tile layers
+                    continue;
 
-            // Copy the selected part of the layer
-            TileLayer *copyLayer = tileLayer->copy(area.translated(-tileLayer->position()));
-            copyLayer->setName(tileLayer->name());
-            copyLayer->setPosition(area.boundingRect().topLeft());
+                const TileLayer *tileLayer = static_cast<const TileLayer*>(layer);
+                const QRegion area = selectedArea.intersected(tileLayer->bounds());
+                if (area.isEmpty())                     // nothing to copy
+                    continue;
 
-            copyMap.addLayer(copyLayer);
-            break;
-        }
-        case Layer::ObjectGroupType: // todo: maybe it makes to group selected objects by layer
-        case Layer::ImageLayerType:
-        case Layer::GroupLayerType:
-            break;  // nothing to do
+                // Copy the selected part of the layer
+                TileLayer *copyLayer = tileLayer->copy(area.translated(-tileLayer->position()));
+                copyLayer->setName(tileLayer->name());
+                copyLayer->setPosition(area.boundingRect().topLeft());
+
+                copyMap.addLayer(copyLayer);
+                break;
+            }
+            case Layer::ObjectGroupType: // todo: maybe it makes to group selected objects by layer
+            case Layer::ImageLayerType:
+            case Layer::GroupLayerType:
+                break;  // nothing to do
+            }
         }
     }
 
     if (!selectedObjects.isEmpty()) {
-        // Create a new object group with clones of the selected objects
-        ObjectGroup *objectGroup = new ObjectGroup;
-        for (const MapObject *mapObject : selectedObjects)
-            objectGroup->addObject(mapObject->clone());
-        copyMap.addLayer(objectGroup);
+        bool objectGroupSelected = std::any_of(selectedLayers.begin(), selectedLayers.end(),
+                                               [] (Layer *layer) { return layer->isObjectGroup(); });
+
+        if (objectGroupSelected) {
+            // Create a new object group with clones of the selected objects
+            ObjectGroup *objectGroup = new ObjectGroup;
+            for (const MapObject *mapObject : selectedObjects)
+                objectGroup->addObject(mapObject->clone());
+            copyMap.addLayer(objectGroup);
+        }
     }
 
     if (copyMap.layerCount() > 0) {
@@ -213,6 +224,7 @@ void ClipboardManager::pasteObjectGroup(const ObjectGroup *objectGroup,
     if (!(flags & PasteInPlace)) {
         // Determine where to insert the objects
         const MapRenderer *renderer = mapDocument->renderer();
+        // FIXME: This is not the visual center
         const QPointF center = objectGroup->objectsBoundingRect().center();
 
         // Take the mouse position if the mouse is on the view, otherwise

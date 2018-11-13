@@ -316,6 +316,10 @@ bool MapDocumentActionHandler::copy()
     return false;
 }
 
+/**
+ * Erases the selected tiles when any tile layer is selected and removes the
+ * selected objects when any object layer is selected.
+ */
 void MapDocumentActionHandler::delete_()
 {
     if (!mMapDocument)
@@ -325,37 +329,48 @@ void MapDocumentActionHandler::delete_()
         return;
 
     const QRegion &selectedArea = mMapDocument->selectedArea();
+    const QList<Layer*> &selectedLayers = mMapDocument->selectedLayers();
+    const QList<MapObject*> selectedObjects = mMapDocument->selectedObjectsOrdered();
+
+    bool tileLayerSelected = std::any_of(selectedLayers.begin(), selectedLayers.end(),
+                                         [] (Layer *layer) { return layer->isTileLayer(); });
 
     QList<QUndoCommand*> commands;
 
-    LayerIterator layerIterator(mMapDocument->map(), Layer::TileLayerType);
-    for (Layer *layer : mMapDocument->selectedLayers()) {
-        if (!layer->isTileLayer())
-            continue;
+    if (tileLayerSelected) {
+        LayerIterator layerIterator(mMapDocument->map(), Layer::TileLayerType);
+        for (Layer *layer : selectedLayers) {
+            if (!layer->isTileLayer())
+                continue;
 
-        auto tileLayer = static_cast<TileLayer*>(layer);
-        const QRegion area = selectedArea.intersected(tileLayer->bounds());
-        if (area.isEmpty())                     // nothing to delete
-            continue;
+            auto tileLayer = static_cast<TileLayer*>(layer);
+            const QRegion area = selectedArea.intersected(tileLayer->bounds());
+            if (area.isEmpty())                     // nothing to delete
+                continue;
 
-        // Delete the selected part of the layer
-        commands.append(new EraseTiles(mMapDocument, tileLayer, area));
+            // Delete the selected part of the layer
+            commands.append(new EraseTiles(mMapDocument, tileLayer, area));
+        }
+
+        if (!selectedArea.isEmpty())
+            commands.append(new ChangeSelectedArea(mMapDocument, QRegion()));
     }
 
-    commands.append(new RemoveMapObjects(mMapDocument, mMapDocument->selectedObjects()));
+    if (!selectedObjects.isEmpty()) {
+        bool objectGroupSelected = std::any_of(selectedLayers.begin(), selectedLayers.end(),
+                                               [] (Layer *layer) { return layer->isObjectGroup(); });
 
-    QUndoStack *undoStack = mMapDocument->undoStack();
+        if (objectGroupSelected)
+            commands.append(new RemoveMapObjects(mMapDocument, selectedObjects));
+    }
 
     if (!commands.isEmpty()) {
+        QUndoStack *undoStack = mMapDocument->undoStack();
         undoStack->beginMacro(tr("Delete"));
         for (QUndoCommand *command : commands)
             undoStack->push(command);
-    }
-
-    selectNone();
-
-    if (!commands.isEmpty())
         undoStack->endMacro();
+    }
 }
 
 void MapDocumentActionHandler::selectAll()
