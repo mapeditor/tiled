@@ -1,4 +1,4 @@
-### Tiled 1.2.1 (. November 2018)
+### Tiled 1.2.1 (14 November 2018)
 
 * Fixed JSON templates not being visible in Templates view (#2009)
 * Fixed Maps view to show all readable map formats
@@ -8,6 +8,9 @@
 * Fixed disappearing of tile types on export/import of a tileset (#2023)
 * Fixed tool shortcuts when using Spanish translation
 * Fixed saving of the "Justify" alignment option for text objects (#2026)
+* Changed Cut, Copy and Delete actions to apply based on selected layer types
+* Windows: Updated builds to Qt 5.9.7
+* Updated Russian translation (by Rafael Osipov, #2017)
 
 ### Tiled 1.2.0 (19 September 2018)
 
