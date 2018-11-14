@@ -2,7 +2,7 @@
 
 * Fixed JSON templates not being visible in Templates view (#2009)
 * Fixed Maps view to show all readable map formats
-* Fixed crash when deleting a command using the context menu (#2014)
+* Fixed crash when deleting a command using the context menu (by Robert Lewicki, #2014)
 * Fixed crash after a world file failed to load
 * Fixed Select None action to be enabled when there is any selection
 * Fixed disappearing of tile types on export/import of a tileset (#2023)
