@@ -7,8 +7,8 @@ cache:
   - C:\ProgramData\chocolatey\lib -> appveyor.yml
 
 environment:
-  my_secret:
-    secure: +3IhWT10lCSC4GE4gGfWt8WiZdIXuMUfaImgvQUullg=
+  BUTLER_API_KEY:
+    secure: j7JM5L6KeqpnQukzJLsm7J6oV92SpmyEZLSoED1pZ3gQ79VIkdxtbQmTkqUNZPsz
   matrix:
     - QTDIR: C:\Qt\5.9\msvc2013_64
       PYTHONHOME: C:\Python37-x64
