@@ -1,6 +1,6 @@
 /*
  * brushitem.h
- * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2017, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2010 Stefan Beller <stefanbeller@googlemail.com>
  *
  * This file is part of Tiled.
@@ -19,15 +19,14 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef BRUSHITEM_H
-#define BRUSHITEM_H
+#pragma once
+
+#include "map.h"
+#include "tilelayer.h"
 
 #include <QGraphicsItem>
 
 namespace Tiled {
-
-class TileLayer;
-
 namespace Internal {
 
 class MapDocument;
@@ -39,62 +38,69 @@ class MapDocument;
 class BrushItem : public QGraphicsItem
 {
 public:
-    /**
-     * Constructor.
-     */
     BrushItem();
 
-    /**
-     * Sets the map document this brush is operating on.
-     */
     void setMapDocument(MapDocument *mapDocument);
 
-    /**
-     * Sets a tile layer representing this brush. When no tile layer is set,
-     * the brush only draws the selection color.
-     *
-     * The BrushItem does not take ownership over the tile layer, but makes a
-     * personal copy of the tile layer.
-     */
-    void setTileLayer(const TileLayer *tileLayer);
+    void clear();
 
-    /**
-     * Returns the current tile layer.
-     */
-    TileLayer *tileLayer() const { return mTileLayer; }
+    void setTileLayer(const SharedTileLayer &tileLayer);
+    void setTileLayer(const SharedTileLayer &tileLayer, const QRegion &region);
+    const SharedTileLayer &tileLayer() const;
 
-    /**
-     * Changes the position of the tile layer, if one is set.
-     */
+    void setMap(const SharedMap &map);
+    const SharedMap &map() const;
+
     void setTileLayerPosition(const QPoint &pos);
 
-    /**
-     * Sets the region of tiles that this brush item occupies.
-     */
     void setTileRegion(const QRegion &region);
+    const QRegion &tileRegion() const;
 
-    /**
-     * Returns the region of the current tile layer or the region that was set
-     * using setTileRegion.
-     */
-    QRegion tileRegion() const { return mRegion; }
+    void setLayerOffset(const QPointF &offset);
 
     // QGraphicsItem
-    QRectF boundingRect() const;
+    QRectF boundingRect() const override;
     void paint(QPainter *painter,
                const QStyleOptionGraphicsItem *option,
-               QWidget *widget = 0);
+               QWidget *widget = nullptr) override;
+
+protected:
+    MapDocument *mapDocument() const  { return mMapDocument; }
 
 private:
     void updateBoundingRect();
 
     MapDocument *mMapDocument;
-    TileLayer *mTileLayer;
+    SharedTileLayer mTileLayer;
+    SharedMap mMap;
     QRegion mRegion;
     QRectF mBoundingRect;
 };
 
+/**
+ * Returns the current tile layer.
+ */
+inline const SharedTileLayer &BrushItem::tileLayer() const
+{
+    return mTileLayer;
+}
+
+/**
+ * Returns the current map.
+ */
+inline const SharedMap &BrushItem::map() const
+{
+    return mMap;
+}
+
+/**
+ * Returns the region of the current tile layer or the region that was set
+ * using setTileRegion.
+ */
+inline const QRegion &BrushItem::tileRegion() const
+{
+    return mRegion;
+}
+
 } // namespace Internal
 } // namespace Tiled
-
-#endif // BRUSHITEM_H

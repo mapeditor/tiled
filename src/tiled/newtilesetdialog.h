@@ -18,8 +18,10 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef NEWTILESETDIALOG_H
-#define NEWTILESETDIALOG_H
+#pragma once
+
+#include "tileset.h"
+#include "tilesetchanges.h"
 
 #include <QDialog>
 
@@ -28,51 +30,53 @@ class NewTilesetDialog;
 }
 
 namespace Tiled {
-
-class Tileset;
-
 namespace Internal {
 
 /**
- * A dialog for the creation of a new tileset.
+ * A dialog for the creation of a new tileset, or for editing the parameters
+ * of an existing one.
  */
 class NewTilesetDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    /**
-     * Constructs a new tileset dialog
-     *
-     * @param path the path to start in by default, or an image file
-     */
-    NewTilesetDialog(const QString &path, QWidget *parent = 0);
+    enum Mode {
+        CreateTileset,
+        EditTilesetParameters,
+    };
+
+    NewTilesetDialog(QWidget *parent = nullptr);
     ~NewTilesetDialog();
 
-    void setTileWidth(int width);
-    void setTileHeight(int height);
+    void setImagePath(const QString &path);
+    void setTileSize(QSize size);
 
-    /**
-     * Shows the dialog and returns the created tileset. Returns 0 if the
-     * dialog was cancelled.
-     */
-    Tileset *createTileset();
+    SharedTileset createTileset();
+
+    bool isEmbedded() const;
+
+    bool editTilesetParameters(TilesetParameters &parameters);
 
 private slots:
     void browse();
     void nameEdited(const QString &name);
     void tilesetTypeChanged(int index);
     void updateOkButton();
+    void updateColorPickerButton();
     void tryAccept();
+    void pickColorFromImage();
+    void colorSelected(QColor);
 
 private:
+    void setMode(Mode mode);
+
+    Mode mMode;
     QString mPath;
     Ui::NewTilesetDialog *mUi;
     bool mNameWasEdited;
-    Tileset *mNewTileset;
+    SharedTileset mNewTileset;
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // NEWTILESETDIALOG_H

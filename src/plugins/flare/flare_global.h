@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef FLARE_GLOBAL_H
-#define FLARE_GLOBAL_H
+#pragma once
 
 #include <QtCore/qglobal.h>
 
@@ -29,5 +28,3 @@
 #else
 #  define FLARESHARED_EXPORT Q_DECL_IMPORT
 #endif
-
-#endif // FLARE_GLOBAL_H

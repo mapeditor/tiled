@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CONVERTERDATAMODEL_H
-#define CONVERTERDATAMODEL_H
+#pragma once
 
 #include <QAbstractListModel>
 #include <QList>
@@ -35,7 +34,7 @@ class ConverterDataModel : public QAbstractListModel
     Q_OBJECT
 
 public:
-    ConverterDataModel(ConverterControl *control, QObject *parent = 0);
+    ConverterDataModel(ConverterControl *control, QObject *parent = nullptr);
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
 
@@ -64,5 +63,3 @@ private:
     QList<QString> mFileNames;
     QMap<QString, QString> mFileVersions;
 };
-
-#endif // CONVERTERDATAMODEL_H

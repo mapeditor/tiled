@@ -28,142 +28,96 @@
 
 #include "tmxrasterizer.h"
 
-#include <QApplication>
+#include <QCommandLineParser>
 #include <QDebug>
+#include <QGuiApplication>
 #include <QStringList>
+#include <QUrl>
 
-namespace {
-
-struct CommandLineOptions {
-    CommandLineOptions()
-        : showHelp(false)
-        , showVersion(false)
-        , scale(0.0)
-        , tileSize(0)
-        , useAntiAliasing(false)
-    {}
-
-    bool showHelp;
-    bool showVersion;
-    QString fileToOpen;
-    QString fileToSave;
-    qreal scale;
-    int tileSize;
-    bool useAntiAliasing;
-};
-
-} // anonymous namespace
-
-static void showHelp()
+static QString localFile(const QString &fileNameOrUrl)
 {
-    // TODO: Make translatable
-    qWarning() <<
-            "Usage:\n"
-            "  tmxrasterizer [options] [input file] [output file]\n"
-            "\n"
-            "Options:\n"
-            "  -h --help           : Display this help\n"
-            "  -v --version        : Display the version\n"
-            "  -s --scale SCALE    : The scale of the output image\n"
-            "  -t --tilesize SIZE  : The requested size in pixels at which a tile is rendered\n"
-            "                        Overrides the --scale option\n"
-            "  -a --anti-aliasing  : Smooth the output image using anti-aliasing\n";
-}
-
-static void showVersion()
-{
-    qWarning() << "TMX Map Rasterizer"
-            << qPrintable(QApplication::applicationVersion());
-}
-
-static void parseCommandLineArguments(CommandLineOptions &options)
-{
-    const QStringList arguments = QCoreApplication::arguments();
-
-    for (int i = 1; i < arguments.size(); ++i) {
-        const QString &arg = arguments.at(i);
-        if (arg == QLatin1String("--help") || arg == QLatin1String("-h")) {
-            options.showHelp = true;
-        } else if (arg == QLatin1String("--version")
-                || arg == QLatin1String("-v")) {
-            options.showVersion = true;
-        } else if (arg == QLatin1String("--scale")
-                || arg == QLatin1String("-s")) {
-            i++;
-            if (i >= arguments.size()) {
-                options.showHelp = true;
-            } else {
-                bool scaleIsDouble;
-                options.scale = arguments.at(i).toDouble(&scaleIsDouble);
-                if (!scaleIsDouble) {
-                    qWarning() << arguments.at(i) << ": the specified scale is not a number.";
-                    options.showHelp = true;
-                }
-            }
-        } else if (arg == QLatin1String("--tilesize")
-                || arg == QLatin1String("-t")) {
-            i++;
-            if (i >= arguments.size()) {
-                options.showHelp = true;
-            } else {
-                bool tileSizeIsInt;
-                options.tileSize = arguments.at(i).toInt(&tileSizeIsInt);
-                if (!tileSizeIsInt) {
-                    qWarning() << arguments.at(i) << ": the specified tile size is not an integer.";
-                    options.showHelp = true;
-                }
-            }
-        } else if (arg == QLatin1String("--anti-aliasing")
-                || arg == QLatin1String("-a")) {
-            options.useAntiAliasing = true;
-        } else if (arg.isEmpty()) {
-            options.showHelp = true;
-        } else if (arg.at(0) == QLatin1Char('-')) {
-            qWarning() << "Unknown option" << arg;
-            options.showHelp = true;
-        } else if (options.fileToOpen.isEmpty()) {
-            options.fileToOpen = arg;
-        } else if (options.fileToSave.isEmpty()) {
-            options.fileToSave = arg;
-        } else {
-            // All args are already defined. Show help.
-            options.showHelp = true;
-        }
-    }
+    const QUrl url(fileNameOrUrl);
+    return url.isLocalFile() ? url.toLocalFile() : fileNameOrUrl;
 }
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+    QGuiApplication app(argc, argv);
 
-    a.setOrganizationDomain(QLatin1String("mapeditor.org"));
-    a.setApplicationName(QLatin1String("TmxRasterizer"));
-    a.setApplicationVersion(QLatin1String("1.0"));
+    app.setOrganizationDomain(QLatin1String("mapeditor.org"));
+    app.setApplicationName(QLatin1String("TmxRasterizer"));
+    app.setApplicationVersion(QLatin1String("1.0"));
 
-    CommandLineOptions options;
-    parseCommandLineArguments(options);
+    QCommandLineParser parser;
+    parser.setApplicationDescription(QCoreApplication::translate("main", "Renders a Tiled map (TMX format) to an image."));
+    parser.addHelpOption();
+    parser.addVersionOption();
+    parser.addOptions({
+                          { { "s", "scale" },
+                            QCoreApplication::translate("main", "The scale of the output image (default: 1)."),
+                            QCoreApplication::translate("main", "scale") },
+                          { { "t", "tilesize" },
+                            QCoreApplication::translate("main", "The requested size in pixels at which a tile is rendered (overrides the --scale option)."),
+                            QCoreApplication::translate("main", "size") },
+                          { "size",
+                            QCoreApplication::translate("main", "The output image fits within a SIZE x SIZE square (overrides the --scale and --tilesize options)."),
+                            QCoreApplication::translate("main", "size") },
+                          { { "a", "anti-aliasing" },
+                            QCoreApplication::translate("main", "Antialias edges of primitives.") },
+                          { "no-smoothing",
+                            QCoreApplication::translate("main", "Use nearest neighbour instead of smooth blending of pixels.") },
+                          { "ignore-visibility",
+                            QCoreApplication::translate("main", "Ignore all layer visibility flags in the map file, and render all layers in the output (default is to omit invisible layers).") },
+                          { "hide-layer",
+                            QCoreApplication::translate("main", "Specifies a layer to omit from the output image. Can be repeated to hide multiple layers."),
+                            QCoreApplication::translate("main", "name") },
+                      });
+    parser.addPositionalArgument("map", QCoreApplication::translate("main", "Map file to render."));
+    parser.addPositionalArgument("image", QCoreApplication::translate("main", "Image file to output."));
+    parser.process(app);
 
-    if (options.showVersion) {
-        showVersion();
-        return 0;
-    }
-    if (options.showHelp || options.fileToOpen.isEmpty() || options.fileToSave.isEmpty()) {
-        showHelp();
-        return 0;
-    }
-    if (options.scale <= 0.0 && options.tileSize <= 0) {
-        showHelp();
-        return 0;
-    }
+    const QStringList args = parser.positionalArguments();
+    if (args.size() != 2)
+        parser.showHelp(1);
+
+    const QString &fileToOpen = localFile(args.at(0));
+    const QString &fileToSave = args.at(1);
+
+    if (fileToOpen.isEmpty() || fileToSave.isEmpty())
+        parser.showHelp(1);
 
     TmxRasterizer w;
-    w.setAntiAliasing(options.useAntiAliasing);
+    w.setAntiAliasing(parser.isSet(QLatin1String("anti-aliasing")));
+    w.setSmoothImages(!parser.isSet(QLatin1String("no-smoothing")));
+    w.setIgnoreVisibility(parser.isSet(QLatin1String("ignore-visibility")));
+    w.setLayersToHide(parser.values(QLatin1String("hide-layer")));
 
-    if (options.tileSize > 0) {
-        w.setTileSize(options.tileSize);
-    } else if (options.scale > 0.0) {
-        w.setScale(options.scale);
+    if (parser.isSet(QLatin1String("size"))) {
+        bool ok;
+        w.setSize(parser.value(QLatin1String("size")).toInt(&ok));
+        if (!ok || w.size() <= 0) {
+            qWarning().noquote() << QCoreApplication::translate("main", "Invalid size specified: \"%1\"").arg(parser.value(QLatin1String("size")));
+            exit(1);
+        }
     }
 
-    return w.render(options.fileToOpen, options.fileToSave);
+    if (parser.isSet(QLatin1String("tilesize"))) {
+        bool ok;
+        w.setTileSize(parser.value(QLatin1String("tilesize")).toInt(&ok));
+        if (!ok || w.tileSize() <= 0) {
+            qWarning().noquote() << QCoreApplication::translate("main", "Invalid tile size specified: \"%1\"").arg(parser.value(QLatin1String("tilesize")));
+            exit(1);
+        }
+    }
+
+    if (parser.isSet(QLatin1String("scale"))) {
+        bool ok;
+        w.setScale(parser.value(QLatin1String("scale")).toDouble(&ok));
+        if (!ok || w.scale() <= 0.0) {
+            qWarning().noquote() << QCoreApplication::translate("main", "Invalid scale specified: \"%1\"").arg(parser.value(QLatin1String("scale")));
+            exit(1);
+        }
+    }
+
+    return w.render(fileToOpen, fileToSave);
 }

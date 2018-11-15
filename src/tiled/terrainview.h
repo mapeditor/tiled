@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TERRAINVIEW_H
-#define TERRAINVIEW_H
+#pragma once
 
 #include "terrainmodel.h"
 
@@ -29,7 +28,7 @@
 namespace Tiled {
 namespace Internal {
 
-class MapDocument;
+class TilesetDocument;
 class Zoomable;
 
 /**
@@ -41,9 +40,9 @@ class TerrainView : public QTreeView
     Q_OBJECT
 
 public:
-    TerrainView(QWidget *parent = 0);
+    TerrainView(QWidget *parent = nullptr);
 
-    void setMapDocument(MapDocument *mapDocument);
+    void setTilesetDocument(TilesetDocument *tilesetDocument);
 
     Zoomable *zoomable() const { return mZoomable; }
 
@@ -52,9 +51,14 @@ public:
      */
     Terrain *terrainAt(const QModelIndex &index) const;
 
+signals:
+    void removeTerrainTypeRequested();
+
 protected:
-    void wheelEvent(QWheelEvent *event);
-    void contextMenuEvent(QContextMenuEvent *event);
+    bool event(QEvent *event) override;
+    void wheelEvent(QWheelEvent *event) override;
+    void contextMenuEvent(QContextMenuEvent *event) override;
+    void keyPressEvent(QKeyEvent *event) override;
 
 private slots:
     void editTerrainProperties();
@@ -63,12 +67,10 @@ private slots:
 
 private:
     Zoomable *mZoomable;
-    MapDocument *mMapDocument;
+    TilesetDocument *mTilesetDocument;
 };
 
 } // namespace Internal
 } // namespace Tiled
 
 Q_DECLARE_METATYPE(Tiled::Internal::TerrainView *)
-
-#endif // TERRAINVIEW_H

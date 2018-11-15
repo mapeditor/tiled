@@ -19,24 +19,31 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ABSTRACTTOOL_H
-#define ABSTRACTTOOL_H
+#pragma once
 
-#include <QObject>
+#include <QCursor>
+#include <QGraphicsSceneMouseEvent>
 #include <QIcon>
 #include <QKeySequence>
 #include <QMetaType>
+#include <QObject>
 #include <QString>
-#include <QGraphicsSceneMouseEvent>
 
 class QEvent;
 class QKeyEvent;
+class QToolBar;
 
 namespace Tiled {
+
+class Layer;
+class Tile;
+class ObjectTemplate;
+
 namespace Internal {
 
 class MapDocument;
 class MapScene;
+class ToolManager;
 
 /**
  * An abstraction of any kind of tool used to edit the map.
@@ -51,6 +58,13 @@ class AbstractTool : public QObject
 {
     Q_OBJECT
 
+    Q_PROPERTY(QString name READ name WRITE setName)
+    Q_PROPERTY(QIcon icon READ icon WRITE setIcon)
+    Q_PROPERTY(QKeySequence shortcut READ shortcut WRITE setShortcut)
+    Q_PROPERTY(QString statusInfo READ statusInfo WRITE setStatusInfo NOTIFY statusInfoChanged)
+    Q_PROPERTY(QCursor cursor READ cursor WRITE setCursor NOTIFY cursorChanged)
+    Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
+
 public:
     /**
      * Constructs an abstract tool with the given \a name and \a icon.
@@ -58,24 +72,29 @@ public:
     AbstractTool(const QString &name,
                  const QIcon &icon,
                  const QKeySequence &shortcut,
-                 QObject *parent = 0);
+                 QObject *parent = nullptr);
 
-    virtual ~AbstractTool() {}
+    QString name() const;
+    void setName(const QString &name);
 
-    QString name() const { return mName; }
-    void setName(const QString &name) { mName = name; }
+    QIcon icon() const;
+    void setIcon(const QIcon &icon);
 
-    QIcon icon() const { return mIcon; }
-    void setIcon(const QIcon &icon) { mIcon = icon; }
+    QKeySequence shortcut() const;
+    void setShortcut(const QKeySequence &shortcut);
 
-    QKeySequence shortcut() const { return mShortcut; }
-    void setShortcut(const QKeySequence &shortcut) { mShortcut = shortcut; }
-
-    QString statusInfo() const { return mStatusInfo; }
+    QString statusInfo() const;
     void setStatusInfo(const QString &statusInfo);
 
-    bool isEnabled() const { return mEnabled; }
+    QCursor cursor() const;
+    void setCursor(const QCursor &cursor);
+
+    bool isEnabled() const;
     void setEnabled(bool enabled);
+
+    ToolManager *toolManager() const;
+    Tile *tile() const;
+    ObjectTemplate *objectTemplate() const;
 
     /**
      * Activates this tool. If the tool plans to add any items to the scene, it
@@ -119,6 +138,14 @@ public:
     virtual void mouseReleased(QGraphicsSceneMouseEvent *event) = 0;
 
     /**
+     * Called when a mouse button is pressed a second time on the scene, after
+     * a short interval.
+     *
+     * By default, this function calls mousePressed.
+     */
+    virtual void mouseDoubleClicked(QGraphicsSceneMouseEvent *event);
+
+    /**
      * Called when the user presses or releases a modifier key resulting
      * in a change of modifier status, and when the tool is enabled with
      * a modifier key pressed.
@@ -129,6 +156,8 @@ public:
      * Called when the application language changed.
      */
     virtual void languageChanged() = 0;
+
+    virtual void populateToolBar(QToolBar*) {}
 
 public slots:
     void setMapDocument(MapDocument *mapDocument);
@@ -146,6 +175,8 @@ protected:
 
     MapDocument *mapDocument() const { return mMapDocument; }
 
+    Layer *currentLayer() const;
+
 protected slots:
     /**
      * By default, this function is called after the current map has changed
@@ -158,21 +189,78 @@ protected slots:
 
 signals:
     void statusInfoChanged(const QString &statusInfo);
+    void cursorChanged(const QCursor &cursor);
     void enabledChanged(bool enabled);
 
 private:
+    friend class ToolManager;
+
     QString mName;
     QIcon mIcon;
     QKeySequence mShortcut;
     QString mStatusInfo;
+    QCursor mCursor;
     bool mEnabled;
 
+    ToolManager *mToolManager;
     MapDocument *mMapDocument;
 };
+
+
+inline QString AbstractTool::name() const
+{
+    return mName;
+}
+
+inline void AbstractTool::setName(const QString &name)
+{
+    mName = name;
+}
+
+inline QIcon AbstractTool::icon() const
+{
+    return mIcon;
+}
+
+inline void AbstractTool::setIcon(const QIcon &icon)
+{
+    mIcon = icon;
+}
+
+inline QKeySequence AbstractTool::shortcut() const
+{
+    return mShortcut;
+}
+
+inline void AbstractTool::setShortcut(const QKeySequence &shortcut)
+{
+    mShortcut = shortcut;
+}
+
+inline QString AbstractTool::statusInfo() const
+{
+    return mStatusInfo;
+}
+
+inline QCursor AbstractTool::cursor() const
+{
+    return mCursor;
+}
+
+inline bool AbstractTool::isEnabled() const
+{
+    return mEnabled;
+}
+
+/**
+ * Returns the ToolManager with which this tool is registered, if any.
+ */
+inline ToolManager *AbstractTool::toolManager() const
+{
+    return mToolManager;
+}
 
 } // namespace Internal
 } // namespace Tiled
 
 Q_DECLARE_METATYPE(Tiled::Internal::AbstractTool*)
-
-#endif // ABSTRACTTOOL_H

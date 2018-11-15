@@ -18,10 +18,10 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OBJECTTYPESMODEL_H
-#define OBJECTTYPESMODEL_H
+#pragma once
 
 #include "preferences.h"
+#include "properties.h"
 
 #include <QAbstractTableModel>
 
@@ -35,29 +35,31 @@ class ObjectTypesModel : public QAbstractTableModel
 public:
     enum { ColorRole = Qt::UserRole };
 
-    ObjectTypesModel(QObject *parent = 0)
+    ObjectTypesModel(QObject *parent = nullptr)
         : QAbstractTableModel(parent)
     {}
 
     void setObjectTypes(const ObjectTypes &objectTypes);
-
     const ObjectTypes &objectTypes() const { return mObjectTypes; }
 
-    int rowCount(const QModelIndex &parent) const;
-    int columnCount(const QModelIndex &parent) const;
+    ObjectType objectTypeAt(const QModelIndex &index) const;
+
+    int rowCount(const QModelIndex &parent) const override;
+    int columnCount(const QModelIndex &parent) const override;
 
     QVariant headerData(int section, Qt::Orientation orientation,
-                        int role) const;
+                        int role) const override;
 
-    QVariant data(const QModelIndex &index, int role) const;
-    bool setData(const QModelIndex &index, const QVariant &value, int role);
-    Qt::ItemFlags flags(const QModelIndex &index) const;
+    QVariant data(const QModelIndex &index, int role) const override;
+    bool setData(const QModelIndex &index, const QVariant &value, int role) override;
+    Qt::ItemFlags flags(const QModelIndex &index) const override;
 
     void setObjectTypeColor(int objectIndex, const QColor &color);
+    void setObjectTypeProperties(int objectIndex, const Properties &properties);
     void removeObjectTypes(const QModelIndexList &indexes);
 
 public slots:
-    void appendNewObjectType();
+    QModelIndex addNewObjectType();
 
 private:
     ObjectTypes mObjectTypes;
@@ -65,5 +67,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // OBJECTTYPESMODEL_H

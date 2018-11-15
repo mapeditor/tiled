@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CHANGEIMAGELAYERPOSITION_H
-#define CHANGEIMAGELAYERPOSITION_H
+#pragma once
 
 #include <QPoint>
 #include <QUndoCommand>
@@ -40,14 +39,14 @@ public:
      *
      * @param mapDocument   the map document of the layer's map
      * @param imageLayer    the image layer to modify
-     * @param newPos        the new positon of the image layer
+     * @param newPos        the new position of the image layer
      */
     ChangeImageLayerPosition(MapDocument *mapDocument,
                              ImageLayer *imageLayer,
                              const QPoint &newPos);
 
-    void undo();
-    void redo();
+    void undo() override;
+    void redo() override;
 
 private:
     MapDocument *mMapDocument;
@@ -58,5 +57,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // CHANGEIMAGELAYERPOSITION_H

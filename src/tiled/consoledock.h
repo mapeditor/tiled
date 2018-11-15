@@ -18,27 +18,36 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CONSOLEDOCK_H
-#define CONSOLEDOCK_H
+#pragma once
 
 #include <QDockWidget>
 #include <QPlainTextEdit>
-#include "logginginterface.h"
+
+namespace Tiled {
+
+class LoggingInterface;
+
+namespace Internal {
 
 class ConsoleDock : public QDockWidget
 {
     Q_OBJECT
-    
+
 public:
-    explicit ConsoleDock(QWidget *parent = 0);
+    explicit ConsoleDock(QWidget *parent = nullptr);
     ~ConsoleDock();
 
-protected slots:
-    void appendInfo(QString str);
-    void appendError(QString str);
+private slots:
+    void appendInfo(const QString &str);
+    void appendError(const QString &str);
+
+    void onObjectAdded(QObject *object);
 
 private:
+    void registerOutput(LoggingInterface *output);
+
     QPlainTextEdit *plainTextEdit;
 };
 
-#endif // CONSOLEDOCK_H
+} // namespace Internal
+} // namespace Tiled

@@ -21,7 +21,7 @@
 
 #include "imagelayeritem.h"
 
-#include "imagelayer.h"
+#include "mapdocument.h"
 #include "maprenderer.h"
 
 #include <QPainter>
@@ -30,20 +30,19 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-ImageLayerItem::ImageLayerItem(ImageLayer *layer, MapRenderer *renderer)
-    : mLayer(layer)
-    , mRenderer(renderer)
+ImageLayerItem::ImageLayerItem(ImageLayer *layer, MapDocument *mapDocument, QGraphicsItem *parent)
+    : LayerItem(layer, parent)
+    , mMapDocument(mapDocument)
 {
     setFlag(QGraphicsItem::ItemUsesExtendedStyleOption);
 
     syncWithImageLayer();
-    setOpacity(mLayer->opacity());
 }
 
 void ImageLayerItem::syncWithImageLayer()
 {
     prepareGeometryChange();
-    mBoundingRect = mRenderer->boundingRect(mLayer);
+    mBoundingRect = mMapDocument->renderer()->boundingRect(imageLayer());
 }
 
 QRectF ImageLayerItem::boundingRect() const
@@ -56,5 +55,6 @@ void ImageLayerItem::paint(QPainter *painter,
                            QWidget *)
 {
     // TODO: Display a border around the layer when selected
-    mRenderer->drawImageLayer(painter, mLayer, option->exposedRect);
+    MapRenderer *renderer = mMapDocument->renderer();
+    renderer->drawImageLayer(painter, imageLayer(), option->exposedRect);
 }

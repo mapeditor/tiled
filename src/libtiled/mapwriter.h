@@ -27,8 +27,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef MAPWRITER_H
-#define MAPWRITER_H
+#pragma once
 
 #include "map.h"
 #include "tiled_global.h"
@@ -40,6 +39,8 @@ class QIODevice;
 namespace Tiled {
 
 class Map;
+class MapObject;
+class ObjectTemplate;
 class Tileset;
 
 namespace Internal {
@@ -82,7 +83,7 @@ public:
      * Error checking will need to be done on the \a device after calling this
      * function.
      */
-    void writeTileset(const Tileset *tileset, QIODevice *device,
+    void writeTileset(const Tileset &tileset, QIODevice *device,
                       const QString &path = QString());
 
     /**
@@ -91,18 +92,17 @@ public:
      * Returns false and sets errorString() when reading failed.
      * \overload
      */
-    bool writeTileset(const Tileset *tileset, const QString &fileName);
+    bool writeTileset(const Tileset &tileset, const QString &fileName);
+
+    void writeObjectTemplate(const ObjectTemplate *objectTemplate, QIODevice *device,
+                             const QString &path = QString());
+
+    bool writeObjectTemplate(const ObjectTemplate *objectTemplate, const QString &fileName);
 
     /**
      * Returns the error message for the last occurred error.
      */
     QString errorString() const;
-
-    /**
-     * Sets the format in which the tile layer data is stored.
-     */
-    void setLayerDataFormat(Map::LayerDataFormat format);
-    Map::LayerDataFormat layerDataFormat() const;
 
     /**
      * Sets whether the DTD reference is written when saving the map.
@@ -111,9 +111,9 @@ public:
     bool isDtdEnabled() const;
 
 private:
+    Q_DISABLE_COPY(MapWriter)
+
     Internal::MapWriterPrivate *d;
 };
 
 } // namespace Tiled
-
-#endif // MAPWRITER_H

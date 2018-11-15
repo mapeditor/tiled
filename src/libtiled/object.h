@@ -26,10 +26,10 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef OBJECT_H
-#define OBJECT_H
+#pragma once
 
 #include "properties.h"
+#include "objecttypes.h"
 
 namespace Tiled {
 
@@ -43,22 +43,20 @@ public:
         LayerType,
         MapObjectType,
         MapType,
+        ObjectTemplateType,
         TerrainType,
         TilesetType,
-        TileType
+        TileType,
+        WangSetType,
+        WangColorType
     };
 
-    Object(TypeId typeId) : mTypeId(typeId) {}
-
-    Object(const Object &object) :
-        mTypeId(object.mTypeId),
-        mProperties(object.mProperties)
-    {}
+    explicit Object(TypeId typeId) : mTypeId(typeId) {}
 
     /**
      * Virtual destructor.
      */
-    virtual ~Object() {}
+    virtual ~Object();
 
     /**
      * Returns the type of this object.
@@ -77,6 +75,12 @@ public:
     { mProperties = properties; }
 
     /**
+     * Clears all existing properties
+     */
+    void clearProperties ()
+    { mProperties.clear(); }
+
+    /**
      * Merges \a properties with the existing properties. Properties with the
      * same name will be overridden.
      *
@@ -88,8 +92,19 @@ public:
     /**
      * Returns the value of the object's \a name property.
      */
-    QString property(const QString &name) const
+    QVariant property(const QString &name) const
     { return mProperties.value(name); }
+
+    QVariant inheritedProperty(const QString &name) const;
+
+    /**
+     * Returns the value of the object's \a name property, as a string.
+     *
+     * This is a workaround for the Python plugin, because I do not know how
+     * to pass a QVariant back to Python.
+     */
+    QString propertyAsString(const QString &name) const
+    { return mProperties.value(name).toString(); }
 
     /**
      * Returns whether this object has a property with the given \a name.
@@ -100,7 +115,7 @@ public:
     /**
      * Sets the value of the object's \a name property to \a value.
      */
-    void setProperty(const QString &name, const QString &value)
+    void setProperty(const QString &name, const QVariant &value)
     { mProperties.insert(name, value); }
 
     /**
@@ -109,11 +124,35 @@ public:
     void removeProperty(const QString &name)
     { mProperties.remove(name); }
 
+    bool isPartOfTileset() const;
+
+    static void setObjectTypes(const ObjectTypes &objectTypes);
+    static const ObjectTypes &objectTypes()
+    { return mObjectTypes; }
+
 private:
-    TypeId mTypeId;
+    const TypeId mTypeId;
     Properties mProperties;
+
+    static ObjectTypes mObjectTypes;
 };
 
-} // namespace Tiled
 
-#endif // OBJECT_H
+/**
+ * Returns whether this object is stored as part of a tileset.
+ */
+inline bool Object::isPartOfTileset() const
+{
+    switch (mTypeId) {
+    case Object::TilesetType:
+    case Object::TileType:
+    case Object::TerrainType:
+    case Object::WangSetType:
+    case Object::WangColorType:
+        return true;
+    default:
+        return false;
+    }
+}
+
+} // namespace Tiled

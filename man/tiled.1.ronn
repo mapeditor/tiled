@@ -1,0 +1,35 @@
+tiled(1) -- tile map editor
+===========================
+
+## SYNOPSIS
+
+`tiled` [<OPTIONS>] [FILES...]
+
+## DESCRIPTION
+
+Tiled is a general purpose tile map editor. It's built to be easy to use,
+yet flexible enough to work with varying game engines, whether your game
+is an RPG, platformer or Breakout clone. Tiled is free software and written
+in C++, using the Qt application framework.
+
+## OPTIONS
+
+  * `-h` `--help`:
+    Displays the help
+  * `-v` `--version`:
+    Displays the version
+  * `--quit`:
+    Only check validity of arguments
+  * `--disable-opengl`:
+    Disables hardware accelerated rendering
+  * `--export-map` [format] <tmx file> <target file>:
+    Exports the specified tmx file to target
+  * `--export-formats`:
+    Prints a list of supported export formats
+
+## AUTHORS
+<https://github.com/bjorn/tiled/blob/master/AUTHORS>
+
+## SEE ALSO
+
+tmxviewer(1), tmxrasterizer(1), <http://www.mapeditor.org/>

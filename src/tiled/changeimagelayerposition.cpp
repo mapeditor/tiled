@@ -45,11 +45,11 @@ ChangeImageLayerPosition::ChangeImageLayerPosition(
 void ChangeImageLayerPosition::redo()
 {
     mImageLayer->setPosition(mRedoPos);
-    mMapDocument->emitImageLayerChanged(mImageLayer);
+    emit mMapDocument->imageLayerChanged(mImageLayer);
 }
 
 void ChangeImageLayerPosition::undo()
 {
     mImageLayer->setPosition(mUndoPos);
-    mMapDocument->emitImageLayerChanged(mImageLayer);
+    emit mMapDocument->imageLayerChanged(mImageLayer);
 }

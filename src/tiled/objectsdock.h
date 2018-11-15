@@ -18,20 +18,22 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OBJECTSDOCK_H
-#define OBJECTSDOCK_H
+#pragma once
 
 #include <QDockWidget>
 #include <QTreeView>
 
+class QAbstractProxyModel;
 class QTreeView;
 
 namespace Tiled {
 
-class ObjectGroup;
+class Layer;
+class MapObject;
 
 namespace Internal {
 
+class Document;
 class MapDocument;
 class MapObjectModel;
 class ObjectsView;
@@ -41,33 +43,37 @@ class ObjectsDock : public QDockWidget
     Q_OBJECT
 
 public:
-    ObjectsDock(QWidget *parent = 0);
+    ObjectsDock(QWidget *parent = nullptr);
 
     void setMapDocument(MapDocument *mapDoc);
 
 protected:
-    void changeEvent(QEvent *e);
+    void changeEvent(QEvent *e) override;
 
 private slots:
     void updateActions();
     void aboutToShowMoveToMenu();
     void triggeredMoveToMenu(QAction *action);
     void objectProperties();
-    void documentCloseRequested(int index);
+    void documentAboutToClose(Document *document);
+    void moveObjectsUp();
+    void moveObjectsDown();
 
 private:
     void retranslateUi();
 
-    void saveExpandedGroups(MapDocument *mapDoc);
-    void restoreExpandedGroups(MapDocument *mapDoc);
+    void saveExpandedGroups();
+    void restoreExpandedGroups();
 
     QAction *mActionNewLayer;
     QAction *mActionObjectProperties;
     QAction *mActionMoveToGroup;
+    QAction *mActionMoveUp;
+    QAction *mActionMoveDown;
 
     ObjectsView *mObjectsView;
     MapDocument *mMapDocument;
-    QMap<MapDocument*, QList<ObjectGroup*> > mExpandedGroups;
+    QMap<MapDocument*, QList<Layer*> > mExpandedGroups;
     QMenu *mMoveToMenu;
 };
 
@@ -76,29 +82,45 @@ class ObjectsView : public QTreeView
     Q_OBJECT
 
 public:
-    ObjectsView(QWidget *parent = 0);
+    ObjectsView(QWidget *parent = nullptr);
 
-    QSize sizeHint() const;
+    QSize sizeHint() const override;
 
     void setMapDocument(MapDocument *mapDoc);
 
-    MapObjectModel *model() const;
+    MapObjectModel *mapObjectModel() const;
 
-protected slots:
-    virtual void selectionChanged(const QItemSelection &selected,
-                                  const QItemSelection &deselected);
+protected:
+    bool event(QEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    bool viewportEvent(QEvent *event) override;
+    void selectionChanged(const QItemSelection &selected,
+                          const QItemSelection &deselected) override;
+
+    void drawRow(QPainter *painter,
+                 const QStyleOptionViewItem &option,
+                 const QModelIndex &index) const override;
 
 private slots:
-    void onPressed(const QModelIndex &index);
-    void onActivated(const QModelIndex &index);
+    void onActivated(const QModelIndex &proxyIndex);
+    void onSectionResized(int logicalIndex);
     void selectedObjectsChanged();
+    void hoveredObjectChanged(MapObject *object, MapObject *previous);
+    void setColumnVisibility(bool visible);
+
+    void showCustomHeaderContextMenu(const QPoint &point);
 
 private:
+    void restoreVisibleColumns();
+    void synchronizeSelectedItems();
+
+    void updateRow(MapObject *object);
+
     MapDocument *mMapDocument;
+    QAbstractProxyModel *mProxyModel;
     bool mSynching;
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // OBJECTSDOCK_H

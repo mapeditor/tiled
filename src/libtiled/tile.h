@@ -27,18 +27,43 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef TILE_H
-#define TILE_H
+#pragma once
 
 #include "object.h"
+#include "tiled.h"
 
 #include <QPixmap>
+#include <QSharedPointer>
+#include <QUrl>
 
 namespace Tiled {
 
 class ObjectGroup;
 class Terrain;
 class Tileset;
+
+/**
+ * Convenience function for creating tile terrain information.
+ */
+inline unsigned makeTerrain(int id)
+{
+    id &= 0xFF;
+    return id << 24 | id << 16 | id << 8 | id;
+}
+
+/**
+ * Convenience function for creating tile terrain information.
+ */
+inline unsigned makeTerrain(int topLeft,
+                            int topRight,
+                            int bottomLeft,
+                            int bottomRight)
+{
+    return (topLeft & 0xFF) << 24 |
+           (topRight & 0xFF) << 16 |
+           (bottomLeft & 0xFF) << 8 |
+           (bottomRight & 0xFF);
+}
 
 /**
  * Returns the given \a terrain with the \a corner modified to \a terrainId.
@@ -55,6 +80,12 @@ inline unsigned setTerrainCorner(unsigned terrain, int corner, int terrainId)
  */
 struct Frame
 {
+    bool operator == (const Frame &frame) const
+    {
+        return tileId == frame.tileId &&
+                duration == frame.duration;
+    }
+
     int tileId;
     int duration;
 };
@@ -62,94 +93,43 @@ struct Frame
 class TILEDSHARED_EXPORT Tile : public Object
 {
 public:
+    Tile(int id, Tileset *tileset);
     Tile(const QPixmap &image, int id, Tileset *tileset);
-    Tile(const QPixmap &image, const QString &imageSource,
-         int id, Tileset *tileset);
 
     ~Tile();
 
-    /**
-     * Returns ID of this tile within its tileset.
-     */
-    int id() const { return mId; }
+    int id() const;
 
-    /**
-     * Returns the tileset that this tile is part of.
-     */
-    Tileset *tileset() const { return mTileset; }
+    Tileset *tileset() const;
+    QSharedPointer<Tileset> sharedTileset() const;
 
-    /**
-     * Returns the image of this tile.
-     */
-    const QPixmap &image() const { return mImage; }
+    const QPixmap &image() const;
+    void setImage(const QPixmap &image);
 
-    const QPixmap &currentFrameImage() const;
+    const Tile *currentFrameTile() const;
 
-    /**
-     * Sets the image of this tile.
-     */
-    void setImage(const QPixmap &image) { mImage = image; }
+    const QUrl &imageSource() const;
+    void setImageSource(const QUrl &imageSource);
 
-    /**
-     * Returns the file name of the external image that represents this tile.
-     * When this tile doesn't refer to an external image, an empty string is
-     * returned.
-     */
-    const QString &imageSource() const { return mImageSource; }
+    int width() const;
+    int height() const;
+    QSize size() const;
 
-    void setImageSource(const QString &imageSource)
-    { mImageSource = imageSource; }
+    QPoint offset() const;
 
-    /**
-     * Returns the width of this tile.
-     */
-    int width() const { return mImage.width(); }
+    const QString &type() const;
+    void setType(const QString &type);
 
-    /**
-     * Returns the height of this tile.
-     */
-    int height() const { return mImage.height(); }
-
-    /**
-     * Returns the size of this tile.
-     */
-    QSize size() const { return mImage.size(); }
-
-    /**
-     * Returns the Terrain of a given corner.
-     */
     Terrain *terrainAtCorner(int corner) const;
 
-    /**
-     * Returns the terrain id at a given corner.
-     */
-    int cornerTerrainId(int corner) const { unsigned t = (terrain() >> (3 - corner)*8) & 0xFF; return t == 0xFF ? -1 : (int)t; }
+    int cornerTerrainId(int corner) const;
+    void setCornerTerrainId(int corner, int terrainId);
 
-    /**
-     * Set the terrain type of a given corner.
-     */
-    void setCornerTerrain(int corner, int terrainId)
-    { setTerrain(setTerrainCorner(mTerrain, corner, terrainId)); }
-
-    /**
-     * Returns the terrain for each corner of this tile.
-     */
-    unsigned terrain() const { return mTerrain; }
-
-    /**
-     * Set the terrain for each corner of the tile.
-     */
+    inline unsigned terrain() const;
     void setTerrain(unsigned terrain);
 
-    /**
-     * Returns the probability of this terrain type appearing while painting (0-100%).
-     */
-    float terrainProbability() const { return mTerrainProbability; }
-
-    /**
-     * Set the probability of this terrain type appearing while painting (0-100%).
-     */
-    void setTerrainProbability(float probability) { mTerrainProbability = probability; }
+    qreal probability() const;
+    void setProbability(qreal probability);
 
     ObjectGroup *objectGroup() const;
     void setObjectGroup(ObjectGroup *objectGroup);
@@ -159,15 +139,23 @@ public:
     void setFrames(const QVector<Frame> &frames);
     bool isAnimated() const;
     int currentFrameIndex() const;
+    bool resetAnimation();
     bool advanceAnimation(int ms);
+
+    LoadingStatus imageStatus() const;
+    void setImageStatus(LoadingStatus status);
+
+    Tile *clone(Tileset *tileset) const;
 
 private:
     int mId;
     Tileset *mTileset;
     QPixmap mImage;
-    QString mImageSource;
+    QUrl mImageSource;
+    LoadingStatus mImageStatus;
+    QString mType;
     unsigned mTerrain;
-    float mTerrainProbability;
+    qreal mProbability;
     ObjectGroup *mObjectGroup;
 
     QVector<Frame> mFrames;
@@ -176,6 +164,137 @@ private:
 
     friend class Tileset; // To allow changing the tile id
 };
+
+/**
+ * Returns ID of this tile within its tileset.
+ */
+inline int Tile::id() const
+{
+    return mId;
+}
+
+/**
+ * Returns the tileset that this tile is part of.
+ */
+inline Tileset *Tile::tileset() const
+{
+    return mTileset;
+}
+
+/**
+ * Returns the image of this tile.
+ */
+inline const QPixmap &Tile::image() const
+{
+    return mImage;
+}
+
+/**
+ * Sets the image of this tile.
+ */
+inline void Tile::setImage(const QPixmap &image)
+{
+    mImage = image;
+    mImageStatus = image.isNull() ? LoadingError : LoadingReady;
+}
+
+/**
+ * Returns the URL of the external image that represents this tile.
+ * When this tile doesn't refer to an external image, an empty URL is
+ * returned.
+ */
+inline const QUrl &Tile::imageSource() const
+{
+    return mImageSource;
+}
+
+inline void Tile::setImageSource(const QUrl &imageSource)
+{
+    mImageSource = imageSource;
+}
+
+/**
+ * Returns the width of this tile.
+ */
+inline int Tile::width() const
+{
+    return mImage.width();
+}
+
+/**
+ * Returns the height of this tile.
+ */
+inline int Tile::height() const
+{
+    return mImage.height();
+}
+
+/**
+ * Returns the size of this tile.
+ */
+inline QSize Tile::size() const
+{
+    return mImage.size();
+}
+
+/**
+ * Returns the type of this tile. Tile objects that do not have a type
+ * explicitly set on them are assumed to be of the type returned by this
+ * function.
+ */
+inline const QString &Tile::type() const
+{
+    return mType;
+}
+
+/**
+ * Sets the type of this tile.
+ * \sa type()
+ */
+inline void Tile::setType(const QString &type)
+{
+    mType = type;
+}
+
+/**
+ * Returns the terrain id at a given corner.
+ */
+inline int Tile::cornerTerrainId(int corner) const
+{
+    unsigned t = (terrain() >> (3 - corner)*8) & 0xFF; return t == 0xFF ? -1 : (int)t;
+}
+
+/**
+ * Set the terrain type of a given corner.
+ */
+inline void Tile::setCornerTerrainId(int corner, int terrainId)
+{
+    setTerrain(setTerrainCorner(mTerrain, corner, terrainId));
+}
+
+/**
+ * Returns the terrain for each corner of this tile.
+ */
+inline unsigned Tile::terrain() const
+{
+    return mTerrain;
+}
+
+/**
+ * Returns the relative probability of this tile appearing while painting.
+ */
+inline qreal Tile::probability() const
+{
+    return mProbability;
+}
+
+/**
+ * Set the relative probability of this tile appearing while painting.
+ */
+inline void Tile::setProbability(qreal probability)
+{
+    mProbability = probability;
+}
 
 /**
  * @return The group of objects associated with this tile. This is generally
@@ -201,6 +320,17 @@ inline int Tile::currentFrameIndex() const
     return mCurrentFrameIndex;
 }
 
-} // namespace Tiled
+/**
+ * Returns the loading status of the image referenced by this tile.
+ */
+inline LoadingStatus Tile::imageStatus() const
+{
+    return mImageStatus;
+}
 
-#endif // TILE_H
+inline void Tile::setImageStatus(LoadingStatus status)
+{
+    mImageStatus = status;
+}
+
+} // namespace Tiled

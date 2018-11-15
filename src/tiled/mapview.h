@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MAPVIEW_H
-#define MAPVIEW_H
+#pragma once
 
 #include <QGraphicsView>
 #include <QPinchGesture>
@@ -55,9 +54,10 @@ public:
         NoStaticContents,
     };
 
-    MapView(QWidget *parent = 0, Mode mode = StaticContents);
-    ~MapView();
+    MapView(QWidget *parent = nullptr, Mode mode = StaticContents);
+    ~MapView() override;
 
+    void setScene(MapScene *scene);
     MapScene *mapScene() const;
 
     Zoomable *zoomable() const { return mZoomable; }
@@ -65,24 +65,36 @@ public:
     bool handScrolling() const { return mHandScrolling; }
     void setHandScrolling(bool handScrolling);
 
+    void forceCenterOn(const QPointF &pos);
+
 protected:
-    bool event(QEvent *event);
+    bool event(QEvent *event) override;
 
-    void hideEvent(QHideEvent *);
+    void hideEvent(QHideEvent *) override;
+    void resizeEvent(QResizeEvent *event) override;
 
-    void wheelEvent(QWheelEvent *event);
+    void keyPressEvent(QKeyEvent *event) override;
 
-    void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
+    void wheelEvent(QWheelEvent *event) override;
+
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+
+    void focusInEvent(QFocusEvent *event) override;
 
     void handlePinchGesture(QPinchGesture *pinch);
 
     void adjustCenterFromMousePosition(QPoint &mousePos);
 
+signals:
+    void focused();
+
 private slots:
     void adjustScale(qreal scale);
     void setUseOpenGL(bool useOpenGL);
+    void updateSceneRect(const QRectF &sceneRect);
+    void updateSceneRect(const QRectF &sceneRect, const QTransform &transform);
 
 private:
     QPoint mLastMousePos;
@@ -94,5 +106,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // MAPVIEW_H

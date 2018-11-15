@@ -5,11 +5,7 @@ TEMPLATE = app
 TARGET = tmxrasterizer
 target.path = $${PREFIX}/bin
 INSTALLS += target
-TEMPLATE = app
-
-greaterThan(QT_MAJOR_VERSION, 4) {
-    QT += widgets
-}
+CONFIG += console
 
 win32 {
     DESTDIR = ../..
@@ -18,6 +14,7 @@ win32 {
 }
 
 macx {
+    CONFIG -= app_bundle
     QMAKE_LIBDIR += $$OUT_PWD/../../bin/Tiled.app/Contents/Frameworks
 } else:win32 {
     LIBS += -L$$OUT_PWD/../../lib
@@ -26,7 +23,7 @@ macx {
 }
 
 # Make sure the executable can find libtiled
-!win32:!macx:contains(RPATH, yes) {
+!win32:!macx:!cygwin:contains(RPATH, yes) {
     QMAKE_RPATHDIR += \$\$ORIGIN/../lib
 
     # It is not possible to use ORIGIN in QMAKE_RPATHDIR, so a bit manually
@@ -40,5 +37,5 @@ SOURCES += main.cpp \
 HEADERS += tmxrasterizer.h
 
 manpage.path = $${PREFIX}/share/man/man1/
-manpage.files += ../../docs/tmxrasterizer.1
+manpage.files += ../../man/tmxrasterizer.1
 INSTALLS += manpage

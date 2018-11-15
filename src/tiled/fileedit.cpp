@@ -54,23 +54,28 @@ FileEdit::FileEdit(QWidget *parent)
     setFocusPolicy(Qt::StrongFocus);
     setAttribute(Qt::WA_InputMethodEnabled);
 
-    connect(mLineEdit, SIGNAL(textEdited(QString)),
-            this, SIGNAL(filePathChanged(QString)));
-    connect(mLineEdit, SIGNAL(textChanged(QString)),
-            this, SLOT(validate(QString)));
-    connect(button, SIGNAL(clicked()),
-            this, SLOT(buttonClicked()));
+    connect(mLineEdit, &QLineEdit::textEdited,
+            this, &FileEdit::textEdited);
+    connect(mLineEdit, &QLineEdit::textChanged,
+            this, &FileEdit::validate);
+    connect(button, &QAbstractButton::clicked,
+            this, &FileEdit::buttonClicked);
 }
 
-void FileEdit::setFilePath(const QString &filePath)
+void FileEdit::setFileUrl(const QUrl &url)
 {
-     if (mLineEdit->text() != filePath)
-         mLineEdit->setText(filePath);
+    const QString path = url.toString(QUrl::PreferLocalFile);
+    if (mLineEdit->text() != path)
+        mLineEdit->setText(path);
 }
 
-QString FileEdit::filePath() const
+QUrl FileEdit::fileUrl() const
 {
-    return mLineEdit->text();
+    const QString path = mLineEdit->text();
+    QUrl url(path);
+    if (url.isRelative())
+        url = QUrl::fromLocalFile(path);
+    return url;
 }
 
 void FileEdit::focusInEvent(QFocusEvent *e)
@@ -98,9 +103,18 @@ void FileEdit::keyReleaseEvent(QKeyEvent *e)
     mLineEdit->event(e);
 }
 
-void FileEdit::validate(const QString &text)
+void FileEdit::textEdited()
 {
-    QColor textColor = QFile::exists(text) ? mOkTextColor : mErrorTextColor;
+    emit fileUrlChanged(fileUrl());
+}
+
+void FileEdit::validate()
+{
+    const QUrl url(fileUrl());
+
+    QColor textColor = mOkTextColor;
+    if (url.isLocalFile() && !QFile::exists(url.toLocalFile()))
+        textColor = mErrorTextColor;
 
     QPalette palette = mLineEdit->palette();
     palette.setColor(QPalette::Active, QPalette::Text, textColor);
@@ -109,11 +123,14 @@ void FileEdit::validate(const QString &text)
 
 void FileEdit::buttonClicked()
 {
-    QString filePath = QFileDialog::getOpenFileName(this, tr("Choose a File"), mLineEdit->text(), mFilter);
-    if (filePath.isNull())
+    QUrl url = QFileDialog::getOpenFileUrl(window(),
+                                           tr("Choose a File"),
+                                           fileUrl(),
+                                           mFilter);
+    if (url.isEmpty())
         return;
-    mLineEdit->setText(filePath);
-    emit filePathChanged(filePath);
+    setFileUrl(url);
+    emit fileUrlChanged(url);
 }
 
 } // namespace Internal

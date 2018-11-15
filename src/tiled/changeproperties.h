@@ -18,18 +18,18 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CHANGEPROPERTIES_H
-#define CHANGEPROPERTIES_H
+#pragma once
 
 #include "object.h"
 
 #include <QString>
 #include <QUndoCommand>
+#include <QVector>
 
 namespace Tiled {
 namespace Internal {
 
-class MapDocument;
+class Document;
 
 class ChangeProperties : public QUndoCommand
 {
@@ -37,22 +37,24 @@ public:
     /**
      * Constructs a new 'Change Properties' command.
      *
-     * @param mapDocument  the map document of the object's map
+     * @param document     the document owning the object
      * @param kind         the kind of properties (Map, Layer, Object, etc.)
      * @param object       the object of which the properties should be changed
      * @param newProperties the new properties that should be applied
      */
-    ChangeProperties(MapDocument *mapDocument,
+    ChangeProperties(Document *document,
                      const QString &kind,
                      Object *object,
-                     const Properties &newProperties);
-    void undo();
-    void redo();
+                     const Properties &newProperties,
+                     QUndoCommand *parent = nullptr);
+
+    void undo() override;
+    void redo() override;
 
 private:
     void swapProperties();
 
-    MapDocument *mMapDocument;
+    Document *mDocument;
     Object *mObject;
     Properties mNewProperties;
 };
@@ -63,27 +65,31 @@ public:
     /**
      * Constructs a new 'Set Property' command.
      *
-     * @param mapDocument  the map document of the object's map
-     * @param object       the object of which the property should be changed
+     * @param document     the document owning the objects
+     * @param objects      the objects of which the property should be changed
      * @param name         the name of the property to be changed
      * @param value        the new value of the property
+     * @param type         the (new) type ot the property to be changed
      */
-    SetProperty(MapDocument *mapDocument,
-                Object *object,
+    SetProperty(Document *document,
+                const QList<Object*> &objects,
                 const QString &name,
-                const QString &value,
-                QUndoCommand *parent = 0);
+                const QVariant &value,
+                QUndoCommand *parent = nullptr);
 
-    void undo();
-    void redo();
+    void undo() override;
+    void redo() override;
 
 private:
-    MapDocument *mMapDocument;
-    Object *mObject;
+    struct ObjectProperty {
+        QVariant previousValue;
+        bool existed;
+    };
+    QVector<ObjectProperty> mProperties;
+    Document *mDocument;
+    QList<Object*> mObjects;
     QString mName;
-    QString mValue;
-    QString mPreviousValue;
-    bool mPropertyExisted;
+    QVariant mValue;
 };
 
 class RemoveProperty : public QUndoCommand
@@ -92,23 +98,23 @@ public:
     /**
      * Constructs a new 'Remove Property' command.
      *
-     * @param mapDocument  the map document of the object's map
-     * @param object       the object from which the property should be removed
+     * @param document     the document owning the objects
+     * @param objects      the objects from which the property should be removed
      * @param name         the name of the property to be removed
      */
-    RemoveProperty(MapDocument *mapDocument,
-                   Object *object,
+    RemoveProperty(Document *document,
+                   const QList<Object*> &objects,
                    const QString &name,
-                   QUndoCommand *parent = 0);
+                   QUndoCommand *parent = nullptr);
 
-    void undo();
-    void redo();
+    void undo() override;
+    void redo() override;
 
 private:
-    MapDocument *mMapDocument;
-    Object *mObject;
+    Document *mDocument;
+    QList<Object*> mObjects;
+    QVector<QVariant> mPreviousValues;
     QString mName;
-    QString mPreviousValue;
 };
 
 class RenameProperty : public QUndoCommand
@@ -117,18 +123,16 @@ public:
     /**
      * Constructs a new 'Rename Property' command.
      *
-     * @param mapDocument  the map document of the object's map
+     * @param document     the document owning the object
      * @param object       the object of which the property should be renamed
      * @param oldName      the old name of the property
      * @param newName      the new name of the property
      */
-    RenameProperty(MapDocument *mapDocument,
-                   Object *object,
+    RenameProperty(Document *document,
+                   const QList<Object*> &objects,
                    const QString &oldName,
                    const QString &newName);
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // CHANGEPROPERTIES_H

@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MOVEMAPOBJECT_H
-#define MOVEMAPOBJECT_H
+#pragma once
 
 #include <QUndoCommand>
 #include <QPointF>
@@ -37,10 +36,17 @@ class MoveMapObject : public QUndoCommand
 public:
     MoveMapObject(MapDocument *mapDocument,
                   MapObject *mapObject,
-                  const QPointF &oldPos);
+                  const QPointF &oldPos,
+                  QUndoCommand *parent = nullptr);
 
-    void undo();
-    void redo();
+    MoveMapObject(MapDocument *mapDocument,
+                  MapObject *mapObject,
+                  const QPointF &newPos,
+                  const QPointF &oldPos,
+                  QUndoCommand *parent = nullptr);
+
+    void undo() override;
+    void redo() override;
 
 private:
     MapDocument *mMapDocument;
@@ -51,5 +57,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // MOVEMAPOBJECT_H

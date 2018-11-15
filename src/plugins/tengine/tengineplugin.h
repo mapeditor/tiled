@@ -18,44 +18,39 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TENGINEPLUGIN_H
-#define TENGINEPLUGIN_H
+#pragma once
 
 #include "tengine_global.h"
 
-#include "mapwriterinterface.h"
+#include "mapformat.h"
 #include "properties.h"
 
 #include <QObject>
 
 namespace Tengine {
 // ASCII characters between decimals 32 and 126 should be ok
-const int ASCII_MIN = 32;
-const int ASCII_MAX = 126;
+const char ASCII_MIN = 32;
+const char ASCII_MAX = 126;
 
-class TENGINESHARED_EXPORT TenginePlugin : public QObject,
-                                   public Tiled::MapWriterInterface
+class TENGINESHARED_EXPORT TenginePlugin : public Tiled::WritableMapFormat
 {
     Q_OBJECT
-    Q_INTERFACES(Tiled::MapWriterInterface)
-#if QT_VERSION >= 0x050000
-    Q_PLUGIN_METADATA(IID "org.mapeditor.MapWriterInterface" FILE "plugin.json")
-#endif
+    Q_PLUGIN_METADATA(IID "org.mapeditor.MapFormat" FILE "plugin.json")
 
 public:
     TenginePlugin();
 
-    // MapWriterInterface
-    bool write(const Tiled::Map *map, const QString &fileName);
-    QString nameFilter() const;
-    QString errorString() const;
+    bool write(const Tiled::Map *map, const QString &fileName) override;
+    QString nameFilter() const override;
+    QString shortName() const override;
+    QString errorString() const override;
 
 private:
     QString mError;
-    QString constructArgs(Tiled::Properties props, QList<QString> propOrder) const;
-    QString constructAdditionalTable(Tiled::Properties props, QList<QString> propOrder) const;
+    QString constructArgs(const Tiled::Properties &props,
+                          const QList<QString> &propOrder) const;
+    QString constructAdditionalTable(const Tiled::Properties &props,
+                                     const QList<QString> &propOrder) const;
 };
 
 } // namespace Tengine
-
-#endif // TENGINEPLUGIN_H

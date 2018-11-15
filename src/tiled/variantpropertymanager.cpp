@@ -21,21 +21,59 @@
 
 #include "variantpropertymanager.h"
 
+#include "mapdocument.h"
+#include "textpropertyedit.h"
+#include "tilesetdocument.h"
+
+#include <QFileInfo>
+
 namespace Tiled {
 namespace Internal {
 
-class FilePathPropertyType
-{
-};
+class TilesetParametersPropertyType {};
+class AlignmentPropertyType {};
 
-int VariantPropertyManager::filePathTypeId()
+} // namespace Tiled
+} // namespace Internal
+
+// Needs to be up here rather than at the bottom of the file to make a
+// static_assert in qMetaTypeId work (as of C++11)
+Q_DECLARE_METATYPE(Tiled::Internal::TilesetParametersPropertyType)
+Q_DECLARE_METATYPE(Tiled::Internal::AlignmentPropertyType)
+
+namespace Tiled {
+namespace Internal {
+
+VariantPropertyManager::VariantPropertyManager(QObject *parent)
+    : QtVariantPropertyManager(parent)
+    , mSuggestionsAttribute(QStringLiteral("suggestions"))
+    , mMultilineAttribute(QStringLiteral("multiline"))
+    , mImageMissingIcon(QStringLiteral("://images/16x16/image-missing.png"))
 {
-    return qMetaTypeId<FilePathPropertyType>();
+    mImageMissingIcon.addPixmap(QPixmap(QStringLiteral("://images/32x32/image-missing.png")));
+
+    connect(this, &QtVariantPropertyManager::valueChanged,
+            this, &VariantPropertyManager::slotValueChanged);
+    connect(this, &QtAbstractPropertyManager::propertyDestroyed,
+            this, &VariantPropertyManager::slotPropertyDestroyed);
+}
+
+QVariant VariantPropertyManager::value(const QtProperty *property) const
+{
+    if (mValues.contains(property))
+        return mValues[property].value;
+    if (m_alignValues.contains(property))
+        return QVariant::fromValue(m_alignValues.value(property));
+    return QtVariantPropertyManager::value(property);
 }
 
 bool VariantPropertyManager::isPropertyTypeSupported(int propertyType) const
 {
     if (propertyType == filePathTypeId())
+        return true;
+    if (propertyType == tilesetParametersTypeId())
+        return true;
+    if (propertyType == alignmentTypeId())
         return true;
     return QtVariantPropertyManager::isPropertyTypeSupported(propertyType);
 }
@@ -44,22 +82,19 @@ int VariantPropertyManager::valueType(int propertyType) const
 {
     if (propertyType == filePathTypeId())
         return QVariant::String;
+    if (propertyType == tilesetParametersTypeId())
+        return qMetaTypeId<TilesetDocument*>();
+    if (propertyType == alignmentTypeId())
+        return qMetaTypeId<Qt::Alignment>();
     return QtVariantPropertyManager::valueType(propertyType);
-}
-
-QVariant VariantPropertyManager::value(const QtProperty *property) const
-{
-    if (mValues.contains(property))
-        return mValues[property].value;
-    return QtVariantPropertyManager::value(property);
 }
 
 QStringList VariantPropertyManager::attributes(int propertyType) const
 {
     if (propertyType == filePathTypeId()) {
-        QStringList attr;
-        attr << QLatin1String("filter");
-        return attr;
+        return QStringList {
+            QStringLiteral("filter")
+        };
     }
     return QtVariantPropertyManager::attributes(propertyType);
 }
@@ -83,35 +118,132 @@ QVariant VariantPropertyManager::attributeValue(const QtProperty *property,
             return mValues[property].filter;
         return QVariant();
     }
-    if (attribute == mSuggestionsAttribute && mSuggestions.contains(property))
-        return mSuggestions[property];
+    if (mStringAttributes.contains(property)) {
+        if (attribute == mSuggestionsAttribute)
+            return mStringAttributes[property].suggestions;
+        if (attribute == mMultilineAttribute)
+            return mStringAttributes[property].multiline;
+    }
 
     return QtVariantPropertyManager::attributeValue(property, attribute);
 }
 
+int VariantPropertyManager::tilesetParametersTypeId()
+{
+    return qMetaTypeId<TilesetParametersPropertyType>();
+}
+
+int VariantPropertyManager::alignmentTypeId()
+{
+    return qMetaTypeId<AlignmentPropertyType>();
+}
+
 QString VariantPropertyManager::valueText(const QtProperty *property) const
 {
-    if (mValues.contains(property))
-        return mValues[property].value;
+    if (mValues.contains(property)) {
+        QVariant value = mValues[property].value;
+        int typeId = propertyType(property);
+
+        if (typeId == filePathTypeId()) {
+            FilePath filePath = value.value<FilePath>();
+            QString fileName = filePath.url.fileName();
+            if (fileName.isEmpty()) {
+                QString path = filePath.url.toLocalFile();
+                if (path.endsWith(QLatin1Char('/')))
+                    path.chop(1);
+                fileName = QFileInfo(path).fileName();
+            }
+            return fileName;
+        }
+
+        if (typeId == tilesetParametersTypeId()) {
+            if (TilesetDocument *tilesetDocument = value.value<TilesetDocument*>())
+                return tilesetDocument->tileset()->imageSource().fileName();
+        }
+
+        return value.toString();
+    }
+
+    if (m_alignValues.contains(const_cast<QtProperty *>(property))) {
+        const Qt::Alignment v = m_alignValues.value(const_cast<QtProperty *>(property));
+        return tr("%1, %2").arg(indexHToString(alignToIndexH(v))).arg(indexVToString(alignToIndexV(v)));
+    }
+
+    auto stringAttributesIt = mStringAttributes.find(property);
+    if (stringAttributesIt != mStringAttributes.end()) {
+        if ((*stringAttributesIt).multiline)
+            return escapeNewlines(value(property).toString());
+    }
+
     return QtVariantPropertyManager::valueText(property);
 }
 
-void VariantPropertyManager::setValue(QtProperty *property, const QVariant &val)
+QIcon VariantPropertyManager::valueIcon(const QtProperty *property) const
 {
     if (mValues.contains(property)) {
-        if (val.type() != QVariant::String && !val.canConvert(QVariant::String))
-            return;
-        QString str = qVariantValue<QString>(val);
+        QVariant value = mValues[property].value;
+        QString filePath;
+        int typeId = propertyType(property);
+
+        // TODO: Needs a special icon for remote files
+        if (typeId == filePathTypeId()) {
+            const FilePath fp = value.value<FilePath>();
+            filePath = fp.url.toLocalFile();
+        }
+
+        if (typeId == tilesetParametersTypeId()) {
+            if (TilesetDocument *tilesetDocument = value.value<TilesetDocument*>())
+                filePath = tilesetDocument->tileset()->imageSource().toLocalFile();
+        }
+
+        // TODO: This assumes the file path is an image reference. It should be
+        // replaced with a more generic icon.
+        if (filePath.isEmpty() || !QFile::exists(filePath))
+            return QIcon::fromTheme(QLatin1String("image-missing"), mImageMissingIcon);
+        else
+            return mIconProvider.icon(QFileInfo(filePath));
+    }
+
+    return QtVariantPropertyManager::valueIcon(property);
+}
+
+void VariantPropertyManager::setValue(QtProperty *property, const QVariant &value)
+{
+    if (mValues.contains(property)) {
         Data d = mValues[property];
-        if (d.value == str)
+        if (d.value == value)
             return;
-        d.value = str;
+        d.value = value;
         mValues[property] = d;
         emit propertyChanged(property);
-        emit valueChanged(property, str);
+        emit valueChanged(property, value);
+        return;
+    } else if (m_alignValues.contains(property)) {
+        if (value.userType() != qMetaTypeId<Qt::Alignment>() && !value.canConvert(qMetaTypeId<Qt::Alignment>()))
+            return;
+
+        const Qt::Alignment v = value.value<Qt::Alignment>();
+        const Qt::Alignment val = m_alignValues.value(property);
+
+        if (val == v)
+            return;
+
+        QtVariantProperty *alignH = variantProperty(m_propertyToAlignH.value(property));
+        QtVariantProperty *alignV = variantProperty(m_propertyToAlignV.value(property));
+
+        if (alignH)
+            alignH->setValue(alignToIndexH(v));
+        if (alignV)
+            alignV->setValue(alignToIndexV(v));
+
+        m_alignValues[property] = v;
+
+        emit QtVariantPropertyManager::valueChanged(property, QVariant::fromValue(v));
+        emit propertyChanged(property);
+
         return;
     }
-    QtVariantPropertyManager::setValue(property, val);
+    QtVariantPropertyManager::setValue(property, value);
 }
 
 void VariantPropertyManager::setAttribute(QtProperty *property,
@@ -122,7 +254,7 @@ void VariantPropertyManager::setAttribute(QtProperty *property,
         if (attribute == QLatin1String("filter")) {
             if (val.type() != QVariant::String && !val.canConvert(QVariant::String))
                 return;
-            QString str = qVariantValue<QString>(val);
+            QString str = val.toString();
             Data d = mValues[property];
             if (d.filter == str)
                 return;
@@ -133,8 +265,16 @@ void VariantPropertyManager::setAttribute(QtProperty *property,
         return;
     }
 
-    if (attribute == mSuggestionsAttribute && mSuggestions.contains(property))
-        mSuggestions[property] = qVariantValue<QStringList>(val);
+    if (mStringAttributes.contains(property)) {
+        if (attribute == mSuggestionsAttribute) {
+            mStringAttributes[property].suggestions = val.toStringList();
+            return;
+        }
+        if (attribute == mMultilineAttribute) {
+            mStringAttributes[property].multiline = val.toBool();
+            return;
+        }
+    }
 
     QtVariantPropertyManager::setAttribute(property, attribute, val);
 }
@@ -142,10 +282,35 @@ void VariantPropertyManager::setAttribute(QtProperty *property,
 void VariantPropertyManager::initializeProperty(QtProperty *property)
 {
     const int type = propertyType(property);
-    if (type == filePathTypeId())
+    if (type == filePathTypeId()) {
         mValues[property] = Data();
-    else if (type == QVariant::String)
-        mSuggestions[property] = QStringList();
+    } else if (type == tilesetParametersTypeId()) {
+        mValues[property] = Data();
+    } else if (type == QVariant::String) {
+        mStringAttributes[property] = StringAttributes();
+    } else if (type == alignmentTypeId()) {
+        const Qt::Alignment align = Qt::AlignLeft | Qt::AlignVCenter;
+        m_alignValues[property] = align;
+
+        QtVariantProperty *alignH = addProperty(enumTypeId(), tr("Horizontal"));
+        QStringList namesH;
+        namesH << indexHToString(0) << indexHToString(1) << indexHToString(2) << indexHToString(3);
+        alignH->setAttribute(QStringLiteral("enumNames"), namesH);
+        alignH->setValue(alignToIndexH(align));
+        m_propertyToAlignH[property] = alignH;
+        m_alignHToProperty[alignH] = property;
+        property->addSubProperty(alignH);
+
+        QtVariantProperty *alignV = addProperty(enumTypeId(), tr("Vertical"));
+        QStringList namesV;
+        namesV << indexVToString(0) << indexVToString(1) << indexVToString(2);
+        alignV->setAttribute(QStringLiteral("enumNames"), namesV);
+        alignV->setValue(alignToIndexV(align));
+        m_propertyToAlignV[property] = alignV;
+        m_alignVToProperty[alignV] = property;
+        property->addSubProperty(alignV);
+    }
+
 
     QtVariantPropertyManager::initializeProperty(property);
 }
@@ -153,11 +318,122 @@ void VariantPropertyManager::initializeProperty(QtProperty *property)
 void VariantPropertyManager::uninitializeProperty(QtProperty *property)
 {
     mValues.remove(property);
-    mSuggestions.remove(property);
+    mStringAttributes.remove(property);
+    m_alignValues.remove(property);
+
+    QtProperty *alignH = m_propertyToAlignH.value(property);
+    if (alignH) {
+        delete alignH;
+        m_alignHToProperty.remove(alignH);
+    }
+    QtProperty *alignV = m_propertyToAlignV.value(property);
+    if (alignV) {
+        delete alignV;
+        m_alignVToProperty.remove(alignV);
+    }
+
     QtVariantPropertyManager::uninitializeProperty(property);
+}
+
+void VariantPropertyManager::slotValueChanged(QtProperty *property, const QVariant &value)
+{
+    if (QtProperty *alignProperty = m_alignHToProperty.value(property)) {
+        const Qt::Alignment v = m_alignValues.value(alignProperty);
+        const Qt::Alignment newValue = indexHToAlign(value.toInt()) | indexVToAlign(alignToIndexV(v));
+        if (v == newValue)
+            return;
+
+        variantProperty(alignProperty)->setValue(QVariant::fromValue(newValue));
+    } else if (QtProperty *alignProperty = m_alignVToProperty.value(property)) {
+        const Qt::Alignment v = m_alignValues.value(alignProperty);
+        const Qt::Alignment newValue = indexVToAlign(value.toInt()) | indexHToAlign(alignToIndexH(v));
+        if (v == newValue)
+            return;
+
+        variantProperty(alignProperty)->setValue(QVariant::fromValue(newValue));
+    }
+}
+
+void VariantPropertyManager::slotPropertyDestroyed(QtProperty *property)
+{
+    if (QtProperty *alignProperty = m_alignHToProperty.value(property)) {
+        m_propertyToAlignH.remove(alignProperty);
+        m_alignHToProperty.remove(property);
+    } else if (QtProperty *alignProperty = m_alignVToProperty.value(property)) {
+        m_propertyToAlignV.remove(alignProperty);
+        m_alignVToProperty.remove(property);
+    }
+}
+
+int VariantPropertyManager::alignToIndexH(Qt::Alignment align) const
+{
+    if (align & Qt::AlignLeft)
+        return 0;
+    if (align & Qt::AlignHCenter)
+        return 1;
+    if (align & Qt::AlignRight)
+        return 2;
+    if (align & Qt::AlignJustify)
+        return 3;
+    return 0;
+}
+
+int VariantPropertyManager::alignToIndexV(Qt::Alignment align) const
+{
+    if (align & Qt::AlignTop)
+        return 0;
+    if (align & Qt::AlignVCenter)
+        return 1;
+    if (align & Qt::AlignBottom)
+        return 2;
+    return 1;
+}
+
+Qt::Alignment VariantPropertyManager::indexHToAlign(int idx) const
+{
+    switch (idx) {
+    case 0: return Qt::AlignLeft;
+    case 1: return Qt::AlignHCenter;
+    case 2: return Qt::AlignRight;
+    case 3: return Qt::AlignJustify;
+    default: break;
+    }
+    return Qt::AlignLeft;
+}
+
+Qt::Alignment VariantPropertyManager::indexVToAlign(int idx) const
+{
+    switch (idx) {
+    case 0: return Qt::AlignTop;
+    case 1: return Qt::AlignVCenter;
+    case 2: return Qt::AlignBottom;
+    default: break;
+    }
+    return Qt::AlignVCenter;
+}
+
+QString VariantPropertyManager::indexHToString(int idx) const
+{
+    switch (idx) {
+    case 0: return tr("Left");
+    case 1: return tr("Center");
+    case 2: return tr("Right");
+    case 3: return tr("Justify");
+    default: break;
+    }
+    return tr("Left");
+}
+
+QString VariantPropertyManager::indexVToString(int idx) const
+{
+    switch (idx) {
+    case 0: return tr("Top");
+    case 1: return tr("Center");
+    case 2: return tr("Bottom");
+    default: break;
+    }
+    return tr("Center");
 }
 
 } // namespace Internal
 } // namespace Tiled
-
-Q_DECLARE_METATYPE(Tiled::Internal::FilePathPropertyType)

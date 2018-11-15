@@ -87,7 +87,7 @@ void ConverterDataModel::insertFileNames(const QStringList &fileNames)
     const int row = mFileNames.size();
     beginInsertRows(QModelIndex(), row, row + fileNames.count() - 1);
     mFileNames.append(fileNames);
-    foreach (const QString &fileName, fileNames)
+    for (const QString &fileName : fileNames)
          mFileVersions[fileName] = mControl->automappingRuleFileVersion(fileName);
     endInsertRows();
 }

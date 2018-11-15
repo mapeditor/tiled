@@ -6,20 +6,33 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>242</width>
-    <height>402</height>
+    <width>370</width>
+    <height>382</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Resize</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string>Size</string>
      </property>
      <layout class="QGridLayout" name="_6">
+      <item row="0" column="1">
+       <widget class="QSpinBox" name="widthSpinBox">
+        <property name="suffix">
+         <string> tiles</string>
+        </property>
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>99999</number>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="0">
        <widget class="QLabel" name="label_3">
         <property name="text">
@@ -27,16 +40,6 @@
         </property>
         <property name="buddy">
          <cstring>widthSpinBox</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QSpinBox" name="widthSpinBox">
-        <property name="minimum">
-         <number>1</number>
-        </property>
-        <property name="maximum">
-         <number>99999</number>
         </property>
        </widget>
       </item>
@@ -52,6 +55,9 @@
       </item>
       <item row="1" column="1">
        <widget class="QSpinBox" name="heightSpinBox">
+        <property name="suffix">
+         <string> tiles</string>
+        </property>
         <property name="minimum">
          <number>1</number>
         </property>
@@ -63,7 +69,7 @@
      </layout>
     </widget>
    </item>
-   <item>
+   <item row="0" column="1">
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
       <string>Offset</string>
@@ -81,6 +87,9 @@
       </item>
       <item row="0" column="1">
        <widget class="QSpinBox" name="offsetXSpinBox">
+        <property name="suffix">
+         <string> tiles</string>
+        </property>
         <property name="minimum">
          <number>-99999</number>
         </property>
@@ -101,6 +110,9 @@
       </item>
       <item row="1" column="1">
        <widget class="QSpinBox" name="offsetYSpinBox">
+        <property name="suffix">
+         <string> tiles</string>
+        </property>
         <property name="minimum">
          <number>-99999</number>
         </property>
@@ -112,7 +124,7 @@
      </layout>
     </widget>
    </item>
-   <item>
+   <item row="1" column="0" colspan="2">
     <widget class="QFrame" name="frame">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -133,7 +145,17 @@
      </layout>
     </widget>
    </item>
-   <item>
+   <item row="2" column="0" colspan="2">
+    <widget class="QCheckBox" name="removeObjectsCheckBox">
+     <property name="text">
+      <string>Remove objects outside of the map</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -172,29 +194,13 @@
  <connections>
   <connection>
    <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>ResizeDialog</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>227</x>
-     <y>376</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>157</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBox</sender>
    <signal>rejected()</signal>
    <receiver>ResizeDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>232</x>
-     <y>382</y>
+     <y>399</y>
     </hint>
     <hint type="destinationlabel">
      <x>241</x>
@@ -209,8 +215,8 @@
    <slot>setOffsetX(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>172</x>
-     <y>154</y>
+     <x>349</x>
+     <y>63</y>
     </hint>
     <hint type="destinationlabel">
      <x>120</x>
@@ -225,8 +231,8 @@
    <slot>setOffsetY(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>172</x>
-     <y>185</y>
+     <x>349</x>
+     <y>97</y>
     </hint>
     <hint type="destinationlabel">
      <x>120</x>
@@ -277,8 +283,8 @@
      <y>285</y>
     </hint>
     <hint type="destinationlabel">
-     <x>172</x>
-     <y>154</y>
+     <x>349</x>
+     <y>63</y>
     </hint>
    </hints>
   </connection>
@@ -293,8 +299,24 @@
      <y>285</y>
     </hint>
     <hint type="destinationlabel">
-     <x>172</x>
-     <y>185</y>
+     <x>349</x>
+     <y>97</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>ResizeDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>311</x>
+     <y>385</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>365</x>
+     <y>353</y>
     </hint>
    </hints>
   </connection>

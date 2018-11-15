@@ -1,6 +1,6 @@
 /*
  * addremovelayer.h
- * Copyright 2009, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2009-2017, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -18,14 +18,15 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ADDREMOVELAYER_H
-#define ADDREMOVELAYER_H
+#pragma once
 
-#include <QCoreApplication>
+#include "undocommands.h"
+
 #include <QUndoCommand>
 
 namespace Tiled {
 
+class GroupLayer;
 class Layer;
 
 namespace Internal {
@@ -38,7 +39,9 @@ class MapDocument;
 class AddRemoveLayer : public QUndoCommand
 {
 public:
-    AddRemoveLayer(MapDocument *mapDocument, int index, Layer *layer);
+    AddRemoveLayer(MapDocument *mapDocument, int index, Layer *layer,
+                   GroupLayer *parentLayer,
+                   QUndoCommand *parent = nullptr);
 
     ~AddRemoveLayer();
 
@@ -46,32 +49,33 @@ protected:
     void addLayer();
     void removeLayer();
 
-private:
     MapDocument *mMapDocument;
     Layer *mLayer;
+    GroupLayer *mParentLayer;
     int mIndex;
 };
 
 /**
  * Undo command that adds a layer to a map.
  */
-class AddLayer : public AddRemoveLayer
+class AddLayer : public AddRemoveLayer, public ClonableUndoCommand
 {
 public:
     /**
-     * Creates an undo command that adds the \a layer at \a index.
+     * Creates an undo command that adds the \a layer to \a parentLayer at
+     * \a index.
      */
-    AddLayer(MapDocument *mapDocument, int index, Layer *layer)
-        : AddRemoveLayer(mapDocument, index, layer)
-    {
-        setText(QCoreApplication::translate("Undo Commands", "Add Layer"));
-    }
+    AddLayer(MapDocument *mapDocument,
+             int index, Layer *layer, GroupLayer *parentLayer,
+             QUndoCommand *parent = nullptr);
 
-    void undo()
+    void undo() override
     { removeLayer(); }
 
-    void redo()
+    void redo() override
     { addLayer(); }
+
+    AddLayer *clone(QUndoCommand *parent = nullptr) const override;
 };
 
 /**
@@ -83,20 +87,16 @@ public:
     /**
      * Creates an undo command that removes the layer at \a index.
      */
-    RemoveLayer(MapDocument *mapDocument, int index)
-        : AddRemoveLayer(mapDocument, index, 0)
-    {
-        setText(QCoreApplication::translate("Undo Commands", "Remove Layer"));
-    }
+    RemoveLayer(MapDocument *mapDocument,
+                int index, GroupLayer *parentLayer,
+                QUndoCommand *parent = nullptr);
 
-    void undo()
+    void undo() override
     { addLayer(); }
 
-    void redo()
+    void redo() override
     { removeLayer(); }
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // ADDREMOVELAYER_H

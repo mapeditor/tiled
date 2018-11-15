@@ -51,6 +51,34 @@
 #include <QFocusEvent>
 #include <QStyle>
 #include <QPalette>
+#include <QScreen>
+
+#ifndef Q_OS_MAC
+static qreal defaultDpiScale()
+{
+    if (const QScreen *screen = QGuiApplication::primaryScreen())
+        return screen->logicalDotsPerInchX() / 96.0;
+    return 1.0;
+}
+#endif
+
+static qreal dpiScaled(qreal value)
+{
+#ifdef Q_OS_MAC
+    // On mac the DPI is always 72 so we should not scale it
+    return value;
+#else
+    static const qreal scale = defaultDpiScale();
+    return value * scale;
+#endif
+}
+
+static QSize dpiScaled(QSize value)
+{
+    return QSize(qRound(dpiScaled(value.width())),
+                 qRound(dpiScaled(value.height())));
+}
+
 
 #if QT_VERSION >= 0x040400
 QT_BEGIN_NAMESPACE
@@ -92,10 +120,14 @@ public:
     void setCurrentItem(QtBrowserItem *browserItem, bool block);
     void editItem(QtBrowserItem *browserItem);
 
+    QList<QtBrowserItem*> selectedItems() const;
+
     void slotCurrentBrowserItemChanged(QtBrowserItem *item);
     void slotCurrentTreeItemChanged(QTreeWidgetItem *newItem, QTreeWidgetItem *);
+    void slotItemSelectionChanged();
 
     QTreeWidgetItem *editedItem() const;
+    QtBrowserItem *editedBrowserItem() const;
 
 private:
     void updateItem(QTreeWidgetItem *item);
@@ -108,6 +140,7 @@ private:
     QtPropertyEditorView *m_treeWidget;
 
     bool m_headerVisible;
+    bool m_allowMultiSelection;
     QtTreePropertyBrowser::ResizeMode m_resizeMode;
     class QtPropertyEditorDelegate *m_delegate;
     bool m_markPropertiesWithoutValue;
@@ -120,7 +153,7 @@ class QtPropertyEditorView : public QTreeWidget
 {
     Q_OBJECT
 public:
-    QtPropertyEditorView(QWidget *parent = 0);
+    explicit QtPropertyEditorView(QWidget *parent = 0);
 
     void setEditorPrivate(QtTreePropertyBrowserPrivate *editorPrivate)
         { m_editorPrivate = editorPrivate; }
@@ -146,7 +179,7 @@ QtPropertyEditorView::QtPropertyEditorView(QWidget *parent) :
 
 void QtPropertyEditorView::drawRow(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    QStyleOptionViewItemV3 opt = option;
+    QStyleOptionViewItem opt = option;
     bool hasValue = true;
     if (m_editorPrivate) {
         QtProperty *property = m_editorPrivate->indexToProperty(index);
@@ -220,12 +253,12 @@ class QtPropertyEditorDelegate : public QItemDelegate
 {
     Q_OBJECT
 public:
-    QtPropertyEditorDelegate(QObject *parent = 0)
+    explicit QtPropertyEditorDelegate(QObject *parent = 0)
         : QItemDelegate(parent), m_editorPrivate(0), m_editedItem(0), m_editedWidget(0), m_disablePainting(false)
-        {}
+    {}
 
     void setEditorPrivate(QtTreePropertyBrowserPrivate *editorPrivate)
-        { m_editorPrivate = editorPrivate; }
+    { m_editorPrivate = editorPrivate; }
 
     QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
             const QModelIndex &index) const;
@@ -348,7 +381,7 @@ void QtPropertyEditorDelegate::paint(QPainter *painter, const QStyleOptionViewIt
         if (property)
             hasValue = property->hasValue();
     }
-    QStyleOptionViewItemV3 opt = option;
+    QStyleOptionViewItem opt = option;
     if ((m_editorPrivate && index.column() == 0) || !hasValue) {
         QtProperty *property = m_editorPrivate->indexToProperty(index);
         if (property && property->isModified()) {
@@ -362,7 +395,7 @@ void QtPropertyEditorDelegate::paint(QPainter *painter, const QStyleOptionViewIt
         opt.palette.setColor(QPalette::Text, opt.palette.color(QPalette::BrightText));
     } else {
         c = m_editorPrivate->calculatedBackgroundColor(m_editorPrivate->indexToBrowserItem(index));
-        if (c.isValid() && (opt.features & QStyleOptionViewItemV2::Alternate))
+        if (c.isValid() && (opt.features & QStyleOptionViewItem::Alternate))
             c = c.lighter(112);
     }
     if (c.isValid())
@@ -409,7 +442,7 @@ void QtPropertyEditorDelegate::drawDisplay(QPainter *painter, const QStyleOption
 QSize QtPropertyEditorDelegate::sizeHint(const QStyleOptionViewItem &option,
             const QModelIndex &index) const
 {
-    return QItemDelegate::sizeHint(option, index) + QSize(3, 4);
+    return QItemDelegate::sizeHint(option, index) + dpiScaled(QSize(3, 4));
 }
 
 bool QtPropertyEditorDelegate::eventFilter(QObject *object, QEvent *event)
@@ -426,6 +459,7 @@ bool QtPropertyEditorDelegate::eventFilter(QObject *object, QEvent *event)
 QtTreePropertyBrowserPrivate::QtTreePropertyBrowserPrivate() :
     m_treeWidget(0),
     m_headerVisible(true),
+    m_allowMultiSelection(false),
     m_resizeMode(QtTreePropertyBrowser::Stretch),
     m_delegate(0),
     m_markPropertiesWithoutValue(false),
@@ -483,14 +517,20 @@ void QtTreePropertyBrowserPrivate::init(QWidget *parent)
     m_delegate = new QtPropertyEditorDelegate(parent);
     m_delegate->setEditorPrivate(this);
     m_treeWidget->setItemDelegate(m_delegate);
+#if QT_VERSION >= 0x050000
+    m_treeWidget->header()->setSectionsMovable(false);
+    m_treeWidget->header()->setSectionResizeMode(QHeaderView::Stretch);
+#else
     m_treeWidget->header()->setMovable(false);
     m_treeWidget->header()->setResizeMode(QHeaderView::Stretch);
+#endif
 
     m_expandIcon = drawIndicatorIcon(q_ptr->palette(), q_ptr->style());
 
     QObject::connect(m_treeWidget, SIGNAL(collapsed(const QModelIndex &)), q_ptr, SLOT(slotCollapsed(const QModelIndex &)));
     QObject::connect(m_treeWidget, SIGNAL(expanded(const QModelIndex &)), q_ptr, SLOT(slotExpanded(const QModelIndex &)));
     QObject::connect(m_treeWidget, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), q_ptr, SLOT(slotCurrentTreeItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
+    QObject::connect(m_treeWidget, SIGNAL(itemSelectionChanged()), q_ptr, SLOT(slotItemSelectionChanged()));
 }
 
 QtBrowserItem *QtTreePropertyBrowserPrivate::currentItem() const
@@ -619,6 +659,12 @@ void QtTreePropertyBrowserPrivate::propertyChanged(QtBrowserItem *index)
 void QtTreePropertyBrowserPrivate::updateItem(QTreeWidgetItem *item)
 {
     QtProperty *property = m_itemToIndex[item]->property();
+
+    if (property->nameColor().isValid())
+        item->setForeground(0, QBrush(property->nameColor()));
+    if (property->valueColor().isValid())
+        item->setForeground(1, QBrush(property->valueColor()));
+
     QIcon expandIcon;
     if (property->hasValue()) {
         QString toolTip = property->toolTip();
@@ -699,9 +745,19 @@ void QtTreePropertyBrowserPrivate::slotCurrentTreeItemChanged(QTreeWidgetItem *n
     m_browserChangedBlocked = false;
 }
 
+void QtTreePropertyBrowserPrivate::slotItemSelectionChanged()
+{
+    emit q_ptr->selectedItemsChanged();
+}
+
 QTreeWidgetItem *QtTreePropertyBrowserPrivate::editedItem() const
 {
     return m_delegate->editedItem();
+}
+
+QtBrowserItem *QtTreePropertyBrowserPrivate::editedBrowserItem() const
+{
+    return m_itemToIndex.value(editedItem());
 }
 
 void QtTreePropertyBrowserPrivate::editItem(QtBrowserItem *browserItem)
@@ -710,6 +766,18 @@ void QtTreePropertyBrowserPrivate::editItem(QtBrowserItem *browserItem)
         m_treeWidget->setCurrentItem (treeItem, 1);
         m_treeWidget->editItem(treeItem, 1);
     }
+}
+
+QList<QtBrowserItem *> QtTreePropertyBrowserPrivate::selectedItems() const
+{
+    const QList<QTreeWidgetItem*> selectedTreeItems = m_treeWidget->selectedItems();
+    QList<QtBrowserItem*> browserItems;
+
+    for (QTreeWidgetItem *treeItem : selectedTreeItems)
+        if (QtBrowserItem *browserItem = m_itemToIndex.value(treeItem, 0))
+            browserItems.append(browserItem);
+
+    return browserItems;
 }
 
 /*!
@@ -852,6 +920,25 @@ void QtTreePropertyBrowser::setHeaderVisible(bool visible)
 }
 
 /*!
+  \property QtTreePropertyBrowser::allowMultiSelection
+  \brief whether to allow multiple selection items.
+*/
+bool QtTreePropertyBrowser::allowMultiSelection() const
+{
+    return d_ptr->m_allowMultiSelection;
+}
+
+void QtTreePropertyBrowser::setAllowMultiSelection(bool multiSelection)
+{
+    if (d_ptr->m_allowMultiSelection == multiSelection)
+        return;
+
+    d_ptr->m_allowMultiSelection = multiSelection;
+    d_ptr->m_treeWidget->setSelectionMode(multiSelection ? QAbstractItemView::ExtendedSelection
+                                                         : QAbstractItemView::SingleSelection);
+}
+
+/*!
   \enum QtTreePropertyBrowser::ResizeMode
 
   The resize mode specifies the behavior of the header sections.
@@ -896,7 +983,11 @@ void QtTreePropertyBrowser::setResizeMode(QtTreePropertyBrowser::ResizeMode mode
         case QtTreePropertyBrowser::Stretch:
         default:                                      m = QHeaderView::Stretch;          break;
     }
+#if QT_VERSION >= 0x050000
+    d_ptr->m_treeWidget->header()->setSectionResizeMode(m);
+#else
     d_ptr->m_treeWidget->header()->setResizeMode(m);
+#endif
 }
 
 /*!
@@ -1069,6 +1160,24 @@ void QtTreePropertyBrowser::itemChanged(QtBrowserItem *item)
 void QtTreePropertyBrowser::editItem(QtBrowserItem *item)
 {
     d_ptr->editItem(item);
+}
+
+/*!
+    Returns the current item being edited, if any.
+*/
+QtBrowserItem *QtTreePropertyBrowser::editedItem() const
+{
+    return d_ptr->editedBrowserItem();
+}
+
+/*!
+    Returns the selected items.
+
+    \sa setAllowMultiSelection()
+*/
+QList<QtBrowserItem *> QtTreePropertyBrowser::selectedItems() const
+{
+    return d_ptr->selectedItems();
 }
 
 #if QT_VERSION >= 0x040400

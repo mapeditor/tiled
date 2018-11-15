@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef COMMANDDIALOG_H
-#define COMMANDDIALOG_H
+#pragma once
 
 #include <QDialog>
 #include <QTreeView>
@@ -38,14 +37,33 @@ class CommandDialog : public QDialog
     Q_OBJECT
 
 public:
-    CommandDialog(QWidget *parent = 0);
+    CommandDialog(QWidget *parent = nullptr);
     ~CommandDialog();
 
     /**
       * Saves the changes to the users preferences.
-      * Automatically called when the dialog is accepted.
+      * Automatically called when the dialog is closed.
       */
-    void accept();
+    void closeEvent(QCloseEvent *event) override;
+
+public slots:
+    void setShortcut(const QKeySequence &keySequence);
+
+    void setSaveBeforeExecute(int state);
+
+    void setShowOutput(int state);
+
+    void setExecutable(const QString &text);
+
+    void setArguments(const QString &text);
+
+    void setWorkingDirectory(const QString &text);
+
+    void updateWidgets(const QModelIndex &current, const QModelIndex&);
+
+    void browseExecutable();
+
+    void browseWorkingDirectory();
 
 private:
     Ui::CommandDialog *mUi;
@@ -57,7 +75,6 @@ class CommandTreeView : public QTreeView
 
 public:
     CommandTreeView(QWidget *parent);
-    ~CommandTreeView();
 
     /**
       * Returns the model used by this view in CommandDataMode form.
@@ -68,7 +85,7 @@ private slots:
     /**
       * Displays a context menu for the item at <i>event</i>'s position.
       */
-    void contextMenuEvent(QContextMenuEvent *event);
+    void contextMenuEvent(QContextMenuEvent *event) override;
 
     /**
       * Fixes the selection after rows have been removed.
@@ -86,5 +103,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // COMMANDDIALOG_H

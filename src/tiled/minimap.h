@@ -19,8 +19,9 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MINIMAP_H
-#define MINIMAP_H
+#pragma once
+
+#include "minimaprenderer.h"
 
 #include <QFrame>
 #include <QImage>
@@ -36,35 +37,26 @@ class MiniMap : public QFrame
     Q_OBJECT
 
 public:
-    enum MiniMapRenderFlag {
-        DrawObjects             = 0x0001,
-        DrawTiles               = 0x0002,
-        DrawImages              = 0x0004,
-        IgnoreInvisibleLayer    = 0x0008,
-        DrawGrid                = 0x0010
-    };
-    Q_DECLARE_FLAGS(MiniMapRenderFlags, MiniMapRenderFlag)
-
     MiniMap(QWidget *parent);
 
     void setMapDocument(MapDocument *);
 
-    MiniMapRenderFlags renderFlags() const { return mRenderFlags; }
-    void setRenderFlags(MiniMapRenderFlags flags) { mRenderFlags = flags; }
+    MiniMapRenderer::RenderFlags renderFlags() const { return mRenderFlags; }
+    void setRenderFlags(MiniMapRenderer::RenderFlags flags) { mRenderFlags = flags; }
 
-    QSize sizeHint() const;
+    QSize sizeHint() const override;
 
 public slots:
     /** Schedules a redraw of the minimap image. */
     void scheduleMapImageUpdate();
 
 protected:
-    void paintEvent(QPaintEvent *);
-    void resizeEvent(QResizeEvent *);
-    void wheelEvent(QWheelEvent *event);
-    void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
+    void paintEvent(QPaintEvent *) override;
+    void resizeEvent(QResizeEvent *) override;
+    void wheelEvent(QWheelEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
 
 private slots:
     void redrawTimeout();
@@ -78,7 +70,7 @@ private:
     QPoint mDragOffset;
     bool mMouseMoveCursorState;
     bool mRedrawMapImage;
-    MiniMapRenderFlags mRenderFlags;
+    MiniMapRenderer::RenderFlags mRenderFlags;
 
     QRect viewportRect() const;
     QPointF mapToScene(QPoint p) const;
@@ -89,7 +81,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::Internal::MiniMap::MiniMapRenderFlags)
-
-#endif // MINIMAP_H

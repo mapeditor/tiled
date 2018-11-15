@@ -19,10 +19,11 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef VARIANTPROPERTYMANAGER_H
-#define VARIANTPROPERTYMANAGER_H
+#pragma once
 
 #include <QtVariantPropertyManager>
+
+#include <QFileIconProvider>
 
 namespace Tiled {
 namespace Internal {
@@ -36,45 +37,67 @@ class VariantPropertyManager : public QtVariantPropertyManager
     Q_OBJECT
 
 public:
-    explicit VariantPropertyManager(QObject *parent = 0)
-        : QtVariantPropertyManager(parent)
-        , mSuggestionsAttribute(QLatin1String("suggestions"))
-    {}
+    explicit VariantPropertyManager(QObject *parent = nullptr);
 
-    QVariant value(const QtProperty *property) const;
-    int valueType(int propertyType) const;
-    bool isPropertyTypeSupported(int propertyType) const;
+    QVariant value(const QtProperty *property) const override;
+    int valueType(int propertyType) const override;
+    bool isPropertyTypeSupported(int propertyType) const override;
 
-    QStringList attributes(int propertyType) const;
-    int attributeType(int propertyType, const QString &attribute) const;
+    QStringList attributes(int propertyType) const override;
+    int attributeType(int propertyType, const QString &attribute) const override;
     QVariant attributeValue(const QtProperty *property,
-                            const QString &attribute) const;
+                            const QString &attribute) const override;
 
-    static int filePathTypeId();
+    static int tilesetParametersTypeId();
+    static int alignmentTypeId();
 
 public slots:
-    void setValue(QtProperty *property, const QVariant &val);
+    void setValue(QtProperty *property, const QVariant &val) override;
     void setAttribute(QtProperty *property,
                       const QString &attribute,
-                      const QVariant &value);
+                      const QVariant &value) override;
 
 protected:
-    QString valueText(const QtProperty *property) const;
-    void initializeProperty(QtProperty *property);
-    void uninitializeProperty(QtProperty *property);
+    QString valueText(const QtProperty *property) const override;
+    QIcon valueIcon(const QtProperty *property) const override;
+    void initializeProperty(QtProperty *property) override;
+    void uninitializeProperty(QtProperty *property) override;
+
+private slots:
+    void slotValueChanged(QtProperty *property, const QVariant &value);
+    void slotPropertyDestroyed(QtProperty *property);
 
 private:
     struct Data {
-        QString value;
+        QVariant value;
         QString filter;
     };
     QMap<const QtProperty *, Data> mValues;
-    QMap<const QtProperty *, QStringList> mSuggestions;
+
+    struct StringAttributes {
+        QStringList suggestions;
+        bool multiline = false;
+    };
+    QMap<const QtProperty *, StringAttributes> mStringAttributes;
+
+    int alignToIndexH(Qt::Alignment align) const;
+    int alignToIndexV(Qt::Alignment align) const;
+    Qt::Alignment indexHToAlign(int idx) const;
+    Qt::Alignment indexVToAlign(int idx) const;
+    QString indexHToString(int idx) const;
+    QString indexVToString(int idx) const;
+    QMap<const QtProperty *, Qt::Alignment> m_alignValues;
+    typedef QMap<QtProperty *, QtProperty *> PropertyToPropertyMap;
+    PropertyToPropertyMap m_propertyToAlignH;
+    PropertyToPropertyMap m_propertyToAlignV;
+    PropertyToPropertyMap m_alignHToProperty;
+    PropertyToPropertyMap m_alignVToProperty;
 
     const QString mSuggestionsAttribute;
+    const QString mMultilineAttribute;
+    QIcon mImageMissingIcon;
+    QFileIconProvider mIconProvider;
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // VARIANTPROPERTYMANAGER_H

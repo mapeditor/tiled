@@ -20,6 +20,8 @@
 
 #include "geometry.h"
 
+#include <QTransform>
+
 namespace Tiled {
 
 /**
@@ -28,7 +30,7 @@ namespace Tiled {
  * (x1,y1) determines the radius.
  *
  * It is adapted from http://en.wikipedia.org/wiki/Midpoint_circle_algorithm
- * here is the orginal: http://homepage.smc.edu/kennedy_john/belipse.pdf
+ * here is the original: http://homepage.smc.edu/kennedy_john/belipse.pdf
  */
 QVector<QPoint> pointsOnEllipse(int x0, int y0, int x1, int y1)
 {
@@ -97,9 +99,74 @@ QVector<QPoint> pointsOnEllipse(int x0, int y0, int x1, int y1)
 }
 
 /**
+ * returns an elliptical region centered at x0,y0 with radius determinded by x1,y1
+ */
+QRegion ellipseRegion(int x0, int y0, int x1, int y1)
+{
+    QRegion ret;
+    int x, y;
+    int xChange, yChange;
+    int ellipseError;
+    int twoXSquare, twoYSquare;
+    int stoppingX, stoppingY;
+    int radiusX = x0 > x1 ? x0 - x1 : x1 - x0;
+    int radiusY = y0 > y1 ? y0 - y1 : y1 - y0;
+
+    if (radiusX == 0 && radiusY == 0)
+        return ret;
+
+    twoXSquare = 2 * radiusX * radiusX;
+    twoYSquare = 2 * radiusY * radiusY;
+    x = radiusX;
+    y = 0;
+    xChange = radiusY * radiusY * (1 - 2 * radiusX);
+    yChange = radiusX * radiusX;
+    ellipseError = 0;
+    stoppingX = twoYSquare*radiusX;
+    stoppingY = 0;
+    while (stoppingX >= stoppingY) {
+        ret += QRect(-x, y, x * 2, 1);
+        ret += QRect(-x, -y, x * 2, 1);
+        y++;
+        stoppingY += twoXSquare;
+        ellipseError += yChange;
+        yChange += twoXSquare;
+        if ((2 * ellipseError + xChange) > 0) {
+            x--;
+            stoppingX -= twoYSquare;
+            ellipseError += xChange;
+            xChange += twoYSquare;
+        }
+    }
+    x = 0;
+    y = radiusY;
+    xChange = radiusY * radiusY;
+    yChange = radiusX * radiusX * (1 - 2 * radiusY);
+    ellipseError = 0;
+    stoppingX = 0;
+    stoppingY = twoXSquare * radiusY;
+    while (stoppingX <= stoppingY) {
+        ret += QRect(-x, y, x * 2, 1);
+        ret += QRect(-x, -y, x * 2, 1);
+        x++;
+        stoppingX += twoYSquare;
+        ellipseError += xChange;
+        xChange += twoYSquare;
+        if ((2 * ellipseError + yChange) > 0) {
+            y--;
+            stoppingY -= twoXSquare;
+            ellipseError += yChange;
+            yChange += twoXSquare;
+        }
+    }
+
+    return ret.translated(x0, y0);
+}
+
+/**
  * Returns the lists of points on a line from (x0,y0) to (x1,y1).
  *
- * This is an implementation of bresenhams line algorithm, initially copied
+ * This is an implementation of Bresenham's line algorithm, initially copied
  * from http://en.wikipedia.org/wiki/Bresenham's_line_algorithm#Optimization
  * changed to C++ syntax.
  */
@@ -107,15 +174,18 @@ QVector<QPoint> pointsOnLine(int x0, int y0, int x1, int y1)
 {
     QVector<QPoint> ret;
 
-    bool steep = qAbs(y1 - y0) > qAbs(x1 - x0);
+    const bool steep = qAbs(y1 - y0) > qAbs(x1 - x0);
     if (steep) {
         qSwap(x0, y0);
         qSwap(x1, y1);
     }
-    if (x0 > x1) {
+
+    const bool reverse = x0 > x1;
+    if (reverse) {
         qSwap(x0, x1);
         qSwap(y0, y1);
     }
+
     const int deltax = x1 - x0;
     const int deltay = qAbs(y1 - y0);
     int error = deltax / 2;
@@ -138,6 +208,9 @@ QVector<QPoint> pointsOnLine(int x0, int y0, int x1, int y1)
              error = error + deltax;
         }
     }
+
+    if (reverse)
+        std::reverse(ret.begin(), ret.end());
 
     return ret;
 }
@@ -163,16 +236,22 @@ static bool isCoherentTo(const QRect &rect, const QRegion &region)
 
 /**
  * Calculates all coherent regions occupied by the given \a region.
- * Returns a list of regions, where each region is coherent in itself.
+ * Returns an array of regions, where each region is coherent in itself.
  */
-QList<QRegion> coherentRegions(const QRegion &region)
+QVector<QRegion> coherentRegions(const QRegion &region)
 {
-    QList<QRegion> result;
-    QVector<QRect> rects = region.rects();
+    QVector<QRegion> result;
+    QVector<QRect> rects;
+#if QT_VERSION < 0x050800
+    rects = region.rects();
+#else
+    rects.reserve(static_cast<int>(region.end() - region.begin()));
+    for (const QRect &rect : region)
+        rects.append(rect);
+#endif
 
     while (!rects.isEmpty()) {
-        QRegion newCoherentRegion = rects.last();
-        rects.pop_back();
+        QRegion newCoherentRegion = rects.takeLast();
 
         // Add up all coherent rects until there is no rect left which is
         // coherent to the newly created region.
@@ -190,6 +269,19 @@ QList<QRegion> coherentRegions(const QRegion &region)
         result += newCoherentRegion;
     }
     return result;
+}
+
+/**
+ * Returns a transform that rotates by \a rotation degrees around the given
+ * \a position.
+ */
+QTransform rotateAt(const QPointF &position, qreal rotation)
+{
+    QTransform transform;
+    transform.translate(position.x(), position.y());
+    transform.rotate(rotation);
+    transform.translate(-position.x(), -position.y());
+    return transform;
 }
 
 } // namespace Tiled

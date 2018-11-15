@@ -18,10 +18,11 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CREATEOBJECTTOOL_H
-#define CREATEOBJECTTOOL_H
+#pragma once
 
 #include "abstractobjecttool.h"
+
+#include <memory>
 
 namespace Tiled {
 
@@ -30,57 +31,69 @@ class Tile;
 namespace Internal {
 
 class MapObjectItem;
+class ObjectGroupItem;
 
 class CreateObjectTool : public AbstractObjectTool
 {
     Q_OBJECT
 
 public:
-    enum CreationMode {
-        CreateRectangle,
-        CreateTile,
-        CreatePolygon,
-        CreatePolyline,
-        CreateEllipse
+    CreateObjectTool(QObject *parent = nullptr);
+    ~CreateObjectTool() override;
+
+    void activate(MapScene *scene) override;
+    void deactivate(MapScene *scene) override;
+
+    void keyPressed(QKeyEvent *event) override;
+    void mouseEntered() override;
+    void mouseLeft() override;
+    void mouseMoved(const QPointF &pos,
+                    Qt::KeyboardModifiers modifiers) override;
+    void mousePressed(QGraphicsSceneMouseEvent *event) override;
+    void mouseReleased(QGraphicsSceneMouseEvent *event) override;
+    void modifiersChanged(Qt::KeyboardModifiers modifiers) override;
+
+protected:
+    void mapDocumentChanged(MapDocument *oldDocument,
+                            MapDocument *newDocument) override;
+
+    void updateEnabledState() override;
+
+    enum State {
+        Idle,
+        Preview,
+        CreatingObject,
     };
 
-    CreateObjectTool(CreationMode mode, QObject *parent = 0);
-    ~CreateObjectTool();
+    virtual void mouseMovedWhileCreatingObject(const QPointF &pos,
+                                               Qt::KeyboardModifiers modifiers);
 
-    void deactivate(MapScene *scene);
+    virtual bool startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup);
+    virtual MapObject *createNewMapObject() = 0;
+    virtual void cancelNewMapObject();
+    virtual void finishNewMapObject();
+    virtual std::unique_ptr<MapObject> clearNewMapObjectItem();
 
-    void keyPressed(QKeyEvent *event);
-    void mouseEntered();
-    void mouseMoved(const QPointF &pos,
-                    Qt::KeyboardModifiers modifiers);
-    void mousePressed(QGraphicsSceneMouseEvent *event);
-    void mouseReleased(QGraphicsSceneMouseEvent *event);
+    State state() const { return mState; }
+    void setState(State state) { mState = state; }
 
-    void languageChanged();
+    ObjectGroup *newMapObjectGroup() { return mNewMapObjectGroup.get(); }
+    ObjectGroupItem *objectGroupItem() { return mObjectGroupItem.get(); }
 
-public slots:
-    /**
-     * Sets the tile that will be used when the creation mode is
-     * CreateTileObjects.
-     */
-    void setTile(Tile *tile) { mTile = tile; }
+    MapObjectItem *mNewMapObjectItem;   // owned by mObjectGroupItem if set
 
 private:
-    void startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup);
-    MapObject *clearNewMapObjectItem();
-    void cancelNewMapObject();
-    void finishNewMapObject();
-    void finishOrCancelPolygon();
+    void objectGroupChanged(ObjectGroup *objectGroup);
 
-    MapObjectItem *mNewMapObjectItem;
-    ObjectGroup *mOverlayObjectGroup;
-    MapObject *mOverlayPolygonObject;
-    MapObjectItem *mOverlayPolygonItem;
-    Tile *mTile;
-    CreationMode mMode;
+    void tryCreatePreview(const QPointF &scenePos,
+                          Qt::KeyboardModifiers modifiers);
+
+    State mState = Idle;
+    QPointF mLastScenePos;
+    Qt::KeyboardModifiers mLastModifiers = Qt::NoModifier;
+    std::unique_ptr<ObjectGroup> mNewMapObjectGroup;
+    std::unique_ptr<ObjectGroupItem> mObjectGroupItem;
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // CREATEOBJECTTOOL_H

@@ -26,9 +26,9 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef TILED_GIDMAPPER_H
-#define TILED_GIDMAPPER_H
+#pragma once
 
+#include "map.h"
 #include "tilelayer.h"
 
 #include <QMap>
@@ -41,57 +41,72 @@ namespace Tiled {
 class TILEDSHARED_EXPORT GidMapper
 {
 public:
-    /**
-     * Default constructor. Use \l insert to initialize the gid mapper
-     * incrementally.
-     */
     GidMapper();
+    GidMapper(const QVector<SharedTileset> &tilesets);
 
-    /**
-     * Constructor that initializes the gid mapper using the given \a tilesets.
-     */
-    GidMapper(const QList<Tileset *> &tilesets);
+    void insert(unsigned firstGid, const SharedTileset &tileset);
+    void clear();
+    bool isEmpty() const;
 
-    /**
-     * Insert the given \a tileset with \a firstGid as its first global ID.
-     */
-    void insert(unsigned firstGid, Tileset *tileset)
-    { mFirstGidToTileset.insert(firstGid, tileset); }
-
-    /**
-     * Clears the gid mapper, so that it can be reused.
-     */
-    void clear() { mFirstGidToTileset.clear(); }
-
-    /**
-     * Returns true when no tilesets are known to this gid mapper.
-     */
-    bool isEmpty() const { return mFirstGidToTileset.isEmpty(); }
-
-    /**
-     * Returns the cell data matched by the given \a gid. The \a ok parameter
-     * indicates whether an error occurred.
-     */
     Cell gidToCell(unsigned gid, bool &ok) const;
-
-    /**
-     * Returns the global tile ID for the given \a cell. Returns 0 when the
-     * cell is empty or when its tileset isn't known.
-     */
     unsigned cellToGid(const Cell &cell) const;
 
-    /**
-     * This sets the original tileset width. In case the image size has
-     * changed, the tile indexes will be adjusted automatically when using
-     * gidToCell().
-     */
-    void setTilesetWidth(const Tileset *tileset, int width);
+    QByteArray encodeLayerData(const TileLayer &tileLayer,
+                               Map::LayerDataFormat format,
+                               QRect bounds = QRect()) const;
+
+    enum DecodeError {
+        NoError = 0,
+        CorruptLayerData,
+        TileButNoTilesets,
+        InvalidTile
+    };
+
+    DecodeError decodeLayerData(TileLayer &tileLayer,
+                                const QByteArray &layerData,
+                                Map::LayerDataFormat format,
+                                QRect bounds) const;
+
+    unsigned invalidTile() const;
 
 private:
-    QMap<unsigned, Tileset*> mFirstGidToTileset;
-    QMap<const Tileset*, int> mTilesetColumnCounts;
+    QMap<unsigned, SharedTileset> mFirstGidToTileset;
+
+    mutable unsigned mInvalidTile;
 };
 
-} // namespace Tiled
 
-#endif // TILED_GIDMAPPER_H
+/**
+ * Insert the given \a tileset with \a firstGid as its first global ID.
+ */
+inline void GidMapper::insert(unsigned firstGid, const SharedTileset &tileset)
+{
+    mFirstGidToTileset.insert(firstGid, tileset);
+}
+
+/**
+ * Clears the gid mapper, so that it can be reused.
+ */
+inline void GidMapper::clear()
+{
+    mFirstGidToTileset.clear();
+}
+
+/**
+ * Returns true when no tilesets are known to this gid mapper.
+ */
+inline bool GidMapper::isEmpty() const
+{
+    return mFirstGidToTileset.isEmpty();
+}
+
+/**
+ * Returns the GID of the invalid tile in case decodeLayerData() returns
+ * the InvalidTile error.
+ */
+inline unsigned GidMapper::invalidTile() const
+{
+    return mInvalidTile;
+}
+
+} // namespace Tiled

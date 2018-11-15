@@ -21,13 +21,17 @@
 #include "tiledapplication.h"
 
 #include <QFileOpenEvent>
+#include <QJsonArray>
+#include <QJsonDocument>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
 
 TiledApplication::TiledApplication(int &argc, char **argv) :
-    QApplication(argc, argv)
+    QtSingleApplication(argc, argv)
 {
+    connect(this, &TiledApplication::messageReceived,
+            this, &TiledApplication::onMessageReceived);
 }
 
 bool TiledApplication::event(QEvent *event)
@@ -38,4 +42,12 @@ bool TiledApplication::event(QEvent *event)
         return true;
     }
     return QApplication::event(event);
+}
+
+void TiledApplication::onMessageReceived(const QString &message)
+{
+   const QJsonArray files = QJsonDocument::fromJson(message.toLatin1()).array();
+   for (const QJsonValue &file : files) {
+       emit fileOpenRequest(file.toString());
+   }
 }

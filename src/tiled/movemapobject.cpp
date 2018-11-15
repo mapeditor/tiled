@@ -31,11 +31,27 @@ using namespace Tiled::Internal;
 
 MoveMapObject::MoveMapObject(MapDocument *mapDocument,
                              MapObject *mapObject,
-                             const QPointF &oldPos)
-    : mMapDocument(mapDocument)
+                             const QPointF &oldPos,
+                             QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , mMapDocument(mapDocument)
     , mMapObject(mapObject)
     , mOldPos(oldPos)
     , mNewPos(mapObject->position())
+{
+    setText(QCoreApplication::translate("Undo Commands", "Move Object"));
+}
+
+MoveMapObject::MoveMapObject(MapDocument *mapDocument,
+                             MapObject *mapObject,
+                             const QPointF &newPos,
+                             const QPointF &oldPos,
+                             QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , mMapDocument(mapDocument)
+    , mMapObject(mapObject)
+    , mOldPos(oldPos)
+    , mNewPos(newPos)
 {
     setText(QCoreApplication::translate("Undo Commands", "Move Object"));
 }

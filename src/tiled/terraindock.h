@@ -21,13 +21,14 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TERRAINDOCK_H
-#define TERRAINDOCK_H
+#pragma once
 
 #include <QDockWidget>
 #include <QMap>
 
 class QModelIndex;
+class QPushButton;
+class QToolBar;
 
 namespace Tiled {
 
@@ -35,9 +36,12 @@ class Terrain;
 
 namespace Internal {
 
-class MapDocument;
+class Document;
 class TerrainFilterModel;
+class TerrainModel;
 class TerrainView;
+class TilesetDocument;
+class TilesetDocumentsFilterModel;
 
 /**
  * The dock widget that displays the terrains. Also keeps track of the
@@ -48,48 +52,72 @@ class TerrainDock : public QDockWidget
     Q_OBJECT
 
 public:
-    /**
-     * Constructor.
-     */
-    TerrainDock(QWidget *parent = 0);
-
-    ~TerrainDock();
+    TerrainDock(QWidget *parent = nullptr);
+    ~TerrainDock() override;
 
     /**
-     * Sets the map for which the tilesets should be displayed.
+     * Sets the document for which the terrains should be displayed. This can
+     * be either a MapDocument or a TilesetDocument.
      */
-    void setMapDocument(MapDocument *mapDocument);
+    void setDocument(Document *document);
 
     /**
      * Returns the currently selected tile.
      */
     Terrain *currentTerrain() const { return mCurrentTerrain; }
 
+    void editTerrainName(Terrain *terrain);
+
 signals:
     /**
-     * Emitted when the current tile changed.
+     * Emitted when the current terrain changed.
      */
     void currentTerrainChanged(const Terrain *terrain);
 
+    /**
+     * Emitted when it would make sense to switch to the Terrain Brush.
+     */
+    void selectTerrainBrush();
+
+    void addTerrainTypeRequested();
+    void removeTerrainTypeRequested();
+
+public slots:
+    void setCurrentTerrain(Terrain *terrain);
+
 protected:
-    void changeEvent(QEvent *e);
+    void changeEvent(QEvent *e) override;
 
 private slots:
-    void currentRowChanged(const QModelIndex &index);
+    void refreshCurrentTerrain();
     void indexPressed(const QModelIndex &index);
     void expandRows(const QModelIndex &parent, int first, int last);
+    void eraseTerrainButtonClicked();
+    void rowsMoved();
 
 private:
-    void setCurrentTerrain(Terrain *terrain);
     void retranslateUi();
 
-    MapDocument *mMapDocument;
+    QModelIndex terrainIndex(Terrain *terrain) const;
+    void moveTerrainTypeUp();
+    void moveTerrainTypeDown();
+
+    QToolBar *mToolBar;
+    QAction *mAddTerrainType;
+    QAction *mRemoveTerrainType;
+    QAction *mMoveTerrainTypeUp;
+    QAction *mMoveTerrainTypeDown;
+
+    Document *mDocument;
     TerrainView *mTerrainView;
+    QPushButton *mEraseTerrainButton;
     Terrain *mCurrentTerrain;
+    TilesetDocumentsFilterModel *mTilesetDocumentsFilterModel;
+    TerrainModel *mTerrainModel;
     TerrainFilterModel *mProxyModel;
+
+    bool mInitializing;
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TERRAINDOCK_H

@@ -28,6 +28,7 @@
 
 #include "tmxrasterizer.h"
 
+#include "hexagonalrenderer.h"
 #include "imagelayer.h"
 #include "isometricrenderer.h"
 #include "map.h"
@@ -38,56 +39,86 @@
 #include "tilelayer.h"
 
 #include <QDebug>
+#include <QImageWriter>
+
+#include <memory>
 
 using namespace Tiled;
 
 TmxRasterizer::TmxRasterizer():
     mScale(1.0),
     mTileSize(0),
-    mUseAntiAliasing(true)
+    mSize(0),
+    mUseAntiAliasing(false),
+    mSmoothImages(true),
+    mIgnoreVisibility(false)
 {
 }
 
-TmxRasterizer::~TmxRasterizer()
+bool TmxRasterizer::shouldDrawLayer(const Layer *layer) const
 {
+    if (layer->isObjectGroup() || layer->isGroupLayer())
+        return false;
+
+    if (mLayersToHide.contains(layer->name(), Qt::CaseInsensitive))
+        return false;
+
+    if (mIgnoreVisibility)
+        return true;
+
+    return !layer->isHidden();
 }
 
 int TmxRasterizer::render(const QString &mapFileName,
                           const QString &imageFileName)
 {
-    Map *map;
-    MapRenderer *renderer;
     MapReader reader;
-    map = reader.readMap(mapFileName);
+    std::unique_ptr<Map> map { reader.readMap(mapFileName) };
     if (!map) {
-        qWarning().nospace() << "Error while reading " << mapFileName << ":\n"
-                             << qPrintable(reader.errorString());
+        qWarning("Error while reading \"%s\":\n%s",
+                 qUtf8Printable(mapFileName),
+                 qUtf8Printable(reader.errorString()));
         return 1;
     }
 
+    std::unique_ptr<MapRenderer> renderer;
+
     switch (map->orientation()) {
     case Map::Isometric:
-        renderer = new IsometricRenderer(map);
+        renderer.reset(new IsometricRenderer(map.get()));
         break;
     case Map::Staggered:
-        renderer = new StaggeredRenderer(map);
+        renderer.reset(new StaggeredRenderer(map.get()));
+        break;
+    case Map::Hexagonal:
+        renderer.reset(new HexagonalRenderer(map.get()));
         break;
     case Map::Orthogonal:
     default:
-        renderer = new OrthogonalRenderer(map);
+        renderer.reset(new OrthogonalRenderer(map.get()));
         break;
     }
 
+    QRect mapBoundingRect = renderer->mapBoundingRect();
+    QSize mapSize = mapBoundingRect.size();
+    QPoint mapOffset = mapBoundingRect.topLeft();
     qreal xScale, yScale;
 
-    if (mTileSize > 0) {
+    if (mSize > 0) {
+        xScale = (qreal) mSize / mapSize.width();
+        yScale = (qreal) mSize / mapSize.height();
+        xScale = yScale = qMin(1.0, qMin(xScale, yScale));
+    } else if (mTileSize > 0) {
         xScale = (qreal) mTileSize / map->tileWidth();
         yScale = (qreal) mTileSize / map->tileHeight();
     } else {
         xScale = yScale = mScale;
     }
 
-    QSize mapSize = renderer->mapSize();
+    QMargins margins = map->computeLayerOffsetMargins();
+    mapSize.setWidth(mapSize.width() + margins.left() + margins.right());
+    mapSize.setHeight(mapSize.height() + margins.top() + margins.bottom());
+
     mapSize.rwidth() *= xScale;
     mapSize.rheight() *= yScale;
 
@@ -95,20 +126,23 @@ int TmxRasterizer::render(const QString &mapFileName,
     image.fill(Qt::transparent);
     QPainter painter(&image);
 
-    if (xScale != qreal(1) || yScale != qreal(1)) {
-        if (mUseAntiAliasing) {
-            painter.setRenderHints(QPainter::SmoothPixmapTransform |
-                                   QPainter::Antialiasing);
-        }
-        painter.setTransform(QTransform::fromScale(xScale, yScale));
-    }
-    // Perform a similar rendering than found in saveasimagedialog.cpp
-    foreach (Layer *layer, map->layers()) {
-        // Exclude all object groups and collision layers
-        if (layer->isObjectGroup() || layer->name().toLower() == "collision")
+    painter.setRenderHint(QPainter::Antialiasing, mUseAntiAliasing);
+    painter.setRenderHint(QPainter::SmoothPixmapTransform, mSmoothImages);
+    painter.setTransform(QTransform::fromScale(xScale, yScale));
+
+    painter.translate(margins.left(), margins.top());
+    painter.translate(-mapOffset);
+
+    // Perform a similar rendering than found in exportasimagedialog.cpp
+    LayerIterator iterator(map.get());
+    while (const Layer *layer = iterator.next()) {
+        if (!shouldDrawLayer(layer))
             continue;
 
-        painter.setOpacity(layer->opacity());
+        const auto offset = layer->totalOffset();
+
+        painter.setOpacity(layer->effectiveOpacity());
+        painter.translate(offset);
 
         const TileLayer *tileLayer = dynamic_cast<const TileLayer*>(layer);
         const ImageLayer *imageLayer = dynamic_cast<const ImageLayer*>(layer);
@@ -118,14 +152,24 @@ int TmxRasterizer::render(const QString &mapFileName,
         } else if (imageLayer) {
             renderer->drawImageLayer(&painter, imageLayer);
         }
+
+        painter.translate(-offset);
     }
 
-    // Save image
-    image.save(imageFileName);
+    map.reset();
 
-    delete renderer;
-    qDeleteAll(map->tilesets());
-    delete map;
+    // Save image
+    QImageWriter imageWriter(imageFileName);
+
+    if (!imageWriter.canWrite())
+        imageWriter.setFormat("png");
+
+    if (!imageWriter.write(image)) {
+        qWarning("Error while writing \"%s\": %s",
+                 qUtf8Printable(imageFileName),
+                 qUtf8Printable(imageWriter.errorString()));
+        return 1;
+    }
 
     return 0;
 }

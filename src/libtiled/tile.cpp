@@ -33,28 +33,27 @@
 
 using namespace Tiled;
 
+Tile::Tile(int id, Tileset *tileset):
+    Object(TileType),
+    mId(id),
+    mTileset(tileset),
+    mImageStatus(LoadingReady),
+    mTerrain(-1),
+    mProbability(1.0),
+    mObjectGroup(nullptr),
+    mCurrentFrameIndex(0),
+    mUnusedTime(0)
+{}
+
 Tile::Tile(const QPixmap &image, int id, Tileset *tileset):
     Object(TileType),
     mId(id),
     mTileset(tileset),
     mImage(image),
+    mImageStatus(image.isNull() ? LoadingError : LoadingReady),
     mTerrain(-1),
-    mTerrainProbability(-1.f),
-    mObjectGroup(0),
-    mCurrentFrameIndex(0),
-    mUnusedTime(0)
-{}
-
-Tile::Tile(const QPixmap &image, const QString &imageSource,
-           int id, Tileset *tileset):
-    Object(TileType),
-    mId(id),
-    mTileset(tileset),
-    mImage(image),
-    mImageSource(imageSource),
-    mTerrain(-1),
-    mTerrainProbability(-1.f),
-    mObjectGroup(0),
+    mProbability(1.0),
+    mObjectGroup(nullptr),
     mCurrentFrameIndex(0),
     mUnusedTime(0)
 {}
@@ -65,24 +64,47 @@ Tile::~Tile()
 }
 
 /**
- * Returns the image for rendering this tile, taking into account tile
- * animations.
+ * Returns the tileset that this tile is part of as a shared pointer.
  */
-const QPixmap &Tile::currentFrameImage() const
+QSharedPointer<Tileset> Tile::sharedTileset() const
+{
+    return mTileset->sharedPointer();
+}
+
+/**
+ * Returns the tile to render when taking into account tile animations.
+ *
+ * \warning May return null when the tileset is invalid or the image could
+ *          not be loaded.
+ */
+const Tile *Tile::currentFrameTile() const
 {
     if (isAnimated()) {
         const Frame &frame = mFrames.at(mCurrentFrameIndex);
-        return mTileset->tileAt(frame.tileId)->image();
-    } else {
-        return mImage;
+        return mTileset->findTile(frame.tileId);
     }
+    return this;
 }
 
+/**
+ * Returns the drawing offset of the tile (in pixels).
+ */
+QPoint Tile::offset() const
+{
+    return mTileset->tileOffset();
+}
+
+/**
+ * Returns the Terrain of a given corner.
+ */
 Terrain *Tile::terrainAtCorner(int corner) const
 {
     return mTileset->terrain(cornerTerrainId(corner));
 }
 
+/**
+ * Set the terrain for each corner of the tile.
+ */
 void Tile::setTerrain(unsigned terrain)
 {
     if (mTerrain == terrain)
@@ -128,9 +150,26 @@ ObjectGroup *Tile::swapObjectGroup(ObjectGroup *objectGroup)
  */
 void Tile::setFrames(const QVector<Frame> &frames)
 {
+    resetAnimation();
     mFrames = frames;
+}
+
+/**
+ * Resets the tile animation. Returns whether this caused the current tileId to
+ * change.
+ */
+bool Tile::resetAnimation()
+{
+    if (!isAnimated())
+        return false;
+
+    Frame previousFrame = mFrames.at(mCurrentFrameIndex);
+    Frame currentFrame = mFrames.at(0);
+
     mCurrentFrameIndex = 0;
     mUnusedTime = 0;
+
+    return previousFrame.tileId != currentFrame.tileId;
 }
 
 /**
@@ -155,4 +194,28 @@ bool Tile::advanceAnimation(int ms)
     }
 
     return previousTileId != frame.tileId;
+}
+
+/**
+ * Returns a duplicate of this tile, to be added to the given \a tileset.
+ */
+Tile *Tile::clone(Tileset *tileset) const
+{
+    Tile *c = new Tile(mImage, mId, tileset);
+    c->setProperties(properties());
+
+    c->mImageSource = mImageSource;
+    c->mImageStatus = mImageStatus;
+    c->mType = mType;
+    c->mTerrain = mTerrain;
+    c->mProbability = mProbability;
+
+    if (mObjectGroup)
+        c->mObjectGroup = mObjectGroup->clone();
+
+    c->mFrames = mFrames;
+    c->mCurrentFrameIndex = mCurrentFrameIndex;
+    c->mUnusedTime = mUnusedTime;
+
+    return c;
 }

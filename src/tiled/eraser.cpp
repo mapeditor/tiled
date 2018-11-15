@@ -36,16 +36,19 @@ Eraser::Eraser(QObject *parent)
                        QIcon(QLatin1String(
                                ":images/22x22/stock-tool-eraser.png")),
                        QKeySequence(tr("E")),
+                       nullptr,
                        parent)
-    , mErasing(false)
+    , mMode(Nothing)
 {
 }
 
 void Eraser::tilePositionChanged(const QPoint &tilePos)
 {
-    brushItem()->setTileRegion(QRect(tilePos, QSize(1, 1)));
+    Q_UNUSED(tilePos);
 
-    if (mErasing)
+    brushItem()->setTileRegion(eraseArea());
+
+    if (mMode == Erase)
         doErase(true);
 }
 
@@ -54,16 +57,34 @@ void Eraser::mousePressed(QGraphicsSceneMouseEvent *event)
     if (!brushItem()->isVisible())
         return;
 
-    if (event->button() == Qt::LeftButton) {
-        mErasing = true;
-        doErase(false);
+    if (mMode == Nothing) {
+        if (event->button() == Qt::LeftButton) {
+            mMode = Erase;
+            doErase(false);
+        } else if (event->button() == Qt::RightButton) {
+            mStart = tilePosition();
+            mMode = RectangleErase;
+        }
     }
 }
 
 void Eraser::mouseReleased(QGraphicsSceneMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton)
-        mErasing = false;
+    switch (mMode) {
+    case Nothing:
+        break;
+    case Erase:
+        if (event->button() == Qt::LeftButton)
+            mMode = Nothing;
+        break;
+    case RectangleErase:
+        if (event->button() == Qt::RightButton) {
+            doErase(false);
+            mMode = Nothing;
+            brushItem()->setTileRegion(eraseArea());
+        }
+        break;
+    }
 }
 
 void Eraser::languageChanged()
@@ -74,22 +95,48 @@ void Eraser::languageChanged()
 
 void Eraser::doErase(bool continuation)
 {
-    TileLayer *tileLayer = currentTileLayer();
-    const QPoint tilePos = tilePosition();
-    QRegion eraseRegion(tilePos.x(), tilePos.y(), 1, 1);
+    QRegion globalEraseRegion(eraseArea());
+    QPoint tilePos = tilePosition();
 
     if (continuation) {
-        foreach (const QPoint &p, pointsOnLine(mLastTilePos, tilePos))
-            eraseRegion |= QRegion(p.x(), p.y(), 1, 1);
+        const QVector<QPoint> points = pointsOnLine(mLastTilePos, tilePos);
+        for (const QPoint &p : points)
+            globalEraseRegion |= QRegion(p.x(), p.y(), 1, 1);
     }
-    mLastTilePos = tilePosition();
+    mLastTilePos = tilePos;
 
-    if (!tileLayer->bounds().intersects(eraseRegion.boundingRect()))
-        return;
+    for (Layer *layer : mapDocument()->selectedLayers()) {
+        if (!layer->isTileLayer())
+            continue;
+        if (!layer->isUnlocked())
+            continue;
 
-    EraseTiles *erase = new EraseTiles(mapDocument(), tileLayer, eraseRegion);
-    erase->setMergeable(continuation);
+        auto tileLayer = static_cast<TileLayer*>(layer);
 
-    mapDocument()->undoStack()->push(erase);
-    mapDocument()->emitRegionEdited(eraseRegion, tileLayer);
+        QRegion eraseRegion = globalEraseRegion.intersected(tileLayer->bounds());
+        if (eraseRegion.isEmpty())
+            continue;
+
+        EraseTiles *erase = new EraseTiles(mapDocument(), tileLayer, eraseRegion);
+        erase->setMergeable(continuation);
+
+        mapDocument()->undoStack()->push(erase);
+        emit mapDocument()->regionEdited(eraseRegion, tileLayer);
+
+        continuation = true;    // further erases are always continuations
+    }
+}
+
+QRect Eraser::eraseArea() const
+{
+    if (mMode == RectangleErase) {
+        QRect rect = QRect(mStart, tilePosition()).normalized();
+        if (rect.width() == 0)
+            rect.adjust(-1, 0, 1, 0);
+        if (rect.height() == 0)
+            rect.adjust(0, -1, 0, 1);
+        return rect;
+    }
+
+    return QRect(tilePosition(), QSize(1, 1));
 }

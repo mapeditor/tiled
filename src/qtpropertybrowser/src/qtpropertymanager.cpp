@@ -392,7 +392,7 @@ class QtMetaEnumWrapper : public QObject
 public:
     QSizePolicy::Policy policy() const { return QSizePolicy::Ignored; }
 private:
-    QtMetaEnumWrapper(QObject *parent) : QObject(parent) {}
+    explicit QtMetaEnumWrapper(QObject *parent) : QObject(parent) {}
 };
 
 class QtMetaEnumProvider
@@ -1111,7 +1111,14 @@ QString QtDoublePropertyManager::valueText(const QtProperty *property) const
     const QtDoublePropertyManagerPrivate::PropertyValueMap::const_iterator it = d_ptr->m_values.constFind(property);
     if (it == d_ptr->m_values.constEnd())
         return QString();
-    return QLocale::system().toString(it.value().val, 'f', it.value().decimals);
+    const int decimals = it.value().decimals;
+    const QString text = QLocale::system().toString(it.value().val, 'f', decimals);
+
+    // remove redundant trailing 0's in case of high precision
+    if (decimals > 3)
+        return removeRedundantTrialingZeros(text);
+
+    return text;
 }
 
 /*!
@@ -5757,7 +5764,7 @@ public:
     QtBoolPropertyManager *m_boolPropertyManager;
 
     QMap<const QtProperty *, QtProperty *> m_propertyToFamily;
-    QMap<const QtProperty *, QtProperty *> m_propertyToPointSize;
+    QMap<const QtProperty *, QtProperty *> m_propertyToPixelSize;
     QMap<const QtProperty *, QtProperty *> m_propertyToBold;
     QMap<const QtProperty *, QtProperty *> m_propertyToItalic;
     QMap<const QtProperty *, QtProperty *> m_propertyToUnderline;
@@ -5765,7 +5772,7 @@ public:
     QMap<const QtProperty *, QtProperty *> m_propertyToKerning;
 
     QMap<const QtProperty *, QtProperty *> m_familyToProperty;
-    QMap<const QtProperty *, QtProperty *> m_pointSizeToProperty;
+    QMap<const QtProperty *, QtProperty *> m_pixelSizeToProperty;
     QMap<const QtProperty *, QtProperty *> m_boldToProperty;
     QMap<const QtProperty *, QtProperty *> m_italicToProperty;
     QMap<const QtProperty *, QtProperty *> m_underlineToProperty;
@@ -5786,9 +5793,9 @@ void QtFontPropertyManagerPrivate::slotIntChanged(QtProperty *property, int valu
 {
     if (m_settingValue)
         return;
-    if (QtProperty *prop = m_pointSizeToProperty.value(property, 0)) {
+    if (QtProperty *prop = m_pixelSizeToProperty.value(property, 0)) {
         QFont f = m_values[prop];
-        f.setPointSize(value);
+        f.setPixelSize(value);
         q_ptr->setValue(prop, f);
     }
 }
@@ -5833,9 +5840,9 @@ void QtFontPropertyManagerPrivate::slotBoolChanged(QtProperty *property, bool va
 
 void QtFontPropertyManagerPrivate::slotPropertyDestroyed(QtProperty *property)
 {
-    if (QtProperty *pointProp = m_pointSizeToProperty.value(property, 0)) {
-        m_propertyToPointSize[pointProp] = 0;
-        m_pointSizeToProperty.remove(property);
+    if (QtProperty *pixelProp = m_pixelSizeToProperty.value(property, 0)) {
+        m_propertyToPixelSize[pixelProp] = 0;
+        m_pixelSizeToProperty.remove(property);
     } else if (QtProperty *pointProp = m_familyToProperty.value(property, 0)) {
         m_propertyToFamily[pointProp] = 0;
         m_familyToProperty.remove(property);
@@ -6071,7 +6078,7 @@ void QtFontPropertyManager::setValue(QtProperty *property, const QFont &val)
     bool settingValue = d_ptr->m_settingValue;
     d_ptr->m_settingValue = true;
     d_ptr->m_enumPropertyManager->setValue(d_ptr->m_propertyToFamily[property], idx);
-    d_ptr->m_intPropertyManager->setValue(d_ptr->m_propertyToPointSize[property], val.pointSize());
+    d_ptr->m_intPropertyManager->setValue(d_ptr->m_propertyToPixelSize[property], val.pixelSize());
     d_ptr->m_boolPropertyManager->setValue(d_ptr->m_propertyToBold[property], val.bold());
     d_ptr->m_boolPropertyManager->setValue(d_ptr->m_propertyToItalic[property], val.italic());
     d_ptr->m_boolPropertyManager->setValue(d_ptr->m_propertyToUnderline[property], val.underline());
@@ -6104,13 +6111,13 @@ void QtFontPropertyManager::initializeProperty(QtProperty *property)
     d_ptr->m_familyToProperty[familyProp] = property;
     property->addSubProperty(familyProp);
 
-    QtProperty *pointSizeProp = d_ptr->m_intPropertyManager->addProperty();
-    pointSizeProp->setPropertyName(tr("Point Size"));
-    d_ptr->m_intPropertyManager->setValue(pointSizeProp, val.pointSize());
-    d_ptr->m_intPropertyManager->setMinimum(pointSizeProp, 1);
-    d_ptr->m_propertyToPointSize[property] = pointSizeProp;
-    d_ptr->m_pointSizeToProperty[pointSizeProp] = property;
-    property->addSubProperty(pointSizeProp);
+    QtProperty *pixelSizeProp = d_ptr->m_intPropertyManager->addProperty();
+    pixelSizeProp->setPropertyName(tr("Pixel Size"));
+    d_ptr->m_intPropertyManager->setValue(pixelSizeProp, val.pointSize());
+    d_ptr->m_intPropertyManager->setMinimum(pixelSizeProp, 1);
+    d_ptr->m_propertyToPixelSize[property] = pixelSizeProp;
+    d_ptr->m_pixelSizeToProperty[pixelSizeProp] = property;
+    property->addSubProperty(pixelSizeProp);
 
     QtProperty *boldProp = d_ptr->m_boolPropertyManager->addProperty();
     boldProp->setPropertyName(tr("Bold"));
@@ -6160,12 +6167,12 @@ void QtFontPropertyManager::uninitializeProperty(QtProperty *property)
     }
     d_ptr->m_propertyToFamily.remove(property);
 
-    QtProperty *pointSizeProp = d_ptr->m_propertyToPointSize[property];
-    if (pointSizeProp) {
-        d_ptr->m_pointSizeToProperty.remove(pointSizeProp);
-        delete pointSizeProp;
+    QtProperty *pixelSizeProp = d_ptr->m_propertyToPixelSize[property];
+    if (pixelSizeProp) {
+        d_ptr->m_pixelSizeToProperty.remove(pixelSizeProp);
+        delete pixelSizeProp;
     }
-    d_ptr->m_propertyToPointSize.remove(property);
+    d_ptr->m_propertyToPixelSize.remove(property);
 
     QtProperty *boldProp = d_ptr->m_propertyToBold[property];
     if (boldProp) {
@@ -6220,6 +6227,7 @@ public:
     PropertyValueMap m_values;
 
     QtIntPropertyManager *m_intPropertyManager;
+    bool m_applyingValueChange;
 
     QMap<const QtProperty *, QtProperty *> m_propertyToR;
     QMap<const QtProperty *, QtProperty *> m_propertyToG;
@@ -6234,6 +6242,9 @@ public:
 
 void QtColorPropertyManagerPrivate::slotIntChanged(QtProperty *property, int value)
 {
+    if (m_applyingValueChange)
+        return;
+
     if (QtProperty *prop = m_rToProperty.value(property, 0)) {
         QColor c = m_values[prop];
         c.setRed(value);
@@ -6312,6 +6323,8 @@ QtColorPropertyManager::QtColorPropertyManager(QObject *parent)
     d_ptr->q_ptr = this;
 
     d_ptr->m_intPropertyManager = new QtIntPropertyManager(this);
+    d_ptr->m_applyingValueChange = false;
+
     connect(d_ptr->m_intPropertyManager, SIGNAL(valueChanged(QtProperty *, int)),
                 this, SLOT(slotIntChanged(QtProperty *, int)));
 
@@ -6378,6 +6391,8 @@ QIcon QtColorPropertyManager::valueIcon(const QtProperty *property) const
     const QtColorPropertyManagerPrivate::PropertyValueMap::const_iterator it = d_ptr->m_values.constFind(property);
     if (it == d_ptr->m_values.constEnd())
         return QIcon();
+    if (!it.value().isValid())
+        return QIcon();
     return QtPropertyBrowserUtils::brushValueIcon(QBrush(it.value()));
 }
 
@@ -6400,10 +6415,14 @@ void QtColorPropertyManager::setValue(QtProperty *property, const QColor &val)
 
     it.value() = val;
 
+    d_ptr->m_applyingValueChange = true;
+
     d_ptr->m_intPropertyManager->setValue(d_ptr->m_propertyToR[property], val.red());
     d_ptr->m_intPropertyManager->setValue(d_ptr->m_propertyToG[property], val.green());
     d_ptr->m_intPropertyManager->setValue(d_ptr->m_propertyToB[property], val.blue());
     d_ptr->m_intPropertyManager->setValue(d_ptr->m_propertyToA[property], val.alpha());
+
+    d_ptr->m_applyingValueChange = false;
 
     emit propertyChanged(property);
     emit valueChanged(property, val);

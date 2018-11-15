@@ -1,6 +1,7 @@
 include(../../src/libtiled/libtiled.pri)
 
-CONFIG += qtestlib
+QT += testlib
+CONFIG += c++11
 TEMPLATE = app
 
 macx {
@@ -9,7 +10,7 @@ macx {
     LIBS += -L$$OUT_PWD/../../lib
 }
 
-!win32:!macx {
+!win32:!macx:!cygwin {
     QMAKE_RPATHDIR += \$\$ORIGIN/../../lib
 
     # It is not possible to use ORIGIN in QMAKE_RPATHDIR, so a bit manually

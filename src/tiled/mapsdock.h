@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MAPSDOCK_H
-#define MAPSDOCK_H
+#pragma once
 
 #include <QDockWidget>
 #include <QTreeView>
@@ -33,7 +32,6 @@ class QTreeView;
 namespace Tiled {
 namespace Internal {
 
-class MainWindow;
 class MapsView;
 
 class MapsDock : public QDockWidget
@@ -41,7 +39,7 @@ class MapsDock : public QDockWidget
     Q_OBJECT
 
 public:
-    MapsDock(MainWindow *mainWindow, QWidget *parent = 0);
+    MapsDock(QWidget *parent = nullptr);
 
 private slots:
     void browse();
@@ -49,7 +47,7 @@ private slots:
     void onMapsDirectoryChanged();
 
 protected:
-    void changeEvent(QEvent *e);
+    void changeEvent(QEvent *e) override;
 
 private:
     void retranslateUi();
@@ -66,27 +64,28 @@ class MapsView : public QTreeView
     Q_OBJECT
 
 public:
-    MapsView(MainWindow *mainWindow, QWidget *parent = 0);
+    MapsView(QWidget *parent = nullptr);
 
     /**
      * Returns a sensible size hint.
      */
-    QSize sizeHint() const;
+    QSize sizeHint() const override;
 
-    void mousePressEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *event) override;
 
-    QFileSystemModel *model() const { return mFSModel; }
+    QFileSystemModel *model() const { return mFileSystemModel; }
 
 private slots:
     void onMapsDirectoryChanged();
     void onActivated(const QModelIndex &index);
 
+    void pluginObjectAddedOrRemoved(QObject *object);
+
 private:
-    MainWindow *mMainWindow;
-    QFileSystemModel *mFSModel;
+    void updateNameFilters();
+
+    QFileSystemModel *mFileSystemModel;
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // MAPSDOCK_H

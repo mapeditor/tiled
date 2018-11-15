@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>365</width>
-    <height>268</height>
+    <width>518</width>
+    <height>534</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,68 +17,160 @@
    <property name="sizeConstraint">
     <enum>QLayout::SetFixedSize</enum>
    </property>
+   <item row="0" column="0" colspan="2">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Map</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_4">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Orientation:</string>
+        </property>
+        <property name="buddy">
+         <cstring>orientation</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="orientation">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>1</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="layerFormatLabel">
+        <property name="text">
+         <string>Tile layer format:</string>
+        </property>
+        <property name="buddy">
+         <cstring>layerFormat</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QComboBox" name="layerFormat"/>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="renderOrderLabel">
+        <property name="text">
+         <string>Tile render order:</string>
+        </property>
+        <property name="buddy">
+         <cstring>renderOrder</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QComboBox" name="renderOrder"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
    <item row="1" column="0">
     <widget class="QGroupBox" name="groupBox_3">
      <property name="title">
       <string>Map size</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout_2">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label">
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QRadioButton" name="fixedSize">
         <property name="text">
-         <string>Width:</string>
+         <string>Fixed</string>
         </property>
-        <property name="buddy">
-         <cstring>mapWidth</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QSpinBox" name="mapWidth">
-        <property name="suffix">
-         <string extracomment="Remember starting with a space."> tiles</string>
-        </property>
-        <property name="minimum">
-         <number>1</number>
-        </property>
-        <property name="maximum">
-         <number>99999</number>
-        </property>
-        <property name="value">
-         <number>100</number>
+        <property name="checked">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_2">
+      <item>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="1" column="2">
+         <widget class="QSpinBox" name="mapHeight">
+          <property name="suffix">
+           <string> tiles</string>
+          </property>
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>99999</number>
+          </property>
+          <property name="value">
+           <number>100</number>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLabel" name="widthLabel">
+          <property name="text">
+           <string>Width:</string>
+          </property>
+          <property name="buddy">
+           <cstring>mapWidth</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QSpinBox" name="mapWidth">
+          <property name="suffix">
+           <string extracomment="Remember starting with a space."> tiles</string>
+          </property>
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>99999</number>
+          </property>
+          <property name="value">
+           <number>100</number>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLabel" name="heightLabel">
+          <property name="text">
+           <string>Height:</string>
+          </property>
+          <property name="buddy">
+           <cstring>mapHeight</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1" colspan="2">
+         <widget class="QLabel" name="pixelSizeLabel">
+          <property name="text">
+           <string notr="true" extracomment="Dummy text">3200 x 3200 pixels</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <spacer name="fixedSizeSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>30</width>
+            <height>0</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="mapInfinite">
         <property name="text">
-         <string>Height:</string>
-        </property>
-        <property name="buddy">
-         <cstring>mapHeight</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QSpinBox" name="mapHeight">
-        <property name="suffix">
-         <string> tiles</string>
-        </property>
-        <property name="minimum">
-         <number>1</number>
-        </property>
-        <property name="maximum">
-         <number>99999</number>
-        </property>
-        <property name="value">
-         <number>100</number>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0" colspan="2">
-       <widget class="QLabel" name="pixelSizeLabel">
-        <property name="text">
-         <string notr="true" extracomment="Dummy text">3200 x 3200 pixels</string>
+         <string>Infinite</string>
         </property>
        </widget>
       </item>
@@ -178,61 +270,22 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
      </property>
-    </widget>
-   </item>
-   <item row="0" column="0" colspan="2">
-    <widget class="QGroupBox" name="groupBox">
-     <property name="title">
-      <string>Map</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_4">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_5">
-        <property name="text">
-         <string>Orientation:</string>
-        </property>
-        <property name="buddy">
-         <cstring>orientation</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QComboBox" name="orientation">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>1</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="layerFormatLabel">
-        <property name="text">
-         <string>Layer format:</string>
-        </property>
-        <property name="buddy">
-         <cstring>layerFormat</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QComboBox" name="layerFormat"/>
-      </item>
-     </layout>
     </widget>
    </item>
   </layout>
  </widget>
  <tabstops>
   <tabstop>orientation</tabstop>
+  <tabstop>layerFormat</tabstop>
+  <tabstop>renderOrder</tabstop>
+  <tabstop>fixedSize</tabstop>
   <tabstop>mapWidth</tabstop>
   <tabstop>mapHeight</tabstop>
+  <tabstop>mapInfinite</tabstop>
   <tabstop>tileWidth</tabstop>
   <tabstop>tileHeight</tabstop>
-  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>
@@ -243,8 +296,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
+     <x>281</x>
+     <y>520</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -259,8 +312,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
+     <x>349</x>
+     <y>520</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>

@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OFFSETMAPDIALOG_H
-#define OFFSETMAPDIALOG_H
+#pragma once
 
 #include <QDialog>
 
@@ -29,6 +28,9 @@ class OffsetMapDialog;
 }
 
 namespace Tiled {
+
+class Layer;
+
 namespace Internal {
 
 class MapDocument;
@@ -38,22 +40,25 @@ class OffsetMapDialog : public QDialog
     Q_OBJECT
 
 public:
-    OffsetMapDialog(MapDocument *mapDocument, QWidget *parent = 0);
+    OffsetMapDialog(MapDocument *mapDocument, QWidget *parent = nullptr);
 
-    ~OffsetMapDialog();
+    ~OffsetMapDialog() override;
 
-    QList<int> affectedLayerIndexes() const;
+    QList<Layer*> affectedLayers() const;
     QRect affectedBoundingRect() const;
 
     QPoint offset() const;
     bool wrapX() const;
     bool wrapY() const;
 
+private slots:
+    void boundsSelectionChanged();
+
 private:
     enum LayerSelection {
         AllVisibleLayers,
         AllLayers,
-        SelectedLayer
+        SelectedLayers
     };
 
     enum BoundsSelection {
@@ -62,9 +67,9 @@ private:
     };
 
     LayerSelection layerSelection() const;
-    BoundsSelection boundsSelection() const;
 
-    void disableBoundsSelectionCurrentArea();
+    BoundsSelection boundsSelection() const;
+    void setBoundsSelection(BoundsSelection boundsSelection);
 
     Ui::OffsetMapDialog *mUi;
     MapDocument *mMapDocument;
@@ -72,5 +77,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // OFFSETMAPDIALOG_H

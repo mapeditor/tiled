@@ -31,7 +31,7 @@
 
 using namespace Tiled::Internal;
 
-LanguageManager *LanguageManager::mInstance = 0;
+LanguageManager *LanguageManager::mInstance;
 
 LanguageManager *LanguageManager::instance()
 {
@@ -43,15 +43,15 @@ LanguageManager *LanguageManager::instance()
 void LanguageManager::deleteInstance()
 {
     delete mInstance;
-    mInstance = 0;
+    mInstance = nullptr;
 }
 
 LanguageManager::LanguageManager()
-    : mQtTranslator(0)
-    , mAppTranslator(0)
+    : mQtTranslator(nullptr)
+    , mAppTranslator(nullptr)
 {
     mTranslationsDir = QCoreApplication::applicationDirPath();
-#ifdef Q_OS_WIN32
+#if defined(Q_OS_WIN32)
     mTranslationsDir += QLatin1String("/translations");
 #elif defined(Q_OS_MAC)
     mTranslationsDir += QLatin1String("/../Translations");
@@ -87,7 +87,7 @@ void LanguageManager::installTranslators()
         QCoreApplication::installTranslator(mQtTranslator);
     } else {
         delete mQtTranslator;
-        mQtTranslator = 0;
+        mQtTranslator = nullptr;
     }
 
     if (mAppTranslator->load(QLatin1String("tiled_") + language,
@@ -95,7 +95,7 @@ void LanguageManager::installTranslators()
         QCoreApplication::installTranslator(mAppTranslator);
     } else {
         delete mAppTranslator;
-        mAppTranslator = 0;
+        mAppTranslator = nullptr;
     }
 }
 

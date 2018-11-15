@@ -31,23 +31,21 @@
 #include "objectgroup.h"
 
 #include "layer.h"
+#include "map.h"
 #include "mapobject.h"
 #include "tile.h"
-#include "tileset.h"
 
 #include <cmath>
 
 using namespace Tiled;
 
 ObjectGroup::ObjectGroup()
-    : Layer(ObjectGroupType, QString(), 0, 0, 0, 0)
-    , mDrawOrder(TopDownOrder)
+    : ObjectGroup(QString(), 0, 0)
 {
 }
 
-ObjectGroup::ObjectGroup(const QString &name,
-                         int x, int y, int width, int height)
-    : Layer(ObjectGroupType, name, x, y, width, height)
+ObjectGroup::ObjectGroup(const QString &name, int x, int y)
+    : Layer(ObjectGroupType, name, x, y)
     , mDrawOrder(TopDownOrder)
 {
 }
@@ -61,12 +59,16 @@ void ObjectGroup::addObject(MapObject *object)
 {
     mObjects.append(object);
     object->setObjectGroup(this);
+    if (mMap && object->id() == 0)
+        object->setId(mMap->takeNextObjectId());
 }
 
 void ObjectGroup::insertObject(int index, MapObject *object)
 {
     mObjects.insert(index, object);
     object->setObjectGroup(this);
+    if (mMap && object->id() == 0)
+        object->setId(mMap->takeNextObjectId());
 }
 
 int ObjectGroup::removeObject(MapObject *object)
@@ -75,14 +77,14 @@ int ObjectGroup::removeObject(MapObject *object)
     Q_ASSERT(index != -1);
 
     mObjects.removeAt(index);
-    object->setObjectGroup(0);
+    object->setObjectGroup(nullptr);
     return index;
 }
 
 void ObjectGroup::removeObjectAt(int index)
 {
     MapObject *object = mObjects.takeAt(index);
-    object->setObjectGroup(0);
+    object->setObjectGroup(nullptr);
 }
 
 void ObjectGroup::moveObjects(int from, int to, int count)
@@ -110,7 +112,7 @@ void ObjectGroup::moveObjects(int from, int to, int count)
 QRectF ObjectGroup::objectsBoundingRect() const
 {
     QRectF boundingRect;
-    foreach (const MapObject *object, mObjects)
+    for (const MapObject *object : mObjects)
         boundingRect = boundingRect.united(object->bounds());
     return boundingRect;
 }
@@ -120,22 +122,21 @@ bool ObjectGroup::isEmpty() const
     return mObjects.isEmpty();
 }
 
-QSet<Tileset*> ObjectGroup::usedTilesets() const
+QSet<SharedTileset> ObjectGroup::usedTilesets() const
 {
-    QSet<Tileset*> tilesets;
+    QSet<SharedTileset> tilesets;
 
-    foreach (const MapObject *object, mObjects)
-        if (const Tile *tile = object->cell().tile)
-            tilesets.insert(tile->tileset());
+    for (const MapObject *object : mObjects)
+        if (const Tile *tile = object->cell().tile())
+            tilesets.insert(tile->sharedTileset());
 
     return tilesets;
 }
 
 bool ObjectGroup::referencesTileset(const Tileset *tileset) const
 {
-    foreach (const MapObject *object, mObjects) {
-        const Tile *tile = object->cell().tile;
-        if (tile && tile->tileset() == tileset)
+    for (const MapObject *object : mObjects) {
+        if (object->cell().tileset() == tileset)
             return true;
     }
 
@@ -145,33 +146,37 @@ bool ObjectGroup::referencesTileset(const Tileset *tileset) const
 void ObjectGroup::replaceReferencesToTileset(Tileset *oldTileset,
                                              Tileset *newTileset)
 {
-    foreach (MapObject *object, mObjects) {
-        const Tile *tile = object->cell().tile;
-        if (tile && tile->tileset() == oldTileset) {
+    for (MapObject *object : mObjects) {
+        if (object->cell().tileset() == oldTileset) {
             Cell cell = object->cell();
-            cell.tile = newTileset->tileAt(tile->id());
+            cell.setTile(newTileset, cell.tileId());
             object->setCell(cell);
         }
     }
 }
 
-void ObjectGroup::offset(const QPointF &offset,
-                         const QRectF &bounds,
-                         bool wrapX, bool wrapY)
+void ObjectGroup::offsetObjects(const QPointF &offset,
+                                const QRectF &bounds,
+                                bool wrapX, bool wrapY)
 {
-    foreach (MapObject *object, mObjects) {
+    if (offset.isNull())
+        return;
+
+    const bool boundsValid = bounds.isValid();
+
+    for (MapObject *object : mObjects) {
         const QPointF objectCenter = object->bounds().center();
-        if (!bounds.contains(objectCenter))
+        if (boundsValid && !bounds.contains(objectCenter))
             continue;
 
         QPointF newCenter(objectCenter + offset);
 
-        if (wrapX && bounds.width() > 0) {
+        if (wrapX && boundsValid) {
             qreal nx = std::fmod(newCenter.x() - bounds.left(), bounds.width());
             newCenter.setX(bounds.left() + (nx < 0 ? bounds.width() + nx : nx));
         }
 
-        if (wrapY && bounds.height() > 0) {
+        if (wrapY && boundsValid) {
             qreal ny = std::fmod(newCenter.y() - bounds.top(), bounds.height());
             newCenter.setY(bounds.top() + (ny < 0 ? bounds.height() + ny : ny));
         }
@@ -180,19 +185,19 @@ void ObjectGroup::offset(const QPointF &offset,
     }
 }
 
-bool ObjectGroup::canMergeWith(Layer *other) const
+bool ObjectGroup::canMergeWith(const Layer *other) const
 {
     return other->isObjectGroup();
 }
 
-Layer *ObjectGroup::mergedWith(Layer *other) const
+Layer *ObjectGroup::mergedWith(const Layer *other) const
 {
     Q_ASSERT(canMergeWith(other));
 
-    const ObjectGroup *og = static_cast<ObjectGroup*>(other);
+    const ObjectGroup *og = static_cast<const ObjectGroup*>(other);
 
-    ObjectGroup *merged = static_cast<ObjectGroup*>(clone());
-    foreach (const MapObject *mapObject, og->objects())
+    ObjectGroup *merged = clone();
+    for (const MapObject *mapObject : og->objects())
         merged->addObject(mapObject->clone());
     return merged;
 }
@@ -202,15 +207,38 @@ Layer *ObjectGroup::mergedWith(Layer *other) const
  *
  * \sa Layer::clone()
  */
-Layer *ObjectGroup::clone() const
+ObjectGroup *ObjectGroup::clone() const
 {
-    return initializeClone(new ObjectGroup(mName, mX, mY, mWidth, mHeight));
+    return initializeClone(new ObjectGroup(mName, mX, mY));
+}
+
+/**
+ * Resets the ids of all objects to 0. Mostly used when new ids should be
+ * assigned after the object group has been cloned.
+ */
+void ObjectGroup::resetObjectIds()
+{
+    const QList<MapObject*> &objects = mObjects;
+    for (MapObject *object : objects)
+        object->resetId();
+}
+
+/**
+ * Returns the highest object id in use by this object group, or 0 if no object
+ * with assigned id exists.
+ */
+int ObjectGroup::highestObjectId() const
+{
+    int id = 0;
+    for (const MapObject *object : mObjects)
+        id = std::max(id, object->id());
+    return id;
 }
 
 ObjectGroup *ObjectGroup::initializeClone(ObjectGroup *clone) const
 {
     Layer::initializeClone(clone);
-    foreach (const MapObject *object, mObjects)
+    for (const MapObject *object : mObjects)
         clone->addObject(object->clone());
     clone->setColor(mColor);
     clone->setDrawOrder(mDrawOrder);

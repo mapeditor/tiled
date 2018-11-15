@@ -8,7 +8,32 @@
 #
 
 # The list of supported translations
-LANGUAGES = en nl pt es de pt_BR ja fr it cs he lv zh ru
+LANGUAGES = \
+    ar_DZ \
+    bg \
+    cs \
+    de \
+    en \
+    es \
+    fi \
+    fr \
+    he \
+    hu \
+    it \
+    ja \
+    nb \
+    nl \
+    pl \
+    pt \
+    pt_PT \
+    ru \
+    tr \
+    uk \
+    zh \
+    zh_TW
+
+# Disabled languages because they're too outdated
+#    lv \
 
 # Helper function to adapt the slashes in a path to the system
 defineReplace(fixSlashes) {
@@ -26,7 +51,7 @@ defineReplace(prependAppend) {
 # Large hack to make sure this pro file does not try to compile an application
 TEMPLATE = app
 TARGET = phony_target
-CONFIG -= qt separate_debug_info gdb_dwarf_index
+CONFIG -= qt sdk separate_debug_info gdb_dwarf_index
 QT =
 LIBS =
 QMAKE_LINK = @: IGNORE THIS LINE

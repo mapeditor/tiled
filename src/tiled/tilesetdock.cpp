@@ -22,40 +22,43 @@
 
 #include "tilesetdock.h"
 
+#include "actionmanager.h"
 #include "addremovemapobject.h"
-#include "addremovetiles.h"
 #include "addremovetileset.h"
+#include "containerhelpers.h"
 #include "documentmanager.h"
-#include "editterraindialog.h"
 #include "erasetiles.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapobject.h"
-#include "movetileset.h"
 #include "objectgroup.h"
 #include "preferences.h"
-#include "rangeset.h"
+#include "replacetileset.h"
+#include "swaptiles.h"
 #include "terrain.h"
 #include "tile.h"
 #include "tilelayer.h"
-#include "tileset.h"
+#include "tilesetdocument.h"
+#include "tilesetdocumentsmodel.h"
+#include "tilesetformat.h"
 #include "tilesetmodel.h"
 #include "tilesetview.h"
 #include "tilesetmanager.h"
-#include "tmxmapwriter.h"
+#include "tilestamp.h"
+#include "tmxmapformat.h"
 #include "utils.h"
 #include "zoomable.h"
 
-#include <QMimeData>
 #include <QAction>
-#include <QDropEvent>
 #include <QComboBox>
+#include <QDropEvent>
 #include <QFileDialog>
 #include <QHBoxLayout>
-#include <QInputDialog>
 #include <QMenu>
 #include <QMessageBox>
-#include <QSignalMapper>
+#include <QMimeData>
+#include <QPushButton>
+#include <QSettings>
 #include <QStackedWidget>
 #include <QStylePainter>
 #include <QToolBar>
@@ -63,59 +66,41 @@
 #include <QUrl>
 #include <QVBoxLayout>
 
+#include <functional>
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
 namespace {
 
-/**
- * Used for exporting/importing tilesets.
- *
- * @warning Does not work for tilesets that are shared by multiple maps!
- */
-class SetTilesetFileName : public QUndoCommand
+class NoTilesetWidget : public QWidget
 {
+    Q_OBJECT
+
 public:
-    SetTilesetFileName(MapDocument *mapDocument,
-                       Tileset *tileset,
-                       const QString &fileName)
-        : mMapDocument(mapDocument)
-        , mTileset(tileset)
-        , mFileName(fileName)
+    explicit NoTilesetWidget(QWidget *parent = nullptr)
+        : QWidget(parent)
     {
-        if (fileName.isEmpty())
-            setText(QCoreApplication::translate("Undo Commands",
-                                                "Import Tileset"));
-        else
-            setText(QCoreApplication::translate("Undo Commands",
-                                                "Export Tileset"));
+        QPushButton *newTilesetButton = new QPushButton(this);
+        newTilesetButton->setText(tr("New Tileset..."));
+
+        QGridLayout *gridLayout = new QGridLayout(this);
+        gridLayout->addWidget(newTilesetButton, 0, 0, Qt::AlignCenter);
+
+        connect(newTilesetButton, &QPushButton::clicked, [] {
+            ActionManager::action("file.new_tileset")->trigger();
+        });
     }
-
-    void undo() { swap(); }
-    void redo() { swap(); }
-
-private:
-    void swap()
-    {
-        QString previousFileName = mTileset->fileName();
-        mMapDocument->setTilesetFileName(mTileset, mFileName);
-        mFileName = previousFileName;
-    }
-
-    MapDocument *mMapDocument;
-    Tileset *mTileset;
-    QString mFileName;
 };
-
 
 class TilesetMenuButton : public QToolButton
 {
 public:
-    TilesetMenuButton(QWidget *parent = 0)
+    explicit TilesetMenuButton(QWidget *parent = nullptr)
         : QToolButton(parent)
     {
         setArrowType(Qt::DownArrow);
-        setIconSize(QSize(16, 16));
+        setIconSize(Utils::smallIconSize());
         setPopupMode(QToolButton::InstantPopup);
         setAutoRaise(true);
 
@@ -124,7 +109,7 @@ public:
     }
 
 protected:
-    void paintEvent(QPaintEvent *)
+    void paintEvent(QPaintEvent *) override
     {
         QStylePainter p(this);
         QStyleOptionToolButton opt;
@@ -137,114 +122,99 @@ protected:
     }
 };
 
-/**
- * Determines whether a cell references a certain tileset.
- */
-class ReferencesTileset
-{
-public:
-    explicit ReferencesTileset(Tileset *tileset) : mTileset(tileset) {}
-
-    bool operator() (const Cell &cell) const
-    {
-        if (const Tile *tile = cell.tile)
-            return tile->tileset() == mTileset;
-        return false;
-    }
-
-private:
-    Tileset *mTileset;
-};
 
 /**
- * Determines whether a cell matches certain tiles.
+ * Qt excludes OS X when implementing mouse wheel for switching tabs. However,
+ * we explicitly want this feature on the tileset tab bar as a possible means
+ * of navigation.
  */
-class MatchesAnyTile
+class WheelEnabledTabBar : public QTabBar
 {
 public:
-    MatchesAnyTile(const QList<Tile*> &tiles) : mTiles(tiles) {}
+    explicit WheelEnabledTabBar(QWidget *parent = nullptr)
+       : QTabBar(parent)
+    {}
 
-    bool operator() (const Cell &cell) const
+    void wheelEvent(QWheelEvent *event) override
     {
-        if (Tile *tile = cell.tile)
-            return mTiles.contains(tile);
-        return false;
-    }
-
-private:
-    QList<Tile*> mTiles;
-};
-
-template<typename Condition>
-static bool hasTileReferences(MapDocument *mapDocument, Condition condition)
-{
-    foreach (Layer *layer, mapDocument->map()->layers()) {
-        if (TileLayer *tileLayer = layer->asTileLayer()) {
-            if (tileLayer->hasCell(condition))
-                return true;
-
-        } else if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
-            foreach (MapObject *object, objectGroup->objects()) {
-                if (condition(object->cell()))
-                    return true;
-            }
+        int index = currentIndex();
+        if (index != -1) {
+            index += event->delta() > 0 ? -1 : 1;
+            if (index >= 0 && index < count())
+                setCurrentIndex(index);
         }
     }
+};
 
-    return false;
-}
 
-template<typename Condition>
-static void removeTileReferences(MapDocument *mapDocument, Condition condition)
+static void removeTileReferences(MapDocument *mapDocument,
+                                 std::function<bool(const Cell &)> condition)
 {
     QUndoStack *undoStack = mapDocument->undoStack();
 
-    foreach (Layer *layer, mapDocument->map()->layers()) {
-        if (TileLayer *tileLayer = layer->asTileLayer()) {
+    QList<MapObject*> objectsToRemove;
+
+    LayerIterator it(mapDocument->map());
+    while (Layer *layer = it.next()) {
+        switch (layer->layerType()) {
+        case Layer::TileLayerType: {
+            auto tileLayer = static_cast<TileLayer*>(layer);
             const QRegion refs = tileLayer->region(condition);
             if (!refs.isEmpty())
                 undoStack->push(new EraseTiles(mapDocument, tileLayer, refs));
-
-        } else if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
-            foreach (MapObject *object, objectGroup->objects()) {
+            break;
+        }
+        case Layer::ObjectGroupType: {
+            auto objectGroup = static_cast<ObjectGroup*>(layer);
+            for (MapObject *object : *objectGroup) {
                 if (condition(object->cell()))
-                    undoStack->push(new RemoveMapObject(mapDocument, object));
+                    objectsToRemove.append(object);
             }
+            break;
+        }
+        case Layer::ImageLayerType:
+        case Layer::GroupLayerType:
+            break;
         }
     }
+
+    if (!objectsToRemove.isEmpty())
+        undoStack->push(new RemoveMapObjects(mapDocument, objectsToRemove));
 }
 
 } // anonymous namespace
 
-TilesetDock::TilesetDock(QWidget *parent):
-    QDockWidget(parent),
-    mMapDocument(0),
-    mTabBar(new QTabBar),
-    mViewStack(new QStackedWidget),
-    mToolBar(new QToolBar),
-    mCurrentTile(0),
-    mCurrentTiles(0),
-    mImportTileset(new QAction(this)),
-    mExportTileset(new QAction(this)),
-    mPropertiesTileset(new QAction(this)),
-    mDeleteTileset(new QAction(this)),
-    mEditTerrain(new QAction(this)),
-    mAddTiles(new QAction(this)),
-    mRemoveTiles(new QAction(this)),
-    mTilesetMenuButton(new TilesetMenuButton(this)),
-    mTilesetMenu(new QMenu(this)),
-    mTilesetActionGroup(new QActionGroup(this)),
-    mTilesetMenuMapper(0)
+TilesetDock::TilesetDock(QWidget *parent)
+    : QDockWidget(parent)
+    , mMapDocument(nullptr)
+    , mTilesetDocumentsFilterModel(new TilesetDocumentsFilterModel(this))
+    , mTabBar(new WheelEnabledTabBar)
+    , mSuperViewStack(new QStackedWidget)
+    , mViewStack(new QStackedWidget)
+    , mToolBar(new QToolBar)
+    , mCurrentTile(nullptr)
+    , mCurrentTiles(nullptr)
+    , mNewTileset(new QAction(this))
+    , mEmbedTileset(new QAction(this))
+    , mExportTileset(new QAction(this))
+    , mEditTileset(new QAction(this))
+    , mDeleteTileset(new QAction(this))
+    , mTilesetMenuButton(new TilesetMenuButton(this))
+    , mTilesetMenu(new QMenu(this))
+    , mTilesetActionGroup(new QActionGroup(this))
+    , mEmittingStampCaptured(false)
+    , mSynchronizingSelection(false)
 {
     setObjectName(QLatin1String("TilesetDock"));
 
-    mTabBar->setMovable(true);
     mTabBar->setUsesScrollButtons(true);
+    mTabBar->setExpanding(false);
+    mTabBar->setContextMenuPolicy(Qt::CustomContextMenu);
 
-    connect(mTabBar, SIGNAL(currentChanged(int)),
-            SLOT(updateActions()));
-    connect(mTabBar, SIGNAL(tabMoved(int,int)),
-            this, SLOT(moveTileset(int,int)));
+    connect(mTabBar, &QTabBar::currentChanged, this, &TilesetDock::updateActions);
+    connect(mTabBar, &QTabBar::tabMoved, this, &TilesetDock::onTabMoved);
+    connect(mTabBar, &QWidget::customContextMenuRequested,
+            this, &TilesetDock::tabContextMenuRequested);
 
     QWidget *w = new QWidget(this);
 
@@ -255,76 +225,72 @@ TilesetDock::TilesetDock(QWidget *parent):
 
     QVBoxLayout *vertical = new QVBoxLayout(w);
     vertical->setSpacing(0);
-    vertical->setMargin(5);
+    vertical->setMargin(0);
     vertical->addLayout(horizontal);
-    vertical->addWidget(mViewStack);
+    vertical->addWidget(mSuperViewStack);
+
+    mSuperViewStack->insertWidget(0, new NoTilesetWidget(this));
+    mSuperViewStack->insertWidget(1, mViewStack);
 
     horizontal = new QHBoxLayout;
     horizontal->setSpacing(0);
     horizontal->addWidget(mToolBar, 1);
     vertical->addLayout(horizontal);
 
-    mImportTileset->setIcon(QIcon(QLatin1String(":images/16x16/document-import.png")));
+    mNewTileset->setIcon(QIcon(QLatin1String(":images/16x16/document-new.png")));
+    mEmbedTileset->setIcon(QIcon(QLatin1String(":images/16x16/document-import.png")));
     mExportTileset->setIcon(QIcon(QLatin1String(":images/16x16/document-export.png")));
-    mPropertiesTileset->setIcon(QIcon(QLatin1String(":images/16x16/document-properties.png")));
+    mEditTileset->setIcon(QIcon(QLatin1String(":images/16x16/document-properties.png")));
     mDeleteTileset->setIcon(QIcon(QLatin1String(":images/16x16/edit-delete.png")));
-    mEditTerrain->setIcon(QIcon(QLatin1String(":images/16x16/terrain.png")));
-    mAddTiles->setIcon(QIcon(QLatin1String(":images/16x16/add.png")));
-    mRemoveTiles->setIcon(QIcon(QLatin1String(":images/16x16/remove.png")));
 
-    Utils::setThemeIcon(mImportTileset, "document-import");
+    Utils::setThemeIcon(mNewTileset, "document-new");
+    Utils::setThemeIcon(mEmbedTileset, "document-import");
     Utils::setThemeIcon(mExportTileset, "document-export");
-    Utils::setThemeIcon(mPropertiesTileset, "document-properties");
+    Utils::setThemeIcon(mEditTileset, "document-properties");
     Utils::setThemeIcon(mDeleteTileset, "edit-delete");
-    Utils::setThemeIcon(mAddTiles, "add");
-    Utils::setThemeIcon(mRemoveTiles, "remove");
 
-    connect(mImportTileset, SIGNAL(triggered()),
-            SLOT(importTileset()));
-    connect(mExportTileset, SIGNAL(triggered()),
-            SLOT(exportTileset()));
-    connect(mPropertiesTileset, SIGNAL(triggered()),
-            SLOT(editTilesetProperties()));
-    connect(mDeleteTileset, SIGNAL(triggered()),
-            SLOT(removeTileset()));
-    connect(mEditTerrain, SIGNAL(triggered()),
-            SLOT(editTerrain()));
-    connect(mAddTiles, SIGNAL(triggered()),
-            SLOT(addTiles()));
-    connect(mRemoveTiles, SIGNAL(triggered()),
-            SLOT(removeTiles()));
+    connect(mNewTileset, &QAction::triggered, this, &TilesetDock::newTileset);
+    connect(mEmbedTileset, &QAction::triggered, this, &TilesetDock::embedTileset);
+    connect(mExportTileset, &QAction::triggered, this, &TilesetDock::exportTileset);
+    connect(mEditTileset, &QAction::triggered, this, &TilesetDock::editTileset);
+    connect(mDeleteTileset, &QAction::triggered, this, &TilesetDock::removeTileset);
 
-    mToolBar->setIconSize(QSize(16, 16));
-    mToolBar->addAction(mImportTileset);
+    mToolBar->addAction(mNewTileset);
+    mToolBar->setIconSize(Utils::smallIconSize());
+    mToolBar->addAction(mEmbedTileset);
     mToolBar->addAction(mExportTileset);
-    mToolBar->addAction(mPropertiesTileset);
+    mToolBar->addAction(mEditTileset);
     mToolBar->addAction(mDeleteTileset);
-    mToolBar->addAction(mEditTerrain);
-    mToolBar->addAction(mAddTiles);
-    mToolBar->addAction(mRemoveTiles);
 
-    mZoomable = new Zoomable(this);
     mZoomComboBox = new QComboBox;
-    mZoomable->connectToComboBox(mZoomComboBox);
     horizontal->addWidget(mZoomComboBox);
 
-    connect(mViewStack, SIGNAL(currentChanged(int)),
-            this, SLOT(updateCurrentTiles()));
-    connect(mViewStack, SIGNAL(currentChanged(int)),
-            this, SLOT(updateCurrentTile()));
+    connect(mViewStack, &QStackedWidget::currentChanged,
+            this, &TilesetDock::updateCurrentTiles);
+    connect(mViewStack, &QStackedWidget::currentChanged,
+            this, &TilesetDock::currentTilesetChanged);
 
-    connect(TilesetManager::instance(), SIGNAL(tilesetChanged(Tileset*)),
-            this, SLOT(tilesetChanged(Tileset*)));
+    connect(TilesetManager::instance(), &TilesetManager::tilesetImagesChanged,
+            this, &TilesetDock::tilesetChanged);
 
-    connect(DocumentManager::instance(), SIGNAL(documentCloseRequested(int)),
-            SLOT(documentCloseRequested(int)));
+    connect(mTilesetDocumentsFilterModel, &TilesetDocumentsModel::rowsInserted,
+            this, &TilesetDock::onTilesetRowsInserted);
+    connect(mTilesetDocumentsFilterModel, &TilesetDocumentsModel::rowsAboutToBeRemoved,
+            this, &TilesetDock::onTilesetRowsAboutToBeRemoved);
+    connect(mTilesetDocumentsFilterModel, &TilesetDocumentsModel::rowsMoved,
+            this, &TilesetDock::onTilesetRowsMoved);
+    connect(mTilesetDocumentsFilterModel, &TilesetDocumentsModel::layoutChanged,
+            this, &TilesetDock::onTilesetLayoutChanged);
+    connect(mTilesetDocumentsFilterModel, &TilesetDocumentsModel::dataChanged,
+            this, &TilesetDock::onTilesetDataChanged);
 
     mTilesetMenuButton->setMenu(mTilesetMenu);
-    connect(mTilesetMenu, SIGNAL(aboutToShow()), SLOT(refreshTilesetMenu()));
+    connect(mTilesetMenu, &QMenu::aboutToShow, this, &TilesetDock::refreshTilesetMenu);
 
     setWidget(w);
     retranslateUi();
     setAcceptDrops(true);
+
     updateActions();
 }
 
@@ -339,23 +305,13 @@ void TilesetDock::setMapDocument(MapDocument *mapDocument)
         return;
 
     // Hide while we update the tab bar, to avoid repeated layouting
+    // But, this causes problems on OS X (issue #1055)
+#ifndef Q_OS_OSX
     widget()->hide();
+#endif
 
-    setCurrentTiles(0);
-
-    if (mMapDocument) {
-        // Remember the last visible tileset for this map
-        const QString tilesetName = mTabBar->tabText(mTabBar->currentIndex());
-        mCurrentTilesets.insert(mMapDocument, tilesetName);
-    }
-
-    // Clear previous content
-    while (mTabBar->count())
-        mTabBar->removeTab(0);
-    while (mViewStack->count())
-        delete mViewStack->widget(0);
-
-    mTilesets.clear();
+    setCurrentTiles(nullptr);
+    setCurrentTile(nullptr);
 
     // Clear all connections to the previous document
     if (mMapDocument)
@@ -363,45 +319,88 @@ void TilesetDock::setMapDocument(MapDocument *mapDocument)
 
     mMapDocument = mapDocument;
 
+    mTilesetDocumentsFilterModel->setMapDocument(mapDocument);
+
     if (mMapDocument) {
-        mTilesets = mMapDocument->map()->tilesets();
+        if (Object *object = mMapDocument->currentObject())
+            if (object->typeId() == Object::TileType)
+                setCurrentTile(static_cast<Tile*>(object));
 
-        foreach (Tileset *tileset, mTilesets) {
-            TilesetView *view = new TilesetView;
-            view->setMapDocument(mMapDocument);
-            view->setZoomable(mZoomable);
-
-            mTabBar->addTab(tileset->name());
-            mViewStack->addWidget(view);
-        }
-
-        connect(mMapDocument, SIGNAL(tilesetAdded(int,Tileset*)),
-                SLOT(tilesetAdded(int,Tileset*)));
-        connect(mMapDocument, SIGNAL(tilesetRemoved(Tileset*)),
-                SLOT(tilesetRemoved(Tileset*)));
-        connect(mMapDocument, SIGNAL(tilesetMoved(int,int)),
-                SLOT(tilesetMoved(int,int)));
-        connect(mMapDocument, SIGNAL(tilesetNameChanged(Tileset*)),
-                SLOT(tilesetNameChanged(Tileset*)));
-        connect(mMapDocument, SIGNAL(tilesetFileNameChanged(Tileset*)),
-                SLOT(updateActions()));
-        connect(mMapDocument, SIGNAL(tilesetChanged(Tileset*)),
-                SLOT(tilesetChanged(Tileset*)));
-        connect(mMapDocument, SIGNAL(tileAnimationChanged(Tile*)),
-                SLOT(tileAnimationChanged(Tile*)));
-
-        QString cacheName = mCurrentTilesets.take(mMapDocument);
-        for (int i = 0; i < mTabBar->count(); ++i) {
-            if (mTabBar->tabText(i) == cacheName) {
-                mTabBar->setCurrentIndex(i);
-                break;
-            }
-        }
+        connect(mMapDocument, &MapDocument::tilesetAdded,
+                this, &TilesetDock::updateActions);
+        connect(mMapDocument, &MapDocument::tilesetRemoved,
+                this, &TilesetDock::updateActions);
+        connect(mMapDocument, &MapDocument::tilesetReplaced,
+                this, &TilesetDock::updateActions);
     }
 
     updateActions();
 
+#ifndef Q_OS_OSX
     widget()->show();
+#endif
+}
+
+/**
+ * Synchronizes the selection with the given stamp. Ignored when the stamp is
+ * changing because of a selection change in the TilesetDock.
+ */
+void TilesetDock::selectTilesInStamp(const TileStamp &stamp)
+{
+    if (mEmittingStampCaptured)
+        return;
+
+    QSet<Tile*> processed;
+    QMap<QItemSelectionModel*, QItemSelection> selections;
+
+    for (const TileStampVariation &variation : stamp.variations()) {
+        for (auto layer : variation.map->tileLayers()) {
+            for (const Cell &cell : *static_cast<TileLayer*>(layer)) {
+                if (Tile *tile = cell.tile()) {
+                    if (processed.contains(tile))
+                        continue;
+
+                    processed.insert(tile); // avoid spending time on duplicates
+
+                    Tileset *tileset = tile->tileset();
+                    int tilesetIndex = mTilesets.indexOf(tileset->sharedPointer());
+                    if (tilesetIndex != -1) {
+                        TilesetView *view = tilesetViewAt(tilesetIndex);
+                        if (!view->model()) // Lazily set up the model
+                            setupTilesetModel(view, tileset);
+
+                        const TilesetModel *model = view->tilesetModel();
+                        const QModelIndex modelIndex = model->tileIndex(tile);
+                        QItemSelectionModel *selectionModel = view->selectionModel();
+                        selections[selectionModel].select(modelIndex, modelIndex);
+                    }
+                }
+            }
+        }
+    }
+
+    if (!selections.isEmpty()) {
+        mSynchronizingSelection = true;
+
+        // Mark captured tiles as selected
+        for (auto i = selections.constBegin(); i != selections.constEnd(); ++i) {
+            QItemSelectionModel *selectionModel = i.key();
+            const QItemSelection &selection = i.value();
+            selectionModel->select(selection, QItemSelectionModel::SelectCurrent);
+        }
+
+        // Update the current tile (useful for animation and collision editors)
+        auto first = selections.begin();
+        QItemSelectionModel *selectionModel = first.key();
+        const QItemSelection &selection = first.value();
+        const QModelIndex currentIndex = selection.first().topLeft();
+        if (selectionModel->currentIndex() != currentIndex)
+            selectionModel->setCurrentIndex(currentIndex, QItemSelectionModel::NoUpdate);
+        else
+            currentChanged(currentIndex);
+
+        mSynchronizingSelection = false;
+    }
 }
 
 void TilesetDock::changeEvent(QEvent *e)
@@ -420,69 +419,77 @@ void TilesetDock::dragEnterEvent(QDragEnterEvent *e)
 {
     const QList<QUrl> urls = e->mimeData()->urls();
     if (!urls.isEmpty() && !urls.at(0).toLocalFile().isEmpty())
-        e->accept();
+        e->acceptProposedAction();
 }
 
 void TilesetDock::dropEvent(QDropEvent *e)
 {
     QStringList paths;
-    foreach (const QUrl &url, e->mimeData()->urls()) {
+    for (const QUrl &url : e->mimeData()->urls()) {
         const QString localFile = url.toLocalFile();
         if (!localFile.isEmpty())
             paths.append(localFile);
     }
     if (!paths.isEmpty()) {
-        emit tilesetsDropped(paths);
-        e->accept();
+        emit localFilesDropped(paths);
+        e->acceptProposedAction();
+    }
+}
+
+void TilesetDock::currentTilesetChanged()
+{
+    if (const TilesetView *view = currentTilesetView()) {
+        view->zoomable()->setComboBox(mZoomComboBox);
+
+        if (const QItemSelectionModel *s = view->selectionModel())
+            setCurrentTile(view->tilesetModel()->tileAt(s->currentIndex()));
     }
 }
 
 void TilesetDock::selectionChanged()
 {
     updateActions();
-    updateCurrentTiles();
+
+    if (!mSynchronizingSelection)
+        updateCurrentTiles();
+}
+
+void TilesetDock::currentChanged(const QModelIndex &index)
+{
+    if (!index.isValid())
+        return;
+
+    const TilesetModel *model = static_cast<const TilesetModel*>(index.model());
+    setCurrentTile(model->tileAt(index));
 }
 
 void TilesetDock::updateActions()
 {
     bool external = false;
-    bool hasImageSource = false;
-    bool hasSelection = false;
-    TilesetView *view = 0;
+    TilesetView *view = nullptr;
+    Tileset *tileset = nullptr;
     const int index = mTabBar->currentIndex();
 
     if (index > -1) {
         view = tilesetViewAt(index);
+        tileset = mTilesets.at(index).data();
+
         if (view) {
-            Tileset *tileset = mTilesets.at(index);
-
-            if (!view->model()) {
-                // Lazily set up the model
-                view->setModel(new TilesetModel(tileset, view));
-
-                QItemSelectionModel *s = view->selectionModel();
-                connect(s, SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
-                        SLOT(selectionChanged()));
-                connect(s, SIGNAL(currentChanged(QModelIndex,QModelIndex)),
-                        SLOT(updateCurrentTile()));
-                connect(view, SIGNAL(pressed(QModelIndex)),
-                        SLOT(indexPressed(QModelIndex)));
-            }
+            if (!view->model()) // Lazily set up the model
+                setupTilesetModel(view, tileset);
 
             mViewStack->setCurrentIndex(index);
             external = tileset->isExternal();
-            hasImageSource = !tileset->imageSource().isEmpty();
-            hasSelection = view->selectionModel()->hasSelection();
         }
     }
 
-    mImportTileset->setEnabled(view && external);
-    mExportTileset->setEnabled(view && !external);
-    mPropertiesTileset->setEnabled(view && !external);
-    mDeleteTileset->setEnabled(view);
-    mEditTerrain->setEnabled(view && !external);
-    mAddTiles->setEnabled(view && !hasImageSource && !external);
-    mRemoveTiles->setEnabled(view && !hasImageSource && hasSelection && !external);
+    const bool tilesetIsDisplayed = view != nullptr;
+    const auto map = mMapDocument ? mMapDocument->map() : nullptr;
+
+    mEmbedTileset->setEnabled(tilesetIsDisplayed && external);
+    mExportTileset->setEnabled(tilesetIsDisplayed && !external);
+    mEditTileset->setEnabled(tilesetIsDisplayed);
+    mDeleteTileset->setEnabled(tilesetIsDisplayed && map && contains(map->tilesets(), tileset));
 }
 
 void TilesetDock::updateCurrentTiles()
@@ -505,7 +512,7 @@ void TilesetDock::updateCurrentTiles()
     int minY = first.row();
     int maxY = first.row();
 
-    foreach (const QModelIndex &index, indexes) {
+    for (const QModelIndex &index : indexes) {
         if (minX > index.column()) minX = index.column();
         if (maxX < index.column()) maxX = index.column();
         if (minY > index.row()) minY = index.row();
@@ -518,20 +525,13 @@ void TilesetDock::updateCurrentTiles()
                                          maxY - minY + 1);
 
     const TilesetModel *model = view->tilesetModel();
-    foreach (const QModelIndex &index, indexes) {
+    for (const QModelIndex &index : indexes) {
         tileLayer->setCell(index.column() - minX,
                            index.row() - minY,
                            Cell(model->tileAt(index)));
     }
 
     setCurrentTiles(tileLayer);
-}
-
-void TilesetDock::updateCurrentTile()
-{
-    if (const TilesetView *view = currentTilesetView())
-        if (const QItemSelectionModel *s = view->selectionModel())
-            setCurrentTile(view->tilesetModel()->tileAt(s->currentIndex()));
 }
 
 void TilesetDock::indexPressed(const QModelIndex &index)
@@ -541,71 +541,94 @@ void TilesetDock::indexPressed(const QModelIndex &index)
         mMapDocument->setCurrentObject(tile);
 }
 
-void TilesetDock::tilesetAdded(int index, Tileset *tileset)
+void TilesetDock::createTilesetView(int index, TilesetDocument *tilesetDocument)
 {
-    TilesetView *view = new TilesetView;
-    view->setMapDocument(mMapDocument);
-    view->setZoomable(mZoomable);
+    auto tileset = tilesetDocument->tileset();
 
     mTilesets.insert(index, tileset);
-    mTabBar->insertTab(index, tileset->name());
-    mViewStack->insertWidget(index, view);
+    mTilesetDocuments.insert(index, tilesetDocument);
 
-    updateActions();
+    TilesetView *view = new TilesetView;
+
+    // Hides the "New Tileset..." special view if it is shown.
+    mSuperViewStack->setCurrentIndex(1);
+
+    // Insert view before the tab to make sure it is there when the tab index
+    // changes (happens when first tab is inserted).
+    mViewStack->insertWidget(index, view);
+    mTabBar->insertTab(index, tileset->name());
+    mTabBar->setTabToolTip(index, tileset->fileName());
+
+    QString path = QLatin1String("TilesetDock/TilesetScale/") + tileset->name();
+    qreal scale = Preferences::instance()->settings()->value(path, 1).toReal();
+    view->zoomable()->setScale(scale);
+
+    connect(tilesetDocument, &TilesetDocument::fileNameChanged,
+            this, &TilesetDock::tilesetFileNameChanged);
+    connect(tilesetDocument, &TilesetDocument::tilesetChanged,
+            this, &TilesetDock::tilesetChanged);
+    connect(tilesetDocument, &TilesetDocument::tileImageSourceChanged,
+            this, &TilesetDock::tileImageSourceChanged);
+    connect(tilesetDocument, &TilesetDocument::tileAnimationChanged,
+            this, &TilesetDock::tileAnimationChanged);
+
+    connect(view, &TilesetView::clicked,
+            this, &TilesetDock::updateCurrentTiles);
+    connect(view, &TilesetView::swapTilesRequested,
+            this, &TilesetDock::swapTiles);
+}
+
+void TilesetDock::deleteTilesetView(int index)
+{
+    TilesetDocument *tilesetDocument = mTilesetDocuments.at(index);
+    tilesetDocument->disconnect(this);
+
+    Tileset *tileset = tilesetDocument->tileset().data();
+    TilesetView *view = tilesetViewAt(index);
+
+    QString path = QLatin1String("TilesetDock/TilesetScale/") + tileset->name();
+    QSettings *settings = Preferences::instance()->settings();
+    if (view->scale() != 1.0)
+        settings->setValue(path, view->scale());
+    else
+        settings->remove(path);
+
+    mTilesets.remove(index);
+    mTilesetDocuments.removeAt(index);
+    delete view;                    // view needs to go before the tab
+    mTabBar->removeTab(index);
+
+    // Make the "New Tileset..." special tab reappear if there is no tileset open
+    if (mTilesets.isEmpty())
+        mSuperViewStack->setCurrentIndex(0);
+
+    // Make sure we don't reference this tileset anymore
+    if (mCurrentTiles && mCurrentTiles->referencesTileset(tileset)) {
+        TileLayer *cleaned = mCurrentTiles->clone();
+        cleaned->removeReferencesToTileset(tileset);
+        setCurrentTiles(cleaned);
+    }
+    if (mCurrentTile && mCurrentTile->tileset() == tileset)
+        setCurrentTile(nullptr);
+}
+
+void TilesetDock::moveTilesetView(int from, int to)
+{
+    mTabBar->moveTab(from, to);
 }
 
 void TilesetDock::tilesetChanged(Tileset *tileset)
 {
     // Update the affected tileset model, if it exists
-    const int index = mTilesets.indexOf(tileset);
+    const int index = indexOf(mTilesets, tileset);
     if (index < 0)
         return;
 
-    if (TilesetModel *model = tilesetViewAt(index)->tilesetModel())
+    TilesetView *view = tilesetViewAt(index);
+
+    if (TilesetModel *model = view->tilesetModel()) {
+        view->updateBackgroundColor();
         model->tilesetChanged();
-}
-
-void TilesetDock::tilesetRemoved(Tileset *tileset)
-{
-    // Delete the related tileset view
-    const int index = mTilesets.indexOf(tileset);
-    Q_ASSERT(index != -1);
-
-    mTilesets.removeAt(index);
-    mTabBar->removeTab(index);
-    delete tilesetViewAt(index);
-
-    // Make sure we don't reference this tileset anymore
-    if (mCurrentTiles) {
-        // TODO: Don't clean unnecessarily (but first the concept of
-        //       "current brush" would need to be introduced)
-        TileLayer *cleaned = static_cast<TileLayer *>(mCurrentTiles->clone());
-        cleaned->removeReferencesToTileset(tileset);
-        setCurrentTiles(cleaned);
-    }
-    if (mCurrentTile && mCurrentTile->tileset() == tileset)
-        setCurrentTile(0);
-
-    updateActions();
-}
-
-void TilesetDock::tilesetMoved(int from, int to)
-{
-    mTilesets.insert(to, mTilesets.takeAt(from));
-
-    // Move the related tileset views
-    QWidget *widget = mViewStack->widget(from);
-    mViewStack->removeWidget(widget);
-    mViewStack->insertWidget(to, widget);
-    mViewStack->setCurrentIndex(mTabBar->currentIndex());
-
-    // Update the titles of the affected tabs
-    const int start = qMin(from, to);
-    const int end = qMax(from, to);
-    for (int i = start; i <= end; ++i) {
-        const Tileset *tileset = mTilesets.at(i);
-        if (mTabBar->tabText(i) != tileset->name())
-            mTabBar->setTabText(i, tileset->name());
     }
 }
 
@@ -616,16 +639,22 @@ void TilesetDock::removeTileset()
 {
     const int currentIndex = mViewStack->currentIndex();
     if (currentIndex != -1)
-        removeTileset(mViewStack->currentIndex());
+        removeTilesetAt(mViewStack->currentIndex());
 }
 
 /**
  * Removes the tileset at the given index. Prompting the user when the tileset
  * is in use by the map.
  */
-void TilesetDock::removeTileset(int index)
+void TilesetDock::removeTilesetAt(int index)
 {
-    Tileset *tileset = mTilesets.at(index);
+    auto &sharedTileset = mTilesets.at(index);
+
+    int mapTilesetIndex = mMapDocument->map()->tilesets().indexOf(sharedTileset);
+    if (mapTilesetIndex == -1)
+        return;
+
+    Tileset *tileset = sharedTileset.data();
     const bool inUse = mMapDocument->map()->isTilesetUsed(tileset);
 
     // If the tileset is in use, warn the user and confirm removal
@@ -644,23 +673,25 @@ void TilesetDock::removeTileset(int index)
             return;
     }
 
-    QUndoCommand *remove = new RemoveTileset(mMapDocument, index, tileset);
+    QUndoCommand *remove = new RemoveTileset(mMapDocument, mapTilesetIndex);
     QUndoStack *undoStack = mMapDocument->undoStack();
 
     if (inUse) {
         // Remove references to tiles in this tileset from the current map
+        auto referencesTileset = [tileset] (const Cell &cell) {
+            return cell.tileset() == tileset;
+        };
         undoStack->beginMacro(remove->text());
-        removeTileReferences(mMapDocument, ReferencesTileset(tileset));
+        removeTileReferences(mMapDocument, referencesTileset);
     }
     undoStack->push(remove);
     if (inUse)
         undoStack->endMacro();
 }
 
-void TilesetDock::moveTileset(int from, int to)
+void TilesetDock::newTileset()
 {
-    QUndoCommand *command = new MoveTileset(mMapDocument, from, to);
-    mMapDocument->undoStack()->push(command);
+    ActionManager::action("file.new_tileset")->trigger();
 }
 
 void TilesetDock::setCurrentTiles(TileLayer *tiles)
@@ -671,7 +702,19 @@ void TilesetDock::setCurrentTiles(TileLayer *tiles)
     delete mCurrentTiles;
     mCurrentTiles = tiles;
 
-    emit currentTilesChanged(mCurrentTiles);
+    if (tiles && mMapDocument) {
+        // Create a tile stamp with these tiles
+        Map *map = mMapDocument->map();
+        Map *stamp = new Map(map->orientation(),
+                             tiles->size(),
+                             map->tileSize());
+        stamp->addLayer(tiles->clone());
+        stamp->addTilesets(tiles->usedTilesets());
+
+        mEmittingStampCaptured = true;
+        emit stampCaptured(TileStamp(stamp));
+        mEmittingStampCaptured = false;
+    }
 }
 
 void TilesetDock::setCurrentTile(Tile *tile)
@@ -682,29 +725,124 @@ void TilesetDock::setCurrentTile(Tile *tile)
     mCurrentTile = tile;
     emit currentTileChanged(tile);
 
-    if (tile)
+    if (mMapDocument && tile)
         mMapDocument->setCurrentObject(tile);
 }
 
 void TilesetDock::retranslateUi()
 {
     setWindowTitle(tr("Tilesets"));
-    mImportTileset->setText(tr("&Import Tileset"));
+    mNewTileset->setText(tr("New Tileset"));
+    mEmbedTileset->setText(tr("&Embed Tileset"));
     mExportTileset->setText(tr("&Export Tileset As..."));
-    mPropertiesTileset->setText(tr("Tile&set Properties"));
+    mEditTileset->setText(tr("Edit Tile&set"));
     mDeleteTileset->setText(tr("&Remove Tileset"));
-    mEditTerrain->setText(tr("Edit &Terrain Information"));
-    mAddTiles->setText(tr("Add Tiles"));
-    mRemoveTiles->setText(tr("Remove Tiles"));
+}
+
+void TilesetDock::onTilesetRowsInserted(const QModelIndex &parent, int first, int last)
+{
+    for (int row = first; row <= last; ++row) {
+        const QModelIndex index = mTilesetDocumentsFilterModel->index(row, 0, parent);
+        const QVariant var = mTilesetDocumentsFilterModel->data(index, TilesetDocumentsModel::TilesetDocumentRole);
+        createTilesetView(row, var.value<TilesetDocument*>());
+    }
+}
+
+void TilesetDock::onTilesetRowsAboutToBeRemoved(const QModelIndex &parent, int first, int last)
+{
+    Q_UNUSED(parent)
+
+    for (int index = last; index >= first; --index)
+        deleteTilesetView(index);
+}
+
+void TilesetDock::onTilesetRowsMoved(const QModelIndex &parent, int start, int end, const QModelIndex &destination, int row)
+{
+    Q_UNUSED(parent)
+    Q_UNUSED(destination)
+
+    if (start == row)
+        return;
+
+    while (start <= end) {
+        moveTilesetView(start, row);
+
+        if (row < start) {
+            ++start;
+            ++row;
+        } else {
+            --end;
+        }
+    }
+}
+
+void TilesetDock::onTilesetLayoutChanged(const QList<QPersistentModelIndex> &parents, QAbstractItemModel::LayoutChangeHint hint)
+{
+    Q_UNUSED(parents)
+    Q_UNUSED(hint)
+
+    // Make sure the tileset tabs and views are still in the right order
+    for (int i = 0, rows = mTilesetDocumentsFilterModel->rowCount(); i < rows; ++i) {
+        const QModelIndex index = mTilesetDocumentsFilterModel->index(i, 0);
+        const QVariant var = mTilesetDocumentsFilterModel->data(index, TilesetDocumentsModel::TilesetDocumentRole);
+        TilesetDocument *tilesetDocument = var.value<TilesetDocument*>();
+        int currentIndex = mTilesetDocuments.indexOf(tilesetDocument);
+        if (currentIndex != i) {
+            Q_ASSERT(currentIndex > i);
+            moveTilesetView(currentIndex, i);
+        }
+    }
+}
+
+void TilesetDock::onTilesetDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
+{
+    // Update the titles of the affected tabs
+    for (int i = topLeft.row(); i <= bottomRight.row(); ++i) {
+        const SharedTileset &tileset = mTilesets.at(i);
+        if (mTabBar->tabText(i) != tileset->name())
+            mTabBar->setTabText(i, tileset->name());
+        mTabBar->setTabToolTip(i, tileset->fileName());
+    }
+}
+
+void TilesetDock::onTabMoved(int from, int to)
+{
+#if QT_VERSION >= 0x050600
+    mTilesets.move(from, to);
+#else
+    mTilesets.insert(to, mTilesets.takeAt(from));
+#endif
+    mTilesetDocuments.move(from, to);
+
+    // Move the related tileset view
+    const QSignalBlocker blocker(mViewStack);
+    QWidget *widget = mViewStack->widget(from);
+    mViewStack->removeWidget(widget);
+    mViewStack->insertWidget(to, widget);
+}
+
+void TilesetDock::tabContextMenuRequested(const QPoint &pos)
+{
+    int index = mTabBar->tabAt(pos);
+    if (index == -1)
+        return;
+
+    QMenu menu;
+
+    QString fileName = mTilesetDocuments.at(index)->fileName();
+    if (!fileName.isEmpty())
+        Utils::addFileManagerActions(menu, fileName);
+
+    menu.exec(mTabBar->mapToGlobal(pos));
 }
 
 Tileset *TilesetDock::currentTileset() const
 {
     const int index = mTabBar->currentIndex();
     if (index == -1)
-        return 0;
+        return nullptr;
 
-    return mTilesets.at(index);
+    return mTilesets.at(index).data();
 }
 
 TilesetView *TilesetDock::currentTilesetView() const
@@ -717,14 +855,27 @@ TilesetView *TilesetDock::tilesetViewAt(int index) const
     return static_cast<TilesetView *>(mViewStack->widget(index));
 }
 
-void TilesetDock::editTilesetProperties()
+void TilesetDock::setupTilesetModel(TilesetView *view, Tileset *tileset)
+{
+    view->setModel(new TilesetModel(tileset, view));
+
+    QItemSelectionModel *s = view->selectionModel();
+    connect(s, &QItemSelectionModel::selectionChanged,
+            this, &TilesetDock::selectionChanged);
+    connect(s, &QItemSelectionModel::currentChanged,
+            this, &TilesetDock::currentChanged);
+    connect(view, &TilesetView::pressed,
+            this, &TilesetDock::indexPressed);
+}
+
+void TilesetDock::editTileset()
 {
     Tileset *tileset = currentTileset();
     if (!tileset)
         return;
 
-    mMapDocument->setCurrentObject(tileset);
-    mMapDocument->emitEditCurrentObject();
+    DocumentManager *documentManager = DocumentManager::instance();
+    documentManager->openTileset(tileset->sharedPointer());
 }
 
 void TilesetDock::exportTileset()
@@ -733,161 +884,118 @@ void TilesetDock::exportTileset()
     if (!tileset)
         return;
 
-    const QLatin1String extension(".tsx");
-    QString suggestedFileName = QFileInfo(mMapDocument->fileName()).path();
+    if (tileset->isExternal())
+        return;
+
+    int mapTilesetIndex = mMapDocument->map()->tilesets().indexOf(tileset->sharedPointer());
+    if (mapTilesetIndex == -1)
+        return;
+
+    // To export a tileset we clone it, since the tileset could now be used by
+    // other maps. This ensures undo can take the map back to using an embedded
+    // tileset, without affecting those other maps.
+    SharedTileset externalTileset = tileset->clone();
+
+    FormatHelper<TilesetFormat> helper(FileFormat::ReadWrite);
+
+    Preferences *prefs = Preferences::instance();
+
+    QString suggestedFileName = prefs->lastPath(Preferences::ExternalTileset);
     suggestedFileName += QLatin1Char('/');
-    suggestedFileName += tileset->name();
+    suggestedFileName += externalTileset->name();
+
+    const QLatin1String extension(".tsx");
     if (!suggestedFileName.endsWith(extension))
         suggestedFileName.append(extension);
 
+    // todo: remember last used filter
+    QString selectedFilter = TsxTilesetFormat().nameFilter();
     const QString fileName =
             QFileDialog::getSaveFileName(this, tr("Export Tileset"),
                                          suggestedFileName,
-                                         tr("Tiled tileset files (*.tsx)"));
+                                         helper.filter(), &selectedFilter);
+
     if (fileName.isEmpty())
         return;
 
-    TmxMapWriter writer;
+    prefs->setLastPath(Preferences::ExternalTileset,
+                       QFileInfo(fileName).path());
 
-    if (writer.writeTileset(tileset, fileName)) {
-        QUndoCommand *command = new SetTilesetFileName(mMapDocument,
-                                                       tileset, fileName);
-        mMapDocument->undoStack()->push(command);
-    }
-}
+    TilesetFormat *format = helper.formatByNameFilter(selectedFilter);
+    if (!format)
+        return;     // can't happen
 
-void TilesetDock::importTileset()
-{
-    Tileset *tileset = currentTileset();
-    if (!tileset)
+    if (!format->write(*externalTileset, fileName)) {
+        QString error = format->errorString();
+        QMessageBox::critical(window(),
+                              tr("Export Tileset"),
+                              tr("Error saving tileset: %1").arg(error));
         return;
+    }
 
-    QUndoCommand *command = new SetTilesetFileName(mMapDocument,
-                                                   tileset, QString());
+    externalTileset->setFileName(fileName);
+    externalTileset->setFormat(format);
+
+    QUndoCommand *command = new ReplaceTileset(mMapDocument,
+                                               mapTilesetIndex,
+                                               externalTileset);
     mMapDocument->undoStack()->push(command);
+
+    // Make sure the external tileset is selected
+    int externalTilesetIndex = mTilesets.indexOf(externalTileset);
+    if (externalTilesetIndex != -1)
+        mTabBar->setCurrentIndex(externalTilesetIndex);
 }
 
-void TilesetDock::editTerrain()
+void TilesetDock::embedTileset()
 {
     Tileset *tileset = currentTileset();
     if (!tileset)
         return;
 
-    EditTerrainDialog editTerrainDialog(mMapDocument, tileset, this);
-    editTerrainDialog.exec();
-}
-
-void TilesetDock::addTiles()
-{
-    Tileset *tileset = currentTileset();
-    if (!tileset)
+    if (!tileset->isExternal())
         return;
 
-    Preferences *prefs = Preferences::instance();
-    const QString startLocation = QFileInfo(prefs->lastPath(Preferences::ImageFile)).absolutePath();
-    const QString filter = Utils::readableImageFormatsFilter();
-    const QStringList files = QFileDialog::getOpenFileNames(this,
-                                                            tr("Add Tiles"),
-                                                            startLocation,
-                                                            filter);
-    QList<Tile*> tiles;
-    int id = tileset->tileCount();
-
-    foreach (const QString &file, files) {
-        const QPixmap image(file);
-        if (!image.isNull()) {
-            tiles.append(new Tile(image, file, id, tileset));
-            ++id;
-        } else {
-            QMessageBox warning(QMessageBox::Warning,
-                                tr("Add Tiles"),
-                                tr("Could not load \"%1\"!").arg(file),
-                                QMessageBox::Ignore | QMessageBox::Cancel,
-                                this);
-            warning.setDefaultButton(QMessageBox::Ignore);
-
-            if (warning.exec() != QMessageBox::Ignore) {
-                qDeleteAll(tiles);
-                return;
-            }
-        }
-    }
-
-    if (tiles.isEmpty())
-        return;
-
-    mMapDocument->undoStack()->push(new AddTiles(mMapDocument, tileset, tiles));
-}
-
-void TilesetDock::removeTiles()
-{
-    TilesetView *view = currentTilesetView();
-    if (!view)
-        return;
-    if (!view->selectionModel()->hasSelection())
-        return;
-
-    const QModelIndexList indexes = view->selectionModel()->selectedIndexes();
-    const TilesetModel *model = view->tilesetModel();
-    RangeSet<int> tileIds;
-    QList<Tile*> tiles;
-
-    foreach (const QModelIndex &index, indexes) {
-        if (Tile *tile = model->tileAt(index)) {
-            tileIds.insert(tile->id());
-            tiles.append(tile);
-        }
-    }
-
-    const MatchesAnyTile matchesAnyTile(tiles);
-    const bool inUse = hasTileReferences(mMapDocument, matchesAnyTile);
-
-    // If the tileset is in use, warn the user and confirm removal
-    if (inUse) {
-        QMessageBox warning(QMessageBox::Warning,
-                            tr("Remove Tiles"),
-                            tr("One or more of the tiles to be removed are "
-                               "still in use by the map!"),
-                            QMessageBox::Yes | QMessageBox::No,
-                            this);
-        warning.setDefaultButton(QMessageBox::Yes);
-        warning.setInformativeText(tr("Remove all references to these tiles?"));
-
-        if (warning.exec() != QMessageBox::Yes)
-            return;
-    }
+    // To embed a tileset we clone it, since further changes to that tileset
+    // should not affect the exteral tileset.
+    SharedTileset embeddedTileset = tileset->clone();
 
     QUndoStack *undoStack = mMapDocument->undoStack();
-    undoStack->beginMacro(tr("Remove Tiles"));
+    int mapTilesetIndex = mMapDocument->map()->tilesets().indexOf(tileset->sharedPointer());
 
-    removeTileReferences(mMapDocument, matchesAnyTile);
+    // Tileset may not be part of the map yet
+    if (mapTilesetIndex == -1)
+        undoStack->push(new AddTileset(mMapDocument, embeddedTileset));
+    else
+        undoStack->push(new ReplaceTileset(mMapDocument, mapTilesetIndex, embeddedTileset));
 
-    // Iterate backwards over the ranges in order to keep the indexes valid
-    RangeSet<int>::Range firstRange = tileIds.begin();
-    RangeSet<int>::Range it = tileIds.end();
-    if (it == firstRange) // no range
-        return;
-
-    Tileset *tileset = view->tilesetModel()->tileset();
-    do {
-        --it;
-        undoStack->push(new RemoveTiles(mMapDocument, tileset,
-                                        it.first(), it.length()));
-    } while (it != firstRange);
-
-    undoStack->endMacro();
-
-    // Clear the current tiles, will be referencing the removed tiles
-    setCurrentTiles(0);
-    setCurrentTile(0);
+    // Make sure the embedded tileset is selected
+    int embeddedTilesetIndex = mTilesets.indexOf(embeddedTileset);
+    if (embeddedTilesetIndex != -1)
+        mTabBar->setCurrentIndex(embeddedTilesetIndex);
 }
 
-void TilesetDock::tilesetNameChanged(Tileset *tileset)
+void TilesetDock::tilesetFileNameChanged(const QString &fileName)
 {
-    const int index = mTilesets.indexOf(tileset);
+    TilesetDocument *tilesetDocument = static_cast<TilesetDocument*>(sender());
+    Tileset *tileset = tilesetDocument->tileset().data();
+
+    const int index = indexOf(mTilesets, tileset);
     Q_ASSERT(index != -1);
 
-    mTabBar->setTabText(index, tileset->name());
+    mTabBar->setTabToolTip(index, fileName);
+
+    updateActions();
+}
+
+void TilesetDock::tileImageSourceChanged(Tile *tile)
+{
+    int tilesetIndex = mTilesets.indexOf(tile->tileset()->sharedPointer());
+    if (tilesetIndex != -1) {
+        TilesetView *view = tilesetViewAt(tilesetIndex);
+        if (TilesetModel *model = view->tilesetModel())
+            model->tileChanged(tile);
+    }
 }
 
 void TilesetDock::tileAnimationChanged(Tile *tile)
@@ -897,37 +1005,30 @@ void TilesetDock::tileAnimationChanged(Tile *tile)
             model->tileChanged(tile);
 }
 
-void TilesetDock::documentCloseRequested(int index)
-{
-    DocumentManager *documentManager = DocumentManager::instance();
-    mCurrentTilesets.remove(documentManager->documents().at(index));
-}
-
 void TilesetDock::refreshTilesetMenu()
 {
     mTilesetMenu->clear();
 
-    if (mTilesetMenuMapper) {
-        mTabBar->disconnect(mTilesetMenuMapper);
-        delete mTilesetMenuMapper;
-    }
-
-    mTilesetMenuMapper = new QSignalMapper(this);
-    connect(mTilesetMenuMapper, SIGNAL(mapped(int)),
-            mTabBar, SLOT(setCurrentIndex(int)));
-
     const int currentIndex = mTabBar->currentIndex();
 
     for (int i = 0; i < mTabBar->count(); ++i) {
-        QAction *action = new QAction(mTabBar->tabText(i), this);
-        action->setCheckable(true);
+        QAction *action = mTilesetMenu->addAction(mTabBar->tabText(i));
+        connect(action, &QAction::triggered, [=] { mTabBar->setCurrentIndex(i); });
 
+        action->setCheckable(true);
         mTilesetActionGroup->addAction(action);
         if (i == currentIndex)
             action->setChecked(true);
-
-        mTilesetMenu->addAction(action);
-        connect(action, SIGNAL(triggered()), mTilesetMenuMapper, SLOT(map()));
-        mTilesetMenuMapper->setMapping(action, i);
     }
 }
+
+void TilesetDock::swapTiles(Tile *tileA, Tile *tileB)
+{
+    if (!mMapDocument)
+        return;
+
+    QUndoStack *undoStack = mMapDocument->undoStack();
+    undoStack->push(new SwapTiles(mMapDocument, tileA, tileB));
+}
+
+#include "tilesetdock.moc"

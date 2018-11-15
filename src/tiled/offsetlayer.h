@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OFFSETLAYER_H
-#define OFFSETLAYER_H
+#pragma once
 
 #include <QRect>
 #include <QPoint>
@@ -40,32 +39,26 @@ class MapDocument;
 class OffsetLayer : public QUndoCommand
 {
 public:
-    /**
-     * Creates an undo command that offsets the layer at \a index by \a offset,
-     * within \a bounds, and can optionally wrap on the x or y axis.
-     */
     OffsetLayer(MapDocument *mapDocument,
-                int index,
+                Layer *layer,
                 const QPoint &offset,
                 const QRect &bounds,
                 bool xWrap,
                 bool yWrap);
 
-    ~OffsetLayer();
+    ~OffsetLayer() override;
 
-    void undo();
-    void redo();
+    void undo() override;
+    void redo() override;
 
 private:
-    Layer *swapLayer(Layer *layer);
-
     MapDocument *mMapDocument;
-    int mIndex;
+    bool mDone;
     Layer *mOriginalLayer;
     Layer *mOffsetLayer;
+    QPointF mOldOffset;
+    QPointF mNewOffset;
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // OFFSETLAYER_H

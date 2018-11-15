@@ -1,6 +1,6 @@
 /*
  * undodock.cpp
- * Copyright 2009-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2009-2017, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2010, Petr Viktorin <encukou@gmail.com>
  *
  * This file is part of Tiled.
@@ -28,24 +28,28 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-UndoDock::UndoDock(QUndoGroup *undoGroup, QWidget *parent)
+UndoDock::UndoDock(QWidget *parent)
     : QDockWidget(parent)
 {
     setObjectName(QLatin1String("undoViewDock"));
 
-    mUndoView = new QUndoView(undoGroup, this);
+    mUndoView = new QUndoView(this);
     QIcon cleanIcon(QLatin1String(":images/16x16/drive-harddisk.png"));
     mUndoView->setCleanIcon(cleanIcon);
     mUndoView->setUniformItemSizes(true);
-    mUndoView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
     QWidget *widget = new QWidget(this);
     QVBoxLayout *layout = new QVBoxLayout(widget);
-    layout->setMargin(5);
+    layout->setMargin(0);
     layout->addWidget(mUndoView);
 
     setWidget(widget);
     retranslateUi();
+}
+
+void UndoDock::setStack(QUndoStack *stack)
+{
+    mUndoView->setStack(stack);
 }
 
 void UndoDock::changeEvent(QEvent *e)

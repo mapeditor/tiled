@@ -33,8 +33,10 @@ ChangeMapObjectsOrder::ChangeMapObjectsOrder(MapDocument *mapDocument,
                                              ObjectGroup *objectGroup,
                                              int from,
                                              int to,
-                                             int count)
-    : mMapDocument(mapDocument)
+                                             int count,
+                                             QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , mMapDocument(mapDocument)
     , mObjectGroup(objectGroup)
     , mFrom(from)
     , mTo(to)

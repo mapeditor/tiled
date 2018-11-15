@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GEOMETRY_H
-#define GEOMETRY_H
+#pragma once
 
 #include <QPoint>
 #include <QRegion>
@@ -28,13 +27,17 @@
 namespace Tiled {
 
 QVector<QPoint> pointsOnEllipse(int x0, int y0, int x1, int y1);
+QRegion ellipseRegion(int x0, int y0, int x1, int y1);
 QVector<QPoint> pointsOnLine(int x0, int y0, int x1, int y1);
+
+inline QVector<QPoint> pointsOnEllipse(QPoint a, QPoint b)
+{ return pointsOnEllipse(a.x(), a.y(), b.x(), b.y()); }
 
 inline QVector<QPoint> pointsOnLine(QPoint a, QPoint b)
 { return pointsOnLine(a.x(), a.y(), b.x(), b.y()); }
 
-QList<QRegion> coherentRegions(const QRegion &region);
+QVector<QRegion> coherentRegions(const QRegion &region);
+
+QTransform rotateAt(const QPointF &position, qreal rotation);
 
 } // namespace Tiled
-
-#endif // GEOMETRY_H

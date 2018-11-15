@@ -20,6 +20,7 @@
 
 #include "tileselectionitem.h"
 
+#include "grouplayer.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "maprenderer.h"
@@ -32,13 +33,19 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-TileSelectionItem::TileSelectionItem(MapDocument *mapDocument)
-    : mMapDocument(mapDocument)
+TileSelectionItem::TileSelectionItem(MapDocument *mapDocument,
+                                     QGraphicsItem *parent)
+    : QGraphicsObject(parent)
+    , mMapDocument(mapDocument)
 {
     setFlag(QGraphicsItem::ItemUsesExtendedStyleOption);
 
-    connect(mMapDocument, SIGNAL(tileSelectionChanged(QRegion,QRegion)),
-            this, SLOT(selectionChanged(QRegion,QRegion)));
+    connect(mapDocument, &MapDocument::selectedAreaChanged,
+            this, &TileSelectionItem::selectionChanged);
+    connect(mapDocument, &MapDocument::layerChanged,
+            this, &TileSelectionItem::layerChanged);
+    connect(mapDocument, &MapDocument::currentLayerChanged,
+            this, &TileSelectionItem::currentLayerChanged);
 
     updateBoundingRect();
 }
@@ -52,7 +59,7 @@ void TileSelectionItem::paint(QPainter *painter,
                               const QStyleOptionGraphicsItem *option,
                               QWidget *)
 {
-    const QRegion &selection = mMapDocument->tileSelection();
+    const QRegion &selection = mMapDocument->selectedArea();
     QColor highlight = QApplication::palette().highlight().color();
     highlight.setAlpha(128);
 
@@ -72,8 +79,21 @@ void TileSelectionItem::selectionChanged(const QRegion &newSelection,
     update(mMapDocument->renderer()->boundingRect(changedArea));
 }
 
+void TileSelectionItem::layerChanged(Layer *layer)
+{
+    if (auto currentLayer = mMapDocument->currentLayer())
+        if (currentLayer->isParentOrSelf(layer))
+            setPos(currentLayer->totalOffset());
+}
+
+void TileSelectionItem::currentLayerChanged(Layer *layer)
+{
+    if (layer)
+        setPos(layer->totalOffset());
+}
+
 void TileSelectionItem::updateBoundingRect()
 {
-    const QRect b = mMapDocument->tileSelection().boundingRect();
+    const QRect b = mMapDocument->selectedArea().boundingRect();
     mBoundingRect = mMapDocument->renderer()->boundingRect(b);
 }

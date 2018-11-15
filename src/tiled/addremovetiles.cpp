@@ -20,66 +20,53 @@
 
 #include "addremovetiles.h"
 
-#include "mapdocument.h"
 #include "tile.h"
-#include "tileset.h"
+#include "tilesetdocument.h"
 
 #include <QCoreApplication>
 
 namespace Tiled {
 namespace Internal {
 
-AddRemoveTiles::AddRemoveTiles(MapDocument *mapDocument,
-                               Tileset *tileset,
-                               int index,
-                               int count,
-                               const QList<Tile *> &tiles)
-    : mMapDocument(mapDocument)
-    , mTileset(tileset)
-    , mIndex(index)
-    , mCount(count)
+AddRemoveTiles::AddRemoveTiles(TilesetDocument *tilesetDocument,
+                               const QList<Tile *> &tiles,
+                               bool add)
+    : mTilesetDocument(tilesetDocument)
     , mTiles(tiles)
+    , mTilesAdded(!add)
 {
 }
 
 AddRemoveTiles::~AddRemoveTiles()
 {
-    qDeleteAll(mTiles);
+    if (!mTilesAdded)
+        qDeleteAll(mTiles);
 }
 
 void AddRemoveTiles::addTiles()
 {
-    mTileset->insertTiles(mIndex, mTiles);
-    mTiles.clear();
-    mMapDocument->emitTilesetChanged(mTileset);
+    mTilesetDocument->addTiles(mTiles);
+    mTilesAdded = true;
 }
 
 void AddRemoveTiles::removeTiles()
 {
-    mTiles = mTileset->tiles().mid(mIndex, mCount);
-    mTileset->removeTiles(mIndex, mCount);
-    mMapDocument->emitTilesetChanged(mTileset);
+    mTilesetDocument->removeTiles(mTiles);
+    mTilesAdded = false;
 }
 
 
-AddTiles::AddTiles(MapDocument *mapDocument,
-                   Tileset *tileset,
+AddTiles::AddTiles(TilesetDocument *tilesetDocument,
                    const QList<Tile *> &tiles)
-    : AddRemoveTiles(mapDocument,
-                     tileset,
-                     tileset->tileCount(),
-                     tiles.count(),
-                     tiles)
+    : AddRemoveTiles(tilesetDocument, tiles, true)
 {
     setText(QCoreApplication::translate("Undo Commands", "Add Tiles"));
 }
 
 
-RemoveTiles::RemoveTiles(MapDocument *mapDocument,
-                         Tileset *tileset,
-                         int index,
-                         int count)
-    : AddRemoveTiles(mapDocument, tileset, index, count)
+RemoveTiles::RemoveTiles(TilesetDocument *tilesetDocument,
+                         const QList<Tile *> &tiles)
+    : AddRemoveTiles(tilesetDocument, tiles, false)
 {
     setText(QCoreApplication::translate("Undo Commands", "Remove Tiles"));
 }

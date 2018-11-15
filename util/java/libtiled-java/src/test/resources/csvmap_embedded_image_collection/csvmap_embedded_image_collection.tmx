@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" tiledversion="1.0.2" orientation="orthogonal" renderorder="right-down" width="3" height="1" tilewidth="32" tileheight="32" nextobjectid="1">
+ <tileset firstgid="1" name="embedded_image_collection" tilewidth="32" tileheight="32" tilecount="2" columns="0">
+  <grid orientation="orthogonal" width="1" height="1"/>
+  <tile id="0">
+   <image width="32" height="32" source="csvmap_embedded_image_collection_1.png"/>
+  </tile>
+  <tile id="3">
+   <image width="32" height="32" source="csvmap_embedded_image_collection_2.png"/>
+  </tile>
+ </tileset>
+ <layer name="Tile Layer 1" width="3" height="1">
+  <data encoding="csv">
+1,0,4
+  </data>
+ </layer>
+</map>

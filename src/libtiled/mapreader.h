@@ -26,10 +26,11 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef MAPREADER_H
-#define MAPREADER_H
+#pragma once
 
+#include "objecttemplate.h"
 #include "tiled_global.h"
+#include "tileset.h"
 
 #include <QImage>
 
@@ -38,7 +39,6 @@ class QFile;
 namespace Tiled {
 
 class Map;
-class Tileset;
 
 namespace Internal {
 class MapReaderPrivate;
@@ -54,7 +54,7 @@ class TILEDSHARED_EXPORT MapReader
 {
 public:
     MapReader();
-    ~MapReader();
+    virtual ~MapReader();
 
     /**
      * Reads a TMX map from the given \a device. Optionally a \a path can
@@ -82,48 +82,46 @@ public:
      *
      * The caller takes ownership over the newly created tileset.
      */
-    Tileset *readTileset(QIODevice *device, const QString &path = QString());
+    SharedTileset readTileset(QIODevice *device, const QString &path = QString());
 
     /**
      * Reads a TSX tileset from the given \a fileName.
      * \overload
      */
-    Tileset *readTileset(const QString &fileName);
+    SharedTileset readTileset(const QString &fileName);
 
     /**
      * Returns the error message for the last occurred error.
      */
     QString errorString() const;
 
+    ObjectTemplate *readObjectTemplate(QIODevice *device, const QString &path = QString());
+    ObjectTemplate *readObjectTemplate(const QString &fileName);
+
 protected:
     /**
      * Called for each \a reference to an external file. Should return the path
-     * to be used when loading this file. \a mapPath contains the path to the
+     * to be used when loading this file. \a mapDir contains the path to the
      * map or tileset that is currently being loaded.
      */
-    virtual QString resolveReference(const QString &reference,
-                                     const QString &mapPath);
-
-    /**
-     * Called when an external image is encountered while a tileset is loaded.
-     */
-    virtual QImage readExternalImage(const QString &source);
+    QString resolveReference(const QString &reference,
+                             const QDir &mapDir);
 
     /**
      * Called when an external tileset is encountered while a map is loaded.
-     * The default implementation just calls readTileset() on a new MapReader.
+     * The default implementation just calls Tiled::readTileset().
      *
      * If an error occurred, the \a error parameter should be set to the error
      * message.
      */
-    virtual Tileset *readExternalTileset(const QString &source,
-                                         QString *error);
+    virtual SharedTileset readExternalTileset(const QString &source,
+                                              QString *error);
 
 private:
+    Q_DISABLE_COPY(MapReader)
+
     friend class Internal::MapReaderPrivate;
     Internal::MapReaderPrivate *d;
 };
 
 } // namespace Tiled
-
-#endif // MAPREADER_H

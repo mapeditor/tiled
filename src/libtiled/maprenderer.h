@@ -26,8 +26,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef MAPRENDERER_H
-#define MAPRENDERER_H
+#pragma once
 
 #include "tiled_global.h"
 
@@ -59,17 +58,23 @@ class TILEDSHARED_EXPORT MapRenderer
 public:
     MapRenderer(const Map *map)
         : mMap(map)
-        , mFlags(0)
+        , mFlags(nullptr)
         , mObjectLineWidth(2)
         , mPainterScale(1)
     {}
 
-    virtual ~MapRenderer() {}
+    virtual ~MapRenderer();
 
     /**
-     * Returns the size in pixels of the map associated with this renderer.
+     * Returns the map this renderer is associated with.
      */
-    virtual QSize mapSize() const = 0;
+    const Map *map() const;
+
+    /**
+     * Returns the bounding rectangle in pixels of the map associated with
+     * this renderer.
+     */
+    virtual QRect mapBoundingRect() const = 0;
 
     /**
      * Returns the bounding rectangle in pixels of the given \a rect given in
@@ -98,6 +103,12 @@ public:
      * possible.
      */
     virtual QPainterPath shape(const MapObject *object) const = 0;
+
+    /**
+     * Returns the shape of the given point \a object, conforming to the
+     * shape() method requirements.
+     */
+    QPainterPath pointShape(const MapObject *object) const;
 
     /**
      * Draws the tile grid in the specified \a rect using the given
@@ -134,6 +145,11 @@ public:
                                const QColor &color) const = 0;
 
     /**
+     * Draws the a pin in the given \a color using the \a painter.
+     */
+    void drawPointObject(QPainter *painter, const QColor &color) const;
+
+    /**
      * Draws the given image \a layer using the given \a painter.
      */
     void drawImageLayer(QPainter *painter,
@@ -156,6 +172,14 @@ public:
         return screenPolygon;
     }
 
+    QPolygonF screenToPixelCoords(const QPolygonF &polygon) const
+    {
+        QPolygonF pixelPolygon(polygon.size());
+        for (int i = polygon.size() - 1; i >= 0; --i)
+            pixelPolygon[i] = screenToPixelCoords(polygon[i]);
+        return pixelPolygon;
+    }
+
     /**
      * Returns the pixel coordinates matching the given tile coordinates.
      */
@@ -174,33 +198,25 @@ public:
      * Returns the tile coordinates matching the given screen position.
      */
     virtual QPointF screenToTileCoords(qreal x, qreal y) const = 0;
-
-    inline QPointF screenToTileCoords(const QPointF &point) const
-    { return screenToTileCoords(point.x(), point.y()); }
+    inline QPointF screenToTileCoords(const QPointF &point) const;
 
     /**
      * Returns the screen position matching the given tile coordinates.
      */
     virtual QPointF tileToScreenCoords(qreal x, qreal y) const = 0;
-
-    inline QPointF tileToScreenCoords(const QPointF &point) const
-    { return tileToScreenCoords(point.x(), point.y()); }
+    inline QPointF tileToScreenCoords(const QPointF &point) const;
 
     /**
      * Returns the pixel position matching the given screen position.
      */
     virtual QPointF screenToPixelCoords(qreal x, qreal y) const = 0;
-
-    inline QPointF screenToPixelCoords(const QPointF &point) const
-    { return screenToPixelCoords(point.x(), point.y()); }
+    inline QPointF screenToPixelCoords(const QPointF &point) const;
 
     /**
      * Returns the screen position matching the given pixel position.
      */
     virtual QPointF pixelToScreenCoords(qreal x, qreal y) const = 0;
-
-    inline QPointF pixelToScreenCoords(const QPointF &point) const
-    { return pixelToScreenCoords(point.x(), point.y()); }
+    inline QPointF pixelToScreenCoords(const QPointF &point) const;
 
     qreal objectLineWidth() const { return mObjectLineWidth; }
     void setObjectLineWidth(qreal lineWidth) { mObjectLineWidth = lineWidth; }
@@ -218,10 +234,7 @@ public:
     static QPolygonF lineToPolygon(const QPointF &start, const QPointF &end);
 
 protected:
-    /**
-     * Returns the map this renderer is associated with.
-     */
-    const Map *map() const { return mMap; }
+    QPen makeGridPen(const QPaintDevice *device, QColor color) const;
 
 private:
     const Map *mMap;
@@ -230,6 +243,32 @@ private:
     qreal mObjectLineWidth;
     qreal mPainterScale;
 };
+
+inline const Map *MapRenderer::map() const
+{
+    return mMap;
+}
+
+inline QPointF MapRenderer::screenToTileCoords(const QPointF &point) const
+{
+    return screenToTileCoords(point.x(), point.y());
+}
+
+inline QPointF MapRenderer::tileToScreenCoords(const QPointF &point) const
+{
+    return tileToScreenCoords(point.x(), point.y());
+}
+
+inline QPointF MapRenderer::screenToPixelCoords(const QPointF &point) const
+{
+    return screenToPixelCoords(point.x(), point.y());
+}
+
+inline QPointF MapRenderer::pixelToScreenCoords(const QPointF &point) const
+{
+    return pixelToScreenCoords(point.x(), point.y());
+}
+
 
 /**
  * A utility class for rendering cells.
@@ -242,22 +281,26 @@ public:
         BottomCenter
     };
 
-    explicit CellRenderer(QPainter *painter);
+    enum CellType {
+        OrthogonalCells,
+        HexagonalCells
+    };
+
+    explicit CellRenderer(QPainter *painter, CellType cellType = OrthogonalCells);
 
     ~CellRenderer() { flush(); }
 
-    void render(const Cell &cell, const QPointF &pos, Origin origin);
+    void render(const Cell &cell, const QPointF &pos, const QSizeF &size, Origin origin);
     void flush();
 
 private:
     QPainter * const mPainter;
-    Tile *mTile;
+    const Tile *mTile;
     QVector<QPainter::PixmapFragment> mFragments;
     const bool mIsOpenGL;
+    const CellType mCellType;
 };
 
 } // namespace Tiled
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::RenderFlags)
-
-#endif // MAPRENDERER_H

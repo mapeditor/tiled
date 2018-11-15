@@ -22,10 +22,12 @@
 #include "abstracttool.h"
 
 #include "mapdocument.h"
+#include "toolmanager.h"
 
 #include <QKeyEvent>
 
-using namespace Tiled::Internal;
+namespace Tiled {
+namespace Internal {
 
 AbstractTool::AbstractTool(const QString &name, const QIcon &icon,
                            const QKeySequence &shortcut, QObject *parent)
@@ -34,7 +36,8 @@ AbstractTool::AbstractTool(const QString &name, const QIcon &icon,
     , mIcon(icon)
     , mShortcut(shortcut)
     , mEnabled(false)
-    , mMapDocument(0)
+    , mToolManager(nullptr)
+    , mMapDocument(nullptr)
 {
 }
 
@@ -50,18 +53,43 @@ void AbstractTool::setStatusInfo(const QString &statusInfo)
     }
 }
 
+/**
+ * Sets the cursor used by this tool. This will be the cursor set on the
+ * viewport of the MapView while the tool is active.
+ */
+void AbstractTool::setCursor(const QCursor &cursor)
+{
+    mCursor = cursor;
+    emit cursorChanged(cursor);
+}
+
 void AbstractTool::setEnabled(bool enabled)
 {
     if (mEnabled == enabled)
         return;
 
     mEnabled = enabled;
-    emit enabledChanged(mEnabled);
+    emit enabledChanged(enabled);
+}
+
+Tile *AbstractTool::tile() const
+{
+    return toolManager()->tile();
+}
+
+ObjectTemplate *AbstractTool::objectTemplate() const
+{
+    return toolManager()->objectTemplate();
 }
 
 void AbstractTool::keyPressed(QKeyEvent *event)
 {
     event->ignore();
+}
+
+void AbstractTool::mouseDoubleClicked(QGraphicsSceneMouseEvent *event)
+{
+    mousePressed(event);
 }
 
 void AbstractTool::setMapDocument(MapDocument *mapDocument)
@@ -70,10 +98,10 @@ void AbstractTool::setMapDocument(MapDocument *mapDocument)
         return;
 
     if (mMapDocument) {
-        disconnect(mMapDocument, SIGNAL(layerChanged(int)),
-                   this, SLOT(updateEnabledState()));
-        disconnect(mMapDocument, SIGNAL(currentLayerIndexChanged(int)),
-                   this, SLOT(updateEnabledState()));
+        disconnect(mMapDocument, &MapDocument::layerChanged,
+                   this, &AbstractTool::updateEnabledState);
+        disconnect(mMapDocument, &MapDocument::currentLayerChanged,
+                   this, &AbstractTool::updateEnabledState);
     }
 
     MapDocument *oldDocument = mMapDocument;
@@ -81,15 +109,23 @@ void AbstractTool::setMapDocument(MapDocument *mapDocument)
     mapDocumentChanged(oldDocument, mMapDocument);
 
     if (mMapDocument) {
-        connect(mMapDocument, SIGNAL(layerChanged(int)),
-                this, SLOT(updateEnabledState()));
-        connect(mMapDocument, SIGNAL(currentLayerIndexChanged(int)),
-                this, SLOT(updateEnabledState()));
+        connect(mMapDocument, &MapDocument::layerChanged,
+                this, &AbstractTool::updateEnabledState);
+        connect(mMapDocument, &MapDocument::currentLayerChanged,
+                this, &AbstractTool::updateEnabledState);
     }
     updateEnabledState();
 }
 
 void AbstractTool::updateEnabledState()
 {
-    setEnabled(mMapDocument != 0);
+    setEnabled(mMapDocument != nullptr);
 }
+
+Layer *AbstractTool::currentLayer() const
+{
+    return mMapDocument ? mMapDocument->currentLayer() : nullptr;
+}
+
+} // namespace Internal
+} // namespace Tiled

@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TENGINE_GLOBAL_H
-#define TENGINE_GLOBAL_H
+#pragma once
 
 #include <QtCore/qglobal.h>
 
@@ -28,5 +27,3 @@
 #else
 #  define TENGINESHARED_EXPORT Q_DECL_IMPORT
 #endif
-
-#endif // TENGINE_GLOBAL_H

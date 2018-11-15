@@ -19,43 +19,94 @@
  */
 
 #include "command.h"
-#include "documentmanager.h"
-#include "mapdocument.h"
 
+#include "commandmanager.h"
+#include "documentmanager.h"
+#include "logginginterface.h"
+#include "mapdocument.h"
+#include "mapobject.h"
+
+#include <QDir>
 #include <QMessageBox>
-#include <QSettings>
+#include <QStandardPaths>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
 
+QString Command::finalWorkingDirectory() const
+{
+    QString finalWorkingDirectory = workingDirectory;
+
+    finalWorkingDirectory = replaceVariables(finalWorkingDirectory, false);
+
+    QString finalExecutable = replaceVariables(executable);
+    QFileInfo mFile(finalExecutable);
+
+    if (!mFile.exists())
+        mFile = QFileInfo(QStandardPaths::findExecutable(finalExecutable));
+
+    finalWorkingDirectory.replace(QLatin1String("%executablepath"),
+                                  mFile.absolutePath());
+
+    return finalWorkingDirectory;
+}
+
 QString Command::finalCommand() const
 {
-    QString finalCommand = command;
+    QString finalCommand = QString(QLatin1String("%1 %2")).arg(executable, arguments);
 
-    // Perform map filename replacement
-    MapDocument *mapDocument = DocumentManager::instance()->currentDocument();
-    if (mapDocument) {
-        const QString fileName = mapDocument->fileName();
-        finalCommand.replace(QLatin1String("%mapfile"),
-                             QString(QLatin1String("\"%1\"")).arg(fileName));
+    return replaceVariables(finalCommand);
+}
+
+QString Command::replaceVariables(const QString &string, bool quoteValues) const
+{
+    QString finalString = string;
+
+    QString replaceString = (quoteValues) ? QString(QLatin1String("\"%1\"")) :
+                                            QString(QLatin1String("%1"));
+
+    // Perform variable replacement
+    if (Document *document = DocumentManager::instance()->currentDocument()) {
+        const QString fileName = document->fileName();
+
+        finalString.replace(QLatin1String("%mapfile"),
+                            replaceString.arg(fileName));
+
+        QFileInfo fileInfo(fileName);
+        QString mapPath = fileInfo.absolutePath();
+
+        finalString.replace(
+            QLatin1String("%mappath"),
+            replaceString.arg(mapPath));
+
+        if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document)) {
+            if (const Layer *layer = mapDocument->currentLayer()) {
+                finalString.replace(QLatin1String("%layername"),
+                                    replaceString.arg(layer->name()));
+            }
+        }
+
+        if (MapObject *currentObject = dynamic_cast<MapObject *>(document->currentObject())) {
+            finalString.replace(QLatin1String("%objecttype"),
+                                replaceString.arg(currentObject->type()));
+            finalString.replace(QLatin1String("%objectid"),
+                                replaceString.arg(currentObject->id()));
+        }
     }
 
-    return finalCommand;
+    return finalString;
 }
 
 void Command::execute(bool inTerminal) const
 {
-    // Save if save option is unset or true
-    QSettings settings;
-    QVariant variant = settings.value(QLatin1String("saveBeforeExecute"), true);
-    if (variant.toBool()) {
-        MapDocument *document = DocumentManager::instance()->currentDocument();
+    if (saveBeforeExecute) {
+        Document *document = DocumentManager::instance()->currentDocument();
         if (document)
-            document->save();
+            document->save(document->fileName());
     }
 
     // Start the process
-    new CommandProcess(*this, inTerminal);
+    new CommandProcess(*this, inTerminal, showOutput);
 }
 
 QVariant Command::toQVariant() const
@@ -63,7 +114,12 @@ QVariant Command::toQVariant() const
     QHash<QString, QVariant> hash;
     hash[QLatin1String("Enabled")] = isEnabled;
     hash[QLatin1String("Name")] = name;
-    hash[QLatin1String("Command")] = command;
+    hash[QLatin1String("Command")] = executable;
+    hash[QLatin1String("Arguments")] = arguments;
+    hash[QLatin1String("WorkingDirectory")] = workingDirectory;
+    hash[QLatin1String("Shortcut")] = shortcut;
+    hash[QLatin1String("ShowOutput")] = showOutput;
+    hash[QLatin1String("SaveBeforeExecute")] = saveBeforeExecute;
     return hash;
 }
 
@@ -72,37 +128,53 @@ Command Command::fromQVariant(const QVariant &variant)
     const QHash<QString, QVariant> hash = variant.toHash();
 
     const QString namePref = QLatin1String("Name");
-    const QString commandPref = QLatin1String("Command");
+    const QString executablePref = QLatin1String("Command");
+    const QString argumentsPref = QLatin1String("Arguments");
+    const QString workingDirectoryPref = QLatin1String("WorkingDirectory");
     const QString enablePref = QLatin1String("Enabled");
+    const QString shortcutPref = QLatin1String("Shortcut");
+    const QString showOutputPref = QLatin1String("ShowOutput");
+    const QString saveBeforeExecutePref = QLatin1String("SaveBeforeExecute");
 
     Command command;
     if (hash.contains(enablePref))
         command.isEnabled = hash[enablePref].toBool();
     if (hash.contains(namePref))
         command.name = hash[namePref].toString();
-    if (hash.contains(commandPref))
-        command.command = hash[commandPref].toString();
+    if (hash.contains(executablePref))
+        command.executable = hash[executablePref].toString();
+    if (hash.contains(argumentsPref))
+        command.arguments = hash[argumentsPref].toString();
+    if (hash.contains(workingDirectoryPref))
+        command.workingDirectory = hash[workingDirectoryPref].toString();
+    if (hash.contains(shortcutPref))
+        command.shortcut = hash[shortcutPref].value<QKeySequence>();
+    if (hash.contains(showOutputPref))
+        command.showOutput = hash[showOutputPref].toBool();
+    if (hash.contains(saveBeforeExecutePref))
+        command.saveBeforeExecute = hash[saveBeforeExecutePref].toBool();
 
     return command;
 }
 
-CommandProcess::CommandProcess(const Command &command, bool inTerminal)
+CommandProcess::CommandProcess(const Command &command, bool inTerminal, bool showOutput)
     : QProcess(DocumentManager::instance())
     , mName(command.name)
     , mFinalCommand(command.finalCommand())
+    , mFinalWorkingDirectory(command.finalWorkingDirectory())
 #ifdef Q_OS_MAC
-    , mFile(QLatin1String("tiledXXXXXX.command"))
+    , mFile(QDir::tempPath() + QLatin1String("/tiledXXXXXX.command"))
 #endif
 {
     // Give an error if the command is empty or just whitespace
     if (mFinalCommand.trimmed().isEmpty()) {
-        handleError(QProcess::FailedToStart);
+        handleProcessError(QProcess::FailedToStart);
         return;
     }
 
     // Modify the command to run in a terminal
     if (inTerminal) {
-#ifdef Q_WS_X11
+#ifdef Q_OS_LINUX
         static bool hasGnomeTerminal = QProcess::execute(
                                     QLatin1String("which gnome-terminal")) == 0;
 
@@ -113,25 +185,25 @@ CommandProcess::CommandProcess(const Command &command, bool inTerminal)
 #elif defined(Q_OS_MAC)
         // The only way I know to launch a Terminal with a command on mac is
         // to make a .command file and open it. The client command invoke the
-        // exectuable directly (rather than using open) in order to get std
+        // executable directly (rather than using open) in order to get std
         // output in the terminal. Otherwise, you can use the Console
         // application to see the output.
 
         // Create and write the command to a .command file
 
         if (!mFile.open()) {
-            handleError(tr("Unable to create/open %1").arg(mFile.fileName()));
+            reportErrorAndDelete(tr("Unable to create/open %1").arg(mFile.fileName()));
             return;
         }
-        mFile.write(mFinalCommand.toStdString().c_str());
+        mFile.write(mFinalCommand.toLocal8Bit());
         mFile.close();
 
         // Add execute permission to the file
         int chmodRet = QProcess::execute(QString(QLatin1String(
                                      "chmod +x \"%1\"")).arg(mFile.fileName()));
         if (chmodRet != 0) {
-            handleError(tr("Unable to add executable permissions to %1")
-                                                        .arg(mFile.fileName()));
+            reportErrorAndDelete(tr("Unable to add executable permissions to %1")
+                                 .arg(mFile.fileName()));
             return;
         }
 
@@ -143,15 +215,44 @@ CommandProcess::CommandProcess(const Command &command, bool inTerminal)
 #endif
     }
 
-    connect(this, SIGNAL(error(QProcess::ProcessError)),
-            SLOT(handleError(QProcess::ProcessError)));
+#if QT_VERSION < 0x050600
+    connect(this, static_cast<void(QProcess::*)(QProcess::ProcessError)>(&QProcess::error),
+            this, &CommandProcess::handleProcessError);
+#else
+    connect(this, &QProcess::errorOccurred,
+            this, &CommandProcess::handleProcessError);
+#endif
 
-    connect(this, SIGNAL(finished(int)), SLOT(deleteLater()));
+    connect(this, static_cast<void(QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished),
+            this, &QObject::deleteLater);
+
+    if (showOutput) {
+        CommandManager::instance()->logger()->log(LoggingInterface::INFO,
+                                                  tr("Executing: %1").arg(mFinalCommand));
+
+        connect(this, &QProcess::readyReadStandardError, this, &CommandProcess::consoleError);
+        connect(this, &QProcess::readyReadStandardOutput, this, &CommandProcess::consoleOutput);
+    }
+
+    if (!mFinalWorkingDirectory.trimmed().isEmpty())
+        setWorkingDirectory(mFinalWorkingDirectory);
 
     start(mFinalCommand);
 }
 
-void CommandProcess::handleError(QProcess::ProcessError error)
+void CommandProcess::consoleOutput()
+{
+    CommandManager::instance()->logger()->log(LoggingInterface::INFO,
+                                              QString::fromLocal8Bit(readAllStandardOutput()));
+}
+
+void CommandProcess::consoleError()
+{
+    CommandManager::instance()->logger()->log(LoggingInterface::ERROR,
+                                              QString::fromLocal8Bit(readAllStandardError()));
+}
+
+void CommandProcess::handleProcessError(QProcess::ProcessError error)
 {
     QString errorStr;
     switch (error) {
@@ -168,14 +269,13 @@ void CommandProcess::handleError(QProcess::ProcessError error)
         errorStr = tr("An unknown error occurred.");
     }
 
-    handleError(errorStr);
+    reportErrorAndDelete(errorStr);
 }
 
-void CommandProcess::handleError(const QString &error)
+void CommandProcess::reportErrorAndDelete(const QString &error)
 {
-    QString title = tr("Error Executing %1").arg(mName);
-
-    QString message = error + QLatin1String("\n\n") + mFinalCommand;
+    const QString title = tr("Error Executing %1").arg(mName);
+    const QString message = error + QLatin1String("\n\n") + mFinalCommand;
 
     QWidget *parent = DocumentManager::instance()->widget();
     QMessageBox::warning(parent, title, message);

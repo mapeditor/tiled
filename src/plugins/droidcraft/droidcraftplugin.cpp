@@ -21,15 +21,15 @@
 #include "droidcraftplugin.h"
 
 #include "map.h"
+#include "savefile.h"
 #include "tile.h"
 #include "tileset.h"
 #include "tilelayer.h"
 #include "compression.h"
 
 #include <QFile>
-#include <QFileInfo>
 
-using namespace Droidcraft;
+namespace Droidcraft {
 
 DroidcraftPlugin::DroidcraftPlugin()
 {
@@ -54,7 +54,7 @@ Tiled::Map *DroidcraftPlugin::read(const QString &fileName)
     // Check the data
     if (uncompressed.count() != 48 * 48) {
         mError = tr("This is not a valid Droidcraft map file!");
-        return 0;
+        return nullptr;
     }
 
     // Build 48 x 48 map
@@ -62,8 +62,8 @@ Tiled::Map *DroidcraftPlugin::read(const QString &fileName)
     // -> Create a TileLayer -> Fill layer -> Add TileLayer to Map
     Map *map = new Map(Map::Orthogonal, 48, 48, 32, 32);
 
-    Tileset *mapTileset = new Tileset("tileset", 32, 32);
-    mapTileset->loadFromImage(QImage(":/tileset.png"), "tileset.png");
+    SharedTileset mapTileset(Tileset::create("tileset", 32, 32));
+    mapTileset->loadFromImage(QImage(":/tileset.png"), QUrl("qrc://tileset.png"));
     map->addTileset(mapTileset);
 
     // Fill layer
@@ -71,12 +71,12 @@ Tiled::Map *DroidcraftPlugin::read(const QString &fileName)
 
     // Load
     for (int i = 0; i < 48 * 48; i++) {
-        unsigned char tileFile = uncompressed.at(i);
+        unsigned char tileId = uncompressed.at(i);
 
         int y = i / 48;
         int x = i - (48 * y);
 
-        Tile *tile = mapTileset->tileAt(tileFile);
+        Tile *tile = mapTileset->findTile(tileId);
         mapLayer->setCell(x, y, Cell(tile));
     }
 
@@ -87,7 +87,7 @@ Tiled::Map *DroidcraftPlugin::read(const QString &fileName)
 
 bool DroidcraftPlugin::supportsFile(const QString &fileName) const
 {
-    return QFileInfo(fileName).suffix() == QLatin1String("dat");
+    return fileName.endsWith(QLatin1String(".dat"), Qt::CaseInsensitive);
 }
 
 // Writer
@@ -117,7 +117,7 @@ bool DroidcraftPlugin::write(const Tiled::Map *map, const QString &fileName)
 
     for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {
-            if (Tile *tile = mapLayer->cellAt(x, y).tile)
+            if (Tile *tile = mapLayer->cellAt(x, y).tile())
                 uncompressed[y * width + x] = (unsigned char) tile->id();
         }
     }
@@ -125,14 +125,18 @@ bool DroidcraftPlugin::write(const Tiled::Map *map, const QString &fileName)
     QByteArray compressed = compress(uncompressed, Gzip);
 
     // Write QByteArray
-    QFile file(fileName);
+    SaveFile file(fileName);
     if (!file.open(QIODevice::WriteOnly)) {
         mError = tr("Could not open file for writing.");
         return false;
     }
 
-    file.write(compressed);
-    file.close();
+    file.device()->write(compressed);
+
+    if (!file.commit()) {
+        mError = file.errorString();
+        return false;
+    }
 
     return true;
 }
@@ -142,11 +146,14 @@ QString DroidcraftPlugin::nameFilter() const
     return tr("Droidcraft map files (*.dat)");
 }
 
+QString DroidcraftPlugin::shortName() const
+{
+    return QLatin1String("droidcraft");
+}
+
 QString DroidcraftPlugin::errorString() const
 {
     return mError;
 }
 
-#if QT_VERSION < 0x050000
-Q_EXPORT_PLUGIN2(Droidcraft, DroidcraftPlugin)
-#endif
+} // namespace Droidcraft

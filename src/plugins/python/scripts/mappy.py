@@ -2,14 +2,19 @@
 Mappy support for Tiled
 2012-2013, <samuli@tuomola.net>
 """
-from tiled import *
-from tiled.qt import *
-import os, sys, struct
-from lib.mappy_types import BLKSTR, MPHD, fmpchunk
-import pickle
-from StringIO import StringIO
-from collections import OrderedDict
 from base64 import b64encode, b64decode
+from collections import OrderedDict
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
+
+import os, sys, struct
+import pickle
+
+import tiled as T
+from lib.mappy_types import BLKSTR, MPHD, fmpchunk
+
 
 class FMPPicklerMixin:
 
@@ -23,12 +28,12 @@ class FMPPicklerMixin:
       frm.data = fh.read(4)
       filelen = frm.len - 16
       chunks[frm.id] = frm
-      print frm
+      print(frm)
 
       while fh.tell() < filelen:
         fc = fmpchunk()
         if not fc.unpack(fh): break
-        print fh.tell(), fc
+        print(fh.tell(), fc)
         fc.data = fh.read(fc.len)
         chunks[fc.id] = fc
 
@@ -39,7 +44,7 @@ class FMPPicklerMixin:
 
     with open(fn, 'wb') as fh:
       for k,v in chunks.items():
-        print k, len(v) + v.len # chunk header + data
+        print(k, len(v) + v.len) # chunk header + data
         fh.write(v.pack())
         fh.write(v.data)
 
@@ -48,55 +53,59 @@ class FMPPicklerMixin:
     src = StringIO()
     pi = pickle.Pickler(src, 2)
     pi.dump(chunks)
-    print "packlen", src.len
+    print("packlen", src.len)
     return b64encode(src.getvalue())
 
   @classmethod
   def unpicklechunks(cls, data):
     src = StringIO(b64decode(data))
-    print "unpacklen",src.len
+    print("unpacklen",src.len)
     return pickle.Unpickler(src).load()
 
 
-class Mappy(Plugin, FMPPicklerMixin):
+class Mappy(T.Plugin, FMPPicklerMixin):
 
   @classmethod
   def nameFilter(cls):
     return "Mappy (*.fmp)"
 
   @classmethod
+  def shortName(cls):
+    return "mappy"
+
+  @classmethod
   def supportsFile(cls, f):
-    return open(f).read(4) == 'FORM'
+    return open(f,'rb').read(4) == b'FORM'
 
   @classmethod
   def read(cls, f):
 
-    print 'Loading map at',f
+    print('Loading map at',f)
     chunks = cls.unpackchunks(f)
     hd = MPHD()
     # perhaps cpystruct should only read as many bytes as it can handle?
     hd.unpack(chunks['MPHD'].data[:len(hd)])
 
-    m = Tiled.Map(Tiled.Map.Orthogonal, hd.mapwidth, hd.mapheight,
+    m = T.Tiled.Map(T.Tiled.Map.Orthogonal, hd.mapwidth, hd.mapheight,
                     hd.blockwidth, hd.blockheight)
     if hd.type == 2:
-      print 'Isometric maps not supported at the moment'
+      print('Isometric maps not supported at the moment')
       return m
 
-    m.setProperty('chunks', cls.picklechunks(chunks))
+    #TODO: m.setProperty('chunks', cls.picklechunks(chunks))
 
-    tset = Tiled.Tileset('Tiles', hd.blockwidth, hd.blockheight, 0, 0)
+    tset = T.Tiled.Tileset.create('Tiles', hd.blockwidth, hd.blockheight, 0, 0)
     cmap = list(FMPColormap.unpack(chunks['CMAP'].data))
-    tset.loadFromImage(FMPTileGfx.unpack(hd, chunks['BGFX'].data, cmap), "")
+    tset.data().loadFromImage(FMPTileGfx.unpack(hd, chunks['BGFX'].data, cmap), "")
 
     blks = FMPBlocks(chunks['BKDT'].data, hd).blocks
 
     for c in ['LYR'+str(i) for i in range(7,0,-1)]+['BODY']:
-      if not chunks.has_key(c): continue
-      print 'populating',c
-      lay = Tiled.TileLayer(c,0,0,hd.mapwidth, hd.mapheight)
+      if c not in chunks: continue
+      print('populating',c)
+      lay = T.Tiled.TileLayer(c,0,0,hd.mapwidth, hd.mapheight)
       lvl = list(FMPLayer.unpack(hd, chunks[c].data))
-      FMPLayer.populate(lay, blks, tset, hd, lvl)
+      FMPLayer.populate(lay, blks, tset.data(), hd, lvl)
       m.addLayer(lay)
 
     m.addTileset(tset)
@@ -107,14 +116,14 @@ class Mappy(Plugin, FMPPicklerMixin):
   @classmethod
   def write(cls, m, fn):
 
-    if m.orientation() != Tiled.Map.Orthogonal:
-      print 'Isometric maps not supported at the moment'
+    if m.orientation() != T.Tiled.Map.Orthogonal:
+      print('Isometric maps not supported at the moment')
       return False
     if not m.property('chunks'):
       raise Exception("Export depends on unparsed binary blobs from original "
                       +"fmp to be stored in the map property 'chunks'")
 
-    print 'Writing map at',fn
+    print('Writing map at',fn)
 
     chunks = cls.unpicklechunks(m.property('chunks'))
     hd = MPHD()
@@ -155,18 +164,18 @@ class FMPTileGfx:
   @classmethod
   def unpack(cls, hd, dat, cmap):
     n = 0
-    w,h = hd.blockwidth*10, hd.blockheight*hd.numblockgfx/10+hd.blockheight
-    fmt = QImage.Format_Indexed8 if hd.blockdepth==8 else QImage.Format_ARGB32
-    img = QImage(w, h, fmt)
+    w,h = hd.blockwidth*10, int(hd.blockheight*hd.numblockgfx/10+hd.blockheight)
+    fmt = T.qt.QImage.Format_Indexed8 if hd.blockdepth==8 else T.qt.QImage.Format_ARGB32
+    img = T.qt.QImage(w, h, fmt)
     img.setColorTable(cmap)
 
     for i in range(hd.numblockgfx):
-      col,row = i%10, i/10
+      col,row = int(i%10), int(i/10)
       tx,ty = col*hd.blockwidth, row*hd.blockheight
 
       for y in range(hd.blockheight):
         for x in range(hd.blockwidth):
-          c = struct.unpack('B', dat[n])[0]
+          c = struct.unpack('B', dat[n:n+1])[0]
           if hd.blockdepth==8:
             img.setPixel(tx+x, ty+y, c)
           else:
@@ -190,7 +199,7 @@ class FMPLayer:
   @classmethod
   def pack(cls, hd, blocks, layer, laynum):
     dat = StringIO()
-    print hd
+    print(hd)
     for y in range(layer.height()):
       for x in range(layer.width()):
         cell = layer.cellAt(x, y)
@@ -210,18 +219,18 @@ class FMPLayer:
 
       for y in range(hd.mapheight):
         for x in range(hd.mapwidth):
-          v = ldata[i]
+          v = int(ldata[i])
 
           if v >= len(blocks):
             pass#print 'unknown block at',i
           else:
-            n = blocks[ldata[i]].olay[fg]
+            n = int(blocks[v].olay[fg])
             if n != 0:
               ti = tileset.tileAt(n)
               if ti is None:
-                print 'invalid tile',n,'at',x,y
+                print('invalid tile',n,'at',x,y)
               else:
-                layer.setCell(x, y, Tiled.Cell(ti))
+                layer.setCell(x, y, T.Tiled.Cell(ti))
           i += 1
 
 
@@ -230,14 +239,14 @@ class FMPColormap:
   @classmethod
   def unpack(self, cmap):
     """cmap -- rgb bytearray"""
-    print 'got',len(cmap)
+    print('got',len(cmap))
     for i in range(0,len(cmap),3):
       r,g,b = struct.unpack('3B', cmap[i:i+3])
-      yield QColor(r,g,b).rgb()
+      yield T.qt.QColor(r,g,b).rgb()
 
   @classmethod
   def pack(self, cmap):
-    """cmap -- QImage.colorTable"""
+    """cmap -- T.qt.QImage.colorTable"""
     yield fmpchunk(id='CMAP', len=len(list(cmap))).pack()
     for c in cmap:
       yield struct.pack('3B', (c.qRed,c.qGreen,c.qBlue))

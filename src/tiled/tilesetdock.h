@@ -20,9 +20,11 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILESETDOCK_H
-#define TILESETDOCK_H
+#pragma once
 
+#include "tileset.h"
+
+#include <QAbstractItemModel>
 #include <QDockWidget>
 #include <QList>
 #include <QMap>
@@ -32,7 +34,6 @@ class QActionGroup;
 class QComboBox;
 class QMenu;
 class QModelIndex;
-class QSignalMapper;
 class QStackedWidget;
 class QTabBar;
 class QToolBar;
@@ -47,8 +48,12 @@ class Tileset;
 
 namespace Internal {
 
+class Document;
 class MapDocument;
+class TilesetDocument;
+class TilesetDocumentsFilterModel;
 class TilesetView;
+class TileStamp;
 class Zoomable;
 
 /**
@@ -63,7 +68,7 @@ public:
     /**
      * Constructor.
      */
-    TilesetDock(QWidget *parent = 0);
+    TilesetDock(QWidget *parent = nullptr);
 
     ~TilesetDock();
 
@@ -77,6 +82,8 @@ public:
      */
     Tile *currentTile() const { return mCurrentTile; }
 
+    void selectTilesInStamp(const TileStamp &);
+
 signals:
     /**
      * Emitted when the current tile changed.
@@ -86,87 +93,100 @@ signals:
     /**
      * Emitted when the currently selected tiles changed.
      */
-    void currentTilesChanged(const TileLayer *tiles);
+    void stampCaptured(const TileStamp &);
 
     /**
      * Emitted when files are dropped at the tileset dock.
      */
-    void tilesetsDropped(const QStringList &paths);
+    // todo: change to QList<QUrl>
+    void localFilesDropped(const QStringList &paths);
 
 protected:
-    void changeEvent(QEvent *e);
+    void changeEvent(QEvent *e) override;
 
-    void dragEnterEvent(QDragEnterEvent *);
-    void dropEvent(QDropEvent *);
+    void dragEnterEvent(QDragEnterEvent *) override;
+    void dropEvent(QDropEvent *) override;
 
 private slots:
+    void currentTilesetChanged();
     void selectionChanged();
+    void currentChanged(const QModelIndex &index);
+
     void updateActions();
     void updateCurrentTiles();
-    void updateCurrentTile();
     void indexPressed(const QModelIndex &index);
 
-    void tilesetAdded(int index, Tileset *tileset);
     void tilesetChanged(Tileset *tileset);
-    void tilesetRemoved(Tileset *tileset);
-    void tilesetMoved(int from, int to);
-    void tilesetNameChanged(Tileset *tileset);
+    void tilesetFileNameChanged(const QString &fileName);
+
+    void tileImageSourceChanged(Tile *tile);
     void tileAnimationChanged(Tile *tile);
 
     void removeTileset();
-    void removeTileset(int index);
-    void moveTileset(int from, int to);
+    void removeTilesetAt(int index);
 
-    void editTilesetProperties();
-    void importTileset();
+    void newTileset();
+    void editTileset();
+    void embedTileset();
     void exportTileset();
 
-    void editTerrain();
-    void addTiles();
-    void removeTiles();
-
-    void documentCloseRequested(int index);
-
     void refreshTilesetMenu();
+
+    void swapTiles(Tile *tileA, Tile *tileB);
 
 private:
     void setCurrentTile(Tile *tile);
     void setCurrentTiles(TileLayer *tiles);
     void retranslateUi();
 
+    void onTilesetRowsInserted(const QModelIndex &parent, int first, int last);
+    void onTilesetRowsAboutToBeRemoved(const QModelIndex &parent, int first, int last);
+    void onTilesetRowsMoved(const QModelIndex &parent, int start, int end, const QModelIndex &destination, int row);
+    void onTilesetLayoutChanged(const QList<QPersistentModelIndex> &parents, QAbstractItemModel::LayoutChangeHint hint);
+    void onTilesetDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
+
+    void onTabMoved(int from, int to);
+    void tabContextMenuRequested(const QPoint &pos);
+
     Tileset *currentTileset() const;
     TilesetView *currentTilesetView() const;
     TilesetView *tilesetViewAt(int index) const;
 
+    void createTilesetView(int index, TilesetDocument *tilesetDocument);
+    void deleteTilesetView(int index);
+    void moveTilesetView(int from, int to);
+    void setupTilesetModel(TilesetView *view, Tileset *tileset);
+
     MapDocument *mMapDocument;
-    QList<Tileset*> mTilesets;
+
+    // Shared tileset references because the dock wants to add new tiles
+    QVector<SharedTileset> mTilesets;
+    QList<TilesetDocument *> mTilesetDocuments;
+    TilesetDocumentsFilterModel *mTilesetDocumentsFilterModel;
+
     QTabBar *mTabBar;
+    QStackedWidget *mSuperViewStack;
     QStackedWidget *mViewStack;
     QToolBar *mToolBar;
     Tile *mCurrentTile;
     TileLayer *mCurrentTiles;
     const Terrain *mTerrain;
 
-    QAction *mImportTileset;
+    QAction *mNewTileset;
+    QAction *mEmbedTileset;
     QAction *mExportTileset;
-    QAction *mPropertiesTileset;
+    QAction *mEditTileset;
     QAction *mDeleteTileset;
-    QAction *mEditTerrain;
-    QAction *mAddTiles;
-    QAction *mRemoveTiles;
-
-    QMap<MapDocument *, QString> mCurrentTilesets;
 
     QToolButton *mTilesetMenuButton;
     QMenu *mTilesetMenu; //opens on click of mTilesetMenu
     QActionGroup *mTilesetActionGroup;
-    QSignalMapper *mTilesetMenuMapper; //needed due to dynamic content
 
-    Zoomable *mZoomable;
     QComboBox *mZoomComboBox;
+
+    bool mEmittingStampCaptured;
+    bool mSynchronizingSelection;
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TILESETDOCK_H

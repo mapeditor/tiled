@@ -19,17 +19,12 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef REPLICAISLAND_GLOBAL_H
-#define REPLICAISLAND_GLOBAL_H
+#pragma once
 
 #include <QtCore/qglobal.h>
 
 #if defined(REPLICAISLAND_LIBRARY)
 #  define REPLICAISLANDSHARED_EXPORT Q_DECL_EXPORT
-#  define REPLICAISLANDSHARED_IMPORT Q_DECL_EXPORT
 #else
 #  define REPLICAISLANDSHARED_EXPORT Q_DECL_IMPORT
-#  define REPLICAISLANDSHARED_IMPORT Q_DECL_IMPORT
 #endif
-
-#endif // REPLICAISLAND_GLOBAL_H

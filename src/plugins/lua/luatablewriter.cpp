@@ -75,6 +75,7 @@ void LuaTableWriter::writeStartTable(const QByteArray &name)
 
 void LuaTableWriter::writeEndTable()
 {
+    Q_ASSERT(m_indent > 0);
     --m_indent;
     if (m_valueWritten)
         writeNewline();
@@ -126,13 +127,27 @@ void LuaTableWriter::writeKeyAndValue(const QByteArray &key,
 }
 
 void LuaTableWriter::writeQuotedKeyAndValue(const QString &key,
-                                            const QString &value)
+                                            const QVariant &value)
 {
     prepareNewLine();
     write('[');
     write(quote(key).toUtf8());
     write("] = ");
-    write(quote(value).toUtf8());
+
+    switch (value.type()) {
+    case QVariant::Int:
+    case QVariant::UInt:
+    case QVariant::LongLong:
+    case QVariant::ULongLong:
+    case QVariant::Double:
+    case QVariant::Bool:
+        write(value.toString().toLatin1());
+        break;
+    default:
+        write(quote(value.toString()).toUtf8());
+        break;
+    }
+
     m_newLine = false;
     m_valueWritten = true;
 }
@@ -153,11 +168,11 @@ void LuaTableWriter::writeKeyAndUnquotedValue(const QByteArray &key,
  */
 QString LuaTableWriter::quote(const QString &str)
 {
-    QString quoted("\"");
+    QString quoted;
+    quoted.reserve(str.length() + 2);   // most likely scenario
+    quoted.append(QLatin1Char('"'));
 
-    for (int i = 0; i < str.length(); ++i) {
-        const QChar c = str.at(i);
-
+    for (const QChar c : str) {
         switch (c.unicode()) {
         case '\\':  quoted.append(QLatin1String("\\\\"));  break;
         case '"':   quoted.append(QLatin1String("\\\""));  break;
@@ -208,7 +223,7 @@ void LuaTableWriter::writeNewline()
     }
 }
 
-void LuaTableWriter::write(const char *bytes, unsigned length)
+void LuaTableWriter::write(const char *bytes, qint64 length)
 {
     if (m_device->write(bytes, length) != length)
         m_error = true;

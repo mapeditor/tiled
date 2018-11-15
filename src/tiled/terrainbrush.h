@@ -20,8 +20,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TERRAINBRUSH_H
-#define TERRAINBRUSH_H
+#pragma once
 
 #include "abstracttiletool.h"
 #include "tilelayer.h"
@@ -48,18 +47,18 @@ public:
         PaintVertex          // paint terrain to map vertices
     };
 
-    TerrainBrush(QObject *parent = 0);
-    ~TerrainBrush();
+    TerrainBrush(QObject *parent = nullptr);
+    ~TerrainBrush() override;
 
-    void activate(MapScene *scene);
-    void deactivate(MapScene *scene);
+    void activate(MapScene *scene) override;
+    void deactivate(MapScene *scene) override;
 
-    void mousePressed(QGraphicsSceneMouseEvent *event);
-    void mouseReleased(QGraphicsSceneMouseEvent *event);
+    void mousePressed(QGraphicsSceneMouseEvent *event) override;
+    void mouseReleased(QGraphicsSceneMouseEvent *event) override;
 
-    void modifiersChanged(Qt::KeyboardModifiers modifiers);
+    void modifiersChanged(Qt::KeyboardModifiers modifiers) override;
 
-    void languageChanged();
+    void languageChanged() override;
 
     /**
      * Sets the stamp that is drawn when painting. The stamp brush takes
@@ -83,43 +82,35 @@ public:
     }
 
 signals:
-    /**
-     * Emitted when the currently selected tiles changed. The stamp brush emits
-     * this signal instead of setting its stamp directly so that the fill tool
-     * also gets the new stamp.
-     */
-    void currentTilesChanged(const TileLayer *tiles);
+    void terrainCaptured(Terrain *terrain);
 
 protected:
-    void tilePositionChanged(const QPoint &tilePos);
+    void tilePositionChanged(const QPoint &tilePos) override;
 
     void mapDocumentChanged(MapDocument *oldDocument,
-                            MapDocument *newDocument);
+                            MapDocument *newDocument) override;
 
 private:
     void beginPaint();
 
     /**
      * Merges the tile layer of its brush item into the current map.
-     * mergeable determines if this can be merged with similar actions for undo.
-     * whereX and whereY give an offset where to merge the brush items tilelayer
-     * into the current map.
+     * \a mergeable determines if this can be merged with similar actions for undo.
      */
-    void doPaint(bool mergeable, int whereX, int whereY);
+    void doPaint(bool mergeable);
 
     void capture();
 
     /**
      * updates the brush given new coordinates.
      */
-    void updateBrush(QPoint cursorPos, const QVector<QPoint> *list = NULL);
+    void updateBrush(QPoint cursorPos, const QVector<QPoint> *list = nullptr);
 
     /**
      * The terrain we are currently painting.
      */
     const Terrain *mTerrain;
     int mPaintX, mPaintY;
-    int mOffsetX, mOffsetY;
 
     bool mIsActive;
 
@@ -141,6 +132,7 @@ private:
      */
     BrushBehavior mBrushBehavior;
     BrushMode mBrushMode;
+    bool mMirrorDiagonally;
 
     /**
      * The starting position needed for drawing lines and circles.
@@ -152,5 +144,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // STAMPBRUSH_H

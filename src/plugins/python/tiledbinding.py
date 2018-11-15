@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
  Python Tiled Plugin
  Copyright 2012-2013, Samuli Tuomola <samuli@tuomola.net>
@@ -18,9 +19,39 @@
  this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
+from __future__ import print_function
+from functools import wraps
+from operator import attrgetter, itemgetter
 from pybindgen import *
+from collections import OrderedDict
+
+
+class SimpleSortedDict(OrderedDict):
+    "naive and ineffecient but adequate for this use"
+    def items(self):
+        return sorted([[k, self[k]] for k in self], key=itemgetter(0))
+
+
+def patch_a_prop(func, prop, value_factory):
+    """replace an object property after it's given method has executed
+    """
+    assert callable(value_factory)
+    def _decorate(obj, *args, **kwargs):
+        ret = func(obj, *args, **kwargs)
+        setattr(obj, prop, value_factory())
+        return ret
+
+    return wraps(func)(_decorate)
+
+
+# after a new pybindgen container is instantiated, replace it's methods dictionary
+Module.__init__ = patch_a_prop(Module.__init__, 'methods', lambda:SimpleSortedDict())
+CppClass.__init__ = patch_a_prop(CppClass.__init__, 'methods', lambda:SimpleSortedDict())
+
 
 mod = Module('tiled')
+mod.functions = SimpleSortedDict()
+
 mod.add_include('"pythonplugin.h"')
 mod.add_include('"map.h"')
 mod.add_include('"layer.h"')
@@ -31,7 +62,9 @@ mod.add_include('"tilelayer.h"')
 mod.add_include('"objectgroup.h"')
 mod.add_include('"tileset.h"')
 
+mod.header.writeln('#ifndef _MSC_VER')
 mod.header.writeln('#pragma GCC diagnostic ignored "-Wmissing-field-initializers"')
+mod.header.writeln('#endif')
 
 # one day PyQt/PySide could be considered
 import qtbinding
@@ -41,7 +74,18 @@ qtbinding.generate(mod)
 
 tiled = mod.add_cpp_namespace('Tiled')
 
-cls_tile = tiled.add_class('Tile')
+cls_props = tiled.add_class('Properties')
+cls_props.add_copy_constructor()
+cls_props.add_method('keys', 'QList<QString>', [])
+#cls_propsc = tiled.add_container('QMap<QString,QString>', ('QString','QString'), 'map', cls_props)
+
+cls_object = tiled.add_class('Object')
+cls_object.add_method('properties', retval('Tiled::Properties','p'), [])
+cls_object.add_method('propertyAsString', 'QString', [('QString','prop')])
+cls_object.add_method('setProperty', None,
+    [('QString','prop'),('QString','val')])
+
+cls_tile = tiled.add_class('Tile', cls_object)
 cls_tile.add_method('id', 'int', [])
 cls_tile.add_method('image', retval('const QPixmap&'), [])
 cls_tile.add_method('setImage', None, [('const QPixmap&','image')])
@@ -49,9 +93,14 @@ cls_tile.add_method('width', 'int', [])
 cls_tile.add_method('height', 'int', [])
 #cls_tile.add_method('size', 'QSize', [])
 
-cls_tileset = tiled.add_class('Tileset')
-cls_tileset.add_constructor([('QString','name'), ('int','tw'), ('int','th'),
-    ('int','ts'), ('int','margin')])
+cls_tileset = tiled.add_class('Tileset', cls_object)
+cls_sharedtileset = tiled.add_class('SharedTileset')
+cls_sharedtileset.add_copy_constructor()
+cls_sharedtileset.add_method('data', retval('Tiled::Tileset*',reference_existing_object=True), [])
+
+cls_tileset.add_method('create', 'Tiled::SharedTileset',
+                       [('QString','name'), ('int','tileWidth'), ('int','tileHeight'), ('int','tileSpacing'), ('int','margin')],
+                       is_static=True)
 cls_tileset.add_method('name', 'QString', [])
 cls_tileset.add_method('setName', None, [('QString','name')])
 cls_tileset.add_method('fileName', 'QString', [])
@@ -74,20 +123,16 @@ cls_tileset.add_method('setTransparentColor', None, [('QColor','col')])
 cls_tileset.add_method('transparentColor', 'QColor', [])
 
 cls_tile.add_constructor([param('const QPixmap&','image'), param('int','id'),
-    param('Tileset*','ts',transfer_ownership=False)])
+    param('Tileset*','tileset',transfer_ownership=False)])
 cls_tile.add_method('tileset',
     retval('Tiled::Tileset*',reference_existing_object=True), [])
 
-cls_layer = tiled.add_class('Layer')
+cls_layer = tiled.add_class('Layer', cls_object)
 
 #mod.add_container('QList<Tiled::Tileset*>',
 #                retval('Tiled::Tileset*',caller_owns_return=False), 'list')
 
-cls_props = tiled.add_class('Properties')
-cls_props.add_method('keys', 'QList<QString>', [])
-#cls_propsc = tiled.add_container('QMap<QString,QString>', ('QString','QString'), 'map', cls_props)
-
-cls_map = tiled.add_class('Map')
+cls_map = tiled.add_class('Map', cls_object)
 cls_map.add_enum('Orientation', ('Unknown','Orthogonal','Isometric'))
 cls_map.add_copy_constructor()
 cls_map.add_constructor([('Orientation','orient'), ('int','w'), ('int','h'),
@@ -104,36 +149,42 @@ cls_map.add_method('layerCount', 'int', [])
 cls_map.add_method('tileLayerCount', 'int', [])
 cls_map.add_method('objectGroupCount', 'int', [])
 cls_map.add_method('addTileset', None,
-    [param('Tileset*','ts',transfer_ownership=True)])
+    [param('SharedTileset','tileset')])
 cls_map.add_method('insertTileset', None,
-    [('int','pos'),param('Tileset*','ts',transfer_ownership=True)])
+    [('int','pos'),param('SharedTileset','tileset')])
 cls_map.add_method('indexOfTileset', 'int',
-    [param('Tileset*','ts',transfer_ownership=True)])
+    [param('const SharedTileset &','tileset')])
 cls_map.add_method('removeTilesetAt', None, [('int','pos')])
 cls_map.add_method('replaceTileset', None,
-    [param('Tileset*','oldts',transfer_ownership=True),
-    param('Tileset*','newts',transfer_ownership=True)])
-cls_map.add_method('tilesetAt', 
-    retval('Tiled::Tileset*', reference_existing_object=True),
+    [param('SharedTileset','oldTileset'),
+     param('SharedTileset','newTileset')])
+cls_map.add_method('tilesetAt',
+    retval('Tiled::SharedTileset'),
     [('int','idx')])
 cls_map.add_method('tilesetCount', 'int', [])
 cls_map.add_method('isTilesetUsed', 'bool',
-    [param('Tileset*','ts',transfer_ownership=True)])
-cls_map.add_method('properties', retval('Tiled::Properties','p'), [])
-cls_map.add_method('property', 'QString', [('QString','name')])
-cls_map.add_method('setProperty', None, [('QString','name'),
-    ('QString','value')])
+    [param('const Tileset*','tileset')])
 
 cls_cell = tiled.add_class('Cell')
-cls_cell.add_constructor([param('Tiled::Tile*','tile',
-    transfer_ownership=True)])
+cls_cell.add_constructor([param('Tiled::Tile*','tile',transfer_ownership=False)])
+cls_cell.add_copy_constructor()
+cls_cell.add_binary_comparison_operator('==')
+cls_cell.add_binary_comparison_operator('!=')
 cls_cell.add_method('isEmpty', 'bool', [])
-cls_cell.add_instance_attribute('tile', retval('Tiled::Tile*', 
-    is_const=True), is_const=True)
+cls_cell.add_instance_attribute('flippedHorizontally', 'bool', getter='flippedHorizontally', setter='setFlippedHorizontally')
+cls_cell.add_instance_attribute('flippedVertically', 'bool', getter='flippedVertically', setter='setFlippedVertically')
+cls_cell.add_instance_attribute('flippedAntiDiagonally', 'bool', getter='flippedAntiDiagonally', setter='setFlippedAntiDiagonally')
+cls_cell.add_instance_attribute('rotatedHexagonal120', 'bool', getter='rotatedHexagonal120', setter='setRotatedHexagonal120')
+cls_cell.add_instance_attribute('checked', 'bool', getter='checked', setter='setChecked')
+cls_cell.add_method('tile', retval('Tiled::Tile*',reference_existing_object=True), [])
+cls_cell.add_method('tileset', retval('Tiled::Tileset*',reference_existing_object=True), [])
+cls_cell.add_method('setTile', None, [param('Tiled::Tile*','tile',transfer_ownership=False)])
 
 cls_tilelayer = tiled.add_class('TileLayer', cls_layer)
 cls_tilelayer.add_constructor([('QString','name'), ('int','x'), ('int','y'),
     ('int','w'), ('int','h')])
+cls_tilelayer.add_method('width', 'int', [])
+cls_tilelayer.add_method('height', 'int', [])
 cls_tilelayer.add_method('cellAt', retval('Tiled::Cell'),
     [('int','x'),('int','y')])
 cls_tilelayer.add_method('setCell', None, [('int','x'),('int','y'),
@@ -142,18 +193,12 @@ cls_tilelayer.add_method('referencesTileset', 'bool',
     [param('Tileset*','ts',transfer_ownership=False)])
 cls_tilelayer.add_method('isEmpty', 'bool', [])
 
-cls_imagelayer = tiled.add_class('ImageLayer')
-cls_imagelayer.add_constructor([('QString','name'), ('int','x'), ('int','y'),
-    ('int','w'), ('int','h')])
+cls_imagelayer = tiled.add_class('ImageLayer', cls_layer)
+cls_imagelayer.add_constructor([('QString','name'), ('int','x'), ('int','y')])
 cls_imagelayer.add_method('loadFromImage', 'bool',
     [('const QImage&','img'),('QString','file')])
 cls_imagelayer.add_method('image', retval('const QPixmap&'), [])
 cls_imagelayer.add_method('setImage', None, [('const QPixmap&','image')])
-
-cls_object = tiled.add_class('Object')
-cls_object.add_method('property', 'QString', [('QString','prop')])
-cls_object.add_method('setProperty', None,
-    [('QString','prop'),('QString','val')])
 
 cls_mapobject = tiled.add_class('MapObject', cls_object)
 cls_mapobject.add_constructor([])
@@ -161,15 +206,15 @@ cls_mapobject.add_constructor([('QString','name'), ('QString','type'),
     ('QPointF','pos'), ('QSizeF','size') ])
 cls_mapobject.add_enum('Shape', ('Rectangle','Polygon','Polyline'))
 cls_mapobject.add_method('setPosition', None, [('QPointF','pos')])
-cls_mapobject.add_method('x', 'float', [])
-cls_mapobject.add_method('setX', None, [('float','x')])
-cls_mapobject.add_method('y', 'float', [])
-cls_mapobject.add_method('setY', None, [('float','y')])
+cls_mapobject.add_method('x', 'double', [])
+cls_mapobject.add_method('setX', None, [('double','x')])
+cls_mapobject.add_method('y', 'double', [])
+cls_mapobject.add_method('setY', None, [('double','y')])
 cls_mapobject.add_method('setSize', None, [param('QSizeF','size')])
-cls_mapobject.add_method('width', 'float', [])
-cls_mapobject.add_method('setWidth', None, [('float','w')])
-cls_mapobject.add_method('height', 'float', [])
-cls_mapobject.add_method('setHeight', None, [('float','h')])
+cls_mapobject.add_method('width', 'double', [])
+cls_mapobject.add_method('setWidth', None, [('double','w')])
+cls_mapobject.add_method('height', 'double', [])
+cls_mapobject.add_method('setHeight', None, [('double','h')])
 #cls_mapobject.add_method('setPolygon', None, [param('QPolygonF','pol')])
 #cls_mapobject.add_method('polygon', 'QPolygonF', [])
 cls_mapobject.add_method('setShape', None, [param('Shape','s')])
@@ -179,8 +224,8 @@ cls_mapobject.add_method('setCell', None, [param('const Tiled::Cell','c',)])
 cls_mapobject.add_method('cell', retval('const Tiled::Cell'), [])
 #cls_mapobject.add_method('setObjectGroup', 'ObjectGroup*', [])
 #cls_mapobject.add_method('objectGroup', 'ObjectGroup*', [])
-cls_mapobject.add_method('rotation', 'float', [])
-cls_mapobject.add_method('setRotation', None, [('float','r')])
+cls_mapobject.add_method('rotation', 'double', [])
+cls_mapobject.add_method('setRotation', None, [('double','r')])
 cls_mapobject.add_method('isVisible', 'bool', [])
 cls_mapobject.add_method('setVisible', None, [('bool','v')])
 cls_mapobject.add_method('name', 'QString', [])
@@ -189,14 +234,13 @@ cls_mapobject.add_method('type', 'QString', [])
 cls_mapobject.add_method('setType', None, [('QString','n')])
 
 cls_objectgroup = tiled.add_class('ObjectGroup', cls_layer)
-cls_objectgroup.add_constructor([('QString','name'),
-    ('int','x'), ('int','y'), ('int','w'), ('int','h')])
+cls_objectgroup.add_constructor([('QString','name'), ('int','x'), ('int','y')])
 cls_objectgroup.add_method('addObject', None,
-    [param('MapObject*','mo',transfer_ownership=True)])
+    [param('MapObject*','object',transfer_ownership=True)])
 cls_objectgroup.add_method('insertObject', None,
-    [('int','idx'),param('MapObject*','mo',transfer_ownership=False)])
+    [('int','idx'),param('MapObject*','object',transfer_ownership=False)])
 cls_objectgroup.add_method('removeObject', 'int',
-    [param('MapObject*','mo',transfer_ownership=False)])
+    [param('MapObject*','object',transfer_ownership=False)])
 #cls_tilelayer.add_method('cellAt', retval('Tiled::Cell'),
 #    [('int','x'),('int','y')])
 cls_objectgroup.add_method('objectAt', retval('Tiled::MapObject*',reference_existing_object=True),[('int','index')])
@@ -219,20 +263,16 @@ cls_map.add_method('layerAt',
 
 cls_layer.add_method('name', 'QString', [])
 cls_layer.add_method('setName', None, [('QString','name')])
-cls_layer.add_method('opacity', 'float', [])
-cls_layer.add_method('setOpacity', None, [('float','opacity')])
+cls_layer.add_method('opacity', 'double', [])
+cls_layer.add_method('setOpacity', None, [('double','opacity')])
 cls_layer.add_method('isVisible', 'bool', [])
 cls_layer.add_method('setVisible', None, [('bool','visible')])
 cls_layer.add_method('map', retval('Tiled::Map*',reference_existing_object=True), [])
-cls_layer.add_method('setMap', None,
-    [param('Tiled::Map*','map',transfer_ownership=False)])
 cls_layer.add_method('x', 'int', [])
 cls_layer.add_method('setX', None, [('int','x')])
 cls_layer.add_method('y', 'int', [])
 cls_layer.add_method('setY', None, [('int','y')])
 cls_layer.add_method('setPosition', None, [('int','x'),('int','y')])
-cls_layer.add_method('width', 'int', [])
-cls_layer.add_method('height', 'int', [])
 cls_layer.add_method('asTileLayer',
     retval('Tiled::TileLayer*',reference_existing_object=True), [], is_virtual=True)
 cls_layer.add_method('asObjectGroup',
@@ -278,7 +318,7 @@ mod.add_function('loadTilesetFromFile', 'bool',
     [param('Tileset*','ts',transfer_ownership=False),('QString','file')])
 
 mod.body.writeln("""
-bool loadTilesetFromFile(Tiled::Tileset *ts, QString file)
+static bool loadTilesetFromFile(Tiled::Tileset *ts, const QString &file)
 {
     QImage img(file);
     return ts->loadFromImage(img, file);
@@ -299,7 +339,7 @@ cls_pp = mod.add_class('PythonScript',
 """
 cls_logi = tiled.add_class('LoggingInterface', destructor_visibility='private')
 cls_logi.add_enum('OutputType', ('INFO','ERROR'))
-cls_logi.add_method('log', 'void', [('OutputType','type'),('const QString','msg')], 
+cls_logi.add_method('log', 'void', [('OutputType','type'),('const QString','msg')],
     is_virtual=True)
 
 
@@ -307,21 +347,27 @@ with open('pythonbind.cpp','w') as fh:
     import pybindgen.typehandlers.codesink as cs
     sink = cs.MemoryCodeSink()
 
+    print("""
+#ifdef __MINGW32__
+#include <cmath> // included before Python.h to fix ::hypot not declared issue
+#endif
+""", file=fh)
+
     mod.generate(fh)
 
-    print >>fh, """
+    print("""
 PyObject* _wrap_convert_c2py__Tiled__LoggingInterface(Tiled::LoggingInterface *cvalue)
 {
         PyObject *py_retval;
         PyTiledLoggingInterface *py_LoggingInterface;
-        
+
         py_LoggingInterface = PyObject_New(PyTiledLoggingInterface, &PyTiledLoggingInterface_Type);
         py_LoggingInterface->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
         py_LoggingInterface->obj = cvalue;
         py_retval = Py_BuildValue((char *) "N", py_LoggingInterface);
         return py_retval;
 }
-        """
+""", file=fh)
     #mod.generate_c_to_python_type_converter(
     #  utils.eval_retval(retval("Tiled::LoggingInterface")),
     #  sink)
@@ -332,6 +378,6 @@ PyObject* _wrap_convert_c2py__Tiled__LoggingInterface(Tiled::LoggingInterface *c
         utils.eval_retval("const Tiled::Map"),
         sink)
 
-    print >>fh, sink.flush()
+    print(sink.flush(), file=fh)
 
 # vim: ai ts=4 sts=4 et sw=4 ft=python

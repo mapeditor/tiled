@@ -20,8 +20,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TERRAINMODEL_H
-#define TERRAINMODEL_H
+#pragma once
 
 #include <QAbstractItemModel>
 #include <tileset.h>
@@ -33,7 +32,7 @@ class Terrain;
 
 namespace Internal {
 
-class MapDocument;
+class TilesetDocument;
 
 /**
  * A model providing a tree view on the terrain types available on a map.
@@ -50,49 +49,34 @@ public:
     /**
      * Constructor.
      *
-     * @param mapDocument the map to manage terrains for
+     * @param tilesetDocumentsModel a model of a list of tileset documents
      */
-    TerrainModel(MapDocument *mapDocument,
-                 QObject *parent = 0);
+    TerrainModel(QAbstractItemModel *tilesetDocumentsModel,
+                 QObject *parent = nullptr);
 
     ~TerrainModel();
 
     QModelIndex index(int row, int column,
-                      const QModelIndex &parent = QModelIndex()) const;
+                      const QModelIndex &parent = QModelIndex()) const override;
 
     QModelIndex index(Tileset *tileset) const;
     QModelIndex index(Terrain *terrain) const;
 
-    QModelIndex parent(const QModelIndex &child) const;
+    QModelIndex parent(const QModelIndex &child) const override;
 
     /**
      * Returns the number of rows. For the root, this is the number of tilesets
      * with terrain types defined. Otherwise it is the number of terrain types
      * in a certain tileset.
      */
-    int rowCount(const QModelIndex &parent = QModelIndex()) const;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 
-    /**
-     * Returns the number of columns.
-     */
-    int columnCount(const QModelIndex &parent = QModelIndex()) const;
+    int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 
-    /**
-     * Returns the data stored under the given <i>role</i> for the item
-     * referred to by the <i>index</i>.
-     */
     QVariant data(const QModelIndex &index,
-                  int role = Qt::DisplayRole) const;
+                  int role = Qt::DisplayRole) const override;
 
-    /**
-     * Allows for changing the name of a terrain.
-     */
-    bool setData(const QModelIndex &index, const QVariant &value, int role);
-
-    /**
-     * Makes terrain names editable.
-     */
-    Qt::ItemFlags flags(const QModelIndex &index) const;
+    Qt::ItemFlags flags(const QModelIndex &index) const override;
 
     /**
      * Returns the tileset at the given \a index, or 0 if there is no tileset.
@@ -104,34 +88,24 @@ public:
      */
     Terrain *terrainAt(const QModelIndex &index) const;
 
-    void insertTerrain(Tileset *tileset, int index, Terrain *terrain);
-    Terrain *takeTerrainAt(Tileset *tileset, int index);
-    void setTerrainName(Tileset *tileset, int index, const QString &name);
-    void setTerrainImage(Tileset *tileset, int index, int tileId);
-
-signals:
-    void terrainAdded(Tileset *tileset, int terrainId);
-    void terrainRemoved(Terrain *terrain);
-
-    /**
-     * Emitted when either the name or the image of a terrain changed.
-     */
-    void terrainChanged(Tileset *tileset, int index);
-
 private slots:
-    void tilesetAboutToBeAdded(int index);
-    void tilesetAdded();
-    void tilesetAboutToBeRemoved(int index);
-    void tilesetRemoved();
-    void tilesetNameChanged(Tileset *tileset);
+    void onTilesetRowsInserted(const QModelIndex &parent, int first, int last);
+    void onTilesetRowsAboutToBeRemoved(const QModelIndex &parent, int first, int last);
+    void onTilesetRowsMoved(const QModelIndex &parent, int start, int end, const QModelIndex &destination, int row);
+    void onTilesetLayoutChanged(const QList<QPersistentModelIndex> &parents, QAbstractItemModel::LayoutChangeHint hint);
+    void onTilesetDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
+
+    void onTerrainAboutToBeAdded(Tileset *tileset, int terrainId);
+    void onTerrainAdded(Tileset *tileset);
+    void onTerrainAboutToBeRemoved(Terrain *terrain);
+    void onTerrainRemoved(Terrain *terrain);
+    void onTerrainAboutToBeSwapped(Tileset *tileset, int terrainId, int swapTerrainId);
+    void onTerrainSwapped();
 
 private:
-    void emitTerrainChanged(Terrain *terrain);
-
-    MapDocument *mMapDocument;
+    QAbstractItemModel *mTilesetDocumentsModel;
+    QList<TilesetDocument*> mTilesetDocuments;
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TERRAINMODEL_H

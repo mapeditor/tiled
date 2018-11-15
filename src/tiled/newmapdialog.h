@@ -18,8 +18,9 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef NEWMAPDIALOG_H
-#define NEWMAPDIALOG_H
+#pragma once
+
+#include "mapdocument.h"
 
 #include <QDialog>
 
@@ -30,8 +31,6 @@ class NewMapDialog;
 namespace Tiled {
 namespace Internal {
 
-class MapDocument;
-
 /**
  * A dialog for the creation of a new map.
  */
@@ -40,17 +39,19 @@ class NewMapDialog : public QDialog
     Q_OBJECT
 
 public:
-    NewMapDialog(QWidget *parent = 0);
+    NewMapDialog(QWidget *parent = nullptr);
     ~NewMapDialog();
 
     /**
-     * Shows the dialog and returns the created map. Returns 0 if the dialog
+     * Shows the dialog and returns the created map. Returns null if the dialog
      * was cancelled.
      */
-    MapDocument *createMap();
+    MapDocumentPtr createMap();
 
 private slots:
     void refreshPixelSize();
+
+    void updateWidgets(bool checked);
 
 private:
     Ui::NewMapDialog *mUi;
@@ -58,5 +59,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // NEWMAPDIALOG_H

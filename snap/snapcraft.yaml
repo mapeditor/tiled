@@ -1,0 +1,47 @@
+name: tiled
+version: git
+version-script: git describe | cut -c 2-
+summary: Your free, easy to use and flexible tile map editor.
+description: |
+  Tiled is a free software level editor. It supports editing tile maps in
+  various projections (orthogonal, isometric, hexagonal) and also supports
+  building levels with freely positioned, rotated or scaled images or
+  annotating them with objects of various shapes.
+
+grade: stable
+confinement: strict
+
+apps:
+  tiled:
+    command: desktop-launch ${SNAP}/usr/bin/tiled
+    desktop: usr/share/applications/org.mapeditor.Tiled.desktop
+    plugs: [home, opengl, unity7, network]
+  tmxviewer:
+    command: desktop-launch ${SNAP}/usr/bin/tmxviewer
+    plugs: [home, unity7]
+  tmxrasterizer:
+    command: desktop-launch ${SNAP}/usr/bin/tmxrasterizer
+    plugs: [home, unity7]
+  terraingenerator:
+    command: desktop-launch ${SNAP}/usr/bin/terraingenerator
+    plugs: [home, unity7]
+  automappingconverter:
+    command: desktop-launch ${SNAP}/usr/bin/automappingconverter
+    plugs: [home, unity7]
+
+parts:
+  tiled:
+    plugin: qmake
+    qt-version: qt5
+    options:
+      - PREFIX=/usr
+      - CONFIG+=release
+    source: .
+    build-packages:
+    # FIXME: Python plugin compiles and loads, but can't find platform libraries
+    #  - pkg-config
+    #  - python-dev
+      - qttools5-dev-tools
+    #stage-packages:
+    #  - libpython2.7
+    after: [desktop-qt5]

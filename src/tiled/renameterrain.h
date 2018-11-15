@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef RENAMETERRAIN_H
-#define RENAMETERRAIN_H
+#pragma once
 
 #include <QUndoCommand>
 
@@ -29,22 +28,21 @@ class Tileset;
 
 namespace Internal {
 
-class MapDocument;
-class TerrainModel;
+class TilesetDocument;
+class TilesetTerrainModel;
 
 class RenameTerrain : public QUndoCommand
 {
 public:
-    RenameTerrain(MapDocument *mapDocument,
-                  Tileset *tileset,
+    RenameTerrain(TilesetDocument *tilesetDocument,
                   int terrainId,
                   const QString &newName);
 
-    void undo();
-    void redo();
+    void undo() override;
+    void redo() override;
 
 private:
-    TerrainModel *mTerrainModel;
+    TilesetTerrainModel *mTerrainModel;
     Tileset *mTileset;
     int mTerrainId;
     QString mOldName;
@@ -53,5 +51,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // RENAMETERRAIN_H

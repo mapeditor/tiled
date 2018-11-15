@@ -31,10 +31,10 @@ namespace Tiled {
 namespace Internal {
 
 SetLayerVisible::SetLayerVisible(MapDocument *mapDocument,
-                                 int layerIndex,
+                                 Layer *layer,
                                  bool visible)
     : mMapDocument(mapDocument)
-    , mLayerIndex(layerIndex)
+    , mLayer(layer)
     , mVisible(visible)
 {
     if (visible)
@@ -47,19 +47,40 @@ SetLayerVisible::SetLayerVisible(MapDocument *mapDocument,
 
 void SetLayerVisible::swap()
 {
-    const Layer *layer = mMapDocument->map()->layerAt(mLayerIndex);
-    const bool previousVisible = layer->isVisible();
-    mMapDocument->layerModel()->setLayerVisible(mLayerIndex, mVisible);
+    const bool previousVisible = mLayer->isVisible();
+    mMapDocument->layerModel()->setLayerVisible(mLayer, mVisible);
     mVisible = previousVisible;
+}
+
+SetLayerLocked::SetLayerLocked(MapDocument *mapDocument,
+                               Layer *layer,
+                               bool locked)
+    : mMapDocument(mapDocument)
+    , mLayer(layer)
+    , mLocked(locked)
+{
+    if (locked)
+        setText(QCoreApplication::translate("Undo Commands",
+                                            "Lock Layer"));
+    else
+        setText(QCoreApplication::translate("Undo Commands",
+                                            "Unlock Layer"));
+}
+
+void SetLayerLocked::swap()
+{
+    const bool previousLocked = mLayer->isLocked();
+    mMapDocument->layerModel()->setLayerLocked(mLayer, mLocked);
+    mLocked = previousLocked;
 }
 
 
 SetLayerOpacity::SetLayerOpacity(MapDocument *mapDocument,
-                                 int layerIndex,
-                                 float opacity)
+                                 Layer *layer,
+                                 qreal opacity)
     : mMapDocument(mapDocument)
-    , mLayerIndex(layerIndex)
-    , mOldOpacity(mMapDocument->map()->layerAt(layerIndex)->opacity())
+    , mLayer(layer)
+    , mOldOpacity(layer->opacity())
     , mNewOpacity(opacity)
 {
     setText(QCoreApplication::translate("Undo Commands",
@@ -70,17 +91,38 @@ bool SetLayerOpacity::mergeWith(const QUndoCommand *other)
 {
     const SetLayerOpacity *o = static_cast<const SetLayerOpacity*>(other);
     if (!(mMapDocument == o->mMapDocument &&
-          mLayerIndex == o->mLayerIndex))
+          mLayer == o->mLayer))
         return false;
 
     mNewOpacity = o->mNewOpacity;
     return true;
 }
 
-void SetLayerOpacity::setOpacity(float opacity)
+void SetLayerOpacity::setOpacity(qreal opacity)
 {
-    mMapDocument->layerModel()->setLayerOpacity(mLayerIndex, opacity);
+    mMapDocument->layerModel()->setLayerOpacity(mLayer, opacity);
 }
+
+
+SetLayerOffset::SetLayerOffset(MapDocument *mapDocument,
+                               Layer *layer,
+                               const QPointF &offset,
+                               QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , mMapDocument(mapDocument)
+    , mLayer(layer)
+    , mOldOffset(layer->offset())
+    , mNewOffset(offset)
+{
+    setText(QCoreApplication::translate("Undo Commands",
+                                        "Change Layer Offset"));
+}
+
+void SetLayerOffset::setOffset(const QPointF &offset)
+{
+    mMapDocument->layerModel()->setLayerOffset(mLayer, offset);
+}
+
 
 } // namespace Internal
 } // namespace Tiled

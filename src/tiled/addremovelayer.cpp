@@ -1,6 +1,6 @@
 /*
  * addremovelayer.cpp
- * Copyright 2009, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2009-2017, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -24,14 +24,20 @@
 #include "layermodel.h"
 #include "mapdocument.h"
 
+#include <QCoreApplication>
+
 namespace Tiled {
 namespace Internal {
 
 AddRemoveLayer::AddRemoveLayer(MapDocument *mapDocument,
                                int index,
-                               Layer *layer)
-    : mMapDocument(mapDocument)
+                               Layer *layer,
+                               GroupLayer *parentLayer,
+                               QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , mMapDocument(mapDocument)
     , mLayer(layer)
+    , mParentLayer(parentLayer)
     , mIndex(index)
 {
 }
@@ -43,25 +49,38 @@ AddRemoveLayer::~AddRemoveLayer()
 
 void AddRemoveLayer::addLayer()
 {
-    const int currentLayer = mMapDocument->currentLayerIndex();
-
-    mMapDocument->layerModel()->insertLayer(mIndex, mLayer);
-    mLayer = 0;
-
-    // Insertion below or at the current layer increases current layer index
-    if (mIndex <= currentLayer)
-        mMapDocument->setCurrentLayerIndex(currentLayer + 1);
+    mMapDocument->layerModel()->insertLayer(mParentLayer, mIndex, mLayer);
+    mLayer = nullptr;
 }
 
 void AddRemoveLayer::removeLayer()
 {
-    const int currentLayer = mMapDocument->currentLayerIndex();
+    mLayer = mMapDocument->layerModel()->takeLayerAt(mParentLayer, mIndex);
+}
 
-    mLayer = mMapDocument->layerModel()->takeLayerAt(mIndex);
+AddLayer::AddLayer(MapDocument *mapDocument,
+                   int index, Layer *layer, GroupLayer *parentLayer,
+                   QUndoCommand *parent)
+    : AddRemoveLayer(mapDocument, index, layer, parentLayer, parent)
+{
+    setText(QCoreApplication::translate("Undo Commands", "Add Layer"));
+}
 
-    // Removal below the current layer decreases the current layer index
-    if (mIndex < currentLayer)
-        mMapDocument->setCurrentLayerIndex(currentLayer - 1);
+AddLayer *AddLayer::clone(QUndoCommand *parent) const
+{
+    return new AddLayer(mMapDocument,
+                        mIndex,
+                        mLayer ? mLayer->clone() : nullptr,
+                        mParentLayer,
+                        parent);
+}
+
+RemoveLayer::RemoveLayer(MapDocument *mapDocument,
+                         int index, GroupLayer *parentLayer,
+                         QUndoCommand *parent)
+    : AddRemoveLayer(mapDocument, index, nullptr, parentLayer, parent)
+{
+    setText(QCoreApplication::translate("Undo Commands", "Remove Layer"));
 }
 
 } // namespace Internal

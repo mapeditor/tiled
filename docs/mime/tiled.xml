@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
-  <mime-type type="application/x-tiled-tmx">
-    <comment>Tiled map</comment>
-    <generic-icon name="application-x-tiled"/>
-    <glob pattern="*.tmx"/>
-    <sub-class-of type="application/xml"/>
-  </mime-type>
-</mime-info>

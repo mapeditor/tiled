@@ -18,16 +18,15 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ADDREMOVETILESET_H
-#define ADDREMOVETILESET_H
+#pragma once
+
+#include "tileset.h"
+#include "undocommands.h"
 
 #include <QCoreApplication>
 #include <QUndoCommand>
 
 namespace Tiled {
-
-class Tileset;
-
 namespace Internal {
 
 class MapDocument;
@@ -38,32 +37,38 @@ class MapDocument;
 class AddRemoveTileset : public QUndoCommand
 {
 public:
-    AddRemoveTileset(MapDocument *mapDocument, int index, Tileset *tileset);
+    AddRemoveTileset(MapDocument *mapDocument,
+                     int index,
+                     const SharedTileset &tileset,
+                     QUndoCommand *parent = nullptr);
+
     ~AddRemoveTileset();
 
 protected:
     void addTileset();
     void removeTileset();
 
-private:
     MapDocument *mMapDocument;
-    Tileset *mTileset;
+    SharedTileset mTileset;
     int mIndex;
 };
 
 /**
  * Adds a tileset to a map.
  */
-class AddTileset : public AddRemoveTileset
+class AddTileset : public AddRemoveTileset, public ClonableUndoCommand
 {
 public:
-    AddTileset(MapDocument *mapDocument, Tileset *tileset);
+    AddTileset(MapDocument *mapDocument, const SharedTileset &tileset,
+               QUndoCommand *parent = nullptr);
 
-    void undo()
+    void undo() override
     { removeTileset(); }
 
-    void redo()
+    void redo() override
     { addTileset(); }
+
+    AddTileset *clone(QUndoCommand *parent = nullptr) const override;
 };
 
 /**
@@ -72,21 +77,14 @@ public:
 class RemoveTileset : public AddRemoveTileset
 {
 public:
-    RemoveTileset(MapDocument *mapDocument, int index, Tileset *tileset)
-        : AddRemoveTileset(mapDocument, index, tileset)
-    {
-        setText(QCoreApplication::translate("Undo Commands",
-                                            "Remove Tileset"));
-    }
+    RemoveTileset(MapDocument *mapDocument, int index);
 
-    void undo()
+    void undo() override
     { addTileset(); }
 
-    void redo()
+    void redo() override
     { removeTileset(); }
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // ADDREMOVETILESET_H

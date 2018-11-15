@@ -28,16 +28,19 @@
 
 #include "tmxviewer.h"
 
+#include "hexagonalrenderer.h"
 #include "isometricrenderer.h"
 #include "map.h"
 #include "mapobject.h"
 #include "mapreader.h"
 #include "objectgroup.h"
 #include "orthogonalrenderer.h"
+#include "staggeredrenderer.h"
 #include "tilelayer.h"
 #include "tileset.h"
 
 #include <QCoreApplication>
+#include <QDebug>
 #include <QGraphicsItem>
 #include <QGraphicsScene>
 #include <QStyleOptionGraphicsItem>
@@ -51,20 +54,31 @@ class MapObjectItem : public QGraphicsItem
 {
 public:
     MapObjectItem(MapObject *mapObject, MapRenderer *renderer,
-                  QGraphicsItem *parent = 0)
+                  QGraphicsItem *parent = nullptr)
         : QGraphicsItem(parent)
         , mMapObject(mapObject)
         , mRenderer(renderer)
-    {}
-
-    QRectF boundingRect() const
     {
-        return mRenderer->boundingRect(mMapObject);
+        const QPointF &position = mapObject->position();
+        const QPointF pixelPos = renderer->pixelToScreenCoords(position);
+
+        QRectF boundingRect = renderer->boundingRect(mapObject);
+        boundingRect.translate(-pixelPos);
+        mBoundingRect = boundingRect;
+
+        setPos(pixelPos);
+        setRotation(mapObject->rotation());
     }
 
-    void paint(QPainter *p, const QStyleOptionGraphicsItem *, QWidget *)
+    QRectF boundingRect() const override
+    {
+        return mBoundingRect;
+    }
+
+    void paint(QPainter *p, const QStyleOptionGraphicsItem *, QWidget *) override
     {
         const QColor &color = mMapObject->objectGroup()->color();
+        p->translate(-pos());
         mRenderer->drawMapObject(p, mMapObject,
                                  color.isValid() ? color : Qt::darkGray);
     }
@@ -72,6 +86,7 @@ public:
 private:
     MapObject *mMapObject;
     MapRenderer *mRenderer;
+    QRectF mBoundingRect;
 };
 
 /**
@@ -81,20 +96,21 @@ class TileLayerItem : public QGraphicsItem
 {
 public:
     TileLayerItem(TileLayer *tileLayer, MapRenderer *renderer,
-                  QGraphicsItem *parent = 0)
+                  QGraphicsItem *parent = nullptr)
         : QGraphicsItem(parent)
         , mTileLayer(tileLayer)
         , mRenderer(renderer)
     {
         setFlag(QGraphicsItem::ItemUsesExtendedStyleOption);
+        setPos(mTileLayer->offset());
     }
 
-    QRectF boundingRect() const
+    QRectF boundingRect() const override
     {
         return mRenderer->boundingRect(mTileLayer->bounds());
     }
 
-    void paint(QPainter *p, const QStyleOptionGraphicsItem *option, QWidget *)
+    void paint(QPainter *p, const QStyleOptionGraphicsItem *option, QWidget *) override
     {
         mRenderer->drawTileLayer(p, mTileLayer, option->rect);
     }
@@ -111,18 +127,24 @@ class ObjectGroupItem : public QGraphicsItem
 {
 public:
     ObjectGroupItem(ObjectGroup *objectGroup, MapRenderer *renderer,
-                    QGraphicsItem *parent = 0)
+                    QGraphicsItem *parent = nullptr)
         : QGraphicsItem(parent)
     {
         setFlag(QGraphicsItem::ItemHasNoContents);
+        setPos(objectGroup->offset());
+
+        const ObjectGroup::DrawOrder drawOrder = objectGroup->drawOrder();
 
         // Create a child item for each object
-        foreach (MapObject *object, objectGroup->objects())
-            new MapObjectItem(object, renderer, this);
+        for (MapObject *object : objectGroup->objects()) {
+            MapObjectItem *item = new MapObjectItem(object, renderer, this);
+            if (drawOrder == ObjectGroup::TopDownOrder)
+                item->setZValue(item->y());
+        }
     }
 
-    QRectF boundingRect() const { return QRectF(); }
-    void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *) {}
+    QRectF boundingRect() const override { return QRectF(); }
+    void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *) override {}
 };
 
 /**
@@ -131,13 +153,13 @@ public:
 class MapItem : public QGraphicsItem
 {
 public:
-    MapItem(Map *map, MapRenderer *renderer, QGraphicsItem *parent = 0)
+    MapItem(Map *map, MapRenderer *renderer, QGraphicsItem *parent = nullptr)
         : QGraphicsItem(parent)
     {
         setFlag(QGraphicsItem::ItemHasNoContents);
 
         // Create a child item for each layer
-        foreach (Layer *layer, map->layers()) {
+        for (Layer *layer : map->layers()) {
             if (TileLayer *tileLayer = layer->asTileLayer()) {
                 new TileLayerItem(tileLayer, renderer, this);
             } else if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
@@ -146,16 +168,14 @@ public:
         }
     }
 
-    QRectF boundingRect() const { return QRectF(); }
-    void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *) {}
+    QRectF boundingRect() const override { return QRectF(); }
+    void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *) override {}
 };
 
 
 TmxViewer::TmxViewer(QWidget *parent) :
     QGraphicsView(parent),
-    mScene(new QGraphicsScene(this)),
-    mMap(0),
-    mRenderer(0)
+    mScene(new QGraphicsScene(this))
 {
     setWindowTitle(tr("TMX Viewer"));
 
@@ -170,35 +190,39 @@ TmxViewer::TmxViewer(QWidget *parent) :
     viewport()->setAttribute(Qt::WA_StaticContents);
 }
 
-TmxViewer::~TmxViewer()
-{
-    qDeleteAll(mMap->tilesets());
-    delete mMap;
-    delete mRenderer;
-}
+TmxViewer::~TmxViewer() = default;
 
-void TmxViewer::viewMap(const QString &fileName)
+bool TmxViewer::viewMap(const QString &fileName)
 {
-    delete mRenderer;
-    mRenderer = 0;
-
     mScene->clear();
     centerOn(0, 0);
 
+    mRenderer.reset();
+
     MapReader reader;
-    mMap = reader.readMap(fileName);
-    if (!mMap)
-        return; // TODO: Add error handling
+    mMap.reset(reader.readMap(fileName));
+    if (!mMap) {
+        qWarning().noquote() << "Error:" << reader.errorString();
+        return false;
+    }
 
     switch (mMap->orientation()) {
     case Map::Isometric:
-        mRenderer = new IsometricRenderer(mMap);
+        mRenderer.reset(new IsometricRenderer(mMap.get()));
+        break;
+    case Map::Staggered:
+        mRenderer.reset(new StaggeredRenderer(mMap.get()));
+        break;
+    case Map::Hexagonal:
+        mRenderer.reset(new HexagonalRenderer(mMap.get()));
         break;
     case Map::Orthogonal:
     default:
-        mRenderer = new OrthogonalRenderer(mMap);
+        mRenderer.reset(new OrthogonalRenderer(mMap.get()));
         break;
     }
 
-    mScene->addItem(new MapItem(mMap, mRenderer));
+    mScene->addItem(new MapItem(mMap.get(), mRenderer.get()));
+
+    return true;
 }

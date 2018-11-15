@@ -1,0 +1,288 @@
+<?xml version="1.0"?>
+<!--
+  #%L
+  This file is part of libtiled-java.
+  %%
+  Copyright (C) 2004 - 2017 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+  Copyright (C) 2017 Mike Thomas <mikepthomas@outlook.com>
+  %%
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions are met:
+  
+  1. Redistributions of source code must retain the above copyright notice,
+     this list of conditions and the following disclaimer.
+  2. Redistributions in binary form must reproduce the above copyright notice,
+     this list of conditions and the following disclaimer in the documentation
+     and/or other materials provided with the distribution.
+  
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE
+  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+  POSSIBILITY OF SUCH DAMAGE.
+  #L%
+  -->
+<jxb:bindings xmlns:xs="http://www.w3.org/2001/XMLSchema"
+              xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+              xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+              xmlns:annox="http://annox.dev.java.net"
+              jxb:version="2.1"
+              jxb:extensionBindingPrefixes="xjc annox">
+    <jxb:bindings schemaLocation="map.xsd" node="/xs:schema">
+
+        <jxb:globalBindings choiceContentProperty="true"/>
+
+        <jxb:bindings node="xs:complexType[@name='Group']">
+            <jxb:bindings node="xs:attribute[@name='x']">
+                <annox:annotate target="setter">@java.lang.Deprecated</annox:annotate>
+                <annox:annotate target="getter">@java.lang.Deprecated</annox:annotate>
+                <annox:annotate target="field">@java.lang.Deprecated</annox:annotate>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='y']">
+                <annox:annotate target="setter">@java.lang.Deprecated</annox:annotate>
+                <annox:annotate target="getter">@java.lang.Deprecated</annox:annotate>
+                <annox:annotate target="field">@java.lang.Deprecated</annox:annotate>
+            </jxb:bindings>
+        </jxb:bindings>
+
+        <jxb:bindings node="xs:complexType[@name='Image']">
+            <jxb:class name="ImageData" />
+            <jxb:bindings node="xs:attribute[@name='id']">
+                <annox:annotate target="setter">@java.lang.Deprecated</annox:annotate>
+                <annox:annotate target="getter">@java.lang.Deprecated</annox:annotate>
+                <annox:annotate target="field">@java.lang.Deprecated</annox:annotate>
+            </jxb:bindings>
+        </jxb:bindings>
+
+        <jxb:bindings node="xs:complexType[@name='Layer']">
+            <jxb:class name="LayerData" implClass="MapLayer"/>
+
+            <jxb:bindings node="xs:sequence">
+                <jxb:bindings node="xs:element[@name='properties']">
+                    <jxb:property>
+                        <jxb:baseType name="Properties"/>
+                    </jxb:property>
+                </jxb:bindings>
+            </jxb:bindings>
+
+            <jxb:bindings node="xs:attribute[@name='x']">
+                <annox:annotate target="setter">@java.lang.Deprecated</annox:annotate>
+                <annox:annotate target="getter">@java.lang.Deprecated</annox:annotate>
+                <annox:annotate target="field">@java.lang.Deprecated</annox:annotate>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='y']">
+                <annox:annotate target="setter">@java.lang.Deprecated</annox:annotate>
+                <annox:annotate target="getter">@java.lang.Deprecated</annox:annotate>
+                <annox:annotate target="field">@java.lang.Deprecated</annox:annotate>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='height']">
+                <annox:annotate target="setter">@java.lang.Deprecated</annox:annotate>
+                <annox:annotate target="getter">@java.lang.Deprecated</annox:annotate>
+                <annox:annotate target="field">@java.lang.Deprecated</annox:annotate>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='width']">
+                <annox:annotate target="setter">@java.lang.Deprecated</annox:annotate>
+                <annox:annotate target="getter">@java.lang.Deprecated</annox:annotate>
+                <annox:annotate target="field">@java.lang.Deprecated</annox:annotate>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='opacity']">
+                <jxb:property>
+                    <jxb:javadoc>
+                        The layer opacity. ranging from 0.0 to 1.0.
+                        If it is different from the previous value
+                        and the layer is visible, a MapChangedEvent
+                        is fired.
+                    </jxb:javadoc>
+                </jxb:property>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='visible']">
+                <jxb:property>
+                    <jxb:javadoc>
+                        The visibility of this map layer. If it
+                        changes from its current value, a
+                        MapChangedEvent is fired.
+
+                        &lt;code&gt;true&lt;/code&gt; if the layer
+                        is visible, &lt;code7gt;false&lt;/code&gt;
+                        otherwise.
+                    </jxb:javadoc>
+                </jxb:property>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='offsetx']">		
+                <jxb:property name="offsetX"/>		
+            </jxb:bindings>		
+            <jxb:bindings node="xs:attribute[@name='offsety']">		
+                <jxb:property name="offsetY"/>		
+            </jxb:bindings>
+        </jxb:bindings>
+
+        <jxb:bindings node="xs:complexType[@name='Map']">
+            <jxb:class name="MapData" implClass="Map"/>
+
+            <jxb:bindings node="xs:sequence">
+                <jxb:bindings node="xs:choice">
+                    <jxb:property name="layers"/>
+                </jxb:bindings>
+                <jxb:bindings node="xs:element[@name='properties']">
+                    <jxb:property>
+                        <jxb:baseType name="Properties"/>
+                    </jxb:property>
+                </jxb:bindings>
+                <jxb:bindings node="xs:element[@name='tileset']">
+                    <jxb:property name="tileSets">
+                        <jxb:baseType name="TileSet"/>
+                        <jxb:javadoc>
+                            A list with the currently loaded tileSets.
+                        </jxb:javadoc>
+                    </jxb:property>
+                </jxb:bindings>
+            </jxb:bindings>
+
+            <jxb:bindings node="xs:attribute[@name='hexsidelength']">
+                <jxb:property name="hexSideLength"/>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='orientation']">
+                <jxb:property>
+                    <jxb:javadoc>
+                        The orientation of this map will be one of.
+                        {@link org.mapeditor.core.Orientation#ISOMETRIC},
+                        {@link org.mapeditor.core.Orientation#ORTHOGONAL},
+                        {@link org.mapeditor.core.Orientation#HEXAGONAL} and
+                        {@link org.mapeditor.core.Orientation#STAGGERED}.
+                    </jxb:javadoc>
+                </jxb:property>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='staggeraxis']">
+                <jxb:property name="staggerAxis"/>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='staggerindex']">
+                <jxb:property name="staggerIndex"/>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='tileheight']">
+                <jxb:property name="tileHeight"/>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='tilewidth']">
+                <jxb:property name="tileWidth"/>
+            </jxb:bindings>
+        </jxb:bindings>
+
+        <jxb:bindings node="xs:complexType[@name='Object']">
+            <jxb:class name="MapObjectData" implClass="MapObject"/>
+
+            <jxb:bindings node="xs:sequence/xs:element[@name='properties']">
+                <jxb:property>
+                    <jxb:baseType name="Properties"/>
+                </jxb:property>
+            </jxb:bindings>
+        </jxb:bindings>
+
+        <jxb:bindings node="xs:complexType[@name='ObjectGroup']">
+            <jxb:class name="ObjectGroupData" implClass="ObjectGroup"/>
+
+            <jxb:bindings node="xs:complexContent/xs:extension">
+                <jxb:bindings node="xs:sequence">
+                    <jxb:bindings node="xs:element[@name='object']">
+                        <jxb:property name="objects">
+                            <jxb:baseType name="MapObject"/>
+                        </jxb:property>
+                    </jxb:bindings>
+                </jxb:bindings>
+            </jxb:bindings>
+        </jxb:bindings>
+
+        <jxb:bindings node="xs:complexType[@name='Properties']">
+            <jxb:class name="PropertiesData" implClass="Properties" />
+
+            <jxb:bindings node="xs:sequence">
+                <jxb:bindings node="xs:element[@name='property']">
+                    <jxb:property name="properties"/>
+                </jxb:bindings>
+            </jxb:bindings>
+        </jxb:bindings>
+
+        <jxb:bindings node="xs:complexType[@name='Tile']">
+            <jxb:class name="TileData" implClass="Tile"/>
+
+            <jxb:bindings node="xs:sequence">
+                <jxb:bindings node="xs:element[@name='image']">
+                    <jxb:property name="imageData"/>
+                </jxb:bindings>
+                <jxb:bindings node="xs:element[@name='properties']">
+                    <jxb:property>
+                        <jxb:baseType name="Properties"/>
+                    </jxb:property>
+                </jxb:bindings>
+            </jxb:bindings>
+        </jxb:bindings>
+
+        <jxb:bindings node="xs:complexType[@name='TileLayer']">
+            <jxb:class name="TileLayerData" implClass="TileLayer"/>
+        </jxb:bindings>
+
+        <jxb:bindings node="xs:complexType[@name='TileSet']">
+            <jxb:class name="TileSetData" implClass="TileSet"/>
+
+            <jxb:bindings node="xs:sequence">
+                <jxb:bindings node="xs:element[@name='image']">
+                    <jxb:property name="imageData"/>
+                </jxb:bindings>
+                <jxb:bindings node="xs:element[@name='properties']">
+                    <jxb:property>
+                        <jxb:baseType name="Properties"/>
+                    </jxb:property>
+                </jxb:bindings>
+                <jxb:bindings node="xs:element[@name='tile']">
+                    <jxb:property name="internalTiles">
+                        <jxb:baseType name="Tile"/>
+                    </jxb:property>
+                </jxb:bindings>
+            </jxb:bindings>
+
+            <jxb:bindings node="xs:attribute[@name='margin']">
+                <jxb:property name="tileMargin"/>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='spacing']">
+                <jxb:property name="tileSpacing"/>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='tileheight']">
+                <jxb:property name="tileHeight">
+                    <jxb:javadoc>
+                        The maximum height of tiles in this tileset.
+
+                        Not all tiles in a tileset are required to
+                        have the same height, but the height should
+                        be at least the tile height of the map the
+                        tileset is used with.
+
+                        If there are tiles with varying heights in
+                        this tileset, the returned height will be
+                        the maximum.
+                    </jxb:javadoc>
+                </jxb:property>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='tilewidth']">
+                <jxb:property name="tileWidth">
+                    <jxb:javadoc>
+                        The maximum width of tiles in this tileset.
+
+                        All tiles in a tileset should be the same
+                        width, and the same as the tile width of
+                        the map the tileset is used with.
+                    </jxb:javadoc>
+                </jxb:property>
+            </jxb:bindings>
+        </jxb:bindings>
+
+        <jxb:bindings node="xs:simpleType[@name='Compression']">
+            <jxb:bindings node="xs:restriction/xs:enumeration[@value='gzip']">
+                <annox:annotate target="field">@java.lang.Deprecated</annox:annotate>
+            </jxb:bindings>
+        </jxb:bindings>
+    </jxb:bindings>
+</jxb:bindings>

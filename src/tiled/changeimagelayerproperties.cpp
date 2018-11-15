@@ -34,7 +34,7 @@ ChangeImageLayerProperties::ChangeImageLayerProperties(
         MapDocument *mapDocument,
         ImageLayer *imageLayer,
         const QColor &color,
-        const QString &path)
+        const QUrl &newSource)
     : QUndoCommand(
           QCoreApplication::translate(
               "Undo Commands", "Change Image Layer Properties"))
@@ -42,8 +42,8 @@ ChangeImageLayerProperties::ChangeImageLayerProperties(
     , mImageLayer(imageLayer)
     , mUndoColor(imageLayer->transparentColor())
     , mRedoColor(color)
-    , mUndoPath(imageLayer->imageSource())
-    , mRedoPath(path)
+    , mUndoSource(imageLayer->imageSource())
+    , mRedoSource(newSource)
 {
 }
 
@@ -51,23 +51,23 @@ void ChangeImageLayerProperties::redo()
 {
     mImageLayer->setTransparentColor(mRedoColor);
 
-    if (mRedoPath.isEmpty())
+    if (mRedoSource.isEmpty())
         mImageLayer->resetImage();
     else
-        mImageLayer->loadFromImage(QImage(mRedoPath), mRedoPath);
+        mImageLayer->loadFromImage(mRedoSource);
 
-    mMapDocument->emitImageLayerChanged(mImageLayer);
+    emit mMapDocument->imageLayerChanged(mImageLayer);
 }
 
 void ChangeImageLayerProperties::undo()
 {
     mImageLayer->setTransparentColor(mUndoColor);
 
-    if (mUndoPath.isEmpty())
+    if (mUndoSource.isEmpty())
         mImageLayer->resetImage();
     else
-        mImageLayer->loadFromImage(QImage(mUndoPath), mUndoPath);
+        mImageLayer->loadFromImage(mUndoSource);
 
-    mMapDocument->emitImageLayerChanged(mImageLayer);
+    emit mMapDocument->imageLayerChanged(mImageLayer);
 }
 

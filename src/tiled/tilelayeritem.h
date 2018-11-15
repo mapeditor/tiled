@@ -18,31 +18,32 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILELAYERITEM_H
-#define TILELAYERITEM_H
+#pragma once
 
-#include <QGraphicsItem>
+#include "layeritem.h"
+
+#include "tilelayer.h"
 
 namespace Tiled {
-
-class MapRenderer;
-class TileLayer;
-
 namespace Internal {
+
+class MapDocument;
 
 /**
  * A graphics item displaying a tile layer in a QGraphicsView.
  */
-class TileLayerItem : public QGraphicsItem
+class TileLayerItem : public LayerItem
 {
 public:
     /**
      * Constructor.
      *
-     * @param layer    the tile layer to be displayed
-     * @param renderer the map renderer to use to render the layer
+     * @param layer       the tile layer to be displayed
+     * @param mapDocument the map document owning the map of this layer
      */
-    TileLayerItem(TileLayer *layer, MapRenderer *renderer);
+    TileLayerItem(TileLayer *layer, MapDocument *mapDocument, QGraphicsItem *parent = nullptr);
+
+    TileLayer *tileLayer() const;
 
     /**
      * Updates the size and position of this item. Should be called when the
@@ -55,18 +56,20 @@ public:
     void syncWithTileLayer();
 
     // QGraphicsItem
-    QRectF boundingRect() const;
+    QRectF boundingRect() const override;
     void paint(QPainter *painter,
                const QStyleOptionGraphicsItem *option,
-               QWidget *widget = 0);
+               QWidget *widget = nullptr) override;
 
 private:
-    TileLayer *mLayer;
-    MapRenderer *mRenderer;
+    MapDocument *mMapDocument;
     QRectF mBoundingRect;
 };
 
+inline TileLayer *TileLayerItem::tileLayer() const
+{
+    return static_cast<TileLayer*>(layer());
+}
+
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TILELAYERITEM_H

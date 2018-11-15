@@ -28,22 +28,40 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef MAPOBJECT_H
-#define MAPOBJECT_H
+#pragma once
 
 #include "object.h"
 #include "tiled.h"
 #include "tilelayer.h"
 
+#include <QFont>
 #include <QPolygonF>
+#include <QRectF>
 #include <QSizeF>
 #include <QString>
-#include <QRectF>
+#include <QTextOption>
 
 namespace Tiled {
 
+class MapRenderer;
 class ObjectGroup;
+class ObjectTemplate;
 class Tile;
+
+struct TILEDSHARED_EXPORT TextData
+{
+    TextData();
+
+    QString text;
+    QFont font;
+    QColor color = Qt::black;
+    Qt::Alignment alignment = Qt::AlignTop | Qt::AlignLeft;
+    bool wordWrap = true;
+
+    int flags() const;
+    QTextOption textOption() const;
+    QSizeF textSize() const;
+};
 
 /**
  * An object on a map. Objects are positioned and scaled using floating point
@@ -61,13 +79,38 @@ public:
      * Enumerates the different object shapes. Rectangle is the default shape.
      * When a polygon is set, the shape determines whether it should be
      * interpreted as a filled polygon or a line.
+     *
+     * Text objects contain arbitrary text, contained withih their rectangle
+     * (in screen coordinates).
      */
     enum Shape {
         Rectangle,
         Polygon,
         Polyline,
-        Ellipse
+        Ellipse,
+        Text,
+        Point,
     };
+
+    /**
+     * Can be used to get/set property values using QVariant.
+     */
+    enum Property {
+        NameProperty             = 1 << 0,
+        TypeProperty             = 1 << 1,
+        VisibleProperty          = 1 << 2,
+        TextProperty             = 1 << 3,
+        TextFontProperty         = 1 << 4,
+        TextAlignmentProperty    = 1 << 5,
+        TextWordWrapProperty     = 1 << 6,
+        TextColorProperty        = 1 << 7,
+        SizeProperty             = 1 << 8,
+        RotationProperty         = 1 << 9,
+        CellProperty             = 1 << 10,
+        ShapeProperty            = 1 << 11
+    };
+
+    Q_DECLARE_FLAGS(ChangedProperties, Property)
 
     MapObject();
 
@@ -75,183 +118,398 @@ public:
               const QPointF &pos,
               const QSizeF &size);
 
-    /**
-     * Returns the name of this object. The name is usually just used for
-     * identification of the object in the editor.
-     */
-    const QString &name() const { return mName; }
+    int id() const;
+    void setId(int id);
+    void resetId();
 
-    /**
-     * Sets the name of this object.
-     */
-    void setName(const QString &name) { mName = name; }
+    int index() const;
 
-    /**
-     * Returns the type of this object. The type usually says something about
-     * how the object is meant to be interpreted by the engine.
-     */
-    const QString &type() const { return mType; }
+    const QString &name() const;
+    void setName(const QString &name);
 
-    /**
-     * Sets the type of this object.
-     */
-    void setType(const QString &type) { mType = type; }
+    const QString &type() const;
+    void setType(const QString &type);
 
-    /**
-     * Returns the position of this object.
-     */
-    const QPointF &position() const { return mPos; }
+    const QString &effectiveType() const;
 
-    /**
-     * Sets the position of this object.
-     */
-    void setPosition(const QPointF &pos) { mPos = pos; }
+    const QPointF &position() const;
+    void setPosition(const QPointF &pos);
 
-    /**
-     * Returns the x position of this object.
-     */
-    qreal x() const { return mPos.x(); }
+    qreal x() const;
+    void setX(qreal x);
 
-    /**
-     * Sets the x position of this object.
-     */
-    void setX(qreal x) { mPos.setX(x); }
+    qreal y() const;
+    void setY(qreal y);
 
-    /**
-     * Returns the y position of this object.
-     */
-    qreal y() const { return mPos.y(); }
+    const QSizeF &size() const;
+    void setSize(const QSizeF &size);
+    void setSize(qreal width, qreal height);
 
-    /**
-     * Sets the x position of this object.
-     */
-    void setY(qreal y) { mPos.setY(y); }
+    qreal width() const;
+    void setWidth(qreal width);
 
-    /**
-     * Returns the size of this object.
-     */
-    const QSizeF &size() const { return mSize; }
+    qreal height() const;
+    void setHeight(qreal height);
 
-    /**
-     * Sets the size of this object.
-     */
-    void setSize(const QSizeF &size) { mSize = size; }
+    void setBounds(const QRectF &bounds);
 
-    void setSize(qreal width, qreal height)
-    { setSize(QSizeF(width, height)); }
+    const TextData &textData() const;
+    void setTextData(const TextData &textData);
 
-    /**
-     * Returns the width of this object.
-     */
-    qreal width() const { return mSize.width(); }
+    const QPolygonF &polygon() const;
+    void setPolygon(const QPolygonF &polygon);
 
-    /**
-     * Sets the width of this object.
-     */
-    void setWidth(qreal width) { mSize.setWidth(width); }
+    Shape shape() const;
+    void setShape(Shape shape);
 
-    /**
-     * Returns the height of this object.
-     */
-    qreal height() const { return mSize.height(); }
+    bool hasDimensions() const;
+    bool canRotate() const;
+    bool isTileObject() const;
 
-    /**
-     * Sets the height of this object.
-     */
-    void setHeight(qreal height) { mSize.setHeight(height); }
+    QRectF bounds() const;
+    QRectF boundsUseTile() const;
+    QRectF screenBounds(const MapRenderer &renderer) const;
 
-    /**
-     * Sets the polygon associated with this object. The polygon is only used
-     * when the object shape is set to either Polygon or Polyline.
-     *
-     * \sa setShape()
-     */
-    void setPolygon(const QPolygonF &polygon) { mPolygon = polygon; }
+    const Cell &cell() const;
+    void setCell(const Cell &cell);
 
-    /**
-     * Returns the polygon associated with this object. Returns an empty
-     * polygon when no polygon is associated with this object.
-     */
-    const QPolygonF &polygon() const { return mPolygon; }
+    const ObjectTemplate *objectTemplate() const;
+    void setObjectTemplate(const ObjectTemplate *objectTemplate);
 
-    /**
-     * Sets the shape of the object.
-     */
-    void setShape(Shape shape) { mShape = shape; }
+    ObjectGroup *objectGroup() const;
+    void setObjectGroup(ObjectGroup *objectGroup);
 
-    /**
-     * Returns the shape of the object.
-     */
-    Shape shape() const { return mShape; }
+    qreal rotation() const;
+    void setRotation(qreal rotation);
 
-    /**
-     * Shortcut to getting a QRectF from position() and size().
-     */
-    QRectF bounds() const { return QRectF(mPos, mSize); }
+    Alignment alignment() const;
 
-    /**
-     * Sets the tile that is associated with this object. The object will
-     * display as the tile image.
-     *
-     * \warning The object shape is ignored for tile objects!
-     */
-    void setCell(const Cell &cell) { mCell = cell; }
+    bool isVisible() const;
+    void setVisible(bool visible);
 
-    /**
-     * Returns the tile associated with this object.
-     */
-    const Cell &cell() const { return mCell; }
+    QVariant mapObjectProperty(Property property) const;
+    void setMapObjectProperty(Property property, const QVariant &value);
 
-    /**
-     * Returns the object group this object belongs to.
-     */
-    ObjectGroup *objectGroup() const { return mObjectGroup; }
+    void setChangedProperties(ChangedProperties changedProperties);
+    MapObject::ChangedProperties changedProperties() const;
 
-    /**
-     * Sets the object group this object belongs to. Should only be called
-     * from the ObjectGroup class.
-     */
-    void setObjectGroup(ObjectGroup *objectGroup)
-    { mObjectGroup = objectGroup; }
+    void setPropertyChanged(Property property, bool state = true);
+    bool propertyChanged(Property property) const;
 
-    /**
-     * Sets the rotation of the object
-     */
-    void setRotation(qreal rotation) { mRotation = rotation; }
+    void flip(FlipDirection direction, const QPointF &origin);
 
-    /**
-     * Returns the rotation of the object.
-     */
-    qreal rotation() const { return mRotation; }
-
-    bool isVisible() const { return mVisible; }
-    void setVisible(bool visible) { mVisible = visible; }
-
-    /**
-     * Flip this object in the given \a direction. This doesn't change the size
-     * of the object.
-     */
-    void flip(FlipDirection direction);
-
-    /**
-     * Returns a duplicate of this object. The caller is responsible for the
-     * ownership of this newly created object.
-     */
     MapObject *clone() const;
+    void copyPropertiesFrom(const MapObject *object);
+
+    const MapObject *templateObject() const;
+
+    void syncWithTemplate();
+    void detachFromTemplate();
+
+    bool isTemplateInstance() const;
+
+    bool isTemplateBase() const;
+    void markAsTemplateBase();
 
 private:
+    void flipRectObject(const QTransform &flipTransform);
+    void flipPolygonObject(const QTransform &flipTransform);
+    void flipTileObject(const QTransform &flipTransform);
+
+    int mId;
+    Shape mShape;
     QString mName;
     QString mType;
     QPointF mPos;
     QSizeF mSize;
+    TextData mTextData;
     QPolygonF mPolygon;
-    Shape mShape;
     Cell mCell;
+    const ObjectTemplate *mObjectTemplate;
     ObjectGroup *mObjectGroup;
     qreal mRotation;
     bool mVisible;
+    bool mTemplateBase;
+    ChangedProperties mChangedProperties;
 };
+
+/**
+ * Returns the id of this object. Each object gets an id assigned that is
+ * unique for the map the object is on.
+ */
+inline int MapObject::id() const
+{ return mId; }
+
+/**
+ * Sets the id of this object.
+ */
+inline void MapObject::setId(int id)
+{ mId = id; }
+
+/**
+ * Sets the id back to 0. Mostly used when a new id should be assigned
+ * after the object has been cloned.
+ */
+inline void MapObject::resetId()
+{ setId(0); }
+
+/**
+ * Returns the name of this object. The name is usually just used for
+ * identification of the object in the editor.
+ */
+inline const QString &MapObject::name() const
+{ return mName; }
+
+/**
+ * Sets the name of this object.
+ */
+inline void MapObject::setName(const QString &name)
+{ mName = name; }
+
+/**
+ * Returns the type of this object. The type usually says something about
+ * how the object is meant to be interpreted by the engine.
+ */
+inline const QString &MapObject::type() const
+{ return mType; }
+
+/**
+ * Sets the type of this object.
+ */
+inline void MapObject::setType(const QString &type)
+{ mType = type; }
+
+/**
+ * Returns the position of this object.
+ */
+inline const QPointF &MapObject::position() const
+{ return mPos; }
+
+/**
+ * Sets the position of this object.
+ */
+inline void MapObject::setPosition(const QPointF &pos)
+{ mPos = pos; }
+
+/**
+ * Returns the x position of this object.
+ */
+inline qreal MapObject::x() const
+{ return mPos.x(); }
+
+/**
+ * Sets the x position of this object.
+ */
+inline void MapObject::setX(qreal x)
+{ mPos.setX(x); }
+
+/**
+ * Returns the y position of this object.
+ */
+inline qreal MapObject::y() const
+{ return mPos.y(); }
+
+/**
+ * Sets the x position of this object.
+ */
+inline void MapObject::setY(qreal y)
+{ mPos.setY(y); }
+
+/**
+ * Returns the size of this object.
+ */
+inline const QSizeF &MapObject::size() const
+{ return mSize; }
+
+/**
+ * Sets the size of this object.
+ */
+inline void MapObject::setSize(const QSizeF &size)
+{ mSize = size; }
+
+inline void MapObject::setSize(qreal width, qreal height)
+{ setSize(QSizeF(width, height)); }
+
+/**
+ * Returns the width of this object.
+ */
+inline qreal MapObject::width() const
+{ return mSize.width(); }
+
+/**
+ * Sets the width of this object.
+ */
+inline void MapObject::setWidth(qreal width)
+{ mSize.setWidth(width); }
+
+/**
+ * Returns the height of this object.
+ */
+inline qreal MapObject::height() const
+{ return mSize.height(); }
+
+/**
+ * Sets the height of this object.
+ */
+inline void MapObject::setHeight(qreal height)
+{ mSize.setHeight(height); }
+
+/**
+ * Sets the position and size of this object.
+ */
+inline void MapObject::setBounds(const QRectF &bounds)
+{
+    mPos = bounds.topLeft();
+    mSize = bounds.size();
+}
+
+/**
+ * Returns the text associated with this object, when it is a text object.
+ */
+inline const TextData &MapObject::textData() const
+{ return mTextData; }
+
+/**
+ * Returns the polygon associated with this object. Returns an empty
+ * polygon when no polygon is associated with this object.
+ */
+inline const QPolygonF &MapObject::polygon() const
+{ return mPolygon; }
+
+/**
+ * Sets the polygon associated with this object. The polygon is only used
+ * when the object shape is set to either Polygon or Polyline.
+ *
+ * \sa setShape()
+ */
+inline void MapObject::setPolygon(const QPolygonF &polygon)
+{ mPolygon = polygon; }
+
+/**
+ * Returns the shape of the object.
+ */
+inline MapObject::Shape MapObject::shape() const
+{ return mShape; }
+
+/**
+ * Sets the shape of the object.
+ */
+inline void MapObject::setShape(MapObject::Shape shape)
+{ mShape = shape; }
+
+/**
+ * Returns true if this object has a width and height.
+ */
+inline bool MapObject::hasDimensions() const
+{
+    switch (mShape) {
+        case Polygon:
+        case Polyline:
+        case Point:
+            return false;
+        default:
+            return true;
+    }
+}
+
+/**
+ * Returns true if this object can be rotated.
+ */
+inline bool MapObject::canRotate() const
+{ return mShape != Point; }
+
+inline bool MapObject::isTileObject() const
+{ return !mCell.isEmpty(); }
+
+/**
+ * Shortcut to getting a QRectF from position() and size().
+ */
+inline QRectF MapObject::bounds() const
+{ return QRectF(mPos, mSize); }
+
+/**
+ * Returns the tile associated with this object.
+ */
+inline const Cell &MapObject::cell() const
+{ return mCell; }
+
+/**
+ * Sets the tile that is associated with this object. The object will
+ * display as the tile image.
+ *
+ * \warning The object shape is ignored for tile objects!
+ */
+inline void MapObject::setCell(const Cell &cell)
+{ mCell = cell; }
+
+inline const ObjectTemplate *MapObject::objectTemplate() const
+{ return mObjectTemplate; }
+
+inline void MapObject::setObjectTemplate(const ObjectTemplate *objectTemplate)
+{ mObjectTemplate = objectTemplate; }
+
+/**
+ * Returns the object group this object belongs to.
+ */
+inline ObjectGroup *MapObject::objectGroup() const
+{ return mObjectGroup; }
+
+/**
+ * Sets the object group this object belongs to. Should only be called
+ * from the ObjectGroup class.
+ */
+inline void MapObject::setObjectGroup(ObjectGroup *objectGroup)
+{ mObjectGroup = objectGroup; }
+
+/**
+ * Returns the rotation of the object in degrees clockwise.
+ */
+inline qreal MapObject::rotation() const
+{ return mRotation; }
+
+/**
+ * Sets the rotation of the object in degrees clockwise.
+ */
+inline void MapObject::setRotation(qreal rotation)
+{ mRotation = rotation; }
+
+inline bool MapObject::isVisible() const
+{ return mVisible; }
+
+inline void MapObject::setVisible(bool visible)
+{ mVisible = visible; }
+
+inline void MapObject::setChangedProperties(ChangedProperties changedProperties)
+{ mChangedProperties = changedProperties; }
+
+inline MapObject::ChangedProperties MapObject::changedProperties() const
+{ return mChangedProperties; }
+
+inline void MapObject::setPropertyChanged(Property property, bool state)
+{
+#if QT_VERSION >= 0x050700
+    mChangedProperties.setFlag(property, state);
+#else
+    if (state)
+        mChangedProperties |= property;
+    else
+        mChangedProperties &= ~property;
+#endif
+}
+
+inline bool MapObject::propertyChanged(Property property) const
+{ return mChangedProperties.testFlag(property); }
+
+inline bool MapObject::isTemplateInstance() const
+{ return mObjectTemplate != nullptr; }
+
+inline bool MapObject::isTemplateBase() const
+{ return mTemplateBase; }
+
+inline void MapObject::markAsTemplateBase()
+{ mTemplateBase = true; }
 
 } // namespace Tiled
 
-#endif // MAPOBJECT_H
+Q_DECLARE_METATYPE(Tiled::MapObject::Shape)
+Q_DECLARE_METATYPE(Tiled::MapObject*)

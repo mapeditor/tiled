@@ -1,6 +1,6 @@
 /*
  * brushitem.cpp
- * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2017, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -36,12 +36,14 @@ using namespace Tiled;
 using namespace Tiled::Internal;
 
 BrushItem::BrushItem():
-    mMapDocument(0),
-    mTileLayer(0)
+    mMapDocument(nullptr)
 {
     setFlag(QGraphicsItem::ItemUsesExtendedStyleOption);
 }
 
+/**
+ * Sets the map document this brush is operating on.
+ */
 void BrushItem::setMapDocument(MapDocument *mapDocument)
 {
     if (mMapDocument == mapDocument)
@@ -50,25 +52,62 @@ void BrushItem::setMapDocument(MapDocument *mapDocument)
     mMapDocument = mapDocument;
 
     // The tiles in the stamp may no longer be valid
-    setTileLayer(0);
-    updateBoundingRect();
+    clear();
 }
 
-void BrushItem::setTileLayer(const TileLayer *tileLayer)
+/**
+ * Clears the tile layer, map and region set on this item.
+ */
+void BrushItem::clear()
 {
-    delete mTileLayer;
+    mTileLayer.clear();
+    mMap.clear();
+    mRegion = QRegion();
 
-    if (tileLayer) {
-        mTileLayer = static_cast<TileLayer*>(tileLayer->clone());
-        mRegion = mTileLayer->region();
-    } else {
-        mTileLayer = 0;
-        mRegion = QRegion();
-    }
     updateBoundingRect();
     update();
 }
 
+/**
+ * Sets a tile layer representing this brush. When no tile layer is set,
+ * the brush only draws the selection color.
+ */
+void BrushItem::setTileLayer(const SharedTileLayer &tileLayer)
+{
+    mTileLayer = tileLayer;
+    mRegion = tileLayer ? tileLayer->region() : QRegion();
+
+    updateBoundingRect();
+    update();
+}
+
+/**
+ * Sets a tile layer as well as the region that should be highlighted along
+ * with it. This allows highlighting of areas that are not covered by tiles in
+ * the given tile layer.
+ */
+void BrushItem::setTileLayer(const SharedTileLayer &tileLayer,
+                             const QRegion &region)
+{
+    mTileLayer = tileLayer;
+    mRegion = region;
+
+    updateBoundingRect();
+    update();
+}
+
+void BrushItem::setMap(const SharedMap &map)
+{
+    mMap = map;
+    mRegion = map->tileRegion();
+
+    updateBoundingRect();
+    update();
+}
+
+/**
+ * Changes the position of the tile layer, if one is set.
+ */
 void BrushItem::setTileLayerPosition(const QPoint &pos)
 {
     if (!mTileLayer)
@@ -84,6 +123,9 @@ void BrushItem::setTileLayerPosition(const QPoint &pos)
     updateBoundingRect();
 }
 
+/**
+ * Sets the region of tiles that this brush item occupies.
+ */
 void BrushItem::setTileRegion(const QRegion &region)
 {
     if (mRegion == region)
@@ -91,6 +133,14 @@ void BrushItem::setTileRegion(const QRegion &region)
 
     mRegion = region;
     updateBoundingRect();
+}
+
+/**
+ * Sets the layer offset used by the currently active layer.
+ */
+void BrushItem::setLayerOffset(const QPointF &offset)
+{
+    setPos(offset);
 }
 
 QRectF BrushItem::boundingRect() const
@@ -105,18 +155,33 @@ void BrushItem::paint(QPainter *painter,
     QColor insideMapHighlight = QApplication::palette().highlight().color();
     insideMapHighlight.setAlpha(64);
     QColor outsideMapHighlight = QColor(255, 0, 0, 64);
-    
-    int mapWidth = mMapDocument->map()->width();
-    int mapHeight = mMapDocument->map()->height();
-    QRegion mapRegion = QRegion(0, 0, mapWidth, mapHeight);
-    QRegion insideMapRegion = mRegion.intersected(mapRegion);
-    QRegion outsideMapRegion = mRegion.subtracted(mapRegion);
+
+    QRegion insideMapRegion = mRegion;
+    QRegion outsideMapRegion;
+
+    if (!mMapDocument->currentLayer()->isUnlocked()) {
+        qSwap(insideMapRegion, outsideMapRegion);
+    } else if (!mMapDocument->map()->infinite()) {
+        int mapWidth = mMapDocument->map()->width();
+        int mapHeight = mMapDocument->map()->height();
+        QRegion mapRegion = QRegion(0, 0, mapWidth, mapHeight);
+
+        insideMapRegion = mRegion.intersected(mapRegion);
+        outsideMapRegion = mRegion.subtracted(mapRegion);
+    }
 
     const MapRenderer *renderer = mMapDocument->renderer();
     if (mTileLayer) {
         const qreal opacity = painter->opacity();
         painter->setOpacity(0.75);
-        renderer->drawTileLayer(painter, mTileLayer, option->exposedRect);
+        renderer->drawTileLayer(painter, mTileLayer.data(), option->exposedRect);
+        painter->setOpacity(opacity);
+    } else if (mMap) {
+        const qreal opacity = painter->opacity();
+        painter->setOpacity(0.75);
+        LayerIterator it(mMap.data(), Layer::TileLayerType);
+        while (auto tileLayer = static_cast<TileLayer*>(it.next()))
+            renderer->drawTileLayer(painter, tileLayer, option->exposedRect);
         painter->setOpacity(opacity);
     }
 
@@ -140,17 +205,25 @@ void BrushItem::updateBoundingRect()
     const QRect bounds = mRegion.boundingRect();
     mBoundingRect = mMapDocument->renderer()->boundingRect(bounds);
 
+    QMargins drawMargins;
+
     // Adjust for amount of pixels tiles extend at the top and to the right
     if (mTileLayer) {
-        const Map *map = mMapDocument->map();
+        drawMargins = mTileLayer->drawMargins();
 
-        QMargins drawMargins = mTileLayer->drawMargins();
-        drawMargins.setTop(drawMargins.top() - map->tileHeight());
-        drawMargins.setRight(drawMargins.right() - map->tileWidth());
-
-        mBoundingRect.adjust(-drawMargins.left(),
-                             -drawMargins.top(),
-                             drawMargins.right(),
-                             drawMargins.bottom());
+        QSize tileSize = mMapDocument->map()->tileSize();
+        drawMargins.setTop(drawMargins.top() - tileSize.height());
+        drawMargins.setRight(drawMargins.right() - tileSize.width());
+    } else if (mMap) {
+        drawMargins = mMap->drawMargins();
+    } else {
+        return;
     }
+
+    // Since we're also drawing a tile selection, we should not apply
+    // negative margins
+    mBoundingRect.adjust(qMin(0, -drawMargins.left()),
+                         qMin(0, -drawMargins.top()),
+                         qMax(0, drawMargins.right()),
+                         qMax(0, drawMargins.bottom()));
 }

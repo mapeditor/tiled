@@ -5,24 +5,27 @@ Pekka Kana 2 map support for Tiled
 Notes:
 - should make PK2 classes mixins with Tiled ones
 """
-import os, sys, re, string
-from tiled import *
-from tiled.qt import *
 from lib import cpystruct
 from os.path import dirname, exists
 from struct import pack,unpack,Struct
 from base64 import b64encode, b64decode
+import os, sys, re, string
+import tiled as T
 
 maps = []
 
-class PK2(Plugin):
+class PK2(T.Plugin):
   @classmethod
   def nameFilter(cls):
     return "Pekka Kana 2 (*.map)"
 
   @classmethod
+  def shortName(cls):
+    return "pk2"
+
+  @classmethod
   def supportsFile(cls, f):
-    return open(f, 'rb').read(4) == '1.3\0'
+    return open(f, 'rb').read(4) == b'1.3\0'
 
   @classmethod
   def read(cls, f):
@@ -34,44 +37,42 @@ class PK2(Plugin):
       lay1 = PK2MAPLAYER(fh)
       lay2 = PK2MAPLAYER(fh)
       lay3 = PK2MAPLAYER(fh)
-      print lvl
+      print(lvl)
 
     # -- tileset
-    img = QImage()
+    img = T.qt.QImage()
     imgfile = dirname(f)+'/../../gfx/tiles/'+str(lvl.tileFile)
     img.load(imgfile, 'BMP')
-    t = Tiled.Tileset('Tiles', 32,32, 0, 0)
-    t.setTransparentColor(QColor(img.color(255)))
-    t.loadFromImage(img, imgfile)
+    t = T.Tiled.Tileset.create('Tiles', 32,32, 0, 0)
+    t.data().setTransparentColor(T.qt.QColor(img.color(255)))
+    t.data().loadFromImage(img, imgfile)
 
     # find common bounding box for the layers
     bb = ['','',10,10]
     for l in [lay1,lay2,lay3]:
-      print l
+      print(l)
       bb[0] = min([bb[0], l.lx.num])
       bb[1] = min([bb[1], l.ly.num])
       bb[2] = max([bb[2], l.width()])
       bb[3] = max([bb[3], l.height()])
 
-    print 'bounds', bb
+    print('bounds', bb)
 
-    m = Tiled.Map(Tiled.Map.Orthogonal, bb[2], bb[3], 32,32)
+    m = T.Tiled.Map(T.Tiled.Map.Orthogonal, bb[2], bb[3], 32,32)
     maps.append(m)
 
     # -- background image
-    lai = Tiled.ImageLayer('Scenery', 0,0, bb[2], bb[3])
-    img = QImage()
+    lai = T.Tiled.ImageLayer('Scenery', bb[2], bb[3])
+    img = T.qt.QImage()
     imgfile = dirname(f)+'/../../gfx/scenery/'+str(lvl.fieldFile)
     img.load(imgfile, 'BMP')
     lai.loadFromImage(img, imgfile)
 
     # -- layers
-    la1 = Tiled.TileLayer('Back', 0,0, bb[2], bb[3])
-    la1.setMap(m)
+    la1 = T.Tiled.TileLayer('Back', 0,0, bb[2], bb[3])
     lay1.doTiles(t, la1, bb)
 
-    la2 = Tiled.TileLayer('Front', 0,0, bb[2], bb[3])
-    la2.setMap(m)
+    la2 = T.Tiled.TileLayer('Front', 0,0, bb[2], bb[3])
     lay2.doTiles(t, la2, bb)
 
     sprdir = dirname(f)+'/../../sprites/'
@@ -86,12 +87,12 @@ class PK2(Plugin):
 
       if not lay3.spriteGfx.has_key(str(spr.kuvatiedosto)):
         sprfile = find_case_insensitive_filename(sprdir, str(spr.kuvatiedosto))
-        img = QImage()
+        img = T.qt.QImage()
         img.load(sprdir+sprfile, 'BMP')
-        print 'loading', sprdir+sprfile
-        sprts = Tiled.Tileset(sprfile, 32,32, 0, 0)
-        sprts.setTransparentColor(QColor(img.color(255)))
-        sprts.loadFromImage(img, sprdir+sprfile)
+        print('loading', sprdir+sprfile)
+        sprts = T.Tiled.Tileset.create(sprfile, 32,32, 0, 0)
+        sprts.data().setTransparentColor(T.qt.QColor(img.color(255)))
+        sprts.data().loadFromImage(img, sprdir+sprfile)
         lay3.spriteGfx[str(spr.kuvatiedosto)] = sprts
 
       #sprgfx[(str(spr.kuvatiedosto]
@@ -99,10 +100,8 @@ class PK2(Plugin):
 
       #print spr
 
-    la3 = Tiled.ObjectGroup('Sprites', 0,0, bb[2], bb[3])
-    la3.setMap(m)
+    la3 = T.Tiled.ObjectGroup('Sprites', bb[2], bb[3])
     lay3.doSprites(la3, bb)
-
     m.addLayer(lai)
     m.addTileset(t)
     for sprts in lay3.spriteGfx.values():
@@ -128,14 +127,14 @@ class PK2(Plugin):
     #setattr(out, "sprites", ['pla'])
 
     with open(fn, 'wb') as fh:
-      print >>fh, out.pack()
+      print(out.pack(), file=fh)
 
       for i in range(m.layerCount()):
         tiles = []
         l = 0
         if isTileLayerAt(m, i):
           l = tileLayerAt(m, i)
-          print l
+          print(l)
         elif isObjectGroupAt(m, i):
           #l = objectGroupAt(m, i)
           continue
@@ -144,8 +143,8 @@ class PK2(Plugin):
           for x in range(l.width()):
             if l.cellAt(x, y).tile != None:
               tiles.append( l.cellAt(x, y).tile.id() )
-        print >>fh, 0,0, l.width(), l.height()
-        print >>fh, bytearray(tiles)
+        print(0,0, l.width(), l.height(), file=fh)
+        print(bytearray(tiles), file=fh)
 
     return True
 
@@ -234,9 +233,9 @@ class PK2MAPLAYER(cpystruct.CpyStruct("asciinum lx, ly, w, h;")):
           rx = self.lx.num + x - bb[0]
           ry = self.ly.num + y - bb[1] + 1
           spr = self.sprites[sprite]
-          obj = Tiled.MapObject(str(spr.kuvatiedosto), '', QPointF(rx, ry), QSizeF(1, 1)) #spr.width, spr.height))
+          obj = T.Tiled.MapObject(str(spr.kuvatiedosto), '', T.qt.QPointF(rx, ry), T.qt.QSizeF(1, 1)) #spr.width, spr.height))
           # 0 should point to the actual sprite but how?
-          obj.setCell(Tiled.Cell(self.spriteGfx[str(spr.kuvatiedosto)].tileAt(0)))
+          obj.setCell(Tiled.Cell(self.spriteGfx[str(spr.kuvatiedosto)].data().tileAt(0)))
           la.addObject(obj)
 
   def doTiles(self, ts, la, bb):
@@ -246,15 +245,15 @@ class PK2MAPLAYER(cpystruct.CpyStruct("asciinum lx, ly, w, h;")):
         if tile != 255:
           rx = self.lx.num + x - bb[0]
           ry = self.ly.num + y - bb[1]
-          if tile == 149: print 'start @',rx,ry
-          if tile == 150: print 'end @',rx,ry
-          ti = ts.tileAt(tile)
+          if tile == 149: print('start @',rx,ry)
+          if tile == 150: print('end @',rx,ry)
+          ti = ts.data().tileAt(tile)
           if ti != None and rx < bb[2] and ry < bb[3]:
             # app should check that coords are within layer
             #print rx,ry,self.ly,y
-            la.setCell(rx, ry, Tiled.Cell(ti))
+            la.setCell(rx, ry, T.Tiled.Cell(ti))
           else:
-            print 'invalid',rx,ry
+            print('invalid',rx,ry)
 
 class PK2SPR_ANIM(cpystruct.CpyStruct("""
   uchar   seq[10];

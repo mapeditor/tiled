@@ -21,15 +21,16 @@
 
 #include "convertercontrol.h"
 
-#include "map.h"
 #include "layer.h"
-#include "tileset.h"
-
+#include "map.h"
 #include "mapreader.h"
 #include "mapwriter.h"
+#include "tileset.h"
 
 #include <QDebug>
 #include <QSettings>
+
+#include <memory>
 
 using namespace Tiled;
 
@@ -47,7 +48,7 @@ QString ConverterControl::automappingRuleFileVersion(const QString &fileName)
 
     // version 1 check
     bool hasonlyruleprefix = true;
-    foreach (Tiled::Layer *layer, map->layers()) {
+    for (Tiled::Layer *layer : map->layers()) {
         if (!layer->name().startsWith("rule", Qt::CaseInsensitive))
             hasonlyruleprefix = false;
     }
@@ -60,7 +61,7 @@ QString ConverterControl::automappingRuleFileVersion(const QString &fileName)
     bool hasregion = false;
     bool allused = true;
 
-    foreach (Tiled::Layer *layer, map->layers()) {
+    for (Tiled::Layer *layer : map->layers()) {
         bool isunused = true;
         if (layer->name().startsWith("input", Qt::CaseInsensitive)) {
             hasrule = true;
@@ -86,7 +87,7 @@ QString ConverterControl::automappingRuleFileVersion(const QString &fileName)
 void ConverterControl::convertV1toV2(const QString &fileName)
 {
     Tiled::MapReader reader;
-    Tiled::Map *map = reader.readMap(fileName);
+    const std::unique_ptr<Tiled::Map> map(reader.readMap(fileName));
 
     if (!map) {
         qWarning() << "Error at conversion of " << fileName << ":\n"
@@ -94,7 +95,7 @@ void ConverterControl::convertV1toV2(const QString &fileName)
         return;
     }
 
-    foreach (Tiled::Layer *layer, map->layers()) {
+    for (Tiled::Layer *layer : map->layers()) {
         if (layer->name().startsWith("ruleset", Qt::CaseInsensitive)) {
             layer->setName("Input_set");
         } else if (layer->name().startsWith("rulenotset", Qt::CaseInsensitive)) {
@@ -111,9 +112,5 @@ void ConverterControl::convertV1toV2(const QString &fileName)
     }
 
     Tiled::MapWriter writer;
-    writer.setLayerDataFormat(map->layerDataFormat());
-    writer.writeMap(map, fileName);
-
-    qDeleteAll(map->tilesets());
-    delete map;
+    writer.writeMap(map.get(), fileName);
 }

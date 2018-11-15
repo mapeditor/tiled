@@ -7,19 +7,21 @@ Note:
 - only supports bg1 of bgmode 1
 http://snesemu.black-ship.net/misc/techdocs/snesdoc.html#GraphicsFormat
 """
-import sys, re, string
-from tiled import *
-from tiled.qt import *
 from os.path import dirname
 from struct import pack,unpack,Struct
 from collections import namedtuple
+import sys, re, string
+import tiled as T
 
-maps = []
 
-class ZST(Plugin):
+class ZST(T.Plugin):
   @classmethod
   def nameFilter(cls):
     return "zSNES Save State (*.zs?)"
+
+  @classmethod
+  def shortName(cls):
+    return "zst"
 
   @classmethod
   def supportsFile(cls, f):
@@ -28,7 +30,6 @@ class ZST(Plugin):
   @classmethod
   def read(cls, f):
     m = Tiled.Map(Tiled.Map.Orthogonal, 64,32, 8,8)
-    maps.append(m)
 
     # bg1-4 layer bpp counts
     bgmodes = ( (2, 4, 4, 8, 8, 4, 4, 0),
@@ -36,7 +37,7 @@ class ZST(Plugin):
         (2, 2, 0, 0, 0, 0, 0, 0),
         (2, 0, 0, 0, 0, 0, 0, 0))
 
-    img = QImage(32*8, 32*8, QImage.Format_Indexed8)
+    img = T.qt.QImage(32*8, 32*8, T.qt.QImage.Format_Indexed8)
     #img.fill(255)
     cmap = []
     with open(f, 'rb') as fh:
@@ -60,20 +61,19 @@ class ZST(Plugin):
         img.setColorTable(cmap[pal*colors:pal*colors+colors])
         fh.seek(tilemapbase+tilebase)
         readTileset(fh, img)
- 
-        tsets.append(Tiled.Tileset('Pal%i'%pal, 8,8, 0, 0))
-        tsets[pal].setTransparentColor(QColor(img.color(0)))
-        tsets[pal].loadFromImage(img, 'script')
+
+        tsets.append(Tiled.Tileset.create('Pal%i'%pal, 8,8, 0, 0))
+        tsets[pal].data().setTransparentColor(QColor(img.color(0)))
+        tsets[pal].data().loadFromImage(img, 'script')
 
       la = Tiled.TileLayer('Back', 0,0, 64,32)
-      la.setMap(m)
       fh.seek(tilemapbase)
 
       for y in range(la.height()):
         for x in range(32):
           t = parseTile(unpack('H', fh.read(2))[0])
           try:
-            tile = tsets[t.pal].tileAt(t.idx)
+            tile = tsets[t.pal].data().tileAt(t.idx)
             pix = tile.image()
             tile.setImage(pix)
             """ overriding tile gfx could be an alternative to palgroup layers
@@ -83,26 +83,22 @@ class ZST(Plugin):
             """
             la.setCell(x, y, Tiled.Cell(tile))
           except:
-            print 'out of range %i,%i: %i' % (x,y,t.idx)
+            print('out of range %i,%i: %i' % (x,y,t.idx))
 
       if la.width() > 32:
         for y in range(la.height()):
           for x in range(32, la.width()):
             t = parseTile(unpack('H', fh.read(2))[0])
             try:
-              tile = tsets[t.pal].tileAt(t.idx)
+              tile = tsets[t.pal].data().tileAt(t.idx)
               la.setCell(x, y, Tiled.Cell(tile))
             except:
-              print 'out of range %i,%i: %i' % (x,y,t.idx)
+              print('out of range %i,%i: %i' % (x,y,t.idx))
 
       for pal in range(7):
         m.addTileset(tsets[pal])
       m.addLayer(la)
     return m
-
-  @classmethod
-  def write(cls, m, fn):
-    return False
 
 def readTileset(dat, img, tvert=32, thoriz=32):
   tw, th = 8, 8
@@ -152,7 +148,7 @@ def parseColors(cgram):
     g = ((col >> 5) << 3) & 0xf8
     b = ((col >> 10) << 3) & 0xf8
     #print (r,g,b),
-    yield QColor(r,g,b).rgb()
+    yield T.qt.QColor(r,g,b).rgb()
 
 def parseTile(t):
   ret = namedtuple('Tile', 'idx pal prio flipx flipy')

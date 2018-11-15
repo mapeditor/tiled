@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CHANGEOBJECTGROUPPROPERTIES_H
-#define CHANGEOBJECTGROUPPROPERTIES_H
+#pragma once
 
 #include "objectgroup.h"
 
@@ -47,8 +46,8 @@ public:
                                 const QColor &newColor,
                                 ObjectGroup::DrawOrder newDrawOrder);
 
-    void undo();
-    void redo();
+    void undo() override;
+    void redo() override;
 
 private:
     MapDocument *mMapDocument;
@@ -61,5 +60,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // CHANGEOBJECTGROUPPROPERTIES_H

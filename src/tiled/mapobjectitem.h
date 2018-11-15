@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MAPOBJECTITEM_H
-#define MAPOBJECTITEM_H
+#pragma once
 
 #include <QCoreApplication>
 #include <QGraphicsItem>
@@ -52,42 +51,28 @@ public:
      * @param parent the item of the object group this object belongs to
      */
     MapObjectItem(MapObject *object, MapDocument *mapDocument,
-                  ObjectGroupItem *parent = 0);
+                  QGraphicsItem *parent = nullptr);
 
-    MapObject *mapObject() const
-    { return mObject; }
+    enum { Type = UserType + 1 };
+    int type() const override { return Type; }
+
+    MapObject *mapObject() const;
 
     /**
      * Should be called when the map object this item refers to was changed.
      */
     void syncWithMapObject();
 
-    /**
-     * Sets whether this map object is editable. Editable map objects can be
-     * resized and get a move cursor.
-     */
-    void setEditable(bool editable);
-
-    bool isEditable() const
-    { return mIsEditable; }
+    bool isHoverIndicator() const;
+    void setIsHoverIndicator(bool isHoverIndicator);
 
     // QGraphicsItem
-    QRectF boundingRect() const;
-    QPainterPath shape() const;
+    QRectF boundingRect() const override;
+    QPainterPath shape() const override;
 
     void paint(QPainter *painter,
                const QStyleOptionGraphicsItem *option,
-               QWidget *widget = 0);
-
-    /**
-     * Resizes the associated map object. The \a size is given in tiles.
-     */
-    void resizeObject(const QSizeF &size);
-
-    /**
-     * Sets the rotation of the associated map object.
-     */
-    void setObjectRotation(qreal angle);
+               QWidget *widget = nullptr) override;
 
     /**
      * Sets a new polygon on the associated object.
@@ -111,18 +96,23 @@ private:
 
     /** Bounding rect cached, for adapting to geometry change correctly. */
     QRectF mBoundingRect;
-    QString mName;      // Copy of the name, so we know when it changes
-    QPolygonF mPolygon; // Copy of the polygon, for the same reason
+    QPolygonF mPolygon; // Copy of the polygon, so we know when it changes
     QColor mColor;      // Cached color of the object
-    bool mIsEditable;
-    bool mSyncing;
-    ResizeHandle *mResizeHandle;
-
-    friend class Handle;
-    friend class ResizeHandle;
+    bool mIsHoveredIndicator = false;
 };
+
+
+inline MapObject *MapObjectItem::mapObject() const
+{
+    return mObject;
+}
+
+inline bool MapObjectItem::isHoverIndicator() const
+{
+    return mIsHoveredIndicator;
+}
 
 } // namespace Internal
 } // namespace Tiled
 
-#endif // MAPOBJECTITEM_H
+Q_DECLARE_METATYPE(Tiled::Internal::MapObjectItem*)

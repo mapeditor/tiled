@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef AUTOMAPPINGMANAGER_H
-#define AUTOMAPPINGMANAGER_H
+#pragma once
 
 #include <QObject>
 #include <QRegion>
@@ -47,7 +46,7 @@ public:
     /**
      * Constructor.
      */
-    AutomappingManager(QObject *parent = 0);
+    AutomappingManager(QObject *parent = nullptr);
 
     ~AutomappingManager();
 
@@ -59,36 +58,37 @@ public:
 
 signals:
     /**
-     * This signal is emited after automapping was done and an error occurred.
+     * This signal is emitted after automapping was done and an error occurred.
      */
-    void errorsOccurred();
+    void errorsOccurred(bool automatic);
 
     /**
-     * This signal is emited after automapping was done and a warning occurred.
+     * This signal is emitted after automapping was done and a warning occurred.
      */
-    void warningsOccurred();
+    void warningsOccurred(bool automatic);
 
 public slots:
     /**
-     * This triggers an automapping on the whole current map document.
+     * This triggers an automapping on the current map document. Starts with
+     * the currently selected area, or the entire map if there is no selection.
      */
     void autoMap();
 
 private slots:
-    void autoMap(const QRegion &where, Layer *touchedLayer);
+    void onRegionEdited(const QRegion &where, Layer *touchedLayer);
 
 private:
     Q_DISABLE_COPY(AutomappingManager)
 
     /**
      * This function parses a rules file.
-     * For each path which is a rule, (fileextension is tmx) an AutoMapper
+     * For each path which is a rule, (file extension is tmx) an AutoMapper
      * object is setup.
      *
-     * If a fileextension is txt, this file will be opened and searched for
+     * If a file extension is txt, this file will be opened and searched for
      * rules again.
      *
-     * @return if the loading was successful: return true if it suceeded.
+     * @return if the loading was successful: return true if it succeeded.
      */
     bool loadFile(const QString &filePath);
 
@@ -138,5 +138,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // AUTOMAPPINGMANAGER_H

@@ -13,9 +13,7 @@ This small library is BSD licensed. See the LICENSE.BSD file for details.
 
 Adam Turk <aturk@biggeruniverse.com>
 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
-
-This library includes MiGBase64, a BSD licensed base64 encoder & decoder
-by Mikael Grev. See src/tiled/util/Base64.java for licensing details.
+Mike Thomas <mikepthomas@outlook.com>
 
 http://www.mapeditor.org/
 
@@ -23,12 +21,12 @@ http://www.mapeditor.org/
  Building
 ----------
 
-To make libtiled.jar, install Ant (http://ant.apache.org/), and run the
+To make libtiled.jar, install Maven (http://maven.apache.org/), and run the
 following command:
-$ ant jar
+$ mvn clean install
 
 To run all unit-tests, run the following command:
-$ ant test
-Running unit-tests requires you to have ant-junit.jar in your classpath. This
-is usually installed by the default Ant install, but some OS:es refer to that
-as the "ant-optional" package.
+$ mvn test -P release-profile
+
+To generate reports and documentation, run:
+$ mvn site

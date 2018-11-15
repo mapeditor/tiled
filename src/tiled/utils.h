@@ -18,33 +18,30 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UTILS_H
-#define UTILS_H
+#pragma once
 
 #include <QIcon>
 #include <QString>
 
 class QAction;
+class QKeyEvent;
 class QMenu;
 
 namespace Tiled {
 namespace Utils {
 
-/**
- * Returns a file dialog filter that matches all readable image formats.
- */
 QString readableImageFormatsFilter();
-
-/**
- * Returns a file dialog filter that matches all writable image formats.
- */
 QString writableImageFormatsFilter();
+
+QStringList cleanFilterList(const QString &filter);
+bool fileNameMatchesNameFilter(const QString &fileName,
+                               const QString &nameFilter);
 
 /**
  * Looks up the icon with the specified \a name from the system theme and set
  * it on the instance \a t when found.
  *
- * This is a templated method which is used on instances of QAction, QMenu,
+ * This is a template method which is used on instances of QAction, QMenu,
  * QToolButton, etc.
  *
  * Does nothing when the platform is not Linux.
@@ -65,7 +62,18 @@ void setThemeIcon(T *t, const char *name)
 void restoreGeometry(QWidget *widget);
 void saveGeometry(QWidget *widget);
 
+qreal defaultDpiScale();
+qreal dpiScaled(qreal value);
+QSize dpiScaled(QSize value);
+QPoint dpiScaled(QPoint value);
+QRectF dpiScaled(QRectF value);
+QSize smallIconSize();
+
+bool isZoomInShortcut(QKeyEvent *event);
+bool isZoomOutShortcut(QKeyEvent *event);
+bool isResetZoomShortcut(QKeyEvent *event);
+
+void addFileManagerActions(QMenu &menu, const QString &fileName);
+
 } // namespace Utils
 } // namespace Tiled
-
-#endif // UTILS_H

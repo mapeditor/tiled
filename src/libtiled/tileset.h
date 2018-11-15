@@ -1,6 +1,6 @@
 /*
  * tileset.h
- * Copyright 2008-2009, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2015, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2009, Edward Hutchins <eah1@yahoo.com>
  *
  * This file is part of libtiled.
@@ -27,24 +27,31 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef TILESET_H
-#define TILESET_H
+#pragma once
 
+#include "imagereference.h"
 #include "object.h"
 
 #include <QColor>
 #include <QList>
-#include <QVector>
-#include <QPoint>
-#include <QString>
 #include <QPixmap>
+#include <QPoint>
+#include <QPointer>
+#include <QSharedPointer>
+#include <QString>
+#include <QVector>
 
 class QImage;
 
 namespace Tiled {
 
 class Tile;
+class Tileset;
+class TilesetFormat;
 class Terrain;
+class WangSet;
+
+typedef QSharedPointer<Tileset> SharedTileset;
 
 /**
  * A tileset, representing a set of tiles.
@@ -58,7 +65,19 @@ class TILEDSHARED_EXPORT Tileset : public Object
 {
 public:
     /**
-     * Constructor.
+     * The orientation of the tileset determines the projection used in the
+     * TileCollisionDock and for the terrain information overlay of the
+     * TilesetView.
+     */
+    enum Orientation {
+        Orthogonal,
+        Isometric,
+    };
+
+    /**
+     * Creates a new tileset with the given parameters. Using this function
+     * makes sure the internal weak pointer is initialized, which enables the
+     * sharedPointer() function.
      *
      * @param name        the name of the tileset
      * @param tileWidth   the width of the tiles in the tileset
@@ -66,269 +85,564 @@ public:
      * @param tileSpacing the spacing between the tiles in the tileset image
      * @param margin      the margin around the tiles in the tileset image
      */
-    Tileset(const QString &name, int tileWidth, int tileHeight,
-            int tileSpacing = 0, int margin = 0):
-        Object(TilesetType),
-        mName(name),
-        mTileWidth(tileWidth),
-        mTileHeight(tileHeight),
-        mTileSpacing(tileSpacing),
-        mMargin(margin),
-        mImageWidth(0),
-        mImageHeight(0),
-        mColumnCount(0),
-        mTerrainDistancesDirty(false)
-    {
-        Q_ASSERT(tileSpacing >= 0);
-        Q_ASSERT(margin >= 0);
-    }
-
-    /**
-     * Destructor.
-     */
-    ~Tileset();
-
-    /**
-     * Returns the name of this tileset.
-     */
-    const QString &name() const { return mName; }
-
-    /**
-     * Sets the name of this tileset.
-     */
-    void setName(const QString &name) { mName = name; }
-
-    /**
-     * Returns the file name of this tileset. When the tileset isn't an
-     * external tileset, the file name is empty.
-     */
-    const QString &fileName() const { return mFileName; }
-
-    /**
-     * Sets the filename of this tileset.
-     */
-    void setFileName(const QString &fileName) { mFileName = fileName; }
-
-    /**
-     * Returns whether this tileset is external.
-     */
-    bool isExternal() const { return !mFileName.isEmpty(); }
-
-    /**
-     * Returns the maximum width of the tiles in this tileset.
-     */
-    int tileWidth() const { return mTileWidth; }
-
-    /**
-     * Returns the maximum height of the tiles in this tileset.
-     */
-    int tileHeight() const { return mTileHeight; }
-
-    /**
-     * Returns the maximum size of the tiles in this tileset.
-     */
-    QSize tileSize() const { return QSize(mTileWidth, mTileHeight); }
-
-    /**
-     * Returns the spacing between the tiles in the tileset image.
-     */
-    int tileSpacing() const { return mTileSpacing; }
-
-    /**
-     * Returns the margin around the tiles in the tileset image.
-     */
-    int margin() const { return mMargin; }
-
-    /**
-     * Returns the offset that is applied when drawing the tiles in this
-     * tileset.
-     */
-    QPoint tileOffset() const { return mTileOffset; }
-
-    /**
-     * @see tileOffset
-     */
-    void setTileOffset(QPoint offset) { mTileOffset = offset; }
-
-    /**
-     * Returns a const reference to the list of tiles in this tileset.
-     */
-    const QList<Tile*> &tiles() const { return mTiles; }
-
-    /**
-     * Returns the tile for the given tile ID.
-     * The tile ID is local to this tileset, which means the IDs are in range
-     * [0, tileCount() - 1].
-     */
-    Tile *tileAt(int id) const;
-
-    /**
-     * Returns the number of tiles in this tileset.
-     */
-    int tileCount() const { return mTiles.size(); }
-
-    /**
-     * Returns the number of tile columns in the tileset image.
-     */
-    int columnCount() const { return mColumnCount; }
-
-    /**
-     * Returns the width of the tileset image.
-     */
-    int imageWidth() const { return mImageWidth; }
-
-    /**
-     * Returns the height of the tileset image.
-     */
-    int imageHeight() const { return mImageHeight; }
-
-    /**
-     * Returns the transparent color, or an invalid color if no transparent
-     * color is used.
-     */
-    QColor transparentColor() const { return mTransparentColor; }
-
-    /**
-     * Sets the transparent color. Pixels with this color will be masked out
-     * when loadFromImage() is called.
-     */
-    void setTransparentColor(const QColor &c) { mTransparentColor = c; }
-
-    /**
-     * Load this tileset from the given tileset \a image. This will replace
-     * existing tile images in this tileset with new ones. If the new image
-     * contains more tiles than exist in the tileset new tiles will be
-     * appended, if there are fewer tiles the excess images will be blanked.
-     *
-     * The tile width and height of this tileset must be higher than 0.
-     *
-     * @param image    the image to load the tiles from
-     * @param fileName the file name of the image, which will be remembered
-     *                 as the image source of this tileset.
-     * @return <code>true</code> if loading was successful, otherwise
-     *         returns <code>false</code>
-     */
-    bool loadFromImage(const QImage &image, const QString &fileName);
-
-    /**
-     * Convenience override that loads the image using the QImage constructor.
-     */
-    bool loadFromImage(const QString &fileName);
-
-    /**
-     * This checks if there is a similar tileset in the given list.
-     * It is needed for replacing this tileset by its similar copy.
-     */
-    Tileset *findSimilarTileset(const QList<Tileset*> &tilesets) const;
-
-    /**
-     * Returns the file name of the external image that contains the tiles in
-     * this tileset. Is an empty string when this tileset doesn't have a
-     * tileset image.
-     */
-    const QString &imageSource() const { return mImageSource; }
-
-    /**
-     * Returns the column count that this tileset would have if the tileset
-     * image would have the given \a width. This takes into account the tile
-     * size, margin and spacing.
-     */
-    int columnCountForWidth(int width) const;
-
-    /**
-     * Returns a const reference to the list of terrains in this tileset.
-     */
-    const QList<Terrain*> &terrains() const { return mTerrainTypes; }
-
-    /**
-     * Returns the number of terrain types in this tileset.
-     */
-    int terrainCount() const { return mTerrainTypes.size(); }
-
-    /**
-     * Returns the terrain type at the given \a index.
-     */
-    Terrain *terrain(int index) const { return index >= 0 ? mTerrainTypes[index] : 0; }
-
-    /**
-     * Adds a new terrain type.
-     *
-     * @param name      the name of the terrain
-     * @param imageTile the id of the tile that represents the terrain visually
-     * @return the created Terrain instance
-     */
-    Terrain *addTerrain(const QString &name, int imageTileId);
-
-    /**
-     * Adds the \a terrain type at the given \a index.
-     *
-     * The terrain should already have this tileset associated with it.
-     */
-    void insertTerrain(int index, Terrain *terrain);
-
-    /**
-     * Removes the terrain type at the given \a index and returns it. The
-     * caller becomes responsible for the lifetime of the terrain type.
-     *
-     * This will cause the terrain ids of subsequent terrains to shift up to
-     * fill the space and the terrain information of all tiles in this tileset
-     * will be updated accordingly.
-     */
-    Terrain *takeTerrainAt(int index);
-
-    /**
-     * Returns the transition penalty(/distance) between 2 terrains. -1 if no
-     * transition is possible.
-     */
-    int terrainTransitionPenalty(int terrainType0, int terrainType1);
-
-    /**
-     * Adds a new tile to the end of the tileset.
-     */
-    Tile *addTile(const QPixmap &image, const QString &source = QString());
-
-    void insertTiles(int index, const QList<Tile*> &tiles);
-    void removeTiles(int index, int count);
-
-    /**
-     * Sets the \a image to be used for the tile with the given \a id.
-     */
-    void setTileImage(int id, const QPixmap &image,
-                      const QString &source = QString());
-
-    /**
-     * Used by the Tile class when its terrain information changes.
-     */
-    void markTerrainDistancesDirty() { mTerrainDistancesDirty = true; }
+    static SharedTileset create(const QString &name,
+                                int tileWidth,
+                                int tileHeight,
+                                int tileSpacing = 0,
+                                int margin = 0);
 
 private:
     /**
-     * Sets tile size to the maximum size.
+     * Private constructor. Use create() instead.
      */
-    void updateTileSize();
+    Tileset(QString name, int tileWidth, int tileHeight,
+            int tileSpacing = 0, int margin = 0);
+
+public:
+    ~Tileset();
+
+    const QString &name() const;
+    void setName(const QString &name);
+
+    const QString &fileName() const;
+    void setFileName(const QString &fileName);
+    bool isExternal() const;
+
+    void setFormat(TilesetFormat *format);
+    TilesetFormat *format() const;
+
+    int tileWidth() const;
+    int tileHeight() const;
+
+    QSize tileSize() const;
+    void setTileSize(QSize tileSize);
+
+    int tileSpacing() const;
+    void setTileSpacing(int tileSpacing);
+
+    int margin() const;
+    void setMargin(int margin);
+
+    QPoint tileOffset() const;
+    void setTileOffset(QPoint offset);
+
+    Orientation orientation() const;
+    void setOrientation(Orientation orientation);
+
+    QSize gridSize() const;
+    void setGridSize(QSize gridSize);
+
+    const QMap<int, Tile*> &tiles() const;
+    inline Tile *findTile(int id) const;
+    Tile *tileAt(int id) const { return findTile(id); } // provided for Python
+    Tile *findOrCreateTile(int id);
+    int tileCount() const;
+
+    int columnCount() const;
+    int rowCount() const;
+    void setColumnCount(int columnCount);
+    int expectedColumnCount() const;
+    int expectedRowCount() const;
+    void syncExpectedColumnsAndRows();
+
+    int imageWidth() const;
+    int imageHeight() const;
+
+    QColor transparentColor() const;
+    void setTransparentColor(const QColor &c);
+
+    const QColor &backgroundColor() const;
+    void setBackgroundColor(QColor color);
+
+    void setImageReference(const ImageReference &reference);
+
+    bool loadFromImage(const QImage &image, const QUrl &source);
+    bool loadFromImage(const QImage &image, const QString &source);
+    bool loadFromImage(const QString &fileName);
+    bool loadImage();
+
+    SharedTileset findSimilarTileset(const QVector<SharedTileset> &tilesets) const;
+
+    const QUrl &imageSource() const;
+    void setImageSource(const QUrl &imageSource);
+    bool isCollection() const;
+
+    int columnCountForWidth(int width) const;
+    int rowCountForHeight(int height) const;
+
+    const QList<Terrain*> &terrains() const;
+    int terrainCount() const;
+    Terrain *terrain(int index) const;
+
+    Terrain *addTerrain(const QString &name, int imageTileId);
+    void insertTerrain(int index, Terrain *terrain);
+    Terrain *takeTerrainAt(int index);
+    void swapTerrains(int index, int swapIndex);
+
+    int terrainTransitionPenalty(int terrainType0, int terrainType1) const;
+    int maximumTerrainDistance() const;
+
+    const QList<WangSet*> &wangSets() const;
+    int wangSetCount() const;
+    WangSet *wangSet(int index) const;
+
+    void addWangSet(WangSet *wangSet);
+    void insertWangSet(int index, WangSet *wangSet);
+    WangSet *takeWangSetAt(int index);
+
+    Tile *addTile(const QPixmap &image, const QUrl &source = QUrl());
+    void addTiles(const QList<Tile*> &tiles);
+    void removeTiles(const QList<Tile *> &tiles);
+    void deleteTile(int id);
+
+    void setNextTileId(int nextId);
+    int nextTileId() const;
+    int takeNextTileId();
+
+    void setTileImage(Tile *tile,
+                      const QPixmap &image,
+                      const QUrl &source = QUrl());
+
+    void markTerrainDistancesDirty();
+
+    SharedTileset sharedPointer() const;
+
+    void setStatus(LoadingStatus status);
+    void setImageStatus(LoadingStatus status);
+    LoadingStatus status() const;
+    LoadingStatus imageStatus() const;
+
+    void swap(Tileset &other);
+
+    SharedTileset clone() const;
 
     /**
-     * Calculates the transition distance matrix for all terrain types.
+     * Helper function that converts the tileset orientation to a string value.
+     * Useful for map writers.
+     *
+     * @return The tileset orientation as a lowercase string.
      */
+    static QString orientationToString(Orientation);
+
+    /**
+     * Helper function that converts a string to a tileset orientation enumerator.
+     * Useful for map readers.
+     *
+     * @return The tileset orientation matching the given string, or
+     *         Tileset::Orthogonal if the string is unrecognized.
+     */
+    static Orientation orientationFromString(const QString &);
+
+private:
+    void updateTileSize();
     void recalculateTerrainDistances();
 
     QString mName;
     QString mFileName;
-    QString mImageSource;
-    QColor mTransparentColor;
+    ImageReference mImageReference;
     int mTileWidth;
     int mTileHeight;
     int mTileSpacing;
     int mMargin;
     QPoint mTileOffset;
-    int mImageWidth;
-    int mImageHeight;
+    Orientation mOrientation;
+    QSize mGridSize;
     int mColumnCount;
-    QList<Tile*> mTiles;
+    int mExpectedColumnCount;
+    int mExpectedRowCount;
+    int mNextTileId;
+    int mMaximumTerrainDistance;
+    QMap<int, Tile*> mTiles;
     QList<Terrain*> mTerrainTypes;
+    QList<WangSet*> mWangSets;
     bool mTerrainDistancesDirty;
+    LoadingStatus mStatus;
+    QColor mBackgroundColor;
+    QPointer<TilesetFormat> mFormat;
+
+    QWeakPointer<Tileset> mWeakPointer;
 };
+
+
+/**
+ * Returns the name of this tileset.
+ */
+inline const QString &Tileset::name() const
+{
+    return mName;
+}
+
+/**
+ * Sets the name of this tileset.
+ */
+inline void Tileset::setName(const QString &name)
+{
+    mName = name;
+}
+
+/**
+ * Returns the file name of this tileset. When the tileset isn't an
+ * external tileset, the file name is empty.
+ */
+inline const QString &Tileset::fileName() const
+{
+    return mFileName;
+}
+
+/**
+ * Sets the filename of this tileset.
+ */
+inline void Tileset::setFileName(const QString &fileName)
+{
+    mFileName = fileName;
+}
+
+/**
+ * Returns whether this tileset is external.
+ */
+inline bool Tileset::isExternal() const
+{
+    return !mFileName.isEmpty();
+}
+
+/**
+ * Returns the maximum width of the tiles in this tileset.
+ */
+inline int Tileset::tileWidth() const
+{
+    return mTileWidth;
+}
+
+/**
+ * Returns the maximum height of the tiles in this tileset.
+ */
+inline int Tileset::tileHeight() const
+{
+    return mTileHeight;
+}
+
+/**
+ * Returns the maximum size of the tiles in this tileset.
+ */
+inline QSize Tileset::tileSize() const
+{
+    return QSize(mTileWidth, mTileHeight);
+}
+
+/**
+ * Returns the spacing between the tiles in the tileset image.
+ */
+inline int Tileset::tileSpacing() const
+{
+    return mTileSpacing;
+}
+
+/**
+ * Returns the margin around the tiles in the tileset image.
+ */
+inline int Tileset::margin() const
+{
+    return mMargin;
+}
+
+/**
+ * Returns the offset that is applied when drawing the tiles in this
+ * tileset.
+ */
+inline QPoint Tileset::tileOffset() const
+{
+    return mTileOffset;
+}
+
+/**
+ * @see tileOffset
+ */
+inline void Tileset::setTileOffset(QPoint offset)
+{
+    mTileOffset = offset;
+}
+
+/**
+ * Returns the orientation of the tiles in this tileset.
+ */
+inline Tileset::Orientation Tileset::orientation() const
+{
+    return mOrientation;
+}
+
+/**
+ * @see orientation
+ */
+inline void Tileset::setOrientation(Orientation orientation)
+{
+    mOrientation = orientation;
+}
+
+/**
+ * Returns the grid size that is used when the tileset has Isometric
+ * orientation.
+ */
+inline QSize Tileset::gridSize() const
+{
+    return mGridSize;
+}
+
+/**
+ * @see gridSize
+ */
+inline void Tileset::setGridSize(QSize gridSize)
+{
+    mGridSize = gridSize;
+}
+
+/**
+ * Returns a const reference to the tiles in this tileset.
+ */
+inline const QMap<int, Tile *> &Tileset::tiles() const
+{
+    return mTiles;
+}
+
+/**
+ * Returns the tile with the given tile ID. The tile IDs are local to this
+ * tileset.
+ */
+inline Tile *Tileset::findTile(int id) const
+{
+    return mTiles.value(id);
+}
+
+/**
+ * Returns the number of tiles in this tileset.
+ *
+ * Note that the tiles are not necessarily consecutive.
+ */
+inline int Tileset::tileCount() const
+{
+    return mTiles.size();
+}
+
+/**
+ * Returns the number of tile columns in the tileset image.
+ */
+inline int Tileset::columnCount() const
+{
+    return mColumnCount;
+}
+
+/**
+ * Sets the column count to use when displaying this tileset. For tileset image
+ * based tilesets, this reflects the number of tile columns in the image.
+ */
+inline void Tileset::setColumnCount(int columnCount)
+{
+    mColumnCount = columnCount;
+}
+
+/**
+ * Returns the number of tile columns expected to be in the tileset image. This
+ * may differ from the actual amount of columns encountered when loading the
+ * image, and can be used for automatically adjusting tile indexes.
+ */
+inline int Tileset::expectedColumnCount() const
+{
+    return mExpectedColumnCount;
+}
+
+/**
+ * Returns the number of tile rows expected to be in the tileset image. This
+ * may differ from the actual amount of rows encountered when loading the
+ * image, and is checked when automatically adjusting tile indexes.
+ */
+inline int Tileset::expectedRowCount() const
+{
+    return mExpectedRowCount;
+}
+
+/**
+ * Sets the expected column and row count to the actual column count. Usually
+ * called after checking with the user whether he wants the map to be adjusted
+ * to a change to the tileset image size.
+ */
+inline void Tileset::syncExpectedColumnsAndRows()
+{
+    mExpectedColumnCount = mColumnCount;
+    mExpectedRowCount = rowCount();
+}
+
+/**
+ * Returns the width of the tileset image.
+ */
+inline int Tileset::imageWidth() const
+{
+    return mImageReference.size.width();
+}
+
+/**
+ * Returns the height of the tileset image.
+ */
+inline int Tileset::imageHeight() const
+{
+    return mImageReference.size.height();
+}
+
+/**
+ * Returns the transparent color, or an invalid color if no transparent
+ * color is used.
+ */
+inline QColor Tileset::transparentColor() const
+{
+    return mImageReference.transparentColor;
+}
+
+/**
+ * Returns the background color of this tileset.
+ */
+inline const QColor &Tileset::backgroundColor() const
+{
+    return mBackgroundColor;
+}
+
+/**
+ * Sets the background color of this tileset.
+ */
+inline void Tileset::setBackgroundColor(QColor color)
+{
+    mBackgroundColor = color;
+}
+
+/**
+ * Returns the URL of the external image that contains the tiles in
+ * this tileset. Is an empty string when this tileset doesn't have a
+ * tileset image.
+ */
+inline const QUrl &Tileset::imageSource() const
+{
+    return mImageReference.source;
+}
+
+/**
+ * Returns whether this tileset is a collection of images. In this case, the
+ * tileset itself has no image source.
+ */
+inline bool Tileset::isCollection() const
+{
+    return imageSource().isEmpty();
+}
+
+/**
+ * Returns a const reference to the list of terrains in this tileset.
+ */
+inline const QList<Terrain *> &Tileset::terrains() const
+{
+    return mTerrainTypes;
+}
+
+/**
+ * Returns the number of terrain types in this tileset.
+ */
+inline int Tileset::terrainCount() const
+{
+    return mTerrainTypes.size();
+}
+
+/**
+ * Returns the terrain type at the given \a index.
+ */
+inline Terrain *Tileset::terrain(int index) const
+{
+    return index >= 0 ? mTerrainTypes[index] : nullptr;
+}
+
+inline const QList<WangSet*> &Tileset::wangSets() const
+{
+    return mWangSets;
+}
+
+inline int Tileset::wangSetCount() const
+{
+    return mWangSets.size();
+}
+
+inline WangSet *Tileset::wangSet(int index) const
+{
+    return index >= 0 ? mWangSets[index] : nullptr;
+}
+
+/**
+ * Sets the next id to be used for tiles in this tileset.
+ */
+inline void Tileset::setNextTileId(int nextId)
+{
+    Q_ASSERT(nextId > 0);
+    mNextTileId = nextId;
+}
+
+/**
+ * Returns the next tile id for this tileset.
+ */
+inline int Tileset::nextTileId() const
+{
+    return mNextTileId;
+}
+
+/**
+ * Returns the next tile id for this tileset and allocates a new one.
+ */
+inline int Tileset::takeNextTileId()
+{
+    return mNextTileId++;
+}
+
+/**
+ * Used by the Tile class when its terrain information changes.
+ */
+inline void Tileset::markTerrainDistancesDirty()
+{
+    mTerrainDistancesDirty = true;
+}
+
+inline SharedTileset Tileset::sharedPointer() const
+{
+    return SharedTileset(mWeakPointer);
+}
+
+/**
+ * Sets the status of this tileset.
+ */
+inline void Tileset::setStatus(LoadingStatus status)
+{
+    mStatus = status;
+}
+
+/**
+ * Sets the loading status of this tileset's image.
+ */
+inline void Tileset::setImageStatus(LoadingStatus status)
+{
+    mImageReference.status = status;
+}
+
+/**
+ * Returns the loading status of this tileset.
+ *
+ * Only valid for external tilesets (fileName() != empty).
+ */
+inline LoadingStatus Tileset::status() const
+{
+    return mStatus;
+}
+
+/**
+ * Returns the loading status of this tileset's image.
+ *
+ * Only valid for tilesets based on a single image (imageSource() != empty).
+ */
+inline LoadingStatus Tileset::imageStatus() const
+{
+    return mImageReference.status;
+}
 
 } // namespace Tiled
 
-#endif // TILESET_H
+Q_DECLARE_METATYPE(Tiled::SharedTileset)

@@ -18,20 +18,20 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef EDITPOLYGONTOOL_H
-#define EDITPOLYGONTOOL_H
+#pragma once
 
 #include "abstractobjecttool.h"
 
 #include <QMap>
 #include <QSet>
 
+#include <memory>
+
 class QGraphicsItem;
 
 namespace Tiled {
 namespace Internal {
 
-class MapObjectItem;
 class PointHandle;
 class SelectionRectangle;
 
@@ -43,70 +43,98 @@ class EditPolygonTool : public AbstractObjectTool
     Q_OBJECT
 
 public:
-    explicit EditPolygonTool(QObject *parent = 0);
-    ~EditPolygonTool();
+    explicit EditPolygonTool(QObject *parent = nullptr);
+    ~EditPolygonTool() override;
 
-    void activate(MapScene *scene);
-    void deactivate(MapScene *scene);
+    void activate(MapScene *scene) override;
+    void deactivate(MapScene *scene) override;
 
-    void mouseEntered();
+    void keyPressed(QKeyEvent *event) override;
+
+    void mouseEntered() override;
     void mouseMoved(const QPointF &pos,
-                    Qt::KeyboardModifiers modifiers);
-    void mousePressed(QGraphicsSceneMouseEvent *event);
-    void mouseReleased(QGraphicsSceneMouseEvent *event);
-    void modifiersChanged(Qt::KeyboardModifiers modifiers);
+                    Qt::KeyboardModifiers modifiers) override;
+    void mousePressed(QGraphicsSceneMouseEvent *event) override;
+    void mouseReleased(QGraphicsSceneMouseEvent *event) override;
+    void mouseDoubleClicked(QGraphicsSceneMouseEvent *event) override;
+    void modifiersChanged(Qt::KeyboardModifiers modifiers) override;
 
-    void languageChanged();
+    void languageChanged() override;
+
+    bool hasSelectedHandles() const { return !mSelectedHandles.isEmpty(); }
+
+public slots:
+    void deleteNodes();
 
 private slots:
     void updateHandles();
     void objectsRemoved(const QList<MapObject *> &objects);
 
-    void deleteNodes();
     void joinNodes();
     void splitSegments();
+    void deleteSegment();
+    void extendPolyline();
 
 private:
-    enum Mode {
-        NoMode,
+    enum Action {
+        NoAction,
         Selecting,
         Moving
     };
+
+    void updateHover(const QPointF &scenePos, QGraphicsSceneMouseEvent *event = nullptr);
 
     void setSelectedHandles(const QSet<PointHandle*> &handles);
     void setSelectedHandle(PointHandle *handle)
     { setSelectedHandles(QSet<PointHandle*>() << handle); }
 
-    void updateSelection(const QPointF &pos,
-                         Qt::KeyboardModifiers modifiers);
+    void setHighlightedHandles(const QSet<PointHandle*> &handles);
+
+    void updateSelection(QGraphicsSceneMouseEvent *event);
 
     void startSelecting();
 
-    void startMoving();
+    void startMoving(const QPointF &pos);
     void updateMovingItems(const QPointF &pos,
                            Qt::KeyboardModifiers modifiers);
     void finishMoving(const QPointF &pos);
 
-    void showHandleContextMenu(PointHandle *clickedHandle, QPoint screenPos);
+    void abortCurrentAction(const QList<MapObject *> &objects = QList<MapObject*>());
 
-    SelectionRectangle *mSelectionRectangle;
+    void showHandleContextMenu(QPoint screenPos);
+
+    QSet<PointHandle*> clickedHandles() const;
+
+    struct InteractedSegment {
+        MapObject *object = nullptr;
+        int index = 0;
+        QPointF nearestPointOnLine;
+
+        explicit operator bool() const { return object != nullptr; }
+        void clear() { object = nullptr; }
+    };
+
+    std::unique_ptr<SelectionRectangle> mSelectionRectangle;
     bool mMousePressed;
+    PointHandle *mHoveredHandle;
+    InteractedSegment mHoveredSegment;
     PointHandle *mClickedHandle;
-    MapObjectItem *mClickedObjectItem;
+    InteractedSegment mClickedSegment;
+    MapObject *mClickedObject;
     QVector<QPointF> mOldHandlePositions;
     QMap<MapObject*, QPolygonF> mOldPolygons;
     QPointF mAlignPosition;
-    Mode mMode;
+    Action mAction;
     QPointF mStart;
+    QPointF mLastMousePos;
     QPoint mScreenStart;
     Qt::KeyboardModifiers mModifiers;
 
     /// The list of handles associated with each selected map object
-    QMap<MapObjectItem*, QList<PointHandle*> > mHandles;
+    QMap<MapObject*, QList<PointHandle*> > mHandles;
     QSet<PointHandle*> mSelectedHandles;
+    QSet<PointHandle*> mHighlightedHandles;
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // EDITPOLYGONTOOL_H

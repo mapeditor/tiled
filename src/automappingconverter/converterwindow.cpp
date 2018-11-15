@@ -35,20 +35,15 @@ ConverterWindow::ConverterWindow(QWidget *parent) :
     ui->setupUi(this);
     ui->saveButton->setText(tr("Save all as %1").arg(mControl->version2()));
 
-    connect(ui->addbutton, SIGNAL(clicked()), this, SLOT(addRule()));
-    connect(ui->saveButton, SIGNAL(clicked()),
-            mDataModel, SLOT(updateVersions()));
+    connect(ui->addbutton, &QAbstractButton::clicked, this, &ConverterWindow::addRule);
+    connect(ui->saveButton, &QAbstractButton::clicked,
+            mDataModel, &ConverterDataModel::updateVersions);
 
     ui->treeView->setModel(mDataModel);
 
     QHeaderView *header = ui->treeView->header();
-#if QT_VERSION >= 0x050000
     header->setSectionResizeMode(0, QHeaderView::Stretch);
     header->setSectionResizeMode(1, QHeaderView::ResizeToContents);
-#else
-    header->setResizeMode(0, QHeaderView::Stretch);
-    header->setResizeMode(1, QHeaderView::ResizeToContents);
-#endif
 }
 
 ConverterWindow::~ConverterWindow()

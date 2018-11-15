@@ -756,7 +756,28 @@ void QtCheckBoxFactory::disconnectPropertyManager(QtBoolPropertyManager *manager
 
 // QtDoubleSpinBoxFactory
 
-class QtDoubleSpinBoxFactoryPrivate : public EditorFactoryPrivate<QDoubleSpinBox>
+class DoubleSpinBoxAnyPrecision : public QDoubleSpinBox
+{
+    Q_OBJECT
+
+public:
+    explicit DoubleSpinBoxAnyPrecision(QWidget *parent = nullptr)
+        : QDoubleSpinBox(parent)
+    {}
+
+    QString textFromValue(double val) const override
+    {
+        QString text = QDoubleSpinBox::textFromValue(val);
+
+        // remove redundant trailing 0's in case of high precision
+        if (decimals() > 3)
+            return removeRedundantTrialingZeros(text);
+
+        return text;
+    }
+};
+
+class QtDoubleSpinBoxFactoryPrivate : public EditorFactoryPrivate<DoubleSpinBoxAnyPrecision>
 {
     QtDoubleSpinBoxFactory *q_ptr;
     Q_DECLARE_PUBLIC(QtDoubleSpinBoxFactory)
@@ -772,10 +793,8 @@ public:
 
 void QtDoubleSpinBoxFactoryPrivate::slotPropertyChanged(QtProperty *property, double value)
 {
-    QList<QDoubleSpinBox *> editors = m_createdEditors[property];
-    QListIterator<QDoubleSpinBox *> itEditor(m_createdEditors[property]);
-    while (itEditor.hasNext()) {
-        QDoubleSpinBox *editor = itEditor.next();
+    const auto editors = m_createdEditors[property];
+    for (auto editor : editors) {
         if (editor->value() != value) {
             editor->blockSignals(true);
             editor->setValue(value);
@@ -794,10 +813,8 @@ void QtDoubleSpinBoxFactoryPrivate::slotRangeChanged(QtProperty *property,
     if (!manager)
         return;
 
-    QList<QDoubleSpinBox *> editors = m_createdEditors[property];
-    QListIterator<QDoubleSpinBox *> itEditor(editors);
-    while (itEditor.hasNext()) {
-        QDoubleSpinBox *editor = itEditor.next();
+    const auto editors = m_createdEditors[property];
+    for (auto editor : editors) {
         editor->blockSignals(true);
         editor->setRange(min, max);
         editor->setValue(manager->value(property));
@@ -814,10 +831,8 @@ void QtDoubleSpinBoxFactoryPrivate::slotSingleStepChanged(QtProperty *property, 
     if (!manager)
         return;
 
-    QList<QDoubleSpinBox *> editors = m_createdEditors[property];
-    QListIterator<QDoubleSpinBox *> itEditor(editors);
-    while (itEditor.hasNext()) {
-        QDoubleSpinBox *editor = itEditor.next();
+    const auto editors = m_createdEditors[property];
+    for (auto editor : editors) {
         editor->blockSignals(true);
         editor->setSingleStep(step);
         editor->blockSignals(false);
@@ -833,9 +848,8 @@ void QtDoubleSpinBoxFactoryPrivate::slotReadOnlyChanged( QtProperty *property, b
     if (!manager)
         return;
 
-    QListIterator<QDoubleSpinBox *> itEditor(m_createdEditors[property]);
-    while (itEditor.hasNext()) {
-        QDoubleSpinBox *editor = itEditor.next();
+    const auto editors = m_createdEditors[property];
+    for (auto editor : editors) {
         editor->blockSignals(true);
         editor->setReadOnly(readOnly);
         editor->blockSignals(false);
@@ -851,10 +865,8 @@ void QtDoubleSpinBoxFactoryPrivate::slotDecimalsChanged(QtProperty *property, in
     if (!manager)
         return;
 
-    QList<QDoubleSpinBox *> editors = m_createdEditors[property];
-    QListIterator<QDoubleSpinBox *> itEditor(editors);
-    while (itEditor.hasNext()) {
-        QDoubleSpinBox *editor = itEditor.next();
+    const auto editors = m_createdEditors[property];
+    for (auto editor : editors) {
         editor->blockSignals(true);
         editor->setDecimals(prec);
         editor->setValue(manager->value(property));
@@ -865,8 +877,8 @@ void QtDoubleSpinBoxFactoryPrivate::slotDecimalsChanged(QtProperty *property, in
 void QtDoubleSpinBoxFactoryPrivate::slotSetValue(double value)
 {
     QObject *object = q_ptr->sender();
-    const QMap<QDoubleSpinBox *, QtProperty *>::ConstIterator itcend = m_editorToProperty.constEnd();
-    for (QMap<QDoubleSpinBox *, QtProperty *>::ConstIterator itEditor = m_editorToProperty.constBegin(); itEditor != itcend; ++itEditor) {
+    const auto itcend = m_editorToProperty.constEnd();
+    for (auto itEditor = m_editorToProperty.constBegin(); itEditor != itcend; ++itEditor) {
         if (itEditor.key() == object) {
             QtProperty *property = itEditor.value();
             QtDoublePropertyManager *manager = q_ptr->propertyManager(property);
@@ -1641,7 +1653,7 @@ class QtCharEdit : public QWidget
 {
     Q_OBJECT
 public:
-    QtCharEdit(QWidget *parent = 0);
+    explicit QtCharEdit(QWidget *parent = 0);
 
     QChar value() const;
     bool eventFilter(QObject *o, QEvent *e);
@@ -2271,7 +2283,7 @@ class QtColorEditWidget : public QWidget {
     Q_OBJECT
 
 public:
-    QtColorEditWidget(QWidget *parent);
+    explicit QtColorEditWidget(QWidget *parent);
 
     bool eventFilter(QObject *obj, QEvent *ev);
 
@@ -2316,6 +2328,7 @@ QtColorEditWidget::QtColorEditWidget(QWidget *parent) :
     connect(m_button, SIGNAL(clicked()), this, SLOT(buttonClicked()));
     lt->addWidget(m_button);
     m_pixmapLabel->setPixmap(QtPropertyBrowserUtils::brushValuePixmap(QBrush(m_color)));
+    m_pixmapLabel->setVisible(m_color.isValid());
     m_label->setText(QtPropertyBrowserUtils::colorValueText(m_color));
 }
 
@@ -2324,17 +2337,16 @@ void QtColorEditWidget::setValue(const QColor &c)
     if (m_color != c) {
         m_color = c;
         m_pixmapLabel->setPixmap(QtPropertyBrowserUtils::brushValuePixmap(QBrush(c)));
+        m_pixmapLabel->setVisible(c.isValid());
         m_label->setText(QtPropertyBrowserUtils::colorValueText(c));
     }
 }
 
 void QtColorEditWidget::buttonClicked()
 {
-    bool ok = false;
-    QRgb oldRgba = m_color.rgba();
-    QRgb newRgba = QColorDialog::getRgba(oldRgba, &ok, this);
-    if (ok && newRgba != oldRgba) {
-        setValue(QColor::fromRgba(newRgba));
+    QColor newColor = QColorDialog::getColor(m_color, this, QString(), QColorDialog::ShowAlphaChannel);
+    if (newColor.isValid() && newColor != m_color) {
+        setValue(newColor);
         emit valueChanged(m_color);
     }
 }
@@ -2480,7 +2492,7 @@ class QtFontEditWidget : public QWidget {
     Q_OBJECT
 
 public:
-    QtFontEditWidget(QWidget *parent);
+    explicit QtFontEditWidget(QWidget *parent);
 
     bool eventFilter(QObject *obj, QEvent *ev);
 
@@ -2540,14 +2552,31 @@ void QtFontEditWidget::setValue(const QFont &f)
 void QtFontEditWidget::buttonClicked()
 {
     bool ok = false;
-    QFont newFont = QFontDialog::getFont(&ok, m_font, this, tr("Select Font"));
-    if (ok && newFont != m_font) {
+
+    QFont oldFont = m_font;
+
+    // Font dialogs generally deal with point sizes. When the font size is set
+    // in pixels, convert to points.
+    if (m_font.pixelSize() != -1)
+        oldFont.setPointSizeF(oldFont.pixelSize() / logicalDpiX() * 72.0);
+
+    QFont newFont = QFontDialog::getFont(&ok, oldFont, this, tr("Select Font"));
+    if (ok && newFont != oldFont) {
         QFont f = m_font;
+
+        // Convert back to pixels when the current font size is set in pixels
+        if (m_font.pixelSize() != -1 && newFont.pointSize() != -1) {
+            int pixelSize = qRound(newFont.pointSizeF() / 72.0 * logicalDpiX());
+            newFont.setPixelSize(pixelSize);
+        }
+
         // prevent mask for unchanged attributes, don't change other attributes (like kerning, etc...)
         if (m_font.family() != newFont.family())
             f.setFamily(newFont.family());
-        if (m_font.pointSize() != newFont.pointSize())
-            f.setPointSize(newFont.pointSize());
+        if (m_font.pixelSize() != newFont.pixelSize() && newFont.pixelSize() != -1)
+            f.setPixelSize(newFont.pixelSize());
+        if (m_font.pointSize() != newFont.pointSize() && newFont.pointSize() != -1)
+            f.setPointSizeF(newFont.pointSizeF());
         if (m_font.bold() != newFont.bold())
             f.setBold(newFont.bold());
         if (m_font.italic() != newFont.italic())

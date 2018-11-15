@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>238</width>
-    <height>212</height>
+    <width>282</width>
+    <height>244</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -40,6 +40,9 @@
        <widget class="QSpinBox" name="xOffset">
         <property name="enabled">
          <bool>true</bool>
+        </property>
+        <property name="suffix">
+         <string> tiles</string>
         </property>
         <property name="minimum">
          <number>-999</number>
@@ -84,6 +87,9 @@
       </item>
       <item row="4" column="2">
        <widget class="QSpinBox" name="yOffset">
+        <property name="suffix">
+         <string> tiles</string>
+        </property>
         <property name="minimum">
          <number>-999</number>
         </property>
@@ -123,7 +129,7 @@
         </item>
         <item>
          <property name="text">
-          <string>Selected Layer</string>
+          <string>Selected Layers</string>
          </property>
         </item>
        </widget>

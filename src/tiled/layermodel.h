@@ -1,6 +1,6 @@
 /*
  * layermodel.h
- * Copyright 2008-2009, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2017, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -18,14 +18,14 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LAYERMODEL_H
-#define LAYERMODEL_H
+#pragma once
 
 #include <QAbstractListModel>
 #include <QIcon>
 
 namespace Tiled {
 
+class GroupLayer;
 class Layer;
 class Map;
 
@@ -38,7 +38,7 @@ class MapDocument;
  * The model also allows modification of the layer stack while keeping the
  * layer views up to date.
  */
-class LayerModel : public QAbstractListModel
+class LayerModel : public QAbstractItemModel
 {
     Q_OBJECT
 
@@ -50,102 +50,57 @@ public:
         OpacityRole = Qt::UserRole
     };
 
-    /**
-     * Constructor.
-     */
-    LayerModel(QObject *parent = 0);
+    LayerModel(QObject *parent = nullptr);
 
-    /**
-     * Returns the number of rows.
-     */
-    int rowCount(const QModelIndex &parent = QModelIndex()) const;
+    QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
+    QModelIndex parent(const QModelIndex &index) const override;
 
-    /**
-     * Returns the data stored under the given <i>role</i> for the item
-     * referred to by the <i>index</i>.
-     */
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    int columnCount(const QModelIndex &parent = QModelIndex()) const override;
+
     QVariant data(const QModelIndex &index,
-                  int role = Qt::DisplayRole) const;
+                  int role = Qt::DisplayRole) const override;
 
-    /**
-     * Allows for changing the name, visibility and opacity of a layer.
-     */
-    bool setData(const QModelIndex &index, const QVariant &value, int role);
+    bool setData(const QModelIndex &index, const QVariant &value, int role) override;
 
-    /**
-     * Makes sure the items are checkable and names editable.
-     */
-    Qt::ItemFlags flags(const QModelIndex &index) const;
+    Qt::ItemFlags flags(const QModelIndex &index) const override;
 
-    /**
-     * Returns the headers for the table.
-     */
     QVariant headerData(int section, Qt::Orientation orientation,
-                        int role = Qt::DisplayRole) const;
+                        int role = Qt::DisplayRole) const override;
 
-    /**
-     * Returns the layer index associated with a given model index.
-     * \sa layerIndexToRow
-     */
-    int toLayerIndex(const QModelIndex &index) const;
+    QStringList mimeTypes() const override;
+    QMimeData *mimeData(const QModelIndexList &indexes) const override;
+    Qt::DropActions supportedDropActions() const override;
+    bool dropMimeData(const QMimeData *data, Qt::DropAction action,
+                      int row, int column,
+                      const QModelIndex &parent) override;
 
-    /**
-     * Returns the row associated with the given layer index.
-     * \sa toLayerIndex
-     */
-    int layerIndexToRow(int layerIndex) const;
+    QModelIndex index(Layer *layer, int column = 0) const;
+    Layer *toLayer(const QModelIndex &index) const;
 
-    /**
-     * Returns the map document associated with this model.
-     */
-    MapDocument *mapDocument() const { return mMapDocument; }
-
-    /**
-     * Sets the map document associated with this model.
-     */
+    MapDocument *mapDocument() const;
     void setMapDocument(MapDocument *mapDocument);
 
-    /**
-     * Adds a layer to this model's map, inserting it at the given index.
-     */
-    void insertLayer(int index, Layer *layer);
+    void insertLayer(GroupLayer *parentLayer, int index, Layer *layer);
+    Layer *takeLayerAt(GroupLayer *parentLayer, int index);
+    void replaceLayer(Layer *layer, Layer *replacement);
+    void moveLayer(GroupLayer *parentLayer, int index, GroupLayer *toParentLayer, int toIndex);
 
-    /**
-     * Removes the layer at the given index from this model's map and
-     * returns it. The caller becomes responsible for the lifetime of this
-     * layer.
-     */
-    Layer *takeLayerAt(int index);
+    void setLayerVisible(Layer *layer, bool visible);
+    void setLayerLocked(Layer *layer, bool locked);
+    void setLayerOpacity(Layer *layer, qreal opacity);
+    void setLayerOffset(Layer *layer, const QPointF &offset);
 
-    /**
-     * Sets whether the layer at the given index is visible.
-     */
-    void setLayerVisible(int layerIndex, bool visible);
+    void renameLayer(Layer *layer, const QString &name);
 
-    /**
-     * Sets the opacity of the layer at the given index.
-     */
-    void setLayerOpacity(int layerIndex, float opacity);
-
-    /**
-     * Renames the layer at the given index.
-     */
-    void renameLayer(int index, const QString &name);
-
-    /**
-      * Show or hide all other layers except the layer at the given index.
-      * If any other layer is visible then all layers will be hidden, otherwise
-      * the layers will be shown.
-      */
-    void toggleOtherLayers(int layerIndex);
+    void toggleOtherLayers(const QList<Layer *> &layers);
+    void toggleLockOtherLayers(const QList<Layer *> &layers);
 
 signals:
-    void layerAdded(int index);
-    void layerAboutToBeRemoved(int index);
-    void layerRemoved(int index);
-    void layerAboutToBeRenamed(int index);
-    void layerRenamed(int index);
-    void layerChanged(int index);
+    void layerAdded(Layer *layer);
+    void layerAboutToBeRemoved(GroupLayer *parentLayer, int index);
+    void layerRemoved(Layer *layer);
+    void layerChanged(Layer *layer);
 
 private:
     MapDocument *mMapDocument;
@@ -156,7 +111,13 @@ private:
     QIcon mImageLayerIcon;
 };
 
+/**
+ * Returns the map document associated with this model.
+ */
+inline MapDocument *LayerModel::mapDocument() const
+{
+    return mMapDocument;
+}
+
 } // namespace Internal
 } // namespace Tiled
-
-#endif // LAYERMODEL_H

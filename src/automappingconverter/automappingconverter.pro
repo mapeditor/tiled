@@ -16,7 +16,7 @@ macx {
 }
 
 # Make sure the executable can find libtiled
-!win32:!macx:contains(RPATH, yes) {
+!win32:!macx:!cygwin:contains(RPATH, yes) {
     QMAKE_RPATHDIR += \$\$ORIGIN/../lib
 
     # It is not possible to use ORIGIN in QMAKE_RPATHDIR, so a bit manually
@@ -24,9 +24,7 @@ macx {
     QMAKE_RPATHDIR =
 }
 
-greaterThan(QT_MAJOR_VERSION, 4) {
-    QT += widgets
-}
+QT += widgets
 
 TARGET = automappingconverter
 TEMPLATE = app
@@ -49,6 +47,6 @@ FORMS    += \
     converterwindow.ui
 
 manpage.path = $${PREFIX}/share/man/man1/
-manpage.files += ../../docs/automappingconverter.1
+manpage.files += ../../man/automappingconverter.1
 INSTALLS += manpage
 

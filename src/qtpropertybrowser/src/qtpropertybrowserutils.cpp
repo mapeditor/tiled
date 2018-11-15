@@ -184,35 +184,45 @@ QIcon QtPropertyBrowserUtils::brushValueIcon(const QBrush &b)
 
 QString QtPropertyBrowserUtils::colorValueText(const QColor &c)
 {
-    return QCoreApplication::translate("QtPropertyBrowserUtils", "[%1, %2, %3] (%4)")
-           .arg(c.red()).arg(c.green()).arg(c.blue()).arg(c.alpha());
+    if (c.isValid()) {
+        return QCoreApplication::translate("QtPropertyBrowserUtils", "[%1, %2, %3] (%4)")
+               .arg(c.red()).arg(c.green()).arg(c.blue()).arg(c.alpha());
+    } else {
+        return QCoreApplication::translate("QtPropertyBrowserUtils", "Not set");
+    }
 }
 
-QPixmap QtPropertyBrowserUtils::fontValuePixmap(const QFont &font)
+QPixmap QtPropertyBrowserUtils::fontValuePixmap(const QFont &font, int size)
 {
     QFont f = font;
-    QImage img(16, 16, QImage::Format_ARGB32_Premultiplied);
+    QImage img(size, size, QImage::Format_ARGB32_Premultiplied);
     img.fill(0);
     QPainter p(&img);
     p.setRenderHint(QPainter::TextAntialiasing, true);
     p.setRenderHint(QPainter::Antialiasing, true);
-    f.setPointSize(13);
+    f.setPixelSize(img.height() - 2);
     p.setFont(f);
     QTextOption t;
     t.setAlignment(Qt::AlignCenter);
-    p.drawText(QRect(0, 0, 16, 16), QString(QLatin1Char('A')), t);
+    p.drawText(img.rect(), QString(QLatin1Char('A')), t);
     return QPixmap::fromImage(img);
 }
 
 QIcon QtPropertyBrowserUtils::fontValueIcon(const QFont &f)
 {
-    return QIcon(fontValuePixmap(f));
+    QIcon icon(fontValuePixmap(f, 16));
+    icon.addPixmap(fontValuePixmap(f, 32));
+    return icon;
 }
 
 QString QtPropertyBrowserUtils::fontValueText(const QFont &f)
 {
+    int size = f.pointSize();
+    if (size == -1)
+        size = f.pixelSize();
+
     return QCoreApplication::translate("QtPropertyBrowserUtils", "[%1, %2]")
-           .arg(f.family()).arg(f.pointSize());
+           .arg(f.family()).arg(size);
 }
 
 
@@ -449,6 +459,36 @@ bool QtKeySequenceEdit::event(QEvent *e)
 }
 
 
+/**
+ * Strips a floating point number representation of redundant trailing zeros.
+ * Examples:
+ *
+ *  0.01000 -> 0.01
+ *  3.000   -> 3.0
+ */
+QString removeRedundantTrialingZeros(const QString &text)
+{
+    const QChar decimalPoint = QLocale::system().decimalPoint();
+
+    int i = text.length() - 1;
+    int redundantZeros = 0;
+
+    while (i > 0) {
+        if (text.at(i) == QLatin1Char('0')) {
+            ++redundantZeros;
+        } else {
+            if (text.at(i) == decimalPoint)
+                --redundantZeros;
+            break;
+        }
+        --i;
+    }
+
+    if (redundantZeros > 0)
+        return text.left(text.length() - redundantZeros);
+
+    return text;
+}
 
 
 #if QT_VERSION >= 0x040400

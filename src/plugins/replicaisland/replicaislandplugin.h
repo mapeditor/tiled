@@ -19,22 +19,18 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef REPLICAISLANDPLUGIN_H
-#define REPLICAISLANDPLUGIN_H
+#pragma once
 
 #include "replicaisland_global.h"
 
 #include "map.h"
-#include "mapwriterinterface.h"
-#include "mapreaderinterface.h"
+#include "mapformat.h"
 
 #include <QObject>
 
 namespace Tiled {
-
 class TileLayer;
-
-};
+}
 
 namespace ReplicaIsland {
 
@@ -43,17 +39,11 @@ namespace ReplicaIsland {
  * open source side-scrolling video game for Android.
  */
 class REPLICAISLANDSHARED_EXPORT ReplicaIslandPlugin :
-        public QObject,
-        public Tiled::MapWriterInterface,
-        public Tiled::MapReaderInterface
+        public Tiled::MapFormat
 {
     Q_OBJECT
-    Q_INTERFACES(Tiled::MapReaderInterface)
-    Q_INTERFACES(Tiled::MapWriterInterface)
-#if QT_VERSION >= 0x050000
-    Q_PLUGIN_METADATA(IID "org.mapeditor.MapReaderInterface" FILE "plugin.json")
-    Q_PLUGIN_METADATA(IID "org.mapeditor.MapWriterInterface" FILE "plugin.json")
-#endif
+    Q_INTERFACES(Tiled::MapFormat)
+    Q_PLUGIN_METADATA(IID "org.mapeditor.MapFormat" FILE "plugin.json")
 
 public:
     /**
@@ -61,34 +51,26 @@ public:
      */
     ReplicaIslandPlugin();
 
-    // MapReaderInterface
-    Tiled::Map *read(const QString &fileName);
-    QString nameFilter() const;
-    bool supportsFile(const QString &fileName) const;
-    QString errorString() const;
-
-    // MapWriterInterface
-    bool write(const Tiled::Map *map, const QString &fileName);
+    Tiled::Map *read(const QString &fileName) override;
+    QString nameFilter() const override;
+    QString shortName() const override;
+    bool supportsFile(const QString &fileName) const override;
+    QString errorString() const override;
+    bool write(const Tiled::Map *map, const QString &fileName) override;
 
 private:
     QString mError;
 
-    // MapReaderInterface support.
     void loadTilesetsFromResources(Tiled::Map *map,
-                                   QList<Tiled::Tileset *> &typeTilesets,
-                                   QList<Tiled::Tileset *> &tileIndexTilesets);
-    Tiled::Tileset *loadTilesetFromResource(const QString &name);
+                                   QVector<Tiled::SharedTileset> &typeTilesets,
+                                   QVector<Tiled::SharedTileset> &tileIndexTilesets);
+    Tiled::SharedTileset loadTilesetFromResource(const QString &name);
     void addTilesetsToMap(Tiled::Map *map,
-                          const QList<Tiled::Tileset *> &tilesets);
-    Tiled::Tileset *tilesetForLayer(int type, int tileIndex,
-                                    const QList<Tiled::Tileset *> &typeTilesets,
-                                    const QList<Tiled::Tileset *> &tileIndexTilesets);
+                          const QVector<Tiled::SharedTileset> &tilesets);
+
     QString layerTypeToName(char type);
 
-    // MapWriterInterface support.
     bool writeLayer(QDataStream &out, Tiled::TileLayer *layer);
 };
 
 } // namespace ReplicaIsland
-
-#endif // REPLICAISLANDPLUGIN_H

@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MOVEMAPOBJECTTOGROUP_H
-#define MOVEMAPOBJECTTOGROUP_H
+#pragma once
 
 #include <QUndoCommand>
 
@@ -39,17 +38,16 @@ public:
                          MapObject *mapObject,
                          ObjectGroup *objectGroup);
 
-    void undo();
-    void redo();
+    void undo() override;
+    void redo() override;
 
 private:
     MapDocument *mMapDocument;
     MapObject *mMapObject;
     ObjectGroup *mOldObjectGroup;
     ObjectGroup *mNewObjectGroup;
+    int mOldIndex;
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // MOVEMAPOBJECTTOGROUP_H

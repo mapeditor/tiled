@@ -1,9 +1,7 @@
 include(../plugin.pri)
 include(find_python.pri)
 
-greaterThan(QT_MAJOR_VERSION, 4) {
-    QT += widgets
-}
+QT += widgets
 
 DEFINES += PYTHON_LIBRARY
 

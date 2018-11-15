@@ -24,19 +24,22 @@
 #include "map.h"
 #include "mapdocument.h"
 #include "tilelayer.h"
-#include "tilesetmanager.h"
-#include "tmxmapreader.h"
+#include "tmxmapformat.h"
 #include "preferences.h"
 
 #include <QFileInfo>
 #include <QTextStream>
+
+#include "qtcompat_p.h"
+
+#include <memory>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
 
 AutomappingManager::AutomappingManager(QObject *parent)
     : QObject(parent)
-    , mMapDocument(0)
+    , mMapDocument(nullptr)
     , mLoaded(false)
 {
 }
@@ -52,13 +55,29 @@ void AutomappingManager::autoMap()
         return;
 
     Map *map = mMapDocument->map();
-    int w = map->width();
-    int h = map->height();
+    QRegion region = mMapDocument->selectedArea();
 
-    autoMapInternal(QRect(0, 0, w, h), 0);
+    if (region.isEmpty()) {
+        if (map->infinite()) {
+            LayerIterator iterator(map);
+
+            QRect bounds;
+            while (Layer *layer = iterator.next()) {
+                if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer))
+                    bounds = bounds.united(tileLayer->bounds());
+            }
+            region = bounds;
+        } else {
+            int w = map->width();
+            int h = map->height();
+            region = QRect(0, 0, w, h);
+        }
+    }
+
+    autoMapInternal(region, nullptr);
 }
 
-void AutomappingManager::autoMap(const QRegion &where, Layer *touchedLayer)
+void AutomappingManager::onRegionEdited(const QRegion &where, Layer *touchedLayer)
 {
     if (Preferences::instance()->automappingDrawing())
         autoMapInternal(where, touchedLayer);
@@ -69,11 +88,10 @@ void AutomappingManager::autoMapInternal(const QRegion &where,
 {
     mError.clear();
     mWarning.clear();
-    if (!mMapDocument) {
-        mError = tr("No map document found!") + QLatin1Char('\n');
-        emit errorsOccurred();
+    if (!mMapDocument)
         return;
-    }
+
+    const bool automatic = touchedLayer != nullptr;
 
     if (!mLoaded) {
         const QString mapPath = QFileInfo(mMapDocument->fileName()).path();
@@ -81,18 +99,14 @@ void AutomappingManager::autoMapInternal(const QRegion &where,
         if (loadFile(rulesFileName)) {
             mLoaded = true;
         } else {
-            emit errorsOccurred();
+            emit errorsOccurred(automatic);
             return;
         }
     }
 
-    // use a pointer to the region, so each automapper can manipulate it and the
-    // following automappers do see the impact
-    QRegion *passedRegion = new QRegion(where);
-
     QVector<AutoMapper*> passedAutoMappers;
     if (touchedLayer) {
-        foreach (AutoMapper *a, mAutoMappers) {
+        for (AutoMapper *a : qAsConst(mAutoMappers)) {
             if (a->ruleLayerNameUsed(touchedLayer->name()))
                 passedAutoMappers.append(a);
         }
@@ -100,25 +114,26 @@ void AutomappingManager::autoMapInternal(const QRegion &where,
         passedAutoMappers = mAutoMappers;
     }
     if (!passedAutoMappers.isEmpty()) {
+        // use a copy of the region, so each automapper can manipulate it and the
+        // following automappers do see the impact
+        QRegion region(where);
+
         QUndoStack *undoStack = mMapDocument->undoStack();
         undoStack->beginMacro(tr("Apply AutoMap rules"));
-        AutoMapperWrapper *aw = new AutoMapperWrapper(mMapDocument, passedAutoMappers, passedRegion);
+        AutoMapperWrapper *aw = new AutoMapperWrapper(mMapDocument, passedAutoMappers, &region);
         undoStack->push(aw);
         undoStack->endMacro();
     }
-    foreach (AutoMapper *automapper, mAutoMappers) {
+    for (AutoMapper *automapper : qAsConst(mAutoMappers)) {
         mWarning += automapper->warningString();
         mError += automapper->errorString();
     }
 
-    mMapDocument->emitRegionChanged(*passedRegion);
-    delete passedRegion;
-
     if (!mWarning.isEmpty())
-        emit warningsOccurred();
+        emit warningsOccurred(automatic);
 
     if (!mError.isEmpty())
-        emit errorsOccurred();
+        emit errorsOccurred(automatic);
 }
 
 bool AutomappingManager::loadFile(const QString &filePath)
@@ -132,7 +147,7 @@ bool AutomappingManager::loadFile(const QString &filePath)
                   + QLatin1Char('\n');
         return false;
     }
-    if (!rulesFile.open(QIODevice::ReadOnly)) {
+    if (!rulesFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
         mError += tr("Error opening rules file:\n%1").arg(filePath)
                   + QLatin1Char('\n');
         return false;
@@ -157,25 +172,21 @@ bool AutomappingManager::loadFile(const QString &filePath)
             continue;
         }
         if (rulePath.endsWith(QLatin1String(".tmx"), Qt::CaseInsensitive)) {
-            TmxMapReader mapReader;
+            TmxMapFormat tmxFormat;
 
-            Map *rules = mapReader.read(rulePath);
+            std::unique_ptr<Map> rules(tmxFormat.read(rulePath));
 
             if (!rules) {
                 mError += tr("Opening rules map failed:\n%1").arg(
-                        mapReader.errorString()) + QLatin1Char('\n');
+                        tmxFormat.errorString()) + QLatin1Char('\n');
                 ret = false;
                 continue;
             }
 
-            TilesetManager *tilesetManager = TilesetManager::instance();
-            tilesetManager->addReferences(rules->tilesets());
-
-            AutoMapper *autoMapper;
-            autoMapper = new AutoMapper(mMapDocument, rules, rulePath);
+            AutoMapper *autoMapper = new AutoMapper(mMapDocument, rules.release(), rulePath);
 
             mWarning += autoMapper->warningString();
-            const QString error = autoMapper->errorString(); 
+            const QString error = autoMapper->errorString();
             if (error.isEmpty()) {
                 mAutoMappers.append(autoMapper);
             } else {
@@ -200,8 +211,8 @@ void AutomappingManager::setMapDocument(MapDocument *mapDocument)
     mMapDocument = mapDocument;
 
     if (mMapDocument) {
-        connect(mMapDocument, SIGNAL(regionEdited(QRegion,Layer*)),
-                this, SLOT(autoMap(QRegion,Layer*)));
+        connect(mMapDocument, &MapDocument::regionEdited,
+                this, &AutomappingManager::onRegionEdited);
     }
 
     mLoaded = false;

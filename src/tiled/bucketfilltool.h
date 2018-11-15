@@ -20,109 +20,62 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef BUCKETFILLTOOL_H
-#define BUCKETFILLTOOL_H
+#pragma once
 
-#include "abstracttiletool.h"
-
+#include "abstracttilefilltool.h"
 #include "tilelayer.h"
+#include "tilestamp.h"
 
 namespace Tiled {
+
+class WangSet;
+
 namespace Internal {
 
 class MapDocument;
+class StampActions;
+class WangFiller;
 
 /**
  * Implements a tool that bucket fills (flood fills) a region with a repeatable
  * stamp.
  */
-class BucketFillTool : public AbstractTileTool
+class BucketFillTool : public AbstractTileFillTool
 {
     Q_OBJECT
 
 public:
-    BucketFillTool(QObject *parent = 0);
-    ~BucketFillTool();
+    BucketFillTool(QObject *parent = nullptr);
+    ~BucketFillTool() override;
 
-    void activate(MapScene *scene);
-    void deactivate(MapScene *scene);
+    void mousePressed(QGraphicsSceneMouseEvent *event) override;
 
-    void mousePressed(QGraphicsSceneMouseEvent *event);
-    void mouseReleased(QGraphicsSceneMouseEvent *event);
+    void modifiersChanged(Qt::KeyboardModifiers) override;
 
-    void modifiersChanged(Qt::KeyboardModifiers);
-
-    void languageChanged();
-
-    /**
-     * Sets the stamp that is drawn when filling. The BucketFillTool takes
-     * ownership over the stamp layer.
-     */
-    void setStamp(TileLayer *stamp);
-
-    /**
-     * This returns the actual tile layer which is used to define the current
-     * state.
-     */
-    TileLayer *stamp() const { return mStamp; }
-
-public slots:
-    void setRandom(bool value);
+    void languageChanged() override;
 
 protected:
-    void tilePositionChanged(const QPoint &tilePos);
-
-    void mapDocumentChanged(MapDocument *oldDocument,
-                            MapDocument *newDocument);
+    void tilePositionChanged(const QPoint &tilePos) override;
+    void clearConnections(MapDocument *mapDocument) override;
 
 private slots:
     void clearOverlay();
 
 private:
-    void makeConnections();
-    void clearConnections(MapDocument *mapDocument);
-
-    TileLayer *mStamp;
-    TileLayer *mFillOverlay;
-    QRegion mFillRegion;
-
-    bool mIsActive;
     bool mLastShiftStatus;
 
     /**
-     * Indicates if the tool is using the random mode.
-     */
-    bool mIsRandom;
-
-    /**
-     * Contains the value of mIsRandom at that time, when the latest call of
-     * tilePositionChanged() took place.
-     * This variable is needed to detect if the random mode was changed during
+     * The active fill method during the last call of tilePositionChanged().
+     *
+     * This variable is needed to detect if the fill method was changed during
      * mFillOverlay being brushed at an area.
      */
-    bool mLastRandomStatus;
+    FillMethod mLastFillMethod;
 
-    /**
-     * Contains all used random cells to use in random mode.
-     * The same cell can be in the list multiple times to make different
-     * random weights possible.
-     */
-    QList<Cell> mRandomList;
+    QRegion mFillRegion;
 
-    /**
-     * Updates the list of random cells.
-     * This is done by taking all non-null tiles from the original stamp mStamp.
-     */
-    void updateRandomList();
-
-    /**
-     * Returns a tile layer having random tiles placed at \a region.The
-     * caller is responsible for the returned tile layer.
-     */
-    TileLayer *getRandomTileLayer(const QRegion &region) const;
+    void makeConnections();
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // BUCKETFILLTOOL_H

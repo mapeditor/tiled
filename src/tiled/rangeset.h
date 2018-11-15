@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef RANGESET_H
-#define RANGESET_H
+#pragma once
 
 #include <map>
 
@@ -188,5 +187,3 @@ public:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // RANGESET_H

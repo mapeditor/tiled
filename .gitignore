@@ -1,5 +1,6 @@
-build
-bin
+# General build artifacts
+build/
+bin/
 lib/tiled/plugins/*
 lib/*.so*
 Makefile*
@@ -8,9 +9,9 @@ Makefile*
 *.moc
 moc_*.cpp
 ui_*.h
-*.pro.user*
 qrc_*
-docs/html
+default/
+moc_predefs.h
 
 # Build artifacts on Windows
 tiled.exe
@@ -25,9 +26,31 @@ automappingconverter.exe
 *.intermediate.manifest
 
 # Build artifacts on Mac
+.qmake.stash
 translations/phony_target.app
 
-tests/test_mapreader
+# IDE files
+*.pro.user*
+*.qbs.user*
+
+tests/mapreader/mapreader
+tests/staggeredrenderer/staggeredrenderer
 
 # Ronn html outputs
-docs/*.1.html
+man/*.1.html
+
+# Doxygen and Sphinx
+html/
+docs/_build/html/
+docs/_build/gettext/.doctrees
+docs/_build/doctrees/
+*.mo
+
+# Work-in-progress worktrees
+wip/
+util/java/tmxviewer-java/target
+util/java/libtiled-java/target
+/util/java/target/
+
+# Linux perf/debugging
+gmon.out

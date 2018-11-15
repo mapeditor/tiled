@@ -21,21 +21,24 @@
 #include "newtilesetdialog.h"
 #include "ui_newtilesetdialog.h"
 
+#include "documentmanager.h"
+#include "imagecolorpickerwidget.h"
+#include "mapdocument.h"
 #include "preferences.h"
-#include "tileset.h"
 #include "utils.h"
 
 #include <QFileDialog>
+#include <QFileInfo>
 #include <QImage>
 #include <QMessageBox>
 #include <QSettings>
-#include <QFileInfo>
-
-#include <memory>
+#include <QCheckBox>
 
 static const char * const TYPE_KEY = "Tileset/Type";
+static const char * const EMBED_KEY = "Tileset/EmbedInMap";
 static const char * const COLOR_ENABLED_KEY = "Tileset/UseTransparentColor";
 static const char * const COLOR_KEY = "Tileset/TransparentColor";
+static const char * const TILE_SIZE_KEY = "Tileset/TileSize";
 static const char * const SPACING_KEY = "Tileset/Spacing";
 static const char * const MARGIN_KEY = "Tileset/Margin";
 
@@ -58,45 +61,49 @@ static TilesetType tilesetType(Ui::NewTilesetDialog *ui)
     }
 }
 
-NewTilesetDialog::NewTilesetDialog(const QString &path, QWidget *parent) :
+NewTilesetDialog::NewTilesetDialog(QWidget *parent) :
     QDialog(parent),
-    mPath(path),
     mUi(new Ui::NewTilesetDialog),
-    mNameWasEdited(false),
-    mNewTileset(0)
+    mNameWasEdited(false)
 {
     mUi->setupUi(this);
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+#endif
 
     // Restore previously used settings
     QSettings *s = Preferences::instance()->settings();
+
     int tilesetType = s->value(QLatin1String(TYPE_KEY)).toInt();
+    bool embedded = s->value(QLatin1String(EMBED_KEY)).toBool();
     bool colorEnabled = s->value(QLatin1String(COLOR_ENABLED_KEY)).toBool();
     QString colorName = s->value(QLatin1String(COLOR_KEY)).toString();
-    QColor color = colorName.isEmpty() ? Qt::magenta : QColor(colorName);
+    QColor color = QColor::isValidColor(colorName) ? QColor(colorName) : Qt::magenta;
+    QSize tileSize = s->value(QLatin1String(TILE_SIZE_KEY)).toSize();
     int spacing = s->value(QLatin1String(SPACING_KEY)).toInt();
     int margin = s->value(QLatin1String(MARGIN_KEY)).toInt();
 
     mUi->tilesetType->setCurrentIndex(tilesetType);
+    mUi->embedded->setChecked(embedded);
     mUi->useTransparentColor->setChecked(colorEnabled);
     mUi->colorButton->setColor(color);
+    if (tileSize.isValid()) {
+        mUi->tileWidth->setValue(tileSize.width());
+        mUi->tileHeight->setValue(tileSize.height());
+    }
     mUi->spacing->setValue(spacing);
     mUi->margin->setValue(margin);
 
-    connect(mUi->browseButton, SIGNAL(clicked()), SLOT(browse()));
-    connect(mUi->name, SIGNAL(textEdited(QString)), SLOT(nameEdited(QString)));
-    connect(mUi->name, SIGNAL(textChanged(QString)), SLOT(updateOkButton()));
-    connect(mUi->image, SIGNAL(textChanged(QString)), SLOT(updateOkButton()));
-    connect(mUi->tilesetType, SIGNAL(currentIndexChanged(int)),
-            SLOT(tilesetTypeChanged(int)));
-
-    // Set the image and name fields if the given path is a file
-    const QFileInfo fileInfo(path);
-    if (fileInfo.isFile()) {
-        mUi->image->setText(path);
-        mUi->name->setText(fileInfo.completeBaseName());
-    }
-
+    connect(mUi->browseButton, &QAbstractButton::clicked, this, &NewTilesetDialog::browse);
+    connect(mUi->name, &QLineEdit::textEdited, this, &NewTilesetDialog::nameEdited);
+    connect(mUi->name, &QLineEdit::textChanged, this, &NewTilesetDialog::updateOkButton);
+    connect(mUi->embedded, &QCheckBox::toggled, this, &NewTilesetDialog::updateOkButton);
+    connect(mUi->image, &QLineEdit::textChanged, this, &NewTilesetDialog::updateOkButton);
+    connect(mUi->image, &QLineEdit::textChanged, this, &NewTilesetDialog::updateColorPickerButton);
+    connect(mUi->useTransparentColor, &QCheckBox::toggled, this, &NewTilesetDialog::updateColorPickerButton);
+    connect(mUi->tilesetType, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+            this, &NewTilesetDialog::tilesetTypeChanged);
+    connect(mUi->dropperButton, &QAbstractButton::clicked, this, &NewTilesetDialog::pickColorFromImage);
     mUi->imageGroupBox->setVisible(tilesetType == 0);
     updateOkButton();
 }
@@ -106,22 +113,85 @@ NewTilesetDialog::~NewTilesetDialog()
     delete mUi;
 }
 
-void NewTilesetDialog::setTileWidth(int width)
+/**
+ * Sets the path to start in by default.
+ *
+ * Also sets the image and name fields if the given path is a file.
+ */
+void NewTilesetDialog::setImagePath(const QString &path)
 {
-    mUi->tileWidth->setValue(width);
+    mPath = path;
+
+    const QFileInfo fileInfo(path);
+    if (fileInfo.isFile()) {
+        mUi->image->setText(path);
+        mUi->name->setText(fileInfo.completeBaseName());
+    }
 }
 
-void NewTilesetDialog::setTileHeight(int height)
+void NewTilesetDialog::setTileSize(QSize size)
 {
-    mUi->tileHeight->setValue(height);
+    mUi->tileWidth->setValue(size.width());
+    mUi->tileHeight->setValue(size.height());
 }
 
-Tileset *NewTilesetDialog::createTileset()
+/**
+ * Shows the dialog and returns the created tileset. Returns 0 if the
+ * dialog was cancelled.
+ */
+SharedTileset NewTilesetDialog::createTileset()
 {
+    bool couldEmbed = false;
+    if (auto document = DocumentManager::instance()->currentDocument()) {
+        if (auto mapDocument = qobject_cast<MapDocument*>(document)) {
+            couldEmbed = true;
+            setTileSize(mapDocument->map()->tileSize());
+        }
+    }
+
+    mUi->embedded->setEnabled(couldEmbed);
+
+    setMode(CreateTileset);
+
     if (exec() != QDialog::Accepted)
-        return 0;
+        return SharedTileset();
 
     return mNewTileset;
+}
+
+bool NewTilesetDialog::isEmbedded() const
+{
+    return mUi->embedded->isChecked();
+}
+
+/**
+ * Shows the dialog and allows to change the given parameters.
+ *
+ * Returns whether the dialog was accepted.
+ */
+bool NewTilesetDialog::editTilesetParameters(TilesetParameters &parameters)
+{
+    setMode(EditTilesetParameters);
+
+    // todo: support remote files
+    mPath = parameters.imageSource.toLocalFile();
+    mUi->image->setText(parameters.imageSource.toString(QUrl::PreferLocalFile));
+
+    QColor transparentColor = parameters.transparentColor;
+    mUi->useTransparentColor->setChecked(transparentColor.isValid());
+    if (transparentColor.isValid())
+        mUi->colorButton->setColor(transparentColor);
+
+    mUi->tileWidth->setValue(parameters.tileSize.width());
+    mUi->tileHeight->setValue(parameters.tileSize.height());
+    mUi->spacing->setValue(parameters.tileSpacing);
+    mUi->margin->setValue(parameters.margin);
+
+    if (exec() != QDialog::Accepted)
+        return false;
+
+    parameters = TilesetParameters(*mNewTileset);
+    return true;
 }
 
 void NewTilesetDialog::tryAccept()
@@ -131,7 +201,7 @@ void NewTilesetDialog::tryAccept()
 
     const QString name = mUi->name->text();
 
-    std::auto_ptr<Tileset> tileset;
+    SharedTileset tileset;
 
     if (tilesetType(mUi) == TilesetImage) {
         const QString image = mUi->image->text();
@@ -142,9 +212,9 @@ void NewTilesetDialog::tryAccept()
         const int spacing = mUi->spacing->value();
         const int margin = mUi->margin->value();
 
-        tileset.reset(new Tileset(name,
+        tileset = Tileset::create(name,
                                   tileWidth, tileHeight,
-                                  spacing, margin));
+                                  spacing, margin);
 
         if (useTransparentColor)
             tileset->setTransparentColor(transparentColor);
@@ -164,20 +234,43 @@ void NewTilesetDialog::tryAccept()
                                          "margin and spacing!"));
                 return;
             }
+
+            tileset->syncExpectedColumnsAndRows();
         }
 
-        s->setValue(QLatin1String(COLOR_ENABLED_KEY), useTransparentColor);
-        s->setValue(QLatin1String(COLOR_KEY), transparentColor.name());
-        s->setValue(QLatin1String(SPACING_KEY), spacing);
-        s->setValue(QLatin1String(MARGIN_KEY), margin);
+        if (mMode == CreateTileset) {
+            s->setValue(QLatin1String(COLOR_ENABLED_KEY), useTransparentColor);
+            s->setValue(QLatin1String(COLOR_KEY), transparentColor.name());
+            s->setValue(QLatin1String(TILE_SIZE_KEY), QSize(tileWidth, tileHeight));
+            s->setValue(QLatin1String(SPACING_KEY), spacing);
+            s->setValue(QLatin1String(MARGIN_KEY), margin);
+        }
     } else {
-        tileset.reset(new Tileset(name, 1, 1));
+        tileset = Tileset::create(name, 1, 1);
     }
 
-    s->setValue(QLatin1String(TYPE_KEY), mUi->tilesetType->currentIndex());
+    if (mMode == CreateTileset) {
+        s->setValue(QLatin1String(TYPE_KEY), mUi->tilesetType->currentIndex());
+        s->setValue(QLatin1String(EMBED_KEY), mUi->embedded->isChecked());
+    }
 
-    mNewTileset = tileset.release();
+    mNewTileset = tileset;
     accept();
+}
+
+void NewTilesetDialog::setMode(Mode mode)
+{
+    mMode = mode;
+
+    if (mode == EditTilesetParameters) {
+        mUi->tilesetType->setCurrentIndex(0);
+        setWindowTitle(QApplication::translate("NewTilesetDialog", "Edit Tileset"));
+    } else {
+        setWindowTitle(QApplication::translate("NewTilesetDialog", "New Tileset"));
+    }
+
+    mUi->tilesetGroupBox->setVisible(mode == CreateTileset);
+    updateOkButton();
 }
 
 void NewTilesetDialog::browse()
@@ -209,9 +302,45 @@ void NewTilesetDialog::updateOkButton()
 {
     QPushButton *okButton = mUi->buttonBox->button(QDialogButtonBox::Ok);
 
-    bool enabled = !mUi->name->text().isEmpty();
+    bool enabled = true;
+    QString text;
+
+    if (mMode == CreateTileset) {
+        enabled &= !mUi->name->text().isEmpty();
+        text = isEmbedded() ? tr("&OK") : tr("&Save As...");
+    } else {
+        text = tr("&OK");
+    }
+
     if (tilesetType(mUi) == TilesetImage)
         enabled &= !mUi->image->text().isEmpty();
 
     okButton->setEnabled(enabled);
+    okButton->setText(text);
+}
+
+void NewTilesetDialog::updateColorPickerButton()
+{
+    mUi->dropperButton->setEnabled(mUi->useTransparentColor->isChecked() &&
+                                   !mUi->image->text().isEmpty());
+}
+
+/**
+ * Shows the popup window used to select the color from the chosen image.
+ */
+void NewTilesetDialog::pickColorFromImage()
+{
+    auto *popup = new ImageColorPickerWidget(mUi->dropperButton);
+    popup->setAttribute(Qt::WA_DeleteOnClose);
+
+    connect(popup, &ImageColorPickerWidget::colorSelected,
+            this, &NewTilesetDialog::colorSelected);
+
+    if (!popup->selectColor(mUi->image->text()))
+        delete popup;
+}
+
+void NewTilesetDialog::colorSelected(QColor color)
+{
+    mUi->colorButton->setColor(color);
 }

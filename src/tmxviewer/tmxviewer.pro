@@ -5,11 +5,8 @@ TEMPLATE = app
 TARGET = tmxviewer
 target.path = $${PREFIX}/bin
 INSTALLS += target
-TEMPLATE = app
 
-greaterThan(QT_MAJOR_VERSION, 4) {
-    QT += widgets
-}
+QT += widgets
 
 win32 {
     DESTDIR = ../..
@@ -26,7 +23,7 @@ macx {
 }
 
 # Make sure the executable can find libtiled
-!win32:!macx:contains(RPATH, yes) {
+!win32:!macx:!cygwin:contains(RPATH, yes) {
     QMAKE_RPATHDIR += \$\$ORIGIN/../lib
 
     # It is not possible to use ORIGIN in QMAKE_RPATHDIR, so a bit manually
@@ -40,5 +37,5 @@ SOURCES += main.cpp \
 HEADERS += tmxviewer.h
 
 manpage.path = $${PREFIX}/share/man/man1/
-manpage.files += ../../docs/tmxviewer.1
+manpage.files += ../../man/tmxviewer.1
 INSTALLS += manpage

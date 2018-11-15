@@ -15,8 +15,8 @@
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-from tiled.qt import *
-from cpystruct import *
+import tiled as T
+from .cpystruct import *
 #from PyQt4.Qt import QColor  # to test outside tiled
 import struct
 
@@ -57,28 +57,28 @@ class CMAP(CpyStruct("BYTE color[3];", True)):
   def parse(cls, dat):
     c = CMAP()
     sz = struct.calcsize(getattr(cls, '__fstr'))
-    for i in range(len(dat)/sz):
+    for i in range(int(len(dat)/sz)):
       c.unpack(dat[i*sz:i*sz+sz])
-      yield QColor(c.color[0],c.color[1],c.color[2]).rgb()
+      yield T.qt.QColor(c.color[0],c.color[1],c.color[2]).rgb()
 
 def uncomp(dat):
   i = 0
   ret = bytearray()
   while i < len(dat):
-    v = struct.unpack('b', dat[i])[0]
+    v = struct.unpack('b', dat[i:i+1])[0]
     i += 1
     if v >= 0:
       for n in range(v+1):
-        ret += dat[i]
+        ret += dat[i:i+1]
         i += 1
     elif v != -128:
       for n in range(v-1,0,1):
-        ret += dat[i]
+        ret += dat[i:i+1]
       i += 1
   return ret
 
 def readbody(bd, ch):
-  bj = [0,(ch.sz.w+15) / 16 * 2]
+  bj = [0,int((ch.sz.w+15) / 16) * 2]
   for p in range(2,ch.planes):
     bj.append(bj[1] * p)
 
@@ -96,7 +96,7 @@ def readbody(bd, ch):
 
 def parselbm(f):
   for id,dat in list(IFFchunk.parsefile(f)):
-    if id == 'BMHD': 
+    if id == 'BMHD':
       ch = BMHD(dat)
       yield id, ch
     elif id == 'CMAP':
@@ -114,5 +114,5 @@ def parselbm(f):
 
 if __name__ == "__main__":
   import sys
-  print list(parselbm(sys.argv[1]))
+  print( list(parselbm(sys.argv[1])) )
 

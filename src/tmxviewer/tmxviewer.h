@@ -26,10 +26,11 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef TMXVIEWER_H
-#define TMXVIEWER_H
+#pragma once
 
 #include <QGraphicsView>
+
+#include <memory>
 
 namespace Tiled {
 class Map;
@@ -41,15 +42,13 @@ class TmxViewer : public QGraphicsView
     Q_OBJECT
 
 public:
-    explicit TmxViewer(QWidget *parent = 0);
+    explicit TmxViewer(QWidget *parent = nullptr);
     ~TmxViewer();
 
-    void viewMap(const QString &fileName);
+    bool viewMap(const QString &fileName);
 
 private:
     QGraphicsScene *mScene;
-    Tiled::Map *mMap;
-    Tiled::MapRenderer *mRenderer;
+    std::unique_ptr<Tiled::Map> mMap;
+    std::unique_ptr<Tiled::MapRenderer> mRenderer;
 };
-
-#endif // TMXVIEWER_H

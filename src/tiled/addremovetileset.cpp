@@ -22,25 +22,23 @@
 
 #include "map.h"
 #include "mapdocument.h"
-#include "tilesetmanager.h"
 
 using namespace Tiled;
 using namespace Tiled::Internal;
 
 AddRemoveTileset::AddRemoveTileset(MapDocument *mapDocument,
                                    int index,
-                                   Tileset *tileset)
-    : mMapDocument(mapDocument)
+                                   const SharedTileset &tileset,
+                                   QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , mMapDocument(mapDocument)
     , mTileset(tileset)
     , mIndex(index)
 {
-    // Make sure the tileset manager keeps this tileset around
-    TilesetManager::instance()->addReference(mTileset);
 }
 
 AddRemoveTileset::~AddRemoveTileset()
 {
-    TilesetManager::instance()->removeReference(mTileset);
 }
 
 void AddRemoveTileset::removeTileset()
@@ -54,10 +52,29 @@ void AddRemoveTileset::addTileset()
 }
 
 
-AddTileset::AddTileset(MapDocument *mapDocument, Tileset *tileset)
+AddTileset::AddTileset(MapDocument *mapDocument, const SharedTileset &tileset,
+                       QUndoCommand *parent)
     : AddRemoveTileset(mapDocument,
                        mapDocument->map()->tilesets().size(),
-                       tileset)
+                       tileset,
+                       parent)
 {
     setText(QCoreApplication::translate("Undo Commands", "Add Tileset"));
+}
+
+AddTileset *AddTileset::clone(QUndoCommand *parent) const
+{
+    auto c = new AddTileset(mMapDocument, mTileset, parent);
+    c->mIndex = mIndex;
+    return c;
+}
+
+
+RemoveTileset::RemoveTileset(MapDocument *mapDocument, int index)
+    : AddRemoveTileset(mapDocument,
+                       index,
+                       mapDocument->map()->tilesetAt(index))
+{
+    setText(QCoreApplication::translate("Undo Commands",
+                                        "Remove Tileset"));
 }

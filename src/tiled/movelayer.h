@@ -18,13 +18,13 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MOVELAYER_H
-#define MOVELAYER_H
+#pragma once
 
 #include <QUndoCommand>
 
 namespace Tiled {
 
+class Layer;
 class Map;
 
 namespace Internal {
@@ -43,23 +43,26 @@ public:
      * Constructor.
      *
      * @param mapDocument the map document that's being changed
-     * @param index       the index of the layer to move
+     * @param layer       the layer to move
      * @param direction   the direction in which to move the layer
      */
-    MoveLayer(MapDocument *mapDocument, int index, Direction direction);
+    MoveLayer(MapDocument *mapDocument, Layer *layer, Direction direction);
 
-    void undo();
-    void redo();
+    void undo() override { moveLayer(); }
+    void redo() override { moveLayer(); }
+
+    static bool canMoveUp(const Layer &layer);
+    static bool canMoveDown(const Layer &layer);
+    static bool canMoveUp(const QList<Layer *> &layers);
+    static bool canMoveDown(const QList<Layer *> &layers);
 
 private:
     void moveLayer();
 
     MapDocument *mMapDocument;
-    int mIndex;
+    Layer *mLayer;
     Direction mDirection;
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // MOVELAYER_H

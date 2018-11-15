@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef RESIZELAYER_H
-#define RESIZELAYER_H
+#pragma once
 
 #include <QPoint>
 #include <QSize>
@@ -47,23 +46,20 @@ public:
     ResizeTileLayer(MapDocument *mapDocument,
                     TileLayer *layer,
                     const QSize &size,
-                    const QPoint &offset);
+                    const QPoint &offset,
+                    QUndoCommand *parent = nullptr);
 
     ~ResizeTileLayer();
 
-    void undo();
-    void redo();
+    void undo() override;
+    void redo() override;
 
 private:
-    Layer *swapLayer(Layer *layer);
-
     MapDocument *mMapDocument;
-    int mIndex;
+    bool mDone;
     TileLayer *mOriginalLayer;
     TileLayer *mResizedLayer;
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // RESIZELAYER_H

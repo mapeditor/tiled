@@ -51,12 +51,12 @@ void ChangeObjectGroupProperties::redo()
 {
     mObjectGroup->setColor(mRedoColor);
     mObjectGroup->setDrawOrder(mRedoDrawOrder);
-    mMapDocument->emitObjectGroupChanged(mObjectGroup);
+    emit mMapDocument->objectGroupChanged(mObjectGroup);
 }
 
 void ChangeObjectGroupProperties::undo()
 {
     mObjectGroup->setColor(mUndoColor);
     mObjectGroup->setDrawOrder(mUndoDrawOrder);
-    mMapDocument->emitObjectGroupChanged(mObjectGroup);
+    emit mMapDocument->objectGroupChanged(mObjectGroup);
 }
