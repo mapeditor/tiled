@@ -460,7 +460,7 @@
     </message>
     <message>
         <location line="+15"/>
-        <source>Json map files (*.json)</source>
+        <source>JSON map files (*.json)</source>
         <translation>Файлове с карти във формата json (*.json)</translation>
     </message>
     <message>
@@ -495,7 +495,7 @@
     </message>
     <message>
         <location line="+14"/>
-        <source>Json template files (*.json)</source>
+        <source>JSON template files (*.json)</source>
         <translation>Файлове с шаблони във формата json (*.json)</translation>
     </message>
 </context>
@@ -525,7 +525,7 @@
     </message>
     <message>
         <location line="+14"/>
-        <source>Json tileset files (*.json)</source>
+        <source>JSON tileset files (*.json)</source>
         <translation>Файлове с плочни набори във формата json (*.json)</translation>
     </message>
 </context>
@@ -5458,7 +5458,7 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="+152"/>
-        <source>Missing wang tile transition</source>
+        <source>Missing Wang tile transition</source>
         <translation>Липсва плочен преход на Ванг</translation>
     </message>
 </context>

@@ -323,7 +323,7 @@ void WangBrush::updateStatusInfo()
         QString extraInfo;
         if (!static_cast<WangBrushItem*>(brushItem())->isValid())
             extraInfo = QString(QLatin1String(" (%1)"))
-                        .arg(tr("Missing wang tile transition"));
+                        .arg(tr("Missing Wang tile transition"));
 
         setStatusInfo(QString(QLatin1String("%1, %2%3%4"))
                       .arg(mPaintPoint.x())

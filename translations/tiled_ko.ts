@@ -403,8 +403,8 @@
     </message>
     <message>
         <location line="+15"/>
-        <source>Json map files (*.json)</source>
-        <translation>Json 맵 파일 (*.json)</translation>
+        <source>JSON map files (*.json)</source>
+        <translation>JSON 맵 파일 (*.json)</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -438,8 +438,8 @@
     </message>
     <message>
         <location line="+14"/>
-        <source>Json tileset files (*.json)</source>
-        <translation>Json 타일셋 파일 (*.json)</translation>
+        <source>JSON tileset files (*.json)</source>
+        <translation>JSON 타일셋 파일 (*.json)</translation>
     </message>
 </context>
 <context>

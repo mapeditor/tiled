@@ -461,8 +461,8 @@
     </message>
     <message>
         <location line="+15"/>
-        <source>Json map files (*.json)</source>
-        <translation>Json-kartfiler (*.json)</translation>
+        <source>JSON map files (*.json)</source>
+        <translation>JSON-kartfiler (*.json)</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -496,7 +496,7 @@
     </message>
     <message>
         <location line="+14"/>
-        <source>Json template files (*.json)</source>
+        <source>JSON template files (*.json)</source>
         <translation>JSON-malfiler (*.json)</translation>
     </message>
 </context>
@@ -526,8 +526,8 @@
     </message>
     <message>
         <location line="+14"/>
-        <source>Json tileset files (*.json)</source>
-        <translation>Json-rutebrettfiler (*.json)</translation>
+        <source>JSON tileset files (*.json)</source>
+        <translation>JSON-rutebrettfiler (*.json)</translation>
     </message>
 </context>
 <context>
@@ -5527,7 +5527,7 @@ Vennligst velgt et spesifikt format.</translation>
     </message>
     <message>
         <location line="+152"/>
-        <source>Missing wang tile transition</source>
+        <source>Missing Wang tile transition</source>
         <translation>Manglende Wang-flisovergang</translation>
     </message>
 </context>

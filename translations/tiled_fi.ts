@@ -460,8 +460,8 @@
     </message>
     <message>
         <location line="+15"/>
-        <source>Json map files (*.json)</source>
-        <translation>Json kenttätiedostot (*.json)</translation>
+        <source>JSON map files (*.json)</source>
+        <translation>JSON kenttätiedostot (*.json)</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -495,7 +495,7 @@
     </message>
     <message>
         <location line="+14"/>
-        <source>Json template files (*.json)</source>
+        <source>JSON template files (*.json)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -525,8 +525,8 @@
     </message>
     <message>
         <location line="+14"/>
-        <source>Json tileset files (*.json)</source>
-        <translation>Json tileset-tiedostot (*.json)</translation>
+        <source>JSON tileset files (*.json)</source>
+        <translation>JSON tileset-tiedostot (*.json)</translation>
     </message>
 </context>
 <context>
@@ -5535,7 +5535,7 @@ Ole hyvä ja valitse tietty tiedostomuoto.</translation>
     </message>
     <message>
         <location line="+152"/>
-        <source>Missing wang tile transition</source>
+        <source>Missing Wang tile transition</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

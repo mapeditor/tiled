@@ -145,7 +145,7 @@ bool JsonMapFormat::write(const Tiled::Map *map, const QString &fileName)
 QString JsonMapFormat::nameFilter() const
 {
     if (mSubFormat == Json)
-        return tr("Json map files (*.json)");
+        return tr("JSON map files (*.json)");
     else
         return tr("JavaScript map files (*.js)");
 }
@@ -302,7 +302,7 @@ bool JsonTilesetFormat::write(const Tiled::Tileset &tileset,
 
 QString JsonTilesetFormat::nameFilter() const
 {
-    return tr("Json tileset files (*.json)");
+    return tr("JSON tileset files (*.json)");
 }
 
 QString JsonTilesetFormat::shortName() const
@@ -406,7 +406,7 @@ bool JsonObjectTemplateFormat::write(const Tiled::ObjectTemplate *objectTemplate
 
 QString JsonObjectTemplateFormat::nameFilter() const
 {
-    return tr("Json template files (*.json)");
+    return tr("JSON template files (*.json)");
 }
 
 QString JsonObjectTemplateFormat::shortName() const

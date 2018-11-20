@@ -398,7 +398,7 @@
     </message>
     <message>
         <location line="+15"/>
-        <source>Json map files (*.json)</source>
+        <source>JSON map files (*.json)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -432,7 +432,7 @@
     </message>
     <message>
         <location line="+14"/>
-        <source>Json tileset files (*.json)</source>
+        <source>JSON tileset files (*.json)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

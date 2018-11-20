@@ -460,8 +460,8 @@
     </message>
     <message>
         <location line="+15"/>
-        <source>Json map files (*.json)</source>
-        <translation>Json harita dosyaları (*.json)</translation>
+        <source>JSON map files (*.json)</source>
+        <translation>JSON harita dosyaları (*.json)</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -495,7 +495,7 @@
     </message>
     <message>
         <location line="+14"/>
-        <source>Json template files (*.json)</source>
+        <source>JSON template files (*.json)</source>
         <translation>json şablon dosyaları (*.json)</translation>
     </message>
 </context>
@@ -525,8 +525,8 @@
     </message>
     <message>
         <location line="+14"/>
-        <source>Json tileset files (*.json)</source>
-        <translation>Json desen seti dosyaları (*.json)</translation>
+        <source>JSON tileset files (*.json)</source>
+        <translation>JSON desen seti dosyaları (*.json)</translation>
     </message>
 </context>
 <context>
@@ -5487,7 +5487,7 @@ Lütfen belirli bir biçim seçin.</translation>
     </message>
     <message>
         <location line="+152"/>
-        <source>Missing wang tile transition</source>
+        <source>Missing Wang tile transition</source>
         <translation>Eksik Wang desen geçişi</translation>
     </message>
 </context>

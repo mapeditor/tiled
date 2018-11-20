@@ -460,8 +460,8 @@
     </message>
     <message>
         <location line="+15"/>
-        <source>Json map files (*.json)</source>
-        <translation>Файли карт Json (*.json)</translation>
+        <source>JSON map files (*.json)</source>
+        <translation>Файли карт JSON (*.json)</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -495,8 +495,8 @@
     </message>
     <message>
         <location line="+14"/>
-        <source>Json template files (*.json)</source>
-        <translation>Файли шаблонів Json (*.json)</translation>
+        <source>JSON template files (*.json)</source>
+        <translation>Файли шаблонів JSON (*.json)</translation>
     </message>
 </context>
 <context>
@@ -525,8 +525,8 @@
     </message>
     <message>
         <location line="+14"/>
-        <source>Json tileset files (*.json)</source>
-        <translation>Файли набору плиток Json (*.json)</translation>
+        <source>JSON tileset files (*.json)</source>
+        <translation>Файли набору плиток JSON (*.json)</translation>
     </message>
 </context>
 <context>
@@ -5559,7 +5559,7 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="+152"/>
-        <source>Missing wang tile transition</source>
+        <source>Missing Wang tile transition</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
