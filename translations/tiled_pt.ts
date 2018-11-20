@@ -420,8 +420,8 @@
     </message>
     <message>
         <location line="+15"/>
-        <source>Json map files (*.json)</source>
-        <translation>Arquivo de mapas Json (*.json)</translation>
+        <source>JSON map files (*.json)</source>
+        <translation>Arquivo de mapas JSON (*.json)</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -455,7 +455,7 @@
     </message>
     <message>
         <location line="+14"/>
-        <source>Json template files (*.json)</source>
+        <source>JSON template files (*.json)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -485,8 +485,8 @@
     </message>
     <message>
         <location line="+14"/>
-        <source>Json tileset files (*.json)</source>
-        <translation>Arquivos de tileset Json (*.json)</translation>
+        <source>JSON tileset files (*.json)</source>
+        <translation>Arquivos de tileset JSON (*.json)</translation>
     </message>
 </context>
 <context>
@@ -5343,7 +5343,7 @@ Por favor selecione o formato específico.</translation>
     </message>
     <message>
         <location line="+152"/>
-        <source>Missing wang tile transition</source>
+        <source>Missing Wang tile transition</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

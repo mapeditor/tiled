@@ -421,8 +421,8 @@
     </message>
     <message>
         <location line="+15"/>
-        <source>Json map files (*.json)</source>
-        <translation>Json map bestanden (*.json)</translation>
+        <source>JSON map files (*.json)</source>
+        <translation>JSON map bestanden (*.json)</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -456,8 +456,8 @@
     </message>
     <message>
         <location line="+14"/>
-        <source>Json template files (*.json)</source>
-        <translation>Json sjabloon bestand (*.json)</translation>
+        <source>JSON template files (*.json)</source>
+        <translation>JSON sjabloon bestand (*.json)</translation>
     </message>
 </context>
 <context>
@@ -486,8 +486,8 @@
     </message>
     <message>
         <location line="+14"/>
-        <source>Json tileset files (*.json)</source>
-        <translation>Json tileset bestanden (*.json)</translation>
+        <source>JSON tileset files (*.json)</source>
+        <translation>JSON tileset bestanden (*.json)</translation>
     </message>
 </context>
 <context>
@@ -5345,7 +5345,7 @@ Kies een specifiek bestandsformaat.</translation>
     </message>
     <message>
         <location line="+152"/>
-        <source>Missing wang tile transition</source>
+        <source>Missing Wang tile transition</source>
         <translation>Missende Wang tile transitie</translation>
     </message>
 </context>

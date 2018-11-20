@@ -302,7 +302,7 @@ bool JsonTilesetFormat::write(const Tiled::Tileset &tileset,
 
 QString JsonTilesetFormat::nameFilter() const
 {
-    return tr("Json tileset files (*.json)");
+    return tr("JSON tileset files (*.json)");
 }
 
 QString JsonTilesetFormat::shortName() const
