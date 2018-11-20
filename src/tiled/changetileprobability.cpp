@@ -61,9 +61,8 @@ void ChangeTileProbability::swap()
     for (int i = 0; i < mTiles.size(); ++ i) {
         Tile *tile = mTiles[i];
         qreal probability = tile->probability();
-        tile->setProbability(mProbabilities[i]);
+        mTilesetDocument->setTileProbability(tile, mProbabilities[i]);
         mProbabilities[i] = probability;
-        emit mTilesetDocument->tileProbabilityChanged(tile);
     }
 }
 

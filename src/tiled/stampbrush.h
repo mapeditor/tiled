@@ -155,7 +155,9 @@ private:
     bool mIsWangFill;
     WangSet *mWangSet;
 
+    bool mRandomCacheValid;
     void updateRandomList();
+    void invalidateRandomCache();
 
     StampActions *mStampActions;
 };
