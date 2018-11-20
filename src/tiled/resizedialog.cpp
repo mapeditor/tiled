@@ -37,7 +37,9 @@ ResizeDialog::ResizeDialog(QWidget *parent)
 {
     mUi->setupUi(this);
     resize(Utils::dpiScaled(size()));
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+#endif
 
     Preferences *prefs = Preferences::instance();
     QSettings *s = prefs->settings();
@@ -53,8 +55,8 @@ ResizeDialog::ResizeDialog(QWidget *parent)
     mUi->resizeHelper->setNewSize(QSize(mUi->widthSpinBox->value(),
                                         mUi->heightSpinBox->value()));
 
-    connect(mUi->resizeHelper, SIGNAL(offsetBoundsChanged(QRect)),
-                               SLOT(updateOffsetBounds(QRect)));
+    connect(mUi->resizeHelper, &ResizeHelper::offsetBoundsChanged,
+            this, &ResizeDialog::updateOffsetBounds);
 
     Utils::restoreGeometry(this);
 }

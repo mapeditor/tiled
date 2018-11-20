@@ -45,6 +45,10 @@ class TILEDSHARED_EXPORT LoggingInterface : public QObject
     Q_OBJECT
 
 public:
+    explicit LoggingInterface(QObject *parent = nullptr)
+        : QObject(parent)
+    {}
+
     enum OutputType {
         INFO, ERROR
     };

@@ -49,7 +49,7 @@ public:
 
 private:
     MapDocument * const mMapDocument;
-    QList<Layer *> const mLayers;
+    QList<Layer *> mLayers;
     GroupLayer * const mLayerParent;
     int const mIndex;
 

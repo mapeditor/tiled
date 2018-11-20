@@ -26,6 +26,8 @@
 
 #include <QCoreApplication>
 
+#include "qtcompat_p.h"
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
@@ -87,13 +89,21 @@ static QList<MapObject*> objectList(const QVector<MapObjectCell> &changes)
 
 void ChangeMapObjectCells::swap()
 {
-    for (MapObjectCell &change : mChanges) {
+    for (int i = 0; i < mChanges.size(); ++i) {
+        MapObjectCell &change = mChanges[i];
+
         auto cell = change.object->cell();
         change.object->setCell(change.cell);
         change.cell = cell;
+
+        auto changed = change.object->propertyChanged(MapObject::CellProperty);
+        change.object->setPropertyChanged(MapObject::CellProperty, change.propertyChanged);
+        change.propertyChanged = changed;
     }
+
     emit mMapObjectModel->objectsChanged(objectList(mChanges));
 }
+
 
 ChangeMapObjectsTile::ChangeMapObjectsTile(MapDocument *mapDocument,
                                            const QList<MapObject *> &mapObjects,
@@ -179,14 +189,8 @@ void DetachObjects::redo()
 {
     QUndoCommand::redo(); // redo child commands
 
-    for (int i = 0; i < mMapObjects.size(); ++i) {
-        // Merge the instance properties into the template properties
-        MapObject *object = mMapObjects.at(i);
-        Properties newProperties = object->templateObject()->properties();
-        newProperties.merge(object->properties());
-        object->setProperties(newProperties);
-        object->setObjectTemplate(nullptr);
-    }
+    for (MapObject *object : qAsConst(mMapObjects))
+        object->detachFromTemplate();
 
     emit mMapDocument->mapObjectModel()->objectsChanged(mMapObjects);
 }

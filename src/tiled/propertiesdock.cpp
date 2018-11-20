@@ -55,8 +55,8 @@ PropertiesDock::PropertiesDock(QWidget *parent)
     mActionAddProperty = new QAction(this);
     mActionAddProperty->setEnabled(false);
     mActionAddProperty->setIcon(QIcon(QLatin1String(":/images/16x16/add.png")));
-    connect(mActionAddProperty, SIGNAL(triggered()),
-            SLOT(addProperty()));
+    connect(mActionAddProperty, &QAction::triggered,
+            this, &PropertiesDock::openAddPropertyDialog);
 
     mActionRemoveProperty = new QAction(this);
     mActionRemoveProperty->setEnabled(false);
@@ -68,8 +68,8 @@ PropertiesDock::PropertiesDock(QWidget *parent)
     mActionRenameProperty = new QAction(this);
     mActionRenameProperty->setEnabled(false);
     mActionRenameProperty->setIcon(QIcon(QLatin1String(":/images/16x16/rename.png")));
-    connect(mActionRenameProperty, SIGNAL(triggered()),
-            SLOT(renameProperty()));
+    connect(mActionRenameProperty, &QAction::triggered,
+            this, &PropertiesDock::renameProperty);
 
     Utils::setThemeIcon(mActionAddProperty, "add");
     Utils::setThemeIcon(mActionRemoveProperty, "remove");
@@ -114,10 +114,10 @@ void PropertiesDock::setDocument(Document *document)
     mPropertyBrowser->setDocument(document);
 
     if (document) {
-        connect(document, SIGNAL(currentObjectChanged(Object*)),
-                SLOT(currentObjectChanged(Object*)));
-        connect(document, SIGNAL(editCurrentObject()),
-                SLOT(bringToFront()));
+        connect(document, &Document::currentObjectChanged,
+                this, &PropertiesDock::currentObjectChanged);
+        connect(document, &Document::editCurrentObject,
+                this, &PropertiesDock::bringToFront);
 
         connect(document, &Document::propertyAdded,
                 this, &PropertiesDock::updateActions);
@@ -248,7 +248,7 @@ void PropertiesDock::pasteProperties()
     }
 }
 
-void PropertiesDock::addProperty()
+void PropertiesDock::openAddPropertyDialog()
 {
     AddPropertyDialog dialog(mPropertyBrowser);
     if (dialog.exec() == AddPropertyDialog::Accepted)
@@ -313,10 +313,10 @@ void PropertiesDock::renameProperty()
     dialog->setLabelText(tr("Name:"));
     dialog->setTextValue(oldName);
     dialog->setWindowTitle(tr("Rename Property"));
-    dialog->open(this, SLOT(renameProperty(QString)));
+    dialog->open(this, SLOT(renamePropertyTo(QString)));
 }
 
-void PropertiesDock::renameProperty(const QString &name)
+void PropertiesDock::renamePropertyTo(const QString &name)
 {
     if (name.isEmpty())
         return;
@@ -420,7 +420,7 @@ void PropertiesDock::showContextMenu(const QPoint& pos)
     connect(cutAction, &QAction::triggered, this, &PropertiesDock::cutProperties);
     connect(copyAction, &QAction::triggered, this, &PropertiesDock::copyProperties);
     connect(pasteAction, &QAction::triggered, this, &PropertiesDock::pasteProperties);
-    connect(renameAction, &QAction::triggered, this, static_cast<void (PropertiesDock::*)()>(&PropertiesDock::renameProperty));
+    connect(renameAction, &QAction::triggered, this, &PropertiesDock::renameProperty);
     connect(removeAction, &QAction::triggered, this, &PropertiesDock::removeProperties);
 
     const QPoint globalPos = mPropertyBrowser->mapToGlobal(pos);

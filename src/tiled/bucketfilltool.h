@@ -23,7 +23,6 @@
 #pragma once
 
 #include "abstracttilefilltool.h"
-#include "randompicker.h"
 #include "tilelayer.h"
 #include "tilestamp.h"
 
@@ -47,7 +46,7 @@ class BucketFillTool : public AbstractTileFillTool
 
 public:
     BucketFillTool(QObject *parent = nullptr);
-    ~BucketFillTool();
+    ~BucketFillTool() override;
 
     void mousePressed(QGraphicsSceneMouseEvent *event) override;
 
@@ -64,6 +63,16 @@ private slots:
 
 private:
     bool mLastShiftStatus;
+
+    /**
+     * The active fill method during the last call of tilePositionChanged().
+     *
+     * This variable is needed to detect if the fill method was changed during
+     * mFillOverlay being brushed at an area.
+     */
+    FillMethod mLastFillMethod;
+
+    QRegion mFillRegion;
 
     void makeConnections();
 };

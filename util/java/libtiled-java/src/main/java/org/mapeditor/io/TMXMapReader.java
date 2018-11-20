@@ -64,10 +64,10 @@ import org.mapeditor.core.ObjectGroup;
 import org.mapeditor.core.Properties;
 import org.mapeditor.core.Tile;
 import org.mapeditor.core.TileLayer;
+import org.mapeditor.core.TileOffset;
 import org.mapeditor.core.TileSet;
 import org.mapeditor.util.BasicTileCutter;
 import org.mapeditor.util.ImageHelper;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -236,14 +236,11 @@ public class TMXMapReader {
     private TileSet unmarshalTileset(Node t) throws Exception {
         TileSet set = unmarshalClass(t, TileSet.class);
 
-        int firstGid = getAttribute(t, "firstgid", 1);
-
         String source = set.getSource();
         if (source != null) {
             String filename = xmlPath + source;
             InputStream in = new URL(makeUrl(filename)).openStream();
             TileSet ext = unmarshalTilesetFile(in, filename);
-            setFirstGidForTileset(ext, firstGid);
 
             if (ext == null) {
                 error = "Tileset " + source + " was not loaded correctly!";
@@ -261,10 +258,9 @@ public class TMXMapReader {
 
             if (settings.reuseCachedTilesets) {
                 set = cachedTilesets.get(name);
-                if (set != null) {
-                    setFirstGidForTileset(set, firstGid);
+                if (set != null)
                     return set;
-                }
+
                 set = new TileSet();
                 cachedTilesets.put(name, set);
             } else {
@@ -272,7 +268,6 @@ public class TMXMapReader {
             }
 
             set.setName(name);
-            setFirstGidForTileset(set, firstGid);
 
             boolean hasTilesetImage = false;
             NodeList children = t.getChildNodes();
@@ -324,6 +319,11 @@ public class TMXMapReader {
                         //TODO: there is the possibility here of overlaying images,
                         //      which some people may want
                     }
+                } else if (child.getNodeName().equalsIgnoreCase("tileoffset")) {
+                   TileOffset tileoffset = new TileOffset();
+                   tileoffset.setX(Integer.valueOf(getAttributeValue(child, "x")));
+                   tileoffset.setY(Integer.valueOf(getAttributeValue(child, "y")));
+                   set.setTileoffset(tileoffset);
                 }
             }
 
@@ -499,19 +499,16 @@ public class TMXMapReader {
         final int offsetY = getAttribute(t, "y", 0);
         og.setOffset(offsetX, offsetY);
 
-        // Add all objects from the objects group
-        NodeList children = t.getChildNodes();
+        // Manually parse the objects in object group
+        og.getObjects().clear();
 
+        NodeList children = t.getChildNodes();
         for (int i = 0; i < children.getLength(); i++) {
             Node child = children.item(i);
             if ("object".equalsIgnoreCase(child.getNodeName())) {
                 og.addObject(readMapObject(child));
             }
         }
-
-        Properties props = new Properties();
-        readProperties(children, props);
-        og.setProperties(props);
 
         return og;
     }
@@ -710,10 +707,9 @@ public class TMXMapReader {
             throw new Exception("Couldn't load map.");
         }
 
-        // Load properties
-        readProperties(mapNode.getChildNodes(), map.getProperties());
+        // Don't need to load properties again.
 
-        // Clear untl they are loaded correctly
+        // We need to load layers and tilesets manually so that they are loaded correctly
         map.getTileSets().clear();
         map.getLayers().clear();
 
@@ -721,7 +717,10 @@ public class TMXMapReader {
         tilesetPerFirstGid = new TreeMap<>();
         NodeList l = doc.getElementsByTagName("tileset");
         for (int i = 0; (item = l.item(i)) != null; i++) {
-            map.addTileset(unmarshalTileset(item));
+            int firstGid = getAttribute(item, "firstgid", 1);
+            TileSet tileset = unmarshalTileset(item);
+            tilesetPerFirstGid.put(firstGid, tileset);
+            map.addTileset(tileset);
         }
 
         // Load the layers and objectgroups
@@ -805,7 +804,8 @@ public class TMXMapReader {
      * @throws java.lang.Exception if any.
      */
     public Map readMap(InputStream in) throws Exception {
-        xmlPath = makeUrl(".");
+        //xmlPath = makeUrl(".");
+        xmlPath = System.getProperty("user.dir") + File.separatorChar;
 
         Map unmarshalledMap = unmarshal(in);
 
@@ -911,9 +911,5 @@ public class TMXMapReader {
      */
     private Entry<Integer, TileSet> findTileSetForTileGID(int gid) {
         return tilesetPerFirstGid.floorEntry(gid);
-    }
-
-    private void setFirstGidForTileset(TileSet tileset, int firstGid) {
-        tilesetPerFirstGid.put(firstGid, tileset);
     }
 }

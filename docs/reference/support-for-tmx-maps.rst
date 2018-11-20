@@ -215,6 +215,8 @@ Corona SDK
    announcement <http://discourse.mapeditor.org/t/new-lua-coronasdk-framework-ponytiled/1826>`__)
 -  `Dusk Engine <https://github.com/GymbylCoding/Dusk-Engine>`__ is a
    fully featured Tiled map game engine for Corona SDK
+-  `Berry <https://github.com/ldurniat/Berry>`__ is a simple Tiled
+   Map Loader for Corona SDK.
 
 Flixel
 ~~~~~~
@@ -441,6 +443,7 @@ Unity 3D
    object layers).
 -  `Tiled2Unity <http://www.seanba.com/introtiled2unity.html>`__ exports
    TMX files to Unity with support for (non-simple) collisions.
+-  `UniTiled <https://yjaffal.itch.io/unitiled>`__, a native TMX importer for Unity.
 -  `UniTMX <https://bitbucket.org/PolCPP/unitmx/overview>`__ imports TMX
    files into a mesh.
 -  `X-UniTMX <https://bitbucket.org/Chaoseiro/x-unitmx>`__ supports

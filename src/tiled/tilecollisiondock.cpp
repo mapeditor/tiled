@@ -27,7 +27,7 @@
 #include "createrectangleobjecttool.h"
 #include "createellipseobjecttool.h"
 #include "createpolygonobjecttool.h"
-#include "createpolylineobjecttool.h"
+#include "createtemplatetool.h"
 #include "layermodel.h"
 #include "map.h"
 #include "mapdocument.h"
@@ -60,7 +60,6 @@ TileCollisionDock::TileCollisionDock(QWidget *parent)
     : QDockWidget(parent)
     , mTile(nullptr)
     , mTilesetDocument(nullptr)
-    , mDummyMapDocument(nullptr)
     , mMapScene(new MapScene(this))
     , mMapView(new MapView(this, MapView::NoStaticContents))
     , mToolManager(new ToolManager(this))
@@ -72,13 +71,14 @@ TileCollisionDock::TileCollisionDock(QWidget *parent)
 
     mMapView->setScene(mMapScene);
 
+    mMapView->setResizeAnchor(QGraphicsView::AnchorViewCenter);
     mMapView->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     mMapView->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
     CreateObjectTool *rectangleObjectsTool = new CreateRectangleObjectTool(this);
     CreateObjectTool *ellipseObjectsTool = new CreateEllipseObjectTool(this);
     CreateObjectTool *polygonObjectsTool = new CreatePolygonObjectTool(this);
-    CreateObjectTool *polylineObjectsTool = new CreatePolylineObjectTool(this);;
+    CreateObjectTool *templatesTool = new CreateTemplateTool(this);
 
     QToolBar *toolBar = new QToolBar(this);
     toolBar->setObjectName(QLatin1String("TileCollisionDockToolBar"));
@@ -92,7 +92,7 @@ TileCollisionDock::TileCollisionDock(QWidget *parent)
     toolBar->addAction(mToolManager->registerTool(rectangleObjectsTool));
     toolBar->addAction(mToolManager->registerTool(ellipseObjectsTool));
     toolBar->addAction(mToolManager->registerTool(polygonObjectsTool));
-    toolBar->addAction(mToolManager->registerTool(polylineObjectsTool));
+    toolBar->addAction(mToolManager->registerTool(templatesTool));
 
     auto widget = new QWidget(this);
     auto vertical = new QVBoxLayout(widget);
@@ -108,8 +108,10 @@ TileCollisionDock::TileCollisionDock(QWidget *parent)
     setWidget(widget);
 
     mMapScene->setSelectedTool(mToolManager->selectedTool());
-    connect(mToolManager, SIGNAL(selectedToolChanged(AbstractTool*)),
-            SLOT(setSelectedTool(AbstractTool*)));
+    connect(mToolManager, &ToolManager::selectedToolChanged,
+            this, &TileCollisionDock::setSelectedTool);
+    connect(mToolManager, &ToolManager::statusInfoChanged,
+            this, &TileCollisionDock::statusInfoChanged);
 
     QComboBox *zoomComboBox = new QComboBox;
     horizontal->addWidget(zoomComboBox);
@@ -135,6 +137,8 @@ void TileCollisionDock::setTilesetDocument(TilesetDocument *tilesetDocument)
     if (mTilesetDocument) {
         connect(mTilesetDocument, &TilesetDocument::tileObjectGroupChanged,
                 this, &TileCollisionDock::tileObjectGroupChanged);
+        connect(mTilesetDocument, &TilesetDocument::tilesetTileOffsetChanged,
+                this, &TileCollisionDock::tilesetTileOffsetChanged);
     }
 }
 
@@ -146,7 +150,7 @@ void TileCollisionDock::setTile(Tile *tile)
     mTile = tile;
 
     mMapScene->disableSelectedTool();
-    MapDocument *previousDocument = mDummyMapDocument;
+    auto previousDocument = mDummyMapDocument;
 
     mMapView->setEnabled(tile);
 
@@ -159,11 +163,12 @@ void TileCollisionDock::setTile(Tile *tile)
             tileSize = tile->tileset()->gridSize();
         }
 
-        Map *map = new Map(orientation, 1, 1, tileSize.width(), tileSize.height());
+        std::unique_ptr<Map> map { new Map(orientation, 1, 1, tileSize.width(), tileSize.height()) };
         map->addTileset(tile->sharedTileset());
 
         TileLayer *tileLayer = new TileLayer(QString(), 0, 0, 1, 1);
         tileLayer->setCell(0, 0, Cell(tile));
+        tileLayer->setOffset(-tile->offset());  // undo tile offset
         map->addLayer(tileLayer);
 
         ObjectGroup *objectGroup;
@@ -176,27 +181,29 @@ void TileCollisionDock::setTile(Tile *tile)
         map->setNextObjectId(objectGroup->highestObjectId() + 1);
         map->addLayer(objectGroup);
 
-        mDummyMapDocument = new MapDocument(map);
+        mDummyMapDocument = MapDocumentPtr::create(map.release());
+        mDummyMapDocument->setAllowHidingObjects(false);
+        mDummyMapDocument->setAllowTileObjects(false);
         mDummyMapDocument->setCurrentLayer(objectGroup);
 
-        mMapScene->setMapDocument(mDummyMapDocument);
-        mToolManager->setMapDocument(mDummyMapDocument);
+        mMapScene->setMapDocument(mDummyMapDocument.data());
+        mToolManager->setMapDocument(mDummyMapDocument.data());
 
         mMapScene->enableSelectedTool();
 
         connect(mDummyMapDocument->undoStack(), &QUndoStack::indexChanged,
                 this, &TileCollisionDock::applyChanges);
 
-        connect(mDummyMapDocument, &MapDocument::selectedObjectsChanged,
+        connect(mDummyMapDocument.data(), &MapDocument::selectedObjectsChanged,
                 this, &TileCollisionDock::selectedObjectsChanged);
 
     } else {
-        mDummyMapDocument = nullptr;
+        mDummyMapDocument.clear();
         mMapScene->setMapDocument(nullptr);
         mToolManager->setMapDocument(nullptr);
     }
 
-    emit dummyMapDocumentChanged(mDummyMapDocument);
+    emit dummyMapDocumentChanged(mDummyMapDocument.data());
 
     setHasSelectedObjects(false);
 
@@ -205,8 +212,6 @@ void TileCollisionDock::setTile(Tile *tile)
         // from the QUndoStack destructor.
         disconnect(previousDocument->undoStack(), &QUndoStack::indexChanged,
                    this, &TileCollisionDock::applyChanges);
-
-        delete previousDocument;
     }
 }
 
@@ -223,11 +228,13 @@ void TileCollisionDock::applyChanges()
         return;
 
     ObjectGroup *objectGroup = static_cast<ObjectGroup*>(mDummyMapDocument->map()->layerAt(1));
-    ObjectGroup *clonedGroup = objectGroup->clone();
+    std::unique_ptr<ObjectGroup> clonedGroup;
+    if (!objectGroup->isEmpty())
+        clonedGroup.reset(objectGroup->clone());
 
     QUndoStack *undoStack = mTilesetDocument->undoStack();
     mApplyingChanges = true;
-    undoStack->push(new ChangeTileObjectGroup(mTilesetDocument, mTile, clonedGroup));
+    undoStack->push(new ChangeTileObjectGroup(mTilesetDocument, mTile, std::move(clonedGroup)));
     mApplyingChanges = false;
 }
 
@@ -262,6 +269,16 @@ void TileCollisionDock::tileObjectGroupChanged(Tile *tile)
     mSynchronizing = false;
 }
 
+void TileCollisionDock::tilesetTileOffsetChanged(Tileset *tileset)
+{
+    if (!mDummyMapDocument)
+        return;
+
+    auto tileLayer = mDummyMapDocument->map()->layerAt(0);
+    auto tileOffset = tileset->tileOffset();
+    mDummyMapDocument->layerModel()->setLayerOffset(tileLayer, -tileOffset);
+}
+
 void TileCollisionDock::cut()
 {
     if (!mTile)
@@ -276,7 +293,7 @@ void TileCollisionDock::copy()
     if (!mDummyMapDocument)
         return;
 
-    ClipboardManager::instance()->copySelection(mDummyMapDocument);
+    ClipboardManager::instance()->copySelection(*mDummyMapDocument);
 }
 
 void TileCollisionDock::paste()
@@ -295,7 +312,7 @@ void TileCollisionDock::paste(ClipboardManager::PasteFlags flags)
         return;
 
     ClipboardManager *clipboardManager = ClipboardManager::instance();
-    QScopedPointer<Map> map(clipboardManager->map());
+    const std::unique_ptr<Map> map(clipboardManager->map());
     if (!map)
         return;
 
@@ -318,17 +335,14 @@ void TileCollisionDock::delete_(Operation operation)
     if (!mDummyMapDocument)
         return;
 
-    const QList<MapObject*> selectedObjects = mDummyMapDocument->selectedObjects();
+    const QList<MapObject*> &selectedObjects = mDummyMapDocument->selectedObjects();
     if (selectedObjects.isEmpty())
         return;
 
-    QUndoStack *undoStack = mDummyMapDocument->undoStack();
-    undoStack->beginMacro(operation == Delete ? tr("Delete") : tr("Cut"));
+    auto command = new RemoveMapObjects(mDummyMapDocument.data(), selectedObjects);
+    command->setText(operation == Delete ? tr("Delete") : tr("Cut"));
 
-    for (MapObject *mapObject : selectedObjects)
-        undoStack->push(new RemoveMapObject(mDummyMapDocument, mapObject));
-
-    undoStack->endMacro();
+    mDummyMapDocument->undoStack()->push(command);
 }
 
 void TileCollisionDock::selectedObjectsChanged()

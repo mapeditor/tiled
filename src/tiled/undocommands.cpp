@@ -1,6 +1,6 @@
 /*
- * createmultipointobjecttool.h
- * Copyright 2014, Martin Ziel <martin.ziel.com>
+ * undocommands.cpp
+ * Copyright 2017, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -18,33 +18,28 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#pragma once
+#include "undocommands.h"
 
-#include "createobjecttool.h"
+#include <QUndoCommand>
 
 namespace Tiled {
-
 namespace Internal {
 
-class CreateMultipointObjectTool : public CreateObjectTool
+bool cloneChildren(const QUndoCommand *command, QUndoCommand *parent)
 {
-    Q_OBJECT
+    const int childCount = command->childCount();
 
-public:
-    CreateMultipointObjectTool(QObject *parent);
-    ~CreateMultipointObjectTool();
+    // Check if we're allowed to clone all children
+    for (int i = 0; i < childCount; ++i)
+        if (!dynamic_cast<const ClonableUndoCommand*>(command->child(i)))
+            return false;
 
-    bool startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup) override;
+    // Actually clone the children
+    for (int i = 0; i < childCount; ++i)
+        dynamic_cast<const ClonableUndoCommand*>(command->child(i))->clone(parent);
 
-protected:
-    void mouseMovedWhileCreatingObject(const QPointF &pos,
-                                       Qt::KeyboardModifiers modifiers) override;
-    void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event) override;
-
-private:
-    MapObject *mOverlayPolygonObject;
-    ObjectGroup *mOverlayObjectGroup;
-};
+    return true;
+}
 
 } // namespace Internal
 } // namespace Tiled

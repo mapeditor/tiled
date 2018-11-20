@@ -41,10 +41,6 @@ class AlignmentPropertyType {};
 Q_DECLARE_METATYPE(Tiled::Internal::TilesetParametersPropertyType)
 Q_DECLARE_METATYPE(Tiled::Internal::AlignmentPropertyType)
 
-#if QT_VERSION < 0x050500
-Q_DECLARE_METATYPE(Qt::Alignment)
-#endif
-
 namespace Tiled {
 namespace Internal {
 
@@ -323,6 +319,7 @@ void VariantPropertyManager::uninitializeProperty(QtProperty *property)
 {
     mValues.remove(property);
     mStringAttributes.remove(property);
+    m_alignValues.remove(property);
 
     QtProperty *alignH = m_propertyToAlignH.value(property);
     if (alignH) {

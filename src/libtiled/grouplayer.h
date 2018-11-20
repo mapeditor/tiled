@@ -30,7 +30,7 @@ class TILEDSHARED_EXPORT GroupLayer : public Layer
 {
 public:
     GroupLayer(const QString &name, int x, int y);
-    ~GroupLayer();
+    ~GroupLayer() override;
 
     int layerCount() const;
     Layer *layerAt(int index) const;
@@ -44,8 +44,8 @@ public:
     QSet<SharedTileset> usedTilesets() const override;
     bool referencesTileset(const Tileset *tileset) const override;
     void replaceReferencesToTileset(Tileset *oldTileset, Tileset *newTileset) override;
-    bool canMergeWith(Layer *other) const override;
-    Layer *mergedWith(Layer *other) const override;
+    bool canMergeWith(const Layer *other) const override;
+    Layer *mergedWith(const Layer *other) const override;
     GroupLayer *clone() const override;
 
     // Enable easy iteration over children with range-based for

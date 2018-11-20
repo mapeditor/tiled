@@ -22,7 +22,7 @@ General
 
 .. figure:: images/preferences-general.png
    :alt: General Preferences
-   :scale: 66
+   :scale: 50
    :align: right
 
 Saving and Loading
@@ -49,6 +49,38 @@ Use safe writing of files
     disk space. Unfortunately, it is known to cause issues when saving
     files to a Dropbox folder or a network drive, in which case it helps
     to disable this feature.
+
+.. raw:: html
+
+   <div class="new">New in Tiled 1.2</div>
+
+.. _export-options:
+
+Export Options
+~~~~~~~~~~~~~~
+
+The following export options are applied each time a map or tileset gets
+exported, without affecting the map or tileset itself.
+
+Embed tilesets
+    All tilesets are embedded in the exported map. Useful for example
+    when you are exporting to JSON and loading an external tileset is
+    not desired.
+
+Detach templates
+    All template instances are detached. Useful when you want to use the
+    templates feature but can't or don't want to load the external
+    template object files.
+
+Resolve object types and properties
+    Stores effective object type and properties with each object.
+    Object properties are inherited from a tile (in case of a tile
+    object) and from the default properties of their type.
+
+These options are also available as options when exporting using the command-line.
+
+Interface
+---------
 
 Interface
 ~~~~~~~~~
@@ -77,7 +109,7 @@ Hardware accelerated drawing (OpenGL)
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.1</div>
+   <div class="new new-prev">Since Tiled 1.1</div>
 
 Mouse wheel zooms by default
     This option causes the mouse wheel to zoom without the need to hold
@@ -86,7 +118,7 @@ Mouse wheel zooms by default
     touchpad.
 
 Theme
------
+~~~~~
 
 On Windows and Linux, the default style used by Tiled is "Tiled Fusion".
 This is a customized version of the "Fusion" style that ships with Qt.

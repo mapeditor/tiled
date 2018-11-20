@@ -50,7 +50,7 @@ TerrainView::TerrainView(QWidget *parent)
     setItemsExpandable(false);
     setHeaderHidden(true);
 
-    connect(mZoomable, SIGNAL(scaleChanged(qreal)), SLOT(adjustScale()));
+    connect(mZoomable, &Zoomable::scaleChanged, this, &TerrainView::adjustScale);
 }
 
 void TerrainView::setTilesetDocument(TilesetDocument *tilesetDocument)
@@ -112,8 +112,8 @@ void TerrainView::contextMenuEvent(QContextMenuEvent *event)
                                              tr("Terrain &Properties..."));
     Utils::setThemeIcon(terrainProperties, "document-properties");
 
-    connect(terrainProperties, SIGNAL(triggered()),
-            SLOT(editTerrainProperties()));
+    connect(terrainProperties, &QAction::triggered,
+            this, &TerrainView::editTerrainProperties);
 
     menu.exec(event->globalPos());
 }
@@ -124,7 +124,7 @@ void TerrainView::keyPressEvent(QKeyEvent *event)
         switch (event->key()) {
         case Qt::Key_Delete:
         case Qt::Key_Backspace:
-            if (Terrain *terrain = terrainAt(currentIndex())) {
+            if (terrainAt(currentIndex())) {
                 emit removeTerrainTypeRequested();
                 return;
             }

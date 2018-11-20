@@ -37,6 +37,7 @@ class ObjectGroup;
 class ObjectTemplate;
 class Properties;
 class Tileset;
+class WangColor;
 
 /**
  * Converts a QVariant to a Map instance. Meant to be used together with
@@ -88,6 +89,8 @@ private:
     Properties toProperties(const QVariant &propertiesVariant,
                             const QVariant &propertyTypesVariant) const;
     SharedTileset toTileset(const QVariant &variant);
+    WangSet *toWangSet(const QVariantMap &variantMap, Tileset *tileset);
+    QSharedPointer<WangColor> toWangColor(const QVariantMap &variantMap, bool isEdge);
     ObjectTemplate *toObjectTemplate(const QVariant &variant);
     Layer *toLayer(const QVariant &variant);
     TileLayer *toTileLayer(const QVariantMap &variantMap);
@@ -98,6 +101,11 @@ private:
 
     QPolygonF toPolygon(const QVariant &variant) const;
     TextData toTextData(const QVariantMap &variant) const;
+
+    bool readTileLayerData(TileLayer &tileLayer,
+                           const QVariant &dataVariant,
+                           Map::LayerDataFormat layerDataFormat,
+                           QRect bounds);
 
     Properties extractProperties(const QVariantMap &variantMap) const;
 

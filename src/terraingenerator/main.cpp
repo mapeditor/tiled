@@ -33,6 +33,8 @@
 #include <QPainter>
 #include <QStringList>
 
+#include <algorithm>
+
 using namespace Tiled;
 
 namespace {
@@ -332,7 +334,11 @@ static bool isEmpty(const QImage &image)
              image.format() == QImage::Format_ARGB32_Premultiplied);
 
     const QRgb *rgb = reinterpret_cast<const QRgb*>(image.constBits());
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
     const QRgb * const last = rgb + image.byteCount() / 4;
+#else
+    const QRgb * const last = rgb + image.sizeInBytes() / 4;
+#endif
 
     for (; rgb != last; ++rgb)
         if (qAlpha(*rgb) > 0)
@@ -558,7 +564,7 @@ int main(int argc, char *argv[])
             QPainter painter(&tileImage);
 
             QStringList terrainList = terrainNames.terrainList();
-            qSort(terrainList.begin(), terrainList.end(), lessThan);
+            std::sort(terrainList.begin(), terrainList.end(), lessThan);
 
             // Draw the lowest terrain to avoid pixel gaps
             QString baseTerrain = terrainList.first();
@@ -630,7 +636,6 @@ int main(int argc, char *argv[])
 
     // Save the target tileset
     MapWriter writer;
-    targetTileset->setFileName(QString());
     writer.writeTileset(*targetTileset, options.target);
 
     return 0;

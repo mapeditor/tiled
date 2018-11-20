@@ -28,8 +28,11 @@
 #include "preferences.h"
 
 #include <QFileInfo>
-#include <QScopedPointer>
 #include <QTextStream>
+
+#include "qtcompat_p.h"
+
+#include <memory>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -52,26 +55,29 @@ void AutomappingManager::autoMap()
         return;
 
     Map *map = mMapDocument->map();
+    QRegion region = mMapDocument->selectedArea();
 
-    QRect bounds;
+    if (region.isEmpty()) {
+        if (map->infinite()) {
+            LayerIterator iterator(map);
 
-    if (map->infinite()) {
-        LayerIterator iterator(map);
-
-        while (Layer *layer = iterator.next()) {
-            if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer))
-                bounds = bounds.united(tileLayer->bounds());
+            QRect bounds;
+            while (Layer *layer = iterator.next()) {
+                if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer))
+                    bounds = bounds.united(tileLayer->bounds());
+            }
+            region = bounds;
+        } else {
+            int w = map->width();
+            int h = map->height();
+            region = QRect(0, 0, w, h);
         }
-    } else {
-        int w = map->width();
-        int h = map->height();
-        bounds = QRect(0, 0, w, h);
     }
 
-    autoMapInternal(bounds, nullptr);
+    autoMapInternal(region, nullptr);
 }
 
-void AutomappingManager::autoMap(const QRegion &where, Layer *touchedLayer)
+void AutomappingManager::onRegionEdited(const QRegion &where, Layer *touchedLayer)
 {
     if (Preferences::instance()->automappingDrawing())
         autoMapInternal(where, touchedLayer);
@@ -100,7 +106,7 @@ void AutomappingManager::autoMapInternal(const QRegion &where,
 
     QVector<AutoMapper*> passedAutoMappers;
     if (touchedLayer) {
-        foreach (AutoMapper *a, mAutoMappers) {
+        for (AutoMapper *a : qAsConst(mAutoMappers)) {
             if (a->ruleLayerNameUsed(touchedLayer->name()))
                 passedAutoMappers.append(a);
         }
@@ -118,7 +124,7 @@ void AutomappingManager::autoMapInternal(const QRegion &where,
         undoStack->push(aw);
         undoStack->endMacro();
     }
-    foreach (AutoMapper *automapper, mAutoMappers) {
+    for (AutoMapper *automapper : qAsConst(mAutoMappers)) {
         mWarning += automapper->warningString();
         mError += automapper->errorString();
     }
@@ -168,7 +174,7 @@ bool AutomappingManager::loadFile(const QString &filePath)
         if (rulePath.endsWith(QLatin1String(".tmx"), Qt::CaseInsensitive)) {
             TmxMapFormat tmxFormat;
 
-            QScopedPointer<Map> rules(tmxFormat.read(rulePath));
+            std::unique_ptr<Map> rules(tmxFormat.read(rulePath));
 
             if (!rules) {
                 mError += tr("Opening rules map failed:\n%1").arg(
@@ -177,7 +183,7 @@ bool AutomappingManager::loadFile(const QString &filePath)
                 continue;
             }
 
-            AutoMapper *autoMapper = new AutoMapper(mMapDocument, rules.take(), rulePath);
+            AutoMapper *autoMapper = new AutoMapper(mMapDocument, rules.release(), rulePath);
 
             mWarning += autoMapper->warningString();
             const QString error = autoMapper->errorString();
@@ -205,8 +211,8 @@ void AutomappingManager::setMapDocument(MapDocument *mapDocument)
     mMapDocument = mapDocument;
 
     if (mMapDocument) {
-        connect(mMapDocument, SIGNAL(regionEdited(QRegion,Layer*)),
-                this, SLOT(autoMap(QRegion,Layer*)));
+        connect(mMapDocument, &MapDocument::regionEdited,
+                this, &AutomappingManager::onRegionEdited);
     }
 
     mLoaded = false;

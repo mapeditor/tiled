@@ -102,8 +102,6 @@ void AggregatedProperties::aggregate(const Properties &properties)
             insert(it.key(), AggregatedPropertyData(it.value()));
         }
     }
-
-    ++mAggregatedCount;
 }
 
 int filePathTypeId()

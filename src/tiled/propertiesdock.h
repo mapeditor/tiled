@@ -61,11 +61,11 @@ private slots:
     void cutProperties();
     bool copyProperties();
     void pasteProperties();
-    void addProperty();
+    void openAddPropertyDialog();
     void addProperty(const QString &name, const QVariant &value);
     void removeProperties();
     void renameProperty();
-    void renameProperty(const QString &name);
+    void renamePropertyTo(const QString &name);
     void showContextMenu(const QPoint& pos);
 
 private:

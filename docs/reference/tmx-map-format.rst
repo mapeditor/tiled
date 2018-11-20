@@ -55,6 +55,9 @@ might be useful for XML-namespacing anyway.*
    (since 0.11)
 -  **backgroundcolor:** The background color of the map. (optional, may
    include alpha value since 0.15 in the form ``#AARRGGBB``)
+-  **nextlayerid:** Stores the next available ID for new layers. This
+   number is stored to prevent reuse of the same ID after layers have
+   been removed. (since 1.2)
 -  **nextobjectid:** Stores the next available ID for new objects. This
    number is stored to prevent reuse of the same ID after objects have
    been removed. (since 0.11)
@@ -290,10 +293,13 @@ associating it with a certain Wang ID.
 <layer>
 -------
 
-All ``<tileset>`` tags shall occur before the first ``<layer>`` tag so
-that parsers may rely on having the tilesets before needing to resolve
+All :ref:`tmx-tileset` tags shall occur before the first :ref:`tmx-layer` tag
+so that parsers may rely on having the tilesets before needing to resolve
 tiles.
 
+-  **id:** Unique ID of the layer. Each layer that added to a map gets
+   a unique id. Even if a layer is deleted, no layer ever gets the same
+   ID. Can not be changed in Tiled. (since Tiled 1.2)
 -  **name:** The name of the layer.
 -  *x:* The x coordinate of the layer in tiles. Defaults to 0 and can not be changed in Tiled.
 -  *y:* The y coordinate of the layer in tiles. Defaults to 0 and can not be changed in Tiled.
@@ -438,6 +444,9 @@ should generally be avoided.
 <objectgroup>
 -------------
 
+-  **id:** Unique ID of the layer. Each layer that added to a map gets
+   a unique id. Even if a layer is deleted, no layer ever gets the same
+   ID. Can not be changed in Tiled. (since Tiled 1.2)
 -  **name:** The name of the object group.
 -  **color:** The color used to display the objects in this group.
 -  *x:* The x coordinate of the object group in tiles. Defaults to 0 and
@@ -568,7 +577,7 @@ object.
 -  **kerning:** Whether kerning should be used while rendering the text
    (1) or not (0). Default to 1.
 -  **halign:** Horizontal alignment of the text within the object
-   (``left`` (default), ``center`` or ``right``)
+   (``left`` (default), ``center``, ``right`` or ``justify`` (since Tiled 1.2.1))
 -  **valign:** Vertical alignment of the text within the object (``top``
    (default), ``center`` or ``bottom``)
 
@@ -580,6 +589,9 @@ character data.
 <imagelayer>
 ------------
 
+-  **id:** Unique ID of the layer. Each layer that added to a map gets
+   a unique id. Even if a layer is deleted, no layer ever gets the same
+   ID. Can not be changed in Tiled. (since Tiled 1.2)
 -  **name:** The name of the image layer.
 -  **offsetx:** Rendering offset of the image layer in pixels. Defaults to
    0. (since 0.15)
@@ -602,6 +614,9 @@ Can contain: :ref:`tmx-properties`, :ref:`tmx-image`
 <group>
 -------
 
+-  **id:** Unique ID of the layer. Each layer that added to a map gets
+   a unique id. Even if a layer is deleted, no layer ever gets the same
+   ID. Can not be changed in Tiled. (since Tiled 1.2)
 -  **name:** The name of the group layer.
 -  **offsetx:** Rendering offset of the group layer in pixels. Defaults to
    0.

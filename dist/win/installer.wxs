@@ -86,6 +86,7 @@
             <File Id="Qt5Core_dll" Source="$(var.QtDir)\bin\Qt5Core.dll"/>
             <File Id="Qt5Gui_dll" Source="$(var.QtDir)\bin\Qt5Gui.dll"/>
             <File Id="Qt5Network_dll" Source="$(var.QtDir)\bin\Qt5Network.dll"/>
+            <File Id="Qt5Svg_dll" Source="$(var.QtDir)\bin\Qt5Svg.dll"/>
             <File Id="Qt5Widgets_dll" Source="$(var.QtDir)\bin\Qt5Widgets.dll"/>
 
             <?ifdef MingwDir ?>
@@ -93,12 +94,21 @@
             <File Id="libstdc___6_dll" Source="$(var.MingwDir)\bin\libstdc++-6.dll"/>
             <File Id="libwinpthread_1_dll" Source="$(var.MingwDir)\bin\libwinpthread-1.dll"/>
             <?else?>
-            <File Source="$(var.VcInstallDir)\redist\$(var.Platform)\Microsoft.VC120.CRT\msvcp120.dll"/>
-            <File Source="$(var.VcInstallDir)\redist\$(var.Platform)\Microsoft.VC120.CRT\msvcr120.dll"/>
+              <?ifdef VcUniversalCRT ?>
+              <File Source="$(var.VcInstallDir)\msvcp140.dll"/>
+              <?else?>
+              <File Source="$(var.VcInstallDir)\redist\$(var.Platform)\Microsoft.VC120.CRT\msvcp120.dll"/>
+              <File Source="$(var.VcInstallDir)\redist\$(var.Platform)\Microsoft.VC120.CRT\msvcr120.dll"/>
+              <?endif?>
             <?endif?>
 
             <?ifdef Sparkle ?>
             <File Id="WinSparkleDLL" Source="$(var.InstallRoot)\WinSparkle.dll" />
+            <?endif?>
+
+            <?ifdef OpenSslDir ?>
+            <File Id="libeay32_dll" Source="$(var.OpenSslDir)\libeay32.dll" />
+            <File Id="ssleay32_dll" Source="$(var.OpenSslDir)\ssleay32.dll" />
             <?endif?>
 
             <File Id="COPYING" Name="COPYING.txt" Source="$(var.RootDir)\COPYING"/>
@@ -150,6 +160,7 @@
               <Component Id="ImageFormatPlugins" Guid="{C655A440-9F24-4489-8DB9-5A4EFF6EB5D7}">
                 <File Id="qgif_dll" Source="$(var.QtDir)\plugins\imageformats\qgif.dll"/>
                 <File Id="qjpeg_dll" Source="$(var.QtDir)\plugins\imageformats\qjpeg.dll"/>
+                <File Id="qsvg_dll" Source="$(var.QtDir)\plugins\imageformats\qsvg.dll"/>
                 <File Id="qtga_dll" Source="$(var.QtDir)\plugins\imageformats\qtga.dll"/>
                 <File Id="qtiff_dll" Source="$(var.QtDir)\plugins\imageformats\qtiff.dll"/>
                 <File Id="qwbmp_dll" Source="$(var.QtDir)\plugins\imageformats\qwbmp.dll"/>

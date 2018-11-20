@@ -1,6 +1,6 @@
 /*
- * createpolylineobjecttool.h
- * Copyright 2014, Martin Ziel <martin.ziel.com>
+ * newsbutton.h
+ * Copyright 2018, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -20,20 +20,24 @@
 
 #pragma once
 
-#include "createmultipointobjecttool.h"
+#include <QToolButton>
 
 namespace Tiled {
 namespace Internal {
 
-class CreatePolylineObjectTool: public CreateMultipointObjectTool
+class NewsButton : public QToolButton
 {
     Q_OBJECT
+
 public:
-    CreatePolylineObjectTool(QObject *parent);
-    void languageChanged() override;
-protected:
-    MapObject *createNewMapObject() override;
-    void finishNewMapObject() override;
+    explicit NewsButton(QWidget *parent = nullptr);
+
+private:
+    void refreshButton();
+    void showNewsMenu();
+
+    QIcon mReadIcon;
+    QIcon mUnreadIcon;
 };
 
 } // namespace Internal

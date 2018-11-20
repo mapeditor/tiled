@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>272</width>
-    <height>231</height>
+    <width>282</width>
+    <height>244</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -129,7 +129,7 @@
         </item>
         <item>
          <property name="text">
-          <string>Selected Layer</string>
+          <string>Selected Layers</string>
          </property>
         </item>
        </widget>

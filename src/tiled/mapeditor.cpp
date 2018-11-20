@@ -20,6 +20,7 @@
 
 #include "mapeditor.h"
 
+#include "addremovelayer.h"
 #include "addremovetileset.h"
 #include "brokenlinks.h"
 #include "bucketfilltool.h"
@@ -27,7 +28,6 @@
 #include "createobjecttool.h"
 #include "createpointobjecttool.h"
 #include "createpolygonobjecttool.h"
-#include "createpolylineobjecttool.h"
 #include "createrectangleobjecttool.h"
 #include "createtemplatetool.h"
 #include "createtextobjecttool.h"
@@ -46,11 +46,12 @@
 #include "mapsdock.h"
 #include "mapview.h"
 #include "minimapdock.h"
+#include "newsbutton.h"
 #include "newtilesetdialog.h"
+#include "objectgroup.h"
 #include "objectsdock.h"
-#include "objecttemplate.h"
-#include "templatesdock.h"
 #include "objectselectiontool.h"
+#include "objecttemplate.h"
 #include "painttilelayer.h"
 #include "preferences.h"
 #include "propertiesdock.h"
@@ -58,6 +59,7 @@
 #include "selectsametiletool.h"
 #include "shapefilltool.h"
 #include "stampbrush.h"
+#include "templatesdock.h"
 #include "terrain.h"
 #include "terrainbrush.h"
 #include "terraindock.h"
@@ -88,10 +90,11 @@
 #include <QScrollBar>
 #include <QSettings>
 #include <QShortcut>
-#include <QSignalMapper>
 #include <QStackedWidget>
 #include <QStatusBar>
 #include <QToolBar>
+
+#include <memory>
 
 static const char SIZE_KEY[] = "MapEditor/Size";
 static const char STATE_KEY[] = "MapEditor/State";
@@ -161,7 +164,9 @@ MapEditor::MapEditor(QObject *parent)
     , mViewWithTool(nullptr)
     , mTileStampManager(new TileStampManager(*mToolManager, this))
 {
+#if QT_VERSION >= 0x050600
     mMainWindow->setDockOptions(mMainWindow->dockOptions() | QMainWindow::GroupedDragging);
+#endif
     mMainWindow->setDockNestingEnabled(true);
     mMainWindow->setCentralWidget(mWidgetStack);
 
@@ -183,7 +188,6 @@ MapEditor::MapEditor(QObject *parent)
     CreateObjectTool *pointObjectsTool = new CreatePointObjectTool(this);
     CreateObjectTool *ellipseObjectsTool = new CreateEllipseObjectTool(this);
     CreateObjectTool *polygonObjectsTool = new CreatePolygonObjectTool(this);
-    CreateObjectTool *polylineObjectsTool = new CreatePolylineObjectTool(this);
     CreateObjectTool *textObjectsTool = new CreateTextObjectTool(this);
 
     mToolsToolBar->addAction(mToolManager->registerTool(mStampBrush));
@@ -202,7 +206,6 @@ MapEditor::MapEditor(QObject *parent)
     mToolsToolBar->addAction(mToolManager->registerTool(pointObjectsTool));
     mToolsToolBar->addAction(mToolManager->registerTool(ellipseObjectsTool));
     mToolsToolBar->addAction(mToolManager->registerTool(polygonObjectsTool));
-    mToolsToolBar->addAction(mToolManager->registerTool(polylineObjectsTool));
     mToolsToolBar->addAction(mToolManager->registerTool(tileObjectsTool));
     mToolsToolBar->addAction(mToolManager->registerTool(templatesTool));
     mToolsToolBar->addAction(mToolManager->registerTool(textObjectsTool));
@@ -226,6 +229,7 @@ MapEditor::MapEditor(QObject *parent)
 
     mMainWindow->statusBar()->addPermanentWidget(mLayerComboBox);
     mMainWindow->statusBar()->addPermanentWidget(mZoomComboBox);
+    mMainWindow->statusBar()->addPermanentWidget(new NewsButton);
     mMainWindow->statusBar()->addWidget(mStatusInfoLabel);
 
     connect(mWidgetStack, &QStackedWidget::currentChanged, this, &MapEditor::currentWidgetChanged);
@@ -273,15 +277,12 @@ MapEditor::MapEditor(QObject *parent)
     connect(mWangBrush, &WangBrush::colorCaptured,
             mWangDock, &WangDock::onColorCaptured);
 
-    connect(mTileStampsDock, SIGNAL(setStamp(TileStamp)),
-            this, SLOT(setStamp(TileStamp)));
+    connect(mTileStampsDock, &TileStampsDock::setStamp,
+            this, &MapEditor::setStamp);
 
     setSelectedTool(mToolManager->selectedTool());
     connect(mToolManager, &ToolManager::selectedToolChanged,
             this, &MapEditor::setSelectedTool);
-
-    connect(mTemplatesDock, &TemplatesDock::templateEdited,
-            this, &MapEditor::updateTemplateInstances);
 
     setupQuickStamps();
     retranslateUi();
@@ -403,10 +404,10 @@ void MapEditor::setCurrentDocument(Document *document)
     if (mapDocument) {
         connect(mapDocument, &MapDocument::currentLayerChanged,
                 this, &MapEditor::updateLayerComboIndex);
-//        connect(mapDocument, SIGNAL(selectedAreaChanged(QRegion,QRegion)),
-//                SLOT(updateActions()));
-//        connect(mapDocument, SIGNAL(selectedObjectsChanged()),
-//                SLOT(updateActions()));
+//        connect(mapDocument, &MapDocument::selectedAreaChanged,
+//                this, &MapEditor::updateActions);
+//        connect(mapDocument, &MapDocument::selectedObjectsChanged,
+//                this, &MapEditor::updateActions);
 
         if (mapView) {
             mZoomable = mapView->zoomable();
@@ -490,12 +491,10 @@ Editor::StandardActions MapEditor::enabledStandardActions() const
 
     if (mCurrentMapDocument) {
         Layer *currentLayer = mCurrentMapDocument->currentLayer();
-
-        bool tileLayerSelected = currentLayer && currentLayer->isTileLayer();
         bool objectsSelected = !mCurrentMapDocument->selectedObjects().isEmpty();
-        QRegion selection = mCurrentMapDocument->selectedArea();
+        bool areaSelected = !mCurrentMapDocument->selectedArea().isEmpty();
 
-        if ((tileLayerSelected && !selection.isEmpty()) || objectsSelected)
+        if ((currentLayer && areaSelected) || objectsSelected)
             standardActions |= CutAction | CopyAction | DeleteAction;
 
         if (ClipboardManager::instance()->hasMap())
@@ -629,85 +628,70 @@ void MapEditor::setSelectedTool(AbstractTool *tool)
     }
 }
 
+static void normalizeTileLayerPositionsAndMapSize(Map *map)
+{
+    LayerIterator it(map, Layer::TileLayerType);
+
+    QRect contentRect;
+    while (auto tileLayer = static_cast<TileLayer*>(it.next()))
+        contentRect |= tileLayer->region().boundingRect();
+
+    if (!contentRect.isEmpty()) {
+        QPoint offset = contentRect.topLeft();
+        it.toFront();
+        while (auto tileLayer = static_cast<TileLayer*>(it.next()))
+            tileLayer->setPosition(tileLayer->position() - offset);
+
+        map->setWidth(contentRect.width());
+        map->setHeight(contentRect.height());
+    }
+}
+
 void MapEditor::paste(ClipboardManager::PasteFlags flags)
 {
     if (!mCurrentMapDocument)
         return;
 
-    Layer *currentLayer = mCurrentMapDocument->currentLayer();
-    if (!currentLayer)
-        return;
-
     ClipboardManager *clipboardManager = ClipboardManager::instance();
-    QScopedPointer<Map> map(clipboardManager->map());
+    Map *map = clipboardManager->map();
     if (!map)
         return;
 
-    // We can currently only handle maps with a single layer
-    if (map->layerCount() != 1)
-        return;
+    std::unique_ptr<Map> mapDeleter(map);
 
-    TilesetManager *tilesetManager = TilesetManager::instance();
-    tilesetManager->addReferences(map->tilesets());
+    bool tilesetsUnified = false;
 
-    mCurrentMapDocument->unifyTilesets(map.data());
-    Layer *layer = map->layerAt(0);
+    if (flags & ClipboardManager::PasteInPlace)
+        mCurrentMapDocument->undoStack()->beginMacro(tr("Paste in Place"));
 
-    if (layer->isTileLayer()) {
+    LayerIterator tileLayerIterator(map, Layer::TileLayerType);
+    if (tileLayerIterator.next()) {
         if (flags & ClipboardManager::PasteInPlace) {
-            TileLayer *source = static_cast<TileLayer*>(layer);
-            TileLayer *target = currentLayer->asTileLayer();
-
-            if (target) {
-                // Paste onto the current layer, using the same position as where
-                // the copied piece came from.
-                auto undoStack = mCurrentMapDocument->undoStack();
-                undoStack->push(new PaintTileLayer(mCurrentMapDocument,
-                                                   target,
-                                                   source->x(),
-                                                   source->y(),
-                                                   source));
-            }
+            QVector<SharedTileset> missingTilesets;
+            mCurrentMapDocument->unifyTilesets(map, missingTilesets);
+            mCurrentMapDocument->paintTileLayers(map, false, &missingTilesets);
+            tilesetsUnified = missingTilesets.isEmpty();
         } else {
             // Reset selection and paste into the stamp brush
             MapDocumentActionHandler::instance()->selectNone();
-            layer->setPosition(0, 0);   // Make sure the tile layer is at origin
-            Map *stamp = map.take();    // TileStamp will take ownership
-            setStamp(TileStamp(stamp));
-            tilesetManager->removeReferences(stamp->tilesets());
+            normalizeTileLayerPositionsAndMapSize(map);
+            setStamp(TileStamp(mapDeleter.release())); // TileStamp takes ownership
             mToolManager->selectTool(mStampBrush);
         }
-    } else if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
+    }
+
+    LayerIterator objectGroupIterator(map, Layer::ObjectGroupType);
+    if (ObjectGroup *objectGroup = static_cast<ObjectGroup*>(objectGroupIterator.next())) {
+        if (!tilesetsUnified)
+            mCurrentMapDocument->unifyTilesets(map);
+
+        // todo: Handle multiple object groups
         const MapView *view = currentMapView();
         clipboardManager->pasteObjectGroup(objectGroup, mCurrentMapDocument, view, flags);
     }
 
-    if (map)
-        tilesetManager->removeReferences(map->tilesets());
-}
-
-void MapEditor::flip(FlipDirection direction)
-{
-    if (mStampBrush->isEnabled()) {
-        const TileStamp &stamp = mStampBrush->stamp();
-        if (!stamp.isEmpty())
-            setStamp(stamp.flipped(direction));
-
-    } else if (mCurrentMapDocument) {
-        mCurrentMapDocument->flipSelectedObjects(direction);
-    }
-}
-
-void MapEditor::rotate(RotateDirection direction)
-{
-    if (mStampBrush->isEnabled()) {
-        const TileStamp &stamp = mStampBrush->stamp();
-        if (!stamp.isEmpty())
-            setStamp(stamp.rotated(direction));
-
-    } else if (mCurrentMapDocument) {
-        mCurrentMapDocument->rotateSelectedObjects(direction);
-    }
+    if (flags & ClipboardManager::PasteInPlace)
+        mCurrentMapDocument->undoStack()->endMacro();
 }
 
 void MapEditor::setRandom(bool value)
@@ -771,19 +755,6 @@ void MapEditor::currentWidgetChanged()
     setCurrentDocument(mapView ? mapView->mapScene()->mapDocument() : nullptr);
 }
 
-//void MapEditor::changeEvent(QEvent *event)
-//{
-//    QMainWindow::changeEvent(event);
-//    switch (event->type()) {
-//    case QEvent::LanguageChange:
-//        mToolManager->retranslateTools();
-//        retranslateUi();
-//        break;
-//    default:
-//        break;
-//    }
-//}
-
 void MapEditor::cursorChanged(const QCursor &cursor)
 {
     if (mViewWithTool)
@@ -832,15 +803,6 @@ void MapEditor::addExternalTilesets(const QStringList &fileNames)
 void MapEditor::filesDroppedOnTilesetDock(const QStringList &fileNames)
 {
     handleExternalTilesetsAndImages(fileNames, true);
-}
-
-void MapEditor::updateTemplateInstances(const ObjectTemplate *objectTemplate)
-{
-    QHashIterator<MapDocument*, MapView*> mapDocumentIterator(mWidgetForMap);
-    while (mapDocumentIterator.hasNext()) {
-        mapDocumentIterator.next();
-        mapDocumentIterator.key()->updateTemplateInstances(objectTemplate);
-    }
 }
 
 void MapEditor::handleExternalTilesetsAndImages(const QStringList &fileNames,
@@ -932,8 +894,8 @@ SharedTileset MapEditor::newTileset(const QString &path, const QImage &image)
 
     if (!newTileset.isEmbedded()) {
         // Save new external tileset
-        QScopedPointer<TilesetDocument> tilesetDocument(new TilesetDocument(tileset));
-        if (!DocumentManager::instance()->saveDocumentAs(tilesetDocument.data()))
+        const std::unique_ptr<TilesetDocument> tilesetDocument(new TilesetDocument(tileset));
+        if (!DocumentManager::instance()->saveDocumentAs(tilesetDocument.get()))
             return SharedTileset();
     }
 
@@ -944,38 +906,24 @@ void MapEditor::setupQuickStamps()
 {
     QList<Qt::Key> keys = TileStampManager::quickStampKeys();
 
-    QSignalMapper *selectMapper = new QSignalMapper(this);
-    QSignalMapper *createMapper = new QSignalMapper(this);
-    QSignalMapper *extendMapper = new QSignalMapper(this);
-
     for (int i = 0; i < keys.length(); i++) {
         Qt::Key key = keys.at(i);
 
         // Set up shortcut for selecting this quick stamp
         QShortcut *selectStamp = new QShortcut(key, mMainWindow);
-        connect(selectStamp, SIGNAL(activated()), selectMapper, SLOT(map()));
-        selectMapper->setMapping(selectStamp, i);
+        connect(selectStamp, &QShortcut::activated, [=] { mTileStampManager->selectQuickStamp(i); });
 
         // Set up shortcut for creating this quick stamp
         QShortcut *createStamp = new QShortcut(Qt::CTRL + key, mMainWindow);
-        connect(createStamp, SIGNAL(activated()), createMapper, SLOT(map()));
-        createMapper->setMapping(createStamp, i);
+        connect(createStamp, &QShortcut::activated, [=] { mTileStampManager->createQuickStamp(i); });
 
         // Set up shortcut for extending this quick stamp
         QShortcut *extendStamp = new QShortcut(Qt::CTRL + Qt::SHIFT + key, mMainWindow);
-        connect(extendStamp, SIGNAL(activated()), extendMapper, SLOT(map()));
-        extendMapper->setMapping(extendStamp, i);
+        connect(extendStamp, &QShortcut::activated, [=] { mTileStampManager->extendQuickStamp(i); });
     }
 
-    connect(selectMapper, SIGNAL(mapped(int)),
-            mTileStampManager, SLOT(selectQuickStamp(int)));
-    connect(createMapper, SIGNAL(mapped(int)),
-            mTileStampManager, SLOT(createQuickStamp(int)));
-    connect(extendMapper, SIGNAL(mapped(int)),
-            mTileStampManager, SLOT(extendQuickStamp(int)));
-
-    connect(mTileStampManager, SIGNAL(setStamp(TileStamp)),
-            this, SLOT(setStamp(TileStamp)));
+    connect(mTileStampManager, &TileStampManager::setStamp,
+            this, &MapEditor::setStamp);
 }
 
 void MapEditor::retranslateUi()

@@ -84,7 +84,8 @@ void TerrainBrush::tilePositionChanged(const QPoint &pos)
     case Paint: {
         int x = mPaintX;
         int y = mPaintY;
-        foreach (const QPoint &p, pointsOnLine(x, y, pos.x(), pos.y())) {
+        const auto points = pointsOnLine(x, y, pos.x(), pos.y());
+        for (const QPoint &p : points) {
             updateBrush(p);
             doPaint(true);
         }
@@ -408,15 +409,18 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
     QRect bounds;
     for (ConsiderationPoint point : transitionList)
         bounds |= QRect(point, point);
+
+    auto staggeredRenderer = dynamic_cast<StaggeredRenderer*>(mapDocument()->renderer());
+
     int margin = terrainTileset ? terrainTileset->maximumTerrainDistance() : 3;
+    if (staggeredRenderer)
+        ++margin;
     bounds.adjust(-margin, -margin, margin, margin);
 
     if (!mapDocument()->map()->infinite())
         bounds = bounds.intersected(currentLayer->rect().translated(-layerPosition));
 
     int initialTiles = transitionList.size();
-
-    auto staggeredRenderer = dynamic_cast<StaggeredRenderer*>(mapDocument()->renderer());
 
     // produce terrain with transitions using a simple, relative naive approach (considers each tile once, and doesn't allow re-consideration if selection was bad)
     while (!transitionList.isEmpty()) {

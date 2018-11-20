@@ -89,13 +89,7 @@ public:
                                 int tileWidth,
                                 int tileHeight,
                                 int tileSpacing = 0,
-                                int margin = 0)
-    {
-        SharedTileset tileset(new Tileset(name, tileWidth, tileHeight,
-                                          tileSpacing, margin));
-        tileset->mWeakPointer = tileset;
-        return tileset;
-    }
+                                int margin = 0);
 
 private:
     /**
@@ -256,11 +250,11 @@ private:
     int mColumnCount;
     int mExpectedColumnCount;
     int mExpectedRowCount;
-    QMap<int, Tile*> mTiles;
     int mNextTileId;
+    int mMaximumTerrainDistance;
+    QMap<int, Tile*> mTiles;
     QList<Terrain*> mTerrainTypes;
     QList<WangSet*> mWangSets;
-    int mMaximumTerrainDistance;
     bool mTerrainDistancesDirty;
     LoadingStatus mStatus;
     QColor mBackgroundColor;
@@ -515,14 +509,6 @@ inline const QColor &Tileset::backgroundColor() const
 inline void Tileset::setBackgroundColor(QColor color)
 {
     mBackgroundColor = color;
-}
-
-/**
- * Convenience override that loads the image using the QImage constructor.
- */
-inline bool Tileset::loadFromImage(const QString &fileName)
-{
-    return loadFromImage(QImage(fileName), QUrl::fromLocalFile(fileName));
 }
 
 /**

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>466</width>
-    <height>586</height>
+    <width>555</width>
+    <height>646</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -22,13 +22,13 @@
      <property name="currentIndex">
       <number>0</number>
      </property>
-     <widget class="QWidget" name="tab">
+     <widget class="QWidget" name="generalTab">
       <attribute name="title">
        <string>General</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <widget class="QGroupBox" name="groupBox">
+        <widget class="QGroupBox" name="saveAndLoadGroupBox">
          <property name="title">
           <string>Saving and Loading</string>
          </property>
@@ -71,7 +71,57 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBox_2">
+        <widget class="QGroupBox" name="exportGroupBox">
+         <property name="title">
+          <string>Export Options</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_5">
+          <item row="2" column="0">
+           <widget class="QCheckBox" name="resolveObjectTypesAndProperties">
+            <property name="text">
+             <string>Resolve object types and properties</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="QCheckBox" name="detachTemplateInstances">
+            <property name="text">
+             <string>Detach templates</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" colspan="2">
+           <widget class="QCheckBox" name="embedTilesets">
+            <property name="text">
+             <string>Embed tilesets</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>1</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="interfaceTab">
+      <attribute name="title">
+       <string>Interface</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="QGroupBox" name="interfaceGroupBox">
          <property name="title">
           <string>Interface</string>
          </property>
@@ -179,27 +229,7 @@
         </widget>
        </item>
        <item>
-        <spacer name="verticalSpacer">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>381</width>
-           <height>1</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="tab_2">
-      <attribute name="title">
-       <string>Theme</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
-       <item>
-        <widget class="QGroupBox" name="groupBox_3">
+        <widget class="QGroupBox" name="themeGroupBox">
          <property name="title">
           <string>Theme</string>
          </property>
@@ -277,20 +307,20 @@
          <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
-           <height>40</height>
+           <height>0</height>
           </size>
          </property>
         </spacer>
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_3">
+     <widget class="QWidget" name="updatesTab">
       <attribute name="title">
        <string>Updates</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_7">
        <item>
-        <widget class="QGroupBox" name="groupBox_5">
+        <widget class="QGroupBox" name="updatesGroupBox">
          <property name="title">
           <string>Updates</string>
          </property>
@@ -349,14 +379,14 @@
          <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
-           <height>40</height>
+           <height>0</height>
           </size>
          </property>
         </spacer>
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_4">
+     <widget class="QWidget" name="pluginsTab">
       <attribute name="title">
        <string>Plugins</string>
       </attribute>
@@ -402,16 +432,20 @@
   <tabstop>reloadTilesetImages</tabstop>
   <tabstop>openLastFiles</tabstop>
   <tabstop>safeSaving</tabstop>
+  <tabstop>embedTilesets</tabstop>
+  <tabstop>detachTemplateInstances</tabstop>
+  <tabstop>resolveObjectTypesAndProperties</tabstop>
   <tabstop>languageCombo</tabstop>
   <tabstop>gridColor</tabstop>
   <tabstop>gridFine</tabstop>
   <tabstop>objectLineWidth</tabstop>
   <tabstop>openGL</tabstop>
+  <tabstop>wheelZoomsByDefault</tabstop>
   <tabstop>styleCombo</tabstop>
-  <tabstop>selectionColor</tabstop>
   <tabstop>baseColor</tabstop>
-  <tabstop>checkForUpdate</tabstop>
+  <tabstop>selectionColor</tabstop>
   <tabstop>autoUpdateCheckBox</tabstop>
+  <tabstop>checkForUpdate</tabstop>
   <tabstop>pluginList</tabstop>
  </tabstops>
  <resources/>

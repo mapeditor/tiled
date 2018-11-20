@@ -30,6 +30,7 @@
 #pragma once
 
 #include "mapobject.h"
+#include "tileset.h"
 
 #include <QPointer>
 
@@ -53,10 +54,13 @@ public:
     void setFormat(ObjectTemplateFormat *format);
     ObjectTemplateFormat *format() const;
 
+    const SharedTileset &tileset() const;
+
 private:
     QString mFileName;
     QPointer<ObjectTemplateFormat> mFormat;
     MapObject *mObject;
+    SharedTileset mTileset;
 };
 
 inline const MapObject *ObjectTemplate::object() const
@@ -67,5 +71,8 @@ inline const QString &ObjectTemplate::fileName() const
 
 inline void ObjectTemplate::setFileName(const QString &fileName)
 { mFileName = fileName; }
+
+inline const SharedTileset &ObjectTemplate::tileset() const
+{ return mTileset; }
 
 } // namespace Tiled

@@ -31,9 +31,12 @@
 #include "maintoolbar.h"
 #include "mapdocument.h"
 #include "mapobject.h"
+#include "newsbutton.h"
 #include "objectgroup.h"
+#include "objecttemplate.h"
 #include "preferences.h"
 #include "propertiesdock.h"
+#include "templatesdock.h"
 #include "terrain.h"
 #include "terraindock.h"
 #include "tile.h"
@@ -45,6 +48,7 @@
 #include "tilesetmodel.h"
 #include "tilesetterrainmodel.h"
 #include "tilesetview.h"
+#include "toolmanager.h"
 #include "undodock.h"
 #include "utils.h"
 #include "wangcolorview.h"
@@ -58,6 +62,7 @@
 #include <QDropEvent>
 #include <QFileDialog>
 #include <QFileInfo>
+#include <QLabel>
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QMimeData>
@@ -167,13 +172,17 @@ TilesetEditor::TilesetEditor(QObject *parent)
     , mUndoDock(new UndoDock(mMainWindow))
     , mTerrainDock(new TerrainDock(mMainWindow))
     , mTileCollisionDock(new TileCollisionDock(mMainWindow))
+    , mTemplatesDock(new TemplatesDock(mMainWindow))
     , mWangDock(new WangDock(mMainWindow))
     , mZoomComboBox(new QComboBox)
+    , mStatusInfoLabel(new QLabel)
     , mTileAnimationEditor(new TileAnimationEditor(mMainWindow))
     , mCurrentTilesetDocument(nullptr)
     , mCurrentTile(nullptr)
 {
+#if QT_VERSION >= 0x050600
     mMainWindow->setDockOptions(mMainWindow->dockOptions() | QMainWindow::GroupedDragging);
+#endif
     mMainWindow->setDockNestingEnabled(true);
     mMainWindow->setCentralWidget(mWidgetStack);
 
@@ -207,6 +216,10 @@ TilesetEditor::TilesetEditor(QObject *parent)
     mTilesetToolBar->addAction(mShowAnimationEditor);
 
     mMainWindow->statusBar()->addPermanentWidget(mZoomComboBox);
+    mMainWindow->statusBar()->addPermanentWidget(new NewsButton);
+    mMainWindow->statusBar()->addWidget(mStatusInfoLabel);
+
+    mTemplatesDock->setPropertiesDock(mPropertiesDock);
 
     resetLayout();
 
@@ -236,10 +249,9 @@ TilesetEditor::TilesetEditor(QObject *parent)
     connect(mWangDock->wangColorView(), &WangColorView::wangColorColorPicked,
             this, &TilesetEditor::setWangColorColor);
 
-    connect(this, &TilesetEditor::currentTileChanged,
-            mTileAnimationEditor, &TileAnimationEditor::setTile);
-    connect(this, &TilesetEditor::currentTileChanged,
-            mTileCollisionDock, &TileCollisionDock::setTile);
+    connect(this, &TilesetEditor::currentTileChanged, mTileAnimationEditor, &TileAnimationEditor::setTile);
+    connect(this, &TilesetEditor::currentTileChanged, mTileCollisionDock, &TileCollisionDock::setTile);
+    connect(this, &TilesetEditor::currentTileChanged, mTemplatesDock, &TemplatesDock::setTile);
 
     connect(mTileCollisionDock, &TileCollisionDock::dummyMapDocumentChanged,
             this, [this]() {
@@ -247,8 +259,13 @@ TilesetEditor::TilesetEditor(QObject *parent)
     });
     connect(mTileCollisionDock, &TileCollisionDock::hasSelectedObjectsChanged,
             this, &TilesetEditor::hasSelectedCollisionObjectsChanged);
+    connect(mTileCollisionDock, &TileCollisionDock::statusInfoChanged,
+            mStatusInfoLabel, &QLabel::setText);
     connect(mTileCollisionDock, &TileCollisionDock::visibilityChanged,
             this, &Editor::enabledStandardActionsChanged);
+
+    connect(mTemplatesDock, &TemplatesDock::currentTemplateChanged,
+            mTileCollisionDock->toolManager(), &ToolManager::setObjectTemplate);
 
     connect(TilesetManager::instance(), &TilesetManager::tilesetImagesChanged,
             this, &TilesetEditor::updateTilesetView);
@@ -468,6 +485,8 @@ void TilesetEditor::resetLayout()
 
     mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mPropertiesDock);
     mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mUndoDock);
+    mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mTemplatesDock);
+    mMainWindow->tabifyDockWidget(mUndoDock, mTemplatesDock);
 
     mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mTerrainDock);
     mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mTileCollisionDock);
@@ -716,19 +735,34 @@ static void removeTileReferences(MapDocument *mapDocument,
     QUndoStack *undoStack = mapDocument->undoStack();
     undoStack->beginMacro(QCoreApplication::translate("Undo Commands", "Remove Tiles"));
 
-    for (Layer *layer : mapDocument->map()->layers()) {
-        if (TileLayer *tileLayer = layer->asTileLayer()) {
+    QList<MapObject*> objectsToRemove;
+
+    LayerIterator it(mapDocument->map());
+    while (Layer *layer = it.next()) {
+        switch (layer->layerType()) {
+        case Layer::TileLayerType: {
+            auto tileLayer = static_cast<TileLayer*>(layer);
             const QRegion refs = tileLayer->region(condition);
             if (!refs.isEmpty())
                 undoStack->push(new EraseTiles(mapDocument, tileLayer, refs));
-
-        } else if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
+            break;
+        }
+        case Layer::ObjectGroupType: {
+            auto objectGroup = static_cast<ObjectGroup*>(layer);
             for (MapObject *object : *objectGroup) {
                 if (condition(object->cell()))
-                    undoStack->push(new RemoveMapObject(mapDocument, object));
+                    objectsToRemove.append(object);
             }
+            break;
+        }
+        case Layer::ImageLayerType:
+        case Layer::GroupLayerType:
+            break;
         }
     }
+
+    if (!objectsToRemove.isEmpty())
+        undoStack->push(new RemoveMapObjects(mapDocument, objectsToRemove));
 
     undoStack->endMacro();
 }
@@ -975,24 +1009,24 @@ void TilesetEditor::setWangSetImage(Tile *tile)
         return;
 
     mCurrentTilesetDocument->undoStack()->push(new SetWangSetImage(mCurrentTilesetDocument,
-                                                                   mCurrentTilesetDocument->tileset()->wangSets().indexOf(wangSet),
+                                                                   wangSet,
                                                                    tile->id()));
 }
 
 void TilesetEditor::setWangColorImage(Tile *tile, bool isEdge, int index)
 {
-    mCurrentTilesetDocument->undoStack()->push(new ChangeWangColorImage(tile->id(),
-                                                                        index,
-                                                                        isEdge,
-                                                                        mWangDock->wangColorModel()));
+    WangSet *wangSet = mWangDock->currentWangSet();
+    WangColor *wangColor = isEdge ? wangSet->edgeColorAt(index).data() : wangSet->cornerColorAt(index).data();
+    mCurrentTilesetDocument->undoStack()->push(new ChangeWangColorImage(mCurrentTilesetDocument,
+                                                                        wangColor,
+                                                                        tile->id()));
 }
 
-void TilesetEditor::setWangColorColor(const QColor &color, bool isEdge, int index)
+void TilesetEditor::setWangColorColor(WangColor *wangColor, const QColor &color)
 {
-    mCurrentTilesetDocument->undoStack()->push(new ChangeWangColorColor(color,
-                                                                        index,
-                                                                        isEdge,
-                                                                        mWangDock->wangColorModel()));
+    mCurrentTilesetDocument->undoStack()->push(new ChangeWangColorColor(mCurrentTilesetDocument,
+                                                                        wangColor,
+                                                                        color));
 }
 
 void TilesetEditor::onAnimationEditorClosed()

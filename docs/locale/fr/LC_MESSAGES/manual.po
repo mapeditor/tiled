@@ -6,28 +6,32 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Tiled 1.0\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: bjorn@lindeijer.nl\n"
 "POT-Creation-Date: 2017-12-21 14:31+0100\n"
-"PO-Revision-Date: 2017-12-13 08:53+0000\n"
+"PO-Revision-Date: 2018-09-04 16:18+0000\n"
 "Last-Translator: Rhenaud Dubois <rhen33390@gmail.com>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/tiled/manual/fr/>"
+"\n"
 "Language: fr\n"
-"Language-Team: French "
-"<https://hosted.weblate.org/projects/tiled/manual/fr/>\n"
-"Plural-Forms: nplurals=2; plural=n > 1\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 3.2-dev\n"
 "Generated-By: Babel 2.5.1\n"
 
 #: ../../manual/automapping.rst:3
+#, fuzzy
 msgid "Automapping"
-msgstr ""
+msgstr "Automapping"
 
 #: ../../manual/automapping.rst:6
+#, fuzzy
 msgid "What is Automapping?"
-msgstr ""
+msgstr "Qu'est-ce que l'Automapping ?"
 
 #: ../../manual/automapping.rst:8
+#, fuzzy
 msgid ""
 "Automapping is an advanced tool to automatically search certain "
 "combinations of tiles across layers in a map and to replace these parts "
@@ -36,32 +40,47 @@ msgid ""
 "rather complex scenario, which would need lots more time if manually "
 "crafted."
 msgstr ""
+"L'Automapping est un outil avancé permettant de rechercher certaines "
+"combinaisons de tuiles dans les couches d'une carte et de remplacer ces "
+"parties par d'autres combinaisons de tuiles. Cela permet à l'utilisateur de "
+"déssiner les structures avec un gain de temps significatif car l'Automapping "
+"sera capable de générer des scénarios complexes, qui requièrerait bien plus "
+"de temps s'il avait été créés manuellement."
 
 #: ../../manual/automapping.rst:15
+#, fuzzy
 msgid ""
 "So the goal of Automapping is that you only need to draw within one layer"
 " and everything else is setup for you. This brings some advantages:"
 msgstr ""
+"Donc le but de l'Automapping est que vous n'avez qu'à dessiner que dans un "
+"seul calque puis tout sera créé pour vous. Cela apporte quelques avantages :"
 
 #: ../../manual/automapping.rst:18
 msgid "**Working speed** - you need less time to setup a map."
-msgstr ""
+msgstr "**Vitesse de travail** - moins de temps requis pour créer une carte."
 
 #: ../../manual/automapping.rst:19
 msgid ""
 "**Less errors** - the main reason is to reduce the error rate. If you "
 "have setup the rules properly, there is no hidden error."
 msgstr ""
+"** Moins d'erreurs** - le but principal est de réduire la quantité "
+"d'erreurs. Si les règles ont été créées convenablement, il n'y a aucune "
+"erreur cachée."
 
 #: ../../manual/automapping.rst:23
 msgid "External Links"
-msgstr ""
+msgstr "Liens Externes"
 
 #: ../../manual/automapping.rst:25
+#, fuzzy
 msgid ""
 "`Automapping explained for Tiled 0.9 and later (YouTube) "
 "<http://www.youtube.com/watch?v=UUi0lD1pxyQ>`__"
 msgstr ""
+"`L'Automapping expliqué pour Tiled 0.9 et versions ultérieures (YouTube) "
+"<http://www.youtube.com/watch?v=UUi0lD1pxyQ>`__"
 
 #: ../../manual/automapping.rst:26
 #, fuzzy
@@ -69,18 +88,20 @@ msgid ""
 "`Examples on Automapping "
 "<https://github.com/stefanbeller/tiled_examples>`__"
 msgstr ""
-"``A`` - Lance la `Cartographie Automatique "
-"<https://github.com/bjorn/tiled/wiki/Automapping>`"
+"`Examples d'Automapping <https://github.com/stefanbeller/tiled_examples>`__"
 
 #: ../../manual/automapping.rst:27
+#, fuzzy
 msgid ""
 "`Tiled Map Editor Tutorial Part Three: AutoMap (YouTube) "
 "<https://youtu.be/A_A6rz7cvG4>`__"
 msgstr ""
+"`Troisième Partie du Tutoriel sur l'Éditeur de Carte Tiled : AutoMap "
+"(YouTube) <https://youtu.be/A_A6rz7cvG4>`__"
 
 #: ../../manual/automapping.rst:31
 msgid "Setting it Up"
-msgstr ""
+msgstr "Mise en Place"
 
 #: ../../manual/automapping.rst:33
 msgid ""
@@ -88,58 +109,76 @@ msgid ""
 "the folder where the current map is located. Each line in this text file "
 "is either"
 msgstr ""
+"La fonctionnalité d'Automapping cherche un fichier texte nommé 'rules.txt' "
+"dans le dossier contenant la carte en cours d'édition. Chaque line dans ce "
+"fichier texte est soit"
 
 #: ../../manual/automapping.rst:37
 msgid "a path to a **rulefile**"
-msgstr ""
+msgstr "un chemin vers un **fichier de règles**"
 
 #: ../../manual/automapping.rst:38
 msgid ""
 "or a path to another textfile which has the same syntax (i.e. in another "
 "directory)"
 msgstr ""
+"ou un chemin vers un autre fichier texte qui a la même syntaxe (ex. dans un "
+"autre dossier)"
 
 #: ../../manual/automapping.rst:40
 msgid "or is a comment which is indicated by **#** or **//**"
-msgstr ""
+msgstr "ou un commentaire qui est indiqué par **#** ou **//**"
 
 #: ../../manual/automapping.rst:42
 msgid ""
 "A **rulefile** is a standard map file, which can be read and written by "
 "tiled (\\*.tmx). In one rulefile there can be defined multiple rules."
 msgstr ""
+"Un **fichier de règles** est un fichier de carte standard, qui peut être lu "
+"et écrit par Tiled (\\*.tmx). Il peut y avoir plusieurs règles dans un "
+"fichier de règles."
 
 #: ../../manual/automapping.rst:45
 msgid "An automapping **rulefile** consists of 4 major parts:"
-msgstr ""
+msgstr "Un **fichier de règles** d'automapping consiste en 4 parties majeures :"
 
 #: ../../manual/automapping.rst:47
+#, fuzzy
 msgid ""
 "The definition of regions describes which locations of the rulemap are "
 "actually used to create Automapping rules."
 msgstr ""
+"La définition des régions décrit quelles parties de la carte de règles "
+"seront utilisées pour créer les règles d'Automapping."
 
 #: ../../manual/automapping.rst:49
 msgid ""
 "The definition of inputs describes which kind of pattern the working map "
 "will be searched for."
 msgstr ""
+"La définition des entrées décrit quels types de modèles la carte de travail "
+"cherchera."
 
 #: ../../manual/automapping.rst:51
 msgid ""
 "The definition of outputs describes how the working map is changed when "
 "an input pattern is found."
 msgstr ""
+"La définition des sorties décrit de quelle manière la carte de travail sera "
+"changée lorsqu'un modèle d'entrée a été trouvé."
 
 #: ../../manual/automapping.rst:53
 msgid ""
 "The map properties are used to fine-tune the input pattern localization "
 "and the output of all rules within this rules file."
 msgstr ""
+"Les propriétés de carte sont utilisées pour affiner la localisation des "
+"modèles d'entrée et la sortie de toutes les règles comprises dans ce fichier "
+"de règles."
 
 #: ../../manual/automapping.rst:57
 msgid "Defining the Regions"
-msgstr ""
+msgstr "Définir les Régions"
 
 #: ../../manual/automapping.rst:59
 msgid ""
@@ -5161,4 +5200,3 @@ msgstr ""
 #~ "complicated way of automatic tile "
 #~ "placement, check out [[Automapping]]."
 #~ msgstr ""
-

@@ -27,12 +27,15 @@
 #include "brushitem.h"
 #include "tilepainter.h"
 #include "tile.h"
+#include "tilelayer.h"
 #include "mapdocument.h"
 #include "painttilelayer.h"
 #include "staggeredrenderer.h"
 #include "stampactions.h"
 
 #include <QApplication>
+
+#include <memory>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -44,6 +47,7 @@ BucketFillTool::BucketFillTool(QObject *parent)
                            QKeySequence(tr("F")),
                            nullptr,
                            parent)
+    , mLastFillMethod(mFillMethod)
 {
 }
 
@@ -91,13 +95,15 @@ void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
             // If not holding shift, a region is computed from the current pos
             bool computeRegion = true;
 
-            // If the stamp is a single tile, ignore that tile when making the region
+            // If the stamp is a single layer with a single tile, ignore that tile when making the region
             if (mFillMethod != WangFill && mStamp.variations().size() == 1) {
                 const TileStampVariation &variation = mStamp.variations().first();
-                TileLayer *stampLayer = variation.tileLayer();
-                if (stampLayer->size() == QSize(1, 1) &&
-                        stampLayer->cellAt(0, 0) == regionComputer.cellAt(tilePos))
-                    computeRegion = false;
+                if (variation.map->layerCount() == 1) {
+                    auto stampLayer = static_cast<TileLayer*>(variation.map->layerAt(0));
+                    if (stampLayer->size() == QSize(1, 1) &&
+                            stampLayer->cellAt(0, 0) == regionComputer.cellAt(tilePos))
+                        computeRegion = false;
+                }
             }
 
             if (computeRegion)
@@ -126,39 +132,13 @@ void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
         fillRegionChanged = true;
     }
 
-    if (!mFillOverlay) {
-        // Create a new overlay region
-        const QRect fillBounds = mFillRegion.boundingRect();
-        mFillOverlay = SharedTileLayer::create(QString(),
-                                               fillBounds.x(),
-                                               fillBounds.y(),
-                                               fillBounds.width(),
-                                               fillBounds.height());
-    }
+    bool hasRandom = mFillMethod == RandomFill || mFillMethod == WangFill;
+    if (mFillMethod == TileFill)
+        hasRandom = mStamp.variations().size() > 1;
 
-    // Paint the new overlay
-    switch (mFillMethod) {
-    case TileFill:
-        if (fillRegionChanged || mStamp.variations().size() > 1) {
-            fillWithStamp(*mFillOverlay, mStamp,
-                          mFillRegion.translated(-mFillOverlay->position()));
-            fillRegionChanged = true;
-        }
-        break;
-    case RandomFill:
-        randomFill(*mFillOverlay, mFillRegion);
-        fillRegionChanged = true;
-        break;
-    case WangFill:
-        wangFill(*mFillOverlay, *tileLayer, mFillRegion);
-        fillRegionChanged = true;
-        break;
-    }
+    if (fillRegionChanged || hasRandom)
+        updatePreview(mFillRegion);
 
-    if (fillRegionChanged) {
-        // Update the brush item to draw the overlay
-        brushItem()->setTileLayer(mFillOverlay);
-    }
     // Create connections to know when the overlay should be cleared
     makeConnections();
 }
@@ -169,44 +149,26 @@ void BucketFillTool::mousePressed(QGraphicsSceneMouseEvent *event)
     if (event->isAccepted())
         return;
 
-    if (event->button() != Qt::LeftButton || mFillRegion.isEmpty())
+    if (event->button() != Qt::LeftButton)
+        return;
+    if (mFillRegion.isEmpty())
         return;
     if (!brushItem()->isVisible())
         return;
 
-    if (!currentTileLayer()->isUnlocked())
-        return;
-
-    const TileLayer *preview = mFillOverlay.data();
+    auto preview = mPreviewMap;
     if (!preview)
         return;
 
-    PaintTileLayer *paint = new PaintTileLayer(mapDocument(),
-                                               currentTileLayer(),
-                                               preview->x(),
-                                               preview->y(),
-                                               preview);
-
-    paint->setText(QCoreApplication::translate("Undo Commands", "Fill Area"));
-
-    if (!mMissingTilesets.isEmpty()) {
-        for (const SharedTileset &tileset : mMissingTilesets) {
-            if (!mapDocument()->map()->tilesets().contains(tileset))
-                new AddTileset(mapDocument(), tileset, paint);
-        }
-
-        mMissingTilesets.clear();
-    }
-
-    QRegion fillRegion(mFillRegion);
-    mapDocument()->undoStack()->push(paint);
-    emit mapDocument()->regionEdited(fillRegion, currentTileLayer());
+    mapDocument()->undoStack()->beginMacro(QCoreApplication::translate("Undo Commands", "Fill Area"));
+    mapDocument()->paintTileLayers(preview.data(), false, &mMissingTilesets);
+    mapDocument()->undoStack()->endMacro();
 }
 
 void BucketFillTool::modifiersChanged(Qt::KeyboardModifiers)
 {
     // Don't need to recalculate fill region if there was no fill region
-    if (!mFillOverlay)
+    if (!mPreviewMap)
         return;
 
     tilePositionChanged(tilePosition());
@@ -227,6 +189,7 @@ void BucketFillTool::clearOverlay()
     clearConnections(mapDocument());
 
     AbstractTileFillTool::clearOverlay();
+    mFillRegion = QRegion();
 }
 
 void BucketFillTool::makeConnections()

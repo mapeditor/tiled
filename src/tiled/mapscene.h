@@ -24,11 +24,11 @@
 #pragma once
 
 #include "mapdocument.h"
+#include "mapitem.h"
 
 #include <QColor>
 #include <QGraphicsScene>
-#include <QMap>
-#include <QSet>
+#include <QHash>
 
 namespace Tiled {
 
@@ -46,7 +46,6 @@ class LayerItem;
 class MapDocument;
 class MapObjectItem;
 class MapScene;
-class MapItem;
 class ObjectGroupItem;
 
 /**
@@ -63,14 +62,14 @@ public:
     MapDocument *mapDocument() const;
     void setMapDocument(MapDocument *map);
 
+    QRectF mapBoundingRect() const;
+
     void enableSelectedTool();
     void disableSelectedTool();
 
     void setSelectedTool(AbstractTool *tool);
 
 protected:
-    void drawForeground(QPainter *painter, const QRectF &rect) override;
-
     bool event(QEvent *event) override;
 
     void keyPressEvent(QKeyEvent *event) override;
@@ -85,17 +84,10 @@ protected:
     void dragMoveEvent(QGraphicsSceneDragDropEvent *event) override;
 
 private slots:
-    void setGridVisible(bool visible);
-
     void refreshScene();
-
-    void currentLayerChanged();
 
     void mapChanged();
     void repaintTileset(Tileset *tileset);
-    void tileLayerChanged(TileLayer *, MapDocument::TileLayerChangeFlags flags);
-
-    void layerChanged(Layer *);
 
     void adaptToTilesetTileSizeChanges();
     void adaptToTileSizeChanges();
@@ -106,13 +98,15 @@ private:
     void updateDefaultBackgroundColor();
     void updateSceneRect();
 
+    MapItem *takeOrCreateMapItem(const MapDocumentPtr &mapDocument,
+                                 MapItem::DisplayMode displayMode);
+
     bool eventFilter(QObject *object, QEvent *event) override;
 
     MapDocument *mMapDocument;
-    MapItem *mMapItem;
+    QHash<MapDocument*, MapItem*> mMapItems;
     AbstractTool *mSelectedTool;
     AbstractTool *mActiveTool;
-    bool mGridVisible;
     bool mUnderMouse;
     Qt::KeyboardModifiers mCurrentModifiers;
     QPointF mLastMousePos;

@@ -96,15 +96,20 @@ protected:
     bool event(QEvent *event) override;
     void contextMenuEvent(QContextMenuEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
+    void selectionChanged(const QItemSelection &selected,
+                          const QItemSelection &deselected) override;
 
 private slots:
     void currentRowChanged(const QModelIndex &proxyIndex);
     void indexPressed(const QModelIndex &proxyIndex);
     void currentLayerChanged(Layer *layer);
+    void selectedLayersChanged();
+    void layerRemoved(Layer *layer);
 
 private:
     MapDocument *mMapDocument;
     QAbstractProxyModel *mProxyModel;
+    bool mUpdatingSelectedLayers;
 };
 
 } // namespace Internal

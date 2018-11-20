@@ -28,7 +28,8 @@ class QTreeView;
 
 namespace Tiled {
 
-class ObjectGroup;
+class Layer;
+class MapObject;
 
 namespace Internal {
 
@@ -72,7 +73,7 @@ private:
 
     ObjectsView *mObjectsView;
     MapDocument *mMapDocument;
-    QMap<MapDocument*, QList<ObjectGroup*> > mExpandedGroups;
+    QMap<MapDocument*, QList<Layer*> > mExpandedGroups;
     QMenu *mMoveToMenu;
 };
 
@@ -91,21 +92,30 @@ public:
 
 protected:
     bool event(QEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    bool viewportEvent(QEvent *event) override;
     void selectionChanged(const QItemSelection &selected,
                           const QItemSelection &deselected) override;
 
+    void drawRow(QPainter *painter,
+                 const QStyleOptionViewItem &option,
+                 const QModelIndex &index) const override;
+
 private slots:
-    void onPressed(const QModelIndex &proxyIndex);
     void onActivated(const QModelIndex &proxyIndex);
     void onSectionResized(int logicalIndex);
     void selectedObjectsChanged();
+    void hoveredObjectChanged(MapObject *object, MapObject *previous);
     void setColumnVisibility(bool visible);
 
-    void showCustomMenu(const QPoint &point);
+    void showCustomHeaderContextMenu(const QPoint &point);
 
 private:
-    void restoreVisibleSections();
+    void restoreVisibleColumns();
     void synchronizeSelectedItems();
+
+    void updateRow(MapObject *object);
 
     MapDocument *mMapDocument;
     QAbstractProxyModel *mProxyModel;

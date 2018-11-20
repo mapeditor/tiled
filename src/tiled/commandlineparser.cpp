@@ -24,6 +24,8 @@
 #include <QDebug>
 #include <QFileInfo>
 
+#include "qtcompat_p.h"
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
@@ -146,7 +148,7 @@ bool CommandLineParser::handleLongOption(const QString &longName)
         return true;
     }
 
-    foreach (const Option &option, mOptions) {
+    for (const Option &option : qAsConst(mOptions)) {
         if (longName == option.longName) {
             option.callback(option.data);
             return true;
@@ -163,7 +165,7 @@ bool CommandLineParser::handleShortOption(QChar c)
         return true;
     }
 
-    foreach (const Option &option, mOptions) {
+    for (const Option &option : qAsConst(mOptions)) {
         if (c == option.shortName) {
             option.callback(option.data);
             return true;

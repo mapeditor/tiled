@@ -101,7 +101,7 @@ object you'd like to avoid interacting with.
 
 .. raw:: html
 
-   <div class="new new-prev">New in Tiled 1.0</div>
+   <div class="new new-prev">Since Tiled 1.0</div>
 
 Group Layers
 ------------

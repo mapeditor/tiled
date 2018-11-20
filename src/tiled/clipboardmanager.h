@@ -55,7 +55,7 @@ public:
     Properties properties() const;
     void setProperties(const Properties &properties);
 
-    void copySelection(const MapDocument *mapDocument);
+    bool copySelection(const MapDocument &mapDocument);
 
     enum PasteFlag {
         PasteDefault        = 0x0,

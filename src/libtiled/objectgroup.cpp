@@ -159,19 +159,24 @@ void ObjectGroup::offsetObjects(const QPointF &offset,
                                 const QRectF &bounds,
                                 bool wrapX, bool wrapY)
 {
+    if (offset.isNull())
+        return;
+
+    const bool boundsValid = bounds.isValid();
+
     for (MapObject *object : mObjects) {
         const QPointF objectCenter = object->bounds().center();
-        if (!bounds.contains(objectCenter))
+        if (boundsValid && !bounds.contains(objectCenter))
             continue;
 
         QPointF newCenter(objectCenter + offset);
 
-        if (wrapX && bounds.width() > 0) {
+        if (wrapX && boundsValid) {
             qreal nx = std::fmod(newCenter.x() - bounds.left(), bounds.width());
             newCenter.setX(bounds.left() + (nx < 0 ? bounds.width() + nx : nx));
         }
 
-        if (wrapY && bounds.height() > 0) {
+        if (wrapY && boundsValid) {
             qreal ny = std::fmod(newCenter.y() - bounds.top(), bounds.height());
             newCenter.setY(bounds.top() + (ny < 0 ? bounds.height() + ny : ny));
         }
@@ -180,16 +185,16 @@ void ObjectGroup::offsetObjects(const QPointF &offset,
     }
 }
 
-bool ObjectGroup::canMergeWith(Layer *other) const
+bool ObjectGroup::canMergeWith(const Layer *other) const
 {
     return other->isObjectGroup();
 }
 
-Layer *ObjectGroup::mergedWith(Layer *other) const
+Layer *ObjectGroup::mergedWith(const Layer *other) const
 {
     Q_ASSERT(canMergeWith(other));
 
-    const ObjectGroup *og = static_cast<ObjectGroup*>(other);
+    const ObjectGroup *og = static_cast<const ObjectGroup*>(other);
 
     ObjectGroup *merged = clone();
     for (const MapObject *mapObject : og->objects())

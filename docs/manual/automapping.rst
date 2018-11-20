@@ -7,17 +7,16 @@ What is Automapping?
 
 Automapping is an advanced tool to automatically search certain
 combinations of tiles across layers in a map and to replace these parts
-by other combination. This allows the user to draw structures with a
-minimum of time spent and the Automapping will be able to generate a
-rather complex scenario, which would need lots more time if manually
-crafted.
+with another combination. This allows the user to draw structures quickly
+and Automapping will generate a complex scenario from them, which would have
+taken much more time if manually crafted.
 
-So the goal of Automapping is that you only need to draw within one
+The goal of Automapping is that you only need to draw within one
 layer and everything else is setup for you. This brings some advantages:
 
 -  **Working speed** - you need less time to setup a map.
 -  **Less errors** - the main reason is to reduce the error rate. If you
-   have setup the rules properly, there is no hidden error.
+   have setup the rules properly, there are no hidden errors.
 
 External Links
 --------------
@@ -30,7 +29,7 @@ External Links
 Setting it Up
 =============
 
-The Automapping feature is looking for a text file called 'rules.txt' in
+The Automapping feature looks for a text file called 'rules.txt' in
 the folder where the current map is located. Each line in this text file
 is either
 
@@ -40,7 +39,7 @@ is either
 -  or is a comment which is indicated by **#** or **//**
 
 A **rulefile** is a standard map file, which can be read and written by
-tiled (\*.tmx). In one rulefile there can be defined multiple rules.
+tiled (\*.tmx). In one rulefile there can be multiple defined rules.
 
 An automapping **rulefile** consists of 4 major parts:
 
@@ -56,13 +55,13 @@ An automapping **rulefile** consists of 4 major parts:
 Defining the Regions
 --------------------
 
-There must be either a tile layer called **regions** or there must be the
+There must be either a tile layer called **regions** or there must be
 both tile layers **regions\_input** and **regions\_output**. Using the
 **regions** layer, the region defined for input and output is the same.
 Using the different layers **regions\_input** and **regions\_output**
 delivers the possibility to have different regions for the input section
 and the output section. The region layer(s) are only used to mark
-regions, where an Automapping rule exists. Therefore it does not matter
+regions where an Automapping rule exists. Therefore, it does not matter
 which tiles are used in this layer, since these tiles are just used to
 define a region. So either use any tile or no tile at a coordinate to
 indicate if that coordinate belongs to a rule or if it doesn't.
@@ -75,14 +74,14 @@ regions are interpreted as one rule.
 Multiple Rules in One Rulefile
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Of course multiple rules are possible in one rulemap. If you want to
+Multiple rules are possible in one rulemap. However, if you want to
 have the rules applied in a certain sequence, you should use multiple
 **rulefiles** and define the sequence within the **rules.txt** file. As
 of now there also is a certain sequence within one rulemapfile.
 Generally speaking the regions with small y value come first. If there
 are regions at the same y value, then the x value is taken into account.
 On orthogonal maps this ordering scheme is the same as for reading in
-most western countries. (Left to right, top to down). The order within
+most western countries (Left to right, top to bottom). The order within
 one rulemap may be changed later, once tiled is capable of utilizing
 multiple threads/processors. So if you want to rely on a certain
 sequence, use different rulemaps and order these in the rules.txt
@@ -127,7 +126,7 @@ or as fuzzy as you need.
 Definition of Outputs
 ---------------------
 
-Outputs are generally defined by layers whichs name follows this scheme
+Outputs are generally defined by layers whichs name follows this scheme:
 
 **output[index]\_name**
 
@@ -149,15 +148,15 @@ distributed) across all indexes. So a dice will be rolled and one index
 is picked. All of the output layers carrying this index will be put out
 into the working map then.
 
-Note that the output is not being checked for overlapping itself. This
+Note that the output is not being checked for overlapping on itself. This
 can be achieved by setting the map property **NoOverlappingRules** to
 true.
 
 Map Properties
 --------------
 
-There are three different map properties, which can be used to add
-additional information to a **rulefile**:
+The following map properties can be used to customize the behavior of
+the rules in a **rulefile**:
 
 DeleteTiles
    This map property is a boolean property: it can be
@@ -175,12 +174,26 @@ AutomappingRadius
    determines how many tiles around your changes will be checked as well
    for redoing the Automapping at live Automapping.
 
+.. raw:: html
+
+   <div class="new">New in Tiled 1.2</div>
+
+MatchOutsideMap
+   This map property determines whether rules can match even when their input
+   region falls partially outside of a map. By default it is ``false`` for
+   bounded maps and ``true`` for infinite maps. In some cases it can be useful
+   to enable this also for bounded maps. Tiles outside of the map boundaries
+   are simply considered empty.
+
+   Tiled 1.0 and 1.1 behaved as if this property was ``true``, whereas older
+   versions of Tiled have behaved as if this property was ``false``.
+
 NoOverlappingRules
    This map property is a boolean property:
    A rule is not allowed to overlap on itself.
 
 These properties are map wide, meaning it applies to all rules which are
-part of the rulemap. If you need rules with different properties, you
+part of the rulemap. If you need rules with different properties you
 can use multiple rulemaps.
 
 Layer Properties
@@ -339,7 +352,7 @@ implement the shoreline, which has grass in southern and water in
 northern direction.
 
 So basically the meaning we will define in the input region is: *All
-tiles which are south of a water tile and are no water tiles itself,
+tiles which are south of a water tile and are not water tiles themselves,
 will be replaced by a shoreline tile*
 
 +-----------------------------------------------------------+------------------+
@@ -393,7 +406,7 @@ rulefile. (which is listed afterwards in rules.txt)
 +-----------------------------------------------------------+-----------------------------------------------------------+-----------------------------------------------------------+
 
 The shoreline may have some more corners nearby, which means there may
-be more different tiles than the straigt corner lines. In the figure we
+be more different tiles than the straight corner lines. In the figure we
 see all inputs which should be covered.
 
 Both the tiles in the top right corner and in the lower left corner are
@@ -410,7 +423,7 @@ regions
 ^^^^^^^
 
 So with this rule we want to put the bent in shore line tile in the top
-left corner, hence we don't care which tile has been there before. Also
+left corner, we don't care which tile was there before. Also
 we don't care about the tile in the lower right corner. (probably water,
 but can be any decorative watertile, so just ignore it).
 
@@ -438,9 +451,9 @@ Now we want to put all the nine possible patterns we observed as
 possible input for this rule. We could of course define nine different
 layers *input1\_Ground* up to *input9\_Ground*
 
-Nine TileLayers?! what a mess, we'll put it in a better way.
+Nine TileLayers?! what a mess, we'll do it a better way.
 
-Also consider not having just 3 possible tiles at the 2 locations but 4.
+Also, consider having not just 3 possible tiles at the 2 locations but 4.
 Then we would need 4\*4=16 tilelayers to get all conditions. Another
 downside of this comes with more needed locations: Think of more than 2
 locations needed to construct a ruleinput. So for 3 locations, then each
@@ -499,8 +512,8 @@ Adding Collision Tiles
 ~~~~~~~~~~~~~~~~~~~~~~
 
 The Mana World uses an extra tile layer called *Collision* to have
-information about whether a player is able to walk at certain tiles or
-if it is not. That layer is invisible to the player, but the game engine
+information about whether a player is able to walk on certain tiles or
+not. That layer is invisible to the player, but the game engine
 parses it, whether there is a tile or there is no tile.
 
 So we need to decide for each position if a player can walk there and
@@ -539,7 +552,7 @@ not marked by a collision any more. This can be done by adding the map
 property *DeleteTiles* and setting it to *yes* or *true*. Then all the
 parts in the *Collision* layer will be erased before the Automapping
 takes place, so the collision tiles are only placed at real unwalkable
-tiles and the history if there has been a collision place is neglected.
+tiles and the history of if there has been a collision tile placed is neglected.
 
 Random Grass Tiles
 ~~~~~~~~~~~~~~~~~~
@@ -555,7 +568,7 @@ As output we will also put each grass tile into one output layer. To
 make it random the *index* of the output layers needs to be different
 for each layer.
 
-The following rule might look always the same, but there are different
+The following rule might look the same, but there are different
 grass tiles. Each grass tile is in both one of the input and one of the
 output layers (the order of the layers doesn't matter).
 
@@ -630,7 +643,7 @@ The input layer has the following meaning:
 the 3x2 tiles above here are no brown tiles, this rule matches.*
 
 Only the lowest 2 coordinates contain the brown tile. The upper
-coordinates contains no tile. (It is not an invisible tile, just no tile
+coordinates contain no tile. (It is not an invisible tile, just no tile
 at all.) The input layer called *Input\_set* is depicted in the middle
 of the figure.
 
@@ -644,14 +657,14 @@ contains the actual wall tiles.
 
 .. figure:: images/automapping/LoneCoder/firstattempt.png
 
-   A broken version of the rule, *NoOverlappingRules* was not yet set.
+   A broken version of the rule, because *NoOverlappingRules* was not yet set.
 
 When trying to match the input layer to the desired set layer (right
 picture of the figure at the beginning of the example, you will see it
-matches all way long, no matter of the vertical adjustment.
+matches all the way along, with no regard of the vertical adjustment.
 
 Hence when we use the rule as discussed now, we will get not the desired
-result, but this rule overlaps itself. The overlapping problem is shown
+result, because this rule overlaps itself. The overlapping problem is shown
 in figure above.
 
 Since the overlapping is not desired, we can turn it off by adding a map

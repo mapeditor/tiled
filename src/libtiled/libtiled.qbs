@@ -4,7 +4,7 @@ DynamicLibrary {
     targetName: "tiled"
 
     Depends { name: "cpp" }
-    Depends { name: "Qt"; submodules: "gui"; versionAtLeast: "5.6" }
+    Depends { name: "Qt"; submodules: "gui"; versionAtLeast: "5.5" }
 
     Properties {
         condition: !qbs.toolchain.contains("msvc")
@@ -44,6 +44,8 @@ DynamicLibrary {
         "hex.h",
         "hexagonalrenderer.cpp",
         "hexagonalrenderer.h",
+        "imagecache.cpp",
+        "imagecache.h",
         "imagelayer.cpp",
         "imagelayer.h",
         "imagereference.cpp",
@@ -110,6 +112,8 @@ DynamicLibrary {
         "varianttomapconverter.h",
         "wangset.cpp",
         "wangset.h",
+        "worldmanager.cpp",
+        "worldmanager.h",
     ]
 
     Group {

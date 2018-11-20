@@ -24,23 +24,17 @@
 
 #include "mapdocument.h"
 #include "mapobject.h"
-#include "mapobjectmodel.h"
 #include "maprenderer.h"
 #include "mapscene.h"
 #include "mapview.h"
 #include "objectgroup.h"
 #include "objectgroupitem.h"
 #include "preferences.h"
-#include "resizemapobject.h"
 #include "tile.h"
+#include "utils.h"
 #include "zoomable.h"
 
-#include <QApplication>
-#include <QGraphicsSceneMouseEvent>
 #include <QPainter>
-#include <QPalette>
-#include <QStyleOptionGraphicsItem>
-#include <QVector2D>
 
 #include <cmath>
 
@@ -48,11 +42,13 @@ using namespace Tiled;
 using namespace Tiled::Internal;
 
 MapObjectItem::MapObjectItem(MapObject *object, MapDocument *mapDocument,
-                             ObjectGroupItem *parent):
+                             QGraphicsItem *parent):
     QGraphicsItem(parent),
     mObject(object),
     mMapDocument(mapDocument)
 {
+    setAcceptedMouseButtons(Qt::MouseButtons());
+    setAcceptHoverEvents(true);
     syncWithMapObject();
 }
 
@@ -61,14 +57,13 @@ void MapObjectItem::syncWithMapObject()
     const QColor color = objectColor(mObject);
 
     // Update the whole object when the name, polygon or color has changed
-    if (mName != mObject->name() || mPolygon != mObject->polygon() || mColor != color) {
-        mName = mObject->name();
+    if (mPolygon != mObject->polygon() || mColor != color) {
         mPolygon = mObject->polygon();
         mColor = color;
         update();
     }
 
-    QString toolTip = mName;
+    QString toolTip = mObject->name();
     const QString &type = mObject->type();
     if (!type.isEmpty())
         toolTip += QLatin1String(" (") + type + QLatin1String(")");
@@ -83,9 +78,15 @@ void MapObjectItem::syncWithMapObject()
     setPos(pixelPos);
     setRotation(mObject->rotation());
 
-    if (ObjectGroup *objectGroup = mObject->objectGroup())
+    if (ObjectGroup *objectGroup = mObject->objectGroup()) {
         if (objectGroup->drawOrder() == ObjectGroup::TopDownOrder)
             setZValue(pixelPos.y());
+
+        if (mIsHoveredIndicator) {
+            auto totalOffset = objectGroup->totalOffset();
+            setTransform(QTransform::fromTranslate(totalOffset.x(), totalOffset.y()));
+        }
+    }
 
     if (mBoundingRect != bounds) {
         // Notify the graphics scene about the geometry change in advance
@@ -94,6 +95,25 @@ void MapObjectItem::syncWithMapObject()
     }
 
     setVisible(mObject->isVisible());
+}
+
+void MapObjectItem::setIsHoverIndicator(bool isHoverIndicator)
+{
+    if (mIsHoveredIndicator == isHoverIndicator)
+        return;
+
+    mIsHoveredIndicator = isHoverIndicator;
+
+    if (isHoverIndicator) {
+        auto totalOffset = mObject->objectGroup()->totalOffset();
+        setOpacity(0.5);
+        setTransform(QTransform::fromTranslate(totalOffset.x(), totalOffset.y()));
+    } else {
+        setOpacity(1.0);
+        setTransform(QTransform());
+    }
+
+    update();
 }
 
 QRectF MapObjectItem::boundingRect() const
@@ -115,15 +135,42 @@ void MapObjectItem::paint(QPainter *painter,
     qreal scale = static_cast<MapView*>(widget->parent())->zoomable()->scale();
     painter->translate(-pos());
     mMapDocument->renderer()->setPainterScale(scale);
-    mMapDocument->renderer()->drawMapObject(painter, mObject, mColor);
-}
+    mMapDocument->renderer()->drawMapObject(painter, mObject, mIsHoveredIndicator ? mColor.lighter() : mColor);
+    painter->translate(pos());
 
-void MapObjectItem::resizeObject(const QRectF &bounds)
-{
-    // Not using the MapObjectModel because it is used during object creation,
-    // when the object is not actually part of the map yet.
-    mObject->setBounds(bounds);
-    syncWithMapObject();
+    if (mIsHoveredIndicator) {
+        // TODO: Code mostly duplicated in MapObjectOutline
+        const QPointF pixelPos = mMapDocument->renderer()->pixelToScreenCoords(mObject->position());
+        QRectF bounds = mObject->screenBounds(*mMapDocument->renderer());
+        bounds.translate(-pixelPos);
+
+        const QLineF lines[4] = {
+            QLineF(bounds.topLeft(), bounds.topRight()),
+            QLineF(bounds.bottomLeft(), bounds.bottomRight()),
+            QLineF(bounds.topLeft(), bounds.bottomLeft()),
+            QLineF(bounds.topRight(), bounds.bottomRight())
+        };
+
+        // Draw a solid white line
+        QPen pen(Qt::white, 1.0, Qt::SolidLine);
+        pen.setCosmetic(true);
+        painter->setPen(pen);
+        painter->drawLines(lines, 4);
+
+#if QT_VERSION >= 0x050600
+        const qreal devicePixelRatio = painter->device()->devicePixelRatioF();
+#else
+        const int devicePixelRatio = painter->device()->devicePixelRatio();
+#endif
+        const qreal dashLength = std::ceil(Utils::dpiScaled(3) * devicePixelRatio);
+
+        // Draw a black dashed line above the white line
+        pen.setColor(Qt::black);
+        pen.setCapStyle(Qt::FlatCap);
+        pen.setDashPattern({dashLength, dashLength});
+        painter->setPen(pen);
+        painter->drawLines(lines, 4);
+    }
 }
 
 void MapObjectItem::setPolygon(const QPolygonF &polygon)

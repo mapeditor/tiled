@@ -41,7 +41,7 @@ get quoted in JSON and Lua exports.
 
 .. raw:: html
 
-   <div class="new new-prev">New in Tiled 1.0</div>
+   <div class="new new-prev">Since Tiled 1.0</div>
 
 .. _tile-property-inheritance:
 
@@ -95,7 +95,7 @@ engine what kind of object it is dealing with.
 
 .. raw:: html
 
-   <div class="new new-prev">New in Tiled 1.0</div>
+   <div class="new new-prev">Since Tiled 1.0</div>
 
 .. _typed-tiles:
 

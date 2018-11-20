@@ -41,17 +41,16 @@ using namespace Tiled;
 QRect OrthogonalRenderer::mapBoundingRect() const
 {
     if (!map()->infinite()) {
-        return QRect(0, 0, map()->width() * map()->tileWidth(),
+        return QRect(0, 0,
+                     map()->width() * map()->tileWidth(),
                      map()->height() * map()->tileHeight());
     }
 
     QRect mapBounds;
 
-    LayerIterator iterator(map());
-    while (Layer *layer = iterator.next()) {
-        if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer))
-            mapBounds = mapBounds.united(tileLayer->bounds());
-    }
+    LayerIterator iterator(map(), Layer::TileLayerType);
+    while (TileLayer *tileLayer = static_cast<TileLayer*>(iterator.next()))
+        mapBounds = mapBounds.united(tileLayer->bounds());
 
     if (mapBounds.size() == QSize(0, 0))
         mapBounds.setSize(QSize(1, 1));
@@ -343,7 +342,12 @@ void OrthogonalRenderer::drawTileSelection(QPainter *painter,
                                            const QColor &color,
                                            const QRectF &exposed) const
 {
-    foreach (const QRect &r, region.rects()) {
+#if QT_VERSION < 0x050800
+    const auto rects = region.rects();
+    for (const QRect &r : rects) {
+#else
+    for (const QRect &r : region) {
+#endif
         const QRectF toFill = QRectF(boundingRect(r)).intersected(exposed);
         if (!toFill.isEmpty())
             painter->fillRect(toFill, color);

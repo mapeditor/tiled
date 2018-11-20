@@ -95,14 +95,16 @@ protected:
     void mapDocumentChanged(MapDocument *oldDocument,
                             MapDocument *newDocument) override;
 
+    QList<Layer *> targetLayers() const override;
+
 private:
     enum PaintFlags {
-        Mergeable               = 0x1,
-        SuppressRegionEdited    = 0x2
+        Mergeable = 0x1
     };
 
     void beginPaint();
-    QRegion doPaint(int flags = 0);
+    void doPaint(int flags = 0,
+                 QHash<TileLayer *, QRegion> *paintedRegions = nullptr);
 
     void beginCapture();
     void endCapture();
@@ -111,7 +113,7 @@ private:
     void updatePreview(QPoint tilePos);
 
     TileStamp mStamp;
-    SharedTileLayer mPreviewLayer;
+    SharedMap mPreviewMap;
     QVector<SharedTileset> mMissingTilesets;
 
     CaptureStampHelper mCaptureStampHelper;
@@ -153,7 +155,9 @@ private:
     bool mIsWangFill;
     WangSet *mWangSet;
 
+    bool mRandomCacheValid;
     void updateRandomList();
+    void invalidateRandomCache();
 
     StampActions *mStampActions;
 };

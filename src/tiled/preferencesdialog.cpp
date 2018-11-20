@@ -28,6 +28,8 @@
 
 #include <QSortFilterProxyModel>
 
+#include "qtcompat_p.h"
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
@@ -37,7 +39,9 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     , mLanguages(LanguageManager::instance()->availableLanguages())
 {
     mUi->setupUi(this);
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+#endif
 
 #if defined(QT_NO_OPENGL)
     mUi->openGL->setEnabled(false);
@@ -45,7 +49,7 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     mUi->openGL->setEnabled(true);
 #endif
 
-    foreach (const QString &name, mLanguages) {
+    for (const QString &name : qAsConst(mLanguages)) {
         QLocale locale(name);
         QString string = QString(QLatin1String("%1 (%2)"))
             .arg(QLocale::languageToString(locale.language()))
@@ -85,14 +89,24 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     connect(mUi->safeSaving, &QCheckBox::toggled,
             preferences, &Preferences::setSafeSavingEnabled);
 
-    connect(mUi->languageCombo, SIGNAL(currentIndexChanged(int)),
-            SLOT(languageSelected(int)));
-    connect(mUi->gridColor, SIGNAL(colorChanged(QColor)),
-            preferences, SLOT(setGridColor(QColor)));
-    connect(mUi->gridFine, SIGNAL(valueChanged(int)),
-            preferences, SLOT(setGridFine(int)));
-    connect(mUi->objectLineWidth, SIGNAL(valueChanged(double)),
-            preferences, SLOT(setObjectLineWidth(qreal)));
+    connect(mUi->embedTilesets, &QCheckBox::toggled, preferences, [preferences] (bool value) {
+        preferences->setExportOption(Preferences::EmbedTilesets, value);
+    });
+    connect(mUi->detachTemplateInstances, &QCheckBox::toggled, preferences, [preferences] (bool value) {
+        preferences->setExportOption(Preferences::DetachTemplateInstances, value);
+    });
+    connect(mUi->resolveObjectTypesAndProperties, &QCheckBox::toggled, preferences, [preferences] (bool value) {
+        preferences->setExportOption(Preferences::ResolveObjectTypesAndProperties, value);
+    });
+
+    connect(mUi->languageCombo, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+            this, &PreferencesDialog::languageSelected);
+    connect(mUi->gridColor, &ColorButton::colorChanged,
+            preferences, &Preferences::setGridColor);
+    connect(mUi->gridFine, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+            preferences, &Preferences::setGridFine);
+    connect(mUi->objectLineWidth, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+            preferences, &Preferences::setObjectLineWidth);
     connect(mUi->openGL, &QCheckBox::toggled,
             preferences, &Preferences::setUseOpenGL);
     connect(mUi->wheelZoomsByDefault, &QCheckBox::toggled,
@@ -148,6 +162,11 @@ void PreferencesDialog::fromPreferences()
     mUi->enableDtd->setChecked(prefs->dtdEnabled());
     mUi->openLastFiles->setChecked(prefs->openLastFilesOnStartup());
     mUi->safeSaving->setChecked(prefs->safeSavingEnabled());
+
+    mUi->embedTilesets->setChecked(prefs->exportOption(Preferences::EmbedTilesets));
+    mUi->detachTemplateInstances->setChecked(prefs->exportOption(Preferences::DetachTemplateInstances));
+    mUi->resolveObjectTypesAndProperties->setChecked(prefs->exportOption(Preferences::ResolveObjectTypesAndProperties));
+
     if (mUi->openGL->isEnabled())
         mUi->openGL->setChecked(prefs->useOpenGL());
     mUi->wheelZoomsByDefault->setChecked(prefs->wheelZoomsByDefault());

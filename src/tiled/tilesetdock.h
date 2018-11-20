@@ -34,7 +34,6 @@ class QActionGroup;
 class QComboBox;
 class QMenu;
 class QModelIndex;
-class QSignalMapper;
 class QStackedWidget;
 class QTabBar;
 class QToolBar;
@@ -124,7 +123,7 @@ private slots:
     void tileAnimationChanged(Tile *tile);
 
     void removeTileset();
-    void removeTileset(int index);
+    void removeTilesetAt(int index);
 
     void newTileset();
     void editTileset();
@@ -182,7 +181,6 @@ private:
     QToolButton *mTilesetMenuButton;
     QMenu *mTilesetMenu; //opens on click of mTilesetMenu
     QActionGroup *mTilesetActionGroup;
-    QSignalMapper *mTilesetMenuMapper; //needed due to dynamic content
 
     QComboBox *mZoomComboBox;
 

@@ -35,23 +35,14 @@ namespace Internal {
 ObjectTemplateModel::ObjectTemplateModel(QObject *parent):
     QFileSystemModel(parent)
 {
-    QStringList nameFilters;
-
-    for (ObjectTemplateFormat *format : PluginManager::objects<ObjectTemplateFormat>()) {
-        if (!(format->capabilities() & FileFormat::Read))
-            continue;
-
-        const QString filter = format->nameFilter();
-        nameFilters.append(Utils::cleanFilterList(filter));
-    }
-
     setFilter(QDir::AllDirs | QDir::Files | QDir::NoDotAndDotDot);
-    setNameFilters(nameFilters);
     setNameFilterDisables(false); // hide filtered files
-}
+    updateNameFilters();
 
-ObjectTemplateModel::~ObjectTemplateModel()
-{
+    connect(PluginManager::instance(), &PluginManager::objectAdded,
+            this, &ObjectTemplateModel::pluginObjectAddedOrRemoved);
+    connect(PluginManager::instance(), &PluginManager::objectRemoved,
+            this, &ObjectTemplateModel::pluginObjectAddedOrRemoved);
 }
 
 int ObjectTemplateModel::columnCount(const QModelIndex &parent) const
@@ -106,6 +97,28 @@ QMimeData *ObjectTemplateModel::mimeData(const QModelIndexList &indexes) const
 
     mimeData->setData(QLatin1String(TEMPLATES_MIMETYPE), encodedData);
     return mimeData;
+}
+
+void ObjectTemplateModel::pluginObjectAddedOrRemoved(QObject *object)
+{
+    if (auto format = qobject_cast<ObjectTemplateFormat*>(object))
+        if (format->capabilities() & FileFormat::Read)
+            updateNameFilters();
+}
+
+void ObjectTemplateModel::updateNameFilters()
+{
+    QStringList nameFilters;
+
+    for (ObjectTemplateFormat *format : PluginManager::objects<ObjectTemplateFormat>()) {
+        if (!(format->capabilities() & FileFormat::Read))
+            continue;
+
+        const QString filter = format->nameFilter();
+        nameFilters.append(Utils::cleanFilterList(filter));
+    }
+
+    setNameFilters(nameFilters);
 }
 
 } // namespace Internal

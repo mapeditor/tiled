@@ -22,6 +22,7 @@
 
 #include "abstracttiletool.h"
 #include "capturestamphelper.h"
+#include "map.h"
 #include "randompicker.h"
 #include "tilelayer.h"
 #include "tilestamp.h"
@@ -89,8 +90,23 @@ protected:
 
     void tilePositionChanged(const QPoint &tilePos) override;
 
+    QList<Layer *> targetLayers() const override;
+
     virtual void clearConnections(MapDocument *mapDocument) = 0;
 
+    void updatePreview(const QRegion &fillRegion);
+
+    void clearOverlay();
+
+    TileStamp mStamp;
+    SharedMap mPreviewMap;
+    QVector<SharedTileset> mMissingTilesets;
+
+    FillMethod mFillMethod;
+
+    StampActions *mStampActions;
+
+private:
     /**
      * Fills the given \a region in the given \a tileLayer with random tiles.
      */
@@ -100,34 +116,17 @@ protected:
                   const TileLayer &backgroundTileLayer,
                   const QRegion &region) const;
 
-    void fillWithStamp(TileLayer &layer,
+    void fillWithStamp(Map &map,
                        const TileStamp &stamp,
                        const QRegion &mask);
 
-    void clearOverlay();
-
-    TileStamp mStamp;
-    SharedTileLayer mFillOverlay;
-    QRegion mFillRegion;
-    QVector<SharedTileset> mMissingTilesets;
-
-    FillMethod mFillMethod;
-
-    /**
-     * The active fill method during the last call of tilePositionChanged().
-     *
-     * This variable is needed to detect if the fill method was changed during
-     * mFillOverlay being brushed at an area.
-     */
-    FillMethod mLastFillMethod;
-
-    StampActions *mStampActions;
-
-private:
     WangSet *mWangSet;
     RandomPicker<Cell> mRandomCellPicker;
 
     CaptureStampHelper mCaptureStampHelper;
+
+    bool mRandomAndMissingCacheValid;
+    void invalidateRandomAndMissingCache();
 
     /**
      * Updates the list of random cells.

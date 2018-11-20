@@ -30,7 +30,6 @@
 #include "objecttemplate.h"
 
 #include "objecttemplateformat.h"
-#include "tilesetmanager.h"
 
 namespace Tiled {
 
@@ -54,23 +53,23 @@ ObjectTemplate::~ObjectTemplate()
 void ObjectTemplate::setObject(const MapObject *object)
 {
     MapObject *oldObject = mObject;
+    Tileset *tileset = nullptr;
 
     if (object) {
-        if (Tileset *tileset = object->cell().tileset())
-            TilesetManager::instance()->addReference(tileset->sharedPointer());
-
+        tileset = object->cell().tileset();
         mObject = object->clone();
         mObject->markAsTemplateBase();
     } else {
         mObject = nullptr;
     }
 
-    if (oldObject) {
-        if (Tileset *tileset = oldObject->cell().tileset())
-            TilesetManager::instance()->removeReference(tileset->sharedPointer());
-
+    if (oldObject)
         delete oldObject;
-    }
+
+    if (tileset)
+        mTileset = tileset->sharedPointer();
+    else
+        mTileset.reset();
 }
 
 void ObjectTemplate::setFormat(ObjectTemplateFormat *format)

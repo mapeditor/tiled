@@ -41,6 +41,8 @@
 #include <QDebug>
 #include <QImageWriter>
 
+#include <memory>
+
 using namespace Tiled;
 
 TmxRasterizer::TmxRasterizer():
@@ -53,11 +55,7 @@ TmxRasterizer::TmxRasterizer():
 {
 }
 
-TmxRasterizer::~TmxRasterizer()
-{
-}
-
-bool TmxRasterizer::shouldDrawLayer(const Layer *layer)
+bool TmxRasterizer::shouldDrawLayer(const Layer *layer) const
 {
     if (layer->isObjectGroup() || layer->isGroupLayer())
         return false;
@@ -74,10 +72,8 @@ bool TmxRasterizer::shouldDrawLayer(const Layer *layer)
 int TmxRasterizer::render(const QString &mapFileName,
                           const QString &imageFileName)
 {
-    Map *map;
-    MapRenderer *renderer;
     MapReader reader;
-    map = reader.readMap(mapFileName);
+    std::unique_ptr<Map> map { reader.readMap(mapFileName) };
     if (!map) {
         qWarning("Error while reading \"%s\":\n%s",
                  qUtf8Printable(mapFileName),
@@ -85,19 +81,21 @@ int TmxRasterizer::render(const QString &mapFileName,
         return 1;
     }
 
+    std::unique_ptr<MapRenderer> renderer;
+
     switch (map->orientation()) {
     case Map::Isometric:
-        renderer = new IsometricRenderer(map);
+        renderer.reset(new IsometricRenderer(map.get()));
         break;
     case Map::Staggered:
-        renderer = new StaggeredRenderer(map);
+        renderer.reset(new StaggeredRenderer(map.get()));
         break;
     case Map::Hexagonal:
-        renderer = new HexagonalRenderer(map);
+        renderer.reset(new HexagonalRenderer(map.get()));
         break;
     case Map::Orthogonal:
     default:
-        renderer = new OrthogonalRenderer(map);
+        renderer.reset(new OrthogonalRenderer(map.get()));
         break;
     }
 
@@ -136,7 +134,7 @@ int TmxRasterizer::render(const QString &mapFileName,
     painter.translate(-mapOffset);
 
     // Perform a similar rendering than found in exportasimagedialog.cpp
-    LayerIterator iterator(map);
+    LayerIterator iterator(map.get());
     while (const Layer *layer = iterator.next()) {
         if (!shouldDrawLayer(layer))
             continue;
@@ -158,8 +156,7 @@ int TmxRasterizer::render(const QString &mapFileName,
         painter.translate(-offset);
     }
 
-    delete renderer;
-    delete map;
+    map.reset();
 
     // Save image
     QImageWriter imageWriter(imageFileName);

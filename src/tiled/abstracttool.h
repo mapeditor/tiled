@@ -43,6 +43,7 @@ namespace Internal {
 
 class MapDocument;
 class MapScene;
+class ToolManager;
 
 /**
  * An abstraction of any kind of tool used to edit the map.
@@ -73,8 +74,6 @@ public:
                  const QKeySequence &shortcut,
                  QObject *parent = nullptr);
 
-    virtual ~AbstractTool() {}
-
     QString name() const;
     void setName(const QString &name);
 
@@ -93,8 +92,8 @@ public:
     bool isEnabled() const;
     void setEnabled(bool enabled);
 
+    ToolManager *toolManager() const;
     Tile *tile() const;
-
     ObjectTemplate *objectTemplate() const;
 
     /**
@@ -162,8 +161,6 @@ public:
 
 public slots:
     void setMapDocument(MapDocument *mapDocument);
-    void setTile(Tile *tile);
-    void setObjectTemplate(ObjectTemplate *objectTemplate);
 
 protected:
     /**
@@ -196,15 +193,16 @@ signals:
     void enabledChanged(bool enabled);
 
 private:
+    friend class ToolManager;
+
     QString mName;
     QIcon mIcon;
     QKeySequence mShortcut;
     QString mStatusInfo;
     QCursor mCursor;
     bool mEnabled;
-    Tile *mTile;
-    ObjectTemplate *mObjectTemplate;
 
+    ToolManager *mToolManager;
     MapDocument *mMapDocument;
 };
 
@@ -254,24 +252,12 @@ inline bool AbstractTool::isEnabled() const
     return mEnabled;
 }
 
-inline Tile *AbstractTool::tile() const
+/**
+ * Returns the ToolManager with which this tool is registered, if any.
+ */
+inline ToolManager *AbstractTool::toolManager() const
 {
-    return mTile;
-}
-
-inline void AbstractTool::setTile(Tile *tile)
-{
-    mTile = tile;
-}
-
-inline ObjectTemplate *AbstractTool::objectTemplate() const
-{
-    return mObjectTemplate;
-}
-
-inline void AbstractTool::setObjectTemplate(ObjectTemplate *objectTemplate)
-{
-    mObjectTemplate = objectTemplate;
+    return mToolManager;
 }
 
 } // namespace Internal

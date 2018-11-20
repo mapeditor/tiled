@@ -61,7 +61,7 @@ Background Color
 
 .. raw:: html
 
-   <div class="new new-prev">New in Tiled 1.0</div>
+   <div class="new new-prev">Since Tiled 1.0</div>
 
 Orientation
    When the tileset contains isometric tiles, you can set this to
@@ -94,7 +94,7 @@ ID
 
 .. raw:: html
 
-   <div class="new new-prev">New in Tiled 1.0</div>
+   <div class="new new-prev">Since Tiled 1.0</div>
 
 Type
    This property refers to custom types defined in the :ref:`Object Types Editor <predefining-properties>`.
@@ -123,7 +123,7 @@ the :ref:`terrain-tool`. See the section about
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.1</div>
+   <div class="new new-prev">Since Tiled 1.1</div>
 
 .. _wang-sets:
 

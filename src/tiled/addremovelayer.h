@@ -20,7 +20,8 @@
 
 #pragma once
 
-#include <QCoreApplication>
+#include "undocommands.h"
+
 #include <QUndoCommand>
 
 namespace Tiled {
@@ -39,7 +40,8 @@ class AddRemoveLayer : public QUndoCommand
 {
 public:
     AddRemoveLayer(MapDocument *mapDocument, int index, Layer *layer,
-                   GroupLayer *parentLayer);
+                   GroupLayer *parentLayer,
+                   QUndoCommand *parent = nullptr);
 
     ~AddRemoveLayer();
 
@@ -47,7 +49,6 @@ protected:
     void addLayer();
     void removeLayer();
 
-private:
     MapDocument *mMapDocument;
     Layer *mLayer;
     GroupLayer *mParentLayer;
@@ -57,24 +58,24 @@ private:
 /**
  * Undo command that adds a layer to a map.
  */
-class AddLayer : public AddRemoveLayer
+class AddLayer : public AddRemoveLayer, public ClonableUndoCommand
 {
 public:
     /**
      * Creates an undo command that adds the \a layer to \a parentLayer at
      * \a index.
      */
-    AddLayer(MapDocument *mapDocument, int index, Layer *layer, GroupLayer *parentLayer)
-        : AddRemoveLayer(mapDocument, index, layer, parentLayer)
-    {
-        setText(QCoreApplication::translate("Undo Commands", "Add Layer"));
-    }
+    AddLayer(MapDocument *mapDocument,
+             int index, Layer *layer, GroupLayer *parentLayer,
+             QUndoCommand *parent = nullptr);
 
     void undo() override
     { removeLayer(); }
 
     void redo() override
     { addLayer(); }
+
+    AddLayer *clone(QUndoCommand *parent = nullptr) const override;
 };
 
 /**
@@ -86,11 +87,9 @@ public:
     /**
      * Creates an undo command that removes the layer at \a index.
      */
-    RemoveLayer(MapDocument *mapDocument, int index, GroupLayer *parentLayer)
-        : AddRemoveLayer(mapDocument, index, nullptr, parentLayer)
-    {
-        setText(QCoreApplication::translate("Undo Commands", "Remove Layer"));
-    }
+    RemoveLayer(MapDocument *mapDocument,
+                int index, GroupLayer *parentLayer,
+                QUndoCommand *parent = nullptr);
 
     void undo() override
     { addLayer(); }

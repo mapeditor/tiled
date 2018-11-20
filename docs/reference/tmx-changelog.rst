@@ -4,6 +4,23 @@ TMX Changelog
 Below are described the changes/additions that were made to the
 :doc:`tmx-map-format` for recent versions of Tiled.
 
+Tiled 1.2.1
+-----------
+
+-  Text objects can now get their horizontal alignment saved as ``justify``.
+   This option existed in the UI before but wasn't saved properly.
+
+Tiled 1.2
+---------
+
+-  Added an ``id`` attribute to the :ref:`tmx-layer`, :ref:`tmx-objectgroup`,
+   :ref:`tmx-imagelayer` and :ref:`tmx-group` elements, which stores a
+   map-unique ID of the layer.
+
+-  Added a ``nextlayerid`` attribute to the :ref:`tmx-map` element, which
+   stores the next available ID for new layers. This number is stored
+   to prevent reuse of the same ID after layers have been removed.
+
 Tiled 1.1
 ---------
 

@@ -39,11 +39,12 @@ class WangColorModel : public QAbstractItemModel
 public:
     enum UserRoles {
         ColorRole = Qt::UserRole,
-        //where Edge is 0 and Corner is 1
+        // where Edge is 0 and Corner is 1
         EdgeOrCornerRole = Qt::UserRole + 1
     };
 
     WangColorModel(TilesetDocument *tilesetDocument,
+                   WangSet *wangSet,
                    QObject *parent = nullptr);
 
     QModelIndex index(int row, int column,
@@ -64,8 +65,8 @@ public:
 
     Qt::ItemFlags flags(const QModelIndex &index) const override;
 
-    void setWangSet(WangSet *wangSet);
-    void setTilesetDocument(TilesetDocument *tilesetDocument) { mTilesetDocument = tilesetDocument; }
+    WangSet *wangSet() const { return mWangSet; }
+    TilesetDocument *tilesetDocument() const { return mTilesetDocument; }
 
     void resetModel();
 
@@ -74,23 +75,21 @@ public:
 
     QSharedPointer<WangColor> wangColorAt(const QModelIndex &index) const;
 
-    WangSet *wangSet() const { return mWangSet; }
-
-    bool hasTilesetDocument() const { return mTilesetDocument != nullptr; }
-
-    void setName(const QString &name, bool isEdge, int index);
-
-    void setImage(int imageId, bool isEdge, int index);
-
-    void setColor(const QColor &color, bool isEdge, int index);
-
-    void setProbability(qreal probability, bool isEdge, int index);
+    void setName(WangColor *wangColor, const QString &name);
+    void setImage(WangColor *wangColor, int imageId);
+    void setColor(WangColor *wangColor, const QColor &color);
+    void setProbability(WangColor *wangColor, qreal probability);
 
 private:
+    enum IndexTypeId {
+        CornerIndexId = 1,
+        EdgeIndexId = 2
+    };
+
+    void emitDataChanged(WangColor *wangColor);
+
     TilesetDocument *mTilesetDocument;
     WangSet *mWangSet;
-    QString *mEdgeText;
-    QString *mCornerText;
 };
 
 } // namespace Internal

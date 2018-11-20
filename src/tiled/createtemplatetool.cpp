@@ -39,45 +39,16 @@ CreateTemplateTool::CreateTemplateTool(QObject *parent)
     icon.addFile(QLatin1String(":images/48x48/insert-template.png"));
     setIcon(icon);
     Utils::setThemeIcon(this, "insert-template");
-    languageChanged();
-}
-
-void CreateTemplateTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt::KeyboardModifiers modifiers)
-{
-    const MapRenderer *renderer = mapDocument()->renderer();
-
-    QPointF pixelCoords = renderer->screenToPixelCoords(pos);
-
-    SnapHelper(renderer, modifiers).snap(pixelCoords);
-
-    mNewMapObjectItem->mapObject()->setPosition(pixelCoords);
-    mNewMapObjectItem->syncWithMapObject();
-    mNewMapObjectItem->setZValue(10000); // sync may change it
-    mNewMapObjectItem->setOpacity(0.75);
-}
-
-void CreateTemplateTool::mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event)
-{
-    if (event->button() == Qt::RightButton)
-        cancelNewMapObject();
-}
-
-void CreateTemplateTool::mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event)
-{
-    if (event->button() == Qt::LeftButton)
-        finishNewMapObject();
-}
-
-bool CreateTemplateTool::startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup)
-{
-    if (!CreateObjectTool::startNewMapObject(pos, objectGroup))
-        return false;
-
-    mNewMapObjectItem->setOpacity(0.75);
-    return true;
+    languageChangedImpl();
 }
 
 void CreateTemplateTool::languageChanged()
+{
+    CreateObjectTool::languageChanged();
+    languageChangedImpl();
+}
+
+void CreateTemplateTool::languageChangedImpl()
 {
     setName(tr("Insert Template"));
     setShortcut(QKeySequence(tr("V")));
@@ -86,11 +57,12 @@ void CreateTemplateTool::languageChanged()
 MapObject *CreateTemplateTool::createNewMapObject()
 {
     auto newObjectTemplate = objectTemplate();
-
     if (!newObjectTemplate)
         return nullptr;
+    if (!mapDocument()->templateAllowed(newObjectTemplate))
+        return nullptr;
 
-    MapObject *newMapObject = new MapObject();
+    MapObject *newMapObject = new MapObject;
     newMapObject->setObjectTemplate(newObjectTemplate);
     newMapObject->syncWithTemplate();
     return newMapObject;

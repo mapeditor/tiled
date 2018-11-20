@@ -45,7 +45,7 @@ SaveFile::SaveFile(const QString &name)
 
 bool SaveFile::commit()
 {
-    if (auto saveFile = qobject_cast<QSaveFile*>(mFileDevice.data()))
+    if (auto saveFile = qobject_cast<QSaveFile*>(mFileDevice.get()))
         return saveFile->commit();
 
     return mFileDevice->error() == QFileDevice::NoError;

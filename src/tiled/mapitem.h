@@ -20,9 +20,12 @@
 
 #pragma once
 
+#include "mapdocument.h"
+
 #include <QGraphicsObject>
 #include <QMap>
-#include <QSet>
+
+#include <memory>
 
 namespace Tiled {
 
@@ -36,9 +39,12 @@ class Tileset;
 
 namespace Internal {
 
+class BorderItem;
 class LayerItem;
-class MapDocument;
 class MapObjectItem;
+class ObjectSelectionItem;
+class TileGridItem;
+class TileSelectionItem;
 
 /**
  * A graphics item that represents the contents of a map.
@@ -48,15 +54,35 @@ class MapObjectItem;
  */
 class MapItem : public QGraphicsObject
 {
+    Q_OBJECT
+
 public:
-    MapItem(MapDocument *mapDocument, QGraphicsItem *parent = nullptr);
+    enum DisplayMode {
+        ReadOnly,
+        Editable
+    };
+
+    MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
+            QGraphicsItem *parent = nullptr);
+    ~MapItem() override;
 
     MapDocument *mapDocument() const;
+
+    void setDisplayMode(DisplayMode displayMode);
 
     // QGraphicsItem
     QRectF boundingRect() const override;
     void paint(QPainter *, const QStyleOptionGraphicsItem *,
                QWidget *widget = nullptr) override;
+
+signals:
+    void boundingRectChanged();
+
+protected:
+    void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
+    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
 private:
     /**
@@ -65,10 +91,8 @@ private:
      */
     void repaintRegion(const QRegion &region, TileLayer *tileLayer);
 
-    void currentLayerChanged();
-
     void mapChanged();
-    void tileLayerChanged(TileLayer *tileLayer);
+    void tileLayerChanged(TileLayer *tileLayer, MapDocument::TileLayerChangeFlags flags);
 
     void layerAdded(Layer *layer);
     void layerRemoved(Layer *layer);
@@ -95,17 +119,25 @@ private:
     void createLayerItems(const QList<Layer *> &layers);
     LayerItem *createLayerItem(Layer *layer);
 
-    void updateCurrentLayerHighlight();
+    void updateBoundingRect();
+    void updateSelectedLayersHighlight();
 
-    MapDocument *mMapDocument;
+    MapDocumentPtr mMapDocument;
     QGraphicsRectItem *mDarkRectangle;
+    QGraphicsRectItem *mBorderRectangle;
+    std::unique_ptr<TileSelectionItem> mTileSelectionItem;
+    std::unique_ptr<TileGridItem> mTileGridItem;
+    std::unique_ptr<ObjectSelectionItem> mObjectSelectionItem;
     QMap<Layer*, LayerItem*> mLayerItems;
     QMap<MapObject*, MapObjectItem*> mObjectItems;
+    DisplayMode mDisplayMode;
+    QRectF mBoundingRect;
+    bool mIsHovered = false;
 };
 
 inline MapDocument *MapItem::mapDocument() const
 {
-    return mMapDocument;
+    return mMapDocument.data();
 }
 
 } // namespace Internal

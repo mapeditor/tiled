@@ -12,7 +12,7 @@ QtGuiApplication {
     Depends { name: "qtpropertybrowser" }
     Depends { name: "qtsingleapplication" }
     Depends { name: "ib"; condition: qbs.targetOS.contains("macos") }
-    Depends { name: "Qt"; submodules: ["core", "widgets"]; versionAtLeast: "5.6" }
+    Depends { name: "Qt"; submodules: ["core", "widgets"]; versionAtLeast: "5.5" }
 
     property bool qtcRunnable: true
     property bool macSparkleEnabled: qbs.targetOS.contains("macos") && project.sparkleEnabled
@@ -30,13 +30,21 @@ QtGuiApplication {
     }
 
     cpp.includePaths: ["."]
-    cpp.frameworks: ["Foundation"]
+    cpp.frameworks: {
+        var frameworks = [];
+        if (qbs.targetOS.contains("macos")) {
+            frameworks.push("Foundation");
+            if (project.sparkleEnabled)
+                frameworks.push("Sparkle", "AppKit");
+        }
+        return frameworks;
+    }
     cpp.useRPaths: project.useRPaths
     cpp.rpaths: {
         if (qbs.targetOS.contains("darwin"))
             return ["@loader_path/../Frameworks"];
         else if (project.linuxArchive)
-            return ["$ORIGIN/lib"]
+            return ["$ORIGIN/lib"];
         else
             return ["$ORIGIN/../lib"];
     }
@@ -46,8 +54,11 @@ QtGuiApplication {
     cpp.defines: {
         var defs = [
             "TILED_VERSION=" + version,
+            "QT_DEPRECATED_WARNINGS",
+            "QT_DISABLE_DEPRECATED_BEFORE=0x050900",
             "QT_NO_CAST_FROM_ASCII",
             "QT_NO_CAST_TO_ASCII",
+            "QT_NO_FOREACH",
             "QT_NO_URL_CAST_FROM_STRING",
             "_USE_MATH_DEFINES"
         ];
@@ -177,16 +188,12 @@ QtGuiApplication {
         "containerhelpers.h",
         "createellipseobjecttool.cpp",
         "createellipseobjecttool.h",
-        "createmultipointobjecttool.cpp",
-        "createmultipointobjecttool.h",
         "createobjecttool.cpp",
         "createobjecttool.h",
         "createpointobjecttool.cpp",
         "createpointobjecttool.h",
         "createpolygonobjecttool.cpp",
         "createpolygonobjecttool.h",
-        "createpolylineobjecttool.cpp",
-        "createpolylineobjecttool.h",
         "createrectangleobjecttool.cpp",
         "createrectangleobjecttool.h",
         "createscalableobjecttool.cpp",
@@ -212,6 +219,8 @@ QtGuiApplication {
         "exportasimagedialog.cpp",
         "exportasimagedialog.h",
         "exportasimagedialog.ui",
+        "exporthelper.cpp",
+        "exporthelper.h",
         "filechangedwarning.cpp",
         "filechangedwarning.h",
         "fileedit.cpp",
@@ -288,6 +297,10 @@ QtGuiApplication {
         "newmapdialog.cpp",
         "newmapdialog.h",
         "newmapdialog.ui",
+        "newsbutton.cpp",
+        "newsbutton.h",
+        "newsfeed.cpp",
+        "newsfeed.h",
         "newtilesetdialog.cpp",
         "newtilesetdialog.h",
         "newtilesetdialog.ui",
@@ -321,6 +334,8 @@ QtGuiApplication {
         "patreondialog.ui",
         "pluginlistmodel.cpp",
         "pluginlistmodel.h",
+        "pointhandle.cpp",
+        "pointhandle.h",
         "preferences.cpp",
         "preferencesdialog.cpp",
         "preferencesdialog.h",
@@ -446,6 +461,7 @@ QtGuiApplication {
         "toolmanager.h",
         "treeviewcombobox.cpp",
         "treeviewcombobox.h",
+        "undocommands.cpp",
         "undocommands.h",
         "undodock.cpp",
         "undodock.h",
@@ -510,7 +526,6 @@ QtGuiApplication {
 
     Properties {
         condition: macSparkleEnabled
-        cpp.frameworks: ["Sparkle", "AppKit"]
         cpp.systemFrameworkPaths: outer.concat("/Library/Frameworks")
     }
     Group {
@@ -519,10 +534,21 @@ QtGuiApplication {
         files: ["sparkleautoupdater.mm"]
     }
     Group {
+        condition: qbs.targetOS.contains("macos")
         name: "Public DSA Key File"
         files: ["../../dist/dsa_pub.pem"]
         qbs.install: true
         qbs.installDir: "Tiled.app/Contents/Resources"
+    }
+    Group {
+        condition: macSparkleEnabled
+        name: "Sparkle framework"
+        prefix: sparkleDir + "/"
+        files: "**"
+        fileTags: []    // files should only be copied
+        qbs.install: true
+        qbs.installDir: "Tiled.app/Contents/Frameworks/Sparkle.framework"
+        qbs.installSourceBase: prefix
     }
 
     Properties {
@@ -560,7 +586,7 @@ QtGuiApplication {
         condition: qbs.targetOS.contains("linux")
         qbs.install: true
         qbs.installDir: "share/applications"
-        files: [ "../../tiled.desktop" ]
+        files: [ "../../org.mapeditor.Tiled.desktop" ]
     }
 
     Group {
@@ -568,7 +594,7 @@ QtGuiApplication {
         condition: qbs.targetOS.contains("linux")
         qbs.install: true
         qbs.installDir: "share/metainfo"
-        files: [ "../../tiled.appdata.xml" ]
+        files: [ "../../org.mapeditor.Tiled.appdata.xml" ]
     }
 
     Group {
@@ -584,7 +610,7 @@ QtGuiApplication {
         condition: qbs.targetOS.contains("linux")
         qbs.install: true
         qbs.installDir: "share/mime/packages"
-        files: [ "../../mime/tiled.xml" ]
+        files: [ "../../mime/org.mapeditor.Tiled.xml" ]
     }
 
     Group {

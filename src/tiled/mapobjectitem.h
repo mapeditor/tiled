@@ -51,18 +51,20 @@ public:
      * @param parent the item of the object group this object belongs to
      */
     MapObjectItem(MapObject *object, MapDocument *mapDocument,
-                  ObjectGroupItem *parent = nullptr);
+                  QGraphicsItem *parent = nullptr);
 
     enum { Type = UserType + 1 };
     int type() const override { return Type; }
 
-    MapObject *mapObject() const
-    { return mObject; }
+    MapObject *mapObject() const;
 
     /**
      * Should be called when the map object this item refers to was changed.
      */
     void syncWithMapObject();
+
+    bool isHoverIndicator() const;
+    void setIsHoverIndicator(bool isHoverIndicator);
 
     // QGraphicsItem
     QRectF boundingRect() const override;
@@ -71,12 +73,6 @@ public:
     void paint(QPainter *painter,
                const QStyleOptionGraphicsItem *option,
                QWidget *widget = nullptr) override;
-
-    /**
-     * Resizes the associated map object. The \a bounds are given in pixel
-     * coordinates.
-     */
-    void resizeObject(const QRectF &bounds);
 
     /**
      * Sets a new polygon on the associated object.
@@ -100,10 +96,21 @@ private:
 
     /** Bounding rect cached, for adapting to geometry change correctly. */
     QRectF mBoundingRect;
-    QString mName;      // Copy of the name, so we know when it changes
-    QPolygonF mPolygon; // Copy of the polygon, for the same reason
+    QPolygonF mPolygon; // Copy of the polygon, so we know when it changes
     QColor mColor;      // Cached color of the object
+    bool mIsHoveredIndicator = false;
 };
+
+
+inline MapObject *MapObjectItem::mapObject() const
+{
+    return mObject;
+}
+
+inline bool MapObjectItem::isHoverIndicator() const
+{
+    return mIsHoveredIndicator;
+}
 
 } // namespace Internal
 } // namespace Tiled

@@ -26,13 +26,14 @@
 #include <QSet>
 #include <QVector>
 
+#include <memory>
+
 class QGraphicsItem;
 
 namespace Tiled {
 namespace Internal {
 
 class Handle;
-class MapObjectItem;
 class OriginIndicator;
 class ResizeHandle;
 class RotateHandle;
@@ -51,16 +52,19 @@ public:
 
     void keyPressed(QKeyEvent *) override;
     void mouseEntered() override;
+    void mouseLeft() override;
     void mouseMoved(const QPointF &pos,
                     Qt::KeyboardModifiers modifiers) override;
     void mousePressed(QGraphicsSceneMouseEvent *event) override;
     void mouseReleased(QGraphicsSceneMouseEvent *event) override;
+    void mouseDoubleClicked(QGraphicsSceneMouseEvent *event) override;
     void modifiersChanged(Qt::KeyboardModifiers modifiers) override;
 
     void languageChanged() override;
 
 private slots:
-    void updateHandles(bool resetOriginIndicator = true);
+    void updateHandles();
+    void updateHandlesAndOrigin();
     void updateHandleVisibility();
 
     void objectsRemoved(const QList<MapObject *> &);
@@ -79,6 +83,8 @@ private:
         Resize,
         Rotate,
     };
+
+    void updateHandlesImpl(bool resetOriginIndicator);
 
     void updateHover(const QPointF &pos);
     void updateSelection(const QPointF &pos,
@@ -111,6 +117,8 @@ private:
     void setMode(Mode mode);
     void saveSelectionState();
 
+    void abortCurrentAction(const QList<MapObject *> &removedObjects = QList<MapObject*>());
+
     void refreshCursor();
 
     QPointF snapToGrid(const QPointF &pos,
@@ -129,32 +137,31 @@ private:
         qreal oldRotation;
     };
 
-    SelectionRectangle *mSelectionRectangle;
-    QGraphicsItem *mOriginIndicator;
+    std::unique_ptr<SelectionRectangle> mSelectionRectangle;
+    std::unique_ptr<QGraphicsItem> mOriginIndicator;
     RotateHandle *mRotateHandles[4];
     ResizeHandle *mResizeHandles[8];
     bool mMousePressed;
 
-    MapObjectItem *mHoveredObjectItem;
+    MapObject *mHoveredObject;
     Handle *mHoveredHandle;
 
-    MapObjectItem *mClickedObjectItem;
+    MapObject *mClickedObject;
     OriginIndicator *mClickedOriginIndicator;
     RotateHandle *mClickedRotateHandle;
     ResizeHandle *mClickedResizeHandle;
 
     QVector<MovingObject> mMovingObjects;
 
-    QPointF mOldOriginPosition;
-
     QPointF mAlignPosition;
-    QPointF mOrigin;
+    QPointF mOriginPos;
     bool mResizingLimitHorizontal;
     bool mResizingLimitVertical;
     Mode mMode;
     Action mAction;
     QPointF mStart;
     QPointF mStartOffset;
+    QPointF mLastMousePos;
     QPoint mScreenStart;
     Qt::KeyboardModifiers mModifiers;
 };

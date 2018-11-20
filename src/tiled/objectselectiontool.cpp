@@ -21,6 +21,7 @@
 #include "objectselectiontool.h"
 
 #include "changepolygon.h"
+#include "editpolygontool.h"
 #include "geometry.h"
 #include "layer.h"
 #include "map.h"
@@ -40,15 +41,16 @@
 #include "snaphelper.h"
 #include "tile.h"
 #include "tileset.h"
+#include "toolmanager.h"
 #include "utils.h"
 
 #include <QApplication>
 #include <QGraphicsItem>
 #include <QGraphicsView>
 #include <QKeyEvent>
+#include <QMenu>
 #include <QTransform>
 #include <QUndoStack>
-#include <QMenu>
 
 #include "qtcompat_p.h"
 
@@ -144,6 +146,8 @@ public:
         : QGraphicsItem(parent)
         , mUnderMouse(false)
     {
+        setAcceptedMouseButtons(Qt::MouseButtons());
+        setAcceptHoverEvents(true);
         setFlags(QGraphicsItem::ItemIgnoresTransformations |
                  QGraphicsItem::ItemIgnoresParentOpacity);
     }
@@ -317,9 +321,9 @@ ObjectSelectionTool::ObjectSelectionTool(QObject *parent)
     , mSelectionRectangle(new SelectionRectangle)
     , mOriginIndicator(new OriginIndicator)
     , mMousePressed(false)
-    , mHoveredObjectItem(nullptr)
+    , mHoveredObject(nullptr)
     , mHoveredHandle(nullptr)
-    , mClickedObjectItem(nullptr)
+    , mClickedObject(nullptr)
     , mClickedOriginIndicator(nullptr)
     , mClickedRotateHandle(nullptr)
     , mClickedResizeHandle(nullptr)
@@ -336,9 +340,6 @@ ObjectSelectionTool::ObjectSelectionTool(QObject *parent)
 
 ObjectSelectionTool::~ObjectSelectionTool()
 {
-    delete mSelectionRectangle;
-    delete mOriginIndicator;
-
     for (RotateHandle *handle : mRotateHandles)
         delete handle;
     for (ResizeHandle *handle : mResizeHandles)
@@ -349,18 +350,18 @@ void ObjectSelectionTool::activate(MapScene *scene)
 {
     AbstractObjectTool::activate(scene);
 
-    updateHandles();
+    updateHandlesAndOrigin();
 
-    connect(mapDocument(), SIGNAL(objectsChanged(QList<MapObject*>)),
-            this, SLOT(updateHandles()));
-    connect(mapDocument(), SIGNAL(mapChanged()),
-            this, SLOT(updateHandles()));
-    connect(mapDocument(), SIGNAL(selectedObjectsChanged()),
-            this, SLOT(updateHandles()));
+    connect(mapDocument(), &MapDocument::objectsChanged,
+            this, &ObjectSelectionTool::updateHandlesAndOrigin);
+    connect(mapDocument(), &MapDocument::mapChanged,
+            this, &ObjectSelectionTool::updateHandlesAndOrigin);
+    connect(mapDocument(), &MapDocument::selectedObjectsChanged,
+            this, &ObjectSelectionTool::updateHandlesAndOrigin);
     connect(mapDocument(), &MapDocument::objectsRemoved,
             this, &ObjectSelectionTool::objectsRemoved);
 
-    scene->addItem(mOriginIndicator);
+    scene->addItem(mOriginIndicator.get());
     for (RotateHandle *handle : mRotateHandles)
         scene->addItem(handle);
     for (ResizeHandle *handle : mResizeHandles)
@@ -369,20 +370,25 @@ void ObjectSelectionTool::activate(MapScene *scene)
 
 void ObjectSelectionTool::deactivate(MapScene *scene)
 {
-    scene->removeItem(mOriginIndicator);
+    scene->removeItem(mOriginIndicator.get());
     for (RotateHandle *handle : mRotateHandles)
         scene->removeItem(handle);
     for (ResizeHandle *handle : mResizeHandles)
         scene->removeItem(handle);
 
-    disconnect(mapDocument(), SIGNAL(objectsChanged(QList<MapObject*>)),
-               this, SLOT(updateHandles()));
-    disconnect(mapDocument(), SIGNAL(mapChanged()),
-               this, SLOT(updateHandles()));
-    disconnect(mapDocument(), SIGNAL(selectedObjectsChanged()),
-               this, SLOT(updateHandles()));
+    disconnect(mapDocument(), &MapDocument::objectsChanged,
+               this, &ObjectSelectionTool::updateHandlesAndOrigin);
+    disconnect(mapDocument(), &MapDocument::mapChanged,
+               this, &ObjectSelectionTool::updateHandlesAndOrigin);
+    disconnect(mapDocument(), &MapDocument::selectedObjectsChanged,
+               this, &ObjectSelectionTool::updateHandlesAndOrigin);
     disconnect(mapDocument(), &MapDocument::objectsRemoved,
                this, &ObjectSelectionTool::objectsRemoved);
+
+    abortCurrentAction();
+
+    mHoveredObject = nullptr;
+    mapDocument()->setHoveredMapObject(nullptr);
 
     AbstractObjectTool::deactivate(scene);
 }
@@ -390,7 +396,13 @@ void ObjectSelectionTool::deactivate(MapScene *scene)
 void ObjectSelectionTool::keyPressed(QKeyEvent *event)
 {
     if (mAction != NoAction) {
-        event->ignore();
+        // If we're currently performing some action, the only relevant key to
+        // handle is Escape, to abort it.
+        if (event->key() == Qt::Key_Escape)
+            abortCurrentAction();
+        else
+            event->ignore();
+
         return;
     }
 
@@ -401,6 +413,10 @@ void ObjectSelectionTool::keyPressed(QKeyEvent *event)
     case Qt::Key_Down:  moveBy = QPointF(0, 1); break;
     case Qt::Key_Left:  moveBy = QPointF(-1, 0); break;
     case Qt::Key_Right: moveBy = QPointF(1, 0); break;
+    case Qt::Key_Escape:
+        if (!mapDocument()->selectedObjects().isEmpty())
+            mapDocument()->setSelectedObjects(QList<MapObject*>());
+        return;
     default:
         AbstractObjectTool::keyPressed(event);
         return;
@@ -441,6 +457,11 @@ void ObjectSelectionTool::mouseEntered()
 {
 }
 
+void ObjectSelectionTool::mouseLeft()
+{
+    mapDocument()->setHoveredMapObject(nullptr);
+}
+
 void ObjectSelectionTool::mouseMoved(const QPointF &pos,
                                      Qt::KeyboardModifiers modifiers)
 {
@@ -464,7 +485,7 @@ void ObjectSelectionTool::mouseMoved(const QPointF &pos,
                 startRotating(pos);
             } else if (mClickedResizeHandle) {
                 startResizing();
-            } else if ((mClickedObjectItem || ((modifiers & Qt::AltModifier) && hasSelection)) &&
+            } else if ((mClickedObject || ((modifiers & Qt::AltModifier) && hasSelection)) &&
                        !(modifiers & Qt::ShiftModifier)) {
                 startMoving(pos, modifiers);
             } else {
@@ -494,6 +515,8 @@ void ObjectSelectionTool::mouseMoved(const QPointF &pos,
     }
 
     refreshCursor();
+
+    mLastMousePos = pos;
 }
 
 static QGraphicsView *findView(QGraphicsSceneEvent *event)
@@ -524,7 +547,7 @@ void ObjectSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
         }
 
         if (!clickedHandle) {
-            mClickedObjectItem = topMostObjectItemAt(mStart);
+            mClickedObject = topMostMapObjectAt(mStart);
         } else {
             mClickedOriginIndicator = dynamic_cast<OriginIndicator*>(clickedHandle);
             mClickedRotateHandle = dynamic_cast<RotateHandle*>(clickedHandle);
@@ -535,13 +558,13 @@ void ObjectSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
     }
     case Qt::RightButton:
         if (event->modifiers() & Qt::AltModifier) {
-            QList<MapObjectItem*> underlyingObjectItems = objectItemsAt(event->scenePos());
+            QList<MapObject*> underlyingObjectItems = mapObjectsAt(event->scenePos());
             if (underlyingObjectItems.empty())
                 break;
             QMenu selectUnderlyingMenu;
 
             for (int i = 0; i < underlyingObjectItems.size(); ++i) {
-                MapObject *mapObject = underlyingObjectItems[i]->mapObject();
+                MapObject *mapObject = underlyingObjectItems[i];
                 QString objectName = mapObject->name();
                 if (objectName.isEmpty()) {
                     if (mapObject->type().isEmpty())
@@ -591,6 +614,8 @@ void ObjectSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
 {
     if (event->button() != Qt::LeftButton)
         return;
+    if (!mMousePressed)
+        return; // we didn't receive press so we should ignore this release
 
     switch (mAction) {
     case NoAction: {
@@ -601,43 +626,43 @@ void ObjectSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
         const Qt::KeyboardModifiers modifiers = event->modifiers();
         QList<MapObject*> selection = mapDocument()->selectedObjects();
         if (modifiers & Qt::AltModifier) {
-            const auto underlyingObjects = objectItemsAt(event->scenePos());
+            const auto underlyingObjects = mapObjectsAt(event->scenePos());
             if (underlyingObjects.isEmpty())
                 break;
 
             // Determine the item after the last selected item
-            MapObjectItem *nextItem = underlyingObjects.first();
+            MapObject *nextObject = underlyingObjects.first();
             for (int i = underlyingObjects.size() - 1; i >= 0; --i) {
-                MapObjectItem *underlyingObject = underlyingObjects.at(i);
-                if (selection.contains(underlyingObject->mapObject()))
+                MapObject *underlyingObject = underlyingObjects.at(i);
+                if (selection.contains(underlyingObject))
                     break;
-                nextItem = underlyingObject;
+                nextObject = underlyingObject;
             }
 
             // If the first and last item are already selected, try to find the
             // first non-selected item. If even that fails, we pretend to have
             // clicked the first item as usual to allow toggling the selection.
-            if (selection.contains(nextItem->mapObject())) {
+            if (selection.contains(nextObject)) {
                 for (int i = 1; i < underlyingObjects.size() - 1; ++i) {
-                    MapObjectItem *underlyingObject = underlyingObjects.at(i);
-                    if (!selection.contains(underlyingObject->mapObject())) {
-                        nextItem = underlyingObject;
+                    MapObject *underlyingObject = underlyingObjects.at(i);
+                    if (!selection.contains(underlyingObject)) {
+                        nextObject = underlyingObject;
                         break;
                     }
                 }
             }
 
-            mClickedObjectItem = nextItem;
+            mClickedObject = nextObject;
         }
-        if (mClickedObjectItem) {
+        if (mClickedObject) {
             if (modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) {
-                int index = selection.indexOf(mClickedObjectItem->mapObject());
+                int index = selection.indexOf(mClickedObject);
                 if (index != -1)
                     selection.removeAt(index);
                 else
-                    selection.append(mClickedObjectItem->mapObject());
+                    selection.append(mClickedObject);
                 mapDocument()->setSelectedObjects(selection);
-            } else if (selection.contains(mClickedObjectItem->mapObject())) {
+            } else if (selection.contains(mClickedObject)) {
                 // Clicking one of the selected items changes the edit mode
                 if (mMode == Resize) {
                     if (selection.size() > 1 || selection.first()->canRotate())
@@ -647,7 +672,7 @@ void ObjectSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
                 }
             } else {
                 selection.clear();
-                selection.append(mClickedObjectItem->mapObject());
+                selection.append(mClickedObject);
                 setMode(Resize);
                 mapDocument()->setSelectedObjects(selection);
             }
@@ -658,7 +683,7 @@ void ObjectSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
     }
     case Selecting:
         updateSelection(event->scenePos(), event->modifiers());
-        mapScene()->removeItem(mSelectionRectangle);
+        mapScene()->removeItem(mSelectionRectangle.get());
         mAction = NoAction;
         break;
     case Moving:
@@ -676,13 +701,23 @@ void ObjectSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
     }
 
     mMousePressed = false;
-    mClickedObjectItem = nullptr;
+    mClickedObject = nullptr;
     mClickedOriginIndicator = nullptr;
     mClickedRotateHandle = nullptr;
     mClickedResizeHandle = nullptr;
 
     updateHover(event->scenePos());
     refreshCursor();
+}
+
+void ObjectSelectionTool::mouseDoubleClicked(QGraphicsSceneMouseEvent *event)
+{
+    mousePressed(event);
+
+    if (mClickedObject && (mClickedObject->shape() == MapObject::Polygon ||
+                           mClickedObject->shape() == MapObject::Polyline)) {
+        toolManager()->selectTool(toolManager()->findTool<EditPolygonTool>());
+    }
 }
 
 void ObjectSelectionTool::modifiersChanged(Qt::KeyboardModifiers modifiers)
@@ -693,24 +728,20 @@ void ObjectSelectionTool::modifiersChanged(Qt::KeyboardModifiers modifiers)
 
 void ObjectSelectionTool::languageChanged()
 {
+    AbstractObjectTool::languageChanged();
+
     setName(tr("Select Objects"));
     setShortcut(QKeySequence(tr("S")));
 }
 
-static QPointF alignmentOffset(const QRectF &r, Alignment alignment)
+void ObjectSelectionTool::updateHandles()
 {
-    switch (alignment) {
-    case TopLeft:       break;
-    case Top:           return QPointF(r.width() / 2, 0);
-    case TopRight:      return QPointF(r.width(), 0);
-    case Left:          return QPointF(0, r.height() / 2);
-    case Center:        return QPointF(r.width() / 2, r.height() / 2);
-    case Right:         return QPointF(r.width(), r.height() / 2);
-    case BottomLeft:    return QPointF(0, r.height());
-    case Bottom:        return QPointF(r.width() / 2, r.height());
-    case BottomRight:   return QPointF(r.width(), r.height());
-    }
-    return QPointF();
+    updateHandlesImpl(false);
+}
+
+void ObjectSelectionTool::updateHandlesAndOrigin()
+{
+    updateHandlesImpl(true);
 }
 
 // TODO: Check whether this function should be moved into MapObject::bounds
@@ -859,13 +890,30 @@ static QTransform objectTransform(MapObject *object, MapRenderer *renderer)
     return transform;
 }
 
-void ObjectSelectionTool::updateHandles(bool resetOriginIndicator)
+/**
+ * Like QRectF::united, but without the null checks at the start and based on
+ * the assumption that neither rect has negative sizes.
+ */
+static QRectF uniteBounds(const QRectF &a, const QRectF &b)
+{
+    Q_ASSERT(a.width() >= 0.0 && a.height() >= 0.0);
+    Q_ASSERT(b.width() >= 0.0 && b.height() >= 0.0);
+
+    const qreal left = qMin(a.left(), b.left());
+    const qreal right = qMax(a.right(), b.right());
+    const qreal top = qMin(a.top(), b.top());
+    const qreal bottom = qMax(a.bottom(), b.bottom());
+
+    return QRectF(left, top, right - left, bottom - top);
+}
+
+void ObjectSelectionTool::updateHandlesImpl(bool resetOriginIndicator)
 {
     if (mAction == Moving || mAction == Rotating || mAction == Resizing)
         return;
 
     const QList<MapObject*> &objects = mapDocument()->selectedObjects();
-    const bool showHandles = objects.size() > 0 && (objects.size() > 1 || std::any_of(objects.begin(), objects.end(), canResize));
+    const bool showHandles = objects.size() > 0 && (objects.size() > 1 || canResize(objects.first()));
 
     if (showHandles) {
         MapRenderer *renderer = mapDocument()->renderer();
@@ -874,8 +922,9 @@ void ObjectSelectionTool::updateHandles(bool resetOriginIndicator)
 
         for (int i = 1; i < objects.size(); ++i) {
             MapObject *object = objects.at(i);
-            boundingRect |= objectBounds(object, renderer,
+            QRectF bounds = objectBounds(object, renderer,
                                          objectTransform(object, renderer));
+            boundingRect = uniteBounds(boundingRect, bounds);
         }
 
         QPointF topLeft = boundingRect.topLeft();
@@ -976,29 +1025,15 @@ void ObjectSelectionTool::updateHandleVisibility()
 
 void ObjectSelectionTool::objectsRemoved(const QList<MapObject *> &objects)
 {
-    if (mAction != Moving && mAction != Rotating && mAction != Resizing)
-        return;
+    if (mClickedObject && objects.contains(mClickedObject))
+        mClickedObject = nullptr;
+    if (mHoveredObject && objects.contains(mHoveredObject))
+        mHoveredObject = nullptr;
 
     // Abort move/rotate/resize to avoid crashing...
     // TODO: This should really not be allowed to happen in the first place
-    // since it breaks the undo history, for example.
-    for (int i = mMovingObjects.size() - 1; i >= 0; --i) {
-        const MovingObject &object = mMovingObjects.at(i);
-
-        if (objects.contains(object.mapObject)) {
-            // Avoid referencing the removed object
-            mMovingObjects.remove(i);
-        } else {
-            object.mapObject->setPosition(object.oldPosition);
-            object.mapObject->setSize(object.oldSize);
-            object.mapObject->setPolygon(object.oldPolygon);
-            object.mapObject->setRotation(object.oldRotation);
-        }
-    }
-
-    emit mapDocument()->mapObjectModel()->objectsChanged(changingObjects());
-
-    mMovingObjects.clear();
+    if (mAction == Moving || mAction == Rotating || mAction == Resizing)
+        abortCurrentAction(objects);
 }
 
 void ObjectSelectionTool::updateHover(const QPointF &pos)
@@ -1026,10 +1061,12 @@ void ObjectSelectionTool::updateHover(const QPointF &pos)
         mHoveredHandle = hoveredHandle;
     }
 
-    MapObjectItem *hoveredObjectItem = nullptr;
+    MapObject *hoveredObject = nullptr;
     if (!hoveredHandle)
-        hoveredObjectItem = topMostObjectItemAt(pos);
-    mHoveredObjectItem = hoveredObjectItem;
+        hoveredObject = topMostMapObjectAt(pos);
+    mHoveredObject = hoveredObject;
+
+    mapDocument()->setHoveredMapObject((mAction == NoAction) ? hoveredObject : nullptr);
 }
 
 void ObjectSelectionTool::updateSelection(const QPointF &pos,
@@ -1045,6 +1082,8 @@ void ObjectSelectionTool::updateSelection(const QPointF &pos,
 
     const QList<QGraphicsItem *> &items = mapScene()->items(rect);
     for (QGraphicsItem *item : items) {
+        if (!item->isEnabled())
+            continue;
         MapObjectItem *mapObjectItem = qgraphicsitem_cast<MapObjectItem*>(item);
         if (mapObjectItem && mapObjectItem->mapObject()->objectGroup()->isUnlocked())
             selectedObjects.append(mapObjectItem->mapObject());
@@ -1064,16 +1103,16 @@ void ObjectSelectionTool::updateSelection(const QPointF &pos,
 void ObjectSelectionTool::startSelecting()
 {
     mAction = Selecting;
-    mapScene()->addItem(mSelectionRectangle);
+    mapScene()->addItem(mSelectionRectangle.get());
 }
 
 void ObjectSelectionTool::startMoving(const QPointF &pos,
                                       Qt::KeyboardModifiers modifiers)
 {
     // Move only the clicked item, if it was not part of the selection
-    if (mClickedObjectItem && !(modifiers & Qt::AltModifier)) {
-        if (!mapDocument()->selectedObjects().contains(mClickedObjectItem->mapObject()))
-            mapDocument()->setSelectedObjects({ mClickedObjectItem->mapObject() });
+    if (mClickedObject && !(modifiers & Qt::AltModifier)) {
+        if (!mapDocument()->selectedObjects().contains(mClickedObject))
+            mapDocument()->setSelectedObjects({ mClickedObject });
     }
 
     saveSelectionState();
@@ -1081,7 +1120,7 @@ void ObjectSelectionTool::startMoving(const QPointF &pos,
     mStart = pos;
     mAction = Moving;
     mAlignPosition = mMovingObjects.first().oldPosition;
-    mOldOriginPosition = mOriginIndicator->pos();
+    mOriginPos = mOriginIndicator->pos();
 
     for (const MovingObject &object : qAsConst(mMovingObjects)) {
         const QPointF &pos = object.oldPosition;
@@ -1109,14 +1148,14 @@ void ObjectSelectionTool::updateMovingItems(const QPointF &pos,
 
     mapDocument()->mapObjectModel()->emitObjectsChanged(changingObjects(), MapObjectModel::Position);
 
-    mOriginIndicator->setPos(mOldOriginPosition + diff);
+    mOriginIndicator->setPos(mOriginPos + diff);
 }
 
 void ObjectSelectionTool::finishMoving(const QPointF &pos)
 {
     Q_ASSERT(mAction == Moving);
     mAction = NoAction;
-    updateHandles(false);
+    updateHandles();
 
     if (mStart == pos) // Move is a no-op
         return;
@@ -1137,13 +1176,13 @@ void ObjectSelectionTool::startMovingOrigin(const QPointF &pos)
 {
     mStart = pos;
     mAction = MovingOrigin;
-    mOldOriginPosition = mOriginIndicator->pos();
+    mOriginPos = mOriginIndicator->pos();
 }
 
 void ObjectSelectionTool::updateMovingOrigin(const QPointF &pos,
                                              Qt::KeyboardModifiers)
 {
-    mOriginIndicator->setPos(mOldOriginPosition + (pos - mStart));
+    mOriginIndicator->setPos(mOriginPos + (pos - mStart));
 }
 
 void ObjectSelectionTool::finishMovingOrigin()
@@ -1156,7 +1195,7 @@ void ObjectSelectionTool::startRotating(const QPointF &pos)
 {
     mStart = pos;
     mAction = Rotating;
-    mOrigin = mOriginIndicator->pos();
+    mOriginPos = mOriginIndicator->pos();
 
     saveSelectionState();
     updateHandleVisibility();
@@ -1167,8 +1206,8 @@ void ObjectSelectionTool::updateRotatingItems(const QPointF &pos,
 {
     MapRenderer *renderer = mapDocument()->renderer();
 
-    const QPointF startDiff = mOrigin - mStart;
-    const QPointF currentDiff = mOrigin - pos;
+    const QPointF startDiff = mOriginPos - mStart;
+    const QPointF currentDiff = mOriginPos - pos;
 
     const qreal startAngle = std::atan2(startDiff.y(), startDiff.x());
     const qreal currentAngle = std::atan2(currentDiff.y(), currentDiff.x());
@@ -1178,17 +1217,16 @@ void ObjectSelectionTool::updateRotatingItems(const QPointF &pos,
     if (modifiers & Qt::ControlModifier)
         angleDiff = std::floor((angleDiff + snap / 2) / snap) * snap;
 
-    const auto &movingObjects = mMovingObjects;
-    for (const MovingObject &object : movingObjects) {
+    for (const MovingObject &object : qAsConst(mMovingObjects)) {
         MapObject *mapObject = object.mapObject;
         const QPointF offset = mapObject->objectGroup()->totalOffset();
 
-        const QPointF oldRelPos = object.oldScreenPosition + offset - mOrigin;
+        const QPointF oldRelPos = object.oldScreenPosition + offset - mOriginPos;
         const qreal sn = std::sin(angleDiff);
         const qreal cs = std::cos(angleDiff);
         const QPointF newRelPos(oldRelPos.x() * cs - oldRelPos.y() * sn,
                                 oldRelPos.x() * sn + oldRelPos.y() * cs);
-        const QPointF newPixelPos = mOrigin + newRelPos - offset;
+        const QPointF newPixelPos = mOriginPos + newRelPos - offset;
         const QPointF newPos = renderer->screenToPixelCoords(newPixelPos);
 
         const qreal newRotation = object.oldRotation + angleDiff * 180 / M_PI;
@@ -1205,7 +1243,7 @@ void ObjectSelectionTool::finishRotating(const QPointF &pos)
 {
     Q_ASSERT(mAction == Rotating);
     mAction = NoAction;
-    updateHandles(false);
+    updateHandles();
 
     if (mStart == pos) // No rotation at all
         return;
@@ -1213,8 +1251,7 @@ void ObjectSelectionTool::finishRotating(const QPointF &pos)
     QUndoStack *undoStack = mapDocument()->undoStack();
     undoStack->beginMacro(tr("Rotate %n Object(s)", "", mMovingObjects.size()));
 
-    const auto &movingObjects = mMovingObjects;
-    for (const MovingObject &object : movingObjects) {
+    for (const MovingObject &object : qAsConst(mMovingObjects)) {
         MapObject *mapObject = object.mapObject;
         undoStack->push(new MoveMapObject(mapDocument(), mapObject, object.oldPosition));
         undoStack->push(new RotateMapObject(mapDocument(), mapObject, object.oldRotation));
@@ -1229,7 +1266,7 @@ void ObjectSelectionTool::finishRotating(const QPointF &pos)
 void ObjectSelectionTool::startResizing()
 {
     mAction = Resizing;
-    mOrigin = mOriginIndicator->pos();
+    mOriginPos = mOriginIndicator->pos();
 
     mResizingLimitHorizontal = mClickedResizeHandle->resizingLimitHorizontal();
     mResizingLimitVertical = mClickedResizeHandle->resizingLimitVertical();
@@ -1247,7 +1284,7 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
 
     QPointF resizingOrigin = mClickedResizeHandle->resizingOrigin();
     if (modifiers & Qt::ShiftModifier)
-        resizingOrigin = mOrigin;
+        resizingOrigin = mOriginPos;
 
     mOriginIndicator->setPos(resizingOrigin);
 
@@ -1290,8 +1327,7 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
     if (!std::isfinite(scale))
         scale = 1;
 
-    const auto &movingObjects = mMovingObjects;
-    for (const MovingObject &object : movingObjects) {
+    for (const MovingObject &object : qAsConst(mMovingObjects)) {
         MapObject *mapObject = object.mapObject;
         const QPointF offset = mapObject->objectGroup()->totalOffset();
 
@@ -1474,7 +1510,7 @@ void ObjectSelectionTool::finishResizing(const QPointF &pos)
 {
     Q_ASSERT(mAction == Resizing);
     mAction = NoAction;
-    updateHandles();
+    updateHandlesAndOrigin();
 
     if (mStart == pos) // No scaling at all
         return;
@@ -1482,8 +1518,7 @@ void ObjectSelectionTool::finishResizing(const QPointF &pos)
     QUndoStack *undoStack = mapDocument()->undoStack();
     undoStack->beginMacro(tr("Resize %n Object(s)", "", mMovingObjects.size()));
 
-    const auto &movingObjects = mMovingObjects;
-    for (const MovingObject &object : movingObjects) {
+    for (const MovingObject &object : qAsConst(mMovingObjects)) {
         MapObject *mapObject = object.mapObject;
         undoStack->push(new MoveMapObject(mapDocument(), mapObject, object.oldPosition));
         undoStack->push(new ResizeMapObject(mapDocument(), mapObject, object.oldSize));
@@ -1501,7 +1536,7 @@ void ObjectSelectionTool::setMode(Mode mode)
 {
     if (mMode != mode) {
         mMode = mode;
-        updateHandles(false);
+        updateHandles();
     }
 }
 
@@ -1525,6 +1560,59 @@ void ObjectSelectionTool::saveSelectionState()
     }
 }
 
+/**
+ * This aborts any in-progress action.
+ *
+ * The \a removedObjects is used to avoid sending the "objectsChanged" signal
+ * for objects that have been removed.
+ */
+void ObjectSelectionTool::abortCurrentAction(const QList<MapObject *> &removedObjects)
+{
+    switch (mAction) {
+    case NoAction:
+        break;
+    case Selecting:
+        mapScene()->removeItem(mSelectionRectangle.get());
+        break;
+    case MovingOrigin:
+        mOriginIndicator->setPos(mOriginPos);
+        break;
+    case Moving:
+    case Rotating:
+    case Resizing:
+        // Return the origin indicator to its initial position
+        mOriginIndicator->setPos(mOriginPos);
+
+        // Reset objects to their old transform
+        for (const MovingObject &object : qAsConst(mMovingObjects)) {
+            object.mapObject->setPosition(object.oldPosition);
+            object.mapObject->setSize(object.oldSize);
+            object.mapObject->setPolygon(object.oldPolygon);
+            object.mapObject->setRotation(object.oldRotation);
+        }
+
+        // Don't emit changed for removed objects
+        for (int i = mMovingObjects.size() - 1; i >= 0; --i)
+            if (removedObjects.contains(mMovingObjects.at(i).mapObject))
+                mMovingObjects.remove(i);
+
+        emit mapDocument()->mapObjectModel()->objectsChanged(changingObjects());
+        break;
+    }
+
+    mMousePressed = false;
+    mClickedObject = nullptr;
+    mClickedOriginIndicator = nullptr;
+    mClickedResizeHandle = nullptr;
+    mClickedRotateHandle = nullptr;
+    mMovingObjects.clear();
+    mAction = NoAction;
+
+    updateHandles();
+    updateHover(mLastMousePos);
+    refreshCursor();
+}
+
 void ObjectSelectionTool::refreshCursor()
 {
     Qt::CursorShape cursorShape = Qt::ArrowCursor;
@@ -1533,7 +1621,7 @@ void ObjectSelectionTool::refreshCursor()
     case NoAction: {
         const bool hasSelection = !mapDocument()->selectedObjects().isEmpty();
 
-        if ((mHoveredObjectItem || ((mModifiers & Qt::AltModifier) && hasSelection && !mHoveredHandle)) &&
+        if ((mHoveredObject || ((mModifiers & Qt::AltModifier) && hasSelection && !mHoveredHandle)) &&
                 !(mModifiers & Qt::ShiftModifier)) {
             cursorShape = Qt::SizeAllCursor;
         }

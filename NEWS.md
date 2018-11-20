@@ -1,6 +1,149 @@
-### Tiled 1.1.1 (...)
+### Tiled 1.2.1 (14 November 2018)
 
-Fixed crash on load for template instances of non-tile objects
+* Fixed JSON templates not being visible in Templates view (#2009)
+* Fixed Maps view to show all readable map formats
+* Fixed crash when deleting a command using the context menu (by Robert Lewicki, #2014)
+* Fixed crash after a world file failed to load
+* Fixed Select None action to be enabled when there is any selection
+* Fixed disappearing of tile types on export/import of a tileset (#2023)
+* Fixed tool shortcuts when using Spanish translation
+* Fixed saving of the "Justify" alignment option for text objects (#2026)
+* Changed Cut, Copy and Delete actions to apply based on selected layer types
+* Windows: Updated builds to Qt 5.9.7
+* Updated Russian translation (by Rafael Osipov, #2017)
+
+### Tiled 1.2.0 (19 September 2018)
+
+* Added multi-layer selection, including multi-layer tile layer editing
+* Added support for multi-map worlds (#1669)
+* Added ability to extend existing polylines (with Ketan Gupta, #1683)
+* Added option to highlight the hovered object (#1190)
+* Added news from website to the status bar (#1898)
+* Added option to show object labels for hovered objects
+* Added option to embed tilesets on export (#1850)
+* Added option to detach templates on export (#1850)
+* Added option to resolve object types and properties on export (#1850)
+* Added Escape for switching to the Select Objects tool and for clearing the selection
+* Added Escape to cancel the current action in all object layer tools
+* Added double-click on polygon objects to switch to Edit Polygons tool
+* Added interaction with segments for polygons, for selection and dragging
+* Added double-clicking a polygon segment for inserting a new point at that location
+* Added action to lock/unlock all other layers (by kralle333, #1883)
+* Added --export-tileset command line argument (by Josh Bramlett, #1872)
+* Added unique persistent layer IDs (#1892)
+* Added 'version' and 'tiledversion' to external tileset files
+* Added full paths to Recent Files menu as tool tips (by Gauthier Billot, #1992)
+* Create Object Tools: Show preview already on hover (#537)
+* Objects view: Only center view on object on press or activation
+* Objects view: When clicking a layer, make it the current one (by kralle333, #1931)
+* Unified the Create Polygon and Create Polyline tools
+* JSON plugin: Made the JSON format easier to parse (by saeedakhter, #1868)
+* Tile Collision Editor: Allowed using object templates
+* Templates view: Don't allow hiding the template object
+* Python plugin: Updated to Python 3 (by Samuli Tuomola)
+* Python plugin: Fixed startup messages not appearing in debug console
+* Python plugin: Fixed file change watching for main script files
+* Lua plugin: Include properties from templates (#1901)
+* Lua plugin: Include tileset column count in export (by Matt Drollette, #1969)
+* tBIN plugin: Don't ignore objects that aren't perfectly aligned (#1985)
+* tBIN plugin: Fixed "Unsupported property type" error for newly added float properties
+* Automapping: Report error when no output layers are found
+* AutoMapping: Changed matching outside of map boundaries and added 'MatchOutsideMap' option
+* Linux: Modernized the appstream file (by Patrick Griffis)
+* libtiled: Allow qrc-based tileset images (#1947)
+* libtiled-java: Fixed loading maps with multiple external tilesets
+* Optimized deletion of many objects (#1972)
+* Make Ctrl+Q work for quitting also on Windows (#1998)
+* Fixed randomizing of terrain, Wang tiles and stamp variations (#1949)
+* Fixed tilesets getting added to maps when they shouldn't be (#2002)
+* Fixed issue with default font size in combination with custom family (#1994)
+* Fixed the tile grid to render below labels, handles and selection indicators
+* Fixed confirming overwrite when exporting a tileset
+* Fixed reading of infinite maps that don't use chunked layer data
+* Updated Bulgarian, Dutch, French, German, Norwegian Bokmål, Portuguese (Portugal) and Turkish translations
+
+### Tiled 1.1.6 (17 July 2018)
+
+* Fixed Terrain Brush issue on staggered isometric maps (#1951)
+* Fixed objects to stay selected when moving them between layers
+* Fixed small tab bar rendering issue on high DPI displays
+* Fixed rendering of arrows on scroll bar buttons
+* Fixed object labels to adjust properly to the font DPI
+* Fixed resize handle locations for multiple zero-sized objects
+* Fixed handling of arrow keys on focused layer combo box (#1973)
+* Tile Collision Editor: Fixed handling of tile offset (#1955)
+* Tile Collision Editor: Fixed potential crash on Undo (#1965)
+* Python plugin: Added some missing API to the Cell class
+* Windows and Linux: Downgraded builds to Qt 5.9 (fixes #1928)
+* macOS: Fixed library loading issues for tmxrasterizer and terraingenerator
+* macOS: Downgraded to Qt 5.6 (fixes resizing of undocked views and reduces minimum macOS version to 10.7)
+* Updates to German, Hungarian, Norwegian Bokmål, Polish, Portuguese (Portugal), Russian and Ukrainian translations
+
+### Tiled 1.1.5 (25 April 2018)
+
+* Fixed erasing mode of the Terrain Brush
+* Fixed crash after editing a template
+* Fixed rendering of eye/lock icons in Layers view
+* Fixed object index when undoing Move Object to Layer action (#1932)
+* Fixed shortcuts for flipping and rotating objects (#1926)
+* Fixed dynamic retranslation of tools and tool actions
+* Fixed possible crash when undoing/redoing Wang color changes
+* Fixed handling of sub-properties in Object Type Editor (#1936)
+* Fixed crash when deleting an object right before dragging it (#1933)
+* Adjust Wang tile data when tileset column count changes (#1851)
+* Improved fill behavior in case of selection on infinite map (#1921)
+* Removed ability to hide tile collision objects (#1929)
+* Remove tile collision layer along with the last object (#1230)
+* JSON plugin: Made the reader more strict about object types (#1922)
+* JSON plugin: Added support for Wang sets
+
+### Tiled 1.1.4 (28 March 2018)
+
+* Fixed exporting of external tilesets to JSON or TSX formats
+* Fixed problem with embedding or exporting tilesets with Wang sets
+* Fixed tiles placed by the terrain tool being considered different (#1913)
+* Fixed text alignment values appearing at random in Properties view (#1767)
+* macOS: Fixed eye/lock icon display in Layers view
+* Re-enabled Space for toggling layer visibility
+* Migrate properties set on tile collision layer to the tile (#1912)
+* Don't reset stamp brush state when pressing Alt
+* Automapping: Apply rules to selected area when there is one
+* Windows and Linux: Updated builds to Qt 5.10.1
+* Linux: Indicate Tiled can open multiple files at once in desktop file
+* Lowered the minimum supported version of Qt to 5.5
+
+### Tiled 1.1.3 (6 March 2018)
+
+* Fixed crash when removing a tileset referenced by multiple objects
+* Fixed crash on paste when it introduced more than one new tileset
+* Fixed Invert Selection for non-infinite maps
+* Fixed Select All to not select objects on locked layers
+* Fixed logic determining the tilesets used by a tile layer
+* Fixed copy/paste changing object order (#1896)
+* Fixed tileset getting loaded twice when used by the map and a template
+* Fixed repainting issues on undo/redo for new maps (#1887)
+* JSON plugin: Fixed loading of infinite maps using CSV tile layer format (#1878)
+* Linux: Updated AppImage to Qt 5.9.4
+* Updated Hungarian, Japanese, Norwegian Bokmål, Portuguese and Ukrainian translations
+
+### Tiled 1.1.2 (31 January 2018)
+
+* Fixed possible crash while editing polygons
+* Fixed hang when loading map file with empty compressed layer data
+* Fixed selection of tile stamp to work on mouse click
+* Fixed tools not being up to date on modifier keys after activation
+* Fixed "Offset Map" action for infinite maps (#1866)
+* Templates view: Keep template centered when resizing view
+* Tile Collision Editor: Keep tile centered when resizing view
+* Tile Collision Editor: Display tool info text in status bar
+* JSON plugin: Fixed reading of infinite maps (#1858)
+* libtiled-java: Fixed some bugs (by Henry Wang, #1840)
+* libtiled-java: Fixed tile offset value not being considered (by digitalhoax, #1863)
+
+### Tiled 1.1.1 (4 January 2018)
+
+* Fixed crash on load for template instances of non-tile objects
+* Windows Installer: Include the Qt SVG image plugin
 
 ### Tiled 1.1.0 (3 January 2018)
 

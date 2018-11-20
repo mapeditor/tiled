@@ -32,6 +32,8 @@
 #include <QPointer>
 #include <QRegion>
 
+#include <memory>
+
 class QModelIndex;
 class QPoint;
 class QRect;
@@ -51,8 +53,11 @@ class WangSet;
 namespace Internal {
 
 class LayerModel;
+class MapDocument;
 class MapObjectModel;
 class TileSelectionModel;
+
+using MapDocumentPtr = QSharedPointer<MapDocument>;
 
 /**
  * Represents an editable map. The purpose of this class is to make sure that
@@ -83,15 +88,17 @@ public:
 
     ~MapDocument() override;
 
+    MapDocumentPtr sharedFromThis() { return qSharedPointerCast<MapDocument>(Document::sharedFromThis()); }
+
     bool save(const QString &fileName, QString *error = nullptr) override;
 
     /**
      * Loads a map and returns a MapDocument instance on success. Returns null
      * on error and sets the \a error message.
      */
-    static MapDocument *load(const QString &fileName,
-                             MapFormat *format,
-                             QString *error = nullptr);
+    static MapDocumentPtr load(const QString &fileName,
+                               MapFormat *format,
+                               QString *error = nullptr);
 
     MapFormat *readerFormat() const;
     void setReaderFormat(MapFormat *format);
@@ -108,7 +115,7 @@ public:
      * Returns the map instance. Be aware that directly modifying the map will
      * not allow the GUI to update itself appropriately.
      */
-    Map *map() const { return mMap; }
+    Map *map() const { return mMap.get(); }
 
     int layerIndex(const Layer *layer) const;
 
@@ -118,6 +125,9 @@ public:
      */
     Layer *currentLayer() const { return mCurrentLayer; }
     void setCurrentLayer(Layer *layer);
+
+    const QList<Layer*> &selectedLayers() const { return mSelectedLayers; }
+    void setSelectedLayers(const QList<Layer*> &layers);
 
     /**
      * Resize this map to the given \a size, while at the same time shifting
@@ -141,18 +151,23 @@ public:
     void rotateSelectedObjects(RotateDirection direction);
 
     Layer *addLayer(Layer::TypeFlag layerType);
-    void groupLayer(Layer *layer);
-    void ungroupLayer(Layer *layer);
-    void duplicateLayer();
-    void mergeLayerDown();
-    void moveLayerUp(Layer *layer);
-    void moveLayerDown(Layer *layer);
-    void removeLayer(Layer *layer);
-    void toggleOtherLayers(Layer *layer);
+    void groupLayers(const QList<Layer *> &layers);
+    void ungroupLayers(const QList<Layer *> &layers);
+    void duplicateLayers(const QList<Layer *> &layers);
+    void mergeLayersDown(const QList<Layer *> &layers);
+    void moveLayersUp(const QList<Layer *> &layers);
+    void moveLayersDown(const QList<Layer *> &layers);
+    void removeLayers(const QList<Layer *> &layers);
+    void toggleOtherLayers(const QList<Layer *> &layers);
+    void toggleLockOtherLayers(const QList<Layer *> &layers);
 
     void insertTileset(int index, const SharedTileset &tileset);
     void removeTilesetAt(int index);
     SharedTileset replaceTileset(int index, const SharedTileset &tileset);
+
+    void paintTileLayers(const Map *map, bool mergeable = false,
+                         QVector<SharedTileset> *missingTilesets = nullptr,
+                         QHash<TileLayer *, QRegion> *paintedRegions = nullptr);
 
     void replaceObjectTemplate(const ObjectTemplate *oldObjectTemplate,
                                const ObjectTemplate *newObjectTemplate);
@@ -176,7 +191,7 @@ public:
     /**
      * Returns the map renderer.
      */
-    MapRenderer *renderer() const { return mRenderer; }
+    MapRenderer *renderer() const { return mRenderer.get(); }
 
     /**
      * Creates the map renderer. Should be called after changing the map
@@ -200,6 +215,8 @@ public:
     const QList<MapObject*> &selectedObjects() const
     { return mSelectedObjects; }
 
+    QList<MapObject*> selectedObjectsOrdered() const;
+
     /**
      * Sets the list of selected objects, emitting the selectedObjectsChanged
      * signal.
@@ -208,10 +225,19 @@ public:
 
     QList<Object*> currentObjects() const override;
 
+    MapObject *hoveredMapObject() const { return mHoveredMapObject; }
+    void setHoveredMapObject(MapObject *object);
+
     void unifyTilesets(Map *map);
     void unifyTilesets(Map *map, QVector<SharedTileset> &missingTilesets);
 
-    void emitEditLayerNameRequested();
+    bool allowHidingObjects() const { return mAllowHidingObjects; }
+    void setAllowHidingObjects(bool value) { mAllowHidingObjects = value; }
+
+    bool allowTileObjects() const { return mAllowTileObjects; }
+    void setAllowTileObjects(bool value) { mAllowTileObjects = value; }
+
+    bool templateAllowed(const ObjectTemplate *objectTemplate) const;
 
 signals:
     /**
@@ -222,9 +248,20 @@ signals:
                              const QRegion &oldSelection);
 
     /**
+     * Emitted when the list of selected layers changes.
+     */
+    void selectedLayersChanged();
+
+    /**
      * Emitted when the list of selected objects changes.
      */
     void selectedObjectsChanged();
+
+    /**
+     * Emitted when the hovered object changes. Use \a previous with caution,
+     * because it may reference an object that was removed.
+     */
+    void hoveredMapObjectChanged(MapObject *object, MapObject *previous);
 
     /**
      * Emitted when the map size or its tile size changes.
@@ -295,6 +332,7 @@ signals:
     void tilesetTileOffsetChanged(Tileset *tileset);
     void tileTypeChanged(Tile *tile);
     void tileImageSourceChanged(Tile *tile);
+    void tileProbabilityChanged(Tile *tile);
 
 private slots:
     void onObjectsRemoved(const QList<MapObject*> &objects);
@@ -311,9 +349,9 @@ private slots:
 public slots:
     void updateTemplateInstances(const ObjectTemplate *objectTemplate);
     void selectAllInstances(const ObjectTemplate *objectTemplate);
+    void deselectObjects(const QList<MapObject*> &objects);
 
 private:
-    void deselectObjects(const QList<MapObject*> &objects);
     void moveObjectIndex(const MapObject *object, int count);
 
     /*
@@ -323,13 +361,17 @@ private:
     QPointer<MapFormat> mReaderFormat;
     QPointer<MapFormat> mWriterFormat;
     QPointer<MapFormat> mExportFormat;
-    Map *mMap;
+    std::unique_ptr<Map> mMap;
     LayerModel *mLayerModel;
     QRegion mSelectedArea;
+    QList<Layer*> mSelectedLayers;
     QList<MapObject*> mSelectedObjects;
-    MapRenderer *mRenderer;
-    Layer* mCurrentLayer;
+    MapObject *mHoveredMapObject;       /**< Map object with mouse on top. */
+    std::unique_ptr<MapRenderer> mRenderer;
+    Layer *mCurrentLayer;
     MapObjectModel *mMapObjectModel;
+    bool mAllowHidingObjects = true;
+    bool mAllowTileObjects = true;
 };
 
 } // namespace Internal

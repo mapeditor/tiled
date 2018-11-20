@@ -38,11 +38,11 @@ public:
 private:
     uint mId;
 
-    friend uint qHash(Id id);
+    friend uint qHash(Id id) Q_DECL_NOTHROW;
 };
 
 
-inline uint qHash(Id id)
+inline uint qHash(Id id) Q_DECL_NOTHROW
 {
     return id.mId;
 }

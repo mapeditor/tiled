@@ -20,8 +20,9 @@
 
 #include "abstracttileselectiontool.h"
 
-#include "mapdocument.h"
+#include "brushitem.h"
 #include "changeselectedarea.h"
+#include "mapdocument.h"
 
 #include <QAction>
 #include <QActionGroup>
@@ -76,7 +77,7 @@ AbstractTileSelectionTool::AbstractTileSelectionTool(const QString &name,
     connect(mIntersect, &QAction::triggered,
             [this]() { mSelectionMode = mDefaultMode = Intersect; });
 
-    languageChanged();
+    AbstractTileSelectionTool::languageChanged();
 }
 
 void AbstractTileSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
@@ -145,4 +146,10 @@ void AbstractTileSelectionTool::populateToolBar(QToolBar *toolBar)
     toolBar->addAction(mAdd);
     toolBar->addAction(mSubtract);
     toolBar->addAction(mIntersect);
+}
+
+// Override to ignore whether the current layer is a visible tile layer
+void AbstractTileSelectionTool::updateBrushVisibility()
+{
+    brushItem()->setVisible(isBrushVisible());
 }

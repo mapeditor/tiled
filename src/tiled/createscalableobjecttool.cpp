@@ -49,7 +49,12 @@ static qreal sign(qreal value)
 void CreateScalableObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt::KeyboardModifiers modifiers)
 {
     const MapRenderer *renderer = mapDocument()->renderer();
-    const QPointF pixelCoords = renderer->screenToPixelCoords(pos);
+    QPointF pixelCoords = renderer->screenToPixelCoords(pos);
+
+    if (state() == Preview) {
+        SnapHelper(renderer, modifiers).snap(pixelCoords);
+        mStartPos = pixelCoords;
+    }
 
     QRectF objectArea(mStartPos, pixelCoords);
 
@@ -66,17 +71,8 @@ void CreateScalableObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos,
     objectArea.setWidth(snapSize.x());
     objectArea.setHeight(snapSize.y());
 
-    mNewMapObjectItem->resizeObject(objectArea.normalized());
-}
-
-void CreateScalableObjectTool::mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event)
-{
-    if (event->button() == Qt::RightButton)
-        cancelNewMapObject();
-}
-
-void CreateScalableObjectTool::mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event)
-{
-    if (event->button() == Qt::LeftButton)
-        finishNewMapObject();
+    // Not using the MapObjectModel because the object is not actually part of
+    // the map yet
+    mNewMapObjectItem->mapObject()->setBounds(objectArea.normalized());
+    mNewMapObjectItem->syncWithMapObject();
 }

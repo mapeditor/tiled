@@ -81,9 +81,17 @@ public:
     SplitPolyline(MapDocument *mapDocument,
                   MapObject *mapObject,
                   int edgeIndex);
+    ~SplitPolyline() override;
 
     void undo() override;
     void redo() override;
+
+    /**
+     * Returns the new polyline object created due to the split.
+     *
+     * @warning Only valid after the command has been performed!
+     */
+    MapObject *secondPolyline() const { return mSecondPolyline; }
 
 private:
     MapDocument *mMapDocument;
@@ -93,6 +101,7 @@ private:
     int mEdgeIndex;
     int mObjectIndex;
     bool mOldChangeState;
+    bool mOwnsSecondPolyline;
 };
 
 } // namespace Internal

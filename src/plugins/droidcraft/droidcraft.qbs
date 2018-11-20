@@ -1,7 +1,7 @@
 import qbs 1.0
 
 TiledPlugin {
-    cpp.defines: ["DROIDCRAFT_LIBRARY"]
+    cpp.defines: base.concat(["DROIDCRAFT_LIBRARY"])
 
     files: [
         "droidcraft_global.h",

@@ -25,6 +25,8 @@
 #include "mapdocument.h"
 #include "map.h"
 
+#include "qtcompat_p.h"
+
 namespace Tiled {
 namespace Internal {
 
@@ -39,6 +41,10 @@ ReparentLayers::ReparentLayers(MapDocument *mapDocument,
     , mLayerParent(layerParent)
     , mIndex(index)
 {
+    // Sort layers by global index (visual order)
+    std::sort(mLayers.begin(), mLayers.end(), [] (Layer *a, Layer *b) {
+        return globalIndex(a) < globalIndex(b);
+    });
 }
 
 void ReparentLayers::undo()
@@ -69,7 +75,7 @@ void ReparentLayers::redo()
 
     int index = mIndex;
 
-    for (auto layer : mLayers) {
+    for (auto layer : qAsConst(mLayers)) {
         UndoInfo undoInfo;
         undoInfo.parent = layer->parentLayer();
         undoInfo.oldIndex = layer->siblingIndex();

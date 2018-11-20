@@ -45,7 +45,7 @@ CommandButton::CommandButton(QWidget *parent)
 
     CommandManager::instance()->registerMenu(mMenu);
 
-    connect(this, SIGNAL(clicked()), SLOT(runCommand()));
+    connect(this, &QAbstractButton::clicked, this, &CommandButton::runCommand);
 }
 
 void CommandButton::runCommand()
@@ -71,7 +71,7 @@ void CommandButton::runCommand()
             msgBox.setEscapeButton(QMessageBox::Ok);
 
             QAbstractButton *button = msgBox.buttons().last();
-            connect(button, SIGNAL(clicked()), SLOT(showDialog()));
+            connect(button, &QAbstractButton::clicked, this, &CommandButton::showDialog);
 
             msgBox.exec();
             return;

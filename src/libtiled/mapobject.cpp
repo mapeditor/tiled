@@ -31,6 +31,7 @@
 #include "mapobject.h"
 
 #include "map.h"
+#include "maprenderer.h"
 #include "objectgroup.h"
 #include "objecttemplate.h"
 #include "tile.h"
@@ -83,11 +84,11 @@ MapObject::MapObject(const QString &name, const QString &type,
                      const QSizeF &size):
     Object(MapObjectType),
     mId(0),
+    mShape(Rectangle),
     mName(name),
     mType(type),
     mPos(pos),
     mSize(size),
-    mShape(Rectangle),
     mObjectTemplate(nullptr),
     mObjectGroup(nullptr),
     mRotation(0.0),
@@ -125,7 +126,10 @@ void MapObject::setTextData(const TextData &textData)
 }
 
 /**
- * Shortcut to getting a QRectF from position() and size() that uses cell tile if present.
+ * Shortcut to getting a QRectF from position() and size() that uses cell tile
+ * if present.
+ *
+ * \deprecated See problems in comment.
  */
 QRectF MapObject::boundsUseTile() const
 {
@@ -145,6 +149,75 @@ QRectF MapObject::boundsUseTile() const
 
     // No tile so just use regular bounds
     return bounds();
+}
+
+static void align(QRectF &r, Alignment alignment)
+{
+    r.translate(-alignmentOffset(r, alignment));
+}
+
+/**
+ * Returns the bounds of the object in screen space when using the given
+ * \a renderer. Does not take into account rotation!
+ *
+ * This is slightly different from the bounds that should be used when
+ * rendering the object, which are returned by the MapRenderer::boundingRect
+ * function.
+ *
+ * \todo Look into unduplicating this code, which is also present in
+ * objectselectiontool.cpp in very similar form (objectBounds).
+ */
+QRectF MapObject::screenBounds(const MapRenderer &renderer) const
+{
+    if (!mCell.isEmpty()) {
+        // Tile objects can have a tile offset, which is scaled along with the image
+        QSizeF imgSize;
+        QPoint tileOffset;
+
+        if (const Tile *tile = mCell.tile()) {
+            imgSize = tile->size();
+            tileOffset = tile->offset();
+        } else {
+            imgSize = size();
+        }
+
+        const QPointF position = renderer.pixelToScreenCoords(mPos);
+        const QSizeF objectSize = size();
+        const qreal scaleX = imgSize.width() > 0 ? objectSize.width() / imgSize.width() : 0;
+        const qreal scaleY = imgSize.height() > 0 ? objectSize.height() / imgSize.height() : 0;
+
+        QRectF bounds(position.x() + (tileOffset.x() * scaleX),
+                      position.y() + (tileOffset.y() * scaleY),
+                      objectSize.width(),
+                      objectSize.height());
+
+        align(bounds, alignment());
+
+        return bounds;
+    } else {
+        switch (mShape) {
+        case MapObject::Ellipse:
+        case MapObject::Rectangle: {
+            QRectF bounds(this->bounds());
+            align(bounds, alignment());
+            QPolygonF screenPolygon = renderer.pixelToScreenCoords(bounds);
+            return screenPolygon.boundingRect();
+        }
+        case MapObject::Point:
+            return renderer.shape(this).boundingRect();
+        case MapObject::Polygon:
+        case MapObject::Polyline: {
+            // Alignment is irrelevant for polygon objects since they have no size
+            const QPolygonF polygon = mPolygon.translated(mPos);
+            QPolygonF screenPolygon = renderer.pixelToScreenCoords(polygon);
+            return screenPolygon.boundingRect();
+        }
+        case MapObject::Text:
+            return renderer.boundingRect(this);
+        }
+    }
+
+    return QRectF();
 }
 
 /*
@@ -185,7 +258,7 @@ QVariant MapObject::mapObjectProperty(Property property) const
     case SizeProperty:          return mSize;
     case RotationProperty:      return mRotation;
     case CellProperty:          Q_ASSERT(false); break;
-    case ShapeProperty:         Q_ASSERT(false); break;
+    case ShapeProperty:         return mShape;
     }
     return QVariant();
 }
@@ -197,16 +270,14 @@ void MapObject::setMapObjectProperty(Property property, const QVariant &value)
     case TypeProperty:          mType = value.toString(); break;
     case VisibleProperty:       mVisible = value.toBool(); break;
     case TextProperty:          mTextData.text = value.toString(); break;
-    case TextFontProperty:
-        mTextData.font = value.value<QFont>();
-        break;
+    case TextFontProperty:      mTextData.font = value.value<QFont>(); break;
     case TextAlignmentProperty: mTextData.alignment = value.value<Qt::Alignment>(); break;
     case TextWordWrapProperty:  mTextData.wordWrap = value.toBool(); break;
     case TextColorProperty:     mTextData.color = value.value<QColor>(); break;
     case SizeProperty:          mSize = value.toSizeF(); break;
     case RotationProperty:      mRotation = value.toReal(); break;
     case CellProperty:          Q_ASSERT(false); break;
-    case ShapeProperty:         Q_ASSERT(false); break;
+    case ShapeProperty:         mShape = value.value<Shape>(); break;
     }
 }
 
@@ -287,7 +358,6 @@ const MapObject *MapObject::templateObject() const
 void MapObject::syncWithTemplate()
 {
     const MapObject *base = templateObject();
-
     if (!base)
         return;
 
@@ -316,6 +386,22 @@ void MapObject::syncWithTemplate()
 
     if (!propertyChanged(MapObject::VisibleProperty))
         setVisible(base->isVisible());
+}
+
+void MapObject::detachFromTemplate()
+{
+    // Can't detach when template object not loaded
+    const MapObject *base = templateObject();
+    if (!base)
+        return;
+
+    // All non-overridden properties are already synchronized, so we only need
+    // to merge the custom properties.
+    Properties newProperties = base->properties();
+    newProperties.merge(properties());
+    setProperties(newProperties);
+
+    setObjectTemplate(nullptr);
 }
 
 void MapObject::flipRectObject(const QTransform &flipTransform)

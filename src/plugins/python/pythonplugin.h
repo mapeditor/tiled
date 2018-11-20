@@ -63,7 +63,7 @@ class Q_DECL_EXPORT PythonPlugin : public Tiled::Plugin
 
 public:
     PythonPlugin();
-    ~PythonPlugin();
+    ~PythonPlugin() override;
 
     void initialize() override;
 
@@ -88,7 +88,7 @@ private:
 };
 
 
-// Class exposed for python scripts to extend
+// Class exposed for Python scripts to extend
 class PythonScript {
 public:
     // perhaps provide default that throws NotImplementedError
@@ -133,7 +133,7 @@ private:
 
 } // namespace Python
 
-PyMODINIT_FUNC inittiled(void);
+PyMODINIT_FUNC PyInit_tiled(void);
 extern int _wrap_convert_py2c__Tiled__Map___star__(PyObject *obj, Tiled::Map * *address);
 extern PyObject* _wrap_convert_c2py__Tiled__Map_const(Tiled::Map const *cvalue);
 extern PyObject* _wrap_convert_c2py__Tiled__LoggingInterface(Tiled::LoggingInterface *cvalue);

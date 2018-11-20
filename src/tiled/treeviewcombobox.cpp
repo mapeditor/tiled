@@ -101,23 +101,30 @@ void TreeViewComboBox::wheelEvent(QWheelEvent *e)
 
 void TreeViewComboBox::keyPressEvent(QKeyEvent *e)
 {
+    QModelIndex index;
+
     if (e->key() == Qt::Key_Up || e->key() == Qt::Key_PageUp) {
-        setCurrentModelIndex(indexAbove(m_view->currentIndex()));
+        index = indexAbove(m_view->currentIndex());
     } else if (e->key() == Qt::Key_Down || e->key() == Qt::Key_PageDown) {
-        setCurrentModelIndex(indexBelow(m_view->currentIndex()));
+        index = indexBelow(m_view->currentIndex());
     } else if (e->key() == Qt::Key_Home) {
-        QModelIndex index = m_view->model()->index(0, 0);
+        index = m_view->model()->index(0, 0);
         if (index.isValid() && !(model()->flags(index) & Qt::ItemIsSelectable))
             index = indexBelow(index);
-        setCurrentModelIndex(index);
     } else if (e->key() == Qt::Key_End) {
-        QModelIndex index = lastIndex(m_view->rootIndex());
+        index = lastIndex(m_view->rootIndex());
         if (index.isValid() && !(model()->flags(index) & Qt::ItemIsSelectable))
             index = indexAbove(index);
-        setCurrentModelIndex(index);
     } else {
         QComboBox::keyPressEvent(e);
         return;
+    }
+
+    if (index.isValid()) {
+        setCurrentModelIndex(index);
+
+        // for compatibility we emit activated with a useless row parameter
+        emit activated(index.row());
     }
 
     e->accept();

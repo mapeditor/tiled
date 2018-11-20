@@ -36,18 +36,17 @@ int WangTemplateModel::rowCount(const QModelIndex &parent) const
     if (parent.isValid())
         return 0;
 
-    if (mWangSet) {
-        int rows = mWangSet->edgeColorCount() * mWangSet->cornerColorCount();
-        rows *= rows;
-        rows *= rows;
-        rows &= ~(1<<31);
-
-        //arbitrary large cap on how many rows can be displayed.
-        //could eventually be moved to pagination...
-        return std::min(rows, 0xffff);
-    } else {
+    if (!mWangSet)
         return 0;
-    }
+
+    int rows = mWangSet->edgeColorCount() * mWangSet->cornerColorCount();
+    rows *= rows;
+    rows *= rows;
+    rows &= ~(1 << 31);
+
+    // arbitrary large cap on how many rows can be displayed.
+    // could eventually be moved to pagination...
+    return std::min(rows, 0xffff);
 }
 
 QVariant WangTemplateModel::data(const QModelIndex &index, int role) const

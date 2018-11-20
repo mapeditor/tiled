@@ -66,10 +66,10 @@ FlipMapObjects::FlipMapObjects(MapDocument *mapDocument,
         }
 
         mOldCellStates.append(object->propertyChanged(MapObject::CellProperty));
-        mNewCellStates.append(true);;
+        mNewCellStates.append(true);
 
         mOldRotationStates.append(object->propertyChanged(MapObject::RotationProperty));
-        mNewRotationStates.append(true);;
+        mNewRotationStates.append(true);
     }
     mObjectsCenter = boundaryObjectsRect.center();
 }

@@ -31,7 +31,6 @@
 #include <QFileInfo>
 #include <QImage>
 #include <QMessageBox>
-#include <QScopedPointer>
 #include <QSettings>
 #include <QCheckBox>
 
@@ -68,7 +67,9 @@ NewTilesetDialog::NewTilesetDialog(QWidget *parent) :
     mNameWasEdited(false)
 {
     mUi->setupUi(this);
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+#endif
 
     // Restore previously used settings
     QSettings *s = Preferences::instance()->settings();
@@ -93,15 +94,16 @@ NewTilesetDialog::NewTilesetDialog(QWidget *parent) :
     mUi->spacing->setValue(spacing);
     mUi->margin->setValue(margin);
 
-    connect(mUi->browseButton, SIGNAL(clicked()), SLOT(browse()));
-    connect(mUi->name, SIGNAL(textEdited(QString)), SLOT(nameEdited(QString)));
-    connect(mUi->name, SIGNAL(textChanged(QString)), SLOT(updateOkButton()));
+    connect(mUi->browseButton, &QAbstractButton::clicked, this, &NewTilesetDialog::browse);
+    connect(mUi->name, &QLineEdit::textEdited, this, &NewTilesetDialog::nameEdited);
+    connect(mUi->name, &QLineEdit::textChanged, this, &NewTilesetDialog::updateOkButton);
     connect(mUi->embedded, &QCheckBox::toggled, this, &NewTilesetDialog::updateOkButton);
-    connect(mUi->image, SIGNAL(textChanged(QString)), SLOT(updateOkButton()));
+    connect(mUi->image, &QLineEdit::textChanged, this, &NewTilesetDialog::updateOkButton);
     connect(mUi->image, &QLineEdit::textChanged, this, &NewTilesetDialog::updateColorPickerButton);
     connect(mUi->useTransparentColor, &QCheckBox::toggled, this, &NewTilesetDialog::updateColorPickerButton);
-    connect(mUi->tilesetType, SIGNAL(currentIndexChanged(int)), SLOT(tilesetTypeChanged(int)));
-    connect(mUi->dropperButton, SIGNAL(clicked(bool)), SLOT(pickColorFromImage()));
+    connect(mUi->tilesetType, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+            this, &NewTilesetDialog::tilesetTypeChanged);
+    connect(mUi->dropperButton, &QAbstractButton::clicked, this, &NewTilesetDialog::pickColorFromImage);
     mUi->imageGroupBox->setVisible(tilesetType == 0);
     updateOkButton();
 }
@@ -331,7 +333,8 @@ void NewTilesetDialog::pickColorFromImage()
     auto *popup = new ImageColorPickerWidget(mUi->dropperButton);
     popup->setAttribute(Qt::WA_DeleteOnClose);
 
-    connect(popup, SIGNAL(colorSelected(QColor)), SLOT(colorSelected(QColor)));
+    connect(popup, &ImageColorPickerWidget::colorSelected,
+            this, &NewTilesetDialog::colorSelected);
 
     if (!popup->selectColor(mUi->image->text()))
         delete popup;

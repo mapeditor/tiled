@@ -28,6 +28,7 @@
 #include "map.h"
 #include "mapobject.h"
 #include "objectgroup.h"
+#include "objecttemplate.h"
 #include "properties.h"
 #include "savefile.h"
 #include "terrain.h"
@@ -54,7 +55,7 @@ namespace Lua {
 class LuaWriter
 {
 public:
-    LuaWriter(const QDir &dir)
+    explicit LuaWriter(const QDir &dir)
         : mDir(dir)
     {}
 
@@ -190,7 +191,7 @@ void LuaWriter::writeMap(LuaTableWriter &writer, const Map *map)
 {
     writer.writeStartReturnTable();
 
-    writer.writeKeyAndValue("version", "1.1");
+    writer.writeKeyAndValue("version", "1.2");
     writer.writeKeyAndValue("luaversion", "5.1");
     writer.writeKeyAndValue("tiledversion", QCoreApplication::applicationVersion());
 
@@ -203,6 +204,7 @@ void LuaWriter::writeMap(LuaTableWriter &writer, const Map *map)
     writer.writeKeyAndValue("height", map->height());
     writer.writeKeyAndValue("tilewidth", map->tileWidth());
     writer.writeKeyAndValue("tileheight", map->tileHeight());
+    writer.writeKeyAndValue("nextlayerid", map->nextLayerId());
     writer.writeKeyAndValue("nextobjectid", map->nextObjectId());
 
     if (map->orientation() == Map::Hexagonal)
@@ -266,7 +268,7 @@ static bool includeTile(const Tile *tile)
         return true;
     if (tile->terrain() != 0xFFFFFFFF)
         return true;
-    if (tile->probability() != 1.f)
+    if (tile->probability() != 1.0)
         return true;
 
     return false;
@@ -275,10 +277,16 @@ static bool includeTile(const Tile *tile)
 void LuaWriter::writeTileset(LuaTableWriter &writer, const Tileset &tileset,
                              unsigned firstGid, bool embedded)
 {
-    if (embedded)
+    if (embedded) {
         writer.writeStartTable();
-    else
+    } else {
         writer.writeStartReturnTable();
+
+        // Include version in external tilesets
+        writer.writeKeyAndValue("version", "1.2");
+        writer.writeKeyAndValue("luaversion", "5.1");
+        writer.writeKeyAndValue("tiledversion", QCoreApplication::applicationVersion());
+    }
 
     writer.writeKeyAndValue("name", tileset.name());
     if (embedded)
@@ -296,6 +304,7 @@ void LuaWriter::writeTileset(LuaTableWriter &writer, const Tileset &tileset,
     writer.writeKeyAndValue("tileheight", tileset.tileHeight());
     writer.writeKeyAndValue("spacing", tileset.tileSpacing());
     writer.writeKeyAndValue("margin", tileset.margin());
+    writer.writeKeyAndValue("columns", tileset.columnCount());
 
     if (!tileset.imageSource().isEmpty()) {
         const QString rel = toFileReference(tileset.imageSource(), mDir);
@@ -378,7 +387,7 @@ void LuaWriter::writeTileset(LuaTableWriter &writer, const Tileset &tileset,
             writer.setSuppressNewlines(false);
         }
 
-        if (tile->probability() != 1.f)
+        if (tile->probability() != 1.0)
             writer.writeKeyAndValue("probability", tile->probability());
 
         if (ObjectGroup *objectGroup = tile->objectGroup())
@@ -435,6 +444,7 @@ void LuaWriter::writeTileLayer(LuaTableWriter &writer,
     writer.writeStartTable();
 
     writer.writeKeyAndValue("type", "tilelayer");
+    writer.writeKeyAndValue("id", tileLayer->id());
     writer.writeKeyAndValue("name", tileLayer->name());
     writer.writeKeyAndValue("x", tileLayer->x());
     writer.writeKeyAndValue("y", tileLayer->y());
@@ -533,6 +543,8 @@ void LuaWriter::writeObjectGroup(LuaTableWriter &writer,
         writer.writeStartTable(key);
 
     writer.writeKeyAndValue("type", "objectgroup");
+    if (objectGroup->id() != 0)
+        writer.writeKeyAndValue("id", objectGroup->id());
     writer.writeKeyAndValue("name", objectGroup->name());
     writer.writeKeyAndValue("visible", objectGroup->isVisible());
     writer.writeKeyAndValue("opacity", objectGroup->opacity());
@@ -559,6 +571,7 @@ void LuaWriter::writeImageLayer(LuaTableWriter &writer,
     writer.writeStartTable();
 
     writer.writeKeyAndValue("type", "imagelayer");
+    writer.writeKeyAndValue("id", imageLayer->id());
     writer.writeKeyAndValue("name", imageLayer->name());
     writer.writeKeyAndValue("visible", imageLayer->isVisible());
     writer.writeKeyAndValue("opacity", imageLayer->opacity());
@@ -587,6 +600,7 @@ void LuaWriter::writeGroupLayer(LuaTableWriter &writer,
     writer.writeStartTable();
 
     writer.writeKeyAndValue("type", "group");
+    writer.writeKeyAndValue("id", groupLayer->id());
     writer.writeKeyAndValue("name", groupLayer->name());
     writer.writeKeyAndValue("visible", groupLayer->isVisible());
     writer.writeKeyAndValue("opacity", groupLayer->opacity());
@@ -655,7 +669,14 @@ void LuaWriter::writeMapObject(LuaTableWriter &writer,
         break;
     }
 
-    writeProperties(writer, mapObject->properties());
+    if (const MapObject *base = mapObject->templateObject()) {
+        // Include template properties
+        Properties props = base->properties();
+        props.merge(mapObject->properties());
+        writeProperties(writer, props);
+    } else {
+        writeProperties(writer, mapObject->properties());
+    }
 
     writer.writeEndTable();
 }
@@ -765,6 +786,8 @@ void LuaWriter::writeTextProperties(LuaTableWriter &writer, const MapObject *map
             writer.writeKeyAndValue("halign", "center");
         else if (textData.alignment.testFlag(Qt::AlignRight))
             writer.writeKeyAndValue("halign", "right");
+        else if (textData.alignment.testFlag(Qt::AlignJustify))
+            writer.writeKeyAndValue("halign", "justify");
     }
 
     if (!textData.alignment.testFlag(Qt::AlignTop)) {

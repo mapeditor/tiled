@@ -32,14 +32,15 @@ class QtVariantPropertyManager;
 
 namespace Tiled {
 
-class Object;
+class GroupLayer;
 class ImageLayer;
 class Layer;
 class Map;
 class MapObject;
+class Object;
 class ObjectGroup;
-class TileLayer;
 class Tile;
+class TileLayer;
 class Tileset;
 
 namespace Internal {
@@ -106,6 +107,7 @@ private slots:
     void propertyChanged(Object *object, const QString &name);
     void propertiesChanged(Object *object);
     void selectedObjectsChanged();
+    void selectedLayersChanged();
     void selectedTilesChanged();
 
     void objectTypesChanged();
@@ -180,10 +182,11 @@ private:
     void applyMapObjectValue(PropertyId id, const QVariant &val);
     QUndoCommand *applyMapObjectValueTo(PropertyId id, const QVariant &val, MapObject *mapObject);
     void applyLayerValue(PropertyId id, const QVariant &val);
-    void applyTileLayerValue(PropertyId id, const QVariant &val);
-    void applyObjectGroupValue(PropertyId id, const QVariant &val);
-    void applyImageLayerValue(PropertyId id, const QVariant &val);
-    void applyGroupLayerValue(PropertyId id, const QVariant &val);
+    QUndoCommand *applyLayerValueTo(PropertyId id, const QVariant &val, Layer *layer);
+    QUndoCommand *applyTileLayerValueTo(PropertyId id, const QVariant &val, TileLayer *tileLayer);
+    QUndoCommand *applyObjectGroupValueTo(PropertyId id, const QVariant &val, ObjectGroup *objectGroup);
+    QUndoCommand *applyImageLayerValueTo(PropertyId id, const QVariant &val, ImageLayer *imageLayer);
+    QUndoCommand *applyGroupLayerValueTo(PropertyId id, const QVariant &val, GroupLayer *groupLayer);
     void applyTilesetValue(PropertyId id, const QVariant &val);
     void applyTileValue(PropertyId id, const QVariant &val);
     void applyTerrainValue(PropertyId id, const QVariant &val);

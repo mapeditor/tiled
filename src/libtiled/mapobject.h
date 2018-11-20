@@ -43,18 +43,13 @@
 
 namespace Tiled {
 
+class MapRenderer;
 class ObjectGroup;
 class ObjectTemplate;
 class Tile;
 
 struct TILEDSHARED_EXPORT TextData
 {
-    enum FontAttributes {
-        FontFamily  = 0x1,
-        FontSize    = 0x2,
-        FontStyle   = 0x8
-    };
-
     TextData();
 
     QString text;
@@ -173,6 +168,7 @@ public:
 
     QRectF bounds() const;
     QRectF boundsUseTile() const;
+    QRectF screenBounds(const MapRenderer &renderer) const;
 
     const Cell &cell() const;
     void setCell(const Cell &cell);
@@ -208,6 +204,7 @@ public:
     const MapObject *templateObject() const;
 
     void syncWithTemplate();
+    void detachFromTemplate();
 
     bool isTemplateInstance() const;
 
@@ -220,20 +217,20 @@ private:
     void flipTileObject(const QTransform &flipTransform);
 
     int mId;
+    Shape mShape;
     QString mName;
     QString mType;
     QPointF mPos;
     QSizeF mSize;
     TextData mTextData;
     QPolygonF mPolygon;
-    Shape mShape;
     Cell mCell;
     const ObjectTemplate *mObjectTemplate;
     ObjectGroup *mObjectGroup;
     qreal mRotation;
     bool mVisible;
-    ChangedProperties mChangedProperties;
     bool mTemplateBase;
+    ChangedProperties mChangedProperties;
 };
 
 /**
@@ -490,10 +487,14 @@ inline MapObject::ChangedProperties MapObject::changedProperties() const
 
 inline void MapObject::setPropertyChanged(Property property, bool state)
 {
+#if QT_VERSION >= 0x050700
+    mChangedProperties.setFlag(property, state);
+#else
     if (state)
         mChangedProperties |= property;
     else
         mChangedProperties &= ~property;
+#endif
 }
 
 inline bool MapObject::propertyChanged(Property property) const
@@ -510,8 +511,5 @@ inline void MapObject::markAsTemplateBase()
 
 } // namespace Tiled
 
-#if QT_VERSION < 0x050500
-Q_DECLARE_METATYPE(Qt::Alignment)
-#endif
-
+Q_DECLARE_METATYPE(Tiled::MapObject::Shape)
 Q_DECLARE_METATYPE(Tiled::MapObject*)

@@ -438,7 +438,9 @@ void MapObjectModel::tileTypeChanged(Tile *tile)
     }
 }
 
-void MapObjectModel::emitObjectsChanged(const QList<MapObject *> &objects, const QList<Column> &columns)
+void MapObjectModel::emitObjectsChanged(const QList<MapObject *> &objects,
+                                        const QList<Column> &columns,
+                                        const QVector<int> &roles)
 {
     emit objectsChanged(objects);
     if (columns.isEmpty())
@@ -446,7 +448,9 @@ void MapObjectModel::emitObjectsChanged(const QList<MapObject *> &objects, const
 
     auto minMaxPair = std::minmax_element(columns.begin(), columns.end());
     for (auto object : objects) {
-        emit dataChanged(index(object, *minMaxPair.first), index(object, *minMaxPair.second));
+        emit dataChanged(index(object, *minMaxPair.first),
+                         index(object, *minMaxPair.second),
+                         roles);
     }
 }
 

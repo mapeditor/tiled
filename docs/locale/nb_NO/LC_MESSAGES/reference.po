@@ -8,19 +8,21 @@ msgstr ""
 "Project-Id-Version: Tiled 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-12-21 14:31+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
+"PO-Revision-Date: 2018-01-04 22:04+0000\n"
+"Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
+"Language-Team: Norwegian Bokmål "
+"<https://hosted.weblate.org/projects/tiled/reference/nb_NO/>\n"
 "Language: nb_NO\n"
-"Language-Team: none\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 2.19-dev\n"
 "Generated-By: Babel 2.5.1\n"
 
 #: ../../reference/json-map-format.rst:2
 msgid "JSON Map Format"
-msgstr ""
+msgstr "JSON-kartformat"
 
 #: ../../reference/json-map-format.rst:4
 msgid ""
@@ -41,7 +43,7 @@ msgstr ""
 
 #: ../../reference/json-map-format.rst:14
 msgid "Map"
-msgstr ""
+msgstr "Kart"
 
 #: ../../reference/json-map-format.rst:17
 #: ../../reference/json-map-format.rst:82
@@ -50,7 +52,7 @@ msgstr ""
 #: ../../reference/json-map-format.rst:453
 #: ../../reference/json-map-format.rst:493
 msgid "Field"
-msgstr ""
+msgstr "Felt"
 
 #: ../../reference/json-map-format.rst:17
 #: ../../reference/json-map-format.rst:82
@@ -59,7 +61,7 @@ msgstr ""
 #: ../../reference/json-map-format.rst:453
 #: ../../reference/json-map-format.rst:493
 msgid "Type"
-msgstr ""
+msgstr "Type"
 
 #: ../../reference/json-map-format.rst:17
 #: ../../reference/json-map-format.rst:82
@@ -68,11 +70,11 @@ msgstr ""
 #: ../../reference/json-map-format.rst:453
 #: ../../reference/json-map-format.rst:493
 msgid "Description"
-msgstr ""
+msgstr "Beskrivelse"
 
 #: ../../reference/json-map-format.rst:19
 msgid "backgroundcolor"
-msgstr ""
+msgstr "bakgrunnsfarge"
 
 #: ../../reference/json-map-format.rst:19
 #: ../../reference/json-map-format.rst:29
@@ -89,7 +91,7 @@ msgstr ""
 #: ../../reference/json-map-format.rst:417
 #: ../../reference/json-map-format.rst:495
 msgid "string"
-msgstr ""
+msgstr "streng"
 
 #: ../../reference/json-map-format.rst:19
 msgid "Hex-formatted color (#RRGGBB or #AARRGGBB) (optional)"
@@ -99,7 +101,7 @@ msgstr ""
 #: ../../reference/json-map-format.rst:88
 #: ../../reference/json-map-format.rst:166
 msgid "height"
-msgstr ""
+msgstr "høyde"
 
 #: ../../reference/json-map-format.rst:21
 #: ../../reference/json-map-format.rst:27
@@ -132,11 +134,11 @@ msgstr ""
 
 #: ../../reference/json-map-format.rst:21
 msgid "Number of tile rows"
-msgstr ""
+msgstr "Antall flisrader"
 
 #: ../../reference/json-map-format.rst:23
 msgid "infinite"
-msgstr ""
+msgstr "uendelig"
 
 #: ../../reference/json-map-format.rst:23
 #: ../../reference/json-map-format.rst:102
@@ -144,16 +146,16 @@ msgstr ""
 #: ../../reference/json-map-format.rst:172
 #: ../../reference/json-map-format.rst:186
 msgid "bool"
-msgstr ""
+msgstr "boolsk"
 
 #: ../../reference/json-map-format.rst:23
 msgid "Whether the map has infinite dimensions"
-msgstr ""
+msgstr "Hvorvidt kartet har uendelige dimensjoner"
 
 #: ../../reference/json-map-format.rst:25
 #: ../../reference/json-map-format.rst:90
 msgid "layers"
-msgstr ""
+msgstr "lag"
 
 #: ../../reference/json-map-format.rst:25
 #: ../../reference/json-map-format.rst:40
@@ -190,7 +192,7 @@ msgstr ""
 #: ../../reference/json-map-format.rst:178
 #: ../../reference/json-map-format.rst:396
 msgid "properties"
-msgstr ""
+msgstr "egenskaper"
 
 #: ../../reference/json-map-format.rst:32
 #: ../../reference/json-map-format.rst:94
@@ -204,7 +206,7 @@ msgstr ""
 #: ../../reference/json-map-format.rst:410
 #: ../../reference/json-map-format.rst:412
 msgid "object"
-msgstr ""
+msgstr "objekt"
 
 #: ../../reference/json-map-format.rst:32
 #: ../../reference/json-map-format.rst:178
@@ -228,12 +230,12 @@ msgstr ""
 
 #: ../../reference/json-map-format.rst:36
 msgid "The Tiled version used to save the file"
-msgstr ""
+msgstr "Tiled-versjon brukt til lagring av fil"
 
 #: ../../reference/json-map-format.rst:38
 #: ../../reference/json-map-format.rst:406
 msgid "tileheight"
-msgstr ""
+msgstr "flishøyde"
 
 #: ../../reference/json-map-format.rst:38
 msgid "Map grid height"
@@ -241,7 +243,7 @@ msgstr ""
 
 #: ../../reference/json-map-format.rst:40
 msgid "tilesets"
-msgstr ""
+msgstr "flissett"
 
 #: ../../reference/json-map-format.rst:40
 msgid "Array of :ref:`tilesets <json-tileset>`"
@@ -250,18 +252,18 @@ msgstr ""
 #: ../../reference/json-map-format.rst:42
 #: ../../reference/json-map-format.rst:415
 msgid "tilewidth"
-msgstr ""
+msgstr "flisbredde"
 
 #: ../../reference/json-map-format.rst:42
 msgid "Map grid width"
-msgstr ""
+msgstr "Bredde på kartets rutenett"
 
 #: ../../reference/json-map-format.rst:44
 #: ../../reference/json-map-format.rst:100
 #: ../../reference/json-map-format.rst:184
 #: ../../reference/json-map-format.rst:417
 msgid "type"
-msgstr ""
+msgstr "typw"
 
 #: ../../reference/json-map-format.rst:44
 msgid "``map`` (since 1.0)"
@@ -269,37 +271,37 @@ msgstr ""
 
 #: ../../reference/json-map-format.rst:46
 msgid "version"
-msgstr ""
+msgstr "versjon"
 
 #: ../../reference/json-map-format.rst:46
 msgid "number"
-msgstr ""
+msgstr "nummer"
 
 #: ../../reference/json-map-format.rst:46
 msgid "The JSON format version"
-msgstr ""
+msgstr "JSON-formatversjon"
 
 #: ../../reference/json-map-format.rst:48
 #: ../../reference/json-map-format.rst:104
 #: ../../reference/json-map-format.rst:188
 msgid "width"
-msgstr ""
+msgstr "bredde"
 
 #: ../../reference/json-map-format.rst:48
 msgid "Number of tile columns"
-msgstr ""
+msgstr "Antall fliskolonner"
 
 #: ../../reference/json-map-format.rst:52
 msgid "Map Example"
-msgstr ""
+msgstr "Karteksempel"
 
 #: ../../reference/json-map-format.rst:79
 msgid "Layer"
-msgstr ""
+msgstr "Lag"
 
 #: ../../reference/json-map-format.rst:84
 msgid "data"
-msgstr ""
+msgstr "data"
 
 #: ../../reference/json-map-format.rst:84
 msgid "Array of GIDs. ``tilelayer`` only."
@@ -326,15 +328,15 @@ msgstr ""
 #: ../../reference/json-map-format.rst:394
 #: ../../reference/json-map-format.rst:495
 msgid "name"
-msgstr ""
+msgstr "navn"
 
 #: ../../reference/json-map-format.rst:92
 msgid "Name assigned to this layer"
-msgstr ""
+msgstr "Navn tildelt dette laget"
 
 #: ../../reference/json-map-format.rst:94
 msgid "objects"
-msgstr ""
+msgstr "objekter"
 
 #: ../../reference/json-map-format.rst:94
 msgid "Array of :ref:`objects <json-object>`. ``objectgroup`` only."
@@ -342,7 +344,7 @@ msgstr ""
 
 #: ../../reference/json-map-format.rst:96
 msgid "opacity"
-msgstr ""
+msgstr "dekkevne"
 
 #: ../../reference/json-map-format.rst:96
 #: ../../reference/json-map-format.rst:180
@@ -351,7 +353,7 @@ msgstr ""
 
 #: ../../reference/json-map-format.rst:96
 msgid "Value between 0 and 1"
-msgstr ""
+msgstr "Verdi mellom 0 og 1"
 
 #: ../../reference/json-map-format.rst:98
 msgid "string key-value pairs."
@@ -364,7 +366,7 @@ msgstr ""
 #: ../../reference/json-map-format.rst:102
 #: ../../reference/json-map-format.rst:186
 msgid "visible"
-msgstr ""
+msgstr "synlig"
 
 #: ../../reference/json-map-format.rst:102
 msgid "Whether layer is shown or hidden in editor"
@@ -377,7 +379,7 @@ msgstr ""
 #: ../../reference/json-map-format.rst:106
 #: ../../reference/json-map-format.rst:190
 msgid "x"
-msgstr ""
+msgstr "x"
 
 #: ../../reference/json-map-format.rst:106
 msgid "Horizontal layer offset in tiles. Always 0."
@@ -386,7 +388,7 @@ msgstr ""
 #: ../../reference/json-map-format.rst:108
 #: ../../reference/json-map-format.rst:192
 msgid "y"
-msgstr ""
+msgstr "y"
 
 #: ../../reference/json-map-format.rst:108
 msgid "Vertical layer offset in tiles. Always 0."
@@ -402,11 +404,11 @@ msgstr ""
 
 #: ../../reference/json-map-format.rst:157
 msgid "Object"
-msgstr ""
+msgstr "Objekt"
 
 #: ../../reference/json-map-format.rst:162
 msgid "ellipse"
-msgstr ""
+msgstr "ellipse"
 
 #: ../../reference/json-map-format.rst:162
 msgid "Used to mark an object as an ellipse"
@@ -467,7 +469,7 @@ msgstr ""
 
 #: ../../reference/json-map-format.rst:182
 msgid "text"
-msgstr ""
+msgstr "tekst"
 
 #: ../../reference/json-map-format.rst:184
 msgid "String assigned to type field in editor"
@@ -491,15 +493,15 @@ msgstr ""
 
 #: ../../reference/json-map-format.rst:196
 msgid "Object Example"
-msgstr ""
+msgstr "Objekteksempel"
 
 #: ../../reference/json-map-format.rst:218
 msgid "Ellipse Example"
-msgstr ""
+msgstr "Ellipseeksempel"
 
 #: ../../reference/json-map-format.rst:236
 msgid "Rectangle Example"
-msgstr ""
+msgstr "Rektangeleksempel"
 
 #: ../../reference/json-map-format.rst:253
 msgid "Point Example"
@@ -515,19 +517,19 @@ msgstr ""
 
 #: ../../reference/json-map-format.rst:351
 msgid "Text Example"
-msgstr ""
+msgstr "Teksteksempel"
 
 #: ../../reference/json-map-format.rst:375
 msgid "Tileset"
-msgstr ""
+msgstr "Flissett"
 
 #: ../../reference/json-map-format.rst:380
 msgid "columns"
-msgstr ""
+msgstr "kolonner"
 
 #: ../../reference/json-map-format.rst:380
 msgid "The number of tile columns in the tileset"
-msgstr ""
+msgstr "Antall kolonner i flissettet"
 
 #: ../../reference/json-map-format.rst:382
 msgid "firstgid"
@@ -539,7 +541,7 @@ msgstr ""
 
 #: ../../reference/json-map-format.rst:384
 msgid "grid"
-msgstr ""
+msgstr "rutenett"
 
 #: ../../reference/json-map-format.rst:384
 msgid "See :ref:`tmx-grid` (optional)"
@@ -547,7 +549,7 @@ msgstr ""
 
 #: ../../reference/json-map-format.rst:386
 msgid "image"
-msgstr ""
+msgstr "bilde"
 
 #: ../../reference/json-map-format.rst:386
 msgid "Image used for tiles in this set"
@@ -555,19 +557,19 @@ msgstr ""
 
 #: ../../reference/json-map-format.rst:388
 msgid "imagewidth"
-msgstr ""
+msgstr "billedbredde"
 
 #: ../../reference/json-map-format.rst:388
 msgid "Width of source image in pixels"
-msgstr ""
+msgstr "Størrelse på kildebildet i piksler"
 
 #: ../../reference/json-map-format.rst:390
 msgid "imageheight"
-msgstr ""
+msgstr "bildehøyde"
 
 #: ../../reference/json-map-format.rst:390
 msgid "Height of source image in pixels"
-msgstr ""
+msgstr "Høyde på kildebildet i piksler"
 
 #: ../../reference/json-map-format.rst:392
 msgid "margin"
@@ -583,7 +585,7 @@ msgstr ""
 
 #: ../../reference/json-map-format.rst:398
 msgid "propertytypes"
-msgstr ""
+msgstr "egenskapstyper"
 
 #: ../../reference/json-map-format.rst:400
 msgid "spacing"
@@ -595,7 +597,7 @@ msgstr ""
 
 #: ../../reference/json-map-format.rst:402
 msgid "terrains"
-msgstr ""
+msgstr "terreng"
 
 #: ../../reference/json-map-format.rst:402
 msgid "Array of :ref:`terrains <json-terrain>` (optional)"
@@ -603,15 +605,15 @@ msgstr ""
 
 #: ../../reference/json-map-format.rst:404
 msgid "tilecount"
-msgstr ""
+msgstr "flisantall"
 
 #: ../../reference/json-map-format.rst:404
 msgid "The number of tiles in this tileset"
-msgstr ""
+msgstr "Antall flis i dette flissettet"
 
 #: ../../reference/json-map-format.rst:406
 msgid "Maximum height of tiles in this set"
-msgstr ""
+msgstr "Maksimal høyde på flis i dette settet"
 
 #: ../../reference/json-map-format.rst:408
 msgid "tileoffset"
@@ -631,7 +633,7 @@ msgstr ""
 
 #: ../../reference/json-map-format.rst:412
 msgid "tiles"
-msgstr ""
+msgstr "flis"
 
 #: ../../reference/json-map-format.rst:412
 msgid "Mapping from tile ID to :ref:`tile <json-tile>` (optional)"
@@ -655,7 +657,7 @@ msgstr ""
 
 #: ../../reference/json-map-format.rst:455
 msgid "terrain"
-msgstr ""
+msgstr "terreng"
 
 #: ../../reference/json-map-format.rst:455
 msgid "index of terrain for each corner of tile"
@@ -679,19 +681,19 @@ msgstr ""
 #: ../../reference/json-map-format.rst:467
 #: ../../reference/json-map-format.rst:500
 msgid "Example:"
-msgstr ""
+msgstr "Eksempel:"
 
 #: ../../reference/json-map-format.rst:490
 msgid "Terrain"
-msgstr ""
+msgstr "Terreng"
 
 #: ../../reference/json-map-format.rst:495
 msgid "Name of terrain"
-msgstr ""
+msgstr "Navn på terreng"
 
 #: ../../reference/json-map-format.rst:497
 msgid "tile"
-msgstr ""
+msgstr "flis"
 
 #: ../../reference/json-map-format.rst:497
 msgid "Local ID of tile representing terrain"
@@ -733,7 +735,7 @@ msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:23
 msgid "Support by Language"
-msgstr ""
+msgstr "Støttet av språket"
 
 #: ../../reference/support-for-tmx-maps.rst:25
 msgid ""
@@ -744,7 +746,7 @@ msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:30
 msgid "C"
-msgstr ""
+msgstr "C"
 
 #: ../../reference/support-for-tmx-maps.rst:32
 msgid ""
@@ -754,7 +756,7 @@ msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:36
 msgid "C++"
-msgstr ""
+msgstr "C++"
 
 #: ../../reference/support-for-tmx-maps.rst:38
 msgid ""
@@ -867,7 +869,7 @@ msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:90
 msgid "D"
-msgstr ""
+msgstr "D"
 
 #: ../../reference/support-for-tmx-maps.rst:92
 msgid ""
@@ -886,7 +888,7 @@ msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:100
 msgid "Go"
-msgstr ""
+msgstr "Go"
 
 #: ../../reference/support-for-tmx-maps.rst:102
 msgid "`github.com/salviati/go-tmx/tmx <https://github.com/salviati/go-tmx>`__"
@@ -894,13 +896,15 @@ msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:105
 msgid "Haskell"
-msgstr ""
+msgstr "Haskell"
 
 #: ../../reference/support-for-tmx-maps.rst:107
 msgid ""
 "`htiled <http://hackage.haskell.org/package/htiled>`__ (TMX) by "
 "`Christian Rødli Amble <https://github.com/chrra>`__."
 msgstr ""
+"`htiled <http://hackage.haskell.org/package/htiled>`__ (TMX) av 'Christian "
+"Rødli Amble <https://github.com/chrra>'__."
 
 #: ../../reference/support-for-tmx-maps.rst:109
 msgid ""
@@ -910,7 +914,7 @@ msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:112
 msgid "Java"
-msgstr ""
+msgstr "Java"
 
 #: ../../reference/support-for-tmx-maps.rst:114
 msgid ""
@@ -939,7 +943,7 @@ msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:126
 msgid "PHP"
-msgstr ""
+msgstr "PHP"
 
 #: ../../reference/support-for-tmx-maps.rst:128
 msgid ""
@@ -969,7 +973,7 @@ msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:144
 msgid "Python"
-msgstr ""
+msgstr "Python"
 
 #: ../../reference/support-for-tmx-maps.rst:146
 msgid ""
@@ -993,7 +997,7 @@ msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:157
 msgid "Vala"
-msgstr ""
+msgstr "Vala"
 
 #: ../../reference/support-for-tmx-maps.rst:159
 msgid ""
@@ -1124,7 +1128,7 @@ msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:232
 msgid "Godot"
-msgstr ""
+msgstr "Godot"
 
 #: ../../reference/support-for-tmx-maps.rst:234
 msgid ""
@@ -1136,7 +1140,7 @@ msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:240
 msgid "Haxe"
-msgstr ""
+msgstr "Haxe"
 
 #: ../../reference/support-for-tmx-maps.rst:242
 msgid "`HaxePunk <https://github.com/HaxePunk/tiled>`__ Tiled Loader for HaxePunk"
@@ -3627,4 +3631,3 @@ msgstr ""
 
 #~ msgid "value: The value of the property."
 #~ msgstr ""
-

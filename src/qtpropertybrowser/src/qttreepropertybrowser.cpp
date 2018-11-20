@@ -53,12 +53,14 @@
 #include <QPalette>
 #include <QScreen>
 
+#ifndef Q_OS_MAC
 static qreal defaultDpiScale()
 {
     if (const QScreen *screen = QGuiApplication::primaryScreen())
         return screen->logicalDotsPerInchX() / 96.0;
     return 1.0;
 }
+#endif
 
 static qreal dpiScaled(qreal value)
 {

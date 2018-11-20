@@ -22,6 +22,7 @@
 
 #include "undocommands.h"
 
+#include <QHash>
 #include <QRegion>
 #include <QUndoCommand>
 
@@ -85,12 +86,18 @@ public:
     bool mergeWith(const QUndoCommand *other) override;
 
 private:
+    struct LayerData
+    {
+        void mergeWith(const LayerData &o);
+
+        TileLayer *mSource = nullptr;
+        TileLayer *mErased = nullptr;
+        int mX, mY;
+        QRegion mPaintedRegion;
+    };
+
     MapDocument *mMapDocument;
-    TileLayer *mTarget;
-    TileLayer *mSource;
-    TileLayer *mErased;
-    int mX, mY;
-    QRegion mPaintedRegion;
+    QHash<TileLayer*, LayerData> mLayerData;
     bool mMergeable;
 };
 

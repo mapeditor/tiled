@@ -46,6 +46,7 @@ private:
     MapObject *mMapObject;
     ObjectGroup *mOldObjectGroup;
     ObjectGroup *mNewObjectGroup;
+    int mOldIndex;
 };
 
 } // namespace Internal

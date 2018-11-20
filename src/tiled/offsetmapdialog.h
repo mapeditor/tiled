@@ -42,7 +42,7 @@ class OffsetMapDialog : public QDialog
 public:
     OffsetMapDialog(MapDocument *mapDocument, QWidget *parent = nullptr);
 
-    ~OffsetMapDialog();
+    ~OffsetMapDialog() override;
 
     QList<Layer*> affectedLayers() const;
     QRect affectedBoundingRect() const;
@@ -51,11 +51,14 @@ public:
     bool wrapX() const;
     bool wrapY() const;
 
+private slots:
+    void boundsSelectionChanged();
+
 private:
     enum LayerSelection {
         AllVisibleLayers,
         AllLayers,
-        SelectedLayer
+        SelectedLayers
     };
 
     enum BoundsSelection {
@@ -64,9 +67,9 @@ private:
     };
 
     LayerSelection layerSelection() const;
-    BoundsSelection boundsSelection() const;
 
-    void disableBoundsSelectionCurrentArea();
+    BoundsSelection boundsSelection() const;
+    void setBoundsSelection(BoundsSelection boundsSelection);
 
     Ui::OffsetMapDialog *mUi;
     MapDocument *mMapDocument;

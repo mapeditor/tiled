@@ -35,7 +35,9 @@ PatreonDialog::PatreonDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::PatreonDialog)
 {
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+#endif
 
     ui->setupUi(this);
 

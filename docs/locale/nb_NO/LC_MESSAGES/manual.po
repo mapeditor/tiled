@@ -6,16 +6,18 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Tiled 1.0\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: bjorn@lindeijer.nl\n"
 "POT-Creation-Date: 2017-12-21 14:31+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
+"PO-Revision-Date: 2018-02-18 07:38+0000\n"
+"Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
+"Language-Team: Norwegian Bokmål "
+"<https://hosted.weblate.org/projects/tiled/manual/nb_NO/>\n"
 "Language: nb_NO\n"
-"Language-Team: none\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 2.19\n"
 "Generated-By: Babel 2.5.1\n"
 
 #: ../../manual/automapping.rst:3
@@ -54,7 +56,7 @@ msgstr ""
 
 #: ../../manual/automapping.rst:23
 msgid "External Links"
-msgstr ""
+msgstr "Eksterne lenker"
 
 #: ../../manual/automapping.rst:25
 msgid ""
@@ -292,13 +294,15 @@ msgstr ""
 
 #: ../../manual/automapping.rst:157 ../../manual/export.rst:164
 msgid "Map Properties"
-msgstr ""
+msgstr "Kartegenskaper"
 
 #: ../../manual/automapping.rst:159
 msgid ""
 "There are three different map properties, which can be used to add "
 "additional information to a **rulefile**:"
 msgstr ""
+"Det er tre forskjellige kartegenskaper, som kan brukes til å legge til "
+"ytterligere informasjon til ei **regelfil**:"
 
 #: ../../manual/automapping.rst:162
 msgid ""
@@ -372,7 +376,7 @@ msgstr ""
 
 #: ../../manual/automapping.rst:204
 msgid "Examples"
-msgstr ""
+msgstr "Eksempler"
 
 #: ../../manual/automapping.rst:206
 msgid ""
@@ -400,7 +404,7 @@ msgstr ""
 #: ../../manual/automapping.rst:463 ../../manual/automapping.rst:496
 #: ../../manual/automapping.rst:543 ../../manual/automapping.rst:593
 msgid "Tile layer"
-msgstr ""
+msgstr "Flislag"
 
 #: ../../manual/automapping.rst:220 ../../manual/automapping.rst:251
 #: ../../manual/automapping.rst:326 ../../manual/automapping.rst:434
@@ -408,7 +412,7 @@ msgstr ""
 #: ../../manual/automapping.rst:543 ../../manual/automapping.rst:593
 #: ../../manual/editing-tilesets.rst:51 ../../manual/using-commands.rst:33
 msgid "Name"
-msgstr ""
+msgstr "Navn"
 
 #: ../../manual/automapping.rst:222 ../../manual/automapping.rst:225
 #: ../../manual/automapping.rst:228 ../../manual/automapping.rst:253
@@ -463,7 +467,7 @@ msgstr ""
 
 #: ../../manual/automapping.rst:291
 msgid "This is what we want to draw."
-msgstr ""
+msgstr "Dette er det vi ønsker å tegne."
 
 #: ../../manual/automapping.rst:295
 msgid "Here we have straight shorelines applied."
@@ -471,11 +475,11 @@ msgstr ""
 
 #: ../../manual/automapping.rst:299
 msgid "Here we have some corners."
-msgstr ""
+msgstr "Her har vi noen hjørner."
 
 #: ../../manual/automapping.rst:303
 msgid "And corners the other way round as well."
-msgstr ""
+msgstr "Og hjørnene andre veien også."
 
 #: ../../manual/automapping.rst:307
 msgid "Here all unwalkable tiles are marked."
@@ -703,6 +707,7 @@ msgstr ""
 #: ../../manual/automapping.rst:492
 msgid "Actually this task is a bunch of rules, but each rule itself is very easy:"
 msgstr ""
+"Denne oppgaven er faktisk en masse regler, men hver regel er veldig enkel:"
 
 #: ../../manual/automapping.rst:502
 msgid "output\\_Collision"
@@ -886,10 +891,12 @@ msgstr ""
 #: ../../manual/automapping.rst:640
 msgid "Keep in mind that the map property applies for all rules on that rule map."
 msgstr ""
+"Ha i minnet at kartegenskapene har innvirkning på alle reglene på det "
+"regelkartet."
 
 #: ../../manual/custom-properties.rst:2
 msgid "Custom Properties"
-msgstr ""
+msgstr "Egendefinerte egenskaper"
 
 #: ../../manual/custom-properties.rst:4
 msgid ""
@@ -909,11 +916,11 @@ msgstr ""
 
 #: ../../manual/custom-properties.rst:17
 msgid "Properties View"
-msgstr ""
+msgstr "Visning av egenskaper"
 
 #: ../../manual/custom-properties.rst:20
 msgid "Adding Properties"
-msgstr ""
+msgstr "Tillegg av egenskaper"
 
 #: ../../manual/custom-properties.rst:22
 msgid ""
@@ -921,6 +928,9 @@ msgid ""
 "Properties view), you are prompted for its name and its type. Currently "
 "Tiled supports the following basic property types:"
 msgstr ""
+"Når du legger til en egenskap (ved bruk av \"+\"-knappen i bunen av "
+"egenskapsvisningen), blir du spurt om dens navn og type. Tiled støtter for "
+"tiden følgende grunnleggende egenskapstyper:"
 
 #: ../../manual/custom-properties.rst:26
 msgid "**string** (any text, including multi-line text)"
@@ -1109,7 +1119,7 @@ msgstr ""
 
 #: ../../manual/editing-tile-layers.rst:2
 msgid "Editing Tile Layers"
-msgstr ""
+msgstr "Redigering av flislag"
 
 #: ../../manual/editing-tile-layers.rst:4
 msgid ""
@@ -1218,8 +1228,9 @@ msgstr ""
 
 #: ../../manual/editing-tile-layers.rst:86 ../../manual/using-wang-tiles.rst:99
 #: ../../manual/using-wang-tiles.rst:106
+#, fuzzy
 msgid "Wang Brush"
-msgstr ""
+msgstr "Wang-pensel"
 
 #: ../../manual/editing-tile-layers.rst:88
 msgid "Shortcut: ``G``"
@@ -1258,7 +1269,7 @@ msgstr ""
 
 #: ../../manual/editing-tile-layers.rst:106
 msgid "Bucket Fill Tool"
-msgstr ""
+msgstr "Bøttefyllingsverktøy"
 
 #: ../../manual/editing-tile-layers.rst:108
 msgid "Shortcut: ``F``"
@@ -1288,7 +1299,7 @@ msgstr ""
 
 #: ../../manual/editing-tile-layers.rst:126
 msgid "Eraser"
-msgstr ""
+msgstr "Hviskelær"
 
 #: ../../manual/editing-tile-layers.rst:128 ../../manual/objects.rst:251
 msgid "Shortcut: ``E``"
@@ -1302,7 +1313,7 @@ msgstr ""
 
 #: ../../manual/editing-tile-layers.rst:134
 msgid "Selection Tools"
-msgstr ""
+msgstr "Utvalgsverktøy"
 
 #: ../../manual/editing-tile-layers.rst:136
 msgid "There are various tile selection tools that all work in similar fashion:"
@@ -1380,7 +1391,7 @@ msgstr ""
 
 #: ../../manual/editing-tilesets.rst:2
 msgid "Editing Tilesets"
-msgstr ""
+msgstr "Redigering av flissett"
 
 #: ../../manual/editing-tilesets.rst:4
 msgid ""
@@ -1472,13 +1483,15 @@ msgstr ""
 
 #: ../../manual/editing-tilesets.rst:60
 msgid "Background Color"
-msgstr ""
+msgstr "Bakgrunnsfarge"
 
 #: ../../manual/editing-tilesets.rst:59
 msgid ""
 "A background color for the tileset, which can be set in case the default "
 "dark-gray background is not suitable for your tiles."
 msgstr ""
+"En bakgrunnsfarge for flissettet, som kan settes i fall den forvalgte "
+"mørkegråe bakgrunnen ikke passer flisene dine."
 
 #: ../../manual/editing-tilesets.rst:72
 msgid "Orientation"
@@ -1496,7 +1509,7 @@ msgstr ""
 
 #: ../../manual/editing-tilesets.rst:77
 msgid "Columns"
-msgstr ""
+msgstr "Kolonner"
 
 #: ../../manual/editing-tilesets.rst:75
 msgid ""
@@ -1507,7 +1520,7 @@ msgstr ""
 
 #: ../../manual/editing-tilesets.rst:83 ../../manual/editing-tilesets.rst:113
 msgid "Image"
-msgstr ""
+msgstr "Bilde"
 
 #: ../../manual/editing-tilesets.rst:80
 msgid ""
@@ -1524,19 +1537,19 @@ msgstr ""
 
 #: ../../manual/editing-tilesets.rst:90
 msgid "Tile Properties"
-msgstr ""
+msgstr "Flisegenskaper"
 
 #: ../../manual/editing-tilesets.rst:93
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #: ../../manual/editing-tilesets.rst:93
 msgid "The ID of the tile in the tileset (read-only)"
-msgstr ""
+msgstr "ID-en for flisen i flissettet (kun lesbar)"
 
 #: ../../manual/editing-tilesets.rst:101
 msgid "Type"
-msgstr ""
+msgstr "Type"
 
 #: ../../manual/editing-tilesets.rst:100
 msgid ""
@@ -1547,7 +1560,7 @@ msgstr ""
 
 #: ../../manual/editing-tilesets.rst:104
 msgid "Width and Height"
-msgstr ""
+msgstr "Bredde og høyde"
 
 #: ../../manual/editing-tilesets.rst:104
 msgid "The size of the tile (read-only)"
@@ -1572,7 +1585,7 @@ msgstr ""
 
 #: ../../manual/editing-tilesets.rst:118
 msgid "Terrain Information"
-msgstr ""
+msgstr "Terrenginformasjon"
 
 #: ../../manual/editing-tilesets.rst:120
 msgid ""
@@ -1582,8 +1595,9 @@ msgid ""
 msgstr ""
 
 #: ../../manual/editing-tilesets.rst:131
+#, fuzzy
 msgid "Wang Sets"
-msgstr ""
+msgstr "Wang-sett"
 
 #: ../../manual/editing-tilesets.rst:133
 msgid ""
@@ -1676,7 +1690,7 @@ msgstr ""
 
 #: ../../manual/editing-tilesets.rst:214
 msgid "**Wang Sets**"
-msgstr ""
+msgstr "**Wang-sett**"
 
 #: ../../manual/editing-tilesets.rst:216
 msgid ""
@@ -1752,7 +1766,7 @@ msgstr ""
 
 #: ../../manual/export.rst:25
 msgid "JSON"
-msgstr ""
+msgstr "JSON"
 
 #: ../../manual/export.rst:27
 msgid ""
@@ -1771,7 +1785,7 @@ msgstr ""
 
 #: ../../manual/export.rst:39
 msgid "Lua"
-msgstr ""
+msgstr "Lua"
 
 #: ../../manual/export.rst:41
 msgid ""
@@ -1791,7 +1805,7 @@ msgstr ""
 
 #: ../../manual/export.rst:52
 msgid "CSV"
-msgstr ""
+msgstr "CSV"
 
 #: ../../manual/export.rst:54
 msgid ""
@@ -2030,7 +2044,7 @@ msgstr ""
 
 #: ../../manual/export.rst:188
 msgid "Layer Properties"
-msgstr ""
+msgstr "Lagegenskaper"
 
 #: ../../manual/export.rst:190
 msgid ""
@@ -2102,7 +2116,7 @@ msgstr ""
 
 #: ../../manual/export.rst:238
 msgid "Other Formats"
-msgstr ""
+msgstr "Andre formater"
 
 #: ../../manual/export.rst:240
 msgid "A few other plugins ship with Tiled to support various games:"
@@ -2157,7 +2171,7 @@ msgstr ""
 
 #: ../../manual/export.rst:254 ../../manual/python.rst:2
 msgid "Python Scripts"
-msgstr ""
+msgstr "Python-skript"
 
 #: ../../manual/export.rst:256
 msgid ""
@@ -2167,11 +2181,11 @@ msgstr ""
 
 #: ../../manual/introduction.rst:2
 msgid "Introduction"
-msgstr ""
+msgstr "Introduksjon"
 
 #: ../../manual/introduction.rst:5
 msgid "About Tiled"
-msgstr ""
+msgstr "Om Tiled"
 
 #: ../../manual/introduction.rst:7
 msgid ""
@@ -2223,11 +2237,11 @@ msgstr ""
 
 #: ../../manual/introduction.rst:42
 msgid "Getting Started"
-msgstr ""
+msgstr "Kom i gang"
 
 #: ../../manual/introduction.rst:45
 msgid "Creating a New Map"
-msgstr ""
+msgstr "Oppretting av et nytt kart"
 
 #: ../../manual/introduction.rst:47
 msgid ""
@@ -2237,7 +2251,7 @@ msgstr ""
 
 #: ../../manual/introduction.rst:53
 msgid "Tiled Window"
-msgstr ""
+msgstr "Tiled-vindu"
 
 #: ../../manual/introduction.rst:55
 msgid ""
@@ -2247,7 +2261,7 @@ msgstr ""
 
 #: ../../manual/introduction.rst:62
 msgid "New Map"
-msgstr ""
+msgstr "Nytt kart"
 
 #: ../../manual/introduction.rst:64
 msgid ""
@@ -2268,7 +2282,7 @@ msgstr ""
 
 #: ../../manual/introduction.rst:79
 msgid "New Tileset"
-msgstr ""
+msgstr "Nytt flissett"
 
 #: ../../manual/introduction.rst:81
 msgid ""
@@ -2326,11 +2340,11 @@ msgstr ""
 
 #: ../../manual/keyboard-shortcuts.rst:2
 msgid "Keyboard Shortcuts"
-msgstr ""
+msgstr "Tastatursnarveier"
 
 #: ../../manual/keyboard-shortcuts.rst:4
 msgid "Try out these keyboard shortcuts to help save you time."
-msgstr ""
+msgstr "Prøv disse tastatursnarveiene for å spare tid."
 
 #: ../../manual/keyboard-shortcuts.rst:6
 msgid "On Mac, replace ``Ctrl`` with the ``Command`` key."
@@ -4994,4 +5008,3 @@ msgstr ""
 #~ "complicated way of automatic tile "
 #~ "placement, check out [[Automapping]]."
 #~ msgstr ""
-

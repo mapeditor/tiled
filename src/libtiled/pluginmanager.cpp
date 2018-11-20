@@ -172,8 +172,8 @@ void PluginManager::removeObject(QObject *object)
     Q_ASSERT(object);
     Q_ASSERT(mInstance->mObjects.contains(object));
 
-    emit mInstance->objectAboutToBeRemoved(object);
     mInstance->mObjects.removeOne(object);
+    emit mInstance->objectRemoved(object);
 }
 
 void PluginManager::loadPlugins()

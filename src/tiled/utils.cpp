@@ -152,7 +152,7 @@ void saveGeometry(QWidget *widget)
 
 qreal defaultDpiScale()
 {
-    static qreal scale = []() {
+    static qreal scale = []{
         if (const QScreen *screen = QGuiApplication::primaryScreen())
             return screen->logicalDotsPerInchX() / 96.0;
         return 1.0;

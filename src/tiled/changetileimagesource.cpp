@@ -20,6 +20,7 @@
 
 #include "changetileimagesource.h"
 
+#include "imagecache.h"
 #include "tilesetdocument.h"
 #include "tile.h"
 
@@ -44,7 +45,7 @@ void ChangeTileImageSource::apply(const QUrl &imageSource)
 {
     // todo: make sure remote source loading is triggered
     mTilesetDocument->setTileImage(mTile,
-                                   QPixmap(imageSource.toLocalFile()),
+                                   ImageCache::loadPixmap(imageSource.toLocalFile()),
                                    imageSource);
 }
 

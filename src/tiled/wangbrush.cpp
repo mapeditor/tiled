@@ -468,33 +468,11 @@ void WangBrush::updateBrush()
     TileLayer *currentLayer = currentTileLayer();
     Q_ASSERT(currentLayer);
 
-    SharedTileLayer stamp;
+    SharedTileLayer stamp = SharedTileLayer::create(QString(), 0, 0, 0, 0);
 
     auto staggeredRenderer = dynamic_cast<StaggeredRenderer*>(mapDocument()->renderer());
 
     if (mIsTileMode) {
-        if (staggeredRenderer) {
-            if (mapDocument()->map()->staggerAxis() == Map::StaggerX) {
-                stamp = SharedTileLayer::create(QString(),
-                                                mPaintPoint.x() - 2,
-                                                mPaintPoint.y() - 1,
-                                                5,
-                                                3);
-            } else {
-                stamp = SharedTileLayer::create(QString(),
-                                                mPaintPoint.x() - 1,
-                                                mPaintPoint.y() - 2,
-                                                3,
-                                                5);
-            }
-        } else {
-            stamp = SharedTileLayer::create(QString(),
-                                            mPaintPoint.x() - 1,
-                                            mPaintPoint.y() - 1,
-                                            3,
-                                            3);
-        }
-
         //array of adjacent positions which is assigned based on map orientation.
         QPoint adjacentPositions[8];
         if (staggeredRenderer) {
@@ -552,11 +530,7 @@ void WangBrush::updateBrush()
                 continue;
 
             QPoint p = adjacentPositions[i];
-            if (currentLayer->cellAt(p).isEmpty())
-                continue;
-
             WangId wangId = mWangSet->wangIdOfCell(currentLayer->cellAt(p));
-
             if (!wangId)
                 continue;
 
@@ -586,34 +560,12 @@ void WangBrush::updateBrush()
                 return;
             }
 
-            p -= stamp->position();
             stamp->setCell(p.x(), p.y(), cell);
         }
     } else {
         if (mBrushMode == PaintVertex) {
-            if (staggeredRenderer) {
-                if (mapDocument()->map()->staggerAxis() == Map::StaggerX) {
-                    stamp = SharedTileLayer::create(QString(),
-                                                    mPaintPoint.x() - 2,
-                                                    mPaintPoint.y() - 1,
-                                                    3,
-                                                    3);
-                } else {
-                    stamp = SharedTileLayer::create(QString(),
-                                                    mPaintPoint.x() - 1,
-                                                    mPaintPoint.y() - 1,
-                                                    2,
-                                                    3);
-                }
-            } else {
-                stamp = SharedTileLayer::create(QString(),
-                                                mPaintPoint.x() - 1,
-                                                mPaintPoint.y() - 1,
-                                                2,
-                                                2);
-            }
-
             QPoint adjacentPoints[4];
+
             if (staggeredRenderer) {
                 adjacentPoints[0] = mPaintPoint;
                 adjacentPoints[1] = staggeredRenderer->bottomLeft(mPaintPoint.x(), mPaintPoint.y());
@@ -630,12 +582,7 @@ void WangBrush::updateBrush()
 
             for (int i = 0; i < 4; ++i) {
                 QPoint p = adjacentPoints[i];
-
-                if (currentLayer->cellAt(p).isEmpty())
-                    continue;
-
                 WangId wangId = mWangSet->wangIdOfCell(currentLayer->cellAt(p));
-
                 if (!wangId)
                     continue;
 
@@ -652,24 +599,9 @@ void WangBrush::updateBrush()
                     return;
                 }
 
-                p -= stamp->position();
                 stamp->setCell(p.x(), p.y(), cell);
             }
         } else {
-            if (staggeredRenderer) {
-                stamp = SharedTileLayer::create(QString(),
-                                                mPaintPoint.x() - 1,
-                                                mPaintPoint.y() - 1,
-                                                3,
-                                                3);
-            } else {
-                stamp = SharedTileLayer::create(QString(),
-                                                mPaintPoint.x() + ((mEdgeDir & 1)? ((mEdgeDir == 3) ? -1 : 0) : 0),
-                                                mPaintPoint.y() + ((mEdgeDir & 1)? 0 : ((mEdgeDir == 0) ? -1 : 0)),
-                                                (mEdgeDir & 1) ? 2 : 1,
-                                                (mEdgeDir & 1) ? 1 : 2);
-            }
-
             QPoint dirPoint;
             if (staggeredRenderer) {
                 switch (mEdgeDir) {
@@ -702,8 +634,7 @@ void WangBrush::updateBrush()
                     return;
                 }
 
-                QPoint p = mPaintPoint - stamp->position();
-                stamp->setCell(p.x(), p.y(), cell);
+                stamp->setCell(mPaintPoint.x(), mPaintPoint.y(), cell);
             }
 
             if (WangId wangId = mWangSet->wangIdOfCell(currentLayer->cellAt(dirPoint))) {
@@ -718,12 +649,20 @@ void WangBrush::updateBrush()
                     return;
                 }
 
-                dirPoint -= stamp->position();
                 stamp->setCell(dirPoint.x(), dirPoint.y(), cell);
             }
         }
     }
 
     static_cast<WangBrushItem*>(brushItem())->setInvalidTiles();
-    brushItem()->setTileLayer(stamp);
+
+    // Translate to map coordinate space and normalize stamp
+    QRegion brushRegion = stamp->region();
+    brushRegion.translate(currentLayer->position());
+    QRect brushRect = brushRegion.boundingRect();
+    stamp->setPosition(brushRect.topLeft());
+    stamp->resize(brushRect.size(), -brushRect.topLeft());
+
+    // set the new tile layer as the brush
+    brushItem()->setTileLayer(stamp, brushRegion);
 }

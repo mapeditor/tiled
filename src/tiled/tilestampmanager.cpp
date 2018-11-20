@@ -41,6 +41,8 @@
 #include <QJsonDocument>
 #include <QRegularExpression>
 
+#include <memory>
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
@@ -123,9 +125,9 @@ static TileStamp stampFromContext(AbstractTool *selectedTool)
             return stamp;
 
         selection.translate(-tileLayer->position());
-        QScopedPointer<TileLayer> copy(tileLayer->copy(selection));
+        std::unique_ptr<TileLayer> copy(tileLayer->copy(selection));
 
-        if (copy->size().isEmpty())
+        if (copy->isEmpty())
             return stamp;
 
         const Map *map = mapDocument->map();
@@ -134,11 +136,10 @@ static TileStamp stampFromContext(AbstractTool *selectedTool)
                                map->tileWidth(), map->tileHeight());
 
         // Add tileset references to map
-        foreach (const SharedTileset &tileset, copy->usedTilesets())
-            copyMap->addTileset(tileset);
+        copyMap->addTilesets(copy->usedTilesets());
 
         copyMap->setRenderOrder(map->renderOrder());
-        copyMap->addLayer(copy.take());
+        copyMap->addLayer(copy.release());
 
         stamp.addVariation(copyMap);
     }

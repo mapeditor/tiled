@@ -33,8 +33,10 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -100,7 +102,7 @@ public class ObjectGroup extends ObjectGroupData implements Cloneable, Iterable<
      * @return a boolean.
      */
     public boolean isEmpty() {
-        return objects.isEmpty();
+        return getObjects().isEmpty();
     }
 
     /** {@inheritDoc} */
@@ -108,7 +110,7 @@ public class ObjectGroup extends ObjectGroupData implements Cloneable, Iterable<
     public Object clone() throws CloneNotSupportedException {
         ObjectGroup clone = (ObjectGroup) super.clone();
         clone.objects = new LinkedList<>();
-        for (MapObject object : objects) {
+        for (MapObject object : getObjects()) {
             final MapObject objectClone = (MapObject) object.clone();
             clone.objects.add(objectClone);
             objectClone.setObjectGroup(clone);
@@ -122,7 +124,7 @@ public class ObjectGroup extends ObjectGroupData implements Cloneable, Iterable<
      * @param o a {@link org.mapeditor.core.MapObject} object.
      */
     public void addObject(MapObject o) {
-        objects.add(o);
+        getObjects().add(o);
         o.setObjectGroup(this);
     }
 
@@ -132,14 +134,14 @@ public class ObjectGroup extends ObjectGroupData implements Cloneable, Iterable<
      * @param o a {@link org.mapeditor.core.MapObject} object.
      */
     public void removeObject(MapObject o) {
-        objects.remove(o);
+        getObjects().remove(o);
         o.setObjectGroup(null);
     }
 
     /** {@inheritDoc} */
     @Override
     public Iterator<MapObject> iterator() {
-        return objects.iterator();
+        return getObjects().iterator();
     }
 
     /**
@@ -150,7 +152,7 @@ public class ObjectGroup extends ObjectGroupData implements Cloneable, Iterable<
      * @return a {@link org.mapeditor.core.MapObject} object.
      */
     public MapObject getObjectAt(double x, double y) {
-        for (MapObject obj : objects) {
+        for (MapObject obj : getObjects()) {
             // Attempt to get an object bordering the point that has no width
             if (obj.getWidth() == 0 && obj.getX() + this.x == x) {
                 return obj;
@@ -184,7 +186,7 @@ public class ObjectGroup extends ObjectGroupData implements Cloneable, Iterable<
         Rectangle2D mouse = new Rectangle2D.Double(x - zoom - 1, y - zoom - 1, 2 * zoom + 1, 2 * zoom + 1);
         Shape shape;
 
-        for (MapObject obj : objects) {
+        for (MapObject obj : getObjects()) {
             if (obj.getWidth() == 0 && obj.getHeight() == 0) {
                 shape = new Ellipse2D.Double(obj.getX() * zoom, obj.getY() * zoom, 10 * zoom, 10 * zoom);
             } else {

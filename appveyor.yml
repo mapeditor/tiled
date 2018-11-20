@@ -1,18 +1,26 @@
 clone_depth: 200
-version: '1.1.{build}'
+version: '1.2.{build}'
+
+cache:
+  - C:\Users\appveyor\.m2
+  - C:\ProgramData\chocolatey\bin -> appveyor.yml
+  - C:\ProgramData\chocolatey\lib -> appveyor.yml
 
 environment:
-  my_secret:
-    secure: +3IhWT10lCSC4GE4gGfWt8WiZdIXuMUfaImgvQUullg=
+  BUTLER_API_KEY:
+    secure: j7JM5L6KeqpnQukzJLsm7J6oV92SpmyEZLSoED1pZ3gQ79VIkdxtbQmTkqUNZPsz
   matrix:
     - QTDIR: C:\Qt\5.9\msvc2013_64
+      PYTHONHOME: C:\Python37-x64
       PUSH_RELEASE: true
       TILED_ITCH_CHANNEL: windows-64bit
     - QTDIR: C:\Qt\5.9\mingw53_32
+      PYTHONHOME: C:\Python37
       MINGW: C:\Qt\Tools\mingw530_32
       PUSH_RELEASE: true
       TILED_ITCH_CHANNEL: windows-32bit
     - QTDIR: C:\Qt\5.6\mingw49_32
+      PYTHONHOME: C:\Python37
       MINGW: C:\Qt\Tools\mingw492_32
       PUSH_RELEASE: false
       TILED_ITCH_CHANNEL: winxp-32bit
@@ -20,7 +28,7 @@ environment:
 configuration: Release
 
 install:
-  - choco install -y qbs --version 1.9.1
+  - choco install -y qbs --version 1.12.1
   - nuget install secure-file -ExcludeVersion
   - set PATH=%PATH%;%QTDIR%\bin;%MINGW%\bin
 
@@ -40,8 +48,8 @@ build_script:
   - if defined TILED_RELEASE (set TILED_ITCH_VERSION=%TILED_VERSION%) else (set TILED_ITCH_VERSION=%VERSION_DATE%)
   - if defined TILED_SNAPSHOT (set TILED_ITCH_CHANNEL=%TILED_ITCH_CHANNEL%-snapshot)
   - if not defined APPVEYOR_PULL_REQUEST_NUMBER if [%APPVEYOR_REPO_BRANCH%]==[snapshot] set PUSH_TO_ITCH=true
-  - qbs build --all-products release projects.Tiled.windowsInstaller:true
-  - qbs build --all-products itch qbs.buildVariant:release projects.Tiled.sparkleEnabled:false projects.Tiled.version:%TILED_ITCH_VERSION%
+  - qbs build --all-products config:release projects.Tiled.windowsInstaller:true
+  - qbs build --all-products config:itch qbs.buildVariant:release projects.Tiled.sparkleEnabled:false projects.Tiled.version:%TILED_ITCH_VERSION%
   - cd util\java
   - mvn --version
   - mvn clean install
@@ -67,9 +75,6 @@ artifacts:
   - name: AppCast
     path: 'appcast-win*-snapshots.xml'
 
-cache:
-  - C:\Users\appveyor\.m2
-
 deploy:
   - provider: GitHub
     release: Tiled $(TILED_VERSION)
@@ -84,10 +89,10 @@ deploy:
   - provider: FTP
     protocol: sftp
     host: update.mapeditor.org
-    username: bjorn
+    username: update
     password:
-      secure: Hx5YfCOtpeBbftD4qnVCRLUGmMU9nogJTlSxq0xNbJQ=
-    folder: sparkle/snapshots-win
+      secure: YPoSL+S82PCgS5PYbhtxQv0YD7uwZAX9LhjJBBbDGvk=
+    folder: update.mapeditor.org/snapshots-win
     artifact: /.*\.(msi|7z)/
     on:
         branch: snapshot
@@ -97,10 +102,10 @@ deploy:
   - provider: FTP
     protocol: sftp
     host: update.mapeditor.org
-    username: bjorn
+    username: update
     password:
-      secure: Hx5YfCOtpeBbftD4qnVCRLUGmMU9nogJTlSxq0xNbJQ=
-    folder: sparkle
+      secure: YPoSL+S82PCgS5PYbhtxQv0YD7uwZAX9LhjJBBbDGvk=
+    folder: update.mapeditor.org
     artifact: /appcast-win.*-snapshots\.xml/
     on:
         branch: snapshot

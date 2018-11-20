@@ -22,6 +22,8 @@
 
 #include "abstracttool.h"
 
+class QAction;
+
 namespace Tiled {
 
 class MapObject;
@@ -56,6 +58,10 @@ public:
     void mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers) override;
     void mousePressed(QGraphicsSceneMouseEvent *event) override;
 
+    void languageChanged() override;
+
+    void populateToolBar(QToolBar*) override;
+
 protected:
     /**
      * Overridden to only enable this tool when the currently selected layer is
@@ -65,8 +71,8 @@ protected:
 
     MapScene *mapScene() const { return mMapScene; }
     ObjectGroup *currentObjectGroup() const;
-    QList<MapObjectItem*> objectItemsAt(const QPointF &pos) const;
-    MapObjectItem *topMostObjectItemAt(const QPointF &pos) const;
+    QList<MapObject*> mapObjectsAt(const QPointF &pos) const;
+    MapObject *topMostMapObjectAt(const QPointF &pos) const;
 
 private slots:
     void duplicateObjects();
@@ -80,6 +86,8 @@ private slots:
 
     void flipHorizontally();
     void flipVertically();
+    void rotateLeft();
+    void rotateRight();
 
     void raise();
     void lower();
@@ -87,10 +95,15 @@ private slots:
     void lowerToBottom();
 
 private:
-    void showContextMenu(MapObjectItem *clickedObject,
+    void showContextMenu(MapObject *clickedObject,
                          QPoint screenPos);
 
     MapScene *mMapScene;
+
+    QAction *mFlipHorizontal;
+    QAction *mFlipVertical;
+    QAction *mRotateLeft;
+    QAction *mRotateRight;
 };
 
 } // namespace Internal

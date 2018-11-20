@@ -1,3 +1,5 @@
+%global app_id org.mapeditor.Tiled
+
 Name:           tiled
 Version:        0.18.0
 Epoch:          1
@@ -110,10 +112,10 @@ make install INSTALL_ROOT=%{buildroot}
 find -name ".uic" -or -name ".moc" -or -name ".rcc" | xargs rm -rf
 
 # Validate desktop file
-desktop-file-validate %{buildroot}/%{_datadir}/applications/%{name}.desktop
+desktop-file-validate %{buildroot}/%{_datadir}/applications/%{app_id}.desktop
 
 # Appdata
-install -D -p -m644 %{name}.appdata.xml %{buildroot}/%{_datadir}/appdata/%{name}.appdata.xml
+install -D -p -m644 %{app_id}.appdata.xml %{buildroot}/%{_datadir}/appdata/%{app_id}.appdata.xml
 appstream-util validate-relax --nonet %{buildroot}/%{_datadir}/appdata/*.appdata.xml
 
 # locale files
@@ -148,12 +150,12 @@ fi
 %{_bindir}/terraingenerator
 %{_bindir}/tmxrasterizer
 %{_bindir}/tmxviewer
-%{_datadir}/applications/%{name}.desktop
+%{_datadir}/applications/%{app_id}.desktop
 %{_datadir}/icons/hicolor/*/apps/*%{name}*
 %{_datadir}/icons/hicolor/*/mimetypes/*%{name}*
-%{_datadir}/mime/packages/%{name}.xml
+%{_datadir}/mime/packages/%{app_id}.xml
 %{_datadir}/thumbnailers/%{name}.thumbnailer
-%{_datadir}/appdata/%{name}.appdata.xml
+%{_datadir}/appdata/%{app_id}.appdata.xml
 %dir %{_datadir}/%{name}/
 %dir %{_datadir}/%{name}/translations
 %{_libdir}/lib%{name}.so.*

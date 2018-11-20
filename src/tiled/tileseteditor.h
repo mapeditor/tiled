@@ -30,6 +30,7 @@
 
 class QAction;
 class QComboBox;
+class QLabel;
 class QMainWindow;
 class QStackedWidget;
 class QToolBar;
@@ -43,6 +44,7 @@ class Tileset;
 namespace Internal {
 
 class PropertiesDock;
+class TemplatesDock;
 class TerrainDock;
 class TileAnimationEditor;
 class TileCollisionDock;
@@ -129,7 +131,7 @@ private slots:
     void removeWangSet();
     void setWangSetImage(Tile *tile);
     void setWangColorImage(Tile *tile, bool isEdge, int index);
-    void setWangColorColor(const QColor &color, bool isEdge, int index);
+    void setWangColorColor(WangColor *wangColor, const QColor &color);
 
     void onAnimationEditorClosed();
 
@@ -151,8 +153,10 @@ private:
     UndoDock *mUndoDock;
     TerrainDock *mTerrainDock;
     TileCollisionDock *mTileCollisionDock;
+    TemplatesDock *mTemplatesDock;
     WangDock *mWangDock;
     QComboBox *mZoomComboBox;
+    QLabel *mStatusInfoLabel;
     TileAnimationEditor *mTileAnimationEditor;
 
     QHash<TilesetDocument*, TilesetView*> mViewForTileset;

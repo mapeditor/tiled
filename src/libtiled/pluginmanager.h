@@ -141,7 +141,7 @@ public:
 
 signals:
     void objectAdded(QObject *object);
-    void objectAboutToBeRemoved(QObject *object);
+    void objectRemoved(QObject *object);
 
 private:
     Q_DISABLE_COPY(PluginManager)

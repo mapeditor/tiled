@@ -84,6 +84,7 @@ public:
     void insertLayer(GroupLayer *parentLayer, int index, Layer *layer);
     Layer *takeLayerAt(GroupLayer *parentLayer, int index);
     void replaceLayer(Layer *layer, Layer *replacement);
+    void moveLayer(GroupLayer *parentLayer, int index, GroupLayer *toParentLayer, int toIndex);
 
     void setLayerVisible(Layer *layer, bool visible);
     void setLayerLocked(Layer *layer, bool locked);
@@ -92,7 +93,8 @@ public:
 
     void renameLayer(Layer *layer, const QString &name);
 
-    void toggleOtherLayers(Layer *layer);
+    void toggleOtherLayers(const QList<Layer *> &layers);
+    void toggleLockOtherLayers(const QList<Layer *> &layers);
 
 signals:
     void layerAdded(Layer *layer);

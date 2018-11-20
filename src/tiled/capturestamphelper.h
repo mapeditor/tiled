@@ -1,6 +1,6 @@
 /*
  * capturestamphelper.h
- * Copyright 2017, Your Name <your.name@domain>
+ * Copyright 2017, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -28,13 +28,15 @@
 namespace Tiled {
 namespace Internal {
 
+class MapDocument;
+
 class CaptureStampHelper
 {
 public:
     CaptureStampHelper();
 
     void beginCapture(QPoint tilePosition);
-    TileStamp endCapture(const TileLayer *tileLayer, QPoint tilePosition);
+    TileStamp endCapture(const MapDocument &mapDocument, QPoint tilePosition);
 
     bool isActive() const { return mActive; }
     void reset();

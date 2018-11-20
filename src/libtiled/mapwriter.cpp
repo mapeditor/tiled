@@ -212,7 +212,7 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
     const QString orientation = orientationToString(map.orientation());
     const QString renderOrder = renderOrderToString(map.renderOrder());
 
-    w.writeAttribute(QLatin1String("version"), QLatin1String("1.0"));
+    w.writeAttribute(QLatin1String("version"), QLatin1String("1.2"));
     w.writeAttribute(QLatin1String("tiledversion"), QCoreApplication::applicationVersion());
     w.writeAttribute(QLatin1String("orientation"), orientation);
     w.writeAttribute(QLatin1String("renderorder"), renderOrder);
@@ -242,6 +242,8 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
                          colorToString(map.backgroundColor()));
     }
 
+    w.writeAttribute(QLatin1String("nextlayerid"),
+                     QString::number(map.nextLayerId()));
     w.writeAttribute(QLatin1String("nextobjectid"),
                      QString::number(map.nextObjectId()));
 
@@ -287,7 +289,7 @@ static bool includeTile(const Tile *tile)
         return true;
     if (tile->terrain() != 0xFFFFFFFF)
         return true;
-    if (tile->probability() != 1.f)
+    if (tile->probability() != 1.0)
         return true;
 
     return false;
@@ -297,19 +299,25 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
                                     unsigned firstGid)
 {
     w.writeStartElement(QLatin1String("tileset"));
-    if (firstGid > 0)
+
+    if (firstGid > 0) {
         w.writeAttribute(QLatin1String("firstgid"), QString::number(firstGid));
 
-    const QString &fileName = tileset.fileName();
-    if (!fileName.isEmpty()) {
-        QString source = fileName;
-        if (!mUseAbsolutePaths)
-            source = mMapDir.relativeFilePath(source);
-        w.writeAttribute(QLatin1String("source"), source);
+        const QString &fileName = tileset.fileName();
+        if (!fileName.isEmpty()) {
+            QString source = fileName;
+            if (!mUseAbsolutePaths)
+                source = mMapDir.relativeFilePath(source);
+            w.writeAttribute(QLatin1String("source"), source);
 
-        // Tileset is external, so no need to write any of the stuff below
-        w.writeEndElement();
-        return;
+            // Tileset is external, so no need to write any of the stuff below
+            w.writeEndElement();
+            return;
+        }
+    } else {
+        // Include version in external tilesets
+        w.writeAttribute(QLatin1String("version"), QLatin1String("1.2"));
+        w.writeAttribute(QLatin1String("tiledversion"), QCoreApplication::applicationVersion());
     }
 
     w.writeAttribute(QLatin1String("name"), tileset.name());
@@ -405,7 +413,7 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
                 w.writeAttribute(QLatin1String("type"), tile->type());
             if (tile->terrain() != 0xFFFFFFFF)
                 w.writeAttribute(QLatin1String("terrain"), makeTerrainAttribute(tile));
-            if (tile->probability() != 1.f)
+            if (tile->probability() != 1.0)
                 w.writeAttribute(QLatin1String("probability"), QString::number(tile->probability()));
             if (!tile->properties().isEmpty())
                 writeProperties(w, tile->properties());
@@ -500,7 +508,7 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
                 }
             }
 
-            for (const WangTile &wangTile : ws->wangTiles()) {
+            for (const WangTile &wangTile : ws->sortedWangTiles()) {
                 w.writeStartElement(QLatin1String("wangtile"));
                 w.writeAttribute(QLatin1String("tileid"), QString::number(wangTile.tile()->id()));
                 w.writeAttribute(QLatin1String("wangid"),
@@ -642,6 +650,8 @@ void MapWriterPrivate::writeTileLayerData(QXmlStreamWriter &w,
 void MapWriterPrivate::writeLayerAttributes(QXmlStreamWriter &w,
                                             const Layer &layer)
 {
+    if (layer.id() != 0)
+        w.writeAttribute(QLatin1String("id"), QString::number(layer.id()));
     if (!layer.name().isEmpty())
         w.writeAttribute(QLatin1String("name"), layer.name());
 
@@ -836,6 +846,8 @@ void MapWriterPrivate::writeObjectText(QXmlStreamWriter &w, const TextData &text
             w.writeAttribute(QLatin1String("halign"), QLatin1String("center"));
         else if (textData.alignment.testFlag(Qt::AlignRight))
             w.writeAttribute(QLatin1String("halign"), QLatin1String("right"));
+        else if (textData.alignment.testFlag(Qt::AlignJustify))
+            w.writeAttribute(QLatin1String("halign"), QLatin1String("justify"));
     }
 
     if (!textData.alignment.testFlag(Qt::AlignTop)) {

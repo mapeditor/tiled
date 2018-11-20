@@ -10,6 +10,10 @@ menu action multiple times, Tiled will only ask for the file name the
 first time. Exporting can also be automated using the ``--export-map``
 command-line parameter.
 
+Several :ref:`export-options` are available, which are applied to maps
+or tilesets before they are exported (without affecting the map
+or tileset itself).
+
 .. note::
 
    When exporting on the command-line on Linux, Tiled will still need an
@@ -213,13 +217,12 @@ because it won't store everything (most notably it doesn't support
 object layers in general, nor external tilesets), so you need to know
 what you are doing.
 
-.. warning::
+.. note::
 
    The tBIN format supports setting custom properties on the tiles of a
    tile layer. Since Tiled does not support this directly, "TileData"
    objects are created that match the location of the tile, on which
-   such properties are then stored. Care should be taken to keep these
-   objects aligned to the grid for the saving to work correctly.
+   such properties are then stored.
 
 Defold
 ------

@@ -186,11 +186,8 @@ GidMapper::DecodeError GidMapper::decodeLayerData(TileLayer &tileLayer,
     Q_ASSERT(format != Map::XML);
     Q_ASSERT(format != Map::CSV);
 
-    if (bounds.isEmpty())
-        bounds = QRect(0, 0, tileLayer.width(), tileLayer.height());
-
     QByteArray decodedData = QByteArray::fromBase64(layerData);
-    const int size = (bounds.width() * bounds.height()) * 4;
+    const int size = bounds.width() * bounds.height() * 4;
 
     if (format == Map::Base64Gzip || format == Map::Base64Zlib)
         decodedData = decompress(decodedData, size);
@@ -218,7 +215,7 @@ GidMapper::DecodeError GidMapper::decodeLayerData(TileLayer &tileLayer,
         tileLayer.setCell(x, y, result);
 
         x++;
-        if (x == bounds.right() + 1) {
+        if (x > bounds.right()) {
             x = bounds.x();
             y++;
         }

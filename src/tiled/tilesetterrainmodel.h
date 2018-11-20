@@ -51,7 +51,7 @@ public:
     TilesetTerrainModel(TilesetDocument *mapDocument,
                         QObject *parent = nullptr);
 
-    ~TilesetTerrainModel();
+    ~TilesetTerrainModel() override;
 
     using QAbstractListModel::index;
     QModelIndex index(Terrain *terrain) const;

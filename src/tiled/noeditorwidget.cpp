@@ -24,6 +24,8 @@
 #include "actionmanager.h"
 #include "documentmanager.h"
 
+#include <QAction>
+
 namespace Tiled {
 namespace Internal {
 
@@ -67,7 +69,7 @@ void NoEditorWidget::newTileset()
 
 void NoEditorWidget::openFile()
 {
-    DocumentManager::instance()->openFile();
+    DocumentManager::instance()->openFileDialog();
 }
 
 } // namespace Internal

@@ -172,6 +172,14 @@ public:
         return screenPolygon;
     }
 
+    QPolygonF screenToPixelCoords(const QPolygonF &polygon) const
+    {
+        QPolygonF pixelPolygon(polygon.size());
+        for (int i = polygon.size() - 1; i >= 0; --i)
+            pixelPolygon[i] = screenToPixelCoords(polygon[i]);
+        return pixelPolygon;
+    }
+
     /**
      * Returns the pixel coordinates matching the given tile coordinates.
      */

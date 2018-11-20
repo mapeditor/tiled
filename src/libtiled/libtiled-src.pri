@@ -7,6 +7,7 @@ SOURCES += $$PWD/compression.cpp \
     $$PWD/grouplayer.cpp \
     $$PWD/hex.cpp \
     $$PWD/hexagonalrenderer.cpp \
+    $$PWD/imagecache.cpp \
     $$PWD/imagelayer.cpp \
     $$PWD/imagereference.cpp \
     $$PWD/isometricrenderer.cpp \
@@ -38,7 +39,8 @@ SOURCES += $$PWD/compression.cpp \
     $$PWD/tilesetformat.cpp \
     $$PWD/tilesetmanager.cpp \
     $$PWD/varianttomapconverter.cpp \
-    $$PWD/wangset.cpp
+    $$PWD/wangset.cpp \
+    $$PWD/worldmanager.cpp
 HEADERS += $$PWD/compression.h \
     $$PWD/filesystemwatcher.h \
     $$PWD/fileformat.h \
@@ -46,6 +48,7 @@ HEADERS += $$PWD/compression.h \
     $$PWD/grouplayer.h \
     $$PWD/hex.h \
     $$PWD/hexagonalrenderer.h \
+    $$PWD/imagecache.h \
     $$PWD/imagelayer.h \
     $$PWD/imagereference.h \
     $$PWD/isometricrenderer.h \
@@ -80,4 +83,5 @@ HEADERS += $$PWD/compression.h \
     $$PWD/tilesetformat.h \
     $$PWD/tilesetmanager.h \
     $$PWD/varianttomapconverter.h \
-    $$PWD/wangset.h
+    $$PWD/wangset.h \
+    $$PWD/worldmanager.h
