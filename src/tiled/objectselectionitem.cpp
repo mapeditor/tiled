@@ -272,6 +272,9 @@ ObjectSelectionItem::ObjectSelectionItem(MapDocument *mapDocument,
     connect(mapDocument, &MapDocument::objectsChanged,
             this, &ObjectSelectionItem::syncOverlayItems);
 
+    connect(mapDocument, &MapDocument::objectGroupChanged,
+            this, &ObjectSelectionItem::updateObjectLabelColors);
+
     connect(mapDocument, &MapDocument::hoveredMapObjectChanged,
             this, &ObjectSelectionItem::hoveredMapObjectChanged);
 
