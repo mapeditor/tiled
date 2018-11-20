@@ -216,16 +216,16 @@ void StampBrush::mapDocumentChanged(MapDocument *oldDocument,
 {
     AbstractTileTool::mapDocumentChanged(oldDocument, newDocument);
 
+    if (oldDocument) {
+        disconnect(oldDocument, &MapDocument::tileProbabilityChanged,
+                   this, &StampBrush::invalidateRandomCache);
+    }
+
     if (newDocument) {
         invalidateRandomCache();
         updatePreview();
         connect(newDocument, &MapDocument::tileProbabilityChanged,
                 this, &StampBrush::invalidateRandomCache);
-    }
-
-    if (oldDocument) {
-        disconnect(oldDocument, &MapDocument::tileProbabilityChanged,
-                   this, &StampBrush::invalidateRandomCache);
     }
 }
 

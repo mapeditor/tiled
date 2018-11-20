@@ -143,15 +143,15 @@ void AbstractTileFillTool::mapDocumentChanged(MapDocument *oldDocument,
 
     clearConnections(oldDocument);
 
+    if (oldDocument) {
+        disconnect(oldDocument, &MapDocument::tileProbabilityChanged,
+                   this, &AbstractTileFillTool::invalidateRandomAndMissingCache);
+    }
+
     if (newDocument) {
         invalidateRandomAndMissingCache();
         connect(newDocument, &MapDocument::tileProbabilityChanged,
                 this, &AbstractTileFillTool::invalidateRandomAndMissingCache);
-    }
-
-    if (oldDocument) {
-        disconnect(oldDocument, &MapDocument::tileProbabilityChanged,
-                   this, &AbstractTileFillTool::invalidateRandomAndMissingCache);
     }
 
     clearOverlay();
