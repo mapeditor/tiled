@@ -94,6 +94,7 @@ public class TMXMapReader {
     private TreeMap<Integer, TileSet> tilesetPerFirstGid;
     public final TMXMapReaderSettings settings = new TMXMapReaderSettings();
     private final HashMap<String, TileSet> cachedTilesets = new HashMap<>();
+    private final HashMap<Class, Unmarshaller> cachedUnmarshallers = new HashMap<>();
 
     public static final class TMXMapReaderSettings {
 
@@ -151,9 +152,12 @@ public class TMXMapReader {
     }
 
     private <T> T unmarshalClass(Node node, Class<T> type) throws JAXBException {
-        JAXBContext context = JAXBContext.newInstance(type);
-        Unmarshaller unmarshaller = context.createUnmarshaller();
-
+        Unmarshaller unmarshaller = cachedUnmarshallers.get(type);
+        if (unmarshaller == null) {
+            JAXBContext context = JAXBContext.newInstance(type);
+            unmarshaller = context.createUnmarshaller();
+            cachedUnmarshallers.put(type, unmarshaller);
+        }
         JAXBElement<T> element = unmarshaller.unmarshal(node, type);
         return element.getValue();
     }
