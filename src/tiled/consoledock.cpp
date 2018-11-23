@@ -47,7 +47,7 @@ ConsoleDock::ConsoleDock(QWidget *parent)
     layout->setSpacing(0);
 
     mPlainTextEdit->setReadOnly(true);
-    mPlainTextEdit->setStyleSheet(QStringLiteral(
+    mPlainTextEdit->setStyleSheet(QLatin1String(
                             "QAbstractScrollArea {"
                             " background-color: black;"
                             " color:lightgray;"
