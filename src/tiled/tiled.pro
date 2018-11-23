@@ -13,11 +13,7 @@ win32 {
     DESTDIR = ../../bin
 }
 
-QT += widgets
-
-contains(QT_CONFIG, opengl):!macx:!minQtVersion(5, 4, 0) {
-    QT += opengl
-}
+QT += widgets qml
 
 DEFINES += TILED_VERSION=$${TILED_VERSION}
 
