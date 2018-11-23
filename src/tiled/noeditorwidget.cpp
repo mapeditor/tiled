@@ -59,12 +59,12 @@ void NoEditorWidget::changeEvent(QEvent *e)
 
 void NoEditorWidget::newMap()
 {
-    ActionManager::action("file.new_map")->trigger();
+    ActionManager::action("NewMap")->trigger();
 }
 
 void NoEditorWidget::newTileset()
 {
-    ActionManager::action("file.new_tileset")->trigger();
+    ActionManager::action("NewTileset")->trigger();
 }
 
 void NoEditorWidget::openFile()

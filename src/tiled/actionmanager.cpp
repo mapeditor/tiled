@@ -60,5 +60,10 @@ QAction *ActionManager::action(Id id)
     return act;
 }
 
+QAction *ActionManager::findAction(Id id)
+{
+    return d->mIdToAction.value(id);
+}
+
 } // namespace Internal
 } // namespace Tiled

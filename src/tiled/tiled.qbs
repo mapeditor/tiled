@@ -12,7 +12,7 @@ QtGuiApplication {
     Depends { name: "qtpropertybrowser" }
     Depends { name: "qtsingleapplication" }
     Depends { name: "ib"; condition: qbs.targetOS.contains("macos") }
-    Depends { name: "Qt"; submodules: ["core", "widgets"]; versionAtLeast: "5.5" }
+    Depends { name: "Qt"; submodules: ["core", "widgets", "qml"]; versionAtLeast: "5.5" }
 
     property bool qtcRunnable: true
     property bool macSparkleEnabled: qbs.targetOS.contains("macos") && project.sparkleEnabled
@@ -376,6 +376,10 @@ QtGuiApplication {
         "reversingproxymodel.h",
         "rotatemapobject.cpp",
         "rotatemapobject.h",
+        "scriptmanager.cpp",
+        "scriptmanager.h",
+        "scriptmodule.cpp",
+        "scriptmodule.h",
         "selectionrectangle.cpp",
         "selectionrectangle.h",
         "selectsametiletool.cpp",

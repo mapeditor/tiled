@@ -21,6 +21,7 @@
 
 #include "mapdocumentactionhandler.h"
 
+#include "actionmanager.h"
 #include "addremovelayer.h"
 #include "addremovemapobject.h"
 #include "changeselectedarea.h"
@@ -177,6 +178,34 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
 
     connect(mActionDuplicateObjects, &QAction::triggered, this, &MapDocumentActionHandler::duplicateObjects);
     connect(mActionRemoveObjects, &QAction::triggered, this, &MapDocumentActionHandler::removeObjects);
+
+    ActionManager::registerAction(mActionSelectAll, "SelectAll");
+    ActionManager::registerAction(mActionSelectInverse, "SelectInverse");
+    ActionManager::registerAction(mActionSelectNone, "SelectNone");
+    ActionManager::registerAction(mActionCropToSelection, "CropToSelection");
+    ActionManager::registerAction(mActionAutocrop, "Autocrop");
+    ActionManager::registerAction(mActionAddTileLayer, "AddTileLayer");
+    ActionManager::registerAction(mActionAddObjectGroup, "AddObjectLayer");
+    ActionManager::registerAction(mActionAddImageLayer, "AddImageLayer");
+    ActionManager::registerAction(mActionAddGroupLayer, "AddGroupLayer");
+    ActionManager::registerAction(mActionLayerViaCopy, "LayerViaCopy");
+    ActionManager::registerAction(mActionLayerViaCut, "LayerViaCut");
+    ActionManager::registerAction(mActionGroupLayers, "GroupLayers");
+    ActionManager::registerAction(mActionUngroupLayers, "UngroupLayers");
+
+    ActionManager::registerAction(mActionDuplicateLayers, "DuplicateLayers");
+    ActionManager::registerAction(mActionMergeLayersDown, "MergeLayersDown");
+    ActionManager::registerAction(mActionSelectPreviousLayer, "SelectPreviousLayer");
+    ActionManager::registerAction(mActionSelectNextLayer, "SelectNextLayer");
+    ActionManager::registerAction(mActionRemoveLayers, "RemoveLayers");
+    ActionManager::registerAction(mActionMoveLayersUp, "MoveLayersUp");
+    ActionManager::registerAction(mActionMoveLayersDown, "MoveLayersDown");
+    ActionManager::registerAction(mActionToggleOtherLayers, "ToggleOtherLayers");
+    ActionManager::registerAction(mActionToggleLockOtherLayers, "ToggleLockOtherLayers");
+    ActionManager::registerAction(mActionLayerProperties, "LayerProperties");
+
+    ActionManager::registerAction(mActionDuplicateObjects, "DuplicateObjects");
+    ActionManager::registerAction(mActionRemoveObjects, "RemoveObjects");
 
     updateActions();
     retranslateUi();

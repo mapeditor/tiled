@@ -88,7 +88,7 @@ public:
         gridLayout->addWidget(newTilesetButton, 0, 0, Qt::AlignCenter);
 
         connect(newTilesetButton, &QPushButton::clicked, [] {
-            ActionManager::action("file.new_tileset")->trigger();
+            ActionManager::action("NewTileset")->trigger();
         });
     }
 };
@@ -691,7 +691,7 @@ void TilesetDock::removeTilesetAt(int index)
 
 void TilesetDock::newTileset()
 {
-    ActionManager::action("file.new_tileset")->trigger();
+    ActionManager::action("NewTileset")->trigger();
 }
 
 void TilesetDock::setCurrentTiles(TileLayer *tiles)

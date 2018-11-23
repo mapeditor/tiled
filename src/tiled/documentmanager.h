@@ -62,6 +62,8 @@ class DocumentManager : public QObject
 {
     Q_OBJECT
 
+    Q_PROPERTY(Document *currentDocument READ currentDocument NOTIFY currentDocumentChanged)
+
 public:
     static DocumentManager *instance();
     static void deleteInstance();

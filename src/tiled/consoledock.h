@@ -21,7 +21,9 @@
 #pragma once
 
 #include <QDockWidget>
-#include <QPlainTextEdit>
+
+class QLineEdit;
+class QPlainTextEdit;
 
 namespace Tiled {
 
@@ -40,13 +42,20 @@ public:
 private slots:
     void appendInfo(const QString &str);
     void appendError(const QString &str);
+    void appendScript(const QString &str);
 
     void onObjectAdded(QObject *object);
+    void executeScript();
+
+    void moveHistory(int direction);
 
 private:
     void registerOutput(LoggingInterface *output);
 
-    QPlainTextEdit *plainTextEdit;
+    QPlainTextEdit *mPlainTextEdit;
+    QLineEdit *mLineEdit;
+    QVector<QString> mHistory;
+    int mHistoryPosition = 0;
 };
 
 } // namespace Internal

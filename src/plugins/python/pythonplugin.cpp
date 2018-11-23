@@ -124,7 +124,7 @@ void PythonPlugin::initialize()
         PyRun_SimpleString(QString("import sys; sys.path.insert(0, \"%1\")")
                            .arg(mScriptDir).toUtf8().constData());
 
-        log(QString("-- Added %1 to path\n").arg(mScriptDir));
+        log(QString("Python scripts path: %1\n").arg(mScriptDir));
     }
 
     reloadModules();

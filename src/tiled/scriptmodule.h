@@ -1,6 +1,6 @@
 /*
- * actionmanager.h
- * Copyright 2016, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+ * scriptmodule.h
+ * Copyright 2018, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -20,38 +20,37 @@
 
 #pragma once
 
-#include "id.h"
+#include "documentmanager.h"
 
 #include <QObject>
-
-class QAction;
 
 namespace Tiled {
 namespace Internal {
 
-class MainWindow;
-
 /**
- * Manager of global actions.
+ * Initial point of access to Tiled functionality from JavaScript.
  */
-class ActionManager : public QObject
+class ScriptModule : public QObject
 {
     Q_OBJECT
 
+    Q_PROPERTY(QString version READ version)
+    Q_PROPERTY(QString platform READ platform)
+    Q_PROPERTY(QString arch READ arch)
+
+    Q_PROPERTY(DocumentManager *documentManager READ documentManager)
+
 public:
-    static void registerAction(QAction *action, Id id);
+    ScriptModule(QObject *parent = nullptr);
 
-    static QAction *action(Id id);
-    static QAction *findAction(Id id);
+    QString version() const;
+    QString platform() const;
+    QString arch() const;
 
-signals:
-    void actionAdded(Id id);
+    DocumentManager *documentManager() const;
 
-private:
-    explicit ActionManager(QObject *parent = nullptr);
-    ~ActionManager();
-
-    friend class Tiled::Internal::MainWindow;   // creation
+public slots:
+    void trigger(const QByteArray &actionName);
 };
 
 } // namespace Internal
