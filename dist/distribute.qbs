@@ -69,6 +69,7 @@ Product {
                     "Qt5Core" + postfix,
                     "Qt5Gui" + postfix,
                     "Qt5Network" + postfix,
+                    "Qt5Qml" + postfix,
                     "Qt5Svg" + postfix,
                     "Qt5Widgets" + postfix
                 );

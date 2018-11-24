@@ -86,6 +86,7 @@
             <File Id="Qt5Core_dll" Source="$(var.QtDir)\bin\Qt5Core.dll"/>
             <File Id="Qt5Gui_dll" Source="$(var.QtDir)\bin\Qt5Gui.dll"/>
             <File Id="Qt5Network_dll" Source="$(var.QtDir)\bin\Qt5Network.dll"/>
+            <File Id="Qt5Qml_dll" Source="$(var.QtDir)\bin\Qt5Qml.dll"/>
             <File Id="Qt5Svg_dll" Source="$(var.QtDir)\bin\Qt5Svg.dll"/>
             <File Id="Qt5Widgets_dll" Source="$(var.QtDir)\bin\Qt5Widgets.dll"/>
 
