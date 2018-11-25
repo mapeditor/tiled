@@ -4,11 +4,12 @@ import qbs.File
 QtGuiApplication {
     name: "tiledquick"
     targetName: name
+    condition: Qt.core.versionMinor > 10
 
     Depends {
         name: "Qt"
         submodules: ["core", "quick", "widgets"]
-        versionAtLeast: "5.4"
+        versionAtLeast: "5.10"
     }
     Depends {
         name: "tiledquickplugin"
