@@ -36,7 +36,6 @@
 #include "imagelayer.h"
 #include "isometricrenderer.h"
 #include "layermodel.h"
-#include "map.h"
 #include "mapobject.h"
 #include "mapobjectmodel.h"
 #include "movelayer.h"

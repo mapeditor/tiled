@@ -24,6 +24,7 @@
 
 #include "document.h"
 #include "layer.h"
+#include "map.h"
 #include "mapformat.h"
 #include "tiled.h"
 #include "tileset.h"
@@ -71,6 +72,8 @@ using MapDocumentPtr = QSharedPointer<MapDocument>;
 class MapDocument : public Document
 {
     Q_OBJECT
+
+    Q_PROPERTY(Map *map READ map CONSTANT)
 
 public:
     enum TileLayerChangeFlag {
