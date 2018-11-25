@@ -223,9 +223,7 @@ void TemplatesDock::setTemplate(ObjectTemplate *objectTemplate)
 
     mMapView->setEnabled(objectTemplate);
 
-    if (objectTemplate) {
-        Q_ASSERT(objectTemplate->object());
-
+    if (objectTemplate && objectTemplate->object()) {
         mDummyMapDocument = ourDummyDocuments.value(objectTemplate);
 
         if (!mDummyMapDocument) {
