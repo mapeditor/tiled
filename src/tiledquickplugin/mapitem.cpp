@@ -33,8 +33,8 @@ using namespace TiledQuick;
 
 MapItem::MapItem(QQuickItem *parent)
     : QQuickItem(parent)
-    , mMap(0)
-    , mRenderer(0)
+    , mMap(nullptr)
+    , mRenderer(nullptr)
 {
 }
 
@@ -149,7 +149,7 @@ QPointF MapItem::pixelToScreenCoords(const QPointF &position) const
 QPointF MapItem::pixelToTileCoords(qreal x, qreal y) const
 {
     if (!mRenderer)
-        return QPoint(x, y);
+        return QPointF(x, y);
     return mRenderer->pixelToTileCoords(x, y);
 }
 
@@ -176,7 +176,7 @@ void MapItem::refresh()
     mTileLayerItems.clear();
 
     delete mRenderer;
-    mRenderer = 0;
+    mRenderer = nullptr;
 
     if (!mMap)
         return;
@@ -190,7 +190,7 @@ void MapItem::refresh()
         break;
     }
 
-    foreach (Tiled::Layer *layer, mMap->layers()) {
+    for (Tiled::Layer *layer : mMap->layers()) {
         if (Tiled::TileLayer *tl = layer->asTileLayer()) {
             TileLayerItem *layerItem = new TileLayerItem(tl, mRenderer, this);
             mTileLayerItems.append(layerItem);

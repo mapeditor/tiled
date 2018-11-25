@@ -47,7 +47,7 @@ class MapItem : public QQuickItem
     Q_PROPERTY(QRectF visibleArea READ visibleArea WRITE setVisibleArea NOTIFY visibleAreaChanged)
 
 public:
-    explicit MapItem(QQuickItem *parent = 0);
+    explicit MapItem(QQuickItem *parent = nullptr);
 
     Tiled::Map *map() const;
     void setMap(Tiled::Map *map);

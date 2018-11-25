@@ -48,7 +48,7 @@ public:
         Error
     };
 
-    explicit MapLoader(QObject *parent = 0);
+    explicit MapLoader(QObject *parent = nullptr);
     ~MapLoader();
 
     QUrl source() const;

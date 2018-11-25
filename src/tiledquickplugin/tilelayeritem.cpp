@@ -62,10 +62,9 @@ static inline QSGTexture *tilesetTexture(Tileset *tileset,
 struct TilesetHelper
 {
     TilesetHelper(const MapItem *mapItem)
-        : mMapItem(mapItem)
-        , mWindow(mapItem->window())
-        , mTileset(0)
-        , mTexture(0)
+        : mWindow(mapItem->window())
+        , mTileset(nullptr)
+        , mTexture(nullptr)
         , mMargin(0)
         , mTileHSpace(0)
         , mTileVSpace(0)
@@ -104,7 +103,6 @@ struct TilesetHelper
     }
 
 private:
-    const MapItem *mMapItem;
     QQuickWindow *mWindow;
     Tileset *mTileset;
     QSGTexture *mTexture;
@@ -188,7 +186,6 @@ public:
                           const QRect &rect) :
         mRenderer(renderer),
         mParent(parent),
-        mMapItem(mapItem),
         mLayer(layer),
         mRect(rect),
         mTilesetHelper(mapItem),
@@ -204,7 +201,6 @@ private:
 
     Tiled::MapRenderer *mRenderer;
     QSGNode *mParent;
-    const MapItem *mMapItem;
     const TileLayer *mLayer;
     const QRect mRect;
     TilesetHelper mTilesetHelper;
@@ -362,7 +358,7 @@ QSGNode *TileItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNodeDat
         helper.setTileset(tileset);
 
         if (!helper.texture())
-            return 0;
+            return nullptr;
 
         const Map *map = mapItem->map();
         const int tileWidth = map->tileWidth();

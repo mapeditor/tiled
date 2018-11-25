@@ -29,7 +29,7 @@ using namespace TiledQuick;
 
 MapLoader::MapLoader(QObject *parent)
     : QObject(parent)
-    , m_map(0)
+    , m_map(nullptr)
     , m_status(Null)
 {
 }
