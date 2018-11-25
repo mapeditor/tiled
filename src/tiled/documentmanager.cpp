@@ -437,9 +437,11 @@ DocumentPtr DocumentManager::loadDocument(const QString &fileName,
         return mDocuments.at(documentIndex);
 
     // Try to find it in otherwise referenced documents
-    {
-        QString canonicalFilePath = QFileInfo(fileName).canonicalFilePath();
+    QString canonicalFilePath = QFileInfo(fileName).canonicalFilePath();
+    if (!canonicalFilePath.isEmpty()) {
         for (Document *doc : Document::documentInstances()) {
+            if (doc->fileName().isEmpty())
+                continue;
             if (QFileInfo(doc->fileName()).canonicalFilePath() == canonicalFilePath)
                 return doc->sharedFromThis();
         }
