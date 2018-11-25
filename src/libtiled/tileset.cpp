@@ -255,6 +255,8 @@ bool Tileset::loadFromImage(const QImage &image, const QUrl &source)
  * Exists only because the Python plugin interface does not handle QUrl (would
  * be nice to add this). Assumes \a source is a local file when it would
  * otherwise be a relative URL (without scheme).
+ *
+ * \sa setImageSource
  */
 bool Tileset::loadFromImage(const QImage &image, const QString &source)
 {
@@ -392,6 +394,19 @@ void Tileset::setImageSource(const QUrl &imageSource)
         mImageReference.source = imageSource;
         TilesetManager::instance()->tilesetImageSourceChanged(*this, oldImageSource);
     }
+}
+
+/**
+ * Exists only because the Python plugin interface does not handle QUrl (would
+ * be nice to add this). Assumes \a source is a local file when it would
+ * otherwise be a relative URL (without scheme).
+ *
+ * \sa loadFromImage
+ */
+void Tileset::setImageSource(const QString &source)
+{
+    const QUrl url(source);
+    setImageSource(url.isRelative() ? QUrl::fromLocalFile(source) : url);
 }
 
 /**
