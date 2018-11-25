@@ -165,6 +165,9 @@ public:
 
     const QUrl &imageSource() const;
     void setImageSource(const QUrl &imageSource);
+    void setImageSource(const QString &url);
+    QString imageSourceString() const;
+
     bool isCollection() const;
 
     int columnCountForWidth(int width) const;
@@ -519,6 +522,15 @@ inline void Tileset::setBackgroundColor(QColor color)
 inline const QUrl &Tileset::imageSource() const
 {
     return mImageReference.source;
+}
+
+/**
+ * QString-API for Python.
+ */
+inline QString Tileset::imageSourceString() const
+{
+    const QUrl &url = imageSource();
+    return url.isLocalFile() ? url.toLocalFile() : url.toString();
 }
 
 /**

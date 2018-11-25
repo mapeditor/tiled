@@ -110,17 +110,25 @@ cls_tileset.add_method('tileWidth', 'int', [])
 cls_tileset.add_method('tileHeight', 'int', [])
 cls_tileset.add_method('tileSpacing', 'int', [])
 cls_tileset.add_method('margin', 'int', [])
-#cls_tileset.add_method('tileOffset', 'QPoint', [])
+cls_tileset.add_method('tileOffset', 'QPoint', [])
+cls_tileset.add_method('setTileOffset', None, [('QPoint','offset')])
 cls_tileset.add_method('loadFromImage', 'bool',
     [('const QImage&','img'),('QString','file')])
+cls_tileset.add_method('loadImage', 'bool', [])
+cls_tileset.add_method('findTile',
+    retval('Tiled::Tile*',reference_existing_object=True), [('int','id')])
 cls_tileset.add_method('tileAt',
     retval('Tiled::Tile*',reference_existing_object=True), [('int','id')])
 cls_tileset.add_method('tileCount', 'int', [])
 cls_tileset.add_method('columnCount', 'int', [])
+cls_tileset.add_method('rowCount', 'int', [])
 cls_tileset.add_method('imageWidth', 'int', [])
 cls_tileset.add_method('imageHeight', 'int', [])
 cls_tileset.add_method('setTransparentColor', None, [('QColor','col')])
 cls_tileset.add_method('transparentColor', 'QColor', [])
+cls_tileset.add_method('imageSourceString', 'QString', [])
+cls_tileset.add_method('setImageSource', None, [('QString','source')])
+cls_tileset.add_method('isCollection', 'bool', [])
 
 cls_tile.add_constructor([param('const QPixmap&','image'), param('int','id'),
     param('Tileset*','tileset',transfer_ownership=False)])
