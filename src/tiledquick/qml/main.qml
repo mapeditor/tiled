@@ -18,6 +18,7 @@ ApplicationWindow {
     visible: true
 
     FontLoader {
+        id: fontAwesomeLoader
         source: "fonts/fontawesome.ttf"
     }
 
@@ -95,7 +96,7 @@ ApplicationWindow {
             anchors.fill: parent
             ToolButton {
                 action: openAction
-                font.family: "FontAwesome"
+                font.family: fontAwesomeLoader.name
                 text: FontAwesome.open
             }
         }
