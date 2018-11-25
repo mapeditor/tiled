@@ -51,6 +51,10 @@ public:
 
 public slots:
     void trigger(const QByteArray &actionName);
+
+    void alert(const QString &text, const QString &title = QString());
+    bool confirm(const QString &text, const QString &title = QString());
+    QString prompt(const QString &label, const QString &text = QString(), const QString &title = QString());
 };
 
 } // namespace Internal

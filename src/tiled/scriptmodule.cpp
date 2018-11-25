@@ -24,6 +24,8 @@
 
 #include <QAction>
 #include <QCoreApplication>
+#include <QInputDialog>
+#include <QMessageBox>
 
 namespace Tiled {
 namespace Internal {
@@ -71,6 +73,21 @@ void ScriptModule::trigger(const QByteArray &actionName)
 {
     if (QAction *action = ActionManager::findAction(Id(actionName)))
         action->trigger();
+}
+
+void ScriptModule::alert(const QString &text, const QString &title)
+{
+    QMessageBox::warning(nullptr, title, text);
+}
+
+bool ScriptModule::confirm(const QString &text, const QString &title)
+{
+    return QMessageBox::question(nullptr, title, text) == QMessageBox::Yes;
+}
+
+QString ScriptModule::prompt(const QString &label, const QString &text, const QString &title)
+{
+    return QInputDialog::getText(nullptr, title, label, QLineEdit::Normal, text);
 }
 
 } // namespace Internal
