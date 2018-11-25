@@ -309,7 +309,7 @@ bool PythonMapFormat::write(const Tiled::Map *map, const QString &fileName)
 
     mPlugin.log(tr("-- Using script %1 to write %2").arg(mScriptFile, fileName));
 
-    PyObject *pmap = _wrap_convert_c2py__Tiled__Map_const(map);
+    PyObject *pmap = _wrap_convert_c2py__Tiled__Map_const___star__(&map);
     if (!pmap)
         return false;
     PyObject *pinst = PyObject_CallMethod(mClass,

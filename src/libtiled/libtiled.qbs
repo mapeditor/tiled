@@ -93,6 +93,7 @@ DynamicLibrary {
         "staggeredrenderer.h",
         "templatemanager.cpp",
         "templatemanager.h",
+        "terrain.h",
         "tile.cpp",
         "tileanimationdriver.cpp",
         "tileanimationdriver.h",
@@ -134,12 +135,11 @@ DynamicLibrary {
     }
 
     Group {
+        condition: !qbs.targetOS.contains("darwin")
         qbs.install: true
         qbs.installDir: {
             if (qbs.targetOS.contains("windows"))
                 return ""
-            else if (qbs.targetOS.contains("darwin"))
-                return "Tiled.app/Contents/Frameworks"
             else
                 return "lib"
         }

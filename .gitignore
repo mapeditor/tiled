@@ -1,33 +1,37 @@
 # General build artifacts
 build/
 bin/
-lib/tiled/plugins/*
-lib/*.so*
+lib/
 Makefile*
 *.o
 *.qm
 *.moc
+moc_predefs.h
 moc_*.cpp
 ui_*.h
 qrc_*
+*.qmlc
 default/
 moc_predefs.h
 
 # Build artifacts on Windows
-tiled.exe
-tmxrasterizer.exe
-tmxviewer.exe
-automappingconverter.exe
 *.dll
 *.obj
 *.a
 *.lib
 *.exp
 *.intermediate.manifest
+*.exe
+*.ilk
+*.pdb
+*uic_wrapper.bat
 
 # Build artifacts on Mac
 .qmake.stash
 translations/phony_target.app
+
+# Mac stuff
+*.DS_Store
 
 # IDE files
 *.pro.user*

@@ -308,7 +308,7 @@ void TileStampsDock::setStampAtIndex(const QModelIndex &index)
         emit setStamp(mTileStampModel->stampAt(index));
     } else if (const TileStampVariation *variation = mTileStampModel->variationAt(index)) {
         // single variation clicked, use it specifically
-        emit setStamp(TileStamp(new Map(*variation->map)));
+        emit setStamp(TileStamp(variation->map->clone()));
     }
 }
 

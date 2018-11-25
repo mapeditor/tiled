@@ -57,7 +57,7 @@ TileStampData::TileStampData(const TileStampData &other)
 {
     // deep-copy the map data
     for (TileStampVariation &variation : variations)
-        variation.map = new Map(*variation.map);
+        variation.map = variation.map->clone();
 }
 
 TileStampData::~TileStampData()

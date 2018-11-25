@@ -63,6 +63,8 @@ typedef QSharedPointer<Tileset> SharedTileset;
  */
 class TILEDSHARED_EXPORT Tileset : public Object
 {
+    Q_OBJECT
+
 public:
     /**
      * The orientation of the tileset determines the projection used in the

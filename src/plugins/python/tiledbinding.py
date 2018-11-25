@@ -142,7 +142,6 @@ cls_layer = tiled.add_class('Layer', cls_object)
 
 cls_map = tiled.add_class('Map', cls_object)
 cls_map.add_enum('Orientation', ('Unknown','Orthogonal','Isometric'))
-cls_map.add_copy_constructor()
 cls_map.add_constructor([('Orientation','orient'), ('int','w'), ('int','h'),
     ('int','tileW'), ('int','tileH')])
 cls_map.add_method('orientation', 'Orientation', [])
@@ -375,15 +374,30 @@ PyObject* _wrap_convert_c2py__Tiled__LoggingInterface(Tiled::LoggingInterface *c
         py_retval = Py_BuildValue((char *) "N", py_LoggingInterface);
         return py_retval;
 }
+
+int _wrap_convert_py2c__Tiled__Map___star__(PyObject *value, Tiled::Map * *address)
+{
+    PyObject *py_retval;
+    PyTiledMap *tmp_Map;
+
+    py_retval = Py_BuildValue((char *) "(O)", value);
+    if (!PyArg_ParseTuple(py_retval, (char *) "O!", &PyTiledMap_Type, &tmp_Map)) {
+        Py_DECREF(py_retval);
+        return 0;
+    }
+    *address = tmp_Map->obj->clone();
+    Py_DECREF(py_retval);
+    return 1;
+}
 """, file=fh)
     #mod.generate_c_to_python_type_converter(
     #  utils.eval_retval(retval("Tiled::LoggingInterface")),
     #  sink)
-    mod.generate_python_to_c_type_converter(
-        utils.eval_retval(retval('Tiled::Map*',caller_owns_return=True)),
-        sink)
+    # mod.generate_python_to_c_type_converter(
+    #    utils.eval_retval(retval('Tiled::Map*',caller_owns_return=True)),
+    #    sink)
     mod.generate_c_to_python_type_converter(
-        utils.eval_retval("const Tiled::Map"),
+        utils.eval_retval(retval('const Tiled::Map*',reference_existing_object=True)),
         sink)
 
     print(sink.flush(), file=fh)

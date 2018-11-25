@@ -80,5 +80,6 @@ TILEDSHARED_EXPORT QPointF alignmentOffset(const QRectF &r, Alignment alignment)
 
 TILEDSHARED_EXPORT QString toFileReference(const QUrl &url, const QDir &dir);
 TILEDSHARED_EXPORT QUrl toUrl(const QString &reference, const QDir &dir);
+TILEDSHARED_EXPORT QString urlToLocalFileOrQrc(const QUrl &url);
 
 } // namespace Tiled

@@ -71,3 +71,26 @@ QUrl Tiled::toUrl(const QString &filePathOrUrl, const QDir &dir)
 
     return QUrl::fromLocalFile(absolutePath);
 }
+
+/*
+    If \a url is a local file returns a path suitable for passing to QFile.
+    Otherwise returns an empty string.
+*/
+QString Tiled::urlToLocalFileOrQrc(const QUrl &url)
+{
+    if (url.scheme().compare(QLatin1String("qrc"), Qt::CaseInsensitive) == 0) {
+        if (url.authority().isEmpty())
+            return QLatin1Char(':') + url.path();
+        return QString();
+    }
+
+#if defined(Q_OS_ANDROID)
+    else if (url.scheme().compare(QLatin1String("assets"), Qt::CaseInsensitive) == 0) {
+        if (url.authority().isEmpty())
+            return url.toString();
+        return QString();
+    }
+#endif
+
+    return url.toLocalFile();
+}

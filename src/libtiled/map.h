@@ -55,6 +55,19 @@ class Tile;
  */
 class TILEDSHARED_EXPORT Map : public Object
 {
+    Q_OBJECT
+    Q_PROPERTY(int width READ width WRITE setWidth NOTIFY widthChanged)
+    Q_PROPERTY(int height READ height WRITE setHeight NOTIFY heightChanged)
+    Q_PROPERTY(int tileWidth READ tileWidth WRITE setTileWidth NOTIFY tileWidthChanged)
+    Q_PROPERTY(int tileHeight READ tileHeight WRITE setTileHeight NOTIFY tileHeightChanged)
+    Q_PROPERTY(QSize size READ size NOTIFY sizeChanged)
+
+    Q_ENUMS(Orientation
+            LayerDataFormat
+            RenderOrder
+            StaggerAxis
+            StaggerIndex)
+
     class LayerIteratorHelper
     {
     public:
@@ -125,8 +138,10 @@ public:
         StaggerEven = 1
     };
 
+    Map();
+
     /**
-     * Constructor, taking map orientation, size and tile size as parameters.
+     * Constructor taking map orientation, size and tile size as parameters.
      */
     Map(Orientation orientation,
         int width, int height,
@@ -139,11 +154,9 @@ public:
         bool infinite = false);
 
     /**
-     * Copy constructor. Makes sure that a deep-copy of the layers is created.
+     * Destructor.
      */
-    Map(const Map &map);
-
-    ~Map() override;
+    ~Map();
 
     /**
      * Returns the orientation of the map.
@@ -175,7 +188,7 @@ public:
     /**
      * Sets the width of this map in tiles.
      */
-    void setWidth(int width) { mWidth = width; }
+    void setWidth(int width);
 
     /**
      * Returns the height of this map in tiles.
@@ -185,7 +198,7 @@ public:
     /**
      * Sets the height of this map in tiles.
      */
-    void setHeight(int height) { mHeight = height; }
+    void setHeight(int height);
 
     /**
      * Returns the size of this map. Provided for convenience.
@@ -200,7 +213,7 @@ public:
     /**
      * Sets the width of one tile.
      */
-    void setTileWidth(int width) { mTileWidth = width; }
+    void setTileWidth(int width);
 
     /**
      * Returns the tile height used by this map.
@@ -210,7 +223,7 @@ public:
     /**
      * Sets the height of one tile.
      */
-    void setTileHeight(int height) { mTileHeight = height; }
+    void setTileHeight(int height);
 
     bool infinite() const { return mInfinite; }
 
@@ -405,6 +418,8 @@ public:
      */
     bool isTilesetUsed(const Tileset *tileset) const;
 
+    Map *clone() const;
+
     /**
      * Returns whether the map is staggered
      */
@@ -426,6 +441,13 @@ public:
     void initializeObjectIds(ObjectGroup &objectGroup);
 
     QRegion tileRegion() const;
+
+signals:
+    void widthChanged();
+    void heightChanged();
+    void tileWidthChanged();
+    void tileHeightChanged();
+    void sizeChanged();
 
 private:
     friend class GroupLayer;    // so it can call adoptLayer

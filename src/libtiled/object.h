@@ -28,6 +28,8 @@
 
 #pragma once
 
+#include <QObject>
+
 #include "properties.h"
 #include "objecttypes.h"
 
@@ -36,8 +38,10 @@ namespace Tiled {
 /**
  * The base class for anything that can hold properties.
  */
-class TILEDSHARED_EXPORT Object
+class TILEDSHARED_EXPORT Object : public QObject
 {
+    Q_OBJECT
+
 public:
     enum TypeId {
         LayerType,

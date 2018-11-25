@@ -135,5 +135,5 @@ private:
 
 PyMODINIT_FUNC PyInit_tiled(void);
 extern int _wrap_convert_py2c__Tiled__Map___star__(PyObject *obj, Tiled::Map * *address);
-extern PyObject* _wrap_convert_c2py__Tiled__Map_const(Tiled::Map const *cvalue);
+extern PyObject* _wrap_convert_c2py__Tiled__Map_const___star__(Tiled::Map const * *cvalue);
 extern PyObject* _wrap_convert_c2py__Tiled__LoggingInterface(Tiled::LoggingInterface *cvalue);

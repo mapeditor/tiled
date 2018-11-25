@@ -40,6 +40,8 @@ class ObjectTemplateFormat;
 
 class TILEDSHARED_EXPORT ObjectTemplate : public Object
 {
+    Q_OBJECT
+
 public:
     ObjectTemplate();
     ObjectTemplate(const QString &fileName);

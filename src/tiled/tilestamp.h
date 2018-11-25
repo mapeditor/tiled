@@ -108,7 +108,7 @@ private:
  */
 inline void TileStamp::addVariation(const TileStampVariation &variation)
 {
-    addVariation(new Map(*variation.map), variation.probability);
+    addVariation(variation.map->clone(), variation.probability);
 }
 
 } // namespace Internal

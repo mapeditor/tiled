@@ -26,6 +26,8 @@ Project {
         "src/qtsingleapplication",
         "src/terraingenerator",
         "src/tiled",
+        "src/tiledquick",
+        "src/tiledquickplugin",
         "src/tmxrasterizer",
         "src/tmxviewer",
         "translations"

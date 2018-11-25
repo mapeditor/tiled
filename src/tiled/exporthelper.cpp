@@ -86,7 +86,7 @@ const Map *ExportHelper::prepareExportMap(const Map *map, std::unique_ptr<Map> &
         return map;
 
     // Make a copy to which export options are applied
-    exportMap.reset(new Map(*map));
+    exportMap.reset(map->clone());
 
     if (mOptions.testFlag(Preferences::DetachTemplateInstances))
         for (Layer *layer : exportMap->objectGroups())
