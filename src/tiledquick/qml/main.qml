@@ -1,37 +1,39 @@
-import QtQuick 2.4
-import QtQuick.Controls 1.3
-import QtQuick.Dialogs 1.2
-import QtQuick.Layouts 1.1
+import QtQuick 2.10
+import QtQuick.Controls 2.3
+import QtQuick.Layouts 1.3
 import org.mapeditor.Tiled 1.0 as Tiled
 import Qt.labs.settings 1.0
+import Qt.labs.platform 1.0 as Platform
+
+// For access to FontAwesome Singleton
+import "."
 
 ApplicationWindow {
     id: window
-
-    visible: true
-
     width: 1024
     height: 720
-
     minimumWidth: 480
     minimumHeight: 320
-
     title: qsTr("Tiled Quick")
+    visible: true
 
-    FileDialog {
+    FontLoader {
+        source: "fonts/fontawesome.ttf"
+    }
+
+    Platform.FileDialog {
         id: fileDialog
         nameFilters: [ "TMX files (*.tmx)", "All files (*)" ]
         onAccepted: {
-            mapLoader.source = fileDialog.fileUrl
+            mapLoader.source = fileDialog.file
             settings.mapsFolder = fileDialog.folder
         }
     }
 
-    MessageDialog {
+    Platform.MessageDialog {
         id: aboutBox
         title: "About Tiled Quick"
         text: "This is an experimental Qt Quick version of Tiled,\na generic 2D map editor"
-        icon: StandardIcon.Information
     }
 
     Settings {
@@ -49,11 +51,17 @@ ApplicationWindow {
         id: openAction
         text: qsTr("Open...")
         shortcut: StandardKey.Open
-        iconName: "document-open"
         onTriggered: {
             fileDialog.folder = settings.mapsFolder
             fileDialog.open()
         }
+    }
+
+    Action {
+        id: exitAction
+        text: qsTr("Exit")
+        shortcut: StandardKey.Quit
+        onTriggered: Qt.quit()
     }
 
     menuBar: MenuBar {
@@ -62,7 +70,6 @@ ApplicationWindow {
             MenuItem {
                 action: openAction
                 text: qsTr("Open...")
-                shortcut: StandardKey.Open
                 onTriggered: {
                     fileDialog.open()
                 }
@@ -70,8 +77,8 @@ ApplicationWindow {
             MenuSeparator {}
             MenuItem {
                 text: qsTr("Exit")
-                shortcut: StandardKey.Quit
-                onTriggered: Qt.quit();
+                action: exitAction
+                onTriggered: Qt.quit()
             }
         }
         Menu {
@@ -83,11 +90,13 @@ ApplicationWindow {
         }
     }
 
-    toolBar: ToolBar {
+    header: ToolBar {
         RowLayout {
             anchors.fill: parent
             ToolButton {
                 action: openAction
+                font.family: "FontAwesome"
+                text: FontAwesome.open
             }
         }
     }
@@ -164,7 +173,7 @@ ApplicationWindow {
         }
     }
 
-    statusBar: StatusBar {
+    footer: Pane {
         RowLayout {
             Label {
                 text: {

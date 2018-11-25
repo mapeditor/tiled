@@ -2,7 +2,6 @@
 build/
 bin/
 lib/
-qml/
 Makefile*
 *.o
 *.qm
@@ -30,6 +29,9 @@ moc_predefs.h
 # Build artifacts on Mac
 .qmake.stash
 translations/phony_target.app
+
+# Mac stuff
+*.DS_Store
 
 # IDE files
 *.pro.user*
