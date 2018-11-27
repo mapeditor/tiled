@@ -139,7 +139,7 @@ private:
 
     QFileSystemWatcher mWatcher;
 
-    const QString rulesFileName();
+    QString rulesFileName() const;
 };
 
 } // namespace Internal
