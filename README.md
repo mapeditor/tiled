@@ -32,7 +32,7 @@ Compiling
 Before you can compile Tiled, you must ensure the Qt (>= 5.6) development
 libraries have been installed:
 
-* On Ubuntu/Debian: `apt-get install qt5-default qttools5-dev-tools zlib1g-dev`
+* On Ubuntu/Debian: `apt-get install qt5-default qttools5-dev-tools zlib1g-dev qtdeclarative5-dev`
 * On Fedora:        `sudo dnf builddep tiled`
 * On Arch Linux:    `pacman -S qt`
 * On Mac OS X with [Homebrew](http://brew.sh/):
