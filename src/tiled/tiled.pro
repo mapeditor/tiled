@@ -127,6 +127,7 @@ SOURCES += aboutdialog.cpp \
     createtileobjecttool.cpp \
     document.cpp \
     documentmanager.cpp \
+    editablemap.cpp \
     editor.cpp \
     editpolygontool.cpp \
     eraser.cpp \
@@ -328,6 +329,7 @@ HEADERS += aboutdialog.h \
     createtileobjecttool.h \
     document.h \
     documentmanager.h \
+    editablemap.h \
     editor.h \
     editpolygontool.h \
     eraser.h \

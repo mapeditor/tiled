@@ -28,6 +28,8 @@ namespace Tiled {
 
 class TILEDSHARED_EXPORT GroupLayer : public Layer
 {
+    Q_OBJECT
+
 public:
     GroupLayer(const QString &name, int x, int y);
     ~GroupLayer() override;

@@ -30,6 +30,7 @@
 #include "changeproperties.h"
 #include "changeselectedarea.h"
 #include "containerhelpers.h"
+#include "editablemap.h"
 #include "flipmapobjects.h"
 #include "grouplayer.h"
 #include "hexagonalrenderer.h"
@@ -211,6 +212,14 @@ QString MapDocument::displayName() const
     return displayName;
 }
 
+EditableMap *MapDocument::edit()
+{
+    if (!mEditableMap)
+        mEditableMap = new EditableMap(sharedFromThis(), this);
+
+    return mEditableMap;
+}
+
 /**
   * Returns the sibling index of the given \a layer, or -1 if no layer is given.
   */
@@ -243,103 +252,9 @@ void MapDocument::setSelectedLayers(const QList<Layer *> &layers)
     emit selectedLayersChanged();
 }
 
-/**
- * Custom intersects check necessary because QRectF::intersects wants a
- * non-empty area of overlap, but we should also consider overlap with empty
- * area as intersection.
- *
- * Results for rectangles with negative size are undefined.
- */
-static bool intersects(const QRectF &a, const QRectF &b)
-{
-    return a.right() >= b.left() &&
-            a.bottom() >= b.top() &&
-            a.left() <= b.right() &&
-            a.top() <= b.bottom();
-}
-
-static bool visibleIn(const QRectF &area, MapObject *object,
-                      const MapRenderer &renderer)
-{
-    QRectF boundingRect = renderer.boundingRect(object);
-
-    if (object->rotation() != 0) {
-        // Rotate around object position
-        QPointF pos = renderer.pixelToScreenCoords(object->position());
-        boundingRect.translate(-pos);
-
-        QTransform transform;
-        transform.rotate(object->rotation());
-        boundingRect = transform.mapRect(boundingRect);
-
-        boundingRect.translate(pos);
-    }
-
-    return intersects(area, boundingRect);
-}
-
 void MapDocument::resizeMap(const QSize &size, const QPoint &offset, bool removeObjects)
 {
-    const QRegion movedSelection = mSelectedArea.translated(offset);
-    const QRect newArea = QRect(-offset, size);
-    const QRectF visibleArea = mRenderer->boundingRect(newArea);
-
-    const QPointF origin = mRenderer->tileToPixelCoords(QPointF());
-    const QPointF newOrigin = mRenderer->tileToPixelCoords(-offset);
-    const QPointF pixelOffset = origin - newOrigin;
-
-    // Resize the map and each layer
-    QUndoCommand *command = new QUndoCommand(tr("Resize Map"));
-
-    QList<MapObject *> objectsToRemove;
-
-    LayerIterator iterator(mMap.get());
-    while (Layer *layer = iterator.next()) {
-        switch (layer->layerType()) {
-        case Layer::TileLayerType: {
-            TileLayer *tileLayer = static_cast<TileLayer*>(layer);
-            new ResizeTileLayer(this, tileLayer, size, offset, command);
-            break;
-        }
-        case Layer::ObjectGroupType: {
-            ObjectGroup *objectGroup = static_cast<ObjectGroup*>(layer);
-
-            for (MapObject *o : objectGroup->objects()) {
-                if (removeObjects && !visibleIn(visibleArea, o, *mRenderer)) {
-                    // Remove objects that will fall outside of the map
-                    objectsToRemove.append(o);
-                } else {
-                    QPointF oldPos = o->position();
-                    QPointF newPos = oldPos + pixelOffset;
-                    new MoveMapObject(this, o, newPos, oldPos, command);
-                }
-            }
-            break;
-        }
-        case Layer::ImageLayerType: {
-            // Adjust image layer by changing its offset
-            auto imageLayer = static_cast<ImageLayer*>(layer);
-            new SetLayerOffset(this, layer,
-                               imageLayer->offset() + pixelOffset,
-                               command);
-            break;
-        }
-        case Layer::GroupLayerType: {
-            // Recursion handled by LayerIterator
-            break;
-        }
-        }
-    }
-
-    if (!objectsToRemove.isEmpty())
-        new RemoveMapObjects(this, objectsToRemove, command);
-
-    new ResizeMap(this, size, command);
-    new ChangeSelectedArea(this, movedSelection, command);
-
-    mUndoStack->push(command);
-
-    // TODO: Handle layers that don't match the map size correctly
+    edit()->resize(size, offset, removeObjects);
 }
 
 void MapDocument::autocropMap()

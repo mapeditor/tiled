@@ -69,23 +69,23 @@ DocumentManager *ScriptModule::documentManager() const
     return DocumentManager::instance();
 }
 
-void ScriptModule::trigger(const QByteArray &actionName)
+void ScriptModule::trigger(const QByteArray &actionName) const
 {
     if (QAction *action = ActionManager::findAction(Id(actionName)))
         action->trigger();
 }
 
-void ScriptModule::alert(const QString &text, const QString &title)
+void ScriptModule::alert(const QString &text, const QString &title) const
 {
     QMessageBox::warning(nullptr, title, text);
 }
 
-bool ScriptModule::confirm(const QString &text, const QString &title)
+bool ScriptModule::confirm(const QString &text, const QString &title) const
 {
     return QMessageBox::question(nullptr, title, text) == QMessageBox::Yes;
 }
 
-QString ScriptModule::prompt(const QString &label, const QString &text, const QString &title)
+QString ScriptModule::prompt(const QString &label, const QString &text, const QString &title) const
 {
     return QInputDialog::getText(nullptr, title, label, QLineEdit::Normal, text);
 }

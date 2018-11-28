@@ -21,9 +21,10 @@
 #include "scriptmanager.h"
 
 #include "documentmanager.h"
+#include "editablemap.h"
 #include "scriptmodule.h"
 
-#include <QJSEngine>
+#include <QQmlEngine>
 #include <QtDebug>
 
 namespace Tiled {
@@ -35,15 +36,20 @@ ScriptManager &ScriptManager::instance()
     return scriptManager;
 }
 
+/*
+ * mJSEngine needs to be QQmlEngine for the "Qt" module to be available, which
+ * is necessary to pass things like QSize or QPoint to some API functions
+ * (using Qt.size and Qt.point).
+ *
+ * It also means we don't need to call QJSEngine::installExtensions, since the
+ * QQmlEngine seems to include those by default.
+ */
+
 ScriptManager::ScriptManager(QObject *parent)
     : QObject(parent)
-    , mJSEngine(new QJSEngine(this))
+    , mJSEngine(new QQmlEngine(this))
 {
-#if QT_VERSION < 0x050600
-    mJSEngine->installTranslatorFunctions();
-#else
-    mJSEngine->installExtensions(QJSEngine::AllExtensions);
-#endif
+    qRegisterMetaType<Tiled::Internal::EditableMap*>();
 
     ScriptModule *module = new ScriptModule(this);
 

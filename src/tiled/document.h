@@ -89,6 +89,8 @@ public:
 
     QUndoStack *undoStack() const;
     bool isModified() const;
+    Q_INVOKABLE void undo();
+    Q_INVOKABLE void redo();
 
     Object *currentObject() const { return mCurrentObject; }
     void setCurrentObject(Object *object);

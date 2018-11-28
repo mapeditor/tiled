@@ -48,18 +48,18 @@ class ObjectTemplate;
 class Tile;
 
 /**
- * A tile map. Consists of a stack of layers, each can be either a TileLayer
- * or an ObjectGroup.
+ * A tile map. Consists of a stack of layers.
  *
  * It also keeps track of the list of referenced tilesets.
  */
 class TILEDSHARED_EXPORT Map : public Object
 {
     Q_OBJECT
-    Q_PROPERTY(int width READ width WRITE setWidth NOTIFY widthChanged)
-    Q_PROPERTY(int height READ height WRITE setHeight NOTIFY heightChanged)
-    Q_PROPERTY(int tileWidth READ tileWidth WRITE setTileWidth NOTIFY tileWidthChanged)
-    Q_PROPERTY(int tileHeight READ tileHeight WRITE setTileHeight NOTIFY tileHeightChanged)
+
+    Q_PROPERTY(int width READ width NOTIFY widthChanged)
+    Q_PROPERTY(int height READ height NOTIFY heightChanged)
+    Q_PROPERTY(int tileWidth READ tileWidth NOTIFY tileWidthChanged)
+    Q_PROPERTY(int tileHeight READ tileHeight NOTIFY tileHeightChanged)
     Q_PROPERTY(QSize size READ size NOTIFY sizeChanged)
 
     Q_ENUMS(Orientation

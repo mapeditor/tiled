@@ -57,6 +57,7 @@ class LayerModel;
 class MapDocument;
 class MapObjectModel;
 class TileSelectionModel;
+class EditableMap;
 
 using MapDocumentPtr = QSharedPointer<MapDocument>;
 
@@ -119,6 +120,8 @@ public:
      * not allow the GUI to update itself appropriately.
      */
     Map *map() const { return mMap.get(); }
+
+    Q_INVOKABLE Tiled::Internal::EditableMap *edit();
 
     int layerIndex(const Layer *layer) const;
 
@@ -365,6 +368,7 @@ private:
     QPointer<MapFormat> mWriterFormat;
     QPointer<MapFormat> mExportFormat;
     std::unique_ptr<Map> mMap;
+    EditableMap *mEditableMap = nullptr;
     LayerModel *mLayerModel;
     QRegion mSelectedArea;
     QList<Layer*> mSelectedLayers;

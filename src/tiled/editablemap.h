@@ -1,0 +1,188 @@
+/*
+ * editablemap.h
+ * Copyright 2018, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+ *
+ * This file is part of Tiled.
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#pragma once
+
+#include <QObject>
+
+#include "mapdocument.h"
+
+class QUndoCommand;
+
+namespace Tiled {
+namespace Internal {
+
+class EditableMap : public QObject
+{
+    Q_OBJECT
+
+    Q_PROPERTY(int width READ width NOTIFY sizeChanged)
+    Q_PROPERTY(int height READ height NOTIFY sizeChanged)
+    Q_PROPERTY(QSize size READ size NOTIFY sizeChanged)
+    Q_PROPERTY(int tileWidth READ tileWidth WRITE setTileWidth NOTIFY tileWidthChanged)
+    Q_PROPERTY(int tileHeight READ tileHeight WRITE setTileHeight NOTIFY tileHeightChanged)
+    Q_PROPERTY(bool infinite READ infinite WRITE setInfinite)
+    Q_PROPERTY(int hexSideLength READ hexSideLength WRITE setHexSideLength)
+    Q_PROPERTY(Map::StaggerAxis staggerAxis READ staggerAxis WRITE setStaggerAxis)
+    Q_PROPERTY(Map::StaggerIndex staggerIndex READ staggerIndex WRITE setStaggerIndex)
+    Q_PROPERTY(Map::Orientation orientation READ orientation WRITE setOrientation)
+    Q_PROPERTY(Map::RenderOrder renderOrder READ renderOrder WRITE setRenderOrder)
+    Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor)
+    Q_PROPERTY(Map::LayerDataFormat layerDataFormat READ layerDataFormat WRITE setLayerDataFormat)
+
+public:
+    explicit EditableMap(const MapDocumentPtr &mapDocument,
+                         QObject *parent = nullptr);
+
+    int width() const;
+    int height() const;
+    QSize size() const;
+    int tileWidth() const;
+    int tileHeight() const;
+    bool infinite() const;
+    int hexSideLength() const;
+    Map::StaggerAxis staggerAxis() const;
+    Map::StaggerIndex staggerIndex() const;
+    Map::Orientation orientation() const;
+    Map::RenderOrder renderOrder() const;
+    QColor backgroundColor() const;
+    Map::LayerDataFormat layerDataFormat() const;
+
+    void setTileWidth(int value);
+    void setTileHeight(int value);
+    void setInfinite(bool value);
+    void setHexSideLength(int value);
+    void setStaggerAxis(Map::StaggerAxis value);
+    void setStaggerIndex(Map::StaggerIndex value);
+    void setOrientation(Map::Orientation value);
+    void setRenderOrder(Map::RenderOrder value);
+    void setBackgroundColor(const QColor &value);
+    void setLayerDataFormat(Map::LayerDataFormat value);
+
+signals:
+    void sizeChanged();
+    void tileWidthChanged();
+    void tileHeightChanged();
+
+public slots:
+    void resize(const QSize &size,
+                const QPoint &offset = QPoint(),
+                bool removeObjects = false);
+
+private:
+    Map *map() const;
+    MapRenderer *renderer() const;
+    MapDocument *mapDocument() const;
+    QUndoStack *undoStack() const;
+    void push(QUndoCommand *command);
+
+    MapDocumentPtr mMapDocument;
+};
+
+
+inline int EditableMap::width() const
+{
+    return map()->width();
+}
+
+inline int EditableMap::height() const
+{
+    return map()->height();
+}
+
+inline int EditableMap::tileWidth() const
+{
+    return map()->tileWidth();
+}
+
+inline int EditableMap::tileHeight() const
+{
+    return map()->tileHeight();
+}
+
+inline bool EditableMap::infinite() const
+{
+    return map()->infinite();
+}
+
+inline int EditableMap::hexSideLength() const
+{
+    return map()->hexSideLength();
+}
+
+inline Map::StaggerAxis EditableMap::staggerAxis() const
+{
+    return map()->staggerAxis();
+}
+
+inline Map::StaggerIndex EditableMap::staggerIndex() const
+{
+    return map()->staggerIndex();
+}
+
+inline Map::Orientation EditableMap::orientation() const
+{
+    return map()->orientation();
+}
+
+inline Map::RenderOrder EditableMap::renderOrder() const
+{
+    return map()->renderOrder();
+}
+
+inline QColor EditableMap::backgroundColor() const
+{
+    return map()->backgroundColor();
+}
+
+inline Map::LayerDataFormat EditableMap::layerDataFormat() const
+{
+    return map()->layerDataFormat();
+}
+
+inline QSize EditableMap::size() const
+{
+    return map()->size();
+}
+
+inline Map *EditableMap::map() const
+{
+    return mMapDocument->map();
+}
+
+inline MapRenderer *EditableMap::renderer() const
+{
+    return mMapDocument->renderer();
+}
+
+inline MapDocument *EditableMap::mapDocument() const
+{
+    return mMapDocument.get();
+}
+
+inline QUndoStack *EditableMap::undoStack() const
+{
+    return mMapDocument->undoStack();
+}
+
+} // namespace Internal
+} // namespace Tiled
+
+Q_DECLARE_METATYPE(Tiled::Internal::EditableMap*)

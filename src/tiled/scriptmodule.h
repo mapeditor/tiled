@@ -50,11 +50,11 @@ public:
     DocumentManager *documentManager() const;
 
 public slots:
-    void trigger(const QByteArray &actionName);
+    void trigger(const QByteArray &actionName) const;
 
-    void alert(const QString &text, const QString &title = QString());
-    bool confirm(const QString &text, const QString &title = QString());
-    QString prompt(const QString &label, const QString &text = QString(), const QString &title = QString());
+    void alert(const QString &text, const QString &title = QString()) const;
+    bool confirm(const QString &text, const QString &title = QString()) const;
+    QString prompt(const QString &label, const QString &text = QString(), const QString &title = QString()) const;
 };
 
 } // namespace Internal

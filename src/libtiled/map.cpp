@@ -87,6 +87,7 @@ void Map::setWidth(int width)
 
     mWidth = width;
     emit widthChanged();
+    emit sizeChanged();
 }
 
 void Map::setHeight(int height)
@@ -106,7 +107,6 @@ void Map::setTileWidth(int width)
 
     mTileWidth = width;
     emit tileWidthChanged();
-    emit sizeChanged();
 }
 
 void Map::setTileHeight(int height)

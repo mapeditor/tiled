@@ -70,6 +70,16 @@ bool Document::isModified() const
     return !mUndoStack->isClean();
 }
 
+void Document::undo()
+{
+    mUndoStack->undo();
+}
+
+void Document::redo()
+{
+    mUndoStack->redo();
+}
+
 void Document::setCurrentObject(Object *object)
 {
     if (object == mCurrentObject)

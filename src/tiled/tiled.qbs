@@ -209,6 +209,8 @@ QtGuiApplication {
         "document.h",
         "documentmanager.cpp",
         "documentmanager.h",
+        "editablemap.cpp",
+        "editablemap.h",
         "editor.cpp",
         "editor.h",
         "editpolygontool.cpp",
