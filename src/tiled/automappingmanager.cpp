@@ -224,9 +224,8 @@ void AutomappingManager::setMapDocument(MapDocument *mapDocument)
         newRules = rulesFileName();
     }
 
-    if (newRules != oldRules) {
+    if (newRules != oldRules)
         cleanUp();
-    }
 }
 
 void AutomappingManager::cleanUp()
