@@ -174,7 +174,7 @@ inline MapRenderer *EditableMap::renderer() const
 
 inline MapDocument *EditableMap::mapDocument() const
 {
-    return mMapDocument.get();
+    return mMapDocument.data();
 }
 
 inline QUndoStack *EditableMap::undoStack() const
