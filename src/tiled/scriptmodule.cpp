@@ -21,6 +21,7 @@
 #include "scriptmodule.h"
 
 #include "actionmanager.h"
+#include "editableasset.h"
 
 #include <QAction>
 #include <QCoreApplication>
@@ -67,6 +68,19 @@ QString ScriptModule::arch() const
 DocumentManager *ScriptModule::documentManager() const
 {
     return DocumentManager::instance();
+}
+
+EditableAsset *ScriptModule::activeAsset() const
+{
+    return documentManager()->currentDocument()->editable();
+}
+
+QList<QObject *> ScriptModule::openAssets() const
+{
+    QList<QObject *> assets;
+    for (const DocumentPtr &doc : documentManager()->documents())
+        assets.append(doc->editable());
+    return assets;
 }
 
 void ScriptModule::trigger(const QByteArray &actionName) const

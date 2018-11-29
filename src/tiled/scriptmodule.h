@@ -27,6 +27,8 @@
 namespace Tiled {
 namespace Internal {
 
+class EditableAsset;
+
 /**
  * Initial point of access to Tiled functionality from JavaScript.
  */
@@ -40,6 +42,9 @@ class ScriptModule : public QObject
 
     Q_PROPERTY(DocumentManager *documentManager READ documentManager)
 
+    Q_PROPERTY(Tiled::Internal::EditableAsset *activeAsset READ activeAsset)
+    Q_PROPERTY(QList<QObject*> openAssets READ openAssets)
+
 public:
     ScriptModule(QObject *parent = nullptr);
 
@@ -48,6 +53,9 @@ public:
     QString arch() const;
 
     DocumentManager *documentManager() const;
+
+    Tiled::Internal::EditableAsset *activeAsset() const;
+    QList<QObject*> openAssets() const;
 
 public slots:
     void trigger(const QByteArray &actionName) const;

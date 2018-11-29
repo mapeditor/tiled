@@ -24,13 +24,14 @@
 #include "abstracttool.h"
 #include "adjusttileindexes.h"
 #include "brokenlinks.h"
+#include "editableasset.h"
 #include "editor.h"
 #include "filechangedwarning.h"
 #include "filesystemwatcher.h"
+#include "map.h"
 #include "mapdocument.h"
 #include "mapeditor.h"
 #include "mapformat.h"
-#include "map.h"
 #include "maprenderer.h"
 #include "mapscene.h"
 #include "mapview.h"
@@ -373,7 +374,7 @@ void DocumentManager::addDocument(const DocumentPtr &document)
     mTabBar->setTabToolTip(documentIndex, document->fileName());
 
     connect(document.data(), &Document::fileNameChanged, this, &DocumentManager::fileNameChanged);
-    connect(document.data(), &Document::modifiedChanged, this, &DocumentManager::modifiedChanged);
+    connect(document->editable(), &EditableAsset::modifiedChanged, this, &DocumentManager::modifiedChanged);
     connect(document.data(), &Document::saved, this, &DocumentManager::documentSaved);
 
     if (auto *mapDocument = qobject_cast<MapDocument*>(document.data())) {

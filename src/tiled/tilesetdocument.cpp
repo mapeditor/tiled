@@ -20,8 +20,9 @@
 
 #include "tilesetdocument.h"
 
-#include "mapdocument.h"
+#include "editabletileset.h"
 #include "map.h"
+#include "mapdocument.h"
 #include "terrain.h"
 #include "tile.h"
 #include "tilesetformat.h"
@@ -140,8 +141,8 @@ bool TilesetDocument::reload(QString *error)
 
     tileset->setFormat(format);
 
-    mUndoStack->push(new ReloadTileset(this, tileset));
-    mUndoStack->setClean();
+    undoStack()->push(new ReloadTileset(this, tileset));
+    undoStack()->setClean();
     mLastSaved = QFileInfo(fileName()).lastModified();
 
     return true;
@@ -218,6 +219,14 @@ void TilesetDocument::swapTileset(SharedTileset &tileset)
     sTilesetToDocument.insert(mTileset, this);
 
     emit tilesetChanged(mTileset.data());
+}
+
+EditableAsset *TilesetDocument::editable()
+{
+    if (!mEditableTileset)
+        mEditableTileset = new EditableTileset(this, this);
+
+    return mEditableTileset;
 }
 
 /**

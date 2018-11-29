@@ -34,6 +34,7 @@ namespace Tiled {
 
 namespace Internal {
 
+class EditableTileset;
 class MapDocument;
 class TilesetDocument;
 class TilesetTerrainModel;
@@ -78,6 +79,8 @@ public:
 
     void swapTileset(SharedTileset &tileset);
     const SharedTileset &tileset() const;
+
+    Q_INVOKABLE Tiled::Internal::EditableAsset *editable() override;
 
     bool isEmbedded() const;
     void setClean();
@@ -163,6 +166,7 @@ private slots:
 
 private:
     SharedTileset mTileset;
+    EditableTileset *mEditableTileset = nullptr;
     QList<MapDocument*> mMapDocuments;
 
     TilesetTerrainModel *mTerrainModel;

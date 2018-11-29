@@ -121,7 +121,7 @@ public:
      */
     Map *map() const { return mMap.get(); }
 
-    Q_INVOKABLE Tiled::Internal::EditableMap *edit();
+    Q_INVOKABLE Tiled::Internal::EditableAsset *editable() override;
 
     int layerIndex(const Layer *layer) const;
 

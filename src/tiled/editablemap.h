@@ -20,16 +20,15 @@
 
 #pragma once
 
-#include <QObject>
-
+#include "editableasset.h"
 #include "mapdocument.h"
-
-class QUndoCommand;
 
 namespace Tiled {
 namespace Internal {
 
-class EditableMap : public QObject
+class EditableLayer;
+
+class EditableMap : public EditableAsset
 {
     Q_OBJECT
 
@@ -46,9 +45,10 @@ class EditableMap : public QObject
     Q_PROPERTY(Map::RenderOrder renderOrder READ renderOrder WRITE setRenderOrder)
     Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor)
     Q_PROPERTY(Map::LayerDataFormat layerDataFormat READ layerDataFormat WRITE setLayerDataFormat)
+    Q_PROPERTY(int layerCount READ layerCount)
 
 public:
-    explicit EditableMap(const MapDocumentPtr &mapDocument,
+    explicit EditableMap(MapDocument *mapDocument,
                          QObject *parent = nullptr);
 
     int width() const;
@@ -64,6 +64,8 @@ public:
     Map::RenderOrder renderOrder() const;
     QColor backgroundColor() const;
     Map::LayerDataFormat layerDataFormat() const;
+    int layerCount() const;
+    Q_INVOKABLE Tiled::Internal::EditableLayer *layerAt(int index);
 
     void setTileWidth(int value);
     void setTileHeight(int value);
@@ -75,6 +77,8 @@ public:
     void setRenderOrder(Map::RenderOrder value);
     void setBackgroundColor(const QColor &value);
     void setLayerDataFormat(Map::LayerDataFormat value);
+
+    MapDocument *mapDocument() const;
 
 signals:
     void sizeChanged();
@@ -89,11 +93,10 @@ public slots:
 private:
     Map *map() const;
     MapRenderer *renderer() const;
-    MapDocument *mapDocument() const;
-    QUndoStack *undoStack() const;
-    void push(QUndoCommand *command);
 
-    MapDocumentPtr mMapDocument;
+    MapDocument *mMapDocument;
+
+    QHash<Layer*, EditableLayer*> mEditableLayers;
 };
 
 
@@ -105,6 +108,11 @@ inline int EditableMap::width() const
 inline int EditableMap::height() const
 {
     return map()->height();
+}
+
+inline QSize EditableMap::size() const
+{
+    return map()->size();
 }
 
 inline int EditableMap::tileWidth() const
@@ -157,9 +165,9 @@ inline Map::LayerDataFormat EditableMap::layerDataFormat() const
     return map()->layerDataFormat();
 }
 
-inline QSize EditableMap::size() const
+inline int EditableMap::layerCount() const
 {
-    return map()->size();
+    return map()->layerCount();
 }
 
 inline Map *EditableMap::map() const
@@ -174,12 +182,7 @@ inline MapRenderer *EditableMap::renderer() const
 
 inline MapDocument *EditableMap::mapDocument() const
 {
-    return mMapDocument.data();
-}
-
-inline QUndoStack *EditableMap::undoStack() const
-{
-    return mMapDocument->undoStack();
+    return mMapDocument;
 }
 
 } // namespace Internal

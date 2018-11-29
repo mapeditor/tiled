@@ -24,6 +24,7 @@
 #include "changelayer.h"
 #include "changemapproperty.h"
 #include "changeselectedarea.h"
+#include "editablelayer.h"
 #include "movemapobject.h"
 #include "resizemap.h"
 #include "resizetilelayer.h"
@@ -39,13 +40,31 @@
 namespace Tiled {
 namespace Internal {
 
-EditableMap::EditableMap(const MapDocumentPtr &mapDocument, QObject *parent)
-    : QObject(parent)
+EditableMap::EditableMap(MapDocument *mapDocument, QObject *parent)
+    : EditableAsset(parent)
     , mMapDocument(mapDocument)
 {
     connect(map(), &Map::sizeChanged, this, &EditableMap::sizeChanged);
     connect(map(), &Map::tileWidthChanged, this, &EditableMap::tileWidthChanged);
     connect(map(), &Map::tileHeightChanged, this, &EditableMap::tileHeightChanged);
+}
+
+EditableLayer *EditableMap::layerAt(int index)
+{
+    if (index < 0 || index >= layerCount())
+        return nullptr;
+
+    Layer *layer = map()->layerAt(index);
+
+    // FIXME: EditableLayer instances need to be cleaned up when layers are
+    // removed, or potentially when the EditableLayer is destroyed (in case we
+    // let the script own the instance, in which case it should probably own
+    // the layer).
+    EditableLayer* &editableLayer = mEditableLayers[layer];
+    if (!editableLayer)
+        editableLayer = new EditableLayer(this, layer, this);
+
+    return editableLayer;
 }
 
 void EditableMap::setTileWidth(int value)
@@ -205,11 +224,6 @@ void EditableMap::resize(const QSize &size,
     mapDocument()->undoStack()->push(command);
 
     // TODO: Handle layers that don't match the map size correctly
-}
-
-void EditableMap::push(QUndoCommand *command)
-{
-    undoStack()->push(command);
 }
 
 } // namespace Internal
