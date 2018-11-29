@@ -764,7 +764,9 @@ bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
     auto document = mDocumentManager->loadDocument(fileName, fileFormat, &error);
 
     if (!document) {
-        QMessageBox::critical(this, tr("Error Opening File"), error);
+        QMessageBox::critical(this,
+                              tr("Error Opening File"),
+                              tr("Error opening '%1':\n%2").arg(fileName, error));
         return false;
     }
 
