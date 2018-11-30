@@ -22,10 +22,10 @@ DynamicLibrary {
         "QT_NO_FOREACH",
         "QT_NO_URL_CAST_FROM_STRING"
     ]
-    bundle.isBundle: false
 
     Properties {
         condition: qbs.targetOS.contains("macos")
+        bundle.isBundle: false
         cpp.cxxFlags: ["-Wno-unknown-pragmas"]
     }
 
