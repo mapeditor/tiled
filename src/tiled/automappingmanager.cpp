@@ -29,6 +29,7 @@
 
 #include <QFileInfo>
 #include <QTextStream>
+#include <QFileSystemWatcher>
 
 #include "qtcompat_p.h"
 
@@ -42,6 +43,8 @@ AutomappingManager::AutomappingManager(QObject *parent)
     , mMapDocument(nullptr)
     , mLoaded(false)
 {
+    connect(&mWatcher, &QFileSystemWatcher::fileChanged,
+            this, &AutomappingManager::onFileChanged);
 }
 
 AutomappingManager::~AutomappingManager()
@@ -94,9 +97,8 @@ void AutomappingManager::autoMapInternal(const QRegion &where,
     const bool automatic = touchedLayer != nullptr;
 
     if (!mLoaded) {
-        const QString mapPath = QFileInfo(mMapDocument->fileName()).path();
-        const QString rulesFileName = mapPath + QLatin1String("/rules.txt");
-        if (loadFile(rulesFileName)) {
+        const QString rulesFile = rulesFileName();
+        if (loadFile(rulesFile)) {
             mLoaded = true;
         } else {
             emit errorsOccurred(automatic);
@@ -153,6 +155,8 @@ bool AutomappingManager::loadFile(const QString &filePath)
         return false;
     }
 
+    mWatcher.addPath(filePath);
+
     QTextStream in(&rulesFile);
     QString line = in.readLine();
 
@@ -189,6 +193,7 @@ bool AutomappingManager::loadFile(const QString &filePath)
             const QString error = autoMapper->errorString();
             if (error.isEmpty()) {
                 mAutoMappers.append(autoMapper);
+                mWatcher.addPath(rulePath);
             } else {
                 mError += error;
                 delete autoMapper;
@@ -204,22 +209,42 @@ bool AutomappingManager::loadFile(const QString &filePath)
 
 void AutomappingManager::setMapDocument(MapDocument *mapDocument)
 {
-    cleanUp();
-    if (mMapDocument)
+    QString oldRules;
+    if (mMapDocument) {
+        oldRules = rulesFileName();
         mMapDocument->disconnect(this);
+    }
 
     mMapDocument = mapDocument;
 
+    QString newRules;
     if (mMapDocument) {
         connect(mMapDocument, &MapDocument::regionEdited,
                 this, &AutomappingManager::onRegionEdited);
+        newRules = rulesFileName();
     }
 
-    mLoaded = false;
+    if (newRules != oldRules)
+        cleanUp();
 }
 
 void AutomappingManager::cleanUp()
 {
     qDeleteAll(mAutoMappers);
     mAutoMappers.clear();
+    mLoaded = false;
+    if (!mWatcher.files().isEmpty())
+        mWatcher.removePaths(mWatcher.files());
+}
+
+void AutomappingManager::onFileChanged()
+{
+    cleanUp();
+}
+
+QString AutomappingManager::rulesFileName() const
+{
+    const QString mapPath = QFileInfo(mMapDocument->fileName()).path();
+    const QString rulesFileName = mapPath + QLatin1String("/rules.txt");
+    return rulesFileName;
 }
