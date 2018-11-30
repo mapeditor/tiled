@@ -26,8 +26,11 @@ DynamicLibrary {
         cpp.cxxFlags: ["-Wno-unknown-pragmas"]
     }
 
-    bundle.isBundle: false
-    cpp.sonamePrefix: qbs.targetOS.contains("darwin") ? "@rpath" : undefined
+    Properties {
+        condition: qbs.targetOS.contains("darwin")
+        bundle.isBundle: false
+        cpp.sonamePrefix: "@rpath"
+    }
 
     files: [
         "compression.cpp",
