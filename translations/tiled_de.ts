@@ -3967,7 +3967,7 @@ Bitte Format angeben.</translation>
     <message>
         <location line="+1"/>
         <source>Lock/&amp;Unlock all Other Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle anderen Ebenen sperren/&amp;entsperren</translation>
     </message>
     <message>
         <location line="+1"/>
