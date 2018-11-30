@@ -11,7 +11,10 @@ DynamicLibrary {
 
     cpp.cxxLanguageVersion: "c++11"
 
-    bundle.isBundle: false
+    Properties {
+        condition: qbs.targetOS.contains("darwin")
+        bundle.isBundle: false
+    }
 
     files: [
         "mapitem.cpp",
