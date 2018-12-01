@@ -72,14 +72,17 @@ DocumentManager *ScriptModule::documentManager() const
 
 EditableAsset *ScriptModule::activeAsset() const
 {
-    return documentManager()->currentDocument()->editable();
+    if (Document *document = documentManager()->currentDocument())
+        return document->editable();
+
+    return nullptr;
 }
 
 QList<QObject *> ScriptModule::openAssets() const
 {
     QList<QObject *> assets;
-    for (const DocumentPtr &doc : documentManager()->documents())
-        assets.append(doc->editable());
+    for (const DocumentPtr &document : documentManager()->documents())
+        assets.append(document->editable());
     return assets;
 }
 
