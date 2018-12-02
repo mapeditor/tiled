@@ -130,7 +130,7 @@ QVariant MapObjectModel::data(const QModelIndex &index, int role) const
                 return QLatin1Char('(')
                         + QString::number(mapObject->x())
                         + QLatin1String(", ")
-                        + QString::number(InvertYAxisHelper().getPixelY(mapObject->y()))
+                        + QString::number(InvertYAxisHelper().tileY(mapObject->y()))
                         + QLatin1Char(')');
             }
             break;

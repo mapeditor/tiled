@@ -24,32 +24,41 @@
 #include "preferences.h"
 #include "mapdocumentactionhandler.h"
 
-class InvertYAxisHelper{
-    public:
-        InvertYAxisHelper() {}
-        ~InvertYAxisHelper() {}
-        
-        // Inverts Y coordinate in grid
-        float getY(float y) const
-        {
-            // Check if Invert Y Axis is set
-            if(Tiled::Internal::Preferences::instance()->invertYAxis())
-            {
-                return Tiled::Internal::MapDocumentActionHandler::instance()->mapDocument()->map()->height() - 1 - y;
-            }
-            return y;
-        }
+namespace Tiled{
+    namespace Internal {
 
-        // Inverts Y coordinate in pixels
-        float getPixelY(float y) const
+        class InvertYAxisHelper
         {
-            // Obtain the map document
-            auto map = Tiled::Internal::MapDocumentActionHandler::instance()->mapDocument()->map();
-            if(Tiled::Internal::Preferences::instance()->invertYAxis())
+        public:
+            // Constructors
+            InvertYAxisHelper()  {}
+            InvertYAxisHelper(Map* m) : target(m) {}
+                
+            // Inverts Y coordinate in grid
+            qreal tileY(qreal y) const
             {
-                return ((map->height() + 1) * map->tileHeight()) - y;
+                // Check if Invert Y Axis is set
+                if(Preferences::instance()->invertYAxis())
+                {
+                    return MapDocumentActionHandler::instance()->mapDocument()->map()->height() - 1 - y;
+                }
+                return y;
             }
-            return y;
-        }
 
-};
+            // Inverts Y coordinate in pixels
+            qreal pixelY(qreal y) const
+            {
+                // Obtain the map document
+                if(Preferences::instance()->invertYAxis())
+                {
+                    return ((target->height() + 1) * target->tileHeight()) - y;
+                }
+                return y;
+            }
+
+        private:
+            Map* target;
+        };
+
+    } // Namespace Internal
+} // Namespace Tiled
