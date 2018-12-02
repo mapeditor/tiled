@@ -37,6 +37,7 @@
 #include "tile.h"
 #include "tmxmapformat.h"
 #include "utils.h"
+#include "invertyaxishelper.h"
 
 #include <QFileDialog>
 #include <QKeyEvent>
@@ -160,7 +161,7 @@ void AbstractObjectTool::mouseMoved(const QPointF &pos,
     const QPointF tilePosF = mapDocument()->renderer()->screenToTileCoords(offsetPos);
     const int x = qFloor(tilePosF.x());
     const int y = qFloor(tilePosF.y());
-    setStatusInfo(QString(QLatin1String("%1, %2 (%3, %4)")).arg(x).arg(y).arg(pixelPos.x()).arg(pixelPos.y()));
+    setStatusInfo(QString(QLatin1String("%1, %2 (%3, %4)")).arg(x).arg(InvertYAxisHelper().getY(y)).arg(pixelPos.x()).arg(InvertYAxisHelper().getPixelY(pixelPos.y())));
 }
 
 void AbstractObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
