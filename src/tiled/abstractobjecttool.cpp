@@ -164,7 +164,7 @@ void AbstractObjectTool::mouseMoved(const QPointF &pos,
     setStatusInfo(QString(QLatin1String("%1, %2 (%3, %4)")).arg(x)
                                                            .arg(InvertYAxisHelper(mapDocument()).tileY(y))
                                                            .arg(pixelPos.x())
-                                                           .arg(InvertYAxisHelper(MapDocumentActionHandler::instance()->mapDocument()).pixelY(pixelPos.y())));
+                                                           .arg(InvertYAxisHelper(mapDocument()).pixelY(pixelPos.y())));
 }
 
 void AbstractObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
