@@ -23,42 +23,42 @@
 
 #include "preferences.h"
 #include "mapdocumentactionhandler.h"
+#include "maprenderer.h"
 
-namespace Tiled{
-    namespace Internal {
+namespace Tiled {
+namespace Internal {
 
-        class InvertYAxisHelper
-        {
-        public:
-            // Constructors
-            InvertYAxisHelper()  {}
-            InvertYAxisHelper(Map* m) : target(m) {}
+    class InvertYAxisHelper
+    {
+    public:
+        // Constructors
+        InvertYAxisHelper(MapDocument *m) : mTarget(m) {}
                 
-            // Inverts Y coordinate in grid
-            qreal tileY(qreal y) const
-            {
-                // Check if Invert Y Axis is set
-                if(Preferences::instance()->invertYAxis())
-                {
-                    return MapDocumentActionHandler::instance()->mapDocument()->map()->height() - 1 - y;
-                }
-                return y;
+        // Inverts Y coordinate in grid
+        int tileY(int y) const
+        {
+            // Check if Invert Y Axis is set
+            if (Preferences::instance()->invertYAxis()) {
+                const MapRenderer *renderer = mTarget->renderer();
+                return renderer->map()->height() - 1 - y;
             }
+            return y;
+        }
 
-            // Inverts Y coordinate in pixels
-            qreal pixelY(qreal y) const
-            {
-                // Obtain the map document
-                if(Preferences::instance()->invertYAxis())
-                {
-                    return ((target->height() + 1) * target->tileHeight()) - y;
-                }
-                return y;
+        // Inverts Y coordinate in pixels
+        qreal pixelY(qreal y) const
+        {
+            // Obtain the map document
+            if (Preferences::instance()->invertYAxis()) {
+                const MapRenderer *renderer = mTarget->renderer();
+                return (renderer->map()->height() * renderer->map()->tileHeight())- y;
             }
+            return y;
+        }
 
-        private:
-            Map* target;
-        };
+    private:
+        MapDocument *mTarget;
+    };
 
-    } // Namespace Internal
+} // Namespace Internal
 } // Namespace Tiled

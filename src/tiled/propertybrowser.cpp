@@ -1030,7 +1030,7 @@ QUndoCommand *PropertyBrowser::applyMapObjectValueTo(PropertyId id, const QVaria
     }
     case YProperty: {
         const QPointF oldPos = mapObject->position();
-        const QPointF newPos(oldPos.x(), InvertYAxisHelper(mMapDocument->map()).pixelY(val.toReal()));
+        const QPointF newPos(oldPos.x(), InvertYAxisHelper(mMapDocument).pixelY(val.toReal()));
         command = new MoveMapObject(mMapDocument, mapObject, newPos, oldPos);
         break;
     }
@@ -1618,7 +1618,7 @@ void PropertyBrowser::updateProperties()
         if (auto visibleProperty = mIdToProperty[VisibleProperty])
             visibleProperty->setValue(mapObject->isVisible());
         mIdToProperty[XProperty]->setValue(mapObject->x());
-        mIdToProperty[YProperty]->setValue(InvertYAxisHelper(MapDocumentActionHandler::instance()->mapDocument()->map()).pixelY(mapObject->y()));
+        mIdToProperty[YProperty]->setValue(InvertYAxisHelper(mMapDocument).pixelY(mapObject->y()));
 
         if (flags & ObjectHasDimensions) {
             mIdToProperty[WidthProperty]->setValue(mapObject->width());

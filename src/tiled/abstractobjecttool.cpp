@@ -162,9 +162,9 @@ void AbstractObjectTool::mouseMoved(const QPointF &pos,
     const int x = qFloor(tilePosF.x());
     const int y = qFloor(tilePosF.y());
     setStatusInfo(QString(QLatin1String("%1, %2 (%3, %4)")).arg(x)
-                                                           .arg(InvertYAxisHelper().tileY(y))
+                                                           .arg(InvertYAxisHelper(mapDocument()).tileY(y))
                                                            .arg(pixelPos.x())
-                                                           .arg(InvertYAxisHelper(MapDocumentActionHandler::instance()->mapDocument()->map()).pixelY(pixelPos.y())));
+                                                           .arg(InvertYAxisHelper(MapDocumentActionHandler::instance()->mapDocument()).pixelY(pixelPos.y())));
 }
 
 void AbstractObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
