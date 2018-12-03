@@ -40,7 +40,7 @@ namespace Internal {
             // Check if Invert Y Axis is set
             if (Preferences::instance()->invertYAxis()) {
                 const MapRenderer *renderer = mTarget->renderer();
-                return renderer->map()->height() - 1 - y;
+                return mTarget->map()->height() - 1 - y;
             }
             return y;
         }
