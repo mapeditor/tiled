@@ -28,37 +28,36 @@
 namespace Tiled {
 namespace Internal {
 
-    class InvertYAxisHelper
-    {
-    public:
-        // Constructors
-        InvertYAxisHelper(MapDocument *m) : mTarget(m) {}
+class InvertYAxisHelper
+{
+public:
+    InvertYAxisHelper(MapDocument *m) : mTarget(m) {}
                 
-        // Inverts Y coordinate in grid
-        int tileY(int y) const
-        {
-            // Check if Invert Y Axis is set
-            if (Preferences::instance()->invertYAxis()) {
-                const MapRenderer *renderer = mTarget->renderer();
-                return mTarget->map()->height() - 1 - y;
-            }
-            return y;
+    // Inverts Y coordinate in grid
+    int tileY(int y) const
+    {
+        // Check if Invert Y Axis is set
+        if (Preferences::instance()->invertYAxis()) {
+            return mTarget->map()->height() - 1 - y;
         }
+        return y;
+    }
 
-        // Inverts Y coordinate in pixels
-        qreal pixelY(qreal y) const
-        {
-            // Obtain the map document
-            if (Preferences::instance()->invertYAxis()) {
-                const MapRenderer *renderer = mTarget->renderer();
-                return (renderer->map()->height() * renderer->map()->tileHeight())- y;
-            }
-            return y;
+    // Inverts Y coordinate in pixels
+    qreal pixelY(qreal y) const
+    {
+        // Obtain the map document
+        if (Preferences::instance()->invertYAxis()) {
+            const MapRenderer *renderer = mTarget->renderer();
+            QRect boundingRect = renderer->boundingRect(QRect(QPoint(), mTarget->map()->size()));
+            return boundingRect.height() - y;
         }
+        return y;
+    }
 
-    private:
-        MapDocument *mTarget;
-    };
+private:
+    MapDocument *mTarget;
+};
 
 } // Namespace Internal
 } // Namespace Tiled

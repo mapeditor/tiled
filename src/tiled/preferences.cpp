@@ -686,7 +686,7 @@ void Preferences::setWheelZoomsByDefault(bool mode)
 
 void Preferences::setInvertYAxis(bool enabled)
 {
-    if(mInvertYAxis == enabled)
+    if (mInvertYAxis == enabled)
         return;
 
     mInvertYAxis = enabled;
