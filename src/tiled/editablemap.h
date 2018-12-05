@@ -68,6 +68,7 @@ public:
     Map::LayerDataFormat layerDataFormat() const;
     int layerCount() const;
     Q_INVOKABLE Tiled::Internal::EditableLayer *layerAt(int index);
+    Q_INVOKABLE void removeLayerAt(int index);
 
     void setTileWidth(int value);
     void setTileHeight(int value);

@@ -1,5 +1,5 @@
 /*
- * editabletileset.cpp
+ * editabletilelayer.cpp
  * Copyright 2018, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
@@ -18,39 +18,21 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "editabletileset.h"
-
-#include "tilesetchanges.h"
-#include "tilesetdocument.h"
+#include "editabletilelayer.h"
 
 namespace Tiled {
 namespace Internal {
 
-EditableTileset::EditableTileset(TilesetDocument *tilesetDocument,
-                                 QObject *parent)
-    : EditableAsset(parent)
-    , mTilesetDocument(tilesetDocument)
+EditableTileLayer::EditableTileLayer(EditableMap *map,
+                                     TileLayer *layer,
+                                     QObject *parent)
+    : EditableLayer(map, layer, parent)
 {
 }
 
-void EditableTileset::setName(const QString &name)
+Cell EditableTileLayer::cellAt(int x, int y) const
 {
-    push(new RenameTileset(mTilesetDocument, name));
-}
-
-void EditableTileset::setTileOffset(QPoint tileOffset)
-{
-    push(new ChangeTilesetTileOffset(mTilesetDocument, tileOffset));
-}
-
-void EditableTileset::setBackgroundColor(const QColor &color)
-{
-    push(new ChangeTilesetBackgroundColor(mTilesetDocument, color));
-}
-
-Tileset *EditableTileset::tileset() const
-{
-    return mTilesetDocument->tileset().data();
+    return tileLayer()->cellAt(x, y);
 }
 
 } // namespace Internal

@@ -21,10 +21,11 @@
 #include "scriptmanager.h"
 
 #include "documentmanager.h"
-#include "editablelayer.h"
 #include "editablemap.h"
+#include "editabletilelayer.h"
 #include "editabletileset.h"
 #include "scriptmodule.h"
+#include "tilelayer.h"
 
 #include <QQmlEngine>
 #include <QtDebug>
@@ -54,7 +55,9 @@ ScriptManager::ScriptManager(QObject *parent)
     qRegisterMetaType<EditableAsset*>();
     qRegisterMetaType<EditableLayer*>();
     qRegisterMetaType<EditableMap*>();
+    qRegisterMetaType<EditableTileLayer*>();
     qRegisterMetaType<EditableTileset*>();
+    qRegisterMetaType<Cell>();
 
     ScriptModule *module = new ScriptModule(this);
 

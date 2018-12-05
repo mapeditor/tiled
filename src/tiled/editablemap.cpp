@@ -20,11 +20,13 @@
 
 #include "editablemap.h"
 
+#include "addremovelayer.h"
 #include "addremovemapobject.h"
 #include "changelayer.h"
 #include "changemapproperty.h"
 #include "changeselectedarea.h"
 #include "editablelayer.h"
+#include "editabletilelayer.h"
 #include "movemapobject.h"
 #include "resizemap.h"
 #include "resizetilelayer.h"
@@ -62,10 +64,23 @@ EditableLayer *EditableMap::layerAt(int index)
     // let the script own the instance, in which case it should probably own
     // the layer).
     EditableLayer* &editableLayer = mEditableLayers[layer];
-    if (!editableLayer)
-        editableLayer = new EditableLayer(this, layer, this);
+    if (!editableLayer) {
+        switch (layer->layerType()) {
+        case Layer::TileLayerType:
+            editableLayer = new EditableTileLayer(this, static_cast<TileLayer*>(layer), this);
+            break;
+        default:
+            editableLayer = new EditableLayer(this, layer, this);
+            break;
+        }
+    }
 
     return editableLayer;
+}
+
+void EditableMap::removeLayerAt(int index)
+{
+    push(new RemoveLayer(mapDocument(), index, nullptr));
 }
 
 void EditableMap::setTileWidth(int value)

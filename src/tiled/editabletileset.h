@@ -21,6 +21,7 @@
 #pragma once
 
 #include "editableasset.h"
+#include "tileset.h"
 
 namespace Tiled {
 namespace Internal {
@@ -31,13 +32,79 @@ class EditableTileset : public EditableAsset
 {
     Q_OBJECT
 
+    Q_PROPERTY(QString name READ name WRITE setName)
+    Q_PROPERTY(int tileWidth READ tileWidth)
+    Q_PROPERTY(int tileHeight READ tileHeight)
+    Q_PROPERTY(QSize tileSize READ tileSize)
+    Q_PROPERTY(int tileSpacing READ tileSpacing)
+    Q_PROPERTY(int margin READ margin)
+    Q_PROPERTY(QPoint tileOffset READ tileOffset WRITE setTileOffset)
+    Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor)
+
 public:
     explicit EditableTileset(TilesetDocument *tilesetDocument,
                              QObject *parent = nullptr);
 
+    const QString &name() const;
+    int tileWidth() const;
+    int tileHeight() const;
+    QSize tileSize() const;
+    int tileSpacing() const;
+    int margin() const;
+    QPoint tileOffset() const;
+    QColor backgroundColor() const;
+
+public slots:
+    void setName(const QString &name);
+    void setTileOffset(QPoint tileOffset);
+    void setBackgroundColor(const QColor &color);
+
 private:
+    Tileset *tileset() const;
+
     TilesetDocument *mTilesetDocument;
 };
+
+
+inline const QString &EditableTileset::name() const
+{
+    return tileset()->name();
+}
+
+inline int EditableTileset::tileWidth() const
+{
+    return tileset()->tileWidth();
+}
+
+inline int EditableTileset::tileHeight() const
+{
+    return tileset()->tileHeight();
+}
+
+inline QSize EditableTileset::tileSize() const
+{
+    return tileset()->tileSize();
+}
+
+inline int EditableTileset::tileSpacing() const
+{
+    return tileset()->tileSpacing();
+}
+
+inline int EditableTileset::margin() const
+{
+    return tileset()->margin();
+}
+
+inline QPoint EditableTileset::tileOffset() const
+{
+    return tileset()->tileOffset();
+}
+
+inline QColor EditableTileset::backgroundColor() const
+{
+    return tileset()->backgroundColor();
+}
 
 } // namespace Internal
 } // namespace Tiled

@@ -131,6 +131,7 @@ SOURCES += aboutdialog.cpp \
     editablelayer.cpp \
     editablemap.cpp \
     editableselectedarea.cpp \
+    editabletilelayer.cpp \
     editabletileset.cpp \
     editor.cpp \
     editpolygontool.cpp \
@@ -337,6 +338,7 @@ HEADERS += aboutdialog.h \
     editablelayer.h \
     editablemap.h \
     editableselectedarea.h \
+    editabletilelayer.h \
     editabletileset.h \
     editor.h \
     editpolygontool.h \

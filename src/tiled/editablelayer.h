@@ -59,6 +59,9 @@ public slots:
     void setLocked(bool locked);
     void setOffset(QPointF offset);
 
+protected:
+    Layer *layer() const;
+
 private:
     EditableMap *mMap;
     Layer *mLayer;
@@ -88,6 +91,11 @@ inline bool EditableLayer::isLocked() const
 inline QPointF EditableLayer::offset() const
 {
     return mLayer->offset();
+}
+
+inline Layer *EditableLayer::layer() const
+{
+    return mLayer;
 }
 
 } // namespace Internal
