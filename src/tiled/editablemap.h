@@ -21,6 +21,7 @@
 #pragma once
 
 #include "editableasset.h"
+#include "editableselectedarea.h"
 #include "mapdocument.h"
 
 namespace Tiled {
@@ -39,12 +40,13 @@ class EditableMap : public EditableAsset
     Q_PROPERTY(int tileHeight READ tileHeight WRITE setTileHeight NOTIFY tileHeightChanged)
     Q_PROPERTY(bool infinite READ infinite WRITE setInfinite)
     Q_PROPERTY(int hexSideLength READ hexSideLength WRITE setHexSideLength)
-    Q_PROPERTY(Map::StaggerAxis staggerAxis READ staggerAxis WRITE setStaggerAxis)
-    Q_PROPERTY(Map::StaggerIndex staggerIndex READ staggerIndex WRITE setStaggerIndex)
-    Q_PROPERTY(Map::Orientation orientation READ orientation WRITE setOrientation)
-    Q_PROPERTY(Map::RenderOrder renderOrder READ renderOrder WRITE setRenderOrder)
+    Q_PROPERTY(Tiled::Map::StaggerAxis staggerAxis READ staggerAxis WRITE setStaggerAxis)
+    Q_PROPERTY(Tiled::Map::StaggerIndex staggerIndex READ staggerIndex WRITE setStaggerIndex)
+    Q_PROPERTY(Tiled::Map::Orientation orientation READ orientation WRITE setOrientation)
+    Q_PROPERTY(Tiled::Map::RenderOrder renderOrder READ renderOrder WRITE setRenderOrder)
     Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor)
-    Q_PROPERTY(Map::LayerDataFormat layerDataFormat READ layerDataFormat WRITE setLayerDataFormat)
+    Q_PROPERTY(Tiled::Map::LayerDataFormat layerDataFormat READ layerDataFormat WRITE setLayerDataFormat)
+    Q_PROPERTY(Tiled::Internal::EditableSelectedArea *selectedArea READ selectedArea CONSTANT)
     Q_PROPERTY(int layerCount READ layerCount)
 
 public:
@@ -79,6 +81,7 @@ public:
     void setLayerDataFormat(Map::LayerDataFormat value);
 
     MapDocument *mapDocument() const;
+    EditableSelectedArea *selectedArea();
 
 signals:
     void sizeChanged();
@@ -94,9 +97,10 @@ private:
     Map *map() const;
     MapRenderer *renderer() const;
 
-    MapDocument *mMapDocument;
+    MapDocument * const mMapDocument;
 
     QHash<Layer*, EditableLayer*> mEditableLayers;
+    EditableSelectedArea mSelectedArea;
 };
 
 
@@ -183,6 +187,11 @@ inline MapRenderer *EditableMap::renderer() const
 inline MapDocument *EditableMap::mapDocument() const
 {
     return mMapDocument;
+}
+
+inline EditableSelectedArea *EditableMap::selectedArea()
+{
+    return &mSelectedArea;
 }
 
 } // namespace Internal

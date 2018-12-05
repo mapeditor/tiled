@@ -215,6 +215,8 @@ QtGuiApplication {
         "editablelayer.h",
         "editablemap.cpp",
         "editablemap.h",
+        "editableselectedarea.cpp",
+        "editableselectedarea.h",
         "editabletileset.cpp",
         "editabletileset.h",
         "editor.cpp",

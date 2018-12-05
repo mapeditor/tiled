@@ -43,6 +43,7 @@ namespace Internal {
 EditableMap::EditableMap(MapDocument *mapDocument, QObject *parent)
     : EditableAsset(parent)
     , mMapDocument(mapDocument)
+    , mSelectedArea(mapDocument)
 {
     connect(map(), &Map::sizeChanged, this, &EditableMap::sizeChanged);
     connect(map(), &Map::tileWidthChanged, this, &EditableMap::tileWidthChanged);
