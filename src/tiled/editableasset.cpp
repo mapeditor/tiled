@@ -40,6 +40,11 @@ bool EditableAsset::isModified() const
     return !undoStack()->isClean();
 }
 
+void EditableAsset::push(QUndoCommand *command)
+{
+    undoStack()->push(command);
+}
+
 void EditableAsset::undo()
 {
     undoStack()->undo();
@@ -48,11 +53,6 @@ void EditableAsset::undo()
 void EditableAsset::redo()
 {
     undoStack()->redo();
-}
-
-void EditableAsset::push(QUndoCommand *command)
-{
-    undoStack()->push(command);
 }
 
 } // namespace Internal

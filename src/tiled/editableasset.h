@@ -32,21 +32,25 @@ class EditableAsset : public QObject
 {
     Q_OBJECT
 
+    Q_PROPERTY(QString fileName READ fileName NOTIFY fileNameChanged)
     Q_PROPERTY(bool modified READ isModified NOTIFY modifiedChanged)
 
 public:
     explicit EditableAsset(QObject *parent = nullptr);
 
+    virtual QString fileName() const = 0;
+
     QUndoStack *undoStack() const;
     bool isModified() const;
-    Q_INVOKABLE void undo();
-    Q_INVOKABLE void redo();
     void push(QUndoCommand *command);
+
+public slots:
+    void undo();
+    void redo();
 
 signals:
     void modifiedChanged();
-
-public slots:
+    void fileNameChanged(const QString &fileName, const QString &oldFileName);
 
 private:
     QUndoStack *mUndoStack;

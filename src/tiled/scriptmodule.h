@@ -40,9 +40,7 @@ class ScriptModule : public QObject
     Q_PROPERTY(QString platform READ platform)
     Q_PROPERTY(QString arch READ arch)
 
-    Q_PROPERTY(DocumentManager *documentManager READ documentManager)
-
-    Q_PROPERTY(Tiled::Internal::EditableAsset *activeAsset READ activeAsset NOTIFY activeAssetChanged)
+    Q_PROPERTY(Tiled::Internal::EditableAsset *activeAsset READ activeAsset WRITE setActiveAsset NOTIFY activeAssetChanged)
     Q_PROPERTY(QList<QObject*> openAssets READ openAssets)
 
 public:
@@ -52,9 +50,9 @@ public:
     QString platform() const;
     QString arch() const;
 
-    DocumentManager *documentManager() const;
+    EditableAsset *activeAsset() const;
+    bool setActiveAsset(EditableAsset *asset) const;
 
-    Tiled::Internal::EditableAsset *activeAsset() const;
     QList<QObject*> openAssets() const;
 
 signals:

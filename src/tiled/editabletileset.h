@@ -45,6 +45,8 @@ public:
     explicit EditableTileset(TilesetDocument *tilesetDocument,
                              QObject *parent = nullptr);
 
+    QString fileName() const override;
+
     const QString &name() const;
     int tileWidth() const;
     int tileHeight() const;

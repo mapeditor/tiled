@@ -72,23 +72,30 @@ QString ScriptModule::arch() const
 #endif
 }
 
-DocumentManager *ScriptModule::documentManager() const
-{
-    return DocumentManager::instance();
-}
-
 EditableAsset *ScriptModule::activeAsset() const
 {
-    if (Document *document = documentManager()->currentDocument())
+    auto documentManager = DocumentManager::instance();
+    if (Document *document = documentManager->currentDocument())
         return document->editable();
 
     return nullptr;
 }
 
+bool ScriptModule::setActiveAsset(EditableAsset *asset) const
+{
+    auto documentManager = DocumentManager::instance();
+    for (const DocumentPtr &document : documentManager->documents())
+        if (document->editable() == asset)
+            return documentManager->switchToDocument(document.data());
+
+    return false;
+}
+
 QList<QObject *> ScriptModule::openAssets() const
 {
+    auto documentManager = DocumentManager::instance();
     QList<QObject *> assets;
-    for (const DocumentPtr &document : documentManager()->documents())
+    for (const DocumentPtr &document : documentManager->documents())
         assets.append(document->editable());
     return assets;
 }

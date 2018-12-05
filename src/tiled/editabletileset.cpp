@@ -31,6 +31,12 @@ EditableTileset::EditableTileset(TilesetDocument *tilesetDocument,
     : EditableAsset(parent)
     , mTilesetDocument(tilesetDocument)
 {
+    connect(tilesetDocument, &Document::fileNameChanged, this, &EditableAsset::fileNameChanged);
+}
+
+QString EditableTileset::fileName() const
+{
+    return mTilesetDocument->fileName();
 }
 
 void EditableTileset::setName(const QString &name)

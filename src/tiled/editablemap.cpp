@@ -50,6 +50,13 @@ EditableMap::EditableMap(MapDocument *mapDocument, QObject *parent)
     connect(map(), &Map::sizeChanged, this, &EditableMap::sizeChanged);
     connect(map(), &Map::tileWidthChanged, this, &EditableMap::tileWidthChanged);
     connect(map(), &Map::tileHeightChanged, this, &EditableMap::tileHeightChanged);
+
+    connect(mapDocument, &Document::fileNameChanged, this, &EditableAsset::fileNameChanged);
+}
+
+QString EditableMap::fileName() const
+{
+    return mapDocument()->fileName();
 }
 
 EditableLayer *EditableMap::layerAt(int index)

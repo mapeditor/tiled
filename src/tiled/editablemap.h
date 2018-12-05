@@ -53,6 +53,8 @@ public:
     explicit EditableMap(MapDocument *mapDocument,
                          QObject *parent = nullptr);
 
+    QString fileName() const override;
+
     int width() const;
     int height() const;
     QSize size() const;
