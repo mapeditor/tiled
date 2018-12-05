@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include "regionvaluetype.h"
+
 #include <QObject>
 #include <QRect>
 
@@ -40,15 +42,44 @@ public:
 
 public slots:
     void set(const QRect &rect);
+    void set(const QRectF &rect);
+    void set(const Tiled::Internal::RegionValueType &region);
     void add(const QRect &rect);
+    void add(const QRectF &rect);
+    void add(const Tiled::Internal::RegionValueType &region);
     void subtract(const QRect &rect);
+    void subtract(const QRectF &rect);
+    void subtract(const Tiled::Internal::RegionValueType &region);
     void intersect(const QRect &rect);
+    void intersect(const QRectF &rect);
+    void intersect(const Tiled::Internal::RegionValueType &region);
 
 private:
     void set(const QRegion &region);
 
     MapDocument * const mMapDocument;
 };
+
+
+inline void EditableSelectedArea::set(const QRectF &rect)
+{
+    set(rect.toRect());
+}
+
+inline void EditableSelectedArea::add(const QRectF &rect)
+{
+    add(rect.toRect());
+}
+
+inline void EditableSelectedArea::subtract(const QRectF &rect)
+{
+    subtract(rect.toRect());
+}
+
+inline void EditableSelectedArea::intersect(const QRectF &rect)
+{
+    intersect(rect.toRect());
+}
 
 } // namespace Internal
 } // namespace Tiled

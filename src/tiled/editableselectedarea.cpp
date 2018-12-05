@@ -36,7 +36,12 @@ EditableSelectedArea::EditableSelectedArea(MapDocument *mapDocument, QObject *pa
 
 void EditableSelectedArea::set(const QRect &rect)
 {
-    set(rect);
+    set(QRegion(rect));
+}
+
+void EditableSelectedArea::set(const RegionValueType &region)
+{
+    set(region.region());
 }
 
 void EditableSelectedArea::add(const QRect &rect)
@@ -44,14 +49,29 @@ void EditableSelectedArea::add(const QRect &rect)
     set(mMapDocument->selectedArea().united(rect));
 }
 
+void EditableSelectedArea::add(const RegionValueType &region)
+{
+    set(mMapDocument->selectedArea().united(region.region()));
+}
+
 void EditableSelectedArea::subtract(const QRect &rect)
 {
     set(mMapDocument->selectedArea().subtracted(rect));
 }
 
+void EditableSelectedArea::subtract(const RegionValueType &region)
+{
+    set(mMapDocument->selectedArea().subtracted(region.region()));
+}
+
 void EditableSelectedArea::intersect(const QRect &rect)
 {
     set(mMapDocument->selectedArea().intersected(rect));
+}
+
+void EditableSelectedArea::intersect(const RegionValueType &region)
+{
+    set(mMapDocument->selectedArea().intersected(region.region()));
 }
 
 void EditableSelectedArea::set(const QRegion &region)

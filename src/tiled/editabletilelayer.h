@@ -21,6 +21,7 @@
 #pragma once
 
 #include "editablelayer.h"
+#include "regionvaluetype.h"
 #include "tilelayer.h"
 
 namespace Tiled {
@@ -43,6 +44,8 @@ public:
     int width() const;
     int height() const;
     QSize size() const;
+
+    Q_INVOKABLE Tiled::Internal::RegionValueType region() const;
 
     Tiled::Cell cell() const { return Tiled::Cell(); }
     Q_INVOKABLE Tiled::Cell cellAt(int x, int y) const;

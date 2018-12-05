@@ -24,6 +24,7 @@
 #include "editablemap.h"
 #include "editabletilelayer.h"
 #include "editabletileset.h"
+#include "regionvaluetype.h"
 #include "scriptmodule.h"
 #include "tilelayer.h"
 
@@ -58,6 +59,7 @@ ScriptManager::ScriptManager(QObject *parent)
     qRegisterMetaType<EditableTileLayer*>();
     qRegisterMetaType<EditableTileset*>();
     qRegisterMetaType<Cell>();
+    qRegisterMetaType<RegionValueType>();
 
     ScriptModule *module = new ScriptModule(this);
 

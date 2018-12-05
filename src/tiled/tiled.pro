@@ -197,6 +197,7 @@ SOURCES += aboutdialog.cpp \
     propertiesdock.cpp \
     propertybrowser.cpp \
     raiselowerhelper.cpp \
+    regionvaluetype.cpp \
     renamelayer.cpp \
     renameterrain.cpp \
     renamewangset.cpp \
@@ -406,6 +407,7 @@ HEADERS += aboutdialog.h \
     raiselowerhelper.h \
     randompicker.h \
     rangeset.h \
+    regionvaluetype.h \
     renamelayer.h \
     renameterrain.h \
     renamewangset.h \

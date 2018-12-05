@@ -1,5 +1,5 @@
 /*
- * editabletilelayer.cpp
+ * regionvaluetype.cpp
  * Copyright 2018, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
@@ -18,26 +18,43 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "editabletilelayer.h"
+#include "regionvaluetype.h"
 
 namespace Tiled {
 namespace Internal {
 
-EditableTileLayer::EditableTileLayer(EditableMap *map,
-                                     TileLayer *layer,
-                                     QObject *parent)
-    : EditableLayer(map, layer, parent)
+RegionValueType::RegionValueType()
 {
 }
 
-RegionValueType EditableTileLayer::region() const
+RegionValueType::RegionValueType(int x, int y, int w, int h)
+    : mRegion(x, y, w, h)
 {
-    return RegionValueType(tileLayer()->region());
 }
 
-Cell EditableTileLayer::cellAt(int x, int y) const
+RegionValueType::RegionValueType(const QRect &rect)
+    : mRegion(rect)
 {
-    return tileLayer()->cellAt(x, y);
+}
+
+RegionValueType::RegionValueType(const QRegion &region)
+    : mRegion(region)
+{
+}
+
+QString RegionValueType::toString() const
+{
+    switch (mRegion.rectCount()) {
+    case 0:
+        return QLatin1String("Region(empty)");
+    case 1: {
+        QRect r = boundingRect();
+        return QString::asprintf("Region(x = %d, y = %d, w = %d, h = %d)",
+                                 r.x(), r.y(), r.width(), r.height());
+    }
+    default:
+        return QLatin1String("Region(...)");
+    }
 }
 
 } // namespace Internal

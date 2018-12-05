@@ -362,6 +362,8 @@ QtGuiApplication {
         "raiselowerhelper.h",
         "randompicker.h",
         "rangeset.h",
+        "regionvaluetype.cpp",
+        "regionvaluetype.h",
         "renamelayer.cpp",
         "renamelayer.h",
         "renameterrain.cpp",
