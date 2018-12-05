@@ -42,7 +42,7 @@ class ScriptModule : public QObject
 
     Q_PROPERTY(DocumentManager *documentManager READ documentManager)
 
-    Q_PROPERTY(Tiled::Internal::EditableAsset *activeAsset READ activeAsset)
+    Q_PROPERTY(Tiled::Internal::EditableAsset *activeAsset READ activeAsset NOTIFY activeAssetChanged)
     Q_PROPERTY(QList<QObject*> openAssets READ openAssets)
 
 public:
@@ -57,8 +57,25 @@ public:
     Tiled::Internal::EditableAsset *activeAsset() const;
     QList<QObject*> openAssets() const;
 
+signals:
+    void assetCreated(Tiled::Internal::EditableAsset *asset);
+    void assetOpened(Tiled::Internal::EditableAsset *asset);
+    void assetAboutToBeSaved(Tiled::Internal::EditableAsset *asset);
+    void assetSaved(Tiled::Internal::EditableAsset *asset);
+    void assetAboutToBeClosed(Tiled::Internal::EditableAsset *asset);
+
+    void activeAssetChanged(Tiled::Internal::EditableAsset *asset);
+
 public slots:
     void trigger(const QByteArray &actionName) const;
+
+private slots:
+    void documentCreated(Document *document);
+    void documentOpened(Document *document);
+    void documentAboutToBeSaved(Document *document);
+    void documentSaved(Document *document);
+    void documentAboutToClose(Document *document);
+    void currentDocumentChanged(Document *document);
 
     void alert(const QString &text, const QString &title = QString()) const;
     bool confirm(const QString &text, const QString &title = QString()) const;

@@ -40,11 +40,11 @@
 #include "exporthelper.h"
 #include "languagemanager.h"
 #include "layer.h"
-#include "mapdocumentactionhandler.h"
+#include "map.h"
 #include "mapdocument.h"
+#include "mapdocumentactionhandler.h"
 #include "mapeditor.h"
 #include "mapformat.h"
-#include "map.h"
 #include "mapobject.h"
 #include "maprenderer.h"
 #include "mapscene.h"
@@ -737,10 +737,12 @@ void MainWindow::dropEvent(QDropEvent *e)
 void MainWindow::newMap()
 {
     NewMapDialog newMapDialog(this);
-    auto mapDocument = newMapDialog.createMap();
+    MapDocumentPtr mapDocument = newMapDialog.createMap();
 
     if (!mapDocument)
         return;
+
+    emit mDocumentManager->documentCreated(mapDocument.data());
 
     if (!mDocumentManager->saveDocumentAs(mapDocument.data()))
         return;
@@ -761,7 +763,7 @@ bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
     }
 
     QString error;
-    auto document = mDocumentManager->loadDocument(fileName, fileFormat, &error);
+    DocumentPtr document = mDocumentManager->loadDocument(fileName, fileFormat, &error);
 
     if (!document) {
         QMessageBox::critical(this,
@@ -1157,6 +1159,7 @@ bool MainWindow::newTileset(const QString &path)
     } else {
         // Save new external tileset and open it
         auto tilesetDocument = TilesetDocumentPtr::create(tileset);
+        emit mDocumentManager->documentCreated(tilesetDocument.data());
         if (!mDocumentManager->saveDocumentAs(tilesetDocument.data()))
             return false;
         mDocumentManager->addDocument(tilesetDocument);

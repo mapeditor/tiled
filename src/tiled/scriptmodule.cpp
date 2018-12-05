@@ -34,6 +34,13 @@ namespace Internal {
 ScriptModule::ScriptModule(QObject *parent)
     : QObject(parent)
 {
+    auto documentManager = DocumentManager::instance();
+    connect(documentManager, &DocumentManager::documentCreated, this, &ScriptModule::documentCreated);
+    connect(documentManager, &DocumentManager::documentOpened, this, &ScriptModule::documentOpened);
+    connect(documentManager, &DocumentManager::documentAboutToBeSaved, this, &ScriptModule::documentAboutToBeSaved);
+    connect(documentManager, &DocumentManager::documentSaved, this, &ScriptModule::documentSaved);
+    connect(documentManager, &DocumentManager::documentAboutToClose, this, &ScriptModule::documentAboutToClose);
+    connect(documentManager, &DocumentManager::currentDocumentChanged, this, &ScriptModule::currentDocumentChanged);
 }
 
 QString ScriptModule::version() const
@@ -90,6 +97,36 @@ void ScriptModule::trigger(const QByteArray &actionName) const
 {
     if (QAction *action = ActionManager::findAction(Id(actionName)))
         action->trigger();
+}
+
+void ScriptModule::documentOpened(Document *document)
+{
+    emit assetOpened(document->editable());
+}
+
+void ScriptModule::documentCreated(Document *document)
+{
+    emit assetCreated(document->editable());
+}
+
+void ScriptModule::documentAboutToBeSaved(Document *document)
+{
+    emit assetAboutToBeSaved(document->editable());
+}
+
+void ScriptModule::documentSaved(Document *document)
+{
+    emit assetSaved(document->editable());
+}
+
+void ScriptModule::documentAboutToClose(Document *document)
+{
+    emit assetAboutToBeClosed(document->editable());
+}
+
+void ScriptModule::currentDocumentChanged(Document *document)
+{
+    emit activeAssetChanged(document ? document->editable() : nullptr);
 }
 
 void ScriptModule::alert(const QString &text, const QString &title) const

@@ -375,7 +375,7 @@ void DocumentManager::addDocument(const DocumentPtr &document)
 
     connect(document.data(), &Document::fileNameChanged, this, &DocumentManager::fileNameChanged);
     connect(document->editable(), &EditableAsset::modifiedChanged, this, &DocumentManager::modifiedChanged);
-    connect(document.data(), &Document::saved, this, &DocumentManager::documentSaved);
+    connect(document.data(), &Document::saved, this, &DocumentManager::onDocumentSaved);
 
     if (auto *mapDocument = qobject_cast<MapDocument*>(document.data())) {
         connect(mapDocument, &MapDocument::tilesetAdded, this, &DocumentManager::tilesetAdded);
@@ -383,9 +383,8 @@ void DocumentManager::addDocument(const DocumentPtr &document)
         connect(mapDocument, &MapDocument::tilesetReplaced, this, &DocumentManager::tilesetReplaced);
     }
 
-    if (auto *tilesetDocument = qobject_cast<TilesetDocument*>(document.data())) {
+    if (auto *tilesetDocument = qobject_cast<TilesetDocument*>(document.data()))
         connect(tilesetDocument, &TilesetDocument::tilesetNameChanged, this, &DocumentManager::tilesetNameChanged);
-    }
 
     switchToDocument(documentIndex);
 
@@ -394,6 +393,8 @@ void DocumentManager::addDocument(const DocumentPtr &document)
 
     // todo: fix this (move to MapEditor)
     //    centerViewOn(0, 0);
+
+    emit documentOpened(document.data());
 }
 
 /**
@@ -492,6 +493,8 @@ bool DocumentManager::saveDocument(Document *document, const QString &fileName)
     if (fileName.isEmpty())
         return false;
 
+    emit documentAboutToBeSaved(document);
+
     QString error;
     if (!document->save(fileName, &error)) {
         QMessageBox::critical(mWidget->window(), QCoreApplication::translate("Tiled::Internal::MainWindow", "Error Saving File"), error);
@@ -499,6 +502,9 @@ bool DocumentManager::saveDocument(Document *document, const QString &fileName)
     }
 
     Preferences::instance()->addRecentFile(fileName);
+
+    emit documentSaved(document);
+
     return true;
 }
 
@@ -815,7 +821,7 @@ void DocumentManager::updateDocumentTab(Document *document)
     mTabBar->setTabToolTip(index, document->fileName());
 }
 
-void DocumentManager::documentSaved()
+void DocumentManager::onDocumentSaved()
 {
     Document *document = static_cast<Document*>(sender());
 
