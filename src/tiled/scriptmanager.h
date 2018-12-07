@@ -38,6 +38,10 @@ public:
     QJSValue evaluate(const QString &program,
                       const QString &fileName = QString(), int lineNumber = 1);
 
+    QJSValue evaluateFile(const QString &fileName);
+
+    void evaluateStartupScripts();
+
 private:
     explicit ScriptManager(QObject *parent = nullptr);
 

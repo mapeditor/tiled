@@ -28,7 +28,10 @@
 #include "scriptmodule.h"
 #include "tilelayer.h"
 
+#include <QFile>
 #include <QQmlEngine>
+#include <QStandardPaths>
+#include <QTextCodec>
 #include <QtDebug>
 
 namespace Tiled {
@@ -77,6 +80,33 @@ QJSValue ScriptManager::evaluate(const QString &program,
                  << ":" << result.toString();
     }
     return result;
+}
+
+QJSValue ScriptManager::evaluateFile(const QString &fileName)
+{
+    QFile file(fileName);
+
+    if (!file.open(QFile::ReadOnly | QFile::Text)) {
+        qWarning() << "Error opening file:" << fileName;
+        return QJSValue();
+    }
+
+    const QByteArray text = file.readAll();
+    const QString script = QTextCodec::codecForUtfText(text)->toUnicode(text);
+
+    return evaluate(script, fileName);
+}
+
+void ScriptManager::evaluateStartupScripts()
+{
+    const QStringList configLocations = QStandardPaths::standardLocations(QStandardPaths::AppConfigLocation);
+    for (const QString &configLocation : configLocations) {
+        const QString scriptFile = configLocation + QLatin1String("/startup.js");
+        if (QFile::exists(scriptFile)) {
+            qDebug() << "Evaluating startup script:" << scriptFile;
+            evaluateFile(scriptFile);
+        }
+    }
 }
 
 } // namespace Internal

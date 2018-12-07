@@ -29,6 +29,7 @@
 #include "mapreader.h"
 #include "pluginmanager.h"
 #include "preferences.h"
+#include "scriptmanager.h"
 #include "sparkleautoupdater.h"
 #include "standardautoupdater.h"
 #include "stylehelper.h"
@@ -470,6 +471,7 @@ int main(int argc, char *argv[])
                      &w, [&] (const QString &file) { w.openFile(file); });
 
     PluginManager::instance()->loadPlugins();
+    ScriptManager::instance().evaluateStartupScripts();
 
     if (!commandLine.filesToOpen().isEmpty()) {
         for (const QString &fileName : commandLine.filesToOpen())
