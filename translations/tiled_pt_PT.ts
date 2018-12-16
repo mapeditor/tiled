@@ -50,7 +50,7 @@
     <message>
         <location filename="../src/tiled/main.cpp" line="+359"/>
         <source>Export syntax is --export-map [format] &lt;source&gt; &lt;target&gt;</source>
-        <translation>Sintaxe de Exportação é --export-map [format] &lt;source&gt; &lt;target&gt;</translation>
+        <translation>Sintaxe de Exportação é --export-map [formato] &lt;fonte&gt; &lt;destino&gt;</translation>
     </message>
     <message>
         <location line="-232"/>
@@ -80,7 +80,7 @@
     <message>
         <location line="+9"/>
         <source>Export syntax is --export-tileset [format] &lt;source&gt; &lt;target&gt;</source>
-        <translation>Sintaxe de exportação é --export-tileset [format] &lt;source&gt; &lt;target&gt;</translation>
+        <translation>Sintaxe de exportação é --export-tileset [formato] &lt;fonte&gt; &lt;destino&gt;</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -90,7 +90,7 @@
     <message>
         <location line="+11"/>
         <source>Failed to export tileset to target file.</source>
-        <translation>Falha ao exportar tileset para ficheiro alvo.</translation>
+        <translation>Falha ao exportar tileset para ficheiro de destino.</translation>
     </message>
 </context>
 <context>
@@ -167,12 +167,12 @@
     <message>
         <location line="+5"/>
         <source>Export the specified map file to target</source>
-        <translation>Exportar o mapa específico para alvo</translation>
+        <translation>Exportar o mapa específico para destino</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export the specified tileset file to target</source>
-        <translation>Exportar o tileset específico para alvo</translation>
+        <translation>Exportar o tileset específico para destino</translation>
     </message>
     <message>
         <location line="+84"/>
