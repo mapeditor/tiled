@@ -3225,22 +3225,22 @@ PyTypeObject PyQList__lt__QString__gt__Iter_Type = {
 
 
 bool isImageLayerAt(Tiled::Map *map, int index) {
-    return (dynamic_cast<const Tiled::ImageLayer*>(map->layerAt(index)) != 0);
+    return map->layerAt(index)->isImageLayer();
 }
 bool isTileLayerAt(Tiled::Map *map, int index) {
-    return (dynamic_cast<const Tiled::TileLayer*>(map->layerAt(index)) != 0);
+    return map->layerAt(index)->isTileLayer();
 }
 bool isObjectGroupAt(Tiled::Map *map, int index) {
-    return (dynamic_cast<const Tiled::ObjectGroup*>(map->layerAt(index)) != 0);
+    return map->layerAt(index)->isObjectGroup();
 }
 Tiled::ImageLayer* imageLayerAt(Tiled::Map *map, int index) {
-    return static_cast<Tiled::ImageLayer*>(map->layerAt(index));
+    return map->layerAt(index)->asImageLayer();
 }
 Tiled::TileLayer* tileLayerAt(Tiled::Map *map, int index) {
-    return static_cast<Tiled::TileLayer*>(map->layerAt(index));
+    return map->layerAt(index)->asTileLayer();
 }
 Tiled::ObjectGroup* objectGroupAt(Tiled::Map *map, int index) {
-    return static_cast<Tiled::ObjectGroup*>(map->layerAt(index));
+    return map->layerAt(index)->asObjectGroup();
 }
 
 
@@ -8259,6 +8259,56 @@ inittiled_Tiled(void)
 
 
 PyObject *
+_wrap_tiled_imageLayerAt(PyObject * PYBINDGEN_UNUSED(dummy), PyObject *args, PyObject *kwargs)
+{
+    PyObject *py_retval;
+    Tiled::ImageLayer *retval;
+    PyTiledMap *map;
+    Tiled::Map *map_ptr;
+    int index;
+    const char *keywords[] = {"map", "index", NULL};
+    PyTiledImageLayer *py_ImageLayer;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!i", (char **) keywords, &PyTiledMap_Type, &map, &index)) {
+        return NULL;
+    }
+    map_ptr = (map ? map->obj : NULL);
+    retval = imageLayerAt(map_ptr, index);
+    if (!(retval)) {
+        Py_INCREF(Py_None);
+        return Py_None;
+    }
+    py_ImageLayer = PyObject_New(PyTiledImageLayer, &PyTiledImageLayer_Type);
+    py_ImageLayer->obj = retval;
+    py_ImageLayer->flags = PYBINDGEN_WRAPPER_FLAG_OBJECT_NOT_OWNED;
+    py_retval = Py_BuildValue((char *) "N", py_ImageLayer);
+    return py_retval;
+}
+PyObject * _wrap_tiled_imageLayerAt(PyObject * PYBINDGEN_UNUSED(dummy), PyObject *args, PyObject *kwargs);
+
+
+PyObject *
+_wrap_tiled_isImageLayerAt(PyObject * PYBINDGEN_UNUSED(dummy), PyObject *args, PyObject *kwargs)
+{
+    PyObject *py_retval;
+    bool retval;
+    PyTiledMap *map;
+    Tiled::Map *map_ptr;
+    int index;
+    const char *keywords[] = {"map", "index", NULL};
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!i", (char **) keywords, &PyTiledMap_Type, &map, &index)) {
+        return NULL;
+    }
+    map_ptr = (map ? map->obj : NULL);
+    retval = isImageLayerAt(map_ptr, index);
+    py_retval = Py_BuildValue((char *) "N", PyBool_FromLong(retval));
+    return py_retval;
+}
+PyObject * _wrap_tiled_isImageLayerAt(PyObject * PYBINDGEN_UNUSED(dummy), PyObject *args, PyObject *kwargs);
+
+
+PyObject *
 _wrap_tiled_isObjectGroupAt(PyObject * PYBINDGEN_UNUSED(dummy), PyObject *args, PyObject *kwargs)
 {
     PyObject *py_retval;
@@ -8380,6 +8430,8 @@ _wrap_tiled_tileLayerAt(PyObject * PYBINDGEN_UNUSED(dummy), PyObject *args, PyOb
 PyObject * _wrap_tiled_tileLayerAt(PyObject * PYBINDGEN_UNUSED(dummy), PyObject *args, PyObject *kwargs);
 
 static PyMethodDef tiled_functions[] = {
+    {(char *) "imageLayerAt", (PyCFunction) _wrap_tiled_imageLayerAt, METH_KEYWORDS|METH_VARARGS, "imageLayerAt(map, index)\n\ntype: map: Tiled::Map *\ntype: index: int" },
+    {(char *) "isImageLayerAt", (PyCFunction) _wrap_tiled_isImageLayerAt, METH_KEYWORDS|METH_VARARGS, "isImageLayerAt(map, index)\n\ntype: map: Tiled::Map *\ntype: index: int" },
     {(char *) "isObjectGroupAt", (PyCFunction) _wrap_tiled_isObjectGroupAt, METH_KEYWORDS|METH_VARARGS, "isObjectGroupAt(map, index)\n\ntype: map: Tiled::Map *\ntype: index: int" },
     {(char *) "isTileLayerAt", (PyCFunction) _wrap_tiled_isTileLayerAt, METH_KEYWORDS|METH_VARARGS, "isTileLayerAt(map, index)\n\ntype: map: Tiled::Map *\ntype: index: int" },
     {(char *) "loadTilesetFromFile", (PyCFunction) _wrap_tiled_loadTilesetFromFile, METH_KEYWORDS|METH_VARARGS, "loadTilesetFromFile(ts, file)\n\ntype: ts: Tileset *\ntype: file: QString" },
