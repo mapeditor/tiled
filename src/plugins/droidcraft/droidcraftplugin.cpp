@@ -67,7 +67,7 @@ Tiled::Map *DroidcraftPlugin::read(const QString &fileName)
     map->addTileset(mapTileset);
 
     // Fill layer
-    TileLayer *mapLayer = new TileLayer("map", 0, 0, 48, 48);
+    std::unique_ptr<TileLayer> mapLayer(new TileLayer("map", 0, 0, 48, 48));
 
     // Load
     for (int i = 0; i < 48 * 48; i++) {
@@ -80,7 +80,7 @@ Tiled::Map *DroidcraftPlugin::read(const QString &fileName)
         mapLayer->setCell(x, y, Cell(tile));
     }
 
-    map->addLayer(mapLayer);
+    map->addLayer(std::move(mapLayer));
 
     return map;
 }

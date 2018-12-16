@@ -320,7 +320,7 @@ JsonObjectTemplateFormat::JsonObjectTemplateFormat(QObject *parent)
 {
 }
 
-Tiled::ObjectTemplate *JsonObjectTemplateFormat::read(const QString &fileName)
+std::unique_ptr<Tiled::ObjectTemplate> JsonObjectTemplateFormat::read(const QString &fileName)
 {
     QFile file(fileName);
 
@@ -340,8 +340,8 @@ Tiled::ObjectTemplate *JsonObjectTemplateFormat::read(const QString &fileName)
     }
 
     Tiled::VariantToMapConverter converter;
-    Tiled::ObjectTemplate *objectTemplate = converter.toObjectTemplate(variant,
-                                                                       QFileInfo(fileName).dir());
+    auto objectTemplate = converter.toObjectTemplate(variant,
+                                                     QFileInfo(fileName).dir());
 
     if (!objectTemplate)
         mError = converter.errorString();

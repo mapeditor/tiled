@@ -114,7 +114,7 @@ class XmlObjectTemplateFormat : public ObjectTemplateFormat
 public:
     XmlObjectTemplateFormat(QObject *parent = nullptr);
 
-    ObjectTemplate *read(const QString &fileName) override;
+    std::unique_ptr<ObjectTemplate> read(const QString &fileName) override;
 
     bool write(const ObjectTemplate *objectTemplate, const QString &fileName) override;
 

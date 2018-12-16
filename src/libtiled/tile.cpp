@@ -40,7 +40,6 @@ Tile::Tile(int id, Tileset *tileset):
     mImageStatus(LoadingReady),
     mTerrain(-1),
     mProbability(1.0),
-    mObjectGroup(nullptr),
     mCurrentFrameIndex(0),
     mUnusedTime(0)
 {}
@@ -53,14 +52,12 @@ Tile::Tile(const QPixmap &image, int id, Tileset *tileset):
     mImageStatus(image.isNull() ? LoadingError : LoadingReady),
     mTerrain(-1),
     mProbability(1.0),
-    mObjectGroup(nullptr),
     mCurrentFrameIndex(0),
     mUnusedTime(0)
 {}
 
 Tile::~Tile()
 {
-    delete mObjectGroup;
 }
 
 /**
@@ -119,15 +116,14 @@ void Tile::setTerrain(unsigned terrain)
  * The Tile takes ownership over the ObjectGroup and it can't also be part of
  * a map.
  */
-void Tile::setObjectGroup(ObjectGroup *objectGroup)
+void Tile::setObjectGroup(std::unique_ptr<ObjectGroup> &&objectGroup)
 {
     Q_ASSERT(!objectGroup || !objectGroup->map());
 
     if (mObjectGroup == objectGroup)
         return;
 
-    delete mObjectGroup;
-    mObjectGroup = objectGroup;
+    mObjectGroup.swap(objectGroup);
 }
 
 /**
@@ -139,8 +135,8 @@ void Tile::setObjectGroup(ObjectGroup *objectGroup)
  */
 ObjectGroup *Tile::swapObjectGroup(ObjectGroup *objectGroup)
 {
-    ObjectGroup *previousObjectGroup = mObjectGroup;
-    mObjectGroup = objectGroup;
+    ObjectGroup *previousObjectGroup = mObjectGroup.release();
+    mObjectGroup.reset(objectGroup);
     return previousObjectGroup;
 }
 
@@ -211,7 +207,7 @@ Tile *Tile::clone(Tileset *tileset) const
     c->mProbability = mProbability;
 
     if (mObjectGroup)
-        c->mObjectGroup = mObjectGroup->clone();
+        c->mObjectGroup.reset(mObjectGroup->clone());
 
     c->mFrames = mFrames;
     c->mCurrentFrameIndex = mCurrentFrameIndex;

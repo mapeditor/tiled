@@ -172,12 +172,12 @@ XmlObjectTemplateFormat::XmlObjectTemplateFormat(QObject *parent)
 {
 }
 
-ObjectTemplate *XmlObjectTemplateFormat::read(const QString &fileName)
+std::unique_ptr<ObjectTemplate> XmlObjectTemplateFormat::read(const QString &fileName)
 {
     mError.clear();
 
     MapReader reader;
-    ObjectTemplate *objectTemplate = reader.readObjectTemplate(fileName);
+    auto objectTemplate = reader.readObjectTemplate(fileName);
     if (!objectTemplate)
         mError = reader.errorString();
 

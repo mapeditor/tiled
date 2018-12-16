@@ -202,7 +202,7 @@ int Map::layerCount(Layer::TypeFlag type) const
 
 void Map::addLayer(Layer *layer)
 {
-    adoptLayer(layer);
+    adoptLayer(*layer);
     mLayers.append(layer);
 }
 
@@ -227,18 +227,18 @@ Layer *Map::findLayer(const QString &name, int layerTypes) const
 
 void Map::insertLayer(int index, Layer *layer)
 {
-    adoptLayer(layer);
+    adoptLayer(*layer);
     mLayers.insert(index, layer);
 }
 
-void Map::adoptLayer(Layer *layer)
+void Map::adoptLayer(Layer &layer)
 {
-    if (layer->id() == 0)
-        layer->setId(takeNextLayerId());
+    if (layer.id() == 0)
+        layer.setId(takeNextLayerId());
 
-    layer->setMap(this);
+    layer.setMap(this);
 
-    if (ObjectGroup *group = layer->asObjectGroup())
+    if (ObjectGroup *group = layer.asObjectGroup())
         initializeObjectIds(*group);
 }
 

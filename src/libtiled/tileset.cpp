@@ -658,6 +658,11 @@ void Tileset::addWangSet(WangSet *wangSet)
     mWangSets.append(wangSet);
 }
 
+void Tileset::addWangSet(std::unique_ptr<WangSet> &&wangSet)
+{
+    addWangSet(wangSet.release());
+}
+
 /**
  * @brief Tileset::insertWangSet Adds a wangSet.
  * @param wangSet A pointer to the wangset to add.

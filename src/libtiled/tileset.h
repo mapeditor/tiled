@@ -41,6 +41,8 @@
 #include <QString>
 #include <QVector>
 
+#include <memory>
+
 class QImage;
 
 namespace Tiled {
@@ -192,6 +194,7 @@ public:
     WangSet *wangSet(int index) const;
 
     void addWangSet(WangSet *wangSet);
+    void addWangSet(std::unique_ptr<WangSet> &&wangSet);
     void insertWangSet(int index, WangSet *wangSet);
     WangSet *takeWangSetAt(int index);
 
