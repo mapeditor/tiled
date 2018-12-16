@@ -128,8 +128,11 @@ QMargins Map::computeLayerOffsetMargins() const
 {
     QMargins offsetMargins;
 
-    for (const Layer *layer : mLayers) {
-        const QPointF offset = layer->offset();
+    for (const Layer *layer : allLayers()) {
+        if (layer->isGroupLayer())
+            continue;
+
+        const QPointF offset = layer->totalOffset();
         offsetMargins = maxMargins(QMargins(qCeil(-offset.x()),
                                             qCeil(-offset.y()),
                                             qCeil(offset.x()),
