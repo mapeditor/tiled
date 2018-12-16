@@ -67,6 +67,10 @@ signals:
 public slots:
     void trigger(const QByteArray &actionName) const;
 
+    void alert(const QString &text, const QString &title = QString()) const;
+    bool confirm(const QString &text, const QString &title = QString()) const;
+    QString prompt(const QString &label, const QString &text = QString(), const QString &title = QString()) const;
+
 private slots:
     void documentCreated(Document *document);
     void documentOpened(Document *document);
@@ -74,10 +78,6 @@ private slots:
     void documentSaved(Document *document);
     void documentAboutToClose(Document *document);
     void currentDocumentChanged(Document *document);
-
-    void alert(const QString &text, const QString &title = QString()) const;
-    bool confirm(const QString &text, const QString &title = QString()) const;
-    QString prompt(const QString &label, const QString &text = QString(), const QString &title = QString()) const;
 };
 
 } // namespace Internal

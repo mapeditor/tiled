@@ -106,14 +106,29 @@ void ScriptModule::trigger(const QByteArray &actionName) const
         action->trigger();
 }
 
-void ScriptModule::documentOpened(Document *document)
+void ScriptModule::alert(const QString &text, const QString &title) const
 {
-    emit assetOpened(document->editable());
+    QMessageBox::warning(nullptr, title, text);
+}
+
+bool ScriptModule::confirm(const QString &text, const QString &title) const
+{
+    return QMessageBox::question(nullptr, title, text) == QMessageBox::Yes;
+}
+
+QString ScriptModule::prompt(const QString &label, const QString &text, const QString &title) const
+{
+    return QInputDialog::getText(nullptr, title, label, QLineEdit::Normal, text);
 }
 
 void ScriptModule::documentCreated(Document *document)
 {
     emit assetCreated(document->editable());
+}
+
+void ScriptModule::documentOpened(Document *document)
+{
+    emit assetOpened(document->editable());
 }
 
 void ScriptModule::documentAboutToBeSaved(Document *document)
@@ -134,21 +149,6 @@ void ScriptModule::documentAboutToClose(Document *document)
 void ScriptModule::currentDocumentChanged(Document *document)
 {
     emit activeAssetChanged(document ? document->editable() : nullptr);
-}
-
-void ScriptModule::alert(const QString &text, const QString &title) const
-{
-    QMessageBox::warning(nullptr, title, text);
-}
-
-bool ScriptModule::confirm(const QString &text, const QString &title) const
-{
-    return QMessageBox::question(nullptr, title, text) == QMessageBox::Yes;
-}
-
-QString ScriptModule::prompt(const QString &label, const QString &text, const QString &title) const
-{
-    return QInputDialog::getText(nullptr, title, label, QLineEdit::Normal, text);
 }
 
 } // namespace Internal
