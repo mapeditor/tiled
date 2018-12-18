@@ -43,6 +43,7 @@ public:
     explicit EditableLayer(EditableMap *map,
                            Layer *layer,
                            QObject *parent = nullptr);
+    ~EditableLayer() override;
 
     const QString &name() const;
     qreal opacity() const;
@@ -50,7 +51,9 @@ public:
     bool isLocked() const;
     QPointF offset() const;
 
-signals:
+    Layer *layer() const;
+
+    void invalidate();
 
 public slots:
     void setName(const QString &name);
@@ -59,10 +62,9 @@ public slots:
     void setLocked(bool locked);
     void setOffset(QPointF offset);
 
-protected:
-    Layer *layer() const;
-
 private:
+    bool checkValid();
+
     EditableMap *mMap;
     Layer *mLayer;
 };

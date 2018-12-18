@@ -52,6 +52,7 @@ class EditableMap : public EditableAsset
 public:
     explicit EditableMap(MapDocument *mapDocument,
                          QObject *parent = nullptr);
+    ~EditableMap() override;
 
     QString fileName() const override;
 
@@ -96,7 +97,14 @@ public slots:
                 const QPoint &offset = QPoint(),
                 bool removeObjects = false);
 
+private slots:
+    void invalidateEditableLayer(Layer *layer);
+
 private:
+    friend class EditableLayer;
+
+    void editableLayerDeleted(EditableLayer *editableLayer);
+
     Map *map() const;
     MapRenderer *renderer() const;
 

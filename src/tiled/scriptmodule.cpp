@@ -137,7 +137,7 @@ void ScriptModule::log(const QString &text) const
 
 void ScriptModule::error(const QString &text) const
 {
-    mLogger->error(text);
+    mLogger->error(tr("Error: %1").arg(text));
 }
 
 void ScriptModule::documentCreated(Document *document)

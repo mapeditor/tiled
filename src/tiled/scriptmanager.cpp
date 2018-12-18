@@ -54,7 +54,8 @@ ScriptManager &ScriptManager::instance()
 
 ScriptManager::ScriptManager(QObject *parent)
     : QObject(parent)
-    , mJSEngine(new QQmlEngine(this))
+    , mEngine(new QQmlEngine(this))
+    , mModule(new ScriptModule(this))
 {
     qRegisterMetaType<EditableAsset*>();
     qRegisterMetaType<EditableLayer*>();
@@ -64,20 +65,19 @@ ScriptManager::ScriptManager(QObject *parent)
     qRegisterMetaType<Cell>();
     qRegisterMetaType<RegionValueType>();
 
-    ScriptModule *module = new ScriptModule(this);
-
-    QJSValue globalObject = mJSEngine->globalObject();
-    globalObject.setProperty(QStringLiteral("tiled"), mJSEngine->newQObject(module));
+    QJSValue globalObject = mEngine->globalObject();
+    globalObject.setProperty(QStringLiteral("tiled"), mEngine->newQObject(mModule));
 }
 
 QJSValue ScriptManager::evaluate(const QString &program,
                                  const QString &fileName, int lineNumber)
 {
-    QJSValue result = mJSEngine->evaluate(program, fileName, lineNumber);
+    QJSValue result = mEngine->evaluate(program, fileName, lineNumber);
     if (result.isError()) {
-        qDebug() << "Uncaught exception at line"
-                 << result.property(QLatin1String("lineNumber")).toInt()
-                 << ":" << result.toString();
+        qDebug().nospace().noquote()
+                << "Uncaught exception at line "
+                << result.property(QLatin1String("lineNumber")).toInt()
+                << ": " << result.toString();
     }
     return result;
 }

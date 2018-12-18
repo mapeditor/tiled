@@ -23,6 +23,10 @@
 #include "changelayer.h"
 #include "editablemap.h"
 #include "renamelayer.h"
+#include "scriptmanager.h"
+#include "scriptmodule.h"
+
+#include <QJSEngine>
 
 namespace Tiled {
 namespace Internal {
@@ -34,29 +38,59 @@ EditableLayer::EditableLayer(EditableMap *map, Layer *layer, QObject *parent)
 {
 }
 
+EditableLayer::~EditableLayer()
+{
+    if (mMap)
+        mMap->editableLayerDeleted(this);
+}
+
+void EditableLayer::invalidate()
+{
+    mMap = nullptr;
+}
+
 void EditableLayer::setName(const QString &name)
 {
-    mMap->push(new RenameLayer(mMap->mapDocument(), mLayer, name));
+    if (checkValid())
+        mMap->push(new RenameLayer(mMap->mapDocument(), mLayer, name));
 }
 
 void EditableLayer::setOpacity(qreal opacity)
 {
-    mMap->push(new SetLayerOpacity(mMap->mapDocument(), mLayer, opacity));
+    if (checkValid())
+        mMap->push(new SetLayerOpacity(mMap->mapDocument(), mLayer, opacity));
 }
 
 void EditableLayer::setVisible(bool visible)
 {
-    mMap->push(new SetLayerVisible(mMap->mapDocument(), mLayer, visible));
+    if (checkValid())
+        mMap->push(new SetLayerVisible(mMap->mapDocument(), mLayer, visible));
 }
 
 void EditableLayer::setLocked(bool locked)
 {
-    mMap->push(new SetLayerLocked(mMap->mapDocument(), mLayer, locked));
+    if (checkValid())
+        mMap->push(new SetLayerLocked(mMap->mapDocument(), mLayer, locked));
 }
 
 void EditableLayer::setOffset(QPointF offset)
 {
-    mMap->push(new SetLayerOffset(mMap->mapDocument(), mLayer, offset));
+    if (checkValid())
+        mMap->push(new SetLayerOffset(mMap->mapDocument(), mLayer, offset));
+}
+
+bool EditableLayer::checkValid()
+{
+    if (!mMap) {
+        const QString message = tr("Can't modify layer that was removed from the map");
+#if QT_VERSION < QT_VERSION_CHECK(5, 12, 0)
+        ScriptManager::instance().module()->error(message);
+#else
+        ScriptManager::instance().engine()->throwError(message);
+#endif
+        return false;
+    }
+    return true;
 }
 
 } // namespace Internal

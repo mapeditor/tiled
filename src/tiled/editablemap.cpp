@@ -27,6 +27,7 @@
 #include "changeselectedarea.h"
 #include "editablelayer.h"
 #include "editabletilelayer.h"
+#include "grouplayer.h"
 #include "movemapobject.h"
 #include "resizemap.h"
 #include "resizetilelayer.h"
@@ -38,6 +39,8 @@
 #include <tilelayer.h>
 
 #include <QUndoStack>
+
+#include "qtcompat_p.h"
 
 namespace Tiled {
 namespace Internal {
@@ -52,6 +55,13 @@ EditableMap::EditableMap(MapDocument *mapDocument, QObject *parent)
     connect(map(), &Map::tileHeightChanged, this, &EditableMap::tileHeightChanged);
 
     connect(mapDocument, &Document::fileNameChanged, this, &EditableAsset::fileNameChanged);
+    connect(mapDocument, &MapDocument::layerRemoved, this, &EditableMap::invalidateEditableLayer);
+}
+
+EditableMap::~EditableMap()
+{
+    for (EditableLayer *editableLayer : qAsConst(mEditableLayers))
+        editableLayer->invalidate();
 }
 
 QString EditableMap::fileName() const
@@ -74,10 +84,10 @@ EditableLayer *EditableMap::layerAt(int index)
     if (!editableLayer) {
         switch (layer->layerType()) {
         case Layer::TileLayerType:
-            editableLayer = new EditableTileLayer(this, static_cast<TileLayer*>(layer), this);
+            editableLayer = new EditableTileLayer(this, static_cast<TileLayer*>(layer));
             break;
         default:
-            editableLayer = new EditableLayer(this, layer, this);
+            editableLayer = new EditableLayer(this, layer);
             break;
         }
     }
@@ -247,6 +257,24 @@ void EditableMap::resize(const QSize &size,
     mapDocument()->undoStack()->push(command);
 
     // TODO: Handle layers that don't match the map size correctly
+}
+
+void EditableMap::invalidateEditableLayer(Layer *layer)
+{
+    auto iterator = mEditableLayers.find(layer);
+    if (iterator != mEditableLayers.end()) {
+        (*iterator)->invalidate();
+        mEditableLayers.erase(iterator);
+    }
+
+    if (GroupLayer *groupLayer = layer->asGroupLayer())
+        for (Layer *layer : groupLayer->layers())
+            invalidateEditableLayer(layer);
+}
+
+void EditableMap::editableLayerDeleted(EditableLayer *editableLayer)
+{
+    mEditableLayers.remove(editableLayer->layer());
 }
 
 } // namespace Internal

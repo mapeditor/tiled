@@ -116,8 +116,21 @@ void ConsoleDock::executeScript()
     if (result.isError()) {
         QString errorString = result.toString();
 
-        // Add line number when script spanned multiple lines
-        if (script.indexOf(QLatin1Char('\n')) != -1) {
+        QString stack = result.property(QStringLiteral("stack")).toString();
+        auto stackEntries = stack.splitRef(QLatin1Char('\n'));
+        if (stackEntries.size() > 1) {
+            // Add stack if there were more than one entries
+            errorString.append(QLatin1Char('\n'));
+            errorString.append(tr("Stack traceback:"));
+            errorString.append(QLatin1Char('\n'));
+
+            for (const auto &entry : stackEntries) {
+                errorString.append(QLatin1String("  "));
+                errorString.append(entry);
+                errorString.append(QLatin1Char('\n'));
+            }
+        } else if (script.contains(QLatin1Char('\n'))) {
+            // Add line number when script spanned multiple lines
             errorString = tr("At line %1: %2")
                     .arg(result.property(QStringLiteral("lineNumber")).toInt())
                     .arg(errorString);
