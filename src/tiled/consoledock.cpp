@@ -137,7 +137,7 @@ void ConsoleDock::executeScript()
         }
 
         appendError(errorString);
-    } else {
+    } else if (!result.isUndefined()) {
         appendInfo(result.toString());
     }
 
