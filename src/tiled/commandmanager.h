@@ -70,6 +70,7 @@ private:
     Q_DISABLE_COPY(CommandManager)
 
     CommandManager();
+    ~CommandManager() override;
 
     /**
      * Populates all the menus registered in CommandManager

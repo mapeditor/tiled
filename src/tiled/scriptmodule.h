@@ -25,6 +25,9 @@
 #include <QObject>
 
 namespace Tiled {
+
+class LoggingInterface;
+
 namespace Internal {
 
 class EditableAsset;
@@ -45,6 +48,7 @@ class ScriptModule : public QObject
 
 public:
     ScriptModule(QObject *parent = nullptr);
+    ~ScriptModule() override;
 
     QString version() const;
     QString platform() const;
@@ -71,6 +75,9 @@ public slots:
     bool confirm(const QString &text, const QString &title = QString()) const;
     QString prompt(const QString &label, const QString &text = QString(), const QString &title = QString()) const;
 
+    void log(const QString &text) const;
+    void error(const QString &text) const;
+
 private slots:
     void documentCreated(Document *document);
     void documentOpened(Document *document);
@@ -78,6 +85,9 @@ private slots:
     void documentSaved(Document *document);
     void documentAboutToClose(Document *document);
     void currentDocumentChanged(Document *document);
+
+private:
+    LoggingInterface *mLogger;
 };
 
 } // namespace Internal

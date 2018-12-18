@@ -20,7 +20,6 @@
 
 #include "consoledock.h"
 
-#include "commandmanager.h"
 #include "logginginterface.h"
 #include "pluginmanager.h"
 #include "scriptmanager.h"
@@ -67,8 +66,6 @@ ConsoleDock::ConsoleDock(QWidget *parent)
 
     layout->addWidget(mPlainTextEdit);
     layout->addWidget(mLineEdit);
-
-    registerOutput(CommandManager::instance()->logger());
 
     for (LoggingInterface *output : PluginManager::objects<LoggingInterface>())
         registerOutput(output);

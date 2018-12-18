@@ -23,6 +23,7 @@
 #include "commanddatamodel.h"
 #include "commanddialog.h"
 #include "logginginterface.h"
+#include "pluginmanager.h"
 #include "utils.h"
 
 #include <QApplication>
@@ -40,6 +41,13 @@ CommandManager::CommandManager()
     , mLogger(new LoggingInterface(this))
 {
     updateActions();
+
+    PluginManager::addObject(mLogger);
+}
+
+CommandManager::~CommandManager()
+{
+    PluginManager::removeObject(mLogger);
 }
 
 CommandManager *CommandManager::instance()
