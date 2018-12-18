@@ -47,6 +47,8 @@ public:
 
     void evaluateStartupScripts();
 
+    void throwError(const QString &message);
+
 private:
     explicit ScriptManager(QObject *parent = nullptr);
 

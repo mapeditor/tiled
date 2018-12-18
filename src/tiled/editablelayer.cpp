@@ -24,9 +24,6 @@
 #include "editablemap.h"
 #include "renamelayer.h"
 #include "scriptmanager.h"
-#include "scriptmodule.h"
-
-#include <QJSEngine>
 
 namespace Tiled {
 namespace Internal {
@@ -44,53 +41,61 @@ EditableLayer::~EditableLayer()
         mMap->editableLayerDeleted(this);
 }
 
-void EditableLayer::invalidate()
+void EditableLayer::detach()
 {
+    Q_ASSERT(mMap);
+
     mMap = nullptr;
+    mDetachedLayer.reset(mLayer->clone());
+    mLayer = mDetachedLayer.get();
+}
+
+void EditableLayer::attach(EditableMap *map)
+{
+    Q_ASSERT(!mMap && map);
+
+    mMap = map;
+    mDetachedLayer.release();
 }
 
 void EditableLayer::setName(const QString &name)
 {
-    if (checkValid())
+    if (mMap)
         mMap->push(new RenameLayer(mMap->mapDocument(), mLayer, name));
+    else
+        mLayer->setName(name);
 }
 
 void EditableLayer::setOpacity(qreal opacity)
 {
-    if (checkValid())
+    if (mMap)
         mMap->push(new SetLayerOpacity(mMap->mapDocument(), mLayer, opacity));
+    else
+        mLayer->setOpacity(opacity);
 }
 
 void EditableLayer::setVisible(bool visible)
 {
-    if (checkValid())
+    if (mMap)
         mMap->push(new SetLayerVisible(mMap->mapDocument(), mLayer, visible));
+    else
+        mLayer->setVisible(visible);
 }
 
 void EditableLayer::setLocked(bool locked)
 {
-    if (checkValid())
+    if (mMap)
         mMap->push(new SetLayerLocked(mMap->mapDocument(), mLayer, locked));
+    else
+        mLayer->setLocked(locked);
 }
 
 void EditableLayer::setOffset(QPointF offset)
 {
-    if (checkValid())
+    if (mMap)
         mMap->push(new SetLayerOffset(mMap->mapDocument(), mLayer, offset));
-}
-
-bool EditableLayer::checkValid()
-{
-    if (!mMap) {
-        const QString message = tr("Can't modify layer that was removed from the map");
-#if QT_VERSION < QT_VERSION_CHECK(5, 12, 0)
-        ScriptManager::instance().module()->error(message);
-#else
-        ScriptManager::instance().engine()->throwError(message);
-#endif
-        return false;
-    }
-    return true;
+    else
+        mLayer->setOffset(offset);
 }
 
 } // namespace Internal

@@ -109,5 +109,14 @@ void ScriptManager::evaluateStartupScripts()
     }
 }
 
+void ScriptManager::throwError(const QString &message)
+{
+#if QT_VERSION < QT_VERSION_CHECK(5, 12, 0)
+    module()->error(message);
+#else
+    engine()->throwError(message);
+#endif
+}
+
 } // namespace Internal
 } // namespace Tiled

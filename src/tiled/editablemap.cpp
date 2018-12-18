@@ -31,6 +31,7 @@
 #include "movemapobject.h"
 #include "resizemap.h"
 #include "resizetilelayer.h"
+#include "scriptmanager.h"
 
 #include <imagelayer.h>
 #include <mapobject.h>
@@ -55,13 +56,13 @@ EditableMap::EditableMap(MapDocument *mapDocument, QObject *parent)
     connect(map(), &Map::tileHeightChanged, this, &EditableMap::tileHeightChanged);
 
     connect(mapDocument, &Document::fileNameChanged, this, &EditableAsset::fileNameChanged);
-    connect(mapDocument, &MapDocument::layerRemoved, this, &EditableMap::invalidateEditableLayer);
+    connect(mapDocument, &MapDocument::layerRemoved, this, &EditableMap::detachEditableLayer);
 }
 
 EditableMap::~EditableMap()
 {
     for (EditableLayer *editableLayer : qAsConst(mEditableLayers))
-        editableLayer->invalidate();
+        editableLayer->detach();
 }
 
 QString EditableMap::fileName() const
@@ -98,6 +99,21 @@ EditableLayer *EditableMap::layerAt(int index)
 void EditableMap::removeLayerAt(int index)
 {
     push(new RemoveLayer(mapDocument(), index, nullptr));
+}
+
+void EditableMap::insertLayerAt(int index, EditableLayer *layer)
+{
+    if (layer->map()) {
+        ScriptManager::instance().throwError(tr("Layer already part of a map"));
+        return;
+    }
+
+    push(new AddLayer(mapDocument(), index, layer->layer(), nullptr));
+
+    layer->attach(this);
+
+    Q_ASSERT(!mEditableLayers.contains(layer->layer()));
+    mEditableLayers.insert(layer->layer(), layer);
 }
 
 void EditableMap::setTileWidth(int value)
@@ -259,17 +275,17 @@ void EditableMap::resize(const QSize &size,
     // TODO: Handle layers that don't match the map size correctly
 }
 
-void EditableMap::invalidateEditableLayer(Layer *layer)
+void EditableMap::detachEditableLayer(Layer *layer)
 {
     auto iterator = mEditableLayers.find(layer);
     if (iterator != mEditableLayers.end()) {
-        (*iterator)->invalidate();
+        (*iterator)->detach();
         mEditableLayers.erase(iterator);
     }
 
     if (GroupLayer *groupLayer = layer->asGroupLayer())
-        for (Layer *layer : groupLayer->layers())
-            invalidateEditableLayer(layer);
+        for (Layer *childLayer : groupLayer->layers())
+            detachEditableLayer(childLayer);
 }
 
 void EditableMap::editableLayerDeleted(EditableLayer *editableLayer)

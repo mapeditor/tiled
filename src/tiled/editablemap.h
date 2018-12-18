@@ -72,6 +72,7 @@ public:
     int layerCount() const;
     Q_INVOKABLE Tiled::Internal::EditableLayer *layerAt(int index);
     Q_INVOKABLE void removeLayerAt(int index);
+    Q_INVOKABLE void insertLayerAt(int index, Tiled::Internal::EditableLayer *layer);
 
     void setTileWidth(int value);
     void setTileHeight(int value);
@@ -98,7 +99,7 @@ public slots:
                 bool removeObjects = false);
 
 private slots:
-    void invalidateEditableLayer(Layer *layer);
+    void detachEditableLayer(Layer *layer);
 
 private:
     friend class EditableLayer;

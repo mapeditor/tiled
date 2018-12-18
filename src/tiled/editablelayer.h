@@ -24,6 +24,8 @@
 
 #include <QObject>
 
+#include <memory>
+
 namespace Tiled {
 namespace Internal {
 
@@ -38,6 +40,7 @@ class EditableLayer : public QObject
     Q_PROPERTY(bool visible READ isVisible WRITE setVisible)
     Q_PROPERTY(bool locked READ isLocked WRITE setLocked)
     Q_PROPERTY(QPointF offset READ offset WRITE setOffset)
+    Q_PROPERTY(Tiled::Internal::EditableMap *map READ map)
 
 public:
     explicit EditableLayer(EditableMap *map,
@@ -51,9 +54,11 @@ public:
     bool isLocked() const;
     QPointF offset() const;
 
+    EditableMap *map() const;
     Layer *layer() const;
 
-    void invalidate();
+    void detach();
+    void attach(EditableMap *map);
 
 public slots:
     void setName(const QString &name);
@@ -63,10 +68,9 @@ public slots:
     void setOffset(QPointF offset);
 
 private:
-    bool checkValid();
-
     EditableMap *mMap;
     Layer *mLayer;
+    std::unique_ptr<Layer> mDetachedLayer;
 };
 
 
@@ -93,6 +97,11 @@ inline bool EditableLayer::isLocked() const
 inline QPointF EditableLayer::offset() const
 {
     return mLayer->offset();
+}
+
+inline EditableMap *EditableLayer::map() const
+{
+    return mMap;
 }
 
 inline Layer *EditableLayer::layer() const
