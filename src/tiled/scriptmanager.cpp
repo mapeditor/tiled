@@ -22,6 +22,8 @@
 
 #include "documentmanager.h"
 #include "editablemap.h"
+#include "editablemapobject.h"
+#include "editableobjectgroup.h"
 #include "editabletilelayer.h"
 #include "editabletileset.h"
 #include "regionvaluetype.h"
@@ -64,12 +66,14 @@ ScriptManager::ScriptManager(QObject *parent)
     , mEngine(new QQmlEngine(this))
     , mModule(new ScriptModule(this))
 {
+    qRegisterMetaType<Cell>();
     qRegisterMetaType<EditableAsset*>();
     qRegisterMetaType<EditableLayer*>();
     qRegisterMetaType<EditableMap*>();
+    qRegisterMetaType<EditableMapObject*>();
+    qRegisterMetaType<EditableObjectGroup*>();
     qRegisterMetaType<EditableTileLayer*>();
     qRegisterMetaType<EditableTileset*>();
-    qRegisterMetaType<Cell>();
     qRegisterMetaType<RegionValueType>();
 
     QJSValue globalObject = mEngine->globalObject();

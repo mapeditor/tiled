@@ -26,6 +26,8 @@
 #include "changemapproperty.h"
 #include "changeselectedarea.h"
 #include "editablelayer.h"
+#include "editablemapobject.h"
+#include "editableobjectgroup.h"
 #include "editabletilelayer.h"
 #include "grouplayer.h"
 #include "movemapobject.h"
@@ -56,12 +58,19 @@ EditableMap::EditableMap(MapDocument *mapDocument, QObject *parent)
 
     connect(mapDocument, &Document::fileNameChanged, this, &EditableAsset::fileNameChanged);
     connect(mapDocument, &MapDocument::layerRemoved, this, &EditableMap::detachEditableLayer);
+    connect(mapDocument, &MapDocument::objectsRemoved, this, &EditableMap::detachMapObjects);
 }
 
 EditableMap::~EditableMap()
 {
-    for (EditableLayer *editableLayer : qAsConst(mEditableLayers))
-        editableLayer->detach();
+    // Operate on copy since original container will get modified
+    const auto editableLayers = mEditableLayers;
+    for (auto editable : editableLayers)
+        editable->detach();
+
+    const auto editableMapObjects = mEditableMapObjects;
+    for (auto editable : editableMapObjects)
+        editable->detach();
 }
 
 QString EditableMap::fileName() const
@@ -71,48 +80,65 @@ QString EditableMap::fileName() const
 
 EditableLayer *EditableMap::layerAt(int index)
 {
-    if (index < 0 || index >= layerCount())
+    if (index < 0 || index >= layerCount()) {
+        ScriptManager::instance().throwError(tr("Index out of range"));
         return nullptr;
-
-    Layer *layer = map()->layerAt(index);
-
-    // FIXME: EditableLayer instances need to be cleaned up when layers are
-    // removed, or potentially when the EditableLayer is destroyed (in case we
-    // let the script own the instance, in which case it should probably own
-    // the layer).
-    EditableLayer* &editableLayer = mEditableLayers[layer];
-    if (!editableLayer) {
-        switch (layer->layerType()) {
-        case Layer::TileLayerType:
-            editableLayer = new EditableTileLayer(this, static_cast<TileLayer*>(layer));
-            break;
-        default:
-            editableLayer = new EditableLayer(this, layer);
-            break;
-        }
     }
 
-    return editableLayer;
+    Layer *layer = map()->layerAt(index);
+    return editableLayer(layer);
 }
 
 void EditableMap::removeLayerAt(int index)
 {
+    if (index < 0 || index >= layerCount()) {
+        ScriptManager::instance().throwError(tr("Index out of range"));
+        return;
+    }
+
     push(new RemoveLayer(mapDocument(), index, nullptr));
 }
 
-void EditableMap::insertLayerAt(int index, EditableLayer *layer)
+void EditableMap::removeLayer(EditableLayer *editableLayer)
 {
-    if (layer->map()) {
+    if (!editableLayer) {
+        ScriptManager::instance().throwError(tr("Invalid argument"));
+        return;
+    }
+
+    int index = map()->layers().indexOf(editableLayer->layer());
+    if (index == -1) {
+        ScriptManager::instance().throwError(tr("Layer not found"));
+        return;
+    }
+
+    removeLayerAt(index);
+}
+
+void EditableMap::insertLayerAt(int index, EditableLayer *editableLayer)
+{
+    if (index < 0 || index > layerCount()) {
+        ScriptManager::instance().throwError(tr("Index out of range"));
+        return;
+    }
+
+    if (!editableLayer) {
+        ScriptManager::instance().throwError(tr("Invalid argument"));
+        return;
+    }
+
+    if (editableLayer->map()) {
         ScriptManager::instance().throwError(tr("Layer already part of a map"));
         return;
     }
 
-    push(new AddLayer(mapDocument(), index, layer->layer(), nullptr));
+    push(new AddLayer(mapDocument(), index, editableLayer->layer(), nullptr));
+    editableLayer->attach(this);
+}
 
-    layer->attach(this);
-
-    Q_ASSERT(!mEditableLayers.contains(layer->layer()));
-    mEditableLayers.insert(layer->layer(), layer);
+void EditableMap::addLayer(EditableLayer *editableLayer)
+{
+    insertLayerAt(layerCount(), editableLayer);
 }
 
 void EditableMap::setTileWidth(int value)
@@ -277,19 +303,58 @@ void EditableMap::resize(const QSize &size,
 void EditableMap::detachEditableLayer(Layer *layer)
 {
     auto iterator = mEditableLayers.find(layer);
-    if (iterator != mEditableLayers.end()) {
+    if (iterator != mEditableLayers.end())
         (*iterator)->detach();
-        mEditableLayers.erase(iterator);
-    }
 
-    if (GroupLayer *groupLayer = layer->asGroupLayer())
+    if (GroupLayer *groupLayer = layer->asGroupLayer()) {
         for (Layer *childLayer : groupLayer->layers())
             detachEditableLayer(childLayer);
+    } else if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
+        detachMapObjects(objectGroup->objects());
+    }
 }
 
-void EditableMap::editableLayerDeleted(EditableLayer *editableLayer)
+void EditableMap::detachMapObjects(const QList<MapObject *> &mapObjects)
 {
-    mEditableLayers.remove(editableLayer->layer());
+    for (MapObject *mapObject : mapObjects) {
+        auto iterator = mEditableMapObjects.find(mapObject);
+        if (iterator != mEditableMapObjects.end())
+            (*iterator)->detach();
+    }
+}
+
+EditableLayer *EditableMap::editableLayer(Layer *layer)
+{
+    Q_ASSERT(layer->map() == map());
+
+    EditableLayer* &editableLayer = mEditableLayers[layer];
+    if (!editableLayer) {
+        switch (layer->layerType()) {
+        case Layer::TileLayerType:
+            editableLayer = new EditableTileLayer(this, static_cast<TileLayer*>(layer));
+            break;
+        case Layer::ObjectGroupType:
+            editableLayer = new EditableObjectGroup(this, static_cast<ObjectGroup*>(layer));
+            break;
+        default:
+            editableLayer = new EditableLayer(this, layer);
+            break;
+        }
+    }
+
+    return editableLayer;
+}
+
+EditableMapObject *EditableMap::editableMapObject(MapObject *mapObject)
+{
+    Q_ASSERT(mapObject->objectGroup());
+    Q_ASSERT(mapObject->objectGroup()->map() == map());
+
+    EditableMapObject* &editableMapObject = mEditableMapObjects[mapObject];
+    if (!editableMapObject)
+        editableMapObject = new EditableMapObject(this, mapObject);
+
+    return editableMapObject;
 }
 
 } // namespace Tiled

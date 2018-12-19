@@ -26,7 +26,10 @@
 
 namespace Tiled {
 
+class MapObject;
+
 class EditableLayer;
+class EditableMapObject;
 
 class EditableMap : public EditableAsset
 {
@@ -71,7 +74,9 @@ public:
     int layerCount() const;
     Q_INVOKABLE Tiled::EditableLayer *layerAt(int index);
     Q_INVOKABLE void removeLayerAt(int index);
-    Q_INVOKABLE void insertLayerAt(int index, Tiled::EditableLayer *layer);
+    Q_INVOKABLE void removeLayer(Tiled::EditableLayer *editableLayer);
+    Q_INVOKABLE void insertLayerAt(int index, Tiled::EditableLayer *editableLayer);
+    Q_INVOKABLE void addLayer(Tiled::EditableLayer *editableLayer);
 
     void setTileWidth(int value);
     void setTileHeight(int value);
@@ -99,11 +104,15 @@ public slots:
 
 private slots:
     void detachEditableLayer(Layer *layer);
+    void detachMapObjects(const QList<MapObject*> &mapObjects);
 
 private:
     friend class EditableLayer;
+    friend class EditableMapObject;
+    friend class EditableObjectGroup;
 
-    void editableLayerDeleted(EditableLayer *editableLayer);
+    EditableLayer *editableLayer(Layer *layer);
+    EditableMapObject *editableMapObject(MapObject *mapObject);
 
     Map *map() const;
     MapRenderer *renderer() const;
@@ -111,6 +120,7 @@ private:
     MapDocument * const mMapDocument;
 
     QHash<Layer*, EditableLayer*> mEditableLayers;
+    QHash<MapObject*, EditableMapObject*> mEditableMapObjects;
     EditableSelectedArea mSelectedArea;
 };
 

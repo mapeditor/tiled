@@ -37,14 +37,17 @@ EditableLayer::EditableLayer(EditableMap *map, Layer *layer, QObject *parent)
 EditableLayer::~EditableLayer()
 {
     if (mMap)
-        mMap->editableLayerDeleted(this);
+        mMap->mEditableLayers.remove(layer());
 }
 
 void EditableLayer::detach()
 {
     Q_ASSERT(mMap);
+    Q_ASSERT(mMap->mEditableLayers.contains(layer()));
 
+    mMap->mEditableLayers.remove(mLayer);
     mMap = nullptr;
+
     mDetachedLayer.reset(mLayer->clone());
     mLayer = mDetachedLayer.get();
 }
@@ -52,8 +55,10 @@ void EditableLayer::detach()
 void EditableLayer::attach(EditableMap *map)
 {
     Q_ASSERT(!mMap && map);
+    Q_ASSERT(!map->mEditableLayers.contains(layer()));
 
     mMap = map;
+    mMap->mEditableLayers.insert(layer(), this);
     mDetachedLayer.release();
 }
 

@@ -52,8 +52,8 @@ public:
     bool isVisible() const;
     bool isLocked() const;
     QPointF offset() const;
-
     EditableMap *map() const;
+
     Layer *layer() const;
 
     void detach();

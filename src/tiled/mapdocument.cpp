@@ -116,6 +116,10 @@ MapDocument::MapDocument(Map *map, const QString &fileName)
 
 MapDocument::~MapDocument()
 {
+    // Needs to be deleted before the Map instance is deleted, because it may
+    // cause script values to detach from the map, in which case they'll need
+    // to be able to copy the data.
+    delete mEditableMap;
 }
 
 bool MapDocument::save(const QString &fileName, QString *error)
