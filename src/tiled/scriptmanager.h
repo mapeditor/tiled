@@ -23,6 +23,8 @@
 #include <QObject>
 #include <QJSValue>
 
+#include <memory>
+
 class QJSEngine;
 
 namespace Tiled {
@@ -36,6 +38,7 @@ class ScriptManager : public QObject
 
 public:
     static ScriptManager &instance();
+    static void deleteInstance();
 
     ScriptModule *module() const;
     QJSEngine *engine() const;
@@ -54,6 +57,8 @@ private:
 
     QJSEngine *mEngine;
     ScriptModule *mModule;
+
+    static std::unique_ptr<ScriptManager> mInstance;
 };
 
 

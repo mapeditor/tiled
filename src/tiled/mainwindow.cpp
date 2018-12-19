@@ -58,6 +58,7 @@
 #include "patreondialog.h"
 #include "pluginmanager.h"
 #include "resizedialog.h"
+#include "scriptmanager.h"
 #include "templatemanager.h"
 #include "terrain.h"
 #include "tile.h"
@@ -649,6 +650,7 @@ MainWindow::~MainWindow()
 
     DocumentManager::deleteInstance();
     TemplateManager::deleteInstance();
+    ScriptManager::deleteInstance();
     TilesetManager::deleteInstance();
     Preferences::deleteInstance();
     LanguageManager::deleteInstance();

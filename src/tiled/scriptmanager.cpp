@@ -37,10 +37,18 @@
 namespace Tiled {
 namespace Internal {
 
+std::unique_ptr<ScriptManager> ScriptManager::mInstance;
+
 ScriptManager &ScriptManager::instance()
 {
-    static ScriptManager scriptManager;
-    return scriptManager;
+    if (!mInstance)
+        mInstance.reset(new ScriptManager);
+    return *mInstance;
+}
+
+void ScriptManager::deleteInstance()
+{
+    mInstance.reset();
 }
 
 /*
