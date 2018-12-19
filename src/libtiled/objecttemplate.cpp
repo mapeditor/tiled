@@ -72,7 +72,10 @@ void ObjectTemplate::setObject(std::unique_ptr<MapObject> &&object)
     mObject = std::move(object);
 
     Tileset *tileset = mObject->cell().tileset();
-    mTileset = tileset ? tileset->sharedPointer() : nullptr;
+    if (tileset)
+        mTileset = tileset->sharedPointer();
+    else
+        mTileset.reset();
 }
 
 void ObjectTemplate::setFormat(ObjectTemplateFormat *format)
