@@ -33,7 +33,6 @@
 #include <QtMath>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 /*
  * Below there are a lot of helper functions which are copied from various

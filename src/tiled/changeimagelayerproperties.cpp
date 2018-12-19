@@ -28,7 +28,6 @@
 #include <QCoreApplication>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 ChangeImageLayerProperties::ChangeImageLayerProperties(
         MapDocument *mapDocument,

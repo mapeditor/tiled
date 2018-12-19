@@ -49,7 +49,6 @@ static const char FIRST_COLUMN_WIDTH_KEY[] = "ObjectsDock/FirstSectionSize";
 static const char VISIBLE_COLUMNS_KEY[] = "ObjectsDock/VisibleSections";
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 ObjectsDock::ObjectsDock(QWidget *parent)
     : QDockWidget(parent)

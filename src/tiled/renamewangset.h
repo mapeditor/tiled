@@ -26,8 +26,6 @@ namespace Tiled {
 
 class WangSet;
 
-namespace Internal {
-
 class TilesetDocument;
 
 class RenameWangSet : public QUndoCommand
@@ -47,5 +45,4 @@ private:
     QString mNewName;
 };
 
-} // namespace Internal
 } // namespace Tiled

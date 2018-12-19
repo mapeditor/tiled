@@ -30,7 +30,6 @@
 #include <QMimeData>
 
 namespace Tiled {
-namespace Internal {
 
 ObjectTemplateModel::ObjectTemplateModel(QObject *parent):
     QFileSystemModel(parent)
@@ -121,5 +120,4 @@ void ObjectTemplateModel::updateNameFilters()
     setNameFilters(nameFilters);
 }
 
-} // namespace Internal
 } // namespace Tiled

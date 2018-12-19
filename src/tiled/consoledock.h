@@ -29,8 +29,6 @@ namespace Tiled {
 
 class LoggingInterface;
 
-namespace Internal {
-
 class ConsoleDock : public QDockWidget
 {
     Q_OBJECT
@@ -58,5 +56,4 @@ private:
     int mHistoryPosition = 0;
 };
 
-} // namespace Internal
 } // namespace Tiled

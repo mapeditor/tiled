@@ -27,7 +27,6 @@
 #include <QUndoCommand>
 
 namespace Tiled {
-namespace Internal {
 
 class MapDocument;
 
@@ -58,5 +57,4 @@ private:
     ObjectGroup::DrawOrder mRedoDrawOrder;
 };
 
-} // namespace Internal
 } // namespace Tiled

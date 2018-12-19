@@ -26,7 +26,6 @@
 #include <QAbstractTableModel>
 
 namespace Tiled {
-namespace Internal {
 
 class ObjectTypesModel : public QAbstractTableModel
 {
@@ -65,5 +64,4 @@ private:
     ObjectTypes mObjectTypes;
 };
 
-} // namespace Internal
 } // namespace Tiled

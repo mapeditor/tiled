@@ -40,8 +40,6 @@ namespace Tiled {
 class FileSystemWatcher;
 class ObjectTemplate;
 
-namespace Internal {
-
 class AbstractTool;
 class BrokenLinksModel;
 class BrokenLinksWidget;
@@ -254,5 +252,4 @@ inline TilesetDocumentsModel *DocumentManager::tilesetDocumentsModel() const
     return mTilesetDocumentsModel;
 }
 
-} // namespace Tiled::Internal
 } // namespace Tiled

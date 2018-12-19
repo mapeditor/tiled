@@ -26,7 +26,6 @@ class QLabel;
 class QDialogButtonBox;
 
 namespace Tiled {
-namespace Internal {
 
 class FileChangedWarning : public QWidget
 {
@@ -47,5 +46,4 @@ private:
     QDialogButtonBox *mButtons;
 };
 
-} // namespace Internal
 } // namespace Tiled

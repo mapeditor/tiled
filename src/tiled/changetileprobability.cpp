@@ -26,7 +26,6 @@
 #include <QCoreApplication>
 
 namespace Tiled {
-namespace Internal {
 
 ChangeTileProbability::ChangeTileProbability(TilesetDocument *tilesetDocument,
                                              const QList<Tile*>& tiles,
@@ -66,6 +65,5 @@ void ChangeTileProbability::swap()
     }
 }
 
-} // namespace Internal
 } // namespace Tiled
 

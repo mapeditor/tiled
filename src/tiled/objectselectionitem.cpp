@@ -40,7 +40,6 @@
 #include <cmath>
 
 namespace Tiled {
-namespace Internal {
 
 static const qreal labelMargin = 2;
 static const qreal labelDistance = 4;
@@ -551,5 +550,4 @@ void ObjectSelectionItem::addRemoveObjectOutlines()
     mObjectOutlines.swap(outlineItems);
 }
 
-} // namespace Internal
 } // namespace Tiled

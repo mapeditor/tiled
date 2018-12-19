@@ -26,7 +26,6 @@
 #include "wangset.h"
 
 using namespace Tiled;
-using namespace Internal;
 
 static const QPoint aroundTilePoints[] = {
     QPoint( 0, -1),

@@ -27,7 +27,6 @@
 #include <QVector>
 
 namespace Tiled {
-namespace Internal {
 
 class Document;
 
@@ -134,5 +133,4 @@ public:
                    const QString &newName);
 };
 
-} // namespace Internal
 } // namespace Tiled

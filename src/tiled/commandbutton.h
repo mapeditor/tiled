@@ -25,7 +25,6 @@
 class QMenu;
 
 namespace Tiled {
-namespace Internal {
 
 class MainWindow;
 class DocumentManager;
@@ -50,5 +49,4 @@ private:
     QMenu *mMenu;
 };
 
-} // namespace Internal
 } // namespace Tiled

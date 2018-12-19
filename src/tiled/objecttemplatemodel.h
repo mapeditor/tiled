@@ -27,8 +27,6 @@ namespace Tiled {
 
 class ObjectTemplate;
 
-namespace Internal {
-
 class ObjectTemplateModel : public QFileSystemModel
 {
     Q_OBJECT
@@ -51,5 +49,4 @@ private:
     void updateNameFilters();
 };
 
-} // namespace Internal
 } // namespace Tiled

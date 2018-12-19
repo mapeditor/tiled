@@ -30,7 +30,6 @@
 
 using namespace Tiled;
 using namespace Tiled::Utils;
-using namespace Tiled::Internal;
 
 CommandButton::CommandButton(QWidget *parent)
     : QToolButton(parent)

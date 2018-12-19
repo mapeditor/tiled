@@ -38,7 +38,6 @@
 #include <QVBoxLayout>
 
 namespace Tiled {
-namespace Internal {
 
 TileStampsDock::TileStampsDock(TileStampManager *stampManager, QWidget *parent)
     : QDockWidget(parent)
@@ -337,5 +336,4 @@ bool TileStampView::event(QEvent *event)
     return QTreeView::event(event);
 }
 
-} // namespace Internal
 } // namespace Tiled

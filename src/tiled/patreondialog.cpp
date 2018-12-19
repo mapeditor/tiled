@@ -29,7 +29,7 @@
 #include <QUrl>
 #include <QMenu>
 
-using namespace Tiled::Internal;
+using namespace Tiled;
 
 PatreonDialog::PatreonDialog(QWidget *parent) :
     QDialog(parent),

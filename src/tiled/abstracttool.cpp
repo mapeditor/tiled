@@ -27,7 +27,6 @@
 #include <QKeyEvent>
 
 namespace Tiled {
-namespace Internal {
 
 AbstractTool::AbstractTool(const QString &name, const QIcon &icon,
                            const QKeySequence &shortcut, QObject *parent)
@@ -127,5 +126,4 @@ Layer *AbstractTool::currentLayer() const
     return mMapDocument ? mMapDocument->currentLayer() : nullptr;
 }
 
-} // namespace Internal
 } // namespace Tiled

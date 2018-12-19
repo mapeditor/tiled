@@ -24,7 +24,6 @@
 #include "objectgroup.h"
 
 namespace Tiled {
-namespace Internal {
 
 /**
  * Prepares a tileset for export.
@@ -142,5 +141,4 @@ void ExportHelper::resolveTypeAndProperties(MapObject *object) const
     object->setProperties(properties);
 }
 
-} // namespace Internal
 } // namespace Tiled

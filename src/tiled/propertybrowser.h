@@ -43,8 +43,6 @@ class Tile;
 class TileLayer;
 class Tileset;
 
-namespace Internal {
-
 class Document;
 class MapDocument;
 class TilesetDocument;
@@ -247,5 +245,4 @@ inline Object *PropertyBrowser::object() const
     return mObject;
 }
 
-} // namespace Internal
 } // namespace Tiled

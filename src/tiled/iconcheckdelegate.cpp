@@ -27,7 +27,6 @@
 #include <QPainter>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 IconCheckDelegate::IconCheckDelegate(IconType icon,
                                      bool exclusive,

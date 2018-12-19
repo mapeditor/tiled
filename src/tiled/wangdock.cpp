@@ -48,10 +48,8 @@
 #include <QUndoStack>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 namespace Tiled {
-namespace Internal {
 
 static WangSet *firstWangSet(MapDocument *MapDocument)
 {
@@ -98,7 +96,6 @@ protected:
     bool mEnabled;
 };
 
-} // namespace Internal
 } // namespace Tiled
 
 WangDock::WangDock(QWidget *parent)

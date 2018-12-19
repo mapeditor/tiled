@@ -23,7 +23,6 @@
 #include "autoupdater.h"
 
 namespace Tiled {
-namespace Internal {
 
 class WinSparkleAutoUpdater : public AutoUpdater
 {
@@ -37,5 +36,4 @@ public:
     QDateTime lastUpdateCheckDate() override;
 };
 
-} // namespace Internal
 } // namespace Tiled

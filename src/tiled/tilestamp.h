@@ -30,7 +30,6 @@
 #include <QVector>
 
 namespace Tiled {
-namespace Internal {
 
 struct TileStampVariation
 {
@@ -51,7 +50,6 @@ struct TileStampVariation
 };
 
 class TileStampData;
-
 
 class TileStamp
 {
@@ -111,5 +109,4 @@ inline void TileStamp::addVariation(const TileStampVariation &variation)
     addVariation(variation.map->clone(), variation.probability);
 }
 
-} // namespace Internal
 } // namespace Tiled

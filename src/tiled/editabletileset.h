@@ -24,7 +24,6 @@
 #include "tileset.h"
 
 namespace Tiled {
-namespace Internal {
 
 class TilesetDocument;
 
@@ -108,7 +107,6 @@ inline QColor EditableTileset::backgroundColor() const
     return tileset()->backgroundColor();
 }
 
-} // namespace Internal
 } // namespace Tiled
 
-Q_DECLARE_METATYPE(Tiled::Internal::EditableTileset*)
+Q_DECLARE_METATYPE(Tiled::EditableTileset*)

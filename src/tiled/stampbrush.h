@@ -32,8 +32,6 @@ namespace Tiled {
 class Tile;
 class WangSet;
 
-namespace Internal {
-
 class MapDocument;
 class StampActions;
 class WangFiller;
@@ -162,5 +160,4 @@ private:
     StampActions *mStampActions;
 };
 
-} // namespace Internal
 } // namespace Tiled

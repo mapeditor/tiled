@@ -26,7 +26,6 @@ class QAction;
 class QToolBar;
 
 namespace Tiled {
-namespace Internal {
 
 class StampActions : public QObject
 {
@@ -55,5 +54,4 @@ private:
     QAction *mRotateRight;
 };
 
-} // namespace Internal
 } // namespace Tiled

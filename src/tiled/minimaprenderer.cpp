@@ -39,7 +39,6 @@
 #include "qtcompat_p.h"
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 MiniMapRenderer::MiniMapRenderer(Map *map)
     : mMap(map)

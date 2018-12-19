@@ -31,7 +31,6 @@
 #include "qtcompat_p.h"
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 AddRemoveMapObjects::AddRemoveMapObjects(MapDocument *mapDocument,
                                          const QVector<Entry> &entries,

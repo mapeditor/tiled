@@ -37,8 +37,6 @@ class FileFormat;
 class Object;
 class Tile;
 
-namespace Internal {
-
 class EditableAsset;
 
 /**
@@ -92,7 +90,7 @@ public:
     QUndoStack *undoStack();
     bool isModified() const;
 
-    Q_INVOKABLE virtual Tiled::Internal::EditableAsset *editable() = 0;
+    Q_INVOKABLE virtual Tiled::EditableAsset *editable() = 0;
 
     Object *currentObject() const { return mCurrentObject; }
     void setCurrentObject(Object *object);
@@ -188,5 +186,4 @@ inline const QList<Document *> &Document::documentInstances()
 
 using DocumentPtr = QSharedPointer<Document>;
 
-} // namespace Internal
 } // namespace Tiled

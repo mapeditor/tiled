@@ -29,8 +29,6 @@ namespace Tiled {
 class MapObject;
 class ObjectGroup;
 
-namespace Internal {
-
 class MapObjectItem;
 
 /**
@@ -106,5 +104,4 @@ private:
     QAction *mRotateRight;
 };
 
-} // namespace Internal
 } // namespace Tiled

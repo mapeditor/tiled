@@ -26,8 +26,6 @@ namespace Tiled {
 
 class WangColor;
 
-namespace Internal {
-
 class WangColorView : public QTreeView
 {
     Q_OBJECT
@@ -50,5 +48,4 @@ private:
     QSharedPointer<WangColor> mClickedWangColor;
 };
 
-} // namespace Internal
 } // namespace Tiled

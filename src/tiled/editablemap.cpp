@@ -44,7 +44,6 @@
 #include "qtcompat_p.h"
 
 namespace Tiled {
-namespace Internal {
 
 EditableMap::EditableMap(MapDocument *mapDocument, QObject *parent)
     : EditableAsset(parent)
@@ -293,5 +292,4 @@ void EditableMap::editableLayerDeleted(EditableLayer *editableLayer)
     mEditableLayers.remove(editableLayer->layer());
 }
 
-} // namespace Internal
 } // namespace Tiled

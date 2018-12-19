@@ -30,8 +30,6 @@ namespace Tiled {
 class Tile;
 class ObjectTemplate;
 
-namespace Internal {
-
 class AbstractTool;
 class MapDocument;
 
@@ -149,5 +147,4 @@ inline void ToolManager::setObjectTemplate(ObjectTemplate *objectTemplate)
     mObjectTemplate = objectTemplate;
 }
 
-} // namespace Internal
 } // namespace Tiled

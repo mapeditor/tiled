@@ -29,7 +29,7 @@
 #include <QLocale>
 #include <QTranslator>
 
-using namespace Tiled::Internal;
+using namespace Tiled;
 
 LanguageManager *LanguageManager::mInstance;
 

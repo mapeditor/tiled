@@ -71,7 +71,6 @@
 #include <QMessageBox>
 
 namespace Tiled {
-namespace Internal {
 
 PropertyBrowser::PropertyBrowser(QWidget *parent)
     : QtTreePropertyBrowser(parent)
@@ -1891,10 +1890,10 @@ void PropertyBrowser::retranslateUi()
     mStaggerIndexNames.append(tr("Odd"));
     mStaggerIndexNames.append(tr("Even"));
 
-    mOrientationNames.append(QCoreApplication::translate("Tiled::Internal::NewMapDialog", "Orthogonal"));
-    mOrientationNames.append(QCoreApplication::translate("Tiled::Internal::NewMapDialog", "Isometric"));
-    mOrientationNames.append(QCoreApplication::translate("Tiled::Internal::NewMapDialog", "Isometric (Staggered)"));
-    mOrientationNames.append(QCoreApplication::translate("Tiled::Internal::NewMapDialog", "Hexagonal (Staggered)"));
+    mOrientationNames.append(QCoreApplication::translate("Tiled::NewMapDialog", "Orthogonal"));
+    mOrientationNames.append(QCoreApplication::translate("Tiled::NewMapDialog", "Isometric"));
+    mOrientationNames.append(QCoreApplication::translate("Tiled::NewMapDialog", "Isometric (Staggered)"));
+    mOrientationNames.append(QCoreApplication::translate("Tiled::NewMapDialog", "Hexagonal (Staggered)"));
 
     mTilesetOrientationNames.append(mOrientationNames.at(0));
     mTilesetOrientationNames.append(mOrientationNames.at(1));
@@ -1920,5 +1919,4 @@ void PropertyBrowser::retranslateUi()
     addProperties();
 }
 
-} // namespace Internal
 } // namespace Tiled

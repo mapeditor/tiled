@@ -26,7 +26,6 @@
 #include <QUndoCommand>
 
 namespace Tiled {
-namespace Internal {
 
 class MapDocument;
 
@@ -54,5 +53,4 @@ private:
     QVector<bool> mNewCellStates;
 };
 
-} // namespace Internal
 } // namespace Tiled

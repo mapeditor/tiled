@@ -31,7 +31,6 @@
 #include <QToolButton>
 
 namespace Tiled {
-namespace Internal {
 
 TilesetParametersEdit::TilesetParametersEdit(QWidget *parent)
     : QWidget(parent)
@@ -84,5 +83,4 @@ void TilesetParametersEdit::buttonClicked()
     }
 }
 
-} // namespace Internal
 } // namespace Tiled

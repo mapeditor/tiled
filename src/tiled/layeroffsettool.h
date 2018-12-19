@@ -24,7 +24,6 @@
 #include "abstracttool.h"
 
 namespace Tiled {
-namespace Internal {
 
 class LayerOffsetTool : public AbstractTool
 {
@@ -71,5 +70,4 @@ private:
     QVector<DraggingLayer> mDraggingLayers;
 };
 
-} // namespace Internal
 } // namespace Tiled

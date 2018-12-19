@@ -27,7 +27,6 @@ class PatreonDialog;
 }
 
 namespace Tiled {
-namespace Internal {
 
 class PatreonDialog : public QDialog
 {
@@ -46,5 +45,4 @@ private:
     Ui::PatreonDialog *ui;
 };
 
-} // namespace Internal
 } // namespace Tiled

@@ -51,8 +51,6 @@ class Terrain;
 class Tile;
 class WangSet;
 
-namespace Internal {
-
 class LayerModel;
 class MapDocument;
 class MapObjectModel;
@@ -121,7 +119,7 @@ public:
      */
     Map *map() const { return mMap.get(); }
 
-    Q_INVOKABLE Tiled::Internal::EditableAsset *editable() override;
+    Q_INVOKABLE Tiled::EditableAsset *editable() override;
 
     int layerIndex(const Layer *layer) const;
 
@@ -381,7 +379,6 @@ private:
     bool mAllowTileObjects = true;
 };
 
-} // namespace Internal
 } // namespace Tiled
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::Internal::MapDocument::TileLayerChangeFlags)
+Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::MapDocument::TileLayerChangeFlags)

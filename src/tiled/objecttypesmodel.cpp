@@ -21,7 +21,6 @@
 #include "objecttypesmodel.h"
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 static bool objectTypeLessThan(const ObjectType &a, const ObjectType &b)
 {

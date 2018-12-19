@@ -39,8 +39,6 @@ class Layer;
 class Tile;
 class ObjectTemplate;
 
-namespace Internal {
-
 class MapDocument;
 class MapScene;
 class ToolManager;
@@ -260,7 +258,6 @@ inline ToolManager *AbstractTool::toolManager() const
     return mToolManager;
 }
 
-} // namespace Internal
 } // namespace Tiled
 
-Q_DECLARE_METATYPE(Tiled::Internal::AbstractTool*)
+Q_DECLARE_METATYPE(Tiled::AbstractTool*)

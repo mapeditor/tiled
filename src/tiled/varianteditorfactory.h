@@ -24,7 +24,6 @@
 #include <QtVariantEditorFactory>
 
 namespace Tiled {
-namespace Internal {
 
 class FileEdit;
 class TextPropertyEdit;
@@ -78,5 +77,4 @@ private:
     QMap<TextPropertyEdit *, QtProperty *> mTextPropertyEditToProperty;
 };
 
-} // namespace Internal
 } // namespace Tiled

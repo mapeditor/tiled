@@ -24,7 +24,6 @@
 #include "tilesetdocument.h"
 
 using namespace Tiled;
-using namespace Internal;
 
 ChangeWangColorName::ChangeWangColorName(TilesetDocument *tilesetDocument,
                                          WangColor *wangColor,

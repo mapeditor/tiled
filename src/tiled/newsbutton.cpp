@@ -30,7 +30,6 @@
 static const char newsArchiveUrl[] = "https://www.mapeditor.org/news";
 
 namespace Tiled {
-namespace Internal {
 
 NewsButton::NewsButton(QWidget *parent)
     : QToolButton(parent)
@@ -125,5 +124,4 @@ void NewsButton::showNewsMenu()
     setDown(false);
 }
 
-} // namespace Internal
 } // namespace Tiled

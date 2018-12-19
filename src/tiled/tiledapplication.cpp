@@ -25,7 +25,6 @@
 #include <QJsonDocument>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 TiledApplication::TiledApplication(int &argc, char **argv) :
     QtSingleApplication(argc, argv)

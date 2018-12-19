@@ -29,7 +29,6 @@ class PreferencesDialog;
 }
 
 namespace Tiled {
-namespace Internal {
 
 /**
  * The preferences dialog. Allows the user to configure some general behaviour
@@ -64,5 +63,4 @@ private:
 };
 
 
-} // namespace Internal
 } // namespace Tiled

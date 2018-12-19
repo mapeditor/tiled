@@ -27,7 +27,6 @@
 #include "tile.h"
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 TilesetTerrainModel::TilesetTerrainModel(TilesetDocument *tilesetDocument,
                                          QObject *parent):

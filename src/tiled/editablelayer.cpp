@@ -26,7 +26,6 @@
 #include "scriptmanager.h"
 
 namespace Tiled {
-namespace Internal {
 
 EditableLayer::EditableLayer(EditableMap *map, Layer *layer, QObject *parent)
     : QObject(parent)
@@ -98,5 +97,4 @@ void EditableLayer::setOffset(QPointF offset)
         mLayer->setOffset(offset);
 }
 
-} // namespace Internal
 } // namespace Tiled

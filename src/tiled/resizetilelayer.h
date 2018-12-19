@@ -29,8 +29,6 @@ namespace Tiled {
 class Layer;
 class TileLayer;
 
-namespace Internal {
-
 class MapDocument;
 
 /**
@@ -61,5 +59,4 @@ private:
     TileLayer *mResizedLayer;
 };
 
-} // namespace Internal
 } // namespace Tiled

@@ -48,7 +48,6 @@
 #include <QtMath>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 static bool isTileObject(MapObject *mapObject)
 {
@@ -175,13 +174,13 @@ void AbstractObjectTool::languageChanged()
 {
     mFlipHorizontal->setToolTip(tr("Flip Horizontally"));
     mFlipVertical->setToolTip(tr("Flip Vertically"));
-    mRotateLeft->setToolTip(QCoreApplication::translate("Tiled::Internal::StampActions", "Rotate Left"));
-    mRotateRight->setToolTip(QCoreApplication::translate("Tiled::Internal::StampActions", "Rotate Right"));
+    mRotateLeft->setToolTip(QCoreApplication::translate("Tiled::StampActions", "Rotate Left"));
+    mRotateRight->setToolTip(QCoreApplication::translate("Tiled::StampActions", "Rotate Right"));
 
-    mFlipHorizontal->setShortcut(QKeySequence(QCoreApplication::translate("Tiled::Internal::StampActions", "X")));
-    mFlipVertical->setShortcut(QKeySequence(QCoreApplication::translate("Tiled::Internal::StampActions", "Y")));
-    mRotateLeft->setShortcut(QKeySequence(QCoreApplication::translate("Tiled::Internal::StampActions", "Shift+Z")));
-    mRotateRight->setShortcut(QKeySequence(QCoreApplication::translate("Tiled::Internal::StampActions", "Z")));
+    mFlipHorizontal->setShortcut(QKeySequence(QCoreApplication::translate("Tiled::StampActions", "X")));
+    mFlipVertical->setShortcut(QKeySequence(QCoreApplication::translate("Tiled::StampActions", "Y")));
+    mRotateLeft->setShortcut(QKeySequence(QCoreApplication::translate("Tiled::StampActions", "Shift+Z")));
+    mRotateRight->setShortcut(QKeySequence(QCoreApplication::translate("Tiled::StampActions", "Z")));
 }
 
 void AbstractObjectTool::populateToolBar(QToolBar *toolBar)
@@ -281,12 +280,12 @@ static QString saveObjectTemplate(const MapObject *mapObject)
     if (!mapObject->name().isEmpty())
         suggestedFileName += mapObject->name();
     else
-        suggestedFileName += QCoreApplication::translate("Tiled::Internal::MainWindow", "untitled");
+        suggestedFileName += QCoreApplication::translate("Tiled::MainWindow", "untitled");
     suggestedFileName += QLatin1String(".tx");
 
     QWidget *parent = DocumentManager::instance()->widget()->window();
     QString fileName = QFileDialog::getSaveFileName(parent,
-                                                    QCoreApplication::translate("Tiled::Internal::MainWindow", "Save Template"),
+                                                    QCoreApplication::translate("Tiled::MainWindow", "Save Template"),
                                                     suggestedFileName,
                                                     filter,
                                                     &selectedFilter);
@@ -300,7 +299,7 @@ static QString saveObjectTemplate(const MapObject *mapObject)
     objectTemplate.setObject(mapObject);
 
     if (!format->write(&objectTemplate, fileName)) {
-        QMessageBox::critical(nullptr, QCoreApplication::translate("Tiled::Internal::MainWindow", "Error Saving Template"),
+        QMessageBox::critical(nullptr, QCoreApplication::translate("Tiled::MainWindow", "Error Saving Template"),
                               format->errorString());
         return QString();
     }

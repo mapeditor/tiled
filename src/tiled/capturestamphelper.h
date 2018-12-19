@@ -26,7 +26,6 @@
 #include <QRect>
 
 namespace Tiled {
-namespace Internal {
 
 class MapDocument;
 
@@ -48,7 +47,6 @@ private:
     bool mActive;
 };
 
-} // namespace Internal
 } // namespace Tiled
 
 #endif // CAPTURESTAMPHELPER_H

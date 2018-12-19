@@ -25,7 +25,6 @@
 #include "reversingproxymodel.h"
 
 namespace Tiled {
-namespace Internal {
 
 // Stupid hack needed because createIndex is protected
 class FriendModel : public QAbstractItemModel
@@ -450,4 +449,3 @@ void ReversingProxyModel::sourceRowsRemoved(const QModelIndex &parent, int start
 }
 
 } // namespace Tiled
-} // namespace Internal

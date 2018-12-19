@@ -31,7 +31,6 @@
 #include <QStandardPaths>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 QString Command::finalWorkingDirectory() const
 {

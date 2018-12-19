@@ -98,7 +98,6 @@
 #endif
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 using namespace Tiled::Utils;
 
 

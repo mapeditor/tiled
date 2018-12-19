@@ -29,8 +29,6 @@ namespace Tiled {
 
 class TileLayer;
 
-namespace Internal {
-
 class TileStamp;
 class TileStampManager;
 class TileStampModel;
@@ -98,5 +96,4 @@ protected:
     bool event(QEvent *event) override;
 };
 
-} // namespace Internal
 } // namespace Tiled

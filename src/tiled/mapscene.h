@@ -39,8 +39,6 @@ class Tile;
 class TileLayer;
 class Tileset;
 
-namespace Internal {
-
 class AbstractTool;
 class LayerItem;
 class MapDocument;
@@ -121,5 +119,4 @@ inline MapDocument *MapScene::mapDocument() const
     return mMapDocument;
 }
 
-} // namespace Internal
 } // namespace Tiled

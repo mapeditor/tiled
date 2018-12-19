@@ -63,7 +63,6 @@
 #include "qtcompat_p.h"
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 
 DocumentManager *DocumentManager::mInstance;
@@ -497,7 +496,7 @@ bool DocumentManager::saveDocument(Document *document, const QString &fileName)
 
     QString error;
     if (!document->save(fileName, &error)) {
-        QMessageBox::critical(mWidget->window(), QCoreApplication::translate("Tiled::Internal::MainWindow", "Error Saving File"), error);
+        QMessageBox::critical(mWidget->window(), QCoreApplication::translate("Tiled::MainWindow", "Error Saving File"), error);
         return false;
     }
 
@@ -540,12 +539,12 @@ bool DocumentManager::saveDocumentAs(Document *document)
                 !Utils::fileNameMatchesNameFilter(QFileInfo(fileName).fileName(), selectedFilter))
             {
                 QMessageBox messageBox(QMessageBox::Warning,
-                                       QCoreApplication::translate("Tiled::Internal::MainWindow", "Extension Mismatch"),
-                                       QCoreApplication::translate("Tiled::Internal::MainWindow", "The file extension does not match the chosen file type."),
+                                       QCoreApplication::translate("Tiled::MainWindow", "Extension Mismatch"),
+                                       QCoreApplication::translate("Tiled::MainWindow", "The file extension does not match the chosen file type."),
                                        QMessageBox::Yes | QMessageBox::No,
                                        mWidget->window());
 
-                messageBox.setInformativeText(QCoreApplication::translate("Tiled::Internal::MainWindow",
+                messageBox.setInformativeText(QCoreApplication::translate("Tiled::MainWindow",
                                                                           "Tiled may not automatically recognize your file when loading. "
                                                                           "Are you sure you want to save with this extension?"));
 
@@ -564,7 +563,7 @@ bool DocumentManager::saveDocumentAs(Document *document)
         FormatHelper<MapFormat> helper(FileFormat::ReadWrite);
         filter = helper.filter();
 
-        auto suggestedFileName = QCoreApplication::translate("Tiled::Internal::MainWindow", "untitled");
+        auto suggestedFileName = QCoreApplication::translate("Tiled::MainWindow", "untitled");
         suggestedFileName.append(QLatin1String(".tmx"));
 
         fileName = getSaveFileName(suggestedFileName);
@@ -584,7 +583,7 @@ bool DocumentManager::saveDocumentAs(Document *document)
 
         auto suggestedFileName = tilesetDocument->tileset()->name().trimmed();
         if (suggestedFileName.isEmpty())
-            suggestedFileName = QCoreApplication::translate("Tiled::Internal::MainWindow", "untitled");
+            suggestedFileName = QCoreApplication::translate("Tiled::MainWindow", "untitled");
         suggestedFileName.append(QLatin1String(".tsx"));
 
         fileName = getSaveFileName(suggestedFileName);

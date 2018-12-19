@@ -27,7 +27,6 @@
 #include <QPushButton>
 
 namespace Tiled {
-namespace Internal {
 
 FileChangedWarning::FileChangedWarning(QWidget *parent)
     : QWidget(parent)
@@ -70,5 +69,4 @@ void FileChangedWarning::paintEvent(QPaintEvent *event)
 
 }
 
-} // namespace Internal
 } // namespace Tiled

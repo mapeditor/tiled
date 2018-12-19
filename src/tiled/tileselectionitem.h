@@ -26,8 +26,6 @@ namespace Tiled {
 
 class Layer;
 
-namespace Internal {
-
 class MapDocument;
 
 /**
@@ -63,5 +61,4 @@ private:
     QRectF mBoundingRect;
 };
 
-} // namespace Internal
 } // namespace Tiled

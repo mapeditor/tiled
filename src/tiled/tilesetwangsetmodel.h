@@ -28,8 +28,6 @@ class Tileset;
 class WangSet;
 class WangColor;
 
-namespace Internal {
-
 class TilesetDocument;
 
 class TilesetWangSetModel : public QAbstractListModel
@@ -92,5 +90,4 @@ private:
     TilesetDocument *mTilesetDocument;
 };
 
-} // namespace Internal
 } // namespace Tiled

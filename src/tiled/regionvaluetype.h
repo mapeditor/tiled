@@ -24,7 +24,6 @@
 #include <QRegion>
 
 namespace Tiled {
-namespace Internal {
 
 class RegionValueType
 {
@@ -42,13 +41,13 @@ public:
 
     Q_INVOKABLE void add(const QRect &rect);
     Q_INVOKABLE void add(const QRectF &rect);
-    Q_INVOKABLE void add(const Tiled::Internal::RegionValueType &region);
+    Q_INVOKABLE void add(const Tiled::RegionValueType &region);
     Q_INVOKABLE void subtract(const QRect &rect);
     Q_INVOKABLE void subtract(const QRectF &rect);
-    Q_INVOKABLE void subtract(const Tiled::Internal::RegionValueType &region);
+    Q_INVOKABLE void subtract(const Tiled::RegionValueType &region);
     Q_INVOKABLE void intersect(const QRect &rect);
     Q_INVOKABLE void intersect(const QRectF &rect);
-    Q_INVOKABLE void intersect(const Tiled::Internal::RegionValueType &region);
+    Q_INVOKABLE void intersect(const Tiled::RegionValueType &region);
 
     QRect boundingRect() const;
     const QRegion &region() const;
@@ -113,7 +112,6 @@ inline const QRegion &RegionValueType::region() const
     return mRegion;
 }
 
-} // namespace Internal
 } // namespace Tiled
 
-Q_DECLARE_METATYPE(Tiled::Internal::RegionValueType)
+Q_DECLARE_METATYPE(Tiled::RegionValueType)

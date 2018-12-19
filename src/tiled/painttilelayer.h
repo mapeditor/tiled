@@ -30,8 +30,6 @@ namespace Tiled {
 
 class TileLayer;
 
-namespace Internal {
-
 class MapDocument;
 
 /**
@@ -109,5 +107,4 @@ inline void PaintTileLayer::setMergeable(bool mergeable)
     mMergeable = mergeable;
 }
 
-} // namespace Internal
 } // namespace Tiled

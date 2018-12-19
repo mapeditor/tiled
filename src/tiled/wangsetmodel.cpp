@@ -36,7 +36,6 @@
 #include <QPalette>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 WangSetModel::WangSetModel(QAbstractItemModel *tilesetDocumentModel,
                            QObject *parent):

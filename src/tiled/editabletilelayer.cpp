@@ -21,7 +21,6 @@
 #include "editabletilelayer.h"
 
 namespace Tiled {
-namespace Internal {
 
 EditableTileLayer::EditableTileLayer(EditableMap *map,
                                      TileLayer *layer,
@@ -40,5 +39,4 @@ Cell EditableTileLayer::cellAt(int x, int y) const
     return tileLayer()->cellAt(x, y);
 }
 
-} // namespace Internal
 } // namespace Tiled

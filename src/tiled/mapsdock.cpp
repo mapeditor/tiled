@@ -39,7 +39,6 @@
 #include <QPushButton>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 /**
  * Class represents the file system model with disabled dragging of directories.

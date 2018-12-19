@@ -28,7 +28,6 @@
 #include <QCoreApplication>
 
 namespace Tiled {
-namespace Internal {
 
 RenameTerrain::RenameTerrain(TilesetDocument *tilesetDocument,
                              int terrainId,
@@ -52,5 +51,4 @@ void RenameTerrain::redo()
     mTerrainModel->setTerrainName(mTerrainId, mNewName);
 }
 
-} // namespace Internal
 } // namespace Tiled

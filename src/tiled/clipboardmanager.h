@@ -31,8 +31,6 @@ namespace Tiled {
 class ObjectGroup;
 class Map;
 
-namespace Internal {
-
 class MapDocument;
 class MapView;
 
@@ -107,5 +105,4 @@ inline bool ClipboardManager::hasProperties() const
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(ClipboardManager::PasteFlags)
 
-} // namespace Internal
 } // namespace Tiled

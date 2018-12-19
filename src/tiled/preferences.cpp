@@ -34,7 +34,6 @@
 #include <QStandardPaths>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 Preferences *Preferences::mInstance;
 

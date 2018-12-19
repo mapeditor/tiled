@@ -42,7 +42,7 @@ class Map;
 
 namespace Internal {
 class MapReaderPrivate;
-}
+} // namespace Internal
 
 /**
  * A fast QXmlStreamReader based reader for the TMX and TSX formats.

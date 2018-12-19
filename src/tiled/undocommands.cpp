@@ -23,7 +23,6 @@
 #include <QUndoCommand>
 
 namespace Tiled {
-namespace Internal {
 
 bool cloneChildren(const QUndoCommand *command, QUndoCommand *parent)
 {
@@ -41,5 +40,4 @@ bool cloneChildren(const QUndoCommand *command, QUndoCommand *parent)
     return true;
 }
 
-} // namespace Internal
 } // namespace Tiled

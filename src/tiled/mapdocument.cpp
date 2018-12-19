@@ -67,7 +67,6 @@
 #include "qtcompat_p.h"
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 MapDocument::MapDocument(Map *map, const QString &fileName)
     : Document(MapDocumentType, fileName)

@@ -29,7 +29,6 @@
 #include "qtcompat_p.h"
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 ChangeMapObject::ChangeMapObject(MapDocument *mapDocument,
                                  MapObject *mapObject,

@@ -27,8 +27,6 @@ namespace Tiled {
 
 class Tile;
 
-namespace Internal {
-
 class TilesetDocument;
 
 class ChangeTileImageSource : public QUndoCommand
@@ -50,5 +48,4 @@ private:
     QUrl mNewImageSource;
 };
 
-} // namespace Internal
 } // namespace Tiled

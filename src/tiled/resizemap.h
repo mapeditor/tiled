@@ -24,7 +24,6 @@
 #include <QUndoCommand>
 
 namespace Tiled {
-namespace Internal {
 
 class MapDocument;
 
@@ -49,5 +48,4 @@ private:
     QSize mSize;
 };
 
-} // namespace Internal
 } // namespace Tiled

@@ -31,7 +31,6 @@
 #include <QStyleOptionGraphicsItem>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 TileSelectionItem::TileSelectionItem(MapDocument *mapDocument,
                                      QGraphicsItem *parent)

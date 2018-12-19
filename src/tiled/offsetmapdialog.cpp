@@ -27,7 +27,6 @@
 #include "ui_offsetmapdialog.h"
 
 namespace Tiled {
-namespace Internal {
 
 OffsetMapDialog::OffsetMapDialog(MapDocument *mapDocument, QWidget *parent)
     : QDialog(parent)
@@ -176,5 +175,4 @@ void OffsetMapDialog::boundsSelectionChanged()
     }
 }
 
-} // namespace Internal
 } // namespace Tiled

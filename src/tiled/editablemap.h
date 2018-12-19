@@ -25,7 +25,6 @@
 #include "mapdocument.h"
 
 namespace Tiled {
-namespace Internal {
 
 class EditableLayer;
 
@@ -46,7 +45,7 @@ class EditableMap : public EditableAsset
     Q_PROPERTY(Tiled::Map::RenderOrder renderOrder READ renderOrder WRITE setRenderOrder)
     Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor)
     Q_PROPERTY(Tiled::Map::LayerDataFormat layerDataFormat READ layerDataFormat WRITE setLayerDataFormat)
-    Q_PROPERTY(Tiled::Internal::EditableSelectedArea *selectedArea READ selectedArea CONSTANT)
+    Q_PROPERTY(Tiled::EditableSelectedArea *selectedArea READ selectedArea CONSTANT)
     Q_PROPERTY(int layerCount READ layerCount)
 
 public:
@@ -70,9 +69,9 @@ public:
     QColor backgroundColor() const;
     Map::LayerDataFormat layerDataFormat() const;
     int layerCount() const;
-    Q_INVOKABLE Tiled::Internal::EditableLayer *layerAt(int index);
+    Q_INVOKABLE Tiled::EditableLayer *layerAt(int index);
     Q_INVOKABLE void removeLayerAt(int index);
-    Q_INVOKABLE void insertLayerAt(int index, Tiled::Internal::EditableLayer *layer);
+    Q_INVOKABLE void insertLayerAt(int index, Tiled::EditableLayer *layer);
 
     void setTileWidth(int value);
     void setTileHeight(int value);
@@ -206,7 +205,6 @@ inline EditableSelectedArea *EditableMap::selectedArea()
     return &mSelectedArea;
 }
 
-} // namespace Internal
 } // namespace Tiled
 
-Q_DECLARE_METATYPE(Tiled::Internal::EditableMap*)
+Q_DECLARE_METATYPE(Tiled::EditableMap*)

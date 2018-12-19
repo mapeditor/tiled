@@ -26,7 +26,6 @@ class QUndoCommand;
 class QUndoStack;
 
 namespace Tiled {
-namespace Internal {
 
 class EditableAsset : public QObject
 {
@@ -62,7 +61,6 @@ inline QUndoStack *EditableAsset::undoStack() const
     return mUndoStack;
 }
 
-} // namespace Internal
 } // namespace Tiled
 
-Q_DECLARE_METATYPE(Tiled::Internal::EditableAsset*)
+Q_DECLARE_METATYPE(Tiled::EditableAsset*)

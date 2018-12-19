@@ -28,8 +28,6 @@ namespace Tiled {
 
 class LoggingInterface;
 
-namespace Internal {
-
 class EditableAsset;
 
 /**
@@ -43,7 +41,7 @@ class ScriptModule : public QObject
     Q_PROPERTY(QString platform READ platform)
     Q_PROPERTY(QString arch READ arch)
 
-    Q_PROPERTY(Tiled::Internal::EditableAsset *activeAsset READ activeAsset WRITE setActiveAsset NOTIFY activeAssetChanged)
+    Q_PROPERTY(Tiled::EditableAsset *activeAsset READ activeAsset WRITE setActiveAsset NOTIFY activeAssetChanged)
     Q_PROPERTY(QList<QObject*> openAssets READ openAssets)
 
 public:
@@ -60,13 +58,13 @@ public:
     QList<QObject*> openAssets() const;
 
 signals:
-    void assetCreated(Tiled::Internal::EditableAsset *asset);
-    void assetOpened(Tiled::Internal::EditableAsset *asset);
-    void assetAboutToBeSaved(Tiled::Internal::EditableAsset *asset);
-    void assetSaved(Tiled::Internal::EditableAsset *asset);
-    void assetAboutToBeClosed(Tiled::Internal::EditableAsset *asset);
+    void assetCreated(Tiled::EditableAsset *asset);
+    void assetOpened(Tiled::EditableAsset *asset);
+    void assetAboutToBeSaved(Tiled::EditableAsset *asset);
+    void assetSaved(Tiled::EditableAsset *asset);
+    void assetAboutToBeClosed(Tiled::EditableAsset *asset);
 
-    void activeAssetChanged(Tiled::Internal::EditableAsset *asset);
+    void activeAssetChanged(Tiled::EditableAsset *asset);
 
 public slots:
     void trigger(const QByteArray &actionName) const;
@@ -90,5 +88,4 @@ private:
     LoggingInterface *mLogger;
 };
 
-} // namespace Internal
 } // namespace Tiled

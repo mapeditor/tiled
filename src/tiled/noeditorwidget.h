@@ -23,7 +23,6 @@
 #include <QWidget>
 
 namespace Tiled {
-namespace Internal {
 
 namespace Ui {
 class NoEditorWidget;
@@ -49,5 +48,4 @@ private:
     Ui::NoEditorWidget *ui;
 };
 
-} // namespace Internal
 } // namespace Tiled

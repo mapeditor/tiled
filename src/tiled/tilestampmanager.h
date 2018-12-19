@@ -32,8 +32,6 @@ namespace Tiled {
 class Map;
 class TileLayer;
 
-namespace Internal {
-
 class MapDocument;
 class TileStamp;
 class TileStampModel;
@@ -117,5 +115,4 @@ inline TileStampModel *TileStampManager::tileStampModel() const
     return mTileStampModel;
 }
 
-} // namespace Tiled::Internal
 } // namespace Tiled

@@ -30,7 +30,6 @@
 #include <QMessageBox>
 
 namespace Tiled {
-namespace Internal {
 
 ScriptModule::ScriptModule(QObject *parent)
     : QObject(parent)
@@ -170,5 +169,4 @@ void ScriptModule::currentDocumentChanged(Document *document)
     emit activeAssetChanged(document ? document->editable() : nullptr);
 }
 
-} // namespace Internal
 } // namespace Tiled

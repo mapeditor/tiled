@@ -42,7 +42,6 @@
 #include <climits>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 TerrainBrush::TerrainBrush(QObject *parent)
     : AbstractTileTool(tr("Terrain Brush"),

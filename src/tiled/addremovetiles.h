@@ -26,8 +26,6 @@ namespace Tiled {
 
 class Tile;
 
-namespace Internal {
-
 class TilesetDocument;
 
 /**
@@ -84,5 +82,4 @@ public:
     { removeTiles(); }
 };
 
-} // namespace Internal
 } // namespace Tiled

@@ -31,8 +31,6 @@ namespace Tiled {
 
 class ObjectGroup;
 
-namespace Internal {
-
 class MapDocument;
 class MapScene;
 
@@ -72,5 +70,4 @@ private:
     RangeSet<int> mSelectionRanges;
 };
 
-} // namespace Internal
 } // namespace Tiled

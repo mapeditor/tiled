@@ -29,8 +29,6 @@ namespace Tiled {
 
 class LoggingInterface;
 
-namespace Internal {
-
 class CommandDataModel;
 
 class CommandManager : public QObject
@@ -86,5 +84,4 @@ private:
     LoggingInterface *mLogger;
 };
 
-} // namespace Internal
 } // namespace Tiled

@@ -31,7 +31,6 @@
 #include <QSortFilterProxyModel>
 
 using namespace Tiled;
-using namespace Internal;
 
 namespace {
 

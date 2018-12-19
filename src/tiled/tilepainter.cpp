@@ -27,7 +27,6 @@
 #include <QQueue>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 namespace {
 

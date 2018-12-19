@@ -27,7 +27,9 @@
 
 #include <cmath>
 
-using namespace Tiled::Internal;
+#include "qtcompat_p.h"
+
+using namespace Tiled;
 
 static QString scaleToString(qreal scale)
 {
@@ -126,7 +128,7 @@ void Zoomable::handlePinchGesture(QPinchGesture *pinch)
         break;
     case Qt::GestureStarted:
         mGestureStartScale = mScale;
-        // fall through
+        Q_FALLTHROUGH();
     case Qt::GestureUpdated: {
         qreal factor = pinch->totalScaleFactor();
         qreal scale = qBound(mZoomFactors.first(),

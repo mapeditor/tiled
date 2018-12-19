@@ -29,7 +29,6 @@ namespace Tiled {
 class Tileset;
 class MapObject;
 
-namespace Internal {
 
 /**
  * A reader and writer for Tiled's .tmx map format.
@@ -130,5 +129,4 @@ private:
     QString mError;
 };
 
-} // namespace Internal
 } // namespace Tiled

@@ -25,7 +25,6 @@
 #include <winsparkle.h>
 
 namespace Tiled {
-namespace Internal {
 
 #ifdef TILED_SNAPSHOT
 
@@ -85,5 +84,4 @@ QDateTime WinSparkleAutoUpdater::lastUpdateCheckDate()
 #endif
 }
 
-} // namespace Internal
 } // namespace Tiled

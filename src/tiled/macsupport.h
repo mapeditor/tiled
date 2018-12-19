@@ -33,5 +33,5 @@ public:
     /**
      * Adds fullscreen button to window for Lion.
      */
-    static void addFullscreen(Tiled::Internal::MainWindow *window);
+    static void addFullscreen(Tiled::MainWindow *window);
 };

@@ -36,7 +36,6 @@
 #include <memory>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 AutomappingManager::AutomappingManager(QObject *parent)
     : QObject(parent)

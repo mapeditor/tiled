@@ -32,7 +32,6 @@
 #include <QMenu>
 
 namespace Tiled {
-namespace Internal {
 
 CommandManager *CommandManager::mInstance;
 
@@ -135,5 +134,4 @@ void CommandManager::retranslateUi()
     mEditCommands->setText(tr("Edit Commands..."));
 }
 
-} // namespace Internal
 } // namespace Tiled

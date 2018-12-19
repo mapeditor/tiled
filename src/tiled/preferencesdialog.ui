@@ -127,7 +127,7 @@
          </property>
          <layout class="QGridLayout" name="gridLayout_2">
           <item row="2" column="3">
-           <widget class="Tiled::Internal::ColorButton" name="gridColor"/>
+           <widget class="Tiled::ColorButton" name="gridColor"/>
           </item>
           <item row="0" column="4">
            <spacer name="horizontalSpacer_2">
@@ -258,7 +258,7 @@
            </widget>
           </item>
           <item row="2" column="2">
-           <widget class="Tiled::Internal::ColorButton" name="selectionColor"/>
+           <widget class="Tiled::ColorButton" name="selectionColor"/>
           </item>
           <item row="0" column="0">
            <widget class="QLabel" name="label_5">
@@ -271,7 +271,7 @@
            </widget>
           </item>
           <item row="1" column="2">
-           <widget class="Tiled::Internal::ColorButton" name="baseColor"/>
+           <widget class="Tiled::ColorButton" name="baseColor"/>
           </item>
           <item row="0" column="3">
            <spacer name="horizontalSpacer">
@@ -421,7 +421,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>Tiled::Internal::ColorButton</class>
+   <class>Tiled::ColorButton</class>
    <extends>QToolButton</extends>
    <header>colorbutton.h</header>
   </customwidget>

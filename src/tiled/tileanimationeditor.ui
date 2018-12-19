@@ -153,7 +153,7 @@
        </property>
       </widget>
      </widget>
-     <widget class="Tiled::Internal::TilesetView" name="tilesetView">
+     <widget class="Tiled::TilesetView" name="tilesetView">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
         <horstretch>0</horstretch>
@@ -186,7 +186,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>Tiled::Internal::TilesetView</class>
+   <class>Tiled::TilesetView</class>
    <extends>QTableView</extends>
    <header location="global">tilesetview.h</header>
   </customwidget>

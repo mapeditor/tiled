@@ -26,7 +26,6 @@
 #include <QUndoStack>
 
 namespace Tiled {
-namespace Internal {
 
 EditableSelectedArea::EditableSelectedArea(MapDocument *mapDocument, QObject *parent)
     : QObject(parent)
@@ -82,5 +81,4 @@ void EditableSelectedArea::set(const QRegion &region)
     }
 }
 
-} // namespace Internal
 } // namespace Tiled

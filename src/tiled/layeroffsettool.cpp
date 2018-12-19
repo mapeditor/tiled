@@ -37,7 +37,6 @@
 #include "qtcompat_p.h"
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 LayerOffsetTool::LayerOffsetTool(QObject *parent)
     : AbstractTool(tr("Offset Layers"),

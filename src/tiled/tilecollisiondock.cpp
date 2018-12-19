@@ -55,7 +55,6 @@
 #include <QVBoxLayout>
 
 namespace Tiled {
-namespace Internal {
 
 TileCollisionDock::TileCollisionDock(QWidget *parent)
     : QDockWidget(parent)
@@ -375,8 +374,7 @@ void TileCollisionDock::changeEvent(QEvent *e)
 
 void TileCollisionDock::retranslateUi()
 {
-    setWindowTitle(QCoreApplication::translate("Tiled::Internal::MainWindow", "Tile Collision Editor"));
+    setWindowTitle(QCoreApplication::translate("Tiled::MainWindow", "Tile Collision Editor"));
 }
 
-} // namespace Internal
 } // namespace Tiled

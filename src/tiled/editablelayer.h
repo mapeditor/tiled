@@ -27,7 +27,6 @@
 #include <memory>
 
 namespace Tiled {
-namespace Internal {
 
 class EditableMap;
 
@@ -40,7 +39,7 @@ class EditableLayer : public QObject
     Q_PROPERTY(bool visible READ isVisible WRITE setVisible)
     Q_PROPERTY(bool locked READ isLocked WRITE setLocked)
     Q_PROPERTY(QPointF offset READ offset WRITE setOffset)
-    Q_PROPERTY(Tiled::Internal::EditableMap *map READ map)
+    Q_PROPERTY(Tiled::EditableMap *map READ map)
 
 public:
     explicit EditableLayer(EditableMap *map,
@@ -109,7 +108,6 @@ inline Layer *EditableLayer::layer() const
     return mLayer;
 }
 
-} // namespace Internal
 } // namespace Tiled
 
-Q_DECLARE_METATYPE(Tiled::Internal::EditableLayer*)
+Q_DECLARE_METATYPE(Tiled::EditableLayer*)

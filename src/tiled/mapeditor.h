@@ -40,8 +40,6 @@ namespace Tiled {
 
 class Terrain;
 
-namespace Internal {
-
 class AbstractTool;
 class BucketFillTool;
 class ComboBoxProxyModel;
@@ -194,5 +192,4 @@ inline MapView *MapEditor::currentMapView() const
     return viewForDocument(mCurrentMapDocument);
 }
 
-} // namespace Internal
 } // namespace Tiled

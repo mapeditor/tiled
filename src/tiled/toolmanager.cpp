@@ -27,7 +27,6 @@
 #include <QShortcut>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 ToolManager::ToolManager(QObject *parent)
     : QObject(parent)

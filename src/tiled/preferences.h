@@ -31,7 +31,6 @@
 class QSettings;
 
 namespace Tiled {
-namespace Internal {
 
 /**
  * This class holds user preferences and provides a convenient interface to
@@ -392,7 +391,6 @@ inline bool Preferences::wheelZoomsByDefault() const
     return mWheelZoomsByDefault;
 }
 
-} // namespace Internal
 } // namespace Tiled
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::Internal::Preferences::ExportOptions)
+Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::Preferences::ExportOptions)

@@ -38,8 +38,6 @@ class Tile;
 class Tileset;
 class ObjectTemplate;
 
-namespace Internal {
-
 class Document;
 class TilesetDocument;
 
@@ -153,5 +151,4 @@ private:
     QAbstractButton *mLocateButton;
 };
 
-} // namespace Internal
 } // namespace Tiled

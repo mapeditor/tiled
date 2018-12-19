@@ -43,7 +43,6 @@
 #include <memory>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 StampBrush::StampBrush(QObject *parent)
     : AbstractTileTool(tr("Stamp Brush"),

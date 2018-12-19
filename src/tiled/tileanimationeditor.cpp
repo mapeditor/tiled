@@ -43,7 +43,6 @@
 static const char * const FRAME_DURATION_KEY = "Animation/FrameDuration";
 
 namespace Tiled {
-namespace Internal {
 
 class FrameListModel : public QAbstractListModel
 {
@@ -565,7 +564,6 @@ void TileAnimationEditor::resetPreview()
                                                   "Preview"));
 }
 
-} // namespace Internal
 } // namespace Tiled
 
 #include "tileanimationeditor.moc"

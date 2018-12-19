@@ -27,8 +27,6 @@ namespace Tiled {
 
 class ImageLayer;
 
-namespace Internal {
-
 class MapDocument;
 
 class ChangeImageLayerPosition : public QUndoCommand
@@ -55,5 +53,4 @@ private:
     const QPoint mRedoPos;
 };
 
-} // namespace Internal
 } // namespace Tiled

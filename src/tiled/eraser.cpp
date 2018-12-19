@@ -29,7 +29,6 @@
 #include "tilelayer.h"
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 Eraser::Eraser(QObject *parent)
     : AbstractTileTool(tr("Eraser"),

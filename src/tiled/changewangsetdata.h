@@ -29,8 +29,6 @@ namespace Tiled {
 class Tileset;
 class Tile;
 
-namespace Internal {
-
 class TilesetDocument;
 
 class ChangeWangSetEdgeCount : public QUndoCommand
@@ -119,5 +117,4 @@ private:
     int mNewImageTileId;
 };
 
-} // namespace Internal
 } // namespace Tiled

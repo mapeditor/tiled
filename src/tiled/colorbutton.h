@@ -24,7 +24,6 @@
 #include <QToolButton>
 
 namespace Tiled {
-namespace Internal {
 
 /**
  * A tool button for letting the user pick a color. When clicked it shows a
@@ -53,5 +52,4 @@ private:
     QColor mColor;
 };
 
-} // namespace Internal
 } // namespace Tiled

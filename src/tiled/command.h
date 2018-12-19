@@ -30,7 +30,6 @@
 #endif
 
 namespace Tiled {
-namespace Internal {
 
 struct Command
 {
@@ -110,5 +109,4 @@ private:
 #endif
 };
 
-} // namespace Internal
 } // namespace Tiled

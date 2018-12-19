@@ -25,7 +25,6 @@
 #include "tilelayer.h"
 
 namespace Tiled {
-namespace Internal {
 
 class EditableTileLayer : public EditableLayer
 {
@@ -45,7 +44,7 @@ public:
     int height() const;
     QSize size() const;
 
-    Q_INVOKABLE Tiled::Internal::RegionValueType region() const;
+    Q_INVOKABLE Tiled::RegionValueType region() const;
 
     Tiled::Cell cell() const { return Tiled::Cell(); }
     Q_INVOKABLE Tiled::Cell cellAt(int x, int y) const;
@@ -79,7 +78,6 @@ inline TileLayer *EditableTileLayer::tileLayer() const
     return static_cast<TileLayer*>(layer());
 }
 
-} // namespace Internal
 } // namespace Tiled
 
-Q_DECLARE_METATYPE(Tiled::Internal::EditableTileLayer*)
+Q_DECLARE_METATYPE(Tiled::EditableTileLayer*)

@@ -51,7 +51,6 @@
 #include <QUndoStack>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 // This references created dummy documents, to make sure they are shared if the
 // same template is open in the MapEditor and the TilesetEditor.

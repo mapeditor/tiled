@@ -23,7 +23,6 @@
 #include <QUndoStack>
 
 namespace Tiled {
-namespace Internal {
 
 EditableAsset::EditableAsset(QObject *parent)
     : QObject(parent)
@@ -55,5 +54,4 @@ void EditableAsset::redo()
     undoStack()->redo();
 }
 
-} // namespace Internal
 } // namespace Tiled

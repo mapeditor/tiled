@@ -21,7 +21,6 @@
 #include "regionvaluetype.h"
 
 namespace Tiled {
-namespace Internal {
 
 RegionValueType::RegionValueType()
 {
@@ -57,5 +56,4 @@ QString RegionValueType::toString() const
     }
 }
 
-} // namespace Internal
 } // namespace Tiled

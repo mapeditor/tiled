@@ -28,7 +28,6 @@ class CommandDialog;
 }
 
 namespace Tiled {
-namespace Internal {
 
 class CommandDataModel;
 
@@ -101,5 +100,4 @@ private:
     CommandDataModel *mModel;
 };
 
-} // namespace Internal
 } // namespace Tiled

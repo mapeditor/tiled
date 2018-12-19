@@ -24,7 +24,6 @@
 #include "tilesetdocument.h"
 
 namespace Tiled {
-namespace Internal {
 
 EditableTileset::EditableTileset(TilesetDocument *tilesetDocument,
                                  QObject *parent)
@@ -59,5 +58,4 @@ Tileset *EditableTileset::tileset() const
     return mTilesetDocument->tileset().data();
 }
 
-} // namespace Internal
 } // namespace Tiled

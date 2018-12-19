@@ -28,7 +28,6 @@
 class QJSEngine;
 
 namespace Tiled {
-namespace Internal {
 
 class ScriptModule;
 
@@ -72,5 +71,4 @@ inline QJSEngine *ScriptManager::engine() const
     return mEngine;
 }
 
-} // namespace Internal
 } // namespace Tiled

@@ -30,7 +30,6 @@
 #include <QApplication>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 TileSelectionTool::TileSelectionTool(QObject *parent)
     : AbstractTileSelectionTool(tr("Rectangular Select"),

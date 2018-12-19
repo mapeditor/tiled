@@ -28,7 +28,6 @@
 #include <QCoreApplication>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 ChangePolygon::ChangePolygon(MapDocument *mapDocument,
                              MapObject *mapObject,

@@ -26,7 +26,6 @@
 #include <QIcon>
 
 namespace Tiled {
-namespace Internal {
 
 PluginListModel::PluginListModel(QObject *parent)
     : QAbstractListModel(parent)
@@ -110,6 +109,5 @@ bool PluginListModel::setData(const QModelIndex &index, const QVariant &value, i
     return false;
 }
 
-} // namespace Internal
 } // namespace Tiled
 

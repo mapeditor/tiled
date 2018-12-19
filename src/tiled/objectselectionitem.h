@@ -32,8 +32,6 @@ class Layer;
 class MapObject;
 class Tile;
 
-namespace Internal {
-
 class MapDocument;
 class MapObjectItem;
 class MapObjectLabel;
@@ -83,5 +81,4 @@ private:
     std::unique_ptr<MapObjectItem> mHoveredMapObjectItem;
 };
 
-} // namespace Internal
 } // namespace Tiled

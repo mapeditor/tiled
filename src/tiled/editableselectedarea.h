@@ -28,7 +28,6 @@
 class QUndoCommand;
 
 namespace Tiled {
-namespace Internal {
 
 class MapDocument;
 
@@ -43,16 +42,16 @@ public:
 public slots:
     void set(const QRect &rect);
     void set(const QRectF &rect);
-    void set(const Tiled::Internal::RegionValueType &region);
+    void set(const Tiled::RegionValueType &region);
     void add(const QRect &rect);
     void add(const QRectF &rect);
-    void add(const Tiled::Internal::RegionValueType &region);
+    void add(const Tiled::RegionValueType &region);
     void subtract(const QRect &rect);
     void subtract(const QRectF &rect);
-    void subtract(const Tiled::Internal::RegionValueType &region);
+    void subtract(const Tiled::RegionValueType &region);
     void intersect(const QRect &rect);
     void intersect(const QRectF &rect);
-    void intersect(const Tiled::Internal::RegionValueType &region);
+    void intersect(const Tiled::RegionValueType &region);
 
 private:
     void set(const QRegion &region);
@@ -81,5 +80,4 @@ inline void EditableSelectedArea::intersect(const QRectF &rect)
     intersect(rect.toRect());
 }
 
-} // namespace Internal
 } // namespace Tiled

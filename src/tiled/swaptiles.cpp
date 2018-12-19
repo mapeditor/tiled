@@ -29,7 +29,6 @@
 #include <QCoreApplication>
 
 namespace Tiled {
-namespace Internal {
 
 SwapTiles::SwapTiles(MapDocument *mapDocument,
                      Tile *tile1,
@@ -96,5 +95,4 @@ void SwapTiles::swap()
         emit mMapDocument->mapObjectModel()->objectsChanged(changedObjects);
 }
 
-} // namespace Internal
 } // namespace Tiled

@@ -32,7 +32,6 @@
 static const char feedUrl[] = "https://www.mapeditor.org/rss.xml";
 
 namespace Tiled {
-namespace Internal {
 
 NewsFeed::NewsFeed()
     : mNetworkAccessManager(new QNetworkAccessManager(this))
@@ -175,5 +174,4 @@ void NewsFeed::setLastRead(const QDateTime &dateTime)
     emit refreshed();
 }
 
-} // namespace Internal
 } // namespace Tiled

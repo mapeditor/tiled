@@ -39,7 +39,6 @@
 #include <cmath>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 MapObjectItem::MapObjectItem(MapObject *object, MapDocument *mapDocument,
                              QGraphicsItem *parent):

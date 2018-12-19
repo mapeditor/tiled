@@ -26,7 +26,6 @@
 #include <memory>
 
 namespace Tiled {
-namespace Internal {
 
 /**
  * Applies certain export options to a map and its tilesets, or to a specific
@@ -50,5 +49,4 @@ private:
     const Preferences::ExportOptions mOptions;
 };
 
-} // namespace Internal
 } // namespace Tiled

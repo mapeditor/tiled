@@ -57,7 +57,6 @@
 #define AS_STRING(x) STRINGIFY(x)
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 namespace {
 

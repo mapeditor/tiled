@@ -29,7 +29,6 @@
 #include <QStyleFactory>
 
 namespace Tiled {
-namespace Internal {
 
 StyleHelper *StyleHelper::mInstance;
 
@@ -143,5 +142,4 @@ void StyleHelper::apply()
     emit styleApplied();
 }
 
-} // namespace Internal
 } // namespace Tiled

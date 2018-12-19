@@ -38,7 +38,6 @@
 #include <QPalette>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 TerrainModel::TerrainModel(QAbstractItemModel *tilesetDocumentsModel,
                            QObject *parent):

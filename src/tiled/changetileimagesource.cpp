@@ -27,7 +27,6 @@
 #include <QCoreApplication>
 
 namespace Tiled {
-namespace Internal {
 
 ChangeTileImageSource::ChangeTileImageSource(TilesetDocument *tilesetDocument,
                                              Tile *tile,
@@ -49,5 +48,4 @@ void ChangeTileImageSource::apply(const QUrl &imageSource)
                                    imageSource);
 }
 
-} // namespace Internal
 } // namespace Tiled

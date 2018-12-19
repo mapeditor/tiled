@@ -30,8 +30,6 @@ namespace Tiled {
 
 class WangSet;
 
-namespace Internal {
-
 class MapDocument;
 class StampActions;
 class WangFiller;
@@ -77,5 +75,4 @@ private:
     void makeConnections();
 };
 
-} // namespace Internal
 } // namespace Tiled

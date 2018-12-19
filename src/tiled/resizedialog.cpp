@@ -27,7 +27,7 @@
 
 #include <QSettings>
 
-using namespace Tiled::Internal;
+using namespace Tiled;
 
 static const char * const REMOVE_OBJECTS_KEY = "ResizeMap/RemoveObjects";
 

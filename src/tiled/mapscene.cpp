@@ -48,7 +48,6 @@
 #include "qtcompat_p.h"
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 MapScene::MapScene(QObject *parent):
     QGraphicsScene(parent),

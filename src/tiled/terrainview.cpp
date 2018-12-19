@@ -37,7 +37,6 @@
 #include <QWheelEvent>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 TerrainView::TerrainView(QWidget *parent)
     : QTreeView(parent)

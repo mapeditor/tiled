@@ -23,7 +23,6 @@
 #include "createscalableobjecttool.h"
 
 namespace Tiled {
-namespace Internal {
 
 class CreateEllipseObjectTool : public CreateScalableObjectTool
 {
@@ -41,5 +40,4 @@ private:
     void languageChangedImpl();
 };
 
-} // namespace Internal
 } // namespace Tiled

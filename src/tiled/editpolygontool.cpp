@@ -52,7 +52,6 @@
 #include <cstdlib>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 EditPolygonTool::EditPolygonTool(QObject *parent)
     : AbstractObjectTool(tr("Edit Polygons"),

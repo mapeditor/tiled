@@ -69,4 +69,4 @@ inline ObjectTemplate *TemplateManager::findObjectTemplate(const QString &fileNa
     return mObjectTemplates.value(fileName);
 }
 
-} // namespace Tiled::Internal
+} // namespace Tiled

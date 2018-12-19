@@ -28,7 +28,6 @@
 #include <QCoreApplication>
 
 namespace Tiled {
-namespace Internal {
 
 SetLayerVisible::SetLayerVisible(MapDocument *mapDocument,
                                  Layer *layer,
@@ -124,5 +123,4 @@ void SetLayerOffset::setOffset(const QPointF &offset)
 }
 
 
-} // namespace Internal
 } // namespace Tiled

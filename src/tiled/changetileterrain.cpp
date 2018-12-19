@@ -26,7 +26,6 @@
 #include <QCoreApplication>
 
 namespace Tiled {
-namespace Internal {
 
 ChangeTileTerrain::ChangeTileTerrain()
     : mTilesetDocument(nullptr)
@@ -140,5 +139,4 @@ void ChangeTileTerrain::initText()
                                         "Change Tile Terrain"));
 }
 
-} // namespace Internal
 } // namespace Tiled

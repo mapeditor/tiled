@@ -35,7 +35,6 @@
 #include <QtDebug>
 
 namespace Tiled {
-namespace Internal {
 
 std::unique_ptr<ScriptManager> ScriptManager::mInstance;
 
@@ -126,5 +125,4 @@ void ScriptManager::throwError(const QString &message)
 #endif
 }
 
-} // namespace Internal
 } // namespace Tiled

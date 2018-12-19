@@ -26,8 +26,6 @@ namespace Tiled {
 
 class ObjectGroup;
 
-namespace Internal {
-
 class MapDocument;
 
 class ChangeMapObjectsOrder : public QUndoCommand
@@ -51,5 +49,4 @@ private:
     int mCount;
 };
 
-} // namespace Internal
 } // namespace Tiled

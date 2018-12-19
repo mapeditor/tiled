@@ -30,7 +30,6 @@
 class QGraphicsItem;
 
 namespace Tiled {
-namespace Internal {
 
 class PointHandle;
 class SelectionRectangle;
@@ -136,5 +135,4 @@ private:
     QSet<PointHandle*> mHighlightedHandles;
 };
 
-} // namespace Internal
 } // namespace Tiled

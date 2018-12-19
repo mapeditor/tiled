@@ -30,7 +30,6 @@
 #include <QVBoxLayout>
 
 namespace Tiled {
-namespace Internal {
 
 ConsoleDock::ConsoleDock(QWidget *parent)
     : QDockWidget(parent)
@@ -167,5 +166,4 @@ void ConsoleDock::registerOutput(LoggingInterface *output)
     connect(output, &LoggingInterface::error, this, &ConsoleDock::appendError);
 }
 
-} // namespace Internal
 } // namespace Tiled

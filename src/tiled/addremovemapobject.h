@@ -28,8 +28,6 @@ namespace Tiled {
 class MapObject;
 class ObjectGroup;
 
-namespace Internal {
-
 class MapDocument;
 
 /**
@@ -103,5 +101,4 @@ public:
     void redo() override;
 };
 
-} // namespace Internal
 } // namespace Tiled

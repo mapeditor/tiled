@@ -37,8 +37,6 @@ class MapObject;
 class ObjectGroup;
 class TileLayer;
 
-namespace Internal {
-
 class MapDocument;
 
 struct InputLayer
@@ -374,5 +372,4 @@ private:
     QString mWarning;
 };
 
-} // namespace Internal
 } // namespace Tiled

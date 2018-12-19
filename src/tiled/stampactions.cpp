@@ -24,7 +24,6 @@
 #include <QToolBar>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 StampActions::StampActions(QObject *parent) : QObject(parent)
 {

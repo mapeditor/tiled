@@ -34,8 +34,6 @@ class Tile;
 class TileAnimationDriver;
 class Tileset;
 
-namespace Internal {
-
 class FrameListModel;
 class TilesetDocument;
 
@@ -92,5 +90,4 @@ private:
     int mPreviewUnusedTime;
 };
 
-} // namespace Internal
 } // namespace Tiled

@@ -23,7 +23,6 @@
 #include <QProxyStyle>
 
 namespace Tiled {
-namespace Internal {
 
 class TiledProxyStyle : public QProxyStyle
 {
@@ -86,5 +85,4 @@ inline bool TiledProxyStyle::isDark() const
     return mIsDark;
 }
 
-} // namespace Internal
 } // namespace Tiled
