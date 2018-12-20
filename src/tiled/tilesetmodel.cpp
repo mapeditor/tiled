@@ -225,7 +225,17 @@ void TilesetModel::tileChanged(Tile *tile)
 
 void TilesetModel::refreshTileIds()
 {
+    mTileNames.clear();
     mTileIds.clear();
     for (Tile *tile : mTileset->tiles())
-        mTileIds.append(tile->id());
+    {
+        if(mTileset->isCollection())
+            mTileNames[tile->name()] = tile->id();
+        else
+            mTileIds.append(tile->id());
+    }
+    if(!mTileset->isCollection())
+        return;
+    for(QMap<QString, int>::iterator itr = mTileNames.begin(); itr != mTileNames.end(); itr++)
+        mTileIds.append(itr.value());
 }

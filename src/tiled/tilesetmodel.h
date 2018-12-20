@@ -22,6 +22,7 @@
 #pragma once
 
 #include <QAbstractListModel>
+#include <QMap>
 
 namespace Tiled {
 
@@ -142,6 +143,7 @@ private:
 
     Tileset *mTileset;
     QList<int> mTileIds;
+    QMap<QString, int> mTileNames;
 };
 
 } // namespace Tiled

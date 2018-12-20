@@ -42,7 +42,9 @@ Tile::Tile(int id, Tileset *tileset):
     mProbability(1.0),
     mCurrentFrameIndex(0),
     mUnusedTime(0)
-{}
+{
+    mName = QString::number(mId);
+}
 
 Tile::Tile(const QPixmap &image, int id, Tileset *tileset):
     Object(TileType),
@@ -54,7 +56,9 @@ Tile::Tile(const QPixmap &image, int id, Tileset *tileset):
     mProbability(1.0),
     mCurrentFrameIndex(0),
     mUnusedTime(0)
-{}
+{
+    mName = QString::number(mId);
+}
 
 Tile::~Tile()
 {
