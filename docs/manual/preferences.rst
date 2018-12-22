@@ -11,9 +11,9 @@ The preferences are stored in a system-dependent format and location:
 +-------------+-----------------------------------------------------------------+
 | **Windows** | Registry key ``HKEY_CURRENT_USER\SOFTWARE\mapeditor.org\Tiled`` |
 +-------------+-----------------------------------------------------------------+
-| **macOS**   | ``~/Library/Preferences/org.mapeditor.Tiled.plist``             |
+| **macOS**   | :file:`~/Library/Preferences/org.mapeditor.Tiled.plist`         |
 +-------------+-----------------------------------------------------------------+
-| **Linux**   |  ``~/.config/mapeditor.org/tiled.conf``                         |
+| **Linux**   | :file:`~/.config/mapeditor.org/tiled.conf`                      |
 +-------------+-----------------------------------------------------------------+
 
 
