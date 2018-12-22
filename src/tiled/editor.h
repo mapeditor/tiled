@@ -71,6 +71,6 @@ signals:
     void enabledStandardActionsChanged();
 };
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(Editor::StandardActions)
-
 } // namespace Tiled
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::Editor::StandardActions)

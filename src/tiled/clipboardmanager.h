@@ -103,6 +103,6 @@ inline bool ClipboardManager::hasProperties() const
     return mHasProperties;
 }
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(ClipboardManager::PasteFlags)
-
 } // namespace Tiled
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::ClipboardManager::PasteFlags)

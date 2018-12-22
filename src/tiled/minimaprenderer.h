@@ -57,6 +57,6 @@ private:
     MapRenderer *mRenderer;
 };
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::MiniMapRenderer::RenderFlags)
-
 } // namespace Tiled
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::MiniMapRenderer::RenderFlags)
