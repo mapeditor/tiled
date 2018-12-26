@@ -54,8 +54,3 @@
 .rst-content .line-block {
     margin-bottom: 0.5em;
 }
-
-/* make the return type stand out less */
-.rst-content dl dt .classifier, .rst-content dl dt .classifier-delimiter {
-    font-weight: lighter;
-}
