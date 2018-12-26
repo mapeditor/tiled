@@ -4,12 +4,80 @@ Scripting
 Introduction
 ------------
 
-Initial scripting capabilities have been added to Tiled, which can be
-used from the Console view (*View > Views and Toolbars > Console*).
+Initial scripting capabilities have been added to Tiled. The API is
+still incomplete, but many actions can be automated either by
+interacting with any open assets or by triggering UI actions. Scripts
+can be run from the Console view and there is a script loaded on
+startup.
 
-In the Console you will find a text entry where you can write or paste
-scripts to automate certain actions. The available API is documented
-below.
+Startup Script
+^^^^^^^^^^^^^^
+
+If present, a :file:`startup.js` script is evaluated on startup. This
+script could define functions that can be called from the Console or can
+connect to signals to add functionality.
+
+The location of the startup script depends on the platform. The file
+:file:`startup.js` is searched for in the following locations:
+
++-------------+-----------------------------------------------------------------+
+| **Windows** | | :file:`C:/Users/<USER>/AppData/Local/Tiled/startup.js`        |
+|             | | :file:`C:/ProgramData/Tiled/startup.js`                       |
++-------------+-----------------------------------------------------------------+
+| **macOS**   | | :file:`~/Library/Preferences/Tiled/startup.js`                |
++-------------+-----------------------------------------------------------------+
+| **Linux**   | | :file:`~/.config/tiled/startup.js`                            |
+|             | | :file:`/etc/xdg/tiled/startup.js`                             |
++-------------+-----------------------------------------------------------------+
+
+Any file that exists will be evaluated. Changes made to startup scripts
+only take effect when restarting Tiled.
+
+Console View
+^^^^^^^^^^^^
+
+In the Console view (*View > Views and Toolbars > Console*) you will
+find a text entry where you can write or paste scripts to evaluate them.
+
+You can use the Up/Down keys to navigate through previously entered
+script expressions.
+
+Connecting to Signals
+^^^^^^^^^^^^^^^^^^^^^
+
+The script API provides signals to which functions can be connected.
+Currently, the tiled module has the most useful :ref:`set of signals <script-tiled-signals>`.
+
+Properties usually will have related signals which can be used to detect
+changes to that property, but most of those are currently not
+implemented.
+
+To connect to a signal, call its ``connect`` function and pass in a
+function object. In the following example, newly created maps
+automatically get their first tile layer removed:
+
+.. code:: js
+
+    tiled.assetCreated.connect(function(asset) {
+        if (asset.layerCount > 0) {
+            asset.removeLayerAt(0)
+            tiled.log("assetCreated: Removed automatically added tile layer.")
+        }
+    })
+
+In some cases it will be necessary to later disconnect the function from
+the signal again. This can be done by defining the function separately
+and passing it into the ``disconnect`` function:
+
+.. code:: js
+
+    function onAssetCreated(asset) {
+        // Do something...
+    }
+
+    tiled.assetCreated.connect(onAssetCreated)
+    // ...
+    tiled.assetCreated.disconnect(onAssetCreated)
 
 API Reference
 -------------
@@ -220,6 +288,7 @@ tiled.error(text : string) : void
     Outputs the given text in the Console window as error message (automatically
     gets "Error: " prepended).
 
+.. _script-tiled-signals:
 
 Signals
 ~~~~~~~
