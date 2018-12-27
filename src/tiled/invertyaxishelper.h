@@ -26,7 +26,6 @@
 #include "preferences.h"
 
 namespace Tiled {
-namespace Internal {
 
 class InvertYAxisHelper
 {
@@ -67,5 +66,4 @@ inline qreal InvertYAxisHelper::pixelY(qreal y) const
     return y;
 }
 
-} // Namespace Internal
 } // Namespace Tiled
