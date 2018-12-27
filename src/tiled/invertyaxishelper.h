@@ -21,9 +21,9 @@
 
 #pragma once
 
-#include "preferences.h"
-#include "mapdocumentactionhandler.h"
+#include "mapdocument.h"
 #include "maprenderer.h"
+#include "preferences.h"
 
 namespace Tiled {
 namespace Internal {
@@ -31,33 +31,41 @@ namespace Internal {
 class InvertYAxisHelper
 {
 public:
-    InvertYAxisHelper(MapDocument *m) : mTarget(m) {}
+    InvertYAxisHelper(MapDocument *mapDocument)
+        : mMapDocument(mapDocument)
+    {}
                 
-    // Inverts Y coordinate in grid
-    int tileY(int y) const
-    {
-        // Check if Invert Y Axis is set
-        if (Preferences::instance()->invertYAxis()) {
-            return mTarget->map()->height() - 1 - y;
-        }
-        return y;
-    }
-
-    // Inverts Y coordinate in pixels
-    qreal pixelY(qreal y) const
-    {
-        // Obtain the map document
-        if (Preferences::instance()->invertYAxis()) {
-            const MapRenderer *renderer = mTarget->renderer();
-            QRect boundingRect = renderer->boundingRect(QRect(QPoint(), mTarget->map()->size()));
-            return boundingRect.height() - y;
-        }
-        return y;
-    }
+    int tileY(int y) const;
+    qreal pixelY(qreal y) const;
 
 private:
-    MapDocument *mTarget;
+    MapDocument *mMapDocument;
 };
+
+/**
+ * Inverts Y coordinate in tiles when applicable.
+ */
+inline int InvertYAxisHelper::tileY(int y) const
+{
+    // Check if Invert Y Axis is set
+    if (Preferences::instance()->invertYAxis())
+        return mMapDocument->map()->height() - 1 - y;
+    return y;
+}
+
+/**
+ * Inverts Y coordinate in pixels when applicable.
+ */
+inline qreal InvertYAxisHelper::pixelY(qreal y) const
+{
+    // Obtain the map document
+    if (Preferences::instance()->invertYAxis()) {
+        const MapRenderer *renderer = mMapDocument->renderer();
+        QRect boundingRect = renderer->boundingRect(QRect(QPoint(), mMapDocument->map()->size()));
+        return boundingRect.height() - y;
+    }
+    return y;
+}
 
 } // Namespace Internal
 } // Namespace Tiled
