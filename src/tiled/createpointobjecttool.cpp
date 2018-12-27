@@ -28,7 +28,6 @@
 #include "utils.h"
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 CreatePointObjectTool::CreatePointObjectTool(QObject *parent)
     : CreateObjectTool(parent)

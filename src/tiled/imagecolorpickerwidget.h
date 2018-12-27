@@ -30,7 +30,6 @@ class ImageColorPickerWidget;
 }
 
 namespace Tiled {
-namespace Internal {
 
 /**
  * A popup widget for selecting a colour from an image.
@@ -64,5 +63,4 @@ private slots:
     void onMouseRelease(QMouseEvent*);
 };
 
-} // namespace Internal
 } // namespace Tiled

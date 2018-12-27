@@ -30,7 +30,6 @@
 #include <QPalette>
 
 using namespace Tiled;
-using namespace Internal;
 
 WangColorModel::WangColorModel(TilesetDocument *tilesetDocument,
                                WangSet *wangSet,

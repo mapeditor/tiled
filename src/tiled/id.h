@@ -23,7 +23,6 @@
 #include <QLatin1String>
 
 namespace Tiled {
-namespace Internal {
 
 class Id
 {
@@ -47,5 +46,4 @@ inline uint qHash(Id id) Q_DECL_NOTHROW
     return id.mId;
 }
 
-} // namespace Internal
 } // namespace Tiled

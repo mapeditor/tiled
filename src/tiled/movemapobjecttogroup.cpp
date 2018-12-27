@@ -28,7 +28,6 @@
 #include <QCoreApplication>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 MoveMapObjectToGroup::MoveMapObjectToGroup(MapDocument *mapDocument,
                                            MapObject *mapObject,

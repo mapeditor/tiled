@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Tiled::Internal::NoEditorWidget</class>
- <widget class="QWidget" name="Tiled::Internal::NoEditorWidget">
+ <class>Tiled::NoEditorWidget</class>
+ <widget class="QWidget" name="Tiled::NoEditorWidget">
   <property name="geometry">
    <rect>
     <x>0</x>

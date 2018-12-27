@@ -32,7 +32,6 @@
 
 namespace Tiled {
 
-namespace Internal {
 
 class EditableTileset;
 class MapDocument;
@@ -80,7 +79,7 @@ public:
     void swapTileset(SharedTileset &tileset);
     const SharedTileset &tileset() const;
 
-    Q_INVOKABLE Tiled::Internal::EditableAsset *editable() override;
+    Q_INVOKABLE Tiled::EditableAsset *editable() override;
 
     bool isEmbedded() const;
     void setClean();
@@ -207,5 +206,4 @@ inline const QList<Tile *> &TilesetDocument::selectedTiles() const
     return mSelectedTiles;
 }
 
-} // namespace Internal
 } // namespace Tiled

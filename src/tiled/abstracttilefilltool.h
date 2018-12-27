@@ -31,8 +31,6 @@ namespace Tiled {
 
 class WangSet;
 
-namespace Internal {
-
 class MapDocument;
 class StampActions;
 class WangFiller;
@@ -141,5 +139,4 @@ inline bool AbstractTileFillTool::isCapturing() const
     return mCaptureStampHelper.isActive();
 }
 
-} // namespace Internal
 } // namespace Tiled

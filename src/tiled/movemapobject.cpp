@@ -27,7 +27,6 @@
 #include <QCoreApplication>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 MoveMapObject::MoveMapObject(MapDocument *mapDocument,
                              MapObject *mapObject,

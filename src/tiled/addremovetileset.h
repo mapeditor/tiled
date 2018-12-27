@@ -27,7 +27,6 @@
 #include <QUndoCommand>
 
 namespace Tiled {
-namespace Internal {
 
 class MapDocument;
 
@@ -86,5 +85,4 @@ public:
     { removeTileset(); }
 };
 
-} // namespace Internal
 } // namespace Tiled

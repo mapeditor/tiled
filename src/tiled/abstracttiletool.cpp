@@ -33,7 +33,6 @@
 #include <QtMath>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 AbstractTileTool::AbstractTileTool(const QString &name,
                                    const QIcon &icon,

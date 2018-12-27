@@ -29,7 +29,6 @@
 #include <QJsonArray>
 
 namespace Tiled {
-namespace Internal {
 
 class TileStampData : public QSharedData
 {
@@ -341,5 +340,4 @@ TileStamp TileStamp::fromJson(const QJsonObject &json, const QDir &mapDir)
     return stamp;
 }
 
-} // namespace Internal
 } // namespace Tiled

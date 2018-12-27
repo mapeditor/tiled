@@ -27,8 +27,6 @@ namespace Tiled {
 
 class MapObject;
 
-namespace Internal {
-
 class MapDocument;
 
 class ResizeMapObject : public QUndoCommand
@@ -54,5 +52,4 @@ private:
     bool mOldChangeState;
 };
 
-} // namespace Internal
 } // namespace Tiled

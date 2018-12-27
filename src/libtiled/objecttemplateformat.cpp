@@ -25,10 +25,10 @@
 
 namespace Tiled {
 
-ObjectTemplate *readObjectTemplate(const QString &fileName, QString *error)
+std::unique_ptr<ObjectTemplate> readObjectTemplate(const QString &fileName, QString *error)
 {
     if (ObjectTemplateFormat *format = findSupportingTemplateFormat(fileName)) {
-        ObjectTemplate *objectTemplate = format->read(fileName);
+        auto objectTemplate = format->read(fileName);
 
         if (error) {
             if (!objectTemplate)

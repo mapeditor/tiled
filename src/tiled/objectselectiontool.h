@@ -31,7 +31,6 @@
 class QGraphicsItem;
 
 namespace Tiled {
-namespace Internal {
 
 class Handle;
 class OriginIndicator;
@@ -166,5 +165,4 @@ private:
     Qt::KeyboardModifiers mModifiers;
 };
 
-} // namespace Internal
 } // namespace Tiled

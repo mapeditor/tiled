@@ -8,7 +8,7 @@ a well-defined terrain type at each of their 4 corners, which seems to
 be the most common method.
 
 To demonstrate how to use this tool we describe the steps necessary to
-reproduce the ``desert.tmx`` example map, which now also includes
+reproduce the :file:`desert.tmx` example map, which now also includes
 terrain information in its tileset.
 
 Create a New Map and Add a Tileset
@@ -17,7 +17,7 @@ Create a New Map and Add a Tileset
 First of all, follow the :ref:`getting-started` instructions to set up
 the map and the tileset.
 
-The ``tmw_desert_spacing.png`` tileset we just set up has 4 different
+The :file:`tmw_desert_spacing.png` tileset we just set up has 4 different
 terrain types. Traditionally editing a map with these tiles meant that
 you had to carefully connect the right transitions to avoid broken
 edges. Now we will define the terrain information for this tileset,
@@ -45,7 +45,7 @@ In this mode, the list of terrain types is displayed and you can mark
 corners of the tiles in your tileset as belonging to a certain terrain
 type. To start with, add each of the 4 terrain types. The fastest way is
 by right-clicking on a tile representing a certain terrain and choosing
-"Add Terrain Type". This automatically sets the tile as the image
+:guilabel:`Add Terrain Type`. This automatically sets the tile as the image
 representing the terrain.
 
 .. figure:: images/terraintool/02-editterraindialog-add.png

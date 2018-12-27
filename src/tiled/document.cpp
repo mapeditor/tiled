@@ -28,7 +28,6 @@
 #include <QUndoStack>
 
 namespace Tiled {
-namespace Internal {
 
 QList<Document*> Document::sDocumentInstances;
 
@@ -133,5 +132,4 @@ void Document::setChangedOnDisk(bool changedOnDisk)
     mChangedOnDisk = changedOnDisk;
 }
 
-} // namespace Internal
 } // namespace Tiled

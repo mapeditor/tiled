@@ -45,7 +45,7 @@ class Tileset;
 
 namespace Internal {
 class MapWriterPrivate;
-}
+} // namespace Internal
 
 /**
  * A QXmlStreamWriter based writer for the TMX and TSX formats.

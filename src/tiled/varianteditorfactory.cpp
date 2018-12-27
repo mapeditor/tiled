@@ -33,7 +33,6 @@
 #include <QToolButton>
 
 namespace Tiled {
-namespace Internal {
 
 class ResetWidget : public QWidget
 {
@@ -279,7 +278,6 @@ void VariantEditorFactory::slotEditorDestroyed(QObject *object)
     }
 }
 
-} // namespace Internal
 } // namespace Tiled
 
 #include "varianteditorfactory.moc"

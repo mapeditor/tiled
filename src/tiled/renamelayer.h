@@ -26,8 +26,6 @@ namespace Tiled {
 
 class Layer;
 
-namespace Internal {
-
 class MapDocument;
 
 class RenameLayer : public QUndoCommand
@@ -48,5 +46,4 @@ private:
     QString mName;
 };
 
-} // namespace Internal
 } // namespace Tiled

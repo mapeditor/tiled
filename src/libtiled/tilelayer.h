@@ -59,8 +59,16 @@ class Tile;
 /**
  * A cell on a tile layer grid.
  */
-class Cell
+class TILEDSHARED_EXPORT Cell
 {
+    Q_GADGET
+
+    Q_PROPERTY(int tileId READ tileId)
+    Q_PROPERTY(bool flippedHorizontally READ flippedHorizontally WRITE setFlippedHorizontally)
+    Q_PROPERTY(bool flippedVertically READ flippedVertically WRITE setFlippedVertically)
+    Q_PROPERTY(bool flippedAntiDiagonally READ flippedAntiDiagonally WRITE setFlippedAntiDiagonally)
+    Q_PROPERTY(bool rotatedHexagonal120 READ rotatedHexagonal120 WRITE setRotatedHexagonal120)
+
 public:
     Cell() :
         _tileset(nullptr),
@@ -620,3 +628,5 @@ inline const Cell &TileLayer::cellAt(const QPoint &point) const
 typedef QSharedPointer<TileLayer> SharedTileLayer;
 
 } // namespace Tiled
+
+Q_DECLARE_METATYPE(Tiled::Cell)

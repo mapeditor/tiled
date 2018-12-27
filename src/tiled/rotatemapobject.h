@@ -26,8 +26,6 @@ namespace Tiled {
 
 class MapObject;
 
-namespace Internal {
-
 class MapDocument;
 
 class RotateMapObject : public QUndoCommand
@@ -53,5 +51,4 @@ private:
     bool mOldChangeState;
 };
 
-} // namespace Internal
 } // namespace Tiled

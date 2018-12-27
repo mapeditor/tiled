@@ -46,7 +46,6 @@
 #include "qtcompat_p.h"
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 CreatePolygonObjectTool::CreatePolygonObjectTool(QObject *parent)
     : CreateObjectTool(parent)

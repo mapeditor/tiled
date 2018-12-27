@@ -23,7 +23,6 @@
 #include "abstracttiletool.h"
 
 namespace Tiled {
-namespace Internal {
 
 /**
  * Implements a simple eraser tool.
@@ -58,5 +57,4 @@ private:
     QPoint mStart;
 };
 
-} // namespace Internal
 } // namespace Tiled

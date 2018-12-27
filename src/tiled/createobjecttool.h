@@ -28,8 +28,6 @@ namespace Tiled {
 
 class Tile;
 
-namespace Internal {
-
 class MapObjectItem;
 class ObjectGroupItem;
 
@@ -95,5 +93,4 @@ private:
     std::unique_ptr<ObjectGroupItem> mObjectGroupItem;
 };
 
-} // namespace Internal
 } // namespace Tiled

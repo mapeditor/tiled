@@ -47,8 +47,6 @@ class FileFormat;
 class TileLayer;
 class Terrain;
 
-namespace Internal {
-
 class ActionManager;
 class AutomappingManager;
 class DocumentManager;
@@ -223,5 +221,4 @@ private:
     QMap<QMainWindow*, QByteArray> mMainWindowStates;
 };
 
-} // namespace Internal
 } // namespace Tiled

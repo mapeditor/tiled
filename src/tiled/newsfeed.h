@@ -31,7 +31,6 @@ class QNetworkAccessManager;
 class QNetworkReply;
 
 namespace Tiled {
-namespace Internal {
 
 class NewsItem
 {
@@ -105,5 +104,4 @@ inline QString NewsFeed::errorString() const
     return mErrorString;
 }
 
-} // namespace Internal
 } // namespace Tiled

@@ -58,10 +58,8 @@
 #include <float.h>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 namespace Tiled {
-namespace Internal {
 
 enum AnchorPosition {
     TopLeftAnchor,
@@ -309,7 +307,6 @@ void ResizeHandle::paint(QPainter *painter,
     painter->drawPath(mArrow);
 }
 
-} // namespace Internal
 } // namespace Tiled
 
 

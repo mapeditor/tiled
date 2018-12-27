@@ -27,7 +27,6 @@
 #include <QCoreApplication>
 
 namespace Tiled {
-namespace Internal {
 
 RenameTileset::RenameTileset(TilesetDocument *tilesetDocument,
                              const QString &newName)
@@ -211,5 +210,4 @@ void ChangeTilesetGridSize::swap()
     emit mTilesetDocument->tilesetChanged(&tileset);
 }
 
-} // namespace Internal
 } // namespace Tiled

@@ -40,8 +40,6 @@ namespace Tiled {
 class FileSystemWatcher;
 class ObjectTemplate;
 
-namespace Internal {
-
 class AbstractTool;
 class BrokenLinksModel;
 class BrokenLinksWidget;
@@ -134,6 +132,11 @@ public:
     void abortMultiDocumentClose();
 
 signals:
+    void documentCreated(Document *document);
+    void documentOpened(Document *document);
+    void documentAboutToBeSaved(Document *document);
+    void documentSaved(Document *document);
+
     void fileOpenDialogRequested();
     void fileOpenRequested(const QString &path);
     void fileSaveRequested();
@@ -177,7 +180,7 @@ private slots:
                          const QString &oldFileName);
     void modifiedChanged();
     void updateDocumentTab(Document *document);
-    void documentSaved();
+    void onDocumentSaved();
     void documentTabMoved(int from, int to);
     void tabContextMenuRequested(const QPoint &pos);
 
@@ -249,5 +252,4 @@ inline TilesetDocumentsModel *DocumentManager::tilesetDocumentsModel() const
     return mTilesetDocumentsModel;
 }
 
-} // namespace Tiled::Internal
 } // namespace Tiled

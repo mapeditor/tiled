@@ -39,7 +39,6 @@
 #include "qtcompat_p.h"
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 MiniMapRenderer::MiniMapRenderer(Map *map)
     : mMap(map)
@@ -109,10 +108,7 @@ static void extendMapRect(QRect &mapBoundingRect, const MapRenderer &renderer)
     QRectF rect(mapBoundingRect);
 
     // Take into account large tiles extending beyond their cell
-    for (const Layer *layer : renderer.map()->layers()) {
-        if (layer->layerType() != Layer::TileLayerType)
-            continue;
-
+    for (const Layer *layer : renderer.map()->tileLayers()) {
         const TileLayer *tileLayer = static_cast<const TileLayer*>(layer);
         const QPointF offset = tileLayer->totalOffset();
 

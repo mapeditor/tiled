@@ -23,7 +23,6 @@
 #include <QHash>
 
 namespace Tiled {
-namespace Internal {
 
 class ActionManagerPrivate
 {
@@ -65,5 +64,4 @@ QAction *ActionManager::findAction(Id id)
     return d->mIdToAction.value(id);
 }
 
-} // namespace Internal
 } // namespace Tiled

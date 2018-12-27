@@ -20,15 +20,42 @@
 
 #include "editabletileset.h"
 
+#include "tilesetchanges.h"
+#include "tilesetdocument.h"
+
 namespace Tiled {
-namespace Internal {
 
 EditableTileset::EditableTileset(TilesetDocument *tilesetDocument,
                                  QObject *parent)
     : EditableAsset(parent)
     , mTilesetDocument(tilesetDocument)
 {
+    connect(tilesetDocument, &Document::fileNameChanged, this, &EditableAsset::fileNameChanged);
 }
 
-} // namespace Internal
+QString EditableTileset::fileName() const
+{
+    return mTilesetDocument->fileName();
+}
+
+void EditableTileset::setName(const QString &name)
+{
+    push(new RenameTileset(mTilesetDocument, name));
+}
+
+void EditableTileset::setTileOffset(QPoint tileOffset)
+{
+    push(new ChangeTilesetTileOffset(mTilesetDocument, tileOffset));
+}
+
+void EditableTileset::setBackgroundColor(const QColor &color)
+{
+    push(new ChangeTilesetBackgroundColor(mTilesetDocument, color));
+}
+
+Tileset *EditableTileset::tileset() const
+{
+    return mTilesetDocument->tileset().data();
+}
+
 } // namespace Tiled

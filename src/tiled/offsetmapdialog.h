@@ -31,8 +31,6 @@ namespace Tiled {
 
 class Layer;
 
-namespace Internal {
-
 class MapDocument;
 
 class OffsetMapDialog : public QDialog
@@ -75,5 +73,4 @@ private:
     MapDocument *mMapDocument;
 };
 
-} // namespace Internal
 } // namespace Tiled

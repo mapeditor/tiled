@@ -22,8 +22,7 @@
 
 #include "preferences.h"
 
-using namespace Tiled::Internal;
-
+using namespace Tiled;
 
 StandardAutoUpdater::StandardAutoUpdater()
 {

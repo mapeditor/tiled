@@ -28,8 +28,6 @@ namespace Tiled {
 class GroupLayer;
 class Layer;
 
-namespace Internal {
-
 class MapDocument;
 
 /**
@@ -60,5 +58,4 @@ private:
     QVector<UndoInfo> mUndoInfo;
 };
 
-} // namespace Internal
 } // namespace Tiled

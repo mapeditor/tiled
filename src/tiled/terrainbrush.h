@@ -30,8 +30,6 @@ namespace Tiled {
 class Tile;
 class Terrain;
 
-namespace Internal {
-
 class MapDocument;
 
 /**
@@ -142,5 +140,4 @@ private:
     int mLineReferenceX, mLineReferenceY;
 };
 
-} // namespace Internal
 } // namespace Tiled

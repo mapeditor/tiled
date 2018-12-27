@@ -34,8 +34,6 @@ class MapObject;
 class Map;
 class ObjectGroup;
 
-namespace Internal {
-
 class MapDocument;
 
 /**
@@ -126,5 +124,4 @@ private:
     QIcon mObjectGroupIcon;
 };
 
-} // namespace Internal
 } // namespace Tiled

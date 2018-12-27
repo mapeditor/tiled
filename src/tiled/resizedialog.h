@@ -29,7 +29,6 @@ class ResizeDialog;
 }
 
 namespace Tiled {
-namespace Internal {
 
 class ResizeDialog : public QDialog
 {
@@ -57,5 +56,4 @@ private:
     Ui::ResizeDialog *mUi;
 };
 
-} // namespace Internal
 } // namespace Tiled

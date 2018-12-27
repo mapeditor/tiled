@@ -27,7 +27,6 @@ class QAction;
 class QActionGroup;
 
 namespace Tiled {
-namespace Internal {
 
 class MapDocument;
 
@@ -78,5 +77,4 @@ private:
     QActionGroup *mActionGroup;
 };
 
-} // namespace Internal
 } // namespace Tiled

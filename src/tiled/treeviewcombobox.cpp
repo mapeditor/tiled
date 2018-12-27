@@ -28,7 +28,6 @@
 #include <QWheelEvent>
 
 namespace Tiled {
-namespace Internal {
 
 TreeViewComboBoxView::TreeViewComboBoxView(QWidget *parent)
     : QTreeView(parent)
@@ -170,5 +169,4 @@ TreeViewComboBoxView *TreeViewComboBox::view() const
     return m_view;
 }
 
-} // namespace Internal
 } // namespace Tiled

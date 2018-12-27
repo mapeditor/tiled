@@ -23,7 +23,6 @@
 #include <QDockWidget>
 
 namespace Tiled {
-namespace Internal {
 
 class MiniMap;
 class MapDocument;
@@ -49,5 +48,4 @@ private:
     MiniMap *mMiniMap;
 };
 
-} // namespace Internal
 } // namespace Tiled

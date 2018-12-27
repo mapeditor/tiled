@@ -28,8 +28,6 @@ namespace Tiled {
 
 class MapObject;
 
-namespace Internal {
-
 class Handle;
 class MapDocument;
 class ObjectGroupItem;
@@ -112,7 +110,6 @@ inline bool MapObjectItem::isHoverIndicator() const
     return mIsHoveredIndicator;
 }
 
-} // namespace Internal
 } // namespace Tiled
 
-Q_DECLARE_METATYPE(Tiled::Internal::MapObjectItem*)
+Q_DECLARE_METATYPE(Tiled::MapObjectItem*)

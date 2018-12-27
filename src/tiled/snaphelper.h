@@ -24,7 +24,6 @@
 #include "maprenderer.h"
 
 namespace Tiled {
-namespace Internal {
 
 class SnapHelper
 {
@@ -44,5 +43,4 @@ private:
     bool mSnapToPixels;
 };
 
-} // namespace Internal
 } // namespace Tiled

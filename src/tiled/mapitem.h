@@ -37,8 +37,6 @@ class Tile;
 class TileLayer;
 class Tileset;
 
-namespace Internal {
-
 class BorderItem;
 class LayerItem;
 class MapObjectItem;
@@ -140,5 +138,4 @@ inline MapDocument *MapItem::mapDocument() const
     return mMapDocument.data();
 }
 
-} // namespace Internal
 } // namespace Tiled

@@ -32,8 +32,6 @@ class Object;
 class Tile;
 class Tileset;
 
-namespace Internal {
-
 class AbstractTool;
 class MapScene;
 class MapView;
@@ -117,7 +115,6 @@ inline bool TileCollisionDock::hasSelectedObjects() const
     return mHasSelectedObjects;
 }
 
-} // namespace Internal
 } // namespace Tiled
 
 #endif // TILECOLLISIONDOCK_H

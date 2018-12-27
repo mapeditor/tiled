@@ -29,8 +29,6 @@ namespace Tiled {
 class WangSet;
 class WangId;
 
-namespace Internal {
-
 class Zoomable;
 
 class WangTemplateView : public QListView
@@ -65,5 +63,4 @@ private:
     Zoomable *mZoomable;
 };
 
-}
-}
+} // namespace Tiled

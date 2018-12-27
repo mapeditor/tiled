@@ -27,7 +27,6 @@
 class QAction;
 
 namespace Tiled {
-namespace Internal {
 
 class MainWindow;
 
@@ -51,8 +50,7 @@ private:
     explicit ActionManager(QObject *parent = nullptr);
     ~ActionManager();
 
-    friend class Tiled::Internal::MainWindow;   // creation
+    friend class Tiled::MainWindow;   // creation
 };
 
-} // namespace Internal
 } // namespace Tiled

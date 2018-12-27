@@ -24,7 +24,6 @@
 #include <QIcon>
 
 namespace Tiled {
-namespace Internal {
 
 class PluginListModel : public QAbstractListModel
 {
@@ -46,5 +45,4 @@ private:
     QIcon mPluginErrorIcon;
 };
 
-} // namespace Internal
 } // namespace Tiled

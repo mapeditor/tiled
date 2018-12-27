@@ -29,7 +29,6 @@
 #include "tilelayer.h"
 
 namespace Tiled {
-namespace Internal {
 
 class MapDocument;
 
@@ -49,5 +48,4 @@ protected:
     void tilePositionChanged(const QPoint &tilePos) override;
 };
 
-} // namespace Internal
 } // namespace Tiled

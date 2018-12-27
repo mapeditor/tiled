@@ -30,8 +30,6 @@ namespace Tiled {
 class Tileset;
 class Terrain;
 
-namespace Internal {
-
 class TilesetDocument;
 
 /**
@@ -107,5 +105,4 @@ private:
     QList<TilesetDocument*> mTilesetDocuments;
 };
 
-} // namespace Internal
 } // namespace Tiled

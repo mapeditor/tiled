@@ -52,7 +52,6 @@
 #include <algorithm>
 
 namespace Tiled {
-namespace Internal {
 
 MapDocumentActionHandler *MapDocumentActionHandler::mInstance;
 
@@ -821,5 +820,4 @@ void MapDocumentActionHandler::updateActions()
     mActionRemoveObjects->setText(removeText);
 }
 
-} // namespace Internal
 } // namespace Tiled

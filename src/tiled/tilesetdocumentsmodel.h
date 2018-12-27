@@ -31,8 +31,6 @@ namespace Tiled {
 
 class Tileset;
 
-namespace Internal {
-
 class MapDocument;
 
 /**
@@ -112,7 +110,6 @@ private:
     MapDocument *mMapDocument;
 };
 
-} // namespace Internal
 } // namespace Tiled
 
 #endif // TILESETDOCUMENTSMODEL_H

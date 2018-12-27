@@ -36,7 +36,6 @@
 #include <QUndoStack>
 
 namespace Tiled {
-namespace Internal {
 
 class ReloadTileset : public QUndoCommand
 {
@@ -400,5 +399,4 @@ void TilesetDocument::onWangSetRemoved(WangSet *wangSet)
     mWangColorModels.erase(wangSet);
 }
 
-} // namespace Internal
 } // namespace Tiled

@@ -24,7 +24,6 @@
 #include "utils.h"
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 CreateEllipseObjectTool::CreateEllipseObjectTool(QObject *parent)
     : CreateScalableObjectTool(parent)

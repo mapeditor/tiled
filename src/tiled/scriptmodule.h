@@ -25,7 +25,8 @@
 #include <QObject>
 
 namespace Tiled {
-namespace Internal {
+
+class LoggingInterface;
 
 class EditableAsset;
 
@@ -40,22 +41,30 @@ class ScriptModule : public QObject
     Q_PROPERTY(QString platform READ platform)
     Q_PROPERTY(QString arch READ arch)
 
-    Q_PROPERTY(DocumentManager *documentManager READ documentManager)
-
-    Q_PROPERTY(Tiled::Internal::EditableAsset *activeAsset READ activeAsset)
+    Q_PROPERTY(Tiled::EditableAsset *activeAsset READ activeAsset WRITE setActiveAsset NOTIFY activeAssetChanged)
     Q_PROPERTY(QList<QObject*> openAssets READ openAssets)
 
 public:
     ScriptModule(QObject *parent = nullptr);
+    ~ScriptModule() override;
 
     QString version() const;
     QString platform() const;
     QString arch() const;
 
-    DocumentManager *documentManager() const;
+    EditableAsset *activeAsset() const;
+    bool setActiveAsset(EditableAsset *asset) const;
 
-    Tiled::Internal::EditableAsset *activeAsset() const;
     QList<QObject*> openAssets() const;
+
+signals:
+    void assetCreated(Tiled::EditableAsset *asset);
+    void assetOpened(Tiled::EditableAsset *asset);
+    void assetAboutToBeSaved(Tiled::EditableAsset *asset);
+    void assetSaved(Tiled::EditableAsset *asset);
+    void assetAboutToBeClosed(Tiled::EditableAsset *asset);
+
+    void activeAssetChanged(Tiled::EditableAsset *asset);
 
 public slots:
     void trigger(const QByteArray &actionName) const;
@@ -63,7 +72,20 @@ public slots:
     void alert(const QString &text, const QString &title = QString()) const;
     bool confirm(const QString &text, const QString &title = QString()) const;
     QString prompt(const QString &label, const QString &text = QString(), const QString &title = QString()) const;
+
+    void log(const QString &text) const;
+    void error(const QString &text) const;
+
+private slots:
+    void documentCreated(Document *document);
+    void documentOpened(Document *document);
+    void documentAboutToBeSaved(Document *document);
+    void documentSaved(Document *document);
+    void documentAboutToClose(Document *document);
+    void currentDocumentChanged(Document *document);
+
+private:
+    LoggingInterface *mLogger;
 };
 
-} // namespace Internal
 } // namespace Tiled

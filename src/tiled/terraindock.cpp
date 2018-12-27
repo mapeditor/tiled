@@ -44,10 +44,8 @@
 #include <QTreeView>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 namespace Tiled {
-namespace Internal {
 
 static Terrain *firstTerrain(MapDocument *mapDocument)
 {
@@ -99,7 +97,6 @@ protected:
     bool mEnabled;
 };
 
-} // namespace Internal
 } // namespace Tiled
 
 TerrainDock::TerrainDock(QWidget *parent)

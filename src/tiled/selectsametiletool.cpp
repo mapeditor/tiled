@@ -25,7 +25,6 @@
 #include "mapdocument.h"
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 SelectSameTileTool::SelectSameTileTool(QObject *parent)
     : AbstractTileSelectionTool(tr("Select Same Tile"),

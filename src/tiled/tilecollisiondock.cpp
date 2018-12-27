@@ -21,13 +21,14 @@
 #include "tilecollisiondock.h"
 
 #include "addremovemapobject.h"
-#include "editpolygontool.h"
 #include "changetileobjectgroup.h"
-#include "createobjecttool.h"
-#include "createrectangleobjecttool.h"
 #include "createellipseobjecttool.h"
+#include "createobjecttool.h"
+#include "createpointobjecttool.h"
 #include "createpolygonobjecttool.h"
+#include "createrectangleobjecttool.h"
 #include "createtemplatetool.h"
+#include "editpolygontool.h"
 #include "layermodel.h"
 #include "map.h"
 #include "mapdocument.h"
@@ -54,7 +55,6 @@
 #include <QVBoxLayout>
 
 namespace Tiled {
-namespace Internal {
 
 TileCollisionDock::TileCollisionDock(QWidget *parent)
     : QDockWidget(parent)
@@ -76,6 +76,7 @@ TileCollisionDock::TileCollisionDock(QWidget *parent)
     mMapView->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
     CreateObjectTool *rectangleObjectsTool = new CreateRectangleObjectTool(this);
+    CreateObjectTool *pointObjectsTool = new CreatePointObjectTool(this);
     CreateObjectTool *ellipseObjectsTool = new CreateEllipseObjectTool(this);
     CreateObjectTool *polygonObjectsTool = new CreatePolygonObjectTool(this);
     CreateObjectTool *templatesTool = new CreateTemplateTool(this);
@@ -90,6 +91,7 @@ TileCollisionDock::TileCollisionDock(QWidget *parent)
     toolBar->addAction(mToolManager->registerTool(new ObjectSelectionTool(this)));
     toolBar->addAction(mToolManager->registerTool(new EditPolygonTool(this)));
     toolBar->addAction(mToolManager->registerTool(rectangleObjectsTool));
+    toolBar->addAction(mToolManager->registerTool(pointObjectsTool));
     toolBar->addAction(mToolManager->registerTool(ellipseObjectsTool));
     toolBar->addAction(mToolManager->registerTool(polygonObjectsTool));
     toolBar->addAction(mToolManager->registerTool(templatesTool));
@@ -372,8 +374,7 @@ void TileCollisionDock::changeEvent(QEvent *e)
 
 void TileCollisionDock::retranslateUi()
 {
-    setWindowTitle(QCoreApplication::translate("Tiled::Internal::MainWindow", "Tile Collision Editor"));
+    setWindowTitle(QCoreApplication::translate("Tiled::MainWindow", "Tile Collision Editor"));
 }
 
-} // namespace Internal
 } // namespace Tiled

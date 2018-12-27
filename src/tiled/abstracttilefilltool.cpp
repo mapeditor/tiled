@@ -28,7 +28,6 @@
 #include <QAction>
 
 using namespace Tiled;
-using namespace Internal;
 
 AbstractTileFillTool::AbstractTileFillTool(const QString &name,
                                            const QIcon &icon,

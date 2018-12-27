@@ -24,6 +24,8 @@
 
 #include <QList>
 
+#include <memory>
+
 namespace Tiled {
 
 class TILEDSHARED_EXPORT GroupLayer : public Layer
@@ -41,6 +43,7 @@ public:
     void addLayer(Layer *layer);
     void insertLayer(int index, Layer *layer);
     Layer *takeLayerAt(int index);
+    void addLayer(std::unique_ptr<Layer> &&layer);
 
     bool isEmpty() const override;
     QSet<SharedTileset> usedTilesets() const override;
@@ -61,7 +64,7 @@ protected:
     GroupLayer *initializeClone(GroupLayer *clone) const;
 
 private:
-    void adoptLayer(Layer *layer);
+    void adoptLayer(Layer &layer);
 
     QList<Layer*> mLayers;
 };
@@ -75,6 +78,11 @@ inline int GroupLayer::layerCount() const
 inline Layer *GroupLayer::layerAt(int index) const
 {
     return mLayers.at(index);
+}
+
+inline void GroupLayer::addLayer(std::unique_ptr<Layer> &&layer)
+{
+    addLayer(layer.release());
 }
 
 } // namespace Tiled

@@ -78,7 +78,6 @@ static const char SIZE_KEY[] = "TilesetEditor/Size";
 static const char STATE_KEY[] = "TilesetEditor/State";
 
 namespace Tiled {
-namespace Internal {
 
 namespace {
 
@@ -611,7 +610,7 @@ void TilesetEditor::retranslateUi()
     mRemoveTiles->setText(tr("Remove Tiles"));
     mShowAnimationEditor->setText(tr("Tile Animation Editor"));
 
-    mTileCollisionDock->toggleViewAction()->setShortcut(QCoreApplication::translate("Tiled::Internal::MainWindow", "Ctrl+Shift+O"));
+    mTileCollisionDock->toggleViewAction()->setShortcut(QCoreApplication::translate("Tiled::MainWindow", "Ctrl+Shift+O"));
 }
 
 static bool hasTileInTileset(const QUrl &imageSource, const Tileset &tileset)
@@ -1048,7 +1047,6 @@ void TilesetEditor::updateAddRemoveActions()
     mRemoveTiles->setEnabled(isCollection && hasSelection);
 }
 
-} // namespace Internal
 } // namespace Tiled
 
 #include "tileseteditor.moc"

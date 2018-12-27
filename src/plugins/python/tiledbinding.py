@@ -325,30 +325,35 @@ cls_layer.add_method('asGroupLayer', retval('Tiled::GroupLayer*',reference_exist
 
 mod.body.writeln("""
 bool isImageLayerAt(Tiled::Map *map, int index) {
-    return (dynamic_cast<const Tiled::ImageLayer*>(map->layerAt(index)) != 0);
+    return map->layerAt(index)->isImageLayer();
 }
 bool isTileLayerAt(Tiled::Map *map, int index) {
-    return (dynamic_cast<const Tiled::TileLayer*>(map->layerAt(index)) != 0);
+    return map->layerAt(index)->isTileLayer();
 }
 bool isObjectGroupAt(Tiled::Map *map, int index) {
-    return (dynamic_cast<const Tiled::ObjectGroup*>(map->layerAt(index)) != 0);
+    return map->layerAt(index)->isObjectGroup();
 }
 Tiled::ImageLayer* imageLayerAt(Tiled::Map *map, int index) {
-    return static_cast<Tiled::ImageLayer*>(map->layerAt(index));
+    return map->layerAt(index)->asImageLayer();
 }
 Tiled::TileLayer* tileLayerAt(Tiled::Map *map, int index) {
-    return static_cast<Tiled::TileLayer*>(map->layerAt(index));
+    return map->layerAt(index)->asTileLayer();
 }
 Tiled::ObjectGroup* objectGroupAt(Tiled::Map *map, int index) {
-    return static_cast<Tiled::ObjectGroup*>(map->layerAt(index));
+    return map->layerAt(index)->asObjectGroup();
 }
 """)
 
+mod.add_function('isImageLayerAt', 'bool',
+    [param('Tiled::Map*','map',transfer_ownership=False),('int','index')])
 mod.add_function('isTileLayerAt', 'bool',
     [param('Tiled::Map*','map',transfer_ownership=False),('int','index')])
 mod.add_function('isObjectGroupAt', 'bool',
     [param('Tiled::Map*','map',transfer_ownership=False),('int','index')])
 
+mod.add_function('imageLayerAt',
+    retval('Tiled::ImageLayer*',reference_existing_object=True),
+    [param('Tiled::Map*','map',transfer_ownership=False),('int','index')])
 mod.add_function('tileLayerAt',
     retval('Tiled::TileLayer*',reference_existing_object=True),
     [param('Tiled::Map*','map',transfer_ownership=False),('int','index')])

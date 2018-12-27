@@ -26,7 +26,6 @@
 #include <QCoreApplication>
 
 namespace Tiled {
-namespace Internal {
 
 ResizeMap::ResizeMap(MapDocument *mapDocument,
                      const QSize &size,
@@ -60,5 +59,4 @@ void ResizeMap::swapSize()
     emit mMapDocument->mapChanged();
 }
 
-} // namespace Internal
 } // namespace Tiled

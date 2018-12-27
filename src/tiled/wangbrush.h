@@ -24,7 +24,6 @@
 #include "wangset.h"
 
 namespace Tiled {
-namespace Internal {
 
 class WangBrush : public AbstractTileTool
 {
@@ -96,5 +95,4 @@ private:
     BrushBehavior mBrushBehavior;
 };
 
-} // namespace Internal
 } // namespace Tiled

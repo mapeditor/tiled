@@ -101,7 +101,6 @@ static const char STATE_KEY[] = "MapEditor/State";
 static const char MAPSTATES_KEY[] = "MapEditor/MapStates";
 
 namespace Tiled {
-namespace Internal {
 
 /**
  * A proxy model that makes sure no items are checked or checkable and that
@@ -932,5 +931,4 @@ void MapEditor::retranslateUi()
     mToolSpecificToolBar->setWindowTitle(tr("Tool Options"));
 }
 
-} // namespace Internal
 } // namespace Tiled

@@ -29,8 +29,6 @@ namespace Tiled {
 
 class LoggingInterface;
 
-namespace Internal {
-
 class CommandDataModel;
 
 class CommandManager : public QObject
@@ -70,6 +68,7 @@ private:
     Q_DISABLE_COPY(CommandManager)
 
     CommandManager();
+    ~CommandManager() override;
 
     /**
      * Populates all the menus registered in CommandManager
@@ -85,5 +84,4 @@ private:
     LoggingInterface *mLogger;
 };
 
-} // namespace Internal
 } // namespace Tiled

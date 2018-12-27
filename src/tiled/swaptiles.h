@@ -29,8 +29,6 @@ namespace Tiled {
 
 class Tile;
 
-namespace Internal {
-
 class MapDocument;
 
 /**
@@ -61,7 +59,6 @@ private:
     Tile *mTile2;
 };
 
-} // namespace Internal
 } // namespace Tiled
 
 #endif // SWAPTILES_H

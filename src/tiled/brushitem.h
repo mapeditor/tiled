@@ -27,7 +27,6 @@
 #include <QGraphicsItem>
 
 namespace Tiled {
-namespace Internal {
 
 class MapDocument;
 
@@ -102,5 +101,4 @@ inline const QRegion &BrushItem::tileRegion() const
     return mRegion;
 }
 
-} // namespace Internal
 } // namespace Tiled

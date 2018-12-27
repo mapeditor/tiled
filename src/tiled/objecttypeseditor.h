@@ -35,7 +35,6 @@ class QtVariantProperty;
 class QtVariantPropertyManager;
 
 namespace Tiled {
-namespace Internal {
 
 class ObjectTypesModel;
 
@@ -104,5 +103,4 @@ private:
     QAction *mRenamePropertyAction;
 };
 
-} // namespace Internal
 } // namespace Tiled

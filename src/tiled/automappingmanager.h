@@ -30,8 +30,6 @@ namespace Tiled {
 
 class Layer;
 
-namespace Internal {
-
 class AutoMapper;
 class MapDocument;
 
@@ -142,5 +140,4 @@ private:
     QString rulesFileName() const;
 };
 
-} // namespace Internal
 } // namespace Tiled

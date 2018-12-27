@@ -34,7 +34,6 @@
 #include "qtcompat_p.h"
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 /**
  * Creates an undo command that offsets the layer at \a index by \a offset,

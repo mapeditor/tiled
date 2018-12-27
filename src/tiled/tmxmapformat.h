@@ -29,7 +29,6 @@ namespace Tiled {
 class Tileset;
 class MapObject;
 
-namespace Internal {
 
 /**
  * A reader and writer for Tiled's .tmx map format.
@@ -114,7 +113,7 @@ class XmlObjectTemplateFormat : public ObjectTemplateFormat
 public:
     XmlObjectTemplateFormat(QObject *parent = nullptr);
 
-    ObjectTemplate *read(const QString &fileName) override;
+    std::unique_ptr<ObjectTemplate> read(const QString &fileName) override;
 
     bool write(const ObjectTemplate *objectTemplate, const QString &fileName) override;
 
@@ -130,5 +129,4 @@ private:
     QString mError;
 };
 
-} // namespace Internal
 } // namespace Tiled

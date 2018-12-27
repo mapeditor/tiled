@@ -28,7 +28,6 @@
 #include "qtcompat_p.h"
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
                                      QVector<AutoMapper*> autoMapper,

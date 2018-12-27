@@ -25,7 +25,6 @@
 class QToolButton;
 
 namespace Tiled {
-namespace Internal {
 
 class CommandButton;
 class Document;
@@ -56,5 +55,4 @@ private:
     CommandButton *mCommandButton;
 };
 
-} // namespace Internal
 } // namespace Tiled

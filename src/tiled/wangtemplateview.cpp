@@ -36,7 +36,6 @@
 #include <QWheelEvent>
 
 using namespace Tiled;
-using namespace Internal;
 
 namespace {
 /* The delegate for drawing the wang tile templates

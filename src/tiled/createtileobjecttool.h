@@ -24,7 +24,6 @@
 
 namespace Tiled {
 
-namespace Internal {
 
 class CreateTileObjectTool : public CreateObjectTool
 {
@@ -45,5 +44,4 @@ private:
     void languageChangedImpl();
 };
 
-} // namespace Internal
 } // namespace Tiled

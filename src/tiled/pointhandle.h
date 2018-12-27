@@ -27,7 +27,6 @@ namespace Tiled {
 
 class MapObject;
 
-namespace Internal {
 
 /**
  * A handle that allows moving around a point of a polygon.
@@ -63,7 +62,6 @@ private:
     bool mHighlighted;
 };
 
-} // namespace Internal
 } // namespace Tiled
 
 #endif // POINTHANDLE_H

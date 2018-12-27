@@ -36,7 +36,6 @@
 #include <QWheelEvent>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 WangSetView::WangSetView(QWidget *parent)
     : QTreeView(parent)

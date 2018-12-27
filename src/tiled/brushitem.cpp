@@ -33,7 +33,6 @@
 #include <QUndoStack>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 BrushItem::BrushItem():
     mMapDocument(nullptr)

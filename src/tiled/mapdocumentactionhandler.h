@@ -32,8 +32,6 @@ namespace Tiled {
 class ObjectGroup;
 class MapObject;
 
-namespace Internal {
-
 class MapDocument;
 
 /**
@@ -174,5 +172,4 @@ private:
     static MapDocumentActionHandler *mInstance;
 };
 
-} // namespace Internal
 } // namespace Tiled

@@ -31,8 +31,6 @@ namespace Tiled {
 class Tile;
 class TileLayer;
 
-namespace Internal {
-
 class MapDocument;
 
 class EraseTiles : public QUndoCommand
@@ -69,5 +67,4 @@ private:
     bool mMergeable;
 };
 
-} // namespace Internal
 } // namespace Tiled

@@ -42,7 +42,7 @@ class Map;
 
 namespace Internal {
 class MapReaderPrivate;
-}
+} // namespace Internal
 
 /**
  * A fast QXmlStreamReader based reader for the TMX and TSX formats.
@@ -95,8 +95,8 @@ public:
      */
     QString errorString() const;
 
-    ObjectTemplate *readObjectTemplate(QIODevice *device, const QString &path = QString());
-    ObjectTemplate *readObjectTemplate(const QString &fileName);
+    std::unique_ptr<ObjectTemplate> readObjectTemplate(QIODevice *device, const QString &path = QString());
+    std::unique_ptr<ObjectTemplate> readObjectTemplate(const QString &fileName);
 
 protected:
     /**

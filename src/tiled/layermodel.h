@@ -29,8 +29,6 @@ class GroupLayer;
 class Layer;
 class Map;
 
-namespace Internal {
-
 class MapDocument;
 
 /**
@@ -119,5 +117,4 @@ inline MapDocument *LayerModel::mapDocument() const
     return mMapDocument;
 }
 
-} // namespace Internal
 } // namespace Tiled

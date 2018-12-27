@@ -38,7 +38,6 @@
 #include <memory>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 BucketFillTool::BucketFillTool(QObject *parent)
     : AbstractTileFillTool(tr("Bucket Fill Tool"),

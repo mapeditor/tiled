@@ -22,6 +22,7 @@
 
 #include "actionmanager.h"
 #include "editableasset.h"
+#include "logginginterface.h"
 
 #include <QAction>
 #include <QCoreApplication>
@@ -29,11 +30,25 @@
 #include <QMessageBox>
 
 namespace Tiled {
-namespace Internal {
 
 ScriptModule::ScriptModule(QObject *parent)
     : QObject(parent)
+    , mLogger(new LoggingInterface(this))
 {
+    auto documentManager = DocumentManager::instance();
+    connect(documentManager, &DocumentManager::documentCreated, this, &ScriptModule::documentCreated);
+    connect(documentManager, &DocumentManager::documentOpened, this, &ScriptModule::documentOpened);
+    connect(documentManager, &DocumentManager::documentAboutToBeSaved, this, &ScriptModule::documentAboutToBeSaved);
+    connect(documentManager, &DocumentManager::documentSaved, this, &ScriptModule::documentSaved);
+    connect(documentManager, &DocumentManager::documentAboutToClose, this, &ScriptModule::documentAboutToClose);
+    connect(documentManager, &DocumentManager::currentDocumentChanged, this, &ScriptModule::currentDocumentChanged);
+
+    PluginManager::addObject(mLogger);
+}
+
+ScriptModule::~ScriptModule()
+{
+    PluginManager::removeObject(mLogger);
 }
 
 QString ScriptModule::version() const
@@ -65,23 +80,30 @@ QString ScriptModule::arch() const
 #endif
 }
 
-DocumentManager *ScriptModule::documentManager() const
-{
-    return DocumentManager::instance();
-}
-
 EditableAsset *ScriptModule::activeAsset() const
 {
-    if (Document *document = documentManager()->currentDocument())
+    auto documentManager = DocumentManager::instance();
+    if (Document *document = documentManager->currentDocument())
         return document->editable();
 
     return nullptr;
 }
 
+bool ScriptModule::setActiveAsset(EditableAsset *asset) const
+{
+    auto documentManager = DocumentManager::instance();
+    for (const DocumentPtr &document : documentManager->documents())
+        if (document->editable() == asset)
+            return documentManager->switchToDocument(document.data());
+
+    return false;
+}
+
 QList<QObject *> ScriptModule::openAssets() const
 {
+    auto documentManager = DocumentManager::instance();
     QList<QObject *> assets;
-    for (const DocumentPtr &document : documentManager()->documents())
+    for (const DocumentPtr &document : documentManager->documents())
         assets.append(document->editable());
     return assets;
 }
@@ -107,5 +129,44 @@ QString ScriptModule::prompt(const QString &label, const QString &text, const QS
     return QInputDialog::getText(nullptr, title, label, QLineEdit::Normal, text);
 }
 
-} // namespace Internal
+void ScriptModule::log(const QString &text) const
+{
+    mLogger->info(text);
+}
+
+void ScriptModule::error(const QString &text) const
+{
+    mLogger->error(tr("Error: %1").arg(text));
+}
+
+void ScriptModule::documentCreated(Document *document)
+{
+    emit assetCreated(document->editable());
+}
+
+void ScriptModule::documentOpened(Document *document)
+{
+    emit assetOpened(document->editable());
+}
+
+void ScriptModule::documentAboutToBeSaved(Document *document)
+{
+    emit assetAboutToBeSaved(document->editable());
+}
+
+void ScriptModule::documentSaved(Document *document)
+{
+    emit assetSaved(document->editable());
+}
+
+void ScriptModule::documentAboutToClose(Document *document)
+{
+    emit assetAboutToBeClosed(document->editable());
+}
+
+void ScriptModule::currentDocumentChanged(Document *document)
+{
+    emit activeAssetChanged(document ? document->editable() : nullptr);
+}
+
 } // namespace Tiled

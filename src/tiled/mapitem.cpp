@@ -45,7 +45,6 @@
 #include "qtcompat_p.h"
 
 namespace Tiled {
-namespace Internal {
 
 static const qreal darkeningFactor = 0.6;
 static const qreal opacityFactor = 0.4;
@@ -678,7 +677,6 @@ void MapItem::updateSelectedLayersHighlight()
     }
 }
 
-} // namespace Internal
 } // namespace Tiled
 
 #include "mapitem.moc"

@@ -27,7 +27,6 @@
 #include "tilepainter.h"
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 MagicWandTool::MagicWandTool(QObject *parent)
     : AbstractTileSelectionTool(tr("Magic Wand"),

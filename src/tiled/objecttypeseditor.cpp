@@ -39,7 +39,6 @@
 #include <QToolBar>
 
 namespace Tiled {
-namespace Internal {
 
 class ColorDelegate : public QStyledItemDelegate
 {
@@ -600,5 +599,4 @@ void ObjectTypesEditor::currentItemChanged(QtBrowserItem *item)
     mRenamePropertyAction->setEnabled(itemSelected);
 }
 
-} // namespace Internal
 } // namespace Tiled

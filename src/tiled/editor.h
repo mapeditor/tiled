@@ -26,7 +26,6 @@ class QToolBar;
 class QDockWidget;
 
 namespace Tiled {
-namespace Internal {
 
 class Document;
 class Zoomable;
@@ -72,7 +71,6 @@ signals:
     void enabledStandardActionsChanged();
 };
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(Editor::StandardActions)
-
-} // namespace Internal
 } // namespace Tiled
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::Editor::StandardActions)

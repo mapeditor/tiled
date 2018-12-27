@@ -63,6 +63,11 @@ void ObjectGroup::addObject(MapObject *object)
         object->setId(mMap->takeNextObjectId());
 }
 
+void ObjectGroup::addObject(std::unique_ptr<MapObject> &&object)
+{
+    addObject(object.release());
+}
+
 void ObjectGroup::insertObject(int index, MapObject *object)
 {
     mObjects.insert(index, object);
@@ -252,13 +257,10 @@ QString Tiled::drawOrderToString(ObjectGroup::DrawOrder drawOrder)
     default:
     case ObjectGroup::UnknownOrder:
         return QLatin1String("unknown");
-        break;
     case ObjectGroup::TopDownOrder:
         return QLatin1String("topdown");
-        break;
     case ObjectGroup::IndexOrder:
         return QLatin1String("index");
-        break;
     }
 }
 

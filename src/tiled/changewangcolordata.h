@@ -28,8 +28,6 @@ namespace Tiled {
 
 class WangColor;
 
-namespace Internal {
-
 class TilesetDocument;
 
 class ChangeWangColorName : public QUndoCommand
@@ -101,5 +99,4 @@ private:
     qreal mNewProbability;
 };
 
-} // namespace Internal
 } // namespace Tiled

@@ -26,7 +26,6 @@
 #include "imagelayer.h"
 
 namespace Tiled {
-namespace Internal {
 
 class MapDocument;
 
@@ -72,5 +71,4 @@ inline ImageLayer *ImageLayerItem::imageLayer() const
     return static_cast<ImageLayer*>(layer());
 }
 
-} // namespace Internal
 } // namespace Tiled

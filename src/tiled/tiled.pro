@@ -130,6 +130,10 @@ SOURCES += aboutdialog.cpp \
     editableasset.cpp \
     editablelayer.cpp \
     editablemap.cpp \
+    editablemapobject.cpp \
+    editableobjectgroup.cpp \
+    editableselectedarea.cpp \
+    editabletilelayer.cpp \
     editabletileset.cpp \
     editor.cpp \
     editpolygontool.cpp \
@@ -195,6 +199,7 @@ SOURCES += aboutdialog.cpp \
     propertiesdock.cpp \
     propertybrowser.cpp \
     raiselowerhelper.cpp \
+    regionvaluetype.cpp \
     renamelayer.cpp \
     renameterrain.cpp \
     renamewangset.cpp \
@@ -335,6 +340,10 @@ HEADERS += aboutdialog.h \
     editableasset.h \
     editablelayer.h \
     editablemap.h \
+    editablemapobject.h \
+    editableobjectgroup.h \
+    editableselectedarea.h \
+    editabletilelayer.h \
     editabletileset.h \
     editor.h \
     editpolygontool.h \
@@ -402,6 +411,7 @@ HEADERS += aboutdialog.h \
     raiselowerhelper.h \
     randompicker.h \
     rangeset.h \
+    regionvaluetype.h \
     renamelayer.h \
     renameterrain.h \
     renamewangset.h \

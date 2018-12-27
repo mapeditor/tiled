@@ -29,8 +29,6 @@ namespace Tiled {
 
 class Layer;
 
-namespace Internal {
-
 class MapDocument;
 
 /**
@@ -60,5 +58,4 @@ private:
     QPointF mNewOffset;
 };
 
-} // namespace Internal
 } // namespace Tiled

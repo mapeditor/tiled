@@ -25,7 +25,6 @@
 
 namespace Tiled {
 
-namespace Internal {
 
 class PointHandle;
 
@@ -101,5 +100,4 @@ private:
     PointHandle *mClickedHandle;
 };
 
-} // namespace Internal
 } // namespace Tiled

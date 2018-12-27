@@ -21,21 +21,35 @@
 #include "scriptmanager.h"
 
 #include "documentmanager.h"
-#include "editablelayer.h"
 #include "editablemap.h"
+#include "editablemapobject.h"
+#include "editableobjectgroup.h"
+#include "editabletilelayer.h"
 #include "editabletileset.h"
+#include "regionvaluetype.h"
 #include "scriptmodule.h"
+#include "tilelayer.h"
 
+#include <QFile>
 #include <QQmlEngine>
+#include <QStandardPaths>
+#include <QTextCodec>
 #include <QtDebug>
 
 namespace Tiled {
-namespace Internal {
+
+std::unique_ptr<ScriptManager> ScriptManager::mInstance;
 
 ScriptManager &ScriptManager::instance()
 {
-    static ScriptManager scriptManager;
-    return scriptManager;
+    if (!mInstance)
+        mInstance.reset(new ScriptManager);
+    return *mInstance;
+}
+
+void ScriptManager::deleteInstance()
+{
+    mInstance.reset();
 }
 
 /*
@@ -49,30 +63,70 @@ ScriptManager &ScriptManager::instance()
 
 ScriptManager::ScriptManager(QObject *parent)
     : QObject(parent)
-    , mJSEngine(new QQmlEngine(this))
+    , mEngine(new QQmlEngine(this))
+    , mModule(new ScriptModule(this))
 {
+    qRegisterMetaType<Cell>();
     qRegisterMetaType<EditableAsset*>();
     qRegisterMetaType<EditableLayer*>();
     qRegisterMetaType<EditableMap*>();
+    qRegisterMetaType<EditableMapObject*>();
+    qRegisterMetaType<EditableObjectGroup*>();
+    qRegisterMetaType<EditableTileLayer*>();
     qRegisterMetaType<EditableTileset*>();
+    qRegisterMetaType<RegionValueType>();
 
-    ScriptModule *module = new ScriptModule(this);
-
-    QJSValue globalObject = mJSEngine->globalObject();
-    globalObject.setProperty(QStringLiteral("tiled"), mJSEngine->newQObject(module));
+    QJSValue globalObject = mEngine->globalObject();
+    globalObject.setProperty(QStringLiteral("tiled"), mEngine->newQObject(mModule));
 }
 
 QJSValue ScriptManager::evaluate(const QString &program,
                                  const QString &fileName, int lineNumber)
 {
-    QJSValue result = mJSEngine->evaluate(program, fileName, lineNumber);
+    QJSValue result = mEngine->evaluate(program, fileName, lineNumber);
     if (result.isError()) {
-        qDebug() << "Uncaught exception at line"
-                 << result.property(QLatin1String("lineNumber")).toInt()
-                 << ":" << result.toString();
+        qDebug().nospace().noquote()
+                << "Uncaught exception at line "
+                << result.property(QLatin1String("lineNumber")).toInt()
+                << ": " << result.toString();
     }
     return result;
 }
 
-} // namespace Internal
+QJSValue ScriptManager::evaluateFile(const QString &fileName)
+{
+    QFile file(fileName);
+
+    if (!file.open(QFile::ReadOnly | QFile::Text)) {
+        qWarning() << "Error opening file:" << fileName;
+        return QJSValue();
+    }
+
+    const QByteArray text = file.readAll();
+    const QString script = QTextCodec::codecForUtfText(text)->toUnicode(text);
+
+    return evaluate(script, fileName);
+}
+
+void ScriptManager::evaluateStartupScripts()
+{
+    const QStringList configLocations = QStandardPaths::standardLocations(QStandardPaths::AppConfigLocation);
+    for (const QString &configLocation : configLocations) {
+        const QString scriptFile = configLocation + QLatin1String("/startup.js");
+        if (QFile::exists(scriptFile)) {
+            qDebug() << "Evaluating startup script:" << scriptFile;
+            evaluateFile(scriptFile);
+        }
+    }
+}
+
+void ScriptManager::throwError(const QString &message)
+{
+#if QT_VERSION < QT_VERSION_CHECK(5, 12, 0)
+    module()->error(message);
+#else
+    engine()->throwError(message);
+#endif
+}
+
 } // namespace Tiled

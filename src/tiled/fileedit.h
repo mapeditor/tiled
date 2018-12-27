@@ -27,7 +27,6 @@
 class QLineEdit;
 
 namespace Tiled {
-namespace Internal {
 
 /**
  * A widget that combines a line edit with a button to choose a file.
@@ -66,5 +65,4 @@ private:
     QColor mErrorTextColor;
 };
 
-} // namespace Internal
 } // namespace Tiled

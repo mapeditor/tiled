@@ -44,7 +44,6 @@
 static const char * const TMX_MIMETYPE = "text/tmx";
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 ClipboardManager *ClipboardManager::mInstance;
 

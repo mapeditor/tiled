@@ -28,7 +28,6 @@
 #include "qtcompat_p.h"
 
 namespace Tiled {
-namespace Internal {
 
 ReparentLayers::ReparentLayers(MapDocument *mapDocument,
                                const QList<Layer *> &layers,
@@ -97,5 +96,4 @@ void ReparentLayers::redo()
     mMapDocument->setCurrentLayer(currentLayer);
 }
 
-} // namespace Internal
 } // namespace Tiled

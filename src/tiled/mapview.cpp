@@ -39,7 +39,6 @@
 #endif
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 MapView::MapView(QWidget *parent, Mode mode)
     : QGraphicsView(parent)

@@ -28,7 +28,6 @@ namespace Tiled {
 
 class Map;
 
-namespace Internal {
 
 struct TileStampVariation;
 
@@ -103,5 +102,4 @@ inline const QList<TileStamp> &TileStampModel::stamps() const
     return mStamps;
 }
 
-} // namespace Internal
 } // namespace Tiled

@@ -44,7 +44,6 @@
 #include <memory>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 static QString stampFilePath(const QString &name)
 {

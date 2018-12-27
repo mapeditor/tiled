@@ -48,7 +48,6 @@
 #include <QtCore/qmath.h>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 namespace {
 

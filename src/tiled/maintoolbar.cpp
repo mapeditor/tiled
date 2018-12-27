@@ -32,7 +32,6 @@
 #include <QUndoGroup>
 
 namespace Tiled {
-namespace Internal {
 
 MainToolBar::MainToolBar(QWidget *parent)
     : QToolBar(parent)
@@ -138,5 +137,4 @@ void MainToolBar::retranslateUi()
     mUndoAction->setIconText(tr("Undo"));
 }
 
-} // namespace Internal
 } // namespace Tiled

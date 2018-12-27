@@ -31,7 +31,6 @@
 #include <algorithm>
 
 namespace Tiled {
-namespace Internal {
 
 MoveLayer::MoveLayer(MapDocument *mapDocument, Layer *layer, Direction direction):
     mMapDocument(mapDocument),
@@ -115,4 +114,3 @@ void MoveLayer::moveLayer()
 }
 
 } // namespace Tiled
-} // namespace Internal

@@ -28,7 +28,6 @@
 #include <QPalette>
 
 namespace Tiled {
-namespace Internal {
 
 PointHandle::PointHandle(MapObject *mapObject, int pointIndex)
     : QGraphicsItem()
@@ -88,5 +87,4 @@ void PointHandle::paint(QPainter *painter,
         painter->drawEllipse(QRectF(-4, -4, 8, 8));
 }
 
-} // namespace Internal
 } // namespace Tiled

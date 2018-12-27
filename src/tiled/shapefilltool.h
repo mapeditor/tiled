@@ -25,7 +25,6 @@
 class QAction;
 
 namespace Tiled {
-namespace Internal {
 
 class ShapeFillTool : public AbstractTileFillTool
 {
@@ -69,5 +68,4 @@ private:
     void updateFillOverlay();
 };
 
-} // namespace Internal
 } // namespace Tiled

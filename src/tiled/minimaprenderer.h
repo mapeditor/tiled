@@ -29,8 +29,6 @@ namespace Tiled {
 class Map;
 class MapRenderer;
 
-namespace Internal {
-
 class MiniMapRenderer
 {
 public:
@@ -59,7 +57,6 @@ private:
     MapRenderer *mRenderer;
 };
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::Internal::MiniMapRenderer::RenderFlags)
-
-} // namespace Internal
 } // namespace Tiled
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::MiniMapRenderer::RenderFlags)

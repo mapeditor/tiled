@@ -30,8 +30,6 @@ namespace Tiled {
 class Tile;
 class Tileset;
 
-namespace Internal {
-
 class TilesetDocument;
 
 class ChangeTileTerrain : public QUndoCommand
@@ -81,5 +79,4 @@ private:
     bool mMergeable;
 };
 
-} // namespace Internal
 } // namespace Tiled

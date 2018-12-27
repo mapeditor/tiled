@@ -49,7 +49,6 @@
 #include <QMetaEnum>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 LayerDock::LayerDock(QWidget *parent):
     QDockWidget(parent),

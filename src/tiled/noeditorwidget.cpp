@@ -27,7 +27,6 @@
 #include <QAction>
 
 namespace Tiled {
-namespace Internal {
 
 NoEditorWidget::NoEditorWidget(QWidget *parent) :
     QWidget(parent),
@@ -72,5 +71,4 @@ void NoEditorWidget::openFile()
     DocumentManager::instance()->openFileDialog();
 }
 
-} // namespace Internal
 } // namespace Tiled

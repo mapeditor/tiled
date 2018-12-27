@@ -26,7 +26,6 @@
 #include <QRegion>
 
 namespace Tiled {
-namespace Internal {
 
 class MapDocument;
 
@@ -124,4 +123,3 @@ inline Cell TilePainter::cellAt(QPoint pos) const
 }
 
 } // namespace Tiled
-} // namespace Internal

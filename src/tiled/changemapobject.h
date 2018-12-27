@@ -32,8 +32,6 @@ class MapObject;
 class ObjectTemplate;
 class Tile;
 
-namespace Internal {
-
 class MapDocument;
 class MapObjectModel;
 
@@ -175,5 +173,4 @@ private:
     ObjectTemplate *mObjectTemplate;
 };
 
-} // namespace Internal
 } // namespace Tiled

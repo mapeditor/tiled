@@ -31,8 +31,6 @@ namespace Tiled {
 class Layer;
 class MapObject;
 
-namespace Internal {
-
 class Document;
 class MapDocument;
 class MapObjectModel;
@@ -122,5 +120,4 @@ private:
     bool mSynching;
 };
 
-} // namespace Internal
 } // namespace Tiled

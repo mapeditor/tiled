@@ -30,7 +30,6 @@
 #include "qtcompat_p.h"
 
 using namespace Tiled;
-using namespace Internal;
 
 ChangeWangSetEdgeCount::ChangeWangSetEdgeCount(TilesetDocument *tilesetDocument,
                                                WangSet *wangSet,

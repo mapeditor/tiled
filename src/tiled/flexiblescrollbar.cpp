@@ -21,7 +21,6 @@
 #include "flexiblescrollbar.h"
 
 namespace Tiled {
-namespace Internal {
 
 FlexibleScrollBar::FlexibleScrollBar(Qt::Orientation orientation, QWidget *parent)
     : QScrollBar(orientation, parent)
@@ -97,5 +96,4 @@ void FlexibleScrollBar::setOverrideRange(int min, int max)
     mInternalRangeChange = false;
 }
 
-} // namespace Internal
 } // namespace Tiled

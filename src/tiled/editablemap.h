@@ -21,12 +21,15 @@
 #pragma once
 
 #include "editableasset.h"
+#include "editableselectedarea.h"
 #include "mapdocument.h"
 
 namespace Tiled {
-namespace Internal {
+
+class MapObject;
 
 class EditableLayer;
+class EditableMapObject;
 
 class EditableMap : public EditableAsset
 {
@@ -39,17 +42,21 @@ class EditableMap : public EditableAsset
     Q_PROPERTY(int tileHeight READ tileHeight WRITE setTileHeight NOTIFY tileHeightChanged)
     Q_PROPERTY(bool infinite READ infinite WRITE setInfinite)
     Q_PROPERTY(int hexSideLength READ hexSideLength WRITE setHexSideLength)
-    Q_PROPERTY(Map::StaggerAxis staggerAxis READ staggerAxis WRITE setStaggerAxis)
-    Q_PROPERTY(Map::StaggerIndex staggerIndex READ staggerIndex WRITE setStaggerIndex)
-    Q_PROPERTY(Map::Orientation orientation READ orientation WRITE setOrientation)
-    Q_PROPERTY(Map::RenderOrder renderOrder READ renderOrder WRITE setRenderOrder)
+    Q_PROPERTY(Tiled::Map::StaggerAxis staggerAxis READ staggerAxis WRITE setStaggerAxis)
+    Q_PROPERTY(Tiled::Map::StaggerIndex staggerIndex READ staggerIndex WRITE setStaggerIndex)
+    Q_PROPERTY(Tiled::Map::Orientation orientation READ orientation WRITE setOrientation)
+    Q_PROPERTY(Tiled::Map::RenderOrder renderOrder READ renderOrder WRITE setRenderOrder)
     Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor)
-    Q_PROPERTY(Map::LayerDataFormat layerDataFormat READ layerDataFormat WRITE setLayerDataFormat)
+    Q_PROPERTY(Tiled::Map::LayerDataFormat layerDataFormat READ layerDataFormat WRITE setLayerDataFormat)
+    Q_PROPERTY(Tiled::EditableSelectedArea *selectedArea READ selectedArea CONSTANT)
     Q_PROPERTY(int layerCount READ layerCount)
 
 public:
     explicit EditableMap(MapDocument *mapDocument,
                          QObject *parent = nullptr);
+    ~EditableMap() override;
+
+    QString fileName() const override;
 
     int width() const;
     int height() const;
@@ -65,7 +72,11 @@ public:
     QColor backgroundColor() const;
     Map::LayerDataFormat layerDataFormat() const;
     int layerCount() const;
-    Q_INVOKABLE Tiled::Internal::EditableLayer *layerAt(int index);
+    Q_INVOKABLE Tiled::EditableLayer *layerAt(int index);
+    Q_INVOKABLE void removeLayerAt(int index);
+    Q_INVOKABLE void removeLayer(Tiled::EditableLayer *editableLayer);
+    Q_INVOKABLE void insertLayerAt(int index, Tiled::EditableLayer *editableLayer);
+    Q_INVOKABLE void addLayer(Tiled::EditableLayer *editableLayer);
 
     void setTileWidth(int value);
     void setTileHeight(int value);
@@ -79,6 +90,7 @@ public:
     void setLayerDataFormat(Map::LayerDataFormat value);
 
     MapDocument *mapDocument() const;
+    EditableSelectedArea *selectedArea();
 
 signals:
     void sizeChanged();
@@ -90,13 +102,26 @@ public slots:
                 const QPoint &offset = QPoint(),
                 bool removeObjects = false);
 
+private slots:
+    void detachEditableLayer(Layer *layer);
+    void detachMapObjects(const QList<MapObject*> &mapObjects);
+
 private:
+    friend class EditableLayer;
+    friend class EditableMapObject;
+    friend class EditableObjectGroup;
+
+    EditableLayer *editableLayer(Layer *layer);
+    EditableMapObject *editableMapObject(MapObject *mapObject);
+
     Map *map() const;
     MapRenderer *renderer() const;
 
-    MapDocument *mMapDocument;
+    MapDocument * const mMapDocument;
 
     QHash<Layer*, EditableLayer*> mEditableLayers;
+    QHash<MapObject*, EditableMapObject*> mEditableMapObjects;
+    EditableSelectedArea mSelectedArea;
 };
 
 
@@ -185,7 +210,11 @@ inline MapDocument *EditableMap::mapDocument() const
     return mMapDocument;
 }
 
-} // namespace Internal
+inline EditableSelectedArea *EditableMap::selectedArea()
+{
+    return &mSelectedArea;
+}
+
 } // namespace Tiled
 
-Q_DECLARE_METATYPE(Tiled::Internal::EditableMap*)
+Q_DECLARE_METATYPE(Tiled::EditableMap*)

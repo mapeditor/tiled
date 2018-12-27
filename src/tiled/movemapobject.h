@@ -27,8 +27,6 @@ namespace Tiled {
 
 class MapObject;
 
-namespace Internal {
-
 class MapDocument;
 
 class MoveMapObject : public QUndoCommand
@@ -55,5 +53,4 @@ private:
     QPointF mNewPos;
 };
 
-} // namespace Internal
 } // namespace Tiled

@@ -35,7 +35,6 @@
 #include <QtMath>
 
 using namespace Tiled;
-using namespace Internal;
 
 //value between 0 and 0.5 to control the dead zone with edge mode.
 static const double MIDDLE_DEAD_ZONE = 0.25;

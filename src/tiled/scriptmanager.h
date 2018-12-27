@@ -23,10 +23,13 @@
 #include <QObject>
 #include <QJSValue>
 
+#include <memory>
+
 class QJSEngine;
 
 namespace Tiled {
-namespace Internal {
+
+class ScriptModule;
 
 class ScriptManager : public QObject
 {
@@ -34,15 +37,38 @@ class ScriptManager : public QObject
 
 public:
     static ScriptManager &instance();
+    static void deleteInstance();
+
+    ScriptModule *module() const;
+    QJSEngine *engine() const;
 
     QJSValue evaluate(const QString &program,
                       const QString &fileName = QString(), int lineNumber = 1);
 
+    QJSValue evaluateFile(const QString &fileName);
+
+    void evaluateStartupScripts();
+
+    void throwError(const QString &message);
+
 private:
     explicit ScriptManager(QObject *parent = nullptr);
 
-    QJSEngine *mJSEngine;
+    QJSEngine *mEngine;
+    ScriptModule *mModule;
+
+    static std::unique_ptr<ScriptManager> mInstance;
 };
 
-} // namespace Internal
+
+inline ScriptModule *ScriptManager::module() const
+{
+    return mModule;
+}
+
+inline QJSEngine *ScriptManager::engine() const
+{
+    return mEngine;
+}
+
 } // namespace Tiled

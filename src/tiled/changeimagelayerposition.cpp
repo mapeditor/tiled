@@ -26,7 +26,6 @@
 #include <QCoreApplication>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 ChangeImageLayerPosition::ChangeImageLayerPosition(
         MapDocument *mapDocument,

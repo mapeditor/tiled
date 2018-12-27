@@ -26,27 +26,30 @@ class QUndoCommand;
 class QUndoStack;
 
 namespace Tiled {
-namespace Internal {
 
 class EditableAsset : public QObject
 {
     Q_OBJECT
 
+    Q_PROPERTY(QString fileName READ fileName NOTIFY fileNameChanged)
     Q_PROPERTY(bool modified READ isModified NOTIFY modifiedChanged)
 
 public:
     explicit EditableAsset(QObject *parent = nullptr);
 
+    virtual QString fileName() const = 0;
+
     QUndoStack *undoStack() const;
     bool isModified() const;
-    Q_INVOKABLE void undo();
-    Q_INVOKABLE void redo();
     void push(QUndoCommand *command);
+
+public slots:
+    void undo();
+    void redo();
 
 signals:
     void modifiedChanged();
-
-public slots:
+    void fileNameChanged(const QString &fileName, const QString &oldFileName);
 
 private:
     QUndoStack *mUndoStack;
@@ -58,7 +61,6 @@ inline QUndoStack *EditableAsset::undoStack() const
     return mUndoStack;
 }
 
-} // namespace Internal
 } // namespace Tiled
 
-Q_DECLARE_METATYPE(Tiled::Internal::EditableAsset*)
+Q_DECLARE_METATYPE(Tiled::EditableAsset*)

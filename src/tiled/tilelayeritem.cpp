@@ -29,7 +29,6 @@
 #include <QStyleOptionGraphicsItem>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 TileLayerItem::TileLayerItem(TileLayer *layer, MapDocument *mapDocument, QGraphicsItem *parent)
     : LayerItem(layer, parent)

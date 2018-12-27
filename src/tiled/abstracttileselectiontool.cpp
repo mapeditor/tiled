@@ -30,7 +30,6 @@
 #include <QToolBar>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 AbstractTileSelectionTool::AbstractTileSelectionTool(const QString &name,
                                                      const QIcon &icon,

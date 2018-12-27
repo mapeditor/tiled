@@ -30,8 +30,6 @@ namespace Tiled {
 class Object;
 class Tileset;
 
-namespace Internal {
-
 class Document;
 class PropertyBrowser;
 
@@ -78,5 +76,4 @@ private:
     QAction *mActionRenameProperty;
 };
 
-} // namespace Internal
 } // namespace Tiled

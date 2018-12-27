@@ -26,8 +26,6 @@ namespace Tiled {
 
 class TileLayer;
 
-namespace Internal {
-
 class BrushItem;
 class MapDocument;
 class TileStamp;
@@ -130,5 +128,4 @@ private:
     bool mBrushVisible;
 };
 
-} // namespace Internal
 } // namespace Tiled

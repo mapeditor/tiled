@@ -30,7 +30,6 @@ class QMouseEvent;
 class QResizeEvent;
 
 namespace Tiled {
-namespace Internal {
 
 /**
  * A special widget designed as an aid for resizing a canvas. Based on a
@@ -98,5 +97,4 @@ private:
     std::function<QImage(QSize)> mMiniMapRenderer;
 };
 
-} // namespace Internal
 } // namespace Tiled

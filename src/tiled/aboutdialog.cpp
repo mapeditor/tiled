@@ -30,7 +30,7 @@
 
 #include <cmath>
 
-using namespace Tiled::Internal;
+using namespace Tiled;
 
 AboutDialog::AboutDialog(QWidget *parent): QDialog(parent)
 {

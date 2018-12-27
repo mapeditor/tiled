@@ -27,7 +27,6 @@
 #include <QHash>
 
 namespace Tiled {
-namespace Internal {
 
 class StringHash
 {
@@ -85,5 +84,4 @@ QByteArray Id::name() const
     return stringFromId.value(mId).string;
 }
 
-} // namespace Internal
 } // namespace Tiled

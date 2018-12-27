@@ -33,8 +33,6 @@ namespace Tiled {
 
 class Tileset;
 
-namespace Internal {
-
 class TilesetDocument;
 
 class RenameTileset : public QUndoCommand
@@ -175,5 +173,4 @@ private:
     QSize mGridSize;
 };
 
-} // namespace Internal
 } // namespace Tiled

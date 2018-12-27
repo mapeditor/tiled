@@ -26,7 +26,6 @@
 #include <QVBoxLayout>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 UndoDock::UndoDock(QWidget *parent)
     : QDockWidget(parent)

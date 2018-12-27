@@ -34,7 +34,6 @@
 #include <memory>
 
 using namespace Tiled;
-using namespace Internal;
 
 ShapeFillTool::ShapeFillTool(QObject *parent)
     : AbstractTileFillTool(tr("Shape Fill Tool"),

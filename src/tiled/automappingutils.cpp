@@ -30,7 +30,6 @@
 #include <QUndoStack>
 
 namespace Tiled {
-namespace Internal {
 
 void eraseRegionObjectGroup(MapDocument *mapDocument,
                             ObjectGroup *layer,
@@ -96,5 +95,4 @@ const QList<MapObject*> objectsInRegion(const ObjectGroup *layer,
     return ret;
 }
 
-} // namespace Internal
 } // namespace Tiled

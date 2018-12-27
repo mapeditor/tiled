@@ -41,7 +41,6 @@
 #include "qtcompat_p.h"
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 /*
  * About the order of the methods in this file.

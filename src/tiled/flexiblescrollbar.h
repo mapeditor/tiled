@@ -23,7 +23,6 @@
 #include <QScrollBar>
 
 namespace Tiled {
-namespace Internal {
 
 class FlexibleScrollBar : public QScrollBar
 {
@@ -47,5 +46,4 @@ private:
     bool mInternalRangeChange;
 };
 
-} // namespace Internal
 } // namespace Tiled

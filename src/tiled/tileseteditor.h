@@ -41,8 +41,6 @@ class Terrain;
 class Tile;
 class Tileset;
 
-namespace Internal {
-
 class PropertiesDock;
 class TemplatesDock;
 class TerrainDock;
@@ -185,5 +183,4 @@ inline TileAnimationEditor *TilesetEditor::tileAnimationEditor() const
     return mTileAnimationEditor;
 }
 
-} // namespace Internal
 } // namespace Tiled

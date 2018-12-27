@@ -23,7 +23,6 @@
 #include "abstracttileselectiontool.h"
 
 namespace Tiled {
-namespace Internal {
 
 class TileSelectionTool : public AbstractTileSelectionTool
 {
@@ -54,5 +53,4 @@ private:
     bool mSelecting;
 };
 
-} // namespace Internal
 } // namespace Tiled

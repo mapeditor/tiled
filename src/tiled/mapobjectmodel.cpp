@@ -36,7 +36,6 @@
 #include <QStyle>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 MapObjectModel::MapObjectModel(QObject *parent):
     QAbstractItemModel(parent),

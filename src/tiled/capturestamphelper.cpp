@@ -27,7 +27,6 @@
 #include <memory>
 
 namespace Tiled {
-namespace Internal {
 
 CaptureStampHelper::CaptureStampHelper()
     : mActive(false)
@@ -108,5 +107,4 @@ QRect CaptureStampHelper::capturedArea(QPoint tilePosition) const
     return captured;
 }
 
-} // namespace Internal
 } // namespace Tiled

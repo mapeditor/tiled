@@ -26,8 +26,6 @@ namespace Tiled {
 
 class Tileset;
 
-namespace Internal {
-
 class TilesetDocument;
 class TilesetTerrainModel;
 
@@ -49,5 +47,4 @@ private:
     QString mNewName;
 };
 
-} // namespace Internal
 } // namespace Tiled

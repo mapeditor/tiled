@@ -23,7 +23,6 @@
 #include "minimaprenderer.h"
 
 namespace Tiled {
-namespace Internal {
 
 TileStampModel::TileStampModel(QObject *parent)
     : QAbstractItemModel(parent)
@@ -336,5 +335,4 @@ void TileStampModel::clear()
     endResetModel();
 }
 
-} // namespace Internal
 } // namespace Tiled

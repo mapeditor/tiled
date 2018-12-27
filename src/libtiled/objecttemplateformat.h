@@ -32,6 +32,8 @@
 #include "fileformat.h"
 #include "objecttemplate.h"
 
+#include <memory>
+
 namespace Tiled {
 
 class TILEDSHARED_EXPORT ObjectTemplateFormat : public FileFormat
@@ -43,12 +45,12 @@ public:
         : FileFormat(parent)
     {}
 
-    virtual ObjectTemplate* read(const QString &fileName) = 0;
+    virtual std::unique_ptr<ObjectTemplate> read(const QString &fileName) = 0;
     virtual bool write(const ObjectTemplate *objectTemplate, const QString &fileName) = 0;
 };
 
-TILEDSHARED_EXPORT ObjectTemplate *readObjectTemplate(const QString &fileName,
-                                                      QString *error = nullptr);
+TILEDSHARED_EXPORT std::unique_ptr<ObjectTemplate> readObjectTemplate(const QString &fileName,
+                                                                      QString *error = nullptr);
 
 TILEDSHARED_EXPORT ObjectTemplateFormat *findSupportingTemplateFormat(const QString &fileName);
 

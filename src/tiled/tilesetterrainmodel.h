@@ -27,8 +27,6 @@ namespace Tiled {
 class Tileset;
 class Terrain;
 
-namespace Internal {
-
 class TilesetDocument;
 
 /**
@@ -114,5 +112,4 @@ private:
     TilesetDocument *mTilesetDocument;
 };
 
-} // namespace Internal
 } // namespace Tiled

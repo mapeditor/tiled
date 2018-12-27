@@ -24,7 +24,7 @@
 #include <QPainter>
 #include <QResizeEvent>
 
-using namespace Tiled::Internal;
+using namespace Tiled;
 
 ResizeHelper::ResizeHelper(QWidget *parent)
     : QWidget(parent)

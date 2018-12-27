@@ -33,7 +33,6 @@ class QModelIndex;
 class QUndoStack;
 
 namespace Tiled {
-namespace Internal {
 
 class LayerView;
 
@@ -112,5 +111,4 @@ private:
     bool mUpdatingSelectedLayers;
 };
 
-} // namespace Internal
 } // namespace Tiled

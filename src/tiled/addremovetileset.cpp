@@ -24,7 +24,6 @@
 #include "mapdocument.h"
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 AddRemoveTileset::AddRemoveTileset(MapDocument *mapDocument,
                                    int index,

@@ -26,7 +26,6 @@
 
 namespace Tiled {
 
-namespace Internal {
 
 /**
  * A model for getting the info for a wang set template of a given WangSet
@@ -62,5 +61,4 @@ private:
     WangSet *mWangSet;
 };
 
-} // namespace Internal
 } // namespace Tiled

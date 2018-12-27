@@ -30,7 +30,6 @@ class QModelIndex;
 class QTreeView;
 
 namespace Tiled {
-namespace Internal {
 
 class MapsView;
 
@@ -87,5 +86,4 @@ private:
     QFileSystemModel *mFileSystemModel;
 };
 
-} // namespace Internal
 } // namespace Tiled

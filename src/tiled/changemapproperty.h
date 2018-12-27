@@ -26,7 +26,6 @@
 #include <QUndoCommand>
 
 namespace Tiled {
-namespace Internal {
 
 class MapDocument;
 
@@ -123,5 +122,4 @@ private:
     };
 };
 
-} // namespace Internal
 } // namespace Tiled

@@ -23,7 +23,6 @@
 #include "layer.h"
 
 namespace Tiled {
-namespace Internal {
 
 LayerItem::LayerItem(Layer *layer, QGraphicsItem *parent)
     : QGraphicsItem(parent)
@@ -34,5 +33,4 @@ LayerItem::LayerItem(Layer *layer, QGraphicsItem *parent)
     setPos(layer->offset());
 }
 
-} // namespace Internal
 } // namespace Tiled

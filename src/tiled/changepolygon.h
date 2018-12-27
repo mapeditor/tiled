@@ -27,8 +27,6 @@ namespace Tiled {
 
 class MapObject;
 
-namespace Internal {
-
 class MapDocument;
 
 /**
@@ -104,5 +102,4 @@ private:
     bool mOwnsSecondPolyline;
 };
 
-} // namespace Internal
 } // namespace Tiled

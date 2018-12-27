@@ -24,7 +24,6 @@
 #include <QPinchGesture>
 
 namespace Tiled {
-namespace Internal {
 
 class MapScene;
 class Zoomable;
@@ -104,5 +103,4 @@ private:
     Zoomable *mZoomable;
 };
 
-} // namespace Internal
 } // namespace Tiled

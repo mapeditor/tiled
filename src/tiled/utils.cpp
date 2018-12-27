@@ -120,7 +120,7 @@ void restoreGeometry(QWidget *widget)
 {
     Q_ASSERT(!widget->objectName().isEmpty());
 
-    const QSettings *settings = Internal::Preferences::instance()->settings();
+    const QSettings *settings = Preferences::instance()->settings();
 
     const QString key = widget->objectName() + QLatin1String("/Geometry");
     widget->restoreGeometry(settings->value(key).toByteArray());
@@ -139,7 +139,7 @@ void saveGeometry(QWidget *widget)
 {
     Q_ASSERT(!widget->objectName().isEmpty());
 
-    QSettings *settings = Internal::Preferences::instance()->settings();
+    QSettings *settings = Preferences::instance()->settings();
 
     const QString key = widget->objectName() + QLatin1String("/Geometry");
     settings->setValue(key, widget->saveGeometry());

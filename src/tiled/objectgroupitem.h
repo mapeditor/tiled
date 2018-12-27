@@ -25,7 +25,6 @@
 #include "objectgroup.h"
 
 namespace Tiled {
-namespace Internal {
 
 /**
  * A graphics item representing an object group in a QGraphicsView. It only
@@ -52,5 +51,4 @@ inline ObjectGroup *ObjectGroupItem::objectGroup() const
     return static_cast<ObjectGroup*>(layer());
 }
 
-} // namespace Internal
 } // namespace Tiled
