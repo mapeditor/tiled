@@ -541,8 +541,11 @@ void TileAnimationEditor::advancePreviewAnimation(int ms)
 
     if (previousTileId != frame.tileId) {
         Tileset *tileset = mTile->tileset();
-        if (const Tile *tile = tileset->findTile(frame.tileId))
-            mUi->preview->setPixmap(tile->image());
+        if (const Tile *tile = tileset->findTile(frame.tileId)) {
+            const int w = tile->image().width() * mUi->tilesetView->zoomable()->scale();
+            const int h = tile->image().height() * mUi->tilesetView->zoomable()->scale();
+            mUi->preview->setPixmap(tile->image().scaled(w, h, Qt::KeepAspectRatio));
+        }
     }
 }
 
