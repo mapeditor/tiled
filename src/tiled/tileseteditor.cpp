@@ -425,6 +425,7 @@ QList<QDockWidget *> TilesetEditor::dockWidgets() const
         mUndoDock,
         mTerrainDock,
         mTileCollisionDock,
+        mTemplatesDock,
         mWangDock
     };
 }
