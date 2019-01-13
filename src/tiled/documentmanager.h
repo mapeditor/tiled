@@ -172,7 +172,6 @@ private slots:
     void currentIndexChanged();
     void fileNameChanged(const QString &fileName,
                          const QString &oldFileName);
-    void modifiedChanged();
     void updateDocumentTab(Document *document);
     void onDocumentSaved();
     void documentTabMoved(int from, int to);

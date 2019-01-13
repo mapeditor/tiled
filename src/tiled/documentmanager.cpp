@@ -24,6 +24,7 @@
 #include "abstracttool.h"
 #include "adjusttileindexes.h"
 #include "brokenlinks.h"
+#include "containerhelpers.h"
 #include "editableasset.h"
 #include "editor.h"
 #include "filechangedwarning.h"
@@ -257,8 +258,7 @@ int DocumentManager::findDocument(const QString &fileName) const
 
 int DocumentManager::findDocument(Document *document) const
 {
-    auto i = std::find(mDocuments.begin(), mDocuments.end(), document);
-    return i != mDocuments.end() ? static_cast<int>(i - mDocuments.begin()) : -1;
+    return indexOf(mDocuments, document);
 }
 
 /**
@@ -346,10 +346,12 @@ void DocumentManager::addDocument(const DocumentPtr &document)
     mDocuments.append(document);
     mUndoGroup->addStack(document->undoStack());
 
-    if (auto mapDocument = qobject_cast<MapDocument*>(document.data())) {
+    Document *documentPtr = document.data();
+
+    if (auto mapDocument = qobject_cast<MapDocument*>(documentPtr)) {
         for (const SharedTileset &tileset : mapDocument->map()->tilesets())
             addToTilesetDocument(tileset, mapDocument);
-    } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document.data())) {
+    } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(documentPtr)) {
         // We may have opened a bare tileset that wasn't seen before
         if (!mTilesetDocumentsModel->contains(tilesetDocument)) {
             mTilesetDocumentsModel->append(tilesetDocument);
@@ -361,7 +363,7 @@ void DocumentManager::addDocument(const DocumentPtr &document)
         mFileSystemWatcher->addPath(document->fileName());
 
     if (Editor *editor = mEditorForType.value(document->type()))
-        editor->addDocument(document.data());
+        editor->addDocument(documentPtr);
 
     QString tabText = document->displayName();
     if (document->isModified())
@@ -370,17 +372,17 @@ void DocumentManager::addDocument(const DocumentPtr &document)
     const int documentIndex = mTabBar->addTab(tabText);
     mTabBar->setTabToolTip(documentIndex, document->fileName());
 
-    connect(document.data(), &Document::fileNameChanged, this, &DocumentManager::fileNameChanged);
-    connect(document->editable(), &EditableAsset::modifiedChanged, this, &DocumentManager::modifiedChanged);
-    connect(document.data(), &Document::saved, this, &DocumentManager::onDocumentSaved);
+    connect(documentPtr, &Document::fileNameChanged, this, &DocumentManager::fileNameChanged);
+    connect(document->editable(), &EditableAsset::modifiedChanged, this, [=] { updateDocumentTab(documentPtr); });
+    connect(documentPtr, &Document::saved, this, &DocumentManager::onDocumentSaved);
 
-    if (auto *mapDocument = qobject_cast<MapDocument*>(document.data())) {
+    if (auto *mapDocument = qobject_cast<MapDocument*>(documentPtr)) {
         connect(mapDocument, &MapDocument::tilesetAdded, this, &DocumentManager::tilesetAdded);
         connect(mapDocument, &MapDocument::tilesetRemoved, this, &DocumentManager::tilesetRemoved);
         connect(mapDocument, &MapDocument::tilesetReplaced, this, &DocumentManager::tilesetReplaced);
     }
 
-    if (auto *tilesetDocument = qobject_cast<TilesetDocument*>(document.data()))
+    if (auto *tilesetDocument = qobject_cast<TilesetDocument*>(documentPtr))
         connect(tilesetDocument, &TilesetDocument::tilesetNameChanged, this, &DocumentManager::tilesetNameChanged);
 
     switchToDocument(documentIndex);
@@ -391,7 +393,7 @@ void DocumentManager::addDocument(const DocumentPtr &document)
     // todo: fix this (move to MapEditor)
     //    centerViewOn(0, 0);
 
-    emit documentOpened(document.data());
+    emit documentOpened(documentPtr);
 }
 
 /**
@@ -797,11 +799,6 @@ void DocumentManager::fileNameChanged(const QString &fileName,
     }
 
     updateDocumentTab(document);
-}
-
-void DocumentManager::modifiedChanged()
-{
-    updateDocumentTab(static_cast<Document*>(sender()));
 }
 
 void DocumentManager::updateDocumentTab(Document *document)
