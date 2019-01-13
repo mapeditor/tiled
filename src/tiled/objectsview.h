@@ -46,6 +46,8 @@ public:
 
     MapObjectModel *mapObjectModel() const;
 
+    QModelIndex layerViewIndex(Layer *layer) const;
+
 public slots:
     void saveExpandedGroups();
     void restoreExpandedGroups();

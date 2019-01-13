@@ -90,9 +90,6 @@ public:
     QMenu *createNewLayerMenu(QWidget *parent) const;
     QMenu *createGroupLayerMenu(QWidget *parent) const;
 
-signals:
-    void mapDocumentChanged(MapDocument *mapDocument);
-
 public slots:
     void cut();
     bool copy();

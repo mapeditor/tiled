@@ -35,6 +35,7 @@ class Tileset;
 class AbstractTool;
 class MapScene;
 class MapView;
+class ObjectsView;
 class TilesetDocument;
 class ToolManager;
 
@@ -86,6 +87,11 @@ private slots:
     void selectedObjectsChanged();
     void setHasSelectedObjects(bool hasSelectedObjects);
 
+    void selectAll();
+
+    void moveObjectsUp();
+    void moveObjectsDown();
+
 private:
     void retranslateUi();
 
@@ -94,7 +100,10 @@ private:
     MapDocumentPtr mDummyMapDocument;
     MapScene *mMapScene;
     MapView *mMapView;
+    ObjectsView *mObjectsView;
     ToolManager *mToolManager;
+    QAction *mActionMoveUp;
+    QAction *mActionMoveDown;
     bool mApplyingChanges;
     bool mSynchronizing;
     bool mHasSelectedObjects;

@@ -38,6 +38,7 @@
 #include "mapview.h"
 #include "objectgroup.h"
 #include "objectselectiontool.h"
+#include "objectsview.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
@@ -47,8 +48,10 @@
 #include "zoomable.h"
 
 #include <QCloseEvent>
-#include <QCoreApplication>
 #include <QComboBox>
+#include <QCoreApplication>
+#include <QShortcut>
+#include <QSplitter>
 #include <QStatusBar>
 #include <QToolBar>
 #include <QUndoStack>
@@ -62,6 +65,7 @@ TileCollisionDock::TileCollisionDock(QWidget *parent)
     , mTilesetDocument(nullptr)
     , mMapScene(new MapScene(this))
     , mMapView(new MapView(this, MapView::NoStaticContents))
+    , mObjectsView(new ObjectsView(this))
     , mToolManager(new ToolManager(this))
     , mApplyingChanges(false)
     , mSynchronizing(false)
@@ -74,6 +78,8 @@ TileCollisionDock::TileCollisionDock(QWidget *parent)
     mMapView->setResizeAnchor(QGraphicsView::AnchorViewCenter);
     mMapView->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     mMapView->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+
+    mObjectsView->setRootIsDecorated(false);
 
     CreateObjectTool *rectangleObjectsTool = new CreateRectangleObjectTool(this);
     CreateObjectTool *pointObjectsTool = new CreatePointObjectTool(this);
@@ -96,16 +102,44 @@ TileCollisionDock::TileCollisionDock(QWidget *parent)
     toolBar->addAction(mToolManager->registerTool(polygonObjectsTool));
     toolBar->addAction(mToolManager->registerTool(templatesTool));
 
+    mActionMoveUp = new QAction(this);
+    mActionMoveUp->setIcon(QIcon(QLatin1String(":/images/16x16/go-up.png")));
+    mActionMoveUp->setEnabled(false);
+    mActionMoveDown = new QAction(this);
+    mActionMoveDown->setIcon(QIcon(QLatin1String(":/images/16x16/go-down.png")));
+    mActionMoveDown->setEnabled(false);
+
+    Utils::setThemeIcon(mActionMoveUp, "go-up");
+    Utils::setThemeIcon(mActionMoveDown, "go-down");
+
+    QToolBar *objectsToolBar = new QToolBar(this);
+    objectsToolBar->setMovable(false);
+    objectsToolBar->setFloatable(false);
+    objectsToolBar->setIconSize(Utils::smallIconSize());
+    objectsToolBar->addAction(mActionMoveUp);
+    objectsToolBar->addAction(mActionMoveDown);
+
+    auto objectsWidget = new QWidget;
+    auto objectsVertical = new QVBoxLayout(objectsWidget);
+    objectsVertical->setSpacing(0);
+    objectsVertical->setMargin(0);
+    objectsVertical->addWidget(mObjectsView);
+    objectsVertical->addWidget(objectsToolBar);
+
     auto widget = new QWidget(this);
     auto vertical = new QVBoxLayout(widget);
     vertical->setSpacing(0);
     vertical->setMargin(0);
 
-    auto horizontal = new QHBoxLayout();
+    auto horizontal = new QHBoxLayout;
     horizontal->addWidget(toolBar, 1);
 
+    auto splitter = new QSplitter;
+    splitter->addWidget(mMapView);
+    splitter->addWidget(objectsWidget);
+
     vertical->addLayout(horizontal);
-    vertical->addWidget(mMapView);
+    vertical->addWidget(splitter);
 
     setWidget(widget);
 
@@ -120,6 +154,12 @@ TileCollisionDock::TileCollisionDock(QWidget *parent)
 
     Zoomable *zoomable = mMapView->zoomable();
     zoomable->setComboBox(zoomComboBox);
+
+    auto selectAllShortcut = new QShortcut(Qt::CTRL + Qt::Key_A, this, nullptr, nullptr, Qt::WidgetWithChildrenShortcut);
+    connect(selectAllShortcut, &QShortcut::activated, this, &TileCollisionDock::selectAll);
+
+    connect(mActionMoveUp, &QAction::triggered, this, &TileCollisionDock::moveObjectsUp);
+    connect(mActionMoveDown, &QAction::triggered, this, &TileCollisionDock::moveObjectsDown);
 
     retranslateUi();
 }
@@ -189,6 +229,8 @@ void TileCollisionDock::setTile(Tile *tile)
         mDummyMapDocument->setCurrentLayer(objectGroup);
 
         mMapScene->setMapDocument(mDummyMapDocument.data());
+        mObjectsView->setMapDocument(mDummyMapDocument.data());
+        mObjectsView->setRootIndex(mObjectsView->layerViewIndex(objectGroup));
         mToolManager->setMapDocument(mDummyMapDocument.data());
 
         mMapScene->enableSelectedTool();
@@ -202,8 +244,10 @@ void TileCollisionDock::setTile(Tile *tile)
     } else {
         mDummyMapDocument.clear();
         mMapScene->setMapDocument(nullptr);
+        mObjectsView->setMapDocument(nullptr);
         mToolManager->setMapDocument(nullptr);
     }
+
 
     emit dummyMapDocumentChanged(mDummyMapDocument.data());
 
@@ -350,6 +394,8 @@ void TileCollisionDock::delete_(Operation operation)
 void TileCollisionDock::selectedObjectsChanged()
 {
     setHasSelectedObjects(!mDummyMapDocument->selectedObjects().isEmpty());
+    mActionMoveUp->setEnabled(hasSelectedObjects());
+    mActionMoveDown->setEnabled(hasSelectedObjects());
 }
 
 void TileCollisionDock::setHasSelectedObjects(bool hasSelectedObjects)
@@ -358,6 +404,27 @@ void TileCollisionDock::setHasSelectedObjects(bool hasSelectedObjects)
         mHasSelectedObjects = hasSelectedObjects;
         emit hasSelectedObjectsChanged();
     }
+}
+
+void TileCollisionDock::selectAll()
+{
+    if (!mDummyMapDocument)
+        return;
+
+    ObjectGroup *objectGroup = static_cast<ObjectGroup*>(mDummyMapDocument->map()->layerAt(1));
+    mDummyMapDocument->setSelectedObjects(objectGroup->objects());
+}
+
+void TileCollisionDock::moveObjectsUp()
+{
+    if (mDummyMapDocument)
+        mDummyMapDocument->moveObjectsUp(mDummyMapDocument->selectedObjects());
+}
+
+void TileCollisionDock::moveObjectsDown()
+{
+    if (mDummyMapDocument)
+        mDummyMapDocument->moveObjectsDown(mDummyMapDocument->selectedObjects());
 }
 
 void TileCollisionDock::changeEvent(QEvent *e)
@@ -375,6 +442,9 @@ void TileCollisionDock::changeEvent(QEvent *e)
 void TileCollisionDock::retranslateUi()
 {
     setWindowTitle(QCoreApplication::translate("Tiled::MainWindow", "Tile Collision Editor"));
+
+    mActionMoveUp->setToolTip(tr("Move Objects Up"));
+    mActionMoveDown->setToolTip(tr("Move Objects Down"));
 }
 
 } // namespace Tiled

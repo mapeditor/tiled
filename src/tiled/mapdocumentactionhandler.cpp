@@ -271,8 +271,6 @@ void MapDocumentActionHandler::setMapDocument(MapDocument *mapDocument)
         connect(mapDocument, &MapDocument::mapChanged,
                 this, &MapDocumentActionHandler::updateActions);
     }
-
-    emit mapDocumentChanged(mMapDocument);
 }
 
 /**

@@ -107,6 +107,16 @@ MapObjectModel *ObjectsView::mapObjectModel() const
     return mMapDocument ? mMapDocument->mapObjectModel() : nullptr;
 }
 
+QModelIndex ObjectsView::layerViewIndex(Layer *layer) const
+{
+    if (MapObjectModel *model = mapObjectModel()) {
+        QModelIndex sourceIndex = model->index(layer);
+        return mProxyModel->mapFromSource(sourceIndex);
+    }
+
+    return QModelIndex();
+}
+
 void ObjectsView::saveExpandedGroups()
 {
     mExpandedGroups[mMapDocument].clear();
