@@ -21,19 +21,14 @@
 #pragma once
 
 #include <QDockWidget>
-#include <QTreeView>
+#include <QMap>
 
-class QAbstractProxyModel;
-class QTreeView;
+class QMenu;
 
 namespace Tiled {
 
-class Layer;
-class MapObject;
-
 class Document;
 class MapDocument;
-class MapObjectModel;
 class ObjectsView;
 
 class ObjectsDock : public QDockWidget
@@ -60,9 +55,6 @@ private slots:
 private:
     void retranslateUi();
 
-    void saveExpandedGroups();
-    void restoreExpandedGroups();
-
     QAction *mActionNewLayer;
     QAction *mActionObjectProperties;
     QAction *mActionMoveToGroup;
@@ -71,53 +63,7 @@ private:
 
     ObjectsView *mObjectsView;
     MapDocument *mMapDocument;
-    QMap<MapDocument*, QList<Layer*> > mExpandedGroups;
     QMenu *mMoveToMenu;
-};
-
-class ObjectsView : public QTreeView
-{
-    Q_OBJECT
-
-public:
-    ObjectsView(QWidget *parent = nullptr);
-
-    QSize sizeHint() const override;
-
-    void setMapDocument(MapDocument *mapDoc);
-
-    MapObjectModel *mapObjectModel() const;
-
-protected:
-    bool event(QEvent *event) override;
-    void mousePressEvent(QMouseEvent *event) override;
-    void mouseMoveEvent(QMouseEvent *event) override;
-    bool viewportEvent(QEvent *event) override;
-    void selectionChanged(const QItemSelection &selected,
-                          const QItemSelection &deselected) override;
-
-    void drawRow(QPainter *painter,
-                 const QStyleOptionViewItem &option,
-                 const QModelIndex &index) const override;
-
-private slots:
-    void onActivated(const QModelIndex &proxyIndex);
-    void onSectionResized(int logicalIndex);
-    void selectedObjectsChanged();
-    void hoveredObjectChanged(MapObject *object, MapObject *previous);
-    void setColumnVisibility(bool visible);
-
-    void showCustomHeaderContextMenu(const QPoint &point);
-
-private:
-    void restoreVisibleColumns();
-    void synchronizeSelectedItems();
-
-    void updateRow(MapObject *object);
-
-    MapDocument *mMapDocument;
-    QAbstractProxyModel *mProxyModel;
-    bool mSynching;
 };
 
 } // namespace Tiled
