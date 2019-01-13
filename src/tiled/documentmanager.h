@@ -38,7 +38,6 @@ class QTabBar;
 namespace Tiled {
 
 class FileSystemWatcher;
-class ObjectTemplate;
 
 class AbstractTool;
 class BrokenLinksModel;
@@ -48,7 +47,6 @@ class Editor;
 class FileChangedWarning;
 class MapDocument;
 class MapEditor;
-class MapScene;
 class MapView;
 class TilesetDocument;
 class TilesetDocumentsModel;
@@ -124,10 +122,6 @@ public:
     TilesetDocument *findTilesetDocument(const QString &fileName) const;
 
     void openTileset(const SharedTileset &tileset);
-
-    void centerMapViewOn(qreal x, qreal y);
-    void centerMapViewOn(const QPointF &pos)
-    { centerMapViewOn(pos.x(), pos.y()); }
 
     void abortMultiDocumentClose();
 

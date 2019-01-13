@@ -339,11 +339,9 @@ void ObjectsView::mousePressEvent(QMouseEvent *event)
     if (MapObject *mapObject = mapObjectModel()->toMapObject(index)) {
         mMapDocument->setCurrentObject(mapObject);
 
-        if (event->button() == Qt::LeftButton && !event->modifiers()) {
-            const QPointF center = mapObject->bounds().center();
-            const QPointF offset = mapObject->objectGroup()->totalOffset();
-            DocumentManager::instance()->centerMapViewOn(center + offset);
-        }
+        if (event->button() == Qt::LeftButton && !event->modifiers())
+            mMapDocument->focusMapObjectRequested(mapObject);
+
     } else if (Layer *layer = mapObjectModel()->toLayer(index)) {
         mMapDocument->setCurrentObject(layer);
         mMapDocument->setCurrentLayer(layer);
@@ -380,10 +378,7 @@ void ObjectsView::onActivated(const QModelIndex &proxyIndex)
 
     if (MapObject *mapObject = mapObjectModel()->toMapObject(index)) {
         mMapDocument->setCurrentObject(mapObject);
-
-        const QPointF center = mapObject->bounds().center();
-        const QPointF offset = mapObject->objectGroup()->totalOffset();
-        DocumentManager::instance()->centerMapViewOn(center + offset);
+        emit mMapDocument->focusMapObjectRequested(mapObject);
     }
 }
 

@@ -32,8 +32,6 @@
 #include "mapdocument.h"
 #include "mapeditor.h"
 #include "mapformat.h"
-#include "maprenderer.h"
-#include "mapscene.h"
 #include "mapview.h"
 #include "noeditorwidget.h"
 #include "preferences.h"
@@ -936,17 +934,6 @@ void DocumentManager::hideChangedWarning()
 
     document->setChangedOnDisk(false);
     mFileChangedWarning->setVisible(false);
-}
-
-/**
- * Centers the current map on the pixel coordinates \a x, \a y.
- */
-void DocumentManager::centerMapViewOn(qreal x, qreal y)
-{
-    if (MapView *view = currentMapView()) {
-        auto mapDocument = view->mapScene()->mapDocument();
-        view->centerOn(mapDocument->renderer()->pixelToScreenCoords(x, y));
-    }
 }
 
 TilesetDocument* DocumentManager::findTilesetDocument(const SharedTileset &tileset) const

@@ -67,6 +67,9 @@ public:
 
     void setSelectedTool(AbstractTool *tool);
 
+signals:
+    void mapDocumentChanged(MapDocument *mapDocument);
+
 protected:
     bool event(QEvent *event) override;
 

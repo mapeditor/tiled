@@ -103,6 +103,7 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
     }
 
     refreshScene();
+    emit mapDocumentChanged(mMapDocument);
 }
 
 /**

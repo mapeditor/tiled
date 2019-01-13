@@ -21,7 +21,11 @@
 #include "mapview.h"
 
 #include "flexiblescrollbar.h"
+#include "mapdocument.h"
+#include "mapobject.h"
+#include "maprenderer.h"
 #include "mapscene.h"
+#include "objectgroup.h"
 #include "preferences.h"
 #include "utils.h"
 #include "zoomable.h"
@@ -88,9 +92,18 @@ MapView::~MapView()
 
 void MapView::setScene(MapScene *scene)
 {
+    if (MapScene *currentScene = mapScene())
+        currentScene->disconnect(this);
+
     QGraphicsView::setScene(scene);
-    if (scene)
+
+    if (scene) {
         updateSceneRect(scene->sceneRect());
+        connect(scene, &MapScene::mapDocumentChanged,
+                this, &MapView::setMapDocument);
+    }
+
+    setMapDocument(scene ? scene->mapDocument() : nullptr);
 }
 
 MapScene *MapView::mapScene() const
@@ -163,6 +176,32 @@ void MapView::updateSceneRect(const QRectF &sceneRect, const QTransform &transfo
     const QRectF expandedSceneRect = transform.inverted().mapRect(viewRect);
 
     setSceneRect(expandedSceneRect);
+}
+
+void MapView::focusMapObject(MapObject *mapObject)
+{
+    // FIXME: This is not always the visual center
+    const QPointF center = mapObject->bounds().center();
+    const QPointF offset = mapObject->objectGroup()->totalOffset();
+    const QPointF focus = center + offset;
+
+    centerOn(mMapDocument->renderer()->pixelToScreenCoords(focus));
+}
+
+void MapView::setMapDocument(MapDocument *mapDocument)
+{
+    if (mMapDocument == mapDocument)
+        return;
+
+    if (mMapDocument)
+        mMapDocument->disconnect(this);
+
+    mMapDocument = mapDocument;
+
+    if (mapDocument) {
+        connect(mapDocument, &MapDocument::focusMapObjectRequested,
+                this, &MapView::focusMapObject);
+    }
 }
 
 void MapView::setHandScrolling(bool handScrolling)

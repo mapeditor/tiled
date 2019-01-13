@@ -268,6 +268,11 @@ signals:
     void hoveredMapObjectChanged(MapObject *object, MapObject *previous);
 
     /**
+     * Emitted when the map view should focus on the given object.
+     */
+    void focusMapObjectRequested(MapObject *object);
+
+    /**
      * Emitted when the map size or its tile size changes.
      */
     void mapChanged();
