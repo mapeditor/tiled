@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILEDQUICK_MAPITEM_H
-#define TILEDQUICK_MAPITEM_H
+#pragma once
 
 #include <QQuickItem>
 
@@ -92,5 +91,3 @@ inline Tiled::Map *MapItem::map() const
 { return mMap; }
 
 } // namespace TiledQuick
-
-#endif // TILEDQUICK_MAPITEM_H

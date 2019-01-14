@@ -26,8 +26,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef WORLDMANAGER_H
-#define WORLDMANAGER_H
+#pragma once
 
 #include "tiled_global.h"
 
@@ -114,5 +113,3 @@ private:
 };
 
 } // namespace Tiled
-
-#endif // WORLDMANAGER_H

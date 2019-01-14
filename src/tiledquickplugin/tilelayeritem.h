@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILEDQUICK_TILELAYERITEM_H
-#define TILEDQUICK_TILELAYERITEM_H
+#pragma once
 
 #include <QQuickItem>
 
@@ -96,5 +95,3 @@ inline QPoint TileItem::position() const
 }
 
 } // namespace TiledQuick
-
-#endif // TILEDQUICK_TILELAYERITEM_H

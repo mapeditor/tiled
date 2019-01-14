@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILEDQUICK_TILESNODE_H
-#define TILEDQUICK_TILESNODE_H
+#pragma once
 
 #include <QSGGeometryNode>
 #include <QSGTextureMaterial>
@@ -62,5 +61,3 @@ inline QSGTexture *TilesNode::texture() const
 }
 
 } // namespace TiledQuick
-
-#endif // TILEDQUICK_TILESNODE_H

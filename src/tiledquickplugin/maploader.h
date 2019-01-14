@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILEDQUICK_MAPLOADER_H
-#define TILEDQUICK_MAPLOADER_H
+#pragma once
 
 #include <QObject>
 #include <QUrl>
@@ -94,5 +93,3 @@ inline QUrl MapLoader::source() const
 }
 
 } // namespace TiledQuick
-
-#endif // TILEDQUICK_MAPLOADER_H

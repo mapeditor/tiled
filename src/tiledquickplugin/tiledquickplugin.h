@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILEDQUICK_TILEDQUICKPLUGIN_H
-#define TILEDQUICK_TILEDQUICKPLUGIN_H
+#pragma once
 
 #include <QQmlExtensionPlugin>
 
@@ -37,5 +36,3 @@ public:
 };
 
 } // namespace TiledQuick
-
-#endif // TILEDQUICK_TILEDQUICKPLUGIN_H

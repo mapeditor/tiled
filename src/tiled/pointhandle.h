@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef POINTHANDLE_H
-#define POINTHANDLE_H
+#pragma once
 
 #include <QGraphicsItem>
 
@@ -63,5 +62,3 @@ private:
 };
 
 } // namespace Tiled
-
-#endif // POINTHANDLE_H

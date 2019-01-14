@@ -26,8 +26,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef IMAGECACHE_H
-#define IMAGECACHE_H
+#pragma once
 
 #include "tiled_global.h"
 
@@ -68,5 +67,3 @@ public:
 };
 
 } // namespace Tiled
-
-#endif // IMAGECACHE_H
