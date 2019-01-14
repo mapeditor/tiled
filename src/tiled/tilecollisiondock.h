@@ -18,13 +18,14 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILECOLLISIONDOCK_H
-#define TILECOLLISIONDOCK_H
+#pragma once
 
 #include "clipboardmanager.h"
 #include "mapdocument.h"
 
 #include <QDockWidget>
+
+class QSplitter;
 
 namespace Tiled {
 
@@ -43,14 +44,24 @@ class TileCollisionDock : public QDockWidget
 {
     Q_OBJECT
 
+public:
     enum Operation {
         Cut,
         Delete
     };
 
-public:
+    enum ObjectsViewVisibility {
+        Hidden,
+        ShowRight,
+        ShowBottom
+    };
+    Q_ENUM(ObjectsViewVisibility)
+
     explicit TileCollisionDock(QWidget *parent = nullptr);
     ~TileCollisionDock() override;
+
+    void saveState();
+    void restoreState();
 
     void setTilesetDocument(TilesetDocument *tilesetDocument);
 
@@ -92,21 +103,29 @@ private slots:
     void moveObjectsUp();
     void moveObjectsDown();
 
+    void setObjectsViewVisibility(ObjectsViewVisibility);
+
 private:
     void retranslateUi();
 
-    Tile *mTile;
-    TilesetDocument *mTilesetDocument;
+    Tile *mTile = nullptr;
+    TilesetDocument *mTilesetDocument = nullptr;
     MapDocumentPtr mDummyMapDocument;
     MapScene *mMapScene;
     MapView *mMapView;
     ObjectsView *mObjectsView;
+    QWidget *mObjectsWidget;
+    QSplitter *mObjectsViewSplitter;
+    QAction *mObjectsViewHiddenAction;
+    QAction *mObjectsViewShowRightAction;
+    QAction *mObjectsViewShowBottomAction;
     ToolManager *mToolManager;
     QAction *mActionMoveUp;
     QAction *mActionMoveDown;
-    bool mApplyingChanges;
-    bool mSynchronizing;
-    bool mHasSelectedObjects;
+    bool mApplyingChanges = false;
+    bool mSynchronizing = false;
+    bool mHasSelectedObjects = false;
+    ObjectsViewVisibility mObjectsViewVisibility = Hidden;
 };
 
 inline MapDocument *TileCollisionDock::dummyMapDocument() const
@@ -125,5 +144,3 @@ inline bool TileCollisionDock::hasSelectedObjects() const
 }
 
 } // namespace Tiled
-
-#endif // TILECOLLISIONDOCK_H

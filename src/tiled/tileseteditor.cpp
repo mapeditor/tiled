@@ -278,6 +278,8 @@ void TilesetEditor::saveState()
     QSettings *settings = Preferences::instance()->settings();
     settings->setValue(QLatin1String(SIZE_KEY), mMainWindow->size());
     settings->setValue(QLatin1String(STATE_KEY), mMainWindow->saveState());
+
+    mTileCollisionDock->saveState();
 }
 
 void TilesetEditor::restoreState()
@@ -288,6 +290,8 @@ void TilesetEditor::restoreState()
         mMainWindow->resize(size.width(), size.height());
         mMainWindow->restoreState(settings->value(QLatin1String(STATE_KEY)).toByteArray());
     }
+
+    mTileCollisionDock->restoreState();
 }
 
 void TilesetEditor::addDocument(Document *document)

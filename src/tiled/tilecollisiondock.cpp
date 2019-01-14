@@ -39,6 +39,7 @@
 #include "objectgroup.h"
 #include "objectselectiontool.h"
 #include "objectsview.h"
+#include "preferences.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
@@ -47,29 +48,31 @@
 #include "utils.h"
 #include "zoomable.h"
 
+#include <QActionGroup>
 #include <QCloseEvent>
 #include <QComboBox>
 #include <QCoreApplication>
+#include <QMenu>
+#include <QSettings>
 #include <QShortcut>
 #include <QSplitter>
 #include <QStatusBar>
 #include <QToolBar>
+#include <QToolButton>
 #include <QUndoStack>
 #include <QVBoxLayout>
 
 namespace Tiled {
 
+static const char OBJECTS_VIEW_VISIBILITY[] = "TileCollisionDock/ObjectsViewVisibility";
+static const char COLLISION_DOCK_SPLITTER_STATE[] = "TileCollisionDock/SplitterState";
+
 TileCollisionDock::TileCollisionDock(QWidget *parent)
     : QDockWidget(parent)
-    , mTile(nullptr)
-    , mTilesetDocument(nullptr)
     , mMapScene(new MapScene(this))
     , mMapView(new MapView(this, MapView::NoStaticContents))
     , mObjectsView(new ObjectsView(this))
     , mToolManager(new ToolManager(this))
-    , mApplyingChanges(false)
-    , mSynchronizing(false)
-    , mHasSelectedObjects(false)
 {
     setObjectName(QLatin1String("tileCollisionDock"));
 
@@ -87,20 +90,20 @@ TileCollisionDock::TileCollisionDock(QWidget *parent)
     CreateObjectTool *polygonObjectsTool = new CreatePolygonObjectTool(this);
     CreateObjectTool *templatesTool = new CreateTemplateTool(this);
 
-    QToolBar *toolBar = new QToolBar(this);
-    toolBar->setObjectName(QLatin1String("TileCollisionDockToolBar"));
-    toolBar->setMovable(false);
-    toolBar->setFloatable(false);
-    toolBar->setContextMenuPolicy(Qt::ActionsContextMenu);
+    QToolBar *toolsToolBar = new QToolBar(this);
+    toolsToolBar->setObjectName(QLatin1String("TileCollisionDockToolBar"));
+    toolsToolBar->setMovable(false);
+    toolsToolBar->setFloatable(false);
+    toolsToolBar->setContextMenuPolicy(Qt::ActionsContextMenu);
 
     mToolManager = new ToolManager(this);
-    toolBar->addAction(mToolManager->registerTool(new ObjectSelectionTool(this)));
-    toolBar->addAction(mToolManager->registerTool(new EditPolygonTool(this)));
-    toolBar->addAction(mToolManager->registerTool(rectangleObjectsTool));
-    toolBar->addAction(mToolManager->registerTool(pointObjectsTool));
-    toolBar->addAction(mToolManager->registerTool(ellipseObjectsTool));
-    toolBar->addAction(mToolManager->registerTool(polygonObjectsTool));
-    toolBar->addAction(mToolManager->registerTool(templatesTool));
+    toolsToolBar->addAction(mToolManager->registerTool(new ObjectSelectionTool(this)));
+    toolsToolBar->addAction(mToolManager->registerTool(new EditPolygonTool(this)));
+    toolsToolBar->addAction(mToolManager->registerTool(rectangleObjectsTool));
+    toolsToolBar->addAction(mToolManager->registerTool(pointObjectsTool));
+    toolsToolBar->addAction(mToolManager->registerTool(ellipseObjectsTool));
+    toolsToolBar->addAction(mToolManager->registerTool(polygonObjectsTool));
+    toolsToolBar->addAction(mToolManager->registerTool(templatesTool));
 
     mActionMoveUp = new QAction(this);
     mActionMoveUp->setIcon(QIcon(QLatin1String(":/images/16x16/go-up.png")));
@@ -119,29 +122,17 @@ TileCollisionDock::TileCollisionDock(QWidget *parent)
     objectsToolBar->addAction(mActionMoveUp);
     objectsToolBar->addAction(mActionMoveDown);
 
-    auto objectsWidget = new QWidget;
-    auto objectsVertical = new QVBoxLayout(objectsWidget);
+    mObjectsWidget = new QWidget;
+    mObjectsWidget->setVisible(false);
+    auto objectsVertical = new QVBoxLayout(mObjectsWidget);
     objectsVertical->setSpacing(0);
     objectsVertical->setMargin(0);
     objectsVertical->addWidget(mObjectsView);
     objectsVertical->addWidget(objectsToolBar);
 
-    auto widget = new QWidget(this);
-    auto vertical = new QVBoxLayout(widget);
-    vertical->setSpacing(0);
-    vertical->setMargin(0);
-
-    auto horizontal = new QHBoxLayout;
-    horizontal->addWidget(toolBar, 1);
-
-    auto splitter = new QSplitter;
-    splitter->addWidget(mMapView);
-    splitter->addWidget(objectsWidget);
-
-    vertical->addLayout(horizontal);
-    vertical->addWidget(splitter);
-
-    setWidget(widget);
+    mObjectsViewSplitter = new QSplitter;
+    mObjectsViewSplitter->addWidget(mMapView);
+    mObjectsViewSplitter->addWidget(mObjectsWidget);
 
     mMapScene->setSelectedTool(mToolManager->selectedTool());
     connect(mToolManager, &ToolManager::selectedToolChanged,
@@ -149,24 +140,87 @@ TileCollisionDock::TileCollisionDock(QWidget *parent)
     connect(mToolManager, &ToolManager::statusInfoChanged,
             this, &TileCollisionDock::statusInfoChanged);
 
+    auto objectsViewActionGroup = new QActionGroup(this);
+
+    mObjectsViewHiddenAction = new QAction(tr("Hidden"), objectsViewActionGroup);
+    mObjectsViewHiddenAction->setData(QVariant::fromValue(Hidden));
+    mObjectsViewHiddenAction->setCheckable(true);
+    mObjectsViewHiddenAction->setChecked(true);
+
+    mObjectsViewShowRightAction = new QAction(tr("Show Right"), objectsViewActionGroup);
+    mObjectsViewShowRightAction->setData(QVariant::fromValue(ShowRight));
+    mObjectsViewShowRightAction->setCheckable(true);
+
+    mObjectsViewShowBottomAction = new QAction(tr("Show Bottom"), objectsViewActionGroup);
+    mObjectsViewShowBottomAction->setData(QVariant::fromValue(ShowBottom));
+    mObjectsViewShowBottomAction->setCheckable(true);
+
+    connect(objectsViewActionGroup, &QActionGroup::triggered, this, [this] (QAction *action) {
+        setObjectsViewVisibility(action->data().value<ObjectsViewVisibility>());
+    });
+
+    auto objectsViewMenu = new QMenu(this);
+    objectsViewMenu->addActions(objectsViewActionGroup->actions());
+
+    QIcon objectsViewIcon(QLatin1String("://images/16x16/layer-object.png"));
+    objectsViewIcon.addFile(QLatin1String("://images/32x32/layer-object.png"));
+
+    auto objectsViewButton = new QToolButton;
+    objectsViewButton->setMenu(objectsViewMenu);
+    objectsViewButton->setPopupMode(QToolButton::InstantPopup);
+    objectsViewButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
+    objectsViewButton->setAutoRaise(true);
+    objectsViewButton->setIcon(objectsViewIcon);
+    objectsViewButton->setToolTip(tr("Objects list"));
+
     QComboBox *zoomComboBox = new QComboBox;
-    horizontal->addWidget(zoomComboBox);
+    mMapView->zoomable()->setComboBox(zoomComboBox);
 
-    Zoomable *zoomable = mMapView->zoomable();
-    zoomable->setComboBox(zoomComboBox);
+    auto rightToolBar = new QToolBar;
+    rightToolBar->setIconSize(Utils::smallIconSize());
+    rightToolBar->addWidget(objectsViewButton);
+    rightToolBar->addSeparator();
+    rightToolBar->addWidget(zoomComboBox);
 
-    auto selectAllShortcut = new QShortcut(Qt::CTRL + Qt::Key_A, this, nullptr, nullptr, Qt::WidgetWithChildrenShortcut);
+    auto horizontal = new QHBoxLayout;
+    horizontal->setSpacing(qRound(Utils::dpiScaled(5)));
+    horizontal->addWidget(toolsToolBar, 1);
+    horizontal->addWidget(rightToolBar);
+
+    auto widget = new QWidget(this);
+    auto vertical = new QVBoxLayout(widget);
+    vertical->setSpacing(0);
+    vertical->setMargin(0);
+    vertical->addLayout(horizontal);
+    vertical->addWidget(mObjectsViewSplitter);
+
+    auto selectAllShortcut = new QShortcut(Qt::CTRL + Qt::Key_A, mMapView, nullptr, nullptr, Qt::WidgetShortcut);
     connect(selectAllShortcut, &QShortcut::activated, this, &TileCollisionDock::selectAll);
 
     connect(mActionMoveUp, &QAction::triggered, this, &TileCollisionDock::moveObjectsUp);
     connect(mActionMoveDown, &QAction::triggered, this, &TileCollisionDock::moveObjectsDown);
 
     retranslateUi();
+    setWidget(widget);
 }
 
 TileCollisionDock::~TileCollisionDock()
 {
     setTile(nullptr);
+}
+
+void TileCollisionDock::saveState()
+{
+    QSettings *settings = Preferences::instance()->settings();
+    settings->setValue(QLatin1String(OBJECTS_VIEW_VISIBILITY), QVariant::fromValue(mObjectsViewVisibility).toString());
+    settings->setValue(QLatin1String(COLLISION_DOCK_SPLITTER_STATE), mObjectsViewSplitter->saveState());
+}
+
+void TileCollisionDock::restoreState()
+{
+    const QSettings *settings = Preferences::instance()->settings();
+    setObjectsViewVisibility(settings->value(QLatin1String(OBJECTS_VIEW_VISIBILITY), Hidden).value<ObjectsViewVisibility>());
+    mObjectsViewSplitter->restoreState(settings->value(QLatin1String(COLLISION_DOCK_SPLITTER_STATE)).toByteArray());
 }
 
 void TileCollisionDock::setTilesetDocument(TilesetDocument *tilesetDocument)
@@ -425,6 +479,31 @@ void TileCollisionDock::moveObjectsDown()
 {
     if (mDummyMapDocument)
         mDummyMapDocument->moveObjectsDown(mDummyMapDocument->selectedObjects());
+}
+
+void TileCollisionDock::setObjectsViewVisibility(ObjectsViewVisibility visibility)
+{
+    if (mObjectsViewVisibility == visibility)
+        return;
+
+    mObjectsViewVisibility = visibility;
+
+    switch (visibility) {
+    case Hidden:
+        mObjectsWidget->setVisible(false);
+        mObjectsViewHiddenAction->setChecked(true);
+        break;
+    case ShowRight:
+        mObjectsWidget->setVisible(true);
+        mObjectsViewSplitter->setOrientation(Qt::Horizontal);
+        mObjectsViewShowRightAction->setChecked(true);
+        break;
+    case ShowBottom:
+        mObjectsWidget->setVisible(true);
+        mObjectsViewSplitter->setOrientation(Qt::Vertical);
+        mObjectsViewShowBottomAction->setChecked(true);
+        break;
+    }
 }
 
 void TileCollisionDock::changeEvent(QEvent *e)
