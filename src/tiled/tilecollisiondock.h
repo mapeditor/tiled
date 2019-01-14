@@ -100,8 +100,11 @@ private slots:
 
     void selectAll();
 
+    void duplicateObjects();
+    void removeObjects();
     void moveObjectsUp();
     void moveObjectsDown();
+    void objectProperties();
 
     void setObjectsViewVisibility(ObjectsViewVisibility);
 
@@ -120,8 +123,11 @@ private:
     QAction *mObjectsViewShowRightAction;
     QAction *mObjectsViewShowBottomAction;
     ToolManager *mToolManager;
+    QAction *mActionDuplicateObjects;
+    QAction *mActionRemoveObjects;
     QAction *mActionMoveUp;
     QAction *mActionMoveDown;
+    QAction *mActionObjectProperties;
     bool mApplyingChanges = false;
     bool mSynchronizing = false;
     bool mHasSelectedObjects = false;
