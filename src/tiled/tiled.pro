@@ -214,6 +214,7 @@ SOURCES += aboutdialog.cpp \
     resizetilelayer.cpp \
     reversingproxymodel.cpp \
     rotatemapobject.cpp \
+    scriptedmapformat.cpp \
     scriptmanager.cpp \
     scriptmodule.cpp \
     selectionrectangle.cpp \
@@ -427,6 +428,7 @@ HEADERS += aboutdialog.h \
     resizetilelayer.h \
     reversingproxymodel.h \
     rotatemapobject.h \
+    scriptedmapformat.h \
     scriptmanager.h \
     scriptmodule.h \
     selectionrectangle.h \

@@ -397,6 +397,8 @@ QtGuiApplication {
         "reversingproxymodel.h",
         "rotatemapobject.cpp",
         "rotatemapobject.h",
+        "scriptedmapformat.cpp",
+        "scriptedmapformat.h",
         "scriptmanager.cpp",
         "scriptmanager.h",
         "scriptmodule.cpp",

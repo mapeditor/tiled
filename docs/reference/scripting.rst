@@ -288,6 +288,64 @@ tiled.error(text : string) : void
     Outputs the given text in the Console window as error message (automatically
     gets "Error: " prepended).
 
+.. _script-registerMapFormat:
+
+tiled.registerMapFormat(shortName : string, mapFormat : object) : void
+    Registers a new map format that can then be used to export maps to.
+
+    If a map format is already registered with the same ``shortName``,
+    the existing format is replaced. The short name can also be used to
+    specify the format when using ``--export-map`` on the command-line,
+    in case the file extension is ambiguous or a different one should be
+    used.
+
+    The ``mapFormat`` object is expected to have the following members:
+
+    .. csv-table::
+        :widths: 1, 2
+
+        **name** : string, Name of format as shown in the file dialog.
+        **extension** : string, The file extension used by the format.
+        "**toString** : function(map : :ref:`script-map`, fileName : string) : string", "A function
+        that returns the string representation of the given map, when
+        saved to the given file name (useful for relative references)."
+
+    Example that produces a simple JSON representation of a map:
+
+    .. code:: javascript
+
+        var customMapFormat = {
+            name: "Custom map format",
+            extension: "custom",
+
+            toString: function(map, fileName) {
+                var m = {
+                    width: map.width,
+                    height: map.height,
+                    layers: []
+                };
+
+                for (var i = 0; i < map.layerCount; ++i) {
+                    var layer = map.layerAt(i);
+                    if (layer.isTileLayer) {
+                        var rows = [];
+                        for (y = 0; y < layer.height; ++y) {
+                            var row = [];
+                            for (x = 0; x < layer.width; ++x)
+                                row.push(layer.cellAt(x, y).tileId);
+                            rows.push(row);
+                        }
+                        m.layers.push(rows);
+                    }
+                }
+
+                return JSON.stringify(m);
+            },
+        }
+
+        tiled.registerMapFormat("custom", customMapFormat)
+
+
 .. _script-tiled-signals:
 
 Signals
@@ -332,6 +390,7 @@ Properties
 
     **fileName** : string |ro|, File name of the asset.
     **modified** : bool |ro|, Whether the asset was modified after it was saved or loaded.
+    **readOnly** : bool |ro|, Whether the asset is read-only.
 
 .. _script-map:
 
@@ -346,9 +405,9 @@ Properties
 .. csv-table::
     :widths: 1, 2
 
-    **width** : int |ro|, Width of the map in tiles. Use :ref:`resize <script-map-resize>` to change it.
-    **height** : int |ro|, Height of the map in tiles. Use :ref:`resize <script-map-resize>` to change it.
-    **size** : size |ro|, Size of the map in tiles (has ``width`` and ``height`` members). Use :ref:`resize <script-map-resize>` to change it.
+    **width** : int |ro|, Width of the map in tiles (only relevant for non-infinite maps). Use :ref:`resize <script-map-resize>` to change it.
+    **height** : int |ro|, Height of the map in tiles (only relevant for non-infinite maps). Use :ref:`resize <script-map-resize>` to change it.
+    **size** : size |ro|, Size of the map in tiles (only relevant for non-infinite maps). Use :ref:`resize <script-map-resize>` to change it.
     **tileWidth** : int, Tile width (used by tile layers).
     **tileHeight**: int, Tile height (used by tile layers).
     **infinite** : bool, Whether this map is infinite.
@@ -418,6 +477,11 @@ Properties
     **locked** : bool, Whether the layer is locked (affects whether child layers are locked for group layers).
     **offset** : point, Offset in pixels that is applied when this layer is rendered.
     **map** : :ref:`script-map`, Map that this layer is part of (or ``null`` in case of a standalone layer).
+    **isTileLayer** : bool |ro|, Whether this layer is a :ref:`script-tilelayer`.
+    **isObjectGroup** : bool |ro|, Whether this layer is an :ref:`script-objectgroup`.
+    **isGroupLayer** : bool |ro|, Whether this layer is a group layer.
+    **isImageLayer** : bool |ro|, Whether this layer is an image layer.
+    **readOnly** : bool |ro|, Whether the layer is read-only.
 
 .. _script-tilelayer:
 
@@ -510,6 +574,7 @@ Properties
     **visible** : bool, Whether the object is visible.
     **layer** : :ref:`script-objectgroup` |ro|, Layer this object is part of (or ``null`` in case of a standalone object).
     **map** : :ref:`script-map` |ro|, Map this object is part of (or ``null`` in case of a standalone object).
+    **readOnly** : bool |ro|, Whether the object is read-only.
 
 .. _script-tileset:
 

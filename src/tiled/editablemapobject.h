@@ -53,6 +53,7 @@ class EditableMapObject : public QObject
     Q_PROPERTY(Tiled::EditableMap *map READ map)
 //    Q_PROPERTY(bool mTemplateBase)
 //    Q_PROPERTY(ChangedProperties mChangedProperties)
+    Q_PROPERTY(bool readOnly READ isReadOnly)
 
 public:
     EditableMapObject(EditableMap *map,
@@ -72,6 +73,7 @@ public:
     bool visible() const;
     EditableObjectGroup *layer() const;
     EditableMap *map();
+    bool isReadOnly() const;
 
     MapObject *mapObject() const;
 

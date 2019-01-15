@@ -47,6 +47,11 @@ EditableObjectGroup *EditableMapObject::layer() const
     return nullptr;
 }
 
+bool EditableMapObject::isReadOnly() const
+{
+    return mMap && mMap->isReadOnly();
+}
+
 void EditableMapObject::detach()
 {
     Q_ASSERT(mMap);

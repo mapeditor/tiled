@@ -23,6 +23,8 @@
 #include "actionmanager.h"
 #include "editableasset.h"
 #include "logginginterface.h"
+#include "scriptedmapformat.h"
+#include "scriptmanager.h"
 
 #include <QAction>
 #include <QCoreApplication>
@@ -49,6 +51,9 @@ ScriptModule::ScriptModule(QObject *parent)
 ScriptModule::~ScriptModule()
 {
     PluginManager::removeObject(mLogger);
+
+    for (const auto &pair : mRegisteredMapFormats)
+        PluginManager::removeObject(pair.second.get());
 }
 
 QString ScriptModule::version() const
@@ -106,6 +111,21 @@ QList<QObject *> ScriptModule::openAssets() const
     for (const DocumentPtr &document : documentManager->documents())
         assets.append(document->editable());
     return assets;
+}
+
+void ScriptModule::registerMapFormat(const QString &shortName, const QJSValue &mapFormatObject)
+{
+    if (!ScriptedMapFormat::validateMapFormatObject(mapFormatObject))
+        return;
+
+    auto &format = mRegisteredMapFormats[shortName];
+
+    // Remove any previously registered format with the same name
+    if (format)
+        PluginManager::removeObject(format.get());
+
+    format.reset(new ScriptedMapFormat(shortName, mapFormatObject));
+    PluginManager::addObject(format.get());
 }
 
 void ScriptModule::trigger(const QByteArray &actionName) const

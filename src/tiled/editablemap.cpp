@@ -28,6 +28,7 @@
 #include "editablelayer.h"
 #include "editablemapobject.h"
 #include "editableobjectgroup.h"
+#include "editableselectedarea.h"
 #include "editabletilelayer.h"
 #include "grouplayer.h"
 #include "movemapobject.h"
@@ -50,7 +51,8 @@ namespace Tiled {
 EditableMap::EditableMap(MapDocument *mapDocument, QObject *parent)
     : EditableAsset(parent)
     , mMapDocument(mapDocument)
-    , mSelectedArea(mapDocument)
+    , mMap(mapDocument->map())
+    , mSelectedArea(new EditableSelectedArea(mapDocument, this))
 {
     connect(map(), &Map::sizeChanged, this, &EditableMap::sizeChanged);
     connect(map(), &Map::tileWidthChanged, this, &EditableMap::tileWidthChanged);
@@ -59,6 +61,19 @@ EditableMap::EditableMap(MapDocument *mapDocument, QObject *parent)
     connect(mapDocument, &Document::fileNameChanged, this, &EditableAsset::fileNameChanged);
     connect(mapDocument, &MapDocument::layerRemoved, this, &EditableMap::detachEditableLayer);
     connect(mapDocument, &MapDocument::objectsRemoved, this, &EditableMap::detachMapObjects);
+}
+
+/**
+ * Creates a read-only instance of EditableMap that works on the given \a map.
+ *
+ * The map's lifetime must exceed that of the EditableMap instance.
+ */
+EditableMap::EditableMap(const Map *map, QObject *parent)
+    : EditableAsset(parent)
+    , mMapDocument(nullptr)
+    , mMap(map)
+    , mSelectedArea(nullptr)
+{
 }
 
 EditableMap::~EditableMap()
@@ -75,7 +90,9 @@ EditableMap::~EditableMap()
 
 QString EditableMap::fileName() const
 {
-    return mapDocument()->fileName();
+    if (MapDocument *document = mapDocument())
+        return document->fileName();
+    return QString();
 }
 
 EditableLayer *EditableMap::layerAt(int index)
@@ -85,7 +102,7 @@ EditableLayer *EditableMap::layerAt(int index)
         return nullptr;
     }
 
-    Layer *layer = map()->layerAt(index);
+    Layer *layer = mMap->layerAt(index);
     return editableLayer(layer);
 }
 
@@ -132,8 +149,8 @@ void EditableMap::insertLayerAt(int index, EditableLayer *editableLayer)
         return;
     }
 
-    push(new AddLayer(mapDocument(), index, editableLayer->layer(), nullptr));
-    editableLayer->attach(this);
+    if (push(new AddLayer(mapDocument(), index, editableLayer->layer(), nullptr)))
+        editableLayer->attach(this);
 }
 
 void EditableMap::addLayer(EditableLayer *editableLayer)
@@ -235,6 +252,8 @@ void EditableMap::resize(const QSize &size,
                          const QPoint &offset,
                          bool removeObjects)
 {
+    if (checkReadOnly())
+        return;
     if (size.isEmpty())
         return;
 
@@ -325,7 +344,7 @@ void EditableMap::detachMapObjects(const QList<MapObject *> &mapObjects)
 
 EditableLayer *EditableMap::editableLayer(Layer *layer)
 {
-    Q_ASSERT(layer->map() == map());
+    Q_ASSERT(layer->map() == mMap);
 
     EditableLayer* &editableLayer = mEditableLayers[layer];
     if (!editableLayer) {

@@ -73,11 +73,6 @@ DefoldPlugin::DefoldPlugin()
 {
 }
 
-QStringList DefoldPlugin::outputFiles(const Tiled::Map *, const QString &fileName) const
-{
-    return QStringList() << fileName;
-}
-
 QString DefoldPlugin::nameFilter() const
 {
     return tr("Defold files (*.tilemap)");

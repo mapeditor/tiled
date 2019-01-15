@@ -40,6 +40,11 @@ EditableLayer::~EditableLayer()
         mMap->mEditableLayers.remove(layer());
 }
 
+bool EditableLayer::isReadOnly() const
+{
+    return mMap && mMap->isReadOnly();
+}
+
 void EditableLayer::detach()
 {
     Q_ASSERT(mMap);

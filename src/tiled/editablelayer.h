@@ -40,6 +40,11 @@ class EditableLayer : public QObject
     Q_PROPERTY(bool locked READ isLocked WRITE setLocked)
     Q_PROPERTY(QPointF offset READ offset WRITE setOffset)
     Q_PROPERTY(Tiled::EditableMap *map READ map)
+    Q_PROPERTY(bool isTileLayer READ isTileLayer CONSTANT)
+    Q_PROPERTY(bool isObjectLayer READ isObjectLayer CONSTANT)
+    Q_PROPERTY(bool isGroupLayer READ isGroupLayer CONSTANT)
+    Q_PROPERTY(bool isImageLayer READ isImageLayer CONSTANT)
+    Q_PROPERTY(bool readOnly READ isReadOnly)
 
 public:
     explicit EditableLayer(EditableMap *map,
@@ -53,6 +58,11 @@ public:
     bool isLocked() const;
     QPointF offset() const;
     EditableMap *map() const;
+    bool isTileLayer();
+    bool isObjectLayer();
+    bool isGroupLayer();
+    bool isImageLayer();
+    bool isReadOnly() const;
 
     Layer *layer() const;
 
@@ -101,6 +111,26 @@ inline QPointF EditableLayer::offset() const
 inline EditableMap *EditableLayer::map() const
 {
     return mMap;
+}
+
+inline bool EditableLayer::isTileLayer()
+{
+    return mLayer->isTileLayer();
+}
+
+inline bool EditableLayer::isObjectLayer()
+{
+    return mLayer->isObjectGroup();
+}
+
+inline bool EditableLayer::isGroupLayer()
+{
+    return mLayer->isGroupLayer();
+}
+
+inline bool EditableLayer::isImageLayer()
+{
+    return mLayer->isImageLayer();
 }
 
 inline Layer *EditableLayer::layer() const

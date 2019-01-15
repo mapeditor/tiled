@@ -21,7 +21,6 @@
 #pragma once
 
 #include "editableasset.h"
-#include "editableselectedarea.h"
 #include "mapdocument.h"
 
 namespace Tiled {
@@ -30,6 +29,7 @@ class MapObject;
 
 class EditableLayer;
 class EditableMapObject;
+class EditableSelectedArea;
 
 class EditableMap : public EditableAsset
 {
@@ -52,11 +52,12 @@ class EditableMap : public EditableAsset
     Q_PROPERTY(int layerCount READ layerCount)
 
 public:
-    explicit EditableMap(MapDocument *mapDocument,
-                         QObject *parent = nullptr);
+    explicit EditableMap(MapDocument *mapDocument, QObject *parent = nullptr);
+    explicit EditableMap(const Map *map, QObject *parent = nullptr);
     ~EditableMap() override;
 
     QString fileName() const override;
+    bool isReadOnly() const override;
 
     int width() const;
     int height() const;
@@ -114,16 +115,23 @@ private:
     EditableLayer *editableLayer(Layer *layer);
     EditableMapObject *editableMapObject(MapObject *mapObject);
 
-    Map *map() const;
+    Map *map();
+    const Map *map() const;
     MapRenderer *renderer() const;
 
     MapDocument * const mMapDocument;
+    const Map * const mMap;
 
     QHash<Layer*, EditableLayer*> mEditableLayers;
     QHash<MapObject*, EditableMapObject*> mEditableMapObjects;
-    EditableSelectedArea mSelectedArea;
+    EditableSelectedArea *mSelectedArea;
 };
 
+
+inline bool EditableMap::isReadOnly() const
+{
+    return mMapDocument == nullptr;
+}
 
 inline int EditableMap::width() const
 {
@@ -195,9 +203,15 @@ inline int EditableMap::layerCount() const
     return map()->layerCount();
 }
 
-inline Map *EditableMap::map() const
+inline Map *EditableMap::map()
 {
+    Q_ASSERT(mMapDocument);
     return mMapDocument->map();
+}
+
+inline const Map *EditableMap::map() const
+{
+    return mMap;
 }
 
 inline MapRenderer *EditableMap::renderer() const
@@ -212,7 +226,7 @@ inline MapDocument *EditableMap::mapDocument() const
 
 inline EditableSelectedArea *EditableMap::selectedArea()
 {
-    return &mSelectedArea;
+    return mSelectedArea;
 }
 
 } // namespace Tiled

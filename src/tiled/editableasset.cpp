@@ -20,6 +20,8 @@
 
 #include "editableasset.h"
 
+#include "scriptmanager.h"
+
 #include <QUndoStack>
 
 namespace Tiled {
@@ -39,9 +41,27 @@ bool EditableAsset::isModified() const
     return !undoStack()->isClean();
 }
 
-void EditableAsset::push(QUndoCommand *command)
+bool EditableAsset::push(QUndoCommand *command)
 {
-    undoStack()->push(command);
+    return push(std::unique_ptr<QUndoCommand>(command));
+}
+
+bool EditableAsset::push(std::unique_ptr<QUndoCommand> &&command)
+{
+    if (checkReadOnly())
+        return false;
+
+    undoStack()->push(command.release());
+    return true;
+}
+
+bool EditableAsset::checkReadOnly() const
+{
+    if (isReadOnly()) {
+        ScriptManager::instance().throwError(tr("Asset is read-only"));
+        return true;
+    }
+    return false;
 }
 
 void EditableAsset::undo()

@@ -94,11 +94,11 @@ void EditableObjectGroup::insertObjectAt(int index, EditableMapObject *editableM
     }
 
     if (map()) {
-        map()->push(new AddMapObjects(map()->mapDocument(),
-                                      objectGroup(),
-                                      editableMapObject->mapObject()));
-
-        editableMapObject->attach(map());
+        if (map()->push(new AddMapObjects(map()->mapDocument(),
+                                          objectGroup(),
+                                          editableMapObject->mapObject()))) {
+            editableMapObject->attach(map());
+        }
     } else {
         // todo: when this ObjectGroup is added to a map later, who is going to
         // attach the EditableMapObject, which is not referenced anywhere?

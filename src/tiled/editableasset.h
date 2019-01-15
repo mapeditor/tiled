@@ -22,6 +22,8 @@
 
 #include <QObject>
 
+#include <memory>
+
 class QUndoCommand;
 class QUndoStack;
 
@@ -33,15 +35,20 @@ class EditableAsset : public QObject
 
     Q_PROPERTY(QString fileName READ fileName NOTIFY fileNameChanged)
     Q_PROPERTY(bool modified READ isModified NOTIFY modifiedChanged)
+    Q_PROPERTY(bool readOnly READ isReadOnly)
 
 public:
     explicit EditableAsset(QObject *parent = nullptr);
 
     virtual QString fileName() const = 0;
+    virtual bool isReadOnly() const = 0;
 
     QUndoStack *undoStack() const;
     bool isModified() const;
-    void push(QUndoCommand *command);
+    bool push(QUndoCommand *command);
+    bool push(std::unique_ptr<QUndoCommand> &&command);
+
+    bool checkReadOnly() const;
 
 public slots:
     void undo();

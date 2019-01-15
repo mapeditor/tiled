@@ -79,8 +79,8 @@ public:
     virtual bool supportsFile(const QString &fileName) const = 0;
 
     /**
-     * Returns the error to be shown to the user if an error occured while
-     * trying to read a map.
+     * Returns the error to be shown to the user if an error occurred while
+     * trying to read or write a file.
      */
     virtual QString errorString() const = 0;
 };

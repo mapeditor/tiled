@@ -22,13 +22,18 @@
 
 #include "documentmanager.h"
 
+#include <QJSValue>
 #include <QObject>
+
+#include <map>
+#include <memory>
 
 namespace Tiled {
 
 class LoggingInterface;
 
 class EditableAsset;
+class ScriptedMapFormat;
 
 /**
  * Initial point of access to Tiled functionality from JavaScript.
@@ -56,6 +61,8 @@ public:
     bool setActiveAsset(EditableAsset *asset) const;
 
     QList<QObject*> openAssets() const;
+
+    Q_INVOKABLE void registerMapFormat(const QString &shortName, const QJSValue &mapFormatObject);
 
 signals:
     void assetCreated(Tiled::EditableAsset *asset);
@@ -86,6 +93,7 @@ private slots:
 
 private:
     LoggingInterface *mLogger;
+    std::map<QString, std::unique_ptr<ScriptedMapFormat>> mRegisteredMapFormats;
 };
 
 } // namespace Tiled

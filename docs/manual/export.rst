@@ -253,6 +253,12 @@ tengine
 
 These plugins are disabled by default. They can be enabled in *Edit > Preferences > Plugins*.
 
+JavaScript
+~~~~~~~~~~
+
+It is possible to add custom export formats using :doc:`scripting </reference/scripting>`
+(by calling :ref:`tiled.registerMapFormat <script-registerMapFormat>`).
+
 Python Scripts
 ~~~~~~~~~~~~~~
 

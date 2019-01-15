@@ -45,6 +45,7 @@ public:
                              QObject *parent = nullptr);
 
     QString fileName() const override;
+    bool isReadOnly() const override;
 
     const QString &name() const;
     int tileWidth() const;
@@ -66,6 +67,11 @@ private:
     TilesetDocument *mTilesetDocument;
 };
 
+
+inline bool EditableTileset::isReadOnly() const
+{
+    return mTilesetDocument == nullptr;
+}
 
 inline const QString &EditableTileset::name() const
 {
