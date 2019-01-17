@@ -49,9 +49,8 @@
 namespace Tiled {
 
 EditableMap::EditableMap(MapDocument *mapDocument, QObject *parent)
-    : EditableAsset(parent)
-    , mMapDocument(mapDocument)
-    , mMap(mapDocument->map())
+    : EditableAsset(mapDocument, mapDocument->map(), parent)
+    , mReadOnly(false)
     , mSelectedArea(new EditableSelectedArea(mapDocument, this))
 {
     connect(map(), &Map::sizeChanged, this, &EditableMap::sizeChanged);
@@ -69,9 +68,8 @@ EditableMap::EditableMap(MapDocument *mapDocument, QObject *parent)
  * The map's lifetime must exceed that of the EditableMap instance.
  */
 EditableMap::EditableMap(const Map *map, QObject *parent)
-    : EditableAsset(parent)
-    , mMapDocument(nullptr)
-    , mMap(map)
+    : EditableAsset(nullptr, const_cast<Map*>(map), parent)
+    , mReadOnly(true)
     , mSelectedArea(nullptr)
 {
 }
@@ -88,13 +86,6 @@ EditableMap::~EditableMap()
         editable->detach();
 }
 
-QString EditableMap::fileName() const
-{
-    if (MapDocument *document = mapDocument())
-        return document->fileName();
-    return QString();
-}
-
 EditableLayer *EditableMap::layerAt(int index)
 {
     if (index < 0 || index >= layerCount()) {
@@ -102,7 +93,7 @@ EditableLayer *EditableMap::layerAt(int index)
         return nullptr;
     }
 
-    Layer *layer = mMap->layerAt(index);
+    Layer *layer = map()->layerAt(index);
     return editableLayer(layer);
 }
 
@@ -344,7 +335,7 @@ void EditableMap::detachMapObjects(const QList<MapObject *> &mapObjects)
 
 EditableLayer *EditableMap::editableLayer(Layer *layer)
 {
-    Q_ASSERT(layer->map() == mMap);
+    Q_ASSERT(layer->map() == map());
 
     EditableLayer* &editableLayer = mEditableLayers[layer];
     if (!editableLayer) {

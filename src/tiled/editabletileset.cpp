@@ -27,35 +27,34 @@ namespace Tiled {
 
 EditableTileset::EditableTileset(TilesetDocument *tilesetDocument,
                                  QObject *parent)
-    : EditableAsset(parent)
-    , mTilesetDocument(tilesetDocument)
+    : EditableAsset(tilesetDocument, tilesetDocument->tileset().data(), parent)
 {
     connect(tilesetDocument, &Document::fileNameChanged, this, &EditableAsset::fileNameChanged);
 }
 
-QString EditableTileset::fileName() const
+TilesetDocument *EditableTileset::tilesetDocument() const
 {
-    return mTilesetDocument->fileName();
+    return static_cast<TilesetDocument*>(document());
 }
 
 void EditableTileset::setName(const QString &name)
 {
-    push(new RenameTileset(mTilesetDocument, name));
+    push(new RenameTileset(tilesetDocument(), name));
 }
 
 void EditableTileset::setTileOffset(QPoint tileOffset)
 {
-    push(new ChangeTilesetTileOffset(mTilesetDocument, tileOffset));
+    push(new ChangeTilesetTileOffset(tilesetDocument(), tileOffset));
 }
 
 void EditableTileset::setBackgroundColor(const QColor &color)
 {
-    push(new ChangeTilesetBackgroundColor(mTilesetDocument, color));
+    push(new ChangeTilesetBackgroundColor(tilesetDocument(), color));
 }
 
 Tileset *EditableTileset::tileset() const
 {
-    return mTilesetDocument->tileset().data();
+    return tilesetDocument()->tileset().data();
 }
 
 } // namespace Tiled

@@ -20,16 +20,15 @@
 
 #pragma once
 
+#include "editableobject.h"
 #include "mapobject.h"
-
-#include <QObject>
 
 namespace Tiled {
 
 class EditableMap;
 class EditableObjectGroup;
 
-class EditableMapObject : public QObject
+class EditableMapObject : public EditableObject
 {
     Q_OBJECT
 
@@ -53,7 +52,6 @@ class EditableMapObject : public QObject
     Q_PROPERTY(Tiled::EditableMap *map READ map)
 //    Q_PROPERTY(bool mTemplateBase)
 //    Q_PROPERTY(ChangedProperties mChangedProperties)
-    Q_PROPERTY(bool readOnly READ isReadOnly)
 
 public:
     EditableMapObject(EditableMap *map,
@@ -72,8 +70,7 @@ public:
     qreal rotation() const;
     bool visible() const;
     EditableObjectGroup *layer() const;
-    EditableMap *map();
-    bool isReadOnly() const;
+    EditableMap *map() const;
 
     MapObject *mapObject() const;
 
@@ -95,7 +92,6 @@ public slots:
 private:
     void setMapObjectProperty(MapObject::Property property, const QVariant &value);
 
-    EditableMap *mMap;
     MapObject *mMapObject;
     std::unique_ptr<MapObject> mDetachedMapObject;
 };
@@ -154,11 +150,6 @@ inline qreal EditableMapObject::rotation() const
 inline bool EditableMapObject::visible() const
 {
     return mMapObject->isVisible();
-}
-
-inline EditableMap *EditableMapObject::map()
-{
-    return mMap;
 }
 
 inline MapObject *EditableMapObject::mapObject() const

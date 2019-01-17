@@ -28,30 +28,29 @@
 namespace Tiled {
 
 EditableLayer::EditableLayer(EditableMap *map, Layer *layer, QObject *parent)
-    : QObject(parent)
-    , mMap(map)
+    : EditableObject(map, layer, parent)
     , mLayer(layer)
 {
 }
 
 EditableLayer::~EditableLayer()
 {
-    if (mMap)
-        mMap->mEditableLayers.remove(layer());
+    if (map())
+        map()->mEditableLayers.remove(layer());
 }
 
-bool EditableLayer::isReadOnly() const
+EditableMap *EditableLayer::map() const
 {
-    return mMap && mMap->isReadOnly();
+    return static_cast<EditableMap*>(asset());
 }
 
 void EditableLayer::detach()
 {
-    Q_ASSERT(mMap);
-    Q_ASSERT(mMap->mEditableLayers.contains(layer()));
+    Q_ASSERT(map());
+    Q_ASSERT(map()->mEditableLayers.contains(layer()));
 
-    mMap->mEditableLayers.remove(mLayer);
-    mMap = nullptr;
+    map()->mEditableLayers.remove(mLayer);
+    setAsset(nullptr);
 
     mDetachedLayer.reset(mLayer->clone());
     mLayer = mDetachedLayer.get();
@@ -59,52 +58,57 @@ void EditableLayer::detach()
 
 void EditableLayer::attach(EditableMap *map)
 {
-    Q_ASSERT(!mMap && map);
+    Q_ASSERT(!asset() && map);
     Q_ASSERT(!map->mEditableLayers.contains(layer()));
 
-    mMap = map;
-    mMap->mEditableLayers.insert(layer(), this);
+    setAsset(map);
+    map->mEditableLayers.insert(layer(), this);
     mDetachedLayer.release();
 }
 
 void EditableLayer::setName(const QString &name)
 {
-    if (mMap)
-        mMap->push(new RenameLayer(mMap->mapDocument(), mLayer, name));
+    if (asset())
+        asset()->push(new RenameLayer(mapDocument(), mLayer, name));
     else
         mLayer->setName(name);
 }
 
 void EditableLayer::setOpacity(qreal opacity)
 {
-    if (mMap)
-        mMap->push(new SetLayerOpacity(mMap->mapDocument(), mLayer, opacity));
+    if (asset())
+        asset()->push(new SetLayerOpacity(mapDocument(), mLayer, opacity));
     else
         mLayer->setOpacity(opacity);
 }
 
 void EditableLayer::setVisible(bool visible)
 {
-    if (mMap)
-        mMap->push(new SetLayerVisible(mMap->mapDocument(), mLayer, visible));
+    if (asset())
+        asset()->push(new SetLayerVisible(mapDocument(), mLayer, visible));
     else
         mLayer->setVisible(visible);
 }
 
 void EditableLayer::setLocked(bool locked)
 {
-    if (mMap)
-        mMap->push(new SetLayerLocked(mMap->mapDocument(), mLayer, locked));
+    if (asset())
+        asset()->push(new SetLayerLocked(mapDocument(), mLayer, locked));
     else
         mLayer->setLocked(locked);
 }
 
 void EditableLayer::setOffset(QPointF offset)
 {
-    if (mMap)
-        mMap->push(new SetLayerOffset(mMap->mapDocument(), mLayer, offset));
+    if (asset())
+        asset()->push(new SetLayerOffset(mapDocument(), mLayer, offset));
     else
         mLayer->setOffset(offset);
+}
+
+MapDocument *EditableLayer::mapDocument() const
+{
+    return map() ? map()->mapDocument() : nullptr;
 }
 
 } // namespace Tiled

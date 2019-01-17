@@ -370,10 +370,66 @@ tiled.activeAssetChanged(asset : :ref:`script-asset`)
     The currently active asset has changed.
 
 
+.. _script-object:
+
+Object
+^^^^^^
+
+The base of most data types in Tiled. Provides the ability to associate custom
+properties with the data.
+
+Properties
+~~~~~~~~~~
+
+.. csv-table::
+    :widths: 1, 2
+
+    **asset** : :ref:`script-asset` |ro|, "The asset this object is part of, or ``null``."
+    **readOnly** : bool |ro|, Whether the object is read-only.
+
+Functions
+~~~~~~~~~
+
+.. _script-object-property:
+
+Object.property(name : string) : variant
+    Returns the value of the custom property with the given name, or
+    ``undefined`` if no such property is set on the object.
+
+    *Note:* Currently it is not possible to inspect the value of ``file`` properties.
+
+.. _script-object-setProperty:
+
+Object.setProperty(name : string, value : variant) : void
+    Sets the value of the custom property with the given name. Supported types
+    are ``bool``, ``number`` and ``string``. When setting a ``number``, the
+    property type will be set to either ``int`` or ``float``, depending on
+    whether it is a whole number.
+
+    *Note:* Support for ``color`` and ``file`` properties is currently missing.
+
+.. _script-object-properties:
+
+Object.properties() : object
+    Returns all custom properties set on this object. Modifications to the
+    properties will not affect the original object.
+
+.. _script-object-setProperties:
+
+Object.setProperties(properties : object) : void
+    Replaces all currently set custom properties with a new set of properties.
+
+.. _script-object-removeProperty:
+
+Object.removeProperty(name : string) : void
+    Removes the custom property with the given name.
+
 .. _script-asset:
 
 Asset
 ^^^^^
+
+Inherits :ref:`script-object`.
 
 Represents any top-level data type that can be saved to a file. Currently
 either a :ref:`script-map` or a :ref:`script-tileset`.
@@ -390,7 +446,6 @@ Properties
 
     **fileName** : string |ro|, File name of the asset.
     **modified** : bool |ro|, Whether the asset was modified after it was saved or loaded.
-    **readOnly** : bool |ro|, Whether the asset is read-only.
 
 .. _script-map:
 
@@ -465,6 +520,8 @@ Map.resize(size : size [, offset : point [, removeObjects : bool = false]]) : vo
 Layer
 ^^^^^
 
+Inherits :ref:`script-object`.
+
 Properties
 ~~~~~~~~~~
 
@@ -481,7 +538,6 @@ Properties
     **isObjectGroup** : bool |ro|, Whether this layer is an :ref:`script-objectgroup`.
     **isGroupLayer** : bool |ro|, Whether this layer is a group layer.
     **isImageLayer** : bool |ro|, Whether this layer is an image layer.
-    **readOnly** : bool |ro|, Whether the layer is read-only.
 
 .. _script-tilelayer:
 
@@ -555,6 +611,8 @@ ObjectGroup.addObject(object : :ref:`script-mapobject`) : void
 MapObject
 ^^^^^^^^^
 
+Inherits :ref:`script-object`.
+
 Properties
 ~~~~~~~~~~
 
@@ -574,7 +632,6 @@ Properties
     **visible** : bool, Whether the object is visible.
     **layer** : :ref:`script-objectgroup` |ro|, Layer this object is part of (or ``null`` in case of a standalone object).
     **map** : :ref:`script-map` |ro|, Map this object is part of (or ``null`` in case of a standalone object).
-    **readOnly** : bool |ro|, Whether the object is read-only.
 
 .. _script-tileset:
 

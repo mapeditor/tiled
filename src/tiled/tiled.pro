@@ -131,6 +131,7 @@ SOURCES += aboutdialog.cpp \
     editablelayer.cpp \
     editablemap.cpp \
     editablemapobject.cpp \
+    editableobject.cpp \
     editableobjectgroup.cpp \
     editableselectedarea.cpp \
     editabletilelayer.cpp \
@@ -343,6 +344,7 @@ HEADERS += aboutdialog.h \
     editablelayer.h \
     editablemap.h \
     editablemapobject.h \
+    editableobject.h \
     editableobjectgroup.h \
     editableselectedarea.h \
     editabletilelayer.h \

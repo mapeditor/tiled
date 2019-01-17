@@ -44,7 +44,6 @@ public:
     explicit EditableTileset(TilesetDocument *tilesetDocument,
                              QObject *parent = nullptr);
 
-    QString fileName() const override;
     bool isReadOnly() const override;
 
     const QString &name() const;
@@ -56,6 +55,8 @@ public:
     QPoint tileOffset() const;
     QColor backgroundColor() const;
 
+    TilesetDocument *tilesetDocument() const;
+
 public slots:
     void setName(const QString &name);
     void setTileOffset(QPoint tileOffset);
@@ -64,13 +65,13 @@ public slots:
 private:
     Tileset *tileset() const;
 
-    TilesetDocument *mTilesetDocument;
+    bool mReadOnly = false;
 };
 
 
 inline bool EditableTileset::isReadOnly() const
 {
-    return mTilesetDocument == nullptr;
+    return mReadOnly;
 }
 
 inline const QString &EditableTileset::name() const

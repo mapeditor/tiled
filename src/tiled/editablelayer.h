@@ -20,17 +20,17 @@
 
 #pragma once
 
+#include "editableobject.h"
 #include "layer.h"
-
-#include <QObject>
 
 #include <memory>
 
 namespace Tiled {
 
 class EditableMap;
+class MapDocument;
 
-class EditableLayer : public QObject
+class EditableLayer : public EditableObject
 {
     Q_OBJECT
 
@@ -44,7 +44,6 @@ class EditableLayer : public QObject
     Q_PROPERTY(bool isObjectLayer READ isObjectLayer CONSTANT)
     Q_PROPERTY(bool isGroupLayer READ isGroupLayer CONSTANT)
     Q_PROPERTY(bool isImageLayer READ isImageLayer CONSTANT)
-    Q_PROPERTY(bool readOnly READ isReadOnly)
 
 public:
     explicit EditableLayer(EditableMap *map,
@@ -62,7 +61,6 @@ public:
     bool isObjectLayer();
     bool isGroupLayer();
     bool isImageLayer();
-    bool isReadOnly() const;
 
     Layer *layer() const;
 
@@ -77,7 +75,8 @@ public slots:
     void setOffset(QPointF offset);
 
 private:
-    EditableMap *mMap;
+    MapDocument *mapDocument() const;
+
     Layer *mLayer;
     std::unique_ptr<Layer> mDetachedLayer;
 };
@@ -106,11 +105,6 @@ inline bool EditableLayer::isLocked() const
 inline QPointF EditableLayer::offset() const
 {
     return mLayer->offset();
-}
-
-inline EditableMap *EditableLayer::map() const
-{
-    return mMap;
 }
 
 inline bool EditableLayer::isTileLayer()

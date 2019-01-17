@@ -30,16 +30,15 @@ namespace Tiled {
 EditableMapObject::EditableMapObject(EditableMap *map,
                                      MapObject *mapObject,
                                      QObject *parent)
-    : QObject(parent)
-    , mMap(map)
+    : EditableObject(map, mapObject, parent)
     , mMapObject(mapObject)
 {
 }
 
 EditableObjectGroup *EditableMapObject::layer() const
 {
-    if (mMap)
-        return static_cast<EditableObjectGroup*>(mMap->editableLayer(mMapObject->objectGroup()));
+    if (map())
+        return static_cast<EditableObjectGroup*>(map()->editableLayer(mMapObject->objectGroup()));
     else
         // todo: what to do for objects that are part of detached layers?
         ;
@@ -47,18 +46,18 @@ EditableObjectGroup *EditableMapObject::layer() const
     return nullptr;
 }
 
-bool EditableMapObject::isReadOnly() const
+EditableMap *EditableMapObject::map() const
 {
-    return mMap && mMap->isReadOnly();
+    return static_cast<EditableMap*>(asset());
 }
 
 void EditableMapObject::detach()
 {
-    Q_ASSERT(mMap);
-    Q_ASSERT(mMap->mEditableMapObjects.contains(mapObject()));
+    Q_ASSERT(map());
+    Q_ASSERT(map()->mEditableMapObjects.contains(mapObject()));
 
-    mMap->mEditableMapObjects.remove(mapObject());
-    mMap = nullptr;
+    map()->mEditableMapObjects.remove(mapObject());
+    setAsset(nullptr);
 
     mDetachedMapObject.reset(mMapObject->clone());
     mMapObject = mDetachedMapObject.get();
@@ -66,11 +65,11 @@ void EditableMapObject::detach()
 
 void EditableMapObject::attach(EditableMap *map)
 {
-    Q_ASSERT(!mMap && map);
+    Q_ASSERT(!asset() && map);
     Q_ASSERT(!map->mEditableMapObjects.contains(mapObject()));
 
-    mMap = map;
-    mMap->mEditableMapObjects.insert(mapObject(), this);
+    setAsset(map);
+    map->mEditableMapObjects.insert(mapObject(), this);
     mDetachedMapObject.release();
 }
 
@@ -86,9 +85,9 @@ void EditableMapObject::setType(QString type)
 
 void EditableMapObject::setPos(QPointF pos)
 {
-    if (mMap) {
-        mMap->push(new MoveMapObject(mMap->mapDocument(), mMapObject,
-                                     pos, mMapObject->position()));
+    if (asset()) {
+        asset()->push(new MoveMapObject(map()->mapDocument(), mMapObject,
+                                        pos, mMapObject->position()));
     } else {
         mMapObject->setPosition(pos);
     }
@@ -112,9 +111,9 @@ void EditableMapObject::setVisible(bool visible)
 void EditableMapObject::setMapObjectProperty(MapObject::Property property,
                                              const QVariant &value)
 {
-    if (mMap) {
-        mMap->push(new ChangeMapObject(mMap->mapDocument(), mMapObject,
-                                       property, value));
+    if (asset()) {
+        asset()->push(new ChangeMapObject(map()->mapDocument(), mMapObject,
+                                          property, value));
     } else {
         mMapObject->setMapObjectProperty(property, value);
     }

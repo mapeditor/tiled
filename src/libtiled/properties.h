@@ -31,10 +31,8 @@
 #include "tiled_global.h"
 
 #include <QJsonArray>
-#include <QMap>
-#include <QString>
 #include <QUrl>
-#include <QVariant>
+#include <QVariantMap>
 
 class QDir;
 
@@ -47,9 +45,17 @@ struct FilePath {
 /**
  * Collection of properties and their values.
  */
-class TILEDSHARED_EXPORT Properties : public QMap<QString,QVariant>
+class TILEDSHARED_EXPORT Properties : public QVariantMap
 {
 public:
+    Properties() = default;
+    Properties(const Properties &) = default;
+    Properties(Properties &&) = default;
+    Properties(const QVariantMap &variantMap) : QVariantMap(variantMap) {}
+
+    Properties &operator=(const Properties &other) = default;
+    Properties &operator=(Properties &&other) = default;
+
     void merge(const Properties &other);
 
     QJsonArray toJson() const;

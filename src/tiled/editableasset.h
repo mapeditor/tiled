@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include <QObject>
+#include "editableobject.h"
 
 #include <memory>
 
@@ -29,18 +29,19 @@ class QUndoStack;
 
 namespace Tiled {
 
-class EditableAsset : public QObject
+class Document;
+
+class EditableAsset : public EditableObject
 {
     Q_OBJECT
 
     Q_PROPERTY(QString fileName READ fileName NOTIFY fileNameChanged)
     Q_PROPERTY(bool modified READ isModified NOTIFY modifiedChanged)
-    Q_PROPERTY(bool readOnly READ isReadOnly)
 
 public:
-    explicit EditableAsset(QObject *parent = nullptr);
+    explicit EditableAsset(Document *document, Object *object, QObject *parent = nullptr);
 
-    virtual QString fileName() const = 0;
+    QString fileName() const;
     virtual bool isReadOnly() const = 0;
 
     QUndoStack *undoStack() const;
@@ -49,6 +50,8 @@ public:
     bool push(std::unique_ptr<QUndoCommand> &&command);
 
     bool checkReadOnly() const;
+
+    Document *document() const;
 
 public slots:
     void undo();
@@ -59,13 +62,19 @@ signals:
     void fileNameChanged(const QString &fileName, const QString &oldFileName);
 
 private:
-    QUndoStack *mUndoStack;
+    Document * const mDocument;
+    QUndoStack * const mUndoStack;
 };
 
 
 inline QUndoStack *EditableAsset::undoStack() const
 {
     return mUndoStack;
+}
+
+inline Document *EditableAsset::document() const
+{
+    return mDocument;
 }
 
 } // namespace Tiled

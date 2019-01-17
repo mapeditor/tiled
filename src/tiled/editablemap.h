@@ -56,7 +56,6 @@ public:
     explicit EditableMap(const Map *map, QObject *parent = nullptr);
     ~EditableMap() override;
 
-    QString fileName() const override;
     bool isReadOnly() const override;
 
     int width() const;
@@ -115,12 +114,10 @@ private:
     EditableLayer *editableLayer(Layer *layer);
     EditableMapObject *editableMapObject(MapObject *mapObject);
 
-    Map *map();
-    const Map *map() const;
+    Map *map() const;
     MapRenderer *renderer() const;
 
-    MapDocument * const mMapDocument;
-    const Map * const mMap;
+    bool mReadOnly;
 
     QHash<Layer*, EditableLayer*> mEditableLayers;
     QHash<MapObject*, EditableMapObject*> mEditableMapObjects;
@@ -130,7 +127,7 @@ private:
 
 inline bool EditableMap::isReadOnly() const
 {
-    return mMapDocument == nullptr;
+    return mReadOnly;
 }
 
 inline int EditableMap::width() const
@@ -203,25 +200,19 @@ inline int EditableMap::layerCount() const
     return map()->layerCount();
 }
 
-inline Map *EditableMap::map()
+inline Map *EditableMap::map() const
 {
-    Q_ASSERT(mMapDocument);
-    return mMapDocument->map();
-}
-
-inline const Map *EditableMap::map() const
-{
-    return mMap;
+    return static_cast<Map*>(object());
 }
 
 inline MapRenderer *EditableMap::renderer() const
 {
-    return mMapDocument->renderer();
+    return mapDocument() ? mapDocument()->renderer() : nullptr;
 }
 
 inline MapDocument *EditableMap::mapDocument() const
 {
-    return mMapDocument;
+    return static_cast<MapDocument*>(document());
 }
 
 inline EditableSelectedArea *EditableMap::selectedArea()

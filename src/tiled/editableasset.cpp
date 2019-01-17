@@ -20,17 +20,26 @@
 
 #include "editableasset.h"
 
+#include "document.h"
 #include "scriptmanager.h"
 
 #include <QUndoStack>
 
 namespace Tiled {
 
-EditableAsset::EditableAsset(QObject *parent)
-    : QObject(parent)
+EditableAsset::EditableAsset(Document *document, Object *object, QObject *parent)
+    : EditableObject(this, object, parent)
+    , mDocument(document)
     , mUndoStack(new QUndoStack(this))
 {
     connect(mUndoStack, &QUndoStack::cleanChanged, this, &EditableAsset::modifiedChanged);
+}
+
+QString EditableAsset::fileName() const
+{
+    if (document())
+        return document()->fileName();
+    return QString();
 }
 
 /**
