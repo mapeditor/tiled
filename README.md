@@ -29,16 +29,23 @@ offered by the standard Java libraries.
 Compiling
 -------------------------------------------------------------------------------
 
-Before you can compile Tiled, you must ensure the Qt (>= 5.6) development
+Before you can compile Tiled, you must ensure the Qt (>= 5.5) development
 libraries have been installed:
 
-* On Ubuntu/Debian: `apt-get install qt5-default qttools5-dev-tools zlib1g-dev qtdeclarative5-dev`
+* On Ubuntu/Debian: `sudo apt install qt5-default qttools5-dev-tools zlib1g-dev qtdeclarative5-dev`
 * On Fedora:        `sudo dnf builddep tiled`
-* On Arch Linux:    `pacman -S qt`
-* On Mac OS X with [Homebrew](http://brew.sh/):
+* On Arch Linux:    `sudo pacman -S qt`
+* On macOS with [Homebrew](http://brew.sh/):
   + `brew install qt5`
   + `brew link qt5 --force`
-* Alternatively, you can [download Qt here](https://www.qt.io/download-qt-installer)
+
+Alternatively, you can [download Qt here](https://www.qt.io/download-qt-installer).
+You will still need to install a development environment alongside and some
+libraries depending on your system, for example:
+
+* On Ubuntu/Debian: `sudo apt install build-essential zlib1g-dev libgl1-mesa-dev`
+* On Windows:       Choose "MinGW" Qt version, or install Visual Studio
+* On macOS:         Install Xcode
 
 Next, compile by running:
 
