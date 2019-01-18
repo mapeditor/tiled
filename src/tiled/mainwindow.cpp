@@ -121,15 +121,14 @@ struct ExportDetails
 template <typename Format>
 ExportDetails<Format> chooseExportDetails(const QString &fileName,
                                           const QString &lastExportName,
-                                          const QString &lastExportFilter,
-                                          QWidget* window,
+                                          QString &selectedFilter,
+                                          QWidget *window,
                                           QFileDialog::Options options = QFileDialog::Options())
 {
     FormatHelper<Format> helper(FileFormat::Write, MainWindow::tr("All Files (*)"));
 
     Preferences *pref = Preferences::instance();
 
-    QString selectedFilter = lastExportFilter;
     QString suggestedFilename = lastExportName;
 
     if (suggestedFilename.isEmpty()) {
@@ -170,7 +169,7 @@ ExportDetails<Format> chooseExportDetails(const QString &fileName,
                     QMessageBox::warning(window, MainWindow::tr("Non-unique file extension"),
                                          MainWindow::tr("Non-unique file extension.\n"
                                                         "Please select specific format."));
-                    return chooseExportDetails<Format>(exportToFileName, lastExportName, lastExportFilter, window, options);
+                    return chooseExportDetails<Format>(exportToFileName, lastExportName, selectedFilter, window, options);
                 } else {
                     chosenFormat = format;
                 }
@@ -1666,8 +1665,14 @@ void MainWindow::exportMapAs(MapDocument *mapDocument)
 void MainWindow::exportTilesetAs(TilesetDocument *tilesetDocument)
 {
     QString fileName = tilesetDocument->fileName();
+    if (fileName.isEmpty()) {
+        fileName = Preferences::instance()->lastPath(Preferences::ExportedFile);
+        fileName += QLatin1Char('/');
+        fileName = tilesetDocument->tileset()->name();
+    }
+
     QString selectedFilter =
-            mSettings.value(QLatin1String("lastUsedExportFilter")).toString();
+            mSettings.value(QLatin1String("lastUsedTilesetExportFilter")).toString();
     auto exportDetails = chooseExportDetails<TilesetFormat>(fileName,
                                                             tilesetDocument->lastExportFileName(),
                                                             selectedFilter,
@@ -1678,7 +1683,7 @@ void MainWindow::exportTilesetAs(TilesetDocument *tilesetDocument)
     Preferences *pref = Preferences::instance();
 
     pref->setLastPath(Preferences::ExportedFile, QFileInfo(exportDetails.mFileName).path());
-    mSettings.setValue(QLatin1String("lastUsedExportFilter"), selectedFilter);
+    mSettings.setValue(QLatin1String("lastUsedTilesetExportFilter"), selectedFilter);
 
     SharedTileset exportTileset = ExportHelper().prepareExportTileset(tilesetDocument->tileset());
 
