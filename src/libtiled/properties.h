@@ -50,11 +50,9 @@ class TILEDSHARED_EXPORT Properties : public QVariantMap
 public:
     Properties() = default;
     Properties(const Properties &) = default;
-    Properties(Properties &&) = default;
     Properties(const QVariantMap &variantMap) : QVariantMap(variantMap) {}
 
     Properties &operator=(const Properties &other) = default;
-    Properties &operator=(Properties &&other) = default;
 
     void merge(const Properties &other);
 
