@@ -263,6 +263,9 @@ static void showInFileManager(const QString &fileName)
 
 void addFileManagerActions(QMenu &menu, const QString &fileName)
 {
+    if (fileName.isEmpty())
+        return;
+
     QAction *copyPath = menu.addAction(QCoreApplication::translate("Utils", "Copy File Path"));
     QObject::connect(copyPath, &QAction::triggered, [fileName] {
         QClipboard *clipboard = QApplication::clipboard();
