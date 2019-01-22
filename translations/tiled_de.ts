@@ -680,7 +680,7 @@
     <message>
         <location line="+324"/>
         <source>For Hovered Object</source>
-        <translation>Für schwebendes Objekt</translation>
+        <translation type="unfinished">Für hervorgehobenes Objekt</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -5609,7 +5609,7 @@ Bitte Format angeben.</translation>
     <message>
         <location filename="../src/tiled/wangsetview.cpp" line="+105"/>
         <source>Wang Set &amp;Properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>Wang-Set &amp; Eigenschaften</translation>
     </message>
 </context>
 <context>

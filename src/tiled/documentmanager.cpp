@@ -843,7 +843,14 @@ void DocumentManager::tabContextMenuRequested(const QPoint &pos)
 
     QMenu menu(mTabBar->window());
 
-    Utils::addFileManagerActions(menu, mDocuments.at(index)->fileName());
+    const Document *fileDocument = mDocuments.at(index).data();
+    if (fileDocument->type() == Document::TilesetDocumentType) {
+        auto tilesetDocument = static_cast<const TilesetDocument*>(fileDocument);
+        if (tilesetDocument->isEmbedded())
+            fileDocument = tilesetDocument->mapDocuments().first();
+    }
+
+    Utils::addFileManagerActions(menu, fileDocument->fileName());
 
     menu.addSeparator();
 

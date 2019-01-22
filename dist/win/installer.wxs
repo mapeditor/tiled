@@ -141,6 +141,7 @@
                 <File Id="filD34235A8BFB590E5CCC1D9E2894616EC" Source="$(var.InstallRoot)\plugins\tiled\flare.dll" />
                 <File Id="gmx_dll" Source="$(var.InstallRoot)\plugins\tiled\gmx.dll" />
                 <File Id="fil39697F4D8941F23FE8E9024568D7FAD6" Source="$(var.InstallRoot)\plugins\tiled\json.dll" />
+                <File Id="json1_dll" Source="$(var.InstallRoot)\plugins\tiled\json1.dll" />
                 <File Id="fil4D119D1A1F54B04C4EB7C3E1B25B1616" Source="$(var.InstallRoot)\plugins\tiled\lua.dll" />
 
                 <?ifdef Python ?>
