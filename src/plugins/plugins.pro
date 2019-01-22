@@ -5,6 +5,7 @@ SUBDIRS = csv \
           flare \
           gmx \
           json \
+          json1 \
           lua \
           replicaisland \
           tbin \

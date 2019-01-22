@@ -37,11 +37,17 @@ struct TextData;
 /**
  * Converts Map instances to QVariant. Meant to be used together with
  * JsonWriter.
+ *
+ * The 'version' is interpreted as follows:
+ *  1: The JSON format used by Tiled 1.1 and earlier
+ *  2: The simplified JSON format used from Tiled 1.2 onwards
  */
 class TILEDSHARED_EXPORT MapToVariantConverter
 {
 public:
-    MapToVariantConverter() {}
+    explicit MapToVariantConverter(int version = 2)
+        : mVersion(version)
+    {}
 
     /**
      * Converts the given \a map to a QVariant. The \a mapDir is used to
@@ -58,6 +64,8 @@ public:
 
 private:
     QVariant toVariant(const Tileset &tileset, int firstGid) const;
+    QVariant toVariant(const Properties &properties) const;
+    QVariant propertyTypesToVariant(const Properties &properties) const;
     QVariant toVariant(const WangSet &wangSet) const;
     QVariant toVariant(const WangColor &wangColor) const;
     QVariant toVariant(const QList<Layer*> &layers, Map::LayerDataFormat format) const;
@@ -79,6 +87,7 @@ private:
     void addProperties(QVariantMap &variantMap,
                        const Properties &properties) const;
 
+    int mVersion;
     QDir mMapDir;
     GidMapper mGidMapper;
 };
