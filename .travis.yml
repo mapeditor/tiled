@@ -37,7 +37,7 @@ matrix:
     - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
     before_install:
     - eval "${MATRIX_EVAL}"
-    - sudo add-apt-repository --yes ppa:beineri/opt-qt595-trusty
+    - sudo add-apt-repository --yes ppa:beineri/opt-qt597-trusty
     - sudo apt-get update -qq
     - sudo apt-get -y install qt59base qt59script qt59svg qt59imageformats qt59tools
       binutils zlib1g-dev
@@ -47,7 +47,7 @@ matrix:
     - qbs --version
     - qbs setup-toolchains --detect
     - qbs setup-qt --detect
-    - qbs config defaultProfile qt-5-9-5
+    - qbs config defaultProfile qt-5-9-7
     - qbs install --install-root Tiled/usr config:release projects.Tiled.version:$TILED_VERSION
     - cp LICENSE* COPYING *md Tiled/
     after_success:
