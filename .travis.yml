@@ -1,6 +1,6 @@
 language: cpp
 sudo: required
-dist: trusty
+dist: xenial
 python: 3.6
 env:
   global:
@@ -32,22 +32,24 @@ matrix:
         sources:
         - ubuntu-toolchain-r-test
         packages:
+        - binutils
         - g++-7
+        - libgl1-mesa-dev
+        - zlib1g-dev
     env:
     - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
     before_install:
     - eval "${MATRIX_EVAL}"
-    - sudo add-apt-repository --yes ppa:beineri/opt-qt595-trusty
+    - sudo add-apt-repository --yes ppa:beineri/opt-qt597-xenial
     - sudo apt-get update -qq
     - sudo apt-get -y install qt59base qt59script qt59svg qt59imageformats qt59tools
-      binutils zlib1g-dev
     - source /opt/qt59/bin/qt59-env.sh
     - source ./dist/linux/setup-qbs.sh
     script:
     - qbs --version
     - qbs setup-toolchains --detect
     - qbs setup-qt --detect
-    - qbs config defaultProfile qt-5-9-5
+    - qbs config defaultProfile qt-5-9-7
     - qbs install --install-root Tiled/usr config:release projects.Tiled.version:$TILED_VERSION
     - cp LICENSE* COPYING *md Tiled/
     after_success:
@@ -88,14 +90,21 @@ matrix:
       script: dist/linux/push-to-itch.sh
   - os: linux
     compiler: clang
+    addons:
+      apt:
+        packages:
+        - binutils
+        - cppcheck
+        - libgl1-mesa-dev
+        - xvfb
+        - zlib1g-dev
     env:
     - QMAKESPEC=linux-clang
     - MAKEFLAGS=-j2
     before_install:
-    - sudo add-apt-repository --yes ppa:beineri/opt-qt563-trusty
+    - sudo add-apt-repository --yes ppa:beineri/opt-qt563-xenial
     - sudo apt-get update -qq
-    - sudo apt-get -y install qt56base qt56svg qt56tools binutils zlib1g-dev cppcheck
-      xvfb
+    - sudo apt-get -y install qt56base qt56svg qt56tools
     - source /opt/qt56/bin/qt56-env.sh
     - qmake -version
     script:
@@ -112,19 +121,23 @@ matrix:
   - os: osx
     env:
     - INSTALLER_NAME="qt-opensource-mac-x64-clang-5.6.3"
-    - QT_CI_PACKAGES="qt.563.clang_64"
     before_install:
-    - brew update
-    - brew install qbs
+    - curl -L https://raw.githubusercontent.com/benlau/qtci/master/recipes/install-qt
+      --output install-qt
     - curl -L https://raw.githubusercontent.com/benlau/qtci/master/bin/extract-qt-installer
       --output extract-qt-installer
+    - chmod +x install-qt
     - chmod +x extract-qt-installer
+    - export PATH=$PATH:$PWD
     - curl -L http://download.qt.io/official_releases/qt/5.6/5.6.3/${INSTALLER_NAME}.dmg
       --output ${INSTALLER_NAME}.dmg
     - hdiutil attach ${INSTALLER_NAME}.dmg
-    - "./extract-qt-installer /Volumes/${INSTALLER_NAME}/${INSTALLER_NAME}.app/Contents/MacOS/${INSTALLER_NAME}
+    - "QT_CI_PACKAGES=qt.563.clang_64 ./extract-qt-installer /Volumes/${INSTALLER_NAME}/${INSTALLER_NAME}.app/Contents/MacOS/${INSTALLER_NAME}
       $HOME/Qt"
     - hdiutil detach /Volumes/${INSTALLER_NAME}
+    - QT_CI_PACKAGES=qt.qt5.597.clang_64,qt.qt5.597.qtscript QT_CI_DOWNLOADER="wget -c -nv -N" install-qt 5.9.7
+    - source qt-5.9.7.env
+    - source ./dist/linux/setup-qbs.sh
     script:
     - qbs --version
     - qbs setup-toolchains --detect
