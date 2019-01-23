@@ -33,9 +33,11 @@ class EditableTileLayer : public EditableLayer
     Q_PROPERTY(int width READ width)
     Q_PROPERTY(int height READ height)
     Q_PROPERTY(QSize size READ size)
-    Q_PROPERTY(Tiled::Cell cell READ cell)
 
 public:
+    Q_INVOKABLE explicit EditableTileLayer(const QString &name = QString(),
+                                           QObject *parent = nullptr);
+
     explicit EditableTileLayer(EditableMap *map,
                                TileLayer *layer,
                                QObject *parent = nullptr);
@@ -46,7 +48,6 @@ public:
 
     Q_INVOKABLE Tiled::RegionValueType region() const;
 
-    Tiled::Cell cell() const { return Tiled::Cell(); }
     Q_INVOKABLE Tiled::Cell cellAt(int x, int y) const;
 
 signals:

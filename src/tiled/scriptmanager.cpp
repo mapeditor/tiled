@@ -78,6 +78,14 @@ ScriptManager::ScriptManager(QObject *parent)
 
     QJSValue globalObject = mEngine->globalObject();
     globalObject.setProperty(QStringLiteral("tiled"), mEngine->newQObject(mModule));
+#if QT_VERSION > 0x050800
+    globalObject.setProperty(QStringLiteral("Layer"), mEngine->newQMetaObject<EditableLayer>());
+    globalObject.setProperty(QStringLiteral("MapObject"), mEngine->newQMetaObject<EditableMapObject>());
+    globalObject.setProperty(QStringLiteral("ObjectGroup"), mEngine->newQMetaObject<EditableObjectGroup>());
+    globalObject.setProperty(QStringLiteral("TileLayer"), mEngine->newQMetaObject<EditableTileLayer>());
+    globalObject.setProperty(QStringLiteral("TileMap"), mEngine->newQMetaObject<EditableMap>());
+    globalObject.setProperty(QStringLiteral("Tileset"), mEngine->newQMetaObject<EditableTileset>());
+#endif
 }
 
 QJSValue ScriptManager::evaluate(const QString &program,
@@ -114,7 +122,7 @@ void ScriptManager::evaluateStartupScripts()
     for (const QString &configLocation : configLocations) {
         const QString scriptFile = configLocation + QLatin1String("/startup.js");
         if (QFile::exists(scriptFile)) {
-            qDebug() << "Evaluating startup script:" << scriptFile;
+            module()->log(tr("Evaluating '%1'").arg(scriptFile));
             evaluateFile(scriptFile);
         }
     }

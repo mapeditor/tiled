@@ -70,6 +70,8 @@ class TILEDSHARED_EXPORT Cell
     Q_PROPERTY(bool rotatedHexagonal120 READ rotatedHexagonal120 WRITE setRotatedHexagonal120)
 
 public:
+    static Cell empty;
+
     Cell() :
         _tileset(nullptr),
         _tileId(-1),
@@ -516,7 +518,6 @@ protected:
 private:
     int mWidth;
     int mHeight;
-    Cell mEmptyCell;
     QHash<QPoint, Chunk> mChunks;
     QRect mBounds;
     mutable QSet<SharedTileset> mUsedTilesets;
@@ -617,7 +618,7 @@ inline const Cell &TileLayer::cellAt(int x, int y) const
     if (const Chunk *chunk = findChunk(x, y))
         return chunk->cellAt(x & CHUNK_MASK, y & CHUNK_MASK);
     else
-        return mEmptyCell;
+        return Cell::empty;
 }
 
 inline const Cell &TileLayer::cellAt(const QPoint &point) const

@@ -74,11 +74,6 @@ QSizeF TextData::textSize() const
 }
 
 
-MapObject::MapObject():
-    MapObject(QString(), QString(), QPointF(), QSizeF(0, 0))
-{
-}
-
 MapObject::MapObject(const QString &name, const QString &type,
                      const QPointF &pos,
                      const QSizeF &size):

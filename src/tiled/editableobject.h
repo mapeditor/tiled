@@ -55,6 +55,7 @@ public:
 
 protected:
     void setAsset(EditableAsset *asset);
+    void setObject(Object *object);
 
 private:
     EditableAsset *mAsset;
@@ -85,6 +86,11 @@ inline Object *EditableObject::object() const
 inline void EditableObject::setAsset(EditableAsset *asset)
 {
     mAsset = asset;
+}
+
+inline void EditableObject::setObject(Object *object)
+{
+    mObject = object;
 }
 
 } // namespace Tiled

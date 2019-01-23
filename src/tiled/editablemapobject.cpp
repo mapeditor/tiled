@@ -27,18 +27,24 @@
 
 namespace Tiled {
 
+EditableMapObject::EditableMapObject(const QString &name,
+                                     QObject *parent)
+    : EditableObject(nullptr, new MapObject(name), parent)
+{
+    mDetachedMapObject.reset(mapObject());
+}
+
 EditableMapObject::EditableMapObject(EditableMap *map,
                                      MapObject *mapObject,
                                      QObject *parent)
     : EditableObject(map, mapObject, parent)
-    , mMapObject(mapObject)
 {
 }
 
 EditableObjectGroup *EditableMapObject::layer() const
 {
     if (map())
-        return static_cast<EditableObjectGroup*>(map()->editableLayer(mMapObject->objectGroup()));
+        return static_cast<EditableObjectGroup*>(map()->editableLayer(mapObject()->objectGroup()));
     else
         // todo: what to do for objects that are part of detached layers?
         ;
@@ -59,8 +65,8 @@ void EditableMapObject::detach()
     map()->mEditableMapObjects.remove(mapObject());
     setAsset(nullptr);
 
-    mDetachedMapObject.reset(mMapObject->clone());
-    mMapObject = mDetachedMapObject.get();
+    mDetachedMapObject.reset(mapObject()->clone());
+    setObject(mDetachedMapObject.get());
 }
 
 void EditableMapObject::attach(EditableMap *map)
@@ -86,10 +92,10 @@ void EditableMapObject::setType(QString type)
 void EditableMapObject::setPos(QPointF pos)
 {
     if (asset()) {
-        asset()->push(new MoveMapObject(map()->mapDocument(), mMapObject,
-                                        pos, mMapObject->position()));
+        asset()->push(new MoveMapObject(map()->mapDocument(), mapObject(),
+                                        pos, mapObject()->position()));
     } else {
-        mMapObject->setPosition(pos);
+        mapObject()->setPosition(pos);
     }
 }
 
@@ -112,10 +118,10 @@ void EditableMapObject::setMapObjectProperty(MapObject::Property property,
                                              const QVariant &value)
 {
     if (asset()) {
-        asset()->push(new ChangeMapObject(map()->mapDocument(), mMapObject,
+        asset()->push(new ChangeMapObject(map()->mapDocument(), mapObject(),
                                           property, value));
     } else {
-        mMapObject->setMapObjectProperty(property, value);
+        mapObject()->setMapObjectProperty(property, value);
     }
 }
 

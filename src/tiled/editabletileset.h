@@ -41,6 +41,8 @@ class EditableTileset : public EditableAsset
     Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor)
 
 public:
+    Q_INVOKABLE explicit EditableTileset(const QString &name = QString(),
+                                         QObject *parent = nullptr);
     explicit EditableTileset(TilesetDocument *tilesetDocument,
                              QObject *parent = nullptr);
 
@@ -66,6 +68,7 @@ private:
     Tileset *tileset() const;
 
     bool mReadOnly = false;
+    SharedTileset mTileset;
 };
 
 
@@ -112,6 +115,11 @@ inline QPoint EditableTileset::tileOffset() const
 inline QColor EditableTileset::backgroundColor() const
 {
     return tileset()->backgroundColor();
+}
+
+inline Tileset *EditableTileset::tileset() const
+{
+    return static_cast<Tileset*>(object());
 }
 
 } // namespace Tiled

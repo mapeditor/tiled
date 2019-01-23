@@ -34,6 +34,9 @@ class EditableObjectGroup : public EditableLayer
     Q_PROPERTY(QColor color READ color WRITE setColor)
 
 public:
+    Q_INVOKABLE explicit EditableObjectGroup(const QString &name = QString(),
+                                             QObject *parent = nullptr);
+
     EditableObjectGroup(EditableMap *map,
                         ObjectGroup *objectGroup,
                         QObject *parent = nullptr);

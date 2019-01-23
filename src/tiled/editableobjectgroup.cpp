@@ -27,6 +27,11 @@
 
 namespace Tiled {
 
+EditableObjectGroup::EditableObjectGroup(const QString &name, QObject *parent)
+    : EditableLayer(std::unique_ptr<Layer>(new ObjectGroup(name)), parent)
+{
+}
+
 EditableObjectGroup::EditableObjectGroup(EditableMap *map,
                                          ObjectGroup *objectGroup,
                                          QObject *parent)

@@ -114,11 +114,10 @@ public:
 
     Q_DECLARE_FLAGS(ChangedProperties, Property)
 
-    MapObject();
-
-    MapObject(const QString &name, const QString &type,
-              const QPointF &pos,
-              const QSizeF &size);
+    explicit MapObject(const QString &name = QString(),
+                       const QString &type = QString(),
+                       const QPointF &pos = QPointF(),
+                       const QSizeF &size = QSizeF(0, 0));
 
     int id() const;
     void setId(int id);

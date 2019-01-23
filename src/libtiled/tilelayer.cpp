@@ -37,6 +37,8 @@
 
 using namespace Tiled;
 
+Cell Cell::empty;
+
 QRegion Chunk::region(std::function<bool (const Cell &)> condition) const
 {
     QRegion region;
@@ -91,7 +93,7 @@ void Chunk::removeReferencesToTileset(Tileset *tileset)
 {
     for (int i = 0, i_end = mGrid.size(); i < i_end; ++i) {
         if (mGrid.at(i).tileset() == tileset)
-            mGrid.replace(i, Cell());
+            mGrid.replace(i, Cell::empty);
     }
 }
 
@@ -109,8 +111,6 @@ TileLayer::TileLayer(const QString &name, int x, int y, int width, int height)
     , mHeight(height)
     , mUsedTilesetsDirty(false)
 {
-    Q_ASSERT(width >= 0);
-    Q_ASSERT(height >= 0);
 }
 
 TileLayer::TileLayer(const QString &name, QPoint position, QSize size)
@@ -181,7 +181,7 @@ QRegion TileLayer::region(std::function<bool (const Cell &)> condition) const
 void Tiled::TileLayer::setCell(int x, int y, const Cell &cell)
 {
     if (!findChunk(x, y)) {
-        if (cell == mEmptyCell && !cell.checked()) {
+        if (cell == Cell::empty && !cell.checked()) {
             return;
         } else {
             mBounds = mBounds.united(QRect(x - (x & CHUNK_MASK),
@@ -303,7 +303,7 @@ void TileLayer::erase(const QRegion &region)
 #endif
         for (int x = rect.left(); x <= rect.right(); ++x)
             for (int y = rect.top(); y <= rect.bottom(); ++y)
-                setCell(x, y, mEmptyCell);
+                setCell(x, y, Cell::empty);
 }
 
 void TileLayer::flip(FlipDirection direction)
@@ -645,7 +645,7 @@ void TileLayer::offsetTiles(const QPoint &offset,
             if (bounds.contains(oldX, oldY))
                 newLayer->setCell(x, y, cellAt(oldX, oldY));
             else
-                newLayer->setCell(x, y, Cell());
+                newLayer->setCell(x, y, Cell::empty);
         }
     }
 

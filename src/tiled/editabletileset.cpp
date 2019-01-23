@@ -25,6 +25,14 @@
 
 namespace Tiled {
 
+EditableTileset::EditableTileset(const QString &name,
+                                 QObject *parent)
+    : EditableAsset(nullptr, nullptr, parent)
+{
+    mTileset = Tileset::create(name, 0, 0);
+    setObject(mTileset.data());
+}
+
 EditableTileset::EditableTileset(TilesetDocument *tilesetDocument,
                                  QObject *parent)
     : EditableAsset(tilesetDocument, tilesetDocument->tileset().data(), parent)
@@ -39,22 +47,26 @@ TilesetDocument *EditableTileset::tilesetDocument() const
 
 void EditableTileset::setName(const QString &name)
 {
-    push(new RenameTileset(tilesetDocument(), name));
+    if (tilesetDocument())
+        push(new RenameTileset(tilesetDocument(), name));
+    else
+        tileset()->setName(name);
 }
 
 void EditableTileset::setTileOffset(QPoint tileOffset)
 {
-    push(new ChangeTilesetTileOffset(tilesetDocument(), tileOffset));
+    if (tilesetDocument())
+        push(new ChangeTilesetTileOffset(tilesetDocument(), tileOffset));
+    else
+        tileset()->setTileOffset(tileOffset);
 }
 
 void EditableTileset::setBackgroundColor(const QColor &color)
 {
-    push(new ChangeTilesetBackgroundColor(tilesetDocument(), color));
-}
-
-Tileset *EditableTileset::tileset() const
-{
-    return tilesetDocument()->tileset().data();
+    if (tilesetDocument())
+        push(new ChangeTilesetBackgroundColor(tilesetDocument(), color));
+    else
+        tileset()->setBackgroundColor(color);
 }
 
 } // namespace Tiled

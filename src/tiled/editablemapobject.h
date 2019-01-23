@@ -54,6 +54,9 @@ class EditableMapObject : public EditableObject
 //    Q_PROPERTY(ChangedProperties mChangedProperties)
 
 public:
+    Q_INVOKABLE explicit EditableMapObject(const QString &name = QString(),
+                                           QObject *parent = nullptr);
+
     EditableMapObject(EditableMap *map,
                       MapObject *mapObject,
                       QObject *parent = nullptr);
@@ -92,69 +95,68 @@ public slots:
 private:
     void setMapObjectProperty(MapObject::Property property, const QVariant &value);
 
-    MapObject *mMapObject;
     std::unique_ptr<MapObject> mDetachedMapObject;
 };
 
 
 inline int EditableMapObject::id() const
 {
-    return mMapObject->id();
+    return mapObject()->id();
 }
 
 inline QString EditableMapObject::name() const
 {
-    return mMapObject->name();
+    return mapObject()->name();
 }
 
 inline QString EditableMapObject::type() const
 {
-    return mMapObject->type();
+    return mapObject()->type();
 }
 
 inline qreal EditableMapObject::x() const
 {
-    return mMapObject->x();
+    return mapObject()->x();
 }
 
 inline qreal EditableMapObject::y() const
 {
-    return mMapObject->y();
+    return mapObject()->y();
 }
 
 inline QPointF EditableMapObject::pos() const
 {
-    return mMapObject->position();
+    return mapObject()->position();
 }
 
 inline qreal EditableMapObject::width() const
 {
-    return mMapObject->width();
+    return mapObject()->width();
 }
 
 inline qreal EditableMapObject::height() const
 {
-    return mMapObject->height();
+    return mapObject()->height();
 }
 
 inline QSizeF EditableMapObject::size() const
 {
-    return mMapObject->size();
+    return mapObject()->size();
 }
 
 inline qreal EditableMapObject::rotation() const
 {
-    return mMapObject->rotation();
+    return mapObject()->rotation();
 }
 
 inline bool EditableMapObject::visible() const
 {
-    return mMapObject->isVisible();
+    return mapObject()->isVisible();
 }
 
 inline MapObject *EditableMapObject::mapObject() const
 {
-    return mMapObject;
+    return static_cast<MapObject*>(object());
 }
 
 inline void EditableMapObject::setX(qreal x)

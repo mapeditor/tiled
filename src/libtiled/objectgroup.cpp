@@ -39,8 +39,8 @@
 
 using namespace Tiled;
 
-ObjectGroup::ObjectGroup()
-    : ObjectGroup(QString(), 0, 0)
+ObjectGroup::ObjectGroup(const QString &name)
+    : ObjectGroup(name, 0, 0)
 {
 }
 

@@ -48,6 +48,16 @@
 
 namespace Tiled {
 
+EditableMap::EditableMap(QObject *parent)
+    : EditableAsset(nullptr, new Map(), parent)
+    , mReadOnly(false)
+    , mSelectedArea(nullptr)
+{
+    connect(map(), &Map::sizeChanged, this, &EditableMap::sizeChanged);
+    connect(map(), &Map::tileWidthChanged, this, &EditableMap::tileWidthChanged);
+    connect(map(), &Map::tileHeightChanged, this, &EditableMap::tileHeightChanged);
+}
+
 EditableMap::EditableMap(MapDocument *mapDocument, QObject *parent)
     : EditableAsset(mapDocument, mapDocument->map(), parent)
     , mReadOnly(false)
@@ -305,7 +315,7 @@ void EditableMap::resize(const QSize &size,
     new ResizeMap(mapDocument(), size, command);
     new ChangeSelectedArea(mapDocument(), movedSelection, command);
 
-    mapDocument()->undoStack()->push(command);
+    push(command);
 
     // TODO: Handle layers that don't match the map size correctly
 }

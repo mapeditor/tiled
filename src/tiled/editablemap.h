@@ -52,6 +52,7 @@ class EditableMap : public EditableAsset
     Q_PROPERTY(int layerCount READ layerCount)
 
 public:
+    Q_INVOKABLE explicit EditableMap(QObject *parent = nullptr);
     explicit EditableMap(MapDocument *mapDocument, QObject *parent = nullptr);
     explicit EditableMap(const Map *map, QObject *parent = nullptr);
     ~EditableMap() override;

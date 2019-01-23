@@ -46,9 +46,12 @@ class EditableLayer : public EditableObject
     Q_PROPERTY(bool isImageLayer READ isImageLayer CONSTANT)
 
 public:
-    explicit EditableLayer(EditableMap *map,
-                           Layer *layer,
+    explicit EditableLayer(std::unique_ptr<Layer> &&layer,
                            QObject *parent = nullptr);
+
+    EditableLayer(EditableMap *map,
+                  Layer *layer,
+                  QObject *parent = nullptr);
     ~EditableLayer() override;
 
     const QString &name() const;
@@ -57,10 +60,10 @@ public:
     bool isLocked() const;
     QPointF offset() const;
     EditableMap *map() const;
-    bool isTileLayer();
-    bool isObjectLayer();
-    bool isGroupLayer();
-    bool isImageLayer();
+    bool isTileLayer() const;
+    bool isObjectLayer() const;
+    bool isGroupLayer() const;
+    bool isImageLayer() const;
 
     Layer *layer() const;
 
@@ -77,59 +80,58 @@ public slots:
 private:
     MapDocument *mapDocument() const;
 
-    Layer *mLayer;
     std::unique_ptr<Layer> mDetachedLayer;
 };
 
 
 inline const QString &EditableLayer::name() const
 {
-    return mLayer->name();
+    return layer()->name();
 }
 
 inline qreal EditableLayer::opacity() const
 {
-    return mLayer->opacity();
+    return layer()->opacity();
 }
 
 inline bool EditableLayer::isVisible() const
 {
-    return mLayer->isVisible();
+    return layer()->isVisible();
 }
 
 inline bool EditableLayer::isLocked() const
 {
-    return mLayer->isLocked();
+    return layer()->isLocked();
 }
 
 inline QPointF EditableLayer::offset() const
 {
-    return mLayer->offset();
+    return layer()->offset();
 }
 
-inline bool EditableLayer::isTileLayer()
+inline bool EditableLayer::isTileLayer() const
 {
-    return mLayer->isTileLayer();
+    return layer()->isTileLayer();
 }
 
-inline bool EditableLayer::isObjectLayer()
+inline bool EditableLayer::isObjectLayer() const
 {
-    return mLayer->isObjectGroup();
+    return layer()->isObjectGroup();
 }
 
-inline bool EditableLayer::isGroupLayer()
+inline bool EditableLayer::isGroupLayer() const
 {
-    return mLayer->isGroupLayer();
+    return layer()->isGroupLayer();
 }
 
-inline bool EditableLayer::isImageLayer()
+inline bool EditableLayer::isImageLayer() const
 {
-    return mLayer->isImageLayer();
+    return layer()->isImageLayer();
 }
 
 inline Layer *EditableLayer::layer() const
 {
-    return mLayer;
+    return static_cast<Layer*>(object());
 }
 
 } // namespace Tiled
