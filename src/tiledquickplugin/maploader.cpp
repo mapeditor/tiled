@@ -47,7 +47,7 @@ void MapLoader::setSource(const QUrl &source)
 
     Tiled::MapReader mapReader;
 
-    Tiled::Map *map = mapReader.readMap(Tiled::urlToLocalFileOrQrc(source));
+    std::unique_ptr<Tiled::Map> map(mapReader.readMap(Tiled::urlToLocalFileOrQrc(source)));
     Status status = map ? Ready : Error;
     QString error = map ? QString() : mapReader.errorString();
 
@@ -55,16 +55,14 @@ void MapLoader::setSource(const QUrl &source)
     const bool statusDiff = m_status != status;
     const bool errorDiff = m_error != error;
 
-    delete m_map;
-
-    m_map = map;
+    m_map = std::move(map);
     m_status = status;
     m_error = error;
 
     emit sourceChanged(source);
 
     if (mapDiff)
-        emit mapChanged(map);
+        emit mapChanged(m_map.get());
     if (statusDiff)
         emit statusChanged(status);
     if (errorDiff)

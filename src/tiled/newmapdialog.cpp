@@ -190,7 +190,7 @@ MapDocumentPtr NewMapDialog::createMap()
     s->setValue(QLatin1String(TILE_WIDTH_KEY), tileWidth);
     s->setValue(QLatin1String(TILE_HEIGHT_KEY), tileHeight);
 
-    return MapDocumentPtr::create(map.release());
+    return MapDocumentPtr::create(std::move(map));
 }
 
 void NewMapDialog::refreshPixelSize()

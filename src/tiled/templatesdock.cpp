@@ -227,7 +227,7 @@ void TemplatesDock::setTemplate(ObjectTemplate *objectTemplate)
 
         if (!mDummyMapDocument) {
             Map::Orientation orientation = Map::Orthogonal;
-            Map *map = new Map(orientation, 1, 1, 1, 1);
+            std::unique_ptr<Map> map { new Map(orientation, 1, 1, 1, 1) };
 
             MapObject *dummyObject = objectTemplate->object()->clone();
             dummyObject->markAsTemplateBase();
@@ -244,7 +244,7 @@ void TemplatesDock::setTemplate(ObjectTemplate *objectTemplate)
 
             map->addLayer(objectGroup);
 
-            mDummyMapDocument = MapDocumentPtr::create(map);
+            mDummyMapDocument = MapDocumentPtr::create(std::move(map));
             mDummyMapDocument->setAllowHidingObjects(false);
             mDummyMapDocument->setCurrentLayer(objectGroup);
 

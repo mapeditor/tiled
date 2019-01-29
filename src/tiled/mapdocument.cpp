@@ -68,18 +68,18 @@
 
 using namespace Tiled;
 
-MapDocument::MapDocument(Map *map, const QString &fileName)
+MapDocument::MapDocument(std::unique_ptr<Map> map, const QString &fileName)
     : Document(MapDocumentType, fileName)
-    , mMap(map)
+    , mMap(std::move(map))
     , mLayerModel(new LayerModel(this))
     , mHoveredMapObject(nullptr)
     , mMapObjectModel(new MapObjectModel(this))
 {
-    mCurrentObject = map;
+    mCurrentObject = mMap.get();
 
     createRenderer();
 
-    mCurrentLayer = (map->layerCount() == 0) ? nullptr : map->layerAt(0);
+    mCurrentLayer = (mMap->layerCount() == 0) ? nullptr : mMap->layerAt(0);
     mLayerModel->setMapDocument(this);
 
     // Forward signals emitted from the layer model
@@ -155,7 +155,7 @@ MapDocumentPtr MapDocument::load(const QString &fileName,
                                  MapFormat *format,
                                  QString *error)
 {
-    Map *map = format->read(fileName);
+    auto map = format->read(fileName);
 
     if (!map) {
         if (error)
@@ -163,7 +163,7 @@ MapDocumentPtr MapDocument::load(const QString &fileName,
         return MapDocumentPtr();
     }
 
-    MapDocumentPtr document = MapDocumentPtr::create(map, fileName);
+    MapDocumentPtr document = MapDocumentPtr::create(std::move(map), fileName);
     document->setReaderFormat(format);
     if (format->hasCapabilities(MapFormat::Write))
         document->setWriterFormat(format);

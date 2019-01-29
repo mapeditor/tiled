@@ -109,7 +109,7 @@ TbinMapFormat::TbinMapFormat(QObject *)
 {
 }
 
-Tiled::Map *TbinMapFormat::read(const QString &fileName)
+std::unique_ptr<Tiled::Map> TbinMapFormat::read(const QString &fileName)
 {
     std::ifstream file( fileName.toStdString(), std::ios::in | std::ios::binary );
     if (!file) {
@@ -118,7 +118,7 @@ Tiled::Map *TbinMapFormat::read(const QString &fileName)
     }
 
     tbin::Map tmap;
-    Tiled::Map* map = nullptr;
+    std::unique_ptr<Tiled::Map> map;
     try
     {
         tmap.loadFromStream(file);
@@ -128,11 +128,11 @@ Tiled::Map *TbinMapFormat::read(const QString &fileName)
 
         auto &firstLayer = tmap.layers[0];
 
-        map = new Tiled::Map(Tiled::Map::Orthogonal,
-                             QSize(firstLayer.layerSize.x, firstLayer.layerSize.y),
-                             QSize(firstLayer.tileSize.x, firstLayer.tileSize.y));
+        map.reset(new Tiled::Map(Tiled::Map::Orthogonal,
+                                 QSize(firstLayer.layerSize.x, firstLayer.layerSize.y),
+                                 QSize(firstLayer.tileSize.x, firstLayer.tileSize.y)));
 
-        tbinToTiledProperties(tmap.props, map);
+        tbinToTiledProperties(tmap.props, map.get());
 
         const QDir fileDir(QFileInfo(fileName).dir());
 

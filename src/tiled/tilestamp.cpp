@@ -73,13 +73,11 @@ TileStamp::TileStamp()
 
 /**
  * Constructs a tile stamp with the given \a map as its only variation.
- *
- * The stamp takes ownership over the map.
  */
-TileStamp::TileStamp(Map *map)
+TileStamp::TileStamp(std::unique_ptr<Map> map)
     : d(new TileStampData)
 {
-    addVariation(map);
+    addVariation(std::move(map));
 }
 
 TileStamp::TileStamp(const TileStamp &other)
@@ -150,13 +148,11 @@ const QVector<TileStampVariation> &TileStamp::variations() const
 
 /**
  * Adds a variation \a map to this tile stamp with a given \a probability.
- *
- * The tile stamp takes ownership over the map.
  */
-void TileStamp::addVariation(Map *map, qreal probability)
+void TileStamp::addVariation(std::unique_ptr<Map> map, qreal probability)
 {
     Q_ASSERT(map);
-    d->variations.append(TileStampVariation(map, probability));
+    d->variations.append(TileStampVariation(map.release(), probability));
 }
 
 /**
@@ -326,7 +322,7 @@ TileStamp TileStamp::fromJson(const QJsonObject &json, const QDir &mapDir)
 
         QVariant mapVariant = variationJson.value(QLatin1String("map")).toVariant();
         VariantToMapConverter converter;
-        Map *map = converter.toMap(mapVariant, mapDir);
+        auto map = converter.toMap(mapVariant, mapDir);
         if (!map) {
             qDebug() << "Failed to load map for stamp:" << converter.errorString();
             continue;
@@ -334,7 +330,7 @@ TileStamp TileStamp::fromJson(const QJsonObject &json, const QDir &mapDir)
 
         qreal probability = variationJson.value(QLatin1String("probability")).toDouble(1);
 
-        stamp.addVariation(map, probability);
+        stamp.addVariation(std::move(map), probability);
     }
 
     return stamp;

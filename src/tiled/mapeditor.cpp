@@ -652,37 +652,37 @@ void MapEditor::paste(ClipboardManager::PasteFlags flags)
         return;
 
     ClipboardManager *clipboardManager = ClipboardManager::instance();
-    Map *map = clipboardManager->map();
+    std::unique_ptr<Map> map = clipboardManager->map();
     if (!map)
         return;
 
-    std::unique_ptr<Map> mapDeleter(map);
+    Map *mapPtr = map.get();
 
     bool tilesetsUnified = false;
 
     if (flags & ClipboardManager::PasteInPlace)
         mCurrentMapDocument->undoStack()->beginMacro(tr("Paste in Place"));
 
-    LayerIterator tileLayerIterator(map, Layer::TileLayerType);
+    LayerIterator tileLayerIterator(mapPtr, Layer::TileLayerType);
     if (tileLayerIterator.next()) {
         if (flags & ClipboardManager::PasteInPlace) {
             QVector<SharedTileset> missingTilesets;
-            mCurrentMapDocument->unifyTilesets(map, missingTilesets);
-            mCurrentMapDocument->paintTileLayers(map, false, &missingTilesets);
+            mCurrentMapDocument->unifyTilesets(mapPtr, missingTilesets);
+            mCurrentMapDocument->paintTileLayers(mapPtr, false, &missingTilesets);
             tilesetsUnified = missingTilesets.isEmpty();
         } else {
             // Reset selection and paste into the stamp brush
             MapDocumentActionHandler::instance()->selectNone();
-            normalizeTileLayerPositionsAndMapSize(map);
-            setStamp(TileStamp(mapDeleter.release())); // TileStamp takes ownership
+            normalizeTileLayerPositionsAndMapSize(mapPtr);
+            setStamp(TileStamp(std::move(map))); // TileStamp takes ownership
             mToolManager->selectTool(mStampBrush);
         }
     }
 
-    LayerIterator objectGroupIterator(map, Layer::ObjectGroupType);
+    LayerIterator objectGroupIterator(mapPtr, Layer::ObjectGroupType);
     if (ObjectGroup *objectGroup = static_cast<ObjectGroup*>(objectGroupIterator.next())) {
         if (!tilesetsUnified)
-            mCurrentMapDocument->unifyTilesets(map);
+            mCurrentMapDocument->unifyTilesets(mapPtr);
 
         // todo: Handle multiple object groups
         const MapView *view = currentMapView();

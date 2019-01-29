@@ -48,7 +48,7 @@ FlarePlugin::FlarePlugin()
 {
 }
 
-Tiled::Map *FlarePlugin::read(const QString &fileName)
+std::unique_ptr<Tiled::Map> FlarePlugin::read(const QString &fileName)
 {
     QFile file(fileName);
 
@@ -57,7 +57,7 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
         return nullptr;
     }
 
-    // default to values of the original flare alpha game.
+    // default to values of the original Flare alpha game.
     std::unique_ptr<Map> map(new Map(Map::Isometric, 256, 256, 64, 32));
 
     QTextStream stream (&file);
@@ -269,7 +269,7 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
         return nullptr;
     }
 
-    return map.release();
+    return map;
 }
 
 bool FlarePlugin::supportsFile(const QString &fileName) const

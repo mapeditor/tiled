@@ -200,7 +200,7 @@ bool TmxViewer::viewMap(const QString &fileName)
     mRenderer.reset();
 
     MapReader reader;
-    mMap.reset(reader.readMap(fileName));
+    mMap = reader.readMap(fileName);
     if (!mMap) {
         qWarning().noquote() << "Error:" << reader.errorString();
         return false;

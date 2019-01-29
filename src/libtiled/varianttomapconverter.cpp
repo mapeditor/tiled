@@ -47,8 +47,8 @@ static QString resolvePath(const QDir &dir, const QVariant &variant)
     return fileName;
 }
 
-Map *VariantToMapConverter::toMap(const QVariant &variant,
-                                  const QDir &mapDir)
+std::unique_ptr<Map> VariantToMapConverter::toMap(const QVariant &variant,
+                                                  const QDir &mapDir)
 {
     mGidMapper.clear();
     mMapDir = mapDir;
@@ -123,7 +123,7 @@ Map *VariantToMapConverter::toMap(const QVariant &variant,
             tileset->loadImage();
     }
 
-    return map.release();
+    return map;
 }
 
 SharedTileset VariantToMapConverter::toTileset(const QVariant &variant,

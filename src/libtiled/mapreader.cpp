@@ -72,7 +72,7 @@ public:
         mReadingExternalTileset(false)
     {}
 
-    Map *readMap(QIODevice *device, const QString &path);
+    std::unique_ptr<Map> readMap(QIODevice *device, const QString &path);
     SharedTileset readTileset(QIODevice *device, const QString &path);
     std::unique_ptr<ObjectTemplate> readObjectTemplate(QIODevice *device, const QString &path);
 
@@ -83,7 +83,7 @@ public:
 private:
     void readUnknownElement();
 
-    Map *readMap();
+    std::unique_ptr<Map> readMap();
 
     SharedTileset readTileset();
     void readTilesetTile(Tileset &tileset);
@@ -150,11 +150,11 @@ private:
 } // namespace Internal
 } // namespace Tiled
 
-Map *MapReaderPrivate::readMap(QIODevice *device, const QString &path)
+std::unique_ptr<Map> MapReaderPrivate::readMap(QIODevice *device, const QString &path)
 {
     mError.clear();
     mPath.setPath(path);
-    Map *map = nullptr;
+    std::unique_ptr<Map> map;
 
     xml.setDevice(device);
 
@@ -235,7 +235,7 @@ void MapReaderPrivate::readUnknownElement()
     xml.skipCurrentElement();
 }
 
-Map *MapReaderPrivate::readMap()
+std::unique_ptr<Map> MapReaderPrivate::readMap()
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("map"));
 
@@ -328,7 +328,7 @@ Map *MapReaderPrivate::readMap()
         }
     }
 
-    return mMap.release();
+    return std::move(mMap);
 }
 
 SharedTileset MapReaderPrivate::readTileset()
@@ -1301,12 +1301,12 @@ MapReader::~MapReader()
     delete d;
 }
 
-Map *MapReader::readMap(QIODevice *device, const QString &path)
+std::unique_ptr<Map> MapReader::readMap(QIODevice *device, const QString &path)
 {
     return d->readMap(device, path);
 }
 
-Map *MapReader::readMap(const QString &fileName)
+std::unique_ptr<Map> MapReader::readMap(const QString &fileName)
 {
     QFile file(fileName);
     if (!d->openFile(&file))

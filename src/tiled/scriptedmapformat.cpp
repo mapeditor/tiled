@@ -99,7 +99,7 @@ QStringList ScriptedMapFormat::outputFiles(const Map *map, const QString &fileNa
 }
 #endif
 
-Map *ScriptedMapFormat::read(const QString &fileName)
+std::unique_ptr<Map> ScriptedMapFormat::read(const QString &fileName)
 {
     Q_UNUSED(fileName)
 

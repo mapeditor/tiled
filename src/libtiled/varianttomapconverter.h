@@ -61,7 +61,7 @@ public:
      * Returns 0 in case of an error. The error can be obstained using
      * errorString().
      */
-    Map *toMap(const QVariant &variant, const QDir &mapDir);
+    std::unique_ptr<Map> toMap(const QVariant &variant, const QDir &mapDir);
 
     /**
      * Tries to convert the given \a variant to a Tileset instance. The

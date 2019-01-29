@@ -41,7 +41,7 @@ class TmxMapFormat : public MapFormat
 public:
     TmxMapFormat(QObject *parent = nullptr);
 
-    Map *read(const QString &fileName) override;
+    std::unique_ptr<Map> read(const QString &fileName) override;
 
     bool write(const Map *map, const QString &fileName) override;
 
@@ -60,7 +60,7 @@ public:
      *
      * @see toByteArray
      */
-    Map *fromByteArray(const QByteArray &data);
+    std::unique_ptr<Map> fromByteArray(const QByteArray &data);
 
     QString nameFilter() const override { return tr("Tiled map files (*.tmx *.xml)"); }
 

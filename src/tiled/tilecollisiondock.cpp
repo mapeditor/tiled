@@ -291,7 +291,7 @@ void TileCollisionDock::setTile(Tile *tile)
         map->setNextObjectId(objectGroup->highestObjectId() + 1);
         map->addLayer(objectGroup);
 
-        mDummyMapDocument = MapDocumentPtr::create(map.release());
+        mDummyMapDocument = MapDocumentPtr::create(std::move(map));
         mDummyMapDocument->setAllowHidingObjects(false);
         mDummyMapDocument->setAllowTileObjects(false);
         mDummyMapDocument->setCurrentLayer(objectGroup);

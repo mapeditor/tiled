@@ -24,6 +24,8 @@
 
 #include <QObject>
 
+#include <memory>
+
 class QClipboard;
 
 namespace Tiled {
@@ -46,7 +48,7 @@ public:
     static void deleteInstance();
 
     bool hasMap() const;
-    Map *map() const;
+    std::unique_ptr<Map> map() const;
     void setMap(const Map &map);
 
     bool hasProperties() const;

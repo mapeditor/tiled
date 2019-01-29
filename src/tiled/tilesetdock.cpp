@@ -704,14 +704,14 @@ void TilesetDock::setCurrentTiles(TileLayer *tiles)
     if (tiles && mMapDocument) {
         // Create a tile stamp with these tiles
         Map *map = mMapDocument->map();
-        Map *stamp = new Map(map->orientation(),
-                             tiles->size(),
-                             map->tileSize());
+        std::unique_ptr<Map> stamp { new Map(map->orientation(),
+                                             tiles->size(),
+                                             map->tileSize()) };
         stamp->addLayer(tiles->clone());
         stamp->addTilesets(tiles->usedTilesets());
 
         mEmittingStampCaptured = true;
-        emit stampCaptured(TileStamp(stamp));
+        emit stampCaptured(TileStamp(std::move(stamp)));
         mEmittingStampCaptured = false;
     }
 }

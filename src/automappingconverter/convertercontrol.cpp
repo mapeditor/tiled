@@ -41,7 +41,7 @@ ConverterControl::ConverterControl()
 QString ConverterControl::automappingRuleFileVersion(const QString &fileName)
 {
     Tiled::MapReader reader;
-    Tiled::Map *map = reader.readMap(fileName);
+    std::unique_ptr<Tiled::Map> map(reader.readMap(fileName));
 
     if (!map)
         return versionNotAMap();

@@ -23,6 +23,8 @@
 #include <QObject>
 #include <QUrl>
 
+#include <memory>
+
 namespace Tiled {
 class Map;
 }
@@ -66,7 +68,7 @@ public slots:
 
 private:
     QUrl m_source;
-    Tiled::Map *m_map;
+    std::unique_ptr<Tiled::Map> m_map;
     Status m_status;
     QString m_error;
 };
@@ -74,7 +76,7 @@ private:
 
 inline Tiled::Map *MapLoader::map() const
 {
-    return m_map;
+    return m_map.get();
 }
 
 inline MapLoader::Status MapLoader::status() const
