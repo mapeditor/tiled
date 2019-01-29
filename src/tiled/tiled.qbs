@@ -223,6 +223,8 @@ QtGuiApplication {
         "editableobjectgroup.h",
         "editableselectedarea.cpp",
         "editableselectedarea.h",
+        "editabletile.cpp",
+        "editabletile.h",
         "editabletilelayer.cpp",
         "editabletilelayer.h",
         "editabletileset.cpp",

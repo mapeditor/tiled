@@ -20,6 +20,8 @@
 
 #include "editabletileset.h"
 
+#include "editabletile.h"
+#include "scriptmanager.h"
 #include "tilesetchanges.h"
 #include "tilesetdocument.h"
 
@@ -38,6 +40,35 @@ EditableTileset::EditableTileset(TilesetDocument *tilesetDocument,
     : EditableAsset(tilesetDocument, tilesetDocument->tileset().data(), parent)
 {
     connect(tilesetDocument, &Document::fileNameChanged, this, &EditableAsset::fileNameChanged);
+    connect(tilesetDocument, &TilesetDocument::tilesRemoved, this, &EditableTileset::detachTiles);
+}
+
+EditableTileset::~EditableTileset()
+{
+    // Operate on copy since original container will get modified
+    const auto editableTiles = mEditableTiles;
+    for (auto editable : editableTiles)
+        editable->detach();
+}
+
+EditableTile *EditableTileset::tile(int id)
+{
+    Tile *tile = tileset()->findTile(id);
+
+    if (!tile) {
+        ScriptManager::instance().throwError(tr("Invalid tile ID"));
+        return nullptr;
+    }
+
+    return editableTile(tile);
+}
+
+QList<QObject*> EditableTileset::tiles()
+{
+    QList<QObject*> tiles;
+    for (Tile *tile : tileset()->tiles())
+        tiles.append(editableTile(tile));
+    return tiles;
 }
 
 TilesetDocument *EditableTileset::tilesetDocument() const
@@ -67,6 +98,26 @@ void EditableTileset::setBackgroundColor(const QColor &color)
         push(new ChangeTilesetBackgroundColor(tilesetDocument(), color));
     else
         tileset()->setBackgroundColor(color);
+}
+
+void EditableTileset::detachTiles(const QList<Tile *> &tiles)
+{
+    for (Tile *tile : tiles) {
+        auto iterator = mEditableTiles.constFind(tile);
+        if (iterator != mEditableTiles.constEnd())
+            (*iterator)->detach();
+    }
+}
+
+EditableTile *EditableTileset::editableTile(Tile *tile)
+{
+    Q_ASSERT(tile->tileset() == tileset());
+
+    EditableTile* &editableTile = mEditableTiles[tile];
+    if (!editableTile)
+        editableTile = new EditableTile(this, tile);
+
+    return editableTile;
 }
 
 } // namespace Tiled

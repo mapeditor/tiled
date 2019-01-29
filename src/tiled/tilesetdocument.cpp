@@ -274,6 +274,7 @@ void TilesetDocument::setTilesetTileOffset(const QPoint &tileOffset)
 void TilesetDocument::addTiles(const QList<Tile *> &tiles)
 {
     mTileset->addTiles(tiles);
+    emit tilesAdded(tiles);
     emit tilesetChanged(mTileset.data());
 }
 
@@ -288,6 +289,7 @@ void TilesetDocument::removeTiles(const QList<Tile *> &tiles)
     }
 
     mTileset->removeTiles(tiles);
+    emit tilesRemoved(tiles);
     emit tilesetChanged(mTileset.data());
 }
 

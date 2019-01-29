@@ -25,6 +25,7 @@
 
 namespace Tiled {
 
+class EditableTile;
 class TilesetDocument;
 
 class EditableTileset : public EditableAsset
@@ -45,6 +46,7 @@ public:
                                          QObject *parent = nullptr);
     explicit EditableTileset(TilesetDocument *tilesetDocument,
                              QObject *parent = nullptr);
+    ~EditableTileset() override;
 
     bool isReadOnly() const override;
 
@@ -57,6 +59,9 @@ public:
     QPoint tileOffset() const;
     QColor backgroundColor() const;
 
+    Q_INVOKABLE Tiled::EditableTile *tile(int id);
+    Q_INVOKABLE QList<QObject*> tiles();
+
     TilesetDocument *tilesetDocument() const;
 
 public slots:
@@ -64,11 +69,20 @@ public slots:
     void setTileOffset(QPoint tileOffset);
     void setBackgroundColor(const QColor &color);
 
+private slots:
+    void detachTiles(const QList<Tile*> &tiles);
+
 private:
+    friend class EditableTile;
+
+    EditableTile *editableTile(Tile *tile);
+
     Tileset *tileset() const;
 
     bool mReadOnly = false;
     SharedTileset mTileset;
+
+    QHash<Tile*, EditableTile*> mEditableTiles;
 };
 
 

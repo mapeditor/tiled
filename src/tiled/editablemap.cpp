@@ -322,8 +322,8 @@ void EditableMap::resize(const QSize &size,
 
 void EditableMap::detachEditableLayer(Layer *layer)
 {
-    auto iterator = mEditableLayers.find(layer);
-    if (iterator != mEditableLayers.end())
+    auto iterator = mEditableLayers.constFind(layer);
+    if (iterator != mEditableLayers.constEnd())
         (*iterator)->detach();
 
     if (GroupLayer *groupLayer = layer->asGroupLayer()) {
@@ -337,8 +337,8 @@ void EditableMap::detachEditableLayer(Layer *layer)
 void EditableMap::detachMapObjects(const QList<MapObject *> &mapObjects)
 {
     for (MapObject *mapObject : mapObjects) {
-        auto iterator = mEditableMapObjects.find(mapObject);
-        if (iterator != mEditableMapObjects.end())
+        auto iterator = mEditableMapObjects.constFind(mapObject);
+        if (iterator != mEditableMapObjects.constEnd())
             (*iterator)->detach();
     }
 }

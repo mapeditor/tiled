@@ -120,6 +120,9 @@ signals:
      */
     void tilesetChanged(Tileset *tileset);
 
+    void tilesAdded(const QList<Tile*> &tiles);
+    void tilesRemoved(const QList<Tile*> &tiles);
+
     void tilesetNameChanged(Tileset *tileset);
     void tilesetTileOffsetChanged(Tileset *tileset);
 

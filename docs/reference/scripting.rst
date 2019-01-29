@@ -449,8 +449,8 @@ Properties
 
 .. _script-map:
 
-Map
-^^^
+TileMap
+^^^^^^^
 
 Inherits :ref:`script-asset`.
 
@@ -479,40 +479,43 @@ Properties
 Functions
 ~~~~~~~~~
 
+new TileMap()
+    Constructs a new map.
+
 .. _script-map-layerAt:
 
-Map.layerAt(index : int) : :ref:`script-layer`
+TileMap.layerAt(index : int) : :ref:`script-layer`
     Returns a reference to the top-level layer at the given index. When the
     layer gets removed from the map, the reference changes to a standalone
     copy of the layer.
 
 .. _script-map-removeLayerAt:
 
-Map.removeLayerAt(index : int) : void
+TileMap.removeLayerAt(index : int) : void
     Removes the top-level layer at the given index. When a reference to the
     layer still exists, that reference becomes a standalone copy of the layer.
 
 .. _script-map-removeLayer:
 
-Map.removeLayer(layer : :ref:`script-layer`) : void
+TileMap.removeLayer(layer : :ref:`script-layer`) : void
     Removes the given layer from the map. The reference to the layer becomes
     a standalone copy.
 
 .. _script-map-insertLayerAt:
 
-Map.insertLayerAt(index : int, layer : :ref:`script-layer`) : void
+TileMap.insertLayerAt(index : int, layer : :ref:`script-layer`) : void
     Inserts the layer at the given index. The layer can't already be part of
     a map.
 
 .. _script-map-addLayer:
 
-Map.addLayer(layer : :ref:`script-layer`) : void
+TileMap.addLayer(layer : :ref:`script-layer`) : void
     Adds the layer to the map, above all existing layers. The layer can't
     already be part of a map.
 
 .. _script-map-resize:
 
-Map.resize(size : size [, offset : point [, removeObjects : bool = false]]) : void
+TileMap.resize(size : size [, offset : point [, removeObjects : bool = false]]) : void
     Resizes the map to the given size, optionally applying an offset (in tiles)
 
 .. _script-layer:
@@ -559,6 +562,9 @@ Properties
 Functions
 ~~~~~~~~~
 
+new TileLayer([name : string])
+    Constructs a new tile layer, which can be added to a :ref:`script-map`.
+
 TileLayer.region() : region
     Returns the region of the layer that is covered with tiles.
 
@@ -586,6 +592,9 @@ Properties
 
 Functions
 ~~~~~~~~~
+
+new ObjectGroup([name : string])
+    Constructs a new object layer, which can be added to a :ref:`script-map`.
 
 ObjectGroup.objectAt(index : int) : :ref:`script-mapobject`
     Returns a reference to the object at the given index. When the object is
@@ -633,6 +642,12 @@ Properties
     **layer** : :ref:`script-objectgroup` |ro|, Layer this object is part of (or ``null`` in case of a standalone object).
     **map** : :ref:`script-map` |ro|, Map this object is part of (or ``null`` in case of a standalone object).
 
+Functions
+~~~~~~~~~
+
+new MapObject([name : string])
+    Constructs a new map object, which can be added to an :ref:`script-objectgroup`.
+
 .. _script-tileset:
 
 Tileset
@@ -654,6 +669,40 @@ Properties
     **margin** : int |ro|, Margin around the tileset in pixels (only used at the top and left sides of the tileset image).
     **tileOffset** : point, Offset in pixels that is applied when tiles from this tileset are rendered.
     **backgroundColor** : color, Background color for this tileset in the *Tilesets* view.
+
+Functions
+~~~~~~~~~
+
+new Tileset([name : string])
+    Constructs a new tileset.
+
+Tileset.tile(id : int) : :ref:`script-tile`
+    Returns a reference to the tile with the given ID. Raises an error if no
+    such tile exists. When the tile gets removed from the tileset, the
+    reference changes to a standalone copy of the tile.
+
+Tileset.tiles() : [:ref:`script-tile`]
+    Returns an array containing all tiles in the tileset.
+
+.. _script-tile:
+
+Tile
+^^^^
+
+Inherits :ref:`script-object`.
+
+Properties
+~~~~~~~~~~
+
+.. csv-table::
+    :widths: 1, 2
+
+    **id** : int |ro|, ID of this tile within its tileset.
+    **width** : int |ro|, Width of the tile in pixels.
+    **height** : int |ro|, Height of the tile in pixels.
+    **size** : size |ro|, Size of the tile in pixels (has ``width`` and ``height`` members).
+    **type** : string, Type of the tile.
+    **probability** : number, Probability that the tile gets chosen relative to other tiles.
 
 .. _script-selectedarea:
 
