@@ -111,7 +111,7 @@ public:
 
     Capabilities capabilities() const override { return mCapabilities; }
 
-    Tiled::Map *read(const QString &fileName) override;
+    std::unique_ptr<Tiled::Map> read(const QString &fileName) override;
     bool supportsFile(const QString &fileName) const override;
 
     bool write(const Tiled::Map *map, const QString &fileName) override;

@@ -275,7 +275,7 @@ PythonMapFormat::PythonMapFormat(const QString &scriptFile,
     setPythonClass(class_);
 }
 
-Tiled::Map *PythonMapFormat::read(const QString &fileName)
+std::unique_ptr<Tiled::Map> PythonMapFormat::read(const QString &fileName)
 {
     mError = QString();
 
@@ -300,7 +300,7 @@ Tiled::Map *PythonMapFormat::read(const QString &fileName)
 
     if (ret)
         ret->setProperty("__script__", mScriptFile);
-    return ret;
+    return std::unique_ptr<Tiled::Map>(ret);
 }
 
 bool PythonMapFormat::write(const Tiled::Map *map, const QString &fileName)
