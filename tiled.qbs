@@ -30,6 +30,7 @@ Project {
         "src/tiledquickplugin",
         "src/tmxrasterizer",
         "src/tmxviewer",
+        "tests",
         "translations"
     ]
 }
