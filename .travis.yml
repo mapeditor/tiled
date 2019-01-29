@@ -58,7 +58,7 @@ matrix:
     - chmod a+x linuxdeployqt
     - unset QTDIR; unset QT_PLUGIN_PATH; unset LD_LIBRARY_PATH
     - "./linuxdeployqt ./Tiled/usr/share/applications/org.mapeditor.Tiled.desktop
-      -bundle-non-qt-libs -extra-plugins=imageformats/libqsvg.so -exclude-libs=libpython3.5m.so.1
+      -bundle-non-qt-libs -extra-plugins=platformthemes,imageformats/libqsvg.so -exclude-libs=libpython3.5m.so.1
       -verbose=2"
     - "./linuxdeployqt ./Tiled/usr/share/applications/org.mapeditor.Tiled.desktop
       -exclude-libs=libpython3.5m.so.1 -appimage"
