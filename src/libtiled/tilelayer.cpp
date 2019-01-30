@@ -306,6 +306,17 @@ void TileLayer::erase(const QRegion &region)
                 setCell(x, y, Cell::empty);
 }
 
+/**
+ * Clears all tiles from this layer.
+ */
+void TileLayer::clear()
+{
+    mChunks.clear();
+    mBounds = QRect();
+    mUsedTilesets.clear();
+    mUsedTilesetsDirty = false;
+}
+
 void TileLayer::flip(FlipDirection direction)
 {
     const std::unique_ptr<TileLayer> newLayer(new TileLayer(QString(), 0, 0, mWidth, mHeight));

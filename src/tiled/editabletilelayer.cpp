@@ -20,6 +20,9 @@
 
 #include "editabletilelayer.h"
 
+#include "tilelayeredit.h"
+#include "tilesetdocument.h"
+
 namespace Tiled {
 
 EditableTileLayer::EditableTileLayer(const QString &name, QObject *parent)
@@ -34,6 +37,12 @@ EditableTileLayer::EditableTileLayer(EditableMap *map,
 {
 }
 
+EditableTileLayer::~EditableTileLayer()
+{
+    while (!mActiveEdits.isEmpty())
+        delete mActiveEdits.first();
+}
+
 RegionValueType EditableTileLayer::region() const
 {
     return RegionValueType(tileLayer()->region());
@@ -42,6 +51,43 @@ RegionValueType EditableTileLayer::region() const
 Cell EditableTileLayer::cellAt(int x, int y) const
 {
     return tileLayer()->cellAt(x, y);
+}
+
+int EditableTileLayer::flagsAt(int x, int y) const
+{
+    const Cell &cell = tileLayer()->cellAt(x, y);
+
+    int flags = 0;
+
+    if (cell.flippedHorizontally())
+        flags |= EditableTile::FlippedHorizontally;
+    if (cell.flippedVertically())
+        flags |= EditableTile::FlippedVertically;
+    if (cell.flippedAntiDiagonally())
+        flags |= EditableTile::FlippedAntiDiagonally;
+    if (cell.rotatedHexagonal120())
+        flags |= EditableTile::RotatedHexagonal120;
+
+    return flags;
+}
+
+EditableTile *EditableTileLayer::tileAt(int x, int y) const
+{
+    if (Tile *tile = cellAt(x, y).tile()) {
+        auto tileset = tile->tileset()->sharedPointer();
+
+        if (auto tilesetDocument = TilesetDocument::findDocumentForTileset(tileset)) {
+            EditableTileset *editable = tilesetDocument->editable();
+            return editable->editableTile(tile);
+        }
+    }
+
+    return nullptr;
+}
+
+TileLayerEdit *EditableTileLayer::edit()
+{
+    return new TileLayerEdit(this);
 }
 
 } // namespace Tiled

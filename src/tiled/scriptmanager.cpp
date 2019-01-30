@@ -27,6 +27,7 @@
 #include "editabletile.h"
 #include "editabletilelayer.h"
 #include "editabletileset.h"
+#include "tilelayeredit.h"
 #include "regionvaluetype.h"
 #include "scriptmodule.h"
 #include "tilelayer.h"
@@ -76,6 +77,7 @@ ScriptManager::ScriptManager(QObject *parent)
     qRegisterMetaType<EditableTile*>();
     qRegisterMetaType<EditableTileLayer*>();
     qRegisterMetaType<EditableTileset*>();
+    qRegisterMetaType<TileLayerEdit*>();
     qRegisterMetaType<RegionValueType>();
 
     QJSValue globalObject = mEngine->globalObject();
@@ -84,6 +86,7 @@ ScriptManager::ScriptManager(QObject *parent)
     globalObject.setProperty(QStringLiteral("Layer"), mEngine->newQMetaObject<EditableLayer>());
     globalObject.setProperty(QStringLiteral("MapObject"), mEngine->newQMetaObject<EditableMapObject>());
     globalObject.setProperty(QStringLiteral("ObjectGroup"), mEngine->newQMetaObject<EditableObjectGroup>());
+    globalObject.setProperty(QStringLiteral("Tile"), mEngine->newQMetaObject<EditableTile>());
     globalObject.setProperty(QStringLiteral("TileLayer"), mEngine->newQMetaObject<EditableTileLayer>());
     globalObject.setProperty(QStringLiteral("TileMap"), mEngine->newQMetaObject<EditableMap>());
     globalObject.setProperty(QStringLiteral("Tileset"), mEngine->newQMetaObject<EditableTileset>());

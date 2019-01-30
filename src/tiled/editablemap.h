@@ -90,6 +90,7 @@ public:
     void setBackgroundColor(const QColor &value);
     void setLayerDataFormat(Map::LayerDataFormat value);
 
+    Map *map() const;
     MapDocument *mapDocument() const;
     EditableSelectedArea *selectedArea();
 
@@ -115,7 +116,6 @@ private:
     EditableLayer *editableLayer(Layer *layer);
     EditableMapObject *editableMapObject(MapObject *mapObject);
 
-    Map *map() const;
     MapRenderer *renderer() const;
 
     bool mReadOnly;
@@ -206,11 +206,6 @@ inline Map *EditableMap::map() const
     return static_cast<Map*>(object());
 }
 
-inline MapRenderer *EditableMap::renderer() const
-{
-    return mapDocument() ? mapDocument()->renderer() : nullptr;
-}
-
 inline MapDocument *EditableMap::mapDocument() const
 {
     return static_cast<MapDocument*>(document());
@@ -219,6 +214,11 @@ inline MapDocument *EditableMap::mapDocument() const
 inline EditableSelectedArea *EditableMap::selectedArea()
 {
     return mSelectedArea;
+}
+
+inline MapRenderer *EditableMap::renderer() const
+{
+    return mapDocument() ? mapDocument()->renderer() : nullptr;
 }
 
 } // namespace Tiled

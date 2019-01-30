@@ -332,7 +332,9 @@ public:
      */
     TileLayer(const QString &name, int x, int y, int width, int height);
 
-    TileLayer(const QString &name, QPoint position, QSize size);
+    TileLayer(const QString &name = QString(),
+              QPoint position = QPoint(),
+              QSize size = QSize(0, 0));
 
     /**
      * Returns the width of this layer.
@@ -395,6 +397,8 @@ public:
      * Removes all cells in the specified region.
      */
     void erase(const QRegion &region);
+
+    void clear();
 
     /**
      * Sets the cells starting at the given position to the cells in the given

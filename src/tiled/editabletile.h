@@ -43,6 +43,14 @@ class EditableTile : public EditableObject
     Q_PROPERTY(Tiled::EditableTileset *tileset READ tileset)
 
 public:
+    enum Flags {
+        FlippedHorizontally     = 0x01,
+        FlippedVertically       = 0x02,
+        FlippedAntiDiagonally   = 0x04,
+        RotatedHexagonal120     = 0x08
+    };
+    Q_ENUM(Flags)
+
     EditableTile(EditableTileset *tileset,
                  Tile *tile,
                  QObject *parent = nullptr);
@@ -106,3 +114,5 @@ inline Tile *EditableTile::tile() const
 }
 
 } // namespace Tiled
+
+Q_DECLARE_METATYPE(Tiled::EditableTile*)

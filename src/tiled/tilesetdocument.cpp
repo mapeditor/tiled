@@ -220,7 +220,7 @@ void TilesetDocument::swapTileset(SharedTileset &tileset)
     emit tilesetChanged(mTileset.data());
 }
 
-EditableAsset *TilesetDocument::editable()
+EditableTileset *TilesetDocument::editable()
 {
     if (!mEditableTileset)
         mEditableTileset = new EditableTileset(this, this);

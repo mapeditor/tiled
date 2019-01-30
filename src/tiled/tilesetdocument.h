@@ -21,6 +21,7 @@
 #pragma once
 
 #include "document.h"
+#include "editabletileset.h"
 #include "tileset.h"
 #include "tilesetformat.h"
 
@@ -33,7 +34,6 @@
 namespace Tiled {
 
 
-class EditableTileset;
 class MapDocument;
 class TilesetDocument;
 class TilesetTerrainModel;
@@ -79,7 +79,7 @@ public:
     void swapTileset(SharedTileset &tileset);
     const SharedTileset &tileset() const;
 
-    Q_INVOKABLE Tiled::EditableAsset *editable() override;
+    EditableTileset *editable() override;
 
     bool isEmbedded() const;
     void setClean();

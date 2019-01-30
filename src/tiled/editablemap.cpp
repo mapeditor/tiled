@@ -255,8 +255,10 @@ void EditableMap::resize(const QSize &size,
 {
     if (checkReadOnly())
         return;
-    if (size.isEmpty())
+    if (size.isEmpty()) {
+        ScriptManager::instance().throwError(tr("Invalid size"));
         return;
+    }
 
     const QRegion movedSelection = mapDocument()->selectedArea().translated(offset);
     const QRect newArea = QRect(-offset, size);

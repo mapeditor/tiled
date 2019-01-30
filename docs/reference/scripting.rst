@@ -446,6 +446,8 @@ Properties
 
     **fileName** : string |ro|, File name of the asset.
     **modified** : bool |ro|, Whether the asset was modified after it was saved or loaded.
+    **isTileMap** : bool |ro|, Whether the asset is a :ref:`script-map`.
+    **isTileset** : bool |ro|, Whether the asset is a :ref:`script-tileset`.
 
 .. _script-map:
 
@@ -569,7 +571,20 @@ TileLayer.region() : region
     Returns the region of the layer that is covered with tiles.
 
 TileLayer.cellAt(x : int, y : int) : cell
-    Returns the value of the cell at the given position.
+    Returns the value of the cell at the given position. Can be used to query
+    the flags and the tile ID, but does not currently allow getting a tile
+    reference.
+
+TileLayer.flagsAt(x : int, y : int) : int
+    Returns the flags used for the tile at the given position.
+
+TileLayer.tileAt(x : int, y : int) : :ref:`script-tile`
+    Returns the tile used at the given position, or ``null`` for empty spaces.
+
+.. _script-tilelayer-edit:
+
+TileLayer.edit() : :ref:`script-tilelayeredit`
+    Returns an object that enables making modifications to the tile layer.
 
 .. _script-objectgroup:
 
@@ -704,6 +719,37 @@ Properties
     **type** : string, Type of the tile.
     **probability** : number, Probability that the tile gets chosen relative to other tiles.
 
+.. _script-tilelayeredit:
+
+TileLayerEdit
+^^^^^^^^^^^^^
+
+This object enables modifying the tiles on a tile layer. Tile layers can't be
+modified directly for reasons of efficiency. The :ref:`apply() <script-tilelayeredit-apply>`
+function needs to be called when you're done making changes.
+
+An instance of this object is created by calling :ref:`TileLayer.edit() <script-tilelayer-edit>`.
+
+Properties
+~~~~~~~~~~
+
+.. csv-table::
+    :widths: 1, 2
+
+    **target** : :ref:`script-tilelayer` |ro|, The target layer of this edit object.
+
+Functions
+~~~~~~~~~
+
+TileLayerEdit.setTile(x : int, y : int, tile : :ref:`script-tile` [, flags : int = 0]) : void
+    Sets the tile at the given location, optionally specifying tile flags.
+
+.. _script-tilelayeredit-apply:
+
+TileLayerEdit.apply() : void
+    Applies all changes made through this object. This object can be reused to
+    make further changes.
+
 .. _script-selectedarea:
 
 SelectedArea
@@ -737,4 +783,4 @@ SelectedArea.intersect(region : region) : void
     Sets the selected area to the intersection of the current selected area and the given region.
 
 
-.. |ro| replace:: *[read-only]*
+.. |ro| replace:: *[read‑only]*

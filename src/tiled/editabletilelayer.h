@@ -26,6 +26,9 @@
 
 namespace Tiled {
 
+class EditableTile;
+class TileLayerEdit;
+
 class EditableTileLayer : public EditableLayer
 {
     Q_OBJECT
@@ -41,6 +44,7 @@ public:
     explicit EditableTileLayer(EditableMap *map,
                                TileLayer *layer,
                                QObject *parent = nullptr);
+    ~EditableTileLayer() override;
 
     int width() const;
     int height() const;
@@ -49,13 +53,17 @@ public:
     Q_INVOKABLE Tiled::RegionValueType region() const;
 
     Q_INVOKABLE Tiled::Cell cellAt(int x, int y) const;
+    Q_INVOKABLE int flagsAt(int x, int y) const;
+    Q_INVOKABLE Tiled::EditableTile *tileAt(int x, int y) const;
 
-signals:
+    Q_INVOKABLE Tiled::TileLayerEdit *edit();
 
-public slots:
+    TileLayer *tileLayer() const;
 
 private:
-    TileLayer *tileLayer() const;
+    friend TileLayerEdit;
+
+    QList<TileLayerEdit*> mActiveEdits;
 };
 
 

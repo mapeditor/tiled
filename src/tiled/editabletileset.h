@@ -74,6 +74,7 @@ private slots:
 
 private:
     friend class EditableTile;
+    friend class EditableTileLayer;
 
     EditableTile *editableTile(Tile *tile);
 

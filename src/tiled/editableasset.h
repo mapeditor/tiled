@@ -37,12 +37,16 @@ class EditableAsset : public EditableObject
 
     Q_PROPERTY(QString fileName READ fileName NOTIFY fileNameChanged)
     Q_PROPERTY(bool modified READ isModified NOTIFY modifiedChanged)
+    Q_PROPERTY(bool isTileMap READ isMap CONSTANT)
+    Q_PROPERTY(bool isTileset READ isTileset CONSTANT)
 
 public:
     explicit EditableAsset(Document *document, Object *object, QObject *parent = nullptr);
 
     QString fileName() const;
     virtual bool isReadOnly() const = 0;
+    bool isMap() const;
+    bool isTileset() const;
 
     QUndoStack *undoStack() const;
     bool isModified() const;
