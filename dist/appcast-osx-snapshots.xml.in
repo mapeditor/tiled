@@ -8,7 +8,7 @@
       <title>Tiled @VERSION@</title>
       <pubDate>@VERSIONDATE@</pubDate>
       <sparkle:releaseNotesLink>https://github.com/bjorn/tiled/commits/snapshot</sparkle:releaseNotesLink>
-      <sparkle:minimumSystemVersion>10.7.0</sparkle:minimumSystemVersion>
+      <sparkle:minimumSystemVersion>10.10.0</sparkle:minimumSystemVersion>
       <enclosure url="@URL@"
                  sparkle:version="@VERSIONDATE@"
                  sparkle:shortVersionString="@VERSION@"

@@ -7,7 +7,7 @@
 	<key>CFBundleExecutable</key>
 	<string>@EXECUTABLE@</string>
 	<key>CFBundleGetInfoString</key>
-	<string>Tiled @FULL_VERSION@, Copyright 2008-2017 Thorbjørn Lindeijer, GNU General Public License</string>
+	<string>Tiled @FULL_VERSION@, Copyright 2008-2019 Thorbjørn Lindeijer, GNU General Public License</string>
 	<key>CFBundleIconFile</key>
 	<string>@ICON@</string>
 	<key>CFBundleIdentifier</key>
