@@ -81,19 +81,19 @@ ConsoleDock::~ConsoleDock()
 
 void ConsoleDock::appendInfo(const QString &str)
 {
-    mPlainTextEdit->appendHtml(QLatin1String("<pre>") + str +
+    mPlainTextEdit->appendHtml(QLatin1String("<pre>") + str.toHtmlEscaped() +
                                QLatin1String("</pre>"));
 }
 
 void ConsoleDock::appendError(const QString &str)
 {
-    mPlainTextEdit->appendHtml(QLatin1String("<pre style='color:red'>") + str +
+    mPlainTextEdit->appendHtml(QLatin1String("<pre style='color:red'>") + str.toHtmlEscaped() +
                                QLatin1String("</pre>"));
 }
 
 void ConsoleDock::appendScript(const QString &str)
 {
-    mPlainTextEdit->appendHtml(QLatin1String("<pre style='color:lightgreen'>&gt; ") + str +
+    mPlainTextEdit->appendHtml(QLatin1String("<pre style='color:lightgreen'>&gt; ") + str.toHtmlEscaped() +
                                QLatin1String("</pre>"));
 }
 
