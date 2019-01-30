@@ -42,10 +42,7 @@ bool CsvPlugin::write(const Map *map, const QString &fileName)
 
     // Traverse all tile layers
     int currentLayer = 0;
-    for (const Layer *layer : map->layers()) {
-        if (layer->layerType() != Layer::TileLayerType)
-            continue;
-
+    for (const Layer *layer : map->tileLayers()) {
         const TileLayer *tileLayer = static_cast<const TileLayer*>(layer);
 
         SaveFile file(layerPaths.at(currentLayer));
@@ -109,10 +106,7 @@ QStringList CsvPlugin::outputFiles(const Tiled::Map *map, const QString &fileNam
     const QString path = fileInfo.path();
 
     // Loop layers to calculate the path for the exported file
-    for (const Layer *layer : map->layers()) {
-        if (layer->layerType() != Layer::TileLayerType)
-            continue;
-
+    for (const Layer *layer : map->tileLayers()) {
         // Get the output file name for this layer
         const QString layerName = layer->name();
         const QString layerFileName = base + layerName + QLatin1String(".csv");
