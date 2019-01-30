@@ -1,4 +1,4 @@
-### Tiled 1.2.2 (23 January 2019)
+### Tiled 1.2.2 (29 January 2019)
 
 * Added 'json1' plugin that exports to the old JSON format (#2058)
 * Enable the adding of point objects in Tile Collision Editor (#2043)
