@@ -52,6 +52,7 @@ class EditableMap : public EditableAsset
     Q_PROPERTY(Tiled::EditableSelectedArea *selectedArea READ selectedArea CONSTANT)
     Q_PROPERTY(Tiled::EditableLayer* currentLayer READ currentLayer WRITE setCurrentLayer NOTIFY currentLayerChanged)
     Q_PROPERTY(QList<QObject*> selectedLayers READ selectedLayers WRITE setSelectedLayers NOTIFY selectedLayersChanged)
+    Q_PROPERTY(QList<QObject*> selectedObjects READ selectedObjects WRITE setSelectedObjects NOTIFY selectedObjectsChanged)
 
 public:
     Q_INVOKABLE explicit EditableMap(QObject *parent = nullptr);
@@ -78,6 +79,8 @@ public:
     int layerCount() const;
     EditableLayer *currentLayer();
     QList<QObject*> selectedLayers();
+    QList<QObject*> selectedObjects();
+
     Q_INVOKABLE Tiled::EditableLayer *layerAt(int index);
     Q_INVOKABLE void removeLayerAt(int index);
     Q_INVOKABLE void removeLayer(Tiled::EditableLayer *editableLayer);
@@ -96,6 +99,7 @@ public:
     void setLayerDataFormat(Map::LayerDataFormat value);
     void setCurrentLayer(EditableLayer *layer);
     void setSelectedLayers(const QList<QObject*> &layers);
+    void setSelectedObjects(const QList<QObject*> &objects);
 
     Map *map() const;
     MapDocument *mapDocument() const;
@@ -107,6 +111,7 @@ signals:
 
     void currentLayerChanged(Tiled::EditableLayer *layer);
     void selectedLayersChanged();
+    void selectedObjectsChanged();
 
 public slots:
     void resize(const QSize &size,

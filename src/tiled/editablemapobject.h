@@ -43,7 +43,8 @@ class EditableMapObject : public EditableObject
     Q_PROPERTY(qreal height READ height WRITE setHeight)
     Q_PROPERTY(QSizeF size READ size WRITE setSize)
     Q_PROPERTY(qreal rotation READ rotation WRITE setRotation)
-    Q_PROPERTY(bool visible READ visible WRITE setVisible)
+    Q_PROPERTY(bool visible READ isVisible WRITE setVisible)
+    Q_PROPERTY(bool selected READ isSelected WRITE setSelected)
 //    Q_PROPERTY(TextData mTextData)
 //    Q_PROPERTY(QPolygonF mPolygon)
 //    Q_PROPERTY(Cell mCell)
@@ -71,7 +72,8 @@ public:
     qreal height() const;
     QSizeF size() const;
     qreal rotation() const;
-    bool visible() const;
+    bool isVisible() const;
+    bool isSelected() const;
     EditableObjectGroup *layer() const;
     EditableMap *map() const;
 
@@ -91,6 +93,7 @@ public slots:
     void setSize(QSizeF size);
     void setRotation(qreal rotation);
     void setVisible(bool visible);
+    void setSelected(bool selected);
 
 private:
     void setMapObjectProperty(MapObject::Property property, const QVariant &value);
@@ -149,7 +152,7 @@ inline qreal EditableMapObject::rotation() const
     return mapObject()->rotation();
 }
 
-inline bool EditableMapObject::visible() const
+inline bool EditableMapObject::isVisible() const
 {
     return mapObject()->isVisible();
 }

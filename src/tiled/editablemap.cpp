@@ -73,6 +73,7 @@ EditableMap::EditableMap(MapDocument *mapDocument, QObject *parent)
 
     connect(mapDocument, &MapDocument::currentLayerChanged, this, &EditableMap::onCurrentLayerChanged);
     connect(mapDocument, &MapDocument::selectedLayersChanged, this, &EditableMap::selectedLayersChanged);
+    connect(mapDocument, &MapDocument::selectedObjectsChanged, this, &EditableMap::selectedObjectsChanged);
 }
 
 /**
@@ -118,6 +119,20 @@ QList<QObject *> EditableMap::selectedLayers()
         selectedLayers.append(editableLayer(layer));
 
     return selectedLayers;
+}
+
+QList<QObject *> EditableMap::selectedObjects()
+{
+    QList<QObject*> selectedObjects;
+
+    if (!mapDocument())
+        return QList<QObject*>();
+
+    const auto &objects = mapDocument()->selectedObjects();
+    for (MapObject *object : objects)
+        selectedObjects.append(editableMapObject(object));
+
+    return selectedObjects;
 }
 
 EditableLayer *EditableMap::layerAt(int index)
@@ -269,6 +284,27 @@ void EditableMap::setSelectedLayers(const QList<QObject *> &layers)
     // Automatically make sure the current layer is one of the selected ones
     if (!plainLayers.contains(document->currentLayer()))
         document->setCurrentLayer(plainLayers.isEmpty() ? nullptr : plainLayers.first());
+}
+
+void EditableMap::setSelectedObjects(const QList<QObject *> &objects)
+{
+    auto document = mapDocument();
+    if (!document)
+        return;
+
+    QList<MapObject*> plainObjects;
+
+    for (QObject *objectObject : objects) {
+        auto editableMapObject = qobject_cast<EditableMapObject*>(objectObject);
+        if (!editableMapObject) {
+            ScriptManager::instance().throwError(tr("Not an object"));
+            return;
+        }
+
+        plainObjects.append(editableMapObject->mapObject());
+    }
+
+    document->setSelectedObjects(plainObjects);
 }
 
 /**

@@ -479,6 +479,7 @@ Properties
     **selectedArea** : :ref:`SelectionArea <script-selectedarea>`, The selected area of tiles.
     **currentLayer** : :ref:`script-layer`, The current layer.
     **selectedLayers** : [:ref:`script-layer`], Selected layers.
+    **selectedObjects** : [:ref:`script-mapobject`], Selected objects.
 
 Functions
 ~~~~~~~~~
@@ -605,6 +606,7 @@ Properties
 .. csv-table::
     :widths: 1, 2
 
+    **objects** : [:ref:`script-mapobject`] |ro|, Array of all objects on this layer.
     **objectCount** : int |ro|, Number of objects on this layer.
     **color** : color, Color of shape and point objects on this layer (when not set by object type).
 
@@ -657,6 +659,7 @@ Properties
     **size** : size, Size of the object in pixels (has ``width`` and ``height`` members).
     **rotation** : number, Rotation of the object in degrees clockwise.
     **visible** : bool, Whether the object is visible.
+    **selected** : bool, Whether the object is selected.
     **layer** : :ref:`script-objectgroup` |ro|, Layer this object is part of (or ``null`` in case of a standalone object).
     **map** : :ref:`script-map` |ro|, Map this object is part of (or ``null`` in case of a standalone object).
 

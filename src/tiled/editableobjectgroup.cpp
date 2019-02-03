@@ -39,6 +39,17 @@ EditableObjectGroup::EditableObjectGroup(EditableMap *map,
 {
 }
 
+QList<QObject *> EditableObjectGroup::objects()
+{
+    if (!map()) // todo: unsupported for stand-alone object groups at the moment...
+        return QList<QObject*>();
+
+    QList<QObject*> objects;
+    for (MapObject *object : objectGroup()->objects())
+        objects.append(map()->editableMapObject(object));
+    return objects;
+}
+
 EditableMapObject *EditableObjectGroup::objectAt(int index)
 {
     if (index < 0 || index >= objectCount()) {

@@ -41,6 +41,14 @@ EditableMapObject::EditableMapObject(EditableMap *map,
 {
 }
 
+bool EditableMapObject::isSelected() const
+{
+    if (auto m = map())
+        if (auto doc = m->mapDocument())
+            return doc->selectedObjects().contains(mapObject());
+    return false;
+}
+
 EditableObjectGroup *EditableMapObject::layer() const
 {
     if (map())
@@ -112,6 +120,28 @@ void EditableMapObject::setRotation(qreal rotation)
 void EditableMapObject::setVisible(bool visible)
 {
     setMapObjectProperty(MapObject::VisibleProperty, visible);
+}
+
+void EditableMapObject::setSelected(bool selected)
+{
+    auto document = map() ? map()->mapDocument() : nullptr;
+    if (!document)
+        return;
+
+    if (selected) {
+        if (!document->selectedObjects().contains(mapObject())) {
+            auto objects = document->selectedObjects();
+            objects.append(mapObject());
+            document->setSelectedObjects(objects);
+        }
+    } else {
+        int index = document->selectedObjects().indexOf(mapObject());
+        if (index != -1) {
+            auto objects = document->selectedObjects();
+            objects.removeAt(index);
+            document->setSelectedObjects(objects);
+        }
+    }
 }
 
 void EditableMapObject::setMapObjectProperty(MapObject::Property property,
