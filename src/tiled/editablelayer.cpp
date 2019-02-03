@@ -49,6 +49,13 @@ EditableMap *EditableLayer::map() const
     return static_cast<EditableMap*>(asset());
 }
 
+bool EditableLayer::isSelected() const
+{
+    if (auto document = mapDocument())
+        return document->selectedLayers().contains(layer());
+    return false;
+}
+
 void EditableLayer::detach()
 {
     Q_ASSERT(map());
@@ -109,6 +116,28 @@ void EditableLayer::setOffset(QPointF offset)
         asset()->push(new SetLayerOffset(mapDocument(), layer(), offset));
     else
         layer()->setOffset(offset);
+}
+
+void EditableLayer::setSelected(bool selected)
+{
+    auto document = mapDocument();
+    if (!document)
+        return;
+
+    if (selected) {
+        if (!document->selectedLayers().contains(layer())) {
+            auto layers = document->selectedLayers();
+            layers.append(layer());
+            document->setSelectedLayers(layers);
+        }
+    } else {
+        int index = document->selectedLayers().indexOf(layer());
+        if (index != -1) {
+            auto layers = document->selectedLayers();
+            layers.removeAt(index);
+            document->setSelectedLayers(layers);
+        }
+    }
 }
 
 MapDocument *EditableLayer::mapDocument() const

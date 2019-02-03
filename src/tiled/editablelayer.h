@@ -40,6 +40,7 @@ class EditableLayer : public EditableObject
     Q_PROPERTY(bool locked READ isLocked WRITE setLocked)
     Q_PROPERTY(QPointF offset READ offset WRITE setOffset)
     Q_PROPERTY(Tiled::EditableMap *map READ map)
+    Q_PROPERTY(bool selected READ isSelected WRITE setSelected)
     Q_PROPERTY(bool isTileLayer READ isTileLayer CONSTANT)
     Q_PROPERTY(bool isObjectLayer READ isObjectLayer CONSTANT)
     Q_PROPERTY(bool isGroupLayer READ isGroupLayer CONSTANT)
@@ -60,6 +61,7 @@ public:
     bool isLocked() const;
     QPointF offset() const;
     EditableMap *map() const;
+    bool isSelected() const;
     bool isTileLayer() const;
     bool isObjectLayer() const;
     bool isGroupLayer() const;
@@ -76,6 +78,7 @@ public slots:
     void setVisible(bool visible);
     void setLocked(bool locked);
     void setOffset(QPointF offset);
+    void setSelected(bool selected);
 
 private:
     MapDocument *mapDocument() const;

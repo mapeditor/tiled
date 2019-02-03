@@ -68,8 +68,11 @@ EditableMap::EditableMap(MapDocument *mapDocument, QObject *parent)
     connect(map(), &Map::tileHeightChanged, this, &EditableMap::tileHeightChanged);
 
     connect(mapDocument, &Document::fileNameChanged, this, &EditableAsset::fileNameChanged);
-    connect(mapDocument, &MapDocument::layerRemoved, this, &EditableMap::detachEditableLayer);
+    connect(mapDocument, &MapDocument::layerRemoved, this, &EditableMap::detachLayer);
     connect(mapDocument, &MapDocument::objectsRemoved, this, &EditableMap::detachMapObjects);
+
+    connect(mapDocument, &MapDocument::currentLayerChanged, this, &EditableMap::onCurrentLayerChanged);
+    connect(mapDocument, &MapDocument::selectedLayersChanged, this, &EditableMap::selectedLayersChanged);
 }
 
 /**
@@ -94,6 +97,27 @@ EditableMap::~EditableMap()
     const auto editableMapObjects = mEditableMapObjects;
     for (auto editable : editableMapObjects)
         editable->detach();
+}
+
+EditableLayer *EditableMap::currentLayer()
+{
+    if (auto document = mapDocument())
+        return editableLayer(document->currentLayer());
+    return nullptr;
+}
+
+QList<QObject *> EditableMap::selectedLayers()
+{
+    QList<QObject*> selectedLayers;
+
+    if (!mapDocument())
+        return QList<QObject*>();
+
+    const auto &layers = mapDocument()->selectedLayers();
+    for (Layer *layer : layers)
+        selectedLayers.append(editableLayer(layer));
+
+    return selectedLayers;
 }
 
 EditableLayer *EditableMap::layerAt(int index)
@@ -209,6 +233,44 @@ void EditableMap::setLayerDataFormat(Map::LayerDataFormat value)
     push(new ChangeMapProperty(mapDocument(), value));
 }
 
+void EditableMap::setCurrentLayer(EditableLayer *layer)
+{
+    auto document = mapDocument();
+    if (!document)
+        return;
+
+    document->setCurrentLayer(layer ? layer->layer() : nullptr);
+
+    // Automatically select the layer if it isn't already
+    if (layer && !document->selectedLayers().contains(layer->layer()))
+        document->setSelectedLayers({ layer->layer() });
+}
+
+void EditableMap::setSelectedLayers(const QList<QObject *> &layers)
+{
+    auto document = mapDocument();
+    if (!document)
+        return;
+
+    QList<Layer*> plainLayers;
+
+    for (QObject *layerObject : layers) {
+        auto editableLayer = qobject_cast<EditableLayer*>(layerObject);
+        if (!editableLayer) {
+            ScriptManager::instance().throwError(tr("Not a layer"));
+            return;
+        }
+
+        plainLayers.append(editableLayer->layer());
+    }
+
+    document->setSelectedLayers(plainLayers);
+
+    // Automatically make sure the current layer is one of the selected ones
+    if (!plainLayers.contains(document->currentLayer()))
+        document->setCurrentLayer(plainLayers.isEmpty() ? nullptr : plainLayers.first());
+}
+
 /**
  * Custom intersects check necessary because QRectF::intersects wants a
  * non-empty area of overlap, but we should also consider overlap with empty
@@ -322,7 +384,7 @@ void EditableMap::resize(const QSize &size,
     // TODO: Handle layers that don't match the map size correctly
 }
 
-void EditableMap::detachEditableLayer(Layer *layer)
+void EditableMap::detachLayer(Layer *layer)
 {
     auto iterator = mEditableLayers.constFind(layer);
     if (iterator != mEditableLayers.constEnd())
@@ -330,7 +392,7 @@ void EditableMap::detachEditableLayer(Layer *layer)
 
     if (GroupLayer *groupLayer = layer->asGroupLayer()) {
         for (Layer *childLayer : groupLayer->layers())
-            detachEditableLayer(childLayer);
+            detachLayer(childLayer);
     } else if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
         detachMapObjects(objectGroup->objects());
     }
@@ -345,8 +407,16 @@ void EditableMap::detachMapObjects(const QList<MapObject *> &mapObjects)
     }
 }
 
+void EditableMap::onCurrentLayerChanged(Layer *layer)
+{
+    emit currentLayerChanged(editableLayer(layer));
+}
+
 EditableLayer *EditableMap::editableLayer(Layer *layer)
 {
+    if (!layer)
+        return nullptr;
+
     Q_ASSERT(layer->map() == map());
 
     EditableLayer* &editableLayer = mEditableLayers[layer];

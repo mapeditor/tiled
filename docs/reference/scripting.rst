@@ -475,8 +475,10 @@ Properties
     **staggerIndex** : int, "For staggered and hexagonal maps, determines whether the even or odd indexes along the staggered axis are shifted. 0 (Odd), 1 (Even)."
     **backgroundColor** : color, Background color of the map.
     **layerDataFormat** : int, "The format in which the layer data is stored, taken into account by TMX, JSON and Lua map formats: 0 (XML), 1 (Base64), 2 (Base64Gzip), 3 (Base64Zlib), 4 (CSV)"
-    **selectedArea** : :ref:`SelectionArea <script-selectedarea>`, The selected area of tiles.
     **layerCount** : int |ro|, Number of top-level layers the map has.
+    **selectedArea** : :ref:`SelectionArea <script-selectedarea>`, The selected area of tiles.
+    **currentLayer** : :ref:`script-layer`, The current layer.
+    **selectedLayers** : [:ref:`script-layer`], Selected layers.
 
 Functions
 ~~~~~~~~~
@@ -539,6 +541,7 @@ Properties
     **locked** : bool, Whether the layer is locked (affects whether child layers are locked for group layers).
     **offset** : point, Offset in pixels that is applied when this layer is rendered.
     **map** : :ref:`script-map`, Map that this layer is part of (or ``null`` in case of a standalone layer).
+    **selected** : bool, Whether the layer is selected.
     **isTileLayer** : bool |ro|, Whether this layer is a :ref:`script-tilelayer`.
     **isObjectGroup** : bool |ro|, Whether this layer is an :ref:`script-objectgroup`.
     **isGroupLayer** : bool |ro|, Whether this layer is a group layer.
