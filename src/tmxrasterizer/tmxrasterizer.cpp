@@ -37,6 +37,7 @@
 #include "orthogonalrenderer.h"
 #include "staggeredrenderer.h"
 #include "tilelayer.h"
+#include "worldmanager.h"
 
 #include <QDebug>
 #include <QImageWriter>
@@ -55,6 +56,48 @@ TmxRasterizer::TmxRasterizer():
 {
 }
 
+std::unique_ptr<MapRenderer> TmxRasterizer::createRenderer(Map& map) const
+{
+    switch (map.orientation()) {
+    case Map::Isometric:
+        return std::unique_ptr<MapRenderer>(new IsometricRenderer(&map));
+    case Map::Staggered:
+        return std::unique_ptr<MapRenderer>(new StaggeredRenderer(&map));
+    case Map::Hexagonal:
+        return std::unique_ptr<MapRenderer>(new HexagonalRenderer(&map));
+    case Map::Orthogonal:
+    default:
+        return std::unique_ptr<MapRenderer>(new OrthogonalRenderer(&map));
+    }
+}
+void TmxRasterizer::drawMapLayers(MapRenderer& renderer,
+                                 QPainter& painter,
+                                 Map& map,
+                                 QPoint mapOffset) const
+{
+    // Perform a similar rendering than found in exportasimagedialog.cpp
+    LayerIterator iterator(&map);
+    while (const Layer *layer = iterator.next()) {
+        if (!shouldDrawLayer(layer))
+            continue;
+
+        const auto offset = layer->totalOffset() + mapOffset;
+        painter.setOpacity(layer->effectiveOpacity());
+        painter.translate(offset);
+
+        const TileLayer *tileLayer = dynamic_cast<const TileLayer*>(layer);
+        const ImageLayer *imageLayer = dynamic_cast<const ImageLayer*>(layer);
+
+        if (tileLayer) {
+            renderer.drawTileLayer(&painter, tileLayer);
+        } else if (imageLayer) {
+            renderer.drawImageLayer(&painter, imageLayer);
+        }
+
+        painter.translate(-offset);
+    }
+}
+
 bool TmxRasterizer::shouldDrawLayer(const Layer *layer) const
 {
     if (layer->isObjectGroup() || layer->isGroupLayer())
@@ -69,8 +112,17 @@ bool TmxRasterizer::shouldDrawLayer(const Layer *layer) const
     return !layer->isHidden();
 }
 
-int TmxRasterizer::render(const QString &mapFileName,
+int TmxRasterizer::render(const QString &fileName,
                           const QString &imageFileName)
+{
+    if(fileName.endsWith(".world"))
+        return renderWorld(fileName, imageFileName);
+    else
+        return renderMap(fileName, imageFileName);
+}
+
+int TmxRasterizer::renderMap(const QString &mapFileName,
+                             const QString &imageFileName)
 {
     MapReader reader;
     std::unique_ptr<Map> map { reader.readMap(mapFileName) };
@@ -81,24 +133,7 @@ int TmxRasterizer::render(const QString &mapFileName,
         return 1;
     }
 
-    std::unique_ptr<MapRenderer> renderer;
-
-    switch (map->orientation()) {
-    case Map::Isometric:
-        renderer.reset(new IsometricRenderer(map.get()));
-        break;
-    case Map::Staggered:
-        renderer.reset(new StaggeredRenderer(map.get()));
-        break;
-    case Map::Hexagonal:
-        renderer.reset(new HexagonalRenderer(map.get()));
-        break;
-    case Map::Orthogonal:
-    default:
-        renderer.reset(new OrthogonalRenderer(map.get()));
-        break;
-    }
-
+    std::unique_ptr<MapRenderer> renderer = createRenderer(*map.get());
     QRect mapBoundingRect = renderer->mapBoundingRect();
     QSize mapSize = mapBoundingRect.size();
     QPoint mapOffset = mapBoundingRect.topLeft();
@@ -133,32 +168,15 @@ int TmxRasterizer::render(const QString &mapFileName,
     painter.translate(margins.left(), margins.top());
     painter.translate(-mapOffset);
 
-    // Perform a similar rendering than found in exportasimagedialog.cpp
-    LayerIterator iterator(map.get());
-    while (const Layer *layer = iterator.next()) {
-        if (!shouldDrawLayer(layer))
-            continue;
-
-        const auto offset = layer->totalOffset();
-
-        painter.setOpacity(layer->effectiveOpacity());
-        painter.translate(offset);
-
-        const TileLayer *tileLayer = dynamic_cast<const TileLayer*>(layer);
-        const ImageLayer *imageLayer = dynamic_cast<const ImageLayer*>(layer);
-
-        if (tileLayer) {
-            renderer->drawTileLayer(&painter, tileLayer);
-        } else if (imageLayer) {
-            renderer->drawImageLayer(&painter, imageLayer);
-        }
-
-        painter.translate(-offset);
-    }
-
+    drawMapLayers(*renderer.get(), painter, *map.get());
     map.reset();
+    return saveImage(imageFileName, image);
+}
 
-    // Save image
+
+int TmxRasterizer::saveImage(const QString& imageFileName,
+                             const QImage& image) const
+{
     QImageWriter imageWriter(imageFileName);
 
     if (!imageWriter.canWrite())
@@ -172,4 +190,72 @@ int TmxRasterizer::render(const QString &mapFileName,
     }
 
     return 0;
+}
+
+int TmxRasterizer::renderWorld(const QString &worldFileName,
+                               const QString &imageFileName)
+{
+    WorldManager &worldManager = WorldManager::instance();
+    QString errorString;
+    const World *world = nullptr;
+    if (worldManager.loadWorld(worldFileName, &errorString)){
+        auto const &worlds = worldManager.worlds();
+        auto WorldIt = worlds.find(worldFileName);
+        if (WorldIt != worlds.end())
+            world = WorldIt.value();
+    }
+    if (world == nullptr) {
+        qWarning("Error loading the world file \"%s\":\n%s",
+                 qUtf8Printable(worldFileName),
+                 qUtf8Printable(errorString));
+        return 1;
+    }
+        
+    auto const maps = world->allMaps();
+    QRect worldBoundingRect;
+    bool boundsAreInit = false;
+    for (const World::MapEntry &mapEntry : maps) {
+        if (!boundsAreInit){
+            boundsAreInit = true;
+            worldBoundingRect = mapEntry.rect;
+            continue;
+        }
+        if (worldBoundingRect.left() > mapEntry.rect.left())
+            worldBoundingRect.setLeft(mapEntry.rect.left());
+        if (worldBoundingRect.top() > mapEntry.rect.top())
+            worldBoundingRect.setTop(mapEntry.rect.top());
+        if (worldBoundingRect.right() < mapEntry.rect.right())
+            worldBoundingRect.setRight(mapEntry.rect.right());
+        if (worldBoundingRect.bottom() < mapEntry.rect.bottom())
+            worldBoundingRect.setBottom(mapEntry.rect.bottom());
+    }   
+        
+    QSize mapSize = worldBoundingRect.size();
+    QPoint mapOffset = worldBoundingRect.topLeft();
+    
+    QImage image(mapSize * mScale, QImage::Format_ARGB32);
+    image.fill(Qt::transparent);
+    QPainter painter(&image);
+
+    painter.setRenderHint(QPainter::Antialiasing, mUseAntiAliasing);
+    painter.setRenderHint(QPainter::SmoothPixmapTransform, mSmoothImages);
+    painter.setTransform(QTransform::fromScale(mScale, mScale));
+
+    painter.translate(-mapOffset);
+
+    for (const World::MapEntry &mapEntry : maps) {
+        MapReader reader;
+        std::unique_ptr<Map> map { reader.readMap(mapEntry.fileName) };
+        if (!map) {
+            qWarning("Error while reading \"%s\":\n%s",
+                    qUtf8Printable(mapEntry.fileName),
+                    qUtf8Printable(reader.errorString()));
+            return 1;
+        }
+
+        std::unique_ptr<MapRenderer> renderer = createRenderer(*map.get());
+        drawMapLayers(*renderer.get(), painter, *map.get(), mapEntry.rect.topLeft());
+    }
+
+    return saveImage(imageFileName, image);
 }

@@ -30,10 +30,15 @@
 
 #include "layer.h"
 
+#include "map.h"
+#include "mapreader.h"
 #include <QString>
 #include <QStringList>
 
 using namespace Tiled;
+
+class QImage;
+class QPainter;
 
 class TmxRasterizer
 {
@@ -57,7 +62,7 @@ public:
 
     void setLayersToHide(QStringList layersToHide) { mLayersToHide = layersToHide; }
 
-    int render(const QString &mapFileName, const QString &imageFileName);
+    int render(const QString &fileName, const QString &imageFileName);
 
 private:
     qreal mScale;
@@ -68,5 +73,10 @@ private:
     bool mIgnoreVisibility;
     QStringList mLayersToHide;
 
+    std::unique_ptr<MapRenderer> createRenderer(Map& map) const;
+    void drawMapLayers(MapRenderer& renderer, QPainter& painter, Map& map, QPoint mapOffset = QPoint(0,0)) const;
+    int renderMap(const QString &mapFileName, const QString &imageFileName);
+    int renderWorld(const QString &worldFileName, const QString &imageFileName);
+    int saveImage(const QString& imageFileName, const QImage& image) const;
     bool shouldDrawLayer(const Layer *layer) const;
 };
