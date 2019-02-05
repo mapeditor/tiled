@@ -30,15 +30,15 @@
 
 #include "tiled_global.h"
 
+#include "filesystemwatcher.h"
+
 #include <QCoreApplication>
-#include <QFileSystemWatcher>
 #include <QMap>
 #include <QObject>
 #include <QPoint>
 #include <QRect>
 #include <QRegularExpression>
 #include <QSize>
-#include <QTimer>
 #include <QVector>
 
 #include <memory>
@@ -94,7 +94,7 @@ signals:
     void worldsChanged();
 
 private slots:
-    void reloadChangedWorldFiles();
+    void reloadWorldFiles(const QStringList &fileNames);
 
 private:
     WorldManager();
@@ -105,9 +105,7 @@ private:
 
     QMap<QString, World*> mWorlds;
 
-    QFileSystemWatcher mFileSystemWatcher;
-    QTimer mReloadTimer;
-    QStringList mChangedWorldFiles;
+    FileSystemWatcher mFileSystemWatcher;
 
     static WorldManager *mInstance;
 };

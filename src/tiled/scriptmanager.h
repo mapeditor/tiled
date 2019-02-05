@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include "filesystemwatcher.h"
+
 #include <QObject>
 #include <QJSValue>
 
@@ -51,11 +53,18 @@ public:
 
     void throwError(const QString &message);
 
+    void reset();
+
+    void scriptFilesChanged(const QStringList &scriptFiles);
+
 private:
     explicit ScriptManager(QObject *parent = nullptr);
 
+    void initialize();
+
     QJSEngine *mEngine;
     ScriptModule *mModule;
+    FileSystemWatcher mWatcher;
 
     static std::unique_ptr<ScriptManager> mInstance;
 };

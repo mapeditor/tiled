@@ -34,8 +34,6 @@
 #include <QObject>
 #include <QList>
 #include <QString>
-#include <QSet>
-#include <QTimer>
 
 namespace Tiled {
 
@@ -87,8 +85,7 @@ signals:
     void repaintTileset(Tileset *tileset);
 
 private slots:
-    void fileChanged(const QString &path);
-    void fileChangedTimeout();
+    void filesChanged(const QStringList &fileNames);
 
     void advanceTileAnimations(int ms);
 
@@ -106,8 +103,6 @@ private:
     QList<Tileset*> mTilesets;
     FileSystemWatcher *mWatcher;
     TileAnimationDriver *mAnimationDriver;
-    QSet<QString> mChangedFiles;
-    QTimer mChangedFilesTimer;
     bool mReloadTilesetsOnChange;
 };
 

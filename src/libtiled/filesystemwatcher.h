@@ -32,6 +32,8 @@
 
 #include <QMap>
 #include <QObject>
+#include <QSet>
+#include <QTimer>
 
 class QFileSystemWatcher;
 
@@ -43,6 +45,10 @@ namespace Tiled {
  * doesn't exist.
  *
  * It's meant to be used as drop-in replacement for QFileSystemWatcher.
+ *
+ * Optionally, the 'filesChanged' signal can be used, which triggers at a delay
+ * to avoid problems occurring when trying to reload only partially written
+ * files, as well as avoiding fast consecutive reloads.
  */
 class TILEDSHARED_EXPORT FileSystemWatcher : public QObject
 {
@@ -53,18 +59,24 @@ public:
 
     void addPath(const QString &path);
     void removePath(const QString &path);
+    void clear();
 
 signals:
     void fileChanged(const QString &path);
+    void filesChanged(const QStringList &paths);
     void directoryChanged(const QString &path);
 
 private slots:
     void onFileChanged(const QString &path);
     void onDirectoryChanged(const QString &path);
+    void filesChangedTimeout();
 
 private:
     QFileSystemWatcher *mWatcher;
     QMap<QString, int> mWatchCount;
+
+    QSet<QString> mChangedFiles;
+    QTimer mChangedFilesTimer;
 };
 
 } // namespace Tiled

@@ -45,18 +45,8 @@ WorldManager *WorldManager::mInstance;
 
 WorldManager::WorldManager()
 {
-    mReloadTimer.setSingleShot(true);
-    mReloadTimer.setInterval(250);
-
-    connect(&mFileSystemWatcher, &QFileSystemWatcher::fileChanged,
-            this, [this] (const QString &fileName) {
-        if (!mChangedWorldFiles.contains(fileName))
-            mChangedWorldFiles.append(fileName);
-        mReloadTimer.start();
-    });
-
-    connect(&mReloadTimer, &QTimer::timeout,
-            this, &WorldManager::reloadChangedWorldFiles);
+    connect(&mFileSystemWatcher, &FileSystemWatcher::filesChanged,
+            this, &WorldManager::reloadWorldFiles);
 }
 
 WorldManager::~WorldManager()
@@ -78,11 +68,11 @@ void WorldManager::deleteInstance()
     mInstance = nullptr;
 }
 
-void WorldManager::reloadChangedWorldFiles()
+void WorldManager::reloadWorldFiles(const QStringList &fileNames)
 {
     bool changed = false;
 
-    for (const QString &fileName : qAsConst(mChangedWorldFiles)) {
+    for (const QString &fileName : fileNames) {
         if (mWorlds.contains(fileName)) {
             auto world = privateLoadWorld(fileName);
             if (world) {
@@ -93,8 +83,6 @@ void WorldManager::reloadChangedWorldFiles()
             }
         }
     }
-
-    mChangedWorldFiles.clear();
 
     if (changed)
         emit worldsChanged();

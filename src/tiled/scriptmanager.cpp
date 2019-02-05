@@ -80,6 +80,14 @@ ScriptManager::ScriptManager(QObject *parent)
     qRegisterMetaType<TileLayerEdit*>();
     qRegisterMetaType<RegionValueType>();
 
+    connect(&mWatcher, &FileSystemWatcher::filesChanged,
+            this, &ScriptManager::scriptFilesChanged);
+
+    initialize();
+}
+
+void ScriptManager::initialize()
+{
     QJSValue globalObject = mEngine->globalObject();
     globalObject.setProperty(QStringLiteral("tiled"), mEngine->newQObject(mModule));
 #if QT_VERSION > 0x050800
@@ -129,6 +137,8 @@ void ScriptManager::evaluateStartupScripts()
         if (QFile::exists(scriptFile)) {
             module()->log(tr("Evaluating '%1'").arg(scriptFile));
             evaluateFile(scriptFile);
+
+            mWatcher.addPath(scriptFile);
         }
     }
 }
@@ -140,6 +150,27 @@ void ScriptManager::throwError(const QString &message)
 #else
     engine()->throwError(message);
 #endif
+}
+
+void ScriptManager::reset()
+{
+    module()->log(tr("Resetting script engine"));
+
+    mWatcher.clear();
+    delete mEngine;
+    delete mModule;
+
+    mEngine = new QQmlEngine(this);
+    mModule = new ScriptModule(this);
+
+    initialize();
+    evaluateStartupScripts();
+}
+
+void ScriptManager::scriptFilesChanged(const QStringList &scriptFiles)
+{
+    module()->log(tr("Script files changed: %1").arg(scriptFiles.join(QLatin1String(", "))));
+    reset();
 }
 
 } // namespace Tiled

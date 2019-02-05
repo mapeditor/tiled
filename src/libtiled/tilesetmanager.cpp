@@ -49,14 +49,8 @@ TilesetManager::TilesetManager():
     mAnimationDriver(new TileAnimationDriver(this)),
     mReloadTilesetsOnChange(false)
 {
-    connect(mWatcher, &FileSystemWatcher::fileChanged,
-            this, &TilesetManager::fileChanged);
-
-    mChangedFilesTimer.setInterval(500);
-    mChangedFilesTimer.setSingleShot(true);
-
-    connect(&mChangedFilesTimer, &QTimer::timeout,
-            this, &TilesetManager::fileChangedTimeout);
+    connect(mWatcher, &FileSystemWatcher::filesChanged,
+            this, &TilesetManager::filesChanged);
 
     connect(mAnimationDriver, &TileAnimationDriver::update,
             this, &TilesetManager::advanceTileAnimations);
@@ -205,33 +199,20 @@ void TilesetManager::tilesetImageSourceChanged(const Tileset &tileset,
         mWatcher->addPath(tileset.imageSource().toLocalFile());
 }
 
-void TilesetManager::fileChanged(const QString &path)
+void TilesetManager::filesChanged(const QStringList &fileNames)
 {
     if (!mReloadTilesetsOnChange)
         return;
 
-    /*
-     * Use a one-shot timer since GIMP (for example) seems to generate many
-     * file changes during a save, and some of the intermediate attempts to
-     * reload the tileset images actually fail (at least for .png files).
-     */
-    mChangedFiles.insert(path);
-    mChangedFilesTimer.start();
-}
-
-void TilesetManager::fileChangedTimeout()
-{
-    for (const QString &fileName : qAsConst(mChangedFiles))
+    for (const QString &fileName : fileNames)
         ImageCache::remove(fileName);
 
     for (Tileset *tileset : qAsConst(mTilesets)) {
         const QString fileName = tileset->imageSource().toLocalFile();
-        if (mChangedFiles.contains(fileName))
+        if (fileNames.contains(fileName))
             if (tileset->loadImage())
                 emit tilesetImagesChanged(tileset);
     }
-
-    mChangedFiles.clear();
 }
 
 /**
