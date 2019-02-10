@@ -146,16 +146,11 @@ std::unique_ptr<Tiled::Map> TbinMapFormat::read(const QString &fileName)
             if (ttilesheet.margin.x != ttilesheet.margin.y)
                 throw std::invalid_argument(QT_TR_NOOP("Tilesheet must have equal margins."));
 
-            auto tilesheet = Tiled::Tileset::create(ttilesheet.id.c_str(), ttilesheet.tileSize.x, ttilesheet.tileSize.y, ttilesheet.spacing.x, ttilesheet.margin.x);
-            tilesheet->setImageSource(Tiled::toUrl(QString::fromStdString(ttilesheet.image), fileDir));
-            if (!tilesheet->loadImage()) {
-                QList<Tiled::Tile*> tiles;
-                for (int i = 0; i < ttilesheet.sheetSize.x * ttilesheet.sheetSize.y; ++i) {
-                    tiles.append(new Tiled::Tile(i, tilesheet.data()));
-                }
-                tilesheet->addTiles(tiles);
-            }
-            tbinToTiledProperties(ttilesheet.props, tilesheet.data());
+            auto tileset = Tiled::Tileset::create(ttilesheet.id.c_str(), ttilesheet.tileSize.x, ttilesheet.tileSize.y, ttilesheet.spacing.x, ttilesheet.margin.x);
+            tileset->setImageSource(Tiled::toUrl(QString::fromStdString(ttilesheet.image), fileDir));
+            tileset->loadImage();
+
+            tbinToTiledProperties(ttilesheet.props, tileset.data());
 
             for (auto prop : ttilesheet.props) {
                 if (prop.first[0] != '@')
@@ -166,7 +161,7 @@ std::unique_ptr<Tiled::Map> TbinMapFormat::read(const QString &fileName)
                     int index = strs[2].toInt();
                     tbin::Properties dummyProps;
                     dummyProps.insert(std::make_pair(strs[3].toStdString(), prop.second));
-                    Tiled::Tile* tile = tilesheet->tileAt(index);
+                    Tiled::Tile *tile = tileset->findOrCreateTile(index);
                     tbinToTiledProperties(dummyProps, tile);
                 }
                 // TODO: 'AutoTile' ?
@@ -174,7 +169,7 @@ std::unique_ptr<Tiled::Map> TbinMapFormat::read(const QString &fileName)
                 // (In tIDE, right click a tilesheet and choose "Auto Tiles..."
             }
 
-            map->addTileset(tilesheet);
+            map->addTileset(tileset);
         }
         for (const tbin::Layer& tlayer : tmap.layers) {
             if (tlayer.tileSize.x != firstLayer.tileSize.x || tlayer.tileSize.y != firstLayer.tileSize.y)
