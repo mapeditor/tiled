@@ -286,7 +286,7 @@ bool Tileset::loadFromImage(const QString &fileName)
 bool Tileset::loadImage()
 {
     TilesheetParameters p;
-    p.fileName = mImageReference.source.toLocalFile();
+    p.fileName = Tiled::urlToLocalFileOrQrc(mImageReference.source);
     p.tileWidth = mTileWidth;
     p.tileHeight = mTileHeight;
     p.spacing = mTileSpacing;
