@@ -271,13 +271,20 @@ QVariant MapObjectModel::headerData(int section, Qt::Orientation orientation,
 
 QModelIndex MapObjectModel::index(Layer *layer) const
 {
+    Q_ASSERT(layer);
     Q_ASSERT(layer->isObjectGroup() || layer->isGroupLayer());
+    Q_ASSERT(layer->map() == mMap);
+
     const int row = filteredChildLayers(layer->parentLayer()).indexOf(layer);
     return createIndex(row, 0, layer);
 }
 
 QModelIndex MapObjectModel::index(MapObject *mapObject, int column) const
 {
+    Q_ASSERT(mapObject);
+    Q_ASSERT(mapObject->objectGroup());
+    Q_ASSERT(mapObject->objectGroup()->map() == mMap);
+
     const int row = mapObject->objectGroup()->objects().indexOf(mapObject);
     return createIndex(row, column, mapObject);
 }

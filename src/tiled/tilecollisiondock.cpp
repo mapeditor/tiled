@@ -188,6 +188,7 @@ void TileCollisionDock::setTile(Tile *tile)
         mDummyMapDocument->setAllowHidingObjects(false);
         mDummyMapDocument->setAllowTileObjects(false);
         mDummyMapDocument->setCurrentLayer(objectGroup);
+        mDummyMapDocument->setSelectedLayers({objectGroup});
 
         mMapScene->setMapDocument(mDummyMapDocument.data());
         mToolManager->setMapDocument(mDummyMapDocument.data());
@@ -266,6 +267,7 @@ void TileCollisionDock::tileObjectGroupChanged(Tile *tile)
 
     layerModel->insertLayer(nullptr, 1, objectGroup);
     mDummyMapDocument->setCurrentLayer(objectGroup);
+    mDummyMapDocument->setSelectedLayers({objectGroup});
 
     mToolManager->selectTool(selectedTool);
 
