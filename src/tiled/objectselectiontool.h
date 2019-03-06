@@ -116,7 +116,13 @@ private:
     void setMode(Mode mode);
     void saveSelectionState();
 
-    void abortCurrentAction(const QList<MapObject *> &removedObjects = QList<MapObject*>());
+    enum AbortReason {
+        UserInteraction,
+        Deactivated
+    };
+
+    void abortCurrentAction(AbortReason reason = UserInteraction,
+                            const QList<MapObject *> &removedObjects = QList<MapObject*>());
 
     void refreshCursor();
 

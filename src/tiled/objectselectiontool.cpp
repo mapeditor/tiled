@@ -382,7 +382,7 @@ void ObjectSelectionTool::deactivate(MapScene *scene)
     disconnect(mapDocument(), &MapDocument::objectsRemoved,
                this, &ObjectSelectionTool::objectsRemoved);
 
-    abortCurrentAction();
+    abortCurrentAction(Deactivated);
 
     mHoveredObject = nullptr;
     mapDocument()->setHoveredMapObject(nullptr);
@@ -396,7 +396,7 @@ void ObjectSelectionTool::keyPressed(QKeyEvent *event)
         // If we're currently performing some action, the only relevant key to
         // handle is Escape, to abort it.
         if (event->key() == Qt::Key_Escape)
-            abortCurrentAction();
+            abortCurrentAction(UserInteraction);
         else
             event->ignore();
 
@@ -1030,7 +1030,7 @@ void ObjectSelectionTool::objectsRemoved(const QList<MapObject *> &objects)
     // Abort move/rotate/resize to avoid crashing...
     // TODO: This should really not be allowed to happen in the first place
     if (mAction == Moving || mAction == Rotating || mAction == Resizing)
-        abortCurrentAction(objects);
+        abortCurrentAction(UserInteraction, objects);
 }
 
 void ObjectSelectionTool::updateHover(const QPointF &pos)
@@ -1563,7 +1563,7 @@ void ObjectSelectionTool::saveSelectionState()
  * The \a removedObjects is used to avoid sending the "objectsChanged" signal
  * for objects that have been removed.
  */
-void ObjectSelectionTool::abortCurrentAction(const QList<MapObject *> &removedObjects)
+void ObjectSelectionTool::abortCurrentAction(AbortReason reason, const QList<MapObject *> &removedObjects)
 {
     switch (mAction) {
     case NoAction:
@@ -1605,9 +1605,11 @@ void ObjectSelectionTool::abortCurrentAction(const QList<MapObject *> &removedOb
     mMovingObjects.clear();
     mAction = NoAction;
 
-    updateHandles();
-    updateHover(mLastMousePos);
-    refreshCursor();
+    if (reason != Deactivated) {
+        updateHandles();
+        updateHover(mLastMousePos);
+        refreshCursor();
+    }
 }
 
 void ObjectSelectionTool::refreshCursor()
