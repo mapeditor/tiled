@@ -137,10 +137,14 @@ WangDock::WangDock(QWidget *parent)
 
     mAddWangSet->setIcon(QIcon(QStringLiteral(":/images/22x22/add.png")));
     mRemoveWangSet->setIcon(QIcon(QStringLiteral(":/images/22x22/remove.png")));
+    mRemoveWangSet->setEnabled(false);
 
     mAddEdgeColor->setIcon(QIcon(QStringLiteral(":/images/22x22/add-edge.png")));
+    mAddEdgeColor->setEnabled(false);
     mAddCornerColor->setIcon(QIcon(QStringLiteral(":/images/22x22/add-corner.png")));
+    mAddCornerColor->setEnabled(false);
     mRemoveColor->setIcon(QIcon(QStringLiteral(":/images/22x22/remove.png")));
+    mRemoveColor->setEnabled(false);
 
     Utils::setThemeIcon(mAddWangSet, "add");
     Utils::setThemeIcon(mRemoveWangSet, "remove");
@@ -174,7 +178,6 @@ WangDock::WangDock(QWidget *parent)
 
     mWangTemplateView = new WangTemplateView(w);
     mWangTemplateView->setModel(mWangTemplateModel);
-    mWangTemplateView->setVisible(true);
 
     connect(mWangTemplateView->selectionModel(), &QItemSelectionModel::currentChanged,
             this, &WangDock::refreshCurrentWangId);
@@ -183,7 +186,6 @@ WangDock::WangDock(QWidget *parent)
 
     mWangColorView = new WangColorView(w);
     mWangColorView->setModel(mWangColorFilterModel);
-    mWangColorView->setVisible(true);
 
     connect(mWangColorView->selectionModel(), &QItemSelectionModel::currentRowChanged,
             this, &WangDock::refreshCurrentWangColor);
@@ -248,6 +250,7 @@ WangDock::WangDock(QWidget *parent)
     vertical->setMargin(0);
     vertical->addWidget(wangViews);
 
+    hideTemplateColorView();
     setWidget(w);
     retranslateUi();
 }
@@ -303,7 +306,6 @@ void WangDock::setDocument(Document *document)
 
         mTemplateAndColorView->setTabEnabled(0, true);
         mTemplateAndColorView->tabBar()->show();
-        setTemplateView();
 
         /*
          * Removing a wangset usually changes the selected wangset without the
@@ -609,7 +611,6 @@ void WangDock::onCurrentWangIdChanged(WangId wangId)
 void WangDock::setTemplateView()
 {
     mTemplateAndColorWidget->setVisible(true);
-
     mTemplateAndColorView->setCurrentIndex(0);
     retranslateUi();
 }
@@ -617,9 +618,7 @@ void WangDock::setTemplateView()
 void WangDock::setColorView()
 {
     mTemplateAndColorWidget->setVisible(true);
-
     mTemplateAndColorView->setCurrentIndex(1);
-
     retranslateUi();
 }
 
