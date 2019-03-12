@@ -170,31 +170,26 @@ QString DefoldCollectionPlugin::errorString() const
  * Determines the root of the project by looking for a file called "game.project".
  * If no such file is found by going up the hierarchy, return filename from the \a filePath.
 */
-QString DefoldCollectionPlugin::TilesetRelativePath(QString filePath)
+QString tilesetRelativePath(const QString & filePath)
 {
-    QString gameproject = "/game.project";
+    QString gameproject = "game.project";
     QFileInfo fi(filePath);
-    QDir Qd = fi.dir();
+    QDir dir = fi.dir();
 
-    while (Qd.exists() && !Qd.isRoot())
-    {
-        if (QFileInfo::exists(Qd.path() + gameproject))
-        {
+    while (dir.exists() && !dir.isRoot()) {
+        if (dir.exists(gameproject)) {
             // return relative path
-            filePath.replace(Qd.path(), "");
-            return filePath;
-        }
-        else if (!Qd.cdUp())
-        {
+            return filePath.right(filePath.length() - dir.path().length());
+        } else if (!dir.cdUp()) {
             break;
         }
     }
     return fi.fileName();
 }
 
-bool DefoldCollectionPlugin::write(const Tiled::Map *map, const QString &fileName)
+bool DefoldCollectionPlugin::write(const Tiled::Map *map, const QString &collectionFile)
 {
-    QFileInfo fi(fileName);
+    QFileInfo fi(collectionFile);
     QString outputFilePath = fi.filePath();
     QString outputFileName = fi.fileName();
 
@@ -205,19 +200,17 @@ bool DefoldCollectionPlugin::write(const Tiled::Map *map, const QString &fileNam
     tilesetFileDir.chop(outputFileName.length());
 
     // if there are no group layers, all tilemaps are components of the top gameobject called "tilemaps"
-    if (map->groupLayerCount() == 0)
-    {
+    if (map->groupLayerCount() == 0) {
         QString components;
 
         // create a tilemap for each tileset this map uses
-        for (auto& tileset_current : map->tilesets())
-        {
-            QString tilesetFilePath = tilesetFileDir;
-            tilesetFilePath.append(mapName + "-" + tileset_current->name() + ".tilemap");
+        for (auto &tileset : map->tilesets()) {
+            QString tilemapFilePath = tilesetFileDir;
+            tilemapFilePath.append(mapName + "-" + tileset->name() + ".tilemap");
 
             QVariantHash component_h;
-            component_h["tilemap_name"] = mapName + "-" + tileset_current->name();
-            component_h["tilemap_rel_path"] = TilesetRelativePath(tilesetFilePath);
+            component_h["tilemap_name"] = mapName + "-" + tileset->name();
+            component_h["tilemap_rel_path"] = tilesetRelativePath(tilemapFilePath);
             components.append(replaceTags(QLatin1String(component_t), component_h));
 
             QVariantHash map_h;
@@ -225,8 +218,7 @@ bool DefoldCollectionPlugin::write(const Tiled::Map *map, const QString &fileNam
             QString layers;            
             Tiled::LayerIterator it(map, Tiled::Layer::TileLayerType);
             int layerOrder = 0;
-            while (auto tileLayer = static_cast<Tiled::TileLayer*>(it.next()))
-            {
+            while (auto tileLayer = static_cast<Tiled::TileLayer*>(it.next())) {
                 QVariantHash layer_h;
                 layer_h["id"] = tileLayer->name();
                 float zIndex = qBound(0, layerOrder, 1000) * 0.00000001f;
@@ -234,12 +226,10 @@ bool DefoldCollectionPlugin::write(const Tiled::Map *map, const QString &fileNam
                 layer_h["is_visible"] = tileLayer->isVisible() ? 1 : 0;
                 QString cells;
 
-                for (int x = 0; x < tileLayer->width(); ++x)
-                {
-                    for (int y = 0; y < tileLayer->height(); ++y)
-                    {
+                for (int x = 0; x < tileLayer->width(); ++x) {
+                    for (int y = 0; y < tileLayer->height(); ++y) {
                         const Tiled::Cell &cell = tileLayer->cellAt(x, y);
-                        if (cell.isEmpty() || cell.tileset() != tileset_current) // skip cell if it doesn't belong to current tileset
+                        if (cell.isEmpty() || cell.tileset() != tileset) // skip cell if it doesn't belong to current tileset
                             continue;
                         QVariantHash cell_h;
                         cell_h["x"] = x;
@@ -260,26 +250,23 @@ bool DefoldCollectionPlugin::write(const Tiled::Map *map, const QString &fileNam
             // Below, we input a value that's not necessarily correct in Defold, but it lets the user know what tilesource to link this tilemap with manually.
             // However, if the user keeps all tilesources in /tilesources/ and the name of the tilesource corresponds with the name of the tileset in Defold,
             // the value will be automatically correct.
-            map_h["tile_set"] = "/tilesources/" + tileset_current->name() + ".tilesource";
+            map_h["tile_set"] = "/tilesources/" + tileset->name() + ".tilesource";
 
             QString result = replaceTags(QLatin1String(map_t), map_h);
-            Tiled::SaveFile mapFile(tilesetFilePath);
-            if (!mapFile.open(QIODevice::WriteOnly | QIODevice::Text))
-            {
+            Tiled::SaveFile mapFile(tilemapFilePath);
+            if (!mapFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
                 mError = tr("Could not open file for writing.");
                 return false;
             }
             QTextStream stream(mapFile.device());
             stream << result;
 
-            if (mapFile.error() != QFileDevice::NoError)
-            {
+            if (mapFile.error() != QFileDevice::NoError) {
                 mError = mapFile.errorString();
                 return false;
             }
 
-            if (!mapFile.commit())
-            {
+            if (!mapFile.commit()) {
                 mError = mapFile.errorString();
                 return false;
             }
@@ -294,17 +281,15 @@ bool DefoldCollectionPlugin::write(const Tiled::Map *map, const QString &fileNam
         collection_h["components"] = components;        
 
         QString result = replaceTags(QLatin1String(collection_t), collection_h);
-        Tiled::SaveFile mapFile(fileName);
-        if (!mapFile.open(QIODevice::WriteOnly | QIODevice::Text))
-        {
+        Tiled::SaveFile mapFile(collectionFile);
+        if (!mapFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
             mError = tr("Could not open file for writing.");
             return false;
         }
         QTextStream stream(mapFile.device());
         stream << result;
 
-        if (mapFile.error() != QFileDevice::NoError)
-        {
+        if (mapFile.error() != QFileDevice::NoError) {
             mError = mapFile.errorString();
             return false;
         }
@@ -313,17 +298,14 @@ bool DefoldCollectionPlugin::write(const Tiled::Map *map, const QString &fileNam
             mError = mapFile.errorString();
             return false;
         }
-    }
-    // if there are group layers, each group layer is a gameobject, parented to the top gameobject, while being a parent to multiple tilemap components
-    else
-    {
+    } else {
+        // if there are group layers, each group layer is a gameobject, parented to the top gameobject, while being a parent to multiple tilemap components
         QString children;
         QString embeddedInstances;
 
         // foreach Group Layer
         int groupLayerOrder = 0;
-        for (auto& layer : map->layers())
-        {
+        for (auto &layer : map->layers()) {
             if (layer->layerType() != Tiled::Layer::GroupLayerType)
                 continue;
 
@@ -337,18 +319,16 @@ bool DefoldCollectionPlugin::write(const Tiled::Map *map, const QString &fileNam
             QString components;
 
             // write as many tilemaps as there are tilesets per group layer
-            for (auto& tileset_current : map->tilesets())
-            {
-                QString tilesetFilePath = tilesetFileDir;
-                tilesetFilePath.append(mapName + "-" + layer->name() + "-" + tileset_current->name() + ".tilemap");
+            for (auto &tileset : map->tilesets()) {
+                QString tilemapFilePath = tilesetFileDir;
+                tilemapFilePath.append(mapName + "-" + layer->name() + "-" + tileset->name() + ".tilemap");
 
                 QVariantHash map_h;
 
                 QString layers;
                 int cells_on_this_tilemap = 0;
                 int layerOrder = 0;
-                for (auto& subLayer : layer->asGroupLayer()->layers())
-                {
+                for (auto &subLayer : layer->asGroupLayer()->layers()) {
                     auto tileLayer = subLayer->asTileLayer();
                     if (tileLayer == nullptr)
                         continue;
@@ -363,12 +343,10 @@ bool DefoldCollectionPlugin::write(const Tiled::Map *map, const QString &fileNam
                     layer_h["is_visible"] = layer->isVisible() ? 1 : 0;
                     QString cells;
 
-                    for (int x = 0; x < tileLayer->width(); ++x)
-                    {
-                        for (int y = 0; y < tileLayer->height(); ++y)
-                        {
+                    for (int x = 0; x < tileLayer->width(); ++x) {
+                        for (int y = 0; y < tileLayer->height(); ++y) {
                             const Tiled::Cell &cell = tileLayer->cellAt(x, y);
-                            if (cell.isEmpty() || cell.tileset() != tileset_current) // skip cell if it doesn't belong to current tileset
+                            if (cell.isEmpty() || cell.tileset() != tileset) // skip cell if it doesn't belong to current tileset
                                 continue;
                             QVariantHash cell_h;
                             cell_h["x"] = x;
@@ -383,11 +361,10 @@ bool DefoldCollectionPlugin::write(const Tiled::Map *map, const QString &fileNam
                             // If 0 cells are found, this component is not necessary.
                             // If more than 1 cells are found, recreating it would be redundant.
                             // Hence, only when encountering the first cell do we create it.
-                            if (cells_on_this_tilemap == 1)
-                            {
+                            if (cells_on_this_tilemap == 1) {
                                 QVariantHash component_h;
-                                component_h["tilemap_name"] = mapName + "-" + layer->name() + "-" + tileset_current->name();
-                                component_h["tilemap_rel_path"] = TilesetRelativePath(tilesetFilePath);
+                                component_h["tilemap_name"] = mapName + "-" + layer->name() + "-" + tileset->name();
+                                component_h["tilemap_rel_path"] = tilesetRelativePath(tilemapFilePath);
                                 components.append(replaceTags(QLatin1String(component_t), component_h));
                             }
                         }
@@ -402,16 +379,15 @@ bool DefoldCollectionPlugin::write(const Tiled::Map *map, const QString &fileNam
                 // Below, we input a value that's not necessarily correct in Defold, but it lets the user know what tilesource to link this tilemap with manually.
                 // However, if the user keeps all tilesources in /tilesources/ and the name of the tilesource corresponds with the name of the tileset in Defold,
                 // the value will be automatically correct.
-                map_h["tile_set"] = "/tilesources/" + tileset_current->name() + ".tilesource";
+                map_h["tile_set"] = "/tilesources/" + tileset->name() + ".tilesource";
 
                 // avoid saving tilemaps with 0 cells
                 if (cells_on_this_tilemap == 0)
                     continue;
 
                 QString result = replaceTags(QLatin1String(map_t), map_h);
-                Tiled::SaveFile mapFile(tilesetFilePath);
-                if (!mapFile.open(QIODevice::WriteOnly | QIODevice::Text))
-                {
+                Tiled::SaveFile mapFile(tilemapFilePath);
+                if (!mapFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
                     mError = tr("Could not open file for writing.");
                     return false;
                 }
@@ -419,14 +395,12 @@ bool DefoldCollectionPlugin::write(const Tiled::Map *map, const QString &fileNam
                 QTextStream stream(mapFile.device());
                 stream << result;
 
-                if (mapFile.error() != QFileDevice::NoError)
-                {
+                if (mapFile.error() != QFileDevice::NoError) {
                     mError = mapFile.errorString();
                     return false;
                 }
 
-                if (!mapFile.commit())
-                {
+                if (!mapFile.commit()) {
                     mError = mapFile.errorString();
                     return false;
                 }
@@ -445,23 +419,20 @@ bool DefoldCollectionPlugin::write(const Tiled::Map *map, const QString &fileNam
         collection_h["embedded-instances"] = embeddedInstances;
 
         QString result = replaceTags(QLatin1String(collection_t), collection_h);
-        Tiled::SaveFile mapFile(fileName);
-        if (!mapFile.open(QIODevice::WriteOnly | QIODevice::Text))
-        {
+        Tiled::SaveFile mapFile(collectionFile);
+        if (!mapFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
             mError = tr("Could not open file for writing.");
             return false;
         }
         QTextStream stream(mapFile.device());
         stream << result;
 
-        if (mapFile.error() != QFileDevice::NoError)
-        {
+        if (mapFile.error() != QFileDevice::NoError) {
             mError = mapFile.errorString();
             return false;
         }
 
-        if (!mapFile.commit())
-        {
+        if (!mapFile.commit()) {
             mError = mapFile.errorString();
             return false;
         }

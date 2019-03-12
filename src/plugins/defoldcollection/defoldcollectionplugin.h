@@ -36,7 +36,7 @@ class DEFOLDCOLLECTIONPLUGINSHARED_EXPORT DefoldCollectionPlugin : public Tiled:
 public:
     DefoldCollectionPlugin();
 
-    bool write(const Tiled::Map *map, const QString &fileName) override;
+    bool write(const Tiled::Map *map, const QString &collectionFile) override;
     QString errorString() const override;
     QString shortName() const override;
 
@@ -44,9 +44,9 @@ protected:
     QString nameFilter() const override;
 
 private:
-    QString TilesetRelativePath(QString filePath);
-
     QString mError;
 };
+
+static QString tilesetRelativePath(const QString & filePath);
 
 } // namespace DefoldCollection
