@@ -168,7 +168,7 @@ QString DefoldCollectionPlugin::errorString() const
 /*
  * Returns a new filepath relative to the root of the Defold project if we're in one.
  * Determines the root of the project by looking for a file called "game.project".
- * If no such file is found by going up the heirarchy, return filename from the filepath.
+ * If no such file is found by going up the hierarchy, return filename from the \a filePath.
 */
 QString DefoldCollectionPlugin::TilesetRelativePath(QString filePath)
 {
