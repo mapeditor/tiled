@@ -1,3 +1,10 @@
+### Tiled 1.2.3 (12 March 2019)
+
+* Fixed cut/copy in Tile Collision Editor (#2075)
+* Fixed crash when trying to add Wang colors without a selected Wang set (#2083)
+* tBIN plugin: Fixed hang when locating missing tileset image (#2068)
+* CSV plugin: Fixed exporting of grouped tile layers
+
 ### Tiled 1.2.2 (29 January 2019)
 
 * Added 'json1' plugin that exports to the old JSON format (#2058)
