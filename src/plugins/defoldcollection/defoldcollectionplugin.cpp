@@ -326,7 +326,7 @@ bool DefoldCollectionPlugin::write(const Tiled::Map *map, const QString &collect
                 QVariantHash map_h;
 
                 QString layers;
-                int cells_on_this_tilemap = 0;
+                int cellsOnThisTilemap = 0;
                 int layerOrder = 0;
                 for (auto &subLayer : layer->asGroupLayer()->layers()) {
                     auto tileLayer = subLayer->asTileLayer();
@@ -355,13 +355,13 @@ bool DefoldCollectionPlugin::write(const Tiled::Map *map, const QString &collect
                             cell_h["h_flip"] = cell.flippedHorizontally() ? 1 : 0;
                             cell_h["v_flip"] = cell.flippedVertically() ? 1 : 0;
                             cells.append(replaceTags(QLatin1String(cell_t), cell_h));
-                            cells_on_this_tilemap++;
+                            cellsOnThisTilemap++;
 
                             // Create a component for this embedded instance only when the first cell is found.
                             // If 0 cells are found, this component is not necessary.
                             // If more than 1 cells are found, recreating it would be redundant.
                             // Hence, only when encountering the first cell do we create it.
-                            if (cells_on_this_tilemap == 1) {
+                            if (cellsOnThisTilemap == 1) {
                                 QVariantHash component_h;
                                 component_h["tilemap_name"] = mapName + "-" + layer->name() + "-" + tileset->name();
                                 component_h["tilemap_rel_path"] = tilesetRelativePath(tilemapFilePath);
@@ -382,7 +382,7 @@ bool DefoldCollectionPlugin::write(const Tiled::Map *map, const QString &collect
                 map_h["tile_set"] = "/tilesources/" + tileset->name() + ".tilesource";
 
                 // avoid saving tilemaps with 0 cells
-                if (cells_on_this_tilemap == 0)
+                if (cellsOnThisTilemap == 0)
                     continue;
 
                 QString result = replaceTags(QLatin1String(map_t), map_h);
