@@ -89,6 +89,8 @@ public:
 
     Q_INVOKABLE void extendMenu(const QByteArray &idName, QJSValue items);
 
+    LoggingInterface *logger() const;
+
 signals:
     void assetCreated(Tiled::EditableAsset *asset);
     void assetOpened(Tiled::EditableAsset *asset);
@@ -123,5 +125,11 @@ private:
 
     QVector<MenuExtension> mMenuExtensions;
 };
+
+
+inline LoggingInterface *ScriptModule::logger() const
+{
+    return mLogger;
+}
 
 } // namespace Tiled

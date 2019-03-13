@@ -112,33 +112,8 @@ void ConsoleDock::executeScript()
     appendScript(script);
 
     const QJSValue result = ScriptManager::instance().evaluate(script);
-    if (result.isError()) {
-        QString errorString = result.toString();
-
-        QString stack = result.property(QStringLiteral("stack")).toString();
-        auto stackEntries = stack.splitRef(QLatin1Char('\n'));
-        if (stackEntries.size() > 1) {
-            // Add stack if there were more than one entries
-            errorString.append(QLatin1Char('\n'));
-            errorString.append(tr("Stack traceback:"));
-            errorString.append(QLatin1Char('\n'));
-
-            for (const auto &entry : stackEntries) {
-                errorString.append(QLatin1String("  "));
-                errorString.append(entry);
-                errorString.append(QLatin1Char('\n'));
-            }
-        } else if (script.contains(QLatin1Char('\n'))) {
-            // Add line number when script spanned multiple lines
-            errorString = tr("At line %1: %2")
-                    .arg(result.property(QStringLiteral("lineNumber")).toInt())
-                    .arg(errorString);
-        }
-
-        appendError(errorString);
-    } else if (!result.isUndefined()) {
+    if (!result.isError() && !result.isUndefined())
         appendInfo(result.toString());
-    }
 
     mLineEdit->clear();
 

@@ -27,6 +27,7 @@
 #include "editabletile.h"
 #include "editabletilelayer.h"
 #include "editabletileset.h"
+#include "logginginterface.h"
 #include "regionvaluetype.h"
 #include "scriptedaction.h"
 #include "scriptmodule.h"
@@ -107,12 +108,33 @@ QJSValue ScriptManager::evaluate(const QString &program,
                                  const QString &fileName, int lineNumber)
 {
     QJSValue result = mEngine->evaluate(program, fileName, lineNumber);
+
     if (result.isError()) {
-        qDebug().nospace().noquote()
-                << "Uncaught exception at line "
-                << result.property(QLatin1String("lineNumber")).toInt()
-                << ": " << result.toString();
+        QString errorString = result.toString();
+
+        QString stack = result.property(QStringLiteral("stack")).toString();
+        const auto stackEntries = stack.splitRef(QLatin1Char('\n'));
+        if (stackEntries.size() > 1) {
+            // Add stack if there were more than one entries
+            errorString.append(QLatin1Char('\n'));
+            errorString.append(tr("Stack traceback:"));
+            errorString.append(QLatin1Char('\n'));
+
+            for (const auto &entry : stackEntries) {
+                errorString.append(QLatin1String("  "));
+                errorString.append(entry);
+                errorString.append(QLatin1Char('\n'));
+            }
+        } else if (program.contains(QLatin1Char('\n'))) {
+            // Add line number when script spanned multiple lines
+            errorString = tr("At line %1: %2")
+                    .arg(result.property(QStringLiteral("lineNumber")).toInt())
+                    .arg(errorString);
+        }
+
+        emit mModule->logger()->error(errorString);
     }
+
     return result;
 }
 
@@ -121,7 +143,7 @@ QJSValue ScriptManager::evaluateFile(const QString &fileName)
     QFile file(fileName);
 
     if (!file.open(QFile::ReadOnly | QFile::Text)) {
-        qWarning() << "Error opening file:" << fileName;
+        mModule->logger()->error(tr("Error opening file: %1").arg(fileName));
         return QJSValue();
     }
 
