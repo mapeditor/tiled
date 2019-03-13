@@ -23,12 +23,14 @@
 #include "actionmanager.h"
 #include "editableasset.h"
 #include "logginginterface.h"
+#include "scriptedaction.h"
 #include "scriptedmapformat.h"
 #include "scriptmanager.h"
 
 #include <QAction>
 #include <QCoreApplication>
 #include <QInputDialog>
+#include <QMenu>
 #include <QMessageBox>
 
 namespace Tiled {
@@ -51,6 +53,9 @@ ScriptModule::ScriptModule(QObject *parent)
 ScriptModule::~ScriptModule()
 {
     PluginManager::removeObject(mLogger);
+
+    for (const auto &pair : mRegisteredActions)
+        ActionManager::unregisterAction(pair.second->id());
 
     for (const auto &pair : mRegisteredMapFormats)
         PluginManager::removeObject(pair.second.get());
@@ -85,6 +90,27 @@ QString ScriptModule::arch() const
 #endif
 }
 
+static QStringList idsToNames(const QList<Id> &ids)
+{
+    QStringList names;
+    for (const Id &id : ids)
+        names.append(QLatin1String(id.name()));
+
+    names.sort();
+
+    return names;
+}
+
+QStringList ScriptModule::actions() const
+{
+    return idsToNames(ActionManager::actions());
+}
+
+QStringList ScriptModule::menus() const
+{
+    return idsToNames(ActionManager::menus());
+}
+
 EditableAsset *ScriptModule::activeAsset() const
 {
     auto documentManager = DocumentManager::instance();
@@ -113,8 +139,41 @@ QList<QObject *> ScriptModule::openAssets() const
     return assets;
 }
 
-void ScriptModule::registerMapFormat(const QString &shortName, const QJSValue &mapFormatObject)
+ScriptedAction *ScriptModule::registerAction(const QByteArray &idName, QJSValue callback)
 {
+    if (idName.isEmpty()) {
+        ScriptManager::instance().throwError(tr("Invalid ID"));
+        return nullptr;
+    }
+
+    if (!callback.isCallable()) {
+        ScriptManager::instance().throwError(tr("Invalid callback function"));
+        return nullptr;
+    }
+
+    Id id(idName);
+    auto &action = mRegisteredActions[idName];
+
+    // Remove any previously registered action with the same name
+    if (action) {
+        ActionManager::unregisterAction(id);
+    } else if (ActionManager::findAction(id)) {
+        ScriptManager::instance().throwError(tr("Reserved ID"));
+        return nullptr;
+    }
+
+    action.reset(new ScriptedAction(id, callback, this));
+    ActionManager::registerAction(action.get(), id);
+    return action.get();
+}
+
+void ScriptModule::registerMapFormat(const QString &shortName, QJSValue mapFormatObject)
+{
+    if (shortName.isEmpty()) {
+        ScriptManager::instance().throwError(tr("Invalid shortName"));
+        return;
+    }
+
     if (!ScriptedMapFormat::validateMapFormatObject(mapFormatObject))
         return;
 
@@ -128,10 +187,91 @@ void ScriptModule::registerMapFormat(const QString &shortName, const QJSValue &m
     PluginManager::addObject(format.get());
 }
 
+static QString toString(QJSValue value)
+{
+    if (value.isString())
+        return value.toString();
+    return QString();
+}
+
+static Id toId(QJSValue value)
+{
+    return Id(toString(value).toUtf8());
+}
+
+void ScriptModule::extendMenu(const QByteArray &idName, QJSValue items)
+{
+    MenuExtension extension;
+    extension.menuId = Id(idName);
+
+    if (!ActionManager::findMenu(extension.menuId)) {
+        ScriptManager::instance().throwError(tr("Unknown menu"));
+        return;
+    }
+
+    auto addItem = [&] (QJSValue item) -> bool {
+        MenuItem menuItem;
+
+        const QJSValue action = item.property(QStringLiteral("action"));
+        const QJSValue text = item.property(QStringLiteral("text"));
+
+        menuItem.action = toId(action);
+        menuItem.beforeAction = toId(item.property(QStringLiteral("before")));
+        menuItem.isSeparator = item.property(QStringLiteral("separator")).toBool();
+
+        if (!menuItem.action.isNull()) {
+            if (menuItem.isSeparator) {
+                ScriptManager::instance().throwError(tr("Separators can't have actions"));
+                return false;
+            }
+
+            if (!ActionManager::findAction(menuItem.action)) {
+                ScriptManager::instance().throwError(tr("Unknown action: '%1'").arg(
+                                                         QString::fromUtf8(menuItem.action.name())));
+                return false;
+            }
+        } else if (!menuItem.isSeparator) {
+            ScriptManager::instance().throwError(tr("Non-separator item without action"));
+            return false;
+        }
+
+        extension.items.append(menuItem);
+        return true;
+    };
+
+    // Support either a single menu item or an array of items
+    if (items.isArray()) {
+        const quint32 length = items.property(QStringLiteral("length")).toUInt();
+        for (quint32 i = 0; i < length; ++i)
+            if (!addItem(items.property(i)))
+                return;
+    } else if (!addItem(items)) {
+        return;
+    }
+
+    // Apply the extension
+    QMenu *menu = ActionManager::menu(extension.menuId);
+    QAction *before = nullptr;
+
+    for (MenuItem &item : extension.items) {
+        if (item.beforeAction)
+            before = ActionManager::findAction(item.beforeAction);
+
+        if (item.isSeparator)
+            menu->insertSeparator(before)->setParent(this);
+        else
+            menu->insertAction(before, ActionManager::action(item.action));
+    }
+
+    mMenuExtensions.append(extension);
+}
+
 void ScriptModule::trigger(const QByteArray &actionName) const
 {
-    if (QAction *action = ActionManager::findAction(Id(actionName)))
+    if (QAction *action = ActionManager::findAction(actionName))
         action->trigger();
+    else
+        ScriptManager::instance().throwError(tr("Unknown action"));
 }
 
 void ScriptModule::alert(const QString &text, const QString &title) const

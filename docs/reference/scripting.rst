@@ -98,6 +98,8 @@ Properties
     **platform** : string |ro|, "Operating system. One of ``windows``, ``macos``, ``linux`` or ``unix``
     (for any other UNIX-like system)."
     **arch** : string |ro|, "Processor architecture. One of ``x64``, ``x86`` or ``unknown``."
+    **actions** : [string] |ro|, "Available actions for :ref:`tiled.trigger() <script-trigger>`."
+    **menus** : [string] |ro|, "Available menus for :ref:`tiled.extendMenu() <script-extendMenu>`."
     **activeAsset** : :ref:`script-asset`, "Currently selected asset, or ``null`` if no file is open. Can be assigned
     any open asset in order to change the active asset."
     **openAssets** : array |ro|, "List of currently opened :ref:`assets <script-asset>`."
@@ -105,166 +107,14 @@ Properties
 Functions
 ~~~~~~~~~
 
+.. _script-trigger:
+
 tiled.trigger(action : string) : void
     This function can be used to trigger any registered action. This
     includes most actions you would normally trigger through the menu or by
     using their shortcut.
 
-    The following actions are currently available:
-
-    +---------------------------+
-    | Action                    |
-    +===========================+
-    | About                     |
-    +---------------------------+
-    | AddExternalTileset        |
-    +---------------------------+
-    | AutoMap                   |
-    +---------------------------+
-    | AutoMapWhileDrawing       |
-    +---------------------------+
-    | BecomePatron              |
-    +---------------------------+
-    | ClearRecentFiles          |
-    +---------------------------+
-    | ClearView                 |
-    +---------------------------+
-    | Close                     |
-    +---------------------------+
-    | CloseAll                  |
-    +---------------------------+
-    | Copy                      |
-    +---------------------------+
-    | Cut                       |
-    +---------------------------+
-    | Delete                    |
-    +---------------------------+
-    | Documentation             |
-    +---------------------------+
-    | EditCommands              |
-    +---------------------------+
-    | Export                    |
-    +---------------------------+
-    | ExportAs                  |
-    +---------------------------+
-    | ExportAsImage             |
-    +---------------------------+
-    | FullScreen                |
-    +---------------------------+
-    | HighlightCurrentLayer     |
-    +---------------------------+
-    | HighlightHoveredObject    |
-    +---------------------------+
-    | LabelForHoveredObject     |
-    +---------------------------+
-    | LabelsForAllObjects       |
-    +---------------------------+
-    | LabelsForSelectedObjects  |
-    +---------------------------+
-    | LoadWorld                 |
-    +---------------------------+
-    | MapProperties             |
-    +---------------------------+
-    | NewMap                    |
-    +---------------------------+
-    | NewTileset                |
-    +---------------------------+
-    | NoLabels                  |
-    +---------------------------+
-    | OffsetMap                 |
-    +---------------------------+
-    | Open                      |
-    +---------------------------+
-    | Paste                     |
-    +---------------------------+
-    | PasteInPlace              |
-    +---------------------------+
-    | Preferences               |
-    +---------------------------+
-    | Quit                      |
-    +---------------------------+
-    | Reload                    |
-    +---------------------------+
-    | ResizeMap                 |
-    +---------------------------+
-    | Save                      |
-    +---------------------------+
-    | SaveAll                   |
-    +---------------------------+
-    | SaveAs                    |
-    +---------------------------+
-    | ShowGrid                  |
-    +---------------------------+
-    | ShowTileAnimations        |
-    +---------------------------+
-    | ShowTileObjectOutlines    |
-    +---------------------------+
-    | SnapNothing               |
-    +---------------------------+
-    | SnapToFineGrid            |
-    +---------------------------+
-    | SnapToGrid                |
-    +---------------------------+
-    | SnapToPixels              |
-    +---------------------------+
-    | TilesetProperties         |
-    +---------------------------+
-    | ZoomIn                    |
-    +---------------------------+
-    | ZoomNormal                |
-    +---------------------------+
-    | ZoomOut                   |
-    +---------------------------+
-    | SelectAll                 |
-    +---------------------------+
-    | SelectInverse             |
-    +---------------------------+
-    | SelectNone                |
-    +---------------------------+
-    | CropToSelection           |
-    +---------------------------+
-    | Autocrop                  |
-    +---------------------------+
-    | AddTileLayer              |
-    +---------------------------+
-    | AddObjectLayer            |
-    +---------------------------+
-    | AddImageLayer             |
-    +---------------------------+
-    | AddGroupLayer             |
-    +---------------------------+
-    | LayerViaCopy              |
-    +---------------------------+
-    | LayerViaCut               |
-    +---------------------------+
-    | GroupLayers               |
-    +---------------------------+
-    | UngroupLayers             |
-    +---------------------------+
-    | DuplicateLayers           |
-    +---------------------------+
-    | MergeLayersDown           |
-    +---------------------------+
-    | SelectPreviousLayer       |
-    +---------------------------+
-    | SelectNextLayer           |
-    +---------------------------+
-    | RemoveLayers              |
-    +---------------------------+
-    | MoveLayersUp              |
-    +---------------------------+
-    | MoveLayersDown            |
-    +---------------------------+
-    | ToggleOtherLayers         |
-    +---------------------------+
-    | ToggleLockOtherLayers     |
-    +---------------------------+
-    | LayerProperties           |
-    +---------------------------+
-    | DuplicateObjects          |
-    +---------------------------+
-    | RemoveObjects             |
-    +---------------------------+
+    Use the ``tiled.actions`` property to get a list of all available actions.
 
     Actions that are checkable will toggle when triggered.
 
@@ -288,6 +138,28 @@ tiled.error(text : string) : void
     Outputs the given text in the Console window as error message (automatically
     gets "Error: " prepended).
 
+.. _script-registerAction:
+
+tiled.registerAction(id : string, callback : function) : :ref:`script-action`
+    Registers a new action with the given ``id`` and ``callback`` (which is
+    called when the action is triggered). The returned action object can be
+    used to set (and update) various properties of the action.
+
+    Example:
+
+    .. code:: javascript
+
+        var action = tiled.registerAction("CustomAction", function(action) {
+            tiled.log(action.text + " was " + (action.checked ? "checked" : "unchecked"))
+        })
+
+        action.text = "My Custom Action"
+        action.checkable = true
+        action.shortcut = "Ctrl+K"
+
+    The shortcut will currently only work when the action is added to a menu
+    using :ref:`tiled.extendMenu() <script-extendMenu>`.
+
 .. _script-registerMapFormat:
 
 tiled.registerMapFormat(shortName : string, mapFormat : object) : void
@@ -299,7 +171,7 @@ tiled.registerMapFormat(shortName : string, mapFormat : object) : void
     in case the file extension is ambiguous or a different one should be
     used.
 
-    The ``mapFormat`` object is expected to have the following members:
+    The ``mapFormat`` object is expected to have the following properties:
 
     .. csv-table::
         :widths: 1, 2
@@ -345,6 +217,38 @@ tiled.registerMapFormat(shortName : string, mapFormat : object) : void
 
         tiled.registerMapFormat("custom", customMapFormat)
 
+.. _script-extendMenu:
+
+tiled.extendMenu(id : string, items : array | object) : void
+    Extends the menu with the given ID. Supports both a list of items or a
+    single item. Available menu IDs can be obtained using the ``tiled.menus``
+    property.
+
+    A menu item is defined by an object with the following properties:
+
+    .. csv-table::
+        :widths: 1, 2
+
+        **action** : string, ID of a registered action that the menu item will represent.
+        **before** : string, ID of the action before which this menu item should be added (optional).
+        **separator** : bool, Set to ``true`` if this item is a menu separator (optional).
+
+    If a menu item does not include a ``before`` property, the value is
+    inherited from the previous item. When this property is not set at all,
+    the items are appended to the end of the menu.
+
+    Example that adds a custom action to the "Edit" menu, before the "Select
+    All" action and separated by a separator:
+
+    .. code:: javascript
+
+        tiled.extendMenu("Edit", [
+            { action: "CustomAction", before: "SelectAll" },
+            { separator: true }
+        ]);
+
+    The "CustomAction" will need to have been registered before using
+    :ref:`tiled.registerAction() <script-registerAction>`.
 
 .. _script-tiled-signals:
 
@@ -790,3 +694,37 @@ SelectedArea.intersect(region : region) : void
 
 
 .. |ro| replace:: *[read‑only]*
+
+.. _script-action:
+
+Action
+^^^^^^
+
+An action that was registered with :ref:`tiled.registerAction() <script-registerAction>`.
+This class is used to change the properties of the action. It can be added to a menu using
+:ref:`tiled.extendMenu() <script-extendMenu>`.
+
+Properties
+~~~~~~~~~~
+
+.. csv-table::
+    :widths: 1, 2
+
+    **checkable** : bool, Whether the action can be checked.
+    **checked** : bool, Whether the action is checked.
+    **enabled** : bool, Whether the action is enabled.
+    **iconName** : string, Name of an icon from the system theme (only works on Linux).
+    **iconVisibleInMenu** : bool, Whether the action should show an icon in a menu.
+    **id** : string |ro|, The ID this action was registered with.
+    **shortcut** : QKeySequence, The shortcut (can be assigned a string like "Ctrl+K").
+    **text** : string, The text used when the action is part of a menu.
+    **visible** : bool, Whether the action is visible.
+
+Functions
+~~~~~~~~~
+
+Action.trigger() : void
+    Triggers the action.
+
+Action.toggle() : void
+    Changes the checked state to its opposite state.

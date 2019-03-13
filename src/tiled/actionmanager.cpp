@@ -21,6 +21,7 @@
 #include "actionmanager.h"
 
 #include <QHash>
+#include <QMenu>
 
 namespace Tiled {
 
@@ -28,6 +29,7 @@ class ActionManagerPrivate
 {
 public:
     QHash<Id, QAction*> mIdToAction;
+    QHash<Id, QMenu*> mIdToMenu;
 };
 
 static ActionManager *m_instance = nullptr;
@@ -52,11 +54,29 @@ void ActionManager::registerAction(QAction *action, Id id)
     d->mIdToAction.insert(id, action);
 }
 
+void ActionManager::unregisterAction(Id id)
+{
+    Q_ASSERT_X(d->mIdToAction.contains(id), "ActionManager::unregisterAction", "unknown id");
+    d->mIdToAction.remove(id);
+}
+
+void ActionManager::registerMenu(QMenu *menu, Id id)
+{
+    Q_ASSERT_X(!d->mIdToMenu.contains(id), "ActionManager::registerMenu", "duplicate id");
+    d->mIdToMenu.insert(id, menu);
+}
+
+void ActionManager::unregisterMenu(Id id)
+{
+    Q_ASSERT_X(d->mIdToMenu.contains(id), "ActionManager::unregisterMenu", "unknown id");
+    d->mIdToMenu.remove(id);
+}
+
 QAction *ActionManager::action(Id id)
 {
-    auto act = d->mIdToAction.value(id);
-    Q_ASSERT_X(act, "ActionManager::action", "unknown id");
-    return act;
+    auto action = d->mIdToAction.value(id);
+    Q_ASSERT_X(action, "ActionManager::action", "unknown id");
+    return action;
 }
 
 QAction *ActionManager::findAction(Id id)
@@ -64,4 +84,25 @@ QAction *ActionManager::findAction(Id id)
     return d->mIdToAction.value(id);
 }
 
+QMenu *ActionManager::menu(Id id)
+{
+    auto menu = d->mIdToMenu.value(id);
+    Q_ASSERT_X(menu, "ActionManager::menu", "unknown id");
+    return menu;
+}
+
+QMenu *ActionManager::findMenu(Id id)
+{
+    return d->mIdToMenu.value(id);
+}
+
+QList<Id> ActionManager::actions()
+{
+    return d->mIdToAction.keys();
+}
+
+QList<Id> ActionManager::menus()
+{
+    return d->mIdToMenu.keys();
+}
 } // namespace Tiled

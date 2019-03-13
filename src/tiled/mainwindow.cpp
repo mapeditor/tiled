@@ -202,6 +202,19 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 {
     mUi->setupUi(this);
 
+    ActionManager::registerMenu(mUi->menuFile, "File");
+    ActionManager::registerMenu(mUi->menuRecentFiles, "RecentFiles");
+    ActionManager::registerMenu(mUi->menuNew, "New");
+    ActionManager::registerMenu(mUi->menuCommand, "Command");
+    ActionManager::registerMenu(mUi->menuEdit, "Edit");
+    ActionManager::registerMenu(mUi->menuHelp, "Help");
+    ActionManager::registerMenu(mUi->menuMap, "Map");
+    ActionManager::registerMenu(mUi->menuUnloadWorld, "UnloadWorld");
+    ActionManager::registerMenu(mUi->menuView, "View");
+    ActionManager::registerMenu(mUi->menuShowObjectNames, "ShowObjectNames");
+    ActionManager::registerMenu(mUi->menuSnapping, "Snapping");
+    ActionManager::registerMenu(mUi->menuTileset, "Tileset");
+
     ActionManager::registerAction(mUi->actionAbout, "About");
     ActionManager::registerAction(mUi->actionAboutQt, "AboutQt");
     ActionManager::registerAction(mUi->actionAddExternalTileset, "AddExternalTileset");
@@ -509,6 +522,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionDocumentation, &QAction::triggered, this, &MainWindow::openDocumentation);
     connect(mUi->actionBecomePatron, &QAction::triggered, this, &MainWindow::becomePatron);
     connect(mUi->actionAbout, &QAction::triggered, this, &MainWindow::aboutTiled);
+    connect(mUi->actionAboutQt, &QAction::triggered, qApp, &QApplication::aboutQt);
 
     mUi->menuUnloadWorld->setEnabled(!WorldManager::instance().worlds().isEmpty());
 

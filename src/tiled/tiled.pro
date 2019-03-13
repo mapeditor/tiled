@@ -216,6 +216,7 @@ SOURCES += aboutdialog.cpp \
     resizetilelayer.cpp \
     reversingproxymodel.cpp \
     rotatemapobject.cpp \
+    scriptedaction.cpp \
     scriptedmapformat.cpp \
     scriptmanager.cpp \
     scriptmodule.cpp \
@@ -433,6 +434,7 @@ HEADERS += aboutdialog.h \
     resizetilelayer.h \
     reversingproxymodel.h \
     rotatemapobject.h \
+    scriptedaction.h \
     scriptedmapformat.h \
     scriptmanager.h \
     scriptmodule.h \

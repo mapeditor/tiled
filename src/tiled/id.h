@@ -27,9 +27,14 @@ namespace Tiled {
 class Id
 {
 public:
+    Id() : mId(0) {}
     Id(const char *name);
+    Id(const QByteArray &name);
 
     QByteArray name() const;
+    bool isNull() const { return mId == 0; }
+
+    explicit operator bool() const { return !isNull(); }
 
     bool operator==(Id id) const { return mId == id.mId; }
     bool operator!=(Id id) const { return mId != id.mId; }

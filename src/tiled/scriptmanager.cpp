@@ -27,10 +27,11 @@
 #include "editabletile.h"
 #include "editabletilelayer.h"
 #include "editabletileset.h"
-#include "tilelayeredit.h"
 #include "regionvaluetype.h"
+#include "scriptedaction.h"
 #include "scriptmodule.h"
 #include "tilelayer.h"
+#include "tilelayeredit.h"
 
 #include <QFile>
 #include <QQmlEngine>
@@ -79,6 +80,7 @@ ScriptManager::ScriptManager(QObject *parent)
     qRegisterMetaType<EditableTileset*>();
     qRegisterMetaType<TileLayerEdit*>();
     qRegisterMetaType<RegionValueType>();
+    qRegisterMetaType<ScriptedAction*>();
 
     connect(&mWatcher, &FileSystemWatcher::filesChanged,
             this, &ScriptManager::scriptFilesChanged);

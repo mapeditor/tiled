@@ -21,18 +21,23 @@
 #pragma once
 
 #include "documentmanager.h"
+#include "id.h"
 
 #include <QJSValue>
 #include <QObject>
+#include <QVector>
 
 #include <map>
 #include <memory>
+
+class QAction;
 
 namespace Tiled {
 
 class LoggingInterface;
 
 class EditableAsset;
+class ScriptedAction;
 class ScriptedMapFormat;
 
 /**
@@ -46,10 +51,24 @@ class ScriptModule : public QObject
     Q_PROPERTY(QString platform READ platform)
     Q_PROPERTY(QString arch READ arch)
 
+    Q_PROPERTY(QStringList actions READ actions)
+    Q_PROPERTY(QStringList menus READ menus)
+
     Q_PROPERTY(Tiled::EditableAsset *activeAsset READ activeAsset WRITE setActiveAsset NOTIFY activeAssetChanged)
     Q_PROPERTY(QList<QObject*> openAssets READ openAssets)
 
 public:
+    struct MenuItem {
+        Id action;
+        Id beforeAction;
+        bool isSeparator;
+    };
+
+    struct MenuExtension {
+        Id menuId;
+        QVector<MenuItem> items;
+    };
+
     ScriptModule(QObject *parent = nullptr);
     ~ScriptModule() override;
 
@@ -57,12 +76,18 @@ public:
     QString platform() const;
     QString arch() const;
 
+    QStringList actions() const;
+    QStringList menus() const;
+
     EditableAsset *activeAsset() const;
     bool setActiveAsset(EditableAsset *asset) const;
 
     QList<QObject*> openAssets() const;
 
-    Q_INVOKABLE void registerMapFormat(const QString &shortName, const QJSValue &mapFormatObject);
+    Q_INVOKABLE Tiled::ScriptedAction *registerAction(const QByteArray &id, QJSValue callback);
+    Q_INVOKABLE void registerMapFormat(const QString &shortName, QJSValue mapFormatObject);
+
+    Q_INVOKABLE void extendMenu(const QByteArray &idName, QJSValue items);
 
 signals:
     void assetCreated(Tiled::EditableAsset *asset);
@@ -93,7 +118,10 @@ private slots:
 
 private:
     LoggingInterface *mLogger;
+    std::map<QByteArray, std::unique_ptr<ScriptedAction>> mRegisteredActions;
     std::map<QString, std::unique_ptr<ScriptedMapFormat>> mRegisteredMapFormats;
+
+    QVector<MenuExtension> mMenuExtensions;
 };
 
 } // namespace Tiled
