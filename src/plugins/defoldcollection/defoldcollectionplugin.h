@@ -47,6 +47,4 @@ private:
     QString mError;
 };
 
-static QString tilesetRelativePath(const QString & filePath);
-
 } // namespace DefoldCollection
