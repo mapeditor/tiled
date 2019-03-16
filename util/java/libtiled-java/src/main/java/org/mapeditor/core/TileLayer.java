@@ -2,9 +2,9 @@
  * #%L
  * This file is part of libtiled-java.
  * %%
- * Copyright (C) 2004 - 2018 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright (C) 2004 - 2018 Adam Turk <aturk@biggeruniverse.com>
- * Copyright (C) 2016 - 2018 Mike Thomas <mikepthomas@outlook.com>
+ * Copyright (C) 2004 - 2019 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright (C) 2004 - 2019 Adam Turk <aturk@biggeruniverse.com>
+ * Copyright (C) 2016 - 2019 Mike Thomas <mikepthomas@outlook.com>
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -43,10 +43,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
  * data.
  *
  * @see org.mapeditor.core.Map
- * @author Thorbjørn Lindeijer
- * @author Adam Turk
- * @author Mike Thomas
- * @version 1.1.3
+ * @version 1.2.3
  */
 @XmlAccessorType(XmlAccessType.NONE)
 public class TileLayer extends TileLayerData {
@@ -55,7 +52,7 @@ public class TileLayer extends TileLayerData {
     private HashMap<Object, Properties> tileInstanceProperties = new HashMap<>();
 
     /**
-     * <p>getTileInstancePropertiesAt.</p>
+     * getTileInstancePropertiesAt.
      *
      * @param x a int.
      * @param y a int.
@@ -70,7 +67,7 @@ public class TileLayer extends TileLayerData {
     }
 
     /**
-     * <p>setTileInstancePropertiesAt.</p>
+     * setTileInstancePropertiesAt.
      *
      * @param x a int.
      * @param y a int.
@@ -220,7 +217,7 @@ public class TileLayer extends TileLayerData {
     }
 
     /**
-     * <p>isEmpty.</p>
+     * isEmpty.
      *
      * @return a boolean.
      */

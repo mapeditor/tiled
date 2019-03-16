@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.3" orientation="orthogonal" renderorder="right-down" width="7" height="3" tilewidth="24" tileheight="24" infinite="0" nextobjectid="1">
+<map version="1.2" tiledversion="1.2.3" orientation="orthogonal" renderorder="right-down" width="7" height="3" tilewidth="24" tileheight="24" infinite="0" nextlayerid="4" nextobjectid="1">
  <properties>
   <property name="AutomappingRadius" value="3"/>
   <property name="DeleteTiles" value="yes"/>
@@ -10,17 +10,17 @@
  <tileset firstgid="73" name="rules_sewers" tilewidth="24" tileheight="24" tilecount="6" columns="3">
   <image source="rules_sewers.png" width="72" height="48"/>
  </tileset>
- <layer name="Regions" width="7" height="3">
+ <layer id="1" name="Regions" width="7" height="3">
   <data encoding="base64" compression="zlib">
    eJxjYMAPPHHQ+AAAJfgA3A==
   </data>
  </layer>
- <layer name="Input_set" width="7" height="3">
+ <layer id="2" name="Input_set" width="7" height="3">
   <data encoding="base64" compression="zlib">
    eJxjYMAPPKG0F5T2JqAeBAAmbADf
   </data>
  </layer>
- <layer name="Output_Ground" width="7" height="3">
+ <layer id="3" name="Output_Ground" width="7" height="3">
   <data encoding="base64" compression="zlib">
    eJxjYMAPeKG0DJRWIqAeBAAMkABM
   </data>

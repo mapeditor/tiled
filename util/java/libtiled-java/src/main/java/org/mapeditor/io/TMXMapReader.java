@@ -2,9 +2,9 @@
  * #%L
  * This file is part of libtiled-java.
  * %%
- * Copyright (C) 2004 - 2018 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright (C) 2004 - 2018 Adam Turk <aturk@biggeruniverse.com>
- * Copyright (C) 2016 - 2018 Mike Thomas <mikepthomas@outlook.com>
+ * Copyright (C) 2004 - 2019 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright (C) 2004 - 2019 Adam Turk <aturk@biggeruniverse.com>
+ * Copyright (C) 2016 - 2019 Mike Thomas <mikepthomas@outlook.com>
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -80,10 +80,7 @@ import org.xml.sax.SAXException;
  * The standard map reader for TMX files. Supports reading .tmx, .tmx.gz and
  * *.tsx files.
  *
- * @author Thorbjørn Lindeijer
- * @author Adam Turk
- * @author Mike Thomas
- * @version 1.1.3
+ * @version 1.2.3
  */
 public class TMXMapReader {
 
@@ -105,7 +102,7 @@ public class TMXMapReader {
     }
 
     /**
-     * <p>Constructor for TMXMapReader.</p>
+     * Constructor for TMXMapReader.
      */
     public TMXMapReader() {
     }
@@ -767,7 +764,7 @@ public class TMXMapReader {
     }
 
     /**
-     * <p>readMap.</p>
+     * readMap.
      *
      * @param filename a {@link java.lang.String} object.
      * @return a {@link org.mapeditor.core.Map} object.
@@ -776,6 +773,12 @@ public class TMXMapReader {
     public Map readMap(String filename) throws Exception {
         xmlPath = filename.substring(0,
                 filename.lastIndexOf(File.separatorChar) + 1);
+
+        // it is a temporary solution, being used instead of
+        // xmlPath = filename.substring(0, filename.lastIndexOf(File.separatorChar) + 1);
+        // because using File.separatorChar in windows, when path contains / symbols leads to exceptions.
+        // file path processing in all methods/classes should be checked and fixed
+        xmlPath = filename.substring(0, filename.lastIndexOf('/') + 1);
 
         String xmlFile = makeUrl(filename);
         //xmlPath = makeUrl(xmlPath);
@@ -797,7 +800,7 @@ public class TMXMapReader {
     }
 
     /**
-     * <p>readMap.</p>
+     * readMap.
      *
      * @param in a {@link java.io.InputStream} object.
      * @return a {@link org.mapeditor.core.Map} object.
@@ -815,7 +818,7 @@ public class TMXMapReader {
     }
 
     /**
-     * <p>readTileset.</p>
+     * readTileset.
      *
      * @param filename a {@link java.lang.String} object.
      * @return a {@link org.mapeditor.core.TileSet} object.
@@ -835,7 +838,7 @@ public class TMXMapReader {
     }
 
     /**
-     * <p>readTileset.</p>
+     * readTileset.
      *
      * @param in a {@link java.io.InputStream} object.
      * @return a {@link org.mapeditor.core.TileSet} object.
@@ -846,7 +849,7 @@ public class TMXMapReader {
     }
 
     /**
-     * <p>accept.</p>
+     * accept.
      *
      * @param pathName a {@link java.io.File} object.
      * @return a boolean.

@@ -63,7 +63,7 @@ public class JaxbTest {
         MapReader reader = new MapReader();
         Map map = reader.readMap(url.getFile());
 
-        assertEquals("1.0", map.getVersion());
+        assertEquals("1.2", map.getVersion());
 
         TileLayer layer = (TileLayer) map.getLayers().get(0);
         Data data = layer.getData();

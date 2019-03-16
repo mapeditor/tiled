@@ -73,6 +73,49 @@ POSSIBILITY OF SUCH DAMAGE.
         </xs:sequence>
     </xs:complexType>
 
+    <xs:complexType name="Chunk">
+        <xs:annotation>
+            <xs:documentation source="http://doc.mapeditor.org/reference/tmx-map-format/#chunk">
+                This is currently added only for infinite maps. The contents of a
+                chunk element is same as that of the data element, except it
+                stores the 'data' of the area specified in the attributes.
+            </xs:documentation>
+        </xs:annotation>
+
+        <xs:sequence>
+            <xs:element name="tile" type="Tile" maxOccurs="unbounded"/>
+        </xs:sequence>
+
+        <xs:attribute name="x" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    The x coordinate of the chunk in tiles.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="y" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    The y coordinate of the chunk in tiles.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="width" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    The width of the chunk in tiles.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="height" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    The height of the chunk in tiles.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
     <xs:complexType name="Data">
         <xs:annotation>
             <xs:documentation source="http://doc.mapeditor.org/reference/tmx-map-format/#data">
@@ -203,6 +246,17 @@ POSSIBILITY OF SUCH DAMAGE.
             <xs:element name="group" type="Group" maxOccurs="unbounded"/>
         </xs:sequence>
 
+        <xs:attribute name="id" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    Unique ID of the layer. Each layer that added to a map gets a
+                    unique id. Even if a layer is deleted, no layer ever gets the
+                    same ID. Can not be changed in Tiled.
+
+                    @since 1.2
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
         <xs:attribute name="name" type="xs:string">
             <xs:annotation>
                 <xs:documentation>
@@ -361,6 +415,17 @@ POSSIBILITY OF SUCH DAMAGE.
             <xs:element name="properties" type="Properties" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
 
+        <xs:attribute name="id" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    Unique ID of the layer. Each layer that added to a map gets a
+                    unique id. Even if a layer is deleted, no layer ever gets the
+                    same ID. Can not be changed in Tiled. 
+
+                    @since 1.2
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
         <xs:attribute name="name" type="xs:string" use="required">
             <xs:annotation>
                 <xs:documentation>
@@ -587,6 +652,17 @@ POSSIBILITY OF SUCH DAMAGE.
                     alpha value since 0.15 in the form `#AARRGGBB`)
 
                     @since 0.9
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="nextlayerid" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    Stores the next available ID for new layers. This number is
+                    stored to prevent reuse of the same ID after layers have been
+                    removed.
+
+                    @since 1.2
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
