@@ -279,15 +279,41 @@ void MapItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
         QGraphicsItem::mousePressEvent(event);
 }
 
+/**
+ * Switches from the current mapitem to this one,
+ * tries to select similar layers and tileset by name.
+ */
 void MapItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     if (mDisplayMode == ReadOnly && event->button() == Qt::LeftButton && isUnderMouse()) {
         MapView *view = static_cast<MapView*>(event->widget()->parent());
         QRectF viewRect { view->viewport()->rect() };
         QRectF sceneViewRect = view->viewportTransform().inverted().mapRect(viewRect);
+
+        Layer* currentLayer = nullptr;
+        QList<Layer*> selectedLayers;
+        Document *currentDocument = DocumentManager::instance()->currentDocument();
+        if (auto currentMapDocument = qobject_cast<MapDocument*>(currentDocument)) {
+            currentLayer = currentMapDocument->currentLayer();
+            selectedLayers = currentMapDocument->selectedLayers();
+        }
+
         DocumentManager::instance()->switchToDocument(mMapDocument.data(),
                                                       sceneViewRect.center() - pos(),
                                                       view->zoomable()->scale());
+
+        Layer *newCurrentLayer = mapDocument()->map()->findLayer(currentLayer->name(), currentLayer->layerType());
+        QList<Layer*> newSelectedLayers;
+        for (Layer *layer : selectedLayers) {
+            Layer *layerWithSameName = mapDocument()->map()->findLayer(layer->name(), layer->layerType());
+            if (layerWithSameName)
+                newSelectedLayers << layerWithSameName;
+        }
+        if (newCurrentLayer)
+            mapDocument()->setCurrentLayer(newCurrentLayer);
+        if (!newSelectedLayers.isEmpty())
+            mapDocument()->setSelectedLayers(newSelectedLayers);
+
         return;
     }
 
