@@ -49,7 +49,7 @@ typedef enum _PyBindGenWrapperFlags {
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
-#include "mapreader.h"
+#include "tilesetmanager.h"
 #include <QImage>
 #include <QFileDialog>
 #include <QWidget>
@@ -3207,11 +3207,10 @@ static bool loadTilesetFromFile(Tiled::Tileset *ts, const QString &file)
 }
 
 
-static bool loadSharedTilesetFromTsx(Tiled::SharedTileset& sts, const QString &file)
+static bool loadTileset(Tiled::SharedTileset& sts, const QString &file)
 {
-    Tiled::MapReader reader;
-    Tiled::SharedTileset result = reader.readTileset(file);
-    if (result == 0)
+    auto result = Tiled::TilesetManager::instance()->loadTileset(file);
+    if (!result || result->status() == Tiled::LoadingStatus::LoadingError)
     {
         return false;
     }
@@ -3655,11 +3654,37 @@ _wrap_PyTiledObject_setProperty__1(PyTiledObject *self, PyObject *args, PyObject
     return py_retval;
 }
 
+PyObject *
+_wrap_PyTiledObject_setProperty__2(PyTiledObject *self, PyObject *args, PyObject *kwargs, PyObject **return_exception)
+{
+    PyObject *py_retval;
+    const char *prop;
+    Py_ssize_t prop_len;
+    bool val;
+    PyObject *py_val;
+    const char *keywords[] = {"prop", "val", NULL};
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "s#O", (char **) keywords, &prop, &prop_len, &py_val)) {
+        {
+            PyObject *exc_type, *traceback;
+            PyErr_Fetch(&exc_type, return_exception, &traceback);
+            Py_XDECREF(exc_type);
+            Py_XDECREF(traceback);
+        }
+        return NULL;
+    }
+    val = (bool) PyObject_IsTrue(py_val);
+    self->obj->setProperty(QString::fromUtf8(prop), val);
+    Py_INCREF(Py_None);
+    py_retval = Py_None;
+    return py_retval;
+}
+
 PyObject * _wrap_PyTiledObject_setProperty(PyTiledObject *self, PyObject *args, PyObject *kwargs)
 {
     PyObject * retval;
     PyObject *error_list;
-    PyObject *exceptions[2] = {0,};
+    PyObject *exceptions[3] = {0,};
     retval = _wrap_PyTiledObject_setProperty__0(self, args, kwargs, &exceptions[0]);
     if (!exceptions[0]) {
         return retval;
@@ -3669,11 +3694,19 @@ PyObject * _wrap_PyTiledObject_setProperty(PyTiledObject *self, PyObject *args, 
         Py_DECREF(exceptions[0]);
         return retval;
     }
-    error_list = PyList_New(2);
+    retval = _wrap_PyTiledObject_setProperty__2(self, args, kwargs, &exceptions[2]);
+    if (!exceptions[2]) {
+        Py_DECREF(exceptions[0]);
+        Py_DECREF(exceptions[1]);
+        return retval;
+    }
+    error_list = PyList_New(3);
     PyList_SET_ITEM(error_list, 0, PyObject_Str(exceptions[0]));
     Py_DECREF(exceptions[0]);
     PyList_SET_ITEM(error_list, 1, PyObject_Str(exceptions[1]));
     Py_DECREF(exceptions[1]);
+    PyList_SET_ITEM(error_list, 2, PyObject_Str(exceptions[2]));
+    Py_DECREF(exceptions[2]);
     PyErr_SetObject(PyExc_TypeError, error_list);
     Py_DECREF(error_list);
     return NULL;
@@ -8375,7 +8408,7 @@ PyObject * _wrap_tiled_isTileLayerAt(PyObject * PYBINDGEN_UNUSED(dummy), PyObjec
 
 
 PyObject *
-_wrap_tiled_loadSharedTilesetFromTsx(PyObject * PYBINDGEN_UNUSED(dummy), PyObject *args, PyObject *kwargs)
+_wrap_tiled_loadTileset(PyObject * PYBINDGEN_UNUSED(dummy), PyObject *args, PyObject *kwargs)
 {
     PyObject *py_retval;
     bool retval;
@@ -8387,11 +8420,11 @@ _wrap_tiled_loadSharedTilesetFromTsx(PyObject * PYBINDGEN_UNUSED(dummy), PyObjec
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!s#", (char **) keywords, &PyTiledSharedTileset_Type, &sts, &file, &file_len)) {
         return NULL;
     }
-    retval = loadSharedTilesetFromTsx(*((PyTiledSharedTileset *) sts)->obj, QString::fromUtf8(file));
+    retval = loadTileset(*((PyTiledSharedTileset *) sts)->obj, QString::fromUtf8(file));
     py_retval = Py_BuildValue((char *) "N", PyBool_FromLong(retval));
     return py_retval;
 }
-PyObject * _wrap_tiled_loadSharedTilesetFromTsx(PyObject * PYBINDGEN_UNUSED(dummy), PyObject *args, PyObject *kwargs);
+PyObject * _wrap_tiled_loadTileset(PyObject * PYBINDGEN_UNUSED(dummy), PyObject *args, PyObject *kwargs);
 
 
 PyObject *
@@ -8478,7 +8511,7 @@ static PyMethodDef tiled_functions[] = {
     {(char *) "isImageLayerAt", (PyCFunction) _wrap_tiled_isImageLayerAt, METH_VARARGS|METH_KEYWORDS, "isImageLayerAt(map, index)\n\ntype: map: Tiled::Map *\ntype: index: int" },
     {(char *) "isObjectGroupAt", (PyCFunction) _wrap_tiled_isObjectGroupAt, METH_VARARGS|METH_KEYWORDS, "isObjectGroupAt(map, index)\n\ntype: map: Tiled::Map *\ntype: index: int" },
     {(char *) "isTileLayerAt", (PyCFunction) _wrap_tiled_isTileLayerAt, METH_VARARGS|METH_KEYWORDS, "isTileLayerAt(map, index)\n\ntype: map: Tiled::Map *\ntype: index: int" },
-    {(char *) "loadSharedTilesetFromTsx", (PyCFunction) _wrap_tiled_loadSharedTilesetFromTsx, METH_VARARGS|METH_KEYWORDS, "loadSharedTilesetFromTsx(sts, file)\n\ntype: sts: Tiled::SharedTileset &\ntype: file: QString" },
+    {(char *) "loadTileset", (PyCFunction) _wrap_tiled_loadTileset, METH_VARARGS|METH_KEYWORDS, "loadTileset(sts, file)\n\ntype: sts: Tiled::SharedTileset &\ntype: file: QString" },
     {(char *) "loadTilesetFromFile", (PyCFunction) _wrap_tiled_loadTilesetFromFile, METH_VARARGS|METH_KEYWORDS, "loadTilesetFromFile(ts, file)\n\ntype: ts: Tileset *\ntype: file: QString" },
     {(char *) "objectGroupAt", (PyCFunction) _wrap_tiled_objectGroupAt, METH_VARARGS|METH_KEYWORDS, "objectGroupAt(map, index)\n\ntype: map: Tiled::Map *\ntype: index: int" },
     {(char *) "tileLayerAt", (PyCFunction) _wrap_tiled_tileLayerAt, METH_VARARGS|METH_KEYWORDS, "tileLayerAt(map, index)\n\ntype: map: Tiled::Map *\ntype: index: int" },
@@ -8585,7 +8618,7 @@ PyTypeObject PyPythonPythonScript_Type = {
     (getattrofunc)NULL,     /* tp_getattro */
     (setattrofunc)NULL,     /* tp_setattro */
     (PyBufferProcs*)NULL,  /* tp_as_buffer */
-    Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_GC|Py_TPFLAGS_BASETYPE,                      /* tp_flags */
+    Py_TPFLAGS_HAVE_GC|Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE,                      /* tp_flags */
     "",                        /* Documentation string */
     (traverseproc)PyPythonPythonScript__tp_traverse,     /* tp_traverse */
     (inquiry)PyPythonPythonScript__tp_clear,             /* tp_clear */

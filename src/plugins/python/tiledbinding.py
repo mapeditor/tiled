@@ -62,7 +62,7 @@ mod.add_include('"objectgroup.h"')
 mod.add_include('"tile.h"')
 mod.add_include('"tilelayer.h"')
 mod.add_include('"tileset.h"')
-mod.add_include('"mapreader.h"')
+mod.add_include('"tilesetmanager.h"')
 
 mod.header.writeln('#ifndef _MSC_VER')
 mod.header.writeln('#pragma GCC diagnostic ignored "-Wmissing-field-initializers"')
@@ -379,14 +379,13 @@ static bool loadTilesetFromFile(Tiled::Tileset *ts, const QString &file)
 }
 """)
 
-mod.add_function('loadSharedTilesetFromTsx', 'bool', [('Tiled::SharedTileset&','sts'),('QString','file')])
+mod.add_function('loadTileset', 'bool', [('Tiled::SharedTileset&','sts'),('QString','file')])
 
 mod.body.writeln("""
-static bool loadSharedTilesetFromTsx(Tiled::SharedTileset& sts, const QString &file)
+static bool loadTileset(Tiled::SharedTileset& sts, const QString &file)
 {
-    Tiled::MapReader reader;
-    Tiled::SharedTileset result = reader.readTileset(file);
-    if (result == 0)
+    auto result = Tiled::TilesetManager::instance()->loadTileset(file);
+    if (!result || result->status() == Tiled::LoadingStatus::LoadingError)
     {
         return false;
     }
