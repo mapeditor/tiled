@@ -38,7 +38,8 @@ ScriptedAction::ScriptedAction(Id id,
         QJSValueList arguments;
         arguments.append(ScriptManager::instance().engine()->newQObject(this));
 
-        mCallback.call(arguments);
+        QJSValue result = mCallback.call(arguments);
+        ScriptManager::instance().checkError(result);
     });
 }
 

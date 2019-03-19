@@ -51,6 +51,7 @@ public:
 
     void evaluateStartupScripts();
 
+    void checkError(QJSValue value, const QString &program = QString());
     void throwError(const QString &message);
 
     void reset();

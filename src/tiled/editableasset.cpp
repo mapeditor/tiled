@@ -76,6 +76,20 @@ bool EditableAsset::push(std::unique_ptr<QUndoCommand> &&command)
     return true;
 }
 
+QJSValue EditableAsset::macro(const QString &text, QJSValue callback)
+{
+    if (!callback.isCallable()) {
+        ScriptManager::instance().throwError(tr("Invalid callback"));
+        return QJSValue();
+    }
+
+    undoStack()->beginMacro(text);
+    QJSValue result = callback.call();
+    ScriptManager::instance().checkError(result);
+    undoStack()->endMacro();
+    return result;
+}
+
 bool EditableAsset::checkReadOnly() const
 {
     if (isReadOnly()) {

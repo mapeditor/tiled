@@ -22,6 +22,8 @@
 
 #include "editableobject.h"
 
+#include <QJSValue>
+
 #include <memory>
 
 class QUndoCommand;
@@ -52,6 +54,8 @@ public:
     bool isModified() const;
     bool push(QUndoCommand *command);
     bool push(std::unique_ptr<QUndoCommand> &&command);
+
+    Q_INVOKABLE QJSValue macro(const QString &text, QJSValue callback);
 
     bool checkReadOnly() const;
 

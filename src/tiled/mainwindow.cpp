@@ -429,6 +429,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     menuBar()->insertMenu(mUi->menuHelp->menuAction(), mLayerMenu);
 
+    ActionManager::registerMenu(mLayerMenu, "Layer");
+    ActionManager::registerMenu(mNewLayerMenu, "NewLayer");
+    ActionManager::registerMenu(mGroupLayerMenu, "GroupLayer");
+
     connect(mUi->actionNewMap, &QAction::triggered, this, &MainWindow::newMap);
     connect(mUi->actionNewTileset, &QAction::triggered, this, [this] { newTileset(); });
     connect(mUi->actionOpen, &QAction::triggered, this, &MainWindow::openFileDialog);

@@ -30,8 +30,11 @@ The location of the startup script depends on the platform. The file
 |             | | :file:`/etc/xdg/tiled/startup.js`                             |
 +-------------+-----------------------------------------------------------------+
 
-Any file that exists will be evaluated. Changes made to startup scripts
-only take effect when restarting Tiled.
+Any file that exists will be evaluated.
+
+When a startup script is changed, the script engine is reinstantiated and the
+scripts are reloaded. This makes it quick to iterate on a script until it
+works at intended.
 
 Console View
 ^^^^^^^^^^^^
@@ -352,6 +355,26 @@ Properties
     **modified** : bool |ro|, Whether the asset was modified after it was saved or loaded.
     **isTileMap** : bool |ro|, Whether the asset is a :ref:`script-map`.
     **isTileset** : bool |ro|, Whether the asset is a :ref:`script-tileset`.
+
+Functions
+~~~~~~~~~
+
+Asset.macro(text : string, callback : function) : value
+    Creates a single undo command that wraps all changes applied to this asset
+    by the given callback. Recommended to avoid spamming the undo stack with
+    small steps that the user does not care about.
+
+    Example function that changes visibility of multiple layers in one step:
+
+    .. code:: javascript
+
+        tileMap.macro((visible ? "Show" : "Hide") + " Selected Layers", function() {
+            tileMap.selectedLayers.forEach(function(layer) {
+                layer.visible = visible
+            })
+        })
+
+    The returned value is whatever the callback function returned.
 
 .. _script-map:
 
