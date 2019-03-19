@@ -25,6 +25,7 @@
 #include "changelayer.h"
 #include "changemapproperty.h"
 #include "changeselectedarea.h"
+#include "editableimagelayer.h"
 #include "editablelayer.h"
 #include "editablemapobject.h"
 #include "editableobjectgroup.h"
@@ -463,6 +464,9 @@ EditableLayer *EditableMap::editableLayer(Layer *layer)
             break;
         case Layer::ObjectGroupType:
             editableLayer = new EditableObjectGroup(this, static_cast<ObjectGroup*>(layer));
+            break;
+        case Layer::ImageLayerType:
+            editableLayer = new EditableImageLayer(this, static_cast<ImageLayer*>(layer));
             break;
         default:
             editableLayer = new EditableLayer(this, layer);

@@ -473,7 +473,7 @@ Properties
     **isTileLayer** : bool |ro|, Whether this layer is a :ref:`script-tilelayer`.
     **isObjectGroup** : bool |ro|, Whether this layer is an :ref:`script-objectgroup`.
     **isGroupLayer** : bool |ro|, Whether this layer is a group layer.
-    **isImageLayer** : bool |ro|, Whether this layer is an image layer.
+    **isImageLayer** : bool |ro|, Whether this layer is an :ref:`script-imagelayer`.
 
 .. _script-tilelayer:
 
@@ -561,6 +561,22 @@ ObjectGroup.insertObjectAt(index : int, object : :ref:`script-mapobject`) : void
 ObjectGroup.addObject(object : :ref:`script-mapobject`) : void
     Adds the given object to the layer. The object can't already be part of
     a layer.
+
+.. _script-imagelayer:
+
+ImageLayer
+^^^^^^^^^^
+
+Inherits :ref:`script-layer`.
+
+Properties
+~~~~~~~~~~
+
+.. csv-table::
+    :widths: 1, 2
+
+    **transparentColor** : color, Color used as transparent color when rendering the image.
+    **imageSource** : url, Reference to the image rendered by this layer.
 
 .. _script-mapobject:
 

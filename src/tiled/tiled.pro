@@ -87,7 +87,6 @@ SOURCES += aboutdialog.cpp \
     brushitem.cpp \
     bucketfilltool.cpp \
     capturestamphelper.cpp \
-    changeimagelayerposition.cpp \
     changeimagelayerproperties.cpp \
     changelayer.cpp \
     changemapobject.cpp \
@@ -128,6 +127,7 @@ SOURCES += aboutdialog.cpp \
     document.cpp \
     documentmanager.cpp \
     editableasset.cpp \
+    editableimagelayer.cpp \
     editablelayer.cpp \
     editablemap.cpp \
     editablemapobject.cpp \
@@ -302,7 +302,6 @@ HEADERS += aboutdialog.h \
     brushitem.h \
     bucketfilltool.h \
     capturestamphelper.h \
-    changeimagelayerposition.h \
     changeimagelayerproperties.h \
     changelayer.h \
     changemapobject.h \
@@ -344,6 +343,7 @@ HEADERS += aboutdialog.h \
     document.h \
     documentmanager.h \
     editableasset.h \
+    editableimagelayer.h \
     editablelayer.h \
     editablemap.h \
     editablemapobject.h \

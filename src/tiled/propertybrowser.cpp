@@ -20,7 +20,6 @@
 
 #include "propertybrowser.h"
 
-#include "changeimagelayerposition.h"
 #include "changeimagelayerproperties.h"
 #include "changelayer.h"
 #include "changemapobject.h"
