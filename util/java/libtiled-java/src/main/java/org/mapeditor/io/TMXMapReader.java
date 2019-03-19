@@ -161,9 +161,11 @@ public class TMXMapReader {
     private <T> T unmarshalClass(Node node, Class<T> type) throws JAXBException {
         JAXBContext context;
         if (type == Tile.class) {
-            context = (tileContext == null) ? JAXBContext.newInstance(Tile.class) : tileContext;
+            if (tileContext == null) tileContext = JAXBContext.newInstance(Tile.class);
+            context = tileContext;
         } else if (type == AnimatedTile.class) {
-            context = (animatedTileContext == null) ? JAXBContext.newInstance(AnimatedTile.class) : animatedTileContext;
+            if (animatedTileContext == null) animatedTileContext = JAXBContext.newInstance(AnimatedTile.class);
+            context = animatedTileContext;
         } else {
             context = JAXBContext.newInstance(type);
         }
