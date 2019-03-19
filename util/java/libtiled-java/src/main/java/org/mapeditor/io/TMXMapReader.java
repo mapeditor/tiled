@@ -154,10 +154,21 @@ public class TMXMapReader {
         }
     }
 
-    private <T> T unmarshalClass(Node node, Class<T> type) throws JAXBException {
-        JAXBContext context = JAXBContext.newInstance(type);
-        Unmarshaller unmarshaller = context.createUnmarshaller();
+    
+    private JAXBContext tileContext;
+    private JAXBContext animatedTileContext;
 
+    private <T> T unmarshalClass(Node node, Class<T> type) throws JAXBException {
+        JAXBContext context;
+        if (type == Tile.class) {
+            context = (tileContext == null) ? JAXBContext.newInstance(Tile.class) : tileContext;
+        } else if (type == AnimatedTile.class) {
+            context = (animatedTileContext == null) ? JAXBContext.newInstance(AnimatedTile.class) : animatedTileContext;
+        } else {
+            context = JAXBContext.newInstance(type);
+        }
+        
+        Unmarshaller unmarshaller = context.createUnmarshaller();
         JAXBElement<T> element = unmarshaller.unmarshal(node, type);
         return element.getValue();
     }
