@@ -98,7 +98,10 @@ public class TMXMapReader {
     private TreeMap<Integer, TileSet> tilesetPerFirstGid;
     public final TMXMapReaderSettings settings = new TMXMapReaderSettings();
     private final HashMap<String, TileSet> cachedTilesets = new HashMap<>();
-
+  
+    private static JAXBContext tileContext;
+    private static JAXBContext animatedTileContext;
+    
     public static final class TMXMapReaderSettings {
 
         public boolean reuseCachedTilesets = false;
@@ -154,12 +157,9 @@ public class TMXMapReader {
         }
     }
 
-    
-    private JAXBContext tileContext;
-    private JAXBContext animatedTileContext;
-
     private <T> T unmarshalClass(Node node, Class<T> type) throws JAXBException {
         JAXBContext context;
+        
         if (type == Tile.class) {
             if (tileContext == null) tileContext = JAXBContext.newInstance(Tile.class);
             context = tileContext;
