@@ -127,8 +127,10 @@ SOURCES += aboutdialog.cpp \
     document.cpp \
     documentmanager.cpp \
     editableasset.cpp \
+    editablegrouplayer.cpp \
     editableimagelayer.cpp \
     editablelayer.cpp \
+    editablemanager.cpp \
     editablemap.cpp \
     editablemapobject.cpp \
     editableobject.cpp \
@@ -343,8 +345,10 @@ HEADERS += aboutdialog.h \
     document.h \
     documentmanager.h \
     editableasset.h \
+    editablegrouplayer.h \
     editableimagelayer.h \
     editablelayer.h \
+    editablemanager.h \
     editablemap.h \
     editablemapobject.h \
     editableobject.h \

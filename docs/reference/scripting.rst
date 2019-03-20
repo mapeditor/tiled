@@ -472,7 +472,7 @@ Properties
     **selected** : bool, Whether the layer is selected.
     **isTileLayer** : bool |ro|, Whether this layer is a :ref:`script-tilelayer`.
     **isObjectGroup** : bool |ro|, Whether this layer is an :ref:`script-objectgroup`.
-    **isGroupLayer** : bool |ro|, Whether this layer is a group layer.
+    **isGroupLayer** : bool |ro|, Whether this layer is a :ref:`script-grouplayer`.
     **isImageLayer** : bool |ro|, Whether this layer is an :ref:`script-imagelayer`.
 
 .. _script-tilelayer:
@@ -561,6 +561,47 @@ ObjectGroup.insertObjectAt(index : int, object : :ref:`script-mapobject`) : void
 ObjectGroup.addObject(object : :ref:`script-mapobject`) : void
     Adds the given object to the layer. The object can't already be part of
     a layer.
+
+.. _script-grouplayer:
+
+GroupLayer
+^^^^^^^^^^
+
+Inherits :ref:`script-layer`.
+
+Properties
+~~~~~~~~~~
+
+.. csv-table::
+    :widths: 1, 2
+
+    **layerCount** : int |ro|, Number of child layers the group layer has.
+
+Functions
+~~~~~~~~~
+
+new GroupLayer([name : string])
+    Constructs a new group layer.
+
+GroupLayer.layerAt(index : int) : :ref:`script-layer`
+    Returns a reference to the child layer at the given index.
+
+GroupLayer.removeLayerAt(index : int) : void
+    Removes the child layer at the given index. When a reference to the layer
+    still exists and this group layer isn't already standalone, that reference
+    becomes a standalone copy of the layer.
+
+GroupLayer.removeLayer(layer : :ref:`script-layer`) : void
+    Removes the given layer from the group. If this group wasn't standalone,
+    the reference to the layer becomes a standalone copy.
+
+GroupLayer.insertLayerAt(index : int, layer : :ref:`script-layer`) : void
+    Inserts the layer at the given index. The layer can't already be part of
+    a map.
+
+GroupLayer.addLayer(layer : :ref:`script-layer`) : void
+    Adds the layer to the group, above all existing layers. The layer can't
+    already be part of a map.
 
 .. _script-imagelayer:
 

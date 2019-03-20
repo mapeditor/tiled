@@ -28,6 +28,14 @@ namespace Tiled {
 
 class EditableAsset;
 
+/**
+ * Editable wrapper class, enabling objects to be inspected and modified from
+ * scripts.
+ *
+ * Generally, editables are created on-demand and are owned by the script
+ * (garbage collected). This excludes EditableAsset instances, which are owned
+ * by their Document.
+ */
 class EditableObject : public QObject
 {
     Q_OBJECT

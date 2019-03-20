@@ -21,6 +21,7 @@
 #include "editablemapobject.h"
 
 #include "changemapobject.h"
+#include "editablemanager.h"
 #include "editablemap.h"
 #include "editableobjectgroup.h"
 #include "movemapobject.h"
@@ -32,6 +33,7 @@ EditableMapObject::EditableMapObject(const QString &name,
     : EditableObject(nullptr, new MapObject(name), parent)
 {
     mDetachedMapObject.reset(mapObject());
+    EditableManager::instance().mEditableMapObjects.insert(mapObject(), this);
 }
 
 EditableMapObject::EditableMapObject(EditableMap *map,
@@ -39,6 +41,16 @@ EditableMapObject::EditableMapObject(EditableMap *map,
                                      QObject *parent)
     : EditableObject(map, mapObject, parent)
 {
+    if (map)
+        map->mAttachedMapObjects.insert(mapObject, this);
+}
+
+EditableMapObject::~EditableMapObject()
+{
+    if (map())
+        map()->mAttachedMapObjects.remove(mapObject());
+
+    EditableManager::instance().mEditableMapObjects.remove(mapObject());
 }
 
 bool EditableMapObject::isSelected() const
@@ -51,13 +63,8 @@ bool EditableMapObject::isSelected() const
 
 EditableObjectGroup *EditableMapObject::layer() const
 {
-    if (map())
-        return static_cast<EditableObjectGroup*>(map()->editableLayer(mapObject()->objectGroup()));
-    else
-        // todo: what to do for objects that are part of detached layers?
-        ;
-
-    return nullptr;
+    auto editableLayer = EditableManager::instance().editableLayer(map(), mapObject()->objectGroup());
+    return static_cast<EditableObjectGroup*>(editableLayer);
 }
 
 EditableMap *EditableMapObject::map() const
@@ -68,22 +75,39 @@ EditableMap *EditableMapObject::map() const
 void EditableMapObject::detach()
 {
     Q_ASSERT(map());
-    Q_ASSERT(map()->mEditableMapObjects.contains(mapObject()));
+    Q_ASSERT(map()->mAttachedMapObjects.contains(mapObject()));
 
-    map()->mEditableMapObjects.remove(mapObject());
+    map()->mAttachedMapObjects.remove(mapObject());
+    EditableManager::instance().mEditableMapObjects.remove(mapObject());
     setAsset(nullptr);
 
     mDetachedMapObject.reset(mapObject()->clone());
     setObject(mDetachedMapObject.get());
+    EditableManager::instance().mEditableMapObjects.insert(mapObject(), this);
 }
 
 void EditableMapObject::attach(EditableMap *map)
 {
     Q_ASSERT(!asset() && map);
-    Q_ASSERT(!map->mEditableMapObjects.contains(mapObject()));
+    Q_ASSERT(!map->mAttachedMapObjects.contains(mapObject()));
 
     setAsset(map);
-    map->mEditableMapObjects.insert(mapObject(), this);
+    map->mAttachedMapObjects.insert(mapObject(), this);
+    mDetachedMapObject.release();
+}
+
+void EditableMapObject::hold()
+{
+    Q_ASSERT(!asset());             // if asset exists, it holds the object (possibly indirectly)
+    Q_ASSERT(!mDetachedMapObject);  // can't already be holding the object
+
+    mDetachedMapObject.reset(mapObject());
+}
+
+void EditableMapObject::release()
+{
+    Q_ASSERT(mDetachedMapObject.get() == mapObject());
+
     mDetachedMapObject.release();
 }
 

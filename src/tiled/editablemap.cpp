@@ -25,8 +25,10 @@
 #include "changelayer.h"
 #include "changemapproperty.h"
 #include "changeselectedarea.h"
+#include "editablegrouplayer.h"
 #include "editableimagelayer.h"
 #include "editablelayer.h"
+#include "editablemanager.h"
 #include "editablemapobject.h"
 #include "editableobjectgroup.h"
 #include "editableselectedarea.h"
@@ -69,7 +71,9 @@ EditableMap::EditableMap(MapDocument *mapDocument, QObject *parent)
     connect(map(), &Map::tileHeightChanged, this, &EditableMap::tileHeightChanged);
 
     connect(mapDocument, &Document::fileNameChanged, this, &EditableAsset::fileNameChanged);
+    connect(mapDocument, &MapDocument::layerAdded, this, &EditableMap::attachLayer);
     connect(mapDocument, &MapDocument::layerRemoved, this, &EditableMap::detachLayer);
+    connect(mapDocument, &MapDocument::objectsAdded, this, &EditableMap::attachMapObjects);
     connect(mapDocument, &MapDocument::objectsRemoved, this, &EditableMap::detachMapObjects);
 
     connect(mapDocument, &MapDocument::currentLayerChanged, this, &EditableMap::onCurrentLayerChanged);
@@ -92,46 +96,46 @@ EditableMap::EditableMap(const Map *map, QObject *parent)
 EditableMap::~EditableMap()
 {
     // Operate on copy since original container will get modified
-    const auto editableLayers = mEditableLayers;
-    for (auto editable : editableLayers)
+    const auto attachedLayers = mAttachedLayers;
+    for (auto editable : attachedLayers)
         editable->detach();
 
-    const auto editableMapObjects = mEditableMapObjects;
-    for (auto editable : editableMapObjects)
+    const auto attachedMapObjects = mAttachedMapObjects;
+    for (auto editable : attachedMapObjects)
         editable->detach();
 }
 
 EditableLayer *EditableMap::currentLayer()
 {
     if (auto document = mapDocument())
-        return editableLayer(document->currentLayer());
+        return EditableManager::instance().editableLayer(this, document->currentLayer());
     return nullptr;
 }
 
 QList<QObject *> EditableMap::selectedLayers()
 {
-    QList<QObject*> selectedLayers;
-
     if (!mapDocument())
         return QList<QObject*>();
 
-    const auto &layers = mapDocument()->selectedLayers();
-    for (Layer *layer : layers)
-        selectedLayers.append(editableLayer(layer));
+    QList<QObject*> selectedLayers;
+
+    auto &editableManager = EditableManager::instance();
+    for (Layer *layer : mapDocument()->selectedLayers())
+        selectedLayers.append(editableManager.editableLayer(this, layer));
 
     return selectedLayers;
 }
 
 QList<QObject *> EditableMap::selectedObjects()
 {
-    QList<QObject*> selectedObjects;
-
     if (!mapDocument())
         return QList<QObject*>();
 
-    const auto &objects = mapDocument()->selectedObjects();
-    for (MapObject *object : objects)
-        selectedObjects.append(editableMapObject(object));
+    QList<QObject*> selectedObjects;
+
+    auto &editableManager = EditableManager::instance();
+    for (MapObject *object : mapDocument()->selectedObjects())
+        selectedObjects.append(editableManager.editableMapObject(this, object));
 
     return selectedObjects;
 }
@@ -144,7 +148,7 @@ EditableLayer *EditableMap::layerAt(int index)
     }
 
     Layer *layer = map()->layerAt(index);
-    return editableLayer(layer);
+    return EditableManager::instance().editableLayer(this, layer);
 }
 
 void EditableMap::removeLayerAt(int index)
@@ -190,8 +194,7 @@ void EditableMap::insertLayerAt(int index, EditableLayer *editableLayer)
         return;
     }
 
-    if (push(new AddLayer(mapDocument(), index, editableLayer->layer(), nullptr)))
-        editableLayer->attach(this);
+    push(new AddLayer(mapDocument(), index, editableLayer->layer(), nullptr));
 }
 
 void EditableMap::addLayer(EditableLayer *editableLayer)
@@ -421,10 +424,25 @@ void EditableMap::resize(const QSize &size,
     // TODO: Handle layers that don't match the map size correctly
 }
 
+void EditableMap::attachLayer(Layer *layer)
+{
+    Q_ASSERT(!mAttachedLayers.contains(layer));
+
+    if (EditableLayer *editable = EditableManager::instance().find(layer))
+        editable->attach(this);
+
+    if (GroupLayer *groupLayer = layer->asGroupLayer()) {
+        for (Layer *childLayer : groupLayer->layers())
+            attachLayer(childLayer);
+    } else if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
+        attachMapObjects(objectGroup->objects());
+    }
+}
+
 void EditableMap::detachLayer(Layer *layer)
 {
-    auto iterator = mEditableLayers.constFind(layer);
-    if (iterator != mEditableLayers.constEnd())
+    auto iterator = mAttachedLayers.constFind(layer);
+    if (iterator != mAttachedLayers.constEnd())
         (*iterator)->detach();
 
     if (GroupLayer *groupLayer = layer->asGroupLayer()) {
@@ -435,58 +453,28 @@ void EditableMap::detachLayer(Layer *layer)
     }
 }
 
+void EditableMap::attachMapObjects(const QList<MapObject *> &mapObjects)
+{
+    const auto &editableManager = EditableManager::instance();
+    for (MapObject *mapObject : mapObjects) {
+        Q_ASSERT(!mAttachedMapObjects.contains(mapObject));
+        if (EditableMapObject *editable = editableManager.find(mapObject))
+            editable->attach(this);
+    }
+}
+
 void EditableMap::detachMapObjects(const QList<MapObject *> &mapObjects)
 {
     for (MapObject *mapObject : mapObjects) {
-        auto iterator = mEditableMapObjects.constFind(mapObject);
-        if (iterator != mEditableMapObjects.constEnd())
+        auto iterator = mAttachedMapObjects.constFind(mapObject);
+        if (iterator != mAttachedMapObjects.constEnd())
             (*iterator)->detach();
     }
 }
 
 void EditableMap::onCurrentLayerChanged(Layer *layer)
 {
-    emit currentLayerChanged(editableLayer(layer));
-}
-
-EditableLayer *EditableMap::editableLayer(Layer *layer)
-{
-    if (!layer)
-        return nullptr;
-
-    Q_ASSERT(layer->map() == map());
-
-    EditableLayer* &editableLayer = mEditableLayers[layer];
-    if (!editableLayer) {
-        switch (layer->layerType()) {
-        case Layer::TileLayerType:
-            editableLayer = new EditableTileLayer(this, static_cast<TileLayer*>(layer));
-            break;
-        case Layer::ObjectGroupType:
-            editableLayer = new EditableObjectGroup(this, static_cast<ObjectGroup*>(layer));
-            break;
-        case Layer::ImageLayerType:
-            editableLayer = new EditableImageLayer(this, static_cast<ImageLayer*>(layer));
-            break;
-        default:
-            editableLayer = new EditableLayer(this, layer);
-            break;
-        }
-    }
-
-    return editableLayer;
-}
-
-EditableMapObject *EditableMap::editableMapObject(MapObject *mapObject)
-{
-    Q_ASSERT(mapObject->objectGroup());
-    Q_ASSERT(mapObject->objectGroup()->map() == map());
-
-    EditableMapObject* &editableMapObject = mEditableMapObjects[mapObject];
-    if (!editableMapObject)
-        editableMapObject = new EditableMapObject(this, mapObject);
-
-    return editableMapObject;
+    emit currentLayerChanged(EditableManager::instance().editableLayer(this, layer));
 }
 
 } // namespace Tiled

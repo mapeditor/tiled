@@ -22,6 +22,7 @@
 
 #include "addremovemapobject.h"
 #include "changeobjectgroupproperties.h"
+#include "editablemanager.h"
 #include "editablemap.h"
 #include "scriptmanager.h"
 
@@ -41,12 +42,10 @@ EditableObjectGroup::EditableObjectGroup(EditableMap *map,
 
 QList<QObject *> EditableObjectGroup::objects()
 {
-    if (!map()) // todo: unsupported for stand-alone object groups at the moment...
-        return QList<QObject*>();
-
+    auto &editableManager = EditableManager::instance();
     QList<QObject*> objects;
     for (MapObject *object : objectGroup()->objects())
-        objects.append(map()->editableMapObject(object));
+        objects.append(editableManager.editableMapObject(map(), object));
     return objects;
 }
 
@@ -58,14 +57,7 @@ EditableMapObject *EditableObjectGroup::objectAt(int index)
     }
 
     auto mapObject = objectGroup()->objectAt(index);
-
-    if (map()) {
-        return map()->editableMapObject(mapObject);
-    } else {
-        // todo: what's going to ensure this object doesn't become roaming?
-        // todo: what about avoiding the creation of multiple instances pointing to the same object?
-        return new EditableMapObject(nullptr, mapObject);
-    }
+    return EditableManager::instance().editableMapObject(map(), mapObject);
 }
 
 void EditableObjectGroup::removeObjectAt(int index)
@@ -81,8 +73,7 @@ void EditableObjectGroup::removeObjectAt(int index)
         map()->push(new RemoveMapObjects(map()->mapDocument(), mapObject));
     } else {
         objectGroup()->removeObjectAt(index);
-        // todo: if there is still a EditableMapObject instance pointing to this object, it should not be deleted
-        delete mapObject;
+        EditableManager::instance().release(mapObject);
     }
 }
 
@@ -110,15 +101,12 @@ void EditableObjectGroup::insertObjectAt(int index, EditableMapObject *editableM
     }
 
     if (map()) {
-        if (map()->push(new AddMapObjects(map()->mapDocument(),
-                                          objectGroup(),
-                                          editableMapObject->mapObject()))) {
-            editableMapObject->attach(map());
-        }
+        map()->push(new AddMapObjects(map()->mapDocument(),
+                                      objectGroup(),
+                                      editableMapObject->mapObject()));
     } else {
-        // todo: when this ObjectGroup is added to a map later, who is going to
-        // attach the EditableMapObject, which is not referenced anywhere?
         objectGroup()->insertObject(index, editableMapObject->mapObject());
+        editableMapObject->release();   // now owned by the object group
     }
 }
 

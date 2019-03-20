@@ -119,7 +119,9 @@ public slots:
                 bool removeObjects = false);
 
 private slots:
+    void attachLayer(Layer *layer);
     void detachLayer(Layer *layer);
+    void attachMapObjects(const QList<MapObject*> &mapObjects);
     void detachMapObjects(const QList<MapObject*> &mapObjects);
 
     void onCurrentLayerChanged(Layer *layer);
@@ -127,17 +129,13 @@ private slots:
 private:
     friend class EditableLayer;
     friend class EditableMapObject;
-    friend class EditableObjectGroup;
-
-    EditableLayer *editableLayer(Layer *layer);
-    EditableMapObject *editableMapObject(MapObject *mapObject);
 
     MapRenderer *renderer() const;
 
     bool mReadOnly;
 
-    QHash<Layer*, EditableLayer*> mEditableLayers;
-    QHash<MapObject*, EditableMapObject*> mEditableMapObjects;
+    QHash<Layer*, EditableLayer*> mAttachedLayers;
+    QHash<MapObject*, EditableMapObject*> mAttachedMapObjects;
     EditableSelectedArea *mSelectedArea;
 };
 
