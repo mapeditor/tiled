@@ -62,6 +62,7 @@ mod.add_include('"objectgroup.h"')
 mod.add_include('"tile.h"')
 mod.add_include('"tilelayer.h"')
 mod.add_include('"tileset.h"')
+mod.add_include('"tilesetmanager.h"')
 
 mod.header.writeln('#ifndef _MSC_VER')
 mod.header.writeln('#pragma GCC diagnostic ignored "-Wmissing-field-initializers"')
@@ -85,6 +86,10 @@ cls_object.add_method('properties', retval('Tiled::Properties','p'), [])
 cls_object.add_method('propertyAsString', 'QString', [('QString','prop')])
 cls_object.add_method('setProperty', None,
     [('QString','prop'),('QString','val')])
+cls_object.add_method('setProperty', None,
+    [('QString','prop'),('int','val')])
+cls_object.add_method('setProperty', None,
+    [('QString','prop'),('bool','val')])
 
 cls_tile = tiled.add_class('Tile', cls_object)
 cls_tile.add_method('id', 'int', [])
@@ -371,6 +376,15 @@ static bool loadTilesetFromFile(Tiled::Tileset *ts, const QString &file)
 {
     QImage img(file);
     return ts->loadFromImage(img, file);
+}
+""")
+
+mod.add_function('loadTileset', 'Tiled::SharedTileset', [('QString','file')])
+
+mod.body.writeln("""
+static Tiled::SharedTileset loadTileset(const QString &file)
+{
+    return Tiled::TilesetManager::instance()->loadTileset(file);
 }
 """)
 

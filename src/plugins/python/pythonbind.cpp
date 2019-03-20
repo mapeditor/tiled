@@ -9,51 +9,6 @@
 #include <stddef.h>
 
 
-#if PY_VERSION_HEX < 0x020400F0
-
-#define PyEval_ThreadsInitialized() 1
-
-#define Py_CLEAR(op)				\
-        do {                            	\
-                if (op) {			\
-                        PyObject *tmp = (PyObject *)(op);	\
-                        (op) = NULL;		\
-                        Py_DECREF(tmp);		\
-                }				\
-        } while (0)
-
-
-#define Py_VISIT(op)							\
-        do { 								\
-                if (op) {						\
-                        int vret = visit((PyObject *)(op), arg);	\
-                        if (vret)					\
-                                return vret;				\
-                }							\
-        } while (0)
-
-#endif
-
-
-
-#if PY_VERSION_HEX < 0x020500F0
-
-typedef int Py_ssize_t;
-# define PY_SSIZE_T_MAX INT_MAX
-# define PY_SSIZE_T_MIN INT_MIN
-typedef inquiry lenfunc;
-typedef intargfunc ssizeargfunc;
-typedef intobjargproc ssizeobjargproc;
-
-#endif
-
-
-#ifndef PyVarObject_HEAD_INIT
-#define PyVarObject_HEAD_INIT(type, size) \
-        PyObject_HEAD_INIT(type) size,
-#endif
-
-
 #if PY_VERSION_HEX >= 0x03000000
 #if PY_VERSION_HEX >= 0x03050000
 typedef PyAsyncMethods* cmpfunc;
@@ -94,6 +49,7 @@ typedef enum _PyBindGenWrapperFlags {
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
+#include "tilesetmanager.h"
 #include <QImage>
 #include <QFileDialog>
 #include <QWidget>
@@ -3250,6 +3206,12 @@ static bool loadTilesetFromFile(Tiled::Tileset *ts, const QString &file)
     return ts->loadFromImage(img, file);
 }
 
+
+static Tiled::SharedTileset loadTileset(const QString &file)
+{
+    return Tiled::TilesetManager::instance()->loadTileset(file);
+}
+
 #if PY_VERSION_HEX >= 0x03000000
 static struct PyModuleDef tiled_qt_moduledef = {
     PyModuleDef_HEAD_INIT,
@@ -3636,8 +3598,9 @@ _wrap_PyTiledObject_propertyAsString(PyTiledObject *self, PyObject *args, PyObje
 }
 
 
+
 PyObject *
-_wrap_PyTiledObject_setProperty(PyTiledObject *self, PyObject *args, PyObject *kwargs)
+_wrap_PyTiledObject_setProperty__0(PyTiledObject *self, PyObject *args, PyObject *kwargs, PyObject **return_exception)
 {
     PyObject *py_retval;
     const char *prop;
@@ -3647,6 +3610,12 @@ _wrap_PyTiledObject_setProperty(PyTiledObject *self, PyObject *args, PyObject *k
     const char *keywords[] = {"prop", "val", NULL};
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "s#s#", (char **) keywords, &prop, &prop_len, &val, &val_len)) {
+        {
+            PyObject *exc_type, *traceback;
+            PyErr_Fetch(&exc_type, return_exception, &traceback);
+            Py_XDECREF(exc_type);
+            Py_XDECREF(traceback);
+        }
         return NULL;
     }
     self->obj->setProperty(QString::fromUtf8(prop), QString::fromUtf8(val));
@@ -3655,10 +3624,92 @@ _wrap_PyTiledObject_setProperty(PyTiledObject *self, PyObject *args, PyObject *k
     return py_retval;
 }
 
+PyObject *
+_wrap_PyTiledObject_setProperty__1(PyTiledObject *self, PyObject *args, PyObject *kwargs, PyObject **return_exception)
+{
+    PyObject *py_retval;
+    const char *prop;
+    Py_ssize_t prop_len;
+    int val;
+    const char *keywords[] = {"prop", "val", NULL};
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "s#i", (char **) keywords, &prop, &prop_len, &val)) {
+        {
+            PyObject *exc_type, *traceback;
+            PyErr_Fetch(&exc_type, return_exception, &traceback);
+            Py_XDECREF(exc_type);
+            Py_XDECREF(traceback);
+        }
+        return NULL;
+    }
+    self->obj->setProperty(QString::fromUtf8(prop), val);
+    Py_INCREF(Py_None);
+    py_retval = Py_None;
+    return py_retval;
+}
+
+PyObject *
+_wrap_PyTiledObject_setProperty__2(PyTiledObject *self, PyObject *args, PyObject *kwargs, PyObject **return_exception)
+{
+    PyObject *py_retval;
+    const char *prop;
+    Py_ssize_t prop_len;
+    bool val;
+    PyObject *py_val;
+    const char *keywords[] = {"prop", "val", NULL};
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "s#O", (char **) keywords, &prop, &prop_len, &py_val)) {
+        {
+            PyObject *exc_type, *traceback;
+            PyErr_Fetch(&exc_type, return_exception, &traceback);
+            Py_XDECREF(exc_type);
+            Py_XDECREF(traceback);
+        }
+        return NULL;
+    }
+    val = (bool) PyObject_IsTrue(py_val);
+    self->obj->setProperty(QString::fromUtf8(prop), val);
+    Py_INCREF(Py_None);
+    py_retval = Py_None;
+    return py_retval;
+}
+
+PyObject * _wrap_PyTiledObject_setProperty(PyTiledObject *self, PyObject *args, PyObject *kwargs)
+{
+    PyObject * retval;
+    PyObject *error_list;
+    PyObject *exceptions[3] = {0,};
+    retval = _wrap_PyTiledObject_setProperty__0(self, args, kwargs, &exceptions[0]);
+    if (!exceptions[0]) {
+        return retval;
+    }
+    retval = _wrap_PyTiledObject_setProperty__1(self, args, kwargs, &exceptions[1]);
+    if (!exceptions[1]) {
+        Py_DECREF(exceptions[0]);
+        return retval;
+    }
+    retval = _wrap_PyTiledObject_setProperty__2(self, args, kwargs, &exceptions[2]);
+    if (!exceptions[2]) {
+        Py_DECREF(exceptions[0]);
+        Py_DECREF(exceptions[1]);
+        return retval;
+    }
+    error_list = PyList_New(3);
+    PyList_SET_ITEM(error_list, 0, PyObject_Str(exceptions[0]));
+    Py_DECREF(exceptions[0]);
+    PyList_SET_ITEM(error_list, 1, PyObject_Str(exceptions[1]));
+    Py_DECREF(exceptions[1]);
+    PyList_SET_ITEM(error_list, 2, PyObject_Str(exceptions[2]));
+    Py_DECREF(exceptions[2]);
+    PyErr_SetObject(PyExc_TypeError, error_list);
+    Py_DECREF(error_list);
+    return NULL;
+}
+
 static PyMethodDef PyTiledObject_methods[] = {
     {(char *) "properties", (PyCFunction) _wrap_PyTiledObject_properties, METH_NOARGS, "properties()\n\n" },
     {(char *) "propertyAsString", (PyCFunction) _wrap_PyTiledObject_propertyAsString, METH_KEYWORDS|METH_VARARGS, "propertyAsString(prop)\n\ntype: prop: QString" },
-    {(char *) "setProperty", (PyCFunction) _wrap_PyTiledObject_setProperty, METH_KEYWORDS|METH_VARARGS, "setProperty(prop, val)\n\ntype: prop: QString\ntype: val: QString" },
+    {(char *) "setProperty", (PyCFunction) _wrap_PyTiledObject_setProperty, METH_KEYWORDS|METH_VARARGS, NULL },
     {NULL, NULL, 0, NULL}
 };
 
@@ -6234,9 +6285,23 @@ static int _wrap_PyTiledCell__set_checked(PyTiledCell *self, PyObject *value, vo
 }
 static PyGetSetDef PyTiledCell__getsets[] = {
     {
+        (char*) "flippedHorizontally", /* attribute name */
+        (getter) _wrap_PyTiledCell__get_flippedHorizontally, /* C function to get the attribute */
+        (setter) _wrap_PyTiledCell__set_flippedHorizontally, /* C function to set the attribute */
+        NULL, /* optional doc string */
+        NULL /* optional additional data for getter and setter */
+    },
+    {
         (char*) "flippedVertically", /* attribute name */
         (getter) _wrap_PyTiledCell__get_flippedVertically, /* C function to get the attribute */
         (setter) _wrap_PyTiledCell__set_flippedVertically, /* C function to set the attribute */
+        NULL, /* optional doc string */
+        NULL /* optional additional data for getter and setter */
+    },
+    {
+        (char*) "flippedAntiDiagonally", /* attribute name */
+        (getter) _wrap_PyTiledCell__get_flippedAntiDiagonally, /* C function to get the attribute */
+        (setter) _wrap_PyTiledCell__set_flippedAntiDiagonally, /* C function to set the attribute */
         NULL, /* optional doc string */
         NULL /* optional additional data for getter and setter */
     },
@@ -6251,20 +6316,6 @@ static PyGetSetDef PyTiledCell__getsets[] = {
         (char*) "checked", /* attribute name */
         (getter) _wrap_PyTiledCell__get_checked, /* C function to get the attribute */
         (setter) _wrap_PyTiledCell__set_checked, /* C function to set the attribute */
-        NULL, /* optional doc string */
-        NULL /* optional additional data for getter and setter */
-    },
-    {
-        (char*) "flippedAntiDiagonally", /* attribute name */
-        (getter) _wrap_PyTiledCell__get_flippedAntiDiagonally, /* C function to get the attribute */
-        (setter) _wrap_PyTiledCell__set_flippedAntiDiagonally, /* C function to set the attribute */
-        NULL, /* optional doc string */
-        NULL /* optional additional data for getter and setter */
-    },
-    {
-        (char*) "flippedHorizontally", /* attribute name */
-        (getter) _wrap_PyTiledCell__get_flippedHorizontally, /* C function to get the attribute */
-        (setter) _wrap_PyTiledCell__set_flippedHorizontally, /* C function to set the attribute */
         NULL, /* optional doc string */
         NULL /* optional additional data for getter and setter */
     },
@@ -8351,6 +8402,28 @@ PyObject * _wrap_tiled_isTileLayerAt(PyObject * PYBINDGEN_UNUSED(dummy), PyObjec
 
 
 PyObject *
+_wrap_tiled_loadTileset(PyObject * PYBINDGEN_UNUSED(dummy), PyObject *args, PyObject *kwargs)
+{
+    PyObject *py_retval;
+    const char *file;
+    Py_ssize_t file_len;
+    const char *keywords[] = {"file", NULL};
+    PyTiledSharedTileset *py_SharedTileset;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "s#", (char **) keywords, &file, &file_len)) {
+        return NULL;
+    }
+    Tiled::SharedTileset retval = loadTileset(QString::fromUtf8(file));
+    py_SharedTileset = PyObject_New(PyTiledSharedTileset, &PyTiledSharedTileset_Type);
+    py_SharedTileset->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
+    py_SharedTileset->obj = new Tiled::SharedTileset(retval);
+    py_retval = Py_BuildValue((char *) "N", py_SharedTileset);
+    return py_retval;
+}
+PyObject * _wrap_tiled_loadTileset(PyObject * PYBINDGEN_UNUSED(dummy), PyObject *args, PyObject *kwargs);
+
+
+PyObject *
 _wrap_tiled_loadTilesetFromFile(PyObject * PYBINDGEN_UNUSED(dummy), PyObject *args, PyObject *kwargs)
 {
     PyObject *py_retval;
@@ -8434,6 +8507,7 @@ static PyMethodDef tiled_functions[] = {
     {(char *) "isImageLayerAt", (PyCFunction) _wrap_tiled_isImageLayerAt, METH_KEYWORDS|METH_VARARGS, "isImageLayerAt(map, index)\n\ntype: map: Tiled::Map *\ntype: index: int" },
     {(char *) "isObjectGroupAt", (PyCFunction) _wrap_tiled_isObjectGroupAt, METH_KEYWORDS|METH_VARARGS, "isObjectGroupAt(map, index)\n\ntype: map: Tiled::Map *\ntype: index: int" },
     {(char *) "isTileLayerAt", (PyCFunction) _wrap_tiled_isTileLayerAt, METH_KEYWORDS|METH_VARARGS, "isTileLayerAt(map, index)\n\ntype: map: Tiled::Map *\ntype: index: int" },
+    {(char *) "loadTileset", (PyCFunction) _wrap_tiled_loadTileset, METH_KEYWORDS|METH_VARARGS, "loadTileset(file)\n\ntype: file: QString" },
     {(char *) "loadTilesetFromFile", (PyCFunction) _wrap_tiled_loadTilesetFromFile, METH_KEYWORDS|METH_VARARGS, "loadTilesetFromFile(ts, file)\n\ntype: ts: Tileset *\ntype: file: QString" },
     {(char *) "objectGroupAt", (PyCFunction) _wrap_tiled_objectGroupAt, METH_KEYWORDS|METH_VARARGS, "objectGroupAt(map, index)\n\ntype: map: Tiled::Map *\ntype: index: int" },
     {(char *) "tileLayerAt", (PyCFunction) _wrap_tiled_tileLayerAt, METH_KEYWORDS|METH_VARARGS, "tileLayerAt(map, index)\n\ntype: map: Tiled::Map *\ntype: index: int" },
@@ -8540,7 +8614,7 @@ PyTypeObject PyPythonPythonScript_Type = {
     (getattrofunc)NULL,     /* tp_getattro */
     (setattrofunc)NULL,     /* tp_setattro */
     (PyBufferProcs*)NULL,  /* tp_as_buffer */
-    Py_TPFLAGS_BASETYPE|Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_GC,                      /* tp_flags */
+    Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_GC|Py_TPFLAGS_BASETYPE,                      /* tp_flags */
     "",                        /* Documentation string */
     (traverseproc)PyPythonPythonScript__tp_traverse,     /* tp_traverse */
     (inquiry)PyPythonPythonScript__tp_clear,             /* tp_clear */
