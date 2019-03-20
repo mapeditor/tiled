@@ -379,18 +379,12 @@ static bool loadTilesetFromFile(Tiled::Tileset *ts, const QString &file)
 }
 """)
 
-mod.add_function('loadTileset', 'bool', [('Tiled::SharedTileset&','sts'),('QString','file')])
+mod.add_function('loadTileset', 'Tiled::SharedTileset', [('QString','file')])
 
 mod.body.writeln("""
-static bool loadTileset(Tiled::SharedTileset& sts, const QString &file)
+static Tiled::SharedTileset loadTileset(const QString &file)
 {
-    auto result = Tiled::TilesetManager::instance()->loadTileset(file);
-    if (!result || result->status() == Tiled::LoadingStatus::LoadingError)
-    {
-        return false;
-    }
-    sts = result;
-    return true;
+    return Tiled::TilesetManager::instance()->loadTileset(file);
 }
 """)
 
