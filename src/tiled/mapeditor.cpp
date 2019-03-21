@@ -960,4 +960,14 @@ void MapEditor::showTileCollisionShapesChanged(bool enabled)
         mapView->mapScene()->setShowTileCollisionShapes(enabled);
 }
 
+void MapEditor::setCurrentTileset(SharedTileset tileset)
+{
+    mTilesetDock->setCurrentTileset(tileset);
+}
+
+Tileset *MapEditor::currentTileset()
+{
+    return mTilesetDock->currentTileset();
+}
+
 } // namespace Tiled

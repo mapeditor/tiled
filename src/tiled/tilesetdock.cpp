@@ -832,6 +832,13 @@ void TilesetDock::tabContextMenuRequested(const QPoint &pos)
     menu.exec(mTabBar->mapToGlobal(pos));
 }
 
+void TilesetDock::setCurrentTileset(SharedTileset tileset)
+{
+    const int index = mTilesets.indexOf(tileset);
+    if (index != -1)
+        mTabBar->setCurrentIndex(index);
+}
+
 Tileset *TilesetDock::currentTileset() const
 {
     const int index = mTabBar->currentIndex();

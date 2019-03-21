@@ -80,6 +80,9 @@ public:
      */
     Tile *currentTile() const { return mCurrentTile; }
 
+    void setCurrentTileset(SharedTileset tileset);
+    Tileset *currentTileset() const;
+
     void selectTilesInStamp(const TileStamp &);
 
 signals:
@@ -146,7 +149,6 @@ private:
     void onTabMoved(int from, int to);
     void tabContextMenuRequested(const QPoint &pos);
 
-    Tileset *currentTileset() const;
     TilesetView *currentTilesetView() const;
     TilesetView *tilesetViewAt(int index) const;
 
