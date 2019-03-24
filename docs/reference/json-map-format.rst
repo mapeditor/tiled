@@ -129,7 +129,7 @@ Layer
 +------------------+----------+---------------------------------------------------------------+
 | properties       | array    | A list of properties (name, value, type).                     |
 +------------------+----------+---------------------------------------------------------------+
-| transparentcolor | string   | Hex-formatted color (#RRGGBB) (optional, ``imagelayer`` only. |
+| transparentcolor | string   | Hex-formatted color (#RRGGBB) (optional, ``imagelayer`` only) |
 +------------------+----------+---------------------------------------------------------------+
 | type             | string   | ``tilelayer``, ``objectgroup``, ``imagelayer`` or ``group``   |
 +------------------+----------+---------------------------------------------------------------+
