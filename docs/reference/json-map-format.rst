@@ -107,7 +107,7 @@ Layer
 +------------------+----------+---------------------------------------------------------------+
 | draworder        | string   | ``topdown`` (default) or ``index``. ``objectgroup`` only.     |
 +------------------+----------+---------------------------------------------------------------+
-| encoding         | string   | ``csv`` (default) or ``base64``. ``tilelayer`` only.           |
+| encoding         | string   | ``csv`` (default) or ``base64``. ``tilelayer`` only.          |
 +------------------+----------+---------------------------------------------------------------+
 | height           | int      | Row count. Same as map height for fixed-size maps.            |
 +------------------+----------+---------------------------------------------------------------+
@@ -115,7 +115,7 @@ Layer
 +------------------+----------+---------------------------------------------------------------+
 | image            | string   | Image used by this layer. ``imagelayer`` only.                |
 +------------------+----------+---------------------------------------------------------------+
-| layers           | array    | Array of :ref:`layers <json-layer>`. ``group`` on             |
+| layers           | array    | Array of :ref:`layers <json-layer>`. ``group`` only.          |
 +------------------+----------+---------------------------------------------------------------+
 | name             | string   | Name assigned to this layer                                   |
 +------------------+----------+---------------------------------------------------------------+
@@ -129,7 +129,7 @@ Layer
 +------------------+----------+---------------------------------------------------------------+
 | properties       | array    | A list of properties (name, value, type).                     |
 +------------------+----------+---------------------------------------------------------------+
-| transparentcolor | string   | Hex-formatted color (#RRGGBB) (optional, ``imagelayer`` only  |
+| transparentcolor | string   | Hex-formatted color (#RRGGBB) (optional, ``imagelayer`` only. |
 +------------------+----------+---------------------------------------------------------------+
 | type             | string   | ``tilelayer``, ``objectgroup``, ``imagelayer`` or ``group``   |
 +------------------+----------+---------------------------------------------------------------+
