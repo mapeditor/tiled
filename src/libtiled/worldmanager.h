@@ -82,7 +82,7 @@ public:
     static WorldManager &instance();
     static void deleteInstance();
 
-    bool loadWorld(const QString &fileName, QString *errorString = nullptr);
+    World *loadWorld(const QString &fileName, QString *errorString = nullptr);
     void unloadWorld(const QString &fileName);
 
     const QMap<QString, World*> &worlds() const { return mWorlds; }

@@ -172,14 +172,14 @@ std::unique_ptr<World> WorldManager::privateLoadWorld(const QString &fileName,
 /**
  * Loads the world with the given \a fileName.
  *
- * \returns whether the world was loaded succesfully, optionally setting
+ * \returns the world if it was loaded succesfully, optionally setting
  *          \a errorString when not.
  */
-bool WorldManager::loadWorld(const QString &fileName, QString *errorString)
+World *WorldManager::loadWorld(const QString &fileName, QString *errorString)
 {
     auto world = privateLoadWorld(fileName, errorString);
     if (!world)
-        return false;
+        return nullptr;
 
     if (mWorlds.contains(fileName))
         delete mWorlds.take(fileName);
@@ -189,7 +189,7 @@ bool WorldManager::loadWorld(const QString &fileName, QString *errorString)
     mWorlds.insert(fileName, world.release());
     emit worldsChanged();
 
-    return true;
+    return mWorlds.value(fileName);
 }
 
 /**

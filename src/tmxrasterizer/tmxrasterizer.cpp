@@ -56,7 +56,7 @@ TmxRasterizer::TmxRasterizer():
 {
 }
 
-std::unique_ptr<MapRenderer> TmxRasterizer::createRenderer(Map& map) const
+std::unique_ptr<MapRenderer> TmxRasterizer::createRenderer(Map &map) const
 {
     switch (map.orientation()) {
     case Map::Isometric:
@@ -71,9 +71,9 @@ std::unique_ptr<MapRenderer> TmxRasterizer::createRenderer(Map& map) const
     }
 }
 void TmxRasterizer::drawMapLayers(MapRenderer& renderer,
-                                 QPainter& painter,
-                                 Map& map,
-                                 QPoint mapOffset) const
+                                  QPainter& painter,
+                                  Map& map,
+                                  QPoint mapOffset) const
 {
     // Perform a similar rendering than found in exportasimagedialog.cpp
     LayerIterator iterator(&map);
@@ -115,7 +115,7 @@ bool TmxRasterizer::shouldDrawLayer(const Layer *layer) const
 int TmxRasterizer::render(const QString &fileName,
                           const QString &imageFileName)
 {
-    if(fileName.endsWith(".world"))
+    if (fileName.endsWith(".world", Qt::CaseInsensitive))
         return renderWorld(fileName, imageFileName);
     else
         return renderMap(fileName, imageFileName);
@@ -133,7 +133,7 @@ int TmxRasterizer::renderMap(const QString &mapFileName,
         return 1;
     }
 
-    std::unique_ptr<MapRenderer> renderer = createRenderer(*map.get());
+    std::unique_ptr<MapRenderer> renderer = createRenderer(*map);
     QRect mapBoundingRect = renderer->mapBoundingRect();
     QSize mapSize = mapBoundingRect.size();
     QPoint mapOffset = mapBoundingRect.topLeft();
@@ -168,7 +168,7 @@ int TmxRasterizer::renderMap(const QString &mapFileName,
     painter.translate(margins.left(), margins.top());
     painter.translate(-mapOffset);
 
-    drawMapLayers(*renderer.get(), painter, *map.get());
+    drawMapLayers(*renderer, painter, *map);
     map.reset();
     return saveImage(imageFileName, image);
 }
@@ -197,51 +197,57 @@ int TmxRasterizer::renderWorld(const QString &worldFileName,
 {
     WorldManager &worldManager = WorldManager::instance();
     QString errorString;
-    const World *world = nullptr;
-    if (worldManager.loadWorld(worldFileName, &errorString)){
-        auto const &worlds = worldManager.worlds();
-        auto WorldIt = worlds.find(worldFileName);
-        if (WorldIt != worlds.end())
-            world = WorldIt.value();
-    }
-    if (world == nullptr) {
+    const World *world = worldManager.loadWorld(worldFileName, &errorString);
+    if (!world) {
         qWarning("Error loading the world file \"%s\":\n%s",
                  qUtf8Printable(worldFileName),
                  qUtf8Printable(errorString));
         return 1;
     }
-        
+    
     auto const maps = world->allMaps();
+    if (maps.isEmpty()) {
+        qWarning("Error: The world file to rasterize contains no maps : \"%s\"",
+                 qUtf8Printable(worldFileName));
+        return 1;
+    }
     QRect worldBoundingRect;
-    bool boundsAreInit = false;
+    MapReader reader;
     for (const World::MapEntry &mapEntry : maps) {
-        if (!boundsAreInit){
-            boundsAreInit = true;
-            worldBoundingRect = mapEntry.rect;
+        std::unique_ptr<Map> map { reader.readMap(mapEntry.fileName) };
+        if (!map) {
+            qWarning("Error while reading \"%s\":\n%s",
+                     qUtf8Printable(mapEntry.fileName),
+                     qUtf8Printable(reader.errorString()));
             continue;
         }
-        if (worldBoundingRect.left() > mapEntry.rect.left())
-            worldBoundingRect.setLeft(mapEntry.rect.left());
-        if (worldBoundingRect.top() > mapEntry.rect.top())
-            worldBoundingRect.setTop(mapEntry.rect.top());
-        if (worldBoundingRect.right() < mapEntry.rect.right())
-            worldBoundingRect.setRight(mapEntry.rect.right());
-        if (worldBoundingRect.bottom() < mapEntry.rect.bottom())
-            worldBoundingRect.setBottom(mapEntry.rect.bottom());
-    }   
-        
-    QSize mapSize = worldBoundingRect.size();
-    QPoint mapOffset = worldBoundingRect.topLeft();
-    
-    QImage image(mapSize * mScale, QImage::Format_ARGB32);
+        std::unique_ptr<MapRenderer> renderer = createRenderer(*map);
+        QRect mapBoundingRect = renderer->mapBoundingRect();
+        mapBoundingRect.translate(mapEntry.rect.topLeft());
+
+        worldBoundingRect = worldBoundingRect.united(mapBoundingRect);
+    }
+    qDebug() << worldBoundingRect; //NO_PROD
+    QSize worldSize = worldBoundingRect.size();
+    qreal xScale, yScale;
+    if (mSize > 0) {
+        xScale = (qreal) mSize / worldSize.width();
+        yScale = (qreal) mSize / worldSize.height();
+        xScale = yScale = qMin(1.0, qMin(xScale, yScale));
+    } else
+        xScale = yScale = mScale;
+
+    worldSize.rwidth() *= xScale;
+    worldSize.rheight() *= yScale;
+    QImage image(worldSize, QImage::Format_ARGB32);
     image.fill(Qt::transparent);
     QPainter painter(&image);
 
     painter.setRenderHint(QPainter::Antialiasing, mUseAntiAliasing);
     painter.setRenderHint(QPainter::SmoothPixmapTransform, mSmoothImages);
-    painter.setTransform(QTransform::fromScale(mScale, mScale));
+    painter.setTransform(QTransform::fromScale(xScale, yScale));
 
-    painter.translate(-mapOffset);
+    painter.translate(-worldBoundingRect.topLeft());
 
     for (const World::MapEntry &mapEntry : maps) {
         MapReader reader;
@@ -253,8 +259,8 @@ int TmxRasterizer::renderWorld(const QString &worldFileName,
             return 1;
         }
 
-        std::unique_ptr<MapRenderer> renderer = createRenderer(*map.get());
-        drawMapLayers(*renderer.get(), painter, *map.get(), mapEntry.rect.topLeft());
+        std::unique_ptr<MapRenderer> renderer = createRenderer(*map);
+        drawMapLayers(*renderer, painter, *map, mapEntry.rect.topLeft());
     }
 
     return saveImage(imageFileName, image);
