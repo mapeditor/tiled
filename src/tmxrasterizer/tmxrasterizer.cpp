@@ -70,9 +70,9 @@ std::unique_ptr<MapRenderer> TmxRasterizer::createRenderer(Map &map) const
         return std::unique_ptr<MapRenderer>(new OrthogonalRenderer(&map));
     }
 }
-void TmxRasterizer::drawMapLayers(MapRenderer& renderer,
-                                  QPainter& painter,
-                                  Map& map,
+void TmxRasterizer::drawMapLayers(MapRenderer &renderer,
+                                  QPainter &painter,
+                                  Map &map,
                                   QPoint mapOffset) const
 {
     // Perform a similar rendering than found in exportasimagedialog.cpp
