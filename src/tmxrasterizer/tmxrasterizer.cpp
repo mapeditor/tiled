@@ -46,17 +46,7 @@
 
 using namespace Tiled;
 
-TmxRasterizer::TmxRasterizer():
-    mScale(1.0),
-    mTileSize(0),
-    mSize(0),
-    mUseAntiAliasing(false),
-    mSmoothImages(true),
-    mIgnoreVisibility(false)
-{
-}
-
-std::unique_ptr<MapRenderer> TmxRasterizer::createRenderer(Map &map) const
+static std::unique_ptr<MapRenderer> createRenderer(Map &map)
 {
     switch (map.orientation()) {
     case Map::Isometric:
@@ -70,6 +60,17 @@ std::unique_ptr<MapRenderer> TmxRasterizer::createRenderer(Map &map) const
         return std::unique_ptr<MapRenderer>(new OrthogonalRenderer(&map));
     }
 }
+
+TmxRasterizer::TmxRasterizer():
+    mScale(1.0),
+    mTileSize(0),
+    mSize(0),
+    mUseAntiAliasing(false),
+    mSmoothImages(true),
+    mIgnoreVisibility(false)
+{
+}
+
 void TmxRasterizer::drawMapLayers(MapRenderer &renderer,
                                   QPainter &painter,
                                   Map &map,

@@ -73,7 +73,6 @@ private:
     bool mIgnoreVisibility;
     QStringList mLayersToHide;
 
-    std::unique_ptr<MapRenderer> createRenderer(Map& map) const;
     void drawMapLayers(MapRenderer &renderer, QPainter &painter, Map &map, QPoint mapOffset = QPoint(0, 0)) const;
     int renderMap(const QString &mapFileName, const QString &imageFileName);
     int renderWorld(const QString &worldFileName, const QString &imageFileName);
