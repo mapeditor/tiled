@@ -51,7 +51,7 @@ public:
     int size() const { return mSize; }
     bool useAntiAliasing() const { return mUseAntiAliasing; }
     bool smoothImages() const { return mSmoothImages; }
-    bool IgnoreVisibility() const { return mIgnoreVisibility; }
+    bool ignoreVisibility() const { return mIgnoreVisibility; }
 
     void setScale(qreal scale) { mScale = scale; }
     void setTileSize(int tileSize) { mTileSize = tileSize; }
@@ -74,9 +74,9 @@ private:
     QStringList mLayersToHide;
 
     std::unique_ptr<MapRenderer> createRenderer(Map& map) const;
-    void drawMapLayers(MapRenderer& renderer, QPainter& painter, Map& map, QPoint mapOffset = QPoint(0,0)) const;
+    void drawMapLayers(MapRenderer &renderer, QPainter &painter, Map &map, QPoint mapOffset = QPoint(0, 0)) const;
     int renderMap(const QString &mapFileName, const QString &imageFileName);
     int renderWorld(const QString &worldFileName, const QString &imageFileName);
-    int saveImage(const QString& imageFileName, const QImage& image) const;
+    int saveImage(const QString &imageFileName, const QImage &image) const;
     bool shouldDrawLayer(const Layer *layer) const;
 };

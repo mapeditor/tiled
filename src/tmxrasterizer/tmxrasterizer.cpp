@@ -140,12 +140,12 @@ int TmxRasterizer::renderMap(const QString &mapFileName,
     qreal xScale, yScale;
 
     if (mSize > 0) {
-        xScale = (qreal) mSize / mapSize.width();
-        yScale = (qreal) mSize / mapSize.height();
+        xScale = static_cast<qreal>(mSize) / mapSize.width();
+        yScale = static_cast<qreal>(mSize) / mapSize.height();
         xScale = yScale = qMin(1.0, qMin(xScale, yScale));
     } else if (mTileSize > 0) {
-        xScale = (qreal) mTileSize / map->tileWidth();
-        yScale = (qreal) mTileSize / map->tileHeight();
+        xScale = static_cast<qreal>(mTileSize) / map->tileWidth();
+        yScale = static_cast<qreal>(mTileSize) / map->tileHeight();
     } else {
         xScale = yScale = mScale;
     }
@@ -174,8 +174,8 @@ int TmxRasterizer::renderMap(const QString &mapFileName,
 }
 
 
-int TmxRasterizer::saveImage(const QString& imageFileName,
-                             const QImage& image) const
+int TmxRasterizer::saveImage(const QString &imageFileName,
+                             const QImage &image) const
 {
     QImageWriter imageWriter(imageFileName);
 
@@ -227,15 +227,16 @@ int TmxRasterizer::renderWorld(const QString &worldFileName,
 
         worldBoundingRect = worldBoundingRect.united(mapBoundingRect);
     }
-    qDebug() << worldBoundingRect; //NO_PROD
+
     QSize worldSize = worldBoundingRect.size();
     qreal xScale, yScale;
     if (mSize > 0) {
-        xScale = (qreal) mSize / worldSize.width();
-        yScale = (qreal) mSize / worldSize.height();
+        xScale = static_cast<qreal>(mSize) / worldSize.width();
+        yScale = static_cast<qreal>(mSize) / worldSize.height();
         xScale = yScale = qMin(1.0, qMin(xScale, yScale));
-    } else
+    } else {
         xScale = yScale = mScale;
+    }
 
     worldSize.rwidth() *= xScale;
     worldSize.rheight() *= yScale;
