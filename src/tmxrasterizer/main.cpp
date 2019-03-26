@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
     app.setApplicationVersion(QLatin1String("1.0"));
 
     QCommandLineParser parser;
-    parser.setApplicationDescription(QCoreApplication::translate("main", "Renders a Tiled map (TMX format) to an image."));
+    parser.setApplicationDescription(QCoreApplication::translate("main", "Renders a Tiled map (TMX format) or a World map (WORLD format) to an image."));
     parser.addHelpOption();
     parser.addVersionOption();
     parser.addOptions({
