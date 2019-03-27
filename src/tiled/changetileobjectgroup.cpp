@@ -43,7 +43,7 @@ ChangeTileObjectGroup::ChangeTileObjectGroup(TilesetDocument *tilesetDocument,
 
 void ChangeTileObjectGroup::swap()
 {
-    mObjectGroup.reset(mTile->swapObjectGroup(mObjectGroup.release()));
+    mTile->swapObjectGroup(mObjectGroup);
     emit mTilesetDocument->tileObjectGroupChanged(mTile);
 }
 

@@ -414,10 +414,10 @@ void MapEditor::setCurrentDocument(Document *document)
         }
 
         connect(mCurrentMapDocument, &MapDocument::currentObjectChanged,
-                this, [this, mapDocument](){ mPropertiesDock->setDocument(mapDocument); });
+                this, [this, mapDocument] { mPropertiesDock->setDocument(mapDocument); });
 
         connect(mapView, &MapView::focused,
-                this, [this, mapDocument](){ mPropertiesDock->setDocument(mapDocument); });
+                this, [this, mapDocument] { mPropertiesDock->setDocument(mapDocument); });
 
         mReversingProxyModel->setSourceModel(mapDocument->layerModel());
     } else {

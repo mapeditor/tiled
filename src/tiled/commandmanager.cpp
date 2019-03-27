@@ -105,7 +105,7 @@ void CommandManager::updateActions()
         QAction *mAction = new QAction(command.name, this);
         mAction->setShortcut(command.shortcut);
 
-        connect(mAction, &QAction::triggered, [this,i]() { mModel->execute(i); });
+        connect(mAction, &QAction::triggered, [this,i] { mModel->execute(i); });
 
         mActions.append(mAction);
     }

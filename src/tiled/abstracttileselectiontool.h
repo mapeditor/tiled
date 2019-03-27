@@ -57,9 +57,9 @@ protected:
         Intersect
     };
 
-    SelectionMode selectionMode() { return mSelectionMode; }
+    SelectionMode selectionMode() const { return mSelectionMode; }
 
-    QRegion selectedRegion() { return mSelectedRegion; }
+    QRegion selectedRegion() const { return mSelectedRegion; }
     void setSelectedRegion(QRegion region) { mSelectedRegion = region; }
 
     void updateBrushVisibility() override;

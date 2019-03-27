@@ -181,7 +181,7 @@ void ToolManager::createShortcuts(QWidget *parent)
             // Make sure the shortcut is only enabled when the action is,
             // because different tools may use the same shortcut.
             shortcut->setEnabled(action->isEnabled());
-            connect(action, &QAction::changed, shortcut, [=]() {
+            connect(action, &QAction::changed, shortcut, [=] {
                 shortcut->setKey(action->shortcut());
                 shortcut->setEnabled(action->isEnabled());
             });

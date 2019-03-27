@@ -62,13 +62,13 @@ StampBrush::StampBrush(QObject *parent)
     connect(mStampActions->wangFill(), &QAction::toggled, this, &StampBrush::wangFillChanged);
 
     connect(mStampActions->flipHorizontal(), &QAction::triggered,
-            [this]() { emit stampChanged(mStamp.flipped(FlipHorizontally)); });
+            [this] { emit stampChanged(mStamp.flipped(FlipHorizontally)); });
     connect(mStampActions->flipVertical(), &QAction::triggered,
-            [this]() { emit stampChanged(mStamp.flipped(FlipVertically)); });
+            [this] { emit stampChanged(mStamp.flipped(FlipVertically)); });
     connect(mStampActions->rotateLeft(), &QAction::triggered,
-            [this]() { emit stampChanged(mStamp.rotated(RotateLeft)); });
+            [this] { emit stampChanged(mStamp.rotated(RotateLeft)); });
     connect(mStampActions->rotateRight(), &QAction::triggered,
-            [this]() { emit stampChanged(mStamp.rotated(RotateRight)); });
+            [this] { emit stampChanged(mStamp.rotated(RotateRight)); });
 }
 
 StampBrush::~StampBrush()

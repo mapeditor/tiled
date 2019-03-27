@@ -66,7 +66,7 @@ QList<MapObject *> AddRemoveMapObjects::objects(const QVector<Entry> &entries)
     QList<MapObject*> objects;
     objects.reserve(entries.size());
 
-    for (const Entry &entry : qAsConst(entries))
+    for (const Entry &entry : entries)
         objects.append(entry.mapObject);
 
     return objects;

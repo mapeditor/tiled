@@ -253,7 +253,7 @@ TilesetEditor::TilesetEditor(QObject *parent)
     connect(this, &TilesetEditor::currentTileChanged, mTemplatesDock, &TemplatesDock::setTile);
 
     connect(mTileCollisionDock, &TileCollisionDock::dummyMapDocumentChanged,
-            this, [this]() {
+            this, [this] {
         mPropertiesDock->setDocument(mCurrentTilesetDocument);
     });
     connect(mTileCollisionDock, &TileCollisionDock::hasSelectedObjectsChanged,

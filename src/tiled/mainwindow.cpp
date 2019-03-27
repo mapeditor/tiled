@@ -648,7 +648,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     connect(preferences, &Preferences::recentFilesChanged, this, &MainWindow::updateRecentFilesMenu);
 
-    QTimer::singleShot(500, this, [this,preferences]() {
+    QTimer::singleShot(500, this, [this,preferences] {
         if (preferences->shouldShowPatreonDialog())
             becomePatron();
     });
