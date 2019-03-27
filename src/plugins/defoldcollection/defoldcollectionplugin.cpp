@@ -38,83 +38,83 @@
 
 namespace DefoldCollection {
 
-typedef QList<const Tiled::Cell*> CellsList;
-
 static const char cellTemplate[] =
-"  cell {\n\
-    x: {{x}}\n\
-    y: {{y}}\n\
-    tile: {{tile}}\n\
-    h_flip: {{h_flip}}\n\
-    v_flip: {{v_flip}}\n\
-  }\n";
+R"(  cell {
+    x: {{x}}
+    y: {{y}}
+    tile: {{tile}}
+    h_flip: {{h_flip}}
+    v_flip: {{v_flip}}
+  }
+)";
 
 static const char layerTemplate[] =
-"layers {\n\
-  id: \"{{id}}\"\n\
-  z: {{z}}\n\
-  is_visible: {{is_visible}}\n\
-{{cells}}\
-}\n";
+R"(layers {
+  id: "{{id}}"
+  z: {{z}}
+  is_visible: {{is_visible}}
+{{cells}}}
+)";
 
 static const char tileMapTemplate[] =
-"tile_set: \"{{tile_set}}\"\n\
-{{layers}}\n\
-material: \"{{material}}\"\n\
-blend_mode: {{blend_mode}}\n";
+R"(tile_set: "{{tile_set}}"
+{{layers}}
+material: "{{material}}"
+blend_mode: {{blend_mode}}
+)";
 
 static const char collectionTemplate[] =
-"name: \"default\"\n\
-scale_along_z: 0\n\
-{{embedded-instances}}\n\
-\n";
+R"(name: "default"
+scale_along_z: 0
+{{embedded-instances}}
+
+)";
 
 static const char componentTemplate[] =
-"  \"components {\\n\"\n\
-  \"  id: \\\"{{tilemap_name}}\\\"\\n\"\n\
-  \"  component: \\\"{{tilemap_rel_path}}\\\"\\n\"\n\
-  \"  position {\\n\"\n\
-  \"    x: 0.0\\n\"\n\
-  \"    y: 0.0\\n\"\n\
-  \"    z: 0.0\\n\"\n\
-  \"  }\\n\"\n\
-  \"  rotation {\\n\"\n\
-  \"    x: 0.0\\n\"\n\
-  \"    y: 0.0\\n\"\n\
-  \"    z: 0.0\\n\"\n\
-  \"    w: 1.0\\n\"\n\
-  \"  }\\n\"\n\
-  \"}\\n\"\n\
-";
+R"(  "components {\n"
+  "  id: \"{{tilemap_name}}\"\n"
+  "  component: \"{{tilemap_rel_path}}\"\n"
+  "  position {\n"
+  "    x: 0.0\n"
+  "    y: 0.0\n"
+  "    z: 0.0\n"
+  "  }\n"
+  "  rotation {\n"
+  "    x: 0.0\n"
+  "    y: 0.0\n"
+  "    z: 0.0\n"
+  "    w: 1.0\n"
+  "  }\n"
+  "}\n"
+)";
 
 static const char childTemplate[] =
-"  children: \"{{child-name}}\"\n\
-";
+R"(  children: "{{child-name}}"
+)";
 
 static const char emdeddedInstanceTemplate[] =
-"embedded_instances {\n\
-  id: \"{{instance-name}}\"\n\
-{{children}}\
-  data: {{components}}\n\
-  \"\"\n\
-  position {\n\
-    x: {{pos-x}}\n\
-    y: {{pos-y}}\n\
-    z: 0.0\n\
-  }\n\
-  rotation {\n\
-    x: 0.0\n\
-    y: 0.0\n\
-    z: 0.0\n\
-    w: 1.0\n\
-  }\n\
-  scale3 {\n\
-    x: 1.0\n\
-    y: 1.0\n\
-    z: 1.0\n\
-  }\n\
-}\n\
-";
+R"(embedded_instances {
+  id: "{{instance-name}}"
+{{children}}  data: {{components}}
+  ""
+  position {
+    x: {{pos-x}}
+    y: {{pos-y}}
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+)";
 
 static QString replaceTags(QString context, const QVariantHash &map)
 {
@@ -150,8 +150,8 @@ QString DefoldCollectionPlugin::errorString() const
  * Returns a new filepath relative to the root of the Defold project if we're in one.
  * Determines the root of the project by looking for a file called "game.project".
  * If no such file is found by going up the hierarchy, return filename from the \a filePath.
-*/
-static QString tilesetRelativePath(const QString & filePath)
+ */
+static QString tilesetRelativePath(const QString &filePath)
 {
     QString gameproject = "game.project";
     QFileInfo fi(filePath);
@@ -170,26 +170,22 @@ static QString tilesetRelativePath(const QString & filePath)
 
 /*
  * Returns z-Index for a layer, depending on its order in the map
-*/
+ */
 static float zIndexForLayer(const Tiled::Map &map, const Tiled::Layer &inLayer, bool isTopLayer)
 {
     if (isTopLayer) {
         int topLayerOrder = 0;
-        for(auto &layer : map.layers()) {
+        for (auto layer : map.layers()) {
             if (layer->layerType() != Tiled::Layer::GroupLayerType && layer->layerType() != Tiled::Layer::TileLayerType)
                 continue;
             if (&inLayer == layer)
                 return qBound(0, topLayerOrder, 9999) * 0.0001f;
             topLayerOrder++;
         }
-    }
-    else {
-        if (!inLayer.parentLayer())
-            return 0;
-
+    } else if (inLayer.parentLayer()) {
         float zIndex = zIndexForLayer(map, *inLayer.parentLayer(), true);
         int subLayerOrder = 0;
-        for (auto &subLayer : inLayer.parentLayer()->layers()) {
+        for (auto subLayer : inLayer.parentLayer()->layers()) {
             if (subLayer == &inLayer) {
                 zIndex += qBound(0, subLayerOrder, 9999) * 0.00000001f;
                 return zIndex;
@@ -202,15 +198,13 @@ static float zIndexForLayer(const Tiled::Map &map, const Tiled::Layer &inLayer, 
 
 /*
  * Writes a .collection file, as well as multiple .tilemap files required by this collection
-*/
+ */
 bool DefoldCollectionPlugin::write(const Tiled::Map *map, const QString &collectionFile)
 {
     QFileInfo fi(collectionFile);
     QString outputFilePath = fi.filePath();
     QString outputFileName = fi.fileName();
-
-    QString mapName = outputFileName;
-    mapName.replace(".collection", "");
+    QString mapName = fi.completeBaseName();
 
     QVariantHash collectionHash;
     QString embeddedInstances;
@@ -219,8 +213,8 @@ bool DefoldCollectionPlugin::write(const Tiled::Map *map, const QString &collect
     mainEmbeddedInstanceHash["instance-name"] = "tilemaps";
     mainEmbeddedInstanceHash["pos-x"] = map->property(QLatin1String("x-offset")).toInt();
     mainEmbeddedInstanceHash["pos-y"] = map->property(QLatin1String("y-offset")).toInt();
-    QString topLevelChildren("");
-    QString topLevelComponents("");
+    QString topLevelChildren;
+    QString topLevelComponents;
 
     QString tilesetFileDir = outputFilePath;
     tilesetFileDir.chop(outputFileName.length());
@@ -241,8 +235,7 @@ bool DefoldCollectionPlugin::write(const Tiled::Map *map, const QString &collect
 
         int componentCells = 0;
         QString layers;
-        Tiled::LayerIterator it(map, Tiled::Layer::TileLayerType);
-        for (auto &layer : map->layers()) {
+        for (auto layer : map->layers()) {
             if (layer->layerType() != Tiled::Layer::TileLayerType)
                 continue;
             auto tileLayer = static_cast<Tiled::TileLayer*>(layer);
@@ -253,14 +246,14 @@ bool DefoldCollectionPlugin::write(const Tiled::Map *map, const QString &collect
             layerHash["is_visible"] = tileLayer->isVisible() ? 1 : 0;
             QString cells;
 
-            int cellsFound = 0;
             for (int x = 0; x < tileLayer->width(); ++x) {
                 for (int y = 0; y < tileLayer->height(); ++y) {
                     const Tiled::Cell &cell = tileLayer->cellAt(x, y);
-                    if (cell.isEmpty() || cell.tileset() != tileset) // skip cell if it doesn't belong to current tileset
+                    if (cell.isEmpty())
+                        continue;
+                    if (cell.tileset() != tileset) // skip cell if it doesn't belong to current tileset
                         continue;
 
-                    cellsFound++;
                     tilemapHasCells = true;
                     componentCells++;
                     QVariantHash cellHash;
@@ -274,15 +267,14 @@ bool DefoldCollectionPlugin::write(const Tiled::Map *map, const QString &collect
                     // Create a component for this embedded instance only when the first cell of this component is found.
                     // If 0 cells are found, this component is not necessary.
                     // If more than 1 cells are found, recreating it would be redundant.
-                    if (componentCells == 1) {
+                    if (componentCells == 1)
                         topLevelComponents.append(replaceTags(QLatin1String(componentTemplate), componentHash));
-                    }
                 }
             }
             layerHash["cells"] = cells;
 
             // only add this layer to the .tilemap if it has any cells
-            if (cellsFound)
+            if (!cells.isEmpty())
                 layers.append(replaceTags(QLatin1String(layerTemplate), layerHash));
         }
         // make a check that this tilemap has cells at all, or no .tilesource file is necessary
@@ -316,21 +308,22 @@ bool DefoldCollectionPlugin::write(const Tiled::Map *map, const QString &collect
         }
     }
 
-    // foreach Group Layer, create a "GameObject" parented to the "tilemaps" GO
+    // For each Group Layer, create a "GameObject" parented to the "tilemaps" GO
     // and create tilemaps for layers (as components of this GO)
-    for (auto &layer : map->layers()) {
+    for (auto layer : map->layers()) {
         if (layer->layerType() != Tiled::Layer::GroupLayerType)
             continue;
+        auto groupLayer = static_cast<Tiled::GroupLayer*>(layer);
 
         QVariantHash childHash;
         childHash["child-name"] = layer->name();
         topLevelChildren.append(replaceTags(QLatin1String(childTemplate), childHash));
 
-        QVariantHash emdedded_instance_h;
-        emdedded_instance_h["instance-name"] = layer->name();
-        emdedded_instance_h["pos-x"] = 0;
-        emdedded_instance_h["pos-y"] = 0;
-        emdedded_instance_h["children"] = "";
+        QVariantHash emdeddedInstanceHash;
+        emdeddedInstanceHash["instance-name"] = layer->name();
+        emdeddedInstanceHash["pos-x"] = 0;
+        emdeddedInstanceHash["pos-y"] = 0;
+        emdeddedInstanceHash["children"] = "";
 
         QString components;
 
@@ -345,9 +338,9 @@ bool DefoldCollectionPlugin::write(const Tiled::Map *map, const QString &collect
             QString layers;
 
             int componentCells = 0;
-            for (auto &subLayer : layer->asGroupLayer()->layers()) {
+            for (auto subLayer : groupLayer->layers()) {
                 auto tileLayer = subLayer->asTileLayer();
-                if (tileLayer == nullptr)
+                if (!tileLayer)
                     continue;
 
                 QVariantHash layerHash;
@@ -357,7 +350,6 @@ bool DefoldCollectionPlugin::write(const Tiled::Map *map, const QString &collect
                 layerHash["is_visible"] = layer->isVisible() ? 1 : 0;
                 QString cells;
 
-                int cellsOnThisLayer = 0;
                 for (int x = 0; x < tileLayer->width(); ++x) {
                     for (int y = 0; y < tileLayer->height(); ++y) {
                         const Tiled::Cell &cell = tileLayer->cellAt(x, y);
@@ -372,21 +364,20 @@ bool DefoldCollectionPlugin::write(const Tiled::Map *map, const QString &collect
                         cellHash["v_flip"] = cell.flippedVertically() ? 1 : 0;
                         cells.append(replaceTags(QLatin1String(cellTemplate), cellHash));
                         cellsOnThisTilemap++;
-                        cellsOnThisLayer++;
                         componentCells++;
 
                         // Create a component for this embedded instance only when the first cell of this component is found.
                         // If 0 cells are found, this component is not necessary.
                         // If more than 1 cells are found, recreating it would be redundant.
                         if (componentCells == 1) {
-                            QVariantHash component_h;
-                            component_h["tilemap_name"] = mapName + "-" + layer->name() + "-" + tileset->name();
-                            component_h["tilemap_rel_path"] = tilesetRelativePath(tilemapFilePath);
-                            components.append(replaceTags(QLatin1String(componentTemplate), component_h));
+                            QVariantHash componentHash;
+                            componentHash["tilemap_name"] = mapName + "-" + layer->name() + "-" + tileset->name();
+                            componentHash["tilemap_rel_path"] = tilesetRelativePath(tilemapFilePath);
+                            components.append(replaceTags(QLatin1String(componentTemplate), componentHash));
                         }
                     }
                 }
-                if (cellsOnThisLayer > 0) {
+                if (!cells.isEmpty()) {
                     layerHash["cells"] = cells;
                     layers.append(replaceTags(QLatin1String(layerTemplate), layerHash));
                 }
@@ -428,8 +419,8 @@ bool DefoldCollectionPlugin::write(const Tiled::Map *map, const QString &collect
                 return false;
             }
         }
-        emdedded_instance_h["components"] = components;
-        embeddedInstances.append(replaceTags(QLatin1String(emdeddedInstanceTemplate), emdedded_instance_h));
+        emdeddedInstanceHash["components"] = components;
+        embeddedInstances.append(replaceTags(QLatin1String(emdeddedInstanceTemplate), emdeddedInstanceHash));
     }
 
     mainEmbeddedInstanceHash["components"] = topLevelComponents;
