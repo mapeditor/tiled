@@ -409,6 +409,8 @@ QtGuiApplication {
         "scriptedaction.h",
         "scriptedmapformat.cpp",
         "scriptedmapformat.h",
+        "scriptedtool.cpp",
+        "scriptedtool.h",
         "scriptmanager.cpp",
         "scriptmanager.h",
         "scriptmodule.cpp",

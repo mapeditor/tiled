@@ -62,9 +62,6 @@ public:
 
     QRectF mapBoundingRect() const;
 
-    void enableSelectedTool();
-    void disableSelectedTool();
-
     void setSelectedTool(AbstractTool *tool);
 
 signals:
@@ -107,7 +104,6 @@ private:
     MapDocument *mMapDocument;
     QHash<MapDocument*, MapItem*> mMapItems;
     AbstractTool *mSelectedTool;
-    AbstractTool *mActiveTool;
     bool mUnderMouse;
     Qt::KeyboardModifiers mCurrentModifiers;
     QPointF mLastMousePos;

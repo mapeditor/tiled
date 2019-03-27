@@ -34,11 +34,21 @@ class TileLayerEdit : public QObject
     Q_OBJECT
 
     Q_PROPERTY(Tiled::EditableTileLayer *target READ target)
+    Q_PROPERTY(bool mergeable READ isMergeable WRITE setMergeable)
 
 public:
     explicit TileLayerEdit(EditableTileLayer *tileLayer,
                            QObject *parent = nullptr);
     ~TileLayerEdit() override;
+
+    /**
+     * Sets whether this edit can be merged with a previous edit.
+     *
+     * Calling apply() automatically set this edit to be mergeable, so that
+     * edits are merged when this object is reused.
+     */
+    void setMergeable(bool mergeable);
+    bool isMergeable() const;
 
     EditableTileLayer *target() const;
 
@@ -49,8 +59,19 @@ public slots:
 private:
     EditableTileLayer *mTargetLayer;
     TileLayer mChanges;
+    bool mMergeable = false;
 };
 
+
+inline void TileLayerEdit::setMergeable(bool mergeable)
+{
+    mMergeable = mergeable;
+}
+
+inline bool TileLayerEdit::isMergeable() const
+{
+    return mMergeable;
+}
 
 inline EditableTileLayer *TileLayerEdit::target() const
 {

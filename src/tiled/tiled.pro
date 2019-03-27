@@ -220,6 +220,7 @@ SOURCES += aboutdialog.cpp \
     rotatemapobject.cpp \
     scriptedaction.cpp \
     scriptedmapformat.cpp \
+    scriptedtool.cpp \
     scriptmanager.cpp \
     scriptmodule.cpp \
     selectionrectangle.cpp \
@@ -440,6 +441,7 @@ HEADERS += aboutdialog.h \
     rotatemapobject.h \
     scriptedaction.h \
     scriptedmapformat.h \
+    scriptedtool.h \
     scriptmanager.h \
     scriptmodule.h \
     selectionrectangle.h \

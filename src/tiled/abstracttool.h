@@ -261,3 +261,4 @@ inline ToolManager *AbstractTool::toolManager() const
 } // namespace Tiled
 
 Q_DECLARE_METATYPE(Tiled::AbstractTool*)
+Q_DECLARE_INTERFACE(Tiled::AbstractTool, "org.mapeditor.AbstractTool")

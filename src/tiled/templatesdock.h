@@ -66,7 +66,6 @@ public slots:
     void bringToFront();
 
 private slots:
-    void setSelectedTool(AbstractTool *tool);
     void setTemplate(ObjectTemplate *objectTemplate);
     void checkTileset();
 

@@ -39,6 +39,7 @@ class LoggingInterface;
 class EditableAsset;
 class ScriptedAction;
 class ScriptedMapFormat;
+class ScriptedTool;
 
 /**
  * Initial point of access to Tiled functionality from JavaScript.
@@ -86,6 +87,7 @@ public:
 
     Q_INVOKABLE Tiled::ScriptedAction *registerAction(const QByteArray &id, QJSValue callback);
     Q_INVOKABLE void registerMapFormat(const QString &shortName, QJSValue mapFormatObject);
+    Q_INVOKABLE Tiled::ScriptedTool *registerTool(const QString &shortName, QJSValue toolObject);
 
     Q_INVOKABLE void extendMenu(const QByteArray &idName, QJSValue items);
 
@@ -122,6 +124,7 @@ private:
     LoggingInterface *mLogger;
     std::map<QByteArray, std::unique_ptr<ScriptedAction>> mRegisteredActions;
     std::map<QString, std::unique_ptr<ScriptedMapFormat>> mRegisteredMapFormats;
+    std::map<QString, std::unique_ptr<ScriptedTool>> mRegisteredTools;
 
     QVector<MenuExtension> mMenuExtensions;
 };
