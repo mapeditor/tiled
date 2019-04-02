@@ -86,6 +86,10 @@ C#/.NET
    library for parsing Tiled map TMX files. This library could be used
    with MonoGame and Windows Runtime Universal apps.
 
+Clojure
+~~~~~~~
+- `tile-soup <https://github.com/oakes/tile-soup>`__: Parses and validates a TMX file into a map. Automatically decodes Base64 and CSV formatted data and coerces numbers when necessary. Works on both the JVM and in browsers via ClojureScript.
+
 D
 ~
 
