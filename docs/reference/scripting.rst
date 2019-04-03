@@ -179,7 +179,7 @@ tiled.registerMapFormat(shortName : string, mapFormat : object) : void
     .. csv-table::
         :widths: 1, 2
 
-        **name** : string, Name of format as shown in the file dialog.
+        **name** : string, Name of the format as shown in the file dialog.
         **extension** : string, The file extension used by the format.
         "**toString** : function(map : :ref:`script-map`, fileName : string) : string", "A function
         that returns the string representation of the given map, when
@@ -219,6 +219,95 @@ tiled.registerMapFormat(shortName : string, mapFormat : object) : void
         }
 
         tiled.registerMapFormat("custom", customMapFormat)
+
+.. _script-registerTool:
+
+tiled.registerTool(shortName : string, tool : object) : object
+    Registers a custom tool that will become available on the Tools tool bar
+    of the Map Editor.
+
+    If a tool is already registered with the same ``shortName`` the existing
+    tool is replaced.
+
+    The ``tool`` object has the following properties:
+
+    .. csv-table::
+        :widths: 1, 2
+
+        **name** : string, Name of the tool as shown on the tool bar.
+        **map** : :ref:`script-map`, Currently active tile map.
+        **selectedTile** : :ref:`script-tile`, The last clicked tile for the active map.
+        **tilePosition** : point, Mouse cursor position in tile coordinates.
+        **statusInfo** : string, Text shown in the status bar while the tool is active.
+        **enabled** : bool, Whether this tool is enabled.
+        "**activated** : function() : void", Called when the tool was activated.
+        "**deactivated** : function() : void", Called when the tool was deactivated.
+        "**keyPressed** : function(key, modifiers) : void", Called when a key was pressed while the tool was active.
+        "**mouseEntered** : function() : void", Called when the mouse entered the map view.
+        "**mouseLeft** : function() : void", Called when the mouse left the map view.
+        "**mouseMoved** : function(x, y, modifiers) : void", Called when the mouse position in the map scene changed.
+        "**mousePressed** : function(button, x, y, modifiers) : void", Called when a mouse button was pressed.
+        "**mouseReleased** : function(button, x, y, modifers) : void", Called when a mouse button was released.
+        "**mouseDoubleClicked** : function(button, x, y, modifiers) : void", Called when a mouse button was double-clicked.
+        "**modifiersChanged** : function(modifiers) : void", Called when the active modifier keys changed.
+        "**languageChanged** : function() : void", Called when the language was changed.
+        "**mapChanged** : function(oldMap : :ref:`script-map`, newMap : :ref:`script-map`) : void", Called when the active map was changed.
+        "**tilePositionChanged** : function() : void", Called when the hovered tile position changed.
+        "**updateStatusInfo** : function() : void", Called when the hovered tile position changed. Used to override the default updating of the status bar text.
+        "**updateEnabledState** : function() : void", Called when the map or the current layer changed.
+
+    Here is an example tool that places a rectangle each time the mouse has
+    moved by 32 pixels:
+
+    .. code:: javascript
+
+        var tool = tiled.registerTool("PlaceRectangles", {
+            name: "Place Rectangles",
+
+            mouseMoved: function(x, y, modifiers) {
+                if (!this.pressed)
+                    return
+
+                var dx = Math.abs(this.x - x)
+                var dy = Math.abs(this.y - y)
+
+                this.distance += Math.sqrt(dx*dx + dy*dy)
+                this.x = x
+                this.y = y
+
+                if (this.distance > 32) {
+                    var objectLayer = this.map.currentLayer
+
+                    if (objectLayer && objectLayer.isObjectLayer) {
+                        var object = new MapObject(++this.counter)
+                        object.x = Math.min(this.lastX, x)
+                        object.y = Math.min(this.lastY, y)
+                        object.width = Math.abs(this.lastX - x)
+                        object.height = Math.abs(this.lastY - y)
+                        objectLayer.addObject(object)
+                    }
+
+                    this.distance = 0
+                    this.lastX = x
+                    this.lastY = y
+                }
+            },
+
+            mousePressed: function(button, x, y, modifiers) {
+                this.pressed = true
+                this.x = x
+                this.y = y
+                this.distance = 0
+                this.counter = 0
+                this.lastX = x
+                this.lastY = y
+            },
+
+            mouseReleased: function(button, x, y, modifiers) {
+                this.pressed = false
+            },
+        })
+
 
 .. _script-extendMenu:
 
@@ -727,6 +816,7 @@ Properties
     :widths: 1, 2
 
     **target** : :ref:`script-tilelayer` |ro|, The target layer of this edit object.
+    **mergeable** : bool, "Whether applied edits are mergeable with previous edits. Starts out as ``false`` and is automatically set to ``true`` by :ref:`apply() <script-tilelayeredit-apply>`."
 
 Functions
 ~~~~~~~~~
