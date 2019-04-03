@@ -38,6 +38,8 @@ class EditableSelectedArea : public QObject
 public:
     explicit EditableSelectedArea(MapDocument *mapDocument,
                                   QObject *parent = nullptr);
+    Q_PROPERTY(QRect boundingRect READ boundingRect)
+    Q_INVOKABLE Tiled::RegionValueType get();
 
 public slots:
     void set(const QRect &rect);
@@ -55,6 +57,8 @@ public slots:
 
 private:
     void set(const QRegion &region);
+    QRect boundingRect();
+
 
     MapDocument * const mMapDocument;
 };
@@ -78,6 +82,11 @@ inline void EditableSelectedArea::subtract(const QRectF &rect)
 inline void EditableSelectedArea::intersect(const QRectF &rect)
 {
     intersect(rect.toRect());
+}
+
+inline QRect EditableSelectedArea::boundingRect()
+{
+    return get().boundingRect();
 }
 
 } // namespace Tiled

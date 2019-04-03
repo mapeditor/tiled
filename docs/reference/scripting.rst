@@ -838,28 +838,34 @@ SelectedArea
 Functions
 ~~~~~~~~~
 
+SelectedArea.boundingRect() : :ref:`script-rect`
+    Returns a ectangle which surrounds the selected area.
+
+SelectedArea.get() : :ref:`script-region`
+    Returns the selected region.
+
 SelectedArea.set(rect : :ref:`script-rect`) : void
     Sets the selected area to the given rectangle.
 
-SelectedArea.set(region : region) : void
+SelectedArea.set(region : :ref:`script-region`) : void
     Sets the selected area to the given region.
 
 SelectedArea.add(rect : :ref:`script-rect`) : void
     Adds the given rectangle to the selected area.
 
-SelectedArea.add(region : region) : void
+SelectedArea.add(region : :ref:`script-region`) : void
     Adds the given region to the selected area.
 
 SelectedArea.subtract(rect : :ref:`script-rect`) : void
     Subtracts the given rectangle from the selected area.
 
-SelectedArea.subtract(region : region) : void
+SelectedArea.subtract(region : :ref:`script-region`) : void
     Subtracts the given region from the selected area.
 
 SelectedArea.intersect(rect : :ref:`script-rect`) : void
     Sets the selected area to the intersection of the current selected area and the given rectangle.
 
-SelectedArea.intersect(region : region) : void
+SelectedArea.intersect(region : :ref:`script-region`) : void
     Sets the selected area to the intersection of the current selected area and the given region.
 
 
@@ -925,5 +931,17 @@ rect
     **y** : int, Y coordinate of the rectangle.
     **width** : int, Width of the rectangle.
     **height** : int, Height of the rectangle.
+
+.. _script-region:
+
+region
+~~~~~~
+
+**Properties**:
+
+.. csv-table::
+    :widths: 1, 2
+
+    **boundingRect** : :ref:`script-rect` |ro|, Rectangle which surrounds the selected area.
 
 
