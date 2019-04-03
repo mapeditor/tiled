@@ -24,6 +24,7 @@
 #include "editablemap.h"
 #include "editablemapobject.h"
 #include "editableobjectgroup.h"
+#include "editableselectedarea.h"
 #include "editabletile.h"
 #include "editabletilelayer.h"
 #include "editabletileset.h"
@@ -77,6 +78,7 @@ ScriptManager::ScriptManager(QObject *parent)
     qRegisterMetaType<EditableMap*>();
     qRegisterMetaType<EditableMapObject*>();
     qRegisterMetaType<EditableObjectGroup*>();
+    qRegisterMetaType<EditableSelectedArea*>();
     qRegisterMetaType<EditableTile*>();
     qRegisterMetaType<EditableTileLayer*>();
     qRegisterMetaType<EditableTileset*>();
