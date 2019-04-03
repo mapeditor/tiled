@@ -838,25 +838,25 @@ SelectedArea
 Functions
 ~~~~~~~~~
 
-SelectedArea.set(rect : rect) : void
+SelectedArea.set(rect : :ref:`script-rect`) : void
     Sets the selected area to the given rectangle.
 
 SelectedArea.set(region : region) : void
     Sets the selected area to the given region.
 
-SelectedArea.add(rect : rect) : void
+SelectedArea.add(rect : :ref:`script-rect`) : void
     Adds the given rectangle to the selected area.
 
 SelectedArea.add(region : region) : void
     Adds the given region to the selected area.
 
-SelectedArea.subtract(rect : rect) : void
+SelectedArea.subtract(rect : :ref:`script-rect`) : void
     Subtracts the given rectangle from the selected area.
 
 SelectedArea.subtract(region : region) : void
     Subtracts the given region from the selected area.
 
-SelectedArea.intersect(rect : rect) : void
+SelectedArea.intersect(rect : :ref:`script-rect`) : void
     Sets the selected area to the intersection of the current selected area and the given rectangle.
 
 SelectedArea.intersect(region : region) : void
@@ -898,3 +898,32 @@ Action.trigger() : void
 
 Action.toggle() : void
     Changes the checked state to its opposite state.
+
+
+.. _script-basic-types:
+
+Basic Types
+^^^^^^^^^^^
+
+Some types are provided by the Qt Scripting Engine. In the following the most important
+ones are documented.
+
+
+.. _script-rect:
+
+rect
+~~~~
+
+``Qt.rect(x, y, width, height)`` can be used to create a rectangle.
+
+**Properties**:
+
+.. csv-table::
+    :widths: 1, 2
+
+    **x** : int, X coordinate of the rectangle.
+    **y** : int, Y coordinate of the rectangle.
+    **width** : int, Width of the rectangle.
+    **height** : int, Height of the rectangle.
+
+
