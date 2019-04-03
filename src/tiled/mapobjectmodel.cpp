@@ -36,11 +36,18 @@
 
 using namespace Tiled;
 
-MapObjectModel::MapObjectModel(QObject *parent):
-    QAbstractItemModel(parent),
-    mMapDocument(nullptr),
-    mMap(nullptr),
-    mObjectGroupIcon(QLatin1String(":/images/16x16/layer-object.png"))
+MapObjectModel::MapObjectModel(QObject *parent)
+    : QAbstractItemModel(parent)
+    , mMapDocument(nullptr)
+    , mMap(nullptr)
+    , mObjectGroupIcon(QLatin1String(":/images/16x16/layer-object.png"))
+    , mRectangleIcon(QLatin1String(":images/24x24/object-rectangle.png"))
+    , mImageIcon(QLatin1String(":images/24x24/object-image.png"))
+    , mPolygonIcon(QLatin1String(":images/24x24/object-polygon.png"))
+    , mPolylineIcon(QLatin1String(":images/24x24/object-polyline.png"))
+    , mEllipseIcon(QLatin1String(":images/24x24/object-ellipse.png"))
+    , mTextIcon(QLatin1String(":images/24x24/object-text.png"))
+    , mPointIcon(QLatin1String(":images/24x24/object-point.png"))
 {
     mObjectGroupIcon.addFile(QLatin1String(":images/32x32/layer-object.png"));
 }
@@ -130,6 +137,24 @@ QVariant MapObjectModel::data(const QModelIndex &index, int role) const
                         + QLatin1String(", ")
                         + QString::number(mapObject->y())
                         + QLatin1Char(')');
+            }
+            break;
+        case Qt::DecorationRole:
+            if (index.column() == Name) {
+                switch (mapObject->shape()) {
+                case MapObject::Rectangle:
+                    return mapObject->isTileObject() ? mImageIcon : mRectangleIcon;
+                case MapObject::Polygon:
+                    return mPolygonIcon;
+                case MapObject::Polyline:
+                    return mPolylineIcon;
+                case MapObject::Ellipse:
+                    return mEllipseIcon;
+                case MapObject::Text:
+                    return mTextIcon;
+                case MapObject::Point:
+                    return mPointIcon;
+                }
             }
             break;
         case Qt::ForegroundRole:

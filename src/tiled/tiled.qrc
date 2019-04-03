@@ -146,5 +146,12 @@
         <file>images/22x22/ellipse-fill.png</file>
         <file>images/16x16/mail-read-symbolic.png</file>
         <file>images/16x16/mail-unread-symbolic.png</file>
+        <file>images/24x24/object-image.png</file>
+        <file>images/24x24/object-point.png</file>
+        <file>images/24x24/object-polygon.png</file>
+        <file>images/24x24/object-polyline.png</file>
+        <file>images/24x24/object-rectangle.png</file>
+        <file>images/24x24/object-text.png</file>
+        <file>images/24x24/object-ellipse.png</file>
     </qresource>
 </RCC>
