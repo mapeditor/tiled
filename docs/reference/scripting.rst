@@ -237,7 +237,7 @@ tiled.registerTool(shortName : string, tool : object) : object
         **name** : string, Name of the tool as shown on the tool bar.
         **map** : :ref:`script-map`, Currently active tile map.
         **selectedTile** : :ref:`script-tile`, The last clicked tile for the active map.
-        **tilePosition** : point, Mouse cursor position in tile coordinates.
+        **tilePosition** : :ref:`script-point`, Mouse cursor position in tile coordinates.
         **statusInfo** : string, Text shown in the status bar while the tool is active.
         **enabled** : bool, Whether this tool is enabled.
         "**activated** : function() : void", Called when the tool was activated.
@@ -536,7 +536,7 @@ TileMap.addLayer(layer : :ref:`script-layer`) : void
 
 .. _script-map-resize:
 
-TileMap.resize(size : size [, offset : point [, removeObjects : bool = false]]) : void
+TileMap.resize(size : size [, offset : :ref:`script-point` [, removeObjects : bool = false]]) : void
     Resizes the map to the given size, optionally applying an offset (in tiles)
 
 .. _script-layer:
@@ -556,7 +556,7 @@ Properties
     **opacity** : number, "Opacity of the layer, from 0 (fully transparent) to 1 (fully opaque)."
     **visible** : bool, Whether the layer is visible (affects child layer visibility for group layers).
     **locked** : bool, Whether the layer is locked (affects whether child layers are locked for group layers).
-    **offset** : point, Offset in pixels that is applied when this layer is rendered.
+    **offset** : :ref:`script-point`, Offset in pixels that is applied when this layer is rendered.
     **map** : :ref:`script-map`, Map that this layer is part of (or ``null`` in case of a standalone layer).
     **selected** : bool, Whether the layer is selected.
     **isTileLayer** : bool |ro|, Whether this layer is a :ref:`script-tilelayer`.
@@ -726,7 +726,7 @@ Properties
     **type** : string, Type of the object.
     **x** : number, X coordinate of the object in pixels.
     **y** : number, Y coordinate of the object in pixels.
-    **pos** : point, Position of the object in pixels (has ``x`` and ``y`` members).
+    **pos** : :ref:`script-point`, Position of the object in pixels.
     **width** : number, Width of the object in pixels.
     **height** : number, Height of the object in pixels.
     **size** : size, Size of the object in pixels (has ``width`` and ``height`` members).
@@ -761,7 +761,7 @@ Properties
     **tileSize** : size |ro|, Tile size for tiles in this tileset in pixels (has ``width`` and ``height`` members).
     **tileSpacing** : int |ro|, Spacing between tiles in this tileset in pixels.
     **margin** : int |ro|, Margin around the tileset in pixels (only used at the top and left sides of the tileset image).
-    **tileOffset** : point, Offset in pixels that is applied when tiles from this tileset are rendered.
+    **tileOffset** : :ref:`script-point`, Offset in pixels that is applied when tiles from this tileset are rendered.
     **backgroundColor** : color, Background color for this tileset in the *Tilesets* view.
 
 Functions
@@ -945,4 +945,19 @@ region
 
     **boundingRect** : :ref:`script-rect` |ro|, Rectangle which surrounds the selected area.
 
+
+.. _script-point:
+
+point
+~~~~~
+
+``Qt.point(x, y)`` can be used to create a point object.
+
+**Properties**:
+
+.. csv-table::
+    :widths: 1, 2
+
+    **x** : number, X coordinate of the point.
+    **y** : number, Y coordinate of the point.
 
