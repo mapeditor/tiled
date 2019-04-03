@@ -179,20 +179,20 @@ void ScriptModule::registerMapFormat(const QString &shortName, QJSValue mapForma
     format.reset(new ScriptedMapFormat(shortName, mapFormatObject, this));
 }
 
-ScriptedTool *ScriptModule::registerTool(const QString &shortName, QJSValue toolObject)
+QJSValue ScriptModule::registerTool(const QString &shortName, QJSValue toolObject)
 {
     if (shortName.isEmpty()) {
         ScriptManager::instance().throwError(tr("Invalid shortName"));
-        return nullptr;
+        return QJSValue();
     }
 
     if (!ScriptedTool::validateToolObject(toolObject))
-        return nullptr;
+        return QJSValue();
 
     auto &tool = mRegisteredTools[shortName];
 
     tool.reset(new ScriptedTool(toolObject, this));
-    return tool.get();
+    return toolObject;
 }
 
 static QString toString(QJSValue value)

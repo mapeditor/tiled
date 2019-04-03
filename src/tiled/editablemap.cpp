@@ -472,9 +472,9 @@ void EditableMap::detachMapObjects(const QList<MapObject *> &mapObjects)
     }
 }
 
-void EditableMap::onCurrentLayerChanged(Layer *layer)
+void EditableMap::onCurrentLayerChanged(Layer *)
 {
-    emit currentLayerChanged(EditableManager::instance().editableLayer(this, layer));
+    emit currentLayerChanged();
 }
 
 } // namespace Tiled

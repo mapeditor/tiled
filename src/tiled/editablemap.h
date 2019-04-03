@@ -109,7 +109,7 @@ signals:
     void tileWidthChanged();
     void tileHeightChanged();
 
-    void currentLayerChanged(Tiled::EditableLayer *layer);
+    void currentLayerChanged();
     void selectedLayersChanged();
     void selectedObjectsChanged();
 
@@ -124,7 +124,7 @@ private slots:
     void attachMapObjects(const QList<MapObject*> &mapObjects);
     void detachMapObjects(const QList<MapObject*> &mapObjects);
 
-    void onCurrentLayerChanged(Layer *layer);
+    void onCurrentLayerChanged(Layer *);
 
 private:
     friend class EditableLayer;

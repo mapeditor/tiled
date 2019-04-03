@@ -87,7 +87,7 @@ public:
 
     Q_INVOKABLE Tiled::ScriptedAction *registerAction(const QByteArray &id, QJSValue callback);
     Q_INVOKABLE void registerMapFormat(const QString &shortName, QJSValue mapFormatObject);
-    Q_INVOKABLE Tiled::ScriptedTool *registerTool(const QString &shortName, QJSValue toolObject);
+    Q_INVOKABLE QJSValue registerTool(const QString &shortName, QJSValue toolObject);
 
     Q_INVOKABLE void extendMenu(const QByteArray &idName, QJSValue items);
 

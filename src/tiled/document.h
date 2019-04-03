@@ -149,6 +149,8 @@ protected:
 
     QString mLastExportFileName;
 
+    EditableAsset *mEditable = nullptr;
+
 private:
     static QList<Document*> sDocumentInstances;
 };

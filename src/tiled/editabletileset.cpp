@@ -41,6 +41,7 @@ EditableTileset::EditableTileset(TilesetDocument *tilesetDocument,
     : EditableAsset(tilesetDocument, tilesetDocument->tileset().data(), parent)
 {
     connect(tilesetDocument, &Document::fileNameChanged, this, &EditableAsset::fileNameChanged);
+    connect(tilesetDocument, &TilesetDocument::tilesAdded, this, &EditableTileset::attachTiles);
     connect(tilesetDocument, &TilesetDocument::tilesRemoved, this, &EditableTileset::detachTiles);
 }
 

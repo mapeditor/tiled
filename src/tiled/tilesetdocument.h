@@ -168,7 +168,6 @@ private slots:
 
 private:
     SharedTileset mTileset;
-    EditableTileset *mEditableTileset = nullptr;
     QList<MapDocument*> mMapDocuments;
 
     TilesetTerrainModel *mTerrainModel;

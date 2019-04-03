@@ -222,10 +222,10 @@ void TilesetDocument::swapTileset(SharedTileset &tileset)
 
 EditableTileset *TilesetDocument::editable()
 {
-    if (!mEditableTileset)
-        mEditableTileset = new EditableTileset(this, this);
+    if (!mEditable)
+        mEditable = new EditableTileset(this, this);
 
-    return mEditableTileset;
+    return static_cast<EditableTileset*>(mEditable);
 }
 
 /**

@@ -43,6 +43,11 @@ ScriptedTool::ScriptedTool(QJSValue object, QObject *parent)
             setName(name);
     }
 
+    // Make members of ScriptedTool available through the original object
+    auto &scriptManager = ScriptManager::instance();
+    auto self = scriptManager.engine()->newQObject(this);
+    mScriptObject.setPrototype(self);
+
     PluginManager::addObject(this);
 }
 
@@ -206,6 +211,12 @@ void ScriptedTool::tilePositionChanged(const QPoint &tilePos)
     call(QStringLiteral("tilePositionChanged"), args);
 }
 
+void ScriptedTool::updateStatusInfo()
+{
+    if (!call(QStringLiteral("updateStatusInfo")))
+        AbstractTileTool::updateStatusInfo();
+}
+
 void ScriptedTool::updateEnabledState()
 {
     if (!call(QStringLiteral("updateEnabledState"))) {
@@ -221,13 +232,7 @@ bool ScriptedTool::call(const QString &methodName, const QJSValueList &args)
     QJSValue method = mScriptObject.property(methodName);
     if (method.isCallable()) {
         auto &scriptManager = ScriptManager::instance();
-        auto self = scriptManager.engine()->newQObject(this);
-
-        // Make whatever members were included in the original object available
-        // through the instance pointed to by 'this'.
-        self.setPrototype(mScriptObject);
-
-        QJSValue result = method.callWithInstance(self, args);
+        QJSValue result = method.callWithInstance(mScriptObject, args);
         scriptManager.checkError(result);
 
         return true;
