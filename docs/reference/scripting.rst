@@ -797,6 +797,7 @@ Properties
     **size** : size |ro|, Size of the tile in pixels (has ``width`` and ``height`` members).
     **type** : string, Type of the tile.
     **probability** : number, Probability that the tile gets chosen relative to other tiles.
+    **tileset** : :ref:`script-tileset` |ro|, The tileset of the tile.
 
 .. _script-tilelayeredit:
 
