@@ -37,7 +37,8 @@ Map
 +-------------------+----------+----------------------------------------------------------+
 | properties        | array    | A list of properties (name, value, type).                |
 +-------------------+----------+----------------------------------------------------------+
-| renderorder       | string   | Rendering direction (orthogonal maps only)               |
+| renderorder       | string   | ``right-down`` (the default), ``right-up``, ``left-down``|
+|                   |          | or ``left-up`` (orthogonal maps only)                    |
 +-------------------+----------+----------------------------------------------------------+
 | staggeraxis       | string   | ``x`` or ``y`` (staggered / hexagonal maps only)         |
 +-------------------+----------+----------------------------------------------------------+
