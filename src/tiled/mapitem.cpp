@@ -129,6 +129,7 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
 
     connect(prefs, &Preferences::objectLineWidthChanged, this, &MapItem::setObjectLineWidth);
     connect(prefs, &Preferences::showTileObjectOutlinesChanged, this, &MapItem::setShowTileObjectOutlines);
+    connect(prefs, &Preferences::showTileCollisionShapesChanged, this, &MapItem::syncObjectItemsWithCollisionShapes);
     connect(prefs, &Preferences::highlightCurrentLayerChanged, this, &MapItem::updateSelectedLayersHighlight);
     connect(prefs, &Preferences::objectTypesChanged, this, &MapItem::syncAllObjectItems);
 
@@ -143,6 +144,7 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
     connect(mapDocument.data(), &MapDocument::selectedLayersChanged, this, &MapItem::updateSelectedLayersHighlight);
     connect(mapDocument.data(), &MapDocument::tilesetTileOffsetChanged, this, &MapItem::adaptToTilesetTileSizeChanges);
     connect(mapDocument.data(), &MapDocument::tileImageSourceChanged, this, &MapItem::adaptToTileSizeChanges);
+    connect(mapDocument.data(), &MapDocument::tileObjectGroupChanged, this, &MapItem::tileObjectGroupChanged);
     connect(mapDocument.data(), &MapDocument::tilesetReplaced, this, &MapItem::tilesetReplaced);
     connect(mapDocument.data(), &MapDocument::objectsInserted, this, &MapItem::objectsInserted);
     connect(mapDocument.data(), &MapDocument::objectsRemoved, this, &MapItem::objectsRemoved);
@@ -440,6 +442,18 @@ void MapItem::adaptToTileSizeChanges(Tile *tile)
     }
 }
 
+void MapItem::tileObjectGroupChanged(Tile *tile)
+{
+    if (!Preferences::instance()->showTileCollisionShapes())
+        return;
+
+    for (MapObjectItem *item : qAsConst(mObjectItems)) {
+        const Cell &cell = item->mapObject()->cell();
+        if (cell.tile() == tile)
+            item->syncWithMapObject();
+    }
+}
+
 void MapItem::tilesetReplaced(int index, Tileset *tileset)
 {
     Q_UNUSED(index)
@@ -520,6 +534,13 @@ void MapItem::syncAllObjectItems()
         item->syncWithMapObject();
 }
 
+void MapItem::syncObjectItemsWithCollisionShapes()
+{
+    for (MapObjectItem *item : qAsConst(mObjectItems))
+        if (Tile *tile = item->mapObject()->cell().tile())
+            if (tile->objectGroup() && !tile->objectGroup()->isEmpty())
+                item->syncWithMapObject();
+}
 
 void MapItem::setObjectLineWidth(qreal lineWidth)
 {

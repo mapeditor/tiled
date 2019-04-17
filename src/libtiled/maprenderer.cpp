@@ -49,6 +49,30 @@ QRectF MapRenderer::boundingRect(const ImageLayer *imageLayer) const
     return QRectF(QPointF(), imageLayer->image().size());
 }
 
+QPainterPath MapRenderer::pointShape(const QPointF &position) const
+{
+    QPainterPath path;
+
+    const qreal radius = 10.0;
+    const qreal sweep = 235.0;
+    const qreal startAngle = 90.0 - sweep / 2;
+    QRectF rectangle(-radius, -radius, radius * 2, radius * 2);
+    path.moveTo(radius * cos(startAngle * M_PI / 180.0), -radius * sin(startAngle * M_PI / 180.0));
+    path.arcTo(rectangle, startAngle, sweep);
+    path.lineTo(0, 2 * radius);
+    path.closeSubpath();
+
+    QPainterPath hole;
+    const qreal smallRadius = radius / 2.0;
+    hole.addEllipse(QRectF(-smallRadius, -smallRadius, smallRadius * 2, smallRadius * 2));
+    path = path.subtracted(hole);
+
+    path.translate(pixelToScreenCoords(position) +
+                   QPointF(0, -2 * radius));
+
+    return path;
+}
+
 void MapRenderer::drawImageLayer(QPainter *painter,
                                  const ImageLayer *imageLayer,
                                  const QRectF &exposed)
@@ -102,10 +126,10 @@ void MapRenderer::drawPointObject(QPainter *painter, const QColor &color) const
     const QBrush opaqueBrush(color);
     painter->setBrush(opaqueBrush);
     const qreal smallRadius = radius / 3.0;
-    painter->drawEllipse(-smallRadius, -smallRadius, smallRadius * 2, smallRadius * 2);
+    painter->drawEllipse(QRectF(-smallRadius, -smallRadius, smallRadius * 2, smallRadius * 2));
 }
 
-QPainterPath MapRenderer::pointShape(const MapObject *object) const
+QPainterPath MapRenderer::pointInteractionShape(const MapObject *object) const
 {
     Q_ASSERT(object->shape() == MapObject::Point);
     QPainterPath path;

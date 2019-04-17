@@ -80,6 +80,7 @@ Preferences::Preferences()
     mShowGrid = boolValue("ShowGrid", true);
     mShowTileObjectOutlines = boolValue("ShowTileObjectOutlines");
     mShowTileAnimations = boolValue("ShowTileAnimations", true);
+    mShowTileCollisionShapes = boolValue("ShowTileCollisionShapes");
     mSnapToGrid = boolValue("SnapToGrid");
     mSnapToFineGrid = boolValue("SnapToFineGrid");
     mSnapToPixels = boolValue("SnapToPixels");
@@ -272,6 +273,18 @@ void Preferences::setShowTileAnimations(bool enabled)
     tilesetManager->setAnimateTiles(mShowTileAnimations);
 
     emit showTileAnimationsChanged(mShowTileAnimations);
+}
+
+void Preferences::setShowTileCollisionShapes(bool enabled)
+{
+    if (mShowTileCollisionShapes == enabled)
+        return;
+
+    mShowTileCollisionShapes = enabled;
+    mSettings->setValue(QLatin1String("Interface/ShowTileCollisionShapes"),
+                        mShowTileCollisionShapes);
+
+    emit showTileCollisionShapesChanged(enabled);
 }
 
 void Preferences::setSnapToGrid(bool snapToGrid)

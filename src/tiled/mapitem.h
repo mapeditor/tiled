@@ -101,6 +101,7 @@ private:
 
     void adaptToTilesetTileSizeChanges(Tileset *tileset);
     void adaptToTileSizeChanges(Tile *tile);
+    void tileObjectGroupChanged(Tile *tile);
 
     void tilesetReplaced(int index, Tileset *tileset);
 
@@ -110,6 +111,7 @@ private:
     void objectsIndexChanged(ObjectGroup *objectGroup, int first, int last);
 
     void syncAllObjectItems();
+    void syncObjectItemsWithCollisionShapes();
 
     void setObjectLineWidth(qreal lineWidth);
     void setShowTileObjectOutlines(bool enabled);

@@ -99,16 +99,28 @@ public:
 
     /**
      * Returns the shape in pixels of the given \a object. This is used for
-     * mouse interaction and should match the rendered object as closely as
-     * possible.
+     * rendering shape objects.
      */
     virtual QPainterPath shape(const MapObject *object) const = 0;
 
     /**
-     * Returns the shape of the given point \a object, conforming to the
-     * shape() method requirements.
+     * Returns the interaction shape in pixels of the given \a object. This is
+     * used for mouse interaction and should match the rendered object as
+     * closely as possible.
      */
-    QPainterPath pointShape(const MapObject *object) const;
+    virtual QPainterPath interactionShape(const MapObject *object) const = 0;
+
+    /**
+     * Returns the shape of a point object at the given \a position, conforming
+     * to the shape() method requirements.
+     */
+    QPainterPath pointShape(const QPointF &position) const;
+
+    /**
+     * Returns the interaction shape of the given point \a object, conforming
+     * to the interactionShape() method requirements.
+     */
+    QPainterPath pointInteractionShape(const MapObject *object) const;
 
     /**
      * Draws the tile grid in the specified \a rect using the given

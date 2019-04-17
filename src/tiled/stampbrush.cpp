@@ -413,7 +413,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &points)
                                   cell);
         }
 
-        preview->addLayer(previewLayer.release());
+        preview->addLayer(std::move(previewLayer));
         preview->addTilesets(preview->usedTilesets());
         mPreviewMap = preview;
     } else if (mIsWangFill) {
@@ -452,7 +452,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &points)
                                   cell);
         }
 
-        preview->addLayer(previewLayer.release());
+        preview->addLayer(std::move(previewLayer));
         preview->addTileset(mWangSet->tileset()->sharedPointer());
         mPreviewMap = preview;
     } else {

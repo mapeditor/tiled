@@ -215,8 +215,8 @@ std::unique_ptr<Tiled::Map> TbinMapFormat::read(const QString &fileName)
                     objects->addObject(obj);
                 }
             }
-            map->addLayer(layer.release());
-            map->addLayer(objects.release());
+            map->addLayer(std::move(layer));
+            map->addLayer(std::move(objects));
         }
     }
     catch (std::exception& e) {

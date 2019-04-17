@@ -341,6 +341,7 @@ signals:
     void tileTypeChanged(Tile *tile);
     void tileImageSourceChanged(Tile *tile);
     void tileProbabilityChanged(Tile *tile);
+    void tileObjectGroupChanged(Tile *tile);
 
 private slots:
     void onObjectsRemoved(const QList<MapObject*> &objects);

@@ -27,6 +27,7 @@
 namespace Tiled {
 
 class MapObject;
+class Tile;
 
 class Handle;
 class MapDocument;
@@ -86,6 +87,10 @@ public:
     static QColor objectColor(const MapObject *object);
 
 private:
+    void expandBoundsToCoverTileCollisionObjects(QRectF &bounds);
+    void paintTileCollisionObjects(QPainter *painter, qreal painterScale);
+    QTransform tileCollisionObjectsTransform(const Tile &tile) const;
+
     MapDocument *mapDocument() const { return mMapDocument; }
     QColor color() const { return mColor; }
 

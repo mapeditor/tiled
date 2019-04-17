@@ -43,8 +43,7 @@ ChangeTileObjectGroup::ChangeTileObjectGroup(TilesetDocument *tilesetDocument,
 
 void ChangeTileObjectGroup::swap()
 {
-    mTile->swapObjectGroup(mObjectGroup);
-    emit mTilesetDocument->tileObjectGroupChanged(mTile);
+    mTilesetDocument->swapTileObjectGroup(mTile, mObjectGroup);
 }
 
 } // namespace Tiled

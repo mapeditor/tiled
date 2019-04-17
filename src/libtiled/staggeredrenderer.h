@@ -72,7 +72,7 @@ namespace Tiled {
  *     Similar problem as with stamps when offsetting at an uneven y offset.
  *
  */
-class TILEDSHARED_EXPORT StaggeredRenderer : public HexagonalRenderer
+class TILEDSHARED_EXPORT StaggeredRenderer final : public HexagonalRenderer
 {
 public:
     StaggeredRenderer(const Map *map) : HexagonalRenderer(map) {}

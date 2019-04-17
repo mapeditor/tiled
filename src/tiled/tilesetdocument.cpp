@@ -358,6 +358,15 @@ void TilesetDocument::setTileProbability(Tile *tile, qreal probability)
         emit mapDocument->tileProbabilityChanged(tile);
 }
 
+void TilesetDocument::swapTileObjectGroup(Tile *tile, std::unique_ptr<ObjectGroup> &objectGroup)
+{
+    tile->swapObjectGroup(objectGroup);
+    emit tileObjectGroupChanged(tile);
+
+    for (MapDocument *mapDocument : mapDocuments())
+        emit mapDocument->tileObjectGroupChanged(tile);
+}
+
 TilesetDocument *TilesetDocument::findDocumentForTileset(const SharedTileset &tileset)
 {
     return sTilesetToDocument.value(tileset);

@@ -22,6 +22,8 @@
 
 #include "mapobjectitem.h"
 
+#include "geometry.h"
+#include "isometricrenderer.h"
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "maprenderer.h"
@@ -29,6 +31,7 @@
 #include "mapview.h"
 #include "objectgroup.h"
 #include "objectgroupitem.h"
+#include "orthogonalrenderer.h"
 #include "preferences.h"
 #include "tile.h"
 #include "utils.h"
@@ -47,7 +50,7 @@ MapObjectItem::MapObjectItem(MapObject *object, MapDocument *mapDocument,
     mMapDocument(mapDocument)
 {
     setAcceptedMouseButtons(Qt::MouseButtons());
-    setAcceptHoverEvents(true);
+    setAcceptHoverEvents(true);     // Accept hover events otherwise going to the MapItem
     syncWithMapObject();
 }
 
@@ -73,6 +76,9 @@ void MapObjectItem::syncWithMapObject()
     QRectF bounds = renderer->boundingRect(mObject);
 
     bounds.translate(-pixelPos);
+
+    if (Preferences::instance()->showTileCollisionShapes())
+        expandBoundsToCoverTileCollisionObjects(bounds);
 
     setPos(pixelPos);
     setRotation(mObject->rotation());
@@ -122,7 +128,7 @@ QRectF MapObjectItem::boundingRect() const
 
 QPainterPath MapObjectItem::shape() const
 {
-    QPainterPath path = mMapDocument->renderer()->shape(mObject);
+    QPainterPath path = mMapDocument->renderer()->interactionShape(mObject);
     path.translate(-pos());
     return path;
 }
@@ -131,11 +137,16 @@ void MapObjectItem::paint(QPainter *painter,
                           const QStyleOptionGraphicsItem *,
                           QWidget *widget)
 {
-    qreal scale = static_cast<MapView*>(widget->parent())->zoomable()->scale();
+    const qreal scale = static_cast<MapView*>(widget->parent())->zoomable()->scale();
+    const QColor color = mIsHoveredIndicator ? mColor.lighter() : mColor;
+
     painter->translate(-pos());
     mMapDocument->renderer()->setPainterScale(scale);
-    mMapDocument->renderer()->drawMapObject(painter, mObject, mIsHoveredIndicator ? mColor.lighter() : mColor);
+    mMapDocument->renderer()->drawMapObject(painter, mObject, color);
     painter->translate(pos());
+
+    if (Preferences::instance()->showTileCollisionShapes())
+        paintTileCollisionObjects(painter, scale);
 
     if (mIsHoveredIndicator) {
         // TODO: Code mostly duplicated in MapObjectOutline
@@ -197,4 +208,123 @@ QColor MapObjectItem::objectColor(const MapObject *object)
 
     // Fallback color
     return Qt::gray;
+}
+
+void MapObjectItem::expandBoundsToCoverTileCollisionObjects(QRectF &bounds)
+{
+    const Cell &cell = mObject->cell();
+    const Tile *tile = cell.tile();
+    if (!tile || !tile->objectGroup())
+        return;
+
+    const Tileset *tileset = cell.tileset();
+    const Map map(tileset->orientation() == Tileset::Orthogonal ? Map::Orthogonal
+                                                                : Map::Isometric,
+                  QSize(1, 1),
+                  tileset->gridSize());
+
+    std::unique_ptr<MapRenderer> renderer;
+
+    if (tileset->orientation() == Tileset::Orthogonal)
+        renderer.reset(new OrthogonalRenderer(&map));
+    else
+        renderer.reset(new IsometricRenderer(&map));
+
+    const QTransform tileTransform = tileCollisionObjectsTransform(*tile);
+
+    for (MapObject *object : tile->objectGroup()->objects()) {
+        auto transform = rotateAt(object->position(), object->rotation());
+        transform *= tileTransform;
+
+        bounds |= transform.mapRect(renderer->boundingRect(object));
+    }
+}
+
+void MapObjectItem::paintTileCollisionObjects(QPainter *painter, qreal painterScale)
+{
+    const Cell &cell = mObject->cell();
+    const Tile *tile = cell.tile();
+    if (!tile || !tile->objectGroup())
+        return;
+
+    const Tileset *tileset = cell.tileset();
+    const Map map(tileset->orientation() == Tileset::Orthogonal ? Map::Orthogonal
+                                                                : Map::Isometric,
+                  QSize(1, 1),
+                  tileset->gridSize());
+
+    std::unique_ptr<MapRenderer> renderer;
+
+    if (tileset->orientation() == Tileset::Orthogonal)
+        renderer.reset(new OrthogonalRenderer(&map));
+    else
+        renderer.reset(new IsometricRenderer(&map));
+
+    const qreal lineWidth = Preferences::instance()->objectLineWidth();
+    const qreal shadowDist = (lineWidth == 0 ? 1 : lineWidth) / painterScale;
+    const QPointF shadowOffset = QPointF(shadowDist * 0.5, shadowDist * 0.5);
+    const QTransform tileTransform = tileCollisionObjectsTransform(*tile);
+
+    QPen shadowPen(Qt::black);
+    shadowPen.setCosmetic(true);
+    shadowPen.setJoinStyle(Qt::RoundJoin);
+    shadowPen.setCapStyle(Qt::RoundCap);
+    shadowPen.setWidthF(lineWidth);
+    shadowPen.setStyle(Qt::DotLine);
+
+    painter->setRenderHint(QPainter::Antialiasing);
+
+    for (MapObject *object : tile->objectGroup()->objects()) {
+        QColor penColor = objectColor(object);
+        QColor brushColor = penColor;
+        brushColor.setAlpha(50);
+        QPen colorPen(shadowPen);
+        colorPen.setColor(penColor);
+
+        painter->setPen(colorPen);
+        painter->setBrush(brushColor);
+
+        auto transform = rotateAt(object->position(), object->rotation());
+        transform *= tileTransform;
+
+        const auto shape = transform.map(renderer->shape(object));
+
+        painter->strokePath(shape.translated(shadowOffset), shadowPen);
+
+        if (object->shape() == MapObject::Polyline)
+            painter->strokePath(shape, colorPen);
+        else
+            painter->drawPath(shape);
+    }
+}
+
+QTransform MapObjectItem::tileCollisionObjectsTransform(const Tile &tile) const
+{
+    const Tileset *tileset = tile.tileset();
+
+    QTransform tileTransform;
+
+    tileTransform.scale(mObject->width() / tile.width(),
+                        mObject->height() / tile.height());
+
+    if (mMapDocument->map()->orientation() == Map::Isometric)
+        tileTransform.translate(-tile.width() / 2, 0.0);
+
+    tileTransform.translate(tileset->tileOffset().x(), tileset->tileOffset().y());
+
+    if (mObject->cell().flippedVertically()) {
+        tileTransform.scale(1, -1);
+        tileTransform.translate(0, tile.height());
+    }
+    if (mObject->cell().flippedHorizontally()) {
+        tileTransform.scale(-1, 1);
+        tileTransform.translate(-tile.width(), 0);
+    }
+
+    if (tileset->orientation() == Tileset::Isometric)
+        tileTransform.translate(0.0, -tile.tileset()->gridSize().height());
+    else
+        tileTransform.translate(0.0, -tile.height());
+
+    return tileTransform;
 }

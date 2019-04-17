@@ -136,7 +136,7 @@ public:
     void setProbability(qreal probability);
 
     ObjectGroup *objectGroup() const;
-    void setObjectGroup(std::unique_ptr<ObjectGroup> &&objectGroup);
+    void setObjectGroup(std::unique_ptr<ObjectGroup> objectGroup);
     void swapObjectGroup(std::unique_ptr<ObjectGroup> &objectGroup);
 
     const QVector<Frame> &frames() const;

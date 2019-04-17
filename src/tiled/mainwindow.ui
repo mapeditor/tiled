@@ -159,6 +159,7 @@
     <addaction name="actionShowTileObjectOutlines"/>
     <addaction name="menuShowObjectNames"/>
     <addaction name="actionShowTileAnimations"/>
+    <addaction name="actionShowTileCollisionShapes"/>
     <addaction name="actionHighlightCurrentLayer"/>
     <addaction name="actionHighlightHoveredObject"/>
     <addaction name="separator"/>
@@ -639,6 +640,14 @@
    </property>
    <property name="text">
     <string>Highlight Hovered Object</string>
+   </property>
+  </action>
+  <action name="actionShowTileCollisionShapes">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Tile Collision Shapes</string>
    </property>
   </action>
  </widget>
