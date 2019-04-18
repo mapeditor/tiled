@@ -21,6 +21,7 @@
 #include "editablelayer.h"
 
 #include "changelayer.h"
+#include "editablemanager.h"
 #include "editablemap.h"
 #include "renamelayer.h"
 #include "scriptmanager.h"
@@ -31,17 +32,22 @@ EditableLayer::EditableLayer(std::unique_ptr<Layer> &&layer, QObject *parent)
     : EditableObject(nullptr, layer.get(), parent)
 {
     mDetachedLayer = std::move(layer);
+    EditableManager::instance().mEditableLayers.insert(this->layer(), this);
 }
 
 EditableLayer::EditableLayer(EditableMap *map, Layer *layer, QObject *parent)
     : EditableObject(map, layer, parent)
 {
+    if (map)
+        map->mAttachedLayers.insert(layer, this);
 }
 
 EditableLayer::~EditableLayer()
 {
     if (map())
-        map()->mEditableLayers.remove(layer());
+        map()->mAttachedLayers.remove(layer());
+
+    EditableManager::instance().mEditableLayers.remove(layer());
 }
 
 EditableMap *EditableLayer::map() const
@@ -59,22 +65,39 @@ bool EditableLayer::isSelected() const
 void EditableLayer::detach()
 {
     Q_ASSERT(map());
-    Q_ASSERT(map()->mEditableLayers.contains(layer()));
+    Q_ASSERT(map()->mAttachedLayers.contains(layer()));
 
-    map()->mEditableLayers.remove(layer());
+    map()->mAttachedLayers.remove(layer());
+    EditableManager::instance().mEditableLayers.remove(layer());
     setAsset(nullptr);
 
     mDetachedLayer.reset(layer()->clone());
     setObject(mDetachedLayer.get());
+    EditableManager::instance().mEditableLayers.insert(layer(), this);
 }
 
 void EditableLayer::attach(EditableMap *map)
 {
     Q_ASSERT(!asset() && map);
-    Q_ASSERT(!map->mEditableLayers.contains(layer()));
+    Q_ASSERT(!map->mAttachedLayers.contains(layer()));
 
     setAsset(map);
-    map->mEditableLayers.insert(layer(), this);
+    map->mAttachedLayers.insert(layer(), this);
+    mDetachedLayer.release();
+}
+
+void EditableLayer::hold()
+{
+    Q_ASSERT(!asset());         // if asset exists, it holds the layer (possibly indirectly)
+    Q_ASSERT(!mDetachedLayer);  // can't already be holding the layer
+
+    mDetachedLayer.reset(layer());
+}
+
+void EditableLayer::release()
+{
+    Q_ASSERT(mDetachedLayer.get() == layer());
+
     mDetachedLayer.release();
 }
 

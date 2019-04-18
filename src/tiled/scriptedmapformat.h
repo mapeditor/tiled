@@ -34,6 +34,7 @@ class ScriptedMapFormat final : public MapFormat
 public:
     ScriptedMapFormat(const QString &shortName, const QJSValue &object,
                       QObject *parent = nullptr);
+    ~ScriptedMapFormat() override;
 
     // FileFormat interface
     Capabilities capabilities() const override;

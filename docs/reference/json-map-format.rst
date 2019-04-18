@@ -37,7 +37,8 @@ Map
 +-------------------+----------+----------------------------------------------------------+
 | properties        | array    | A list of properties (name, value, type).                |
 +-------------------+----------+----------------------------------------------------------+
-| renderorder       | string   | Rendering direction (orthogonal maps only)               |
+| renderorder       | string   | ``right-down`` (the default), ``right-up``, ``left-down``|
+|                   |          | or ``left-up`` (orthogonal maps only)                    |
 +-------------------+----------+----------------------------------------------------------+
 | staggeraxis       | string   | ``x`` or ``y`` (staggered / hexagonal maps only)         |
 +-------------------+----------+----------------------------------------------------------+
@@ -129,7 +130,7 @@ Layer
 +------------------+----------+---------------------------------------------------------------+
 | properties       | array    | A list of properties (name, value, type).                     |
 +------------------+----------+---------------------------------------------------------------+
-| transparentcolor | string   | Hex-formatted color (#RRGGBB) (optional, ``imagelayer`` only) |
+| transparentcolor | string   | Hex-formatted color (#RRGGBB) (optional). ``imagelayer`` only |
 +------------------+----------+---------------------------------------------------------------+
 | type             | string   | ``tilelayer``, ``objectgroup``, ``imagelayer`` or ``group``   |
 +------------------+----------+---------------------------------------------------------------+
@@ -526,27 +527,30 @@ Tileset Example
 Tile (Definition)
 ~~~~~~~~~~~~~~~~~
 
-+------------+---------------------+--------------------------------------------+
-| Field      | Type                | Description                                |
-+============+=====================+============================================+
-| animation  | array               | Array of :ref:`Frames <json-frame>`        |
-+------------+---------------------+--------------------------------------------+
-| id         | int                 | Local ID of the tile                       |
-+------------+---------------------+--------------------------------------------+
-| image      | string              | Image representing this tile (optional)    |
-+------------+---------------------+--------------------------------------------+
-| imageheight| int                 | Height of the tile image in pixels         |
-+------------+---------------------+--------------------------------------------+
-| imagewidth | int                 | Width of the tile image in pixels          |
-+------------+---------------------+--------------------------------------------+
-| objectgroup| :ref:`json-layer`   | Layer with type ``objectgroup`` (optional) |
-+------------+---------------------+--------------------------------------------+
-| properties | array               | A list of properties (name, value, type)   |
-+------------+---------------------+--------------------------------------------+
-| terrain    | array               | Index of terrain for each corner of tile   |
-+------------+---------------------+--------------------------------------------+
-| type       | string              | The type of the tile (optional)            |
-+------------+---------------------+--------------------------------------------+
++------------+---------------------+------------------------------------------------+
+| Field      | Type                | Description                                    |
++============+=====================+================================================+
+| animation  | array               | Array of :ref:`Frames <json-frame>`            |
++------------+---------------------+------------------------------------------------+
+| id         | int                 | Local ID of the tile                           |
++------------+---------------------+------------------------------------------------+
+| image      | string              | Image representing this tile (optional)        |
++------------+---------------------+------------------------------------------------+
+| imageheight| int                 | Height of the tile image in pixels             |
++------------+---------------------+------------------------------------------------+
+| imagewidth | int                 | Width of the tile image in pixels              |
++------------+---------------------+------------------------------------------------+
+| objectgroup| :ref:`json-layer`   | Layer with type ``objectgroup`` (optional)     |
++------------+---------------------+------------------------------------------------+
+| probability| double              | Percentage chance this tile is chosen when     |
+|            |                     | competing with others in the editor (optional) |
++------------+---------------------+------------------------------------------------+
+| properties | array               | A list of properties (name, value, type)       |
++------------+---------------------+------------------------------------------------+
+| terrain    | array               | Index of terrain for each corner of tile       |
++------------+---------------------+------------------------------------------------+
+| type       | string              | The type of the tile (optional)                |
++------------+---------------------+------------------------------------------------+
 
 A tileset that associates information with each tile, like its image
 path or terrain type, may include a ``tiles`` array property. Each tile

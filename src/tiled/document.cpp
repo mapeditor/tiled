@@ -72,7 +72,7 @@ void Document::setFileName(const QString &fileName)
  */
 bool Document::isModified() const
 {
-    return !const_cast<Document*>(this)->undoStack()->isClean();
+    return mEditable && mEditable->isModified();
 }
 
 void Document::setCurrentObject(Object *object)

@@ -127,8 +127,10 @@ SOURCES += aboutdialog.cpp \
     document.cpp \
     documentmanager.cpp \
     editableasset.cpp \
+    editablegrouplayer.cpp \
     editableimagelayer.cpp \
     editablelayer.cpp \
+    editablemanager.cpp \
     editablemap.cpp \
     editablemapobject.cpp \
     editableobject.cpp \
@@ -218,6 +220,7 @@ SOURCES += aboutdialog.cpp \
     rotatemapobject.cpp \
     scriptedaction.cpp \
     scriptedmapformat.cpp \
+    scriptedtool.cpp \
     scriptmanager.cpp \
     scriptmodule.cpp \
     selectionrectangle.cpp \
@@ -343,8 +346,10 @@ HEADERS += aboutdialog.h \
     document.h \
     documentmanager.h \
     editableasset.h \
+    editablegrouplayer.h \
     editableimagelayer.h \
     editablelayer.h \
+    editablemanager.h \
     editablemap.h \
     editablemapobject.h \
     editableobject.h \
@@ -436,6 +441,7 @@ HEADERS += aboutdialog.h \
     rotatemapobject.h \
     scriptedaction.h \
     scriptedmapformat.h \
+    scriptedtool.h \
     scriptmanager.h \
     scriptmodule.h \
     selectionrectangle.h \

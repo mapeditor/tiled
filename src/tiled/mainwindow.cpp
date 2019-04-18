@@ -257,6 +257,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerAction(mUi->actionSaveAs, "SaveAs");
     ActionManager::registerAction(mUi->actionShowGrid, "ShowGrid");
     ActionManager::registerAction(mUi->actionShowTileAnimations, "ShowTileAnimations");
+    ActionManager::registerAction(mUi->actionShowTileCollisionShapes, "ShowTileCollisionShapes");
     ActionManager::registerAction(mUi->actionShowTileObjectOutlines, "ShowTileObjectOutlines");
     ActionManager::registerAction(mUi->actionSnapNothing, "SnapNothing");
     ActionManager::registerAction(mUi->actionSnapToFineGrid, "SnapToFineGrid");
@@ -343,6 +344,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->actionShowGrid->setChecked(preferences->showGrid());
     mUi->actionShowTileObjectOutlines->setChecked(preferences->showTileObjectOutlines());
     mUi->actionShowTileAnimations->setChecked(preferences->showTileAnimations());
+    mUi->actionShowTileCollisionShapes->setChecked(preferences->showTileCollisionShapes());
     mUi->actionSnapToGrid->setChecked(preferences->snapToGrid());
     mUi->actionSnapToFineGrid->setChecked(preferences->snapToFineGrid());
     mUi->actionSnapToPixels->setChecked(preferences->snapToPixels());
@@ -461,6 +463,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             preferences, &Preferences::setShowTileObjectOutlines);
     connect(mUi->actionShowTileAnimations, &QAction::toggled,
             preferences, &Preferences::setShowTileAnimations);
+    connect(mUi->actionShowTileCollisionShapes, &QAction::toggled,
+            preferences, &Preferences::setShowTileCollisionShapes);
     connect(mUi->actionSnapToGrid, &QAction::toggled,
             preferences, &Preferences::setSnapToGrid);
     connect(mUi->actionSnapToFineGrid, &QAction::toggled,
@@ -648,7 +652,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     connect(preferences, &Preferences::recentFilesChanged, this, &MainWindow::updateRecentFilesMenu);
 
-    QTimer::singleShot(500, this, [this,preferences]() {
+    QTimer::singleShot(500, this, [this,preferences] {
         if (preferences->shouldShowPatreonDialog())
             becomePatron();
     });

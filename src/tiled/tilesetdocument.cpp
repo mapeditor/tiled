@@ -222,10 +222,10 @@ void TilesetDocument::swapTileset(SharedTileset &tileset)
 
 EditableTileset *TilesetDocument::editable()
 {
-    if (!mEditableTileset)
-        mEditableTileset = new EditableTileset(this, this);
+    if (!mEditable)
+        mEditable = new EditableTileset(this, this);
 
-    return mEditableTileset;
+    return static_cast<EditableTileset*>(mEditable);
 }
 
 /**
@@ -356,6 +356,15 @@ void TilesetDocument::setTileProbability(Tile *tile, qreal probability)
 
     for (MapDocument *mapDocument : mapDocuments())
         emit mapDocument->tileProbabilityChanged(tile);
+}
+
+void TilesetDocument::swapTileObjectGroup(Tile *tile, std::unique_ptr<ObjectGroup> &objectGroup)
+{
+    tile->swapObjectGroup(objectGroup);
+    emit tileObjectGroupChanged(tile);
+
+    for (MapDocument *mapDocument : mapDocuments())
+        emit mapDocument->tileObjectGroupChanged(tile);
 }
 
 TilesetDocument *TilesetDocument::findDocumentForTileset(const SharedTileset &tileset)

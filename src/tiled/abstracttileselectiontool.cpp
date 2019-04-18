@@ -68,13 +68,13 @@ AbstractTileSelectionTool::AbstractTileSelectionTool(const QString &name,
     mActionGroup->addAction(mIntersect);
 
     connect(mReplace, &QAction::triggered,
-            [this]() { mSelectionMode = mDefaultMode = Replace; });
+            [this] { mSelectionMode = mDefaultMode = Replace; });
     connect(mAdd, &QAction::triggered,
-            [this]() { mSelectionMode = mDefaultMode = Add; });
+            [this] { mSelectionMode = mDefaultMode = Add; });
     connect(mSubtract, &QAction::triggered,
-            [this]() { mSelectionMode = mDefaultMode = Subtract; });
+            [this] { mSelectionMode = mDefaultMode = Subtract; });
     connect(mIntersect, &QAction::triggered,
-            [this]() { mSelectionMode = mDefaultMode = Intersect; });
+            [this] { mSelectionMode = mDefaultMode = Intersect; });
 
     AbstractTileSelectionTool::languageChanged();
 }

@@ -33,6 +33,7 @@
 
 namespace Tiled {
 
+class ObjectGroup;
 
 class MapDocument;
 class TilesetDocument;
@@ -107,6 +108,7 @@ public:
     void setTileType(Tile *tile, const QString &type);
     void setTileImage(Tile *tile, const QPixmap &image, const QUrl &source);
     void setTileProbability(Tile *tile, qreal probability);
+    void swapTileObjectGroup(Tile *tile, std::unique_ptr<ObjectGroup> &objectGroup);
 
     static TilesetDocument* findDocumentForTileset(const SharedTileset &tileset);
 
@@ -168,7 +170,6 @@ private slots:
 
 private:
     SharedTileset mTileset;
-    EditableTileset *mEditableTileset = nullptr;
     QList<MapDocument*> mMapDocuments;
 
     TilesetTerrainModel *mTerrainModel;

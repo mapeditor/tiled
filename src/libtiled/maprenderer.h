@@ -43,7 +43,8 @@ class TileLayer;
 class ImageLayer;
 
 enum RenderFlag {
-    ShowTileObjectOutlines = 0x1
+    ShowTileObjectOutlines = 0x1,
+    ShowTileCollisionShapes = 0x2
 };
 
 Q_DECLARE_FLAGS(RenderFlags, RenderFlag)
@@ -99,16 +100,28 @@ public:
 
     /**
      * Returns the shape in pixels of the given \a object. This is used for
-     * mouse interaction and should match the rendered object as closely as
-     * possible.
+     * rendering shape objects.
      */
     virtual QPainterPath shape(const MapObject *object) const = 0;
 
     /**
-     * Returns the shape of the given point \a object, conforming to the
-     * shape() method requirements.
+     * Returns the interaction shape in pixels of the given \a object. This is
+     * used for mouse interaction and should match the rendered object as
+     * closely as possible.
      */
-    QPainterPath pointShape(const MapObject *object) const;
+    virtual QPainterPath interactionShape(const MapObject *object) const = 0;
+
+    /**
+     * Returns the shape of a point object at the given \a position, conforming
+     * to the shape() method requirements.
+     */
+    QPainterPath pointShape(const QPointF &position) const;
+
+    /**
+     * Returns the interaction shape of the given point \a object, conforming
+     * to the interactionShape() method requirements.
+     */
+    QPainterPath pointInteractionShape(const MapObject *object) const;
 
     /**
      * Draws the tile grid in the specified \a rect using the given
@@ -286,7 +299,8 @@ public:
         HexagonalCells
     };
 
-    explicit CellRenderer(QPainter *painter, CellType cellType = OrthogonalCells);
+    explicit CellRenderer(QPainter *painter, const MapRenderer *renderer,
+                          CellType cellType = OrthogonalCells);
 
     ~CellRenderer() { flush(); }
 
@@ -294,7 +308,10 @@ public:
     void flush();
 
 private:
+    void paintTileCollisionShapes();
+
     QPainter * const mPainter;
+    const MapRenderer * const mRenderer;
     const Tile *mTile;
     QVector<QPainter::PixmapFragment> mFragments;
     const bool mIsOpenGL;

@@ -27,6 +27,7 @@
 namespace Tiled {
 
 class MapObject;
+class Tile;
 
 class Handle;
 class MapDocument;
@@ -77,15 +78,10 @@ public:
      */
     void setPolygon(const QPolygonF &polygon);
 
-    /**
-     * A helper function to determine the color of a map object. The color is
-     * determined first of all by the object type, and otherwise by the group
-     * that the object is in. If still no color is defined, it defaults to
-     * gray.
-     */
-    static QColor objectColor(const MapObject *object);
-
 private:
+    void expandBoundsToCoverTileCollisionObjects(QRectF &bounds);
+    QTransform tileCollisionObjectsTransform(const Tile &tile) const;
+
     MapDocument *mapDocument() const { return mMapDocument; }
     QColor color() const { return mColor; }
 

@@ -116,28 +116,24 @@ void Tile::setTerrain(unsigned terrain)
  * The Tile takes ownership over the ObjectGroup and it can't also be part of
  * a map.
  */
-void Tile::setObjectGroup(std::unique_ptr<ObjectGroup> &&objectGroup)
+void Tile::setObjectGroup(std::unique_ptr<ObjectGroup> objectGroup)
 {
     Q_ASSERT(!objectGroup || !objectGroup->map());
 
     if (mObjectGroup == objectGroup)
         return;
 
-    mObjectGroup.swap(objectGroup);
+    mObjectGroup = std::move(objectGroup);
 }
 
 /**
  * Swaps the object group of this tile with \a objectGroup. The tile releases
  * ownership over its existing object group and takes ownership over the new
  * one.
- *
- * @return The previous object group referenced by this tile.
  */
-ObjectGroup *Tile::swapObjectGroup(ObjectGroup *objectGroup)
+void Tile::swapObjectGroup(std::unique_ptr<ObjectGroup> &objectGroup)
 {
-    ObjectGroup *previousObjectGroup = mObjectGroup.release();
-    mObjectGroup.reset(objectGroup);
-    return previousObjectGroup;
+    std::swap(mObjectGroup, objectGroup);
 }
 
 /**

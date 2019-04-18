@@ -20,6 +20,7 @@
 
 #include "mapeditor.h"
 
+#include "actionmanager.h"
 #include "addremovelayer.h"
 #include "addremovetileset.h"
 #include "brokenlinks.h"
@@ -93,6 +94,8 @@
 #include <QStackedWidget>
 #include <QStatusBar>
 #include <QToolBar>
+
+#include "qtcompat_p.h"
 
 #include <memory>
 
@@ -210,6 +213,25 @@ MapEditor::MapEditor(QObject *parent)
     mToolsToolBar->addAction(mToolManager->registerTool(textObjectsTool));
     mToolsToolBar->addSeparator();
     mToolsToolBar->addAction(mToolManager->registerTool(new LayerOffsetTool(this)));
+    mToolsToolBar->addSeparator();  // todo: hide when there are no tool extensions
+
+    const auto tools = PluginManager::instance()->objects<AbstractTool>();
+    for (auto tool : tools)
+        mToolsToolBar->addAction(mToolManager->registerTool(tool));
+
+    connect(PluginManager::instance(), &PluginManager::objectAdded,
+            this, [this] (QObject *object) {
+        if (auto tool = qobject_cast<AbstractTool*>(object))
+            mToolsToolBar->addAction(mToolManager->registerTool(tool));
+    });
+    connect(PluginManager::instance(), &PluginManager::objectRemoved,
+            this, [this] (QObject *object) {
+        if (auto tool = qobject_cast<AbstractTool*>(object)) {
+            auto action = mToolManager->findAction(tool);
+            mToolsToolBar->removeAction(action);
+            mToolManager->unregisterTool(tool);
+        }
+    });
 
     mToolManager->createShortcuts(mMainWindow);
 
@@ -285,7 +307,11 @@ MapEditor::MapEditor(QObject *parent)
 
     setupQuickStamps();
     retranslateUi();
-    connect(Preferences::instance(), &Preferences::languageChanged, this, &MapEditor::retranslateUi);
+
+    Preferences *prefs = Preferences::instance();
+    connect(prefs, &Preferences::languageChanged, this, &MapEditor::retranslateUi);
+    connect(prefs, &Preferences::showTileCollisionShapesChanged,
+            this, &MapEditor::showTileCollisionShapesChanged);
 
     QSettings *settings = Preferences::instance()->settings();
     mMapStates = settings->value(QLatin1String(MAPSTATES_KEY)).toMap();
@@ -320,6 +346,7 @@ void MapEditor::addDocument(Document *document)
     MapView *view = new MapView(mWidgetStack);
     MapScene *scene = new MapScene(view); // scene is owned by the view
 
+    scene->setShowTileCollisionShapes(Preferences::instance()->showTileCollisionShapes());
     scene->setMapDocument(mapDocument);
     view->setScene(scene);
 
@@ -414,10 +441,10 @@ void MapEditor::setCurrentDocument(Document *document)
         }
 
         connect(mCurrentMapDocument, &MapDocument::currentObjectChanged,
-                this, [this, mapDocument](){ mPropertiesDock->setDocument(mapDocument); });
+                this, [this, mapDocument] { mPropertiesDock->setDocument(mapDocument); });
 
         connect(mapView, &MapView::focused,
-                this, [this, mapDocument](){ mPropertiesDock->setDocument(mapDocument); });
+                this, [this, mapDocument] { mPropertiesDock->setDocument(mapDocument); });
 
         mReversingProxyModel->setSourceModel(mapDocument->layerModel());
     } else {
@@ -430,7 +457,7 @@ void MapEditor::setCurrentDocument(Document *document)
     // Take the currently active tool to the new map view
     if (mViewWithTool) {
         MapScene *mapScene = mViewWithTool->mapScene();
-        mapScene->disableSelectedTool();
+        mapScene->setSelectedTool(nullptr);
         mViewWithTool = nullptr;
     }
 
@@ -439,11 +466,12 @@ void MapEditor::setCurrentDocument(Document *document)
     if (mapView) {
         MapScene *mapScene = mapView->mapScene();
         mapScene->setSelectedTool(mSelectedTool);
-        mapScene->enableSelectedTool();
+
         if (mSelectedTool)
             mapView->viewport()->setCursor(mSelectedTool->cursor());
         else
             mapView->viewport()->unsetCursor();
+
         mViewWithTool = mapView;
     }
 }
@@ -606,12 +634,7 @@ void MapEditor::setSelectedTool(AbstractTool *tool)
 
     if (mViewWithTool) {
         MapScene *mapScene = mViewWithTool->mapScene();
-        mapScene->disableSelectedTool();
-
-        if (tool) {
-            mapScene->setSelectedTool(tool);
-            mapScene->enableSelectedTool();
-        }
+        mapScene->setSelectedTool(tool);
 
         if (tool)
             mViewWithTool->viewport()->setCursor(tool->cursor());
@@ -929,6 +952,12 @@ void MapEditor::retranslateUi()
 {
     mToolsToolBar->setWindowTitle(tr("Tools"));
     mToolSpecificToolBar->setWindowTitle(tr("Tool Options"));
+}
+
+void MapEditor::showTileCollisionShapesChanged(bool enabled)
+{
+    for (auto mapView : qAsConst(mWidgetForMap))
+        mapView->mapScene()->setShowTileCollisionShapes(enabled);
 }
 
 } // namespace Tiled

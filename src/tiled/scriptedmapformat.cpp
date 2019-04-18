@@ -36,7 +36,14 @@ ScriptedMapFormat::ScriptedMapFormat(const QString &shortName,
     : MapFormat(parent)
     , mShortName(shortName)
     , mObject(object)
-{}
+{
+    PluginManager::addObject(this);
+}
+
+ScriptedMapFormat::~ScriptedMapFormat()
+{
+    PluginManager::removeObject(this);
+}
 
 FileFormat::Capabilities ScriptedMapFormat::capabilities() const
 {

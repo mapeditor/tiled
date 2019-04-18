@@ -138,7 +138,7 @@ static TileStamp stampFromContext(AbstractTool *selectedTool)
         copyMap->addTilesets(copy->usedTilesets());
 
         copyMap->setRenderOrder(map->renderOrder());
-        copyMap->addLayer(copy.release());
+        copyMap->addLayer(std::move(copy));
 
         stamp.addVariation(std::move(copyMap));
     }

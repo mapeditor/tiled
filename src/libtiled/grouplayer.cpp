@@ -34,10 +34,10 @@ GroupLayer::~GroupLayer()
     qDeleteAll(mLayers);
 }
 
-void GroupLayer::addLayer(Layer *layer)
+void GroupLayer::addLayer(std::unique_ptr<Layer> layer)
 {
     adoptLayer(*layer);
-    mLayers.append(layer);
+    mLayers.append(layer.release());
 }
 
 void GroupLayer::insertLayer(int index, Layer *layer)
@@ -130,7 +130,7 @@ GroupLayer *GroupLayer::initializeClone(GroupLayer *clone) const
 {
     Layer::initializeClone(clone);
     for (const Layer *layer : mLayers)
-        clone->addLayer(layer->clone());
+        clone->addLayer(std::unique_ptr<Layer>{ layer->clone() });
     return clone;
 }
 

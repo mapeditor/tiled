@@ -143,6 +143,7 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
     connect(mapDocument.data(), &MapDocument::selectedLayersChanged, this, &MapItem::updateSelectedLayersHighlight);
     connect(mapDocument.data(), &MapDocument::tilesetTileOffsetChanged, this, &MapItem::adaptToTilesetTileSizeChanges);
     connect(mapDocument.data(), &MapDocument::tileImageSourceChanged, this, &MapItem::adaptToTileSizeChanges);
+    connect(mapDocument.data(), &MapDocument::tileObjectGroupChanged, this, &MapItem::tileObjectGroupChanged);
     connect(mapDocument.data(), &MapDocument::tilesetReplaced, this, &MapItem::tilesetReplaced);
     connect(mapDocument.data(), &MapDocument::objectsInserted, this, &MapItem::objectsInserted);
     connect(mapDocument.data(), &MapDocument::objectsRemoved, this, &MapItem::objectsRemoved);
@@ -225,6 +226,20 @@ void MapItem::setDisplayMode(DisplayMode displayMode)
     }
 
     updateSelectedLayersHighlight();
+}
+
+void MapItem::setShowTileCollisionShapes(bool enabled)
+{
+    mapDocument()->renderer()->setFlag(ShowTileCollisionShapes, enabled);
+
+    for (MapObjectItem *item : qAsConst(mObjectItems))
+        if (Tile *tile = item->mapObject()->cell().tile())
+            if (tile->objectGroup() && !tile->objectGroup()->isEmpty())
+                item->syncWithMapObject();
+
+    for (LayerItem *item : qAsConst(mLayerItems))
+        if (item->layer()->isTileLayer())
+            item->update();
 }
 
 QRectF MapItem::boundingRect() const
@@ -440,6 +455,18 @@ void MapItem::adaptToTileSizeChanges(Tile *tile)
     }
 }
 
+void MapItem::tileObjectGroupChanged(Tile *tile)
+{
+    if (!Preferences::instance()->showTileCollisionShapes())
+        return;
+
+    for (MapObjectItem *item : qAsConst(mObjectItems)) {
+        const Cell &cell = item->mapObject()->cell();
+        if (cell.tile() == tile)
+            item->syncWithMapObject();
+    }
+}
+
 void MapItem::tilesetReplaced(int index, Tileset *tileset)
 {
     Q_UNUSED(index)
@@ -519,7 +546,6 @@ void MapItem::syncAllObjectItems()
     for (MapObjectItem *item : qAsConst(mObjectItems))
         item->syncWithMapObject();
 }
-
 
 void MapItem::setObjectLineWidth(qreal lineWidth)
 {

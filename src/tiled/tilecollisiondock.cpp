@@ -143,9 +143,8 @@ TileCollisionDock::TileCollisionDock(QWidget *parent)
     mObjectsViewSplitter->addWidget(mMapView);
     mObjectsViewSplitter->addWidget(mObjectsWidget);
 
-    mMapScene->setSelectedTool(mToolManager->selectedTool());
     connect(mToolManager, &ToolManager::selectedToolChanged,
-            this, &TileCollisionDock::setSelectedTool);
+            mMapScene, &MapScene::setSelectedTool);
     connect(mToolManager, &ToolManager::statusInfoChanged,
             this, &TileCollisionDock::statusInfoChanged);
 
@@ -259,7 +258,7 @@ void TileCollisionDock::setTile(Tile *tile)
 
     mTile = tile;
 
-    mMapScene->disableSelectedTool();
+    mMapScene->setSelectedTool(nullptr);
     auto previousDocument = mDummyMapDocument;
 
     mMapView->setEnabled(tile);
@@ -302,7 +301,7 @@ void TileCollisionDock::setTile(Tile *tile)
         mObjectsView->setRootIndex(mObjectsView->layerViewIndex(objectGroup));
         mToolManager->setMapDocument(mDummyMapDocument.data());
 
-        mMapScene->enableSelectedTool();
+        mMapScene->setSelectedTool(mToolManager->selectedTool());
 
         connect(mDummyMapDocument->undoStack(), &QUndoStack::indexChanged,
                 this, &TileCollisionDock::applyChanges);
@@ -328,13 +327,6 @@ void TileCollisionDock::setTile(Tile *tile)
         disconnect(previousDocument->undoStack(), &QUndoStack::indexChanged,
                    this, &TileCollisionDock::applyChanges);
     }
-}
-
-void TileCollisionDock::setSelectedTool(AbstractTool *tool)
-{
-    mMapScene->disableSelectedTool();
-    mMapScene->setSelectedTool(tool);
-    mMapScene->enableSelectedTool();
 }
 
 void TileCollisionDock::applyChanges()

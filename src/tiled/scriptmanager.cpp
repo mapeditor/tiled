@@ -24,12 +24,14 @@
 #include "editablemap.h"
 #include "editablemapobject.h"
 #include "editableobjectgroup.h"
+#include "editableselectedarea.h"
 #include "editabletile.h"
 #include "editabletilelayer.h"
 #include "editabletileset.h"
 #include "logginginterface.h"
 #include "regionvaluetype.h"
 #include "scriptedaction.h"
+#include "scriptedtool.h"
 #include "scriptmodule.h"
 #include "tilelayer.h"
 #include "tilelayeredit.h"
@@ -76,12 +78,14 @@ ScriptManager::ScriptManager(QObject *parent)
     qRegisterMetaType<EditableMap*>();
     qRegisterMetaType<EditableMapObject*>();
     qRegisterMetaType<EditableObjectGroup*>();
+    qRegisterMetaType<EditableSelectedArea*>();
     qRegisterMetaType<EditableTile*>();
     qRegisterMetaType<EditableTileLayer*>();
     qRegisterMetaType<EditableTileset*>();
-    qRegisterMetaType<TileLayerEdit*>();
     qRegisterMetaType<RegionValueType>();
     qRegisterMetaType<ScriptedAction*>();
+    qRegisterMetaType<ScriptedTool*>();
+    qRegisterMetaType<TileLayerEdit*>();
 
     connect(&mWatcher, &FileSystemWatcher::filesChanged,
             this, &ScriptManager::scriptFilesChanged);

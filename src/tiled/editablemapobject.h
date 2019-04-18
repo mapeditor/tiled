@@ -62,6 +62,8 @@ public:
                       MapObject *mapObject,
                       QObject *parent = nullptr);
 
+    ~EditableMapObject() override;
+
     int id() const;
     QString name() const;
     QString type() const;
@@ -81,6 +83,8 @@ public:
 
     void detach();
     void attach(EditableMap *map);
+    void hold();
+    void release();
 
 public slots:
     void setName(QString name);

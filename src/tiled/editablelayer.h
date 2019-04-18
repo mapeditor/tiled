@@ -71,6 +71,8 @@ public:
 
     void detach();
     void attach(EditableMap *map);
+    void hold();
+    void release();
 
 public slots:
     void setName(const QString &name);
@@ -80,9 +82,10 @@ public slots:
     void setOffset(QPointF offset);
     void setSelected(bool selected);
 
-private:
+protected:
     MapDocument *mapDocument() const;
 
+private:
     std::unique_ptr<Layer> mDetachedLayer;
 };
 

@@ -298,7 +298,7 @@ public:
     /**
      * Adds a layer to this map.
      */
-    void addLayer(std::unique_ptr<Layer> &&layer);
+    void addLayer(std::unique_ptr<Layer> layer);
     void addLayer(Layer *layer);
 
     /**
@@ -546,7 +546,7 @@ inline Map::LayerIteratorHelper Map::objectGroups() const
     return allLayers(Layer::ObjectGroupType);
 }
 
-inline void Map::addLayer(std::unique_ptr<Layer> &&layer)
+inline void Map::addLayer(std::unique_ptr<Layer> layer)
 {
     addLayer(layer.release());
 }

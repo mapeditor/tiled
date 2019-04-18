@@ -25,6 +25,7 @@
 #include "logginginterface.h"
 #include "scriptedaction.h"
 #include "scriptedmapformat.h"
+#include "scriptedtool.h"
 #include "scriptmanager.h"
 
 #include <QAction>
@@ -56,9 +57,6 @@ ScriptModule::~ScriptModule()
 
     for (const auto &pair : mRegisteredActions)
         ActionManager::unregisterAction(pair.second->id());
-
-    for (const auto &pair : mRegisteredMapFormats)
-        PluginManager::removeObject(pair.second.get());
 }
 
 QString ScriptModule::version() const
@@ -178,13 +176,23 @@ void ScriptModule::registerMapFormat(const QString &shortName, QJSValue mapForma
         return;
 
     auto &format = mRegisteredMapFormats[shortName];
+    format.reset(new ScriptedMapFormat(shortName, mapFormatObject, this));
+}
 
-    // Remove any previously registered format with the same name
-    if (format)
-        PluginManager::removeObject(format.get());
+QJSValue ScriptModule::registerTool(const QString &shortName, QJSValue toolObject)
+{
+    if (shortName.isEmpty()) {
+        ScriptManager::instance().throwError(tr("Invalid shortName"));
+        return QJSValue();
+    }
 
-    format.reset(new ScriptedMapFormat(shortName, mapFormatObject));
-    PluginManager::addObject(format.get());
+    if (!ScriptedTool::validateToolObject(toolObject))
+        return QJSValue();
+
+    auto &tool = mRegisteredTools[shortName];
+
+    tool.reset(new ScriptedTool(toolObject, this));
+    return toolObject;
 }
 
 static QString toString(QJSValue value)

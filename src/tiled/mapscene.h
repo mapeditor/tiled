@@ -60,10 +60,9 @@ public:
     MapDocument *mapDocument() const;
     void setMapDocument(MapDocument *map);
 
-    QRectF mapBoundingRect() const;
+    void setShowTileCollisionShapes(bool enabled);
 
-    void enableSelectedTool();
-    void disableSelectedTool();
+    QRectF mapBoundingRect() const;
 
     void setSelectedTool(AbstractTool *tool);
 
@@ -104,12 +103,12 @@ private:
 
     bool eventFilter(QObject *object, QEvent *event) override;
 
-    MapDocument *mMapDocument;
+    MapDocument *mMapDocument = nullptr;
     QHash<MapDocument*, MapItem*> mMapItems;
-    AbstractTool *mSelectedTool;
-    AbstractTool *mActiveTool;
-    bool mUnderMouse;
-    Qt::KeyboardModifiers mCurrentModifiers;
+    AbstractTool *mSelectedTool = nullptr;
+    bool mUnderMouse = false;
+    bool mShowTileCollisionShapes = false;
+    Qt::KeyboardModifiers mCurrentModifiers = Qt::NoModifier;
     QPointF mLastMousePos;
     QColor mDefaultBackgroundColor;
 };

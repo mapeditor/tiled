@@ -1137,7 +1137,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="-42"/>
         <source>Infinite</source>
-        <translation type="unfinished"></translation>
+        <translation>Infinito</translation>
     </message>
     <message>
         <location line="+10"/>

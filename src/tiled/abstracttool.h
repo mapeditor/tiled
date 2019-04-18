@@ -157,7 +157,6 @@ public:
 
     virtual void populateToolBar(QToolBar*) {}
 
-public slots:
     void setMapDocument(MapDocument *mapDocument);
 
 protected:
@@ -175,7 +174,6 @@ protected:
 
     Layer *currentLayer() const;
 
-protected slots:
     /**
      * By default, this function is called after the current map has changed
      * and when the current layer changes. It can be overridden to implement
@@ -261,3 +259,4 @@ inline ToolManager *AbstractTool::toolManager() const
 } // namespace Tiled
 
 Q_DECLARE_METATYPE(Tiled::AbstractTool*)
+Q_DECLARE_INTERFACE(Tiled::AbstractTool, "org.mapeditor.AbstractTool")

@@ -51,12 +51,15 @@ public:
     void setMapDocument(MapDocument *mapDocument);
 
     QAction *registerTool(AbstractTool *tool);
+    void unregisterTool(AbstractTool *tool);
 
     bool selectTool(AbstractTool *tool);
     AbstractTool *selectedTool() const;
 
     template<typename Tool>
     Tool *findTool();
+
+    QAction *findAction(AbstractTool *tool) const;
 
     void retranslateTools();
 

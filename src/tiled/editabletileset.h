@@ -63,6 +63,7 @@ public:
     Q_INVOKABLE QList<QObject*> tiles();
 
     TilesetDocument *tilesetDocument() const;
+    Tileset *tileset() const;
 
 public slots:
     void setName(const QString &name);
@@ -70,20 +71,16 @@ public slots:
     void setBackgroundColor(const QColor &color);
 
 private slots:
+    void attachTiles(const QList<Tile*> &tiles);
     void detachTiles(const QList<Tile*> &tiles);
 
 private:
     friend class EditableTile;
-    friend class EditableTileLayer;
-
-    EditableTile *editableTile(Tile *tile);
-
-    Tileset *tileset() const;
 
     bool mReadOnly = false;
     SharedTileset mTileset;
 
-    QHash<Tile*, EditableTile*> mEditableTiles;
+    QHash<Tile*, EditableTile*> mAttachedTiles;
 };
 
 

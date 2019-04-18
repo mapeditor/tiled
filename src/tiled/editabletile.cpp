@@ -22,6 +22,7 @@
 
 #include "changetile.h"
 #include "changetileprobability.h"
+#include "editablemanager.h"
 #include "editabletileset.h"
 
 namespace Tiled {
@@ -29,12 +30,16 @@ namespace Tiled {
 EditableTile::EditableTile(EditableTileset *tileset, Tile *tile, QObject *parent)
     : EditableObject(tileset, tile, parent)
 {
+    if (tileset)
+        tileset->mAttachedTiles.insert(tile, this);
 }
 
 EditableTile::~EditableTile()
 {
     if (tileset())
-        tileset()->mEditableTiles.remove(tile());
+        tileset()->mAttachedTiles.remove(tile());
+
+    EditableManager::instance().mEditableTiles.remove(tile());
 }
 
 EditableTileset *EditableTile::tileset() const
@@ -45,22 +50,24 @@ EditableTileset *EditableTile::tileset() const
 void EditableTile::detach()
 {
     Q_ASSERT(tileset());
-    Q_ASSERT(tileset()->mEditableTiles.contains(tile()));
+    Q_ASSERT(tileset()->mAttachedTiles.contains(tile()));
 
-    tileset()->mEditableTiles.remove(tile());
+    tileset()->mAttachedTiles.remove(tile());
+    EditableManager::instance().mEditableTiles.remove(tile());
     setAsset(nullptr);
 
     mDetachedTile.reset(tile()->clone(nullptr));
     setObject(mDetachedTile.get());
+    EditableManager::instance().mEditableTiles.insert(tile(), this);
 }
 
 void EditableTile::attach(EditableTileset *tileset)
 {
     Q_ASSERT(!asset() && tileset);
-    Q_ASSERT(!tileset->mEditableTiles.contains(tile()));
+    Q_ASSERT(!tileset->mAttachedTiles.contains(tile()));
 
     setAsset(tileset);
-    tileset->mEditableTiles.insert(tile(), this);
+    tileset->mAttachedTiles.insert(tile(), this);
     mDetachedTile.release();
 }
 

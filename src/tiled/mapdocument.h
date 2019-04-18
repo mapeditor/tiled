@@ -341,6 +341,7 @@ signals:
     void tileTypeChanged(Tile *tile);
     void tileImageSourceChanged(Tile *tile);
     void tileProbabilityChanged(Tile *tile);
+    void tileObjectGroupChanged(Tile *tile);
 
 private slots:
     void onObjectsRemoved(const QList<MapObject*> &objects);
@@ -370,7 +371,6 @@ private:
     QPointer<MapFormat> mWriterFormat;
     QPointer<MapFormat> mExportFormat;
     std::unique_ptr<Map> mMap;
-    EditableMap *mEditableMap = nullptr;
     LayerModel *mLayerModel;
     QRegion mSelectedArea;
     QList<Layer*> mSelectedLayers;

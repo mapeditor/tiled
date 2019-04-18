@@ -67,6 +67,7 @@ public:
     MapDocument *mapDocument() const;
 
     void setDisplayMode(DisplayMode displayMode);
+    void setShowTileCollisionShapes(bool enabled);
 
     // QGraphicsItem
     QRectF boundingRect() const override;
@@ -101,6 +102,7 @@ private:
 
     void adaptToTilesetTileSizeChanges(Tileset *tileset);
     void adaptToTileSizeChanges(Tile *tile);
+    void tileObjectGroupChanged(Tile *tile);
 
     void tilesetReplaced(int index, Tileset *tileset);
 

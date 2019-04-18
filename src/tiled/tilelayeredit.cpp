@@ -73,6 +73,7 @@ void TileLayerEdit::apply()
                                         rect.x(), rect.y(),
                                         &mChanges,
                                         paintedRegion);
+        paint->setMergeable(mMergeable);
 
         // Add any used tilesets that aren't yet part of the target map
         const auto tilesets = mChanges.usedTilesets();
@@ -88,6 +89,10 @@ void TileLayerEdit::apply()
     }
 
     mChanges.clear();
+
+    // Applying an edit automatically makes it mergeable, so that further
+    // changes made through the same edit are merged by default.
+    mMergeable = true;
 }
 
 } // namespace Tiled

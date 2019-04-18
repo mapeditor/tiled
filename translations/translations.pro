@@ -27,6 +27,7 @@ LANGUAGES = \
     pt \
     pt_PT \
     ru \
+    sv \
     tr \
     uk \
     zh \

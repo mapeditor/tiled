@@ -90,7 +90,6 @@ protected:
     void changeEvent(QEvent *e) override;
 
 private slots:
-    void setSelectedTool(AbstractTool*);
     void applyChanges();
     void tileObjectGroupChanged(Tile*);
     void tilesetTileOffsetChanged(Tileset *tileset);

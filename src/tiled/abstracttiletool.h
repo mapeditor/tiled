@@ -36,6 +36,9 @@ class TileStamp;
 class AbstractTileTool : public AbstractTool
 {
     Q_OBJECT
+    Q_INTERFACES(Tiled::AbstractTool)
+
+    Q_PROPERTY(QPoint tilePosition READ tilePosition)
 
 public:
     /**

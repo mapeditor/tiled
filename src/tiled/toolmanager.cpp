@@ -108,6 +108,22 @@ QAction *ToolManager::registerTool(AbstractTool *tool)
     return toolAction;
 }
 
+void ToolManager::unregisterTool(AbstractTool *tool)
+{
+    auto action = findAction(tool);
+    Q_ASSERT(action);
+    delete action;
+
+    if (mDisabledTool == tool)
+        mDisabledTool = nullptr;
+    if (mPreviouslyDisabledTool == tool)
+        mPreviouslyDisabledTool = nullptr;
+    if (mSelectedTool == tool)
+        mSelectedTool = nullptr;
+
+    selectEnabledTool();
+}
+
 /**
  * Selects the given tool. It should be previously added using registerTool().
  *
@@ -134,6 +150,16 @@ bool ToolManager::selectTool(AbstractTool *tool)
         action->setChecked(false);
     setSelectedTool(nullptr);
     return tool == nullptr;
+}
+
+QAction *ToolManager::findAction(AbstractTool *tool) const
+{
+    const auto actions = mActionGroup->actions();
+    for (QAction *action : actions) {
+        if (action->data().value<AbstractTool*>() == tool)
+            return action;
+    }
+    return nullptr;
 }
 
 void ToolManager::actionTriggered(QAction *action)
@@ -181,7 +207,7 @@ void ToolManager::createShortcuts(QWidget *parent)
             // Make sure the shortcut is only enabled when the action is,
             // because different tools may use the same shortcut.
             shortcut->setEnabled(action->isEnabled());
-            connect(action, &QAction::changed, shortcut, [=]() {
+            connect(action, &QAction::changed, shortcut, [=] {
                 shortcut->setKey(action->shortcut());
                 shortcut->setEnabled(action->isEnabled());
             });
