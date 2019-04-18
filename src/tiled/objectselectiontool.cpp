@@ -358,6 +358,8 @@ void ObjectSelectionTool::activate(MapScene *scene)
             this, &ObjectSelectionTool::updateHandlesAndOrigin);
     connect(mapDocument(), &MapDocument::selectedObjectsChanged,
             this, &ObjectSelectionTool::updateHandlesAndOrigin);
+    connect(mapDocument(), &MapDocument::tilesetTileOffsetChanged,
+            this, &ObjectSelectionTool::updateHandlesAndOrigin);
     connect(mapDocument(), &MapDocument::objectsRemoved,
             this, &ObjectSelectionTool::objectsRemoved);
 
@@ -381,6 +383,8 @@ void ObjectSelectionTool::deactivate(MapScene *scene)
     disconnect(mapDocument(), &MapDocument::mapChanged,
                this, &ObjectSelectionTool::updateHandlesAndOrigin);
     disconnect(mapDocument(), &MapDocument::selectedObjectsChanged,
+               this, &ObjectSelectionTool::updateHandlesAndOrigin);
+    disconnect(mapDocument(), &MapDocument::tilesetTileOffsetChanged,
                this, &ObjectSelectionTool::updateHandlesAndOrigin);
     disconnect(mapDocument(), &MapDocument::objectsRemoved,
                this, &ObjectSelectionTool::objectsRemoved);

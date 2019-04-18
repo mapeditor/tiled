@@ -61,6 +61,7 @@ public:
         setZValue(1); // makes sure outlines are above labels
     }
 
+    MapObject *mapObject() const { return mObject; }
     void syncWithMapObject(const MapRenderer &renderer);
 
     QRectF boundingRect() const override;
@@ -284,6 +285,9 @@ ObjectSelectionItem::ObjectSelectionItem(MapDocument *mapDocument,
     connect(mapDocument, &MapDocument::objectsRemoved,
             this, &ObjectSelectionItem::objectsRemoved);
 
+    connect(mapDocument, &MapDocument::tilesetTileOffsetChanged,
+            this, &ObjectSelectionItem::tilesetTileOffsetChanged);
+
     connect(mapDocument, &MapDocument::tileTypeChanged,
             this, &ObjectSelectionItem::tileTypeChanged);
 
@@ -463,6 +467,23 @@ void ObjectSelectionItem::objectsRemoved(const QList<MapObject *> &objects)
     if (objectLabelVisibility() == Preferences::AllObjectLabels)
         for (MapObject *object : objects)
             delete mObjectLabels.take(object);
+}
+
+void ObjectSelectionItem::tilesetTileOffsetChanged(Tileset *tileset)
+{
+    // Tile offset affects the position of selection outlines and labels
+    const MapRenderer &renderer = *mMapDocument->renderer();
+
+    for (MapObjectLabel *label : mObjectLabels)
+        if (label->mapObject()->cell().tileset() == tileset)
+            label->syncWithMapObject(renderer);
+
+    for (MapObjectOutline *outline : mObjectOutlines)
+        if (outline->mapObject()->cell().tileset() == tileset)
+            outline->syncWithMapObject(renderer);
+
+    if (mHoveredMapObjectItem && mHoveredMapObjectItem->mapObject()->cell().tileset() == tileset)
+        mHoveredMapObjectItem->syncWithMapObject();
 }
 
 void ObjectSelectionItem::tileTypeChanged(Tile *tile)
