@@ -343,12 +343,22 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
 
         if (testFlag(ShowTileObjectOutlines)) {
             QPointF tileOffset;
+            QPointF scale(1.0, 1.0);
 
-            if (const Tile *tile = cell.tile())
+            if (const Tile *tile = cell.tile()) {
                 tileOffset = tile->offset();
 
-            QRectF rect(QPointF(pos.x() - size.width() / 2 + tileOffset.x(),
-                                pos.y() - size.height() + tileOffset.y()),
+                const QPixmap &image = tile->image();
+                const QSizeF imageSize = image.size();
+
+                if (!imageSize.isEmpty()) {
+                    scale = QPointF(size.width() / imageSize.width(),
+                                    size.height() / imageSize.height());
+                }
+            }
+
+            QRectF rect(QPointF(pos.x() - size.width() / 2 + tileOffset.x() * scale.x(),
+                                pos.y() - size.height() + tileOffset.y() * scale.y()),
                         size);
 
             pen.setStyle(Qt::SolidLine);
