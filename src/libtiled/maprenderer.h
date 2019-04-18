@@ -43,7 +43,8 @@ class TileLayer;
 class ImageLayer;
 
 enum RenderFlag {
-    ShowTileObjectOutlines = 0x1
+    ShowTileObjectOutlines = 0x1,
+    ShowTileCollisionShapes = 0x2
 };
 
 Q_DECLARE_FLAGS(RenderFlags, RenderFlag)
@@ -298,7 +299,8 @@ public:
         HexagonalCells
     };
 
-    explicit CellRenderer(QPainter *painter, CellType cellType = OrthogonalCells);
+    explicit CellRenderer(QPainter *painter, const MapRenderer *renderer,
+                          CellType cellType = OrthogonalCells);
 
     ~CellRenderer() { flush(); }
 
@@ -306,7 +308,10 @@ public:
     void flush();
 
 private:
+    void paintTileCollisionShapes();
+
     QPainter * const mPainter;
+    const MapRenderer * const mRenderer;
     const Tile *mTile;
     QVector<QPainter::PixmapFragment> mFragments;
     const bool mIsOpenGL;

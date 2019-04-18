@@ -188,6 +188,8 @@ public:
     bool isVisible() const;
     void setVisible(bool visible);
 
+    QColor effectiveColor() const;
+
     QVariant mapObjectProperty(Property property) const;
     void setMapObjectProperty(Property property, const QVariant &value);
 

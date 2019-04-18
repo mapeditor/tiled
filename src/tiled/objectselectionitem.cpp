@@ -151,7 +151,7 @@ public:
     MapObjectLabel(MapObject *object, QGraphicsItem *parent = nullptr)
         : QGraphicsItem(parent)
         , mObject(object)
-        , mColor(MapObjectItem::objectColor(mObject))
+        , mColor(mObject->effectiveColor())
     {
         setFlags(QGraphicsItem::ItemIgnoresTransformations |
                  QGraphicsItem::ItemIgnoresParentOpacity);
@@ -215,7 +215,7 @@ void MapObjectLabel::syncWithMapObject(const MapRenderer &renderer)
 
 void MapObjectLabel::updateColor()
 {
-    QColor color = MapObjectItem::objectColor(mObject);
+    const QColor color = mObject->effectiveColor();
     if (mColor != color) {
         mColor = color;
         update();

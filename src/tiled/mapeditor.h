@@ -130,6 +130,7 @@ private slots:
 private:
     void setupQuickStamps();
     void retranslateUi();
+    void showTileCollisionShapesChanged(bool enabled);
 
     void handleExternalTilesetsAndImages(const QStringList &fileNames,
                                          bool handleImages);

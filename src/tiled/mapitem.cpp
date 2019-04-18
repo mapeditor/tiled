@@ -129,7 +129,6 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
 
     connect(prefs, &Preferences::objectLineWidthChanged, this, &MapItem::setObjectLineWidth);
     connect(prefs, &Preferences::showTileObjectOutlinesChanged, this, &MapItem::setShowTileObjectOutlines);
-    connect(prefs, &Preferences::showTileCollisionShapesChanged, this, &MapItem::syncObjectItemsWithCollisionShapes);
     connect(prefs, &Preferences::highlightCurrentLayerChanged, this, &MapItem::updateSelectedLayersHighlight);
     connect(prefs, &Preferences::objectTypesChanged, this, &MapItem::syncAllObjectItems);
 
@@ -227,6 +226,20 @@ void MapItem::setDisplayMode(DisplayMode displayMode)
     }
 
     updateSelectedLayersHighlight();
+}
+
+void MapItem::setShowTileCollisionShapes(bool enabled)
+{
+    mapDocument()->renderer()->setFlag(ShowTileCollisionShapes, enabled);
+
+    for (MapObjectItem *item : qAsConst(mObjectItems))
+        if (Tile *tile = item->mapObject()->cell().tile())
+            if (tile->objectGroup() && !tile->objectGroup()->isEmpty())
+                item->syncWithMapObject();
+
+    for (LayerItem *item : qAsConst(mLayerItems))
+        if (item->layer()->isTileLayer())
+            item->update();
 }
 
 QRectF MapItem::boundingRect() const
@@ -532,14 +545,6 @@ void MapItem::syncAllObjectItems()
 {
     for (MapObjectItem *item : qAsConst(mObjectItems))
         item->syncWithMapObject();
-}
-
-void MapItem::syncObjectItemsWithCollisionShapes()
-{
-    for (MapObjectItem *item : qAsConst(mObjectItems))
-        if (Tile *tile = item->mapObject()->cell().tile())
-            if (tile->objectGroup() && !tile->objectGroup()->isEmpty())
-                item->syncWithMapObject();
 }
 
 void MapItem::setObjectLineWidth(qreal lineWidth)

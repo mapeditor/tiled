@@ -67,6 +67,7 @@ public:
     MapDocument *mapDocument() const;
 
     void setDisplayMode(DisplayMode displayMode);
+    void setShowTileCollisionShapes(bool enabled);
 
     // QGraphicsItem
     QRectF boundingRect() const override;
@@ -111,7 +112,6 @@ private:
     void objectsIndexChanged(ObjectGroup *objectGroup, int first, int last);
 
     void syncAllObjectItems();
-    void syncObjectItemsWithCollisionShapes();
 
     void setObjectLineWidth(qreal lineWidth);
     void setShowTileObjectOutlines(bool enabled);

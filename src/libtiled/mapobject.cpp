@@ -239,6 +239,30 @@ Alignment MapObject::alignment() const
     return BottomLeft;
 }
 
+/**
+ * A helper function to determine the color of a map object. The color is
+ * determined first of all by the object type, and otherwise by the group
+ * that the object is in. If still no color is defined, it defaults to
+ * gray.
+ */
+QColor MapObject::effectiveColor() const
+{
+    const QString effectiveType = this->effectiveType();
+
+    // See if this object type has a color associated with it
+    for (const ObjectType &type : Object::objectTypes()) {
+        if (type.name.compare(effectiveType, Qt::CaseInsensitive) == 0)
+            return type.color;
+    }
+
+    // If not, get color from object group
+    if (mObjectGroup && mObjectGroup->color().isValid())
+        return mObjectGroup->color();
+
+    // Fallback color
+    return Qt::gray;
+}
+
 QVariant MapObject::mapObjectProperty(Property property) const
 {
     switch (property) {

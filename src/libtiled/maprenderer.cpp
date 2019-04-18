@@ -29,9 +29,13 @@
 #include "maprenderer.h"
 
 #include "imagelayer.h"
+#include "isometricrenderer.h"
+#include "map.h"
 #include "mapobject.h"
+#include "orthogonalrenderer.h"
 #include "tile.h"
 #include "tilelayer.h"
+#include "objectgroup.h"
 
 #include <QPaintEngine>
 #include <QPainter>
@@ -220,8 +224,9 @@ static bool hasOpenGLEngine(const QPainter *painter)
             type == QPaintEngine::OpenGL2);
 }
 
-CellRenderer::CellRenderer(QPainter *painter, const CellType cellType)
+CellRenderer::CellRenderer(QPainter *painter, const MapRenderer *renderer, CellType cellType)
     : mPainter(painter)
+    , mRenderer(renderer)
     , mTile(nullptr)
     , mIsOpenGL(hasOpenGLEngine(painter))
     , mCellType(cellType)
@@ -333,6 +338,17 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &si
     mPainter->setTransform(transform);
     mPainter->drawPixmap(target, image, source);
     mPainter->setTransform(oldTransform);
+
+    // A bit of a hack to still draw tile collision shapes when requested
+    if (mRenderer->flags().testFlag(ShowTileCollisionShapes)
+            && tile->objectGroup()
+            && !tile->objectGroup()->objects().isEmpty()) {
+        mTile = tile;
+        mFragments.append(fragment);
+        paintTileCollisionShapes();
+        mTile = nullptr;
+        mFragments.resize(0);
+    }
 }
 
 /**
@@ -347,6 +363,90 @@ void CellRenderer::flush()
                                   mFragments.size(),
                                   mTile->image());
 
+    if (mRenderer->flags().testFlag(ShowTileCollisionShapes)
+            && mTile->objectGroup()
+            && !mTile->objectGroup()->objects().isEmpty()) {
+        paintTileCollisionShapes();
+    }
+
     mTile = nullptr;
     mFragments.resize(0);
+}
+
+/**
+ * Returns a transform that rotates by \a rotation degrees around the given
+ * \a position.
+ */
+static QTransform rotateAt(const QPointF &position, qreal rotation)
+{
+    QTransform transform;
+    transform.translate(position.x(), position.y());
+    transform.rotate(rotation);
+    transform.translate(-position.x(), -position.y());
+    return transform;
+}
+
+void CellRenderer::paintTileCollisionShapes()
+{
+    const Tileset *tileset = mTile->tileset();
+    const Map map(tileset->orientation() == Tileset::Orthogonal ? Map::Orthogonal
+                                                                : Map::Isometric,
+                  QSize(1, 1),
+                  tileset->gridSize());
+
+    std::unique_ptr<MapRenderer> renderer;
+
+    const bool isIsometric = tileset->orientation() == Tileset::Isometric;
+    if (isIsometric)
+        renderer.reset(new IsometricRenderer(&map));
+    else
+        renderer.reset(new OrthogonalRenderer(&map));
+
+    const qreal lineWidth = mRenderer->objectLineWidth();
+    const qreal shadowDist = (lineWidth == 0 ? 1 : lineWidth) / mRenderer->painterScale();
+    const QPointF shadowOffset = QPointF(shadowDist * 0.5, shadowDist * 0.5);
+
+    QPen shadowPen(Qt::black);
+    shadowPen.setCosmetic(true);
+    shadowPen.setJoinStyle(Qt::RoundJoin);
+    shadowPen.setCapStyle(Qt::RoundCap);
+    shadowPen.setWidthF(lineWidth);
+    shadowPen.setStyle(Qt::DotLine);
+
+    mPainter->setRenderHint(QPainter::Antialiasing);
+
+    for (const auto &fragment : mFragments) {
+        QTransform tileTransform;
+        tileTransform.translate(fragment.x, fragment.y);
+        tileTransform.rotate(fragment.rotation);
+        tileTransform.scale(fragment.scaleX, fragment.scaleY);
+        tileTransform.translate(-fragment.width * 0.5, -fragment.height * 0.5);
+
+        if (isIsometric)
+            tileTransform.translate(0, fragment.height - tileset->gridSize().height());
+
+        for (MapObject *object : mTile->objectGroup()->objects()) {
+            QColor penColor = object->effectiveColor();
+            QColor brushColor = penColor;
+            brushColor.setAlpha(50);
+            QPen colorPen(shadowPen);
+            colorPen.setColor(penColor);
+
+            mPainter->setPen(colorPen);
+            mPainter->setBrush(brushColor);
+
+            auto transform = rotateAt(renderer->pixelToScreenCoords(object->position()),
+                                      object->rotation());
+            transform *= tileTransform;
+
+            const auto shape = transform.map(renderer->shape(object));
+
+            mPainter->strokePath(shape.translated(shadowOffset), shadowPen);
+
+            if (object->shape() == MapObject::Polyline)
+                mPainter->strokePath(shape, colorPen);
+            else
+                mPainter->drawPath(shape);
+        }
+    }
 }

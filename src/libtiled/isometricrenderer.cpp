@@ -304,7 +304,7 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
     // Determine whether the current row is shifted half a tile to the right
     bool shifted = inUpperHalf ^ inLeftHalf;
 
-    CellRenderer renderer(painter);
+    CellRenderer renderer(painter, this);
 
     for (int y = startPos.y() * 2; y - tileHeight * 2 < rect.bottom() * 2;
          y += tileHeight)
@@ -372,8 +372,8 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
         const QSizeF size = object->size();
         const QPointF pos = pixelToScreenCoords(object->position());
 
-        CellRenderer(painter).render(cell, pos, size,
-                                     CellRenderer::BottomCenter);
+        CellRenderer(painter, this).render(cell, pos, size,
+                                           CellRenderer::BottomCenter);
 
         if (testFlag(ShowTileObjectOutlines)) {
             QPointF tileOffset;
@@ -386,6 +386,8 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
                         size);
 
             pen.setStyle(Qt::SolidLine);
+            painter->setRenderHint(QPainter::Antialiasing, false);
+            painter->setBrush(Qt::NoBrush);
             painter->setPen(pen);
             painter->drawRect(rect);
             pen.setStyle(Qt::DotLine);

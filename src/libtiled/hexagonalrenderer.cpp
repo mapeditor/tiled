@@ -307,7 +307,7 @@ void HexagonalRenderer::drawTileLayer(QPainter *painter,
     if (inLeftHalf)
         startTile.rx()--;
 
-    CellRenderer renderer(painter, CellRenderer::HexagonalCells);
+    CellRenderer renderer(painter, this, CellRenderer::HexagonalCells);
 
     const int endX = map()->infinite() ? layer->bounds().right() - layer->x() + 1 : layer->width();
     const int endY = map()->infinite() ? layer->bounds().bottom() - layer->y() + 1 : layer->height();

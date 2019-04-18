@@ -32,7 +32,6 @@
 #include "objectgroup.h"
 #include "objectgroupitem.h"
 #include "orthogonalrenderer.h"
-#include "preferences.h"
 #include "tile.h"
 #include "utils.h"
 #include "zoomable.h"
@@ -56,7 +55,7 @@ MapObjectItem::MapObjectItem(MapObject *object, MapDocument *mapDocument,
 
 void MapObjectItem::syncWithMapObject()
 {
-    const QColor color = objectColor(mObject);
+    const QColor color = mObject->effectiveColor();
 
     // Update the whole object when the name, polygon or color has changed
     if (mPolygon != mObject->polygon() || mColor != color) {
@@ -77,7 +76,7 @@ void MapObjectItem::syncWithMapObject()
 
     bounds.translate(-pixelPos);
 
-    if (Preferences::instance()->showTileCollisionShapes())
+    if (renderer->flags().testFlag(ShowTileCollisionShapes))
         expandBoundsToCoverTileCollisionObjects(bounds);
 
     setPos(pixelPos);
@@ -145,9 +144,6 @@ void MapObjectItem::paint(QPainter *painter,
     mMapDocument->renderer()->drawMapObject(painter, mObject, color);
     painter->translate(pos());
 
-    if (Preferences::instance()->showTileCollisionShapes())
-        paintTileCollisionObjects(painter, scale);
-
     if (mIsHoveredIndicator) {
         // TODO: Code mostly duplicated in MapObjectOutline
         const QPointF pixelPos = mMapDocument->renderer()->pixelToScreenCoords(mObject->position());
@@ -191,25 +187,6 @@ void MapObjectItem::setPolygon(const QPolygonF &polygon)
     syncWithMapObject();
 }
 
-QColor MapObjectItem::objectColor(const MapObject *object)
-{
-    const QString effectiveType = object->effectiveType();
-
-    // See if this object type has a color associated with it
-    for (const ObjectType &type : Object::objectTypes()) {
-        if (type.name.compare(effectiveType, Qt::CaseInsensitive) == 0)
-            return type.color;
-    }
-
-    // If not, get color from object group
-    const ObjectGroup *objectGroup = object->objectGroup();
-    if (objectGroup && objectGroup->color().isValid())
-        return objectGroup->color();
-
-    // Fallback color
-    return Qt::gray;
-}
-
 void MapObjectItem::expandBoundsToCoverTileCollisionObjects(QRectF &bounds)
 {
     const Cell &cell = mObject->cell();
@@ -237,64 +214,6 @@ void MapObjectItem::expandBoundsToCoverTileCollisionObjects(QRectF &bounds)
         transform *= tileTransform;
 
         bounds |= transform.mapRect(renderer->boundingRect(object));
-    }
-}
-
-void MapObjectItem::paintTileCollisionObjects(QPainter *painter, qreal painterScale)
-{
-    const Cell &cell = mObject->cell();
-    const Tile *tile = cell.tile();
-    if (!tile || !tile->objectGroup())
-        return;
-
-    const Tileset *tileset = cell.tileset();
-    const Map map(tileset->orientation() == Tileset::Orthogonal ? Map::Orthogonal
-                                                                : Map::Isometric,
-                  QSize(1, 1),
-                  tileset->gridSize());
-
-    std::unique_ptr<MapRenderer> renderer;
-
-    if (tileset->orientation() == Tileset::Orthogonal)
-        renderer.reset(new OrthogonalRenderer(&map));
-    else
-        renderer.reset(new IsometricRenderer(&map));
-
-    const qreal lineWidth = Preferences::instance()->objectLineWidth();
-    const qreal shadowDist = (lineWidth == 0 ? 1 : lineWidth) / painterScale;
-    const QPointF shadowOffset = QPointF(shadowDist * 0.5, shadowDist * 0.5);
-    const QTransform tileTransform = tileCollisionObjectsTransform(*tile);
-
-    QPen shadowPen(Qt::black);
-    shadowPen.setCosmetic(true);
-    shadowPen.setJoinStyle(Qt::RoundJoin);
-    shadowPen.setCapStyle(Qt::RoundCap);
-    shadowPen.setWidthF(lineWidth);
-    shadowPen.setStyle(Qt::DotLine);
-
-    painter->setRenderHint(QPainter::Antialiasing);
-
-    for (MapObject *object : tile->objectGroup()->objects()) {
-        QColor penColor = objectColor(object);
-        QColor brushColor = penColor;
-        brushColor.setAlpha(50);
-        QPen colorPen(shadowPen);
-        colorPen.setColor(penColor);
-
-        painter->setPen(colorPen);
-        painter->setBrush(brushColor);
-
-        auto transform = rotateAt(object->position(), object->rotation());
-        transform *= tileTransform;
-
-        const auto shape = transform.map(renderer->shape(object));
-
-        painter->strokePath(shape.translated(shadowOffset), shadowPen);
-
-        if (object->shape() == MapObject::Polyline)
-            painter->strokePath(shape, colorPen);
-        else
-            painter->drawPath(shape);
     }
 }
 

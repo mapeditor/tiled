@@ -95,6 +95,8 @@
 #include <QStatusBar>
 #include <QToolBar>
 
+#include "qtcompat_p.h"
+
 #include <memory>
 
 static const char SIZE_KEY[] = "MapEditor/Size";
@@ -305,7 +307,11 @@ MapEditor::MapEditor(QObject *parent)
 
     setupQuickStamps();
     retranslateUi();
-    connect(Preferences::instance(), &Preferences::languageChanged, this, &MapEditor::retranslateUi);
+
+    Preferences *prefs = Preferences::instance();
+    connect(prefs, &Preferences::languageChanged, this, &MapEditor::retranslateUi);
+    connect(prefs, &Preferences::showTileCollisionShapesChanged,
+            this, &MapEditor::showTileCollisionShapesChanged);
 
     QSettings *settings = Preferences::instance()->settings();
     mMapStates = settings->value(QLatin1String(MAPSTATES_KEY)).toMap();
@@ -340,6 +346,7 @@ void MapEditor::addDocument(Document *document)
     MapView *view = new MapView(mWidgetStack);
     MapScene *scene = new MapScene(view); // scene is owned by the view
 
+    scene->setShowTileCollisionShapes(Preferences::instance()->showTileCollisionShapes());
     scene->setMapDocument(mapDocument);
     view->setScene(scene);
 
@@ -945,6 +952,12 @@ void MapEditor::retranslateUi()
 {
     mToolsToolBar->setWindowTitle(tr("Tools"));
     mToolSpecificToolBar->setWindowTitle(tr("Tool Options"));
+}
+
+void MapEditor::showTileCollisionShapesChanged(bool enabled)
+{
+    for (auto mapView : qAsConst(mWidgetForMap))
+        mapView->mapScene()->setShowTileCollisionShapes(enabled);
 }
 
 } // namespace Tiled

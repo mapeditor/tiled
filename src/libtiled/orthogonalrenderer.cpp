@@ -311,7 +311,7 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
     const QTransform savedTransform = painter->transform();
     painter->translate(layerPos);
 
-    CellRenderer renderer(painter);
+    CellRenderer renderer(painter, this);
 
     Map::RenderOrder renderOrder = map()->renderOrder();
 
@@ -391,8 +391,8 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
 
     if (!cell.isEmpty()) {
         const QSizeF size = object->size();
-        CellRenderer(painter).render(cell, QPointF(), size,
-                                     CellRenderer::BottomLeft);
+        CellRenderer(painter, this).render(cell, QPointF(), size,
+                                           CellRenderer::BottomLeft);
 
         if (testFlag(ShowTileObjectOutlines)) {
             QPointF tileOffset;
@@ -406,6 +406,8 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
 
             QPen pen(Qt::SolidLine);
             pen.setCosmetic(true);
+            painter->setRenderHint(QPainter::Antialiasing, false);
+            painter->setBrush(Qt::NoBrush);
             painter->setPen(pen);
             painter->drawRect(rect);
             pen.setStyle(Qt::DotLine);

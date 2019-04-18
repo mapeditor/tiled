@@ -26,7 +26,6 @@
 #include "imagelayer.h"
 #include "isometricrenderer.h"
 #include "mapobject.h"
-#include "mapobjectitem.h"
 #include "maprenderer.h"
 #include "objectgroup.h"
 #include "orthogonalrenderer.h"
@@ -216,7 +215,7 @@ void MiniMapRenderer::renderToImage(QImage& image, RenderFlags renderFlags) cons
                             painter.translate(-origin);
                         }
 
-                        const QColor color = MapObjectItem::objectColor(object);
+                        const QColor color = object->effectiveColor();
                         mRenderer->drawMapObject(&painter, object, color);
 
                         if (object->rotation() != qreal(0))

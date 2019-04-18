@@ -49,12 +49,8 @@
 
 using namespace Tiled;
 
-MapScene::MapScene(QObject *parent):
-    QGraphicsScene(parent),
-    mMapDocument(nullptr),
-    mSelectedTool(nullptr),
-    mUnderMouse(false),
-    mCurrentModifiers(Qt::NoModifier)
+MapScene::MapScene(QObject *parent)
+    : QGraphicsScene(parent)
 {
     updateDefaultBackgroundColor();
 
@@ -103,6 +99,16 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
 
     refreshScene();
     emit mapDocumentChanged(mMapDocument);
+}
+
+void MapScene::setShowTileCollisionShapes(bool enabled)
+{
+    if (mShowTileCollisionShapes == enabled)
+        return;
+
+    mShowTileCollisionShapes = enabled;
+    for (auto mapItem : mMapItems)
+        mapItem->setShowTileCollisionShapes(enabled);
 }
 
 /**
@@ -227,6 +233,7 @@ MapItem *MapScene::takeOrCreateMapItem(const MapDocumentPtr &mapDocument, MapIte
     auto mapItem = mMapItems.take(mapDocument.data());
     if (!mapItem) {
         mapItem = new MapItem(mapDocument, displayMode);
+        mapItem->setShowTileCollisionShapes(mShowTileCollisionShapes);
         connect(mapItem, &MapItem::boundingRectChanged, this, &MapScene::updateSceneRect);
         addItem(mapItem);
     } else {
