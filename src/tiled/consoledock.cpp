@@ -45,12 +45,11 @@ ConsoleDock::ConsoleDock(QWidget *parent)
     layout->setSpacing(0);
 
     mPlainTextEdit->setReadOnly(true);
-    mPlainTextEdit->setStyleSheet(QLatin1String(
-                            "QAbstractScrollArea {"
-                            " background-color: black;"
-                            " color:lightgray;"
-                            "}"
-                            ));
+
+    QPalette p = mPlainTextEdit->palette();
+    p.setColor(QPalette::Base, Qt::black);
+    p.setColor(QPalette::Text, Qt::lightGray);
+    mPlainTextEdit->setPalette(p);
 
     mLineEdit->setPlaceholderText(tr("Execute script"));
     mLineEdit->setClearButtonEnabled(true);
