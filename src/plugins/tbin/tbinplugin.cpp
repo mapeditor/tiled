@@ -147,7 +147,7 @@ Tiled::Map *TbinMapFormat::read(const QString &fileName)
                 throw std::invalid_argument(QT_TR_NOOP("Tilesheet must have equal margins."));
 
             auto tileset = Tiled::Tileset::create(ttilesheet.id.c_str(), ttilesheet.tileSize.x, ttilesheet.tileSize.y, ttilesheet.spacing.x, ttilesheet.margin.x);
-            tileset->setImageSource(Tiled::toUrl(QString::fromStdString(ttilesheet.image), fileDir));
+            tileset->setImageSource(Tiled::toUrl(QString::fromStdString(ttilesheet.image).replace("\\", "/"), fileDir));
             tileset->loadImage();
 
             tbinToTiledProperties(ttilesheet.props, tileset.data());
