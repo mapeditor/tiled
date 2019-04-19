@@ -345,7 +345,7 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
                 continue;
 
             Tile *tile = cell.tile();
-            QSize size = tile ? tile->size() : map()->tileSize();
+            QSize size = (tile && !tile->image().isNull()) ? tile->size() : map()->tileSize();
             renderer.render(cell,
                             QPointF(x * tileWidth, (y + 1) * tileHeight),
                             size,
