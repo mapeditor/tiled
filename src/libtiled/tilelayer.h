@@ -74,6 +74,12 @@ public:
         _flags(0)
     {}
 
+    Cell(Tileset *tileset, int tileId) :
+        _tileset(tileset),
+        _tileId(tileId),
+        _flags(0)
+    {}
+
     bool isEmpty() const { return _tileset == nullptr; }
 
     bool operator == (const Cell &other) const

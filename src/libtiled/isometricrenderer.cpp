@@ -281,7 +281,7 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
             const Cell &cell = layer->cellAt(columnItr);
             if (!cell.isEmpty()) {
                 Tile *tile = cell.tile();
-                QSize size = tile ? tile->size() : map()->tileSize();
+                QSize size = (tile && !tile->image().isNull()) ? tile->size() : map()->tileSize();
                 renderer.render(cell, QPointF(x, (qreal)y / 2), size,
                                 CellRenderer::BottomLeft);
             }
