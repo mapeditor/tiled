@@ -75,7 +75,7 @@ prefix of  `/usr` instead of `/usr/local`:
     $ qmake -r PREFIX=/usr
 
 Note: The -r recursive flag is required if you've run qmake before, as this
-command will affect nested pro files)
+command will affect nested pro files.
 
 To install Tiled to a packaging directory:
 
