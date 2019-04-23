@@ -1,6 +1,6 @@
 /*
- * preferencesdialog.h
- * Copyright 2009-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * shortcutsettingspage.h
+ * Copyright 2019, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -20,47 +20,27 @@
 
 #pragma once
 
-#include <QDialog>
+#include <QWidget>
 
-class QModelIndex;
-
-namespace Ui {
-class PreferencesDialog;
-}
+class QSortFilterProxyModel;
 
 namespace Tiled {
 
-/**
- * The preferences dialog. Allows the user to configure some general behaviour
- * settings of Tiled and choose the language.
- */
-class PreferencesDialog : public QDialog
+namespace Ui {
+class ShortcutSettingsPage;
+}
+
+class ShortcutSettingsPage : public QWidget
 {
     Q_OBJECT
 
 public:
-    PreferencesDialog(QWidget *parent = nullptr);
-    ~PreferencesDialog() override;
-
-protected:
-    void changeEvent(QEvent *e) override;
-
-private slots:
-    void languageSelected(int index);
+    explicit ShortcutSettingsPage(QWidget *parent = nullptr);
+    ~ShortcutSettingsPage();
 
 private:
-    void fromPreferences();
-
-    void retranslateUi();
-
-    void styleComboChanged();
-
-    void autoUpdateToggled(bool checked);
-    void checkForUpdates();
-
-    Ui::PreferencesDialog *mUi;
-    QStringList mLanguages;
+    Ui::ShortcutSettingsPage *ui;
+    QSortFilterProxyModel *mProxyModel;
 };
-
 
 } // namespace Tiled
