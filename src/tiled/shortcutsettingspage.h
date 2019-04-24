@@ -40,6 +40,8 @@ public:
     explicit ShortcutSettingsPage(QWidget *parent = nullptr);
     ~ShortcutSettingsPage() override;
 
+    QSize sizeHint() const override;
+
 private:
     void importShortcuts();
     void exportShortcuts();

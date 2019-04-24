@@ -125,6 +125,8 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
 
     connect(pluginListModel, &PluginListModel::setPluginEnabled,
             preferences, &Preferences::setPluginEnabled);
+
+    resize(sizeHint());
 }
 
 PreferencesDialog::~PreferencesDialog()

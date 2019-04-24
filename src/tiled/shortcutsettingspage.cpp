@@ -338,6 +338,69 @@ QWidget *ShortcutDelegate::createEditor(QWidget *parent,
 
 
 /**
+ * Allows interactively resizing each column, but also stretches a single one
+ * when the header gets resized.
+ *
+ * Based on HeaderViewStretcher from Qt Creator.
+ */
+class CustomStretchColumnHeaderView : public QHeaderView
+{
+    Q_OBJECT
+
+public:
+    CustomStretchColumnHeaderView(QWidget *parent = nullptr);
+
+    void initialize();
+
+protected:
+    void resizeEvent(QResizeEvent *event) override;
+    void showEvent(QShowEvent *event) override;
+    void hideEvent(QHideEvent *event) override;
+
+private:
+    const int mColumnToStretch = 1;
+};
+
+CustomStretchColumnHeaderView::CustomStretchColumnHeaderView(QWidget *parent)
+    : QHeaderView(Qt::Horizontal, parent)
+{
+    setStretchLastSection(true);
+}
+
+/**
+ * Should be called after setting the model and the header on the view, but
+ * before the view is shown.
+ */
+void CustomStretchColumnHeaderView::initialize()
+{
+    for (int i = 0; i < count(); ++i)
+        setSectionResizeMode(i, i == mColumnToStretch ? Stretch : ResizeToContents);
+}
+
+void CustomStretchColumnHeaderView::resizeEvent(QResizeEvent *event)
+{
+    if (sectionResizeMode(mColumnToStretch) == QHeaderView::Interactive) {
+        int diff = event->size().width() - event->oldSize().width();
+        resizeSection(mColumnToStretch, qMax(32, sectionSize(mColumnToStretch) + diff));
+    }
+    QHeaderView::resizeEvent(event);
+}
+
+void CustomStretchColumnHeaderView::showEvent(QShowEvent *event)
+{
+    for (int i = 0; i < count(); ++i)
+        setSectionResizeMode(i, QHeaderView::Interactive);
+    QHeaderView::showEvent(event);
+}
+
+void CustomStretchColumnHeaderView::hideEvent(QHideEvent *event)
+{
+    initialize();
+    QHeaderView::hideEvent(event);
+}
+
+
+/**
  * The actual settings page for editing keyboard shortcuts.
  */
 ShortcutSettingsPage::ShortcutSettingsPage(QWidget *parent)
@@ -353,12 +416,14 @@ ShortcutSettingsPage::ShortcutSettingsPage(QWidget *parent)
     mProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
     mProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
 
+    auto header = new CustomStretchColumnHeaderView(this);
+
     ui->shortcutsView->setModel(mProxyModel);
-    ui->shortcutsView->header()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
-    ui->shortcutsView->header()->setSectionResizeMode(1, QHeaderView::Stretch);
-    ui->shortcutsView->header()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
+    ui->shortcutsView->setHeader(header);
     ui->shortcutsView->sortByColumn(0, Qt::AscendingOrder);
     ui->shortcutsView->setItemDelegateForColumn(2, new ShortcutDelegate);
+
+    header->initialize();
 
     connect(ui->filterEdit, &QLineEdit::textChanged,
             mProxyModel, &QSortFilterProxyModel::setFilterFixedString);
@@ -379,6 +444,13 @@ ShortcutSettingsPage::~ShortcutSettingsPage()
         emit shortcutEditor->editingFinished();
 
     delete ui;
+}
+
+QSize ShortcutSettingsPage::sizeHint() const
+{
+    QSize size = QWidget::sizeHint();
+    size.setWidth(qRound(Utils::dpiScaled(500)));
+    return size;
 }
 
 void ShortcutSettingsPage::importShortcuts()
