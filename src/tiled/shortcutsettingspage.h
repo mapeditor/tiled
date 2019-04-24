@@ -42,6 +42,10 @@ public:
 
     QSize sizeHint() const override;
 
+protected:
+    void showEvent(QShowEvent *event) override;
+    void hideEvent(QHideEvent *event) override;
+
 private:
     void importShortcuts();
     void exportShortcuts();

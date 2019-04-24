@@ -64,7 +64,8 @@ public:
     void setCustomShortcuts(const QHash<Id, QKeySequence> &shortcuts);
 
 signals:
-    void actionAdded(Id id);
+    void actionChanged(Id id);
+    void actionsChanged();
 
 private:
     explicit ActionManager(QObject *parent = nullptr);

@@ -55,6 +55,7 @@ class ActionsModel : public QAbstractListModel
 public:
     explicit ActionsModel(QObject *parent = nullptr);
 
+    void setVisible(bool visible);
     void resetAllCustomShortcuts();
     void setCustomShortcuts(const QHash<Id, QKeySequence> &shortcuts);
 
@@ -66,18 +67,39 @@ public:
     QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 
 private:
+    void refresh();
     void emitDataChanged(int row);
+    void actionChanged(Id actionId);
 
     QList<Id> mActions;
     bool mDirty = false;
+    bool mVisible = false;
 };
 
 ActionsModel::ActionsModel(QObject *parent)
     : QAbstractListModel(parent)
     , mActions(ActionManager::actions())
 {
-    connect(ActionManager::instance(), &ActionManager::actionAdded,
-            this, [this] { mDirty = true; });
+    connect(ActionManager::instance(), &ActionManager::actionChanged,
+            this, &ActionsModel::actionChanged);
+    connect(ActionManager::instance(), &ActionManager::actionsChanged,
+            this, [this] { mDirty = true; refresh(); });
+}
+
+void ActionsModel::setVisible(bool visible)
+{
+    mVisible = visible;
+    refresh();
+}
+
+void ActionsModel::refresh()
+{
+    if (mVisible && mDirty) {
+        beginResetModel();
+        mActions = ActionManager::actions();
+        mDirty = false;
+        endResetModel();
+    }
 }
 
 void ActionsModel::resetAllCustomShortcuts()
@@ -170,7 +192,7 @@ bool ActionsModel::setData(const QModelIndex &index, const QVariant &value, int 
             const auto keySequence = value.value<QKeySequence>();
             if (action->shortcut() != keySequence) {
                 actionManager->setCustomShortcut(actionId, keySequence);
-                emitDataChanged(index.row());
+                // Guaranteed to trigger actionChanged, which emits dataChanged
                 return true;
             }
         }
@@ -209,6 +231,13 @@ void ActionsModel::emitDataChanged(int row)
     emit dataChanged(index(row, 0),
                      index(row, 2),
                      QVector<int> { Qt::DisplayRole, Qt::EditRole, Qt::FontRole });
+}
+
+void ActionsModel::actionChanged(Id actionId)
+{
+    int row = mActions.indexOf(actionId);
+    if (row != -1)
+        emitDataChanged(row);
 }
 
 
@@ -451,6 +480,18 @@ QSize ShortcutSettingsPage::sizeHint() const
     QSize size = QWidget::sizeHint();
     size.setWidth(qRound(Utils::dpiScaled(500)));
     return size;
+}
+
+void ShortcutSettingsPage::showEvent(QShowEvent *event)
+{
+    mActionsModel->setVisible(true);
+    QWidget::showEvent(event);
+}
+
+void ShortcutSettingsPage::hideEvent(QHideEvent *event)
+{
+    mActionsModel->setVisible(false);
+    QWidget::hideEvent(event);
 }
 
 void ShortcutSettingsPage::importShortcuts()
