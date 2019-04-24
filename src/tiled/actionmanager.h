@@ -61,6 +61,8 @@ public:
     void resetCustomShortcut(Id id);
     void resetAllCustomShortcuts();
 
+    void setCustomShortcuts(const QHash<Id, QKeySequence> &shortcuts);
+
 signals:
     void actionAdded(Id id);
 

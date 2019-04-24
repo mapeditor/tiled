@@ -23,18 +23,26 @@
 
 #include "actionmanager.h"
 #include "preferences.h"
+#include "savefile.h"
 #include "utils.h"
 
 #include <QAbstractListModel>
 #include <QAction>
+#include <QApplication>
+#include <QFileDialog>
 #include <QItemEditorFactory>
 #include <QKeyEvent>
 #include <QKeySequenceEdit>
+#include <QMessageBox>
 #include <QSortFilterProxyModel>
 #include <QStyledItemDelegate>
 #include <QToolButton>
+#include <QXmlStreamReader>
+#include <QXmlStreamWriter>
 
 #include <memory>
+
+#include "qtcompat_p.h"
 
 namespace Tiled {
 
@@ -48,6 +56,7 @@ public:
     explicit ActionsModel(QObject *parent = nullptr);
 
     void resetAllCustomShortcuts();
+    void setCustomShortcuts(const QHash<Id, QKeySequence> &shortcuts);
 
     int rowCount(const QModelIndex &parent) const override;
     int columnCount(const QModelIndex &parent) const override;
@@ -72,6 +81,15 @@ ActionsModel::ActionsModel(QObject *parent)
 void ActionsModel::resetAllCustomShortcuts()
 {
     ActionManager::instance()->resetAllCustomShortcuts();
+
+    emit dataChanged(index(0, 0),
+                     index(mActions.size() - 1, 2),
+                     QVector<int> { Qt::DisplayRole, Qt::EditRole, Qt::FontRole });
+}
+
+void ActionsModel::setCustomShortcuts(const QHash<Id, QKeySequence> &shortcuts)
+{
+    ActionManager::instance()->setCustomShortcuts(shortcuts);
 
     emit dataChanged(index(0, 0),
                      index(mActions.size() - 1, 2),
@@ -177,8 +195,9 @@ QVariant ActionsModel::headerData(int section, Qt::Orientation orientation, int 
 
 
 /**
- * ShortcutEditor is mostly needed to add a "Clear" button to the
- * QKeySequenceEdit, which doesn't feature one as of Qt 5.13.
+ * ShortcutEditor is needed to add a "Clear" button to the QKeySequenceEdit,
+ * which doesn't feature one as of Qt 5.13. It also adds a button to reset
+ * the shortcut.
  */
 class ShortcutEditor : public QWidget
 {
@@ -291,13 +310,12 @@ QWidget *ShortcutDelegate::createEditor(QWidget *parent,
 ShortcutSettingsPage::ShortcutSettingsPage(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::ShortcutSettingsPage)
+    , mActionsModel(new ActionsModel(this))
     , mProxyModel(new QSortFilterProxyModel(this))
 {
     ui->setupUi(this);
 
-    auto actionsModel = new ActionsModel(this);
-
-    mProxyModel->setSourceModel(actionsModel);
+    mProxyModel->setSourceModel(mActionsModel);
     mProxyModel->setSortLocaleAware(true);
     mProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
     mProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
@@ -313,12 +331,122 @@ ShortcutSettingsPage::ShortcutSettingsPage(QWidget *parent)
             mProxyModel, &QSortFilterProxyModel::setFilterFixedString);
 
     connect(ui->resetButton, &QPushButton::clicked,
-            actionsModel, &ActionsModel::resetAllCustomShortcuts);
+            mActionsModel, &ActionsModel::resetAllCustomShortcuts);
+
+    connect(ui->importButton, &QPushButton::clicked,
+            this, &ShortcutSettingsPage::importShortcuts);
+    connect(ui->exportButton, &QPushButton::clicked,
+            this, &ShortcutSettingsPage::exportShortcuts);
 }
 
 ShortcutSettingsPage::~ShortcutSettingsPage()
 {
     delete ui;
+}
+
+void ShortcutSettingsPage::importShortcuts()
+{
+    QString filter = tr("Keyboard Mapping Scheme (*.kms)");
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Import Shortcuts"),
+                                                    QString(), filter);
+
+    if (fileName.isEmpty())
+        return;
+
+    QFile file(fileName);
+    if (!file.open(QFile::ReadOnly | QIODevice::Text)) {
+        QMessageBox::critical(this,
+                              tr("Error Loading Shortcuts"),
+                              tr("Could not open file for reading."));
+        return;
+    }
+
+    QXmlStreamReader xml(&file);
+
+    if (xml.readNextStartElement() && xml.name() == QLatin1String("mapping")) {
+        QHash<Id, QKeySequence> result;
+
+        while (xml.readNextStartElement()) {
+            if (xml.name() == QLatin1String("shortcut")) {
+                QStringRef id = xml.attributes().value(QLatin1String("id"));
+
+                while (xml.readNextStartElement()) {
+                    if (xml.name() == QLatin1String("key")) {
+                        QString keyString = xml.attributes().value(QLatin1String("value")).toString();
+                        result.insert(Id(id.toUtf8()), QKeySequence(keyString));
+                        xml.skipCurrentElement();   // skip out of "key" element
+                        xml.skipCurrentElement();   // skip out of "shortcut" element
+                        break;
+                    } else {
+                        xml.skipCurrentElement();   // skip unknown element
+                    }
+                }
+            } else {
+                xml.skipCurrentElement();           // skip unknown element
+            }
+        }
+
+        mActionsModel->setCustomShortcuts(result);
+    }
+}
+
+void ShortcutSettingsPage::exportShortcuts()
+{
+    QString filter = tr("Keyboard Mapping Scheme (*.kms)");
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Export Shortcuts"),
+                                                    QString(), filter);
+
+    if (fileName.isEmpty())
+        return;
+
+    SaveFile file(fileName);
+
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        QMessageBox::critical(this,
+                              tr("Error Saving Shortcuts"),
+                              tr("Could not open file for writing."));
+        return;
+    }
+
+    QXmlStreamWriter xml(file.device());
+
+    xml.setAutoFormatting(true);
+    xml.setAutoFormattingIndent(1);
+
+    xml.writeStartDocument();
+    xml.writeDTD(QLatin1String("<!DOCTYPE KeyboardMappingScheme>"));
+    xml.writeComment(QString::fromLatin1(" Written by %1 %2, %3. ").
+                     arg(QApplication::applicationDisplayName(),
+                         QApplication::applicationVersion(),
+                         QDateTime::currentDateTime().toString(Qt::ISODate)));
+    xml.writeStartElement(QLatin1String("mapping"));
+
+    auto actions = ActionManager::actions();
+    std::sort(actions.begin(), actions.end());
+
+    for (Id actionId : qAsConst(actions)) {
+        const auto action = ActionManager::action(actionId);
+        const auto shortcut = action->shortcut();
+
+        xml.writeStartElement(QLatin1String("shortcut"));
+        xml.writeAttribute(QLatin1String("id"), actionId.toString());
+
+        if (!shortcut.isEmpty()) {
+            xml.writeEmptyElement(QLatin1String("key"));
+            xml.writeAttribute(QLatin1String("value"), shortcut.toString());
+        }
+
+        xml.writeEndElement();  // shortcut
+    }
+
+    xml.writeEndElement();  // mapping
+    xml.writeEndDocument();
+
+    if (!file.commit()) {
+        QMessageBox::critical(this,
+                              tr("Error Saving Shortcuts"),
+                              file.errorString());
+    }
 }
 
 } // namespace Tiled

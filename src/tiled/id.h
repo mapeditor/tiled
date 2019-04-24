@@ -32,12 +32,14 @@ public:
     Id(const QByteArray &name);
 
     QByteArray name() const;
+    QString toString() const;
     bool isNull() const { return mId == 0; }
 
     explicit operator bool() const { return !isNull(); }
 
     bool operator==(Id id) const { return mId == id.mId; }
     bool operator!=(Id id) const { return mId != id.mId; }
+    bool operator<(Id id) const { return name() < id.name(); }
 
 private:
     uint mId;

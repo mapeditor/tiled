@@ -41,21 +41,6 @@ public:
 static ActionManager *m_instance;
 static ActionManagerPrivate *d;
 
-static void saveCustomShortcuts()
-{
-    auto settings = Preferences::instance()->settings();
-    settings->beginGroup(QLatin1String("CustomShortcuts"));
-
-    QHashIterator<Id, QKeySequence> iterator(d->mCustomShortcuts);
-    while (iterator.hasNext()) {
-        iterator.next();
-        settings->setValue(QString::fromLatin1(iterator.key().name()),
-                           iterator.value().toString());
-    }
-
-    settings->endGroup();
-}
-
 static void readCustomShortcuts()
 {
     const auto settings = Preferences::instance()->settings();
@@ -169,7 +154,9 @@ void ActionManager::setCustomShortcut(Id id, const QKeySequence &keySequence)
     d->mCustomShortcuts.insert(id, keySequence);
     a->setShortcut(keySequence);
 
-    saveCustomShortcuts();
+    auto settings = Preferences::instance()->settings();
+    settings->setValue(QLatin1String("CustomShortcuts/") + id.toString(),
+                       keySequence.toString());
 }
 
 bool ActionManager::hasCustomShortcut(Id id) const
@@ -179,13 +166,15 @@ bool ActionManager::hasCustomShortcut(Id id) const
 
 void ActionManager::resetCustomShortcut(Id id)
 {
-    if (hasCustomShortcut(id)) {
-        auto a = action(id);
-        a->setShortcut(d->mDefaultShortcuts.take(id));
-        d->mCustomShortcuts.remove(id);
-    }
+    if (!hasCustomShortcut(id))
+        return;
 
-    saveCustomShortcuts();
+    auto a = action(id);
+    a->setShortcut(d->mDefaultShortcuts.take(id));
+    d->mCustomShortcuts.remove(id);
+
+    auto settings = Preferences::instance()->settings();
+    settings->remove(QLatin1String("CustomShortcuts/") + id.toString());
 }
 
 void ActionManager::resetAllCustomShortcuts()
@@ -199,7 +188,34 @@ void ActionManager::resetAllCustomShortcuts()
     d->mDefaultShortcuts.clear();
     d->mCustomShortcuts.clear();
 
-    saveCustomShortcuts();
+    auto settings = Preferences::instance()->settings();
+    settings->remove(QLatin1String("CustomShortcuts"));
+}
+
+/**
+ * Sets the custom shortcuts.
+ *
+ * Shortcuts that are the same as the default ones will be reset.
+ */
+void ActionManager::setCustomShortcuts(const QHash<Id, QKeySequence> &shortcuts)
+{
+    QHashIterator<Id, QKeySequence> iterator(shortcuts);
+    while (iterator.hasNext()) {
+        iterator.next();
+
+        const Id id = iterator.key();
+        const QKeySequence &shortcut = iterator.value();
+
+        if (auto a = findAction(id)) {
+            if (d->mDefaultShortcuts.contains(id)
+                    ? d->mDefaultShortcuts.value(id) == shortcut
+                    : a->shortcut() == shortcut) {
+                resetCustomShortcut(id);
+            } else {
+                setCustomShortcut(id, shortcut);
+            }
+        }
+    }
 }
 
 } // namespace Tiled

@@ -26,6 +26,8 @@ class QSortFilterProxyModel;
 
 namespace Tiled {
 
+class ActionsModel;
+
 namespace Ui {
 class ShortcutSettingsPage;
 }
@@ -39,7 +41,11 @@ public:
     ~ShortcutSettingsPage();
 
 private:
+    void importShortcuts();
+    void exportShortcuts();
+
     Ui::ShortcutSettingsPage *ui;
+    ActionsModel *mActionsModel;
     QSortFilterProxyModel *mProxyModel;
 };
 
