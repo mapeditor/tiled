@@ -38,7 +38,7 @@ class ShortcutSettingsPage : public QWidget
 
 public:
     explicit ShortcutSettingsPage(QWidget *parent = nullptr);
-    ~ShortcutSettingsPage();
+    ~ShortcutSettingsPage() override;
 
 private:
     void importShortcuts();
