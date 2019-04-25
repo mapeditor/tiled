@@ -53,6 +53,10 @@ namespace Tiled {
 class ActionsModel : public QAbstractListModel
 {
 public:
+    enum UserRoles {
+        HasCustomShortcut = Qt::UserRole
+    };
+
     explicit ActionsModel(QObject *parent = nullptr);
 
     void setVisible(bool visible);
@@ -168,6 +172,10 @@ QVariant ActionsModel::data(const QModelIndex &index, int role) const
         }
         break;
     }
+    case HasCustomShortcut: {
+        const Id actionId = mActions.at(index.row());
+        return ActionManager::instance()->hasCustomShortcut(actionId);
+    }
     }
 
     return QVariant();
@@ -256,6 +264,8 @@ public:
 
     QKeySequence keySequence() const;
 
+    void setResetEnabled(bool enabled);
+
 public slots:
     void setKeySequence(QKeySequence keySequence);
 
@@ -266,6 +276,7 @@ signals:
 
 private:
     QKeySequenceEdit *mKeySequenceEdit;
+    QToolButton *mResetButton;
 };
 
 ShortcutEditor::ShortcutEditor(QWidget *parent)
@@ -273,37 +284,48 @@ ShortcutEditor::ShortcutEditor(QWidget *parent)
     , mKeySequenceEdit(new QKeySequenceEdit)
 {
     auto clearButton = new QToolButton(this);
-    auto resetButton = new QToolButton(this);
-
+    clearButton->setAutoRaise(true);
+    clearButton->setAutoFillBackground(true);
     clearButton->setToolTip(tr("Remove shortcut"));
-    resetButton->setToolTip(tr("Reset shortcut to default"));
+    clearButton->setEnabled(false);
+    clearButton->setIcon(QIcon(QLatin1String("://images/scalable/edit-delete-symbolic.svg")));
 
-    Utils::setThemeIcon(clearButton, "edit-clear");
-    Utils::setThemeIcon(resetButton, "edit-undo");
+    mResetButton = new QToolButton(this);
+    mResetButton->setAutoRaise(true);
+    mResetButton->setAutoFillBackground(true);
+    mResetButton->setToolTip(tr("Reset shortcut to default"));
+    mResetButton->setIcon(QIcon(QLatin1String("://images/scalable/edit-undo-symbolic.svg")));
 
     auto layout = new QHBoxLayout(this);
-    layout->addWidget(mKeySequenceEdit);
     layout->setMargin(0);
     layout->setSpacing(0);
+    layout->addWidget(mKeySequenceEdit);
     layout->addWidget(clearButton);
-    layout->addWidget(resetButton);
+    layout->addWidget(mResetButton);
 
     setFocusProxy(mKeySequenceEdit);
 
     connect(clearButton, &QToolButton::clicked,
             mKeySequenceEdit, &QKeySequenceEdit::clear);
-    connect(resetButton, &QToolButton::clicked,
+    connect(mResetButton, &QToolButton::clicked,
             this, &ShortcutEditor::resetRequested);
 
     connect(mKeySequenceEdit, &QKeySequenceEdit::editingFinished,
             this, &ShortcutEditor::editingFinished);
     connect(mKeySequenceEdit, &QKeySequenceEdit::keySequenceChanged,
             this, &ShortcutEditor::keySequenceChanged);
+    connect(mKeySequenceEdit, &QKeySequenceEdit::keySequenceChanged,
+            this, [=] { clearButton->setEnabled(!keySequence().isEmpty()); });
 }
 
 QKeySequence ShortcutEditor::keySequence() const
 {
     return mKeySequenceEdit->keySequence();
+}
+
+void ShortcutEditor::setResetEnabled(bool enabled)
+{
+    mResetButton->setEnabled(enabled);
 }
 
 void ShortcutEditor::setKeySequence(QKeySequence keySequence)
@@ -347,18 +369,26 @@ QWidget *ShortcutDelegate::createEditor(QWidget *parent,
                                         const QModelIndex &index) const
 {
     auto editor = QStyledItemDelegate::createEditor(parent, option, index);
-    const QPersistentModelIndex persistentIndex(index);
 
     if (auto shortcutEditor = qobject_cast<ShortcutEditor*>(editor)) {
+        shortcutEditor->setResetEnabled(index.data(ActionsModel::HasCustomShortcut).toBool());
+
+        const QPersistentModelIndex persistentIndex(index);
+
+        connect(shortcutEditor, &ShortcutEditor::keySequenceChanged, this, [=] {
+            emit const_cast<ShortcutDelegate*>(this)->commitData(editor);
+            shortcutEditor->setResetEnabled(index.data(ActionsModel::HasCustomShortcut).toBool());
+        });
+
         connect(shortcutEditor, &ShortcutEditor::editingFinished, this, [=] {
-            const_cast<ShortcutDelegate*>(this)->commitData(editor);
-            const_cast<ShortcutDelegate*>(this)->closeEditor(editor, QAbstractItemDelegate::SubmitModelCache);
+            emit const_cast<ShortcutDelegate*>(this)->closeEditor(editor);
         });
 
         connect(shortcutEditor, &ShortcutEditor::resetRequested, this, [=] {
             auto model = const_cast<QAbstractItemModel*>(persistentIndex.model());
             model->setData(persistentIndex, QVariant(), Qt::EditRole);
-            const_cast<ShortcutDelegate*>(this)->closeEditor(editor);
+            shortcutEditor->setKeySequence(index.data(Qt::EditRole).value<QKeySequence>());
+            shortcutEditor->setResetEnabled(index.data(ActionsModel::HasCustomShortcut).toBool());
         });
     }
 

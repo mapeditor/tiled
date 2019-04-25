@@ -34,10 +34,11 @@ public:
     QHash<Id, QAction*> mIdToAction;
     QHash<Id, QMenu*> mIdToMenu;
 
-    QHash<Id, QKeySequence> mDefaultShortcuts;
+    QHash<Id, QKeySequence> mDefaultShortcuts;      // for resetting to default
     QHash<Id, QKeySequence> mCustomShortcuts;
+    QHash<Id, QKeySequence> mLastKnownShortcuts;    // for detecting shortcut changes
 
-    bool mSettingShortcut = false;
+    bool mApplyingShortcut = false;
 };
 
 static ActionManager *m_instance;
@@ -57,6 +58,13 @@ static void readCustomShortcuts()
     }
 
     settings->endGroup();
+}
+
+static void applyShortcut(QAction *action, const QKeySequence &shortcut)
+{
+    d->mApplyingShortcut = true;
+    action->setShortcut(shortcut);
+    d->mApplyingShortcut = false;
 }
 
 
@@ -87,29 +95,29 @@ void ActionManager::registerAction(QAction *action, Id id)
 {
     Q_ASSERT_X(!d->mIdToAction.contains(id), "ActionManager::registerAction", "duplicate id");
     d->mIdToAction.insert(id, action);
+    d->mLastKnownShortcuts.insert(id, action->shortcut());
 
-    if (m_instance->hasCustomShortcut(id)) {
-        d->mDefaultShortcuts.insert(id, action->shortcut());
-        action->setShortcut(d->mCustomShortcuts.value(id));
-    }
-
-    connect(action, &QAction::changed,
-            m_instance, [id,action] {
-        if (!d->mSettingShortcut) {
+    connect(action, &QAction::changed, m_instance, [id,action] {
+        if (!d->mApplyingShortcut && d->mDefaultShortcuts.contains(id) && d->mLastKnownShortcuts.value(id) != action->shortcut()) {
             // Update remembered default shortcut
-            if (d->mDefaultShortcuts.contains(id))
-                d->mDefaultShortcuts.insert(id, action->shortcut());
+            d->mDefaultShortcuts.insert(id, action->shortcut());
 
             // Reset back to user-defined shortcut if set
             if (d->mCustomShortcuts.contains(id)) {
-                d->mSettingShortcut = true;
-                action->setShortcut(d->mCustomShortcuts.value(id));
-                d->mSettingShortcut = false;
+                applyShortcut(action, d->mCustomShortcuts.value(id));
+                return;
             }
         }
 
+        d->mLastKnownShortcuts.insert(id, action->shortcut());
+
         emit m_instance->actionChanged(id);
     });
+
+    if (m_instance->hasCustomShortcut(id)) {
+        d->mDefaultShortcuts.insert(id, action->shortcut());
+        applyShortcut(action, d->mCustomShortcuts.value(id));
+    }
 
     emit m_instance->actionsChanged();
 }
@@ -119,6 +127,8 @@ void ActionManager::unregisterAction(Id id)
     Q_ASSERT_X(d->mIdToAction.contains(id), "ActionManager::unregisterAction", "unknown id");
     QAction *action = d->mIdToAction.take(id);
     action->disconnect(m_instance);
+    d->mDefaultShortcuts.remove(id);
+    d->mLastKnownShortcuts.remove(id);
     emit m_instance->actionsChanged();
 }
 
@@ -176,9 +186,7 @@ void ActionManager::setCustomShortcut(Id id, const QKeySequence &keySequence)
         d->mDefaultShortcuts.insert(id, a->shortcut());
 
     d->mCustomShortcuts.insert(id, keySequence);
-    d->mSettingShortcut = true;
-    a->setShortcut(keySequence);
-    d->mSettingShortcut = false;
+    applyShortcut(a, keySequence);
 
     auto settings = Preferences::instance()->settings();
     settings->setValue(QLatin1String("CustomShortcuts/") + id.toString(),
@@ -196,9 +204,7 @@ void ActionManager::resetCustomShortcut(Id id)
         return;
 
     auto a = action(id);
-    d->mSettingShortcut = true;
-    a->setShortcut(d->mDefaultShortcuts.take(id));
-    d->mSettingShortcut = false;
+    applyShortcut(a, d->mDefaultShortcuts.take(id));
     d->mCustomShortcuts.remove(id);
 
     auto settings = Preferences::instance()->settings();
@@ -207,14 +213,12 @@ void ActionManager::resetCustomShortcut(Id id)
 
 void ActionManager::resetAllCustomShortcuts()
 {
-    d->mSettingShortcut = true;
     QHashIterator<Id, QKeySequence> iterator(d->mDefaultShortcuts);
     while (iterator.hasNext()) {
         iterator.next();
         if (auto a = findAction(iterator.key()))
-            a->setShortcut(iterator.value());
+            applyShortcut(a, iterator.value());
     }
-    d->mSettingShortcut = false;
     d->mDefaultShortcuts.clear();
     d->mCustomShortcuts.clear();
 

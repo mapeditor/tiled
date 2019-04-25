@@ -153,5 +153,7 @@
         <file>images/24x24/object-rectangle.png</file>
         <file>images/24x24/object-text.png</file>
         <file>images/24x24/object-ellipse.png</file>
+        <file>images/scalable/edit-undo-symbolic.svg</file>
+        <file>images/scalable/edit-delete-symbolic.svg</file>
     </qresource>
 </RCC>
