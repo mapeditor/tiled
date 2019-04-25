@@ -15,7 +15,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="sizeConstraint">
-    <enum>QLayout::SetFixedSize</enum>
+    <enum>QLayout::SetMinimumSize</enum>
    </property>
    <item>
     <widget class="QTabWidget" name="tabWidget">
@@ -239,9 +239,12 @@
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Fixed</enum>
+            </property>
             <property name="sizeHint" stdset="0">
              <size>
-              <width>72</width>
+              <width>100</width>
               <height>20</height>
              </size>
             </property>
@@ -286,7 +289,7 @@
             </property>
            </spacer>
           </item>
-          <item row="1" column="0">
+          <item row="1" column="0" colspan="2">
            <widget class="QLabel" name="baseColorLabel">
             <property name="text">
              <string>Base color:</string>
@@ -313,6 +316,11 @@
         </spacer>
        </item>
       </layout>
+     </widget>
+     <widget class="Tiled::ShortcutSettingsPage" name="keyboardTab">
+      <attribute name="title">
+       <string>Keyboard</string>
+      </attribute>
      </widget>
      <widget class="QWidget" name="updatesTab">
       <attribute name="title">
@@ -424,6 +432,12 @@
    <class>Tiled::ColorButton</class>
    <extends>QToolButton</extends>
    <header>colorbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>Tiled::ShortcutSettingsPage</class>
+   <extends>QWidget</extends>
+   <header>shortcutsettingspage.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>

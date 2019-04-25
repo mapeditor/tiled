@@ -226,6 +226,7 @@ SOURCES += aboutdialog.cpp \
     selectionrectangle.cpp \
     selectsametiletool.cpp \
     shapefilltool.cpp \
+    shortcutsettingspage.cpp \
     snaphelper.cpp \
     stampactions.cpp \
     stampbrush.cpp \
@@ -447,6 +448,7 @@ HEADERS += aboutdialog.h \
     selectionrectangle.h \
     selectsametiletool.h \
     shapefilltool.h \
+    shortcutsettingspage.h \
     snaphelper.h \
     sparkleautoupdater.h \
     stampactions.h \
@@ -517,6 +519,7 @@ FORMS += aboutdialog.ui \
     patreondialog.ui \
     preferencesdialog.ui \
     resizedialog.ui \
+    shortcutsettingspage.ui \
     texteditordialog.ui \
     tileanimationeditor.ui
 

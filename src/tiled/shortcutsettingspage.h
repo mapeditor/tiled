@@ -1,6 +1,6 @@
 /*
- * id.h
- * Copyright 2016, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+ * shortcutsettingspage.h
+ * Copyright 2019, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -20,37 +20,39 @@
 
 #pragma once
 
-#include <QLatin1String>
+#include <QWidget>
+
+class QSortFilterProxyModel;
 
 namespace Tiled {
 
-class Id
+class ActionsModel;
+
+namespace Ui {
+class ShortcutSettingsPage;
+}
+
+class ShortcutSettingsPage : public QWidget
 {
+    Q_OBJECT
+
 public:
-    Id() : mId(0) {}
-    Id(const char *name);
-    Id(const QByteArray &name);
+    explicit ShortcutSettingsPage(QWidget *parent = nullptr);
+    ~ShortcutSettingsPage() override;
 
-    QByteArray name() const;
-    QString toString() const;
-    bool isNull() const { return mId == 0; }
+    QSize sizeHint() const override;
 
-    explicit operator bool() const { return !isNull(); }
-
-    bool operator==(Id id) const { return mId == id.mId; }
-    bool operator!=(Id id) const { return mId != id.mId; }
-    bool operator<(Id id) const { return name() < id.name(); }
+protected:
+    void showEvent(QShowEvent *event) override;
+    void hideEvent(QHideEvent *event) override;
 
 private:
-    uint mId;
+    void importShortcuts();
+    void exportShortcuts();
 
-    friend uint qHash(Id id) Q_DECL_NOTHROW;
+    Ui::ShortcutSettingsPage *ui;
+    ActionsModel *mActionsModel;
+    QSortFilterProxyModel *mProxyModel;
 };
-
-
-inline uint qHash(Id id) Q_DECL_NOTHROW
-{
-    return id.mId;
-}
 
 } // namespace Tiled

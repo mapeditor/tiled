@@ -39,6 +39,8 @@ class ActionManager : public QObject
     Q_OBJECT
 
 public:
+    static ActionManager *instance();
+
     static void registerAction(QAction *action, Id id);
     static void unregisterAction(Id id);
 
@@ -54,8 +56,16 @@ public:
     static QList<Id> actions();
     static QList<Id> menus();
 
+    void setCustomShortcut(Id id, const QKeySequence &keySequence);
+    bool hasCustomShortcut(Id id) const;
+    void resetCustomShortcut(Id id);
+    void resetAllCustomShortcuts();
+
+    void setCustomShortcuts(const QHash<Id, QKeySequence> &shortcuts);
+
 signals:
-    void actionAdded(Id id);
+    void actionChanged(Id id);
+    void actionsChanged();
 
 private:
     explicit ActionManager(QObject *parent = nullptr);

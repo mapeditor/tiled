@@ -658,12 +658,12 @@ void Preferences::setOpenLastFilesOnStartup(bool open)
 
 void Preferences::setPluginEnabled(const QString &fileName, bool enabled)
 {
-    PluginManager::instance()->setPluginState(fileName, enabled ? PluginEnabled : PluginDisabled);
+    PluginManager *pluginManager = PluginManager::instance();
+    pluginManager->setPluginState(fileName, enabled ? PluginEnabled : PluginDisabled);
 
     QStringList disabledPlugins;
     QStringList enabledPlugins;
 
-    PluginManager *pluginManager = PluginManager::instance();
     auto &states = pluginManager->pluginStates();
 
     for (auto it = states.begin(), it_end = states.end(); it != it_end; ++it) {

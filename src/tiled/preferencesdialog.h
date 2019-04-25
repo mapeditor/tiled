@@ -40,7 +40,7 @@ class PreferencesDialog : public QDialog
 
 public:
     PreferencesDialog(QWidget *parent = nullptr);
-    ~PreferencesDialog();
+    ~PreferencesDialog() override;
 
 protected:
     void changeEvent(QEvent *e) override;

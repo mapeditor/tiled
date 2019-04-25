@@ -34,7 +34,7 @@ using namespace Tiled;
 
 PreferencesDialog::PreferencesDialog(QWidget *parent)
     : QDialog(parent)
-    , mUi(new Ui::PreferencesDialog)
+    , mUi(new ::Ui::PreferencesDialog)
     , mLanguages(LanguageManager::instance()->availableLanguages())
 {
     mUi->setupUi(this);
@@ -125,6 +125,8 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
 
     connect(pluginListModel, &PluginListModel::setPluginEnabled,
             preferences, &Preferences::setPluginEnabled);
+
+    resize(sizeHint());
 }
 
 PreferencesDialog::~PreferencesDialog()
