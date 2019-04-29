@@ -475,6 +475,8 @@ Tileset
 +------------------+----------+-----------------------------------------------------+
 | properties       | array    | A list of properties (name, value, type).           |
 +------------------+----------+-----------------------------------------------------+
+| source           | string   | The external file that contains this tilesets data. |
++------------------+----------+-----------------------------------------------------+
 | spacing          | int      | Spacing between adjacent tiles in image (pixels)    |
 +------------------+----------+-----------------------------------------------------+
 | terrains         | array    | Array of :ref:`Terrains <json-terrain>` (optional)  |
