@@ -60,6 +60,7 @@ public:
     bool hasCustomShortcut(Id id) const;
     void resetCustomShortcut(Id id);
     void resetAllCustomShortcuts();
+    QKeySequence defaultShortcut(Id id);
 
     void setCustomShortcuts(const QHash<Id, QKeySequence> &shortcuts);
 

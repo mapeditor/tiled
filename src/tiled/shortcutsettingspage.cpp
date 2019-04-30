@@ -54,14 +54,14 @@ class ActionsModel : public QAbstractListModel
 {
 public:
     enum UserRoles {
-        HasCustomShortcut = Qt::UserRole
+        HasCustomShortcut = Qt::UserRole,
+        HasConflictingShortcut,
+        ActionId,
     };
 
     explicit ActionsModel(QObject *parent = nullptr);
 
     void setVisible(bool visible);
-    void resetAllCustomShortcuts();
-    void setCustomShortcuts(const QHash<Id, QKeySequence> &shortcuts);
 
     int rowCount(const QModelIndex &parent) const override;
     int columnCount(const QModelIndex &parent) const override;
@@ -70,24 +70,29 @@ public:
     Qt::ItemFlags flags(const QModelIndex &index) const override;
     QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 
-private:
     void refresh();
+
+private:
+    void refreshConflicts();
     void emitDataChanged(int row);
     void actionChanged(Id actionId);
 
-    QList<Id> mActions;
+    QList<Id> mActions = ActionManager::actions();
+    QVector<bool> mConflicts;
     bool mDirty = false;
     bool mVisible = false;
+    bool mConflictsDirty = true;
 };
 
 ActionsModel::ActionsModel(QObject *parent)
     : QAbstractListModel(parent)
-    , mActions(ActionManager::actions())
 {
     connect(ActionManager::instance(), &ActionManager::actionChanged,
             this, &ActionsModel::actionChanged);
     connect(ActionManager::instance(), &ActionManager::actionsChanged,
-            this, [this] { mDirty = true; refresh(); });
+            this, [this] { mDirty = mConflictsDirty = true; refresh(); });
+
+    refreshConflicts();
 }
 
 void ActionsModel::setVisible(bool visible)
@@ -98,30 +103,51 @@ void ActionsModel::setVisible(bool visible)
 
 void ActionsModel::refresh()
 {
-    if (mVisible && mDirty) {
+    if (!mVisible)
+        return;
+
+    if (mDirty) {
         beginResetModel();
         mActions = ActionManager::actions();
+        refreshConflicts();
         mDirty = false;
         endResetModel();
+    } else {
+        refreshConflicts();
     }
 }
 
-void ActionsModel::resetAllCustomShortcuts()
+void ActionsModel::refreshConflicts()
 {
-    ActionManager::instance()->resetAllCustomShortcuts();
+    if (!mConflictsDirty)
+        return;
 
-    emit dataChanged(index(0, 0),
-                     index(mActions.size() - 1, 2),
-                     QVector<int> { Qt::DisplayRole, Qt::EditRole, Qt::FontRole });
-}
+    QMap<QKeySequence, Id> actionsByKey;
 
-void ActionsModel::setCustomShortcuts(const QHash<Id, QKeySequence> &shortcuts)
-{
-    ActionManager::instance()->setCustomShortcuts(shortcuts);
+    for (const auto &actionId : qAsConst(mActions)) {
+        if (auto action = ActionManager::findAction(actionId))
+            if (!action->shortcut().isEmpty())
+                actionsByKey.insertMulti(action->shortcut(), actionId);
+    }
 
-    emit dataChanged(index(0, 0),
-                     index(mActions.size() - 1, 2),
-                     QVector<int> { Qt::DisplayRole, Qt::EditRole, Qt::FontRole });
+    QVector<bool> conflicts;
+    conflicts.reserve(mActions.size());
+
+    for (const auto &actionId : qAsConst(mActions)) {
+        if (auto action = ActionManager::findAction(actionId))
+            conflicts.append(actionsByKey.count(action->shortcut()) > 1);
+        else
+            conflicts.append(false);
+    }
+
+    mConflicts.swap(conflicts);
+    mConflictsDirty = false;
+
+    if (!mDirty && conflicts.size() == mConflicts.size() && conflicts != mConflicts) {
+        emit dataChanged(index(0, 0),
+                         index(conflicts.size() - 1, 2),
+                         QVector<int> { Qt::ForegroundRole });
+    }
 }
 
 int ActionsModel::rowCount(const QModelIndex &parent) const
@@ -147,8 +173,7 @@ static QString strippedText(QString s)
 QVariant ActionsModel::data(const QModelIndex &index, int role) const
 {
     switch (role) {
-    case Qt::DisplayRole:
-    case Qt::EditRole: {
+    case Qt::DisplayRole: {
         const Id actionId = mActions.at(index.row());
 
         switch (index.column()) {
@@ -157,10 +182,15 @@ QVariant ActionsModel::data(const QModelIndex &index, int role) const
         case 1:
             return strippedText(ActionManager::action(actionId)->text());
         case 2:
-            return ActionManager::action(actionId)->shortcut();
+            return ActionManager::action(actionId)->shortcut().toString(QKeySequence::NativeText);
         }
 
         break;
+    }
+
+    case Qt::EditRole: {
+        const Id actionId = mActions.at(index.row());
+        return ActionManager::action(actionId)->shortcut();
     }
     case Qt::FontRole: {
         const Id actionId = mActions.at(index.row());
@@ -172,10 +202,19 @@ QVariant ActionsModel::data(const QModelIndex &index, int role) const
         }
         break;
     }
+    case Qt::ForegroundRole: {
+        if (mConflicts.at(index.row()))
+            return QColor(Qt::red);
+        break;
+    }
     case HasCustomShortcut: {
         const Id actionId = mActions.at(index.row());
         return ActionManager::instance()->hasCustomShortcut(actionId);
     }
+    case HasConflictingShortcut:
+        return mConflicts.at(index.row());
+    case ActionId:
+        return QVariant::fromValue(mActions.at(index.row()));
     }
 
     return QVariant();
@@ -194,13 +233,15 @@ bool ActionsModel::setData(const QModelIndex &index, const QVariant &value, int 
             if (value.isNull() && actionManager->hasCustomShortcut(actionId)) {
                 actionManager->resetCustomShortcut(actionId);
                 emitDataChanged(index.row());
+                refreshConflicts();
                 return true;
             }
 
             const auto keySequence = value.value<QKeySequence>();
             if (action->shortcut() != keySequence) {
-                actionManager->setCustomShortcut(actionId, keySequence);
                 // Guaranteed to trigger actionChanged, which emits dataChanged
+                actionManager->setCustomShortcut(actionId, keySequence);
+                refreshConflicts();
                 return true;
             }
         }
@@ -244,8 +285,53 @@ void ActionsModel::emitDataChanged(int row)
 void ActionsModel::actionChanged(Id actionId)
 {
     int row = mActions.indexOf(actionId);
-    if (row != -1)
+    if (row != -1) {
+        mConflictsDirty = true;
         emitDataChanged(row);
+    }
+}
+
+
+/**
+ * Special sort-filter model that is able to filter based on key sequences.
+ */
+class KeySequenceFilterModel : public QSortFilterProxyModel
+{
+public:
+    KeySequenceFilterModel(QObject *parent = nullptr)
+        : QSortFilterProxyModel(parent)
+    {}
+
+    void setFilter(const QString &pattern);
+
+protected:
+    bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override;
+
+private:
+    QString mPattern;
+    QKeySequence mKeySequence;
+};
+
+void KeySequenceFilterModel::setFilter(const QString &pattern)
+{
+    mPattern = pattern;
+
+    if (pattern.startsWith(QLatin1String("key:")))
+        mKeySequence = QKeySequence(pattern.mid(4));
+    else
+        mKeySequence = QKeySequence();
+
+    setFilterFixedString(pattern);
+}
+
+bool KeySequenceFilterModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
+{
+    if (mKeySequence.isEmpty())
+        return QSortFilterProxyModel::filterAcceptsRow(sourceRow, sourceParent);
+
+    auto source = sourceModel();
+    auto keySequence = source->data(source->index(sourceRow, 2, sourceParent), Qt::EditRole).value<QKeySequence>();
+    return !keySequence.isEmpty() && mKeySequence.matches(keySequence) != QKeySequence::NoMatch;
 }
 
 
@@ -466,14 +552,18 @@ ShortcutSettingsPage::ShortcutSettingsPage(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::ShortcutSettingsPage)
     , mActionsModel(new ActionsModel(this))
-    , mProxyModel(new QSortFilterProxyModel(this))
+    , mProxyModel(new KeySequenceFilterModel(this))
 {
     ui->setupUi(this);
+
+    ui->conflictsLabel->setVisible(false);
 
     mProxyModel->setSourceModel(mActionsModel);
     mProxyModel->setSortLocaleAware(true);
     mProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
     mProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
+    mProxyModel->setFilterKeyColumn(-1);
+    mProxyModel->setDynamicSortFilter(false);   // Can mess up ShortcutEditor interaction
 
     auto header = new CustomStretchColumnHeaderView(this);
 
@@ -485,10 +575,20 @@ ShortcutSettingsPage::ShortcutSettingsPage(QWidget *parent)
     header->initialize();
 
     connect(ui->filterEdit, &QLineEdit::textChanged,
-            mProxyModel, &QSortFilterProxyModel::setFilterFixedString);
+            mProxyModel, &KeySequenceFilterModel::setFilter);
 
-    connect(ui->resetButton, &QPushButton::clicked,
-            mActionsModel, &ActionsModel::resetAllCustomShortcuts);
+    connect(ui->resetButton, &QPushButton::clicked, this, [this] {
+        ActionManager::instance()->resetAllCustomShortcuts();
+        mActionsModel->refresh();
+    });
+
+    connect(ui->shortcutsView->selectionModel(), &QItemSelectionModel::currentRowChanged,
+            this, &ShortcutSettingsPage::refreshConflicts);
+    connect(mProxyModel, &QAbstractItemModel::dataChanged,
+            this, &ShortcutSettingsPage::refreshConflicts);
+
+    connect(ui->conflictsLabel, &QLabel::linkActivated,
+            this, &ShortcutSettingsPage::searchConflicts);
 
     connect(ui->importButton, &QPushButton::clicked,
             this, &ShortcutSettingsPage::importShortcuts);
@@ -524,6 +624,23 @@ void ShortcutSettingsPage::hideEvent(QHideEvent *event)
     QWidget::hideEvent(event);
 }
 
+void ShortcutSettingsPage::refreshConflicts()
+{
+    auto current = ui->shortcutsView->currentIndex();
+    bool conflicts = current.isValid() &&
+            mProxyModel->data(current, ActionsModel::HasConflictingShortcut).toBool();
+    ui->conflictsLabel->setVisible(conflicts);
+}
+
+void ShortcutSettingsPage::searchConflicts()
+{
+    auto current = ui->shortcutsView->currentIndex();
+    if (current.isValid()) {
+        auto filterSequence = mProxyModel->data(current, Qt::EditRole).value<QKeySequence>();
+        ui->filterEdit->setText(QLatin1String("key:") + filterSequence.toString(QKeySequence::NativeText));
+    }
+}
+
 void ShortcutSettingsPage::importShortcuts()
 {
     QString filter = tr("Keyboard Mapping Scheme (*.kms)");
@@ -543,31 +660,37 @@ void ShortcutSettingsPage::importShortcuts()
 
     QXmlStreamReader xml(&file);
 
-    if (xml.readNextStartElement() && xml.name() == QLatin1String("mapping")) {
-        QHash<Id, QKeySequence> result;
-
-        while (xml.readNextStartElement()) {
-            if (xml.name() == QLatin1String("shortcut")) {
-                QStringRef id = xml.attributes().value(QLatin1String("id"));
-
-                while (xml.readNextStartElement()) {
-                    if (xml.name() == QLatin1String("key")) {
-                        QString keyString = xml.attributes().value(QLatin1String("value")).toString();
-                        result.insert(Id(id.toUtf8()), QKeySequence(keyString));
-                        xml.skipCurrentElement();   // skip out of "key" element
-                        xml.skipCurrentElement();   // skip out of "shortcut" element
-                        break;
-                    } else {
-                        xml.skipCurrentElement();   // skip unknown element
-                    }
-                }
-            } else {
-                xml.skipCurrentElement();           // skip unknown element
-            }
-        }
-
-        mActionsModel->setCustomShortcuts(result);
+    if (!xml.readNextStartElement() || xml.name() != QLatin1String("mapping")) {
+        QMessageBox::critical(this,
+                              tr("Error Loading Shortcuts"),
+                              tr("Invalid shortcuts file."));
+        return;
     }
+
+    QHash<Id, QKeySequence> result;
+
+    while (xml.readNextStartElement()) {
+        if (xml.name() == QLatin1String("shortcut")) {
+            QStringRef id = xml.attributes().value(QLatin1String("id"));
+
+            while (xml.readNextStartElement()) {
+                if (xml.name() == QLatin1String("key")) {
+                    QString keyString = xml.attributes().value(QLatin1String("value")).toString();
+                    result.insert(Id(id.toUtf8()), QKeySequence(keyString));
+                    xml.skipCurrentElement();   // skip out of "key" element
+                    xml.skipCurrentElement();   // skip out of "shortcut" element
+                    break;
+                } else {
+                    xml.skipCurrentElement();   // skip unknown element
+                }
+            }
+        } else {
+            xml.skipCurrentElement();           // skip unknown element
+        }
+    }
+
+    ActionManager::instance()->setCustomShortcuts(result);
+    mActionsModel->refresh();
 }
 
 void ShortcutSettingsPage::exportShortcuts()

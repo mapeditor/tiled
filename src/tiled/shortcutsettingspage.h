@@ -27,6 +27,7 @@ class QSortFilterProxyModel;
 namespace Tiled {
 
 class ActionsModel;
+class KeySequenceFilterModel;
 
 namespace Ui {
 class ShortcutSettingsPage;
@@ -47,12 +48,15 @@ protected:
     void hideEvent(QHideEvent *event) override;
 
 private:
+    void refreshConflicts();
+    void searchConflicts();
+
     void importShortcuts();
     void exportShortcuts();
 
     Ui::ShortcutSettingsPage *ui;
     ActionsModel *mActionsModel;
-    QSortFilterProxyModel *mProxyModel;
+    KeySequenceFilterModel *mProxyModel;
 };
 
 } // namespace Tiled

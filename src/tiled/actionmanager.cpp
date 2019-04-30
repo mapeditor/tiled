@@ -39,6 +39,7 @@ public:
     QHash<Id, QKeySequence> mLastKnownShortcuts;    // for detecting shortcut changes
 
     bool mApplyingShortcut = false;
+    bool mResettingShortcut = false;
 };
 
 static ActionManager *m_instance;
@@ -180,6 +181,8 @@ QList<Id> ActionManager::menus()
 
 void ActionManager::setCustomShortcut(Id id, const QKeySequence &keySequence)
 {
+    Q_ASSERT(!d->mResettingShortcut);
+
     auto a = action(id);
 
     if (!hasCustomShortcut(id))
@@ -203,9 +206,13 @@ void ActionManager::resetCustomShortcut(Id id)
     if (!hasCustomShortcut(id))
         return;
 
+    d->mResettingShortcut = true;
+
     auto a = action(id);
     applyShortcut(a, d->mDefaultShortcuts.take(id));
     d->mCustomShortcuts.remove(id);
+
+    d->mResettingShortcut = false;
 
     auto settings = Preferences::instance()->settings();
     settings->remove(QLatin1String("CustomShortcuts/") + id.toString());
@@ -224,6 +231,15 @@ void ActionManager::resetAllCustomShortcuts()
 
     auto settings = Preferences::instance()->settings();
     settings->remove(QLatin1String("CustomShortcuts"));
+}
+
+QKeySequence ActionManager::defaultShortcut(Id id)
+{
+    if (d->mDefaultShortcuts.contains(id))
+        return d->mDefaultShortcuts.value(id);
+    if (auto a = findAction(id))
+        return a->shortcut();
+    return QKeySequence();
 }
 
 /**

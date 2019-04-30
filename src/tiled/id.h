@@ -21,6 +21,7 @@
 #pragma once
 
 #include <QLatin1String>
+#include <QMetaType>
 
 namespace Tiled {
 
@@ -54,3 +55,5 @@ inline uint qHash(Id id) Q_DECL_NOTHROW
 }
 
 } // namespace Tiled
+
+Q_DECLARE_METATYPE(Tiled::Id)
