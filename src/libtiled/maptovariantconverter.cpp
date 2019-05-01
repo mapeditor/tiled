@@ -148,7 +148,6 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
         tilesetVariant[QLatin1String("tiledversion")] = QCoreApplication::applicationVersion();
     }
 
-
     tilesetVariant[QLatin1String("name")] = tileset.name();
     tilesetVariant[QLatin1String("tilewidth")] = tileset.tileWidth();
     tilesetVariant[QLatin1String("tileheight")] = tileset.tileHeight();
