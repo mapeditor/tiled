@@ -15,49 +15,29 @@ The following fields can be found in a Tiled JSON file:
 Map
 ---
 
-+-------------------+----------+----------------------------------------------------------+
-| Field             | Type     | Description                                              |
-+===================+==========+==========================================================+
-| backgroundcolor   | string   | Hex-formatted color (#RRGGBB or #AARRGGBB) (optional)    |
-+-------------------+----------+----------------------------------------------------------+
-| height            | int      | Number of tile rows                                      |
-+-------------------+----------+----------------------------------------------------------+
-| hexsidelength     | int      | Length of the side of a hex tile in pixels               |
-+-------------------+----------+----------------------------------------------------------+
-| infinite          | bool     | Whether the map has infinite dimensions                  |
-+-------------------+----------+----------------------------------------------------------+
-| layers            | array    | Array of :ref:`Layers <json-layer>`                      |
-+-------------------+----------+----------------------------------------------------------+
-| nextlayerid       | int      | Auto-increments for each layer                           |
-+-------------------+----------+----------------------------------------------------------+
-| nextobjectid      | int      | Auto-increments for each placed object                   |
-+-------------------+----------+----------------------------------------------------------+
-| orientation       | string   | ``orthogonal``, ``isometric``, ``staggered`` or          |
-|                   |          | ``hexagonal``                                            |
-+-------------------+----------+----------------------------------------------------------+
-| properties        | array    | A list of properties (name, value, type).                |
-+-------------------+----------+----------------------------------------------------------+
-| renderorder       | string   | ``right-down`` (the default), ``right-up``, ``left-down``|
-|                   |          | or ``left-up`` (orthogonal maps only)                    |
-+-------------------+----------+----------------------------------------------------------+
-| staggeraxis       | string   | ``x`` or ``y`` (staggered / hexagonal maps only)         |
-+-------------------+----------+----------------------------------------------------------+
-| staggerindex      | string   | ``odd`` or ``even`` (staggered / hexagonal maps only)    |
-+-------------------+----------+----------------------------------------------------------+
-| tiledversion      | string   | The Tiled version used to save the file                  |
-+-------------------+----------+----------------------------------------------------------+
-| tileheight        | int      | Map grid height                                          |
-+-------------------+----------+----------------------------------------------------------+
-| tilesets          | array    | Array of :ref:`Tilesets <json-tileset>`                  |
-+-------------------+----------+----------------------------------------------------------+
-| tilewidth         | int      | Map grid width                                           |
-+-------------------+----------+----------------------------------------------------------+
-| type              | string   | ``map`` (since 1.0)                                      |
-+-------------------+----------+----------------------------------------------------------+
-| version           | number   | The JSON format version                                  |
-+-------------------+----------+----------------------------------------------------------+
-| width             | int      | Number of tile columns                                   |
-+-------------------+----------+----------------------------------------------------------+
+.. csv-table::
+    :header: Field, Type, Description
+    :widths: 10, 5, 40
+
+    backgroundcolor,  string,           "Hex-formatted color (#RRGGBB or #AARRGGBB) (optional)"
+    height,           int,              "Number of tile rows"
+    hexsidelength,    int,              "Length of the side of a hex tile in pixels"
+    infinite,         bool,             "Whether the map has infinite dimensions"
+    layers,           array,            "Array of :ref:`Layers <json-layer>`"
+    nextlayerid,      int,              "Auto-increments for each layer"
+    nextobjectid,     int,              "Auto-increments for each placed object"
+    orientation,      string,           "``orthogonal``, ``isometric``, ``staggered`` or ``hexagonal``"
+    properties,       array,            "A list of properties (name, value, type)."
+    renderorder,      string,           "``right-down`` (the default), ``right-up``, ``left-down`` or ``left-up`` (orthogonal maps only)"
+    staggeraxis,      string,           "``x`` or ``y`` (staggered / hexagonal maps only)"
+    staggerindex,     string,           "``odd`` or ``even`` (staggered / hexagonal maps only)"
+    tiledversion,     string,           "The Tiled version used to save the file"
+    tileheight,       int,              "Map grid height"
+    tilesets,         array,            "Array of :ref:`Tilesets <json-tileset>`"
+    tilewidth,        int,              "Map grid width"
+    type,             string,           "``map`` (since 1.0)"
+    version,          number,           "The JSON format version"
+    width,            int,              "Number of tile columns"
 
 Map Example
 ~~~~~~~~~~~
@@ -95,53 +75,31 @@ Map Example
 Layer
 -----
 
-+------------------+----------+---------------------------------------------------------------+
-| Field            | Type     | Description                                                   |
-+==================+==========+===============================================================+
-| chunks           | array    | Array of :ref:`chunks <json-chunk>` (optional). ``tilelayer`` |
-|                  |          | only.                                                         |
-+------------------+----------+---------------------------------------------------------------+
-| compression      | string   | ``zlib``, ``gzip`` or empty (default). ``tilelayer`` only.    |
-+------------------+----------+---------------------------------------------------------------+
-| data             | array or | Array of ``unsigned int`` (GIDs) or base64-encoded            |
-|                  | string   | data. ``tilelayer`` only.                                     |
-+------------------+----------+---------------------------------------------------------------+
-| draworder        | string   | ``topdown`` (default) or ``index``. ``objectgroup`` only.     |
-+------------------+----------+---------------------------------------------------------------+
-| encoding         | string   | ``csv`` (default) or ``base64``. ``tilelayer`` only.          |
-+------------------+----------+---------------------------------------------------------------+
-| height           | int      | Row count. Same as map height for fixed-size maps.            |
-+------------------+----------+---------------------------------------------------------------+
-| id               | int      | Incremental id - unique across all layers                     |
-+------------------+----------+---------------------------------------------------------------+
-| image            | string   | Image used by this layer. ``imagelayer`` only.                |
-+------------------+----------+---------------------------------------------------------------+
-| layers           | array    | Array of :ref:`layers <json-layer>`. ``group`` only.          |
-+------------------+----------+---------------------------------------------------------------+
-| name             | string   | Name assigned to this layer                                   |
-+------------------+----------+---------------------------------------------------------------+
-| objects          | object   | Array of :ref:`objects <json-object>`. ``objectgroup`` only.  |
-+------------------+----------+---------------------------------------------------------------+
-| offsetx          | double   | Horizontal layer offset in pixels (default: 0)                |
-+------------------+----------+---------------------------------------------------------------+
-| offsety          | double   | Vertical layer offset in pixels (default: 0)                  |
-+------------------+----------+---------------------------------------------------------------+
-| opacity          | double   | Value between 0 and 1                                         |
-+------------------+----------+---------------------------------------------------------------+
-| properties       | array    | A list of properties (name, value, type).                     |
-+------------------+----------+---------------------------------------------------------------+
-| transparentcolor | string   | Hex-formatted color (#RRGGBB) (optional). ``imagelayer`` only |
-+------------------+----------+---------------------------------------------------------------+
-| type             | string   | ``tilelayer``, ``objectgroup``, ``imagelayer`` or ``group``   |
-+------------------+----------+---------------------------------------------------------------+
-| visible          | bool     | Whether layer is shown or hidden in editor                    |
-+------------------+----------+---------------------------------------------------------------+
-| width            | int      | Column count. Same as map width for fixed-size maps.          |
-+------------------+----------+---------------------------------------------------------------+
-| x                | int      | Horizontal layer offset in tiles. Always 0.                   |
-+------------------+----------+---------------------------------------------------------------+
-| y                | int      | Vertical layer offset in tiles. Always 0.                     |
-+------------------+----------+---------------------------------------------------------------+
+.. csv-table::
+    :header: Field, Type, Description
+    :widths: 10, 5, 40
+
+    chunks,           array,            "Array of :ref:`chunks <json-chunk>` (optional). ``tilelayer`` only."
+    compression,      string,           "``zlib``, ``gzip`` or empty (default). ``tilelayer`` only."
+    data,             array or string,  "Array of ``unsigned int`` (GIDs) or base64-encoded data. ``tilelayer`` only."
+    draworder,        string,           "``topdown`` (default) or ``index``. ``objectgroup`` only."
+    encoding,         string,           "``csv`` (default) or ``base64``. ``tilelayer`` only."
+    height,           int,              "Row count. Same as map height for fixed-size maps."
+    id,               int,              "Incremental id - unique across all layers"
+    image,            string,           "Image used by this layer. ``imagelayer`` only."
+    layers,           array,            "Array of :ref:`layers <json-layer>`. ``group`` only."
+    name,             string,           "Name assigned to this layer"
+    objects,          object,           "Array of :ref:`objects <json-object>`. ``objectgroup`` only."
+    offsetx,          double,           "Horizontal layer offset in pixels (default: 0)"
+    offsety,          double,           "Vertical layer offset in pixels (default: 0)"
+    opacity,          double,           "Value between 0 and 1"
+    properties,       array,            "A list of properties (name, value, type)."
+    transparentcolor, string,           "Hex-formatted color (#RRGGBB) (optional). ``imagelayer`` "
+    type,             string,           "``tilelayer``, ``objectgroup``, ``imagelayer`` or ``group``"
+    visible,          bool,             "Whether layer is shown or hidden in editor"
+    width,            int,              "Column count. Same as map width for fixed-size maps."
+    x,                int,              "Horizontal layer offset in tiles. Always 0."
+    y,                int,              "Vertical layer offset in tiles. Always 0."
 
 Tile Layer Example
 ~~~~~~~~~~~~~~~~~~
@@ -198,20 +156,15 @@ Chunk
 Chunks are used to store the tile layer data for
 :doc:`infinite maps </manual/using-infinite-maps>`.
 
-+--------------+-----------------+----------------------------------------------+
-| Field        | Type            | Description                                  |
-+==============+=================+==============================================+
-| data         | array or string | Array of ``unsigned int`` (GIDs) or          |
-|              |                 | base64-encoded data                          |
-+--------------+-----------------+----------------------------------------------+
-| height       | int             | Height in tiles                              |
-+--------------+-----------------+----------------------------------------------+
-| width        | int             | Width in tiles                               |
-+--------------+-----------------+----------------------------------------------+
-| x            | int             | X coordinate in tiles                        |
-+--------------+-----------------+----------------------------------------------+
-| y            | int             | Y coordinate in tiles                        |
-+--------------+-----------------+----------------------------------------------+
+.. csv-table::
+    :header: Field, Type, Description
+    :widths: 10, 5, 40
+
+    data,             array or string,  "Array of ``unsigned int`` (GIDs) or base64-encoded data"
+    height,           int,              "Height in tiles"
+    width,            int,              "Width in tiles"
+    x,                int,              "X coordinate in tiles"
+    y,                int,              "Y coordinate in tiles"
 
 Chunk Example
 ~~~~~~~~~~~~~
@@ -231,44 +184,27 @@ Chunk Example
 Object
 ------
 
-+--------------+----------+----------------------------------------------------+
-| Field        | Type     | Description                                        |
-+==============+==========+====================================================+
-| ellipse      | bool     | Used to mark an object as an ellipse               |
-+--------------+----------+----------------------------------------------------+
-| gid          | int      | GID, only if object comes from a Tilemap           |
-+--------------+----------+----------------------------------------------------+
-| height       | double   | Height in pixels. Ignored if using a gid.          |
-+--------------+----------+----------------------------------------------------+
-| id           | int      | Incremental id - unique across all objects         |
-+--------------+----------+----------------------------------------------------+
-| name         | string   | String assigned to name field in editor            |
-+--------------+----------+----------------------------------------------------+
-| point        | bool     | Used to mark an object as a point                  |
-+--------------+----------+----------------------------------------------------+
-| polygon      | array    | A list of x,y coordinates in pixels                |
-+--------------+----------+----------------------------------------------------+
-| polyline     | array    | A list of x,y coordinates in pixels                |
-+--------------+----------+----------------------------------------------------+
-| properties   | array    | A list of properties (name, value, type)           |
-+--------------+----------+----------------------------------------------------+
-| rotation     | double   | Angle in degrees clockwise                         |
-+--------------+----------+----------------------------------------------------+
-| template     | string   | Reference to a template file, in case object is a  |
-|              |          | :doc:`template instance </manual/using-templates>` |
-+--------------+----------+----------------------------------------------------+
-| text         | object   | String key-value pairs                             |
-+--------------+----------+----------------------------------------------------+
-| type         | string   | String assigned to type field in editor            |
-+--------------+----------+----------------------------------------------------+
-| visible      | bool     | Whether object is shown in editor.                 |
-+--------------+----------+----------------------------------------------------+
-| width        | double   | Width in pixels. Ignored if using a gid.           |
-+--------------+----------+----------------------------------------------------+
-| x            | double   | X coordinate in pixels                             |
-+--------------+----------+----------------------------------------------------+
-| y            | double   | Y coordinate in pixels                             |
-+--------------+----------+----------------------------------------------------+
+.. csv-table::
+    :header: Field, Type, Description
+    :widths: 10, 5, 40
+
+    ellipse,          bool,             "Used to mark an object as an ellipse"
+    gid,              int,              "GID, only if object comes from a Tilemap"
+    height,           double,           "Height in pixels. Ignored if using a gid."
+    id,               int,              "Incremental id - unique across all objects"
+    name,             string,           "String assigned to name field in editor"
+    point,            bool,             "Used to mark an object as a point"
+    polygon,          array,            "A list of x,y coordinates in pixels"
+    polyline,         array,            "A list of x,y coordinates in pixels"
+    properties,       array,            "A list of properties (name, value, type)"
+    rotation,         double,           "Angle in degrees clockwise"
+    template,         string,           "Reference to a template file, in case object is a :doc:`template instance </manual/using-templates>`"
+    text,             object,           "String key-value pairs"
+    type,             string,           "String assigned to type field in editor"
+    visible,          bool,             "Whether object is shown in editor."
+    width,            double,           "Width in pixels. Ignored if using a gid."
+    x,                double,           "X coordinate in pixels"
+    y,                double,           "Y coordinate in pixels"
 
 Object Example
 ~~~~~~~~~~~~~~
@@ -454,50 +390,30 @@ Text Example
 Tileset
 -------
 
-+------------------+----------+-----------------------------------------------------+
-| Field            | Type     | Description                                         |
-+==================+==========+=====================================================+
-| columns          | int      | The number of tile columns in the tileset           |
-+------------------+----------+-----------------------------------------------------+
-| firstgid         | int      | GID corresponding to the first tile in the set      |
-+------------------+----------+-----------------------------------------------------+
-| grid             | object   | See :ref:`tmx-grid` (optional)                      |
-+------------------+----------+-----------------------------------------------------+
-| image            | string   | Image used for tiles in this set                    |
-+------------------+----------+-----------------------------------------------------+
-| imagewidth       | int      | Width of source image in pixels                     |
-+------------------+----------+-----------------------------------------------------+
-| imageheight      | int      | Height of source image in pixels                    |
-+------------------+----------+-----------------------------------------------------+
-| margin           | int      | Buffer between image edge and first tile (pixels)   |
-+------------------+----------+-----------------------------------------------------+
-| name             | string   | Name given to this tileset                          |
-+------------------+----------+-----------------------------------------------------+
-| properties       | array    | A list of properties (name, value, type).           |
-+------------------+----------+-----------------------------------------------------+
-| source           | string   | The external file that contains this tilesets data. |
-+------------------+----------+-----------------------------------------------------+
-| spacing          | int      | Spacing between adjacent tiles in image (pixels)    |
-+------------------+----------+-----------------------------------------------------+
-| terrains         | array    | Array of :ref:`Terrains <json-terrain>` (optional)  |
-+------------------+----------+-----------------------------------------------------+
-| tilecount        | int      | The number of tiles in this tileset                 |
-+------------------+----------+-----------------------------------------------------+
-| tileheight       | int      | Maximum height of tiles in this set                 |
-+------------------+----------+-----------------------------------------------------+
-| tileoffset       | object   | See :ref:`tmx-tileoffset` (optional)                |
-+------------------+----------+-----------------------------------------------------+
-| tiles            | array    | Array of :ref:`Tiles <json-tile>` (optional)        |
-+------------------+----------+-----------------------------------------------------+
-| tilewidth        | int      | Maximum width of tiles in this set                  |
-+------------------+----------+-----------------------------------------------------+
-| transparentcolor | string   | Hex-formatted color (#RRGGBB) (optional)            |
-+------------------+----------+-----------------------------------------------------+
-| type             | string   | ``tileset`` (for tileset files, since 1.0)          |
-+------------------+----------+-----------------------------------------------------+
-| wangsets         | array    | Array of :ref:`Wang sets <json-wangset>`            |
-|                  |          | (since 1.1.5)                                       |
-+------------------+----------+-----------------------------------------------------+
+.. csv-table::
+    :header: Field, Type, Description
+    :widths: 10, 5, 40
+
+    columns,          int,              "The number of tile columns in the tileset"
+    firstgid,         int,              "GID corresponding to the first tile in the set"
+    grid,             object,           "See :ref:`tmx-grid` (optional)"
+    image,            string,           "Image used for tiles in this set"
+    imagewidth,       int,              "Width of source image in pixels"
+    imageheight,      int,              "Height of source image in pixels"
+    margin,           int,              "Buffer between image edge and first tile (pixels)"
+    name,             string,           "Name given to this tileset"
+    properties,       array,            "A list of properties (name, value, type)."
+    source,           string,           "The external file that contains this tilesets data"
+    spacing,          int,              "Spacing between adjacent tiles in image (pixels)"
+    terrains,         array,            "Array of :ref:`Terrains <json-terrain>` (optional)"
+    tilecount,        int,              "The number of tiles in this tileset"
+    tileheight,       int,              "Maximum height of tiles in this set"
+    tileoffset,       object,           "See :ref:`tmx-tileoffset` (optional)"
+    tiles,            array,            "Array of :ref:`Tiles <json-tile>` (optional)"
+    tilewidth,        int,              "Maximum width of tiles in this set"
+    transparentcolor, string,           "Hex-formatted color (#RRGGBB) (optional)"
+    type,             string,           "``tileset`` (for tileset files, since 1.0)"
+    wangsets,         array,            "Array of :ref:`Wang sets <json-wangset>` (since 1.1.5)"
 
 Tileset Example
 ~~~~~~~~~~~~~~~
@@ -529,30 +445,20 @@ Tileset Example
 Tile (Definition)
 ~~~~~~~~~~~~~~~~~
 
-+------------+---------------------+------------------------------------------------+
-| Field      | Type                | Description                                    |
-+============+=====================+================================================+
-| animation  | array               | Array of :ref:`Frames <json-frame>`            |
-+------------+---------------------+------------------------------------------------+
-| id         | int                 | Local ID of the tile                           |
-+------------+---------------------+------------------------------------------------+
-| image      | string              | Image representing this tile (optional)        |
-+------------+---------------------+------------------------------------------------+
-| imageheight| int                 | Height of the tile image in pixels             |
-+------------+---------------------+------------------------------------------------+
-| imagewidth | int                 | Width of the tile image in pixels              |
-+------------+---------------------+------------------------------------------------+
-| objectgroup| :ref:`json-layer`   | Layer with type ``objectgroup`` (optional)     |
-+------------+---------------------+------------------------------------------------+
-| probability| double              | Percentage chance this tile is chosen when     |
-|            |                     | competing with others in the editor (optional) |
-+------------+---------------------+------------------------------------------------+
-| properties | array               | A list of properties (name, value, type)       |
-+------------+---------------------+------------------------------------------------+
-| terrain    | array               | Index of terrain for each corner of tile       |
-+------------+---------------------+------------------------------------------------+
-| type       | string              | The type of the tile (optional)                |
-+------------+---------------------+------------------------------------------------+
+.. csv-table::
+    :header: Field, Type, Description
+    :widths: 10, 5, 40
+
+    animation,        array,              "Array of :ref:`Frames <json-frame>`"
+    id,               int,                "Local ID of the tile"
+    image,            string,             "Image representing this tile (optional)"
+    imageheight,      int,                "Height of the tile image in pixels"
+    imagewidth,       int,                "Width of the tile image in pixels"
+    objectgroup,      :ref:`json-layer`,  "Layer with type ``objectgroup`` (optional)"
+    probability,      double,             "Percentage chance this tile is chosen when competing with others in the editor (optional)"
+    properties,       array,              "A list of properties (name, value, type)"
+    terrain,          array,              "Index of terrain for each corner of tile"
+    type,             string,             "The type of the tile (optional)"
 
 A tileset that associates information with each tile, like its image
 path or terrain type, may include a ``tiles`` array property. Each tile
@@ -605,26 +511,24 @@ Example:
 Frame
 ~~~~~
 
-+---------+----------+-----------------------------------------+
-| Field   | Type     | Description                             |
-+=========+==========+=========================================+
-| duration| int      | Frame duration in milliseconds          |
-+---------+----------+-----------------------------------------+
-| tileid  | int      | Local tile ID representing this frame   |
-+---------+----------+-----------------------------------------+
+.. csv-table::
+    :header: Field, Type, Description
+    :widths: 10, 5, 40
+
+    duration,         int,              "Frame duration in milliseconds"
+    tileid,           int,              "Local tile ID representing this frame"
 
 .. _json-terrain:
 
 Terrain
 ~~~~~~~
 
-+---------+----------+-----------------------------------------+
-| Field   | Type     | Description                             |
-+=========+==========+=========================================+
-| name    | string   | Name of terrain                         |
-+---------+----------+-----------------------------------------+
-| tile    | int      | Local ID of tile representing terrain   |
-+---------+----------+-----------------------------------------+
+.. csv-table::
+    :header: Field, Type, Description
+    :widths: 10, 5, 40
+
+    name,             string,           "Name of terrain"
+    tile,             int,              "Local ID of tile representing terrain"
 
 Example:
 
@@ -649,36 +553,29 @@ Example:
 Wang Set
 ~~~~~~~~
 
-+------------------+----------+-----------------------------------------------------+
-| Field            | Type     | Description                                         |
-+==================+==========+=====================================================+
-| cornercolors     | array    | Array of :ref:`Wang colors <json-wangcolor>`        |
-+------------------+----------+-----------------------------------------------------+
-| edgecolors       | array    | Array of :ref:`Wang colors <json-wangcolor>`        |
-+------------------+----------+-----------------------------------------------------+
-| name             | string   | Name of the Wang set                                |
-+------------------+----------+-----------------------------------------------------+
-| tile             | int      | Local ID of tile representing the Wang set          |
-+------------------+----------+-----------------------------------------------------+
-| wangtiles        | array    | Array of :ref:`Wang tiles <json-wangtile>`          |
-+------------------+----------+-----------------------------------------------------+
+.. csv-table::
+    :header: Field, Type, Description
+    :widths: 10, 5, 40
+
+    cornercolors,     array,            "Array of :ref:`Wang colors <json-wangcolor>`"
+    edgecolors,       array,            "Array of :ref:`Wang colors <json-wangcolor>`"
+    name,             string,           "Name of the Wang set"
+    tile,             int,              "Local ID of tile representing the Wang set"
+    wangtiles,        array,            "Array of :ref:`Wang tiles <json-wangtile>`"
 
 .. _json-wangcolor:
 
 Wang Color
 ^^^^^^^^^^
 
-+------------------+----------+-----------------------------------------------------+
-| Field            | Type     | Description                                         |
-+==================+==========+=====================================================+
-| color            | string   | Hex-formatted color (#RRGGBB or #AARRGGBB)          |
-+------------------+----------+-----------------------------------------------------+
-| name             | string   | Name of the Wang color                              |
-+------------------+----------+-----------------------------------------------------+
-| probability      | double   | Probability used when randomizing                   |
-+------------------+----------+-----------------------------------------------------+
-| tile             | int      | Local ID of tile representing the Wang color        |
-+------------------+----------+-----------------------------------------------------+
+.. csv-table::
+    :header: Field, Type, Description
+    :widths: 10, 5, 40
+
+    color,            string,           "Hex-formatted color (#RRGGBB or #AARRGGBB)"
+    name,             string,           "Name of the Wang color"
+    probability,      double,           "Probability used when randomizing"
+    tile,             int,              "Local ID of tile representing the Wang color"
 
 Example:
 
@@ -696,19 +593,15 @@ Example:
 Wang Tile
 ^^^^^^^^^
 
-+------------------+----------+-----------------------------------------------------+
-| Field            | Type     | Description                                         |
-+==================+==========+=====================================================+
-| dflip            | bool     | Tile is flipped diagonally                          |
-+------------------+----------+-----------------------------------------------------+
-| hflip            | bool     | Tile is flipped horizontally                        |
-+------------------+----------+-----------------------------------------------------+
-| tileid           | int      | Local ID of tile                                    |
-+------------------+----------+-----------------------------------------------------+
-| vflip            | bool     | Tile is flipped vertically                          |
-+------------------+----------+-----------------------------------------------------+
-| wangid           | array    | Array of Wang color indexes (``uchar[8]``)          |
-+------------------+----------+-----------------------------------------------------+
+.. csv-table::
+    :header: Field, Type, Description
+    :widths: 10, 5, 40
+
+    dflip,            bool,             "Tile is flipped diagonally"
+    hflip,            bool,             "Tile is flipped horizontally"
+    tileid,           int,              "Local ID of tile"
+    vflip,            bool,             "Tile is flipped vertically"
+    wangid,           array,            "Array of Wang color indexes (``uchar[8]``)"
 
 Example:
 
@@ -730,15 +623,13 @@ Object Template
 An object template is written to its own file and referenced by any
 instances of that template.
 
-+------------+---------------------+--------------------------------------------------+
-| Field      | Type                | Description                                      |
-+============+=====================+==================================================+
-| type       | string              | ``template``                                     |
-+------------+---------------------+--------------------------------------------------+
-| tileset    | :ref:`json-tileset` | External tileset used by the template (optional) |
-+------------+---------------------+--------------------------------------------------+
-| object     | :ref:`json-object`  | The object instantiated by this template         |
-+------------+---------------------+--------------------------------------------------+
+.. csv-table::
+    :header: Field, Type, Description
+    :widths: 10, 5, 40
+
+    type,             string,              "``template``"
+    tileset,          :ref:`json-tileset`, "External tileset used by the template (optional)"
+    object,           :ref:`json-object`,  "The object instantiated by this template"
 
 Changelog
 ---------
