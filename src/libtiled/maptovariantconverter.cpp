@@ -520,7 +520,7 @@ QVariant MapToVariantConverter::toVariant(const MapObject &object) const
         if (!object.cell().isEmpty())
             objectVariant[QLatin1String("gid")] = mGidMapper.cellToGid(object.cell());
 
-    if (id != 0) {
+    if (!object.isTemplateBase()) {
         objectVariant[QLatin1String("x")] = object.x();
         objectVariant[QLatin1String("y")] = object.y();
     }
