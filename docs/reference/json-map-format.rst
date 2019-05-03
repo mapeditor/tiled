@@ -96,7 +96,7 @@ Layer
     properties,       array,            "Array of :ref:`Properties <json-property>`"
     startx,           int,              "X coordinate where layer content starts (for infinite maps)"
     starty,           int,              "Y coordinate where layer content starts (for infinite maps)"
-    transparentcolor, string,           "Hex-formatted color (#RRGGBB) (optional). ``imagelayer`` "
+    transparentcolor, string,           "Hex-formatted color (#RRGGBB) (optional). ``imagelayer`` only."
     type,             string,           "``tilelayer``, ``objectgroup``, ``imagelayer`` or ``group``"
     visible,          bool,             "Whether layer is shown or hidden in editor"
     width,            int,              "Column count. Same as map width for fixed-size maps."
