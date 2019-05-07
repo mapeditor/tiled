@@ -257,18 +257,20 @@ Product {
                 return "C:/windows/SysWOW64/"
         }
         files: {
+            var list = []
             if (qbs.toolchain.contains("mingw")) {
-                return [
-                    "libgcc_s_dw2-1.dll",
-                    "libstdc++-6.dll",
-                    "libwinpthread-1.dll",
-                ]
+                list.push("libstdc++-6.dll",
+                          "libwinpthread-1.dll")
+
+                if (qbs.architecture == "x86_64")
+                    list.push("libgcc_s_seh-1.dll")
+                else
+                    list.push("libgcc_s_dw2-1.dll")
             } else {
-                return [
-                    "MSVCP120.DLL",
-                    "MSVCR120.DLL",
-                ]
+                list.push("MSVCP120.DLL",
+                          "MSVCR120.DLL")
             }
+            return list
         }
         qbs.install: true
         qbs.installDir: ""

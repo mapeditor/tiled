@@ -91,7 +91,11 @@
             <File Id="Qt5Widgets_dll" Source="$(var.QtDir)\bin\Qt5Widgets.dll"/>
 
             <?ifdef MingwDir ?>
+            <?if $(var.Platform) = x64 ?>
+            <File Id="libgcc_s_seh_1_dll" Source="$(var.MingwDir)\bin\libgcc_s_seh-1.dll"/>
+            <?else ?>
             <File Id="libgcc_s_dw2_1_dll" Source="$(var.MingwDir)\bin\libgcc_s_dw2-1.dll"/>
+            <?endif ?>
             <File Id="libstdc___6_dll" Source="$(var.MingwDir)\bin\libstdc++-6.dll"/>
             <File Id="libwinpthread_1_dll" Source="$(var.MingwDir)\bin\libwinpthread-1.dll"/>
             <?else?>
