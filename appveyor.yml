@@ -10,13 +10,14 @@ environment:
   BUTLER_API_KEY:
     secure: j7JM5L6KeqpnQukzJLsm7J6oV92SpmyEZLSoED1pZ3gQ79VIkdxtbQmTkqUNZPsz
   matrix:
-    - QTDIR: C:\Qt\5.9\msvc2013_64
+    - QTDIR: C:\Qt\5.12\mingw73_64
       PYTHONHOME: C:\Python37-x64
+      MINGW: C:\Qt\Tools\mingw730_64
       PUSH_RELEASE: true
       TILED_ITCH_CHANNEL: windows-64bit
-    - QTDIR: C:\Qt\5.9\mingw53_32
+    - QTDIR: C:\Qt\5.12\mingw73_32
       PYTHONHOME: C:\Python37
-      MINGW: C:\Qt\Tools\mingw530_32
+      MINGW: C:\Qt\Tools\mingw730_32
       PUSH_RELEASE: true
       TILED_ITCH_CHANNEL: windows-32bit
     - QTDIR: C:\Qt\5.6\mingw49_32
