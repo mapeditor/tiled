@@ -51,6 +51,9 @@ WindowsInstallerPackage {
             }
         }
 
+        if (Qt.core.versionMinor >= 10)
+            defs.push("WindowsVistaStyle")
+
         if (project.sparkleEnabled)
             defs.push("Sparkle");
 

@@ -162,6 +162,11 @@
                 <File Id="qwindows_dll" Source="$(var.QtDir)\plugins\platforms\qwindows.dll"/>
               </Component>
             </Directory>
+            <Directory Id="iconEnginePlugins" Name="iconengines">
+              <Component Id="IconEnginePlugins" Guid="{6087784F-C335-4EA6-A959-674E0D72F194}">
+                <File Id="qsvgicon_dll" Source="$(var.QtDir)\plugins\iconengines\qsvgicon.dll"/>
+              </Component>
+            </Directory>
             <Directory Id="imageFormatPlugins" Name="imageformats">
               <Component Id="ImageFormatPlugins" Guid="{C655A440-9F24-4489-8DB9-5A4EFF6EB5D7}">
                 <File Id="qgif_dll" Source="$(var.QtDir)\plugins\imageformats\qgif.dll"/>
@@ -173,6 +178,13 @@
                 <File Id="qwebp_dll" Source="$(var.QtDir)\plugins\imageformats\qwebp.dll"/>
               </Component>
             </Directory>
+            <?ifdef WindowsVistaStyle ?>
+            <Directory Id="stylePlugins" Name="styles">
+              <Component Id="StylePlugins" Guid="{DB5D5DD3-1128-4FE0-A76C-EB7E4069EBFE}">
+                <File Id="qwindowsvistastyle_dll" Source="$(var.QtDir)\plugins\styles\qwindowsvistastyle.dll"/>
+              </Component>
+            </Directory>
+            <?endif?>
           </Directory>
 
           <Directory Id="dir674F7F6D2030C2EBF39AA06B57EAF368" Name="translations">
@@ -376,6 +388,10 @@
       <ComponentRef Id='PythonPluginExampleLib' />
       <ComponentRef Id='PlatformPlugins' />
       <ComponentRef Id='ImageFormatPlugins' />
+      <ComponentRef Id='IconEnginePlugins' />
+      <?ifdef WindowsVistaStyle ?>
+      <ComponentRef Id='StylePlugins' />
+      <?endif?>
       <ComponentRef Id='ProgramMenuDir' />
     </Feature>
 

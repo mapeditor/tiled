@@ -130,6 +130,24 @@ Product {
     }
 
     Group {
+        name: "Qt Icon Engine Plugins"
+        prefix: FileInfo.joinPaths(Qt.core.pluginPath, "/iconengines/")
+        files: pluginFiles
+        excludeFiles: pluginExcludeFiles
+        qbs.install: true
+        qbs.installDir: "plugins/iconengines"
+    }
+
+    Group {
+        name: "Qt Image Format Plugins"
+        prefix: FileInfo.joinPaths(Qt.core.pluginPath, "/imageformats/")
+        files: pluginFiles
+        excludeFiles: pluginExcludeFiles
+        qbs.install: true
+        qbs.installDir: "plugins/imageformats"
+    }
+
+    Group {
         name: "Qt Platform Plugins"
         prefix: FileInfo.joinPaths(Qt.core.pluginPath, "/platforms/")
         files: pluginFiles
@@ -157,12 +175,12 @@ Product {
     }
 
     Group {
-        name: "Qt Image Format Plugins"
-        prefix: FileInfo.joinPaths(Qt.core.pluginPath, "/imageformats/")
+        name: "Qt Style Plugins"
+        prefix: FileInfo.joinPaths(Qt.core.pluginPath, "/styles/")
         files: pluginFiles
         excludeFiles: pluginExcludeFiles
         qbs.install: true
-        qbs.installDir: "plugins/imageformats"
+        qbs.installDir: "plugins/styles"
     }
 
     Group {
@@ -172,15 +190,6 @@ Product {
         files: pluginFiles
         qbs.install: true
         qbs.installDir: "plugins/xcbglintegrations"
-    }
-
-    Group {
-        name: "Qt Icon Engine Plugins"
-        condition: qbs.targetOS.contains("linux")
-        prefix: FileInfo.joinPaths(Qt.core.pluginPath, "/iconengines/")
-        files: pluginFiles
-        qbs.install: true
-        qbs.installDir: "plugins/iconengines"
     }
 
     Group {
