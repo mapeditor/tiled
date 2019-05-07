@@ -21,6 +21,7 @@
 #include "tilestampsdock.h"
 
 #include "documentmanager.h"
+#include "filteredit.h"
 #include "preferences.h"
 #include "tilestamp.h"
 #include "tilestampmanager.h"
@@ -44,7 +45,7 @@ TileStampsDock::TileStampsDock(TileStampManager *stampManager, QWidget *parent)
     , mTileStampManager(stampManager)
     , mTileStampModel(stampManager->tileStampModel())
     , mProxyModel(new QSortFilterProxyModel(mTileStampModel))
-    , mFilterEdit(new QLineEdit(this))
+    , mFilterEdit(new FilterEdit(this))
     , mNewStamp(new QAction(this))
     , mAddVariation(new QAction(this))
     , mDuplicate(new QAction(this))
@@ -81,7 +82,7 @@ TileStampsDock::TileStampsDock(TileStampManager *stampManager, QWidget *parent)
     Utils::setThemeIcon(mDelete, "edit-delete");
     Utils::setThemeIcon(mChooseFolder, "document-open");
 
-    mFilterEdit->setClearButtonEnabled(true);
+    mFilterEdit->setFilteredView(mTileStampView);
 
     connect(mFilterEdit, &QLineEdit::textChanged,
             mProxyModel, &QSortFilterProxyModel::setFilterFixedString);

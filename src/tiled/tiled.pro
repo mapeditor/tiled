@@ -147,6 +147,7 @@ SOURCES += aboutdialog.cpp \
     exporthelper.cpp \
     filechangedwarning.cpp \
     fileedit.cpp \
+    filteredit.cpp \
     flexiblescrollbar.cpp \
     flipmapobjects.cpp \
     geometry.cpp \
@@ -367,6 +368,7 @@ HEADERS += aboutdialog.h \
     exporthelper.h \
     filechangedwarning.h \
     fileedit.h \
+    filteredit.h \
     flexiblescrollbar.h \
     flipmapobjects.h \
     geometry.h \

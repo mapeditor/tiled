@@ -250,6 +250,8 @@ QtGuiApplication {
         "filechangedwarning.h",
         "fileedit.cpp",
         "fileedit.h",
+        "filteredit.cpp",
+        "filteredit.h",
         "flexiblescrollbar.cpp",
         "flexiblescrollbar.h",
         "flipmapobjects.cpp",

@@ -23,12 +23,9 @@
          <number>0</number>
         </property>
         <item>
-         <widget class="QLineEdit" name="filterEdit">
+         <widget class="Tiled::FilterEdit" name="filterEdit">
           <property name="placeholderText">
            <string>Filter</string>
-          </property>
-          <property name="clearButtonEnabled">
-           <bool>true</bool>
           </property>
          </widget>
         </item>
@@ -112,6 +109,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>Tiled::FilterEdit</class>
+   <extends>QLineEdit</extends>
+   <header>filteredit.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>filterEdit</tabstop>
   <tabstop>shortcutsView</tabstop>

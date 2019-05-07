@@ -558,6 +558,8 @@ ShortcutSettingsPage::ShortcutSettingsPage(QWidget *parent)
 
     ui->conflictsLabel->setVisible(false);
 
+    ui->filterEdit->setFilteredView(ui->shortcutsView);
+
     mProxyModel->setSourceModel(mActionsModel);
     mProxyModel->setSortLocaleAware(true);
     mProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
@@ -580,6 +582,15 @@ ShortcutSettingsPage::ShortcutSettingsPage(QWidget *parent)
     connect(ui->resetButton, &QPushButton::clicked, this, [this] {
         ActionManager::instance()->resetAllCustomShortcuts();
         mActionsModel->refresh();
+    });
+
+    connect(ui->shortcutsView, &QAbstractItemView::activated,
+            this, [this] (const QModelIndex &index) {
+        if (index.isValid()) {
+            auto shortcutIndex = mProxyModel->index(index.row(), 2);
+            ui->shortcutsView->setCurrentIndex(shortcutIndex);  // Makes sure editor closes when current index changes
+            ui->shortcutsView->edit(shortcutIndex);
+        }
     });
 
     connect(ui->shortcutsView->selectionModel(), &QItemSelectionModel::currentRowChanged,
