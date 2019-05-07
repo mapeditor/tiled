@@ -121,8 +121,8 @@ public:
     void setChecked(bool checked) { checked ? _flags |= Checked : _flags &= ~Checked; }
 
     Tile *tile() const;
-    void setTile(Tile *tile);
     void setTile(Tileset *tileset, int tileId);
+    void setTile(Tile *tile);
     bool refersTile(const Tile *tile) const;
 
 private:
@@ -145,18 +145,18 @@ inline Tile *Cell::tile() const
     return _tileset ? _tileset->findTile(_tileId) : nullptr;
 }
 
+inline void Cell::setTile(Tileset *tileset, int tileId)
+{
+    _tileset = tileset;
+    _tileId = tileId;
+}
+
 inline void Cell::setTile(Tile *tile)
 {
     if (tile)
         setTile(tile->tileset(), tile->id());
     else
         setTile(nullptr, -1);
-}
-
-inline void Cell::setTile(Tileset *tileset, int tileId)
-{
-    _tileset = tileset;
-    _tileId = tileId;
 }
 
 inline bool Cell::refersTile(const Tile *tile) const
