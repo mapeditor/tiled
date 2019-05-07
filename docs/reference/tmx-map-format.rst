@@ -73,6 +73,9 @@ the only type, and are simply called ``layer``, object layers have the
 order in which these layers appear is the order in which the layers are
 rendered by Tiled.
 
+The ``staggered`` orientation refers to an isometric map using staggered
+axes.
+
 Can contain: :ref:`tmx-properties`, :ref:`tmx-tileset`,
 :ref:`tmx-layer`, :ref:`tmx-objectgroup`,
 :ref:`tmx-imagelayer`, :ref:`tmx-group` (since 1.0)
