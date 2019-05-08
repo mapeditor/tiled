@@ -367,7 +367,7 @@ void EditPolygonTool::setSelectedHandles(const QSet<PointHandle *> &handles)
 
 void EditPolygonTool::setHighlightedHandles(const QSet<PointHandle *> &handles)
 {
-    for (PointHandle *handle : mHighlightedHandles)
+    for (PointHandle *handle : qAsConst(mHighlightedHandles))
         if (!handles.contains(handle))
             handle->setHighlighted(false);
 
@@ -403,7 +403,7 @@ void EditPolygonTool::updateHandles()
     while (i.hasNext()) {
         i.next();
         if (!selection.contains(i.key())) {
-            for (PointHandle *handle : i.value())
+            for (PointHandle *handle : qAsConst(i.value()))
                 deleteHandle(handle);
 
             i.remove();

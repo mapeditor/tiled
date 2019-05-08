@@ -38,6 +38,8 @@
 #include <QStyledItemDelegate>
 #include <QToolBar>
 
+#include "qtcompat_p.h"
+
 namespace Tiled {
 
 class ColorDelegate : public QStyledItemDelegate
@@ -369,8 +371,8 @@ void ObjectTypesEditor::importObjectTypes()
 
     if (serializer.readObjectTypes(fileName, objectTypes)) {
         ObjectTypes currentTypes = mObjectTypesModel->objectTypes();
-        for (const ObjectType &type : objectTypes) {
-            auto it = std::find_if(currentTypes.begin(), currentTypes.end(), [&type](ObjectType &existingType) {
+        for (const ObjectType &type : qAsConst(objectTypes)) {
+            auto it = std::find_if(currentTypes.begin(), currentTypes.end(), [&type](const ObjectType &existingType) {
                 return existingType.name == type.name;
             });
 

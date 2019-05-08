@@ -773,7 +773,7 @@ void MapDocument::paintTileLayers(const Map *map, bool mergeable,
                                                    tileLayer);
 
         if (missingTilesets && !missingTilesets->isEmpty()) {
-            for (const SharedTileset &tileset : *missingTilesets) {
+            for (const SharedTileset &tileset : qAsConst(*missingTilesets)) {
                 if (!mMap->tilesets().contains(tileset))
                     new AddTileset(this, tileset, paint);
             }

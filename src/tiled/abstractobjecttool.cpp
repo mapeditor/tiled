@@ -47,6 +47,8 @@
 
 #include <QtMath>
 
+#include "qtcompat_p.h"
+
 using namespace Tiled;
 
 static bool isTileObject(MapObject *mapObject)
@@ -262,7 +264,7 @@ void AbstractObjectTool::resetTileSize()
     if (!commands.isEmpty()) {
         QUndoStack *undoStack = mapDocument()->undoStack();
         undoStack->beginMacro(tr("Reset Tile Size"));
-        for (auto command : commands)
+        for (auto command : qAsConst(commands))
             undoStack->push(command);
         undoStack->endMacro();
     }
@@ -345,7 +347,7 @@ void AbstractObjectTool::detachSelectedObjects()
     auto changeMapObjectCommand = new DetachObjects(currentMapDocument, templateInstances);
 
     // Add any missing tileset used by the templates to the map map before detaching
-    for (SharedTileset sharedTileset : sharedTilesets) {
+    for (const SharedTileset &sharedTileset : qAsConst(sharedTilesets)) {
         if (!currentMapDocument->map()->tilesets().contains(sharedTileset))
             new AddTileset(currentMapDocument, sharedTileset, changeMapObjectCommand);
     }

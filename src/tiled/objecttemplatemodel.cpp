@@ -109,7 +109,8 @@ void ObjectTemplateModel::updateNameFilters()
 {
     QStringList nameFilters;
 
-    for (ObjectTemplateFormat *format : PluginManager::objects<ObjectTemplateFormat>()) {
+    const auto formats = PluginManager::objects<ObjectTemplateFormat>();
+    for (ObjectTemplateFormat *format : formats) {
         if (!(format->capabilities() & FileFormat::Read))
             continue;
 

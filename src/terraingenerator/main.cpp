@@ -33,6 +33,8 @@
 #include <QPainter>
 #include <QStringList>
 
+#include "qtcompat_p.h"
+
 #include <algorithm>
 
 using namespace Tiled;
@@ -419,7 +421,7 @@ int main(int argc, char *argv[])
     }
 
     // Read source tilesets.
-    for (const QString &sourceFileName : options.sources) {
+    for (const QString &sourceFileName : qAsConst(options.sources)) {
         SharedTileset source = reader.readTileset(sourceFileName);
         if (!source) {
             qCritical("Error reading source tileset '%s':\n%s",
@@ -460,7 +462,7 @@ int main(int argc, char *argv[])
     } else {
         // Dump the combine lists.
         qWarning() << "Terrains to combine:";
-        for (const QStringList &combine : options.combineList) {
+        for (const QStringList &combine : qAsConst(options.combineList)) {
             if (combine.isEmpty()) {
                 qCritical("Empty combine set");
             }
@@ -477,20 +479,22 @@ int main(int argc, char *argv[])
     // Setup terrain priorities.
     TerrainLessThan lessThan;
     int priority = 0;
-    for (const QString &terrainName : options.terrainPriority) {
+    for (const QString &terrainName : qAsConst(options.terrainPriority)) {
         lessThan.terrainPriority.insert(terrainName, priority);
         ++priority;
     }
 
-    qDebug() << "Terrains found:" << terrains.keys();
+    const auto terrainNames = terrains.keys();
+    qDebug() << "Terrains found:" << terrainNames;
 
     // Check if all terrains from priority list were found and loaded.
-    for (const QString &terrainName : lessThan.terrainPriority.keys())
+    const auto terrainsWithPriority = lessThan.terrainPriority.keys();
+    for (const QString &terrainName : terrainsWithPriority)
         if (!terrains.contains(terrainName))
             qWarning() << "Terrain" << terrainName << "from priority list not found.";
 
     // Add terrain names not specified from command line.
-    for (const QString &terrainName : terrains.keys()) {
+    for (const QString &terrainName : terrainNames) {
         if (!lessThan.terrainPriority.contains(terrainName)) {
             qWarning() << "No priority set for" << terrainName;
             lessThan.terrainPriority.insert(terrainName, priority);
@@ -521,7 +525,7 @@ int main(int argc, char *argv[])
 
     // Prepare a list of terrain combinations.
     QVector<TileTerrainNames> process;
-    for (const QStringList &combine : options.combineList) {
+    for (const QStringList &combine : qAsConst(options.combineList)) {
         QList<Terrain*> terrainList;
         // Get the terrains to combine
         for (const QString &terrainName : combine)

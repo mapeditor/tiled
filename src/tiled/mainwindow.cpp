@@ -97,6 +97,8 @@
 #include <QtPlatformHeaders\QWindowsWindowFunctions>
 #endif
 
+#include "qtcompat_p.h"
+
 using namespace Tiled;
 using namespace Tiled::Utils;
 
@@ -1136,7 +1138,8 @@ void MainWindow::toggleClearView(bool clearView)
         QList<QDockWidget*> docks = findChildren<QDockWidget*>(QString(), Qt::FindDirectChildrenOnly);
         QList<QToolBar*> toolBars = findChildren<QToolBar*>(QString(), Qt::FindDirectChildrenOnly);
 
-        for (Editor *editor : mDocumentManager->editors()) {
+        const auto editors = mDocumentManager->editors();
+        for (Editor *editor : editors) {
             if (auto editorWindow = qobject_cast<QMainWindow*>(editor->editorWidget()))
                 mMainWindowStates.insert(editorWindow, editorWindow->saveState());
 
@@ -1144,9 +1147,9 @@ void MainWindow::toggleClearView(bool clearView)
             toolBars += editor->toolBars();
         }
 
-        for (auto dock : docks)
+        for (auto dock : qAsConst(docks))
             dock->hide();
-        for (auto toolBar : toolBars)
+        for (auto toolBar : qAsConst(toolBars))
             toolBar->hide();
 
     } else {

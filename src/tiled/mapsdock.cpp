@@ -243,7 +243,8 @@ void MapsView::updateNameFilters()
 {
     QStringList nameFilters;
 
-    for (MapFormat *format : PluginManager::objects<MapFormat>()) {
+    const auto mapFormats = PluginManager::objects<MapFormat>();
+    for (MapFormat *format : mapFormats) {
         if (!(format->capabilities() & MapFormat::Read))
             continue;
 

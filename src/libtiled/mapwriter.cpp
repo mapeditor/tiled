@@ -508,7 +508,8 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
                 }
             }
 
-            for (const WangTile &wangTile : ws->sortedWangTiles()) {
+            const auto wangTiles = ws->sortedWangTiles();
+            for (const WangTile &wangTile : wangTiles) {
                 w.writeStartElement(QLatin1String("wangtile"));
                 w.writeAttribute(QLatin1String("tileid"), QString::number(wangTile.tile()->id()));
                 w.writeAttribute(QLatin1String("wangid"),
@@ -587,7 +588,8 @@ void MapWriterPrivate::writeTileLayer(QXmlStreamWriter &w,
         w.writeAttribute(QLatin1String("compression"), compression);
 
     if (tileLayer.map()->infinite()) {
-        for (const QRect &rect : tileLayer.sortedChunksToWrite()) {
+        const auto chunks = tileLayer.sortedChunksToWrite();
+        for (const QRect &rect : chunks) {
             w.writeStartElement(QLatin1String("chunk"));
             w.writeAttribute(QLatin1String("x"), QString::number(rect.x()));
             w.writeAttribute(QLatin1String("y"), QString::number(rect.y()));

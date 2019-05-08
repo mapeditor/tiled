@@ -263,7 +263,8 @@ void CommandLineHandler::showExportFormats()
     PluginManager::instance()->loadPlugins();
 
     QStringList formats;
-    for (MapFormat *format : PluginManager::objects<MapFormat>()) {
+    const auto mapFormats = PluginManager::objects<MapFormat>();
+    for (MapFormat *format : mapFormats) {
         if (format->hasCapabilities(MapFormat::Write))
             formats.append(format->shortName());
     }
@@ -274,7 +275,8 @@ void CommandLineHandler::showExportFormats()
         qWarning(" %s", qUtf8Printable(name));
 
     formats.clear();
-    for (TilesetFormat *format : PluginManager::objects<TilesetFormat>()) {
+    const auto tilesetFormats = PluginManager::objects<TilesetFormat>();
+    for (TilesetFormat *format : tilesetFormats) {
         if (format->hasCapabilities(TilesetFormat::Write))
             formats.append(format->shortName());
     }

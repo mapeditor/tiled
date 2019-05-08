@@ -481,7 +481,8 @@ void LuaWriter::writeTileLayer(LuaTableWriter &writer,
 
     if (tileLayer->map()->infinite()) {
         writer.writeStartTable("chunks");
-        for (const QRect &rect : tileLayer->sortedChunksToWrite()) {
+        const auto chunks = tileLayer->sortedChunksToWrite();
+        for (const QRect &rect : chunks) {
             writer.writeStartTable();
 
             writer.writeKeyAndValue("x", rect.x());

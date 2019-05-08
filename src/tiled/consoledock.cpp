@@ -65,7 +65,8 @@ ConsoleDock::ConsoleDock(QWidget *parent)
     layout->addWidget(mPlainTextEdit);
     layout->addWidget(mLineEdit);
 
-    for (LoggingInterface *output : PluginManager::objects<LoggingInterface>())
+    const auto outputs = PluginManager::objects<LoggingInterface>();
+    for (LoggingInterface *output : outputs)
         registerOutput(output);
 
     connect(PluginManager::instance(), &PluginManager::objectAdded,

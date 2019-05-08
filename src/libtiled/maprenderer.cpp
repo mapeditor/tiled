@@ -41,6 +41,8 @@
 #include <QPainter>
 #include <QVector2D>
 
+#include "qtcompat_p.h"
+
 #include <cmath>
 
 using namespace Tiled;
@@ -415,7 +417,7 @@ void CellRenderer::paintTileCollisionShapes()
 
     mPainter->setRenderHint(QPainter::Antialiasing);
 
-    for (const auto &fragment : mFragments) {
+    for (const auto &fragment : qAsConst(mFragments)) {
         QTransform tileTransform;
         tileTransform.translate(fragment.x, fragment.y);
         tileTransform.rotate(fragment.rotation);

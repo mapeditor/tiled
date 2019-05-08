@@ -103,7 +103,7 @@ AutoMapperWrapper::~AutoMapperWrapper()
 void AutoMapperWrapper::undo()
 {
     Map *map = mMapDocument->map();
-    for (TileLayer *layer : mLayersBefore) {
+    for (TileLayer *layer : qAsConst(mLayersBefore)) {
         const int layerIndex = map->indexOfLayer(layer->name());
         if (layerIndex != -1)
             patchLayer(layerIndex, layer);
@@ -113,7 +113,7 @@ void AutoMapperWrapper::undo()
 void AutoMapperWrapper::redo()
 {
     Map *map = mMapDocument->map();
-    for (TileLayer *layer : mLayersAfter) {
+    for (TileLayer *layer : qAsConst(mLayersAfter)) {
         const int layerIndex = map->indexOfLayer(layer->name());
         if (layerIndex != -1)
             patchLayer(layerIndex, layer);

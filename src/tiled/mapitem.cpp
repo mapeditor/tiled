@@ -340,7 +340,8 @@ void MapItem::layerAdded(Layer *layer)
     createLayerItem(layer);
 
     int z = 0;
-    for (auto sibling : layer->siblings())
+    const auto siblings = layer->siblings();
+    for (auto sibling : siblings)
         mLayerItems.value(sibling)->setZValue(z++);
 }
 

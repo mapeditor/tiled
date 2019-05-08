@@ -107,7 +107,7 @@ void MapScene::setShowTileCollisionShapes(bool enabled)
         return;
 
     mShowTileCollisionShapes = enabled;
-    for (auto mapItem : mMapItems)
+    for (auto mapItem : qAsConst(mMapItems))
         mapItem->setShowTileCollisionShapes(enabled);
 }
 

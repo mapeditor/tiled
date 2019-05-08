@@ -67,7 +67,8 @@ SharedTileset readTileset(const QString &fileName, QString *error)
 
 TilesetFormat *findSupportingTilesetFormat(const QString &fileName)
 {
-    for (TilesetFormat *format : PluginManager::objects<TilesetFormat>())
+    const auto tilesetFormats = PluginManager::objects<TilesetFormat>();
+    for (TilesetFormat *format : tilesetFormats)
         if (format->supportsFile(fileName))
             return format;
     return nullptr;

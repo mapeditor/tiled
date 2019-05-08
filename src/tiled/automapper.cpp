@@ -465,7 +465,7 @@ void AutoMapper::autoMap(QRegion *where)
     // delete all the relevant area, if the property "DeleteTiles" is set
     if (mOptions.deleteTiles) {
         const QRegion setLayersRegion = computeSetLayersRegion();
-        for (const RuleOutput &translationTable : mLayerList) {
+        for (const RuleOutput &translationTable : qAsConst(mLayerList)) {
             for (const int index : translationTable) {
                 Layer *dstLayer = mMapWork->layerAt(index);
                 const QRegion region = setLayersRegion.intersected(*where);

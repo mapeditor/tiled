@@ -1440,7 +1440,7 @@ QtVariantProperty *PropertyBrowser::addProperty(PropertyId id, int type,
     if (id == CustomProperty) {
         // Collapse custom color properties, to save space
         if (type == QVariant::Color)
-            setExpanded(items(property).first(), false);
+            setExpanded(items(property).constFirst(), false);
 
         if (mObject->isPartOfTileset())
             property->setEnabled(mTilesetDocument);
@@ -1468,7 +1468,7 @@ QtVariantProperty *PropertyBrowser::createCustomProperty(const QString &name, co
 
     // Collapse custom color properties, to save space
     if (value.type() == QVariant::Color)
-        setExpanded(items(property).first(), false);
+        setExpanded(items(property).constFirst(), false);
 
     mUpdating = false;
     return property;
@@ -1494,7 +1494,7 @@ void PropertyBrowser::setCustomPropertyValue(QtVariantProperty *property,
         updateCustomPropertyColor(name);
 
         if (wasCurrent)
-            setCurrentItem(items(property).first());
+            setCurrentItem(items(property).constFirst());
     } else {
         mUpdating = true;
         property->setValue(value);
@@ -1531,11 +1531,11 @@ void PropertyBrowser::addProperties()
 
     // Make sure the color and font properties are collapsed, to save space
     if (QtProperty *colorProperty = mIdToProperty.value(ColorProperty))
-        setExpanded(items(colorProperty).first(), false);
+        setExpanded(items(colorProperty).constFirst(), false);
     if (QtProperty *colorProperty = mIdToProperty.value(BackgroundColorProperty))
-        setExpanded(items(colorProperty).first(), false);
+        setExpanded(items(colorProperty).constFirst(), false);
     if (QtProperty *fontProperty = mIdToProperty.value(FontProperty))
-        setExpanded(items(fontProperty).first(), false);
+        setExpanded(items(fontProperty).constFirst(), false);
 
     // Add a node for the custom properties
     mCustomPropertiesGroup = mGroupManager->addProperty(tr("Custom Properties"));
@@ -1744,7 +1744,8 @@ void PropertyBrowser::updateCustomProperties()
 
     mCombinedProperties = mObject->properties();
     // Add properties from selected objects which mObject does not contain to mCombinedProperties.
-    for (Object *obj : mDocument->currentObjects()) {
+    const auto currentObjects = mDocument->currentObjects();
+    for (Object *obj : currentObjects) {
         if (obj == mObject)
             continue;
 

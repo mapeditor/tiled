@@ -351,7 +351,8 @@ QVariant MapToVariantConverter::toVariant(const WangSet &wangSet) const
     wangSetVariant[QLatin1String("cornercolors")] = cornerColorVariants;
 
     QVariantList wangTileVariants;
-    for (const WangTile &wangTile : wangSet.sortedWangTiles()) {
+    const auto wangTiles = wangSet.sortedWangTiles();
+    for (const WangTile &wangTile : wangTiles) {
         QVariantMap wangTileVariant;
 
         QVariantList wangIdVariant;
@@ -447,7 +448,8 @@ QVariant MapToVariantConverter::toVariant(const TileLayer &tileLayer,
     if (tileLayer.map()->infinite()) {
         QVariantList chunkVariants;
 
-        for (const QRect &rect : tileLayer.sortedChunksToWrite()) {
+        const auto chunks = tileLayer.sortedChunksToWrite();
+        for (const QRect &rect : chunks) {
             QVariantMap chunkVariant;
 
             chunkVariant[QLatin1String("x")] = rect.x();

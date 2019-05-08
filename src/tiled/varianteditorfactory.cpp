@@ -32,6 +32,8 @@
 #include <QHBoxLayout>
 #include <QToolButton>
 
+#include "qtcompat_p.h"
+
 namespace Tiled {
 
 class ResetWidget : public QWidget
@@ -182,17 +184,17 @@ void VariantEditorFactory::slotPropertyChanged(QtProperty *property,
                                                const QVariant &value)
 {
     if (mCreatedFileEdits.contains(property)) {
-        for (FileEdit *edit : mCreatedFileEdits[property]) {
+        for (FileEdit *edit : qAsConst(mCreatedFileEdits)[property]) {
             FilePath filePath = value.value<FilePath>();
             edit->setFileUrl(filePath.url);
         }
     }
     else if (mCreatedTilesetEdits.contains(property)) {
-        for (TilesetParametersEdit *edit : mCreatedTilesetEdits[property])
+        for (TilesetParametersEdit *edit : qAsConst(mCreatedTilesetEdits)[property])
             edit->setTilesetDocument(value.value<TilesetDocument*>());
     }
     else if (mCreatedTextPropertyEdits.contains(property)) {
-        for (TextPropertyEdit *edit : mCreatedTextPropertyEdits[property])
+        for (TextPropertyEdit *edit : qAsConst(mCreatedTextPropertyEdits)[property])
             edit->setText(value.toString());
     }
 }
@@ -203,7 +205,7 @@ void VariantEditorFactory::slotPropertyAttributeChanged(QtProperty *property,
 {
     if (mCreatedFileEdits.contains(property)) {
         if (attribute == QLatin1String("filter")) {
-            for (FileEdit *edit : mCreatedFileEdits[property])
+            for (FileEdit *edit : qAsConst(mCreatedFileEdits)[property])
                 edit->setFilter(value.toString());
         }
     }

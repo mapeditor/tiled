@@ -35,6 +35,8 @@
 #include "mapobject.h"
 #include "tile.h"
 
+#include "qtcompat_p.h"
+
 #include <cmath>
 
 using namespace Tiled;
@@ -151,7 +153,7 @@ bool ObjectGroup::referencesTileset(const Tileset *tileset) const
 void ObjectGroup::replaceReferencesToTileset(Tileset *oldTileset,
                                              Tileset *newTileset)
 {
-    for (MapObject *object : mObjects) {
+    for (MapObject *object : qAsConst(mObjects)) {
         if (object->cell().tileset() == oldTileset) {
             Cell cell = object->cell();
             cell.setTile(newTileset, cell.tileId());
@@ -169,7 +171,7 @@ void ObjectGroup::offsetObjects(const QPointF &offset,
 
     const bool boundsValid = bounds.isValid();
 
-    for (MapObject *object : mObjects) {
+    for (MapObject *object : qAsConst(mObjects)) {
         const QPointF objectCenter = object->bounds().center();
         if (boundsValid && !bounds.contains(objectCenter))
             continue;

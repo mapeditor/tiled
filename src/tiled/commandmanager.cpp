@@ -31,6 +31,8 @@
 #include <QLatin1String>
 #include <QMenu>
 
+#include "qtcompat_p.h"
+
 namespace Tiled {
 
 CommandManager *CommandManager::mInstance;
@@ -83,7 +85,7 @@ void CommandManager::showDialog()
 
 void CommandManager::populateMenus()
 {
-    for (QMenu *menu : mMenus) {
+    for (QMenu *menu : qAsConst(mMenus)) {
         menu->clear();
         menu->addActions(mActions);
     }

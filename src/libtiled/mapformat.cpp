@@ -65,7 +65,8 @@ std::unique_ptr<Map> readMap(const QString &fileName, QString *error)
 
 MapFormat *findSupportingMapFormat(const QString &fileName)
 {
-    for (MapFormat *format : PluginManager::objects<MapFormat>())
+    const auto mapFormats = PluginManager::objects<MapFormat>();
+    for (MapFormat *format : mapFormats)
         if (format->supportsFile(fileName))
             return format;
     return nullptr;

@@ -442,7 +442,7 @@ void ObjectSelectionItem::syncOverlayItems(const QList<MapObject*> &objects)
 
 void ObjectSelectionItem::updateObjectLabelColors()
 {
-    for (MapObjectLabel *label : mObjectLabels)
+    for (MapObjectLabel *label : qAsConst(mObjectLabels))
         label->updateColor();
 }
 
@@ -473,11 +473,11 @@ void ObjectSelectionItem::tilesetTileOffsetChanged(Tileset *tileset)
     // Tile offset affects the position of selection outlines and labels
     const MapRenderer &renderer = *mMapDocument->renderer();
 
-    for (MapObjectLabel *label : mObjectLabels)
+    for (MapObjectLabel *label : qAsConst(mObjectLabels))
         if (label->mapObject()->cell().tileset() == tileset)
             label->syncWithMapObject(renderer);
 
-    for (MapObjectOutline *outline : mObjectOutlines)
+    for (MapObjectOutline *outline : qAsConst(mObjectOutlines))
         if (outline->mapObject()->cell().tileset() == tileset)
             outline->syncWithMapObject(renderer);
 
@@ -487,7 +487,7 @@ void ObjectSelectionItem::tilesetTileOffsetChanged(Tileset *tileset)
 
 void ObjectSelectionItem::tileTypeChanged(Tile *tile)
 {
-    for (MapObjectLabel *label : mObjectLabels) {
+    for (MapObjectLabel *label : qAsConst(mObjectLabels)) {
         MapObject *object = label->mapObject();
         if (object->type().isEmpty()) {
             const auto &cell = object->cell();
