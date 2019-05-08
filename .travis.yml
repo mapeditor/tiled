@@ -48,9 +48,8 @@ matrix:
     script:
     - qbs --version
     - qbs setup-toolchains --detect
-    - qbs setup-qt --detect
-    - qbs config defaultProfile qt-5-12-3
-    - qbs install --install-root Tiled/usr config:release projects.Tiled.version:$TILED_VERSION
+    - qbs config defaultProfile gcc
+    - qbs install --install-root Tiled config:release qbs.installPrefix:/usr projects.Tiled.version:$TILED_VERSION
     - cp LICENSE* COPYING *md Tiled/
     after_success:
     - wget -c "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
@@ -128,16 +127,14 @@ matrix:
     - chmod +x install-qt
     - chmod +x extract-qt-installer
     - export PATH=$PATH:$PWD
-    - QT_CI_PACKAGES=qt.qt5.597.clang_64,qt.qt5.597.qtscript QT_CI_DOWNLOADER="wget -c -nv -N" install-qt 5.9.7
-    - source qt-5.9.7.env
+    - QT_CI_PACKAGES=qt.qt5.5123.clang_64,qt.qt5.5123.qtscript QT_CI_DOWNLOADER="wget -c -nv -N" install-qt 5.12.3
+    - source qt-5.12.3.env
     - source ./dist/linux/setup-qbs.sh
     script:
     - qbs --version
     - qbs setup-toolchains --detect
-    - qbs setup-qt --detect
-    - qbs config profiles.qt-5-9-7.baseProfile xcode-macosx-x86_64
-    - qbs config defaultProfile qt-5-9-7
-    - qbs install --install-root install config:release projects.Tiled.version:$TILED_VERSION
+    - qbs config defaultProfile xcode
+    - qbs install --install-root install config:release qbs.installPrefix:"" projects.Tiled.version:$TILED_VERSION
     - macdeployqt install/Tiled.app
     - pushd install
     - ruby ../dist/macos/fixup-install-names.rb
