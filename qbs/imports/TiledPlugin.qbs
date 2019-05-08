@@ -5,7 +5,7 @@ DynamicLibrary {
     Depends { name: "cpp" }
     Depends { name: "Qt"; submodules: "gui" }
 
-    cpp.cxxLanguageVersion: "c++11"
+    cpp.cxxLanguageVersion: "c++14"
     cpp.visibility: "minimal"
     cpp.useRPaths: project.useRPaths
     cpp.rpaths: {

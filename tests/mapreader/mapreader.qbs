@@ -7,7 +7,7 @@ CppApplication {
     Depends { name: "libtiled" }
     Depends { name: "Qt.testlib" }
 
-    cpp.cxxLanguageVersion: "c++11"
+    cpp.cxxLanguageVersion: "c++14"
 
     files: [
         "test_mapreader.cpp",

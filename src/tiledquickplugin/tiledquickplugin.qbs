@@ -9,7 +9,7 @@ DynamicLibrary {
         versionAtLeast: "5.4"
     }
 
-    cpp.cxxLanguageVersion: "c++11"
+    cpp.cxxLanguageVersion: "c++14"
 
     Properties {
         condition: qbs.targetOS.contains("darwin")
