@@ -65,12 +65,6 @@ class TILEDSHARED_EXPORT Map : public Object
     Q_PROPERTY(int tileHeight READ tileHeight NOTIFY tileHeightChanged)
     Q_PROPERTY(QSize size READ size NOTIFY sizeChanged)
 
-    Q_ENUMS(Orientation
-            LayerDataFormat
-            RenderOrder
-            StaggerAxis
-            StaggerIndex)
-
     class LayerIteratorHelper
     {
     public:
@@ -100,6 +94,7 @@ public:
         Staggered,
         Hexagonal
     };
+    Q_ENUM(Orientation)
 
     /**
      * The different formats in which the tile layer data can be stored.
@@ -111,6 +106,7 @@ public:
         Base64Zlib = 3,
         CSV        = 4
     };
+    Q_ENUM(LayerDataFormat)
 
     /**
      * The order in which tiles are rendered on screen.
@@ -121,6 +117,7 @@ public:
         LeftDown   = 2,
         LeftUp     = 3
     };
+    Q_ENUM(RenderOrder)
 
     /**
      * Which axis is staggered. Only used by the isometric staggered and
@@ -130,6 +127,7 @@ public:
         StaggerX,
         StaggerY
     };
+    Q_ENUM(StaggerAxis)
 
     /**
      * When staggering, specifies whether the odd or the even rows/columns are
@@ -140,6 +138,7 @@ public:
         StaggerOdd  = 0,
         StaggerEven = 1
     };
+    Q_ENUM(StaggerIndex)
 
     Map();
 

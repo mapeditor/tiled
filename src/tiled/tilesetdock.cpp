@@ -350,7 +350,7 @@ void TilesetDock::selectTilesInStamp(const TileStamp &stamp)
         return;
 
     QSet<Tile*> processed;
-    QMap<QItemSelectionModel*, QItemSelection> selections;
+    QHash<QItemSelectionModel*, QItemSelection> selections;
 
     for (const TileStampVariation &variation : stamp.variations()) {
         for (auto layer : variation.map->tileLayers()) {

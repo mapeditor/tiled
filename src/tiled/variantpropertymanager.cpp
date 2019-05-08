@@ -163,7 +163,8 @@ QString VariantPropertyManager::valueText(const QtProperty *property) const
 
     if (m_alignValues.contains(const_cast<QtProperty *>(property))) {
         const Qt::Alignment v = m_alignValues.value(const_cast<QtProperty *>(property));
-        return tr("%1, %2").arg(indexHToString(alignToIndexH(v))).arg(indexVToString(alignToIndexV(v)));
+        return tr("%1, %2").arg(indexHToString(alignToIndexH(v)),
+                                indexVToString(alignToIndexV(v)));
     }
 
     auto stringAttributesIt = mStringAttributes.find(property);

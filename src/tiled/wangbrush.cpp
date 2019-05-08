@@ -327,8 +327,7 @@ void WangBrush::updateStatusInfo()
         setStatusInfo(QString(QLatin1String("%1, %2%3%4"))
                       .arg(mPaintPoint.x())
                       .arg(mPaintPoint.y())
-                      .arg(wangColor)
-                      .arg(extraInfo));
+                      .arg(wangColor, extraInfo));
 
     } else {
         setStatusInfo(QString());

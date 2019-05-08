@@ -51,8 +51,8 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     for (const QString &name : qAsConst(mLanguages)) {
         QLocale locale(name);
         QString string = QString(QLatin1String("%1 (%2)"))
-            .arg(QLocale::languageToString(locale.language()))
-            .arg(QLocale::countryToString(locale.country()));
+            .arg(QLocale::languageToString(locale.language()),
+                 QLocale::countryToString(locale.country()));
         mUi->languageCombo->addItem(string, name);
     }
 

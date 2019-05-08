@@ -166,10 +166,12 @@ bool AutomappingManager::loadFile(const QString &filePath)
                 || rulePath.startsWith(QLatin1String("//")))
             continue;
 
-        if (QFileInfo(rulePath).isRelative())
+        const QFileInfo rulePathInfo(rulePath);
+
+        if (rulePathInfo.isRelative())
             rulePath = absPath + QLatin1Char('/') + rulePath;
 
-        if (!QFileInfo(rulePath).exists()) {
+        if (!rulePathInfo.exists()) {
             mError += tr("File not found:\n%1").arg(rulePath) + QLatin1Char('\n');
             ret = false;
             continue;

@@ -1120,10 +1120,10 @@ QPolygonF MapReaderPrivate::readPolygon()
             break;
         }
 
-        const qreal x = point.left(commaPos).toDouble(&ok);
+        const qreal x = point.leftRef(commaPos).toDouble(&ok);
         if (!ok)
             break;
-        const qreal y = point.mid(commaPos + 1).toDouble(&ok);
+        const qreal y = point.midRef(commaPos + 1).toDouble(&ok);
         if (!ok)
             break;
 

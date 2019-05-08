@@ -40,14 +40,13 @@ class MapLoader : public QObject
     Q_PROPERTY(Status status READ status NOTIFY statusChanged)
     Q_PROPERTY(QString error READ error NOTIFY errorChanged)
 
-    Q_ENUMS(Status)
-
 public:
     enum Status {
         Null,
         Ready,
         Error
     };
+    Q_ENUM(Status)
 
     explicit MapLoader(QObject *parent = nullptr);
     ~MapLoader();

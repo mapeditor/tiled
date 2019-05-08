@@ -221,7 +221,6 @@ void ScriptModule::extendMenu(const QByteArray &idName, QJSValue items)
         MenuItem menuItem;
 
         const QJSValue action = item.property(QStringLiteral("action"));
-        const QJSValue text = item.property(QStringLiteral("text"));
 
         menuItem.action = toId(action);
         menuItem.beforeAction = toId(item.property(QStringLiteral("before")));

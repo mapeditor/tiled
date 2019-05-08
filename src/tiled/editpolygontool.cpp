@@ -104,7 +104,7 @@ void EditPolygonTool::deactivate(MapScene *scene)
     abortCurrentAction();
 
     // Delete all handles
-    QMapIterator<MapObject*, QList<PointHandle*> > i(mHandles);
+    QHashIterator<MapObject*, QList<PointHandle*> > i(mHandles);
     while (i.hasNext())
         qDeleteAll(i.next().value());
 
@@ -399,7 +399,7 @@ void EditPolygonTool::updateHandles()
     };
 
     // First destroy the handles for objects that are no longer selected
-    QMutableMapIterator<MapObject*, QList<PointHandle*> > i(mHandles);
+    QMutableHashIterator<MapObject*, QList<PointHandle*> > i(mHandles);
     while (i.hasNext()) {
         i.next();
         if (!selection.contains(i.key())) {
@@ -595,7 +595,7 @@ void EditPolygonTool::finishMoving(const QPointF &pos)
 
     // TODO: This isn't really optimal. Would be better to have a single undo
     // command that supports changing multiple map objects.
-    QMapIterator<MapObject*, QPolygonF> i(mOldPolygons);
+    QHashIterator<MapObject*, QPolygonF> i(mOldPolygons);
     while (i.hasNext()) {
         i.next();
         undoStack->push(new ChangePolygon(mapDocument(), i.key(), i.value()));
@@ -617,7 +617,7 @@ void EditPolygonTool::abortCurrentAction(const QList<MapObject *> &removedObject
         break;
     case Moving:
         // Reset the polygons
-        QMapIterator<MapObject*, QPolygonF> i(mOldPolygons);
+        QHashIterator<MapObject*, QPolygonF> i(mOldPolygons);
         while (i.hasNext()) {
             i.next();
 
@@ -718,7 +718,7 @@ QSet<PointHandle *> EditPolygonTool::clickedHandles() const
     return handles;
 }
 
-typedef QMap<MapObject*, RangeSet<int> > PointIndexesByObject;
+typedef QHash<MapObject*, RangeSet<int> > PointIndexesByObject;
 static PointIndexesByObject
 groupIndexesByObject(const QSet<PointHandle*> &handles)
 {
@@ -739,7 +739,7 @@ void EditPolygonTool::deleteNodes()
         return;
 
     PointIndexesByObject p = groupIndexesByObject(mSelectedHandles);
-    QMapIterator<MapObject*, RangeSet<int> > i(p);
+    QHashIterator<MapObject*, RangeSet<int> > i(p);
 
     QUndoStack *undoStack = mapDocument()->undoStack();
 
@@ -902,7 +902,7 @@ void EditPolygonTool::joinNodes()
         return;
 
     const PointIndexesByObject p = groupIndexesByObject(mSelectedHandles);
-    QMapIterator<MapObject*, RangeSet<int> > i(p);
+    QHashIterator<MapObject*, RangeSet<int> > i(p);
 
     QUndoStack *undoStack = mapDocument()->undoStack();
     bool macroStarted = false;
@@ -938,7 +938,7 @@ void EditPolygonTool::splitSegments()
         return;
 
     const PointIndexesByObject p = groupIndexesByObject(mSelectedHandles);
-    QMapIterator<MapObject*, RangeSet<int> > i(p);
+    QHashIterator<MapObject*, RangeSet<int> > i(p);
 
     QUndoStack *undoStack = mapDocument()->undoStack();
     bool macroStarted = false;

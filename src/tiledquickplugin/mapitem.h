@@ -40,7 +40,6 @@ class TileLayerItem;
 class MapItem : public QQuickItem
 {
     Q_OBJECT
-    Q_ENUMS(Status)
 
     Q_PROPERTY(Tiled::Map *map READ map WRITE setMap NOTIFY mapChanged)
     Q_PROPERTY(QRectF visibleArea READ visibleArea WRITE setVisibleArea NOTIFY visibleAreaChanged)
