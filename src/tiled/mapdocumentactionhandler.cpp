@@ -124,6 +124,24 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     mActionMoveLayersDown->setIcon(
             QIcon(QLatin1String(":/images/16x16/go-down.png")));
 
+    QIcon toggleVisibilityIcon;
+    toggleVisibilityIcon.addFile(QLatin1String(":/images/14x14/hidden.png"));
+    toggleVisibilityIcon.addFile(QLatin1String(":/images/16x16/hidden.png"));
+    toggleVisibilityIcon.addFile(QLatin1String(":/images/24x24/hidden.png"));
+
+    mActionToggleSelectedLayers = new QAction(this);
+    mActionToggleSelectedLayers->setShortcut(tr("Ctrl+H"));
+    mActionToggleSelectedLayers->setIcon(toggleVisibilityIcon);
+
+    QIcon lockedIcon;
+    lockedIcon.addFile(QLatin1String(":/images/14x14/locked.png"));
+    lockedIcon.addFile(QLatin1String(":/images/16x16/locked.png"));
+    lockedIcon.addFile(QLatin1String(":/images/24x24/locked.png"));
+
+    mActionToggleLockSelectedLayers = new QAction(this);
+    mActionToggleLockSelectedLayers->setShortcut(tr("Ctrl+L"));
+    mActionToggleLockSelectedLayers->setIcon(lockedIcon);
+
     mActionToggleOtherLayers = new QAction(this);
     mActionToggleOtherLayers->setShortcut(tr("Ctrl+Shift+H"));
     mActionToggleOtherLayers->setIcon(
@@ -131,8 +149,7 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
 
     mActionToggleLockOtherLayers = new QAction(this);
     mActionToggleLockOtherLayers->setShortcut(tr("Ctrl+Shift+L"));
-    mActionToggleLockOtherLayers->setIcon(
-        QIcon(QLatin1String(":/images/16x16/locked.png")));
+    mActionToggleLockOtherLayers->setIcon(lockedIcon);
 
     mActionLayerProperties = new QAction(this);
     mActionLayerProperties->setIcon(
@@ -171,6 +188,8 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     connect(mActionRemoveLayers, &QAction::triggered, this, &MapDocumentActionHandler::removeLayers);
     connect(mActionMoveLayersUp, &QAction::triggered, this, &MapDocumentActionHandler::moveLayersUp);
     connect(mActionMoveLayersDown, &QAction::triggered, this, &MapDocumentActionHandler::moveLayersDown);
+    connect(mActionToggleSelectedLayers, &QAction::triggered, this, &MapDocumentActionHandler::toggleSelectedLayers);
+    connect(mActionToggleLockSelectedLayers, &QAction::triggered, this, &MapDocumentActionHandler::toggleLockSelectedLayers);
     connect(mActionToggleOtherLayers, &QAction::triggered, this, &MapDocumentActionHandler::toggleOtherLayers);
     connect(mActionToggleLockOtherLayers, &QAction::triggered, this, &MapDocumentActionHandler::toggleLockOtherLayers);
     connect(mActionLayerProperties, &QAction::triggered, this, &MapDocumentActionHandler::layerProperties);
@@ -199,6 +218,8 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     ActionManager::registerAction(mActionRemoveLayers, "RemoveLayers");
     ActionManager::registerAction(mActionMoveLayersUp, "MoveLayersUp");
     ActionManager::registerAction(mActionMoveLayersDown, "MoveLayersDown");
+    ActionManager::registerAction(mActionToggleSelectedLayers, "ToggleSelectedLayers");
+    ActionManager::registerAction(mActionToggleLockSelectedLayers, "ToggleLockSelectedLayers");
     ActionManager::registerAction(mActionToggleOtherLayers, "ToggleOtherLayers");
     ActionManager::registerAction(mActionToggleLockOtherLayers, "ToggleLockOtherLayers");
     ActionManager::registerAction(mActionLayerProperties, "LayerProperties");
@@ -239,8 +260,10 @@ void MapDocumentActionHandler::retranslateUi()
     mActionSelectNextLayer->setText(tr("Select &Next Layer"));
     mActionMoveLayersUp->setText(tr("R&aise Layers"));
     mActionMoveLayersDown->setText(tr("&Lower Layers"));
-    mActionToggleOtherLayers->setText(tr("Show/&Hide all Other Layers"));
-    mActionToggleLockOtherLayers->setText(tr("Lock/&Unlock all Other Layers"));
+    mActionToggleSelectedLayers->setText(tr("Show/&Hide Layers"));
+    mActionToggleLockSelectedLayers->setText(tr("Lock/&Unlock Layers"));
+    mActionToggleOtherLayers->setText(tr("Show/&Hide Other Layers"));
+    mActionToggleLockOtherLayers->setText(tr("Lock/&Unlock Other Layers"));
     mActionLayerProperties->setText(tr("Layer &Properties..."));
 }
 
@@ -700,6 +723,18 @@ void MapDocumentActionHandler::removeLayers()
         mMapDocument->removeLayers(mMapDocument->selectedLayers());
 }
 
+void MapDocumentActionHandler::toggleSelectedLayers()
+{
+    if (mMapDocument)
+        mMapDocument->toggleLayers(mMapDocument->selectedLayers());
+}
+
+void MapDocumentActionHandler::toggleLockSelectedLayers()
+{
+    if (mMapDocument)
+        mMapDocument->toggleLockLayers(mMapDocument->selectedLayers());
+}
+
 void MapDocumentActionHandler::toggleOtherLayers()
 {
     if (mMapDocument)
@@ -795,6 +830,8 @@ void MapDocumentActionHandler::updateActions()
     mActionSelectNextLayer->setEnabled(hasNextLayer);
     mActionMoveLayersUp->setEnabled(canMoveLayersUp);
     mActionMoveLayersDown->setEnabled(canMoveLayersDown);
+    mActionToggleSelectedLayers->setEnabled(!selectedLayers.isEmpty());
+    mActionToggleLockSelectedLayers->setEnabled(!selectedLayers.isEmpty());
     mActionToggleOtherLayers->setEnabled(currentLayer && (hasNextLayer || hasPreviousLayer));
     mActionToggleLockOtherLayers->setEnabled(currentLayer && (hasNextLayer || hasPreviousLayer));
     mActionRemoveLayers->setEnabled(!selectedLayers.isEmpty());

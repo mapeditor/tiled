@@ -412,6 +412,8 @@ void LayerView::contextMenuEvent(QContextMenuEvent *event)
         menu.addAction(handler->actionMoveLayersUp());
         menu.addAction(handler->actionMoveLayersDown());
         menu.addSeparator();
+        menu.addAction(handler->actionToggleSelectedLayers());
+        menu.addAction(handler->actionToggleLockSelectedLayers());
         menu.addAction(handler->actionToggleOtherLayers());
         menu.addAction(handler->actionToggleLockOtherLayers());
         menu.addSeparator();

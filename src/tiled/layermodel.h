@@ -91,6 +91,8 @@ public:
 
     void renameLayer(Layer *layer, const QString &name);
 
+    void toggleLayers(const QList<Layer *> &layers);
+    void toggleLockLayers(const QList<Layer *> &layers);
     void toggleOtherLayers(const QList<Layer *> &layers);
     void toggleLockOtherLayers(const QList<Layer *> &layers);
 

@@ -648,6 +648,22 @@ void MapDocument::removeLayers(const QList<Layer *> &layers)
 }
 
 /**
+ * \see LayerModel::toggleLayers
+ */
+void MapDocument::toggleLayers(const QList<Layer *> &layers)
+{
+    mLayerModel->toggleLayers(layers);
+}
+
+/**
+ * \see LayerModel::toggleLockLayers
+ */
+void MapDocument::toggleLockLayers(const QList<Layer *> &layers)
+{
+    mLayerModel->toggleLockLayers(layers);
+}
+
+/**
  * \see LayerModel::toggleOtherLayers
  */
 void MapDocument::toggleOtherLayers(const QList<Layer *> &layers)

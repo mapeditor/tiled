@@ -489,6 +489,54 @@ void LayerModel::renameLayer(Layer *layer, const QString &name)
 }
 
 /**
+ * Shows the layers when all are invisible, hides otherwise.
+ */
+void LayerModel::toggleLayers(const QList<Layer *> &layers)
+{
+    if (layers.isEmpty())
+        return;
+
+    bool visible = std::all_of(layers.begin(), layers.end(),
+                               [] (Layer *layer) { return !layer->isVisible(); });
+
+    QUndoStack *undoStack = mMapDocument->undoStack();
+    if (visible)
+        undoStack->beginMacro(tr("Show Layers"));
+    else
+        undoStack->beginMacro(tr("Hide Layers"));
+
+    for (Layer *l : layers)
+        if (visible != l->isVisible())
+            undoStack->push(new SetLayerVisible(mMapDocument, l, visible));
+
+    undoStack->endMacro();
+}
+
+/**
+ * Locks layers when any are unlocked, unlocks otherwise.
+ */
+void LayerModel::toggleLockLayers(const QList<Layer *> &layers)
+{
+    if (layers.isEmpty())
+        return;
+
+    bool locked = std::any_of(layers.begin(), layers.end(),
+                              [] (Layer *layer) { return !layer->isLocked(); });
+
+    QUndoStack *undoStack = mMapDocument->undoStack();
+    if (locked)
+        undoStack->beginMacro(tr("Lock Layers"));
+    else
+        undoStack->beginMacro(tr("Unlock Layers"));
+
+    for (Layer *l : layers)
+        if (locked != l->isLocked())
+            undoStack->push(new SetLayerLocked(mMapDocument, l, locked));
+
+    undoStack->endMacro();
+}
+
+/**
  * Collects siblings of \a layers, including siblings of all parents. None of
  * the layers provided as input are returned.
  */
