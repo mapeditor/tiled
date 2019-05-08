@@ -44,6 +44,8 @@
 
 #include "qtcompat_p.h"
 
+#include <memory>
+
 namespace Tiled {
 
 static const qreal darkeningFactor = 0.6;
@@ -174,13 +176,13 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
     } else {
         updateSelectedLayersHighlight();
 
-        mTileSelectionItem.reset(new TileSelectionItem(mapDocument.data(), this));
+        mTileSelectionItem = std::make_unique<TileSelectionItem>(mapDocument.data(), this);
         mTileSelectionItem->setZValue(10000 - 2);
 
-        mTileGridItem.reset(new TileGridItem(mapDocument.data(), this));
+        mTileGridItem = std::make_unique<TileGridItem>(mapDocument.data(), this);
         mTileGridItem->setZValue(10000 - 2);
 
-        mObjectSelectionItem.reset(new ObjectSelectionItem(mapDocument.data(), this));
+        mObjectSelectionItem = std::make_unique<ObjectSelectionItem>(mapDocument.data(), this);
         mObjectSelectionItem->setZValue(10000 - 1);
     }
 }
@@ -215,13 +217,13 @@ void MapItem::setDisplayMode(DisplayMode displayMode)
 
         mBorderRectangle->setBrush(Qt::NoBrush);
 
-        mTileSelectionItem.reset(new TileSelectionItem(mapDocument(), this));
+        mTileSelectionItem = std::make_unique<TileSelectionItem>(mapDocument(), this);
         mTileSelectionItem->setZValue(10000 - 3);
 
-        mTileGridItem.reset(new TileGridItem(mapDocument(), this));
+        mTileGridItem = std::make_unique<TileGridItem>(mapDocument(), this);
         mTileGridItem->setZValue(10000 - 2);
 
-        mObjectSelectionItem.reset(new ObjectSelectionItem(mapDocument(), this));
+        mObjectSelectionItem = std::make_unique<ObjectSelectionItem>(mapDocument(), this);
         mObjectSelectionItem->setZValue(10000 - 1);
     }
 

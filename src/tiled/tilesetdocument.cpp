@@ -321,7 +321,7 @@ WangColorModel *TilesetDocument::wangColorModel(WangSet *wangSet)
 
     std::unique_ptr<WangColorModel> &model = mWangColorModels[wangSet];
     if (!model)
-        model.reset(new WangColorModel(this, wangSet));
+        model = std::make_unique<WangColorModel>(this, wangSet);
     return model.get();
 }
 

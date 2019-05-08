@@ -44,6 +44,7 @@
 #include "qtcompat_p.h"
 
 #include <cmath>
+#include <memory>
 
 using namespace Tiled;
 
@@ -400,9 +401,9 @@ void CellRenderer::paintTileCollisionShapes()
 
     const bool isIsometric = tileset->orientation() == Tileset::Isometric;
     if (isIsometric)
-        renderer.reset(new IsometricRenderer(&map));
+        renderer = std::make_unique<IsometricRenderer>(&map);
     else
-        renderer.reset(new OrthogonalRenderer(&map));
+        renderer = std::make_unique<OrthogonalRenderer>(&map);
 
     const qreal lineWidth = mRenderer->objectLineWidth();
     const qreal shadowDist = (lineWidth == 0 ? 1 : lineWidth) / mRenderer->painterScale();

@@ -39,6 +39,7 @@
 #include <QPainter>
 
 #include <cmath>
+#include <memory>
 
 using namespace Tiled;
 
@@ -203,9 +204,9 @@ void MapObjectItem::expandBoundsToCoverTileCollisionObjects(QRectF &bounds)
     std::unique_ptr<MapRenderer> renderer;
 
     if (tileset->orientation() == Tileset::Orthogonal)
-        renderer.reset(new OrthogonalRenderer(&map));
+        renderer = std::make_unique<OrthogonalRenderer>(&map);
     else
-        renderer.reset(new IsometricRenderer(&map));
+        renderer = std::make_unique<IsometricRenderer>(&map);
 
     const QTransform tileTransform = tileCollisionObjectsTransform(*tile);
 

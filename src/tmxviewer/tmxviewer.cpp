@@ -208,17 +208,17 @@ bool TmxViewer::viewMap(const QString &fileName)
 
     switch (mMap->orientation()) {
     case Map::Isometric:
-        mRenderer.reset(new IsometricRenderer(mMap.get()));
+        mRenderer = std::make_unique<IsometricRenderer>(mMap.get());
         break;
     case Map::Staggered:
-        mRenderer.reset(new StaggeredRenderer(mMap.get()));
+        mRenderer = std::make_unique<StaggeredRenderer>(mMap.get());
         break;
     case Map::Hexagonal:
-        mRenderer.reset(new HexagonalRenderer(mMap.get()));
+        mRenderer = std::make_unique<HexagonalRenderer>(mMap.get());
         break;
     case Map::Orthogonal:
     default:
-        mRenderer.reset(new OrthogonalRenderer(mMap.get()));
+        mRenderer = std::make_unique<OrthogonalRenderer>(mMap.get());
         break;
     }
 

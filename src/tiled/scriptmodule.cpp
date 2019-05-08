@@ -160,7 +160,7 @@ ScriptedAction *ScriptModule::registerAction(const QByteArray &idName, QJSValue 
         return nullptr;
     }
 
-    action.reset(new ScriptedAction(id, callback, this));
+    action = std::make_unique<ScriptedAction>(id, callback, this);
     ActionManager::registerAction(action.get(), id);
     return action.get();
 }
@@ -176,7 +176,7 @@ void ScriptModule::registerMapFormat(const QString &shortName, QJSValue mapForma
         return;
 
     auto &format = mRegisteredMapFormats[shortName];
-    format.reset(new ScriptedMapFormat(shortName, mapFormatObject, this));
+    format = std::make_unique<ScriptedMapFormat>(shortName, mapFormatObject, this);
 }
 
 QJSValue ScriptModule::registerTool(const QString &shortName, QJSValue toolObject)
@@ -191,7 +191,7 @@ QJSValue ScriptModule::registerTool(const QString &shortName, QJSValue toolObjec
 
     auto &tool = mRegisteredTools[shortName];
 
-    tool.reset(new ScriptedTool(toolObject, this));
+    tool = std::make_unique<ScriptedTool>(toolObject, this);
     return toolObject;
 }
 

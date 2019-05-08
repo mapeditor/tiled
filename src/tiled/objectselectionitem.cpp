@@ -339,7 +339,7 @@ void ObjectSelectionItem::hoveredMapObjectChanged(MapObject *object,
     }
 
     if (object && prefs->highlightHoveredObject()) {
-        mHoveredMapObjectItem.reset(new MapObjectItem(object, mMapDocument, this));
+        mHoveredMapObjectItem = std::make_unique<MapObjectItem>(object, mMapDocument, this);
         mHoveredMapObjectItem->setEnabled(false);
         mHoveredMapObjectItem->setIsHoverIndicator(true);
         mHoveredMapObjectItem->setZValue(-1.0);     // show below selection outlines

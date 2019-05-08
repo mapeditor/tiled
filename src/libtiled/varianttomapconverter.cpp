@@ -610,7 +610,7 @@ std::unique_ptr<MapObject> VariantToMapConverter::toMapObject(const QVariantMap 
     const QPointF pos(x, y);
     const QSizeF size(width, height);
 
-    std::unique_ptr<MapObject> object(new MapObject(name, type, pos, size));
+    auto object = std::make_unique<MapObject>(name, type, pos, size);
     object->setId(id);
 
     if (variantMap.contains(QLatin1String("rotation"))) {
@@ -722,7 +722,7 @@ std::unique_ptr<GroupLayer> VariantToMapConverter::toGroupLayer(const QVariantMa
     const qreal opacity = variantMap[QLatin1String("opacity")].toReal();
     const bool visible = variantMap[QLatin1String("visible")].toBool();
 
-    std::unique_ptr<GroupLayer> groupLayer(new GroupLayer(name, x, y));
+    auto groupLayer = std::make_unique<GroupLayer>(name, x, y);
 
     groupLayer->setOpacity(opacity);
     groupLayer->setVisible(visible);

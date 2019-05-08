@@ -67,7 +67,7 @@ std::unique_ptr<Tiled::Map> DroidcraftPlugin::read(const QString &fileName)
     map->addTileset(mapTileset);
 
     // Fill layer
-    std::unique_ptr<TileLayer> mapLayer(new TileLayer("map", 0, 0, 48, 48));
+    auto mapLayer = std::make_unique<TileLayer>("map", 0, 0, 48, 48);
 
     // Load
     for (int i = 0; i < 48 * 48; i++) {

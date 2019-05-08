@@ -36,6 +36,7 @@
 #include <cmath>
 #include <fstream>
 #include <map>
+#include <memory>
 #include <sstream>
 
 namespace
@@ -128,9 +129,9 @@ std::unique_ptr<Tiled::Map> TbinMapFormat::read(const QString &fileName)
 
         auto &firstLayer = tmap.layers[0];
 
-        map.reset(new Tiled::Map(Tiled::Map::Orthogonal,
-                                 QSize(firstLayer.layerSize.x, firstLayer.layerSize.y),
-                                 QSize(firstLayer.tileSize.x, firstLayer.tileSize.y)));
+        map = std::make_unique<Tiled::Map>(Tiled::Map::Orthogonal,
+                                           QSize(firstLayer.layerSize.x, firstLayer.layerSize.y),
+                                           QSize(firstLayer.tileSize.x, firstLayer.tileSize.y));
 
         tbinToTiledProperties(tmap.props, map.get());
 

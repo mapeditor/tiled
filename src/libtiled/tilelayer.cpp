@@ -319,7 +319,7 @@ void TileLayer::clear()
 
 void TileLayer::flip(FlipDirection direction)
 {
-    const std::unique_ptr<TileLayer> newLayer(new TileLayer(QString(), 0, 0, mWidth, mHeight));
+    const auto newLayer = std::make_unique<TileLayer>(QString(), 0, 0, mWidth, mHeight);
 
     Q_ASSERT(direction == FlipHorizontally || direction == FlipVertically);
 
@@ -353,7 +353,7 @@ void TileLayer::flip(FlipDirection direction)
 
 void TileLayer::flipHexagonal(FlipDirection direction)
 {
-    const std::unique_ptr<TileLayer> newLayer(new TileLayer(QString(), 0, 0, mWidth, mHeight));
+    const auto newLayer = std::make_unique<TileLayer>(QString(), 0, 0, mWidth, mHeight);
 
     Q_ASSERT(direction == FlipHorizontally || direction == FlipVertically);
 
@@ -411,7 +411,7 @@ void TileLayer::rotate(RotateDirection direction)
 
     int newWidth = mHeight;
     int newHeight = mWidth;
-    const std::unique_ptr<TileLayer> newLayer(new TileLayer(QString(), 0, 0, newWidth, newHeight));
+    const auto newLayer = std::make_unique<TileLayer>(QString(), 0, 0, newWidth, newHeight);
 
     QHashIterator<QPoint, Chunk> it(mChunks);
     while (it.hasNext()) {
@@ -468,7 +468,7 @@ void TileLayer::rotateHexagonal(RotateDirection direction, Map *map)
 
     int newWidth = topRight.toStaggered(staggerIndex, staggerAxis).x() * 2 + 2;
     int newHeight = bottomRight.toStaggered(staggerIndex, staggerAxis).y() * 2 + 2;
-    const std::unique_ptr<TileLayer> newLayer(new TileLayer(QString(), 0, 0, newWidth, newHeight));
+    const auto newLayer = std::make_unique<TileLayer>(QString(), 0, 0, newWidth, newHeight);
 
     Hex newCenter(newWidth / 2, newHeight / 2, staggerIndex, staggerAxis);
 
@@ -609,7 +609,7 @@ void TileLayer::resize(const QSize &size, const QPoint &offset)
     if (this->size() == size && offset.isNull())
         return;
 
-    const std::unique_ptr<TileLayer> newLayer(new TileLayer(QString(), 0, 0, size.width(), size.height()));
+    const auto newLayer = std::make_unique<TileLayer>(QString(), 0, 0, size.width(), size.height());
 
     // Copy over the preserved part
     QRect area = mBounds.translated(offset).intersected(newLayer->rect());
@@ -666,7 +666,7 @@ void TileLayer::offsetTiles(const QPoint &offset,
 
 void TileLayer::offsetTiles(const QPoint &offset)
 {
-    const std::unique_ptr<TileLayer> newLayer(new TileLayer(QString(), 0, 0, 0, 0));
+    const auto newLayer = std::make_unique<TileLayer>(QString(), 0, 0, 0, 0);
 
     // Process only the allocated chunks
     QHashIterator<QPoint, Chunk> it(mChunks);

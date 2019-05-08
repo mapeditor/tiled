@@ -916,7 +916,7 @@ SharedTileset MapEditor::newTileset(const QString &path, const QImage &image)
 
     if (!newTileset.isEmbedded()) {
         // Save new external tileset
-        const std::unique_ptr<TilesetDocument> tilesetDocument(new TilesetDocument(tileset));
+        const auto tilesetDocument = std::make_unique<TilesetDocument>(tileset);
         if (!DocumentManager::instance()->saveDocumentAs(tilesetDocument.get()))
             return SharedTileset();
     }
