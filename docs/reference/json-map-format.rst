@@ -89,7 +89,7 @@ Layer
     image,            string,           "Image used by this layer. ``imagelayer`` only."
     layers,           array,            "Array of :ref:`layers <json-layer>`. ``group`` only."
     name,             string,           "Name assigned to this layer"
-    objects,          object,           "Array of :ref:`objects <json-object>`. ``objectgroup`` only."
+    objects,          array,            "Array of :ref:`objects <json-object>`. ``objectgroup`` only."
     offsetx,          double,           "Horizontal layer offset in pixels (default: 0)"
     offsety,          double,           "Vertical layer offset in pixels (default: 0)"
     opacity,          double,           "Value between 0 and 1"
@@ -196,12 +196,12 @@ Object
     id,               int,              "Incremental id, unique across all objects"
     name,             string,           "String assigned to name field in editor"
     point,            bool,             "Used to mark an object as a point"
-    polygon,          array,            "A list of x,y coordinates in pixels"
-    polyline,         array,            "A list of x,y coordinates in pixels"
+    polygon,          array,            "Array of :ref:`Points <json-point>`, in case the object is a polygon"
+    polyline,         array,            "Array of :ref:`Points <json-point>`, in case the object is a polyline"
     properties,       array,            "Array of :ref:`Properties <json-property>`"
     rotation,         double,           "Angle in degrees clockwise"
     template,         string,           "Reference to a template file, in case object is a :doc:`template instance </manual/using-templates>`"
-    text,             object,           "In case of text objects, instance of :ref:`json-object-text`"
+    text,             :ref:`json-object-text`, "Only used for text objects"
     type,             string,           "String assigned to type field in editor"
     visible,          bool,             "Whether object is shown in editor."
     width,            double,           "Width in pixels."
@@ -703,6 +703,20 @@ Property
     name,             string,           "Name of the property"
     type,             string,           "Type of the property (``string`` (default), ``int``, ``float``, ``bool``, ``color`` or ``file`` (since 0.16, with ``color`` and ``file`` added in 0.17))"
     value,            value,            "Value of the property"
+
+.. _json-point:
+
+Point
+-----
+
+A point on a polygon or a polyline, relative to the position of the object.
+
+.. csv-table::
+    :header: Field, Type, Description
+    :widths: 1, 1, 4
+
+    x,                double,           "X coordinate in pixels"
+    y,                double,           "Y coordinate in pixels"
 
 Changelog
 ---------
