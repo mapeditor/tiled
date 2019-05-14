@@ -3925,6 +3925,18 @@ _wrap_PyTiledTile_tileset(PyTiledTile *self)
 
 
 PyObject *
+_wrap_PyTiledTile_type(PyTiledTile *self)
+{
+    PyObject *py_retval;
+    QString retval;
+
+    retval = self->obj->type();
+    py_retval = Py_BuildValue((char *) "s", retval.toUtf8().data());
+    return py_retval;
+}
+
+
+PyObject *
 _wrap_PyTiledTile_width(PyTiledTile *self)
 {
     PyObject *py_retval;
@@ -3942,6 +3954,7 @@ static PyMethodDef PyTiledTile_methods[] = {
     {(char *) "setImage", (PyCFunction) _wrap_PyTiledTile_setImage, METH_KEYWORDS|METH_VARARGS, "setImage(image)\n\ntype: image: QPixmap const &" },
     {(char *) "size", (PyCFunction) _wrap_PyTiledTile_size, METH_NOARGS, "size()\n\n" },
     {(char *) "tileset", (PyCFunction) _wrap_PyTiledTile_tileset, METH_NOARGS, "tileset()\n\n" },
+    {(char *) "type", (PyCFunction) _wrap_PyTiledTile_type, METH_NOARGS, "type()\n\n" },
     {(char *) "width", (PyCFunction) _wrap_PyTiledTile_width, METH_NOARGS, "width()\n\n" },
     {NULL, NULL, 0, NULL}
 };
@@ -7485,6 +7498,18 @@ _wrap_PyTiledMapObject_cell(PyTiledMapObject *self)
 
 
 PyObject *
+_wrap_PyTiledMapObject_effectiveType(PyTiledMapObject *self)
+{
+    PyObject *py_retval;
+    QString retval;
+
+    retval = self->obj->effectiveType();
+    py_retval = Py_BuildValue((char *) "s", retval.toUtf8().data());
+    return py_retval;
+}
+
+
+PyObject *
 _wrap_PyTiledMapObject_height(PyTiledMapObject *self)
 {
     PyObject *py_retval;
@@ -7821,6 +7846,7 @@ _wrap_PyTiledMapObject_y(PyTiledMapObject *self)
 
 static PyMethodDef PyTiledMapObject_methods[] = {
     {(char *) "cell", (PyCFunction) _wrap_PyTiledMapObject_cell, METH_NOARGS, "cell()\n\n" },
+    {(char *) "effectiveType", (PyCFunction) _wrap_PyTiledMapObject_effectiveType, METH_NOARGS, "effectiveType()\n\n" },
     {(char *) "height", (PyCFunction) _wrap_PyTiledMapObject_height, METH_NOARGS, "height()\n\n" },
     {(char *) "isVisible", (PyCFunction) _wrap_PyTiledMapObject_isVisible, METH_NOARGS, "isVisible()\n\n" },
     {(char *) "name", (PyCFunction) _wrap_PyTiledMapObject_name, METH_NOARGS, "name()\n\n" },
@@ -8614,7 +8640,7 @@ PyTypeObject PyPythonPythonScript_Type = {
     (getattrofunc)NULL,     /* tp_getattro */
     (setattrofunc)NULL,     /* tp_setattro */
     (PyBufferProcs*)NULL,  /* tp_as_buffer */
-    Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_GC|Py_TPFLAGS_BASETYPE,                      /* tp_flags */
+    Py_TPFLAGS_HAVE_GC|Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE,                      /* tp_flags */
     "",                        /* Documentation string */
     (traverseproc)PyPythonPythonScript__tp_traverse,     /* tp_traverse */
     (inquiry)PyPythonPythonScript__tp_clear,             /* tp_clear */
