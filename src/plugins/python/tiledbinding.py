@@ -98,6 +98,7 @@ cls_tile.add_method('setImage', None, [('const QPixmap&','image')])
 cls_tile.add_method('width', 'int', [])
 cls_tile.add_method('height', 'int', [])
 cls_tile.add_method('size', 'QSize', [])
+cls_tile.add_method('type', 'QString', [])
 
 cls_tileset = tiled.add_class('Tileset', cls_object)
 cls_sharedtileset = tiled.add_class('SharedTileset')
@@ -280,6 +281,7 @@ cls_mapobject.add_method('name', 'QString', [])
 cls_mapobject.add_method('setName', None, [('QString','n')])
 cls_mapobject.add_method('type', 'QString', [])
 cls_mapobject.add_method('setType', None, [('QString','n')])
+cls_mapobject.add_method('effectiveType', 'QString', [])
 
 cls_objectgroup.add_constructor([('QString','name'), ('int','x'), ('int','y')])
 cls_objectgroup.add_method('addObject', None,
