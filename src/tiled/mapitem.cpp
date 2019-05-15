@@ -328,27 +328,14 @@ void MapItem::layerAdded(Layer *layer)
     int z = 0;
     for (auto sibling : layer->siblings())
         mLayerItems.value(sibling)->setZValue(z++);
+
+    updateBoundingRect();
 }
 
 void MapItem::layerRemoved(Layer *layer)
 {
-    switch (layer->layerType()) {
-    case Layer::TileLayerType:
-    case Layer::ImageLayerType:
-        break;
-    case Layer::ObjectGroupType:
-        // Delete any object items
-        for (auto object : static_cast<ObjectGroup*>(layer)->objects())
-            delete mObjectItems.take(object);
-        break;
-    case Layer::GroupLayerType:
-        // Recurse into group layers
-        for (auto childLayer : static_cast<GroupLayer*>(layer)->layers())
-            layerRemoved(childLayer);
-        break;
-    }
-
-    delete mLayerItems.take(layer);
+    deleteLayerItems(layer);
+    updateBoundingRect();
 }
 
 /**
@@ -611,16 +598,43 @@ LayerItem *MapItem::createLayerItem(Layer *layer)
     return layerItem;
 }
 
+void MapItem::deleteLayerItems(Layer *layer)
+{
+    switch (layer->layerType()) {
+    case Layer::TileLayerType:
+    case Layer::ImageLayerType:
+        break;
+    case Layer::ObjectGroupType:
+        // Delete any object items
+        for (auto object : static_cast<ObjectGroup*>(layer)->objects())
+            delete mObjectItems.take(object);
+        break;
+    case Layer::GroupLayerType:
+        // Recurse into group layers
+        for (auto childLayer : static_cast<GroupLayer*>(layer)->layers())
+            deleteLayerItems(childLayer);
+        break;
+    }
+
+    delete mLayerItems.take(layer);
+}
+
 void MapItem::updateBoundingRect()
 {
-    QRectF boundingRect = mapDocument()->renderer()->mapBoundingRect();
+    QRectF boundingRect;
+
+    for (auto layerItem : qAsConst(mLayerItems))
+        if (layerItem->layer()->isTileLayer())
+            boundingRect |= layerItem->boundingRect().translated(layerItem->pos());
 
     if (mBoundingRect != boundingRect) {
         prepareGeometryChange();
         mBoundingRect = boundingRect;
         emit boundingRectChanged();
 
-        mBorderRectangle->setRect(mBoundingRect);
+        // This rectangle represents the map boundary and as such is unaffected
+        // by layer offsets.
+        mBorderRectangle->setRect(mapDocument()->renderer()->mapBoundingRect());
     }
 }
 

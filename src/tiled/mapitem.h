@@ -118,6 +118,7 @@ private:
 
     void createLayerItems(const QList<Layer *> &layers);
     LayerItem *createLayerItem(Layer *layer);
+    void deleteLayerItems(Layer *layer);
 
     void updateBoundingRect();
     void updateSelectedLayersHighlight();
