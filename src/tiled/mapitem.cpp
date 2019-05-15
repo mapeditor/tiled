@@ -625,17 +625,17 @@ void MapItem::updateBoundingRect()
 
     for (auto layerItem : qAsConst(mLayerItems))
         if (layerItem->layer()->isTileLayer())
-            boundingRect |= layerItem->boundingRect().translated(layerItem->pos());
+            boundingRect |= layerItem->boundingRect().translated(layerItem->layer()->totalOffset());
 
     if (mBoundingRect != boundingRect) {
         prepareGeometryChange();
         mBoundingRect = boundingRect;
         emit boundingRectChanged();
-
-        // This rectangle represents the map boundary and as such is unaffected
-        // by layer offsets.
-        mBorderRectangle->setRect(mapDocument()->renderer()->mapBoundingRect());
     }
+
+    // This rectangle represents the map boundary and as such is unaffected
+    // by layer offsets.
+    mBorderRectangle->setRect(mapDocument()->renderer()->mapBoundingRect());
 }
 
 void MapItem::updateSelectedLayersHighlight()
