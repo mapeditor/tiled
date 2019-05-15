@@ -34,9 +34,10 @@ using namespace TiledQuick;
 MapItem::MapItem(QQuickItem *parent)
     : QQuickItem(parent)
     , mMap(nullptr)
-    , mRenderer(nullptr)
 {
 }
+
+MapItem::~MapItem() = default;
 
 void MapItem::setMap(Tiled::Map *map)
 {
@@ -175,7 +176,6 @@ void MapItem::refresh()
     qDeleteAll(mTileLayerItems);
     mTileLayerItems.clear();
 
-    delete mRenderer;
     mRenderer = nullptr;
 
     if (!mMap)
@@ -183,16 +183,16 @@ void MapItem::refresh()
 
     switch (mMap->orientation()) {
     case Tiled::Map::Isometric:
-        mRenderer = new Tiled::IsometricRenderer(mMap);
+        mRenderer = std::make_unique<Tiled::IsometricRenderer>(mMap);
         break;
     default:
-        mRenderer = new Tiled::OrthogonalRenderer(mMap);
+        mRenderer = std::make_unique<Tiled::OrthogonalRenderer>(mMap);
         break;
     }
 
     for (Tiled::Layer *layer : mMap->layers()) {
         if (Tiled::TileLayer *tl = layer->asTileLayer()) {
-            TileLayerItem *layerItem = new TileLayerItem(tl, mRenderer, this);
+            TileLayerItem *layerItem = new TileLayerItem(tl, mRenderer.get(), this);
             mTileLayerItems.append(layerItem);
         }
     }

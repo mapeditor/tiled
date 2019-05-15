@@ -62,7 +62,7 @@ void TilesNode::processTileData(const QVector<TileData> &tileData)
     mGeometry.allocate(tileData.size() * 6);
     QSGGeometry::TexturedPoint2D *v = mGeometry.vertexDataAsTexturedPoint2D();
 
-    foreach (const TileData &data, tileData) {
+    for (const TileData &data : tileData) {
         // Taking into account the normalized texture subrectancle
         const float s_width = data.width * s_x;
         const float s_height = data.height * s_y;

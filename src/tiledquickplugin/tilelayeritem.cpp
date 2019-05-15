@@ -295,7 +295,7 @@ TileLayerItem::TileLayerItem(TileLayer *layer, MapRenderer *renderer,
 {
     setFlag(ItemHasContents);
 
-    connect(parent, SIGNAL(visibleAreaChanged()), SLOT(updateVisibleTiles()));
+    connect(parent, &MapItem::visibleAreaChanged, this, &TileLayerItem::updateVisibleTiles);
 
     syncWithTileLayer();
     setOpacity(mLayer->opacity());
@@ -360,13 +360,13 @@ QSGNode *TileItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNodeDat
         if (!helper.texture())
             return nullptr;
 
-        const Map *map = mapItem->map();
-        const int tileWidth = map->tileWidth();
-        const int tileHeight = map->tileHeight();
-
         Tile *tile = mCell.tile();
         if (!tile)
             return nullptr;   // todo: render "missing tile" marker
+
+        const Map *map = mapItem->map();
+        const int tileWidth = map->tileWidth();
+        const int tileHeight = map->tileHeight();
 
         const QSize size = tile->size();
         const QPoint offset = tileset->tileOffset();

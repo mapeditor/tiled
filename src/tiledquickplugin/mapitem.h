@@ -22,6 +22,8 @@
 
 #include <QQuickItem>
 
+#include <memory>
+
 namespace Tiled {
 class Map;
 class MapRenderer;
@@ -46,6 +48,7 @@ class MapItem : public QQuickItem
 
 public:
     explicit MapItem(QQuickItem *parent = nullptr);
+    ~MapItem();
 
     Tiled::Map *map() const;
     void setMap(Tiled::Map *map);
@@ -79,7 +82,7 @@ private:
     Tiled::Map *mMap;
     QRectF mVisibleArea;
 
-    Tiled::MapRenderer *mRenderer;
+    std::unique_ptr<Tiled::MapRenderer> mRenderer;
     QList<TileLayerItem*> mTileLayerItems;
 };
 
