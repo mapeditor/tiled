@@ -111,6 +111,12 @@ public:
     { return mProperties.value(name).toString(); }
 
     /**
+     * Returns the type of the object's \a name property, as a string.
+     */
+    QString propertyType(const QString &name) const
+    { return typeToName(mProperties.value(name).userType()); }
+
+    /**
      * Returns whether this object has a property with the given \a name.
      */
     bool hasProperty(const QString &name) const
