@@ -13,6 +13,13 @@ exist when you start Tiled).
 
 There are several `example scripts`_ available in the repository.
 
+.. note::
+
+    Since Tiled 1.2.4, the Python plugin is disabled by default, because
+    depending on which Python version is installed on the system the loading of
+    this plugin may cause a crash (`#2091`_). To use the Python plugin, first
+    enable it in the Preferences.
+
 .. warning::
 
     On Windows, Python is not installed by default. For the Tiled Python
@@ -117,3 +124,4 @@ methods.
 .. _example scripts: https://github.com/bjorn/tiled/tree/master/src/plugins/python/scripts
 .. _source file: https://github.com/bjorn/tiled/blob/master/src/plugins/python/tiledbinding.py
 .. _open issues related to Python support: https://github.com/bjorn/tiled/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+python+in%3Atitle
+.. _#2091: https://github.com/bjorn/tiled/issues/2091

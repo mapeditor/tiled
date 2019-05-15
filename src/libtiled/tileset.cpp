@@ -295,7 +295,7 @@ bool Tileset::loadImage()
     p.margin = mMargin;
     p.transparentColor = mImageReference.transparentColor;
 
-    auto image = ImageCache::loadImage(p.fileName);
+    QImage image = ImageCache::loadImage(p.fileName);
     if (image.isNull()) {
         mImageReference.status = LoadingError;
         return false;

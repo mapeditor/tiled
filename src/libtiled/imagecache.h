@@ -31,6 +31,7 @@
 #include "tiled_global.h"
 
 #include <QColor>
+#include <QDateTime>
 #include <QHash>
 #include <QImage>
 #include <QPixmap>
@@ -52,18 +53,47 @@ struct TILEDSHARED_EXPORT TilesheetParameters
 
 uint TILEDSHARED_EXPORT qHash(const TilesheetParameters &key, uint seed = 0) Q_DECL_NOTHROW;
 
+struct LoadedImage
+{
+    explicit LoadedImage(const QString &fileName);
+
+    operator const QImage &() const { return image; }
+
+    QImage image;
+    QDateTime lastModified;
+};
+
+struct LoadedPixmap
+{
+    explicit LoadedPixmap(const LoadedImage &cachedImage);
+
+    operator const QPixmap &() const { return pixmap; }
+
+    QPixmap pixmap;
+    QDateTime lastModified;
+};
+
+struct CutTiles
+{
+    operator const QVector<QPixmap> &() const { return tiles; }
+
+    QVector<QPixmap> tiles;
+    QDateTime lastModified;
+};
+
 class TILEDSHARED_EXPORT ImageCache
 {
 public:
-    static QImage loadImage(const QString &fileName);
+    static LoadedImage loadImage(const QString &fileName);
     static QPixmap loadPixmap(const QString &fileName);
     static QVector<QPixmap> cutTiles(const TilesheetParameters &parameters);
 
     static void remove(const QString &fileName);
 
-    static QHash<QString, QImage> sLoadedImages;
-    static QHash<QString, QPixmap> sLoadedPixmaps;
-    static QHash<TilesheetParameters, QVector<QPixmap>> sCutTiles;
+private:
+    static QHash<QString, LoadedImage> sLoadedImages;
+    static QHash<QString, LoadedPixmap> sLoadedPixmaps;
+    static QHash<TilesheetParameters, CutTiles> sCutTiles;
 };
 
 } // namespace Tiled

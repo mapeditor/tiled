@@ -106,16 +106,15 @@ static TileStamp stampFromContext(AbstractTool *selectedTool)
 {
     TileStamp stamp;
 
-    if (StampBrush *stampBrush = dynamic_cast<StampBrush*>(selectedTool)) {
+    if (auto stampBrush = dynamic_cast<StampBrush*>(selectedTool)) {
         // take the stamp from the stamp brush
         stamp = stampBrush->stamp();
-    } else if (BucketFillTool *fillTool = dynamic_cast<BucketFillTool*>(selectedTool)) {
+    } else if (auto fillTool = dynamic_cast<AbstractTileFillTool*>(selectedTool)) {
         // take the stamp from the fill tool
         stamp = fillTool->stamp();
-    } else if (MapDocument *mapDocument = qobject_cast<MapDocument*>(DocumentManager::instance()->currentDocument())) {
+    } else if (auto mapDocument = qobject_cast<MapDocument*>(DocumentManager::instance()->currentDocument())) {
         // try making a stamp from the current tile selection
-        const TileLayer *tileLayer =
-                dynamic_cast<TileLayer*>(mapDocument->currentLayer());
+        const auto tileLayer = dynamic_cast<TileLayer*>(mapDocument->currentLayer());
         if (!tileLayer)
             return stamp;
 
