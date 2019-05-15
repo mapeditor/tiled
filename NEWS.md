@@ -1,3 +1,17 @@
+### Tiled 1.2.4 (15 May 2019)
+
+* Fixed view boundaries to take into account layer offsets (#2090)
+* Fixed map size when switching infinite off (#2051)
+* Fixed the image cache to check file modification time (#2081)
+* Fixed updating a few things when changing tileset drawing offset
+* Fixed position of tile object outline on isometric maps
+* Fixed saving of tile stamps when using the Shape Fill Tool
+* tBIN plugin: Fixed loading of some tilesets on Linux
+* tBIN plugin: Fixed possible crash when images can't be found (#2106)
+* Python plugin: Disable this plugin by default, to avoid crashes on startup (#2091)
+* JSON plugin: Fixed writing of position for objects without ID
+* Added Swedish translation (by Anton R)
+
 ### Tiled 1.2.3 (12 March 2019)
 
 * Fixed cut/copy in Tile Collision Editor (#2075)
