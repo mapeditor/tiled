@@ -85,6 +85,7 @@ public:
     QString mError;
     Map::LayerDataFormat mLayerDataFormat;
     bool mDtdEnabled;
+	QSize mChunkSize;
 
 private:
     void writeMap(QXmlStreamWriter &w, const Map &map);
@@ -114,6 +115,7 @@ private:
 MapWriterPrivate::MapWriterPrivate()
     : mLayerDataFormat(Map::Base64Zlib)
     , mDtdEnabled(false)
+    , mChunkSize(CHUNK_SIZE, CHUNK_SIZE)
     , mUseAbsolutePaths(false)
 {
 }
@@ -149,6 +151,7 @@ void MapWriterPrivate::writeMap(const Map *map, QIODevice *device,
     mMapDir = QDir(path);
     mUseAbsolutePaths = path.isEmpty();
     mLayerDataFormat = map->layerDataFormat();
+    mChunkSize = map->chunkSize();
 
     AutoFormattingWriter writer(device);
     writer.writeStartDocument();
@@ -586,9 +589,12 @@ void MapWriterPrivate::writeTileLayer(QXmlStreamWriter &w,
         w.writeAttribute(QLatin1String("encoding"), encoding);
     if (!compression.isEmpty())
         w.writeAttribute(QLatin1String("compression"), compression);
+	
+    w.writeAttribute(QLatin1String("chunkwidth"), QString::number(mChunkSize.width()));
+    w.writeAttribute(QLatin1String("chunkheight"), QString::number(mChunkSize.height()));
 
     if (tileLayer.map()->infinite()) {
-        const auto chunks = tileLayer.sortedChunksToWrite();
+        const auto chunks = tileLayer.sortedChunksToWrite(mChunkSize);
         for (const QRect &rect : chunks) {
             w.writeStartElement(QLatin1String("chunk"));
             w.writeAttribute(QLatin1String("x"), QString::number(rect.x()));

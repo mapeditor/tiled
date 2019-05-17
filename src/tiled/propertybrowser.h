@@ -160,7 +160,9 @@ private:
         WangColorProbabilityProperty,
         CustomProperty,
         InfiniteProperty,
-        TemplateProperty
+        TemplateProperty,
+        ChunkWidthProperty,
+        ChunkHeightProperty
     };
 
     void addMapProperties();

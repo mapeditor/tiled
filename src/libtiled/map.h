@@ -416,6 +416,16 @@ public:
     void setBackgroundColor(QColor color) { mBackgroundColor = color; }
 
     /**
+     * Returns the chunk size of tile layers in this map.
+     */
+    const QSize &chunkSize() const { return mChunkSize; }
+    
+    /**
+     * Sets the chunk size of tile layers in this map.
+     */
+    void setChunkSize(QSize size) { mChunkSize = size; }
+    
+    /**
      * Returns whether the given \a tileset is used by any tile layer of this
      * map.
      */
@@ -470,6 +480,7 @@ private:
     StaggerAxis mStaggerAxis;
     StaggerIndex mStaggerIndex;
     QColor mBackgroundColor;
+    QSize mChunkSize;
     mutable QMargins mDrawMargins;
     mutable bool mDrawMarginsDirty;
     QList<Layer*> mLayers;

@@ -791,6 +791,21 @@ void MapReaderPrivate::readTileLayerData(TileLayer &tileLayer)
 
     mMap->setLayerDataFormat(layerDataFormat);
 
+    int chunkWidth = CHUNK_SIZE;
+    int chunkHeight = CHUNK_SIZE;
+
+    QStringRef chunkWidthAttribute = atts.value(QLatin1String("chunkwidth"));
+    QStringRef chunkHeightAttribute = atts.value(QLatin1String("chunkheight"));
+
+    if (!chunkWidthAttribute.isEmpty()) {
+        chunkWidth = chunkWidthAttribute.toInt();
+    }
+    if (!chunkHeightAttribute.isEmpty()) {
+        chunkHeight = chunkHeightAttribute.toInt();
+    }
+
+    mMap->setChunkSize(QSize(chunkWidth, chunkHeight));
+
     readTileLayerRect(tileLayer,
                       layerDataFormat,
                       encoding,

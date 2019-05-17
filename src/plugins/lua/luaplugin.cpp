@@ -67,9 +67,11 @@ public:
                       bool embedded = true);
     void writeLayers(LuaTableWriter &,
                      const QList<Tiled::Layer*> &layers,
-                     Tiled::Map::LayerDataFormat format);
+                     Tiled::Map::LayerDataFormat format,
+                     const QSize& chunkSize);
     void writeTileLayer(LuaTableWriter &, const Tiled::TileLayer *,
-                        Tiled::Map::LayerDataFormat);
+                        Tiled::Map::LayerDataFormat,
+                        const QSize& chunkSize);
     void writeTileLayerData(LuaTableWriter &, const Tiled::TileLayer *,
                             Tiled::Map::LayerDataFormat format,
                             QRect bounds);
@@ -77,7 +79,8 @@ public:
                           const QByteArray &key = QByteArray());
     void writeImageLayer(LuaTableWriter &, const Tiled::ImageLayer *);
     void writeGroupLayer(LuaTableWriter &, const Tiled::GroupLayer *,
-                         Tiled::Map::LayerDataFormat);
+                         Tiled::Map::LayerDataFormat,
+                         const QSize& chunkSize);
     void writeMapObject(LuaTableWriter &, const Tiled::MapObject *);
 
     static void writePolygon(LuaTableWriter &, const Tiled::MapObject *);
@@ -234,7 +237,7 @@ void LuaWriter::writeMap(LuaTableWriter &writer, const Map *map)
     }
     writer.writeEndTable();
 
-    writeLayers(writer, map->layers(), map->layerDataFormat());
+    writeLayers(writer, map->layers(), map->layerDataFormat(), map->chunkSize());
 
     writer.writeEndTable();
 }
@@ -415,13 +418,14 @@ void LuaWriter::writeTileset(LuaTableWriter &writer, const Tileset &tileset,
 
 void LuaWriter::writeLayers(LuaTableWriter &writer,
                             const QList<Layer *> &layers,
-                            Map::LayerDataFormat format)
+                            Map::LayerDataFormat format,
+                            const QSize& chunkSize)
 {
     writer.writeStartTable("layers");
     for (const Layer *layer : layers) {
         switch (layer->layerType()) {
         case Layer::TileLayerType:
-            writeTileLayer(writer, static_cast<const TileLayer*>(layer), format);
+            writeTileLayer(writer, static_cast<const TileLayer*>(layer), format, chunkSize);
             break;
         case Layer::ObjectGroupType:
             writeObjectGroup(writer, static_cast<const ObjectGroup*>(layer));
@@ -430,7 +434,7 @@ void LuaWriter::writeLayers(LuaTableWriter &writer,
             writeImageLayer(writer, static_cast<const ImageLayer*>(layer));
             break;
         case Layer::GroupLayerType:
-            writeGroupLayer(writer, static_cast<const GroupLayer*>(layer), format);
+            writeGroupLayer(writer, static_cast<const GroupLayer*>(layer), format, chunkSize);
             break;
         }
     }
@@ -439,7 +443,8 @@ void LuaWriter::writeLayers(LuaTableWriter &writer,
 
 void LuaWriter::writeTileLayer(LuaTableWriter &writer,
                                const TileLayer *tileLayer,
-                               Map::LayerDataFormat format)
+                               Map::LayerDataFormat format,
+                               const QSize& chunkSize)
 {
     writer.writeStartTable();
 
@@ -477,11 +482,14 @@ void LuaWriter::writeTileLayer(LuaTableWriter &writer,
 
         break;
     }
-    }
+	}
+
+    writer.writeKeyAndValue("chunkwidth", chunkSize.width());
+    writer.writeKeyAndValue("chunkheight", chunkSize.height());
 
     if (tileLayer->map()->infinite()) {
         writer.writeStartTable("chunks");
-        const auto chunks = tileLayer->sortedChunksToWrite();
+        const auto chunks = tileLayer->sortedChunksToWrite(chunkSize);
         for (const QRect &rect : chunks) {
             writer.writeStartTable();
 
@@ -596,7 +604,8 @@ void LuaWriter::writeImageLayer(LuaTableWriter &writer,
 
 void LuaWriter::writeGroupLayer(LuaTableWriter &writer,
                                 const GroupLayer *groupLayer,
-                                Map::LayerDataFormat format)
+                                Map::LayerDataFormat format,
+                                const QSize& chunkSize)
 {
     writer.writeStartTable();
 
@@ -612,7 +621,7 @@ void LuaWriter::writeGroupLayer(LuaTableWriter &writer,
 
     writeProperties(writer, groupLayer->properties());
 
-    writeLayers(writer, groupLayer->layers(), format);
+    writeLayers(writer, groupLayer->layers(), format, chunkSize);
 
     writer.writeEndTable();
 }

@@ -599,6 +599,12 @@ void PropertyBrowser::addMapProperties()
 
     layerFormatProperty->setAttribute(QLatin1String("enumNames"), mLayerFormatNames);
 
+    QtVariantProperty *chunkWidthProperty = addProperty(ChunkWidthProperty, QVariant::Int, tr("Tile Layer Chunk Width"), groupProperty);
+    QtVariantProperty *chunkHeightProperty = addProperty(ChunkHeightProperty, QVariant::Int, tr("Tile Layer Chunk Height"), groupProperty);
+
+    chunkWidthProperty->setAttribute(QLatin1String("minimum"), CHUNK_SIZE_MIN);
+    chunkHeightProperty->setAttribute(QLatin1String("minimum"), CHUNK_SIZE_MIN);
+
     QtVariantProperty *renderOrderProperty =
             addProperty(RenderOrderProperty,
                         QtVariantPropertyManager::enumTypeId(),
@@ -978,6 +984,18 @@ void PropertyBrowser::applyMapValue(PropertyId id, const QVariant &val)
     case BackgroundColorProperty:
         command = new ChangeMapProperty(mMapDocument, val.value<QColor>());
         break;
+    case ChunkWidthProperty: {
+        QSize chunkSize = mMapDocument->map()->chunkSize();
+        chunkSize.setWidth(val.toInt());
+        command = new ChangeMapProperty(mMapDocument, chunkSize);
+        break;
+    }
+    case ChunkHeightProperty: {
+        QSize chunkSize = mMapDocument->map()->chunkSize();
+        chunkSize.setHeight(val.toInt());
+        command = new ChangeMapProperty(mMapDocument, chunkSize);
+        break;
+    }
     default:
         break;
     }
@@ -1578,6 +1596,8 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[LayerFormatProperty]->setValue(map->layerDataFormat());
         mIdToProperty[RenderOrderProperty]->setValue(map->renderOrder());
         mIdToProperty[BackgroundColorProperty]->setValue(map->backgroundColor());
+        mIdToProperty[ChunkWidthProperty]->setValue(map->chunkSize().width());
+        mIdToProperty[ChunkHeightProperty]->setValue(map->chunkSize().height());
         break;
     }
     case Object::MapObjectType: {
