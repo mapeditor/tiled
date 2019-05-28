@@ -292,36 +292,48 @@ void MapItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         QRectF sceneViewRect = view->viewportTransform().inverted().mapRect(viewRect);
 
         // Try selecting similar layers and tileset by name to the previously active mapitem
-        Layer *currentLayer = nullptr;
-        QList<Layer*> selectedLayers;
-        Tileset *currentTileset = nullptr;
         Document *currentDocument = DocumentManager::instance()->currentDocument();
+        SharedTileset newSimilarTileset;
+
         if (auto currentMapDocument = qobject_cast<MapDocument*>(currentDocument)) {
-            currentLayer = currentMapDocument->currentLayer();
-            Layer *newCurrentLayer = mapDocument()->map()->findLayer(currentLayer->name(), currentLayer->layerType());
-            if (newCurrentLayer)
-                mapDocument()->setCurrentLayer(newCurrentLayer);
-            selectedLayers = currentMapDocument->selectedLayers();
+            const Layer *currentLayer = currentMapDocument->currentLayer();
+            const QList<Layer*> selectedLayers = currentMapDocument->selectedLayers();
+
+            if (currentLayer) {
+                Layer *newCurrentLayer = mapDocument()->map()->findLayer(currentLayer->name(),
+                                                                         currentLayer->layerType());
+                if (newCurrentLayer)
+                    mapDocument()->setCurrentLayer(newCurrentLayer);
+            }
+
             QList<Layer*> newSelectedLayers;
-            for (Layer *layer : selectedLayers) {
-                Layer *layerWithSameName = mapDocument()->map()->findLayer(layer->name(), layer->layerType());
-                if (layerWithSameName)
-                    newSelectedLayers << layerWithSameName;
+            for (Layer *selectedLayer : selectedLayers) {
+                Layer *newSelectedLayer = mapDocument()->map()->findLayer(selectedLayer->name(),
+                                                                          selectedLayer->layerType());
+                if (newSelectedLayer)
+                    newSelectedLayers << newSelectedLayer;
             }
             if (!newSelectedLayers.isEmpty())
                 mapDocument()->setSelectedLayers(newSelectedLayers);
+
             Editor *currentEditor = DocumentManager::instance()->currentEditor();
             if (auto currentMapEditor = qobject_cast<MapEditor*>(currentEditor)) {
-                currentTileset = currentMapEditor->currentTileset();
-                SharedTileset newSimilarTileset = currentTileset->findSimilarTileset(mapDocument()->map()->tilesets());
-                if (newSimilarTileset)
-                    currentMapEditor->setCurrentTileset(newSimilarTileset);
+                if (SharedTileset currentTileset = currentMapEditor->currentTileset()) {
+                    if (!mapDocument()->map()->tilesets().contains(currentTileset))
+                        newSimilarTileset = currentTileset->findSimilarTileset(mapDocument()->map()->tilesets());
+                }
             }
         }
 
         DocumentManager::instance()->switchToDocument(mMapDocument.data(),
                                                       sceneViewRect.center() - pos(),
                                                       view->zoomable()->scale());
+
+        Editor *newEditor = DocumentManager::instance()->currentEditor();
+        if (auto newMapEditor = qobject_cast<MapEditor*>(newEditor))
+            if (newSimilarTileset)
+                newMapEditor->setCurrentTileset(newSimilarTileset);
+
         return;
     }
 

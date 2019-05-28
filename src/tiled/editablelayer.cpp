@@ -155,14 +155,14 @@ void EditableLayer::setSelected(bool selected)
         if (!document->selectedLayers().contains(layer())) {
             auto layers = document->selectedLayers();
             layers.append(layer());
-            document->setSelectedLayers(layers);
+            document->switchSelectedLayers(layers);
         }
     } else {
         int index = document->selectedLayers().indexOf(layer());
         if (index != -1) {
             auto layers = document->selectedLayers();
             layers.removeAt(index);
-            document->setSelectedLayers(layers);
+            document->switchSelectedLayers(layers);
         }
     }
 }

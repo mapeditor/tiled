@@ -295,8 +295,7 @@ void TileCollisionDock::setTile(Tile *tile)
         mDummyMapDocument = MapDocumentPtr::create(std::move(map));
         mDummyMapDocument->setAllowHidingObjects(false);
         mDummyMapDocument->setAllowTileObjects(false);
-        mDummyMapDocument->setCurrentLayer(objectGroup);
-        mDummyMapDocument->setSelectedLayers({objectGroup});
+        mDummyMapDocument->switchCurrentLayer(objectGroup);
 
         mMapScene->setMapDocument(mDummyMapDocument.data());
         mObjectsView->setMapDocument(mDummyMapDocument.data());
@@ -397,8 +396,7 @@ void TileCollisionDock::tileObjectGroupChanged(Tile *tile)
     objectGroup->setDrawOrder(ObjectGroup::IndexOrder);
 
     layerModel->insertLayer(nullptr, 1, objectGroup);
-    mDummyMapDocument->setCurrentLayer(objectGroup);
-    mDummyMapDocument->setSelectedLayers({objectGroup});
+    mDummyMapDocument->switchCurrentLayer(objectGroup);
     mObjectsView->setRootIndex(mObjectsView->layerViewIndex(objectGroup));
 
     mToolManager->selectTool(selectedTool);

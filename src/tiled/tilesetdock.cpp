@@ -832,20 +832,20 @@ void TilesetDock::tabContextMenuRequested(const QPoint &pos)
     menu.exec(mTabBar->mapToGlobal(pos));
 }
 
-void TilesetDock::setCurrentTileset(SharedTileset tileset)
+void TilesetDock::setCurrentTileset(const SharedTileset &tileset)
 {
     const int index = mTilesets.indexOf(tileset);
     if (index != -1)
         mTabBar->setCurrentIndex(index);
 }
 
-Tileset *TilesetDock::currentTileset() const
+SharedTileset TilesetDock::currentTileset() const
 {
     const int index = mTabBar->currentIndex();
     if (index == -1)
-        return nullptr;
+        return {};
 
-    return mTilesets.at(index).data();
+    return mTilesets.at(index);
 }
 
 TilesetView *TilesetDock::currentTilesetView() const
@@ -873,24 +873,24 @@ void TilesetDock::setupTilesetModel(TilesetView *view, Tileset *tileset)
 
 void TilesetDock::editTileset()
 {
-    Tileset *tileset = currentTileset();
+    auto tileset = currentTileset();
     if (!tileset)
         return;
 
     DocumentManager *documentManager = DocumentManager::instance();
-    documentManager->openTileset(tileset->sharedPointer());
+    documentManager->openTileset(tileset);
 }
 
 void TilesetDock::exportTileset()
 {
-    Tileset *tileset = currentTileset();
+    auto tileset = currentTileset();
     if (!tileset)
         return;
 
     if (tileset->isExternal())
         return;
 
-    int mapTilesetIndex = mMapDocument->map()->tilesets().indexOf(tileset->sharedPointer());
+    int mapTilesetIndex = mMapDocument->map()->tilesets().indexOf(tileset);
     if (mapTilesetIndex == -1)
         return;
 
@@ -952,7 +952,7 @@ void TilesetDock::exportTileset()
 
 void TilesetDock::embedTileset()
 {
-    Tileset *tileset = currentTileset();
+    auto tileset = currentTileset();
     if (!tileset)
         return;
 
@@ -964,7 +964,7 @@ void TilesetDock::embedTileset()
     SharedTileset embeddedTileset = tileset->clone();
 
     QUndoStack *undoStack = mMapDocument->undoStack();
-    int mapTilesetIndex = mMapDocument->map()->tilesets().indexOf(tileset->sharedPointer());
+    int mapTilesetIndex = mMapDocument->map()->tilesets().indexOf(tileset);
 
     // Tileset may not be part of the map yet
     if (mapTilesetIndex == -1)

@@ -131,12 +131,8 @@ void AbstractTileTool::mousePressed(QGraphicsSceneMouseEvent *event)
             }
         }
 
-        if (!layers.isEmpty()) {
-            mapDocument()->setSelectedLayers(layers);
-
-            if (!layers.contains(mapDocument()->currentLayer()))
-                mapDocument()->setCurrentLayer(layers.first());
-        }
+        if (!layers.isEmpty())
+            mapDocument()->switchSelectedLayers(layers);
 
         return;
     }

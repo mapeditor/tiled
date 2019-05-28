@@ -68,7 +68,7 @@ public:
      */
     TilesetDock(QWidget *parent = nullptr);
 
-    ~TilesetDock();
+    ~TilesetDock() override;
 
     /**
      * Sets the map for which the tilesets should be displayed.
@@ -80,8 +80,8 @@ public:
      */
     Tile *currentTile() const { return mCurrentTile; }
 
-    void setCurrentTileset(SharedTileset tileset);
-    Tileset *currentTileset() const;
+    void setCurrentTileset(const SharedTileset &tileset);
+    SharedTileset currentTileset() const;
 
     void selectTilesInStamp(const TileStamp &);
 
