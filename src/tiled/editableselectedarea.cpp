@@ -33,6 +33,11 @@ EditableSelectedArea::EditableSelectedArea(MapDocument *mapDocument, QObject *pa
 {
 }
 
+RegionValueType EditableSelectedArea::get() const
+{
+    return RegionValueType(mMapDocument->selectedArea());
+}
+
 void EditableSelectedArea::set(const QRect &rect)
 {
     set(QRegion(rect));

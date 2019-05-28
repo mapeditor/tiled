@@ -237,7 +237,7 @@ tiled.registerTool(shortName : string, tool : object) : object
         **name** : string, Name of the tool as shown on the tool bar.
         **map** : :ref:`script-map`, Currently active tile map.
         **selectedTile** : :ref:`script-tile`, The last clicked tile for the active map.
-        **tilePosition** : point, Mouse cursor position in tile coordinates.
+        **tilePosition** : :ref:`script-point`, Mouse cursor position in tile coordinates.
         **statusInfo** : string, Text shown in the status bar while the tool is active.
         **enabled** : bool, Whether this tool is enabled.
         "**activated** : function() : void", Called when the tool was activated.
@@ -536,7 +536,7 @@ TileMap.addLayer(layer : :ref:`script-layer`) : void
 
 .. _script-map-resize:
 
-TileMap.resize(size : size [, offset : point [, removeObjects : bool = false]]) : void
+TileMap.resize(size : size [, offset : :ref:`script-point` [, removeObjects : bool = false]]) : void
     Resizes the map to the given size, optionally applying an offset (in tiles)
 
 .. _script-layer:
@@ -556,7 +556,7 @@ Properties
     **opacity** : number, "Opacity of the layer, from 0 (fully transparent) to 1 (fully opaque)."
     **visible** : bool, Whether the layer is visible (affects child layer visibility for group layers).
     **locked** : bool, Whether the layer is locked (affects whether child layers are locked for group layers).
-    **offset** : point, Offset in pixels that is applied when this layer is rendered.
+    **offset** : :ref:`script-point`, Offset in pixels that is applied when this layer is rendered.
     **map** : :ref:`script-map`, Map that this layer is part of (or ``null`` in case of a standalone layer).
     **selected** : bool, Whether the layer is selected.
     **isTileLayer** : bool |ro|, Whether this layer is a :ref:`script-tilelayer`.
@@ -726,7 +726,7 @@ Properties
     **type** : string, Type of the object.
     **x** : number, X coordinate of the object in pixels.
     **y** : number, Y coordinate of the object in pixels.
-    **pos** : point, Position of the object in pixels (has ``x`` and ``y`` members).
+    **pos** : :ref:`script-point`, Position of the object in pixels.
     **width** : number, Width of the object in pixels.
     **height** : number, Height of the object in pixels.
     **size** : size, Size of the object in pixels (has ``width`` and ``height`` members).
@@ -761,7 +761,7 @@ Properties
     **tileSize** : size |ro|, Tile size for tiles in this tileset in pixels (has ``width`` and ``height`` members).
     **tileSpacing** : int |ro|, Spacing between tiles in this tileset in pixels.
     **margin** : int |ro|, Margin around the tileset in pixels (only used at the top and left sides of the tileset image).
-    **tileOffset** : point, Offset in pixels that is applied when tiles from this tileset are rendered.
+    **tileOffset** : :ref:`script-point`, Offset in pixels that is applied when tiles from this tileset are rendered.
     **backgroundColor** : color, Background color for this tileset in the *Tilesets* view.
 
 Functions
@@ -797,6 +797,7 @@ Properties
     **size** : size |ro|, Size of the tile in pixels (has ``width`` and ``height`` members).
     **type** : string, Type of the tile.
     **probability** : number, Probability that the tile gets chosen relative to other tiles.
+    **tileset** : :ref:`script-tileset` |ro|, The tileset of the tile.
 
 .. _script-tilelayeredit:
 
@@ -835,31 +836,42 @@ TileLayerEdit.apply() : void
 SelectedArea
 ^^^^^^^^^^^^
 
+Properties
+~~~~~~~~~~
+
+.. csv-table::
+    :widths: 1, 2
+
+    **boundingRect** : :ref:`script-rect` |ro|, Bounding rectangle of the selected area.
+
 Functions
 ~~~~~~~~~
 
-SelectedArea.set(rect : rect) : void
+SelectedArea.get() : :ref:`script-region`
+    Returns the selected region.
+
+SelectedArea.set(rect : :ref:`script-rect`) : void
     Sets the selected area to the given rectangle.
 
-SelectedArea.set(region : region) : void
+SelectedArea.set(region : :ref:`script-region`) : void
     Sets the selected area to the given region.
 
-SelectedArea.add(rect : rect) : void
+SelectedArea.add(rect : :ref:`script-rect`) : void
     Adds the given rectangle to the selected area.
 
-SelectedArea.add(region : region) : void
+SelectedArea.add(region : :ref:`script-region`) : void
     Adds the given region to the selected area.
 
-SelectedArea.subtract(rect : rect) : void
+SelectedArea.subtract(rect : :ref:`script-rect`) : void
     Subtracts the given rectangle from the selected area.
 
-SelectedArea.subtract(region : region) : void
+SelectedArea.subtract(region : :ref:`script-region`) : void
     Subtracts the given region from the selected area.
 
-SelectedArea.intersect(rect : rect) : void
+SelectedArea.intersect(rect : :ref:`script-rect`) : void
     Sets the selected area to the intersection of the current selected area and the given rectangle.
 
-SelectedArea.intersect(region : region) : void
+SelectedArea.intersect(region : :ref:`script-region`) : void
     Sets the selected area to the intersection of the current selected area and the given region.
 
 
@@ -898,3 +910,59 @@ Action.trigger() : void
 
 Action.toggle() : void
     Changes the checked state to its opposite state.
+
+
+.. _script-basic-types:
+
+Basic Types
+^^^^^^^^^^^
+
+Some types are provided by the Qt Scripting Engine. In the following the most important
+ones are documented.
+
+
+.. _script-rect:
+
+rect
+~~~~
+
+``Qt.rect(x, y, width, height)`` can be used to create a rectangle.
+
+**Properties**:
+
+.. csv-table::
+    :widths: 1, 2
+
+    **x** : int, X coordinate of the rectangle.
+    **y** : int, Y coordinate of the rectangle.
+    **width** : int, Width of the rectangle.
+    **height** : int, Height of the rectangle.
+
+.. _script-region:
+
+region
+~~~~~~
+
+**Properties**:
+
+.. csv-table::
+    :widths: 1, 2
+
+    **boundingRect** : :ref:`script-rect` |ro|, Bounding rectangle of the region.
+
+
+.. _script-point:
+
+point
+~~~~~
+
+``Qt.point(x, y)`` can be used to create a point object.
+
+**Properties**:
+
+.. csv-table::
+    :widths: 1, 2
+
+    **x** : number, X coordinate of the point.
+    **y** : number, Y coordinate of the point.
+
