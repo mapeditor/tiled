@@ -33,7 +33,7 @@ EditableSelectedArea::EditableSelectedArea(MapDocument *mapDocument, QObject *pa
 {
 }
 
-RegionValueType EditableSelectedArea::get()
+RegionValueType EditableSelectedArea::get() const
 {
     return RegionValueType(mMapDocument->selectedArea());
 }

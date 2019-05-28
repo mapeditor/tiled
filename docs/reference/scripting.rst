@@ -836,11 +836,16 @@ TileLayerEdit.apply() : void
 SelectedArea
 ^^^^^^^^^^^^
 
+Properties
+~~~~~~~~~~
+
+.. csv-table::
+    :widths: 1, 2
+
+    **boundingRect** : :ref:`script-rect` |ro|, Bounding rectangle of the selected area.
+
 Functions
 ~~~~~~~~~
-
-SelectedArea.boundingRect() : :ref:`script-rect`
-    Returns a ectangle which surrounds the selected area.
 
 SelectedArea.get() : :ref:`script-region`
     Returns the selected region.
@@ -943,7 +948,7 @@ region
 .. csv-table::
     :widths: 1, 2
 
-    **boundingRect** : :ref:`script-rect` |ro|, Rectangle which surrounds the selected area.
+    **boundingRect** : :ref:`script-rect` |ro|, Bounding rectangle of the region.
 
 
 .. _script-point:
