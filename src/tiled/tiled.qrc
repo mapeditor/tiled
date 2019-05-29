@@ -155,5 +155,6 @@
         <file>images/24x24/object-ellipse.png</file>
         <file>images/scalable/edit-undo-symbolic.svg</file>
         <file>images/scalable/edit-delete-symbolic.svg</file>
+        <file>images/scalable/software-update-available-symbolic.svg</file>
     </qresource>
 </RCC>

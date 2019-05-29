@@ -48,6 +48,7 @@
 #include "mapview.h"
 #include "minimapdock.h"
 #include "newsbutton.h"
+#include "newversionbutton.h"
 #include "newtilesetdialog.h"
 #include "objectgroup.h"
 #include "objectsdock.h"
@@ -251,6 +252,7 @@ MapEditor::MapEditor(QObject *parent)
     mMainWindow->statusBar()->addPermanentWidget(mLayerComboBox);
     mMainWindow->statusBar()->addPermanentWidget(mZoomComboBox);
     mMainWindow->statusBar()->addPermanentWidget(new NewsButton);
+    mMainWindow->statusBar()->addPermanentWidget(new NewVersionButton);
     mMainWindow->statusBar()->addWidget(mStatusInfoLabel);
 
     connect(mWidgetStack, &QStackedWidget::currentChanged, this, &MapEditor::currentWidgetChanged);

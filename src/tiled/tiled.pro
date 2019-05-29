@@ -185,6 +185,9 @@ SOURCES += aboutdialog.cpp \
     newsbutton.cpp \
     newsfeed.cpp \
     newtilesetdialog.cpp \
+    newversionbutton.cpp \
+    newversionchecker.cpp \
+    newversiondialog.cpp \
     noeditorwidget.cpp \
     objectgroupitem.cpp \
     objectsdock.cpp \
@@ -406,6 +409,9 @@ HEADERS += aboutdialog.h \
     newsbutton.h \
     newsfeed.h \
     newtilesetdialog.h \
+    newversionbutton.h \
+    newversionchecker.h \
+    newversiondialog.h \
     noeditorwidget.h \
     objectgroupitem.h \
     objectsdock.h \
@@ -515,6 +521,7 @@ FORMS += aboutdialog.ui \
     mainwindow.ui \
     newmapdialog.ui \
     newtilesetdialog.ui \
+    newversiondialog.ui \
     noeditorwidget.ui \
     objecttypeseditor.ui \
     offsetmapdialog.ui \
