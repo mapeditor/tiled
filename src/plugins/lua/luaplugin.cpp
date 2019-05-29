@@ -68,10 +68,10 @@ public:
     void writeLayers(LuaTableWriter &,
                      const QList<Tiled::Layer*> &layers,
                      Tiled::Map::LayerDataFormat format,
-                     const QSize& chunkSize);
+                     QSize chunkSize);
     void writeTileLayer(LuaTableWriter &, const Tiled::TileLayer *,
                         Tiled::Map::LayerDataFormat,
-                        const QSize& chunkSize);
+                        QSize chunkSize);
     void writeTileLayerData(LuaTableWriter &, const Tiled::TileLayer *,
                             Tiled::Map::LayerDataFormat format,
                             QRect bounds);
@@ -80,7 +80,7 @@ public:
     void writeImageLayer(LuaTableWriter &, const Tiled::ImageLayer *);
     void writeGroupLayer(LuaTableWriter &, const Tiled::GroupLayer *,
                          Tiled::Map::LayerDataFormat,
-                         const QSize& chunkSize);
+                         QSize chunkSize);
     void writeMapObject(LuaTableWriter &, const Tiled::MapObject *);
 
     static void writePolygon(LuaTableWriter &, const Tiled::MapObject *);
@@ -419,7 +419,7 @@ void LuaWriter::writeTileset(LuaTableWriter &writer, const Tileset &tileset,
 void LuaWriter::writeLayers(LuaTableWriter &writer,
                             const QList<Layer *> &layers,
                             Map::LayerDataFormat format,
-                            const QSize& chunkSize)
+                            QSize chunkSize)
 {
     writer.writeStartTable("layers");
     for (const Layer *layer : layers) {
@@ -444,7 +444,7 @@ void LuaWriter::writeLayers(LuaTableWriter &writer,
 void LuaWriter::writeTileLayer(LuaTableWriter &writer,
                                const TileLayer *tileLayer,
                                Map::LayerDataFormat format,
-                               const QSize& chunkSize)
+                               QSize chunkSize)
 {
     writer.writeStartTable();
 
@@ -484,8 +484,8 @@ void LuaWriter::writeTileLayer(LuaTableWriter &writer,
     }
 	}
 
-    writer.writeKeyAndValue("chunkwidth", chunkSize.width());
-    writer.writeKeyAndValue("chunkheight", chunkSize.height());
+    writer.writeKeyAndValue("outputchunkwidth", chunkSize.width());
+    writer.writeKeyAndValue("outputchunkheight", chunkSize.height());
 
     if (tileLayer->map()->infinite()) {
         writer.writeStartTable("chunks");
@@ -605,7 +605,7 @@ void LuaWriter::writeImageLayer(LuaTableWriter &writer,
 void LuaWriter::writeGroupLayer(LuaTableWriter &writer,
                                 const GroupLayer *groupLayer,
                                 Map::LayerDataFormat format,
-                                const QSize& chunkSize)
+                                QSize chunkSize)
 {
     writer.writeStartTable();
 

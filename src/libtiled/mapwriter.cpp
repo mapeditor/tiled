@@ -85,7 +85,7 @@ public:
     QString mError;
     Map::LayerDataFormat mLayerDataFormat;
     bool mDtdEnabled;
-	QSize mChunkSize;
+    QSize mChunkSize;
 
 private:
     void writeMap(QXmlStreamWriter &w, const Map &map);
@@ -590,8 +590,8 @@ void MapWriterPrivate::writeTileLayer(QXmlStreamWriter &w,
     if (!compression.isEmpty())
         w.writeAttribute(QLatin1String("compression"), compression);
 	
-    w.writeAttribute(QLatin1String("chunkwidth"), QString::number(mChunkSize.width()));
-    w.writeAttribute(QLatin1String("chunkheight"), QString::number(mChunkSize.height()));
+    w.writeAttribute(QLatin1String("outputchunkwidth"), QString::number(mChunkSize.width()));
+    w.writeAttribute(QLatin1String("outputchunkheight"), QString::number(mChunkSize.height()));
 
     if (tileLayer.map()->infinite()) {
         const auto chunks = tileLayer.sortedChunksToWrite(mChunkSize);

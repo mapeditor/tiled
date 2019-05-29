@@ -418,7 +418,7 @@ public:
     /**
      * Returns the chunk size of tile layers in this map.
      */
-    const QSize &chunkSize() const { return mChunkSize; }
+    QSize chunkSize() const { return mChunkSize; }
     
     /**
      * Sets the chunk size of tile layers in this map.

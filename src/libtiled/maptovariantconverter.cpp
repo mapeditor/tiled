@@ -387,7 +387,7 @@ QVariant MapToVariantConverter::toVariant(const WangColor &wangColor) const
 
 QVariant MapToVariantConverter::toVariant(const QList<Layer *> &layers,
                                           Map::LayerDataFormat format,
-                                          const QSize &chunkSize) const
+                                          QSize chunkSize) const
 {
     QVariantList layerVariants;
 
@@ -412,7 +412,7 @@ QVariant MapToVariantConverter::toVariant(const QList<Layer *> &layers,
 
 QVariant MapToVariantConverter::toVariant(const TileLayer &tileLayer,
                                           Map::LayerDataFormat format,
-                                          const QSize &chunkSize) const
+                                          QSize chunkSize) const
 {
     QVariantMap tileLayerVariant;
     tileLayerVariant[QLatin1String("type")] = QLatin1String("tilelayer");
@@ -448,8 +448,8 @@ QVariant MapToVariantConverter::toVariant(const TileLayer &tileLayer,
         break;
 	}
 
-    tileLayerVariant[QLatin1String("chunkwidth")] = chunkSize.width();
-    tileLayerVariant[QLatin1String("chunkheight")] = chunkSize.height();
+    tileLayerVariant[QLatin1String("outputchunkwidth")] = chunkSize.width();
+    tileLayerVariant[QLatin1String("outputchunkheight")] = chunkSize.height();
 
     if (tileLayer.map()->infinite()) {
         QVariantList chunkVariants;
@@ -656,7 +656,7 @@ QVariant MapToVariantConverter::toVariant(const ImageLayer &imageLayer) const
 
 QVariant MapToVariantConverter::toVariant(const GroupLayer &groupLayer,
                                           Map::LayerDataFormat format,
-                                          const QSize &chunkSize) const
+                                          QSize chunkSize) const
 {
     QVariantMap groupLayerVariant;
     groupLayerVariant[QLatin1String("type")] = QLatin1String("group");

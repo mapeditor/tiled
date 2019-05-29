@@ -70,7 +70,7 @@ public:
      * @param mapDocument       the map document of the map
      * @param backgroundColor   the new chunk size to use for tile layers
      */
-    ChangeMapProperty(MapDocument *mapDocument, const QSize &chunkSize);
+    ChangeMapProperty(MapDocument *mapDocument, QSize chunkSize);
 
     /**
      * Constructs a command that changes the map stagger axis.
