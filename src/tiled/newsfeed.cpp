@@ -29,7 +29,11 @@
 #include <QTimerEvent>
 #include <QXmlStreamReader>
 
+#ifdef TILED_SNAPSHOT
+static const char feedUrl[] = "https://thorbjorn.itch.io/tiled/devlog.rss";
+#else
 static const char feedUrl[] = "https://www.mapeditor.org/rss.xml";
+#endif
 
 namespace Tiled {
 
