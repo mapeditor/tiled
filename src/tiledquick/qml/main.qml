@@ -150,10 +150,17 @@ ApplicationWindow {
         anchors.fill: parent
 
         onDragged: {
-            containerAnimation.stop()
-            containerAnimation.x += dx
-            containerAnimation.y += dy
-            containerAnimation.start()
+            if (containerAnimation.running) {
+                containerAnimation.stop()
+                containerAnimation.x += dx
+                containerAnimation.y += dy
+                mapContainer.x += dx
+                mapContainer.y += dy
+                containerAnimation.start()
+            } else {
+                mapContainer.x += dx
+                mapContainer.y += dy
+            }
         }
 
         onWheel: {
