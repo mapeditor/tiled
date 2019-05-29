@@ -62,7 +62,7 @@ public:
 protected:
     void mapDocumentChanged(MapDocument *oldDocument, MapDocument *newDocument) override;
 
-    void tilePositionChanged(const QPoint &tilePos) override;
+    void tilePositionChanged(QPoint tilePos) override;
     void updateStatusInfo() override;
 
     void updateEnabledState() override;

@@ -134,7 +134,7 @@ void ShapeFillTool::populateToolBar(QToolBar *toolBar)
     toolBar->addActions(actionGroup->actions());
 }
 
-void ShapeFillTool::tilePositionChanged(const QPoint &tilePos)
+void ShapeFillTool::tilePositionChanged(QPoint tilePos)
 {
     if (mToolBehavior == MakingShape)
         updateFillOverlay();

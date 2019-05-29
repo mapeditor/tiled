@@ -304,8 +304,8 @@ bool AutoMapper::setupRuleMapTileLayers()
 
 static bool compareRuleRegion(const QRegion &r1, const QRegion &r2)
 {
-    const QPoint &p1 = r1.boundingRect().topLeft();
-    const QPoint &p2 = r2.boundingRect().topLeft();
+    const QPoint p1 = r1.boundingRect().topLeft();
+    const QPoint p2 = r2.boundingRect().topLeft();
     return p1.y() < p2.y() || (p1.y() == p2.y() && p1.x() < p2.x());
 }
 
@@ -607,7 +607,7 @@ static void collectCellsInRegion(const QVector<InputLayer> &list,
 static bool layerMatchesConditions(const TileLayer &setLayer,
                                    const InputConditions &conditions,
                                    const QRegion &ruleRegion,
-                                   const QPoint &offset,
+                                   const QPoint offset,
                                    const AutoMapper::Options &options)
 {
     const auto &listYes = conditions.listYes;

@@ -114,8 +114,8 @@ signals:
     void selectedObjectsChanged();
 
 public slots:
-    void resize(const QSize &size,
-                const QPoint &offset = QPoint(),
+    void resize(QSize size,
+                QPoint offset = QPoint(),
                 bool removeObjects = false);
 
 private slots:

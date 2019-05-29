@@ -44,7 +44,7 @@ using namespace Tiled;
  */
 OffsetLayer::OffsetLayer(MapDocument *mapDocument,
                          Layer *layer,
-                         const QPoint &offset,
+                         QPoint offset,
                          const QRect &bounds,
                          bool wrapX,
                          bool wrapY)

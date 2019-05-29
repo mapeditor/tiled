@@ -73,7 +73,7 @@ protected:
      * New virtual method to implement for tile tools. This method is called
      * on mouse move events, but only when the tile position changes.
      */
-    virtual void tilePositionChanged(const QPoint &tilePos) = 0;
+    virtual void tilePositionChanged(QPoint tilePos) = 0;
 
     /**
      * Updates the status info with the current tile position. When the mouse

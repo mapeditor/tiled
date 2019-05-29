@@ -41,7 +41,7 @@ Eraser::Eraser(QObject *parent)
 {
 }
 
-void Eraser::tilePositionChanged(const QPoint &tilePos)
+void Eraser::tilePositionChanged(QPoint tilePos)
 {
     Q_UNUSED(tilePos);
 

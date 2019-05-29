@@ -285,7 +285,7 @@ void WangBrush::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers)
     }
 }
 
-void WangBrush::tilePositionChanged(const QPoint &tilePos)
+void WangBrush::tilePositionChanged(QPoint tilePos)
 {
     if (mBrushMode == Idle)
         return;

@@ -39,7 +39,7 @@ public:
 
     ~ResizeDialog();
 
-    void setOldSize(const QSize &size);
+    void setOldSize(QSize size);
 
     QSize newSize() const;
     QPoint offset() const;

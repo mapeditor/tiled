@@ -351,9 +351,7 @@ static bool visibleIn(const QRectF &area, MapObject *object,
  * the contents by \a offset. If \a removeObjects is true then all objects
  * which are outside the map will be removed.
  */
-void EditableMap::resize(const QSize &size,
-                         const QPoint &offset,
-                         bool removeObjects)
+void EditableMap::resize(QSize size, QPoint offset, bool removeObjects)
 {
     if (checkReadOnly())
         return;

@@ -43,8 +43,8 @@ public:
      */
     ResizeTileLayer(MapDocument *mapDocument,
                     TileLayer *layer,
-                    const QSize &size,
-                    const QPoint &offset,
+                    QSize size,
+                    QPoint offset,
                     QUndoCommand *parent = nullptr);
 
     ~ResizeTileLayer();

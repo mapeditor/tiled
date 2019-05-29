@@ -77,7 +77,7 @@ void TerrainBrush::deactivate(MapScene *scene)
     mIsActive = false;
 }
 
-void TerrainBrush::tilePositionChanged(const QPoint &pos)
+void TerrainBrush::tilePositionChanged(QPoint pos)
 {
     switch (mBrushBehavior) {
     case Paint: {

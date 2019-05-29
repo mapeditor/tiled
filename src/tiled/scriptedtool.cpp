@@ -202,7 +202,7 @@ void ScriptedTool::mapDocumentChanged(MapDocument *oldDocument,
     call(QStringLiteral("mapChanged"), args);
 }
 
-void ScriptedTool::tilePositionChanged(const QPoint &tilePos)
+void ScriptedTool::tilePositionChanged(QPoint tilePos)
 {
     QJSValueList args;
     args.append(tilePos.x());

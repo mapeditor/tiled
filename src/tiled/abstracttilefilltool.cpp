@@ -156,7 +156,7 @@ void AbstractTileFillTool::mapDocumentChanged(MapDocument *oldDocument,
     clearOverlay();
 }
 
-void AbstractTileFillTool::tilePositionChanged(const QPoint &tilePos)
+void AbstractTileFillTool::tilePositionChanged(QPoint tilePos)
 {
     if (mCaptureStampHelper.isActive()) {
         clearOverlay();

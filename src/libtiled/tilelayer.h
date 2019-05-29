@@ -45,7 +45,7 @@
 
 #include <functional>
 
-inline uint qHash(const QPoint &key, uint seed = 0) Q_DECL_NOTHROW
+inline uint qHash(QPoint key, uint seed = 0) Q_DECL_NOTHROW
 {
     uint h1 = qHash(key.x(), seed);
     uint h2 = qHash(key.y(), seed);
@@ -178,7 +178,7 @@ public:
     QRegion region(std::function<bool (const Cell &)> condition) const;
 
     const Cell &cellAt(int x, int y) const;
-    const Cell &cellAt(const QPoint &point) const;
+    const Cell &cellAt(QPoint point) const;
 
     void setCell(int x, int y, const Cell &cell);
 
@@ -204,7 +204,7 @@ inline const Cell &Chunk::cellAt(int x, int y) const
     return mGrid.at(x + y * CHUNK_SIZE);
 }
 
-inline const Cell &Chunk::cellAt(const QPoint &point) const
+inline const Cell &Chunk::cellAt(QPoint point) const
 {
     return cellAt(point.x(), point.y());
 }
@@ -357,7 +357,7 @@ public:
      */
     QSize size() const { return QSize(mWidth, mHeight); }
 
-    void setSize(const QSize &size);
+    void setSize(QSize size);
 
     /**
      * Returns the bounds of this layer.
@@ -369,7 +369,7 @@ public:
     QMargins drawMargins() const;
 
     bool contains(int x, int y) const;
-    bool contains(const QPoint &point) const;
+    bool contains(QPoint point) const;
 
     Chunk &chunk(int x, int y);
 
@@ -379,7 +379,7 @@ public:
     QRegion region() const;
 
     const Cell &cellAt(int x, int y) const;
-    const Cell &cellAt(const QPoint &point) const;
+    const Cell &cellAt(QPoint point) const;
 
     void setCell(int x, int y, const Cell &cell);
 
@@ -397,7 +397,7 @@ public:
      * fall outside of this layer will be lost and empty tiles in the given
      * layer will have no effect.
      */
-    void merge(const QPoint &pos, const TileLayer *layer);
+    void merge(QPoint pos, const TileLayer *layer);
 
     /**
      * Removes all cells in the specified region.
@@ -479,7 +479,7 @@ public:
      * Resizes this tile layer to \a size, while shifting all tiles by
      * \a offset.
      */
-    void resize(const QSize &size, const QPoint &offset);
+    void resize(QSize size, QPoint offset);
 
     /**
      * Offsets the tiles in this layer within \a bounds by \a offset,
@@ -487,8 +487,8 @@ public:
      *
      * \sa ObjectGroup::offsetObjects()
      */
-    void offsetTiles(const QPoint &offset,
-                     const QRect &bounds,
+    void offsetTiles(QPoint offset,
+                     QRect bounds,
                      bool wrapX, bool wrapY);
 
     /**
@@ -496,7 +496,7 @@ public:
      *
      * \sa ObjectGroup::offsetObjects()
      */
-    void offsetTiles(const QPoint &offset);
+    void offsetTiles(QPoint offset);
 
     bool canMergeWith(const Layer *other) const override;
     Layer *mergedWith(const Layer *other) const override;
@@ -579,7 +579,7 @@ inline void TileLayer::const_iterator::advance()
 /**
  * Sets the size of this layer.
  */
-inline void TileLayer::setSize(const QSize &size)
+inline void TileLayer::setSize(QSize size)
 {
     mWidth = size.width();
     mHeight = size.height();
@@ -590,7 +590,7 @@ inline bool TileLayer::contains(int x, int y) const
     return x >= 0 && y >= 0 && x < mWidth && y < mHeight;
 }
 
-inline bool TileLayer::contains(const QPoint &point) const
+inline bool TileLayer::contains(QPoint point) const
 {
     return contains(point.x(), point.y());
 }
@@ -631,7 +631,7 @@ inline const Cell &TileLayer::cellAt(int x, int y) const
         return Cell::empty;
 }
 
-inline const Cell &TileLayer::cellAt(const QPoint &point) const
+inline const Cell &TileLayer::cellAt(QPoint point) const
 {
     return cellAt(point.x(), point.y());
 }

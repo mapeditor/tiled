@@ -232,7 +232,7 @@ TileLayer *TileLayer::copy(const QRegion &region) const
     return copied;
 }
 
-void TileLayer::merge(const QPoint &pos, const TileLayer *layer)
+void TileLayer::merge(QPoint pos, const TileLayer *layer)
 {
     // Determine the overlapping area
     QRect area = QRect(pos, QSize(layer->width(), layer->height()));
@@ -604,7 +604,7 @@ void TileLayer::replaceReferencesToTileset(Tileset *oldTileset,
         mUsedTilesets.insert(newTileset->sharedPointer());
 }
 
-void TileLayer::resize(const QSize &size, const QPoint &offset)
+void TileLayer::resize(QSize size, QPoint offset)
 {
     if (this->size() == size && offset.isNull())
         return;
@@ -629,8 +629,8 @@ static int clampWrap(int value, int min, int max)
     return (v < 0 ? (v + 1) % d + d - 1 : v % d) + min;
 }
 
-void TileLayer::offsetTiles(const QPoint &offset,
-                            const QRect &bounds,
+void TileLayer::offsetTiles(QPoint offset,
+                            QRect bounds,
                             bool wrapX, bool wrapY)
 {
     if (offset.isNull())
@@ -664,7 +664,7 @@ void TileLayer::offsetTiles(const QPoint &offset,
     mBounds = newLayer->mBounds;
 }
 
-void TileLayer::offsetTiles(const QPoint &offset)
+void TileLayer::offsetTiles(QPoint offset)
 {
     const auto newLayer = std::make_unique<TileLayer>(QString(), 0, 0, 0, 0);
 

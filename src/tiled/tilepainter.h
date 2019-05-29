@@ -94,14 +94,14 @@ public:
      * Computes the paintable fill region made up of all cells of the same type
      * as that at \a fillOrigin that are connected.
      */
-    QRegion computePaintableFillRegion(const QPoint &fillOrigin) const;
+    QRegion computePaintableFillRegion(QPoint fillOrigin) const;
 
     /**
      * Computes a fill region made up of all cells of the same type as that
      * at \a fillOrigin that are connected. Does not take into account the
      * current selection.
      */
-    QRegion computeFillRegion(const QPoint &fillOrigin) const;
+    QRegion computeFillRegion(QPoint fillOrigin) const;
 
     /**
      * Returns true if the given cell is drawable.

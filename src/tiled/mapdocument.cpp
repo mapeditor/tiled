@@ -255,7 +255,7 @@ void MapDocument::setSelectedLayers(const QList<Layer *> &layers)
     emit selectedLayersChanged();
 }
 
-void MapDocument::resizeMap(const QSize &size, const QPoint &offset, bool removeObjects)
+void MapDocument::resizeMap(QSize size, QPoint offset, bool removeObjects)
 {
     static_cast<EditableMap*>(editable())->resize(size, offset, removeObjects);
 }
@@ -275,7 +275,7 @@ void MapDocument::autocropMap()
 }
 
 void MapDocument::offsetMap(const QList<Layer*> &layers,
-                            const QPoint &offset,
+                            const QPoint offset,
                             const QRect &bounds,
                             bool wrapX, bool wrapY)
 {

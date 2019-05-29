@@ -73,7 +73,7 @@ template <typename T>
     typedef QString ConvertTo;
 };
 
-static QString uniqueName(const QString &key, const QStyleOption *option, const QSize &size)
+static QString uniqueName(const QString &key, const QStyleOption *option, QSize size)
 {
     const QStyleOptionComplex *complexOption = qstyleoption_cast<const QStyleOptionComplex *>(option);
     QString tmp = key % HexString<uint>(option->state)

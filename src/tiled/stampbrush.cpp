@@ -81,7 +81,7 @@ void StampBrush::deactivate(MapScene *scene)
     AbstractTileTool::deactivate(scene);
 }
 
-void StampBrush::tilePositionChanged(const QPoint &pos)
+void StampBrush::tilePositionChanged(QPoint pos)
 {
     if (mBrushBehavior == Paint) {
         // Draw a line from the previous point to avoid gaps, skipping the

@@ -54,7 +54,7 @@ BucketFillTool::~BucketFillTool()
 {
 }
 
-void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
+void BucketFillTool::tilePositionChanged(QPoint tilePos)
 {
     AbstractTileFillTool::tilePositionChanged(tilePos);
 
