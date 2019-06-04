@@ -291,6 +291,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     QIcon redoIcon(QLatin1String(":images/16x16/edit-redo.png"));
     QIcon undoIcon(QLatin1String(":images/16x16/edit-undo.png"));
+    QIcon highlightCurrentLayerIcon(QLatin1String("://images/scalable/highlight-current-layer-16.svg"));
+    highlightCurrentLayerIcon.addFile(QLatin1String("://images/scalable/highlight-current-layer-24.svg"));
 
 #ifndef Q_OS_MAC
     QIcon tiledIcon(QLatin1String(":images/16x16/tiled.png"));
@@ -351,6 +353,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->actionHighlightCurrentLayer->setChecked(preferences->highlightCurrentLayer());
     mUi->actionHighlightHoveredObject->setChecked(preferences->highlightHoveredObject());
     mUi->actionAutoMapWhileDrawing->setChecked(preferences->automappingDrawing());
+
+    mUi->actionHighlightCurrentLayer->setIcon(highlightCurrentLayerIcon);
+    mUi->actionHighlightCurrentLayer->setIconVisibleInMenu(false);
 
 #ifdef Q_OS_MAC
     mUi->actionFullScreen->setShortcuts(QKeySequence::FullScreen);

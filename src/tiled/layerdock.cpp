@@ -23,6 +23,7 @@
 
 #include "layerdock.h"
 
+#include "actionmanager.h"
 #include "changelayer.h"
 #include "layer.h"
 #include "layermodel.h"
@@ -86,6 +87,9 @@ LayerDock::LayerDock(QWidget *parent):
     buttonContainer->setMovable(false);
     buttonContainer->setIconSize(Utils::smallIconSize());
 
+    auto spacerWidget = new QWidget;
+    spacerWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+
     buttonContainer->addWidget(mNewLayerButton);
     buttonContainer->addAction(handler->actionMoveLayersUp());
     buttonContainer->addAction(handler->actionMoveLayersDown());
@@ -94,6 +98,8 @@ LayerDock::LayerDock(QWidget *parent):
     buttonContainer->addSeparator();
     buttonContainer->addAction(handler->actionToggleOtherLayers());
     buttonContainer->addAction(handler->actionToggleLockOtherLayers());
+    buttonContainer->addWidget(spacerWidget);
+    buttonContainer->addAction(ActionManager::action("HighlightCurrentLayer"));
 
     QVBoxLayout *listAndToolBar = new QVBoxLayout;
     listAndToolBar->setSpacing(0);
