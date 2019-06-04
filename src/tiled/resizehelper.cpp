@@ -211,11 +211,7 @@ void ResizeHelper::recalculateScale()
     newScale += mZoom;
 
     if (newScale != mScale && mMiniMapRenderer) {
-#if QT_VERSION >= 0x050600
         const qreal ratio = devicePixelRatioF();
-#else
-        const int ratio = devicePixelRatio();
-#endif
         const QSize size = mOldSize * (newScale * ratio);
         mMiniMap = mMiniMapRenderer(size);
     }

@@ -117,11 +117,7 @@ bool ObjectTypesModel::setData(const QModelIndex &index,
             Q_ASSERT(newRow != oldRow);
             Q_ASSERT(newRow != oldRow + 1);
             beginMoveRows(QModelIndex(), oldRow, oldRow, QModelIndex(), newRow);
-#if QT_VERSION >= 0x050600
             mObjectTypes.move(oldRow, moveToRow);
-#else
-            mObjectTypes.insert(moveToRow, mObjectTypes.takeAt(oldRow));
-#endif
             endMoveRows();
         }
         return true;

@@ -180,9 +180,7 @@ TilesetEditor::TilesetEditor(QObject *parent)
     , mCurrentTilesetDocument(nullptr)
     , mCurrentTile(nullptr)
 {
-#if QT_VERSION >= 0x050600
     mMainWindow->setDockOptions(mMainWindow->dockOptions() | QMainWindow::GroupedDragging);
-#endif
     mMainWindow->setDockNestingEnabled(true);
     mMainWindow->setCentralWidget(mWidgetStack);
 

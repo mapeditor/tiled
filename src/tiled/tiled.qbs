@@ -13,7 +13,7 @@ QtGuiApplication {
     Depends { name: "qtpropertybrowser" }
     Depends { name: "qtsingleapplication" }
     Depends { name: "ib"; condition: qbs.targetOS.contains("macos") }
-    Depends { name: "Qt"; submodules: ["core", "widgets", "qml"]; versionAtLeast: "5.5" }
+    Depends { name: "Qt"; submodules: ["core", "widgets", "qml"]; versionAtLeast: "5.6" }
 
     property bool qtcRunnable: true
 

@@ -828,11 +828,7 @@ void DocumentManager::onDocumentSaved()
 
 void DocumentManager::documentTabMoved(int from, int to)
 {
-#if QT_VERSION >= 0x050600
     mDocuments.move(from, to);
-#else
-    mDocuments.insert(to, mDocuments.takeAt(from));
-#endif
 }
 
 void DocumentManager::tabContextMenuRequested(const QPoint &pos)
