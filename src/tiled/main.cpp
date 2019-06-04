@@ -30,12 +30,10 @@
 #include "pluginmanager.h"
 #include "preferences.h"
 #include "scriptmanager.h"
-#include "sparkleautoupdater.h"
 #include "stylehelper.h"
 #include "tiledapplication.h"
 #include "tileset.h"
 #include "tmxmapformat.h"
-#include "winsparkleautoupdater.h"
 
 #include <QDebug>
 #include <QFileInfo>
@@ -449,15 +447,6 @@ int main(int argc, char *argv[])
         if (a.sendMessage(QLatin1String(doc.toJson())))
             return 0;
     }
-
-    std::unique_ptr<AutoUpdater> updater;
-#ifdef TILED_SPARKLE
-#if defined(Q_OS_MAC)
-    updater.reset(new SparkleAutoUpdater);
-#elif defined(Q_OS_WIN)
-    updater.reset(new WinSparkleAutoUpdater);
-#endif
-#endif
 
     MainWindow w;
     w.show();

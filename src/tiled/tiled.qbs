@@ -16,30 +16,8 @@ QtGuiApplication {
     Depends { name: "Qt"; submodules: ["core", "widgets", "qml"]; versionAtLeast: "5.5" }
 
     property bool qtcRunnable: true
-    property bool macSparkleEnabled: qbs.targetOS.contains("macos") && project.sparkleEnabled
-    property bool winSparkleEnabled: qbs.targetOS.contains("windows") && project.sparkleEnabled
-
-    property string sparkleDir: {
-        if (qbs.targetOS.contains("windows")) {
-            if (qbs.architecture === "x86_64")
-                return "winsparkle/x64"
-            else
-                return "winsparkle/x86"
-        } else if (qbs.targetOS.contains("macos")) {
-            return "/Library/Frameworks/Sparkle.framework"
-        }
-    }
 
     cpp.includePaths: ["."]
-    cpp.frameworks: {
-        var frameworks = [];
-        if (qbs.targetOS.contains("macos")) {
-            frameworks.push("Foundation");
-            if (project.sparkleEnabled)
-                frameworks.push("Sparkle", "AppKit");
-        }
-        return frameworks;
-    }
     cpp.useRPaths: project.useRPaths
     cpp.rpaths: {
         if (qbs.targetOS.contains("darwin"))
@@ -65,8 +43,6 @@ QtGuiApplication {
         ];
         if (project.snapshot)
             defs.push("TILED_SNAPSHOT");
-        if (project.sparkleEnabled)
-            defs.push("TILED_SPARKLE");
         return defs;
     }
 
@@ -119,8 +95,6 @@ QtGuiApplication {
         "automappingmanager.h",
         "automappingutils.cpp",
         "automappingutils.h",
-        "autoupdater.cpp",
-        "autoupdater.h",
         "brokenlinks.cpp",
         "brokenlinks.h",
         "brushitem.cpp",
@@ -546,6 +520,7 @@ QtGuiApplication {
 
     Properties {
         condition: qbs.targetOS.contains("macos")
+        cpp.frameworks: ["Foundation"]
         cpp.cxxFlags: ["-Wno-unknown-pragmas"]
         bundle.identifierPrefix: "org.mapeditor"
         ib.appIconName: "tiled-icon-mac"
@@ -575,55 +550,12 @@ QtGuiApplication {
         fileTagsFilter: product.type
     }
 
-    Properties {
-        condition: macSparkleEnabled
-        cpp.systemFrameworkPaths: outer.concat("/Library/Frameworks")
-    }
-    Group {
-        condition: macSparkleEnabled
-        name: "SparkleAutoUpdater"
-        files: ["sparkleautoupdater.mm"]
-    }
     Group {
         condition: qbs.targetOS.contains("macos")
         name: "Public DSA Key File"
         files: ["../../dist/dsa_pub.pem"]
         qbs.install: true
         qbs.installDir: "Tiled.app/Contents/Resources"
-    }
-    Group {
-        condition: macSparkleEnabled
-        name: "Sparkle framework"
-        prefix: sparkleDir + "/"
-        files: "**"
-        fileTags: []    // files should only be copied
-        qbs.install: true
-        qbs.installDir: "Tiled.app/Contents/Frameworks/Sparkle.framework"
-        qbs.installSourceBase: prefix
-    }
-
-    Properties {
-        condition: winSparkleEnabled
-        cpp.includePaths: [".", "winsparkle/include"]
-        cpp.libraryPaths: [sparkleDir]
-        cpp.dynamicLibraries: ["WinSparkle"]
-    }
-    Group {
-        name: "WinSparkle"
-        condition: winSparkleEnabled
-        files: [
-            "winsparkleautoupdater.cpp",
-            "winsparkleautoupdater.h",
-        ]
-    }
-    Group {
-        name: "WinSparkle DLL"
-        condition: winSparkleEnabled
-        qbs.install: true
-        qbs.installDir: ""
-        files: [
-            sparkleDir + "/WinSparkle.dll"
-        ]
     }
 
     Group {

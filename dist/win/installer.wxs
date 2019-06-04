@@ -107,10 +107,6 @@
               <?endif?>
             <?endif?>
 
-            <?ifdef Sparkle ?>
-            <File Id="WinSparkleDLL" Source="$(var.InstallRoot)\WinSparkle.dll" />
-            <?endif?>
-
             <?ifdef OpenSslDir ?>
             <File Id="libeay32_dll" Source="$(var.OpenSslDir)\libeay32.dll" />
             <File Id="ssleay32_dll" Source="$(var.OpenSslDir)\ssleay32.dll" />

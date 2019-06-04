@@ -25,29 +25,6 @@ macx {
     LIBS += -framework Foundation
     DEFINES += QT_NO_OPENGL
     OBJECTIVE_SOURCES += macsupport.mm
-
-    sparkle {
-        SPARKLE_DIR = /Library/Frameworks
-
-        !exists($${SPARKLE_DIR}/Sparkle.framework) {
-            error("Sparkle.framework not found at $${SPARKLE_DIR}")
-        }
-
-        DEFINES += TILED_SPARKLE
-        LIBS += -framework Sparkle -framework AppKit
-        LIBS += -F$${SPARKLE_DIR}
-        QMAKE_OBJECTIVE_CFLAGS += -F$${SPARKLE_DIR}
-        OBJECTIVE_SOURCES += sparkleautoupdater.mm
-
-        APP_RESOURCES.path = Contents/Resources
-        APP_RESOURCES.files = \
-            ../../dist/dsa_pub.pem
-
-        SPARKLE_FRAMEWORK.path = Contents/Frameworks
-        SPARKLE_FRAMEWORK.files = $${SPARKLE_DIR}/Sparkle.framework
-
-        QMAKE_BUNDLE_DATA += APP_RESOURCES SPARKLE_FRAMEWORK
-    }
 } else:win32 {
     LIBS += -L$$OUT_PWD/../../lib
 } else {
@@ -82,7 +59,6 @@ SOURCES += aboutdialog.cpp \
     automapperwrapper.cpp \
     automappingmanager.cpp \
     automappingutils.cpp  \
-    autoupdater.cpp \
     brokenlinks.cpp \
     brushitem.cpp \
     bucketfilltool.cpp \
@@ -304,7 +280,6 @@ HEADERS += aboutdialog.h \
     automapperwrapper.h \
     automappingmanager.h \
     automappingutils.h \
-    autoupdater.h \
     brokenlinks.h \
     brushitem.h \
     bucketfilltool.h \
@@ -457,7 +432,6 @@ HEADERS += aboutdialog.h \
     shapefilltool.h \
     shortcutsettingspage.h \
     snaphelper.h \
-    sparkleautoupdater.h \
     stampactions.h \
     stampbrush.h \
     stylehelper.h \

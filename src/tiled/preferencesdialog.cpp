@@ -21,7 +21,6 @@
 #include "preferencesdialog.h"
 #include "ui_preferencesdialog.h"
 
-#include "autoupdater.h"
 #include "languagemanager.h"
 #include "pluginlistmodel.h"
 #include "preferences.h"
