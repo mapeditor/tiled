@@ -176,7 +176,7 @@ AutomappingRadius
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.2</div>
+   <div class="new new-prev">Since Tiled 1.2</div>
 
 MatchOutsideMap
    This map property determines whether rules can match even when their input

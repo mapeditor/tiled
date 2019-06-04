@@ -19,7 +19,7 @@ Each type of object has its own placement tool.
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.2</div>
+   <div class="new new-prev">Since Tiled 1.2</div>
 
 A preview is shown of the object you're about to place when you hover
 over the map. While placing an object, you can press ``Escape`` or
@@ -104,7 +104,7 @@ paths to be followed.
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.2</div>
+   <div class="new new-prev">Since Tiled 1.2</div>
 
 You can extend an existing polyline at either end when it is selected,
 by clicking on the displayed dots. It is also possible to finish the
@@ -203,7 +203,7 @@ directly select the desired object.
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.2</div>
+   <div class="new new-prev">Since Tiled 1.2</div>
 
 You can quickly switch to the :ref:`edit-polygons-tool` tool by
 double-clicking on the polygon or polyline you want to edit.
@@ -301,7 +301,7 @@ object in two polyline objects.
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.2</div>
+   <div class="new new-prev">Since Tiled 1.2</div>
 
 It is possible to extend a polyline at either end, either by
 right-clicking those nodes and choosing "Extend Polyline", or by
