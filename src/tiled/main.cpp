@@ -31,7 +31,6 @@
 #include "preferences.h"
 #include "scriptmanager.h"
 #include "sparkleautoupdater.h"
-#include "standardautoupdater.h"
 #include "stylehelper.h"
 #include "tiledapplication.h"
 #include "tileset.h"

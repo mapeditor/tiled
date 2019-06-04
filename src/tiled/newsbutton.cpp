@@ -21,6 +21,7 @@
 #include "newsbutton.h"
 
 #include "newsfeed.h"
+#include "preferences.h"
 #include "utils.h"
 
 #include <QDesktopServices>
@@ -40,6 +41,10 @@ NewsButton::NewsButton(QWidget *parent)
     , mReadIcon(QLatin1String("://images/16x16/mail-read-symbolic.png"))
     , mUnreadIcon(QLatin1String("://images/16x16/mail-unread-symbolic.png"))
 {
+    const auto preferences = Preferences::instance();
+    setVisible(preferences->displayNews());
+    connect(preferences, &Preferences::displayNewsChanged, this, &NewsButton::setVisible);
+
     auto &feed = NewsFeed::instance();
 
     setToolButtonStyle(Qt::ToolButtonTextBesideIcon);

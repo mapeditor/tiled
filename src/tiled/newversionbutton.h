@@ -31,10 +31,22 @@ class NewVersionButton : public QToolButton
     Q_OBJECT
 
 public:
+    enum Visibility {
+        ManualVisible,
+        AutoVisible
+    };
+
     explicit NewVersionButton(QWidget *parent = nullptr);
+    explicit NewVersionButton(Visibility visibility, QWidget *parent = nullptr);
 
 private slots:
     void newVersionAvailable(const NewVersionChecker::VersionInfo &versionInfo);
+    void errorStringChanged(const QString &errorString);
+
+private:
+    void updateVisiblity();
+
+    Visibility mVisiblity;
 };
 
 } // namespace Tiled

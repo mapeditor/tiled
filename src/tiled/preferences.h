@@ -165,6 +165,9 @@ public:
     bool checkForUpdates() const;
     void setCheckForUpdates(bool on);
 
+    bool displayNews() const;
+    void setDisplayNews(bool on);
+
     bool wheelZoomsByDefault() const;
 
     /**
@@ -229,7 +232,8 @@ signals:
 
     void recentFilesChanged();
 
-    void checkForUpdatesChanged();
+    void checkForUpdatesChanged(bool on);
+    void displayNewsChanged(bool on);
 
 private:
     Preferences();
@@ -284,6 +288,7 @@ private:
     int mRunCount;
     bool mIsPatron;
     bool mCheckForUpdates;
+    bool mDisplayNews;
     bool mWheelZoomsByDefault;
 
     static Preferences *mInstance;
@@ -453,6 +458,11 @@ inline bool Preferences::isPatron() const
 inline bool Preferences::checkForUpdates() const
 {
     return mCheckForUpdates;
+}
+
+inline bool Preferences::displayNews() const
+{
+    return mDisplayNews;
 }
 
 inline bool Preferences::openLastFilesOnStartup() const

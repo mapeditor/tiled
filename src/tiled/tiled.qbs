@@ -439,8 +439,6 @@ QtGuiApplication {
         "stampactions.h",
         "stampbrush.cpp",
         "stampbrush.h",
-        "standardautoupdater.cpp",
-        "standardautoupdater.h",
         "stylehelper.cpp",
         "stylehelper.h",
         "swaptiles.cpp",

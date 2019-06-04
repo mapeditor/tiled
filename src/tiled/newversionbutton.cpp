@@ -21,6 +21,7 @@
 #include "newversionbutton.h"
 
 #include "newversiondialog.h"
+#include "preferences.h"
 #include "utils.h"
 
 #include <QGuiApplication>
@@ -28,22 +29,37 @@
 namespace Tiled {
 
 NewVersionButton::NewVersionButton(QWidget *parent)
-    : QToolButton(parent)
+    : NewVersionButton(ManualVisible, parent)
 {
-    setIcon(QIcon(QLatin1String("://images/scalable/software-update-available-symbolic.svg")));
+}
+
+NewVersionButton::NewVersionButton(NewVersionButton::Visibility visibility, QWidget *parent)
+    : QToolButton(parent)
+    , mVisiblity(visibility)
+{
     setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
     setAutoRaise(true);
-    setVisible(false);
-    setText(tr("Update Available"));
+    setText(tr("Up to date"));
+    setEnabled(false);
 
     const auto &checker = NewVersionChecker::instance();
 
     connect(&checker, &NewVersionChecker::newVersionAvailable,
             this, &NewVersionButton::newVersionAvailable);
 
+    connect(&checker, &NewVersionChecker::errorStringChanged,
+            this, &NewVersionButton::errorStringChanged);
+
     if (checker.isNewVersionAvailable())
         newVersionAvailable(checker.versionInfo());
+    else if (visibility == AutoVisible)
+        setVisible(false);
+    else
+        errorStringChanged(checker.errorString());
+
+    connect(Preferences::instance(), &Preferences::checkForUpdatesChanged,
+            this, &NewVersionButton::updateVisiblity);
 
     connect(this, &QToolButton::clicked, this, [this, &checker] {
         NewVersionDialog(checker.versionInfo(), window()).exec();
@@ -52,10 +68,36 @@ NewVersionButton::NewVersionButton(QWidget *parent)
 
 void NewVersionButton::newVersionAvailable(const NewVersionChecker::VersionInfo &versionInfo)
 {
-    setVisible(true);
+    setIcon(QIcon(QLatin1String("://images/scalable/software-update-available-symbolic.svg")));
+    setEnabled(true);
+    setText(tr("Update Available"));
     setToolTip(tr("%1 %2 is available").arg(QGuiApplication::applicationDisplayName(),
                                             versionInfo.version));
+
+    if (mVisiblity == AutoVisible)
+        setVisible(Preferences::instance()->checkForUpdates());
 }
 
+void NewVersionButton::errorStringChanged(const QString &errorString)
+{
+    if (errorString.isEmpty())
+        return;
+
+    setToolTip(errorString);
+    setIcon(QIcon());
+    setEnabled(false);
+    setText(tr("Error checking for updates"));
+}
+
+void NewVersionButton::updateVisiblity()
+{
+    if (mVisiblity != AutoVisible)
+        return;
+
+    const auto preferences = Preferences::instance();
+    const auto &checker = NewVersionChecker::instance();
+
+    setVisible(preferences->checkForUpdates() && checker.isNewVersionAvailable());
+}
 
 } // namespace Tiled

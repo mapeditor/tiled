@@ -44,6 +44,8 @@ public:
 
     static NewVersionChecker &instance();
 
+    void setEnabled(bool enabled);
+
     void refresh();
 
     bool isNewVersionAvailable() const;
@@ -54,7 +56,6 @@ protected:
     void timerEvent(QTimerEvent *event) override;
 
 signals:
-    void refreshed();
     void newVersionAvailable(const VersionInfo &versionInfo);
     void errorStringChanged(const QString &errorString);
 

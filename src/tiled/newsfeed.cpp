@@ -43,16 +43,12 @@ NewsFeed::NewsFeed()
     connect(mNetworkAccessManager, &QNetworkAccessManager::finished,
             this, &NewsFeed::finished);
 
-    auto settings = Preferences::instance()->settings();
+    const auto preferences = Preferences::instance();
+    const auto settings = preferences->settings();
     mLastRead = settings->value(QLatin1String("Install/NewsFeedLastRead")).toDateTime();
 
-    refresh();
-
-    // Refresh the news feed once every 4 hours
-    auto second = 1000;
-    auto minute = 60 * second;
-    auto hour = 60 * minute;
-    mRefreshTimer.start(4 * hour, Qt::VeryCoarseTimer, this);
+    setEnabled(preferences->displayNews());
+    connect(preferences, &Preferences::displayNewsChanged, this, &NewsFeed::setEnabled);
 }
 
 NewsFeed &NewsFeed::instance()
@@ -61,11 +57,29 @@ NewsFeed &NewsFeed::instance()
     return newsFeed;
 }
 
+void NewsFeed::setEnabled(bool enabled)
+{
+    if (mRefreshTimer.isActive() == enabled)
+        return;
+
+    if (enabled) {
+        refresh();
+
+        // Refresh the news feed once every 4 hours
+        auto second = 1000;
+        auto minute = 60 * second;
+        auto hour = 60 * minute;
+        mRefreshTimer.start(4 * hour, Qt::VeryCoarseTimer, this);
+    } else {
+        mRefreshTimer.stop();
+    }
+}
+
 /**
  * Requests the feed from the network.
  *
- * Normally does not need to be called. The feed is refreshed automatically on
- * startup and every 4 hours.
+ * Can be called to request a news feed update when automatic refresh
+ * has been disabled.
  */
 void NewsFeed::refresh()
 {

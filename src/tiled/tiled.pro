@@ -234,7 +234,6 @@ SOURCES += aboutdialog.cpp \
     snaphelper.cpp \
     stampactions.cpp \
     stampbrush.cpp \
-    standardautoupdater.cpp \
     stylehelper.cpp \
     swaptiles.cpp \
     templatesdock.cpp \
@@ -461,7 +460,6 @@ HEADERS += aboutdialog.h \
     sparkleautoupdater.h \
     stampactions.h \
     stampbrush.h \
-    standardautoupdater.h \
     stylehelper.h \
     swaptiles.h \
     templatesdock.h \

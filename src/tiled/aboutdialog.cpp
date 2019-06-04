@@ -21,6 +21,7 @@
 
 #include "aboutdialog.h"
 
+#include "newversionchecker.h"
 #include "tiledproxystyle.h"
 #include "utils.h"
 
@@ -61,6 +62,10 @@ AboutDialog::AboutDialog(QWidget *parent): QDialog(parent)
             logo->setPixmap(QPixmap(QString::fromUtf8(":/images/about-tiled-logo-white.png")));
 
     connect(donateButton, &QAbstractButton::clicked, this, &AboutDialog::donate);
+
+    // Manual refresh to update the NewVersionButton in this dialog, in case
+    // automatic checking was disabled.
+    NewVersionChecker::instance().refresh();
 }
 
 void AboutDialog::donate()

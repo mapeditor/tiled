@@ -20,6 +20,8 @@
 
 #include "newversionchecker.h"
 
+#include "preferences.h"
+
 #include <QCoreApplication>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -55,13 +57,9 @@ NewVersionChecker::NewVersionChecker()
     connect(mNetworkAccessManager, &QNetworkAccessManager::finished,
             this, &NewVersionChecker::finished);
 
-    refresh();
-
-    // Check for new version once every 6 hours
-    auto second = 1000;
-    auto minute = 60 * second;
-    auto hour = 60 * minute;
-    mRefreshTimer.start(6 * hour, Qt::VeryCoarseTimer, this);
+    auto preferences = Preferences::instance();
+    setEnabled(preferences->checkForUpdates());
+    connect(preferences, &Preferences::checkForUpdatesChanged, this, &NewVersionChecker::setEnabled);
 }
 
 NewVersionChecker &NewVersionChecker::instance()
@@ -70,11 +68,28 @@ NewVersionChecker &NewVersionChecker::instance()
     return instance;
 }
 
+void NewVersionChecker::setEnabled(bool enabled)
+{
+    if (mRefreshTimer.isActive() == enabled)
+        return;
+
+    if (enabled) {
+        refresh();
+
+        // Check for new version once every 6 hours
+        auto second = 1000;
+        auto minute = 60 * second;
+        auto hour = 60 * minute;
+        mRefreshTimer.start(6 * hour, Qt::VeryCoarseTimer, this);
+    } else {
+        mRefreshTimer.stop();
+    }
+}
+
 /**
  * Requests the latest version from the network.
  *
- * Normally does not need to be called. The version is refreshed automatically
- * on startup and every 6 hours.
+ * Can be called to check for updates when automatic refresh has been disabled.
  */
 void NewVersionChecker::refresh()
 {
@@ -105,7 +120,6 @@ void NewVersionChecker::finished(QNetworkReply *reply)
     if (reply->error() != QNetworkReply::NoError) {
         mErrorString = reply->errorString();
         emit errorStringChanged(mErrorString);
-        emit refreshed();
         return;
     }
 
@@ -115,7 +129,6 @@ void NewVersionChecker::finished(QNetworkReply *reply)
     if (error.error != QJsonParseError::NoError || object.isEmpty()) {
         mErrorString = error.errorString();
         emit errorStringChanged(mErrorString);
-        emit refreshed();
         return;
     }
 
@@ -133,8 +146,6 @@ void NewVersionChecker::finished(QNetworkReply *reply)
         emit newVersionAvailable(mVersionInfo);
         mRefreshTimer.stop();
     }
-
-    emit refreshed();
 }
 
 } // namespace Tiled
