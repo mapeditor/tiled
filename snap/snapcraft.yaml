@@ -44,7 +44,9 @@ parts:
     #  - python-dev
       - qttools5-dev-tools
       - qtdeclarative5-dev
-    #stage-packages:
+      - zlib1g-dev
+    stage-packages:
+      - libqt5quick5
     #  - libpython2.7
     after: [desktop-qt5]
 
