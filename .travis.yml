@@ -138,8 +138,20 @@ matrix:
     - macdeployqt install/Tiled.app
     - pushd install
     - ruby ../dist/macos/fixup-install-names.rb
+    - ditto -c -k --sequesterRsrc --keepParent Tiled.app ../Tiled-$TILED_VERSION-macos.zip
     - popd
     deploy:
+    - provider: releases
+      skip_cleanup: true
+      draft: true
+      tag_name: "$TRAVIS_TAG"
+      api_key:
+        secure: g8B2MDEElF5v1K1awuhB1C54Fbl2eUmKdfJTPhYC8kYiLoWClgufOPavJOHO+hH5us1LtbCvOa6Z+lrSe9YnuwNcV2MKENQQ4CjpViEI51wpAOM1/WW+C7tDu2BNFKCJjldRrSGttFD2lgVbNYBY7w56/2stZNRBuTfdE8YZEFc=
+      file: Tiled-*-macos.zip
+      file_glob: true
+      on:
+        repo: bjorn/tiled
+        tags: true
     - provider: script
       skip_cleanup: true
       on:
