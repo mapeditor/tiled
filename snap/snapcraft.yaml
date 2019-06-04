@@ -42,6 +42,7 @@ parts:
     #  - pkg-config
     #  - python-dev
       - qttools5-dev-tools
+      - qtdeclarative5-dev
     #stage-packages:
     #  - libpython2.7
     after: [desktop-qt5]
