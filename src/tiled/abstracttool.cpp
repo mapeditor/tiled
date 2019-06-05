@@ -40,6 +40,30 @@ AbstractTool::AbstractTool(const QString &name, const QIcon &icon,
 {
 }
 
+void AbstractTool::setName(const QString &name)
+{
+    if (mName == name)
+        return;
+
+    mName = name;
+    emit changed();
+}
+
+void AbstractTool::setIcon(const QIcon &icon)
+{
+    mIcon = icon;
+    emit changed();
+}
+
+void AbstractTool::setShortcut(const QKeySequence &shortcut)
+{
+    if (mShortcut == shortcut)
+        return;
+
+    mShortcut = shortcut;
+    emit changed();
+}
+
 /**
  * Sets the current status information for this tool. This information will be
  * displayed in the status bar.

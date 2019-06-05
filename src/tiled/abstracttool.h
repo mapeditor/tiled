@@ -56,9 +56,9 @@ class AbstractTool : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(QString name READ name WRITE setName)
-    Q_PROPERTY(QIcon icon READ icon WRITE setIcon)
-    Q_PROPERTY(QKeySequence shortcut READ shortcut WRITE setShortcut)
+    Q_PROPERTY(QString name READ name WRITE setName NOTIFY changed)
+    Q_PROPERTY(QIcon icon READ icon WRITE setIcon NOTIFY changed)
+    Q_PROPERTY(QKeySequence shortcut READ shortcut WRITE setShortcut NOTIFY changed)
     Q_PROPERTY(QString statusInfo READ statusInfo WRITE setStatusInfo NOTIFY statusInfoChanged)
     Q_PROPERTY(QCursor cursor READ cursor WRITE setCursor NOTIFY cursorChanged)
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
@@ -184,6 +184,7 @@ protected:
     virtual void updateEnabledState();
 
 signals:
+    void changed();
     void statusInfoChanged(const QString &statusInfo);
     void cursorChanged(const QCursor &cursor);
     void enabledChanged(bool enabled);
@@ -208,19 +209,9 @@ inline QString AbstractTool::name() const
     return mName;
 }
 
-inline void AbstractTool::setName(const QString &name)
-{
-    mName = name;
-}
-
 inline QIcon AbstractTool::icon() const
 {
     return mIcon;
-}
-
-inline void AbstractTool::setIcon(const QIcon &icon)
-{
-    mIcon = icon;
 }
 
 inline QKeySequence AbstractTool::shortcut() const
@@ -228,10 +219,6 @@ inline QKeySequence AbstractTool::shortcut() const
     return mShortcut;
 }
 
-inline void AbstractTool::setShortcut(const QKeySequence &shortcut)
-{
-    mShortcut = shortcut;
-}
 
 inline QString AbstractTool::statusInfo() const
 {

@@ -24,7 +24,11 @@
 #include "languagemanager.h"
 #include "pluginlistmodel.h"
 #include "preferences.h"
+#include "scriptmanager.h"
 
+#include <QDesktopServices>
+#include <QDir>
+#include <QFile>
 #include <QSortFilterProxyModel>
 
 #include "qtcompat_p.h"
@@ -124,6 +128,14 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
 
     connect(pluginListModel, &PluginListModel::setPluginEnabled,
             preferences, &Preferences::setPluginEnabled);
+
+    const QString &extensionsPath = ScriptManager::instance().extensionsPath();
+    mUi->extensionsPathEdit->setText(extensionsPath);
+    mUi->openExtensionsPathButton->setEnabled(!extensionsPath.isEmpty());
+    connect(mUi->openExtensionsPathButton, &QPushButton::clicked, this, [&] {
+        if (QFile::exists(extensionsPath) || QDir().mkpath(extensionsPath))
+            QDesktopServices::openUrl(QUrl::fromLocalFile(extensionsPath));
+    });
 
     resize(sizeHint());
 }

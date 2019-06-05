@@ -34,9 +34,9 @@ namespace Tiled {
 
 ScriptedTool::ScriptedTool(QJSValue object, QObject *parent)
     : AbstractTileTool(QStringLiteral("<unnamed tool>"), QIcon(), QKeySequence(), nullptr, parent)
-    , mScriptObject(object)
+    , mScriptObject(std::move(object))
 {
-    const QJSValue nameProperty = object.property(QStringLiteral("name"));
+    const QJSValue nameProperty = mScriptObject.property(QStringLiteral("name"));
     if (nameProperty.isString()) {
         const QString name = nameProperty.toString();
         if (!name.isEmpty())
@@ -186,6 +186,19 @@ bool ScriptedTool::validateToolObject(QJSValue value)
     }
 
     return true;
+}
+
+void ScriptedTool::setIconFileName(const QString &fileName)
+{
+    if (mIconFileName == fileName)
+        return;
+
+    mIconFileName = fileName;
+
+    QString iconFile = QStringLiteral("ext:");
+    iconFile.append(fileName);
+
+    setIcon(QIcon { iconFile });
 }
 
 void ScriptedTool::mapDocumentChanged(MapDocument *oldDocument,

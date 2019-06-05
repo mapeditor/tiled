@@ -43,13 +43,17 @@ ScriptedAction::ScriptedAction(Id id,
     });
 }
 
-void ScriptedAction::setIconName(const QString &name)
+void ScriptedAction::setIconFileName(const QString &fileName)
 {
-    if (mIconName == name)
+    if (mIconFileName == fileName)
         return;
 
-    mIconName = name;
-    Utils::setThemeIcon(this, name);
+    mIconFileName = fileName;
+
+    QString iconFile = QStringLiteral("ext:");
+    iconFile.append(fileName);
+
+    setIcon(QIcon { iconFile });
 }
 
 } // namespace Tiled

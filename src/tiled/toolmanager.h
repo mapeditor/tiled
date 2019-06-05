@@ -87,6 +87,7 @@ signals:
 
 private slots:
     void actionTriggered(QAction *action);
+    void toolChanged();
     void toolEnabledChanged(bool enabled);
     void selectEnabledTool();
 

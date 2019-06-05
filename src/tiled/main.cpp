@@ -458,7 +458,7 @@ int main(int argc, char *argv[])
                      &w, [&] (const QString &file) { w.openFile(file); });
 
     PluginManager::instance()->loadPlugins();
-    ScriptManager::instance().evaluateStartupScripts();
+    ScriptManager::instance().initialize();
 
     if (!commandLine.filesToOpen().isEmpty()) {
         for (const QString &fileName : commandLine.filesToOpen())
