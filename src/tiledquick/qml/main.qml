@@ -48,6 +48,16 @@ ApplicationWindow {
         property alias windowVisibility: window.visibility
     }
 
+    Shortcut {
+        sequence: "F11"
+        onActivated: {
+            if (window.visibility == ApplicationWindow.FullScreen)
+                window.visibility = ApplicationWindow.Windowed
+            else
+                window.visibility = ApplicationWindow.FullScreen
+        }
+    }
+
     Action {
         id: openAction
         text: qsTr("Open...")
