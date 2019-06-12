@@ -37,11 +37,12 @@ ScriptedTool::ScriptedTool(QJSValue object, QObject *parent)
     , mScriptObject(std::move(object))
 {
     const QJSValue nameProperty = mScriptObject.property(QStringLiteral("name"));
-    if (nameProperty.isString()) {
-        const QString name = nameProperty.toString();
-        if (!name.isEmpty())
-            setName(name);
-    }
+    if (nameProperty.isString())
+        setName(nameProperty.toString());
+
+    const QJSValue iconProperty = mScriptObject.property(QStringLiteral("icon"));
+    if (iconProperty.isString())
+        setIconFileName(iconProperty.toString());
 
     // Make members of ScriptedTool available through the original object
     auto &scriptManager = ScriptManager::instance();
