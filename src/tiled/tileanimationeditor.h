@@ -75,6 +75,7 @@ private slots:
 
     void advancePreviewAnimation(int ms);
     void resetPreview();
+    bool updatePreviewPixmap();
 
 private:
     Ui::TileAnimationEditor *mUi;
