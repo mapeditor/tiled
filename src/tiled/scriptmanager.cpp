@@ -94,6 +94,10 @@ ScriptManager::ScriptManager(QObject *parent)
     const QString configLocation { QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation) };
     if (!configLocation.isEmpty()) {
         mExtensionsPath = QDir{configLocation}.filePath(QStringLiteral("extensions"));
+
+        if (!QFile::exists(mExtensionsPath))
+            QDir().mkpath(mExtensionsPath);
+
         mExtensionsPaths.append(mExtensionsPath);
     }
 }
