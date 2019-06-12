@@ -23,6 +23,7 @@
 
 #include "changelayer.h"
 #include "changemapobject.h"
+#include "changeevents.h"
 #include "grouplayer.h"
 #include "layermodel.h"
 #include "map.h"
@@ -392,6 +393,9 @@ void MapObjectModel::setMapDocument(MapDocument *mapDocument)
                 this, &MapObjectModel::layerAboutToBeRemoved);
         connect(mMapDocument, &MapDocument::tileTypeChanged,
                 this, &MapObjectModel::tileTypeChanged);
+
+        connect(mMapDocument, &Document::changed,
+                this, &MapObjectModel::documentChanged);
     }
 
     endResetModel();
@@ -469,28 +473,6 @@ void MapObjectModel::tileTypeChanged(Tile *tile)
     }
 }
 
-void MapObjectModel::emitObjectsChanged(const QList<MapObject *> &objects,
-                                        const QList<Column> &columns,
-                                        const QVector<int> &roles)
-{
-    emit objectsChanged(objects);
-    if (columns.isEmpty())
-        return;
-
-    auto minMaxPair = std::minmax_element(columns.begin(), columns.end());
-    for (auto object : objects) {
-        emit dataChanged(index(object, *minMaxPair.first),
-                         index(object, *minMaxPair.second),
-                         roles);
-    }
-}
-
-void MapObjectModel::emitObjectsChanged(const QList<MapObject *> &objects, Column column)
-{
-    emitObjectsChanged(objects,
-                       QList<MapObjectModel::Column>() << column);
-}
-
 QList<Layer *> &MapObjectModel::filteredChildLayers(GroupLayer *parentLayer) const
 {
     if (!mFilteredLayers.contains(parentLayer)) {
@@ -511,7 +493,7 @@ void MapObjectModel::insertObject(ObjectGroup *og, int index, MapObject *o)
     beginInsertRows(this->index(og), row, row);
     og->insertObject(row, o);
     endInsertRows();
-    emit objectsAdded(QList<MapObject*>() << o);
+    emit objectsAdded({o});
 }
 
 int MapObjectModel::removeObject(ObjectGroup *og, MapObject *o)
@@ -539,70 +521,39 @@ void MapObjectModel::moveObjects(ObjectGroup *og, int from, int to, int count)
     endMoveRows();
 }
 
-void MapObjectModel::setObjectPolygon(MapObject *o, const QPolygonF &polygon)
+void MapObjectModel::documentChanged(const ChangeEvent &change)
 {
-    if (o->polygon() == polygon)
-        return;
-
-    o->setPolygon(polygon);
-    emit objectsChanged(QList<MapObject*>() << o);
-}
-
-void MapObjectModel::setObjectPosition(MapObject *o, const QPointF &pos)
-{
-    if (o->position() == pos)
-        return;
-
-    o->setPosition(pos);
-    emit objectsChanged(QList<MapObject*>() << o);
-}
-
-void MapObjectModel::setObjectSize(MapObject *o, const QSizeF &size)
-{
-    if (o->size() == size)
-        return;
-
-    o->setSize(size);
-    emit objectsChanged(QList<MapObject*>() << o);
-}
-
-void MapObjectModel::setObjectRotation(MapObject *o, qreal rotation)
-{
-    if (o->rotation() == rotation)
-        return;
-
-    o->setRotation(rotation);
-    emit objectsChanged(QList<MapObject*>() << o);
-}
-
-void MapObjectModel::setObjectProperty(MapObject *o,
-                                       MapObject::Property property,
-                                       const QVariant &value)
-{
-    if (o->mapObjectProperty(property) == value)
-        return;
-
-    o->setMapObjectProperty(property, value);
-
-    QList<MapObject*> objects = QList<MapObject*>() << o;
-
     // Notify views about certain property changes
-    switch (property) {
-    case MapObject::NameProperty:
-    case MapObject::VisibleProperty: {
-        QModelIndex index = this->index(o, 0);
-        emit dataChanged(index, index);
-        break;
-    }
-    case MapObject::TypeProperty: {
-        QModelIndex index = this->index(o, 1);
-        emit dataChanged(index, index);
-        emit objectsTypeChanged(objects);
-        break;
-    }
-    default:
-        break;
-    }
+    switch (change.type) {
+    case ChangeEvent::MapObjectsChanged: {
+        const auto &mapObjectChange = static_cast<const MapObjectsChangeEvent&>(change);
 
-    emit objectsChanged(objects);
+        QList<Column> columns;
+        if (mapObjectChange.properties & (MapObject::NameProperty | MapObject::VisibleProperty))
+            columns.append(MapObjectModel::Name);
+        if (mapObjectChange.properties & MapObject::TypeProperty)
+            columns.append(MapObjectModel::Type);
+        if (mapObjectChange.properties & MapObject::PositionProperty)
+            columns.append(MapObjectModel::Position);
+
+        emitDataChanged(mapObjectChange.mapObjects, columns);
+
+        break;
+    }
+    }
+}
+
+void MapObjectModel::emitDataChanged(const QList<MapObject *> &objects,
+                                     const QList<Column> &columns,
+                                     const QVector<int> &roles)
+{
+    if (columns.isEmpty())
+        return;
+
+    auto minMaxPair = std::minmax_element(columns.begin(), columns.end());
+    for (auto object : objects) {
+        emit dataChanged(index(object, *minMaxPair.first),
+                         index(object, *minMaxPair.second),
+                         roles);
+    }
 }

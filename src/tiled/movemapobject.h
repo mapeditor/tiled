@@ -27,17 +27,17 @@ namespace Tiled {
 
 class MapObject;
 
-class MapDocument;
+class Document;
 
 class MoveMapObject : public QUndoCommand
 {
 public:
-    MoveMapObject(MapDocument *mapDocument,
+    MoveMapObject(Document *document,
                   MapObject *mapObject,
                   const QPointF &oldPos,
                   QUndoCommand *parent = nullptr);
 
-    MoveMapObject(MapDocument *mapDocument,
+    MoveMapObject(Document *document,
                   MapObject *mapObject,
                   const QPointF &newPos,
                   const QPointF &oldPos,
@@ -47,7 +47,7 @@ public:
     void redo() override;
 
 private:
-    MapDocument *mMapDocument;
+    Document *mDocument;
     MapObject *mMapObject;
     QPointF mOldPos;
     QPointF mNewPos;

@@ -27,6 +27,7 @@ namespace Tiled {
 
 class MapObject;
 
+class Document;
 class MapDocument;
 
 /**
@@ -38,11 +39,11 @@ class MapDocument;
 class ChangePolygon : public QUndoCommand
 {
 public:
-    ChangePolygon(MapDocument *mapDocument,
+    ChangePolygon(Document *document,
                   MapObject *mapObject,
                   const QPolygonF &oldPolygon);
 
-    ChangePolygon(MapDocument *mapDocument,
+    ChangePolygon(Document *document,
                   MapObject *mapObject,
                   const QPolygonF &newPolygon,
                   const QPolygonF &oldPolygon);
@@ -51,7 +52,7 @@ public:
     void redo() override;
 
 private:
-    MapDocument *mMapDocument;
+    Document *mDocument;
     MapObject *mMapObject;
 
     QPolygonF mOldPolygon;

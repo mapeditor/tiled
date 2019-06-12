@@ -61,6 +61,9 @@ public:
 
     void languageChanged() override;
 
+protected:
+    void changeEvent(const ChangeEvent &event) override;
+
 private slots:
     void updateHandles();
     void updateHandlesAndOrigin();

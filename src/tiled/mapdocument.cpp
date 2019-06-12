@@ -64,6 +64,7 @@
 #include <QRect>
 #include <QUndoStack>
 
+#include "changeevents.h"
 #include "qtcompat_p.h"
 
 using namespace Tiled;
@@ -96,10 +97,6 @@ MapDocument::MapDocument(std::unique_ptr<Map> map, const QString &fileName)
     mMapObjectModel->setMapDocument(this);
     connect(mMapObjectModel, &MapObjectModel::objectsAdded,
             this, &MapDocument::objectsAdded);
-    connect(mMapObjectModel, &MapObjectModel::objectsChanged,
-            this, &MapDocument::objectsChanged);
-    connect(mMapObjectModel, &MapObjectModel::objectsTypeChanged,
-            this, &MapDocument::objectsTypeChanged);
     connect(mMapObjectModel, &MapObjectModel::objectsRemoved,
             this, &MapDocument::onObjectsRemoved);
 
@@ -822,7 +819,7 @@ void MapDocument::replaceObjectTemplate(const ObjectTemplate *oldObjectTemplate,
     auto changedObjects = mMap->replaceObjectTemplate(oldObjectTemplate, newObjectTemplate);
 
     // Update the objects in the map scene
-    emit objectsChanged(changedObjects);
+    emit changed(MapObjectsChangeEvent(std::move(changedObjects)));
     emit objectTemplateReplaced(newObjectTemplate, oldObjectTemplate);
 }
 
@@ -1148,7 +1145,7 @@ void MapDocument::updateTemplateInstances(const ObjectTemplate *objectTemplate)
             }
         }
     }
-    emit objectsChanged(objectList);
+    emit changed(MapObjectsChangeEvent(std::move(objectList)));
 }
 
 void MapDocument::selectAllInstances(const ObjectTemplate *objectTemplate)

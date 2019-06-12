@@ -37,6 +37,7 @@ class FileFormat;
 class Object;
 class Tile;
 
+class ChangeEvent;
 class EditableAsset;
 
 /**
@@ -116,6 +117,7 @@ public:
     static const QList<Document*> &documentInstances();
 
 signals:
+    void changed(const ChangeEvent &change);
     void saved();
 
     void fileNameChanged(const QString &fileName,

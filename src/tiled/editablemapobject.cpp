@@ -115,7 +115,7 @@ void EditableMapObject::setType(QString type)
 void EditableMapObject::setPos(QPointF pos)
 {
     if (asset()) {
-        asset()->push(new MoveMapObject(map()->mapDocument(), mapObject(),
+        asset()->push(new MoveMapObject(asset()->document(), mapObject(),
                                         pos, mapObject()->position()));
     } else {
         mapObject()->setPosition(pos);
@@ -163,7 +163,7 @@ void EditableMapObject::setMapObjectProperty(MapObject::Property property,
                                              const QVariant &value)
 {
     if (asset()) {
-        asset()->push(new ChangeMapObject(map()->mapDocument(), mapObject(),
+        asset()->push(new ChangeMapObject(asset()->document(), mapObject(),
                                           property, value));
     } else {
         mapObject()->setMapObjectProperty(property, value);

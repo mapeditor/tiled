@@ -103,6 +103,7 @@ QtGuiApplication {
         "bucketfilltool.h",
         "capturestamphelper.cpp",
         "capturestamphelper.h",
+        "changeevents.h",
         "changeimagelayerproperties.cpp",
         "changeimagelayerproperties.h",
         "changelayer.cpp",

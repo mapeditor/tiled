@@ -29,7 +29,6 @@
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "mapobjectitem.h"
-#include "mapobjectmodel.h"
 #include "maprenderer.h"
 #include "mapscene.h"
 #include "objectgroup.h"
@@ -47,6 +46,7 @@
 #include <QMenu>
 #include <QUndoStack>
 
+#include "changeevents.h"
 #include "qtcompat_p.h"
 
 #include <cstdlib>
@@ -80,8 +80,6 @@ void EditPolygonTool::activate(MapScene *scene)
     // TODO: Could be more optimal by separating the updating of handles from
     // the creation and removal of handles depending on changes in the
     // selection, and by only updating the handles of the objects that changed.
-    connect(mapDocument(), &MapDocument::objectsChanged,
-            this, &EditPolygonTool::updateHandles);
     connect(mapDocument(), &MapDocument::selectedObjectsChanged,
             this, &EditPolygonTool::updateHandles);
     connect(mapDocument(), &MapDocument::objectsRemoved,
@@ -92,8 +90,6 @@ void EditPolygonTool::activate(MapScene *scene)
 
 void EditPolygonTool::deactivate(MapScene *scene)
 {
-    disconnect(mapDocument(), &MapDocument::objectsChanged,
-               this, &EditPolygonTool::updateHandles);
     disconnect(mapDocument(), &MapDocument::selectedObjectsChanged,
                this, &EditPolygonTool::updateHandles);
     disconnect(mapDocument(), &MapDocument::objectsRemoved,
@@ -576,7 +572,8 @@ void EditPolygonTool::updateMovingItems(const QPointF &pos,
         // update the polygon
         QPolygonF polygon = object->polygon();
         polygon[handle->pointIndex()] = newPixelPos - object->position();
-        mapDocument()->mapObjectModel()->setObjectPolygon(object, polygon);
+        object->setPolygon(polygon);
+        emit mapDocument()->changed(MapObjectsChangeEvent(object, MapObject::ShapeProperty));
 
         ++i;
     }
@@ -624,10 +621,10 @@ void EditPolygonTool::abortCurrentAction(const QList<MapObject *> &removedObject
             MapObject *object = i.key();
             const QPolygonF &oldPolygon = i.value();
 
-            if (removedObjects.contains(object))
-                object->setPolygon(oldPolygon);
-            else
-                mapDocument()->mapObjectModel()->setObjectPolygon(object, oldPolygon);
+            object->setPolygon(oldPolygon);
+
+            if (!removedObjects.contains(object))
+                emit mapDocument()->changed(MapObjectsChangeEvent(object, MapObject::ShapeProperty));
         }
 
         mOldPolygons.clear();
@@ -773,6 +770,28 @@ void EditPolygonTool::deleteNodes()
     }
 
     undoStack->endMacro();
+}
+
+void EditPolygonTool::changeEvent(const ChangeEvent &event)
+{
+    AbstractObjectTool::changeEvent(event);
+
+    if (!mapScene())
+        return;
+
+    switch (event.type) {
+    case ChangeEvent::MapObjectsChanged: {
+        constexpr auto propertiesAffectingHandles =
+                MapObject::PositionProperty |
+                MapObject::RotationProperty |
+                MapObject::ShapeProperty;
+
+        if (static_cast<const MapObjectsChangeEvent&>(event).properties & propertiesAffectingHandles)
+            updateHandles();
+
+        break;
+    }
+    }
 }
 
 /**

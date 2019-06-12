@@ -331,7 +331,7 @@ void CreateObjectTool::finishNewMapObject()
 
     mapDocument()->undoStack()->push(addObjectCommand);
 
-    mapDocument()->setSelectedObjects(QList<MapObject*>() << newMapObject.get());
+    mapDocument()->setSelectedObjects({newMapObject.get()});
     newMapObject.release();     // now owned by its object group
 
     mState = Idle;

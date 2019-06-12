@@ -27,12 +27,12 @@
 
 namespace Tiled {
 
-class MapDocument;
+class Document;
 
 class FlipMapObjects : public QUndoCommand
 {
 public:
-    FlipMapObjects(MapDocument *mapDocument,
+    FlipMapObjects(Document *document,
                    const QList<MapObject *> &mapObjects,
                    FlipDirection flipDirection);
 
@@ -42,7 +42,7 @@ public:
 private:
     void flip();
 
-    MapDocument *mMapDocument;
+    Document *mDocument;
     const QList<MapObject *> mMapObjects;
     QPointF mObjectsCenter;
     FlipDirection mFlipDirection;

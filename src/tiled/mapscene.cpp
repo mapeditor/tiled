@@ -436,7 +436,7 @@ void MapScene::dropEvent(QGraphicsSceneDragDropEvent *event)
 
     mapDocument()->undoStack()->push(addObjectCommand);
 
-    mapDocument()->setSelectedObjects(QList<MapObject*>() << newMapObject);
+    mapDocument()->setSelectedObjects({newMapObject});
 }
 
 void MapScene::dragLeaveEvent(QGraphicsSceneDragDropEvent *event)

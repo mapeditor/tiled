@@ -79,8 +79,6 @@ void CreatePolygonObjectTool::activate(MapScene *scene)
 
     updateHandles();
 
-    connect(mapDocument(), &MapDocument::objectsChanged,
-            this, &CreatePolygonObjectTool::objectsChanged);
     connect(mapDocument(), &MapDocument::selectedObjectsChanged,
             this, &CreatePolygonObjectTool::updateHandles);
     connect(mapDocument(), &MapDocument::objectsRemoved,
@@ -96,8 +94,6 @@ void CreatePolygonObjectTool::deactivate(MapScene *scene)
     if (mMode == ExtendingAtBegin || mMode == ExtendingAtEnd)
         finishExtendingMapObject();
 
-    disconnect(mapDocument(), &MapDocument::objectsChanged,
-               this, &CreatePolygonObjectTool::objectsChanged);
     disconnect(mapDocument(), &MapDocument::selectedObjectsChanged,
                this, &CreatePolygonObjectTool::updateHandles);
     disconnect(mapDocument(), &MapDocument::objectsRemoved,
@@ -462,13 +458,22 @@ void CreatePolygonObjectTool::updateHandles()
         createHandles(mNewMapObjectItem->mapObject());
 }
 
-void CreatePolygonObjectTool::objectsChanged(const QList<MapObject *> &objects)
+void CreatePolygonObjectTool::objectsChanged(const MapObjectsChangeEvent &mapObjectsChangeEvent)
 {
+    if (!mapScene())
+        return;
+
     // Possibly the polygon of the object being extended changed
-    if (mNewMapObjectItem && objects.contains(mNewMapObjectItem->mapObject()))
+    if (mNewMapObjectItem && mapObjectsChangeEvent.mapObjects.contains(mNewMapObjectItem->mapObject()))
         synchronizeOverlayObject();
 
-    updateHandles();
+    constexpr auto propertiesAffectingHandles =
+            MapObject::PositionProperty |
+            MapObject::RotationProperty |
+            MapObject::ShapeProperty;
+
+    if (mapObjectsChangeEvent.properties & propertiesAffectingHandles)
+        updateHandles();
 }
 
 void CreatePolygonObjectTool::objectsRemoved(const QList<MapObject *> &objects)
@@ -590,6 +595,18 @@ void CreatePolygonObjectTool::extend(MapObject *mapObject, bool extendingFirst)
     setState(CreatingObject);
 
     updateHandles();
+}
+
+void CreatePolygonObjectTool::changeEvent(const ChangeEvent &event)
+{
+    CreateObjectTool::changeEvent(event);
+
+    switch (event.type) {
+    case ChangeEvent::MapObjectsChanged: {
+        objectsChanged(static_cast<const MapObjectsChangeEvent&>(event));
+        break;
+    }
+    }
 }
 
 void CreatePolygonObjectTool::setHoveredHandle(PointHandle *handle)

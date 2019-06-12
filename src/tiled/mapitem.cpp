@@ -42,6 +42,7 @@
 #include <QStyleOptionGraphicsItem>
 #include <QWidget>
 
+#include "changeevents.h"
 #include "qtcompat_p.h"
 
 #include <memory>
@@ -134,6 +135,7 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
     connect(prefs, &Preferences::highlightCurrentLayerChanged, this, &MapItem::updateSelectedLayersHighlight);
     connect(prefs, &Preferences::objectTypesChanged, this, &MapItem::syncAllObjectItems);
 
+    connect(mapDocument.data(), &Document::changed, this, &MapItem::documentChanged);
     connect(mapDocument.data(), &MapDocument::mapChanged, this, &MapItem::mapChanged);
     connect(mapDocument.data(), &MapDocument::regionChanged, this, &MapItem::repaintRegion);
     connect(mapDocument.data(), &MapDocument::tileLayerChanged, this, &MapItem::tileLayerChanged);
@@ -149,7 +151,6 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
     connect(mapDocument.data(), &MapDocument::tilesetReplaced, this, &MapItem::tilesetReplaced);
     connect(mapDocument.data(), &MapDocument::objectsInserted, this, &MapItem::objectsInserted);
     connect(mapDocument.data(), &MapDocument::objectsRemoved, this, &MapItem::objectsRemoved);
-    connect(mapDocument.data(), &MapDocument::objectsChanged, this, &MapItem::objectsChanged);
     connect(mapDocument.data(), &MapDocument::objectsIndexChanged, this, &MapItem::objectsIndexChanged);
 
     updateBoundingRect();
@@ -314,6 +315,16 @@ void MapItem::repaintRegion(const QRegion &region, TileLayer *tileLayer)
     }
 }
 
+void MapItem::documentChanged(const ChangeEvent &change)
+{
+    switch (change.type) {
+    case ChangeEvent::MapObjectsChanged: {
+        syncObjectItems(static_cast<const MapObjectsChangeEvent&>(change).mapObjects);
+        break;
+    }
+    }
+}
+
 /**
  * Adapts the layers and objects to new map size or orientation.
  */
@@ -400,7 +411,7 @@ void MapItem::layerChanged(Layer *layer)
  */
 void MapItem::objectGroupChanged(ObjectGroup *objectGroup)
 {
-    objectsChanged(objectGroup->objects());
+    syncObjectItems(objectGroup->objects());
     objectsIndexChanged(objectGroup, 0, objectGroup->objectCount() - 1);
 }
 
@@ -504,7 +515,7 @@ void MapItem::objectsRemoved(const QList<MapObject*> &objects)
 /**
  * Updates the map object items related to the given objects.
  */
-void MapItem::objectsChanged(const QList<MapObject*> &objects)
+void MapItem::syncObjectItems(const QList<MapObject*> &objects)
 {
     for (MapObject *object : objects) {
         MapObjectItem *item = mObjectItems.value(object);

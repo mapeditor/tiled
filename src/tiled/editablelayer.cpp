@@ -57,6 +57,10 @@ bool EditableLayer::isSelected() const
     return false;
 }
 
+/**
+ * Turns this layer reference into a stand-alone copy of the layer it was
+ * referencing.
+ */
 void EditableLayer::detach()
 {
     Q_ASSERT(asset());
@@ -69,6 +73,10 @@ void EditableLayer::detach()
     EditableManager::instance().mEditableLayers.insert(layer(), this);
 }
 
+/**
+ * Turns this stand-alone layer into a reference, with the layer now owned by
+ * the given asset.
+ */
 void EditableLayer::attach(EditableMap *map)
 {
     Q_ASSERT(!asset() && map);
@@ -77,6 +85,9 @@ void EditableLayer::attach(EditableMap *map)
     mDetachedLayer.release();
 }
 
+/**
+ * Take ownership of the referenced layer.
+ */
 void EditableLayer::hold()
 {
     Q_ASSERT(!asset());         // if asset exists, it holds the layer (possibly indirectly)
@@ -85,6 +96,9 @@ void EditableLayer::hold()
     mDetachedLayer.reset(layer());
 }
 
+/**
+ * Release ownership of the referenced layer.
+ */
 void EditableLayer::release()
 {
     Q_ASSERT(mDetachedLayer.get() == layer());

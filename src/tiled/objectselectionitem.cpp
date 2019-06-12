@@ -250,6 +250,9 @@ ObjectSelectionItem::ObjectSelectionItem(MapDocument *mapDocument,
 {
     setFlag(QGraphicsItem::ItemHasNoContents);
 
+    connect(mapDocument, &Document::changed,
+            this, &ObjectSelectionItem::changeEvent);
+
     connect(mapDocument, &MapDocument::selectedObjectsChanged,
             this, &ObjectSelectionItem::selectedObjectsChanged);
 
@@ -264,9 +267,6 @@ ObjectSelectionItem::ObjectSelectionItem(MapDocument *mapDocument,
 
     connect(mapDocument, &MapDocument::layerChanged,
             this, &ObjectSelectionItem::layerChanged);
-
-    connect(mapDocument, &MapDocument::objectsChanged,
-            this, &ObjectSelectionItem::syncOverlayItems);
 
     connect(mapDocument, &MapDocument::objectGroupChanged,
             this, &ObjectSelectionItem::updateObjectLabelColors);
@@ -300,6 +300,16 @@ ObjectSelectionItem::ObjectSelectionItem(MapDocument *mapDocument,
 
 ObjectSelectionItem::~ObjectSelectionItem()
 {
+}
+
+void ObjectSelectionItem::changeEvent(const ChangeEvent &event)
+{
+    switch (event.type) {
+    case ChangeEvent::MapObjectsChanged: {
+        syncOverlayItems(static_cast<const MapObjectsChangeEvent&>(event).mapObjects);
+        break;
+    }
+    }
 }
 
 void ObjectSelectionItem::selectedObjectsChanged()

@@ -20,31 +20,29 @@
 
 #include "rotatemapobject.h"
 
-#include "mapdocument.h"
+#include "changeevents.h"
+#include "document.h"
 #include "mapobject.h"
-#include "mapobjectmodel.h"
 
 #include <QCoreApplication>
 
 using namespace Tiled;
 
-RotateMapObject::RotateMapObject(MapDocument *mapDocument,
+RotateMapObject::RotateMapObject(Document *document,
                                  MapObject *mapObject,
                                  qreal oldRotation)
-    : mMapDocument(mapDocument)
-    , mMapObject(mapObject)
-    , mOldRotation(oldRotation)
-    , mNewRotation(mapObject->rotation())
-    , mOldChangeState(mapObject->propertyChanged(MapObject::RotationProperty))
+    : RotateMapObject(document,
+                      mapObject,
+                      mapObject->rotation(),
+                      oldRotation)
 {
-    setText(QCoreApplication::translate("Undo Commands", "Rotate Object"));
 }
 
-RotateMapObject::RotateMapObject(MapDocument *mapDocument,
+RotateMapObject::RotateMapObject(Document *document,
                                  MapObject *mapObject,
                                  qreal newRotation,
                                  qreal oldRotation)
-    : mMapDocument(mapDocument)
+    : mDocument(document)
     , mMapObject(mapObject)
     , mOldRotation(oldRotation)
     , mNewRotation(newRotation)
@@ -55,12 +53,16 @@ RotateMapObject::RotateMapObject(MapDocument *mapDocument,
 
 void RotateMapObject::undo()
 {
-    mMapDocument->mapObjectModel()->setObjectRotation(mMapObject, mOldRotation);
+    mMapObject->setRotation(mOldRotation);
     mMapObject->setPropertyChanged(MapObject::RotationProperty, mOldChangeState);
+
+    emit mDocument->changed(MapObjectsChangeEvent(mMapObject, MapObject::RotationProperty));
 }
 
 void RotateMapObject::redo()
 {
-    mMapDocument->mapObjectModel()->setObjectRotation(mMapObject, mNewRotation);
+    mMapObject->setRotation(mNewRotation);
     mMapObject->setPropertyChanged(MapObject::RotationProperty);
+
+    emit mDocument->changed(MapObjectsChangeEvent(mMapObject, MapObject::RotationProperty));
 }

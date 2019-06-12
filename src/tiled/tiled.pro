@@ -284,6 +284,7 @@ HEADERS += aboutdialog.h \
     brushitem.h \
     bucketfilltool.h \
     capturestamphelper.h \
+    changeevents.h \
     changeimagelayerproperties.h \
     changelayer.h \
     changemapobject.h \

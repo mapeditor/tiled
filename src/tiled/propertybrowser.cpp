@@ -136,10 +136,6 @@ void PropertyBrowser::setDocument(Document *document)
     if (mapDocument) {
         connect(mapDocument, &MapDocument::mapChanged,
                 this, &PropertyBrowser::mapChanged);
-        connect(mapDocument, &MapDocument::objectsChanged,
-                this, &PropertyBrowser::objectsChanged);
-        connect(mapDocument, &MapDocument::objectsTypeChanged,
-                this, &PropertyBrowser::objectsTypeChanged);
         connect(mapDocument, &MapDocument::layerChanged,
                 this, &PropertyBrowser::layerChanged);
         connect(mapDocument, &MapDocument::objectGroupChanged,
@@ -183,6 +179,9 @@ void PropertyBrowser::setDocument(Document *document)
     }
 
     if (document) {
+        connect(document, &Document::changed,
+                this, &PropertyBrowser::documentChanged);
+
         // For custom properties:
         connect(document, &Document::propertyAdded,
                 this, &PropertyBrowser::propertyAdded);
@@ -245,24 +244,33 @@ bool PropertyBrowser::event(QEvent *event)
     return QtTreePropertyBrowser::event(event);
 }
 
+void PropertyBrowser::documentChanged(const ChangeEvent &change)
+{
+    switch (change.type) {
+    case ChangeEvent::MapObjectsChanged: {
+        objectsChanged(static_cast<const MapObjectsChangeEvent&>(change));
+        break;
+    }
+    }
+}
+
 void PropertyBrowser::mapChanged()
 {
     if (mObject == mMapDocument->map())
         updateProperties();
 }
 
-void PropertyBrowser::objectsChanged(const QList<MapObject *> &objects)
+void PropertyBrowser::objectsChanged(const MapObjectsChangeEvent &mapObjectsChange)
 {
-    if (mObject && mObject->typeId() == Object::MapObjectType)
-        if (objects.contains(static_cast<MapObject*>(mObject)))
-            updateProperties();
-}
+    if (!mObject || mObject->typeId() != Object::MapObjectType)
+        return;
+    if (!mapObjectsChange.mapObjects.contains(static_cast<MapObject*>(mObject)))
+        return;
 
-void PropertyBrowser::objectsTypeChanged(const QList<MapObject *> &objects)
-{
-    if (mObject && mObject->typeId() == Object::MapObjectType)
-        if (objects.contains(static_cast<MapObject*>(mObject)))
-            updateCustomProperties();
+    updateProperties();
+
+    if (mapObjectsChange.properties & (MapObject::CustomProperties | MapObject::TypeProperty))
+        updateCustomProperties();
 }
 
 void PropertyBrowser::layerChanged(Layer *layer)
@@ -1007,38 +1015,38 @@ QUndoCommand *PropertyBrowser::applyMapObjectValueTo(PropertyId id, const QVaria
             return nullptr; // unrecognized property
         }
 
-        command = new ChangeMapObject(mMapDocument, mapObject, property, val);
+        command = new ChangeMapObject(mDocument, mapObject, property, val);
         break;
     }
     case XProperty: {
         const QPointF oldPos = mapObject->position();
         const QPointF newPos(val.toReal(), oldPos.y());
-        command = new MoveMapObject(mMapDocument, mapObject, newPos, oldPos);
+        command = new MoveMapObject(mDocument, mapObject, newPos, oldPos);
         break;
     }
     case YProperty: {
         const QPointF oldPos = mapObject->position();
         const QPointF newPos(oldPos.x(), val.toReal());
-        command = new MoveMapObject(mMapDocument, mapObject, newPos, oldPos);
+        command = new MoveMapObject(mDocument, mapObject, newPos, oldPos);
         break;
     }
     case WidthProperty: {
         const QSizeF oldSize = mapObject->size();
         const QSizeF newSize(val.toReal(), oldSize.height());
-        command = new ResizeMapObject(mMapDocument, mapObject, newSize, oldSize);
+        command = new ResizeMapObject(mDocument, mapObject, newSize, oldSize);
         break;
     }
     case HeightProperty: {
         const QSizeF oldSize = mapObject->size();
         const QSizeF newSize(oldSize.width(), val.toReal());
-        command = new ResizeMapObject(mMapDocument, mapObject, newSize, oldSize);
+        command = new ResizeMapObject(mDocument, mapObject, newSize, oldSize);
         break;
     }
     case RotationProperty:
         if (mapObject->canRotate()) {
             const qreal newRotation = val.toDouble();
             const qreal oldRotation = mapObject->rotation();
-            command = new RotateMapObject(mMapDocument, mapObject, newRotation, oldRotation);
+            command = new RotateMapObject(mDocument, mapObject, newRotation, oldRotation);
         }
         break;
     case FlippingProperty: {
@@ -1050,7 +1058,7 @@ QUndoCommand *PropertyBrowser::applyMapObjectValueTo(PropertyId id, const QVaria
         mapObjectCell.cell.setFlippedHorizontally(flippingFlags & 1);
         mapObjectCell.cell.setFlippedVertically(flippingFlags & 2);
 
-        command = new ChangeMapObjectCells(mMapDocument,
+        command = new ChangeMapObjectCells(mDocument,
                                            QVector<MapObjectCell>() << mapObjectCell);
 
         command->setText(QCoreApplication::translate("Undo Commands",

@@ -90,6 +90,7 @@ private:
      */
     void repaintRegion(const QRegion &region, TileLayer *tileLayer);
 
+    void documentChanged(const ChangeEvent &change);
     void mapChanged();
     void tileLayerChanged(TileLayer *tileLayer, MapDocument::TileLayerChangeFlags flags);
 
@@ -108,7 +109,7 @@ private:
 
     void objectsInserted(ObjectGroup *objectGroup, int first, int last);
     void objectsRemoved(const QList<MapObject*> &objects);
-    void objectsChanged(const QList<MapObject*> &objects);
+    void syncObjectItems(const QList<MapObject*> &objects);
     void objectsIndexChanged(ObjectGroup *objectGroup, int first, int last);
 
     void syncAllObjectItems();
