@@ -95,14 +95,8 @@ EditableMap::EditableMap(const Map *map, QObject *parent)
 
 EditableMap::~EditableMap()
 {
-    // Operate on copy since original container will get modified
-    const auto attachedLayers = mAttachedLayers;
-    for (auto editable : attachedLayers)
-        editable->detach();
-
-    const auto attachedMapObjects = mAttachedMapObjects;
-    for (auto editable : attachedMapObjects)
-        editable->detach();
+    for (Layer *layer : map()->layers())
+        detachLayer(layer);
 }
 
 EditableLayer *EditableMap::currentLayer()
@@ -424,8 +418,6 @@ void EditableMap::resize(QSize size, QPoint offset, bool removeObjects)
 
 void EditableMap::attachLayer(Layer *layer)
 {
-    Q_ASSERT(!mAttachedLayers.contains(layer));
-
     if (EditableLayer *editable = EditableManager::instance().find(layer))
         editable->attach(this);
 
@@ -439,9 +431,9 @@ void EditableMap::attachLayer(Layer *layer)
 
 void EditableMap::detachLayer(Layer *layer)
 {
-    auto iterator = mAttachedLayers.constFind(layer);
-    if (iterator != mAttachedLayers.constEnd())
-        (*iterator)->detach();
+    auto editableLayer = EditableManager::instance().find(layer);
+    if (editableLayer && editableLayer->map() == this)
+        editableLayer->detach();
 
     if (GroupLayer *groupLayer = layer->asGroupLayer()) {
         for (Layer *childLayer : groupLayer->layers())
@@ -455,7 +447,6 @@ void EditableMap::attachMapObjects(const QList<MapObject *> &mapObjects)
 {
     const auto &editableManager = EditableManager::instance();
     for (MapObject *mapObject : mapObjects) {
-        Q_ASSERT(!mAttachedMapObjects.contains(mapObject));
         if (EditableMapObject *editable = editableManager.find(mapObject))
             editable->attach(this);
     }
@@ -463,10 +454,12 @@ void EditableMap::attachMapObjects(const QList<MapObject *> &mapObjects)
 
 void EditableMap::detachMapObjects(const QList<MapObject *> &mapObjects)
 {
+    const auto &editableManager = EditableManager::instance();
     for (MapObject *mapObject : mapObjects) {
-        auto iterator = mAttachedMapObjects.constFind(mapObject);
-        if (iterator != mAttachedMapObjects.constEnd())
-            (*iterator)->detach();
+        if (EditableMapObject *editable = editableManager.find(mapObject)) {
+            Q_ASSERT(editable->map() == this);
+            editable->detach();
+        }
     }
 }
 

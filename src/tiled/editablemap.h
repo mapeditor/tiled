@@ -127,15 +127,10 @@ private slots:
     void onCurrentLayerChanged(Layer *);
 
 private:
-    friend class EditableLayer;
-    friend class EditableMapObject;
-
     MapRenderer *renderer() const;
 
     bool mReadOnly;
 
-    QHash<Layer*, EditableLayer*> mAttachedLayers;
-    QHash<MapObject*, EditableMapObject*> mAttachedMapObjects;
     EditableSelectedArea *mSelectedArea;
 };
 

@@ -41,15 +41,10 @@ EditableMapObject::EditableMapObject(EditableMap *map,
                                      QObject *parent)
     : EditableObject(map, mapObject, parent)
 {
-    if (map)
-        map->mAttachedMapObjects.insert(mapObject, this);
 }
 
 EditableMapObject::~EditableMapObject()
 {
-    if (map())
-        map()->mAttachedMapObjects.remove(mapObject());
-
     EditableManager::instance().mEditableMapObjects.remove(mapObject());
 }
 
@@ -75,9 +70,7 @@ EditableMap *EditableMapObject::map() const
 void EditableMapObject::detach()
 {
     Q_ASSERT(map());
-    Q_ASSERT(map()->mAttachedMapObjects.contains(mapObject()));
 
-    map()->mAttachedMapObjects.remove(mapObject());
     EditableManager::instance().mEditableMapObjects.remove(mapObject());
     setAsset(nullptr);
 
@@ -89,10 +82,8 @@ void EditableMapObject::detach()
 void EditableMapObject::attach(EditableMap *map)
 {
     Q_ASSERT(!asset() && map);
-    Q_ASSERT(!map->mAttachedMapObjects.contains(mapObject()));
 
     setAsset(map);
-    map->mAttachedMapObjects.insert(mapObject(), this);
     mDetachedMapObject.release();
 }
 

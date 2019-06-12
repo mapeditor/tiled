@@ -30,15 +30,10 @@ namespace Tiled {
 EditableTile::EditableTile(EditableTileset *tileset, Tile *tile, QObject *parent)
     : EditableObject(tileset, tile, parent)
 {
-    if (tileset)
-        tileset->mAttachedTiles.insert(tile, this);
 }
 
 EditableTile::~EditableTile()
 {
-    if (tileset())
-        tileset()->mAttachedTiles.remove(tile());
-
     EditableManager::instance().mEditableTiles.remove(tile());
 }
 
@@ -50,9 +45,7 @@ EditableTileset *EditableTile::tileset() const
 void EditableTile::detach()
 {
     Q_ASSERT(tileset());
-    Q_ASSERT(tileset()->mAttachedTiles.contains(tile()));
 
-    tileset()->mAttachedTiles.remove(tile());
     EditableManager::instance().mEditableTiles.remove(tile());
     setAsset(nullptr);
 
@@ -64,10 +57,8 @@ void EditableTile::detach()
 void EditableTile::attach(EditableTileset *tileset)
 {
     Q_ASSERT(!asset() && tileset);
-    Q_ASSERT(!tileset->mAttachedTiles.contains(tile()));
 
     setAsset(tileset);
-    tileset->mAttachedTiles.insert(tile(), this);
     mDetachedTile.release();
 }
 

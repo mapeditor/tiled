@@ -75,12 +75,8 @@ private slots:
     void detachTiles(const QList<Tile*> &tiles);
 
 private:
-    friend class EditableTile;
-
     bool mReadOnly = false;
     SharedTileset mTileset;
-
-    QHash<Tile*, EditableTile*> mAttachedTiles;
 };
 
 

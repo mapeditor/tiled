@@ -38,15 +38,10 @@ EditableLayer::EditableLayer(std::unique_ptr<Layer> &&layer, QObject *parent)
 EditableLayer::EditableLayer(EditableMap *map, Layer *layer, QObject *parent)
     : EditableObject(map, layer, parent)
 {
-    if (map)
-        map->mAttachedLayers.insert(layer, this);
 }
 
 EditableLayer::~EditableLayer()
 {
-    if (map())
-        map()->mAttachedLayers.remove(layer());
-
     EditableManager::instance().mEditableLayers.remove(layer());
 }
 
@@ -64,10 +59,8 @@ bool EditableLayer::isSelected() const
 
 void EditableLayer::detach()
 {
-    Q_ASSERT(map());
-    Q_ASSERT(map()->mAttachedLayers.contains(layer()));
+    Q_ASSERT(asset());
 
-    map()->mAttachedLayers.remove(layer());
     EditableManager::instance().mEditableLayers.remove(layer());
     setAsset(nullptr);
 
@@ -79,10 +72,8 @@ void EditableLayer::detach()
 void EditableLayer::attach(EditableMap *map)
 {
     Q_ASSERT(!asset() && map);
-    Q_ASSERT(!map->mAttachedLayers.contains(layer()));
 
     setAsset(map);
-    map->mAttachedLayers.insert(layer(), this);
     mDetachedLayer.release();
 }
 

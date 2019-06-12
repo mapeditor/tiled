@@ -47,10 +47,7 @@ EditableTileset::EditableTileset(TilesetDocument *tilesetDocument,
 
 EditableTileset::~EditableTileset()
 {
-    // Operate on copy since original container will get modified
-    const auto editableTiles = mAttachedTiles;
-    for (auto editable : editableTiles)
-        editable->detach();
+    detachTiles(tileset()->tiles().values());
 }
 
 EditableTile *EditableTileset::tile(int id)
@@ -107,8 +104,6 @@ void EditableTileset::attachTiles(const QList<Tile *> &tiles)
 {
     const auto &editableManager = EditableManager::instance();
     for (Tile *tile : tiles) {
-        Q_ASSERT(!mAttachedTiles.contains(tile));
-
         if (EditableTile *editable = editableManager.find(tile))
             editable->attach(this);
     }
@@ -116,10 +111,12 @@ void EditableTileset::attachTiles(const QList<Tile *> &tiles)
 
 void EditableTileset::detachTiles(const QList<Tile *> &tiles)
 {
+    const auto &editableManager = EditableManager::instance();
     for (Tile *tile : tiles) {
-        auto iterator = mAttachedTiles.constFind(tile);
-        if (iterator != mAttachedTiles.constEnd())
-            (*iterator)->detach();
+        if (auto editable = editableManager.find(tile)) {
+            Q_ASSERT(editable->tileset() == this);
+            editable->detach();
+        }
     }
 }
 
