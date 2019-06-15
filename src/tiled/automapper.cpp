@@ -618,7 +618,8 @@ static bool layerMatchesConditions(const TileLayer &setLayer,
                                    const InputConditions &conditions,
                                    const QRegion &ruleRegion,
                                    const QPoint offset,
-                                   const AutoMapper::Options &options)
+                                   const AutoMapper::Options &options,
+                                   bool isMapInfinite)
 {
     const auto &listYes = conditions.listYes;
     const auto &listNo = conditions.listNo;
@@ -643,18 +644,21 @@ static bool layerMatchesConditions(const TileLayer &setLayer,
 
                 int xd = x + offset.x();
                 int yd = y + offset.y();
-                if (options.wrapBorder) {
-                    int width = setLayer.size().width();
-                    int height = setLayer.size().height();
-                    xd = (xd % width + width) % width;
-                    yd = (yd % height + height) % height;
-                } else if (options.overflowBorder) {
-                    if (xd < 0) xd = 0;
-                    else if (xd >= setLayer.size().width())
-                        xd = setLayer.size().width() - 1;
-                    if (yd < 0) yd = 0;
-                    else if (yd >= setLayer.size().height())
-                        yd = setLayer.size().height() - 1;
+
+                if (!isMapInfinite) {
+                    if (options.wrapBorder) {
+                        int width = setLayer.size().width();
+                        int height = setLayer.size().height();
+                        xd = (xd % width + width) % width;
+                        yd = (yd % height + height) % height;
+                    } else if (options.overflowBorder) {
+                        if (xd < 0) xd = 0;
+                        else if (xd >= setLayer.size().width())
+                            xd = setLayer.size().width() - 1;
+                        if (yd < 0) yd = 0;
+                        else if (yd >= setLayer.size().height())
+                            yd = setLayer.size().height() - 1;
+                    }
                 }
 
                 const Cell &setCell = setLayer.cellAt(xd, yd);
@@ -747,7 +751,7 @@ QRect AutoMapper::applyRule(int ruleIndex, const QRect &where)
                 const int i = mMapWork->indexOfLayer(name, Layer::TileLayerType);
                 const TileLayer &setLayer = (i >= 0) ? *mMapWork->layerAt(i)->asTileLayer() : dummy;
 
-                if (!layerMatchesConditions(setLayer, conditions, ruleInputRegion, QPoint(x, y), mOptions)) {
+                if (!layerMatchesConditions(setLayer, conditions, ruleInputRegion, QPoint(x, y), mOptions, mMapWork->infinite())) {
                     allLayerNamesMatch = false;
                     break;
                 }
