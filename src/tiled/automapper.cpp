@@ -108,6 +108,16 @@ bool AutoMapper::setupRuleMapProperties()
                 mOptions.matchOutsideMap = value.toBool();
                 continue;
             }
+        } else if (name.compare(QLatin1String("OverflowBorder"), Qt::CaseInsensitive) == 0) {
+            if (value.canConvert(QVariant::Bool)) {
+                mOptions.overflowBorder = value.toBool();
+                continue;
+            }
+        } else if (name.compare(QLatin1String("WrapBorder"), Qt::CaseInsensitive) == 0) {
+            if (value.canConvert(QVariant::Bool)) {
+                mOptions.wrapBorder = value.toBool();
+                continue;
+            }
         } else if (name.compare(QLatin1String("AutomappingRadius"), Qt::CaseInsensitive) == 0) {
             if (value.canConvert(QVariant::Int)) {
                 mOptions.autoMappingRadius = value.toInt();
@@ -631,8 +641,23 @@ static bool layerMatchesConditions(const TileLayer &setLayer,
                         !setLayer.contains(x + offset.x(), y + offset.y()))
                     return false;
 
-                const Cell &setCell = setLayer.cellAt(x + offset.x(),
-                                                      y + offset.y());
+                int xd = x + offset.x();
+                int yd = y + offset.y();
+                if (options.wrapBorder) {
+                    int width = setLayer.size().width();
+                    int height = setLayer.size().height();
+                    xd = (xd % width + width) % width;
+                    yd = (yd % height + height) % height;
+                } else if (options.overflowBorder) {
+                    if (xd < 0) xd = 0;
+                    else if (xd >= setLayer.size().width())
+                        xd = setLayer.size().width() - 1;
+                    if (yd < 0) yd = 0;
+                    else if (yd >= setLayer.size().height())
+                        yd = setLayer.size().height() - 1;
+                }
+
+                const Cell &setCell = setLayer.cellAt(xd, yd);
 
                 // First check listNo. If any tile matches there, we can
                 // immediately know there is no match.
@@ -836,11 +861,14 @@ void AutoMapper::copyTileRegion(const TileLayer *srcLayer, int srcX, int srcY,
     int endX = dstX + width;
     int endY = dstY + height;
 
-    if (!mMapWork->infinite()) {
+    int dwidth = dstLayer->width();
+    int dheight = dstLayer->height();
+
+    if (!mOptions.wrapBorder && !mMapWork->infinite()) {
         startX = qMax(0, startX);
         startY = qMax(0, startY);
-        endX = qMin(dstLayer->width(), endX);
-        endY = qMin(dstLayer->height(), endY);
+        endX = qMin(dwidth, endX);
+        endY = qMin(dheight, endY);
     }
 
     const int offsetX = srcX - dstX;
@@ -851,7 +879,13 @@ void AutoMapper::copyTileRegion(const TileLayer *srcLayer, int srcX, int srcY,
             const Cell &cell = srcLayer->cellAt(x + offsetX, y + offsetY);
             if (!cell.isEmpty()) {
                 // this is without graphics update, it's done afterwards for all
-                dstLayer->setCell(x, y, cell);
+                int xd = x;
+                int yd = y;
+                if (mOptions.wrapBorder && !mMapWork->infinite()) {
+                    xd = (xd % dwidth + dwidth) % dwidth;
+                    yd = (yd % dheight + dheight) % dheight;
+                }
+                dstLayer->setCell(xd, yd, cell);
             }
         }
     }
