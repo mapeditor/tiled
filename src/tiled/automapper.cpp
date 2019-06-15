@@ -42,6 +42,11 @@
 
 using namespace Tiled;
 
+// Should i leave this function here?
+inline int wrap(int value, int bound) {
+    return (value % bound + bound) % bound;
+}
+
 /*
  * About the order of the methods in this file.
  * The Automapper class has 3 bigger public functions, that is
@@ -134,6 +139,17 @@ bool AutoMapper::setupRuleMapProperties()
                        "Ignoring this property.")
                 .arg(mRulePath, name, value.toString()) + QLatin1Char('\n');
     }
+
+    // OverflowBorder and WrapBorder make no sense for infinite maps
+    if (mMapWork->infinite()) {
+        mOptions.overflowBorder = false;
+        mOptions.wrapBorder = false;
+    }
+
+    // Each of the border options imply MatchOutsideMap
+    if (mOptions.overflowBorder || mOptions.wrapBorder)
+        mOptions.matchOutsideMap = true;
+
     return true;
 }
 
@@ -618,8 +634,7 @@ static bool layerMatchesConditions(const TileLayer &setLayer,
                                    const InputConditions &conditions,
                                    const QRegion &ruleRegion,
                                    const QPoint offset,
-                                   const AutoMapper::Options &options,
-                                   bool isMapInfinite)
+                                   const AutoMapper::Options &options)
 {
     const auto &listYes = conditions.listYes;
     const auto &listNo = conditions.listNo;
@@ -638,27 +653,21 @@ static bool layerMatchesConditions(const TileLayer &setLayer,
 #endif
         for (int x = rect.left(); x <= rect.right(); ++x) {
             for (int y = rect.top(); y <= rect.bottom(); ++y) {
-                if (!options.matchOutsideMap &&
-                        !setLayer.contains(x + offset.x(), y + offset.y()))
-                    return false;
-
                 int xd = x + offset.x();
                 int yd = y + offset.y();
 
-                if (!isMapInfinite) {
-                    if (options.wrapBorder) {
-                        int width = setLayer.size().width();
-                        int height = setLayer.size().height();
-                        xd = (xd % width + width) % width;
-                        yd = (yd % height + height) % height;
-                    } else if (options.overflowBorder) {
-                        if (xd < 0) xd = 0;
-                        else if (xd >= setLayer.size().width())
-                            xd = setLayer.size().width() - 1;
-                        if (yd < 0) yd = 0;
-                        else if (yd >= setLayer.size().height())
-                            yd = setLayer.size().height() - 1;
-                    }
+                if (!options.matchOutsideMap &&
+                        !setLayer.contains(xd, yd))
+                    return false;
+
+                // Those two options are guaranteed to be false if the map is infinite,
+                // so no "invalid" width/height accessing here.
+                if (options.wrapBorder) {
+                    xd = wrap(xd, setLayer.width());
+                    yd = wrap(yd, setLayer.height());
+                } else if (options.overflowBorder) {
+                    xd = qBound(0, xd, setLayer.width() - 1);
+                    yd = qBound(0, yd, setLayer.height() - 1);
                 }
 
                 const Cell &setCell = setLayer.cellAt(xd, yd);
@@ -751,7 +760,7 @@ QRect AutoMapper::applyRule(int ruleIndex, const QRect &where)
                 const int i = mMapWork->indexOfLayer(name, Layer::TileLayerType);
                 const TileLayer &setLayer = (i >= 0) ? *mMapWork->layerAt(i)->asTileLayer() : dummy;
 
-                if (!layerMatchesConditions(setLayer, conditions, ruleInputRegion, QPoint(x, y), mOptions, mMapWork->infinite())) {
+                if (!layerMatchesConditions(setLayer, conditions, ruleInputRegion, QPoint(x, y), mOptions)) {
                     allLayerNamesMatch = false;
                     break;
                 }
@@ -885,9 +894,11 @@ void AutoMapper::copyTileRegion(const TileLayer *srcLayer, int srcX, int srcY,
                 // this is without graphics update, it's done afterwards for all
                 int xd = x;
                 int yd = y;
-                if (mOptions.wrapBorder && !mMapWork->infinite()) {
-                    xd = (xd % dwidth + dwidth) % dwidth;
-                    yd = (yd % dheight + dheight) % dheight;
+
+                // WrapBorder is only true on finite maps
+                if (mOptions.wrapBorder) {
+                    xd = wrap(xd, dwidth);
+                    yd = wrap(yd, dheight);
                 }
                 dstLayer->setCell(xd, yd, cell);
             }
