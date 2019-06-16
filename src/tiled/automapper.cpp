@@ -43,7 +43,7 @@
 using namespace Tiled;
 
 // Should i leave this function here?
-inline static int wrap(int value, int bound)
+static int wrap(int value, int bound)
 {
     return (value % bound + bound) % bound;
 }
