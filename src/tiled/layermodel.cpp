@@ -601,7 +601,7 @@ void LayerModel::documentChanged(const ChangeEvent &change)
 
         break;
     }
-    case ChangeEvent::MapObjectsChanged:
+    default:
         break;
     }
 }

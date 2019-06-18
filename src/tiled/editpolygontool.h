@@ -70,7 +70,7 @@ protected:
 
 private slots:
     void updateHandles();
-    void objectsRemoved(const QList<MapObject *> &objects);
+    void objectsAboutToBeRemoved(const QList<MapObject *> &objects);
 
     void joinNodes();
     void splitSegments();

@@ -153,7 +153,6 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
     connect(mapDocument.data(), &MapDocument::tileObjectGroupChanged, this, &MapItem::tileObjectGroupChanged);
     connect(mapDocument.data(), &MapDocument::tilesetReplaced, this, &MapItem::tilesetReplaced);
     connect(mapDocument.data(), &MapDocument::objectsInserted, this, &MapItem::objectsInserted);
-    connect(mapDocument.data(), &MapDocument::objectsRemoved, this, &MapItem::objectsRemoved);
     connect(mapDocument.data(), &MapDocument::objectsIndexChanged, this, &MapItem::objectsIndexChanged);
 
     updateBoundingRect();
@@ -324,8 +323,13 @@ void MapItem::documentChanged(const ChangeEvent &change)
     case ChangeEvent::LayerChanged:
         layerChanged(static_cast<const LayerChangeEvent&>(change).layer);
         break;
+    case ChangeEvent::MapObjectsAboutToBeRemoved:
+        deleteObjectItems(static_cast<const MapObjectsEvent&>(change).mapObjects);
+        break;
     case ChangeEvent::MapObjectsChanged:
         syncObjectItems(static_cast<const MapObjectsChangeEvent&>(change).mapObjects);
+        break;
+    default:
         break;
     }
 }
@@ -506,7 +510,7 @@ void MapItem::objectsInserted(ObjectGroup *objectGroup, int first, int last)
 /**
  * Removes the map object items related to the given objects.
  */
-void MapItem::objectsRemoved(const QList<MapObject*> &objects)
+void MapItem::deleteObjectItems(const QList<MapObject*> &objects)
 {
     for (MapObject *o : objects) {
         auto i = mObjectItems.find(o);

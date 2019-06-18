@@ -251,6 +251,8 @@ void PropertyBrowser::documentChanged(const ChangeEvent &change)
     case ChangeEvent::MapObjectsChanged:
         objectsChanged(static_cast<const MapObjectsChangeEvent&>(change));
         break;
+    default:
+        break;
     }
 }
 

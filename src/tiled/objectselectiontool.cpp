@@ -356,8 +356,6 @@ void ObjectSelectionTool::activate(MapScene *scene)
             this, &ObjectSelectionTool::updateHandlesAndOrigin);
     connect(mapDocument(), &MapDocument::tilesetTileOffsetChanged,
             this, &ObjectSelectionTool::updateHandlesAndOrigin);
-    connect(mapDocument(), &MapDocument::objectsRemoved,
-            this, &ObjectSelectionTool::objectsRemoved);
 
     scene->addItem(mOriginIndicator.get());
     for (RotateHandle *handle : mRotateHandles)
@@ -380,8 +378,6 @@ void ObjectSelectionTool::deactivate(MapScene *scene)
                this, &ObjectSelectionTool::updateHandlesAndOrigin);
     disconnect(mapDocument(), &MapDocument::tilesetTileOffsetChanged,
                this, &ObjectSelectionTool::updateHandlesAndOrigin);
-    disconnect(mapDocument(), &MapDocument::objectsRemoved,
-               this, &ObjectSelectionTool::objectsRemoved);
 
     abortCurrentAction(Deactivated);
 
@@ -747,6 +743,11 @@ void ObjectSelectionTool::changeEvent(const ChangeEvent &event)
     case ChangeEvent::MapObjectsChanged:
         updateHandlesAndOrigin();
         break;
+    case ChangeEvent::MapObjectsAboutToBeRemoved:
+        objectsAboutToBeRemoved(static_cast<const MapObjectsEvent&>(event).mapObjects);
+        break;
+    default:
+        break;
     }
 }
 
@@ -1039,7 +1040,7 @@ void ObjectSelectionTool::updateHandleVisibility()
     mOriginIndicator->setVisible(showOrigin);
 }
 
-void ObjectSelectionTool::objectsRemoved(const QList<MapObject *> &objects)
+void ObjectSelectionTool::objectsAboutToBeRemoved(const QList<MapObject *> &objects)
 {
     if (mClickedObject && objects.contains(mClickedObject))
         mClickedObject = nullptr;

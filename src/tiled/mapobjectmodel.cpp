@@ -476,28 +476,6 @@ QList<Layer *> &MapObjectModel::filteredChildLayers(GroupLayer *parentLayer) con
     return mFilteredLayers[parentLayer];
 }
 
-void MapObjectModel::insertObject(ObjectGroup *og, int index, MapObject *o)
-{
-    const int row = (index >= 0) ? index : og->objectCount();
-    beginInsertRows(this->index(og), row, row);
-    og->insertObject(row, o);
-    endInsertRows();
-    emit objectsAdded({o});
-}
-
-int MapObjectModel::removeObject(ObjectGroup *og, MapObject *o)
-{
-    QList<MapObject*> objects;
-    objects << o;
-
-    const int row = og->objects().indexOf(o);
-    beginRemoveRows(index(og), row, row);
-    og->removeObjectAt(row);
-    endRemoveRows();
-    emit objectsRemoved(objects);
-    return row;
-}
-
 void MapObjectModel::moveObjects(ObjectGroup *og, int from, int to, int count)
 {
     const QModelIndex parent = index(og);
@@ -527,6 +505,26 @@ void MapObjectModel::documentChanged(const ChangeEvent &change)
 
         break;
     }
+    case ChangeEvent::MapObjectsAdded:
+    case ChangeEvent::MapObjectsAboutToBeRemoved:
+        // handled individually instead
+        break;
+    case ChangeEvent::MapObjectAboutToBeAdded: {
+        auto &e = static_cast<const MapObjectEvent&>(change);
+        beginInsertRows(index(e.objectGroup), e.index, e.index);
+        break;
+    }
+    case ChangeEvent::MapObjectAboutToBeRemoved: {
+        auto &e = static_cast<const MapObjectEvent&>(change);
+        beginRemoveRows(index(e.objectGroup), e.index, e.index);
+        break;
+    }
+    case ChangeEvent::MapObjectAdded:
+        endInsertRows();
+        break;
+    case ChangeEvent::MapObjectRemoved:
+        endRemoveRows();
+        break;
     case ChangeEvent::MapObjectsChanged: {
         const auto &mapObjectChange = static_cast<const MapObjectsChangeEvent&>(change);
 

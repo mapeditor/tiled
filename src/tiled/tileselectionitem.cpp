@@ -79,7 +79,7 @@ void TileSelectionItem::documentChanged(const ChangeEvent &change)
                     setPos(currentLayer->totalOffset());
         break;
     }
-    case ChangeEvent::MapObjectsChanged:
+    default:
         break;
     }
 }

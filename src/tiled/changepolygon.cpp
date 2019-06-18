@@ -88,26 +88,21 @@ SplitPolyline::SplitPolyline(MapDocument *mapDocument,
                              int index)
     : mMapDocument(mapDocument)
     , mFirstPolyline(mapObject)
-    , mSecondPolyline(nullptr)
     , mEdgeIndex(index)
-    , mObjectIndex(-1)
     , mOldChangeState(mapObject->propertyChanged(MapObject::ShapeProperty))
-    , mOwnsSecondPolyline(false)
 {
     setText(QCoreApplication::translate("Undo Commands", "Split Polyline"));
 }
 
 SplitPolyline::~SplitPolyline()
 {
-    if (mOwnsSecondPolyline)
-        delete mSecondPolyline;
 }
 
 void SplitPolyline::undo()
 {
-    mMapDocument->mapObjectModel()->removeObject(mFirstPolyline->objectGroup(),
-                                                 mSecondPolyline);
-    mOwnsSecondPolyline = true;
+    Q_ASSERT(mAddSecondPolyline);
+
+    mAddSecondPolyline->undo();
 
     QPolygonF polygon = mFirstPolyline->polygon() + mSecondPolyline->polygon();
 
@@ -122,9 +117,7 @@ void SplitPolyline::redo()
     QPolygonF firstPolygon = mFirstPolyline->polygon();
     firstPolygon.erase(firstPolygon.begin() + mEdgeIndex + 1, firstPolygon.end());
 
-    if (!mSecondPolyline) {
-        mObjectIndex = mFirstPolyline->objectGroup()->objects().indexOf(mFirstPolyline) + 1;
-
+    if (!mAddSecondPolyline) {
         QPolygonF secondPolygon = mFirstPolyline->polygon();
         secondPolygon.erase(secondPolygon.begin(), secondPolygon.begin() + mEdgeIndex + 1);
 
@@ -132,12 +125,16 @@ void SplitPolyline::redo()
         mSecondPolyline->resetId();
         mSecondPolyline->setPolygon(secondPolygon);
         mSecondPolyline->setPropertyChanged(MapObject::ShapeProperty);
+
+        AddRemoveMapObjects::Entry entry;
+        entry.mapObject = mSecondPolyline;
+        entry.objectGroup = mFirstPolyline->objectGroup();
+        entry.index = mFirstPolyline->objectGroup()->objects().indexOf(mFirstPolyline) + 1;
+
+        mAddSecondPolyline.reset(new AddMapObjects(mMapDocument, { entry }));
     }
 
-    mMapDocument->mapObjectModel()->insertObject(mFirstPolyline->objectGroup(),
-                                                 mObjectIndex,
-                                                 mSecondPolyline);
-    mOwnsSecondPolyline = false;
+    mAddSecondPolyline->redo();
 
     mFirstPolyline->setPolygon(firstPolygon);
     mFirstPolyline->setPropertyChanged(MapObject::ShapeProperty);

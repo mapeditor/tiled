@@ -33,6 +33,12 @@ class ChangeEvent
 public:
     enum Type {
         LayerChanged,
+        MapObjectAboutToBeAdded,
+        MapObjectAboutToBeRemoved,
+        MapObjectAdded,
+        MapObjectRemoved,
+        MapObjectsAboutToBeRemoved,
+        MapObjectsAdded,
         MapObjectsChanged,
     } type;
 
@@ -67,7 +73,18 @@ public:
     int properties;
 };
 
-class MapObjectsChangeEvent : public ChangeEvent
+class MapObjectsEvent : public ChangeEvent
+{
+public:
+    MapObjectsEvent(Type type, QList<MapObject *> mapObjects)
+        : ChangeEvent(type)
+        , mapObjects(std::move(mapObjects))
+    {}
+
+    QList<MapObject *> mapObjects;
+};
+
+class MapObjectsChangeEvent : public MapObjectsEvent
 {
 public:
     MapObjectsChangeEvent(MapObject *mapObject,
@@ -77,13 +94,24 @@ public:
 
     MapObjectsChangeEvent(QList<MapObject *> mapObjects,
                           MapObject::ChangedProperties properties = MapObject::AllProperties)
-        : ChangeEvent(MapObjectsChanged)
-        , mapObjects(std::move(mapObjects))
+        : MapObjectsEvent(MapObjectsChanged, std::move(mapObjects))
         , properties(properties)
     {}
 
-    QList<MapObject *> mapObjects;
     MapObject::ChangedProperties properties;
+};
+
+class MapObjectEvent : public ChangeEvent
+{
+public:
+    MapObjectEvent(Type type, ObjectGroup *objectGroup, int index)
+        : ChangeEvent(type)
+        , objectGroup(objectGroup)
+        , index(index)
+    {}
+
+    ObjectGroup *objectGroup;
+    int index;
 };
 
 } // namespace Tiled

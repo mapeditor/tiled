@@ -69,7 +69,7 @@ private slots:
     void updateHandlesAndOrigin();
     void updateHandleVisibility();
 
-    void objectsRemoved(const QList<MapObject *> &);
+    void objectsAboutToBeRemoved(const QList<MapObject *> &);
 
 private:
     enum Action {

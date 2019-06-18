@@ -108,7 +108,7 @@ void EditableLayer::release()
 void EditableLayer::setName(const QString &name)
 {
     if (asset())
-        asset()->push(new SetLayerName(document(), layer(), name));
+        asset()->push(new SetLayerName(asset()->document(), layer(), name));
     else
         layer()->setName(name);
 }
@@ -116,7 +116,7 @@ void EditableLayer::setName(const QString &name)
 void EditableLayer::setOpacity(qreal opacity)
 {
     if (asset())
-        asset()->push(new SetLayerOpacity(document(), layer(), opacity));
+        asset()->push(new SetLayerOpacity(asset()->document(), layer(), opacity));
     else
         layer()->setOpacity(opacity);
 }
@@ -124,7 +124,7 @@ void EditableLayer::setOpacity(qreal opacity)
 void EditableLayer::setVisible(bool visible)
 {
     if (asset())
-        asset()->push(new SetLayerVisible(document(), layer(), visible));
+        asset()->push(new SetLayerVisible(asset()->document(), layer(), visible));
     else
         layer()->setVisible(visible);
 }
@@ -132,7 +132,7 @@ void EditableLayer::setVisible(bool visible)
 void EditableLayer::setLocked(bool locked)
 {
     if (asset())
-        asset()->push(new SetLayerLocked(document(), layer(), locked));
+        asset()->push(new SetLayerLocked(asset()->document(), layer(), locked));
     else
         layer()->setLocked(locked);
 }
@@ -140,7 +140,7 @@ void EditableLayer::setLocked(bool locked)
 void EditableLayer::setOffset(QPointF offset)
 {
     if (asset())
-        asset()->push(new SetLayerOffset(document(), layer(), offset));
+        asset()->push(new SetLayerOffset(asset()->document(), layer(), offset));
     else
         layer()->setOffset(offset);
 }

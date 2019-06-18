@@ -148,7 +148,7 @@ void AbstractTool::changeEvent(const ChangeEvent &event)
         // this includes updating brush visibility...
         updateEnabledState();
         break;
-    case ChangeEvent::MapObjectsChanged:
+    default:
         break;
     }
 }

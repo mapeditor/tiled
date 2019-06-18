@@ -93,10 +93,8 @@ MapDocument::MapDocument(std::unique_ptr<Map> map, const QString &fileName)
 
     // Forward signals emitted from the map object model
     mMapObjectModel->setMapDocument(this);
-    connect(mMapObjectModel, &MapObjectModel::objectsAdded,
-            this, &MapDocument::objectsAdded);
-    connect(mMapObjectModel, &MapObjectModel::objectsRemoved,
-            this, &MapDocument::onObjectsRemoved);
+    connect(this, &Document::changed,
+            this, &MapDocument::onChanged);
 
     connect(mMapObjectModel, &QAbstractItemModel::rowsInserted,
             this, &MapDocument::onMapObjectModelRowsInserted);
@@ -1015,18 +1013,24 @@ bool MapDocument::templateAllowed(const ObjectTemplate *objectTemplate) const
     return true;
 }
 
-/**
- * Before forwarding the signal, the objects are removed from the list of
- * selected objects, triggering a selectedObjectsChanged signal when
- * appropriate.
- */
-void MapDocument::onObjectsRemoved(const QList<MapObject*> &objects)
+void MapDocument::onChanged(const ChangeEvent &change)
 {
-    if (mHoveredMapObject && objects.contains(mHoveredMapObject))
-        setHoveredMapObject(nullptr);
+    switch (change.type) {
+    case ChangeEvent::MapObjectsAboutToBeRemoved: {
+        const auto &mapObjects = static_cast<const MapObjectsEvent&>(change).mapObjects;
 
-    deselectObjects(objects);
-    emit objectsRemoved(objects);
+        if (mHoveredMapObject && mapObjects.contains(mHoveredMapObject))
+            setHoveredMapObject(nullptr);
+
+        // Deselecting all objects to be removed here avoids causing a selection
+        // change for each individual object.
+        deselectObjects(mapObjects);
+
+        break;
+    }
+    default:
+        break;
+    }
 }
 
 void MapDocument::onMapObjectModelRowsInserted(const QModelIndex &parent,

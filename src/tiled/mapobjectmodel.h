@@ -87,13 +87,7 @@ public:
     void setMapDocument(MapDocument *mapDocument);
     MapDocument *mapDocument() const { return mMapDocument; }
 
-    void insertObject(ObjectGroup *og, int index, MapObject *o);
-    int removeObject(ObjectGroup *og, MapObject *o);
     void moveObjects(ObjectGroup *og, int from, int to, int count);
-
-signals:
-    void objectsAdded(const QList<MapObject *> &objects);
-    void objectsRemoved(const QList<MapObject *> &objects);
 
 private slots:
     void layerAdded(Layer *layer);

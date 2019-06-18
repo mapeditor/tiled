@@ -22,6 +22,7 @@
 
 #include "addremovelayer.h"
 #include "addremovemapobject.h"
+#include "changeevents.h"
 #include "changelayer.h"
 #include "changemapproperty.h"
 #include "changeselectedarea.h"
@@ -71,10 +72,9 @@ EditableMap::EditableMap(MapDocument *mapDocument, QObject *parent)
     connect(map(), &Map::tileHeightChanged, this, &EditableMap::tileHeightChanged);
 
     connect(mapDocument, &Document::fileNameChanged, this, &EditableAsset::fileNameChanged);
+    connect(mapDocument, &Document::changed, this, &EditableMap::documentChanged);
     connect(mapDocument, &MapDocument::layerAdded, this, &EditableMap::attachLayer);
     connect(mapDocument, &MapDocument::layerRemoved, this, &EditableMap::detachLayer);
-    connect(mapDocument, &MapDocument::objectsAdded, this, &EditableMap::attachMapObjects);
-    connect(mapDocument, &MapDocument::objectsRemoved, this, &EditableMap::detachMapObjects);
 
     connect(mapDocument, &MapDocument::currentLayerChanged, this, &EditableMap::onCurrentLayerChanged);
     connect(mapDocument, &MapDocument::selectedLayersChanged, this, &EditableMap::selectedLayersChanged);
@@ -414,6 +414,20 @@ void EditableMap::resize(QSize size, QPoint offset, bool removeObjects)
     push(command);
 
     // TODO: Handle layers that don't match the map size correctly
+}
+
+void EditableMap::documentChanged(const ChangeEvent &change)
+{
+    switch (change.type) {
+    case ChangeEvent::MapObjectsAdded:
+        attachMapObjects(static_cast<const MapObjectsEvent&>(change).mapObjects);
+        break;
+    case ChangeEvent::MapObjectsAboutToBeRemoved:
+        detachMapObjects(static_cast<const MapObjectsEvent&>(change).mapObjects);
+        break;
+    default:
+        break;
+    }
 }
 
 void EditableMap::attachLayer(Layer *layer)

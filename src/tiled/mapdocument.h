@@ -329,9 +329,7 @@ signals:
     void objectTemplateReplaced(const ObjectTemplate *newObjectTemplate,
                                 const ObjectTemplate *oldObjectTemplate);
 
-    void objectsAdded(const QList<MapObject*> &objects);
     void objectsInserted(ObjectGroup *objectGroup, int first, int last);
-    void objectsRemoved(const QList<MapObject*> &objects);
     void objectsIndexChanged(ObjectGroup *objectGroup, int first, int last);
 
     // emitted from the TilesetDocument
@@ -343,7 +341,7 @@ signals:
     void tileObjectGroupChanged(Tile *tile);
 
 private slots:
-    void onObjectsRemoved(const QList<MapObject*> &objects);
+    void onChanged(const ChangeEvent &change);
 
     void onMapObjectModelRowsInserted(const QModelIndex &parent, int first, int last);
     void onMapObjectModelRowsInsertedOrRemoved(const QModelIndex &parent, int first, int last);

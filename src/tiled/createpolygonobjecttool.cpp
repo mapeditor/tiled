@@ -81,8 +81,6 @@ void CreatePolygonObjectTool::activate(MapScene *scene)
 
     connect(mapDocument(), &MapDocument::selectedObjectsChanged,
             this, &CreatePolygonObjectTool::updateHandles);
-    connect(mapDocument(), &MapDocument::objectsRemoved,
-            this, &CreatePolygonObjectTool::objectsRemoved);
     connect(mapDocument(), &MapDocument::layerRemoved,
             this, &CreatePolygonObjectTool::layerRemoved);
 }
@@ -94,8 +92,6 @@ void CreatePolygonObjectTool::deactivate(MapScene *scene)
 
     disconnect(mapDocument(), &MapDocument::selectedObjectsChanged,
                this, &CreatePolygonObjectTool::updateHandles);
-    disconnect(mapDocument(), &MapDocument::objectsRemoved,
-               this, &CreatePolygonObjectTool::objectsRemoved);
     disconnect(mapDocument(), &MapDocument::layerRemoved,
                this, &CreatePolygonObjectTool::layerRemoved);
 
@@ -469,7 +465,7 @@ void CreatePolygonObjectTool::objectsChanged(const MapObjectsChangeEvent &mapObj
         updateHandles();
 }
 
-void CreatePolygonObjectTool::objectsRemoved(const QList<MapObject *> &objects)
+void CreatePolygonObjectTool::objectsAboutToBeRemoved(const QList<MapObject *> &objects)
 {
     // Check whether the object being extended was removed
     if (mNewMapObjectItem && objects.contains(mNewMapObjectItem->mapObject()))
@@ -604,6 +600,11 @@ void CreatePolygonObjectTool::changeEvent(const ChangeEvent &event)
         break;
     case ChangeEvent::MapObjectsChanged:
         objectsChanged(static_cast<const MapObjectsChangeEvent&>(event));
+        break;
+    case ChangeEvent::MapObjectsAboutToBeRemoved:
+        objectsAboutToBeRemoved(static_cast<const MapObjectsEvent&>(event).mapObjects);
+        break;
+    default:
         break;
     }
 }

@@ -82,16 +82,12 @@ void EditPolygonTool::activate(MapScene *scene)
     // selection, and by only updating the handles of the objects that changed.
     connect(mapDocument(), &MapDocument::selectedObjectsChanged,
             this, &EditPolygonTool::updateHandles);
-    connect(mapDocument(), &MapDocument::objectsRemoved,
-            this, &EditPolygonTool::objectsRemoved);
 }
 
 void EditPolygonTool::deactivate(MapScene *scene)
 {
     disconnect(mapDocument(), &MapDocument::selectedObjectsChanged,
                this, &EditPolygonTool::updateHandles);
-    disconnect(mapDocument(), &MapDocument::objectsRemoved,
-               this, &EditPolygonTool::objectsRemoved);
 
     abortCurrentAction();
 
@@ -444,7 +440,7 @@ void EditPolygonTool::updateHandles()
     }
 }
 
-void EditPolygonTool::objectsRemoved(const QList<MapObject *> &objects)
+void EditPolygonTool::objectsAboutToBeRemoved(const QList<MapObject *> &objects)
 {
     if (mAction == Moving) {
         // Make sure we're not going to try to still change these objects when
@@ -791,6 +787,11 @@ void EditPolygonTool::changeEvent(const ChangeEvent &event)
 
         break;
     }
+    case ChangeEvent::MapObjectsAboutToBeRemoved:
+        objectsAboutToBeRemoved(static_cast<const MapObjectsEvent&>(event).mapObjects);
+        break;
+    default:
+        break;
     }
 }
 

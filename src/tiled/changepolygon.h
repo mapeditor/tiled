@@ -20,8 +20,12 @@
 
 #pragma once
 
+#include "addremovemapobject.h"
+
 #include <QPolygonF>
 #include <QUndoCommand>
+
+#include <memory>
 
 namespace Tiled {
 
@@ -60,6 +64,7 @@ private:
     bool mOldChangeState;
 };
 
+// TODO: Merge into ChangePolygon
 class TogglePolygonPolyline : public QUndoCommand
 {
 public:
@@ -85,22 +90,15 @@ public:
     void undo() override;
     void redo() override;
 
-    /**
-     * Returns the new polyline object created due to the split.
-     *
-     * @warning Only valid after the command has been performed!
-     */
-    MapObject *secondPolyline() const { return mSecondPolyline; }
-
 private:
     MapDocument *mMapDocument;
     MapObject *mFirstPolyline;
     MapObject *mSecondPolyline;
+    std::unique_ptr<AddMapObjects> mAddSecondPolyline;
 
     int mEdgeIndex;
     int mObjectIndex;
     bool mOldChangeState;
-    bool mOwnsSecondPolyline;
 };
 
 } // namespace Tiled

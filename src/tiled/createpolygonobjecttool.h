@@ -68,7 +68,7 @@ private slots:
     void updateHandles();
 
     void objectsChanged(const MapObjectsChangeEvent &mapObjectsChangeEvent);
-    void objectsRemoved(const QList<MapObject *> &objects);
+    void objectsAboutToBeRemoved(const QList<MapObject *> &objects);
 
     void layerRemoved(Layer *layer);
 

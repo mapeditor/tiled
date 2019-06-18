@@ -271,12 +271,6 @@ ObjectSelectionItem::ObjectSelectionItem(MapDocument *mapDocument,
     connect(mapDocument, &MapDocument::hoveredMapObjectChanged,
             this, &ObjectSelectionItem::hoveredMapObjectChanged);
 
-    connect(mapDocument, &MapDocument::objectsAdded,
-            this, &ObjectSelectionItem::objectsAdded);
-
-    connect(mapDocument, &MapDocument::objectsRemoved,
-            this, &ObjectSelectionItem::objectsRemoved);
-
     connect(mapDocument, &MapDocument::tilesetTileOffsetChanged,
             this, &ObjectSelectionItem::tilesetTileOffsetChanged);
 
@@ -307,6 +301,14 @@ void ObjectSelectionItem::changeEvent(const ChangeEvent &event)
         break;
     case ChangeEvent::MapObjectsChanged:
         syncOverlayItems(static_cast<const MapObjectsChangeEvent&>(event).mapObjects);
+        break;
+    case ChangeEvent::MapObjectsAdded:
+        objectsAdded(static_cast<const MapObjectsEvent&>(event).mapObjects);
+        break;
+    case ChangeEvent::MapObjectsAboutToBeRemoved:
+        objectsAboutToBeRemoved(static_cast<const MapObjectsEvent&>(event).mapObjects);
+        break;
+    default:
         break;
     }
 }
@@ -466,7 +468,7 @@ void ObjectSelectionItem::objectsAdded(const QList<MapObject *> &objects)
     }
 }
 
-void ObjectSelectionItem::objectsRemoved(const QList<MapObject *> &objects)
+void ObjectSelectionItem::objectsAboutToBeRemoved(const QList<MapObject *> &objects)
 {
     if (objectLabelVisibility() == Preferences::AllObjectLabels)
         for (MapObject *object : objects)

@@ -70,7 +70,7 @@ private slots:
     void syncOverlayItems(const QList<MapObject *> &objects);
     void updateObjectLabelColors();
     void objectsAdded(const QList<MapObject*> &objects);
-    void objectsRemoved(const QList<MapObject*> &objects);
+    void objectsAboutToBeRemoved(const QList<MapObject*> &objects);
     void tilesetTileOffsetChanged(Tileset *tileset);
     void tileTypeChanged(Tile *tile);
 
