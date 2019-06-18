@@ -26,6 +26,7 @@
 
 namespace Tiled {
 
+class Document;
 class EditableAsset;
 
 /**
@@ -60,6 +61,7 @@ public:
     Q_INVOKABLE void removeProperty(const QString &name);
 
     Object *object() const;
+    Document *document() const;
 
 protected:
     void setAsset(EditableAsset *asset);

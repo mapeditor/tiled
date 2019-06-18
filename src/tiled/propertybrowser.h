@@ -94,7 +94,6 @@ private slots:
     void documentChanged(const ChangeEvent &change);
     void mapChanged();
     void objectsChanged(const MapObjectsChangeEvent &mapObjectsChange);
-    void layerChanged(Layer *layer);
     void objectGroupChanged(ObjectGroup *objectGroup);
     void imageLayerChanged(ImageLayer *imageLayer);
     void tilesetChanged(Tileset *tileset);

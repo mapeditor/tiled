@@ -84,8 +84,6 @@ void EditPolygonTool::activate(MapScene *scene)
             this, &EditPolygonTool::updateHandles);
     connect(mapDocument(), &MapDocument::objectsRemoved,
             this, &EditPolygonTool::objectsRemoved);
-    connect(mapDocument(), &MapDocument::layerChanged,          // layer offset
-            this, &EditPolygonTool::updateHandles);
 }
 
 void EditPolygonTool::deactivate(MapScene *scene)
@@ -94,8 +92,6 @@ void EditPolygonTool::deactivate(MapScene *scene)
                this, &EditPolygonTool::updateHandles);
     disconnect(mapDocument(), &MapDocument::objectsRemoved,
                this, &EditPolygonTool::objectsRemoved);
-    disconnect(mapDocument(), &MapDocument::layerChanged,
-               this, &EditPolygonTool::updateHandles);
 
     abortCurrentAction();
 
@@ -780,6 +776,10 @@ void EditPolygonTool::changeEvent(const ChangeEvent &event)
         return;
 
     switch (event.type) {
+    case ChangeEvent::LayerChanged:
+        if (static_cast<const LayerChangeEvent&>(event).properties & LayerChangeEvent::OffsetProperty)
+            updateHandles();
+        break;
     case ChangeEvent::MapObjectsChanged: {
         constexpr auto propertiesAffectingHandles =
                 MapObject::PositionProperty |

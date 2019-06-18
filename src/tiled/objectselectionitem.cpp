@@ -265,9 +265,6 @@ ObjectSelectionItem::ObjectSelectionItem(MapDocument *mapDocument,
     connect(mapDocument, &MapDocument::layerAboutToBeRemoved,
             this, &ObjectSelectionItem::layerAboutToBeRemoved);
 
-    connect(mapDocument, &MapDocument::layerChanged,
-            this, &ObjectSelectionItem::layerChanged);
-
     connect(mapDocument, &MapDocument::objectGroupChanged,
             this, &ObjectSelectionItem::updateObjectLabelColors);
 
@@ -305,10 +302,12 @@ ObjectSelectionItem::~ObjectSelectionItem()
 void ObjectSelectionItem::changeEvent(const ChangeEvent &event)
 {
     switch (event.type) {
-    case ChangeEvent::MapObjectsChanged: {
+    case ChangeEvent::LayerChanged:
+        layerChanged(static_cast<const LayerChangeEvent&>(event).layer);
+        break;
+    case ChangeEvent::MapObjectsChanged:
         syncOverlayItems(static_cast<const MapObjectsChangeEvent&>(event).mapObjects);
         break;
-    }
     }
 }
 

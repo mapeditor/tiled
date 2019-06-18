@@ -23,7 +23,6 @@
 #include "changelayer.h"
 #include "editablemanager.h"
 #include "editablemap.h"
-#include "renamelayer.h"
 #include "scriptmanager.h"
 
 namespace Tiled {
@@ -35,8 +34,8 @@ EditableLayer::EditableLayer(std::unique_ptr<Layer> &&layer, QObject *parent)
     EditableManager::instance().mEditableLayers.insert(this->layer(), this);
 }
 
-EditableLayer::EditableLayer(EditableMap *map, Layer *layer, QObject *parent)
-    : EditableObject(map, layer, parent)
+EditableLayer::EditableLayer(EditableAsset *asset, Layer *layer, QObject *parent)
+    : EditableObject(asset, layer, parent)
 {
 }
 
@@ -47,7 +46,7 @@ EditableLayer::~EditableLayer()
 
 EditableMap *EditableLayer::map() const
 {
-    return static_cast<EditableMap*>(asset());
+    return asset()->isMap() ? static_cast<EditableMap*>(asset()) : nullptr;
 }
 
 bool EditableLayer::isSelected() const
@@ -109,7 +108,7 @@ void EditableLayer::release()
 void EditableLayer::setName(const QString &name)
 {
     if (asset())
-        asset()->push(new RenameLayer(mapDocument(), layer(), name));
+        asset()->push(new SetLayerName(document(), layer(), name));
     else
         layer()->setName(name);
 }
@@ -117,7 +116,7 @@ void EditableLayer::setName(const QString &name)
 void EditableLayer::setOpacity(qreal opacity)
 {
     if (asset())
-        asset()->push(new SetLayerOpacity(mapDocument(), layer(), opacity));
+        asset()->push(new SetLayerOpacity(document(), layer(), opacity));
     else
         layer()->setOpacity(opacity);
 }
@@ -125,7 +124,7 @@ void EditableLayer::setOpacity(qreal opacity)
 void EditableLayer::setVisible(bool visible)
 {
     if (asset())
-        asset()->push(new SetLayerVisible(mapDocument(), layer(), visible));
+        asset()->push(new SetLayerVisible(document(), layer(), visible));
     else
         layer()->setVisible(visible);
 }
@@ -133,7 +132,7 @@ void EditableLayer::setVisible(bool visible)
 void EditableLayer::setLocked(bool locked)
 {
     if (asset())
-        asset()->push(new SetLayerLocked(mapDocument(), layer(), locked));
+        asset()->push(new SetLayerLocked(document(), layer(), locked));
     else
         layer()->setLocked(locked);
 }
@@ -141,7 +140,7 @@ void EditableLayer::setLocked(bool locked)
 void EditableLayer::setOffset(QPointF offset)
 {
     if (asset())
-        asset()->push(new SetLayerOffset(mapDocument(), layer(), offset));
+        asset()->push(new SetLayerOffset(document(), layer(), offset));
     else
         layer()->setOffset(offset);
 }

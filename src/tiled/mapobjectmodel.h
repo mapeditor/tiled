@@ -97,14 +97,13 @@ signals:
 
 private slots:
     void layerAdded(Layer *layer);
-    void layerChanged(Layer *layer);
     void layerAboutToBeRemoved(GroupLayer *groupLayer, int index);
     void tileTypeChanged(Tile *tile);
     void documentChanged(const ChangeEvent &change);
 
 private:
     void emitDataChanged(const QList<MapObject *> &objects,
-                         const QList<Column> &columns = QList<Column>(),
+                         const QVarLengthArray<Column, 3> &columns,
                          const QVector<int> &roles = QVector<int>());
 
     MapDocument *mMapDocument;

@@ -123,8 +123,6 @@ void AbstractTool::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument) {
         disconnect(mMapDocument, &MapDocument::changed,
                    this, &AbstractTool::changeEvent);
-        disconnect(mMapDocument, &MapDocument::layerChanged,
-                   this, &AbstractTool::updateEnabledState);
         disconnect(mMapDocument, &MapDocument::currentLayerChanged,
                    this, &AbstractTool::updateEnabledState);
     }
@@ -136,16 +134,23 @@ void AbstractTool::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument) {
         connect(mMapDocument, &MapDocument::changed,
                 this, &AbstractTool::changeEvent);
-        connect(mMapDocument, &MapDocument::layerChanged,
-                this, &AbstractTool::updateEnabledState);
         connect(mMapDocument, &MapDocument::currentLayerChanged,
                 this, &AbstractTool::updateEnabledState);
     }
     updateEnabledState();
 }
 
-void AbstractTool::changeEvent(const ChangeEvent &)
+void AbstractTool::changeEvent(const ChangeEvent &event)
 {
+    switch (event.type) {
+    case ChangeEvent::LayerChanged:
+        // Enabled state is not actually affected by layer properties, but
+        // this includes updating brush visibility...
+        updateEnabledState();
+        break;
+    case ChangeEvent::MapObjectsChanged:
+        break;
+    }
 }
 
 void AbstractTool::updateEnabledState()

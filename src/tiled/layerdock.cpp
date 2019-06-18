@@ -34,6 +34,7 @@
 #include "reversingproxymodel.h"
 #include "utils.h"
 #include "iconcheckdelegate.h"
+#include "changeevents.h"
 
 #include <QApplication>
 #include <QBoxLayout>
@@ -128,10 +129,10 @@ void LayerDock::setMapDocument(MapDocument *mapDocument)
     mMapDocument = mapDocument;
 
     if (mMapDocument) {
+        connect(mMapDocument, &MapDocument::changed,
+                this, &LayerDock::documentChanged);
         connect(mMapDocument, &MapDocument::currentLayerChanged,
                 this, &LayerDock::updateOpacitySlider);
-        connect(mMapDocument, &MapDocument::layerChanged,
-                this, &LayerDock::layerChanged);
         connect(mMapDocument, &MapDocument::editLayerNameRequested,
                 this, &LayerDock::editLayerName);
     }
@@ -181,16 +182,21 @@ void LayerDock::updateOpacitySlider()
     mUpdatingSlider = false;
 }
 
-void LayerDock::layerChanged(Layer *layer)
+void LayerDock::documentChanged(const ChangeEvent &change)
 {
-    if (layer != mMapDocument->currentLayer())
-        return;
+    switch (change.type) {
+    case ChangeEvent::LayerChanged: {
+        auto &layerChange = static_cast<const LayerChangeEvent&>(change);
 
-    // Don't update the slider when we're the ones changing the layer opacity
-    if (mChangingLayerOpacity)
-        return;
-
-    updateOpacitySlider();
+        // Don't update the slider when we're the ones changing the layer opacity
+        if ((layerChange.properties & LayerChangeEvent::OpacityProperty) && !mChangingLayerOpacity)
+            if (layerChange.layer == mMapDocument->currentLayer())
+                updateOpacitySlider();
+        break;
+    }
+    default:
+        break;
+    }
 }
 
 void LayerDock::editLayerName()

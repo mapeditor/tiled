@@ -26,10 +26,13 @@
 
 namespace Tiled {
 
+class Layer;
+
 class ChangeEvent
 {
 public:
     enum Type {
+        LayerChanged,
         MapObjectsChanged,
     } type;
 
@@ -37,6 +40,31 @@ protected:
     ChangeEvent(Type type)
         : type(type)
     {}
+};
+
+/**
+ * Layer can change name, opacity, visible, locked or offset.
+ */
+class LayerChangeEvent : public ChangeEvent
+{
+public:
+    enum LayerProperties {
+        NameProperty            = 1 << 0,
+        OpacityProperty         = 1 << 1,
+        VisibleProperty         = 1 << 2,
+        LockedProperty          = 1 << 3,
+        OffsetProperty          = 1 << 4,
+        AllProperties           = 0xFF
+    };
+
+    LayerChangeEvent(Layer *layer, int properties = AllProperties)
+        : ChangeEvent(LayerChanged)
+        , layer(layer)
+        , properties(properties)
+    {}
+
+    Layer *layer;
+    int properties;
 };
 
 class MapObjectsChangeEvent : public ChangeEvent

@@ -385,7 +385,9 @@ void TileCollisionDock::tilesetTileOffsetChanged(Tileset *tileset)
 
     auto tileLayer = mDummyMapDocument->map()->layerAt(0);
     auto tileOffset = tileset->tileOffset();
-    mDummyMapDocument->layerModel()->setLayerOffset(tileLayer, -tileOffset);
+    tileLayer->setOffset(-tileOffset);
+
+    emit mDummyMapDocument->changed(LayerChangeEvent(tileLayer, LayerChangeEvent::OffsetProperty));
 }
 
 void TileCollisionDock::cut()

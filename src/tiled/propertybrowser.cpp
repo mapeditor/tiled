@@ -41,7 +41,6 @@
 #include "objectgroup.h"
 #include "objecttemplate.h"
 #include "preferences.h"
-#include "renamelayer.h"
 #include "renameterrain.h"
 #include "renamewangset.h"
 #include "replacetileset.h"
@@ -136,8 +135,6 @@ void PropertyBrowser::setDocument(Document *document)
     if (mapDocument) {
         connect(mapDocument, &MapDocument::mapChanged,
                 this, &PropertyBrowser::mapChanged);
-        connect(mapDocument, &MapDocument::layerChanged,
-                this, &PropertyBrowser::layerChanged);
         connect(mapDocument, &MapDocument::objectGroupChanged,
                 this, &PropertyBrowser::objectGroupChanged);
         connect(mapDocument, &MapDocument::imageLayerChanged,
@@ -247,10 +244,13 @@ bool PropertyBrowser::event(QEvent *event)
 void PropertyBrowser::documentChanged(const ChangeEvent &change)
 {
     switch (change.type) {
-    case ChangeEvent::MapObjectsChanged: {
+    case ChangeEvent::LayerChanged:
+        if (mObject == static_cast<const LayerChangeEvent&>(change).layer)
+            updateProperties();
+        break;
+    case ChangeEvent::MapObjectsChanged:
         objectsChanged(static_cast<const MapObjectsChangeEvent&>(change));
         break;
-    }
     }
 }
 
@@ -271,12 +271,6 @@ void PropertyBrowser::objectsChanged(const MapObjectsChangeEvent &mapObjectsChan
 
     if (mapObjectsChange.properties & (MapObject::CustomProperties | MapObject::TypeProperty))
         updateCustomProperties();
-}
-
-void PropertyBrowser::layerChanged(Layer *layer)
-{
-    if (mObject == layer)
-        updateProperties();
 }
 
 void PropertyBrowser::objectGroupChanged(ObjectGroup *objectGroup)
@@ -1120,7 +1114,7 @@ QUndoCommand *PropertyBrowser::applyLayerValueTo(PropertyBrowser::PropertyId id,
 
     switch (id) {
     case NameProperty:
-        command = new RenameLayer(mMapDocument, layer, val.toString());
+        command = new SetLayerName(mMapDocument, layer, val.toString());
         break;
     case VisibleProperty:
         command = new SetLayerVisible(mMapDocument, layer, val.toBool());

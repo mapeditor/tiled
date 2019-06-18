@@ -90,8 +90,6 @@ MapDocument::MapDocument(std::unique_ptr<Map> map, const QString &fileName)
             this, &MapDocument::onLayerAboutToBeRemoved);
     connect(mLayerModel, &LayerModel::layerRemoved,
             this, &MapDocument::onLayerRemoved);
-    connect(mLayerModel, &LayerModel::layerChanged,
-            this, &MapDocument::layerChanged);
 
     // Forward signals emitted from the map object model
     mMapObjectModel->setMapDocument(this);

@@ -740,6 +740,10 @@ void ObjectSelectionTool::changeEvent(const ChangeEvent &event)
         return;
 
     switch (event.type) {
+    case ChangeEvent::LayerChanged:
+        if (static_cast<const LayerChangeEvent&>(event).properties & LayerChangeEvent::OffsetProperty)
+            updateHandlesAndOrigin();
+        break;
     case ChangeEvent::MapObjectsChanged:
         updateHandlesAndOrigin();
         break;

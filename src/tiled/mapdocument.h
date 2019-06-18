@@ -281,7 +281,6 @@ signals:
     void layerAdded(Layer *layer);
     void layerAboutToBeRemoved(GroupLayer *parentLayer, int index);
     void layerRemoved(Layer *layer);
-    void layerChanged(Layer *layer);
 
     /**
      * Emitted after a new layer was added and the name should be edited.

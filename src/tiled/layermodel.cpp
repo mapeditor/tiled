@@ -20,12 +20,12 @@
 
 #include "layermodel.h"
 
+#include "changeevents.h"
 #include "changelayer.h"
 #include "grouplayer.h"
+#include "layer.h"
 #include "map.h"
 #include "mapdocument.h"
-#include "layer.h"
-#include "renamelayer.h"
 #include "reparentlayers.h"
 #include "tilelayer.h"
 
@@ -189,8 +189,8 @@ bool LayerModel::setData(const QModelIndex &index, const QVariant &value,
     } else if (role == Qt::EditRole) {
         const QString newName = value.toString();
         if (layer->name() != newName) {
-            RenameLayer *rename = new RenameLayer(mMapDocument, layer,
-                                                  newName);
+            SetLayerName *rename = new SetLayerName(mMapDocument, layer,
+                                                    newName);
             mMapDocument->undoStack()->push(rename);
         }
         return true;
@@ -351,6 +351,12 @@ void LayerModel::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument == mapDocument)
         return;
 
+    if (mMapDocument)
+        disconnect(mMapDocument, &Document::changed, this, &LayerModel::documentChanged);
+
+    if (mapDocument)
+        connect(mapDocument, &Document::changed, this, &LayerModel::documentChanged);
+
     beginResetModel();
     mMapDocument = mapDocument;
     mMap = mMapDocument->map();
@@ -420,72 +426,6 @@ void LayerModel::moveLayer(GroupLayer *parentLayer, int index, GroupLayer *toPar
 {
     auto layer = takeLayerAt(parentLayer, index);
     insertLayer(toParentLayer, toIndex, layer);
-}
-
-/**
- * Sets whether the layer at the given index is visible.
- */
-void LayerModel::setLayerVisible(Layer *layer, bool visible)
-{
-    if (layer->isVisible() == visible)
-        return;
-
-    layer->setVisible(visible);
-
-    const QModelIndex modelIndex = index(layer, 1);
-    emit dataChanged(modelIndex, modelIndex);
-    emit layerChanged(layer);
-}
-
-void LayerModel::setLayerLocked(Layer *layer, bool locked)
-{
-    if (layer->isLocked() == locked)
-        return;
-
-    layer->setLocked(locked);
-
-    const QModelIndex modelIndex = index(layer, 2);
-    emit dataChanged(modelIndex, modelIndex);
-    emit layerChanged(layer);
-}
-
-/**
- * Sets the opacity of the layer at the given index.
- */
-void LayerModel::setLayerOpacity(Layer *layer, qreal opacity)
-{
-    if (layer->opacity() == opacity)
-        return;
-
-    layer->setOpacity(opacity);
-    emit layerChanged(layer);
-}
-
-/**
- * Sets the offset of the layer at the given index.
- */
-void LayerModel::setLayerOffset(Layer *layer, const QPointF &offset)
-{
-    if (layer->offset() == offset)
-        return;
-
-    layer->setOffset(offset);
-    emit layerChanged(layer);
-}
-
-/**
- * Renames the layer at the given index.
- */
-void LayerModel::renameLayer(Layer *layer, const QString &name)
-{
-    if (layer->name() == name)
-        return;
-
-    layer->setName(name);
-
-    const QModelIndex modelIndex = index(layer);
-    emit dataChanged(modelIndex, modelIndex);
-    emit layerChanged(layer);
 }
 
 /**
@@ -636,4 +576,32 @@ void LayerModel::toggleLockOtherLayers(const QList<Layer *> &layers)
     }
 
     undoStack->endMacro();
+}
+
+void LayerModel::documentChanged(const ChangeEvent &change)
+{
+    switch (change.type) {
+    case ChangeEvent::LayerChanged: {
+        const auto &layerChange = static_cast<const LayerChangeEvent&>(change);
+
+        QVarLengthArray<int, 3> columns;
+        if (layerChange.properties & LayerChangeEvent::NameProperty)
+            columns.append(0);
+        if (layerChange.properties & LayerChangeEvent::VisibleProperty)
+            columns.append(1);
+        if (layerChange.properties & LayerChangeEvent::LockedProperty)
+            columns.append(2);
+
+        if (!columns.isEmpty()) {
+            auto minMaxPair = std::minmax_element(columns.begin(), columns.end());
+            emit dataChanged(index(layerChange.layer, *minMaxPair.first),
+                             index(layerChange.layer, *minMaxPair.second));
+
+        }
+
+        break;
+    }
+    case ChangeEvent::MapObjectsChanged:
+        break;
+    }
 }

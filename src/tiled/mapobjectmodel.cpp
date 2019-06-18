@@ -29,7 +29,6 @@
 #include "map.h"
 #include "mapdocument.h"
 #include "objectgroup.h"
-#include "renamelayer.h"
 
 #include <QApplication>
 #include <QPalette>
@@ -256,8 +255,8 @@ bool MapObjectModel::setData(const QModelIndex &index, const QVariant &value,
         case Qt::EditRole: {
             const QString newName = value.toString();
             if (layer->name() != newName) {
-                RenameLayer *rename = new RenameLayer(mMapDocument, layer,
-                                                      newName);
+                SetLayerName *rename = new SetLayerName(mMapDocument, layer,
+                                                        newName);
                 mMapDocument->undoStack()->push(rename);
             }
             return true;
@@ -387,8 +386,6 @@ void MapObjectModel::setMapDocument(MapDocument *mapDocument)
 
         connect(mMapDocument, &MapDocument::layerAdded,
                 this, &MapObjectModel::layerAdded);
-        connect(mMapDocument, &MapDocument::layerChanged,
-                this, &MapObjectModel::layerChanged);
         connect(mMapDocument, &MapDocument::layerAboutToBeRemoved,
                 this, &MapObjectModel::layerAboutToBeRemoved);
         connect(mMapDocument, &MapDocument::tileTypeChanged,
@@ -425,14 +422,6 @@ void MapObjectModel::layerAdded(Layer *layer)
         beginInsertRows(parent, row, row);
         filtered.insert(row, layer);
         endInsertRows();
-    }
-}
-
-void MapObjectModel::layerChanged(Layer *layer)
-{
-    if (layer->isObjectGroup() || layer->isGroupLayer()) {
-        QModelIndex index = this->index(layer);
-        emit dataChanged(index, index);
     }
 }
 
@@ -525,10 +514,23 @@ void MapObjectModel::documentChanged(const ChangeEvent &change)
 {
     // Notify views about certain property changes
     switch (change.type) {
+    case ChangeEvent::LayerChanged: {
+        auto &layerChange = static_cast<const LayerChangeEvent&>(change);
+
+        if (layerChange.properties & (LayerChangeEvent::NameProperty | LayerChangeEvent::VisibleProperty)) {
+            auto layer = layerChange.layer;
+            if (layer->isObjectGroup() || layer->isGroupLayer()) {
+                QModelIndex index = this->index(layer);
+                emit dataChanged(index, index);
+            }
+        }
+
+        break;
+    }
     case ChangeEvent::MapObjectsChanged: {
         const auto &mapObjectChange = static_cast<const MapObjectsChangeEvent&>(change);
 
-        QList<Column> columns;
+        QVarLengthArray<Column, 3> columns;
         if (mapObjectChange.properties & (MapObject::NameProperty | MapObject::VisibleProperty))
             columns.append(MapObjectModel::Name);
         if (mapObjectChange.properties & MapObject::TypeProperty)
@@ -544,7 +546,7 @@ void MapObjectModel::documentChanged(const ChangeEvent &change)
 }
 
 void MapObjectModel::emitDataChanged(const QList<MapObject *> &objects,
-                                     const QList<Column> &columns,
+                                     const QVarLengthArray<Column, 3> &columns,
                                      const QVector<int> &roles)
 {
     if (columns.isEmpty())

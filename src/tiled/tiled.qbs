@@ -362,8 +362,6 @@ QtGuiApplication {
         "rangeset.h",
         "regionvaluetype.cpp",
         "regionvaluetype.h",
-        "renamelayer.cpp",
-        "renamelayer.h",
         "renameterrain.cpp",
         "renameterrain.h",
         "renamewangset.cpp",

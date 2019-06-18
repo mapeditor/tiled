@@ -74,11 +74,15 @@ public:
                 this, [this] { update(); });
 
         // Offset of current layer may have changed
-        connect(mapDocument, &MapDocument::layerChanged,
-                this, [this] (Layer *layer) {
-            if (Layer *currentLayer = mMapDocument->currentLayer())
-                if (currentLayer->isParentOrSelf(layer))
-                    update();
+        connect(mapDocument, &Document::changed,
+                this, [this] (const ChangeEvent &change) {
+            if (change.type == ChangeEvent::LayerChanged) {
+                auto &layerChange = static_cast<const LayerChangeEvent&>(change);
+                if (layerChange.properties & LayerChangeEvent::OffsetProperty)
+                    if (Layer *currentLayer = mMapDocument->currentLayer())
+                        if (currentLayer->isParentOrSelf(layerChange.layer))
+                            update();
+            }
         });
 
         setVisible(prefs->showGrid());
@@ -141,7 +145,6 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
     connect(mapDocument.data(), &MapDocument::tileLayerChanged, this, &MapItem::tileLayerChanged);
     connect(mapDocument.data(), &MapDocument::layerAdded, this, &MapItem::layerAdded);
     connect(mapDocument.data(), &MapDocument::layerRemoved, this, &MapItem::layerRemoved);
-    connect(mapDocument.data(), &MapDocument::layerChanged, this, &MapItem::layerChanged);
     connect(mapDocument.data(), &MapDocument::objectGroupChanged, this, &MapItem::objectGroupChanged);
     connect(mapDocument.data(), &MapDocument::imageLayerChanged, this, &MapItem::imageLayerChanged);
     connect(mapDocument.data(), &MapDocument::selectedLayersChanged, this, &MapItem::updateSelectedLayersHighlight);
@@ -318,10 +321,12 @@ void MapItem::repaintRegion(const QRegion &region, TileLayer *tileLayer)
 void MapItem::documentChanged(const ChangeEvent &change)
 {
     switch (change.type) {
-    case ChangeEvent::MapObjectsChanged: {
+    case ChangeEvent::LayerChanged:
+        layerChanged(static_cast<const LayerChangeEvent&>(change).layer);
+        break;
+    case ChangeEvent::MapObjectsChanged:
         syncObjectItems(static_cast<const MapObjectsChangeEvent&>(change).mapObjects);
         break;
-    }
     }
 }
 

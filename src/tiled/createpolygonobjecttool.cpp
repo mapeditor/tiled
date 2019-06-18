@@ -83,8 +83,6 @@ void CreatePolygonObjectTool::activate(MapScene *scene)
             this, &CreatePolygonObjectTool::updateHandles);
     connect(mapDocument(), &MapDocument::objectsRemoved,
             this, &CreatePolygonObjectTool::objectsRemoved);
-    connect(mapDocument(), &MapDocument::layerChanged,          // layer offset
-            this, &CreatePolygonObjectTool::updateHandles);
     connect(mapDocument(), &MapDocument::layerRemoved,
             this, &CreatePolygonObjectTool::layerRemoved);
 }
@@ -98,8 +96,6 @@ void CreatePolygonObjectTool::deactivate(MapScene *scene)
                this, &CreatePolygonObjectTool::updateHandles);
     disconnect(mapDocument(), &MapDocument::objectsRemoved,
                this, &CreatePolygonObjectTool::objectsRemoved);
-    disconnect(mapDocument(), &MapDocument::layerChanged,
-               this, &CreatePolygonObjectTool::updateHandles);
     disconnect(mapDocument(), &MapDocument::layerRemoved,
                this, &CreatePolygonObjectTool::layerRemoved);
 
@@ -460,9 +456,6 @@ void CreatePolygonObjectTool::updateHandles()
 
 void CreatePolygonObjectTool::objectsChanged(const MapObjectsChangeEvent &mapObjectsChangeEvent)
 {
-    if (!mapScene())
-        return;
-
     // Possibly the polygon of the object being extended changed
     if (mNewMapObjectItem && mapObjectsChangeEvent.mapObjects.contains(mNewMapObjectItem->mapObject()))
         synchronizeOverlayObject();
@@ -601,11 +594,17 @@ void CreatePolygonObjectTool::changeEvent(const ChangeEvent &event)
 {
     CreateObjectTool::changeEvent(event);
 
+    if (!mapScene())
+        return;
+
     switch (event.type) {
-    case ChangeEvent::MapObjectsChanged: {
+    case ChangeEvent::LayerChanged:
+        if (static_cast<const LayerChangeEvent&>(event).properties & LayerChangeEvent::OffsetProperty)
+            updateHandles();
+        break;
+    case ChangeEvent::MapObjectsChanged:
         objectsChanged(static_cast<const MapObjectsChangeEvent&>(event));
         break;
-    }
     }
 }
 
