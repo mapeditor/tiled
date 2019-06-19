@@ -112,7 +112,7 @@ MapDocument::~MapDocument()
     // Needs to be deleted before the Map instance is deleted, because it may
     // cause script values to detach from the map, in which case they'll need
     // to be able to copy the data.
-    delete mEditable;
+    mEditable.reset();
 }
 
 bool MapDocument::save(const QString &fileName, QString *error)
@@ -211,9 +211,9 @@ QString MapDocument::displayName() const
 EditableAsset *MapDocument::editable()
 {
     if (!mEditable)
-        mEditable = new EditableMap(this, this);
+        mEditable.reset(new EditableMap(this, this));
 
-    return mEditable;
+    return mEditable.get();
 }
 
 /**

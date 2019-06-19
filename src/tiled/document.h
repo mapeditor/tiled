@@ -29,6 +29,8 @@
 #include <QString>
 #include <QVariant>
 
+#include <memory>
+
 class QUndoStack;
 
 namespace Tiled {
@@ -151,7 +153,7 @@ protected:
 
     QString mLastExportFileName;
 
-    EditableAsset *mEditable = nullptr;
+    std::unique_ptr<EditableAsset> mEditable;
 
 private:
     static QList<Document*> sDocumentInstances;
