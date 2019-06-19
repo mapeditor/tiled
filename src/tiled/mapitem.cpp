@@ -145,7 +145,6 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
     connect(mapDocument.data(), &MapDocument::tileLayerChanged, this, &MapItem::tileLayerChanged);
     connect(mapDocument.data(), &MapDocument::layerAdded, this, &MapItem::layerAdded);
     connect(mapDocument.data(), &MapDocument::layerRemoved, this, &MapItem::layerRemoved);
-    connect(mapDocument.data(), &MapDocument::objectGroupChanged, this, &MapItem::objectGroupChanged);
     connect(mapDocument.data(), &MapDocument::imageLayerChanged, this, &MapItem::imageLayerChanged);
     connect(mapDocument.data(), &MapDocument::selectedLayersChanged, this, &MapItem::updateSelectedLayersHighlight);
     connect(mapDocument.data(), &MapDocument::tilesetTileOffsetChanged, this, &MapItem::adaptToTilesetTileSizeChanges);
@@ -329,6 +328,24 @@ void MapItem::documentChanged(const ChangeEvent &change)
     case ChangeEvent::MapObjectsChanged:
         syncObjectItems(static_cast<const MapObjectsChangeEvent&>(change).mapObjects);
         break;
+    case ChangeEvent::ObjectGroupChanged: {
+        auto &objectGroupChange = static_cast<const ObjectGroupChangeEvent&>(change);
+        auto objectGroup = objectGroupChange.objectGroup;
+
+        bool sync = (objectGroupChange.properties & ObjectGroupChangeEvent::ColorProperty) != 0;
+
+        if (objectGroupChange.properties & ObjectGroupChangeEvent::DrawOrderProperty) {
+            if (objectGroup->drawOrder() == ObjectGroup::IndexOrder)
+                objectsIndexChanged(objectGroup, 0, objectGroup->objectCount() - 1);
+            else
+                sync = true;
+        }
+
+        if (sync)
+            syncObjectItems(objectGroup->objects());
+
+        break;
+    }
     default:
         break;
     }
@@ -412,16 +429,6 @@ void MapItem::layerChanged(Layer *layer)
     layerItem->setPos(layer->offset());
 
     updateBoundingRect();   // possible layer offset change
-}
-
-/**
- * When an object group has changed it may mean its color or drawing order
- * changed, which affects all its objects.
- */
-void MapItem::objectGroupChanged(ObjectGroup *objectGroup)
-{
-    syncObjectItems(objectGroup->objects());
-    objectsIndexChanged(objectGroup, 0, objectGroup->objectCount() - 1);
 }
 
 /**

@@ -91,6 +91,7 @@ protected:
 
 private slots:
     void applyChanges();
+    void documentChanged(const ChangeEvent &change);
     void tileObjectGroupChanged(Tile*);
     void tilesetTileOffsetChanged(Tileset *tileset);
 

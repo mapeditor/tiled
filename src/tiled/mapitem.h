@@ -98,7 +98,6 @@ private:
     void layerRemoved(Layer *layer);
     void layerChanged(Layer *layer);
 
-    void objectGroupChanged(ObjectGroup *objectGroup);
     void imageLayerChanged(ImageLayer *imageLayer);
 
     void adaptToTilesetTileSizeChanges(Tileset *tileset);

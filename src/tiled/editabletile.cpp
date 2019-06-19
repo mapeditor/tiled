@@ -23,7 +23,9 @@
 #include "changetile.h"
 #include "changetileprobability.h"
 #include "editablemanager.h"
+#include "editableobjectgroup.h"
 #include "editabletileset.h"
+#include "objectgroup.h"
 
 namespace Tiled {
 
@@ -37,6 +39,17 @@ EditableTile::~EditableTile()
     EditableManager::instance().mEditableTiles.remove(tile());
 }
 
+EditableObjectGroup *EditableTile::objectGroup() const
+{
+    if (!mAttachedObjectGroup) {
+        mAttachedObjectGroup = tile()->objectGroup();
+    } else {
+        Q_ASSERT(mAttachedObjectGroup == tile()->objectGroup());
+    }
+
+    return EditableManager::instance().editableObjectGroup(asset(), mAttachedObjectGroup);
+}
+
 EditableTileset *EditableTile::tileset() const
 {
     return static_cast<EditableTileset*>(asset());
@@ -46,12 +59,25 @@ void EditableTile::detach()
 {
     Q_ASSERT(tileset());
 
-    EditableManager::instance().mEditableTiles.remove(tile());
+    auto &editableManager = EditableManager::instance();
+
+    editableManager.mEditableTiles.remove(tile());
     setAsset(nullptr);
 
     mDetachedTile.reset(tile()->clone(nullptr));
     setObject(mDetachedTile.get());
-    EditableManager::instance().mEditableTiles.insert(tile(), this);
+    editableManager.mEditableTiles.insert(tile(), this);
+
+    // Move over any attached editable object group
+    if (auto editable = editableManager.find(mAttachedObjectGroup)) {
+        editableManager.mEditableLayers.remove(mAttachedObjectGroup);
+        editable->setAsset(nullptr);
+        editable->setObject(tile()->objectGroup());
+        editableManager.mEditableLayers.insert(tile()->objectGroup(), editable);
+        mAttachedObjectGroup = tile()->objectGroup();
+    } else {
+        mAttachedObjectGroup = nullptr;
+    }
 }
 
 void EditableTile::attach(EditableTileset *tileset)
@@ -60,6 +86,13 @@ void EditableTile::attach(EditableTileset *tileset)
 
     setAsset(tileset);
     mDetachedTile.release();
+}
+
+void EditableTile::detachObjectGroup()
+{
+    if (auto editable = EditableManager::instance().find(mAttachedObjectGroup))
+        editable->detach();
+    mAttachedObjectGroup = nullptr;
 }
 
 void EditableTile::setType(const QString &type)

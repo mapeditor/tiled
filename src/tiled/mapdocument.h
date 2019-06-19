@@ -309,12 +309,6 @@ signals:
     void tileLayerChanged(TileLayer *layer, TileLayerChangeFlags flags);
 
     /**
-     * Should be emitted when changing the color or drawing order of an object
-     * group.
-     */
-    void objectGroupChanged(ObjectGroup *objectGroup);
-
-    /**
      * Should be emitted when changing the image or the transparent color of
      * an image layer.
      */

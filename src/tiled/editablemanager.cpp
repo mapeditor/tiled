@@ -65,7 +65,7 @@ EditableLayer *EditableManager::editableLayer(EditableMap *map, Layer *layer)
     if (!layer)
         return nullptr;
 
-    Q_ASSERT(layer->map() == map->map());
+    Q_ASSERT(!map || layer->map() == map->map());
 
     EditableLayer* &editableLayer = mEditableLayers[layer];
     if (!editableLayer) {
@@ -88,14 +88,27 @@ EditableLayer *EditableManager::editableLayer(EditableMap *map, Layer *layer)
     return editableLayer;
 }
 
-EditableMapObject *EditableManager::editableMapObject(EditableMap *map, MapObject *mapObject)
+EditableObjectGroup *EditableManager::editableObjectGroup(EditableAsset *asset, ObjectGroup *objectGroup)
+{
+    if (!objectGroup)
+        return nullptr;
+
+    Q_ASSERT(!objectGroup->map());
+
+    EditableLayer* &editableLayer = mEditableLayers[objectGroup];
+    if (!editableLayer)
+        editableLayer = new EditableObjectGroup(asset, objectGroup);
+
+    return static_cast<EditableObjectGroup*>(editableLayer);
+}
+
+EditableMapObject *EditableManager::editableMapObject(EditableAsset *asset, MapObject *mapObject)
 {
     Q_ASSERT(mapObject->objectGroup());
-    Q_ASSERT(mapObject->objectGroup()->map() == map->map());
 
     EditableMapObject* &editableMapObject = mEditableMapObjects[mapObject];
     if (!editableMapObject)
-        editableMapObject = new EditableMapObject(map, mapObject);
+        editableMapObject = new EditableMapObject(asset, mapObject);
 
     return editableMapObject;
 }

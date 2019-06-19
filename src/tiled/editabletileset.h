@@ -74,6 +74,8 @@ private slots:
     void attachTiles(const QList<Tile*> &tiles);
     void detachTiles(const QList<Tile*> &tiles);
 
+    void tileObjectGroupChanged(Tile *tile);
+
 private:
     bool mReadOnly = false;
     SharedTileset mTileset;

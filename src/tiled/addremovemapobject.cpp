@@ -101,7 +101,9 @@ AddMapObjects::AddMapObjects(Document *document,
 
 void AddMapObjects::undo()
 {
-    emit mDocument->changed(MapObjectsEvent(ChangeEvent::MapObjectsAboutToBeRemoved, objects(mEntries)));
+    MapObjectsEvent mapObjectsEvent { ChangeEvent::MapObjectsAboutToBeRemoved, objects(mEntries) };
+
+    emit mDocument->changed(mapObjectsEvent);
 
     for (int i = mEntries.size() - 1; i >= 0; --i) {
         Entry &entry = mEntries[i];
@@ -109,6 +111,9 @@ void AddMapObjects::undo()
         entry.objectGroup->removeObjectAt(entry.index);
         emit mDocument->changed(MapObjectEvent(ChangeEvent::MapObjectRemoved, entry.objectGroup, entry.index));
     }
+
+    mapObjectsEvent.type = ChangeEvent::MapObjectsRemoved;
+    emit mDocument->changed(mapObjectsEvent);
 
     mOwnsObjects = true;
 

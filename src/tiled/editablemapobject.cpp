@@ -36,10 +36,10 @@ EditableMapObject::EditableMapObject(const QString &name,
     EditableManager::instance().mEditableMapObjects.insert(mapObject(), this);
 }
 
-EditableMapObject::EditableMapObject(EditableMap *map,
+EditableMapObject::EditableMapObject(EditableAsset *asset,
                                      MapObject *mapObject,
                                      QObject *parent)
-    : EditableObject(map, mapObject, parent)
+    : EditableObject(asset, mapObject, parent)
 {
 }
 
@@ -58,18 +58,18 @@ bool EditableMapObject::isSelected() const
 
 EditableObjectGroup *EditableMapObject::layer() const
 {
-    auto editableLayer = EditableManager::instance().editableLayer(map(), mapObject()->objectGroup());
+    auto editableLayer = EditableManager::instance().editableObjectGroup(asset(), mapObject()->objectGroup());
     return static_cast<EditableObjectGroup*>(editableLayer);
 }
 
 EditableMap *EditableMapObject::map() const
 {
-    return static_cast<EditableMap*>(asset());
+    return asset()->isMap() ? static_cast<EditableMap*>(asset()) : nullptr;
 }
 
 void EditableMapObject::detach()
 {
-    Q_ASSERT(map());
+    Q_ASSERT(asset());
 
     EditableManager::instance().mEditableMapObjects.remove(mapObject());
     setAsset(nullptr);

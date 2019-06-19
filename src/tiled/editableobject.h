@@ -63,7 +63,6 @@ public:
     Object *object() const;
     Document *document() const;
 
-protected:
     void setAsset(EditableAsset *asset);
     void setObject(Object *object);
 

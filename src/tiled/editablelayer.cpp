@@ -76,11 +76,11 @@ void EditableLayer::detach()
  * Turns this stand-alone layer into a reference, with the layer now owned by
  * the given asset.
  */
-void EditableLayer::attach(EditableMap *map)
+void EditableLayer::attach(EditableAsset *asset)
 {
-    Q_ASSERT(!asset() && map);
+    Q_ASSERT(!this->asset() && asset);
 
-    setAsset(map);
+    setAsset(asset);
     mDetachedLayer.release();
 }
 

@@ -43,6 +43,7 @@ EditableTileset::EditableTileset(TilesetDocument *tilesetDocument,
     connect(tilesetDocument, &Document::fileNameChanged, this, &EditableAsset::fileNameChanged);
     connect(tilesetDocument, &TilesetDocument::tilesAdded, this, &EditableTileset::attachTiles);
     connect(tilesetDocument, &TilesetDocument::tilesRemoved, this, &EditableTileset::detachTiles);
+    connect(tilesetDocument, &TilesetDocument::tileObjectGroupChanged, this, &EditableTileset::tileObjectGroupChanged);
 }
 
 EditableTileset::~EditableTileset()
@@ -118,6 +119,14 @@ void EditableTileset::detachTiles(const QList<Tile *> &tiles)
             editable->detach();
         }
     }
+}
+
+void EditableTileset::tileObjectGroupChanged(Tile *tile)
+{
+    Q_ASSERT(tile->tileset() == tileset());
+
+    if (auto editable = EditableManager::instance().find(tile))
+        editable->detachObjectGroup();
 }
 
 } // namespace Tiled

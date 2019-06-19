@@ -40,6 +40,8 @@ public:
         MapObjectsAboutToBeRemoved,
         MapObjectsAdded,
         MapObjectsChanged,
+        MapObjectsRemoved,
+        ObjectGroupChanged,
     } type;
 
 protected:
@@ -48,13 +50,10 @@ protected:
     {}
 };
 
-/**
- * Layer can change name, opacity, visible, locked or offset.
- */
 class LayerChangeEvent : public ChangeEvent
 {
 public:
-    enum LayerProperties {
+    enum LayerProperty {
         NameProperty            = 1 << 0,
         OpacityProperty         = 1 << 1,
         VisibleProperty         = 1 << 2,
@@ -70,6 +69,24 @@ public:
     {}
 
     Layer *layer;
+    int properties;
+};
+
+class ObjectGroupChangeEvent : public ChangeEvent
+{
+public:
+    enum ObjectGroupProperty {
+        ColorProperty           = 1 << 0,
+        DrawOrderProperty       = 1 << 1,
+    };
+
+    ObjectGroupChangeEvent(ObjectGroup *objectGroup, int properties)
+        : ChangeEvent(ObjectGroupChanged)
+        , objectGroup(objectGroup)
+        , properties(properties)
+    {}
+
+    ObjectGroup *objectGroup;
     int properties;
 };
 

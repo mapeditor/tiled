@@ -70,7 +70,7 @@ public:
     Layer *layer() const;
 
     void detach();
-    void attach(EditableMap *map);
+    void attach(EditableAsset *asset);
     void hold();
     void release();
 

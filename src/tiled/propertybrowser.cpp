@@ -135,8 +135,6 @@ void PropertyBrowser::setDocument(Document *document)
     if (mapDocument) {
         connect(mapDocument, &MapDocument::mapChanged,
                 this, &PropertyBrowser::mapChanged);
-        connect(mapDocument, &MapDocument::objectGroupChanged,
-                this, &PropertyBrowser::objectGroupChanged);
         connect(mapDocument, &MapDocument::imageLayerChanged,
                 this, &PropertyBrowser::imageLayerChanged);
         connect(mapDocument, &MapDocument::tileTypeChanged,
@@ -251,6 +249,9 @@ void PropertyBrowser::documentChanged(const ChangeEvent &change)
     case ChangeEvent::MapObjectsChanged:
         objectsChanged(static_cast<const MapObjectsChangeEvent&>(change));
         break;
+    case ChangeEvent::ObjectGroupChanged:
+        if (mObject == static_cast<const ObjectGroupChangeEvent&>(change).objectGroup)
+            updateProperties();
     default:
         break;
     }
@@ -273,12 +274,6 @@ void PropertyBrowser::objectsChanged(const MapObjectsChangeEvent &mapObjectsChan
 
     if (mapObjectsChange.properties & (MapObject::CustomProperties | MapObject::TypeProperty))
         updateCustomProperties();
-}
-
-void PropertyBrowser::objectGroupChanged(ObjectGroup *objectGroup)
-{
-    if (mObject == objectGroup)
-        updateProperties();
 }
 
 void PropertyBrowser::imageLayerChanged(ImageLayer *imageLayer)

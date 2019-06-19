@@ -29,12 +29,14 @@ namespace Tiled {
 
 class Layer;
 class MapObject;
+class ObjectGroup;
 class Tile;
 
 class EditableAsset;
 class EditableLayer;
 class EditableMap;
 class EditableMapObject;
+class EditableObjectGroup;
 class EditableTile;
 class EditableTileset;
 
@@ -57,7 +59,8 @@ public:
     void release(MapObject *mapObject);
 
     EditableLayer *editableLayer(EditableMap *map, Layer *layer);
-    EditableMapObject *editableMapObject(EditableMap *map, MapObject *mapObject);
+    EditableObjectGroup *editableObjectGroup(EditableAsset *asset, ObjectGroup *objectGroup);
+    EditableMapObject *editableMapObject(EditableAsset *asset, MapObject *mapObject);
     EditableTile *editableTile(EditableTileset *tileset, Tile *tile);
 
 private:

@@ -58,7 +58,7 @@ public:
     Q_INVOKABLE explicit EditableMapObject(const QString &name = QString(),
                                            QObject *parent = nullptr);
 
-    EditableMapObject(EditableMap *map,
+    EditableMapObject(EditableAsset *asset,
                       MapObject *mapObject,
                       QObject *parent = nullptr);
 

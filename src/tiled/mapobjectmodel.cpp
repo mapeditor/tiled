@@ -505,8 +505,9 @@ void MapObjectModel::documentChanged(const ChangeEvent &change)
 
         break;
     }
-    case ChangeEvent::MapObjectsAdded:
     case ChangeEvent::MapObjectsAboutToBeRemoved:
+    case ChangeEvent::MapObjectsAdded:
+    case ChangeEvent::MapObjectsRemoved:
         // handled individually instead
         break;
     case ChangeEvent::MapObjectAboutToBeAdded: {
@@ -540,6 +541,8 @@ void MapObjectModel::documentChanged(const ChangeEvent &change)
 
         break;
     }
+    case ChangeEvent::ObjectGroupChanged:
+        break;
     }
 }
 

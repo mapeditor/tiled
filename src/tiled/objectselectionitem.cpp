@@ -265,9 +265,6 @@ ObjectSelectionItem::ObjectSelectionItem(MapDocument *mapDocument,
     connect(mapDocument, &MapDocument::layerAboutToBeRemoved,
             this, &ObjectSelectionItem::layerAboutToBeRemoved);
 
-    connect(mapDocument, &MapDocument::objectGroupChanged,
-            this, &ObjectSelectionItem::updateObjectLabelColors);
-
     connect(mapDocument, &MapDocument::hoveredMapObjectChanged,
             this, &ObjectSelectionItem::hoveredMapObjectChanged);
 
@@ -307,6 +304,10 @@ void ObjectSelectionItem::changeEvent(const ChangeEvent &event)
         break;
     case ChangeEvent::MapObjectsAboutToBeRemoved:
         objectsAboutToBeRemoved(static_cast<const MapObjectsEvent&>(event).mapObjects);
+        break;
+    case ChangeEvent::ObjectGroupChanged:
+        if (static_cast<const ObjectGroupChangeEvent&>(event).properties & ObjectGroupChangeEvent::ColorProperty)
+            updateObjectLabelColors();
         break;
     default:
         break;
