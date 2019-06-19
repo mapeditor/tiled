@@ -130,7 +130,7 @@ matrix:
     - chmod +x install-qt
     - chmod +x extract-qt-installer
     - export PATH=$PATH:$PWD
-    - curl -L http://download.qt.io/official_releases/qt/5.6/5.6.3/${INSTALLER_NAME}.dmg
+    - curl -L https://download.qt.io/archive/qt/5.6/5.6.3/${INSTALLER_NAME}.dmg
       --output ${INSTALLER_NAME}.dmg
     - hdiutil attach ${INSTALLER_NAME}.dmg
     - "QT_CI_PACKAGES=qt.563.clang_64 ./extract-qt-installer /Volumes/${INSTALLER_NAME}/${INSTALLER_NAME}.app/Contents/MacOS/${INSTALLER_NAME}
