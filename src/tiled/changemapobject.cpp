@@ -117,7 +117,7 @@ ChangeMapObjectsTile::ChangeMapObjectsTile(Document *document,
     , mMapObjects(mapObjects)
     , mTile(tile)
 {
-    for (MapObject *object : mMapObjects) {
+    for (MapObject *object : qAsConst(mMapObjects)) {
         Cell cell = object->cell();
         mOldCells.append(cell);
         Tile *tile = cell.tile();

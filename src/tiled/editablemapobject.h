@@ -23,17 +23,20 @@
 #include "editableobject.h"
 #include "mapobject.h"
 
+#include <QJSValue>
+
 namespace Tiled {
 
 class EditableMap;
 class EditableObjectGroup;
+class EditableTile;
 
 class EditableMapObject : public EditableObject
 {
     Q_OBJECT
 
     Q_PROPERTY(int id READ id)
-//    Q_PROPERTY(Shape mShape)
+    Q_PROPERTY(Shape shape READ shape WRITE setShape)
     Q_PROPERTY(QString name READ name WRITE setName)
     Q_PROPERTY(QString type READ type WRITE setType)
     Q_PROPERTY(qreal x READ x WRITE setX)
@@ -44,18 +47,35 @@ class EditableMapObject : public EditableObject
     Q_PROPERTY(QSizeF size READ size WRITE setSize)
     Q_PROPERTY(qreal rotation READ rotation WRITE setRotation)
     Q_PROPERTY(bool visible READ isVisible WRITE setVisible)
-    Q_PROPERTY(bool selected READ isSelected WRITE setSelected)
+    Q_PROPERTY(QJSValue polygon READ polygon WRITE setPolygon)
 //    Q_PROPERTY(TextData mTextData)
-//    Q_PROPERTY(QPolygonF mPolygon)
-//    Q_PROPERTY(Cell mCell)
+    Q_PROPERTY(Tiled::EditableTile *tile READ tile WRITE setTile)
+    Q_PROPERTY(bool tileFlippedHorizontally READ tileFlippedHorizontally WRITE setTileFlippedHorizontally)
+    Q_PROPERTY(bool tileFlippedVertically READ tileFlippedVertically WRITE setTileFlippedVertically)
 //    Q_PROPERTY(const ObjectTemplate *mObjectTemplate)
+    Q_PROPERTY(bool selected READ isSelected WRITE setSelected)
     Q_PROPERTY(Tiled::EditableObjectGroup *layer READ layer)
     Q_PROPERTY(Tiled::EditableMap *map READ map)
 //    Q_PROPERTY(bool mTemplateBase)
 //    Q_PROPERTY(ChangedProperties mChangedProperties)
 
 public:
+    // Synchronized with MapObject::Shape
+    enum Shape {
+        Rectangle,
+        Polygon,
+        Polyline,
+        Ellipse,
+        Text,
+        Point,
+    };
+    Q_ENUM(Shape)
+
     Q_INVOKABLE explicit EditableMapObject(const QString &name = QString(),
+                                           QObject *parent = nullptr);
+
+    Q_INVOKABLE explicit EditableMapObject(Shape shape,
+                                           const QString &name = QString(),
                                            QObject *parent = nullptr);
 
     EditableMapObject(EditableAsset *asset,
@@ -65,6 +85,7 @@ public:
     ~EditableMapObject() override;
 
     int id() const;
+    Shape shape() const;
     QString name() const;
     QString type() const;
     qreal x() const;
@@ -75,6 +96,10 @@ public:
     QSizeF size() const;
     qreal rotation() const;
     bool isVisible() const;
+    QJSValue polygon() const;
+    EditableTile *tile() const;
+    bool tileFlippedHorizontally() const;
+    bool tileFlippedVertically() const;
     bool isSelected() const;
     EditableObjectGroup *layer() const;
     EditableMap *map() const;
@@ -87,6 +112,7 @@ public:
     void release();
 
 public slots:
+    void setShape(Shape shape);
     void setName(QString name);
     void setType(QString type);
     void setX(qreal x);
@@ -97,6 +123,10 @@ public slots:
     void setSize(QSizeF size);
     void setRotation(qreal rotation);
     void setVisible(bool visible);
+    void setPolygon(QJSValue polygon);
+    void setTile(EditableTile *tile);
+    void setTileFlippedHorizontally(bool tileFlippedHorizontally);
+    void setTileFlippedVertically(bool tileFlippedVertically);
     void setSelected(bool selected);
 
 private:
@@ -109,6 +139,11 @@ private:
 inline int EditableMapObject::id() const
 {
     return mapObject()->id();
+}
+
+inline EditableMapObject::Shape EditableMapObject::shape() const
+{
+    return static_cast<Shape>(mapObject()->shape());
 }
 
 inline QString EditableMapObject::name() const
@@ -159,6 +194,16 @@ inline qreal EditableMapObject::rotation() const
 inline bool EditableMapObject::isVisible() const
 {
     return mapObject()->isVisible();
+}
+
+inline bool EditableMapObject::tileFlippedHorizontally() const
+{
+    return mapObject()->cell().flippedHorizontally();
+}
+
+inline bool EditableMapObject::tileFlippedVertically() const
+{
+    return mapObject()->cell().flippedVertically();
 }
 
 inline MapObject *EditableMapObject::mapObject() const

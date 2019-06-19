@@ -1049,8 +1049,7 @@ QUndoCommand *PropertyBrowser::applyMapObjectValueTo(PropertyId id, const QVaria
         mapObjectCell.cell.setFlippedHorizontally(flippingFlags & 1);
         mapObjectCell.cell.setFlippedVertically(flippingFlags & 2);
 
-        command = new ChangeMapObjectCells(mDocument,
-                                           QVector<MapObjectCell>() << mapObjectCell);
+        command = new ChangeMapObjectCells(mDocument, { mapObjectCell });
 
         command->setText(QCoreApplication::translate("Undo Commands",
                                                      "Flip %n Object(s)",
