@@ -25,6 +25,7 @@
 
 namespace Tiled {
 
+class EditableObjectGroup;
 class EditableTileset;
 
 class EditableTile : public EditableObject
@@ -38,7 +39,7 @@ class EditableTile : public EditableObject
     Q_PROPERTY(QString type READ type WRITE setType)
     // TODO: Expose terrain information
     Q_PROPERTY(qreal probability READ probability WRITE setProbability)
-    //Q_PROPERTY(Tiled::EditableObjectGroup *objectGroup READ objectGroup)
+    Q_PROPERTY(Tiled::EditableObjectGroup *objectGroup READ objectGroup)
     // TODO: Expose animation frames
     Q_PROPERTY(Tiled::EditableTileset *tileset READ tileset)
 
@@ -62,6 +63,7 @@ public:
     QSize size() const;
     const QString &type() const;
     qreal probability() const;
+    EditableObjectGroup *objectGroup() const;
     EditableTileset *tileset() const;
 
     Tile *tile() const;
@@ -69,12 +71,15 @@ public:
     void detach();
     void attach(EditableTileset *tileset);
 
+    void detachObjectGroup();
+
 public slots:
     void setType(const QString &type);
     void setProbability(qreal probability);
 
 private:
     std::unique_ptr<Tile> mDetachedTile;
+    mutable ObjectGroup *mAttachedObjectGroup = nullptr;
 };
 
 

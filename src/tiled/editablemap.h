@@ -119,6 +119,8 @@ public slots:
                 bool removeObjects = false);
 
 private slots:
+    void documentChanged(const ChangeEvent &change);
+
     void attachLayer(Layer *layer);
     void detachLayer(Layer *layer);
     void attachMapObjects(const QList<MapObject*> &mapObjects);

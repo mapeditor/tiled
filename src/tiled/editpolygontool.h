@@ -65,9 +65,12 @@ public:
 public slots:
     void deleteNodes();
 
+protected:
+    void changeEvent(const ChangeEvent &event) override;
+
 private slots:
     void updateHandles();
-    void objectsRemoved(const QList<MapObject *> &objects);
+    void objectsAboutToBeRemoved(const QList<MapObject *> &objects);
 
     void joinNodes();
     void splitSegments();

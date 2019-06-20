@@ -50,6 +50,8 @@ public:
     void extend(MapObject *mapObject, bool extendingFirst);
 
 protected:
+    void changeEvent(const ChangeEvent &event) override;
+
     void mouseMovedWhileCreatingObject(const QPointF &pos,
                                        Qt::KeyboardModifiers modifiers) override;
 
@@ -65,8 +67,8 @@ private slots:
     void updateHover(const QPointF &scenePos, QGraphicsSceneMouseEvent *event = nullptr);
     void updateHandles();
 
-    void objectsChanged(const QList<MapObject *> &objects);
-    void objectsRemoved(const QList<MapObject *> &objects);
+    void objectsChanged(const MapObjectsChangeEvent &mapObjectsChangeEvent);
+    void objectsAboutToBeRemoved(const QList<MapObject *> &objects);
 
     void layerRemoved(Layer *layer);
 

@@ -63,4 +63,9 @@ void EditableObject::removeProperty(const QString &name)
         mObject->removeProperty(name);
 }
 
+Document *EditableObject::document() const
+{
+    return asset() ? asset()->document() : nullptr;
+}
+
 } // namespace Tiled

@@ -59,7 +59,7 @@ protected:
 
 private slots:
     void updateOpacitySlider();
-    void layerChanged(Layer *layer);
+    void documentChanged(const ChangeEvent &change);
     void editLayerName();
     void sliderValueChanged(int opacity);
 

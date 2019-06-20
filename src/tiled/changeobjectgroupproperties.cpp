@@ -21,23 +21,21 @@
 
 #include "changeobjectgroupproperties.h"
 
-#include "mapdocument.h"
-#include "objectgroup.h"
-#include "mapobjectmodel.h"
+#include "changeevents.h"
+#include "document.h"
 
 #include <QCoreApplication>
 
 using namespace Tiled;
 
-ChangeObjectGroupProperties::ChangeObjectGroupProperties(
-        MapDocument *mapDocument,
-        ObjectGroup *objectGroup,
-        const QColor &newColor,
-        ObjectGroup::DrawOrder newDrawOrder)
+ChangeObjectGroupProperties::ChangeObjectGroupProperties(Document *document,
+                                                         ObjectGroup *objectGroup,
+                                                         const QColor &newColor,
+                                                         ObjectGroup::DrawOrder newDrawOrder)
     : QUndoCommand(
-        QCoreApplication::translate(
-            "Undo Commands", "Change Object Layer Properties"))
-    , mMapDocument(mapDocument)
+          QCoreApplication::translate(
+              "Undo Commands", "Change Object Layer Properties"))
+    , mDocument(document)
     , mObjectGroup(objectGroup)
     , mUndoColor(objectGroup->color())
     , mRedoColor(newColor)
@@ -46,16 +44,36 @@ ChangeObjectGroupProperties::ChangeObjectGroupProperties(
 {
 }
 
-void ChangeObjectGroupProperties::redo()
-{
-    mObjectGroup->setColor(mRedoColor);
-    mObjectGroup->setDrawOrder(mRedoDrawOrder);
-    emit mMapDocument->objectGroupChanged(mObjectGroup);
-}
-
 void ChangeObjectGroupProperties::undo()
 {
-    mObjectGroup->setColor(mUndoColor);
-    mObjectGroup->setDrawOrder(mUndoDrawOrder);
-    emit mMapDocument->objectGroupChanged(mObjectGroup);
+    int properties = 0;
+
+    if (mObjectGroup->color() != mUndoColor) {
+        mObjectGroup->setColor(mUndoColor);
+        properties |= ObjectGroupChangeEvent::ColorProperty;
+    }
+
+    if (mObjectGroup->drawOrder() != mUndoDrawOrder) {
+        mObjectGroup->setDrawOrder(mUndoDrawOrder);
+        properties |= ObjectGroupChangeEvent::DrawOrderProperty;
+    }
+
+    emit mDocument->changed(ObjectGroupChangeEvent(mObjectGroup, properties));
+}
+
+void ChangeObjectGroupProperties::redo()
+{
+    int properties = 0;
+
+    if (mObjectGroup->color() != mRedoColor) {
+        mObjectGroup->setColor(mRedoColor);
+        properties |= ObjectGroupChangeEvent::ColorProperty;
+    }
+
+    if (mObjectGroup->drawOrder() != mRedoDrawOrder) {
+        mObjectGroup->setDrawOrder(mRedoDrawOrder);
+        properties |= ObjectGroupChangeEvent::DrawOrderProperty;
+    }
+
+    emit mDocument->changed(ObjectGroupChangeEvent(mObjectGroup, properties));
 }

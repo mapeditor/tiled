@@ -29,6 +29,8 @@
 #include <QString>
 #include <QVariant>
 
+#include <memory>
+
 class QUndoStack;
 
 namespace Tiled {
@@ -37,6 +39,7 @@ class FileFormat;
 class Object;
 class Tile;
 
+class ChangeEvent;
 class EditableAsset;
 
 /**
@@ -116,6 +119,7 @@ public:
     static const QList<Document*> &documentInstances();
 
 signals:
+    void changed(const ChangeEvent &change);
     void saved();
 
     void fileNameChanged(const QString &fileName,
@@ -149,7 +153,7 @@ protected:
 
     QString mLastExportFileName;
 
-    EditableAsset *mEditable = nullptr;
+    std::unique_ptr<EditableAsset> mEditable;
 
 private:
     static QList<Document*> sDocumentInstances;

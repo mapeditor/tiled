@@ -26,17 +26,18 @@
 
 #include <QCoreApplication>
 
+#include "changeevents.h"
 #include "qtcompat_p.h"
 
 using namespace Tiled;
 
-ChangeMapObject::ChangeMapObject(MapDocument *mapDocument,
+ChangeMapObject::ChangeMapObject(Document *document,
                                  MapObject *mapObject,
                                  MapObject::Property property,
                                  const QVariant &value)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Change Object"))
-    , mMapDocument(mapDocument)
+    , mDocument(document)
     , mMapObject(mapObject)
     , mProperty(property)
     , mValue(value)
@@ -58,19 +59,21 @@ ChangeMapObject::ChangeMapObject(MapDocument *mapDocument,
 void ChangeMapObject::swap()
 {
     QVariant oldValue = mMapObject->mapObjectProperty(mProperty);
-    mMapDocument->mapObjectModel()->setObjectProperty(mMapObject, mProperty, mValue);
+    mMapObject->setMapObjectProperty(mProperty, mValue);
     std::swap(mValue, oldValue);
 
     mMapObject->setPropertyChanged(mProperty, mNewChangeState);
     std::swap(mOldChangeState, mNewChangeState);
+
+    emit mDocument->changed(MapObjectsChangeEvent(mMapObject, mProperty));
 }
 
 
-ChangeMapObjectCells::ChangeMapObjectCells(MapDocument *mapDocument,
+ChangeMapObjectCells::ChangeMapObjectCells(Document *document,
                                            const QVector<MapObjectCell> &changes,
                                            QUndoCommand *parent)
     : QUndoCommand(parent)
-    , mMapObjectModel(mapDocument->mapObjectModel())
+    , mDocument(document)
     , mChanges(changes)
 {
 }
@@ -100,21 +103,21 @@ void ChangeMapObjectCells::swap()
         change.propertyChanged = changed;
     }
 
-    emit mMapObjectModel->objectsChanged(objectList(mChanges));
+    emit mDocument->changed(MapObjectsChangeEvent(objectList(mChanges), MapObject::CellProperty));
 }
 
 
-ChangeMapObjectsTile::ChangeMapObjectsTile(MapDocument *mapDocument,
+ChangeMapObjectsTile::ChangeMapObjectsTile(Document *document,
                                            const QList<MapObject *> &mapObjects,
                                            Tile *tile)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Change %n Object/s Tile",
                                                nullptr, mapObjects.size()))
-    , mMapDocument(mapDocument)
+    , mDocument(document)
     , mMapObjects(mapObjects)
     , mTile(tile)
 {
-    for (MapObject *object : mMapObjects) {
+    for (MapObject *object : qAsConst(mMapObjects)) {
         Cell cell = object->cell();
         mOldCells.append(cell);
         Tile *tile = cell.tile();
@@ -154,7 +157,7 @@ void ChangeMapObjectsTile::restoreTiles()
         mMapObjects[i]->setPropertyChanged(MapObject::CellProperty, mOldChangeStates[i]);
     }
 
-    emit mMapDocument->mapObjectModel()->objectsChanged(mMapObjects);
+    emit mDocument->changed(MapObjectsChangeEvent(mMapObjects, MapObject::CellProperty));
 }
 
 void ChangeMapObjectsTile::changeTiles()
@@ -166,16 +169,16 @@ void ChangeMapObjectsTile::changeTiles()
         mMapObjects[i]->setPropertyChanged(MapObject::CellProperty);
     }
 
-    emit mMapDocument->mapObjectModel()->objectsChanged(mMapObjects);
+    emit mDocument->changed(MapObjectsChangeEvent(mMapObjects, MapObject::CellProperty));
 }
 
-DetachObjects::DetachObjects(MapDocument *mapDocument,
+DetachObjects::DetachObjects(Document *document,
                              const QList<MapObject *> &mapObjects,
                              QUndoCommand *parent)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Detach %n Template Instance(s)",
                                                nullptr, mapObjects.size()), parent)
-    , mMapDocument(mapDocument)
+    , mDocument(document)
     , mMapObjects(mapObjects)
 {
     for (const MapObject *object : mapObjects) {
@@ -191,7 +194,7 @@ void DetachObjects::redo()
     for (MapObject *object : qAsConst(mMapObjects))
         object->detachFromTemplate();
 
-    emit mMapDocument->mapObjectModel()->objectsChanged(mMapObjects);
+    emit mDocument->changed(MapObjectsChangeEvent(mMapObjects, MapObject::TemplateProperty));
 }
 
 void DetachObjects::undo()
@@ -205,16 +208,16 @@ void DetachObjects::undo()
 
     QUndoCommand::undo(); // undo child commands
 
-    emit mMapDocument->mapObjectModel()->objectsChanged(mMapObjects);
+    emit mDocument->changed(MapObjectsChangeEvent(mMapObjects, MapObject::TemplateProperty));
 }
 
-ResetInstances::ResetInstances(MapDocument *mapDocument,
+ResetInstances::ResetInstances(Document *document,
                                const QList<MapObject *> &mapObjects,
                                QUndoCommand *parent)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Reset %n Instances",
                                                nullptr, mapObjects.size()), parent)
-    , mMapDocument(mapDocument)
+    , mDocument(document)
     , mMapObjects(mapObjects)
 {
     for (const MapObject *object : mapObjects)
@@ -228,39 +231,46 @@ ResetInstances::~ResetInstances()
 
 void ResetInstances::redo()
 {
+    MapObject::ChangedProperties affectedProperties = MapObject::CustomProperties;
+
     for (auto object : mMapObjects) {
         // Template instances initially don't hold any custom properties
         object->clearProperties();
+
+        affectedProperties |= object->changedProperties();
 
         // Reset built-in properties
         object->setChangedProperties(MapObject::ChangedProperties());
         object->syncWithTemplate();
     }
 
-    emit mMapDocument->objectsChanged(mMapObjects);
+    emit mDocument->changed(MapObjectsChangeEvent(mMapObjects, affectedProperties));
 
     // This signal forces updating custom properties in the properties dock
-    emit mMapDocument->selectedObjectsChanged();
+//    emit mMapDocument->selectedObjectsChanged();
 }
 
 void ResetInstances::undo()
 {
-    for (int i = 0; i < mMapObjects.size(); ++i)
-        mMapObjects.at(i)->copyPropertiesFrom(mOldMapObjects.at(i));
+    MapObject::ChangedProperties affectedProperties = MapObject::CustomProperties;
 
-    emit mMapDocument->objectsChanged(mMapObjects);
-    emit mMapDocument->selectedObjectsChanged();
+    for (int i = 0; i < mMapObjects.size(); ++i) {
+        mMapObjects.at(i)->copyPropertiesFrom(mOldMapObjects.at(i));
+        affectedProperties |= mOldMapObjects.at(i)->changedProperties();
+    }
+
+    emit mDocument->changed(MapObjectsChangeEvent(mMapObjects, affectedProperties));
 }
 
 
-ReplaceObjectsWithTemplate::ReplaceObjectsWithTemplate(MapDocument *mapDocument,
+ReplaceObjectsWithTemplate::ReplaceObjectsWithTemplate(Document *document,
                                                        const QList<MapObject *> &mapObjects,
                                                        ObjectTemplate *objectTemplate,
                                                        QUndoCommand *parent)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Replace %n Object(s) With Template",
                                                nullptr, mapObjects.size()), parent)
-    , mMapDocument(mapDocument)
+    , mDocument(document)
     , mMapObjects(mapObjects)
     , mObjectTemplate(objectTemplate)
 {
@@ -282,8 +292,7 @@ void ReplaceObjectsWithTemplate::redo()
         object->syncWithTemplate();
     }
 
-    emit mMapDocument->objectsChanged(mMapObjects);
-    emit mMapDocument->selectedObjectsChanged();
+    emit mDocument->changed(MapObjectsChangeEvent(mMapObjects, MapObject::AllProperties));
 }
 
 void ReplaceObjectsWithTemplate::undo()
@@ -291,6 +300,5 @@ void ReplaceObjectsWithTemplate::undo()
     for (int i = 0; i < mMapObjects.size(); ++i)
         mMapObjects.at(i)->copyPropertiesFrom(mOldMapObjects.at(i));
 
-    emit mMapDocument->objectsChanged(mMapObjects);
-    emit mMapDocument->selectedObjectsChanged();
+    emit mDocument->changed(MapObjectsChangeEvent(mMapObjects, MapObject::AllProperties));
 }

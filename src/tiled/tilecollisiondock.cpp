@@ -244,6 +244,8 @@ void TileCollisionDock::setTilesetDocument(TilesetDocument *tilesetDocument)
     mTilesetDocument = tilesetDocument;
 
     if (mTilesetDocument) {
+        connect(mTilesetDocument, &Document::changed,
+                this, &TileCollisionDock::documentChanged);
         connect(mTilesetDocument, &TilesetDocument::tileObjectGroupChanged,
                 this, &TileCollisionDock::tileObjectGroupChanged);
         connect(mTilesetDocument, &TilesetDocument::tilesetTileOffsetChanged,
@@ -345,6 +347,32 @@ void TileCollisionDock::applyChanges()
     mApplyingChanges = false;
 }
 
+void TileCollisionDock::documentChanged(const ChangeEvent &change)
+{
+    if (!mTile || !mTile->objectGroup() || mApplyingChanges)
+        return;
+
+    switch (change.type) {
+    case ChangeEvent::MapObjectsAdded:
+    case ChangeEvent::MapObjectsChanged:
+    case ChangeEvent::MapObjectsRemoved: {
+        auto &mapObjects = static_cast<const MapObjectsEvent&>(change).mapObjects;
+        bool affectsTile = std::any_of(mapObjects.begin(),
+                                       mapObjects.end(),
+                                       [og = mTile->objectGroup()] (MapObject *mapObject) {
+            return mapObject->objectGroup() == og;
+        });
+
+        if (affectsTile)
+            tileObjectGroupChanged(mTile);
+
+        break;
+    }
+    default:
+        break;
+    }
+}
+
 void TileCollisionDock::tileObjectGroupChanged(Tile *tile)
 {
     if (mTile != tile)
@@ -385,7 +413,9 @@ void TileCollisionDock::tilesetTileOffsetChanged(Tileset *tileset)
 
     auto tileLayer = mDummyMapDocument->map()->layerAt(0);
     auto tileOffset = tileset->tileOffset();
-    mDummyMapDocument->layerModel()->setLayerOffset(tileLayer, -tileOffset);
+    tileLayer->setOffset(-tileOffset);
+
+    emit mDummyMapDocument->changed(LayerChangeEvent(tileLayer, LayerChangeEvent::OffsetProperty));
 }
 
 void TileCollisionDock::cut()

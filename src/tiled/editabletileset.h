@@ -33,6 +33,8 @@ class EditableTileset : public EditableAsset
     Q_OBJECT
 
     Q_PROPERTY(QString name READ name WRITE setName)
+    Q_PROPERTY(QList<QObject*> tiles READ tiles)
+    Q_PROPERTY(int tileCount READ tileCount)
     Q_PROPERTY(int tileWidth READ tileWidth)
     Q_PROPERTY(int tileHeight READ tileHeight)
     Q_PROPERTY(QSize tileSize READ tileSize)
@@ -51,6 +53,7 @@ public:
     bool isReadOnly() const override;
 
     const QString &name() const;
+    int tileCount() const;
     int tileWidth() const;
     int tileHeight() const;
     QSize tileSize() const;
@@ -60,7 +63,7 @@ public:
     QColor backgroundColor() const;
 
     Q_INVOKABLE Tiled::EditableTile *tile(int id);
-    Q_INVOKABLE QList<QObject*> tiles();
+    QList<QObject*> tiles();
 
     TilesetDocument *tilesetDocument() const;
     Tileset *tileset() const;
@@ -73,6 +76,8 @@ public slots:
 private slots:
     void attachTiles(const QList<Tile*> &tiles);
     void detachTiles(const QList<Tile*> &tiles);
+
+    void tileObjectGroupChanged(Tile *tile);
 
 private:
     bool mReadOnly = false;
@@ -88,6 +93,11 @@ inline bool EditableTileset::isReadOnly() const
 inline const QString &EditableTileset::name() const
 {
     return tileset()->name();
+}
+
+inline int EditableTileset::tileCount() const
+{
+    return tileset()->tileCount();
 }
 
 inline int EditableTileset::tileWidth() const

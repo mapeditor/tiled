@@ -250,6 +250,9 @@ ObjectSelectionItem::ObjectSelectionItem(MapDocument *mapDocument,
 {
     setFlag(QGraphicsItem::ItemHasNoContents);
 
+    connect(mapDocument, &Document::changed,
+            this, &ObjectSelectionItem::changeEvent);
+
     connect(mapDocument, &MapDocument::selectedObjectsChanged,
             this, &ObjectSelectionItem::selectedObjectsChanged);
 
@@ -262,23 +265,8 @@ ObjectSelectionItem::ObjectSelectionItem(MapDocument *mapDocument,
     connect(mapDocument, &MapDocument::layerAboutToBeRemoved,
             this, &ObjectSelectionItem::layerAboutToBeRemoved);
 
-    connect(mapDocument, &MapDocument::layerChanged,
-            this, &ObjectSelectionItem::layerChanged);
-
-    connect(mapDocument, &MapDocument::objectsChanged,
-            this, &ObjectSelectionItem::syncOverlayItems);
-
-    connect(mapDocument, &MapDocument::objectGroupChanged,
-            this, &ObjectSelectionItem::updateObjectLabelColors);
-
     connect(mapDocument, &MapDocument::hoveredMapObjectChanged,
             this, &ObjectSelectionItem::hoveredMapObjectChanged);
-
-    connect(mapDocument, &MapDocument::objectsAdded,
-            this, &ObjectSelectionItem::objectsAdded);
-
-    connect(mapDocument, &MapDocument::objectsRemoved,
-            this, &ObjectSelectionItem::objectsRemoved);
 
     connect(mapDocument, &MapDocument::tilesetTileOffsetChanged,
             this, &ObjectSelectionItem::tilesetTileOffsetChanged);
@@ -300,6 +288,30 @@ ObjectSelectionItem::ObjectSelectionItem(MapDocument *mapDocument,
 
 ObjectSelectionItem::~ObjectSelectionItem()
 {
+}
+
+void ObjectSelectionItem::changeEvent(const ChangeEvent &event)
+{
+    switch (event.type) {
+    case ChangeEvent::LayerChanged:
+        layerChanged(static_cast<const LayerChangeEvent&>(event).layer);
+        break;
+    case ChangeEvent::MapObjectsChanged:
+        syncOverlayItems(static_cast<const MapObjectsChangeEvent&>(event).mapObjects);
+        break;
+    case ChangeEvent::MapObjectsAdded:
+        objectsAdded(static_cast<const MapObjectsEvent&>(event).mapObjects);
+        break;
+    case ChangeEvent::MapObjectsAboutToBeRemoved:
+        objectsAboutToBeRemoved(static_cast<const MapObjectsEvent&>(event).mapObjects);
+        break;
+    case ChangeEvent::ObjectGroupChanged:
+        if (static_cast<const ObjectGroupChangeEvent&>(event).properties & ObjectGroupChangeEvent::ColorProperty)
+            updateObjectLabelColors();
+        break;
+    default:
+        break;
+    }
 }
 
 void ObjectSelectionItem::selectedObjectsChanged()
@@ -457,7 +469,7 @@ void ObjectSelectionItem::objectsAdded(const QList<MapObject *> &objects)
     }
 }
 
-void ObjectSelectionItem::objectsRemoved(const QList<MapObject *> &objects)
+void ObjectSelectionItem::objectsAboutToBeRemoved(const QList<MapObject *> &objects)
 {
     if (objectLabelVisibility() == Preferences::AllObjectLabels)
         for (MapObject *object : objects)

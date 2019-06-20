@@ -21,31 +21,78 @@
 #include "editablemapobject.h"
 
 #include "changemapobject.h"
+#include "changepolygon.h"
 #include "editablemanager.h"
 #include "editablemap.h"
 #include "editableobjectgroup.h"
+#include "editabletile.h"
 #include "movemapobject.h"
+#include "scriptmanager.h"
+#include "tilesetdocument.h"
+
+#include <QJSEngine>
 
 namespace Tiled {
 
-EditableMapObject::EditableMapObject(const QString &name,
+EditableMapObject::EditableMapObject(const QString &name, QObject *parent)
+    : EditableMapObject(Rectangle, name, parent)
+{
+}
+
+EditableMapObject::EditableMapObject(Shape shape,
+                                     const QString &name,
                                      QObject *parent)
     : EditableObject(nullptr, new MapObject(name), parent)
 {
+    mapObject()->setShape(static_cast<MapObject::Shape>(shape));
+
     mDetachedMapObject.reset(mapObject());
     EditableManager::instance().mEditableMapObjects.insert(mapObject(), this);
 }
 
-EditableMapObject::EditableMapObject(EditableMap *map,
+EditableMapObject::EditableMapObject(EditableAsset *asset,
                                      MapObject *mapObject,
                                      QObject *parent)
-    : EditableObject(map, mapObject, parent)
+    : EditableObject(asset, mapObject, parent)
 {
 }
 
 EditableMapObject::~EditableMapObject()
 {
     EditableManager::instance().mEditableMapObjects.remove(mapObject());
+}
+
+QJSValue EditableMapObject::polygon() const
+{
+    QJSEngine *engine = ScriptManager::instance().engine();
+
+    const auto &polygon = mapObject()->polygon();
+    QJSValue array = engine->newArray(polygon.size());
+
+    for (int i = 0; i < polygon.size(); ++i) {
+        QJSValue pointObject = engine->newObject();
+        pointObject.setProperty(QStringLiteral("x"), polygon.at(i).x());
+        pointObject.setProperty(QStringLiteral("y"), polygon.at(i).y());
+        array.setProperty(i, pointObject);
+    }
+
+    return array;
+}
+
+EditableTile *EditableMapObject::tile() const
+{
+    Tile *tile = mapObject()->cell().tile();
+    if (!tile)
+        return nullptr;
+
+    Tileset *tileset = mapObject()->cell().tileset();
+    auto tilesetDocument = TilesetDocument::findDocumentForTileset(tileset->sharedPointer());
+    if (!tilesetDocument)
+        return nullptr;
+
+    auto editableTileset = tilesetDocument->editable();
+    auto editableTile = EditableManager::instance().editableTile(editableTileset, tile);
+    return editableTile;
 }
 
 bool EditableMapObject::isSelected() const
@@ -58,18 +105,18 @@ bool EditableMapObject::isSelected() const
 
 EditableObjectGroup *EditableMapObject::layer() const
 {
-    auto editableLayer = EditableManager::instance().editableLayer(map(), mapObject()->objectGroup());
+    auto editableLayer = EditableManager::instance().editableObjectGroup(asset(), mapObject()->objectGroup());
     return static_cast<EditableObjectGroup*>(editableLayer);
 }
 
 EditableMap *EditableMapObject::map() const
 {
-    return static_cast<EditableMap*>(asset());
+    return asset()->isMap() ? static_cast<EditableMap*>(asset()) : nullptr;
 }
 
 void EditableMapObject::detach()
 {
-    Q_ASSERT(map());
+    Q_ASSERT(asset());
 
     EditableManager::instance().mEditableMapObjects.remove(mapObject());
     setAsset(nullptr);
@@ -102,6 +149,11 @@ void EditableMapObject::release()
     mDetachedMapObject.release();
 }
 
+void EditableMapObject::setShape(Shape shape)
+{
+    setMapObjectProperty(MapObject::ShapeProperty, static_cast<MapObject::Shape>(shape));
+}
+
 void EditableMapObject::setName(QString name)
 {
     setMapObjectProperty(MapObject::NameProperty, name);
@@ -115,10 +167,11 @@ void EditableMapObject::setType(QString type)
 void EditableMapObject::setPos(QPointF pos)
 {
     if (asset()) {
-        asset()->push(new MoveMapObject(map()->mapDocument(), mapObject(),
+        asset()->push(new MoveMapObject(asset()->document(), mapObject(),
                                         pos, mapObject()->position()));
     } else {
         mapObject()->setPosition(pos);
+        mapObject()->setPropertyChanged(MapObject::PositionProperty);
     }
 }
 
@@ -135,6 +188,91 @@ void EditableMapObject::setRotation(qreal rotation)
 void EditableMapObject::setVisible(bool visible)
 {
     setMapObjectProperty(MapObject::VisibleProperty, visible);
+}
+
+void EditableMapObject::setPolygon(QJSValue polygonValue)
+{
+    if (!polygonValue.isArray()) {
+        ScriptManager::instance().throwError(tr("Array expected"));
+        return;
+    }
+
+    QPolygonF polygon;
+    const int length = polygonValue.property(QStringLiteral("length")).toInt();
+
+    for (int i = 0; i < length; ++i) {
+        const auto value = polygonValue.property(i);
+        const QPointF point(value.property(QStringLiteral("x")).toNumber(),
+                            value.property(QStringLiteral("y")).toNumber());
+
+        if (!qIsFinite(point.x()) || !qIsFinite(point.y())) {
+            ScriptManager::instance().throwError(tr("Invalid coordinate"));
+            return;
+        }
+
+        polygon.append(point);
+    }
+
+    if (asset()) {
+        asset()->push(new ChangePolygon(asset()->document(),
+                                        mapObject(),
+                                        polygon,
+                                        mapObject()->polygon()));
+    } else {
+        mapObject()->setPolygon(polygon);
+        mapObject()->setPropertyChanged(MapObject::ShapeProperty);
+    }
+}
+
+void EditableMapObject::setTile(EditableTile *tile)
+{
+    if (asset()) {
+        QList<MapObject *> mapObjects { mapObject() };
+        asset()->push(new ChangeMapObjectsTile(asset()->document(),
+                                               mapObjects,
+                                               tile ? tile->tile() : nullptr));
+    } else {
+        Cell cell = mapObject()->cell();
+        Tile *prevTile = cell.tile();
+
+        // Update the size if the object's tile is valid and the sizes match
+        if (tile && prevTile && prevTile->size() == size())
+            mapObject()->setSize(tile->size());
+
+        cell.setTile(tile ? tile->tile() : nullptr);
+        mapObject()->setCell(cell);
+        mapObject()->setPropertyChanged(MapObject::CellProperty);
+    }
+}
+
+void EditableMapObject::setTileFlippedHorizontally(bool tileFlippedHorizontally)
+{
+    MapObjectCell mapObjectCell;
+    mapObjectCell.object = mapObject();
+    mapObjectCell.cell = mapObject()->cell();
+    mapObjectCell.cell.setFlippedHorizontally(tileFlippedHorizontally);
+
+    if (asset()) {
+        asset()->push(new ChangeMapObjectCells(asset()->document(), { mapObjectCell }));
+    } else {
+        mapObject()->setCell(mapObjectCell.cell);
+        mapObject()->setPropertyChanged(MapObject::CellProperty);
+    }
+}
+
+void EditableMapObject::setTileFlippedVertically(bool tileFlippedVertically)
+{
+    MapObjectCell mapObjectCell;
+    mapObjectCell.object = mapObject();
+    mapObjectCell.cell = mapObject()->cell();
+    mapObjectCell.cell.setFlippedVertically(tileFlippedVertically);
+
+    if (asset()) {
+        asset()->push(new ChangeMapObjectCells(asset()->document(), { mapObjectCell }));
+    } else {
+        mapObject()->setCell(mapObjectCell.cell);
+        mapObject()->setPropertyChanged(MapObject::CellProperty);
+    }
 }
 
 void EditableMapObject::setSelected(bool selected)
@@ -163,10 +301,11 @@ void EditableMapObject::setMapObjectProperty(MapObject::Property property,
                                              const QVariant &value)
 {
     if (asset()) {
-        asset()->push(new ChangeMapObject(map()->mapDocument(), mapObject(),
+        asset()->push(new ChangeMapObject(asset()->document(), mapObject(),
                                           property, value));
     } else {
         mapObject()->setMapObjectProperty(property, value);
+        mapObject()->setPropertyChanged(property);
     }
 }
 

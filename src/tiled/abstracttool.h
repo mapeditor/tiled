@@ -21,6 +21,8 @@
 
 #pragma once
 
+#include "changeevents.h"
+
 #include <QCursor>
 #include <QGraphicsSceneMouseEvent>
 #include <QIcon>
@@ -160,6 +162,8 @@ public:
     void setMapDocument(MapDocument *mapDocument);
 
 protected:
+    virtual void changeEvent(const ChangeEvent &event);
+
     /**
      * Can be used to respond to the map document changing.
      */

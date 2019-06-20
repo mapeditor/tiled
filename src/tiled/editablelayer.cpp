@@ -23,7 +23,6 @@
 #include "changelayer.h"
 #include "editablemanager.h"
 #include "editablemap.h"
-#include "renamelayer.h"
 #include "scriptmanager.h"
 
 namespace Tiled {
@@ -35,8 +34,8 @@ EditableLayer::EditableLayer(std::unique_ptr<Layer> &&layer, QObject *parent)
     EditableManager::instance().mEditableLayers.insert(this->layer(), this);
 }
 
-EditableLayer::EditableLayer(EditableMap *map, Layer *layer, QObject *parent)
-    : EditableObject(map, layer, parent)
+EditableLayer::EditableLayer(EditableAsset *asset, Layer *layer, QObject *parent)
+    : EditableObject(asset, layer, parent)
 {
 }
 
@@ -47,7 +46,7 @@ EditableLayer::~EditableLayer()
 
 EditableMap *EditableLayer::map() const
 {
-    return static_cast<EditableMap*>(asset());
+    return asset()->isMap() ? static_cast<EditableMap*>(asset()) : nullptr;
 }
 
 bool EditableLayer::isSelected() const
@@ -57,6 +56,10 @@ bool EditableLayer::isSelected() const
     return false;
 }
 
+/**
+ * Turns this layer reference into a stand-alone copy of the layer it was
+ * referencing.
+ */
 void EditableLayer::detach()
 {
     Q_ASSERT(asset());
@@ -69,14 +72,21 @@ void EditableLayer::detach()
     EditableManager::instance().mEditableLayers.insert(layer(), this);
 }
 
-void EditableLayer::attach(EditableMap *map)
+/**
+ * Turns this stand-alone layer into a reference, with the layer now owned by
+ * the given asset.
+ */
+void EditableLayer::attach(EditableAsset *asset)
 {
-    Q_ASSERT(!asset() && map);
+    Q_ASSERT(!this->asset() && asset);
 
-    setAsset(map);
+    setAsset(asset);
     mDetachedLayer.release();
 }
 
+/**
+ * Take ownership of the referenced layer.
+ */
 void EditableLayer::hold()
 {
     Q_ASSERT(!asset());         // if asset exists, it holds the layer (possibly indirectly)
@@ -85,6 +95,9 @@ void EditableLayer::hold()
     mDetachedLayer.reset(layer());
 }
 
+/**
+ * Release ownership of the referenced layer.
+ */
 void EditableLayer::release()
 {
     Q_ASSERT(mDetachedLayer.get() == layer());
@@ -95,7 +108,7 @@ void EditableLayer::release()
 void EditableLayer::setName(const QString &name)
 {
     if (asset())
-        asset()->push(new RenameLayer(mapDocument(), layer(), name));
+        asset()->push(new SetLayerName(asset()->document(), layer(), name));
     else
         layer()->setName(name);
 }
@@ -103,7 +116,7 @@ void EditableLayer::setName(const QString &name)
 void EditableLayer::setOpacity(qreal opacity)
 {
     if (asset())
-        asset()->push(new SetLayerOpacity(mapDocument(), layer(), opacity));
+        asset()->push(new SetLayerOpacity(asset()->document(), layer(), opacity));
     else
         layer()->setOpacity(opacity);
 }
@@ -111,7 +124,7 @@ void EditableLayer::setOpacity(qreal opacity)
 void EditableLayer::setVisible(bool visible)
 {
     if (asset())
-        asset()->push(new SetLayerVisible(mapDocument(), layer(), visible));
+        asset()->push(new SetLayerVisible(asset()->document(), layer(), visible));
     else
         layer()->setVisible(visible);
 }
@@ -119,7 +132,7 @@ void EditableLayer::setVisible(bool visible)
 void EditableLayer::setLocked(bool locked)
 {
     if (asset())
-        asset()->push(new SetLayerLocked(mapDocument(), layer(), locked));
+        asset()->push(new SetLayerLocked(asset()->document(), layer(), locked));
     else
         layer()->setLocked(locked);
 }
@@ -127,7 +140,7 @@ void EditableLayer::setLocked(bool locked)
 void EditableLayer::setOffset(QPointF offset)
 {
     if (asset())
-        asset()->push(new SetLayerOffset(mapDocument(), layer(), offset));
+        asset()->push(new SetLayerOffset(asset()->document(), layer(), offset));
     else
         layer()->setOffset(offset);
 }

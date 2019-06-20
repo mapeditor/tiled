@@ -92,6 +92,11 @@ TilesetDocument::TilesetDocument(const SharedTileset &tileset, const QString &fi
 TilesetDocument::~TilesetDocument()
 {
     sTilesetToDocument.remove(mTileset);
+
+    // Needs to be deleted before the Tileset instance is deleted, because it
+    // may cause script values to detach from the map, in which case they'll
+    // need to be able to copy the data.
+    mEditable.reset();
 }
 
 bool TilesetDocument::save(const QString &fileName, QString *error)
@@ -223,9 +228,9 @@ void TilesetDocument::swapTileset(SharedTileset &tileset)
 EditableTileset *TilesetDocument::editable()
 {
     if (!mEditable)
-        mEditable = new EditableTileset(this, this);
+        mEditable.reset(new EditableTileset(this, this));
 
-    return static_cast<EditableTileset*>(mEditable);
+    return static_cast<EditableTileset*>(mEditable.get());
 }
 
 /**

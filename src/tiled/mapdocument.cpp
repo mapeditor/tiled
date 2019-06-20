@@ -64,6 +64,7 @@
 #include <QRect>
 #include <QUndoStack>
 
+#include "changeevents.h"
 #include "qtcompat_p.h"
 
 using namespace Tiled;
@@ -89,19 +90,11 @@ MapDocument::MapDocument(std::unique_ptr<Map> map, const QString &fileName)
             this, &MapDocument::onLayerAboutToBeRemoved);
     connect(mLayerModel, &LayerModel::layerRemoved,
             this, &MapDocument::onLayerRemoved);
-    connect(mLayerModel, &LayerModel::layerChanged,
-            this, &MapDocument::layerChanged);
 
     // Forward signals emitted from the map object model
     mMapObjectModel->setMapDocument(this);
-    connect(mMapObjectModel, &MapObjectModel::objectsAdded,
-            this, &MapDocument::objectsAdded);
-    connect(mMapObjectModel, &MapObjectModel::objectsChanged,
-            this, &MapDocument::objectsChanged);
-    connect(mMapObjectModel, &MapObjectModel::objectsTypeChanged,
-            this, &MapDocument::objectsTypeChanged);
-    connect(mMapObjectModel, &MapObjectModel::objectsRemoved,
-            this, &MapDocument::onObjectsRemoved);
+    connect(this, &Document::changed,
+            this, &MapDocument::onChanged);
 
     connect(mMapObjectModel, &QAbstractItemModel::rowsInserted,
             this, &MapDocument::onMapObjectModelRowsInserted);
@@ -119,7 +112,7 @@ MapDocument::~MapDocument()
     // Needs to be deleted before the Map instance is deleted, because it may
     // cause script values to detach from the map, in which case they'll need
     // to be able to copy the data.
-    delete mEditable;
+    mEditable.reset();
 }
 
 bool MapDocument::save(const QString &fileName, QString *error)
@@ -218,9 +211,9 @@ QString MapDocument::displayName() const
 EditableAsset *MapDocument::editable()
 {
     if (!mEditable)
-        mEditable = new EditableMap(this, this);
+        mEditable.reset(new EditableMap(this, this));
 
-    return mEditable;
+    return mEditable.get();
 }
 
 /**
@@ -822,7 +815,7 @@ void MapDocument::replaceObjectTemplate(const ObjectTemplate *oldObjectTemplate,
     auto changedObjects = mMap->replaceObjectTemplate(oldObjectTemplate, newObjectTemplate);
 
     // Update the objects in the map scene
-    emit objectsChanged(changedObjects);
+    emit changed(MapObjectsChangeEvent(std::move(changedObjects)));
     emit objectTemplateReplaced(newObjectTemplate, oldObjectTemplate);
 }
 
@@ -1020,18 +1013,24 @@ bool MapDocument::templateAllowed(const ObjectTemplate *objectTemplate) const
     return true;
 }
 
-/**
- * Before forwarding the signal, the objects are removed from the list of
- * selected objects, triggering a selectedObjectsChanged signal when
- * appropriate.
- */
-void MapDocument::onObjectsRemoved(const QList<MapObject*> &objects)
+void MapDocument::onChanged(const ChangeEvent &change)
 {
-    if (mHoveredMapObject && objects.contains(mHoveredMapObject))
-        setHoveredMapObject(nullptr);
+    switch (change.type) {
+    case ChangeEvent::MapObjectsAboutToBeRemoved: {
+        const auto &mapObjects = static_cast<const MapObjectsEvent&>(change).mapObjects;
 
-    deselectObjects(objects);
-    emit objectsRemoved(objects);
+        if (mHoveredMapObject && mapObjects.contains(mHoveredMapObject))
+            setHoveredMapObject(nullptr);
+
+        // Deselecting all objects to be removed here avoids causing a selection
+        // change for each individual object.
+        deselectObjects(mapObjects);
+
+        break;
+    }
+    default:
+        break;
+    }
 }
 
 void MapDocument::onMapObjectModelRowsInserted(const QModelIndex &parent,
@@ -1148,7 +1147,7 @@ void MapDocument::updateTemplateInstances(const ObjectTemplate *objectTemplate)
             }
         }
     }
-    emit objectsChanged(objectList);
+    emit changed(MapObjectsChangeEvent(std::move(objectList)));
 }
 
 void MapDocument::selectAllInstances(const ObjectTemplate *objectTemplate)

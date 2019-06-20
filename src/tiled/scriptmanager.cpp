@@ -106,7 +106,7 @@ void ScriptManager::initialize()
 {
     QJSValue globalObject = mEngine->globalObject();
     globalObject.setProperty(QStringLiteral("tiled"), mEngine->newQObject(mModule));
-#if QT_VERSION > 0x050800
+#if QT_VERSION >= 0x050800
     globalObject.setProperty(QStringLiteral("Layer"), mEngine->newQMetaObject<EditableLayer>());
     globalObject.setProperty(QStringLiteral("MapObject"), mEngine->newQMetaObject<EditableMapObject>());
     globalObject.setProperty(QStringLiteral("ObjectGroup"), mEngine->newQMetaObject<EditableObjectGroup>());

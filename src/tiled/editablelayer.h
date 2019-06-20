@@ -50,7 +50,7 @@ public:
     explicit EditableLayer(std::unique_ptr<Layer> &&layer,
                            QObject *parent = nullptr);
 
-    EditableLayer(EditableMap *map,
+    EditableLayer(EditableAsset *asset,
                   Layer *layer,
                   QObject *parent = nullptr);
     ~EditableLayer() override;
@@ -70,7 +70,7 @@ public:
     Layer *layer() const;
 
     void detach();
-    void attach(EditableMap *map);
+    void attach(EditableAsset *asset);
     void hold();
     void release();
 
