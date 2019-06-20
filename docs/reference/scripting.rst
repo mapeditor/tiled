@@ -8,14 +8,59 @@ Scripting
 Introduction
 ------------
 
-Initial scripting capabilities have been added to Tiled. The API is
-still incomplete, but many actions can be automated either by
-interacting with any open assets or by triggering UI actions. Scripts
-can be run from the Console view and there is a script loaded on
+Initial scripting capabilities have been added to Tiled. The API is still
+incomplete, but many actions can be automated either by interacting with any
+open assets or by triggering UI actions.
+
+Scripts can be used to implement :ref:`map export formats <script-registerMapFormat>`
+(only text formats for now), :ref:`custom actions <script-registerAction>` and
+:ref:`new tools <script-registerTool>`.
+
+On startup, Tiled will execute any script files present in
+:ref:`extensions <script-extensions>`. In addition it is possible to run
+scripts directly from :ref:`the console <script-console>`. All scripts share
+a single JavaScript context.
+
+.. _script-extensions:
+
+Scripted Extensions
+^^^^^^^^^^^^^^^^^^^
+
+Extensions are placed in a system-specific location. This folder can be opened
+from the Plugins tab in the Preferences dialog.
+
++-------------+-----------------------------------------------------------------+
+| **Windows** | | :file:`C:/Users/<USER>/AppData/Local/Tiled/extensions/`       |
++-------------+-----------------------------------------------------------------+
+| **macOS**   | | :file:`~/Library/Preferences/Tiled/extensions/`               |
++-------------+-----------------------------------------------------------------+
+| **Linux**   | | :file:`~/.config/tiled/extensions/`                           |
++-------------+-----------------------------------------------------------------+
+
+Each extension is expected to be placed in a sub-directory of the extensions
+directory. All scripts files found in these sub-directories are executed on
 startup.
+
+.. note::
+
+    If your scripts depend on other scripts that you want to include rather
+    than have them execute directly, they can be nested in another
+    sub-directory.
+
+When any loaded script is changed, the script engine is reinstantiated and the
+scripts are reloaded. This makes it quick to iterate on a script until it
+works as intended.
+
+Apart from scripts, extensions can include images that can be used as the icon
+for scripted actions or tools.
 
 Startup Script
 ^^^^^^^^^^^^^^
+
+.. warning::
+
+    This functionality is deprecated. Write an
+    :ref:`extension <script-extensions>` instead.
 
 If present, a :file:`startup.js` script is evaluated on startup. This
 script could define functions that can be called from the Console or can
@@ -36,9 +81,10 @@ The location of the startup script depends on the platform. The file
 
 Any file that exists will be evaluated.
 
-When a startup script is changed, the script engine is reinstantiated and the
-scripts are reloaded. This makes it quick to iterate on a script until it
-works at intended.
+As with extensions, the script engine is reinstantiated and the scripts are
+reloaded when the startup script is changed.
+
+.. _script-console:
 
 Console View
 ^^^^^^^^^^^^
@@ -726,6 +772,7 @@ Properties
     :widths: 1, 2
 
     **id** : int |ro|, Unique (map-wide) ID of the object.
+    **shape** : int, :ref:`Shape <script-mapobject-shape>` of the object.
     **name** : string, Name of the object.
     **type** : string, Type of the object.
     **x** : number, X coordinate of the object in pixels.
@@ -736,9 +783,25 @@ Properties
     **size** : size, Size of the object in pixels (has ``width`` and ``height`` members).
     **rotation** : number, Rotation of the object in degrees clockwise.
     **visible** : bool, Whether the object is visible.
+    **polygon** : :ref:`Polygon <script-polygon>`, Polygon of the object.
+    **tile** : :ref:`script-tile`, Tile of the object.
+    **tileFlippedHorizontally** : bool, Whether the tile is flipped horizontally.
+    **tileFlippedVertically** : bool, Whether the tile is flipped vertically.
     **selected** : bool, Whether the object is selected.
     **layer** : :ref:`script-objectgroup` |ro|, Layer this object is part of (or ``null`` in case of a standalone object).
     **map** : :ref:`script-map` |ro|, Map this object is part of (or ``null`` in case of a standalone object).
+
+.. _script-mapobject-shape:
+
+.. csv-table::
+    :header: "MapObject.Shape"
+
+    MapObject.Rectangle
+    MapObject.Polygon
+    MapObject.Polyline
+    MapObject.Ellipse
+    MapObject.Text
+    MapObject.Point
 
 Functions
 ~~~~~~~~~
@@ -760,6 +823,8 @@ Properties
     :widths: 1, 2
 
     **name** : string, Name of the tileset.
+    **tiles**: [:ref:`script-tile`] |ro|, Array of all tiles in this tileset. Note that the index of a tile in this array does not always match with its ID.
+    **tileCount** : int, The number of tiles in this tileset.
     **tileWidth** : int |ro|, Tile width for tiles in this tileset in pixels.
     **tileHeight** : int |ro|, Tile Height for tiles in this tileset in pixels.
     **tileSize** : size |ro|, Tile size for tiles in this tileset in pixels (has ``width`` and ``height`` members).
@@ -779,8 +844,9 @@ Tileset.tile(id : int) : :ref:`script-tile`
     such tile exists. When the tile gets removed from the tileset, the
     reference changes to a standalone copy of the tile.
 
-Tileset.tiles() : [:ref:`script-tile`]
-    Returns an array containing all tiles in the tileset.
+    Note that the tiles in a tileset are only guaranteed to have consecutive
+    IDs for tileset-image based tilesets. For image collection tilesets there
+    will be gaps when tiles have been removed from the tileset.
 
 .. _script-tile:
 
@@ -801,6 +867,7 @@ Properties
     **size** : size |ro|, Size of the tile in pixels (has ``width`` and ``height`` members).
     **type** : string, Type of the tile.
     **probability** : number, Probability that the tile gets chosen relative to other tiles.
+    **objectGroup** : :ref:`script-objectgroup` |ro|, The :ref:`script-objectgroup` associated with the tile in case collision shapes were defined. Returns ``null`` if no collision shapes were defined for this tile.
     **tileset** : :ref:`script-tileset` |ro|, The tileset of the tile.
 
 .. _script-tilelayeredit:
@@ -899,7 +966,7 @@ Properties
     **checkable** : bool, Whether the action can be checked.
     **checked** : bool, Whether the action is checked.
     **enabled** : bool, Whether the action is enabled.
-    **iconName** : string, Name of an icon from the system theme (only works on Linux).
+    **icon** : string, File name of an icon.
     **iconVisibleInMenu** : bool, Whether the action should show an icon in a menu.
     **id** : string |ro|, The ID this action was registered with.
     **shortcut** : QKeySequence, The shortcut (can be assigned a string like "Ctrl+K").
@@ -970,3 +1037,13 @@ point
     **x** : number, X coordinate of the point.
     **y** : number, Y coordinate of the point.
 
+.. _script-polygon:
+
+Polygon
+~~~~~~~
+
+A polygon is not strictly a custom type. It is an array of objects that each
+have an ``x`` and ``y`` property, representing the points of the polygon.
+
+To modify the polygon of a :ref:`script-mapobject`, change or set up the
+polygon array and then assign it to the object.
