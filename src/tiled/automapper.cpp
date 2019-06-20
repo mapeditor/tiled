@@ -42,7 +42,6 @@
 
 using namespace Tiled;
 
-// Should i leave this function here?
 static int wrap(int value, int bound)
 {
     return (value % bound + bound) % bound;
@@ -657,8 +656,7 @@ static bool layerMatchesConditions(const TileLayer &setLayer,
                 int xd = x + offset.x();
                 int yd = y + offset.y();
 
-                if (!options.matchOutsideMap &&
-                        !setLayer.contains(xd, yd))
+                if (!options.matchOutsideMap && !setLayer.contains(xd, yd))
                     return false;
 
                 // Those two options are guaranteed to be false if the map is infinite,
