@@ -199,7 +199,7 @@ OverflowBorder
    are considered as if they were copies of the nearest inbound tiles, effectively
    "overflowing" the map's borders to the outside region.
 
-   When that property is ``true``, it also implies **MatchOutsideMap**. Please note that
+   When this property is ``true``, it implies **MatchOutsideMap**. Note that
    this property has no effect on infinite maps (since there is no notion of border).
 
 .. raw:: html
@@ -212,10 +212,11 @@ WrapBorder
    making tiles on one border of the map influence the regions on the other border and
    vice versa.
 
-   When that property is ``true``, it also implies MatchOutsideMap. Please note that
+   When this property is ``true``, it implies **MatchOutsideMap**. Note that
    this property has no effect on infinite maps (since there is no notion of border).
-   If both **WrapBorder** and **OverflowBorder** are ``true``, **WrapBorder** takes precedence
-   over **OverflowBorder**.
+
+   If both **WrapBorder** and **OverflowBorder** are ``true``, **WrapBorder** takes
+   precedence over **OverflowBorder**.
 
 NoOverlappingRules
    This map property is a boolean property:
