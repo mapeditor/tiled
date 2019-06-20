@@ -183,10 +183,40 @@ MatchOutsideMap
    region falls partially outside of a map. By default it is ``false`` for
    bounded maps and ``true`` for infinite maps. In some cases it can be useful
    to enable this also for bounded maps. Tiles outside of the map boundaries
-   are simply considered empty.
+   are simply considered empty unless one of either **OverflowBorder** or
+   **WrapBorder** are also true.
 
    Tiled 1.0 and 1.1 behaved as if this property was ``true``, whereas older
    versions of Tiled have behaved as if this property was ``false``.
+
+.. raw:: html
+
+   <div class="new">New in Tiled 1.3</div>
+
+OverflowBorder
+   This map property customizes the behavior intended by the **MatchOutsideMap**
+   property. When this property is ``true``, tiles outside of the map boundaries
+   are considered as if they were copies of the nearest inbound tiles, effectively
+   "overflowing" the map's borders to the outside region.
+
+   When this property is ``true``, it implies **MatchOutsideMap**. Note that
+   this property has no effect on infinite maps (since there is no notion of border).
+
+.. raw:: html
+
+   <div class="new">New in Tiled 1.3</div>
+
+WrapBorder
+   This map property customizes the behavior intended by the **MatchOutsideMap**
+   property. When this property is ``true``, the map effectively "wraps" around itself,
+   making tiles on one border of the map influence the regions on the other border and
+   vice versa.
+
+   When this property is ``true``, it implies **MatchOutsideMap**. Note that
+   this property has no effect on infinite maps (since there is no notion of border).
+
+   If both **WrapBorder** and **OverflowBorder** are ``true``, **WrapBorder** takes
+   precedence over **OverflowBorder**.
 
 NoOverlappingRules
    This map property is a boolean property:
