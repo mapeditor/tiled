@@ -189,6 +189,10 @@ MatchOutsideMap
    Tiled 1.0 and 1.1 behaved as if this property was ``true``, whereas older
    versions of Tiled have behaved as if this property was ``false``.
 
+.. raw:: html
+
+   <div class="new">New in Tiled 1.3</div>
+
 OverflowBorder
    This map property customizes the behavior intended by the **MatchOutsideMap**
    property. When this property is ``true``, tiles outside of the map boundaries
@@ -197,6 +201,10 @@ OverflowBorder
 
    When that property is ``true``, it also implies **MatchOutsideMap**. Please note that
    this property has no effect on infinite maps (since there is no notion of border).
+
+.. raw:: html
+
+   <div class="new">New in Tiled 1.3</div>
 
 WrapBorder
    This map property customizes the behavior intended by the **MatchOutsideMap**
