@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: Tiled 1.0\n"
 "Report-Msgid-Bugs-To: bjorn@lindeijer.nl\n"
 "POT-Creation-Date: 2017-12-21 14:31+0100\n"
-"PO-Revision-Date: 2018-09-04 16:18+0000\n"
-"Last-Translator: Rhenaud Dubois <rhen33390@gmail.com>\n"
+"PO-Revision-Date: 2019-06-27 21:00+0000\n"
+"Last-Translator: Calvin M.T. <pro@calvinmt.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/tiled/manual/fr/>"
 "\n"
 "Language: fr\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 3.2-dev\n"
+"X-Generator: Weblate 3.7.1-dev\n"
 "Generated-By: Babel 2.5.1\n"
 
 #: ../../manual/automapping.rst:3
@@ -1755,7 +1755,7 @@ msgstr ""
 
 #: ../../manual/editing-tilesets.rst:101
 msgid "Type"
-msgstr ""
+msgstr "Type"
 
 #: ../../manual/editing-tilesets.rst:100
 msgid ""
