@@ -708,14 +708,15 @@ void MapDocument::removeTilesetAt(int index)
  */
 SharedTileset MapDocument::replaceTileset(int index, const SharedTileset &tileset)
 {
-    SharedTileset oldTileset = mMap->tilesetAt(index);
+    emit tilesetAboutToBeRemoved(index);
 
+    const SharedTileset oldTileset = mMap->tilesetAt(index);
     bool added = mMap->replaceTileset(oldTileset, tileset);
 
+    emit tilesetReplaced(index, tileset.data(), oldTileset.data());
+    emit tilesetRemoved(oldTileset.data());
     if (added)
-        emit tilesetReplaced(index, tileset.data(), oldTileset.data());
-    else
-        emit tilesetRemoved(oldTileset.data());
+        emit tilesetAdded(index, tileset.data());
 
     return oldTileset;
 }

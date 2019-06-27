@@ -542,6 +542,7 @@ Properties
     **backgroundColor** : color, Background color of the map.
     **layerDataFormat** : int, "The format in which the layer data is stored, taken into account by TMX, JSON and Lua map formats: 0 (XML), 1 (Base64), 2 (Base64Gzip), 3 (Base64Zlib), 4 (CSV)"
     **layerCount** : int |ro|, Number of top-level layers the map has.
+    **tilesets** : [:ref:`script-tileset`], "The list of tilesets referenced by this map. To determine which tilesets are actually used, call :ref:`usedTilesets() <script-map-usedTilesets>`."
     **selectedArea** : :ref:`SelectionArea <script-selectedarea>`, The selected area of tiles.
     **currentLayer** : :ref:`script-layer`, The current layer.
     **selectedLayers** : [:ref:`script-layer`], Selected layers.
@@ -583,6 +584,36 @@ TileMap.insertLayerAt(index : int, layer : :ref:`script-layer`) : void
 TileMap.addLayer(layer : :ref:`script-layer`) : void
     Adds the layer to the map, above all existing layers. The layer can't
     already be part of a map.
+
+.. _script-map-addTileset:
+
+TileMap.addTileset(tileset : :ref:`script-tileset`) : bool
+    Adds the given tileset to the list of tilesets referenced by this map.
+    Returns ``true`` if the tileset was added, or ``false`` if the tileset was
+    already referenced by this map.
+
+.. _script-map-replaceTileset:
+
+TileMap.replaceTileset(oldTileset : :ref:`script-tileset`, newTileset : :ref:`script-tileset`) : bool
+    Replaces all occurrences of ``oldTileset`` with ``newTileset``. Returns
+    ``true`` on success, or ``false`` when either the old tileset was not
+    referenced by the map, or when the new tileset was already referenced by
+    the map.
+
+.. _script-map-removeTileset:
+
+TileMap.removeTileset(tileset : :ref:`script-tileset`) : bool
+    Removes the given tileset from the list of tilesets referenced by this
+    map. Returns ``true`` on success, or ``false`` when the given tileset was
+    not referenced by this map or when the tileset was still in use by a tile
+    layer or tile object.
+
+.. _script-map-usedTilesets:
+
+TileMap.usedTilesets() : [:ref:`script-tileset`]
+    Returns the list of tilesets actually used by this map. This is generally
+    a subset of the tilesets referenced by the map (the ``TileMap.tilesets``
+    property).
 
 .. _script-map-resize:
 

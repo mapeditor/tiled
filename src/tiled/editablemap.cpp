@@ -22,6 +22,7 @@
 
 #include "addremovelayer.h"
 #include "addremovemapobject.h"
+#include "addremovetileset.h"
 #include "changeevents.h"
 #include "changelayer.h"
 #include "changemapproperty.h"
@@ -36,9 +37,12 @@
 #include "editabletilelayer.h"
 #include "grouplayer.h"
 #include "movemapobject.h"
+#include "replacetileset.h"
 #include "resizemap.h"
 #include "resizetilelayer.h"
 #include "scriptmanager.h"
+#include "tileset.h"
+#include "tilesetdocument.h"
 
 #include <imagelayer.h>
 #include <mapobject.h>
@@ -97,6 +101,15 @@ EditableMap::~EditableMap()
 {
     for (Layer *layer : map()->layers())
         detachLayer(layer);
+}
+
+QList<QObject *> EditableMap::tilesets() const
+{
+    QList<QObject *> editableTilesets;
+    for (const SharedTileset &tileset : map()->tilesets())
+        if (auto document = TilesetDocument::findDocumentForTileset(tileset))
+            editableTilesets.append(document->editable());
+    return editableTilesets;
 }
 
 EditableLayer *EditableMap::currentLayer()
@@ -194,6 +207,63 @@ void EditableMap::insertLayerAt(int index, EditableLayer *editableLayer)
 void EditableMap::addLayer(EditableLayer *editableLayer)
 {
     insertLayerAt(layerCount(), editableLayer);
+}
+
+bool EditableMap::addTileset(EditableTileset *editableTileset)
+{
+    const auto &tileset = editableTileset->tileset()->sharedPointer();
+    if (map()->indexOfTileset(tileset) != -1)
+        return false;   // can't add existing tileset
+
+    push(new AddTileset(mapDocument(), tileset));
+    return true;
+}
+
+bool EditableMap::replaceTileset(EditableTileset *oldEditableTileset,
+                                 EditableTileset *newEditableTileset)
+{
+    if (oldEditableTileset == newEditableTileset) {
+        ScriptManager::instance().throwError(tr("Invalid argument"));
+        return false;
+    }
+
+    SharedTileset oldTileset = oldEditableTileset->tileset()->sharedPointer();
+    int indexOfOldTileset = map()->indexOfTileset(oldTileset);
+    if (indexOfOldTileset == -1)
+        return false;   // can't replace non-existing tileset
+
+    SharedTileset newTileset = newEditableTileset->tileset()->sharedPointer();
+    int indexOfNewTileset = map()->indexOfTileset(newTileset);
+    if (indexOfNewTileset != -1)
+        return false;   // can't replace with tileset that is already part of the map (undo broken)
+
+    push(new ReplaceTileset(mapDocument(), indexOfOldTileset, newTileset));
+    return true;
+}
+
+bool EditableMap::removeTileset(EditableTileset *editableTileset)
+{
+    Tileset *tileset = editableTileset->tileset();
+    int index = map()->indexOfTileset(tileset->sharedPointer());
+    if (index == -1)
+        return false;   // can't remove non-existing tileset
+
+    if (map()->isTilesetUsed(tileset))
+        return false;   // not allowed to remove a tileset that's in use
+
+    push(new RemoveTileset(mapDocument(), index));
+    return true;
+}
+
+QList<QObject *> EditableMap::usedTilesets() const
+{
+    const auto tilesets = map()->usedTilesets();
+
+    QList<QObject *> editableTilesets;
+    for (const SharedTileset &tileset : tilesets)
+        if (auto document = TilesetDocument::findDocumentForTileset(tileset))
+            editableTilesets.append(document->editable());
+    return editableTilesets;
 }
 
 void EditableMap::setTileWidth(int value)

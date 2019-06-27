@@ -179,7 +179,6 @@ private slots:
 
     void tilesetAdded(int index, Tileset *tileset);
     void tilesetRemoved(Tileset *tileset);
-    void tilesetReplaced(int index, Tileset *tileset, Tileset *oldTileset);
 
     void tilesetNameChanged(Tileset *tileset);
 

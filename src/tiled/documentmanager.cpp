@@ -379,7 +379,6 @@ void DocumentManager::addDocument(const DocumentPtr &document)
     if (auto *mapDocument = qobject_cast<MapDocument*>(documentPtr)) {
         connect(mapDocument, &MapDocument::tilesetAdded, this, &DocumentManager::tilesetAdded);
         connect(mapDocument, &MapDocument::tilesetRemoved, this, &DocumentManager::tilesetRemoved);
-        connect(mapDocument, &MapDocument::tilesetReplaced, this, &DocumentManager::tilesetReplaced);
     }
 
     if (auto *tilesetDocument = qobject_cast<TilesetDocument*>(documentPtr))
@@ -881,14 +880,6 @@ void DocumentManager::tilesetRemoved(Tileset *tileset)
 {
     MapDocument *mapDocument = static_cast<MapDocument*>(QObject::sender());
     removeFromTilesetDocument(tileset->sharedPointer(), mapDocument);
-}
-
-void DocumentManager::tilesetReplaced(int index, Tileset *tileset, Tileset *oldTileset)
-{
-    Q_UNUSED(index)
-    MapDocument *mapDocument = static_cast<MapDocument*>(QObject::sender());
-    addToTilesetDocument(tileset->sharedPointer(), mapDocument);
-    removeFromTilesetDocument(oldTileset->sharedPointer(), mapDocument);
 }
 
 void DocumentManager::tilesetNameChanged(Tileset *tileset)
