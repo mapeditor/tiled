@@ -17,18 +17,17 @@
   features: Reads TMX
   notes: Depends on [zlib](https://zlib.net/) and [TinyXml](http://www.grinninglizard.com/tinyxml/)
 
-- language: C++
-  name: TestNLTmxMap
-  url: https://github.com/catnapgames/TestNLTmxMap
-  updated: 28-11-2017
-  status: Inactive since 2012
-  features: Reads TMX
-  notes: Depends on [RapidXml](http://rapidxml.sourceforge.net/)
-
-- language: JavaScript
+- language: JavaScript / TypeScript
   name: Phaser
   url: https://github.com/photonstorm/phaser
   wiki: https://github.com/bjorn/tiled/wiki/Phaser
   updated: 21-12-2017
   status: Active
   features: Reads tilemaps from CSV or JSON and supports rendering
+
+- language: Object Pascal
+  name: Castle Game Engine
+  url: https://castle-engine.io/
+  updated: 28-06-2019
+  status: Active
+  features: Reads TMX and provides an optional default visualization
