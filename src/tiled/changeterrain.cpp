@@ -1,5 +1,5 @@
 /*
- * renameterrain.cpp
+ * changeterrain.cpp
  * Copyright 2012-2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
@@ -18,7 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "renameterrain.h"
+#include "changeterrain.h"
 
 #include "terrain.h"
 #include "tileset.h"
@@ -49,6 +49,26 @@ void RenameTerrain::undo()
 void RenameTerrain::redo()
 {
     mTerrainModel->setTerrainName(mTerrainId, mNewName);
+}
+
+
+SetTerrainImage::SetTerrainImage(TilesetDocument *tilesetDocument, int terrainId, int tileId)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands",
+                                               "Change Terrain Image"))
+    , mTerrainModel(tilesetDocument->terrainModel())
+    , mTerrainId(terrainId)
+    , mOldImageTileId(tilesetDocument->tileset()->terrain(terrainId)->imageTileId())
+    , mNewImageTileId(tileId)
+{}
+
+void SetTerrainImage::undo()
+{
+    mTerrainModel->setTerrainImage(mTerrainId, mOldImageTileId);
+}
+
+void SetTerrainImage::redo()
+{
+    mTerrainModel->setTerrainImage(mTerrainId, mNewImageTileId);
 }
 
 } // namespace Tiled

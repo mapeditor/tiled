@@ -24,6 +24,7 @@
 #include "editableimagelayer.h"
 #include "editablemap.h"
 #include "editableobjectgroup.h"
+#include "editableterrain.h"
 #include "editabletile.h"
 #include "editabletilelayer.h"
 #include "editabletileset.h"
@@ -104,6 +105,9 @@ EditableObjectGroup *EditableManager::editableObjectGroup(EditableAsset *asset, 
 
 EditableMapObject *EditableManager::editableMapObject(EditableAsset *asset, MapObject *mapObject)
 {
+    if (!mapObject)
+        return nullptr;
+
     Q_ASSERT(mapObject->objectGroup());
 
     EditableMapObject* &editableMapObject = mEditableMapObjects[mapObject];
@@ -115,6 +119,9 @@ EditableMapObject *EditableManager::editableMapObject(EditableAsset *asset, MapO
 
 EditableTile *EditableManager::editableTile(EditableTileset *tileset, Tile *tile)
 {
+    if (!tile)
+        return nullptr;
+
     Q_ASSERT(tile->tileset() == tileset->tileset());
 
     EditableTile* &editableTile = mEditableTiles[tile];
@@ -122,6 +129,20 @@ EditableTile *EditableManager::editableTile(EditableTileset *tileset, Tile *tile
         editableTile = new EditableTile(tileset, tile);
 
     return editableTile;
+}
+
+EditableTerrain *EditableManager::editableTerrain(EditableTileset *tileset, Terrain *terrain)
+{
+    if (!terrain)
+        return nullptr;
+
+    Q_ASSERT(terrain->tileset() == tileset->tileset());
+
+    EditableTerrain* &editableTerrain = mEditableTerrains[terrain];
+    if (!editableTerrain)
+        editableTerrain = new EditableTerrain(tileset, terrain);
+
+    return editableTerrain;
 }
 
 EditableManager::EditableManager(QObject *parent)

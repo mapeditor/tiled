@@ -174,7 +174,6 @@ private:
 
     TilesetTerrainModel *mTerrainModel;
     TilesetWangSetModel *mWangSetModel;
-    WangColorModel *mWangColorModel;
     std::unordered_map<WangSet*, std::unique_ptr<WangColorModel>> mWangColorModels;
 
     QList<Tile*> mSelectedTiles;

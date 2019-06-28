@@ -63,7 +63,6 @@ TilesetDocument::TilesetDocument(const SharedTileset &tileset, const QString &fi
     , mTileset(tileset)
     , mTerrainModel(new TilesetTerrainModel(this, this))
     , mWangSetModel(new TilesetWangSetModel(this, this))
-    , mWangColorModel(nullptr)
 {
     Q_ASSERT(!sTilesetToDocument.contains(tileset));
     sTilesetToDocument.insert(tileset, this);

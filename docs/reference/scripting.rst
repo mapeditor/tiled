@@ -677,7 +677,8 @@ TileLayer.cellAt(x : int, y : int) : cell
     reference.
 
 TileLayer.flagsAt(x : int, y : int) : int
-    Returns the flags used for the tile at the given position.
+    Returns the :ref:`flags <script-tile-flags>` used for the tile at the given
+    position.
 
 TileLayer.tileAt(x : int, y : int) : :ref:`script-tile`
     Returns the tile used at the given position, or ``null`` for empty spaces.
@@ -855,6 +856,7 @@ Properties
 
     **name** : string, Name of the tileset.
     **tiles**: [:ref:`script-tile`] |ro|, Array of all tiles in this tileset. Note that the index of a tile in this array does not always match with its ID.
+    **terrains**: [:ref:`script-terrain`] |ro|, Array of all terrains in this tileset.
     **tileCount** : int, The number of tiles in this tileset.
     **tileWidth** : int |ro|, Tile width for tiles in this tileset in pixels.
     **tileHeight** : int |ro|, Tile Height for tiles in this tileset in pixels.
@@ -897,9 +899,59 @@ Properties
     **height** : int |ro|, Height of the tile in pixels.
     **size** : size |ro|, Size of the tile in pixels (has ``width`` and ``height`` members).
     **type** : string, Type of the tile.
+    **terrain** : :ref:`script-tileterrains`, An object specifying the terrain at each corner of the tile.
     **probability** : number, Probability that the tile gets chosen relative to other tiles.
     **objectGroup** : :ref:`script-objectgroup` |ro|, The :ref:`script-objectgroup` associated with the tile in case collision shapes were defined. Returns ``null`` if no collision shapes were defined for this tile.
+    **frames** : :ref:`[frame] <script-frames>`, This tile's animation as an array of frames.
+    **animated** : bool |ro|, Indicates whether this tile is animated.
     **tileset** : :ref:`script-tileset` |ro|, The tileset of the tile.
+
+.. _script-tile-flags:
+
+.. csv-table::
+    :header: "Tile.Flags"
+
+    Tile.FlippedHorizontally
+    Tile.FlippedVertically
+    Tile.FlippedAntiDiagonally
+    Tile.RotatedHexagonal120
+
+.. _script-tile-corner:
+
+.. csv-table::
+    :header: "Tile.Corner"
+
+    Tile.TopLeft
+    Tile.TopRight
+    Tile.BottomLeft
+    Tile.BottomRight
+
+Functions
+~~~~~~~~~
+
+Tile.terrainAtCorner(corner : :ref:`Corner <script-tile-corner>`) : :ref:`script-terrain`
+    Returns the terrain used at the given corner.
+
+Tile.setTerrainAtCorner(corner : :ref:`Corner <script-tile-corner>`, :ref:`script-terrain`) : void
+    Sets the terrain used at the given corner.
+
+.. _script-terrain:
+
+Terrain
+^^^^^^^
+
+Inherits :ref:`script-object`.
+
+Properties
+~~~~~~~~~~
+
+.. csv-table::
+    :widths: 1, 2
+
+    **id** : int |ro|, ID of this terrain.
+    **name** : string, Name of the terrain.
+    **imageTile** : :ref:`script-tile`, The tile representing the terrain (needs to be from the same tileset).
+    **tileset** : :ref:`script-tileset` |ro|, The tileset of the terrain.
 
 .. _script-tilelayeredit:
 
@@ -925,7 +977,7 @@ Functions
 ~~~~~~~~~
 
 TileLayerEdit.setTile(x : int, y : int, tile : :ref:`script-tile` [, flags : int = 0]) : void
-    Sets the tile at the given location, optionally specifying tile flags.
+    Sets the tile at the given location, optionally specifying :ref:`tile flags <script-tile-flags>`.
 
 .. _script-tilelayeredit-apply:
 
@@ -1078,3 +1130,30 @@ have an ``x`` and ``y`` property, representing the points of the polygon.
 
 To modify the polygon of a :ref:`script-mapobject`, change or set up the
 polygon array and then assign it to the object.
+
+.. _script-tileterrains:
+
+Terrains
+~~~~~~~~
+
+An object specifying the terrain for each corner of a tile:
+
+.. csv-table::
+
+    **topLeft** : :ref:`script-terrain`
+    **topRight** : :ref:`script-terrain`
+    **bottomLeft** : :ref:`script-terrain`
+    **bottomRight** : :ref:`script-terrain`
+
+.. _script-frames:
+
+Frames
+~~~~~~
+
+An array of frames, which are objects with the following properties:
+
+.. csv-table::
+    :widths: 1, 2
+
+    **tileId** : int, The local tile ID used to represent the frame.
+    **duration** : int, Duration of the frame in milliseconds.

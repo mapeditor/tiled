@@ -30,6 +30,7 @@ namespace Tiled {
 class Layer;
 class MapObject;
 class ObjectGroup;
+class Terrain;
 class Tile;
 
 class EditableAsset;
@@ -37,6 +38,7 @@ class EditableLayer;
 class EditableMap;
 class EditableMapObject;
 class EditableObjectGroup;
+class EditableTerrain;
 class EditableTile;
 class EditableTileset;
 
@@ -54,6 +56,7 @@ public:
     EditableLayer *find(Layer *layer) const;
     EditableMapObject *find(MapObject *mapObject) const;
     EditableTile *find(Tile *tile) const;
+    EditableTerrain *find(Terrain *terrain) const;
 
     void release(Layer *layer);
     void release(MapObject *mapObject);
@@ -62,17 +65,20 @@ public:
     EditableObjectGroup *editableObjectGroup(EditableAsset *asset, ObjectGroup *objectGroup);
     EditableMapObject *editableMapObject(EditableAsset *asset, MapObject *mapObject);
     EditableTile *editableTile(EditableTileset *tileset, Tile *tile);
+    EditableTerrain *editableTerrain(EditableTileset *tileset, Terrain *terrain);
 
 private:
     friend class EditableLayer;
     friend class EditableMapObject;
     friend class EditableTile;
+    friend class EditableTerrain;
 
     explicit EditableManager(QObject *parent = nullptr);
 
     QHash<Layer*, EditableLayer*> mEditableLayers;
     QHash<MapObject*, EditableMapObject*> mEditableMapObjects;
     QHash<Tile*, EditableTile*> mEditableTiles;
+    QHash<Terrain*, EditableTerrain*> mEditableTerrains;
 
     static std::unique_ptr<EditableManager> mInstance;
 };
@@ -91,6 +97,11 @@ inline EditableMapObject *EditableManager::find(MapObject *mapObject) const
 inline EditableTile *EditableManager::find(Tile *tile) const
 {
     return mEditableTiles.value(tile);
+}
+
+inline EditableTerrain *EditableManager::find(Terrain *terrain) const
+{
+    return mEditableTerrains.value(terrain);
 }
 
 } // namespace Tiled

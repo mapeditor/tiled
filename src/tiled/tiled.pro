@@ -72,6 +72,7 @@ SOURCES += aboutdialog.cpp \
     changepolygon.cpp \
     changeproperties.cpp \
     changeselectedarea.cpp \
+    changeterrain.cpp \
     changetile.cpp \
     changetileanimation.cpp \
     changetileimagesource.cpp \
@@ -112,6 +113,7 @@ SOURCES += aboutdialog.cpp \
     editableobject.cpp \
     editableobjectgroup.cpp \
     editableselectedarea.cpp \
+    editableterrain.cpp \
     editabletile.cpp \
     editabletilelayer.cpp \
     editabletileset.cpp \
@@ -185,7 +187,6 @@ SOURCES += aboutdialog.cpp \
     propertybrowser.cpp \
     raiselowerhelper.cpp \
     regionvaluetype.cpp \
-    renameterrain.cpp \
     renamewangset.cpp \
     reparentlayers.cpp \
     replacetemplate.cpp \
@@ -293,6 +294,7 @@ HEADERS += aboutdialog.h \
     changepolygon.h \
     changeproperties.h \
     changeselectedarea.h \
+    changeterrain.h \
     changetile.h \
     changetileanimation.h \
     changetileimagesource.h \
@@ -334,6 +336,7 @@ HEADERS += aboutdialog.h \
     editableobject.h \
     editableobjectgroup.h \
     editableselectedarea.h \
+    editableterrain.h \
     editabletile.h \
     editabletilelayer.h \
     editabletileset.h \
@@ -409,7 +412,6 @@ HEADERS += aboutdialog.h \
     randompicker.h \
     rangeset.h \
     regionvaluetype.h \
-    renameterrain.h \
     renamewangset.h \
     reparentlayers.h \
     replacetemplate.h \

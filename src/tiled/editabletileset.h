@@ -34,6 +34,7 @@ class EditableTileset : public EditableAsset
 
     Q_PROPERTY(QString name READ name WRITE setName)
     Q_PROPERTY(QList<QObject*> tiles READ tiles)
+    Q_PROPERTY(QList<QObject*> terrains READ terrains)
     Q_PROPERTY(int tileCount READ tileCount)
     Q_PROPERTY(int tileWidth READ tileWidth)
     Q_PROPERTY(int tileHeight READ tileHeight)
@@ -64,6 +65,7 @@ public:
 
     Q_INVOKABLE Tiled::EditableTile *tile(int id);
     QList<QObject*> tiles();
+    QList<QObject*> terrains();
 
     TilesetDocument *tilesetDocument() const;
     Tileset *tileset() const;
@@ -76,8 +78,11 @@ public slots:
 private slots:
     void attachTiles(const QList<Tile*> &tiles);
     void detachTiles(const QList<Tile*> &tiles);
+    void detachTerrains(const QList<Terrain*> &terrains);
 
     void tileObjectGroupChanged(Tile *tile);
+
+    void terrainAdded(Tileset *tileset, int terrainId);
 
 private:
     bool mReadOnly = false;

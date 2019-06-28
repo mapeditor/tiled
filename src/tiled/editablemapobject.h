@@ -56,7 +56,6 @@ class EditableMapObject : public EditableObject
     Q_PROPERTY(bool selected READ isSelected WRITE setSelected)
     Q_PROPERTY(Tiled::EditableObjectGroup *layer READ layer)
     Q_PROPERTY(Tiled::EditableMap *map READ map)
-//    Q_PROPERTY(bool mTemplateBase)
 //    Q_PROPERTY(ChangedProperties mChangedProperties)
 
 public:
