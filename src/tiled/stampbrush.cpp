@@ -113,39 +113,42 @@ void StampBrush::tilePositionChanged(QPoint pos)
 
 void StampBrush::mousePressed(QGraphicsSceneMouseEvent *event)
 {
-    if (!brushItem()->isVisible())
-        return;
-
-    if (event->button() == Qt::LeftButton) {
-        switch (mBrushBehavior) {
-        case Line:
-            mStampReference = tilePosition();
-            mBrushBehavior = LineStartSet;
-            break;
-        case Circle:
-            mStampReference = tilePosition();
-            mBrushBehavior = CircleMidSet;
-            break;
-        case LineStartSet:
-            doPaint();
-            mStampReference = tilePosition();
-            break;
-        case CircleMidSet:
-            doPaint();
-            break;
-        case Paint:
-            beginPaint();
-            break;
-        case Free:
-            beginPaint();
-            mBrushBehavior = Paint;
-            break;
-        case Capture:
-            break;
+    if (brushItem()->isVisible()) {
+        if (event->button() == Qt::LeftButton) {
+            switch (mBrushBehavior) {
+            case Line:
+                mStampReference = tilePosition();
+                mBrushBehavior = LineStartSet;
+                break;
+            case Circle:
+                mStampReference = tilePosition();
+                mBrushBehavior = CircleMidSet;
+                break;
+            case LineStartSet:
+                doPaint();
+                mStampReference = tilePosition();
+                break;
+            case CircleMidSet:
+                doPaint();
+                break;
+            case Paint:
+                beginPaint();
+                break;
+            case Free:
+                beginPaint();
+                mBrushBehavior = Paint;
+                break;
+            case Capture:
+                break;
+            }
+            return;
+        } else if (event->button() == Qt::RightButton && event->modifiers() == Qt::NoModifier) {
+            beginCapture();
+            return;
         }
-    } else if (event->button() == Qt::RightButton) {
-        beginCapture();
     }
+
+    AbstractTileTool::mousePressed(event);
 }
 
 void StampBrush::mouseReleased(QGraphicsSceneMouseEvent *event)

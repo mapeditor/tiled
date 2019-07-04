@@ -126,6 +126,10 @@ void ScriptedTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifier
 
 void ScriptedTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
+    AbstractTileTool::mousePressed(event);
+    if (event->isAccepted())
+        return;
+
     QJSValueList args;
     args.append(event->button());
     args.append(event->pos().x());
@@ -133,6 +137,7 @@ void ScriptedTool::mousePressed(QGraphicsSceneMouseEvent *event)
     args.append(static_cast<int>(event->modifiers()));
 
     call(QStringLiteral("mousePressed"), args);
+    event->accept();
 }
 
 void ScriptedTool::mouseReleased(QGraphicsSceneMouseEvent *event)
