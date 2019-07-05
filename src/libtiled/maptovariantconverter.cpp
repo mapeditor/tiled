@@ -64,6 +64,7 @@ QVariant MapToVariantConverter::toVariant(const Map &map, const QDir &mapDir)
     mapVariant[QLatin1String("infinite")] = map.infinite();
     mapVariant[QLatin1String("nextlayerid")] = map.nextLayerId();
     mapVariant[QLatin1String("nextobjectid")] = map.nextObjectId();
+    mapVariant[QLatin1String("compressionlevel")] = map.compressionlevel();
 
     addProperties(mapVariant, map.properties());
 
