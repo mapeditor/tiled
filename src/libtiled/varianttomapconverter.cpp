@@ -124,7 +124,7 @@ std::unique_ptr<Map> VariantToMapConverter::toMap(const QVariant &variant,
     }
 
     const int compressionLevel = variantMap[QLatin1String("compressionlevel")].toInt();
-    map->setCompressionlevel(compressionLevel);
+    map->setCompressionLevel(compressionLevel);
 
     return map;
 }

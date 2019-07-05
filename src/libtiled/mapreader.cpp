@@ -282,7 +282,7 @@ std::unique_ptr<Map> MapReaderPrivate::readMap()
     mMap->setStaggerAxis(staggerAxis);
     mMap->setStaggerIndex(staggerIndex);
     mMap->setRenderOrder(renderOrder);
-    mMap->setCompressionlevel(compressionLevelString.toUInt());
+    mMap->setCompressionLevel(compressionLevelString.toUInt());
     if (nextLayerId)
         mMap->setNextLayerId(nextLayerId);
     if (nextObjectId)

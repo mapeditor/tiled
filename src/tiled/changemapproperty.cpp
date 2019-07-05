@@ -195,9 +195,9 @@ void ChangeMapProperty::swap()
         break;
     }
     case CompressionLevel: {
-        const unsigned int compressionLevel = map->compressionlevel();
-        map->setCompressionlevel(mCompressionLevel);
-        mCompressionLevel = compressionLevel;
+        const int compressionLevel = map->compressionLevel();
+        map->setCompressionLevel(mIntValue);
+        mIntValue = compressionLevel;
         break;
     }
     }

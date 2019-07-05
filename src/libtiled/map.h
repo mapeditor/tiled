@@ -186,12 +186,12 @@ public:
     /**
      * Returns the compression level of this map.
      */
-    unsigned int compressionlevel() const { return mCompressionlevel; }
+    int compressionLevel() const { return mCompressionLevel; }
 
     /**
      * Sets the compression level of this map.
      */
-    void setCompressionlevel(int compressionlevel) { if(compressionlevel>=1 && compressionlevel<=99) mCompressionlevel = compressionlevel; }
+    void setCompressionLevel(int compressionLevel) { mCompressionLevel = compressionLevel; }
 
     /**
      * Returns the width of this map in tiles.
@@ -472,7 +472,7 @@ private:
 
     Orientation mOrientation;
     RenderOrder mRenderOrder;
-    unsigned int mCompressionlevel;
+    int mCompressionLevel;
     int mWidth;
     int mHeight;
     int mTileWidth;

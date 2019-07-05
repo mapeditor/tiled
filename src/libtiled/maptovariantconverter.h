@@ -68,18 +68,18 @@ private:
     QVariant propertyTypesToVariant(const Properties &properties) const;
     QVariant toVariant(const WangSet &wangSet) const;
     QVariant toVariant(const WangColor &wangColor) const;
-    QVariant toVariant(const QList<Layer*> &layers, Map::LayerDataFormat format) const;
-    QVariant toVariant(const TileLayer &tileLayer, Map::LayerDataFormat format) const;
+    QVariant toVariant(const QList<Layer*> &layers, Map::LayerDataFormat format, int compressionLevel) const;
+    QVariant toVariant(const TileLayer &tileLayer, Map::LayerDataFormat format, int compressionLevel) const;
     QVariant toVariant(const ObjectGroup &objectGroup) const;
     QVariant toVariant(const MapObject &object) const;
     QVariant toVariant(const TextData &textData) const;
     QVariant toVariant(const ImageLayer &imageLayer) const;
-    QVariant toVariant(const GroupLayer &groupLayer, Map::LayerDataFormat format) const;
+    QVariant toVariant(const GroupLayer &groupLayer, Map::LayerDataFormat format, int compressionLevel) const;
 
     void addTileLayerData(QVariantMap &variant,
                           const TileLayer &tileLayer,
-                          Map::LayerDataFormat format,
-                          const QRect &bounds, const unsigned int compressionlevel = 6) const;
+                          Map::LayerDataFormat format, int compressionlevel,
+                          const QRect &bounds) const;
 
     void addLayerAttributes(QVariantMap &layerVariant,
                             const Layer &layer) const;

@@ -68,18 +68,19 @@ public:
     void writeLayers(LuaTableWriter &,
                      const QList<Tiled::Layer*> &layers,
                      Tiled::Map::LayerDataFormat format,
-                     const unsigned int compressionlevel = 6);
+                     int compressionLevel);
     void writeTileLayer(LuaTableWriter &, const Tiled::TileLayer *,
-                        Tiled::Map::LayerDataFormat, const unsigned int compressionlevel = 6);
+                        Tiled::Map::LayerDataFormat, int compressionLevel);
     void writeTileLayerData(LuaTableWriter &, const Tiled::TileLayer *,
                             Tiled::Map::LayerDataFormat format,
                             QRect bounds,
-                            const unsigned int compressionlevel = 6);
+                            int compressionLevel);
     void writeObjectGroup(LuaTableWriter &, const Tiled::ObjectGroup *,
                           const QByteArray &key = QByteArray());
     void writeImageLayer(LuaTableWriter &, const Tiled::ImageLayer *);
     void writeGroupLayer(LuaTableWriter &, const Tiled::GroupLayer *,
-                         Tiled::Map::LayerDataFormat);
+                         Tiled::Map::LayerDataFormat,
+                         int compressionLevel);
     void writeMapObject(LuaTableWriter &, const Tiled::MapObject *);
 
     static void writePolygon(LuaTableWriter &, const Tiled::MapObject *);
@@ -236,7 +237,7 @@ void LuaWriter::writeMap(LuaTableWriter &writer, const Map *map)
     }
     writer.writeEndTable();
 
-    writeLayers(writer, map->layers(), map->layerDataFormat(), map->compressionlevel());
+    writeLayers(writer, map->layers(), map->layerDataFormat(), map->compressionLevel());
 
     writer.writeEndTable();
 }
@@ -418,13 +419,13 @@ void LuaWriter::writeTileset(LuaTableWriter &writer, const Tileset &tileset,
 void LuaWriter::writeLayers(LuaTableWriter &writer,
                             const QList<Layer *> &layers,
                             Map::LayerDataFormat format,
-                            const unsigned int compressionlevel)
+                            int compressionLevel)
 {
     writer.writeStartTable("layers");
     for (const Layer *layer : layers) {
         switch (layer->layerType()) {
         case Layer::TileLayerType:
-            writeTileLayer(writer, static_cast<const TileLayer*>(layer), format, compressionlevel);
+            writeTileLayer(writer, static_cast<const TileLayer*>(layer), format, compressionLevel);
             break;
         case Layer::ObjectGroupType:
             writeObjectGroup(writer, static_cast<const ObjectGroup*>(layer));
@@ -433,7 +434,7 @@ void LuaWriter::writeLayers(LuaTableWriter &writer,
             writeImageLayer(writer, static_cast<const ImageLayer*>(layer));
             break;
         case Layer::GroupLayerType:
-            writeGroupLayer(writer, static_cast<const GroupLayer*>(layer), format);
+            writeGroupLayer(writer, static_cast<const GroupLayer*>(layer), format, compressionLevel);
             break;
         }
     }
@@ -443,7 +444,7 @@ void LuaWriter::writeLayers(LuaTableWriter &writer,
 void LuaWriter::writeTileLayer(LuaTableWriter &writer,
                                const TileLayer *tileLayer,
                                Map::LayerDataFormat format,
-                               const unsigned int compressionlevel)
+                               int compressionLevel)
 {
     writer.writeStartTable();
 
@@ -502,14 +503,14 @@ void LuaWriter::writeTileLayer(LuaTableWriter &writer,
             writer.writeKeyAndValue("height", rect.height());
             writer.setSuppressNewlines(false);
 
-            writeTileLayerData(writer, tileLayer, format, rect);
+            writeTileLayerData(writer, tileLayer, format, rect, compressionLevel);
 
             writer.writeEndTable();
         }
         writer.writeEndTable();
     } else {
         writeTileLayerData(writer, tileLayer, format,
-                           QRect(0, 0, tileLayer->width(), tileLayer->height()), compressionlevel);
+                           QRect(0, 0, tileLayer->width(), tileLayer->height()), compressionLevel);
     }
 
     writer.writeEndTable();
@@ -519,7 +520,7 @@ void LuaWriter::writeTileLayerData(LuaTableWriter &writer,
                                    const TileLayer *tileLayer,
                                    Map::LayerDataFormat format,
                                    QRect bounds,
-                                   const unsigned int compressionlevel)
+                                   int compressionLevel)
 {
     switch (format) {
     case Map::XML:
@@ -539,7 +540,7 @@ void LuaWriter::writeTileLayerData(LuaTableWriter &writer,
     case Map::Base64Zlib:
     case Map::Base64Gzip:
     case Map::Base64Zstandard: {
-        QByteArray layerData = mGidMapper.encodeLayerData(*tileLayer, format, bounds, compressionlevel);
+        QByteArray layerData = mGidMapper.encodeLayerData(*tileLayer, format, bounds, compressionLevel);
         writer.writeKeyAndValue("data", layerData);
         break;
     }
@@ -608,7 +609,8 @@ void LuaWriter::writeImageLayer(LuaTableWriter &writer,
 
 void LuaWriter::writeGroupLayer(LuaTableWriter &writer,
                                 const GroupLayer *groupLayer,
-                                Map::LayerDataFormat format)
+                                Map::LayerDataFormat format,
+                                int compressionLevel)
 {
     writer.writeStartTable();
 
@@ -624,7 +626,7 @@ void LuaWriter::writeGroupLayer(LuaTableWriter &writer,
 
     writeProperties(writer, groupLayer->properties());
 
-    writeLayers(writer, groupLayer->layers(), format);
+    writeLayers(writer, groupLayer->layers(), format, compressionLevel);
 
     writer.writeEndTable();
 }

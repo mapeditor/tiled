@@ -68,7 +68,9 @@ static void logZlibError(int error)
     }
 }
 
-QByteArray Tiled::decompress(const QByteArray &data, int expectedSize, CompressionMethod method)
+QByteArray Tiled::decompress(const QByteArray &data,
+                             int expectedSize,
+                             CompressionMethod method)
 {
     if (data.isEmpty())
         return QByteArray();
@@ -128,7 +130,7 @@ QByteArray Tiled::decompress(const QByteArray &data, int expectedSize, Compressi
 
         out.resize(outLength);
         return out;
-    #ifdef TILED_ZSTD_SUPPORT
+#ifdef TILED_ZSTD_SUPPORT
     } else if (method == Zstandard) {
         size_t const dSize = ZSTD_decompress(out.data(), out.size(), data.constData(), data.size());
         if (ZSTD_isError(dSize)) {
@@ -137,22 +139,26 @@ QByteArray Tiled::decompress(const QByteArray &data, int expectedSize, Compressi
         }
         out.resize(dSize);
         return out;
-    #endif
+#endif
     } else {
         qDebug() << "compression not supported:" << method;
         return QByteArray();
     }
 }
 
-QByteArray Tiled::compress(const QByteArray &data, CompressionMethod method, unsigned int compressionlevel)
+QByteArray Tiled::compress(const QByteArray &data,
+                           CompressionMethod method,
+                           int compressionLevel)
 {
     if (data.isEmpty())
         return QByteArray();
 
     if (method == Zlib || method == Gzip) {
-        int compressionlevelZlib=Z_DEFAULT_COMPRESSION;
-        if(compressionlevel>=1 && compressionlevel<=9)
-            compressionlevelZlib=compressionlevel;
+        if (compressionLevel == -1)
+            compressionLevel = Z_DEFAULT_COMPRESSION;
+        else
+            compressionLevel = qBound(1, compressionLevel, 9);
+
         QByteArray out;
         out.resize(1024);
         int err;
@@ -167,7 +173,7 @@ QByteArray Tiled::compress(const QByteArray &data, CompressionMethod method, uns
 
         const int windowBits = (method == Gzip) ? 15 + 16 : 15;
 
-        err = deflateInit2(&strm, compressionlevelZlib, Z_DEFLATED, windowBits,
+        err = deflateInit2(&strm, compressionLevel, Z_DEFLATED, windowBits,
                            8, Z_DEFAULT_STRATEGY);
         if (err != Z_OK) {
             logZlibError(err);
@@ -199,30 +205,31 @@ QByteArray Tiled::compress(const QByteArray &data, CompressionMethod method, uns
 
         out.resize(outLength);
         return out;
-    #ifdef TILED_ZSTD_SUPPORT
+#ifdef TILED_ZSTD_SUPPORT
     } else if (method == Zstandard) {
-        int compressionlevelZstandard=6;
-        if(compressionlevel>=1 && compressionlevel<=22)
-            compressionlevelZstandard=compressionlevel;
+        if (compressionLevel == -1)
+            compressionLevel = 6;
+        else
+            compressionLevel = qBound(1, compressionLevel, 22);
+
         size_t const cBuffSize = ZSTD_compressBound(data.size());
 
         void* const cBuff = malloc(cBuffSize);
-        if (!cBuff)
-        {
+        if (!cBuff) {
             qDebug() << "error to alloc" << cBuffSize;
             return QByteArray();
         }
 
-        size_t const cSize = ZSTD_compress(cBuff, cBuffSize, data.constData(), data.size(), compressionlevelZstandard);
+        size_t const cSize = ZSTD_compress(cBuff, cBuffSize, data.constData(), data.size(), compressionLevel);
         if (ZSTD_isError(cSize)) {
             qDebug() << "error compressing:" << ZSTD_getErrorName(cSize);
             return QByteArray();
         }
 
-        QByteArray data(static_cast<char *>(cBuff),cSize);
+        QByteArray data(static_cast<char *>(cBuff), cSize);
         free(cBuff);
         return data;
-    #endif
+#endif
     } else {
         qDebug() << "compression not supported:" << method;
         return QByteArray();

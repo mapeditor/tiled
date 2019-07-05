@@ -1580,7 +1580,7 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[StaggerAxisProperty]->setValue(map->staggerAxis());
         mIdToProperty[StaggerIndexProperty]->setValue(map->staggerIndex());
         mIdToProperty[LayerFormatProperty]->setValue(map->layerDataFormat());
-        mIdToProperty[CompressionLevelProperty]->setValue(map->compressionlevel());
+        mIdToProperty[CompressionLevelProperty]->setValue(map->compressionLevel());
         mIdToProperty[RenderOrderProperty]->setValue(map->renderOrder());
         mIdToProperty[BackgroundColorProperty]->setValue(map->backgroundColor());
         break;

@@ -149,7 +149,7 @@ unsigned GidMapper::cellToGid(const Cell &cell) const
  */
 QByteArray GidMapper::encodeLayerData(const TileLayer &tileLayer,
                                       Map::LayerDataFormat format,
-                                      QRect bounds, const unsigned int compressionlevel) const
+                                      QRect bounds, int compressionLevel) const
 {
     Q_ASSERT(format != Map::XML);
     Q_ASSERT(format != Map::CSV);
@@ -171,11 +171,11 @@ QByteArray GidMapper::encodeLayerData(const TileLayer &tileLayer,
     }
 
     if (format == Map::Base64Gzip)
-        tileData = compress(tileData, Gzip, compressionlevel);
+        tileData = compress(tileData, Gzip, compressionLevel);
     else if (format == Map::Base64Zlib)
-        tileData = compress(tileData, Zlib, compressionlevel);
+        tileData = compress(tileData, Zlib, compressionLevel);
     else if (format == Map::Base64Zstandard)
-        tileData = compress(tileData, Zstandard, compressionlevel);
+        tileData = compress(tileData, Zstandard, compressionLevel);
 
     return tileData.toBase64();
 }
