@@ -980,7 +980,7 @@ void PropertyBrowser::applyMapValue(PropertyId id, const QVariant &val)
         command = new ChangeMapProperty(mMapDocument, val.value<QColor>());
         break;
     case CompressionLevelProperty: {
-        command = new ChangeMapProperty(mMapDocument, val.toInt());
+        command = new ChangeMapProperty(mMapDocument, ChangeMapProperty::Property::CompressionLevel, val.toInt());
         break;
     }
     default:
