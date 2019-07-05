@@ -104,8 +104,8 @@ public:
         Base64          = 1,
         Base64Gzip      = 2,
         Base64Zlib      = 3,
-        CSV             = 4,
-        Base64Zstandard = 5
+        Base64Zstandard = 4,
+        CSV             = 5
     };
     Q_ENUM(LayerDataFormat)
 
@@ -660,6 +660,14 @@ TILEDSHARED_EXPORT QString orientationToString(Map::Orientation);
  *         the string is unrecognized.
  */
 TILEDSHARED_EXPORT Map::Orientation orientationFromString(const QString &);
+
+/**
+ * Helper function that returns a string representing the compression used by
+ * the given layer data format.
+ *
+ * @return The compression as a lowercase string.
+ */
+TILEDSHARED_EXPORT QString compressionToString(Map::LayerDataFormat);
 
 TILEDSHARED_EXPORT QString renderOrderToString(Map::RenderOrder renderOrder);
 TILEDSHARED_EXPORT Map::RenderOrder renderOrderFromString(const QString &);

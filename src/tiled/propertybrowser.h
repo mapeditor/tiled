@@ -21,6 +21,7 @@
 #pragma once
 
 #include "changeevents.h"
+#include "map.h"
 #include "properties.h"
 
 #include <QtTreePropertyBrowser>
@@ -37,10 +38,7 @@ namespace Tiled {
 
 class GroupLayer;
 class ImageLayer;
-class Layer;
-class Map;
 class MapObject;
-class Object;
 class ObjectGroup;
 class Tile;
 class TileLayer;
@@ -237,6 +235,7 @@ private:
     QStringList mOrientationNames;
     QStringList mTilesetOrientationNames;
     QStringList mLayerFormatNames;
+    QList<Map::LayerDataFormat> mLayerFormatValues;
     QStringList mRenderOrderNames;
     QStringList mFlippingFlagNames;
     QStringList mDrawOrderNames;

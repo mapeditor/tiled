@@ -78,7 +78,7 @@ private:
 
     void addTileLayerData(QVariantMap &variant,
                           const TileLayer &tileLayer,
-                          Map::LayerDataFormat format, int compressionlevel,
+                          Map::LayerDataFormat format, int compressionLevel,
                           const QRect &bounds) const;
 
     void addLayerAttributes(QVariantMap &layerVariant,

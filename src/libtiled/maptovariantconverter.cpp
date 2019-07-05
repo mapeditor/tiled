@@ -439,18 +439,9 @@ QVariant MapToVariantConverter::toVariant(const TileLayer &tileLayer,
     case Map::Base64:
     case Map::Base64Zlib:
     case Map::Base64Gzip:
-        tileLayerVariant[QLatin1String("encoding")] = QLatin1String("base64");
-
-        if (format == Map::Base64Zlib)
-            tileLayerVariant[QLatin1String("compression")] = QLatin1String("zlib");
-        else if (format == Map::Base64Gzip)
-            tileLayerVariant[QLatin1String("compression")] = QLatin1String("gzip");
-
-        break;
     case Map::Base64Zstandard:
         tileLayerVariant[QLatin1String("encoding")] = QLatin1String("base64");
-        tileLayerVariant[QLatin1String("compression")] = QLatin1String("zstd");
-
+        tileLayerVariant[QLatin1String("compression")] = compressionToString(format);
         break;
     }
 
