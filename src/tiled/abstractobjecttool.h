@@ -29,8 +29,6 @@ namespace Tiled {
 class MapObject;
 class ObjectGroup;
 
-namespace Internal {
-
 class MapObjectItem;
 
 /**
@@ -40,6 +38,7 @@ class MapObjectItem;
 class AbstractObjectTool : public AbstractTool
 {
     Q_OBJECT
+    Q_INTERFACES(Tiled::AbstractTool)
 
 public:
     /**
@@ -106,5 +105,4 @@ private:
     QAction *mRotateRight;
 };
 
-} // namespace Internal
 } // namespace Tiled

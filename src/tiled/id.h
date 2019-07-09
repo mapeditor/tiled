@@ -21,19 +21,26 @@
 #pragma once
 
 #include <QLatin1String>
+#include <QMetaType>
 
 namespace Tiled {
-namespace Internal {
 
 class Id
 {
 public:
+    Id() : mId(0) {}
     Id(const char *name);
+    Id(const QByteArray &name);
 
     QByteArray name() const;
+    QString toString() const;
+    bool isNull() const { return mId == 0; }
+
+    explicit operator bool() const { return !isNull(); }
 
     bool operator==(Id id) const { return mId == id.mId; }
     bool operator!=(Id id) const { return mId != id.mId; }
+    bool operator<(Id id) const { return name() < id.name(); }
 
 private:
     uint mId;
@@ -47,5 +54,6 @@ inline uint qHash(Id id) Q_DECL_NOTHROW
     return id.mId;
 }
 
-} // namespace Internal
 } // namespace Tiled
+
+Q_DECLARE_METATYPE(Tiled::Id)

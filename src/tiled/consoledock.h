@@ -21,13 +21,13 @@
 #pragma once
 
 #include <QDockWidget>
-#include <QPlainTextEdit>
+
+class QLineEdit;
+class QPlainTextEdit;
 
 namespace Tiled {
 
 class LoggingInterface;
-
-namespace Internal {
 
 class ConsoleDock : public QDockWidget
 {
@@ -40,14 +40,20 @@ public:
 private slots:
     void appendInfo(const QString &str);
     void appendError(const QString &str);
+    void appendScript(const QString &str);
 
     void onObjectAdded(QObject *object);
+    void executeScript();
+
+    void moveHistory(int direction);
 
 private:
     void registerOutput(LoggingInterface *output);
 
-    QPlainTextEdit *plainTextEdit;
+    QPlainTextEdit *mPlainTextEdit;
+    QLineEdit *mLineEdit;
+    QStringList mHistory;
+    int mHistoryPosition = 0;
 };
 
-} // namespace Internal
 } // namespace Tiled

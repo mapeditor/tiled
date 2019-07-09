@@ -38,8 +38,6 @@ class ObjectTemplate;
 class MapObject;
 class Tile;
 
-namespace Internal {
-
 class AbstractTool;
 class MapScene;
 class MapView;
@@ -68,7 +66,6 @@ public slots:
     void bringToFront();
 
 private slots:
-    void setSelectedTool(AbstractTool *tool);
     void setTemplate(ObjectTemplate *objectTemplate);
     void checkTileset();
 
@@ -135,5 +132,4 @@ private:
 inline void TemplatesDock::setPropertiesDock(PropertiesDock *propertiesDock)
 { mPropertiesDock = propertiesDock; }
 
-} // namespace Internal
 } // namespace Tiled

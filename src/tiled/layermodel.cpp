@@ -20,12 +20,12 @@
 
 #include "layermodel.h"
 
+#include "changeevents.h"
 #include "changelayer.h"
 #include "grouplayer.h"
+#include "layer.h"
 #include "map.h"
 #include "mapdocument.h"
-#include "layer.h"
-#include "renamelayer.h"
 #include "reparentlayers.h"
 #include "tilelayer.h"
 
@@ -34,7 +34,6 @@
 #include <QStyle>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 LayerModel::LayerModel(QObject *parent):
     QAbstractItemModel(parent),
@@ -190,8 +189,8 @@ bool LayerModel::setData(const QModelIndex &index, const QVariant &value,
     } else if (role == Qt::EditRole) {
         const QString newName = value.toString();
         if (layer->name() != newName) {
-            RenameLayer *rename = new RenameLayer(mMapDocument, layer,
-                                                  newName);
+            SetLayerName *rename = new SetLayerName(mMapDocument, layer,
+                                                    newName);
             mMapDocument->undoStack()->push(rename);
         }
         return true;
@@ -352,6 +351,12 @@ void LayerModel::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument == mapDocument)
         return;
 
+    if (mMapDocument)
+        disconnect(mMapDocument, &Document::changed, this, &LayerModel::documentChanged);
+
+    if (mapDocument)
+        connect(mapDocument, &Document::changed, this, &LayerModel::documentChanged);
+
     beginResetModel();
     mMapDocument = mapDocument;
     mMap = mMapDocument->map();
@@ -424,69 +429,51 @@ void LayerModel::moveLayer(GroupLayer *parentLayer, int index, GroupLayer *toPar
 }
 
 /**
- * Sets whether the layer at the given index is visible.
+ * Shows the layers when all are invisible, hides otherwise.
  */
-void LayerModel::setLayerVisible(Layer *layer, bool visible)
+void LayerModel::toggleLayers(const QList<Layer *> &layers)
 {
-    if (layer->isVisible() == visible)
+    if (layers.isEmpty())
         return;
 
-    layer->setVisible(visible);
+    bool visible = std::all_of(layers.begin(), layers.end(),
+                               [] (Layer *layer) { return !layer->isVisible(); });
 
-    const QModelIndex modelIndex = index(layer, 1);
-    emit dataChanged(modelIndex, modelIndex);
-    emit layerChanged(layer);
-}
+    QUndoStack *undoStack = mMapDocument->undoStack();
+    if (visible)
+        undoStack->beginMacro(tr("Show Layers"));
+    else
+        undoStack->beginMacro(tr("Hide Layers"));
 
-void LayerModel::setLayerLocked(Layer *layer, bool locked)
-{
-    if (layer->isLocked() == locked)
-        return;
+    for (Layer *l : layers)
+        if (visible != l->isVisible())
+            undoStack->push(new SetLayerVisible(mMapDocument, l, visible));
 
-    layer->setLocked(locked);
-
-    const QModelIndex modelIndex = index(layer, 2);
-    emit dataChanged(modelIndex, modelIndex);
-    emit layerChanged(layer);
+    undoStack->endMacro();
 }
 
 /**
- * Sets the opacity of the layer at the given index.
+ * Locks layers when any are unlocked, unlocks otherwise.
  */
-void LayerModel::setLayerOpacity(Layer *layer, qreal opacity)
+void LayerModel::toggleLockLayers(const QList<Layer *> &layers)
 {
-    if (layer->opacity() == opacity)
+    if (layers.isEmpty())
         return;
 
-    layer->setOpacity(opacity);
-    emit layerChanged(layer);
-}
+    bool locked = std::any_of(layers.begin(), layers.end(),
+                              [] (Layer *layer) { return !layer->isLocked(); });
 
-/**
- * Sets the offset of the layer at the given index.
- */
-void LayerModel::setLayerOffset(Layer *layer, const QPointF &offset)
-{
-    if (layer->offset() == offset)
-        return;
+    QUndoStack *undoStack = mMapDocument->undoStack();
+    if (locked)
+        undoStack->beginMacro(tr("Lock Layers"));
+    else
+        undoStack->beginMacro(tr("Unlock Layers"));
 
-    layer->setOffset(offset);
-    emit layerChanged(layer);
-}
+    for (Layer *l : layers)
+        if (locked != l->isLocked())
+            undoStack->push(new SetLayerLocked(mMapDocument, l, locked));
 
-/**
- * Renames the layer at the given index.
- */
-void LayerModel::renameLayer(Layer *layer, const QString &name)
-{
-    if (layer->name() == name)
-        return;
-
-    layer->setName(name);
-
-    const QModelIndex modelIndex = index(layer);
-    emit dataChanged(modelIndex, modelIndex);
-    emit layerChanged(layer);
+    undoStack->endMacro();
 }
 
 /**
@@ -589,4 +576,32 @@ void LayerModel::toggleLockOtherLayers(const QList<Layer *> &layers)
     }
 
     undoStack->endMacro();
+}
+
+void LayerModel::documentChanged(const ChangeEvent &change)
+{
+    switch (change.type) {
+    case ChangeEvent::LayerChanged: {
+        const auto &layerChange = static_cast<const LayerChangeEvent&>(change);
+
+        QVarLengthArray<int, 3> columns;
+        if (layerChange.properties & LayerChangeEvent::NameProperty)
+            columns.append(0);
+        if (layerChange.properties & LayerChangeEvent::VisibleProperty)
+            columns.append(1);
+        if (layerChange.properties & LayerChangeEvent::LockedProperty)
+            columns.append(2);
+
+        if (!columns.isEmpty()) {
+            auto minMaxPair = std::minmax_element(columns.begin(), columns.end());
+            emit dataChanged(index(layerChange.layer, *minMaxPair.first),
+                             index(layerChange.layer, *minMaxPair.second));
+
+        }
+
+        break;
+    }
+    default:
+        break;
+    }
 }

@@ -26,8 +26,6 @@ namespace Tiled {
 
 class Layer;
 
-namespace Internal {
-
 class LayerItem : public QGraphicsItem
 {
 public:
@@ -39,5 +37,4 @@ private:
     Layer *mLayer;
 };
 
-} // namespace Internal
 } // namespace Tiled

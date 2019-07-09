@@ -27,7 +27,6 @@
 #include <QQueue>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 namespace {
 
@@ -328,7 +327,7 @@ static QRegion fillRegion(const TileLayer *layer,
     return fillRegion;
 }
 
-QRegion TilePainter::computePaintableFillRegion(const QPoint &fillOrigin) const
+QRegion TilePainter::computePaintableFillRegion(QPoint fillOrigin) const
 {
     const Map *map = mMapDocument->map();
     const QRegion &selection = mMapDocument->selectedArea();
@@ -353,7 +352,7 @@ QRegion TilePainter::computePaintableFillRegion(const QPoint &fillOrigin) const
     return region;
 }
 
-QRegion TilePainter::computeFillRegion(const QPoint &fillOrigin) const
+QRegion TilePainter::computeFillRegion(QPoint fillOrigin) const
 {
     const Map *map = mMapDocument->map();
     QRegion bounds = map->infinite() ? mTileLayer->bounds() : mTileLayer->rect();

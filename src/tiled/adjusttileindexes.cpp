@@ -42,7 +42,6 @@
 #include <QCoreApplication>
 
 namespace Tiled {
-namespace Internal {
 
 AdjustTileIndexes::AdjustTileIndexes(MapDocument *mapDocument,
                                      const Tileset &tileset)
@@ -316,5 +315,4 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
         new ChangeTileTerrain(tilesetDocument, terrainChanges, this);
 }
 
-} // namespace Internal
 } // namespace Tiled

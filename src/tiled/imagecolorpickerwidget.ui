@@ -48,7 +48,7 @@
     <number>5</number>
    </property>
    <item>
-    <widget class="Tiled::Internal::ClickableLabel" name="imageArea">
+    <widget class="Tiled::ClickableLabel" name="imageArea">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
        <horstretch>0</horstretch>
@@ -119,7 +119,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>Tiled::Internal::ClickableLabel</class>
+   <class>Tiled::ClickableLabel</class>
    <extends>QLabel</extends>
    <header>clickablelabel.h</header>
   </customwidget>

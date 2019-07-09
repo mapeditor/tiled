@@ -28,8 +28,6 @@ namespace Tiled {
 class Terrain;
 class Tileset;
 
-namespace Internal {
-
 class TilesetDocument;
 
 /**
@@ -77,5 +75,4 @@ public:
     void redo() override { moveTerrainDown(); }
 };
 
-} // namespace Internal
 } // namespace Tiled

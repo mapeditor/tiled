@@ -27,7 +27,6 @@ class QUndoStack;
 class QUndoView;
 
 namespace Tiled {
-namespace Internal {
 
 /**
  * A dock widget showing the undo stack. Mainly for debugging, but can also be
@@ -50,5 +49,4 @@ private:
     QUndoView *mUndoView;
 };
 
-} // namespace Internal
 } // namespace Tiled

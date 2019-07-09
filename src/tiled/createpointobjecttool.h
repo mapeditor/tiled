@@ -23,7 +23,6 @@
 #include "createobjecttool.h"
 
 namespace Tiled {
-namespace Internal {
 
 class CreatePointObjectTool : public CreateObjectTool
 {
@@ -41,5 +40,4 @@ private:
     void languageChangedImpl();
 };
 
-} // namespace Internal
 } // namespace Tiled

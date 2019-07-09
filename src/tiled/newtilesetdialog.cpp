@@ -43,7 +43,6 @@ static const char * const SPACING_KEY = "Tileset/Spacing";
 static const char * const MARGIN_KEY = "Tileset/Margin";
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 enum TilesetType {
     TilesetImage,

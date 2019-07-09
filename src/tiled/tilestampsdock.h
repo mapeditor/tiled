@@ -29,8 +29,7 @@ namespace Tiled {
 
 class TileLayer;
 
-namespace Internal {
-
+class FilterEdit;
 class TileStamp;
 class TileStampManager;
 class TileStampModel;
@@ -71,7 +70,7 @@ private:
     TileStampModel *mTileStampModel;
     QSortFilterProxyModel *mProxyModel;
     TileStampView *mTileStampView;
-    QLineEdit *mFilterEdit;
+    FilterEdit *mFilterEdit;
 
     QAction *mNewStamp;
     QAction *mAddVariation;
@@ -98,5 +97,4 @@ protected:
     bool event(QEvent *event) override;
 };
 
-} // namespace Internal
 } // namespace Tiled

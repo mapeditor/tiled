@@ -28,7 +28,6 @@
 class QLineEdit;
 
 namespace Tiled {
-namespace Internal {
 
 QString escapeNewlines(const QString &string);
 
@@ -60,5 +59,4 @@ private:
     QString mCachedText;
 };
 
-} // namespace Internal
 } // namespace Tiled

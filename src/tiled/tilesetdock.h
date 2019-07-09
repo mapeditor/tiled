@@ -46,8 +46,6 @@ class Tile;
 class TileLayer;
 class Tileset;
 
-namespace Internal {
-
 class Document;
 class MapDocument;
 class TilesetDocument;
@@ -188,5 +186,4 @@ private:
     bool mSynchronizingSelection;
 };
 
-} // namespace Internal
 } // namespace Tiled

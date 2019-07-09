@@ -30,7 +30,6 @@
 #include <QVector>
 
 namespace Tiled {
-namespace Internal {
 
 struct TileStampVariation
 {
@@ -52,12 +51,11 @@ struct TileStampVariation
 
 class TileStampData;
 
-
 class TileStamp
 {
 public:
     TileStamp();
-    explicit TileStamp(Map *map);
+    explicit TileStamp(std::unique_ptr<Map> map);
 
     TileStamp(const TileStamp &other);
     TileStamp &operator=(const TileStamp &other);
@@ -78,7 +76,7 @@ public:
     QSize maxSize() const;
 
     const QVector<TileStampVariation> &variations() const;
-    void addVariation(Map *map, qreal probability = 1.0);
+    void addVariation(std::unique_ptr<Map> map, qreal probability = 1.0);
     void addVariation(const TileStampVariation &variation);
     Map *takeVariation(int index);
     bool isEmpty() const;
@@ -108,8 +106,8 @@ private:
  */
 inline void TileStamp::addVariation(const TileStampVariation &variation)
 {
-    addVariation(new Map(*variation.map), variation.probability);
+    addVariation(std::unique_ptr<Map>(variation.map->clone()),
+                 variation.probability);
 }
 
-} // namespace Internal
 } // namespace Tiled

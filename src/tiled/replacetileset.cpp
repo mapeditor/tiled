@@ -26,7 +26,6 @@
 #include <QCoreApplication>
 
 namespace Tiled {
-namespace Internal {
 
 ReplaceTileset::ReplaceTileset(MapDocument *mapDocument,
                                int index,
@@ -45,5 +44,4 @@ void ReplaceTileset::swap()
     mTileset = mMapDocument->replaceTileset(mIndex, mTileset);
 }
 
-} // namespace Internal
 } // namespace Tiled

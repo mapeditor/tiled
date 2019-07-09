@@ -49,7 +49,7 @@ JsonMapFormat::JsonMapFormat(SubFormat subFormat, QObject *parent)
     , mSubFormat(subFormat)
 {}
 
-Tiled::Map *JsonMapFormat::read(const QString &fileName)
+std::unique_ptr<Tiled::Map> JsonMapFormat::read(const QString &fileName)
 {
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -79,7 +79,7 @@ Tiled::Map *JsonMapFormat::read(const QString &fileName)
     }
 
     Tiled::VariantToMapConverter converter;
-    Tiled::Map *map = converter.toMap(variant, QFileInfo(fileName).dir());
+    auto map = converter.toMap(variant, QFileInfo(fileName).dir());
 
     if (!map)
         mError = converter.errorString();
@@ -145,7 +145,7 @@ bool JsonMapFormat::write(const Tiled::Map *map, const QString &fileName)
 QString JsonMapFormat::nameFilter() const
 {
     if (mSubFormat == Json)
-        return tr("Json map files (*.json)");
+        return tr("JSON map files (*.json)");
     else
         return tr("JavaScript map files (*.js)");
 }
@@ -302,7 +302,7 @@ bool JsonTilesetFormat::write(const Tiled::Tileset &tileset,
 
 QString JsonTilesetFormat::nameFilter() const
 {
-    return tr("Json tileset files (*.json)");
+    return tr("JSON tileset files (*.json)");
 }
 
 QString JsonTilesetFormat::shortName() const
@@ -320,7 +320,7 @@ JsonObjectTemplateFormat::JsonObjectTemplateFormat(QObject *parent)
 {
 }
 
-Tiled::ObjectTemplate *JsonObjectTemplateFormat::read(const QString &fileName)
+std::unique_ptr<Tiled::ObjectTemplate> JsonObjectTemplateFormat::read(const QString &fileName)
 {
     QFile file(fileName);
 
@@ -340,8 +340,8 @@ Tiled::ObjectTemplate *JsonObjectTemplateFormat::read(const QString &fileName)
     }
 
     Tiled::VariantToMapConverter converter;
-    Tiled::ObjectTemplate *objectTemplate = converter.toObjectTemplate(variant,
-                                                                       QFileInfo(fileName).dir());
+    auto objectTemplate = converter.toObjectTemplate(variant,
+                                                     QFileInfo(fileName).dir());
 
     if (!objectTemplate)
         mError = converter.errorString();
@@ -406,7 +406,7 @@ bool JsonObjectTemplateFormat::write(const Tiled::ObjectTemplate *objectTemplate
 
 QString JsonObjectTemplateFormat::nameFilter() const
 {
-    return tr("Json template files (*.json)");
+    return tr("JSON template files (*.json)");
 }
 
 QString JsonObjectTemplateFormat::shortName() const

@@ -24,14 +24,16 @@
 #include "addremoveterrain.h"
 #include "addremovetiles.h"
 #include "addremovewangset.h"
+#include "changeterrain.h"
 #include "changetileterrain.h"
-#include "changewangsetdata.h"
 #include "changewangcolordata.h"
+#include "changewangsetdata.h"
 #include "erasetiles.h"
 #include "maintoolbar.h"
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "newsbutton.h"
+#include "newversionbutton.h"
 #include "objectgroup.h"
 #include "objecttemplate.h"
 #include "preferences.h"
@@ -78,43 +80,6 @@ static const char SIZE_KEY[] = "TilesetEditor/Size";
 static const char STATE_KEY[] = "TilesetEditor/State";
 
 namespace Tiled {
-namespace Internal {
-
-namespace {
-
-class SetTerrainImage : public QUndoCommand
-{
-public:
-    SetTerrainImage(TilesetDocument *tilesetDocument,
-                    int terrainId,
-                    int tileId)
-        : QUndoCommand(QCoreApplication::translate("Undo Commands",
-                                                   "Change Terrain Image"))
-        , mTerrainModel(tilesetDocument->terrainModel())
-        , mTerrainId(terrainId)
-        , mOldImageTileId(tilesetDocument->tileset()->terrain(terrainId)->imageTileId())
-        , mNewImageTileId(tileId)
-    {}
-
-    void undo() override
-    {
-        mTerrainModel->setTerrainImage(mTerrainId, mOldImageTileId);
-    }
-
-    void redo() override
-    {
-        mTerrainModel->setTerrainImage(mTerrainId, mNewImageTileId);
-    }
-
-private:
-    TilesetTerrainModel *mTerrainModel;
-    int mTerrainId;
-    int mOldImageTileId;
-    int mNewImageTileId;
-};
-
-} // anonymous namespace
-
 
 class TilesetEditorWindow : public QMainWindow
 {
@@ -180,9 +145,7 @@ TilesetEditor::TilesetEditor(QObject *parent)
     , mCurrentTilesetDocument(nullptr)
     , mCurrentTile(nullptr)
 {
-#if QT_VERSION >= 0x050600
     mMainWindow->setDockOptions(mMainWindow->dockOptions() | QMainWindow::GroupedDragging);
-#endif
     mMainWindow->setDockNestingEnabled(true);
     mMainWindow->setCentralWidget(mWidgetStack);
 
@@ -217,6 +180,7 @@ TilesetEditor::TilesetEditor(QObject *parent)
 
     mMainWindow->statusBar()->addPermanentWidget(mZoomComboBox);
     mMainWindow->statusBar()->addPermanentWidget(new NewsButton);
+    mMainWindow->statusBar()->addPermanentWidget(new NewVersionButton(NewVersionButton::AutoVisible));
     mMainWindow->statusBar()->addWidget(mStatusInfoLabel);
 
     mTemplatesDock->setPropertiesDock(mPropertiesDock);
@@ -254,7 +218,7 @@ TilesetEditor::TilesetEditor(QObject *parent)
     connect(this, &TilesetEditor::currentTileChanged, mTemplatesDock, &TemplatesDock::setTile);
 
     connect(mTileCollisionDock, &TileCollisionDock::dummyMapDocumentChanged,
-            this, [this]() {
+            this, [this] {
         mPropertiesDock->setDocument(mCurrentTilesetDocument);
     });
     connect(mTileCollisionDock, &TileCollisionDock::hasSelectedObjectsChanged,
@@ -279,6 +243,8 @@ void TilesetEditor::saveState()
     QSettings *settings = Preferences::instance()->settings();
     settings->setValue(QLatin1String(SIZE_KEY), mMainWindow->size());
     settings->setValue(QLatin1String(STATE_KEY), mMainWindow->saveState());
+
+    mTileCollisionDock->saveState();
 }
 
 void TilesetEditor::restoreState()
@@ -289,6 +255,8 @@ void TilesetEditor::restoreState()
         mMainWindow->resize(size.width(), size.height());
         mMainWindow->restoreState(settings->value(QLatin1String(STATE_KEY)).toByteArray());
     }
+
+    mTileCollisionDock->restoreState();
 }
 
 void TilesetEditor::addDocument(Document *document)
@@ -425,6 +393,7 @@ QList<QDockWidget *> TilesetEditor::dockWidgets() const
         mUndoDock,
         mTerrainDock,
         mTileCollisionDock,
+        mTemplatesDock,
         mWangDock
     };
 }
@@ -611,7 +580,7 @@ void TilesetEditor::retranslateUi()
     mRemoveTiles->setText(tr("Remove Tiles"));
     mShowAnimationEditor->setText(tr("Tile Animation Editor"));
 
-    mTileCollisionDock->toggleViewAction()->setShortcut(QCoreApplication::translate("Tiled::Internal::MainWindow", "Ctrl+Shift+O"));
+    mTileCollisionDock->toggleViewAction()->setShortcut(QCoreApplication::translate("Tiled::MainWindow", "Ctrl+Shift+O"));
 }
 
 static bool hasTileInTileset(const QUrl &imageSource, const Tileset &tileset)
@@ -1048,7 +1017,6 @@ void TilesetEditor::updateAddRemoveActions()
     mRemoveTiles->setEnabled(isCollection && hasSelection);
 }
 
-} // namespace Internal
 } // namespace Tiled
 
 #include "tileseteditor.moc"

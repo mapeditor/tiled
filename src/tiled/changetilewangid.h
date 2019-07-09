@@ -26,7 +26,6 @@
 #include <QUndoCommand>
 
 namespace Tiled {
-namespace Internal {
 
 class TilesetDocument;
 
@@ -73,5 +72,4 @@ private:
     bool mMergeable;
 };
 
-} // namespace Internal
 } // namespace Tiled

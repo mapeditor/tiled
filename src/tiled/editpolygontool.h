@@ -22,7 +22,7 @@
 
 #include "abstractobjecttool.h"
 
-#include <QMap>
+#include <QHash>
 #include <QSet>
 
 #include <memory>
@@ -30,7 +30,6 @@
 class QGraphicsItem;
 
 namespace Tiled {
-namespace Internal {
 
 class PointHandle;
 class SelectionRectangle;
@@ -66,9 +65,12 @@ public:
 public slots:
     void deleteNodes();
 
+protected:
+    void changeEvent(const ChangeEvent &event) override;
+
 private slots:
     void updateHandles();
-    void objectsRemoved(const QList<MapObject *> &objects);
+    void objectsAboutToBeRemoved(const QList<MapObject *> &objects);
 
     void joinNodes();
     void splitSegments();
@@ -122,7 +124,7 @@ private:
     InteractedSegment mClickedSegment;
     MapObject *mClickedObject;
     QVector<QPointF> mOldHandlePositions;
-    QMap<MapObject*, QPolygonF> mOldPolygons;
+    QHash<MapObject*, QPolygonF> mOldPolygons;
     QPointF mAlignPosition;
     Action mAction;
     QPointF mStart;
@@ -131,10 +133,9 @@ private:
     Qt::KeyboardModifiers mModifiers;
 
     /// The list of handles associated with each selected map object
-    QMap<MapObject*, QList<PointHandle*> > mHandles;
+    QHash<MapObject*, QList<PointHandle*> > mHandles;
     QSet<PointHandle*> mSelectedHandles;
     QSet<PointHandle*> mHighlightedHandles;
 };
 
-} // namespace Internal
 } // namespace Tiled

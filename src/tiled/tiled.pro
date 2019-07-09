@@ -13,11 +13,7 @@ win32 {
     DESTDIR = ../../bin
 }
 
-QT += widgets
-
-contains(QT_CONFIG, opengl):!macx:!minQtVersion(5, 4, 0) {
-    QT += opengl
-}
+QT += widgets qml
 
 DEFINES += TILED_VERSION=$${TILED_VERSION}
 
@@ -29,29 +25,6 @@ macx {
     LIBS += -framework Foundation
     DEFINES += QT_NO_OPENGL
     OBJECTIVE_SOURCES += macsupport.mm
-
-    sparkle {
-        SPARKLE_DIR = /Library/Frameworks
-
-        !exists($${SPARKLE_DIR}/Sparkle.framework) {
-            error("Sparkle.framework not found at $${SPARKLE_DIR}")
-        }
-
-        DEFINES += TILED_SPARKLE
-        LIBS += -framework Sparkle -framework AppKit
-        LIBS += -F$${SPARKLE_DIR}
-        QMAKE_OBJECTIVE_CFLAGS += -F$${SPARKLE_DIR}
-        OBJECTIVE_SOURCES += sparkleautoupdater.mm
-
-        APP_RESOURCES.path = Contents/Resources
-        APP_RESOURCES.files = \
-            ../../dist/dsa_pub.pem
-
-        SPARKLE_FRAMEWORK.path = Contents/Frameworks
-        SPARKLE_FRAMEWORK.files = $${SPARKLE_DIR}/Sparkle.framework
-
-        QMAKE_BUNDLE_DATA += APP_RESOURCES SPARKLE_FRAMEWORK
-    }
 } else:win32 {
     LIBS += -L$$OUT_PWD/../../lib
 } else {
@@ -86,12 +59,10 @@ SOURCES += aboutdialog.cpp \
     automapperwrapper.cpp \
     automappingmanager.cpp \
     automappingutils.cpp  \
-    autoupdater.cpp \
     brokenlinks.cpp \
     brushitem.cpp \
     bucketfilltool.cpp \
     capturestamphelper.cpp \
-    changeimagelayerposition.cpp \
     changeimagelayerproperties.cpp \
     changelayer.cpp \
     changemapobject.cpp \
@@ -101,6 +72,7 @@ SOURCES += aboutdialog.cpp \
     changepolygon.cpp \
     changeproperties.cpp \
     changeselectedarea.cpp \
+    changeterrain.cpp \
     changetile.cpp \
     changetileanimation.cpp \
     changetileimagesource.cpp \
@@ -131,6 +103,20 @@ SOURCES += aboutdialog.cpp \
     createtileobjecttool.cpp \
     document.cpp \
     documentmanager.cpp \
+    editableasset.cpp \
+    editablegrouplayer.cpp \
+    editableimagelayer.cpp \
+    editablelayer.cpp \
+    editablemanager.cpp \
+    editablemap.cpp \
+    editablemapobject.cpp \
+    editableobject.cpp \
+    editableobjectgroup.cpp \
+    editableselectedarea.cpp \
+    editableterrain.cpp \
+    editabletile.cpp \
+    editabletilelayer.cpp \
+    editabletileset.cpp \
     editor.cpp \
     editpolygontool.cpp \
     eraser.cpp \
@@ -139,6 +125,7 @@ SOURCES += aboutdialog.cpp \
     exporthelper.cpp \
     filechangedwarning.cpp \
     fileedit.cpp \
+    filteredit.cpp \
     flexiblescrollbar.cpp \
     flipmapobjects.cpp \
     geometry.cpp \
@@ -176,11 +163,15 @@ SOURCES += aboutdialog.cpp \
     newsbutton.cpp \
     newsfeed.cpp \
     newtilesetdialog.cpp \
+    newversionbutton.cpp \
+    newversionchecker.cpp \
+    newversiondialog.cpp \
     noeditorwidget.cpp \
     objectgroupitem.cpp \
     objectsdock.cpp \
     objectselectionitem.cpp \
     objectselectiontool.cpp \
+    objectsview.cpp \
     objecttemplatemodel.cpp \
     objecttypeseditor.cpp \
     objecttypesmodel.cpp \
@@ -195,8 +186,7 @@ SOURCES += aboutdialog.cpp \
     propertiesdock.cpp \
     propertybrowser.cpp \
     raiselowerhelper.cpp \
-    renamelayer.cpp \
-    renameterrain.cpp \
+    regionvaluetype.cpp \
     renamewangset.cpp \
     reparentlayers.cpp \
     replacetemplate.cpp \
@@ -208,13 +198,18 @@ SOURCES += aboutdialog.cpp \
     resizetilelayer.cpp \
     reversingproxymodel.cpp \
     rotatemapobject.cpp \
+    scriptedaction.cpp \
+    scriptedmapformat.cpp \
+    scriptedtool.cpp \
+    scriptmanager.cpp \
+    scriptmodule.cpp \
     selectionrectangle.cpp \
     selectsametiletool.cpp \
     shapefilltool.cpp \
+    shortcutsettingspage.cpp \
     snaphelper.cpp \
     stampactions.cpp \
     stampbrush.cpp \
-    standardautoupdater.cpp \
     stylehelper.cpp \
     swaptiles.cpp \
     templatesdock.cpp \
@@ -228,6 +223,7 @@ SOURCES += aboutdialog.cpp \
     tilecollisiondock.cpp \
     tiledapplication.cpp \
     tiledproxystyle.cpp \
+    tilelayeredit.cpp \
     tilelayeritem.cpp \
     tilepainter.cpp \
     tileselectionitem.cpp \
@@ -284,12 +280,11 @@ HEADERS += aboutdialog.h \
     automapperwrapper.h \
     automappingmanager.h \
     automappingutils.h \
-    autoupdater.h \
     brokenlinks.h \
     brushitem.h \
     bucketfilltool.h \
     capturestamphelper.h \
-    changeimagelayerposition.h \
+    changeevents.h \
     changeimagelayerproperties.h \
     changelayer.h \
     changemapobject.h \
@@ -299,6 +294,7 @@ HEADERS += aboutdialog.h \
     changepolygon.h \
     changeproperties.h \
     changeselectedarea.h \
+    changeterrain.h \
     changetile.h \
     changetileanimation.h \
     changetileimagesource.h \
@@ -330,6 +326,20 @@ HEADERS += aboutdialog.h \
     createtileobjecttool.h \
     document.h \
     documentmanager.h \
+    editableasset.h \
+    editablegrouplayer.h \
+    editableimagelayer.h \
+    editablelayer.h \
+    editablemanager.h \
+    editablemap.h \
+    editablemapobject.h \
+    editableobject.h \
+    editableobjectgroup.h \
+    editableselectedarea.h \
+    editableterrain.h \
+    editabletile.h \
+    editabletilelayer.h \
+    editabletileset.h \
     editor.h \
     editpolygontool.h \
     eraser.h \
@@ -338,6 +348,7 @@ HEADERS += aboutdialog.h \
     exporthelper.h \
     filechangedwarning.h \
     fileedit.h \
+    filteredit.h \
     flexiblescrollbar.h \
     flipmapobjects.h \
     geometry.h \
@@ -375,12 +386,16 @@ HEADERS += aboutdialog.h \
     newsbutton.h \
     newsfeed.h \
     newtilesetdialog.h \
+    newversionbutton.h \
+    newversionchecker.h \
+    newversiondialog.h \
     noeditorwidget.h \
     objectgroupitem.h \
     objectsdock.h \
     objectselectionitem.h \
     objecttemplatemodel.h \
     objectselectiontool.h \
+    objectsview.h \
     objecttypeseditor.h \
     objecttypesmodel.h \
     offsetlayer.h \
@@ -396,8 +411,7 @@ HEADERS += aboutdialog.h \
     raiselowerhelper.h \
     randompicker.h \
     rangeset.h \
-    renamelayer.h \
-    renameterrain.h \
+    regionvaluetype.h \
     renamewangset.h \
     reparentlayers.h \
     replacetemplate.h \
@@ -409,14 +423,18 @@ HEADERS += aboutdialog.h \
     resizetilelayer.h \
     reversingproxymodel.h \
     rotatemapobject.h \
+    scriptedaction.h \
+    scriptedmapformat.h \
+    scriptedtool.h \
+    scriptmanager.h \
+    scriptmodule.h \
     selectionrectangle.h \
     selectsametiletool.h \
     shapefilltool.h \
+    shortcutsettingspage.h \
     snaphelper.h \
-    sparkleautoupdater.h \
     stampactions.h \
     stampbrush.h \
-    standardautoupdater.h \
     stylehelper.h \
     swaptiles.h \
     templatesdock.h \
@@ -430,6 +448,7 @@ HEADERS += aboutdialog.h \
     tilecollisiondock.h \
     tiledapplication.h \
     tiledproxystyle.h \
+    tilelayeredit.h \
     tilelayeritem.h \
     tilepainter.h \
     tileselectionitem.h \
@@ -475,12 +494,14 @@ FORMS += aboutdialog.ui \
     mainwindow.ui \
     newmapdialog.ui \
     newtilesetdialog.ui \
+    newversiondialog.ui \
     noeditorwidget.ui \
     objecttypeseditor.ui \
     offsetmapdialog.ui \
     patreondialog.ui \
     preferencesdialog.ui \
     resizedialog.ui \
+    shortcutsettingspage.ui \
     texteditordialog.ui \
     tileanimationeditor.ui
 

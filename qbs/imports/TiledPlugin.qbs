@@ -5,7 +5,7 @@ DynamicLibrary {
     Depends { name: "cpp" }
     Depends { name: "Qt"; submodules: "gui" }
 
-    cpp.cxxLanguageVersion: "c++11"
+    cpp.cxxLanguageVersion: "c++14"
     cpp.visibility: "minimal"
     cpp.useRPaths: project.useRPaths
     cpp.rpaths: {
@@ -22,10 +22,10 @@ DynamicLibrary {
         "QT_NO_FOREACH",
         "QT_NO_URL_CAST_FROM_STRING"
     ]
-    bundle.isBundle: false
 
     Properties {
         condition: qbs.targetOS.contains("macos")
+        bundle.isBundle: false
         cpp.cxxFlags: ["-Wno-unknown-pragmas"]
     }
 

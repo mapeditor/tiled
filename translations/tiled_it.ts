@@ -23,12 +23,12 @@
         <source>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;Copyright 2008-2018 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;https://www.mapeditor.org/&quot;&gt;https://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
         <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Versione %1&lt;/i&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;Copyright 2008-2018 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(vedi il file AUTHORS per una lista completa degli autori dei contributi)&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;Puoi modificare e ridistribuire questo programma rispettando i termini della GPL (versione 2 o successiva). Una copia della GPL è contenuta nel file &apos;COPYING&apos; distribuito con Tiled.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;https://www.mapeditor.org/&quot;&gt;https://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </translation>
     </message>
 </context>
@@ -459,8 +459,8 @@
     </message>
     <message>
         <location line="+15"/>
-        <source>Json map files (*.json)</source>
-        <translation>File mappa Json (*.json)</translation>
+        <source>JSON map files (*.json)</source>
+        <translation>File mappa JSON (*.json)</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -494,7 +494,7 @@
     </message>
     <message>
         <location line="+14"/>
-        <source>Json template files (*.json)</source>
+        <source>JSON template files (*.json)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -524,8 +524,8 @@
     </message>
     <message>
         <location line="+14"/>
-        <source>Json tileset files (*.json)</source>
-        <translation>FIle tileset Json (*.json)</translation>
+        <source>JSON tileset files (*.json)</source>
+        <translation>File tileset JSON (*.json)</translation>
     </message>
 </context>
 <context>
@@ -5532,7 +5532,7 @@ Seleziona un formato specifico.</translation>
     </message>
     <message>
         <location line="+152"/>
-        <source>Missing wang tile transition</source>
+        <source>Missing Wang tile transition</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -20,16 +20,15 @@
 
 #include "swaptiles.h"
 
+#include "changeevents.h"
 #include "mapdocument.h"
 #include "mapobject.h"
-#include "mapobjectmodel.h"
 #include "objectgroup.h"
 #include "tilelayer.h"
 
 #include <QCoreApplication>
 
 namespace Tiled {
-namespace Internal {
 
 SwapTiles::SwapTiles(MapDocument *mapDocument,
                      Tile *tile1,
@@ -92,9 +91,13 @@ void SwapTiles::swap()
         }
     }
 
-    if (!changedObjects.isEmpty())
-        emit mMapDocument->mapObjectModel()->objectsChanged(changedObjects);
+    if (!changedObjects.isEmpty()) {
+        MapObject::ChangedProperties changedProperties = MapObject::CellProperty;
+        if (tileSizeChanged)
+            changedProperties |= MapObject::SizeProperty;
+
+        emit mMapDocument->changed(MapObjectsChangeEvent(changedObjects, changedProperties));
+    }
 }
 
-} // namespace Internal
 } // namespace Tiled

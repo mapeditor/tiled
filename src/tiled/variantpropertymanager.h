@@ -26,7 +26,6 @@
 #include <QFileIconProvider>
 
 namespace Tiled {
-namespace Internal {
 
 /**
  * Extension of the QtVariantPropertyManager that adds support for a filePath
@@ -99,5 +98,4 @@ private:
     QFileIconProvider mIconProvider;
 };
 
-} // namespace Internal
 } // namespace Tiled

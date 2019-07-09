@@ -24,8 +24,10 @@
 #include <QPinchGesture>
 
 namespace Tiled {
-namespace Internal {
 
+class MapObject;
+
+class MapDocument;
 class MapScene;
 class Zoomable;
 
@@ -95,8 +97,12 @@ private slots:
     void setUseOpenGL(bool useOpenGL);
     void updateSceneRect(const QRectF &sceneRect);
     void updateSceneRect(const QRectF &sceneRect, const QTransform &transform);
+    void focusMapObject(MapObject *mapObject);
 
 private:
+    void setMapDocument(MapDocument *mapDocument);
+
+    MapDocument *mMapDocument = nullptr;
     QPoint mLastMousePos;
     QPointF mLastMouseScenePos;
     bool mHandScrolling;
@@ -104,5 +110,4 @@ private:
     Zoomable *mZoomable;
 };
 
-} // namespace Internal
 } // namespace Tiled

@@ -21,7 +21,6 @@
 #include "objectgroupitem.h"
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 ObjectGroupItem::ObjectGroupItem(ObjectGroup *objectGroup, QGraphicsItem *parent)
     : LayerItem(objectGroup, parent)

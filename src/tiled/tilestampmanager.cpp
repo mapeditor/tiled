@@ -44,7 +44,6 @@
 #include <memory>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 static QString stampFilePath(const QString &name)
 {
@@ -107,16 +106,15 @@ static TileStamp stampFromContext(AbstractTool *selectedTool)
 {
     TileStamp stamp;
 
-    if (StampBrush *stampBrush = dynamic_cast<StampBrush*>(selectedTool)) {
+    if (auto stampBrush = dynamic_cast<StampBrush*>(selectedTool)) {
         // take the stamp from the stamp brush
         stamp = stampBrush->stamp();
-    } else if (BucketFillTool *fillTool = dynamic_cast<BucketFillTool*>(selectedTool)) {
+    } else if (auto fillTool = dynamic_cast<AbstractTileFillTool*>(selectedTool)) {
         // take the stamp from the fill tool
         stamp = fillTool->stamp();
-    } else if (MapDocument *mapDocument = qobject_cast<MapDocument*>(DocumentManager::instance()->currentDocument())) {
+    } else if (auto mapDocument = qobject_cast<MapDocument*>(DocumentManager::instance()->currentDocument())) {
         // try making a stamp from the current tile selection
-        const TileLayer *tileLayer =
-                dynamic_cast<TileLayer*>(mapDocument->currentLayer());
+        const auto tileLayer = dynamic_cast<TileLayer*>(mapDocument->currentLayer());
         if (!tileLayer)
             return stamp;
 
@@ -131,17 +129,17 @@ static TileStamp stampFromContext(AbstractTool *selectedTool)
             return stamp;
 
         const Map *map = mapDocument->map();
-        Map *copyMap = new Map(map->orientation(),
-                               copy->width(), copy->height(),
-                               map->tileWidth(), map->tileHeight());
+        std::unique_ptr<Map> copyMap { new Map(map->orientation(),
+                                               copy->width(), copy->height(),
+                                               map->tileWidth(), map->tileHeight()) };
 
         // Add tileset references to map
         copyMap->addTilesets(copy->usedTilesets());
 
         copyMap->setRenderOrder(map->renderOrder());
-        copyMap->addLayer(copy.release());
+        copyMap->addLayer(std::move(copy));
 
-        stamp.addVariation(copyMap);
+        stamp.addVariation(std::move(copyMap));
     }
 
     return stamp;

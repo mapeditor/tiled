@@ -29,7 +29,6 @@
 #include <QCoreApplication>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 MoveTerrain::MoveTerrain(TilesetDocument *tilesetDocument, int index)
     : mTilesetDocument(tilesetDocument)

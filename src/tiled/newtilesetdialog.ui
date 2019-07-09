@@ -142,7 +142,7 @@
        </widget>
       </item>
       <item row="1" column="2">
-       <widget class="Tiled::Internal::ColorButton" name="colorButton">
+       <widget class="Tiled::ColorButton" name="colorButton">
         <property name="enabled">
          <bool>false</bool>
         </property>
@@ -332,7 +332,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>Tiled::Internal::ColorButton</class>
+   <class>Tiled::ColorButton</class>
    <extends>QToolButton</extends>
    <header>colorbutton.h</header>
   </customwidget>

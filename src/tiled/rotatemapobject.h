@@ -26,18 +26,16 @@ namespace Tiled {
 
 class MapObject;
 
-namespace Internal {
-
-class MapDocument;
+class Document;
 
 class RotateMapObject : public QUndoCommand
 {
 public:
-    RotateMapObject(MapDocument *mapDocument,
+    RotateMapObject(Document *document,
                     MapObject *mapObject,
                     qreal oldRotation);
 
-    RotateMapObject(MapDocument *mapDocument,
+    RotateMapObject(Document *document,
                     MapObject *mapObject,
                     qreal newRotation,
                     qreal oldRotation);
@@ -46,12 +44,11 @@ public:
     void redo() override;
 
 private:
-    MapDocument *mMapDocument;
+    Document *mDocument;
     MapObject *mMapObject;
     qreal mOldRotation;
     qreal mNewRotation;
     bool mOldChangeState;
 };
 
-} // namespace Internal
 } // namespace Tiled

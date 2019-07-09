@@ -46,7 +46,6 @@
 #include "qtcompat_p.h"
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 CreatePolygonObjectTool::CreatePolygonObjectTool(QObject *parent)
     : CreateObjectTool(parent)
@@ -80,13 +79,7 @@ void CreatePolygonObjectTool::activate(MapScene *scene)
 
     updateHandles();
 
-    connect(mapDocument(), &MapDocument::objectsChanged,
-            this, &CreatePolygonObjectTool::objectsChanged);
     connect(mapDocument(), &MapDocument::selectedObjectsChanged,
-            this, &CreatePolygonObjectTool::updateHandles);
-    connect(mapDocument(), &MapDocument::objectsRemoved,
-            this, &CreatePolygonObjectTool::objectsRemoved);
-    connect(mapDocument(), &MapDocument::layerChanged,          // layer offset
             this, &CreatePolygonObjectTool::updateHandles);
     connect(mapDocument(), &MapDocument::layerRemoved,
             this, &CreatePolygonObjectTool::layerRemoved);
@@ -97,13 +90,7 @@ void CreatePolygonObjectTool::deactivate(MapScene *scene)
     if (mMode == ExtendingAtBegin || mMode == ExtendingAtEnd)
         finishExtendingMapObject();
 
-    disconnect(mapDocument(), &MapDocument::objectsChanged,
-               this, &CreatePolygonObjectTool::objectsChanged);
     disconnect(mapDocument(), &MapDocument::selectedObjectsChanged,
-               this, &CreatePolygonObjectTool::updateHandles);
-    disconnect(mapDocument(), &MapDocument::objectsRemoved,
-               this, &CreatePolygonObjectTool::objectsRemoved);
-    disconnect(mapDocument(), &MapDocument::layerChanged,
                this, &CreatePolygonObjectTool::updateHandles);
     disconnect(mapDocument(), &MapDocument::layerRemoved,
                this, &CreatePolygonObjectTool::layerRemoved);
@@ -463,16 +450,22 @@ void CreatePolygonObjectTool::updateHandles()
         createHandles(mNewMapObjectItem->mapObject());
 }
 
-void CreatePolygonObjectTool::objectsChanged(const QList<MapObject *> &objects)
+void CreatePolygonObjectTool::objectsChanged(const MapObjectsChangeEvent &mapObjectsChangeEvent)
 {
     // Possibly the polygon of the object being extended changed
-    if (mNewMapObjectItem && objects.contains(mNewMapObjectItem->mapObject()))
+    if (mNewMapObjectItem && mapObjectsChangeEvent.mapObjects.contains(mNewMapObjectItem->mapObject()))
         synchronizeOverlayObject();
 
-    updateHandles();
+    constexpr auto propertiesAffectingHandles =
+            MapObject::PositionProperty |
+            MapObject::RotationProperty |
+            MapObject::ShapeProperty;
+
+    if (mapObjectsChangeEvent.properties & propertiesAffectingHandles)
+        updateHandles();
 }
 
-void CreatePolygonObjectTool::objectsRemoved(const QList<MapObject *> &objects)
+void CreatePolygonObjectTool::objectsAboutToBeRemoved(const QList<MapObject *> &objects)
 {
     // Check whether the object being extended was removed
     if (mNewMapObjectItem && objects.contains(mNewMapObjectItem->mapObject()))
@@ -591,6 +584,29 @@ void CreatePolygonObjectTool::extend(MapObject *mapObject, bool extendingFirst)
     setState(CreatingObject);
 
     updateHandles();
+}
+
+void CreatePolygonObjectTool::changeEvent(const ChangeEvent &event)
+{
+    CreateObjectTool::changeEvent(event);
+
+    if (!mapScene())
+        return;
+
+    switch (event.type) {
+    case ChangeEvent::LayerChanged:
+        if (static_cast<const LayerChangeEvent&>(event).properties & LayerChangeEvent::OffsetProperty)
+            updateHandles();
+        break;
+    case ChangeEvent::MapObjectsChanged:
+        objectsChanged(static_cast<const MapObjectsChangeEvent&>(event));
+        break;
+    case ChangeEvent::MapObjectsAboutToBeRemoved:
+        objectsAboutToBeRemoved(static_cast<const MapObjectsEvent&>(event).mapObjects);
+        break;
+    default:
+        break;
+    }
 }
 
 void CreatePolygonObjectTool::setHoveredHandle(PointHandle *handle)

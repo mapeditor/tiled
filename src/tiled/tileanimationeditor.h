@@ -34,8 +34,6 @@ class Tile;
 class TileAnimationDriver;
 class Tileset;
 
-namespace Internal {
-
 class FrameListModel;
 class TilesetDocument;
 
@@ -77,6 +75,7 @@ private slots:
 
     void advancePreviewAnimation(int ms);
     void resetPreview();
+    bool updatePreviewPixmap();
 
 private:
     Ui::TileAnimationEditor *mUi;
@@ -92,5 +91,4 @@ private:
     int mPreviewUnusedTime;
 };
 
-} // namespace Internal
 } // namespace Tiled

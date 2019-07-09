@@ -34,7 +34,6 @@
 #include <memory>
 
 using namespace Tiled;
-using namespace Internal;
 
 ShapeFillTool::ShapeFillTool(QObject *parent)
     : AbstractTileFillTool(tr("Shape Fill Tool"),
@@ -135,7 +134,7 @@ void ShapeFillTool::populateToolBar(QToolBar *toolBar)
     toolBar->addActions(actionGroup->actions());
 }
 
-void ShapeFillTool::tilePositionChanged(const QPoint &tilePos)
+void ShapeFillTool::tilePositionChanged(QPoint tilePos)
 {
     if (mToolBehavior == MakingShape)
         updateFillOverlay();

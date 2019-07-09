@@ -28,7 +28,6 @@
 #include <QToolButton>
 
 namespace Tiled {
-namespace Internal {
 
 FileEdit::FileEdit(QWidget *parent)
     : QWidget(parent)
@@ -133,5 +132,4 @@ void FileEdit::buttonClicked()
     emit fileUrlChanged(url);
 }
 
-} // namespace Internal
 } // namespace Tiled

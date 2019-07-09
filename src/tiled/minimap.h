@@ -28,7 +28,6 @@
 #include <QTimer>
 
 namespace Tiled {
-namespace Internal {
 
 class MapDocument;
 
@@ -79,5 +78,4 @@ private:
     void centerViewOnLocalPixel(QPoint centerPos, int delta = 0);
 };
 
-} // namespace Internal
 } // namespace Tiled

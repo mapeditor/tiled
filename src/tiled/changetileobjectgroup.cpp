@@ -27,7 +27,6 @@
 #include <QCoreApplication>
 
 namespace Tiled {
-namespace Internal {
 
 ChangeTileObjectGroup::ChangeTileObjectGroup(TilesetDocument *tilesetDocument,
                                              Tile *tile,
@@ -44,9 +43,7 @@ ChangeTileObjectGroup::ChangeTileObjectGroup(TilesetDocument *tilesetDocument,
 
 void ChangeTileObjectGroup::swap()
 {
-    mObjectGroup.reset(mTile->swapObjectGroup(mObjectGroup.release()));
-    emit mTilesetDocument->tileObjectGroupChanged(mTile);
+    mTilesetDocument->swapTileObjectGroup(mTile, mObjectGroup);
 }
 
-} // namespace Internal
 } // namespace Tiled

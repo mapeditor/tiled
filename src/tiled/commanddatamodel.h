@@ -28,7 +28,6 @@
 class QMenu;
 
 namespace Tiled {
-namespace Internal {
 
 class CommandDataModel : public QAbstractTableModel
 {
@@ -175,5 +174,4 @@ private:
     QList<Command> mCommands;
 };
 
-} // namespace Internal
 } // namespace Tiled

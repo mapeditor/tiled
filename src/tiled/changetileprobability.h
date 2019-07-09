@@ -26,8 +26,6 @@ namespace Tiled {
 
 class Tile;
 
-namespace Internal {
-
 class TilesetDocument;
 
 class ChangeTileProbability : public QUndoCommand
@@ -53,5 +51,4 @@ private:
     QList<qreal> mProbabilities;
 };
 
-} // namespace Internal
 } // namespace Tiled

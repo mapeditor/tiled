@@ -39,8 +39,6 @@ class Tile;
 class TileLayer;
 class Tileset;
 
-namespace Internal {
-
 class AbstractTool;
 class LayerItem;
 class MapDocument;
@@ -62,12 +60,14 @@ public:
     MapDocument *mapDocument() const;
     void setMapDocument(MapDocument *map);
 
+    void setShowTileCollisionShapes(bool enabled);
+
     QRectF mapBoundingRect() const;
 
-    void enableSelectedTool();
-    void disableSelectedTool();
-
     void setSelectedTool(AbstractTool *tool);
+
+signals:
+    void mapDocumentChanged(MapDocument *mapDocument);
 
 protected:
     bool event(QEvent *event) override;
@@ -89,10 +89,7 @@ private slots:
     void mapChanged();
     void repaintTileset(Tileset *tileset);
 
-    void adaptToTilesetTileSizeChanges();
-    void adaptToTileSizeChanges();
-
-    void tilesetReplaced();
+    void tilesetReplaced(int index, Tileset *tileset, Tileset *oldTileset);
 
 private:
     void updateDefaultBackgroundColor();
@@ -103,12 +100,12 @@ private:
 
     bool eventFilter(QObject *object, QEvent *event) override;
 
-    MapDocument *mMapDocument;
+    MapDocument *mMapDocument = nullptr;
     QHash<MapDocument*, MapItem*> mMapItems;
-    AbstractTool *mSelectedTool;
-    AbstractTool *mActiveTool;
-    bool mUnderMouse;
-    Qt::KeyboardModifiers mCurrentModifiers;
+    AbstractTool *mSelectedTool = nullptr;
+    bool mUnderMouse = false;
+    bool mShowTileCollisionShapes = false;
+    Qt::KeyboardModifiers mCurrentModifiers = Qt::NoModifier;
     QPointF mLastMousePos;
     QColor mDefaultBackgroundColor;
 };
@@ -121,5 +118,4 @@ inline MapDocument *MapScene::mapDocument() const
     return mMapDocument;
 }
 
-} // namespace Internal
 } // namespace Tiled

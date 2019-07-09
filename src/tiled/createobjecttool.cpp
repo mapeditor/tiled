@@ -41,7 +41,6 @@
 #include <QPalette>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 CreateObjectTool::CreateObjectTool(QObject *parent)
     : AbstractObjectTool(QString(),
@@ -179,17 +178,16 @@ void CreateObjectTool::modifiersChanged(Qt::KeyboardModifiers modifiers)
     }
 }
 
-void CreateObjectTool::mapDocumentChanged(MapDocument *oldDocument,
-                                          MapDocument *newDocument)
+void CreateObjectTool::changeEvent(const ChangeEvent &event)
 {
-    if (oldDocument) {
-        disconnect(oldDocument, &MapDocument::objectGroupChanged,
-                   this, &CreateObjectTool::objectGroupChanged);
-    }
+    AbstractObjectTool::changeEvent(event);
 
-    if (newDocument) {
-        connect(newDocument, &MapDocument::objectGroupChanged,
-                this, &CreateObjectTool::objectGroupChanged);
+    switch (event.type) {
+    case ChangeEvent::ObjectGroupChanged:
+        objectGroupChanged(static_cast<const ObjectGroupChangeEvent&>(event).objectGroup);
+        break;
+    default:
+        break;
     }
 }
 
@@ -332,7 +330,7 @@ void CreateObjectTool::finishNewMapObject()
 
     mapDocument()->undoStack()->push(addObjectCommand);
 
-    mapDocument()->setSelectedObjects(QList<MapObject*>() << newMapObject.get());
+    mapDocument()->setSelectedObjects({newMapObject.get()});
     newMapObject.release();     // now owned by its object group
 
     mState = Idle;

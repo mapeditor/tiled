@@ -30,8 +30,6 @@ namespace Tiled {
 
 class ImageLayer;
 
-namespace Internal {
-
 class MapDocument;
 
 class ChangeImageLayerProperties : public QUndoCommand
@@ -62,5 +60,4 @@ private:
     const QUrl mRedoSource;
 };
 
-} // namespace Internal
 } // namespace Tiled

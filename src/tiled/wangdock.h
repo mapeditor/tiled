@@ -32,7 +32,6 @@ class QToolBar;
 class QTreeView;
 
 namespace Tiled {
-namespace Internal {
 
 class Document;
 class HasChildrenFilterModel;
@@ -133,5 +132,4 @@ private:
     bool mInitializing;
 };
 
-} // namespace Internal
 } // namespace Tiled

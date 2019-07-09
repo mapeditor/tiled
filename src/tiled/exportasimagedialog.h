@@ -27,7 +27,6 @@ class ExportAsImageDialog;
 }
 
 namespace Tiled {
-namespace Internal {
 
 class MapDocument;
 
@@ -64,5 +63,4 @@ private:
     static QString mPath;
 };
 
-} // namespace Internal
 } // namespace Tiled

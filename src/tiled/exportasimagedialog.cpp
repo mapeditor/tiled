@@ -44,7 +44,6 @@ static const char * const DRAW_GRID_KEY = "SaveAsImage/DrawGrid";
 static const char * const INCLUDE_BACKGROUND_COLOR = "SaveAsImage/IncludeBackgroundColor";
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 QString ExportAsImageDialog::mPath;
 

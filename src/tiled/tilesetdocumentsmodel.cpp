@@ -28,7 +28,6 @@
 #include <algorithm>
 
 namespace Tiled {
-namespace Internal {
 
 TilesetDocumentsModel::TilesetDocumentsModel(QObject *parent)
     : QAbstractListModel(parent)
@@ -135,5 +134,4 @@ bool TilesetDocumentsFilterModel::filterAcceptsRow(int sourceRow, const QModelIn
     return accepted;
 }
 
-} // namespace Internal
 } // namespace Tiled

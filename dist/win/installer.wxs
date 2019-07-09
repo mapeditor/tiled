@@ -86,11 +86,16 @@
             <File Id="Qt5Core_dll" Source="$(var.QtDir)\bin\Qt5Core.dll"/>
             <File Id="Qt5Gui_dll" Source="$(var.QtDir)\bin\Qt5Gui.dll"/>
             <File Id="Qt5Network_dll" Source="$(var.QtDir)\bin\Qt5Network.dll"/>
+            <File Id="Qt5Qml_dll" Source="$(var.QtDir)\bin\Qt5Qml.dll"/>
             <File Id="Qt5Svg_dll" Source="$(var.QtDir)\bin\Qt5Svg.dll"/>
             <File Id="Qt5Widgets_dll" Source="$(var.QtDir)\bin\Qt5Widgets.dll"/>
 
             <?ifdef MingwDir ?>
+            <?if $(var.Platform) = x64 ?>
+            <File Id="libgcc_s_seh_1_dll" Source="$(var.MingwDir)\bin\libgcc_s_seh-1.dll"/>
+            <?else ?>
             <File Id="libgcc_s_dw2_1_dll" Source="$(var.MingwDir)\bin\libgcc_s_dw2-1.dll"/>
+            <?endif ?>
             <File Id="libstdc___6_dll" Source="$(var.MingwDir)\bin\libstdc++-6.dll"/>
             <File Id="libwinpthread_1_dll" Source="$(var.MingwDir)\bin\libwinpthread-1.dll"/>
             <?else?>
@@ -100,10 +105,6 @@
               <File Source="$(var.VcInstallDir)\redist\$(var.Platform)\Microsoft.VC120.CRT\msvcp120.dll"/>
               <File Source="$(var.VcInstallDir)\redist\$(var.Platform)\Microsoft.VC120.CRT\msvcr120.dll"/>
               <?endif?>
-            <?endif?>
-
-            <?ifdef Sparkle ?>
-            <File Id="WinSparkleDLL" Source="$(var.InstallRoot)\WinSparkle.dll" />
             <?endif?>
 
             <?ifdef OpenSslDir ?>
@@ -140,6 +141,7 @@
                 <File Id="filD34235A8BFB590E5CCC1D9E2894616EC" Source="$(var.InstallRoot)\plugins\tiled\flare.dll" />
                 <File Id="gmx_dll" Source="$(var.InstallRoot)\plugins\tiled\gmx.dll" />
                 <File Id="fil39697F4D8941F23FE8E9024568D7FAD6" Source="$(var.InstallRoot)\plugins\tiled\json.dll" />
+                <File Id="json1_dll" Source="$(var.InstallRoot)\plugins\tiled\json1.dll" />
                 <File Id="fil4D119D1A1F54B04C4EB7C3E1B25B1616" Source="$(var.InstallRoot)\plugins\tiled\lua.dll" />
 
                 <?ifdef Python ?>
@@ -156,6 +158,11 @@
                 <File Id="qwindows_dll" Source="$(var.QtDir)\plugins\platforms\qwindows.dll"/>
               </Component>
             </Directory>
+            <Directory Id="iconEnginePlugins" Name="iconengines">
+              <Component Id="IconEnginePlugins" Guid="{6087784F-C335-4EA6-A959-674E0D72F194}">
+                <File Id="qsvgicon_dll" Source="$(var.QtDir)\plugins\iconengines\qsvgicon.dll"/>
+              </Component>
+            </Directory>
             <Directory Id="imageFormatPlugins" Name="imageformats">
               <Component Id="ImageFormatPlugins" Guid="{C655A440-9F24-4489-8DB9-5A4EFF6EB5D7}">
                 <File Id="qgif_dll" Source="$(var.QtDir)\plugins\imageformats\qgif.dll"/>
@@ -167,6 +174,13 @@
                 <File Id="qwebp_dll" Source="$(var.QtDir)\plugins\imageformats\qwebp.dll"/>
               </Component>
             </Directory>
+            <?ifdef WindowsVistaStyle ?>
+            <Directory Id="stylePlugins" Name="styles">
+              <Component Id="StylePlugins" Guid="{DB5D5DD3-1128-4FE0-A76C-EB7E4069EBFE}">
+                <File Id="qwindowsvistastyle_dll" Source="$(var.QtDir)\plugins\styles\qwindowsvistastyle.dll"/>
+              </Component>
+            </Directory>
+            <?endif?>
           </Directory>
 
           <Directory Id="dir674F7F6D2030C2EBF39AA06B57EAF368" Name="translations">
@@ -370,6 +384,10 @@
       <ComponentRef Id='PythonPluginExampleLib' />
       <ComponentRef Id='PlatformPlugins' />
       <ComponentRef Id='ImageFormatPlugins' />
+      <ComponentRef Id='IconEnginePlugins' />
+      <?ifdef WindowsVistaStyle ?>
+      <ComponentRef Id='StylePlugins' />
+      <?endif?>
       <ComponentRef Id='ProgramMenuDir' />
     </Feature>
 

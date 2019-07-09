@@ -27,8 +27,6 @@ namespace Tiled {
 
 class Tile;
 
-namespace Internal {
-
 class TilesetDocument;
 
 class ChangeTileType : public QUndoCommand
@@ -52,5 +50,4 @@ private:
     QVector<QString> mTypes;
 };
 
-} // namespace Internal
 } // namespace Tiled

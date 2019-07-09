@@ -23,7 +23,6 @@
 #include <QToolButton>
 
 namespace Tiled {
-namespace Internal {
 
 class NewsButton : public QToolButton
 {
@@ -40,5 +39,4 @@ private:
     QIcon mUnreadIcon;
 };
 
-} // namespace Internal
 } // namespace Tiled

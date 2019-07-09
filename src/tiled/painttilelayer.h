@@ -30,12 +30,13 @@ namespace Tiled {
 
 class TileLayer;
 
-namespace Internal {
-
 class MapDocument;
 
 /**
  * A command that paints one tile layer on top of another tile layer.
+ *
+ * Can merge with additional commands, even when they paint on different
+ * tile layers.
  */
 class PaintTileLayer : public QUndoCommand
 {
@@ -106,5 +107,4 @@ inline void PaintTileLayer::setMergeable(bool mergeable)
     mMergeable = mergeable;
 }
 
-} // namespace Internal
 } // namespace Tiled

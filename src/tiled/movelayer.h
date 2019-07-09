@@ -27,8 +27,6 @@ namespace Tiled {
 class Layer;
 class Map;
 
-namespace Internal {
-
 class MapDocument;
 
 /**
@@ -64,5 +62,4 @@ private:
     Direction mDirection;
 };
 
-} // namespace Internal
 } // namespace Tiled

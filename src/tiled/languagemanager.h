@@ -25,7 +25,6 @@
 class QTranslator;
 
 namespace Tiled {
-namespace Internal {
 
 class LanguageManager
 {
@@ -58,5 +57,4 @@ private:
     static LanguageManager *mInstance;
 };
 
-} // namespace Internal
 } // namespace Tiled

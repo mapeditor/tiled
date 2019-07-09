@@ -35,6 +35,8 @@
 #include <QObject>
 #include <QString>
 
+#include "qtcompat_p.h"
+
 #include <functional>
 
 class QPluginLoader;
@@ -116,7 +118,7 @@ public:
     {
         QList<T*> results;
         if (mInstance)
-            for (QObject *object : mInstance->mObjects)
+            for (QObject *object : qAsConst(mInstance->mObjects))
                 if (T *result = qobject_cast<T*>(object))
                     results.append(result);
         return results;
@@ -129,7 +131,7 @@ public:
     static void each(std::function<void(T*)> function)
     {
         if (mInstance)
-            for (QObject *object : mInstance->mObjects)
+            for (QObject *object : qAsConst(mInstance->mObjects))
                 if (T *result = qobject_cast<T*>(object))
                     function(result);
     }

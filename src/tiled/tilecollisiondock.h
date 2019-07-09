@@ -18,13 +18,14 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILECOLLISIONDOCK_H
-#define TILECOLLISIONDOCK_H
+#pragma once
 
 #include "clipboardmanager.h"
 #include "mapdocument.h"
 
 #include <QDockWidget>
+
+class QSplitter;
 
 namespace Tiled {
 
@@ -32,11 +33,10 @@ class Object;
 class Tile;
 class Tileset;
 
-namespace Internal {
-
 class AbstractTool;
 class MapScene;
 class MapView;
+class ObjectsView;
 class TilesetDocument;
 class ToolManager;
 
@@ -44,14 +44,24 @@ class TileCollisionDock : public QDockWidget
 {
     Q_OBJECT
 
+public:
     enum Operation {
         Cut,
         Delete
     };
 
-public:
+    enum ObjectsViewVisibility {
+        Hidden,
+        ShowRight,
+        ShowBottom
+    };
+    Q_ENUM(ObjectsViewVisibility)
+
     explicit TileCollisionDock(QWidget *parent = nullptr);
     ~TileCollisionDock() override;
+
+    void saveState();
+    void restoreState();
 
     void setTilesetDocument(TilesetDocument *tilesetDocument);
 
@@ -80,26 +90,48 @@ protected:
     void changeEvent(QEvent *e) override;
 
 private slots:
-    void setSelectedTool(AbstractTool*);
     void applyChanges();
+    void documentChanged(const ChangeEvent &change);
     void tileObjectGroupChanged(Tile*);
     void tilesetTileOffsetChanged(Tileset *tileset);
 
     void selectedObjectsChanged();
     void setHasSelectedObjects(bool hasSelectedObjects);
 
+    void selectAll();
+
+    void duplicateObjects();
+    void removeObjects();
+    void moveObjectsUp();
+    void moveObjectsDown();
+    void objectProperties();
+
+    void setObjectsViewVisibility(ObjectsViewVisibility);
+
 private:
     void retranslateUi();
 
-    Tile *mTile;
-    TilesetDocument *mTilesetDocument;
+    Tile *mTile = nullptr;
+    TilesetDocument *mTilesetDocument = nullptr;
     MapDocumentPtr mDummyMapDocument;
     MapScene *mMapScene;
     MapView *mMapView;
+    ObjectsView *mObjectsView;
+    QWidget *mObjectsWidget;
+    QSplitter *mObjectsViewSplitter;
+    QAction *mObjectsViewHiddenAction;
+    QAction *mObjectsViewShowRightAction;
+    QAction *mObjectsViewShowBottomAction;
     ToolManager *mToolManager;
-    bool mApplyingChanges;
-    bool mSynchronizing;
-    bool mHasSelectedObjects;
+    QAction *mActionDuplicateObjects;
+    QAction *mActionRemoveObjects;
+    QAction *mActionMoveUp;
+    QAction *mActionMoveDown;
+    QAction *mActionObjectProperties;
+    bool mApplyingChanges = false;
+    bool mSynchronizing = false;
+    bool mHasSelectedObjects = false;
+    ObjectsViewVisibility mObjectsViewVisibility = Hidden;
 };
 
 inline MapDocument *TileCollisionDock::dummyMapDocument() const
@@ -117,7 +149,4 @@ inline bool TileCollisionDock::hasSelectedObjects() const
     return mHasSelectedObjects;
 }
 
-} // namespace Internal
 } // namespace Tiled
-
-#endif // TILECOLLISIONDOCK_H

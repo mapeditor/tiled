@@ -24,7 +24,6 @@
 #include "objectgroup.h"
 
 namespace Tiled {
-namespace Internal {
 
 /**
  * Prepares a tileset for export.
@@ -86,7 +85,7 @@ const Map *ExportHelper::prepareExportMap(const Map *map, std::unique_ptr<Map> &
         return map;
 
     // Make a copy to which export options are applied
-    exportMap.reset(new Map(*map));
+    exportMap.reset(map->clone());
 
     if (mOptions.testFlag(Preferences::DetachTemplateInstances))
         for (Layer *layer : exportMap->objectGroups())
@@ -142,5 +141,4 @@ void ExportHelper::resolveTypeAndProperties(MapObject *object) const
     object->setProperties(properties);
 }
 
-} // namespace Internal
 } // namespace Tiled

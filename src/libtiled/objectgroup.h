@@ -36,6 +36,8 @@
 #include <QList>
 #include <QMetaType>
 
+#include <memory>
+
 namespace Tiled {
 
 class MapObject;
@@ -45,6 +47,8 @@ class MapObject;
  */
 class TILEDSHARED_EXPORT ObjectGroup : public Layer
 {
+    Q_OBJECT
+
 public:
     /**
      * Objects within an object group can either be drawn top down (sorted
@@ -58,7 +62,7 @@ public:
         IndexOrder
     };
 
-    ObjectGroup();
+    explicit ObjectGroup(const QString &name = QString());
     ObjectGroup(const QString &name, int x, int y);
 
     ~ObjectGroup() override;
@@ -82,6 +86,7 @@ public:
      * Adds an object to this object group.
      */
     void addObject(MapObject *object);
+    void addObject(std::unique_ptr<MapObject> &&object);
 
     /**
      * Inserts an object at the specified index. This is only used for undoing

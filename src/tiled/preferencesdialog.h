@@ -29,7 +29,6 @@ class PreferencesDialog;
 }
 
 namespace Tiled {
-namespace Internal {
 
 /**
  * The preferences dialog. Allows the user to configure some general behaviour
@@ -41,7 +40,7 @@ class PreferencesDialog : public QDialog
 
 public:
     PreferencesDialog(QWidget *parent = nullptr);
-    ~PreferencesDialog();
+    ~PreferencesDialog() override;
 
 protected:
     void changeEvent(QEvent *e) override;
@@ -56,13 +55,9 @@ private:
 
     void styleComboChanged();
 
-    void autoUpdateToggled(bool checked);
-    void checkForUpdates();
-
     Ui::PreferencesDialog *mUi;
     QStringList mLanguages;
 };
 
 
-} // namespace Internal
 } // namespace Tiled

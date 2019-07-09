@@ -23,7 +23,6 @@
 #include <QtMath>
 
 using namespace Tiled;
-using namespace Internal;
 
 WangTemplateModel::WangTemplateModel(WangSet *wangSet, QObject *parent)
     : QAbstractListModel(parent)

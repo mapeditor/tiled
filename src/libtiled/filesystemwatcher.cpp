@@ -39,10 +39,16 @@ FileSystemWatcher::FileSystemWatcher(QObject *parent) :
     QObject(parent),
     mWatcher(new QFileSystemWatcher(this))
 {
+    mChangedFilesTimer.setInterval(500);
+    mChangedFilesTimer.setSingleShot(true);
+
     connect(mWatcher, &QFileSystemWatcher::fileChanged,
             this, &FileSystemWatcher::onFileChanged);
     connect(mWatcher, &QFileSystemWatcher::directoryChanged,
             this, &FileSystemWatcher::onDirectoryChanged);
+
+    connect(&mChangedFilesTimer, &QTimer::timeout,
+            this, &FileSystemWatcher::filesChangedTimeout);
 }
 
 void FileSystemWatcher::addPath(const QString &path)
@@ -79,6 +85,19 @@ void FileSystemWatcher::removePath(const QString &path)
     }
 }
 
+void FileSystemWatcher::clear()
+{
+    const QStringList files = mWatcher->files();
+    if (!files.isEmpty())
+        mWatcher->removePaths(files);
+
+    const QStringList directories = mWatcher->directories();
+    if (!directories.isEmpty())
+        mWatcher->removePaths(directories);
+
+    mWatchCount.clear();
+}
+
 void FileSystemWatcher::onFileChanged(const QString &path)
 {
     // If the file was replaced, the watcher is automatically removed and needs
@@ -88,12 +107,21 @@ void FileSystemWatcher::onFileChanged(const QString &path)
         if (QFile::exists(path))
             mWatcher->addPath(path);
 
+    mChangedFiles.insert(path);
+    mChangedFilesTimer.start();
+
     emit fileChanged(path);
 }
 
 void FileSystemWatcher::onDirectoryChanged(const QString &path)
 {
     emit directoryChanged(path);
+}
+
+void FileSystemWatcher::filesChangedTimeout()
+{
+    emit filesChanged(mChangedFiles.toList());
+    mChangedFiles.clear();
 }
 
 } // namespace Tiled

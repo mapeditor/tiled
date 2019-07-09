@@ -28,7 +28,6 @@
 #include <QMouseEvent>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 ImageColorPickerWidget::ImageColorPickerWidget(QWidget *parent) :
     QFrame(parent, Qt::Popup),

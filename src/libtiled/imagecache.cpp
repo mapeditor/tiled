@@ -29,6 +29,7 @@
 #include "imagecache.h"
 
 #include <QBitmap>
+#include <QFileInfo>
 
 namespace Tiled {
 
@@ -53,36 +54,62 @@ uint qHash(const TilesheetParameters &key, uint seed) Q_DECL_NOTHROW
     return h;
 }
 
+LoadedImage::LoadedImage(const QString &fileName)
+    : image(fileName)
+    , lastModified(QFileInfo(fileName).lastModified())
+{}
 
-QHash<QString, QImage> ImageCache::sLoadedImages;
-QHash<QString, QPixmap> ImageCache::sLoadedPixmaps;
-QHash<TilesheetParameters, QVector<QPixmap>> ImageCache::sCutTiles;
+LoadedPixmap::LoadedPixmap(const LoadedImage &cachedImage)
+    : pixmap(QPixmap::fromImage(cachedImage))
+    , lastModified(cachedImage.lastModified)
+{}
 
-QImage ImageCache::loadImage(const QString &fileName)
+
+QHash<QString, LoadedImage> ImageCache::sLoadedImages;
+QHash<QString, LoadedPixmap> ImageCache::sLoadedPixmaps;
+QHash<TilesheetParameters, CutTiles> ImageCache::sCutTiles;
+
+LoadedImage ImageCache::loadImage(const QString &fileName)
 {
     auto it = sLoadedImages.find(fileName);
-    if (it == sLoadedImages.end())
-        it = sLoadedImages.insert(fileName, QImage(fileName));
+
+    bool found = it != sLoadedImages.end();
+    bool old = found && it.value().lastModified < QFileInfo(fileName).lastModified();
+
+    if (old)
+        remove(fileName);
+    if (old || !found)
+        it = sLoadedImages.insert(fileName, LoadedImage(fileName));
+
     return it.value();
 }
 
 QPixmap ImageCache::loadPixmap(const QString &fileName)
 {
     auto it = sLoadedPixmaps.find(fileName);
-    if (it == sLoadedPixmaps.end())
-        it = sLoadedPixmaps.insert(fileName, QPixmap::fromImage(loadImage(fileName)));
+
+    bool found = it != sLoadedPixmaps.end();
+    bool old = found && it.value().lastModified < QFileInfo(fileName).lastModified();
+
+    if (old)
+        remove(fileName);
+    if (old || !found)
+        it = sLoadedPixmaps.insert(fileName, LoadedPixmap(loadImage(fileName)));
+
     return it.value();
 }
 
-static QVector<QPixmap> cutTilesImpl(const TilesheetParameters &p)
+static CutTiles cutTilesImpl(const TilesheetParameters &p)
 {
     Q_ASSERT(p.tileWidth > 0 && p.tileHeight > 0);
 
-    const QImage image(ImageCache::loadImage(p.fileName));
+    const LoadedImage loadedImage = ImageCache::loadImage(p.fileName);
+    const QImage &image = loadedImage.image;
     const int stopWidth = image.width() - p.tileWidth;
     const int stopHeight = image.height() - p.tileHeight;
 
-    QVector<QPixmap> tiles;
+    CutTiles result;
+    result.lastModified = loadedImage.lastModified;
 
     for (int y = p.margin; y <= stopHeight; y += p.tileHeight + p.spacing) {
         for (int x = p.margin; x <= stopWidth; x += p.tileWidth + p.spacing) {
@@ -94,18 +121,25 @@ static QVector<QPixmap> cutTilesImpl(const TilesheetParameters &p)
                 tilePixmap.setMask(QBitmap::fromImage(mask));
             }
 
-            tiles.append(tilePixmap);
+            result.tiles.append(tilePixmap);
         }
     }
 
-    return tiles;
+    return result;
 }
 
 QVector<QPixmap> ImageCache::cutTiles(const TilesheetParameters &parameters)
 {
     auto it = sCutTiles.find(parameters);
-    if (it == sCutTiles.end())
+
+    bool found = it != sCutTiles.end();
+    bool old = found && it.value().lastModified < QFileInfo(parameters.fileName).lastModified();
+
+    if (old)
+        remove(parameters.fileName);
+    if (old || !found)
         it = sCutTiles.insert(parameters, cutTilesImpl(parameters));
+
     return it.value();
 }
 
@@ -115,7 +149,7 @@ void ImageCache::remove(const QString &fileName)
     sLoadedPixmaps.remove(fileName);
 
     // Also remove any previously cut tiles
-    QMutableHashIterator<TilesheetParameters, QVector<QPixmap>> it(sCutTiles);
+    QMutableHashIterator<TilesheetParameters, CutTiles> it(sCutTiles);
     while (it.hasNext()) {
         if (it.next().key().fileName == fileName)
             it.remove();

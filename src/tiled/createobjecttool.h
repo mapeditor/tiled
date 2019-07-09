@@ -28,8 +28,6 @@ namespace Tiled {
 
 class Tile;
 
-namespace Internal {
-
 class MapObjectItem;
 class ObjectGroupItem;
 
@@ -54,8 +52,7 @@ public:
     void modifiersChanged(Qt::KeyboardModifiers modifiers) override;
 
 protected:
-    void mapDocumentChanged(MapDocument *oldDocument,
-                            MapDocument *newDocument) override;
+    void changeEvent(const ChangeEvent &event) override;
 
     void updateEnabledState() override;
 
@@ -95,5 +92,4 @@ private:
     std::unique_ptr<ObjectGroupItem> mObjectGroupItem;
 };
 
-} // namespace Internal
 } // namespace Tiled

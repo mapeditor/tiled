@@ -29,7 +29,6 @@
 #include <QMimeData>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 TilesetModel::TilesetModel(Tileset *tileset, QObject *parent):
     QAbstractListModel(parent),

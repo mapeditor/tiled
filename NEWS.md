@@ -1,3 +1,39 @@
+### Tiled 1.2.4 (15 May 2019)
+
+* Fixed view boundaries to take into account layer offsets (#2090)
+* Fixed map size when switching infinite off (#2051)
+* Fixed the image cache to check file modification time (#2081)
+* Fixed updating a few things when changing tileset drawing offset
+* Fixed position of tile object outline on isometric maps
+* Fixed saving of tile stamps when using the Shape Fill Tool
+* tBIN plugin: Fixed loading of some tilesets on Linux
+* tBIN plugin: Fixed possible crash when images can't be found (#2106)
+* Python plugin: Disable this plugin by default, to avoid crashes on startup (#2091)
+* JSON plugin: Fixed writing of position for objects without ID
+* Added Swedish translation (by Anton R)
+
+### Tiled 1.2.3 (12 March 2019)
+
+* Fixed cut/copy in Tile Collision Editor (#2075)
+* Fixed crash when trying to add Wang colors without a selected Wang set (#2083)
+* tBIN plugin: Fixed hang when locating missing tileset image (#2068)
+* CSV plugin: Fixed exporting of grouped tile layers
+
+### Tiled 1.2.2 (29 January 2019)
+
+* Added 'json1' plugin that exports to the old JSON format (#2058)
+* Enable the adding of point objects in Tile Collision Editor (#2043)
+* Reload AutoMapping rules when they have changed on disk (by Justin Zheng, #1997)
+* Fixed remembering of last used export filter
+* Fixed label color to update when object layer color is changed (by Justin Zheng, #1976)
+* Fixed stamp and fill tools to adjust when tile probability is changed (by Justin Zheng, #1996)
+* Fixed misbehavior when trying to open non-existing files
+* Fixed mini-map bounds when layer offsets are used in combination with group layers
+* Fixed Templates view missing from the Views menu (#2054)
+* Fixed Copy Path / Open Folder actions for embedded tilesets (#2059)
+* Python plugin: Made the API more complete (#1867)
+* Updated Chinese, German, Korean, Norwegian Bokmål, Portuguese (Portugal) and Ukrainian translations
+
 ### Tiled 1.2.1 (14 November 2018)
 
 * Fixed JSON templates not being visible in Templates view (#2009)

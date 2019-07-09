@@ -31,7 +31,6 @@
 #include <QStandardPaths>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 QString Command::finalWorkingDirectory() const
 {
@@ -215,13 +214,8 @@ CommandProcess::CommandProcess(const Command &command, bool inTerminal, bool sho
 #endif
     }
 
-#if QT_VERSION < 0x050600
-    connect(this, static_cast<void(QProcess::*)(QProcess::ProcessError)>(&QProcess::error),
-            this, &CommandProcess::handleProcessError);
-#else
     connect(this, &QProcess::errorOccurred,
             this, &CommandProcess::handleProcessError);
-#endif
 
     connect(this, static_cast<void(QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished),
             this, &QObject::deleteLater);

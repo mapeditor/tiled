@@ -30,7 +30,6 @@
 #include <QToolBar>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 AbstractTileSelectionTool::AbstractTileSelectionTool(const QString &name,
                                                      const QIcon &icon,
@@ -69,13 +68,13 @@ AbstractTileSelectionTool::AbstractTileSelectionTool(const QString &name,
     mActionGroup->addAction(mIntersect);
 
     connect(mReplace, &QAction::triggered,
-            [this]() { mSelectionMode = mDefaultMode = Replace; });
+            [this] { mSelectionMode = mDefaultMode = Replace; });
     connect(mAdd, &QAction::triggered,
-            [this]() { mSelectionMode = mDefaultMode = Add; });
+            [this] { mSelectionMode = mDefaultMode = Add; });
     connect(mSubtract, &QAction::triggered,
-            [this]() { mSelectionMode = mDefaultMode = Subtract; });
+            [this] { mSelectionMode = mDefaultMode = Subtract; });
     connect(mIntersect, &QAction::triggered,
-            [this]() { mSelectionMode = mDefaultMode = Intersect; });
+            [this] { mSelectionMode = mDefaultMode = Intersect; });
 
     AbstractTileSelectionTool::languageChanged();
 }
@@ -84,29 +83,31 @@ void AbstractTileSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
     const Qt::MouseButton button = event->button();
 
-    if (button != Qt::LeftButton && button != Qt::RightButton)
-        return;
+    if (button == Qt::LeftButton || (button == Qt::RightButton && event->modifiers() == Qt::NoModifier)) {
+        MapDocument *document = mapDocument();
+        QRegion selection;
 
-    MapDocument *document = mapDocument();
+        // Left button modifies selection, right button clears selection
+        if (button == Qt::LeftButton) {
+            selection = document->selectedArea();
 
-    QRegion selection;
-
-    // Left button modifies selection, right button clears selection
-    if (button == Qt::LeftButton) {
-        selection = document->selectedArea();
-
-        switch (mSelectionMode) {
-        case Replace:   selection = mSelectedRegion; break;
-        case Add:       selection += mSelectedRegion; break;
-        case Subtract:  selection -= mSelectedRegion; break;
-        case Intersect: selection &= mSelectedRegion; break;
+            switch (mSelectionMode) {
+            case Replace:   selection = mSelectedRegion; break;
+            case Add:       selection += mSelectedRegion; break;
+            case Subtract:  selection -= mSelectedRegion; break;
+            case Intersect: selection &= mSelectedRegion; break;
+            }
         }
+
+        if (selection != document->selectedArea()) {
+            QUndoCommand *cmd = new ChangeSelectedArea(document, selection);
+            document->undoStack()->push(cmd);
+        }
+
+        return;
     }
 
-    if (selection != document->selectedArea()) {
-        QUndoCommand *cmd = new ChangeSelectedArea(document, selection);
-        document->undoStack()->push(cmd);
-    }
+    AbstractTileTool::mousePressed(event);
 }
 
 void AbstractTileSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *)

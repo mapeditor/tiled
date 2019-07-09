@@ -29,7 +29,6 @@ class NewMapDialog;
 }
 
 namespace Tiled {
-namespace Internal {
 
 /**
  * A dialog for the creation of a new map.
@@ -57,5 +56,4 @@ private:
     Ui::NewMapDialog *mUi;
 };
 
-} // namespace Internal
 } // namespace Tiled

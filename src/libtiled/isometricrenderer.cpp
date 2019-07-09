@@ -143,35 +143,69 @@ QRectF IsometricRenderer::boundingRect(const MapObject *object) const
 QPainterPath IsometricRenderer::shape(const MapObject *object) const
 {
     QPainterPath path;
-    if (!object->cell().isEmpty() || object->shape() == MapObject::Text) {
+
+    switch (object->shape()) {
+    case MapObject::Ellipse: {
+        path.addEllipse(object->bounds());
+        path = transform().map(path);
+        break;
+    }
+    case MapObject::Rectangle: {
+        QPolygonF polygon = pixelRectToScreenPolygon(object->bounds());
+        polygon.append(polygon.first());
+        path.addPolygon(polygon);
+        break;
+    }
+    case MapObject::Point:
+        path = pointShape(object->position());
+        break;
+    case MapObject::Polygon:
+    case MapObject::Polyline: {
+        const QPointF &pos = object->position();
+        const QPolygonF polygon = object->polygon().translated(pos);
+        QPolygonF screenPolygon = pixelToScreenCoords(polygon);
+        if (object->shape() == MapObject::Polygon && !screenPolygon.isEmpty())
+            screenPolygon.append(screenPolygon.first());
+        path.addPolygon(screenPolygon);
+        break;
+    }
+    case MapObject::Text:
+        path.addRect(boundingRect(object));
+        break;
+    }
+
+    return path;
+}
+
+QPainterPath IsometricRenderer::interactionShape(const MapObject *object) const
+{
+    QPainterPath path;
+    if (object->isTileObject()) {
         path.addRect(boundingRect(object));
     } else {
         switch (object->shape()) {
-        case MapObject::Ellipse:
         case MapObject::Rectangle:
+        case MapObject::Ellipse:
             path.addPolygon(pixelRectToScreenPolygon(object->bounds()));
             break;
-        case MapObject::Point:
-            path = pointShape(object);
-            break;
         case MapObject::Polygon:
+        case MapObject::Text:
+            path = shape(object);
+            break;
+        case MapObject::Point:
+            path = pointInteractionShape(object);
+            break;
         case MapObject::Polyline: {
             const QPointF &pos = object->position();
             const QPolygonF polygon = object->polygon().translated(pos);
             const QPolygonF screenPolygon = pixelToScreenCoords(polygon);
-            if (object->shape() == MapObject::Polygon) {
-                path.addPolygon(screenPolygon);
-            } else {
-                for (int i = 1; i < screenPolygon.size(); ++i) {
-                    path.addPolygon(lineToPolygon(screenPolygon[i - 1],
-                                                  screenPolygon[i]));
-                }
-                path.setFillRule(Qt::WindingFill);
+            for (int i = 1; i < screenPolygon.size(); ++i) {
+                path.addPolygon(lineToPolygon(screenPolygon[i - 1],
+                                              screenPolygon[i]));
             }
+            path.setFillRule(Qt::WindingFill);
             break;
         }
-        case MapObject::Text:
-            break;  // already handled above
         }
     }
     return path;
@@ -270,7 +304,7 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
     // Determine whether the current row is shifted half a tile to the right
     bool shifted = inUpperHalf ^ inLeftHalf;
 
-    CellRenderer renderer(painter);
+    CellRenderer renderer(painter, this);
 
     for (int y = startPos.y() * 2; y - tileHeight * 2 < rect.bottom() * 2;
          y += tileHeight)
@@ -281,7 +315,7 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
             const Cell &cell = layer->cellAt(columnItr);
             if (!cell.isEmpty()) {
                 Tile *tile = cell.tile();
-                QSize size = tile ? tile->size() : map()->tileSize();
+                QSize size = (tile && !tile->image().isNull()) ? tile->size() : map()->tileSize();
                 renderer.render(cell, QPointF(x, (qreal)y / 2), size,
                                 CellRenderer::BottomLeft);
             }
@@ -338,20 +372,32 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
         const QSizeF size = object->size();
         const QPointF pos = pixelToScreenCoords(object->position());
 
-        CellRenderer(painter).render(cell, pos, size,
-                                     CellRenderer::BottomCenter);
+        CellRenderer(painter, this).render(cell, pos, size,
+                                           CellRenderer::BottomCenter);
 
         if (testFlag(ShowTileObjectOutlines)) {
             QPointF tileOffset;
+            QPointF scale(1.0, 1.0);
 
-            if (const Tile *tile = cell.tile())
+            if (const Tile *tile = cell.tile()) {
                 tileOffset = tile->offset();
 
-            QRectF rect(QPointF(pos.x() - size.width() / 2 + tileOffset.x(),
-                                pos.y() - size.height() + tileOffset.y()),
+                const QPixmap &image = tile->image();
+                const QSizeF imageSize = image.size();
+
+                if (!imageSize.isEmpty()) {
+                    scale = QPointF(size.width() / imageSize.width(),
+                                    size.height() / imageSize.height());
+                }
+            }
+
+            QRectF rect(QPointF(pos.x() - size.width() / 2 + tileOffset.x() * scale.x(),
+                                pos.y() - size.height() + tileOffset.y() * scale.y()),
                         size);
 
             pen.setStyle(Qt::SolidLine);
+            painter->setRenderHint(QPainter::Antialiasing, false);
+            painter->setBrush(Qt::NoBrush);
             painter->setPen(pen);
             painter->drawRect(rect);
             pen.setStyle(Qt::DotLine);
@@ -391,53 +437,19 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
 
         switch (object->shape()) {
         case MapObject::Ellipse: {
-            QPolygonF polygon = pixelRectToScreenPolygon(object->bounds());
+            const QPolygonF rect = pixelRectToScreenPolygon(object->bounds());
+            const QPainterPath ellipse = shape(object);
 
-            qreal tw = map()->tileWidth();
-            qreal th = map()->tileHeight();
-            QPointF transformScale(1, 1);
-            if (tw > th)
-                transformScale = QPointF(1, th/tw);
-            else
-                transformScale = QPointF(tw/th, 1);
+            painter->drawPath(ellipse);
+            painter->drawPolygon(rect);
 
-            QPointF l1 = polygon.at(1) - polygon.at(0);
-            QPointF l2 = polygon.at(3) - polygon.at(0);
-            QTransform trans;
-            trans.scale(transformScale.x(), transformScale.y());
-            trans.rotate(45);
-            QTransform iTrans = trans.inverted();
-            QPointF l1x = iTrans.map(l1);
-            QPointF l2x = iTrans.map(l2);
-            QSizeF ellipseSize(l1x.manhattanLength(), l2x.manhattanLength());
-
-            if (ellipseSize.width() > 0 && ellipseSize.height() > 0) {
-                painter->save();
-                painter->setPen(pen);
-                painter->translate(polygon.at(0));
-                painter->scale(transformScale.x(), transformScale.y());
-                painter->rotate(45);
-                painter->drawEllipse(QRectF(QPointF(0, 0), ellipseSize));
-                painter->restore();
-            }
-
-            painter->setBrush(Qt::NoBrush);
-            painter->drawPolygon(polygon);
+            painter->translate(0, -shadowOffset);
 
             painter->setPen(colorPen);
-            painter->setBrush(Qt::NoBrush);
-            painter->translate(QPointF(0, -shadowOffset));
-            painter->drawPolygon(polygon);
+            painter->drawPolygon(rect);
 
             painter->setBrush(brush);
-            if (ellipseSize.width() > 0 && ellipseSize.height() > 0) {
-                painter->save();
-                painter->translate(polygon.at(0));
-                painter->scale(transformScale.x(), transformScale.y());
-                painter->rotate(45);
-                painter->drawEllipse(QRectF(QPointF(0, 0), ellipseSize));
-                painter->restore();
-            }
+            painter->drawPath(ellipse);
             break;
         }
         case MapObject::Point:
@@ -569,6 +581,25 @@ QPointF IsometricRenderer::pixelToScreenCoords(qreal x, qreal y) const
 
     return QPointF((tileX - tileY) * tileWidth / 2 + originX,
                    (tileX + tileY) * tileHeight / 2);
+}
+
+QTransform IsometricRenderer::transform() const
+{
+    const qreal tileWidth = map()->tileWidth();
+    const qreal tileHeight = map()->tileHeight();
+    const qreal originX = map()->height() * tileWidth / 2;
+
+    QPointF transformScale(M_SQRT2, M_SQRT2);
+    if (tileWidth > tileHeight)
+        transformScale.ry() *= tileHeight / tileWidth;
+    else
+        transformScale.rx() *= tileWidth / tileHeight;
+
+    QTransform transform;
+    transform.translate(originX, 0);
+    transform.scale(transformScale.x(), transformScale.y());
+    transform.rotate(45);
+    return transform;
 }
 
 QPolygonF IsometricRenderer::pixelRectToScreenPolygon(const QRectF &rect) const

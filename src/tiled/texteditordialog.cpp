@@ -24,7 +24,6 @@
 #include "utils.h"
 
 namespace Tiled {
-namespace Internal {
 
 TextEditorDialog::TextEditorDialog(QWidget *parent)
     : QDialog(parent)
@@ -67,5 +66,4 @@ void TextEditorDialog::changeEvent(QEvent *e)
     }
 }
 
-} // namespace Internal
 } // namespace Tiled

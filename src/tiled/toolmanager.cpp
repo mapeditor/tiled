@@ -27,7 +27,6 @@
 #include <QShortcut>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 ToolManager::ToolManager(QObject *parent)
     : QObject(parent)
@@ -97,6 +96,9 @@ QAction *ToolManager::registerTool(AbstractTool *tool)
 
     mActionGroup->addAction(toolAction);
 
+    connect(tool, &AbstractTool::changed,
+            this, &ToolManager::toolChanged);
+
     connect(tool, &AbstractTool::enabledChanged,
             this, &ToolManager::toolEnabledChanged);
 
@@ -107,6 +109,24 @@ QAction *ToolManager::registerTool(AbstractTool *tool)
     }
 
     return toolAction;
+}
+
+void ToolManager::unregisterTool(AbstractTool *tool)
+{
+    auto action = findAction(tool);
+    Q_ASSERT(action);
+    delete action;
+
+    tool->disconnect(this);
+
+    if (mDisabledTool == tool)
+        mDisabledTool = nullptr;
+    if (mPreviouslyDisabledTool == tool)
+        mPreviouslyDisabledTool = nullptr;
+    if (mSelectedTool == tool)
+        mSelectedTool = nullptr;
+
+    selectEnabledTool();
 }
 
 /**
@@ -137,9 +157,36 @@ bool ToolManager::selectTool(AbstractTool *tool)
     return tool == nullptr;
 }
 
+QAction *ToolManager::findAction(AbstractTool *tool) const
+{
+    const auto actions = mActionGroup->actions();
+    for (QAction *action : actions) {
+        if (action->data().value<AbstractTool*>() == tool)
+            return action;
+    }
+    return nullptr;
+}
+
 void ToolManager::actionTriggered(QAction *action)
 {
     setSelectedTool(action->data().value<AbstractTool*>());
+}
+
+void ToolManager::toolChanged()
+{
+    auto tool = static_cast<AbstractTool*>(sender());
+
+    if (auto action = findAction(tool)) {
+        action->setText(tool->name());
+        action->setIcon(tool->icon());
+        action->setShortcut(tool->shortcut());
+        if (!tool->shortcut().isEmpty()) {
+            action->setToolTip(QStringLiteral("%1 (%2)").arg(tool->name(),
+                                                             tool->shortcut().toString()));
+        } else {
+            action->setToolTip(tool->name());
+        }
+    }
 }
 
 void ToolManager::retranslateTools()
@@ -154,9 +201,8 @@ void ToolManager::retranslateTools()
         action->setText(tool->name());
         action->setShortcut(tool->shortcut());
         if (!tool->shortcut().isEmpty()) {
-            action->setToolTip(
-                        QString(QLatin1String("%1 (%2)")).arg(tool->name(),
-                                                              tool->shortcut().toString()));
+            action->setToolTip(QStringLiteral("%1 (%2)").arg(tool->name(),
+                                                             tool->shortcut().toString()));
         } else {
             action->setToolTip(tool->name());
         }
@@ -182,7 +228,7 @@ void ToolManager::createShortcuts(QWidget *parent)
             // Make sure the shortcut is only enabled when the action is,
             // because different tools may use the same shortcut.
             shortcut->setEnabled(action->isEnabled());
-            connect(action, &QAction::changed, shortcut, [=]() {
+            connect(action, &QAction::changed, shortcut, [=] {
                 shortcut->setKey(action->shortcut());
                 shortcut->setEnabled(action->isEnabled());
             });

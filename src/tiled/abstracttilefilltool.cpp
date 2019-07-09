@@ -28,7 +28,6 @@
 #include <QAction>
 
 using namespace Tiled;
-using namespace Internal;
 
 AbstractTileFillTool::AbstractTileFillTool(const QString &name,
                                            const QIcon &icon,
@@ -39,18 +38,19 @@ AbstractTileFillTool::AbstractTileFillTool(const QString &name,
     , mFillMethod(TileFill)
     , mStampActions(new StampActions(this))
     , mWangSet(nullptr)
+    , mRandomAndMissingCacheValid(true)
 {
     connect(mStampActions->random(), &QAction::toggled, this, &AbstractTileFillTool::randomChanged);
     connect(mStampActions->wangFill(), &QAction::toggled, this, &AbstractTileFillTool::wangFillChanged);
 
     connect(mStampActions->flipHorizontal(), &QAction::triggered,
-            [this]() { emit stampChanged(mStamp.flipped(FlipHorizontally)); });
+            [this] { emit stampChanged(mStamp.flipped(FlipHorizontally)); });
     connect(mStampActions->flipVertical(), &QAction::triggered,
-            [this]() { emit stampChanged(mStamp.flipped(FlipVertically)); });
+            [this] { emit stampChanged(mStamp.flipped(FlipVertically)); });
     connect(mStampActions->rotateLeft(), &QAction::triggered,
-            [this]() { emit stampChanged(mStamp.rotated(RotateLeft)); });
+            [this] { emit stampChanged(mStamp.rotated(RotateLeft)); });
     connect(mStampActions->rotateRight(), &QAction::triggered,
-            [this]() { emit stampChanged(mStamp.rotated(RotateRight)); });
+            [this] { emit stampChanged(mStamp.rotated(RotateRight)); });
 }
 
 AbstractTileFillTool::~AbstractTileFillTool()
@@ -65,12 +65,12 @@ void AbstractTileFillTool::deactivate(MapScene *scene)
 
 void AbstractTileFillTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
-    if (event->button() == Qt::RightButton) {
+    if (event->button() == Qt::RightButton && event->modifiers() == Qt::NoModifier) {
         mCaptureStampHelper.beginCapture(tilePosition());
         return;
     }
 
-    event->ignore();
+    AbstractTileTool::mousePressed(event);
 }
 
 void AbstractTileFillTool::mouseReleased(QGraphicsSceneMouseEvent *event)
@@ -95,7 +95,7 @@ void AbstractTileFillTool::setStamp(const TileStamp &stamp)
 
     mStamp = stamp;
 
-    updateRandomListAndMissingTilesets();
+    invalidateRandomAndMissingCache();
 
     if (brushItem()->isVisible())
         tilePositionChanged(tilePosition());
@@ -119,7 +119,7 @@ void AbstractTileFillTool::setFillMethod(FillMethod fillMethod)
     mStampActions->wangFill()->setChecked(mFillMethod == WangFill);
 
     if (mFillMethod == RandomFill || mFillMethod == WangFill)
-        updateRandomListAndMissingTilesets();
+        invalidateRandomAndMissingCache();
 
     // Don't need to recalculate fill region if there was no preview
     if (!mPreviewMap)
@@ -132,7 +132,7 @@ void AbstractTileFillTool::setWangSet(WangSet *wangSet)
 {
     mWangSet = wangSet;
 
-    updateRandomListAndMissingTilesets();
+    invalidateRandomAndMissingCache();
 }
 
 void AbstractTileFillTool::mapDocumentChanged(MapDocument *oldDocument,
@@ -142,13 +142,21 @@ void AbstractTileFillTool::mapDocumentChanged(MapDocument *oldDocument,
 
     clearConnections(oldDocument);
 
-    if (newDocument)
-        updateRandomListAndMissingTilesets();
+    if (oldDocument) {
+        disconnect(oldDocument, &MapDocument::tileProbabilityChanged,
+                   this, &AbstractTileFillTool::invalidateRandomAndMissingCache);
+    }
+
+    if (newDocument) {
+        invalidateRandomAndMissingCache();
+        connect(newDocument, &MapDocument::tileProbabilityChanged,
+                this, &AbstractTileFillTool::invalidateRandomAndMissingCache);
+    }
 
     clearOverlay();
 }
 
-void AbstractTileFillTool::tilePositionChanged(const QPoint &tilePos)
+void AbstractTileFillTool::tilePositionChanged(QPoint tilePos)
 {
     if (mCaptureStampHelper.isActive()) {
         clearOverlay();
@@ -169,6 +177,11 @@ QList<Layer *> AbstractTileFillTool::targetLayers() const
 
 void AbstractTileFillTool::updatePreview(const QRegion &fillRegion)
 {
+    if (!mRandomAndMissingCacheValid) {
+        updateRandomListAndMissingTilesets();
+        mRandomAndMissingCacheValid = true;
+    }
+
     const QRect fillBounds = fillRegion.boundingRect();
     auto preview = SharedMap::create(mapDocument()->map()->orientation(),
                                      mapDocument()->map()->size(),
@@ -314,4 +327,9 @@ void AbstractTileFillTool::fillWithStamp(Map &map,
         auto tileLayer = static_cast<TileLayer*>(layer);
         tileLayer->erase((QRegion(tileLayer->bounds()) - mask).translated(-tileLayer->position()));
     }
+}
+
+void AbstractTileFillTool::invalidateRandomAndMissingCache()
+{
+    mRandomAndMissingCacheValid = false;
 }

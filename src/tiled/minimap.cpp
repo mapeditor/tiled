@@ -36,7 +36,6 @@
 #include <QUndoStack>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 MiniMap::MiniMap(QWidget *parent)
     : QFrame(parent)
@@ -170,11 +169,7 @@ void MiniMap::renderMapToImage()
     }
 
     MapRenderer *renderer = mMapDocument->renderer();
-#if QT_VERSION >= 0x050600
     const QSize viewSize = contentsRect().size() * devicePixelRatioF();
-#else
-    const QSize viewSize = contentsRect().size() * devicePixelRatio();
-#endif
     QSize mapSize = renderer->mapBoundingRect().size();
 
     if (mapSize.isEmpty()) {

@@ -38,7 +38,7 @@ class QString;
 namespace Tiled {
 
 /**
- * An object to be added by classes that want to signal the debug console.
+ * An object to be added by classes that want to write to the Console view.
  */
 class TILEDSHARED_EXPORT LoggingInterface : public QObject
 {

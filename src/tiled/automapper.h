@@ -37,8 +37,6 @@ class MapObject;
 class ObjectGroup;
 class TileLayer;
 
-namespace Internal {
-
 class MapDocument;
 
 struct InputLayer
@@ -96,6 +94,18 @@ public:
          * of the map.
          */
         bool matchOutsideMap = true;
+
+        /**
+         * If "matchOutsideMap" is true, treat the out-of-bounds tiles as if they
+         * were the nearest inbound tile possible
+         */
+        bool overflowBorder = false;
+
+        /**
+         * If "matchOutsideMap" is true, wrap the map in the edges to apply the
+         * automapping rules
+         */
+        bool wrapBorder = false;
 
         /**
          * Determines if a rule is allowed to overlap itself.
@@ -374,5 +384,4 @@ private:
     QString mWarning;
 };
 
-} // namespace Internal
 } // namespace Tiled

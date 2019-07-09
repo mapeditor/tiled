@@ -29,6 +29,8 @@
 #include <QString>
 #include <QVariant>
 
+#include <memory>
+
 class QUndoStack;
 
 namespace Tiled {
@@ -37,7 +39,8 @@ class FileFormat;
 class Object;
 class Tile;
 
-namespace Internal {
+class ChangeEvent;
+class EditableAsset;
 
 /**
  * Keeps track of a file and its undo history.
@@ -48,7 +51,7 @@ class Document : public QObject,
     Q_OBJECT
 
     Q_PROPERTY(QString fileName READ fileName NOTIFY fileNameChanged)
-    Q_PROPERTY(bool modified READ isModified NOTIFY modifiedChanged)
+    Q_PROPERTY(bool modified READ isModified)
 
 public:
     enum DocumentType {
@@ -87,8 +90,10 @@ public:
 
     QDateTime lastSaved() const { return mLastSaved; }
 
-    QUndoStack *undoStack() const;
+    QUndoStack *undoStack();
     bool isModified() const;
+
+    Q_INVOKABLE virtual Tiled::EditableAsset *editable() = 0;
 
     Object *currentObject() const { return mCurrentObject; }
     void setCurrentObject(Object *object);
@@ -114,11 +119,11 @@ public:
     static const QList<Document*> &documentInstances();
 
 signals:
+    void changed(const ChangeEvent &change);
     void saved();
 
     void fileNameChanged(const QString &fileName,
                          const QString &oldFileName);
-    void modifiedChanged();
 
     void currentObjectChanged(Object *object);
 
@@ -139,7 +144,6 @@ protected:
 
     DocumentType mType;
     QString mFileName;
-    QUndoStack *mUndoStack;
     QDateTime mLastSaved;
 
     Object *mCurrentObject;             /**< Current properties object. */
@@ -149,6 +153,8 @@ protected:
 
     QString mLastExportFileName;
 
+    std::unique_ptr<EditableAsset> mEditable;
+
 private:
     static QList<Document*> sDocumentInstances;
 };
@@ -157,15 +163,6 @@ private:
 inline QString Document::fileName() const
 {
     return mFileName;
-}
-
-/**
- * Returns the undo stack of this document. Should be used to push any commands
- * on that modify the document.
- */
-inline QUndoStack *Document::undoStack() const
-{
-    return mUndoStack;
 }
 
 inline bool Document::ignoreBrokenLinks() const
@@ -195,5 +192,4 @@ inline const QList<Document *> &Document::documentInstances()
 
 using DocumentPtr = QSharedPointer<Document>;
 
-} // namespace Internal
 } // namespace Tiled

@@ -24,7 +24,7 @@
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
-    <widget class="Tiled::Internal::CommandTreeView" name="treeView">
+    <widget class="Tiled::CommandTreeView" name="treeView">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
        <horstretch>0</horstretch>
@@ -154,7 +154,7 @@
      <item row="4" column="0" colspan="3">
       <widget class="QCheckBox" name="outputBox">
        <property name="text">
-        <string>Show output in Debug Console</string>
+        <string>Show output in Console view</string>
        </property>
       </widget>
      </item>
@@ -197,7 +197,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>Tiled::Internal::CommandTreeView</class>
+   <class>Tiled::CommandTreeView</class>
    <extends>QTreeView</extends>
    <header>commanddialog.h</header>
   </customwidget>

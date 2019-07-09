@@ -34,7 +34,6 @@
 #include <QDebug>
 
 namespace Tiled {
-namespace Internal {
 
 namespace {
 
@@ -181,5 +180,4 @@ void TextPropertyEdit::onButtonClicked()
     }
 }
 
-} // namespace Internal
 } // namespace Tiled

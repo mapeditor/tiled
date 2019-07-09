@@ -29,13 +29,11 @@
 #include "mapreader.h"
 #include "pluginmanager.h"
 #include "preferences.h"
-#include "sparkleautoupdater.h"
-#include "standardautoupdater.h"
+#include "scriptmanager.h"
 #include "stylehelper.h"
 #include "tiledapplication.h"
 #include "tileset.h"
 #include "tmxmapformat.h"
-#include "winsparkleautoupdater.h"
 
 #include <QDebug>
 #include <QFileInfo>
@@ -56,7 +54,6 @@
 #define AS_STRING(x) STRINGIFY(x)
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 namespace {
 
@@ -263,7 +260,8 @@ void CommandLineHandler::showExportFormats()
     PluginManager::instance()->loadPlugins();
 
     QStringList formats;
-    for (MapFormat *format : PluginManager::objects<MapFormat>()) {
+    const auto mapFormats = PluginManager::objects<MapFormat>();
+    for (MapFormat *format : mapFormats) {
         if (format->hasCapabilities(MapFormat::Write))
             formats.append(format->shortName());
     }
@@ -274,7 +272,8 @@ void CommandLineHandler::showExportFormats()
         qWarning(" %s", qUtf8Printable(name));
 
     formats.clear();
-    for (TilesetFormat *format : PluginManager::objects<TilesetFormat>()) {
+    const auto tilesetFormats = PluginManager::objects<TilesetFormat>();
+    for (TilesetFormat *format : tilesetFormats) {
         if (format->hasCapabilities(TilesetFormat::Write))
             formats.append(format->shortName());
     }
@@ -304,9 +303,7 @@ int main(int argc, char *argv[])
     }
 #endif
 
-#if QT_VERSION >= 0x050600
     QGuiApplication::setFallbackSessionManagementEnabled(false);
-#endif
 
     // Enable support for highres images (added in Qt 5.1, but off by default)
     QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
@@ -449,15 +446,6 @@ int main(int argc, char *argv[])
             return 0;
     }
 
-    std::unique_ptr<AutoUpdater> updater;
-#ifdef TILED_SPARKLE
-#if defined(Q_OS_MAC)
-    updater.reset(new SparkleAutoUpdater);
-#elif defined(Q_OS_WIN)
-    updater.reset(new WinSparkleAutoUpdater);
-#endif
-#endif
-
     MainWindow w;
     w.show();
 
@@ -470,6 +458,7 @@ int main(int argc, char *argv[])
                      &w, [&] (const QString &file) { w.openFile(file); });
 
     PluginManager::instance()->loadPlugins();
+    ScriptManager::instance().initialize();
 
     if (!commandLine.filesToOpen().isEmpty()) {
         for (const QString &fileName : commandLine.filesToOpen())

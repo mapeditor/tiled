@@ -25,7 +25,6 @@
 class QAction;
 
 namespace Tiled {
-namespace Internal {
 
 class ShapeFillTool : public AbstractTileFillTool
 {
@@ -44,7 +43,7 @@ public:
     void populateToolBar(QToolBar *toolBar) override;
 
 protected:
-    void tilePositionChanged(const QPoint&) override;
+    void tilePositionChanged(QPoint) override;
     void clearConnections(MapDocument *) override {}
 
 private:
@@ -69,5 +68,4 @@ private:
     void updateFillOverlay();
 };
 
-} // namespace Internal
 } // namespace Tiled

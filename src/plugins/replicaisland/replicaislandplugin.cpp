@@ -48,7 +48,7 @@ ReplicaIslandPlugin::ReplicaIslandPlugin()
 {
 }
 
-Tiled::Map *ReplicaIslandPlugin::read(const QString &fileName)
+std::unique_ptr<Tiled::Map> ReplicaIslandPlugin::read(const QString &fileName)
 {
     using namespace Tiled;
 
@@ -71,12 +71,12 @@ Tiled::Map *ReplicaIslandPlugin::read(const QString &fileName)
     }
 
     // Create our map, setting width and height to 0 until we load a layer.
-    Map *map = new Map(Map::Orthogonal, 0, 0, 32, 32);
+    std::unique_ptr<Map> map { new Map(Map::Orthogonal, 0, 0, 32, 32) };
     map->setProperty("background_index", QString::number(backgroundIndex));
 
     // Load our Tilesets.
     QVector<SharedTileset> typeTilesets, tileIndexTilesets;
-    loadTilesetsFromResources(map, typeTilesets, tileIndexTilesets);
+    loadTilesetsFromResources(map.get(), typeTilesets, tileIndexTilesets);
 
     // Load each of our layers.
     for (quint8 i = 0; i < layerCount; i++) {
@@ -87,7 +87,6 @@ Tiled::Map *ReplicaIslandPlugin::read(const QString &fileName)
         in >> type >> tileIndex >> scrollSpeed
            >> levelSignature >> width >> height;
         if (in.status() == QDataStream::ReadPastEnd || levelSignature != 42) {
-            delete map;
             mError = tr("Can't parse layer header!");
             return nullptr;
         }
@@ -98,7 +97,6 @@ Tiled::Map *ReplicaIslandPlugin::read(const QString &fileName)
         if (map->height() == 0)
             map->setHeight(height);
         if (map->width() != width || map->height() != height) {
-            delete map;
             mError = tr("Inconsistent layer sizes!");
             return nullptr;
         }
@@ -119,7 +117,6 @@ Tiled::Map *ReplicaIslandPlugin::read(const QString &fileName)
         QByteArray tileData(width*height, '\0');
         int bytesRead = in.readRawData(tileData.data(), tileData.size());
         if (bytesRead != tileData.size()) {
-            delete map;
             mError = tr("File ended in middle of layer!");
             return nullptr;
         }
@@ -139,7 +136,6 @@ Tiled::Map *ReplicaIslandPlugin::read(const QString &fileName)
 
     // Make sure we read the entire *.bin file.
     if (in.status() != QDataStream::Ok || !in.atEnd()) {
-        delete map;
         mError = tr("Unexpected data at end of file!");
         return nullptr;
     }

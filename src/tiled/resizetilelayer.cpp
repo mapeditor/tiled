@@ -28,12 +28,11 @@
 #include <QCoreApplication>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 ResizeTileLayer::ResizeTileLayer(MapDocument *mapDocument,
                                  TileLayer *layer,
-                                 const QSize &size,
-                                 const QPoint &offset,
+                                 QSize size,
+                                 QPoint offset,
                                  QUndoCommand *parent)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Resize Layer"),

@@ -28,7 +28,6 @@
 #include "utils.h"
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 CreateScalableObjectTool::CreateScalableObjectTool(QObject *parent)
     : CreateObjectTool(parent)

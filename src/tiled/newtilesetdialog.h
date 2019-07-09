@@ -30,7 +30,6 @@ class NewTilesetDialog;
 }
 
 namespace Tiled {
-namespace Internal {
 
 /**
  * A dialog for the creation of a new tileset, or for editing the parameters
@@ -78,5 +77,4 @@ private:
     SharedTileset mNewTileset;
 };
 
-} // namespace Internal
 } // namespace Tiled

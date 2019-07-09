@@ -40,8 +40,6 @@ namespace Tiled {
 
 class Terrain;
 
-namespace Internal {
-
 class AbstractTool;
 class BucketFillTool;
 class ComboBoxProxyModel;
@@ -132,6 +130,7 @@ private slots:
 private:
     void setupQuickStamps();
     void retranslateUi();
+    void showTileCollisionShapesChanged(bool enabled);
 
     void handleExternalTilesetsAndImages(const QStringList &fileNames,
                                          bool handleImages);
@@ -194,5 +193,4 @@ inline MapView *MapEditor::currentMapView() const
     return viewForDocument(mCurrentMapDocument);
 }
 
-} // namespace Internal
 } // namespace Tiled

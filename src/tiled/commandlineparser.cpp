@@ -27,7 +27,6 @@
 #include "qtcompat_p.h"
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 CommandLineParser::CommandLineParser()
     : mLongestArgument(0)

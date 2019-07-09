@@ -21,6 +21,8 @@
 
 #pragma once
 
+#include "changeevents.h"
+
 #include <QCursor>
 #include <QGraphicsSceneMouseEvent>
 #include <QIcon>
@@ -39,8 +41,6 @@ class Layer;
 class Tile;
 class ObjectTemplate;
 
-namespace Internal {
-
 class MapDocument;
 class MapScene;
 class ToolManager;
@@ -58,9 +58,9 @@ class AbstractTool : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(QString name READ name WRITE setName)
-    Q_PROPERTY(QIcon icon READ icon WRITE setIcon)
-    Q_PROPERTY(QKeySequence shortcut READ shortcut WRITE setShortcut)
+    Q_PROPERTY(QString name READ name WRITE setName NOTIFY changed)
+    Q_PROPERTY(QIcon icon READ icon WRITE setIcon NOTIFY changed)
+    Q_PROPERTY(QKeySequence shortcut READ shortcut WRITE setShortcut NOTIFY changed)
     Q_PROPERTY(QString statusInfo READ statusInfo WRITE setStatusInfo NOTIFY statusInfoChanged)
     Q_PROPERTY(QCursor cursor READ cursor WRITE setCursor NOTIFY cursorChanged)
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
@@ -159,10 +159,11 @@ public:
 
     virtual void populateToolBar(QToolBar*) {}
 
-public slots:
     void setMapDocument(MapDocument *mapDocument);
 
 protected:
+    virtual void changeEvent(const ChangeEvent &event);
+
     /**
      * Can be used to respond to the map document changing.
      */
@@ -177,7 +178,6 @@ protected:
 
     Layer *currentLayer() const;
 
-protected slots:
     /**
      * By default, this function is called after the current map has changed
      * and when the current layer changes. It can be overridden to implement
@@ -188,6 +188,7 @@ protected slots:
     virtual void updateEnabledState();
 
 signals:
+    void changed();
     void statusInfoChanged(const QString &statusInfo);
     void cursorChanged(const QCursor &cursor);
     void enabledChanged(bool enabled);
@@ -212,19 +213,9 @@ inline QString AbstractTool::name() const
     return mName;
 }
 
-inline void AbstractTool::setName(const QString &name)
-{
-    mName = name;
-}
-
 inline QIcon AbstractTool::icon() const
 {
     return mIcon;
-}
-
-inline void AbstractTool::setIcon(const QIcon &icon)
-{
-    mIcon = icon;
 }
 
 inline QKeySequence AbstractTool::shortcut() const
@@ -232,10 +223,6 @@ inline QKeySequence AbstractTool::shortcut() const
     return mShortcut;
 }
 
-inline void AbstractTool::setShortcut(const QKeySequence &shortcut)
-{
-    mShortcut = shortcut;
-}
 
 inline QString AbstractTool::statusInfo() const
 {
@@ -260,7 +247,7 @@ inline ToolManager *AbstractTool::toolManager() const
     return mToolManager;
 }
 
-} // namespace Internal
 } // namespace Tiled
 
-Q_DECLARE_METATYPE(Tiled::Internal::AbstractTool*)
+Q_DECLARE_METATYPE(Tiled::AbstractTool*)
+Q_DECLARE_INTERFACE(Tiled::AbstractTool, "org.mapeditor.AbstractTool")

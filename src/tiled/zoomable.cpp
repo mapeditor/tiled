@@ -27,7 +27,9 @@
 
 #include <cmath>
 
-using namespace Tiled::Internal;
+#include "qtcompat_p.h"
+
+using namespace Tiled;
 
 static QString scaleToString(qreal scale)
 {
@@ -126,7 +128,7 @@ void Zoomable::handlePinchGesture(QPinchGesture *pinch)
         break;
     case Qt::GestureStarted:
         mGestureStartScale = mScale;
-        // fall through
+        Q_FALLTHROUGH();
     case Qt::GestureUpdated: {
         qreal factor = pinch->totalScaleFactor();
         qreal scale = qBound(mZoomFactors.first(),
@@ -143,7 +145,7 @@ void Zoomable::handlePinchGesture(QPinchGesture *pinch)
 
 void Zoomable::zoomIn()
 {
-    for (qreal scale : mZoomFactors) {
+    for (qreal scale : qAsConst(mZoomFactors)) {
         if (scale > mScale) {
             setScale(scale);
             break;
@@ -184,7 +186,7 @@ void Zoomable::setComboBox(QComboBox *comboBox)
 
     if (mComboBox) {
         mComboBox->clear();
-        for (qreal scale : mZoomFactors)
+        for (qreal scale : qAsConst(mZoomFactors))
             mComboBox->addItem(scaleToString(scale), scale);
         syncComboBox();
         connect(mComboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::activated),

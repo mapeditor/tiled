@@ -51,7 +51,6 @@
 #include <QUndoStack>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 // This references created dummy documents, to make sure they are shared if the
 // same template is open in the MapEditor and the TilesetEditor.
@@ -156,8 +155,6 @@ TemplatesDock::TemplatesDock(QWidget *parent)
     setWidget(widget);
     retranslateUi();
 
-    mMapScene->setSelectedTool(mToolManager->selectedTool());
-
     connect(mTemplatesView, &TemplatesView::currentTemplateChanged,
             this, &TemplatesDock::currentTemplateChanged);
 
@@ -171,7 +168,7 @@ TemplatesDock::TemplatesDock(QWidget *parent)
             this, &TemplatesDock::focusOutEvent);
 
     connect(mToolManager, &ToolManager::selectedToolChanged,
-            this, &TemplatesDock::setSelectedTool);
+            mMapScene, &MapScene::setSelectedTool);
 
     setFocusPolicy(Qt::ClickFocus);
     mMapView->setFocusProxy(this);
@@ -179,7 +176,7 @@ TemplatesDock::TemplatesDock(QWidget *parent)
 
 TemplatesDock::~TemplatesDock()
 {
-    mMapScene->disableSelectedTool();
+    mMapScene->setSelectedTool(nullptr);
 
     if (mDummyMapDocument)
         mDummyMapDocument->undoStack()->disconnect(this);
@@ -204,13 +201,6 @@ void TemplatesDock::bringToFront()
     setFocus();
 }
 
-void TemplatesDock::setSelectedTool(AbstractTool *tool)
-{
-    mMapScene->disableSelectedTool();
-    mMapScene->setSelectedTool(tool);
-    mMapScene->enableSelectedTool();
-}
-
 void TemplatesDock::setTemplate(ObjectTemplate *objectTemplate)
 {
     if (mObjectTemplate == objectTemplate)
@@ -218,19 +208,17 @@ void TemplatesDock::setTemplate(ObjectTemplate *objectTemplate)
 
     mObjectTemplate = objectTemplate;
 
-    mMapScene->disableSelectedTool();
+    mMapScene->setSelectedTool(nullptr);
     MapDocumentPtr previousDocument = mDummyMapDocument;
 
     mMapView->setEnabled(objectTemplate);
 
-    if (objectTemplate) {
-        Q_ASSERT(objectTemplate->object());
-
+    if (objectTemplate && objectTemplate->object()) {
         mDummyMapDocument = ourDummyDocuments.value(objectTemplate);
 
         if (!mDummyMapDocument) {
             Map::Orientation orientation = Map::Orthogonal;
-            Map *map = new Map(orientation, 1, 1, 1, 1);
+            std::unique_ptr<Map> map { new Map(orientation, 1, 1, 1, 1) };
 
             MapObject *dummyObject = objectTemplate->object()->clone();
             dummyObject->markAsTemplateBase();
@@ -247,7 +235,7 @@ void TemplatesDock::setTemplate(ObjectTemplate *objectTemplate)
 
             map->addLayer(objectGroup);
 
-            mDummyMapDocument = MapDocumentPtr::create(map);
+            mDummyMapDocument = MapDocumentPtr::create(std::move(map));
             mDummyMapDocument->setAllowHidingObjects(false);
             mDummyMapDocument->setCurrentLayer(objectGroup);
 
@@ -271,7 +259,7 @@ void TemplatesDock::setTemplate(ObjectTemplate *objectTemplate)
     mToolManager->setMapDocument(mDummyMapDocument.data());
     mPropertiesDock->setDocument(mDummyMapDocument.data());
 
-    mMapScene->enableSelectedTool();
+    mMapScene->setSelectedTool(mToolManager->selectedTool());
 
     if (previousDocument)
         previousDocument->undoStack()->disconnect(this);

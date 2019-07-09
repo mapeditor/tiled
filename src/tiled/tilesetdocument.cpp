@@ -20,8 +20,9 @@
 
 #include "tilesetdocument.h"
 
-#include "mapdocument.h"
+#include "editabletileset.h"
 #include "map.h"
+#include "mapdocument.h"
 #include "terrain.h"
 #include "tile.h"
 #include "tilesetformat.h"
@@ -35,7 +36,6 @@
 #include <QUndoStack>
 
 namespace Tiled {
-namespace Internal {
 
 class ReloadTileset : public QUndoCommand
 {
@@ -63,7 +63,6 @@ TilesetDocument::TilesetDocument(const SharedTileset &tileset, const QString &fi
     , mTileset(tileset)
     , mTerrainModel(new TilesetTerrainModel(this, this))
     , mWangSetModel(new TilesetWangSetModel(this, this))
-    , mWangColorModel(nullptr)
 {
     Q_ASSERT(!sTilesetToDocument.contains(tileset));
     sTilesetToDocument.insert(tileset, this);
@@ -92,6 +91,11 @@ TilesetDocument::TilesetDocument(const SharedTileset &tileset, const QString &fi
 TilesetDocument::~TilesetDocument()
 {
     sTilesetToDocument.remove(mTileset);
+
+    // Needs to be deleted before the Tileset instance is deleted, because it
+    // may cause script values to detach from the map, in which case they'll
+    // need to be able to copy the data.
+    mEditable.reset();
 }
 
 bool TilesetDocument::save(const QString &fileName, QString *error)
@@ -140,8 +144,8 @@ bool TilesetDocument::reload(QString *error)
 
     tileset->setFormat(format);
 
-    mUndoStack->push(new ReloadTileset(this, tileset));
-    mUndoStack->setClean();
+    undoStack()->push(new ReloadTileset(this, tileset));
+    undoStack()->setClean();
     mLastSaved = QFileInfo(fileName()).lastModified();
 
     return true;
@@ -220,6 +224,14 @@ void TilesetDocument::swapTileset(SharedTileset &tileset)
     emit tilesetChanged(mTileset.data());
 }
 
+EditableTileset *TilesetDocument::editable()
+{
+    if (!mEditable)
+        mEditable.reset(new EditableTileset(this, this));
+
+    return static_cast<EditableTileset*>(mEditable.get());
+}
+
 /**
  * Used when a map that has this tileset embedded is saved.
  */
@@ -249,7 +261,7 @@ void TilesetDocument::setTilesetName(const QString &name)
         emit mapDocument->tilesetNameChanged(mTileset.data());
 }
 
-void TilesetDocument::setTilesetTileOffset(const QPoint &tileOffset)
+void TilesetDocument::setTilesetTileOffset(QPoint tileOffset)
 {
     mTileset->setTileOffset(tileOffset);
 
@@ -266,6 +278,7 @@ void TilesetDocument::setTilesetTileOffset(const QPoint &tileOffset)
 void TilesetDocument::addTiles(const QList<Tile *> &tiles)
 {
     mTileset->addTiles(tiles);
+    emit tilesAdded(tiles);
     emit tilesetChanged(mTileset.data());
 }
 
@@ -280,6 +293,7 @@ void TilesetDocument::removeTiles(const QList<Tile *> &tiles)
     }
 
     mTileset->removeTiles(tiles);
+    emit tilesRemoved(tiles);
     emit tilesetChanged(mTileset.data());
 }
 
@@ -311,7 +325,7 @@ WangColorModel *TilesetDocument::wangColorModel(WangSet *wangSet)
 
     std::unique_ptr<WangColorModel> &model = mWangColorModels[wangSet];
     if (!model)
-        model.reset(new WangColorModel(this, wangSet));
+        model = std::make_unique<WangColorModel>(this, wangSet);
     return model.get();
 }
 
@@ -331,11 +345,30 @@ void TilesetDocument::setTileImage(Tile *tile, const QPixmap &image, const QUrl 
     Q_ASSERT(tile->tileset() == mTileset.data());
 
     mTileset->setTileImage(tile, image, source);
-
     emit tileImageSourceChanged(tile);
 
     for (MapDocument *mapDocument : mapDocuments())
         emit mapDocument->tileImageSourceChanged(tile);
+}
+
+void TilesetDocument::setTileProbability(Tile *tile, qreal probability)
+{
+    Q_ASSERT(tile->tileset() == mTileset.data());
+
+    tile->setProbability(probability);
+    emit tileProbabilityChanged(tile);
+
+    for (MapDocument *mapDocument : mapDocuments())
+        emit mapDocument->tileProbabilityChanged(tile);
+}
+
+void TilesetDocument::swapTileObjectGroup(Tile *tile, std::unique_ptr<ObjectGroup> &objectGroup)
+{
+    tile->swapObjectGroup(objectGroup);
+    emit tileObjectGroupChanged(tile);
+
+    for (MapDocument *mapDocument : mapDocuments())
+        emit mapDocument->tileObjectGroupChanged(tile);
 }
 
 TilesetDocument *TilesetDocument::findDocumentForTileset(const SharedTileset &tileset)
@@ -381,5 +414,4 @@ void TilesetDocument::onWangSetRemoved(WangSet *wangSet)
     mWangColorModels.erase(wangSet);
 }
 
-} // namespace Internal
 } // namespace Tiled

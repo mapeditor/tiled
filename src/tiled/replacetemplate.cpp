@@ -27,7 +27,6 @@
 #include <QCoreApplication>
 
 namespace Tiled {
-namespace Internal {
 
 ReplaceTemplate::ReplaceTemplate(MapDocument *mapDocument,
                                  const ObjectTemplate *oldObjectTemplate,
@@ -51,5 +50,4 @@ void ReplaceTemplate::swap()
     std::swap(mOldObjectTemplate, mNewObjectTemplate);
 }
 
-} // namespace Internal
 } // namespace Tiled

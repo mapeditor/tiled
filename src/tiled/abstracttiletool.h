@@ -26,8 +26,6 @@ namespace Tiled {
 
 class TileLayer;
 
-namespace Internal {
-
 class BrushItem;
 class MapDocument;
 class TileStamp;
@@ -38,6 +36,9 @@ class TileStamp;
 class AbstractTileTool : public AbstractTool
 {
     Q_OBJECT
+    Q_INTERFACES(Tiled::AbstractTool)
+
+    Q_PROPERTY(QPoint tilePosition READ tilePosition)
 
 public:
     /**
@@ -57,6 +58,7 @@ public:
     void mouseEntered() override;
     void mouseLeft() override;
     void mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers) override;
+    void mousePressed(QGraphicsSceneMouseEvent *event) override;
 
 protected:
     void mapDocumentChanged(MapDocument *oldDocument,
@@ -72,7 +74,7 @@ protected:
      * New virtual method to implement for tile tools. This method is called
      * on mouse move events, but only when the tile position changes.
      */
-    virtual void tilePositionChanged(const QPoint &tilePos) = 0;
+    virtual void tilePositionChanged(QPoint tilePos) = 0;
 
     /**
      * Updates the status info with the current tile position. When the mouse
@@ -130,5 +132,4 @@ private:
     bool mBrushVisible;
 };
 
-} // namespace Internal
 } // namespace Tiled

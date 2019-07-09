@@ -39,7 +39,6 @@
 #include <QPushButton>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 /**
  * Class represents the file system model with disabled dragging of directories.
@@ -244,7 +243,8 @@ void MapsView::updateNameFilters()
 {
     QStringList nameFilters;
 
-    for (MapFormat *format : PluginManager::objects<MapFormat>()) {
+    const auto mapFormats = PluginManager::objects<MapFormat>();
+    for (MapFormat *format : mapFormats) {
         if (!(format->capabilities() & MapFormat::Read))
             continue;
 

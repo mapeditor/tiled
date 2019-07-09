@@ -54,7 +54,6 @@
 #include <algorithm>
 
 namespace Tiled {
-namespace Internal {
 
 QString BrokenLink::filePath() const
 {
@@ -119,8 +118,6 @@ void BrokenLinksModel::setDocument(Document *document)
 
     if (mDocument) {
         if (auto mapDocument = qobject_cast<MapDocument*>(mDocument)) {
-            connect(mapDocument, &MapDocument::tilesetReplaced,
-                    this, &BrokenLinksModel::tilesetReplaced);
             connect(mapDocument, &MapDocument::tilesetAdded,
                     this, &BrokenLinksModel::tilesetAdded);
             connect(mapDocument, &MapDocument::tilesetRemoved,
@@ -340,20 +337,12 @@ void BrokenLinksModel::tilesetAdded(int index, Tileset *tileset)
 {
     Q_UNUSED(index)
     connectToTileset(tileset->sharedPointer());
+    refresh();
 }
 
 void BrokenLinksModel::tilesetRemoved(Tileset *tileset)
 {
     disconnectFromTileset(tileset->sharedPointer());
-}
-
-void BrokenLinksModel::tilesetReplaced(int index, Tileset *newTileset, Tileset *oldTileset)
-{
-    Q_UNUSED(index)
-
-    disconnectFromTileset(oldTileset->sharedPointer());
-    connectToTileset(newTileset->sharedPointer());
-
     refresh();
 }
 
@@ -445,7 +434,7 @@ BrokenLinksWidget::BrokenLinksWidget(BrokenLinksModel *brokenLinksModel, QWidget
 
     // For some reason a model reset doesn't trigger the selectionChanged signal,
     // so we need to handle that explicitly.
-    connect(brokenLinksModel, &BrokenLinksModel::modelReset, this, [this](){
+    connect(brokenLinksModel, &BrokenLinksModel::modelReset, this, [this] {
         selectionChanged();
     });
 }
@@ -484,15 +473,15 @@ void BrokenLinksWidget::selectionChanged()
         const BrokenLink &link = mBrokenLinksModel->brokenLink(firstIndex.row());
 
         switch (link.type) {
-        case Tiled::Internal::MapTilesetReference:
-        case Tiled::Internal::ObjectTemplateReference:
+        case MapTilesetReference:
+        case ObjectTemplateReference:
             mLocateButton->setText(tr("Locate File..."));
             break;
-        case Tiled::Internal::ObjectTemplateTilesetReference:
+        case ObjectTemplateTilesetReference:
             mLocateButton->setText(tr("Open Template..."));
             break;
-        case Tiled::Internal::TilesetTileImageSource:
-        case Tiled::Internal::TilesetImageSource:
+        case TilesetTileImageSource:
+        case TilesetImageSource:
             if (isTileset)
                 mLocateButton->setText(tr("Locate File..."));
             else
@@ -673,7 +662,7 @@ bool BrokenLinksWidget::tryFixLink(const BrokenLink &link, const QString &newFil
         SharedTileset newTileset = TilesetManager::instance()->findTileset(newFilePath);
         if (!newTileset || newTileset->status() == LoadingError) {
             QString error;
-            newTileset = Tiled::readTileset(newFilePath, &error);
+            newTileset = readTileset(newFilePath, &error);
 
             if (!newTileset) {
                 QMessageBox::critical(window(), tr("Error Reading Tileset"), error);
@@ -708,5 +697,4 @@ bool BrokenLinksWidget::tryFixLink(const BrokenLink &link, const QString &newFil
     return true;
 }
 
-} // namespace Internal
 } // namespace Tiled

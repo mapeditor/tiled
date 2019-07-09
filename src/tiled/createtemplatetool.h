@@ -27,8 +27,6 @@ namespace Tiled {
 
 class ObjectTemplate;
 
-namespace Internal {
-
 class CreateTemplateTool : public CreateObjectTool
 {
     Q_OBJECT
@@ -45,5 +43,4 @@ private:
     void languageChangedImpl();
 };
 
-} // namespace Internal
 } // namespace Tiled

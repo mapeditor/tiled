@@ -18,7 +18,6 @@ WindowsInstallerPackage {
     }
 
     Depends { productTypes: ["application", "dynamiclibrary"] }
-    type: base.concat(["appcast"])
 
     Depends { name: "cpp" }
     Depends { name: "Qt.core" }
@@ -51,8 +50,8 @@ WindowsInstallerPackage {
             }
         }
 
-        if (project.sparkleEnabled)
-            defs.push("Sparkle");
+        if (Qt.core.versionMinor >= 10)
+            defs.push("WindowsVistaStyle")
 
         if (File.exists(Environment.getEnv("PYTHONHOME")))
             defs.push("Python");
@@ -69,49 +68,6 @@ WindowsInstallerPackage {
     ]
 
     files: ["installer.wxs"]
-
-    Group {
-        name: "AppCastXml"
-        files: [ "../appcast-win-snapshots.xml.in" ]
-        fileTags: ["appCastXmlIn"]
-        condition: project.snapshot
-    }
-
-    Rule {
-        inputs: ["appCastXmlIn"]
-        Artifact {
-            filePath: input.completeBaseName.replace('win', 'win' + product.bits);
-            fileTags: "appcast"
-        }
-        prepare: {
-            var cmd = new JavaScriptCommand();
-            cmd.description = "prepare " + FileInfo.fileName(output.filePath);
-            cmd.highlight = "codegen";
-
-            cmd.sourceCode = function() {
-                var i;
-                var vars = {};
-                var inf = new TextFile(input.filePath);
-                var all = inf.readAll();
-
-                vars['DATE'] = new Date().toISOString().slice(0, 10);
-                vars['VERSION'] = project.version;
-                vars['FILENAME'] = product.targetName + ".msi";
-                vars['APPCAST_FILENAME'] = output.fileName;
-
-                for (i in vars) {
-                    all = all.replace(new RegExp('@' + i + '@(?!\w)', 'g'), vars[i]);
-                }
-
-                var file = new TextFile(output.filePath, TextFile.WriteOnly);
-                file.truncate();
-                file.write(all);
-                file.close();
-            }
-
-            return cmd;
-        }
-    }
 
     // This is a clever hack to make the rule that compiles the installer
     // depend on all installables, since that rule implicitly depends on

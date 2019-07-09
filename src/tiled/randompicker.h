@@ -25,7 +25,6 @@
 #include <random>
 
 namespace Tiled {
-namespace Internal {
 
 inline std::default_random_engine &globalRandomEngine()
 {
@@ -97,5 +96,4 @@ private:
     QMap<Real, T> mThresholds;
 };
 
-} // namespace Internal
 } // namespace Tiled

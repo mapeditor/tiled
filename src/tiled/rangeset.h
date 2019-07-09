@@ -23,7 +23,6 @@
 #include <map>
 
 namespace Tiled {
-namespace Internal {
 
 /**
  * Logically, a set, but implemented as a set of ranges. This class is only
@@ -185,5 +184,4 @@ public:
     }
 };
 
-} // namespace Internal
 } // namespace Tiled

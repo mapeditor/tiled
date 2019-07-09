@@ -34,7 +34,6 @@
 #include <QStandardPaths>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 Preferences *Preferences::mInstance;
 
@@ -81,6 +80,7 @@ Preferences::Preferences()
     mShowGrid = boolValue("ShowGrid", true);
     mShowTileObjectOutlines = boolValue("ShowTileObjectOutlines");
     mShowTileAnimations = boolValue("ShowTileAnimations", true);
+    mShowTileCollisionShapes = boolValue("ShowTileCollisionShapes");
     mSnapToGrid = boolValue("SnapToGrid");
     mSnapToFineGrid = boolValue("SnapToFineGrid");
     mSnapToPixels = boolValue("SnapToPixels");
@@ -164,7 +164,8 @@ Preferences::Preferences()
     mPatreonDialogTime = mSettings->value(QLatin1String("PatreonDialogTime")).toDate();
     mRunCount = intValue("RunCount", 0) + 1;
     mIsPatron = boolValue("IsPatron");
-    mCheckForUpdates = boolValue("CheckForUpdates");
+    mCheckForUpdates = boolValue("CheckForUpdates", true);
+    mDisplayNews = boolValue("DisplayNews", true);
     if (!mFirstRun.isValid()) {
         mFirstRun = QDate::currentDate();
         mSettings->setValue(QLatin1String("FirstRun"), mFirstRun.toString(Qt::ISODate));
@@ -273,6 +274,18 @@ void Preferences::setShowTileAnimations(bool enabled)
     tilesetManager->setAnimateTiles(mShowTileAnimations);
 
     emit showTileAnimationsChanged(mShowTileAnimations);
+}
+
+void Preferences::setShowTileCollisionShapes(bool enabled)
+{
+    if (mShowTileCollisionShapes == enabled)
+        return;
+
+    mShowTileCollisionShapes = enabled;
+    mSettings->setValue(QLatin1String("Interface/ShowTileCollisionShapes"),
+                        mShowTileCollisionShapes);
+
+    emit showTileCollisionShapesChanged(enabled);
 }
 
 void Preferences::setSnapToGrid(bool snapToGrid)
@@ -632,7 +645,18 @@ void Preferences::setCheckForUpdates(bool on)
     mCheckForUpdates = on;
     mSettings->setValue(QLatin1String("Install/CheckForUpdates"), on);
 
-    emit checkForUpdatesChanged();
+    emit checkForUpdatesChanged(on);
+}
+
+void Preferences::setDisplayNews(bool on)
+{
+    if (mDisplayNews == on)
+        return;
+
+    mDisplayNews = on;
+    mSettings->setValue(QLatin1String("Install/DisplayNews"), on);
+
+    emit displayNewsChanged(on);
 }
 
 void Preferences::setOpenLastFilesOnStartup(bool open)
@@ -646,12 +670,12 @@ void Preferences::setOpenLastFilesOnStartup(bool open)
 
 void Preferences::setPluginEnabled(const QString &fileName, bool enabled)
 {
-    PluginManager::instance()->setPluginState(fileName, enabled ? PluginEnabled : PluginDisabled);
+    PluginManager *pluginManager = PluginManager::instance();
+    pluginManager->setPluginState(fileName, enabled ? PluginEnabled : PluginDisabled);
 
     QStringList disabledPlugins;
     QStringList enabledPlugins;
 
-    PluginManager *pluginManager = PluginManager::instance();
     auto &states = pluginManager->pluginStates();
 
     for (auto it = states.begin(), it_end = states.end(); it != it_end; ++it) {

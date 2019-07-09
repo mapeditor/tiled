@@ -27,7 +27,6 @@ class QAction;
 class QActionGroup;
 
 namespace Tiled {
-namespace Internal {
 
 class MapDocument;
 
@@ -58,9 +57,9 @@ protected:
         Intersect
     };
 
-    SelectionMode selectionMode() { return mSelectionMode; }
+    SelectionMode selectionMode() const { return mSelectionMode; }
 
-    QRegion selectedRegion() { return mSelectedRegion; }
+    QRegion selectedRegion() const { return mSelectedRegion; }
     void setSelectedRegion(QRegion region) { mSelectedRegion = region; }
 
     void updateBrushVisibility() override;
@@ -78,5 +77,4 @@ private:
     QActionGroup *mActionGroup;
 };
 
-} // namespace Internal
 } // namespace Tiled

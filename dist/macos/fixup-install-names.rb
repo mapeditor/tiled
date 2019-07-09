@@ -8,7 +8,7 @@ raise "No application at #{binAppDir}" unless File.directory? binAppDir
 Dir["Tiled.app/**/*.dylib",
     "Tiled.app/Contents/MacOS/tmxrasterizer",
     "Tiled.app/Contents/MacOS/terraingenerator"].each do |library|
-    ["QtCore", "QtGui", "QtWidgets", "QtNetwork"].each do |qtlib|
+    ["QtCore", "QtGui", "QtWidgets", "QtNetwork", "QtQml"].each do |qtlib|
         #find any qt dependencies within this library
         qtdependency = `otool -L "#{library}" | grep #{qtlib}`.split(' ')[0]
         next unless qtdependency

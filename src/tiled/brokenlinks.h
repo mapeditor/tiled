@@ -38,8 +38,6 @@ class Tile;
 class Tileset;
 class ObjectTemplate;
 
-namespace Internal {
-
 class Document;
 class TilesetDocument;
 
@@ -96,7 +94,6 @@ private slots:
 
     void tilesetAdded(int index, Tileset *tileset);
     void tilesetRemoved(Tileset *tileset);
-    void tilesetReplaced(int index, Tileset *newTileset, Tileset *oldTileset);
 
 private:
     void connectToTileset(const SharedTileset &tileset);
@@ -153,5 +150,4 @@ private:
     QAbstractButton *mLocateButton;
 };
 
-} // namespace Internal
 } // namespace Tiled

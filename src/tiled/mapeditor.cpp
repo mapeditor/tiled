@@ -20,6 +20,7 @@
 
 #include "mapeditor.h"
 
+#include "actionmanager.h"
 #include "addremovelayer.h"
 #include "addremovetileset.h"
 #include "brokenlinks.h"
@@ -47,6 +48,7 @@
 #include "mapview.h"
 #include "minimapdock.h"
 #include "newsbutton.h"
+#include "newversionbutton.h"
 #include "newtilesetdialog.h"
 #include "objectgroup.h"
 #include "objectsdock.h"
@@ -94,6 +96,8 @@
 #include <QStatusBar>
 #include <QToolBar>
 
+#include "qtcompat_p.h"
+
 #include <memory>
 
 static const char SIZE_KEY[] = "MapEditor/Size";
@@ -101,7 +105,6 @@ static const char STATE_KEY[] = "MapEditor/State";
 static const char MAPSTATES_KEY[] = "MapEditor/MapStates";
 
 namespace Tiled {
-namespace Internal {
 
 /**
  * A proxy model that makes sure no items are checked or checkable and that
@@ -164,9 +167,7 @@ MapEditor::MapEditor(QObject *parent)
     , mViewWithTool(nullptr)
     , mTileStampManager(new TileStampManager(*mToolManager, this))
 {
-#if QT_VERSION >= 0x050600
     mMainWindow->setDockOptions(mMainWindow->dockOptions() | QMainWindow::GroupedDragging);
-#endif
     mMainWindow->setDockNestingEnabled(true);
     mMainWindow->setCentralWidget(mWidgetStack);
 
@@ -211,6 +212,25 @@ MapEditor::MapEditor(QObject *parent)
     mToolsToolBar->addAction(mToolManager->registerTool(textObjectsTool));
     mToolsToolBar->addSeparator();
     mToolsToolBar->addAction(mToolManager->registerTool(new LayerOffsetTool(this)));
+    mToolsToolBar->addSeparator();  // todo: hide when there are no tool extensions
+
+    const auto tools = PluginManager::instance()->objects<AbstractTool>();
+    for (auto tool : tools)
+        mToolsToolBar->addAction(mToolManager->registerTool(tool));
+
+    connect(PluginManager::instance(), &PluginManager::objectAdded,
+            this, [this] (QObject *object) {
+        if (auto tool = qobject_cast<AbstractTool*>(object))
+            mToolsToolBar->addAction(mToolManager->registerTool(tool));
+    });
+    connect(PluginManager::instance(), &PluginManager::objectRemoved,
+            this, [this] (QObject *object) {
+        if (auto tool = qobject_cast<AbstractTool*>(object)) {
+            auto action = mToolManager->findAction(tool);
+            mToolsToolBar->removeAction(action);
+            mToolManager->unregisterTool(tool);
+        }
+    });
 
     mToolManager->createShortcuts(mMainWindow);
 
@@ -230,6 +250,7 @@ MapEditor::MapEditor(QObject *parent)
     mMainWindow->statusBar()->addPermanentWidget(mLayerComboBox);
     mMainWindow->statusBar()->addPermanentWidget(mZoomComboBox);
     mMainWindow->statusBar()->addPermanentWidget(new NewsButton);
+    mMainWindow->statusBar()->addPermanentWidget(new NewVersionButton(NewVersionButton::AutoVisible));
     mMainWindow->statusBar()->addWidget(mStatusInfoLabel);
 
     connect(mWidgetStack, &QStackedWidget::currentChanged, this, &MapEditor::currentWidgetChanged);
@@ -286,7 +307,11 @@ MapEditor::MapEditor(QObject *parent)
 
     setupQuickStamps();
     retranslateUi();
-    connect(Preferences::instance(), &Preferences::languageChanged, this, &MapEditor::retranslateUi);
+
+    Preferences *prefs = Preferences::instance();
+    connect(prefs, &Preferences::languageChanged, this, &MapEditor::retranslateUi);
+    connect(prefs, &Preferences::showTileCollisionShapesChanged,
+            this, &MapEditor::showTileCollisionShapesChanged);
 
     QSettings *settings = Preferences::instance()->settings();
     mMapStates = settings->value(QLatin1String(MAPSTATES_KEY)).toMap();
@@ -321,6 +346,7 @@ void MapEditor::addDocument(Document *document)
     MapView *view = new MapView(mWidgetStack);
     MapScene *scene = new MapScene(view); // scene is owned by the view
 
+    scene->setShowTileCollisionShapes(Preferences::instance()->showTileCollisionShapes());
     scene->setMapDocument(mapDocument);
     view->setScene(scene);
 
@@ -415,10 +441,10 @@ void MapEditor::setCurrentDocument(Document *document)
         }
 
         connect(mCurrentMapDocument, &MapDocument::currentObjectChanged,
-                this, [this, mapDocument](){ mPropertiesDock->setDocument(mapDocument); });
+                this, [this, mapDocument] { mPropertiesDock->setDocument(mapDocument); });
 
         connect(mapView, &MapView::focused,
-                this, [this, mapDocument](){ mPropertiesDock->setDocument(mapDocument); });
+                this, [this, mapDocument] { mPropertiesDock->setDocument(mapDocument); });
 
         mReversingProxyModel->setSourceModel(mapDocument->layerModel());
     } else {
@@ -431,7 +457,7 @@ void MapEditor::setCurrentDocument(Document *document)
     // Take the currently active tool to the new map view
     if (mViewWithTool) {
         MapScene *mapScene = mViewWithTool->mapScene();
-        mapScene->disableSelectedTool();
+        mapScene->setSelectedTool(nullptr);
         mViewWithTool = nullptr;
     }
 
@@ -440,11 +466,12 @@ void MapEditor::setCurrentDocument(Document *document)
     if (mapView) {
         MapScene *mapScene = mapView->mapScene();
         mapScene->setSelectedTool(mSelectedTool);
-        mapScene->enableSelectedTool();
+
         if (mSelectedTool)
             mapView->viewport()->setCursor(mSelectedTool->cursor());
         else
             mapView->viewport()->unsetCursor();
+
         mViewWithTool = mapView;
     }
 }
@@ -607,12 +634,7 @@ void MapEditor::setSelectedTool(AbstractTool *tool)
 
     if (mViewWithTool) {
         MapScene *mapScene = mViewWithTool->mapScene();
-        mapScene->disableSelectedTool();
-
-        if (tool) {
-            mapScene->setSelectedTool(tool);
-            mapScene->enableSelectedTool();
-        }
+        mapScene->setSelectedTool(tool);
 
         if (tool)
             mViewWithTool->viewport()->setCursor(tool->cursor());
@@ -653,37 +675,37 @@ void MapEditor::paste(ClipboardManager::PasteFlags flags)
         return;
 
     ClipboardManager *clipboardManager = ClipboardManager::instance();
-    Map *map = clipboardManager->map();
+    std::unique_ptr<Map> map = clipboardManager->map();
     if (!map)
         return;
 
-    std::unique_ptr<Map> mapDeleter(map);
+    Map *mapPtr = map.get();
 
     bool tilesetsUnified = false;
 
     if (flags & ClipboardManager::PasteInPlace)
         mCurrentMapDocument->undoStack()->beginMacro(tr("Paste in Place"));
 
-    LayerIterator tileLayerIterator(map, Layer::TileLayerType);
+    LayerIterator tileLayerIterator(mapPtr, Layer::TileLayerType);
     if (tileLayerIterator.next()) {
         if (flags & ClipboardManager::PasteInPlace) {
             QVector<SharedTileset> missingTilesets;
-            mCurrentMapDocument->unifyTilesets(map, missingTilesets);
-            mCurrentMapDocument->paintTileLayers(map, false, &missingTilesets);
+            mCurrentMapDocument->unifyTilesets(mapPtr, missingTilesets);
+            mCurrentMapDocument->paintTileLayers(mapPtr, false, &missingTilesets);
             tilesetsUnified = missingTilesets.isEmpty();
         } else {
             // Reset selection and paste into the stamp brush
             MapDocumentActionHandler::instance()->selectNone();
-            normalizeTileLayerPositionsAndMapSize(map);
-            setStamp(TileStamp(mapDeleter.release())); // TileStamp takes ownership
+            normalizeTileLayerPositionsAndMapSize(mapPtr);
+            setStamp(TileStamp(std::move(map))); // TileStamp takes ownership
             mToolManager->selectTool(mStampBrush);
         }
     }
 
-    LayerIterator objectGroupIterator(map, Layer::ObjectGroupType);
+    LayerIterator objectGroupIterator(mapPtr, Layer::ObjectGroupType);
     if (ObjectGroup *objectGroup = static_cast<ObjectGroup*>(objectGroupIterator.next())) {
         if (!tilesetsUnified)
-            mCurrentMapDocument->unifyTilesets(map);
+            mCurrentMapDocument->unifyTilesets(mapPtr);
 
         // todo: Handle multiple object groups
         const MapView *view = currentMapView();
@@ -894,7 +916,7 @@ SharedTileset MapEditor::newTileset(const QString &path, const QImage &image)
 
     if (!newTileset.isEmbedded()) {
         // Save new external tileset
-        const std::unique_ptr<TilesetDocument> tilesetDocument(new TilesetDocument(tileset));
+        const auto tilesetDocument = std::make_unique<TilesetDocument>(tileset);
         if (!DocumentManager::instance()->saveDocumentAs(tilesetDocument.get()))
             return SharedTileset();
     }
@@ -932,5 +954,10 @@ void MapEditor::retranslateUi()
     mToolSpecificToolBar->setWindowTitle(tr("Tool Options"));
 }
 
-} // namespace Internal
+void MapEditor::showTileCollisionShapesChanged(bool enabled)
+{
+    for (auto mapView : qAsConst(mWidgetForMap))
+        mapView->mapScene()->setShowTileCollisionShapes(enabled);
+}
+
 } // namespace Tiled

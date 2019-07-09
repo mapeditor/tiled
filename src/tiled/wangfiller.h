@@ -33,8 +33,6 @@ namespace Tiled {
 
 class StaggeredRenderer;
 
-namespace Internal {
-
 /**
  * WangFiller provides functions for choosing cells based on a surrounding map
  * and a wangSet.
@@ -108,5 +106,4 @@ private:
     Map::StaggerAxis mStaggerAxis;
 };
 
-} // namespace Internal
 } // namespace Tiled

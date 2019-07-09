@@ -157,8 +157,7 @@ public class TileLayer extends TileLayerData {
                 ytrans = width - 1;
                 break;
             default:
-                System.out.println("Unsupported rotation (" + angle + ")");
-                return;
+                throw new IllegalArgumentException("Unsupported rotation (" + angle + ")");
         }
 
         double ra = Math.toRadians(angle);

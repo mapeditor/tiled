@@ -20,11 +20,14 @@
 
 #pragma once
 
-#include <QHash>
-#include <QUndoCommand>
+#include "changeevents.h"
+#include "properties.h"
 
 #include <QtTreePropertyBrowser>
-#include "properties.h"
+
+#include <QHash>
+
+class QUndoCommand;
 
 class QtGroupPropertyManager;
 class QtVariantProperty;
@@ -42,8 +45,6 @@ class ObjectGroup;
 class Tile;
 class TileLayer;
 class Tileset;
-
-namespace Internal {
 
 class Document;
 class MapDocument;
@@ -90,11 +91,9 @@ protected:
     bool event(QEvent *event) override;
 
 private slots:
+    void documentChanged(const ChangeEvent &change);
     void mapChanged();
-    void objectsChanged(const QList<MapObject*> &objects);
-    void objectsTypeChanged(const QList<MapObject*> &objects);
-    void layerChanged(Layer *layer);
-    void objectGroupChanged(ObjectGroup *objectGroup);
+    void objectsChanged(const MapObjectsChangeEvent &mapObjectsChange);
     void imageLayerChanged(ImageLayer *imageLayer);
     void tilesetChanged(Tileset *tileset);
     void tileChanged(Tile *tile);
@@ -247,5 +246,4 @@ inline Object *PropertyBrowser::object() const
     return mObject;
 }
 
-} // namespace Internal
 } // namespace Tiled

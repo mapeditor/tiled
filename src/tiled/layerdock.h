@@ -33,7 +33,6 @@ class QModelIndex;
 class QUndoStack;
 
 namespace Tiled {
-namespace Internal {
 
 class LayerView;
 
@@ -60,7 +59,7 @@ protected:
 
 private slots:
     void updateOpacitySlider();
-    void layerChanged(Layer *layer);
+    void documentChanged(const ChangeEvent &change);
     void editLayerName();
     void sliderValueChanged(int opacity);
 
@@ -112,5 +111,4 @@ private:
     bool mUpdatingSelectedLayers;
 };
 
-} // namespace Internal
 } // namespace Tiled

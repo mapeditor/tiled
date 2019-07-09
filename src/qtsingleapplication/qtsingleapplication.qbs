@@ -7,7 +7,7 @@ StaticLibrary {
     Depends { name: "Qt"; submodules: ["widgets", "network"]; versionAtLeast: "5.4" }
 
     cpp.includePaths: ["src"]
-    cpp.cxxLanguageVersion: "c++11"
+    cpp.cxxLanguageVersion: "c++14"
 
     files: [
         "src/qtlocalpeer.cpp",

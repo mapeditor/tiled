@@ -28,9 +28,7 @@ namespace Tiled {
 class MapObject;
 class ObjectGroup;
 
-namespace Internal {
-
-class MapDocument;
+class Document;
 
 /**
  * Abstract base class for AddMapObject and RemoveMapObject.
@@ -51,17 +49,19 @@ public:
         int index = -1;
     };
 
-    AddRemoveMapObjects(MapDocument *mapDocument,
+    AddRemoveMapObjects(Document *document,
                         const QVector<Entry> &entries,
                         bool ownObjects,
                         QUndoCommand *parent = nullptr);
     ~AddRemoveMapObjects();
 
+    void releaseObjects();
+
     static QVector<Entry> entries(const QList<MapObject *> &objects);
     static QList<MapObject*> objects(const QVector<Entry> &entries);
 
 protected:
-    MapDocument *mMapDocument;
+    Document *mDocument;
     QVector<Entry> mEntries;
     bool mOwnsObjects;
 };
@@ -72,12 +72,12 @@ protected:
 class AddMapObjects : public AddRemoveMapObjects
 {
 public:
-    AddMapObjects(MapDocument *mapDocument,
+    AddMapObjects(Document *document,
                   ObjectGroup *objectGroup,
                   MapObject *mapObject,
                   QUndoCommand *parent = nullptr);
 
-    AddMapObjects(MapDocument *mapDocument,
+    AddMapObjects(Document *document,
                   const QVector<Entry> &entries,
                   QUndoCommand *parent = nullptr);
 
@@ -91,11 +91,11 @@ public:
 class RemoveMapObjects : public AddRemoveMapObjects
 {
 public:
-    RemoveMapObjects(MapDocument *mapDocument,
+    RemoveMapObjects(Document *document,
                      MapObject *mapObject,
                      QUndoCommand *parent = nullptr);
 
-    RemoveMapObjects(MapDocument *mapDocument,
+    RemoveMapObjects(Document *document,
                      const QList<MapObject *> &mapObjects,
                      QUndoCommand *parent = nullptr);
 
@@ -103,5 +103,4 @@ public:
     void redo() override;
 };
 
-} // namespace Internal
 } // namespace Tiled

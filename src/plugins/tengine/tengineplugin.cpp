@@ -52,10 +52,10 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
     QTextStream out(file.device());
 
     // Write the header
-    QString header = map->property("header").toString();
-    for (const QString &line : header.split("\\n")) {
+    const QString header = map->property("header").toString();
+    const auto lines = header.splitRef("\\n");
+    for (const auto &line : lines)
         out << line << endl;
-    }
 
     const int width = map->width();
     const int height = map->height();

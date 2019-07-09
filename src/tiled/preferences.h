@@ -31,7 +31,6 @@
 class QSettings;
 
 namespace Tiled {
-namespace Internal {
 
 /**
  * This class holds user preferences and provides a convenient interface to
@@ -45,19 +44,20 @@ public:
     static Preferences *instance();
     static void deleteInstance();
 
-    bool showGrid() const { return mShowGrid; }
-    bool showTileObjectOutlines() const { return mShowTileObjectOutlines; }
-    bool showTileAnimations() const { return mShowTileAnimations; }
-    bool snapToGrid() const { return mSnapToGrid; }
-    bool snapToFineGrid() const { return mSnapToFineGrid; }
-    bool snapToPixels() const { return mSnapToPixels; }
-    QColor gridColor() const { return mGridColor; }
-    int gridFine() const { return mGridFine; }
-    qreal objectLineWidth() const { return mObjectLineWidth; }
+    bool showGrid() const;
+    bool showTileObjectOutlines() const;
+    bool showTileAnimations() const;
+    bool showTileCollisionShapes() const;
+    bool snapToGrid() const;
+    bool snapToFineGrid() const;
+    bool snapToPixels() const;
+    QColor gridColor() const;
+    int gridFine() const;
+    qreal objectLineWidth() const;
 
-    bool highlightCurrentLayer() const { return mHighlightCurrentLayer; }
+    bool highlightCurrentLayer() const;
     bool highlightHoveredObject() const;
-    bool showTilesetGrid() const { return mShowTilesetGrid; }
+    bool showTilesetGrid() const;
 
     enum ObjectLabelVisiblity {
         NoObjectLabels,
@@ -115,7 +115,7 @@ public:
     bool reloadTilesetsOnChange() const;
     void setReloadTilesetsOnChanged(bool value);
 
-    bool useOpenGL() const { return mUseOpenGL; }
+    bool useOpenGL() const;
     void setUseOpenGL(bool useOpenGL);
 
     void setObjectTypes(const ObjectTypes &objectTypes);
@@ -132,7 +132,7 @@ public:
     QString lastPath(FileType fileType) const;
     void setLastPath(FileType fileType, const QString &path);
 
-    bool automappingDrawing() const { return mAutoMapDrawing; }
+    bool automappingDrawing() const;
 
     QString mapsDirectory() const;
     void setMapsDirectory(const QString &path);
@@ -165,18 +165,22 @@ public:
     bool checkForUpdates() const;
     void setCheckForUpdates(bool on);
 
+    bool displayNews() const;
+    void setDisplayNews(bool on);
+
     bool wheelZoomsByDefault() const;
 
     /**
      * Provides access to the QSettings instance to allow storing/retrieving
      * arbitrary values. The naming style for groups and keys is CamelCase.
      */
-    QSettings *settings() const { return mSettings; }
+    QSettings *settings() const;
 
 public slots:
     void setShowGrid(bool showGrid);
     void setShowTileObjectOutlines(bool enabled);
     void setShowTileAnimations(bool enabled);
+    void setShowTileCollisionShapes(bool enabled);
     void setSnapToGrid(bool snapToGrid);
     void setSnapToFineGrid(bool snapToFineGrid);
     void setSnapToPixels(bool snapToPixels);
@@ -197,6 +201,7 @@ signals:
     void showGridChanged(bool showGrid);
     void showTileObjectOutlinesChanged(bool enabled);
     void showTileAnimationsChanged(bool enabled);
+    void showTileCollisionShapesChanged(bool enabled);
     void snapToGridChanged(bool snapToGrid);
     void snapToFineGridChanged(bool snapToFineGrid);
     void snapToPixelsChanged(bool snapToPixels);
@@ -227,7 +232,8 @@ signals:
 
     void recentFilesChanged();
 
-    void checkForUpdatesChanged();
+    void checkForUpdatesChanged(bool on);
+    void displayNewsChanged(bool on);
 
 private:
     Preferences();
@@ -244,6 +250,7 @@ private:
     bool mShowGrid;
     bool mShowTileObjectOutlines;
     bool mShowTileAnimations;
+    bool mShowTileCollisionShapes;
     bool mSnapToGrid;
     bool mSnapToFineGrid;
     bool mSnapToPixels;
@@ -281,11 +288,87 @@ private:
     int mRunCount;
     bool mIsPatron;
     bool mCheckForUpdates;
+    bool mDisplayNews;
     bool mWheelZoomsByDefault;
 
     static Preferences *mInstance;
 };
 
+
+inline bool Preferences::showGrid() const
+{
+    return mShowGrid;
+}
+
+inline bool Preferences::showTileObjectOutlines() const
+{
+    return mShowTileObjectOutlines;
+}
+
+inline bool Preferences::showTileAnimations() const
+{
+    return mShowTileAnimations;
+}
+
+inline bool Preferences::showTileCollisionShapes() const
+{
+    return mShowTileCollisionShapes;
+}
+
+inline bool Preferences::snapToGrid() const
+{
+    return mSnapToGrid;
+}
+
+inline bool Preferences::snapToFineGrid() const
+{
+    return mSnapToFineGrid;
+}
+
+inline bool Preferences::snapToPixels() const
+{
+    return mSnapToPixels;
+}
+
+inline QColor Preferences::gridColor() const
+{
+    return mGridColor;
+}
+
+inline int Preferences::gridFine() const
+{
+    return mGridFine;
+}
+
+inline qreal Preferences::objectLineWidth() const
+{
+    return mObjectLineWidth;
+}
+
+inline bool Preferences::highlightCurrentLayer() const
+{
+    return mHighlightCurrentLayer;
+}
+
+inline bool Preferences::highlightHoveredObject() const
+{
+    return mHighlightHoveredObject;
+}
+
+inline bool Preferences::showTilesetGrid() const
+{
+    return mShowTilesetGrid;
+}
+
+inline Preferences::ObjectLabelVisiblity Preferences::objectLabelVisibility() const
+{
+    return mObjectLabelVisibility;
+}
+
+inline bool Preferences::labelForHoveredObject() const
+{
+    return mLabelForHoveredObject;
+}
 
 inline Preferences::ApplicationStyle Preferences::applicationStyle() const
 {
@@ -342,24 +425,19 @@ inline bool Preferences::reloadTilesetsOnChange() const
     return mReloadTilesetsOnChange;
 }
 
+inline bool Preferences::useOpenGL() const
+{
+    return mUseOpenGL;
+}
+
+inline bool Preferences::automappingDrawing() const
+{
+    return mAutoMapDrawing;
+}
+
 inline QString Preferences::mapsDirectory() const
 {
     return mMapsDirectory;
-}
-
-inline bool Preferences::highlightHoveredObject() const
-{
-    return mHighlightHoveredObject;
-}
-
-inline Preferences::ObjectLabelVisiblity Preferences::objectLabelVisibility() const
-{
-    return mObjectLabelVisibility;
-}
-
-inline bool Preferences::labelForHoveredObject() const
-{
-    return mLabelForHoveredObject;
 }
 
 inline QDate Preferences::firstRun() const
@@ -382,6 +460,11 @@ inline bool Preferences::checkForUpdates() const
     return mCheckForUpdates;
 }
 
+inline bool Preferences::displayNews() const
+{
+    return mDisplayNews;
+}
+
 inline bool Preferences::openLastFilesOnStartup() const
 {
     return mOpenLastFilesOnStartup;
@@ -392,7 +475,11 @@ inline bool Preferences::wheelZoomsByDefault() const
     return mWheelZoomsByDefault;
 }
 
-} // namespace Internal
+inline QSettings *Preferences::settings() const
+{
+    return mSettings;
+}
+
 } // namespace Tiled
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::Internal::Preferences::ExportOptions)
+Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::Preferences::ExportOptions)

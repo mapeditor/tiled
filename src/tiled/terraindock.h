@@ -34,8 +34,6 @@ namespace Tiled {
 
 class Terrain;
 
-namespace Internal {
-
 class Document;
 class TerrainFilterModel;
 class TerrainModel;
@@ -119,5 +117,4 @@ private:
     bool mInitializing;
 };
 
-} // namespace Internal
 } // namespace Tiled

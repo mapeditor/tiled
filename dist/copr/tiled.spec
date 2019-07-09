@@ -166,6 +166,7 @@ fi
 # Core plugins
 %{_libdir}/%{name}/plugins/libcsv.so
 %{_libdir}/%{name}/plugins/libjson.so
+%{_libdir}/%{name}/plugins/libjson1.so
 %{_libdir}/%{name}/plugins/liblua.so
 
 %{_mandir}/man1/automappingconverter.1*

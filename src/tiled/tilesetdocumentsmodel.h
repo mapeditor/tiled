@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILESETDOCUMENTSMODEL_H
-#define TILESETDOCUMENTSMODEL_H
+#pragma once
 
 #include "tilesetdocument.h"
 
@@ -30,8 +29,6 @@
 namespace Tiled {
 
 class Tileset;
-
-namespace Internal {
 
 class MapDocument;
 
@@ -112,7 +109,4 @@ private:
     MapDocument *mMapDocument;
 };
 
-} // namespace Internal
 } // namespace Tiled
-
-#endif // TILESETDOCUMENTSMODEL_H

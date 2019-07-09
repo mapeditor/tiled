@@ -34,12 +34,16 @@
 
 #include <QPointer>
 
+#include <memory>
+
 namespace Tiled {
 
 class ObjectTemplateFormat;
 
 class TILEDSHARED_EXPORT ObjectTemplate : public Object
 {
+    Q_OBJECT
+
 public:
     ObjectTemplate();
     ObjectTemplate(const QString &fileName);
@@ -47,6 +51,7 @@ public:
 
     const MapObject *object() const;
     void setObject(const MapObject *object);
+    void setObject(std::unique_ptr<MapObject> &&object);
 
     const QString &fileName() const;
     void setFileName(const QString &fileName);
@@ -59,12 +64,12 @@ public:
 private:
     QString mFileName;
     QPointer<ObjectTemplateFormat> mFormat;
-    MapObject *mObject;
+    std::unique_ptr<MapObject> mObject;
     SharedTileset mTileset;
 };
 
 inline const MapObject *ObjectTemplate::object() const
-{ return mObject; }
+{ return mObject.get(); }
 
 inline const QString &ObjectTemplate::fileName() const
 { return mFileName; }

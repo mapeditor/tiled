@@ -23,6 +23,7 @@
 #include "commanddatamodel.h"
 #include "commanddialog.h"
 #include "logginginterface.h"
+#include "pluginmanager.h"
 #include "utils.h"
 
 #include <QApplication>
@@ -30,8 +31,9 @@
 #include <QLatin1String>
 #include <QMenu>
 
+#include "qtcompat_p.h"
+
 namespace Tiled {
-namespace Internal {
 
 CommandManager *CommandManager::mInstance;
 
@@ -40,6 +42,13 @@ CommandManager::CommandManager()
     , mLogger(new LoggingInterface(this))
 {
     updateActions();
+
+    PluginManager::addObject(mLogger);
+}
+
+CommandManager::~CommandManager()
+{
+    PluginManager::removeObject(mLogger);
 }
 
 CommandManager *CommandManager::instance()
@@ -76,7 +85,7 @@ void CommandManager::showDialog()
 
 void CommandManager::populateMenus()
 {
-    for (QMenu *menu : mMenus) {
+    for (QMenu *menu : qAsConst(mMenus)) {
         menu->clear();
         menu->addActions(mActions);
     }
@@ -98,7 +107,7 @@ void CommandManager::updateActions()
         QAction *mAction = new QAction(command.name, this);
         mAction->setShortcut(command.shortcut);
 
-        connect(mAction, &QAction::triggered, [this,i]() { mModel->execute(i); });
+        connect(mAction, &QAction::triggered, [this,i] { mModel->execute(i); });
 
         mActions.append(mAction);
     }
@@ -127,5 +136,4 @@ void CommandManager::retranslateUi()
     mEditCommands->setText(tr("Edit Commands..."));
 }
 
-} // namespace Internal
 } // namespace Tiled

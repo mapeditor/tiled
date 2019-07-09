@@ -44,7 +44,6 @@
 static const char * const TMX_MIMETYPE = "text/tmx";
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 ClipboardManager *ClipboardManager::mInstance;
 
@@ -81,7 +80,7 @@ void ClipboardManager::deleteInstance()
  * Retrieves the map from the clipboard. Returns null when there was no map or
  * loading failed.
  */
-Map *ClipboardManager::map() const
+std::unique_ptr<Map> ClipboardManager::map() const
 {
     const QMimeData *mimeData = mClipboard->mimeData();
     const QByteArray data = mimeData->data(QLatin1String(TMX_MIMETYPE));

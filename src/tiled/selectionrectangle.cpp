@@ -28,7 +28,6 @@
 #include <QPalette>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 SelectionRectangle::SelectionRectangle(QGraphicsItem *parent)
     : QGraphicsItem(parent)

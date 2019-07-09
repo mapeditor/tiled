@@ -29,8 +29,6 @@ namespace Tiled {
 class ObjectGroup;
 class Tile;
 
-namespace Internal {
-
 class TilesetDocument;
 
 class ChangeTileObjectGroup : public QUndoCommand
@@ -56,5 +54,4 @@ private:
     std::unique_ptr<ObjectGroup> mObjectGroup;
 };
 
-} // namespace Internal
 } // namespace Tiled

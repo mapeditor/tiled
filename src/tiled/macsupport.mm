@@ -31,7 +31,7 @@ bool MacSupport::isLion()
     return [string respondsToSelector:@selector(linguisticTagsInRange:scheme:options:orthography:tokenRanges:)];
 }
 
-void MacSupport::addFullscreen(Tiled::Internal::MainWindow *window)
+void MacSupport::addFullscreen(Tiled::MainWindow *window)
 {
 #if defined(MAC_OS_X_VERSION_10_7) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_7
     if (isLion()) // checks if lion is running

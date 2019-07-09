@@ -23,12 +23,13 @@
         <source>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;Copyright 2008-2018 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;https://www.mapeditor.org/&quot;&gt;https://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
         <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;Copyright 2008-2018 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(모든 기여자 이름은 &apos;AUTHORS&apos; 파일을 참조하십시오.)&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;이 프로그램은 GPL (version 2 이상)에 의거해 수정 및 재배포 될 수 있습니다. GPL 사본은 Tiled와 함께 배포된 &apos;COPYING&apos; 파일에 수록되어 있습니다.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;</translation>
+&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;https://www.mapeditor.org/&quot;&gt;https://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
+</translation>
     </message>
 </context>
 <context>
@@ -49,7 +50,7 @@
     <message>
         <location filename="../src/tiled/main.cpp" line="+239"/>
         <source>Export syntax is --export-map [format] &lt;tmx file&gt; &lt;target file&gt;</source>
-        <translation>내보내기 형식은 --export-map [format] &lt;tmx file&gt; &lt;target file&gt; </translation>
+        <translation>내보내기 형식은 --export-map [format] &lt;tmx file&gt; &lt;target file&gt;</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -403,8 +404,8 @@
     </message>
     <message>
         <location line="+15"/>
-        <source>Json map files (*.json)</source>
-        <translation>Json 맵 파일 (*.json)</translation>
+        <source>JSON map files (*.json)</source>
+        <translation>JSON 맵 파일 (*.json)</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -438,8 +439,8 @@
     </message>
     <message>
         <location line="+14"/>
-        <source>Json tileset files (*.json)</source>
-        <translation>Json 타일셋 파일 (*.json)</translation>
+        <source>JSON tileset files (*.json)</source>
+        <translation>JSON 타일셋 파일 (*.json)</translation>
     </message>
 </context>
 <context>
@@ -1609,97 +1610,97 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qtpropertybrowserutils.cpp" line="-220"/>
         <source>Arrow</source>
-        <translation>Arrow</translation>
+        <translation>화살표</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Up Arrow</source>
-        <translation>Up Arrow</translation>
+        <translation>위 화살표</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Cross</source>
-        <translation>Cross</translation>
+        <translation>십자가</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Wait</source>
-        <translation>Wait</translation>
+        <translation>대기</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>IBeam</source>
-        <translation>IBeam</translation>
+        <translation>I광선</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Size Vertical</source>
-        <translation>Size Vertical</translation>
+        <translation>세로 크기</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Size Horizontal</source>
-        <translation>Size Horizontal</translation>
+        <translation>가로 크기</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Size Backslash</source>
-        <translation>Size Backslash</translation>
+        <translation>백슬래시(\) 크기</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Size Slash</source>
-        <translation>Size Slash</translation>
+        <translation>슬래시(/) 크기</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Size All</source>
-        <translation>Size All</translation>
+        <translation>모든 크기</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Blank</source>
-        <translation>Blank</translation>
+        <translation>공백</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Split Vertical</source>
-        <translation>Split Vertical</translation>
+        <translation>세로 나누기</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Split Horizontal</source>
-        <translation>Split Horizontal</translation>
+        <translation>가로 나누기</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Pointing Hand</source>
-        <translation>Pointing Hand</translation>
+        <translation>포인팅 핸드</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Forbidden</source>
-        <translation>Forbidden</translation>
+        <translation>금지됨</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Open Hand</source>
-        <translation>Open Hand</translation>
+        <translation>오픈 핸드</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Closed Hand</source>
-        <translation>Closed Hand</translation>
+        <translation>클로즈드 핸드</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>What&apos;s This</source>
-        <translation>What&apos;s This</translation>
+        <translation>이것이 무엇인가요</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Busy</source>
-        <translation>Busy</translation>
+        <translation>바쁜</translation>
     </message>
 </context>
 <context>
@@ -1913,7 +1914,7 @@ Line %1, column %2</source>
         <location line="+1704"/>
         <location line="+1"/>
         <source>&lt;Invalid&gt;</source>
-        <translation>&lt;Invalid&gt;</translation>
+        <translation>&lt;무효&gt;</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1923,22 +1924,22 @@ Line %1, column %2</source>
     <message>
         <location line="+45"/>
         <source>Horizontal Policy</source>
-        <translation>Horizontal Policy</translation>
+        <translation>수평 정책</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Vertical Policy</source>
-        <translation>Vertical Policy</translation>
+        <translation>수직 정책</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Horizontal Stretch</source>
-        <translation>Horizontal Stretch</translation>
+        <translation>수평 늘이기</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Vertical Stretch</source>
-        <translation>Vertical Stretch</translation>
+        <translation>수직 늘이기</translation>
     </message>
 </context>
 <context>
@@ -2073,7 +2074,7 @@ Line %1, column %2</source>
     <message>
         <location line="+26"/>
         <source>Offset</source>
-        <translation>Offset</translation>
+        <translation>오프셋</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -2459,7 +2460,7 @@ Line %1, column %2</source>
         <location line="+88"/>
         <location line="+66"/>
         <source>&lt;new command&gt;</source>
-        <translation>&lt;new command&gt;</translation>
+        <translation>&lt;새로운 명령어&gt;</translation>
     </message>
     <message>
         <location line="-58"/>
@@ -2524,7 +2525,7 @@ Line %1, column %2</source>
     <message>
         <location line="+84"/>
         <source>%1 (copy)</source>
-        <translation>%1 (copy)</translation>
+        <translation>%1 (복사)</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -2604,7 +2605,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/createellipseobjecttool.cpp" line="+39"/>
         <source>Insert Ellipse</source>
-        <translation>타원형 삽입 </translation>
+        <translation>타원형 삽입</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2625,7 +2626,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/createpolygonobjecttool.cpp" line="+39"/>
         <source>Insert Polygon</source>
-        <translation>다각형 삽입 </translation>
+        <translation>다각형 삽입</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2638,7 +2639,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/createpolylineobjecttool.cpp" line="+39"/>
         <source>Insert Polyline</source>
-        <translation>다각선 삽입 </translation>
+        <translation>다각선 삽입</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2651,7 +2652,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/createrectangleobjecttool.cpp" line="+39"/>
         <source>Insert Rectangle</source>
-        <translation>직사각형 삽입 </translation>
+        <translation>직사각형 삽입</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2664,7 +2665,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/createtextobjecttool.cpp" line="+70"/>
         <source>Insert Text</source>
-        <translation>텍스트 삽입 </translation>
+        <translation>텍스트 삽입</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2682,7 +2683,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/createtileobjecttool.cpp" line="+81"/>
         <source>Insert Tile</source>
-        <translation>타일 삽입 </translation>
+        <translation>타일 삽입</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2705,7 +2706,7 @@ Line %1, column %2</source>
     <message>
         <location line="+110"/>
         <source>Copy File Path</source>
-        <translation>파일 경로 복사 </translation>
+        <translation>파일 경로 복사</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -2729,7 +2730,7 @@ Line %1, column %2</source>
         <location filename="../src/tiled/editpolygontool.cpp" line="+129"/>
         <location line="+209"/>
         <source>Edit Polygons</source>
-        <translation>다각형 편집 </translation>
+        <translation>다각형 편집</translation>
     </message>
     <message>
         <location line="-207"/>
@@ -2785,12 +2786,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/exportasimagedialog.cpp" line="+64"/>
         <source>Export</source>
-        <translation>내보내기 </translation>
+        <translation>내보내기</translation>
     </message>
     <message>
         <location line="+73"/>
         <source>Export as Image</source>
-        <translation>이미지로 내보내기 </translation>
+        <translation>이미지로 내보내기</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2822,7 +2823,7 @@ Do you want to replace it?</source>
     <message>
         <location line="+107"/>
         <source>Image</source>
-        <translation>이미지 </translation>
+        <translation>이미지</translation>
     </message>
 </context>
 <context>
@@ -3037,7 +3038,7 @@ Do you want to replace it?</source>
     <message>
         <location line="-547"/>
         <source>Open Map</source>
-        <translation>맵 열기 </translation>
+        <translation>맵 열기</translation>
     </message>
     <message>
         <location line="+126"/>
@@ -3223,10 +3224,8 @@ Please select specific format.</source>
     <message numerus="yes">
         <location line="+28"/>
         <source>Rotate %n Object(s)</source>
-        <translation>
-            <numerusform>%n개 오브젝트 회전 </numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>%n개 오브젝트 회전</numerusform>
+        </translation></message>
     <message>
         <location line="+36"/>
         <source>Tile Layer %1</source>
@@ -3324,7 +3323,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+66"/>
         <source>Ctrl+Shift+A</source>
-        <translation>Ctral+Shift+A</translation>
+        <translation>Ctrl+Shift+A</translation>
     </message>
     <message>
         <location line="+30"/>
@@ -3645,25 +3644,25 @@ Please select specific format.</source>
         <location line="+20"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="-17"/>
         <source>Orthogonal</source>
-        <translation>Orthogonal</translation>
+        <translation>직교</translation>
     </message>
     <message>
         <location line="+1"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Isometric</source>
-        <translation>Isometric</translation>
+        <translation>아이소메트릭</translation>
     </message>
     <message>
         <location line="+1"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Isometric (Staggered)</source>
-        <translation>Isometric (Staggered)</translation>
+        <translation>아이소메트릭 (비틀거림)</translation>
     </message>
     <message>
         <location line="+1"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Hexagonal (Staggered)</source>
-        <translation>Hexagonal (Staggered)</translation>
+        <translation>육각형 (비틀거림)</translation>
     </message>
     <message>
         <location line="+60"/>
@@ -3745,7 +3744,7 @@ Please select specific format.</source>
         <location filename="../src/tiled/objectselectiontool.cpp" line="+314"/>
         <location line="+376"/>
         <source>Select Objects</source>
-        <translation>오브젝트 선택 </translation>
+        <translation>오브젝트 선택</translation>
     </message>
     <message>
         <location line="-374"/>
@@ -4742,7 +4741,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>&lt;empty&gt;</source>
-        <translation>&lt;empty&gt;</translation>
+        <translation>&lt;비어있음&gt;</translation>
     </message>
 </context>
 <context>

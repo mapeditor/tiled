@@ -27,7 +27,7 @@
 
 #include <QSettings>
 
-using namespace Tiled::Internal;
+using namespace Tiled;
 
 static const char * const REMOVE_OBJECTS_KEY = "ResizeMap/RemoveObjects";
 
@@ -67,7 +67,7 @@ ResizeDialog::~ResizeDialog()
     delete mUi;
 }
 
-void ResizeDialog::setOldSize(const QSize &size)
+void ResizeDialog::setOldSize(QSize size)
 {
     mUi->resizeHelper->setOldSize(size);
 

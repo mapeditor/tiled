@@ -38,9 +38,9 @@ bool SaveFile::mSafeSavingEnabled = true;
 SaveFile::SaveFile(const QString &name)
 {
     if (mSafeSavingEnabled)
-        mFileDevice.reset(new QSaveFile(name));
+        mFileDevice = std::make_unique<QSaveFile>(name);
     else
-        mFileDevice.reset(new QFile(name));
+        mFileDevice = std::make_unique<QFile>(name);
 }
 
 bool SaveFile::commit()

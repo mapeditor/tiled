@@ -140,7 +140,7 @@
      </property>
      <layout class="QVBoxLayout" name="_5">
       <item>
-       <widget class="Tiled::Internal::ResizeHelper" name="resizeHelper" native="true"/>
+       <widget class="Tiled::ResizeHelper" name="resizeHelper" native="true"/>
       </item>
      </layout>
     </widget>
@@ -169,7 +169,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>Tiled::Internal::ResizeHelper</class>
+   <class>Tiled::ResizeHelper</class>
    <extends>QWidget</extends>
    <header>resizehelper.h</header>
    <container>1</container>

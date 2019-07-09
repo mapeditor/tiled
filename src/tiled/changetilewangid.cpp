@@ -26,7 +26,6 @@
 #include <QCoreApplication>
 
 using namespace Tiled;
-using namespace Internal;
 
 ChangeTileWangId::ChangeTileWangId()
     : mTilesetDocument(nullptr)

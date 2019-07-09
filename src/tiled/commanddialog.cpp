@@ -33,7 +33,6 @@
 #include <QStandardPaths>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 CommandDialog::CommandDialog(QWidget *parent)
     : QDialog(parent)

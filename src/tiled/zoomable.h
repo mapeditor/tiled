@@ -29,7 +29,6 @@ class QPinchGesture;
 class QRegExpValidator;
 
 namespace Tiled {
-namespace Internal {
 
 /**
  * This class represents something zoomable. Is has a zoom factor and methods
@@ -100,5 +99,4 @@ private:
     QRegExpValidator *mComboValidator;
 };
 
-} // namespace Internal
 } // namespace Tiled

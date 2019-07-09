@@ -45,7 +45,6 @@ static const char * const TILE_WIDTH_KEY = "Map/TileWidth";
 static const char * const TILE_HEIGHT_KEY = "Map/TileHeight";
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 template<typename Type>
 static Type comboBoxValue(QComboBox *comboBox)
@@ -191,7 +190,7 @@ MapDocumentPtr NewMapDialog::createMap()
     s->setValue(QLatin1String(TILE_WIDTH_KEY), tileWidth);
     s->setValue(QLatin1String(TILE_HEIGHT_KEY), tileHeight);
 
-    return MapDocumentPtr::create(map.release());
+    return MapDocumentPtr::create(std::move(map));
 }
 
 void NewMapDialog::refreshPixelSize()

@@ -31,6 +31,8 @@
 #include "mapobject.h"
 #include "tile.h"
 
+#include "qtcompat_p.h"
+
 namespace Tiled {
 
 ObjectTypes Object::mObjectTypes;
@@ -82,7 +84,7 @@ QVariant Object::inheritedProperty(const QString &name) const
     }
 
     if (!objectType.isEmpty()) {
-        for (const ObjectType &type : mObjectTypes) {
+        for (const ObjectType &type : qAsConst(mObjectTypes)) {
             if (type.name == objectType)
                 if (type.defaultProperties.contains(name))
                     return type.defaultProperties.value(name);

@@ -1,5 +1,5 @@
 # Initialize the version
-isEmpty(TILED_VERSION):TILED_VERSION = "1.2.1"
+isEmpty(TILED_VERSION):TILED_VERSION = "1.2.4"
 
 # See the README file for instructions about setting the install prefix.
 isEmpty(PREFIX):PREFIX = /usr/local
@@ -20,7 +20,7 @@ win32-g++* {
     QMAKE_LFLAGS += /LARGEADDRESSAWARE
 }
 
-CONFIG += depend_includepath c++11
+CONFIG += depend_includepath c++14
 
 !isEmpty(USE_FHS_PLUGIN_PATH) {
     DEFINES += TILED_PLUGIN_DIR=\\\"$${LIBDIR}/tiled/plugins/\\\"

@@ -26,9 +26,6 @@ namespace Tiled {
 
 class WangSet;
 class Tileset;
-
-namespace Internal {
-
 class TilesetDocument;
 
 class AddRemoveWangSet : public QUndoCommand
@@ -67,5 +64,4 @@ public:
     void redo() override { removeWangSet(); }
 };
 
-} // namespace internal
-} // namespace tiled
+} // namespace Tiled

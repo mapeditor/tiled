@@ -38,7 +38,6 @@
 #include <memory>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 BucketFillTool::BucketFillTool(QObject *parent)
     : AbstractTileFillTool(tr("Bucket Fill Tool"),
@@ -55,7 +54,7 @@ BucketFillTool::~BucketFillTool()
 {
 }
 
-void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
+void BucketFillTool::tilePositionChanged(QPoint tilePos)
 {
     AbstractTileFillTool::tilePositionChanged(tilePos);
 

@@ -35,3 +35,4 @@ Tiled Documentation
    reference/tmx-map-format
    reference/tmx-changelog
    reference/json-map-format
+   reference/scripting

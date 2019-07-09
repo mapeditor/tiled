@@ -24,7 +24,6 @@
 #include <QUndoCommand>
 
 namespace Tiled {
-namespace Internal {
 
 class MapDocument;
 
@@ -36,7 +35,7 @@ class ResizeMap : public QUndoCommand
 {
 public:
     ResizeMap(MapDocument *mapDocument,
-              const QSize &size,
+              QSize size,
               QUndoCommand *parent = nullptr);
 
     void undo() override;
@@ -49,5 +48,4 @@ private:
     QSize mSize;
 };
 
-} // namespace Internal
 } // namespace Tiled

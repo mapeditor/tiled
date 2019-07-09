@@ -47,16 +47,22 @@ bool fileNameMatchesNameFilter(const QString &fileName,
  * Does nothing when the platform is not Linux.
  */
 template <class T>
-void setThemeIcon(T *t, const char *name)
+void setThemeIcon(T *t, const QString &name)
 {
 #ifdef Q_OS_LINUX
-    QIcon themeIcon = QIcon::fromTheme(QLatin1String(name));
+    QIcon themeIcon = QIcon::fromTheme(name);
     if (!themeIcon.isNull())
         t->setIcon(themeIcon);
 #else
     Q_UNUSED(t)
     Q_UNUSED(name)
 #endif
+}
+
+template <class T>
+void setThemeIcon(T *t, const char *name)
+{
+    setThemeIcon(t, QLatin1String(name));
 }
 
 void restoreGeometry(QWidget *widget);

@@ -39,6 +39,9 @@
 #include <QMargins>
 #include <QSharedPointer>
 #include <QSize>
+#include <QVector>
+
+#include <memory>
 
 namespace Tiled {
 
@@ -48,13 +51,20 @@ class ObjectTemplate;
 class Tile;
 
 /**
- * A tile map. Consists of a stack of layers, each can be either a TileLayer
- * or an ObjectGroup.
+ * A tile map. Consists of a stack of layers.
  *
  * It also keeps track of the list of referenced tilesets.
  */
 class TILEDSHARED_EXPORT Map : public Object
 {
+    Q_OBJECT
+
+    Q_PROPERTY(int width READ width NOTIFY widthChanged)
+    Q_PROPERTY(int height READ height NOTIFY heightChanged)
+    Q_PROPERTY(int tileWidth READ tileWidth NOTIFY tileWidthChanged)
+    Q_PROPERTY(int tileHeight READ tileHeight NOTIFY tileHeightChanged)
+    Q_PROPERTY(QSize size READ size NOTIFY sizeChanged)
+
     class LayerIteratorHelper
     {
     public:
@@ -84,6 +94,7 @@ public:
         Staggered,
         Hexagonal
     };
+    Q_ENUM(Orientation)
 
     /**
      * The different formats in which the tile layer data can be stored.
@@ -95,6 +106,7 @@ public:
         Base64Zlib = 3,
         CSV        = 4
     };
+    Q_ENUM(LayerDataFormat)
 
     /**
      * The order in which tiles are rendered on screen.
@@ -105,6 +117,7 @@ public:
         LeftDown   = 2,
         LeftUp     = 3
     };
+    Q_ENUM(RenderOrder)
 
     /**
      * Which axis is staggered. Only used by the isometric staggered and
@@ -114,6 +127,7 @@ public:
         StaggerX,
         StaggerY
     };
+    Q_ENUM(StaggerAxis)
 
     /**
      * When staggering, specifies whether the odd or the even rows/columns are
@@ -124,9 +138,12 @@ public:
         StaggerOdd  = 0,
         StaggerEven = 1
     };
+    Q_ENUM(StaggerIndex)
+
+    Map();
 
     /**
-     * Constructor, taking map orientation, size and tile size as parameters.
+     * Constructor taking map orientation, size and tile size as parameters.
      */
     Map(Orientation orientation,
         int width, int height,
@@ -139,11 +156,9 @@ public:
         bool infinite = false);
 
     /**
-     * Copy constructor. Makes sure that a deep-copy of the layers is created.
+     * Destructor.
      */
-    Map(const Map &map);
-
-    ~Map() override;
+    ~Map();
 
     /**
      * Returns the orientation of the map.
@@ -175,7 +190,7 @@ public:
     /**
      * Sets the width of this map in tiles.
      */
-    void setWidth(int width) { mWidth = width; }
+    void setWidth(int width);
 
     /**
      * Returns the height of this map in tiles.
@@ -185,7 +200,7 @@ public:
     /**
      * Sets the height of this map in tiles.
      */
-    void setHeight(int height) { mHeight = height; }
+    void setHeight(int height);
 
     /**
      * Returns the size of this map. Provided for convenience.
@@ -200,7 +215,7 @@ public:
     /**
      * Sets the width of one tile.
      */
-    void setTileWidth(int width) { mTileWidth = width; }
+    void setTileWidth(int width);
 
     /**
      * Returns the tile height used by this map.
@@ -210,7 +225,7 @@ public:
     /**
      * Sets the height of one tile.
      */
-    void setTileHeight(int height) { mTileHeight = height; }
+    void setTileHeight(int height);
 
     bool infinite() const { return mInfinite; }
 
@@ -282,6 +297,7 @@ public:
     /**
      * Adds a layer to this map.
      */
+    void addLayer(std::unique_ptr<Layer> layer);
     void addLayer(Layer *layer);
 
     /**
@@ -405,6 +421,8 @@ public:
      */
     bool isTilesetUsed(const Tileset *tileset) const;
 
+    Map *clone() const;
+
     /**
      * Returns whether the map is staggered
      */
@@ -427,10 +445,17 @@ public:
 
     QRegion tileRegion() const;
 
+signals:
+    void widthChanged();
+    void heightChanged();
+    void tileWidthChanged();
+    void tileHeightChanged();
+    void sizeChanged();
+
 private:
     friend class GroupLayer;    // so it can call adoptLayer
 
-    void adoptLayer(Layer *layer);
+    void adoptLayer(Layer &layer);
 
     void recomputeDrawMargins() const;
 
@@ -518,6 +543,11 @@ inline Map::LayerIteratorHelper Map::tileLayers() const
 inline Map::LayerIteratorHelper Map::objectGroups() const
 {
     return allLayers(Layer::ObjectGroupType);
+}
+
+inline void Map::addLayer(std::unique_ptr<Layer> layer)
+{
+    addLayer(layer.release());
 }
 
 /**

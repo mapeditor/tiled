@@ -22,15 +22,15 @@
 
 #include "terrainmodel.h"
 
+#include "changeterrain.h"
 #include "containerhelpers.h"
-#include "mapdocument.h"
 #include "map.h"
-#include "renameterrain.h"
+#include "mapdocument.h"
 #include "terrain.h"
 #include "tile.h"
+#include "tileset.h"
 #include "tilesetdocument.h"
 #include "tilesetdocumentsmodel.h"
-#include "tileset.h"
 #include "tilesetterrainmodel.h"
 
 #include <QApplication>
@@ -38,7 +38,6 @@
 #include <QPalette>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 TerrainModel::TerrainModel(QAbstractItemModel *tilesetDocumentsModel,
                            QObject *parent):

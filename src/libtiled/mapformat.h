@@ -29,11 +29,14 @@
 #pragma once
 
 #include "fileformat.h"
+#include "map.h"
 #include "pluginmanager.h"
 
 #include <QObject>
 #include <QStringList>
 #include <QMap>
+
+#include <memory>
 
 namespace Tiled {
 
@@ -67,7 +70,7 @@ public:
     /**
      * Reads the map and returns a new Map instance, or 0 if reading failed.
      */
-    virtual Map *read(const QString &fileName) = 0;
+    virtual std::unique_ptr<Map> read(const QString &fileName) = 0;
 
     /**
      * Writes the given \a map based on the suggested \a fileName.
@@ -119,7 +122,7 @@ public:
     {}
 
     Capabilities capabilities() const override { return Write; }
-    Map *read(const QString &) override { return nullptr; }
+    std::unique_ptr<Map> read(const QString &) override { return nullptr; }
     bool supportsFile(const QString &) const override { return false; }
 };
 
@@ -128,8 +131,8 @@ public:
  * Attempt to read the given map using any of the map formats added
  * to the plugin manager, falling back to the TMX format if none are capable.
  */
-TILEDSHARED_EXPORT Map *readMap(const QString &fileName,
-                                QString *error = nullptr);
+TILEDSHARED_EXPORT std::unique_ptr<Map> readMap(const QString &fileName,
+                                                QString *error = nullptr);
 
 /**
  * Attempts to find a map format supporting the given file.

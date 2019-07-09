@@ -23,7 +23,6 @@
 #include "createobjecttool.h"
 
 namespace Tiled {
-namespace Internal {
 
 class CreateScalableObjectTool : public CreateObjectTool
 {
@@ -42,5 +41,4 @@ private:
     QPointF mStartPos;
 };
 
-} // namespace Internal
 } // namespace Tiled

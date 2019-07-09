@@ -30,7 +30,6 @@
 #include "utils.h"
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 CreateTemplateTool::CreateTemplateTool(QObject *parent)
     : CreateObjectTool(parent)

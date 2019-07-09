@@ -24,7 +24,6 @@
 #include <QIcon>
 
 namespace Tiled {
-namespace Internal {
 
 /**
  * Delegate for drawing an icon in LayerView and ObjectsView for displaying
@@ -70,5 +69,4 @@ private:
     bool mExclusive;
 };
 
-} // namespace Internal
 } // namespace Tiled

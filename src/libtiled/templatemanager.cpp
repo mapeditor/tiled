@@ -21,6 +21,8 @@
 
 #include "templatemanager.h"
 
+#include <memory>
+
 #include "objecttemplate.h"
 #include "objecttemplateformat.h"
 
@@ -56,15 +58,17 @@ ObjectTemplate *TemplateManager::loadObjectTemplate(const QString &fileName, QSt
 {
     ObjectTemplate *objectTemplate = findObjectTemplate(fileName);
 
-    if (!objectTemplate)
-        objectTemplate = readObjectTemplate(fileName, error);
+    if (!objectTemplate) {
+        auto newTemplate = readObjectTemplate(fileName, error);
 
-    // This instance will not have an object. It is used to detect broken
-    // template references.
-    if (!objectTemplate)
-        objectTemplate = new ObjectTemplate(fileName);
+        // This instance will not have an object. It is used to detect broken
+        // template references.
+        if (!newTemplate)
+            newTemplate = std::make_unique<ObjectTemplate>(fileName);
 
-    mObjectTemplates.insert(fileName, objectTemplate);
+        objectTemplate = newTemplate.get();
+        mObjectTemplates.insert(fileName, newTemplate.release());
+    }
 
     return objectTemplate;
 }

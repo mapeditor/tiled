@@ -21,7 +21,6 @@
 #include "grouplayeritem.h"
 
 namespace Tiled {
-namespace Internal {
 
 GroupLayerItem::GroupLayerItem(GroupLayer *groupLayer, QGraphicsItem *parent)
     : LayerItem(groupLayer, parent)
@@ -41,5 +40,4 @@ void GroupLayerItem::paint(QPainter *,
 {
 }
 
-} // namespace Internal
 } // namespace Tiled

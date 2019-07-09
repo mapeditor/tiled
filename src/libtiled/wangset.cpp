@@ -784,18 +784,37 @@ WangId WangSet::templateWangIdAt(unsigned n) const
 
 WangSet *WangSet::clone(Tileset *tileset) const
 {
-    WangSet *c = new WangSet(*this);
-
     // Caller is responsible for adding the WangSet to this tileset
-    c->setTileset(tileset);
+    WangSet *c = new WangSet(tileset, mName, mImageTileId);
+
+    c->mUniqueFullWangIdCount = mUniqueFullWangIdCount;
+    c->mEdgeColors = mEdgeColors;
+    c->mCornerColors = mCornerColors;
+    c->mWangIdToWangTile = mWangIdToWangTile;
+    c->mTileInfoToWangId = mTileInfoToWangId;
+    c->setProperties(properties());
 
     // Avoid sharing Wang colors
     for (QSharedPointer<WangColor> &wangColor : c->mEdgeColors) {
-        wangColor = QSharedPointer<WangColor>::create(*wangColor);
+        const auto properties = wangColor->properties();
+        wangColor = QSharedPointer<WangColor>::create(wangColor->colorIndex(),
+                                                      wangColor->isEdge(),
+                                                      wangColor->name(),
+                                                      wangColor->color(),
+                                                      wangColor->imageId(),
+                                                      wangColor->probability());
+        wangColor->setProperties(properties);
         wangColor->mWangSet = c;
     }
     for (QSharedPointer<WangColor> &wangColor : c->mCornerColors) {
-        wangColor = QSharedPointer<WangColor>::create(*wangColor);
+        const auto properties = wangColor->properties();
+        wangColor = QSharedPointer<WangColor>::create(wangColor->colorIndex(),
+                                                      wangColor->isEdge(),
+                                                      wangColor->name(),
+                                                      wangColor->color(),
+                                                      wangColor->imageId(),
+                                                      wangColor->probability());
+        wangColor->setProperties(properties);
         wangColor->mWangSet = c;
     }
 

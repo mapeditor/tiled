@@ -23,12 +23,12 @@
         <source>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;Copyright 2008-2018 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;https://www.mapeditor.org/&quot;&gt;https://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
         <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled محرر الخرائط&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;النسخة %1&lt;/i&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;حقوق النشر 2008-2018 Thorb&amp;oslash;rn Lindeijer (أنظر لملف AUTHORS للقائمة الكاملة للمساهمين)&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;يجوز لك تعديل وإعادة توزيع هذا البرنامج بموجب شروط الترخيص العام (الإصدار 2 أو أحدث). و هناك نسخة من GPL في ملف &apos;COPYING&apos; تم توزيعها مع Tiled.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;https://www.mapeditor.org/&quot;&gt;https://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </translation>
     </message>
 </context>
@@ -459,7 +459,7 @@
     </message>
     <message>
         <location line="+15"/>
-        <source>Json map files (*.json)</source>
+        <source>JSON map files (*.json)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -494,7 +494,7 @@
     </message>
     <message>
         <location line="+14"/>
-        <source>Json template files (*.json)</source>
+        <source>JSON template files (*.json)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -524,7 +524,7 @@
     </message>
     <message>
         <location line="+14"/>
-        <source>Json tileset files (*.json)</source>
+        <source>JSON tileset files (*.json)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -5637,7 +5637,7 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="+152"/>
-        <source>Missing wang tile transition</source>
+        <source>Missing Wang tile transition</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

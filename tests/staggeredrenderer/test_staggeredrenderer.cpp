@@ -45,7 +45,7 @@ void test_StaggeredRenderer::initTestCase()
 void test_StaggeredRenderer::cleanupTestCase()
 {
     delete mMap;
-    mMap = 0;
+    mMap = nullptr;
 }
 
 void test_StaggeredRenderer::mapSize()

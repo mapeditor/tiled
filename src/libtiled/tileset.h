@@ -41,6 +41,8 @@
 #include <QString>
 #include <QVector>
 
+#include <memory>
+
 class QImage;
 
 namespace Tiled {
@@ -63,6 +65,8 @@ typedef QSharedPointer<Tileset> SharedTileset;
  */
 class TILEDSHARED_EXPORT Tileset : public Object
 {
+    Q_OBJECT
+
 public:
     /**
      * The orientation of the tileset determines the projection used in the
@@ -165,6 +169,9 @@ public:
 
     const QUrl &imageSource() const;
     void setImageSource(const QUrl &imageSource);
+    void setImageSource(const QString &url);
+    QString imageSourceString() const;
+
     bool isCollection() const;
 
     int columnCountForWidth(int width) const;
@@ -187,6 +194,7 @@ public:
     WangSet *wangSet(int index) const;
 
     void addWangSet(WangSet *wangSet);
+    void addWangSet(std::unique_ptr<WangSet> &&wangSet);
     void insertWangSet(int index, WangSet *wangSet);
     WangSet *takeWangSetAt(int index);
 
@@ -519,6 +527,15 @@ inline void Tileset::setBackgroundColor(QColor color)
 inline const QUrl &Tileset::imageSource() const
 {
     return mImageReference.source;
+}
+
+/**
+ * QString-API for Python.
+ */
+inline QString Tileset::imageSourceString() const
+{
+    const QUrl &url = imageSource();
+    return url.isLocalFile() ? url.toLocalFile() : url.toString();
 }
 
 /**

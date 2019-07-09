@@ -24,6 +24,7 @@
 
 #include "document.h"
 #include "layer.h"
+#include "map.h"
 #include "mapformat.h"
 #include "tiled.h"
 #include "tileset.h"
@@ -50,12 +51,11 @@ class Terrain;
 class Tile;
 class WangSet;
 
-namespace Internal {
-
 class LayerModel;
 class MapDocument;
 class MapObjectModel;
 class TileSelectionModel;
+class EditableMap;
 
 using MapDocumentPtr = QSharedPointer<MapDocument>;
 
@@ -72,6 +72,8 @@ class MapDocument : public Document
 {
     Q_OBJECT
 
+    Q_PROPERTY(Map *map READ map CONSTANT)
+
 public:
     enum TileLayerChangeFlag {
         LayerDrawMarginsChanged,
@@ -81,10 +83,9 @@ public:
     Q_FLAG(TileLayerChangeFlags)
 
     /**
-     * Constructs a map document around the given map. The map document takes
-     * ownership of the map.
+     * Constructs a map document around the given map.
      */
-    MapDocument(Map *map, const QString &fileName = QString());
+    MapDocument(std::unique_ptr<Map> map, const QString &fileName = QString());
 
     ~MapDocument() override;
 
@@ -117,6 +118,8 @@ public:
      */
     Map *map() const { return mMap.get(); }
 
+    Tiled::EditableAsset *editable() override;
+
     int layerIndex(const Layer *layer) const;
 
     /**
@@ -134,7 +137,7 @@ public:
      * the contents by \a offset. If \a removeObjects is true then all objects
      * which are outside the map will be removed.
      */
-    void resizeMap(const QSize &size, const QPoint &offset, bool removeObjects);
+    void resizeMap(QSize size, QPoint offset, bool removeObjects);
 
     void autocropMap();
 
@@ -143,7 +146,7 @@ public:
      * wraps on the X or Y axis.
      */
     void offsetMap(const QList<Layer *> &layers,
-                   const QPoint &offset,
+                   QPoint offset,
                    const QRect &bounds,
                    bool wrapX, bool wrapY);
 
@@ -158,6 +161,8 @@ public:
     void moveLayersUp(const QList<Layer *> &layers);
     void moveLayersDown(const QList<Layer *> &layers);
     void removeLayers(const QList<Layer *> &layers);
+    void toggleLayers(const QList<Layer *> &layers);
+    void toggleLockLayers(const QList<Layer *> &layers);
     void toggleOtherLayers(const QList<Layer *> &layers);
     void toggleLockOtherLayers(const QList<Layer *> &layers);
 
@@ -264,6 +269,11 @@ signals:
     void hoveredMapObjectChanged(MapObject *object, MapObject *previous);
 
     /**
+     * Emitted when the map view should focus on the given object.
+     */
+    void focusMapObjectRequested(MapObject *object);
+
+    /**
      * Emitted when the map size or its tile size changes.
      */
     void mapChanged();
@@ -271,7 +281,6 @@ signals:
     void layerAdded(Layer *layer);
     void layerAboutToBeRemoved(GroupLayer *parentLayer, int index);
     void layerRemoved(Layer *layer);
-    void layerChanged(Layer *layer);
 
     /**
      * Emitted after a new layer was added and the name should be edited.
@@ -300,12 +309,6 @@ signals:
     void tileLayerChanged(TileLayer *layer, TileLayerChangeFlags flags);
 
     /**
-     * Should be emitted when changing the color or drawing order of an object
-     * group.
-     */
-    void objectGroupChanged(ObjectGroup *objectGroup);
-
-    /**
      * Should be emitted when changing the image or the transparent color of
      * an image layer.
      */
@@ -320,11 +323,7 @@ signals:
     void objectTemplateReplaced(const ObjectTemplate *newObjectTemplate,
                                 const ObjectTemplate *oldObjectTemplate);
 
-    void objectsAdded(const QList<MapObject*> &objects);
     void objectsInserted(ObjectGroup *objectGroup, int first, int last);
-    void objectsRemoved(const QList<MapObject*> &objects);
-    void objectsChanged(const QList<MapObject*> &objects);
-    void objectsTypeChanged(const QList<MapObject*> &objects);
     void objectsIndexChanged(ObjectGroup *objectGroup, int first, int last);
 
     // emitted from the TilesetDocument
@@ -332,9 +331,11 @@ signals:
     void tilesetTileOffsetChanged(Tileset *tileset);
     void tileTypeChanged(Tile *tile);
     void tileImageSourceChanged(Tile *tile);
+    void tileProbabilityChanged(Tile *tile);
+    void tileObjectGroupChanged(Tile *tile);
 
 private slots:
-    void onObjectsRemoved(const QList<MapObject*> &objects);
+    void onChanged(const ChangeEvent &change);
 
     void onMapObjectModelRowsInserted(const QModelIndex &parent, int first, int last);
     void onMapObjectModelRowsInsertedOrRemoved(const QModelIndex &parent, int first, int last);
@@ -373,7 +374,6 @@ private:
     bool mAllowTileObjects = true;
 };
 
-} // namespace Internal
 } // namespace Tiled
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::Internal::MapDocument::TileLayerChangeFlags)
+Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::MapDocument::TileLayerChangeFlags)

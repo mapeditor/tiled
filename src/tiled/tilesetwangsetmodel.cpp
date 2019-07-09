@@ -27,7 +27,6 @@
 #include "tile.h"
 
 using namespace Tiled;
-using namespace Internal;
 
 TilesetWangSetModel::TilesetWangSetModel(TilesetDocument *mapDocument,
                                          QObject *parent):

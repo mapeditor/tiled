@@ -31,19 +31,18 @@
 #include <QXmlStreamReader>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 TmxMapFormat::TmxMapFormat(QObject *parent)
     : MapFormat(parent)
 {
 }
 
-Map *TmxMapFormat::read(const QString &fileName)
+std::unique_ptr<Map> TmxMapFormat::read(const QString &fileName)
 {
     mError.clear();
 
     MapReader reader;
-    Map *map = reader.readMap(fileName);
+    std::unique_ptr<Map> map(reader.readMap(fileName));
     if (!map)
         mError = reader.errorString();
 
@@ -77,7 +76,7 @@ QByteArray TmxMapFormat::toByteArray(const Map *map)
     return buffer.data();
 }
 
-Map *TmxMapFormat::fromByteArray(const QByteArray &data)
+std::unique_ptr<Map> TmxMapFormat::fromByteArray(const QByteArray &data)
 {
     mError.clear();
 
@@ -86,7 +85,7 @@ Map *TmxMapFormat::fromByteArray(const QByteArray &data)
     buffer.open(QBuffer::ReadOnly);
 
     MapReader reader;
-    Map *map = reader.readMap(&buffer);
+    std::unique_ptr<Map> map(reader.readMap(&buffer));
     if (!map)
         mError = reader.errorString();
 
@@ -172,12 +171,12 @@ XmlObjectTemplateFormat::XmlObjectTemplateFormat(QObject *parent)
 {
 }
 
-ObjectTemplate *XmlObjectTemplateFormat::read(const QString &fileName)
+std::unique_ptr<ObjectTemplate> XmlObjectTemplateFormat::read(const QString &fileName)
 {
     mError.clear();
 
     MapReader reader;
-    ObjectTemplate *objectTemplate = reader.readObjectTemplate(fileName);
+    auto objectTemplate = reader.readObjectTemplate(fileName);
     if (!objectTemplate)
         mError = reader.errorString();
 

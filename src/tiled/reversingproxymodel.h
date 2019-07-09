@@ -23,7 +23,6 @@
 #include <QAbstractProxyModel>
 
 namespace Tiled {
-namespace Internal {
 
 /**
  * Displays the source model "upside down".
@@ -83,4 +82,3 @@ private:
 };
 
 } // namespace Tiled
-} // namespace Internal

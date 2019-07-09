@@ -45,18 +45,8 @@ WorldManager *WorldManager::mInstance;
 
 WorldManager::WorldManager()
 {
-    mReloadTimer.setSingleShot(true);
-    mReloadTimer.setInterval(250);
-
-    connect(&mFileSystemWatcher, &QFileSystemWatcher::fileChanged,
-            this, [this] (const QString &fileName) {
-        if (!mChangedWorldFiles.contains(fileName))
-            mChangedWorldFiles.append(fileName);
-        mReloadTimer.start();
-    });
-
-    connect(&mReloadTimer, &QTimer::timeout,
-            this, &WorldManager::reloadChangedWorldFiles);
+    connect(&mFileSystemWatcher, &FileSystemWatcher::filesChanged,
+            this, &WorldManager::reloadWorldFiles);
 }
 
 WorldManager::~WorldManager()
@@ -78,11 +68,11 @@ void WorldManager::deleteInstance()
     mInstance = nullptr;
 }
 
-void WorldManager::reloadChangedWorldFiles()
+void WorldManager::reloadWorldFiles(const QStringList &fileNames)
 {
     bool changed = false;
 
-    for (const QString &fileName : qAsConst(mChangedWorldFiles)) {
+    for (const QString &fileName : fileNames) {
         if (mWorlds.contains(fileName)) {
             auto world = privateLoadWorld(fileName);
             if (world) {
@@ -93,8 +83,6 @@ void WorldManager::reloadChangedWorldFiles()
             }
         }
     }
-
-    mChangedWorldFiles.clear();
 
     if (changed)
         emit worldsChanged();
@@ -147,8 +135,8 @@ std::unique_ptr<World> WorldManager::privateLoadWorld(const QString &fileName,
         pattern.multiplierY = patternObject.value(QLatin1String("multiplierY")).toInt(1);
         pattern.offset = QPoint(patternObject.value(QLatin1String("offsetX")).toInt(),
                                 patternObject.value(QLatin1String("offsetY")).toInt());
-        pattern.mapSize = QSize(patternObject.value(QLatin1String("mapWidth")).toInt(pattern.multiplierX),
-                                patternObject.value(QLatin1String("mapHeight")).toInt(pattern.multiplierY));
+        pattern.mapSize = QSize(patternObject.value(QLatin1String("mapWidth")).toInt(std::abs(pattern.multiplierX)),
+                                patternObject.value(QLatin1String("mapHeight")).toInt(std::abs(pattern.multiplierY)));
 
         if (pattern.regexp.captureCount() != 2)
             qWarning() << "Invalid number of captures in" << pattern.regexp;
@@ -172,14 +160,14 @@ std::unique_ptr<World> WorldManager::privateLoadWorld(const QString &fileName,
 /**
  * Loads the world with the given \a fileName.
  *
- * \returns whether the world was loaded succesfully, optionally setting
+ * \returns the world if it was loaded succesfully, optionally setting
  *          \a errorString when not.
  */
-bool WorldManager::loadWorld(const QString &fileName, QString *errorString)
+World *WorldManager::loadWorld(const QString &fileName, QString *errorString)
 {
     auto world = privateLoadWorld(fileName, errorString);
     if (!world)
-        return false;
+        return nullptr;
 
     if (mWorlds.contains(fileName))
         delete mWorlds.take(fileName);
@@ -189,7 +177,7 @@ bool WorldManager::loadWorld(const QString &fileName, QString *errorString)
     mWorlds.insert(fileName, world.release());
     emit worldsChanged();
 
-    return true;
+    return mWorlds.value(fileName);
 }
 
 /**

@@ -27,7 +27,6 @@
 #include "qtcompat_p.h"
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 static const char *commandMimeType = "application/x-tiled-commandptr";
 

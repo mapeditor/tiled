@@ -33,7 +33,6 @@
 #include <QCoreApplication>
 
 namespace Tiled {
-namespace Internal {
 
 void RaiseLowerHelper::raise()
 {
@@ -267,5 +266,4 @@ void RaiseLowerHelper::push(const QList<QUndoCommand*> &commands,
     undoStack->endMacro();
 }
 
-} // namespace Internal
 } // namespace Tiled

@@ -74,11 +74,6 @@ QSizeF TextData::textSize() const
 }
 
 
-MapObject::MapObject():
-    MapObject(QString(), QString(), QPointF(), QSizeF(0, 0))
-{
-}
-
 MapObject::MapObject(const QString &name, const QString &type,
                      const QPointF &pos,
                      const QSizeF &size):
@@ -244,6 +239,30 @@ Alignment MapObject::alignment() const
     return BottomLeft;
 }
 
+/**
+ * A helper function to determine the color of a map object. The color is
+ * determined first of all by the object type, and otherwise by the group
+ * that the object is in. If still no color is defined, it defaults to
+ * gray.
+ */
+QColor MapObject::effectiveColor() const
+{
+    const QString effectiveType = this->effectiveType();
+
+    // See if this object type has a color associated with it
+    for (const ObjectType &type : Object::objectTypes()) {
+        if (type.name.compare(effectiveType, Qt::CaseInsensitive) == 0)
+            return type.color;
+    }
+
+    // If not, get color from object group
+    if (mObjectGroup && mObjectGroup->color().isValid())
+        return mObjectGroup->color();
+
+    // Fallback color
+    return Qt::gray;
+}
+
 QVariant MapObject::mapObjectProperty(Property property) const
 {
     switch (property) {
@@ -255,10 +274,14 @@ QVariant MapObject::mapObjectProperty(Property property) const
     case TextAlignmentProperty: return QVariant::fromValue(mTextData.alignment);
     case TextWordWrapProperty:  return mTextData.wordWrap;
     case TextColorProperty:     return mTextData.color;
+    case PositionProperty:      return mPos;
     case SizeProperty:          return mSize;
     case RotationProperty:      return mRotation;
     case CellProperty:          Q_ASSERT(false); break;
     case ShapeProperty:         return mShape;
+    case TemplateProperty:      Q_ASSERT(false); break;
+    case CustomProperties:      Q_ASSERT(false); break;
+    case AllProperties:         Q_ASSERT(false); break;
     }
     return QVariant();
 }
@@ -266,18 +289,22 @@ QVariant MapObject::mapObjectProperty(Property property) const
 void MapObject::setMapObjectProperty(Property property, const QVariant &value)
 {
     switch (property) {
-    case NameProperty:          mName = value.toString(); break;
-    case TypeProperty:          mType = value.toString(); break;
-    case VisibleProperty:       mVisible = value.toBool(); break;
+    case NameProperty:          setName(value.toString()); break;
+    case TypeProperty:          setType(value.toString()); break;
+    case VisibleProperty:       setVisible(value.toBool()); break;
     case TextProperty:          mTextData.text = value.toString(); break;
     case TextFontProperty:      mTextData.font = value.value<QFont>(); break;
     case TextAlignmentProperty: mTextData.alignment = value.value<Qt::Alignment>(); break;
     case TextWordWrapProperty:  mTextData.wordWrap = value.toBool(); break;
     case TextColorProperty:     mTextData.color = value.value<QColor>(); break;
-    case SizeProperty:          mSize = value.toSizeF(); break;
-    case RotationProperty:      mRotation = value.toReal(); break;
+    case PositionProperty:      setPosition(value.toPointF()); break;
+    case SizeProperty:          setSize(value.toSizeF()); break;
+    case RotationProperty:      setRotation(value.toReal()); break;
     case CellProperty:          Q_ASSERT(false); break;
-    case ShapeProperty:         mShape = value.value<Shape>(); break;
+    case ShapeProperty:         setShape(value.value<Shape>()); break;
+    case TemplateProperty:      Q_ASSERT(false); break;
+    case CustomProperties:      Q_ASSERT(false); break;
+    case AllProperties:         Q_ASSERT(false); break;
     }
 }
 
@@ -428,7 +455,7 @@ void MapObject::flipPolygonObject(const QTransform &flipTransform)
     QPointF oldBottomLeftPoint = polygonToMapTransform.map(polygonFlip.map(QPointF(0, 0)));
     QPointF newPos = flipTransform.map(oldBottomLeftPoint);
 
-    mPolygon = polygonFlip.map(mPolygon);
+    setPolygon(polygonFlip.map(mPolygon));
     setPosition(newPos);
 }
 

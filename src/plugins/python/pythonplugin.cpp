@@ -124,7 +124,7 @@ void PythonPlugin::initialize()
         PyRun_SimpleString(QString("import sys; sys.path.insert(0, \"%1\")")
                            .arg(mScriptDir).toUtf8().constData());
 
-        log(QString("-- Added %1 to path\n").arg(mScriptDir));
+        log(QString("Python scripts path: %1\n").arg(mScriptDir));
     }
 
     reloadModules();
@@ -275,7 +275,7 @@ PythonMapFormat::PythonMapFormat(const QString &scriptFile,
     setPythonClass(class_);
 }
 
-Tiled::Map *PythonMapFormat::read(const QString &fileName)
+std::unique_ptr<Tiled::Map> PythonMapFormat::read(const QString &fileName)
 {
     mError = QString();
 
@@ -300,7 +300,7 @@ Tiled::Map *PythonMapFormat::read(const QString &fileName)
 
     if (ret)
         ret->setProperty("__script__", mScriptFile);
-    return ret;
+    return std::unique_ptr<Tiled::Map>(ret);
 }
 
 bool PythonMapFormat::write(const Tiled::Map *map, const QString &fileName)
@@ -309,7 +309,7 @@ bool PythonMapFormat::write(const Tiled::Map *map, const QString &fileName)
 
     mPlugin.log(tr("-- Using script %1 to write %2").arg(mScriptFile, fileName));
 
-    PyObject *pmap = _wrap_convert_c2py__Tiled__Map_const(map);
+    PyObject *pmap = _wrap_convert_c2py__Tiled__Map_const___star__(&map);
     if (!pmap)
         return false;
     PyObject *pinst = PyObject_CallMethod(mClass,

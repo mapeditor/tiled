@@ -27,10 +27,10 @@
 #include <QEvent>
 #include <QMenu>
 #include <QMessageBox>
+#include <QPushButton>
 
 using namespace Tiled;
 using namespace Tiled::Utils;
-using namespace Tiled::Internal;
 
 CommandButton::CommandButton(QWidget *parent)
     : QToolButton(parent)
@@ -66,12 +66,11 @@ void CommandButton::runCommand()
             msgBox.setWindowTitle(tr("Error Executing Command"));
             msgBox.setText(tr("You do not have any commands setup."));
             msgBox.addButton(QMessageBox::Ok);
-            msgBox.addButton(tr("Edit commands..."), QMessageBox::ActionRole);
+            const auto editButton = msgBox.addButton(tr("Edit commands..."), QMessageBox::ActionRole);
             msgBox.setDefaultButton(QMessageBox::Ok);
             msgBox.setEscapeButton(QMessageBox::Ok);
 
-            QAbstractButton *button = msgBox.buttons().last();
-            connect(button, &QAbstractButton::clicked, this, &CommandButton::showDialog);
+            connect(editButton, &QAbstractButton::clicked, this, &CommandButton::showDialog);
 
             msgBox.exec();
             return;

@@ -25,7 +25,6 @@
 class QLabel;
 
 namespace Tiled {
-namespace Internal {
 
 class TilesetDocument;
 
@@ -56,5 +55,4 @@ inline TilesetDocument *TilesetParametersEdit::tilesetDocument() const
     return mTilesetDocument;
 }
 
-} // namespace Internal
 } // namespace Tiled

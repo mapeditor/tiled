@@ -1,7 +1,7 @@
 include(../../src/libtiled/libtiled.pri)
 
 QT += testlib
-CONFIG += c++11
+CONFIG += c++14
 TEMPLATE = app
 
 macx {

@@ -29,7 +29,6 @@
 #include <QTreeView>
 
 namespace Tiled {
-namespace Internal {
 
 class TreeViewComboBoxView : public QTreeView
 {
@@ -75,5 +74,4 @@ inline QModelIndex TreeViewComboBox::currentModelIndex() const
     return m_view->currentIndex();
 }
 
-} // namespace Internal
 } // namespace Tiled

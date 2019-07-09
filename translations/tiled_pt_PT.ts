@@ -23,12 +23,12 @@
         <source>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;Copyright 2008-2018 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;https://www.mapeditor.org/&quot;&gt;https://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
         <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled  Editor de Mapas&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;Copyright 2008-2018 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(ver o ficheiro AUTHORS para a lista completa de contribuitores)&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;Pode modificar e redistribuir este programa sobre os termos GPL (versão 2 ou postrior). Uma cópia da GPL está contida no ficheiro &apos;COPYING&apos; distribuido com o Tiled.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;https://www.mapeditor.org/&quot;&gt;https://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </translation>
     </message>
 </context>
@@ -50,7 +50,7 @@
     <message>
         <location filename="../src/tiled/main.cpp" line="+359"/>
         <source>Export syntax is --export-map [format] &lt;source&gt; &lt;target&gt;</source>
-        <translation>Sintaxe de Exportação é --export-map [format] &lt;source&gt; &lt;target&gt;</translation>
+        <translation>Sintaxe de Exportação é --export-map [formato] &lt;fonte&gt; &lt;destino&gt;</translation>
     </message>
     <message>
         <location line="-232"/>
@@ -80,7 +80,7 @@
     <message>
         <location line="+9"/>
         <source>Export syntax is --export-tileset [format] &lt;source&gt; &lt;target&gt;</source>
-        <translation>Sintaxe de exportação é --export-tileset [format] &lt;source&gt; &lt;target&gt;</translation>
+        <translation>Sintaxe de exportação é --export-tileset [formato] &lt;fonte&gt; &lt;destino&gt;</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -90,7 +90,7 @@
     <message>
         <location line="+11"/>
         <source>Failed to export tileset to target file.</source>
-        <translation>Falha ao exportar tileset para ficheiro alvo.</translation>
+        <translation>Falha ao exportar tileset para ficheiro de destino.</translation>
     </message>
 </context>
 <context>
@@ -167,12 +167,12 @@
     <message>
         <location line="+5"/>
         <source>Export the specified map file to target</source>
-        <translation>Exportar o mapa específico para alvo</translation>
+        <translation>Exportar o mapa específico para destino</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export the specified tileset file to target</source>
-        <translation>Exportar o tileset específico para alvo</translation>
+        <translation>Exportar o tileset específico para destino</translation>
     </message>
     <message>
         <location line="+84"/>
@@ -460,8 +460,8 @@
     </message>
     <message>
         <location line="+15"/>
-        <source>Json map files (*.json)</source>
-        <translation>Ficheiros Json map(*.json)</translation>
+        <source>JSON map files (*.json)</source>
+        <translation>Ficheiros JSON map (*.json)</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -495,8 +495,8 @@
     </message>
     <message>
         <location line="+14"/>
-        <source>Json template files (*.json)</source>
-        <translation>Ficheiros Json template(*.json)</translation>
+        <source>JSON template files (*.json)</source>
+        <translation>Ficheiros JSON template (*.json)</translation>
     </message>
 </context>
 <context>
@@ -525,8 +525,8 @@
     </message>
     <message>
         <location line="+14"/>
-        <source>Json tileset files (*.json)</source>
-        <translation>Ficheiros Json tileset(*.json)</translation>
+        <source>JSON tileset files (*.json)</source>
+        <translation>Ficheiros JSON tileset (*.json)</translation>
     </message>
 </context>
 <context>
@@ -5525,8 +5525,8 @@ Por favor, selecione um formato específico.</translation>
     </message>
     <message>
         <location line="+152"/>
-        <source>Missing wang tile transition</source>
-        <translation>Transição de tile wang em falta</translation>
+        <source>Missing Wang tile transition</source>
+        <translation>Transição de tile Wang em falta</translation>
     </message>
 </context>
 <context>

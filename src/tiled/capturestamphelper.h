@@ -18,15 +18,13 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CAPTURESTAMPHELPER_H
-#define CAPTURESTAMPHELPER_H
+#pragma once
 
 #include "tilestamp.h"
 
 #include <QRect>
 
 namespace Tiled {
-namespace Internal {
 
 class MapDocument;
 
@@ -48,7 +46,4 @@ private:
     bool mActive;
 };
 
-} // namespace Internal
 } // namespace Tiled
-
-#endif // CAPTURESTAMPHELPER_H

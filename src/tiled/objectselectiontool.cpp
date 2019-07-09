@@ -20,6 +20,7 @@
 
 #include "objectselectiontool.h"
 
+#include "changeevents.h"
 #include "changepolygon.h"
 #include "editpolygontool.h"
 #include "geometry.h"
@@ -58,10 +59,8 @@
 #include <float.h>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 namespace Tiled {
-namespace Internal {
 
 enum AnchorPosition {
     TopLeftAnchor,
@@ -309,7 +308,6 @@ void ResizeHandle::paint(QPainter *painter,
     painter->drawPath(mArrow);
 }
 
-} // namespace Internal
 } // namespace Tiled
 
 
@@ -352,14 +350,12 @@ void ObjectSelectionTool::activate(MapScene *scene)
 
     updateHandlesAndOrigin();
 
-    connect(mapDocument(), &MapDocument::objectsChanged,
-            this, &ObjectSelectionTool::updateHandlesAndOrigin);
     connect(mapDocument(), &MapDocument::mapChanged,
             this, &ObjectSelectionTool::updateHandlesAndOrigin);
     connect(mapDocument(), &MapDocument::selectedObjectsChanged,
             this, &ObjectSelectionTool::updateHandlesAndOrigin);
-    connect(mapDocument(), &MapDocument::objectsRemoved,
-            this, &ObjectSelectionTool::objectsRemoved);
+    connect(mapDocument(), &MapDocument::tilesetTileOffsetChanged,
+            this, &ObjectSelectionTool::updateHandlesAndOrigin);
 
     scene->addItem(mOriginIndicator.get());
     for (RotateHandle *handle : mRotateHandles)
@@ -376,16 +372,14 @@ void ObjectSelectionTool::deactivate(MapScene *scene)
     for (ResizeHandle *handle : mResizeHandles)
         scene->removeItem(handle);
 
-    disconnect(mapDocument(), &MapDocument::objectsChanged,
-               this, &ObjectSelectionTool::updateHandlesAndOrigin);
     disconnect(mapDocument(), &MapDocument::mapChanged,
                this, &ObjectSelectionTool::updateHandlesAndOrigin);
     disconnect(mapDocument(), &MapDocument::selectedObjectsChanged,
                this, &ObjectSelectionTool::updateHandlesAndOrigin);
-    disconnect(mapDocument(), &MapDocument::objectsRemoved,
-               this, &ObjectSelectionTool::objectsRemoved);
+    disconnect(mapDocument(), &MapDocument::tilesetTileOffsetChanged,
+               this, &ObjectSelectionTool::updateHandlesAndOrigin);
 
-    abortCurrentAction();
+    abortCurrentAction(Deactivated);
 
     mHoveredObject = nullptr;
     mapDocument()->setHoveredMapObject(nullptr);
@@ -399,7 +393,7 @@ void ObjectSelectionTool::keyPressed(QKeyEvent *event)
         // If we're currently performing some action, the only relevant key to
         // handle is Escape, to abort it.
         if (event->key() == Qt::Key_Escape)
-            abortCurrentAction();
+            abortCurrentAction(UserInteraction);
         else
             event->ignore();
 
@@ -734,6 +728,29 @@ void ObjectSelectionTool::languageChanged()
     setShortcut(QKeySequence(tr("S")));
 }
 
+void ObjectSelectionTool::changeEvent(const ChangeEvent &event)
+{
+    AbstractObjectTool::changeEvent(event);
+
+    if (!mapScene())
+        return;
+
+    switch (event.type) {
+    case ChangeEvent::LayerChanged:
+        if (static_cast<const LayerChangeEvent&>(event).properties & LayerChangeEvent::OffsetProperty)
+            updateHandlesAndOrigin();
+        break;
+    case ChangeEvent::MapObjectsChanged:
+        updateHandlesAndOrigin();
+        break;
+    case ChangeEvent::MapObjectsAboutToBeRemoved:
+        objectsAboutToBeRemoved(static_cast<const MapObjectsEvent&>(event).mapObjects);
+        break;
+    default:
+        break;
+    }
+}
+
 void ObjectSelectionTool::updateHandles()
 {
     updateHandlesImpl(false);
@@ -1023,7 +1040,7 @@ void ObjectSelectionTool::updateHandleVisibility()
     mOriginIndicator->setVisible(showOrigin);
 }
 
-void ObjectSelectionTool::objectsRemoved(const QList<MapObject *> &objects)
+void ObjectSelectionTool::objectsAboutToBeRemoved(const QList<MapObject *> &objects)
 {
     if (mClickedObject && objects.contains(mClickedObject))
         mClickedObject = nullptr;
@@ -1033,7 +1050,7 @@ void ObjectSelectionTool::objectsRemoved(const QList<MapObject *> &objects)
     // Abort move/rotate/resize to avoid crashing...
     // TODO: This should really not be allowed to happen in the first place
     if (mAction == Moving || mAction == Rotating || mAction == Resizing)
-        abortCurrentAction(objects);
+        abortCurrentAction(UserInteraction, objects);
 }
 
 void ObjectSelectionTool::updateHover(const QPointF &pos)
@@ -1146,7 +1163,7 @@ void ObjectSelectionTool::updateMovingItems(const QPointF &pos,
         object.mapObject->setPosition(newPos);
     }
 
-    mapDocument()->mapObjectModel()->emitObjectsChanged(changingObjects(), MapObjectModel::Position);
+    emit mapDocument()->changed(MapObjectsChangeEvent(changingObjects(), MapObject::PositionProperty));
 
     mOriginIndicator->setPos(mOriginPos + diff);
 }
@@ -1236,7 +1253,10 @@ void ObjectSelectionTool::updateRotatingItems(const QPointF &pos,
             mapObject->setRotation(newRotation);
     }
 
-    mapDocument()->mapObjectModel()->emitObjectsChanged(changingObjects(), MapObjectModel::Position);
+    emit mapDocument()->changed(MapObjectsChangeEvent(changingObjects(), MapObject::ChangedProperties {
+                                                          MapObject::PositionProperty,
+                                                          MapObject::RotationProperty
+                                                      }));
 }
 
 void ObjectSelectionTool::finishRotating(const QPointF &pos)
@@ -1364,7 +1384,11 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
         mapObject->setPosition(newPos);
     }
 
-    mapDocument()->mapObjectModel()->emitObjectsChanged(changingObjects(), MapObjectModel::Position);
+    emit mapDocument()->changed(MapObjectsChangeEvent(changingObjects(), MapObject::ChangedProperties {
+                                                          MapObject::PositionProperty,
+                                                          MapObject::SizeProperty,
+                                                          MapObject::ShapeProperty
+                                                      }));
 }
 
 void ObjectSelectionTool::updateResizingSingleItem(const QPointF &resizingOrigin,
@@ -1503,7 +1527,11 @@ void ObjectSelectionTool::updateResizingSingleItem(const QPointF &resizingOrigin
     mapObject->setSize(newSize);
     mapObject->setPosition(newPos);
 
-    mapDocument()->mapObjectModel()->emitObjectsChanged(changingObjects(), MapObjectModel::Position);
+    emit mapDocument()->changed(MapObjectsChangeEvent(changingObjects(), MapObject::ChangedProperties {
+                                                          MapObject::PositionProperty,
+                                                          MapObject::SizeProperty,
+                                                          MapObject::ShapeProperty,
+                                                      }));
 }
 
 void ObjectSelectionTool::finishResizing(const QPointF &pos)
@@ -1566,7 +1594,7 @@ void ObjectSelectionTool::saveSelectionState()
  * The \a removedObjects is used to avoid sending the "objectsChanged" signal
  * for objects that have been removed.
  */
-void ObjectSelectionTool::abortCurrentAction(const QList<MapObject *> &removedObjects)
+void ObjectSelectionTool::abortCurrentAction(AbortReason reason, const QList<MapObject *> &removedObjects)
 {
     switch (mAction) {
     case NoAction:
@@ -1596,7 +1624,12 @@ void ObjectSelectionTool::abortCurrentAction(const QList<MapObject *> &removedOb
             if (removedObjects.contains(mMovingObjects.at(i).mapObject))
                 mMovingObjects.remove(i);
 
-        emit mapDocument()->mapObjectModel()->objectsChanged(changingObjects());
+        emit mapDocument()->changed(MapObjectsChangeEvent(changingObjects(), MapObject::ChangedProperties {
+                                                              MapObject::PositionProperty,
+                                                              MapObject::SizeProperty,
+                                                              MapObject::RotationProperty,
+                                                              MapObject::ShapeProperty,
+                                                          }));
         break;
     }
 
@@ -1608,9 +1641,11 @@ void ObjectSelectionTool::abortCurrentAction(const QList<MapObject *> &removedOb
     mMovingObjects.clear();
     mAction = NoAction;
 
-    updateHandles();
-    updateHover(mLastMousePos);
-    refreshCursor();
+    if (reason != Deactivated) {
+        updateHandles();
+        updateHover(mLastMousePos);
+        refreshCursor();
+    }
 }
 
 void ObjectSelectionTool::refreshCursor()

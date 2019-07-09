@@ -32,8 +32,6 @@ namespace Tiled {
 class Tile;
 class WangSet;
 
-namespace Internal {
-
 class MapDocument;
 class StampActions;
 class WangFiller;
@@ -90,7 +88,7 @@ signals:
     void wangFillChanged(bool value);
 
 protected:
-    void tilePositionChanged(const QPoint &tilePos) override;
+    void tilePositionChanged(QPoint tilePos) override;
 
     void mapDocumentChanged(MapDocument *oldDocument,
                             MapDocument *newDocument) override;
@@ -155,10 +153,11 @@ private:
     bool mIsWangFill;
     WangSet *mWangSet;
 
+    bool mRandomCacheValid;
     void updateRandomList();
+    void invalidateRandomCache();
 
     StampActions *mStampActions;
 };
 
-} // namespace Internal
 } // namespace Tiled

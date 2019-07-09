@@ -25,7 +25,6 @@
 #include <QUndoCommand>
 
 namespace Tiled {
-namespace Internal {
 
 class TilesetDocument;
 
@@ -48,5 +47,4 @@ private:
     QVector<Frame> mFrames;
 };
 
-} // namespace Internal
 } // namespace Tiled

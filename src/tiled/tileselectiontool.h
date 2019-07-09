@@ -23,7 +23,6 @@
 #include "abstracttileselectiontool.h"
 
 namespace Tiled {
-namespace Internal {
 
 class TileSelectionTool : public AbstractTileSelectionTool
 {
@@ -39,7 +38,7 @@ public:
     void languageChanged() override;
 
 protected:
-    void tilePositionChanged(const QPoint &tilePos) override;
+    void tilePositionChanged(QPoint tilePos) override;
 
     void updateStatusInfo() override;
 
@@ -54,5 +53,4 @@ private:
     bool mSelecting;
 };
 
-} // namespace Internal
 } // namespace Tiled

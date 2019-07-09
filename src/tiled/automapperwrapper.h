@@ -27,7 +27,6 @@
 
 namespace Tiled {
 
-namespace Internal {
 
 class MapDocument;
 
@@ -56,5 +55,4 @@ private:
     QVector<TileLayer*> mLayersBefore;
 };
 
-} // namespace Internal
 } // namespace Tiled

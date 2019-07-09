@@ -32,7 +32,6 @@
 #include <QUndoGroup>
 
 namespace Tiled {
-namespace Internal {
 
 MainToolBar::MainToolBar(QWidget *parent)
     : QToolBar(parent)
@@ -59,8 +58,8 @@ MainToolBar::MainToolBar(QWidget *parent)
     mSaveAction = new QAction(this);
 
     QMenu *newMenu = new QMenu(this);
-    newMenu->addAction(ActionManager::action("file.new_map"));
-    newMenu->addAction(ActionManager::action("file.new_tileset"));
+    newMenu->addAction(ActionManager::action("NewMap"));
+    newMenu->addAction(ActionManager::action("NewTileset"));
     mNewButton->setMenu(newMenu);
     mNewButton->setPopupMode(QToolButton::InstantPopup);
 
@@ -138,5 +137,4 @@ void MainToolBar::retranslateUi()
     mUndoAction->setIconText(tr("Undo"));
 }
 
-} // namespace Internal
 } // namespace Tiled

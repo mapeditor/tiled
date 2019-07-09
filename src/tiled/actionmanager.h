@@ -25,9 +25,9 @@
 #include <QObject>
 
 class QAction;
+class QMenu;
 
 namespace Tiled {
-namespace Internal {
 
 class MainWindow;
 
@@ -39,19 +39,40 @@ class ActionManager : public QObject
     Q_OBJECT
 
 public:
+    static ActionManager *instance();
+
     static void registerAction(QAction *action, Id id);
+    static void unregisterAction(Id id);
+
+    static void registerMenu(QMenu *menu, Id id);
+    static void unregisterMenu(Id id);
 
     static QAction *action(Id id);
+    static QAction *findAction(Id id);
+
+    static QMenu *menu(Id id);
+    static QMenu *findMenu(Id id);
+
+    static QList<Id> actions();
+    static QList<Id> menus();
+
+    void setCustomShortcut(Id id, const QKeySequence &keySequence);
+    bool hasCustomShortcut(Id id) const;
+    void resetCustomShortcut(Id id);
+    void resetAllCustomShortcuts();
+    QKeySequence defaultShortcut(Id id);
+
+    void setCustomShortcuts(const QHash<Id, QKeySequence> &shortcuts);
 
 signals:
-    void actionAdded(Id id);
+    void actionChanged(Id id);
+    void actionsChanged();
 
 private:
     explicit ActionManager(QObject *parent = nullptr);
     ~ActionManager();
 
-    friend class Tiled::Internal::MainWindow;   // creation
+    friend class Tiled::MainWindow;   // creation
 };
 
-} // namespace Internal
 } // namespace Tiled

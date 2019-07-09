@@ -28,7 +28,6 @@
 #include "utils.h"
 
 namespace Tiled {
-namespace Internal {
 
 CreateTextObjectTool::CreateTextObjectTool(QObject *parent)
     : CreateObjectTool(parent)
@@ -78,5 +77,4 @@ MapObject *CreateTextObjectTool::createNewMapObject()
     return newMapObject;
 }
 
-} // namespace Internal
 } // namespace Tiled

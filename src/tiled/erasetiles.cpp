@@ -26,7 +26,6 @@
 #include <QCoreApplication>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 EraseTiles::EraseTiles(MapDocument *mapDocument,
                        TileLayer *tileLayer,

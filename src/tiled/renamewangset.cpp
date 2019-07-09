@@ -27,7 +27,6 @@
 #include <QCoreApplication>
 
 using namespace Tiled;
-using namespace Internal;
 
 RenameWangSet::RenameWangSet(TilesetDocument *tilesetDocument,
                              WangSet *wangSet,

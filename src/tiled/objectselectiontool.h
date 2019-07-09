@@ -31,7 +31,6 @@
 class QGraphicsItem;
 
 namespace Tiled {
-namespace Internal {
 
 class Handle;
 class OriginIndicator;
@@ -62,12 +61,15 @@ public:
 
     void languageChanged() override;
 
+protected:
+    void changeEvent(const ChangeEvent &event) override;
+
 private slots:
     void updateHandles();
     void updateHandlesAndOrigin();
     void updateHandleVisibility();
 
-    void objectsRemoved(const QList<MapObject *> &);
+    void objectsAboutToBeRemoved(const QList<MapObject *> &);
 
 private:
     enum Action {
@@ -117,7 +119,13 @@ private:
     void setMode(Mode mode);
     void saveSelectionState();
 
-    void abortCurrentAction(const QList<MapObject *> &removedObjects = QList<MapObject*>());
+    enum AbortReason {
+        UserInteraction,
+        Deactivated
+    };
+
+    void abortCurrentAction(AbortReason reason = UserInteraction,
+                            const QList<MapObject *> &removedObjects = QList<MapObject*>());
 
     void refreshCursor();
 
@@ -166,5 +174,4 @@ private:
     Qt::KeyboardModifiers mModifiers;
 };
 
-} // namespace Internal
 } // namespace Tiled

@@ -86,6 +86,10 @@ C#/.NET
    library for parsing Tiled map TMX files. This library could be used
    with MonoGame and Windows Runtime Universal apps.
 
+Clojure
+~~~~~~~
+- `tile-soup <https://github.com/oakes/tile-soup>`__: Parses and validates a TMX file into a map. Automatically decodes Base64 and CSV formatted data and coerces numbers when necessary. Works on both the JVM and in browsers via ClojureScript.
+
 D
 ~
 
@@ -180,6 +184,11 @@ Allegro
    integrates Tiled support with `Allegro
    5 <http://alleg.sourceforge.net/>`__.
 
+Castle Game Engine (Object Pascal)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-  `Castle Game Engine <https://castle-engine.io/>`__ has native support for Tiled maps (see the `CastleTiledMap unit <https://castle-engine.io/apidoc-unstable/html/CastleTiledMap.html>`__)
+
 cocos2d
 ~~~~~~~
 
@@ -214,9 +223,10 @@ Corona SDK
    Tiled Map Loader for Corona SDK (`forum
    announcement <http://discourse.mapeditor.org/t/new-lua-coronasdk-framework-ponytiled/1826>`__)
 -  `Dusk Engine <https://github.com/GymbylCoding/Dusk-Engine>`__ is a
-   fully featured Tiled map game engine for Corona SDK
+   fully featured Tiled map game engine for Corona SDK (no longer maintained, but may still be useful)
 -  `Berry <https://github.com/ldurniat/Berry>`__ is a simple Tiled
    Map Loader for Corona SDK.
+-  `Qiso <https://qiso.qweb.co.uk>`__ is an isometric engine for Corona SDK that supports loading Tiled maps, and also handles things like path-finding for you.
 
 Flixel
 ~~~~~~

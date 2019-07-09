@@ -43,7 +43,6 @@
 #include <QMenu>
 
 namespace Tiled {
-namespace Internal {
 
 PropertiesDock::PropertiesDock(QWidget *parent)
     : QDockWidget(parent)
@@ -493,5 +492,4 @@ void PropertiesDock::retranslateUi()
     mActionRenameProperty->setText(tr("Rename Property"));
 }
 
-} // namespace Internal
 } // namespace Tiled

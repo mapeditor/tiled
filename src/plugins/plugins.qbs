@@ -8,6 +8,7 @@ Project {
         "flare",
         "gmx",
         "json",
+        "json1",
         "lua",
         "python",
         "replicaisland",

@@ -29,7 +29,6 @@ class ResizeDialog;
 }
 
 namespace Tiled {
-namespace Internal {
 
 class ResizeDialog : public QDialog
 {
@@ -40,7 +39,7 @@ public:
 
     ~ResizeDialog();
 
-    void setOldSize(const QSize &size);
+    void setOldSize(QSize size);
 
     QSize newSize() const;
     QPoint offset() const;
@@ -57,5 +56,4 @@ private:
     Ui::ResizeDialog *mUi;
 };
 
-} // namespace Internal
 } // namespace Tiled

@@ -24,11 +24,11 @@
 #include "abstracttool.h"
 
 namespace Tiled {
-namespace Internal {
 
 class LayerOffsetTool : public AbstractTool
 {
     Q_OBJECT
+    Q_INTERFACES(Tiled::AbstractTool)
 
 public:
     explicit LayerOffsetTool(QObject *parent = nullptr);
@@ -71,5 +71,4 @@ private:
     QVector<DraggingLayer> mDraggingLayers;
 };
 
-} // namespace Internal
 } // namespace Tiled

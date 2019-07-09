@@ -7,8 +7,7 @@ Project {
     qbsSearchPaths: "qbs"
     minimumQbsVersion: "1.8"
 
-    property string version: Environment.getEnv("TILED_VERSION") || "1.2.1";
-    property bool sparkleEnabled: Environment.getEnv("TILED_SPARKLE")
+    property string version: Environment.getEnv("TILED_VERSION") || "1.2.4";
     property bool snapshot: Environment.getEnv("TILED_SNAPSHOT")
     property bool release: Environment.getEnv("TILED_RELEASE")
     property bool installHeaders: false
@@ -26,8 +25,11 @@ Project {
         "src/qtsingleapplication",
         "src/terraingenerator",
         "src/tiled",
+        "src/tiledquick",
+        "src/tiledquickplugin",
         "src/tmxrasterizer",
         "src/tmxviewer",
+        "tests",
         "translations"
     ]
 }

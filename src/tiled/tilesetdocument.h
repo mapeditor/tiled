@@ -21,6 +21,7 @@
 #pragma once
 
 #include "document.h"
+#include "editabletileset.h"
 #include "tileset.h"
 #include "tilesetformat.h"
 
@@ -32,7 +33,7 @@
 
 namespace Tiled {
 
-namespace Internal {
+class ObjectGroup;
 
 class MapDocument;
 class TilesetDocument;
@@ -79,6 +80,8 @@ public:
     void swapTileset(SharedTileset &tileset);
     const SharedTileset &tileset() const;
 
+    EditableTileset *editable() override;
+
     bool isEmbedded() const;
     void setClean();
 
@@ -87,7 +90,7 @@ public:
     void removeMapDocument(MapDocument *mapDocument);
 
     void setTilesetName(const QString &name);
-    void setTilesetTileOffset(const QPoint &tileOffset);
+    void setTilesetTileOffset(QPoint tileOffset);
 
     void addTiles(const QList<Tile*> &tiles);
     void removeTiles(const QList<Tile*> &tiles);
@@ -104,6 +107,8 @@ public:
 
     void setTileType(Tile *tile, const QString &type);
     void setTileImage(Tile *tile, const QPixmap &image, const QUrl &source);
+    void setTileProbability(Tile *tile, qreal probability);
+    void swapTileObjectGroup(Tile *tile, std::unique_ptr<ObjectGroup> &objectGroup);
 
     static TilesetDocument* findDocumentForTileset(const SharedTileset &tileset);
 
@@ -116,6 +121,9 @@ signals:
      * @todo Emit more specific signals.
      */
     void tilesetChanged(Tileset *tileset);
+
+    void tilesAdded(const QList<Tile*> &tiles);
+    void tilesRemoved(const QList<Tile*> &tiles);
 
     void tilesetNameChanged(Tileset *tileset);
     void tilesetTileOffsetChanged(Tileset *tileset);
@@ -166,7 +174,6 @@ private:
 
     TilesetTerrainModel *mTerrainModel;
     TilesetWangSetModel *mWangSetModel;
-    WangColorModel *mWangColorModel;
     std::unordered_map<WangSet*, std::unique_ptr<WangColorModel>> mWangColorModels;
 
     QList<Tile*> mSelectedTiles;
@@ -202,5 +209,4 @@ inline const QList<Tile *> &TilesetDocument::selectedTiles() const
     return mSelectedTiles;
 }
 
-} // namespace Internal
 } // namespace Tiled
