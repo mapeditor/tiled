@@ -222,7 +222,7 @@ int TmxRasterizer::renderWorld(const QString &worldFileName,
     for (const World::MapEntry &mapEntry : maps) {
         std::unique_ptr<Map> map { readMap(mapEntry.fileName, &errorString) };
         if (!map) {
-            qWarning("Errors while reading \"%s\":\n%s",
+            qWarning("Error while reading \"%s\":\n%s",
                      qUtf8Printable(mapEntry.fileName),
                      qUtf8Printable(errorString));
             continue;
