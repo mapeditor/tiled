@@ -59,6 +59,7 @@ Map::Map(Orientation orientation,
     mHexSideLength(0),
     mStaggerAxis(StaggerY),
     mStaggerIndex(StaggerOdd),
+    mChunkSize(CHUNK_SIZE, CHUNK_SIZE),
     mDrawMarginsDirty(true),
     mLayerDataFormat(Base64Zlib),
     mNextLayerId(1),
@@ -337,6 +338,7 @@ Map *Map::clone() const
     o->mStaggerAxis = mStaggerAxis;
     o->mStaggerIndex = mStaggerIndex;
     o->mBackgroundColor = mBackgroundColor;
+    o->mChunkSize = mChunkSize;
     o->mDrawMargins = mDrawMargins;
     o->mDrawMarginsDirty = mDrawMarginsDirty;
     for (const Layer *layer : mLayers) {
