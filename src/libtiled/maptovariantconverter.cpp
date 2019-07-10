@@ -448,10 +448,12 @@ QVariant MapToVariantConverter::toVariant(const TileLayer &tileLayer,
         break;
     }
 
-    tileLayerVariant[QLatin1String("outputchunkwidth")] = chunkSize.width();
-    tileLayerVariant[QLatin1String("outputchunkheight")] = chunkSize.height();
-
     if (tileLayer.map()->infinite()) {
+        if (chunkSize.width() != CHUNK_SIZE || chunkSize.height() != CHUNK_SIZE) {
+            tileLayerVariant[QLatin1String("outputchunkwidth")] = chunkSize.width();
+            tileLayerVariant[QLatin1String("outputchunkheight")] = chunkSize.height();
+        }
+
         QVariantList chunkVariants;
 
         const auto chunks = tileLayer.sortedChunksToWrite(chunkSize);

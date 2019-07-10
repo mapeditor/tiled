@@ -484,10 +484,12 @@ void LuaWriter::writeTileLayer(LuaTableWriter &writer,
     }
     }
 
-    writer.writeKeyAndValue("outputchunkwidth", chunkSize.width());
-    writer.writeKeyAndValue("outputchunkheight", chunkSize.height());
-
     if (tileLayer->map()->infinite()) {
+        if (chunkSize.width() != CHUNK_SIZE || chunkSize.height() != CHUNK_SIZE) {
+            writer.writeKeyAndValue("outputchunkwidth", chunkSize.width());
+            writer.writeKeyAndValue("outputchunkheight", chunkSize.height());
+        }
+
         writer.writeStartTable("chunks");
         const auto chunks = tileLayer->sortedChunksToWrite(chunkSize);
         for (const QRect &rect : chunks) {

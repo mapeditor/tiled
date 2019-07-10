@@ -590,10 +590,12 @@ void MapWriterPrivate::writeTileLayer(QXmlStreamWriter &w,
     if (!compression.isEmpty())
         w.writeAttribute(QLatin1String("compression"), compression);
 
-    w.writeAttribute(QLatin1String("outputchunkwidth"), QString::number(mChunkSize.width()));
-    w.writeAttribute(QLatin1String("outputchunkheight"), QString::number(mChunkSize.height()));
-
     if (tileLayer.map()->infinite()) {
+        if (mChunkSize.width() != CHUNK_SIZE || mChunkSize.height() != CHUNK_SIZE) {
+            w.writeAttribute(QLatin1String("outputchunkwidth"), QString::number(mChunkSize.width()));
+            w.writeAttribute(QLatin1String("outputchunkheight"), QString::number(mChunkSize.height()));
+        }
+
         const auto chunks = tileLayer.sortedChunksToWrite(mChunkSize);
         for (const QRect &rect : chunks) {
             w.writeStartElement(QLatin1String("chunk"));
