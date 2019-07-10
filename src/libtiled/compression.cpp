@@ -214,21 +214,16 @@ QByteArray Tiled::compress(const QByteArray &data,
 
         size_t const cBuffSize = ZSTD_compressBound(data.size());
 
-        void* const cBuff = malloc(cBuffSize);
-        if (!cBuff) {
-            qDebug() << "error to alloc" << cBuffSize;
-            return QByteArray();
-        }
+        QByteArray out;
+        out.resize(cBuffSize);
 
-        size_t const cSize = ZSTD_compress(cBuff, cBuffSize, data.constData(), data.size(), compressionLevel);
+        size_t const cSize = ZSTD_compress(out.data(), cBuffSize, data.constData(), data.size(), compressionLevel);
         if (ZSTD_isError(cSize)) {
             qDebug() << "error compressing:" << ZSTD_getErrorName(cSize);
             return QByteArray();
         }
 
-        QByteArray data(static_cast<char *>(cBuff), cSize);
-        free(cBuff);
-        return data;
+        return out;
 #endif
     } else {
         qDebug() << "compression not supported:" << method;

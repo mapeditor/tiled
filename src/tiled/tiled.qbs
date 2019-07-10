@@ -17,7 +17,11 @@ QtGuiApplication {
 
     property bool qtcRunnable: true
 
-    cpp.includePaths: ["."]
+    cpp.includePaths: [
+                ".",
+                "../../zstd/lib"
+            ]
+
     cpp.useRPaths: project.useRPaths
     cpp.rpaths: {
         if (qbs.targetOS.contains("darwin"))
@@ -43,6 +47,10 @@ QtGuiApplication {
         ];
         if (project.snapshot)
             defs.push("TILED_SNAPSHOT");
+
+        if (project.enableZstd)
+            defs.push("TILED_ZSTD_SUPPORT");
+
         return defs;
     }
 

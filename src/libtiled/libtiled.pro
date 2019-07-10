@@ -20,10 +20,6 @@ win32 {
     LIBS += -lz
 }
 
-#for zstd
-#LIBS += -lzstd
-#DEFINES += TILED_ZSTD_SUPPORT
-
 DEFINES += QT_NO_CAST_FROM_ASCII \
     QT_NO_CAST_TO_ASCII
 DEFINES += TILED_LIBRARY
