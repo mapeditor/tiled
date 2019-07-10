@@ -134,7 +134,7 @@ matrix:
     - QT_CI_PACKAGES=qt.qt5.5123.clang_64,qt.qt5.5123.qtscript QT_CI_DOWNLOADER="wget -c -nv -N" install-qt 5.12.3
     - source qt-5.12.3.env
     - source ./dist/linux/setup-qbs.sh
-    - git clone https://github.com/facebook/zstd.git
+    - git clone --depth 1 -b master https://github.com/facebook/zstd.git
     - cd zstd/lib
     - make
     - cd ../../

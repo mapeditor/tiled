@@ -41,9 +41,8 @@ build_script:
   - if defined TILED_RELEASE echo Building Tiled %TILED_VERSION%... (from %COMMITNOW%)
   - if defined TILED_SNAPSHOT set TILED_VERSION=%APPVEYOR_BUILD_VERSION%
   - if defined TILED_SNAPSHOT echo Building Tiled snapshot %TILED_VERSION%... (from %COMMITNOW%)
-  - git clone https://github.com/facebook/zstd.git
+  - git clone --depth 1 -b master https://github.com/facebook/zstd.git
   - cd zstd/lib
-  - git checkout 83b51e9f886be7c2a4d477b6e7bc6db831791d8d # 1.4.0
   - set CC=gcc
   - mingw32-make -j2
   - cd ../../
