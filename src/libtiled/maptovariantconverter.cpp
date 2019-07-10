@@ -446,7 +446,7 @@ QVariant MapToVariantConverter::toVariant(const TileLayer &tileLayer,
             tileLayerVariant[QLatin1String("compression")] = QLatin1String("gzip");
 
         break;
-	}
+    }
 
     tileLayerVariant[QLatin1String("outputchunkwidth")] = chunkSize.width();
     tileLayerVariant[QLatin1String("outputchunkheight")] = chunkSize.height();

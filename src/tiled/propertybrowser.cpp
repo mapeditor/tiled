@@ -599,8 +599,8 @@ void PropertyBrowser::addMapProperties()
 
     layerFormatProperty->setAttribute(QLatin1String("enumNames"), mLayerFormatNames);
 
-    QtVariantProperty *chunkWidthProperty = addProperty(ChunkWidthProperty, QVariant::Int, tr("Tile Layer Chunk Width"), groupProperty);
-    QtVariantProperty *chunkHeightProperty = addProperty(ChunkHeightProperty, QVariant::Int, tr("Tile Layer Chunk Height"), groupProperty);
+    QtVariantProperty *chunkWidthProperty = addProperty(ChunkWidthProperty, QVariant::Int, tr("Output Chunk Width"), groupProperty);
+    QtVariantProperty *chunkHeightProperty = addProperty(ChunkHeightProperty, QVariant::Int, tr("Output Chunk Height"), groupProperty);
 
     chunkWidthProperty->setAttribute(QLatin1String("minimum"), CHUNK_SIZE_MIN);
     chunkHeightProperty->setAttribute(QLatin1String("minimum"), CHUNK_SIZE_MIN);

@@ -541,20 +541,11 @@ std::unique_ptr<TileLayer> VariantToMapConverter::toTileLayer(const QVariantMap 
     }
     mMap->setLayerDataFormat(layerDataFormat);
 
-    int chunkWidth = CHUNK_SIZE;
-    int chunkHeight = CHUNK_SIZE;
+    int chunkWidth = variantMap[QLatin1String("outputchunkwidth")].toInt();
+    int chunkHeight = variantMap[QLatin1String("outputchunkheight")].toInt();
 
-    const QString chunkWidthVariant = variantMap[QLatin1String("outputchunkwidth")].toString();
-    const QString chunkHeightVariant = variantMap[QLatin1String("outputchunkheight")].toString();
-
-    if (!chunkWidthVariant.isEmpty())
-        chunkWidth = chunkWidthVariant.toInt();
-    if (!chunkHeightVariant.isEmpty())
-        chunkHeight = chunkHeightVariant.toInt();
-
-    // Input validation
-    chunkWidth = (chunkWidth == 0 ? CHUNK_SIZE : qMax(CHUNK_SIZE_MIN, chunkWidth));
-    chunkHeight = (chunkHeight == 0 ? CHUNK_SIZE : qMax(CHUNK_SIZE_MIN, chunkHeight));
+    chunkWidth = chunkWidth == 0 ? CHUNK_SIZE : qMax(CHUNK_SIZE_MIN, chunkWidth);
+    chunkHeight = chunkHeight == 0 ? CHUNK_SIZE : qMax(CHUNK_SIZE_MIN, chunkHeight);
 
     mMap->setChunkSize(QSize(chunkWidth, chunkHeight));
 

@@ -65,10 +65,10 @@ public:
     ChangeMapProperty(MapDocument *mapDocument, const QColor &backgroundColor);
     
     /**
-     * Constructs a command that changes the tile layer chunk size.
+     * Constructs a command that changes the chunk size.
      *
      * @param mapDocument       the map document of the map
-     * @param backgroundColor   the new chunk size to use for tile layers
+     * @param chunkSize         the new chunk size to use for tile layers
      */
     ChangeMapProperty(MapDocument *mapDocument, QSize chunkSize);
 

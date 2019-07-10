@@ -762,16 +762,16 @@ static bool compareRectPos(const QRect &a, const QRect &b)
  * This function is used to determine the chunks to write when saving a tile
  * layer.
  */
-QVector<QRect> TileLayer::sortedChunksToWrite(const QSize& chunkSize) const
+QVector<QRect> TileLayer::sortedChunksToWrite(QSize chunkSize) const
 {
     QVector<QRect> chunksToWrite;
     QSet<QPoint> existingChunks;
 
-    bool isNativeChunkSize = (chunkSize.width() == CHUNK_SIZE && chunkSize.height() == CHUNK_SIZE);
+    bool isNativeChunkSize = (chunkSize.width() == CHUNK_SIZE &&
+                              chunkSize.height() == CHUNK_SIZE);
 
-    if (isNativeChunkSize) {
+    if (isNativeChunkSize)
         chunksToWrite.reserve(mChunks.size());
-    }
 
     QHashIterator<QPoint, Chunk> it(mChunks);
     while (it.hasNext()) {
@@ -779,21 +779,24 @@ QVector<QRect> TileLayer::sortedChunksToWrite(const QSize& chunkSize) const
         if (!it.value().isEmpty()) {
             const QPoint& p = it.key();
             if (isNativeChunkSize) {
-                // If the desired chunk size is equal to our native chunk size, then easy peasy.
-                // We just have to iterate our chunk list and return the bounds of each chunk.
+                // If the desired chunk size is equal to our native chunk size,
+                // then we just we just have to iterate our chunk list and
+                // return the bounds of each chunk.
                 chunksToWrite.append(QRect(p.x() * CHUNK_SIZE,
-                    p.y() * CHUNK_SIZE,
-                    CHUNK_SIZE, CHUNK_SIZE));
-            }
-            else {
-                // If the desired chunk size is not the native size, we have to do a bit of extra
-                // work and "rearrange" chunks as we iterate our list. We do this by iterating every
-                // cell in a chunk. If it's not empty, we check what chunk it should go into with the
-                // new chunk size. If that chunk doesn't exist yet, we create it.
-                // NOTE: Rather than checking every cell in every chunk, we could also just test which
-                // "new" chunks our "old" chunk would intersect with and return all of those, this would
-                // be faster. However, that way we could end up with completely empty chunks, so we'll
-                // take the slower route and iterate all cells instead to avoid that.
+                                           p.y() * CHUNK_SIZE,
+                                           CHUNK_SIZE, CHUNK_SIZE));
+            } else {
+                // If the desired chunk size is not the native size, we have to
+                // do a bit of extra work and "rearrange" chunks as we iterate
+                // our list. We do this by iterating every cell in a chunk. If
+                // it's not empty, we check what chunk it should go into with
+                // the new chunk size. If that chunk doesn't exist yet, we
+                // create it. NOTE: Rather than checking every cell in every
+                // chunk, we could also just test which "new" chunks our "old"
+                // chunk would intersect with and return all of those, this
+                // would be faster. However, that way we could end up with
+                // completely empty chunks, so we'll take the slower route and
+                // iterate all cells instead to avoid that.
                 const Chunk& chunk = it.value();
                 int oldChunkStartX = p.x() * CHUNK_SIZE;
                 int oldChunkStartY = p.y() * CHUNK_SIZE;

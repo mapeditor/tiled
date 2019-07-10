@@ -482,7 +482,7 @@ void LuaWriter::writeTileLayer(LuaTableWriter &writer,
 
         break;
     }
-	}
+    }
 
     writer.writeKeyAndValue("outputchunkwidth", chunkSize.width());
     writer.writeKeyAndValue("outputchunkheight", chunkSize.height());

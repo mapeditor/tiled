@@ -589,7 +589,7 @@ void MapWriterPrivate::writeTileLayer(QXmlStreamWriter &w,
         w.writeAttribute(QLatin1String("encoding"), encoding);
     if (!compression.isEmpty())
         w.writeAttribute(QLatin1String("compression"), compression);
-	
+
     w.writeAttribute(QLatin1String("outputchunkwidth"), QString::number(mChunkSize.width()));
     w.writeAttribute(QLatin1String("outputchunkheight"), QString::number(mChunkSize.height()));
 

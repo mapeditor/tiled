@@ -416,12 +416,12 @@ public:
     void setBackgroundColor(QColor color) { mBackgroundColor = color; }
 
     /**
-     * Returns the chunk size of tile layers in this map.
+     * Returns the chunk size used when saving tile layers of this map.
      */
     QSize chunkSize() const { return mChunkSize; }
     
     /**
-     * Sets the chunk size of tile layers in this map.
+     * Sets the chunk size used when saving tile layers of this map.
      */
     void setChunkSize(QSize size) { mChunkSize = size; }
     

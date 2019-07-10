@@ -71,7 +71,7 @@ ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
 ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
                                      QSize chunkSize)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
-                                               "Change Tile Layer Chunk Size"))
+                                               "Change Chunk Size"))
     , mMapDocument(mapDocument)
     , mProperty(ChunkSize)
     , mChunkSize(chunkSize)
