@@ -51,6 +51,7 @@ Map::Map(Orientation orientation,
     Object(MapType),
     mOrientation(orientation),
     mRenderOrder(RightDown),
+    mCompressionLevel(-1),
     mWidth(width),
     mHeight(height),
     mTileWidth(tileWidth),
@@ -460,6 +461,23 @@ Map::Orientation Tiled::orientationFromString(const QString &string)
         orientation = Map::Hexagonal;
     }
     return orientation;
+}
+
+QString Tiled::compressionToString(Map::LayerDataFormat layerDataFormat)
+{
+    switch (layerDataFormat) {
+    case Map::XML:
+    case Map::Base64:
+    case Map::CSV:
+        return QString();
+    case Map::Base64Gzip:
+        return QLatin1String("gzip");
+    case Map::Base64Zlib:
+        return QLatin1String("zlib");
+    case Map::Base64Zstandard:
+        return QLatin1String("zstd");
+    }
+    return QString();
 }
 
 QString Tiled::renderOrderToString(Map::RenderOrder renderOrder)

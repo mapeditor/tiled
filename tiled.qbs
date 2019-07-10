@@ -13,6 +13,7 @@ Project {
     property bool installHeaders: false
     property bool useRPaths: true
     property bool windowsInstaller: false
+    property bool enableZstd: false
 
     references: [
         "dist/archive.qbs",

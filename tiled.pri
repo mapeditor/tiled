@@ -26,6 +26,11 @@ CONFIG += depend_includepath c++14
     DEFINES += TILED_PLUGIN_DIR=\\\"$${LIBDIR}/tiled/plugins/\\\"
 }
 
+tiled_zstd {
+    LIBS += -lzstd
+    DEFINES += TILED_ZSTD_SUPPORT
+}
+
 # Taken from Qt Creator project files
 defineTest(minQtVersion) {
     maj = $$1

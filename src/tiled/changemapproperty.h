@@ -43,6 +43,7 @@ public:
         RenderOrder,
         BackgroundColor,
         LayerDataFormat,
+        CompressionLevel,
         ChunkSize
     };
 

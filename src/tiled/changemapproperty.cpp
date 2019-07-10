@@ -204,6 +204,12 @@ void ChangeMapProperty::swap()
         mLayerDataFormat = layerDataFormat;
         break;
     }
+    case CompressionLevel: {
+        const int compressionLevel = map->compressionLevel();
+        map->setCompressionLevel(mIntValue);
+        mIntValue = compressionLevel;
+        break;
+    }
     case ChunkSize: {
         const QSize chunkSize = map->chunkSize();
         map->setChunkSize(mChunkSize);

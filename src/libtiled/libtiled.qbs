@@ -11,19 +11,41 @@ DynamicLibrary {
         cpp.dynamicLibraries: base.concat(["z"])
     }
 
+    Properties {
+        condition: qbs.toolchain.contains("mingw") && project.enableZstd
+        cpp.staticLibraries: ["libzstd"]
+        cpp.libraryPaths: ["../../zstd/lib/dll"]
+    }
+
     cpp.cxxLanguageVersion: "c++14"
     cpp.visibility: "minimal"
-    cpp.defines: [
-        "TILED_LIBRARY",
-        "QT_NO_CAST_FROM_ASCII",
-        "QT_NO_CAST_TO_ASCII",
-        "QT_NO_URL_CAST_FROM_STRING",
-        "_USE_MATH_DEFINES"
-    ]
+    cpp.defines: {
+        var defs = [
+            "TILED_LIBRARY",
+            "QT_NO_CAST_FROM_ASCII",
+            "QT_NO_CAST_TO_ASCII",
+            "QT_NO_URL_CAST_FROM_STRING",
+            "_USE_MATH_DEFINES",
+            "TILED_ZSTD_SUPPORT"
+        ]
+
+        if (project.enableZstd)
+            defs.push("TILED_ZSTD_SUPPORT");
+
+        return defs;
+    }
+
+    cpp.includePaths: [ "../../zstd/lib" ]
 
     Properties {
         condition: qbs.targetOS.contains("macos")
         cpp.cxxFlags: ["-Wno-unknown-pragmas"]
+    }
+
+    Properties {
+        condition: qbs.targetOS.contains("macos") && project.enableZstd
+        cpp.staticLibraries: ["zstd"]
+        cpp.libraryPaths: ["../../zstd/lib"]
     }
 
     Properties {
@@ -134,7 +156,10 @@ DynamicLibrary {
             submodules: ["gui"]
         }
 
-        cpp.includePaths: "."
+        cpp.includePaths: [
+            ".",
+            "../../zstd/lib"
+        ]
     }
 
     Group {
