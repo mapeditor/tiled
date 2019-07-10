@@ -36,7 +36,6 @@
 #include "mapreader.h"
 #include "objectgroup.h"
 #include "orthogonalrenderer.h"
-#include "pluginmanager.h"
 #include "staggeredrenderer.h"
 #include "tilelayer.h"
 #include "worldmanager.h"
@@ -118,8 +117,6 @@ bool TmxRasterizer::shouldDrawLayer(const Layer *layer) const
 int TmxRasterizer::render(const QString &fileName,
                           const QString &imageFileName)
 {
-    PluginManager::instance()->loadPlugins();
-
     if (fileName.endsWith(".world", Qt::CaseInsensitive))
         return renderWorld(fileName, imageFileName);
     else
@@ -129,7 +126,6 @@ int TmxRasterizer::render(const QString &fileName,
 int TmxRasterizer::renderMap(const QString &mapFileName,
                              const QString &imageFileName)
 {
-    MapReader reader;
     QString errorString;
     std::unique_ptr<Map> map { readMap(mapFileName, &errorString) };
     if (!map) {
@@ -218,7 +214,6 @@ int TmxRasterizer::renderWorld(const QString &worldFileName,
         return 1;
     }
     QRect worldBoundingRect;
-    MapReader reader;
     for (const World::MapEntry &mapEntry : maps) {
         std::unique_ptr<Map> map { readMap(mapEntry.fileName, &errorString) };
         if (!map) {
@@ -257,7 +252,6 @@ int TmxRasterizer::renderWorld(const QString &worldFileName,
     painter.translate(-worldBoundingRect.topLeft());
 
     for (const World::MapEntry &mapEntry : maps) {
-        MapReader reader;
         std::unique_ptr<Map> map { readMap(mapEntry.fileName, &errorString) };
         if (!map) {
             qWarning("Error while reading \"%s\":\n%s",
