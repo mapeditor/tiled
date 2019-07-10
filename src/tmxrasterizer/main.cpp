@@ -26,6 +26,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include "pluginmanager.h"
 #include "tmxrasterizer.h"
 
 #include <QCommandLineParser>
@@ -48,8 +49,10 @@ int main(int argc, char *argv[])
     app.setApplicationName(QLatin1String("TmxRasterizer"));
     app.setApplicationVersion(QLatin1String("1.0"));
 
+    PluginManager::instance()->loadPlugins();
+
     QCommandLineParser parser;
-    parser.setApplicationDescription(QCoreApplication::translate("main", "Renders a Tiled map (TMX format) or a World map (WORLD format) to an image."));
+    parser.setApplicationDescription(QCoreApplication::translate("main", "Renders a Tiled map or world to an image."));
     parser.addHelpOption();
     parser.addVersionOption();
     parser.addOptions({
@@ -72,7 +75,7 @@ int main(int argc, char *argv[])
                             QCoreApplication::translate("main", "Specifies a layer to omit from the output image. Can be repeated to hide multiple layers."),
                             QCoreApplication::translate("main", "name") },
                       });
-    parser.addPositionalArgument("map", QCoreApplication::translate("main", "Map file to render."));
+    parser.addPositionalArgument("map|world", QCoreApplication::translate("main", "Map or world file to render."));
     parser.addPositionalArgument("image", QCoreApplication::translate("main", "Image file to output."));
     parser.process(app);
 
