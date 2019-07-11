@@ -106,9 +106,10 @@ private slots:
     void layerRemoved(Layer *layer);
 
 private:
-    MapDocument *mMapDocument;
+    MapDocument *mMapDocument = nullptr;
     QAbstractProxyModel *mProxyModel;
-    bool mUpdatingSelectedLayers;
+    bool mUpdatingSelectedLayers = false;
+    bool mUpdatingViewSelection = false;
 };
 
 } // namespace Tiled

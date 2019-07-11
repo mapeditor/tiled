@@ -171,7 +171,7 @@ void ObjectsView::mousePressEvent(QMouseEvent *event)
 
     } else if (Layer *layer = mapObjectModel()->toLayer(index)) {
         mMapDocument->setCurrentObject(layer);
-        mMapDocument->setCurrentLayer(layer);
+        mMapDocument->switchSelectedLayers({ layer });
     }
 
     QTreeView::mousePressEvent(event);

@@ -101,6 +101,9 @@ public:
 
     void showMessage(const QString &text, int timeout = 0);
 
+    void setCurrentTileset(const SharedTileset &tileset);
+    SharedTileset currentTileset() const;
+
 public slots:
     void setSelectedTool(AbstractTool *tool);
 

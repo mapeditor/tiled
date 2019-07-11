@@ -318,15 +318,11 @@ void EditableMap::setLayerDataFormat(Map::LayerDataFormat value)
 
 void EditableMap::setCurrentLayer(EditableLayer *layer)
 {
-    auto document = mapDocument();
-    if (!document)
-        return;
+    QList<QObject*> layers;
+    if (layer)
+        layers.append(layer);
 
-    document->setCurrentLayer(layer ? layer->layer() : nullptr);
-
-    // Automatically select the layer if it isn't already
-    if (layer && !document->selectedLayers().contains(layer->layer()))
-        document->setSelectedLayers({ layer->layer() });
+    setSelectedLayers(layers);
 }
 
 void EditableMap::setSelectedLayers(const QList<QObject *> &layers)
@@ -347,11 +343,7 @@ void EditableMap::setSelectedLayers(const QList<QObject *> &layers)
         plainLayers.append(editableLayer->layer());
     }
 
-    document->setSelectedLayers(plainLayers);
-
-    // Automatically make sure the current layer is one of the selected ones
-    if (!plainLayers.contains(document->currentLayer()))
-        document->setCurrentLayer(plainLayers.isEmpty() ? nullptr : plainLayers.first());
+    document->switchSelectedLayers(plainLayers);
 }
 
 void EditableMap::setSelectedObjects(const QList<QObject *> &objects)

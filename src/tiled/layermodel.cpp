@@ -410,7 +410,10 @@ void LayerModel::replaceLayer(Layer *layer, Layer *replacement)
     Q_ASSERT(layer->map() == mMapDocument->map());
     Q_ASSERT(!replacement->map());
 
-    auto currentLayer = mMapDocument->currentLayer();
+    auto selectedLayers = mMapDocument->selectedLayers();
+
+    const bool wasCurrentLayer = mMapDocument->currentLayer() == layer;
+    const int indexInSelectedLayers = selectedLayers.indexOf(layer);
 
     auto parentLayer = layer->parentLayer();
     auto index = layer->siblingIndex();
@@ -418,8 +421,13 @@ void LayerModel::replaceLayer(Layer *layer, Layer *replacement)
     takeLayerAt(parentLayer, index);
     insertLayer(parentLayer, index, replacement);
 
-    if (layer == currentLayer)
+    if (wasCurrentLayer)
         mMapDocument->setCurrentLayer(replacement);
+
+    if (indexInSelectedLayers != -1) {
+        selectedLayers.replace(indexInSelectedLayers, replacement);
+        mMapDocument->setSelectedLayers(selectedLayers);
+    }
 }
 
 void LayerModel::moveLayer(GroupLayer *parentLayer, int index, GroupLayer *toParentLayer, int toIndex)

@@ -237,7 +237,7 @@ void TemplatesDock::setTemplate(ObjectTemplate *objectTemplate)
 
             mDummyMapDocument = MapDocumentPtr::create(std::move(map));
             mDummyMapDocument->setAllowHidingObjects(false);
-            mDummyMapDocument->setCurrentLayer(objectGroup);
+            mDummyMapDocument->switchCurrentLayer(objectGroup);
 
             ourDummyDocuments.insert(objectTemplate, mDummyMapDocument);
         }

@@ -68,7 +68,7 @@ public:
      */
     TilesetDock(QWidget *parent = nullptr);
 
-    ~TilesetDock();
+    ~TilesetDock() override;
 
     /**
      * Sets the map for which the tilesets should be displayed.
@@ -79,6 +79,9 @@ public:
      * Returns the currently selected tile.
      */
     Tile *currentTile() const { return mCurrentTile; }
+
+    void setCurrentTileset(const SharedTileset &tileset);
+    SharedTileset currentTileset() const;
 
     void selectTilesInStamp(const TileStamp &);
 
@@ -146,7 +149,6 @@ private:
     void onTabMoved(int from, int to);
     void tabContextMenuRequested(const QPoint &pos);
 
-    Tileset *currentTileset() const;
     TilesetView *currentTilesetView() const;
     TilesetView *tilesetViewAt(int index) const;
 

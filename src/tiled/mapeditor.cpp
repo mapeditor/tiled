@@ -365,7 +365,7 @@ void MapEditor::addDocument(Document *document)
 
         int layerIndex = mapState.value(QLatin1String("selectedLayer")).toInt();
         if (Layer *layer = layerAtGlobalIndex(mapDocument->map(), layerIndex))
-            mapDocument->setCurrentLayer(layer);
+            mapDocument->switchCurrentLayer(layer);
     }
 }
 
@@ -800,7 +800,7 @@ void MapEditor::layerComboActivated()
     if (!layer)
         return;
 
-    mCurrentMapDocument->setCurrentLayer(layer);
+    mCurrentMapDocument->switchCurrentLayer(layer);
 }
 
 void MapEditor::updateLayerComboIndex()
@@ -958,6 +958,16 @@ void MapEditor::showTileCollisionShapesChanged(bool enabled)
 {
     for (auto mapView : qAsConst(mWidgetForMap))
         mapView->mapScene()->setShowTileCollisionShapes(enabled);
+}
+
+void MapEditor::setCurrentTileset(const SharedTileset &tileset)
+{
+    mTilesetDock->setCurrentTileset(tileset);
+}
+
+SharedTileset MapEditor::currentTileset() const
+{
+    return mTilesetDock->currentTileset();
 }
 
 } // namespace Tiled
