@@ -15,8 +15,12 @@
  </keywords>
  <content_rating type="oars-1.0" />
  <releases>
-  <release version="1.2.4" type="stable" date="2019-05-15" url="https://www.mapeditor.org/2019/05/15/tiled-1-2-4-released.html" />
-  <release version="2019.07.05" type="development" date="2019-07-05" url="https://thorbjorn.itch.io/tiled/devlog/89540/select-tile-layers-by-clicking-them" />
+  <release version="2019.07.05" type="development" date="2019-07-05">
+   <url>https://thorbjorn.itch.io/tiled/devlog/89540/select-tile-layers-by-clicking-them</url>
+  </release>
+  <release version="1.2.4" type="stable" date="2019-05-15">
+   <url>https://www.mapeditor.org/2019/05/15/tiled-1-2-4-released.html</url>
+  </release>
  </releases>
  <description>
   <p>
@@ -49,5 +53,6 @@
  <provides>
    <id>tiled.desktop</id>
  </provides>
+ <translation type="qt">tiled</translation>
  <update_contact>tingping@fedoraproject.org</update_contact>
 </component>
