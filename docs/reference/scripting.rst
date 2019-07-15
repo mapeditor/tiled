@@ -171,6 +171,12 @@ tiled.trigger(action : string) : void
 
     Actions that are checkable will toggle when triggered.
 
+.. _script-execute:
+
+tiled.executeCommand(name : string, inTerminal : bool) : bool
+    Executes the first custom command with the given name, as if it was
+    triggered manually. Works also with commands that are not currently enabled.
+
 tiled.alert(text : string [, title : string]) : void
     Shows a modal warning dialog to the user with the given text and
     optional title.

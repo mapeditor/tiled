@@ -21,6 +21,8 @@
 #include "scriptmodule.h"
 
 #include "actionmanager.h"
+#include "commanddatamodel.h"
+#include "commandmanager.h"
 #include "editableasset.h"
 #include "logginginterface.h"
 #include "scriptedaction.h"
@@ -279,6 +281,20 @@ void ScriptModule::trigger(const QByteArray &actionName) const
         action->trigger();
     else
         ScriptManager::instance().throwError(tr("Unknown action"));
+}
+
+void ScriptModule::executeCommand(const QString &name, bool inTerminal) const
+{
+    auto commandDataModel = CommandManager::instance()->commandDataModel();
+
+    for (const Command &command : commandDataModel->allCommands()) {
+        if (command.name == name) {
+            command.execute(inTerminal);
+            return;
+        }
+    }
+
+    ScriptManager::instance().throwError(tr("Unknown command"));
 }
 
 void ScriptModule::alert(const QString &text, const QString &title) const

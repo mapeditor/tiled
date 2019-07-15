@@ -36,7 +36,6 @@ class CommandManager : public QObject
     Q_OBJECT
 
 public:
-
     static CommandManager *instance();
 
     static void deleteInstance();
