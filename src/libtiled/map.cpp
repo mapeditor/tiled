@@ -191,11 +191,11 @@ void Map::addLayer(Layer *layer)
     mLayers.append(layer);
 }
 
-int Map::indexOfLayer(const QString &layerName, int layertypes) const
+int Map::indexOfLayer(const QString &layerName, int layerTypes) const
 {
     for (int index = 0; index < mLayers.size(); index++)
         if (layerAt(index)->name() == layerName
-                && (layertypes & layerAt(index)->layerType()))
+                && (layerTypes & layerAt(index)->layerType()))
             return index;
 
     return -1;

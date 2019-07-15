@@ -31,35 +31,35 @@ using namespace Tiled;
 using namespace Tiled::Internal;
 
 AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
-                                     QVector<AutoMapper*> autoMapper,
+                                     QVector<AutoMapper*> autoMappers,
                                      QRegion *where)
 {
     mMapDocument = mapDocument;
     Map *map = mMapDocument->map();
 
-    QSet<QString> touchedLayers;
+    QSet<QString> touchedTileLayers;
     int index = 0;
-    while (index < autoMapper.size()) {
-        AutoMapper *a = autoMapper.at(index);
+    while (index < autoMappers.size()) {
+        AutoMapper *a = autoMappers.at(index);
         if (a->prepareAutoMap()) {
-            touchedLayers |= a->touchedTileLayers();
+            touchedTileLayers |= a->touchedTileLayers();
             index++;
         } else {
-            autoMapper.remove(index);
+            autoMappers.remove(index);
         }
     }
-    for (const QString &layerName : qAsConst(touchedLayers)) {
-        const int layerIndex = map->indexOfLayer(layerName);
+    for (const QString &layerName : qAsConst(touchedTileLayers)) {
+        const int layerIndex = map->indexOfLayer(layerName, Layer::TileLayerType);
         Q_ASSERT(layerIndex != -1);
         mLayersBefore.append(static_cast<TileLayer*>(map->layerAt(layerIndex)->clone()));
     }
 
-    for (AutoMapper *a : autoMapper)
+    for (AutoMapper *a : autoMappers)
         a->autoMap(where);
 
     int beforeIndex = 0;
-    for (const QString &layerName : qAsConst(touchedLayers)) {
-        const int layerIndex = map->indexOfLayer(layerName);
+    for (const QString &layerName : qAsConst(touchedTileLayers)) {
+        const int layerIndex = map->indexOfLayer(layerName, Layer::TileLayerType);
         // layer index exists, because AutoMapper is still alive, don't check
         Q_ASSERT(layerIndex != -1);
         TileLayer *before = mLayersBefore.at(beforeIndex);
@@ -91,7 +91,7 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
         ++beforeIndex;
     }
 
-    for (AutoMapper *a : autoMapper)
+    for (AutoMapper *a : autoMappers)
         a->cleanAll();
 }
 
@@ -105,7 +105,7 @@ void AutoMapperWrapper::undo()
 {
     Map *map = mMapDocument->map();
     for (TileLayer *layer : mLayersBefore) {
-        const int layerIndex = map->indexOfLayer(layer->name());
+        const int layerIndex = map->indexOfLayer(layer->name(), Layer::TileLayerType);
         if (layerIndex != -1)
             patchLayer(layerIndex, layer);
     }
@@ -115,7 +115,7 @@ void AutoMapperWrapper::redo()
 {
     Map *map = mMapDocument->map();
     for (TileLayer *layer : mLayersAfter) {
-        const int layerIndex = map->indexOfLayer(layer->name());
+        const int layerIndex = map->indexOfLayer(layer->name(), Layer::TileLayerType);
         if (layerIndex != -1)
             patchLayer(layerIndex, layer);
     }
