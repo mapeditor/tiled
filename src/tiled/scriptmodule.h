@@ -85,6 +85,10 @@ public:
 
     QList<QObject*> openAssets() const;
 
+    Q_INVOKABLE Tiled::EditableAsset *open(const QString &fileName) const;
+    Q_INVOKABLE bool close(Tiled::EditableAsset *asset) const;
+    Q_INVOKABLE Tiled::EditableAsset *reload(Tiled::EditableAsset *asset) const;
+
     Q_INVOKABLE Tiled::ScriptedAction *registerAction(const QByteArray &id, QJSValue callback);
     Q_INVOKABLE void registerMapFormat(const QString &shortName, QJSValue mapFormatObject);
     Q_INVOKABLE QJSValue registerTool(const QString &shortName, QJSValue toolObject);

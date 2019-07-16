@@ -709,7 +709,7 @@ bool DocumentManager::reloadCurrentDocument()
  * history and current selections. Will not ask the user whether to save
  * any changes!
  *
- * Returns whether the map loaded successfully.
+ * Returns whether the document loaded successfully.
  */
 bool DocumentManager::reloadDocumentAt(int index)
 {

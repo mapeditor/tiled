@@ -216,6 +216,7 @@ void TilesetDocument::swapTileset(SharedTileset &tileset)
     // Bring pointers to safety
     setSelectedTiles(QList<Tile*>());
     setCurrentObject(mTileset.data());
+    mEditable.reset();
 
     sTilesetToDocument.remove(mTileset);
     mTileset->swap(*tileset);

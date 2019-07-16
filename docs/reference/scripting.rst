@@ -177,6 +177,26 @@ tiled.executeCommand(name : string, inTerminal : bool) : bool
     Executes the first custom command with the given name, as if it was
     triggered manually. Works also with commands that are not currently enabled.
 
+.. _script-open:
+
+tiled.open(fileName : string) : :ref:`script-asset`
+    Requests to open the asset with the given file name. Returns a reference to
+    the opened asset, or ``null`` in case there was a problem.
+
+.. _script-close:
+
+tiled.close(asset : :ref:`script-asset`) : bool
+    Closes the given asset without checking for unsaved changes (to confirm the
+    loss of any unsaved changes, set ``activeAsset`` and trigger the "Close"
+    action instead).
+
+.. _script-reload:
+
+tiled.reload(asset : :ref:`script-asset`) : :ref:`script-asset`
+    Reloads the given asset from disk, without checking for unsaved changes.
+    This invalidates the previous script reference to the asset, hence the new
+    reference is returned for convenience. Returns ``null`` if reloading failed.
+
 tiled.alert(text : string [, title : string]) : void
     Shows a modal warning dialog to the user with the given text and
     optional title.
