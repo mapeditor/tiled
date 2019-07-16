@@ -248,8 +248,7 @@ int DocumentManager::findDocument(const QString &fileName) const
         return -1;
 
     for (int i = 0; i < mDocuments.size(); ++i) {
-        QFileInfo fileInfo(mDocuments.at(i)->fileName());
-        if (fileInfo.canonicalFilePath() == canonicalFilePath)
+        if (mDocuments.at(i)->canonicalFilePath() == canonicalFilePath)
             return i;
     }
 
@@ -431,19 +430,10 @@ DocumentPtr DocumentManager::loadDocument(const QString &fileName,
                                           FileFormat *fileFormat,
                                           QString *error)
 {
-    // Return existing document if this file is already open
-    int documentIndex = findDocument(fileName);
-    if (documentIndex != -1)
-        return mDocuments.at(documentIndex);
-
-    // Try to find it in otherwise referenced documents
+    // Try to find it in already loaded documents
     QString canonicalFilePath = QFileInfo(fileName).canonicalFilePath();
-    if (!canonicalFilePath.isEmpty()) {
-        Document *doc = Document::documentInstances().value(canonicalFilePath);
-        if (doc) {
-            return doc->sharedFromThis();
-        }
-    }
+    if (Document *doc = Document::documentInstances().value(canonicalFilePath))
+        return doc->sharedFromThis();
 
     if (!fileFormat) {
         // Try to find a plugin that implements support for this format

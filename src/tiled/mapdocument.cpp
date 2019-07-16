@@ -201,7 +201,7 @@ void MapDocument::setExportFormat(FileFormat *format)
  */
 QString MapDocument::displayName() const
 {
-    QString displayName = QFileInfo(mFileName).fileName();
+    QString displayName = QFileInfo(fileName()).fileName();
     if (displayName.isEmpty())
         displayName = tr("untitled.tmx");
 

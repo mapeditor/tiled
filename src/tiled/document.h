@@ -67,6 +67,7 @@ public:
     DocumentType type() const { return mType; }
 
     QString fileName() const;
+    QString canonicalFilePath() const;
 
     /**
      * Returns the name with which to display this document. It is the file name
@@ -142,20 +143,23 @@ signals:
 protected:
     void setFileName(const QString &fileName);
 
-    DocumentType mType;
-    QString mFileName;
     QDateTime mLastSaved;
 
-    Object *mCurrentObject;             /**< Current properties object. */
-
-    bool mChangedOnDisk;
-    bool mIgnoreBrokenLinks;
+    Object *mCurrentObject = nullptr;   /**< Current properties object. */
 
     QString mLastExportFileName;
 
     std::unique_ptr<EditableAsset> mEditable;
 
 private:
+    const DocumentType mType;
+
+    QString mFileName;
+    QString mCanonicalFilePath;
+
+    bool mChangedOnDisk = false;
+    bool mIgnoreBrokenLinks = false;
+
     static QHash<QString, Document*> sDocumentInstances;
 };
 
@@ -163,6 +167,11 @@ private:
 inline QString Document::fileName() const
 {
     return mFileName;
+}
+
+inline QString Document::canonicalFilePath() const
+{
+    return mCanonicalFilePath;
 }
 
 inline bool Document::ignoreBrokenLinks() const
