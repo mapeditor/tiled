@@ -79,6 +79,11 @@ ConsoleDock::ConsoleDock(QWidget *parent)
     QSettings *settings = Preferences::instance()->settings();
     mHistory = settings->value(QStringLiteral("Console/History")).toStringList();
     mHistoryPosition = mHistory.size();
+
+    connect(this, &QDockWidget::visibilityChanged, this, [this](bool visible) {
+        if (visible)
+            mLineEdit->setFocus();
+    });
 }
 
 ConsoleDock::~ConsoleDock()
