@@ -29,7 +29,7 @@
 
 namespace Tiled {
 
-QList<Document*> Document::sDocumentInstances;
+QHash<QString, Document*> Document::sDocumentInstances;
 
 Document::Document(DocumentType type, const QString &fileName,
                    QObject *parent)
@@ -40,12 +40,18 @@ Document::Document(DocumentType type, const QString &fileName,
     , mChangedOnDisk(false)
     , mIgnoreBrokenLinks(false)
 {
-    sDocumentInstances.append(this);
+    QString canonicalFilePath = QFileInfo(mFileName).canonicalFilePath();
+    if (!canonicalFilePath.isEmpty()) {
+        sDocumentInstances.insert(canonicalFilePath, this);
+    }
 }
 
 Document::~Document()
 {
-    sDocumentInstances.removeOne(this);
+    QString canonicalPath = QFileInfo(mFileName).canonicalFilePath();
+    if (!canonicalPath.isEmpty()) {
+        sDocumentInstances.remove(canonicalPath);
+    }
 }
 
 /**
@@ -63,6 +69,16 @@ void Document::setFileName(const QString &fileName)
         return;
 
     QString oldFileName = mFileName;
+
+    QString canonicalFilePathOld = QFileInfo(oldFileName).canonicalFilePath();
+    if (!canonicalFilePathOld.isEmpty()) {
+        sDocumentInstances.remove(canonicalFilePathOld);
+    }
+    QString canonicalFilePath = QFileInfo(fileName).canonicalFilePath();
+    if (!canonicalFilePath.isEmpty()) {
+        sDocumentInstances.insert(canonicalFilePath, this);
+    }
+
     mFileName = fileName;
     emit fileNameChanged(fileName, oldFileName);
 }

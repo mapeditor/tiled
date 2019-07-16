@@ -116,7 +116,7 @@ public:
     virtual FileFormat *exportFormat() const = 0;
     virtual void setExportFormat(FileFormat *format) = 0;
 
-    static const QList<Document*> &documentInstances();
+    static const QHash<QString, Document *> &documentInstances();
 
 signals:
     void changed(const ChangeEvent &change);
@@ -156,7 +156,7 @@ protected:
     std::unique_ptr<EditableAsset> mEditable;
 
 private:
-    static QList<Document*> sDocumentInstances;
+    static QHash<QString, Document*> sDocumentInstances;
 };
 
 
@@ -185,7 +185,7 @@ inline void Document::setLastExportFileName(const QString &fileName)
     mLastExportFileName = fileName;
 }
 
-inline const QList<Document *> &Document::documentInstances()
+inline const QHash<QString, Document *> &Document::documentInstances()
 {
     return sDocumentInstances;
 }
