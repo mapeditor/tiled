@@ -31,6 +31,23 @@ class EditableMap;
 class EditableObjectGroup;
 class EditableTile;
 
+class Font : public QFont
+{
+    Q_GADGET
+
+    Q_PROPERTY(QString family READ family WRITE setFamily)
+    Q_PROPERTY(int pixelSize READ pixelSize WRITE setPixelSize)
+    Q_PROPERTY(bool bold READ bold WRITE setBold)
+    Q_PROPERTY(bool italic READ italic WRITE setItalic)
+    Q_PROPERTY(bool underline READ underline WRITE setUnderline)
+    Q_PROPERTY(bool strikeOut READ strikeOut WRITE setStrikeOut)
+    Q_PROPERTY(bool kerning READ kerning WRITE setKerning)
+
+public:
+    Font() = default;
+    Font(const QFont &font) : QFont(font) {}
+};
+
 class EditableMapObject : public EditableObject
 {
     Q_OBJECT
@@ -48,7 +65,11 @@ class EditableMapObject : public EditableObject
     Q_PROPERTY(qreal rotation READ rotation WRITE setRotation)
     Q_PROPERTY(bool visible READ isVisible WRITE setVisible)
     Q_PROPERTY(QJSValue polygon READ polygon WRITE setPolygon)
-//    Q_PROPERTY(TextData mTextData)
+    Q_PROPERTY(QString text READ text WRITE setText)
+    Q_PROPERTY(Tiled::Font font READ font WRITE setFont)
+    Q_PROPERTY(Qt::Alignment textAlignment READ textAlignment WRITE setTextAlignment)
+    Q_PROPERTY(bool wordWrap READ wordWrap WRITE setWordWrap)
+    Q_PROPERTY(QColor textColor READ textColor WRITE setTextColor)
     Q_PROPERTY(Tiled::EditableTile *tile READ tile WRITE setTile)
     Q_PROPERTY(bool tileFlippedHorizontally READ tileFlippedHorizontally WRITE setTileFlippedHorizontally)
     Q_PROPERTY(bool tileFlippedVertically READ tileFlippedVertically WRITE setTileFlippedVertically)
@@ -96,6 +117,11 @@ public:
     qreal rotation() const;
     bool isVisible() const;
     QJSValue polygon() const;
+    QString text() const;
+    Font font() const;
+    Qt::Alignment textAlignment() const;
+    bool wordWrap() const;
+    QColor textColor() const;
     EditableTile *tile() const;
     bool tileFlippedHorizontally() const;
     bool tileFlippedVertically() const;
@@ -123,6 +149,11 @@ public slots:
     void setRotation(qreal rotation);
     void setVisible(bool visible);
     void setPolygon(QJSValue polygon);
+    void setText(const QString &text);
+    void setFont(const Font &font);
+    void setTextAlignment(Qt::Alignment textAlignment);
+    void setWordWrap(bool wordWrap);
+    void setTextColor(const QColor &textColor);
     void setTile(EditableTile *tile);
     void setTileFlippedHorizontally(bool tileFlippedHorizontally);
     void setTileFlippedVertically(bool tileFlippedVertically);
@@ -195,6 +226,31 @@ inline bool EditableMapObject::isVisible() const
     return mapObject()->isVisible();
 }
 
+inline QString EditableMapObject::text() const
+{
+    return mapObject()->textData().text;
+}
+
+inline Font EditableMapObject::font() const
+{
+    return mapObject()->textData().font;
+}
+
+inline Qt::Alignment EditableMapObject::textAlignment() const
+{
+    return mapObject()->textData().alignment;
+}
+
+inline bool EditableMapObject::wordWrap() const
+{
+    return mapObject()->textData().wordWrap;
+}
+
+inline QColor EditableMapObject::textColor() const
+{
+    return mapObject()->textData().color;
+}
+
 inline bool EditableMapObject::tileFlippedHorizontally() const
 {
     return mapObject()->cell().flippedHorizontally();
@@ -231,3 +287,5 @@ inline void EditableMapObject::setHeight(qreal height)
 }
 
 } // namespace Tiled
+
+Q_DECLARE_METATYPE(Tiled::Font)

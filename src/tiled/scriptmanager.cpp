@@ -85,6 +85,7 @@ ScriptManager::ScriptManager(QObject *parent)
     qRegisterMetaType<EditableTile*>();
     qRegisterMetaType<EditableTileLayer*>();
     qRegisterMetaType<EditableTileset*>();
+    qRegisterMetaType<Font>();
     qRegisterMetaType<RegionValueType>();
     qRegisterMetaType<ScriptedAction*>();
     qRegisterMetaType<ScriptedTool*>();

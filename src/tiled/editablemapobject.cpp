@@ -224,6 +224,31 @@ void EditableMapObject::setPolygon(QJSValue polygonValue)
     }
 }
 
+void EditableMapObject::setText(const QString &text)
+{
+    setMapObjectProperty(MapObject::TextProperty, text);
+}
+
+void EditableMapObject::setFont(const Font &font)
+{
+    setMapObjectProperty(MapObject::TextFontProperty, QVariant::fromValue<QFont>(font));
+}
+
+void EditableMapObject::setTextAlignment(Qt::Alignment textAlignment)
+{
+    setMapObjectProperty(MapObject::TextAlignmentProperty, QVariant::fromValue(textAlignment));
+}
+
+void EditableMapObject::setWordWrap(bool wordWrap)
+{
+    setMapObjectProperty(MapObject::TextWordWrapProperty, wordWrap);
+}
+
+void EditableMapObject::setTextColor(const QColor &textColor)
+{
+    setMapObjectProperty(MapObject::TextColorProperty, textColor);
+}
+
 void EditableMapObject::setTile(EditableTile *tile)
 {
     if (asset()) {

@@ -842,6 +842,11 @@ Properties
     **rotation** : number, Rotation of the object in degrees clockwise.
     **visible** : bool, Whether the object is visible.
     **polygon** : :ref:`Polygon <script-polygon>`, Polygon of the object.
+    **text** : string, The text of a text object.
+    **font** : :ref:`script-font`, The font of a text object.
+    **textAlignment** : :ref:`script-alignment`, The alignment of a text object.
+    **wordWrap** : bool, Whether the text of a text object wraps based on the width of the object.
+    **textColor** : color, Color of a text object.
     **tile** : :ref:`script-tile`, Tile of the object.
     **tileFlippedHorizontally** : bool, Whether the tile is flipped horizontally.
     **tileFlippedVertically** : bool, Whether the tile is flipped vertically.
@@ -1097,9 +1102,56 @@ Action.toggle() : void
 Basic Types
 ^^^^^^^^^^^
 
-Some types are provided by the Qt Scripting Engine. In the following the most important
+Some types are provided by the Qt Scripting Engine and others are added based
+on the needs of the data types above. In the following the most important
 ones are documented.
 
+.. _script-alignment:
+
+Alignment
+~~~~~~~~~
+
+.. csv-table::
+    :header: "Qt.Alignment"
+    :widths: 1, 2
+
+    Qt.AlignLeft, 0x0001
+    Qt.AlignRight, 0x0002
+    Qt.AlignHCenter, 0x0004
+    Qt.AlignJustify, 0x0008
+    Qt.AlignTop, 0x0020
+    Qt.AlignBottom, 0x0040
+    Qt.AlignVCenter, 0x0080
+    Qt.AlignCenter, Qt.AlignVCenter | Qt.AlignHCenter
+
+.. _script-font:
+
+Font
+~~~~
+
+.. csv-table::
+    :widths: 1, 2
+
+    **family** : string, The font family.
+    **pixelSize** : int, Font size in pixels.
+    **bold** : bool, Whether the font is bold.
+    **italic** : bool, Whether the font is italic.
+    **underline** : bool, Whether the text is underlined.
+    **strikeOut** : bool, Whether the text is striked through.
+    **kerning** : bool, Whether to use kerning when rendering the text.
+
+.. _script-frames:
+
+Frames
+~~~~~~
+
+An array of frames, which are objects with the following properties:
+
+.. csv-table::
+    :widths: 1, 2
+
+    **tileId** : int, The local tile ID used to represent the frame.
+    **duration** : int, Duration of the frame in milliseconds.
 
 .. _script-rect:
 
@@ -1170,16 +1222,3 @@ An object specifying the terrain for each corner of a tile:
     **topRight** : :ref:`script-terrain`
     **bottomLeft** : :ref:`script-terrain`
     **bottomRight** : :ref:`script-terrain`
-
-.. _script-frames:
-
-Frames
-~~~~~~
-
-An array of frames, which are objects with the following properties:
-
-.. csv-table::
-    :widths: 1, 2
-
-    **tileId** : int, The local tile ID used to represent the frame.
-    **duration** : int, Duration of the frame in milliseconds.
