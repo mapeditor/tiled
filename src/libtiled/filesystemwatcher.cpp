@@ -100,13 +100,6 @@ void FileSystemWatcher::clear()
 
 void FileSystemWatcher::onFileChanged(const QString &path)
 {
-    // If the file was replaced, the watcher is automatically removed and needs
-    // to be re-added to keep watching it for changes. This happens commonly
-    // with applications that do atomic saving.
-    if (!mWatcher->files().contains(path))
-        if (QFile::exists(path))
-            mWatcher->addPath(path);
-
     mChangedFiles.insert(path);
     mChangedFilesTimer.start();
 
@@ -120,7 +113,19 @@ void FileSystemWatcher::onDirectoryChanged(const QString &path)
 
 void FileSystemWatcher::filesChangedTimeout()
 {
-    emit filesChanged(mChangedFiles.toList());
+    const auto changedFiles = mChangedFiles.toList();
+
+    // If the file was replaced, the watcher is automatically removed and needs
+    // to be re-added to keep watching it for changes. This happens commonly
+    // with applications that do atomic saving.
+    for (const QString &path : changedFiles) {
+        if (mWatchCount.contains(path) && !mWatcher->files().contains(path)) {
+            if (QFile::exists(path))
+                mWatcher->addPath(path);
+        }
+    }
+
+    emit filesChanged(changedFiles);
     mChangedFiles.clear();
 }
 
