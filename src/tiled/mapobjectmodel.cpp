@@ -376,6 +376,10 @@ void MapObjectModel::setMapDocument(MapDocument *mapDocument)
 void MapObjectModel::layerAdded(Layer *layer)
 {
     if (layer->isObjectGroup() || layer->isGroupLayer()) {
+        auto &filtered = filteredChildLayers(layer->parentLayer());
+        if (filtered.contains(layer))
+            return;
+
         const auto &siblings = layer->siblings();
 
         Layer *prev = nullptr;
@@ -387,7 +391,6 @@ void MapObjectModel::layerAdded(Layer *layer)
             }
         }
 
-        auto &filtered = filteredChildLayers(layer->parentLayer());
         int row = prev ? filtered.indexOf(prev) + 1 : 0;
 
         QModelIndex parent;
