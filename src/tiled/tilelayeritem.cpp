@@ -45,8 +45,12 @@ void TileLayerItem::syncWithTileLayer()
 {
     prepareGeometryChange();
 
-    MapRenderer *renderer = mMapDocument->renderer();
-    QRectF boundingRect = renderer->boundingRect(tileLayer()->bounds());
+    QRect layerBounds = tileLayer()->bounds();
+    if (!mMapDocument->map()->infinite())
+        layerBounds &= tileLayer()->rect();
+
+    const MapRenderer *renderer = mMapDocument->renderer();
+    QRectF boundingRect = renderer->boundingRect(layerBounds);
 
     QMargins margins = tileLayer()->drawMargins();
     if (const Map *map = tileLayer()->map()) {
