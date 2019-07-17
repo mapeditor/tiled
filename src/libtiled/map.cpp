@@ -344,7 +344,6 @@ Map *Map::clone() const
     o->mDrawMarginsDirty = mDrawMarginsDirty;
     for (const Layer *layer : mLayers) {
         Layer *clone = layer->clone();
-        clone->setId(layer->id());
         clone->setMap(o);
         o->mLayers.append(clone);
     }

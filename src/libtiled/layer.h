@@ -80,6 +80,7 @@ public:
      */
     int id() const { return mId; }
     void setId(int id) { mId = id; }
+    void resetIds();
 
     /**
      * Returns the type of this layer.

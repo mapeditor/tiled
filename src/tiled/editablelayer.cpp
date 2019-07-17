@@ -68,6 +68,7 @@ void EditableLayer::detach()
     setAsset(nullptr);
 
     mDetachedLayer.reset(layer()->clone());
+    mDetachedLayer->resetIds();
     setObject(mDetachedLayer.get());
     EditableManager::instance().mEditableLayers.insert(layer(), this);
 }

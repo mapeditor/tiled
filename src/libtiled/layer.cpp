@@ -52,6 +52,23 @@ Layer::Layer(TypeFlag type, const QString &name, int x, int y) :
 {
 }
 
+void Layer::resetIds()
+{
+    mId = 0;        // reset out own ID
+
+    switch (layerType()) {
+    case ObjectGroupType:
+        static_cast<ObjectGroup*>(this)->resetObjectIds();
+        break;
+    case GroupLayerType:
+        for (Layer *layer : static_cast<GroupLayer*>(this)->layers())
+            layer->resetIds();
+        break;
+    default:
+        break;
+    }
+}
+
 /**
  * Returns the effective opacity, which is the opacity multiplied by the
  * opacity of any parent layers.
@@ -165,7 +182,7 @@ bool Layer::canMergeDown() const
  * A helper function for initializing the members of the given instance to
  * those of this layer. Used by subclasses when cloning.
  *
- * Layer name, position and size are not cloned, since they are assumed to have
+ * Layer name, position and size are not copied, since they are assumed to have
  * already been passed to the constructor. Also, map ownership is not cloned,
  * since the clone is not added to the map.
  *
@@ -174,7 +191,7 @@ bool Layer::canMergeDown() const
  */
 Layer *Layer::initializeClone(Layer *clone) const
 {
-    // mId is not copied, will be assigned when layer is added to a map
+    clone->mId = mId;
     clone->mOffset = mOffset;
     clone->mOpacity = mOpacity;
     clone->mVisible = mVisible;
