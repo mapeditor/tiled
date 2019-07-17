@@ -23,8 +23,6 @@
 
 #include <QTreeView>
 
-class QAbstractProxyModel;
-
 namespace Tiled {
 
 class Layer;
@@ -32,6 +30,7 @@ class MapObject;
 
 class MapDocument;
 class MapObjectModel;
+class ObjectsFilterModel;
 
 class ObjectsView : public QTreeView
 {
@@ -47,6 +46,8 @@ public:
     MapObjectModel *mapObjectModel() const;
 
     QModelIndex layerViewIndex(Layer *layer) const;
+
+    void setFilter(const QString &filter);
 
 public slots:
     void saveExpandedGroups();
@@ -77,13 +78,15 @@ private slots:
 private:
     void restoreVisibleColumns();
     void synchronizeSelectedItems();
+    void expandToSelectedObjects();
 
     void updateRow(MapObject *object);
 
-    MapDocument *mMapDocument;
-    QAbstractProxyModel *mProxyModel;
+    MapDocument *mMapDocument = nullptr;
+    ObjectsFilterModel *mProxyModel;
     QMap<MapDocument*, QList<Layer*> > mExpandedGroups;
-    bool mSynching;
+    bool mSynching = false;
+    bool mActiveFilter = false;
 };
 
 } // namespace Tiled

@@ -51,6 +51,13 @@ bool FilterEdit::event(QEvent *event)
                 QCoreApplication::sendEvent(mFilteredView, event);
                 return true;
             }
+
+            if (event->type() == QEvent::KeyPress && key == Qt::Key_Escape) {
+                if (!text().isEmpty()) {
+                    clear();
+                    return true;
+                }
+            }
             break;
         }
         default:

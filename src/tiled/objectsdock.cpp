@@ -21,6 +21,7 @@
 #include "objectsdock.h"
 
 #include "documentmanager.h"
+#include "filteredit.h"
 #include "grouplayer.h"
 #include "map.h"
 #include "mapdocument.h"
@@ -44,6 +45,7 @@ using namespace Tiled;
 
 ObjectsDock::ObjectsDock(QWidget *parent)
     : QDockWidget(parent)
+    , mFilterEdit(new FilterEdit(this))
     , mObjectsView(new ObjectsView)
     , mMapDocument(nullptr)
 {
@@ -61,7 +63,12 @@ ObjectsDock::ObjectsDock(QWidget *parent)
     QVBoxLayout *layout = new QVBoxLayout(widget);
     layout->setMargin(0);
     layout->setSpacing(0);
+    layout->addWidget(mFilterEdit);
     layout->addWidget(mObjectsView);
+
+    mFilterEdit->setFilteredView(mObjectsView);
+
+    connect(mFilterEdit, &QLineEdit::textChanged, mObjectsView, &ObjectsView::setFilter);
 
     mActionNewLayer = new QAction(this);
     mActionNewLayer->setIcon(QIcon(QLatin1String(":/images/16x16/document-new.png")));
@@ -160,6 +167,8 @@ void ObjectsDock::changeEvent(QEvent *e)
 void ObjectsDock::retranslateUi()
 {
     setWindowTitle(tr("Objects"));
+
+    mFilterEdit->setPlaceholderText(tr("Filter"));
 
     mActionNewLayer->setToolTip(tr("Add Object Layer"));
     mActionObjectProperties->setToolTip(tr("Object Properties"));

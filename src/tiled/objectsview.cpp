@@ -41,13 +41,52 @@ namespace Tiled {
 static const char FIRST_COLUMN_WIDTH_KEY[] = "ObjectsDock/FirstSectionSize";
 static const char VISIBLE_COLUMNS_KEY[] = "ObjectsDock/VisibleSections";
 
+class ObjectsFilterModel : public ReversingProxyModel
+{
+    Q_OBJECT
+
+public:
+    ObjectsFilterModel(QObject *parent = nullptr)
+        : ReversingProxyModel(parent)
+    {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
+        setRecursiveFilteringEnabled(true);
+#endif
+    }
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
+protected:
+    bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
+    {
+        return filterRecursiveAcceptsRow(sourceRow, sourceParent);
+    }
+
+private:
+    bool filterRecursiveAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
+    {
+        if (ReversingProxyModel::filterAcceptsRow(sourceRow, sourceParent))
+            return true;
+
+        const QModelIndex index = sourceModel()->index(sourceRow, 0, sourceParent);
+        const int count = sourceModel()->rowCount(index);
+
+        for (int i = 0; i < count; ++i)
+            if (filterRecursiveAcceptsRow(i, index))
+                return true;
+
+        return false;
+    }
+#endif
+};
+
 ObjectsView::ObjectsView(QWidget *parent)
     : QTreeView(parent)
-    , mMapDocument(nullptr)
-    , mProxyModel(new ReversingProxyModel(this))
-    , mSynching(false)
+    , mProxyModel(new ObjectsFilterModel(this))
 {
     setMouseTracking(true);
+
+    mProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
+    mProxyModel->setFilterKeyColumn(-1);
 
     setUniformRowHeights(true);
     setModel(mProxyModel);
@@ -97,6 +136,9 @@ void ObjectsView::setMapDocument(MapDocument *mapDoc)
 
         restoreVisibleColumns();
         synchronizeSelectedItems();
+
+        if (mActiveFilter)
+            expandAll();
     } else {
         mProxyModel->setSourceModel(nullptr);
     }
@@ -117,8 +159,31 @@ QModelIndex ObjectsView::layerViewIndex(Layer *layer) const
     return QModelIndex();
 }
 
+void ObjectsView::setFilter(const QString &filter)
+{
+    const bool hadActiveFilter = mActiveFilter;
+    const bool activeFilter = !filter.isEmpty();
+
+    if (!hadActiveFilter && activeFilter)
+        saveExpandedGroups();
+
+    mProxyModel->setFilterFixedString(filter);
+    mActiveFilter = activeFilter;
+
+    if (activeFilter) {
+        expandAll();        // Expand to see all results
+    } else if (hadActiveFilter) {
+        collapseAll();
+        restoreExpandedGroups();
+        expandToSelectedObjects();
+    }
+}
+
 void ObjectsView::saveExpandedGroups()
 {
+    if (mActiveFilter)
+        return;
+
     mExpandedGroups[mMapDocument].clear();
 
     for (Layer *layer : mMapDocument->map()->objectGroups()) {
@@ -131,6 +196,9 @@ void ObjectsView::saveExpandedGroups()
 
 void ObjectsView::restoreExpandedGroups()
 {
+    if (mActiveFilter)
+        return;
+
     const auto objectGroups = mExpandedGroups.take(mMapDocument);
     for (Layer *layer : objectGroups) {
         const QModelIndex sourceIndex = mMapDocument->mapObjectModel()->index(layer);
@@ -348,6 +416,19 @@ void ObjectsView::synchronizeSelectedItems()
     mSynching = false;
 }
 
+void ObjectsView::expandToSelectedObjects()
+{
+    const QList<MapObject *> &selectedObjects = mMapDocument->selectedObjects();
+    for (auto object : selectedObjects) {
+        auto index = mProxyModel->mapFromSource(mapObjectModel()->index(object));
+
+        // Make sure all parents are expanded
+        for (QModelIndex parent = index.parent(); parent.isValid(); parent = parent.parent())
+            if (!isExpanded(parent))
+                expand(parent);
+    }
+}
+
 void ObjectsView::updateRow(MapObject *object)
 {
     if (!object || !object->objectGroup())
@@ -361,3 +442,5 @@ void ObjectsView::updateRow(MapObject *object)
 }
 
 } // namespace Tiled
+
+#include "objectsview.moc"
