@@ -76,7 +76,7 @@ public class Tile extends TileData {
      * @param t tile to copy
      */
     public Tile(Tile t) {
-        tileset = t.tileset;
+        this.tileset = t.tileset;
 
         Properties tileProperties = t.properties;
         if (tileProperties != null) {
