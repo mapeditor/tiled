@@ -41,17 +41,15 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.TreeMap;
-
 import javax.imageio.ImageIO;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-
+import org.mapeditor.util.BasicTileCutter;
 import org.mapeditor.util.TileCutter;
 import org.mapeditor.util.TransparentImageFilter;
-import org.mapeditor.util.BasicTileCutter;
 
 /**
  * todo: Update documentation
@@ -100,12 +98,28 @@ public class TileSet extends TileSetData implements Iterable<Tile> {
      */
     public void importTileBitmap(String imgFilename, TileCutter cutter)
             throws IOException {
-        setTilesetImageFilename(imgFilename);
 
         Image image = ImageIO.read(new File(imgFilename));
         if (image == null) {
-            throw new IOException("Failed to load " + tilebmpFile);
+            throw new IOException("Failed to load " + imgFilename);
         }
+
+        importTileBitmap(imgFilename, image, cutter);
+    }
+    
+    public void importTileBitmapFromResources(String resourcePath, TileCutter cutter)
+            throws IOException {
+
+        Image image = ImageIO.read(TileSet.class.getResourceAsStream(resourcePath));
+        if (image == null) {
+            throw new IOException("Failed to load " + resourcePath);
+        }
+        
+        importTileBitmap(resourcePath, image, cutter);
+    }
+    
+    private void importTileBitmap(String imgFilename, Image image, TileCutter cutter) {
+        setTilesetImageFilename(imgFilename);
 
         Toolkit tk = Toolkit.getDefaultToolkit();
 

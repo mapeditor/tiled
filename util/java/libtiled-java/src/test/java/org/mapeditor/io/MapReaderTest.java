@@ -32,17 +32,13 @@ package org.mapeditor.io;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import javax.imageio.IIOException;
-
 import static org.junit.Assert.*;
 import org.junit.Test;
-
 import org.mapeditor.core.Map;
 import org.mapeditor.core.ObjectGroup;
 import org.mapeditor.core.Orientation;
 import org.mapeditor.core.StaggerAxis;
 import org.mapeditor.core.StaggerIndex;
-import org.mapeditor.core.Tile;
 import org.mapeditor.core.TileLayer;
 import org.mapeditor.core.TileSet;
 
@@ -147,6 +143,23 @@ public class MapReaderTest {
 
         // Act
         Map map = new TMXMapReader().readMap(url.getPath());
+
+        // Assert
+        assertEquals(Orientation.ORTHOGONAL, map.getOrientation());
+        assertEquals(40, map.getWidth());
+        assertEquals(40, map.getHeight());
+        assertEquals(32, map.getTileWidth());
+        assertEquals(32, map.getTileHeight());
+        assertEquals(1, map.getLayerCount());
+
+        TileLayer layer = (TileLayer) map.getLayer(0);
+        assertNotNull(layer.getTileAt(0, 0));
+    }
+    
+    @Test
+    public void testReadingDesertMapFromResources() throws Exception {
+        // Act
+        Map map = new TMXMapReader().readMapFromResources("/desert/desert.tmx");
 
         // Assert
         assertEquals(Orientation.ORTHOGONAL, map.getOrientation());

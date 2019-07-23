@@ -47,7 +47,6 @@ import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
-
 import javax.imageio.ImageIO;
 import javax.xml.bind.DatatypeConverter;
 import javax.xml.bind.JAXBContext;
@@ -56,7 +55,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.mapeditor.core.*;
 import org.mapeditor.util.BasicTileCutter;
 import org.mapeditor.util.ImageHelper;
@@ -75,6 +73,7 @@ import org.xml.sax.SAXException;
  * @author Thorbjørn Lindeijer
  * @author Adam Turk
  * @author Mike Thomas
+ * @author Markus Schr&ouml;der
  * @version 1.0.2
  */
 public class TMXMapReader {
@@ -96,6 +95,10 @@ public class TMXMapReader {
     private final HashMap<String, TileSet> cachedTilesets = new HashMap<>();
     private final HashMap<Class, Unmarshaller> cachedUnmarshallers = new HashMap<>();
 
+    //added to indicate that the loading is done from resources
+    //it is a switch that is activated in readMapFromResources and used in unmarshalTileset, unmarshalImage
+    private boolean fromResources;
+    
     public static final class TMXMapReaderSettings {
 
         public boolean reuseCachedTilesets = false;
@@ -173,7 +176,11 @@ public class TMXMapReader {
             } else {
                 source = makeUrl(baseDir + source);
             }
+            if(fromResources) {
+                img = ImageIO.read(TMXMapReader.class.getResourceAsStream(source));
+            } else {
             img = ImageIO.read(new URL(source));
+            }
         } else {
             NodeList nl = t.getChildNodes();
 
@@ -241,7 +248,14 @@ public class TMXMapReader {
         if (source != null) {
             source = replacePathSeparator(source);
             String filename = xmlPath + source;
-            InputStream in = new URL(makeUrl(filename)).openStream();
+            InputStream in;
+            
+            if(fromResources) {
+                in = TMXMapReader.class.getResourceAsStream(filename);
+            } else {
+                in = new URL(makeUrl(filename)).openStream();
+               
+            }
             TileSet ext = unmarshalTilesetFile(in, filename);
 
             if (ext == null) {
@@ -308,8 +322,15 @@ public class TMXMapReader {
                             set.setTransparentColor(color);
                         }
 
-                        set.importTileBitmap(sourcePath, new BasicTileCutter(
-                                tileWidth, tileHeight, tileSpacing, tileMargin));
+                        if(fromResources) {
+                            set.importTileBitmapFromResources(sourcePath, new BasicTileCutter(
+                                    tileWidth, tileHeight, tileSpacing, tileMargin));
+                            
+                        } else {
+                            set.importTileBitmap(sourcePath, new BasicTileCutter(
+                                    tileWidth, tileHeight, tileSpacing, tileMargin));
+                        }
+
                     }
                 } else if (child.getNodeName().equalsIgnoreCase("tile")) {
                     Tile tile = unmarshalTile(set, child, xmlPath);
@@ -822,6 +843,27 @@ public class TMXMapReader {
         return unmarshalledMap;
     }
 
+    //added by Markus Schr&ouml;der
+    public Map readMapFromResources(String resourcePath) throws Exception {
+        fromResources = true;
+        
+        xmlPath = resourcePath.substring(0,
+                resourcePath.lastIndexOf(File.separatorChar) + 1);
+        
+        InputStream is = TMXMapReader.class.getResourceAsStream(resourcePath);
+        if (resourcePath.endsWith(".gz")) {
+            is = new GZIPInputStream(is);
+        }
+        
+        Map unmarshalledMap = unmarshal(is);
+        unmarshalledMap.setFilename(resourcePath);
+        
+        map = null;
+        fromResources = false;
+        
+        return unmarshalledMap;
+    } 
+    
     /**
      * <p>readMap.</p>
      *
