@@ -157,7 +157,7 @@ QByteArray Tiled::compress(const QByteArray &data,
         if (compressionLevel == -1)
             compressionLevel = Z_DEFAULT_COMPRESSION;
         else
-            compressionLevel = qBound(1, compressionLevel, 9);
+            compressionLevel = qBound(Z_BEST_SPEED, compressionLevel, Z_BEST_COMPRESSION);
 
         QByteArray out;
         out.resize(1024);
