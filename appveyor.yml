@@ -45,7 +45,6 @@ build_script:
   - cd zstd/lib
   - set CC=gcc
   - mingw32-make -j2 libzstd.a
-  - rm dll/libzstd.dll dll/libzstd.lib
   - ls -l dll
   - cd ../../
   - qbs --version
