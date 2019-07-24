@@ -45,7 +45,6 @@ build_script:
   - cd zstd/lib
   - set CC=gcc
   - mingw32-make -j2 libzstd.a
-  - ls -lR
   - cd ../../
   - qbs --version
   - qbs setup-toolchains --detect
