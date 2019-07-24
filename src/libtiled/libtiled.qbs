@@ -11,12 +11,6 @@ DynamicLibrary {
         cpp.dynamicLibraries: base.concat(["z"])
     }
 
-    Properties {
-        condition: qbs.toolchain.contains("mingw") && project.enableZstd
-        cpp.staticLibraries: ["libzstd"]
-        cpp.libraryPaths: ["../../zstd/lib/dll"]
-    }
-
     cpp.cxxLanguageVersion: "c++14"
     cpp.visibility: "minimal"
     cpp.defines: {
@@ -42,7 +36,7 @@ DynamicLibrary {
     }
 
     Properties {
-        condition: qbs.targetOS.contains("macos") && project.enableZstd
+        condition: project.enableZstd
         cpp.staticLibraries: ["zstd"]
         cpp.libraryPaths: ["../../zstd/lib"]
     }
@@ -155,10 +149,7 @@ DynamicLibrary {
             submodules: ["gui"]
         }
 
-        cpp.includePaths: [
-            ".",
-            "../../zstd/lib"
-        ]
+        cpp.includePaths: "."
     }
 
     Group {
