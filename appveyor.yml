@@ -44,8 +44,9 @@ build_script:
   - git clone --depth 1 -b master https://github.com/facebook/zstd.git
   - cd zstd/lib
   - set CC=gcc
-  - mingw32-make -j2 lib-release
-  - ls -lR .
+  - mingw32-make -j2 lib-zstd.a
+  - rm dll/libzstd.dll dll/libzstd.lib
+  - ls -l dll
   - cd ../../
   - qbs --version
   - qbs setup-toolchains --detect
