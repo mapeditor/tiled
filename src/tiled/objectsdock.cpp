@@ -27,12 +27,10 @@
 #include "mapdocument.h"
 #include "mapdocumentactionhandler.h"
 #include "mapobject.h"
-#include "mapobjectmodel.h"
 #include "objectgroup.h"
 #include "objectsview.h"
 #include "utils.h"
 
-#include <QAbstractProxyModel>
 #include <QBoxLayout>
 #include <QEvent>
 #include <QLabel>
@@ -135,7 +133,7 @@ void ObjectsDock::moveObjectsDown()
 void ObjectsDock::setMapDocument(MapDocument *mapDoc)
 {
     if (mMapDocument) {
-        mObjectsView->saveExpandedGroups();
+        mObjectsView->saveExpandedLayers();
         mMapDocument->disconnect(this);
     }
 
@@ -144,7 +142,7 @@ void ObjectsDock::setMapDocument(MapDocument *mapDoc)
     mObjectsView->setMapDocument(mapDoc);
 
     if (mMapDocument) {
-        mObjectsView->restoreExpandedGroups();
+        mObjectsView->restoreExpandedLayers();
         connect(mMapDocument, &MapDocument::selectedObjectsChanged,
                 this, &ObjectsDock::updateActions);
     }
@@ -223,5 +221,5 @@ void ObjectsDock::objectProperties()
 void ObjectsDock::documentAboutToClose(Document *document)
 {
     if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document))
-        mObjectsView->clearExpandedGroups(mapDocument);
+        mObjectsView->clearExpandedLayers(mapDocument);
 }

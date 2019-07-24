@@ -50,9 +50,9 @@ public:
     void setFilter(const QString &filter);
 
 public slots:
-    void saveExpandedGroups();
-    void restoreExpandedGroups();
-    void clearExpandedGroups(MapDocument *mapDocument);
+    void saveExpandedLayers();
+    void restoreExpandedLayers();
+    void clearExpandedLayers(MapDocument *mapDocument);
 
 protected:
     bool event(QEvent *event) override;
@@ -84,7 +84,7 @@ private:
 
     MapDocument *mMapDocument = nullptr;
     ObjectsFilterModel *mProxyModel;
-    QMap<MapDocument*, QList<Layer*> > mExpandedGroups;
+    QMap<MapDocument*, QList<Layer*> > mExpandedLayers;
     bool mSynching = false;
     bool mActiveFilter = false;
 };

@@ -165,7 +165,7 @@ void ObjectsView::setFilter(const QString &filter)
     const bool activeFilter = !filter.isEmpty();
 
     if (!hadActiveFilter && activeFilter)
-        saveExpandedGroups();
+        saveExpandedLayers();
 
     mProxyModel->setFilterFixedString(filter);
     mActiveFilter = activeFilter;
@@ -174,42 +174,45 @@ void ObjectsView::setFilter(const QString &filter)
         expandAll();        // Expand to see all results
     } else if (hadActiveFilter) {
         collapseAll();
-        restoreExpandedGroups();
+        restoreExpandedLayers();
         expandToSelectedObjects();
     }
 }
 
-void ObjectsView::saveExpandedGroups()
+void ObjectsView::saveExpandedLayers()
 {
     if (mActiveFilter)
         return;
 
-    mExpandedGroups[mMapDocument].clear();
+    mExpandedLayers[mMapDocument].clear();
 
-    for (Layer *layer : mMapDocument->map()->objectGroups()) {
+    for (Layer *layer : mMapDocument->map()->allLayers()) {
+        if (!layer->isObjectGroup() && !layer->isGroupLayer())
+            continue;
+
         const QModelIndex sourceIndex = mMapDocument->mapObjectModel()->index(layer);
         const QModelIndex index = mProxyModel->mapFromSource(sourceIndex);
         if (isExpanded(index))
-            mExpandedGroups[mMapDocument].append(layer);
+            mExpandedLayers[mMapDocument].append(layer);
     }
 }
 
-void ObjectsView::restoreExpandedGroups()
+void ObjectsView::restoreExpandedLayers()
 {
     if (mActiveFilter)
         return;
 
-    const auto objectGroups = mExpandedGroups.take(mMapDocument);
-    for (Layer *layer : objectGroups) {
+    const auto layers = mExpandedLayers.take(mMapDocument);
+    for (Layer *layer : layers) {
         const QModelIndex sourceIndex = mMapDocument->mapObjectModel()->index(layer);
         const QModelIndex index = mProxyModel->mapFromSource(sourceIndex);
         setExpanded(index, true);
     }
 }
 
-void ObjectsView::clearExpandedGroups(MapDocument *mapDocument)
+void ObjectsView::clearExpandedLayers(MapDocument *mapDocument)
 {
-    mExpandedGroups.remove(mapDocument);
+    mExpandedLayers.remove(mapDocument);
 }
 
 bool ObjectsView::event(QEvent *event)
