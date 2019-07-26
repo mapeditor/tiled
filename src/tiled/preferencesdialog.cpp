@@ -98,6 +98,9 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     connect(mUi->resolveObjectTypesAndProperties, &QCheckBox::toggled, preferences, [preferences] (bool value) {
         preferences->setExportOption(Preferences::ResolveObjectTypesAndProperties, value);
     });
+    connect(mUi->minimizeOutput, &QCheckBox::toggled, preferences, [preferences] (bool value) {
+        preferences->setExportOption(Preferences::ExportMinimized, value);
+    });
 
     connect(mUi->languageCombo, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
             this, &PreferencesDialog::languageSelected);
@@ -176,6 +179,7 @@ void PreferencesDialog::fromPreferences()
     mUi->embedTilesets->setChecked(prefs->exportOption(Preferences::EmbedTilesets));
     mUi->detachTemplateInstances->setChecked(prefs->exportOption(Preferences::DetachTemplateInstances));
     mUi->resolveObjectTypesAndProperties->setChecked(prefs->exportOption(Preferences::ResolveObjectTypesAndProperties));
+    mUi->minimizeOutput->setChecked(prefs->exportOption(Preferences::ExportMinimized));
 
     // Interface
     if (mUi->openGL->isEnabled())

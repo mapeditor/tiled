@@ -292,8 +292,10 @@ QString FlarePlugin::errorString() const
     return mError;
 }
 
-bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
+bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName, Options options)
 {
+    Q_UNUSED(options)
+
     SaveFile file(fileName);
 
     if (!file.open(QFile::WriteOnly | QFile::Text)) {

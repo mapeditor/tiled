@@ -992,9 +992,10 @@ void MainWindow::export_()
             exportFormat = &tmxFormat;
 
         std::unique_ptr<Map> exportMap;
-        const Map *map = ExportHelper().prepareExportMap(mapDocument->map(), exportMap);
+        ExportHelper exportHelper;
+        const Map *map = exportHelper.prepareExportMap(mapDocument->map(), exportMap);
 
-        if (exportFormat->write(map, exportFileName)) {
+        if (exportFormat->write(map, exportFileName, exportHelper.formatOptions())) {
             auto *editor = static_cast<MapEditor*>(mDocumentManager->editor(Document::MapDocumentType));
             editor->showMessage(tr("Exported to %1").arg(exportFileName), 3000);
             return;
@@ -1642,7 +1643,8 @@ void MainWindow::exportMapAs(MapDocument *mapDocument)
         return;
 
     std::unique_ptr<Map> exportMap;
-    const Map *map = ExportHelper().prepareExportMap(mapDocument->map(), exportMap);
+    ExportHelper exportHelper;
+    const Map *map = exportHelper.prepareExportMap(mapDocument->map(), exportMap);
 
     // Check if writer will overwrite existing files here because some writers
     // could save to multiple files at the same time. For example CSV saves
@@ -1682,7 +1684,9 @@ void MainWindow::exportMapAs(MapDocument *mapDocument)
     pref->setLastPath(Preferences::ExportedFile, QFileInfo(exportDetails.mFileName).path());
     mSettings.setValue(QLatin1String("lastUsedExportFilter"), selectedFilter);
 
-    auto exportResult = exportDetails.mFormat->write(map, exportDetails.mFileName);
+    auto exportResult = exportDetails.mFormat->write(map,
+                                                     exportDetails.mFileName,
+                                                     exportHelper.formatOptions());
     if (!exportResult) {
         QMessageBox::critical(this, tr("Error Exporting Map!"),
                               exportDetails.mFormat->errorString());
@@ -1716,9 +1720,12 @@ void MainWindow::exportTilesetAs(TilesetDocument *tilesetDocument)
     pref->setLastPath(Preferences::ExportedFile, QFileInfo(exportDetails.mFileName).path());
     mSettings.setValue(QLatin1String("lastUsedTilesetExportFilter"), selectedFilter);
 
-    SharedTileset exportTileset = ExportHelper().prepareExportTileset(tilesetDocument->tileset());
+    ExportHelper exportHelper;
+    SharedTileset exportTileset = exportHelper.prepareExportTileset(tilesetDocument->tileset());
 
-    auto exportResult = exportDetails.mFormat->write(*exportTileset, exportDetails.mFileName);
+    auto exportResult = exportDetails.mFormat->write(*exportTileset,
+                                                     exportDetails.mFileName,
+                                                     exportHelper.formatOptions());
     if (!exportResult) {
         QMessageBox::critical(this, tr("Error Exporting Map!"),
                               exportDetails.mFormat->errorString());

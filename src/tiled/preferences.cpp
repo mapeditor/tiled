@@ -71,6 +71,7 @@ Preferences::Preferences()
     setExportOption(EmbedTilesets, boolValue("EmbedTilesets", false));
     setExportOption(DetachTemplateInstances, boolValue("DetachTemplateInstances", false));
     setExportOption(ResolveObjectTypesAndProperties, boolValue("ResolveObjectTypesAndProperties", false));
+    setExportOption(ExportMinimized, boolValue("Minimized", false));
     mSettings->endGroup();
 
     SaveFile::setSafeSavingEnabled(mSafeSavingEnabled);
@@ -433,6 +434,9 @@ void Preferences::setExportOption(Preferences::ExportOption option, bool value)
         break;
     case ResolveObjectTypesAndProperties:
         mSettings->setValue(QLatin1String("Export/ResolveObjectTypesAndProperties"), value);
+        break;
+    case ExportMinimized:
+        mSettings->setValue(QLatin1String("Export/Minimized"), value);
         break;
     }
 }

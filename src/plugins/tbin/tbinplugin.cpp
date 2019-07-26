@@ -228,8 +228,10 @@ std::unique_ptr<Tiled::Map> TbinMapFormat::read(const QString &fileName)
     return map;
 }
 
-bool TbinMapFormat::write(const Tiled::Map *map, const QString &fileName)
+bool TbinMapFormat::write(const Tiled::Map *map, const QString &fileName, Options options)
 {
+    Q_UNUSED(options)
+
     try {
         tbin::Map tmap;
         //tmap.id = map->name();

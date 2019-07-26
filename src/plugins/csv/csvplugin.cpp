@@ -36,8 +36,10 @@ CsvPlugin::CsvPlugin()
 {
 }
 
-bool CsvPlugin::write(const Map *map, const QString &fileName)
+bool CsvPlugin::write(const Map *map, const QString &fileName, Options options)
 {
+    Q_UNUSED(options)
+
     // Get file paths for each layer
     QStringList layerPaths = outputFiles(map, fileName);
 

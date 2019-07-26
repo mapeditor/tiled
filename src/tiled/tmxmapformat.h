@@ -43,7 +43,7 @@ public:
 
     std::unique_ptr<Map> read(const QString &fileName) override;
 
-    bool write(const Map *map, const QString &fileName) override;
+    bool write(const Map *map, const QString &fileName, Options options) override;
 
     /**
      * Converts the given map to a utf8 byte array (in .tmx format). This is
@@ -88,7 +88,7 @@ public:
 
     SharedTileset read(const QString &fileName) override;
 
-    bool write(const Tileset &tileset, const QString &fileName) override;
+    bool write(const Tileset &tileset, const QString &fileName, Options options) override;
 
     QString nameFilter() const override { return tr("Tiled tileset files (*.tsx *.xml)"); }
 

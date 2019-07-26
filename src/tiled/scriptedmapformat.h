@@ -48,7 +48,7 @@ public:
     QStringList outputFiles(const Map *map, const QString &fileName) const override;
 #endif
     std::unique_ptr<Map> read(const QString &fileName) override;
-    bool write(const Map *map, const QString &fileName) override;
+    bool write(const Map *map, const QString &fileName, Options options) override;
 
     static bool validateMapFormatObject(const QJSValue &value);
 

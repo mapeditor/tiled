@@ -81,6 +81,7 @@ private:
     void setExportEmbedTilesets();
     void setExportDetachTemplateInstances();
     void setExportResolveObjectTypesAndProperties();
+    void setExportMinimized();
     void showExportFormats();
     void startNewInstance();
 
@@ -204,6 +205,11 @@ CommandLineHandler::CommandLineHandler()
                 QLatin1String("--resolve-types-and-properties"),
                 tr("Export the map or tileset with types and properties resolved"));
 
+    option<&CommandLineHandler::setExportMinimized>(
+                QChar(),
+                QLatin1String("--minimize"),
+                tr("Minimize the exported file by omitting unnecessary whitespace"));
+
     option<&CommandLineHandler::startNewInstance>(
                 QChar(),
                 QLatin1String("--new-instance"),
@@ -253,6 +259,11 @@ void CommandLineHandler::setExportDetachTemplateInstances()
 void CommandLineHandler::setExportResolveObjectTypesAndProperties()
 {
     exportOptions |= Preferences::ResolveObjectTypesAndProperties;
+}
+
+void CommandLineHandler::setExportMinimized()
+{
+    exportOptions |= Preferences::ExportMinimized;
 }
 
 void CommandLineHandler::showExportFormats()
@@ -381,10 +392,11 @@ int main(int argc, char *argv[])
 
         // Apply export options
         std::unique_ptr<Map> exportMap;
-        const Map *map = ExportHelper(commandLine.exportOptions).prepareExportMap(sourceMap.get(), exportMap);
+        ExportHelper exportHelper(commandLine.exportOptions);
+        const Map *map = exportHelper.prepareExportMap(sourceMap.get(), exportMap);
 
         // Write out the file
-        bool success = outputFormat->write(map, targetFile);
+        bool success = outputFormat->write(map, targetFile, exportHelper.formatOptions());
 
         if (!success) {
             qWarning().noquote() << QCoreApplication::translate("Command line", "Failed to export map to target file.");
@@ -423,10 +435,11 @@ int main(int argc, char *argv[])
         }
 
         // Apply export options
-        SharedTileset exportTileset = ExportHelper(commandLine.exportOptions).prepareExportTileset(sourceTileset);
+        ExportHelper exportHelper(commandLine.exportOptions);
+        SharedTileset exportTileset = exportHelper.prepareExportTileset(sourceTileset);
 
         // Write out the file
-        bool success = outputFormat->write(*exportTileset, targetFile);
+        bool success = outputFormat->write(*exportTileset, targetFile, exportHelper.formatOptions());
 
         if (!success) {
             qWarning().noquote() << QCoreApplication::translate("Command line", "Failed to export tileset to target file.");

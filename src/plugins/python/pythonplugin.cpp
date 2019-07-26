@@ -303,8 +303,10 @@ std::unique_ptr<Tiled::Map> PythonMapFormat::read(const QString &fileName)
     return std::unique_ptr<Tiled::Map>(ret);
 }
 
-bool PythonMapFormat::write(const Tiled::Map *map, const QString &fileName)
+bool PythonMapFormat::write(const Tiled::Map *map, const QString &fileName, Options options)
 {
+    Q_UNUSED(options)
+
     mError = QString();
 
     mPlugin.log(tr("-- Using script %1 to write %2").arg(mScriptFile, fileName));

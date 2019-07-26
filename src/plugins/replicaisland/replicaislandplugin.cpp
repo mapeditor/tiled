@@ -229,9 +229,10 @@ QString ReplicaIslandPlugin::errorString() const
     return mError;
 }
 
-// Writer
-bool ReplicaIslandPlugin::write(const Tiled::Map *map, const QString &fileName)
+bool ReplicaIslandPlugin::write(const Tiled::Map *map, const QString &fileName, Options options)
 {
+    Q_UNUSED(options)
+
     using namespace Tiled;
 
     // Open up a temporary file for saving the level.
@@ -275,7 +276,6 @@ bool ReplicaIslandPlugin::write(const Tiled::Map *map, const QString &fileName)
     return true;
 }
 
-// Write out a map layer.
 bool ReplicaIslandPlugin::writeLayer(QDataStream &out, Tiled::TileLayer *layer)
 {
     using namespace Tiled;

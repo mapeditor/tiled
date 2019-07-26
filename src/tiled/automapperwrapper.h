@@ -27,7 +27,6 @@
 
 namespace Tiled {
 
-
 class MapDocument;
 
 /**

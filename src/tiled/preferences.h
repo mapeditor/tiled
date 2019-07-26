@@ -101,7 +101,8 @@ public:
     enum ExportOption {
         EmbedTilesets                   = 0x1,
         DetachTemplateInstances         = 0x2,
-        ResolveObjectTypesAndProperties = 0x4
+        ResolveObjectTypesAndProperties = 0x4,
+        ExportMinimized                 = 0x8,
     };
     Q_DECLARE_FLAGS(ExportOptions, ExportOption)
 

@@ -49,6 +49,11 @@ public:
     };
     Q_DECLARE_FLAGS(Capabilities, Capability)
 
+    enum Option {
+        WriteMinimized  = 0x1,
+    };
+    Q_DECLARE_FLAGS(Options, Option)
+
     explicit FileFormat(QObject *parent = nullptr);
 
     /**
@@ -89,6 +94,7 @@ public:
 
 Q_DECLARE_INTERFACE(Tiled::FileFormat, "org.mapeditor.FileFormat")
 Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::FileFormat::Capabilities)
+Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::FileFormat::Options)
 
 namespace Tiled {
 

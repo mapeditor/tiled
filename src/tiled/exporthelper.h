@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include "fileformat.h"
 #include "preferences.h"
 #include "tileset.h"
 
@@ -37,6 +38,8 @@ public:
     explicit ExportHelper(Preferences::ExportOptions options = Preferences::instance()->exportOptions())
         : mOptions(options)
     {}
+
+    FileFormat::Options formatOptions() const;
 
     SharedTileset prepareExportTileset(const SharedTileset &tileset,
                                        bool savingTileset = true) const;

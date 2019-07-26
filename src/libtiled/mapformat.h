@@ -82,7 +82,8 @@ public:
      * @return <code>true</code> on success, <code>false</code> when an error
      *         occurred. The error can be retrieved by errorString().
      */
-    virtual bool write(const Map *map, const QString &fileName) = 0;
+    virtual bool write(const Map *map, const QString &fileName,
+                       Options options = Options()) = 0;
 };
 
 } // namespace Tiled
@@ -104,7 +105,7 @@ public:
         : MapFormat(parent)
     {}
     Capabilities capabilities() const override { return Read; }
-    bool write(const Map *, const QString &) override { return false; }
+    bool write(const Map *, const QString &, Options) override { return false; }
 };
 
 

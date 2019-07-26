@@ -77,7 +77,12 @@ Resolve object types and properties
     Object properties are inherited from a tile (in case of a tile
     object) and from the default properties of their type.
 
-These options are also available as options when exporting using the command-line.
+Minimize output
+    Omits unnecessary whitespace in the output file. This option is supported
+    for XML (TMX and TSX), JSON and Lua formats.
+
+These options are also available as options when exporting using the
+command-line.
 
 Interface
 ---------
