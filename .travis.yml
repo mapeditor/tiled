@@ -136,7 +136,7 @@ matrix:
     - source ./dist/linux/setup-qbs.sh
     - git clone --depth 1 -b master https://github.com/facebook/zstd.git
     - cd zstd/lib
-    - make
+    - make libzstd.a
     - cd ../../
     script:
     - qbs --version
