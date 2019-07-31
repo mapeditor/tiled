@@ -15,11 +15,6 @@ environment:
       MINGW: C:\Qt\Tools\mingw730_64
       PUSH_RELEASE: true
       TILED_ITCH_CHANNEL: windows-64bit
-    - QTDIR: C:\Qt\5.12\mingw73_32
-      PYTHONHOME: C:\Python37
-      MINGW: C:\Qt\Tools\mingw730_32
-      PUSH_RELEASE: true
-      TILED_ITCH_CHANNEL: windows-32bit
     - QTDIR: C:\Qt\5.6\mingw49_32
       PYTHONHOME: C:\Python37
       MINGW: C:\Qt\Tools\mingw492_32
