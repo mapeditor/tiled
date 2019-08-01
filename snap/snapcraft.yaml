@@ -27,9 +27,6 @@ apps:
   terraingenerator:
     command: desktop-launch ${SNAP}/usr/bin/terraingenerator
     plugs: [home, unity7]
-  automappingconverter:
-    command: desktop-launch ${SNAP}/usr/bin/automappingconverter
-    plugs: [home, unity7]
 
 parts:
   tiled:

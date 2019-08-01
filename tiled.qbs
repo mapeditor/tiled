@@ -19,7 +19,6 @@ Project {
         "dist/archive.qbs",
         "dist/distribute.qbs",
         "dist/win/installer.qbs",
-        "src/automappingconverter",
         "src/libtiled",
         "src/plugins",
         "src/qtpropertybrowser",

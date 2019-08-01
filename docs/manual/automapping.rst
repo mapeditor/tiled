@@ -243,32 +243,8 @@ StrictEmpty
    it means an empty tile is not allowed at that location.
 
 
-Converting Rules From 0.8 and Below
-===================================
-
-There is a tool **automappingconverter** along in your distribution to
-convert the rules created for previous versions of Tiled to version 0.9
-and later.
-
-If you are compiling tiled from scratch the tool is found in the in
-**/bin/** folder.
-
-The changes for conversion are only layer renaming:
-
-Previous **RuleRegion** will be named **regions**
-
-Previous **RuleSet** will be named **input\_set**
-
-Previous **RuleNotSet** will be named **inputnot\_set**
-
-Previous **Rule\_\*** will be named **output\_\***
-
 Examples
 ========
-
-All of the examples are for version 0.9 and later. If you want to see
-examples for tiled version 0.8 and below, `have a look in this
-archive. <https://github.com/stefanbeller/tiled_examples/zipball/v0.8andbefore>`__
 
 Abstract Input Layer Examples
 -----------------------------
