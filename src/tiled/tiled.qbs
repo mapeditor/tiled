@@ -258,6 +258,8 @@ QtGuiApplication {
         "imagelayeritem.h",
         "clickablelabel.cpp",
         "clickablelabel.h",
+        "issuesdock.cpp",
+        "issuesdock.h",
         "languagemanager.cpp",
         "languagemanager.h",
         "layerdock.cpp",

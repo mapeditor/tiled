@@ -50,19 +50,29 @@ public:
     {}
 
     enum OutputType {
-        INFO, ERROR
+        INFO,
+        WARNING,
+        ERROR
     };
 
     void log(OutputType type, const QString &message)
     {
-        if (type == INFO)
+        switch (type) {
+        case INFO:
             emit info(message);
-        else if (type == ERROR)
+            break;
+        case WARNING:
+            emit warning(message);
+            break;
+        case ERROR:
             emit error(message);
+            break;
+        }
     }
 
 signals:
     void info(const QString &message);
+    void warning(const QString &message);
     void error(const QString &message);
 };
 

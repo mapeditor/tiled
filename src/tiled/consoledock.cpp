@@ -1,6 +1,7 @@
 /*
- * consoledialog.cpp
+ * consoledock.cpp
  * Copyright 2013, Samuli Tuomola <samuli.tuomola@gmail.com>
+ * Copyright 2018-2019, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -39,7 +40,6 @@ ConsoleDock::ConsoleDock(QWidget *parent)
     , mLineEdit(new QLineEdit)
 {
     setObjectName(QLatin1String("ConsoleDock"));
-    setWindowTitle(tr("Console"));
 
     QWidget *widget = new QWidget(this);
     QVBoxLayout *layout = new QVBoxLayout(widget);
@@ -53,7 +53,6 @@ ConsoleDock::ConsoleDock(QWidget *parent)
     p.setColor(QPalette::Text, Qt::lightGray);
     mPlainTextEdit->setPalette(p);
 
-    mLineEdit->setPlaceholderText(tr("Execute script"));
     mLineEdit->setClearButtonEnabled(true);
     connect(mLineEdit, &QLineEdit::returnPressed,
             this, &ConsoleDock::executeScript);
@@ -84,6 +83,8 @@ ConsoleDock::ConsoleDock(QWidget *parent)
         if (visible)
             mLineEdit->setFocus();
     });
+
+    retranslateUi();
 }
 
 ConsoleDock::~ConsoleDock()
@@ -93,6 +94,12 @@ ConsoleDock::~ConsoleDock()
 void ConsoleDock::appendInfo(const QString &str)
 {
     mPlainTextEdit->appendHtml(QLatin1String("<pre>") + str.toHtmlEscaped() +
+                               QLatin1String("</pre>"));
+}
+
+void ConsoleDock::appendWarning(const QString &str)
+{
+    mPlainTextEdit->appendHtml(QLatin1String("<pre style='color:orange'>") + str.toHtmlEscaped() +
                                QLatin1String("</pre>"));
 }
 
@@ -151,9 +158,29 @@ void ConsoleDock::moveHistory(int direction)
     mHistoryPosition = newPosition;
 }
 
+void ConsoleDock::changeEvent(QEvent *e)
+{
+    QDockWidget::changeEvent(e);
+
+    switch (e->type()) {
+    case QEvent::LanguageChange:
+        retranslateUi();
+        break;
+    default:
+        break;
+    }
+}
+
+void ConsoleDock::retranslateUi()
+{
+    setWindowTitle(tr("Console"));
+    mLineEdit->setPlaceholderText(tr("Execute script"));
+}
+
 void ConsoleDock::registerOutput(LoggingInterface *output)
 {
     connect(output, &LoggingInterface::info, this, &ConsoleDock::appendInfo);
+    connect(output, &LoggingInterface::warning, this, &ConsoleDock::appendWarning);
     connect(output, &LoggingInterface::error, this, &ConsoleDock::appendError);
 }
 

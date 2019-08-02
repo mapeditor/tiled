@@ -115,6 +115,8 @@ public slots:
     QString prompt(const QString &label, const QString &text = QString(), const QString &title = QString()) const;
 
     void log(const QString &text) const;
+
+    void warn(const QString &text) const;
     void error(const QString &text) const;
 
 private slots:

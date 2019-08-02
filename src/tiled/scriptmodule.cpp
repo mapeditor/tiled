@@ -24,6 +24,7 @@
 #include "commanddatamodel.h"
 #include "commandmanager.h"
 #include "editabletileset.h"
+#include "issuesdock.h"
 #include "logginginterface.h"
 #include "scriptedaction.h"
 #include "scriptedmapformat.h"
@@ -376,9 +377,18 @@ void ScriptModule::log(const QString &text) const
     mLogger->info(text);
 }
 
+void ScriptModule::warn(const QString &text) const
+{
+    mLogger->warning(tr("Warning: %1").arg(text));
+
+    reportIssue(Issue { Issue::Warning, text });
+}
+
 void ScriptModule::error(const QString &text) const
 {
     mLogger->error(tr("Error: %1").arg(text));
+
+    reportIssue(Issue { Issue::Error, text });
 }
 
 void ScriptModule::documentCreated(Document *document)

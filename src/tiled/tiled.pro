@@ -83,6 +83,7 @@ SOURCES += aboutdialog.cpp \
     changewangcolordata.cpp \
     changewangsetdata.cpp \
     clickablelabel.cpp \
+    issuesdock.cpp \
     clipboardmanager.cpp \
     colorbutton.cpp \
     commandbutton.cpp \
@@ -305,6 +306,7 @@ HEADERS += aboutdialog.h \
     changewangcolordata.h \
     changewangsetdata.h \
     clickablelabel.h \
+    issuesdock.h \
     clipboardmanager.h \
     colorbutton.h \
     commandbutton.h \

@@ -155,6 +155,7 @@ void LayerDock::setMapDocument(MapDocument *mapDocument)
 void LayerDock::changeEvent(QEvent *e)
 {
     QDockWidget::changeEvent(e);
+
     switch (e->type()) {
     case QEvent::LanguageChange:
         retranslateUi();

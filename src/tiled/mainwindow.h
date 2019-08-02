@@ -24,7 +24,6 @@
 #pragma once
 
 #include "clipboardmanager.h"
-#include "consoledock.h"
 #include "document.h"
 #include "preferences.h"
 #include "preferencesdialog.h"
@@ -49,7 +48,9 @@ class Terrain;
 
 class ActionManager;
 class AutomappingManager;
+class ConsoleDock;
 class DocumentManager;
+class IssuesDock;
 class MapDocument;
 class MapDocumentActionHandler;
 class MapScene;
@@ -197,6 +198,7 @@ private:
     Zoomable *mZoomable = nullptr;
     MapDocumentActionHandler *mActionHandler;
     ConsoleDock *mConsoleDock;
+    IssuesDock *mIssuesDock;
     ObjectTypesEditor *mObjectTypesEditor;
     QSettings mSettings;
 

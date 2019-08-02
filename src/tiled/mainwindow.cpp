@@ -38,6 +38,7 @@
 #include "documentmanager.h"
 #include "exportasimagedialog.h"
 #include "exporthelper.h"
+#include "issuesdock.h"
 #include "languagemanager.h"
 #include "layer.h"
 #include "map.h"
@@ -195,6 +196,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mUi(new Ui::MainWindow)
     , mActionHandler(new MapDocumentActionHandler(this))
     , mConsoleDock(new ConsoleDock(this))
+    , mIssuesDock(new IssuesDock(this))
     , mObjectTypesEditor(new ObjectTypesEditor(this))
     , mAutomappingManager(new AutomappingManager(this))
     , mDocumentManager(DocumentManager::instance())
@@ -305,8 +307,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(undoGroup, &QUndoGroup::cleanChanged, this, &MainWindow::updateWindowTitle);
 
     addDockWidget(Qt::BottomDockWidgetArea, mConsoleDock);
+    addDockWidget(Qt::BottomDockWidgetArea, mIssuesDock);
+    tabifyDockWidget(mConsoleDock, mIssuesDock);
 
     mConsoleDock->setVisible(false);
+    mIssuesDock->setVisible(false);
 
     mUi->actionNewMap->setShortcuts(QKeySequence::New);
     mUi->actionOpen->setShortcuts(QKeySequence::Open);
@@ -1430,9 +1435,12 @@ void MainWindow::resetToDefaultLayout()
     // Make sure we're not in Clear View mode
     mUi->actionClearView->setChecked(false);
 
-    // Reset the Console dock
+    // Reset the Console and Issues dock
     addDockWidget(Qt::BottomDockWidgetArea, mConsoleDock);
+    addDockWidget(Qt::BottomDockWidgetArea, mIssuesDock);
     mConsoleDock->setVisible(false);
+    mIssuesDock->setVisible(false);
+    tabifyDockWidget(mConsoleDock, mIssuesDock);
 
     // Reset the layout of the current editor
     mDocumentManager->currentEditor()->resetLayout();
@@ -1443,6 +1451,7 @@ void MainWindow::updateViewsAndToolbarsMenu()
     mViewsAndToolbarsMenu->clear();
 
     mViewsAndToolbarsMenu->addAction(mConsoleDock->toggleViewAction());
+    mViewsAndToolbarsMenu->addAction(mIssuesDock->toggleViewAction());
 
     if (Editor *editor = mDocumentManager->currentEditor()) {
         mViewsAndToolbarsMenu->addSeparator();

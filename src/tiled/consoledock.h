@@ -1,6 +1,7 @@
 /*
  * consoledock.h
  * Copyright 2013, Samuli Tuomola <samuli.tuomola@gmail.com>
+ * Copyright 2018-2019, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -39,6 +40,7 @@ public:
 
 private slots:
     void appendInfo(const QString &str);
+    void appendWarning(const QString &str);
     void appendError(const QString &str);
     void appendScript(const QString &str);
 
@@ -47,7 +49,11 @@ private slots:
 
     void moveHistory(int direction);
 
+protected:
+    void changeEvent(QEvent *e) override;
+
 private:
+    void retranslateUi();
     void registerOutput(LoggingInterface *output);
 
     QPlainTextEdit *mPlainTextEdit;
