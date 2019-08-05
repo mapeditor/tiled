@@ -515,7 +515,7 @@ will have higher priority, i.e. they will override the template
 properties.
 
 Can contain: :ref:`tmx-properties`, :ref:`tmx-ellipse` (since
-0.9), :ref:`tmx-polygon`, :ref:`tmx-polyline`, :ref:`tmx-text`
+0.9), :ref:`tmx-point`, :ref:`tmx-polygon`, :ref:`tmx-polyline`, :ref:`tmx-text`
 (since 1.0), *image*
 
 .. _tmx-ellipse:
