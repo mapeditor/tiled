@@ -20,6 +20,7 @@
 
 #include "tilestampsdock.h"
 
+#include "actionmanager.h"
 #include "documentmanager.h"
 #include "filteredit.h"
 #include "preferences.h"
@@ -95,6 +96,9 @@ TileStampsDock::TileStampsDock(TileStampManager *stampManager, QWidget *parent)
     connect(mDuplicate, &QAction::triggered, this, &TileStampsDock::duplicate);
     connect(mDelete, &QAction::triggered, this, &TileStampsDock::delete_);
     connect(mChooseFolder, &QAction::triggered, this, &TileStampsDock::chooseFolder);
+
+    ActionManager::registerAction(mNewStamp, "NewStamp");
+    ActionManager::registerAction(mAddVariation, "AddStampVariation");
 
     mDuplicate->setEnabled(false);
     mDelete->setEnabled(false);

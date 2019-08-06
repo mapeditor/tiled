@@ -20,11 +20,11 @@
 
 #include "tilesetterrainmodel.h"
 
-#include "tilesetdocument.h"
-#include "renameterrain.h"
+#include "changeterrain.h"
 #include "terrain.h"
-#include "tileset.h"
 #include "tile.h"
+#include "tileset.h"
+#include "tilesetdocument.h"
 
 using namespace Tiled;
 

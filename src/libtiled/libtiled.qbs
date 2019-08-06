@@ -4,7 +4,7 @@ DynamicLibrary {
     targetName: "tiled"
 
     Depends { name: "cpp" }
-    Depends { name: "Qt"; submodules: "gui"; versionAtLeast: "5.5" }
+    Depends { name: "Qt"; submodules: "gui"; versionAtLeast: "5.6" }
 
     Properties {
         condition: !qbs.toolchain.contains("msvc")
@@ -13,17 +13,32 @@ DynamicLibrary {
 
     cpp.cxxLanguageVersion: "c++14"
     cpp.visibility: "minimal"
-    cpp.defines: [
-        "TILED_LIBRARY",
-        "QT_NO_CAST_FROM_ASCII",
-        "QT_NO_CAST_TO_ASCII",
-        "QT_NO_URL_CAST_FROM_STRING",
-        "_USE_MATH_DEFINES"
-    ]
+    cpp.defines: {
+        var defs = [
+            "TILED_LIBRARY",
+            "QT_NO_CAST_FROM_ASCII",
+            "QT_NO_CAST_TO_ASCII",
+            "QT_NO_URL_CAST_FROM_STRING",
+            "_USE_MATH_DEFINES",
+        ]
+
+        if (project.enableZstd)
+            defs.push("TILED_ZSTD_SUPPORT");
+
+        return defs;
+    }
+
+    cpp.includePaths: [ "../../zstd/lib" ]
 
     Properties {
         condition: qbs.targetOS.contains("macos")
         cpp.cxxFlags: ["-Wno-unknown-pragmas"]
+    }
+
+    Properties {
+        condition: project.enableZstd
+        cpp.staticLibraries: ["zstd"]
+        cpp.libraryPaths: ["../../zstd/lib"]
     }
 
     Properties {

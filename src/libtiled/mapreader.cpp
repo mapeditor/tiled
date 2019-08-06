@@ -271,6 +271,8 @@ std::unique_ptr<Map> MapReaderPrivate::readMap()
             atts.value(QLatin1String("renderorder")).toString();
     const Map::RenderOrder renderOrder =
             renderOrderFromString(renderOrderString);
+    const QString compressionLevelString =
+            atts.value(QLatin1String("compressionlevel")).toString();
 
     const int nextLayerId = atts.value(QLatin1String("nextlayerid")).toInt();
     const int nextObjectId = atts.value(QLatin1String("nextobjectid")).toInt();
@@ -280,6 +282,7 @@ std::unique_ptr<Map> MapReaderPrivate::readMap()
     mMap->setStaggerAxis(staggerAxis);
     mMap->setStaggerIndex(staggerIndex);
     mMap->setRenderOrder(renderOrder);
+    mMap->setCompressionLevel(compressionLevelString.toUInt());
     if (nextLayerId)
         mMap->setNextLayerId(nextLayerId);
     if (nextObjectId)
@@ -779,6 +782,8 @@ void MapReaderPrivate::readTileLayerData(TileLayer &tileLayer)
             layerDataFormat = Map::Base64Gzip;
         } else if (compression == QLatin1String("zlib")) {
             layerDataFormat = Map::Base64Zlib;
+        } else if (compression == QLatin1String("zstd")) {
+            layerDataFormat = Map::Base64Zstandard;
         } else {
             xml.raiseError(tr("Compression method '%1' not supported")
                            .arg(compression.toString()));
@@ -790,6 +795,14 @@ void MapReaderPrivate::readTileLayerData(TileLayer &tileLayer)
     }
 
     mMap->setLayerDataFormat(layerDataFormat);
+
+    int chunkWidth = atts.value(QLatin1String("outputchunkwidth")).toInt();
+    int chunkHeight = atts.value(QLatin1String("outputchunkheight")).toInt();
+
+    chunkWidth = chunkWidth == 0 ? CHUNK_SIZE : qMax(CHUNK_SIZE_MIN, chunkWidth);
+    chunkHeight = chunkHeight == 0 ? CHUNK_SIZE : qMax(CHUNK_SIZE_MIN, chunkHeight);
+
+    mMap->setChunkSize(QSize(chunkWidth, chunkHeight));
 
     readTileLayerRect(tileLayer,
                       layerDataFormat,

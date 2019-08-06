@@ -32,6 +32,7 @@
 #include "imagelayer.h"
 #include "isometricrenderer.h"
 #include "map.h"
+#include "mapformat.h"
 #include "mapreader.h"
 #include "objectgroup.h"
 #include "orthogonalrenderer.h"
@@ -125,12 +126,12 @@ int TmxRasterizer::render(const QString &fileName,
 int TmxRasterizer::renderMap(const QString &mapFileName,
                              const QString &imageFileName)
 {
-    MapReader reader;
-    std::unique_ptr<Map> map { reader.readMap(mapFileName) };
+    QString errorString;
+    std::unique_ptr<Map> map { readMap(mapFileName, &errorString) };
     if (!map) {
         qWarning("Error while reading \"%s\":\n%s",
                  qUtf8Printable(mapFileName),
-                 qUtf8Printable(reader.errorString()));
+                 qUtf8Printable(errorString));
         return 1;
     }
 
@@ -213,13 +214,12 @@ int TmxRasterizer::renderWorld(const QString &worldFileName,
         return 1;
     }
     QRect worldBoundingRect;
-    MapReader reader;
     for (const World::MapEntry &mapEntry : maps) {
-        std::unique_ptr<Map> map { reader.readMap(mapEntry.fileName) };
+        std::unique_ptr<Map> map { readMap(mapEntry.fileName, &errorString) };
         if (!map) {
             qWarning("Error while reading \"%s\":\n%s",
                      qUtf8Printable(mapEntry.fileName),
-                     qUtf8Printable(reader.errorString()));
+                     qUtf8Printable(errorString));
             continue;
         }
         std::unique_ptr<MapRenderer> renderer = createRenderer(*map);
@@ -252,12 +252,11 @@ int TmxRasterizer::renderWorld(const QString &worldFileName,
     painter.translate(-worldBoundingRect.topLeft());
 
     for (const World::MapEntry &mapEntry : maps) {
-        MapReader reader;
-        std::unique_ptr<Map> map { reader.readMap(mapEntry.fileName) };
+        std::unique_ptr<Map> map { readMap(mapEntry.fileName, &errorString) };
         if (!map) {
             qWarning("Error while reading \"%s\":\n%s",
                     qUtf8Printable(mapEntry.fileName),
-                    qUtf8Printable(reader.errorString()));
+                    qUtf8Printable(errorString));
             return 1;
         }
 

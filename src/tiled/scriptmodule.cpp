@@ -21,12 +21,15 @@
 #include "scriptmodule.h"
 
 #include "actionmanager.h"
-#include "editableasset.h"
+#include "commanddatamodel.h"
+#include "commandmanager.h"
+#include "editabletileset.h"
 #include "logginginterface.h"
 #include "scriptedaction.h"
 #include "scriptedmapformat.h"
 #include "scriptedtool.h"
 #include "scriptmanager.h"
+#include "tilesetdocument.h"
 
 #include <QAction>
 #include <QCoreApplication>
@@ -135,6 +138,64 @@ QList<QObject *> ScriptModule::openAssets() const
     for (const DocumentPtr &document : documentManager->documents())
         assets.append(document->editable());
     return assets;
+}
+
+EditableAsset *ScriptModule::open(const QString &fileName) const
+{
+    auto documentManager = DocumentManager::instance();
+    documentManager->openFile(fileName);
+
+    // If opening succeeded, it is the current document
+    int index = documentManager->findDocument(fileName);
+    if (index != -1)
+        if (auto document = documentManager->currentDocument())
+            return document->editable();
+
+    return nullptr;
+}
+
+bool ScriptModule::close(EditableAsset *asset) const
+{
+    auto documentManager = DocumentManager::instance();
+
+    int index = documentManager->findDocument(asset->document());
+    if (index == -1) {
+        ScriptManager::instance().throwError(tr("Not an open asset"));
+        return false;
+    }
+
+    documentManager->closeDocumentAt(index);
+    return true;
+}
+
+EditableAsset *ScriptModule::reload(EditableAsset *asset) const
+{
+    auto documentManager = DocumentManager::instance();
+
+    int index = documentManager->findDocument(asset->document());
+    if (index == -1) {
+        ScriptManager::instance().throwError(tr("Not an open asset"));
+        return nullptr;
+    }
+
+    if (auto editableTileset = qobject_cast<EditableTileset*>(asset)) {
+        if (editableTileset->tilesetDocument()->isEmbedded()) {
+            ScriptManager::instance().throwError(tr("Can't reload an embedded tileset"));
+            return nullptr;
+        }
+    }
+
+    // The reload is going to invalidate the EditableAsset instance and
+    // possibly also its document. We'll try to find it by its file name.
+    const auto fileName = asset->fileName();
+
+    if (documentManager->reloadDocumentAt(index)) {
+        int newIndex = documentManager->findDocument(fileName);
+        if (newIndex != -1)
+            return documentManager->documents().at(newIndex)->editable();
+    }
+
+    return nullptr;
 }
 
 ScriptedAction *ScriptModule::registerAction(const QByteArray &idName, QJSValue callback)
@@ -279,6 +340,20 @@ void ScriptModule::trigger(const QByteArray &actionName) const
         action->trigger();
     else
         ScriptManager::instance().throwError(tr("Unknown action"));
+}
+
+void ScriptModule::executeCommand(const QString &name, bool inTerminal) const
+{
+    auto commandDataModel = CommandManager::instance()->commandDataModel();
+
+    for (const Command &command : commandDataModel->allCommands()) {
+        if (command.name == name) {
+            command.execute(inTerminal);
+            return;
+        }
+    }
+
+    ScriptManager::instance().throwError(tr("Unknown command"));
 }
 
 void ScriptModule::alert(const QString &text, const QString &title) const

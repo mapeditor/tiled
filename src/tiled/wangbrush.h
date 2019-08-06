@@ -53,7 +53,7 @@ public:
     void setCornerColor(int color);
 
 protected:
-    void tilePositionChanged(const QPoint &tilePos) override;
+    void tilePositionChanged(QPoint tilePos) override;
     void mapDocumentChanged(MapDocument *oldDocument, MapDocument *newDocument) override;
     void updateStatusInfo() override;
 

@@ -653,7 +653,7 @@ void MapDocumentActionHandler::layerVia(MapDocumentActionHandler::LayerViaVarian
         undoStack->endMacro();
     }
 
-    mMapDocument->setCurrentLayer(newLayer);
+    mMapDocument->switchCurrentLayer(newLayer);
 
     if (!newObjects.isEmpty())
         mMapDocument->setSelectedObjects(newObjects);
@@ -688,10 +688,8 @@ void MapDocumentActionHandler::selectPreviousLayer()
     if (!mMapDocument)
         return;
 
-    if (Layer *previousLayer = LayerIterator(mMapDocument->currentLayer()).previous()) {
-        mMapDocument->setCurrentLayer(previousLayer);
-        mMapDocument->setSelectedLayers({ previousLayer });
-    }
+    if (Layer *previousLayer = LayerIterator(mMapDocument->currentLayer()).previous())
+        mMapDocument->switchSelectedLayers({ previousLayer });
 }
 
 void MapDocumentActionHandler::selectNextLayer()
@@ -699,10 +697,8 @@ void MapDocumentActionHandler::selectNextLayer()
     if (!mMapDocument)
         return;
 
-    if (Layer *nextLayer = LayerIterator(mMapDocument->currentLayer()).next()) {
-        mMapDocument->setCurrentLayer(nextLayer);
-        mMapDocument->setSelectedLayers({ nextLayer });
-    }
+    if (Layer *nextLayer = LayerIterator(mMapDocument->currentLayer()).next())
+        mMapDocument->switchSelectedLayers({ nextLayer });
 }
 
 void MapDocumentActionHandler::moveLayersUp()

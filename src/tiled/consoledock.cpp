@@ -22,10 +22,12 @@
 
 #include "logginginterface.h"
 #include "pluginmanager.h"
+#include "preferences.h"
 #include "scriptmanager.h"
 
 #include <QLineEdit>
 #include <QPlainTextEdit>
+#include <QSettings>
 #include <QShortcut>
 #include <QVBoxLayout>
 
@@ -73,6 +75,15 @@ ConsoleDock::ConsoleDock(QWidget *parent)
             this, &ConsoleDock::onObjectAdded);
 
     setWidget(widget);
+
+    QSettings *settings = Preferences::instance()->settings();
+    mHistory = settings->value(QStringLiteral("Console/History")).toStringList();
+    mHistoryPosition = mHistory.size();
+
+    connect(this, &QDockWidget::visibilityChanged, this, [this](bool visible) {
+        if (visible)
+            mLineEdit->setFocus();
+    });
 }
 
 ConsoleDock::~ConsoleDock()
@@ -119,6 +130,11 @@ void ConsoleDock::executeScript()
 
     mHistory.append(script);
     mHistoryPosition = mHistory.size();
+
+    // Remember the last few script lines
+    QSettings *settings = Preferences::instance()->settings();
+    settings->setValue(QStringLiteral("Console/History"),
+                       QStringList(mHistory.mid(mHistory.size() - 10)));
 }
 
 void ConsoleDock::moveHistory(int direction)

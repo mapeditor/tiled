@@ -40,6 +40,30 @@ AbstractTool::AbstractTool(const QString &name, const QIcon &icon,
 {
 }
 
+void AbstractTool::setName(const QString &name)
+{
+    if (mName == name)
+        return;
+
+    mName = name;
+    emit changed();
+}
+
+void AbstractTool::setIcon(const QIcon &icon)
+{
+    mIcon = icon;
+    emit changed();
+}
+
+void AbstractTool::setShortcut(const QKeySequence &shortcut)
+{
+    if (mShortcut == shortcut)
+        return;
+
+    mShortcut = shortcut;
+    emit changed();
+}
+
 /**
  * Sets the current status information for this tool. This information will be
  * displayed in the status bar.
@@ -97,8 +121,8 @@ void AbstractTool::setMapDocument(MapDocument *mapDocument)
         return;
 
     if (mMapDocument) {
-        disconnect(mMapDocument, &MapDocument::layerChanged,
-                   this, &AbstractTool::updateEnabledState);
+        disconnect(mMapDocument, &MapDocument::changed,
+                   this, &AbstractTool::changeEvent);
         disconnect(mMapDocument, &MapDocument::currentLayerChanged,
                    this, &AbstractTool::updateEnabledState);
     }
@@ -108,12 +132,25 @@ void AbstractTool::setMapDocument(MapDocument *mapDocument)
     mapDocumentChanged(oldDocument, mMapDocument);
 
     if (mMapDocument) {
-        connect(mMapDocument, &MapDocument::layerChanged,
-                this, &AbstractTool::updateEnabledState);
+        connect(mMapDocument, &MapDocument::changed,
+                this, &AbstractTool::changeEvent);
         connect(mMapDocument, &MapDocument::currentLayerChanged,
                 this, &AbstractTool::updateEnabledState);
     }
     updateEnabledState();
+}
+
+void AbstractTool::changeEvent(const ChangeEvent &event)
+{
+    switch (event.type) {
+    case ChangeEvent::LayerChanged:
+        // Enabled state is not actually affected by layer properties, but
+        // this includes updating brush visibility...
+        updateEnabledState();
+        break;
+    default:
+        break;
+    }
 }
 
 void AbstractTool::updateEnabledState()

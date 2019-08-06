@@ -1,6 +1,6 @@
 /*
- * standardautoupdater.h
- * Copyright 2016, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+ * newversionbutton.h
+ * Copyright 2019, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -20,18 +20,33 @@
 
 #pragma once
 
-#include "autoupdater.h"
+#include "newversionchecker.h"
 
-class StandardAutoUpdater : public AutoUpdater
+#include <QToolButton>
+
+namespace Tiled {
+
+class NewVersionButton : public QToolButton
 {
-public:
-    StandardAutoUpdater();
+    Q_OBJECT
 
 public:
-    void checkForUpdates() override;
+    enum Visibility {
+        ManualVisible,
+        AutoVisible
+    };
 
-    void setAutomaticallyChecksForUpdates(bool on) override;
-    bool automaticallyChecksForUpdates() override;
+    explicit NewVersionButton(QWidget *parent = nullptr);
+    explicit NewVersionButton(Visibility visibility, QWidget *parent = nullptr);
 
-    QDateTime lastUpdateCheckDate() override;
+private slots:
+    void newVersionAvailable(const NewVersionChecker::VersionInfo &versionInfo);
+    void errorStringChanged(const QString &errorString);
+
+private:
+    void updateVisiblity();
+
+    Visibility mVisiblity;
 };
+
+} // namespace Tiled

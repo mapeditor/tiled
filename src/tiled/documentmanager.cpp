@@ -248,8 +248,7 @@ int DocumentManager::findDocument(const QString &fileName) const
         return -1;
 
     for (int i = 0; i < mDocuments.size(); ++i) {
-        QFileInfo fileInfo(mDocuments.at(i)->fileName());
-        if (fileInfo.canonicalFilePath() == canonicalFilePath)
+        if (mDocuments.at(i)->canonicalFilePath() == canonicalFilePath)
             return i;
     }
 
@@ -379,7 +378,6 @@ void DocumentManager::addDocument(const DocumentPtr &document)
     if (auto *mapDocument = qobject_cast<MapDocument*>(documentPtr)) {
         connect(mapDocument, &MapDocument::tilesetAdded, this, &DocumentManager::tilesetAdded);
         connect(mapDocument, &MapDocument::tilesetRemoved, this, &DocumentManager::tilesetRemoved);
-        connect(mapDocument, &MapDocument::tilesetReplaced, this, &DocumentManager::tilesetReplaced);
     }
 
     if (auto *tilesetDocument = qobject_cast<TilesetDocument*>(documentPtr))
@@ -432,21 +430,10 @@ DocumentPtr DocumentManager::loadDocument(const QString &fileName,
                                           FileFormat *fileFormat,
                                           QString *error)
 {
-    // Return existing document if this file is already open
-    int documentIndex = findDocument(fileName);
-    if (documentIndex != -1)
-        return mDocuments.at(documentIndex);
-
-    // Try to find it in otherwise referenced documents
+    // Try to find it in already loaded documents
     QString canonicalFilePath = QFileInfo(fileName).canonicalFilePath();
-    if (!canonicalFilePath.isEmpty()) {
-        for (Document *doc : Document::documentInstances()) {
-            if (doc->fileName().isEmpty())
-                continue;
-            if (QFileInfo(doc->fileName()).canonicalFilePath() == canonicalFilePath)
-                return doc->sharedFromThis();
-        }
-    }
+    if (Document *doc = Document::documentInstances().value(canonicalFilePath))
+        return doc->sharedFromThis();
 
     if (!fileFormat) {
         // Try to find a plugin that implements support for this format
@@ -710,7 +697,7 @@ bool DocumentManager::reloadCurrentDocument()
  * history and current selections. Will not ask the user whether to save
  * any changes!
  *
- * Returns whether the map loaded successfully.
+ * Returns whether the document loaded successfully.
  */
 bool DocumentManager::reloadDocumentAt(int index)
 {
@@ -828,11 +815,7 @@ void DocumentManager::onDocumentSaved()
 
 void DocumentManager::documentTabMoved(int from, int to)
 {
-#if QT_VERSION >= 0x050600
     mDocuments.move(from, to);
-#else
-    mDocuments.insert(to, mDocuments.takeAt(from));
-#endif
 }
 
 void DocumentManager::tabContextMenuRequested(const QPoint &pos)
@@ -885,14 +868,6 @@ void DocumentManager::tilesetRemoved(Tileset *tileset)
 {
     MapDocument *mapDocument = static_cast<MapDocument*>(QObject::sender());
     removeFromTilesetDocument(tileset->sharedPointer(), mapDocument);
-}
-
-void DocumentManager::tilesetReplaced(int index, Tileset *tileset, Tileset *oldTileset)
-{
-    Q_UNUSED(index)
-    MapDocument *mapDocument = static_cast<MapDocument*>(QObject::sender());
-    addToTilesetDocument(tileset->sharedPointer(), mapDocument);
-    removeFromTilesetDocument(oldTileset->sharedPointer(), mapDocument);
 }
 
 void DocumentManager::tilesetNameChanged(Tileset *tileset)

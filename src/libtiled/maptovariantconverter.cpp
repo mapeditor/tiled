@@ -64,6 +64,7 @@ QVariant MapToVariantConverter::toVariant(const Map &map, const QDir &mapDir)
     mapVariant[QLatin1String("infinite")] = map.infinite();
     mapVariant[QLatin1String("nextlayerid")] = map.nextLayerId();
     mapVariant[QLatin1String("nextobjectid")] = map.nextObjectId();
+    mapVariant[QLatin1String("compressionlevel")] = map.compressionLevel();
 
     addProperties(mapVariant, map.properties());
 
@@ -91,7 +92,9 @@ QVariant MapToVariantConverter::toVariant(const Map &map, const QDir &mapDir)
     mapVariant[QLatin1String("tilesets")] = tilesetVariants;
 
     mapVariant[QLatin1String("layers")] = toVariant(map.layers(),
-                                                    map.layerDataFormat());
+                                                    map.layerDataFormat(),
+                                                    map.compressionLevel(),
+                                                    map.chunkSize());
 
     return mapVariant;
 }
@@ -385,14 +388,16 @@ QVariant MapToVariantConverter::toVariant(const WangColor &wangColor) const
 }
 
 QVariant MapToVariantConverter::toVariant(const QList<Layer *> &layers,
-                                          Map::LayerDataFormat format) const
+                                          Map::LayerDataFormat format,
+                                          int compressionLevel,
+                                          QSize chunkSize) const
 {
     QVariantList layerVariants;
 
     for (const Layer *layer : layers) {
         switch (layer->layerType()) {
         case Layer::TileLayerType:
-            layerVariants << toVariant(*static_cast<const TileLayer*>(layer), format);
+            layerVariants << toVariant(*static_cast<const TileLayer*>(layer), format, compressionLevel, chunkSize);
             break;
         case Layer::ObjectGroupType:
             layerVariants << toVariant(*static_cast<const ObjectGroup*>(layer));
@@ -401,7 +406,7 @@ QVariant MapToVariantConverter::toVariant(const QList<Layer *> &layers,
             layerVariants << toVariant(*static_cast<const ImageLayer*>(layer));
             break;
         case Layer::GroupLayerType:
-            layerVariants << toVariant(*static_cast<const GroupLayer*>(layer), format);
+            layerVariants << toVariant(*static_cast<const GroupLayer*>(layer), format, compressionLevel, chunkSize);
         }
     }
 
@@ -409,7 +414,9 @@ QVariant MapToVariantConverter::toVariant(const QList<Layer *> &layers,
 }
 
 QVariant MapToVariantConverter::toVariant(const TileLayer &tileLayer,
-                                          Map::LayerDataFormat format) const
+                                          Map::LayerDataFormat format,
+                                          int compressionLevel,
+                                          QSize chunkSize) const
 {
     QVariantMap tileLayerVariant;
     tileLayerVariant[QLatin1String("type")] = QLatin1String("tilelayer");
@@ -435,20 +442,21 @@ QVariant MapToVariantConverter::toVariant(const TileLayer &tileLayer,
     case Map::Base64:
     case Map::Base64Zlib:
     case Map::Base64Gzip:
+    case Map::Base64Zstandard:
         tileLayerVariant[QLatin1String("encoding")] = QLatin1String("base64");
-
-        if (format == Map::Base64Zlib)
-            tileLayerVariant[QLatin1String("compression")] = QLatin1String("zlib");
-        else if (format == Map::Base64Gzip)
-            tileLayerVariant[QLatin1String("compression")] = QLatin1String("gzip");
-
+        tileLayerVariant[QLatin1String("compression")] = compressionToString(format);
         break;
     }
 
     if (tileLayer.map()->infinite()) {
+        if (chunkSize.width() != CHUNK_SIZE || chunkSize.height() != CHUNK_SIZE) {
+            tileLayerVariant[QLatin1String("outputchunkwidth")] = chunkSize.width();
+            tileLayerVariant[QLatin1String("outputchunkheight")] = chunkSize.height();
+        }
+
         QVariantList chunkVariants;
 
-        const auto chunks = tileLayer.sortedChunksToWrite();
+        const auto chunks = tileLayer.sortedChunksToWrite(chunkSize);
         for (const QRect &rect : chunks) {
             QVariantMap chunkVariant;
 
@@ -457,14 +465,14 @@ QVariant MapToVariantConverter::toVariant(const TileLayer &tileLayer,
             chunkVariant[QLatin1String("width")] = rect.width();
             chunkVariant[QLatin1String("height")] = rect.height();
 
-            addTileLayerData(chunkVariant, tileLayer, format, rect);
+            addTileLayerData(chunkVariant, tileLayer, format, compressionLevel, rect);
 
             chunkVariants.append(chunkVariant);
         }
 
         tileLayerVariant[QLatin1String("chunks")] = chunkVariants;
     } else {
-        addTileLayerData(tileLayerVariant, tileLayer, format,
+        addTileLayerData(tileLayerVariant, tileLayer, format, compressionLevel,
                          QRect(0, 0, tileLayer.width(), tileLayer.height()));
     }
 
@@ -649,7 +657,9 @@ QVariant MapToVariantConverter::toVariant(const ImageLayer &imageLayer) const
 }
 
 QVariant MapToVariantConverter::toVariant(const GroupLayer &groupLayer,
-                                          Map::LayerDataFormat format) const
+                                          Map::LayerDataFormat format,
+                                          int compressionLevel,
+                                          QSize chunkSize) const
 {
     QVariantMap groupLayerVariant;
     groupLayerVariant[QLatin1String("type")] = QLatin1String("group");
@@ -657,7 +667,9 @@ QVariant MapToVariantConverter::toVariant(const GroupLayer &groupLayer,
     addLayerAttributes(groupLayerVariant, groupLayer);
 
     groupLayerVariant[QLatin1String("layers")] = toVariant(groupLayer.layers(),
-                                                           format);
+                                                           format,
+                                                           compressionLevel,
+                                                           chunkSize);
 
     return groupLayerVariant;
 }
@@ -665,6 +677,7 @@ QVariant MapToVariantConverter::toVariant(const GroupLayer &groupLayer,
 void MapToVariantConverter::addTileLayerData(QVariantMap &variant,
                                              const TileLayer &tileLayer,
                                              Map::LayerDataFormat format,
+                                             int compressionLevel,
                                              const QRect &bounds) const
 {
     switch (format) {
@@ -680,8 +693,9 @@ void MapToVariantConverter::addTileLayerData(QVariantMap &variant,
     }
     case Map::Base64:
     case Map::Base64Zlib:
-    case Map::Base64Gzip: {
-        QByteArray layerData = mGidMapper.encodeLayerData(tileLayer, format, bounds);
+    case Map::Base64Gzip:
+    case Map::Base64Zstandard:{
+        QByteArray layerData = mGidMapper.encodeLayerData(tileLayer, format, bounds, compressionLevel);
         variant[QLatin1String("data")] = layerData;
         break;
     }

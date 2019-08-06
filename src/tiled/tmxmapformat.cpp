@@ -49,11 +49,12 @@ std::unique_ptr<Map> TmxMapFormat::read(const QString &fileName)
     return map;
 }
 
-bool TmxMapFormat::write(const Map *map, const QString &fileName)
+bool TmxMapFormat::write(const Map *map, const QString &fileName, Options options)
 {
     Preferences *prefs = Preferences::instance();
 
     MapWriter writer;
+    writer.setMinimizeOutput(options.testFlag(WriteMinimized));
     writer.setDtdEnabled(prefs->dtdEnabled());
 
     bool result = writer.writeMap(map, fileName);
@@ -130,11 +131,12 @@ SharedTileset TsxTilesetFormat::read(const QString &fileName)
     return tileset;
 }
 
-bool TsxTilesetFormat::write(const Tileset &tileset, const QString &fileName)
+bool TsxTilesetFormat::write(const Tileset &tileset, const QString &fileName, Options options)
 {
     Preferences *prefs = Preferences::instance();
 
     MapWriter writer;
+    writer.setMinimizeOutput(options.testFlag(WriteMinimized));
     writer.setDtdEnabled(prefs->dtdEnabled());
 
     bool result = writer.writeTileset(tileset, fileName);

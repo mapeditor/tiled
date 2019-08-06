@@ -90,9 +90,9 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
         connect(mMapDocument, &MapDocument::mapChanged,
                 this, &MapScene::mapChanged);
         connect(mMapDocument, &MapDocument::tilesetTileOffsetChanged,
-                this, &MapScene::adaptToTilesetTileSizeChanges);
+                this, [this] { update(); });
         connect(mMapDocument, &MapDocument::tileImageSourceChanged,
-                this, &MapScene::adaptToTileSizeChanges);
+                this, [this] { update(); });
         connect(mMapDocument, &MapDocument::tilesetReplaced,
                 this, &MapScene::tilesetReplaced);
     }
@@ -264,23 +264,12 @@ void MapScene::repaintTileset(Tileset *tileset)
     }
 }
 
-/**
- * This function should be called when any tiles in the given tileset may have
- * changed their size or offset or image.
- */
-void MapScene::adaptToTilesetTileSizeChanges()
+void MapScene::tilesetReplaced(int index, Tileset *tileset, Tileset *oldTileset)
 {
-    update();
-}
+    Q_UNUSED(index);
+    Q_UNUSED(oldTileset);
 
-void MapScene::adaptToTileSizeChanges()
-{
-    update();
-}
-
-void MapScene::tilesetReplaced()
-{
-    adaptToTilesetTileSizeChanges();
+    repaintTileset(tileset);
 }
 
 /**
@@ -436,7 +425,7 @@ void MapScene::dropEvent(QGraphicsSceneDragDropEvent *event)
 
     mapDocument()->undoStack()->push(addObjectCommand);
 
-    mapDocument()->setSelectedObjects(QList<MapObject*>() << newMapObject);
+    mapDocument()->setSelectedObjects({newMapObject});
 }
 
 void MapScene::dragLeaveEvent(QGraphicsSceneDragDropEvent *event)

@@ -115,7 +115,7 @@ std::unique_ptr<Map> ScriptedMapFormat::read(const QString &fileName)
     return nullptr;
 }
 
-bool ScriptedMapFormat::write(const Map *map, const QString &fileName)
+bool ScriptedMapFormat::write(const Map *map, const QString &fileName, Options options)
 {
     mError.clear();
 
@@ -126,6 +126,7 @@ bool ScriptedMapFormat::write(const Map *map, const QString &fileName)
     QJSValueList arguments;
     arguments.append(ScriptManager::instance().engine()->newQObject(&editable));
     arguments.append(fileName);
+    arguments.append(static_cast<Options::Int>(options));
 
     QJSValue resultValue = toStringProperty.call(arguments);
 

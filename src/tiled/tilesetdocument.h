@@ -90,7 +90,7 @@ public:
     void removeMapDocument(MapDocument *mapDocument);
 
     void setTilesetName(const QString &name);
-    void setTilesetTileOffset(const QPoint &tileOffset);
+    void setTilesetTileOffset(QPoint tileOffset);
 
     void addTiles(const QList<Tile*> &tiles);
     void removeTiles(const QList<Tile*> &tiles);
@@ -174,7 +174,6 @@ private:
 
     TilesetTerrainModel *mTerrainModel;
     TilesetWangSetModel *mWangSetModel;
-    WangColorModel *mWangColorModel;
     std::unordered_map<WangSet*, std::unique_ptr<WangColorModel>> mWangColorModels;
 
     QList<Tile*> mSelectedTiles;

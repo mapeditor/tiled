@@ -51,6 +51,7 @@ Map::Map(Orientation orientation,
     Object(MapType),
     mOrientation(orientation),
     mRenderOrder(RightDown),
+    mCompressionLevel(-1),
     mWidth(width),
     mHeight(height),
     mTileWidth(tileWidth),
@@ -59,6 +60,7 @@ Map::Map(Orientation orientation,
     mHexSideLength(0),
     mStaggerAxis(StaggerY),
     mStaggerIndex(StaggerOdd),
+    mChunkSize(CHUNK_SIZE, CHUNK_SIZE),
     mDrawMarginsDirty(true),
     mLayerDataFormat(Base64Zlib),
     mNextLayerId(1),
@@ -206,11 +208,11 @@ void Map::addLayer(Layer *layer)
     mLayers.append(layer);
 }
 
-int Map::indexOfLayer(const QString &layerName, int layertypes) const
+int Map::indexOfLayer(const QString &layerName, int layerTypes) const
 {
     for (int index = 0; index < mLayers.size(); index++)
         if (layerAt(index)->name() == layerName
-                && (layertypes & layerAt(index)->layerType()))
+                && (layerTypes & layerAt(index)->layerType()))
             return index;
 
     return -1;
@@ -337,11 +339,11 @@ Map *Map::clone() const
     o->mStaggerAxis = mStaggerAxis;
     o->mStaggerIndex = mStaggerIndex;
     o->mBackgroundColor = mBackgroundColor;
+    o->mChunkSize = mChunkSize;
     o->mDrawMargins = mDrawMargins;
     o->mDrawMarginsDirty = mDrawMarginsDirty;
     for (const Layer *layer : mLayers) {
         Layer *clone = layer->clone();
-        clone->setId(layer->id());
         clone->setMap(o);
         o->mLayers.append(clone);
     }
@@ -458,6 +460,23 @@ Map::Orientation Tiled::orientationFromString(const QString &string)
         orientation = Map::Hexagonal;
     }
     return orientation;
+}
+
+QString Tiled::compressionToString(Map::LayerDataFormat layerDataFormat)
+{
+    switch (layerDataFormat) {
+    case Map::XML:
+    case Map::Base64:
+    case Map::CSV:
+        return QString();
+    case Map::Base64Gzip:
+        return QLatin1String("gzip");
+    case Map::Base64Zlib:
+        return QLatin1String("zlib");
+    case Map::Base64Zstandard:
+        return QLatin1String("zstd");
+    }
+    return QString();
 }
 
 QString Tiled::renderOrderToString(Map::RenderOrder renderOrder)

@@ -25,29 +25,6 @@ macx {
     LIBS += -framework Foundation
     DEFINES += QT_NO_OPENGL
     OBJECTIVE_SOURCES += macsupport.mm
-
-    sparkle {
-        SPARKLE_DIR = /Library/Frameworks
-
-        !exists($${SPARKLE_DIR}/Sparkle.framework) {
-            error("Sparkle.framework not found at $${SPARKLE_DIR}")
-        }
-
-        DEFINES += TILED_SPARKLE
-        LIBS += -framework Sparkle -framework AppKit
-        LIBS += -F$${SPARKLE_DIR}
-        QMAKE_OBJECTIVE_CFLAGS += -F$${SPARKLE_DIR}
-        OBJECTIVE_SOURCES += sparkleautoupdater.mm
-
-        APP_RESOURCES.path = Contents/Resources
-        APP_RESOURCES.files = \
-            ../../dist/dsa_pub.pem
-
-        SPARKLE_FRAMEWORK.path = Contents/Frameworks
-        SPARKLE_FRAMEWORK.files = $${SPARKLE_DIR}/Sparkle.framework
-
-        QMAKE_BUNDLE_DATA += APP_RESOURCES SPARKLE_FRAMEWORK
-    }
 } else:win32 {
     LIBS += -L$$OUT_PWD/../../lib
 } else {
@@ -82,7 +59,6 @@ SOURCES += aboutdialog.cpp \
     automapperwrapper.cpp \
     automappingmanager.cpp \
     automappingutils.cpp  \
-    autoupdater.cpp \
     brokenlinks.cpp \
     brushitem.cpp \
     bucketfilltool.cpp \
@@ -96,6 +72,7 @@ SOURCES += aboutdialog.cpp \
     changepolygon.cpp \
     changeproperties.cpp \
     changeselectedarea.cpp \
+    changeterrain.cpp \
     changetile.cpp \
     changetileanimation.cpp \
     changetileimagesource.cpp \
@@ -136,6 +113,7 @@ SOURCES += aboutdialog.cpp \
     editableobject.cpp \
     editableobjectgroup.cpp \
     editableselectedarea.cpp \
+    editableterrain.cpp \
     editabletile.cpp \
     editabletilelayer.cpp \
     editabletileset.cpp \
@@ -185,6 +163,9 @@ SOURCES += aboutdialog.cpp \
     newsbutton.cpp \
     newsfeed.cpp \
     newtilesetdialog.cpp \
+    newversionbutton.cpp \
+    newversionchecker.cpp \
+    newversiondialog.cpp \
     noeditorwidget.cpp \
     objectgroupitem.cpp \
     objectsdock.cpp \
@@ -206,8 +187,6 @@ SOURCES += aboutdialog.cpp \
     propertybrowser.cpp \
     raiselowerhelper.cpp \
     regionvaluetype.cpp \
-    renamelayer.cpp \
-    renameterrain.cpp \
     renamewangset.cpp \
     reparentlayers.cpp \
     replacetemplate.cpp \
@@ -231,7 +210,6 @@ SOURCES += aboutdialog.cpp \
     snaphelper.cpp \
     stampactions.cpp \
     stampbrush.cpp \
-    standardautoupdater.cpp \
     stylehelper.cpp \
     swaptiles.cpp \
     templatesdock.cpp \
@@ -302,11 +280,11 @@ HEADERS += aboutdialog.h \
     automapperwrapper.h \
     automappingmanager.h \
     automappingutils.h \
-    autoupdater.h \
     brokenlinks.h \
     brushitem.h \
     bucketfilltool.h \
     capturestamphelper.h \
+    changeevents.h \
     changeimagelayerproperties.h \
     changelayer.h \
     changemapobject.h \
@@ -316,6 +294,7 @@ HEADERS += aboutdialog.h \
     changepolygon.h \
     changeproperties.h \
     changeselectedarea.h \
+    changeterrain.h \
     changetile.h \
     changetileanimation.h \
     changetileimagesource.h \
@@ -357,6 +336,7 @@ HEADERS += aboutdialog.h \
     editableobject.h \
     editableobjectgroup.h \
     editableselectedarea.h \
+    editableterrain.h \
     editabletile.h \
     editabletilelayer.h \
     editabletileset.h \
@@ -406,6 +386,9 @@ HEADERS += aboutdialog.h \
     newsbutton.h \
     newsfeed.h \
     newtilesetdialog.h \
+    newversionbutton.h \
+    newversionchecker.h \
+    newversiondialog.h \
     noeditorwidget.h \
     objectgroupitem.h \
     objectsdock.h \
@@ -429,8 +412,6 @@ HEADERS += aboutdialog.h \
     randompicker.h \
     rangeset.h \
     regionvaluetype.h \
-    renamelayer.h \
-    renameterrain.h \
     renamewangset.h \
     reparentlayers.h \
     replacetemplate.h \
@@ -452,10 +433,8 @@ HEADERS += aboutdialog.h \
     shapefilltool.h \
     shortcutsettingspage.h \
     snaphelper.h \
-    sparkleautoupdater.h \
     stampactions.h \
     stampbrush.h \
-    standardautoupdater.h \
     stylehelper.h \
     swaptiles.h \
     templatesdock.h \
@@ -515,6 +494,7 @@ FORMS += aboutdialog.ui \
     mainwindow.ui \
     newmapdialog.ui \
     newtilesetdialog.ui \
+    newversiondialog.ui \
     noeditorwidget.ui \
     objecttypeseditor.ui \
     offsetmapdialog.ui \

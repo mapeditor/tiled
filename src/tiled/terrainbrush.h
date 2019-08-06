@@ -83,7 +83,7 @@ signals:
     void terrainCaptured(Terrain *terrain);
 
 protected:
-    void tilePositionChanged(const QPoint &tilePos) override;
+    void tilePositionChanged(QPoint tilePos) override;
 
     void mapDocumentChanged(MapDocument *oldDocument,
                             MapDocument *newDocument) override;

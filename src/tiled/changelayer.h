@@ -29,7 +29,25 @@ namespace Tiled {
 
 class Layer;
 
-class MapDocument;
+class Document;
+
+class SetLayerName : public QUndoCommand
+{
+public:
+    SetLayerName(Document *document,
+                 Layer *layer,
+                 const QString &name);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    void swapName();
+
+    Document *mDocument;
+    Layer *mLayer;
+    QString mName;
+};
 
 /**
  * Used for changing layer visibility.
@@ -37,7 +55,7 @@ class MapDocument;
 class SetLayerVisible : public QUndoCommand
 {
 public:
-    SetLayerVisible(MapDocument *mapDocument,
+    SetLayerVisible(Document *document,
                     Layer *layer,
                     bool visible);
 
@@ -47,7 +65,7 @@ public:
 private:
     void swap();
 
-    MapDocument *mMapDocument;
+    Document *mDocument;
     Layer *mLayer;
     bool mVisible;
 };
@@ -58,7 +76,7 @@ private:
 class SetLayerLocked : public QUndoCommand
 {
 public:
-    SetLayerLocked(MapDocument *mapDocument,
+    SetLayerLocked(Document *document,
                    Layer *layer,
                    bool locked);
 
@@ -68,7 +86,7 @@ public:
 private:
     void swap();
 
-    MapDocument *mMapDocument;
+    Document *mDocument;
     Layer *mLayer;
     bool mLocked;
 };
@@ -80,7 +98,7 @@ private:
 class SetLayerOpacity : public QUndoCommand
 {
 public:
-    SetLayerOpacity(MapDocument *mapDocument,
+    SetLayerOpacity(Document *document,
                     Layer *layer,
                     qreal opacity);
 
@@ -94,7 +112,7 @@ public:
 private:
     void setOpacity(qreal opacity);
 
-    MapDocument *mMapDocument;
+    Document *mDocument;
     Layer *mLayer;
     qreal mOldOpacity;
     qreal mNewOpacity;
@@ -106,7 +124,7 @@ private:
 class SetLayerOffset : public QUndoCommand
 {
 public:
-    SetLayerOffset(MapDocument *mapDocument,
+    SetLayerOffset(Document *document,
                    Layer *layer,
                    const QPointF &offset,
                    QUndoCommand *parent = nullptr);
@@ -119,7 +137,7 @@ public:
 private:
     void setOffset(const QPointF &offset);
 
-    MapDocument *mMapDocument;
+    Document *mDocument;
     Layer *mLayer;
     QPointF mOldOffset;
     QPointF mNewOffset;

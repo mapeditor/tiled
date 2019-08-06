@@ -184,6 +184,11 @@ Allegro
    integrates Tiled support with `Allegro
    5 <http://alleg.sourceforge.net/>`__.
 
+Castle Game Engine (Object Pascal)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-  `Castle Game Engine <https://castle-engine.io/>`__ has native support for Tiled maps (see the `CastleTiledMap unit <https://castle-engine.io/apidoc-unstable/html/CastleTiledMap.html>`__)
+
 cocos2d
 ~~~~~~~
 

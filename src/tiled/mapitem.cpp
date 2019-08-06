@@ -24,6 +24,7 @@
 #include "grouplayer.h"
 #include "grouplayeritem.h"
 #include "imagelayeritem.h"
+#include "mapeditor.h"
 #include "mapobject.h"
 #include "mapobjectitem.h"
 #include "maprenderer.h"
@@ -42,6 +43,7 @@
 #include <QStyleOptionGraphicsItem>
 #include <QWidget>
 
+#include "changeevents.h"
 #include "qtcompat_p.h"
 
 #include <memory>
@@ -73,11 +75,15 @@ public:
                 this, [this] { update(); });
 
         // Offset of current layer may have changed
-        connect(mapDocument, &MapDocument::layerChanged,
-                this, [this] (Layer *layer) {
-            if (Layer *currentLayer = mMapDocument->currentLayer())
-                if (currentLayer->isParentOrSelf(layer))
-                    update();
+        connect(mapDocument, &Document::changed,
+                this, [this] (const ChangeEvent &change) {
+            if (change.type == ChangeEvent::LayerChanged) {
+                auto &layerChange = static_cast<const LayerChangeEvent&>(change);
+                if (layerChange.properties & LayerChangeEvent::OffsetProperty)
+                    if (Layer *currentLayer = mMapDocument->currentLayer())
+                        if (currentLayer->isParentOrSelf(layerChange.layer))
+                            update();
+            }
         });
 
         setVisible(prefs->showGrid());
@@ -134,13 +140,12 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
     connect(prefs, &Preferences::highlightCurrentLayerChanged, this, &MapItem::updateSelectedLayersHighlight);
     connect(prefs, &Preferences::objectTypesChanged, this, &MapItem::syncAllObjectItems);
 
+    connect(mapDocument.data(), &Document::changed, this, &MapItem::documentChanged);
     connect(mapDocument.data(), &MapDocument::mapChanged, this, &MapItem::mapChanged);
     connect(mapDocument.data(), &MapDocument::regionChanged, this, &MapItem::repaintRegion);
     connect(mapDocument.data(), &MapDocument::tileLayerChanged, this, &MapItem::tileLayerChanged);
     connect(mapDocument.data(), &MapDocument::layerAdded, this, &MapItem::layerAdded);
     connect(mapDocument.data(), &MapDocument::layerRemoved, this, &MapItem::layerRemoved);
-    connect(mapDocument.data(), &MapDocument::layerChanged, this, &MapItem::layerChanged);
-    connect(mapDocument.data(), &MapDocument::objectGroupChanged, this, &MapItem::objectGroupChanged);
     connect(mapDocument.data(), &MapDocument::imageLayerChanged, this, &MapItem::imageLayerChanged);
     connect(mapDocument.data(), &MapDocument::selectedLayersChanged, this, &MapItem::updateSelectedLayersHighlight);
     connect(mapDocument.data(), &MapDocument::tilesetTileOffsetChanged, this, &MapItem::adaptToTilesetTileSizeChanges);
@@ -148,8 +153,6 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
     connect(mapDocument.data(), &MapDocument::tileObjectGroupChanged, this, &MapItem::tileObjectGroupChanged);
     connect(mapDocument.data(), &MapDocument::tilesetReplaced, this, &MapItem::tilesetReplaced);
     connect(mapDocument.data(), &MapDocument::objectsInserted, this, &MapItem::objectsInserted);
-    connect(mapDocument.data(), &MapDocument::objectsRemoved, this, &MapItem::objectsRemoved);
-    connect(mapDocument.data(), &MapDocument::objectsChanged, this, &MapItem::objectsChanged);
     connect(mapDocument.data(), &MapDocument::objectsIndexChanged, this, &MapItem::objectsIndexChanged);
 
     updateBoundingRect();
@@ -277,15 +280,60 @@ void MapItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
         QGraphicsItem::mousePressEvent(event);
 }
 
+/**
+ * Switches from the current mapitem to this one,
+ * tries to select similar layers and tileset by name.
+ */
 void MapItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     if (mDisplayMode == ReadOnly && event->button() == Qt::LeftButton && isUnderMouse()) {
         MapView *view = static_cast<MapView*>(event->widget()->parent());
         QRectF viewRect { view->viewport()->rect() };
         QRectF sceneViewRect = view->viewportTransform().inverted().mapRect(viewRect);
+
+        // Try selecting similar layers and tileset by name to the previously active mapitem
+        Document *currentDocument = DocumentManager::instance()->currentDocument();
+        SharedTileset newSimilarTileset;
+
+        if (auto currentMapDocument = qobject_cast<MapDocument*>(currentDocument)) {
+            const Layer *currentLayer = currentMapDocument->currentLayer();
+            const QList<Layer*> selectedLayers = currentMapDocument->selectedLayers();
+
+            if (currentLayer) {
+                Layer *newCurrentLayer = mapDocument()->map()->findLayer(currentLayer->name(),
+                                                                         currentLayer->layerType());
+                if (newCurrentLayer)
+                    mapDocument()->setCurrentLayer(newCurrentLayer);
+            }
+
+            QList<Layer*> newSelectedLayers;
+            for (Layer *selectedLayer : selectedLayers) {
+                Layer *newSelectedLayer = mapDocument()->map()->findLayer(selectedLayer->name(),
+                                                                          selectedLayer->layerType());
+                if (newSelectedLayer)
+                    newSelectedLayers << newSelectedLayer;
+            }
+            if (!newSelectedLayers.isEmpty())
+                mapDocument()->setSelectedLayers(newSelectedLayers);
+
+            Editor *currentEditor = DocumentManager::instance()->currentEditor();
+            if (auto currentMapEditor = qobject_cast<MapEditor*>(currentEditor)) {
+                if (SharedTileset currentTileset = currentMapEditor->currentTileset()) {
+                    if (!mapDocument()->map()->tilesets().contains(currentTileset))
+                        newSimilarTileset = currentTileset->findSimilarTileset(mapDocument()->map()->tilesets());
+                }
+            }
+        }
+
         DocumentManager::instance()->switchToDocument(mMapDocument.data(),
                                                       sceneViewRect.center() - pos(),
                                                       view->zoomable()->scale());
+
+        Editor *newEditor = DocumentManager::instance()->currentEditor();
+        if (auto newMapEditor = qobject_cast<MapEditor*>(newEditor))
+            if (newSimilarTileset)
+                newMapEditor->setCurrentTileset(newSimilarTileset);
+
         return;
     }
 
@@ -311,6 +359,41 @@ void MapItem::repaintRegion(const QRegion &region, TileLayer *tileLayer)
                             margins.bottom());
 
         tileLayerItem->update(boundingRect);
+    }
+}
+
+void MapItem::documentChanged(const ChangeEvent &change)
+{
+    switch (change.type) {
+    case ChangeEvent::LayerChanged:
+        layerChanged(static_cast<const LayerChangeEvent&>(change).layer);
+        break;
+    case ChangeEvent::MapObjectsAboutToBeRemoved:
+        deleteObjectItems(static_cast<const MapObjectsEvent&>(change).mapObjects);
+        break;
+    case ChangeEvent::MapObjectsChanged:
+        syncObjectItems(static_cast<const MapObjectsChangeEvent&>(change).mapObjects);
+        break;
+    case ChangeEvent::ObjectGroupChanged: {
+        auto &objectGroupChange = static_cast<const ObjectGroupChangeEvent&>(change);
+        auto objectGroup = objectGroupChange.objectGroup;
+
+        bool sync = (objectGroupChange.properties & ObjectGroupChangeEvent::ColorProperty) != 0;
+
+        if (objectGroupChange.properties & ObjectGroupChangeEvent::DrawOrderProperty) {
+            if (objectGroup->drawOrder() == ObjectGroup::IndexOrder)
+                objectsIndexChanged(objectGroup, 0, objectGroup->objectCount() - 1);
+            else
+                sync = true;
+        }
+
+        if (sync)
+            syncObjectItems(objectGroup->objects());
+
+        break;
+    }
+    default:
+        break;
     }
 }
 
@@ -392,16 +475,6 @@ void MapItem::layerChanged(Layer *layer)
     layerItem->setPos(layer->offset());
 
     updateBoundingRect();   // possible layer offset change
-}
-
-/**
- * When an object group has changed it may mean its color or drawing order
- * changed, which affects all its objects.
- */
-void MapItem::objectGroupChanged(ObjectGroup *objectGroup)
-{
-    objectsChanged(objectGroup->objects());
-    objectsIndexChanged(objectGroup, 0, objectGroup->objectCount() - 1);
 }
 
 /**
@@ -490,7 +563,7 @@ void MapItem::objectsInserted(ObjectGroup *objectGroup, int first, int last)
 /**
  * Removes the map object items related to the given objects.
  */
-void MapItem::objectsRemoved(const QList<MapObject*> &objects)
+void MapItem::deleteObjectItems(const QList<MapObject*> &objects)
 {
     for (MapObject *o : objects) {
         auto i = mObjectItems.find(o);
@@ -504,7 +577,7 @@ void MapItem::objectsRemoved(const QList<MapObject*> &objects)
 /**
  * Updates the map object items related to the given objects.
  */
-void MapItem::objectsChanged(const QList<MapObject*> &objects)
+void MapItem::syncObjectItems(const QList<MapObject*> &objects)
 {
     for (MapObject *object : objects) {
         MapObjectItem *item = mObjectItems.value(object);

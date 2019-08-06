@@ -52,7 +52,7 @@ Use safe writing of files
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.2</div>
+   <div class="new new-prev">Since Tiled 1.2</div>
 
 .. _export-options:
 
@@ -77,7 +77,12 @@ Resolve object types and properties
     Object properties are inherited from a tile (in case of a tile
     object) and from the default properties of their type.
 
-These options are also available as options when exporting using the command-line.
+Minimize output
+    Omits unnecessary whitespace in the output file. This option is supported
+    for XML (TMX and TSX), JSON and Lua formats.
+
+These options are also available as options when exporting using the
+command-line.
 
 Interface
 ---------
@@ -117,8 +122,42 @@ Mouse wheel zooms by default
     navigate the map, but it can also interfere with panning on a
     touchpad.
 
+.. raw:: html
+
+   <div class="new">New in Tiled 1.3</div>
+
+Updates
+~~~~~~~
+
+By default, Tiled checks for news and new versions and highlights any updates
+in the status bar. Here you can disable this functionality. It is recommended
+to keep at least one of these enabled.
+
+If you disable displaying of new versions, you can still manually check
+whether a new version is available by opening the *About Tiled* dialog.
+
+.. raw:: html
+
+   <div class="new">New in Tiled 1.3</div>
+
+.. _keyboard-options:
+
+Keyboard
+--------
+
+Here you can add, remove or change the keyboard shortcuts of most available
+actions.
+
+Conflicting keybindings are highlighted in red. They will not work until you
+resolve the conflict.
+
+If you customize multiple shortcuts, it is recommended to use the export
+functionality to save the keybindings somewhere, so that you can easily
+recover that setup or copy it to other Tiled installations.
+
+
 Theme
-~~~~~
+-----
 
 On Windows and Linux, the default style used by Tiled is "Tiled Fusion".
 This is a customized version of the "Fusion" style that ships with Qt.
@@ -135,17 +174,6 @@ available since it is in some cases preferable to the custom style. The
 base color and selection color can't be changed when using this style,
 as they depend on the system.
 
-Updates
--------
-
-The official macOS builds and the Windows installers of Tiled ship with
-an automatic update check, done by `Sparkle`_ and `WinSparkle`_
-respectively. These solutions also offer to download the new version
-and to upgrade or run the installer afterwards.
-
-You can turn off the update checks or trigger them manually using the
-*Check Now* button.
-
 Plugins
 -------
 
@@ -159,6 +187,3 @@ When a plugin fails to load, try hovering its icon to see if the tool
 tip displays a useful error message.
 
 See :doc:`export` for more information about supported file formats.
-
-.. _Sparkle: https://sparkle-project.org/
-.. _WinSparkle: https://winsparkle.org/

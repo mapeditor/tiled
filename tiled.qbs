@@ -8,18 +8,17 @@ Project {
     minimumQbsVersion: "1.8"
 
     property string version: Environment.getEnv("TILED_VERSION") || "1.2.4";
-    property bool sparkleEnabled: Environment.getEnv("TILED_SPARKLE")
     property bool snapshot: Environment.getEnv("TILED_SNAPSHOT")
     property bool release: Environment.getEnv("TILED_RELEASE")
     property bool installHeaders: false
     property bool useRPaths: true
     property bool windowsInstaller: false
+    property bool enableZstd: false
 
     references: [
         "dist/archive.qbs",
         "dist/distribute.qbs",
         "dist/win/installer.qbs",
-        "src/automappingconverter",
         "src/libtiled",
         "src/plugins",
         "src/qtpropertybrowser",

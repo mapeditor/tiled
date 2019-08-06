@@ -1,5 +1,5 @@
 /*
- * renameterrain.h
+ * changeterrain.h
  * Copyright 2012-2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
@@ -45,6 +45,24 @@ private:
     int mTerrainId;
     QString mOldName;
     QString mNewName;
+};
+
+
+class SetTerrainImage : public QUndoCommand
+{
+public:
+    SetTerrainImage(TilesetDocument *tilesetDocument,
+                    int terrainId,
+                    int tileId);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    TilesetTerrainModel *mTerrainModel;
+    int mTerrainId;
+    int mOldImageTileId;
+    int mNewImageTileId;
 };
 
 } // namespace Tiled

@@ -27,7 +27,6 @@
 
 namespace Tiled {
 
-
 class MapDocument;
 
 /**
@@ -40,7 +39,8 @@ class MapDocument;
 class AutoMapperWrapper : public QUndoCommand
 {
 public:
-    AutoMapperWrapper(MapDocument *mapDocument, QVector<AutoMapper*> autoMapper,
+    AutoMapperWrapper(MapDocument *mapDocument,
+                      QVector<AutoMapper*> autoMappers,
                       QRegion *where);
     ~AutoMapperWrapper() override;
 

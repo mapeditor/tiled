@@ -36,6 +36,7 @@ matrix:
         - g++-7
         - libgl1-mesa-dev
         - zlib1g-dev
+        - libzstd-dev
     env:
     - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
     before_install:
@@ -49,7 +50,7 @@ matrix:
     - qbs --version
     - qbs setup-toolchains --detect
     - qbs config defaultProfile gcc
-    - qbs install --install-root Tiled config:release qbs.installPrefix:/usr projects.Tiled.version:$TILED_VERSION
+    - qbs install --install-root Tiled config:release qbs.installPrefix:/usr projects.Tiled.version:$TILED_VERSION projects.Tiled.enableZstd:true
     - cp LICENSE* COPYING *md Tiled/
     after_success:
     - wget -c "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
@@ -98,6 +99,7 @@ matrix:
         - libgl1-mesa-dev
         - xvfb
         - zlib1g-dev
+        - libzstd-dev
     env:
     - QMAKESPEC=linux-clang
     - MAKEFLAGS=-j2
@@ -108,10 +110,10 @@ matrix:
     - source /opt/qt56/bin/qt56-env.sh
     - qmake -version
     script:
-    - qmake
+    - qmake "CONFIG+=tiled_zstd"
     - make
     - pushd tests/
-    - qmake
+    - qmake "CONFIG+=tiled_zstd"
     - make
     - for test in `find -executable -type f`; do pushd `dirname $test`; xvfb-run -a
       ./`basename $test`||exit 1; popd; done
@@ -119,6 +121,8 @@ matrix:
     after_script:
     - cppcheck --enable=all -q -Isrc/libtiled `git ls-files src/\*.cpp`
   - os: osx
+    env:
+      - MAKEFLAGS=-j2
     before_install:
     - curl -L https://raw.githubusercontent.com/benlau/qtci/master/recipes/install-qt
       --output install-qt
@@ -130,16 +134,32 @@ matrix:
     - QT_CI_PACKAGES=qt.qt5.5123.clang_64,qt.qt5.5123.qtscript QT_CI_DOWNLOADER="wget -c -nv -N" install-qt 5.12.3
     - source qt-5.12.3.env
     - source ./dist/linux/setup-qbs.sh
+    - git clone --depth 1 -b master https://github.com/facebook/zstd.git
+    - cd zstd/lib
+    - make libzstd.a
+    - cd ../../
     script:
     - qbs --version
     - qbs setup-toolchains --detect
     - qbs config defaultProfile xcode
-    - qbs install --install-root install config:release qbs.installPrefix:"" projects.Tiled.version:$TILED_VERSION
+    - qbs install --install-root install config:release qbs.installPrefix:"" projects.Tiled.version:$TILED_VERSION projects.Tiled.enableZstd:true
     - macdeployqt install/Tiled.app
     - pushd install
     - ruby ../dist/macos/fixup-install-names.rb
+    - ditto -c -k --sequesterRsrc --keepParent Tiled.app ../Tiled-$TILED_VERSION-macos.zip
     - popd
     deploy:
+    - provider: releases
+      skip_cleanup: true
+      draft: true
+      tag_name: "$TRAVIS_TAG"
+      api_key:
+        secure: g8B2MDEElF5v1K1awuhB1C54Fbl2eUmKdfJTPhYC8kYiLoWClgufOPavJOHO+hH5us1LtbCvOa6Z+lrSe9YnuwNcV2MKENQQ4CjpViEI51wpAOM1/WW+C7tDu2BNFKCJjldRrSGttFD2lgVbNYBY7w56/2stZNRBuTfdE8YZEFc=
+      file: Tiled-*-macos.zip
+      file_glob: true
+      on:
+        repo: bjorn/tiled
+        tags: true
     - provider: script
       skip_cleanup: true
       on:

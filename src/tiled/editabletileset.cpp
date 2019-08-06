@@ -21,10 +21,12 @@
 #include "editabletileset.h"
 
 #include "editablemanager.h"
+#include "editableterrain.h"
 #include "editabletile.h"
 #include "scriptmanager.h"
 #include "tilesetchanges.h"
 #include "tilesetdocument.h"
+#include "tilesetterrainmodel.h"
 
 namespace Tiled {
 
@@ -43,14 +45,14 @@ EditableTileset::EditableTileset(TilesetDocument *tilesetDocument,
     connect(tilesetDocument, &Document::fileNameChanged, this, &EditableAsset::fileNameChanged);
     connect(tilesetDocument, &TilesetDocument::tilesAdded, this, &EditableTileset::attachTiles);
     connect(tilesetDocument, &TilesetDocument::tilesRemoved, this, &EditableTileset::detachTiles);
+    connect(tilesetDocument, &TilesetDocument::tileObjectGroupChanged, this, &EditableTileset::tileObjectGroupChanged);
+    connect(tilesetDocument->terrainModel(), &TilesetTerrainModel::terrainAdded, this, &EditableTileset::terrainAdded);
 }
 
 EditableTileset::~EditableTileset()
 {
-    // Operate on copy since original container will get modified
-    const auto editableTiles = mAttachedTiles;
-    for (auto editable : editableTiles)
-        editable->detach();
+    detachTiles(tileset()->tiles().values());
+    detachTerrains(tileset()->terrains());
 }
 
 EditableTile *EditableTileset::tile(int id)
@@ -72,6 +74,15 @@ QList<QObject*> EditableTileset::tiles()
     for (Tile *tile : tileset()->tiles())
         tiles.append(editableManager.editableTile(this, tile));
     return tiles;
+}
+
+QList<QObject *> EditableTileset::terrains()
+{
+    auto &editableManager = EditableManager::instance();
+    QList<QObject*> terrains;
+    for (Terrain *terrain : tileset()->terrains())
+        terrains.append(editableManager.editableTerrain(this, terrain));
+    return terrains;
 }
 
 TilesetDocument *EditableTileset::tilesetDocument() const
@@ -107,8 +118,6 @@ void EditableTileset::attachTiles(const QList<Tile *> &tiles)
 {
     const auto &editableManager = EditableManager::instance();
     for (Tile *tile : tiles) {
-        Q_ASSERT(!mAttachedTiles.contains(tile));
-
         if (EditableTile *editable = editableManager.find(tile))
             editable->attach(this);
     }
@@ -116,11 +125,38 @@ void EditableTileset::attachTiles(const QList<Tile *> &tiles)
 
 void EditableTileset::detachTiles(const QList<Tile *> &tiles)
 {
+    const auto &editableManager = EditableManager::instance();
     for (Tile *tile : tiles) {
-        auto iterator = mAttachedTiles.constFind(tile);
-        if (iterator != mAttachedTiles.constEnd())
-            (*iterator)->detach();
+        if (auto editable = editableManager.find(tile)) {
+            Q_ASSERT(editable->tileset() == this);
+            editable->detach();
+        }
     }
+}
+
+void EditableTileset::detachTerrains(const QList<Terrain *> &terrains)
+{
+    const auto &editableManager = EditableManager::instance();
+    for (Terrain *terrain: terrains) {
+        if (auto editable = editableManager.find(terrain)) {
+            Q_ASSERT(editable->tileset() == this);
+            editable->detach();
+        }
+    }
+}
+
+void EditableTileset::tileObjectGroupChanged(Tile *tile)
+{
+    Q_ASSERT(tile->tileset() == tileset());
+
+    if (auto editable = EditableManager::instance().find(tile))
+        editable->detachObjectGroup();
+}
+
+void EditableTileset::terrainAdded(Tileset *tileset, int terrainId)
+{
+    if (auto editable = EditableManager::instance().find(tileset->terrain(terrainId)))
+        editable->attach(this);
 }
 
 } // namespace Tiled

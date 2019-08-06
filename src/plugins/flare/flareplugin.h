@@ -42,7 +42,7 @@ public:
     std::unique_ptr<Tiled::Map> read(const QString &fileName) override;
     bool supportsFile(const QString &fileName) const override;
 
-    bool write(const Tiled::Map *map, const QString &fileName) override;
+    bool write(const Tiled::Map *map, const QString &fileName, Options options) override;
     QString nameFilter() const override;
     QString shortName() const override;
     QString errorString() const override;

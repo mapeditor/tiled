@@ -52,7 +52,7 @@ private:
 
     QPlainTextEdit *mPlainTextEdit;
     QLineEdit *mLineEdit;
-    QVector<QString> mHistory;
+    QStringList mHistory;
     int mHistoryPosition = 0;
 };
 

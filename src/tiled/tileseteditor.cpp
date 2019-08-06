@@ -24,14 +24,16 @@
 #include "addremoveterrain.h"
 #include "addremovetiles.h"
 #include "addremovewangset.h"
+#include "changeterrain.h"
 #include "changetileterrain.h"
-#include "changewangsetdata.h"
 #include "changewangcolordata.h"
+#include "changewangsetdata.h"
 #include "erasetiles.h"
 #include "maintoolbar.h"
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "newsbutton.h"
+#include "newversionbutton.h"
 #include "objectgroup.h"
 #include "objecttemplate.h"
 #include "preferences.h"
@@ -78,42 +80,6 @@ static const char SIZE_KEY[] = "TilesetEditor/Size";
 static const char STATE_KEY[] = "TilesetEditor/State";
 
 namespace Tiled {
-
-namespace {
-
-class SetTerrainImage : public QUndoCommand
-{
-public:
-    SetTerrainImage(TilesetDocument *tilesetDocument,
-                    int terrainId,
-                    int tileId)
-        : QUndoCommand(QCoreApplication::translate("Undo Commands",
-                                                   "Change Terrain Image"))
-        , mTerrainModel(tilesetDocument->terrainModel())
-        , mTerrainId(terrainId)
-        , mOldImageTileId(tilesetDocument->tileset()->terrain(terrainId)->imageTileId())
-        , mNewImageTileId(tileId)
-    {}
-
-    void undo() override
-    {
-        mTerrainModel->setTerrainImage(mTerrainId, mOldImageTileId);
-    }
-
-    void redo() override
-    {
-        mTerrainModel->setTerrainImage(mTerrainId, mNewImageTileId);
-    }
-
-private:
-    TilesetTerrainModel *mTerrainModel;
-    int mTerrainId;
-    int mOldImageTileId;
-    int mNewImageTileId;
-};
-
-} // anonymous namespace
-
 
 class TilesetEditorWindow : public QMainWindow
 {
@@ -179,9 +145,7 @@ TilesetEditor::TilesetEditor(QObject *parent)
     , mCurrentTilesetDocument(nullptr)
     , mCurrentTile(nullptr)
 {
-#if QT_VERSION >= 0x050600
     mMainWindow->setDockOptions(mMainWindow->dockOptions() | QMainWindow::GroupedDragging);
-#endif
     mMainWindow->setDockNestingEnabled(true);
     mMainWindow->setCentralWidget(mWidgetStack);
 
@@ -216,6 +180,7 @@ TilesetEditor::TilesetEditor(QObject *parent)
 
     mMainWindow->statusBar()->addPermanentWidget(mZoomComboBox);
     mMainWindow->statusBar()->addPermanentWidget(new NewsButton);
+    mMainWindow->statusBar()->addPermanentWidget(new NewVersionButton(NewVersionButton::AutoVisible));
     mMainWindow->statusBar()->addWidget(mStatusInfoLabel);
 
     mTemplatesDock->setPropertiesDock(mPropertiesDock);

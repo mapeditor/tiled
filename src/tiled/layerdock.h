@@ -59,7 +59,7 @@ protected:
 
 private slots:
     void updateOpacitySlider();
-    void layerChanged(Layer *layer);
+    void documentChanged(const ChangeEvent &change);
     void editLayerName();
     void sliderValueChanged(int opacity);
 
@@ -106,9 +106,10 @@ private slots:
     void layerRemoved(Layer *layer);
 
 private:
-    MapDocument *mMapDocument;
+    MapDocument *mMapDocument = nullptr;
     QAbstractProxyModel *mProxyModel;
-    bool mUpdatingSelectedLayers;
+    bool mUpdatingSelectedLayers = false;
+    bool mUpdatingViewSelection = false;
 };
 
 } // namespace Tiled

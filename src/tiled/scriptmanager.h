@@ -22,8 +22,9 @@
 
 #include "filesystemwatcher.h"
 
-#include <QObject>
 #include <QJSValue>
+#include <QObject>
+#include <QStringList>
 
 #include <memory>
 
@@ -41,6 +42,10 @@ public:
     static ScriptManager &instance();
     static void deleteInstance();
 
+    void initialize();
+
+    const QString &extensionsPath() const;
+
     ScriptModule *module() const;
     QJSEngine *engine() const;
 
@@ -49,27 +54,34 @@ public:
 
     QJSValue evaluateFile(const QString &fileName);
 
-    void evaluateStartupScripts();
-
     void checkError(QJSValue value, const QString &program = QString());
     void throwError(const QString &message);
 
     void reset();
 
-    void scriptFilesChanged(const QStringList &scriptFiles);
-
 private:
     explicit ScriptManager(QObject *parent = nullptr);
 
-    void initialize();
+    void scriptFilesChanged(const QStringList &scriptFiles);
+
+    void evaluateStartupScripts();
+    void loadExtensions();
+    void loadExtension(const QString &path);
 
     QJSEngine *mEngine;
     ScriptModule *mModule;
     FileSystemWatcher mWatcher;
+    QString mExtensionsPath;
+    QStringList mExtensionsPaths;
 
     static std::unique_ptr<ScriptManager> mInstance;
 };
 
+
+inline const QString &ScriptManager::extensionsPath() const
+{
+    return mExtensionsPath;
+}
 
 inline ScriptModule *ScriptManager::module() const
 {

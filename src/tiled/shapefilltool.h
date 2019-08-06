@@ -43,7 +43,7 @@ public:
     void populateToolBar(QToolBar *toolBar) override;
 
 protected:
-    void tilePositionChanged(const QPoint&) override;
+    void tilePositionChanged(QPoint) override;
     void clearConnections(MapDocument *) override {}
 
 private:

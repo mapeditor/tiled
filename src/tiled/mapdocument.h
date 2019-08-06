@@ -132,12 +132,15 @@ public:
     const QList<Layer*> &selectedLayers() const { return mSelectedLayers; }
     void setSelectedLayers(const QList<Layer*> &layers);
 
+    void switchCurrentLayer(Layer *layer);
+    void switchSelectedLayers(const QList<Layer*> &layers);
+
     /**
      * Resize this map to the given \a size, while at the same time shifting
      * the contents by \a offset. If \a removeObjects is true then all objects
      * which are outside the map will be removed.
      */
-    void resizeMap(const QSize &size, const QPoint &offset, bool removeObjects);
+    void resizeMap(QSize size, QPoint offset, bool removeObjects);
 
     void autocropMap();
 
@@ -146,7 +149,7 @@ public:
      * wraps on the X or Y axis.
      */
     void offsetMap(const QList<Layer *> &layers,
-                   const QPoint &offset,
+                   QPoint offset,
                    const QRect &bounds,
                    bool wrapX, bool wrapY);
 
@@ -281,7 +284,6 @@ signals:
     void layerAdded(Layer *layer);
     void layerAboutToBeRemoved(GroupLayer *parentLayer, int index);
     void layerRemoved(Layer *layer);
-    void layerChanged(Layer *layer);
 
     /**
      * Emitted after a new layer was added and the name should be edited.
@@ -310,12 +312,6 @@ signals:
     void tileLayerChanged(TileLayer *layer, TileLayerChangeFlags flags);
 
     /**
-     * Should be emitted when changing the color or drawing order of an object
-     * group.
-     */
-    void objectGroupChanged(ObjectGroup *objectGroup);
-
-    /**
      * Should be emitted when changing the image or the transparent color of
      * an image layer.
      */
@@ -330,11 +326,7 @@ signals:
     void objectTemplateReplaced(const ObjectTemplate *newObjectTemplate,
                                 const ObjectTemplate *oldObjectTemplate);
 
-    void objectsAdded(const QList<MapObject*> &objects);
     void objectsInserted(ObjectGroup *objectGroup, int first, int last);
-    void objectsRemoved(const QList<MapObject*> &objects);
-    void objectsChanged(const QList<MapObject*> &objects);
-    void objectsTypeChanged(const QList<MapObject*> &objects);
     void objectsIndexChanged(ObjectGroup *objectGroup, int first, int last);
 
     // emitted from the TilesetDocument
@@ -346,7 +338,7 @@ signals:
     void tileObjectGroupChanged(Tile *tile);
 
 private slots:
-    void onObjectsRemoved(const QList<MapObject*> &objects);
+    void onChanged(const ChangeEvent &change);
 
     void onMapObjectModelRowsInserted(const QModelIndex &parent, int first, int last);
     void onMapObjectModelRowsInsertedOrRemoved(const QModelIndex &parent, int first, int last);

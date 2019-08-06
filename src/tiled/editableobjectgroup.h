@@ -38,7 +38,7 @@ public:
     Q_INVOKABLE explicit EditableObjectGroup(const QString &name = QString(),
                                              QObject *parent = nullptr);
 
-    EditableObjectGroup(EditableMap *map,
+    EditableObjectGroup(EditableAsset *asset,
                         ObjectGroup *objectGroup,
                         QObject *parent = nullptr);
 

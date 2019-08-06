@@ -1,17 +1,66 @@
+.. raw:: html
+
+   <div class="new">New in Tiled 1.3</div>
+
 Scripting
 =========
 
 Introduction
 ------------
 
-Initial scripting capabilities have been added to Tiled. The API is
-still incomplete, but many actions can be automated either by
-interacting with any open assets or by triggering UI actions. Scripts
-can be run from the Console view and there is a script loaded on
+Initial scripting capabilities have been added to Tiled. The API is still
+incomplete, but many actions can be automated either by interacting with any
+open assets or by triggering UI actions.
+
+Scripts can be used to implement :ref:`map export formats <script-registerMapFormat>`
+(only text formats for now), :ref:`custom actions <script-registerAction>` and
+:ref:`new tools <script-registerTool>`.
+
+On startup, Tiled will execute any script files present in
+:ref:`extensions <script-extensions>`. In addition it is possible to run
+scripts directly from :ref:`the console <script-console>`. All scripts share
+a single JavaScript context.
+
+.. _script-extensions:
+
+Scripted Extensions
+^^^^^^^^^^^^^^^^^^^
+
+Extensions are placed in a system-specific location. This folder can be opened
+from the Plugins tab in the Preferences dialog.
+
++-------------+-----------------------------------------------------------------+
+| **Windows** | | :file:`C:/Users/<USER>/AppData/Local/Tiled/extensions/`       |
++-------------+-----------------------------------------------------------------+
+| **macOS**   | | :file:`~/Library/Preferences/Tiled/extensions/`               |
++-------------+-----------------------------------------------------------------+
+| **Linux**   | | :file:`~/.config/tiled/extensions/`                           |
++-------------+-----------------------------------------------------------------+
+
+Each extension is expected to be placed in a sub-directory of the extensions
+directory. All scripts files found in these sub-directories are executed on
 startup.
+
+.. note::
+
+    If your scripts depend on other scripts that you want to include rather
+    than have them execute directly, they can be nested in another
+    sub-directory.
+
+When any loaded script is changed, the script engine is reinstantiated and the
+scripts are reloaded. This makes it quick to iterate on a script until it
+works as intended.
+
+Apart from scripts, extensions can include images that can be used as the icon
+for scripted actions or tools.
 
 Startup Script
 ^^^^^^^^^^^^^^
+
+.. warning::
+
+    This functionality is deprecated. Write an
+    :ref:`extension <script-extensions>` instead.
 
 If present, a :file:`startup.js` script is evaluated on startup. This
 script could define functions that can be called from the Console or can
@@ -32,9 +81,10 @@ The location of the startup script depends on the platform. The file
 
 Any file that exists will be evaluated.
 
-When a startup script is changed, the script engine is reinstantiated and the
-scripts are reloaded. This makes it quick to iterate on a script until it
-works at intended.
+As with extensions, the script engine is reinstantiated and the scripts are
+reloaded when the startup script is changed.
+
+.. _script-console:
 
 Console View
 ^^^^^^^^^^^^
@@ -120,6 +170,32 @@ tiled.trigger(action : string) : void
     Use the ``tiled.actions`` property to get a list of all available actions.
 
     Actions that are checkable will toggle when triggered.
+
+.. _script-execute:
+
+tiled.executeCommand(name : string, inTerminal : bool) : bool
+    Executes the first custom command with the given name, as if it was
+    triggered manually. Works also with commands that are not currently enabled.
+
+.. _script-open:
+
+tiled.open(fileName : string) : :ref:`script-asset`
+    Requests to open the asset with the given file name. Returns a reference to
+    the opened asset, or ``null`` in case there was a problem.
+
+.. _script-close:
+
+tiled.close(asset : :ref:`script-asset`) : bool
+    Closes the given asset without checking for unsaved changes (to confirm the
+    loss of any unsaved changes, set ``activeAsset`` and trigger the "Close"
+    action instead).
+
+.. _script-reload:
+
+tiled.reload(asset : :ref:`script-asset`) : :ref:`script-asset`
+    Reloads the given asset from disk, without checking for unsaved changes.
+    This invalidates the previous script reference to the asset, hence the new
+    reference is returned for convenience. Returns ``null`` if reloading failed.
 
 tiled.alert(text : string [, title : string]) : void
     Shows a modal warning dialog to the user with the given text and
@@ -237,7 +313,7 @@ tiled.registerTool(shortName : string, tool : object) : object
         **name** : string, Name of the tool as shown on the tool bar.
         **map** : :ref:`script-map`, Currently active tile map.
         **selectedTile** : :ref:`script-tile`, The last clicked tile for the active map.
-        **tilePosition** : point, Mouse cursor position in tile coordinates.
+        **tilePosition** : :ref:`script-point`, Mouse cursor position in tile coordinates.
         **statusInfo** : string, Text shown in the status bar while the tool is active.
         **enabled** : bool, Whether this tool is enabled.
         "**activated** : function() : void", Called when the tool was activated.
@@ -492,6 +568,7 @@ Properties
     **backgroundColor** : color, Background color of the map.
     **layerDataFormat** : int, "The format in which the layer data is stored, taken into account by TMX, JSON and Lua map formats: 0 (XML), 1 (Base64), 2 (Base64Gzip), 3 (Base64Zlib), 4 (CSV)"
     **layerCount** : int |ro|, Number of top-level layers the map has.
+    **tilesets** : [:ref:`script-tileset`], "The list of tilesets referenced by this map. To determine which tilesets are actually used, call :ref:`usedTilesets() <script-map-usedTilesets>`."
     **selectedArea** : :ref:`SelectionArea <script-selectedarea>`, The selected area of tiles.
     **currentLayer** : :ref:`script-layer`, The current layer.
     **selectedLayers** : [:ref:`script-layer`], Selected layers.
@@ -534,9 +611,39 @@ TileMap.addLayer(layer : :ref:`script-layer`) : void
     Adds the layer to the map, above all existing layers. The layer can't
     already be part of a map.
 
+.. _script-map-addTileset:
+
+TileMap.addTileset(tileset : :ref:`script-tileset`) : bool
+    Adds the given tileset to the list of tilesets referenced by this map.
+    Returns ``true`` if the tileset was added, or ``false`` if the tileset was
+    already referenced by this map.
+
+.. _script-map-replaceTileset:
+
+TileMap.replaceTileset(oldTileset : :ref:`script-tileset`, newTileset : :ref:`script-tileset`) : bool
+    Replaces all occurrences of ``oldTileset`` with ``newTileset``. Returns
+    ``true`` on success, or ``false`` when either the old tileset was not
+    referenced by the map, or when the new tileset was already referenced by
+    the map.
+
+.. _script-map-removeTileset:
+
+TileMap.removeTileset(tileset : :ref:`script-tileset`) : bool
+    Removes the given tileset from the list of tilesets referenced by this
+    map. Returns ``true`` on success, or ``false`` when the given tileset was
+    not referenced by this map or when the tileset was still in use by a tile
+    layer or tile object.
+
+.. _script-map-usedTilesets:
+
+TileMap.usedTilesets() : [:ref:`script-tileset`]
+    Returns the list of tilesets actually used by this map. This is generally
+    a subset of the tilesets referenced by the map (the ``TileMap.tilesets``
+    property).
+
 .. _script-map-resize:
 
-TileMap.resize(size : size [, offset : point [, removeObjects : bool = false]]) : void
+TileMap.resize(size : size [, offset : :ref:`script-point` [, removeObjects : bool = false]]) : void
     Resizes the map to the given size, optionally applying an offset (in tiles)
 
 .. _script-layer:
@@ -556,7 +663,7 @@ Properties
     **opacity** : number, "Opacity of the layer, from 0 (fully transparent) to 1 (fully opaque)."
     **visible** : bool, Whether the layer is visible (affects child layer visibility for group layers).
     **locked** : bool, Whether the layer is locked (affects whether child layers are locked for group layers).
-    **offset** : point, Offset in pixels that is applied when this layer is rendered.
+    **offset** : :ref:`script-point`, Offset in pixels that is applied when this layer is rendered.
     **map** : :ref:`script-map`, Map that this layer is part of (or ``null`` in case of a standalone layer).
     **selected** : bool, Whether the layer is selected.
     **isTileLayer** : bool |ro|, Whether this layer is a :ref:`script-tilelayer`.
@@ -596,7 +703,8 @@ TileLayer.cellAt(x : int, y : int) : cell
     reference.
 
 TileLayer.flagsAt(x : int, y : int) : int
-    Returns the flags used for the tile at the given position.
+    Returns the :ref:`flags <script-tile-flags>` used for the tile at the given
+    position.
 
 TileLayer.tileAt(x : int, y : int) : :ref:`script-tile`
     Returns the tile used at the given position, or ``null`` for empty spaces.
@@ -722,19 +830,41 @@ Properties
     :widths: 1, 2
 
     **id** : int |ro|, Unique (map-wide) ID of the object.
+    **shape** : int, :ref:`Shape <script-mapobject-shape>` of the object.
     **name** : string, Name of the object.
     **type** : string, Type of the object.
     **x** : number, X coordinate of the object in pixels.
     **y** : number, Y coordinate of the object in pixels.
-    **pos** : point, Position of the object in pixels (has ``x`` and ``y`` members).
+    **pos** : :ref:`script-point`, Position of the object in pixels.
     **width** : number, Width of the object in pixels.
     **height** : number, Height of the object in pixels.
     **size** : size, Size of the object in pixels (has ``width`` and ``height`` members).
     **rotation** : number, Rotation of the object in degrees clockwise.
     **visible** : bool, Whether the object is visible.
+    **polygon** : :ref:`Polygon <script-polygon>`, Polygon of the object.
+    **text** : string, The text of a text object.
+    **font** : :ref:`script-font`, The font of a text object.
+    **textAlignment** : :ref:`script-alignment`, The alignment of a text object.
+    **wordWrap** : bool, Whether the text of a text object wraps based on the width of the object.
+    **textColor** : color, Color of a text object.
+    **tile** : :ref:`script-tile`, Tile of the object.
+    **tileFlippedHorizontally** : bool, Whether the tile is flipped horizontally.
+    **tileFlippedVertically** : bool, Whether the tile is flipped vertically.
     **selected** : bool, Whether the object is selected.
     **layer** : :ref:`script-objectgroup` |ro|, Layer this object is part of (or ``null`` in case of a standalone object).
     **map** : :ref:`script-map` |ro|, Map this object is part of (or ``null`` in case of a standalone object).
+
+.. _script-mapobject-shape:
+
+.. csv-table::
+    :header: "MapObject.Shape"
+
+    MapObject.Rectangle
+    MapObject.Polygon
+    MapObject.Polyline
+    MapObject.Ellipse
+    MapObject.Text
+    MapObject.Point
 
 Functions
 ~~~~~~~~~
@@ -756,12 +886,15 @@ Properties
     :widths: 1, 2
 
     **name** : string, Name of the tileset.
+    **tiles**: [:ref:`script-tile`] |ro|, Array of all tiles in this tileset. Note that the index of a tile in this array does not always match with its ID.
+    **terrains**: [:ref:`script-terrain`] |ro|, Array of all terrains in this tileset.
+    **tileCount** : int, The number of tiles in this tileset.
     **tileWidth** : int |ro|, Tile width for tiles in this tileset in pixels.
     **tileHeight** : int |ro|, Tile Height for tiles in this tileset in pixels.
     **tileSize** : size |ro|, Tile size for tiles in this tileset in pixels (has ``width`` and ``height`` members).
     **tileSpacing** : int |ro|, Spacing between tiles in this tileset in pixels.
     **margin** : int |ro|, Margin around the tileset in pixels (only used at the top and left sides of the tileset image).
-    **tileOffset** : point, Offset in pixels that is applied when tiles from this tileset are rendered.
+    **tileOffset** : :ref:`script-point`, Offset in pixels that is applied when tiles from this tileset are rendered.
     **backgroundColor** : color, Background color for this tileset in the *Tilesets* view.
 
 Functions
@@ -775,8 +908,9 @@ Tileset.tile(id : int) : :ref:`script-tile`
     such tile exists. When the tile gets removed from the tileset, the
     reference changes to a standalone copy of the tile.
 
-Tileset.tiles() : [:ref:`script-tile`]
-    Returns an array containing all tiles in the tileset.
+    Note that the tiles in a tileset are only guaranteed to have consecutive
+    IDs for tileset-image based tilesets. For image collection tilesets there
+    will be gaps when tiles have been removed from the tileset.
 
 .. _script-tile:
 
@@ -796,7 +930,59 @@ Properties
     **height** : int |ro|, Height of the tile in pixels.
     **size** : size |ro|, Size of the tile in pixels (has ``width`` and ``height`` members).
     **type** : string, Type of the tile.
+    **terrain** : :ref:`script-tileterrains`, An object specifying the terrain at each corner of the tile.
     **probability** : number, Probability that the tile gets chosen relative to other tiles.
+    **objectGroup** : :ref:`script-objectgroup` |ro|, The :ref:`script-objectgroup` associated with the tile in case collision shapes were defined. Returns ``null`` if no collision shapes were defined for this tile.
+    **frames** : :ref:`[frame] <script-frames>`, This tile's animation as an array of frames.
+    **animated** : bool |ro|, Indicates whether this tile is animated.
+    **tileset** : :ref:`script-tileset` |ro|, The tileset of the tile.
+
+.. _script-tile-flags:
+
+.. csv-table::
+    :header: "Tile.Flags"
+
+    Tile.FlippedHorizontally
+    Tile.FlippedVertically
+    Tile.FlippedAntiDiagonally
+    Tile.RotatedHexagonal120
+
+.. _script-tile-corner:
+
+.. csv-table::
+    :header: "Tile.Corner"
+
+    Tile.TopLeft
+    Tile.TopRight
+    Tile.BottomLeft
+    Tile.BottomRight
+
+Functions
+~~~~~~~~~
+
+Tile.terrainAtCorner(corner : :ref:`Corner <script-tile-corner>`) : :ref:`script-terrain`
+    Returns the terrain used at the given corner.
+
+Tile.setTerrainAtCorner(corner : :ref:`Corner <script-tile-corner>`, :ref:`script-terrain`) : void
+    Sets the terrain used at the given corner.
+
+.. _script-terrain:
+
+Terrain
+^^^^^^^
+
+Inherits :ref:`script-object`.
+
+Properties
+~~~~~~~~~~
+
+.. csv-table::
+    :widths: 1, 2
+
+    **id** : int |ro|, ID of this terrain.
+    **name** : string, Name of the terrain.
+    **imageTile** : :ref:`script-tile`, The tile representing the terrain (needs to be from the same tileset).
+    **tileset** : :ref:`script-tileset` |ro|, The tileset of the terrain.
 
 .. _script-tilelayeredit:
 
@@ -822,7 +1008,7 @@ Functions
 ~~~~~~~~~
 
 TileLayerEdit.setTile(x : int, y : int, tile : :ref:`script-tile` [, flags : int = 0]) : void
-    Sets the tile at the given location, optionally specifying tile flags.
+    Sets the tile at the given location, optionally specifying :ref:`tile flags <script-tile-flags>`.
 
 .. _script-tilelayeredit-apply:
 
@@ -835,31 +1021,42 @@ TileLayerEdit.apply() : void
 SelectedArea
 ^^^^^^^^^^^^
 
+Properties
+~~~~~~~~~~
+
+.. csv-table::
+    :widths: 1, 2
+
+    **boundingRect** : :ref:`script-rect` |ro|, Bounding rectangle of the selected area.
+
 Functions
 ~~~~~~~~~
 
-SelectedArea.set(rect : rect) : void
+SelectedArea.get() : :ref:`script-region`
+    Returns the selected region.
+
+SelectedArea.set(rect : :ref:`script-rect`) : void
     Sets the selected area to the given rectangle.
 
-SelectedArea.set(region : region) : void
+SelectedArea.set(region : :ref:`script-region`) : void
     Sets the selected area to the given region.
 
-SelectedArea.add(rect : rect) : void
+SelectedArea.add(rect : :ref:`script-rect`) : void
     Adds the given rectangle to the selected area.
 
-SelectedArea.add(region : region) : void
+SelectedArea.add(region : :ref:`script-region`) : void
     Adds the given region to the selected area.
 
-SelectedArea.subtract(rect : rect) : void
+SelectedArea.subtract(rect : :ref:`script-rect`) : void
     Subtracts the given rectangle from the selected area.
 
-SelectedArea.subtract(region : region) : void
+SelectedArea.subtract(region : :ref:`script-region`) : void
     Subtracts the given region from the selected area.
 
-SelectedArea.intersect(rect : rect) : void
+SelectedArea.intersect(rect : :ref:`script-rect`) : void
     Sets the selected area to the intersection of the current selected area and the given rectangle.
 
-SelectedArea.intersect(region : region) : void
+SelectedArea.intersect(region : :ref:`script-region`) : void
     Sets the selected area to the intersection of the current selected area and the given region.
 
 
@@ -883,7 +1080,7 @@ Properties
     **checkable** : bool, Whether the action can be checked.
     **checked** : bool, Whether the action is checked.
     **enabled** : bool, Whether the action is enabled.
-    **iconName** : string, Name of an icon from the system theme (only works on Linux).
+    **icon** : string, File name of an icon.
     **iconVisibleInMenu** : bool, Whether the action should show an icon in a menu.
     **id** : string |ro|, The ID this action was registered with.
     **shortcut** : QKeySequence, The shortcut (can be assigned a string like "Ctrl+K").
@@ -898,3 +1095,130 @@ Action.trigger() : void
 
 Action.toggle() : void
     Changes the checked state to its opposite state.
+
+
+.. _script-basic-types:
+
+Basic Types
+^^^^^^^^^^^
+
+Some types are provided by the Qt Scripting Engine and others are added based
+on the needs of the data types above. In the following the most important
+ones are documented.
+
+.. _script-alignment:
+
+Alignment
+~~~~~~~~~
+
+.. csv-table::
+    :header: "Qt.Alignment"
+    :widths: 1, 2
+
+    Qt.AlignLeft, 0x0001
+    Qt.AlignRight, 0x0002
+    Qt.AlignHCenter, 0x0004
+    Qt.AlignJustify, 0x0008
+    Qt.AlignTop, 0x0020
+    Qt.AlignBottom, 0x0040
+    Qt.AlignVCenter, 0x0080
+    Qt.AlignCenter, Qt.AlignVCenter | Qt.AlignHCenter
+
+.. _script-font:
+
+Font
+~~~~
+
+.. csv-table::
+    :widths: 1, 2
+
+    **family** : string, The font family.
+    **pixelSize** : int, Font size in pixels.
+    **bold** : bool, Whether the font is bold.
+    **italic** : bool, Whether the font is italic.
+    **underline** : bool, Whether the text is underlined.
+    **strikeOut** : bool, Whether the text is striked through.
+    **kerning** : bool, Whether to use kerning when rendering the text.
+
+.. _script-frames:
+
+Frames
+~~~~~~
+
+An array of frames, which are objects with the following properties:
+
+.. csv-table::
+    :widths: 1, 2
+
+    **tileId** : int, The local tile ID used to represent the frame.
+    **duration** : int, Duration of the frame in milliseconds.
+
+.. _script-rect:
+
+rect
+~~~~
+
+``Qt.rect(x, y, width, height)`` can be used to create a rectangle.
+
+**Properties**:
+
+.. csv-table::
+    :widths: 1, 2
+
+    **x** : int, X coordinate of the rectangle.
+    **y** : int, Y coordinate of the rectangle.
+    **width** : int, Width of the rectangle.
+    **height** : int, Height of the rectangle.
+
+.. _script-region:
+
+region
+~~~~~~
+
+**Properties**:
+
+.. csv-table::
+    :widths: 1, 2
+
+    **boundingRect** : :ref:`script-rect` |ro|, Bounding rectangle of the region.
+
+
+.. _script-point:
+
+point
+~~~~~
+
+``Qt.point(x, y)`` can be used to create a point object.
+
+**Properties**:
+
+.. csv-table::
+    :widths: 1, 2
+
+    **x** : number, X coordinate of the point.
+    **y** : number, Y coordinate of the point.
+
+.. _script-polygon:
+
+Polygon
+~~~~~~~
+
+A polygon is not strictly a custom type. It is an array of objects that each
+have an ``x`` and ``y`` property, representing the points of the polygon.
+
+To modify the polygon of a :ref:`script-mapobject`, change or set up the
+polygon array and then assign it to the object.
+
+.. _script-tileterrains:
+
+Terrains
+~~~~~~~~
+
+An object specifying the terrain for each corner of a tile:
+
+.. csv-table::
+
+    **topLeft** : :ref:`script-terrain`
+    **topRight** : :ref:`script-terrain`
+    **bottomLeft** : :ref:`script-terrain`
+    **bottomRight** : :ref:`script-terrain`

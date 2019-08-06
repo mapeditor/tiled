@@ -48,6 +48,16 @@ ApplicationWindow {
         property alias windowVisibility: window.visibility
     }
 
+    Shortcut {
+        sequence: "F11"
+        onActivated: {
+            if (window.visibility == ApplicationWindow.FullScreen)
+                window.visibility = ApplicationWindow.Windowed
+            else
+                window.visibility = ApplicationWindow.FullScreen
+        }
+    }
+
     Action {
         id: openAction
         text: qsTr("Open...")
@@ -150,10 +160,17 @@ ApplicationWindow {
         anchors.fill: parent
 
         onDragged: {
-            containerAnimation.stop()
-            containerAnimation.x += dx
-            containerAnimation.y += dy
-            containerAnimation.start()
+            if (containerAnimation.running) {
+                containerAnimation.stop()
+                containerAnimation.x += dx
+                containerAnimation.y += dy
+                mapContainer.x += dx
+                mapContainer.y += dy
+                containerAnimation.start()
+            } else {
+                mapContainer.x += dx
+                mapContainer.y += dy
+            }
         }
 
         onWheel: {

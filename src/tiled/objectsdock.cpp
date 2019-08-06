@@ -21,17 +21,16 @@
 #include "objectsdock.h"
 
 #include "documentmanager.h"
+#include "filteredit.h"
 #include "grouplayer.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapdocumentactionhandler.h"
 #include "mapobject.h"
-#include "mapobjectmodel.h"
 #include "objectgroup.h"
 #include "objectsview.h"
 #include "utils.h"
 
-#include <QAbstractProxyModel>
 #include <QBoxLayout>
 #include <QEvent>
 #include <QLabel>
@@ -44,6 +43,7 @@ using namespace Tiled;
 
 ObjectsDock::ObjectsDock(QWidget *parent)
     : QDockWidget(parent)
+    , mFilterEdit(new FilterEdit(this))
     , mObjectsView(new ObjectsView)
     , mMapDocument(nullptr)
 {
@@ -61,7 +61,12 @@ ObjectsDock::ObjectsDock(QWidget *parent)
     QVBoxLayout *layout = new QVBoxLayout(widget);
     layout->setMargin(0);
     layout->setSpacing(0);
+    layout->addWidget(mFilterEdit);
     layout->addWidget(mObjectsView);
+
+    mFilterEdit->setFilteredView(mObjectsView);
+
+    connect(mFilterEdit, &QLineEdit::textChanged, mObjectsView, &ObjectsView::setFilter);
 
     mActionNewLayer = new QAction(this);
     mActionNewLayer->setIcon(QIcon(QLatin1String(":/images/16x16/document-new.png")));
@@ -128,7 +133,7 @@ void ObjectsDock::moveObjectsDown()
 void ObjectsDock::setMapDocument(MapDocument *mapDoc)
 {
     if (mMapDocument) {
-        mObjectsView->saveExpandedGroups();
+        mObjectsView->saveExpandedLayers();
         mMapDocument->disconnect(this);
     }
 
@@ -137,7 +142,7 @@ void ObjectsDock::setMapDocument(MapDocument *mapDoc)
     mObjectsView->setMapDocument(mapDoc);
 
     if (mMapDocument) {
-        mObjectsView->restoreExpandedGroups();
+        mObjectsView->restoreExpandedLayers();
         connect(mMapDocument, &MapDocument::selectedObjectsChanged,
                 this, &ObjectsDock::updateActions);
     }
@@ -160,6 +165,8 @@ void ObjectsDock::changeEvent(QEvent *e)
 void ObjectsDock::retranslateUi()
 {
     setWindowTitle(tr("Objects"));
+
+    mFilterEdit->setPlaceholderText(tr("Filter"));
 
     mActionNewLayer->setToolTip(tr("Add Object Layer"));
     mActionObjectProperties->setToolTip(tr("Object Properties"));
@@ -214,5 +221,5 @@ void ObjectsDock::objectProperties()
 void ObjectsDock::documentAboutToClose(Document *document)
 {
     if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document))
-        mObjectsView->clearExpandedGroups(mapDocument);
+        mObjectsView->clearExpandedLayers(mapDocument);
 }

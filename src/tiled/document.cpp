@@ -29,23 +29,26 @@
 
 namespace Tiled {
 
-QList<Document*> Document::sDocumentInstances;
+QHash<QString, Document*> Document::sDocumentInstances;
 
 Document::Document(DocumentType type, const QString &fileName,
                    QObject *parent)
     : QObject(parent)
     , mType(type)
     , mFileName(fileName)
-    , mCurrentObject(nullptr)
-    , mChangedOnDisk(false)
-    , mIgnoreBrokenLinks(false)
+    , mCanonicalFilePath(QFileInfo(mFileName).canonicalFilePath())
 {
-    sDocumentInstances.append(this);
+    if (!mCanonicalFilePath.isEmpty())
+        sDocumentInstances.insert(mCanonicalFilePath, this);
 }
 
 Document::~Document()
 {
-    sDocumentInstances.removeOne(this);
+    if (!mCanonicalFilePath.isEmpty()) {
+        auto i = sDocumentInstances.find(mCanonicalFilePath);
+        if (i != sDocumentInstances.end() && *i == this)
+            sDocumentInstances.erase(i);
+    }
 }
 
 /**
@@ -63,7 +66,19 @@ void Document::setFileName(const QString &fileName)
         return;
 
     QString oldFileName = mFileName;
+
+    if (!mCanonicalFilePath.isEmpty()) {
+        auto i = sDocumentInstances.find(mCanonicalFilePath);
+        if (i != sDocumentInstances.end() && *i == this)
+            sDocumentInstances.erase(i);
+    }
+
     mFileName = fileName;
+    mCanonicalFilePath = QFileInfo(fileName).canonicalFilePath();
+
+    if (!mCanonicalFilePath.isEmpty())
+        sDocumentInstances.insert(mCanonicalFilePath, this);
+
     emit fileNameChanged(fileName, oldFileName);
 }
 

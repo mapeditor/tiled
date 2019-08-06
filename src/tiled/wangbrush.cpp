@@ -125,26 +125,29 @@ WangBrush::~WangBrush()
 
 void WangBrush::mousePressed(QGraphicsSceneMouseEvent *event)
 {
-    if (mBrushMode == Idle || !brushItem()->isVisible())
-        return;
-
-    if (event->button() == Qt::LeftButton) {
-        switch (mBrushBehavior) {
-        case Free:
-            beginPaint();
-            break;
-        default:
-            break;
-        }
-    } else if (event->button() == Qt::RightButton) {
-        switch (mBrushBehavior) {
-        case Free:
-            captureHoverColor();
-            break;
-        default:
-            break;
+    if (mBrushMode != Idle && brushItem()->isVisible()) {
+        if (event->button() == Qt::LeftButton) {
+            switch (mBrushBehavior) {
+            case Free:
+                beginPaint();
+                break;
+            default:
+                break;
+            }
+            return;
+        } else if (event->button() == Qt::RightButton && event->modifiers() == Qt::NoModifier) {
+            switch (mBrushBehavior) {
+            case Free:
+                captureHoverColor();
+                break;
+            default:
+                break;
+            }
+            return;
         }
     }
+
+    AbstractTileTool::mousePressed(event);
 }
 
 void WangBrush::mouseReleased(QGraphicsSceneMouseEvent *event)
@@ -187,10 +190,7 @@ void WangBrush::setCornerColor(int color)
 
 void WangBrush::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers)
 {
-    if (mBrushMode == Idle)
-        return;
-
-    if (mIsTileMode) {
+    if (mBrushMode == Idle || mIsTileMode) {
         AbstractTileTool::mouseMoved(pos, modifiers);
         return;
     }
@@ -285,7 +285,7 @@ void WangBrush::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers)
     }
 }
 
-void WangBrush::tilePositionChanged(const QPoint &tilePos)
+void WangBrush::tilePositionChanged(QPoint tilePos)
 {
     if (mBrushMode == Idle)
         return;

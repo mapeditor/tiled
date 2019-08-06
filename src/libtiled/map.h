@@ -100,11 +100,12 @@ public:
      * The different formats in which the tile layer data can be stored.
      */
     enum LayerDataFormat {
-        XML        = 0,
-        Base64     = 1,
-        Base64Gzip = 2,
-        Base64Zlib = 3,
-        CSV        = 4
+        XML             = 0,
+        Base64          = 1,
+        Base64Gzip      = 2,
+        Base64Zlib      = 3,
+        Base64Zstandard = 4,
+        CSV             = 5
     };
     Q_ENUM(LayerDataFormat)
 
@@ -181,6 +182,16 @@ public:
      */
     void setRenderOrder(RenderOrder renderOrder)
     { mRenderOrder = renderOrder; }
+
+    /**
+     * Returns the compression level of this map.
+     */
+    int compressionLevel() const { return mCompressionLevel; }
+
+    /**
+     * Sets the compression level of this map.
+     */
+    void setCompressionLevel(int compressionLevel) { mCompressionLevel = compressionLevel; }
 
     /**
      * Returns the width of this map in tiles.
@@ -416,6 +427,16 @@ public:
     void setBackgroundColor(QColor color) { mBackgroundColor = color; }
 
     /**
+     * Returns the chunk size used when saving tile layers of this map.
+     */
+    QSize chunkSize() const { return mChunkSize; }
+    
+    /**
+     * Sets the chunk size used when saving tile layers of this map.
+     */
+    void setChunkSize(QSize size) { mChunkSize = size; }
+    
+    /**
      * Returns whether the given \a tileset is used by any tile layer of this
      * map.
      */
@@ -461,6 +482,7 @@ private:
 
     Orientation mOrientation;
     RenderOrder mRenderOrder;
+    int mCompressionLevel;
     int mWidth;
     int mHeight;
     int mTileWidth;
@@ -470,6 +492,7 @@ private:
     StaggerAxis mStaggerAxis;
     StaggerIndex mStaggerIndex;
     QColor mBackgroundColor;
+    QSize mChunkSize;
     mutable QMargins mDrawMargins;
     mutable bool mDrawMarginsDirty;
     QList<Layer*> mLayers;
@@ -648,6 +671,14 @@ TILEDSHARED_EXPORT QString orientationToString(Map::Orientation);
  *         the string is unrecognized.
  */
 TILEDSHARED_EXPORT Map::Orientation orientationFromString(const QString &);
+
+/**
+ * Helper function that returns a string representing the compression used by
+ * the given layer data format.
+ *
+ * @return The compression as a lowercase string.
+ */
+TILEDSHARED_EXPORT QString compressionToString(Map::LayerDataFormat);
 
 TILEDSHARED_EXPORT QString renderOrderToString(Map::RenderOrder renderOrder);
 TILEDSHARED_EXPORT Map::RenderOrder renderOrderFromString(const QString &);

@@ -161,12 +161,9 @@ ExportDetails<Format> chooseExportDetails(const QString &fileName,
     Format *chosenFormat = helper.formatByNameFilter(selectedFilter);
 
     // If not, try to find the file extension among the name filters
-    QString suffix = QFileInfo(exportToFileName).completeSuffix();
-    if (!chosenFormat && !suffix.isEmpty()) {
-        suffix.prepend(QLatin1String("*."));
-
+    if (!chosenFormat) {
         for (Format *format : helper.formats()) {
-            if (format->nameFilter().contains(suffix, Qt::CaseInsensitive)) {
+            if (Utils::fileNameMatchesNameFilter(exportToFileName, format->nameFilter())) {
                 if (chosenFormat) {
                     QMessageBox::warning(window, MainWindow::tr("Non-unique file extension"),
                                          MainWindow::tr("Non-unique file extension.\n"
@@ -285,14 +282,14 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     MacSupport::addFullscreen(this);
 #endif
 
-#if QT_VERSION >= 0x050600
     setDockOptions(dockOptions() | QMainWindow::GroupedDragging);
-#endif
 
     Preferences *preferences = Preferences::instance();
 
     QIcon redoIcon(QLatin1String(":images/16x16/edit-redo.png"));
     QIcon undoIcon(QLatin1String(":images/16x16/edit-undo.png"));
+    QIcon highlightCurrentLayerIcon(QLatin1String("://images/scalable/highlight-current-layer-16.svg"));
+    highlightCurrentLayerIcon.addFile(QLatin1String("://images/scalable/highlight-current-layer-24.svg"));
 
 #ifndef Q_OS_MAC
     QIcon tiledIcon(QLatin1String(":images/16x16/tiled.png"));
@@ -353,6 +350,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->actionHighlightCurrentLayer->setChecked(preferences->highlightCurrentLayer());
     mUi->actionHighlightHoveredObject->setChecked(preferences->highlightHoveredObject());
     mUi->actionAutoMapWhileDrawing->setChecked(preferences->automappingDrawing());
+
+    mUi->actionHighlightCurrentLayer->setIcon(highlightCurrentLayerIcon);
+    mUi->actionHighlightCurrentLayer->setIconVisibleInMenu(false);
 
 #ifdef Q_OS_MAC
     mUi->actionFullScreen->setShortcuts(QKeySequence::FullScreen);
@@ -992,9 +992,10 @@ void MainWindow::export_()
             exportFormat = &tmxFormat;
 
         std::unique_ptr<Map> exportMap;
-        const Map *map = ExportHelper().prepareExportMap(mapDocument->map(), exportMap);
+        ExportHelper exportHelper;
+        const Map *map = exportHelper.prepareExportMap(mapDocument->map(), exportMap);
 
-        if (exportFormat->write(map, exportFileName)) {
+        if (exportFormat->write(map, exportFileName, exportHelper.formatOptions())) {
             auto *editor = static_cast<MapEditor*>(mDocumentManager->editor(Document::MapDocumentType));
             editor->showMessage(tr("Exported to %1").arg(exportFileName), 3000);
             return;
@@ -1292,8 +1293,8 @@ void MainWindow::resizeMap()
     }
 
     if (resizeDialog.exec()) {
-        const QSize &newSize = resizeDialog.newSize();
-        const QPoint &offset = resizeDialog.offset() - mapStart;
+        const QSize newSize = resizeDialog.newSize();
+        const QPoint offset = resizeDialog.offset() - mapStart;
         if (newSize != mapSize || !offset.isNull())
             mapDocument->resizeMap(newSize, offset, resizeDialog.removeObjects());
     }
@@ -1642,7 +1643,8 @@ void MainWindow::exportMapAs(MapDocument *mapDocument)
         return;
 
     std::unique_ptr<Map> exportMap;
-    const Map *map = ExportHelper().prepareExportMap(mapDocument->map(), exportMap);
+    ExportHelper exportHelper;
+    const Map *map = exportHelper.prepareExportMap(mapDocument->map(), exportMap);
 
     // Check if writer will overwrite existing files here because some writers
     // could save to multiple files at the same time. For example CSV saves
@@ -1682,7 +1684,9 @@ void MainWindow::exportMapAs(MapDocument *mapDocument)
     pref->setLastPath(Preferences::ExportedFile, QFileInfo(exportDetails.mFileName).path());
     mSettings.setValue(QLatin1String("lastUsedExportFilter"), selectedFilter);
 
-    auto exportResult = exportDetails.mFormat->write(map, exportDetails.mFileName);
+    auto exportResult = exportDetails.mFormat->write(map,
+                                                     exportDetails.mFileName,
+                                                     exportHelper.formatOptions());
     if (!exportResult) {
         QMessageBox::critical(this, tr("Error Exporting Map!"),
                               exportDetails.mFormat->errorString());
@@ -1716,9 +1720,12 @@ void MainWindow::exportTilesetAs(TilesetDocument *tilesetDocument)
     pref->setLastPath(Preferences::ExportedFile, QFileInfo(exportDetails.mFileName).path());
     mSettings.setValue(QLatin1String("lastUsedTilesetExportFilter"), selectedFilter);
 
-    SharedTileset exportTileset = ExportHelper().prepareExportTileset(tilesetDocument->tileset());
+    ExportHelper exportHelper;
+    SharedTileset exportTileset = exportHelper.prepareExportTileset(tilesetDocument->tileset());
 
-    auto exportResult = exportDetails.mFormat->write(*exportTileset, exportDetails.mFileName);
+    auto exportResult = exportDetails.mFormat->write(*exportTileset,
+                                                     exportDetails.mFileName,
+                                                     exportHelper.formatOptions());
     if (!exportResult) {
         QMessageBox::critical(this, tr("Error Exporting Map!"),
                               exportDetails.mFormat->errorString());

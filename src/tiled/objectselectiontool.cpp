@@ -20,6 +20,7 @@
 
 #include "objectselectiontool.h"
 
+#include "changeevents.h"
 #include "changepolygon.h"
 #include "editpolygontool.h"
 #include "geometry.h"
@@ -349,16 +350,12 @@ void ObjectSelectionTool::activate(MapScene *scene)
 
     updateHandlesAndOrigin();
 
-    connect(mapDocument(), &MapDocument::objectsChanged,
-            this, &ObjectSelectionTool::updateHandlesAndOrigin);
     connect(mapDocument(), &MapDocument::mapChanged,
             this, &ObjectSelectionTool::updateHandlesAndOrigin);
     connect(mapDocument(), &MapDocument::selectedObjectsChanged,
             this, &ObjectSelectionTool::updateHandlesAndOrigin);
     connect(mapDocument(), &MapDocument::tilesetTileOffsetChanged,
             this, &ObjectSelectionTool::updateHandlesAndOrigin);
-    connect(mapDocument(), &MapDocument::objectsRemoved,
-            this, &ObjectSelectionTool::objectsRemoved);
 
     scene->addItem(mOriginIndicator.get());
     for (RotateHandle *handle : mRotateHandles)
@@ -375,16 +372,12 @@ void ObjectSelectionTool::deactivate(MapScene *scene)
     for (ResizeHandle *handle : mResizeHandles)
         scene->removeItem(handle);
 
-    disconnect(mapDocument(), &MapDocument::objectsChanged,
-               this, &ObjectSelectionTool::updateHandlesAndOrigin);
     disconnect(mapDocument(), &MapDocument::mapChanged,
                this, &ObjectSelectionTool::updateHandlesAndOrigin);
     disconnect(mapDocument(), &MapDocument::selectedObjectsChanged,
                this, &ObjectSelectionTool::updateHandlesAndOrigin);
     disconnect(mapDocument(), &MapDocument::tilesetTileOffsetChanged,
                this, &ObjectSelectionTool::updateHandlesAndOrigin);
-    disconnect(mapDocument(), &MapDocument::objectsRemoved,
-               this, &ObjectSelectionTool::objectsRemoved);
 
     abortCurrentAction(Deactivated);
 
@@ -735,6 +728,29 @@ void ObjectSelectionTool::languageChanged()
     setShortcut(QKeySequence(tr("S")));
 }
 
+void ObjectSelectionTool::changeEvent(const ChangeEvent &event)
+{
+    AbstractObjectTool::changeEvent(event);
+
+    if (!mapScene())
+        return;
+
+    switch (event.type) {
+    case ChangeEvent::LayerChanged:
+        if (static_cast<const LayerChangeEvent&>(event).properties & LayerChangeEvent::OffsetProperty)
+            updateHandlesAndOrigin();
+        break;
+    case ChangeEvent::MapObjectsChanged:
+        updateHandlesAndOrigin();
+        break;
+    case ChangeEvent::MapObjectsAboutToBeRemoved:
+        objectsAboutToBeRemoved(static_cast<const MapObjectsEvent&>(event).mapObjects);
+        break;
+    default:
+        break;
+    }
+}
+
 void ObjectSelectionTool::updateHandles()
 {
     updateHandlesImpl(false);
@@ -1024,7 +1040,7 @@ void ObjectSelectionTool::updateHandleVisibility()
     mOriginIndicator->setVisible(showOrigin);
 }
 
-void ObjectSelectionTool::objectsRemoved(const QList<MapObject *> &objects)
+void ObjectSelectionTool::objectsAboutToBeRemoved(const QList<MapObject *> &objects)
 {
     if (mClickedObject && objects.contains(mClickedObject))
         mClickedObject = nullptr;
@@ -1147,7 +1163,7 @@ void ObjectSelectionTool::updateMovingItems(const QPointF &pos,
         object.mapObject->setPosition(newPos);
     }
 
-    mapDocument()->mapObjectModel()->emitObjectsChanged(changingObjects(), MapObjectModel::Position);
+    emit mapDocument()->changed(MapObjectsChangeEvent(changingObjects(), MapObject::PositionProperty));
 
     mOriginIndicator->setPos(mOriginPos + diff);
 }
@@ -1237,7 +1253,10 @@ void ObjectSelectionTool::updateRotatingItems(const QPointF &pos,
             mapObject->setRotation(newRotation);
     }
 
-    mapDocument()->mapObjectModel()->emitObjectsChanged(changingObjects(), MapObjectModel::Position);
+    emit mapDocument()->changed(MapObjectsChangeEvent(changingObjects(), MapObject::ChangedProperties {
+                                                          MapObject::PositionProperty,
+                                                          MapObject::RotationProperty
+                                                      }));
 }
 
 void ObjectSelectionTool::finishRotating(const QPointF &pos)
@@ -1365,7 +1384,11 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
         mapObject->setPosition(newPos);
     }
 
-    mapDocument()->mapObjectModel()->emitObjectsChanged(changingObjects(), MapObjectModel::Position);
+    emit mapDocument()->changed(MapObjectsChangeEvent(changingObjects(), MapObject::ChangedProperties {
+                                                          MapObject::PositionProperty,
+                                                          MapObject::SizeProperty,
+                                                          MapObject::ShapeProperty
+                                                      }));
 }
 
 void ObjectSelectionTool::updateResizingSingleItem(const QPointF &resizingOrigin,
@@ -1504,7 +1527,11 @@ void ObjectSelectionTool::updateResizingSingleItem(const QPointF &resizingOrigin
     mapObject->setSize(newSize);
     mapObject->setPosition(newPos);
 
-    mapDocument()->mapObjectModel()->emitObjectsChanged(changingObjects(), MapObjectModel::Position);
+    emit mapDocument()->changed(MapObjectsChangeEvent(changingObjects(), MapObject::ChangedProperties {
+                                                          MapObject::PositionProperty,
+                                                          MapObject::SizeProperty,
+                                                          MapObject::ShapeProperty,
+                                                      }));
 }
 
 void ObjectSelectionTool::finishResizing(const QPointF &pos)
@@ -1597,7 +1624,12 @@ void ObjectSelectionTool::abortCurrentAction(AbortReason reason, const QList<Map
             if (removedObjects.contains(mMovingObjects.at(i).mapObject))
                 mMovingObjects.remove(i);
 
-        emit mapDocument()->mapObjectModel()->objectsChanged(changingObjects());
+        emit mapDocument()->changed(MapObjectsChangeEvent(changingObjects(), MapObject::ChangedProperties {
+                                                              MapObject::PositionProperty,
+                                                              MapObject::SizeProperty,
+                                                              MapObject::RotationProperty,
+                                                              MapObject::ShapeProperty,
+                                                          }));
         break;
     }
 

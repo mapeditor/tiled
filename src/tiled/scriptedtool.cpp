@@ -34,14 +34,15 @@ namespace Tiled {
 
 ScriptedTool::ScriptedTool(QJSValue object, QObject *parent)
     : AbstractTileTool(QStringLiteral("<unnamed tool>"), QIcon(), QKeySequence(), nullptr, parent)
-    , mScriptObject(object)
+    , mScriptObject(std::move(object))
 {
-    const QJSValue nameProperty = object.property(QStringLiteral("name"));
-    if (nameProperty.isString()) {
-        const QString name = nameProperty.toString();
-        if (!name.isEmpty())
-            setName(name);
-    }
+    const QJSValue nameProperty = mScriptObject.property(QStringLiteral("name"));
+    if (nameProperty.isString())
+        setName(nameProperty.toString());
+
+    const QJSValue iconProperty = mScriptObject.property(QStringLiteral("icon"));
+    if (iconProperty.isString())
+        setIconFileName(iconProperty.toString());
 
     // Make members of ScriptedTool available through the original object
     auto &scriptManager = ScriptManager::instance();
@@ -125,6 +126,10 @@ void ScriptedTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifier
 
 void ScriptedTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
+    AbstractTileTool::mousePressed(event);
+    if (event->isAccepted())
+        return;
+
     QJSValueList args;
     args.append(event->button());
     args.append(event->pos().x());
@@ -132,6 +137,7 @@ void ScriptedTool::mousePressed(QGraphicsSceneMouseEvent *event)
     args.append(static_cast<int>(event->modifiers()));
 
     call(QStringLiteral("mousePressed"), args);
+    event->accept();
 }
 
 void ScriptedTool::mouseReleased(QGraphicsSceneMouseEvent *event)
@@ -188,6 +194,19 @@ bool ScriptedTool::validateToolObject(QJSValue value)
     return true;
 }
 
+void ScriptedTool::setIconFileName(const QString &fileName)
+{
+    if (mIconFileName == fileName)
+        return;
+
+    mIconFileName = fileName;
+
+    QString iconFile = QStringLiteral("ext:");
+    iconFile.append(fileName);
+
+    setIcon(QIcon { iconFile });
+}
+
 void ScriptedTool::mapDocumentChanged(MapDocument *oldDocument,
                                       MapDocument *newDocument)
 {
@@ -202,7 +221,7 @@ void ScriptedTool::mapDocumentChanged(MapDocument *oldDocument,
     call(QStringLiteral("mapChanged"), args);
 }
 
-void ScriptedTool::tilePositionChanged(const QPoint &tilePos)
+void ScriptedTool::tilePositionChanged(QPoint tilePos)
 {
     QJSValueList args;
     args.append(tilePos.x());

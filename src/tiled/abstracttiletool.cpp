@@ -29,6 +29,7 @@
 #include "tilelayer.h"
 #include "tilestamp.h"
 
+#include <QKeyEvent>
 #include <QtMath>
 
 using namespace Tiled;
@@ -99,6 +100,44 @@ void AbstractTileTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers)
         tilePositionChanged(tilePos);
         updateStatusInfo();
     }
+}
+
+void AbstractTileTool::mousePressed(QGraphicsSceneMouseEvent *event)
+{
+    if (event->button() == Qt::RightButton && event->modifiers() & Qt::ControlModifier) {
+        const QPoint pos = tilePosition();
+        QList<Layer*> layers;
+
+        const bool append = event->modifiers() & Qt::ShiftModifier;
+        const bool selectAll = event->modifiers() & Qt::AltModifier;
+
+        if (append)
+            layers = mapDocument()->selectedLayers();
+
+        LayerIterator it(mapDocument()->map(), Layer::TileLayerType);
+        it.toBack();
+        while (auto tileLayer = static_cast<TileLayer*>(it.previous())) {
+            if (tileLayer->isHidden())
+                continue;
+
+            if (!tileLayer->cellAt(pos - tileLayer->position()).isEmpty()) {
+                if (!layers.contains(tileLayer))
+                    layers.append(tileLayer);
+                else if (append)
+                    layers.removeOne(tileLayer);
+
+                if (!selectAll)
+                    break;
+            }
+        }
+
+        if (!layers.isEmpty())
+            mapDocument()->switchSelectedLayers(layers);
+
+        return;
+    }
+
+    event->ignore();
 }
 
 void AbstractTileTool::mapDocumentChanged(MapDocument *oldDocument,

@@ -9,7 +9,6 @@ SUBDIRS = \
     plugins \
     tmxviewer \
     tmxrasterizer \
-    automappingconverter \
     terraingenerator
 
 minQtVersion(5, 4, 0) {

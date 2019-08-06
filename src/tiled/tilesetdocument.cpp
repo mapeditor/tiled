@@ -63,7 +63,6 @@ TilesetDocument::TilesetDocument(const SharedTileset &tileset, const QString &fi
     , mTileset(tileset)
     , mTerrainModel(new TilesetTerrainModel(this, this))
     , mWangSetModel(new TilesetWangSetModel(this, this))
-    , mWangColorModel(nullptr)
 {
     Q_ASSERT(!sTilesetToDocument.contains(tileset));
     sTilesetToDocument.insert(tileset, this);
@@ -71,7 +70,7 @@ TilesetDocument::TilesetDocument(const SharedTileset &tileset, const QString &fi
     mCurrentObject = tileset.data();
 
     // warning: will need to be kept up-to-date
-    mFileName = tileset->fileName();
+    setFileName(tileset->fileName());
 
     connect(this, &TilesetDocument::propertyAdded,
             this, &TilesetDocument::onPropertyAdded);
@@ -92,6 +91,11 @@ TilesetDocument::TilesetDocument(const SharedTileset &tileset, const QString &fi
 TilesetDocument::~TilesetDocument()
 {
     sTilesetToDocument.remove(mTileset);
+
+    // Needs to be deleted before the Tileset instance is deleted, because it
+    // may cause script values to detach from the map, in which case they'll
+    // need to be able to copy the data.
+    mEditable.reset();
 }
 
 bool TilesetDocument::save(const QString &fileName, QString *error)
@@ -195,7 +199,7 @@ QString TilesetDocument::displayName() const
         displayName += QLatin1String("#");
         displayName += mTileset->name();
     } else {
-        displayName = QFileInfo(mFileName).fileName();
+        displayName = QFileInfo(fileName()).fileName();
         if (displayName.isEmpty())
             displayName = tr("untitled.tsx");
     }
@@ -212,6 +216,7 @@ void TilesetDocument::swapTileset(SharedTileset &tileset)
     // Bring pointers to safety
     setSelectedTiles(QList<Tile*>());
     setCurrentObject(mTileset.data());
+    mEditable.reset();
 
     sTilesetToDocument.remove(mTileset);
     mTileset->swap(*tileset);
@@ -223,9 +228,9 @@ void TilesetDocument::swapTileset(SharedTileset &tileset)
 EditableTileset *TilesetDocument::editable()
 {
     if (!mEditable)
-        mEditable = new EditableTileset(this, this);
+        mEditable.reset(new EditableTileset(this, this));
 
-    return static_cast<EditableTileset*>(mEditable);
+    return static_cast<EditableTileset*>(mEditable.get());
 }
 
 /**
@@ -257,7 +262,7 @@ void TilesetDocument::setTilesetName(const QString &name)
         emit mapDocument->tilesetNameChanged(mTileset.data());
 }
 
-void TilesetDocument::setTilesetTileOffset(const QPoint &tileOffset)
+void TilesetDocument::setTilesetTileOffset(QPoint tileOffset)
 {
     mTileset->setTileOffset(tileOffset);
 

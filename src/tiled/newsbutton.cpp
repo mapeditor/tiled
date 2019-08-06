@@ -21,13 +21,18 @@
 #include "newsbutton.h"
 
 #include "newsfeed.h"
+#include "preferences.h"
 #include "utils.h"
 
 #include <QDesktopServices>
 #include <QMenu>
 #include <QPainter>
 
+#ifdef TILED_SNAPSHOT
+static const char newsArchiveUrl[] = "https://thorbjorn.itch.io/tiled/devlog";
+#else
 static const char newsArchiveUrl[] = "https://www.mapeditor.org/news";
+#endif
 
 namespace Tiled {
 
@@ -36,12 +41,20 @@ NewsButton::NewsButton(QWidget *parent)
     , mReadIcon(QLatin1String("://images/16x16/mail-read-symbolic.png"))
     , mUnreadIcon(QLatin1String("://images/16x16/mail-unread-symbolic.png"))
 {
+    const auto preferences = Preferences::instance();
+    setVisible(preferences->displayNews());
+    connect(preferences, &Preferences::displayNewsChanged, this, &NewsButton::setVisible);
+
     auto &feed = NewsFeed::instance();
 
     setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
     setAutoRaise(true);
+#ifdef TILED_SNAPSHOT
+    setText(tr("Devlog"));
+#else
     setText(tr("News"));
+#endif
     setToolTip(feed.errorString());
 
     connect(&feed, &NewsFeed::refreshed,
@@ -76,7 +89,8 @@ void NewsButton::refreshButton()
         painter.setFont(font);
         painter.setBrush(Qt::white);
         painter.setPen(Qt::white);
-        painter.drawText(numberPixmap.rect(), Qt::AlignCenter, QString::number(unreadCount));
+        painter.drawText(numberPixmap.rect(), Qt::AlignCenter, unreadCount < 5 ? QString::number(unreadCount) :
+                                                                                 QString(QLatin1String("!")));
 
         setIcon(QIcon(numberPixmap));
     } else {
@@ -110,7 +124,11 @@ void NewsButton::showNewsMenu()
     }
 
     newsFeedMenu->addSeparator();
+#ifdef TILED_SNAPSHOT
+    QAction *action = newsFeedMenu->addAction(tr("View All Posts"));
+#else
     QAction *action = newsFeedMenu->addAction(tr("News Archive"));
+#endif
     connect(action, &QAction::triggered, [] {
         QDesktopServices::openUrl(QUrl(QLatin1String(newsArchiveUrl)));
         NewsFeed::instance().markAllRead();

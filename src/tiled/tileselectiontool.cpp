@@ -43,7 +43,7 @@ TileSelectionTool::TileSelectionTool(QObject *parent)
     setTilePositionMethod(OnTiles);
 }
 
-void TileSelectionTool::tilePositionChanged(const QPoint &)
+void TileSelectionTool::tilePositionChanged(QPoint)
 {
     if (mSelecting)
         brushItem()->setTileRegion(selectedArea());
@@ -88,6 +88,7 @@ void TileSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
         mMouseScreenStart = event->screenPos();
         mSelectionStart = tilePosition();
         brushItem()->setTileRegion(QRegion());
+        return;
     }
 
     if (button == Qt::RightButton) {
@@ -96,10 +97,14 @@ void TileSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
             mSelecting = false;
             mMouseDown = false; // Avoid restarting select on move
             brushItem()->setTileRegion(QRegion());
-        } else {
+            return;
+        } else if (event->modifiers() == Qt::NoModifier) {
             clearSelection();
+            return;
         }
     }
+
+    AbstractTileTool::mousePressed(event);  // skipping AbstractTileSelection on purpose
 }
 
 void TileSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)

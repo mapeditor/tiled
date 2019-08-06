@@ -96,6 +96,9 @@ QAction *ToolManager::registerTool(AbstractTool *tool)
 
     mActionGroup->addAction(toolAction);
 
+    connect(tool, &AbstractTool::changed,
+            this, &ToolManager::toolChanged);
+
     connect(tool, &AbstractTool::enabledChanged,
             this, &ToolManager::toolEnabledChanged);
 
@@ -113,6 +116,8 @@ void ToolManager::unregisterTool(AbstractTool *tool)
     auto action = findAction(tool);
     Q_ASSERT(action);
     delete action;
+
+    tool->disconnect(this);
 
     if (mDisabledTool == tool)
         mDisabledTool = nullptr;
@@ -167,6 +172,23 @@ void ToolManager::actionTriggered(QAction *action)
     setSelectedTool(action->data().value<AbstractTool*>());
 }
 
+void ToolManager::toolChanged()
+{
+    auto tool = static_cast<AbstractTool*>(sender());
+
+    if (auto action = findAction(tool)) {
+        action->setText(tool->name());
+        action->setIcon(tool->icon());
+        action->setShortcut(tool->shortcut());
+        if (!tool->shortcut().isEmpty()) {
+            action->setToolTip(QStringLiteral("%1 (%2)").arg(tool->name(),
+                                                             tool->shortcut().toString()));
+        } else {
+            action->setToolTip(tool->name());
+        }
+    }
+}
+
 void ToolManager::retranslateTools()
 {
     // Allow the tools to adapt to the new language
@@ -179,9 +201,8 @@ void ToolManager::retranslateTools()
         action->setText(tool->name());
         action->setShortcut(tool->shortcut());
         if (!tool->shortcut().isEmpty()) {
-            action->setToolTip(
-                        QString(QLatin1String("%1 (%2)")).arg(tool->name(),
-                                                              tool->shortcut().toString()));
+            action->setToolTip(QStringLiteral("%1 (%2)").arg(tool->name(),
+                                                             tool->shortcut().toString()));
         } else {
             action->setToolTip(tool->name());
         }

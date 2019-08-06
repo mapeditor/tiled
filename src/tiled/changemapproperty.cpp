@@ -69,6 +69,16 @@ ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
 }
 
 ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
+                                     QSize chunkSize)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands",
+                                               "Change Chunk Size"))
+    , mMapDocument(mapDocument)
+    , mProperty(ChunkSize)
+    , mChunkSize(chunkSize)
+{
+}
+
+ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
                                      Map::StaggerAxis staggerAxis)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Change Stagger Axis"))
@@ -192,6 +202,18 @@ void ChangeMapProperty::swap()
         const Map::LayerDataFormat layerDataFormat = map->layerDataFormat();
         map->setLayerDataFormat(mLayerDataFormat);
         mLayerDataFormat = layerDataFormat;
+        break;
+    }
+    case CompressionLevel: {
+        const int compressionLevel = map->compressionLevel();
+        map->setCompressionLevel(mIntValue);
+        mIntValue = compressionLevel;
+        break;
+    }
+    case ChunkSize: {
+        const QSize chunkSize = map->chunkSize();
+        map->setChunkSize(mChunkSize);
+        mChunkSize = chunkSize;
         break;
     }
     }

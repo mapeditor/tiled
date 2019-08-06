@@ -30,6 +30,7 @@ class MapObject;
 class EditableLayer;
 class EditableMapObject;
 class EditableSelectedArea;
+class EditableTileset;
 
 class EditableMap : public EditableAsset
 {
@@ -49,6 +50,7 @@ class EditableMap : public EditableAsset
     Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor)
     Q_PROPERTY(Tiled::Map::LayerDataFormat layerDataFormat READ layerDataFormat WRITE setLayerDataFormat)
     Q_PROPERTY(int layerCount READ layerCount)
+    Q_PROPERTY(QList<QObject*> tilesets READ tilesets)
     Q_PROPERTY(Tiled::EditableSelectedArea *selectedArea READ selectedArea CONSTANT)
     Q_PROPERTY(Tiled::EditableLayer* currentLayer READ currentLayer WRITE setCurrentLayer NOTIFY currentLayerChanged)
     Q_PROPERTY(QList<QObject*> selectedLayers READ selectedLayers WRITE setSelectedLayers NOTIFY selectedLayersChanged)
@@ -75,8 +77,9 @@ public:
     Map::RenderOrder renderOrder() const;
     QColor backgroundColor() const;
     Map::LayerDataFormat layerDataFormat() const;
-    EditableSelectedArea *selectedArea();
     int layerCount() const;
+    QList<QObject*> tilesets() const;
+    EditableSelectedArea *selectedArea();
     EditableLayer *currentLayer();
     QList<QObject*> selectedLayers();
     QList<QObject*> selectedObjects();
@@ -86,6 +89,12 @@ public:
     Q_INVOKABLE void removeLayer(Tiled::EditableLayer *editableLayer);
     Q_INVOKABLE void insertLayerAt(int index, Tiled::EditableLayer *editableLayer);
     Q_INVOKABLE void addLayer(Tiled::EditableLayer *editableLayer);
+
+    Q_INVOKABLE bool addTileset(Tiled::EditableTileset *tileset);
+    Q_INVOKABLE bool replaceTileset(Tiled::EditableTileset *oldEditableTileset,
+                                    Tiled::EditableTileset *newEditableTileset);
+    Q_INVOKABLE bool removeTileset(Tiled::EditableTileset *editableTileset);
+    Q_INVOKABLE QList<QObject *> usedTilesets() const;
 
     void setTileWidth(int value);
     void setTileHeight(int value);
@@ -114,11 +123,13 @@ signals:
     void selectedObjectsChanged();
 
 public slots:
-    void resize(const QSize &size,
-                const QPoint &offset = QPoint(),
+    void resize(QSize size,
+                QPoint offset = QPoint(),
                 bool removeObjects = false);
 
 private slots:
+    void documentChanged(const ChangeEvent &change);
+
     void attachLayer(Layer *layer);
     void detachLayer(Layer *layer);
     void attachMapObjects(const QList<MapObject*> &mapObjects);
@@ -127,15 +138,10 @@ private slots:
     void onCurrentLayerChanged(Layer *);
 
 private:
-    friend class EditableLayer;
-    friend class EditableMapObject;
-
     MapRenderer *renderer() const;
 
     bool mReadOnly;
 
-    QHash<Layer*, EditableLayer*> mAttachedLayers;
-    QHash<MapObject*, EditableMapObject*> mAttachedMapObjects;
     EditableSelectedArea *mSelectedArea;
 };
 

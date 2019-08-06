@@ -53,7 +53,7 @@ public:
     void languageChanged() override;
 
 protected:
-    void tilePositionChanged(const QPoint &tilePos) override;
+    void tilePositionChanged(QPoint tilePos) override;
     void clearConnections(MapDocument *mapDocument) override;
 
 private slots:

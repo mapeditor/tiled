@@ -57,15 +57,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.mapeditor.core.AnimatedTile;
-import org.mapeditor.core.Map;
-import org.mapeditor.core.MapObject;
-import org.mapeditor.core.ObjectGroup;
-import org.mapeditor.core.Properties;
-import org.mapeditor.core.Tile;
-import org.mapeditor.core.TileLayer;
-import org.mapeditor.core.TileOffset;
-import org.mapeditor.core.TileSet;
+import org.mapeditor.core.*;
 import org.mapeditor.util.BasicTileCutter;
 import org.mapeditor.util.ImageHelper;
 import org.w3c.dom.Document;
@@ -87,9 +79,13 @@ import org.xml.sax.SAXException;
  */
 public class TMXMapReader {
 
-    public long FLIPPED_HORIZONTALLY_FLAG = 0xFFFFFFFF80000000L;
-    public long FLIPPED_VERTICALLY_FLAG = 0xFFFFFFFF40000000L;
-    public long FLIPPED_DIAGONALLY_FLAG = 0xFFFFFFFF20000000L;
+    public static long FLIPPED_HORIZONTALLY_FLAG = 0xFFFFFFFF80000000L;
+    public static long FLIPPED_VERTICALLY_FLAG = 0xFFFFFFFF40000000L;
+    public static long FLIPPED_DIAGONALLY_FLAG = 0xFFFFFFFF20000000L;
+
+    public static long ALL_FLAGS = FLIPPED_HORIZONTALLY_FLAG
+            | FLIPPED_VERTICALLY_FLAG
+            | FLIPPED_DIAGONALLY_FLAG;
 
     private Map map;
     private String xmlPath;
@@ -98,6 +94,7 @@ public class TMXMapReader {
     private TreeMap<Integer, TileSet> tilesetPerFirstGid;
     public final TMXMapReaderSettings settings = new TMXMapReaderSettings();
     private final HashMap<String, TileSet> cachedTilesets = new HashMap<>();
+    private final HashMap<Class, Unmarshaller> cachedUnmarshallers = new HashMap<>();
 
     public static final class TMXMapReaderSettings {
 
@@ -155,9 +152,12 @@ public class TMXMapReader {
     }
 
     private <T> T unmarshalClass(Node node, Class<T> type) throws JAXBException {
-        JAXBContext context = JAXBContext.newInstance(type);
-        Unmarshaller unmarshaller = context.createUnmarshaller();
-
+        Unmarshaller unmarshaller = cachedUnmarshallers.get(type);
+        if (unmarshaller == null) {
+            JAXBContext context = JAXBContext.newInstance(type);
+            unmarshaller = context.createUnmarshaller();
+            cachedUnmarshallers.put(type, unmarshaller);
+        }
         JAXBElement<T> element = unmarshaller.unmarshal(node, type);
         return element.getValue();
     }
@@ -207,6 +207,7 @@ public class TMXMapReader {
             Document tsDoc = builder.parse(in, ".");
 
             String xmlPathSave = xmlPath;
+            filename = replacePathSeparator(filename);
             if (filename.indexOf(File.separatorChar) >= 0) {
                 xmlPath = filename.substring(0,
                         filename.lastIndexOf(File.separatorChar) + 1);
@@ -238,6 +239,7 @@ public class TMXMapReader {
 
         String source = set.getSource();
         if (source != null) {
+            source = replacePathSeparator(source);
             String filename = xmlPath + source;
             InputStream in = new URL(makeUrl(filename)).openStream();
             TileSet ext = unmarshalTilesetFile(in, filename);
@@ -513,6 +515,18 @@ public class TMXMapReader {
         return og;
     }
 
+    private ImageLayer unmarshalImageLayer(Node t) throws Exception {
+        ImageLayer il = null;
+        try {
+            il = unmarshalClass(t, ImageLayer.class);
+        } catch (JAXBException e) {
+            // todo: replace with log message
+            e.printStackTrace();
+            return il;
+        }
+        return il;
+    }
+
     /**
      * Loads a map layer from a layer node.
      *
@@ -664,16 +678,22 @@ public class TMXMapReader {
         return ml;
     }
 
+
+
     /**
      * Helper method to set the tile based on its global id.
      *
      * @param ml tile layer
      * @param y y-coordinate
      * @param x x-coordinate
-     * @param tileId global id of the tile as read from the file
+     * @param tileGid global id of the tile as read from the file
      */
-    private void setTileAtFromTileId(TileLayer ml, int y, int x, int tileId) {
-        ml.setTileAt(x, y, getTileForTileGID(tileId));
+    private void setTileAtFromTileId(TileLayer ml, int y, int x, int tileGid) {
+        Tile tile = this.getTileForTileGID( (tileGid & (int)~ALL_FLAGS));
+
+        long flags = tileGid &  ALL_FLAGS;
+        ml.setTileAt(x, y, tile);
+        ml.setFlagsAt(x, y, (int)flags);
     }
 
     /**
@@ -736,6 +756,11 @@ public class TMXMapReader {
                 if (group != null) {
                     map.addLayer(group);
                 }
+            } else if ("imagelayer".equals(sibs.getNodeName())) {
+                ImageLayer imageLayer = unmarshalImageLayer(sibs);
+                if (imageLayer != null) {
+                    map.addLayer(imageLayer);
+                }
             }
         }
         tilesetPerFirstGid = null;
@@ -774,6 +799,7 @@ public class TMXMapReader {
      * @throws java.lang.Exception if any.
      */
     public Map readMap(String filename) throws Exception {
+        filename = replacePathSeparator(filename);
         xmlPath = filename.substring(0,
                 filename.lastIndexOf(File.separatorChar) + 1);
 
@@ -822,6 +848,7 @@ public class TMXMapReader {
      * @throws java.lang.Exception if any.
      */
     public TileSet readTileset(String filename) throws Exception {
+        filename = replacePathSeparator(filename);
         String xmlFile = filename;
 
         xmlPath = filename.substring(0,
@@ -911,5 +938,18 @@ public class TMXMapReader {
      */
     private Entry<Integer, TileSet> findTileSetForTileGID(int gid) {
         return tilesetPerFirstGid.floorEntry(gid);
+    }
+
+    /**
+     * Tile map can be assembled on UNIX system, but read on Microsoft Windows system.
+     * @param path path to imageSource, tileSet, etc.
+     * @return path with the correct {@link File#separator}
+     */
+    private String replacePathSeparator(String path) {
+        if (path == null)
+            throw new IllegalArgumentException("path cannot be null.");
+        if (path.isEmpty() || path.lastIndexOf(File.separatorChar) >= 0)
+            return path;
+        return path.replace("/", File.separator);
     }
 }

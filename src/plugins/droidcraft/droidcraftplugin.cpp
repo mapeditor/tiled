@@ -35,7 +35,6 @@ DroidcraftPlugin::DroidcraftPlugin()
 {
 }
 
-// Reader
 std::unique_ptr<Tiled::Map> DroidcraftPlugin::read(const QString &fileName)
 {
     using namespace Tiled;
@@ -90,9 +89,10 @@ bool DroidcraftPlugin::supportsFile(const QString &fileName) const
     return fileName.endsWith(QLatin1String(".dat"), Qt::CaseInsensitive);
 }
 
-// Writer
-bool DroidcraftPlugin::write(const Tiled::Map *map, const QString &fileName)
+bool DroidcraftPlugin::write(const Tiled::Map *map, const QString &fileName, Options options)
 {
+    Q_UNUSED(options)
+
     using namespace Tiled;
 
     // Check layer count and type

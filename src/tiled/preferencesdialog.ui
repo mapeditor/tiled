@@ -83,6 +83,13 @@
             </property>
            </widget>
           </item>
+          <item row="0" column="0" colspan="2">
+           <widget class="QCheckBox" name="embedTilesets">
+            <property name="text">
+             <string>Embed tilesets</string>
+            </property>
+           </widget>
+          </item>
           <item row="1" column="0" colspan="2">
            <widget class="QCheckBox" name="detachTemplateInstances">
             <property name="text">
@@ -90,10 +97,13 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="0" colspan="2">
-           <widget class="QCheckBox" name="embedTilesets">
+          <item row="3" column="0">
+           <widget class="QCheckBox" name="minimizeOutput">
+            <property name="toolTip">
+             <string>Omits unnecessary whitespace when supported by the output format</string>
+            </property>
             <property name="text">
-             <string>Embed tilesets</string>
+             <string>Minimize output</string>
             </property>
            </widget>
           </item>
@@ -119,46 +129,13 @@
       <attribute name="title">
        <string>Interface</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
+      <layout class="QVBoxLayout" name="verticalLayout_7">
        <item>
         <widget class="QGroupBox" name="interfaceGroupBox">
          <property name="title">
           <string>Interface</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_2">
-          <item row="2" column="3">
-           <widget class="Tiled::ColorButton" name="gridColor"/>
-          </item>
-          <item row="0" column="4">
-           <spacer name="horizontalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>0</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="5" column="0" colspan="4">
-           <widget class="QCheckBox" name="openGL">
-            <property name="text">
-             <string>Hardware &amp;accelerated drawing (OpenGL)</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_3">
-            <property name="text">
-             <string>Grid color:</string>
-            </property>
-            <property name="buddy">
-             <cstring>gridColor</cstring>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="0">
            <widget class="QLabel" name="label_2">
             <property name="text">
@@ -169,15 +146,8 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>Object line width:</string>
-            </property>
-            <property name="buddy">
-             <cstring>objectLineWidth</cstring>
-            </property>
-           </widget>
+          <item row="0" column="3">
+           <widget class="QComboBox" name="languageCombo"/>
           </item>
           <item row="4" column="3">
            <widget class="QDoubleSpinBox" name="objectLineWidth">
@@ -195,6 +165,16 @@
             </property>
            </widget>
           </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>Grid color:</string>
+            </property>
+            <property name="buddy">
+             <cstring>gridColor</cstring>
+            </property>
+           </widget>
+          </item>
           <item row="3" column="0">
            <widget class="QLabel" name="label_4">
             <property name="text">
@@ -204,6 +184,16 @@
              <cstring>gridFine</cstring>
             </property>
            </widget>
+          </item>
+          <item row="5" column="0" colspan="4">
+           <widget class="QCheckBox" name="openGL">
+            <property name="text">
+             <string>Hardware &amp;accelerated drawing (OpenGL)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="3">
+           <widget class="Tiled::ColorButton" name="gridColor"/>
           </item>
           <item row="3" column="3">
            <widget class="QSpinBox" name="gridFine">
@@ -215,8 +205,28 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="3">
-           <widget class="QComboBox" name="languageCombo"/>
+          <item row="0" column="4">
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>0</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Object line width:</string>
+            </property>
+            <property name="buddy">
+             <cstring>objectLineWidth</cstring>
+            </property>
+           </widget>
           </item>
           <item row="6" column="0">
            <widget class="QCheckBox" name="wheelZoomsByDefault">
@@ -228,6 +238,54 @@
          </layout>
         </widget>
        </item>
+       <item>
+        <widget class="QGroupBox" name="updatesGroupBox">
+         <property name="title">
+          <string>Updates</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <item>
+           <widget class="QCheckBox" name="displayNewsCheckBox">
+            <property name="text">
+             <string>Display news in status bar</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="displayNewVersionCheckBox">
+            <property name="text">
+             <string>Highlight new version in status bar</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>0</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="Tiled::ShortcutSettingsPage" name="keyboardTab">
+      <attribute name="title">
+       <string>Keyboard</string>
+      </attribute>
+     </widget>
+     <widget class="QWidget" name="updatesTab">
+      <attribute name="title">
+       <string>Theme</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
         <widget class="QGroupBox" name="themeGroupBox">
          <property name="title">
@@ -303,83 +361,6 @@
         </widget>
        </item>
        <item>
-        <spacer name="verticalSpacer_3">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>0</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-      </layout>
-     </widget>
-     <widget class="Tiled::ShortcutSettingsPage" name="keyboardTab">
-      <attribute name="title">
-       <string>Keyboard</string>
-      </attribute>
-     </widget>
-     <widget class="QWidget" name="updatesTab">
-      <attribute name="title">
-       <string>Updates</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_7">
-       <item>
-        <widget class="QGroupBox" name="updatesGroupBox">
-         <property name="title">
-          <string>Updates</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_3">
-          <item row="1" column="3">
-           <widget class="QPushButton" name="checkForUpdate">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="text">
-             <string>Check Now</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0" colspan="4">
-           <widget class="QCheckBox" name="autoUpdateCheckBox">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="text">
-             <string>Automatically check for updates</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <spacer name="horizontalSpacer_3">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="lastAutoUpdateCheckLabel">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="text">
-             <string notr="true"/>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
         <spacer name="verticalSpacer_2">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -407,6 +388,36 @@
          <layout class="QVBoxLayout" name="verticalLayout_5">
           <item>
            <widget class="QListView" name="pluginList"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox">
+         <property name="title">
+          <string>Extensions</string>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QLabel" name="extensionsPathLabel">
+            <property name="text">
+             <string>Directory:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="extensionsPathEdit">
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="openExtensionsPathButton">
+            <property name="text">
+             <string>Open...</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -449,18 +460,21 @@
   <tabstop>embedTilesets</tabstop>
   <tabstop>detachTemplateInstances</tabstop>
   <tabstop>resolveObjectTypesAndProperties</tabstop>
+  <tabstop>minimizeOutput</tabstop>
   <tabstop>languageCombo</tabstop>
   <tabstop>gridColor</tabstop>
   <tabstop>gridFine</tabstop>
   <tabstop>objectLineWidth</tabstop>
   <tabstop>openGL</tabstop>
   <tabstop>wheelZoomsByDefault</tabstop>
+  <tabstop>displayNewsCheckBox</tabstop>
+  <tabstop>displayNewVersionCheckBox</tabstop>
   <tabstop>styleCombo</tabstop>
   <tabstop>baseColor</tabstop>
   <tabstop>selectionColor</tabstop>
-  <tabstop>autoUpdateCheckBox</tabstop>
-  <tabstop>checkForUpdate</tabstop>
   <tabstop>pluginList</tabstop>
+  <tabstop>extensionsPathEdit</tabstop>
+  <tabstop>openExtensionsPathButton</tabstop>
  </tabstops>
  <resources/>
  <connections>

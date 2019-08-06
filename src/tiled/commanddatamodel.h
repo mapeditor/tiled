@@ -23,7 +23,6 @@
 #include "command.h"
 
 #include <QAbstractTableModel>
-#include <QSettings>
 
 class QMenu;
 
@@ -48,7 +47,7 @@ public:
       */
     void commit();
 
-    Command firstEnabledCommand() const;
+    const Command *firstEnabledCommand() const;
 
     /**
       * Returns a list of all the commands.
@@ -169,8 +168,6 @@ public slots:
     void remove(int commandIndex);
 
 private:
-
-    QSettings mSettings;
     QList<Command> mCommands;
 };
 

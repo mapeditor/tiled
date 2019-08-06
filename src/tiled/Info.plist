@@ -41,13 +41,7 @@
 			</array>
 		</dict>
 	</array>
-	<key>SUFeedURL</key>
-	<string>https://update.mapeditor.org/appcast-osx.xml</string>
 	<key>SUPublicDSAKeyFile</key>
 	<string>dsa_pub.pem</string>
-	<key>SUEnableAutomaticChecks</key>
-	<true/>
-	<key>SUScheduledCheckInterval</key>
-	<integer>86400</integer>
 </dict>
 </plist>

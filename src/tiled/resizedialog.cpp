@@ -67,7 +67,7 @@ ResizeDialog::~ResizeDialog()
     delete mUi;
 }
 
-void ResizeDialog::setOldSize(const QSize &size)
+void ResizeDialog::setOldSize(QSize size)
 {
     mUi->resizeHelper->setOldSize(size);
 

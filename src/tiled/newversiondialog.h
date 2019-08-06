@@ -1,6 +1,6 @@
 /*
- * standardautoupdater.cpp
- * Copyright 2016, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+ * newversiondialog.h
+ * Copyright 2019, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -18,32 +18,30 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "standardautoupdater.h"
+#pragma once
 
-#include "preferences.h"
+#include "newversionchecker.h"
 
-using namespace Tiled;
+#include <QDialog>
 
-StandardAutoUpdater::StandardAutoUpdater()
-{
+namespace Tiled {
+
+namespace Ui {
+class NewVersionDialog;
 }
 
-void StandardAutoUpdater::checkForUpdates()
+class NewVersionDialog : public QDialog
 {
-    // todo
-}
+    Q_OBJECT
 
-void StandardAutoUpdater::setAutomaticallyChecksForUpdates(bool on)
-{
-    Preferences::instance()->setCheckForUpdates(on);
-}
+public:
+    explicit NewVersionDialog(const NewVersionChecker::VersionInfo &versionInfo,
+                              QWidget *parent = nullptr);
+    ~NewVersionDialog();
 
-bool StandardAutoUpdater::automaticallyChecksForUpdates()
-{
-    return Preferences::instance()->checkForUpdates();
-}
+private:
+    Ui::NewVersionDialog *ui;
+    NewVersionChecker::VersionInfo mVersionInfo;
+};
 
-QDateTime StandardAutoUpdater::lastUpdateCheckDate()
-{
-    return QDateTime(); // todo
-}
+} // namespace Tiled

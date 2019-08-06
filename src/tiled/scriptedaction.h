@@ -32,7 +32,7 @@ class ScriptedAction : public QAction
     Q_OBJECT
 
     Q_PROPERTY(QByteArray id READ idName CONSTANT)
-    Q_PROPERTY(QString iconName READ iconName WRITE setIconName)
+    Q_PROPERTY(QString icon READ iconFileName WRITE setIconFileName)
 
 public:
     ScriptedAction(Id idName,
@@ -42,13 +42,13 @@ public:
     Id id() const;
     QByteArray idName() const;
 
-    QString iconName() const;
-    void setIconName(const QString &name);
+    QString iconFileName() const;
+    void setIconFileName(const QString &fileName);
 
 private:
     Id mId;
     QJSValue mCallback;
-    QString mIconName;
+    QString mIconFileName;
 };
 
 
@@ -62,9 +62,9 @@ inline QByteArray ScriptedAction::idName() const
     return mId.name();
 }
 
-inline QString ScriptedAction::iconName() const
+inline QString ScriptedAction::iconFileName() const
 {
-    return mIconName;
+    return mIconFileName;
 }
 
 } // namespace Tiled

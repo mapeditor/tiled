@@ -28,6 +28,7 @@ class QMenu;
 namespace Tiled {
 
 class Document;
+class FilterEdit;
 class MapDocument;
 class ObjectsView;
 
@@ -61,6 +62,7 @@ private:
     QAction *mActionMoveUp;
     QAction *mActionMoveDown;
 
+    FilterEdit *mFilterEdit;
     ObjectsView *mObjectsView;
     MapDocument *mMapDocument;
     QMenu *mMoveToMenu;

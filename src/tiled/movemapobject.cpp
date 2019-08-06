@@ -20,34 +20,33 @@
 
 #include "movemapobject.h"
 
-#include "mapdocument.h"
+#include "changeevents.h"
+#include "document.h"
 #include "mapobject.h"
-#include "mapobjectmodel.h"
 
 #include <QCoreApplication>
 
 using namespace Tiled;
 
-MoveMapObject::MoveMapObject(MapDocument *mapDocument,
+MoveMapObject::MoveMapObject(Document *document,
                              MapObject *mapObject,
                              const QPointF &oldPos,
                              QUndoCommand *parent)
-    : QUndoCommand(parent)
-    , mMapDocument(mapDocument)
-    , mMapObject(mapObject)
-    , mOldPos(oldPos)
-    , mNewPos(mapObject->position())
+    : MoveMapObject(document,
+                    mapObject,
+                    mapObject->position(),
+                    oldPos,
+                    parent)
 {
-    setText(QCoreApplication::translate("Undo Commands", "Move Object"));
 }
 
-MoveMapObject::MoveMapObject(MapDocument *mapDocument,
+MoveMapObject::MoveMapObject(Document *document,
                              MapObject *mapObject,
                              const QPointF &newPos,
                              const QPointF &oldPos,
                              QUndoCommand *parent)
     : QUndoCommand(parent)
-    , mMapDocument(mapDocument)
+    , mDocument(document)
     , mMapObject(mapObject)
     , mOldPos(oldPos)
     , mNewPos(newPos)
@@ -57,10 +56,12 @@ MoveMapObject::MoveMapObject(MapDocument *mapDocument,
 
 void MoveMapObject::undo()
 {
-    mMapDocument->mapObjectModel()->setObjectPosition(mMapObject, mOldPos);
+    mMapObject->setPosition(mOldPos);
+    emit mDocument->changed(MapObjectsChangeEvent(mMapObject, MapObject::PositionProperty));
 }
 
 void MoveMapObject::redo()
 {
-    mMapDocument->mapObjectModel()->setObjectPosition(mMapObject, mNewPos);
+    mMapObject->setPosition(mNewPos);
+    emit mDocument->changed(MapObjectsChangeEvent(mMapObject, MapObject::PositionProperty));
 }

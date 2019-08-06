@@ -52,8 +52,7 @@ public:
     void modifiersChanged(Qt::KeyboardModifiers modifiers) override;
 
 protected:
-    void mapDocumentChanged(MapDocument *oldDocument,
-                            MapDocument *newDocument) override;
+    void changeEvent(const ChangeEvent &event) override;
 
     void updateEnabledState() override;
 

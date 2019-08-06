@@ -27,9 +27,10 @@
 #include "tmxmapformat.h"
 #include "preferences.h"
 
+#include <QDir>
 #include <QFileInfo>
-#include <QTextStream>
 #include <QFileSystemWatcher>
+#include <QTextStream>
 
 #include "qtcompat_p.h"
 
@@ -140,7 +141,7 @@ void AutomappingManager::autoMapInternal(const QRegion &where,
 bool AutomappingManager::loadFile(const QString &filePath)
 {
     bool ret = true;
-    const QString absPath = QFileInfo(filePath).path();
+    const QDir absPath = QFileInfo(filePath).dir();
     QFile rulesFile(filePath);
 
     if (!rulesFile.exists()) {
@@ -166,10 +167,12 @@ bool AutomappingManager::loadFile(const QString &filePath)
                 || rulePath.startsWith(QLatin1String("//")))
             continue;
 
-        const QFileInfo rulePathInfo(rulePath);
+        QFileInfo rulePathInfo(rulePath);
 
-        if (rulePathInfo.isRelative())
-            rulePath = absPath + QLatin1Char('/') + rulePath;
+        if (rulePathInfo.isRelative()) {
+            rulePath = absPath.filePath(rulePath);
+            rulePathInfo.setFile(rulePath);
+        }
 
         if (!rulePathInfo.exists()) {
             mError += tr("File not found:\n%1").arg(rulePath) + QLatin1Char('\n');

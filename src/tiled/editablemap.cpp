@@ -22,6 +22,8 @@
 
 #include "addremovelayer.h"
 #include "addremovemapobject.h"
+#include "addremovetileset.h"
+#include "changeevents.h"
 #include "changelayer.h"
 #include "changemapproperty.h"
 #include "changeselectedarea.h"
@@ -35,9 +37,12 @@
 #include "editabletilelayer.h"
 #include "grouplayer.h"
 #include "movemapobject.h"
+#include "replacetileset.h"
 #include "resizemap.h"
 #include "resizetilelayer.h"
 #include "scriptmanager.h"
+#include "tileset.h"
+#include "tilesetdocument.h"
 
 #include <imagelayer.h>
 #include <mapobject.h>
@@ -71,10 +76,9 @@ EditableMap::EditableMap(MapDocument *mapDocument, QObject *parent)
     connect(map(), &Map::tileHeightChanged, this, &EditableMap::tileHeightChanged);
 
     connect(mapDocument, &Document::fileNameChanged, this, &EditableAsset::fileNameChanged);
+    connect(mapDocument, &Document::changed, this, &EditableMap::documentChanged);
     connect(mapDocument, &MapDocument::layerAdded, this, &EditableMap::attachLayer);
     connect(mapDocument, &MapDocument::layerRemoved, this, &EditableMap::detachLayer);
-    connect(mapDocument, &MapDocument::objectsAdded, this, &EditableMap::attachMapObjects);
-    connect(mapDocument, &MapDocument::objectsRemoved, this, &EditableMap::detachMapObjects);
 
     connect(mapDocument, &MapDocument::currentLayerChanged, this, &EditableMap::onCurrentLayerChanged);
     connect(mapDocument, &MapDocument::selectedLayersChanged, this, &EditableMap::selectedLayersChanged);
@@ -95,14 +99,17 @@ EditableMap::EditableMap(const Map *map, QObject *parent)
 
 EditableMap::~EditableMap()
 {
-    // Operate on copy since original container will get modified
-    const auto attachedLayers = mAttachedLayers;
-    for (auto editable : attachedLayers)
-        editable->detach();
+    for (Layer *layer : map()->layers())
+        detachLayer(layer);
+}
 
-    const auto attachedMapObjects = mAttachedMapObjects;
-    for (auto editable : attachedMapObjects)
-        editable->detach();
+QList<QObject *> EditableMap::tilesets() const
+{
+    QList<QObject *> editableTilesets;
+    for (const SharedTileset &tileset : map()->tilesets())
+        if (auto document = TilesetDocument::findDocumentForTileset(tileset))
+            editableTilesets.append(document->editable());
+    return editableTilesets;
 }
 
 EditableLayer *EditableMap::currentLayer()
@@ -202,6 +209,63 @@ void EditableMap::addLayer(EditableLayer *editableLayer)
     insertLayerAt(layerCount(), editableLayer);
 }
 
+bool EditableMap::addTileset(EditableTileset *editableTileset)
+{
+    const auto &tileset = editableTileset->tileset()->sharedPointer();
+    if (map()->indexOfTileset(tileset) != -1)
+        return false;   // can't add existing tileset
+
+    push(new AddTileset(mapDocument(), tileset));
+    return true;
+}
+
+bool EditableMap::replaceTileset(EditableTileset *oldEditableTileset,
+                                 EditableTileset *newEditableTileset)
+{
+    if (oldEditableTileset == newEditableTileset) {
+        ScriptManager::instance().throwError(tr("Invalid argument"));
+        return false;
+    }
+
+    SharedTileset oldTileset = oldEditableTileset->tileset()->sharedPointer();
+    int indexOfOldTileset = map()->indexOfTileset(oldTileset);
+    if (indexOfOldTileset == -1)
+        return false;   // can't replace non-existing tileset
+
+    SharedTileset newTileset = newEditableTileset->tileset()->sharedPointer();
+    int indexOfNewTileset = map()->indexOfTileset(newTileset);
+    if (indexOfNewTileset != -1)
+        return false;   // can't replace with tileset that is already part of the map (undo broken)
+
+    push(new ReplaceTileset(mapDocument(), indexOfOldTileset, newTileset));
+    return true;
+}
+
+bool EditableMap::removeTileset(EditableTileset *editableTileset)
+{
+    Tileset *tileset = editableTileset->tileset();
+    int index = map()->indexOfTileset(tileset->sharedPointer());
+    if (index == -1)
+        return false;   // can't remove non-existing tileset
+
+    if (map()->isTilesetUsed(tileset))
+        return false;   // not allowed to remove a tileset that's in use
+
+    push(new RemoveTileset(mapDocument(), index));
+    return true;
+}
+
+QList<QObject *> EditableMap::usedTilesets() const
+{
+    const auto tilesets = map()->usedTilesets();
+
+    QList<QObject *> editableTilesets;
+    for (const SharedTileset &tileset : tilesets)
+        if (auto document = TilesetDocument::findDocumentForTileset(tileset))
+            editableTilesets.append(document->editable());
+    return editableTilesets;
+}
+
 void EditableMap::setTileWidth(int value)
 {
     push(new ChangeMapProperty(mapDocument(), ChangeMapProperty::TileWidth, value));
@@ -254,15 +318,11 @@ void EditableMap::setLayerDataFormat(Map::LayerDataFormat value)
 
 void EditableMap::setCurrentLayer(EditableLayer *layer)
 {
-    auto document = mapDocument();
-    if (!document)
-        return;
+    QList<QObject*> layers;
+    if (layer)
+        layers.append(layer);
 
-    document->setCurrentLayer(layer ? layer->layer() : nullptr);
-
-    // Automatically select the layer if it isn't already
-    if (layer && !document->selectedLayers().contains(layer->layer()))
-        document->setSelectedLayers({ layer->layer() });
+    setSelectedLayers(layers);
 }
 
 void EditableMap::setSelectedLayers(const QList<QObject *> &layers)
@@ -283,11 +343,7 @@ void EditableMap::setSelectedLayers(const QList<QObject *> &layers)
         plainLayers.append(editableLayer->layer());
     }
 
-    document->setSelectedLayers(plainLayers);
-
-    // Automatically make sure the current layer is one of the selected ones
-    if (!plainLayers.contains(document->currentLayer()))
-        document->setCurrentLayer(plainLayers.isEmpty() ? nullptr : plainLayers.first());
+    document->switchSelectedLayers(plainLayers);
 }
 
 void EditableMap::setSelectedObjects(const QList<QObject *> &objects)
@@ -351,9 +407,7 @@ static bool visibleIn(const QRectF &area, MapObject *object,
  * the contents by \a offset. If \a removeObjects is true then all objects
  * which are outside the map will be removed.
  */
-void EditableMap::resize(const QSize &size,
-                         const QPoint &offset,
-                         bool removeObjects)
+void EditableMap::resize(QSize size, QPoint offset, bool removeObjects)
 {
     if (checkReadOnly())
         return;
@@ -424,10 +478,22 @@ void EditableMap::resize(const QSize &size,
     // TODO: Handle layers that don't match the map size correctly
 }
 
+void EditableMap::documentChanged(const ChangeEvent &change)
+{
+    switch (change.type) {
+    case ChangeEvent::MapObjectsAdded:
+        attachMapObjects(static_cast<const MapObjectsEvent&>(change).mapObjects);
+        break;
+    case ChangeEvent::MapObjectsAboutToBeRemoved:
+        detachMapObjects(static_cast<const MapObjectsEvent&>(change).mapObjects);
+        break;
+    default:
+        break;
+    }
+}
+
 void EditableMap::attachLayer(Layer *layer)
 {
-    Q_ASSERT(!mAttachedLayers.contains(layer));
-
     if (EditableLayer *editable = EditableManager::instance().find(layer))
         editable->attach(this);
 
@@ -441,9 +507,9 @@ void EditableMap::attachLayer(Layer *layer)
 
 void EditableMap::detachLayer(Layer *layer)
 {
-    auto iterator = mAttachedLayers.constFind(layer);
-    if (iterator != mAttachedLayers.constEnd())
-        (*iterator)->detach();
+    auto editableLayer = EditableManager::instance().find(layer);
+    if (editableLayer && editableLayer->map() == this)
+        editableLayer->detach();
 
     if (GroupLayer *groupLayer = layer->asGroupLayer()) {
         for (Layer *childLayer : groupLayer->layers())
@@ -457,7 +523,6 @@ void EditableMap::attachMapObjects(const QList<MapObject *> &mapObjects)
 {
     const auto &editableManager = EditableManager::instance();
     for (MapObject *mapObject : mapObjects) {
-        Q_ASSERT(!mAttachedMapObjects.contains(mapObject));
         if (EditableMapObject *editable = editableManager.find(mapObject))
             editable->attach(this);
     }
@@ -465,10 +530,12 @@ void EditableMap::attachMapObjects(const QList<MapObject *> &mapObjects)
 
 void EditableMap::detachMapObjects(const QList<MapObject *> &mapObjects)
 {
+    const auto &editableManager = EditableManager::instance();
     for (MapObject *mapObject : mapObjects) {
-        auto iterator = mAttachedMapObjects.constFind(mapObject);
-        if (iterator != mAttachedMapObjects.constEnd())
-            (*iterator)->detach();
+        if (EditableMapObject *editable = editableManager.find(mapObject)) {
+            Q_ASSERT(editable->map() == this);
+            editable->detach();
+        }
     }
 }
 

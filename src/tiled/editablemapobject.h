@@ -23,17 +23,37 @@
 #include "editableobject.h"
 #include "mapobject.h"
 
+#include <QJSValue>
+
 namespace Tiled {
 
 class EditableMap;
 class EditableObjectGroup;
+class EditableTile;
+
+class Font : public QFont
+{
+    Q_GADGET
+
+    Q_PROPERTY(QString family READ family WRITE setFamily)
+    Q_PROPERTY(int pixelSize READ pixelSize WRITE setPixelSize)
+    Q_PROPERTY(bool bold READ bold WRITE setBold)
+    Q_PROPERTY(bool italic READ italic WRITE setItalic)
+    Q_PROPERTY(bool underline READ underline WRITE setUnderline)
+    Q_PROPERTY(bool strikeOut READ strikeOut WRITE setStrikeOut)
+    Q_PROPERTY(bool kerning READ kerning WRITE setKerning)
+
+public:
+    Font() = default;
+    Font(const QFont &font) : QFont(font) {}
+};
 
 class EditableMapObject : public EditableObject
 {
     Q_OBJECT
 
     Q_PROPERTY(int id READ id)
-//    Q_PROPERTY(Shape mShape)
+    Q_PROPERTY(Shape shape READ shape WRITE setShape)
     Q_PROPERTY(QString name READ name WRITE setName)
     Q_PROPERTY(QString type READ type WRITE setType)
     Q_PROPERTY(qreal x READ x WRITE setX)
@@ -44,27 +64,48 @@ class EditableMapObject : public EditableObject
     Q_PROPERTY(QSizeF size READ size WRITE setSize)
     Q_PROPERTY(qreal rotation READ rotation WRITE setRotation)
     Q_PROPERTY(bool visible READ isVisible WRITE setVisible)
-    Q_PROPERTY(bool selected READ isSelected WRITE setSelected)
-//    Q_PROPERTY(TextData mTextData)
-//    Q_PROPERTY(QPolygonF mPolygon)
-//    Q_PROPERTY(Cell mCell)
+    Q_PROPERTY(QJSValue polygon READ polygon WRITE setPolygon)
+    Q_PROPERTY(QString text READ text WRITE setText)
+    Q_PROPERTY(Tiled::Font font READ font WRITE setFont)
+    Q_PROPERTY(Qt::Alignment textAlignment READ textAlignment WRITE setTextAlignment)
+    Q_PROPERTY(bool wordWrap READ wordWrap WRITE setWordWrap)
+    Q_PROPERTY(QColor textColor READ textColor WRITE setTextColor)
+    Q_PROPERTY(Tiled::EditableTile *tile READ tile WRITE setTile)
+    Q_PROPERTY(bool tileFlippedHorizontally READ tileFlippedHorizontally WRITE setTileFlippedHorizontally)
+    Q_PROPERTY(bool tileFlippedVertically READ tileFlippedVertically WRITE setTileFlippedVertically)
 //    Q_PROPERTY(const ObjectTemplate *mObjectTemplate)
+    Q_PROPERTY(bool selected READ isSelected WRITE setSelected)
     Q_PROPERTY(Tiled::EditableObjectGroup *layer READ layer)
     Q_PROPERTY(Tiled::EditableMap *map READ map)
-//    Q_PROPERTY(bool mTemplateBase)
 //    Q_PROPERTY(ChangedProperties mChangedProperties)
 
 public:
+    // Synchronized with MapObject::Shape
+    enum Shape {
+        Rectangle,
+        Polygon,
+        Polyline,
+        Ellipse,
+        Text,
+        Point,
+    };
+    Q_ENUM(Shape)
+
     Q_INVOKABLE explicit EditableMapObject(const QString &name = QString(),
                                            QObject *parent = nullptr);
 
-    EditableMapObject(EditableMap *map,
+    Q_INVOKABLE explicit EditableMapObject(Shape shape,
+                                           const QString &name = QString(),
+                                           QObject *parent = nullptr);
+
+    EditableMapObject(EditableAsset *asset,
                       MapObject *mapObject,
                       QObject *parent = nullptr);
 
     ~EditableMapObject() override;
 
     int id() const;
+    Shape shape() const;
     QString name() const;
     QString type() const;
     qreal x() const;
@@ -75,6 +116,15 @@ public:
     QSizeF size() const;
     qreal rotation() const;
     bool isVisible() const;
+    QJSValue polygon() const;
+    QString text() const;
+    Font font() const;
+    Qt::Alignment textAlignment() const;
+    bool wordWrap() const;
+    QColor textColor() const;
+    EditableTile *tile() const;
+    bool tileFlippedHorizontally() const;
+    bool tileFlippedVertically() const;
     bool isSelected() const;
     EditableObjectGroup *layer() const;
     EditableMap *map() const;
@@ -87,6 +137,7 @@ public:
     void release();
 
 public slots:
+    void setShape(Shape shape);
     void setName(QString name);
     void setType(QString type);
     void setX(qreal x);
@@ -97,6 +148,15 @@ public slots:
     void setSize(QSizeF size);
     void setRotation(qreal rotation);
     void setVisible(bool visible);
+    void setPolygon(QJSValue polygon);
+    void setText(const QString &text);
+    void setFont(const Font &font);
+    void setTextAlignment(Qt::Alignment textAlignment);
+    void setWordWrap(bool wordWrap);
+    void setTextColor(const QColor &textColor);
+    void setTile(EditableTile *tile);
+    void setTileFlippedHorizontally(bool tileFlippedHorizontally);
+    void setTileFlippedVertically(bool tileFlippedVertically);
     void setSelected(bool selected);
 
 private:
@@ -109,6 +169,11 @@ private:
 inline int EditableMapObject::id() const
 {
     return mapObject()->id();
+}
+
+inline EditableMapObject::Shape EditableMapObject::shape() const
+{
+    return static_cast<Shape>(mapObject()->shape());
 }
 
 inline QString EditableMapObject::name() const
@@ -161,6 +226,41 @@ inline bool EditableMapObject::isVisible() const
     return mapObject()->isVisible();
 }
 
+inline QString EditableMapObject::text() const
+{
+    return mapObject()->textData().text;
+}
+
+inline Font EditableMapObject::font() const
+{
+    return mapObject()->textData().font;
+}
+
+inline Qt::Alignment EditableMapObject::textAlignment() const
+{
+    return mapObject()->textData().alignment;
+}
+
+inline bool EditableMapObject::wordWrap() const
+{
+    return mapObject()->textData().wordWrap;
+}
+
+inline QColor EditableMapObject::textColor() const
+{
+    return mapObject()->textData().color;
+}
+
+inline bool EditableMapObject::tileFlippedHorizontally() const
+{
+    return mapObject()->cell().flippedHorizontally();
+}
+
+inline bool EditableMapObject::tileFlippedVertically() const
+{
+    return mapObject()->cell().flippedVertically();
+}
+
 inline MapObject *EditableMapObject::mapObject() const
 {
     return static_cast<MapObject*>(object());
@@ -187,3 +287,5 @@ inline void EditableMapObject::setHeight(qreal height)
 }
 
 } // namespace Tiled
+
+Q_DECLARE_METATYPE(Tiled::Font)

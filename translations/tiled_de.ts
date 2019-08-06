@@ -23,12 +23,12 @@
         <source>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;Copyright 2008-2018 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;https://www.mapeditor.org/&quot;&gt;https://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
         <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;Copyright 2008-2018 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(siehe AUTHORS-Datei für eine komplette Liste von Entwicklern)&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;https://www.mapeditor.org/&quot;&gt;https://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </translation>
     </message>
 </context>
@@ -680,7 +680,7 @@
     <message>
         <location line="+324"/>
         <source>For Hovered Object</source>
-        <translation type="unfinished">Für hervorgehobenes Objekt</translation>
+        <translation>Für Objekt unter dem Mauszeiger</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -690,7 +690,7 @@
     <message>
         <location line="+8"/>
         <source>Highlight Hovered Object</source>
-        <translation>Schwebendes Objekt hervorheben</translation>
+        <translation>Objekt unter dem Mauszeiger Hervorheben</translation>
     </message>
     <message>
         <location line="-132"/>
@@ -3716,21 +3716,27 @@ Bitte Format angeben.</translation>
     <message numerus="yes">
         <location line="+2"/>
         <source>Group %n Layer(s)</source>
-        <translation><numerusform>Ebene gruppieren</numerusform>
-        <numerusform>%n Ebenen gruppieren</numerusform>
-        </translation></message>
+        <translation>
+            <numerusform>Ebene gruppieren</numerusform>
+            <numerusform>%n Ebenen gruppieren</numerusform>
+        </translation>
+    </message>
     <message numerus="yes">
         <location line="+16"/>
         <source>Ungroup %n Layer(s)</source>
-        <translation><numerusform>Ebene von Gruppe lösen</numerusform>
-        <numerusform>%n Ebenen von Gruppe lösen</numerusform>
-        </translation></message>
+        <translation>
+            <numerusform>Ebene von Gruppe lösen</numerusform>
+            <numerusform>%n Ebenen von Gruppe lösen</numerusform>
+        </translation>
+    </message>
     <message numerus="yes">
         <location line="+46"/>
         <source>Duplicate %n Layer(s)</source>
-        <translation><numerusform>Ebene duplizieren</numerusform>
-        <numerusform>%n Ebenen duplizieren</numerusform>
-        </translation></message>
+        <translation>
+            <numerusform>Ebene duplizieren</numerusform>
+            <numerusform>%n Ebenen duplizieren</numerusform>
+        </translation>
+    </message>
     <message>
         <location line="+27"/>
         <source>Copy of %1</source>
@@ -5609,7 +5615,7 @@ Bitte Format angeben.</translation>
     <message>
         <location filename="../src/tiled/wangsetview.cpp" line="+105"/>
         <source>Wang Set &amp;Properties...</source>
-        <translation>Wang-Set &amp; Eigenschaften</translation>
+        <translation>Wang-Set &amp;Eigenschaften...</translation>
     </message>
 </context>
 <context>
@@ -5909,21 +5915,27 @@ Bitte Format angeben.</translation>
     <message numerus="yes">
         <location line="+65"/>
         <source>Detach %n Template Instance(s)</source>
-        <translation><numerusform>Vorlagen-Instanz lösen</numerusform>
-        <numerusform>%n Vorlagen-Instanzen lösen</numerusform>
-        </translation></message>
+        <translation>
+            <numerusform>Vorlagen-Instanz lösen</numerusform>
+            <numerusform>%n Vorlagen-Instanzen lösen</numerusform>
+        </translation>
+    </message>
     <message numerus="yes">
         <location line="+39"/>
         <source>Reset %n Instances</source>
-        <translation><numerusform>Instanz zurücksetzen</numerusform>
-        <numerusform>%n Instanzen zurücksetzen</numerusform>
-        </translation></message>
+        <translation>
+            <numerusform>Instanz zurücksetzen</numerusform>
+            <numerusform>%n Instanzen zurücksetzen</numerusform>
+        </translation>
+    </message>
     <message numerus="yes">
         <location line="+46"/>
         <source>Replace %n Object(s) With Template</source>
-        <translation><numerusform>Objekt mit Vorlage ersetzen</numerusform>
-        <numerusform>&amp;n Objekte mit Vorlage ersetzen</numerusform>
-        </translation></message>
+        <translation>
+            <numerusform>Objekt mit Vorlage ersetzen</numerusform>
+            <numerusform>&amp;n Objekte mit Vorlage ersetzen</numerusform>
+        </translation>
+    </message>
     <message>
         <location filename="../src/tiled/renameterrain.cpp" line="+36"/>
         <source>Change Terrain Name</source>
@@ -6146,15 +6158,19 @@ Bitte Format angeben.</translation>
     <message numerus="yes">
         <location filename="../src/tiled/mapdocument.cpp" line="-683"/>
         <source>Raise %n Layer(s)</source>
-        <translation><numerusform>Ebene anheben</numerusform>
-        <numerusform>%n Ebenen anheben</numerusform>
-        </translation></message>
+        <translation>
+            <numerusform>Ebene anheben</numerusform>
+            <numerusform>%n Ebenen anheben</numerusform>
+        </translation>
+    </message>
     <message numerus="yes">
         <location line="+27"/>
         <source>Lower %n Layer(s)</source>
-        <translation><numerusform>Ebene senken</numerusform>
-        <numerusform>%n Ebenen senken</numerusform>
-        </translation></message>
+        <translation>
+            <numerusform>Ebene senken</numerusform>
+            <numerusform>%n Ebenen senken</numerusform>
+        </translation>
+    </message>
 </context>
 <context>
     <name>Utils</name>

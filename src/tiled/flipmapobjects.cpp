@@ -21,18 +21,18 @@
 
 #include "flipmapobjects.h"
 
-#include "mapdocument.h"
+#include "changeevents.h"
+#include "document.h"
 #include "mapobject.h"
-#include "mapobjectmodel.h"
 
 #include <QCoreApplication>
 
 using namespace Tiled;
 
-FlipMapObjects::FlipMapObjects(MapDocument *mapDocument,
+FlipMapObjects::FlipMapObjects(Document *document,
                                const QList<MapObject *> &mapObjects,
                                FlipDirection flipDirection)
-    : mMapDocument(mapDocument)
+    : mDocument(document)
     , mMapObjects(mapObjects)
     , mFlipDirection(flipDirection)
 {
@@ -85,5 +85,11 @@ void FlipMapObjects::flip()
 
     mOldRotationStates.swap(mNewRotationStates);
 
-    emit mMapDocument->mapObjectModel()->objectsChanged(mMapObjects);
+    constexpr MapObject::ChangedProperties changedProperties {
+        MapObject::CellProperty,
+        MapObject::PositionProperty,
+        MapObject::RotationProperty,
+        MapObject::ShapeProperty,
+    };
+    emit mDocument->changed(MapObjectsChangeEvent(mMapObjects, changedProperties));
 }

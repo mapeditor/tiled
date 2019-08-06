@@ -30,13 +30,10 @@
 #include "pluginmanager.h"
 #include "preferences.h"
 #include "scriptmanager.h"
-#include "sparkleautoupdater.h"
-#include "standardautoupdater.h"
 #include "stylehelper.h"
 #include "tiledapplication.h"
 #include "tileset.h"
 #include "tmxmapformat.h"
-#include "winsparkleautoupdater.h"
 
 #include <QDebug>
 #include <QFileInfo>
@@ -84,6 +81,7 @@ private:
     void setExportEmbedTilesets();
     void setExportDetachTemplateInstances();
     void setExportResolveObjectTypesAndProperties();
+    void setExportMinimized();
     void showExportFormats();
     void startNewInstance();
 
@@ -207,6 +205,11 @@ CommandLineHandler::CommandLineHandler()
                 QLatin1String("--resolve-types-and-properties"),
                 tr("Export the map or tileset with types and properties resolved"));
 
+    option<&CommandLineHandler::setExportMinimized>(
+                QChar(),
+                QLatin1String("--minimize"),
+                tr("Minimize the exported file by omitting unnecessary whitespace"));
+
     option<&CommandLineHandler::startNewInstance>(
                 QChar(),
                 QLatin1String("--new-instance"),
@@ -258,6 +261,11 @@ void CommandLineHandler::setExportResolveObjectTypesAndProperties()
     exportOptions |= Preferences::ResolveObjectTypesAndProperties;
 }
 
+void CommandLineHandler::setExportMinimized()
+{
+    exportOptions |= Preferences::ExportMinimized;
+}
+
 void CommandLineHandler::showExportFormats()
 {
     PluginManager::instance()->loadPlugins();
@@ -306,9 +314,7 @@ int main(int argc, char *argv[])
     }
 #endif
 
-#if QT_VERSION >= 0x050600
     QGuiApplication::setFallbackSessionManagementEnabled(false);
-#endif
 
     // Enable support for highres images (added in Qt 5.1, but off by default)
     QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
@@ -386,10 +392,11 @@ int main(int argc, char *argv[])
 
         // Apply export options
         std::unique_ptr<Map> exportMap;
-        const Map *map = ExportHelper(commandLine.exportOptions).prepareExportMap(sourceMap.get(), exportMap);
+        ExportHelper exportHelper(commandLine.exportOptions);
+        const Map *map = exportHelper.prepareExportMap(sourceMap.get(), exportMap);
 
         // Write out the file
-        bool success = outputFormat->write(map, targetFile);
+        bool success = outputFormat->write(map, targetFile, exportHelper.formatOptions());
 
         if (!success) {
             qWarning().noquote() << QCoreApplication::translate("Command line", "Failed to export map to target file.");
@@ -428,10 +435,11 @@ int main(int argc, char *argv[])
         }
 
         // Apply export options
-        SharedTileset exportTileset = ExportHelper(commandLine.exportOptions).prepareExportTileset(sourceTileset);
+        ExportHelper exportHelper(commandLine.exportOptions);
+        SharedTileset exportTileset = exportHelper.prepareExportTileset(sourceTileset);
 
         // Write out the file
-        bool success = outputFormat->write(*exportTileset, targetFile);
+        bool success = outputFormat->write(*exportTileset, targetFile, exportHelper.formatOptions());
 
         if (!success) {
             qWarning().noquote() << QCoreApplication::translate("Command line", "Failed to export tileset to target file.");
@@ -451,15 +459,6 @@ int main(int argc, char *argv[])
             return 0;
     }
 
-    std::unique_ptr<AutoUpdater> updater;
-#ifdef TILED_SPARKLE
-#if defined(Q_OS_MAC)
-    updater.reset(new SparkleAutoUpdater);
-#elif defined(Q_OS_WIN)
-    updater.reset(new WinSparkleAutoUpdater);
-#endif
-#endif
-
     MainWindow w;
     w.show();
 
@@ -472,7 +471,7 @@ int main(int argc, char *argv[])
                      &w, [&] (const QString &file) { w.openFile(file); });
 
     PluginManager::instance()->loadPlugins();
-    ScriptManager::instance().evaluateStartupScripts();
+    ScriptManager::instance().initialize();
 
     if (!commandLine.filesToOpen().isEmpty()) {
         for (const QString &fileName : commandLine.filesToOpen())

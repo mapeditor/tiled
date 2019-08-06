@@ -21,6 +21,7 @@
 #include "editabletilelayer.h"
 
 #include "editablemanager.h"
+#include "editablemap.h"
 #include "tilelayeredit.h"
 #include "tilesetdocument.h"
 

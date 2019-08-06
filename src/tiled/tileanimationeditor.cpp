@@ -302,6 +302,9 @@ TileAnimationEditor::TileAnimationEditor(QWidget *parent)
     connect(mUi->tilesetView, &QAbstractItemView::doubleClicked,
             this, &TileAnimationEditor::addFrameForTileAt);
 
+    connect(mUi->tilesetView->zoomable(), &Zoomable::scaleChanged,
+            this, &TileAnimationEditor::updatePreviewPixmap);
+
     connect(mFrameListModel, &QAbstractItemModel::dataChanged,
             this, &TileAnimationEditor::framesEdited);
     connect(mFrameListModel, &QAbstractItemModel::rowsInserted,
@@ -539,11 +542,8 @@ void TileAnimationEditor::advancePreviewAnimation(int ms)
         frame = frames.at(mPreviewFrameIndex);
     }
 
-    if (previousTileId != frame.tileId) {
-        Tileset *tileset = mTile->tileset();
-        if (const Tile *tile = tileset->findTile(frame.tileId))
-            mUi->preview->setPixmap(tile->image());
-    }
+    if (previousTileId != frame.tileId)
+        updatePreviewPixmap();
 }
 
 void TileAnimationEditor::resetPreview()
@@ -551,17 +551,33 @@ void TileAnimationEditor::resetPreview()
     mPreviewFrameIndex = 0;
     mPreviewUnusedTime = 0;
 
-    if (mTile && mTile->isAnimated()) {
-        const int tileId = mTile->frames().first().tileId;
-        Tileset *tileset = mTile->tileset();
-        if (Tile *tile = tileset->findTile(tileId)) {
-            mUi->preview->setPixmap(tile->image());
-            return;
-        }
-    }
+    if (updatePreviewPixmap())
+        return;
 
     mUi->preview->setText(QApplication::translate("TileAnimationEditor",
                                                   "Preview"));
+}
+
+bool TileAnimationEditor::updatePreviewPixmap()
+{
+    if (!mTile || !mTile->isAnimated())
+        return false;
+
+    const QVector<Frame> &frames = mTile->frames();
+    const Tileset *tileset = mTile->tileset();
+    const Frame frame = frames.at(mPreviewFrameIndex);
+
+    if (Tile *tile = tileset->findTile(frame.tileId)) {
+        const QPixmap &image = tile->image();
+        const qreal scale = mUi->tilesetView->zoomable()->scale();
+
+        const int w = image.width() * scale;
+        const int h = image.height() * scale;
+        mUi->preview->setPixmap(image.scaled(w, h, Qt::KeepAspectRatio));
+        return true;
+    }
+
+    return false;
 }
 
 } // namespace Tiled

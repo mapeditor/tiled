@@ -29,6 +29,8 @@
 #include <QString>
 #include <QVariant>
 
+#include <memory>
+
 class QUndoStack;
 
 namespace Tiled {
@@ -37,6 +39,7 @@ class FileFormat;
 class Object;
 class Tile;
 
+class ChangeEvent;
 class EditableAsset;
 
 /**
@@ -64,6 +67,7 @@ public:
     DocumentType type() const { return mType; }
 
     QString fileName() const;
+    QString canonicalFilePath() const;
 
     /**
      * Returns the name with which to display this document. It is the file name
@@ -113,9 +117,10 @@ public:
     virtual FileFormat *exportFormat() const = 0;
     virtual void setExportFormat(FileFormat *format) = 0;
 
-    static const QList<Document*> &documentInstances();
+    static const QHash<QString, Document *> &documentInstances();
 
 signals:
+    void changed(const ChangeEvent &change);
     void saved();
 
     void fileNameChanged(const QString &fileName,
@@ -138,27 +143,35 @@ signals:
 protected:
     void setFileName(const QString &fileName);
 
-    DocumentType mType;
-    QString mFileName;
     QDateTime mLastSaved;
 
-    Object *mCurrentObject;             /**< Current properties object. */
-
-    bool mChangedOnDisk;
-    bool mIgnoreBrokenLinks;
+    Object *mCurrentObject = nullptr;   /**< Current properties object. */
 
     QString mLastExportFileName;
 
-    EditableAsset *mEditable = nullptr;
+    std::unique_ptr<EditableAsset> mEditable;
 
 private:
-    static QList<Document*> sDocumentInstances;
+    const DocumentType mType;
+
+    QString mFileName;
+    QString mCanonicalFilePath;
+
+    bool mChangedOnDisk = false;
+    bool mIgnoreBrokenLinks = false;
+
+    static QHash<QString, Document*> sDocumentInstances;
 };
 
 
 inline QString Document::fileName() const
 {
     return mFileName;
+}
+
+inline QString Document::canonicalFilePath() const
+{
+    return mCanonicalFilePath;
 }
 
 inline bool Document::ignoreBrokenLinks() const
@@ -181,7 +194,7 @@ inline void Document::setLastExportFileName(const QString &fileName)
     mLastExportFileName = fileName;
 }
 
-inline const QList<Document *> &Document::documentInstances()
+inline const QHash<QString, Document *> &Document::documentInstances()
 {
     return sDocumentInstances;
 }

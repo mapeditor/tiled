@@ -77,7 +77,6 @@
               <Shortcut Id="startmenuTiled" Directory="ProgramMenuFolder" Name="Tiled" WorkingDirectory='INSTALLDIR' Icon="tiled.exe" IconIndex="0" Advertise="yes" />
               <Shortcut Id="desktopTiled" Directory="DesktopFolder" Name="Tiled" WorkingDirectory='INSTALLDIR' Icon="tiled.exe" IconIndex="0" Advertise="yes" />
             </File>
-            <File Id="filFC35B15ADCD88C87362A53A3161884C1" Source="$(var.InstallRoot)\automappingconverter.exe" />
             <File Id="filF01A89E83F9999A5C328B9967FB4E6A0" Source="$(var.InstallRoot)\terraingenerator.exe" />
             <File Id="fil806C195E384F65A83656FBCFB9431D61" Source="$(var.InstallRoot)\tiled.dll" />
             <File Id="fil3F7B07FEDA3DAC1FD6C5491D240B7867" Source="$(var.InstallRoot)\tmxrasterizer.exe" />
@@ -105,10 +104,6 @@
               <File Source="$(var.VcInstallDir)\redist\$(var.Platform)\Microsoft.VC120.CRT\msvcp120.dll"/>
               <File Source="$(var.VcInstallDir)\redist\$(var.Platform)\Microsoft.VC120.CRT\msvcr120.dll"/>
               <?endif?>
-            <?endif?>
-
-            <?ifdef Sparkle ?>
-            <File Id="WinSparkleDLL" Source="$(var.InstallRoot)\WinSparkle.dll" />
             <?endif?>
 
             <?ifdef OpenSslDir ?>

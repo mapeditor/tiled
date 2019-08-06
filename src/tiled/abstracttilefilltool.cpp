@@ -65,12 +65,12 @@ void AbstractTileFillTool::deactivate(MapScene *scene)
 
 void AbstractTileFillTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
-    if (event->button() == Qt::RightButton) {
+    if (event->button() == Qt::RightButton && event->modifiers() == Qt::NoModifier) {
         mCaptureStampHelper.beginCapture(tilePosition());
         return;
     }
 
-    event->ignore();
+    AbstractTileTool::mousePressed(event);
 }
 
 void AbstractTileFillTool::mouseReleased(QGraphicsSceneMouseEvent *event)
@@ -156,7 +156,7 @@ void AbstractTileFillTool::mapDocumentChanged(MapDocument *oldDocument,
     clearOverlay();
 }
 
-void AbstractTileFillTool::tilePositionChanged(const QPoint &tilePos)
+void AbstractTileFillTool::tilePositionChanged(QPoint tilePos)
 {
     if (mCaptureStampHelper.isActive()) {
         clearOverlay();

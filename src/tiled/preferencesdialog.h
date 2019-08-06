@@ -55,9 +55,6 @@ private:
 
     void styleComboChanged();
 
-    void autoUpdateToggled(bool checked);
-    void checkForUpdates();
-
     Ui::PreferencesDialog *mUi;
     QStringList mLanguages;
 };

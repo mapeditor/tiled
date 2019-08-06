@@ -20,6 +20,7 @@
 
 #include "tileselectionitem.h"
 
+#include "changeevents.h"
 #include "grouplayer.h"
 #include "map.h"
 #include "mapdocument.h"
@@ -39,10 +40,10 @@ TileSelectionItem::TileSelectionItem(MapDocument *mapDocument,
 {
     setFlag(QGraphicsItem::ItemUsesExtendedStyleOption);
 
+    connect(mapDocument, &MapDocument::changed,
+            this, &TileSelectionItem::documentChanged);
     connect(mapDocument, &MapDocument::selectedAreaChanged,
             this, &TileSelectionItem::selectionChanged);
-    connect(mapDocument, &MapDocument::layerChanged,
-            this, &TileSelectionItem::layerChanged);
     connect(mapDocument, &MapDocument::currentLayerChanged,
             this, &TileSelectionItem::currentLayerChanged);
 
@@ -67,6 +68,22 @@ void TileSelectionItem::paint(QPainter *painter,
                                 option->exposedRect);
 }
 
+void TileSelectionItem::documentChanged(const ChangeEvent &change)
+{
+    switch (change.type) {
+    case ChangeEvent::LayerChanged: {
+        const auto &layerChange = static_cast<const LayerChangeEvent&>(change);
+        if (layerChange.properties & LayerChangeEvent::OffsetProperty)
+            if (auto currentLayer = mMapDocument->currentLayer())
+                if (currentLayer->isParentOrSelf(layerChange.layer))
+                    setPos(currentLayer->totalOffset());
+        break;
+    }
+    default:
+        break;
+    }
+}
+
 void TileSelectionItem::selectionChanged(const QRegion &newSelection,
                                          const QRegion &oldSelection)
 {
@@ -76,13 +93,6 @@ void TileSelectionItem::selectionChanged(const QRegion &newSelection,
     // Make sure changes within the bounding rect are updated
     const QRect changedArea = newSelection.xored(oldSelection).boundingRect();
     update(mMapDocument->renderer()->boundingRect(changedArea));
-}
-
-void TileSelectionItem::layerChanged(Layer *layer)
-{
-    if (auto currentLayer = mMapDocument->currentLayer())
-        if (currentLayer->isParentOrSelf(layer))
-            setPos(currentLayer->totalOffset());
 }
 
 void TileSelectionItem::currentLayerChanged(Layer *layer)

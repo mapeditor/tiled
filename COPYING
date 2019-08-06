@@ -6,7 +6,6 @@ Software             Directory                 License
 -------------------------------------------------------------------
 Tiled                src/tiled                 GPL
 Tiled plugins        src/plugins               GPL
-automappingconverter src/automappingconverter  GPL
 libtiled             src/libtiled              BSD 2-clause license
 libtiled-java        util/java/libtiled-java   BSD 2-clause license
 qtpropertybrowser    src/qtpropertybrowser     BSD 3-clause license

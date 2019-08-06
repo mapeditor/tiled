@@ -93,7 +93,7 @@ combination with rotation doesn't appear to work in GameMaker).
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.1</div>
+   <div class="new new-prev">Since Tiled 1.1</div>
 
 The following custom properties can be set on objects to affect the
 exported instance:
@@ -123,7 +123,7 @@ position of the exported instance.
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.1</div>
+   <div class="new new-prev">Since Tiled 1.1</div>
 
 Views
 ~~~~~
@@ -201,7 +201,7 @@ property on the layer:
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.1</div>
+   <div class="new new-prev">Since Tiled 1.1</div>
 
 tBIN
 ----

@@ -123,6 +123,9 @@ std::unique_ptr<Map> VariantToMapConverter::toMap(const QVariant &variant,
             tileset->loadImage();
     }
 
+    const int compressionLevel = variantMap[QLatin1String("compressionlevel")].toInt();
+    map->setCompressionLevel(compressionLevel);
+
     return map;
 }
 
@@ -531,6 +534,8 @@ std::unique_ptr<TileLayer> VariantToMapConverter::toTileLayer(const QVariantMap 
             layerDataFormat = Map::Base64Gzip;
         } else if (compression == QLatin1String("zlib")) {
             layerDataFormat = Map::Base64Zlib;
+        } else if (compression == QLatin1String("zstd")) {
+            layerDataFormat = Map::Base64Zstandard;
         } else {
             mError = tr("Compression method '%1' not supported").arg(compression);
             return nullptr;
@@ -540,6 +545,14 @@ std::unique_ptr<TileLayer> VariantToMapConverter::toTileLayer(const QVariantMap 
         return nullptr;
     }
     mMap->setLayerDataFormat(layerDataFormat);
+
+    int chunkWidth = variantMap[QLatin1String("outputchunkwidth")].toInt();
+    int chunkHeight = variantMap[QLatin1String("outputchunkheight")].toInt();
+
+    chunkWidth = chunkWidth == 0 ? CHUNK_SIZE : qMax(CHUNK_SIZE_MIN, chunkWidth);
+    chunkHeight = chunkHeight == 0 ? CHUNK_SIZE : qMax(CHUNK_SIZE_MIN, chunkHeight);
+
+    mMap->setChunkSize(QSize(chunkWidth, chunkHeight));
 
     if (dataVariant.isValid() && !dataVariant.isNull()) {
         if (!readTileLayerData(*tileLayer, dataVariant, layerDataFormat,
@@ -845,7 +858,8 @@ bool VariantToMapConverter::readTileLayerData(TileLayer &tileLayer,
 
     case Map::Base64:
     case Map::Base64Zlib:
-    case Map::Base64Gzip: {
+    case Map::Base64Gzip:
+    case Map::Base64Zstandard:{
         const QByteArray data = dataVariant.toByteArray();
         GidMapper::DecodeError error = mGidMapper.decodeLayerData(tileLayer,
                                                                   data,

@@ -7,6 +7,8 @@ description: |
   various projections (orthogonal, isometric, hexagonal) and also supports
   building levels with freely positioned, rotated or scaled images or
   annotating them with objects of various shapes.
+license: GPL-2.0-or-later
+base: core18
 
 grade: stable
 confinement: strict
@@ -25,9 +27,6 @@ apps:
   terraingenerator:
     command: desktop-launch ${SNAP}/usr/bin/terraingenerator
     plugs: [home, unity7]
-  automappingconverter:
-    command: desktop-launch ${SNAP}/usr/bin/automappingconverter
-    plugs: [home, unity7]
 
 parts:
   tiled:
@@ -42,6 +41,34 @@ parts:
     #  - pkg-config
     #  - python-dev
       - qttools5-dev-tools
-    #stage-packages:
+      - qtdeclarative5-dev
+      - zlib1g-dev
+    stage-packages:
+      - libqt5quick5
     #  - libpython2.7
     after: [desktop-qt5]
+
+  desktop-qt5:
+    source: https://github.com/ubuntu/snapcraft-desktop-helpers.git
+    source-subdir: qt
+    plugin: make
+    make-parameters: ["FLAVOR=qt5"]
+    build-packages:
+      - build-essential
+      - qtbase5-dev
+      - dpkg-dev
+    stage-packages:
+      - libxkbcommon0
+      - ttf-ubuntu-font-family
+      - dmz-cursor-theme
+      - light-themes
+      - adwaita-icon-theme
+      - gnome-themes-standard
+      - shared-mime-info
+      - libqt5gui5
+      - libgdk-pixbuf2.0-0
+      - libqt5svg5 # for loading icon themes which are svg
+      - try: [appmenu-qt5] # not available on core18
+      - locales-all
+      - xdg-user-dirs
+      - fcitx-frontend-qt5

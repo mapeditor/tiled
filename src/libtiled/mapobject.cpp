@@ -274,10 +274,14 @@ QVariant MapObject::mapObjectProperty(Property property) const
     case TextAlignmentProperty: return QVariant::fromValue(mTextData.alignment);
     case TextWordWrapProperty:  return mTextData.wordWrap;
     case TextColorProperty:     return mTextData.color;
+    case PositionProperty:      return mPos;
     case SizeProperty:          return mSize;
     case RotationProperty:      return mRotation;
     case CellProperty:          Q_ASSERT(false); break;
     case ShapeProperty:         return mShape;
+    case TemplateProperty:      Q_ASSERT(false); break;
+    case CustomProperties:      Q_ASSERT(false); break;
+    case AllProperties:         Q_ASSERT(false); break;
     }
     return QVariant();
 }
@@ -285,18 +289,22 @@ QVariant MapObject::mapObjectProperty(Property property) const
 void MapObject::setMapObjectProperty(Property property, const QVariant &value)
 {
     switch (property) {
-    case NameProperty:          mName = value.toString(); break;
-    case TypeProperty:          mType = value.toString(); break;
-    case VisibleProperty:       mVisible = value.toBool(); break;
+    case NameProperty:          setName(value.toString()); break;
+    case TypeProperty:          setType(value.toString()); break;
+    case VisibleProperty:       setVisible(value.toBool()); break;
     case TextProperty:          mTextData.text = value.toString(); break;
     case TextFontProperty:      mTextData.font = value.value<QFont>(); break;
     case TextAlignmentProperty: mTextData.alignment = value.value<Qt::Alignment>(); break;
     case TextWordWrapProperty:  mTextData.wordWrap = value.toBool(); break;
     case TextColorProperty:     mTextData.color = value.value<QColor>(); break;
-    case SizeProperty:          mSize = value.toSizeF(); break;
-    case RotationProperty:      mRotation = value.toReal(); break;
+    case PositionProperty:      setPosition(value.toPointF()); break;
+    case SizeProperty:          setSize(value.toSizeF()); break;
+    case RotationProperty:      setRotation(value.toReal()); break;
     case CellProperty:          Q_ASSERT(false); break;
-    case ShapeProperty:         mShape = value.value<Shape>(); break;
+    case ShapeProperty:         setShape(value.value<Shape>()); break;
+    case TemplateProperty:      Q_ASSERT(false); break;
+    case CustomProperties:      Q_ASSERT(false); break;
+    case AllProperties:         Q_ASSERT(false); break;
     }
 }
 
@@ -447,7 +455,7 @@ void MapObject::flipPolygonObject(const QTransform &flipTransform)
     QPointF oldBottomLeftPoint = polygonToMapTransform.map(polygonFlip.map(QPointF(0, 0)));
     QPointF newPos = flipTransform.map(oldBottomLeftPoint);
 
-    mPolygon = polygonFlip.map(mPolygon);
+    setPolygon(polygonFlip.map(mPolygon));
     setPosition(newPos);
 }
 

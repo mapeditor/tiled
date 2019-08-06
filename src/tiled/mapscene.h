@@ -89,10 +89,7 @@ private slots:
     void mapChanged();
     void repaintTileset(Tileset *tileset);
 
-    void adaptToTilesetTileSizeChanges();
-    void adaptToTileSizeChanges();
-
-    void tilesetReplaced();
+    void tilesetReplaced(int index, Tileset *tileset, Tileset *oldTileset);
 
 private:
     void updateDefaultBackgroundColor();

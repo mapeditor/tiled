@@ -48,6 +48,7 @@
 #include "mapview.h"
 #include "minimapdock.h"
 #include "newsbutton.h"
+#include "newversionbutton.h"
 #include "newtilesetdialog.h"
 #include "objectgroup.h"
 #include "objectsdock.h"
@@ -166,9 +167,7 @@ MapEditor::MapEditor(QObject *parent)
     , mViewWithTool(nullptr)
     , mTileStampManager(new TileStampManager(*mToolManager, this))
 {
-#if QT_VERSION >= 0x050600
     mMainWindow->setDockOptions(mMainWindow->dockOptions() | QMainWindow::GroupedDragging);
-#endif
     mMainWindow->setDockNestingEnabled(true);
     mMainWindow->setCentralWidget(mWidgetStack);
 
@@ -251,6 +250,7 @@ MapEditor::MapEditor(QObject *parent)
     mMainWindow->statusBar()->addPermanentWidget(mLayerComboBox);
     mMainWindow->statusBar()->addPermanentWidget(mZoomComboBox);
     mMainWindow->statusBar()->addPermanentWidget(new NewsButton);
+    mMainWindow->statusBar()->addPermanentWidget(new NewVersionButton(NewVersionButton::AutoVisible));
     mMainWindow->statusBar()->addWidget(mStatusInfoLabel);
 
     connect(mWidgetStack, &QStackedWidget::currentChanged, this, &MapEditor::currentWidgetChanged);
@@ -365,7 +365,7 @@ void MapEditor::addDocument(Document *document)
 
         int layerIndex = mapState.value(QLatin1String("selectedLayer")).toInt();
         if (Layer *layer = layerAtGlobalIndex(mapDocument->map(), layerIndex))
-            mapDocument->setCurrentLayer(layer);
+            mapDocument->switchCurrentLayer(layer);
     }
 }
 
@@ -800,7 +800,7 @@ void MapEditor::layerComboActivated()
     if (!layer)
         return;
 
-    mCurrentMapDocument->setCurrentLayer(layer);
+    mCurrentMapDocument->switchCurrentLayer(layer);
 }
 
 void MapEditor::updateLayerComboIndex()
@@ -958,6 +958,16 @@ void MapEditor::showTileCollisionShapesChanged(bool enabled)
 {
     for (auto mapView : qAsConst(mWidgetForMap))
         mapView->mapScene()->setShowTileCollisionShapes(enabled);
+}
+
+void MapEditor::setCurrentTileset(const SharedTileset &tileset)
+{
+    mTilesetDock->setCurrentTileset(tileset);
+}
+
+SharedTileset MapEditor::currentTileset() const
+{
+    return mTilesetDock->currentTileset();
 }
 
 } // namespace Tiled

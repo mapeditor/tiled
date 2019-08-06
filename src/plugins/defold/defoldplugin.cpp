@@ -88,8 +88,10 @@ QString DefoldPlugin::errorString() const
     return mError;
 }
 
-bool DefoldPlugin::write(const Tiled::Map *map, const QString &fileName)
+bool DefoldPlugin::write(const Tiled::Map *map, const QString &fileName, Options options)
 {
+    Q_UNUSED(options)
+
     QVariantHash map_h;
 
     QString layers;

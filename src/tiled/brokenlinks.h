@@ -94,7 +94,6 @@ private slots:
 
     void tilesetAdded(int index, Tileset *tileset);
     void tilesetRemoved(Tileset *tileset);
-    void tilesetReplaced(int index, Tileset *newTileset, Tileset *oldTileset);
 
 private:
     void connectToTileset(const SharedTileset &tileset);

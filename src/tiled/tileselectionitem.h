@@ -26,6 +26,7 @@ namespace Tiled {
 
 class Layer;
 
+class ChangeEvent;
 class MapDocument;
 
 /**
@@ -47,10 +48,9 @@ public:
                QWidget *widget = nullptr) override;
 
 private slots:
+    void documentChanged(const ChangeEvent &change);
     void selectionChanged(const QRegion &newSelection,
                           const QRegion &oldSelection);
-
-    void layerChanged(Layer *layer);
 
     void currentLayerChanged(Layer *layer);
 

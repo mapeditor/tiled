@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include "changeevents.h"
+
 #include <QGraphicsObject>
 #include <QHash>
 
@@ -58,6 +60,7 @@ public:
     void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *) override {}
 
 private slots:
+    void changeEvent(const ChangeEvent &event);
     void selectedObjectsChanged();
     void hoveredMapObjectChanged(MapObject *object, MapObject *previous);
     void mapChanged();
@@ -67,7 +70,7 @@ private slots:
     void syncOverlayItems(const QList<MapObject *> &objects);
     void updateObjectLabelColors();
     void objectsAdded(const QList<MapObject*> &objects);
-    void objectsRemoved(const QList<MapObject*> &objects);
+    void objectsAboutToBeRemoved(const QList<MapObject*> &objects);
     void tilesetTileOffsetChanged(Tileset *tileset);
     void tileTypeChanged(Tile *tile);
 

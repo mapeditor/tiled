@@ -33,10 +33,10 @@ EditableObjectGroup::EditableObjectGroup(const QString &name, QObject *parent)
 {
 }
 
-EditableObjectGroup::EditableObjectGroup(EditableMap *map,
+EditableObjectGroup::EditableObjectGroup(EditableAsset *asset,
                                          ObjectGroup *objectGroup,
                                          QObject *parent)
-    : EditableLayer(map, objectGroup, parent)
+    : EditableLayer(asset, objectGroup, parent)
 {
 }
 
@@ -45,7 +45,7 @@ QList<QObject *> EditableObjectGroup::objects()
     auto &editableManager = EditableManager::instance();
     QList<QObject*> objects;
     for (MapObject *object : objectGroup()->objects())
-        objects.append(editableManager.editableMapObject(map(), object));
+        objects.append(editableManager.editableMapObject(asset(), object));
     return objects;
 }
 
@@ -57,7 +57,7 @@ EditableMapObject *EditableObjectGroup::objectAt(int index)
     }
 
     auto mapObject = objectGroup()->objectAt(index);
-    return EditableManager::instance().editableMapObject(map(), mapObject);
+    return EditableManager::instance().editableMapObject(asset(), mapObject);
 }
 
 void EditableObjectGroup::removeObjectAt(int index)
@@ -69,8 +69,8 @@ void EditableObjectGroup::removeObjectAt(int index)
 
     auto mapObject = objectGroup()->objectAt(index);
 
-    if (map()) {
-        map()->push(new RemoveMapObjects(map()->mapDocument(), mapObject));
+    if (asset()) {
+        asset()->push(new RemoveMapObjects(asset()->document(), mapObject));
     } else {
         objectGroup()->removeObjectAt(index);
         EditableManager::instance().release(mapObject);
@@ -100,10 +100,10 @@ void EditableObjectGroup::insertObjectAt(int index, EditableMapObject *editableM
         return;
     }
 
-    if (map()) {
-        map()->push(new AddMapObjects(map()->mapDocument(),
-                                      objectGroup(),
-                                      editableMapObject->mapObject()));
+    if (asset()) {
+        asset()->push(new AddMapObjects(asset()->document(),
+                                        objectGroup(),
+                                        editableMapObject->mapObject()));
     } else {
         objectGroup()->insertObject(index, editableMapObject->mapObject());
         editableMapObject->release();   // now owned by the object group
@@ -117,11 +117,11 @@ void EditableObjectGroup::addObject(EditableMapObject *editableMapObject)
 
 void EditableObjectGroup::setColor(const QColor &color)
 {
-    if (map()) {
-        map()->push(new ChangeObjectGroupProperties(map()->mapDocument(),
-                                                    objectGroup(),
-                                                    color,
-                                                    objectGroup()->drawOrder()));
+    if (asset()) {
+        asset()->push(new ChangeObjectGroupProperties(asset()->document(),
+                                                      objectGroup(),
+                                                      color,
+                                                      objectGroup()->drawOrder()));
     } else {
         objectGroup()->setColor(color);
     }

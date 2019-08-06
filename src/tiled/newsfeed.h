@@ -50,6 +50,8 @@ private:
 public:
     static NewsFeed &instance();
 
+    void setEnabled(bool enabled);
+
     void refresh();
 
     void markAllRead();

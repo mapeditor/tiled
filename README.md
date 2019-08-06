@@ -29,7 +29,7 @@ offered by the standard Java libraries.
 Compiling
 -------------------------------------------------------------------------------
 
-Before you can compile Tiled, you must ensure the Qt (>= 5.5) development
+Before you can compile Tiled, you must ensure the Qt (>= 5.6) development
 libraries have been installed:
 
 * On Ubuntu/Debian: `sudo apt install qt5-default qttools5-dev-tools zlib1g-dev qtdeclarative5-dev`

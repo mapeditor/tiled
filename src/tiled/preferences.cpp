@@ -71,6 +71,7 @@ Preferences::Preferences()
     setExportOption(EmbedTilesets, boolValue("EmbedTilesets", false));
     setExportOption(DetachTemplateInstances, boolValue("DetachTemplateInstances", false));
     setExportOption(ResolveObjectTypesAndProperties, boolValue("ResolveObjectTypesAndProperties", false));
+    setExportOption(ExportMinimized, boolValue("Minimized", false));
     mSettings->endGroup();
 
     SaveFile::setSafeSavingEnabled(mSafeSavingEnabled);
@@ -164,7 +165,8 @@ Preferences::Preferences()
     mPatreonDialogTime = mSettings->value(QLatin1String("PatreonDialogTime")).toDate();
     mRunCount = intValue("RunCount", 0) + 1;
     mIsPatron = boolValue("IsPatron");
-    mCheckForUpdates = boolValue("CheckForUpdates");
+    mCheckForUpdates = boolValue("CheckForUpdates", true);
+    mDisplayNews = boolValue("DisplayNews", true);
     if (!mFirstRun.isValid()) {
         mFirstRun = QDate::currentDate();
         mSettings->setValue(QLatin1String("FirstRun"), mFirstRun.toString(Qt::ISODate));
@@ -433,6 +435,9 @@ void Preferences::setExportOption(Preferences::ExportOption option, bool value)
     case ResolveObjectTypesAndProperties:
         mSettings->setValue(QLatin1String("Export/ResolveObjectTypesAndProperties"), value);
         break;
+    case ExportMinimized:
+        mSettings->setValue(QLatin1String("Export/Minimized"), value);
+        break;
     }
 }
 
@@ -644,7 +649,18 @@ void Preferences::setCheckForUpdates(bool on)
     mCheckForUpdates = on;
     mSettings->setValue(QLatin1String("Install/CheckForUpdates"), on);
 
-    emit checkForUpdatesChanged();
+    emit checkForUpdatesChanged(on);
+}
+
+void Preferences::setDisplayNews(bool on)
+{
+    if (mDisplayNews == on)
+        return;
+
+    mDisplayNews = on;
+    mSettings->setValue(QLatin1String("Install/DisplayNews"), on);
+
+    emit displayNewsChanged(on);
 }
 
 void Preferences::setOpenLastFilesOnStartup(bool open)

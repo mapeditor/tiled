@@ -26,12 +26,6 @@ namespace Lua {
 
 LuaTableWriter::LuaTableWriter(QIODevice *device)
     : m_device(device)
-    , m_indent(0)
-    , m_valueSeparator(',')
-    , m_suppressNewlines(false)
-    , m_newLine(true)
-    , m_valueWritten(false)
-    , m_error(false)
 {
 }
 
@@ -58,7 +52,7 @@ void LuaTableWriter::writeStartTable()
 void LuaTableWriter::writeStartReturnTable()
 {
     prepareNewLine();
-    write("return {");
+    write(m_minimize ? "return{" : "return {");
     ++m_indent;
     m_newLine = false;
     m_valueWritten = false;
@@ -67,7 +61,7 @@ void LuaTableWriter::writeStartReturnTable()
 void LuaTableWriter::writeStartTable(const QByteArray &name)
 {
     prepareNewLine();
-    write(name + " = {");
+    write(name + (m_minimize ? "={" : " = {"));
     ++m_indent;
     m_newLine = false;
     m_valueWritten = false;
@@ -107,7 +101,7 @@ void LuaTableWriter::writeKeyAndValue(const QByteArray &key,
 {
     prepareNewLine();
     write(key);
-    write(" = \"");
+    write(m_minimize ? "=\"" : " = \"");
     write(value);
     write('"');
     m_newLine = false;
@@ -119,7 +113,7 @@ void LuaTableWriter::writeKeyAndValue(const QByteArray &key,
 {
     prepareNewLine();
     write(key);
-    write(" = \"");
+    write(m_minimize ? "=\"" : " = \"");
     write(value);
     write('"');
     m_newLine = false;
@@ -132,7 +126,7 @@ void LuaTableWriter::writeQuotedKeyAndValue(const QString &key,
     prepareNewLine();
     write('[');
     write(quote(key).toUtf8());
-    write("] = ");
+    write(m_minimize ? "]=" : "] = ");
 
     switch (value.type()) {
     case QVariant::Int:
@@ -157,7 +151,7 @@ void LuaTableWriter::writeKeyAndUnquotedValue(const QByteArray &key,
 {
     prepareNewLine();
     write(key);
-    write(" = ");
+    write(m_minimize ? "=" : " = ");
     write(value);
     m_newLine = false;
     m_valueWritten = true;
@@ -200,7 +194,8 @@ void LuaTableWriter::prepareNewValue()
         writeNewline();
     } else {
         write(m_valueSeparator);
-        write(' ');
+        if (!m_minimize)
+            write(' ');
     }
 }
 
@@ -213,11 +208,13 @@ void LuaTableWriter::writeIndent()
 void LuaTableWriter::writeNewline()
 {
     if (!m_newLine) {
-        if (m_suppressNewlines) {
-            write(' ');
-        } else {
-            write('\n');
-            writeIndent();
+        if (!m_minimize) {
+            if (m_suppressNewlines) {
+                write(' ');
+            } else {
+                write('\n');
+                writeIndent();
+            }
         }
         m_newLine = true;
     }

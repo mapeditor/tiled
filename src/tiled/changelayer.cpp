@@ -20,19 +20,49 @@
 
 #include "changelayer.h"
 
+#include "changeevents.h"
+#include "document.h"
 #include "layer.h"
-#include "layermodel.h"
 #include "map.h"
-#include "mapdocument.h"
 
 #include <QCoreApplication>
 
 namespace Tiled {
 
-SetLayerVisible::SetLayerVisible(MapDocument *mapDocument,
+SetLayerName::SetLayerName(Document *document,
+                           Layer *layer,
+                           const QString &name):
+    mDocument(document),
+    mLayer(layer),
+    mName(name)
+{
+    setText(QCoreApplication::translate("Undo Commands", "Rename Layer"));
+}
+
+void SetLayerName::undo()
+{
+    swapName();
+}
+
+void SetLayerName::redo()
+{
+    swapName();
+}
+
+void SetLayerName::swapName()
+{
+    const QString previousName = mLayer->name();
+    mLayer->setName(mName);
+    mName = previousName;
+
+    emit mDocument->changed(LayerChangeEvent(mLayer, LayerChangeEvent::NameProperty));
+}
+
+
+SetLayerVisible::SetLayerVisible(Document *document,
                                  Layer *layer,
                                  bool visible)
-    : mMapDocument(mapDocument)
+    : mDocument(document)
     , mLayer(layer)
     , mVisible(visible)
 {
@@ -47,14 +77,17 @@ SetLayerVisible::SetLayerVisible(MapDocument *mapDocument,
 void SetLayerVisible::swap()
 {
     const bool previousVisible = mLayer->isVisible();
-    mMapDocument->layerModel()->setLayerVisible(mLayer, mVisible);
+    mLayer->setVisible(mVisible);
     mVisible = previousVisible;
+
+    emit mDocument->changed(LayerChangeEvent(mLayer, LayerChangeEvent::VisibleProperty));
 }
 
-SetLayerLocked::SetLayerLocked(MapDocument *mapDocument,
+
+SetLayerLocked::SetLayerLocked(Document *document,
                                Layer *layer,
                                bool locked)
-    : mMapDocument(mapDocument)
+    : mDocument(document)
     , mLayer(layer)
     , mLocked(locked)
 {
@@ -69,15 +102,17 @@ SetLayerLocked::SetLayerLocked(MapDocument *mapDocument,
 void SetLayerLocked::swap()
 {
     const bool previousLocked = mLayer->isLocked();
-    mMapDocument->layerModel()->setLayerLocked(mLayer, mLocked);
+    mLayer->setLocked(mLocked);
     mLocked = previousLocked;
+
+    emit mDocument->changed(LayerChangeEvent(mLayer, LayerChangeEvent::LockedProperty));
 }
 
 
-SetLayerOpacity::SetLayerOpacity(MapDocument *mapDocument,
+SetLayerOpacity::SetLayerOpacity(Document *document,
                                  Layer *layer,
                                  qreal opacity)
-    : mMapDocument(mapDocument)
+    : mDocument(document)
     , mLayer(layer)
     , mOldOpacity(layer->opacity())
     , mNewOpacity(opacity)
@@ -89,7 +124,7 @@ SetLayerOpacity::SetLayerOpacity(MapDocument *mapDocument,
 bool SetLayerOpacity::mergeWith(const QUndoCommand *other)
 {
     const SetLayerOpacity *o = static_cast<const SetLayerOpacity*>(other);
-    if (!(mMapDocument == o->mMapDocument &&
+    if (!(mDocument == o->mDocument &&
           mLayer == o->mLayer))
         return false;
 
@@ -99,16 +134,17 @@ bool SetLayerOpacity::mergeWith(const QUndoCommand *other)
 
 void SetLayerOpacity::setOpacity(qreal opacity)
 {
-    mMapDocument->layerModel()->setLayerOpacity(mLayer, opacity);
+    mLayer->setOpacity(opacity);
+    emit mDocument->changed(LayerChangeEvent(mLayer, LayerChangeEvent::OpacityProperty));
 }
 
 
-SetLayerOffset::SetLayerOffset(MapDocument *mapDocument,
+SetLayerOffset::SetLayerOffset(Document *document,
                                Layer *layer,
                                const QPointF &offset,
                                QUndoCommand *parent)
     : QUndoCommand(parent)
-    , mMapDocument(mapDocument)
+    , mDocument(document)
     , mLayer(layer)
     , mOldOffset(layer->offset())
     , mNewOffset(offset)
@@ -119,8 +155,8 @@ SetLayerOffset::SetLayerOffset(MapDocument *mapDocument,
 
 void SetLayerOffset::setOffset(const QPointF &offset)
 {
-    mMapDocument->layerModel()->setLayerOffset(mLayer, offset);
+    mLayer->setOffset(offset);
+    emit mDocument->changed(LayerChangeEvent(mLayer, LayerChangeEvent::OffsetProperty));
 }
-
 
 } // namespace Tiled

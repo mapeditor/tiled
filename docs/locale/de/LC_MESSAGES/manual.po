@@ -3,27 +3,30 @@
 # This file is distributed under the same license as the Tiled package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2017.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Tiled 1.0\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: bjorn@lindeijer.nl\n"
 "POT-Creation-Date: 2017-12-21 14:31+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2019-05-20 20:50+0000\n"
+"Last-Translator: ssantos <ssantos@web.de>\n"
+"Language-Team: German <https://hosted.weblate.org/projects/tiled/manual/de/>"
+"\n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.7-dev\n"
 "Generated-By: Babel 2.5.1\n"
 
 #: ../../manual/automapping.rst:3
 msgid "Automapping"
-msgstr ""
+msgstr "Automapping"
 
 #: ../../manual/automapping.rst:6
 msgid "What is Automapping?"
-msgstr ""
+msgstr "Was ist Automapping?"
 
 #: ../../manual/automapping.rst:8
 msgid ""
@@ -4993,4 +4996,3 @@ msgstr ""
 #~ "complicated way of automatic tile "
 #~ "placement, check out [[Automapping]]."
 #~ msgstr ""
-

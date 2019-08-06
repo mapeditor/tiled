@@ -21,6 +21,7 @@
 
 #include "offsetlayer.h"
 
+#include "changeevents.h"
 #include "imagelayer.h"
 #include "layermodel.h"
 #include "map.h"
@@ -44,7 +45,7 @@ using namespace Tiled;
  */
 OffsetLayer::OffsetLayer(MapDocument *mapDocument,
                          Layer *layer,
-                         const QPoint &offset,
+                         QPoint offset,
                          const QRect &bounds,
                          bool wrapX,
                          bool wrapY)
@@ -100,10 +101,12 @@ void OffsetLayer::undo()
 {
     Q_ASSERT(mDone);
     LayerModel *layerModel = mMapDocument->layerModel();
-    if (mOffsetLayer)
+    if (mOffsetLayer) {
         layerModel->replaceLayer(mOffsetLayer, mOriginalLayer);
-    else
-        layerModel->setLayerOffset(mOriginalLayer, mOldOffset);
+    } else {
+        mOriginalLayer->setOffset(mOldOffset);
+        emit mMapDocument->changed(LayerChangeEvent(mOriginalLayer, LayerChangeEvent::OffsetProperty));
+    }
     mDone = false;
 }
 
@@ -111,9 +114,11 @@ void OffsetLayer::redo()
 {
     Q_ASSERT(!mDone);
     LayerModel *layerModel = mMapDocument->layerModel();
-    if (mOffsetLayer)
+    if (mOffsetLayer) {
         layerModel->replaceLayer(mOriginalLayer, mOffsetLayer);
-    else
-        layerModel->setLayerOffset(mOriginalLayer, mNewOffset);
+    } else {
+        mOriginalLayer->setOffset(mNewOffset);
+        emit mMapDocument->changed(LayerChangeEvent(mOriginalLayer, LayerChangeEvent::OffsetProperty));
+    }
     mDone = true;
 }

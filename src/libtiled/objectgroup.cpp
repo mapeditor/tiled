@@ -59,10 +59,7 @@ ObjectGroup::~ObjectGroup()
 
 void ObjectGroup::addObject(MapObject *object)
 {
-    mObjects.append(object);
-    object->setObjectGroup(this);
-    if (mMap && object->id() == 0)
-        object->setId(mMap->takeNextObjectId());
+    insertObject(mObjects.size(), object);
 }
 
 void ObjectGroup::addObject(std::unique_ptr<MapObject> &&object)
@@ -83,8 +80,8 @@ int ObjectGroup::removeObject(MapObject *object)
     const int index = mObjects.indexOf(object);
     Q_ASSERT(index != -1);
 
-    mObjects.removeAt(index);
-    object->setObjectGroup(nullptr);
+    removeObjectAt(index);
+
     return index;
 }
 

@@ -135,8 +135,8 @@ std::unique_ptr<World> WorldManager::privateLoadWorld(const QString &fileName,
         pattern.multiplierY = patternObject.value(QLatin1String("multiplierY")).toInt(1);
         pattern.offset = QPoint(patternObject.value(QLatin1String("offsetX")).toInt(),
                                 patternObject.value(QLatin1String("offsetY")).toInt());
-        pattern.mapSize = QSize(patternObject.value(QLatin1String("mapWidth")).toInt(pattern.multiplierX),
-                                patternObject.value(QLatin1String("mapHeight")).toInt(pattern.multiplierY));
+        pattern.mapSize = QSize(patternObject.value(QLatin1String("mapWidth")).toInt(std::abs(pattern.multiplierX)),
+                                patternObject.value(QLatin1String("mapHeight")).toInt(std::abs(pattern.multiplierY)));
 
         if (pattern.regexp.captureCount() != 2)
             qWarning() << "Invalid number of captures in" << pattern.regexp;
