@@ -223,6 +223,7 @@ QByteArray Tiled::compress(const QByteArray &data,
             return QByteArray();
         }
 
+        out.resize(cSize);
         return out;
 #endif
     } else {
