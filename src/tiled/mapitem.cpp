@@ -728,6 +728,12 @@ void MapItem::updateBoundingRect()
         if (layerItem->layer()->isTileLayer())
             boundingRect |= layerItem->boundingRect().translated(layerItem->layer()->totalOffset());
 
+    QRectF mapBoundingRect = mapDocument()->renderer()->mapBoundingRect();
+
+    // For fixed-size maps, make the bounding rect at least the size of the map
+    if (!mMapDocument->map()->infinite())
+        boundingRect |= mapBoundingRect;
+
     if (mBoundingRect != boundingRect) {
         prepareGeometryChange();
         mBoundingRect = boundingRect;
@@ -736,7 +742,7 @@ void MapItem::updateBoundingRect()
 
     // This rectangle represents the map boundary and as such is unaffected
     // by layer offsets.
-    mBorderRectangle->setRect(mapDocument()->renderer()->mapBoundingRect());
+    mBorderRectangle->setRect(mapBoundingRect);
 }
 
 void MapItem::updateSelectedLayersHighlight()
