@@ -81,6 +81,16 @@ private:
 
 void reportIssue(const Issue &issue);
 
+inline void reportError(const QString &text)
+{
+    reportIssue(Issue { Issue::Error, text });
+}
+
+inline void reportWarning(const QString &text)
+{
+    reportIssue(Issue { Issue::Warning, text });
+}
+
 } // namespace Tiled
 
 Q_DECLARE_METATYPE(Tiled::Issue)

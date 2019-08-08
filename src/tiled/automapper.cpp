@@ -26,6 +26,7 @@
 #include "automappingutils.h"
 #include "changeproperties.h"
 #include "geometry.h"
+#include "issuesdock.h"
 #include "layermodel.h"
 #include "map.h"
 #include "mapdocument.h"
@@ -135,9 +136,13 @@ bool AutoMapper::setupRuleMapProperties()
             }
         }
 
-        mWarning += tr("'%1': Property '%2' = '%3' does not make sense. "
-                       "Ignoring this property.")
-                .arg(mRulePath, name, value.toString()) + QLatin1Char('\n');
+        QString warning = tr("Ignoring unknown property '%2' = '%3' on layer '%4' (rule map '%1')")
+                      .arg(mRulePath, name, value.toString());
+
+        reportWarning(warning);
+
+        mWarning += warning;
+        mWarning += QLatin1Char('\n');
     }
 
     // OverflowBorder and WrapBorder make no sense for infinite maps
@@ -171,9 +176,13 @@ void AutoMapper::setupInputLayerProperties(InputLayer &inputLayer)
             }
         }
 
-        mWarning += tr("'%1': Property '%2' = '%3' on layer '%4' does not make sense. "
-                       "Ignoring this property.")
-                .arg(mRulePath, name, value.toString(), inputLayer.tileLayer->name()) + QLatin1Char('\n');
+        QString warning = tr("Ignoring unknown property '%2' = '%3' on layer '%4' (rule map '%1')")
+                      .arg(mRulePath, name, value.toString(), inputLayer.tileLayer->name());
+
+        reportWarning(warning);
+
+        mWarning += warning;
+        mWarning += QLatin1Char('\n');
     }
 }
 

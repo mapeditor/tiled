@@ -21,11 +21,12 @@
 #include "automappingmanager.h"
 
 #include "automapperwrapper.h"
+#include "issuesdock.h"
 #include "map.h"
 #include "mapdocument.h"
+#include "preferences.h"
 #include "tilelayer.h"
 #include "tmxmapformat.h"
-#include "preferences.h"
 
 #include <QDir>
 #include <QFileInfo>
@@ -145,13 +146,19 @@ bool AutomappingManager::loadFile(const QString &filePath)
     QFile rulesFile(filePath);
 
     if (!rulesFile.exists()) {
-        mError += tr("No rules file found at:\n%1").arg(filePath)
-                  + QLatin1Char('\n');
+        QString error = tr("No rules file found at '%1'").arg(filePath);
+        reportError(error);
+
+        mError += error;
+        mError += QLatin1Char('\n');
         return false;
     }
     if (!rulesFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        mError += tr("Error opening rules file:\n%1").arg(filePath)
-                  + QLatin1Char('\n');
+        QString error = tr("Error opening rules file '%1'").arg(filePath);
+        reportError(error);
+
+        mError += error;
+        mError += QLatin1Char('\n');
         return false;
     }
 
@@ -175,7 +182,12 @@ bool AutomappingManager::loadFile(const QString &filePath)
         }
 
         if (!rulePathInfo.exists()) {
-            mError += tr("File not found:\n%1").arg(rulePath) + QLatin1Char('\n');
+            QString error = tr("File not found: '%1' (referenced by '%2')")
+                    .arg(rulePath, filePath);
+            reportError(error);
+
+            mError += error;
+            mError += QLatin1Char('\n');
             ret = false;
             continue;
         }
@@ -185,8 +197,12 @@ bool AutomappingManager::loadFile(const QString &filePath)
             std::unique_ptr<Map> rules(tmxFormat.read(rulePath));
 
             if (!rules) {
-                mError += tr("Opening rules map failed:\n%1").arg(
-                        tmxFormat.errorString()) + QLatin1Char('\n');
+                QString error = tr("Opening rules map '%1' failed: %2")
+                        .arg(rulePath, tmxFormat.errorString());
+                reportError(error);
+
+                mError += error;
+                mError += QLatin1Char('\n');
                 ret = false;
                 continue;
             }
