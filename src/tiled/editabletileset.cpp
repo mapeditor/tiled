@@ -85,6 +85,45 @@ QList<QObject *> EditableTileset::terrains()
     return terrains;
 }
 
+QList<QObject *> EditableTileset::selectedTiles()
+{
+    if (!tilesetDocument())
+        return QList<QObject*>();
+
+    QList<QObject*> selectedTiles;
+
+    auto &editableManager = EditableManager::instance();
+    for (Tile *tile : tilesetDocument()->selectedTiles())
+        selectedTiles.append(editableManager.editableTile(this, tile));
+
+    return selectedTiles;
+}
+
+void EditableTileset::setSelectedTiles(const QList<QObject *> &tiles)
+{
+    auto document = tilesetDocument();
+    if (!document)
+        return;
+
+    QList<Tile*> plainTiles;
+
+    for (QObject *tileObject : tiles) {
+        auto editableTile = qobject_cast<EditableTile*>(tileObject);
+        if (!editableTile) {
+            ScriptManager::instance().throwError(tr("Not a tile"));
+            return;
+        }
+        if (editableTile->tileset() != this) {
+            ScriptManager::instance().throwError(tr("Tile not from this tileset"));
+            return;
+        }
+
+        plainTiles.append(editableTile->tile());
+    }
+
+    document->setSelectedTiles(plainTiles);
+}
+
 TilesetDocument *EditableTileset::tilesetDocument() const
 {
     return static_cast<TilesetDocument*>(document());

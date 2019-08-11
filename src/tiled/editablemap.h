@@ -43,12 +43,12 @@ class EditableMap : public EditableAsset
     Q_PROPERTY(int tileHeight READ tileHeight WRITE setTileHeight NOTIFY tileHeightChanged)
     Q_PROPERTY(bool infinite READ infinite WRITE setInfinite)
     Q_PROPERTY(int hexSideLength READ hexSideLength WRITE setHexSideLength)
-    Q_PROPERTY(Tiled::Map::StaggerAxis staggerAxis READ staggerAxis WRITE setStaggerAxis)
-    Q_PROPERTY(Tiled::Map::StaggerIndex staggerIndex READ staggerIndex WRITE setStaggerIndex)
-    Q_PROPERTY(Tiled::Map::Orientation orientation READ orientation WRITE setOrientation)
-    Q_PROPERTY(Tiled::Map::RenderOrder renderOrder READ renderOrder WRITE setRenderOrder)
+    Q_PROPERTY(StaggerAxis staggerAxis READ staggerAxis WRITE setStaggerAxis)
+    Q_PROPERTY(StaggerIndex staggerIndex READ staggerIndex WRITE setStaggerIndex)
+    Q_PROPERTY(Orientation orientation READ orientation WRITE setOrientation)
+    Q_PROPERTY(RenderOrder renderOrder READ renderOrder WRITE setRenderOrder)
     Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor)
-    Q_PROPERTY(Tiled::Map::LayerDataFormat layerDataFormat READ layerDataFormat WRITE setLayerDataFormat)
+    Q_PROPERTY(LayerDataFormat layerDataFormat READ layerDataFormat WRITE setLayerDataFormat)
     Q_PROPERTY(int layerCount READ layerCount)
     Q_PROPERTY(QList<QObject*> tilesets READ tilesets)
     Q_PROPERTY(Tiled::EditableSelectedArea *selectedArea READ selectedArea CONSTANT)
@@ -57,6 +57,50 @@ class EditableMap : public EditableAsset
     Q_PROPERTY(QList<QObject*> selectedObjects READ selectedObjects WRITE setSelectedObjects NOTIFY selectedObjectsChanged)
 
 public:
+    // Synchronized with Map::Orientation
+    enum Orientation {
+        Unknown,
+        Orthogonal,
+        Isometric,
+        Staggered,
+        Hexagonal
+    };
+    Q_ENUM(Orientation)
+
+    // Synchronized with Map::LayerDataFormat
+    enum LayerDataFormat {
+        XML             = 0,
+        Base64          = 1,
+        Base64Gzip      = 2,
+        Base64Zlib      = 3,
+        Base64Zstandard = 4,
+        CSV             = 5
+    };
+    Q_ENUM(LayerDataFormat)
+
+    // Synchronized with Map::RenderOrder
+    enum RenderOrder {
+        RightDown  = 0,
+        RightUp    = 1,
+        LeftDown   = 2,
+        LeftUp     = 3
+    };
+    Q_ENUM(RenderOrder)
+
+    // Synchronized with Map::StaggerAxis
+    enum StaggerAxis {
+        StaggerX,
+        StaggerY
+    };
+    Q_ENUM(StaggerAxis)
+
+    // Synchronized with Map::StaggerIndex
+    enum StaggerIndex {
+        StaggerOdd  = 0,
+        StaggerEven = 1
+    };
+    Q_ENUM(StaggerIndex)
+
     Q_INVOKABLE explicit EditableMap(QObject *parent = nullptr);
     explicit EditableMap(MapDocument *mapDocument, QObject *parent = nullptr);
     explicit EditableMap(const Map *map, QObject *parent = nullptr);
@@ -71,12 +115,12 @@ public:
     int tileHeight() const;
     bool infinite() const;
     int hexSideLength() const;
-    Map::StaggerAxis staggerAxis() const;
-    Map::StaggerIndex staggerIndex() const;
-    Map::Orientation orientation() const;
-    Map::RenderOrder renderOrder() const;
+    StaggerAxis staggerAxis() const;
+    StaggerIndex staggerIndex() const;
+    Orientation orientation() const;
+    RenderOrder renderOrder() const;
     QColor backgroundColor() const;
-    Map::LayerDataFormat layerDataFormat() const;
+    LayerDataFormat layerDataFormat() const;
     int layerCount() const;
     QList<QObject*> tilesets() const;
     EditableSelectedArea *selectedArea();
@@ -100,12 +144,12 @@ public:
     void setTileHeight(int value);
     void setInfinite(bool value);
     void setHexSideLength(int value);
-    void setStaggerAxis(Map::StaggerAxis value);
-    void setStaggerIndex(Map::StaggerIndex value);
-    void setOrientation(Map::Orientation value);
-    void setRenderOrder(Map::RenderOrder value);
+    void setStaggerAxis(StaggerAxis value);
+    void setStaggerIndex(StaggerIndex value);
+    void setOrientation(Orientation value);
+    void setRenderOrder(RenderOrder value);
     void setBackgroundColor(const QColor &value);
-    void setLayerDataFormat(Map::LayerDataFormat value);
+    void setLayerDataFormat(LayerDataFormat value);
     void setCurrentLayer(EditableLayer *layer);
     void setSelectedLayers(const QList<QObject*> &layers);
     void setSelectedObjects(const QList<QObject*> &objects);
@@ -186,24 +230,24 @@ inline int EditableMap::hexSideLength() const
     return map()->hexSideLength();
 }
 
-inline Map::StaggerAxis EditableMap::staggerAxis() const
+inline EditableMap::StaggerAxis EditableMap::staggerAxis() const
 {
-    return map()->staggerAxis();
+    return static_cast<StaggerAxis>(map()->staggerAxis());
 }
 
-inline Map::StaggerIndex EditableMap::staggerIndex() const
+inline EditableMap::StaggerIndex EditableMap::staggerIndex() const
 {
-    return map()->staggerIndex();
+    return static_cast<StaggerIndex>(map()->staggerIndex());
 }
 
-inline Map::Orientation EditableMap::orientation() const
+inline EditableMap::Orientation EditableMap::orientation() const
 {
-    return map()->orientation();
+    return static_cast<Orientation>(map()->orientation());
 }
 
-inline Map::RenderOrder EditableMap::renderOrder() const
+inline EditableMap::RenderOrder EditableMap::renderOrder() const
 {
-    return map()->renderOrder();
+    return static_cast<RenderOrder>(map()->renderOrder());
 }
 
 inline QColor EditableMap::backgroundColor() const
@@ -211,9 +255,9 @@ inline QColor EditableMap::backgroundColor() const
     return map()->backgroundColor();
 }
 
-inline Map::LayerDataFormat EditableMap::layerDataFormat() const
+inline EditableMap::LayerDataFormat EditableMap::layerDataFormat() const
 {
-    return map()->layerDataFormat();
+    return static_cast<LayerDataFormat>(map()->layerDataFormat());
 }
 
 inline int EditableMap::layerCount() const

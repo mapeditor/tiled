@@ -43,6 +43,7 @@ class EditableTileset : public EditableAsset
     Q_PROPERTY(int margin READ margin)
     Q_PROPERTY(QPoint tileOffset READ tileOffset WRITE setTileOffset)
     Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor)
+    Q_PROPERTY(QList<QObject*> selectedTiles READ selectedTiles WRITE setSelectedTiles)
 
 public:
     Q_INVOKABLE explicit EditableTileset(const QString &name = QString(),
@@ -66,6 +67,9 @@ public:
     Q_INVOKABLE Tiled::EditableTile *tile(int id);
     QList<QObject*> tiles();
     QList<QObject*> terrains();
+
+    QList<QObject*> selectedTiles();
+    void setSelectedTiles(const QList<QObject*> &tiles);
 
     TilesetDocument *tilesetDocument() const;
     Tileset *tileset() const;

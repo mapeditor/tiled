@@ -286,24 +286,24 @@ void EditableMap::setHexSideLength(int value)
     push(new ChangeMapProperty(mapDocument(), ChangeMapProperty::HexSideLength, value));
 }
 
-void EditableMap::setStaggerAxis(Map::StaggerAxis value)
+void EditableMap::setStaggerAxis(StaggerAxis value)
 {
-    push(new ChangeMapProperty(mapDocument(), value));
+    push(new ChangeMapProperty(mapDocument(), static_cast<Map::StaggerAxis>(value)));
 }
 
-void EditableMap::setStaggerIndex(Map::StaggerIndex value)
+void EditableMap::setStaggerIndex(StaggerIndex value)
 {
-    push(new ChangeMapProperty(mapDocument(), value));
+    push(new ChangeMapProperty(mapDocument(), static_cast<Map::StaggerIndex>(value)));
 }
 
-void EditableMap::setOrientation(Map::Orientation value)
+void EditableMap::setOrientation(Orientation value)
 {
-    push(new ChangeMapProperty(mapDocument(), value));
+    push(new ChangeMapProperty(mapDocument(), static_cast<Map::Orientation>(value)));
 }
 
-void EditableMap::setRenderOrder(Map::RenderOrder value)
+void EditableMap::setRenderOrder(RenderOrder value)
 {
-    push(new ChangeMapProperty(mapDocument(), value));
+    push(new ChangeMapProperty(mapDocument(), static_cast<Map::RenderOrder>(value)));
 }
 
 void EditableMap::setBackgroundColor(const QColor &value)
@@ -311,9 +311,9 @@ void EditableMap::setBackgroundColor(const QColor &value)
     push(new ChangeMapProperty(mapDocument(), value));
 }
 
-void EditableMap::setLayerDataFormat(Map::LayerDataFormat value)
+void EditableMap::setLayerDataFormat(LayerDataFormat value)
 {
-    push(new ChangeMapProperty(mapDocument(), value));
+    push(new ChangeMapProperty(mapDocument(), static_cast<Map::LayerDataFormat>(value)));
 }
 
 void EditableMap::setCurrentLayer(EditableLayer *layer)
@@ -339,6 +339,10 @@ void EditableMap::setSelectedLayers(const QList<QObject *> &layers)
             ScriptManager::instance().throwError(tr("Not a layer"));
             return;
         }
+        if (editableLayer->map() != this) {
+            ScriptManager::instance().throwError(tr("Layer not from this map"));
+            return;
+        }
 
         plainLayers.append(editableLayer->layer());
     }
@@ -358,6 +362,10 @@ void EditableMap::setSelectedObjects(const QList<QObject *> &objects)
         auto editableMapObject = qobject_cast<EditableMapObject*>(objectObject);
         if (!editableMapObject) {
             ScriptManager::instance().throwError(tr("Not an object"));
+            return;
+        }
+        if (editableMapObject->map() != this) {
+            ScriptManager::instance().throwError(tr("Object not from this map"));
             return;
         }
 

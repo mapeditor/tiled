@@ -561,18 +561,67 @@ Properties
     **tileHeight**: int, Tile height (used by tile layers).
     **infinite** : bool, Whether this map is infinite.
     **hexSideLength** : int, Length of the side of a hexagonal tile (used by tile layers on hexagonal maps).
-    **staggerAxis** : int, "For staggered and hexagonal maps, determines which axis (X or Y) is staggered: 0 (X), 1 (Y)."
-    **orientation** : int, "General map orientation: 0 (Unknown), 1 (Orthogonal), 2 (Isometric), 3 (Staggered), 4 (Hexagonal)"
-    **renderOrder** : int, "Tile rendering order (only implemented for orthogonal maps): 0 (RightDown), 1 (RightUp), 2 (LeftDown), 3 (LeftUp)"
-    **staggerIndex** : int, "For staggered and hexagonal maps, determines whether the even or odd indexes along the staggered axis are shifted. 0 (Odd), 1 (Even)."
+    **staggerAxis** : :ref:`StaggerAxis <script-map-staggeraxis>`, "For staggered and hexagonal maps, determines which axis (X or Y) is staggered."
+    **orientation** : :ref:`Orientation <script-map-orientation>`, "General map orientation"
+    **renderOrder** : :ref:`RenderOrder <script-map-renderorder>`, "Tile rendering order (only implemented for orthogonal maps)"
+    **staggerIndex** : :ref:`StaggerIndex <script-map-staggerindex>`, "For staggered and hexagonal maps, determines whether the even or odd indexes along the staggered axis are shifted."
     **backgroundColor** : color, Background color of the map.
-    **layerDataFormat** : int, "The format in which the layer data is stored, taken into account by TMX, JSON and Lua map formats: 0 (XML), 1 (Base64), 2 (Base64Gzip), 3 (Base64Zlib), 4 (CSV)"
+    **layerDataFormat** : :ref:`LayerDataFormat <script-map-layerdataformat>`, "The format in which the layer data is stored, taken into account by TMX, JSON and Lua map formats."
     **layerCount** : int |ro|, Number of top-level layers the map has.
     **tilesets** : [:ref:`script-tileset`], "The list of tilesets referenced by this map. To determine which tilesets are actually used, call :ref:`usedTilesets() <script-map-usedTilesets>`."
     **selectedArea** : :ref:`SelectionArea <script-selectedarea>`, The selected area of tiles.
     **currentLayer** : :ref:`script-layer`, The current layer.
     **selectedLayers** : [:ref:`script-layer`], Selected layers.
     **selectedObjects** : [:ref:`script-mapobject`], Selected objects.
+
+.. _script-map-orientation:
+
+.. csv-table::
+    :header: "TileMap.Orientation"
+
+    TileMap.Unknown
+    TileMap.Orthogonal
+    TileMap.Isometric
+    TileMap.Staggered
+    TileMap.Hexagonal
+
+.. _script-map-layerdataformat:
+
+.. csv-table::
+    :header: "TileMap.LayerDataFormat"
+
+    TileMap.XML
+    TileMap.Base64
+    TileMap.Base64Gzip
+    TileMap.Base64Zlib
+    TileMap.Base64Zstandard
+    TileMap.CSV
+
+.. _script-map-renderorder:
+
+.. csv-table::
+    :header: "TileMap.RenderOrder"
+
+    TileMap.RightDown
+    TileMap.RightUp
+    TileMap.LeftDown
+    TileMap.LeftUp
+
+.. _script-map-staggeraxis:
+
+.. csv-table::
+    :header: "TileMap.StaggerAxis"
+
+    TileMap.StaggerX
+    TileMap.StaggerY
+
+.. _script-map-staggerindex:
+
+.. csv-table::
+    :header: "TileMap.StaggerIndex"
+
+    TileMap.StaggerOdd
+    TileMap.StaggerEven
 
 Functions
 ~~~~~~~~~
@@ -896,6 +945,7 @@ Properties
     **margin** : int |ro|, Margin around the tileset in pixels (only used at the top and left sides of the tileset image).
     **tileOffset** : :ref:`script-point`, Offset in pixels that is applied when tiles from this tileset are rendered.
     **backgroundColor** : color, Background color for this tileset in the *Tilesets* view.
+    **selectedTiles** : [:ref:`script-tile`], Selected tiles (in the tileset editor).
 
 Functions
 ~~~~~~~~~
