@@ -46,6 +46,8 @@ struct Issue
     Severity severity = Error;
     QString text;
 
+    int occurrences() const { return mOccurrences; }
+
     bool operator==(const Issue &o) const
     {
         return severity == o.severity
@@ -54,7 +56,7 @@ struct Issue
 
 private:
     friend class IssuesModel;
-    int occurrences = 1;
+    int mOccurrences = 1;
 };
 
 /**

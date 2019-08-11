@@ -24,6 +24,7 @@
 #include "utils.h"
 
 #include <QAbstractListModel>
+#include <QApplication>
 #include <QCheckBox>
 #include <QEvent>
 #include <QGuiApplication>
@@ -82,7 +83,7 @@ void IssuesModel::addIssue(const Issue &issue)
 {
     int i = mIssues.indexOf(issue);
     if (i != -1) {
-        ++mIssues[i].occurrences;
+        ++mIssues[i].mOccurrences;
         QModelIndex modelIndex = index(i);
         emit dataChanged(modelIndex, modelIndex);
         return;
@@ -124,15 +125,6 @@ QVariant IssuesModel::data(const QModelIndex &index, int role) const
             return QColor(253, 0, 69, 32);
         case Issue::Warning:
             return QColor(255, 230, 0, 32);
-        }
-        break;
-    }
-    case Qt::ForegroundRole: {
-        switch (mIssues.at(index.row()).severity) {
-        case Issue::Error:
-            return QColor(164, 0, 15);
-        case Issue::Warning:
-            return QColor(113, 81, 0);
         }
         break;
     }
@@ -195,12 +187,53 @@ void IssueDelegate::paint(QPainter *painter,
                           const QStyleOptionViewItem &option,
                           const QModelIndex &index) const
 {
-    QStyledItemDelegate::paint(painter, option, index);
+    Q_ASSERT(index.isValid());
 
-    auto color = index.data(Qt::ForegroundRole).value<QBrush>().color();
+    QStyleOptionViewItem opt = option;
+    initStyleOption(&opt, index);
+
+    const Issue issue = index.data(IssuesModel::IssueRole).value<Issue>();
+    const bool isDark = opt.palette.base().color().value() <= 128;
+
+    QColor textColor;
+
+    switch (issue.severity) {
+    case Issue::Error:
+        textColor = isDark ? QColor(255, 55, 55) : QColor(164, 0, 15);
+        break;
+    case Issue::Warning:
+        textColor = isDark ? QColor(255, 183, 0) : QColor(113, 81, 0);
+        break;
+    }
+
+    opt.palette.setColor(QPalette::Text, textColor);
+
+    const QWidget *widget = opt.widget;
+    QStyle *style = widget ? widget->style() : QApplication::style();
+
+    style->drawControl(QStyle::CE_ItemViewItem, &opt, painter, widget);
+
+    // Add lines between issues
+    auto color = textColor;
     color.setAlpha(32);
     painter->setPen(color);
-    painter->drawLine(option.rect.bottomLeft(), option.rect.bottomRight());
+    painter->drawLine(opt.rect.bottomLeft(), opt.rect.bottomRight());
+
+    // Add occurrences label
+    const int occurrences = index.data(IssuesModel::IssueRole).value<Issue>().occurrences();
+    if (occurrences > 1) {
+        auto smallFont = opt.font;
+        if (smallFont.pixelSize() > 0)
+            smallFont.setPixelSize(smallFont.pixelSize() * 0.9);
+        else
+            smallFont.setPointSizeF(smallFont.pointSizeF() * 0.9);
+
+        painter->setPen(textColor);
+        painter->setFont(smallFont);
+        painter->drawText(opt.rect.adjusted(Utils::dpiScaled(4), 0, Utils::dpiScaled(-4), 0),
+                          QString(QLatin1String("(%1)")).arg(occurrences),
+                          QStyle::visualAlignment(opt.direction, Qt::AlignRight | Qt::AlignVCenter));
+    }
 }
 
 
