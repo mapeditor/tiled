@@ -290,6 +290,8 @@ void TilesetEditor::addDocument(Document *document)
 
     connect(tilesetDocument, &TilesetDocument::tilesetChanged,
             this, &TilesetEditor::tilesetChanged);
+    connect(tilesetDocument, &TilesetDocument::selectedTilesChanged,
+            this, &TilesetEditor::selectedTilesChanged);
 
     connect(view, &TilesetView::createNewTerrain, this, &TilesetEditor::addTerrainType);
     connect(view, &TilesetView::terrainImageSelected, this, &TilesetEditor::setTerrainImage);
@@ -517,7 +519,9 @@ void TilesetEditor::selectionChanged()
         if (Tile *tile = model->tileAt(index))
             selectedTiles.append(tile);
 
+    mSettingSelectedTiles = true;
     mCurrentTilesetDocument->setSelectedTiles(selectedTiles);
+    mSettingSelectedTiles = false;
 }
 
 void TilesetEditor::currentChanged(const QModelIndex &index)
@@ -547,6 +551,32 @@ void TilesetEditor::tilesetChanged()
 
     tilesetView->updateBackgroundColor();
     model->tilesetChanged();
+}
+
+void TilesetEditor::selectedTilesChanged()
+{
+    if (mSettingSelectedTiles)
+        return;
+
+    if (mCurrentTilesetDocument != sender())
+        return;
+
+    TilesetView *tilesetView = currentTilesetView();
+    const TilesetModel *model = tilesetView->tilesetModel();
+
+    QItemSelection tileSelection;
+
+    for (Tile *tile : mCurrentTilesetDocument->selectedTiles()) {
+        const QModelIndex modelIndex = model->tileIndex(tile);
+        tileSelection.select(modelIndex, modelIndex);
+    }
+
+    QItemSelectionModel *selectionModel = tilesetView->selectionModel();
+    selectionModel->select(tileSelection, QItemSelectionModel::SelectCurrent);
+    if (!tileSelection.isEmpty()) {
+        selectionModel->setCurrentIndex(tileSelection.first().topLeft(),
+                                        QItemSelectionModel::NoUpdate);
+    }
 }
 
 void TilesetEditor::updateTilesetView(Tileset *tileset)

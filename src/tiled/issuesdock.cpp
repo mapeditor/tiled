@@ -36,11 +36,29 @@
 #include <QStyledItemDelegate>
 #include <QVBoxLayout>
 
-#include <QDebug>
-
 #include <memory>
 
 namespace Tiled {
+
+Issue::Issue(Issue::Severity severity,
+             const QString &text)
+    : mSeverity(severity)
+    , mText(text)
+{
+}
+
+void Issue::setCallback(std::function<void ()> callback, void *context)
+{
+    mCallback = std::move(callback);
+    mContext = context;
+}
+
+void Issue::addOccurrence(const Issue &issue)
+{
+    mOccurrences += 1;
+    setCallback(issue.callback(), issue.context());
+}
+
 
 class IssuesModel : public QAbstractListModel
 {
@@ -51,7 +69,9 @@ public:
 
     static IssuesModel &instance();
 
-    void addIssue(const Issue &issue);
+    unsigned addIssue(const Issue &issue);
+    void removeIssues(const QList<unsigned> &issueIds);
+    void removeIssuesWithContext(void *context);
     void clear();
 
     int rowCount(const QModelIndex &parent) const override;
@@ -60,11 +80,17 @@ public:
 private:
     IssuesModel(QObject *parent = nullptr);
 
+    void removeIssues(const RangeSet<int> &indexes);
+
     QVector<Issue> mIssues;
 
     QIcon mErrorIcon;
     QIcon mWarningIcon;
+
+    static unsigned mNextIssueId;
 };
+
+unsigned IssuesModel::mNextIssueId = 1;
 
 IssuesModel::IssuesModel(QObject *parent)
     : QAbstractListModel(parent)
@@ -79,19 +105,69 @@ IssuesModel &IssuesModel::instance()
     return issuesModel;
 }
 
-void IssuesModel::addIssue(const Issue &issue)
+unsigned IssuesModel::addIssue(const Issue &issue)
 {
     int i = mIssues.indexOf(issue);
     if (i != -1) {
-        ++mIssues[i].mOccurrences;
+        auto &existingIssue = mIssues[i];
+        existingIssue.addOccurrence(issue);
+
         QModelIndex modelIndex = index(i);
         emit dataChanged(modelIndex, modelIndex);
-        return;
+
+        return existingIssue.id();
     }
+
+    const_cast<Issue&>(issue).mId = mNextIssueId++;
 
     beginInsertRows(QModelIndex(), mIssues.size(), mIssues.size());
     mIssues.append(issue);
     endInsertRows();
+
+    return issue.id();
+}
+
+void IssuesModel::removeIssues(const QList<unsigned> &issueIds)
+{
+    RangeSet<int> indexes;
+
+    for (unsigned id : issueIds) {
+        auto it = std::find_if(mIssues.cbegin(), mIssues.cend(),
+                               [id] (const Issue &issue) { return issue.id() == id; });
+
+        if (it != mIssues.cend())
+            indexes.insert(std::distance(mIssues.cbegin(), it));
+    }
+
+    removeIssues(indexes);
+}
+
+void IssuesModel::removeIssuesWithContext(void *context)
+{
+    RangeSet<int> indexes;
+
+    for (int i = 0, size = mIssues.size(); i < size; ++i)
+        if (mIssues.at(i).context() == context)
+            indexes.insert(i);
+
+    removeIssues(indexes);
+}
+
+void IssuesModel::removeIssues(const RangeSet<int> &indexes)
+{
+    if (indexes.isEmpty())
+        return;
+
+    // Remove back to front to keep the indexes valid
+    RangeSet<int>::Range it = indexes.end();
+    RangeSet<int>::Range begin = indexes.begin();
+    // assert: end != begin, since there is at least one entry
+    do {
+        --it;
+        beginRemoveRows(QModelIndex(), it.first(), it.last());
+        mIssues.remove(it.first(), it.length());
+        endRemoveRows();
+    } while (it != begin);
 }
 
 void IssuesModel::clear()
@@ -110,9 +186,9 @@ QVariant IssuesModel::data(const QModelIndex &index, int role) const
 {
     switch (role) {
     case Qt::DisplayRole:
-        return mIssues.at(index.row()).text;
+        return mIssues.at(index.row()).text();
     case Qt::DecorationRole:
-        switch (mIssues.at(index.row()).severity) {
+        switch (mIssues.at(index.row()).severity()) {
         case Issue::Error:
             return mErrorIcon;
         case Issue::Warning:
@@ -120,7 +196,7 @@ QVariant IssuesModel::data(const QModelIndex &index, int role) const
         }
         break;
     case Qt::BackgroundRole: {
-        switch (mIssues.at(index.row()).severity) {
+        switch (mIssues.at(index.row()).severity()) {
         case Issue::Error:
             return QColor(253, 0, 69, 32);
         case Issue::Warning:
@@ -159,7 +235,7 @@ protected:
             auto model = sourceModel();
             auto index = model->index(sourceRow, 0, sourceParent);
             auto issue = model->data(index, IssuesModel::IssueRole).value<Issue>();
-            if (issue.severity == Issue::Warning)
+            if (issue.severity() == Issue::Warning)
                 return false;
         }
 
@@ -197,7 +273,7 @@ void IssueDelegate::paint(QPainter *painter,
 
     QColor textColor;
 
-    switch (issue.severity) {
+    switch (issue.severity()) {
     case Issue::Error:
         textColor = isDark ? QColor(255, 55, 55) : QColor(164, 0, 15);
         break;
@@ -258,6 +334,8 @@ IssuesDock::IssuesDock(QWidget *parent)
     connect(mFilterEdit, &QLineEdit::textChanged,
             mProxyModel, &QSortFilterProxyModel::setFilterFixedString);
 
+    connect(mIssuesView, &QAbstractItemView::activated, this, &IssuesDock::activated);
+
     auto showWarningsCheckBox = new QCheckBox(tr("Show warnings"));
     showWarningsCheckBox->setChecked(true);
 
@@ -298,15 +376,32 @@ void IssuesDock::changeEvent(QEvent *e)
     }
 }
 
+void IssuesDock::activated(const QModelIndex &index)
+{
+    const auto issue = mProxyModel->data(index, IssuesModel::IssueRole).value<Issue>();
+    if (issue.callback())
+        issue.callback()();
+}
+
 void IssuesDock::retranslateUi()
 {
     setWindowTitle(tr("Issues"));
     mFilterEdit->setPlaceholderText(tr("Filter"));
 }
 
-void reportIssue(const Issue &issue)
+unsigned reportIssue(const Issue &issue)
 {
-    IssuesModel::instance().addIssue(issue);
+    return IssuesModel::instance().addIssue(issue);
+}
+
+void clearIssues(const QList<unsigned> &issueIds)
+{
+    IssuesModel::instance().removeIssues(issueIds);
+}
+
+void clearIssuesWithContext(void *context)
+{
+    IssuesModel::instance().removeIssuesWithContext(context);
 }
 
 } // namespace Tiled

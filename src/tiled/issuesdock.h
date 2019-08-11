@@ -20,7 +20,11 @@
 
 #pragma once
 
+#include "rangeset.h"
+
 #include <QDockWidget>
+
+#include <functional>
 
 class QListView;
 class QSortFilterProxyModel;
@@ -38,25 +42,37 @@ struct Issue
     };
 
     Issue() = default;
-    Issue(Severity severity, QString text)
-        : severity(severity)
-        , text(text)
-    {}
+    Issue(Severity severity, const QString &text);
 
-    Severity severity = Error;
-    QString text;
+    Severity severity() const { return mSeverity; }
+    QString text() const { return mText; }
+
+    std::function<void()> callback() const { return mCallback; }
+    void setCallback(std::function<void()> callback, void *context = nullptr);
+
+    void *context() const { return mContext; }
 
     int occurrences() const { return mOccurrences; }
+    unsigned id() const { return mId; }
 
     bool operator==(const Issue &o) const
     {
-        return severity == o.severity
-                && text == o.text;
+        return severity() == o.severity()
+                && text() == o.text();
     }
 
 private:
     friend class IssuesModel;
+
+    void addOccurrence(const Issue &issue);
+
+    Issue::Severity mSeverity = Issue::Error;
+    QString mText;
+    std::function<void()> mCallback;
+    void *mContext = nullptr;
+
     int mOccurrences = 1;
+    unsigned mId = 0;
 };
 
 /**
@@ -74,6 +90,7 @@ protected:
     void changeEvent(QEvent *e) override;
 
 private:
+    void activated(const QModelIndex &index);
     void retranslateUi();
 
     IssueFilterModel *mProxyModel;
@@ -81,16 +98,18 @@ private:
     QListView *mIssuesView;
 };
 
-void reportIssue(const Issue &issue);
+unsigned reportIssue(const Issue &issue);
+void clearIssues(const QList<unsigned> &issueIds);
+void clearIssuesWithContext(void *context);
 
-inline void reportError(const QString &text)
+inline unsigned reportError(const QString &text)
 {
-    reportIssue(Issue { Issue::Error, text });
+    return reportIssue(Issue { Issue::Error, text });
 }
 
-inline void reportWarning(const QString &text)
+inline unsigned reportWarning(const QString &text)
 {
-    reportIssue(Issue { Issue::Warning, text });
+    return reportIssue(Issue { Issue::Warning, text });
 }
 
 } // namespace Tiled

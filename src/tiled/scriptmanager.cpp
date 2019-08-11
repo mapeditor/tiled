@@ -34,8 +34,10 @@
 #include "scriptedaction.h"
 #include "scriptedtool.h"
 #include "scriptmodule.h"
+#include "tilecollisiondock.h"
 #include "tilelayer.h"
 #include "tilelayeredit.h"
+#include "tileseteditor.h"
 
 #include <QDir>
 #include <QFile>
@@ -90,6 +92,8 @@ ScriptManager::ScriptManager(QObject *parent)
     qRegisterMetaType<ScriptedAction*>();
     qRegisterMetaType<ScriptedTool*>();
     qRegisterMetaType<TileLayerEdit*>();
+    qRegisterMetaType<TilesetEditor*>();
+    qRegisterMetaType<TileCollisionDock*>();
 
     connect(&mWatcher, &FileSystemWatcher::filesChanged,
             this, &ScriptManager::scriptFilesChanged);

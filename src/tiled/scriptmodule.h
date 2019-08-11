@@ -22,6 +22,7 @@
 
 #include "documentmanager.h"
 #include "id.h"
+#include "issuesdock.h"
 
 #include <QJSValue>
 #include <QObject>
@@ -40,6 +41,7 @@ class EditableAsset;
 class ScriptedAction;
 class ScriptedMapFormat;
 class ScriptedTool;
+class TilesetEditor;
 
 /**
  * Initial point of access to Tiled functionality from JavaScript.
@@ -57,6 +59,8 @@ class ScriptModule : public QObject
 
     Q_PROPERTY(Tiled::EditableAsset *activeAsset READ activeAsset WRITE setActiveAsset NOTIFY activeAssetChanged)
     Q_PROPERTY(QList<QObject*> openAssets READ openAssets)
+
+    Q_PROPERTY(Tiled::TilesetEditor *tilesetEditor READ tilesetEditor)
 
 public:
     struct MenuItem {
@@ -84,6 +88,8 @@ public:
     bool setActiveAsset(EditableAsset *asset) const;
 
     QList<QObject*> openAssets() const;
+
+    TilesetEditor *tilesetEditor() const;
 
     Q_INVOKABLE Tiled::EditableAsset *open(const QString &fileName) const;
     Q_INVOKABLE bool close(Tiled::EditableAsset *asset) const;
@@ -116,8 +122,8 @@ public slots:
 
     void log(const QString &text) const;
 
-    void warn(const QString &text) const;
-    void error(const QString &text) const;
+    void warn(const QString &text, QJSValue activated = QJSValue());
+    void error(const QString &text, QJSValue activated = QJSValue());
 
 private slots:
     void documentCreated(Document *document);
@@ -128,6 +134,8 @@ private slots:
     void currentDocumentChanged(Document *document);
 
 private:
+    void reportIssue(Issue::Severity severity, const QString &text, QJSValue activated);
+
     LoggingInterface *mLogger;
     std::map<QByteArray, std::unique_ptr<ScriptedAction>> mRegisteredActions;
     std::map<QString, std::unique_ptr<ScriptedMapFormat>> mRegisteredMapFormats;

@@ -28,6 +28,8 @@
 #include "createpolygonobjecttool.h"
 #include "createrectangleobjecttool.h"
 #include "createtemplatetool.h"
+#include "editablemanager.h"
+#include "editablemapobject.h"
 #include "editpolygontool.h"
 #include "layermodel.h"
 #include "map.h"
@@ -40,6 +42,7 @@
 #include "objectselectiontool.h"
 #include "objectsview.h"
 #include "preferences.h"
+#include "scriptmanager.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
@@ -251,6 +254,85 @@ void TileCollisionDock::setTilesetDocument(TilesetDocument *tilesetDocument)
         connect(mTilesetDocument, &TilesetDocument::tilesetTileOffsetChanged,
                 this, &TileCollisionDock::tilesetTileOffsetChanged);
     }
+}
+
+QList<QObject *> TileCollisionDock::selectedObjectsForScript() const
+{
+    QList<QObject*> objects;
+
+    if (!mDummyMapDocument)
+        return objects;
+
+    auto &editableManager = EditableManager::instance();
+    auto editableTileset = mTilesetDocument->editable();
+    const auto &originalObjects = mTile->objectGroup()->objects();
+
+    for (MapObject *mapObject : mDummyMapDocument->selectedObjects()) {
+        const int id = mapObject->id();
+        auto it = std::find_if(originalObjects.begin(), originalObjects.end(),
+                               [id] (MapObject *o) { return o->id() == id; });
+
+        if (it != originalObjects.end()) {
+            MapObject *oo = *it;
+            objects.append(editableManager.editableMapObject(editableTileset, oo));
+        }
+    }
+
+    return objects;
+}
+
+void TileCollisionDock::setSelectedObjectsFromScript(const QList<QObject *> &selectedObjects)
+{
+    if (!mDummyMapDocument)
+        return;
+
+    QList<MapObject*> objectsToSelect;
+
+    for (QObject *object : selectedObjects) {
+        if (auto clonedObject = clonedObjectForScriptObject(qobject_cast<EditableMapObject*>(object)))
+            objectsToSelect.append(clonedObject);
+        else
+            return;
+    }
+
+    mDummyMapDocument->setSelectedObjects(objectsToSelect);
+}
+
+void TileCollisionDock::focusObject(EditableMapObject *object)
+{
+    if (!mDummyMapDocument)
+        return;
+
+    if (auto clonedObject = clonedObjectForScriptObject(object)) {
+        emit mDummyMapDocument->focusMapObjectRequested(clonedObject);
+        mObjectsView->ensureVisible(clonedObject);
+    }
+}
+
+MapObject *TileCollisionDock::clonedObjectForScriptObject(EditableMapObject *scriptObject)
+{
+    if (!scriptObject) {
+        ScriptManager::instance().throwError(tr("Not an object"));
+        return nullptr;
+    }
+    if (scriptObject->asset() != mTilesetDocument->editable()) {
+        ScriptManager::instance().throwError(tr("Object not from this asset"));
+        return nullptr;
+    }
+
+    const auto objectGroup = static_cast<ObjectGroup*>(mDummyMapDocument->map()->layerAt(1));
+    const auto &clonedObjects = objectGroup->objects();
+    const int id = scriptObject->id();
+
+    const auto it = std::find_if(clonedObjects.begin(), clonedObjects.end(),
+                                 [id] (MapObject *o) { return o->id() == id; });
+
+    if (it == clonedObjects.end()) {
+        ScriptManager::instance().throwError(tr("Object not found"));
+        return nullptr;
+    }
+
+    return *it;
 }
 
 void TileCollisionDock::setTile(Tile *tile)

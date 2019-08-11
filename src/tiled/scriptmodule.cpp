@@ -31,6 +31,7 @@
 #include "scriptedtool.h"
 #include "scriptmanager.h"
 #include "tilesetdocument.h"
+#include "tileseteditor.h"
 
 #include <QAction>
 #include <QCoreApplication>
@@ -61,6 +62,8 @@ ScriptModule::~ScriptModule()
 
     for (const auto &pair : mRegisteredActions)
         ActionManager::unregisterAction(pair.second->id());
+
+    clearIssuesWithContext(this);
 }
 
 QString ScriptModule::version() const
@@ -139,6 +142,11 @@ QList<QObject *> ScriptModule::openAssets() const
     for (const DocumentPtr &document : documentManager->documents())
         assets.append(document->editable());
     return assets;
+}
+
+TilesetEditor *ScriptModule::tilesetEditor() const
+{
+    return static_cast<TilesetEditor*>(DocumentManager::instance()->editor(Document::TilesetDocumentType));
 }
 
 EditableAsset *ScriptModule::open(const QString &fileName) const
@@ -377,18 +385,37 @@ void ScriptModule::log(const QString &text) const
     mLogger->info(text);
 }
 
-void ScriptModule::warn(const QString &text) const
+void ScriptModule::warn(const QString &text, QJSValue activated)
 {
-    mLogger->warning(tr("Warning: %1").arg(text));
-
-    reportIssue(Issue { Issue::Warning, text });
+    reportIssue(Issue::Warning, text, activated);
 }
 
-void ScriptModule::error(const QString &text) const
+void ScriptModule::error(const QString &text, QJSValue activated)
 {
-    mLogger->error(tr("Error: %1").arg(text));
+    reportIssue(Issue::Error, text, activated);
+}
 
-    reportIssue(Issue { Issue::Error, text });
+void ScriptModule::reportIssue(Issue::Severity severity, const QString &text, QJSValue activated)
+{
+    switch (severity) {
+    case Tiled::Issue::Error:
+        mLogger->error(tr("Error: %1").arg(text));
+        break;
+    case Tiled::Issue::Warning:
+        mLogger->warning(tr("Warning: %1").arg(text));
+        break;
+    }
+
+    Issue issue { severity, text };
+
+    if (activated.isCallable()) {
+        issue.setCallback([activated] () mutable {   // 'mutable' needed because of non-const QJSValue::call
+            QJSValue result = activated.call();
+            ScriptManager::instance().checkError(result);
+        }, this);
+    }
+
+    Tiled::reportIssue(issue);
 }
 
 void ScriptModule::documentCreated(Document *document)

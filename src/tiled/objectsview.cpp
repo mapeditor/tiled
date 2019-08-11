@@ -159,6 +159,11 @@ QModelIndex ObjectsView::layerViewIndex(Layer *layer) const
     return QModelIndex();
 }
 
+void ObjectsView::ensureVisible(MapObject *mapObject)
+{
+    scrollTo(mProxyModel->mapFromSource(mapObjectModel()->index(mapObject)));
+}
+
 void ObjectsView::setFilter(const QString &filter)
 {
     const bool hadActiveFilter = mActiveFilter;
@@ -238,7 +243,7 @@ void ObjectsView::mousePressEvent(QMouseEvent *event)
         mMapDocument->setCurrentObject(mapObject);
 
         if (event->button() == Qt::LeftButton && !event->modifiers())
-            mMapDocument->focusMapObjectRequested(mapObject);
+            emit mMapDocument->focusMapObjectRequested(mapObject);
 
     } else if (Layer *layer = mapObjectModel()->toLayer(index)) {
         mMapDocument->setCurrentObject(layer);

@@ -156,6 +156,7 @@ Properties
     **activeAsset** : :ref:`script-asset`, "Currently selected asset, or ``null`` if no file is open. Can be assigned
     any open asset in order to change the active asset."
     **openAssets** : array |ro|, "List of currently opened :ref:`assets <script-asset>`."
+    **tilesetEditor** : :ref:`script-tileseteditor`, "Access the editor used when editing tilesets."
 
 Functions
 ~~~~~~~~~
@@ -213,9 +214,19 @@ tiled.prompt(label : string [, text : string [, title : string]]) : string
 tiled.log(text : string) : void
     Outputs the given text in the Console window as regular text.
 
-tiled.error(text : string) : void
+tiled.warn(text : string, activated : function) : void
+    Outputs the given text in the Console window as warning message (automatically
+    gets "Warning: " prepended) and creates an issue in the Issues window.
+
+    When the issue is activated (with double-click or Enter key) the given
+    callback function is invoked.
+
+tiled.error(text : string, activated : function) : void
     Outputs the given text in the Console window as error message (automatically
-    gets "Error: " prepended).
+    gets "Error: " prepended) and creates an issue in the Issues window.
+
+    When the issue is activated (with double-click or Enter key) the given
+    callback function is invoked.
 
 .. _script-registerAction:
 
@@ -1146,6 +1157,39 @@ Action.trigger() : void
 Action.toggle() : void
     Changes the checked state to its opposite state.
 
+
+.. _script-tileseteditor:
+
+Tileset Editor
+^^^^^^^^^^^^^^
+
+Properties
+~~~~~~~~~~
+
+.. csv-table::
+    :widths: 1, 2
+
+    **collisionEditor** : :ref:`script-tilecollisioneditor`, "Access the collision editor within the tileset editor."
+
+.. _script-tilecollisioneditor:
+
+Tile Collision Editor
+^^^^^^^^^^^^^^^^^^^^^
+
+Properties
+~~~~~~~~~~
+
+.. csv-table::
+    :widths: 1, 2
+
+    **selectedObjects** : [:ref:`script-mapobject`], Selected objects.
+
+Functions
+~~~~~~~~~
+
+TileCollisionEditor.focusObject(object : :ref:`script-mapobject`) : void
+    Focuses the given object in the collision editor view and makes sure its
+    visible in its objects list. Does not automatically select the object.
 
 .. _script-basic-types:
 

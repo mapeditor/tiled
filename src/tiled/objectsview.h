@@ -47,6 +47,8 @@ public:
 
     QModelIndex layerViewIndex(Layer *layer) const;
 
+    void ensureVisible(MapObject *mapObject);
+
     void setFilter(const QString &filter);
 
 public slots:
