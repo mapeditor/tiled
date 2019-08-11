@@ -42,6 +42,10 @@ static QPalette createPalette(const QColor &windowColor,
         return QColor::fromHsv(hue, sat, qBound(0, value, 255));
     };
 
+    auto fromValueHalfSat = [=](int value) {
+        return QColor::fromHsv(hue, sat / 2, qBound(0, value, 255));
+    };
+
     const bool isLight = windowValue > 128;
     const int baseValue = isLight ? windowValue + 48 : windowValue - 24;
 
@@ -54,13 +58,13 @@ static QPalette createPalette(const QColor &windowColor,
     const QColor darkDisabledText = QColor(darkTextValue, darkTextValue, darkTextValue, 128);
 
     QPalette palette(fromValue(windowValue));
-    palette.setColor(QPalette::Base, fromValue(baseValue));
-    palette.setColor(QPalette::AlternateBase, fromValue(baseValue - 10));
+    palette.setColor(QPalette::Base, fromValueHalfSat(baseValue));
+    palette.setColor(QPalette::AlternateBase, fromValueHalfSat(baseValue - 10));
     palette.setColor(QPalette::WindowText, isLight ? darkText : lightText);
     palette.setColor(QPalette::ButtonText, isLight ? darkText : lightText);
     palette.setColor(QPalette::Text, isLight ? darkText : lightText);
-    palette.setColor(QPalette::Light, fromValue(windowValue + 55));
-    palette.setColor(QPalette::Dark, fromValue(windowValue - 55));
+    palette.setColor(QPalette::Light, fromValueHalfSat(windowValue + 55));
+    palette.setColor(QPalette::Dark, fromValueHalfSat(windowValue - 55));
     palette.setColor(QPalette::Mid, fromValue(windowValue - 27));
     palette.setColor(QPalette::Midlight, fromValue(windowValue + 27));
 
