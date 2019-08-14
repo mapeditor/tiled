@@ -588,6 +588,16 @@ object.
 Used to mark an object as a text object. Contains the actual text as
 character data.
 
+For alignment purposes, the bottom of the text is the descender height of
+the font, and the top of the text is the ascender height of the font. For
+example, ``bottom`` alignment of the word "cat" will leave some space below
+the text, even though it is unused for this word with most fonts. Similarly,
+``top`` alignment of the word "cat" will leave some space above the "t" with
+most fonts, because this space is used for diacritics.
+
+If the text is larger than the object's bounds, it is clipped to the bounds
+of the object.
+
 .. _tmx-imagelayer:
 
 <imagelayer>
