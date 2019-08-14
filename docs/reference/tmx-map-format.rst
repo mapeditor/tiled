@@ -588,7 +588,7 @@ Used to mark an object as a text object. Contains the actual text as
 character data.
 
 For alignment purposes, the bottom of the text is the descender height of
-the font, and the top of the text is the ascent height of the font. For
+the font, and the top of the text is the ascender height of the font. For
 example, ``bottom`` alignment of the word "cat" will leave some space below
 the text, even though it is unused for this word with most fonts. Similarly,
 ``top`` alignment of the word "cat" will leave some space above the "t" with
