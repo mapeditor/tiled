@@ -488,7 +488,7 @@ Can contain: :ref:`tmx-properties`, :ref:`tmx-object`
 -  **y:** The y coordinate of the object in pixels.
 -  **width:** The width of the object in pixels (defaults to 0).
 -  **height:** The height of the object in pixels (defaults to 0).
--  **rotation:** The rotation of the object in degrees clockwise (defaults
+-  **rotation:** The rotation of the object in degrees clockwise around (x, y) (defaults
    to 0).
 -  **gid:** A reference to a tile (optional).
 -  **visible:** Whether the object is shown (1) or hidden (0). Defaults to
@@ -507,7 +507,8 @@ such as spawn points, warps, exits, etc.
 When the object has a ``gid`` set, then it is represented by the image
 of the tile with that global ID. The image alignment currently depends
 on the map orientation. In orthogonal orientation it's aligned to the
-bottom-left while in isometric it's aligned to the bottom-center.
+bottom-left while in isometric it's aligned to the bottom-center. The
+image will rotate around the bottom-left or bottom-center, respectively.
 
 When the object has a ``template`` set, it will borrow all the
 properties from the specified template, properties saved with the object
