@@ -215,6 +215,8 @@ void ScriptManager::checkError(QJSValue value, const QString &program)
             errorString.append(entry);
             errorString.append(QLatin1Char('\n'));
         }
+
+        errorString.chop(1);
     } else if (program.isEmpty() || program.contains(QLatin1Char('\n'))) {
         // Add line number when script spanned multiple lines
         errorString = tr("At line %1: %2")
@@ -222,7 +224,7 @@ void ScriptManager::checkError(QJSValue value, const QString &program)
                 .arg(errorString);
     }
 
-    emit mModule->logger()->error(errorString);
+    emit mModule->error(errorString);
 }
 
 void ScriptManager::throwError(const QString &message)
