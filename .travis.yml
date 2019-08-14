@@ -37,15 +37,16 @@ matrix:
         - libgl1-mesa-dev
         - zlib1g-dev
         - libzstd-dev
+        - p7zip-full
     env:
-    - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+      - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+      - QT_INSTALL_DIR=~/Qt
+      - QT_BIN=${QT_INSTALL_DIR}/5.12.4/gcc_64/bin
+      - PATH="${QT_INSTALL_DIR}/Tools/QtCreator/bin:${QT_BIN}:${PATH}"
     before_install:
     - eval "${MATRIX_EVAL}"
-    - sudo add-apt-repository --yes ppa:beineri/opt-qt-5.12.3-xenial
-    - sudo apt-get update -qq
-    - sudo apt-get -y install qt512base qt512script qt512svg qt512imageformats qt512tools
-    - source /opt/qt512/bin/qt512-env.sh
-    - source ./dist/linux/setup-qbs.sh
+    - ./dist/install-qt.sh -d ${QT_INSTALL_DIR} --version 5.12.4 qtbase qtdeclarative qtscript qtsvg qtimageformats qttools icu
+    - ./dist/install-qt.sh -d ${QT_INSTALL_DIR} --version 4.9.2 qtcreator
     script:
     - qbs --version
     - qbs setup-toolchains --detect
@@ -121,19 +122,19 @@ matrix:
     after_script:
     - cppcheck --enable=all -q -Isrc/libtiled `git ls-files src/\*.cpp`
   - os: osx
+    addons:
+      homebrew:
+        packages:
+          - p7zip
+        update: true
     env:
       - MAKEFLAGS=-j2
+      - QT_INSTALL_DIR=~/Qt
+      - QT_BIN=${QT_INSTALL_DIR}/5.12.4/clang_64/bin
+      - PATH="${QT_INSTALL_DIR}/Qt Creator.app/Contents/MacOS:${QT_BIN}:${PATH}"
     before_install:
-    - curl -L https://raw.githubusercontent.com/benlau/qtci/master/recipes/install-qt
-      --output install-qt
-    - curl -L https://raw.githubusercontent.com/benlau/qtci/master/bin/extract-qt-installer
-      --output extract-qt-installer
-    - chmod +x install-qt
-    - chmod +x extract-qt-installer
-    - export PATH=$PATH:$PWD
-    - QT_CI_PACKAGES=qt.qt5.5123.clang_64,qt.qt5.5123.qtscript QT_CI_DOWNLOADER="wget -c -nv -N" install-qt 5.12.3
-    - source qt-5.12.3.env
-    - source ./dist/linux/setup-qbs.sh
+    - ./dist/install-qt.sh -d ${QT_INSTALL_DIR} --version 5.12.4 qtbase qtdeclarative qtscript qtsvg qtimageformats qttools
+    - ./dist/install-qt.sh -d ${QT_INSTALL_DIR} --version 4.9.2 qtcreator
     - git clone --depth 1 -b master https://github.com/facebook/zstd.git
     - cd zstd/lib
     - make libzstd.a
