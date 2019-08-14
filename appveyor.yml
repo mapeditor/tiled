@@ -13,18 +13,20 @@ environment:
     - QTDIR: C:\Qt\5.12\mingw73_64
       PYTHONHOME: C:\Python37-x64
       MINGW: C:\Qt\Tools\mingw730_64
+      DEFAULT_PROFILE: x86_64-w64-mingw32
       PUSH_RELEASE: true
       TILED_ITCH_CHANNEL: windows-64bit
     - QTDIR: C:\Qt\5.6\mingw49_32
       PYTHONHOME: C:\Python37
       MINGW: C:\Qt\Tools\mingw492_32
+      DEFAULT_PROFILE: i686-w64-mingw32
       PUSH_RELEASE: false
       TILED_ITCH_CHANNEL: winxp-32bit
 
 configuration: Release
 
 install:
-  - choco install -y qbs --version 1.12.1
+  - choco install -y qbs --version 1.13.1
   - nuget install secure-file -ExcludeVersion
   - set PATH=%PATH%;%QTDIR%\bin;%MINGW%\bin
 
@@ -43,8 +45,7 @@ build_script:
   - cd ../../
   - qbs --version
   - qbs setup-toolchains --detect
-  - qbs setup-qt %QTDIR%\bin\qmake.exe qt
-  - qbs config defaultProfile qt
+  - qbs config defaultProfile %DEFAULT_PROFILE%
   - if defined TILED_RELEASE (set TILED_ITCH_VERSION=%TILED_VERSION%) else (set TILED_ITCH_VERSION=%VERSION_DATE%)
   - if defined TILED_SNAPSHOT (set TILED_ITCH_CHANNEL=%TILED_ITCH_CHANNEL%-snapshot)
   - if not defined APPVEYOR_PULL_REQUEST_NUMBER if [%APPVEYOR_REPO_BRANCH%]==[snapshot] set PUSH_TO_ITCH=true
