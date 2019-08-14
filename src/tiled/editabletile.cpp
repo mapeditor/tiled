@@ -22,12 +22,14 @@
 
 #include "changetile.h"
 #include "changetileanimation.h"
+#include "changetileimagesource.h"
 #include "changetileprobability.h"
 #include "changetileterrain.h"
 #include "editablemanager.h"
 #include "editableobjectgroup.h"
 #include "editableterrain.h"
 #include "editabletileset.h"
+#include "imagecache.h"
 #include "objectgroup.h"
 #include "scriptmanager.h"
 
@@ -154,6 +156,23 @@ void EditableTile::setType(const QString &type)
         asset()->push(new ChangeTileType(tileset()->tilesetDocument(), { tile() }, type));
     else
         tile()->setType(type);
+}
+
+void EditableTile::setImageFileName(const QString &fileName)
+{
+    if (asset()) {
+        if (!tileset()->tileset()->isCollection()) {
+            ScriptManager::instance().throwError(tr("Tileset needs to be an image collection"));
+            return;
+        }
+
+        asset()->push(new ChangeTileImageSource(tileset()->tilesetDocument(),
+                                                tile(),
+                                                QUrl::fromLocalFile(fileName)));
+    } else {
+        tile()->setImage(ImageCache::loadPixmap(fileName));
+        tile()->setImageSource(QUrl::fromLocalFile(fileName));
+    }
 }
 
 void EditableTile::setTerrain(QJSValue value)
