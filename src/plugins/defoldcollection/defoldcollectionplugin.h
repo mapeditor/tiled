@@ -36,7 +36,7 @@ class DEFOLDCOLLECTIONPLUGINSHARED_EXPORT DefoldCollectionPlugin : public Tiled:
 public:
     DefoldCollectionPlugin();
 
-    bool write(const Tiled::Map *map, const QString &collectionFile) override;
+    bool write(const Tiled::Map *map, const QString &collectionFile, Options options) override;
     QString errorString() const override;
     QString shortName() const override;
 

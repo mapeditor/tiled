@@ -199,8 +199,10 @@ static float zIndexForLayer(const Tiled::Map &map, const Tiled::Layer &inLayer, 
 /*
  * Writes a .collection file, as well as multiple .tilemap files required by this collection
  */
-bool DefoldCollectionPlugin::write(const Tiled::Map *map, const QString &collectionFile)
+bool DefoldCollectionPlugin::write(const Tiled::Map *map, const QString &collectionFile, Options options)
 {
+    Q_UNUSED(options)
+
     QFileInfo fi(collectionFile);
     QString outputFilePath = fi.filePath();
     QString outputFileName = fi.fileName();
