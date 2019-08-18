@@ -89,16 +89,16 @@ void EditableGroupLayer::insertLayerAt(int index, EditableLayer *editableLayer)
         return;
     }
 
-    if (editableLayer->map()) {
-        ScriptManager::instance().throwError(tr("Layer already part of a map"));
+    if (!editableLayer->isOwning()) {
+        ScriptManager::instance().throwError(tr("Layer is in use"));
         return;
     }
 
     if (asset()) {
         asset()->push(new AddLayer(mapDocument(), index, editableLayer->layer(), groupLayer()));
     } else {
-        groupLayer()->insertLayer(index, editableLayer->layer());
-        editableLayer->release();   // now owned by the group layer
+        // ownership moves to the group layer
+        groupLayer()->insertLayer(index, editableLayer->release());
     }
 }
 

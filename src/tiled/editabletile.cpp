@@ -23,6 +23,7 @@
 #include "changetile.h"
 #include "changetileanimation.h"
 #include "changetileimagesource.h"
+#include "changetileobjectgroup.h"
 #include "changetileprobability.h"
 #include "changetileterrain.h"
 #include "editablemanager.h"
@@ -209,6 +210,33 @@ void EditableTile::setProbability(qreal probability)
         asset()->push(new ChangeTileProbability(tileset()->tilesetDocument(), { tile() }, probability));
     else
         tile()->setProbability(probability);
+}
+
+void EditableTile::setObjectGroup(EditableObjectGroup *editableObjectGroup)
+{
+    if (!editableObjectGroup) {
+        ScriptManager::instance().throwError(tr("Invalid argument"));
+        return;
+    }
+
+    if (!editableObjectGroup->isOwning()) {
+        ScriptManager::instance().throwError(tr("ObjectGroup is in use"));
+        return;
+    }
+
+    std::unique_ptr<ObjectGroup> og(static_cast<ObjectGroup*>(editableObjectGroup->release()));
+
+    if (asset()) {
+        asset()->push(new ChangeTileObjectGroup(tileset()->tilesetDocument(),
+                                                tile(),
+                                                std::move(og)));
+    } else {
+        detachObjectGroup();
+        tile()->setObjectGroup(std::move(og));
+    }
+
+    Q_ASSERT(editableObjectGroup->objectGroup() == tile()->objectGroup());
+    Q_ASSERT(!editableObjectGroup->isOwning());
 }
 
 void EditableTile::setFrames(QJSValue value)

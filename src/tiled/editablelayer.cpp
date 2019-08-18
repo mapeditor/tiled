@@ -99,11 +99,11 @@ void EditableLayer::hold()
 /**
  * Release ownership of the referenced layer.
  */
-void EditableLayer::release()
+Layer *EditableLayer::release()
 {
-    Q_ASSERT(mDetachedLayer.get() == layer());
+    Q_ASSERT(isOwning());
 
-    mDetachedLayer.release();
+    return mDetachedLayer.release();
 }
 
 void EditableLayer::setName(const QString &name)

@@ -189,7 +189,8 @@ void EditableTileset::tileObjectGroupChanged(Tile *tile)
     Q_ASSERT(tile->tileset() == tileset());
 
     if (auto editable = EditableManager::instance().find(tile))
-        editable->detachObjectGroup();
+        if (editable->attachedObjectGroup() != tile->objectGroup())
+            editable->detachObjectGroup();
 }
 
 void EditableTileset::terrainAdded(Tileset *tileset, int terrainId)

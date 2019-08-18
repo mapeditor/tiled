@@ -994,7 +994,7 @@ Properties
     **imageFileName** : string, File name of the tile image (when the tile is part of an image collection tileset).
     **terrain** : :ref:`script-tileterrains`, An object specifying the terrain at each corner of the tile.
     **probability** : number, Probability that the tile gets chosen relative to other tiles.
-    **objectGroup** : :ref:`script-objectgroup` |ro|, The :ref:`script-objectgroup` associated with the tile in case collision shapes were defined. Returns ``null`` if no collision shapes were defined for this tile.
+    **objectGroup** : :ref:`script-objectgroup`, The :ref:`script-objectgroup` associated with the tile in case collision shapes were defined. Returns ``null`` if no collision shapes were defined for this tile.
     **frames** : :ref:`[frame] <script-frames>`, This tile's animation as an array of frames.
     **animated** : bool |ro|, Indicates whether this tile is animated.
     **tileset** : :ref:`script-tileset` |ro|, The tileset of the tile.

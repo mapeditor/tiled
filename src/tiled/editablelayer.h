@@ -72,7 +72,8 @@ public:
     void detach();
     void attach(EditableAsset *asset);
     void hold();
-    void release();
+    Layer *release();
+    bool isOwning() const;
 
 public slots:
     void setName(const QString &name);
@@ -138,6 +139,11 @@ inline bool EditableLayer::isImageLayer() const
 inline Layer *EditableLayer::layer() const
 {
     return static_cast<Layer*>(object());
+}
+
+inline bool EditableLayer::isOwning() const
+{
+    return mDetachedLayer.get() == layer();
 }
 
 } // namespace Tiled

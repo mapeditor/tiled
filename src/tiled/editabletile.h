@@ -43,7 +43,7 @@ class EditableTile : public EditableObject
     Q_PROPERTY(QString imageFileName READ imageFileName WRITE setImageFileName)
     Q_PROPERTY(QJSValue terrain READ terrain WRITE setTerrain)
     Q_PROPERTY(qreal probability READ probability WRITE setProbability)
-    Q_PROPERTY(Tiled::EditableObjectGroup *objectGroup READ objectGroup)
+    Q_PROPERTY(Tiled::EditableObjectGroup *objectGroup READ objectGroup WRITE setObjectGroup)
     Q_PROPERTY(QJSValue frames READ frames WRITE setFrames)
     Q_PROPERTY(bool animated READ isAnimated)
     Q_PROPERTY(Tiled::EditableTileset *tileset READ tileset)
@@ -91,6 +91,7 @@ public:
     void detach();
     void attach(EditableTileset *tileset);
 
+    const ObjectGroup *attachedObjectGroup() const { return mAttachedObjectGroup; }
     void detachObjectGroup();
 
 public slots:
@@ -98,6 +99,7 @@ public slots:
     void setImageFileName(const QString &fileName);
     void setTerrain(QJSValue value);
     void setProbability(qreal probability);
+    void setObjectGroup(EditableObjectGroup *editableObjectGroup);
     void setFrames(QJSValue value);
 
 private:
