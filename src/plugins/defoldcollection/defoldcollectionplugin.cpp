@@ -327,8 +327,6 @@ bool DefoldCollectionPlugin::write(const Tiled::Map *map, const QString &collect
 
         QString components;
 
-        int cellsOnThisTilemap = 0;
-
         // write as many tilemaps as there are tilesets per group layer
         for (auto &tileset : map->tilesets()) {
             QString tilemapFilePath = tilesetFileDir;
@@ -363,7 +361,6 @@ bool DefoldCollectionPlugin::write(const Tiled::Map *map, const QString &collect
                         cellHash["h_flip"] = cell.flippedHorizontally() ? 1 : 0;
                         cellHash["v_flip"] = cell.flippedVertically() ? 1 : 0;
                         cells.append(replaceTags(QLatin1String(cellTemplate), cellHash));
-                        cellsOnThisTilemap++;
                         componentCells++;
 
                         // Create a component for this embedded instance only when the first cell of this component is found.
@@ -377,6 +374,7 @@ bool DefoldCollectionPlugin::write(const Tiled::Map *map, const QString &collect
                         }
                     }
                 }
+
                 if (!cells.isEmpty()) {
                     layerHash["cells"] = cells;
                     layers.append(replaceTags(QLatin1String(layerTemplate), layerHash));
@@ -384,7 +382,7 @@ bool DefoldCollectionPlugin::write(const Tiled::Map *map, const QString &collect
             }
 
             // no need to save a tilemap with 0 cells
-            if (layers.length() == 0)
+            if (layers.isEmpty())
                 continue;
 
             tileMapHash["layers"] = layers;
@@ -394,10 +392,6 @@ bool DefoldCollectionPlugin::write(const Tiled::Map *map, const QString &collect
             // However, if the user keeps all tilesources in /tilesources/ and the name of the tilesource corresponds with the name of the tileset in Defold,
             // the value will be automatically correct.
             tileMapHash["tile_set"] = "/tilesources/" + tileset->name() + ".tilesource";
-
-            // avoid saving tilemaps with 0 cells
-            if (cellsOnThisTilemap == 0)
-                continue;
 
             QString result = replaceTags(QLatin1String(tileMapTemplate), tileMapHash);
             Tiled::SaveFile mapFile(tilemapFilePath);
