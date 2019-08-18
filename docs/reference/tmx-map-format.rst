@@ -482,8 +482,8 @@ Can contain: :ref:`tmx-properties`, :ref:`tmx-object`
 -  **id:** Unique ID of the object. Each object that is placed on a map gets
    a unique id. Even if an object was deleted, no object gets the same
    ID. Can not be changed in Tiled. (since Tiled 0.11)
--  **name:** The name of the object. An arbitrary string.
--  **type:** The type of the object. An arbitrary string.
+-  **name:** The name of the object. An arbitrary string (defaults to "").
+-  **type:** The type of the object. An arbitrary string (defaults to "").
 -  **x:** The x coordinate of the object in pixels.
 -  **y:** The y coordinate of the object in pixels.
 -  **width:** The width of the object in pixels (defaults to 0).
