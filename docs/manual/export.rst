@@ -238,7 +238,7 @@ Upon export, the ``tile_set`` property of the Tile Map is left empty, so it will
 
 **defoldcollection**
 
-This plugin exports a map to a `Defold Collection <https://www.defold.com/manuals/building-blocks/>`__ (\*.collection), while also creating multiple `\*.tilesource <https://www.defold.com/manuals/tilesource/>`__ files (Defold's equivalent of tilesets).
+This plugin exports a map to a `Defold Collection <https://www.defold.com/manuals/building-blocks/>`__ (\*.collection), while also creating multiple .tilemap files.
 
 It supports:
 
