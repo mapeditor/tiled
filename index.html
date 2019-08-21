@@ -417,14 +417,16 @@
             </div>
             <div class="row">
               <div class="col-xs-12" style="padding-left: 25px; padding-right: 25px;">
-{% for post in site.posts limit:3 %}
+              <div id="codefund" style="float: right"></div>
+              <script src="https://www.codefund.io/properties/169/funder.js" async="async"></script>
+{% for post in site.posts limit:4 %}
 
             <div class="news-item">
              <h4><a href="{{ post.url }}" class="news-headline">{{ post.title }}</a><br/><small>{{ post.date | date_to_long_string }}</small></h4>
             </div>
 
 {% endfor %}
-<p style="text-align: right; margin-right: 10px;"><a href="/news.html">News Archive &raquo;</a></p>
+<p><a href="/news.html">News Archive &raquo;</a></p>
               </div>
             </div>
           </div>
