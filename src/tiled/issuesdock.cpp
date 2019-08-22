@@ -71,9 +71,15 @@ private:
 
 IssuesModel::IssuesModel(QObject *parent)
     : QAbstractListModel(parent)
-    , mErrorIcon(QIcon::fromTheme(QLatin1String("dialog-error")))
-    , mWarningIcon(QIcon::fromTheme(QLatin1String("dialog-warning")))
 {
+    mErrorIcon.addFile(QLatin1String("://images/16/dialog-error.png"));
+    mErrorIcon.addFile(QLatin1String("://images/24/dialog-error.png"));
+    mErrorIcon.addFile(QLatin1String("://images/32/dialog-error.png"));
+
+    mWarningIcon.addFile(QLatin1String("://images/16/dialog-warning.png"));
+    mWarningIcon.addFile(QLatin1String("://images/24/dialog-warning.png"));
+    mWarningIcon.addFile(QLatin1String("://images/32/dialog-warning.png"));
+
     connect(&LoggingInterface::instance(), &LoggingInterface::issue,
             this, &IssuesModel::addIssue);
 }

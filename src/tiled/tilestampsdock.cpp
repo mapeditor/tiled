@@ -72,11 +72,11 @@ TileStampsDock::TileStampsDock(TileStampManager *stampManager, QWidget *parent)
     connect(mTileStampView, &QWidget::customContextMenuRequested,
             this, &TileStampsDock::showContextMenu);
 
-    mNewStamp->setIcon(QIcon(QLatin1String(":images/16x16/document-new.png")));
-    mAddVariation->setIcon(QIcon(QLatin1String(":/images/16x16/add.png")));
-    mDuplicate->setIcon(QIcon(QLatin1String(":/images/16x16/stock-duplicate-16.png")));
-    mDelete->setIcon(QIcon(QLatin1String(":images/16x16/edit-delete.png")));
-    mChooseFolder->setIcon(QIcon(QLatin1String(":images/16x16/document-open.png")));
+    mNewStamp->setIcon(QIcon(QLatin1String(":images/16/document-new.png")));
+    mAddVariation->setIcon(QIcon(QLatin1String(":/images/16/add.png")));
+    mDuplicate->setIcon(QIcon(QLatin1String(":/images/16/stock-duplicate-16.png")));
+    mDelete->setIcon(QIcon(QLatin1String(":images/16/edit-delete.png")));
+    mChooseFolder->setIcon(QIcon(QLatin1String(":images/16/document-open.png")));
 
     Utils::setThemeIcon(mNewStamp, "document-new");
     Utils::setThemeIcon(mAddVariation, "add");
@@ -206,7 +206,7 @@ void TileStampsDock::showContextMenu(QPoint pos)
         menu.addSeparator();
         menu.addAction(deleteStamp);
     } else {
-        QAction *removeVariation = new QAction(QIcon(QLatin1String(":/images/16x16/remove.png")),
+        QAction *removeVariation = new QAction(QIcon(QLatin1String(":/images/16/remove.png")),
                                                tr("Remove Variation"),
                                                &menu);
 

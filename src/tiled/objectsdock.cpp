@@ -50,7 +50,7 @@ ObjectsDock::ObjectsDock(QWidget *parent)
     setObjectName(QLatin1String("ObjectsDock"));
 
     mActionObjectProperties = new QAction(this);
-    mActionObjectProperties->setIcon(QIcon(QLatin1String(":/images/16x16/document-properties.png")));
+    mActionObjectProperties->setIcon(QIcon(QLatin1String(":/images/16/document-properties.png")));
 
     connect(mActionObjectProperties, &QAction::triggered,
             this, &ObjectsDock::objectProperties);
@@ -69,17 +69,17 @@ ObjectsDock::ObjectsDock(QWidget *parent)
     connect(mFilterEdit, &QLineEdit::textChanged, mObjectsView, &ObjectsView::setFilter);
 
     mActionNewLayer = new QAction(this);
-    mActionNewLayer->setIcon(QIcon(QLatin1String(":/images/16x16/document-new.png")));
+    mActionNewLayer->setIcon(QIcon(QLatin1String(":/images/16/document-new.png")));
     connect(mActionNewLayer, &QAction::triggered,
             handler->actionAddObjectGroup(), &QAction::trigger);
 
     mActionMoveToGroup = new QAction(this);
-    mActionMoveToGroup->setIcon(QIcon(QLatin1String(":/images/16x16/layer-object.png")));
+    mActionMoveToGroup->setIcon(QIcon(QLatin1String(":/images/16/layer-object.png")));
 
     mActionMoveUp = new QAction(this);
-    mActionMoveUp->setIcon(QIcon(QLatin1String(":/images/16x16/go-up.png")));
+    mActionMoveUp->setIcon(QIcon(QLatin1String(":/images/16/go-up.png")));
     mActionMoveDown = new QAction(this);
-    mActionMoveDown->setIcon(QIcon(QLatin1String(":/images/16x16/go-down.png")));
+    mActionMoveDown->setIcon(QIcon(QLatin1String(":/images/16/go-down.png")));
 
     Utils::setThemeIcon(mActionObjectProperties, "document-properties");
     Utils::setThemeIcon(mActionMoveUp, "go-up");

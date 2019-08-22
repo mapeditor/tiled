@@ -838,7 +838,7 @@ void DocumentManager::tabContextMenuRequested(const QPoint &pos)
     menu.addSeparator();
 
     QAction *closeTab = menu.addAction(tr("Close"));
-    closeTab->setIcon(QIcon(QStringLiteral(":/images/16x16/window-close.png")));
+    closeTab->setIcon(QIcon(QStringLiteral(":/images/16/window-close.png")));
     Utils::setThemeIcon(closeTab, "window-close");
     connect(closeTab, &QAction::triggered, [this, index] {
         documentCloseRequested(index);

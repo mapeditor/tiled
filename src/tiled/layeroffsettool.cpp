@@ -40,7 +40,7 @@ using namespace Tiled;
 
 LayerOffsetTool::LayerOffsetTool(QObject *parent)
     : AbstractTool(tr("Offset Layers"),
-                   QIcon(QLatin1String(":images/22x22/stock-tool-move-22.png")),
+                   QIcon(QLatin1String(":images/22/stock-tool-move-22.png")),
                    QKeySequence(tr("M")),
                    parent)
     , mMousePressed(false)

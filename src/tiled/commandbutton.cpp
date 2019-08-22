@@ -36,7 +36,7 @@ CommandButton::CommandButton(QWidget *parent)
     : QToolButton(parent)
     , mMenu(new QMenu(this))
 {
-    setIcon(QIcon(QLatin1String(":images/24x24/system-run.png")));
+    setIcon(QIcon(QLatin1String(":images/24/system-run.png")));
     setThemeIcon(this, "system-run");
     retranslateUi();
 

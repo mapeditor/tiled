@@ -39,12 +39,12 @@ LayerModel::LayerModel(QObject *parent):
     QAbstractItemModel(parent),
     mMapDocument(nullptr),
     mMap(nullptr),
-    mTileLayerIcon(QLatin1String(":/images/16x16/layer-tile.png")),
-    mObjectGroupIcon(QLatin1String(":/images/16x16/layer-object.png")),
-    mImageLayerIcon(QLatin1String(":/images/16x16/layer-image.png"))
+    mTileLayerIcon(QLatin1String(":/images/16/layer-tile.png")),
+    mObjectGroupIcon(QLatin1String(":/images/16/layer-object.png")),
+    mImageLayerIcon(QLatin1String(":/images/16/layer-image.png"))
 {
-    mTileLayerIcon.addFile(QLatin1String(":images/32x32/layer-tile.png"));
-    mObjectGroupIcon.addFile(QLatin1String(":images/32x32/layer-object.png"));
+    mTileLayerIcon.addFile(QLatin1String(":images/32/layer-tile.png"));
+    mObjectGroupIcon.addFile(QLatin1String(":images/32/layer-object.png"));
 }
 
 QModelIndex LayerModel::index(int row, int column, const QModelIndex &parent) const

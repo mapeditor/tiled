@@ -40,16 +40,16 @@ MapObjectModel::MapObjectModel(QObject *parent)
     : QAbstractItemModel(parent)
     , mMapDocument(nullptr)
     , mMap(nullptr)
-    , mObjectGroupIcon(QLatin1String(":/images/16x16/layer-object.png"))
-    , mRectangleIcon(QLatin1String(":images/24x24/object-rectangle.png"))
-    , mImageIcon(QLatin1String(":images/24x24/object-image.png"))
-    , mPolygonIcon(QLatin1String(":images/24x24/object-polygon.png"))
-    , mPolylineIcon(QLatin1String(":images/24x24/object-polyline.png"))
-    , mEllipseIcon(QLatin1String(":images/24x24/object-ellipse.png"))
-    , mTextIcon(QLatin1String(":images/24x24/object-text.png"))
-    , mPointIcon(QLatin1String(":images/24x24/object-point.png"))
+    , mObjectGroupIcon(QLatin1String(":/images/16/layer-object.png"))
+    , mRectangleIcon(QLatin1String(":images/24/object-rectangle.png"))
+    , mImageIcon(QLatin1String(":images/24/object-image.png"))
+    , mPolygonIcon(QLatin1String(":images/24/object-polygon.png"))
+    , mPolylineIcon(QLatin1String(":images/24/object-polyline.png"))
+    , mEllipseIcon(QLatin1String(":images/24/object-ellipse.png"))
+    , mTextIcon(QLatin1String(":images/24/object-text.png"))
+    , mPointIcon(QLatin1String(":images/24/object-point.png"))
 {
-    mObjectGroupIcon.addFile(QLatin1String(":images/32x32/layer-object.png"));
+    mObjectGroupIcon.addFile(QLatin1String(":images/32/layer-object.png"));
 }
 
 QModelIndex MapObjectModel::index(int row, int column,

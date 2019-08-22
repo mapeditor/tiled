@@ -109,15 +109,15 @@ TileCollisionDock::TileCollisionDock(QWidget *parent)
     toolsToolBar->addAction(mToolManager->registerTool(templatesTool));
 
     mActionDuplicateObjects = new QAction(this);
-    mActionDuplicateObjects->setIcon(QIcon(QLatin1String(":/images/16x16/stock-duplicate-16.png")));
+    mActionDuplicateObjects->setIcon(QIcon(QLatin1String(":/images/16/stock-duplicate-16.png")));
     mActionRemoveObjects = new QAction(this);
-    mActionRemoveObjects->setIcon(QIcon(QLatin1String(":/images/16x16/edit-delete.png")));
+    mActionRemoveObjects->setIcon(QIcon(QLatin1String(":/images/16/edit-delete.png")));
     mActionMoveUp = new QAction(this);
-    mActionMoveUp->setIcon(QIcon(QLatin1String(":/images/16x16/go-up.png")));
+    mActionMoveUp->setIcon(QIcon(QLatin1String(":/images/16/go-up.png")));
     mActionMoveDown = new QAction(this);
-    mActionMoveDown->setIcon(QIcon(QLatin1String(":/images/16x16/go-down.png")));
+    mActionMoveDown->setIcon(QIcon(QLatin1String(":/images/16/go-down.png")));
     mActionObjectProperties = new QAction(this);
-    mActionObjectProperties->setIcon(QIcon(QLatin1String(":/images/16x16/document-properties.png")));
+    mActionObjectProperties->setIcon(QIcon(QLatin1String(":/images/16/document-properties.png")));
 
     Utils::setThemeIcon(mActionRemoveObjects, "edit-delete");
     Utils::setThemeIcon(mActionMoveUp, "go-up");
@@ -173,8 +173,8 @@ TileCollisionDock::TileCollisionDock(QWidget *parent)
     auto objectsViewMenu = new QMenu(this);
     objectsViewMenu->addActions(objectsViewActionGroup->actions());
 
-    QIcon objectsViewIcon(QLatin1String("://images/16x16/layer-object.png"));
-    objectsViewIcon.addFile(QLatin1String("://images/32x32/layer-object.png"));
+    QIcon objectsViewIcon(QLatin1String("://images/16/layer-object.png"));
+    objectsViewIcon.addFile(QLatin1String("://images/32/layer-object.png"));
 
     auto objectsViewButton = new QToolButton;
     objectsViewButton->setMenu(objectsViewMenu);

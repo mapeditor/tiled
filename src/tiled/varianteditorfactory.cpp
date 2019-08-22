@@ -60,7 +60,7 @@ ResetWidget::ResetWidget(QtProperty *property, QWidget *editor, QWidget *parent)
     QHBoxLayout *layout = new QHBoxLayout(this);
 
     QToolButton *resetButton = new QToolButton(this);
-    resetButton->setIcon(QIcon(QLatin1String(":/images/16x16/edit-clear.png")));
+    resetButton->setIcon(QIcon(QLatin1String(":/images/16/edit-clear.png")));
     resetButton->setIconSize(Utils::smallIconSize());
     resetButton->setAutoRaise(true);
     Utils::setThemeIcon(resetButton, "edit-clear");

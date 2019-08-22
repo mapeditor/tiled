@@ -33,7 +33,7 @@ UndoDock::UndoDock(QWidget *parent)
     setObjectName(QLatin1String("undoViewDock"));
 
     mUndoView = new QUndoView(this);
-    QIcon cleanIcon(QLatin1String(":images/16x16/drive-harddisk.png"));
+    QIcon cleanIcon(QLatin1String(":images/16/drive-harddisk.png"));
     mUndoView->setCleanIcon(cleanIcon);
     mUndoView->setUniformItemSizes(true);
 

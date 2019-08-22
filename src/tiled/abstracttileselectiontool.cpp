@@ -39,10 +39,10 @@ AbstractTileSelectionTool::AbstractTileSelectionTool(const QString &name,
     , mSelectionMode(Replace)
     , mDefaultMode(Replace)
 {
-    QIcon replaceIcon(QLatin1String(":images/16x16/selection-replace.png"));
-    QIcon addIcon(QLatin1String(":images/16x16/selection-add.png"));
-    QIcon subtractIcon(QLatin1String(":images/16x16/selection-subtract.png"));
-    QIcon intersectIcon(QLatin1String(":images/16x16/selection-intersect.png"));
+    QIcon replaceIcon(QLatin1String(":images/16/selection-replace.png"));
+    QIcon addIcon(QLatin1String(":images/16/selection-add.png"));
+    QIcon subtractIcon(QLatin1String(":images/16/selection-subtract.png"));
+    QIcon intersectIcon(QLatin1String(":images/16/selection-intersect.png"));
 
     mReplace = new QAction(this);
     mReplace->setIcon(replaceIcon);

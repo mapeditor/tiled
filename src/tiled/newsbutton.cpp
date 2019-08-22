@@ -38,8 +38,8 @@ namespace Tiled {
 
 NewsButton::NewsButton(QWidget *parent)
     : QToolButton(parent)
-    , mReadIcon(QLatin1String("://images/16x16/mail-read-symbolic.png"))
-    , mUnreadIcon(QLatin1String("://images/16x16/mail-unread-symbolic.png"))
+    , mReadIcon(QLatin1String("://images/16/mail-read-symbolic.png"))
+    , mUnreadIcon(QLatin1String("://images/16/mail-unread-symbolic.png"))
 {
     const auto preferences = Preferences::instance();
     setVisible(preferences->displayNews());

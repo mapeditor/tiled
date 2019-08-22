@@ -288,14 +288,14 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     Preferences *preferences = Preferences::instance();
 
-    QIcon redoIcon(QLatin1String(":images/16x16/edit-redo.png"));
-    QIcon undoIcon(QLatin1String(":images/16x16/edit-undo.png"));
+    QIcon redoIcon(QLatin1String(":images/16/edit-redo.png"));
+    QIcon undoIcon(QLatin1String(":images/16/edit-undo.png"));
     QIcon highlightCurrentLayerIcon(QLatin1String("://images/scalable/highlight-current-layer-16.svg"));
     highlightCurrentLayerIcon.addFile(QLatin1String("://images/scalable/highlight-current-layer-24.svg"));
 
 #ifndef Q_OS_MAC
-    QIcon tiledIcon(QLatin1String(":images/16x16/tiled.png"));
-    tiledIcon.addFile(QLatin1String(":images/32x32/tiled.png"));
+    QIcon tiledIcon(QLatin1String(":images/16/tiled.png"));
+    tiledIcon.addFile(QLatin1String(":images/32/tiled.png"));
     setWindowIcon(tiledIcon);
 #endif
 

@@ -27,19 +27,19 @@ using namespace Tiled;
 
 StampActions::StampActions(QObject *parent) : QObject(parent)
 {
-    QIcon diceIcon(QLatin1String(":images/24x24/dice.png"));
-    QIcon wangIcon(QLatin1String(":images/24x24/wangtile.png"));
-    QIcon flipHorizontalIcon(QLatin1String(":images/24x24/flip-horizontal.png"));
-    QIcon flipVerticalIcon(QLatin1String(":images/24x24/flip-vertical.png"));
-    QIcon rotateLeftIcon(QLatin1String(":images/24x24/rotate-left.png"));
-    QIcon rotateRightIcon(QLatin1String(":images/24x24/rotate-right.png"));
+    QIcon diceIcon(QLatin1String(":images/24/dice.png"));
+    QIcon wangIcon(QLatin1String(":images/24/wangtile.png"));
+    QIcon flipHorizontalIcon(QLatin1String(":images/24/flip-horizontal.png"));
+    QIcon flipVerticalIcon(QLatin1String(":images/24/flip-vertical.png"));
+    QIcon rotateLeftIcon(QLatin1String(":images/24/rotate-left.png"));
+    QIcon rotateRightIcon(QLatin1String(":images/24/rotate-right.png"));
 
-    diceIcon.addFile(QLatin1String(":images/32x32/dice.png"));
-    wangIcon.addFile(QLatin1String(":images/32x32/wangtile.png"));
-    flipHorizontalIcon.addFile(QLatin1String(":images/32x32/flip-horizontal.png"));
-    flipVerticalIcon.addFile(QLatin1String(":images/32x32/flip-vertical.png"));
-    rotateLeftIcon.addFile(QLatin1String(":images/32x32/rotate-left.png"));
-    rotateRightIcon.addFile(QLatin1String(":images/32x32/rotate-right.png"));
+    diceIcon.addFile(QLatin1String(":images/32/dice.png"));
+    wangIcon.addFile(QLatin1String(":images/32/wangtile.png"));
+    flipHorizontalIcon.addFile(QLatin1String(":images/32/flip-horizontal.png"));
+    flipVerticalIcon.addFile(QLatin1String(":images/32/flip-vertical.png"));
+    rotateLeftIcon.addFile(QLatin1String(":images/32/rotate-left.png"));
+    rotateRightIcon.addFile(QLatin1String(":images/32/rotate-right.png"));
 
     mRandom = new QAction(this);
     mRandom->setIcon(diceIcon);

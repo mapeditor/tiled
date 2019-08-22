@@ -106,7 +106,7 @@ void WangBrushItem::setInvalidTiles(const QRegion &region)
 WangBrush::WangBrush(QObject *parent)
     : AbstractTileTool(tr("Wang Brush"),
                       QIcon(QLatin1String(
-                                ":images/24x24/wangtile-edit.png")),
+                                ":images/24/wangtile-edit.png")),
                       QKeySequence(tr("G")),
                       new WangBrushItem,
                       parent)

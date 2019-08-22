@@ -53,20 +53,20 @@ PropertiesDock::PropertiesDock(QWidget *parent)
 
     mActionAddProperty = new QAction(this);
     mActionAddProperty->setEnabled(false);
-    mActionAddProperty->setIcon(QIcon(QLatin1String(":/images/16x16/add.png")));
+    mActionAddProperty->setIcon(QIcon(QLatin1String(":/images/16/add.png")));
     connect(mActionAddProperty, &QAction::triggered,
             this, &PropertiesDock::openAddPropertyDialog);
 
     mActionRemoveProperty = new QAction(this);
     mActionRemoveProperty->setEnabled(false);
-    mActionRemoveProperty->setIcon(QIcon(QLatin1String(":/images/16x16/remove.png")));
+    mActionRemoveProperty->setIcon(QIcon(QLatin1String(":/images/16/remove.png")));
     mActionRemoveProperty->setShortcuts(QKeySequence::Delete);
     connect(mActionRemoveProperty, &QAction::triggered,
             this, &PropertiesDock::removeProperties);
 
     mActionRenameProperty = new QAction(this);
     mActionRenameProperty->setEnabled(false);
-    mActionRenameProperty->setIcon(QIcon(QLatin1String(":/images/16x16/rename.png")));
+    mActionRenameProperty->setIcon(QIcon(QLatin1String(":/images/16/rename.png")));
     connect(mActionRenameProperty, &QAction::triggered,
             this, &PropertiesDock::renameProperty);
 
@@ -361,13 +361,13 @@ void PropertiesDock::showContextMenu(const QPoint& pos)
     QAction *removeAction = contextMenu.addAction(tr("Remove"));
 
     cutAction->setShortcuts(QKeySequence::Cut);
-    cutAction->setIcon(QIcon(QLatin1String(":/images/16x16/edit-cut.png")));
+    cutAction->setIcon(QIcon(QLatin1String(":/images/16/edit-cut.png")));
     cutAction->setEnabled(customPropertiesSelected && currentObjectHasAllProperties);
     copyAction->setShortcuts(QKeySequence::Copy);
-    copyAction->setIcon(QIcon(QLatin1String(":/images/16x16/edit-copy.png")));
+    copyAction->setIcon(QIcon(QLatin1String(":/images/16/edit-copy.png")));
     copyAction->setEnabled(customPropertiesSelected && currentObjectHasAllProperties);
     pasteAction->setShortcuts(QKeySequence::Paste);
-    pasteAction->setIcon(QIcon(QLatin1String(":/images/16x16/edit-paste.png")));
+    pasteAction->setIcon(QIcon(QLatin1String(":/images/16/edit-paste.png")));
     pasteAction->setEnabled(ClipboardManager::instance()->hasProperties());
     renameAction->setEnabled(mActionRenameProperty->isEnabled());
     renameAction->setIcon(mActionRenameProperty->icon());

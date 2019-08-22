@@ -711,7 +711,7 @@ TilesetView::TilesetView(QWidget *parent)
     , mTerrainChanged(false)
     , mWangIdChanged(false)
     , mHandScrolling(false)
-    , mImageMissingIcon(QStringLiteral("://images/32x32/image-missing.png"))
+    , mImageMissingIcon(QStringLiteral("://images/32/image-missing.png"))
 {
     setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
     setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
@@ -1192,7 +1192,7 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
 
     QMenu menu;
 
-    QIcon propIcon(QLatin1String(":images/16x16/document-properties.png"));
+    QIcon propIcon(QLatin1String(":images/16/document-properties.png"));
 
     if (tile) {
         if (mEditTerrain) {

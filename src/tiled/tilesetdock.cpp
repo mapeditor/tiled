@@ -236,11 +236,11 @@ TilesetDock::TilesetDock(QWidget *parent)
     horizontal->addWidget(mToolBar, 1);
     vertical->addLayout(horizontal);
 
-    mNewTileset->setIcon(QIcon(QLatin1String(":images/16x16/document-new.png")));
-    mEmbedTileset->setIcon(QIcon(QLatin1String(":images/16x16/document-import.png")));
-    mExportTileset->setIcon(QIcon(QLatin1String(":images/16x16/document-export.png")));
-    mEditTileset->setIcon(QIcon(QLatin1String(":images/16x16/document-properties.png")));
-    mDeleteTileset->setIcon(QIcon(QLatin1String(":images/16x16/edit-delete.png")));
+    mNewTileset->setIcon(QIcon(QLatin1String(":images/16/document-new.png")));
+    mEmbedTileset->setIcon(QIcon(QLatin1String(":images/16/document-import.png")));
+    mExportTileset->setIcon(QIcon(QLatin1String(":images/16/document-export.png")));
+    mEditTileset->setIcon(QIcon(QLatin1String(":images/16/document-properties.png")));
+    mDeleteTileset->setIcon(QIcon(QLatin1String(":images/16/edit-delete.png")));
 
     Utils::setThemeIcon(mNewTileset, "document-new");
     Utils::setThemeIcon(mEmbedTileset, "document-import");

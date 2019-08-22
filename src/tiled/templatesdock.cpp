@@ -83,17 +83,17 @@ TemplatesDock::TemplatesDock(QWidget *parent)
     toolBar->setMovable(false);
     toolBar->setIconSize(Utils::smallIconSize());
 
-    mChooseDirectory->setIcon(QIcon(QLatin1String(":/images/16x16/document-open.png")));
+    mChooseDirectory->setIcon(QIcon(QLatin1String(":/images/16/document-open.png")));
     Utils::setThemeIcon(mChooseDirectory, "document-open");
     connect(mChooseDirectory, &QAction::triggered, this, &TemplatesDock::chooseDirectory);
 
     toolBar->addAction(mChooseDirectory);
 
-    mUndoAction->setIcon(QIcon(QLatin1String(":/images/16x16/edit-undo.png")));
+    mUndoAction->setIcon(QIcon(QLatin1String(":/images/16/edit-undo.png")));
     Utils::setThemeIcon(mUndoAction, "edit-undo");
     connect(mUndoAction, &QAction::triggered, this, &TemplatesDock::undo);
 
-    mRedoAction->setIcon(QIcon(QLatin1String(":/images/16x16/edit-redo.png")));
+    mRedoAction->setIcon(QIcon(QLatin1String(":/images/16/edit-redo.png")));
     Utils::setThemeIcon(mRedoAction, "edit-redo");
     connect(mRedoAction, &QAction::triggered, this, &TemplatesDock::redo);
 

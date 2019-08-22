@@ -72,12 +72,12 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     mActionCropToSelection = new QAction(this);
     mActionAutocrop = new QAction(this);
 
-    QIcon addTileLayerIcon(QLatin1String(":/images/16x16/layer-tile.png"));
-    QIcon addObjectLayerIcon(QLatin1String(":/images/16x16/layer-object.png"));
-    QIcon addImageLayerIcon(QLatin1String(":/images/16x16/layer-image.png"));
+    QIcon addTileLayerIcon(QLatin1String(":/images/16/layer-tile.png"));
+    QIcon addObjectLayerIcon(QLatin1String(":/images/16/layer-object.png"));
+    QIcon addImageLayerIcon(QLatin1String(":/images/16/layer-image.png"));
 
-    addTileLayerIcon.addFile(QLatin1String(":/images/32x32/layer-tile.png"));
-    addObjectLayerIcon.addFile(QLatin1String(":/images/32x32/layer-object.png"));
+    addTileLayerIcon.addFile(QLatin1String(":/images/32/layer-tile.png"));
+    addObjectLayerIcon.addFile(QLatin1String(":/images/32/layer-object.png"));
 
     mActionAddTileLayer = new QAction(this);
     mActionAddTileLayer->setIcon(addTileLayerIcon);
@@ -100,13 +100,13 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     mActionDuplicateLayers = new QAction(this);
     mActionDuplicateLayers->setShortcut(tr("Ctrl+Shift+D"));
     mActionDuplicateLayers->setIcon(
-            QIcon(QLatin1String(":/images/16x16/stock-duplicate-16.png")));
+            QIcon(QLatin1String(":/images/16/stock-duplicate-16.png")));
 
     mActionMergeLayersDown = new QAction(this);
 
     mActionRemoveLayers = new QAction(this);
     mActionRemoveLayers->setIcon(
-            QIcon(QLatin1String(":/images/16x16/edit-delete.png")));
+            QIcon(QLatin1String(":/images/16/edit-delete.png")));
 
     mActionSelectPreviousLayer = new QAction(this);
     mActionSelectPreviousLayer->setShortcut(tr("Ctrl+PgDown"));
@@ -117,26 +117,26 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     mActionMoveLayersUp = new QAction(this);
     mActionMoveLayersUp->setShortcut(tr("Ctrl+Shift+Up"));
     mActionMoveLayersUp->setIcon(
-            QIcon(QLatin1String(":/images/16x16/go-up.png")));
+            QIcon(QLatin1String(":/images/16/go-up.png")));
 
     mActionMoveLayersDown = new QAction(this);
     mActionMoveLayersDown->setShortcut(tr("Ctrl+Shift+Down"));
     mActionMoveLayersDown->setIcon(
-            QIcon(QLatin1String(":/images/16x16/go-down.png")));
+            QIcon(QLatin1String(":/images/16/go-down.png")));
 
     QIcon toggleVisibilityIcon;
-    toggleVisibilityIcon.addFile(QLatin1String(":/images/14x14/hidden.png"));
-    toggleVisibilityIcon.addFile(QLatin1String(":/images/16x16/hidden.png"));
-    toggleVisibilityIcon.addFile(QLatin1String(":/images/24x24/hidden.png"));
+    toggleVisibilityIcon.addFile(QLatin1String(":/images/14/hidden.png"));
+    toggleVisibilityIcon.addFile(QLatin1String(":/images/16/hidden.png"));
+    toggleVisibilityIcon.addFile(QLatin1String(":/images/24/hidden.png"));
 
     mActionToggleSelectedLayers = new QAction(this);
     mActionToggleSelectedLayers->setShortcut(tr("Ctrl+H"));
     mActionToggleSelectedLayers->setIcon(toggleVisibilityIcon);
 
     QIcon lockedIcon;
-    lockedIcon.addFile(QLatin1String(":/images/14x14/locked.png"));
-    lockedIcon.addFile(QLatin1String(":/images/16x16/locked.png"));
-    lockedIcon.addFile(QLatin1String(":/images/24x24/locked.png"));
+    lockedIcon.addFile(QLatin1String(":/images/14/locked.png"));
+    lockedIcon.addFile(QLatin1String(":/images/16/locked.png"));
+    lockedIcon.addFile(QLatin1String(":/images/24/locked.png"));
 
     mActionToggleLockSelectedLayers = new QAction(this);
     mActionToggleLockSelectedLayers->setShortcut(tr("Ctrl+L"));
@@ -145,7 +145,7 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     mActionToggleOtherLayers = new QAction(this);
     mActionToggleOtherLayers->setShortcut(tr("Ctrl+Shift+H"));
     mActionToggleOtherLayers->setIcon(
-            QIcon(QLatin1String(":/images/16x16/show_hide_others.png")));
+            QIcon(QLatin1String(":/images/16/show_hide_others.png")));
 
     mActionToggleLockOtherLayers = new QAction(this);
     mActionToggleLockOtherLayers->setShortcut(tr("Ctrl+Shift+L"));
@@ -153,13 +153,13 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
 
     mActionLayerProperties = new QAction(this);
     mActionLayerProperties->setIcon(
-            QIcon(QLatin1String(":images/16x16/document-properties.png")));
+            QIcon(QLatin1String(":images/16/document-properties.png")));
 
     mActionDuplicateObjects = new QAction(this);
-    mActionDuplicateObjects->setIcon(QIcon(QLatin1String(":/images/16x16/stock-duplicate-16.png")));
+    mActionDuplicateObjects->setIcon(QIcon(QLatin1String(":/images/16/stock-duplicate-16.png")));
 
     mActionRemoveObjects = new QAction(this);
-    mActionRemoveObjects->setIcon(QIcon(QLatin1String(":/images/16x16/edit-delete.png")));
+    mActionRemoveObjects->setIcon(QIcon(QLatin1String(":/images/16/edit-delete.png")));
 
     Utils::setThemeIcon(mActionRemoveLayers, "edit-delete");
     Utils::setThemeIcon(mActionMoveLayersUp, "go-up");
@@ -303,7 +303,7 @@ QMenu *MapDocumentActionHandler::createNewLayerMenu(QWidget *parent) const
 {
     QMenu *newLayerMenu = new QMenu(tr("&New"), parent);
 
-    newLayerMenu->setIcon(QIcon(QLatin1String(":/images/16x16/document-new.png")));
+    newLayerMenu->setIcon(QIcon(QLatin1String(":/images/16/document-new.png")));
     Utils::setThemeIcon(newLayerMenu, "document-new");
 
     newLayerMenu->addAction(actionAddTileLayer());

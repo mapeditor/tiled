@@ -45,9 +45,9 @@ VariantPropertyManager::VariantPropertyManager(QObject *parent)
     : QtVariantPropertyManager(parent)
     , mSuggestionsAttribute(QStringLiteral("suggestions"))
     , mMultilineAttribute(QStringLiteral("multiline"))
-    , mImageMissingIcon(QStringLiteral("://images/16x16/image-missing.png"))
+    , mImageMissingIcon(QStringLiteral("://images/16/image-missing.png"))
 {
-    mImageMissingIcon.addPixmap(QPixmap(QStringLiteral("://images/32x32/image-missing.png")));
+    mImageMissingIcon.addPixmap(QPixmap(QStringLiteral("://images/32/image-missing.png")));
 
     connect(this, &QtVariantPropertyManager::valueChanged,
             this, &VariantPropertyManager::slotValueChanged);

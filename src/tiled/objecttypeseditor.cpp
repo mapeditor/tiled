@@ -124,14 +124,14 @@ ObjectTypesEditor::ObjectTypesEditor(QWidget *parent)
     mRemovePropertyAction->setEnabled(false);
     mRenamePropertyAction->setEnabled(false);
 
-    QIcon addIcon(QLatin1String(":/images/22x22/add.png"));
-    QIcon removeIcon(QLatin1String(":/images/22x22/remove.png"));
+    QIcon addIcon(QLatin1String(":/images/22/add.png"));
+    QIcon removeIcon(QLatin1String(":/images/22/remove.png"));
 
     mAddObjectTypeAction->setIcon(addIcon);
     mRemoveObjectTypeAction->setIcon(removeIcon);
     mAddPropertyAction->setIcon(addIcon);
     mRemovePropertyAction->setIcon(removeIcon);
-    mRenamePropertyAction->setIcon(QIcon(QLatin1String(":/images/16x16/rename.png")));
+    mRenamePropertyAction->setIcon(QIcon(QLatin1String(":/images/16/rename.png")));
 
     Utils::setThemeIcon(mAddObjectTypeAction, "add");
     Utils::setThemeIcon(mRemoveObjectTypeAction, "remove");

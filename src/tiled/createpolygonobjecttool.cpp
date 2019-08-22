@@ -62,8 +62,8 @@ CreatePolygonObjectTool::CreatePolygonObjectTool(QObject *parent)
     QColor highlight = QApplication::palette().highlight().color();
     mOverlayObjectGroup->setColor(highlight);
 
-    QIcon icon(QLatin1String(":images/24x24/insert-polygon.png"));
-    icon.addFile(QLatin1String(":images/48x48/insert-polygon.png"));
+    QIcon icon(QLatin1String(":images/24/insert-polygon.png"));
+    icon.addFile(QLatin1String(":images/48/insert-polygon.png"));
     setIcon(icon);
 
     languageChangedImpl();

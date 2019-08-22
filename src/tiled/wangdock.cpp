@@ -132,15 +132,15 @@ WangDock::WangDock(QWidget *parent)
     connect(mProxyModel, &QAbstractItemModel::rowsInserted,
             this, &WangDock::expandRows);
 
-    mAddWangSet->setIcon(QIcon(QStringLiteral(":/images/22x22/add.png")));
-    mRemoveWangSet->setIcon(QIcon(QStringLiteral(":/images/22x22/remove.png")));
+    mAddWangSet->setIcon(QIcon(QStringLiteral(":/images/22/add.png")));
+    mRemoveWangSet->setIcon(QIcon(QStringLiteral(":/images/22/remove.png")));
     mRemoveWangSet->setEnabled(false);
 
-    mAddEdgeColor->setIcon(QIcon(QStringLiteral(":/images/22x22/add-edge.png")));
+    mAddEdgeColor->setIcon(QIcon(QStringLiteral(":/images/22/add-edge.png")));
     mAddEdgeColor->setEnabled(false);
-    mAddCornerColor->setIcon(QIcon(QStringLiteral(":/images/22x22/add-corner.png")));
+    mAddCornerColor->setIcon(QIcon(QStringLiteral(":/images/22/add-corner.png")));
     mAddCornerColor->setEnabled(false);
-    mRemoveColor->setIcon(QIcon(QStringLiteral(":/images/22x22/remove.png")));
+    mRemoveColor->setIcon(QIcon(QStringLiteral(":/images/22/remove.png")));
     mRemoveColor->setEnabled(false);
 
     Utils::setThemeIcon(mAddWangSet, "add");
@@ -189,7 +189,7 @@ WangDock::WangDock(QWidget *parent)
 
     mEraseWangIdsButton = new QPushButton(this);
     mEraseWangIdsButton->setIconSize(Utils::smallIconSize());
-    mEraseWangIdsButton->setIcon(QIcon(QLatin1String(":images/22x22/stock-tool-eraser.png")));
+    mEraseWangIdsButton->setIcon(QIcon(QLatin1String(":images/22/stock-tool-eraser.png")));
     mEraseWangIdsButton->setCheckable(true);
     mEraseWangIdsButton->setAutoExclusive(true);
     mEraseWangIdsButton->setChecked(mCurrentWangId == 0);

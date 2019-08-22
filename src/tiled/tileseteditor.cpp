@@ -153,16 +153,16 @@ TilesetEditor::TilesetEditor(QObject *parent)
     QAction *editCollision = mTileCollisionDock->toggleViewAction();
     QAction *editWang = mWangDock->toggleViewAction();
 
-    mAddTiles->setIcon(QIcon(QLatin1String(":images/16x16/add.png")));
-    mRemoveTiles->setIcon(QIcon(QLatin1String(":images/16x16/remove.png")));
-    mShowAnimationEditor->setIcon(QIcon(QLatin1String(":images/24x24/animation-edit.png")));
+    mAddTiles->setIcon(QIcon(QLatin1String(":images/16/add.png")));
+    mRemoveTiles->setIcon(QIcon(QLatin1String(":images/16/remove.png")));
+    mShowAnimationEditor->setIcon(QIcon(QLatin1String(":images/24/animation-edit.png")));
     mShowAnimationEditor->setCheckable(true);
     mShowAnimationEditor->setIconVisibleInMenu(false);
-    editTerrain->setIcon(QIcon(QLatin1String(":images/24x24/terrain.png")));
+    editTerrain->setIcon(QIcon(QLatin1String(":images/24/terrain.png")));
     editTerrain->setIconVisibleInMenu(false);
-    editCollision->setIcon(QIcon(QLatin1String(":images/48x48/tile-collision-editor.png")));
+    editCollision->setIcon(QIcon(QLatin1String(":images/48/tile-collision-editor.png")));
     editCollision->setIconVisibleInMenu(false);
-    editWang->setIcon(QIcon(QLatin1String(":images/24x24/wangtile.png")));
+    editWang->setIcon(QIcon(QLatin1String(":images/24/wangtile.png")));
     editWang->setIconVisibleInMenu(false);
 
     Utils::setThemeIcon(mAddTiles, "add");

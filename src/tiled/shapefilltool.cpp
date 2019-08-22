@@ -38,7 +38,7 @@ using namespace Tiled;
 ShapeFillTool::ShapeFillTool(QObject *parent)
     : AbstractTileFillTool(tr("Shape Fill Tool"),
                            QIcon(QLatin1String(
-                                     ":images/22x22/rectangle-fill.png")),
+                                     ":images/22/rectangle-fill.png")),
                            QKeySequence(tr("P")),
                            nullptr,
                            parent)
@@ -47,8 +47,8 @@ ShapeFillTool::ShapeFillTool(QObject *parent)
     , mRectFill(new QAction(this))
     , mCircleFill(new QAction(this))
 {
-    QIcon rectFillIcon(QLatin1String(":images/22x22/rectangle-fill.png"));
-    QIcon circleFillIcon(QLatin1String(":images/22x22/ellipse-fill.png"));
+    QIcon rectFillIcon(QLatin1String(":images/22/rectangle-fill.png"));
+    QIcon circleFillIcon(QLatin1String(":images/22/ellipse-fill.png"));
 
     mRectFill->setIcon(rectFillIcon);
     mRectFill->setCheckable(true);

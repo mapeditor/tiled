@@ -34,8 +34,8 @@ using namespace Tiled;
 CreateTemplateTool::CreateTemplateTool(QObject *parent)
     : CreateObjectTool(parent)
 {
-    QIcon icon(QLatin1String(":images/24x24/insert-template.png"));
-    icon.addFile(QLatin1String(":images/48x48/insert-template.png"));
+    QIcon icon(QLatin1String(":images/24/insert-template.png"));
+    icon.addFile(QLatin1String(":images/48/insert-template.png"));
     setIcon(icon);
     Utils::setThemeIcon(this, "insert-template");
     languageChangedImpl();
