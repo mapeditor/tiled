@@ -33,12 +33,57 @@
 
 #include <QObject>
 
+#include <functional>
+
 class QString;
 
 namespace Tiled {
 
+struct TILEDSHARED_EXPORT Issue
+{
+    enum Severity {
+        Error,
+        Warning
+    };
+
+    Issue();
+    Issue(Severity severity, const QString &text);
+
+    Severity severity() const { return mSeverity; }
+    QString text() const { return mText; }
+
+    std::function<void()> callback() const { return mCallback; }
+    void setCallback(std::function<void()> callback, void *context = nullptr);
+
+    void *context() const { return mContext; }
+
+    unsigned id() const { return mId; }
+
+    void addOccurrence(const Issue &issue);
+    int occurrences() const { return mOccurrences; }
+
+    bool operator==(const Issue &o) const
+    {
+        return severity() == o.severity()
+                && text() == o.text();
+    }
+
+private:
+    Issue::Severity mSeverity = Issue::Error;
+    QString mText;
+    std::function<void()> mCallback;
+    void *mContext = nullptr;
+
+    int mOccurrences = 1;
+    unsigned mId = 0;
+
+    static unsigned mNextIssueId;
+};
+
 /**
  * An interface for reporting issues.
+ *
+ * Normally you'd use the convenience functions in the Tiled namespace.
  */
 class TILEDSHARED_EXPORT LoggingInterface : public QObject
 {
@@ -55,20 +100,25 @@ public:
         ERROR
     };
 
+    void report(const Issue &issue);
     void log(OutputType type, const QString &message);
 
 signals:
+    void issue(const Issue &issue);
+
     void info(const QString &message);
     void warning(const QString &message);
     void error(const QString &message);
 };
 
 inline void INFO(const QString &message) { LoggingInterface::instance().log(LoggingInterface::INFO, message); }
-inline void WARNING(const QString &message) { LoggingInterface::instance().log(LoggingInterface::WARNING, message); }
-inline void ERROR(const QString &message) { LoggingInterface::instance().log(LoggingInterface::ERROR, message); }
+inline void WARNING(const QString &message) { LoggingInterface::instance().report(Issue { Issue::Warning, message }); }
+inline void ERROR(const QString &message) { LoggingInterface::instance().report(Issue { Issue::Error, message }); }
 
 inline void INFO(QLatin1String message) { LoggingInterface::instance().log(LoggingInterface::INFO, message); }
-inline void WARNING(QLatin1String message) { LoggingInterface::instance().log(LoggingInterface::WARNING, message); }
-inline void ERROR(QLatin1String message) { LoggingInterface::instance().log(LoggingInterface::ERROR, message); }
+inline void WARNING(QLatin1String message) { LoggingInterface::instance().report(Issue { Issue::Warning, message }); }
+inline void ERROR(QLatin1String message) { LoggingInterface::instance().report(Issue { Issue::Error, message }); }
 
 } // namespace Tiled
+
+Q_DECLARE_METATYPE(Tiled::Issue)

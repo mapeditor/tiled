@@ -24,56 +24,14 @@
 
 #include <QDockWidget>
 
-#include <functional>
-
 class QListView;
 class QSortFilterProxyModel;
 
 namespace Tiled {
 
 class FilterEdit;
+class Issue;
 class IssueFilterModel;
-
-struct Issue
-{
-    enum Severity {
-        Error,
-        Warning
-    };
-
-    Issue() = default;
-    Issue(Severity severity, const QString &text);
-
-    Severity severity() const { return mSeverity; }
-    QString text() const { return mText; }
-
-    std::function<void()> callback() const { return mCallback; }
-    void setCallback(std::function<void()> callback, void *context = nullptr);
-
-    void *context() const { return mContext; }
-
-    int occurrences() const { return mOccurrences; }
-    unsigned id() const { return mId; }
-
-    bool operator==(const Issue &o) const
-    {
-        return severity() == o.severity()
-                && text() == o.text();
-    }
-
-private:
-    friend class IssuesModel;
-
-    void addOccurrence(const Issue &issue);
-
-    Issue::Severity mSeverity = Issue::Error;
-    QString mText;
-    std::function<void()> mCallback;
-    void *mContext = nullptr;
-
-    int mOccurrences = 1;
-    unsigned mId = 0;
-};
 
 /**
  * A dock widget that shows errors and warnings, along with the ability to
@@ -98,10 +56,7 @@ private:
     QListView *mIssuesView;
 };
 
-unsigned reportIssue(const Issue &issue);
 void clearIssues(const QList<unsigned> &issueIds);
 void clearIssuesWithContext(void *context);
 
 } // namespace Tiled
-
-Q_DECLARE_METATYPE(Tiled::Issue)

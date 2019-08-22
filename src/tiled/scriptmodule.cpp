@@ -382,37 +382,25 @@ void ScriptModule::log(const QString &text) const
 
 void ScriptModule::warn(const QString &text, QJSValue activated)
 {
-    reportIssue(Issue::Warning, text, activated);
+    Issue issue { Issue::Warning, text };
+    setCallback(issue, activated);
+    LoggingInterface::instance().report(issue);
 }
 
 void ScriptModule::error(const QString &text, QJSValue activated)
 {
-    reportIssue(Issue::Error, text, activated);
+    Issue issue { Issue::Error, text };
+    setCallback(issue, activated);
+    LoggingInterface::instance().report(issue);
 }
 
-void ScriptModule::reportIssue(Issue::Severity severity, const QString &text, QJSValue activated)
+void ScriptModule::setCallback(Issue &issue, QJSValue activated)
 {
-    switch (severity) {
-    case Tiled::Issue::Error:
-        Tiled::ERROR(tr("Error: %1").arg(text));
-        break;
-    case Tiled::Issue::Warning:
-        Tiled::WARNING(tr("Warning: %1").arg(text));
-        break;
-    }
-
-    // FIXME: This create a duplicate issue now, which works as a way to set
-    // the callback on the previously reported issue. But it does also lead
-    // to the occurrence counter going up.
     if (activated.isCallable()) {
-        Issue issue { severity, text };
-
         issue.setCallback([activated] () mutable {   // 'mutable' needed because of non-const QJSValue::call
             QJSValue result = activated.call();
             ScriptManager::instance().checkError(result);
         }, this);
-
-        Tiled::reportIssue(issue);
     }
 }
 

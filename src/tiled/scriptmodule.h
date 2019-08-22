@@ -130,7 +130,7 @@ private slots:
     void currentDocumentChanged(Document *document);
 
 private:
-    void reportIssue(Issue::Severity severity, const QString &text, QJSValue activated);
+    void setCallback(Issue &issue, QJSValue activated);
 
     std::map<QByteArray, std::unique_ptr<ScriptedAction>> mRegisteredActions;
     std::map<QString, std::unique_ptr<ScriptedMapFormat>> mRegisteredMapFormats;

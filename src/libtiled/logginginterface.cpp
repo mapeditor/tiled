@@ -30,6 +30,34 @@
 
 namespace Tiled {
 
+unsigned Issue::mNextIssueId = 1;
+
+Issue::Issue()
+    : Issue(Error, QString())
+{
+}
+
+Issue::Issue(Issue::Severity severity,
+             const QString &text)
+    : mSeverity(severity)
+    , mText(text)
+    , mId(mNextIssueId++)
+{
+}
+
+void Issue::setCallback(std::function<void ()> callback, void *context)
+{
+    mCallback = std::move(callback);
+    mContext = context;
+}
+
+void Issue::addOccurrence(const Issue &issue)
+{
+    mOccurrences += 1;
+    setCallback(issue.callback(), issue.context());
+}
+
+
 LoggingInterface::LoggingInterface(QObject *parent)
     : QObject(parent)
 {}
@@ -40,19 +68,48 @@ LoggingInterface &LoggingInterface::instance()
     return interface;
 }
 
-void LoggingInterface::log(OutputType type, const QString &message)
+/**
+ * Reports an issue by emitting the "issue" signal with the given \a issue.
+ *
+ * Also emits "warning" or "error" signals as appropriate.
+ */
+void LoggingInterface::report(const Issue &issue)
 {
-    switch (type) {
-    case INFO:
-        emit info(message);
+    switch (issue.severity()) {
+    case Issue::Warning:
+        emit warning(issue.text());
         break;
-    case WARNING:
-        emit warning(message);
-        break;
-    case ERROR:
-        emit error(message);
+    case Issue::Error:
+        emit error(issue.text());
         break;
     }
+
+    emit this->issue(issue);
+}
+
+/**
+ * Logs a \a message of the given \a type.
+ *
+ * Also reports a matching issue when the type is "WARNING" or "ERROR".
+ */
+void LoggingInterface::log(OutputType type, const QString &message)
+{
+    Issue::Severity severity;
+
+    switch (type) {
+    default:
+    case INFO:
+        emit info(message);
+        return;
+    case WARNING:
+        severity = Issue::Warning;
+        break;
+    case ERROR:
+        severity = Issue::Error;
+        break;
+    }
+
+    report(Issue(severity, message));
 }
 
 } // namespace Tiled

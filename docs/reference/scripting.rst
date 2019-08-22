@@ -215,15 +215,15 @@ tiled.log(text : string) : void
     Outputs the given text in the Console window as regular text.
 
 tiled.warn(text : string, activated : function) : void
-    Outputs the given text in the Console window as warning message (automatically
-    gets "Warning: " prepended) and creates an issue in the Issues window.
+    Outputs the given text in the Console window as warning message and creates
+    an issue in the Issues window.
 
     When the issue is activated (with double-click or Enter key) the given
     callback function is invoked.
 
 tiled.error(text : string, activated : function) : void
-    Outputs the given text in the Console window as error message (automatically
-    gets "Error: " prepended) and creates an issue in the Issues window.
+    Outputs the given text in the Console window as error message and creates
+    an issue in the Issues window.
 
     When the issue is activated (with double-click or Enter key) the given
     callback function is invoked.

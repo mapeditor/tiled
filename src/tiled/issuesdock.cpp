@@ -21,6 +21,7 @@
 #include "issuesdock.h"
 
 #include "filteredit.h"
+#include "logginginterface.h"
 #include "utils.h"
 
 #include <QAbstractListModel>
@@ -40,26 +41,6 @@
 
 namespace Tiled {
 
-Issue::Issue(Issue::Severity severity,
-             const QString &text)
-    : mSeverity(severity)
-    , mText(text)
-{
-}
-
-void Issue::setCallback(std::function<void ()> callback, void *context)
-{
-    mCallback = std::move(callback);
-    mContext = context;
-}
-
-void Issue::addOccurrence(const Issue &issue)
-{
-    mOccurrences += 1;
-    setCallback(issue.callback(), issue.context());
-}
-
-
 class IssuesModel : public QAbstractListModel
 {
 public:
@@ -69,7 +50,7 @@ public:
 
     static IssuesModel &instance();
 
-    unsigned addIssue(const Issue &issue);
+    void addIssue(const Issue &issue);
     void removeIssues(const QList<unsigned> &issueIds);
     void removeIssuesWithContext(void *context);
     void clear();
@@ -86,17 +67,15 @@ private:
 
     QIcon mErrorIcon;
     QIcon mWarningIcon;
-
-    static unsigned mNextIssueId;
 };
-
-unsigned IssuesModel::mNextIssueId = 1;
 
 IssuesModel::IssuesModel(QObject *parent)
     : QAbstractListModel(parent)
     , mErrorIcon(QIcon::fromTheme(QLatin1String("dialog-error")))
     , mWarningIcon(QIcon::fromTheme(QLatin1String("dialog-warning")))
 {
+    connect(&LoggingInterface::instance(), &LoggingInterface::issue,
+            this, &IssuesModel::addIssue);
 }
 
 IssuesModel &IssuesModel::instance()
@@ -105,7 +84,7 @@ IssuesModel &IssuesModel::instance()
     return issuesModel;
 }
 
-unsigned IssuesModel::addIssue(const Issue &issue)
+void IssuesModel::addIssue(const Issue &issue)
 {
     int i = mIssues.indexOf(issue);
     if (i != -1) {
@@ -114,17 +93,11 @@ unsigned IssuesModel::addIssue(const Issue &issue)
 
         QModelIndex modelIndex = index(i);
         emit dataChanged(modelIndex, modelIndex);
-
-        return existingIssue.id();
     }
-
-    const_cast<Issue&>(issue).mId = mNextIssueId++;
 
     beginInsertRows(QModelIndex(), mIssues.size(), mIssues.size());
     mIssues.append(issue);
     endInsertRows();
-
-    return issue.id();
 }
 
 void IssuesModel::removeIssues(const QList<unsigned> &issueIds)
@@ -387,11 +360,6 @@ void IssuesDock::retranslateUi()
 {
     setWindowTitle(tr("Issues"));
     mFilterEdit->setPlaceholderText(tr("Filter"));
-}
-
-unsigned reportIssue(const Issue &issue)
-{
-    return IssuesModel::instance().addIssue(issue);
 }
 
 void clearIssues(const QList<unsigned> &issueIds)
