@@ -171,7 +171,7 @@ public slots:
                 QPoint offset = QPoint(),
                 bool removeObjects = false);
 
-private slots:
+private:
     void documentChanged(const ChangeEvent &change);
 
     void attachLayer(Layer *layer);
@@ -181,7 +181,6 @@ private slots:
 
     void onCurrentLayerChanged(Layer *);
 
-private:
     MapRenderer *renderer() const;
 
     bool mReadOnly;

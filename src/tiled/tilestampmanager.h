@@ -75,13 +75,12 @@ private:
 
     void loadStamps();
 
-private slots:
+private:
     void stampAdded(TileStamp stamp);
     void stampRenamed(TileStamp stamp);
     void saveStamp(const TileStamp &stamp);
     void deleteStamp(const TileStamp &stamp);
 
-private:
     QVector<TileStamp> mQuickStamps;
     QMap<QString, TileStamp> mStampsByName;
     TileStampModel *mTileStampModel;

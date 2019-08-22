@@ -68,7 +68,7 @@ public slots:
 protected:
     void changeEvent(const ChangeEvent &event) override;
 
-private slots:
+private:
     void updateHandles();
     void objectsAboutToBeRemoved(const QList<MapObject *> &objects);
 
@@ -76,13 +76,6 @@ private slots:
     void splitSegments();
     void deleteSegment();
     void extendPolyline();
-
-private:
-    enum Action {
-        NoAction,
-        Selecting,
-        Moving
-    };
 
     void updateHover(const QPointF &scenePos, QGraphicsSceneMouseEvent *event = nullptr);
 
@@ -106,6 +99,12 @@ private:
     void showHandleContextMenu(QPoint screenPos);
 
     QSet<PointHandle*> clickedHandles() const;
+
+    enum Action {
+        NoAction,
+        Selecting,
+        Moving
+    };
 
     struct InteractedSegment {
         MapObject *object = nullptr;

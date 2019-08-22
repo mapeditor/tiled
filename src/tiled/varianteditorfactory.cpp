@@ -46,10 +46,9 @@ public:
 signals:
     void resetProperty(QtProperty *property);
 
-private slots:
+private:
     void buttonClicked();
 
-private:
     QtProperty *mProperty;
 };
 

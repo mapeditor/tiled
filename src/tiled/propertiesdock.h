@@ -52,7 +52,7 @@ protected:
     bool event(QEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
 
-private slots:
+private:
     void currentObjectChanged(Object *object);
     void updateActions();
 
@@ -66,7 +66,6 @@ private slots:
     void renamePropertyTo(const QString &name);
     void showContextMenu(const QPoint& pos);
 
-private:
     void retranslateUi();
 
     Document *mDocument;

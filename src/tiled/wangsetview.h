@@ -45,12 +45,11 @@ protected:
     void wheelEvent(QWheelEvent *event) override;
     void contextMenuEvent(QContextMenuEvent *event) override;
 
-private slots:
+private:
     void editWangSetProperties();
 
     void adjustScale();
 
-private:
     Zoomable *mZoomable;
     TilesetDocument *mTilesetDocument;
 };

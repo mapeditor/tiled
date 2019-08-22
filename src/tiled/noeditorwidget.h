@@ -39,12 +39,11 @@ public:
 protected:
     void changeEvent(QEvent *e);
 
-private slots:
+private:
     void newMap();
     void newTileset();
     void openFile();
 
-private:
     Ui::NoEditorWidget *ui;
 };
 

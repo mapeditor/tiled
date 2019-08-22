@@ -88,7 +88,7 @@ public:
 protected:
     bool event(QEvent *event) override;
 
-private slots:
+private:
     void documentChanged(const ChangeEvent &change);
     void mapChanged();
     void objectsChanged(const MapObjectsChangeEvent &mapObjectsChange);
@@ -113,7 +113,6 @@ private slots:
 
     void resetProperty(QtProperty *property);
 
-private:
     enum PropertyId {
         NameProperty,
         TypeProperty,

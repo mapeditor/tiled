@@ -36,7 +36,10 @@ public:
     explicit ConsoleDock(QWidget *parent = nullptr);
     ~ConsoleDock();
 
-private slots:
+protected:
+    void changeEvent(QEvent *e) override;
+
+private:
     void appendInfo(const QString &str);
     void appendWarning(const QString &str);
     void appendError(const QString &str);
@@ -46,10 +49,6 @@ private slots:
 
     void moveHistory(int direction);
 
-protected:
-    void changeEvent(QEvent *e) override;
-
-private:
     void retranslateUi();
 
     QPlainTextEdit *mPlainTextEdit;

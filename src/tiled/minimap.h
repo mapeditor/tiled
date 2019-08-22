@@ -57,10 +57,9 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
 
-private slots:
+private:
     void redrawTimeout();
 
-private:
     MapDocument *mMapDocument;
     QImage mMapImage;
     QRect mImageRect;

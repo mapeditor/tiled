@@ -39,11 +39,10 @@ public:
     explicit NewVersionButton(QWidget *parent = nullptr);
     explicit NewVersionButton(Visibility visibility, QWidget *parent = nullptr);
 
-private slots:
+private:
     void newVersionAvailable(const NewVersionChecker::VersionInfo &versionInfo);
     void errorStringChanged(const QString &errorString);
 
-private:
     void updateVisiblity();
 
     Visibility mVisiblity;

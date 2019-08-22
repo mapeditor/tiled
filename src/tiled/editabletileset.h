@@ -79,7 +79,7 @@ public slots:
     void setTileOffset(QPoint tileOffset);
     void setBackgroundColor(const QColor &color);
 
-private slots:
+private:
     void attachTiles(const QList<Tile*> &tiles);
     void detachTiles(const QList<Tile*> &tiles);
     void detachTerrains(const QList<Terrain*> &terrains);
@@ -88,7 +88,6 @@ private slots:
 
     void terrainAdded(Tileset *tileset, int terrainId);
 
-private:
     bool mReadOnly = false;
     SharedTileset mTileset;
 };

@@ -43,6 +43,7 @@ class MapDocument;
 class ToolManager : public QObject
 {
     Q_OBJECT
+    Q_DISABLE_COPY(ToolManager)
 
 public:
     ToolManager(QObject *parent = nullptr);
@@ -85,14 +86,11 @@ signals:
      */
     void statusInfoChanged(const QString &info);
 
-private slots:
+private:
     void actionTriggered(QAction *action);
     void toolChanged();
     void toolEnabledChanged(bool enabled);
     void selectEnabledTool();
-
-private:
-    Q_DISABLE_COPY(ToolManager)
 
     AbstractTool *firstEnabledTool() const;
     void setSelectedTool(AbstractTool *tool);

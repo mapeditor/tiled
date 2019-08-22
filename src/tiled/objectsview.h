@@ -68,7 +68,7 @@ protected:
                  const QStyleOptionViewItem &option,
                  const QModelIndex &index) const override;
 
-private slots:
+private:
     void onActivated(const QModelIndex &proxyIndex);
     void onSectionResized(int logicalIndex);
     void selectedObjectsChanged();
@@ -77,7 +77,6 @@ private slots:
 
     void showCustomHeaderContextMenu(const QPoint &point);
 
-private:
     void restoreVisibleColumns();
     void synchronizeSelectedItems();
     void expandToSelectedObjects();

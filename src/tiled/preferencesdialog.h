@@ -45,10 +45,9 @@ public:
 protected:
     void changeEvent(QEvent *e) override;
 
-private slots:
+private:
     void languageSelected(int index);
 
-private:
     void fromPreferences();
 
     void retranslateUi();

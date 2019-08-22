@@ -59,10 +59,9 @@ signals:
     void newVersionAvailable(const VersionInfo &versionInfo);
     void errorStringChanged(const QString &errorString);
 
-private slots:
+private:
     void finished(QNetworkReply *reply);
 
-private:
     QNetworkAccessManager *mNetworkAccessManager;
     QBasicTimer mRefreshTimer;
     QString mErrorString;

@@ -88,14 +88,13 @@ public:
 signals:
     void hasBrokenLinksChanged(bool hasBrokenLinks);
 
-private slots:
+private:
     void tileImageSourceChanged(Tile *tile);
     void tilesetChanged(Tileset *tileset);
 
     void tilesetAdded(int index, Tileset *tileset);
     void tilesetRemoved(Tileset *tileset);
 
-private:
     void connectToTileset(const SharedTileset &tileset);
     void disconnectFromTileset(const SharedTileset &tileset);
 
@@ -132,11 +131,10 @@ public:
 signals:
     void ignore();
 
-private slots:
+private:
     void clicked(QAbstractButton *button);
     void selectionChanged();
 
-private:
     void tryFixLinks(const QVector<BrokenLink> &links);
     void tryFixLink(const BrokenLink &link);
     bool tryFixLink(const BrokenLink &link, const QString &newFilePath);

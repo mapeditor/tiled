@@ -40,15 +40,14 @@ class MapsDock : public QDockWidget
 public:
     MapsDock(QWidget *parent = nullptr);
 
-private slots:
-    void browse();
-    void editedMapsDirectory();
-    void onMapsDirectoryChanged();
-
 protected:
     void changeEvent(QEvent *e) override;
 
 private:
+    void browse();
+    void editedMapsDirectory();
+    void onMapsDirectoryChanged();
+
     void retranslateUi();
 
     QLineEdit *mDirectoryEdit;
@@ -74,13 +73,12 @@ public:
 
     QFileSystemModel *model() const { return mFileSystemModel; }
 
-private slots:
+private:
     void onMapsDirectoryChanged();
     void onActivated(const QModelIndex &index);
 
     void pluginObjectAddedOrRemoved(QObject *object);
 
-private:
     void updateNameFilters();
 
     QFileSystemModel *mFileSystemModel;

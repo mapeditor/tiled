@@ -92,14 +92,13 @@ protected:
 signals:
     void focused();
 
-private slots:
+private:
     void adjustScale(qreal scale);
     void setUseOpenGL(bool useOpenGL);
     void updateSceneRect(const QRectF &sceneRect);
     void updateSceneRect(const QRectF &sceneRect, const QTransform &transform);
     void focusMapObject(MapObject *mapObject);
 
-private:
     void setMapDocument(MapDocument *mapDocument);
 
     MapDocument *mMapDocument = nullptr;

@@ -72,10 +72,9 @@ signals:
 protected:
     void timerEvent(QTimerEvent *event) override;
 
-private slots:
+private:
     void finished(QNetworkReply *reply);
 
-private:
     void setLastRead(const QDateTime &dateTime);
 
     QNetworkAccessManager *mNetworkAccessManager;

@@ -56,10 +56,9 @@ protected:
     void keyPressEvent(QKeyEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
 
-private slots:
+private:
     void adjustScale();
 
-private:
     Zoomable *mZoomable;
 };
 

@@ -44,7 +44,7 @@ public:
 protected:
     void changeEvent(QEvent *e) override;
 
-private slots:
+private:
     void updateActions();
     void aboutToShowMoveToMenu();
     void triggeredMoveToMenu(QAction *action);
@@ -53,7 +53,6 @@ private slots:
     void moveObjectsUp();
     void moveObjectsDown();
 
-private:
     void retranslateUi();
 
     QAction *mActionNewLayer;

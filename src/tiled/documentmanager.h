@@ -60,6 +60,9 @@ class DocumentManager : public QObject
 
     Q_PROPERTY(Document *currentDocument READ currentDocument NOTIFY currentDocumentChanged)
 
+    DocumentManager(QObject *parent = nullptr);
+    ~DocumentManager() override;
+
 public:
     static DocumentManager *instance();
     static void deleteInstance();
@@ -168,7 +171,7 @@ public slots:
     void openFile(const QString &path);
     void saveFile();
 
-private slots:
+private:
     void currentIndexChanged();
     void fileNameChanged(const QString &fileName,
                          const QString &oldFileName);
@@ -186,10 +189,6 @@ private slots:
     void hideChangedWarning();
 
     void tilesetImagesChanged(Tileset *tileset);
-
-private:
-    DocumentManager(QObject *parent = nullptr);
-    ~DocumentManager() override;
 
     bool askForAdjustment(const Tileset &tileset);
 

@@ -53,12 +53,11 @@ protected:
     void keyPressEvent(QKeyEvent *e) override;
     void keyReleaseEvent(QKeyEvent *e) override;
 
-private slots:
+private:
     void textEdited();
     void validate();
     void buttonClicked();
 
-private:
     QLineEdit *mLineEdit;
     QString mFilter;
     QColor mOkTextColor;

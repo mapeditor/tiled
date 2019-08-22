@@ -47,12 +47,11 @@ public:
      */
     MapDocumentPtr createMap();
 
-private slots:
+private:
     void refreshPixelSize();
 
     void updateWidgets(bool checked);
 
-private:
     Ui::NewMapDialog *mUi;
 };
 

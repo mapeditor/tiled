@@ -39,11 +39,10 @@ public:
 protected:
     void changeEvent(QEvent *event) override;
 
-private slots:
+private:
     void runCommand();
     void showDialog();
 
-private:
     void retranslateUi();
 
     QMenu *mMenu;

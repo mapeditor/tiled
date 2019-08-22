@@ -66,11 +66,10 @@ public:
 
     void initialize() override;
 
-private slots:
-    void reloadModules();
-
 private:
+    void reloadModules();
     bool loadOrReloadModule(ScriptEntry &script);
+
     PyObject *findPluginSubclass(PyObject *module);
 
     QString mScriptDir;

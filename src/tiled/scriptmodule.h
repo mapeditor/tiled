@@ -121,7 +121,7 @@ public slots:
     void warn(const QString &text, QJSValue activated = QJSValue());
     void error(const QString &text, QJSValue activated = QJSValue());
 
-private slots:
+private:
     void documentCreated(Document *document);
     void documentOpened(Document *document);
     void documentAboutToBeSaved(Document *document);
@@ -129,7 +129,6 @@ private slots:
     void documentAboutToClose(Document *document);
     void currentDocumentChanged(Document *document);
 
-private:
     void setCallback(Issue &issue, QJSValue activated);
 
     std::map<QByteArray, std::unique_ptr<ScriptedAction>> mRegisteredActions;

@@ -57,13 +57,12 @@ public:
 protected:
     void changeEvent(QEvent *e) override;
 
-private slots:
+private:
     void updateOpacitySlider();
     void documentChanged(const ChangeEvent &change);
     void editLayerName();
     void sliderValueChanged(int opacity);
 
-private:
     void retranslateUi();
 
     QLabel *mOpacityLabel;
@@ -98,14 +97,13 @@ protected:
     void selectionChanged(const QItemSelection &selected,
                           const QItemSelection &deselected) override;
 
-private slots:
+private:
     void currentRowChanged(const QModelIndex &proxyIndex);
     void indexPressed(const QModelIndex &proxyIndex);
     void currentLayerChanged(Layer *layer);
     void selectedLayersChanged();
     void layerRemoved(Layer *layer);
 
-private:
     MapDocument *mMapDocument = nullptr;
     QAbstractProxyModel *mProxyModel;
     bool mUpdatingSelectedLayers = false;

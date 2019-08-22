@@ -86,7 +86,7 @@ public:
      */
     Terrain *terrainAt(const QModelIndex &index) const;
 
-private slots:
+private:
     void onTilesetRowsInserted(const QModelIndex &parent, int first, int last);
     void onTilesetRowsAboutToBeRemoved(const QModelIndex &parent, int first, int last);
     void onTilesetRowsMoved(const QModelIndex &parent, int start, int end, const QModelIndex &destination, int row);
@@ -100,7 +100,6 @@ private slots:
     void onTerrainAboutToBeSwapped(Tileset *tileset, int terrainId, int swapTerrainId);
     void onTerrainSwapped();
 
-private:
     QAbstractItemModel *mTilesetDocumentsModel;
     QList<TilesetDocument*> mTilesetDocuments;
 };

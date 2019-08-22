@@ -42,10 +42,9 @@ public:
     void setTilesetDocument(TilesetDocument *tilesetDocument);
     TilesetDocument *tilesetDocument() const;
 
-private slots:
+private:
     void buttonClicked();
 
-private:
     QLabel *mLabel;
     TilesetDocument *mTilesetDocument;
 };

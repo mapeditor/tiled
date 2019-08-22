@@ -78,6 +78,9 @@ class TILEDSHARED_EXPORT WorldManager : public QObject
 {
     Q_OBJECT
 
+    WorldManager();
+    ~WorldManager();
+
 public:
     static WorldManager &instance();
     static void deleteInstance();
@@ -93,12 +96,8 @@ public:
 signals:
     void worldsChanged();
 
-private slots:
-    void reloadWorldFiles(const QStringList &fileNames);
-
 private:
-    WorldManager();
-    ~WorldManager();
+    void reloadWorldFiles(const QStringList &fileNames);
 
     std::unique_ptr<World> privateLoadWorld(const QString &fileName,
                                             QString *errorString = nullptr);

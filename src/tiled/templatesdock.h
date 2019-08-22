@@ -65,7 +65,11 @@ public slots:
     void openTemplate(const QString &path);
     void bringToFront();
 
-private slots:
+protected:
+    void focusInEvent(QFocusEvent *event) override;
+    void focusOutEvent(QFocusEvent *event) override;
+
+private:
     void setTemplate(ObjectTemplate *objectTemplate);
     void checkTileset();
 
@@ -75,11 +79,6 @@ private slots:
 
     void chooseDirectory();
 
-protected:
-    void focusInEvent(QFocusEvent *event) override;
-    void focusOutEvent(QFocusEvent *event) override;
-
-private:
     void retranslateUi();
     void fixTileset();
 

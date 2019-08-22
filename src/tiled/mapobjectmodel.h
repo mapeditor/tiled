@@ -89,13 +89,12 @@ public:
 
     void moveObjects(ObjectGroup *og, int from, int to, int count);
 
-private slots:
+private:
     void layerAdded(Layer *layer);
     void layerAboutToBeRemoved(GroupLayer *groupLayer, int index);
     void tileTypeChanged(Tile *tile);
     void documentChanged(const ChangeEvent &change);
 
-private:
     void emitDataChanged(const QList<MapObject *> &objects,
                          const QVarLengthArray<Column, 3> &columns,
                          const QVector<int> &roles = QVector<int>());

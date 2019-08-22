@@ -264,7 +264,7 @@ void ToolManager::toolEnabledChanged(bool enabled)
         // all the tools to update their enabled state.
         if (!mSelectEnabledToolPending) {
             mSelectEnabledToolPending = true;
-            QMetaObject::invokeMethod(this, "selectEnabledTool",
+            QMetaObject::invokeMethod(this, &ToolManager::selectEnabledTool,
                                       Qt::QueuedConnection);
         }
     }

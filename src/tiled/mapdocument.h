@@ -337,7 +337,12 @@ signals:
     void tileProbabilityChanged(Tile *tile);
     void tileObjectGroupChanged(Tile *tile);
 
-private slots:
+public slots:
+    void updateTemplateInstances(const ObjectTemplate *objectTemplate);
+    void selectAllInstances(const ObjectTemplate *objectTemplate);
+    void deselectObjects(const QList<MapObject*> &objects);
+
+private:
     void onChanged(const ChangeEvent &change);
 
     void onMapObjectModelRowsInserted(const QModelIndex &parent, int first, int last);
@@ -349,12 +354,6 @@ private slots:
     void onLayerAboutToBeRemoved(GroupLayer *groupLayer, int index);
     void onLayerRemoved(Layer *layer);
 
-public slots:
-    void updateTemplateInstances(const ObjectTemplate *objectTemplate);
-    void selectAllInstances(const ObjectTemplate *objectTemplate);
-    void deselectObjects(const QList<MapObject*> &objects);
-
-private:
     void moveObjectIndex(const MapObject *object, int count);
 
     /*

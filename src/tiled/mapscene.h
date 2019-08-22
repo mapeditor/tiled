@@ -83,7 +83,7 @@ protected:
     void dragLeaveEvent(QGraphicsSceneDragDropEvent *event) override;
     void dragMoveEvent(QGraphicsSceneDragDropEvent *event) override;
 
-private slots:
+private:
     void refreshScene();
 
     void mapChanged();
@@ -91,7 +91,6 @@ private slots:
 
     void tilesetReplaced(int index, Tileset *tileset, Tileset *oldTileset);
 
-private:
     void updateDefaultBackgroundColor();
     void updateSceneRect();
 

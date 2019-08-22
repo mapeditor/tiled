@@ -42,6 +42,9 @@ class MapView;
 class ClipboardManager : public QObject
 {
     Q_OBJECT
+    Q_DISABLE_COPY(ClipboardManager)
+
+    ClipboardManager();
 
 public:
     static ClipboardManager *instance();
@@ -74,13 +77,8 @@ signals:
     void hasMapChanged();
     void hasPropertiesChanged();
 
-private slots:
-    void update();
-
 private:
-    ClipboardManager();
-
-    Q_DISABLE_COPY(ClipboardManager)
+    void update();
 
     QClipboard *mClipboard;
     bool mHasMap;

@@ -97,7 +97,7 @@ public slots:
 protected:
     void changeEvent(QEvent *e) override;
 
-private slots:
+private:
     void applyChanges();
     void documentChanged(const ChangeEvent &change);
     void tileObjectGroupChanged(Tile*);
@@ -116,7 +116,6 @@ private slots:
 
     void setObjectsViewVisibility(ObjectsViewVisibility);
 
-private:
     MapObject *clonedObjectForScriptObject(EditableMapObject *scriptObject);
 
     void retranslateUi();

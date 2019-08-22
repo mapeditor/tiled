@@ -108,7 +108,7 @@ protected:
     void dragEnterEvent(QDragEnterEvent *) override;
     void dropEvent(QDropEvent *) override;
 
-private slots:
+private:
     void currentTilesetChanged();
     void selectionChanged();
     void currentChanged(const QModelIndex &index);
@@ -135,7 +135,6 @@ private slots:
 
     void swapTiles(Tile *tileA, Tile *tileB);
 
-private:
     void setCurrentTile(Tile *tile);
     void setCurrentTiles(TileLayer *tiles);
     void retranslateUi();

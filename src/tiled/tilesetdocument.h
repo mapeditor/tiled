@@ -159,7 +159,7 @@ signals:
      */
     void selectedTilesChanged();
 
-private slots:
+private:
     void onPropertyAdded(Object *object, const QString &name);
     void onPropertyRemoved(Object *object, const QString &name);
     void onPropertyChanged(Object *object, const QString &name);
@@ -168,7 +168,6 @@ private slots:
     void onTerrainRemoved(Terrain *terrain);
     void onWangSetRemoved(WangSet *wangSet);
 
-private:
     SharedTileset mTileset;
     QList<MapDocument*> mMapDocuments;
 

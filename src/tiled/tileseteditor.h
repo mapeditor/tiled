@@ -97,7 +97,7 @@ public:
 signals:
     void currentTileChanged(Tile *tile);
 
-private slots:
+private:
     void currentWidgetChanged();
 
     void selectionChanged();
@@ -137,7 +137,6 @@ private slots:
 
     void onAnimationEditorClosed();
 
-private:
     void setCurrentTile(Tile *tile);
 
     void retranslateUi();

@@ -41,7 +41,7 @@ protected:
 signals:
     void fileOpenRequest(const QString &file);
 
-private slots:
+private:
     void onMessageReceived(const QString &message);
 };
 

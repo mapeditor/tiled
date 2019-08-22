@@ -59,7 +59,7 @@ public:
     QRectF boundingRect() const override { return QRectF(); }
     void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *) override {}
 
-private slots:
+private:
     void changeEvent(const ChangeEvent &event);
     void selectedObjectsChanged();
     void hoveredMapObjectChanged(MapObject *object, MapObject *previous);
@@ -76,7 +76,6 @@ private slots:
 
     void objectLabelVisibilityChanged();
 
-private:
     void addRemoveObjectLabels();
     void addRemoveObjectOutlines();
 

@@ -42,10 +42,9 @@ public:
     QStringList mimeTypes() const override;
     QMimeData *mimeData(const QModelIndexList &indexes) const override;
 
-private slots:
+private:
     void pluginObjectAddedOrRemoved(QObject *object);
 
-private:
     void updateNameFilters();
 };
 

@@ -48,11 +48,10 @@ public:
 
     void setMiniMapRenderer(std::function<QImage (QSize)> renderer);
 
-private slots:
+private:
     void removeObjectsToggled(bool removeObjects);
     void updateOffsetBounds(const QRect &bounds);
 
-private:
     Ui::ResizeDialog *mUi;
 };
 

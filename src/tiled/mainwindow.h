@@ -103,7 +103,7 @@ protected:
     void dragEnterEvent(QDragEnterEvent *) override;
     void dropEvent(QDropEvent *) override;
 
-private slots:
+private:
     void newMap();
     void openFileDialog();
     bool saveFile();
@@ -160,7 +160,6 @@ private slots:
 
     void ensureHasBorderInFullScreen();
 
-private:
     /**
       * Asks the user whether the given \a mapDocument should be saved, when
       * necessary. If it needs to ask, also makes sure that it is the current

@@ -56,10 +56,9 @@ protected:
     void tilePositionChanged(QPoint tilePos) override;
     void clearConnections(MapDocument *mapDocument) override;
 
-private slots:
+private:
     void clearOverlay();
 
-private:
     bool mLastShiftStatus;
 
     /**

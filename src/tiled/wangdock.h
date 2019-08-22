@@ -87,7 +87,7 @@ public slots:
 protected:
     void changeEvent(QEvent *event) override;
 
-private slots:
+private:
     void activateErase();
     void refreshCurrentWangSet();
     void refreshCurrentWangId();
@@ -99,7 +99,6 @@ private slots:
     void addCornerColor();
     void removeColor();
 
-private:
     void updateAddColorStatus();
     void retranslateUi();
 

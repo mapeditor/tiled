@@ -75,12 +75,11 @@ class CommandProcess : public QProcess
 public:
     CommandProcess(const Command &command, bool inTerminal = false, bool showOutput = true);
 
-private slots:
+private:
     void consoleOutput();
     void consoleError();
     void handleProcessError(QProcess::ProcessError);
 
-private:
     void reportErrorAndDelete(const QString &);
 
     QString mName;
