@@ -28,8 +28,6 @@ class QPlainTextEdit;
 
 namespace Tiled {
 
-class LoggingInterface;
-
 class ConsoleDock : public QDockWidget
 {
     Q_OBJECT
@@ -44,7 +42,6 @@ private slots:
     void appendError(const QString &str);
     void appendScript(const QString &str);
 
-    void onObjectAdded(QObject *object);
     void executeScript();
 
     void moveHistory(int direction);
@@ -54,7 +51,6 @@ protected:
 
 private:
     void retranslateUi();
-    void registerOutput(LoggingInterface *output);
 
     QPlainTextEdit *mPlainTextEdit;
     QLineEdit *mLineEdit;

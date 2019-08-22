@@ -43,7 +43,6 @@ namespace Tiled {
 
 ScriptModule::ScriptModule(QObject *parent)
     : QObject(parent)
-    , mLogger(new LoggingInterface(this))
 {
     auto documentManager = DocumentManager::instance();
     connect(documentManager, &DocumentManager::documentCreated, this, &ScriptModule::documentCreated);
@@ -52,14 +51,10 @@ ScriptModule::ScriptModule(QObject *parent)
     connect(documentManager, &DocumentManager::documentSaved, this, &ScriptModule::documentSaved);
     connect(documentManager, &DocumentManager::documentAboutToClose, this, &ScriptModule::documentAboutToClose);
     connect(documentManager, &DocumentManager::currentDocumentChanged, this, &ScriptModule::currentDocumentChanged);
-
-    PluginManager::addObject(mLogger);
 }
 
 ScriptModule::~ScriptModule()
 {
-    PluginManager::removeObject(mLogger);
-
     for (const auto &pair : mRegisteredActions)
         ActionManager::unregisterAction(pair.second->id());
 
@@ -382,7 +377,7 @@ QString ScriptModule::prompt(const QString &label, const QString &text, const QS
 
 void ScriptModule::log(const QString &text) const
 {
-    mLogger->info(text);
+    Tiled::INFO(text);
 }
 
 void ScriptModule::warn(const QString &text, QJSValue activated)
@@ -399,23 +394,26 @@ void ScriptModule::reportIssue(Issue::Severity severity, const QString &text, QJ
 {
     switch (severity) {
     case Tiled::Issue::Error:
-        mLogger->error(tr("Error: %1").arg(text));
+        Tiled::ERROR(tr("Error: %1").arg(text));
         break;
     case Tiled::Issue::Warning:
-        mLogger->warning(tr("Warning: %1").arg(text));
+        Tiled::WARNING(tr("Warning: %1").arg(text));
         break;
     }
 
-    Issue issue { severity, text };
-
+    // FIXME: This create a duplicate issue now, which works as a way to set
+    // the callback on the previously reported issue. But it does also lead
+    // to the occurrence counter going up.
     if (activated.isCallable()) {
+        Issue issue { severity, text };
+
         issue.setCallback([activated] () mutable {   // 'mutable' needed because of non-const QJSValue::call
             QJSValue result = activated.call();
             ScriptManager::instance().checkError(result);
         }, this);
-    }
 
-    Tiled::reportIssue(issue);
+        Tiled::reportIssue(issue);
+    }
 }
 
 void ScriptModule::documentCreated(Document *document)

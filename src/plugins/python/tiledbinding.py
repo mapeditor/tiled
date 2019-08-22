@@ -56,6 +56,7 @@ mod.add_include('"pythonplugin.h"')
 mod.add_include('"grouplayer.h"')
 mod.add_include('"imagelayer.h"')
 mod.add_include('"layer.h"')
+mod.add_include('"logginginterface.h"')
 mod.add_include('"map.h"')
 mod.add_include('"mapobject.h"')
 mod.add_include('"objectgroup.h"')
@@ -404,9 +405,8 @@ cls_pp = mod.add_class('PythonScript',
  PythonPlugin implements LoggingInterface for messaging to Tiled
 """
 cls_logi = tiled.add_class('LoggingInterface', destructor_visibility='private')
-cls_logi.add_enum('OutputType', ('INFO','ERROR'))
-cls_logi.add_method('log', 'void', [('OutputType','type'),('const QString','msg')],
-    is_virtual=True)
+cls_logi.add_enum('OutputType', ('INFO','WARNING','ERROR'))
+cls_logi.add_method('log', 'void', [('OutputType','type'),('const QString','msg')])
 
 
 with open('pythonbind.cpp','w') as fh:

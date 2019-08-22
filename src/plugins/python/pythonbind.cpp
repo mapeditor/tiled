@@ -43,6 +43,7 @@ typedef enum _PyBindGenWrapperFlags {
 #include "grouplayer.h"
 #include "imagelayer.h"
 #include "layer.h"
+#include "logginginterface.h"
 #include "map.h"
 #include "mapobject.h"
 #include "objectgroup.h"
@@ -500,8 +501,8 @@ _wrap_PyQPoint__copy__(PyQPoint *self)
 }
 
 static PyMethodDef PyQPoint_methods[] = {
-    {(char *) "setX", (PyCFunction) _wrap_PyQPoint_setX, METH_VARARGS|METH_KEYWORDS, "setX(x)\n\ntype: x: int" },
-    {(char *) "setY", (PyCFunction) _wrap_PyQPoint_setY, METH_VARARGS|METH_KEYWORDS, "setY(y)\n\ntype: y: int" },
+    {(char *) "setX", (PyCFunction) _wrap_PyQPoint_setX, METH_KEYWORDS|METH_VARARGS, "setX(x)\n\ntype: x: int" },
+    {(char *) "setY", (PyCFunction) _wrap_PyQPoint_setY, METH_KEYWORDS|METH_VARARGS, "setY(y)\n\ntype: y: int" },
     {(char *) "x", (PyCFunction) _wrap_PyQPoint_x, METH_NOARGS, "x()\n\n" },
     {(char *) "y", (PyCFunction) _wrap_PyQPoint_y, METH_NOARGS, "y()\n\n" },
     {(char *) "__copy__", (PyCFunction) _wrap_PyQPoint__copy__, METH_NOARGS, NULL},
@@ -517,39 +518,6 @@ _wrap_PyQPoint__tp_dealloc(PyQPoint *self)
             delete tmp;
         }
     Py_TYPE(self)->tp_free((PyObject*)self);
-}
-
-static PyObject*
-_wrap_PyQPoint__tp_richcompare (PyQPoint *PYBINDGEN_UNUSED(self), PyQPoint *other, int opid)
-{
-
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyQPoint_Type)) {
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    }
-    switch (opid)
-    {
-    case Py_LT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_LE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_EQ:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_NE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    } /* closes switch (opid) */
-    Py_INCREF(Py_NotImplemented);
-    return Py_NotImplemented;
 }
 
 PyTypeObject PyQPoint_Type = {
@@ -581,7 +549,7 @@ PyTypeObject PyQPoint_Type = {
     "QPoint(ctor_arg)\nQPoint(x, y)",                        /* Documentation string */
     (traverseproc)NULL,     /* tp_traverse */
     (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyQPoint__tp_richcompare,   /* tp_richcompare */
+    (richcmpfunc)NULL,   /* tp_richcompare */
     0,             /* tp_weaklistoffset */
     (getiterfunc)NULL,          /* tp_iter */
     (iternextfunc)NULL,     /* tp_iternext */
@@ -746,8 +714,8 @@ _wrap_PyQPointF__copy__(PyQPointF *self)
 }
 
 static PyMethodDef PyQPointF_methods[] = {
-    {(char *) "setX", (PyCFunction) _wrap_PyQPointF_setX, METH_VARARGS|METH_KEYWORDS, "setX(x)\n\ntype: x: double" },
-    {(char *) "setY", (PyCFunction) _wrap_PyQPointF_setY, METH_VARARGS|METH_KEYWORDS, "setY(y)\n\ntype: y: double" },
+    {(char *) "setX", (PyCFunction) _wrap_PyQPointF_setX, METH_KEYWORDS|METH_VARARGS, "setX(x)\n\ntype: x: double" },
+    {(char *) "setY", (PyCFunction) _wrap_PyQPointF_setY, METH_KEYWORDS|METH_VARARGS, "setY(y)\n\ntype: y: double" },
     {(char *) "x", (PyCFunction) _wrap_PyQPointF_x, METH_NOARGS, "x()\n\n" },
     {(char *) "y", (PyCFunction) _wrap_PyQPointF_y, METH_NOARGS, "y()\n\n" },
     {(char *) "__copy__", (PyCFunction) _wrap_PyQPointF__copy__, METH_NOARGS, NULL},
@@ -763,39 +731,6 @@ _wrap_PyQPointF__tp_dealloc(PyQPointF *self)
             delete tmp;
         }
     Py_TYPE(self)->tp_free((PyObject*)self);
-}
-
-static PyObject*
-_wrap_PyQPointF__tp_richcompare (PyQPointF *PYBINDGEN_UNUSED(self), PyQPointF *other, int opid)
-{
-
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyQPointF_Type)) {
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    }
-    switch (opid)
-    {
-    case Py_LT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_LE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_EQ:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_NE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    } /* closes switch (opid) */
-    Py_INCREF(Py_NotImplemented);
-    return Py_NotImplemented;
 }
 
 PyTypeObject PyQPointF_Type = {
@@ -827,7 +762,7 @@ PyTypeObject PyQPointF_Type = {
     "QPointF(ctor_arg)\nQPointF(x, y)",                        /* Documentation string */
     (traverseproc)NULL,     /* tp_traverse */
     (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyQPointF__tp_richcompare,   /* tp_richcompare */
+    (richcmpfunc)NULL,   /* tp_richcompare */
     0,             /* tp_weaklistoffset */
     (getiterfunc)NULL,          /* tp_iter */
     (iternextfunc)NULL,     /* tp_iternext */
@@ -993,8 +928,8 @@ _wrap_PyQSize__copy__(PyQSize *self)
 
 static PyMethodDef PyQSize_methods[] = {
     {(char *) "height", (PyCFunction) _wrap_PyQSize_height, METH_NOARGS, "height()\n\n" },
-    {(char *) "setHeight", (PyCFunction) _wrap_PyQSize_setHeight, METH_VARARGS|METH_KEYWORDS, "setHeight(h)\n\ntype: h: int" },
-    {(char *) "setWidth", (PyCFunction) _wrap_PyQSize_setWidth, METH_VARARGS|METH_KEYWORDS, "setWidth(w)\n\ntype: w: int" },
+    {(char *) "setHeight", (PyCFunction) _wrap_PyQSize_setHeight, METH_KEYWORDS|METH_VARARGS, "setHeight(h)\n\ntype: h: int" },
+    {(char *) "setWidth", (PyCFunction) _wrap_PyQSize_setWidth, METH_KEYWORDS|METH_VARARGS, "setWidth(w)\n\ntype: w: int" },
     {(char *) "width", (PyCFunction) _wrap_PyQSize_width, METH_NOARGS, "width()\n\n" },
     {(char *) "__copy__", (PyCFunction) _wrap_PyQSize__copy__, METH_NOARGS, NULL},
     {NULL, NULL, 0, NULL}
@@ -1009,39 +944,6 @@ _wrap_PyQSize__tp_dealloc(PyQSize *self)
             delete tmp;
         }
     Py_TYPE(self)->tp_free((PyObject*)self);
-}
-
-static PyObject*
-_wrap_PyQSize__tp_richcompare (PyQSize *PYBINDGEN_UNUSED(self), PyQSize *other, int opid)
-{
-
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyQSize_Type)) {
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    }
-    switch (opid)
-    {
-    case Py_LT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_LE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_EQ:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_NE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    } /* closes switch (opid) */
-    Py_INCREF(Py_NotImplemented);
-    return Py_NotImplemented;
 }
 
 PyTypeObject PyQSize_Type = {
@@ -1073,7 +975,7 @@ PyTypeObject PyQSize_Type = {
     "QSize(ctor_arg)\nQSize(w, h)",                        /* Documentation string */
     (traverseproc)NULL,     /* tp_traverse */
     (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyQSize__tp_richcompare,   /* tp_richcompare */
+    (richcmpfunc)NULL,   /* tp_richcompare */
     0,             /* tp_weaklistoffset */
     (getiterfunc)NULL,          /* tp_iter */
     (iternextfunc)NULL,     /* tp_iternext */
@@ -1239,8 +1141,8 @@ _wrap_PyQSizeF__copy__(PyQSizeF *self)
 
 static PyMethodDef PyQSizeF_methods[] = {
     {(char *) "height", (PyCFunction) _wrap_PyQSizeF_height, METH_NOARGS, "height()\n\n" },
-    {(char *) "setHeight", (PyCFunction) _wrap_PyQSizeF_setHeight, METH_VARARGS|METH_KEYWORDS, "setHeight(h)\n\ntype: h: double" },
-    {(char *) "setWidth", (PyCFunction) _wrap_PyQSizeF_setWidth, METH_VARARGS|METH_KEYWORDS, "setWidth(w)\n\ntype: w: double" },
+    {(char *) "setHeight", (PyCFunction) _wrap_PyQSizeF_setHeight, METH_KEYWORDS|METH_VARARGS, "setHeight(h)\n\ntype: h: double" },
+    {(char *) "setWidth", (PyCFunction) _wrap_PyQSizeF_setWidth, METH_KEYWORDS|METH_VARARGS, "setWidth(w)\n\ntype: w: double" },
     {(char *) "width", (PyCFunction) _wrap_PyQSizeF_width, METH_NOARGS, "width()\n\n" },
     {(char *) "__copy__", (PyCFunction) _wrap_PyQSizeF__copy__, METH_NOARGS, NULL},
     {NULL, NULL, 0, NULL}
@@ -1255,39 +1157,6 @@ _wrap_PyQSizeF__tp_dealloc(PyQSizeF *self)
             delete tmp;
         }
     Py_TYPE(self)->tp_free((PyObject*)self);
-}
-
-static PyObject*
-_wrap_PyQSizeF__tp_richcompare (PyQSizeF *PYBINDGEN_UNUSED(self), PyQSizeF *other, int opid)
-{
-
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyQSizeF_Type)) {
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    }
-    switch (opid)
-    {
-    case Py_LT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_LE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_EQ:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_NE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    } /* closes switch (opid) */
-    Py_INCREF(Py_NotImplemented);
-    return Py_NotImplemented;
 }
 
 PyTypeObject PyQSizeF_Type = {
@@ -1319,7 +1188,7 @@ PyTypeObject PyQSizeF_Type = {
     "QSizeF(ctor_arg)\nQSizeF(w, h)",                        /* Documentation string */
     (traverseproc)NULL,     /* tp_traverse */
     (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyQSizeF__tp_richcompare,   /* tp_richcompare */
+    (richcmpfunc)NULL,   /* tp_richcompare */
     0,             /* tp_weaklistoffset */
     (getiterfunc)NULL,          /* tp_iter */
     (iternextfunc)NULL,     /* tp_iternext */
@@ -1389,39 +1258,6 @@ _wrap_PyQRgb__tp_dealloc(PyQRgb *self)
     Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
-static PyObject*
-_wrap_PyQRgb__tp_richcompare (PyQRgb *PYBINDGEN_UNUSED(self), PyQRgb *other, int opid)
-{
-
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyQRgb_Type)) {
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    }
-    switch (opid)
-    {
-    case Py_LT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_LE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_EQ:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_NE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    } /* closes switch (opid) */
-    Py_INCREF(Py_NotImplemented);
-    return Py_NotImplemented;
-}
-
 PyTypeObject PyQRgb_Type = {
     PyVarObject_HEAD_INIT(NULL, 0)
     (char *) "tiled.qt.QRgb",            /* tp_name */
@@ -1451,7 +1287,7 @@ PyTypeObject PyQRgb_Type = {
     "QRgb(ctor_arg)",                        /* Documentation string */
     (traverseproc)NULL,     /* tp_traverse */
     (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyQRgb__tp_richcompare,   /* tp_richcompare */
+    (richcmpfunc)NULL,   /* tp_richcompare */
     0,             /* tp_weaklistoffset */
     (getiterfunc)NULL,          /* tp_iter */
     (iternextfunc)NULL,     /* tp_iternext */
@@ -1666,39 +1502,6 @@ _wrap_PyQColor__tp_dealloc(PyQColor *self)
     Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
-static PyObject*
-_wrap_PyQColor__tp_richcompare (PyQColor *PYBINDGEN_UNUSED(self), PyQColor *other, int opid)
-{
-
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyQColor_Type)) {
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    }
-    switch (opid)
-    {
-    case Py_LT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_LE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_EQ:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_NE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    } /* closes switch (opid) */
-    Py_INCREF(Py_NotImplemented);
-    return Py_NotImplemented;
-}
-
 PyTypeObject PyQColor_Type = {
     PyVarObject_HEAD_INIT(NULL, 0)
     (char *) "tiled.qt.QColor",            /* tp_name */
@@ -1728,7 +1531,7 @@ PyTypeObject PyQColor_Type = {
     "QColor(r, g, b, a)\nQColor(ctor_arg)\nQColor(r, g, b)\nQColor(col)",                        /* Documentation string */
     (traverseproc)NULL,     /* tp_traverse */
     (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyQColor__tp_richcompare,   /* tp_richcompare */
+    (richcmpfunc)NULL,   /* tp_richcompare */
     0,             /* tp_weaklistoffset */
     (getiterfunc)NULL,          /* tp_iter */
     (iternextfunc)NULL,     /* tp_iternext */
@@ -2092,15 +1895,15 @@ _wrap_PyQImage__copy__(PyQImage *self)
 }
 
 static PyMethodDef PyQImage_methods[] = {
-    {(char *) "color", (PyCFunction) _wrap_PyQImage_color, METH_VARARGS|METH_KEYWORDS, "color(i)\n\ntype: i: int" },
+    {(char *) "color", (PyCFunction) _wrap_PyQImage_color, METH_KEYWORDS|METH_VARARGS, "color(i)\n\ntype: i: int" },
     {(char *) "colorTable", (PyCFunction) _wrap_PyQImage_colorTable, METH_NOARGS, "colorTable()\n\n" },
-    {(char *) "fill", (PyCFunction) _wrap_PyQImage_fill, METH_VARARGS|METH_KEYWORDS, "fill(color)\n\ntype: color: int" },
+    {(char *) "fill", (PyCFunction) _wrap_PyQImage_fill, METH_KEYWORDS|METH_VARARGS, "fill(color)\n\ntype: color: int" },
     {(char *) "height", (PyCFunction) _wrap_PyQImage_height, METH_NOARGS, "height()\n\n" },
-    {(char *) "load", (PyCFunction) _wrap_PyQImage_load, METH_VARARGS|METH_KEYWORDS, "load(fileName, fmt)\n\ntype: fileName: QString const\ntype: fmt: char *" },
-    {(char *) "mirrored", (PyCFunction) _wrap_PyQImage_mirrored, METH_VARARGS|METH_KEYWORDS, "mirrored(horiz, vert)\n\ntype: horiz: bool\ntype: vert: bool" },
-    {(char *) "setColor", (PyCFunction) _wrap_PyQImage_setColor, METH_VARARGS|METH_KEYWORDS, "setColor(i, c)\n\ntype: i: int\ntype: c: QRgb" },
-    {(char *) "setColorTable", (PyCFunction) _wrap_PyQImage_setColorTable, METH_VARARGS|METH_KEYWORDS, "setColorTable(colors)\n\ntype: colors: QVector< QRgb >" },
-    {(char *) "setPixel", (PyCFunction) _wrap_PyQImage_setPixel, METH_VARARGS|METH_KEYWORDS, NULL },
+    {(char *) "load", (PyCFunction) _wrap_PyQImage_load, METH_KEYWORDS|METH_VARARGS, "load(fileName, fmt)\n\ntype: fileName: QString const\ntype: fmt: char *" },
+    {(char *) "mirrored", (PyCFunction) _wrap_PyQImage_mirrored, METH_KEYWORDS|METH_VARARGS, "mirrored(horiz, vert)\n\ntype: horiz: bool\ntype: vert: bool" },
+    {(char *) "setColor", (PyCFunction) _wrap_PyQImage_setColor, METH_KEYWORDS|METH_VARARGS, "setColor(i, c)\n\ntype: i: int\ntype: c: QRgb" },
+    {(char *) "setColorTable", (PyCFunction) _wrap_PyQImage_setColorTable, METH_KEYWORDS|METH_VARARGS, "setColorTable(colors)\n\ntype: colors: QVector< QRgb >" },
+    {(char *) "setPixel", (PyCFunction) _wrap_PyQImage_setPixel, METH_KEYWORDS|METH_VARARGS, NULL },
     {(char *) "width", (PyCFunction) _wrap_PyQImage_width, METH_NOARGS, "width()\n\n" },
     {(char *) "__copy__", (PyCFunction) _wrap_PyQImage__copy__, METH_NOARGS, NULL},
     {NULL, NULL, 0, NULL}
@@ -2115,39 +1918,6 @@ _wrap_PyQImage__tp_dealloc(PyQImage *self)
             delete tmp;
         }
     Py_TYPE(self)->tp_free((PyObject*)self);
-}
-
-static PyObject*
-_wrap_PyQImage__tp_richcompare (PyQImage *PYBINDGEN_UNUSED(self), PyQImage *other, int opid)
-{
-
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyQImage_Type)) {
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    }
-    switch (opid)
-    {
-    case Py_LT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_LE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_EQ:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_NE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    } /* closes switch (opid) */
-    Py_INCREF(Py_NotImplemented);
-    return Py_NotImplemented;
 }
 
 PyTypeObject PyQImage_Type = {
@@ -2179,7 +1949,7 @@ PyTypeObject PyQImage_Type = {
     "QImage(ctor_arg)\nQImage(w, h, f)\nQImage()",                        /* Documentation string */
     (traverseproc)NULL,     /* tp_traverse */
     (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyQImage__tp_richcompare,   /* tp_richcompare */
+    (richcmpfunc)NULL,   /* tp_richcompare */
     0,             /* tp_weaklistoffset */
     (getiterfunc)NULL,          /* tp_iter */
     (iternextfunc)NULL,     /* tp_iternext */
@@ -2307,8 +2077,8 @@ _wrap_PyQPixmap__copy__(PyQPixmap *self)
 }
 
 static PyMethodDef PyQPixmap_methods[] = {
-    {(char *) "convertFromImage", (PyCFunction) _wrap_PyQPixmap_convertFromImage, METH_VARARGS|METH_KEYWORDS, "convertFromImage(image)\n\ntype: image: QImage const &" },
-    {(char *) "fromImage", (PyCFunction) _wrap_PyQPixmap_fromImage, METH_VARARGS|METH_KEYWORDS, "fromImage(image)\n\ntype: image: QImage const &" },
+    {(char *) "convertFromImage", (PyCFunction) _wrap_PyQPixmap_convertFromImage, METH_KEYWORDS|METH_VARARGS, "convertFromImage(image)\n\ntype: image: QImage const &" },
+    {(char *) "fromImage", (PyCFunction) _wrap_PyQPixmap_fromImage, METH_KEYWORDS|METH_VARARGS, "fromImage(image)\n\ntype: image: QImage const &" },
     {(char *) "height", (PyCFunction) _wrap_PyQPixmap_height, METH_NOARGS, "height()\n\n" },
     {(char *) "toImage", (PyCFunction) _wrap_PyQPixmap_toImage, METH_NOARGS, "toImage()\n\n" },
     {(char *) "width", (PyCFunction) _wrap_PyQPixmap_width, METH_NOARGS, "width()\n\n" },
@@ -2325,39 +2095,6 @@ _wrap_PyQPixmap__tp_dealloc(PyQPixmap *self)
             delete tmp;
         }
     Py_TYPE(self)->tp_free((PyObject*)self);
-}
-
-static PyObject*
-_wrap_PyQPixmap__tp_richcompare (PyQPixmap *PYBINDGEN_UNUSED(self), PyQPixmap *other, int opid)
-{
-
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyQPixmap_Type)) {
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    }
-    switch (opid)
-    {
-    case Py_LT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_LE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_EQ:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_NE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    } /* closes switch (opid) */
-    Py_INCREF(Py_NotImplemented);
-    return Py_NotImplemented;
 }
 
 PyTypeObject PyQPixmap_Type = {
@@ -2389,7 +2126,7 @@ PyTypeObject PyQPixmap_Type = {
     "QPixmap(ctor_arg)",                        /* Documentation string */
     (traverseproc)NULL,     /* tp_traverse */
     (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyQPixmap__tp_richcompare,   /* tp_richcompare */
+    (richcmpfunc)NULL,   /* tp_richcompare */
     0,             /* tp_weaklistoffset */
     (getiterfunc)NULL,          /* tp_iter */
     (iternextfunc)NULL,     /* tp_iternext */
@@ -2439,39 +2176,6 @@ _wrap_PyQWidget__tp_dealloc(PyQWidget *self)
     Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
-static PyObject*
-_wrap_PyQWidget__tp_richcompare (PyQWidget *PYBINDGEN_UNUSED(self), PyQWidget *other, int opid)
-{
-
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyQWidget_Type)) {
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    }
-    switch (opid)
-    {
-    case Py_LT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_LE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_EQ:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_NE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    } /* closes switch (opid) */
-    Py_INCREF(Py_NotImplemented);
-    return Py_NotImplemented;
-}
-
 PyTypeObject PyQWidget_Type = {
     PyVarObject_HEAD_INIT(NULL, 0)
     (char *) "tiled.qt.QWidget",            /* tp_name */
@@ -2501,7 +2205,7 @@ PyTypeObject PyQWidget_Type = {
     "",                        /* Documentation string */
     (traverseproc)NULL,     /* tp_traverse */
     (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyQWidget__tp_richcompare,   /* tp_richcompare */
+    (richcmpfunc)NULL,   /* tp_richcompare */
     0,             /* tp_weaklistoffset */
     (getiterfunc)NULL,          /* tp_iter */
     (iternextfunc)NULL,     /* tp_iternext */
@@ -2575,7 +2279,7 @@ _wrap_PyQFileDialog_getOpenFileName(PyQFileDialog *PYBINDGEN_UNUSED(dummy), PyOb
 }
 
 static PyMethodDef PyQFileDialog_methods[] = {
-    {(char *) "getOpenFileName", (PyCFunction) _wrap_PyQFileDialog_getOpenFileName, METH_VARARGS|METH_KEYWORDS|METH_STATIC, "getOpenFileName(parent, caption, dir, filter, selectedFilter, options)\n\ntype: parent: QWidget *\ntype: caption: QString const\ntype: dir: QString const\ntype: filter: QString const\ntype: selectedFilter: QString *\ntype: options: QFlags< QFileDialog::Option >" },
+    {(char *) "getOpenFileName", (PyCFunction) _wrap_PyQFileDialog_getOpenFileName, METH_KEYWORDS|METH_VARARGS|METH_STATIC, "getOpenFileName(parent, caption, dir, filter, selectedFilter, options)\n\ntype: parent: QWidget *\ntype: caption: QString const\ntype: dir: QString const\ntype: filter: QString const\ntype: selectedFilter: QString *\ntype: options: QFlags< QFileDialog::Option >" },
     {NULL, NULL, 0, NULL}
 };
 
@@ -2588,39 +2292,6 @@ _wrap_PyQFileDialog__tp_dealloc(PyQFileDialog *self)
             delete tmp;
         }
     Py_TYPE(self)->tp_free((PyObject*)self);
-}
-
-static PyObject*
-_wrap_PyQFileDialog__tp_richcompare (PyQFileDialog *PYBINDGEN_UNUSED(self), PyQFileDialog *other, int opid)
-{
-
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyQFileDialog_Type)) {
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    }
-    switch (opid)
-    {
-    case Py_LT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_LE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_EQ:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_NE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    } /* closes switch (opid) */
-    Py_INCREF(Py_NotImplemented);
-    return Py_NotImplemented;
 }
 
 PyTypeObject PyQFileDialog_Type = {
@@ -2652,7 +2323,7 @@ PyTypeObject PyQFileDialog_Type = {
     "",                        /* Documentation string */
     (traverseproc)NULL,     /* tp_traverse */
     (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyQFileDialog__tp_richcompare,   /* tp_richcompare */
+    (richcmpfunc)NULL,   /* tp_richcompare */
     0,             /* tp_weaklistoffset */
     (getiterfunc)NULL,          /* tp_iter */
     (iternextfunc)NULL,     /* tp_iternext */
@@ -3467,39 +3138,6 @@ _wrap_PyTiledProperties__tp_dealloc(PyTiledProperties *self)
     Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
-static PyObject*
-_wrap_PyTiledProperties__tp_richcompare (PyTiledProperties *PYBINDGEN_UNUSED(self), PyTiledProperties *other, int opid)
-{
-
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyTiledProperties_Type)) {
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    }
-    switch (opid)
-    {
-    case Py_LT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_LE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_EQ:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_NE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    } /* closes switch (opid) */
-    Py_INCREF(Py_NotImplemented);
-    return Py_NotImplemented;
-}
-
 PyTypeObject PyTiledProperties_Type = {
     PyVarObject_HEAD_INIT(NULL, 0)
     (char *) "tiled.Tiled.Properties",            /* tp_name */
@@ -3529,7 +3167,7 @@ PyTypeObject PyTiledProperties_Type = {
     "Properties(ctor_arg)",                        /* Documentation string */
     (traverseproc)NULL,     /* tp_traverse */
     (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyTiledProperties__tp_richcompare,   /* tp_richcompare */
+    (richcmpfunc)NULL,   /* tp_richcompare */
     0,             /* tp_weaklistoffset */
     (getiterfunc)NULL,          /* tp_iter */
     (iternextfunc)NULL,     /* tp_iternext */
@@ -3726,9 +3364,9 @@ PyObject * _wrap_PyTiledObject_setProperty(PyTiledObject *self, PyObject *args, 
 
 static PyMethodDef PyTiledObject_methods[] = {
     {(char *) "properties", (PyCFunction) _wrap_PyTiledObject_properties, METH_NOARGS, "properties()\n\n" },
-    {(char *) "propertyAsString", (PyCFunction) _wrap_PyTiledObject_propertyAsString, METH_VARARGS|METH_KEYWORDS, "propertyAsString(prop)\n\ntype: prop: QString" },
-    {(char *) "propertyType", (PyCFunction) _wrap_PyTiledObject_propertyType, METH_VARARGS|METH_KEYWORDS, "propertyType(prop)\n\ntype: prop: QString" },
-    {(char *) "setProperty", (PyCFunction) _wrap_PyTiledObject_setProperty, METH_VARARGS|METH_KEYWORDS, NULL },
+    {(char *) "propertyAsString", (PyCFunction) _wrap_PyTiledObject_propertyAsString, METH_KEYWORDS|METH_VARARGS, "propertyAsString(prop)\n\ntype: prop: QString" },
+    {(char *) "propertyType", (PyCFunction) _wrap_PyTiledObject_propertyType, METH_KEYWORDS|METH_VARARGS, "propertyType(prop)\n\ntype: prop: QString" },
+    {(char *) "setProperty", (PyCFunction) _wrap_PyTiledObject_setProperty, METH_KEYWORDS|METH_VARARGS, NULL },
     {NULL, NULL, 0, NULL}
 };
 
@@ -3741,39 +3379,6 @@ _wrap_PyTiledObject__tp_dealloc(PyTiledObject *self)
             delete tmp;
         }
     Py_TYPE(self)->tp_free((PyObject*)self);
-}
-
-static PyObject*
-_wrap_PyTiledObject__tp_richcompare (PyTiledObject *PYBINDGEN_UNUSED(self), PyTiledObject *other, int opid)
-{
-
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyTiledObject_Type)) {
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    }
-    switch (opid)
-    {
-    case Py_LT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_LE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_EQ:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_NE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    } /* closes switch (opid) */
-    Py_INCREF(Py_NotImplemented);
-    return Py_NotImplemented;
 }
 
 PyTypeObject PyTiledObject_Type = {
@@ -3805,7 +3410,7 @@ PyTypeObject PyTiledObject_Type = {
     "",                        /* Documentation string */
     (traverseproc)NULL,     /* tp_traverse */
     (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyTiledObject__tp_richcompare,   /* tp_richcompare */
+    (richcmpfunc)NULL,   /* tp_richcompare */
     0,             /* tp_weaklistoffset */
     (getiterfunc)NULL,          /* tp_iter */
     (iternextfunc)NULL,     /* tp_iternext */
@@ -3970,7 +3575,7 @@ static PyMethodDef PyTiledTile_methods[] = {
     {(char *) "height", (PyCFunction) _wrap_PyTiledTile_height, METH_NOARGS, "height()\n\n" },
     {(char *) "id", (PyCFunction) _wrap_PyTiledTile_id, METH_NOARGS, "id()\n\n" },
     {(char *) "image", (PyCFunction) _wrap_PyTiledTile_image, METH_NOARGS, "image()\n\n" },
-    {(char *) "setImage", (PyCFunction) _wrap_PyTiledTile_setImage, METH_VARARGS|METH_KEYWORDS, "setImage(image)\n\ntype: image: QPixmap const &" },
+    {(char *) "setImage", (PyCFunction) _wrap_PyTiledTile_setImage, METH_KEYWORDS|METH_VARARGS, "setImage(image)\n\ntype: image: QPixmap const &" },
     {(char *) "size", (PyCFunction) _wrap_PyTiledTile_size, METH_NOARGS, "size()\n\n" },
     {(char *) "tileset", (PyCFunction) _wrap_PyTiledTile_tileset, METH_NOARGS, "tileset()\n\n" },
     {(char *) "type", (PyCFunction) _wrap_PyTiledTile_type, METH_NOARGS, "type()\n\n" },
@@ -3987,39 +3592,6 @@ _wrap_PyTiledTile__tp_dealloc(PyTiledTile *self)
             delete tmp;
         }
     Py_TYPE(self)->tp_free((PyObject*)self);
-}
-
-static PyObject*
-_wrap_PyTiledTile__tp_richcompare (PyTiledTile *PYBINDGEN_UNUSED(self), PyTiledTile *other, int opid)
-{
-
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyTiledTile_Type)) {
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    }
-    switch (opid)
-    {
-    case Py_LT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_LE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_EQ:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_NE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    } /* closes switch (opid) */
-    Py_INCREF(Py_NotImplemented);
-    return Py_NotImplemented;
 }
 
 PyTypeObject PyTiledTile_Type = {
@@ -4051,7 +3623,7 @@ PyTypeObject PyTiledTile_Type = {
     "Tile(image, id, tileset)",                        /* Documentation string */
     (traverseproc)NULL,     /* tp_traverse */
     (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyTiledTile__tp_richcompare,   /* tp_richcompare */
+    (richcmpfunc)NULL,   /* tp_richcompare */
     0,             /* tp_weaklistoffset */
     (getiterfunc)NULL,          /* tp_iter */
     (iternextfunc)NULL,     /* tp_iternext */
@@ -4512,27 +4084,27 @@ _wrap_PyTiledTileset_transparentColor(PyTiledTileset *self)
 
 static PyMethodDef PyTiledTileset_methods[] = {
     {(char *) "columnCount", (PyCFunction) _wrap_PyTiledTileset_columnCount, METH_NOARGS, "columnCount()\n\n" },
-    {(char *) "create", (PyCFunction) _wrap_PyTiledTileset_create, METH_VARARGS|METH_KEYWORDS|METH_STATIC, "create(name, tileWidth, tileHeight, tileSpacing, margin)\n\ntype: name: QString\ntype: tileWidth: int\ntype: tileHeight: int\ntype: tileSpacing: int\ntype: margin: int" },
+    {(char *) "create", (PyCFunction) _wrap_PyTiledTileset_create, METH_KEYWORDS|METH_VARARGS|METH_STATIC, "create(name, tileWidth, tileHeight, tileSpacing, margin)\n\ntype: name: QString\ntype: tileWidth: int\ntype: tileHeight: int\ntype: tileSpacing: int\ntype: margin: int" },
     {(char *) "fileName", (PyCFunction) _wrap_PyTiledTileset_fileName, METH_NOARGS, "fileName()\n\n" },
-    {(char *) "findTile", (PyCFunction) _wrap_PyTiledTileset_findTile, METH_VARARGS|METH_KEYWORDS, "findTile(id)\n\ntype: id: int" },
+    {(char *) "findTile", (PyCFunction) _wrap_PyTiledTileset_findTile, METH_KEYWORDS|METH_VARARGS, "findTile(id)\n\ntype: id: int" },
     {(char *) "gridSize", (PyCFunction) _wrap_PyTiledTileset_gridSize, METH_NOARGS, "gridSize()\n\n" },
     {(char *) "imageHeight", (PyCFunction) _wrap_PyTiledTileset_imageHeight, METH_NOARGS, "imageHeight()\n\n" },
     {(char *) "imageSourceString", (PyCFunction) _wrap_PyTiledTileset_imageSourceString, METH_NOARGS, "imageSourceString()\n\n" },
     {(char *) "imageWidth", (PyCFunction) _wrap_PyTiledTileset_imageWidth, METH_NOARGS, "imageWidth()\n\n" },
     {(char *) "isCollection", (PyCFunction) _wrap_PyTiledTileset_isCollection, METH_NOARGS, "isCollection()\n\n" },
     {(char *) "isExternal", (PyCFunction) _wrap_PyTiledTileset_isExternal, METH_NOARGS, "isExternal()\n\n" },
-    {(char *) "loadFromImage", (PyCFunction) _wrap_PyTiledTileset_loadFromImage, METH_VARARGS|METH_KEYWORDS, "loadFromImage(img, file)\n\ntype: img: QImage const &\ntype: file: QString" },
+    {(char *) "loadFromImage", (PyCFunction) _wrap_PyTiledTileset_loadFromImage, METH_KEYWORDS|METH_VARARGS, "loadFromImage(img, file)\n\ntype: img: QImage const &\ntype: file: QString" },
     {(char *) "loadImage", (PyCFunction) _wrap_PyTiledTileset_loadImage, METH_NOARGS, "loadImage()\n\n" },
     {(char *) "margin", (PyCFunction) _wrap_PyTiledTileset_margin, METH_NOARGS, "margin()\n\n" },
     {(char *) "name", (PyCFunction) _wrap_PyTiledTileset_name, METH_NOARGS, "name()\n\n" },
     {(char *) "rowCount", (PyCFunction) _wrap_PyTiledTileset_rowCount, METH_NOARGS, "rowCount()\n\n" },
-    {(char *) "setFileName", (PyCFunction) _wrap_PyTiledTileset_setFileName, METH_VARARGS|METH_KEYWORDS, "setFileName(name)\n\ntype: name: QString" },
-    {(char *) "setGridSize", (PyCFunction) _wrap_PyTiledTileset_setGridSize, METH_VARARGS|METH_KEYWORDS, "setGridSize(gridSize)\n\ntype: gridSize: QSize" },
-    {(char *) "setImageSource", (PyCFunction) _wrap_PyTiledTileset_setImageSource, METH_VARARGS|METH_KEYWORDS, "setImageSource(source)\n\ntype: source: QString" },
-    {(char *) "setName", (PyCFunction) _wrap_PyTiledTileset_setName, METH_VARARGS|METH_KEYWORDS, "setName(name)\n\ntype: name: QString" },
-    {(char *) "setTileOffset", (PyCFunction) _wrap_PyTiledTileset_setTileOffset, METH_VARARGS|METH_KEYWORDS, "setTileOffset(offset)\n\ntype: offset: QPoint" },
-    {(char *) "setTransparentColor", (PyCFunction) _wrap_PyTiledTileset_setTransparentColor, METH_VARARGS|METH_KEYWORDS, "setTransparentColor(col)\n\ntype: col: QColor" },
-    {(char *) "tileAt", (PyCFunction) _wrap_PyTiledTileset_tileAt, METH_VARARGS|METH_KEYWORDS, "tileAt(id)\n\ntype: id: int" },
+    {(char *) "setFileName", (PyCFunction) _wrap_PyTiledTileset_setFileName, METH_KEYWORDS|METH_VARARGS, "setFileName(name)\n\ntype: name: QString" },
+    {(char *) "setGridSize", (PyCFunction) _wrap_PyTiledTileset_setGridSize, METH_KEYWORDS|METH_VARARGS, "setGridSize(gridSize)\n\ntype: gridSize: QSize" },
+    {(char *) "setImageSource", (PyCFunction) _wrap_PyTiledTileset_setImageSource, METH_KEYWORDS|METH_VARARGS, "setImageSource(source)\n\ntype: source: QString" },
+    {(char *) "setName", (PyCFunction) _wrap_PyTiledTileset_setName, METH_KEYWORDS|METH_VARARGS, "setName(name)\n\ntype: name: QString" },
+    {(char *) "setTileOffset", (PyCFunction) _wrap_PyTiledTileset_setTileOffset, METH_KEYWORDS|METH_VARARGS, "setTileOffset(offset)\n\ntype: offset: QPoint" },
+    {(char *) "setTransparentColor", (PyCFunction) _wrap_PyTiledTileset_setTransparentColor, METH_KEYWORDS|METH_VARARGS, "setTransparentColor(col)\n\ntype: col: QColor" },
+    {(char *) "tileAt", (PyCFunction) _wrap_PyTiledTileset_tileAt, METH_KEYWORDS|METH_VARARGS, "tileAt(id)\n\ntype: id: int" },
     {(char *) "tileCount", (PyCFunction) _wrap_PyTiledTileset_tileCount, METH_NOARGS, "tileCount()\n\n" },
     {(char *) "tileHeight", (PyCFunction) _wrap_PyTiledTileset_tileHeight, METH_NOARGS, "tileHeight()\n\n" },
     {(char *) "tileOffset", (PyCFunction) _wrap_PyTiledTileset_tileOffset, METH_NOARGS, "tileOffset()\n\n" },
@@ -4551,39 +4123,6 @@ _wrap_PyTiledTileset__tp_dealloc(PyTiledTileset *self)
             delete tmp;
         }
     Py_TYPE(self)->tp_free((PyObject*)self);
-}
-
-static PyObject*
-_wrap_PyTiledTileset__tp_richcompare (PyTiledTileset *PYBINDGEN_UNUSED(self), PyTiledTileset *other, int opid)
-{
-
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyTiledTileset_Type)) {
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    }
-    switch (opid)
-    {
-    case Py_LT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_LE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_EQ:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_NE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    } /* closes switch (opid) */
-    Py_INCREF(Py_NotImplemented);
-    return Py_NotImplemented;
 }
 
 PyTypeObject PyTiledTileset_Type = {
@@ -4615,7 +4154,7 @@ PyTypeObject PyTiledTileset_Type = {
     "",                        /* Documentation string */
     (traverseproc)NULL,     /* tp_traverse */
     (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyTiledTileset__tp_richcompare,   /* tp_richcompare */
+    (richcmpfunc)NULL,   /* tp_richcompare */
     0,             /* tp_weaklistoffset */
     (getiterfunc)NULL,          /* tp_iter */
     (iternextfunc)NULL,     /* tp_iternext */
@@ -4706,39 +4245,6 @@ _wrap_PyTiledSharedTileset__tp_dealloc(PyTiledSharedTileset *self)
     Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
-static PyObject*
-_wrap_PyTiledSharedTileset__tp_richcompare (PyTiledSharedTileset *PYBINDGEN_UNUSED(self), PyTiledSharedTileset *other, int opid)
-{
-
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyTiledSharedTileset_Type)) {
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    }
-    switch (opid)
-    {
-    case Py_LT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_LE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_EQ:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_NE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    } /* closes switch (opid) */
-    Py_INCREF(Py_NotImplemented);
-    return Py_NotImplemented;
-}
-
 PyTypeObject PyTiledSharedTileset_Type = {
     PyVarObject_HEAD_INIT(NULL, 0)
     (char *) "tiled.Tiled.SharedTileset",            /* tp_name */
@@ -4768,7 +4274,7 @@ PyTypeObject PyTiledSharedTileset_Type = {
     "SharedTileset(ctor_arg)",                        /* Documentation string */
     (traverseproc)NULL,     /* tp_traverse */
     (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyTiledSharedTileset__tp_richcompare,   /* tp_richcompare */
+    (richcmpfunc)NULL,   /* tp_richcompare */
     0,             /* tp_weaklistoffset */
     (getiterfunc)NULL,          /* tp_iter */
     (iternextfunc)NULL,     /* tp_iternext */
@@ -5188,13 +4694,13 @@ static PyMethodDef PyTiledLayer_methods[] = {
     {(char *) "map", (PyCFunction) _wrap_PyTiledLayer_map, METH_NOARGS, "map()\n\n" },
     {(char *) "name", (PyCFunction) _wrap_PyTiledLayer_name, METH_NOARGS, "name()\n\n" },
     {(char *) "opacity", (PyCFunction) _wrap_PyTiledLayer_opacity, METH_NOARGS, "opacity()\n\n" },
-    {(char *) "setLocked", (PyCFunction) _wrap_PyTiledLayer_setLocked, METH_VARARGS|METH_KEYWORDS, "setLocked(locked)\n\ntype: locked: bool" },
-    {(char *) "setName", (PyCFunction) _wrap_PyTiledLayer_setName, METH_VARARGS|METH_KEYWORDS, "setName(name)\n\ntype: name: QString" },
-    {(char *) "setOpacity", (PyCFunction) _wrap_PyTiledLayer_setOpacity, METH_VARARGS|METH_KEYWORDS, "setOpacity(opacity)\n\ntype: opacity: double" },
-    {(char *) "setPosition", (PyCFunction) _wrap_PyTiledLayer_setPosition, METH_VARARGS|METH_KEYWORDS, "setPosition(x, y)\n\ntype: x: int\ntype: y: int" },
-    {(char *) "setVisible", (PyCFunction) _wrap_PyTiledLayer_setVisible, METH_VARARGS|METH_KEYWORDS, "setVisible(visible)\n\ntype: visible: bool" },
-    {(char *) "setX", (PyCFunction) _wrap_PyTiledLayer_setX, METH_VARARGS|METH_KEYWORDS, "setX(x)\n\ntype: x: int" },
-    {(char *) "setY", (PyCFunction) _wrap_PyTiledLayer_setY, METH_VARARGS|METH_KEYWORDS, "setY(y)\n\ntype: y: int" },
+    {(char *) "setLocked", (PyCFunction) _wrap_PyTiledLayer_setLocked, METH_KEYWORDS|METH_VARARGS, "setLocked(locked)\n\ntype: locked: bool" },
+    {(char *) "setName", (PyCFunction) _wrap_PyTiledLayer_setName, METH_KEYWORDS|METH_VARARGS, "setName(name)\n\ntype: name: QString" },
+    {(char *) "setOpacity", (PyCFunction) _wrap_PyTiledLayer_setOpacity, METH_KEYWORDS|METH_VARARGS, "setOpacity(opacity)\n\ntype: opacity: double" },
+    {(char *) "setPosition", (PyCFunction) _wrap_PyTiledLayer_setPosition, METH_KEYWORDS|METH_VARARGS, "setPosition(x, y)\n\ntype: x: int\ntype: y: int" },
+    {(char *) "setVisible", (PyCFunction) _wrap_PyTiledLayer_setVisible, METH_KEYWORDS|METH_VARARGS, "setVisible(visible)\n\ntype: visible: bool" },
+    {(char *) "setX", (PyCFunction) _wrap_PyTiledLayer_setX, METH_KEYWORDS|METH_VARARGS, "setX(x)\n\ntype: x: int" },
+    {(char *) "setY", (PyCFunction) _wrap_PyTiledLayer_setY, METH_KEYWORDS|METH_VARARGS, "setY(y)\n\ntype: y: int" },
     {(char *) "x", (PyCFunction) _wrap_PyTiledLayer_x, METH_NOARGS, "x()\n\n" },
     {(char *) "y", (PyCFunction) _wrap_PyTiledLayer_y, METH_NOARGS, "y()\n\n" },
     {NULL, NULL, 0, NULL}
@@ -5209,39 +4715,6 @@ _wrap_PyTiledLayer__tp_dealloc(PyTiledLayer *self)
             delete tmp;
         }
     Py_TYPE(self)->tp_free((PyObject*)self);
-}
-
-static PyObject*
-_wrap_PyTiledLayer__tp_richcompare (PyTiledLayer *PYBINDGEN_UNUSED(self), PyTiledLayer *other, int opid)
-{
-
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyTiledLayer_Type)) {
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    }
-    switch (opid)
-    {
-    case Py_LT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_LE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_EQ:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_NE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    } /* closes switch (opid) */
-    Py_INCREF(Py_NotImplemented);
-    return Py_NotImplemented;
 }
 
 PyTypeObject PyTiledLayer_Type = {
@@ -5273,7 +4746,7 @@ PyTypeObject PyTiledLayer_Type = {
     "",                        /* Documentation string */
     (traverseproc)NULL,     /* tp_traverse */
     (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyTiledLayer__tp_richcompare,   /* tp_richcompare */
+    (richcmpfunc)NULL,   /* tp_richcompare */
     0,             /* tp_weaklistoffset */
     (getiterfunc)NULL,          /* tp_iter */
     (iternextfunc)NULL,     /* tp_iternext */
@@ -6057,44 +5530,44 @@ _wrap_PyTiledMap_width(PyTiledMap *self)
 }
 
 static PyMethodDef PyTiledMap_methods[] = {
-    {(char *) "addLayer", (PyCFunction) _wrap_PyTiledMap_addLayer, METH_VARARGS|METH_KEYWORDS, NULL },
-    {(char *) "addTileset", (PyCFunction) _wrap_PyTiledMap_addTileset, METH_VARARGS|METH_KEYWORDS, "addTileset(tileset)\n\ntype: tileset: SharedTileset" },
+    {(char *) "addLayer", (PyCFunction) _wrap_PyTiledMap_addLayer, METH_KEYWORDS|METH_VARARGS, NULL },
+    {(char *) "addTileset", (PyCFunction) _wrap_PyTiledMap_addTileset, METH_KEYWORDS|METH_VARARGS, "addTileset(tileset)\n\ntype: tileset: SharedTileset" },
     {(char *) "backgroundColor", (PyCFunction) _wrap_PyTiledMap_backgroundColor, METH_NOARGS, "backgroundColor()\n\n" },
     {(char *) "groupLayerCount", (PyCFunction) _wrap_PyTiledMap_groupLayerCount, METH_NOARGS, "groupLayerCount()\n\n" },
     {(char *) "height", (PyCFunction) _wrap_PyTiledMap_height, METH_NOARGS, "height()\n\n" },
     {(char *) "hexSideLength", (PyCFunction) _wrap_PyTiledMap_hexSideLength, METH_NOARGS, "hexSideLength()\n\n" },
     {(char *) "imageLayerCount", (PyCFunction) _wrap_PyTiledMap_imageLayerCount, METH_NOARGS, "imageLayerCount()\n\n" },
-    {(char *) "indexOfTileset", (PyCFunction) _wrap_PyTiledMap_indexOfTileset, METH_VARARGS|METH_KEYWORDS, "indexOfTileset(tileset)\n\ntype: tileset: SharedTileset const &" },
+    {(char *) "indexOfTileset", (PyCFunction) _wrap_PyTiledMap_indexOfTileset, METH_KEYWORDS|METH_VARARGS, "indexOfTileset(tileset)\n\ntype: tileset: SharedTileset const &" },
     {(char *) "infinite", (PyCFunction) _wrap_PyTiledMap_infinite, METH_NOARGS, "infinite()\n\n" },
-    {(char *) "insertTileset", (PyCFunction) _wrap_PyTiledMap_insertTileset, METH_VARARGS|METH_KEYWORDS, "insertTileset(pos, tileset)\n\ntype: pos: int\ntype: tileset: SharedTileset" },
-    {(char *) "isTilesetUsed", (PyCFunction) _wrap_PyTiledMap_isTilesetUsed, METH_VARARGS|METH_KEYWORDS, "isTilesetUsed(tileset)\n\ntype: tileset: Tileset const *" },
-    {(char *) "layerAt", (PyCFunction) _wrap_PyTiledMap_layerAt, METH_VARARGS|METH_KEYWORDS, "layerAt(index)\n\ntype: index: int" },
+    {(char *) "insertTileset", (PyCFunction) _wrap_PyTiledMap_insertTileset, METH_KEYWORDS|METH_VARARGS, "insertTileset(pos, tileset)\n\ntype: pos: int\ntype: tileset: SharedTileset" },
+    {(char *) "isTilesetUsed", (PyCFunction) _wrap_PyTiledMap_isTilesetUsed, METH_KEYWORDS|METH_VARARGS, "isTilesetUsed(tileset)\n\ntype: tileset: Tileset const *" },
+    {(char *) "layerAt", (PyCFunction) _wrap_PyTiledMap_layerAt, METH_KEYWORDS|METH_VARARGS, "layerAt(index)\n\ntype: index: int" },
     {(char *) "layerCount", (PyCFunction) _wrap_PyTiledMap_layerCount, METH_NOARGS, "layerCount()\n\n" },
     {(char *) "nextLayerId", (PyCFunction) _wrap_PyTiledMap_nextLayerId, METH_NOARGS, "nextLayerId()\n\n" },
     {(char *) "nextObjectId", (PyCFunction) _wrap_PyTiledMap_nextObjectId, METH_NOARGS, "nextObjectId()\n\n" },
     {(char *) "objectGroupCount", (PyCFunction) _wrap_PyTiledMap_objectGroupCount, METH_NOARGS, "objectGroupCount()\n\n" },
     {(char *) "orientation", (PyCFunction) _wrap_PyTiledMap_orientation, METH_NOARGS, "orientation()\n\n" },
-    {(char *) "removeTilesetAt", (PyCFunction) _wrap_PyTiledMap_removeTilesetAt, METH_VARARGS|METH_KEYWORDS, "removeTilesetAt(pos)\n\ntype: pos: int" },
+    {(char *) "removeTilesetAt", (PyCFunction) _wrap_PyTiledMap_removeTilesetAt, METH_KEYWORDS|METH_VARARGS, "removeTilesetAt(pos)\n\ntype: pos: int" },
     {(char *) "renderOrder", (PyCFunction) _wrap_PyTiledMap_renderOrder, METH_NOARGS, "renderOrder()\n\n" },
-    {(char *) "replaceTileset", (PyCFunction) _wrap_PyTiledMap_replaceTileset, METH_VARARGS|METH_KEYWORDS, "replaceTileset(oldTileset, newTileset)\n\ntype: oldTileset: SharedTileset\ntype: newTileset: SharedTileset" },
-    {(char *) "setBackgroundColor", (PyCFunction) _wrap_PyTiledMap_setBackgroundColor, METH_VARARGS|METH_KEYWORDS, "setBackgroundColor(col)\n\ntype: col: QColor" },
-    {(char *) "setHeight", (PyCFunction) _wrap_PyTiledMap_setHeight, METH_VARARGS|METH_KEYWORDS, "setHeight(h)\n\ntype: h: int" },
-    {(char *) "setHexSideLength", (PyCFunction) _wrap_PyTiledMap_setHexSideLength, METH_VARARGS|METH_KEYWORDS, "setHexSideLength(hexSideLength)\n\ntype: hexSideLength: int" },
-    {(char *) "setInfinite", (PyCFunction) _wrap_PyTiledMap_setInfinite, METH_VARARGS|METH_KEYWORDS, "setInfinite(infinite)\n\ntype: infinite: bool" },
-    {(char *) "setNextLayerId", (PyCFunction) _wrap_PyTiledMap_setNextLayerId, METH_VARARGS|METH_KEYWORDS, "setNextLayerId(nextLayerId)\n\ntype: nextLayerId: int" },
-    {(char *) "setNextObjectId", (PyCFunction) _wrap_PyTiledMap_setNextObjectId, METH_VARARGS|METH_KEYWORDS, "setNextObjectId(nextObjectId)\n\ntype: nextObjectId: int" },
-    {(char *) "setOrientation", (PyCFunction) _wrap_PyTiledMap_setOrientation, METH_VARARGS|METH_KEYWORDS, "setOrientation(orientation)\n\ntype: orientation: Tiled::Map::Orientation" },
-    {(char *) "setRenderOrder", (PyCFunction) _wrap_PyTiledMap_setRenderOrder, METH_VARARGS|METH_KEYWORDS, "setRenderOrder(renderOrder)\n\ntype: renderOrder: Tiled::Map::RenderOrder" },
-    {(char *) "setStaggerAxis", (PyCFunction) _wrap_PyTiledMap_setStaggerAxis, METH_VARARGS|METH_KEYWORDS, "setStaggerAxis(staggerAxis)\n\ntype: staggerAxis: Tiled::Map::StaggerAxis" },
-    {(char *) "setStaggerIndex", (PyCFunction) _wrap_PyTiledMap_setStaggerIndex, METH_VARARGS|METH_KEYWORDS, "setStaggerIndex(staggerIndex)\n\ntype: staggerIndex: Tiled::Map::StaggerIndex" },
-    {(char *) "setWidth", (PyCFunction) _wrap_PyTiledMap_setWidth, METH_VARARGS|METH_KEYWORDS, "setWidth(w)\n\ntype: w: int" },
+    {(char *) "replaceTileset", (PyCFunction) _wrap_PyTiledMap_replaceTileset, METH_KEYWORDS|METH_VARARGS, "replaceTileset(oldTileset, newTileset)\n\ntype: oldTileset: SharedTileset\ntype: newTileset: SharedTileset" },
+    {(char *) "setBackgroundColor", (PyCFunction) _wrap_PyTiledMap_setBackgroundColor, METH_KEYWORDS|METH_VARARGS, "setBackgroundColor(col)\n\ntype: col: QColor" },
+    {(char *) "setHeight", (PyCFunction) _wrap_PyTiledMap_setHeight, METH_KEYWORDS|METH_VARARGS, "setHeight(h)\n\ntype: h: int" },
+    {(char *) "setHexSideLength", (PyCFunction) _wrap_PyTiledMap_setHexSideLength, METH_KEYWORDS|METH_VARARGS, "setHexSideLength(hexSideLength)\n\ntype: hexSideLength: int" },
+    {(char *) "setInfinite", (PyCFunction) _wrap_PyTiledMap_setInfinite, METH_KEYWORDS|METH_VARARGS, "setInfinite(infinite)\n\ntype: infinite: bool" },
+    {(char *) "setNextLayerId", (PyCFunction) _wrap_PyTiledMap_setNextLayerId, METH_KEYWORDS|METH_VARARGS, "setNextLayerId(nextLayerId)\n\ntype: nextLayerId: int" },
+    {(char *) "setNextObjectId", (PyCFunction) _wrap_PyTiledMap_setNextObjectId, METH_KEYWORDS|METH_VARARGS, "setNextObjectId(nextObjectId)\n\ntype: nextObjectId: int" },
+    {(char *) "setOrientation", (PyCFunction) _wrap_PyTiledMap_setOrientation, METH_KEYWORDS|METH_VARARGS, "setOrientation(orientation)\n\ntype: orientation: Tiled::Map::Orientation" },
+    {(char *) "setRenderOrder", (PyCFunction) _wrap_PyTiledMap_setRenderOrder, METH_KEYWORDS|METH_VARARGS, "setRenderOrder(renderOrder)\n\ntype: renderOrder: Tiled::Map::RenderOrder" },
+    {(char *) "setStaggerAxis", (PyCFunction) _wrap_PyTiledMap_setStaggerAxis, METH_KEYWORDS|METH_VARARGS, "setStaggerAxis(staggerAxis)\n\ntype: staggerAxis: Tiled::Map::StaggerAxis" },
+    {(char *) "setStaggerIndex", (PyCFunction) _wrap_PyTiledMap_setStaggerIndex, METH_KEYWORDS|METH_VARARGS, "setStaggerIndex(staggerIndex)\n\ntype: staggerIndex: Tiled::Map::StaggerIndex" },
+    {(char *) "setWidth", (PyCFunction) _wrap_PyTiledMap_setWidth, METH_KEYWORDS|METH_VARARGS, "setWidth(w)\n\ntype: w: int" },
     {(char *) "staggerAxis", (PyCFunction) _wrap_PyTiledMap_staggerAxis, METH_NOARGS, "staggerAxis()\n\n" },
     {(char *) "staggerIndex", (PyCFunction) _wrap_PyTiledMap_staggerIndex, METH_NOARGS, "staggerIndex()\n\n" },
     {(char *) "tileHeight", (PyCFunction) _wrap_PyTiledMap_tileHeight, METH_NOARGS, "tileHeight()\n\n" },
     {(char *) "tileLayerCount", (PyCFunction) _wrap_PyTiledMap_tileLayerCount, METH_NOARGS, "tileLayerCount()\n\n" },
     {(char *) "tileSize", (PyCFunction) _wrap_PyTiledMap_tileSize, METH_NOARGS, "tileSize()\n\n" },
     {(char *) "tileWidth", (PyCFunction) _wrap_PyTiledMap_tileWidth, METH_NOARGS, "tileWidth()\n\n" },
-    {(char *) "tilesetAt", (PyCFunction) _wrap_PyTiledMap_tilesetAt, METH_VARARGS|METH_KEYWORDS, "tilesetAt(index)\n\ntype: index: int" },
+    {(char *) "tilesetAt", (PyCFunction) _wrap_PyTiledMap_tilesetAt, METH_KEYWORDS|METH_VARARGS, "tilesetAt(index)\n\ntype: index: int" },
     {(char *) "tilesetCount", (PyCFunction) _wrap_PyTiledMap_tilesetCount, METH_NOARGS, "tilesetCount()\n\n" },
     {(char *) "width", (PyCFunction) _wrap_PyTiledMap_width, METH_NOARGS, "width()\n\n" },
     {NULL, NULL, 0, NULL}
@@ -6109,39 +5582,6 @@ _wrap_PyTiledMap__tp_dealloc(PyTiledMap *self)
             delete tmp;
         }
     Py_TYPE(self)->tp_free((PyObject*)self);
-}
-
-static PyObject*
-_wrap_PyTiledMap__tp_richcompare (PyTiledMap *PYBINDGEN_UNUSED(self), PyTiledMap *other, int opid)
-{
-
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyTiledMap_Type)) {
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    }
-    switch (opid)
-    {
-    case Py_LT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_LE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_EQ:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_NE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    } /* closes switch (opid) */
-    Py_INCREF(Py_NotImplemented);
-    return Py_NotImplemented;
 }
 
 PyTypeObject PyTiledMap_Type = {
@@ -6173,7 +5613,7 @@ PyTypeObject PyTiledMap_Type = {
     "Map(orient, w, h, tileW, tileH)",                        /* Documentation string */
     (traverseproc)NULL,     /* tp_traverse */
     (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyTiledMap__tp_richcompare,   /* tp_richcompare */
+    (richcmpfunc)NULL,   /* tp_richcompare */
     0,             /* tp_weaklistoffset */
     (getiterfunc)NULL,          /* tp_iter */
     (iternextfunc)NULL,     /* tp_iternext */
@@ -6506,7 +5946,7 @@ _wrap_PyTiledCell__copy__(PyTiledCell *self)
 
 static PyMethodDef PyTiledCell_methods[] = {
     {(char *) "isEmpty", (PyCFunction) _wrap_PyTiledCell_isEmpty, METH_NOARGS, "isEmpty()\n\n" },
-    {(char *) "setTile", (PyCFunction) _wrap_PyTiledCell_setTile, METH_VARARGS|METH_KEYWORDS, "setTile(tile)\n\ntype: tile: Tiled::Tile *" },
+    {(char *) "setTile", (PyCFunction) _wrap_PyTiledCell_setTile, METH_KEYWORDS|METH_VARARGS, "setTile(tile)\n\ntype: tile: Tiled::Tile *" },
     {(char *) "tile", (PyCFunction) _wrap_PyTiledCell_tile, METH_NOARGS, "tile()\n\n" },
     {(char *) "tileset", (PyCFunction) _wrap_PyTiledCell_tileset, METH_NOARGS, "tileset()\n\n" },
     {(char *) "__copy__", (PyCFunction) _wrap_PyTiledCell__copy__, METH_NOARGS, NULL},
@@ -6525,7 +5965,7 @@ _wrap_PyTiledCell__tp_dealloc(PyTiledCell *self)
 }
 
 static PyObject*
-_wrap_PyTiledCell__tp_richcompare (PyTiledCell *PYBINDGEN_UNUSED(self), PyTiledCell *other, int opid)
+_wrap_PyTiledCell__tp_richcompare (PyTiledCell *self, PyTiledCell *other, int opid)
 {
 
     if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyTiledCell_Type)) {
@@ -6739,11 +6179,11 @@ _wrap_PyTiledTileLayer_width(PyTiledTileLayer *self)
 }
 
 static PyMethodDef PyTiledTileLayer_methods[] = {
-    {(char *) "cellAt", (PyCFunction) _wrap_PyTiledTileLayer_cellAt, METH_VARARGS|METH_KEYWORDS, "cellAt(x, y)\n\ntype: x: int\ntype: y: int" },
+    {(char *) "cellAt", (PyCFunction) _wrap_PyTiledTileLayer_cellAt, METH_KEYWORDS|METH_VARARGS, "cellAt(x, y)\n\ntype: x: int\ntype: y: int" },
     {(char *) "height", (PyCFunction) _wrap_PyTiledTileLayer_height, METH_NOARGS, "height()\n\n" },
     {(char *) "isEmpty", (PyCFunction) _wrap_PyTiledTileLayer_isEmpty, METH_NOARGS, "isEmpty()\n\n" },
-    {(char *) "referencesTileset", (PyCFunction) _wrap_PyTiledTileLayer_referencesTileset, METH_VARARGS|METH_KEYWORDS, "referencesTileset(ts)\n\ntype: ts: Tileset *" },
-    {(char *) "setCell", (PyCFunction) _wrap_PyTiledTileLayer_setCell, METH_VARARGS|METH_KEYWORDS, "setCell(x, y, c)\n\ntype: x: int\ntype: y: int\ntype: c: Cell" },
+    {(char *) "referencesTileset", (PyCFunction) _wrap_PyTiledTileLayer_referencesTileset, METH_KEYWORDS|METH_VARARGS, "referencesTileset(ts)\n\ntype: ts: Tileset *" },
+    {(char *) "setCell", (PyCFunction) _wrap_PyTiledTileLayer_setCell, METH_KEYWORDS|METH_VARARGS, "setCell(x, y, c)\n\ntype: x: int\ntype: y: int\ntype: c: Cell" },
     {(char *) "width", (PyCFunction) _wrap_PyTiledTileLayer_width, METH_NOARGS, "width()\n\n" },
     {NULL, NULL, 0, NULL}
 };
@@ -6757,39 +6197,6 @@ _wrap_PyTiledTileLayer__tp_dealloc(PyTiledTileLayer *self)
             delete tmp;
         }
     Py_TYPE(self)->tp_free((PyObject*)self);
-}
-
-static PyObject*
-_wrap_PyTiledTileLayer__tp_richcompare (PyTiledTileLayer *PYBINDGEN_UNUSED(self), PyTiledTileLayer *other, int opid)
-{
-
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyTiledTileLayer_Type)) {
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    }
-    switch (opid)
-    {
-    case Py_LT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_LE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_EQ:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_NE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    } /* closes switch (opid) */
-    Py_INCREF(Py_NotImplemented);
-    return Py_NotImplemented;
 }
 
 PyTypeObject PyTiledTileLayer_Type = {
@@ -6821,7 +6228,7 @@ PyTypeObject PyTiledTileLayer_Type = {
     "TileLayer(name, x, y, w, h)",                        /* Documentation string */
     (traverseproc)NULL,     /* tp_traverse */
     (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyTiledTileLayer__tp_richcompare,   /* tp_richcompare */
+    (richcmpfunc)NULL,   /* tp_richcompare */
     0,             /* tp_weaklistoffset */
     (getiterfunc)NULL,          /* tp_iter */
     (iternextfunc)NULL,     /* tp_iternext */
@@ -6919,8 +6326,8 @@ _wrap_PyTiledImageLayer_setImage(PyTiledImageLayer *self, PyObject *args, PyObje
 
 static PyMethodDef PyTiledImageLayer_methods[] = {
     {(char *) "image", (PyCFunction) _wrap_PyTiledImageLayer_image, METH_NOARGS, "image()\n\n" },
-    {(char *) "loadFromImage", (PyCFunction) _wrap_PyTiledImageLayer_loadFromImage, METH_VARARGS|METH_KEYWORDS, "loadFromImage(img, file)\n\ntype: img: QImage const &\ntype: file: QString" },
-    {(char *) "setImage", (PyCFunction) _wrap_PyTiledImageLayer_setImage, METH_VARARGS|METH_KEYWORDS, "setImage(image)\n\ntype: image: QPixmap const &" },
+    {(char *) "loadFromImage", (PyCFunction) _wrap_PyTiledImageLayer_loadFromImage, METH_KEYWORDS|METH_VARARGS, "loadFromImage(img, file)\n\ntype: img: QImage const &\ntype: file: QString" },
+    {(char *) "setImage", (PyCFunction) _wrap_PyTiledImageLayer_setImage, METH_KEYWORDS|METH_VARARGS, "setImage(image)\n\ntype: image: QPixmap const &" },
     {NULL, NULL, 0, NULL}
 };
 
@@ -6933,39 +6340,6 @@ _wrap_PyTiledImageLayer__tp_dealloc(PyTiledImageLayer *self)
             delete tmp;
         }
     Py_TYPE(self)->tp_free((PyObject*)self);
-}
-
-static PyObject*
-_wrap_PyTiledImageLayer__tp_richcompare (PyTiledImageLayer *PYBINDGEN_UNUSED(self), PyTiledImageLayer *other, int opid)
-{
-
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyTiledImageLayer_Type)) {
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    }
-    switch (opid)
-    {
-    case Py_LT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_LE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_EQ:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_NE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    } /* closes switch (opid) */
-    Py_INCREF(Py_NotImplemented);
-    return Py_NotImplemented;
 }
 
 PyTypeObject PyTiledImageLayer_Type = {
@@ -6997,7 +6371,7 @@ PyTypeObject PyTiledImageLayer_Type = {
     "ImageLayer(name, x, y)",                        /* Documentation string */
     (traverseproc)NULL,     /* tp_traverse */
     (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyTiledImageLayer__tp_richcompare,   /* tp_richcompare */
+    (richcmpfunc)NULL,   /* tp_richcompare */
     0,             /* tp_weaklistoffset */
     (getiterfunc)NULL,          /* tp_iter */
     (iternextfunc)NULL,     /* tp_iternext */
@@ -7080,7 +6454,7 @@ _wrap_PyTiledGroupLayer_layerCount(PyTiledGroupLayer *self)
 }
 
 static PyMethodDef PyTiledGroupLayer_methods[] = {
-    {(char *) "layerAt", (PyCFunction) _wrap_PyTiledGroupLayer_layerAt, METH_VARARGS|METH_KEYWORDS, "layerAt(index)\n\ntype: index: int" },
+    {(char *) "layerAt", (PyCFunction) _wrap_PyTiledGroupLayer_layerAt, METH_KEYWORDS|METH_VARARGS, "layerAt(index)\n\ntype: index: int" },
     {(char *) "layerCount", (PyCFunction) _wrap_PyTiledGroupLayer_layerCount, METH_NOARGS, "layerCount()\n\n" },
     {NULL, NULL, 0, NULL}
 };
@@ -7094,39 +6468,6 @@ _wrap_PyTiledGroupLayer__tp_dealloc(PyTiledGroupLayer *self)
             delete tmp;
         }
     Py_TYPE(self)->tp_free((PyObject*)self);
-}
-
-static PyObject*
-_wrap_PyTiledGroupLayer__tp_richcompare (PyTiledGroupLayer *PYBINDGEN_UNUSED(self), PyTiledGroupLayer *other, int opid)
-{
-
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyTiledGroupLayer_Type)) {
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    }
-    switch (opid)
-    {
-    case Py_LT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_LE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_EQ:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_NE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    } /* closes switch (opid) */
-    Py_INCREF(Py_NotImplemented);
-    return Py_NotImplemented;
 }
 
 PyTypeObject PyTiledGroupLayer_Type = {
@@ -7158,7 +6499,7 @@ PyTypeObject PyTiledGroupLayer_Type = {
     "GroupLayer(name, x, y)",                        /* Documentation string */
     (traverseproc)NULL,     /* tp_traverse */
     (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyTiledGroupLayer__tp_richcompare,   /* tp_richcompare */
+    (richcmpfunc)NULL,   /* tp_richcompare */
     0,             /* tp_weaklistoffset */
     (getiterfunc)NULL,          /* tp_iter */
     (iternextfunc)NULL,     /* tp_iternext */
@@ -7321,12 +6662,12 @@ _wrap_PyTiledObjectGroup_removeObject(PyTiledObjectGroup *self, PyObject *args, 
 }
 
 static PyMethodDef PyTiledObjectGroup_methods[] = {
-    {(char *) "addObject", (PyCFunction) _wrap_PyTiledObjectGroup_addObject, METH_VARARGS|METH_KEYWORDS, "addObject(object)\n\ntype: object: MapObject *" },
-    {(char *) "insertObject", (PyCFunction) _wrap_PyTiledObjectGroup_insertObject, METH_VARARGS|METH_KEYWORDS, "insertObject(index, object)\n\ntype: index: int\ntype: object: MapObject *" },
-    {(char *) "objectAt", (PyCFunction) _wrap_PyTiledObjectGroup_objectAt, METH_VARARGS|METH_KEYWORDS, "objectAt(index)\n\ntype: index: int" },
+    {(char *) "addObject", (PyCFunction) _wrap_PyTiledObjectGroup_addObject, METH_KEYWORDS|METH_VARARGS, "addObject(object)\n\ntype: object: MapObject *" },
+    {(char *) "insertObject", (PyCFunction) _wrap_PyTiledObjectGroup_insertObject, METH_KEYWORDS|METH_VARARGS, "insertObject(index, object)\n\ntype: index: int\ntype: object: MapObject *" },
+    {(char *) "objectAt", (PyCFunction) _wrap_PyTiledObjectGroup_objectAt, METH_KEYWORDS|METH_VARARGS, "objectAt(index)\n\ntype: index: int" },
     {(char *) "objectCount", (PyCFunction) _wrap_PyTiledObjectGroup_objectCount, METH_NOARGS, "objectCount()\n\n" },
-    {(char *) "referencesTileset", (PyCFunction) _wrap_PyTiledObjectGroup_referencesTileset, METH_VARARGS|METH_KEYWORDS, "referencesTileset(ts)\n\ntype: ts: Tileset *" },
-    {(char *) "removeObject", (PyCFunction) _wrap_PyTiledObjectGroup_removeObject, METH_VARARGS|METH_KEYWORDS, "removeObject(object)\n\ntype: object: MapObject *" },
+    {(char *) "referencesTileset", (PyCFunction) _wrap_PyTiledObjectGroup_referencesTileset, METH_KEYWORDS|METH_VARARGS, "referencesTileset(ts)\n\ntype: ts: Tileset *" },
+    {(char *) "removeObject", (PyCFunction) _wrap_PyTiledObjectGroup_removeObject, METH_KEYWORDS|METH_VARARGS, "removeObject(object)\n\ntype: object: MapObject *" },
     {NULL, NULL, 0, NULL}
 };
 
@@ -7339,39 +6680,6 @@ _wrap_PyTiledObjectGroup__tp_dealloc(PyTiledObjectGroup *self)
             delete tmp;
         }
     Py_TYPE(self)->tp_free((PyObject*)self);
-}
-
-static PyObject*
-_wrap_PyTiledObjectGroup__tp_richcompare (PyTiledObjectGroup *PYBINDGEN_UNUSED(self), PyTiledObjectGroup *other, int opid)
-{
-
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyTiledObjectGroup_Type)) {
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    }
-    switch (opid)
-    {
-    case Py_LT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_LE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_EQ:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_NE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    } /* closes switch (opid) */
-    Py_INCREF(Py_NotImplemented);
-    return Py_NotImplemented;
 }
 
 PyTypeObject PyTiledObjectGroup_Type = {
@@ -7403,7 +6711,7 @@ PyTypeObject PyTiledObjectGroup_Type = {
     "ObjectGroup(name, x, y)",                        /* Documentation string */
     (traverseproc)NULL,     /* tp_traverse */
     (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyTiledObjectGroup__tp_richcompare,   /* tp_richcompare */
+    (richcmpfunc)NULL,   /* tp_richcompare */
     0,             /* tp_weaklistoffset */
     (getiterfunc)NULL,          /* tp_iter */
     (iternextfunc)NULL,     /* tp_iternext */
@@ -7871,18 +7179,18 @@ static PyMethodDef PyTiledMapObject_methods[] = {
     {(char *) "name", (PyCFunction) _wrap_PyTiledMapObject_name, METH_NOARGS, "name()\n\n" },
     {(char *) "objectGroup", (PyCFunction) _wrap_PyTiledMapObject_objectGroup, METH_NOARGS, "objectGroup()\n\n" },
     {(char *) "rotation", (PyCFunction) _wrap_PyTiledMapObject_rotation, METH_NOARGS, "rotation()\n\n" },
-    {(char *) "setCell", (PyCFunction) _wrap_PyTiledMapObject_setCell, METH_VARARGS|METH_KEYWORDS, "setCell(c)\n\ntype: c: Tiled::Cell const" },
-    {(char *) "setHeight", (PyCFunction) _wrap_PyTiledMapObject_setHeight, METH_VARARGS|METH_KEYWORDS, "setHeight(h)\n\ntype: h: double" },
-    {(char *) "setName", (PyCFunction) _wrap_PyTiledMapObject_setName, METH_VARARGS|METH_KEYWORDS, "setName(n)\n\ntype: n: QString" },
-    {(char *) "setPosition", (PyCFunction) _wrap_PyTiledMapObject_setPosition, METH_VARARGS|METH_KEYWORDS, "setPosition(pos)\n\ntype: pos: QPointF" },
-    {(char *) "setRotation", (PyCFunction) _wrap_PyTiledMapObject_setRotation, METH_VARARGS|METH_KEYWORDS, "setRotation(r)\n\ntype: r: double" },
-    {(char *) "setShape", (PyCFunction) _wrap_PyTiledMapObject_setShape, METH_VARARGS|METH_KEYWORDS, "setShape(s)\n\ntype: s: Tiled::MapObject::Shape" },
-    {(char *) "setSize", (PyCFunction) _wrap_PyTiledMapObject_setSize, METH_VARARGS|METH_KEYWORDS, "setSize(size)\n\ntype: size: QSizeF" },
-    {(char *) "setType", (PyCFunction) _wrap_PyTiledMapObject_setType, METH_VARARGS|METH_KEYWORDS, "setType(n)\n\ntype: n: QString" },
-    {(char *) "setVisible", (PyCFunction) _wrap_PyTiledMapObject_setVisible, METH_VARARGS|METH_KEYWORDS, "setVisible(v)\n\ntype: v: bool" },
-    {(char *) "setWidth", (PyCFunction) _wrap_PyTiledMapObject_setWidth, METH_VARARGS|METH_KEYWORDS, "setWidth(w)\n\ntype: w: double" },
-    {(char *) "setX", (PyCFunction) _wrap_PyTiledMapObject_setX, METH_VARARGS|METH_KEYWORDS, "setX(x)\n\ntype: x: double" },
-    {(char *) "setY", (PyCFunction) _wrap_PyTiledMapObject_setY, METH_VARARGS|METH_KEYWORDS, "setY(y)\n\ntype: y: double" },
+    {(char *) "setCell", (PyCFunction) _wrap_PyTiledMapObject_setCell, METH_KEYWORDS|METH_VARARGS, "setCell(c)\n\ntype: c: Tiled::Cell const" },
+    {(char *) "setHeight", (PyCFunction) _wrap_PyTiledMapObject_setHeight, METH_KEYWORDS|METH_VARARGS, "setHeight(h)\n\ntype: h: double" },
+    {(char *) "setName", (PyCFunction) _wrap_PyTiledMapObject_setName, METH_KEYWORDS|METH_VARARGS, "setName(n)\n\ntype: n: QString" },
+    {(char *) "setPosition", (PyCFunction) _wrap_PyTiledMapObject_setPosition, METH_KEYWORDS|METH_VARARGS, "setPosition(pos)\n\ntype: pos: QPointF" },
+    {(char *) "setRotation", (PyCFunction) _wrap_PyTiledMapObject_setRotation, METH_KEYWORDS|METH_VARARGS, "setRotation(r)\n\ntype: r: double" },
+    {(char *) "setShape", (PyCFunction) _wrap_PyTiledMapObject_setShape, METH_KEYWORDS|METH_VARARGS, "setShape(s)\n\ntype: s: Tiled::MapObject::Shape" },
+    {(char *) "setSize", (PyCFunction) _wrap_PyTiledMapObject_setSize, METH_KEYWORDS|METH_VARARGS, "setSize(size)\n\ntype: size: QSizeF" },
+    {(char *) "setType", (PyCFunction) _wrap_PyTiledMapObject_setType, METH_KEYWORDS|METH_VARARGS, "setType(n)\n\ntype: n: QString" },
+    {(char *) "setVisible", (PyCFunction) _wrap_PyTiledMapObject_setVisible, METH_KEYWORDS|METH_VARARGS, "setVisible(v)\n\ntype: v: bool" },
+    {(char *) "setWidth", (PyCFunction) _wrap_PyTiledMapObject_setWidth, METH_KEYWORDS|METH_VARARGS, "setWidth(w)\n\ntype: w: double" },
+    {(char *) "setX", (PyCFunction) _wrap_PyTiledMapObject_setX, METH_KEYWORDS|METH_VARARGS, "setX(x)\n\ntype: x: double" },
+    {(char *) "setY", (PyCFunction) _wrap_PyTiledMapObject_setY, METH_KEYWORDS|METH_VARARGS, "setY(y)\n\ntype: y: double" },
     {(char *) "shape", (PyCFunction) _wrap_PyTiledMapObject_shape, METH_NOARGS, "shape()\n\n" },
     {(char *) "type", (PyCFunction) _wrap_PyTiledMapObject_type, METH_NOARGS, "type()\n\n" },
     {(char *) "width", (PyCFunction) _wrap_PyTiledMapObject_width, METH_NOARGS, "width()\n\n" },
@@ -7900,39 +7208,6 @@ _wrap_PyTiledMapObject__tp_dealloc(PyTiledMapObject *self)
             delete tmp;
         }
     Py_TYPE(self)->tp_free((PyObject*)self);
-}
-
-static PyObject*
-_wrap_PyTiledMapObject__tp_richcompare (PyTiledMapObject *PYBINDGEN_UNUSED(self), PyTiledMapObject *other, int opid)
-{
-
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyTiledMapObject_Type)) {
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    }
-    switch (opid)
-    {
-    case Py_LT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_LE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_EQ:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_NE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    } /* closes switch (opid) */
-    Py_INCREF(Py_NotImplemented);
-    return Py_NotImplemented;
 }
 
 PyTypeObject PyTiledMapObject_Type = {
@@ -7964,7 +7239,7 @@ PyTypeObject PyTiledMapObject_Type = {
     "MapObject(name, type, pos, size)\nMapObject()",                        /* Documentation string */
     (traverseproc)NULL,     /* tp_traverse */
     (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyTiledMapObject__tp_richcompare,   /* tp_richcompare */
+    (richcmpfunc)NULL,   /* tp_richcompare */
     0,             /* tp_weaklistoffset */
     (getiterfunc)NULL,          /* tp_iter */
     (iternextfunc)NULL,     /* tp_iternext */
@@ -8019,7 +7294,7 @@ _wrap_PyTiledLoggingInterface_log(PyTiledLoggingInterface *self, PyObject *args,
 }
 
 static PyMethodDef PyTiledLoggingInterface_methods[] = {
-    {(char *) "log", (PyCFunction) _wrap_PyTiledLoggingInterface_log, METH_VARARGS|METH_KEYWORDS, "log(type, msg)\n\ntype: type: Tiled::LoggingInterface::OutputType\ntype: msg: QString const" },
+    {(char *) "log", (PyCFunction) _wrap_PyTiledLoggingInterface_log, METH_KEYWORDS|METH_VARARGS, "log(type, msg)\n\ntype: type: Tiled::LoggingInterface::OutputType\ntype: msg: QString const" },
     {NULL, NULL, 0, NULL}
 };
 
@@ -8029,39 +7304,6 @@ _wrap_PyTiledLoggingInterface__tp_dealloc(PyTiledLoggingInterface *self)
         self->obj = NULL;
 
     Py_TYPE(self)->tp_free((PyObject*)self);
-}
-
-static PyObject*
-_wrap_PyTiledLoggingInterface__tp_richcompare (PyTiledLoggingInterface *PYBINDGEN_UNUSED(self), PyTiledLoggingInterface *other, int opid)
-{
-
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyTiledLoggingInterface_Type)) {
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    }
-    switch (opid)
-    {
-    case Py_LT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_LE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_EQ:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_NE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    } /* closes switch (opid) */
-    Py_INCREF(Py_NotImplemented);
-    return Py_NotImplemented;
 }
 
 PyTypeObject PyTiledLoggingInterface_Type = {
@@ -8093,7 +7335,7 @@ PyTypeObject PyTiledLoggingInterface_Type = {
     "",                        /* Documentation string */
     (traverseproc)NULL,     /* tp_traverse */
     (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyTiledLoggingInterface__tp_richcompare,   /* tp_richcompare */
+    (richcmpfunc)NULL,   /* tp_richcompare */
     0,             /* tp_weaklistoffset */
     (getiterfunc)NULL,          /* tp_iter */
     (iternextfunc)NULL,     /* tp_iternext */
@@ -8344,6 +7586,10 @@ inittiled_Tiled(void)
         tmp_value = PyLong_FromLong(Tiled::LoggingInterface::INFO);
         PyDict_SetItemString((PyObject*) PyTiledLoggingInterface_Type.tp_dict, "INFO", tmp_value);
         Py_DECREF(tmp_value);
+         // Tiled::LoggingInterface::WARNING
+        tmp_value = PyLong_FromLong(Tiled::LoggingInterface::WARNING);
+        PyDict_SetItemString((PyObject*) PyTiledLoggingInterface_Type.tp_dict, "WARNING", tmp_value);
+        Py_DECREF(tmp_value);
          // Tiled::LoggingInterface::ERROR
         tmp_value = PyLong_FromLong(Tiled::LoggingInterface::ERROR);
         PyDict_SetItemString((PyObject*) PyTiledLoggingInterface_Type.tp_dict, "ERROR", tmp_value);
@@ -8548,14 +7794,14 @@ _wrap_tiled_tileLayerAt(PyObject * PYBINDGEN_UNUSED(dummy), PyObject *args, PyOb
 PyObject * _wrap_tiled_tileLayerAt(PyObject * PYBINDGEN_UNUSED(dummy), PyObject *args, PyObject *kwargs);
 
 static PyMethodDef tiled_functions[] = {
-    {(char *) "imageLayerAt", (PyCFunction) _wrap_tiled_imageLayerAt, METH_VARARGS|METH_KEYWORDS, "imageLayerAt(map, index)\n\ntype: map: Tiled::Map *\ntype: index: int" },
-    {(char *) "isImageLayerAt", (PyCFunction) _wrap_tiled_isImageLayerAt, METH_VARARGS|METH_KEYWORDS, "isImageLayerAt(map, index)\n\ntype: map: Tiled::Map *\ntype: index: int" },
-    {(char *) "isObjectGroupAt", (PyCFunction) _wrap_tiled_isObjectGroupAt, METH_VARARGS|METH_KEYWORDS, "isObjectGroupAt(map, index)\n\ntype: map: Tiled::Map *\ntype: index: int" },
-    {(char *) "isTileLayerAt", (PyCFunction) _wrap_tiled_isTileLayerAt, METH_VARARGS|METH_KEYWORDS, "isTileLayerAt(map, index)\n\ntype: map: Tiled::Map *\ntype: index: int" },
-    {(char *) "loadTileset", (PyCFunction) _wrap_tiled_loadTileset, METH_VARARGS|METH_KEYWORDS, "loadTileset(file)\n\ntype: file: QString" },
-    {(char *) "loadTilesetFromFile", (PyCFunction) _wrap_tiled_loadTilesetFromFile, METH_VARARGS|METH_KEYWORDS, "loadTilesetFromFile(ts, file)\n\ntype: ts: Tileset *\ntype: file: QString" },
-    {(char *) "objectGroupAt", (PyCFunction) _wrap_tiled_objectGroupAt, METH_VARARGS|METH_KEYWORDS, "objectGroupAt(map, index)\n\ntype: map: Tiled::Map *\ntype: index: int" },
-    {(char *) "tileLayerAt", (PyCFunction) _wrap_tiled_tileLayerAt, METH_VARARGS|METH_KEYWORDS, "tileLayerAt(map, index)\n\ntype: map: Tiled::Map *\ntype: index: int" },
+    {(char *) "imageLayerAt", (PyCFunction) _wrap_tiled_imageLayerAt, METH_KEYWORDS|METH_VARARGS, "imageLayerAt(map, index)\n\ntype: map: Tiled::Map *\ntype: index: int" },
+    {(char *) "isImageLayerAt", (PyCFunction) _wrap_tiled_isImageLayerAt, METH_KEYWORDS|METH_VARARGS, "isImageLayerAt(map, index)\n\ntype: map: Tiled::Map *\ntype: index: int" },
+    {(char *) "isObjectGroupAt", (PyCFunction) _wrap_tiled_isObjectGroupAt, METH_KEYWORDS|METH_VARARGS, "isObjectGroupAt(map, index)\n\ntype: map: Tiled::Map *\ntype: index: int" },
+    {(char *) "isTileLayerAt", (PyCFunction) _wrap_tiled_isTileLayerAt, METH_KEYWORDS|METH_VARARGS, "isTileLayerAt(map, index)\n\ntype: map: Tiled::Map *\ntype: index: int" },
+    {(char *) "loadTileset", (PyCFunction) _wrap_tiled_loadTileset, METH_KEYWORDS|METH_VARARGS, "loadTileset(file)\n\ntype: file: QString" },
+    {(char *) "loadTilesetFromFile", (PyCFunction) _wrap_tiled_loadTilesetFromFile, METH_KEYWORDS|METH_VARARGS, "loadTilesetFromFile(ts, file)\n\ntype: ts: Tileset *\ntype: file: QString" },
+    {(char *) "objectGroupAt", (PyCFunction) _wrap_tiled_objectGroupAt, METH_KEYWORDS|METH_VARARGS, "objectGroupAt(map, index)\n\ntype: map: Tiled::Map *\ntype: index: int" },
+    {(char *) "tileLayerAt", (PyCFunction) _wrap_tiled_tileLayerAt, METH_KEYWORDS|METH_VARARGS, "tileLayerAt(map, index)\n\ntype: map: Tiled::Map *\ntype: index: int" },
     {NULL, NULL, 0, NULL}
 };
 /* --- classes --- */
@@ -8601,39 +7847,6 @@ _wrap_PyPythonPythonScript__tp_dealloc(PyPythonPythonScript *self)
     Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
-static PyObject*
-_wrap_PyPythonPythonScript__tp_richcompare (PyPythonPythonScript *PYBINDGEN_UNUSED(self), PyPythonPythonScript *other, int opid)
-{
-
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyPythonPythonScript_Type)) {
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    }
-    switch (opid)
-    {
-    case Py_LT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_LE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_EQ:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_NE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GE:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    case Py_GT:
-        Py_INCREF(Py_NotImplemented);
-        return Py_NotImplemented;
-    } /* closes switch (opid) */
-    Py_INCREF(Py_NotImplemented);
-    return Py_NotImplemented;
-}
-
 PyTypeObject PyPythonPythonScript_Type = {
     PyVarObject_HEAD_INIT(NULL, 0)
     (char *) "tiled.PythonScript",            /* tp_name */
@@ -8663,7 +7876,7 @@ PyTypeObject PyPythonPythonScript_Type = {
     "",                        /* Documentation string */
     (traverseproc)PyPythonPythonScript__tp_traverse,     /* tp_traverse */
     (inquiry)PyPythonPythonScript__tp_clear,             /* tp_clear */
-    (richcmpfunc)_wrap_PyPythonPythonScript__tp_richcompare,   /* tp_richcompare */
+    (richcmpfunc)NULL,   /* tp_richcompare */
     0,             /* tp_weaklistoffset */
     (getiterfunc)NULL,          /* tp_iter */
     (iternextfunc)NULL,     /* tp_iternext */

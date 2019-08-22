@@ -141,14 +141,14 @@ QJSValue ScriptManager::evaluateFile(const QString &fileName)
     QFile file(fileName);
 
     if (!file.open(QFile::ReadOnly | QFile::Text)) {
-        mModule->logger()->error(tr("Error opening file: %1").arg(fileName));
+        Tiled::ERROR(tr("Error opening file: %1").arg(fileName));
         return QJSValue();
     }
 
     const QByteArray text = file.readAll();
     const QString script = QTextCodec::codecForUtfText(text)->toUnicode(text);
 
-    module()->log(tr("Evaluating '%1'").arg(fileName));
+    Tiled::INFO(tr("Evaluating '%1'").arg(fileName));
     return evaluate(script, fileName);
 }
 
@@ -238,7 +238,7 @@ void ScriptManager::throwError(const QString &message)
 
 void ScriptManager::reset()
 {
-    module()->log(tr("Resetting script engine"));
+    Tiled::INFO(tr("Resetting script engine"));
 
     mWatcher.clear();
     delete mEngine;
@@ -252,7 +252,7 @@ void ScriptManager::reset()
 
 void ScriptManager::scriptFilesChanged(const QStringList &scriptFiles)
 {
-    module()->log(tr("Script files changed: %1").arg(scriptFiles.join(QLatin1String(", "))));
+    Tiled::INFO(tr("Script files changed: %1").arg(scriptFiles.join(QLatin1String(", "))));
     reset();
 }
 

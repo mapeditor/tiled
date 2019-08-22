@@ -21,7 +21,7 @@
 #include "automappingmanager.h"
 
 #include "automapperwrapper.h"
-#include "issuesdock.h"
+#include "logginginterface.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "preferences.h"
@@ -147,7 +147,7 @@ bool AutomappingManager::loadFile(const QString &filePath)
 
     if (!rulesFile.exists()) {
         QString error = tr("No rules file found at '%1'").arg(filePath);
-        reportError(error);
+        ERROR(error);
 
         mError += error;
         mError += QLatin1Char('\n');
@@ -155,7 +155,7 @@ bool AutomappingManager::loadFile(const QString &filePath)
     }
     if (!rulesFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
         QString error = tr("Error opening rules file '%1'").arg(filePath);
-        reportError(error);
+        ERROR(error);
 
         mError += error;
         mError += QLatin1Char('\n');
@@ -184,7 +184,7 @@ bool AutomappingManager::loadFile(const QString &filePath)
         if (!rulePathInfo.exists()) {
             QString error = tr("File not found: '%1' (referenced by '%2')")
                     .arg(rulePath, filePath);
-            reportError(error);
+            ERROR(error);
 
             mError += error;
             mError += QLatin1Char('\n');
@@ -199,7 +199,7 @@ bool AutomappingManager::loadFile(const QString &filePath)
             if (!rules) {
                 QString error = tr("Opening rules map '%1' failed: %2")
                         .arg(rulePath, tmxFormat.errorString());
-                reportError(error);
+                ERROR(error);
 
                 mError += error;
                 mError += QLatin1Char('\n');

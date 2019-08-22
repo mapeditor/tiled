@@ -39,16 +39,12 @@ CommandManager *CommandManager::mInstance;
 
 CommandManager::CommandManager()
     : mModel(new CommandDataModel(this))
-    , mLogger(new LoggingInterface(this))
 {
     updateActions();
-
-    PluginManager::addObject(mLogger);
 }
 
 CommandManager::~CommandManager()
 {
-    PluginManager::removeObject(mLogger);
 }
 
 CommandManager *CommandManager::instance()

@@ -221,8 +221,7 @@ CommandProcess::CommandProcess(const Command &command, bool inTerminal, bool sho
             this, &QObject::deleteLater);
 
     if (showOutput) {
-        CommandManager::instance()->logger()->log(LoggingInterface::INFO,
-                                                  tr("Executing: %1").arg(mFinalCommand));
+        Tiled::INFO(tr("Executing: %1").arg(mFinalCommand));
 
         connect(this, &QProcess::readyReadStandardError, this, &CommandProcess::consoleError);
         connect(this, &QProcess::readyReadStandardOutput, this, &CommandProcess::consoleOutput);
@@ -236,14 +235,12 @@ CommandProcess::CommandProcess(const Command &command, bool inTerminal, bool sho
 
 void CommandProcess::consoleOutput()
 {
-    CommandManager::instance()->logger()->log(LoggingInterface::INFO,
-                                              QString::fromLocal8Bit(readAllStandardOutput()));
+    Tiled::INFO(QString::fromLocal8Bit(readAllStandardOutput()));
 }
 
 void CommandProcess::consoleError()
 {
-    CommandManager::instance()->logger()->log(LoggingInterface::ERROR,
-                                              QString::fromLocal8Bit(readAllStandardError()));
+    Tiled::ERROR(QString::fromLocal8Bit(readAllStandardError()));
 }
 
 void CommandProcess::handleProcessError(QProcess::ProcessError error)

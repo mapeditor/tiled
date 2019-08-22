@@ -35,8 +35,6 @@ class QAction;
 
 namespace Tiled {
 
-class LoggingInterface;
-
 class EditableAsset;
 class ScriptedAction;
 class ScriptedMapFormat;
@@ -101,8 +99,6 @@ public:
 
     Q_INVOKABLE void extendMenu(const QByteArray &idName, QJSValue items);
 
-    LoggingInterface *logger() const;
-
 signals:
     void assetCreated(Tiled::EditableAsset *asset);
     void assetOpened(Tiled::EditableAsset *asset);
@@ -136,18 +132,11 @@ private slots:
 private:
     void reportIssue(Issue::Severity severity, const QString &text, QJSValue activated);
 
-    LoggingInterface *mLogger;
     std::map<QByteArray, std::unique_ptr<ScriptedAction>> mRegisteredActions;
     std::map<QString, std::unique_ptr<ScriptedMapFormat>> mRegisteredMapFormats;
     std::map<QString, std::unique_ptr<ScriptedTool>> mRegisteredTools;
 
     QVector<MenuExtension> mMenuExtensions;
 };
-
-
-inline LoggingInterface *ScriptModule::logger() const
-{
-    return mLogger;
-}
 
 } // namespace Tiled

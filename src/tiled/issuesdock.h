@@ -102,16 +102,6 @@ unsigned reportIssue(const Issue &issue);
 void clearIssues(const QList<unsigned> &issueIds);
 void clearIssuesWithContext(void *context);
 
-inline unsigned reportError(const QString &text)
-{
-    return reportIssue(Issue { Issue::Error, text });
-}
-
-inline unsigned reportWarning(const QString &text)
-{
-    return reportIssue(Issue { Issue::Warning, text });
-}
-
 } // namespace Tiled
 
 Q_DECLARE_METATYPE(Tiled::Issue)

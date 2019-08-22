@@ -38,16 +38,16 @@ class QString;
 namespace Tiled {
 
 /**
- * An object to be added by classes that want to write to the Console view.
+ * An interface for reporting issues.
  */
 class TILEDSHARED_EXPORT LoggingInterface : public QObject
 {
     Q_OBJECT
 
+    explicit LoggingInterface(QObject *parent = nullptr);
+
 public:
-    explicit LoggingInterface(QObject *parent = nullptr)
-        : QObject(parent)
-    {}
+    static LoggingInterface &instance();
 
     enum OutputType {
         INFO,
@@ -55,25 +55,20 @@ public:
         ERROR
     };
 
-    void log(OutputType type, const QString &message)
-    {
-        switch (type) {
-        case INFO:
-            emit info(message);
-            break;
-        case WARNING:
-            emit warning(message);
-            break;
-        case ERROR:
-            emit error(message);
-            break;
-        }
-    }
+    void log(OutputType type, const QString &message);
 
 signals:
     void info(const QString &message);
     void warning(const QString &message);
     void error(const QString &message);
 };
+
+inline void INFO(const QString &message) { LoggingInterface::instance().log(LoggingInterface::INFO, message); }
+inline void WARNING(const QString &message) { LoggingInterface::instance().log(LoggingInterface::WARNING, message); }
+inline void ERROR(const QString &message) { LoggingInterface::instance().log(LoggingInterface::ERROR, message); }
+
+inline void INFO(QLatin1String message) { LoggingInterface::instance().log(LoggingInterface::INFO, message); }
+inline void WARNING(QLatin1String message) { LoggingInterface::instance().log(LoggingInterface::WARNING, message); }
+inline void ERROR(QLatin1String message) { LoggingInterface::instance().log(LoggingInterface::ERROR, message); }
 
 } // namespace Tiled

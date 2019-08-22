@@ -12,6 +12,7 @@ SOURCES += $$PWD/compression.cpp \
     $$PWD/imagereference.cpp \
     $$PWD/isometricrenderer.cpp \
     $$PWD/layer.cpp \
+    $$PWD/logginginterface.cpp \
     $$PWD/map.cpp \
     $$PWD/mapformat.cpp \
     $$PWD/mapobject.cpp \

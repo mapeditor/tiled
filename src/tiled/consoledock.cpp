@@ -22,7 +22,6 @@
 #include "consoledock.h"
 
 #include "logginginterface.h"
-#include "pluginmanager.h"
 #include "preferences.h"
 #include "scriptmanager.h"
 
@@ -66,12 +65,10 @@ ConsoleDock::ConsoleDock(QWidget *parent)
     layout->addWidget(mPlainTextEdit);
     layout->addWidget(mLineEdit);
 
-    const auto outputs = PluginManager::objects<LoggingInterface>();
-    for (LoggingInterface *output : outputs)
-        registerOutput(output);
-
-    connect(PluginManager::instance(), &PluginManager::objectAdded,
-            this, &ConsoleDock::onObjectAdded);
+    auto& logger = LoggingInterface::instance();
+    connect(&logger, &LoggingInterface::info, this, &ConsoleDock::appendInfo);
+    connect(&logger, &LoggingInterface::warning, this, &ConsoleDock::appendWarning);
+    connect(&logger, &LoggingInterface::error, this, &ConsoleDock::appendError);
 
     setWidget(widget);
 
@@ -113,12 +110,6 @@ void ConsoleDock::appendScript(const QString &str)
 {
     mPlainTextEdit->appendHtml(QLatin1String("<pre style='color:lightgreen'>&gt; ") + str.toHtmlEscaped() +
                                QLatin1String("</pre>"));
-}
-
-void ConsoleDock::onObjectAdded(QObject *object)
-{
-    if (LoggingInterface *output = qobject_cast<LoggingInterface*>(object))
-        registerOutput(output);
 }
 
 void ConsoleDock::executeScript()
@@ -175,13 +166,6 @@ void ConsoleDock::retranslateUi()
 {
     setWindowTitle(tr("Console"));
     mLineEdit->setPlaceholderText(tr("Execute script"));
-}
-
-void ConsoleDock::registerOutput(LoggingInterface *output)
-{
-    connect(output, &LoggingInterface::info, this, &ConsoleDock::appendInfo);
-    connect(output, &LoggingInterface::warning, this, &ConsoleDock::appendWarning);
-    connect(output, &LoggingInterface::error, this, &ConsoleDock::appendError);
 }
 
 } // namespace Tiled

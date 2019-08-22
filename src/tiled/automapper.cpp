@@ -26,8 +26,8 @@
 #include "automappingutils.h"
 #include "changeproperties.h"
 #include "geometry.h"
-#include "issuesdock.h"
 #include "layermodel.h"
+#include "logginginterface.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapobject.h"
@@ -139,7 +139,7 @@ bool AutoMapper::setupRuleMapProperties()
         QString warning = tr("Ignoring unknown property '%2' = '%3' on layer '%4' (rule map '%1')")
                       .arg(mRulePath, name, value.toString());
 
-        reportWarning(warning);
+        WARNING(warning);
 
         mWarning += warning;
         mWarning += QLatin1Char('\n');
@@ -179,7 +179,7 @@ void AutoMapper::setupInputLayerProperties(InputLayer &inputLayer)
         QString warning = tr("Ignoring unknown property '%2' = '%3' on layer '%4' (rule map '%1')")
                       .arg(mRulePath, name, value.toString(), inputLayer.tileLayer->name());
 
-        reportWarning(warning);
+        WARNING(warning);
 
         mWarning += warning;
         mWarning += QLatin1Char('\n');
