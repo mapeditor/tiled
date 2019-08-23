@@ -264,8 +264,13 @@ void ToolManager::toolEnabledChanged(bool enabled)
         // all the tools to update their enabled state.
         if (!mSelectEnabledToolPending) {
             mSelectEnabledToolPending = true;
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
+            QMetaObject::invokeMethod(this, "selectEnabledTool",
+                                      Qt::QueuedConnection);
+#else
             QMetaObject::invokeMethod(this, &ToolManager::selectEnabledTool,
                                       Qt::QueuedConnection);
+#endif
         }
     }
 }

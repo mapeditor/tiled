@@ -86,12 +86,13 @@ signals:
      */
     void statusInfoChanged(const QString &info);
 
-private:
+private slots:
     void actionTriggered(QAction *action);
     void toolChanged();
     void toolEnabledChanged(bool enabled);
     void selectEnabledTool();
 
+private:
     AbstractTool *firstEnabledTool() const;
     void setSelectedTool(AbstractTool *tool);
 
