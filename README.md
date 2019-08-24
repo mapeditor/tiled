@@ -44,7 +44,12 @@ You will still need to install a development environment alongside and some
 libraries depending on your system, for example:
 
 * On Ubuntu/Debian: `sudo apt install build-essential zlib1g-dev libgl1-mesa-dev`
-* On Windows:       Choose "MinGW" Qt version, or install Visual Studio
+* On Windows:       QMake cannot be used on Windows anymore. Install QtCreator [here](https://www.qt.io/download),
+then compile the project through the editor, or use Qbs (installed with QtCreator) on the command line. Note that
+a free account is required to install QtCreator.
+
+While it is possible to use Qbs to generate a Visual Studio project, it doesn't work currently. See issue [#1956](https://github.com/bjorn/tiled/issues/1956). It does work on other platforms, however, so it may be possible to
+generate the project on the Linux Subsystem for Windows, and then copy it over.
 * On macOS:         Install Xcode
 
 Next, compile by running:
