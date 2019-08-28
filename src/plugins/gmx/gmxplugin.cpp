@@ -20,12 +20,13 @@
 
 #include "gmxplugin.h"
 
+#include "logginginterface.h"
 #include "map.h"
+#include "mapobject.h"
+#include "objectgroup.h"
 #include "savefile.h"
 #include "tile.h"
 #include "tilelayer.h"
-#include "mapobject.h"
-#include "objectgroup.h"
 
 #include <QDir>
 #include <QFileInfo>
@@ -138,15 +139,10 @@ bool GmxPlugin::write(const Map *map, const QString &fileName, Options options)
 
     // Write out views
     // Last view in Object layer is the first view in the room
-    LayerIterator iterator(map);
     if (enableViews) {
         stream.writeStartElement("views");
         int viewCount = 0;
-        while (const Layer *layer = iterator.next()) {
-
-            if (layer->layerType() != Layer::ObjectGroupType)
-                continue;
-
+        for (const Layer *layer : map->objectGroups()) {
             const ObjectGroup *objectLayer = static_cast<const ObjectGroup*>(layer);
 
             for (const MapObject *object : objectLayer->objects()) {
@@ -155,8 +151,11 @@ bool GmxPlugin::write(const Map *map, const QString &fileName, Options options)
                     continue;
 
                 // GM only has 8 views so drop anything more than that
-                if (viewCount > 7)
+                if (viewCount > 7) {
+                    Tiled::ERROR(QLatin1String("GMX plugin: Can't export more than 8 views."),
+                                 Tiled::JumpToObject { object });
                     break;
+                }
 
                 viewCount++;
                 stream.writeStartElement("view");
@@ -193,7 +192,7 @@ bool GmxPlugin::write(const Map *map, const QString &fileName, Options options)
     int layerCount = 0;
 
     // Write out object instances
-    iterator.toFront();
+    LayerIterator iterator(map);
     while (const Layer *layer = iterator.next()) {
         ++layerCount;
 
@@ -425,6 +424,9 @@ bool GmxPlugin::write(const Map *map, const QString &fileName, Options options)
                     stream.writeAttribute("scaleY", QString::number(scaleY));
 
                     stream.writeEndElement();
+                } else {
+                    Tiled::WARNING(QString(QLatin1String("GMX plugin: Ignoring non-tile object %1 without type.")).arg(object->id()),
+                                   Tiled::JumpToObject { object });
                 }
             }
             break;
@@ -432,6 +434,8 @@ bool GmxPlugin::write(const Map *map, const QString &fileName, Options options)
 
         case Layer::ImageLayerType:
             // todo: maybe export as backgrounds?
+            Tiled::WARNING(QString(QLatin1String("GMX plugin: Ignoring image layer \"%1\" (not currently supported).")).arg(layer->name()),
+                           Tiled::SelectLayer { layer });
             break;
 
         case Layer::GroupLayerType:

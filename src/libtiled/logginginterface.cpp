@@ -28,6 +28,10 @@
 
 #include "logginginterface.h"
 
+#include "map.h"
+#include "mapobject.h"
+#include "objectgroup.h"
+
 namespace Tiled {
 
 unsigned Issue::mNextIssueId = 1;
@@ -38,9 +42,11 @@ Issue::Issue()
 }
 
 Issue::Issue(Issue::Severity severity,
-             const QString &text)
+             const QString &text,
+             const std::function<void()> &callback)
     : mSeverity(severity)
     , mText(text)
+    , mCallback(callback)
     , mId(mNextIssueId++)
 {
 }
@@ -111,5 +117,41 @@ void LoggingInterface::log(OutputType type, const QString &message)
 
     report(Issue(severity, message));
 }
+
+
+std::function<void (const OpenFile &)> OpenFile::activated;
+std::function<void (const JumpToTile &)> JumpToTile::activated;
+std::function<void (const JumpToObject &)> JumpToObject::activated;
+std::function<void (const SelectLayer &)> SelectLayer::activated;
+std::function<void (const SelectTile &)> SelectTile::activated;
+
+
+JumpToTile::JumpToTile(const Map *map, QPoint tilePos, const Layer *layer)
+    : mapFile(map->fileName())
+    , tilePos(tilePos)
+    , layerId(layer ? layer->id() : -1)
+{
+    Q_ASSERT(!mapFile.isEmpty());
+}
+
+JumpToObject::JumpToObject(const MapObject *object)
+    : mapFile(object->objectGroup()->map()->fileName())
+    , objectId(object->id())
+{
+    Q_ASSERT(!mapFile.isEmpty());
+}
+
+SelectLayer::SelectLayer(const Layer *layer)
+    : mapFile(layer->map()->fileName())
+    , layerId(layer->id())
+{
+    Q_ASSERT(!mapFile.isEmpty());
+}
+
+SelectTile::SelectTile(const Tile *tile)
+    : tileset(tile->tileset()->originalTileset())
+    , tilesetFile(tile->tileset()->originalTileset()->fileName())
+    , tileId(tile->id())
+{}
 
 } // namespace Tiled

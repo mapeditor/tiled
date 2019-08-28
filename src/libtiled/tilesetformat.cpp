@@ -45,8 +45,10 @@ SharedTileset readTileset(const QString &fileName, QString *error)
                 *error = QString();
         }
 
-        if (tileset)
+        if (tileset) {
+            tileset->setFileName(fileName);
             tileset->setFormat(format);
+        }
 
         return tileset;
     }
@@ -61,6 +63,9 @@ SharedTileset readTileset(const QString &fileName, QString *error)
         else
             *error = QString();
     }
+
+    if (tileset)
+        tileset->setFileName(fileName);
 
     return tileset;
 }

@@ -64,6 +64,7 @@ SharedTileset ExportHelper::prepareExportTileset(const SharedTileset &tileset,
     // Either needs to be embedded or is already embedded and we may need to
     // make other changes to the tileset
     SharedTileset exportTileset = tileset->clone();
+    exportTileset->setOriginalTileset(tileset);
 
     if (mOptions.testFlag(Preferences::DetachTemplateInstances)) {
         for (Tile *tile : exportTileset->tiles()) {

@@ -229,6 +229,14 @@ std::unique_ptr<Tiled::Map> TbinMapFormat::read(const QString &fileName)
     return map;
 }
 
+static bool hasFlags(const Tiled::Cell &cell)
+{
+    return cell.flippedHorizontally() ||
+            cell.flippedVertically() ||
+            cell.flippedAntiDiagonally() ||
+            cell.rotatedHexagonal120();
+}
+
 bool TbinMapFormat::write(const Tiled::Map *map, const QString &fileName, Options options)
 {
     Q_UNUSED(options)
@@ -285,6 +293,11 @@ bool TbinMapFormat::write(const Tiled::Map *map, const QString &fileName, Option
                         tbin::Tile ttile;
                         ttile.staticData.tileIndex = -1;
 
+                        if (hasFlags(cell)) {
+                            Tiled::ERROR("tBIN: Flipped and/or rotated tiles are not supported.",
+                                         Tiled::JumpToTile { map, QPoint(ix + layer->x(), iy + layer->y()), layer });
+                        }
+
                         if (Tiled::Tile *tile = cell.tile()) {
                             ttile.tilesheet = tile->tileset()->name().toStdString();
                             if (tile->frames().size() == 0) {
@@ -295,8 +308,11 @@ bool TbinMapFormat::write(const Tiled::Map *map, const QString &fileName, Option
                                 ttile.animatedData.frameInterval = tile->frames().at(0).duration;
 
                                 for (Tiled::Frame frame : tile->frames()) {
-                                    if (frame.duration != ttile.animatedData.frameInterval)
-                                        Tiled::WARNING("Frames with different duration are not supported in the tBIN format.");
+                                    if (frame.duration != ttile.animatedData.frameInterval) {
+                                        Tiled::ERROR("tBIN: Frames with different duration are not supported.",
+                                                     Tiled::SelectTile { tile });
+                                    }
+
                                     tbin::Tile tframe;
                                     tframe.tilesheet = ttile.tilesheet;
                                     tframe.staticData.tileIndex = frame.tileId;
@@ -317,25 +333,26 @@ bool TbinMapFormat::write(const Tiled::Map *map, const QString &fileName, Option
             }
         }
 
-        bool allObjectsAlignedToGrid = true;
-
         for (Tiled::ObjectGroup* objs : objGroups) {
             const auto groupName = objs->name();
 
             tbin::Layer* tiles = tileLayerIdMap[groupName.toStdString()];
             if (!tiles) {
-                Tiled::WARNING(QString(QLatin1String("Ignoring object layer \"%s\" without matching tile layer.")).arg(groupName));
+                Tiled::WARNING(QString(QLatin1String("tBIN: Ignoring object layer \"%1\" without matching tile layer.")).arg(groupName),
+                               Tiled::SelectLayer { objs });
                 continue;
             }
 
             for (Tiled::MapObject* obj : objs->objects()) {
                 if (obj->name() != QLatin1String("TileData")) {
-                    Tiled::WARNING("Ignoring object with name different from 'TileData'.");
+                    Tiled::WARNING(QString(QLatin1String("tBIN: Ignoring object %1 with name different from 'TileData'.")).arg(obj->id()),
+                                   Tiled::JumpToObject { obj });
                     continue;
                 }
 
                 if (obj->properties().isEmpty()) {
-                    Tiled::WARNING("Ignoring object without custom properties.");
+                    Tiled::WARNING(QString(QLatin1String("tBIN: Ignoring object %1 without custom properties.")).arg(obj->id()),
+                                   Tiled::JumpToObject { obj });
                     continue;
                 }
 
@@ -343,7 +360,8 @@ bool TbinMapFormat::write(const Tiled::Map *map, const QString &fileName, Option
                         static_cast<int>(obj->height()) != tiles->tileSize.y ||
                         obj->x() / tiles->tileSize.x != std::floor(obj->x() / tiles->tileSize.x) ||
                         obj->y() / tiles->tileSize.y != std::floor(obj->y() / tiles->tileSize.y)) {
-                    allObjectsAlignedToGrid = false;
+                    Tiled::WARNING(QString(QLatin1String("tBIN: Object %1 is not aligned to the tile grid.")).arg(obj->id()),
+                                   Tiled::JumpToObject { obj });
                 }
 
                 // Determine tile position based on the center of the object
@@ -358,9 +376,6 @@ bool TbinMapFormat::write(const Tiled::Map *map, const QString &fileName, Option
                 tiledToTbinProperties(obj->properties(), tiles->tiles[idx].props);
             }
         }
-
-        if (!allObjectsAlignedToGrid)
-            Tiled::WARNING("Not all objects are aligned to the tile grid.");
 
         std::ofstream file(fileName.toStdString(), std::ios::trunc | std::ios::binary);
         if (!file) {

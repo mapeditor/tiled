@@ -378,7 +378,7 @@ void TemplatesDock::fixTileset()
         auto tilesetDocument = DocumentManager::instance()->findTilesetDocument(tileset);
 
         if (!tilesetDocument) {
-            auto newTilesetDocument = TilesetDocumentPtr::create(tileset, tileset->fileName());
+            auto newTilesetDocument = TilesetDocumentPtr::create(tileset);
             tilesetDocument = newTilesetDocument.data();
             DocumentManager::instance()->addDocument(newTilesetDocument);
         } else {

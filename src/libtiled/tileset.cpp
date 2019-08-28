@@ -778,6 +778,24 @@ void Tileset::setTileImage(Tile *tile,
     }
 }
 
+void Tileset::setOriginalTileset(const SharedTileset &original)
+{
+    mOriginalTileset = original;
+}
+
+/**
+ * When a tileset gets exported, a copy might be made to apply certain export
+ * options. In this case, the copy will have a (weak) pointer to the original
+ * tileset, to allow issues found during export to refer to this tileset.
+ */
+SharedTileset Tileset::originalTileset() const
+{
+    SharedTileset original { mOriginalTileset };
+    if (!original)
+        original = sharedPointer();
+    return original;
+}
+
 void Tileset::swap(Tileset &other)
 {
     const Properties p = properties();

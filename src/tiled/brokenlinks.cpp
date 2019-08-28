@@ -434,9 +434,7 @@ BrokenLinksWidget::BrokenLinksWidget(BrokenLinksModel *brokenLinksModel, QWidget
 
     // For some reason a model reset doesn't trigger the selectionChanged signal,
     // so we need to handle that explicitly.
-    connect(brokenLinksModel, &BrokenLinksModel::modelReset, this, [this] {
-        selectionChanged();
-    });
+    connect(brokenLinksModel, &BrokenLinksModel::modelReset, this, &BrokenLinksWidget::selectionChanged);
 }
 
 void BrokenLinksWidget::clicked(QAbstractButton *button)

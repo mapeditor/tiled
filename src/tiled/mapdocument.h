@@ -85,7 +85,7 @@ public:
     /**
      * Constructs a map document around the given map.
      */
-    MapDocument(std::unique_ptr<Map> map, const QString &fileName = QString());
+    MapDocument(std::unique_ptr<Map> map);
 
     ~MapDocument() override;
 

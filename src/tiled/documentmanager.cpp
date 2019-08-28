@@ -29,10 +29,12 @@
 #include "editor.h"
 #include "filechangedwarning.h"
 #include "filesystemwatcher.h"
+#include "logginginterface.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapeditor.h"
 #include "mapformat.h"
+#include "maprenderer.h"
 #include "mapview.h"
 #include "noeditorwidget.h"
 #include "preferences.h"
@@ -134,6 +136,62 @@ DocumentManager::DocumentManager(QObject *parent)
 
     connect(TilesetManager::instance(), &TilesetManager::tilesetImagesChanged,
             this, &DocumentManager::tilesetImagesChanged);
+
+    OpenFile::activated = [this] (const OpenFile &open) {
+        openFile(open.file);
+    };
+
+    JumpToTile::activated = [this] (const JumpToTile &jump) {
+        if (auto mapDocument = openMapFile(jump.mapFile)) {
+            auto renderer = mapDocument->renderer();
+            auto mapView = viewForDocument(mapDocument);
+            auto pos = renderer->tileToScreenCoords(jump.tilePos);
+            mapView->forceCenterOn(pos);
+
+            if (auto layer = mapDocument->map()->findLayerById(jump.layerId))
+                mapDocument->switchSelectedLayers({ layer });
+        }
+    };
+
+    JumpToObject::activated = [this] (const JumpToObject &jump) {
+        if (auto mapDocument = openMapFile(jump.mapFile)) {
+            if (auto object = mapDocument->map()->findObjectById(jump.objectId)) {
+                mapDocument->focusMapObjectRequested(object);
+                mapDocument->setSelectedObjects({ object });
+            }
+        }
+    };
+
+    SelectLayer::activated = [this] (const SelectLayer &select) {
+        if (auto mapDocument = openMapFile(select.mapFile)) {
+            if (auto layer = mapDocument->map()->findLayerById(select.layerId)) {
+                mapDocument->switchSelectedLayers({ layer });
+                mapDocument->setCurrentObject(layer);
+            }
+        }
+    };
+
+    SelectTile::activated = [this] (const SelectTile &select) {
+        TilesetDocument* tilesetDocument = nullptr;
+
+        if (SharedTileset tileset { select.tileset }) {
+            tilesetDocument = findTilesetDocument(tileset);
+            if (tilesetDocument) {
+                if (!switchToDocument(tilesetDocument))
+                    addDocument(tilesetDocument->sharedFromThis());
+            }
+        }
+
+        if (!tilesetDocument && !select.tilesetFile.isEmpty())
+            tilesetDocument = openTilesetFile(select.tilesetFile);
+
+        if (tilesetDocument) {
+            if (auto tile = tilesetDocument->tileset()->findTile(select.tileId)) {
+                tilesetDocument->setSelectedTiles({ tile });
+                tilesetDocument->setCurrentObject(tile);
+            }
+        }
+    };
 
     mTabBar->installEventFilter(this);
 }
@@ -984,6 +1042,20 @@ void DocumentManager::removeFromTilesetDocument(const SharedTileset &tileset, Ma
             emit tilesetDocumentRemoved(tilesetDocument);
         }
     }
+}
+
+MapDocument *DocumentManager::openMapFile(const QString &path)
+{
+    openFile(path);
+    const int i = findDocument(path);
+    return i == -1 ? nullptr : qobject_cast<MapDocument*>(mDocuments.at(i).data());
+}
+
+TilesetDocument *DocumentManager::openTilesetFile(const QString &path)
+{
+    openFile(path);
+    const int i = findDocument(path);
+    return i == -1 ? nullptr : qobject_cast<TilesetDocument*>(mDocuments.at(i).data());
 }
 
 static bool mayNeedColumnCountAdjustment(const Tileset &tileset)

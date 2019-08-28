@@ -69,8 +69,8 @@
 
 using namespace Tiled;
 
-MapDocument::MapDocument(std::unique_ptr<Map> map, const QString &fileName)
-    : Document(MapDocumentType, fileName)
+MapDocument::MapDocument(std::unique_ptr<Map> map)
+    : Document(MapDocumentType, map->fileName())
     , mMap(std::move(map))
     , mLayerModel(new LayerModel(this))
     , mHoveredMapObject(nullptr)
@@ -130,6 +130,7 @@ bool MapDocument::save(const QString &fileName, QString *error)
     }
 
     undoStack()->setClean();
+    mMap->setFileName(fileName);
     setFileName(fileName);
     mLastSaved = QFileInfo(fileName).lastModified();
 
@@ -156,7 +157,9 @@ MapDocumentPtr MapDocument::load(const QString &fileName,
         return MapDocumentPtr();
     }
 
-    MapDocumentPtr document = MapDocumentPtr::create(std::move(map), fileName);
+    map->setFileName(fileName);
+
+    MapDocumentPtr document = MapDocumentPtr::create(std::move(map));
     document->setReaderFormat(format);
     if (format->hasCapabilities(MapFormat::Write))
         document->setWriterFormat(format);

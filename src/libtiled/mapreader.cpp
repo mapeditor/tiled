@@ -1343,11 +1343,7 @@ SharedTileset MapReader::readTileset(const QString &fileName)
     if (!d->openFile(&file))
         return SharedTileset();
 
-    SharedTileset tileset = readTileset(&file, QFileInfo(fileName).absolutePath());
-    if (tileset)
-        tileset->setFileName(fileName);
-
-    return tileset;
+    return readTileset(&file, QFileInfo(fileName).absolutePath());
 }
 
 std::unique_ptr<ObjectTemplate> MapReader::readObjectTemplate(QIODevice *device, const QString &path)

@@ -32,12 +32,20 @@
 #include "tiled_global.h"
 
 #include <QObject>
+#include <QPoint>
+#include <QWeakPointer>
 
 #include <functional>
 
 class QString;
 
 namespace Tiled {
+
+class Layer;
+class Map;
+class MapObject;
+class Tile;
+class Tileset;
 
 struct TILEDSHARED_EXPORT Issue
 {
@@ -47,7 +55,9 @@ struct TILEDSHARED_EXPORT Issue
     };
 
     Issue();
-    Issue(Severity severity, const QString &text);
+    Issue(Severity severity,
+          const QString &text,
+          const std::function<void()> &callback = std::function<void()>());
 
     Severity severity() const { return mSeverity; }
     QString text() const { return mText; }
@@ -111,13 +121,91 @@ signals:
     void error(const QString &message);
 };
 
-inline void INFO(const QString &message) { LoggingInterface::instance().log(LoggingInterface::INFO, message); }
-inline void WARNING(const QString &message) { LoggingInterface::instance().report(Issue { Issue::Warning, message }); }
-inline void ERROR(const QString &message) { LoggingInterface::instance().report(Issue { Issue::Error, message }); }
+inline void INFO(const QString &message)
+{
+    LoggingInterface::instance().log(LoggingInterface::INFO, message);
+}
 
-inline void INFO(QLatin1String message) { LoggingInterface::instance().log(LoggingInterface::INFO, message); }
-inline void WARNING(QLatin1String message) { LoggingInterface::instance().report(Issue { Issue::Warning, message }); }
-inline void ERROR(QLatin1String message) { LoggingInterface::instance().report(Issue { Issue::Error, message }); }
+inline void WARNING(const QString &message, std::function<void()> callback = std::function<void()>())
+{
+    LoggingInterface::instance().report(Issue { Issue::Warning, message, callback });
+}
+
+inline void ERROR(const QString &message, std::function<void()> callback = std::function<void()>())
+{
+    LoggingInterface::instance().report(Issue { Issue::Error, message, callback });
+}
+
+inline void INFO(QLatin1String message)
+{
+    INFO(QString(message));
+}
+
+inline void WARNING(QLatin1String message, std::function<void()> callback = std::function<void()>())
+{
+    WARNING(QString(message), callback);
+}
+
+inline void ERROR(QLatin1String message, std::function<void()> callback = std::function<void()>())
+{
+    ERROR(QString(message), callback);
+}
+
+// TODO: Try "static inline" once we switch to C++17
+#define ACTIVATABLE(Class) \
+    void operator() () const { activated(*this); } \
+    static std::function<void (const Class &)> activated;
+
+struct TILEDSHARED_EXPORT OpenFile
+{
+    QString file;
+
+    ACTIVATABLE(OpenFile)
+};
+
+struct TILEDSHARED_EXPORT JumpToTile
+{
+    JumpToTile(const Map *map, QPoint tilePos, const Layer *layer = nullptr);
+
+    QString mapFile;
+    QPoint tilePos;
+    int layerId = -1;
+
+    ACTIVATABLE(JumpToTile)
+};
+
+struct TILEDSHARED_EXPORT JumpToObject
+{
+    JumpToObject(const MapObject *object);
+
+    QString mapFile;
+    int objectId;
+
+    ACTIVATABLE(JumpToObject)
+};
+
+struct TILEDSHARED_EXPORT SelectLayer
+{
+    SelectLayer(const Layer *layer);
+
+    QString mapFile;
+    int layerId;
+
+    ACTIVATABLE(SelectLayer)
+};
+
+struct TILEDSHARED_EXPORT SelectTile
+{
+    SelectTile(const Tile *tile);
+
+    QWeakPointer<Tileset> tileset;
+    QString tilesetFile;
+    int tileId;
+
+    ACTIVATABLE(SelectTile)
+};
+
+#undef ACTIVATABLE
 
 } // namespace Tiled
 

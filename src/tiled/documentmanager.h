@@ -128,6 +128,8 @@ public:
 
     void abortMultiDocumentClose();
 
+    bool eventFilter(QObject *object, QEvent *event) override;
+
 signals:
     void documentCreated(Document *document);
     void documentOpened(Document *document);
@@ -195,7 +197,8 @@ private:
     void addToTilesetDocument(const SharedTileset &tileset, MapDocument *mapDocument);
     void removeFromTilesetDocument(const SharedTileset &tileset, MapDocument *mapDocument);
 
-    bool eventFilter(QObject *object, QEvent *event) override;
+    MapDocument *openMapFile(const QString &path);
+    TilesetDocument *openTilesetFile(const QString &path);
 
     QVector<DocumentPtr> mDocuments;
     TilesetDocumentsModel *mTilesetDocumentsModel;

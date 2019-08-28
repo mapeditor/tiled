@@ -137,10 +137,10 @@ bool AutoMapper::setupRuleMapProperties()
             }
         }
 
-        QString warning = tr("Ignoring unknown property '%2' = '%3' on layer '%4' (rule map '%1')")
+        QString warning = tr("Ignoring unknown property '%2' = '%3' (rule map '%1')")
                       .arg(mRulePath, name, value.toString());
 
-        WARNING(warning);
+        WARNING(warning, OpenFile { mRulePath });
 
         mWarning += warning;
         mWarning += QLatin1Char('\n');
@@ -180,7 +180,7 @@ void AutoMapper::setupInputLayerProperties(InputLayer &inputLayer)
         QString warning = tr("Ignoring unknown property '%2' = '%3' on layer '%4' (rule map '%1')")
                       .arg(mRulePath, name, value.toString(), inputLayer.tileLayer->name());
 
-        WARNING(warning);
+        WARNING(warning, SelectLayer { inputLayer.tileLayer });
 
         mWarning += warning;
         mWarning += QLatin1Char('\n');
@@ -843,16 +843,12 @@ void AutoMapper::copyMapRegion(const QRegion &region, QPoint offset,
             if (TileLayer *fromTileLayer = from->asTileLayer()) {
                 TileLayer *toTileLayer = to->asTileLayer();
                 Q_ASSERT(toTileLayer); //TODO check this before in prepareAutomap or such!
-                copyTileRegion(fromTileLayer, rect.x(), rect.y(),
-                               rect.width(), rect.height(),
-                               toTileLayer,
+                copyTileRegion(fromTileLayer, rect, toTileLayer,
                                rect.x() + offset.x(), rect.y() + offset.y());
 
             } else if (ObjectGroup *fromObjectGroup = from->asObjectGroup()) {
                 ObjectGroup *toObjectGroup = to->asObjectGroup();
-                copyObjectRegion(fromObjectGroup, rect.x(), rect.y(),
-                                 rect.width(), rect.height(),
-                                 toObjectGroup,
+                copyObjectRegion(fromObjectGroup, rect, toObjectGroup,
                                  rect.x() + offset.x(), rect.y() + offset.y());
             } else {
                 Q_ASSERT(false);
@@ -873,15 +869,14 @@ void AutoMapper::copyMapRegion(const QRegion &region, QPoint offset,
     }
 }
 
-void AutoMapper::copyTileRegion(const TileLayer *srcLayer, int srcX, int srcY,
-                                int width, int height,
+void AutoMapper::copyTileRegion(const TileLayer *srcLayer, QRect rect,
                                 TileLayer *dstLayer, int dstX, int dstY)
 {
     int startX = dstX;
     int startY = dstY;
 
-    int endX = dstX + width;
-    int endY = dstY + height;
+    int endX = dstX + rect.width();
+    int endY = dstY + rect.height();
 
     int dwidth = dstLayer->width();
     int dheight = dstLayer->height();
@@ -893,8 +888,8 @@ void AutoMapper::copyTileRegion(const TileLayer *srcLayer, int srcX, int srcY,
         endY = qMin(dheight, endY);
     }
 
-    const int offsetX = srcX - dstX;
-    const int offsetY = srcY - dstY;
+    const int offsetX = rect.x() - dstX;
+    const int offsetY = rect.y() - dstY;
 
     for (int x = startX; x < endX; ++x) {
         for (int y = startY; y < endY; ++y) {
@@ -915,11 +910,9 @@ void AutoMapper::copyTileRegion(const TileLayer *srcLayer, int srcX, int srcY,
     }
 }
 
-void AutoMapper::copyObjectRegion(const ObjectGroup *srcLayer, int srcX, int srcY,
-                                  int width, int height,
+void AutoMapper::copyObjectRegion(const ObjectGroup *srcLayer, const QRectF &rect,
                                   ObjectGroup *dstLayer, int dstX, int dstY)
 {
-    const QRectF rect = QRectF(srcX, srcY, width, height);
     const QRectF pixelRect = mMapDocument->renderer()->tileToPixelCoords(rect);
     const QList<MapObject*> objects = objectsInRegion(srcLayer, pixelRect.toAlignedRect());
 

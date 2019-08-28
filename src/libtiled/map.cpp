@@ -334,6 +334,7 @@ bool Map::isTilesetUsed(const Tileset *tileset) const
 Map *Map::clone() const
 {
     Map *o = new Map(mOrientation, mWidth, mHeight, mTileWidth, mTileHeight, mInfinite);
+    o->mFileName = mFileName;
     o->mRenderOrder = mRenderOrder;
     o->mHexSideLength = mHexSideLength;
     o->mStaggerAxis = mStaggerAxis;
@@ -381,6 +382,26 @@ void Map::initializeObjectIds(ObjectGroup &objectGroup)
         if (o->id() == 0)
             o->setId(takeNextObjectId());
     }
+}
+
+Layer *Map::findLayerById(int layerId) const
+{
+    for (Layer *layer : allLayers()) {
+        if (layer->id() == layerId)
+            return layer;
+    }
+    return nullptr;
+}
+
+MapObject *Map::findObjectById(int objectId) const
+{
+    for (Layer *layer : objectGroups()) {
+        for (MapObject *mapObject : static_cast<ObjectGroup*>(layer)->objects()) {
+            if (mapObject->id() == objectId)
+                return mapObject;
+        }
+    }
+    return nullptr;
 }
 
 QRegion Map::tileRegion() const

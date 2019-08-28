@@ -215,6 +215,9 @@ public:
 
     SharedTileset sharedPointer() const;
 
+    void setOriginalTileset(const SharedTileset &original);
+    SharedTileset originalTileset() const;
+
     void setStatus(LoadingStatus status);
     void setImageStatus(LoadingStatus status);
     LoadingStatus status() const;
@@ -269,6 +272,7 @@ private:
     QPointer<TilesetFormat> mFormat;
 
     QWeakPointer<Tileset> mWeakPointer;
+    QWeakPointer<Tileset> mOriginalTileset;
 };
 
 

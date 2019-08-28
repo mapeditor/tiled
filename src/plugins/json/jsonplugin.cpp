@@ -235,8 +235,6 @@ Tiled::SharedTileset JsonTilesetFormat::read(const QString &fileName)
 
     if (!tileset)
         mError = converter.errorString();
-    else
-        tileset->setFileName(fileName);
 
     return tileset;
 }

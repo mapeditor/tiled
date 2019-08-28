@@ -156,10 +156,10 @@ public:
         QSize tileSize,
         bool infinite = false);
 
-    /**
-     * Destructor.
-     */
     ~Map();
+
+    QString fileName() const { return mFileName; }
+    void setFileName(const QString &fileName) { mFileName = fileName; }
 
     /**
      * Returns the orientation of the map.
@@ -464,6 +464,9 @@ public:
     int takeNextObjectId();
     void initializeObjectIds(ObjectGroup &objectGroup);
 
+    Layer *findLayerById(int layerId) const;
+    MapObject *findObjectById(int objectId) const;
+
     QRegion tileRegion() const;
 
 signals:
@@ -480,6 +483,7 @@ private:
 
     void recomputeDrawMargins() const;
 
+    QString mFileName;
     Orientation mOrientation;
     RenderOrder mRenderOrder;
     int mCompressionLevel;

@@ -51,7 +51,7 @@ class TilesetDocument : public Document
     Q_OBJECT
 
 public:
-    TilesetDocument(const SharedTileset &tileset, const QString &fileName = QString());
+    TilesetDocument(const SharedTileset &tileset);
     ~TilesetDocument() override;
 
     TilesetDocumentPtr sharedFromThis() { return qSharedPointerCast<TilesetDocument>(Document::sharedFromThis()); }

@@ -58,8 +58,8 @@ private:
 
 QMap<SharedTileset, TilesetDocument*> TilesetDocument::sTilesetToDocument;
 
-TilesetDocument::TilesetDocument(const SharedTileset &tileset, const QString &fileName)
-    : Document(TilesetDocumentType, fileName)
+TilesetDocument::TilesetDocument(const SharedTileset &tileset)
+    : Document(TilesetDocumentType, tileset->fileName())
     , mTileset(tileset)
     , mTerrainModel(new TilesetTerrainModel(this, this))
     , mWangSetModel(new TilesetWangSetModel(this, this))
@@ -68,9 +68,6 @@ TilesetDocument::TilesetDocument(const SharedTileset &tileset, const QString &fi
     sTilesetToDocument.insert(tileset, this);
 
     mCurrentObject = tileset.data();
-
-    // warning: will need to be kept up-to-date
-    setFileName(tileset->fileName());
 
     connect(this, &TilesetDocument::propertyAdded,
             this, &TilesetDocument::onPropertyAdded);
@@ -142,6 +139,7 @@ bool TilesetDocument::reload(QString *error)
         return false;
     }
 
+    tileset->setFileName(fileName());
     tileset->setFormat(format);
 
     undoStack()->push(new ReloadTileset(this, tileset));
@@ -163,9 +161,10 @@ TilesetDocumentPtr TilesetDocument::load(const QString &fileName,
         return TilesetDocumentPtr();
     }
 
+    tileset->setFileName(fileName);
     tileset->setFormat(format);
 
-    return TilesetDocumentPtr::create(tileset, fileName);
+    return TilesetDocumentPtr::create(tileset);
 }
 
 FileFormat *TilesetDocument::writerFormat() const
