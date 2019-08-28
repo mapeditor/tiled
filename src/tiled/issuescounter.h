@@ -1,5 +1,5 @@
 /*
- * issuesdock.h
+ * issuescounter.h
  * Copyright 2019, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
@@ -20,41 +20,29 @@
 
 #pragma once
 
-#include <QDockWidget>
+#include <QAbstractButton>
 
-class QListView;
-class QSortFilterProxyModel;
+class QLabel;
 
 namespace Tiled {
 
-class FilterEdit;
-class Issue;
-class IssueFilterModel;
-
-/**
- * A dock widget that shows errors and warnings, along with the ability to
- * filter them.
- */
-class IssuesDock : public QDockWidget
+class IssuesCounter : public QAbstractButton
 {
     Q_OBJECT
 
 public:
-    IssuesDock(QWidget *parent = nullptr);
+    explicit IssuesCounter(QWidget *parent = nullptr);
 
 protected:
-    void changeEvent(QEvent *e) override;
+    void paintEvent(QPaintEvent *event) override;
 
 private:
-    void activated(const QModelIndex &index);
-    void retranslateUi();
+    void updateLabels();
 
-    IssueFilterModel *mProxyModel;
-    FilterEdit *mFilterEdit;
-    QListView *mIssuesView;
+    QLabel *mErrorIcon;
+    QLabel *mErrorCount;
+    QLabel *mWarningIcon;
+    QLabel *mWarningCount;
 };
-
-void clearIssues(const QList<unsigned> &issueIds);
-void clearIssuesWithContext(void *context);
 
 } // namespace Tiled

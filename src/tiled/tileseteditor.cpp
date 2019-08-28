@@ -29,6 +29,7 @@
 #include "changewangcolordata.h"
 #include "changewangsetdata.h"
 #include "erasetiles.h"
+#include "issuescounter.h"
 #include "maintoolbar.h"
 #include "mapdocument.h"
 #include "mapobject.h"
@@ -181,6 +182,7 @@ TilesetEditor::TilesetEditor(QObject *parent)
     mMainWindow->statusBar()->addPermanentWidget(mZoomComboBox);
     mMainWindow->statusBar()->addPermanentWidget(new NewsButton);
     mMainWindow->statusBar()->addPermanentWidget(new NewVersionButton(NewVersionButton::AutoVisible));
+    mMainWindow->statusBar()->addWidget(new IssuesCounter);
     mMainWindow->statusBar()->addWidget(mStatusInfoLabel);
 
     mTemplatesDock->setPropertiesDock(mPropertiesDock);

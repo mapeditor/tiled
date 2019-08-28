@@ -21,15 +21,13 @@
 #include "issuesdock.h"
 
 #include "filteredit.h"
-#include "logginginterface.h"
+#include "issuesmodel.h"
 #include "utils.h"
 
-#include <QAbstractListModel>
 #include <QApplication>
 #include <QCheckBox>
 #include <QEvent>
 #include <QGuiApplication>
-#include <QIcon>
 #include <QListView>
 #include <QPainter>
 #include <QPushButton>
@@ -40,157 +38,6 @@
 #include <memory>
 
 namespace Tiled {
-
-class IssuesModel : public QAbstractListModel
-{
-public:
-    enum {
-        IssueRole = Qt::UserRole
-    };
-
-    static IssuesModel &instance();
-
-    void addIssue(const Issue &issue);
-    void removeIssues(const QList<unsigned> &issueIds);
-    void removeIssuesWithContext(void *context);
-    void clear();
-
-    int rowCount(const QModelIndex &parent) const override;
-    QVariant data(const QModelIndex &index, int role) const override;
-
-private:
-    IssuesModel(QObject *parent = nullptr);
-
-    void removeIssues(const RangeSet<int> &indexes);
-
-    QVector<Issue> mIssues;
-
-    QIcon mErrorIcon;
-    QIcon mWarningIcon;
-};
-
-IssuesModel::IssuesModel(QObject *parent)
-    : QAbstractListModel(parent)
-{
-    mErrorIcon.addFile(QLatin1String("://images/16/dialog-error.png"));
-    mErrorIcon.addFile(QLatin1String("://images/24/dialog-error.png"));
-    mErrorIcon.addFile(QLatin1String("://images/32/dialog-error.png"));
-
-    mWarningIcon.addFile(QLatin1String("://images/16/dialog-warning.png"));
-    mWarningIcon.addFile(QLatin1String("://images/24/dialog-warning.png"));
-    mWarningIcon.addFile(QLatin1String("://images/32/dialog-warning.png"));
-
-    connect(&LoggingInterface::instance(), &LoggingInterface::issue,
-            this, &IssuesModel::addIssue);
-}
-
-IssuesModel &IssuesModel::instance()
-{
-    static IssuesModel issuesModel;
-    return issuesModel;
-}
-
-void IssuesModel::addIssue(const Issue &issue)
-{
-    int i = mIssues.indexOf(issue);
-    if (i != -1) {
-        auto &existingIssue = mIssues[i];
-        existingIssue.addOccurrence(issue);
-
-        QModelIndex modelIndex = index(i);
-        emit dataChanged(modelIndex, modelIndex);
-        return;
-    }
-
-    beginInsertRows(QModelIndex(), mIssues.size(), mIssues.size());
-    mIssues.append(issue);
-    endInsertRows();
-}
-
-void IssuesModel::removeIssues(const QList<unsigned> &issueIds)
-{
-    RangeSet<int> indexes;
-
-    for (unsigned id : issueIds) {
-        auto it = std::find_if(mIssues.cbegin(), mIssues.cend(),
-                               [id] (const Issue &issue) { return issue.id() == id; });
-
-        if (it != mIssues.cend())
-            indexes.insert(std::distance(mIssues.cbegin(), it));
-    }
-
-    removeIssues(indexes);
-}
-
-void IssuesModel::removeIssuesWithContext(void *context)
-{
-    RangeSet<int> indexes;
-
-    for (int i = 0, size = mIssues.size(); i < size; ++i)
-        if (mIssues.at(i).context() == context)
-            indexes.insert(i);
-
-    removeIssues(indexes);
-}
-
-void IssuesModel::removeIssues(const RangeSet<int> &indexes)
-{
-    if (indexes.isEmpty())
-        return;
-
-    // Remove back to front to keep the indexes valid
-    RangeSet<int>::Range it = indexes.end();
-    RangeSet<int>::Range begin = indexes.begin();
-    // assert: end != begin, since there is at least one entry
-    do {
-        --it;
-        beginRemoveRows(QModelIndex(), it.first(), it.last());
-        mIssues.remove(it.first(), it.length());
-        endRemoveRows();
-    } while (it != begin);
-}
-
-void IssuesModel::clear()
-{
-    beginResetModel();
-    mIssues.clear();
-    endResetModel();
-}
-
-int IssuesModel::rowCount(const QModelIndex &parent) const
-{
-    return parent.isValid() ? 0 : mIssues.size();
-}
-
-QVariant IssuesModel::data(const QModelIndex &index, int role) const
-{
-    switch (role) {
-    case Qt::DisplayRole:
-        return mIssues.at(index.row()).text();
-    case Qt::DecorationRole:
-        switch (mIssues.at(index.row()).severity()) {
-        case Issue::Error:
-            return mErrorIcon;
-        case Issue::Warning:
-            return mWarningIcon;
-        }
-        break;
-    case Qt::BackgroundRole: {
-        switch (mIssues.at(index.row()).severity()) {
-        case Issue::Error:
-            return QColor(253, 0, 69, 32);
-        case Issue::Warning:
-            return QColor(255, 230, 0, 32);
-        }
-        break;
-    }
-    case IssueRole:
-        return QVariant::fromValue(mIssues.at(index.row()));
-    }
-
-    return QVariant();
-}
-
 
 class IssueFilterModel : public QSortFilterProxyModel
 {
@@ -333,6 +180,10 @@ IssuesDock::IssuesDock(QWidget *parent)
 
     connect(showWarningsCheckBox, &QCheckBox::toggled, mProxyModel, &IssueFilterModel::setShowWarnings);
     connect(clearButton, &QPushButton::clicked, &IssuesModel::instance(), &IssuesModel::clear);
+    connect(&IssuesModel::instance(), &IssuesModel::counterClicked, this, [this] {
+        show();
+        raise();
+    });
 
     auto toolBarLayout = new QHBoxLayout;
     toolBarLayout->addWidget(mFilterEdit);

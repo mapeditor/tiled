@@ -503,6 +503,8 @@ void TiledProxyStyle::drawPrimitive(PrimitiveElement element,
                 };
                 painter->drawPoints(points, 4);
             }
+
+            painter->restore();
             return;
         }
 
