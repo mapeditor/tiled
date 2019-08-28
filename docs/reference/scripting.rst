@@ -156,6 +156,7 @@ Properties
     **activeAsset** : :ref:`script-asset`, "Currently selected asset, or ``null`` if no file is open. Can be assigned
     any open asset in order to change the active asset."
     **openAssets** : array |ro|, "List of currently opened :ref:`assets <script-asset>`."
+    **mapEditor** : :ref:`script-mapeditor`, "Access the editor used when editing maps."
     **tilesetEditor** : :ref:`script-tileseteditor`, "Access the editor used when editing tilesets."
 
 Functions
@@ -757,7 +758,7 @@ new TileLayer([name : string])
 TileLayer.region() : region
     Returns the region of the layer that is covered with tiles.
 
-TileLayer.cellAt(x : int, y : int) : cell
+TileLayer.cellAt(x : int, y : int) : :ref:`script-cell`
     Returns the value of the cell at the given position. Can be used to query
     the flags and the tile ID, but does not currently allow getting a tile
     reference.
@@ -1159,6 +1160,32 @@ Action.toggle() : void
     Changes the checked state to its opposite state.
 
 
+.. _script-mapeditor:
+
+Map Editor
+^^^^^^^^^^
+
+Properties
+~~~~~~~~~~
+
+.. csv-table::
+    :widths: 1, 2
+
+    **tilesetsView** : :ref:`script-tilesetsview`, "Access the Tilesets view."
+
+.. _script-tilesetsview:
+
+Tilesets View
+^^^^^^^^^^^^^
+
+Properties
+~~~~~~~~~~
+
+.. csv-table::
+    :widths: 1, 2
+
+    **currentTileset** : :ref:`script-tileset`, "Access or change the currently displayed tileset."
+
 .. _script-tileseteditor:
 
 Tileset Editor
@@ -1234,6 +1261,25 @@ Font
     **underline** : bool, Whether the text is underlined.
     **strikeOut** : bool, Whether the text is striked through.
     **kerning** : bool, Whether to use kerning when rendering the text.
+
+.. _script-cell:
+
+cell
+~~~~
+
+A cell on a :ref:`script-tilelayer`.
+
+**Properties**:
+
+.. csv-table::
+    :widths: 1, 2
+
+    **tileId** : int, The local tile ID of the tile, or -1 if the cell is empty.
+    **empty** : bool, Whether the cell is empty.
+    **flippedHorizontally** : bool, Whether the tile is flipped horizontally.
+    **flippedVertically** : bool, Whether the tile is flipped vertically.
+    **flippedAntiDiagonally** : bool, Whether the tile is flipped anti-diagonally.
+    **rotatedHexagonal120** : bool, "Whether the tile is rotated by 120 degrees (for hexagonal maps, the anti-diagonal flip is interpreted as a 60-degree rotation)".
 
 .. _script-frames:
 

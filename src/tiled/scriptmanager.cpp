@@ -30,6 +30,7 @@
 #include "editabletilelayer.h"
 #include "editabletileset.h"
 #include "logginginterface.h"
+#include "mapeditor.h"
 #include "regionvaluetype.h"
 #include "scriptedaction.h"
 #include "scriptedtool.h"
@@ -37,6 +38,7 @@
 #include "tilecollisiondock.h"
 #include "tilelayer.h"
 #include "tilelayeredit.h"
+#include "tilesetdock.h"
 #include "tileseteditor.h"
 
 #include <QDir>
@@ -88,12 +90,14 @@ ScriptManager::ScriptManager(QObject *parent)
     qRegisterMetaType<EditableTileLayer*>();
     qRegisterMetaType<EditableTileset*>();
     qRegisterMetaType<Font>();
+    qRegisterMetaType<MapEditor*>();
     qRegisterMetaType<RegionValueType>();
     qRegisterMetaType<ScriptedAction*>();
     qRegisterMetaType<ScriptedTool*>();
+    qRegisterMetaType<TileCollisionDock*>();
     qRegisterMetaType<TileLayerEdit*>();
     qRegisterMetaType<TilesetEditor*>();
-    qRegisterMetaType<TileCollisionDock*>();
+    qRegisterMetaType<TilesetDock*>();
 
     connect(&mWatcher, &FileSystemWatcher::filesChanged,
             this, &ScriptManager::scriptFilesChanged);

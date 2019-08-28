@@ -64,6 +64,7 @@ class TILEDSHARED_EXPORT Cell
     Q_GADGET
 
     Q_PROPERTY(int tileId READ tileId)
+    Q_PROPERTY(bool empty READ isEmpty)
     Q_PROPERTY(bool flippedHorizontally READ flippedHorizontally WRITE setFlippedHorizontally)
     Q_PROPERTY(bool flippedVertically READ flippedVertically WRITE setFlippedVertically)
     Q_PROPERTY(bool flippedAntiDiagonally READ flippedAntiDiagonally WRITE setFlippedAntiDiagonally)

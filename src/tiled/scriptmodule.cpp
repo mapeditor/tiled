@@ -26,6 +26,7 @@
 #include "editabletileset.h"
 #include "issuesdock.h"
 #include "logginginterface.h"
+#include "mapeditor.h"
 #include "scriptedaction.h"
 #include "scriptedmapformat.h"
 #include "scriptedtool.h"
@@ -142,6 +143,11 @@ QList<QObject *> ScriptModule::openAssets() const
 TilesetEditor *ScriptModule::tilesetEditor() const
 {
     return static_cast<TilesetEditor*>(DocumentManager::instance()->editor(Document::TilesetDocumentType));
+}
+
+MapEditor *ScriptModule::mapEditor() const
+{
+    return static_cast<MapEditor*>(DocumentManager::instance()->editor(Document::MapDocumentType));
 }
 
 EditableAsset *ScriptModule::open(const QString &fileName) const

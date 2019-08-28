@@ -72,9 +72,13 @@ class MapEditor : public Editor
 {
     Q_OBJECT
 
+    Q_PROPERTY(Tiled::TilesetDock *tilesetsView READ tilesetDock)
+
 public:
     explicit MapEditor(QObject *parent = nullptr);
     ~MapEditor() override;
+
+    TilesetDock *tilesetDock() const { return mTilesetDock; }
 
     void saveState() override;
     void restoreState() override;

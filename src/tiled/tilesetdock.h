@@ -47,11 +47,12 @@ class TileLayer;
 class Tileset;
 
 class Document;
+class EditableTileset;
 class MapDocument;
+class TileStamp;
 class TilesetDocument;
 class TilesetDocumentsFilterModel;
 class TilesetView;
-class TileStamp;
 class Zoomable;
 
 /**
@@ -61,6 +62,8 @@ class Zoomable;
 class TilesetDock : public QDockWidget
 {
     Q_OBJECT
+
+    Q_PROPERTY(Tiled::EditableTileset *currentTileset READ currentEditableTileset WRITE setCurrentEditableTileset)
 
 public:
     /**
@@ -82,6 +85,9 @@ public:
 
     void setCurrentTileset(const SharedTileset &tileset);
     SharedTileset currentTileset() const;
+
+    void setCurrentEditableTileset(EditableTileset *tileset);
+    EditableTileset *currentEditableTileset() const;
 
     void selectTilesInStamp(const TileStamp &);
 

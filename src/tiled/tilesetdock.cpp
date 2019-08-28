@@ -848,6 +848,20 @@ SharedTileset TilesetDock::currentTileset() const
     return mTilesets.at(index);
 }
 
+void TilesetDock::setCurrentEditableTileset(EditableTileset *tileset)
+{
+    setCurrentTileset(tileset->tileset()->sharedPointer());
+}
+
+EditableTileset *TilesetDock::currentEditableTileset() const
+{
+    const int index = mTabBar->currentIndex();
+    if (index == -1)
+        return nullptr;
+
+    return mTilesetDocuments.at(index)->editable();
+}
+
 TilesetView *TilesetDock::currentTilesetView() const
 {
     return static_cast<TilesetView *>(mViewStack->currentWidget());

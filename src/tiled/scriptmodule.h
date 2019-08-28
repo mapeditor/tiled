@@ -36,6 +36,7 @@ class QAction;
 namespace Tiled {
 
 class EditableAsset;
+class MapEditor;
 class ScriptedAction;
 class ScriptedMapFormat;
 class ScriptedTool;
@@ -58,6 +59,7 @@ class ScriptModule : public QObject
     Q_PROPERTY(Tiled::EditableAsset *activeAsset READ activeAsset WRITE setActiveAsset NOTIFY activeAssetChanged)
     Q_PROPERTY(QList<QObject*> openAssets READ openAssets)
 
+    Q_PROPERTY(Tiled::MapEditor *mapEditor READ mapEditor)
     Q_PROPERTY(Tiled::TilesetEditor *tilesetEditor READ tilesetEditor)
 
 public:
@@ -88,6 +90,7 @@ public:
     QList<QObject*> openAssets() const;
 
     TilesetEditor *tilesetEditor() const;
+    MapEditor *mapEditor() const;
 
     Q_INVOKABLE Tiled::EditableAsset *open(const QString &fileName) const;
     Q_INVOKABLE bool close(Tiled::EditableAsset *asset) const;
