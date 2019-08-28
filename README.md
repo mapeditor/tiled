@@ -30,14 +30,20 @@ Compiling
 -------------------------------------------------------------------------------
 
 Before you can compile Tiled, you must ensure the Qt (>= 5.6) development
-libraries have been installed:
+libraries have been installed as well as the Qbs build tool:
 
-* On Ubuntu/Debian: `sudo apt install qt5-default qttools5-dev-tools zlib1g-dev qtdeclarative5-dev`
+* On Ubuntu/Debian: `sudo apt install qt5-default qttools5-dev-tools zlib1g-dev qtdeclarative5-dev qbs`
 * On Fedora:        `sudo dnf builddep tiled`
-* On Arch Linux:    `sudo pacman -S qt`
+* On Arch Linux:    `sudo pacman -S qt qbs`
 * On macOS with [Homebrew](http://brew.sh/):
-  + `brew install qt5`
+  + `brew install qbs`
   + `brew link qt5 --force`
+
+If you want to build the Python plugin, you additionally need to install the
+Python 3 development libraries:
+
+* On Ubuntu/Debian: `sudo apt install python3-dev`
+* On Windows: https://www.python.org/downloads/windows/
 
 Alternatively, you can [download Qt here](https://www.qt.io/download-qt-installer).
 You will still need to install a development environment alongside and some
@@ -47,41 +53,37 @@ libraries depending on your system, for example:
 * On Windows:       Choose "MinGW" Qt version, or install Visual Studio
 * On macOS:         Install Xcode
 
-Next, compile by running:
+The easiest way to compile and run Tiled is to open `tiled.qbs` in Qt Creator
+and run the project from there.
 
-    $ qmake (or qmake-qt5 on some systems)
-    $ make
+From the command-line, you may need to set up Qbs before you can build Tiled
+(you will also need to make sure the version of Qt you want to use is in your
+path):
 
-To perform a shadow build, run qmake from a different directory and refer
-it to tiled.pro. For example:
+    $ qbs setup-toolchains --detect     # setup toolchains
+    $ qbs setup-qt --detect             # setup Qt (not needed since Qbs 1.13)
+    $ qbs                               # build Tiled
 
-    $ mkdir build
-    $ cd build
-    $ qmake ../tiled.pro
-    $ make
+You can now run Tiled as follows:
 
-You can now run Tiled using the executable in `bin/tiled`.
+    $ qbs run -p tiled
 
 Installing
 -------------------------------------------------------------------------------
 
-To install Tiled, run `make install` from the terminal. By default, Tiled will
-install itself to `/usr/local`.
+To install Tiled, run `qbs install` from the terminal. By default, Tiled will
+be installed to `<build-dir>/install-root`.
 
-The installation prefix can be changed when running qmake, or by changing the
-install root when running `make install`. For example, to use an installation
-prefix of  `/usr` instead of `/usr/local`:
+The installation prefix can be changed when building Tiled. For example, to use
+an installation prefix of  `/usr`:
 
-    $ qmake -r PREFIX=/usr
-
-Note: The -r recursive flag is required if you've run qmake before, as this
-command will affect nested pro files.
+    $ qbs qbs.installPrefix:"/usr"
 
 To install Tiled to a packaging directory:
 
-    $ make install INSTALL_ROOT=/tmp/tiled-pkg
+    $ qbs install --install-root /tmp/tiled-pkg
 
 By default, Tiled and its plugins are compiled with an Rpath that allows them
 to find the shared *libtiled* library immediately after being compiled. When
-packaging a Tiled map for distribution, the Rpath should be disabled by
-appending `RPATH=no` to the qmake command.
+packaging Tiled for distribution, the Rpath should be disabled by appending
+`projects.Tiled.useRPaths:false` to the qbs command.
