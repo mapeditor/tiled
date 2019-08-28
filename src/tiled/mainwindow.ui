@@ -603,7 +603,7 @@
   <action name="actionEditCommands">
    <property name="icon">
     <iconset>
-     <normalon>:/images/24x24/system-run.png</normalon>
+     <normalon>:/images/24/system-run.png</normalon>
     </iconset>
    </property>
    <property name="text">

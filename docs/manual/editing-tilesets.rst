@@ -196,11 +196,11 @@ The following steps allow to add or edit a tile animation:
 A preview of the animation shows in the bottom left corner.
 
 .. |tile-collision-editor-icon|
-   image:: ../../src/tiled/images/48x48/tile-collision-editor.png
+   image:: ../../src/tiled/images/48/tile-collision-editor.png
       :scale: 50
 
 .. |tile-animation-editor-icon|
-   image:: ../../src/tiled/images/24x24/animation-edit.png
+   image:: ../../src/tiled/images/24/animation-edit.png
 
 .. _Tiled2Unity: http://www.seanba.com/Tiled2Unity
 .. _Mega Dad Adventures: http://www.seanba.com/megadadadventures.html
