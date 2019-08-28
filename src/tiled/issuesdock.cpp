@@ -99,6 +99,7 @@ void IssuesModel::addIssue(const Issue &issue)
 
         QModelIndex modelIndex = index(i);
         emit dataChanged(modelIndex, modelIndex);
+        return;
     }
 
     beginInsertRows(QModelIndex(), mIssues.size(), mIssues.size());
@@ -283,7 +284,17 @@ void IssueDelegate::paint(QPainter *painter,
         else
             smallFont.setPointSizeF(smallFont.pointSizeF() * 0.9);
 
-        painter->setPen(textColor);
+        QPalette::ColorGroup cg = opt.state & QStyle::State_Enabled ? QPalette::Normal
+                                                                    : QPalette::Disabled;
+
+        if (cg == QPalette::Normal && !(opt.state & QStyle::State_Active))
+            cg = QPalette::Inactive;
+
+        if (opt.state & QStyle::State_Selected)
+            painter->setPen(opt.palette.color(cg, QPalette::HighlightedText));
+        else
+            painter->setPen(opt.palette.color(cg, QPalette::Text));
+
         painter->setFont(smallFont);
         painter->drawText(opt.rect.adjusted(Utils::dpiScaled(4), 0, Utils::dpiScaled(-4), 0),
                           QString(QLatin1String("(%1)")).arg(occurrences),
