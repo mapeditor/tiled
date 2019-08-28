@@ -56,11 +56,12 @@ static int wrap(int value, int bound)
  * are put directly below each of these functions.
  */
 
-AutoMapper::AutoMapper(MapDocument *workingDocument, Map *rules,
+AutoMapper::AutoMapper(MapDocument *workingDocument,
+                       std::unique_ptr<Map> rules,
                        const QString &rulePath)
     : mMapDocument(workingDocument)
     , mMapWork(workingDocument ? workingDocument->map() : nullptr)
-    , mMapRules(rules)
+    , mMapRules(std::move(rules))
     , mLayerInputRegions(nullptr)
     , mLayerOutputRegions(nullptr)
     , mRulePath(rulePath)
@@ -469,7 +470,7 @@ bool AutoMapper::setupTilesets()
 {
     Q_ASSERT(mAddedTilesets.isEmpty());
 
-    mMapDocument->unifyTilesets(mMapRules, mAddedTilesets);
+    mMapDocument->unifyTilesets(mMapRules.get(), mAddedTilesets);
 
     for (const SharedTileset &tileset : qAsConst(mAddedTilesets))
         mMapDocument->undoStack()->push(new AddTileset(mMapDocument, tileset));
@@ -984,8 +985,7 @@ void AutoMapper::cleanUpRulesMap()
 {
     cleanTilesets();
 
-    delete mMapRules;
-    mMapRules = nullptr;
+    mMapRules.reset();
 
     cleanUpRuleMapLayers();
     mRulesInput.clear();

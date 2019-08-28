@@ -26,7 +26,6 @@
 #include "mapdocument.h"
 #include "preferences.h"
 #include "tilelayer.h"
-#include "tmxmapformat.h"
 
 #include <QDir>
 #include <QFileInfo>
@@ -192,13 +191,12 @@ bool AutomappingManager::loadFile(const QString &filePath)
             continue;
         }
         if (rulePath.endsWith(QLatin1String(".tmx"), Qt::CaseInsensitive)) {
-            TmxMapFormat tmxFormat;
-
-            std::unique_ptr<Map> rules(tmxFormat.read(rulePath));
+            QString errorString;
+            std::unique_ptr<Map> rules { readMap(rulePath, &errorString) };
 
             if (!rules) {
                 QString error = tr("Opening rules map '%1' failed: %2")
-                        .arg(rulePath, tmxFormat.errorString());
+                        .arg(rulePath, errorString);
                 ERROR(error);
 
                 mError += error;
@@ -207,16 +205,15 @@ bool AutomappingManager::loadFile(const QString &filePath)
                 continue;
             }
 
-            AutoMapper *autoMapper = new AutoMapper(mMapDocument, rules.release(), rulePath);
+            std::unique_ptr<AutoMapper> autoMapper { new AutoMapper(mMapDocument, std::move(rules), rulePath) };
 
             mWarning += autoMapper->warningString();
             const QString error = autoMapper->errorString();
             if (error.isEmpty()) {
-                mAutoMappers.append(autoMapper);
+                mAutoMappers.append(autoMapper.release());
                 mWatcher.addPath(rulePath);
             } else {
                 mError += error;
-                delete autoMapper;
             }
         }
         if (rulePath.endsWith(QLatin1String(".txt"), Qt::CaseInsensitive)) {

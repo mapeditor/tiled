@@ -29,6 +29,8 @@
 #include <QString>
 #include <QVector>
 
+#include <memory>
+
 namespace Tiled {
 
 class Layer;
@@ -132,7 +134,8 @@ public:
      *               AutoMapper takes ownership of this map.
      * @param rulePath: The filepath to the rule map.
      */
-    AutoMapper(MapDocument *workingDocument, Map *rules,
+    AutoMapper(MapDocument *workingDocument,
+               std::unique_ptr<Map> rules,
                const QString &rulePath);
     ~AutoMapper();
 
@@ -308,7 +311,7 @@ private:
     /**
      * map containing the rules, usually different than mMapWork
      */
-    Map *mMapRules;
+    std::unique_ptr<Map> mMapRules;
 
     /**
      * This contains all added tilesets as pointers.
