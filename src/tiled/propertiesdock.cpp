@@ -352,13 +352,13 @@ void PropertiesDock::showContextMenu(const QPoint& pos)
     }
 
     QMenu contextMenu(mPropertyBrowser);
-    QAction *cutAction = contextMenu.addAction(tr("Cu&t"));
-    QAction *copyAction = contextMenu.addAction(tr("&Copy"));
-    QAction *pasteAction = contextMenu.addAction(tr("&Paste"));
+    QAction *cutAction = contextMenu.addAction(tr("Cu&t"), this, &PropertiesDock::cutProperties);
+    QAction *copyAction = contextMenu.addAction(tr("&Copy"), this, &PropertiesDock::copyProperties);
+    QAction *pasteAction = contextMenu.addAction(tr("&Paste"), this, &PropertiesDock::pasteProperties);
     contextMenu.addSeparator();
     QMenu *convertMenu = contextMenu.addMenu(tr("Convert To"));
-    QAction *renameAction = contextMenu.addAction(tr("Rename..."));
-    QAction *removeAction = contextMenu.addAction(tr("Remove"));
+    QAction *renameAction = contextMenu.addAction(tr("Rename..."), this, &PropertiesDock::renameProperty);
+    QAction *removeAction = contextMenu.addAction(tr("Remove"), this, &PropertiesDock::removeProperties);
 
     cutAction->setShortcuts(QKeySequence::Cut);
     cutAction->setIcon(QIcon(QLatin1String(":/images/16/edit-cut.png")));
@@ -415,12 +415,6 @@ void PropertiesDock::showContextMenu(const QPoint& pos)
     }
 
     convertMenu->setEnabled(!convertMenu->actions().isEmpty());
-
-    connect(cutAction, &QAction::triggered, this, &PropertiesDock::cutProperties);
-    connect(copyAction, &QAction::triggered, this, &PropertiesDock::copyProperties);
-    connect(pasteAction, &QAction::triggered, this, &PropertiesDock::pasteProperties);
-    connect(renameAction, &QAction::triggered, this, &PropertiesDock::renameProperty);
-    connect(removeAction, &QAction::triggered, this, &PropertiesDock::removeProperties);
 
     const QPoint globalPos = mPropertyBrowser->mapToGlobal(pos);
     const QAction *selectedItem = contextMenu.exec(globalPos);
