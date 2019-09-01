@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include "mapdocument.h"
 #include "tileset.h"
 
 #include <QAbstractListModel>
@@ -146,6 +147,23 @@ private:
     QTreeView *mView;
     QDialogButtonBox *mButtons;
     QAbstractButton *mLocateButton;
+};
+
+
+struct LocateTileset
+{
+    QWeakPointer<Tileset> mTileset;
+    QWeakPointer<MapDocument> mMapDocument;
+
+    void operator()() const;
+};
+
+struct LocateObjectTemplate
+{
+    const ObjectTemplate *mObjectTemplate;
+    QWeakPointer<MapDocument> mMapDocument;
+
+    void operator()() const;
 };
 
 } // namespace Tiled

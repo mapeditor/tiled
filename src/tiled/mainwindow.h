@@ -91,6 +91,8 @@ public:
      */
     void openLastFiles();
 
+    static MainWindow *instance();
+
 protected:
     bool event(QEvent *event) override;
 
@@ -220,6 +222,14 @@ private:
     QPointer<PreferencesDialog> mPreferencesDialog;
 
     QMap<QMainWindow*, QByteArray> mMainWindowStates;
+
+    static MainWindow *mInstance;
 };
+
+inline MainWindow *MainWindow::instance()
+{
+    Q_ASSERT(mInstance);
+    return mInstance;
+}
 
 } // namespace Tiled

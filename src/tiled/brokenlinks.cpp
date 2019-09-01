@@ -23,19 +23,19 @@
 #include "changetileimagesource.h"
 #include "documentmanager.h"
 #include "fileformat.h"
+#include "mainwindow.h"
 #include "map.h"
-#include "mapdocument.h"
 #include "objectgroup.h"
 #include "preferences.h"
 #include "replacetemplate.h"
 #include "replacetileset.h"
-#include "templatesdock.h"
 #include "templatemanager.h"
-#include "tmxmapformat.h"
+#include "templatesdock.h"
 #include "tile.h"
 #include "tilesetchanges.h"
 #include "tilesetdocument.h"
 #include "tilesetmanager.h"
+#include "tmxmapformat.h"
 #include "utils.h"
 
 #include <QPushButton>
@@ -176,6 +176,8 @@ void BrokenLinksModel::refresh()
         };
 
         if (auto mapDocument = qobject_cast<MapDocument*>(mDocument)) {
+            mapDocument->checkIssues();
+
             for (const SharedTileset &tileset : mapDocument->map()->tilesets()) {
                 if (!tileset->fileName().isEmpty() && tileset->status() == LoadingError) {
                     BrokenLink link;
@@ -511,10 +513,10 @@ void BrokenLinksWidget::tryFixLinks(const QVector<BrokenLink> &links)
         }
     }
 
-    // todo: fix caption after string freeze (and the text on the button)
+    // todo: fix text on the button (says "Locate File")
     static QString startingLocation = QFileInfo(links.first().filePath()).path();
     const QString directory = QFileDialog::getExistingDirectory(window(),
-                                                                tr("Locate File"),
+                                                                tr("Locate Directory for Files"),
                                                                 startingLocation);
 
     if (directory.isEmpty())
@@ -693,6 +695,80 @@ bool BrokenLinksWidget::tryFixLink(const BrokenLink &link, const QString &newFil
     }
 
     return true;
+}
+
+
+void LocateTileset::operator ()() const
+{
+    SharedTileset tileset = mTileset.lock();
+    MapDocumentPtr mapDocument = mMapDocument.lock();
+    if (!tileset || !mapDocument)
+        return;
+
+    FormatHelper<TilesetFormat> helper(FileFormat::Read, BrokenLinksWidget::tr("All Files (*)"));
+
+    Preferences *prefs = Preferences::instance();
+    QString start = prefs->lastPath(Preferences::ExternalTileset);
+    QString fileName = QFileDialog::getOpenFileName(MainWindow::instance(), BrokenLinksWidget::tr("Locate External Tileset"),
+                                                    start,
+                                                    helper.filter());
+
+    if (fileName.isEmpty())
+        return;
+
+    prefs->setLastPath(Preferences::ExternalTileset, QFileInfo(fileName).path());
+
+    // It could be, that we have already loaded this tileset.
+    SharedTileset newTileset = TilesetManager::instance()->findTileset(fileName);
+    if (!newTileset || newTileset->status() == LoadingError) {
+        QString error;
+        newTileset = readTileset(fileName, &error);
+
+        if (!newTileset) {
+            QMessageBox::critical(MainWindow::instance(), BrokenLinksWidget::tr("Error Reading Tileset"), error);
+            return;
+        }
+    }
+
+    int index = mapDocument->map()->tilesets().indexOf(tileset);
+    if (index != -1)
+        mapDocument->undoStack()->push(new ReplaceTileset(mapDocument.data(), index, newTileset));
+}
+
+void LocateObjectTemplate::operator()() const
+{
+    MapDocumentPtr mapDocument = mMapDocument.lock();
+    if (!mapDocument)
+        return;
+
+    FormatHelper<ObjectTemplateFormat> helper(FileFormat::Read, BrokenLinksWidget::tr("All Files (*)"));
+
+    Preferences *prefs = Preferences::instance();
+    QString start = prefs->lastPath(Preferences::ObjectTemplateFile);
+    QString fileName = QFileDialog::getOpenFileName(MainWindow::instance(), BrokenLinksWidget::tr("Locate Object Template"),
+                                                    start,
+                                                    helper.filter());
+
+    if (fileName.isEmpty())
+        return;
+
+    prefs->setLastPath(Preferences::ObjectTemplateFile, QFileInfo(fileName).path());
+
+    ObjectTemplate *newObjectTemplate = TemplateManager::instance()->findObjectTemplate(fileName);
+
+    if (!newObjectTemplate || !newObjectTemplate->object()) {
+        QString error;
+        newObjectTemplate = TemplateManager::instance()->loadObjectTemplate(fileName, &error);
+
+        if (!newObjectTemplate->object()) {
+            QMessageBox::critical(MainWindow::instance(), BrokenLinksWidget::tr("Error Reading Object Template"), error);
+            return;
+        }
+    }
+
+    mapDocument->undoStack()->push(new ReplaceTemplate(mapDocument.data(),
+                                                       mObjectTemplate,
+                                                       newObjectTemplate));
 }
 
 } // namespace Tiled

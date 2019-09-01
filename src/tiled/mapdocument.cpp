@@ -24,6 +24,7 @@
 #include "addremovelayer.h"
 #include "addremovemapobject.h"
 #include "addremovetileset.h"
+#include "brokenlinks.h"
 #include "changelayer.h"
 #include "changemapobject.h"
 #include "changemapobjectsorder.h"
@@ -36,7 +37,9 @@
 #include "hexagonalrenderer.h"
 #include "imagelayer.h"
 #include "isometricrenderer.h"
+#include "issuesmodel.h"
 #include "layermodel.h"
+#include "logginginterface.h"
 #include "mapobject.h"
 #include "mapobjectmodel.h"
 #include "movelayer.h"
@@ -1150,6 +1153,38 @@ void MapDocument::onLayerRemoved(Layer *layer)
     switchSelectedLayers(selectedLayers);
 
     emit layerRemoved(layer);
+}
+
+void MapDocument::checkIssues()
+{
+    // Clear any previously found issues in this document
+    IssuesModel::instance().removeIssuesWithContext(this);
+
+    for (const SharedTileset &tileset : map()->tilesets()) {
+        if (tileset->isExternal() && tileset->status() == LoadingError) {
+            ERROR(tr("Failed to load tileset '%1'").arg(tileset->fileName()),
+                  LocateTileset { tileset, sharedFromThis() },
+                  this);
+        }
+    }
+
+    QSet<const ObjectTemplate*> brokenTemplates;
+
+    LayerIterator it(map());
+    for (Layer *layer : map()->objectGroups()) {
+        ObjectGroup *objectGroup = static_cast<ObjectGroup*>(layer->asObjectGroup());
+        for (MapObject *mapObject : *objectGroup) {
+            if (const ObjectTemplate *objectTemplate = mapObject->objectTemplate())
+                if (!objectTemplate->object())
+                    brokenTemplates.insert(objectTemplate);
+        }
+    }
+
+    for (auto objectTemplate : brokenTemplates) {
+        ERROR(tr("Failed to load template '%1'").arg(objectTemplate->fileName()),
+              LocateObjectTemplate { objectTemplate, sharedFromThis() },
+              this);
+    }
 }
 
 void MapDocument::updateTemplateInstances(const ObjectTemplate *objectTemplate)

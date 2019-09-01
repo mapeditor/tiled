@@ -54,7 +54,4 @@ private:
     QListView *mIssuesView;
 };
 
-void clearIssues(const QList<unsigned> &issueIds);
-void clearIssuesWithContext(void *context);
-
 } // namespace Tiled

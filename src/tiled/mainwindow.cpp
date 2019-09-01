@@ -190,6 +190,8 @@ ExportDetails<Format> chooseExportDetails(const QString &fileName,
 } // namespace
 
 
+MainWindow *MainWindow::mInstance;
+
 MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     : QMainWindow(parent, flags)
     , mActionManager(new ActionManager(this))
@@ -201,6 +203,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mAutomappingManager(new AutomappingManager(this))
     , mDocumentManager(DocumentManager::instance())
 {
+    Q_ASSERT(!mInstance);
+    mInstance = this;
+
     mUi->setupUi(this);
 
     ActionManager::registerMenu(mUi->menuFile, "File");
@@ -692,6 +697,9 @@ MainWindow::~MainWindow()
     CommandManager::deleteInstance();
 
     delete mUi;
+
+    Q_ASSERT(mInstance == this);
+    mInstance = nullptr;
 }
 
 void MainWindow::commitData(QSessionManager &manager)

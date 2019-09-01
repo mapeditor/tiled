@@ -247,6 +247,8 @@ public:
 
     bool templateAllowed(const ObjectTemplate *objectTemplate) const;
 
+    void checkIssues();
+
 signals:
     /**
      * Emitted when the selected tile region changes. Sends the currently

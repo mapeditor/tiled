@@ -43,24 +43,26 @@ Issue::Issue()
 
 Issue::Issue(Issue::Severity severity,
              const QString &text,
-             const std::function<void()> &callback)
+             const std::function<void()> &callback,
+             void *context)
     : mSeverity(severity)
     , mText(text)
     , mCallback(callback)
+    , mContext(context)
     , mId(mNextIssueId++)
 {
 }
 
-void Issue::setCallback(std::function<void ()> callback, void *context)
+void Issue::setCallback(std::function<void ()> callback)
 {
     mCallback = std::move(callback);
-    mContext = context;
 }
 
 void Issue::addOccurrence(const Issue &issue)
 {
     mOccurrences += 1;
-    setCallback(issue.callback(), issue.context());
+    setCallback(issue.callback());
+    setContext(issue.context());
 }
 
 

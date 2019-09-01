@@ -230,14 +230,4 @@ void IssuesDock::retranslateUi()
     mFilterEdit->setPlaceholderText(tr("Filter"));
 }
 
-void clearIssues(const QList<unsigned> &issueIds)
-{
-    IssuesModel::instance().removeIssues(issueIds);
-}
-
-void clearIssuesWithContext(void *context)
-{
-    IssuesModel::instance().removeIssuesWithContext(context);
-}
-
 } // namespace Tiled

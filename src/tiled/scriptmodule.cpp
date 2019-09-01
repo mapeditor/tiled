@@ -24,7 +24,7 @@
 #include "commanddatamodel.h"
 #include "commandmanager.h"
 #include "editabletileset.h"
-#include "issuesdock.h"
+#include "issuesmodel.h"
 #include "logginginterface.h"
 #include "mapeditor.h"
 #include "scriptedaction.h"
@@ -59,7 +59,7 @@ ScriptModule::~ScriptModule()
     for (const auto &pair : mRegisteredActions)
         ActionManager::unregisterAction(pair.second->id());
 
-    clearIssuesWithContext(this);
+    IssuesModel::instance().removeIssuesWithContext(this);
 }
 
 QString ScriptModule::version() const
@@ -406,7 +406,8 @@ void ScriptModule::setCallback(Issue &issue, QJSValue activated)
         issue.setCallback([activated] () mutable {   // 'mutable' needed because of non-const QJSValue::call
             QJSValue result = activated.call();
             ScriptManager::instance().checkError(result);
-        }, this);
+        });
+        issue.setContext(this);
     }
 }
 

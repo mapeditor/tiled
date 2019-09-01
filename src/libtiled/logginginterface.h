@@ -57,14 +57,16 @@ struct TILEDSHARED_EXPORT Issue
     Issue();
     Issue(Severity severity,
           const QString &text,
-          const std::function<void()> &callback = std::function<void()>());
+          const std::function<void()> &callback = std::function<void()>(),
+          void *context = nullptr);
 
     Severity severity() const { return mSeverity; }
     QString text() const { return mText; }
 
     std::function<void()> callback() const { return mCallback; }
-    void setCallback(std::function<void()> callback, void *context = nullptr);
+    void setCallback(std::function<void()> callback);
 
+    void setContext(void *context) { mContext = context; }
     void *context() const { return mContext; }
 
     unsigned id() const { return mId; }
@@ -121,19 +123,24 @@ signals:
     void error(const QString &message);
 };
 
+inline void REPORT(const Issue &issue)
+{
+    LoggingInterface::instance().report(issue);
+}
+
 inline void INFO(const QString &message)
 {
     LoggingInterface::instance().log(LoggingInterface::INFO, message);
 }
 
-inline void WARNING(const QString &message, std::function<void()> callback = std::function<void()>())
+inline void WARNING(const QString &message, std::function<void()> callback = std::function<void()>(), void *context = nullptr)
 {
-    LoggingInterface::instance().report(Issue { Issue::Warning, message, callback });
+    REPORT(Issue { Issue::Warning, message, callback, context });
 }
 
-inline void ERROR(const QString &message, std::function<void()> callback = std::function<void()>())
+inline void ERROR(const QString &message, std::function<void()> callback = std::function<void()>(), void *context = nullptr)
 {
-    LoggingInterface::instance().report(Issue { Issue::Error, message, callback });
+    REPORT(Issue { Issue::Error, message, callback, context });
 }
 
 inline void INFO(QLatin1String message)
@@ -141,14 +148,14 @@ inline void INFO(QLatin1String message)
     INFO(QString(message));
 }
 
-inline void WARNING(QLatin1String message, std::function<void()> callback = std::function<void()>())
+inline void WARNING(QLatin1String message, std::function<void()> callback = std::function<void()>(), void *context = nullptr)
 {
-    WARNING(QString(message), callback);
+    WARNING(QString(message), callback, context);
 }
 
-inline void ERROR(QLatin1String message, std::function<void()> callback = std::function<void()>())
+inline void ERROR(QLatin1String message, std::function<void()> callback = std::function<void()>(), void *context = nullptr)
 {
-    ERROR(QString(message), callback);
+    ERROR(QString(message), callback, context);
 }
 
 // TODO: Try "static inline" once we switch to C++17
