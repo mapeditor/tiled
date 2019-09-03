@@ -117,6 +117,8 @@ public:
     virtual FileFormat *exportFormat() const = 0;
     virtual void setExportFormat(FileFormat *format) = 0;
 
+    virtual void checkIssues() = 0;
+
     static const QHash<QString, Document *> &documentInstances();
 
 signals:
@@ -142,6 +144,8 @@ signals:
 
 protected:
     void setFileName(const QString &fileName);
+
+    void checkFilePathProperties(const Object *object) const;
 
     QDateTime mLastSaved;
 

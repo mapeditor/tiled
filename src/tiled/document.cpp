@@ -21,6 +21,7 @@
 #include "document.h"
 
 #include "editableasset.h"
+#include "logginginterface.h"
 #include "object.h"
 #include "tile.h"
 
@@ -80,6 +81,22 @@ void Document::setFileName(const QString &fileName)
         sDocumentInstances.insert(mCanonicalFilePath, this);
 
     emit fileNameChanged(fileName, oldFileName);
+}
+
+void Document::checkFilePathProperties(const Object *object) const
+{
+    auto &props = object->properties();
+
+    for (auto i = props.begin(), i_end = props.end(); i != i_end; ++i) {
+        if (i.value().userType() == filePathTypeId()) {
+            const QString localFile = i.value().value<FilePath>().url.toLocalFile();
+            if (!localFile.isEmpty() && !QFile::exists(localFile)) {
+                WARNING(tr("Custom property '%1' refers to non-existing file '%2'").arg(i.key(), localFile),
+                        SelectCustomProperty { fileName(), i.key(), object},
+                        this);
+            }
+        }
+    }
 }
 
 /**

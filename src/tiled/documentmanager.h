@@ -140,6 +140,7 @@ signals:
     void fileOpenRequested(const QString &path);
     void fileSaveRequested();
     void templateOpenRequested(const QString &path);
+    void selectCustomPropertyRequested(const QString &name);
     void templateTilesetReplaced();
 
     /**

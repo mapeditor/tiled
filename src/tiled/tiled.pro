@@ -320,7 +320,6 @@ HEADERS += aboutdialog.h \
     commandlineparser.h \
     commandmanager.h \
     consoledock.h \
-    containerhelpers.h \
     createellipseobjecttool.h \
     createobjecttool.h \
     createpointobjecttool.h \

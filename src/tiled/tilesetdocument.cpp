@@ -21,6 +21,7 @@
 #include "tilesetdocument.h"
 
 #include "editabletileset.h"
+#include "issuesmodel.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "terrain.h"
@@ -87,6 +88,9 @@ TilesetDocument::TilesetDocument(const SharedTileset &tileset)
 
 TilesetDocument::~TilesetDocument()
 {
+    // Clear any previously found issues in this document
+    IssuesModel::instance().removeIssuesWithContext(this);
+
     sTilesetToDocument.remove(mTileset);
 
     // Needs to be deleted before the Tileset instance is deleted, because it
@@ -369,6 +373,37 @@ void TilesetDocument::swapTileObjectGroup(Tile *tile, std::unique_ptr<ObjectGrou
 
     for (MapDocument *mapDocument : mapDocuments())
         emit mapDocument->tileObjectGroupChanged(tile);
+}
+
+void TilesetDocument::checkIssues()
+{
+    // Clear any previously found issues in this document
+    IssuesModel::instance().removeIssuesWithContext(this);
+
+    if (tileset()->imageStatus() == LoadingError) {
+        auto fileName = tileset()->imageSource().toString(QUrl::PreferLocalFile);
+        ERROR(tr("Failed to load tileset image '%1'").arg(fileName),
+              std::function<void()>(), this);       // todo: hook to file dialog
+    }
+
+    checkFilePathProperties(tileset().data());
+
+    for (Tile *tile : tileset()->tiles()) {
+        checkFilePathProperties(tile);
+        // todo: check properties on collision objects
+
+        if (!tile->imageSource().isEmpty() && tile->imageStatus() == LoadingError) {
+            auto fileName = tile->imageSource().toString(QUrl::PreferLocalFile);
+            ERROR(tr("Failed to load tile image '%1'").arg(fileName),
+                  std::function<void()>(), this);   // todo: hook to file dialog
+        }
+    }
+    for (Terrain *terrain : tileset()->terrains())
+        checkFilePathProperties(terrain);
+    for (WangSet *wangSet : tileset()->wangSets()) {
+        checkFilePathProperties(wangSet);
+        // todo: check properties on wang colors
+    }
 }
 
 TilesetDocument *TilesetDocument::findDocumentForTileset(const SharedTileset &tileset)

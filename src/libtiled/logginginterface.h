@@ -44,6 +44,7 @@ namespace Tiled {
 class Layer;
 class Map;
 class MapObject;
+class Object;
 class Tile;
 class Tileset;
 
@@ -58,7 +59,7 @@ struct TILEDSHARED_EXPORT Issue
     Issue(Severity severity,
           const QString &text,
           const std::function<void()> &callback = std::function<void()>(),
-          void *context = nullptr);
+          const void *context = nullptr);
 
     Severity severity() const { return mSeverity; }
     QString text() const { return mText; }
@@ -66,8 +67,8 @@ struct TILEDSHARED_EXPORT Issue
     std::function<void()> callback() const { return mCallback; }
     void setCallback(std::function<void()> callback);
 
-    void setContext(void *context) { mContext = context; }
-    void *context() const { return mContext; }
+    void setContext(const void *context) { mContext = context; }
+    const void *context() const { return mContext; }
 
     unsigned id() const { return mId; }
 
@@ -84,7 +85,7 @@ private:
     Issue::Severity mSeverity = Issue::Error;
     QString mText;
     std::function<void()> mCallback;
-    void *mContext = nullptr;
+    const void *mContext = nullptr;
 
     int mOccurrences = 1;
     unsigned mId = 0;
@@ -133,12 +134,12 @@ inline void INFO(const QString &message)
     LoggingInterface::instance().log(LoggingInterface::INFO, message);
 }
 
-inline void WARNING(const QString &message, std::function<void()> callback = std::function<void()>(), void *context = nullptr)
+inline void WARNING(const QString &message, std::function<void()> callback = std::function<void()>(), const void *context = nullptr)
 {
     REPORT(Issue { Issue::Warning, message, callback, context });
 }
 
-inline void ERROR(const QString &message, std::function<void()> callback = std::function<void()>(), void *context = nullptr)
+inline void ERROR(const QString &message, std::function<void()> callback = std::function<void()>(), const void *context = nullptr)
 {
     REPORT(Issue { Issue::Error, message, callback, context });
 }
@@ -148,12 +149,12 @@ inline void INFO(QLatin1String message)
     INFO(QString(message));
 }
 
-inline void WARNING(QLatin1String message, std::function<void()> callback = std::function<void()>(), void *context = nullptr)
+inline void WARNING(QLatin1String message, std::function<void()> callback = std::function<void()>(), const void *context = nullptr)
 {
     WARNING(QString(message), callback, context);
 }
 
-inline void ERROR(QLatin1String message, std::function<void()> callback = std::function<void()>(), void *context = nullptr)
+inline void ERROR(QLatin1String message, std::function<void()> callback = std::function<void()>(), const void *context = nullptr)
 {
     ERROR(QString(message), callback, context);
 }
@@ -199,6 +200,18 @@ struct TILEDSHARED_EXPORT SelectLayer
     int layerId;
 
     ACTIVATABLE(SelectLayer)
+};
+
+struct TILEDSHARED_EXPORT SelectCustomProperty
+{
+    SelectCustomProperty(QString fileName, QString propertyName, const Object *object);
+
+    QString fileName;
+    QString propertyName;
+    int objectType;         // see Object::TypeId
+    int id = -1;
+
+    ACTIVATABLE(SelectCustomProperty)
 };
 
 struct TILEDSHARED_EXPORT SelectTile

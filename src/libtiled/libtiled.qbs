@@ -50,6 +50,7 @@ DynamicLibrary {
     files: [
         "compression.cpp",
         "compression.h",
+        "containerhelpers.h",
         "fileformat.cpp",
         "fileformat.h",
         "filesystemwatcher.cpp",

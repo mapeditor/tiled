@@ -101,6 +101,9 @@ PropertyBrowser::PropertyBrowser(QWidget *parent)
             this, &PropertyBrowser::objectTypesChanged);
 }
 
+/**
+ * Sets the \a object for which to display the properties.
+ */
 void PropertyBrowser::setObject(Object *object)
 {
     if (mObject == object)
@@ -112,6 +115,10 @@ void PropertyBrowser::setObject(Object *object)
     addProperties();
 }
 
+/**
+ * Sets the \a document, used for keeping track of changes and for
+ * undo/redo support.
+ */
 void PropertyBrowser::setDocument(Document *document)
 {
     MapDocument *mapDocument = qobject_cast<MapDocument*>(document);
@@ -189,6 +196,9 @@ void PropertyBrowser::setDocument(Document *document)
     }
 }
 
+/**
+ * Returns whether the given \a item displays a custom property.
+ */
 bool PropertyBrowser::isCustomPropertyItem(const QtBrowserItem *item) const
 {
     return item && mPropertyToId[item->property()] == CustomProperty;
@@ -206,6 +216,24 @@ bool PropertyBrowser::allCustomPropertyItems(const QList<QtBrowserItem *> &items
     return true;
 }
 
+/**
+ * Selects the custom property with the given \a name, if it exists.
+ */
+void PropertyBrowser::selectCustomProperty(const QString &name)
+{
+    QtVariantProperty *property = mNameToProperty.value(name);
+    if (!property)
+        return;
+
+    const QList<QtBrowserItem*> propertyItems = items(property);
+    if (!propertyItems.isEmpty())
+        setCurrentItem(propertyItems.first());
+}
+
+/**
+ * Makes the custom property with the \a name the currently edited one,
+ * if it exists.
+ */
 void PropertyBrowser::editCustomProperty(const QString &name)
 {
     QtVariantProperty *property = mNameToProperty.value(name);

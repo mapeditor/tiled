@@ -141,6 +141,9 @@ void BrokenLinksModel::setDocument(Document *document)
 
 void BrokenLinksModel::refresh()
 {
+    if (mDocument)
+        mDocument->checkIssues();
+
     bool brokenLinksBefore = hasBrokenLinks();
 
     beginResetModel();
@@ -176,8 +179,6 @@ void BrokenLinksModel::refresh()
         };
 
         if (auto mapDocument = qobject_cast<MapDocument*>(mDocument)) {
-            mapDocument->checkIssues();
-
             for (const SharedTileset &tileset : mapDocument->map()->tilesets()) {
                 if (!tileset->fileName().isEmpty() && tileset->status() == LoadingError) {
                     BrokenLink link;

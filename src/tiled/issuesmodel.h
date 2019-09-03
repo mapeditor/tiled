@@ -44,7 +44,7 @@ public:
 
     void addIssue(const Issue &issue);
     void removeIssues(const QList<unsigned> &issueIds);
-    void removeIssuesWithContext(void *context);
+    void removeIssuesWithContext(const void *context);
     void clear();
 
     int rowCount(const QModelIndex &parent) const override;

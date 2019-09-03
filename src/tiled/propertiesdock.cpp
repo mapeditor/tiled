@@ -136,6 +136,12 @@ void PropertiesDock::bringToFront()
     mPropertyBrowser->setFocus();
 }
 
+void PropertiesDock::selectCustomProperty(const QString &name)
+{
+    bringToFront();
+    mPropertyBrowser->selectCustomProperty(name);
+}
+
 static bool anyObjectHasProperty(const QList<Object*> &objects, const QString &name)
 {
     for (Object *obj : objects) {

@@ -247,7 +247,7 @@ public:
 
     bool templateAllowed(const ObjectTemplate *objectTemplate) const;
 
-    void checkIssues();
+    void checkIssues() override;
 
 signals:
     /**

@@ -110,6 +110,8 @@ public:
     void setTileProbability(Tile *tile, qreal probability);
     void swapTileObjectGroup(Tile *tile, std::unique_ptr<ObjectGroup> &objectGroup);
 
+    void checkIssues() override;
+
     static TilesetDocument* findDocumentForTileset(const SharedTileset &tileset);
 
 signals:

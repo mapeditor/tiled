@@ -47,6 +47,7 @@ public:
 
 public slots:
     void bringToFront();
+    void selectCustomProperty(const QString &name);
 
 protected:
     bool event(QEvent *event) override;

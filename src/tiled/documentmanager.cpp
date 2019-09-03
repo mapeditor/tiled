@@ -38,11 +38,13 @@
 #include "mapview.h"
 #include "noeditorwidget.h"
 #include "preferences.h"
+#include "terrain.h"
 #include "tilesetdocument.h"
 #include "tilesetdocumentsmodel.h"
 #include "tilesetmanager.h"
 #include "tmxmapformat.h"
 #include "utils.h"
+#include "wangset.h"
 #include "zoomable.h"
 
 #include <QCoreApplication>
@@ -168,6 +170,85 @@ DocumentManager::DocumentManager(QObject *parent)
                 mapDocument->switchSelectedLayers({ layer });
                 mapDocument->setCurrentObject(layer);
             }
+        }
+    };
+
+    SelectCustomProperty::activated = [this] (const SelectCustomProperty &select) {
+        openFile(select.fileName);
+        const int i = findDocument(select.fileName);
+        if (i == -1)
+            return;
+
+        auto doc = mDocuments.at(i).data();
+        Object *obj = nullptr;
+
+        switch (doc->type()) {
+        case Document::MapDocumentType: {
+            auto mapDocument = static_cast<MapDocument*>(doc);
+            switch (select.objectType) {
+            case Object::LayerType:
+                if (auto layer = mapDocument->map()->findLayerById(select.id)) {
+                    mapDocument->switchSelectedLayers({ layer });
+                    obj = layer;
+                }
+                break;
+            case Object::MapObjectType:
+                if (auto object = mapDocument->map()->findObjectById(select.id)) {
+                    mapDocument->focusMapObjectRequested(object);
+                    mapDocument->setSelectedObjects({ object });
+                    obj = object;
+                }
+                break;
+            case Object::MapType:
+                obj = mapDocument->map();
+                break;
+            case Object::ObjectTemplateType:
+                emit templateOpenRequested(select.fileName);
+                // todo: can't access Object pointer
+                break;
+            }
+            break;
+        }
+        case Document::TilesetDocumentType:
+            auto tilesetDocument = static_cast<TilesetDocument*>(doc);
+            switch (select.objectType) {
+            case Object::MapObjectType:
+                // todo: no way to know to which tile this object belongs
+                break;
+            case Object::TerrainType:
+                // todo: select the terrain
+                if (select.id < tilesetDocument->tileset()->terrainCount())
+                    obj = tilesetDocument->tileset()->terrain(select.id);
+                break;
+            case Object::TilesetType:
+                obj = tilesetDocument->tileset().data();
+                break;
+            case Object::TileType:
+                if (auto tile = tilesetDocument->tileset()->findTile(select.id)) {
+                    tilesetDocument->setSelectedTiles({ tile });
+                    obj = tile;
+                }
+                break;
+            case Object::WangSetType: {
+                // todo: select the wang set
+                if (select.id < tilesetDocument->tileset()->wangSetCount())
+                    obj = tilesetDocument->tileset()->wangSet(select.id);
+                break;
+            }
+            case Object::WangColorType:
+                // todo: can't select just by color index
+                break;
+            case Object::ObjectTemplateType:
+                emit templateOpenRequested(select.fileName);
+                // todo: can't access Object pointer
+                break;
+            }
+            break;
+        }
+
+        if (obj) {
+            doc->setCurrentObject(obj);
+            emit selectCustomPropertyRequested(select.propertyName);
         }
     };
 

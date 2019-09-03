@@ -28,9 +28,13 @@
 
 #include "logginginterface.h"
 
+#include "containerhelpers.h"
+#include "layer.h"
 #include "map.h"
 #include "mapobject.h"
 #include "objectgroup.h"
+#include "terrain.h"
+#include "wangset.h"
 
 namespace Tiled {
 
@@ -44,7 +48,7 @@ Issue::Issue()
 Issue::Issue(Issue::Severity severity,
              const QString &text,
              const std::function<void()> &callback,
-             void *context)
+             const void *context)
     : mSeverity(severity)
     , mText(text)
     , mCallback(callback)
@@ -125,6 +129,7 @@ std::function<void (const OpenFile &)> OpenFile::activated;
 std::function<void (const JumpToTile &)> JumpToTile::activated;
 std::function<void (const JumpToObject &)> JumpToObject::activated;
 std::function<void (const SelectLayer &)> SelectLayer::activated;
+std::function<void (const SelectCustomProperty &)> SelectCustomProperty::activated;
 std::function<void (const SelectTile &)> SelectTile::activated;
 
 
@@ -148,6 +153,44 @@ SelectLayer::SelectLayer(const Layer *layer)
     , layerId(layer->id())
 {
     Q_ASSERT(!mapFile.isEmpty());
+}
+
+SelectCustomProperty::SelectCustomProperty(QString fileName,
+                                           QString propertyName,
+                                           const Object *object)
+    : fileName(std::move(fileName))
+    , propertyName(std::move(propertyName))
+    , objectType(object->typeId())
+{
+    switch (object->typeId()) {
+    case Object::LayerType:
+        id = static_cast<const Layer*>(object)->id();
+        break;
+    case Object::MapObjectType:
+        id = static_cast<const MapObject*>(object)->id();
+        break;
+    case Object::MapType:
+        break;
+    case Object::ObjectTemplateType:
+        break;
+    case Object::TerrainType:
+        id = static_cast<const Terrain*>(object)->id();
+        break;
+    case Object::TilesetType:
+        break;
+    case Object::TileType:
+        id = static_cast<const Tile*>(object)->id();
+        break;
+    case Object::WangSetType: {
+        auto wangSet = static_cast<const WangSet*>(object);
+        id = indexOf(wangSet->tileset()->wangSets(), wangSet);
+        break;
+    }
+    case Object::WangColorType:
+        // not so helpful... would need WangSet index as well
+        id = static_cast<const WangColor*>(object)->colorIndex();
+        break;
+    }
 }
 
 SelectTile::SelectTile(const Tile *tile)

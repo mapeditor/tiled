@@ -28,6 +28,7 @@
 #include "changetileterrain.h"
 #include "changewangcolordata.h"
 #include "changewangsetdata.h"
+#include "documentmanager.h"
 #include "erasetiles.h"
 #include "issuescounter.h"
 #include "maintoolbar.h"
@@ -214,6 +215,8 @@ TilesetEditor::TilesetEditor(QObject *parent)
     connect(mWangDock, &WangDock::removeWangSetRequested, this, &TilesetEditor::removeWangSet);
     connect(mWangDock->wangColorView(), &WangColorView::wangColorColorPicked,
             this, &TilesetEditor::setWangColorColor);
+    connect(DocumentManager::instance(), &DocumentManager::selectCustomPropertyRequested,
+            mPropertiesDock, &PropertiesDock::selectCustomProperty);
 
     connect(this, &TilesetEditor::currentTileChanged, mTileAnimationEditor, &TileAnimationEditor::setTile);
     connect(this, &TilesetEditor::currentTileChanged, mTileCollisionDock, &TileCollisionDock::setTile);

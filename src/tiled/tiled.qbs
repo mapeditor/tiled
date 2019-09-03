@@ -169,7 +169,6 @@ QtGuiApplication {
         "commandmanager.h",
         "consoledock.cpp",
         "consoledock.h",
-        "containerhelpers.h",
         "createellipseobjecttool.cpp",
         "createellipseobjecttool.h",
         "createobjecttool.cpp",

@@ -112,6 +112,9 @@ MapDocument::MapDocument(std::unique_ptr<Map> map)
 
 MapDocument::~MapDocument()
 {
+    // Clear any previously found issues in this document
+    IssuesModel::instance().removeIssuesWithContext(this);
+
     // Needs to be deleted before the Map instance is deleted, because it may
     // cause script values to detach from the map, in which case they'll need
     // to be able to copy the data.
@@ -1184,6 +1187,17 @@ void MapDocument::checkIssues()
         ERROR(tr("Failed to load template '%1'").arg(objectTemplate->fileName()),
               LocateObjectTemplate { objectTemplate, sharedFromThis() },
               this);
+    }
+
+    checkFilePathProperties(map());
+
+    for (Layer *layer : map()->allLayers()) {
+        checkFilePathProperties(layer);
+
+        if (layer->isObjectGroup()) {
+            for (MapObject *mapObject : static_cast<ObjectGroup*>(layer)->objects())
+                checkFilePathProperties(mapObject);
+        }
     }
 }
 

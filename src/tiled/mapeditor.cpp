@@ -264,6 +264,8 @@ MapEditor::MapEditor(QObject *parent)
     connect(mTemplatesDock, &TemplatesDock::currentTemplateChanged, mToolManager, &ToolManager::setObjectTemplate);
     connect(DocumentManager::instance(), &DocumentManager::templateOpenRequested,
             mTemplatesDock, &TemplatesDock::openTemplate);
+    connect(DocumentManager::instance(), &DocumentManager::selectCustomPropertyRequested,
+            mPropertiesDock, &PropertiesDock::selectCustomProperty);
 
     connect(mTemplatesDock, &TemplatesDock::templateTilesetReplaced,
             DocumentManager::instance(), &DocumentManager::templateTilesetReplaced);

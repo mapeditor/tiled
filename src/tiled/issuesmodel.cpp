@@ -80,7 +80,7 @@ void IssuesModel::removeIssues(const QList<unsigned> &issueIds)
     removeIssues(indexes);
 }
 
-void IssuesModel::removeIssuesWithContext(void *context)
+void IssuesModel::removeIssuesWithContext(const void *context)
 {
     RangeSet<int> indexes;
 
