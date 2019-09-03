@@ -53,10 +53,12 @@ class DocumentManager;
 class IssuesDock;
 class MapDocument;
 class MapDocumentActionHandler;
+class MapEditor;
 class MapScene;
 class MapView;
 class ObjectTypesEditor;
 class TilesetDocument;
+class TilesetEditor;
 class Zoomable;
 
 /**
@@ -218,6 +220,8 @@ private:
 
     AutomappingManager *mAutomappingManager;
     DocumentManager *mDocumentManager;
+    MapEditor *mMapEditor;
+    TilesetEditor *mTilesetEditor;
 
     QPointer<PreferencesDialog> mPreferencesDialog;
 

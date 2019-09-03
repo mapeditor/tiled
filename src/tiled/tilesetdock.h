@@ -66,9 +66,6 @@ class TilesetDock : public QDockWidget
     Q_PROPERTY(Tiled::EditableTileset *currentTileset READ currentEditableTileset WRITE setCurrentEditableTileset)
 
 public:
-    /**
-     * Constructor.
-     */
     TilesetDock(QWidget *parent = nullptr);
 
     ~TilesetDock() override;
@@ -90,6 +87,9 @@ public:
     EditableTileset *currentEditableTileset() const;
 
     void selectTilesInStamp(const TileStamp &);
+
+    QAction *actionSelectNextTileset() const { return mSelectNextTileset; }
+    QAction *actionSelectPreviousTileset() const { return mSelectPreviousTileset; }
 
 signals:
     /**
@@ -182,6 +182,8 @@ private:
     QAction *mExportTileset;
     QAction *mEditTileset;
     QAction *mDeleteTileset;
+    QAction *mSelectNextTileset;
+    QAction *mSelectPreviousTileset;
 
     QToolButton *mTilesetMenuButton;
     QMenu *mTilesetMenu; //opens on click of mTilesetMenu

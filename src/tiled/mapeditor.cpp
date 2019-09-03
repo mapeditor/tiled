@@ -826,6 +826,16 @@ void MapEditor::addExternalTilesets(const QStringList &fileNames)
     handleExternalTilesetsAndImages(fileNames, false);
 }
 
+QAction *MapEditor::actionSelectNextTileset() const
+{
+    return mTilesetDock->actionSelectNextTileset();
+}
+
+QAction *MapEditor::actionSelectPreviousTileset() const
+{
+    return mTilesetDock->actionSelectPreviousTileset();
+}
+
 void MapEditor::filesDroppedOnTilesetDock(const QStringList &fileNames)
 {
     handleExternalTilesetsAndImages(fileNames, true);

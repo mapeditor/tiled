@@ -29,6 +29,7 @@
 #include "tiled.h"
 #include "tileset.h"
 
+class QAction;
 class QComboBox;
 class QLabel;
 class QMainWindow;
@@ -109,6 +110,9 @@ public:
     SharedTileset currentTileset() const;
 
     void addExternalTilesets(const QStringList &fileNames);
+
+    QAction *actionSelectNextTileset() const;
+    QAction *actionSelectPreviousTileset() const;
 
 private:
     void setSelectedTool(AbstractTool *tool);

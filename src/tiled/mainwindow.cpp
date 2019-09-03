@@ -274,14 +274,14 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerAction(mUi->actionZoomNormal, "ZoomNormal");
     ActionManager::registerAction(mUi->actionZoomOut, "ZoomOut");
 
-    auto *mapEditor = new MapEditor;
-    auto *tilesetEditor = new TilesetEditor;
+    mMapEditor = new MapEditor;
+    mTilesetEditor = new TilesetEditor;
 
-    connect(mapEditor, &Editor::enabledStandardActionsChanged, this, &MainWindow::updateActions);
-    connect(tilesetEditor, &Editor::enabledStandardActionsChanged, this, &MainWindow::updateActions);
+    connect(mMapEditor, &Editor::enabledStandardActionsChanged, this, &MainWindow::updateActions);
+    connect(mTilesetEditor, &Editor::enabledStandardActionsChanged, this, &MainWindow::updateActions);
 
-    mDocumentManager->setEditor(Document::MapDocumentType, mapEditor);
-    mDocumentManager->setEditor(Document::TilesetDocumentType, tilesetEditor);
+    mDocumentManager->setEditor(Document::MapDocumentType, mMapEditor);
+    mDocumentManager->setEditor(Document::TilesetDocumentType, mTilesetEditor);
 
     setCentralWidget(mDocumentManager->widget());
 
@@ -418,9 +418,14 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     mUi->menuMap->insertAction(mUi->actionOffsetMap,
                                mActionHandler->actionCropToSelection());
-
     mUi->menuMap->insertAction(mUi->actionOffsetMap,
                                mActionHandler->actionAutocrop());
+
+    mUi->menuMap->insertAction(mUi->actionMapProperties,
+                               mMapEditor->actionSelectNextTileset());
+    mUi->menuMap->insertAction(mUi->actionMapProperties,
+                               mMapEditor->actionSelectPreviousTileset());
+    mUi->menuMap->insertSeparator(mUi->actionMapProperties);
 
     mLayerMenu = new QMenu(tr("&Layer"), this);
     mNewLayerMenu = mActionHandler->createNewLayerMenu(mLayerMenu);
@@ -601,12 +606,12 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->menuView->insertAction(mUi->actionShowGrid, mShowObjectTypesEditor);
     mUi->menuView->insertSeparator(mUi->actionShowGrid);
 
-    mUi->menuTileset->insertAction(mUi->actionTilesetProperties, tilesetEditor->showAnimationEditor());
-    mUi->menuTileset->insertAction(mUi->actionTilesetProperties, tilesetEditor->editCollisionAction());
-    mUi->menuTileset->insertAction(mUi->actionTilesetProperties, tilesetEditor->editTerrainAction());
+    mUi->menuTileset->insertAction(mUi->actionTilesetProperties, mTilesetEditor->showAnimationEditor());
+    mUi->menuTileset->insertAction(mUi->actionTilesetProperties, mTilesetEditor->editCollisionAction());
+    mUi->menuTileset->insertAction(mUi->actionTilesetProperties, mTilesetEditor->editTerrainAction());
     mUi->menuTileset->insertSeparator(mUi->actionTilesetProperties);
-    mUi->menuTileset->insertAction(mUi->actionTilesetProperties, tilesetEditor->addTilesAction());
-    mUi->menuTileset->insertAction(mUi->actionTilesetProperties, tilesetEditor->removeTilesAction());
+    mUi->menuTileset->insertAction(mUi->actionTilesetProperties, mTilesetEditor->addTilesAction());
+    mUi->menuTileset->insertAction(mUi->actionTilesetProperties, mTilesetEditor->removeTilesAction());
     mUi->menuTileset->insertSeparator(mUi->actionTilesetProperties);
 
     connect(mViewsAndToolbarsMenu, &QMenu::aboutToShow,
@@ -1009,8 +1014,7 @@ void MainWindow::export_()
         const Map *map = exportHelper.prepareExportMap(mapDocument->map(), exportMap);
 
         if (exportFormat->write(map, exportFileName, exportHelper.formatOptions())) {
-            auto *editor = static_cast<MapEditor*>(mDocumentManager->editor(Document::MapDocumentType));
-            editor->showMessage(tr("Exported to %1").arg(exportFileName), 3000);
+            mMapEditor->showMessage(tr("Exported to %1").arg(exportFileName), 3000);
             return;
         }
 
@@ -1358,8 +1362,7 @@ void MainWindow::autoMappingError(bool automatic)
     QString error = mAutomappingManager->errorString();
     if (!error.isEmpty()) {
         if (automatic) {
-            auto *editor = static_cast<MapEditor*>(mDocumentManager->editor(Document::MapDocumentType));
-            editor->showMessage(error, 3000);
+            mMapEditor->showMessage(error, 3000);
         } else {
             QMessageBox::critical(this, tr("Automatic Mapping Error"), error);
         }
@@ -1371,8 +1374,7 @@ void MainWindow::autoMappingWarning(bool automatic)
     QString warning = mAutomappingManager->warningString();
     if (!warning.isEmpty()) {
         if (automatic) {
-            auto *editor = static_cast<MapEditor*>(mDocumentManager->editor(Document::MapDocumentType));
-            editor->showMessage(warning, 3000);
+            mMapEditor->showMessage(warning, 3000);
         } else {
             QMessageBox::warning(this, tr("Automatic Mapping Warning"), warning);
         }
