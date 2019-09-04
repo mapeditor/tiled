@@ -656,7 +656,7 @@ bool DocumentManager::saveDocumentAs(Document *document)
         }
 
         while (true) {
-            fileName = QFileDialog::getSaveFileName(mWidget->window(), QString(),
+            fileName = QFileDialog::getSaveFileName(mWidget->window(), tr("Save File As"),
                                                     fileName,
                                                     filter,
                                                     &selectedFilter);
