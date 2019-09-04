@@ -80,8 +80,6 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
 
     auto *preferences = Preferences::instance();
 
-    connect(mUi->enableDtd, &QCheckBox::toggled,
-            preferences, &Preferences::setDtdEnabled);
     connect(mUi->reloadTilesetImages, &QCheckBox::toggled,
             preferences, &Preferences::setReloadTilesetsOnChanged);
     connect(mUi->openLastFiles, &QCheckBox::toggled,
@@ -172,7 +170,6 @@ void PreferencesDialog::fromPreferences()
 
     // General
     mUi->reloadTilesetImages->setChecked(prefs->reloadTilesetsOnChange());
-    mUi->enableDtd->setChecked(prefs->dtdEnabled());
     mUi->openLastFiles->setChecked(prefs->openLastFilesOnStartup());
     mUi->safeSaving->setChecked(prefs->safeSavingEnabled());
 

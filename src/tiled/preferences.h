@@ -92,9 +92,6 @@ public:
     Map::RenderOrder mapRenderOrder() const;
     void setMapRenderOrder(Map::RenderOrder mapRenderOrder);
 
-    bool dtdEnabled() const;
-    void setDtdEnabled(bool enabled);
-
     bool safeSavingEnabled() const;
     void setSafeSavingEnabled(bool enabled);
 
@@ -394,11 +391,6 @@ inline Map::LayerDataFormat Preferences::layerDataFormat() const
 inline Map::RenderOrder Preferences::mapRenderOrder() const
 {
     return mMapRenderOrder;
-}
-
-inline bool Preferences::dtdEnabled() const
-{
-    return mDtdEnabled;
 }
 
 inline bool Preferences::safeSavingEnabled() const

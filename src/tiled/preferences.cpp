@@ -401,12 +401,6 @@ void Preferences::setMapRenderOrder(Map::RenderOrder mapRenderOrder)
                         mMapRenderOrder);
 }
 
-void Preferences::setDtdEnabled(bool enabled)
-{
-    mDtdEnabled = enabled;
-    mSettings->setValue(QLatin1String("Storage/DtdEnabled"), enabled);
-}
-
 void Preferences::setSafeSavingEnabled(bool enabled)
 {
     mSafeSavingEnabled = enabled;
