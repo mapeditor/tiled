@@ -637,6 +637,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             this, &MainWindow::closeDocument);
     connect(mDocumentManager, &DocumentManager::reloadError,
             this, &MainWindow::reloadError);
+    connect(mDocumentManager, &DocumentManager::documentSaved,
+            this, &MainWindow::documentSaved);
 
     connect(mResetToDefaultLayout, &QAction::triggered, this, &MainWindow::resetToDefaultLayout);
 
@@ -996,41 +998,48 @@ bool MainWindow::confirmAllSave()
 
 void MainWindow::export_()
 {
+    if (!exportDocument(mDocument)) {
+        // fall back when no successful export happened
+        exportAs();
+    }
+}
+
+bool MainWindow::exportDocument(Document *document)
+{
     const QString exportFileName = mDocument->lastExportFileName();
+    if (exportFileName.isEmpty())
+        return false;
 
-    if (!exportFileName.isEmpty()) {
-        if (auto mapDocument = qobject_cast<MapDocument*>(mDocument)) {
-            if (MapFormat *exportFormat = mapDocument->exportFormat()) {
-                std::unique_ptr<Map> exportMap;
-                ExportHelper exportHelper;
-                const Map *map = exportHelper.prepareExportMap(mapDocument->map(), exportMap);
+    if (auto mapDocument = qobject_cast<MapDocument*>(mDocument)) {
+        if (MapFormat *exportFormat = mapDocument->exportFormat()) {
+            std::unique_ptr<Map> exportMap;
+            ExportHelper exportHelper;
+            const Map *map = exportHelper.prepareExportMap(mapDocument->map(), exportMap);
 
-                if (exportFormat->write(map, exportFileName, exportHelper.formatOptions())) {
-                    mMapEditor->showMessage(tr("Exported to %1").arg(exportFileName), 3000);
-                    return;
-                }
-
-                QMessageBox::critical(this, tr("Error Exporting Map"),
-                                      exportFormat->errorString());
+            if (exportFormat->write(map, exportFileName, exportHelper.formatOptions())) {
+                mMapEditor->showMessage(tr("Exported to %1").arg(exportFileName), 3000);
+                return true;
             }
-        } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(mDocument)) {
-            if (TilesetFormat *exportFormat = tilesetDocument->exportFormat()) {
-                ExportHelper exportHelper;
-                const SharedTileset tileset = exportHelper.prepareExportTileset(tilesetDocument->tileset());
 
-                if (exportFormat->write(*tileset, exportFileName, exportHelper.formatOptions())) {
-                    mMapEditor->showMessage(tr("Exported to %1").arg(exportFileName), 3000);
-                    return;
-                }
+            QMessageBox::critical(this, tr("Error Exporting Map"),
+                                  exportFormat->errorString());
+        }
+    } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(mDocument)) {
+        if (TilesetFormat *exportFormat = tilesetDocument->exportFormat()) {
+            ExportHelper exportHelper;
+            const SharedTileset tileset = exportHelper.prepareExportTileset(tilesetDocument->tileset());
 
-                QMessageBox::critical(this, tr("Error Exporting Tileset"),
-                                      exportFormat->errorString());
+            if (exportFormat->write(*tileset, exportFileName, exportHelper.formatOptions())) {
+                mMapEditor->showMessage(tr("Exported to %1").arg(exportFileName), 3000);
+                return true;
             }
+
+            QMessageBox::critical(this, tr("Error Exporting Tileset"),
+                                  exportFormat->errorString());
         }
     }
 
-    // fall back when no successful export happened
-    exportAs();
+    return false;
 }
 
 void MainWindow::exportAs()
@@ -1791,6 +1800,12 @@ void MainWindow::documentChanged(Document *document)
     updateWindowTitle();
     updateActions();
     updateZoomable();
+}
+
+void MainWindow::documentSaved(Document *document)
+{
+    if (Preferences::instance()->exportOnSave())
+        exportDocument(document);
 }
 
 void MainWindow::closeDocument(int index)

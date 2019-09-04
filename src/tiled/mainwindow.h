@@ -114,6 +114,7 @@ private:
     bool saveFileAs();
     void saveAll();
     void export_(); // 'export' is a reserved word
+    bool exportDocument(Document *document);
     void exportAs();
     void exportAsImage();
     void reload();
@@ -154,6 +155,7 @@ private:
     void openRecentFile();
 
     void documentChanged(Document *document);
+    void documentSaved(Document *document);
     void closeDocument(int index);
 
     void reloadError(const QString &error);

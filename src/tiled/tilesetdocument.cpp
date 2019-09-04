@@ -114,7 +114,11 @@ bool TilesetDocument::save(const QString &fileName, QString *error)
 
     undoStack()->setClean();
 
-    mTileset->setFileName(fileName);
+    if (mTileset->fileName() != fileName) {
+        mTileset->setFileName(fileName);
+        mTileset->exportFileName.clear();
+    }
+
     setFileName(fileName);
 
     mLastSaved = QFileInfo(fileName).lastModified();

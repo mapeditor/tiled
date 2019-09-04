@@ -136,7 +136,12 @@ bool MapDocument::save(const QString &fileName, QString *error)
     }
 
     undoStack()->setClean();
-    mMap->fileName = fileName;
+
+    if (mMap->fileName != fileName) {
+        mMap->fileName = fileName;
+        mMap->exportFileName.clear();
+    }
+
     setFileName(fileName);
     mLastSaved = QFileInfo(fileName).lastModified();
 

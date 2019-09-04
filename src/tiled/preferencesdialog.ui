@@ -57,6 +57,13 @@
             </property>
            </widget>
           </item>
+          <item row="3" column="0">
+           <widget class="QCheckBox" name="exportOnSave">
+            <property name="text">
+             <string>Repeat last export on save</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
@@ -446,6 +453,7 @@
   <tabstop>reloadTilesetImages</tabstop>
   <tabstop>openLastFiles</tabstop>
   <tabstop>safeSaving</tabstop>
+  <tabstop>exportOnSave</tabstop>
   <tabstop>embedTilesets</tabstop>
   <tabstop>detachTemplateInstances</tabstop>
   <tabstop>resolveObjectTypesAndProperties</tabstop>

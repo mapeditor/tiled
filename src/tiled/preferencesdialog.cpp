@@ -86,6 +86,8 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
             preferences, &Preferences::setOpenLastFilesOnStartup);
     connect(mUi->safeSaving, &QCheckBox::toggled,
             preferences, &Preferences::setSafeSavingEnabled);
+    connect(mUi->exportOnSave, &QCheckBox::toggled,
+            preferences, &Preferences::setExportOnSave);
 
     connect(mUi->embedTilesets, &QCheckBox::toggled, preferences, [preferences] (bool value) {
         preferences->setExportOption(Preferences::EmbedTilesets, value);
@@ -172,6 +174,7 @@ void PreferencesDialog::fromPreferences()
     mUi->reloadTilesetImages->setChecked(prefs->reloadTilesetsOnChange());
     mUi->openLastFiles->setChecked(prefs->openLastFilesOnStartup());
     mUi->safeSaving->setChecked(prefs->safeSavingEnabled());
+    mUi->exportOnSave->setChecked(prefs->exportOnSave());
 
     mUi->embedTilesets->setChecked(prefs->exportOption(Preferences::EmbedTilesets));
     mUi->detachTemplateInstances->setChecked(prefs->exportOption(Preferences::DetachTemplateInstances));
