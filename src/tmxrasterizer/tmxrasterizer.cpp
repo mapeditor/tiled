@@ -89,11 +89,35 @@ void TmxRasterizer::drawMapLayers(MapRenderer &renderer,
 
         const TileLayer *tileLayer = dynamic_cast<const TileLayer*>(layer);
         const ImageLayer *imageLayer = dynamic_cast<const ImageLayer*>(layer);
+        const ObjectGroup *objectGroup = dynamic_cast<const ObjectGroup*>(layer);
 
         if (tileLayer) {
             renderer.drawTileLayer(&painter, tileLayer);
         } else if (imageLayer) {
             renderer.drawImageLayer(&painter, imageLayer);
+        } else if (objectGroup) {
+            QList<MapObject*> objects = objectGroup->objects();
+
+            if (objectGroup->drawOrder() == ObjectGroup::TopDownOrder)
+                std::stable_sort(objects.begin(), objects.end(), [](MapObject *a, MapObject *b){return a->y() < b->y();});
+
+            for (const MapObject *object : qAsConst(objects)) {
+                if (object->isVisible()) {
+                    if (object->rotation() != qreal(0)) {
+                        QPointF origin = renderer.pixelToScreenCoords(object->position());
+                        painter.save();
+                        painter.translate(origin);
+                        painter.rotate(object->rotation());
+                        painter.translate(-origin);
+                    }
+
+                    const QColor color = object->effectiveColor();
+                    renderer.drawMapObject(&painter, object, color);
+
+                    if (object->rotation() != qreal(0))
+                        painter.restore();
+                }
+            }
         }
 
         painter.translate(-offset);
@@ -102,7 +126,7 @@ void TmxRasterizer::drawMapLayers(MapRenderer &renderer,
 
 bool TmxRasterizer::shouldDrawLayer(const Layer *layer) const
 {
-    if (layer->isObjectGroup() || layer->isGroupLayer())
+    if (layer->isGroupLayer())
         return false;
 
     if (mLayersToHide.contains(layer->name(), Qt::CaseInsensitive))
@@ -257,9 +281,8 @@ int TmxRasterizer::renderWorld(const QString &worldFileName,
             qWarning("Error while reading \"%s\":\n%s",
                     qUtf8Printable(mapEntry.fileName),
                     qUtf8Printable(errorString));
-            return 1;
+            continue;
         }
-
         std::unique_ptr<MapRenderer> renderer = createRenderer(*map);
         drawMapLayers(*renderer, painter, *map, mapEntry.rect.topLeft());
     }
