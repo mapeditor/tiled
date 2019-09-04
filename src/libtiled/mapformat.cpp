@@ -47,7 +47,7 @@ std::unique_ptr<Map> readMap(const QString &fileName, QString *error)
         }
 
         if (map)
-            map->setFileName(fileName);
+            map->fileName = fileName;
 
         return map;
     }
@@ -64,7 +64,7 @@ std::unique_ptr<Map> readMap(const QString &fileName, QString *error)
     }
 
     if (map)
-        map->setFileName(fileName);
+        map->fileName = fileName;
 
     return map;
 }

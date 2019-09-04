@@ -107,6 +107,9 @@ public:
     FileFormat *writerFormat() const override;
     void setWriterFormat(MapFormat *format);
 
+    QString lastExportFileName() const override;
+    void setLastExportFileName(const QString &fileName) override;
+
     MapFormat *exportFormat() const override;
     void setExportFormat(FileFormat *format) override;
 
@@ -364,7 +367,6 @@ private:
      */
     QPointer<MapFormat> mReaderFormat;
     QPointer<MapFormat> mWriterFormat;
-    QPointer<MapFormat> mExportFormat;
     std::unique_ptr<Map> mMap;
     LayerModel *mLayerModel;
     QRegion mSelectedArea;

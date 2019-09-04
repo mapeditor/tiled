@@ -47,7 +47,7 @@ static QString colorToString(const QColor &color)
 
 QVariant MapToVariantConverter::toVariant(const Map &map, const QDir &mapDir)
 {
-    mMapDir = mapDir;
+    mDir = mapDir;
     mGidMapper.clear();
 
     QVariantMap mapVariant;
@@ -65,6 +65,17 @@ QVariant MapToVariantConverter::toVariant(const Map &map, const QDir &mapDir)
     mapVariant[QLatin1String("nextlayerid")] = map.nextLayerId();
     mapVariant[QLatin1String("nextobjectid")] = map.nextObjectId();
     mapVariant[QLatin1String("compressionlevel")] = map.compressionLevel();
+
+    if (!map.exportFileName.isEmpty() || !map.exportFormat.isEmpty()) {
+        QVariantMap editorSettingsVariant;
+
+        QVariantMap exportVariant;
+        exportVariant[QLatin1String("target")] = mDir.relativeFilePath(map.exportFileName);
+        exportVariant[QLatin1String("format")] = map.exportFormat;
+        editorSettingsVariant[QLatin1String("export")] = exportVariant;
+
+        mapVariant[QLatin1String("editorsettings")] = editorSettingsVariant;
+    }
 
     addProperties(mapVariant, map.properties());
 
@@ -102,14 +113,14 @@ QVariant MapToVariantConverter::toVariant(const Map &map, const QDir &mapDir)
 QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
                                           const QDir &directory)
 {
-    mMapDir = directory;
+    mDir = directory;
     return toVariant(tileset, 0);
 }
 
 QVariant MapToVariantConverter::toVariant(const ObjectTemplate &objectTemplate,
                                           const QDir &directory)
 {
-    mMapDir = directory;
+    mDir = directory;
     QVariantMap objectTemplateVariant;
 
     objectTemplateVariant[QLatin1String("type")] = QLatin1String("template");
@@ -136,7 +147,7 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
 
         const QString &fileName = tileset.fileName();
         if (!fileName.isEmpty()) {
-            QString source = mMapDir.relativeFilePath(fileName);
+            QString source = mDir.relativeFilePath(fileName);
             tilesetVariant[QLatin1String("source")] = source;
 
             // Tileset is external, so no need to write any of the stuff below
@@ -158,6 +169,20 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
     tilesetVariant[QLatin1String("margin")] = tileset.margin();
     tilesetVariant[QLatin1String("tilecount")] = tileset.tileCount();
     tilesetVariant[QLatin1String("columns")] = tileset.columnCount();
+
+    // Write editor settings when saving external tilesets
+    if (firstGid == 0) {
+        if (!tileset.exportFileName.isEmpty() || !tileset.exportFormat.isEmpty()) {
+            QVariantMap editorSettingsVariant;
+
+            QVariantMap exportVariant;
+            exportVariant[QLatin1String("target")] = mDir.relativeFilePath(tileset.exportFileName);
+            exportVariant[QLatin1String("format")] = tileset.exportFormat;
+            editorSettingsVariant[QLatin1String("export")] = exportVariant;
+
+            tilesetVariant[QLatin1String("editorsettings")] = editorSettingsVariant;
+        }
+    }
 
     const QColor bgColor = tileset.backgroundColor();
     if (bgColor.isValid())
@@ -184,7 +209,7 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
     // Write the image element
     const QUrl &imageSource = tileset.imageSource();
     if (!imageSource.isEmpty()) {
-        const QString rel = toFileReference(imageSource, mMapDir);
+        const QString rel = toFileReference(imageSource, mDir);
 
         tilesetVariant[QLatin1String("image")] = rel;
 
@@ -231,7 +256,7 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
         if (tile->probability() != 1.0)
             tileVariant[QLatin1String("probability")] = tile->probability();
         if (!tile->imageSource().isEmpty()) {
-            const QString rel = toFileReference(tile->imageSource(), mMapDir);
+            const QString rel = toFileReference(tile->imageSource(), mDir);
             tileVariant[QLatin1String("image")] = rel;
 
             const QSize tileSize = tile->size();
@@ -308,7 +333,7 @@ QVariant MapToVariantConverter::toVariant(const Properties &properties) const
     Properties::const_iterator it = properties.constBegin();
     Properties::const_iterator it_end = properties.constEnd();
     for (; it != it_end; ++it) {
-        const QVariant value = toExportValue(it.value(), mMapDir);
+        const QVariant value = toExportValue(it.value(), mDir);
         variantMap[it.key()] = value;
     }
 
@@ -508,7 +533,7 @@ QVariant MapToVariantConverter::toVariant(const MapObject &object) const
     addProperties(objectVariant, object.properties());
 
     if (const ObjectTemplate *objectTemplate = object.objectTemplate()) {
-        QString relativeFileName = mMapDir.relativeFilePath(objectTemplate->fileName());
+        QString relativeFileName = mDir.relativeFilePath(objectTemplate->fileName());
         objectVariant[QLatin1String("template")] = relativeFileName;
     }
 
@@ -646,7 +671,7 @@ QVariant MapToVariantConverter::toVariant(const ImageLayer &imageLayer) const
 
     addLayerAttributes(imageLayerVariant, imageLayer);
 
-    const QString rel = toFileReference(imageLayer.imageSource(), mMapDir);
+    const QString rel = toFileReference(imageLayer.imageSource(), mDir);
     imageLayerVariant[QLatin1String("image")] = rel;
 
     const QColor transColor = imageLayer.transparentColor();
@@ -737,7 +762,7 @@ void MapToVariantConverter::addProperties(QVariantMap &variantMap,
         Properties::const_iterator it_end = properties.constEnd();
         for (; it != it_end; ++it) {
             int type = it.value().userType();
-            const QVariant value = toExportValue(it.value(), mMapDir);
+            const QVariant value = toExportValue(it.value(), mDir);
 
             propertiesMap[it.key()] = value;
             propertyTypesMap[it.key()] = typeToName(type);
@@ -752,7 +777,7 @@ void MapToVariantConverter::addProperties(QVariantMap &variantMap,
         Properties::const_iterator it_end = properties.constEnd();
         for (; it != it_end; ++it) {
             int type = it.value().userType();
-            const QVariant value = toExportValue(it.value(), mMapDir);
+            const QVariant value = toExportValue(it.value(), mDir);
 
             QVariantMap propertyVariantMap;
             propertyVariantMap[QLatin1String("name")] = it.key();

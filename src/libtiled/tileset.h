@@ -103,6 +103,9 @@ private:
             int tileSpacing = 0, int margin = 0);
 
 public:
+    QString exportFileName;
+    QString exportFormat;
+
     ~Tileset();
 
     const QString &name() const;

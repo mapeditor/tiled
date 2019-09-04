@@ -134,7 +134,7 @@ std::function<void (const SelectTile &)> SelectTile::activated;
 
 
 JumpToTile::JumpToTile(const Map *map, QPoint tilePos, const Layer *layer)
-    : mapFile(map->fileName())
+    : mapFile(map->fileName)
     , tilePos(tilePos)
     , layerId(layer ? layer->id() : -1)
 {
@@ -142,14 +142,14 @@ JumpToTile::JumpToTile(const Map *map, QPoint tilePos, const Layer *layer)
 }
 
 JumpToObject::JumpToObject(const MapObject *object)
-    : mapFile(object->objectGroup()->map()->fileName())
+    : mapFile(object->objectGroup()->map()->fileName)
     , objectId(object->id())
 {
     Q_ASSERT(!mapFile.isEmpty());
 }
 
 SelectLayer::SelectLayer(const Layer *layer)
-    : mapFile(layer->map()->fileName())
+    : mapFile(layer->map()->fileName)
     , layerId(layer->id())
 {
     Q_ASSERT(!mapFile.isEmpty());

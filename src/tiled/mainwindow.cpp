@@ -996,30 +996,37 @@ bool MainWindow::confirmAllSave()
 
 void MainWindow::export_()
 {
-    auto mapDocument = qobject_cast<MapDocument*>(mDocument);
-    if (!mapDocument)
-        return;
-
-    QString exportFileName = mapDocument->lastExportFileName();
+    const QString exportFileName = mDocument->lastExportFileName();
 
     if (!exportFileName.isEmpty()) {
-        MapFormat *exportFormat = mapDocument->exportFormat();
-        TmxMapFormat tmxFormat;
+        if (auto mapDocument = qobject_cast<MapDocument*>(mDocument)) {
+            if (MapFormat *exportFormat = mapDocument->exportFormat()) {
+                std::unique_ptr<Map> exportMap;
+                ExportHelper exportHelper;
+                const Map *map = exportHelper.prepareExportMap(mapDocument->map(), exportMap);
 
-        if (!exportFormat)
-            exportFormat = &tmxFormat;
+                if (exportFormat->write(map, exportFileName, exportHelper.formatOptions())) {
+                    mMapEditor->showMessage(tr("Exported to %1").arg(exportFileName), 3000);
+                    return;
+                }
 
-        std::unique_ptr<Map> exportMap;
-        ExportHelper exportHelper;
-        const Map *map = exportHelper.prepareExportMap(mapDocument->map(), exportMap);
+                QMessageBox::critical(this, tr("Error Exporting Map"),
+                                      exportFormat->errorString());
+            }
+        } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(mDocument)) {
+            if (TilesetFormat *exportFormat = tilesetDocument->exportFormat()) {
+                ExportHelper exportHelper;
+                const SharedTileset tileset = exportHelper.prepareExportTileset(tilesetDocument->tileset());
 
-        if (exportFormat->write(map, exportFileName, exportHelper.formatOptions())) {
-            mMapEditor->showMessage(tr("Exported to %1").arg(exportFileName), 3000);
-            return;
+                if (exportFormat->write(*tileset, exportFileName, exportHelper.formatOptions())) {
+                    mMapEditor->showMessage(tr("Exported to %1").arg(exportFileName), 3000);
+                    return;
+                }
+
+                QMessageBox::critical(this, tr("Error Exporting Tileset"),
+                                      exportFormat->errorString());
+            }
         }
-
-        QMessageBox::critical(this, tr("Error Exporting Map"),
-                              exportFormat->errorString());
     }
 
     // fall back when no successful export happened

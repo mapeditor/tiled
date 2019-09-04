@@ -88,7 +88,7 @@ private:
                        const Properties &properties) const;
 
     int mVersion;
-    QDir mMapDir;
+    QDir mDir;
     GidMapper mGidMapper;
 };
 

@@ -80,6 +80,10 @@ class TILEDSHARED_EXPORT Map : public Object
     };
 
 public:
+    QString fileName;
+    QString exportFileName;
+    QString exportFormat;
+
     /**
      * The orientation of the map determines how it should be rendered. An
      * Orthogonal map is using rectangular tiles that are aligned on a
@@ -157,9 +161,6 @@ public:
         bool infinite = false);
 
     ~Map();
-
-    QString fileName() const { return mFileName; }
-    void setFileName(const QString &fileName) { mFileName = fileName; }
 
     /**
      * Returns the orientation of the map.
@@ -483,7 +484,6 @@ private:
 
     void recomputeDrawMargins() const;
 
-    QString mFileName;
     Orientation mOrientation;
     RenderOrder mRenderOrder;
     int mCompressionLevel;

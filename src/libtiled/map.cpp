@@ -334,7 +334,9 @@ bool Map::isTilesetUsed(const Tileset *tileset) const
 Map *Map::clone() const
 {
     Map *o = new Map(mOrientation, mWidth, mHeight, mTileWidth, mTileHeight, mInfinite);
-    o->mFileName = mFileName;
+    o->fileName = fileName;
+    o->exportFileName = exportFileName;
+    o->exportFormat = exportFormat;
     o->mRenderOrder = mRenderOrder;
     o->mHexSideLength = mHexSideLength;
     o->mStaggerAxis = mStaggerAxis;

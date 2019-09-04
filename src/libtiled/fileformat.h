@@ -138,4 +138,12 @@ private:
     QMap<QString, Format*> mFormatByNameFilter;
 };
 
+template<typename Format>
+Format *findFileFormat(const QString &shortName, FileFormat::Capabilities capabilities = FileFormat::Write)
+{
+    return PluginManager::find<Format>([&](Format *format) {
+        return format->hasCapabilities(capabilities) && format->shortName() == shortName;
+    });
+}
+
 } // namespace Tiled

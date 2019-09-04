@@ -73,7 +73,7 @@
 using namespace Tiled;
 
 MapDocument::MapDocument(std::unique_ptr<Map> map)
-    : Document(MapDocumentType, map->fileName())
+    : Document(MapDocumentType, map->fileName)
     , mMap(std::move(map))
     , mLayerModel(new LayerModel(this))
     , mHoveredMapObject(nullptr)
@@ -136,7 +136,7 @@ bool MapDocument::save(const QString &fileName, QString *error)
     }
 
     undoStack()->setClean();
-    mMap->setFileName(fileName);
+    mMap->fileName = fileName;
     setFileName(fileName);
     mLastSaved = QFileInfo(fileName).lastModified();
 
@@ -163,7 +163,7 @@ MapDocumentPtr MapDocument::load(const QString &fileName,
         return MapDocumentPtr();
     }
 
-    map->setFileName(fileName);
+    map->fileName = fileName;
 
     MapDocumentPtr document = MapDocumentPtr::create(std::move(map));
     document->setReaderFormat(format);
@@ -193,15 +193,27 @@ void MapDocument::setWriterFormat(MapFormat *format)
     mWriterFormat = format;
 }
 
+QString MapDocument::lastExportFileName() const
+{
+    return map()->exportFileName;
+}
+
+void MapDocument::setLastExportFileName(const QString &fileName)
+{
+    map()->exportFileName = fileName;
+}
+
 MapFormat *MapDocument::exportFormat() const
 {
-    return mExportFormat;
+    if (map()->exportFormat.isEmpty())
+        return nullptr;
+    return findFileFormat<MapFormat>(map()->exportFormat);
 }
 
 void MapDocument::setExportFormat(FileFormat *format)
 {
-    mExportFormat = qobject_cast<MapFormat*>(format);
-    Q_ASSERT(mExportFormat);
+    Q_ASSERT(qobject_cast<MapFormat*>(format));
+    map()->exportFormat = format->shortName();
 }
 
 /**

@@ -136,6 +136,21 @@ public:
                     function(result);
     }
 
+    /**
+     * Calls the given function for each object implementing a given interface,
+     * returning the first one for which `true` is returned.
+     */
+    template<typename T>
+    static T *find(std::function<bool(T*)> function)
+    {
+        if (mInstance)
+            for (QObject *object : qAsConst(mInstance->mObjects))
+                if (T *result = qobject_cast<T*>(object))
+                    if (function(result))
+                        return result;
+        return nullptr;
+    }
+
     PluginFile *pluginByFileName(const QString &fileName);
 
     const QMap<QString, PluginState> &pluginStates() const;

@@ -111,8 +111,8 @@ public:
     bool changedOnDisk() const;
     void setChangedOnDisk(bool changedOnDisk);
 
-    QString lastExportFileName() const;
-    void setLastExportFileName(const QString &fileName);
+    virtual QString lastExportFileName() const = 0;
+    virtual void setLastExportFileName(const QString &fileName) = 0;
 
     virtual FileFormat *exportFormat() const = 0;
     virtual void setExportFormat(FileFormat *format) = 0;
@@ -151,8 +151,6 @@ protected:
 
     Object *mCurrentObject = nullptr;   /**< Current properties object. */
 
-    QString mLastExportFileName;
-
     std::unique_ptr<EditableAsset> mEditable;
 
 private:
@@ -186,16 +184,6 @@ inline bool Document::ignoreBrokenLinks() const
 inline bool Document::changedOnDisk() const
 {
     return mChangedOnDisk;
-}
-
-inline QString Document::lastExportFileName() const
-{
-    return mLastExportFileName;
-}
-
-inline void Document::setLastExportFileName(const QString &fileName)
-{
-    mLastExportFileName = fileName;
 }
 
 inline const QHash<QString, Document *> &Document::documentInstances()

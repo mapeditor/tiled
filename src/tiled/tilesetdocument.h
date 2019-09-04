@@ -72,6 +72,9 @@ public:
     FileFormat *writerFormat() const override;
     void setWriterFormat(TilesetFormat *format);
 
+    QString lastExportFileName() const override;
+    void setLastExportFileName(const QString &fileName) override;
+
     TilesetFormat *exportFormat() const override;
     void setExportFormat(FileFormat *format) override;
 
@@ -178,7 +181,6 @@ private:
     std::unordered_map<WangSet*, std::unique_ptr<WangColorModel>> mWangColorModels;
 
     QList<Tile*> mSelectedTiles;
-    QPointer<TilesetFormat> mExportFormat;
 
     static QMap<SharedTileset, TilesetDocument*> sTilesetToDocument;
 };

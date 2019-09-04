@@ -84,8 +84,10 @@ private:
     void readUnknownElement();
 
     std::unique_ptr<Map> readMap();
+    void readMapEditorSettings(Map &map);
 
     SharedTileset readTileset();
+    void readTilesetEditorSettings(Tileset &tileset);
     void readTilesetTile(Tileset &tileset);
     void readTilesetGrid(Tileset &tileset);
     void readTilesetImage(Tileset &tileset);
@@ -293,7 +295,9 @@ std::unique_ptr<Map> MapReaderPrivate::readMap()
         mMap->setBackgroundColor(QColor(bgColorString.toString()));
 
     while (xml.readNextStartElement()) {
-        if (std::unique_ptr<Layer> layer = tryReadLayer())
+        if (xml.name() == QLatin1String("editorsettings"))
+            readMapEditorSettings(*mMap);
+        else if (std::unique_ptr<Layer> layer = tryReadLayer())
             mMap->addLayer(std::move(layer));
         else if (xml.name() == QLatin1String("properties"))
             mMap->mergeProperties(readProperties());
@@ -334,6 +338,24 @@ std::unique_ptr<Map> MapReaderPrivate::readMap()
     return std::move(mMap);
 }
 
+void MapReaderPrivate::readMapEditorSettings(Map &map)
+{
+    Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("editorsettings"));
+
+    while (xml.readNextStartElement()) {
+        if (xml.name() == QLatin1String("export")) {
+            const QXmlStreamAttributes atts = xml.attributes();
+
+            map.exportFileName = QDir::cleanPath(mPath.filePath(atts.value(QLatin1String("target")).toString()));
+            map.exportFormat = atts.value(QLatin1String("format")).toString();
+
+            xml.skipCurrentElement();
+        } else {
+            readUnknownElement();
+        }
+    }
+}
+
 SharedTileset MapReaderPrivate::readTileset()
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("tileset"));
@@ -368,7 +390,9 @@ SharedTileset MapReaderPrivate::readTileset()
                 tileset->setBackgroundColor(QColor(bgColorString.toString()));
 
             while (xml.readNextStartElement()) {
-                if (xml.name() == QLatin1String("tile")) {
+                if (xml.name() == QLatin1String("editorsettings")) {
+                    readTilesetEditorSettings(*tileset);
+                } else if (xml.name() == QLatin1String("tile")) {
                     readTilesetTile(*tileset);
                 } else if (xml.name() == QLatin1String("tileoffset")) {
                     const QXmlStreamAttributes oa = xml.attributes();
@@ -417,6 +441,24 @@ SharedTileset MapReaderPrivate::readTileset()
         mGidMapper.insert(firstGid, tileset);
 
     return tileset;
+}
+
+void MapReaderPrivate::readTilesetEditorSettings(Tileset &tileset)
+{
+    Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("editorsettings"));
+
+    while (xml.readNextStartElement()) {
+        if (xml.name() == QLatin1String("export")) {
+            const QXmlStreamAttributes atts = xml.attributes();
+
+            tileset.exportFileName = QDir::cleanPath(mPath.filePath(atts.value(QLatin1String("target")).toString()));
+            tileset.exportFormat = atts.value(QLatin1String("format")).toString();
+
+            xml.skipCurrentElement();
+        } else {
+            readUnknownElement();
+        }
+    }
 }
 
 void MapReaderPrivate::readTilesetTile(Tileset &tileset)

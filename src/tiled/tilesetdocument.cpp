@@ -181,15 +181,27 @@ void TilesetDocument::setWriterFormat(TilesetFormat *format)
     mTileset->setFormat(format);
 }
 
+QString TilesetDocument::lastExportFileName() const
+{
+    return tileset()->exportFileName;
+}
+
+void TilesetDocument::setLastExportFileName(const QString &fileName)
+{
+    tileset()->exportFileName = fileName;
+}
+
 TilesetFormat* TilesetDocument::exportFormat() const
 {
-    return mExportFormat;
+    if (tileset()->exportFormat.isEmpty())
+        return nullptr;
+    return findFileFormat<TilesetFormat>(tileset()->exportFormat);
 }
 
 void TilesetDocument::setExportFormat(FileFormat *format)
 {
-    mExportFormat = qobject_cast<TilesetFormat*>(format);
-    Q_ASSERT(mExportFormat);
+    Q_ASSERT(qobject_cast<TilesetFormat*>(format));
+    tileset()->exportFormat = format->shortName();
 }
 
 QString TilesetDocument::displayName() const

@@ -51,7 +51,7 @@ std::unique_ptr<Map> VariantToMapConverter::toMap(const QVariant &variant,
                                                   const QDir &mapDir)
 {
     mGidMapper.clear();
-    mMapDir = mapDir;
+    mDir = mapDir;
 
     const QVariantMap variantMap = variant.toMap();
     const QString orientationString = variantMap[QLatin1String("orientation")].toString();
@@ -90,6 +90,8 @@ std::unique_ptr<Map> VariantToMapConverter::toMap(const QVariant &variant,
         map->setNextLayerId(nextLayerId);
     if (nextObjectId)
         map->setNextObjectId(nextObjectId);
+
+    readMapEditorSettings(*map, variantMap[QLatin1String("editorsettings")].toMap());
 
     mMap = map.get();
     map->setProperties(extractProperties(variantMap));
@@ -132,7 +134,7 @@ std::unique_ptr<Map> VariantToMapConverter::toMap(const QVariant &variant,
 SharedTileset VariantToMapConverter::toTileset(const QVariant &variant,
                                                const QDir &directory)
 {
-    mMapDir = directory;
+    mDir = directory;
     mReadingExternalTileset = true;
 
     SharedTileset tileset = toTileset(variant);
@@ -147,7 +149,7 @@ std::unique_ptr<ObjectTemplate> VariantToMapConverter::toObjectTemplate(const QV
                                                                         const QDir &directory)
 {
     mGidMapper.clear();
-    mMapDir = directory;
+    mDir = directory;
     return toObjectTemplate(variant);
 }
 
@@ -166,7 +168,7 @@ Properties VariantToMapConverter::toProperties(const QVariant &propertiesVariant
         if (type == QVariant::Invalid)
             type = QVariant::String;
 
-        const QVariant value = fromExportValue(it.value(), type, mMapDir);
+        const QVariant value = fromExportValue(it.value(), type, mDir);
         properties[it.key()] = value;
     }
 
@@ -180,7 +182,7 @@ Properties VariantToMapConverter::toProperties(const QVariant &propertiesVariant
         int type = nameToType(propertyType);
         if (type == QVariant::Invalid)
             type = QVariant::String;
-        properties[propertyName] = fromExportValue(propertyValue, type, mMapDir);
+        properties[propertyName] = fromExportValue(propertyValue, type, mDir);
     }
 
     return properties;
@@ -195,7 +197,7 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
     // Handle external tilesets
     const QVariant sourceVariant = variantMap[QLatin1String("source")];
     if (!sourceVariant.isNull()) {
-        QString source = resolvePath(mMapDir, sourceVariant);
+        QString source = resolvePath(mDir, sourceVariant);
         QString error;
         SharedTileset tileset = TilesetManager::instance()->loadTileset(source, &error);
         if (!tileset) {
@@ -234,6 +236,8 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
     tileset->setTileOffset(QPoint(tileOffsetX, tileOffsetY));
     tileset->setColumnCount(columns);
 
+    readTilesetEditorSettings(*tileset, variantMap[QLatin1String("editorsettings")].toMap());
+
     if (!grid.isEmpty()) {
         const QString orientation = grid[QLatin1String("orientation")].toString();
         const QSize gridSize(grid[QLatin1String("width")].toInt(),
@@ -254,7 +258,7 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
         const int imageHeight = variantMap[QLatin1String("imageheight")].toInt();
 
         ImageReference imageRef;
-        imageRef.source = toUrl(imageVariant.toString(), mMapDir);
+        imageRef.source = toUrl(imageVariant.toString(), mDir);
         imageRef.size = QSize(imageWidth, imageHeight);
 
         tileset->setImageReference(imageRef);
@@ -296,7 +300,7 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
 
         QVariant imageVariant = tileVar[QLatin1String("image")];
         if (!imageVariant.isNull()) {
-            const QUrl imagePath = toUrl(imageVariant.toString(), mMapDir);
+            const QUrl imagePath = toUrl(imageVariant.toString(), mDir);
             tileset->setTileImage(tile, QPixmap(imagePath.toLocalFile()), imagePath);
         }
 
@@ -632,7 +636,7 @@ std::unique_ptr<MapObject> VariantToMapConverter::toMapObject(const QVariantMap 
     }
 
     if (!templateVariant.isNull()) { // This object is a template instance
-        QString templateFileName = resolvePath(mMapDir, templateVariant);
+        QString templateFileName = resolvePath(mDir, templateVariant);
         auto objectTemplate = TemplateManager::instance()->loadObjectTemplate(templateFileName);
         object->setObjectTemplate(objectTemplate);
     }
@@ -720,7 +724,7 @@ std::unique_ptr<ImageLayer> VariantToMapConverter::toImageLayer(const QVariantMa
     QVariant imageVariant = variantMap[QLatin1String("image")].toString();
 
     if (!imageVariant.isNull()) {
-        const QUrl imageSource = toUrl(imageVariant.toString(), mMapDir);
+        const QUrl imageSource = toUrl(imageVariant.toString(), mDir);
         imageLayer->loadFromImage(imageSource);
     }
 
@@ -814,6 +818,20 @@ TextData VariantToMapConverter::toTextData(const QVariantMap &variant) const
     textData.text = variant[QLatin1String("text")].toString();
 
     return textData;
+}
+
+void VariantToMapConverter::readMapEditorSettings(Map &map, const QVariantMap &editorSettings)
+{
+    const QVariantMap exportVariant = editorSettings[QLatin1String("export")].toMap();
+    map.exportFileName = QDir::cleanPath(mDir.filePath(exportVariant[QLatin1String("target")].toString()));
+    map.exportFormat = exportVariant[QLatin1String("format")].toString();
+}
+
+void VariantToMapConverter::readTilesetEditorSettings(Tileset &tileset, const QVariantMap &editorSettings)
+{
+    const QVariantMap exportVariant = editorSettings[QLatin1String("export")].toMap();
+    tileset.exportFileName = QDir::cleanPath(mDir.filePath(exportVariant[QLatin1String("target")].toString()));
+    tileset.exportFormat = exportVariant[QLatin1String("format")].toString();
 }
 
 bool VariantToMapConverter::readTileLayerData(TileLayer &tileLayer,

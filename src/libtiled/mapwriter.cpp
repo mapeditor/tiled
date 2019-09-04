@@ -103,7 +103,7 @@ private:
     void writeProperties(QXmlStreamWriter &w,
                          const Properties &properties);
 
-    QDir mMapDir;     // The directory in which the map is being saved
+    QDir mDir;      // The directory in which the file is being saved
     GidMapper mGidMapper;
     bool mUseAbsolutePaths { false };
 };
@@ -125,7 +125,7 @@ bool MapWriterPrivate::openFile(SaveFile *file)
 void MapWriterPrivate::writeMap(const Map *map, QIODevice *device,
                                 const QString &path)
 {
-    mMapDir = QDir(path);
+    mDir = QDir(path);
     mUseAbsolutePaths = path.isEmpty();
     mLayerDataFormat = map->layerDataFormat();
     mCompressionlevel = map->compressionLevel();
@@ -150,7 +150,7 @@ void MapWriterPrivate::writeMap(const Map *map, QIODevice *device,
 void MapWriterPrivate::writeTileset(const Tileset &tileset, QIODevice *device,
                                     const QString &path)
 {
-    mMapDir = QDir(path);
+    mDir = QDir(path);
     mUseAbsolutePaths = path.isEmpty();
 
     QXmlStreamWriter writer(device);
@@ -172,7 +172,7 @@ void MapWriterPrivate::writeTileset(const Tileset &tileset, QIODevice *device,
 void MapWriterPrivate::writeObjectTemplate(const ObjectTemplate *objectTemplate, QIODevice *device,
                                            const QString &path)
 {
-    mMapDir = QDir(path);
+    mDir = QDir(path);
     mUseAbsolutePaths = path.isEmpty();
 
     QXmlStreamWriter writer(device);
@@ -238,6 +238,15 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
     w.writeAttribute(QLatin1String("nextobjectid"),
                      QString::number(map.nextObjectId()));
 
+    if (!map.exportFileName.isEmpty() || !map.exportFormat.isEmpty()) {
+        w.writeStartElement(QLatin1String("editorsettings"));
+        w.writeStartElement(QLatin1String("export"));
+        w.writeAttribute(QLatin1String("target"), mDir.relativeFilePath(map.exportFileName));
+        w.writeAttribute(QLatin1String("format"), map.exportFormat);
+        w.writeEndElement();
+        w.writeEndElement();
+    }
+
     writeProperties(w, map.properties());
 
     mGidMapper.clear();
@@ -298,7 +307,7 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
         if (!fileName.isEmpty()) {
             QString source = fileName;
             if (!mUseAbsolutePaths)
-                source = mMapDir.relativeFilePath(source);
+                source = mDir.relativeFilePath(source);
             w.writeAttribute(QLatin1String("source"), source);
 
             // Tileset is external, so no need to write any of the stuff below
@@ -334,6 +343,18 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
                          colorToString(tileset.backgroundColor()));
     }
 
+    // Write editor settings when saving external tilesets
+    if (firstGid == 0) {
+        if (!tileset.exportFileName.isEmpty() || !tileset.exportFormat.isEmpty()) {
+            w.writeStartElement(QLatin1String("editorsettings"));
+            w.writeStartElement(QLatin1String("export"));
+            w.writeAttribute(QLatin1String("target"), mDir.relativeFilePath(tileset.exportFileName));
+            w.writeAttribute(QLatin1String("format"), tileset.exportFormat);
+            w.writeEndElement();
+            w.writeEndElement();
+        }
+    }
+
     const QPoint offset = tileset.tileOffset();
     if (!offset.isNull()) {
         w.writeStartElement(QLatin1String("tileoffset"));
@@ -361,7 +382,7 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
         if (mUseAbsolutePaths)
             source = imageSource.toString(QUrl::PreferLocalFile);
         else
-            source = toFileReference(imageSource, mMapDir);
+            source = toFileReference(imageSource, mDir);
         w.writeAttribute(QLatin1String("source"), source);
 
         const QColor transColor = tileset.transparentColor();
@@ -436,7 +457,7 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
                     if (mUseAbsolutePaths)
                         source = tile->imageSource().toString(QUrl::PreferLocalFile);
                     else
-                        source = toFileReference(tile->imageSource(), mMapDir);
+                        source = toFileReference(tile->imageSource(), mDir);
                     w.writeAttribute(QLatin1String("source"), source);
                 }
 
@@ -741,7 +762,7 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
     if (const ObjectTemplate *objectTemplate = mapObject.objectTemplate()) {
         QString fileName = objectTemplate->fileName();
         if (!mUseAbsolutePaths)
-            fileName = mMapDir.relativeFilePath(fileName);
+            fileName = mDir.relativeFilePath(fileName);
         w.writeAttribute(QLatin1String("template"), fileName);
     }
 
@@ -880,7 +901,7 @@ void MapWriterPrivate::writeImageLayer(QXmlStreamWriter &w,
         w.writeStartElement(QLatin1String("image"));
 
         QString source = mUseAbsolutePaths ? imageSource.toString(QUrl::PreferLocalFile)
-                                           : toFileReference(imageSource, mMapDir);
+                                           : toFileReference(imageSource, mDir);
 
         w.writeAttribute(QLatin1String("source"), source);
 
@@ -936,7 +957,7 @@ void MapWriterPrivate::writeProperties(QXmlStreamWriter &w,
             w.writeAttribute(QLatin1String("type"), typeName);
 
         QVariant exportValue = mUseAbsolutePaths ? toExportValue(it.value())
-                                                 : toExportValue(it.value(), mMapDir);
+                                                 : toExportValue(it.value(), mDir);
         QString value = exportValue.toString();
 
         if (value.contains(QLatin1Char('\n')))
