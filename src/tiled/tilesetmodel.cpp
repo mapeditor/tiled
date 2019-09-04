@@ -178,12 +178,6 @@ void TilesetModel::tilesetChanged()
     endResetModel();
 }
 
-void TilesetModel::resetModel()
-{
-    beginResetModel();
-    endResetModel();
-}
-
 void TilesetModel::tilesChanged(const QList<Tile *> &tiles)
 {
     if (tiles.first()->tileset() != mTileset)

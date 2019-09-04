@@ -87,7 +87,7 @@ protected:
 
     void handlePinchGesture(QPinchGesture *pinch);
 
-    void adjustCenterFromMousePosition(QPoint &mousePos);
+    void adjustCenterFromMousePosition(QPoint mousePos);
 
 signals:
     void focused();

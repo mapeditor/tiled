@@ -440,7 +440,7 @@ void MapView::handlePinchGesture(QPinchGesture *pinch)
     setTransformationAnchor(QGraphicsView::AnchorViewCenter);
 }
 
-void MapView::adjustCenterFromMousePosition(QPoint &mousePos)
+void MapView::adjustCenterFromMousePosition(QPoint mousePos)
 {
     // Place the last known mouse scene pos below the mouse again
     QWidget *view = viewport();

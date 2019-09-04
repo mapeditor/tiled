@@ -697,20 +697,7 @@ QSize TileDelegate::sizeHint(const QStyleOptionViewItem & /* option */,
 TilesetView::TilesetView(QWidget *parent)
     : QTableView(parent)
     , mZoomable(new Zoomable(this))
-    , mTilesetDocument(nullptr)
-    , mMarkAnimatedTiles(true)
-    , mEditTerrain(false)
-    , mEditWangSet(false)
     , mWangBehavior(WholeId)
-    , mEraseTerrain(false)
-    , mTerrain(nullptr)
-    , mWangSet(nullptr)
-    , mWangId(0)
-    , mWangColorIndex(0)
-    , mHoveredCorner(0)
-    , mTerrainChanged(false)
-    , mWangIdChanged(false)
-    , mHandScrolling(false)
     , mImageMissingIcon(QStringLiteral("://images/32/image-missing.png"))
 {
     setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
@@ -1171,7 +1158,31 @@ void TilesetView::wheelEvent(QWheelEvent *event)
     if (event->modifiers() & Qt::ControlModifier &&
             event->orientation() == Qt::Vertical)
     {
+        auto hor = horizontalScrollBar();
+        auto ver = verticalScrollBar();
+
+        const QPointF &viewportPos = event->posF();
+        const QPointF contentPos(viewportPos.x() + hor->value(),
+                                 viewportPos.y() + ver->value());
+
+        QPointF relativeContentPos;
+
+        const QSize oldContentSize = viewportSizeHint();
+        if (!oldContentSize.isEmpty()) {
+            relativeContentPos = QPointF(contentPos.x() / oldContentSize.width(),
+                                         contentPos.y() / oldContentSize.height());
+        }
+
         mZoomable->handleWheelDelta(event->delta());
+
+        executeDelayedItemsLayout();
+
+        const QSize newContentSizeHint = viewportSizeHint();
+        const QPointF newContentPos(relativeContentPos.x() * newContentSizeHint.width(),
+                                    relativeContentPos.y() * newContentSizeHint.height());
+
+        hor->setValue(newContentPos.x() - viewportPos.x());
+        ver->setValue(newContentPos.y() - viewportPos.y());
         return;
     }
 
@@ -1308,14 +1319,12 @@ void TilesetView::swapTiles()
 void TilesetView::setDrawGrid(bool drawGrid)
 {
     mDrawGrid = drawGrid;
-    if (TilesetModel *model = tilesetModel())
-        model->resetModel();
+    scheduleDelayedItemsLayout();
 }
 
 void TilesetView::adjustScale()
 {
-    if (TilesetModel *model = tilesetModel())
-        model->resetModel();
+    scheduleDelayedItemsLayout();
 }
 
 void TilesetView::applyTerrain()

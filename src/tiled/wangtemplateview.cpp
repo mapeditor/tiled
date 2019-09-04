@@ -383,6 +383,5 @@ void WangTemplateView::wheelEvent(QWheelEvent *event)
 
 void WangTemplateView::adjustScale()
 {
-    if (WangTemplateModel *model = wangTemplateModel())
-        model->resetModel();
+    scheduleDelayedItemsLayout();
 }

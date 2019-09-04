@@ -111,11 +111,6 @@ public:
      */
     void tilesetChanged();
 
-    /**
-     * Performs a reset on the model.
-     */
-    void resetModel();
-
 public slots:
     /**
      * Should be called when anything changes about the given \a tiles that

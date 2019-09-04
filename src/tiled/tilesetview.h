@@ -170,24 +170,24 @@ private:
     };
 
     Zoomable *mZoomable;
-    TilesetDocument *mTilesetDocument;
+    TilesetDocument *mTilesetDocument = nullptr;
     bool mDrawGrid;
 
-    bool mMarkAnimatedTiles;
-    bool mEditTerrain;
-    bool mEditWangSet;
+    bool mMarkAnimatedTiles = true;
+    bool mEditTerrain = false;
+    bool mEditWangSet = false;
     WangBehavior mWangBehavior;
-    bool mEraseTerrain;
-    const Terrain *mTerrain;
-    WangSet *mWangSet;
-    WangId mWangId;
-    int mWangColorIndex;
+    bool mEraseTerrain = false;
+    const Terrain *mTerrain = nullptr;
+    WangSet *mWangSet = nullptr;
+    WangId mWangId = 0;
+    int mWangColorIndex = 0;
     QModelIndex mHoveredIndex;
-    int mHoveredCorner;
-    bool mTerrainChanged;
-    bool mWangIdChanged;
+    int mHoveredCorner = 0;
+    bool mTerrainChanged = false;
+    bool mWangIdChanged = false;
 
-    bool mHandScrolling;
+    bool mHandScrolling = false;
     QPoint mLastMousePos;
 
     const QIcon mImageMissingIcon;

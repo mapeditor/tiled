@@ -115,13 +115,8 @@ void WangTemplateModel::setWangSet(WangSet *wangSet)
     endResetModel();
 }
 
-void WangTemplateModel::resetModel()
+void WangTemplateModel::wangSetChanged()
 {
     beginResetModel();
     endResetModel();
-}
-
-void WangTemplateModel::wangSetChanged()
-{
-    resetModel();
 }
