@@ -919,8 +919,15 @@ void MapDocument::setSelectedObjects(const QList<MapObject *> &selectedObjects)
     if (singleObjectGroup)
         switchCurrentLayer(singleObjectGroup);
 
-    if (selectedObjects.size() == 1)
+    // Make sure the current object is one of the selected ones
+    if (!selectedObjects.isEmpty()) {
+        if (currentObject() && currentObject()->typeId() == Object::MapObjectType) {
+            if (selectedObjects.contains(static_cast<MapObject*>(currentObject())))
+                return;
+        }
+
         setCurrentObject(selectedObjects.first());
+    }
 }
 
 QList<Object*> MapDocument::currentObjects() const
