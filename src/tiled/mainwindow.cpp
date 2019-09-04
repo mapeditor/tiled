@@ -1006,11 +1006,11 @@ void MainWindow::export_()
 
 bool MainWindow::exportDocument(Document *document)
 {
-    const QString exportFileName = mDocument->lastExportFileName();
+    const QString exportFileName = document->lastExportFileName();
     if (exportFileName.isEmpty())
         return false;
 
-    if (auto mapDocument = qobject_cast<MapDocument*>(mDocument)) {
+    if (auto mapDocument = qobject_cast<MapDocument*>(document)) {
         if (MapFormat *exportFormat = mapDocument->exportFormat()) {
             std::unique_ptr<Map> exportMap;
             ExportHelper exportHelper;
@@ -1024,7 +1024,7 @@ bool MainWindow::exportDocument(Document *document)
             QMessageBox::critical(this, tr("Error Exporting Map"),
                                   exportFormat->errorString());
         }
-    } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(mDocument)) {
+    } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
         if (TilesetFormat *exportFormat = tilesetDocument->exportFormat()) {
             ExportHelper exportHelper;
             const SharedTileset tileset = exportHelper.prepareExportTileset(tilesetDocument->tileset());
