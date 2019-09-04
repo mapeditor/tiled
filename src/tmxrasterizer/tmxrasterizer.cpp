@@ -89,7 +89,7 @@ void TmxRasterizer::drawMapLayers(MapRenderer &renderer,
 
         const TileLayer *tileLayer = dynamic_cast<const TileLayer*>(layer);
         const ImageLayer *imageLayer = dynamic_cast<const ImageLayer*>(layer);
-        const ObjectGroup *objectGroup = static_cast<const ObjectGroup*>(layer);
+        const ObjectGroup *objectGroup = dynamic_cast<const ObjectGroup*>(layer);
 
         if (tileLayer) {
             renderer.drawTileLayer(&painter, tileLayer);
@@ -281,11 +281,10 @@ int TmxRasterizer::renderWorld(const QString &worldFileName,
             qWarning("Error while reading \"%s\":\n%s",
                     qUtf8Printable(mapEntry.fileName),
                     qUtf8Printable(errorString));
-            //return 1;
-        } else {
-            std::unique_ptr<MapRenderer> renderer = createRenderer(*map);
-            drawMapLayers(*renderer, painter, *map, mapEntry.rect.topLeft());
+            continue;
         }
+        std::unique_ptr<MapRenderer> renderer = createRenderer(*map);
+        drawMapLayers(*renderer, painter, *map, mapEntry.rect.topLeft());
     }
 
     return saveImage(imageFileName, image);
