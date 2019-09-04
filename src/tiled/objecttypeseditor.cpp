@@ -547,11 +547,13 @@ void ObjectTypesEditor::renameProperty()
     const QString oldName = item->property()->propertyName();
 
     QInputDialog *dialog = new QInputDialog(mUi->propertiesView);
+    dialog->setAttribute(Qt::WA_DeleteOnClose);
     dialog->setInputMode(QInputDialog::TextInput);
     dialog->setLabelText(tr("Name:"));
     dialog->setTextValue(oldName);
     dialog->setWindowTitle(tr("Rename Property"));
-    dialog->open(this, SLOT(renamePropertyTo(QString)));
+    connect(dialog, &QInputDialog::textValueSelected, this, &ObjectTypesEditor::renamePropertyTo);
+    dialog->open();
 }
 
 void ObjectTypesEditor::renamePropertyTo(const QString &name)
