@@ -23,6 +23,8 @@
 
 #include <QtVariantEditorFactory>
 
+class QComboBox;
+
 namespace Tiled {
 
 class FileEdit;
@@ -64,6 +66,7 @@ private:
                                       const QVariant &value);
     void fileEditFileUrlChanged(const QUrl &value);
     void textPropertyEditTextChanged(const QString &value);
+    void comboBoxPropertyEditTextChanged(const QString &value);
     void slotEditorDestroyed(QObject *object);
 
     QMap<QtProperty *, QList<FileEdit *> > mCreatedFileEdits;
@@ -74,6 +77,9 @@ private:
 
     QMap<QtProperty *, QList<TextPropertyEdit *> > mCreatedTextPropertyEdits;
     QMap<TextPropertyEdit *, QtProperty *> mTextPropertyEditToProperty;
+
+    QMap<QtProperty *, QList<QComboBox *> > mCreatedComboBoxes;
+    QMap<QComboBox *, QtProperty *> mComboBoxToProperty;
 };
 
 } // namespace Tiled
