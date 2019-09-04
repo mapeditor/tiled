@@ -30,6 +30,7 @@
 
 #include <QCompleter>
 #include <QHBoxLayout>
+#include <QShortcut>
 #include <QToolButton>
 
 #include "qtcompat_p.h"
@@ -149,12 +150,19 @@ QWidget *VariantEditorFactory::createEditor(QtVariantPropertyManager *manager,
 
     if (type == QVariant::String) {
         // Add support for "suggestions" attribute that adds a QCompleter to the QLineEdit
-        QVariant suggestions = manager->attributeValue(property, QLatin1String("suggestions"));
-        if (!suggestions.toStringList().isEmpty()) {
+        QStringList suggestions = manager->attributeValue(property, QLatin1String("suggestions")).toStringList();
+        if (!suggestions.isEmpty()) {
             if (QLineEdit *lineEdit = qobject_cast<QLineEdit*>(editor)) {
-                QCompleter *completer = new QCompleter(suggestions.toStringList(), lineEdit);
+                QCompleter *completer = new QCompleter(suggestions, lineEdit);
                 completer->setCaseSensitivity(Qt::CaseInsensitive);
                 lineEdit->setCompleter(completer);
+
+                QShortcut *completionShortcut = new QShortcut(tr("Ctrl+Space"), lineEdit);
+                completionShortcut->setContext(Qt::WidgetShortcut);
+                connect(completionShortcut, &QShortcut::activated, lineEdit, [=] {
+                    completer->setCompletionPrefix(lineEdit->text().left(lineEdit->cursorPosition()));
+                    completer->complete();
+                });
             }
         }
     }
