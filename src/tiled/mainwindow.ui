@@ -54,7 +54,7 @@
      </property>
      <property name="icon">
       <iconset resource="tiled.qrc">
-       <normaloff>:/images/16x16/document-open-recent.png</normaloff>:/images/16x16/document-open-recent.png</iconset>
+       <normaloff>:/images/16/document-open-recent.png</normaloff>:/images/16/document-open-recent.png</iconset>
      </property>
      <addaction name="actionClearRecentFiles"/>
     </widget>
@@ -188,7 +188,7 @@
   <action name="actionOpen">
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/document-open.png</normaloff>:/images/16x16/document-open.png</iconset>
+     <normaloff>:/images/16/document-open.png</normaloff>:/images/16/document-open.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Open...</string>
@@ -197,7 +197,7 @@
   <action name="actionSave">
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/document-save.png</normaloff>:/images/16x16/document-save.png</iconset>
+     <normaloff>:/images/16/document-save.png</normaloff>:/images/16/document-save.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Save</string>
@@ -206,7 +206,7 @@
   <action name="actionQuit">
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/application-exit.png</normaloff>:/images/16x16/application-exit.png</iconset>
+     <normaloff>:/images/16/application-exit.png</normaloff>:/images/16/application-exit.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Quit</string>
@@ -221,7 +221,7 @@
    </property>
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/edit-copy.png</normaloff>:/images/16x16/edit-copy.png</iconset>
+     <normaloff>:/images/16/edit-copy.png</normaloff>:/images/16/edit-copy.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Copy</string>
@@ -233,7 +233,7 @@
    </property>
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/edit-paste.png</normaloff>:/images/16x16/edit-paste.png</iconset>
+     <normaloff>:/images/16/edit-paste.png</normaloff>:/images/16/edit-paste.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Paste</string>
@@ -242,7 +242,7 @@
   <action name="actionAbout">
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/help-about.png</normaloff>:/images/16x16/help-about.png</iconset>
+     <normaloff>:/images/16/help-about.png</normaloff>:/images/16/help-about.png</iconset>
    </property>
    <property name="text">
     <string>&amp;About Tiled</string>
@@ -262,7 +262,7 @@
   <action name="actionResizeMap">
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/document-page-setup.png</normaloff>:/images/16x16/document-page-setup.png</iconset>
+     <normaloff>:/images/16/document-page-setup.png</normaloff>:/images/16/document-page-setup.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Resize Map...</string>
@@ -271,7 +271,7 @@
   <action name="actionMapProperties">
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/document-properties.png</normaloff>:/images/16x16/document-properties.png</iconset>
+     <normaloff>:/images/16/document-properties.png</normaloff>:/images/16/document-properties.png</iconset>
    </property>
    <property name="text">
     <string>Map &amp;Properties...</string>
@@ -299,7 +299,7 @@
   <action name="actionSaveAs">
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/document-save-as.png</normaloff>:/images/16x16/document-save-as.png</iconset>
+     <normaloff>:/images/16/document-save-as.png</normaloff>:/images/16/document-save-as.png</iconset>
    </property>
    <property name="text">
     <string>Save &amp;As...</string>
@@ -316,7 +316,7 @@
   <action name="actionClose">
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/window-close.png</normaloff>:/images/16x16/window-close.png</iconset>
+     <normaloff>:/images/16/window-close.png</normaloff>:/images/16/window-close.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Close</string>
@@ -325,7 +325,7 @@
   <action name="actionZoomIn">
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/zoom-in.png</normaloff>:/images/16x16/zoom-in.png</iconset>
+     <normaloff>:/images/16/zoom-in.png</normaloff>:/images/16/zoom-in.png</iconset>
    </property>
    <property name="text">
     <string>Zoom In</string>
@@ -334,7 +334,7 @@
   <action name="actionZoomOut">
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/zoom-out.png</normaloff>:/images/16x16/zoom-out.png</iconset>
+     <normaloff>:/images/16/zoom-out.png</normaloff>:/images/16/zoom-out.png</iconset>
    </property>
    <property name="text">
     <string>Zoom Out</string>
@@ -346,7 +346,7 @@
    </property>
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/zoom-original.png</normaloff>:/images/16x16/zoom-original.png</iconset>
+     <normaloff>:/images/16/zoom-original.png</normaloff>:/images/16/zoom-original.png</iconset>
    </property>
    <property name="text">
     <string>Normal Size</string>
@@ -366,7 +366,7 @@
    </property>
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/edit-cut.png</normaloff>:/images/16x16/edit-cut.png</iconset>
+     <normaloff>:/images/16/edit-cut.png</normaloff>:/images/16/edit-cut.png</iconset>
    </property>
    <property name="text">
     <string>Cu&amp;t</string>
@@ -391,7 +391,7 @@
   <action name="actionClearRecentFiles">
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/edit-clear.png</normaloff>:/images/16x16/edit-clear.png</iconset>
+     <normaloff>:/images/16/edit-clear.png</normaloff>:/images/16/edit-clear.png</iconset>
    </property>
    <property name="text">
     <string>Clear Recent Files</string>
@@ -432,7 +432,7 @@
    </property>
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/edit-delete.png</normaloff>:/images/16x16/edit-delete.png</iconset>
+     <normaloff>:/images/16/edit-delete.png</normaloff>:/images/16/edit-delete.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Delete</string>
@@ -583,7 +583,7 @@
   <action name="actionTilesetProperties">
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/document-properties.png</normaloff>:/images/16x16/document-properties.png</iconset>
+     <normaloff>:/images/16/document-properties.png</normaloff>:/images/16/document-properties.png</iconset>
    </property>
    <property name="text">
     <string>Tileset &amp;Properties...</string>

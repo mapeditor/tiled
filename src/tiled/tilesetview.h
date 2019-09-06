@@ -176,7 +176,7 @@ private:
     bool mMarkAnimatedTiles = true;
     bool mEditTerrain = false;
     bool mEditWangSet = false;
-    WangBehavior mWangBehavior;
+    WangBehavior mWangBehavior = WholeId;
     bool mEraseTerrain = false;
     const Terrain *mTerrain = nullptr;
     WangSet *mWangSet = nullptr;
