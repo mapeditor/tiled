@@ -343,7 +343,19 @@ void MapReaderPrivate::readMapEditorSettings(Map &map)
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("editorsettings"));
 
     while (xml.readNextStartElement()) {
-        if (xml.name() == QLatin1String("export")) {
+        if (xml.name() == QLatin1String("chunksize")) {
+            const QXmlStreamAttributes atts = xml.attributes();
+
+            int chunkWidth = atts.value(QLatin1String("width")).toInt();
+            int chunkHeight = atts.value(QLatin1String("height")).toInt();
+
+            chunkWidth = chunkWidth == 0 ? CHUNK_SIZE : qMax(CHUNK_SIZE_MIN, chunkWidth);
+            chunkHeight = chunkHeight == 0 ? CHUNK_SIZE : qMax(CHUNK_SIZE_MIN, chunkHeight);
+
+            map.setChunkSize(QSize(chunkWidth, chunkHeight));
+
+            xml.skipCurrentElement();
+        } else if (xml.name() == QLatin1String("export")) {
             const QXmlStreamAttributes atts = xml.attributes();
 
             map.exportFileName = QDir::cleanPath(mPath.filePath(atts.value(QLatin1String("target")).toString()));
@@ -837,14 +849,6 @@ void MapReaderPrivate::readTileLayerData(TileLayer &tileLayer)
     }
 
     mMap->setLayerDataFormat(layerDataFormat);
-
-    int chunkWidth = atts.value(QLatin1String("outputchunkwidth")).toInt();
-    int chunkHeight = atts.value(QLatin1String("outputchunkheight")).toInt();
-
-    chunkWidth = chunkWidth == 0 ? CHUNK_SIZE : qMax(CHUNK_SIZE_MIN, chunkWidth);
-    chunkHeight = chunkHeight == 0 ? CHUNK_SIZE : qMax(CHUNK_SIZE_MIN, chunkHeight);
-
-    mMap->setChunkSize(QSize(chunkWidth, chunkHeight));
 
     readTileLayerRect(tileLayer,
                       layerDataFormat,

@@ -66,13 +66,24 @@ QVariant MapToVariantConverter::toVariant(const Map &map, const QDir &mapDir)
     mapVariant[QLatin1String("nextobjectid")] = map.nextObjectId();
     mapVariant[QLatin1String("compressionlevel")] = map.compressionLevel();
 
-    if (!map.exportFileName.isEmpty() || !map.exportFormat.isEmpty()) {
+    if (map.chunkSize() != QSize(CHUNK_SIZE, CHUNK_SIZE) || !map.exportFileName.isEmpty() || !map.exportFormat.isEmpty()) {
         QVariantMap editorSettingsVariant;
 
-        QVariantMap exportVariant;
-        exportVariant[QLatin1String("target")] = mDir.relativeFilePath(map.exportFileName);
-        exportVariant[QLatin1String("format")] = map.exportFormat;
-        editorSettingsVariant[QLatin1String("export")] = exportVariant;
+        if (map.chunkSize() != QSize(CHUNK_SIZE, CHUNK_SIZE)) {
+            QVariantMap chunkSizeVariant;
+            chunkSizeVariant[QLatin1String("width")] = map.chunkSize().width();
+            chunkSizeVariant[QLatin1String("height")] = map.chunkSize().height();
+            editorSettingsVariant[QLatin1String("chunksize")] = chunkSizeVariant;
+        }
+
+        if (!map.exportFileName.isEmpty() || !map.exportFormat.isEmpty()) {
+            QVariantMap exportVariant;
+            if (!map.exportFileName.isEmpty())
+                exportVariant[QLatin1String("target")] = mDir.relativeFilePath(map.exportFileName);
+            if (!map.exportFormat.isEmpty())
+                exportVariant[QLatin1String("format")] = map.exportFormat;
+            editorSettingsVariant[QLatin1String("export")] = exportVariant;
+        }
 
         mapVariant[QLatin1String("editorsettings")] = editorSettingsVariant;
     }
@@ -474,11 +485,6 @@ QVariant MapToVariantConverter::toVariant(const TileLayer &tileLayer,
     }
 
     if (tileLayer.map()->infinite()) {
-        if (chunkSize.width() != CHUNK_SIZE || chunkSize.height() != CHUNK_SIZE) {
-            tileLayerVariant[QLatin1String("outputchunkwidth")] = chunkSize.width();
-            tileLayerVariant[QLatin1String("outputchunkheight")] = chunkSize.height();
-        }
-
         QVariantList chunkVariants;
 
         const auto chunks = tileLayer.sortedChunksToWrite(chunkSize);

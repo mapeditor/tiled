@@ -238,13 +238,26 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
     w.writeAttribute(QLatin1String("nextobjectid"),
                      QString::number(map.nextObjectId()));
 
-    if (!map.exportFileName.isEmpty() || !map.exportFormat.isEmpty()) {
+    if (map.chunkSize() != QSize(CHUNK_SIZE, CHUNK_SIZE) || !map.exportFileName.isEmpty() || !map.exportFormat.isEmpty()) {
         w.writeStartElement(QLatin1String("editorsettings"));
-        w.writeStartElement(QLatin1String("export"));
-        w.writeAttribute(QLatin1String("target"), mDir.relativeFilePath(map.exportFileName));
-        w.writeAttribute(QLatin1String("format"), map.exportFormat);
-        w.writeEndElement();
-        w.writeEndElement();
+
+        if (map.chunkSize() != QSize(CHUNK_SIZE, CHUNK_SIZE)) {
+            w.writeStartElement(QLatin1String("chunksize"));
+            w.writeAttribute(QLatin1String("width"), QString::number(map.chunkSize().width()));
+            w.writeAttribute(QLatin1String("height"), QString::number(map.chunkSize().height()));
+            w.writeEndElement();
+        }
+
+        if (!map.exportFileName.isEmpty() || !map.exportFormat.isEmpty()) {
+            w.writeStartElement(QLatin1String("export"));
+            if (!map.exportFileName.isEmpty())
+                w.writeAttribute(QLatin1String("target"), mDir.relativeFilePath(map.exportFileName));
+            if (!map.exportFormat.isEmpty())
+                w.writeAttribute(QLatin1String("format"), map.exportFormat);
+            w.writeEndElement();
+        }
+
+        w.writeEndElement();    // </editorsettings>
     }
 
     writeProperties(w, map.properties());
@@ -601,11 +614,6 @@ void MapWriterPrivate::writeTileLayer(QXmlStreamWriter &w,
         w.writeAttribute(QLatin1String("compression"), compression);
 
     if (tileLayer.map()->infinite()) {
-        if (mChunkSize.width() != CHUNK_SIZE || mChunkSize.height() != CHUNK_SIZE) {
-            w.writeAttribute(QLatin1String("outputchunkwidth"), QString::number(mChunkSize.width()));
-            w.writeAttribute(QLatin1String("outputchunkheight"), QString::number(mChunkSize.height()));
-        }
-
         const auto chunks = tileLayer.sortedChunksToWrite(mChunkSize);
         for (const QRect &rect : chunks) {
             w.writeStartElement(QLatin1String("chunk"));

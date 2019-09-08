@@ -550,14 +550,6 @@ std::unique_ptr<TileLayer> VariantToMapConverter::toTileLayer(const QVariantMap 
     }
     mMap->setLayerDataFormat(layerDataFormat);
 
-    int chunkWidth = variantMap[QLatin1String("outputchunkwidth")].toInt();
-    int chunkHeight = variantMap[QLatin1String("outputchunkheight")].toInt();
-
-    chunkWidth = chunkWidth == 0 ? CHUNK_SIZE : qMax(CHUNK_SIZE_MIN, chunkWidth);
-    chunkHeight = chunkHeight == 0 ? CHUNK_SIZE : qMax(CHUNK_SIZE_MIN, chunkHeight);
-
-    mMap->setChunkSize(QSize(chunkWidth, chunkHeight));
-
     if (dataVariant.isValid() && !dataVariant.isNull()) {
         if (!readTileLayerData(*tileLayer, dataVariant, layerDataFormat,
                                QRect(startX, startY, tileLayer->width(), tileLayer->height()))) {
@@ -822,6 +814,13 @@ TextData VariantToMapConverter::toTextData(const QVariantMap &variant) const
 
 void VariantToMapConverter::readMapEditorSettings(Map &map, const QVariantMap &editorSettings)
 {
+    const QVariantMap chunkSizeVariant = editorSettings[QLatin1String("chunksize")].toMap();
+    int chunkWidth = chunkSizeVariant[QLatin1String("width")].toInt();
+    int chunkHeight = chunkSizeVariant[QLatin1String("height")].toInt();
+    chunkWidth = chunkWidth == 0 ? CHUNK_SIZE : qMax(CHUNK_SIZE_MIN, chunkWidth);
+    chunkHeight = chunkHeight == 0 ? CHUNK_SIZE : qMax(CHUNK_SIZE_MIN, chunkHeight);
+    map.setChunkSize(QSize(chunkWidth, chunkHeight));
+
     const QVariantMap exportVariant = editorSettings[QLatin1String("export")].toMap();
     map.exportFileName = QDir::cleanPath(mDir.filePath(exportVariant[QLatin1String("target")].toString()));
     map.exportFormat = exportVariant[QLatin1String("format")].toString();
