@@ -20,6 +20,7 @@
 
 #include "tileseteditor.h"
 
+#include "actionmanager.h"
 #include "addremovemapobject.h"
 #include "addremoveterrain.h"
 #include "addremovetiles.h"
@@ -155,6 +156,14 @@ TilesetEditor::TilesetEditor(QObject *parent)
     QAction *editTerrain = mTerrainDock->toggleViewAction();
     QAction *editCollision = mTileCollisionDock->toggleViewAction();
     QAction *editWang = mWangDock->toggleViewAction();
+
+    ActionManager::registerAction(editTerrain, "EditTerrain");
+    ActionManager::registerAction(editCollision, "EditCollision");
+    ActionManager::registerAction(editWang, "EditWang");
+    ActionManager::registerAction(mAddTiles, "AddTiles");
+    ActionManager::registerAction(mRemoveTiles, "RemoveTiles");
+    ActionManager::registerAction(mShowAnimationEditor, "ShowAnimationEditor");
+    ActionManager::registerAction(mDynamicWrappingToggle, "DynamicWrappingToggle");
 
     mAddTiles->setIcon(QIcon(QLatin1String(":images/16/add.png")));
     mRemoveTiles->setIcon(QIcon(QLatin1String(":images/16/remove.png")));
