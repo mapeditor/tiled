@@ -3981,6 +3981,21 @@ _wrap_PyTiledTileset_setTransparentColor(PyTiledTileset *self, PyObject *args, P
 
 
 PyObject *
+_wrap_PyTiledTileset_sharedPointer(PyTiledTileset *self)
+{
+    PyObject *py_retval;
+    PyTiledSharedTileset *py_SharedTileset;
+
+    Tiled::SharedTileset retval = self->obj->sharedPointer();
+    py_SharedTileset = PyObject_New(PyTiledSharedTileset, &PyTiledSharedTileset_Type);
+    py_SharedTileset->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
+    py_SharedTileset->obj = new Tiled::SharedTileset(retval);
+    py_retval = Py_BuildValue((char *) "N", py_SharedTileset);
+    return py_retval;
+}
+
+
+PyObject *
 _wrap_PyTiledTileset_tileAt(PyTiledTileset *self, PyObject *args, PyObject *kwargs)
 {
     PyObject *py_retval;
@@ -4104,6 +4119,7 @@ static PyMethodDef PyTiledTileset_methods[] = {
     {(char *) "setName", (PyCFunction) _wrap_PyTiledTileset_setName, METH_KEYWORDS|METH_VARARGS, "setName(name)\n\ntype: name: QString" },
     {(char *) "setTileOffset", (PyCFunction) _wrap_PyTiledTileset_setTileOffset, METH_KEYWORDS|METH_VARARGS, "setTileOffset(offset)\n\ntype: offset: QPoint" },
     {(char *) "setTransparentColor", (PyCFunction) _wrap_PyTiledTileset_setTransparentColor, METH_KEYWORDS|METH_VARARGS, "setTransparentColor(col)\n\ntype: col: QColor" },
+    {(char *) "sharedPointer", (PyCFunction) _wrap_PyTiledTileset_sharedPointer, METH_NOARGS, "sharedPointer()\n\n" },
     {(char *) "tileAt", (PyCFunction) _wrap_PyTiledTileset_tileAt, METH_KEYWORDS|METH_VARARGS, "tileAt(id)\n\ntype: id: int" },
     {(char *) "tileCount", (PyCFunction) _wrap_PyTiledTileset_tileCount, METH_NOARGS, "tileCount()\n\n" },
     {(char *) "tileHeight", (PyCFunction) _wrap_PyTiledTileset_tileHeight, METH_NOARGS, "tileHeight()\n\n" },
@@ -7872,7 +7888,7 @@ PyTypeObject PyPythonPythonScript_Type = {
     (getattrofunc)NULL,     /* tp_getattro */
     (setattrofunc)NULL,     /* tp_setattro */
     (PyBufferProcs*)NULL,  /* tp_as_buffer */
-    Py_TPFLAGS_HAVE_GC|Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE,                      /* tp_flags */
+    Py_TPFLAGS_HAVE_GC|Py_TPFLAGS_BASETYPE|Py_TPFLAGS_DEFAULT,                      /* tp_flags */
     "",                        /* Documentation string */
     (traverseproc)PyPythonPythonScript__tp_traverse,     /* tp_traverse */
     (inquiry)PyPythonPythonScript__tp_clear,             /* tp_clear */

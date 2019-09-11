@@ -143,6 +143,7 @@ cls_tileset.add_method('transparentColor', 'QColor', [])
 cls_tileset.add_method('imageSourceString', 'QString', [])
 cls_tileset.add_method('setImageSource', None, [('QString','source')])
 cls_tileset.add_method('isCollection', 'bool', [])
+cls_tileset.add_method('sharedPointer', 'Tiled::SharedTileset', [])
 
 cls_tile.add_constructor([param('const QPixmap&','image'), param('int','id'),
     param('Tileset*','tileset',transfer_ownership=False)])

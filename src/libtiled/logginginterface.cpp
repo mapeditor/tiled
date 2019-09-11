@@ -121,7 +121,12 @@ void LoggingInterface::log(OutputType type, const QString &message)
         break;
     }
 
-    report(Issue(severity, message));
+    // Remove any trailing newlines
+    QString messageCopy = message;
+    while (messageCopy.endsWith(QLatin1Char('\n')))
+        messageCopy.chop(1);
+
+    report(Issue(severity, messageCopy));
 }
 
 
