@@ -149,6 +149,7 @@ private:
     QAction *mAddTiles;
     QAction *mRemoveTiles;
     QAction *mShowAnimationEditor;
+    QAction *mDynamicWrappingToggle;
 
     PropertiesDock *mPropertiesDock;
     UndoDock *mUndoDock;

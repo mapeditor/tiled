@@ -135,6 +135,7 @@ TilesetEditor::TilesetEditor(QObject *parent)
     , mAddTiles(new QAction(this))
     , mRemoveTiles(new QAction(this))
     , mShowAnimationEditor(new QAction(this))
+    , mDynamicWrappingToggle(new QAction(this))
     , mPropertiesDock(new PropertiesDock(mMainWindow))
     , mUndoDock(new UndoDock(mMainWindow))
     , mTerrainDock(new TerrainDock(mMainWindow))
@@ -166,6 +167,8 @@ TilesetEditor::TilesetEditor(QObject *parent)
     editCollision->setIconVisibleInMenu(false);
     editWang->setIcon(QIcon(QLatin1String(":images/24/wangtile.png")));
     editWang->setIconVisibleInMenu(false);
+    mDynamicWrappingToggle->setCheckable(true);
+    mDynamicWrappingToggle->setIcon(QIcon(QLatin1String("://images/scalable/wrap.svg")));
 
     Utils::setThemeIcon(mAddTiles, "add");
     Utils::setThemeIcon(mRemoveTiles, "remove");
@@ -179,6 +182,8 @@ TilesetEditor::TilesetEditor(QObject *parent)
     mTilesetToolBar->addAction(editCollision);
     mTilesetToolBar->addAction(editWang);
     mTilesetToolBar->addAction(mShowAnimationEditor);
+    mTilesetToolBar->addSeparator();
+    mTilesetToolBar->addAction(mDynamicWrappingToggle);
 
     mMainWindow->statusBar()->addPermanentWidget(mZoomComboBox);
     mMainWindow->statusBar()->addPermanentWidget(new NewsButton);
@@ -201,6 +206,10 @@ TilesetEditor::TilesetEditor(QObject *parent)
     connect(editCollision, &QAction::toggled, this, &TilesetEditor::setEditCollision);
     connect(editWang, &QAction::toggled, this, &TilesetEditor::setEditWang);
     connect(mShowAnimationEditor, &QAction::toggled, mTileAnimationEditor, &TileAnimationEditor::setVisible);
+    connect(mDynamicWrappingToggle, &QAction::toggled, this, [this] (bool checked) {
+        if (TilesetView *view = currentTilesetView())
+            view->setDynamicWrapping(checked);
+    });
 
     connect(mTileAnimationEditor, &TileAnimationEditor::closed, this, &TilesetEditor::onAnimationEditorClosed);
 
@@ -368,6 +377,8 @@ void TilesetEditor::setCurrentDocument(Document *document)
     mCurrentTilesetDocument = tilesetDocument;
 
     if (tilesetDocument) {
+        mDynamicWrappingToggle->setChecked(tilesetView->dynamicWrapping());
+
         currentChanged(tilesetView->currentIndex());
         selectionChanged();
     }
@@ -614,6 +625,7 @@ void TilesetEditor::retranslateUi()
     mAddTiles->setText(tr("Add Tiles"));
     mRemoveTiles->setText(tr("Remove Tiles"));
     mShowAnimationEditor->setText(tr("Tile Animation Editor"));
+    mDynamicWrappingToggle->setText(tr("Dynamically Wrap Tiles"));
 
     mTileCollisionDock->toggleViewAction()->setShortcut(QCoreApplication::translate("Tiled::MainWindow", "Ctrl+Shift+O"));
 }

@@ -184,6 +184,7 @@ private:
     QAction *mDeleteTileset;
     QAction *mSelectNextTileset;
     QAction *mSelectPreviousTileset;
+    QAction *mDynamicWrappingToggle;
 
     QToolButton *mTilesetMenuButton;
     QMenu *mTilesetMenu; //opens on click of mTilesetMenu

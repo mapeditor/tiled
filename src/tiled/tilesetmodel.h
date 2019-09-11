@@ -111,6 +111,8 @@ public:
      */
     void tilesetChanged();
 
+    void setColumnCountOverride(int columnCount);
+
 public slots:
     /**
      * Should be called when anything changes about the given \a tiles that
@@ -137,6 +139,7 @@ private:
 
     Tileset *mTileset;
     QList<int> mTileIds;
+    int mColumnCountOverride = 0;
 };
 
 } // namespace Tiled

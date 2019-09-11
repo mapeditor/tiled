@@ -200,6 +200,7 @@ TilesetDock::TilesetDock(QWidget *parent)
     , mDeleteTileset(new QAction(this))
     , mSelectNextTileset(new QAction(this))
     , mSelectPreviousTileset(new QAction(this))
+    , mDynamicWrappingToggle(new QAction(this))
     , mTilesetMenuButton(new TilesetMenuButton(this))
     , mTilesetMenu(new QMenu(this))
     , mTilesetActionGroup(new QActionGroup(this))
@@ -241,6 +242,9 @@ TilesetDock::TilesetDock(QWidget *parent)
     horizontal->addWidget(mToolBar, 1);
     vertical->addLayout(horizontal);
 
+    mDynamicWrappingToggle->setCheckable(true);
+    mDynamicWrappingToggle->setIcon(QIcon(QLatin1String("://images/scalable/wrap.svg")));
+
     mNewTileset->setIcon(QIcon(QLatin1String(":images/16/document-new.png")));
     mEmbedTileset->setIcon(QIcon(QLatin1String(":images/16/document-import.png")));
     mExportTileset->setIcon(QIcon(QLatin1String(":images/16/document-export.png")));
@@ -260,13 +264,22 @@ TilesetDock::TilesetDock(QWidget *parent)
     connect(mDeleteTileset, &QAction::triggered, this, &TilesetDock::removeTileset);
     connect(mSelectNextTileset, &QAction::triggered, this, [this] { mTabBar->setCurrentIndex(mTabBar->currentIndex() + 1); });
     connect(mSelectPreviousTileset, &QAction::triggered, this, [this] { mTabBar->setCurrentIndex(mTabBar->currentIndex() - 1); });
+    connect(mDynamicWrappingToggle, &QAction::toggled, this, [this] (bool checked) {
+        if (TilesetView *view = currentTilesetView())
+            view->setDynamicWrapping(checked);
+    });
 
-    mToolBar->addAction(mNewTileset);
+    auto stretch = new QWidget;
+    stretch->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+
     mToolBar->setIconSize(Utils::smallIconSize());
+    mToolBar->addAction(mNewTileset);
     mToolBar->addAction(mEmbedTileset);
     mToolBar->addAction(mExportTileset);
     mToolBar->addAction(mEditTileset);
     mToolBar->addAction(mDeleteTileset);
+    mToolBar->addWidget(stretch);
+    mToolBar->addAction(mDynamicWrappingToggle);
 
     mZoomComboBox = new QComboBox;
     horizontal->addWidget(mZoomComboBox);
@@ -450,6 +463,8 @@ void TilesetDock::currentTilesetChanged()
 
         if (const QItemSelectionModel *s = view->selectionModel())
             setCurrentTile(view->tilesetModel()->tileAt(s->currentIndex()));
+
+        mDynamicWrappingToggle->setChecked(view->dynamicWrapping());
     }
 }
 
@@ -750,6 +765,7 @@ void TilesetDock::retranslateUi()
     mSelectNextTileset->setShortcut(tr("]"));
     mSelectPreviousTileset->setText(tr("Select &Previous Tileset"));
     mSelectPreviousTileset->setShortcut(tr("["));
+    mDynamicWrappingToggle->setText(tr("Dynamically Wrap Tiles"));
 }
 
 void TilesetDock::onTilesetRowsInserted(const QModelIndex &parent, int first, int last)

@@ -63,6 +63,9 @@ public:
 
     bool drawGrid() const { return mDrawGrid; }
 
+    void setDynamicWrapping(bool enabled);
+    bool dynamicWrapping() const;
+
     void setModel(QAbstractItemModel *model) override;
 
     /**
@@ -144,6 +147,7 @@ protected:
     void leaveEvent(QEvent *) override;
     void wheelEvent(QWheelEvent *event) override;
     void contextMenuEvent(QContextMenuEvent *event) override;
+    void resizeEvent(QResizeEvent *event) override;
 
 private:
     void addTerrainType();
@@ -155,6 +159,7 @@ private:
     void setDrawGrid(bool drawGrid);
 
     void adjustScale();
+    void refreshColumnCount();
 
     void applyTerrain();
     void finishTerrainChange();
@@ -169,13 +174,19 @@ private:
         Edge     //Assigning color to edges
     };
 
+    enum WrapBehavior {
+        WrapDefault,
+        WrapDynamic,
+        WrapFixed,
+    };
+
     Zoomable *mZoomable;
     TilesetDocument *mTilesetDocument = nullptr;
     bool mDrawGrid;
-
     bool mMarkAnimatedTiles = true;
     bool mEditTerrain = false;
     bool mEditWangSet = false;
+    WrapBehavior mWrapBehavior = WrapDefault;
     WangBehavior mWangBehavior = WholeId;
     bool mEraseTerrain = false;
     const Terrain *mTerrain = nullptr;
