@@ -594,6 +594,10 @@ public class TMXMapWriter {
             w.writeAttribute("gid", mapObject.getGid());
         }
 
+        if (mapObject.getRotation() != 0) {
+            w.writeAttribute("rotation", mapObject.getRotation());
+        }
+
         writeProperties(mapObject.getProperties(), w);
 
         if (mapObject.getImageSource().length() > 0) {

@@ -161,4 +161,5 @@
   width       CDATA   #IMPLIED
   height      CDATA   #IMPLIED
   gid         CDATA   #IMPLIED
+  rotation    CDATA   #IMPLIED
 >
