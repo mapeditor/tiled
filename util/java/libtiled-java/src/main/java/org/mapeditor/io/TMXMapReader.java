@@ -34,6 +34,7 @@ package org.mapeditor.io;
 import java.awt.Color;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -79,9 +80,9 @@ import org.xml.sax.SAXException;
  */
 public class TMXMapReader {
 
-    public static final long FLIPPED_HORIZONTALLY_FLAG = 0xFFFFFFFF80000000L;
-    public static final long FLIPPED_VERTICALLY_FLAG = 0xFFFFFFFF40000000L;
-    public static final long FLIPPED_DIAGONALLY_FLAG = 0xFFFFFFFF20000000L;
+    public static long FLIPPED_HORIZONTALLY_FLAG =  0x0000000080000000L;
+    public static long FLIPPED_VERTICALLY_FLAG =    0x0000000040000000L;
+    public static long FLIPPED_DIAGONALLY_FLAG =    0x0000000020000000L;
 
     public static final long ALL_FLAGS = FLIPPED_HORIZONTALLY_FLAG
             | FLIPPED_VERTICALLY_FLAG
@@ -135,6 +136,15 @@ public class TMXMapReader {
         final String attr = getAttributeValue(node, attribname);
         if (attr != null) {
             return Integer.parseInt(attr);
+        } else {
+            return def;
+        }
+    }
+
+    private static float getFloatAttribute(Node node, String attribname, float def) {
+        final String attr = getAttributeValue(node, attribname);
+        if (attr != null) {
+            return Float.parseFloat(attr);
         } else {
             return def;
         }
@@ -335,6 +345,7 @@ public class TMXMapReader {
     }
 
     private MapObject readMapObject(Node t) throws Exception {
+        final int id = getAttribute(t, "id", 0);
         final String name = getAttributeValue(t, "name");
         final String type = getAttributeValue(t, "type");
         final String gid = getAttributeValue(t, "gid");
@@ -346,6 +357,9 @@ public class TMXMapReader {
 
         MapObject obj = new MapObject(x, y, width, height, rotation);
         obj.setShape(obj.getBounds());
+        if (id != 0) {
+            obj.setId(id);
+        }
         if (name != null) {
             obj.setName(name);
         }
@@ -354,12 +368,15 @@ public class TMXMapReader {
         }
         if (gid != null) {
             long tileId = Long.parseLong(gid);
-            if (tileId > Integer.MAX_VALUE) {
+            if ((tileId & ALL_FLAGS) != 0) {
                 // Read out the flags
-                // TODO: Save these flags somewhere
                 long flippedHorizontally = tileId & FLIPPED_HORIZONTALLY_FLAG;
                 long flippedVertically = tileId & FLIPPED_VERTICALLY_FLAG;
                 long flippedDiagonally = tileId & FLIPPED_DIAGONALLY_FLAG;
+
+                obj.setFlipHorizontal(flippedHorizontally != 0);
+                obj.setFlipVertical(flippedVertically != 0);
+                obj.setFlipDiagonal(flippedDiagonally != 0);
 
                 // Clear the flags
                 tileId &= ~(FLIPPED_HORIZONTALLY_FLAG
@@ -402,6 +419,8 @@ public class TMXMapReader {
                 shape.closePath();
                 obj.setShape(shape);
                 obj.setBounds((Rectangle2D.Double) shape.getBounds2D());
+            } else if ("point".equalsIgnoreCase(child.getNodeName())) {
+                obj.setPoint(new Point());
             }
         }
 
@@ -487,6 +506,61 @@ public class TMXMapReader {
         return tile;
     }
 
+    private Group unmarshalGroup(Node t) throws Exception {
+        Group g = null;
+        try {
+            g = unmarshalClass(t, Group.class);
+        } catch (JAXBException e) {
+            // todo: replace with log message
+            e.printStackTrace();
+            return g;
+        }
+
+        final int offsetX = getAttribute(t, "x", 0);
+        final int offsetY = getAttribute(t, "y", 0);
+        g.setOffset(offsetX, offsetY);
+
+        String opacity = getAttributeValue(t, "opacity");
+        if (opacity != null) {
+            g.setOpacity(Float.parseFloat(opacity));
+        }
+
+        final int locked = getAttribute(t, "locked", 0);
+        if (locked != 0) {
+            g.setLocked(1);
+        }
+
+        g.getLayers().clear();
+
+        // Load the layers and objectgroups
+        for (Node sibs = t.getFirstChild(); sibs != null;
+             sibs = sibs.getNextSibling()) {
+            if ("group".equals(sibs.getNodeName())) {
+                Group group = unmarshalGroup(sibs);
+                if (group != null) {
+                    g.getLayers().add(group);
+                }
+            } else if ("layer".equals(sibs.getNodeName())) {
+                TileLayer layer = readLayer(sibs);
+                if (layer != null) {
+                    g.getLayers().add(layer);
+                }
+            } else if ("objectgroup".equals(sibs.getNodeName())) {
+                ObjectGroup group = unmarshalObjectGroup(sibs);
+                if (group != null) {
+                    g.getLayers().add(group);
+                }
+            } else if ("imagelayer".equals(sibs.getNodeName())) {
+                ImageLayer imageLayer = unmarshalImageLayer(sibs);
+                if (imageLayer != null) {
+                    g.getLayers().add(imageLayer);
+                }
+            }
+        }
+
+        return g;
+    }
+
     private ObjectGroup unmarshalObjectGroup(Node t) throws Exception {
         ObjectGroup og = null;
         try {
@@ -500,6 +574,11 @@ public class TMXMapReader {
         final int offsetX = getAttribute(t, "x", 0);
         final int offsetY = getAttribute(t, "y", 0);
         og.setOffset(offsetX, offsetY);
+
+        final int locked = getAttribute(t, "locked", 0);
+        if (locked != 0) {
+            og.setLocked(1);
+        }
 
         // Manually parse the objects in object group
         og.getObjects().clear();
@@ -535,10 +614,13 @@ public class TMXMapReader {
      * @throws Exception
      */
     private TileLayer readLayer(Node t) throws Exception {
+        final int layerId = getAttribute(t, "id", 0);
         final int layerWidth = getAttribute(t, "width", map.getWidth());
         final int layerHeight = getAttribute(t, "height", map.getHeight());
 
         TileLayer ml = new TileLayer(layerWidth, layerHeight);
+
+        ml.setId(layerId);
 
         final int offsetX = getAttribute(t, "x", 0);
         final int offsetY = getAttribute(t, "y", 0);
@@ -611,19 +693,6 @@ public class TMXMapReader {
                             String gid = csvTileIds[x + y * ml.getWidth()];
                             long tileId = Long.parseLong(gid);
 
-                            if (tileId > Integer.MAX_VALUE) {
-                                // Read out the flags
-                                // TODO: Save these flags somewhere
-                                long flippedHorizontally = tileId & FLIPPED_HORIZONTALLY_FLAG;
-                                long flippedVertically = tileId & FLIPPED_VERTICALLY_FLAG;
-                                long flippedDiagonally = tileId & FLIPPED_DIAGONALLY_FLAG;
-
-                                // Clear the flags
-                                tileId &= ~(FLIPPED_HORIZONTALLY_FLAG
-                                        | FLIPPED_VERTICALLY_FLAG
-                                        | FLIPPED_DIAGONALLY_FLAG);
-                            }
-
                             setTileAtFromTileId(ml, y, x, (int) tileId);
                         }
                     }
@@ -674,6 +743,11 @@ public class TMXMapReader {
         // todo: Shouldn't this be just a user interface feature, rather than
         // todo: something to keep in mind at this level?
         ml.setVisible(visible == 1);
+
+        final int locked = getAttribute(t, "locked", 0);
+        if (locked != 0) {
+            ml.setLocked(1);
+        }
 
         return ml;
     }
@@ -743,9 +817,15 @@ public class TMXMapReader {
             map.addTileset(tileset);
         }
 
-        // Load the layers and objectgroups
+        // Load the layers and groups
         for (Node sibs = mapNode.getFirstChild(); sibs != null;
                 sibs = sibs.getNextSibling()) {
+            if ("group".equals(sibs.getNodeName())) {
+                Group group = unmarshalGroup(sibs);
+                if (group != null) {
+                    map.addLayer(group);
+                }
+            }
             if ("layer".equals(sibs.getNodeName())) {
                 TileLayer layer = readLayer(sibs);
                 if (layer != null) {
