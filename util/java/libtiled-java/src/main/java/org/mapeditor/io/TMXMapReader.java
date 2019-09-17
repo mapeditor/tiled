@@ -334,6 +334,7 @@ public class TMXMapReader {
     }
 
     private MapObject readMapObject(Node t) throws Exception {
+        final int id = getAttribute(t, "id", 0);
         final String name = getAttributeValue(t, "name");
         final String type = getAttributeValue(t, "type");
         final String gid = getAttributeValue(t, "gid");
@@ -345,6 +346,9 @@ public class TMXMapReader {
 
         MapObject obj = new MapObject(x, y, width, height, rotation);
         obj.setShape(obj.getBounds());
+        if (id != 0) {
+            obj.setId(id);
+        }
         if (name != null) {
             obj.setName(name);
         }

@@ -570,6 +570,7 @@ public class TMXMapWriter {
     private void writeMapObject(MapObject mapObject, XMLWriter w, String wp)
             throws IOException {
         w.startElement("object");
+        w.writeAttribute("id", mapObject.getId());
         w.writeAttribute("name", mapObject.getName());
 
         if (mapObject.getType().length() != 0) {
