@@ -131,7 +131,7 @@ static void drawOrthogonalTileLayer(QSGNode *parent,
     QVector<TileData> tileData;
     tileData.reserve(TilesNode::MaxTileCount);
 
-    const QRect contentRect = rect.intersected(layer->bounds().translated(-layer->position()));
+    const QRect contentRect = rect.intersected(layer->localBounds());
 
     for (int y = contentRect.top(); y <= contentRect.bottom(); ++y) {
         for (int x = contentRect.left(); x <= contentRect.right(); ++x) {

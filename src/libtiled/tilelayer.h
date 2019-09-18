@@ -361,9 +361,14 @@ public:
     void setSize(QSize size);
 
     /**
-     * Returns the bounds of this layer.
+     * Returns the bounds of this layer in map tile coordinates.
      */
     QRect bounds() const { return mBounds.translated(mX, mY); }
+
+    /**
+     * Returns the bounds of this layer in local tile coordinates.
+     */
+    QRect localBounds() const { return mBounds; }
 
     QRect rect() const { return QRect(mX, mY, mWidth, mHeight); }
 
@@ -409,7 +414,7 @@ public:
 
     /**
      * Sets the cells starting at the given position to the cells in the given
-     * \a tileLayer. Parts that fall outside of this layer will be ignored.
+     * \a tileLayer.
      *
      * When a \a mask is given, only cells that fall within this mask are set.
      * The mask is applied in local coordinates.

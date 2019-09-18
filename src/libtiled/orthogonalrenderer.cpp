@@ -280,7 +280,7 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
     const QPointF layerPos(layer->x() * tileWidth,
                            layer->y() * tileHeight);
 
-    QRect bounds = layer->bounds().translated(-layer->position());
+    QRect bounds = layer->localBounds();
     int startX = bounds.left();
     int startY = bounds.top();
     int endX = bounds.right();

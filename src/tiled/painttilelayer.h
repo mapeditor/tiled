@@ -22,9 +22,11 @@
 
 #include "undocommands.h"
 
-#include <QHash>
 #include <QRegion>
 #include <QUndoCommand>
+
+#include <memory>
+#include <unordered_map>
 
 namespace Tiled {
 
@@ -91,14 +93,14 @@ private:
     {
         void mergeWith(const LayerData &o);
 
-        TileLayer *mSource = nullptr;
-        TileLayer *mErased = nullptr;
+        std::unique_ptr<TileLayer> mSource;
+        std::unique_ptr<TileLayer> mErased;
         int mX, mY;
         QRegion mPaintedRegion;
     };
 
     MapDocument *mMapDocument;
-    QHash<TileLayer*, LayerData> mLayerData;
+    std::unordered_map<TileLayer*, LayerData> mLayerData;
     bool mMergeable;
 };
 

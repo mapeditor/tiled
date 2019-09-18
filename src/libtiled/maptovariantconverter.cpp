@@ -457,9 +457,8 @@ QVariant MapToVariantConverter::toVariant(const TileLayer &tileLayer,
     QVariantMap tileLayerVariant;
     tileLayerVariant[QLatin1String("type")] = QLatin1String("tilelayer");
 
-    QRect bounds = tileLayer.bounds().translated(-tileLayer.position());
-
     if (tileLayer.map()->infinite()) {
+        QRect bounds = tileLayer.localBounds();
         tileLayerVariant[QLatin1String("width")] = bounds.width();
         tileLayerVariant[QLatin1String("height")] = bounds.height();
         tileLayerVariant[QLatin1String("startx")] = bounds.left();
