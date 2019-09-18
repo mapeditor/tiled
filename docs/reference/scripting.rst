@@ -324,7 +324,8 @@ tiled.registerTool(shortName : string, tool : object) : object
 
         **name** : string, Name of the tool as shown on the tool bar.
         **map** : :ref:`script-map`, Currently active tile map.
-        **selectedTile** : :ref:`script-tile`, The last clicked tile for the active map.
+        **selectedTile** : :ref:`script-tile`, The last clicked tile for the active map. See also the ``currentBrush`` property of :ref:`script-mapeditor`.
+        **preview** : :ref:`script-map`, Get or set the preview for tile layer edits.
         **tilePosition** : :ref:`script-point`, Mouse cursor position in tile coordinates.
         **statusInfo** : string, Text shown in the status bar while the tool is active.
         **enabled** : bool, Whether this tool is enabled.
@@ -1171,7 +1172,8 @@ Properties
 .. csv-table::
     :widths: 1, 2
 
-    **tilesetsView** : :ref:`script-tilesetsview`, "Access the Tilesets view."
+    **tilesetsView** : :ref:`script-tilesetsview` |ro|, "Access the Tilesets view."
+    **currentBrush** : :ref:`script-map`, "Get or set the currently used tile brush."
 
 .. _script-tilesetsview:
 

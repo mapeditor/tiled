@@ -20,6 +20,7 @@
 
 #include "scriptedtool.h"
 
+#include "brushitem.h"
 #include "editablemap.h"
 #include "mapdocument.h"
 #include "pluginmanager.h"
@@ -29,6 +30,7 @@
 
 #include <QJSEngine>
 #include <QKeyEvent>
+#include <QQmlEngine>
 
 namespace Tiled {
 
@@ -75,6 +77,20 @@ EditableTile *ScriptedTool::editableTile() const
     }
 
     return nullptr;
+}
+
+EditableMap *ScriptedTool::preview() const
+{
+    auto editableMap = new EditableMap(brushItem()->map()->clone());
+    QQmlEngine::setObjectOwnership(editableMap, QQmlEngine::JavaScriptOwnership);
+    return editableMap;
+}
+
+void ScriptedTool::setPreview(EditableMap *editableMap)
+{
+    // todo: filter any non-tilelayers out of the map?
+    auto map = editableMap->map()->clone();
+    brushItem()->setMap(SharedMap { map.release() });
 }
 
 void ScriptedTool::activate(MapScene *scene)

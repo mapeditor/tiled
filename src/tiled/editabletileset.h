@@ -52,7 +52,7 @@ public:
                              QObject *parent = nullptr);
     ~EditableTileset() override;
 
-    bool isReadOnly() const override;
+    bool isReadOnly() const final;
 
     const QString &name() const;
     int tileCount() const;

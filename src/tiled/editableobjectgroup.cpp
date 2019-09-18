@@ -69,8 +69,8 @@ void EditableObjectGroup::removeObjectAt(int index)
 
     auto mapObject = objectGroup()->objectAt(index);
 
-    if (asset()) {
-        asset()->push(new RemoveMapObjects(asset()->document(), mapObject));
+    if (auto doc = document()) {
+        asset()->push(new RemoveMapObjects(doc, mapObject));
     } else {
         objectGroup()->removeObjectAt(index);
         EditableManager::instance().release(mapObject);
@@ -100,8 +100,8 @@ void EditableObjectGroup::insertObjectAt(int index, EditableMapObject *editableM
         return;
     }
 
-    if (asset()) {
-        asset()->push(new AddMapObjects(asset()->document(),
+    if (auto doc = document()) {
+        asset()->push(new AddMapObjects(doc,
                                         objectGroup(),
                                         editableMapObject->mapObject()));
     } else {
@@ -117,8 +117,8 @@ void EditableObjectGroup::addObject(EditableMapObject *editableMapObject)
 
 void EditableObjectGroup::setColor(const QColor &color)
 {
-    if (asset()) {
-        asset()->push(new ChangeObjectGroupProperties(asset()->document(),
+    if (auto doc = document()) {
+        asset()->push(new ChangeObjectGroupProperties(doc,
                                                       objectGroup(),
                                                       color,
                                                       objectGroup()->drawOrder()));

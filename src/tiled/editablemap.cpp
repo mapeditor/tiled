@@ -61,6 +61,8 @@ EditableMap::EditableMap(QObject *parent)
     , mReadOnly(false)
     , mSelectedArea(nullptr)
 {
+    mDetachedMap.reset(map());
+
     connect(map(), &Map::sizeChanged, this, &EditableMap::sizeChanged);
     connect(map(), &Map::tileWidthChanged, this, &EditableMap::tileWidthChanged);
     connect(map(), &Map::tileHeightChanged, this, &EditableMap::tileHeightChanged);
@@ -93,6 +95,14 @@ EditableMap::EditableMap(MapDocument *mapDocument, QObject *parent)
 EditableMap::EditableMap(const Map *map, QObject *parent)
     : EditableAsset(nullptr, const_cast<Map*>(map), parent)
     , mReadOnly(true)
+    , mSelectedArea(nullptr)
+{
+}
+
+EditableMap::EditableMap(std::unique_ptr<Map> map, QObject *parent)
+    : EditableAsset(nullptr, map.get(), parent)
+    , mDetachedMap(std::move(map))
+    , mReadOnly(false)
     , mSelectedArea(nullptr)
 {
 }
@@ -165,7 +175,12 @@ void EditableMap::removeLayerAt(int index)
         return;
     }
 
-    push(new RemoveLayer(mapDocument(), index, nullptr));
+    if (auto doc = mapDocument()) {
+        push(new RemoveLayer(doc, index, nullptr));
+    } else if (!isReadOnly()) {
+        auto layer = map()->takeLayerAt(index);
+        EditableManager::instance().release(layer);
+    }
 }
 
 void EditableMap::removeLayer(EditableLayer *editableLayer)
@@ -201,7 +216,12 @@ void EditableMap::insertLayerAt(int index, EditableLayer *editableLayer)
         return;
     }
 
-    push(new AddLayer(mapDocument(), index, editableLayer->layer(), nullptr));
+    if (auto doc = mapDocument()) {
+        push(new AddLayer(doc, index, editableLayer->layer(), nullptr));
+    } else if (!isReadOnly()) {
+        // ownership moves to the map
+        map()->insertLayer(index, editableLayer->release());
+    }
 }
 
 void EditableMap::addLayer(EditableLayer *editableLayer)
@@ -215,7 +235,11 @@ bool EditableMap::addTileset(EditableTileset *editableTileset)
     if (map()->indexOfTileset(tileset) != -1)
         return false;   // can't add existing tileset
 
-    push(new AddTileset(mapDocument(), tileset));
+    if (auto doc = mapDocument())
+        push(new AddTileset(doc, tileset));
+    else if (!isReadOnly())
+        map()->addTileset(tileset);
+
     return true;
 }
 
@@ -237,7 +261,11 @@ bool EditableMap::replaceTileset(EditableTileset *oldEditableTileset,
     if (indexOfNewTileset != -1)
         return false;   // can't replace with tileset that is already part of the map (undo broken)
 
-    push(new ReplaceTileset(mapDocument(), indexOfOldTileset, newTileset));
+    if (auto doc = mapDocument())
+        push(new ReplaceTileset(doc, indexOfOldTileset, newTileset));
+    else if (!isReadOnly())
+        map()->replaceTileset(oldTileset, newTileset);
+
     return true;
 }
 
@@ -251,7 +279,11 @@ bool EditableMap::removeTileset(EditableTileset *editableTileset)
     if (map()->isTilesetUsed(tileset))
         return false;   // not allowed to remove a tileset that's in use
 
-    push(new RemoveTileset(mapDocument(), index));
+    if (auto doc = mapDocument())
+        push(new RemoveTileset(doc, index));
+    else if (!isReadOnly())
+        map()->removeTilesetAt(index);
+
     return true;
 }
 
@@ -268,52 +300,82 @@ QList<QObject *> EditableMap::usedTilesets() const
 
 void EditableMap::setTileWidth(int value)
 {
-    push(new ChangeMapProperty(mapDocument(), ChangeMapProperty::TileWidth, value));
+    if (auto doc = mapDocument())
+        push(new ChangeMapProperty(doc, ChangeMapProperty::TileWidth, value));
+    else if (!isReadOnly())
+        map()->setTileWidth(value);
 }
 
 void EditableMap::setTileHeight(int value)
 {
-    push(new ChangeMapProperty(mapDocument(), ChangeMapProperty::TileHeight, value));
+    if (auto doc = mapDocument())
+        push(new ChangeMapProperty(doc, ChangeMapProperty::TileHeight, value));
+    else if (!isReadOnly())
+        map()->setTileHeight(value);
 }
 
 void EditableMap::setInfinite(bool value)
 {
-    push(new ChangeMapProperty(mapDocument(), ChangeMapProperty::Infinite, value));
+    if (auto doc = mapDocument())
+        push(new ChangeMapProperty(doc, ChangeMapProperty::Infinite, value));
+    else if (!isReadOnly())
+        map()->setInfinite(value);
 }
 
 void EditableMap::setHexSideLength(int value)
 {
-    push(new ChangeMapProperty(mapDocument(), ChangeMapProperty::HexSideLength, value));
+    if (auto doc = mapDocument())
+        push(new ChangeMapProperty(doc, ChangeMapProperty::HexSideLength, value));
+    else if (!isReadOnly())
+        map()->setHexSideLength(value);
 }
 
 void EditableMap::setStaggerAxis(StaggerAxis value)
 {
-    push(new ChangeMapProperty(mapDocument(), static_cast<Map::StaggerAxis>(value)));
+    if (auto doc = mapDocument())
+        push(new ChangeMapProperty(doc, static_cast<Map::StaggerAxis>(value)));
+    else if (!isReadOnly())
+        map()->setStaggerAxis(static_cast<Map::StaggerAxis>(value));
 }
 
 void EditableMap::setStaggerIndex(StaggerIndex value)
 {
-    push(new ChangeMapProperty(mapDocument(), static_cast<Map::StaggerIndex>(value)));
+    if (auto doc = mapDocument())
+        push(new ChangeMapProperty(doc, static_cast<Map::StaggerIndex>(value)));
+    else if (!isReadOnly())
+        map()->setStaggerIndex(static_cast<Map::StaggerIndex>(value));
 }
 
 void EditableMap::setOrientation(Orientation value)
 {
-    push(new ChangeMapProperty(mapDocument(), static_cast<Map::Orientation>(value)));
+    if (auto doc = mapDocument())
+        push(new ChangeMapProperty(doc, static_cast<Map::Orientation>(value)));
+    else if (!isReadOnly())
+        map()->setOrientation(static_cast<Map::Orientation>(value));
 }
 
 void EditableMap::setRenderOrder(RenderOrder value)
 {
-    push(new ChangeMapProperty(mapDocument(), static_cast<Map::RenderOrder>(value)));
+    if (auto doc = mapDocument())
+        push(new ChangeMapProperty(doc, static_cast<Map::RenderOrder>(value)));
+    else if (!isReadOnly())
+        map()->setRenderOrder(static_cast<Map::RenderOrder>(value));
 }
 
 void EditableMap::setBackgroundColor(const QColor &value)
 {
-    push(new ChangeMapProperty(mapDocument(), value));
+    if (auto doc = mapDocument())
+        push(new ChangeMapProperty(doc, value));
+    else if (!isReadOnly())
+        map()->setBackgroundColor(value);
 }
 
 void EditableMap::setLayerDataFormat(LayerDataFormat value)
 {
-    push(new ChangeMapProperty(mapDocument(), static_cast<Map::LayerDataFormat>(value)));
+    if (auto doc = mapDocument())
+        push(new ChangeMapProperty(doc, static_cast<Map::LayerDataFormat>(value)));
+    else if (!isReadOnly())
+        map()->setLayerDataFormat(static_cast<Map::LayerDataFormat>(value));
 }
 
 void EditableMap::setCurrentLayer(EditableLayer *layer)
@@ -419,6 +481,10 @@ void EditableMap::resize(QSize size, QPoint offset, bool removeObjects)
 {
     if (checkReadOnly())
         return;
+    if (!mapDocument()) {   // todo: should be able to resize still
+        ScriptManager::instance().throwError(QLatin1String("Resize is currently not supported for detached maps"));
+        return;
+    }
     if (size.isEmpty()) {
         ScriptManager::instance().throwError(tr("Invalid size"));
         return;

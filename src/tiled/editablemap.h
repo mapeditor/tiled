@@ -104,9 +104,10 @@ public:
     Q_INVOKABLE explicit EditableMap(QObject *parent = nullptr);
     explicit EditableMap(MapDocument *mapDocument, QObject *parent = nullptr);
     explicit EditableMap(const Map *map, QObject *parent = nullptr);
+    explicit EditableMap(std::unique_ptr<Map> map, QObject *parent = nullptr);
     ~EditableMap() override;
 
-    bool isReadOnly() const override;
+    bool isReadOnly() const final;
 
     int width() const;
     int height() const;
@@ -183,6 +184,7 @@ private:
 
     MapRenderer *renderer() const;
 
+    std::unique_ptr<Map> mDetachedMap;
     bool mReadOnly;
 
     EditableSelectedArea *mSelectedArea;

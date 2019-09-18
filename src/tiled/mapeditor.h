@@ -44,6 +44,7 @@ class Terrain;
 class AbstractTool;
 class BucketFillTool;
 class ComboBoxProxyModel;
+class EditableMap;
 class EditPolygonTool;
 class LayerDock;
 class MapDocument;
@@ -74,6 +75,7 @@ class MapEditor : public Editor
     Q_OBJECT
 
     Q_PROPERTY(Tiled::TilesetDock *tilesetsView READ tilesetDock)
+    Q_PROPERTY(Tiled::EditableMap *currentBrush READ currentBrush WRITE setCurrentBrush)
 
 public:
     explicit MapEditor(QObject *parent = nullptr);
@@ -108,6 +110,9 @@ public:
 
     void setCurrentTileset(const SharedTileset &tileset);
     SharedTileset currentTileset() const;
+
+    EditableMap *currentBrush() const;
+    void setCurrentBrush(EditableMap *editableMap);
 
     void addExternalTilesets(const QStringList &fileNames);
 
