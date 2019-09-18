@@ -259,7 +259,7 @@ void TileLayer::setCells(int x, int y, const TileLayer *layer,
         targetArea &= mask;
 
 #if QT_VERSION < 0x050800
-    const auto rects = area.rects();
+    const auto rects = targetArea.rects();
     for (const QRect &rect : rects)
 #else
     for (const QRect &rect : targetArea)
