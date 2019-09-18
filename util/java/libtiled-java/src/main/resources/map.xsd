@@ -327,6 +327,13 @@ POSSIBILITY OF SUCH DAMAGE.
             <xs:element name="properties" type="Properties" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
 
+        <xs:attribute name="id" type="xs:int" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Map-unique ID of the layer.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
         <xs:attribute name="name" type="xs:string" use="required">
             <xs:annotation>
                 <xs:documentation>
@@ -404,6 +411,13 @@ POSSIBILITY OF SUCH DAMAGE.
                     Rendering offset for this layer in pixels. Defaults to 0.
 
                     @since 0.14
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="locked" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    Locking flag of the layer (used by Tiled).
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
@@ -547,6 +561,24 @@ POSSIBILITY OF SUCH DAMAGE.
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
+        <xs:attribute name="infinite" type="xs:int" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Defines if the map infinite.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="nextlayerid" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    Stores the next available ID for new layers. This number
+                    is stored to prevent reuse of the same ID after objects
+                    have been removed.
+
+                    @since 0.12
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
         <xs:attribute name="nextobjectid" type="xs:int">
             <xs:annotation>
                 <xs:documentation>
@@ -582,6 +614,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
         <xs:sequence>
             <xs:element name="properties" type="Properties"/>
+            <xs:element name="point" type="Point"/>
             <xs:element name="ellipse" type="Ellipse">
                 <xs:annotation>
                     <xs:documentation>
@@ -715,6 +748,15 @@ POSSIBILITY OF SUCH DAMAGE.
                 </xs:attribute>
             </xs:extension>
         </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="Point">
+        <xs:annotation>
+            <xs:documentation source="http://doc.mapeditor.org/reference/tmx-map-format/#point">
+                Used to mark an object as a point.
+                The existing x and y attributes are used to determine the position of the point.
+            </xs:documentation>
+        </xs:annotation>
     </xs:complexType>
 
     <xs:complexType name="Polygon">

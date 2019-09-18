@@ -175,17 +175,26 @@ public class TMXMapWriter {
     }
 
     private void writeMap(Map map, XMLWriter w, String wp) throws IOException {
-        w.writeDocType("map", null, "http://mapeditor.org/dtd/1.0/map.dtd");
+//        w.writeDocType("map", null, "http://mapeditor.org/dtd/1.0/map.dtd");
         w.startElement("map");
 
-        w.writeAttribute("version", "1.0");
+        w.writeAttribute("version", "1.2");
+
+        if (!map.getTiledversion().isEmpty()) {
+            w.writeAttribute("tiledversion", map.getTiledversion());
+        }
 
         Orientation orientation = map.getOrientation();
         w.writeAttribute("orientation", orientation.value());
+        w.writeAttribute("renderorder", map.getRenderorder().value());
         w.writeAttribute("width", map.getWidth());
         w.writeAttribute("height", map.getHeight());
         w.writeAttribute("tilewidth", map.getTileWidth());
         w.writeAttribute("tileheight", map.getTileHeight());
+        w.writeAttribute("infinite", map.getInfinite());
+
+        w.writeAttribute("nextlayerid", map.getNextlayerid());
+        w.writeAttribute("nextobjectid", map.getNextobjectid());
 
         switch (orientation) {
             case HEXAGONAL:
@@ -376,6 +385,9 @@ public class TMXMapWriter {
      */
     private void writeLayerAttributes(MapLayer l, XMLWriter w) throws IOException {
         Rectangle bounds = l.getBounds();
+
+        w.writeAttribute("id", l.getId());
+
         w.writeAttribute("name", l.getName());
         if (l instanceof TileLayer) {
             if (bounds.width != 0) {
@@ -406,6 +418,10 @@ public class TMXMapWriter {
         }
         if (l.getOffsetY() != null && l.getOffsetY() != 0) {
             w.writeAttribute("offsety", l.getOffsetY());
+        }
+
+        if (l.getLocked() != null && l.getLocked() != 0) {
+            w.writeAttribute("locked", l.getLocked());
         }
     }
 
@@ -572,24 +588,6 @@ public class TMXMapWriter {
         w.startElement("object");
         w.writeAttribute("id", mapObject.getId());
 
-        if (!mapObject.getName().isEmpty()) {
-            w.writeAttribute("name", mapObject.getName());
-        }
-
-        if (mapObject.getType().length() != 0) {
-            w.writeAttribute("type", mapObject.getType());
-        }
-
-        w.writeAttribute("x", mapObject.getX());
-        w.writeAttribute("y", mapObject.getY());
-
-        if (mapObject.getWidth() != 0) {
-            w.writeAttribute("width", mapObject.getWidth());
-        }
-        if (mapObject.getHeight() != 0) {
-            w.writeAttribute("height", mapObject.getHeight());
-        }
-
         long gid = 0;
         if (mapObject.getTile() != null) {
             Tile t = mapObject.getTile();
@@ -610,7 +608,35 @@ public class TMXMapWriter {
             gid |= TMXMapReader.FLIPPED_DIAGONALLY_FLAG;
         }
 
-        w.writeAttribute("gid", gid);
+        if (gid != 0) {
+            w.writeAttribute("gid", gid);
+        }
+
+        if (!mapObject.getName().isEmpty()) {
+            w.writeAttribute("name", mapObject.getName());
+        }
+
+        if (mapObject.getType().length() != 0) {
+            w.writeAttribute("type", mapObject.getType());
+        }
+
+        w.writeAttribute("x", mapObject.getX());
+        w.writeAttribute("y", mapObject.getY());
+
+        // TODO: Implement Polygon, Ellipse & Polyline too
+        boolean isPoint = mapObject.getPoint() != null;
+        if (isPoint) {
+            w.startElement("point");
+            w.endElement();
+        }
+        else {
+            if (mapObject.getWidth() != 0) {
+                w.writeAttribute("width", mapObject.getWidth());
+            }
+            if (mapObject.getHeight() != 0) {
+                w.writeAttribute("height", mapObject.getHeight());
+            }
+        }
 
         if (mapObject.getRotation() != 0) {
             w.writeAttribute("rotation", mapObject.getRotation());

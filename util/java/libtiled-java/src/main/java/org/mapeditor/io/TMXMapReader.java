@@ -33,6 +33,7 @@ package org.mapeditor.io;
 import java.awt.Color;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -408,6 +409,8 @@ public class TMXMapReader {
                 shape.closePath();
                 obj.setShape(shape);
                 obj.setBounds((Rectangle2D.Double) shape.getBounds2D());
+            } else if ("point".equalsIgnoreCase(child.getNodeName())) {
+                obj.setPoint(new Point());
             }
         }
 
@@ -508,6 +511,11 @@ public class TMXMapReader {
         final int offsetY = getAttribute(t, "y", 0);
         og.setOffset(offsetX, offsetY);
 
+        final int locked = getAttribute(t, "locked", 0);
+        if (locked != 0) {
+            og.setLocked(1);
+        }
+
         // Manually parse the objects in object group
         og.getObjects().clear();
 
@@ -542,10 +550,13 @@ public class TMXMapReader {
      * @throws Exception
      */
     private TileLayer readLayer(Node t) throws Exception {
+        final int layerId = getAttribute(t, "id", 0);
         final int layerWidth = getAttribute(t, "width", map.getWidth());
         final int layerHeight = getAttribute(t, "height", map.getHeight());
 
         TileLayer ml = new TileLayer(layerWidth, layerHeight);
+
+        ml.setId(layerId);
 
         final int offsetX = getAttribute(t, "x", 0);
         final int offsetY = getAttribute(t, "y", 0);
@@ -681,6 +692,11 @@ public class TMXMapReader {
         // todo: Shouldn't this be just a user interface feature, rather than
         // todo: something to keep in mind at this level?
         ml.setVisible(visible == 1);
+
+        final int locked = getAttribute(t, "locked", 0);
+        if (locked != 0) {
+            ml.setLocked(1);
+        }
 
         return ml;
     }

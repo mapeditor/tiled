@@ -270,7 +270,14 @@ public class XMLWriter {
      */
     public void writeAttribute(String name, double content)
             throws IOException, XMLWriterException {
-        writeAttribute(name, String.valueOf(content));
+        //TODO: Tiled omits the decimals if it's '.0' so this is for parity
+        long longContent = (long)content;
+        if (longContent == content) {
+            writeAttribute(name, String.valueOf(longContent));
+        }
+        else {
+            writeAttribute(name, String.valueOf(content));
+        }
     }
 
     /**
