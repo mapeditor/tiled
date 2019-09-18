@@ -33,6 +33,8 @@
 #include <QMimeData>
 #include <QStyle>
 
+#include <algorithm>
+
 using namespace Tiled;
 
 LayerModel::LayerModel(QObject *parent):
@@ -444,8 +446,8 @@ void LayerModel::toggleLayers(const QList<Layer *> &layers)
     if (layers.isEmpty())
         return;
 
-    bool visible = std::all_of(layers.begin(), layers.end(),
-                               [] (Layer *layer) { return !layer->isVisible(); });
+    bool visible = std::none_of(layers.begin(), layers.end(),
+                                [] (Layer *layer) { return layer->isVisible(); });
 
     QUndoStack *undoStack = mMapDocument->undoStack();
     if (visible)
@@ -453,9 +455,9 @@ void LayerModel::toggleLayers(const QList<Layer *> &layers)
     else
         undoStack->beginMacro(tr("Hide Layers"));
 
-    for (Layer *l : layers)
-        if (visible != l->isVisible())
-            undoStack->push(new SetLayerVisible(mMapDocument, l, visible));
+    for (Layer *layer : layers)
+        if (visible != layer->isVisible())
+            undoStack->push(new SetLayerVisible(mMapDocument, layer, visible));
 
     undoStack->endMacro();
 }
@@ -531,13 +533,8 @@ void LayerModel::toggleOtherLayers(const QList<Layer *> &layers)
     if (otherLayers.isEmpty())
         return;
 
-    bool visibility = true;
-    for (Layer *l : otherLayers) {
-        if (l->isVisible()) {
-            visibility = false;
-            break;
-        }
-    }
+    bool visibility = std::none_of(otherLayers.begin(), otherLayers.end(),
+                                   [] (Layer *layer) { return layer->isVisible(); });
 
     QUndoStack *undoStack = mMapDocument->undoStack();
     if (visibility)
@@ -545,9 +542,9 @@ void LayerModel::toggleOtherLayers(const QList<Layer *> &layers)
     else
         undoStack->beginMacro(tr("Hide Other Layers"));
 
-    for (Layer *l : otherLayers) {
-        if (visibility != l->isVisible())
-            undoStack->push(new SetLayerVisible(mMapDocument, l, visibility));
+    for (Layer *layer : otherLayers) {
+        if (visibility != layer->isVisible())
+            undoStack->push(new SetLayerVisible(mMapDocument, layer, visibility));
     }
 
     undoStack->endMacro();
@@ -564,13 +561,8 @@ void LayerModel::toggleLockOtherLayers(const QList<Layer *> &layers)
     if (otherLayers.isEmpty())
         return;
 
-    bool locked = false;
-    for (Layer *l : otherLayers) {
-        if (!l->isLocked()) {
-            locked = true;
-            break;
-        }
-    }
+    bool locked = std::any_of(otherLayers.begin(), otherLayers.end(),
+                              [] (Layer *layer) { return !layer->isLocked(); });
 
     QUndoStack *undoStack = mMapDocument->undoStack();
     if (locked)
@@ -578,9 +570,9 @@ void LayerModel::toggleLockOtherLayers(const QList<Layer *> &layers)
     else
         undoStack->beginMacro(tr("Unlock Other Layers"));
 
-    for (Layer *l : otherLayers) {
-        if (locked != l->isLocked())
-            undoStack->push(new SetLayerLocked(mMapDocument, l, locked));
+    for (Layer *layer : otherLayers) {
+        if (locked != layer->isLocked())
+            undoStack->push(new SetLayerLocked(mMapDocument, layer, locked));
     }
 
     undoStack->endMacro();
