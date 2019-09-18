@@ -571,7 +571,10 @@ public class TMXMapWriter {
             throws IOException {
         w.startElement("object");
         w.writeAttribute("id", mapObject.getId());
-        w.writeAttribute("name", mapObject.getName());
+
+        if (!mapObject.getName().isEmpty()) {
+            w.writeAttribute("name", mapObject.getName());
+        }
 
         if (mapObject.getType().length() != 0) {
             w.writeAttribute("type", mapObject.getType());
