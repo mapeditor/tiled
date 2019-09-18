@@ -8000,7 +8000,7 @@ int _wrap_convert_py2c__Tiled__Map___star__(PyObject *value, Tiled::Map * *addre
         Py_DECREF(py_retval);
         return 0;
     }
-    *address = tmp_Map->obj->clone();
+    *address = tmp_Map->obj->clone().release();
     Py_DECREF(py_retval);
     return 1;
 }

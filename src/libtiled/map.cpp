@@ -331,9 +331,9 @@ bool Map::isTilesetUsed(const Tileset *tileset) const
     return false;
 }
 
-Map *Map::clone() const
+std::unique_ptr<Map> Map::clone() const
 {
-    Map *o = new Map(mOrientation, mWidth, mHeight, mTileWidth, mTileHeight, mInfinite);
+    auto o = std::make_unique<Map>(mOrientation, mWidth, mHeight, mTileWidth, mTileHeight, mInfinite);
     o->fileName = fileName;
     o->exportFileName = exportFileName;
     o->exportFormat = exportFormat;
@@ -347,7 +347,7 @@ Map *Map::clone() const
     o->mDrawMarginsDirty = mDrawMarginsDirty;
     for (const Layer *layer : mLayers) {
         Layer *clone = layer->clone();
-        clone->setMap(o);
+        clone->setMap(o.get());
         o->mLayers.append(clone);
     }
     o->mTilesets = mTilesets;

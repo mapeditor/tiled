@@ -443,7 +443,7 @@ public:
      */
     bool isTilesetUsed(const Tileset *tileset) const;
 
-    Map *clone() const;
+    std::unique_ptr<Map> clone() const;
 
     /**
      * Returns whether the map is staggered

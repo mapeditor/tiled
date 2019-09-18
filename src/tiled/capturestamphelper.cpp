@@ -62,11 +62,11 @@ TileStamp CaptureStampHelper::endCapture(const MapDocument &mapDocument, QPoint 
             continue;
         capturedFromLayer.translate(-tileLayer->position());
 
-        TileLayer *capture = tileLayer->copy(capturedFromLayer);
+        auto capture = tileLayer->copy(capturedFromLayer);
         capture->setName(tileLayer->name());
         capture->setPosition(capturedFromLayer.topLeft() - captured.topLeft());
 
-        stamp->addLayer(capture);
+        stamp->addLayer(std::move(capture));
     }
 
     if (stamp->layerCount() > 0) {

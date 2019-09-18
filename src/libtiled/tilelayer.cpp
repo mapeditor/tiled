@@ -209,14 +209,14 @@ void Tiled::TileLayer::setCell(int x, int y, const Cell &cell)
     _chunk.setCell(x & CHUNK_MASK, y & CHUNK_MASK, cell);
 }
 
-TileLayer *TileLayer::copy(const QRegion &region) const
+std::unique_ptr<TileLayer> TileLayer::copy(const QRegion &region) const
 {
     const QRect regionBounds = region.boundingRect();
     const QRegion regionWithContents = region.intersected(mBounds);
 
-    TileLayer *copied = new TileLayer(QString(),
-                                      0, 0,
-                                      regionBounds.width(), regionBounds.height());
+    auto copied = std::make_unique<TileLayer>(QString(),
+                                              0, 0,
+                                              regionBounds.width(), regionBounds.height());
 
 #if QT_VERSION < 0x050800
     const auto rects = regionWithContents.rects();
@@ -250,7 +250,7 @@ void TileLayer::merge(QPoint pos, const TileLayer *layer)
     }
 }
 
-void TileLayer::setCells(int x, int y, TileLayer *layer,
+void TileLayer::setCells(int x, int y, const TileLayer *layer,
                          const QRegion &mask)
 {
     QRegion area = QRect(x, y, layer->width(), layer->height());

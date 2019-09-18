@@ -40,7 +40,7 @@ EraseTiles::EraseTiles(MapDocument *mapDocument,
 
     // Store the tiles that are to be erased
     const QRegion r = region.translated(-tileLayer->position());
-    data.mErasedCells = tileLayer->copy(r);
+    data.mErasedCells = tileLayer->copy(r).release();
 }
 
 EraseTiles::~EraseTiles()

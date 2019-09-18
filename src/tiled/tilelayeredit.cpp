@@ -65,7 +65,7 @@ void TileLayerEdit::apply()
     auto rect = paintedRegion.boundingRect();
     mChanges.resize(rect.size(), -rect.topLeft());
 
-    if (mTargetLayer->map()) {
+    if (mTargetLayer->mapDocument()) {
         // Apply the change using an undo command
         auto mapDocument = mTargetLayer->map()->mapDocument();
         auto paint = new PaintTileLayer(mapDocument,

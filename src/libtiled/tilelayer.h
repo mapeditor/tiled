@@ -388,9 +388,9 @@ public:
      * Returns a copy of the area specified by the given \a region. The
      * caller is responsible for the returned tile layer.
      */
-    TileLayer *copy(const QRegion &region) const;
+    std::unique_ptr<TileLayer> copy(const QRegion &region) const;
 
-    TileLayer *copy(int x, int y, int width, int height) const
+    std::unique_ptr<TileLayer> copy(int x, int y, int width, int height) const
     { return copy(QRegion(x, y, width, height)); }
 
     /**
@@ -414,7 +414,7 @@ public:
      * When a \a mask is given, only cells that fall within this mask are set.
      * The mask is applied in local coordinates.
      */
-    void setCells(int x, int y, TileLayer *tileLayer,
+    void setCells(int x, int y, const TileLayer *tileLayer,
                   const QRegion &mask = QRegion());
 
     void setTiles(const QRegion &area, Tile *tile);

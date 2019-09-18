@@ -43,7 +43,7 @@ class EditableAsset : public EditableObject
     Q_PROPERTY(bool isTileset READ isTileset CONSTANT)
 
 public:
-    explicit EditableAsset(Document *document, Object *object, QObject *parent = nullptr);
+    EditableAsset(Document *document, Object *object, QObject *parent = nullptr);
 
     QString fileName() const;
     virtual bool isReadOnly() const = 0;

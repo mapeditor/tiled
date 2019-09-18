@@ -60,7 +60,7 @@ PaintTileLayer::PaintTileLayer(MapDocument *mapDocument,
     data.mSource = source->clone();
     data.mErased = target->copy(x - target->x(),
                                 y - target->y(),
-                                source->width(), source->height());
+                                source->width(), source->height()).release();
     data.mX = x;
     data.mY = y;
     data.mPaintedRegion = paintRegion;

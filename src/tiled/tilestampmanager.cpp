@@ -123,7 +123,7 @@ static TileStamp stampFromContext(AbstractTool *selectedTool)
             return stamp;
 
         selection.translate(-tileLayer->position());
-        std::unique_ptr<TileLayer> copy(tileLayer->copy(selection));
+        auto copy = tileLayer->copy(selection);
 
         if (copy->isEmpty())
             return stamp;

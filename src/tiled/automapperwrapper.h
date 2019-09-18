@@ -25,6 +25,8 @@
 #include <QUndoCommand>
 #include <QVector>
 
+#include <vector>
+
 namespace Tiled {
 
 class MapDocument;
@@ -48,11 +50,11 @@ public:
     void redo() override;
 
 private:
-    void patchLayer(int layerIndex, TileLayer *layer);
+    void patchLayer(int layerIndex, const TileLayer &layer);
 
     MapDocument *mMapDocument;
-    QVector<TileLayer*> mLayersAfter;
-    QVector<TileLayer*> mLayersBefore;
+    std::vector<std::unique_ptr<TileLayer>> mLayersAfter;
+    std::vector<std::unique_ptr<TileLayer>> mLayersBefore;
 };
 
 } // namespace Tiled

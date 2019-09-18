@@ -164,11 +164,11 @@ bool ClipboardManager::copySelection(const MapDocument &mapDocument)
                     continue;
 
                 // Copy the selected part of the layer
-                TileLayer *copyLayer = tileLayer->copy(area.translated(-tileLayer->position()));
+                auto copyLayer = tileLayer->copy(area.translated(-tileLayer->position()));
                 copyLayer->setName(tileLayer->name());
                 copyLayer->setPosition(area.boundingRect().topLeft());
 
-                copyMap.addLayer(copyLayer);
+                copyMap.addLayer(std::move(copyLayer));
                 break;
             }
             case Layer::ObjectGroupType: // todo: maybe it makes to group selected objects by layer
