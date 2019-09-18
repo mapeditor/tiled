@@ -141,6 +141,12 @@ public:
     Q_INVOKABLE bool removeTileset(Tiled::EditableTileset *editableTileset);
     Q_INVOKABLE QList<QObject *> usedTilesets() const;
 
+    Q_INVOKABLE void merge(Tiled::EditableMap *editableMap, bool canJoin = false);
+
+    Q_INVOKABLE void resize(QSize size,
+                            QPoint offset = QPoint(),
+                            bool removeObjects = false);
+
     void setTileWidth(int value);
     void setTileHeight(int value);
     void setInfinite(bool value);
@@ -166,11 +172,6 @@ signals:
     void currentLayerChanged();
     void selectedLayersChanged();
     void selectedObjectsChanged();
-
-public slots:
-    void resize(QSize size,
-                QPoint offset = QPoint(),
-                bool removeObjects = false);
 
 private:
     void documentChanged(const ChangeEvent &change);

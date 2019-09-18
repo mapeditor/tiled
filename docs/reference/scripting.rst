@@ -703,6 +703,17 @@ TileMap.usedTilesets() : [:ref:`script-tileset`]
     a subset of the tilesets referenced by the map (the ``TileMap.tilesets``
     property).
 
+.. _script-map-merge:
+
+TileMap.merge(map : :ref:`script-map` [, canJoin : bool = false]) : void
+    Merges the tile layers in the given map with this one. If only a single
+    tile layer exists in the given map, it will be merged with the
+    ``currentLayer``.
+
+    If ``canJoin`` is ``true``, the operation joins with the previous one on
+    the undo stack when possible. Useful for reducing the amount of undo
+    commands.
+
 .. _script-map-resize:
 
 TileMap.resize(size : size [, offset : :ref:`script-point` [, removeObjects : bool = false]]) : void

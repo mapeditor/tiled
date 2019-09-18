@@ -298,6 +298,152 @@ QList<QObject *> EditableMap::usedTilesets() const
     return editableTilesets;
 }
 
+/**
+ * Merges the given map with this map. Automatically adds any tilesets that are
+ * used by the merged map which are not yet part of this map.
+ *
+ * Might replace tilesets in the given \a editableMap, if it is detached.
+ *
+ * Pass \a canJoin as 'true' if the operation is allowed to join with the
+ * previous one on the undo stack.
+ *
+ * @warning Currently only supports tile layers!
+ */
+void EditableMap::merge(EditableMap *editableMap, bool canJoin)
+{
+    if (!mapDocument()) {   // todo: support this outside of the undo stack
+        ScriptManager::instance().throwError(QLatin1String("Merge is currently not supported for detached maps"));
+        return;
+    }
+
+    // unifyTilesets might modify the given map, so need to clone if it has a document.
+    Map *map = editableMap->map();
+    std::unique_ptr<Map> copy;      // manages lifetime
+    if (editableMap->document()) {
+        copy = map->clone();
+        map = copy.get();
+    }
+
+    QVector<SharedTileset> missingTilesets;
+    mapDocument()->unifyTilesets(map, missingTilesets);
+    mapDocument()->paintTileLayers(map, canJoin, &missingTilesets);
+}
+
+/**
+ * Custom intersects check necessary because QRectF::intersects wants a
+ * non-empty area of overlap, but we should also consider overlap with empty
+ * area as intersection.
+ *
+ * Results for rectangles with negative size are undefined.
+ */
+static bool intersects(const QRectF &a, const QRectF &b)
+{
+    return a.right() >= b.left() &&
+            a.bottom() >= b.top() &&
+            a.left() <= b.right() &&
+            a.top() <= b.bottom();
+}
+
+static bool visibleIn(const QRectF &area, MapObject *object,
+                      const MapRenderer &renderer)
+{
+    QRectF boundingRect = renderer.boundingRect(object);
+
+    if (object->rotation() != 0) {
+        // Rotate around object position
+        QPointF pos = renderer.pixelToScreenCoords(object->position());
+        boundingRect.translate(-pos);
+
+        QTransform transform;
+        transform.rotate(object->rotation());
+        boundingRect = transform.mapRect(boundingRect);
+
+        boundingRect.translate(pos);
+    }
+
+    return intersects(area, boundingRect);
+}
+
+/**
+ * Resize this map to the given \a size, while at the same time shifting
+ * the contents by \a offset. If \a removeObjects is true then all objects
+ * which are outside the map will be removed.
+ */
+void EditableMap::resize(QSize size, QPoint offset, bool removeObjects)
+{
+    if (checkReadOnly())
+        return;
+    if (!mapDocument()) {   // todo: should be able to resize still
+        ScriptManager::instance().throwError(QLatin1String("Resize is currently not supported for detached maps"));
+        return;
+    }
+    if (size.isEmpty()) {
+        ScriptManager::instance().throwError(tr("Invalid size"));
+        return;
+    }
+
+    const QRegion movedSelection = mapDocument()->selectedArea().translated(offset);
+    const QRect newArea = QRect(-offset, size);
+    const QRectF visibleArea = renderer()->boundingRect(newArea);
+
+    const QPointF origin = renderer()->tileToPixelCoords(QPointF());
+    const QPointF newOrigin = renderer()->tileToPixelCoords(-offset);
+    const QPointF pixelOffset = origin - newOrigin;
+
+    // Resize the map and each layer
+    QUndoCommand *command = new QUndoCommand(tr("Resize Map"));
+
+    QList<MapObject *> objectsToRemove;
+
+    LayerIterator iterator(map());
+    while (Layer *layer = iterator.next()) {
+        switch (layer->layerType()) {
+        case Layer::TileLayerType: {
+            TileLayer *tileLayer = static_cast<TileLayer*>(layer);
+            new ResizeTileLayer(mapDocument(), tileLayer, size, offset, command);
+            break;
+        }
+        case Layer::ObjectGroupType: {
+            ObjectGroup *objectGroup = static_cast<ObjectGroup*>(layer);
+
+            for (MapObject *o : objectGroup->objects()) {
+                if (removeObjects && !visibleIn(visibleArea, o, *renderer())) {
+                    // Remove objects that will fall outside of the map
+                    objectsToRemove.append(o);
+                } else {
+                    QPointF oldPos = o->position();
+                    QPointF newPos = oldPos + pixelOffset;
+                    new MoveMapObject(mapDocument(), o, newPos, oldPos, command);
+                }
+            }
+            break;
+        }
+        case Layer::ImageLayerType: {
+            // Adjust image layer by changing its offset
+            auto imageLayer = static_cast<ImageLayer*>(layer);
+            new SetLayerOffset(mapDocument(), layer,
+                               imageLayer->offset() + pixelOffset,
+                               command);
+            break;
+        }
+        case Layer::GroupLayerType: {
+            // Recursion handled by LayerIterator
+            break;
+        }
+        }
+    }
+
+    if (!objectsToRemove.isEmpty())
+        new RemoveMapObjects(mapDocument(), objectsToRemove, command);
+
+    new ResizeMap(mapDocument(), size, command);
+    new ChangeSelectedArea(mapDocument(), movedSelection, command);
+
+    push(command);
+
+    // TODO: Handle layers that don't match the map size correctly
+}
+
 void EditableMap::setTileWidth(int value)
 {
     if (auto doc = mapDocument())
@@ -435,121 +581,6 @@ void EditableMap::setSelectedObjects(const QList<QObject *> &objects)
     }
 
     document->setSelectedObjects(plainObjects);
-}
-
-/**
- * Custom intersects check necessary because QRectF::intersects wants a
- * non-empty area of overlap, but we should also consider overlap with empty
- * area as intersection.
- *
- * Results for rectangles with negative size are undefined.
- */
-static bool intersects(const QRectF &a, const QRectF &b)
-{
-    return a.right() >= b.left() &&
-            a.bottom() >= b.top() &&
-            a.left() <= b.right() &&
-            a.top() <= b.bottom();
-}
-
-static bool visibleIn(const QRectF &area, MapObject *object,
-                      const MapRenderer &renderer)
-{
-    QRectF boundingRect = renderer.boundingRect(object);
-
-    if (object->rotation() != 0) {
-        // Rotate around object position
-        QPointF pos = renderer.pixelToScreenCoords(object->position());
-        boundingRect.translate(-pos);
-
-        QTransform transform;
-        transform.rotate(object->rotation());
-        boundingRect = transform.mapRect(boundingRect);
-
-        boundingRect.translate(pos);
-    }
-
-    return intersects(area, boundingRect);
-}
-
-/**
- * Resize this map to the given \a size, while at the same time shifting
- * the contents by \a offset. If \a removeObjects is true then all objects
- * which are outside the map will be removed.
- */
-void EditableMap::resize(QSize size, QPoint offset, bool removeObjects)
-{
-    if (checkReadOnly())
-        return;
-    if (!mapDocument()) {   // todo: should be able to resize still
-        ScriptManager::instance().throwError(QLatin1String("Resize is currently not supported for detached maps"));
-        return;
-    }
-    if (size.isEmpty()) {
-        ScriptManager::instance().throwError(tr("Invalid size"));
-        return;
-    }
-
-    const QRegion movedSelection = mapDocument()->selectedArea().translated(offset);
-    const QRect newArea = QRect(-offset, size);
-    const QRectF visibleArea = renderer()->boundingRect(newArea);
-
-    const QPointF origin = renderer()->tileToPixelCoords(QPointF());
-    const QPointF newOrigin = renderer()->tileToPixelCoords(-offset);
-    const QPointF pixelOffset = origin - newOrigin;
-
-    // Resize the map and each layer
-    QUndoCommand *command = new QUndoCommand(tr("Resize Map"));
-
-    QList<MapObject *> objectsToRemove;
-
-    LayerIterator iterator(map());
-    while (Layer *layer = iterator.next()) {
-        switch (layer->layerType()) {
-        case Layer::TileLayerType: {
-            TileLayer *tileLayer = static_cast<TileLayer*>(layer);
-            new ResizeTileLayer(mapDocument(), tileLayer, size, offset, command);
-            break;
-        }
-        case Layer::ObjectGroupType: {
-            ObjectGroup *objectGroup = static_cast<ObjectGroup*>(layer);
-
-            for (MapObject *o : objectGroup->objects()) {
-                if (removeObjects && !visibleIn(visibleArea, o, *renderer())) {
-                    // Remove objects that will fall outside of the map
-                    objectsToRemove.append(o);
-                } else {
-                    QPointF oldPos = o->position();
-                    QPointF newPos = oldPos + pixelOffset;
-                    new MoveMapObject(mapDocument(), o, newPos, oldPos, command);
-                }
-            }
-            break;
-        }
-        case Layer::ImageLayerType: {
-            // Adjust image layer by changing its offset
-            auto imageLayer = static_cast<ImageLayer*>(layer);
-            new SetLayerOffset(mapDocument(), layer,
-                               imageLayer->offset() + pixelOffset,
-                               command);
-            break;
-        }
-        case Layer::GroupLayerType: {
-            // Recursion handled by LayerIterator
-            break;
-        }
-        }
-    }
-
-    if (!objectsToRemove.isEmpty())
-        new RemoveMapObjects(mapDocument(), objectsToRemove, command);
-
-    new ResizeMap(mapDocument(), size, command);
-    new ChangeSelectedArea(mapDocument(), movedSelection, command);
-
-    push(command);
-
-    // TODO: Handle layers that don't match the map size correctly
 }
 
 void EditableMap::documentChanged(const ChangeEvent &change)
