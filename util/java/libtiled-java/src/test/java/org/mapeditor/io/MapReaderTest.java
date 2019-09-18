@@ -32,7 +32,6 @@ package org.mapeditor.io;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import javax.imageio.IIOException;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -42,7 +41,6 @@ import org.mapeditor.core.ObjectGroup;
 import org.mapeditor.core.Orientation;
 import org.mapeditor.core.StaggerAxis;
 import org.mapeditor.core.StaggerIndex;
-import org.mapeditor.core.Tile;
 import org.mapeditor.core.TileLayer;
 import org.mapeditor.core.TileSet;
 
@@ -270,21 +268,21 @@ public class MapReaderTest {
         TileLayer layer = (TileLayer) map.getLayer(0);
         assertNotNull(layer.getTileAt(0, 0));
 
-        assertTrue(layer.isFlippedHorizontaly(0, 0));
+        assertTrue(layer.isFlippedHorizontally(0, 0));
         assertFalse(layer.isFlippedVertically(0, 0));
-        assertFalse(layer.isFlippedDiagonaly(0, 0));
+        assertFalse(layer.isFlippedDiagonally(0, 0));
 
-        assertFalse(layer.isFlippedHorizontaly(1, 0));
+        assertFalse(layer.isFlippedHorizontally(1, 0));
         assertTrue(layer.isFlippedVertically(1, 0));
-        assertFalse(layer.isFlippedDiagonaly(1, 0));
+        assertFalse(layer.isFlippedDiagonally(1, 0));
 
-        assertTrue(layer.isFlippedHorizontaly(2, 0));
+        assertTrue(layer.isFlippedHorizontally(2, 0));
         assertTrue(layer.isFlippedVertically(2, 0));
-        assertFalse(layer.isFlippedDiagonaly(2, 0));
+        assertFalse(layer.isFlippedDiagonally(2, 0));
 
-        assertFalse(layer.isFlippedHorizontaly(3, 0));
+        assertFalse(layer.isFlippedHorizontally(3, 0));
         assertFalse(layer.isFlippedVertically(3, 0));
-        assertFalse(layer.isFlippedDiagonaly(3, 0));
+        assertFalse(layer.isFlippedDiagonally(3, 0));
     }
 
     private URL getUrlFromResources(String filename) {
