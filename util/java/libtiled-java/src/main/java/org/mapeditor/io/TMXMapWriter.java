@@ -590,12 +590,27 @@ public class TMXMapWriter {
             w.writeAttribute("height", mapObject.getHeight());
         }
 
+        long gid = 0;
         if (mapObject.getTile() != null) {
             Tile t = mapObject.getTile();
-            w.writeAttribute("gid", firstGidPerTileset.get(t.getTileSet()) + t.getId());
+            gid = firstGidPerTileset.get(t.getTileSet()) + t.getId();
         } else if (mapObject.getGid() != null) {
-            w.writeAttribute("gid", mapObject.getGid());
+            gid = mapObject.getGid();
         }
+
+        if (mapObject.getFlipHorizontal()) {
+            gid |= TMXMapReader.FLIPPED_HORIZONTALLY_FLAG;
+        }
+
+        if (mapObject.getFlipVertical()) {
+            gid |= TMXMapReader.FLIPPED_VERTICALLY_FLAG;
+        }
+
+        if (mapObject.getFlipDiagonal()) {
+            gid |= TMXMapReader.FLIPPED_DIAGONALLY_FLAG;
+        }
+
+        w.writeAttribute("gid", gid);
 
         if (mapObject.getRotation() != 0) {
             w.writeAttribute("rotation", mapObject.getRotation());

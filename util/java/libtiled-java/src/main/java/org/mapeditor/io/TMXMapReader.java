@@ -79,9 +79,9 @@ import org.xml.sax.SAXException;
  */
 public class TMXMapReader {
 
-    public static long FLIPPED_HORIZONTALLY_FLAG = 0xFFFFFFFF80000000L;
-    public static long FLIPPED_VERTICALLY_FLAG = 0xFFFFFFFF40000000L;
-    public static long FLIPPED_DIAGONALLY_FLAG = 0xFFFFFFFF20000000L;
+    public static long FLIPPED_HORIZONTALLY_FLAG =  0x0000000080000000L;
+    public static long FLIPPED_VERTICALLY_FLAG =    0x0000000040000000L;
+    public static long FLIPPED_DIAGONALLY_FLAG =    0x0000000020000000L;
 
     public static long ALL_FLAGS = FLIPPED_HORIZONTALLY_FLAG
             | FLIPPED_VERTICALLY_FLAG
@@ -357,12 +357,15 @@ public class TMXMapReader {
         }
         if (gid != null) {
             long tileId = Long.parseLong(gid);
-            if (tileId > Integer.MAX_VALUE) {
+            if ((tileId & ALL_FLAGS) != 0) {
                 // Read out the flags
-                // TODO: Save these flags somewhere
                 long flippedHorizontally = tileId & FLIPPED_HORIZONTALLY_FLAG;
                 long flippedVertically = tileId & FLIPPED_VERTICALLY_FLAG;
                 long flippedDiagonally = tileId & FLIPPED_DIAGONALLY_FLAG;
+
+                obj.setFlipHorizontal(flippedHorizontally != 0);
+                obj.setFlipVertical(flippedVertically != 0);
+                obj.setFlipDiagonal(flippedDiagonally != 0);
 
                 // Clear the flags
                 tileId &= ~(FLIPPED_HORIZONTALLY_FLAG
