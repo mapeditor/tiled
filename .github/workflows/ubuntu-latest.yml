@@ -16,4 +16,4 @@ jobs:
         qbs setup-toolchains --detect
         qbs setup-qt --detect
     - name: build
-      run: qbs build
+      run: qbs build profile:qt-5-9-5
