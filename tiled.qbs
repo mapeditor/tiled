@@ -21,6 +21,7 @@ Project {
         "dist/win/installer.qbs",
         "src/libtiled",
         "src/plugins",
+        "src/pytiled",
         "src/qtpropertybrowser",
         "src/qtsingleapplication",
         "src/terraingenerator",
