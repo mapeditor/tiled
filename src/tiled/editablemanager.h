@@ -49,6 +49,8 @@ class EditableManager : public QObject
 {
     Q_OBJECT
 
+    explicit EditableManager(QObject *parent = nullptr);
+
 public:
     static EditableManager &instance();
     static void deleteInstance();
@@ -72,8 +74,6 @@ private:
     friend class EditableMapObject;
     friend class EditableTile;
     friend class EditableTerrain;
-
-    explicit EditableManager(QObject *parent = nullptr);
 
     QHash<Layer*, EditableLayer*> mEditableLayers;
     QHash<MapObject*, EditableMapObject*> mEditableMapObjects;

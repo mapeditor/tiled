@@ -28,10 +28,23 @@
 #include "editabletile.h"
 #include "editabletilelayer.h"
 #include "editabletileset.h"
+#include "scriptmanager.h"
+
+#include <QQmlEngine>
 
 namespace Tiled {
 
+static bool becomesNullValue(QObject *object)
+{
+    return ScriptManager::instance().engine()->newQObject(object).isNull();
+}
+
 std::unique_ptr<EditableManager> EditableManager::mInstance;
+
+EditableManager::EditableManager(QObject *parent)
+    : QObject(parent)
+{
+}
 
 EditableManager &EditableManager::instance()
 {
@@ -69,7 +82,7 @@ EditableLayer *EditableManager::editableLayer(EditableMap *map, Layer *layer)
     Q_ASSERT(!map || layer->map() == map->map());
 
     EditableLayer* &editableLayer = mEditableLayers[layer];
-    if (!editableLayer) {
+    if (becomesNullValue(editableLayer)) {
         switch (layer->layerType()) {
         case Layer::TileLayerType:
             editableLayer = new EditableTileLayer(map, static_cast<TileLayer*>(layer));
@@ -84,6 +97,7 @@ EditableLayer *EditableManager::editableLayer(EditableMap *map, Layer *layer)
             editableLayer = new EditableGroupLayer(map, static_cast<GroupLayer*>(layer));
             break;
         }
+        QQmlEngine::setObjectOwnership(editableLayer, QQmlEngine::JavaScriptOwnership);
     }
 
     return editableLayer;
@@ -97,8 +111,10 @@ EditableObjectGroup *EditableManager::editableObjectGroup(EditableAsset *asset, 
     Q_ASSERT(!objectGroup->map());
 
     EditableLayer* &editableLayer = mEditableLayers[objectGroup];
-    if (!editableLayer)
+    if (becomesNullValue(editableLayer)) {
         editableLayer = new EditableObjectGroup(asset, objectGroup);
+        QQmlEngine::setObjectOwnership(editableLayer, QQmlEngine::JavaScriptOwnership);
+    }
 
     return static_cast<EditableObjectGroup*>(editableLayer);
 }
@@ -111,8 +127,10 @@ EditableMapObject *EditableManager::editableMapObject(EditableAsset *asset, MapO
     Q_ASSERT(mapObject->objectGroup());
 
     EditableMapObject* &editableMapObject = mEditableMapObjects[mapObject];
-    if (!editableMapObject)
+    if (becomesNullValue(editableMapObject)) {
         editableMapObject = new EditableMapObject(asset, mapObject);
+        QQmlEngine::setObjectOwnership(editableMapObject, QQmlEngine::JavaScriptOwnership);
+    }
 
     return editableMapObject;
 }
@@ -125,8 +143,10 @@ EditableTile *EditableManager::editableTile(EditableTileset *tileset, Tile *tile
     Q_ASSERT(tile->tileset() == tileset->tileset());
 
     EditableTile* &editableTile = mEditableTiles[tile];
-    if (!editableTile)
+    if (becomesNullValue(editableTile)) {
         editableTile = new EditableTile(tileset, tile);
+        QQmlEngine::setObjectOwnership(editableTile, QQmlEngine::JavaScriptOwnership);
+    }
 
     return editableTile;
 }
@@ -139,15 +159,12 @@ EditableTerrain *EditableManager::editableTerrain(EditableTileset *tileset, Terr
     Q_ASSERT(terrain->tileset() == tileset->tileset());
 
     EditableTerrain* &editableTerrain = mEditableTerrains[terrain];
-    if (!editableTerrain)
+    if (becomesNullValue(editableTerrain)) {
         editableTerrain = new EditableTerrain(tileset, terrain);
+        QQmlEngine::setObjectOwnership(editableTerrain, QQmlEngine::JavaScriptOwnership);
+    }
 
     return editableTerrain;
-}
-
-EditableManager::EditableManager(QObject *parent)
-    : QObject(parent)
-{
 }
 
 } // namespace Tiled
