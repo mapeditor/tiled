@@ -26,6 +26,7 @@
 #include "editabletileset.h"
 #include "issuesmodel.h"
 #include "logginginterface.h"
+#include "mainwindow.h"
 #include "mapeditor.h"
 #include "scriptedaction.h"
 #include "scriptedmapformat.h"
@@ -368,17 +369,17 @@ void ScriptModule::executeCommand(const QString &name, bool inTerminal) const
 
 void ScriptModule::alert(const QString &text, const QString &title) const
 {
-    QMessageBox::warning(nullptr, title, text);
+    QMessageBox::warning(MainWindow::instance(), title, text);
 }
 
 bool ScriptModule::confirm(const QString &text, const QString &title) const
 {
-    return QMessageBox::question(nullptr, title, text) == QMessageBox::Yes;
+    return QMessageBox::question(MainWindow::instance(), title, text) == QMessageBox::Yes;
 }
 
 QString ScriptModule::prompt(const QString &label, const QString &text, const QString &title) const
 {
-    return QInputDialog::getText(nullptr, title, label, QLineEdit::Normal, text);
+    return QInputDialog::getText(MainWindow::instance(), title, label, QLineEdit::Normal, text);
 }
 
 void ScriptModule::log(const QString &text) const
