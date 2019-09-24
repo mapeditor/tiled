@@ -1183,8 +1183,30 @@ Properties
 .. csv-table::
     :widths: 1, 2
 
-    **tilesetsView** : :ref:`script-tilesetsview` |ro|, "Access the Tilesets view."
     **currentBrush** : :ref:`script-map`, "Get or set the currently used tile brush."
+    **currentMapView** : :ref:`script-mapview` |ro|, "Access the current map view."
+    **tilesetsView** : :ref:`script-tilesetsview` |ro|, "Access the Tilesets view."
+
+.. _script-mapview:
+
+Map View
+^^^^^^^^
+
+The view displaying the map.
+
+Properties
+~~~~~~~~~~
+
+.. csv-table::
+    :widths: 1, 2
+
+    **scale** : number, "Get or set the scale of the view."
+
+Functions
+~~~~~~~~~
+
+MapView.centerOn(x : number, y : number) : void
+    Centers the view at the given location in screen coordinates.
 
 .. _script-tilesetsview:
 
@@ -1224,6 +1246,7 @@ Properties
     :widths: 1, 2
 
     **selectedObjects** : [:ref:`script-mapobject`], Selected objects.
+    **view** : [:ref:`script-mapview`], The map view used by the Collision Editor.
 
 Functions
 ~~~~~~~~~

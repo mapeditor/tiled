@@ -76,6 +76,7 @@ class MapEditor : public Editor
 
     Q_PROPERTY(Tiled::TilesetDock *tilesetsView READ tilesetDock)
     Q_PROPERTY(Tiled::EditableMap *currentBrush READ currentBrush WRITE setCurrentBrush)
+    Q_PROPERTY(Tiled::MapView *currentMapView READ currentMapView)
 
 public:
     explicit MapEditor(QObject *parent = nullptr);
