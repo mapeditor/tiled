@@ -1435,8 +1435,9 @@ void TilesetView::refreshColumnCount()
 
     const QSize maxSize = maximumViewportSize();
     const int gridSpace = mDrawGrid ? 1 : 0;
-    const int tileSize = tilesetModel()->tileset()->tileWidth() * scale() + gridSpace;
-    const int columnCount = maxSize.width() / tileSize;
+    const int tileWidth = tilesetModel()->tileset()->tileWidth();
+    const int scaledTileSize = std::max<int>(tileWidth * scale(), 1) + gridSpace;
+    const int columnCount = std::max(maxSize.width() / scaledTileSize, 1);
     tilesetModel()->setColumnCountOverride(columnCount);
 }
 
