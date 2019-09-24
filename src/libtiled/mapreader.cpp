@@ -191,7 +191,7 @@ SharedTileset MapReaderPrivate::readTileset(QIODevice *device, const QString &pa
 std::unique_ptr<ObjectTemplate> MapReaderPrivate::readObjectTemplate(QIODevice *device, const QString &path)
 {
     mError.clear();
-    mPath = path;
+    mPath.setPath(path);
     std::unique_ptr<ObjectTemplate> objectTemplate;
 
     xml.setDevice(device);
