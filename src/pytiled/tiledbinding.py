@@ -44,7 +44,7 @@ def patch_a_prop(func, prop, value_factory):
     return wraps(func)(_decorate)
 
 
-# after a new pybindgen container is instantiated, replace it's methods dictionary
+# after a new pybindgen container is instantiated, replace its methods dictionary
 Module.__init__ = patch_a_prop(Module.__init__, 'methods', lambda:SimpleSortedDict())
 CppClass.__init__ = patch_a_prop(CppClass.__init__, 'methods', lambda:SimpleSortedDict())
 
@@ -52,7 +52,7 @@ CppClass.__init__ = patch_a_prop(CppClass.__init__, 'methods', lambda:SimpleSort
 mod = Module('tiled')
 mod.functions = SimpleSortedDict()
 
-mod.add_include('"pythonplugin.h"')
+mod.add_include('"pytiled.h"')
 mod.add_include('"grouplayer.h"')
 mod.add_include('"imagelayer.h"')
 mod.add_include('"layer.h"')
@@ -410,7 +410,7 @@ cls_logi.add_enum('OutputType', ('INFO','WARNING','ERROR'))
 cls_logi.add_method('log', 'void', [('OutputType','type'),('const QString','msg')])
 
 
-with open('pythonbind.cpp','w') as fh:
+with open('pytiled.cpp','w') as fh:
     import pybindgen.typehandlers.codesink as cs
     sink = cs.MemoryCodeSink()
 

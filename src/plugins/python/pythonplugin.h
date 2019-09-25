@@ -80,18 +80,6 @@ private:
     QTimer mReloadTimer;
 };
 
-
-// Class exposed for Python scripts to extend
-class PythonScript {
-public:
-    // perhaps provide default that throws NotImplementedError
-    Tiled::Map *read(const QString &fileName);
-    bool supportsFile(const QString &fileName) const;
-    bool write(const Tiled::Map *map, const QString &fileName);
-    QString nameFilter() const;
-};
-
-
 class PythonMapFormat : public Tiled::MapFormat
 {
     Q_OBJECT

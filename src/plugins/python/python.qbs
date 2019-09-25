@@ -5,7 +5,7 @@ import qbs.Environment
 import qbs.FileInfo
 
 TiledPlugin {
-    Depends { name: "Qt"; submodules: ["widgets"] }
+    Depends { name: "pytiled" }
 
     condition: {
         if (qbs.targetOS.contains("windows"))
@@ -50,8 +50,5 @@ TiledPlugin {
         "plugin.json",
         "pythonplugin.cpp",
         "pythonplugin.h",
-        "pythonbind.cpp",
-        "qtbinding.py",
-        "tiledbinding.py",
     ]
 }

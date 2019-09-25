@@ -10,7 +10,20 @@ DynamicLibrary {
 
     Depends { name: "cpp" }
     Depends { name: "libtiled" }
-    Depends { name: "Qt"; submodules: "gui"; versionAtLeast: "5.6" }
+    Depends { name: "Qt"; submodules: "widgets" }
+
+    cpp.useRPaths: project.useRPaths
+    cpp.rpaths: {
+        if (qbs.targetOS.contains("darwin"))
+            return ["@loader_path/../Frameworks"];
+        else if (project.linuxArchive)
+            return ["$ORIGIN/lib"]
+        else
+            return ["$ORIGIN/../lib"];
+    }
+    cpp.cxxLanguageVersion: "c++14"
+    cpp.visibility: "minimal"
+    cpp.defines: base.concat(["PYTILED_LIBRARY"])
 
     cpp.dynamicLibraryPrefix: ""
     cpp.dynamicLibrarySuffix: {
@@ -45,7 +58,6 @@ DynamicLibrary {
     Properties {
         condition: pkgConfigPython3.found
         cpp.cxxFlags: pkgConfigPython3.cflags
-        cpp.dynamicLibraries: pkgConfigPython3.libraries
         cpp.libraryPaths: pkgConfigPython3.libraryPaths
         cpp.linkerFlags: pkgConfigPython3.linkerFlags
     }
@@ -64,8 +76,6 @@ DynamicLibrary {
         cpp.dynamicLibraries: [FileInfo.joinPaths(Environment.getEnv("PYTHONHOME"), pythonDllProbe.fileNamePrefix + ".dll")]
     }
 
-    cpp.cxxLanguageVersion: "c++14"
-
     Properties {
         condition: qbs.targetOS.contains("darwin")
         bundle.isBundle: false
@@ -74,6 +84,9 @@ DynamicLibrary {
 
     files: [
         "pytiled.cpp",
+        "pytiled.h",
+        "qtbinding.py",
+        "tiledbinding.py",
     ]
 
     Group {
@@ -86,5 +99,10 @@ DynamicLibrary {
                 return "lib"
         }
         fileTagsFilter: "dynamiclibrary"
+    }
+
+    Export {
+        Depends { name: "cpp" }
+        cpp.includePaths: "."
     }
 }
