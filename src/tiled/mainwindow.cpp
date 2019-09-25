@@ -999,11 +999,19 @@ bool MainWindow::confirmAllSave()
 void MainWindow::export_()
 {
     if (!exportDocument(mDocument)) {
-        // fall back when no successful export happened
+        // fall back when previous export could not be repeated
         exportAs();
     }
 }
 
+/**
+ * Exports the given document to the previously used export file name and the
+ * previously used export format.
+ *
+ * @return `false` when no previous file name and export format could be de
+ *          determined. Otherwise, `true` is returned, even if an error
+ *          happened during export.
+ */
 bool MainWindow::exportDocument(Document *document)
 {
     const QString exportFileName = document->lastExportFileName();
@@ -1023,6 +1031,7 @@ bool MainWindow::exportDocument(Document *document)
 
             QMessageBox::critical(this, tr("Error Exporting Map"),
                                   exportFormat->errorString());
+            return true;
         }
     } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
         if (TilesetFormat *exportFormat = tilesetDocument->exportFormat()) {
@@ -1036,6 +1045,7 @@ bool MainWindow::exportDocument(Document *document)
 
             QMessageBox::critical(this, tr("Error Exporting Tileset"),
                                   exportFormat->errorString());
+            return true;
         }
     }
 

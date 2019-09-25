@@ -54,7 +54,7 @@ public:
 
     QJSValue evaluateFile(const QString &fileName);
 
-    void checkError(QJSValue value, const QString &program = QString());
+    bool checkError(QJSValue value, const QString &program = QString());
     void throwError(const QString &message);
 
     void reset();

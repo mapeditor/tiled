@@ -269,9 +269,9 @@ tiled.registerMapFormat(shortName : string, mapFormat : object) : void
 
         **name** : string, Name of the format as shown in the file dialog.
         **extension** : string, The file extension used by the format.
-        "**toString** : function(map : :ref:`script-map`, fileName : string) : string", "A function
-        that returns the string representation of the given map, when
-        saved to the given file name (useful for relative references)."
+        "**write** : function(map : :ref:`script-map`, fileName : string) : string | ArrayBuffer", "A function
+        that serializes the map into either a string or binary data (using ArrayBuffer). The result will be
+        written to the given file (useful for making relative file references)."
 
     Example that produces a simple JSON representation of a map:
 
@@ -281,7 +281,7 @@ tiled.registerMapFormat(shortName : string, mapFormat : object) : void
             name: "Custom map format",
             extension: "custom",
 
-            toString: function(map, fileName) {
+            write: function(map, fileName) {
                 var m = {
                     width: map.width,
                     height: map.height,

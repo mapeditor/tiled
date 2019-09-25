@@ -201,10 +201,10 @@ void ScriptManager::loadExtension(const QString &path)
     }
 }
 
-void ScriptManager::checkError(QJSValue value, const QString &program)
+bool ScriptManager::checkError(QJSValue value, const QString &program)
 {
     if (!value.isError())
-        return;
+        return false;
 
     QString errorString = value.toString();
     QString stack = value.property(QStringLiteral("stack")).toString();
@@ -230,7 +230,8 @@ void ScriptManager::checkError(QJSValue value, const QString &program)
                 .arg(errorString);
     }
 
-    emit mModule->error(errorString);
+    mModule->error(errorString);
+    return true;
 }
 
 void ScriptManager::throwError(const QString &message)
