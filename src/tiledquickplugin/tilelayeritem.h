@@ -65,6 +65,8 @@ public slots:
     void updateVisibleTiles();
 
 private:
+    void layerVisibilityChanged();
+
     Tiled::TileLayer *mLayer;
     Tiled::MapRenderer *mRenderer;
     QRect mVisibleTiles;
