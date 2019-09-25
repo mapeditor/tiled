@@ -514,7 +514,11 @@ Terrain *Tileset::takeTerrainAt(int index)
  */
 void Tileset::swapTerrains(int index, int swapIndex)
 {
+#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
     mTerrainTypes.swap(index, swapIndex);
+#else
+    mTerrainTypes.swapItemsAt(index, swapIndex);
+#endif
 
     // Reassign terrain IDs
     mTerrainTypes.at(index)->mId = index;
