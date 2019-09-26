@@ -123,7 +123,7 @@ static void qt_fusion_draw_arrow(Qt::ArrowType type, QPainter *painter, const QS
     QString cacheKey = uniqueName(QLatin1String("fusion-arrow"), option, rect.size())
             % HexString<uint>(type)
             % HexString<uint>(color.rgba());
-    if (!QPixmapCache::find(cacheKey, cachePixmap)) {
+    if (!QPixmapCache::find(cacheKey, &cachePixmap)) {
         cachePixmap = styleCachePixmap(rect.size());
         cachePixmap.fill(Qt::transparent);
         QPainter cachePainter(&cachePixmap);
@@ -370,7 +370,7 @@ void TiledProxyStyle::drawPrimitive(PrimitiveElement element,
             int state = option->state;
 
             QColor pressedColor = mergedColors(option->palette.base().color(),
-                                               option->palette.foreground().color(), 85);
+                                               option->palette.windowText().color(), 85);
             painter->setBrush(Qt::NoBrush);
 
             // Gradient fill
@@ -878,7 +878,7 @@ void TiledProxyStyle::drawComplexControl(ComplexControl control,
             QColor alphaOutline = outline;
             alphaOutline.setAlpha(180);
 
-            QColor arrowColor = option->palette.foreground().color();
+            QColor arrowColor = option->palette.windowText().color();
             arrowColor.setAlpha(220);
 
             const QColor bgColor = mPalette.color(QPalette::Base);

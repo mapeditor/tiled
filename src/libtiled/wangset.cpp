@@ -593,7 +593,7 @@ void WangSet::removeWangTile(const WangTile &wangTile)
 QList<WangTile> WangSet::sortedWangTiles() const
 {
     QList<WangTile> wangTiles = mWangIdToWangTile.values();
-    qStableSort(wangTiles.begin(), wangTiles.end());
+    std::stable_sort(wangTiles.begin(), wangTiles.end());
     return wangTiles;
 }
 

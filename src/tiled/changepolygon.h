@@ -97,7 +97,6 @@ private:
     std::unique_ptr<AddMapObjects> mAddSecondPolyline;
 
     int mEdgeIndex;
-    int mObjectIndex;
     bool mOldChangeState;
 };
 

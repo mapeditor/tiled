@@ -48,8 +48,9 @@ class Object;
 class Tile;
 class Tileset;
 
-struct TILEDSHARED_EXPORT Issue
+class TILEDSHARED_EXPORT Issue
 {
+public:
     enum Severity {
         Error,
         Warning
