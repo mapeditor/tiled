@@ -469,6 +469,7 @@ public class TMXMapWriter {
 
                     if (tile != null) {
                         gid = getGid(tile);
+                        gid |= tl.getFlagsAt(x, y);
                     }
 
                     out.write(gid & LAST_BYTE);

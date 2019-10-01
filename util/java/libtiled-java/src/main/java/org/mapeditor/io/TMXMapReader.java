@@ -629,19 +629,6 @@ public class TMXMapReader {
                             String gid = csvTileIds[x + y * ml.getWidth()];
                             long tileId = Long.parseLong(gid);
 
-                            if (tileId > Integer.MAX_VALUE) {
-                                // Read out the flags
-                                // TODO: Save these flags somewhere
-                                long flippedHorizontally = tileId & FLIPPED_HORIZONTALLY_FLAG;
-                                long flippedVertically = tileId & FLIPPED_VERTICALLY_FLAG;
-                                long flippedDiagonally = tileId & FLIPPED_DIAGONALLY_FLAG;
-
-                                // Clear the flags
-                                tileId &= ~(FLIPPED_HORIZONTALLY_FLAG
-                                        | FLIPPED_VERTICALLY_FLAG
-                                        | FLIPPED_DIAGONALLY_FLAG);
-                            }
-
                             setTileAtFromTileId(ml, y, x, (int) tileId);
                         }
                     }
