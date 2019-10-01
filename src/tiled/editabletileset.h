@@ -43,6 +43,7 @@ class EditableTileset : public EditableAsset
     Q_PROPERTY(int margin READ margin)
     Q_PROPERTY(QPoint tileOffset READ tileOffset WRITE setTileOffset)
     Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor)
+    Q_PROPERTY(bool collection READ isCollection)
     Q_PROPERTY(QList<QObject*> selectedTiles READ selectedTiles WRITE setSelectedTiles)
 
 public:
@@ -63,6 +64,7 @@ public:
     int margin() const;
     QPoint tileOffset() const;
     QColor backgroundColor() const;
+    bool isCollection() const;
 
     Q_INVOKABLE Tiled::EditableTile *tile(int id);
     QList<QObject*> tiles();
@@ -70,6 +72,9 @@ public:
 
     QList<QObject*> selectedTiles();
     void setSelectedTiles(const QList<QObject*> &tiles);
+
+    // TODO: Add ability to add/remove tiles (in case of image collection)
+    // TODO: Add ability to change the tileset image and tile size
 
     TilesetDocument *tilesetDocument() const;
     Tileset *tileset() const;
@@ -141,6 +146,11 @@ inline QPoint EditableTileset::tileOffset() const
 inline QColor EditableTileset::backgroundColor() const
 {
     return tileset()->backgroundColor();
+}
+
+inline bool EditableTileset::isCollection() const
+{
+    return tileset()->isCollection();
 }
 
 inline Tileset *EditableTileset::tileset() const

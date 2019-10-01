@@ -27,8 +27,8 @@
 
 namespace Tiled {
 
-EditableTileLayer::EditableTileLayer(const QString &name, QObject *parent)
-    : EditableLayer(std::unique_ptr<Layer>(new TileLayer(name, QPoint(), QSize(0, 0))), parent)
+EditableTileLayer::EditableTileLayer(const QString &name, QSize size, QObject *parent)
+    : EditableLayer(std::unique_ptr<Layer>(new TileLayer(name, QPoint(), size)), parent)
 {
 }
 

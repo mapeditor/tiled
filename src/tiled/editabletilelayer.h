@@ -39,6 +39,7 @@ class EditableTileLayer : public EditableLayer
 
 public:
     Q_INVOKABLE explicit EditableTileLayer(const QString &name = QString(),
+                                           QSize size = QSize(0, 0),
                                            QObject *parent = nullptr);
 
     explicit EditableTileLayer(EditableMap *map,

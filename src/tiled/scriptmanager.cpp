@@ -34,6 +34,7 @@
 #include "mapview.h"
 #include "regionvaluetype.h"
 #include "scriptedaction.h"
+#include "scriptedmapformat.h"
 #include "scriptedtool.h"
 #include "scriptmodule.h"
 #include "tilecollisiondock.h"
@@ -94,6 +95,7 @@ ScriptManager::ScriptManager(QObject *parent)
     qRegisterMetaType<MapEditor*>();
     qRegisterMetaType<MapView*>();
     qRegisterMetaType<RegionValueType>();
+    qRegisterMetaType<ScriptFile*>();
     qRegisterMetaType<ScriptedAction*>();
     qRegisterMetaType<ScriptedTool*>();
     qRegisterMetaType<TileCollisionDock*>();

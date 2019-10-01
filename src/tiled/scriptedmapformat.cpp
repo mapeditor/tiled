@@ -24,11 +24,35 @@
 #include "savefile.h"
 #include "scriptmanager.h"
 
+#include <QFile>
 #include <QJSEngine>
 #include <QJSValueIterator>
 #include <QTextStream>
 
 namespace Tiled {
+
+QString ScriptFile::readAsText()
+{
+    QFile file(mFilePath);
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text))
+        return QTextStream(&file).readAll();
+    else
+        mError = file.errorString();
+
+    return {};
+}
+
+QByteArray ScriptFile::readAsBinary()
+{
+    QFile file(mFilePath);
+    if (file.open(QIODevice::ReadOnly))
+        return file.readAll();
+    else
+        mError = file.errorString();
+
+    return {};
+}
+
 
 ScriptedMapFormat::ScriptedMapFormat(const QString &shortName,
                                      const QJSValue &object,
@@ -108,10 +132,26 @@ QStringList ScriptedMapFormat::outputFiles(const Map *map, const QString &fileNa
 
 std::unique_ptr<Map> ScriptedMapFormat::read(const QString &fileName)
 {
-    Q_UNUSED(fileName)
+    mError.clear();
 
-    // TODO: Requires ability to create new things in script
-    mError = QLatin1String("Not implemented");
+    QJSValue readProperty = mObject.property(QStringLiteral("read"));
+
+    ScriptFile file(fileName);
+
+    QJSValueList arguments;
+    arguments.append(ScriptManager::instance().engine()->newQObject(&file));
+
+    QJSValue resultValue = readProperty.call(arguments);
+
+    if (ScriptManager::instance().checkError(resultValue)) {
+        mError = resultValue.toString();
+        return nullptr;
+    }
+
+    EditableMap *editableMap = qobject_cast<EditableMap*>(resultValue.toQObject());
+    if (editableMap)
+        return std::unique_ptr<Map>(editableMap->map()->clone());
+
     return nullptr;
 }
 
