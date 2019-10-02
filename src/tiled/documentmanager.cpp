@@ -511,7 +511,7 @@ void DocumentManager::addDocument(const DocumentPtr &document)
     mTabBar->setTabToolTip(documentIndex, document->fileName());
 
     connect(documentPtr, &Document::fileNameChanged, this, &DocumentManager::fileNameChanged);
-    connect(document->editable(), &EditableAsset::modifiedChanged, this, [=] { updateDocumentTab(documentPtr); });
+    connect(documentPtr, &Document::modifiedChanged, this, [=] { updateDocumentTab(documentPtr); });
     connect(documentPtr, &Document::saved, this, &DocumentManager::onDocumentSaved);
 
     if (auto *mapDocument = qobject_cast<MapDocument*>(documentPtr)) {

@@ -71,14 +71,8 @@ signals:
 
 private:
     Document * const mDocument;
-    QUndoStack * const mUndoStack;
 };
 
-
-inline QUndoStack *EditableAsset::undoStack() const
-{
-    return mUndoStack;
-}
 
 inline Document *EditableAsset::document() const
 {

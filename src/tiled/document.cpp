@@ -38,9 +38,12 @@ Document::Document(DocumentType type, const QString &fileName,
     , mType(type)
     , mFileName(fileName)
     , mCanonicalFilePath(QFileInfo(mFileName).canonicalFilePath())
+    , mUndoStack(new QUndoStack(this))
 {
     if (!mCanonicalFilePath.isEmpty())
         sDocumentInstances.insert(mCanonicalFilePath, this);
+
+    connect(mUndoStack, &QUndoStack::cleanChanged, this, &Document::modifiedChanged);
 }
 
 Document::~Document()
@@ -50,15 +53,6 @@ Document::~Document()
         if (i != sDocumentInstances.end() && *i == this)
             sDocumentInstances.erase(i);
     }
-}
-
-/**
- * Returns the undo stack of this document. Should be used to push any commands
- * on that modify the document.
- */
-QUndoStack *Document::undoStack()
-{
-    return editable()->undoStack();
 }
 
 void Document::setFileName(const QString &fileName)
@@ -104,7 +98,7 @@ void Document::checkFilePathProperties(const Object *object) const
  */
 bool Document::isModified() const
 {
-    return mEditable && mEditable->isModified();
+    return !undoStack()->isClean();
 }
 
 void Document::setCurrentObject(Object *object)

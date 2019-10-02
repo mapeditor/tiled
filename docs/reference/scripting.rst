@@ -567,9 +567,9 @@ Properties
 .. csv-table::
     :widths: 1, 2
 
-    **width** : int |ro|, Width of the map in tiles (only relevant for non-infinite maps). Use :ref:`resize <script-map-resize>` to change it.
-    **height** : int |ro|, Height of the map in tiles (only relevant for non-infinite maps). Use :ref:`resize <script-map-resize>` to change it.
-    **size** : size |ro|, Size of the map in tiles (only relevant for non-infinite maps). Use :ref:`resize <script-map-resize>` to change it.
+    **width** : int, Width of the map in tiles (only relevant for non-infinite maps).
+    **height** : int, Height of the map in tiles (only relevant for non-infinite maps).
+    **size** : :ref:`script-size` |ro|, Size of the map in tiles (only relevant for non-infinite maps).
     **tileWidth** : int, Tile width (used by tile layers).
     **tileHeight**: int, Tile height (used by tile layers).
     **infinite** : bool, Whether this map is infinite.
@@ -641,6 +641,13 @@ Functions
 
 new TileMap()
     Constructs a new map.
+
+.. _script-map-setSize:
+
+TileMap.setSize(width : int, height : int) : void
+    Sets the size of the map in tiles. This does not affect the contents of the map.
+
+    See also :ref:`resize <script-map-resize>`.
 
 .. _script-map-layerAt:
 
@@ -714,10 +721,16 @@ TileMap.merge(map : :ref:`script-map` [, canJoin : bool = false]) : void
     the undo stack when possible. Useful for reducing the amount of undo
     commands.
 
+    *This operation can currently only be applied to maps loaded from a file.*
+
 .. _script-map-resize:
 
-TileMap.resize(size : size [, offset : :ref:`script-point` [, removeObjects : bool = false]]) : void
-    Resizes the map to the given size, optionally applying an offset (in tiles)
+TileMap.resize(size : :ref:`script-size` [, offset : :ref:`script-point` [, removeObjects : bool = false]]) : void
+    Resizes the map to the given size, optionally applying an offset (in tiles).
+
+    *This operation can currently only be applied to maps loaded from a file.*
+
+    See also :ref:`setSize <script-map-setSize>`.
 
 .. _script-layer:
 
@@ -759,7 +772,7 @@ Properties
 
     **width** : int |ro|, Width of the layer in tiles (only relevant for non-infinite maps).
     **height** : int |ro|, Height of the layer in tiles (only relevant for non-infinite maps).
-    **size** : size |ro|, Size of the layer in tiles (has ``width`` and ``height`` members) (only relevant for non-infinite maps).
+    **size** : :ref:`script-size` |ro|, Size of the layer in tiles (has ``width`` and ``height`` members) (only relevant for non-infinite maps).
 
 Functions
 ~~~~~~~~~
@@ -1310,12 +1323,12 @@ A cell on a :ref:`script-tilelayer`.
 .. csv-table::
     :widths: 1, 2
 
-    **tileId** : int, The local tile ID of the tile, or -1 if the cell is empty.
+    **tileId** : int, "The local tile ID of the tile, or -1 if the cell is empty."
     **empty** : bool, Whether the cell is empty.
     **flippedHorizontally** : bool, Whether the tile is flipped horizontally.
     **flippedVertically** : bool, Whether the tile is flipped vertically.
     **flippedAntiDiagonally** : bool, Whether the tile is flipped anti-diagonally.
-    **rotatedHexagonal120** : bool, "Whether the tile is rotated by 120 degrees (for hexagonal maps, the anti-diagonal flip is interpreted as a 60-degree rotation)".
+    **rotatedHexagonal120** : bool, "Whether the tile is rotated by 120 degrees (for hexagonal maps, the anti-diagonal flip is interpreted as a 60-degree rotation)."
 
 .. _script-frames:
 
@@ -1374,6 +1387,21 @@ point
 
     **x** : number, X coordinate of the point.
     **y** : number, Y coordinate of the point.
+
+.. _script-size:
+
+size
+~~~~
+
+``Qt.size(width, height)`` can be used to create a size object.
+
+**Properties**:
+
+.. csv-table::
+    :widths: 1, 2
+
+    **width** : number, Width.
+    **height** : number, Height.
 
 .. _script-polygon:
 

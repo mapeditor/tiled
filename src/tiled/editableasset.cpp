@@ -32,9 +32,11 @@ namespace Tiled {
 EditableAsset::EditableAsset(Document *document, Object *object, QObject *parent)
     : EditableObject(this, object, parent)
     , mDocument(document)
-    , mUndoStack(new QUndoStack(this))
 {
-    connect(mUndoStack, &QUndoStack::cleanChanged, this, &EditableAsset::modifiedChanged);
+    if (document) {
+        connect(document, &Document::modifiedChanged,
+                this, &EditableAsset::modifiedChanged);
+    }
 }
 
 QString EditableAsset::fileName() const
@@ -52,6 +54,11 @@ bool EditableAsset::isMap() const
 bool EditableAsset::isTileset() const
 {
     return qobject_cast<const EditableTileset*>(this) != nullptr;
+}
+
+QUndoStack *EditableAsset::undoStack() const
+{
+    return document() ? document()->undoStack() : nullptr;
 }
 
 /**

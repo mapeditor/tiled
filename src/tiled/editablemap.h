@@ -36,8 +36,8 @@ class EditableMap : public EditableAsset
 {
     Q_OBJECT
 
-    Q_PROPERTY(int width READ width NOTIFY sizeChanged)
-    Q_PROPERTY(int height READ height NOTIFY sizeChanged)
+    Q_PROPERTY(int width READ width WRITE setWidth NOTIFY sizeChanged)
+    Q_PROPERTY(int height READ height WRITE setHeight NOTIFY sizeChanged)
     Q_PROPERTY(QSize size READ size NOTIFY sizeChanged)
     Q_PROPERTY(int tileWidth READ tileWidth WRITE setTileWidth NOTIFY tileWidthChanged)
     Q_PROPERTY(int tileHeight READ tileHeight WRITE setTileHeight NOTIFY tileHeightChanged)
@@ -147,6 +147,9 @@ public:
                             QPoint offset = QPoint(),
                             bool removeObjects = false);
 
+    void setWidth(int width);
+    void setHeight(int height);
+    Q_INVOKABLE void setSize(int width, int height);
     void setTileWidth(int value);
     void setTileHeight(int value);
     void setInfinite(bool value);
@@ -270,6 +273,16 @@ inline int EditableMap::layerCount() const
 inline EditableSelectedArea *EditableMap::selectedArea()
 {
     return mSelectedArea;
+}
+
+inline void EditableMap::setWidth(int width)
+{
+    setSize(width, height());
+}
+
+inline void EditableMap::setHeight(int height)
+{
+    setSize(width(), height);
 }
 
 inline Map *EditableMap::map() const

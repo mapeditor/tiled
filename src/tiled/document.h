@@ -51,7 +51,7 @@ class Document : public QObject,
     Q_OBJECT
 
     Q_PROPERTY(QString fileName READ fileName NOTIFY fileNameChanged)
-    Q_PROPERTY(bool modified READ isModified)
+    Q_PROPERTY(bool modified READ isModified NOTIFY modifiedChanged)
 
 public:
     enum DocumentType {
@@ -91,7 +91,7 @@ public:
 
     QDateTime lastSaved() const { return mLastSaved; }
 
-    QUndoStack *undoStack();
+    QUndoStack *undoStack() const;
     bool isModified() const;
 
     Q_INVOKABLE virtual Tiled::EditableAsset *editable() = 0;
@@ -127,6 +127,7 @@ signals:
 
     void fileNameChanged(const QString &fileName,
                          const QString &oldFileName);
+    void modifiedChanged();
 
     void currentObjectChanged(Object *object);
 
@@ -159,6 +160,8 @@ private:
     QString mFileName;
     QString mCanonicalFilePath;
 
+    QUndoStack * const mUndoStack;
+
     bool mChangedOnDisk = false;
     bool mIgnoreBrokenLinks = false;
 
@@ -174,6 +177,15 @@ inline QString Document::fileName() const
 inline QString Document::canonicalFilePath() const
 {
     return mCanonicalFilePath;
+}
+
+/**
+ * Returns the undo stack of this document. Should be used to push any commands
+ * on that modify the document.
+ */
+inline QUndoStack *Document::undoStack() const
+{
+    return mUndoStack;
 }
 
 inline bool Document::ignoreBrokenLinks() const
