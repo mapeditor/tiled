@@ -443,6 +443,13 @@ Tileset
     version,          number,           "The JSON format version"
     wangsets,         array,            "Array of :ref:`Wang sets <json-wangset>` (since 1.1.5)"
 
+Each tileset has a ``firstgid`` (first global ID) property which
+tells you the global ID of its first tile (the one with local 
+tile ID 0). This allows you to map the global IDs back to the 
+right tileset, and then calculate the local tile ID by 
+subtracting the ``firstgid`` from the global tile ID. The first 
+tileset always has a ``firstgid`` value of 1.
+
 .. _json-tileset-grid:
 
 Grid
