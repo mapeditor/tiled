@@ -649,6 +649,11 @@ TileMap.setSize(width : int, height : int) : void
 
     See also :ref:`resize <script-map-resize>`.
 
+.. _script-map-setTileSize:
+
+TileMap.setTileSize(width : int, height : int) : void
+    Sets the tile size of the map in pixels. This affects the rendering of all tile layers.
+
 .. _script-map-layerAt:
 
 TileMap.layerAt(index : int) : :ref:`script-layer`
@@ -972,16 +977,18 @@ Properties
     :widths: 1, 2
 
     **name** : string, Name of the tileset.
+    **image** : string, The file name of the image used by this tileset. Empty in case of image collection tilesets.
     **tiles**: [:ref:`script-tile`] |ro|, Array of all tiles in this tileset. Note that the index of a tile in this array does not always match with its ID.
     **terrains**: [:ref:`script-terrain`] |ro|, Array of all terrains in this tileset.
     **tileCount** : int, The number of tiles in this tileset.
-    **tileWidth** : int |ro|, Tile width for tiles in this tileset in pixels.
-    **tileHeight** : int |ro|, Tile Height for tiles in this tileset in pixels.
+    **tileWidth** : int, Tile width for tiles in this tileset in pixels.
+    **tileHeight** : int, Tile Height for tiles in this tileset in pixels.
     **tileSize** : size |ro|, Tile size for tiles in this tileset in pixels (has ``width`` and ``height`` members).
     **tileSpacing** : int |ro|, Spacing between tiles in this tileset in pixels.
     **margin** : int |ro|, Margin around the tileset in pixels (only used at the top and left sides of the tileset image).
     **tileOffset** : :ref:`script-point`, Offset in pixels that is applied when tiles from this tileset are rendered.
     **backgroundColor** : color, Background color for this tileset in the *Tilesets* view.
+    **isCollection** : bool, Whether this tileset is a collection of images.
     **selectedTiles** : [:ref:`script-tile`], Selected tiles (in the tileset editor).
 
 Functions
@@ -998,6 +1005,16 @@ Tileset.tile(id : int) : :ref:`script-tile`
     Note that the tiles in a tileset are only guaranteed to have consecutive
     IDs for tileset-image based tilesets. For image collection tilesets there
     will be gaps when tiles have been removed from the tileset.
+
+Tileset.setTileSize(width : int, height : int) : void
+    Sets the tile size for this tileset. If an image has been specified as well,
+    the tileset will be (re)loaded. Can't be used on image collection tilesets.
+
+Tileset.addTile() : :ref:`script-tile`
+    Adds a new tile to this tileset and returns it. Only works for image collection tilesets.
+
+Tileset.removeTiles(tiles : [:ref:`script-tile`]) : void
+    Removes the given tiles from this tileset. Only works for image collection tilesets.
 
 .. _script-tile:
 

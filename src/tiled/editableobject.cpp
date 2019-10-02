@@ -22,6 +22,7 @@
 
 #include "changeproperties.h"
 #include "editableasset.h"
+#include "scriptmanager.h"
 
 namespace Tiled {
 
@@ -66,6 +67,15 @@ void EditableObject::removeProperty(const QString &name)
 Document *EditableObject::document() const
 {
     return asset() ? asset()->document() : nullptr;
+}
+
+bool EditableObject::checkReadOnly() const
+{
+    if (isReadOnly()) {
+        ScriptManager::instance().throwError(tr("Asset is read-only"));
+        return true;
+    }
+    return false;
 }
 
 } // namespace Tiled

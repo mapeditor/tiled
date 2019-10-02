@@ -97,15 +97,6 @@ QJSValue EditableAsset::macro(const QString &text, QJSValue callback)
     return result;
 }
 
-bool EditableAsset::checkReadOnly() const
-{
-    if (isReadOnly()) {
-        ScriptManager::instance().throwError(tr("Asset is read-only"));
-        return true;
-    }
-    return false;
-}
-
 void EditableAsset::undo()
 {
     undoStack()->undo();

@@ -295,6 +295,11 @@ bool Tileset::loadImage()
     p.margin = mMargin;
     p.transparentColor = mImageReference.transparentColor;
 
+    if (p.tileWidth <= 0 || p.tileHeight <= 0) {
+        mImageReference.status = LoadingError;
+        return false;
+    }
+
     QImage image = ImageCache::loadImage(p.fileName);
     if (image.isNull()) {
         mImageReference.status = LoadingError;
@@ -716,7 +721,7 @@ Tile *Tileset::addTile(const QPixmap &image, const QUrl &source)
 void Tileset::addTiles(const QList<Tile *> &tiles)
 {
     for (Tile *tile : tiles) {
-        Q_ASSERT(!mTiles.contains(tile->id()));
+        Q_ASSERT(tile->tileset() == this && !mTiles.contains(tile->id()));
         mTiles.insert(tile->id(), tile);
     }
 
@@ -731,7 +736,7 @@ void Tileset::addTiles(const QList<Tile *> &tiles)
 void Tileset::removeTiles(const QList<Tile *> &tiles)
 {
     for (Tile *tile : tiles) {
-        Q_ASSERT(mTiles.contains(tile->id()));
+        Q_ASSERT(tile->tileset() == this && mTiles.contains(tile->id()));
         mTiles.remove(tile->id());
     }
 

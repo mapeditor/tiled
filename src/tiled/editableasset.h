@@ -57,8 +57,6 @@ public:
 
     Q_INVOKABLE QJSValue macro(const QString &text, QJSValue callback);
 
-    bool checkReadOnly() const;
-
     Document *document() const;
 
 public slots:

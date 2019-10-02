@@ -172,7 +172,7 @@ void EditableMap::removeLayerAt(int index)
 
     if (auto doc = mapDocument()) {
         push(new RemoveLayer(doc, index, nullptr));
-    } else if (!isReadOnly()) {
+    } else if (!checkReadOnly()) {
         auto layer = map()->takeLayerAt(index);
         EditableManager::instance().release(layer);
     }
@@ -213,7 +213,7 @@ void EditableMap::insertLayerAt(int index, EditableLayer *editableLayer)
 
     if (auto doc = mapDocument()) {
         push(new AddLayer(doc, index, editableLayer->layer(), nullptr));
-    } else if (!isReadOnly()) {
+    } else if (!checkReadOnly()) {
         // ownership moves to the map
         map()->insertLayer(index, editableLayer->release());
     }
@@ -232,7 +232,7 @@ bool EditableMap::addTileset(EditableTileset *editableTileset)
 
     if (auto doc = mapDocument())
         push(new AddTileset(doc, tileset));
-    else if (!isReadOnly())
+    else if (!checkReadOnly())
         map()->addTileset(tileset);
 
     return true;
@@ -258,7 +258,7 @@ bool EditableMap::replaceTileset(EditableTileset *oldEditableTileset,
 
     if (auto doc = mapDocument())
         push(new ReplaceTileset(doc, indexOfOldTileset, newTileset));
-    else if (!isReadOnly())
+    else if (!checkReadOnly())
         map()->replaceTileset(oldTileset, newTileset);
 
     return true;
@@ -276,7 +276,7 @@ bool EditableMap::removeTileset(EditableTileset *editableTileset)
 
     if (auto doc = mapDocument())
         push(new RemoveTileset(doc, index));
-    else if (!isReadOnly())
+    else if (!checkReadOnly())
         map()->removeTilesetAt(index);
 
     return true;
@@ -349,7 +349,7 @@ void EditableMap::setSize(int width, int height)
 {
     if (auto doc = mapDocument()) {
         push(new ResizeMap(doc, QSize(width, height)));
-    } else if (!isReadOnly()) {
+    } else if (!checkReadOnly()) {
         map()->setWidth(width);
         map()->setHeight(height);
     }
@@ -359,7 +359,7 @@ void EditableMap::setTileWidth(int value)
 {
     if (auto doc = mapDocument())
         push(new ChangeMapProperty(doc, ChangeMapProperty::TileWidth, value));
-    else if (!isReadOnly())
+    else if (!checkReadOnly())
         map()->setTileWidth(value);
 }
 
@@ -367,15 +367,32 @@ void EditableMap::setTileHeight(int value)
 {
     if (auto doc = mapDocument())
         push(new ChangeMapProperty(doc, ChangeMapProperty::TileHeight, value));
-    else if (!isReadOnly())
+    else if (!checkReadOnly())
         map()->setTileHeight(value);
+}
+
+void EditableMap::setTileSize(int width, int height)
+{
+    if (checkReadOnly())
+        return;
+
+    if (auto doc = mapDocument()) {
+        doc->undoStack()->beginMacro(QCoreApplication::translate("Undo Commands",
+                                                                 "Change Tile Size"));
+        setTileWidth(width);
+        setTileHeight(height);
+        doc->undoStack()->endMacro();
+    } else {
+        map()->setTileWidth(width);
+        map()->setTileHeight(height);
+    }
 }
 
 void EditableMap::setInfinite(bool value)
 {
     if (auto doc = mapDocument())
         push(new ChangeMapProperty(doc, ChangeMapProperty::Infinite, value));
-    else if (!isReadOnly())
+    else if (!checkReadOnly())
         map()->setInfinite(value);
 }
 
@@ -383,7 +400,7 @@ void EditableMap::setHexSideLength(int value)
 {
     if (auto doc = mapDocument())
         push(new ChangeMapProperty(doc, ChangeMapProperty::HexSideLength, value));
-    else if (!isReadOnly())
+    else if (!checkReadOnly())
         map()->setHexSideLength(value);
 }
 
@@ -391,7 +408,7 @@ void EditableMap::setStaggerAxis(StaggerAxis value)
 {
     if (auto doc = mapDocument())
         push(new ChangeMapProperty(doc, static_cast<Map::StaggerAxis>(value)));
-    else if (!isReadOnly())
+    else if (!checkReadOnly())
         map()->setStaggerAxis(static_cast<Map::StaggerAxis>(value));
 }
 
@@ -399,7 +416,7 @@ void EditableMap::setStaggerIndex(StaggerIndex value)
 {
     if (auto doc = mapDocument())
         push(new ChangeMapProperty(doc, static_cast<Map::StaggerIndex>(value)));
-    else if (!isReadOnly())
+    else if (!checkReadOnly())
         map()->setStaggerIndex(static_cast<Map::StaggerIndex>(value));
 }
 
@@ -407,7 +424,7 @@ void EditableMap::setOrientation(Orientation value)
 {
     if (auto doc = mapDocument())
         push(new ChangeMapProperty(doc, static_cast<Map::Orientation>(value)));
-    else if (!isReadOnly())
+    else if (!checkReadOnly())
         map()->setOrientation(static_cast<Map::Orientation>(value));
 }
 
@@ -415,7 +432,7 @@ void EditableMap::setRenderOrder(RenderOrder value)
 {
     if (auto doc = mapDocument())
         push(new ChangeMapProperty(doc, static_cast<Map::RenderOrder>(value)));
-    else if (!isReadOnly())
+    else if (!checkReadOnly())
         map()->setRenderOrder(static_cast<Map::RenderOrder>(value));
 }
 
@@ -423,7 +440,7 @@ void EditableMap::setBackgroundColor(const QColor &value)
 {
     if (auto doc = mapDocument())
         push(new ChangeMapProperty(doc, value));
-    else if (!isReadOnly())
+    else if (!checkReadOnly())
         map()->setBackgroundColor(value);
 }
 
@@ -431,7 +448,7 @@ void EditableMap::setLayerDataFormat(LayerDataFormat value)
 {
     if (auto doc = mapDocument())
         push(new ChangeMapProperty(doc, static_cast<Map::LayerDataFormat>(value)));
-    else if (!isReadOnly())
+    else if (!checkReadOnly())
         map()->setLayerDataFormat(static_cast<Map::LayerDataFormat>(value));
 }
 

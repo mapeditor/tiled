@@ -110,7 +110,7 @@ void EditableLayer::setName(const QString &name)
 {
     if (auto doc = document())
         asset()->push(new SetLayerName(doc, layer(), name));
-    else if (!isReadOnly())
+    else if (!checkReadOnly())
         layer()->setName(name);
 }
 
@@ -118,7 +118,7 @@ void EditableLayer::setOpacity(qreal opacity)
 {
     if (auto doc = document())
         asset()->push(new SetLayerOpacity(doc, layer(), opacity));
-    else if (!isReadOnly())
+    else if (!checkReadOnly())
         layer()->setOpacity(opacity);
 }
 
@@ -126,7 +126,7 @@ void EditableLayer::setVisible(bool visible)
 {
     if (auto doc = document())
         asset()->push(new SetLayerVisible(doc, layer(), visible));
-    else if (!isReadOnly())
+    else if (!checkReadOnly())
         layer()->setVisible(visible);
 }
 
@@ -134,7 +134,7 @@ void EditableLayer::setLocked(bool locked)
 {
     if (auto doc = document())
         asset()->push(new SetLayerLocked(doc, layer(), locked));
-    else if (!isReadOnly())
+    else if (!checkReadOnly())
         layer()->setLocked(locked);
 }
 
@@ -142,7 +142,7 @@ void EditableLayer::setOffset(QPointF offset)
 {
     if (auto doc = document())
         asset()->push(new SetLayerOffset(doc, layer(), offset));
-    else if (!isReadOnly())
+    else if (!checkReadOnly())
         layer()->setOffset(offset);
 }
 

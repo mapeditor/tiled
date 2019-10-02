@@ -152,6 +152,7 @@ public:
     Q_INVOKABLE void setSize(int width, int height);
     void setTileWidth(int value);
     void setTileHeight(int value);
+    Q_INVOKABLE void setTileSize(int width, int height);
     void setInfinite(bool value);
     void setHexSideLength(int value);
     void setStaggerAxis(StaggerAxis value);

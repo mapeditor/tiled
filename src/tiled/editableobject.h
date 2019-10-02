@@ -66,6 +66,9 @@ public:
     void setAsset(EditableAsset *asset);
     void setObject(Object *object);
 
+protected:
+    bool checkReadOnly() const;
+
 private:
     EditableAsset *mAsset;
     Object *mObject;
