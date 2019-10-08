@@ -27,8 +27,8 @@ There are several `example scripts`_ available in the repository.
     https://www.python.org/).
 
     On Linux you will also need to install the appropriate package.
-    However, currently Linux builds are done on Ubuntu 14.04 against
-    Python 3.4, and you'd need to install the same version somehow.
+    However, currently Linux builds are done on Ubuntu 16.04 against
+    Python 3.5, and you'd need to install the same version somehow.
 
     The Python plugin is currently not enabled for macOS releases. We'll
     need to find out how to build it against Python 3, while macOS only
