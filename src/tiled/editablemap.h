@@ -22,11 +22,13 @@
 
 #include "editableasset.h"
 #include "mapdocument.h"
+#include "regionvaluetype.h"
 
 namespace Tiled {
 
 class MapObject;
 
+class AutomappingManager;
 class EditableLayer;
 class EditableMapObject;
 class EditableSelectedArea;
@@ -147,6 +149,11 @@ public:
                             QPoint offset = QPoint(),
                             bool removeObjects = false);
 
+    Q_INVOKABLE void autoMap(const QString &rulesFile = QString());
+    Q_INVOKABLE void autoMap(const QRect &region, const QString &rulesFile = QString());
+    Q_INVOKABLE void autoMap(const QRectF &region, const QString &rulesFile = QString());
+    Q_INVOKABLE void autoMap(const Tiled::RegionValueType &region, const QString &rulesFile = QString());
+
     void setWidth(int width);
     void setHeight(int height);
     Q_INVOKABLE void setSize(int width, int height);
@@ -193,6 +200,7 @@ private:
     bool mReadOnly;
 
     EditableSelectedArea *mSelectedArea;
+    AutomappingManager *mAutomappingManager;
 };
 
 
@@ -274,6 +282,21 @@ inline int EditableMap::layerCount() const
 inline EditableSelectedArea *EditableMap::selectedArea()
 {
     return mSelectedArea;
+}
+
+inline void EditableMap::autoMap(const QString &rulesFile)
+{
+    autoMap(RegionValueType(), rulesFile);
+}
+
+inline void EditableMap::autoMap(const QRect &region, const QString &rulesFile)
+{
+    autoMap(RegionValueType(region), rulesFile);
+}
+
+inline void EditableMap::autoMap(const QRectF &region, const QString &rulesFile)
+{
+    autoMap(region.toRect(), rulesFile);
 }
 
 inline void EditableMap::setWidth(int width)

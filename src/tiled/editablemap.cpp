@@ -22,6 +22,7 @@
 
 #include "addremovelayer.h"
 #include "addremovetileset.h"
+#include "automappingmanager.h"
 #include "changeevents.h"
 #include "changemapproperty.h"
 #include "changeselectedarea.h"
@@ -343,6 +344,27 @@ void EditableMap::resize(QSize size, QPoint offset, bool removeObjects)
     }
 
     mapDocument()->resizeMap(size, offset, removeObjects);
+}
+
+void EditableMap::autoMap(const RegionValueType &region, const QString &rulesFile)
+{
+    if (checkReadOnly())
+        return;
+    if (!mapDocument()) {
+        ScriptManager::instance().throwError(QLatin1String("AutoMapping is currently not supported for detached maps"));
+        return;
+    }
+
+    if (!mAutomappingManager)
+        mAutomappingManager = new AutomappingManager(this);
+
+    AutomappingManager &manager = *mAutomappingManager;
+    manager.setMapDocument(mapDocument(), rulesFile);
+
+    if (region.region().isEmpty())
+        manager.autoMap();
+    else
+        manager.autoMapRegion(region.region());
 }
 
 void EditableMap::setSize(int width, int height)

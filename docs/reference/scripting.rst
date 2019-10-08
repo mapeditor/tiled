@@ -642,6 +642,20 @@ Functions
 new TileMap()
     Constructs a new map.
 
+.. _script-map-autoMap:
+
+TileMap.autoMap([rulesFile : string]) : void
+    Applies :doc:`/manual/automapping` using the given rules file, or using the
+    default rules file is none is given.
+
+    *This operation can only be applied to maps loaded from a file.*
+
+TileMap.autoMap(region : :ref:`script-region` | :ref:`script-rect` [, rulesFile : string]) : void
+    Applies :doc:`/manual/automapping` in the given region using the given
+    rules file, or using the default rules file is none is given.
+
+    *This operation can only be applied to maps loaded from a file.*
+
 .. _script-map-setSize:
 
 TileMap.setSize(width : int, height : int) : void

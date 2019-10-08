@@ -23,8 +23,10 @@
 #include <QObject>
 #include <QRegion>
 #include <QString>
-#include <QVector>
 #include <QFileSystemWatcher>
+
+#include <memory>
+#include <vector>
 
 namespace Tiled {
 
@@ -43,18 +45,21 @@ class AutomappingManager : public QObject
     Q_DISABLE_COPY(AutomappingManager)
 
 public:
-    /**
-     * Constructor.
-     */
     AutomappingManager(QObject *parent = nullptr);
-
     ~AutomappingManager();
 
-    void setMapDocument(MapDocument *mapDocument);
+    void setMapDocument(MapDocument *mapDocument, const QString &rulesFile = QString());
 
     QString errorString() const { return mError; }
 
     QString warningString() const { return mWarning; }
+
+    /**
+     * This triggers an automapping on the current map document. Starts with
+     * the currently selected area, or the entire map if there is no selection.
+     */
+    void autoMap();
+    void autoMapRegion(const QRegion &region);
 
 signals:
     /**
@@ -67,16 +72,12 @@ signals:
      */
     void warningsOccurred(bool automatic);
 
-public slots:
-    /**
-     * This triggers an automapping on the current map document. Starts with
-     * the currently selected area, or the entire map if there is no selection.
-     */
-    void autoMap();
-
 private:
     void onRegionEdited(const QRegion &where, Layer *touchedLayer);
+    void onMapFileNameChanged();
     void onFileChanged();
+
+    void refreshRulesFile(const QString &ruleFileOverride = QString());
 
     /**
      * This function parses a rules file.
@@ -113,7 +114,7 @@ private:
      * For each new file of rules a new AutoMapper is setup. In this vector we
      * can store all of the AutoMappers in order.
      */
-    QVector<AutoMapper*> mAutoMappers;
+    std::vector<std::unique_ptr<AutoMapper>> mAutoMappers;
 
     /**
      * This tells you if the rules for the current map document were already
@@ -135,7 +136,8 @@ private:
 
     QFileSystemWatcher mWatcher;
 
-    QString rulesFileName() const;
+    QString mRulesFile;
+    bool mRulesFileOverride = false;
 };
 
 } // namespace Tiled
