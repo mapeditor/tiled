@@ -1,4 +1,4 @@
-Tiled Map Editor - http://www.mapeditor.org/
+Tiled Map Editor - https://www.mapeditor.org/
 
 About Tiled
 -------------------------------------------------------------------------------
@@ -35,7 +35,7 @@ libraries have been installed as well as the Qbs build tool:
 * On Ubuntu/Debian: `sudo apt install qt5-default qttools5-dev-tools zlib1g-dev qtdeclarative5-dev qbs`
 * On Fedora:        `sudo dnf builddep tiled`
 * On Arch Linux:    `sudo pacman -S qt qbs`
-* On macOS with [Homebrew](http://brew.sh/):
+* On macOS with [Homebrew](https://brew.sh/):
   + `brew install qbs`
   + `brew link qt5 --force`
 
