@@ -72,6 +72,10 @@ struct TILEDSHARED_EXPORT World
     QVector<MapEntry> allMaps() const;
     QVector<MapEntry> mapsInRect(const QRect &rect) const;
     QVector<MapEntry> contextMaps(const QString &fileName) const;
+
+    void error(const QString &message) const;
+    void warning(const QString &message) const;
+    void clearErrorsAndWarnings() const;
 };
 
 class TILEDSHARED_EXPORT WorldManager : public QObject

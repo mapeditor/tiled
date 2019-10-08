@@ -123,6 +123,8 @@ signals:
     void info(const QString &message);
     void warning(const QString &message);
     void error(const QString &message);
+
+    void removeIssuesWithContext(const void *context);
 };
 
 inline void REPORT(const Issue &issue)

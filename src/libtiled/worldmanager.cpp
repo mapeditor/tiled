@@ -28,12 +28,16 @@
 
 #include "worldmanager.h"
 
+#include "logginginterface.h"
+
+#include <QDesktopServices>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QUrl>
 
 #include <QDebug>
 
@@ -73,10 +77,13 @@ void WorldManager::reloadWorldFiles(const QStringList &fileNames)
     bool changed = false;
 
     for (const QString &fileName : fileNames) {
+
         if (mWorlds.contains(fileName)) {
             auto world = privateLoadWorld(fileName);
             if (world) {
-                delete mWorlds.take(fileName);
+                std::unique_ptr<World> oldWorld { mWorlds.take(fileName) };
+                oldWorld->clearErrorsAndWarnings();
+
                 mWorlds.insert(fileName, world.release());
 
                 changed = true;
@@ -86,6 +93,28 @@ void WorldManager::reloadWorldFiles(const QStringList &fileNames)
 
     if (changed)
         emit worldsChanged();
+}
+
+static QString jsonValueToString(const QJsonValue &value)
+{
+    switch (value.type()) {
+    case QJsonValue::Null:
+        return QLatin1String("null");
+    case QJsonValue::Bool:
+        return value.toBool() ? QLatin1String("true") : QLatin1String("false");
+    case QJsonValue::Double:
+        return QString::number(value.toDouble());
+    case QJsonValue::String:
+        return QString(QLatin1String("\"%1\"")).arg(value.toString());
+    case QJsonValue::Array:
+        return QLatin1String("[...]");
+    case QJsonValue::Object:
+        return QLatin1String("{...}");
+    case QJsonValue::Undefined:
+        return QLatin1String("undefined");
+    }
+    Q_UNREACHABLE();
+    return QString();
 }
 
 std::unique_ptr<World> WorldManager::privateLoadWorld(const QString &fileName,
@@ -139,20 +168,23 @@ std::unique_ptr<World> WorldManager::privateLoadWorld(const QString &fileName,
                                 patternObject.value(QLatin1String("mapHeight")).toInt(std::abs(pattern.multiplierY)));
 
         if (pattern.regexp.captureCount() != 2)
-            qWarning() << "Invalid number of captures in" << pattern.regexp;
+            world->error(tr("World: Invalid number of captures in '%1', 2 captures expected").arg(pattern.regexp.pattern()));
         else if (pattern.multiplierX == 0)
-            qWarning() << "Invalid multiplierX:" << pattern.multiplierX;
+            world->error(tr("World: Invalid multiplierX: %1").arg(jsonValueToString(patternObject.value(QLatin1String("multiplierX")))));
         else if (pattern.multiplierY == 0)
-            qWarning() << "Invalid multiplierY:" << pattern.multiplierY;
+            world->error(tr("World: Invalid multiplierY: %1").arg(jsonValueToString(patternObject.value(QLatin1String("multiplierY")))));
         else if (pattern.mapSize.width() <= 0)
-            qWarning() << "Invalid mapWidth:" << pattern.mapSize.width();
+            world->error(tr("World: Invalid mapWidth: %1").arg(jsonValueToString(patternObject.value(QLatin1String("mapWidth")))));
         else if (pattern.mapSize.height() <= 0)
-            qWarning() << "Invalid mapHeight:" << pattern.mapSize.height();
+            world->error(tr("World: Invalid mapHeight: %1").arg(jsonValueToString(patternObject.value(QLatin1String("mapHeight")))));
         else
             world->patterns.append(pattern);
     }
 
     world->onlyShowAdjacentMaps = object.value(QLatin1String("onlyShowAdjacentMaps")).toBool();
+
+    if (world->maps.isEmpty() && world->patterns.isEmpty())
+        world->warning(tr("World contained no valid maps or patterns: %1").arg(fileName));
 
     return world;
 }
@@ -287,6 +319,21 @@ QVector<World::MapEntry> World::contextMaps(const QString &fileName) const
     if (onlyShowAdjacentMaps)
         return mapsInRect(mapRect(fileName).adjusted(-1, -1, 1, 1));
     return allMaps();
+}
+
+void World::error(const QString &message) const
+{
+    ERROR(message, [fileName = this->fileName] { QDesktopServices::openUrl(QUrl::fromLocalFile(fileName)); }, this);
+}
+
+void World::warning(const QString &message) const
+{
+    WARNING(message, [fileName = this->fileName] { QDesktopServices::openUrl(QUrl::fromLocalFile(fileName)); }, this);
+}
+
+void World::clearErrorsAndWarnings() const
+{
+    emit LoggingInterface::instance().removeIssuesWithContext(this);
 }
 
 } // namespace Tiled

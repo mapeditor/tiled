@@ -35,6 +35,8 @@ IssuesModel::IssuesModel(QObject *parent)
 
     connect(&LoggingInterface::instance(), &LoggingInterface::issue,
             this, &IssuesModel::addIssue);
+    connect(&LoggingInterface::instance(), &LoggingInterface::removeIssuesWithContext,
+            this, &IssuesModel::removeIssuesWithContext);
 }
 
 IssuesModel &IssuesModel::instance()
