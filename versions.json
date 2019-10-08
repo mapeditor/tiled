@@ -5,8 +5,8 @@
         "download": "https://thorbjorn.itch.io/tiled/purchase"
     },
     "snapshot":  {
-        "version": "2019.09.18",
-        "release_notes": "https://thorbjorn.itch.io/tiled/devlog/100642/dynamic-wrapping-tileset-view",
+        "version": "2019.10.08",
+        "release_notes": "https://thorbjorn.itch.io/tiled/devlog/103543/script-map-readers-and-binary-formats",
         "download": "https://thorbjorn.itch.io/tiled/purchase"
     }
 }
