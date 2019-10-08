@@ -60,13 +60,21 @@ From the command-line, you may need to set up Qbs before you can build Tiled
 (you will also need to make sure the version of Qt you want to use is in your
 path):
 
-    $ qbs setup-toolchains --detect     # setup toolchains
-    $ qbs setup-qt --detect             # setup Qt (not needed since Qbs 1.13)
-    $ qbs                               # build Tiled
+    qbs setup-toolchains --detect     # setup toolchains
+    qbs setup-qt --detect             # setup Qt (not needed since Qbs 1.13)
+    qbs                               # build Tiled
 
 You can now run Tiled as follows:
 
-    $ qbs run -p tiled
+    qbs run -p tiled
+
+### Working with Visual Studio 2017
+
+Once Qbs is set up (see previous instructions), it is possible to generate a
+Visual Studio 2017 project with it that allows you to code, compile and run
+using that IDE. This can be done with the following command:
+
+    qbs generate -g visualstudio2017
 
 Installing
 -------------------------------------------------------------------------------
@@ -77,11 +85,11 @@ be installed to `<build-dir>/install-root`.
 The installation prefix can be changed when building Tiled. For example, to use
 an installation prefix of  `/usr`:
 
-    $ qbs qbs.installPrefix:"/usr"
+    qbs qbs.installPrefix:"/usr"
 
 To install Tiled to a packaging directory:
 
-    $ qbs install --install-root /tmp/tiled-pkg
+    qbs install --install-root /tmp/tiled-pkg
 
 By default, Tiled and its plugins are compiled with an Rpath that allows them
 to find the shared *libtiled* library immediately after being compiled. When
