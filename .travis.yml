@@ -42,12 +42,12 @@ matrix:
     env:
       - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
       - QT_INSTALL_DIR=~/Qt
-      - QT_BIN=${QT_INSTALL_DIR}/5.12.4/gcc_64/bin
+      - QT_BIN=${QT_INSTALL_DIR}/5.12.5/gcc_64/bin
       - PATH="${QT_INSTALL_DIR}/Tools/QtCreator/bin:${QT_BIN}:${PATH}"
     before_install:
     - eval "${MATRIX_EVAL}"
-    - ./dist/install-qt.sh -d ${QT_INSTALL_DIR} --version 5.12.4 qtbase qtdeclarative qtscript qtsvg qtimageformats qttools icu
-    - ./dist/install-qt.sh -d ${QT_INSTALL_DIR} --version 4.9.2 qtcreator
+    - ./dist/install-qt.sh -d ${QT_INSTALL_DIR} --version 5.12.5 qtbase qtdeclarative qtscript qtsvg qtimageformats qttools icu
+    - ./dist/install-qt.sh -d ${QT_INSTALL_DIR} --version 4.10.0 qtcreator
     script:
     - qbs --version
     - qbs setup-toolchains --detect
@@ -131,11 +131,11 @@ matrix:
     env:
       - MAKEFLAGS=-j2
       - QT_INSTALL_DIR=~/Qt
-      - QT_BIN=${QT_INSTALL_DIR}/5.12.4/clang_64/bin
+      - QT_BIN=${QT_INSTALL_DIR}/5.12.5/clang_64/bin
       - PATH="${QT_INSTALL_DIR}/Qt Creator.app/Contents/MacOS:${QT_BIN}:${PATH}"
     before_install:
-    - ./dist/install-qt.sh -d ${QT_INSTALL_DIR} --version 5.12.4 qtbase qtdeclarative qtscript qtsvg qtimageformats qttools
-    - ./dist/install-qt.sh -d ${QT_INSTALL_DIR} --version 4.9.2 qtcreator
+    - ./dist/install-qt.sh -d ${QT_INSTALL_DIR} --version 5.12.5 qtbase qtdeclarative qtscript qtsvg qtimageformats qttools
+    - ./dist/install-qt.sh -d ${QT_INSTALL_DIR} --version 4.10.0 qtcreator
     - git clone --depth 1 -b master https://github.com/facebook/zstd.git
     - cd zstd/lib
     - make libzstd.a
