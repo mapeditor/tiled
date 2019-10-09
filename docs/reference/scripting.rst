@@ -175,9 +175,11 @@ tiled.trigger(action : string) : void
 
 .. _script-execute:
 
-tiled.executeCommand(name : string, inTerminal : bool) : bool
+tiled.executeCommand(name : string, inTerminal : bool) : void
     Executes the first custom command with the given name, as if it was
     triggered manually. Works also with commands that are not currently enabled.
+
+    Raises a script error if the command is not found.
 
 .. _script-open:
 
