@@ -1,3 +1,13 @@
+### Tiled 1.2.5 (9 October 2019)
+
+* Fixed exporting to a file name containing multiple dots (#2149)
+* Fixed possible crash in AutoMapper (#2157)
+* Fixed crash when unloading certain plugins
+* Fixed duplicated entries in Objects view after grouping layers
+* Fixed adjacent maps within a world not being properly clickable
+* Fixed empty maps within a world not being clickable
+* Fixed handling of negative multiplierX/Y in a world file
+
 ### Tiled 1.2.4 (15 May 2019)
 
 * Fixed view boundaries to take into account layer offsets (#2090)
