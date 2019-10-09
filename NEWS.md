@@ -1,3 +1,55 @@
+### Tiled 1.3.0 (...)
+
+* Added support for extending Tiled with JavaScript
+* Added error and warning counts to the status bar
+* Added Issues view where you can see warnings and errors and interact with them
+* Added configuration of keyboard shortcuts (#215)
+* Added status bar notification on new releases (replacing Sparkle and WinSparkle)
+* Added option to show tile collision shapes on the map (#799)
+* Added switching current layer with Ctrl + Right Click in map view
+* Added search filter to the Objects view (#1467)
+* Added icons to objects in the Objects view
+* Added dynamic wrapping mode to the tileset view (#1241)
+* Added a \*.world file filter when opening a world file
+* Added support for .world files in tmxrasterizer (by Samuel Magnan, #2067)
+* Added synchronization of selected layers and tileset when switching between maps in a world (by JustinZhengBC, #2087)
+* Added actions to show/hide and lock/unlock the selected layers
+* Added toggle button for "Highlight Current Layer" action
+* Added custom output chunk size option to map properties (by Markus, #2130)
+* Added support for Zstandard compression and configurable compression level (with BRULE Herman and Michael de Lang, #1888)
+* Added option to minimize output on export (#944)
+* Added export to Defold .collection files (by CodeSpartan, #2084)
+* Added a warning when custom file properties point to non-existing files (#2080)
+* Added shortcuts for next/previous tileset (#1238)
+* Added saving of the last export target and format in the map/tileset file (#1610)
+* Added option to repeat the last export on save (#1610)
+* Tile Collision Editor: Added objects list view
+* Changed the Type property from a text box to an editable combo box (#823)
+* Changed animation preview to follow zoom factor for tiles (by Ruslan Gainutdinov, #2050)
+* Changed the shortcut for AutoMap from A to Ctrl+M
+* AutoMapping: Added "OverflowBorder" and "WrapBorder" options (by João Baptista de Paula e Silva, #2141)
+* AutoMapping: Allow any supported map format to be used for rule maps
+* Python plugin: Added support for loading external tileset files (by Ruin0x11, #2085)
+* Python plugin: Added Tile.type() and MapObject.effectiveType() (by Ruin0x11, #2124)
+* Python plugin: Added Object.propertyType() (by Ruin0x11, #2125)
+* Python plugin: Added Tileset.sharedPointer() function (#2191)
+* tmxrasterizer: Load plugins to support additional map formats (by Nathan Tolbert, #2152)
+* tmxrasterizer: Added rendering of object layers (by oncer, #2187)
+* Fixed missing native styles when compiled against Qt 5.10 or later (#1977)
+* Fixed file change notifications no longer triggering when file was replaced (by Nathan Tolbert, #2158)
+* Fixed layer IDs getting re-assigned when resizing the map (#2160)
+* Fixed performance issues when switching to a new map in a world with many maps (by Simon Parzer, #2159)
+* Fixed restoring of expanded group layers in Objects view
+* Fixed tileset view to keep position at mouse stable when zooming (#2039)
+* libtiled-java: Added support for image layers and flipped tiles (by Sergey Savchuk, #2006)
+* libtiled-java: Optimized map reader and fixed path separator issues (by Pavel Bondoronok, #2006)
+* Updated builds on all platforms to Qt 5.12 (except snap release)
+* Raised minimum supported Qt version from 5.5 to 5.6
+* Raised minimum supported macOS version from 10.7 to 10.12
+* Removed option to include a DTD in the saved files
+* Removed the automappingconverter tool
+* snap: Updated from Ubuntu 16.04 to 18.04 (core18, Qt 5.9)
+
 ### Tiled 1.2.5 (9 October 2019)
 
 * Fixed exporting to a file name containing multiple dots (#2149)
