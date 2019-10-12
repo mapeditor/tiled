@@ -6,7 +6,7 @@
     <message>
         <location filename="../src/tiled/aboutdialog.ui" line="+14"/>
         <source>About Tiled</source>
-        <translation>A propos de Tiled</translation>
+        <translation>À propos de Tiled</translation>
     </message>
     <message>
         <location line="+96"/>
@@ -65,7 +65,7 @@
     <message>
         <location line="+7"/>
         <source>No exporter found for target file.</source>
-        <translation>Aucun exporteur n&apos;a été trouvé pour le type de fichier cible.</translation>
+        <translation>Aucun exportateur n&apos;a été trouvé pour le type de fichier cible.</translation>
     </message>
     <message>
         <location line="+248"/>
@@ -1041,7 +1041,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+392"/>
         <source>Too many &lt;tile&gt; elements</source>
-        <translation>Trop d&apos;éléments de &lt;tile&gt; à charger</translation>
+        <translation>Trop d&apos;éléments &lt;tile&gt; à charger</translation>
     </message>
     <message>
         <location line="+58"/>
@@ -3666,8 +3666,8 @@ Voulez-vous le remplacer ?</translation>
     <message numerus="yes">
         <location line="+74"/>
         <source>Drag Layer(s)</source>
-        <translation type="unfinished">
-            <numerusform>Déplacer le Calque(s)</numerusform>
+        <translation>
+            <numerusform>Déplacer le Calque</numerusform>
             <numerusform>Déplacer les Calques</numerusform>
         </translation>
     </message>
@@ -4111,7 +4111,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message numerus="yes">
         <location line="+2"/>
         <source>Group %n Layer(s)</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Grouper %n calque(s)</numerusform>
             <numerusform>Grouper %n calques</numerusform>
         </translation>
@@ -4119,7 +4119,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message numerus="yes">
         <location line="+16"/>
         <source>Ungroup %n Layer(s)</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Séparer %n calque(s)</numerusform>
             <numerusform>Séparer %n calques</numerusform>
         </translation>
@@ -4127,7 +4127,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message numerus="yes">
         <location line="+46"/>
         <source>Duplicate %n Layer(s)</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Dupliquer %n calque(s)</numerusform>
             <numerusform>Dupliquer %n calques</numerusform>
         </translation>
@@ -4145,7 +4145,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message numerus="yes">
         <location line="+98"/>
         <source>Remove %n Layer(s)</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Supprimer %n calque(s)</numerusform>
             <numerusform>Supprimer %n calques</numerusform>
         </translation>
