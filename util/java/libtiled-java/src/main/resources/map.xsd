@@ -161,71 +161,33 @@ POSSIBILITY OF SUCH DAMAGE.
             </xs:documentation>
         </xs:annotation>
 
-        <xs:sequence>
-            <xs:element name="properties" type="Properties"/>
-            <xs:element name="layer" type="TileLayer" maxOccurs="unbounded"/>
-            <xs:element name="objectgroup" type="ObjectGroup" maxOccurs="unbounded"/>
-            <xs:element name="imagelayer" type="ImageLayer" maxOccurs="unbounded"/>
-            <xs:element name="group" type="Group" maxOccurs="unbounded"/>
-        </xs:sequence>
+        <xs:complexContent>
+            <xs:extension base="Layer">
+                <xs:sequence>
+                    <xs:element name="layer" type="TileLayer" maxOccurs="unbounded"/>
+                    <xs:element name="objectgroup" type="ObjectGroup" maxOccurs="unbounded"/>
+                    <xs:element name="imagelayer" type="ImageLayer" maxOccurs="unbounded"/>
+                    <xs:element name="group" type="Group" maxOccurs="unbounded"/>
+                </xs:sequence>
 
-        <xs:attribute name="name" type="xs:string">
-            <xs:annotation>
-                <xs:documentation>
-                    The name of the group layer.
-                </xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="offsetx" type="xs:int">
-            <xs:annotation>
-                <xs:documentation>
-                    Rendering offset of the group layer in pixels.
-                    Defaults to 0.
-                </xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="offsety" type="xs:int">
-            <xs:annotation>
-                <xs:documentation>
-                    Rendering offset of the group layer in pixels.
-                    Defaults to 0.
-                </xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="x" type="xs:int">
-            <xs:annotation>
-                <xs:documentation>
-                    The x position of the group layer in pixels.
-
-                    @deprecated since 0.15
-                </xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="y" type="xs:int">
-            <xs:annotation>
-                <xs:documentation>
-                    The y position of the group layer in pixels.
-
-                    @deprecated since 0.15
-                </xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="opacity" type="xs:double">
-            <xs:annotation>
-                <xs:documentation>
-                    The opacity of the layer as a value from 0 to 1.
-                    Defaults to 1.
-                </xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="visible" type="xs:boolean">
-            <xs:annotation>
-                <xs:documentation>
-                    Whether the layer is shown (1) or hidden (0).
-                    Defaults to 1.
-                </xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
+                <xs:attribute name="color" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>
+                            The color used to display the objects in this group.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="draworder" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Whether the objects are drawn according to the order
+                            of appearance ("index") or sorted by their
+                            y-coordinate ("topdown"). Defaults to "topdown".
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
     </xs:complexType>
 
     <xs:complexType name="Image">
@@ -446,14 +408,8 @@ POSSIBILITY OF SUCH DAMAGE.
                 <xs:element name="layer" type="TileLayer" maxOccurs="unbounded"/>
                 <xs:element name="objectgroup" type="ObjectGroup" maxOccurs="unbounded"/>
                 <xs:element name="imagelayer" type="ImageLayer" maxOccurs="unbounded"/>
+                <xs:element name="group" type="Group" maxOccurs="unbounded"/>
             </xs:choice>
-            <xs:element name="group" type="Group" maxOccurs="unbounded">
-                <xs:annotation>
-                    <xs:documentation>
-                        @since 1.0
-                    </xs:documentation>
-                </xs:annotation>
-            </xs:element>
         </xs:sequence>
 
         <xs:attribute name="version" type="xs:string" fixed="1.0">

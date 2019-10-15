@@ -143,6 +143,15 @@ public class TMXMapReader {
         }
     }
 
+    private static float getFloatAttribute(Node node, String attribname, float def) {
+        final String attr = getAttributeValue(node, attribname);
+        if (attr != null) {
+            return Float.parseFloat(attr);
+        } else {
+            return def;
+        }
+    }
+
     private static double getDoubleAttribute(Node node, String attribname, double def) {
         final String attr = getAttributeValue(node, attribname);
         if (attr != null) {
@@ -497,6 +506,64 @@ public class TMXMapReader {
         return tile;
     }
 
+    private Group unmarshalGroup(Node t) throws Exception {
+        Group g = null;
+        try {
+            g = unmarshalClass(t, Group.class);
+        } catch (JAXBException e) {
+            // todo: replace with log message
+            e.printStackTrace();
+            return g;
+        }
+
+        final int offsetX = getAttribute(t, "x", 0);
+        final int offsetY = getAttribute(t, "y", 0);
+        g.setOffset(offsetX, offsetY);
+
+        String opacity = getAttributeValue(t, "opacity");
+        if (opacity != null) {
+            g.setOpacity(Float.parseFloat(opacity));
+        }
+
+        final int locked = getAttribute(t, "locked", 0);
+        if (locked != 0) {
+            g.setLocked(1);
+        }
+
+        g.getGroup().clear();
+        g.getLayer().clear();
+        g.getObjectgroup().clear();
+        g.getImagelayer();
+
+        // Load the layers and objectgroups
+        for (Node sibs = t.getFirstChild(); sibs != null;
+             sibs = sibs.getNextSibling()) {
+            if ("group".equals(sibs.getNodeName())) {
+                Group group = unmarshalGroup(sibs);
+                if (group != null) {
+                    g.getGroup().add(group);
+                }
+            } else if ("layer".equals(sibs.getNodeName())) {
+                TileLayer layer = readLayer(sibs);
+                if (layer != null) {
+                    g.getLayer().add(layer);
+                }
+            } else if ("objectgroup".equals(sibs.getNodeName())) {
+                ObjectGroup group = unmarshalObjectGroup(sibs);
+                if (group != null) {
+                    g.getObjectgroup().add(group);
+                }
+            } else if ("imagelayer".equals(sibs.getNodeName())) {
+                ImageLayer imageLayer = unmarshalImageLayer(sibs);
+                if (imageLayer != null) {
+                    g.getImagelayer().add(imageLayer);
+                }
+            }
+        }
+
+        return g;
+    }
+
     private ObjectGroup unmarshalObjectGroup(Node t) throws Exception {
         ObjectGroup og = null;
         try {
@@ -756,6 +823,12 @@ public class TMXMapReader {
         // Load the layers and objectgroups
         for (Node sibs = mapNode.getFirstChild(); sibs != null;
                 sibs = sibs.getNextSibling()) {
+            if ("group".equals(sibs.getNodeName())) {
+                Group group = unmarshalGroup(sibs);
+                if (group != null) {
+                    map.addLayer(group);
+                }
+            }
             if ("layer".equals(sibs.getNodeName())) {
                 TileLayer layer = readLayer(sibs);
                 if (layer != null) {
