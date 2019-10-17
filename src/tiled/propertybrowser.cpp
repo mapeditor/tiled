@@ -498,7 +498,7 @@ void PropertyBrowser::propertyRemoved(Object *object, const QString &name)
 
 void PropertyBrowser::propertyChanged(Object *object, const QString &name)
 {
-    auto property = mNameToProperty[name];
+    auto property = mNameToProperty.value(name);
     if (!property)
         return;
 
