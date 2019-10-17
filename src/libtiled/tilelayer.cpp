@@ -251,18 +251,13 @@ void TileLayer::merge(QPoint pos, const TileLayer *layer)
 }
 
 void TileLayer::setCells(int x, int y, const TileLayer *layer,
-                         const QRegion &mask)
+                         const QRegion &area)
 {
-    QRegion targetArea = layer->localBounds().translated(x, y);
-
-    if (!mask.isEmpty())
-        targetArea &= mask;
-
 #if QT_VERSION < 0x050800
-    const auto rects = targetArea.rects();
+    const auto rects = area.rects();
     for (const QRect &rect : rects)
 #else
-    for (const QRect &rect : targetArea)
+    for (const QRect &rect : area)
 #endif
         for (int _x = rect.left(); _x <= rect.right(); ++_x)
             for (int _y = rect.top(); _y <= rect.bottom(); ++_y)

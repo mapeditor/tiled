@@ -413,14 +413,16 @@ public:
     void clear();
 
     /**
+     * Sets the cells within the given \a area to the cells in the given
+     * \a tileLayer. The tiles in \a tileLayer are offset by \a x and \a y.
+     */
+    void setCells(int x, int y, const TileLayer *tileLayer, const QRegion &area);
+
+    /**
      * Sets the cells starting at the given position to the cells in the given
      * \a tileLayer.
-     *
-     * When a \a mask is given, only cells that fall within this mask are set.
-     * The mask is applied in local coordinates.
      */
-    void setCells(int x, int y, const TileLayer *tileLayer,
-                  const QRegion &mask = QRegion());
+    void setCells(int x, int y, const TileLayer *tileLayer);
 
     void setTiles(const QRegion &area, Tile *tile);
 
@@ -640,6 +642,12 @@ inline const Cell &TileLayer::cellAt(int x, int y) const
 inline const Cell &TileLayer::cellAt(QPoint point) const
 {
     return cellAt(point.x(), point.y());
+}
+
+inline void TileLayer::setCells(int x, int y, const TileLayer *tileLayer)
+{
+    setCells(x, y, tileLayer,
+             QRect(x, y, tileLayer->width(), tileLayer->height()));
 }
 
 typedef QSharedPointer<TileLayer> SharedTileLayer;

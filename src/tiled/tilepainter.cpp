@@ -102,9 +102,7 @@ void TilePainter::setCells(int x, int y,
                            TileLayer *tileLayer,
                            const QRegion &mask)
 {
-    QRegion region = paintableRegion(tileLayer->localBounds().translated(x, y));
-    region &= mask;
-
+    QRegion region = paintableRegion(mask);
     if (region.isEmpty())
         return;
 
