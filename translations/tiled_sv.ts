@@ -65,7 +65,7 @@
     <message>
         <location line="+7"/>
         <source>No exporter found for target file.</source>
-        <translation>Inge exportör hittades för målfilen.</translation>
+        <translation>Ingen exportör hittades för målfilen.</translation>
     </message>
     <message>
         <location line="+236"/>
