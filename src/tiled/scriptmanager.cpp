@@ -132,7 +132,6 @@ void ScriptManager::initialize()
     globalObject.setProperty(QStringLiteral("Tileset"), mEngine->newQMetaObject<EditableTileset>());
 #endif
 
-    evaluateStartupScripts();
     loadExtensions();
 }
 
@@ -160,24 +159,15 @@ QJSValue ScriptManager::evaluateFile(const QString &fileName)
     return evaluate(script, fileName);
 }
 
-void ScriptManager::evaluateStartupScripts()
-{
-    const QStringList configLocations = QStandardPaths::standardLocations(QStandardPaths::AppConfigLocation);
-    for (const QString &configLocation : configLocations) {
-        const QString scriptFile = configLocation + QLatin1String("/startup.js");
-        if (QFile::exists(scriptFile)) {
-            evaluateFile(scriptFile);
-            mWatcher.addPath(scriptFile);
-        }
-    }
-}
-
 void ScriptManager::loadExtensions()
 {
     QStringList extensionSearchPaths;
 
-    // Each folder in an extensions path is expected to be an extension
     for (const QString &extensionsPath : qAsConst(mExtensionsPaths)) {
+        // Extension scripts and resources can also be in the top-level
+        extensionSearchPaths.append(extensionsPath);
+
+        // Each folder in an extensions path is expected to be an extension
         const QDir extensionsDir(extensionsPath);
         const QStringList dirs = extensionsDir.entryList(QDir::Dirs | QDir::Readable | QDir::NoDotAndDotDot);
         for (const QString &dir : dirs)

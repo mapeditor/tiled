@@ -64,7 +64,6 @@ private:
 
     void scriptFilesChanged(const QStringList &scriptFiles);
 
-    void evaluateStartupScripts();
     void loadExtensions();
     void loadExtension(const QString &path);
 

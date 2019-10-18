@@ -177,10 +177,11 @@ as they depend on the system.
 Plugins
 -------
 
-Here you can choose which plugins are enabled. Currently plugins only
-serve to add support for additional map and/or tileset file formats.
-Some generic plugins are enabled by default, while more specific ones
-need to be manually enabled.
+Here you can choose which plugins are enabled, as well as opening the
+:doc:`scripted extensions </reference/scripting>` folder.
+
+Plugins add support for map and/or tileset file formats. Some generic plugins
+are enabled by default, while more specific ones need to be manually enabled.
 
 There is no need to restart Tiled when enabling or disabling plugins.
 When a plugin fails to load, try hovering its icon to see if the tool

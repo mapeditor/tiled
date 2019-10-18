@@ -8,13 +8,10 @@ Scripting
 Introduction
 ------------
 
-Initial scripting capabilities have been added to Tiled. The API is still
-incomplete, but many actions can be automated either by interacting with any
-open assets or by triggering UI actions.
-
-Scripts can be used to implement :ref:`map export formats <script-registerMapFormat>`
-(only text formats for now), :ref:`custom actions <script-registerAction>` and
-:ref:`new tools <script-registerTool>`.
+Tiled can be extended with the use of JavaScript. Scripts can be used to
+implement :ref:`custom map formats <script-registerMapFormat>`,
+:ref:`custom actions <script-registerAction>` and :ref:`new tools <script-registerTool>`.
+Scripts can also :ref:`automate actions based on signals <script-connecting-to-signals>`.
 
 On startup, Tiled will execute any script files present in
 :ref:`extensions <script-extensions>`. In addition it is possible to run
@@ -27,7 +24,7 @@ Scripted Extensions
 ^^^^^^^^^^^^^^^^^^^
 
 Extensions are placed in a system-specific location. This folder can be opened
-from the Plugins tab in the Preferences dialog.
+from the Plugins tab in the :doc:`Preferences dialog </manual/preferences>`.
 
 +-------------+-----------------------------------------------------------------+
 | **Windows** | | :file:`C:/Users/<USER>/AppData/Local/Tiled/extensions/`       |
@@ -37,8 +34,8 @@ from the Plugins tab in the Preferences dialog.
 | **Linux**   | | :file:`~/.config/tiled/extensions/`                           |
 +-------------+-----------------------------------------------------------------+
 
-Each extension is expected to be placed in a sub-directory of the extensions
-directory. All scripts files found in these sub-directories are executed on
+An extension can be placed directly in the extensions directory, or in a
+sub-directory. All scripts files found in these directories are executed on
 startup.
 
 .. note::
@@ -54,36 +51,6 @@ works as intended.
 Apart from scripts, extensions can include images that can be used as the icon
 for scripted actions or tools.
 
-Startup Script
-^^^^^^^^^^^^^^
-
-.. warning::
-
-    This functionality is deprecated. Write an
-    :ref:`extension <script-extensions>` instead.
-
-If present, a :file:`startup.js` script is evaluated on startup. This
-script could define functions that can be called from the Console or can
-connect to signals to add functionality.
-
-The location of the startup script depends on the platform. The file
-:file:`startup.js` is searched for in the following locations:
-
-+-------------+-----------------------------------------------------------------+
-| **Windows** | | :file:`C:/Users/<USER>/AppData/Local/Tiled/startup.js`        |
-|             | | :file:`C:/ProgramData/Tiled/startup.js`                       |
-+-------------+-----------------------------------------------------------------+
-| **macOS**   | | :file:`~/Library/Preferences/Tiled/startup.js`                |
-+-------------+-----------------------------------------------------------------+
-| **Linux**   | | :file:`~/.config/tiled/startup.js`                            |
-|             | | :file:`/etc/xdg/tiled/startup.js`                             |
-+-------------+-----------------------------------------------------------------+
-
-Any file that exists will be evaluated.
-
-As with extensions, the script engine is reinstantiated and the scripts are
-reloaded when the startup script is changed.
-
 .. _script-console:
 
 Console View
@@ -94,6 +61,8 @@ find a text entry where you can write or paste scripts to evaluate them.
 
 You can use the Up/Down keys to navigate through previously entered
 script expressions.
+
+.. _script-connecting-to-signals:
 
 Connecting to Signals
 ^^^^^^^^^^^^^^^^^^^^^
