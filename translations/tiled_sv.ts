@@ -3150,8 +3150,8 @@ Rad %1, kolumn %2</translation>
         <location line="+265"/>
         <source>Move %n Point(s)</source>
         <translation>
-            <numerusform>Flytta %n punkt(er)</numerusform>
-            <numerusform>Flytta %n punkt(er)</numerusform>
+            <numerusform>Flytta %n punkt</numerusform>
+            <numerusform>Flytta %n punkter</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -3598,7 +3598,7 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location line="+28"/>
         <source>&amp;Group</source>
-        <translation>&amp;Group</translation>
+        <translation>&amp;Gruppera</translation>
     </message>
     <message>
         <location line="+62"/>
@@ -4491,16 +4491,16 @@ Var god ange det specifika formatet.</translation>
         <location line="-252"/>
         <source>Paste Property/Properties</source>
         <translation>
-            <numerusform>Klistra in egenskap/egenskaper</numerusform>
-            <numerusform>Klistra in egenskap/egenskaper</numerusform>
+            <numerusform>Klistra in egenskap</numerusform>
+            <numerusform>Klistra in egenskaper</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+50"/>
         <source>Remove Property/Properties</source>
         <translation>
-            <numerusform>Ta bort egenskap/egenskaper</numerusform>
-            <numerusform>Ta bort egenskap/egenskaper</numerusform>
+            <numerusform>Ta bort egenskap</numerusform>
+            <numerusform>Ta bort egenskaper</numerusform>
         </translation>
     </message>
     <message>
@@ -4537,8 +4537,8 @@ Var god ange det specifika formatet.</translation>
         <location line="+69"/>
         <source>Convert Property/Properties</source>
         <translation>
-            <numerusform>Omvandla egenskap/egenskaper</numerusform>
-            <numerusform>Omvandla egenskap/egenskaper</numerusform>
+            <numerusform>Omvandla egenskap</numerusform>
+            <numerusform>Omvandla egenskaper</numerusform>
         </translation>
     </message>
     <message>
@@ -5906,7 +5906,7 @@ Var god ange det specifika formatet.</translation>
         <source>Change %n Object/s Tile</source>
         <translation>
             <numerusform>Ändra %n objektruta</numerusform>
-            <numerusform>Ändra %n objektruta</numerusform>
+            <numerusform>Ändra %n objektrutor</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -5921,7 +5921,7 @@ Var god ange det specifika formatet.</translation>
         <location line="+39"/>
         <source>Reset %n Instances</source>
         <translation>
-            <numerusform>Återställ %n instanser</numerusform>
+            <numerusform>Återställ %n instans</numerusform>
             <numerusform>Återställ %n instanser</numerusform>
         </translation>
     </message>
