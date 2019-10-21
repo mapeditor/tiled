@@ -530,10 +530,7 @@ public class TMXMapReader {
             g.setLocked(1);
         }
 
-        g.getGroup().clear();
-        g.getLayer().clear();
-        g.getObjectgroup().clear();
-        g.getImagelayer();
+        g.getLayers().clear();
 
         // Load the layers and objectgroups
         for (Node sibs = t.getFirstChild(); sibs != null;
@@ -541,22 +538,22 @@ public class TMXMapReader {
             if ("group".equals(sibs.getNodeName())) {
                 Group group = unmarshalGroup(sibs);
                 if (group != null) {
-                    g.getGroup().add(group);
+                    g.getLayers().add(group);
                 }
             } else if ("layer".equals(sibs.getNodeName())) {
                 TileLayer layer = readLayer(sibs);
                 if (layer != null) {
-                    g.getLayer().add(layer);
+                    g.getLayers().add(layer);
                 }
             } else if ("objectgroup".equals(sibs.getNodeName())) {
                 ObjectGroup group = unmarshalObjectGroup(sibs);
                 if (group != null) {
-                    g.getObjectgroup().add(group);
+                    g.getLayers().add(group);
                 }
             } else if ("imagelayer".equals(sibs.getNodeName())) {
                 ImageLayer imageLayer = unmarshalImageLayer(sibs);
                 if (imageLayer != null) {
-                    g.getImagelayer().add(imageLayer);
+                    g.getLayers().add(imageLayer);
                 }
             }
         }
@@ -820,7 +817,7 @@ public class TMXMapReader {
             map.addTileset(tileset);
         }
 
-        // Load the layers and objectgroups
+        // Load the layers and groups
         for (Node sibs = mapNode.getFirstChild(); sibs != null;
                 sibs = sibs.getNextSibling()) {
             if ("group".equals(sibs.getNodeName())) {

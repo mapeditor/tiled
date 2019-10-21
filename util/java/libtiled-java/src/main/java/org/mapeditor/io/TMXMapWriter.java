@@ -56,6 +56,7 @@ import org.mapeditor.core.MapLayer;
 import org.mapeditor.core.Map;
 import org.mapeditor.core.MapObject;
 import org.mapeditor.core.ObjectGroup;
+import org.mapeditor.core.Group;
 import org.mapeditor.core.Orientation;
 import org.mapeditor.core.Properties;
 import org.mapeditor.core.Sprite;
@@ -219,9 +220,36 @@ public class TMXMapWriter {
                 writeMapLayer((TileLayer) layer, w, wp);
             } else if (layer instanceof ObjectGroup) {
                 writeObjectGroup((ObjectGroup) layer, w, wp);
+            } else if (layer instanceof Group) {
+                writeGroup((Group) layer, w, wp);
             }
         }
         firstGidPerTileset = null;
+
+        w.endElement();
+    }
+
+    private void writeGroup(Group group, XMLWriter w, String wp) throws IOException {
+        w.startElement("group");
+
+        if (group.getColor() != null && group.getColor().isEmpty()) {
+            w.writeAttribute("color", group.getColor());
+        }
+        if (group.getDraworder() != null && !group.getDraworder().equalsIgnoreCase("topdown")) {
+            w.writeAttribute("draworder", group.getDraworder());
+        }
+        writeLayerAttributes(group, w);
+        writeProperties(group.getProperties(), w);
+
+        for (MapLayer layer : group.getLayers()) {
+            if (layer instanceof TileLayer) {
+                writeMapLayer((TileLayer) layer, w, wp);
+            } else if (layer instanceof ObjectGroup) {
+                writeObjectGroup((ObjectGroup) layer, w, wp);
+            } else if (layer instanceof Group) {
+                writeGroup((Group) layer, w, wp);
+            } // TODO: Image Layer writing
+        }
 
         w.endElement();
     }

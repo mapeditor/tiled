@@ -109,6 +109,18 @@
             </jxb:bindings>
         </jxb:bindings>
 
+        <jxb:bindings node="xs:complexType[@name='Group']">
+            <jxb:class name="Group"/>
+
+            <jxb:bindings node="xs:complexContent/xs:extension">
+                <jxb:bindings node="xs:sequence">
+                    <jxb:bindings node="xs:choice">
+                        <jxb:property name="layers"/>
+                    </jxb:bindings>
+                </jxb:bindings>
+            </jxb:bindings>
+        </jxb:bindings>
+
         <jxb:bindings node="xs:complexType[@name='Map']">
             <jxb:class name="MapData" implClass="Map"/>
 
