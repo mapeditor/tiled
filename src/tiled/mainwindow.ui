@@ -41,7 +41,7 @@
      <x>0</x>
      <y>0</y>
      <width>553</width>
-     <height>31</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -168,6 +168,7 @@
     <addaction name="actionZoomIn"/>
     <addaction name="actionZoomOut"/>
     <addaction name="actionZoomNormal"/>
+    <addaction name="actionFitInView"/>
     <addaction name="separator"/>
     <addaction name="actionFullScreen"/>
     <addaction name="actionClearView"/>
@@ -648,6 +649,18 @@
    </property>
    <property name="text">
     <string>Show Tile Collision Shapes</string>
+   </property>
+  </action>
+  <action name="actionFitInView">
+   <property name="icon">
+    <iconset resource="tiled.qrc">
+     <normaloff>:/images/16/zoom-original.png</normaloff>:/images/16/zoom-original.png</iconset>
+   </property>
+   <property name="text">
+    <string>Fit In View</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+J</string>
    </property>
   </action>
  </widget>

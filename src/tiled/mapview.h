@@ -69,6 +69,8 @@ public:
     qreal scale() const;
     void setScale(qreal scale);
 
+    void fitInView();
+
     bool handScrolling() const { return mHandScrolling; }
     void setHandScrolling(bool handScrolling);
 

@@ -271,8 +271,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerAction(mUi->actionSnapToPixels, "SnapToPixels");
     ActionManager::registerAction(mUi->actionTilesetProperties, "TilesetProperties");
     ActionManager::registerAction(mUi->actionZoomIn, "ZoomIn");
-    ActionManager::registerAction(mUi->actionZoomNormal, "ZoomNormal");
     ActionManager::registerAction(mUi->actionZoomOut, "ZoomOut");
+    ActionManager::registerAction(mUi->actionZoomNormal, "ZoomNormal");
+    ActionManager::registerAction(mUi->actionFitInView, "FitInView");
 
     mMapEditor = new MapEditor;
     mTilesetEditor = new TilesetEditor;
@@ -497,6 +498,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionZoomIn, &QAction::triggered, this, &MainWindow::zoomIn);
     connect(mUi->actionZoomOut, &QAction::triggered, this, &MainWindow::zoomOut);
     connect(mUi->actionZoomNormal, &QAction::triggered, this, &MainWindow::zoomNormal);
+    connect(mUi->actionFitInView, &QAction::triggered, this, &MainWindow::fitInView);
     connect(mUi->actionFullScreen, &QAction::toggled, this, &MainWindow::setFullScreen);
     connect(mUi->actionClearView, &QAction::toggled, this, &MainWindow::toggleClearView);
 
@@ -586,6 +588,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     setThemeIcon(mUi->actionZoomIn, "zoom-in");
     setThemeIcon(mUi->actionZoomOut, "zoom-out");
     setThemeIcon(mUi->actionZoomNormal, "zoom-original");
+    setThemeIcon(mUi->actionFitInView, "zoom-original");
     setThemeIcon(mUi->actionResizeMap, "document-page-setup");
     setThemeIcon(mUi->actionMapProperties, "document-properties");
     setThemeIcon(mUi->actionDocumentation, "help-contents");
@@ -1163,6 +1166,12 @@ void MainWindow::zoomNormal()
 {
     if (mZoomable)
         mZoomable->resetZoom();
+}
+
+void MainWindow::fitInView()
+{
+    if (MapView *mapView = mDocumentManager->currentMapView())
+        mapView->fitInView();
 }
 
 void MainWindow::setFullScreen(bool fullScreen)
