@@ -654,7 +654,7 @@
   <action name="actionFitInView">
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/16/zoom-original.png</normaloff>:/images/16/zoom-original.png</iconset>
+     <normaloff>:/images/16/zoom-fit-best.png</normaloff>:/images/16/zoom-fit-best.png</iconset>
    </property>
    <property name="text">
     <string>Fit In View</string>

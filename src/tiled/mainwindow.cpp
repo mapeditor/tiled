@@ -588,7 +588,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     setThemeIcon(mUi->actionZoomIn, "zoom-in");
     setThemeIcon(mUi->actionZoomOut, "zoom-out");
     setThemeIcon(mUi->actionZoomNormal, "zoom-original");
-    setThemeIcon(mUi->actionFitInView, "zoom-original");
+    setThemeIcon(mUi->actionFitInView, "zoom-fit-best");
     setThemeIcon(mUi->actionResizeMap, "document-page-setup");
     setThemeIcon(mUi->actionMapProperties, "document-properties");
     setThemeIcon(mUi->actionDocumentation, "help-contents");
