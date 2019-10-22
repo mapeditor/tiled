@@ -46,6 +46,8 @@
 #include "tmxmapformat.h"
 #include "utils.h"
 #include "wangset.h"
+#include "worlddocument.h"
+#include "worldmanager.h"
 #include "zoomable.h"
 
 #include <QCoreApplication>
@@ -274,6 +276,10 @@ DocumentManager::DocumentManager(QObject *parent)
             }
         }
     };
+
+    WorldManager& worldManager = WorldManager::instance();
+    connect(&worldManager, &WorldManager::worldUnloaded,
+            this, &DocumentManager::onWorldUnloaded);
 }
 
 DocumentManager::~DocumentManager()
@@ -902,8 +908,6 @@ void DocumentManager::currentIndexChanged()
 
     if (document) {
         editor = mEditorForType.value(document->type());
-        mUndoGroup->setActiveStack(document->undoStack());
-
         changed = isDocumentChangedOnDisk(document);
     }
 
@@ -1174,6 +1178,39 @@ TilesetDocument *DocumentManager::openTilesetFile(const QString &path)
     openFile(path);
     const int i = findDocument(path);
     return i == -1 ? nullptr : qobject_cast<TilesetDocument*>(mDocuments.at(i).data());
+}
+
+WorldDocument *DocumentManager::ensureWorldDocument(const QString& fileName)
+{
+    if(!mWorldDocuments.contains(fileName)) {
+        WorldDocument* worldDocument = new WorldDocument(fileName);
+        mWorldDocuments.insert(fileName, worldDocument);
+        mUndoGroup->addStack(worldDocument->undoStack());
+    }
+    return mWorldDocuments[fileName];
+}
+
+QStringList DocumentManager::dirtyWorldFiles() const
+{
+    QStringList dirtyWorldFiles;
+    QStringList allWorldFiles = WorldManager::instance().loadedWorldFiles();
+
+    for(const QString &worldFile : allWorldFiles) {
+        if(!mWorldDocuments.contains(worldFile)) {
+            continue;
+        }
+        if(mWorldDocuments[worldFile]->undoStack()->isClean()) {
+            continue;
+        }
+        dirtyWorldFiles.append(worldFile);
+    }
+
+    return dirtyWorldFiles;
+}
+
+void DocumentManager::onWorldUnloaded( const QString& worldFile )
+{
+    delete mWorldDocuments.take(worldFile);
 }
 
 static bool mayNeedColumnCountAdjustment(const Tileset &tileset)

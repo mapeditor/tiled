@@ -51,6 +51,7 @@ class MapEditor;
 class MapView;
 class TilesetDocument;
 class TilesetDocumentsModel;
+class WorldDocument;
 
 /**
  * This class controls the open documents.
@@ -131,6 +132,9 @@ public:
 
     void abortMultiDocumentClose();
 
+    WorldDocument *ensureWorldDocument(const QString& fileName);
+    QStringList dirtyWorldFiles() const;
+
 signals:
     void documentCreated(Document *document);
     void documentOpened(Document *document);
@@ -178,6 +182,8 @@ public slots:
     void saveFile();
 
 private:
+    void onWorldUnloaded( const QString& worldFile );
+
     void currentIndexChanged();
     void fileNameChanged(const QString &fileName,
                          const QString &oldFileName);
@@ -207,6 +213,7 @@ private:
     TilesetDocument *openTilesetFile(const QString &path);
 
     QVector<DocumentPtr> mDocuments;
+    QMap<QString, WorldDocument*> mWorldDocuments;
     TilesetDocumentsModel *mTilesetDocumentsModel;
 
     // Pointer becomes null when deleted as part of the UI, to prevent double-deletion

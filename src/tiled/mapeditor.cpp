@@ -81,6 +81,8 @@
 #include "wangdock.h"
 #include "wangset.h"
 #include "zoomable.h"
+#include "worldmovemaptool.h"
+#include "worldmanager.h"
 
 #include <QComboBox>
 #include <QDialogButtonBox>
@@ -94,6 +96,7 @@
 #include <QShortcut>
 #include <QStackedWidget>
 #include <QToolBar>
+#include <QUndoGroup>
 
 #include "qtcompat_p.h"
 
@@ -209,6 +212,7 @@ MapEditor::MapEditor(QObject *parent)
     mToolsToolBar->addAction(mToolManager->registerTool(templatesTool));
     mToolsToolBar->addAction(mToolManager->registerTool(textObjectsTool));
     mToolsToolBar->addSeparator();
+    mToolsToolBar->addAction(mToolManager->registerTool(new WorldMoveMapTool(this)));
     mToolsToolBar->addAction(mToolManager->registerTool(new LayerOffsetTool(this)));
     mToolsToolBar->addSeparator();  // todo: hide when there are no tool extensions
 
@@ -308,6 +312,9 @@ MapEditor::MapEditor(QObject *parent)
             this, &MapEditor::showTileCollisionShapesChanged);
     connect(prefs, &Preferences::aboutToSaveSession,
             this, [this] { if (mCurrentMapDocument) saveDocumentState(mCurrentMapDocument); });
+
+    connect(&WorldManager::instance(), &WorldManager::worldsChanged,
+            this, &MapEditor::updateActiveUndoStack);
 }
 
 MapEditor::~MapEditor()
@@ -367,8 +374,10 @@ void MapEditor::setCurrentDocument(Document *document)
     MapDocument *mapDocument = qobject_cast<MapDocument*>(document);
     Q_ASSERT(mapDocument || !document);
 
-    if (mCurrentMapDocument == mapDocument)
+    if (mCurrentMapDocument == mapDocument) {
+        updateActiveUndoStack();
         return;
+    }
 
     if (mCurrentMapDocument) {
         saveDocumentState(mCurrentMapDocument);
@@ -443,6 +452,8 @@ void MapEditor::setCurrentDocument(Document *document)
 
         mViewWithTool = mapView;
     }
+
+    updateActiveUndoStack();
 }
 
 Document *MapEditor::currentDocument() const
@@ -677,6 +688,26 @@ void MapEditor::setSelectedTool(AbstractTool *tool)
                 this, &MapEditor::cursorChanged);
 
         tool->populateToolBar(mToolSpecificToolBar);
+    }
+
+    updateActiveUndoStack();
+}
+
+void MapEditor::updateActiveUndoStack()
+{
+    QUndoStack* undoStack = DocumentManager::instance()->undoGroup()->activeStack();
+    if(mSelectedTool) {
+        undoStack = mSelectedTool->undoStack();
+        if(!undoStack && mCurrentMapDocument) {
+            undoStack = mCurrentMapDocument->undoStack();
+        }
+    }
+    else if(mCurrentMapDocument) {
+        undoStack = mCurrentMapDocument->undoStack();
+    }
+    mUndoDock->setStack(undoStack);
+    if (DocumentManager::instance()->currentEditor() == this) {
+        DocumentManager::instance()->undoGroup()->setActiveStack(undoStack);
     }
 }
 

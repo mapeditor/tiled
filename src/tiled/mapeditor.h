@@ -126,6 +126,8 @@ public:
 
 private:
     void setSelectedTool(AbstractTool *tool);
+    void currentDocumentChanged(Document *document);
+    void updateActiveUndoStack();
 
     void paste(ClipboardManager::PasteFlags flags);
 

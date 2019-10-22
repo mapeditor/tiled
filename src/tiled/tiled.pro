@@ -46,6 +46,7 @@ SOURCES += aboutdialog.cpp \
     abstracttiletool.cpp \
     abstracttilefilltool.cpp \
     abstracttool.cpp \
+    abstractworldtool.cpp \
     actionmanager.cpp \
     addpropertydialog.cpp \
     addremovelayer.cpp \
@@ -269,8 +270,10 @@ SOURCES += aboutdialog.cpp \
     wangsetmodel.cpp \
     wangdock.cpp \
     wangfiller.cpp \
-    wangtemplateview.cpp \
     wangtemplatemodel.cpp \
+    wangtemplateview.cpp \
+    worlddocument.cpp \
+    worldmovemaptool.cpp \
     zoomable.cpp
 
 HEADERS += aboutdialog.h \
@@ -279,6 +282,7 @@ HEADERS += aboutdialog.h \
     abstracttiletool.h \
     abstracttilefilltool.h \
     abstracttool.h \
+    abstractworldtool.h \
     actionmanager.h \
     addpropertydialog.h \
     addremovelayer.h \
@@ -506,8 +510,10 @@ HEADERS += aboutdialog.h \
     wangsetmodel.h \
     wangdock.h \
     wangfiller.h \
-    wangtemplateview.h \
     wangtemplatemodel.h \
+    wangtemplateview.h \
+    worlddocument.h \
+    worldmovemaptool.h \
     zoomable.h
 
 FORMS += aboutdialog.ui \
