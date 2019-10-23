@@ -657,7 +657,7 @@
      <normaloff>:/images/16/zoom-fit-best.png</normaloff>:/images/16/zoom-fit-best.png</iconset>
    </property>
    <property name="text">
-    <string>Fit In View</string>
+    <string>Fit Map in View</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+J</string>

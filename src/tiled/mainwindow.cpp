@@ -1586,6 +1586,7 @@ void MainWindow::updateZoomActions()
     mUi->actionZoomIn->setEnabled(mZoomable && mZoomable->canZoomIn());
     mUi->actionZoomOut->setEnabled(mZoomable && mZoomable->canZoomOut());
     mUi->actionZoomNormal->setEnabled(scale != 1);
+    mUi->actionFitInView->setEnabled(mDocument && mDocument->type() == Document::MapDocumentType);
 }
 
 void MainWindow::openDocumentation()
