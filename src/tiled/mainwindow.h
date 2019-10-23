@@ -132,6 +132,7 @@ private:
     void zoomIn();
     void zoomOut();
     void zoomNormal();
+    void fitInView();
     void setFullScreen(bool fullScreen);
     void toggleClearView(bool clearView);
     void resetToDefaultLayout();

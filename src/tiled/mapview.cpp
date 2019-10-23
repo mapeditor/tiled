@@ -121,6 +121,14 @@ void MapView::setScale(qreal scale)
     mZoomable->setScale(scale);
 }
 
+void MapView::fitInView()
+{
+    // Scale and center map to fit in view
+    QRectF rect = mapScene()->mapBoundingRect();
+    centerOn(rect.center());
+    setScale(std::min(width() / rect.width(), height() / rect.height()) * 0.95);
+}
+
 void MapView::adjustScale(qreal scale)
 {
     const QTransform newTransform = QTransform::fromScale(scale, scale);
