@@ -398,7 +398,7 @@
         <location filename="../src/tiled/scriptedfileformat.cpp" line="+136"/>
         <location filename="../src/tiled/shortcutsettingspage.cpp" line="+722"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kunne ikke åpne fil for skriving.</translation>
     </message>
     <message>
         <location filename="../src/libtiled/worldmanager.cpp" line="+127"/>
@@ -3570,7 +3570,7 @@ Do you want to replace it?</source>
     <message>
         <location line="+8"/>
         <source>Reload</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Last Inn På Nytt</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4527,7 +4527,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location filename="../src/tiled/mapsdock.cpp" line="+82"/>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bla gjennom…</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -4962,7 +4962,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="-131"/>
         <source>Cu&amp;t</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Klipp U&amp;t</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4972,7 +4972,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+1"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Lim Inn</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -5893,7 +5893,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location filename="../src/tiled/tilesetdock.cpp" line="+603"/>
         <source>Remove Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fjern Rutebrett</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -6086,7 +6086,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+9"/>
         <source>Set Wang Set Image</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Valg bilde for Wang-sett</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -6143,7 +6143,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location filename="../src/tiled/variantpropertymanager.cpp" line="+166"/>
         <source>%1, %2</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%1,%2</translation>
     </message>
     <message>
         <location line="+127"/>

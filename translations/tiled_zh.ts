@@ -398,7 +398,7 @@
         <location filename="../src/tiled/scriptedfileformat.cpp" line="+136"/>
         <location filename="../src/tiled/shortcutsettingspage.cpp" line="+722"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">无法打开文件进行写入。</translation>
     </message>
     <message>
         <location filename="../src/libtiled/worldmanager.cpp" line="+127"/>
@@ -2731,7 +2731,7 @@ Line %1, column %2</source>
     <message>
         <location line="+5"/>
         <source>Raise Object</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">提高对象</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -2927,7 +2927,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/brokenlinks.cpp" line="+270"/>
         <source>Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">图块集</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3013,7 +3013,7 @@ Line %1, column %2</source>
         <location line="+14"/>
         <location line="+17"/>
         <source>All Files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">全部文件 (*)</translation>
     </message>
     <message>
         <location line="-12"/>
@@ -3815,7 +3815,7 @@ Do you want to replace it?</source>
         <location line="+744"/>
         <location line="+400"/>
         <source>All Files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">全部文件 (*)</translation>
     </message>
     <message>
         <location line="-1122"/>
@@ -4065,7 +4065,7 @@ Please select specific format.</source>
     <message>
         <location line="+109"/>
         <source>Resize Map</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">调整地图大小</translation>
     </message>
     <message>
         <location line="+75"/>
@@ -4430,7 +4430,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Remove Objects</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">移除多个对象</translation>
     </message>
 </context>
 <context>
@@ -4699,12 +4699,12 @@ Please select specific format.</source>
     <message>
         <location line="+28"/>
         <source>New Map...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">创建新地图...</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>New Tileset...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">新建图块集...</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -5225,7 +5225,7 @@ Please select specific format.</source>
     <message>
         <location line="+9"/>
         <source>Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">图块集</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -5311,7 +5311,7 @@ Please select specific format.</source>
     <message>
         <location line="+40"/>
         <source>Change Infinite Property</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">更改无限属性</translation>
     </message>
     <message>
         <location line="+334"/>
@@ -5624,7 +5624,7 @@ Please select specific format.</source>
     <message>
         <location line="+27"/>
         <source>All Files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">全部文件 (*)</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -5757,7 +5757,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Remove Objects</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">移除多个对象</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -5866,7 +5866,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tilesetdock.cpp" line="+603"/>
         <source>Remove Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">删除 Tileset</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -5886,7 +5886,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>New Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">新图块集</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -5969,7 +5969,7 @@ Please select specific format.</source>
         <location filename="../src/tiled/tileseteditor.cpp" line="-454"/>
         <location line="+447"/>
         <source>Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">图块集</translation>
     </message>
     <message>
         <location line="+2"/>

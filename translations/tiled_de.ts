@@ -4077,7 +4077,7 @@ Bitte Format angeben.</translation>
     <message>
         <location line="+75"/>
         <source>Offset Map</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Karte verschieben</translation>
     </message>
     <message numerus="yes">
         <location line="+27"/>
@@ -4527,7 +4527,7 @@ Bitte Format angeben.</translation>
     <message>
         <location filename="../src/tiled/mapsdock.cpp" line="+82"/>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Durchsuchen…</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -5338,7 +5338,7 @@ Bitte Format angeben.</translation>
     <message>
         <location line="+40"/>
         <source>Change Infinite Property</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Endlos-Eigenschaften ändern</translation>
     </message>
     <message>
         <location line="+334"/>
@@ -6106,7 +6106,7 @@ Bitte Format angeben.</translation>
     <message>
         <location line="+8"/>
         <source>Show &amp;Grid</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zeige &amp;Raster</translation>
     </message>
 </context>
 <context>
@@ -6262,7 +6262,7 @@ Bitte Format angeben.</translation>
     <message>
         <location line="+1"/>
         <source>Remove Wang Set</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wang-Set entfernen</translation>
     </message>
     <message>
         <location line="+1"/>

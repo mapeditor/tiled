@@ -662,7 +662,7 @@
     <message>
         <location line="+27"/>
         <source>Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بلاط</translation>
     </message>
     <message>
         <location line="+100"/>
@@ -2940,7 +2940,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/brokenlinks.cpp" line="+270"/>
         <source>Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بلاط</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -5362,7 +5362,7 @@ Please select specific format.</source>
     <message>
         <location line="+9"/>
         <source>Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بلاط</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -6106,7 +6106,7 @@ Please select specific format.</source>
         <location filename="../src/tiled/tileseteditor.cpp" line="-454"/>
         <location line="+447"/>
         <source>Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بلاط</translation>
     </message>
     <message>
         <location line="+2"/>

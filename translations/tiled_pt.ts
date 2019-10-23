@@ -2959,7 +2959,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+1"/>
         <source>Location</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Caminho</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3155,7 +3155,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+5"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Deletar</translation>
     </message>
     <message>
         <location line="+80"/>
@@ -4423,7 +4423,7 @@ Por favor selecione o formato específico.</translation>
     <message>
         <location line="+65"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Deletar</translation>
     </message>
     <message numerus="yes">
         <location line="+423"/>
@@ -4962,7 +4962,7 @@ Por favor selecione o formato específico.</translation>
     <message>
         <location line="-131"/>
         <source>Cu&amp;t</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Recortar</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4972,7 +4972,7 @@ Por favor selecione o formato específico.</translation>
     <message>
         <location line="+1"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">C&amp;olar</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -5769,7 +5769,7 @@ Por favor selecione o formato específico.</translation>
     <message>
         <location line="+377"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Deletar</translation>
     </message>
     <message>
         <location line="+0"/>

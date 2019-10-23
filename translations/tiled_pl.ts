@@ -3020,7 +3020,7 @@ Linia %1, kolumna %2</translation>
         <location line="+14"/>
         <location line="+17"/>
         <source>All Files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wszystkie pliki (*)</translation>
     </message>
     <message>
         <location line="-12"/>
@@ -3832,7 +3832,7 @@ Czy chcesz to zamienić?</translation>
         <location line="+744"/>
         <location line="+400"/>
         <source>All Files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wszystkie pliki (*)</translation>
     </message>
     <message>
         <location line="-1122"/>
@@ -5085,7 +5085,7 @@ Proszę wybrać konkretny format.</translation>
     <message>
         <location line="-239"/>
         <source>Infinite</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nieskończony</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -5681,7 +5681,7 @@ Proszę wybrać konkretny format.</translation>
     <message>
         <location line="+27"/>
         <source>All Files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wszystkie pliki (*)</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -5923,7 +5923,7 @@ Proszę wybrać konkretny format.</translation>
     <message>
         <location filename="../src/tiled/tilesetdock.cpp" line="+603"/>
         <source>Remove Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Usuń Zestaw Kafelków</translation>
     </message>
     <message>
         <location line="+1"/>

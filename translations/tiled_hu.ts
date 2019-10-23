@@ -4935,7 +4935,7 @@ Válasszon egy adott formátumot.</translation>
     <message>
         <location line="-131"/>
         <source>Cu&amp;t</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Kivágás</translation>
     </message>
     <message>
         <location line="+1"/>

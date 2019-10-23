@@ -4830,18 +4830,18 @@ Please select specific format.</source>
     <message>
         <location line="+2"/>
         <source>Add Property</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Přidání vlastnosti</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Property</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Odstranění vlastnosti</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+322"/>
         <source>Rename Property</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Přejmenování vlastnosti</translation>
     </message>
     <message>
         <location line="-267"/>
@@ -4982,7 +4982,7 @@ Please select specific format.</source>
         <location line="+2"/>
         <location line="+173"/>
         <source>Rename Property</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Přejmenování vlastnosti</translation>
     </message>
     <message>
         <location line="-131"/>
@@ -5031,12 +5031,12 @@ Please select specific format.</source>
     <message>
         <location line="+2"/>
         <source>Add Property</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Přidání vlastnosti</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Property</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Odstranění vlastnosti</translation>
     </message>
 </context>
 <context>

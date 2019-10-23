@@ -2929,7 +2929,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location filename="../src/tiled/brokenlinks.cpp" line="+270"/>
         <source>Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Desen Seti</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2959,7 +2959,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+1"/>
         <source>Location</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Yer</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3921,7 +3921,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+2"/>
         <source>Object Types Editor</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nesne Türü Düzenleyicisi</translation>
     </message>
     <message>
         <location line="+42"/>
@@ -5226,7 +5226,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+9"/>
         <source>Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Desen Seti</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -5970,7 +5970,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <location filename="../src/tiled/tileseteditor.cpp" line="-454"/>
         <location line="+447"/>
         <source>Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Desen Seti</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -5989,7 +5989,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="-189"/>
         <source>Tile Animation Editor</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Desen Animasyon Düzenleyici</translation>
     </message>
     <message>
         <location line="+1"/>

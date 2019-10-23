@@ -2733,7 +2733,7 @@ Line %1, column %2</source>
     <message>
         <location line="+5"/>
         <source>Raise Object</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Преместване на обект нагоре</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -2743,7 +2743,7 @@ Line %1, column %2</source>
     <message>
         <location line="+1"/>
         <source>Lower Object</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Преместване на обект надолу</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -4073,7 +4073,7 @@ Please select specific format.</source>
     <message>
         <location line="+109"/>
         <source>Resize Map</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Преоразмеряване на карта</translation>
     </message>
     <message>
         <location line="+75"/>
@@ -4813,13 +4813,13 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Remove Property</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Премахване на свойство</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+322"/>
         <source>Rename Property</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Преименуване на свойство</translation>
     </message>
     <message>
         <location line="-267"/>
@@ -4958,7 +4958,7 @@ Please select specific format.</source>
         <location line="+2"/>
         <location line="+173"/>
         <source>Rename Property</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Преименуване на свойство</translation>
     </message>
     <message>
         <location line="-131"/>
@@ -5011,7 +5011,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Remove Property</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Премахване на свойство</translation>
     </message>
 </context>
 <context>
@@ -5339,7 +5339,7 @@ Please select specific format.</source>
     <message>
         <location line="+40"/>
         <source>Change Infinite Property</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Промяна на безкрайно свойство</translation>
     </message>
     <message>
         <location line="+334"/>
@@ -5894,7 +5894,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tilesetdock.cpp" line="+603"/>
         <source>Remove Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Премахване на плочен набор</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -6011,7 +6011,7 @@ Please select specific format.</source>
         <location line="-72"/>
         <location line="+190"/>
         <source>Remove Tiles</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Премахване на плочки</translation>
     </message>
     <message>
         <location line="-189"/>
@@ -6107,7 +6107,7 @@ Please select specific format.</source>
     <message>
         <location line="+8"/>
         <source>Show &amp;Grid</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Показване на &amp;решетката</translation>
     </message>
 </context>
 <context>

@@ -398,7 +398,7 @@
         <location filename="../src/tiled/scriptedfileformat.cpp" line="+136"/>
         <location filename="../src/tiled/shortcutsettingspage.cpp" line="+722"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">La tentative d&apos;écriture du fichier a échoué.</translation>
     </message>
     <message>
         <location filename="../src/libtiled/worldmanager.cpp" line="+127"/>
@@ -2732,7 +2732,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+5"/>
         <source>Raise Object</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Déplacer l&apos;objet vers le haut</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -2742,7 +2742,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+1"/>
         <source>Lower Object</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Déplacer l&apos;objet vers le bas</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -2929,7 +2929,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location filename="../src/tiled/brokenlinks.cpp" line="+270"/>
         <source>Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tileset</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3155,7 +3155,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+5"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Effacer</translation>
     </message>
     <message>
         <location line="+80"/>
@@ -4077,7 +4077,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+75"/>
         <source>Offset Map</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Décalage de la carte</translation>
     </message>
     <message numerus="yes">
         <location line="+27"/>
@@ -4153,7 +4153,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+345"/>
         <source>Tile</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tuile</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -4423,7 +4423,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+65"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Effacer</translation>
     </message>
     <message numerus="yes">
         <location line="+423"/>
@@ -4449,7 +4449,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+1"/>
         <source>Remove Objects</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Supprimer les Objets</translation>
     </message>
 </context>
 <context>
@@ -4527,7 +4527,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/tiled/mapsdock.cpp" line="+82"/>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Parcourir…</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -4719,7 +4719,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+28"/>
         <source>New Map...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nouvelle carte…</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -4807,18 +4807,18 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+2"/>
         <source>Add Property</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ajouter une propriété</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Property</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Effacer une propriété</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+322"/>
         <source>Rename Property</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Renommer une propriété</translation>
     </message>
     <message>
         <location line="-267"/>
@@ -4957,7 +4957,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <location line="+2"/>
         <location line="+173"/>
         <source>Rename Property</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Renommer une propriété</translation>
     </message>
     <message>
         <location line="-131"/>
@@ -5005,12 +5005,12 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+2"/>
         <source>Add Property</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ajouter une propriété</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Property</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Effacer une propriété</translation>
     </message>
 </context>
 <context>
@@ -5252,7 +5252,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+9"/>
         <source>Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tileset</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -5297,7 +5297,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+17"/>
         <source>Tile</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tuile</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -5769,7 +5769,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+377"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Effacer</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -5784,7 +5784,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+1"/>
         <source>Remove Objects</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Supprimer les Objets</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -5893,7 +5893,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/tiled/tilesetdock.cpp" line="+603"/>
         <source>Remove Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Supprimer un Tileset</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -5996,7 +5996,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <location filename="../src/tiled/tileseteditor.cpp" line="-454"/>
         <location line="+447"/>
         <source>Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tileset</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -6015,7 +6015,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="-189"/>
         <source>Tile Animation Editor</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Éditeur d&apos;animation de tuile</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -6086,7 +6086,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+9"/>
         <source>Set Wang Set Image</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Régler l&apos;Image de l&apos;Ensemble Wang</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -6106,7 +6106,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+8"/>
         <source>Show &amp;Grid</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Voir la &amp;grille</translation>
     </message>
 </context>
 <context>
@@ -6257,12 +6257,12 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+1"/>
         <source>Add Wang Set</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ajouter un Ensemble Wang</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Wang Set</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Supprimer un Ensemble Wang</translation>
     </message>
     <message>
         <location line="+1"/>

@@ -2734,7 +2734,7 @@ Line %1, column %2</source>
     <message>
         <location line="+5"/>
         <source>Raise Object</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Переместить объект вверх</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -2744,7 +2744,7 @@ Line %1, column %2</source>
     <message>
         <location line="+1"/>
         <source>Lower Object</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Переместить объект вниз</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -4831,18 +4831,18 @@ Please select specific format.</source>
     <message>
         <location line="+2"/>
         <source>Add Property</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Добавить свойство</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Property</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Удалить свойство</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+322"/>
         <source>Rename Property</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Переименовать свойство</translation>
     </message>
     <message>
         <location line="-267"/>
@@ -4984,7 +4984,7 @@ Please select specific format.</source>
         <location line="+2"/>
         <location line="+173"/>
         <source>Rename Property</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Переименовать свойство</translation>
     </message>
     <message>
         <location line="-131"/>
@@ -5033,12 +5033,12 @@ Please select specific format.</source>
     <message>
         <location line="+2"/>
         <source>Add Property</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Добавить свойство</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Property</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Удалить свойство</translation>
     </message>
 </context>
 <context>
@@ -6114,7 +6114,7 @@ Please select specific format.</source>
     <message>
         <location line="+9"/>
         <source>Set Wang Set Image</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Установить изображение для набора плиток Вана</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -6134,7 +6134,7 @@ Please select specific format.</source>
     <message>
         <location line="+8"/>
         <source>Show &amp;Grid</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Отображать &amp;сетку</translation>
     </message>
 </context>
 <context>

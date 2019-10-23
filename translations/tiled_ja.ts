@@ -2731,7 +2731,7 @@ Line %1, column %2</source>
     <message>
         <location line="+5"/>
         <source>Raise Object</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">オブジェクトを前面へ</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -2741,7 +2741,7 @@ Line %1, column %2</source>
     <message>
         <location line="+1"/>
         <source>Lower Object</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">オブジェクトを背面へ</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -4065,12 +4065,12 @@ Please select specific format.</source>
     <message>
         <location line="+109"/>
         <source>Resize Map</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">マップをリサイズ</translation>
     </message>
     <message>
         <location line="+75"/>
         <source>Offset Map</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">マップのオフセット</translation>
     </message>
     <message numerus="yes">
         <location line="+27"/>

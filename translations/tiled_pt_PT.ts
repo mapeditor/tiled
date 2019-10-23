@@ -4447,7 +4447,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+1"/>
         <source>Remove Objects</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Remover Objetos</translation>
     </message>
 </context>
 <context>
@@ -4970,7 +4970,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+1"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Colar</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -5782,7 +5782,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+1"/>
         <source>Remove Objects</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Remover Objetos</translation>
     </message>
     <message>
         <location line="+1"/>

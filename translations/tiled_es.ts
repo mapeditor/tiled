@@ -3015,7 +3015,7 @@ Línea %1, columna %2</translation>
         <location line="+14"/>
         <location line="+17"/>
         <source>All Files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Todos los archivos (*)</translation>
     </message>
     <message>
         <location line="-12"/>
@@ -3822,7 +3822,7 @@ Do you want to replace it?</source>
         <location line="+744"/>
         <location line="+400"/>
         <source>All Files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Todos los archivos (*)</translation>
     </message>
     <message>
         <location line="-1122"/>
@@ -5338,7 +5338,7 @@ Por favor seleccione un formato específico.</translation>
     <message>
         <location line="+40"/>
         <source>Change Infinite Property</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Cambiar Atributo Infinito</translation>
     </message>
     <message>
         <location line="+334"/>
@@ -5651,7 +5651,7 @@ Por favor seleccione un formato específico.</translation>
     <message>
         <location line="+27"/>
         <source>All Files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Todos los archivos (*)</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -6086,7 +6086,7 @@ Por favor seleccione un formato específico.</translation>
     <message>
         <location line="+9"/>
         <source>Set Wang Set Image</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Establecer Conjunto de Imagen Wang</translation>
     </message>
     <message>
         <location line="+4"/>

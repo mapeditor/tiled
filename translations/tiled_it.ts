@@ -397,7 +397,7 @@
         <location filename="../src/tiled/scriptedfileformat.cpp" line="+136"/>
         <location filename="../src/tiled/shortcutsettingspage.cpp" line="+722"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Impossibile aprire il file in scrittura.</translation>
     </message>
     <message>
         <location filename="../src/libtiled/worldmanager.cpp" line="+127"/>
@@ -3154,7 +3154,7 @@ Linea %1, colonna %2</translation>
     <message>
         <location line="+5"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Elimina</translation>
     </message>
     <message>
         <location line="+80"/>
@@ -4076,7 +4076,7 @@ Seleziona un formato specifico.</translation>
     <message>
         <location line="+75"/>
         <source>Offset Map</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Spostamento laterale (offset) mappa</translation>
     </message>
     <message numerus="yes">
         <location line="+27"/>
@@ -4152,7 +4152,7 @@ Seleziona un formato specifico.</translation>
     <message>
         <location line="+345"/>
         <source>Tile</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tile</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -4422,7 +4422,7 @@ Seleziona un formato specifico.</translation>
     <message>
         <location line="+65"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Elimina</translation>
     </message>
     <message numerus="yes">
         <location line="+423"/>
@@ -5295,7 +5295,7 @@ Seleziona un formato specifico.</translation>
     <message>
         <location line="+17"/>
         <source>Tile</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tile</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -5767,7 +5767,7 @@ Seleziona un formato specifico.</translation>
     <message>
         <location line="+377"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Elimina</translation>
     </message>
     <message>
         <location line="+0"/>

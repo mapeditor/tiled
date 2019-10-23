@@ -398,7 +398,7 @@
         <location filename="../src/tiled/scriptedfileformat.cpp" line="+136"/>
         <location filename="../src/tiled/shortcutsettingspage.cpp" line="+722"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Не вдалося відкрити файл для запису.</translation>
     </message>
     <message>
         <location filename="../src/libtiled/worldmanager.cpp" line="+127"/>
@@ -2734,7 +2734,7 @@ Line %1, column %2</source>
     <message>
         <location line="+5"/>
         <source>Raise Object</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Посунути об&apos;єкт вище</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -2744,7 +2744,7 @@ Line %1, column %2</source>
     <message>
         <location line="+1"/>
         <source>Lower Object</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Посунути об&apos;єкт нижче</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -2962,7 +2962,7 @@ Line %1, column %2</source>
     <message>
         <location line="+1"/>
         <source>Location</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Розташування</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4026,7 +4026,7 @@ Please select specific format.</source>
     <message>
         <location line="+27"/>
         <source>&amp;New</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Нова</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4426,7 +4426,7 @@ Please select specific format.</source>
     <message>
         <location line="+37"/>
         <source>&amp;New</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Нова</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -4888,7 +4888,7 @@ Please select specific format.</source>
     <message>
         <location line="+147"/>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ім&apos;я:</translation>
     </message>
 </context>
 <context>
@@ -4978,7 +4978,7 @@ Please select specific format.</source>
     <message>
         <location line="+23"/>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ім&apos;я:</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -5028,7 +5028,7 @@ Please select specific format.</source>
     <message>
         <location line="+58"/>
         <source>Properties</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Налаштування</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -5059,7 +5059,7 @@ Please select specific format.</source>
         <location line="+100"/>
         <location line="+170"/>
         <source>Width</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Довжина</translation>
     </message>
     <message>
         <location line="-269"/>
@@ -6043,7 +6043,7 @@ Please select specific format.</source>
     <message>
         <location line="-189"/>
         <source>Tile Animation Editor</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Редактор плиткової анімації</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -6134,7 +6134,7 @@ Please select specific format.</source>
     <message>
         <location line="+8"/>
         <source>Show &amp;Grid</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Показати &amp;сітку</translation>
     </message>
 </context>
 <context>

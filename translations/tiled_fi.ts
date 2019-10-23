@@ -398,7 +398,7 @@
         <location filename="../src/tiled/scriptedfileformat.cpp" line="+136"/>
         <location filename="../src/tiled/shortcutsettingspage.cpp" line="+722"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tiedostoa ei voitu avata kirjoitusta varten.</translation>
     </message>
     <message>
         <location filename="../src/libtiled/worldmanager.cpp" line="+127"/>
@@ -2732,7 +2732,7 @@ Rivi %1, kolumni %2</translation>
     <message>
         <location line="+5"/>
         <source>Raise Object</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nosta objektia</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -2742,7 +2742,7 @@ Rivi %1, kolumni %2</translation>
     <message>
         <location line="+1"/>
         <source>Lower Object</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Laske objektia</translation>
     </message>
     <message>
         <location line="+0"/>

@@ -398,7 +398,7 @@
         <location filename="../src/tiled/scriptedfileformat.cpp" line="+136"/>
         <location filename="../src/tiled/shortcutsettingspage.cpp" line="+722"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">לא ניתן היה לפתוח את הקובץ לכתיבה.</translation>
     </message>
     <message>
         <location filename="../src/libtiled/worldmanager.cpp" line="+127"/>
@@ -785,7 +785,7 @@
     <message>
         <location line="+27"/>
         <source>Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">סט משבצות</translation>
     </message>
     <message>
         <location line="+100"/>
@@ -2735,7 +2735,7 @@ Line %1, column %2</source>
     <message>
         <location line="+1"/>
         <source>Lower Object</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">להנמיך אובייקט</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -2922,7 +2922,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/brokenlinks.cpp" line="+270"/>
         <source>Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">סט משבצות</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -4064,12 +4064,12 @@ Please select specific format.</source>
     <message>
         <location line="+109"/>
         <source>Resize Map</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">שינוי גודל מפה</translation>
     </message>
     <message>
         <location line="+75"/>
         <source>Offset Map</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">שנה את גבולות המפה</translation>
     </message>
     <message numerus="yes">
         <location line="+27"/>
@@ -4145,7 +4145,7 @@ Please select specific format.</source>
     <message>
         <location line="+345"/>
         <source>Tile</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">אריח</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -4804,7 +4804,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Remove Property</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">להסיר מאפיין</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4991,7 +4991,7 @@ Please select specific format.</source>
     <message>
         <location line="+58"/>
         <source>Properties</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">מאפיינים</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -5001,7 +5001,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Remove Property</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">להסיר מאפיין</translation>
     </message>
 </context>
 <context>
@@ -5243,7 +5243,7 @@ Please select specific format.</source>
     <message>
         <location line="+9"/>
         <source>Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">סט משבצות</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -5288,7 +5288,7 @@ Please select specific format.</source>
     <message>
         <location line="+17"/>
         <source>Tile</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">אריח</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -5884,7 +5884,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tilesetdock.cpp" line="+603"/>
         <source>Remove Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">מחיקת סט משבצות</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -5904,7 +5904,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>New Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">סט משבצות חדש</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -5987,7 +5987,7 @@ Please select specific format.</source>
         <location filename="../src/tiled/tileseteditor.cpp" line="-454"/>
         <location line="+447"/>
         <source>Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">סט משבצות</translation>
     </message>
     <message>
         <location line="+2"/>

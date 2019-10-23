@@ -4075,7 +4075,7 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location line="+75"/>
         <source>Offset Map</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Förskjut karta</translation>
     </message>
     <message numerus="yes">
         <location line="+27"/>
@@ -4959,7 +4959,7 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location line="-131"/>
         <source>Cu&amp;t</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Klipp &amp;ut</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4969,7 +4969,7 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location line="+1"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">K&amp;listra in</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -7006,7 +7006,7 @@ Var god ange det specifika formatet.</translation>
     <message>
         <location line="-10"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Arkiv</translation>
     </message>
     <message>
         <location line="+16"/>
