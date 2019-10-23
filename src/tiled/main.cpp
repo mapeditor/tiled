@@ -45,10 +45,14 @@
 #include <memory>
 
 #ifdef Q_OS_WIN
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #if QT_VERSION >= 0x050700
 #include <QtPlatformHeaders\QWindowsWindowFunctions>
 #endif // QT_VERSION >= 0x050700
+#ifdef ERROR
+#undef ERROR
+#endif
 #endif // Q_OS_WIN
 
 #define STRINGIFY(x) #x
