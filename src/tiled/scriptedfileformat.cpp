@@ -278,7 +278,7 @@ SharedTileset ScriptedTilesetFormat::read(const QString &fileName)
 
     if (ScriptManager::instance().checkError(resultValue)) {
         mError = resultValue.toString();
-        return nullptr;
+        return SharedTileset();
     }
 
     EditableTileset *editableTileset = qobject_cast<EditableTileset*>(resultValue.toQObject());
@@ -290,8 +290,7 @@ SharedTileset ScriptedTilesetFormat::read(const QString &fileName)
         return editableTileset->tileset()->clone();
     }
 
-    return nullptr;
-
+    return SharedTileset();
 }
 
 bool ScriptedTilesetFormat::write(const Tileset &tileset, const QString &fileName, FileFormat::Options options)
