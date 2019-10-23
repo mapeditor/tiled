@@ -46,6 +46,7 @@
 #include "tileset.h"
 #include "tilesetdocument.h"
 
+#include <QCoreApplication>
 #include <QUndoStack>
 
 #include "qtcompat_p.h"
@@ -156,7 +157,7 @@ QList<QObject *> EditableMap::selectedObjects()
 EditableLayer *EditableMap::layerAt(int index)
 {
     if (index < 0 || index >= layerCount()) {
-        ScriptManager::instance().throwError(tr("Index out of range"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Index out of range"));
         return nullptr;
     }
 
@@ -167,7 +168,7 @@ EditableLayer *EditableMap::layerAt(int index)
 void EditableMap::removeLayerAt(int index)
 {
     if (index < 0 || index >= layerCount()) {
-        ScriptManager::instance().throwError(tr("Index out of range"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Index out of range"));
         return;
     }
 
@@ -182,13 +183,13 @@ void EditableMap::removeLayerAt(int index)
 void EditableMap::removeLayer(EditableLayer *editableLayer)
 {
     if (!editableLayer) {
-        ScriptManager::instance().throwError(tr("Invalid argument"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid argument"));
         return;
     }
 
     int index = map()->layers().indexOf(editableLayer->layer());
     if (index == -1) {
-        ScriptManager::instance().throwError(tr("Layer not found"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Layer not found"));
         return;
     }
 
@@ -198,17 +199,17 @@ void EditableMap::removeLayer(EditableLayer *editableLayer)
 void EditableMap::insertLayerAt(int index, EditableLayer *editableLayer)
 {
     if (index < 0 || index > layerCount()) {
-        ScriptManager::instance().throwError(tr("Index out of range"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Index out of range"));
         return;
     }
 
     if (!editableLayer) {
-        ScriptManager::instance().throwError(tr("Invalid argument"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid argument"));
         return;
     }
 
     if (editableLayer->map()) {
-        ScriptManager::instance().throwError(tr("Layer already part of a map"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Layer already part of a map"));
         return;
     }
 
@@ -243,7 +244,7 @@ bool EditableMap::replaceTileset(EditableTileset *oldEditableTileset,
                                  EditableTileset *newEditableTileset)
 {
     if (oldEditableTileset == newEditableTileset) {
-        ScriptManager::instance().throwError(tr("Invalid argument"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid argument"));
         return false;
     }
 
@@ -308,7 +309,7 @@ QList<QObject *> EditableMap::usedTilesets() const
 void EditableMap::merge(EditableMap *editableMap, bool canJoin)
 {
     if (!mapDocument()) {   // todo: support this outside of the undo stack
-        ScriptManager::instance().throwError(QLatin1String("Merge is currently not supported for detached maps"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Merge is currently not supported for detached maps"));
         return;
     }
 
@@ -335,11 +336,11 @@ void EditableMap::resize(QSize size, QPoint offset, bool removeObjects)
     if (checkReadOnly())
         return;
     if (!mapDocument()) {   // todo: should be able to resize still
-        ScriptManager::instance().throwError(QLatin1String("Resize is currently not supported for detached maps"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Resize is currently not supported for detached maps"));
         return;
     }
     if (size.isEmpty()) {
-        ScriptManager::instance().throwError(tr("Invalid size"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid size"));
         return;
     }
 
@@ -351,7 +352,7 @@ void EditableMap::autoMap(const RegionValueType &region, const QString &rulesFil
     if (checkReadOnly())
         return;
     if (!mapDocument()) {
-        ScriptManager::instance().throwError(QLatin1String("AutoMapping is currently not supported for detached maps"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "AutoMapping is currently not supported for detached maps"));
         return;
     }
 
@@ -494,11 +495,11 @@ void EditableMap::setSelectedLayers(const QList<QObject *> &layers)
     for (QObject *layerObject : layers) {
         auto editableLayer = qobject_cast<EditableLayer*>(layerObject);
         if (!editableLayer) {
-            ScriptManager::instance().throwError(tr("Not a layer"));
+            ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Not a layer"));
             return;
         }
         if (editableLayer->map() != this) {
-            ScriptManager::instance().throwError(tr("Layer not from this map"));
+            ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Layer not from this map"));
             return;
         }
 
@@ -519,11 +520,11 @@ void EditableMap::setSelectedObjects(const QList<QObject *> &objects)
     for (QObject *objectObject : objects) {
         auto editableMapObject = qobject_cast<EditableMapObject*>(objectObject);
         if (!editableMapObject) {
-            ScriptManager::instance().throwError(tr("Not an object"));
+            ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Not an object"));
             return;
         }
         if (editableMapObject->map() != this) {
-            ScriptManager::instance().throwError(tr("Object not from this map"));
+            ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Object not from this map"));
             return;
         }
 

@@ -28,8 +28,9 @@
 #include "tilelayer.h"
 #include "compression.h"
 
-#include <QtEndian>
+#include <QCoreApplication>
 #include <QFile>
+#include <QtEndian>
 
 using namespace ReplicaIsland;
 
@@ -238,7 +239,7 @@ bool ReplicaIslandPlugin::write(const Tiled::Map *map, const QString &fileName, 
     // Open up a temporary file for saving the level.
     SaveFile file(fileName);
     if (!file.open(QIODevice::WriteOnly)) {
-        mError = tr("Could not open file for writing.");
+        mError = QCoreApplication::translate("File Errors", "Could not open file for writing.");
         return false;
     }
 

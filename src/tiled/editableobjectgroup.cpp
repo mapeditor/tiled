@@ -26,6 +26,8 @@
 #include "editablemap.h"
 #include "scriptmanager.h"
 
+#include <QCoreApplication>
+
 namespace Tiled {
 
 EditableObjectGroup::EditableObjectGroup(const QString &name, QObject *parent)
@@ -52,7 +54,7 @@ QList<QObject *> EditableObjectGroup::objects()
 EditableMapObject *EditableObjectGroup::objectAt(int index)
 {
     if (index < 0 || index >= objectCount()) {
-        ScriptManager::instance().throwError(tr("Index out of range"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Index out of range"));
         return nullptr;
     }
 
@@ -63,7 +65,7 @@ EditableMapObject *EditableObjectGroup::objectAt(int index)
 void EditableObjectGroup::removeObjectAt(int index)
 {
     if (index < 0 || index >= objectCount()) {
-        ScriptManager::instance().throwError(tr("Index out of range"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Index out of range"));
         return;
     }
 
@@ -81,7 +83,7 @@ void EditableObjectGroup::removeObject(EditableMapObject *editableMapObject)
 {
     int index = objectGroup()->objects().indexOf(editableMapObject->mapObject());
     if (index == -1) {
-        ScriptManager::instance().throwError(tr("Object not found"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Object not found"));
         return;
     }
 
@@ -91,12 +93,12 @@ void EditableObjectGroup::removeObject(EditableMapObject *editableMapObject)
 void EditableObjectGroup::insertObjectAt(int index, EditableMapObject *editableMapObject)
 {
     if (index < 0 || index > objectCount()) {
-        ScriptManager::instance().throwError(tr("Index out of range"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Index out of range"));
         return;
     }
 
     if (editableMapObject->mapObject()->objectGroup()) {
-        ScriptManager::instance().throwError(tr("Object already part of an object layer"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Object already part of an object layer"));
         return;
     }
 

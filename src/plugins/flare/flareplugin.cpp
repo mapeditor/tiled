@@ -32,8 +32,9 @@
 #include "tileset.h"
 #include "objectgroup.h"
 
-#include <QFileInfo>
+#include <QCoreApplication>
 #include <QDir>
+#include <QFileInfo>
 #include <QSettings>
 #include <QStringList>
 #include <QTextStream>
@@ -53,7 +54,7 @@ std::unique_ptr<Tiled::Map> FlarePlugin::read(const QString &fileName)
     QFile file(fileName);
 
     if (!file.open (QIODevice::ReadOnly)) {
-        mError = tr("Could not open file for reading.");
+        mError = QCoreApplication::translate("File Errors", "Could not open file for reading.");
         return nullptr;
     }
 
@@ -299,7 +300,7 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName, Options 
     SaveFile file(fileName);
 
     if (!file.open(QFile::WriteOnly | QFile::Text)) {
-        mError = tr("Could not open file for writing.");
+        mError = QCoreApplication::translate("File Errors", "Could not open file for writing.");
         return false;
     }
 

@@ -24,6 +24,8 @@
 #include "editableasset.h"
 #include "scriptmanager.h"
 
+#include <QCoreApplication>
+
 namespace Tiled {
 
 EditableObject::EditableObject(EditableAsset *asset,
@@ -72,7 +74,7 @@ Document *EditableObject::document() const
 bool EditableObject::checkReadOnly() const
 {
     if (isReadOnly()) {
-        ScriptManager::instance().throwError(tr("Asset is read-only"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Asset is read-only"));
         return true;
     }
     return false;

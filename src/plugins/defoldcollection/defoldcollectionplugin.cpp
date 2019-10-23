@@ -30,9 +30,10 @@
 #include "tilelayer.h"
 #include "grouplayer.h"
 
-#include <QTextStream>
-#include <QFileInfo>
+#include <QCoreApplication>
 #include <QDir>
+#include <QFileInfo>
+#include <QTextStream>
 
 #include <cmath>
 
@@ -292,7 +293,7 @@ bool DefoldCollectionPlugin::write(const Tiled::Map *map, const QString &collect
             QString result = replaceTags(QLatin1String(tileMapTemplate), tileMapHash);
             Tiled::SaveFile mapFile(tilemapFilePath);
             if (!mapFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
-                mError = tr("Could not open file for writing.");
+                mError = QCoreApplication::translate("File Errors", "Could not open file for writing.");
                 return false;
             }
             QTextStream stream(mapFile.device());
@@ -398,7 +399,7 @@ bool DefoldCollectionPlugin::write(const Tiled::Map *map, const QString &collect
             QString result = replaceTags(QLatin1String(tileMapTemplate), tileMapHash);
             Tiled::SaveFile mapFile(tilemapFilePath);
             if (!mapFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
-                mError = tr("Could not open file for writing.");
+                mError = QCoreApplication::translate("File Errors", "Could not open file for writing.");
                 return false;
             }
 
@@ -427,7 +428,7 @@ bool DefoldCollectionPlugin::write(const Tiled::Map *map, const QString &collect
     QString result = replaceTags(QLatin1String(collectionTemplate), collectionHash);
     Tiled::SaveFile mapFile(collectionFile);
     if (!mapFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        mError = tr("Could not open file for writing.");
+        mError = QCoreApplication::translate("File Errors", "Could not open file for writing.");
         return false;
     }
     QTextStream stream(mapFile.device());

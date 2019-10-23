@@ -27,6 +27,7 @@
 
 #include "qjsonparser/json.h"
 
+#include <QCoreApplication>
 #include <QFile>
 #include <QFileInfo>
 #include <QJsonDocument>
@@ -53,7 +54,7 @@ std::unique_ptr<Tiled::Map> JsonMapFormat::read(const QString &fileName)
 {
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        mError = tr("Could not open file for reading.");
+        mError = QCoreApplication::translate("File Errors", "Could not open file for reading.");
         return nullptr;
     }
 
@@ -94,7 +95,7 @@ bool JsonMapFormat::write(const Tiled::Map *map,
     Tiled::SaveFile file(fileName);
 
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        mError = tr("Could not open file for writing.");
+        mError = QCoreApplication::translate("File Errors", "Could not open file for writing.");
         return false;
     }
 
@@ -215,7 +216,7 @@ Tiled::SharedTileset JsonTilesetFormat::read(const QString &fileName)
     QFile file(fileName);
 
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        mError = tr("Could not open file for reading.");
+        mError = QCoreApplication::translate("File Errors", "Could not open file for reading.");
         return Tiled::SharedTileset();
     }
 
@@ -269,7 +270,7 @@ bool JsonTilesetFormat::write(const Tiled::Tileset &tileset,
     Tiled::SaveFile file(fileName);
 
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        mError = tr("Could not open file for writing.");
+        mError = QCoreApplication::translate("File Errors", "Could not open file for writing.");
         return false;
     }
 
@@ -326,7 +327,7 @@ std::unique_ptr<Tiled::ObjectTemplate> JsonObjectTemplateFormat::read(const QStr
     QFile file(fileName);
 
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        mError = tr("Could not open file for reading.");
+        mError = QCoreApplication::translate("File Errors", "Could not open file for reading.");
         return nullptr;
     }
 
@@ -373,7 +374,7 @@ bool JsonObjectTemplateFormat::write(const Tiled::ObjectTemplate *objectTemplate
     Tiled::SaveFile file(fileName);
 
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        mError = tr("Could not open file for writing.");
+        mError = QCoreApplication::translate("File Errors", "Could not open file for writing.");
         return false;
     }
 

@@ -26,6 +26,8 @@
 #include "editabletileset.h"
 #include "scriptmanager.h"
 
+#include <QCoreApplication>
+
 namespace Tiled {
 
 EditableTerrain::EditableTerrain(EditableTileset *tileset, Terrain *terrain, QObject *parent)
@@ -74,14 +76,14 @@ void EditableTerrain::setName(const QString &name)
 {
     if (asset())
         asset()->push(new RenameTerrain(tileset()->tilesetDocument(), terrain()->id(), name));
-    else
+    else if (!checkReadOnly())
         terrain()->setName(name);
 }
 
 void EditableTerrain::setImageTile(EditableTile *imageTile)
 {
     if (imageTile && imageTile->tileset() != tileset()) {
-        ScriptManager::instance().throwError(tr("Tile not from the same tileset"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Tile not from the same tileset"));
         return;
     }
 
@@ -89,7 +91,7 @@ void EditableTerrain::setImageTile(EditableTile *imageTile)
 
     if (asset())
         asset()->push(new SetTerrainImage(tileset()->tilesetDocument(), terrain()->id(), tileId));
-    else
+    else if (!checkReadOnly())
         terrain()->setImageTileId(tileId);
 }
 

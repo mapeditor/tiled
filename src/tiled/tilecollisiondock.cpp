@@ -312,11 +312,11 @@ void TileCollisionDock::focusObject(EditableMapObject *object)
 MapObject *TileCollisionDock::clonedObjectForScriptObject(EditableMapObject *scriptObject)
 {
     if (!scriptObject) {
-        ScriptManager::instance().throwError(tr("Not an object"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Not an object"));
         return nullptr;
     }
     if (scriptObject->asset() != mTilesetDocument->editable()) {
-        ScriptManager::instance().throwError(tr("Object not from this asset"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Object not from this asset"));
         return nullptr;
     }
 
@@ -328,7 +328,7 @@ MapObject *TileCollisionDock::clonedObjectForScriptObject(EditableMapObject *scr
                                  [id] (MapObject *o) { return o->id() == id; });
 
     if (it == clonedObjects.end()) {
-        ScriptManager::instance().throwError(tr("Object not found"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Object not found"));
         return nullptr;
     }
 

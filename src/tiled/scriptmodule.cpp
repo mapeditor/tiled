@@ -171,7 +171,7 @@ bool ScriptModule::close(EditableAsset *asset) const
 
     int index = documentManager->findDocument(asset->document());
     if (index == -1) {
-        ScriptManager::instance().throwError(tr("Not an open asset"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Not an open asset"));
         return false;
     }
 
@@ -185,13 +185,13 @@ EditableAsset *ScriptModule::reload(EditableAsset *asset) const
 
     int index = documentManager->findDocument(asset->document());
     if (index == -1) {
-        ScriptManager::instance().throwError(tr("Not an open asset"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Not an open asset"));
         return nullptr;
     }
 
     if (auto editableTileset = qobject_cast<EditableTileset*>(asset)) {
         if (editableTileset->tilesetDocument()->isEmbedded()) {
-            ScriptManager::instance().throwError(tr("Can't reload an embedded tileset"));
+            ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Can't reload an embedded tileset"));
             return nullptr;
         }
     }
@@ -212,12 +212,12 @@ EditableAsset *ScriptModule::reload(EditableAsset *asset) const
 ScriptedAction *ScriptModule::registerAction(const QByteArray &idName, QJSValue callback)
 {
     if (idName.isEmpty()) {
-        ScriptManager::instance().throwError(tr("Invalid ID"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid ID"));
         return nullptr;
     }
 
     if (!callback.isCallable()) {
-        ScriptManager::instance().throwError(tr("Invalid callback function"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid callback function"));
         return nullptr;
     }
 
@@ -228,7 +228,7 @@ ScriptedAction *ScriptModule::registerAction(const QByteArray &idName, QJSValue 
     if (action) {
         ActionManager::unregisterAction(id);
     } else if (ActionManager::findAction(id)) {
-        ScriptManager::instance().throwError(tr("Reserved ID"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Reserved ID"));
         return nullptr;
     }
 
@@ -240,7 +240,7 @@ ScriptedAction *ScriptModule::registerAction(const QByteArray &idName, QJSValue 
 void ScriptModule::registerMapFormat(const QString &shortName, QJSValue mapFormatObject)
 {
     if (shortName.isEmpty()) {
-        ScriptManager::instance().throwError(tr("Invalid shortName"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid shortName"));
         return;
     }
 
@@ -254,7 +254,7 @@ void ScriptModule::registerMapFormat(const QString &shortName, QJSValue mapForma
 QJSValue ScriptModule::registerTool(const QString &shortName, QJSValue toolObject)
 {
     if (shortName.isEmpty()) {
-        ScriptManager::instance().throwError(tr("Invalid shortName"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid shortName"));
         return QJSValue();
     }
 
@@ -285,7 +285,7 @@ void ScriptModule::extendMenu(const QByteArray &idName, QJSValue items)
     extension.menuId = Id(idName);
 
     if (!ActionManager::findMenu(extension.menuId)) {
-        ScriptManager::instance().throwError(tr("Unknown menu"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Unknown menu"));
         return;
     }
 
@@ -300,17 +300,17 @@ void ScriptModule::extendMenu(const QByteArray &idName, QJSValue items)
 
         if (!menuItem.action.isNull()) {
             if (menuItem.isSeparator) {
-                ScriptManager::instance().throwError(tr("Separators can't have actions"));
+                ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Separators can't have actions"));
                 return false;
             }
 
             if (!ActionManager::findAction(menuItem.action)) {
-                ScriptManager::instance().throwError(tr("Unknown action: '%1'").arg(
+                ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Unknown action: '%1'").arg(
                                                          QString::fromUtf8(menuItem.action.name())));
                 return false;
             }
         } else if (!menuItem.isSeparator) {
-            ScriptManager::instance().throwError(tr("Non-separator item without action"));
+            ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Non-separator item without action"));
             return false;
         }
 
@@ -350,7 +350,7 @@ void ScriptModule::trigger(const QByteArray &actionName) const
     if (QAction *action = ActionManager::findAction(actionName))
         action->trigger();
     else
-        ScriptManager::instance().throwError(tr("Unknown action"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Unknown action"));
 }
 
 void ScriptModule::executeCommand(const QString &name, bool inTerminal) const
@@ -364,7 +364,7 @@ void ScriptModule::executeCommand(const QString &name, bool inTerminal) const
         }
     }
 
-    ScriptManager::instance().throwError(tr("Unknown command"));
+    ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Unknown command"));
 }
 
 void ScriptModule::alert(const QString &text, const QString &title) const

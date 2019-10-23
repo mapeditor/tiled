@@ -29,6 +29,8 @@
 #include "tilesetdocument.h"
 #include "tilesetterrainmodel.h"
 
+#include <QCoreApplication>
+
 namespace Tiled {
 
 EditableTileset::EditableTileset(const QString &name,
@@ -61,7 +63,7 @@ EditableTile *EditableTileset::tile(int id)
     Tile *tile = tileset()->findTile(id);
 
     if (!tile) {
-        ScriptManager::instance().throwError(tr("Invalid tile ID"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid tile ID"));
         return nullptr;
     }
 
@@ -116,7 +118,7 @@ void EditableTileset::setSelectedTiles(const QList<QObject *> &tiles)
 Tiled::EditableTile *EditableTileset::addTile()
 {
     if (!isCollection()) {
-        ScriptManager::instance().throwError(tr("Can only add tiles to an image collection tileset"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Can only add tiles to an image collection tileset"));
         return nullptr;
     }
     if (checkReadOnly())
@@ -135,7 +137,7 @@ Tiled::EditableTile *EditableTileset::addTile()
 void EditableTileset::removeTiles(const QList<QObject *> &tiles)
 {
     if (!isCollection()) {
-        ScriptManager::instance().throwError(tr("Can only remove tiles from an image collection tileset"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Can only remove tiles from an image collection tileset"));
         return;
     }
 
@@ -167,7 +169,7 @@ void EditableTileset::setName(const QString &name)
 void EditableTileset::setImage(const QString &imageFilePath)
 {
     if (isCollection() && tileCount() > 0) {
-        ScriptManager::instance().throwError(tr("Can't set the image of an image collection tileset"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Can't set the image of an image collection tileset"));
         return;
     }
 
@@ -187,7 +189,7 @@ void EditableTileset::setImage(const QString &imageFilePath)
 void EditableTileset::setTileSize(int width, int height)
 {
     if (isCollection() && tileCount() > 0) {
-        ScriptManager::instance().throwError(tr("Can't set tile size on an image collection tileset"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Can't set tile size on an image collection tileset"));
         return;
     }
 
@@ -216,7 +218,7 @@ void EditableTileset::setBackgroundColor(const QColor &color)
 {
     if (tilesetDocument())
         push(new ChangeTilesetBackgroundColor(tilesetDocument(), color));
-    else
+    else if (!checkReadOnly())
         tileset()->setBackgroundColor(color);
 }
 
@@ -225,11 +227,11 @@ bool EditableTileset::tilesFromEditables(const QList<QObject *> &editableTiles, 
     for (QObject *tileObject : editableTiles) {
         auto editableTile = qobject_cast<EditableTile*>(tileObject);
         if (!editableTile) {
-            ScriptManager::instance().throwError(tr("Not a tile"));
+            ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Not a tile"));
             return false;
         }
         if (editableTile->tileset() != this) {
-            ScriptManager::instance().throwError(tr("Tile not from this tileset"));
+            ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Tile not from this tileset"));
             return false;
         }
 

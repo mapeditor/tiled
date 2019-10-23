@@ -30,6 +30,7 @@
 
 #include "logginginterface.h"
 
+#include <QCoreApplication>
 #include <QDesktopServices>
 #include <QDir>
 #include <QFile>
@@ -123,7 +124,7 @@ std::unique_ptr<World> WorldManager::privateLoadWorld(const QString &fileName,
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         if (errorString)
-            *errorString = tr("Could not open file for reading.");
+            *errorString = QCoreApplication::translate("File Errors", "Could not open file for reading.");
         return nullptr;
     }
 

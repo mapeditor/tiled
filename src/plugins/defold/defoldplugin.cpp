@@ -29,6 +29,7 @@
 #include "tile.h"
 #include "tilelayer.h"
 
+#include <QCoreApplication>
 #include <QTextStream>
 
 #include <cmath>
@@ -128,7 +129,7 @@ bool DefoldPlugin::write(const Tiled::Map *map, const QString &fileName, Options
     QString result = replaceTags(QLatin1String(map_t), map_h);
     Tiled::SaveFile mapFile(fileName);
     if (!mapFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        mError = tr("Could not open file for writing.");
+        mError = QCoreApplication::translate("File Errors", "Could not open file for writing.");
         return false;
     }
     QTextStream stream(mapFile.device());

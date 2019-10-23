@@ -28,9 +28,10 @@
 #include "tile.h"
 #include "tilelayer.h"
 
-#include <QTextStream>
+#include <QCoreApplication>
 #include <QHash>
 #include <QList>
+#include <QTextStream>
 
 #include <QtMath>
 
@@ -48,7 +49,7 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName, Option
 
     SaveFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        mError = tr("Could not open file for writing.");
+        mError = QCoreApplication::translate("File Errors", "Could not open file for writing.");
         return false;
     }
     QTextStream out(file.device());

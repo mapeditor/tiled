@@ -115,7 +115,7 @@ private:
 bool MapWriterPrivate::openFile(SaveFile *file)
 {
     if (!file->open(QIODevice::WriteOnly | QIODevice::Text)) {
-        mError = tr("Could not open file for writing.");
+        mError = QCoreApplication::translate("File Errors", "Could not open file for writing.");
         return false;
     }
 

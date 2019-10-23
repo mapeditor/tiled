@@ -31,7 +31,7 @@
 #include "tiled.h"
 #include "tilelayer.h"
 
-#include <QDebug>
+#include <QCoreApplication>
 #include <QDir>
 
 #include <cmath>
@@ -115,7 +115,7 @@ std::unique_ptr<Tiled::Map> TbinMapFormat::read(const QString &fileName)
 {
     std::ifstream file( fileName.toStdString(), std::ios::in | std::ios::binary );
     if (!file) {
-        mError = tr("Could not open file for reading.");
+        mError = QCoreApplication::translate("File Errors", "Could not open file for reading.");
         return nullptr;
     }
 

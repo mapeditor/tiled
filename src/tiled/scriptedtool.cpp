@@ -28,6 +28,7 @@
 #include "tile.h"
 #include "tilesetdocument.h"
 
+#include <QCoreApplication>
 #include <QJSEngine>
 #include <QKeyEvent>
 #include <QQmlEngine>
@@ -203,7 +204,7 @@ bool ScriptedTool::validateToolObject(QJSValue value)
     const QJSValue nameProperty = value.property(QStringLiteral("name"));
 
     if (!nameProperty.isString()) {
-        ScriptManager::instance().throwError(tr("Invalid tool object (requires string 'name' property)"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid tool object (requires string 'name' property)"));
         return false;
     }
 

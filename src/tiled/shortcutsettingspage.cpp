@@ -29,6 +29,7 @@
 #include <QAbstractListModel>
 #include <QAction>
 #include <QApplication>
+#include <QCoreApplication>
 #include <QFileDialog>
 #include <QItemEditorFactory>
 #include <QKeyEvent>
@@ -665,7 +666,7 @@ void ShortcutSettingsPage::importShortcuts()
     if (!file.open(QFile::ReadOnly | QIODevice::Text)) {
         QMessageBox::critical(this,
                               tr("Error Loading Shortcuts"),
-                              tr("Could not open file for reading."));
+                              QCoreApplication::translate("File Errors", "Could not open file for reading."));
         return;
     }
 
@@ -718,7 +719,7 @@ void ShortcutSettingsPage::exportShortcuts()
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         QMessageBox::critical(this,
                               tr("Error Saving Shortcuts"),
-                              tr("Could not open file for writing."));
+                              QCoreApplication::translate("File Errors", "Could not open file for writing."));
         return;
     }
 

@@ -27,6 +27,7 @@
 #include "tilelayer.h"
 #include "compression.h"
 
+#include <QCoreApplication>
 #include <QFile>
 
 namespace Droidcraft {
@@ -127,7 +128,7 @@ bool DroidcraftPlugin::write(const Tiled::Map *map, const QString &fileName, Opt
     // Write QByteArray
     SaveFile file(fileName);
     if (!file.open(QIODevice::WriteOnly)) {
-        mError = tr("Could not open file for writing.");
+        mError = QCoreApplication::translate("File Errors", "Could not open file for writing.");
         return false;
     }
 

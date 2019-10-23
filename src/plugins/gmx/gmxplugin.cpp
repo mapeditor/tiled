@@ -28,6 +28,7 @@
 #include "tile.h"
 #include "tilelayer.h"
 
+#include <QCoreApplication>
 #include <QDir>
 #include <QFileInfo>
 #include <QRegularExpression>
@@ -105,7 +106,7 @@ bool GmxPlugin::write(const Map *map, const QString &fileName, Options options)
 {
     SaveFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        mError = tr("Could not open file for writing.");
+        mError = QCoreApplication::translate("File Errors", "Could not open file for writing.");
         return false;
     }
 

@@ -25,6 +25,7 @@
 #include "editabletileset.h"
 #include "scriptmanager.h"
 
+#include <QCoreApplication>
 #include <QUndoStack>
 
 namespace Tiled {
@@ -86,7 +87,7 @@ bool EditableAsset::push(std::unique_ptr<QUndoCommand> &&command)
 QJSValue EditableAsset::macro(const QString &text, QJSValue callback)
 {
     if (!callback.isCallable()) {
-        ScriptManager::instance().throwError(tr("Invalid callback"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid callback"));
         return QJSValue();
     }
 
