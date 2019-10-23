@@ -106,6 +106,7 @@ SOURCES += aboutdialog.cpp \
     createtileobjecttool.cpp \
     document.cpp \
     documentmanager.cpp \
+    donationdialog.cpp \
     editableasset.cpp \
     editablegrouplayer.cpp \
     editableimagelayer.cpp \
@@ -181,7 +182,6 @@ SOURCES += aboutdialog.cpp \
     offsetlayer.cpp \
     offsetmapdialog.cpp \
     painttilelayer.cpp \
-    patreondialog.cpp \
     pluginlistmodel.cpp \
     pointhandle.cpp \
     preferences.cpp \
@@ -331,6 +331,7 @@ HEADERS += aboutdialog.h \
     createtileobjecttool.h \
     document.h \
     documentmanager.h \
+    donationdialog.h \
     editableasset.h \
     editablegrouplayer.h \
     editableimagelayer.h \
@@ -406,7 +407,6 @@ HEADERS += aboutdialog.h \
     offsetlayer.h \
     offsetmapdialog.h \
     painttilelayer.h \
-    patreondialog.h \
     pluginlistmodel.h \
     pointhandle.h \
     preferencesdialog.h \
@@ -494,6 +494,7 @@ HEADERS += aboutdialog.h \
 FORMS += aboutdialog.ui \
     addpropertydialog.ui \
     commanddialog.ui \
+    donationdialog.ui \
     exportasimagedialog.ui \
     imagecolorpickerwidget.ui \
     mainwindow.ui \
@@ -503,7 +504,6 @@ FORMS += aboutdialog.ui \
     noeditorwidget.ui \
     objecttypeseditor.ui \
     offsetmapdialog.ui \
-    patreondialog.ui \
     preferencesdialog.ui \
     resizedialog.ui \
     shortcutsettingspage.ui \

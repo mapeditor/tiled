@@ -56,7 +56,7 @@
 #include "objectgroup.h"
 #include "objecttypeseditor.h"
 #include "offsetmapdialog.h"
-#include "patreondialog.h"
+#include "donationdialog.h"
 #include "pluginmanager.h"
 #include "resizedialog.h"
 #include "scriptmanager.h"
@@ -226,7 +226,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerAction(mUi->actionAddExternalTileset, "AddExternalTileset");
     ActionManager::registerAction(mUi->actionAutoMap, "AutoMap");
     ActionManager::registerAction(mUi->actionAutoMapWhileDrawing, "AutoMapWhileDrawing");
-    ActionManager::registerAction(mUi->actionBecomePatron, "BecomePatron");
+    ActionManager::registerAction(mUi->actionDonate, "Donate");
     ActionManager::registerAction(mUi->actionClearRecentFiles, "ClearRecentFiles");
     ActionManager::registerAction(mUi->actionClearView, "ClearView");
     ActionManager::registerAction(mUi->actionClose, "Close");
@@ -553,7 +553,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             this, &MainWindow::editTilesetProperties);
 
     connect(mUi->actionDocumentation, &QAction::triggered, this, &MainWindow::openDocumentation);
-    connect(mUi->actionBecomePatron, &QAction::triggered, this, &MainWindow::becomePatron);
+    connect(mUi->actionForum, &QAction::triggered, this, &MainWindow::openForum);
+    connect(mUi->actionDonate, &QAction::triggered, this, &MainWindow::showDonationDialog);
     connect(mUi->actionAbout, &QAction::triggered, this, &MainWindow::aboutTiled);
     connect(mUi->actionAboutQt, &QAction::triggered, qApp, &QApplication::aboutQt);
 
@@ -681,8 +682,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(preferences, &Preferences::recentFilesChanged, this, &MainWindow::updateRecentFilesMenu);
 
     QTimer::singleShot(500, this, [this,preferences] {
-        if (preferences->shouldShowPatreonDialog())
-            becomePatron();
+        if (preferences->shouldShowDonationDialog())
+            showDonationDialog();
     });
 }
 
@@ -1598,6 +1599,11 @@ void MainWindow::openDocumentation()
 #endif
 }
 
+void MainWindow::openForum()
+{
+    QDesktopServices::openUrl(QUrl(QLatin1String("https://discourse.mapeditor.org")));
+}
+
 void MainWindow::writeSettings()
 {
 #ifdef Q_OS_MAC
@@ -1660,10 +1666,10 @@ void MainWindow::updateWindowTitle()
     }
 }
 
-void MainWindow::becomePatron()
+void MainWindow::showDonationDialog()
 {
-    PatreonDialog patreonDialog(this);
-    patreonDialog.exec();
+    DonationDialog donationDialog(this);
+    donationDialog.exec();
 }
 
 void MainWindow::aboutTiled()

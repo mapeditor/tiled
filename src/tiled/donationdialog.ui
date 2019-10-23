@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>PatreonDialog</class>
- <widget class="QDialog" name="PatreonDialog">
+ <class>DonationDialog</class>
+ <widget class="QDialog" name="DonationDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Become a Patron</string>
+   <string>Support Tiled Development</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <property name="sizeConstraint">
@@ -43,14 +43,14 @@
    <item>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QPushButton" name="gotoPatreon">
+      <widget class="QPushButton" name="visitDonatePage">
        <property name="text">
-        <string>Visit https://www.patreon.com/bjorn</string>
+        <string>Visit https://www.mapeditor.org/donate ↗</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="alreadyPatron">
+      <widget class="QPushButton" name="alreadyDonating">
        <property name="text">
         <string>I'm already a supporter!</string>
        </property>

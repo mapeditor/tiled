@@ -162,8 +162,12 @@ Preferences::Preferences()
 
     // Keeping track of some usage information
     mSettings->beginGroup(QLatin1String("Install"));
+    if (mSettings->contains(QLatin1String("PatreonDialogTime"))) {
+        mSettings->setValue(QLatin1String("DonationDialogTime"), mSettings->value(QLatin1String("PatreonDialogTime")));
+        mSettings->remove(QLatin1String("PatreonDialogTime"));
+    }
     mFirstRun = mSettings->value(QLatin1String("FirstRun")).toDate();
-    mPatreonDialogTime = mSettings->value(QLatin1String("PatreonDialogTime")).toDate();
+    mDonationDialogTime = mSettings->value(QLatin1String("DonationDialogTime")).toDate();
     mRunCount = intValue("RunCount", 0) + 1;
     mIsPatron = boolValue("IsPatron");
     mCheckForUpdates = boolValue("CheckForUpdates", true);
@@ -172,12 +176,12 @@ Preferences::Preferences()
         mFirstRun = QDate::currentDate();
         mSettings->setValue(QLatin1String("FirstRun"), mFirstRun.toString(Qt::ISODate));
     }
-    if (!mSettings->contains(QLatin1String("PatreonDialogTime"))) {
-        mPatreonDialogTime = mFirstRun.addMonths(1);
+    if (!mSettings->contains(QLatin1String("DonationDialogTime"))) {
+        mDonationDialogTime = mFirstRun.addMonths(1);
         const QDate today(QDate::currentDate());
-        if (mPatreonDialogTime.daysTo(today) >= 0)
-            mPatreonDialogTime = today.addDays(2);
-        mSettings->setValue(QLatin1String("PatreonDialogTime"), mPatreonDialogTime.toString(Qt::ISODate));
+        if (mDonationDialogTime.daysTo(today) >= 0)
+            mDonationDialogTime = today.addDays(2);
+        mSettings->setValue(QLatin1String("DonationDialogTime"), mDonationDialogTime.toString(Qt::ISODate));
     }
     mSettings->setValue(QLatin1String("RunCount"), mRunCount);
     mSettings->endGroup();
@@ -579,24 +583,24 @@ void Preferences::setPatron(bool isPatron)
     emit isPatronChanged();
 }
 
-bool Preferences::shouldShowPatreonDialog() const
+bool Preferences::shouldShowDonationDialog() const
 {
     if (mIsPatron)
         return false;
     if (mRunCount < 7)
         return false;
-    if (!mPatreonDialogTime.isValid())
+    if (!mDonationDialogTime.isValid())
         return false;
 
-    return mPatreonDialogTime.daysTo(QDate::currentDate()) >= 0;
+    return mDonationDialogTime.daysTo(QDate::currentDate()) >= 0;
 }
 
-void Preferences::setPatreonDialogReminder(const QDate &date)
+void Preferences::setDonationDialogReminder(const QDate &date)
 {
     if (date.isValid())
         setPatron(false);
-    mPatreonDialogTime = date;
-    mSettings->setValue(QLatin1String("Install/PatreonDialogTime"), mPatreonDialogTime.toString(Qt::ISODate));
+    mDonationDialogTime = date;
+    mSettings->setValue(QLatin1String("Install/DonationDialogTime"), mDonationDialogTime.toString(Qt::ISODate));
 }
 
 QStringList Preferences::recentFiles() const

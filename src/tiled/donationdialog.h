@@ -1,6 +1,6 @@
 /*
- * patreondialog.h
- * Copyright 2015, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * donationdialog.h
+ * Copyright 2015-2019, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -23,25 +23,25 @@
 #include <QDialog>
 
 namespace Ui {
-class PatreonDialog;
+class DonationDialog;
 }
 
 namespace Tiled {
 
-class PatreonDialog : public QDialog
+class DonationDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit PatreonDialog(QWidget *parent = nullptr);
-    ~PatreonDialog();
+    explicit DonationDialog(QWidget *parent = nullptr);
+    ~DonationDialog();
 
 private:
-    void openPatreonPage();
+    void openDonationPage();
     void sayThanks();
     void maybeLater(QAction *action);
 
-    Ui::PatreonDialog *ui;
+    Ui::DonationDialog *ui;
 };
 
 } // namespace Tiled

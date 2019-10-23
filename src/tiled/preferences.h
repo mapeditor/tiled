@@ -153,8 +153,8 @@ public:
     bool isPatron() const;
     void setPatron(bool isPatron);
 
-    bool shouldShowPatreonDialog() const;
-    void setPatreonDialogReminder(const QDate &date);
+    bool shouldShowDonationDialog() const;
+    void setDonationDialogReminder(const QDate &date);
 
     enum { MaxRecentFiles = 8 };
     QStringList recentFiles() const;
@@ -286,7 +286,7 @@ private:
     QString mObjectTypesFile;
 
     QDate mFirstRun;
-    QDate mPatreonDialogTime;
+    QDate mDonationDialogTime;
     int mRunCount;
     bool mIsPatron;
     bool mCheckForUpdates;

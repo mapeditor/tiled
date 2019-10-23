@@ -41,7 +41,7 @@
      <x>0</x>
      <y>0</y>
      <width>553</width>
-     <height>22</height>
+     <height>31</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -106,8 +106,9 @@
      <string>&amp;Help</string>
     </property>
     <addaction name="actionDocumentation"/>
+    <addaction name="actionForum"/>
     <addaction name="separator"/>
-    <addaction name="actionBecomePatron"/>
+    <addaction name="actionDonate"/>
     <addaction name="actionAbout"/>
    </widget>
    <widget class="QMenu" name="menuMap">
@@ -493,9 +494,9 @@
     <string>Ctrl+E</string>
    </property>
   </action>
-  <action name="actionBecomePatron">
+  <action name="actionDonate">
    <property name="text">
-    <string>Become a Patron</string>
+    <string>Support Tiled Development</string>
    </property>
   </action>
   <action name="actionSaveAll">
@@ -508,7 +509,7 @@
   </action>
   <action name="actionDocumentation">
    <property name="text">
-    <string>User Manual</string>
+    <string>User Manual ↗</string>
    </property>
   </action>
   <action name="actionNoLabels">
@@ -661,6 +662,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+J</string>
+   </property>
+  </action>
+  <action name="actionForum">
+   <property name="text">
+    <string>Community Forum ↗</string>
    </property>
   </action>
  </widget>

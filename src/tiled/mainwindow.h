@@ -151,7 +151,8 @@ private:
     void updateZoomable();
     void updateZoomActions();
     void openDocumentation();
-    void becomePatron();
+    void openForum();
+    void showDonationDialog();
     void aboutTiled();
     void openRecentFile();
 

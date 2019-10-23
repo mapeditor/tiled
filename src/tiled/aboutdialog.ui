@@ -107,7 +107,7 @@
      <item>
       <widget class="QPushButton" name="donateButton">
        <property name="text">
-        <string>Donate</string>
+        <string>Donate ↗</string>
        </property>
       </widget>
      </item>

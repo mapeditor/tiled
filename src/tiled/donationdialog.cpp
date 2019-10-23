@@ -1,6 +1,6 @@
 /*
- * patreondialog.cpp
- * Copyright 2015, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * donationdialog.cpp
+ * Copyright 2015-2019, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -18,8 +18,8 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "patreondialog.h"
-#include "ui_patreondialog.h"
+#include "donationdialog.h"
+#include "ui_donationdialog.h"
 
 #include "preferences.h"
 #include "utils.h"
@@ -31,9 +31,9 @@
 
 using namespace Tiled;
 
-PatreonDialog::PatreonDialog(QWidget *parent) :
+DonationDialog::DonationDialog(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::PatreonDialog)
+    ui(new Ui::DonationDialog)
 {
 #if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
@@ -51,22 +51,22 @@ PatreonDialog::PatreonDialog(QWidget *parent) :
     laterMenu->addAction(tr("Don't remind me"))->setData(QDate());
     ui->maybeLaterButton->setMenu(laterMenu);
 
-    connect(ui->gotoPatreon, &QPushButton::clicked, this, &PatreonDialog::openPatreonPage);
-    connect(ui->alreadyPatron, &QPushButton::clicked, this, &PatreonDialog::sayThanks);
-    connect(laterMenu, &QMenu::triggered, this, &PatreonDialog::maybeLater);
+    connect(ui->visitDonatePage, &QPushButton::clicked, this, &DonationDialog::openDonationPage);
+    connect(ui->alreadyDonating, &QPushButton::clicked, this, &DonationDialog::sayThanks);
+    connect(laterMenu, &QMenu::triggered, this, &DonationDialog::maybeLater);
 }
 
-PatreonDialog::~PatreonDialog()
+DonationDialog::~DonationDialog()
 {
     delete ui;
 }
 
-void PatreonDialog::openPatreonPage()
+void DonationDialog::openDonationPage()
 {
-    QDesktopServices::openUrl(QUrl(QLatin1String("https://www.patreon.com/bjorn")));
+    QDesktopServices::openUrl(QUrl(QLatin1String("https://www.mapeditor.org/donate")));
 }
 
-void PatreonDialog::sayThanks()
+void DonationDialog::sayThanks()
 {
     Preferences *prefs = Preferences::instance();
     prefs->setPatron(true);
@@ -79,9 +79,9 @@ void PatreonDialog::sayThanks()
     close();
 }
 
-void PatreonDialog::maybeLater(QAction *action)
+void DonationDialog::maybeLater(QAction *action)
 {
     const QDate date = action->data().toDate();
-    Preferences::instance()->setPatreonDialogReminder(date);
+    Preferences::instance()->setDonationDialogReminder(date);
     close();
 }
