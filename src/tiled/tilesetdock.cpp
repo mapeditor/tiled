@@ -761,9 +761,9 @@ void TilesetDock::retranslateUi()
     mExportTileset->setText(tr("&Export Tileset As..."));
     mEditTileset->setText(tr("Edit Tile&set"));
     mDeleteTileset->setText(tr("&Remove Tileset"));
-    mSelectNextTileset->setText(tr("Select &Next Tileset"));
+    mSelectNextTileset->setText(tr("Select Next Tileset"));
     mSelectNextTileset->setShortcut(tr("]"));
-    mSelectPreviousTileset->setText(tr("Select &Previous Tileset"));
+    mSelectPreviousTileset->setText(tr("Select Previous Tileset"));
     mSelectPreviousTileset->setShortcut(tr("["));
     mDynamicWrappingToggle->setText(tr("Dynamically Wrap Tiles"));
 }

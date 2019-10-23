@@ -5965,21 +5965,21 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="+1"/>
-        <source>Select &amp;Next Tileset</source>
+        <source>Select Next Tileset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+2"/>
+        <source>Select Previous Tileset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-1"/>
         <source>]</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+1"/>
-        <source>Select &amp;Previous Tileset</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
+        <location line="+2"/>
         <source>[</source>
         <translation type="unfinished"></translation>
     </message>
