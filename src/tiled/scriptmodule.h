@@ -39,6 +39,7 @@ class EditableAsset;
 class MapEditor;
 class ScriptedAction;
 class ScriptedMapFormat;
+class ScriptedTilesetFormat;
 class ScriptedTool;
 class TilesetEditor;
 
@@ -98,6 +99,7 @@ public:
 
     Q_INVOKABLE Tiled::ScriptedAction *registerAction(const QByteArray &id, QJSValue callback);
     Q_INVOKABLE void registerMapFormat(const QString &shortName, QJSValue mapFormatObject);
+    Q_INVOKABLE void registerTilesetFormat(const QString &shortName, QJSValue tilesetFormatObject);
     Q_INVOKABLE QJSValue registerTool(const QString &shortName, QJSValue toolObject);
 
     Q_INVOKABLE void extendMenu(const QByteArray &idName, QJSValue items);
@@ -136,6 +138,7 @@ private:
 
     std::map<QByteArray, std::unique_ptr<ScriptedAction>> mRegisteredActions;
     std::map<QString, std::unique_ptr<ScriptedMapFormat>> mRegisteredMapFormats;
+    std::map<QString, std::unique_ptr<ScriptedTilesetFormat>> mRegisteredTilesetFormats;
     std::map<QString, std::unique_ptr<ScriptedTool>> mRegisteredTools;
 
     QVector<MenuExtension> mMenuExtensions;

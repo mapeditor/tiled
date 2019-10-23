@@ -29,7 +29,7 @@
 #include "mainwindow.h"
 #include "mapeditor.h"
 #include "scriptedaction.h"
-#include "scriptedmapformat.h"
+#include "scriptedfileformat.h"
 #include "scriptedtool.h"
 #include "scriptmanager.h"
 #include "tilesetdocument.h"
@@ -244,11 +244,25 @@ void ScriptModule::registerMapFormat(const QString &shortName, QJSValue mapForma
         return;
     }
 
-    if (!ScriptedMapFormat::validateMapFormatObject(mapFormatObject))
+    if (!ScriptedFileFormat::validateFileFormatObject(mapFormatObject))
         return;
 
     auto &format = mRegisteredMapFormats[shortName];
     format = std::make_unique<ScriptedMapFormat>(shortName, mapFormatObject, this);
+}
+
+void ScriptModule::registerTilesetFormat(const QString &shortName, QJSValue tilesetFormatObject)
+{
+    if (shortName.isEmpty()) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid shortName"));
+        return;
+    }
+
+    if (!ScriptedFileFormat::validateFileFormatObject(tilesetFormatObject))
+        return;
+
+    auto &format = mRegisteredTilesetFormats[shortName];
+    format = std::make_unique<ScriptedTilesetFormat>(shortName, tilesetFormatObject, this);
 }
 
 QJSValue ScriptModule::registerTool(const QString &shortName, QJSValue toolObject)

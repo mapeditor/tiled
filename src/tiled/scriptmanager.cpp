@@ -34,7 +34,7 @@
 #include "mapview.h"
 #include "regionvaluetype.h"
 #include "scriptedaction.h"
-#include "scriptedmapformat.h"
+#include "scriptedfileformat.h"
 #include "scriptedtool.h"
 #include "scriptmodule.h"
 #include "tilecollisiondock.h"

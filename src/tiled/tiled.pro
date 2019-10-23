@@ -202,7 +202,7 @@ SOURCES += aboutdialog.cpp \
     reversingproxymodel.cpp \
     rotatemapobject.cpp \
     scriptedaction.cpp \
-    scriptedmapformat.cpp \
+    scriptedfileformat.cpp \
     scriptedtool.cpp \
     scriptmanager.cpp \
     scriptmodule.cpp \
@@ -429,7 +429,7 @@ HEADERS += aboutdialog.h \
     reversingproxymodel.h \
     rotatemapobject.h \
     scriptedaction.h \
-    scriptedmapformat.h \
+    scriptedfileformat.h \
     scriptedtool.h \
     scriptmanager.h \
     scriptmodule.h \

@@ -19,6 +19,7 @@ Project {
         "dist/archive.qbs",
         "dist/distribute.qbs",
         "dist/win/installer.qbs",
+        "docs",
         "src/libtiled",
         "src/plugins",
         "src/qtpropertybrowser",

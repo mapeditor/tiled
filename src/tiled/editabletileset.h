@@ -50,6 +50,7 @@ class EditableTileset : public EditableAsset
 public:
     Q_INVOKABLE explicit EditableTileset(const QString &name = QString(),
                                          QObject *parent = nullptr);
+    explicit EditableTileset(const Tileset *tileset, QObject *parent = nullptr);
     explicit EditableTileset(TilesetDocument *tilesetDocument,
                              QObject *parent = nullptr);
     ~EditableTileset() override;

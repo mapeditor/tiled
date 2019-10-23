@@ -41,6 +41,12 @@ EditableTileset::EditableTileset(const QString &name,
     setObject(mTileset.data());
 }
 
+EditableTileset::EditableTileset(const Tileset *tileset, QObject *parent)
+    : EditableAsset(nullptr, const_cast<Tileset*>(tileset), parent)
+    , mReadOnly(true)
+{
+}
+
 EditableTileset::EditableTileset(TilesetDocument *tilesetDocument,
                                  QObject *parent)
     : EditableAsset(tilesetDocument, tilesetDocument->tileset().data(), parent)

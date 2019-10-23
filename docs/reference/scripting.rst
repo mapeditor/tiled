@@ -225,7 +225,8 @@ tiled.registerAction(id : string, callback : function) : :ref:`script-action`
 .. _script-registerMapFormat:
 
 tiled.registerMapFormat(shortName : string, mapFormat : object) : void
-    Registers a new map format that can then be used to export maps to.
+    Registers a new map format that can then be used to open and/or save maps
+    in that format.
 
     If a map format is already registered with the same ``shortName``,
     the existing format is replaced. The short name can also be used to
@@ -240,9 +241,11 @@ tiled.registerMapFormat(shortName : string, mapFormat : object) : void
 
         **name** : string, Name of the format as shown in the file dialog.
         **extension** : string, The file extension used by the format.
+        "**read** : function(file : :ref:`script-file`) : map : :ref:`script-map`", "A function
+        that loads a map from the given :ref:`script-file`."
         "**write** : function(map : :ref:`script-map`, fileName : string) : string | ArrayBuffer", "A function
         that serializes the map into either a string or binary data (using ArrayBuffer). The result will be
-        written to the given file (useful for making relative file references)."
+        written to the given *fileName* (useful for making relative file references)."
 
     Example that produces a simple JSON representation of a map:
 
@@ -278,6 +281,25 @@ tiled.registerMapFormat(shortName : string, mapFormat : object) : void
         }
 
         tiled.registerMapFormat("custom", customMapFormat)
+
+.. _script-registerTilesetFormat:
+
+tiled.registerTilesetFormat(shortName : string, tilesetFormat : object) : void
+    Like :ref:`registerMapFormat <script-registerMapFormat>`, but registers a
+    custom tileset format instead.
+
+    The ``tilesetFormat`` object is expected to have the following properties:
+
+    .. csv-table::
+        :widths: 1, 2
+
+        **name** : string, Name of the format as shown in the file dialog.
+        **extension** : string, The file extension used by the format.
+        "**read** : function(file : :ref:`script-file`) : tileset : :ref:`script-tileset`", "A function
+        that loads a tileset from the given :ref:`script-file`."
+        "**write** : function(tileset : :ref:`script-tileset`, fileName : string) : string | ArrayBuffer", "A function
+        that serializes the tileset into either a string or binary data (using ArrayBuffer). The result will be
+        written to the given *fileName* (useful for making relative file references)."
 
 .. _script-registerTool:
 
@@ -1320,7 +1342,7 @@ cell
 
 A cell on a :ref:`script-tilelayer`.
 
-**Properties**:
+**Properties**
 
 .. csv-table::
     :widths: 1, 2
@@ -1352,7 +1374,7 @@ rect
 
 ``Qt.rect(x, y, width, height)`` can be used to create a rectangle.
 
-**Properties**:
+**Properties**
 
 .. csv-table::
     :widths: 1, 2
@@ -1367,7 +1389,7 @@ rect
 region
 ~~~~~~
 
-**Properties**:
+**Properties**
 
 .. csv-table::
     :widths: 1, 2
@@ -1382,7 +1404,7 @@ point
 
 ``Qt.point(x, y)`` can be used to create a point object.
 
-**Properties**:
+**Properties**
 
 .. csv-table::
     :widths: 1, 2
@@ -1397,7 +1419,7 @@ size
 
 ``Qt.size(width, height)`` can be used to create a size object.
 
-**Properties**:
+**Properties**
 
 .. csv-table::
     :widths: 1, 2
@@ -1429,3 +1451,27 @@ An object specifying the terrain for each corner of a tile:
     **topRight** : :ref:`script-terrain`
     **bottomLeft** : :ref:`script-terrain`
     **bottomRight** : :ref:`script-terrain`
+
+.. _script-file:
+
+file
+~~~~
+
+The file object is used to enable reading from a file in custom map and tileset
+formats.
+
+**Properties**
+
+.. csv-table::
+    :widths: 1, 2
+
+    **filePath** : string |ro|, "The path of the file."
+    **errorString** : string |ro|, "The error string, in case ``readAsText`` or ``readAsBinary`` failed."
+
+**Functions**
+
+File.readAsText() : string
+    Reads the contents of the file in text mode and returns it as a string.
+
+File.readAsBinary() : ArrayBuffer
+    Reads the contents of the file in binary mode and returns it as an ArrayBuffer.
