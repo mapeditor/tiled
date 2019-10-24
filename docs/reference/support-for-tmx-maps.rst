@@ -149,7 +149,7 @@ Python
 -  `pytiled-parser <https://github.com/Beefy-Swain/pytiled_parser>`__: Python parser
    for TMX maps
 -  `Arcade <https://arcade.academy>`__: 2D game library that uses pytiled-parser for 
-   easy loading of TMX maps into a game.
+   easy loading of TMX maps into a game. `Arcade TMXExamples <http://arcade.academy/examples/index.html#tmx-files-tiled-map-editor>`_
 -  `pytmxlib <http://pytmxlib.readthedocs.org/en/latest/>`__: library
    for programmatic manipulation of TMX maps
 -  `python-tmx <http://python-tmx.nongnu.org>`__: a simple library for
