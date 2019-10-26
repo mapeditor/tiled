@@ -106,8 +106,8 @@ void IssuesCounter::updateLabels()
     mErrorIcon->setPixmap(issuesModel.errorIcon().pixmap(iconSize, errorIconMode));
     mWarningIcon->setPixmap(issuesModel.warningIcon().pixmap(iconSize, warningIconMode));
 
-    const QString errorText = tr("%1 error(s)", "", errorCount).arg(errorCount);
-    const QString warningText = tr("%1 warning(s)", "", warningCount).arg(warningCount);
+    const QString errorText = tr("%n error(s)", "", errorCount);
+    const QString warningText = tr("%n warning(s)", "", warningCount);
 
     setToolTip(QString(QLatin1String("%1, %2")).arg(errorText, warningText));
 }
