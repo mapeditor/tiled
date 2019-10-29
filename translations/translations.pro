@@ -30,7 +30,7 @@ LANGUAGES = \
     sv \
     tr \
     uk \
-    zh \
+    zh_CN \
     zh_TW
 
 # Disabled languages because they're too outdated

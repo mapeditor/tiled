@@ -202,7 +202,7 @@
               <File Id="fil3C89A9D825948C24FA8369978AFFA7A8" Source="$(var.InstallRoot)\translations\tiled_pt_PT.qm" />
               <File Id="fil0EAEEC884057A18ABC38BE695E59BEF9" Source="$(var.InstallRoot)\translations\tiled_ru.qm" />
               <File Id="filD4EFD29BBA084142AFB9E6486027D04C" Source="$(var.InstallRoot)\translations\tiled_tr.qm" />
-              <File Id="fil69C6C852D465D530C36403B014136302" Source="$(var.InstallRoot)\translations\tiled_zh.qm" />
+              <File Id="fil69C6C852D465D530C36403B014136302" Source="$(var.InstallRoot)\translations\tiled_zh_CN.qm" />
               <File Id="fil36A85C97B3C872B1AF9E53D0F5DC0FE6" Source="$(var.InstallRoot)\translations\tiled_zh_TW.qm" />
 
               <!-- Qt translations -->
