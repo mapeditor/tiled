@@ -225,7 +225,7 @@
             </property>
            </widget>
           </item>
-          <item row="6" column="0">
+          <item row="6" column="0" colspan="4">
            <widget class="QCheckBox" name="wheelZoomsByDefault">
             <property name="text">
              <string>Mouse wheel &amp;zooms by default</string>
