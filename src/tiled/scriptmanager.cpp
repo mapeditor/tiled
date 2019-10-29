@@ -143,6 +143,18 @@ QJSValue ScriptManager::evaluate(const QString &program,
     return result;
 }
 
+bool ScriptManager::checkFileUtf8(const QByteArray &ba)
+{
+    QTextCodec::ConverterState state;
+    QTextCodec *codec = QTextCodec::codecForName("UTF-8");
+    QString text = codec->toUnicode( ba.constData(), ba.size(), &state);
+
+    if (state.invalidChars >0 ) //Not UTF-8
+        return false;
+
+    return true;
+}
+
 QJSValue ScriptManager::evaluateFile(const QString &fileName)
 {
     QFile file(fileName);
@@ -153,7 +165,13 @@ QJSValue ScriptManager::evaluateFile(const QString &fileName)
     }
 
     const QByteArray text = file.readAll();
-    const QString script = QTextCodec::codecForUtfText(text)->toUnicode(text);
+    QString unistr;
+    if(!checkFileUtf8(text)) {
+        unistr = QTextCodec::codecForUtfText(text)->toUnicode(text);
+    } else {
+        unistr = QString::fromUtf8(text);
+    }
+    const QString script = unistr;
 
     Tiled::INFO(tr("Evaluating '%1'").arg(fileName));
     return evaluate(script, fileName);

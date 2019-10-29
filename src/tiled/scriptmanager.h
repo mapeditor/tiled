@@ -49,6 +49,8 @@ public:
     ScriptModule *module() const;
     QJSEngine *engine() const;
 
+    bool checkFileUtf8(const QByteArray &ba);
+
     QJSValue evaluate(const QString &program,
                       const QString &fileName = QString(), int lineNumber = 1);
 
