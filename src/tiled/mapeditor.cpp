@@ -372,6 +372,9 @@ void MapEditor::addDocument(Document *document)
         int layerIndex = mapState.value(QLatin1String("selectedLayer")).toInt();
         if (Layer *layer = layerAtGlobalIndex(mapDocument->map(), layerIndex))
             mapDocument->switchCurrentLayer(layer);
+
+        // suppress fitting map in view upon show event
+        view->setViewInitialized();
     }
 }
 

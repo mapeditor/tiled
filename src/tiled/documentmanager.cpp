@@ -532,9 +532,6 @@ void DocumentManager::insertDocument(int index, const DocumentPtr &document)
     if (mBrokenLinksModel->hasBrokenLinks())
         mBrokenLinksWidget->show();
 
-    // todo: fix this (move to MapEditor)
-    //    centerViewOn(0, 0);
-
     emit documentOpened(documentPtr);
 }
 

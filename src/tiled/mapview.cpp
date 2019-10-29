@@ -46,7 +46,6 @@ using namespace Tiled;
 
 MapView::MapView(QWidget *parent, Mode mode)
     : QGraphicsView(parent)
-    , mHandScrolling(false)
     , mMode(mode)
     , mZoomable(new Zoomable(this))
 {
@@ -302,6 +301,16 @@ bool MapView::event(QEvent *e)
     }
 
     return QGraphicsView::event(e);
+}
+
+void MapView::showEvent(QShowEvent *event)
+{
+    if (!mViewInitialized) {
+        fitMapInView();
+        mViewInitialized = true;
+    }
+
+    QGraphicsView::showEvent(event);
 }
 
 void MapView::hideEvent(QHideEvent *event)
