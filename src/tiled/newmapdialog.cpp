@@ -31,6 +31,7 @@
 #include "tilelayer.h"
 #include "utils.h"
 
+#include <QCoreApplication>
 #include <QMessageBox>
 #include <QPushButton>
 #include <QSettings>
@@ -171,7 +172,8 @@ MapDocumentPtr NewMapDialog::createMap()
 
     // Add a tile layer to new maps of reasonable size
     if (memory < gigabyte) {
-        map->addLayer(new TileLayer(tr("Tile Layer 1"), 0, 0,
+        map->addLayer(new TileLayer(QCoreApplication::translate("Tiled::MapDocument", "Tile Layer %1").arg(1),
+                                    0, 0,
                                     mapWidth, mapHeight));
     } else {
         const double gigabytes = static_cast<double>(memory) / gigabyte;
