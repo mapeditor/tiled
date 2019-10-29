@@ -1172,7 +1172,7 @@ void MainWindow::zoomNormal()
 void MainWindow::fitInView()
 {
     if (MapView *mapView = mDocumentManager->currentMapView())
-        mapView->fitInView();
+        mapView->fitMapInView();
 }
 
 void MainWindow::setFullScreen(bool fullScreen)
