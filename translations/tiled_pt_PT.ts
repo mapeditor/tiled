@@ -11,7 +11,7 @@
     <message>
         <location line="+96"/>
         <source>Donate ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>Doar ↗</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -139,7 +139,7 @@
     <message>
         <location line="+17"/>
         <source>Show output in Console view</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar saída na vista de Consola</translation>
     </message>
     <message>
         <location line="+33"/>
@@ -177,7 +177,7 @@
     <message>
         <location line="+25"/>
         <source>Minimize the exported file by omitting unnecessary whitespace</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimizar o ficheiro exportado ao omitir espaços em branco desnecessários</translation>
     </message>
     <message>
         <location line="+70"/>
@@ -271,7 +271,7 @@
     <message>
         <location filename="../src/plugins/defoldcollection/defoldcollectionplugin.cpp" line="+137"/>
         <source>Defold collection (*.collection)</source>
-        <translation type="unfinished"></translation>
+        <translation>Coleção Defold (*.collection)</translation>
     </message>
 </context>
 <context>
@@ -279,27 +279,27 @@
     <message>
         <location filename="../src/tiled/donationdialog.ui" line="+14"/>
         <source>Support Tiled Development</source>
-        <translation type="unfinished"></translation>
+        <translation>Apoie o Desenvolvimento do Tiled</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Thanks for using Tiled! Please consider supporting further development with a small monthly donation.</source>
-        <translation type="unfinished">Obrigado por usar Tiled! Pode apoiar o seu desenvolvimento com uma pequena doação mensal.</translation>
+        <translation>Obrigado por usar Tiled! Considere apoiar o seu desenvolvimento com uma pequena doação mensal.</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Visit https://www.mapeditor.org/donate ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>Visite https://www.mapeditor.org/donate ↗</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>I&apos;m already a supporter!</source>
-        <translation type="unfinished">Já sou um apoiante!</translation>
+        <translation>Já sou um apoiante!</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Maybe later</source>
-        <translation type="unfinished">Talvez mais tarde</translation>
+        <translation>Talvez mais tarde</translation>
     </message>
 </context>
 <context>
@@ -398,7 +398,7 @@
         <location filename="../src/tiled/scriptedfileformat.cpp" line="+136"/>
         <location filename="../src/tiled/shortcutsettingspage.cpp" line="+722"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">Impossível abrir ficheiro para escrita.</translation>
+        <translation>Impossível abrir ficheiro para escrita.</translation>
     </message>
     <message>
         <location filename="../src/libtiled/worldmanager.cpp" line="+127"/>
@@ -412,7 +412,7 @@
         <location filename="../src/plugins/tbin/tbinplugin.cpp" line="+118"/>
         <location filename="../src/tiled/shortcutsettingspage.cpp" line="-53"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished">Impossível abrir ficheiro para leitura.</translation>
+        <translation>Impossível abrir ficheiro para leitura.</translation>
     </message>
 </context>
 <context>
@@ -480,12 +480,12 @@
     <message>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+15"/>
         <source>JSON map files [Tiled 1.1] (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ficheiros mapa JSON [Tiled 1.1] (*.json)</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>JavaScript map files [Tiled 1.1] (*.js)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ficheiros mapa JSON [Tiled 1.1] (*.js)</translation>
     </message>
 </context>
 <context>
@@ -512,7 +512,7 @@
     <message>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+14"/>
         <source>JSON template files [Tiled 1.1] (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ficheiros modelo JSON [Tiled 1.1] (*.json)</translation>
     </message>
 </context>
 <context>
@@ -539,7 +539,7 @@
     <message>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+14"/>
         <source>JSON tileset files [Tiled 1.1] (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ficheiros tileset JSON [Tiled 1.1] (*.json)</translation>
     </message>
 </context>
 <context>
@@ -668,22 +668,22 @@
     <message>
         <location line="+368"/>
         <source>Show Tile Collision Shapes</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar Formas de Colisão do Tile</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Fit Map in View</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajustar Mapa na Vista</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+J</source>
-        <translation type="unfinished">Ctrl+Shift+J</translation>
+        <translation>Ctrl+Shift+J</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Community Forum ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>Fórum da Comunidade ↗</translation>
     </message>
     <message>
         <location line="-371"/>
@@ -693,7 +693,7 @@
     <message>
         <location line="+201"/>
         <source>Support Tiled Development</source>
-        <translation type="unfinished"></translation>
+        <translation>Apoie o Desenvolvimento do Tiled</translation>
     </message>
     <message>
         <location line="+132"/>
@@ -758,7 +758,7 @@
     <message>
         <location line="+5"/>
         <source>User Manual ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>Manual do Utilizador ↗</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -828,7 +828,7 @@
     <message>
         <location line="-125"/>
         <source>Ctrl+M</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+M</translation>
     </message>
     <message>
         <location line="+23"/>
@@ -1470,7 +1470,7 @@ Linha %1, coluna %2</translation>
         <location line="+4"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="-2"/>
         <source>Base64 (Zstandard compressed)</source>
-        <translation type="unfinished"></translation>
+        <translation>Base64 (comprimido com Zstandard)</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1535,7 +1535,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+21"/>
         <source>Repeat last export on save</source>
-        <translation type="unfinished"></translation>
+        <translation>Repetir última exportação ao guardar</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1575,12 +1575,12 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="-52"/>
         <source>Omits unnecessary whitespace when supported by the output format</source>
-        <translation type="unfinished"></translation>
+        <translation>Omite espaços em branco desnecessários quando suportado pelo formato de saída</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Minimize output</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimizar saída</translation>
     </message>
     <message>
         <location line="+118"/>
@@ -1595,17 +1595,17 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+16"/>
         <source>Display news in status bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Exibir notícias na barra de estado</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Highlight new version in status bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Sublinhar nova versão na barra de estado</translation>
     </message>
     <message>
         <location line="+24"/>
         <source>Keyboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Teclado</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1616,17 +1616,17 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+106"/>
         <source>Extensions</source>
-        <translation type="unfinished"></translation>
+        <translation>Extensões</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>Diretoria:</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Open...</source>
-        <translation type="unfinished"></translation>
+        <translation>Abrir...</translation>
     </message>
     <message>
         <location filename="../src/tiled/preferencesdialog.cpp" line="+64"/>
@@ -2257,7 +2257,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location filename="../src/tiled/editableasset.cpp" line="+90"/>
         <source>Invalid callback</source>
-        <translation type="unfinished"></translation>
+        <translation>Retorno inválido</translation>
     </message>
     <message>
         <location filename="../src/tiled/editablegrouplayer.cpp" line="+45"/>
@@ -2270,7 +2270,7 @@ Linha %1, coluna %2</translation>
         <location line="+11"/>
         <location line="+28"/>
         <source>Index out of range</source>
-        <translation type="unfinished"></translation>
+        <translation>Índice fora do intervalo</translation>
     </message>
     <message>
         <location line="-16"/>
@@ -2280,23 +2280,23 @@ Linha %1, coluna %2</translation>
         <location line="+40"/>
         <location filename="../src/tiled/editabletile.cpp" line="+219"/>
         <source>Invalid argument</source>
-        <translation type="unfinished"></translation>
+        <translation>Argumento inválido</translation>
     </message>
     <message>
         <location line="-15"/>
         <location filename="../src/tiled/editablemap.cpp" line="-55"/>
         <source>Layer not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Camada não encontrada</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Layer is in use</source>
-        <translation type="unfinished"></translation>
+        <translation>Camada está em uso</translation>
     </message>
     <message>
         <location filename="../src/tiled/editablemap.cpp" line="+20"/>
         <source>Layer already part of a map</source>
-        <translation type="unfinished"></translation>
+        <translation>Camada já é parte de um mapa</translation>
     </message>
     <message>
         <location line="+100"/>
