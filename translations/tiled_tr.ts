@@ -1593,7 +1593,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+10"/>
         <source>Mouse wheel &amp;zooms by default</source>
-        <translation>Tekerlek ön tanımlı olarak &amp;yakınlaştırır</translation>
+        <translation>Tekerlek öntanımlı olarak &amp;yakınlaştırır</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -2680,7 +2680,7 @@ Satır %1, sütun %2</translation>
         <location line="-13"/>
         <source>Duplicate %n Object(s)</source>
         <translation>
-            <numerusform>%n Nesneyi Çoğalt</numerusform>
+            <numerusform>Nesneyi Çoğalt</numerusform>
             <numerusform>%n Nesneyi Çoğalt</numerusform>
         </translation>
     </message>
@@ -2688,7 +2688,7 @@ Satır %1, sütun %2</translation>
         <location line="+2"/>
         <source>Remove %n Object(s)</source>
         <translation>
-            <numerusform>%n Nesneyi Kaldır</numerusform>
+            <numerusform>Nesneyi Kaldır</numerusform>
             <numerusform>%n Nesneyi Kaldır</numerusform>
         </translation>
     </message>
@@ -2776,7 +2776,7 @@ Satır %1, sütun %2</translation>
         <location line="+6"/>
         <source>Move %n Object(s) to Layer</source>
         <translation>
-            <numerusform>%n Nesneyi Katmana Taşı</numerusform>
+            <numerusform>Nesneyi Katmana Taşı</numerusform>
             <numerusform>%n Nesneyi Katmana Taşı</numerusform>
         </translation>
     </message>
@@ -3466,7 +3466,7 @@ Satır %1, sütun %2</translation>
         <location line="+266"/>
         <source>Move %n Point(s)</source>
         <translation>
-            <numerusform>%n Noktayı Taşı</numerusform>
+            <numerusform>Noktayı Taşı</numerusform>
             <numerusform>%n Noktayı Taşı</numerusform>
         </translation>
     </message>
@@ -3475,7 +3475,7 @@ Satır %1, sütun %2</translation>
         <location line="+94"/>
         <source>Delete %n Node(s)</source>
         <translation>
-            <numerusform>%n Boğumu Sil</numerusform>
+            <numerusform>Boğumu Sil</numerusform>
             <numerusform>%n Boğumu Sil</numerusform>
         </translation>
     </message>
@@ -3924,7 +3924,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="-1083"/>
         <source>Reset to Default Layout</source>
-        <translation>Ön Tanımlı Düzene Sıfırla</translation>
+        <translation>Öntanımlı Düzene Sıfırla</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -4087,7 +4087,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+27"/>
         <source>Rotate %n Object(s)</source>
         <translation>
-            <numerusform>%n Nesneyi Döndür</numerusform>
+            <numerusform>Nesneyi Döndür</numerusform>
             <numerusform>%n Nesneyi Döndür</numerusform>
         </translation>
     </message>
@@ -4117,7 +4117,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+2"/>
         <source>Group %n Layer(s)</source>
         <translation>
-            <numerusform>%n Katmanı Grupla</numerusform>
+            <numerusform>Katmanı Grupla</numerusform>
             <numerusform>%n Katmanı Grupla</numerusform>
         </translation>
     </message>
@@ -4125,7 +4125,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+16"/>
         <source>Ungroup %n Layer(s)</source>
         <translation>
-            <numerusform>%n Katmanı Gruptan Çıkar</numerusform>
+            <numerusform>Katmanı Gruptan Çıkar</numerusform>
             <numerusform>%n Katmanı Gruptan Çıkar</numerusform>
         </translation>
     </message>
@@ -4133,7 +4133,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+46"/>
         <source>Duplicate %n Layer(s)</source>
         <translation>
-            <numerusform>%n Katmanı Çoğalt</numerusform>
+            <numerusform>Katmanı Çoğalt</numerusform>
             <numerusform>%n Katmanı Çoğalt</numerusform>
         </translation>
     </message>
@@ -4151,7 +4151,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+98"/>
         <source>Remove %n Layer(s)</source>
         <translation>
-            <numerusform>%n Katmanı Kaldır</numerusform>
+            <numerusform>Katmanı Kaldır</numerusform>
             <numerusform>%n Katmanı Kaldır</numerusform>
         </translation>
     </message>
@@ -4179,7 +4179,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+78"/>
         <source>Duplicate %n Object(s)</source>
         <translation>
-            <numerusform>%n Nesneyi Çoğalt</numerusform>
+            <numerusform>Nesneyi Çoğalt</numerusform>
             <numerusform>%n Nesneyi Çoğalt</numerusform>
         </translation>
     </message>
@@ -4187,7 +4187,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+13"/>
         <source>Remove %n Object(s)</source>
         <translation>
-            <numerusform>%n Nesneyi Kaldır</numerusform>
+            <numerusform>Nesneyi Kaldır</numerusform>
             <numerusform>%n Nesneyi Kaldır</numerusform>
         </translation>
     </message>
@@ -4195,7 +4195,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+11"/>
         <source>Move %n Object(s) to Layer</source>
         <translation>
-            <numerusform>%n Nesneyi Katmana Taşı</numerusform>
+            <numerusform>Nesneyi Katmana Taşı</numerusform>
             <numerusform>%n Nesneyi Katmana Taşı</numerusform>
         </translation>
     </message>
@@ -4203,7 +4203,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+38"/>
         <source>Move %n Object(s) Up</source>
         <translation>
-            <numerusform>%n Nesneyi Yukarı Taşı</numerusform>
+            <numerusform>Nesneyi Yukarı Taşı</numerusform>
             <numerusform>%n Nesneyi Yukarı Taşı</numerusform>
         </translation>
     </message>
@@ -4211,7 +4211,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+36"/>
         <source>Move %n Object(s) Down</source>
         <translation>
-            <numerusform>%n Nesneyi Aşağı Taşı</numerusform>
+            <numerusform>Nesneyi Aşağı Taşı</numerusform>
             <numerusform>%n Nesneyi Aşağı Taşı</numerusform>
         </translation>
     </message>
@@ -4434,7 +4434,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+423"/>
         <source>Duplicate %n Object(s)</source>
         <translation>
-            <numerusform>%n Nesneyi Çoğalt</numerusform>
+            <numerusform>Nesneyi Çoğalt</numerusform>
             <numerusform>%n Nesneyi Çoğalt</numerusform>
         </translation>
     </message>
@@ -4442,7 +4442,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+1"/>
         <source>Remove %n Object(s)</source>
         <translation>
-            <numerusform>%n Nesneyi Kaldır</numerusform>
+            <numerusform>Nesneyi Kaldır</numerusform>
             <numerusform>%n Nesneyi Kaldır</numerusform>
         </translation>
     </message>
@@ -4479,7 +4479,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+17"/>
         <source>Add %n Tileset(s)</source>
         <translation>
-            <numerusform>%n Desen Seti Ekle</numerusform>
+            <numerusform>Desen Seti Ekle</numerusform>
             <numerusform>%n Desen Seti Ekle</numerusform>
         </translation>
     </message>
@@ -4592,7 +4592,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+1"/>
         <source>Tile layers for this map will consume %L1 GB of memory each. Not creating one by default.</source>
-        <translation>Bu harita için desen katmanlarının her biri %L1 GB bellek kullanıyor. Ön tanımlı olarak oluşturulmuyor.</translation>
+        <translation>Bu harita için desen katmanlarının her biri %L1 GB bellek kullanıyor. Öntanımlı olarak oluşturulmuyor.</translation>
     </message>
     <message>
         <location line="+45"/>
@@ -4751,7 +4751,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+742"/>
         <source>Move %n Object(s)</source>
         <translation>
-            <numerusform>%n Nesneyi Taşı</numerusform>
+            <numerusform>Nesneyi Taşı</numerusform>
             <numerusform>%n Nesneyi Taşı</numerusform>
         </translation>
     </message>
@@ -4779,7 +4779,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+699"/>
         <source>Rotate %n Object(s)</source>
         <translation>
-            <numerusform>%n Nesneyi Döndür</numerusform>
+            <numerusform>Nesneyi Döndür</numerusform>
             <numerusform>%n Nesneyi Döndür</numerusform>
         </translation>
     </message>
@@ -4787,7 +4787,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+275"/>
         <source>Resize %n Object(s)</source>
         <translation>
-            <numerusform>%n Nesneyi Yeniden Boyutlandır</numerusform>
+            <numerusform>Nesneyi Yeniden Boyutlandır</numerusform>
             <numerusform>%n Nesneyi Yeniden Boyutlandır</numerusform>
         </translation>
     </message>
@@ -4916,7 +4916,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+17"/>
         <source>Move %n Object(s) to Layer</source>
         <translation>
-            <numerusform>%n Nesneyi Katmana Taşı</numerusform>
+            <numerusform>Nesneyi Katmana Taşı</numerusform>
             <numerusform>%n Nesneyi Katmana Taşı</numerusform>
         </translation>
     </message>
@@ -4927,7 +4927,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <location filename="../src/tiled/preferencesdialog.cpp" line="-161"/>
         <location line="+158"/>
         <source>System default</source>
-        <translation>Sistem ön tanımlı</translation>
+        <translation>Sistem öntanımlı</translation>
     </message>
 </context>
 <context>
@@ -5464,7 +5464,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+7"/>
         <source>Reset shortcut to default</source>
-        <translation>Kısayalu ön tanımlıya sıfırla</translation>
+        <translation>Kısayalu öntanımlıya sıfırla</translation>
     </message>
 </context>
 <context>
@@ -6602,7 +6602,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+61"/>
         <source>Change %n Object/s Tile</source>
         <translation>
-            <numerusform>%n Nesnenin Desenini Değiştir</numerusform>
+            <numerusform>Nesnenin Desenini Değiştir</numerusform>
             <numerusform>%n Nesnenin Desenini Değiştir</numerusform>
         </translation>
     </message>
@@ -6610,7 +6610,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+65"/>
         <source>Detach %n Template Instance(s)</source>
         <translation>
-            <numerusform>%n Şablon Örneğini Ayır</numerusform>
+            <numerusform>Şablon Örneğini Ayır</numerusform>
             <numerusform>%n Şablon Örneğini Ayır</numerusform>
         </translation>
     </message>
@@ -6618,7 +6618,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+39"/>
         <source>Reset %n Instances</source>
         <translation>
-            <numerusform>%n Örneği Sıfırla</numerusform>
+            <numerusform>Örneği Sıfırla</numerusform>
             <numerusform>%n Örneği Sıfırla</numerusform>
         </translation>
     </message>
@@ -6626,7 +6626,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+53"/>
         <source>Replace %n Object(s) With Template</source>
         <translation>
-            <numerusform>%n Nesneyi Şablonla Değiştir</numerusform>
+            <numerusform>Nesneyi Şablonla Değiştir</numerusform>
             <numerusform>%n Nesneyi Şablonla Değiştir</numerusform>
         </translation>
     </message>
@@ -6767,7 +6767,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <location filename="../src/tiled/propertybrowser.cpp" line="-876"/>
         <source>Flip %n Object(s)</source>
         <translation>
-            <numerusform>%n Nesneyi Çevir</numerusform>
+            <numerusform>Nesneyi Çevir</numerusform>
             <numerusform>%n Nesneyi Çevir</numerusform>
         </translation>
     </message>
@@ -6852,7 +6852,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <location filename="../src/tiled/mapdocument.cpp" line="-770"/>
         <source>Raise %n Layer(s)</source>
         <translation>
-            <numerusform>%n Katmanı Yükselt</numerusform>
+            <numerusform>Katmanı Yükselt</numerusform>
             <numerusform>%n Katmanı Yükselt</numerusform>
         </translation>
     </message>
@@ -6860,7 +6860,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+27"/>
         <source>Lower %n Layer(s)</source>
         <translation>
-            <numerusform>%n Katmanı Alçalt</numerusform>
+            <numerusform>Katmanı Alçalt</numerusform>
             <numerusform>%n Katmanı Alçalt</numerusform>
         </translation>
     </message>
@@ -6898,7 +6898,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+5"/>
         <source>The scale of the output image (default: 1).</source>
-        <translation>Çıktı resminin ölçeği (ön tanımlı: 1).</translation>
+        <translation>Çıktı resminin ölçeği (öntanımlı: 1).</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -6934,7 +6934,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+2"/>
         <source>Ignore all layer visibility flags in the map file, and render all layers in the output (default is to omit invisible layers).</source>
-        <translation>Tüm katman görünürlük bayraklarını yok say, ve tüm katmanları çıktıda işle (ön tanımlı olan görünmez katmanları atlamaktır).</translation>
+        <translation>Tüm katman görünürlük bayraklarını yok say, ve tüm katmanları çıktıda işle (öntanımlı olan görünmez katmanları atlamaktır).</translation>
     </message>
     <message>
         <location line="+2"/>

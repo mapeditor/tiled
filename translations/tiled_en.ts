@@ -3655,7 +3655,7 @@ Do you want to replace it?</translation>
     <message numerus="yes">
         <location line="+74"/>
         <source>Drag Layer(s)</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Drag Layer</numerusform>
             <numerusform>Drag Layers</numerusform>
         </translation>
@@ -3993,12 +3993,12 @@ Please select specific format.</translation>
     <message>
         <location line="+115"/>
         <source>Automatic Mapping Error</source>
-        <translation type="unfinished">AutoMapping Error</translation>
+        <translation>AutoMapping Error</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Automatic Mapping Warning</source>
-        <translation type="unfinished">AutoMapping Warning</translation>
+        <translation>AutoMapping Warning</translation>
     </message>
     <message>
         <location line="+244"/>
@@ -4921,7 +4921,7 @@ Please select specific format.</translation>
     <message numerus="yes">
         <location filename="../src/tiled/propertiesdock.cpp" line="+246"/>
         <source>Paste Property/Properties</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Paste Property</numerusform>
             <numerusform>Paste Properties</numerusform>
         </translation>
@@ -4929,7 +4929,7 @@ Please select specific format.</translation>
     <message numerus="yes">
         <location line="+50"/>
         <source>Remove Property/Properties</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Remove Property</numerusform>
             <numerusform>Remove Properties</numerusform>
         </translation>
@@ -4978,7 +4978,7 @@ Please select specific format.</translation>
     <message numerus="yes">
         <location line="+63"/>
         <source>Convert Property/Properties</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Convert Property</numerusform>
             <numerusform>Convert Properties</numerusform>
         </translation>
@@ -6286,7 +6286,7 @@ Please select specific format.</translation>
     <message>
         <location line="+37"/>
         <source>World: Invalid number of captures in &apos;%1&apos;, 2 captures expected</source>
-        <translation type="unfinished">World: Invalid number of captures in &apos;%1&apos;, 2 captures expected</translation>
+        <translation>World: Invalid number of captures in &apos;%1&apos;, 2 captures expected</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -6587,7 +6587,7 @@ Please select specific format.</translation>
     <message numerus="yes">
         <location line="+61"/>
         <source>Change %n Object/s Tile</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Change Object&apos;s Tile</numerusform>
             <numerusform>Change %n Objects&apos; Tile</numerusform>
         </translation>
