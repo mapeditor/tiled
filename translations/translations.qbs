@@ -8,6 +8,7 @@ Product {
     // Disabled languages because they're too outdated
     excludeFiles: [
         "tiled_lv.ts",
+        "tiled_zh.ts",
     ]
 
     Depends { name: "Qt.core" }

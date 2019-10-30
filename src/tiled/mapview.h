@@ -61,6 +61,8 @@ public:
     MapView(QWidget *parent = nullptr, Mode mode = StaticContents);
     ~MapView() override;
 
+    void setViewInitialized();
+
     void setScene(MapScene *scene);
     MapScene *mapScene() const;
 
@@ -69,7 +71,7 @@ public:
     qreal scale() const;
     void setScale(qreal scale);
 
-    void fitInView();
+    void fitMapInView();
 
     bool handScrolling() const { return mHandScrolling; }
     void setHandScrolling(bool handScrolling);
@@ -82,6 +84,7 @@ public:
 protected:
     bool event(QEvent *event) override;
 
+    void showEvent(QShowEvent *) override;
     void hideEvent(QHideEvent *) override;
     void resizeEvent(QResizeEvent *event) override;
 
@@ -114,10 +117,17 @@ private:
     MapDocument *mMapDocument = nullptr;
     QPoint mLastMousePos;
     QPointF mLastMouseScenePos;
-    bool mHandScrolling;
+    bool mHandScrolling = false;
+    bool mViewInitialized = false;
     Mode mMode;
     Zoomable *mZoomable;
 };
+
+
+inline void MapView::setViewInitialized()
+{
+    mViewInitialized = true;
+}
 
 } // namespace Tiled
 

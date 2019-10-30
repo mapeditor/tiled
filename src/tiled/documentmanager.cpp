@@ -478,10 +478,15 @@ void DocumentManager::saveFile()
  */
 void DocumentManager::addDocument(const DocumentPtr &document)
 {
+    insertDocument(mDocuments.size(), document);
+}
+
+void DocumentManager::insertDocument(int index, const DocumentPtr &document)
+{
     Q_ASSERT(document);
     Q_ASSERT(!mDocuments.contains(document));
 
-    mDocuments.append(document);
+    mDocuments.insert(index, document);
     mUndoGroup->addStack(document->undoStack());
 
     Document *documentPtr = document.data();
@@ -507,7 +512,7 @@ void DocumentManager::addDocument(const DocumentPtr &document)
     if (document->isModified())
         tabText.prepend(QLatin1Char('*'));
 
-    const int documentIndex = mTabBar->addTab(tabText);
+    const int documentIndex = mTabBar->insertTab(index, tabText);
     mTabBar->setTabToolTip(documentIndex, document->fileName());
 
     connect(documentPtr, &Document::fileNameChanged, this, &DocumentManager::fileNameChanged);
@@ -526,9 +531,6 @@ void DocumentManager::addDocument(const DocumentPtr &document)
 
     if (mBrokenLinksModel->hasBrokenLinks())
         mBrokenLinksWidget->show();
-
-    // todo: fix this (move to MapEditor)
-    //    centerViewOn(0, 0);
 
     emit documentOpened(documentPtr);
 }
@@ -853,10 +855,12 @@ bool DocumentManager::reloadDocumentAt(int index)
             return false;
         }
 
+        // Save the document state, to ensure the new document will match it
+        static_cast<MapEditor*>(editor(Document::MapDocumentType))->saveDocumentState(mapDocument.data());
+
         // Replace old tab
-        addDocument(newDocument);
-        closeDocumentAt(index);
-        mTabBar->moveTab(mDocuments.size() - 1, index);
+        insertDocument(index, newDocument); // also selects the new document
+        closeDocumentAt(index + 1);
 
         checkTilesetColumns(newDocument.data());
 

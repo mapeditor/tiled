@@ -1444,7 +1444,7 @@ Line %1, column %2</source>
         <translation>XML</translation>
     </message>
     <message>
-        <location filename="../src/tiled/newmapdialog.cpp" line="+91"/>
+        <location filename="../src/tiled/newmapdialog.cpp" line="+92"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Base64 (uncompressed)</source>
         <translation>Base64 (без сжатия)</translation>
@@ -3370,7 +3370,7 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::DocumentManager</name>
     <message>
-        <location filename="../src/tiled/documentmanager.cpp" line="+590"/>
+        <location filename="../src/tiled/documentmanager.cpp" line="+595"/>
         <source>Unrecognized file format.</source>
         <translation type="unfinished">Неизвестный формат файла.</translation>
     </message>
@@ -3381,7 +3381,7 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+193"/>
-        <location line="+18"/>
+        <location line="+20"/>
         <source>%1:
 
 %2</source>
@@ -3595,7 +3595,7 @@ Do you want to replace it?</source>
     <name>Tiled::IssuesCounter</name>
     <message numerus="yes">
         <location filename="../src/tiled/issuescounter.cpp" line="+109"/>
-        <source>%1 error(s)</source>
+        <source>%n error(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
             <numerusform></numerusform>
@@ -3604,7 +3604,7 @@ Do you want to replace it?</source>
     </message>
     <message numerus="yes">
         <location line="+1"/>
-        <source>%1 warning(s)</source>
+        <source>%n warning(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
             <numerusform></numerusform>
@@ -3789,7 +3789,7 @@ Do you want to replace it?</source>
     <name>Tiled::MainWindow</name>
     <message>
         <location filename="../src/tiled/abstractobjecttool.cpp" line="-261"/>
-        <location filename="../src/tiled/documentmanager.cpp" line="-536"/>
+        <location filename="../src/tiled/documentmanager.cpp" line="-538"/>
         <location line="+20"/>
         <source>untitled</source>
         <translation type="unfinished">безымянный</translation>
@@ -4098,6 +4098,7 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="+36"/>
+        <location filename="../src/tiled/newmapdialog.cpp" line="+74"/>
         <source>Tile Layer %1</source>
         <translation type="unfinished">Слой тайлов %1</translation>
     </message>
@@ -4475,7 +4476,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::MapEditor</name>
     <message>
-        <location filename="../src/tiled/mapeditor.cpp" line="+693"/>
+        <location filename="../src/tiled/mapeditor.cpp" line="+701"/>
         <source>Paste in Place</source>
         <translation type="unfinished">Вставить в место</translation>
     </message>
@@ -4572,7 +4573,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::NewMapDialog</name>
     <message>
-        <location filename="../src/tiled/newmapdialog.cpp" line="-22"/>
+        <location filename="../src/tiled/newmapdialog.cpp" line="-96"/>
         <source>Save As...</source>
         <translation type="unfinished">Сохранить как...</translation>
     </message>
@@ -4601,12 +4602,7 @@ Please select specific format.</source>
         <translation type="unfinished">Гексагональная (смещенная)</translation>
     </message>
     <message>
-        <location line="+69"/>
-        <source>Tile Layer 1</source>
-        <translation type="unfinished">Слой тайлов 1</translation>
-    </message>
-    <message>
-        <location line="+4"/>
+        <location line="+74"/>
         <source>Memory Usage Warning</source>
         <translation type="unfinished">Предупреждение о нехватке памяти</translation>
     </message>
@@ -5412,12 +5408,12 @@ Please select specific format.</source>
 <context>
     <name>Tiled::ScriptManager</name>
     <message>
-        <location filename="../src/tiled/scriptmanager.cpp" line="+151"/>
+        <location filename="../src/tiled/scriptmanager.cpp" line="+159"/>
         <source>Error opening file: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+9"/>
         <source>Evaluating &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>

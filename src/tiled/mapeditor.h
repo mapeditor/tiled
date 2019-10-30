@@ -107,6 +107,8 @@ public:
     MapView *currentMapView() const;
     Zoomable *zoomable() const override;
 
+    void saveDocumentState(MapDocument *mapDocument);
+
     void showMessage(const QString &text, int timeout = 0);
 
     void setCurrentTileset(const SharedTileset &tileset);

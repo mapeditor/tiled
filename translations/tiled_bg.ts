@@ -11,7 +11,7 @@
     <message>
         <location line="+96"/>
         <source>Donate ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>Дарение ↗</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -139,7 +139,7 @@
     <message>
         <location line="+17"/>
         <source>Show output in Console view</source>
-        <translation type="unfinished"></translation>
+        <translation>Показване на изхода в конзолния изглед</translation>
     </message>
     <message>
         <location line="+33"/>
@@ -177,7 +177,7 @@
     <message>
         <location line="+25"/>
         <source>Minimize the exported file by omitting unnecessary whitespace</source>
-        <translation type="unfinished"></translation>
+        <translation>Смаляване на изнесения файл чрез премахване на ненужните празни места</translation>
     </message>
     <message>
         <location line="+70"/>
@@ -271,7 +271,7 @@
     <message>
         <location filename="../src/plugins/defoldcollection/defoldcollectionplugin.cpp" line="+137"/>
         <source>Defold collection (*.collection)</source>
-        <translation type="unfinished"></translation>
+        <translation>Колекция на Defold (*.collection)</translation>
     </message>
 </context>
 <context>
@@ -279,7 +279,7 @@
     <message>
         <location filename="../src/tiled/donationdialog.ui" line="+14"/>
         <source>Support Tiled Development</source>
-        <translation type="unfinished"></translation>
+        <translation>Подкрепете разработката на Tiled</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -289,7 +289,7 @@
     <message>
         <location line="+25"/>
         <source>Visit https://www.mapeditor.org/donate ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>Посетете https://www.mapeditor.org/donate ↗</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -470,7 +470,7 @@
     <message>
         <location line="+15"/>
         <source>JSON map files (*.json)</source>
-        <translation>Файлове с карти във формата json (*.json)</translation>
+        <translation>Файлове с карти във формата JSON (*.json)</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -480,12 +480,12 @@
     <message>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+15"/>
         <source>JSON map files [Tiled 1.1] (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Файлове с карти във формата JSON [Tiled 1.1] (*.json)</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>JavaScript map files [Tiled 1.1] (*.js)</source>
-        <translation type="unfinished"></translation>
+        <translation>Файлове с карти на езика JavaScript [Tiled 1.1] (*.js)</translation>
     </message>
 </context>
 <context>
@@ -507,12 +507,12 @@
     <message>
         <location line="+14"/>
         <source>JSON template files (*.json)</source>
-        <translation>Файлове с шаблони във формата json (*.json)</translation>
+        <translation>Файлове с шаблони във формата JSON (*.json)</translation>
     </message>
     <message>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+14"/>
         <source>JSON template files [Tiled 1.1] (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Файлове с шаблони във формата JSON [Tiled 1.1] (*.json)</translation>
     </message>
 </context>
 <context>
@@ -534,12 +534,12 @@
     <message>
         <location line="+14"/>
         <source>JSON tileset files (*.json)</source>
-        <translation>Файлове с плочни набори във формата json (*.json)</translation>
+        <translation>Файлове с плочни набори във формата JSON (*.json)</translation>
     </message>
     <message>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+14"/>
         <source>JSON tileset files [Tiled 1.1] (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Файлове с плочни набори във формата JSON [Tiled 1.1] (*.json)</translation>
     </message>
 </context>
 <context>
@@ -723,7 +723,7 @@
     <message>
         <location line="-8"/>
         <source>User Manual ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>Ръководство на потребителя ↗</translation>
     </message>
     <message>
         <location line="+19"/>
@@ -838,7 +838,7 @@
     <message>
         <location line="+8"/>
         <source>Ctrl+M</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ctrl+M</translation>
     </message>
     <message>
         <location line="+75"/>
@@ -913,7 +913,7 @@
     <message>
         <location line="+16"/>
         <source>Support Tiled Development</source>
-        <translation type="unfinished"></translation>
+        <translation>Подкрепете разработката на Tiled</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -928,7 +928,7 @@
     <message>
         <location line="+9"/>
         <source>Fit Map in View</source>
-        <translation type="unfinished"></translation>
+        <translation>Побиране на картата в изгледа</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -938,7 +938,7 @@
     <message>
         <location line="+5"/>
         <source>Community Forum ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>Форум на общността ↗</translation>
     </message>
     <message>
         <location line="-87"/>
@@ -1445,7 +1445,7 @@ Line %1, column %2</source>
         <translation>XML</translation>
     </message>
     <message>
-        <location filename="../src/tiled/newmapdialog.cpp" line="+91"/>
+        <location filename="../src/tiled/newmapdialog.cpp" line="+92"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Base64 (uncompressed)</source>
         <translation>Base64 (некомпресиран)</translation>
@@ -1471,7 +1471,7 @@ Line %1, column %2</source>
         <location line="+4"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="-2"/>
         <source>Base64 (Zstandard compressed)</source>
-        <translation type="unfinished"></translation>
+        <translation>Base64 (компресиран чрез Zstandard)</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1536,7 +1536,7 @@ Line %1, column %2</source>
     <message>
         <location line="+21"/>
         <source>Repeat last export on save</source>
-        <translation type="unfinished"></translation>
+        <translation>Повтаряне на последното изнасяне при запазване</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1576,12 +1576,12 @@ Line %1, column %2</source>
     <message>
         <location line="-52"/>
         <source>Omits unnecessary whitespace when supported by the output format</source>
-        <translation type="unfinished"></translation>
+        <translation>Премахва ненужните празни места, когато това се поддържа от крайния формат</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Minimize output</source>
-        <translation type="unfinished"></translation>
+        <translation>Смаляване на крайния резултат</translation>
     </message>
     <message>
         <location line="+118"/>
@@ -1596,17 +1596,17 @@ Line %1, column %2</source>
     <message>
         <location line="+16"/>
         <source>Display news in status bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Показване на новини в лентата на състоянието</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Highlight new version in status bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Открояване на новата версия в лентата на състоянието</translation>
     </message>
     <message>
         <location line="+24"/>
         <source>Keyboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Клавиатура</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1617,17 +1617,17 @@ Line %1, column %2</source>
     <message>
         <location line="+106"/>
         <source>Extensions</source>
-        <translation type="unfinished"></translation>
+        <translation>Разширения</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>Папка:</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Open...</source>
-        <translation type="unfinished"></translation>
+        <translation>Отваряне…</translation>
     </message>
     <message>
         <location filename="../src/tiled/preferencesdialog.cpp" line="+64"/>
@@ -2281,43 +2281,43 @@ Line %1, column %2</source>
         <location line="+40"/>
         <location filename="../src/tiled/editabletile.cpp" line="+219"/>
         <source>Invalid argument</source>
-        <translation type="unfinished"></translation>
+        <translation>Неправилен аргумент</translation>
     </message>
     <message>
         <location line="-15"/>
         <location filename="../src/tiled/editablemap.cpp" line="-55"/>
         <source>Layer not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Слоят не е намерен</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Layer is in use</source>
-        <translation type="unfinished"></translation>
+        <translation>Слоят се използва</translation>
     </message>
     <message>
         <location filename="../src/tiled/editablemap.cpp" line="+20"/>
         <source>Layer already part of a map</source>
-        <translation type="unfinished"></translation>
+        <translation>Слоят вече е част от карта</translation>
     </message>
     <message>
         <location line="+100"/>
         <source>Merge is currently not supported for detached maps</source>
-        <translation type="unfinished"></translation>
+        <translation>В момента не се поддържа сливане на разкачени карти</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>Resize is currently not supported for detached maps</source>
-        <translation type="unfinished"></translation>
+        <translation>В момента не се поддържа преоразмеряване на разкачени карти</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Invalid size</source>
-        <translation type="unfinished"></translation>
+        <translation>Неправилен размер</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>AutoMapping is currently not supported for detached maps</source>
-        <translation type="unfinished"></translation>
+        <translation>В момента не се поддържа авто-картиране на разкачени карти</translation>
     </message>
     <message>
         <location line="+143"/>
@@ -3368,7 +3368,7 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::DocumentManager</name>
     <message>
-        <location filename="../src/tiled/documentmanager.cpp" line="+590"/>
+        <location filename="../src/tiled/documentmanager.cpp" line="+595"/>
         <source>Unrecognized file format.</source>
         <translation type="unfinished">Непознат формат на файла.</translation>
     </message>
@@ -3379,7 +3379,7 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+193"/>
-        <location line="+18"/>
+        <location line="+20"/>
         <source>%1:
 
 %2</source>
@@ -3591,7 +3591,7 @@ Do you want to replace it?</source>
     <name>Tiled::IssuesCounter</name>
     <message numerus="yes">
         <location filename="../src/tiled/issuescounter.cpp" line="+109"/>
-        <source>%1 error(s)</source>
+        <source>%n error(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
             <numerusform></numerusform>
@@ -3599,7 +3599,7 @@ Do you want to replace it?</source>
     </message>
     <message numerus="yes">
         <location line="+1"/>
-        <source>%1 warning(s)</source>
+        <source>%n warning(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
             <numerusform></numerusform>
@@ -3782,7 +3782,7 @@ Do you want to replace it?</source>
     <name>Tiled::MainWindow</name>
     <message>
         <location filename="../src/tiled/abstractobjecttool.cpp" line="-261"/>
-        <location filename="../src/tiled/documentmanager.cpp" line="-536"/>
+        <location filename="../src/tiled/documentmanager.cpp" line="-538"/>
         <location line="+20"/>
         <source>untitled</source>
         <translation type="unfinished">неименувано</translation>
@@ -4090,6 +4090,7 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="+36"/>
+        <location filename="../src/tiled/newmapdialog.cpp" line="+74"/>
         <source>Tile Layer %1</source>
         <translation type="unfinished">Слой с плочки %1</translation>
     </message>
@@ -4456,7 +4457,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::MapEditor</name>
     <message>
-        <location filename="../src/tiled/mapeditor.cpp" line="+693"/>
+        <location filename="../src/tiled/mapeditor.cpp" line="+701"/>
         <source>Paste in Place</source>
         <translation type="unfinished">Поставяне в четката</translation>
     </message>
@@ -4552,7 +4553,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::NewMapDialog</name>
     <message>
-        <location filename="../src/tiled/newmapdialog.cpp" line="-22"/>
+        <location filename="../src/tiled/newmapdialog.cpp" line="-96"/>
         <source>Save As...</source>
         <translation type="unfinished">Запазване като…</translation>
     </message>
@@ -4581,12 +4582,7 @@ Please select specific format.</source>
         <translation type="unfinished">Шестоъгълна (размината)</translation>
     </message>
     <message>
-        <location line="+69"/>
-        <source>Tile Layer 1</source>
-        <translation type="unfinished">Слой с плочки 1</translation>
-    </message>
-    <message>
-        <location line="+4"/>
+        <location line="+74"/>
         <source>Memory Usage Warning</source>
         <translation type="unfinished">Предупреждение за използваната памет</translation>
     </message>
@@ -5385,12 +5381,12 @@ Please select specific format.</source>
 <context>
     <name>Tiled::ScriptManager</name>
     <message>
-        <location filename="../src/tiled/scriptmanager.cpp" line="+151"/>
+        <location filename="../src/tiled/scriptmanager.cpp" line="+159"/>
         <source>Error opening file: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+9"/>
         <source>Evaluating &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6993,7 +6989,7 @@ Please select specific format.</source>
         <location filename="../src/tiledquick/qml/main.qml" line="+46"/>
         <location line="+20"/>
         <source>Open...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Отваряне…</translation>
     </message>
     <message>
         <location line="+65"/>
