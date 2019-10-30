@@ -197,7 +197,7 @@
     <message>
         <location line="+5"/>
         <source>Export the map with tilesets embedded</source>
-        <translation>Exportar o mapa com tilesets incluídos</translation>
+        <translation>Exportar o mapa com tilesets incorporados</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -2329,22 +2329,22 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+55"/>
         <source>Can only add tiles to an image collection tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Apenas se podem adicionar tiles a um tileset coleção de imagens</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>Can only remove tiles from an image collection tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Apenas se podem remover tiles de um tileset coleção de imagens</translation>
     </message>
     <message>
         <location line="+32"/>
         <source>Can&apos;t set the image of an image collection tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Não se consegue definir a imagem de um tileset coleção de imagens</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Can&apos;t set tile size on an image collection tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Não se consegue definir o tamanho do tile de um tileset coleção de imagens</translation>
     </message>
     <message>
         <location line="+38"/>
@@ -2359,32 +2359,32 @@ Linha %1, coluna %2</translation>
     <message>
         <location filename="../src/tiled/scriptedfileformat.cpp" line="-11"/>
         <source>Invalid return value for &apos;write&apos; (string or ArrayBuffer expected)</source>
-        <translation type="unfinished"></translation>
+        <translation>Valor de retorno inválido para &apos;write&apos; (esperado string ou ArrayBuffer)</translation>
     </message>
     <message>
         <location line="+38"/>
         <source>Invalid file format object (requires string &apos;name&apos; property)</source>
-        <translation type="unfinished"></translation>
+        <translation>Objeto formato de ficheiro inválido (requer propriedade string &apos;name&apos;)</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Invalid file format object (requires string &apos;extension&apos; property)</source>
-        <translation type="unfinished"></translation>
+        <translation>Objeto formato de ficheiro inválido (requer propriedade string &apos;extension&apos;)</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Invalid file format object (requires a &apos;write&apos; and/or &apos;read&apos; function property)</source>
-        <translation type="unfinished"></translation>
+        <translation>Objeto formato de ficheiro inválido (requer uma propriedade função &apos;write&apos; e/ou &apos;read&apos;)</translation>
     </message>
     <message>
         <location line="+50"/>
         <source>Invalid return value for &apos;outputFiles&apos; (string or array expected)</source>
-        <translation type="unfinished"></translation>
+        <translation>Valor de retorno inválido para &apos;outputFiles&apos; (esperado string ou array)</translation>
     </message>
     <message>
         <location filename="../src/tiled/scriptedtool.cpp" line="+207"/>
         <source>Invalid tool object (requires string &apos;name&apos; property)</source>
-        <translation type="unfinished"></translation>
+        <translation>Objeto ferramenta inválido (requer propriedade string &apos;name&apos;)</translation>
     </message>
     <message>
         <location filename="../src/tiled/scriptmodule.cpp" line="+174"/>
@@ -2395,7 +2395,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+6"/>
         <source>Can&apos;t reload an embedded tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Não consigo recarregar um tileset incorporado</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -2737,12 +2737,12 @@ Linha %1, coluna %2</translation>
     <message>
         <location filename="../src/tiled/automapper.cpp" line="+140"/>
         <source>Ignoring unknown property &apos;%2&apos; = &apos;%3&apos; (rule map &apos;%1&apos;)</source>
-        <translation type="unfinished"></translation>
+        <translation>A ignorar propriedade desconhecida &apos;%2&apos; = &apos;%3&apos; (mapa de regras &apos;%1&apos;)</translation>
     </message>
     <message>
         <location line="+40"/>
         <source>Ignoring unknown property &apos;%2&apos; = &apos;%3&apos; on layer &apos;%4&apos; (rule map &apos;%1&apos;)</source>
-        <translation type="unfinished"></translation>
+        <translation>A ignorar propriedade desconhecida &apos;%2&apos; = &apos;%3&apos; na camada &apos;%4&apos; (mapa de regras &apos;%1&apos;)</translation>
     </message>
     <message>
         <location line="+29"/>
@@ -2806,22 +2806,22 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+24"/>
         <source>No rules file found at &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Ficheiro de regras não encontrado em &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Error opening rules file &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro ao abrir ficheiro de regras &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+28"/>
         <source>File not found: &apos;%1&apos; (referenced by &apos;%2&apos;)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ficheiro não encontrado: &apos;%1&apos; (referenciado por &apos;%2&apos;)</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Opening rules map &apos;%1&apos; failed: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Abertura de mapa de regras &apos;%1&apos; falhou: %2</translation>
     </message>
 </context>
 <context>
@@ -2899,7 +2899,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+36"/>
         <source>Locate Directory for Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Localizar Diretoria para Ficheiros</translation>
     </message>
     <message>
         <location line="+85"/>
