@@ -21,6 +21,7 @@ LANGUAGES = \
     hu \
     it \
     ja \
+    ko \
     nb \
     nl \
     pl \
