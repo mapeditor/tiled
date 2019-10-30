@@ -776,15 +776,21 @@ TileLayer
 
 Inherits :ref:`script-layer`.
 
+Note that while tile layers have a size, the size is generally ignored on
+infinite maps. Even for finite maps, nothing in the scripting API stops you
+from changing the layer outside of its boundaries and changing the size of the
+layer has no effect on its contents. If you want to change the size while
+affecting the contents, use the ``resize`` function.
+
 Properties
 ~~~~~~~~~~
 
 .. csv-table::
     :widths: 1, 2
 
-    **width** : int |ro|, Width of the layer in tiles (only relevant for non-infinite maps).
-    **height** : int |ro|, Height of the layer in tiles (only relevant for non-infinite maps).
-    **size** : :ref:`script-size` |ro|, Size of the layer in tiles (has ``width`` and ``height`` members) (only relevant for non-infinite maps).
+    **width** : int, Width of the layer in tiles (only relevant for non-infinite maps).
+    **height** : int, Height of the layer in tiles (only relevant for non-infinite maps).
+    **size** : :ref:`script-size`, Size of the layer in tiles (has ``width`` and ``height`` members) (only relevant for non-infinite maps).
 
 Functions
 ~~~~~~~~~
@@ -794,6 +800,11 @@ new TileLayer([name : string])
 
 TileLayer.region() : region
     Returns the region of the layer that is covered with tiles.
+
+TileLayer.resize(size : :ref:`script-size`, offset : :ref:`script-point`) : void
+    Resizes the layer, erasing the part of the contents that falls outside of
+    the layer's new size. The offset parameter can be used to shift the contents
+    by a certain distance in tiles before applying the resize.
 
 TileLayer.cellAt(x : int, y : int) : :ref:`script-cell`
     Returns the value of the cell at the given position. Can be used to query

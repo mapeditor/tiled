@@ -23,11 +23,13 @@
 #include "undocommands.h"
 
 #include <QPointF>
+#include <QSize>
 #include <QUndoCommand>
 
 namespace Tiled {
 
 class Layer;
+class TileLayer;
 
 class Document;
 
@@ -141,6 +143,31 @@ private:
     Layer *mLayer;
     QPointF mOldOffset;
     QPointF mNewOffset;
+};
+
+/**
+ * Used for changing the tile layer size.
+ *
+ * Does not affect the contents of the tile layer, as opposed to the
+ * ResizeTileLayer command.
+ */
+class SetTileLayerSize : public QUndoCommand
+{
+public:
+    SetTileLayerSize(Document *document,
+                     TileLayer *tileLayer,
+                     QSize size,
+                     QUndoCommand *parent = nullptr);
+
+    void undo() override { swap(); }
+    void redo() override { swap(); }
+
+private:
+    void swap();
+
+    Document *mDocument;
+    TileLayer *mTileLayer;
+    QSize mSize;
 };
 
 } // namespace Tiled

@@ -159,4 +159,25 @@ void SetLayerOffset::setOffset(const QPointF &offset)
     emit mDocument->changed(LayerChangeEvent(mLayer, LayerChangeEvent::OffsetProperty));
 }
 
+SetTileLayerSize::SetTileLayerSize(Document *document,
+                                   TileLayer *tileLayer,
+                                   QSize size,
+                                   QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , mDocument(document)
+    , mTileLayer(tileLayer)
+    , mSize(size)
+{
+    setText(QCoreApplication::translate("Undo Commands",
+                                        "Change Tile Layer Size"));
+}
+
+void SetTileLayerSize::swap()
+{
+    QSize oldSize = mTileLayer->size();
+    mTileLayer->setSize(mSize);
+    mSize = oldSize;
+    emit mDocument->changed(TileLayerChangeEvent(mTileLayer, TileLayerChangeEvent::SizeProperty));
+}
+
 } // namespace Tiled

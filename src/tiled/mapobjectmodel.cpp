@@ -508,6 +508,8 @@ void MapObjectModel::documentChanged(const ChangeEvent &change)
 
         break;
     }
+    case ChangeEvent::TileLayerChanged:
+        break;
     case ChangeEvent::MapObjectsAboutToBeRemoved:
     case ChangeEvent::MapObjectsAdded:
     case ChangeEvent::MapObjectsRemoved:
