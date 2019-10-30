@@ -651,22 +651,12 @@
         <translation>&amp;Izgarayı Göster</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Ctrl+G</source>
-        <translation>Ctrl+G</translation>
-    </message>
-    <message>
-        <location line="+9"/>
+        <location line="+12"/>
         <source>Save &amp;As...</source>
         <translation>&amp;Farklı Kaydet...</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Ctrl+Alt+S</source>
-        <translation>Ctrl+Alt+S</translation>
-    </message>
-    <message>
-        <location line="+5"/>
+        <location line="+8"/>
         <source>New &amp;Tileset...</source>
         <translation>Yeni &amp;Desen Seti...</translation>
     </message>
@@ -691,12 +681,7 @@
         <translation>Normal Boyut</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Ctrl+0</source>
-        <translation>Ctrl+0</translation>
-    </message>
-    <message>
-        <location line="+147"/>
+        <location line="+150"/>
         <source>Save All</source>
         <translation>Hepsini Kaydet</translation>
     </message>
@@ -752,22 +737,12 @@
         <translation>Yer&amp;ine Yapıştır</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Ctrl+Shift+V</source>
-        <translation>Ctrl+Shift+V</translation>
-    </message>
-    <message>
-        <location line="+8"/>
+        <location line="+11"/>
         <source>Full Screen</source>
         <translation>Tam Ekran</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>F11</source>
-        <translation>F11</translation>
-    </message>
-    <message>
-        <location line="-200"/>
+        <location line="-197"/>
         <source>Cu&amp;t</source>
         <translation>Ke&amp;s</translation>
     </message>
@@ -792,22 +767,12 @@
         <translation>Son Dosyaları Temizle</translation>
     </message>
     <message>
-        <location line="+87"/>
-        <source>Ctrl+R</source>
-        <translation>Ctrl+R</translation>
-    </message>
-    <message>
-        <location line="+5"/>
+        <location line="+92"/>
         <source>&amp;Export</source>
         <translation>&amp;Dışa Aktar</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Ctrl+E</source>
-        <translation>Ctrl+E</translation>
-    </message>
-    <message>
-        <location line="-82"/>
+        <location line="-79"/>
         <source>&amp;Add External Tileset...</source>
         <translation>Harici Desen Seti &amp;Ekle...</translation>
     </message>
@@ -837,12 +802,7 @@
         <translation>Harita &amp;Özellikleri..</translation>
     </message>
     <message>
-        <location line="+8"/>
-        <source>Ctrl+M</source>
-        <translation>Ctrl+M</translation>
-    </message>
-    <message>
-        <location line="+75"/>
+        <location line="+83"/>
         <source>Export As &amp;Image...</source>
         <translation>&amp;Resim Olarak Dışa Aktar...</translation>
     </message>
@@ -852,12 +812,7 @@
         <translation>Farklı Dışa A&amp;ktar...</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Ctrl+Shift+E</source>
-        <translation>Ctrl+Shift+E</translation>
-    </message>
-    <message>
-        <location line="+13"/>
+        <location line="+16"/>
         <source>&amp;Snap to Grid</source>
         <translation>Izgaraya &amp;Yapıştır</translation>
     </message>
@@ -867,12 +822,7 @@
         <translation>Hepsini K&amp;apat</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Ctrl+Shift+W</source>
-        <translation>Ctrl+Shift+W</translation>
-    </message>
-    <message>
-        <location line="+12"/>
+        <location line="+15"/>
         <source>&amp;Delete</source>
         <translation>&amp;Sil</translation>
     </message>
@@ -887,12 +837,7 @@
         <translation>Şu Anki Katmanı &amp;Vurgula</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>H</source>
-        <translation>H</translation>
-    </message>
-    <message>
-        <location line="+8"/>
+        <location line="+11"/>
         <source>Show Tile Object &amp;Outlines</source>
         <translation>Desen Nesne &amp;Ana Hatlarını Göster</translation>
     </message>
@@ -917,12 +862,7 @@
         <translation>Tiled&apos;ın Geliştirilmesini Destekle</translation>
     </message>
     <message>
-        <location line="+8"/>
-        <source>Ctrl+Shift+S</source>
-        <translation>Ctrl+Shift+S</translation>
-    </message>
-    <message>
-        <location line="+145"/>
+        <location line="+153"/>
         <source>Show Tile Collision Shapes</source>
         <translation>Desen Çarpışma Şekillerini Göster</translation>
     </message>
@@ -932,12 +872,7 @@
         <translation>Haritayı Görünüme Sığdır</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Ctrl+Shift+J</source>
-        <translation>Ctrl+Shift+J</translation>
-    </message>
-    <message>
-        <location line="+5"/>
+        <location line="+8"/>
         <source>Community Forum ↗</source>
         <translation>Topluluk Forumu ↗</translation>
     </message>
@@ -967,12 +902,7 @@
         <translation>Görünümü Temizle</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Tab</source>
-        <translation>Sekme</translation>
-    </message>
-    <message>
-        <location filename="../src/tiled/propertybrowser.cpp" line="+798"/>
+        <location filename="../src/tiled/propertybrowser.cpp" line="+799"/>
         <source>All Files (*)</source>
         <translation>Tüm Dosyalar (*)</translation>
     </message>
@@ -2681,7 +2611,6 @@ Satır %1, sütun %2</translation>
         <source>Duplicate %n Object(s)</source>
         <translation>
             <numerusform>Nesneyi Çoğalt</numerusform>
-            <numerusform>%n Nesneyi Çoğalt</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2689,7 +2618,6 @@ Satır %1, sütun %2</translation>
         <source>Remove %n Object(s)</source>
         <translation>
             <numerusform>Nesneyi Kaldır</numerusform>
-            <numerusform>%n Nesneyi Kaldır</numerusform>
         </translation>
     </message>
     <message>
@@ -2723,24 +2651,9 @@ Satır %1, sütun %2</translation>
         <translation>Şablon Örneklerini Sıfırla</translation>
     </message>
     <message>
-        <location line="+7"/>
-        <source>X</source>
-        <translation>X</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Y</source>
-        <translation>Y</translation>
-    </message>
-    <message>
-        <location line="+5"/>
+        <location line="+13"/>
         <source>Raise Object</source>
         <translation>Nesneyi Yükselt</translation>
-    </message>
-    <message>
-        <location line="+0"/>
-        <source>PgUp</source>
-        <translation>PgUp</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2748,36 +2661,20 @@ Satır %1, sütun %2</translation>
         <translation>Nesneyi Alçalt</translation>
     </message>
     <message>
-        <location line="+0"/>
-        <source>PgDown</source>
-        <translation>PgDown</translation>
-    </message>
-    <message>
         <location line="+1"/>
         <source>Raise Object to Top</source>
         <translation>Nesneyi En Üste Yükselt</translation>
-    </message>
-    <message>
-        <location line="+0"/>
-        <source>Home</source>
-        <translation>Home</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Lower Object to Bottom</source>
         <translation>Nesneyi En Alta Alçalt</translation>
     </message>
-    <message>
-        <location line="+0"/>
-        <source>End</source>
-        <translation>End</translation>
-    </message>
     <message numerus="yes">
         <location line="+6"/>
         <source>Move %n Object(s) to Layer</source>
         <translation>
             <numerusform>Nesneyi Katmana Taşı</numerusform>
-            <numerusform>%n Nesneyi Katmana Taşı</numerusform>
         </translation>
     </message>
     <message>
@@ -3049,12 +2946,6 @@ Satır %1, sütun %2</translation>
         <source>Bucket Fill Tool</source>
         <translation>Doldurma Aracı</translation>
     </message>
-    <message>
-        <location line="-132"/>
-        <location line="+133"/>
-        <source>F</source>
-        <translation>F</translation>
-    </message>
 </context>
 <context>
     <name>Tiled::ClipboardManager</name>
@@ -3256,40 +3147,25 @@ Satır %1, sütun %2</translation>
 <context>
     <name>Tiled::CreateEllipseObjectTool</name>
     <message>
-        <location filename="../src/tiled/createellipseobjecttool.cpp" line="+46"/>
+        <location filename="../src/tiled/createellipseobjecttool.cpp" line="+47"/>
         <source>Insert Ellipse</source>
         <translation>Elips Ekle</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>C</source>
-        <translation>C</translation>
     </message>
 </context>
 <context>
     <name>Tiled::CreatePointObjectTool</name>
     <message>
-        <location filename="../src/tiled/createpointobjecttool.cpp" line="+50"/>
+        <location filename="../src/tiled/createpointobjecttool.cpp" line="+51"/>
         <source>Insert Point</source>
         <translation>Nokta Ekle</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>I</source>
-        <translation>I</translation>
     </message>
 </context>
 <context>
     <name>Tiled::CreatePolygonObjectTool</name>
     <message>
-        <location filename="../src/tiled/createpolygonobjecttool.cpp" line="+159"/>
+        <location filename="../src/tiled/createpolygonobjecttool.cpp" line="+161"/>
         <source>Insert Polygon</source>
         <translation>Çokgen Ekle</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>P</source>
-        <translation>P</translation>
     </message>
     <message>
         <location line="+122"/>
@@ -3305,40 +3181,25 @@ Satır %1, sütun %2</translation>
 <context>
     <name>Tiled::CreateRectangleObjectTool</name>
     <message>
-        <location filename="../src/tiled/createrectangleobjecttool.cpp" line="+46"/>
+        <location filename="../src/tiled/createrectangleobjecttool.cpp" line="+47"/>
         <source>Insert Rectangle</source>
         <translation>Dikdörtgen Ekle</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>R</source>
-        <translation>R</translation>
     </message>
 </context>
 <context>
     <name>Tiled::CreateTemplateTool</name>
     <message>
-        <location filename="../src/tiled/createtemplatetool.cpp" line="+52"/>
+        <location filename="../src/tiled/createtemplatetool.cpp" line="+53"/>
         <source>Insert Template</source>
         <translation>Şablon Ekle</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>V</source>
-        <translation>V</translation>
     </message>
 </context>
 <context>
     <name>Tiled::CreateTextObjectTool</name>
     <message>
-        <location filename="../src/tiled/createtextobjecttool.cpp" line="+64"/>
+        <location filename="../src/tiled/createtextobjecttool.cpp" line="+65"/>
         <source>Insert Text</source>
         <translation>Yazı Ekle</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>E</source>
-        <translation>E</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -3349,14 +3210,9 @@ Satır %1, sütun %2</translation>
 <context>
     <name>Tiled::CreateTileObjectTool</name>
     <message>
-        <location filename="../src/tiled/createtileobjecttool.cpp" line="+65"/>
+        <location filename="../src/tiled/createtileobjecttool.cpp" line="+66"/>
         <source>Insert Tile</source>
         <translation>Desen Ekle</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>T</source>
-        <translation>T</translation>
     </message>
 </context>
 <context>
@@ -3370,7 +3226,7 @@ Satır %1, sütun %2</translation>
 <context>
     <name>Tiled::DocumentManager</name>
     <message>
-        <location filename="../src/tiled/documentmanager.cpp" line="+595"/>
+        <location filename="../src/tiled/documentmanager.cpp" line="+592"/>
         <source>Unrecognized file format.</source>
         <translation>Tanınmayan dosya biçimi.</translation>
     </message>
@@ -3452,22 +3308,15 @@ Satır %1, sütun %2</translation>
         <translation>Çokgenleri Düzenle</translation>
     </message>
     <message>
-        <location line="-280"/>
-        <location line="+281"/>
-        <source>O</source>
-        <translation>O</translation>
-    </message>
-    <message>
-        <location line="-23"/>
+        <location line="-22"/>
         <source>Split Segment</source>
         <translation>Parçayı Ayır</translation>
     </message>
     <message numerus="yes">
-        <location line="+266"/>
+        <location line="+265"/>
         <source>Move %n Point(s)</source>
         <translation>
             <numerusform>Noktayı Taşı</numerusform>
-            <numerusform>%n Noktayı Taşı</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -3476,7 +3325,6 @@ Satır %1, sütun %2</translation>
         <source>Delete %n Node(s)</source>
         <translation>
             <numerusform>Boğumu Sil</numerusform>
-            <numerusform>%n Boğumu Sil</numerusform>
         </translation>
     </message>
     <message>
@@ -3510,12 +3358,6 @@ Satır %1, sütun %2</translation>
         <location line="+58"/>
         <source>Eraser</source>
         <translation>Silgi</translation>
-    </message>
-    <message>
-        <location line="-55"/>
-        <location line="+56"/>
-        <source>E</source>
-        <translation>E</translation>
     </message>
 </context>
 <context>
@@ -3596,14 +3438,12 @@ Onu değiştirmek istiyor musunuz?</translation>
         <source>%n error(s)</source>
         <translation>
             <numerusform>%n hata</numerusform>
-            <numerusform>%n hata</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+1"/>
         <source>%n warning(s)</source>
         <translation>
-            <numerusform>%n uyarı</numerusform>
             <numerusform>%n uyarı</numerusform>
         </translation>
     </message>
@@ -3671,7 +3511,6 @@ Onu değiştirmek istiyor musunuz?</translation>
         <source>Drag Layer(s)</source>
         <translation>
             <numerusform>Katmanı Sürükle</numerusform>
-            <numerusform>Katmanları Sürükle</numerusform>
         </translation>
     </message>
     <message>
@@ -3723,12 +3562,6 @@ Onu değiştirmek istiyor musunuz?</translation>
         <source>Offset Layers</source>
         <translation>Katmanları Kaydır</translation>
     </message>
-    <message>
-        <location line="-97"/>
-        <location line="+98"/>
-        <source>M</source>
-        <translation>M</translation>
-    </message>
 </context>
 <context>
     <name>Tiled::MagicWandTool</name>
@@ -3737,12 +3570,6 @@ Onu değiştirmek istiyor musunuz?</translation>
         <location line="+22"/>
         <source>Magic Wand</source>
         <translation>Sihirli Değnek</translation>
-    </message>
-    <message>
-        <location line="-19"/>
-        <location line="+20"/>
-        <source>W</source>
-        <translation>W</translation>
     </message>
 </context>
 <context>
@@ -3865,32 +3692,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>Yinele</translation>
     </message>
     <message>
-        <location line="+16"/>
-        <source>Ctrl+Q</source>
-        <translation>Ctrl+Q</translation>
-    </message>
-    <message>
-        <location line="+70"/>
-        <source>Ctrl+T</source>
-        <translation>Ctrl+T</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Ctrl+=</source>
-        <translation>Ctrl+=</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>+</source>
-        <translation>+</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>-</source>
-        <translation>-</translation>
-    </message>
-    <message>
-        <location line="+25"/>
+        <location line="+121"/>
         <location line="+1254"/>
         <source>&amp;Layer</source>
         <translation>&amp;Katman</translation>
@@ -3932,32 +3734,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>Nesne Türü Düzenleyicisi</translation>
     </message>
     <message>
-        <location line="+42"/>
-        <source>Alt+Left</source>
-        <translation>Alt+Left</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Ctrl+Shift+Tab</source>
-        <translation>Ctrl+Shift+Tab</translation>
-    </message>
-    <message>
-        <location line="+4"/>
-        <source>Alt+Right</source>
-        <translation>Alt+Right</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Ctrl+Tab</source>
-        <translation>Ctrl+Tab</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Alt+C</source>
-        <translation>Alt+C</translation>
-    </message>
-    <message>
-        <location line="+159"/>
+        <location line="+217"/>
         <source>Error Opening File</source>
         <translation>Dosya Açılamadı</translation>
     </message>
@@ -4060,11 +3837,6 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Tile Collision Editor</source>
         <translation>Desen Çarpışma Düzenleyicisi</translation>
     </message>
-    <message>
-        <location filename="../src/tiled/tileseteditor.cpp" line="+639"/>
-        <source>Ctrl+Shift+O</source>
-        <translation>Ctrl+Shift+O</translation>
-    </message>
 </context>
 <context>
     <name>Tiled::MapDocument</name>
@@ -4088,7 +3860,6 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Rotate %n Object(s)</source>
         <translation>
             <numerusform>Nesneyi Döndür</numerusform>
-            <numerusform>%n Nesneyi Döndür</numerusform>
         </translation>
     </message>
     <message>
@@ -4118,7 +3889,6 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Group %n Layer(s)</source>
         <translation>
             <numerusform>Katmanı Grupla</numerusform>
-            <numerusform>%n Katmanı Grupla</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -4126,7 +3896,6 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Ungroup %n Layer(s)</source>
         <translation>
             <numerusform>Katmanı Gruptan Çıkar</numerusform>
-            <numerusform>%n Katmanı Gruptan Çıkar</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -4134,7 +3903,6 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Duplicate %n Layer(s)</source>
         <translation>
             <numerusform>Katmanı Çoğalt</numerusform>
-            <numerusform>%n Katmanı Çoğalt</numerusform>
         </translation>
     </message>
     <message>
@@ -4152,7 +3920,6 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Remove %n Layer(s)</source>
         <translation>
             <numerusform>Katmanı Kaldır</numerusform>
-            <numerusform>%n Katmanı Kaldır</numerusform>
         </translation>
     </message>
     <message>
@@ -4180,7 +3947,6 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Duplicate %n Object(s)</source>
         <translation>
             <numerusform>Nesneyi Çoğalt</numerusform>
-            <numerusform>%n Nesneyi Çoğalt</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -4188,7 +3954,6 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Remove %n Object(s)</source>
         <translation>
             <numerusform>Nesneyi Kaldır</numerusform>
-            <numerusform>%n Nesneyi Kaldır</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -4196,7 +3961,6 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Move %n Object(s) to Layer</source>
         <translation>
             <numerusform>Nesneyi Katmana Taşı</numerusform>
-            <numerusform>%n Nesneyi Katmana Taşı</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -4204,7 +3968,6 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Move %n Object(s) Up</source>
         <translation>
             <numerusform>Nesneyi Yukarı Taşı</numerusform>
-            <numerusform>%n Nesneyi Yukarı Taşı</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -4212,79 +3975,13 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Move %n Object(s) Down</source>
         <translation>
             <numerusform>Nesneyi Aşağı Taşı</numerusform>
-            <numerusform>%n Nesneyi Aşağı Taşı</numerusform>
         </translation>
     </message>
 </context>
 <context>
     <name>Tiled::MapDocumentActionHandler</name>
     <message>
-        <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+68"/>
-        <source>Ctrl+I</source>
-        <translation>Ctrl+I</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Ctrl+Shift+A</source>
-        <translation>Ctrl+Shift+A</translation>
-    </message>
-    <message>
-        <location line="+22"/>
-        <source>Ctrl+J</source>
-        <translation>Ctrl+J</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Ctrl+Shift+J</source>
-        <translation>Ctrl+Shift+J</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Ctrl+Shift+D</source>
-        <translation>Ctrl+Shift+D</translation>
-    </message>
-    <message>
-        <location line="+11"/>
-        <source>Ctrl+PgDown</source>
-        <translation>Ctrl+PgDown</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Ctrl+PgUp</source>
-        <translation>Ctrl+PgUp</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Ctrl+Shift+Up</source>
-        <translation>Ctrl+Shift+Up</translation>
-    </message>
-    <message>
-        <location line="+5"/>
-        <source>Ctrl+Shift+Down</source>
-        <translation>Ctrl+Shift+Down</translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>Ctrl+H</source>
-        <translation>Ctrl+H</translation>
-    </message>
-    <message>
-        <location line="+9"/>
-        <source>Ctrl+L</source>
-        <translation>Ctrl+L</translation>
-    </message>
-    <message>
-        <location line="+4"/>
-        <source>Ctrl+Shift+H</source>
-        <translation>Ctrl+Shift+H</translation>
-    </message>
-    <message>
-        <location line="+5"/>
-        <source>Ctrl+Shift+L</source>
-        <translation>Ctrl+Shift+L</translation>
-    </message>
-    <message>
-        <location line="+90"/>
+        <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+241"/>
         <source>Select &amp;All</source>
         <translation>Hepsini &amp;Seç</translation>
     </message>
@@ -4435,7 +4132,6 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Duplicate %n Object(s)</source>
         <translation>
             <numerusform>Nesneyi Çoğalt</numerusform>
-            <numerusform>%n Nesneyi Çoğalt</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -4443,7 +4139,6 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Remove %n Object(s)</source>
         <translation>
             <numerusform>Nesneyi Kaldır</numerusform>
-            <numerusform>%n Nesneyi Kaldır</numerusform>
         </translation>
     </message>
     <message>
@@ -4460,7 +4155,7 @@ Lütfen belirli bir biçim seçin.</translation>
 <context>
     <name>Tiled::MapEditor</name>
     <message>
-        <location filename="../src/tiled/mapeditor.cpp" line="+701"/>
+        <location filename="../src/tiled/mapeditor.cpp" line="+704"/>
         <source>Paste in Place</source>
         <translation>Yerinde Yapıştır</translation>
     </message>
@@ -4480,7 +4175,6 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Add %n Tileset(s)</source>
         <translation>
             <numerusform>Desen Seti Ekle</numerusform>
-            <numerusform>%n Desen Seti Ekle</numerusform>
         </translation>
     </message>
     <message>
@@ -4740,23 +4434,16 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Select Objects</source>
         <translation>Nesneleri Seç</translation>
     </message>
-    <message>
-        <location line="-410"/>
-        <location line="+411"/>
-        <source>S</source>
-        <translation>S</translation>
-    </message>
     <message numerus="yes">
-        <location line="-289"/>
-        <location line="+742"/>
+        <location line="-288"/>
+        <location line="+741"/>
         <source>Move %n Object(s)</source>
         <translation>
             <numerusform>Nesneyi Taşı</numerusform>
-            <numerusform>%n Nesneyi Taşı</numerusform>
         </translation>
     </message>
     <message>
-        <location line="-616"/>
+        <location line="-615"/>
         <source>Unnamed object</source>
         <translation>Adsız nesne</translation>
     </message>
@@ -4776,11 +4463,10 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>%1) %2</translation>
     </message>
     <message numerus="yes">
-        <location line="+699"/>
+        <location line="+698"/>
         <source>Rotate %n Object(s)</source>
         <translation>
             <numerusform>Nesneyi Döndür</numerusform>
-            <numerusform>%n Nesneyi Döndür</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -4788,7 +4474,6 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Resize %n Object(s)</source>
         <translation>
             <numerusform>Nesneyi Yeniden Boyutlandır</numerusform>
-            <numerusform>%n Nesneyi Yeniden Boyutlandır</numerusform>
         </translation>
     </message>
 </context>
@@ -4917,7 +4602,6 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Move %n Object(s) to Layer</source>
         <translation>
             <numerusform>Nesneyi Katmana Taşı</numerusform>
-            <numerusform>%n Nesneyi Katmana Taşı</numerusform>
         </translation>
     </message>
 </context>
@@ -4937,7 +4621,6 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Paste Property/Properties</source>
         <translation>
             <numerusform>Özelliği Yapıştır</numerusform>
-            <numerusform>Özellikleri Yapıştır</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -4945,7 +4628,6 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Remove Property/Properties</source>
         <translation>
             <numerusform>Özelliği Kaldır</numerusform>
-            <numerusform>Özellikleri Kaldır</numerusform>
         </translation>
     </message>
     <message>
@@ -4994,7 +4676,6 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Convert Property/Properties</source>
         <translation>
             <numerusform>Özelliği Dönüştür</numerusform>
-            <numerusform>Özellikleri Dönüştür</numerusform>
         </translation>
     </message>
     <message>
@@ -5422,12 +5103,6 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Select Same Tile</source>
         <translation>Aynı Deseni Seç</translation>
     </message>
-    <message>
-        <location line="-23"/>
-        <location line="+24"/>
-        <source>S</source>
-        <translation>S</translation>
-    </message>
 </context>
 <context>
     <name>Tiled::ShapeFillTool</name>
@@ -5436,12 +5111,6 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+77"/>
         <source>Shape Fill Tool</source>
         <translation>Şekil Doldurma Aracı</translation>
-    </message>
-    <message>
-        <location line="-74"/>
-        <location line="+75"/>
-        <source>P</source>
-        <translation>P</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -5548,43 +5217,13 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>Sağa Döndür</translation>
     </message>
     <message>
-        <location line="+2"/>
-        <location filename="../src/tiled/stampactions.cpp" line="+3"/>
-        <source>X</source>
-        <translation>X</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <location filename="../src/tiled/stampactions.cpp" line="+1"/>
-        <source>Y</source>
-        <translation>Y</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <location filename="../src/tiled/stampactions.cpp" line="+1"/>
-        <source>Shift+Z</source>
-        <translation>Shift+Z</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <location filename="../src/tiled/stampactions.cpp" line="+1"/>
-        <source>Z</source>
-        <translation>Z</translation>
-    </message>
-    <message>
-        <location filename="../src/tiled/stampactions.cpp" line="-36"/>
+        <location filename="../src/tiled/stampactions.cpp" line="-30"/>
         <location line="+25"/>
         <source>Random Mode</source>
         <translation>Rastgele Kipi</translation>
     </message>
     <message>
-        <location line="-24"/>
-        <location line="+31"/>
-        <source>D</source>
-        <translation>D</translation>
-    </message>
-    <message>
-        <location line="-26"/>
+        <location line="-19"/>
         <location line="+20"/>
         <source>Wang Fill Mode</source>
         <translation>Wang Dolgu Kipi</translation>
@@ -5607,12 +5246,6 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+162"/>
         <source>Stamp Brush</source>
         <translation>Damga Fırça</translation>
-    </message>
-    <message>
-        <location line="-159"/>
-        <location line="+160"/>
-        <source>B</source>
-        <translation>B</translation>
     </message>
 </context>
 <context>
@@ -5679,12 +5312,6 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+122"/>
         <source>Terrain Brush</source>
         <translation>Zemin Fırçası</translation>
-    </message>
-    <message>
-        <location line="-119"/>
-        <location line="+120"/>
-        <source>T</source>
-        <translation>T</translation>
     </message>
 </context>
 <context>
@@ -5811,13 +5438,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>Dikdörtgensel Seçim</translation>
     </message>
     <message>
-        <location line="-108"/>
-        <location line="+109"/>
-        <source>R</source>
-        <translation>R</translation>
-    </message>
-    <message>
-        <location line="-86"/>
+        <location line="-85"/>
         <source>%1, %2 - Rectangle: (%3 x %4)</source>
         <translation>%1, %2 - Dikdörtgen: (%3 x %4)</translation>
     </message>
@@ -5891,7 +5512,7 @@ Lütfen belirli bir biçim seçin.</translation>
 <context>
     <name>Tiled::TilesetDock</name>
     <message>
-        <location filename="../src/tiled/tilesetdock.cpp" line="+603"/>
+        <location filename="../src/tiled/tilesetdock.cpp" line="+606"/>
         <source>Remove Tileset</source>
         <translation>Desen Setini Kaldır</translation>
     </message>
@@ -5941,19 +5562,9 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>Sonraki Desen Setini Seçin</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Select Previous Tileset</source>
         <translation>Önceki Desen Setini Seç</translation>
-    </message>
-    <message>
-        <location line="-1"/>
-        <source>]</source>
-        <translation>]</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>[</source>
-        <translation>[</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -5993,7 +5604,7 @@ Lütfen belirli bir biçim seçin.</translation>
 <context>
     <name>Tiled::TilesetEditor</name>
     <message>
-        <location filename="../src/tiled/tileseteditor.cpp" line="-454"/>
+        <location filename="../src/tiled/tileseteditor.cpp" line="+185"/>
         <location line="+447"/>
         <source>Tileset</source>
         <translation>Desen Seti</translation>
@@ -6196,12 +5807,6 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+68"/>
         <source>Wang Brush</source>
         <translation>Wang Fırçası</translation>
-    </message>
-    <message>
-        <location line="-65"/>
-        <location line="+66"/>
-        <source>G</source>
-        <translation>G</translation>
     </message>
     <message>
         <location line="+149"/>
@@ -6437,7 +6042,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>Sil</translation>
     </message>
     <message>
-        <location filename="../src/tiled/bucketfilltool.cpp" line="-17"/>
+        <location filename="../src/tiled/bucketfilltool.cpp" line="-16"/>
         <source>Fill Area</source>
         <translation>Bölgeyi Doldur</translation>
     </message>
@@ -6589,6 +6194,11 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>Katman Kaydırmasını Değiştir</translation>
     </message>
     <message>
+        <location line="+19"/>
+        <source>Change Tile Layer Size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/tiled/changemapobject.cpp" line="+12"/>
         <source>Show Object</source>
         <translation>Nesneyi Göster</translation>
@@ -6603,7 +6213,6 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Change %n Object/s Tile</source>
         <translation>
             <numerusform>Nesnenin Desenini Değiştir</numerusform>
-            <numerusform>%n Nesnenin Desenini Değiştir</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -6611,7 +6220,6 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Detach %n Template Instance(s)</source>
         <translation>
             <numerusform>Şablon Örneğini Ayır</numerusform>
-            <numerusform>%n Şablon Örneğini Ayır</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -6619,7 +6227,6 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Reset %n Instances</source>
         <translation>
             <numerusform>Örneği Sıfırla</numerusform>
-            <numerusform>%n Örneği Sıfırla</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -6627,7 +6234,6 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Replace %n Object(s) With Template</source>
         <translation>
             <numerusform>Nesneyi Şablonla Değiştir</numerusform>
-            <numerusform>%n Nesneyi Şablonla Değiştir</numerusform>
         </translation>
     </message>
     <message>
@@ -6768,7 +6374,6 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Flip %n Object(s)</source>
         <translation>
             <numerusform>Nesneyi Çevir</numerusform>
-            <numerusform>%n Nesneyi Çevir</numerusform>
         </translation>
     </message>
     <message>
@@ -6844,7 +6449,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <translation>Şablonu Değiştir</translation>
     </message>
     <message>
-        <location filename="../src/tiled/shapefilltool.cpp" line="-20"/>
+        <location filename="../src/tiled/shapefilltool.cpp" line="-19"/>
         <source>Shape Fill</source>
         <translation>Şekil Dolgu</translation>
     </message>
@@ -6853,7 +6458,6 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Raise %n Layer(s)</source>
         <translation>
             <numerusform>Katmanı Yükselt</numerusform>
-            <numerusform>%n Katmanı Yükselt</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -6861,7 +6465,6 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Lower %n Layer(s)</source>
         <translation>
             <numerusform>Katmanı Alçalt</numerusform>
-            <numerusform>%n Katmanı Alçalt</numerusform>
         </translation>
     </message>
     <message>
