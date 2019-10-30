@@ -3220,7 +3220,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location filename="../src/tiled/document.cpp" line="+88"/>
         <source>Custom property &apos;%1&apos; refers to non-existing file &apos;%2&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Propriedade personalizada &apos;%1&apos; refere-se a um ficheiro que não existe &apos;%2&apos;</translation>
     </message>
 </context>
 <context>
@@ -3747,7 +3747,8 @@ Por favor, selecione um formato específico.</translation>
         <location line="+1"/>
         <source>Error opening &apos;%1&apos;:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro ao abrir &apos;%1&apos;:
+%2</translation>
     </message>
     <message>
         <location line="+59"/>
@@ -3778,7 +3779,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+14"/>
         <source>Error Exporting Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro ao Exportar Tileset</translation>
     </message>
     <message>
         <location line="+238"/>
@@ -3944,7 +3945,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+179"/>
         <source>Failed to load tileset &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Falha ao carregar tileset &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+19"/>
@@ -4366,7 +4367,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+15"/>
         <source>Error checking for updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro ao procurar atualizações</translation>
     </message>
 </context>
 <context>
@@ -4412,7 +4413,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+72"/>
         <source>View All Posts</source>
-        <translation type="unfinished"></translation>
+        <translation>Ver Todas as Publicações</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -4785,12 +4786,12 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+5"/>
         <source>Output Chunk Width</source>
-        <translation type="unfinished"></translation>
+        <translation>Largura do Chunk de Saída</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Output Chunk Height</source>
-        <translation type="unfinished"></translation>
+        <translation>Largura de Saída de Chunk</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -5101,7 +5102,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+50"/>
         <source>Stack traceback:</source>
-        <translation type="unfinished"></translation>
+        <translation>Traceback da Pilha:</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -5111,12 +5112,12 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+20"/>
         <source>Resetting script engine</source>
-        <translation type="unfinished"></translation>
+        <translation>A restabelecer motor de script</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Script files changed: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ficheiros de script alterados: %1</translation>
     </message>
 </context>
 <context>
@@ -5157,7 +5158,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+7"/>
         <source>Reset shortcut to default</source>
-        <translation type="unfinished"></translation>
+        <translation>Restabelecer atalho para padrão</translation>
     </message>
 </context>
 <context>
@@ -5180,7 +5181,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+7"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ff0000;&quot;&gt;Potential conflicts!&lt;/span&gt; &lt;a href=&quot;#show-conflicts&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Set Filter&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ff0000;&quot;&gt;Conflictos Potenciais!&lt;/span&gt; &lt;a href=&quot;#show-conflicts&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Definir Filtro&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -5190,13 +5191,13 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+7"/>
         <source>&amp;Reset All</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Reinicializar Tudo</translation>
     </message>
     <message>
         <location filename="../src/tiled/shortcutsettingspage.cpp" line="+275"/>
         <location line="+52"/>
         <source>Keyboard Mapping Scheme (*.kms)</source>
-        <translation type="unfinished"></translation>
+        <translation>Esquema de Mapeamento de Teclado (*.kms)</translation>
     </message>
     <message>
         <location line="-51"/>
@@ -5593,7 +5594,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+1"/>
         <source>Dynamically Wrap Tiles</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiles Enrolados Dinamicamente</translation>
     </message>
     <message>
         <location line="+192"/>
@@ -5617,12 +5618,12 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+178"/>
         <source>Failed to load tileset image &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Falha ao carregar imagem de tileset &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Failed to load tile image &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Falha ao carregar imagem de tile &apos;%1&apos;</translation>
     </message>
 </context>
 <context>
@@ -5655,7 +5656,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+1"/>
         <source>Dynamically Wrap Tiles</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiles Enrolados Dinamicamente</translation>
     </message>
     <message>
         <location line="+49"/>
@@ -5934,27 +5935,27 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+2"/>
         <source>World: Invalid multiplierX: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Mundo: multiplierX inválido: %1</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>World: Invalid multiplierY: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Mundo: multiplierY inválido: %1</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>World: Invalid mapWidth: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Mundo: mapWidth inválido: %1</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>World: Invalid mapHeight: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Mundo: mapHeight inválido: %1</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>World contained no valid maps or patterns: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Mundo não contêm mapas válidos ou padrões: %1</translation>
     </message>
 </context>
 <context>
@@ -6220,7 +6221,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+19"/>
         <source>Change Tile Layer Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Mudar Tamanho da Camada de Tiles</translation>
     </message>
     <message>
         <location filename="../src/tiled/changemapobject.cpp" line="+12"/>
@@ -6346,7 +6347,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+10"/>
         <source>Change Chunk Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Mudar Tamanho do Chunk</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -6501,7 +6502,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location filename="../src/tiled/editablemap.cpp" line="-124"/>
         <source>Change Tile Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Mudar Tamanho do Tile</translation>
     </message>
 </context>
 <context>
@@ -6527,7 +6528,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location filename="../src/tmxrasterizer/main.cpp" line="+55"/>
         <source>Renders a Tiled map or world to an image.</source>
-        <translation type="unfinished"></translation>
+        <translation>Renderizar um mapa de Tiles ou um mundo numa imagem.</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -6583,7 +6584,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+2"/>
         <source>Map or world file to render.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ficheiro mapa ou mundo a renderizar.</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -6619,7 +6620,7 @@ Por favor, selecione um formato específico.</translation>
         <location filename="../src/tiledquick/qml/+android/main.qml" line="+17"/>
         <location filename="../src/tiledquick/qml/main.qml" line="+17"/>
         <source>Tiled Quick</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiled Rápido</translation>
     </message>
     <message>
         <location line="+19"/>
@@ -6632,7 +6633,7 @@ Por favor, selecione um formato específico.</translation>
         <location line="+65"/>
         <location filename="../src/tiledquick/qml/main.qml" line="+116"/>
         <source>No map file loaded</source>
-        <translation type="unfinished"></translation>
+        <translation>Nenhum ficheiro de mapa carregado</translation>
     </message>
     <message>
         <location filename="../src/tiledquick/qml/main.qml" line="-126"/>
@@ -6653,7 +6654,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+2"/>
         <source>About Tiled Quick</source>
-        <translation>Acerca de Tiled Quick</translation>
+        <translation>Acerca de Tiled Rápido</translation>
     </message>
 </context>
 </TS>
