@@ -41,7 +41,7 @@ using namespace Tiled;
 LayerOffsetTool::LayerOffsetTool(QObject *parent)
     : AbstractTool(tr("Offset Layers"),
                    QIcon(QLatin1String(":images/22/stock-tool-move-22.png")),
-                   QKeySequence(tr("M")),
+                   QKeySequence(Qt::Key_M),
                    parent)
     , mMousePressed(false)
     , mDragging(false)
@@ -139,7 +139,6 @@ void LayerOffsetTool::modifiersChanged(Qt::KeyboardModifiers)
 void LayerOffsetTool::languageChanged()
 {
     setName(tr("Offset Layers"));
-    setShortcut(QKeySequence(tr("M")));
 }
 
 void LayerOffsetTool::updateEnabledState()

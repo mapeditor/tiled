@@ -209,6 +209,9 @@ TilesetDock::TilesetDock(QWidget *parent)
 {
     setObjectName(QLatin1String("TilesetDock"));
 
+    mSelectNextTileset->setShortcut(Qt::Key_BracketRight);
+    mSelectPreviousTileset->setShortcut(Qt::Key_BracketLeft);
+
     ActionManager::registerAction(mSelectNextTileset, "SelectNextTileset");
     ActionManager::registerAction(mSelectPreviousTileset, "SelectPreviousTileset");
 
@@ -762,9 +765,7 @@ void TilesetDock::retranslateUi()
     mEditTileset->setText(tr("Edit Tile&set"));
     mDeleteTileset->setText(tr("&Remove Tileset"));
     mSelectNextTileset->setText(tr("Select Next Tileset"));
-    mSelectNextTileset->setShortcut(tr("]"));
     mSelectPreviousTileset->setText(tr("Select Previous Tileset"));
-    mSelectPreviousTileset->setShortcut(tr("["));
     mDynamicWrappingToggle->setText(tr("Dynamically Wrap Tiles"));
 }
 

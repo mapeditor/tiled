@@ -56,7 +56,7 @@ using namespace Tiled;
 EditPolygonTool::EditPolygonTool(QObject *parent)
     : AbstractObjectTool(tr("Edit Polygons"),
           QIcon(QLatin1String(":images/24/tool-edit-polygons.png")),
-          QKeySequence(tr("O")),
+          QKeySequence(Qt::Key_O),
           parent)
     , mSelectionRectangle(new SelectionRectangle)
     , mMousePressed(false)
@@ -337,7 +337,6 @@ void EditPolygonTool::languageChanged()
     AbstractObjectTool::languageChanged();
 
     setName(tr("Edit Polygons"));
-    setShortcut(QKeySequence(tr("O")));
 }
 
 void EditPolygonTool::setSelectedHandles(const QSet<PointHandle *> &handles)

@@ -47,7 +47,7 @@ TerrainBrush::TerrainBrush(QObject *parent)
     : AbstractTileTool(tr("Terrain Brush"),
                        QIcon(QLatin1String(
                                ":images/24/terrain-edit.png")),
-                       QKeySequence(tr("T")),
+                       QKeySequence(Qt::Key_T),
                        nullptr,
                        parent)
     , mTerrain(nullptr)
@@ -167,7 +167,6 @@ void TerrainBrush::modifiersChanged(Qt::KeyboardModifiers modifiers)
 void TerrainBrush::languageChanged()
 {
     setName(tr("Terrain Brush"));
-    setShortcut(QKeySequence(tr("T")));
 }
 
 void TerrainBrush::mapDocumentChanged(MapDocument *oldDocument,

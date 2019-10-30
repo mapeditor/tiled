@@ -636,7 +636,7 @@ void TilesetEditor::retranslateUi()
     mShowAnimationEditor->setText(tr("Tile Animation Editor"));
     mDynamicWrappingToggle->setText(tr("Dynamically Wrap Tiles"));
 
-    mTileCollisionDock->toggleViewAction()->setShortcut(QCoreApplication::translate("Tiled::MainWindow", "Ctrl+Shift+O"));
+    mTileCollisionDock->toggleViewAction()->setShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_O);
 }
 
 static bool hasTileInTileset(const QUrl &imageSource, const Tileset &tileset)

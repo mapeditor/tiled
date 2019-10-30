@@ -35,7 +35,7 @@ TileSelectionTool::TileSelectionTool(QObject *parent)
     : AbstractTileSelectionTool(tr("Rectangular Select"),
                                 QIcon(QLatin1String(
                                       ":images/22/stock-tool-rect-select.png")),
-                                QKeySequence(tr("R")),
+                                QKeySequence(Qt::Key_R),
                                 parent)
     , mMouseDown(false)
     , mSelecting(false)
@@ -144,7 +144,6 @@ void TileSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
 void TileSelectionTool::languageChanged()
 {
     setName(tr("Rectangular Select"));
-    setShortcut(QKeySequence(tr("R")));
 
     AbstractTileSelectionTool::languageChanged();
 }

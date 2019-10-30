@@ -35,6 +35,7 @@ CreatePointObjectTool::CreatePointObjectTool(QObject *parent)
     QIcon icon(QLatin1String(":images/24/insert-point.png"));
     icon.addFile(QLatin1String(":images/48/insert-point.png"));
     setIcon(icon);
+    setShortcut(Qt::Key_I);
     Utils::setThemeIcon(this, "insert-point");
     languageChangedImpl();
 }
@@ -48,7 +49,6 @@ void CreatePointObjectTool::languageChanged()
 void CreatePointObjectTool::languageChangedImpl()
 {
     setName(tr("Insert Point"));
-    setShortcut(QKeySequence(tr("I")));
 }
 
 MapObject *CreatePointObjectTool::createNewMapObject()

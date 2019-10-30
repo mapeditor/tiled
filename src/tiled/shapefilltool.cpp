@@ -39,7 +39,7 @@ ShapeFillTool::ShapeFillTool(QObject *parent)
     : AbstractTileFillTool(tr("Shape Fill Tool"),
                            QIcon(QLatin1String(
                                      ":images/22/rectangle-fill.png")),
-                           QKeySequence(tr("P")),
+                           QKeySequence(Qt::Key_P),
                            nullptr,
                            parent)
     , mToolBehavior(Free)
@@ -114,7 +114,6 @@ void ShapeFillTool::modifiersChanged(Qt::KeyboardModifiers)
 void ShapeFillTool::languageChanged()
 {
     setName(tr("Shape Fill Tool"));
-    setShortcut(QKeySequence(tr("P")));
 
     mRectFill->setToolTip(tr("Rectangle Fill"));
     mCircleFill->setToolTip(tr("Circle Fill"));

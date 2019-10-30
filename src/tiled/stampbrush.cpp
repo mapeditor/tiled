@@ -48,7 +48,7 @@ StampBrush::StampBrush(QObject *parent)
     : AbstractTileTool(tr("Stamp Brush"),
                        QIcon(QLatin1String(
                                ":images/22/stock-tool-clone.png")),
-                       QKeySequence(tr("B")),
+                       QKeySequence(Qt::Key_B),
                        nullptr,
                        parent)
     , mBrushBehavior(Free)
@@ -208,7 +208,6 @@ void StampBrush::modifiersChanged(Qt::KeyboardModifiers modifiers)
 void StampBrush::languageChanged()
 {
     setName(tr("Stamp Brush"));
-    setShortcut(QKeySequence(tr("B")));
 
     mStampActions->languageChanged();
 }

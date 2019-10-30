@@ -43,7 +43,7 @@ BucketFillTool::BucketFillTool(QObject *parent)
     : AbstractTileFillTool(tr("Bucket Fill Tool"),
                            QIcon(QLatin1String(
                                    ":images/22/stock-tool-bucket-fill.png")),
-                           QKeySequence(tr("F")),
+                           QKeySequence(Qt::Key_F),
                            nullptr,
                            parent)
     , mLastFillMethod(mFillMethod)
@@ -176,7 +176,6 @@ void BucketFillTool::modifiersChanged(Qt::KeyboardModifiers)
 void BucketFillTool::languageChanged()
 {
     setName(tr("Bucket Fill Tool"));
-    setShortcut(QKeySequence(tr("F")));
 
     mStampActions->languageChanged();
 }

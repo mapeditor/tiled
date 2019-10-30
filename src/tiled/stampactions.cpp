@@ -45,7 +45,7 @@ StampActions::StampActions(QObject *parent) : QObject(parent)
     mRandom->setIcon(diceIcon);
     mRandom->setCheckable(true);
     mRandom->setToolTip(tr("Random Mode"));
-    mRandom->setShortcut(QKeySequence(tr("D")));
+    mRandom->setShortcut(Qt::Key_D);
 
     mWangFill = new QAction(this);
     mWangFill->setIcon(wangIcon);
@@ -76,11 +76,11 @@ void StampActions::languageChanged()
     mRotateLeft->setToolTip(tr("Rotate Left"));
     mRotateRight->setToolTip(tr("Rotate Right"));
 
-    mRandom->setShortcut(QKeySequence(tr("D")));
-    mFlipHorizontal->setShortcut(QKeySequence(tr("X")));
-    mFlipVertical->setShortcut(QKeySequence(tr("Y")));
-    mRotateLeft->setShortcut(QKeySequence(tr("Shift+Z")));
-    mRotateRight->setShortcut(QKeySequence(tr("Z")));
+    mRandom->setShortcut(Qt::Key_D);
+    mFlipHorizontal->setShortcut(Qt::Key_X);
+    mFlipVertical->setShortcut(Qt::Key_Y);
+    mRotateLeft->setShortcut(Qt::SHIFT + Qt::Key_Z);
+    mRotateRight->setShortcut(Qt::Key_Z);
 }
 
 void StampActions::populateToolBar(QToolBar *toolBar, bool isRandom, bool isWangFill)

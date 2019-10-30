@@ -52,9 +52,7 @@ static void readCustomShortcuts()
 
     const auto keys = settings->childKeys();
     for (const auto &key : keys) {
-        auto keySequence = QKeySequence(settings->value(key).toString(),
-                                        QKeySequence::PortableText);
-
+        auto keySequence = QKeySequence::fromString(settings->value(key).toString());
         d->mCustomShortcuts.insert(Id(key.toUtf8()), keySequence);
     }
 

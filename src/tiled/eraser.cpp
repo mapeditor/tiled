@@ -34,7 +34,7 @@ Eraser::Eraser(QObject *parent)
     : AbstractTileTool(tr("Eraser"),
                        QIcon(QLatin1String(
                                ":images/22/stock-tool-eraser.png")),
-                       QKeySequence(tr("E")),
+                       QKeySequence(Qt::Key_E),
                        nullptr,
                        parent)
     , mMode(Nothing)
@@ -90,7 +90,6 @@ void Eraser::mouseReleased(QGraphicsSceneMouseEvent *event)
 void Eraser::languageChanged()
 {
     setName(tr("Eraser"));
-    setShortcut(QKeySequence(tr("E")));
 }
 
 void Eraser::doErase(bool continuation)
