@@ -6210,7 +6210,7 @@ Please select specific format.</translation>
     <message>
         <location line="+19"/>
         <source>Change Tile Layer Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Change Tile Layer Size</translation>
     </message>
     <message>
         <location filename="../src/tiled/changemapobject.cpp" line="+12"/>
