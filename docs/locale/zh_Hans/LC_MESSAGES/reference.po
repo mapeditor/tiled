@@ -8,17 +8,20 @@ msgstr ""
 "Project-Id-Version: Tiled 1.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-12-21 14:31+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2019-11-01 09:04+0000\n"
+"Last-Translator: HonestQiao <honestqiao@gmail.com>\n"
+"Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
+"tiled/reference/zh_Hans/>\n"
 "Language: zh_Hans\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 3.10-dev\n"
 
 #: ../../reference/json-map-format.rst:2
 msgid "JSON Map Format"
-msgstr ""
+msgstr "JSON地图格式"
 
 #: ../../reference/json-map-format.rst:4
 msgid "Tiled can export maps as JSON files. To do so, simply select \"File > Export As\" and select the JSON file type. You can export json from the command line with the ``--export-map`` option."
@@ -34,7 +37,7 @@ msgstr ""
 
 #: ../../reference/json-map-format.rst:14
 msgid "Map"
-msgstr ""
+msgstr "地图"
 
 #: ../../reference/json-map-format.rst:17
 #: ../../reference/json-map-format.rst:82
@@ -43,7 +46,7 @@ msgstr ""
 #: ../../reference/json-map-format.rst:453
 #: ../../reference/json-map-format.rst:493
 msgid "Field"
-msgstr ""
+msgstr "字段"
 
 #: ../../reference/json-map-format.rst:17
 #: ../../reference/json-map-format.rst:82
@@ -52,7 +55,7 @@ msgstr ""
 #: ../../reference/json-map-format.rst:453
 #: ../../reference/json-map-format.rst:493
 msgid "Type"
-msgstr ""
+msgstr "类型"
 
 #: ../../reference/json-map-format.rst:17
 #: ../../reference/json-map-format.rst:82
@@ -61,11 +64,11 @@ msgstr ""
 #: ../../reference/json-map-format.rst:453
 #: ../../reference/json-map-format.rst:493
 msgid "Description"
-msgstr ""
+msgstr "描述"
 
 #: ../../reference/json-map-format.rst:19
 msgid "backgroundcolor"
-msgstr ""
+msgstr "背景颜色"
 
 #: ../../reference/json-map-format.rst:19
 #: ../../reference/json-map-format.rst:29
@@ -82,7 +85,7 @@ msgstr ""
 #: ../../reference/json-map-format.rst:417
 #: ../../reference/json-map-format.rst:495
 msgid "string"
-msgstr ""
+msgstr "字符串"
 
 #: ../../reference/json-map-format.rst:19
 msgid "Hex-formatted color (#RRGGBB or #AARRGGBB) (optional)"
@@ -92,7 +95,7 @@ msgstr ""
 #: ../../reference/json-map-format.rst:88
 #: ../../reference/json-map-format.rst:166
 msgid "height"
-msgstr ""
+msgstr "高度"
 
 #: ../../reference/json-map-format.rst:21
 #: ../../reference/json-map-format.rst:27
@@ -121,15 +124,15 @@ msgstr ""
 #: ../../reference/json-map-format.rst:415
 #: ../../reference/json-map-format.rst:497
 msgid "int"
-msgstr ""
+msgstr "整数"
 
 #: ../../reference/json-map-format.rst:21
 msgid "Number of tile rows"
-msgstr ""
+msgstr "图块行数"
 
 #: ../../reference/json-map-format.rst:23
 msgid "infinite"
-msgstr ""
+msgstr "无限"
 
 #: ../../reference/json-map-format.rst:23
 #: ../../reference/json-map-format.rst:102
@@ -137,7 +140,7 @@ msgstr ""
 #: ../../reference/json-map-format.rst:172
 #: ../../reference/json-map-format.rst:186
 msgid "bool"
-msgstr ""
+msgstr "布尔"
 
 #: ../../reference/json-map-format.rst:23
 msgid "Whether the map has infinite dimensions"
@@ -146,7 +149,7 @@ msgstr ""
 #: ../../reference/json-map-format.rst:25
 #: ../../reference/json-map-format.rst:90
 msgid "layers"
-msgstr ""
+msgstr "图层"
 
 #: ../../reference/json-map-format.rst:25
 #: ../../reference/json-map-format.rst:40
@@ -156,7 +159,7 @@ msgstr ""
 #: ../../reference/json-map-format.rst:402
 #: ../../reference/json-map-format.rst:455
 msgid "array"
-msgstr ""
+msgstr "数组"
 
 #: ../../reference/json-map-format.rst:25
 msgid "Array of :ref:`layers <json-layer>`"
@@ -172,7 +175,7 @@ msgstr ""
 
 #: ../../reference/json-map-format.rst:29
 msgid "orientation"
-msgstr ""
+msgstr "方向"
 
 #: ../../reference/json-map-format.rst:29
 msgid "``orthogonal``, ``isometric``, ``staggered`` or ``hexagonal``"
@@ -183,7 +186,7 @@ msgstr ""
 #: ../../reference/json-map-format.rst:178
 #: ../../reference/json-map-format.rst:396
 msgid "properties"
-msgstr ""
+msgstr "属性"
 
 #: ../../reference/json-map-format.rst:32
 #: ../../reference/json-map-format.rst:94
@@ -197,7 +200,7 @@ msgstr ""
 #: ../../reference/json-map-format.rst:410
 #: ../../reference/json-map-format.rst:412
 msgid "object"
-msgstr ""
+msgstr "对象"
 
 #: ../../reference/json-map-format.rst:32
 #: ../../reference/json-map-format.rst:178
