@@ -6194,7 +6194,7 @@ Please select specific format.</source>
     <message>
         <location line="+19"/>
         <source>Change Tile Layer Size</source>
-        <translation type="unfinished"></translation>
+        <translation>改变图块层大小</translation>
     </message>
     <message>
         <location filename="../src/tiled/changemapobject.cpp" line="+12"/>
@@ -6530,7 +6530,7 @@ Please select specific format.</source>
     <message>
         <location line="+2"/>
         <source>Use nearest neighbour instead of smooth blending of pixels.</source>
-        <translation>使用最邻近原则渲染，而不是平滑像素渲染。(译注:当图像被放大时，最邻近原渲染会产生马赛克感。)</translation>
+        <translation>使用最邻近原则渲染，而不是平滑像素渲染(译注:当图像被放大时，最邻近原渲染会产生马赛克感。)。</translation>
     </message>
     <message>
         <location line="+2"/>
