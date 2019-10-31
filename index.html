@@ -319,7 +319,7 @@
             <div class="my-box">
               <div class="row" style="margin-bottom: 0.3em;">
                 <div class="col-md-12">
-                  <b>Please support my work on Tiled!</b> - Buy <a href="https://thorbjorn.itch.io/tiled">Tiled on itch.io</a>, or become a patron on <a href="https://liberapay.com/Tiled">Liberapay</a> or <a href="https://www.patreon.com/bjorn/overview">Patreon</a>.
+                  <b>Please support my work on Tiled!</b> - You can donate at <a href="https://github.com/sponsors/bjorn">GitHub Sponsors</a>, <a href="https://www.patreon.com/bjorn/overview">Patreon</a> or <a href="https://liberapay.com/Tiled">Liberapay</a>.
                 </div>
               </div>
               <div class="row">
@@ -329,6 +329,8 @@
                       <a href="https://thorbjorn.itch.io/tiled" ><div class="progress-bar progress-bar-warning progress-bar-striped" id="itch-progressbar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 0%; background-image: linear-gradient(to bottom, #fa5c5c 0px, #FE5900 100%);" data-toggle="tooltip" data-placement="bottom" title="itch"></div></a>
                       <a href="https://liberapay.com/bjorn"><div class="progress-bar progress-bar-warning progress-bar-striped" id="liberapay-progressbar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 0%; background-image: linear-gradient(to bottom, #f6c915 0px, #FE5900 100%);" data-toggle="tooltip" data-placement="bottom" title="Liberapay"></div></a>
                       <a href="https://www.patreon.com/bjorn"><div class="progress-bar progress-bar-warning progress-bar-striped" id="patreon-progressbar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 0%; background-image: linear-gradient(to bottom, #FF945A 0px, #FE5900 100%);" data-toggle="tooltip" data-placement="bottom" title="Patreon"></div></a>
+                      <a href="https://github.com/sponsors/bjorn"><div class="progress-bar progress-bar-warning progress-bar-striped" id="github-progressbar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 0%; background-image: linear-gradient(to bottom, #ea4aaa 0px, #c54190 100%);" data-toggle="tooltip" data-placement="bottom" title="GitHub Sponsors"></div></a>
+                      <a href="https://github.com/sponsors/bjorn"><div class="progress-bar progress-bar-warning progress-bar-striped" id="github-matching-fund-progressbar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 0%; background-image: linear-gradient(to bottom, #f692ce 0px, #c974a7 100%);" data-toggle="tooltip" data-placement="bottom" title="GitHub Sponsors Matching Fund"></div></a>
                       <span style="color: gray; margin-left: 5px;" id="goal-percentage"></span>
                     </div>
                     <div style="margin-left: 4px;">
@@ -553,23 +555,28 @@
       .done(function(data) {
         var itchIncome = 600;
         var itchPurchases = 65;
+        var githubIncome = 230;
+        var githubSponsors = 35;
         var liberapayIncome = data.liberapayEarnings_bjorn * 1.16 * 4;
         var patreonIncome = data.earnings;
-        var totalIncome = itchIncome + liberapayIncome + patreonIncome;
-        var totalSupporters = itchPurchases + data.patrons + data.liberapayPatrons_Tiled + data.liberapayPatrons_bjorn;
+        var totalIncome = itchIncome + liberapayIncome + patreonIncome + githubIncome;
+        var totalSupporters = itchPurchases + data.patrons + data.liberapayPatrons_Tiled + data.liberapayPatrons_bjorn + githubSponsors;
         var goals = [1150, 2300, 2600];
         var endOfProgressBar = Math.max(goals[goals.length - 1], totalIncome);
 
         var itchPercentage = itchIncome / endOfProgressBar * 100;
         var liberapayPercentage = liberapayIncome / endOfProgressBar * 100;
         var patreonPercentage = patreonIncome / endOfProgressBar * 100;
+        var githubPercentage = githubIncome / endOfProgressBar * 100;
 
-        var totalPercentage = itchPercentage + liberapayPercentage + patreonPercentage;
+        var totalPercentage = itchPercentage + liberapayPercentage + patreonPercentage + githubPercentage * 2;
 
         $("#goal-percentage").text(Math.round(totalPercentage) + "%");
-        $("#itch-progressbar").css("width", itchPercentage + "%").attr("title", "itch (~$" + Math.round(itchIncome) + " per month)");
-        $("#liberapay-progressbar").css("width", liberapayPercentage + "%").attr("title", "Liberapay ($" + Math.round(liberapayIncome) + " per month)");
-        $("#patreon-progressbar").css("width", patreonPercentage + "%").attr("title", "Patreon ($" + Math.round(patreonIncome) + " per month)");
+        $("#itch-progressbar").css("width", itchPercentage + "%").attr("title", "itch (~$" + Math.round(itchIncome) + " / month)");
+        $("#liberapay-progressbar").css("width", liberapayPercentage + "%").attr("title", "Liberapay ($" + Math.round(liberapayIncome) + " / month)");
+        $("#patreon-progressbar").css("width", patreonPercentage + "%").attr("title", "Patreon ($" + Math.round(patreonIncome) + " / month)");
+        $("#github-progressbar").css("width", githubPercentage + "%").attr("title", "GitHub Sponsors ($" + Math.round(githubIncome) + " / month)");
+        $("#github-matching-fund-progressbar").css("width", githubPercentage + "%");
         $("#goal1").css("margin-right", (1 - goals[0] / endOfProgressBar) * 100 + "%");
         $("#goal2").css("margin-right", (1 - goals[1] / endOfProgressBar) * 100 + "%");
         $("#goal3").css("margin-right", (1 - goals[2] / endOfProgressBar) * 100 + "%");
