@@ -6,23 +6,26 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Tiled 1.1\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: bjorn@lindeijer.nl\n"
 "POT-Creation-Date: 2017-12-21 14:31+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2019-11-01 09:04+0000\n"
+"Last-Translator: HonestQiao <honestqiao@gmail.com>\n"
+"Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
+"tiled/manual/zh_Hans/>\n"
 "Language: zh_Hans\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 3.10-dev\n"
 
 #: ../../manual/automapping.rst:3
 msgid "Automapping"
-msgstr ""
+msgstr "自动映射"
 
 #: ../../manual/automapping.rst:6
 msgid "What is Automapping?"
-msgstr ""
+msgstr "什么是自动映射？"
 
 #: ../../manual/automapping.rst:8
 msgid "Automapping is an advanced tool to automatically search certain combinations of tiles across layers in a map and to replace these parts by other combination. This allows the user to draw structures with a minimum of time spent and the Automapping will be able to generate a rather complex scenario, which would need lots more time if manually crafted."
@@ -34,7 +37,7 @@ msgstr ""
 
 #: ../../manual/automapping.rst:18
 msgid "**Working speed** - you need less time to setup a map."
-msgstr ""
+msgstr "**工作速度** - 你需要又快又好的设置地图."
 
 #: ../../manual/automapping.rst:19
 msgid "**Less errors** - the main reason is to reduce the error rate. If you have setup the rules properly, there is no hidden error."
@@ -42,7 +45,7 @@ msgstr ""
 
 #: ../../manual/automapping.rst:23
 msgid "External Links"
-msgstr ""
+msgstr "外部链接"
 
 #: ../../manual/automapping.rst:25
 msgid "`Automapping explained for Tiled 0.9 and later (YouTube) <http://www.youtube.com/watch?v=UUi0lD1pxyQ>`__"
@@ -50,15 +53,15 @@ msgstr ""
 
 #: ../../manual/automapping.rst:26
 msgid "`Examples on Automapping <https://github.com/stefanbeller/tiled_examples>`__"
-msgstr ""
+msgstr "`自动映射实例 <https://github.com/stefanbeller/tiled_examples>`__"
 
 #: ../../manual/automapping.rst:27
 msgid "`Tiled Map Editor Tutorial Part Three: AutoMap (YouTube) <https://youtu.be/A_A6rz7cvG4>`__"
-msgstr ""
+msgstr "`Tiled 地图编辑器教程第三部分: 自动映射 (油管) <https://youtu.be/A_A6rz7cvG4>`__"
 
 #: ../../manual/automapping.rst:31
 msgid "Setting it Up"
-msgstr ""
+msgstr "设置"
 
 #: ../../manual/automapping.rst:33
 msgid "The Automapping feature is looking for a text file called 'rules.txt' in the folder where the current map is located. Each line in this text file is either"
@@ -66,7 +69,7 @@ msgstr ""
 
 #: ../../manual/automapping.rst:37
 msgid "a path to a **rulefile**"
-msgstr ""
+msgstr "**rulefile** 路径"
 
 #: ../../manual/automapping.rst:38
 msgid "or a path to another textfile which has the same syntax (i.e. in another directory)"
@@ -102,7 +105,7 @@ msgstr ""
 
 #: ../../manual/automapping.rst:57
 msgid "Defining the Regions"
-msgstr ""
+msgstr "定义区域"
 
 #: ../../manual/automapping.rst:59
 msgid "There must be either a tile layer called **regions** or there must be the both tile layers **regions\\_input** and **regions\\_output**. Using the **regions** layer, the region defined for input and output is the same. Using the different layers **regions\\_input** and **regions\\_output** delivers the possibility to have different regions for the input section and the output section. The region layer(s) are only used to mark regions, where an Automapping rule exists. Therefore it does not matter which tiles are used in this layer, since these tiles are just used to define a region. So either use any tile or no tile at a coordinate to indicate if that coordinate belongs to a rule or if it doesn't."
@@ -114,7 +117,7 @@ msgstr ""
 
 #: ../../manual/automapping.rst:76
 msgid "Multiple Rules in One Rulefile"
-msgstr ""
+msgstr "单个规则文件中多个规则集"
 
 #: ../../manual/automapping.rst:78
 msgid "Of course multiple rules are possible in one rulemap. If you want to have the rules applied in a certain sequence, you should use multiple **rulefiles** and define the sequence within the **rules.txt** file. As of now there also is a certain sequence within one rulemapfile. Generally speaking the regions with small y value come first. If there are regions at the same y value, then the x value is taken into account. On orthogonal maps this ordering scheme is the same as for reading in most western countries. (Left to right, top to down). The order within one rulemap may be changed later, once tiled is capable of utilizing multiple threads/processors. So if you want to rely on a certain sequence, use different rulemaps and order these in the rules.txt"
@@ -122,7 +125,7 @@ msgstr ""
 
 #: ../../manual/automapping.rst:91
 msgid "Definition of Inputs"
-msgstr ""
+msgstr "输入定义"
 
 #: ../../manual/automapping.rst:93
 msgid "Inputs are generally defined by tile layers which name follows this scheme:"
@@ -1083,7 +1086,7 @@ msgstr ""
 
 #: ../../manual/editing-tilesets.rst:101
 msgid "Type"
-msgstr ""
+msgstr "类型"
 
 #: ../../manual/editing-tilesets.rst:100
 msgid "This property refers to custom types defined in the :ref:`Object Types Editor <predefining-properties>`. See the section about :ref:`typed-tiles` for more information."
