@@ -638,7 +638,7 @@
     <message>
         <location line="+12"/>
         <source>&amp;Resize Map...</source>
-        <translation>Haritayı &amp;Yeniden Boyutlandır...</translation>
+        <translation>Haritayı &amp;Boyutlandır...</translation>
     </message>
     <message>
         <location line="+14"/>
@@ -2139,7 +2139,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location filename="../src/tiled/resizedialog.ui" line="+14"/>
         <source>Resize</source>
-        <translation>Yeniden Boyutlandır</translation>
+        <translation>Boyutlandır</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -2239,7 +2239,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+27"/>
         <source>Resize is currently not supported for detached maps</source>
-        <translation>Ayrılmış haritalar için yeniden boyutlandırma şu anda desteklenmiyor</translation>
+        <translation>Ayrılmış haritalar için boyutlandırma şu anda desteklenmiyor</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -2611,6 +2611,7 @@ Satır %1, sütun %2</translation>
         <source>Duplicate %n Object(s)</source>
         <translation>
             <numerusform>Nesneyi Çoğalt</numerusform>
+            <numerusform>%n Nesneyi Çoğalt</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2618,6 +2619,7 @@ Satır %1, sütun %2</translation>
         <source>Remove %n Object(s)</source>
         <translation>
             <numerusform>Nesneyi Kaldır</numerusform>
+            <numerusform>%n Nesneyi Kaldır</numerusform>
         </translation>
     </message>
     <message>
@@ -2675,6 +2677,7 @@ Satır %1, sütun %2</translation>
         <source>Move %n Object(s) to Layer</source>
         <translation>
             <numerusform>Nesneyi Katmana Taşı</numerusform>
+            <numerusform>%n Nesneyi Katmana Taşı</numerusform>
         </translation>
     </message>
     <message>
@@ -3317,6 +3320,7 @@ Satır %1, sütun %2</translation>
         <source>Move %n Point(s)</source>
         <translation>
             <numerusform>Noktayı Taşı</numerusform>
+            <numerusform>%n Noktayı Taşı</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -3325,6 +3329,7 @@ Satır %1, sütun %2</translation>
         <source>Delete %n Node(s)</source>
         <translation>
             <numerusform>Boğumu Sil</numerusform>
+            <numerusform>%n Boğumu Sil</numerusform>
         </translation>
     </message>
     <message>
@@ -3438,12 +3443,14 @@ Onu değiştirmek istiyor musunuz?</translation>
         <source>%n error(s)</source>
         <translation>
             <numerusform>%n hata</numerusform>
+            <numerusform>%n hata</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+1"/>
         <source>%n warning(s)</source>
         <translation>
+            <numerusform>%n uyarı</numerusform>
             <numerusform>%n uyarı</numerusform>
         </translation>
     </message>
@@ -3511,6 +3518,7 @@ Onu değiştirmek istiyor musunuz?</translation>
         <source>Drag Layer(s)</source>
         <translation>
             <numerusform>Katmanı Sürükle</numerusform>
+            <numerusform>Katmanları Sürükle</numerusform>
         </translation>
     </message>
     <message>
@@ -3848,7 +3856,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+109"/>
         <source>Resize Map</source>
-        <translation>Haritayı Yeniden Boyutlandır</translation>
+        <translation>Haritayı Boyutlandır</translation>
     </message>
     <message>
         <location line="+75"/>
@@ -3860,6 +3868,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Rotate %n Object(s)</source>
         <translation>
             <numerusform>Nesneyi Döndür</numerusform>
+            <numerusform>%n Nesneyi Döndür</numerusform>
         </translation>
     </message>
     <message>
@@ -3889,6 +3898,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Group %n Layer(s)</source>
         <translation>
             <numerusform>Katmanı Grupla</numerusform>
+            <numerusform>%n Katmanı Grupla</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -3896,6 +3906,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Ungroup %n Layer(s)</source>
         <translation>
             <numerusform>Katmanı Gruptan Çıkar</numerusform>
+            <numerusform>%n Katmanı Gruptan Çıkar</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -3903,6 +3914,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Duplicate %n Layer(s)</source>
         <translation>
             <numerusform>Katmanı Çoğalt</numerusform>
+            <numerusform>%n Katmanı Çoğalt</numerusform>
         </translation>
     </message>
     <message>
@@ -3920,6 +3932,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Remove %n Layer(s)</source>
         <translation>
             <numerusform>Katmanı Kaldır</numerusform>
+            <numerusform>%n Katmanı Kaldır</numerusform>
         </translation>
     </message>
     <message>
@@ -3947,6 +3960,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Duplicate %n Object(s)</source>
         <translation>
             <numerusform>Nesneyi Çoğalt</numerusform>
+            <numerusform>%n Nesneyi Çoğalt</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -3954,6 +3968,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Remove %n Object(s)</source>
         <translation>
             <numerusform>Nesneyi Kaldır</numerusform>
+            <numerusform>%n Nesneyi Kaldır</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -3961,6 +3976,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Move %n Object(s) to Layer</source>
         <translation>
             <numerusform>Nesneyi Katmana Taşı</numerusform>
+            <numerusform>%n Nesneyi Katmana Taşı</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -3968,6 +3984,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Move %n Object(s) Up</source>
         <translation>
             <numerusform>Nesneyi Yukarı Taşı</numerusform>
+            <numerusform>%n Nesneyi Yukarı Taşı</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -3975,6 +3992,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Move %n Object(s) Down</source>
         <translation>
             <numerusform>Nesneyi Aşağı Taşı</numerusform>
+            <numerusform>%n Nesneyi Aşağı Taşı</numerusform>
         </translation>
     </message>
 </context>
@@ -4132,6 +4150,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Duplicate %n Object(s)</source>
         <translation>
             <numerusform>Nesneyi Çoğalt</numerusform>
+            <numerusform>%n Nesneyi Çoğalt</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -4139,6 +4158,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Remove %n Object(s)</source>
         <translation>
             <numerusform>Nesneyi Kaldır</numerusform>
+            <numerusform>%n Nesneyi Kaldır</numerusform>
         </translation>
     </message>
     <message>
@@ -4175,6 +4195,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Add %n Tileset(s)</source>
         <translation>
             <numerusform>Desen Seti Ekle</numerusform>
+            <numerusform>%n Desen Seti Ekle</numerusform>
         </translation>
     </message>
     <message>
@@ -4440,6 +4461,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Move %n Object(s)</source>
         <translation>
             <numerusform>Nesneyi Taşı</numerusform>
+            <numerusform>%n Nesneyi Taşı</numerusform>
         </translation>
     </message>
     <message>
@@ -4467,13 +4489,15 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Rotate %n Object(s)</source>
         <translation>
             <numerusform>Nesneyi Döndür</numerusform>
+            <numerusform>%n Nesneyi Döndür</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+275"/>
         <source>Resize %n Object(s)</source>
         <translation>
-            <numerusform>Nesneyi Yeniden Boyutlandır</numerusform>
+            <numerusform>Nesneyi Boyutlandır</numerusform>
+            <numerusform>%n Nesneyi Boyutlandır</numerusform>
         </translation>
     </message>
 </context>
@@ -4602,6 +4626,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Move %n Object(s) to Layer</source>
         <translation>
             <numerusform>Nesneyi Katmana Taşı</numerusform>
+            <numerusform>%n Nesneyi Katmana Taşı</numerusform>
         </translation>
     </message>
 </context>
@@ -4621,6 +4646,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Paste Property/Properties</source>
         <translation>
             <numerusform>Özelliği Yapıştır</numerusform>
+            <numerusform>Özellikleri Yapıştır</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -4628,6 +4654,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Remove Property/Properties</source>
         <translation>
             <numerusform>Özelliği Kaldır</numerusform>
+            <numerusform>Özellikleri Kaldır</numerusform>
         </translation>
     </message>
     <message>
@@ -4676,6 +4703,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Convert Property/Properties</source>
         <translation>
             <numerusform>Özelliği Dönüştür</numerusform>
+            <numerusform>Özellikleri Dönüştür</numerusform>
         </translation>
     </message>
     <message>
@@ -6074,17 +6102,17 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location filename="../src/tiled/resizetilelayer.cpp" line="+37"/>
         <source>Resize Layer</source>
-        <translation>Katmanı Yeniden Boyutlandır</translation>
+        <translation>Katmanı Boyutlandır</translation>
     </message>
     <message>
         <location filename="../src/tiled/resizemap.cpp" line="+33"/>
         <source>Resize Map</source>
-        <translation>Haritayı Yeniden Boyutlandır</translation>
+        <translation>Haritayı Boyutlandır</translation>
     </message>
     <message>
         <location filename="../src/tiled/resizemapobject.cpp" line="+51"/>
         <source>Resize Object</source>
-        <translation>Nesneyi Yeniden Boyutlandır</translation>
+        <translation>Nesneyi Boyutlandır</translation>
     </message>
     <message>
         <location filename="../src/tiled/tilesetchanges.cpp" line="+33"/>
@@ -6196,7 +6224,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+19"/>
         <source>Change Tile Layer Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Desen Katman Boyutunu Değiştir</translation>
     </message>
     <message>
         <location filename="../src/tiled/changemapobject.cpp" line="+12"/>
@@ -6213,6 +6241,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Change %n Object/s Tile</source>
         <translation>
             <numerusform>Nesnenin Desenini Değiştir</numerusform>
+            <numerusform>Nesnelerin Desenini Değiştir</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -6220,6 +6249,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Detach %n Template Instance(s)</source>
         <translation>
             <numerusform>Şablon Örneğini Ayır</numerusform>
+            <numerusform>%n Şablon Örneğini Ayır</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -6227,6 +6257,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Reset %n Instances</source>
         <translation>
             <numerusform>Örneği Sıfırla</numerusform>
+            <numerusform>%n Örneği Sıfırla</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -6234,6 +6265,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Replace %n Object(s) With Template</source>
         <translation>
             <numerusform>Nesneyi Şablonla Değiştir</numerusform>
+            <numerusform>%n Nesneyi Şablonla Değiştir</numerusform>
         </translation>
     </message>
     <message>
@@ -6374,6 +6406,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Flip %n Object(s)</source>
         <translation>
             <numerusform>Nesneyi Çevir</numerusform>
+            <numerusform>%n Nesneyi Çevir</numerusform>
         </translation>
     </message>
     <message>
@@ -6458,6 +6491,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Raise %n Layer(s)</source>
         <translation>
             <numerusform>Katmanı Yükselt</numerusform>
+            <numerusform>%n Katmanı Yükselt</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -6465,6 +6499,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Lower %n Layer(s)</source>
         <translation>
             <numerusform>Katmanı Alçalt</numerusform>
+            <numerusform>%n Katmanı Alçalt</numerusform>
         </translation>
     </message>
     <message>
