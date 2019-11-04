@@ -547,11 +547,11 @@
       .done(function(data) {
         var itchIncome = 600;
         var itchPurchases = 65;
-        var githubIncome = 440;
-        var githubSponsors = 38;
+        var githubIncome = 461;
+        var githubSponsors = 40;
         var liberapayIncome = data.liberapayEarnings_bjorn * 1.16 * 4;
         var patreonIncome = data.earnings;
-        var totalIncome = itchIncome + liberapayIncome + patreonIncome + githubIncome;
+        var totalIncome = itchIncome + liberapayIncome + patreonIncome + githubIncome * 2;
         var totalSupporters = itchPurchases + data.patrons + data.liberapayPatrons_Tiled + data.liberapayPatrons_bjorn + githubSponsors;
         var goals = [1150, 2300, 2600];
         var endOfProgressBar = Math.max(goals[goals.length - 1], totalIncome);
