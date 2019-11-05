@@ -35,6 +35,7 @@ CreateTextObjectTool::CreateTextObjectTool(QObject *parent)
     QIcon icon(QLatin1String(":images/24/insert-text.png"));
     icon.addFile(QLatin1String(":images/48/insert-text.png"));
     setIcon(icon);
+    setShortcut(Qt::Key_E);
     Utils::setThemeIcon(this, "insert-text");
     languageChangedImpl();
 }
@@ -62,7 +63,6 @@ void CreateTextObjectTool::languageChanged()
 void CreateTextObjectTool::languageChangedImpl()
 {
     setName(tr("Insert Text"));
-    setShortcut(QKeySequence(tr("E")));
 }
 
 MapObject *CreateTextObjectTool::createNewMapObject()

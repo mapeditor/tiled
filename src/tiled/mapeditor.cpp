@@ -372,6 +372,9 @@ void MapEditor::addDocument(Document *document)
         int layerIndex = mapState.value(QLatin1String("selectedLayer")).toInt();
         if (Layer *layer = layerAtGlobalIndex(mapDocument->map(), layerIndex))
             mapDocument->switchCurrentLayer(layer);
+
+        // suppress fitting map in view upon show event
+        view->setViewInitialized();
     }
 }
 
@@ -381,21 +384,9 @@ void MapEditor::removeDocument(Document *document)
     Q_ASSERT(mapDocument);
     Q_ASSERT(mWidgetForMap.contains(mapDocument));
 
+    saveDocumentState(mapDocument);
+
     MapView *mapView = mWidgetForMap.take(mapDocument);
-
-    // remember the state of this map before deleting the view
-    if (!mapDocument->fileName().isEmpty()) {
-        QVariantMap mapState;
-        mapState.insert(QLatin1String("scale"), mapView->zoomable()->scale());
-        mapState.insert(QLatin1String("viewCenter"), mapView->mapToScene(mapView->viewport()->rect().center()));
-        mapState.insert(QLatin1String("selectedLayer"), globalIndex(mapDocument->currentLayer()));
-        mMapStates.insert(mapDocument->fileName(), mapState);
-
-        Preferences *prefs = Preferences::instance();
-        QSettings *settings = prefs->settings();
-        settings->setValue(QLatin1String(MAPSTATES_KEY), mMapStates);
-    }
-
     // remove first, to keep it valid while the current widget changes
     mWidgetStack->removeWidget(mapView);
     delete mapView;
@@ -618,6 +609,26 @@ Zoomable *MapEditor::zoomable() const
     if (auto view = currentMapView())
         return view->zoomable();
     return nullptr;
+}
+
+void MapEditor::saveDocumentState(MapDocument *mapDocument)
+{
+    MapView *mapView = mWidgetForMap.value(mapDocument);
+    if (!mapView)
+        return;
+
+    // remember the state of this map before deleting the view
+    if (!mapDocument->fileName().isEmpty()) {
+        QVariantMap mapState;
+        mapState.insert(QLatin1String("scale"), mapView->zoomable()->scale());
+        mapState.insert(QLatin1String("viewCenter"), mapView->mapToScene(mapView->viewport()->rect()).boundingRect().center());
+        mapState.insert(QLatin1String("selectedLayer"), globalIndex(mapDocument->currentLayer()));
+        mMapStates.insert(mapDocument->fileName(), mapState);
+
+        Preferences *prefs = Preferences::instance();
+        QSettings *settings = prefs->settings();
+        settings->setValue(QLatin1String(MAPSTATES_KEY), mMapStates);
+    }
 }
 
 void MapEditor::showMessage(const QString &text, int timeout)

@@ -271,6 +271,7 @@ void PropertyBrowser::documentChanged(const ChangeEvent &change)
 {
     switch (change.type) {
     case ChangeEvent::LayerChanged:
+    case ChangeEvent::TileLayerChanged:
         if (mObject == static_cast<const LayerChangeEvent&>(change).layer)
             updateProperties();
         break;

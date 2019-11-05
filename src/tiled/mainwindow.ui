@@ -284,7 +284,7 @@
     <string>AutoMap</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+M</string>
+    <string notr="true">Ctrl+M</string>
    </property>
   </action>
   <action name="actionShowGrid">
@@ -295,7 +295,7 @@
     <string>Show &amp;Grid</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+G</string>
+    <string notr="true">Ctrl+G</string>
    </property>
   </action>
   <action name="actionSaveAs">
@@ -307,7 +307,7 @@
     <string>Save &amp;As...</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Alt+S</string>
+    <string notr="true">Ctrl+Alt+S</string>
    </property>
   </action>
   <action name="actionNewTileset">
@@ -354,7 +354,7 @@
     <string>Normal Size</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+0</string>
+    <string notr="true">Ctrl+0</string>
    </property>
   </action>
   <action name="actionExportAsImage">
@@ -404,7 +404,7 @@
     <string>E&amp;xport As...</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Shift+E</string>
+    <string notr="true">Ctrl+Shift+E</string>
    </property>
   </action>
   <action name="actionAddExternalTileset">
@@ -425,7 +425,7 @@
     <string>C&amp;lose All</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Shift+W</string>
+    <string notr="true">Ctrl+Shift+W</string>
    </property>
   </action>
   <action name="actionDelete">
@@ -451,7 +451,7 @@
     <string>&amp;Highlight Current Layer</string>
    </property>
    <property name="shortcut">
-    <string>H</string>
+    <string notr="true">H</string>
    </property>
   </action>
   <action name="actionShowTileObjectOutlines">
@@ -483,7 +483,7 @@
     <string>Reload</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+R</string>
+    <string notr="true">Ctrl+R</string>
    </property>
   </action>
   <action name="actionExport">
@@ -491,7 +491,7 @@
     <string>&amp;Export</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+E</string>
+    <string notr="true">Ctrl+E</string>
    </property>
   </action>
   <action name="actionDonate">
@@ -504,7 +504,7 @@
     <string>Save All</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Shift+S</string>
+    <string notr="true">Ctrl+Shift+S</string>
    </property>
   </action>
   <action name="actionDocumentation">
@@ -560,7 +560,7 @@
     <string>Paste &amp;in Place</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Shift+V</string>
+    <string notr="true">Ctrl+Shift+V</string>
    </property>
   </action>
   <action name="actionFullScreen">
@@ -571,7 +571,7 @@
     <string>Full Screen</string>
    </property>
    <property name="shortcut">
-    <string>F11</string>
+    <string notr="true">F11</string>
    </property>
   </action>
   <action name="actionSnapToPixels">
@@ -620,7 +620,7 @@
     <string>Clear View</string>
    </property>
    <property name="shortcut">
-    <string>Tab</string>
+    <string notr="true">Tab</string>
    </property>
   </action>
   <action name="actionLabelForHoveredObject">
@@ -661,7 +661,7 @@
     <string>Fit Map in View</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Shift+J</string>
+    <string notr="true">Ctrl+Shift+J</string>
    </property>
   </action>
   <action name="actionForum">

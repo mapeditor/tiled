@@ -94,6 +94,7 @@ public:
     void switchToDocument(MapDocument *mapDocument, QPointF viewCenter, qreal scale);
 
     void addDocument(const DocumentPtr &document);
+    void insertDocument(int index, const DocumentPtr &document);
 
     bool isDocumentModified(Document *document) const;
 

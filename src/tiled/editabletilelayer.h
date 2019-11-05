@@ -33,9 +33,9 @@ class EditableTileLayer : public EditableLayer
 {
     Q_OBJECT
 
-    Q_PROPERTY(int width READ width)
-    Q_PROPERTY(int height READ height)
-    Q_PROPERTY(QSize size READ size)
+    Q_PROPERTY(int width READ width WRITE setWidth)
+    Q_PROPERTY(int height READ height WRITE setHeight)
+    Q_PROPERTY(QSize size READ size WRITE setSize)
 
 public:
     Q_INVOKABLE explicit EditableTileLayer(const QString &name = QString(),
@@ -50,6 +50,12 @@ public:
     int width() const;
     int height() const;
     QSize size() const;
+
+    void setWidth(int width);
+    void setHeight(int height);
+    void setSize(QSize size);
+
+    Q_INVOKABLE void resize(QSize size, QPoint offset = QPoint());
 
     Q_INVOKABLE Tiled::RegionValueType region() const;
 
@@ -81,6 +87,16 @@ inline int EditableTileLayer::height() const
 inline QSize EditableTileLayer::size() const
 {
     return tileLayer()->size();
+}
+
+inline void EditableTileLayer::setWidth(int width)
+{
+    setSize(QSize(width, height()));
+}
+
+inline void EditableTileLayer::setHeight(int height)
+{
+    setSize(QSize(width(), height));
 }
 
 inline TileLayer *EditableTileLayer::tileLayer() const

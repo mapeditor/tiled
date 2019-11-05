@@ -323,7 +323,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->actionOpen->setShortcuts(QKeySequence::Open);
     mUi->actionSave->setShortcuts(QKeySequence::Save);
     mUi->actionClose->setShortcuts(QKeySequence::Close);
-    mUi->actionQuit->setShortcut(QKeySequence(tr("Ctrl+Q")));
+    mUi->actionQuit->setShortcut(Qt::CTRL + Qt::Key_Q);
     mUi->actionCut->setShortcuts(QKeySequence::Cut);
     mUi->actionCopy->setShortcuts(QKeySequence::Copy);
     mUi->actionPaste->setShortcuts(QKeySequence::Paste);
@@ -393,17 +393,17 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionLabelForHoveredObject, &QAction::triggered,
             preferences, &Preferences::setLabelForHoveredObject);
 
-    QShortcut *reloadTilesetsShortcut = new QShortcut(QKeySequence(tr("Ctrl+T")), this);
+    QShortcut *reloadTilesetsShortcut = new QShortcut(Qt::CTRL + Qt::Key_T, this);
     connect(reloadTilesetsShortcut, &QShortcut::activated,
             this, &MainWindow::reloadTilesetImages);
 
     // Make sure Ctrl+= also works for zooming in
     QList<QKeySequence> keys = QKeySequence::keyBindings(QKeySequence::ZoomIn);
-    keys += QKeySequence(tr("Ctrl+="));
-    keys += QKeySequence(tr("+"));
+    keys += QKeySequence(Qt::CTRL + Qt::Key_Equal);
+    keys += QKeySequence(Qt::Key_Plus);
     mUi->actionZoomIn->setShortcuts(keys);
     keys = QKeySequence::keyBindings(QKeySequence::ZoomOut);
-    keys += QKeySequence(tr("-"));
+    keys += QKeySequence(Qt::Key_Minus);
     mUi->actionZoomOut->setShortcuts(keys);
 
     mUi->menuEdit->insertAction(mUi->actionCut, undoAction);
@@ -646,23 +646,23 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     connect(mResetToDefaultLayout, &QAction::triggered, this, &MainWindow::resetToDefaultLayout);
 
-    QShortcut *switchToLeftDocument = new QShortcut(tr("Alt+Left"), this);
+    QShortcut *switchToLeftDocument = new QShortcut(Qt::ALT + Qt::Key_Left, this);
     connect(switchToLeftDocument, &QShortcut::activated,
             mDocumentManager, &DocumentManager::switchToLeftDocument);
-    QShortcut *switchToLeftDocument1 = new QShortcut(tr("Ctrl+Shift+Tab"), this);
+    QShortcut *switchToLeftDocument1 = new QShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_Tab, this);
     connect(switchToLeftDocument1, &QShortcut::activated,
             mDocumentManager, &DocumentManager::switchToLeftDocument);
 
-    QShortcut *switchToRightDocument = new QShortcut(tr("Alt+Right"), this);
+    QShortcut *switchToRightDocument = new QShortcut(Qt::ALT + Qt::Key_Right, this);
     connect(switchToRightDocument, &QShortcut::activated,
             mDocumentManager, &DocumentManager::switchToRightDocument);
-    QShortcut *switchToRightDocument1 = new QShortcut(tr("Ctrl+Tab"), this);
+    QShortcut *switchToRightDocument1 = new QShortcut(Qt::CTRL + Qt::Key_Tab, this);
     connect(switchToRightDocument1, &QShortcut::activated,
             mDocumentManager, &DocumentManager::switchToRightDocument);
 
     connect(qApp, &QApplication::commitDataRequest, this, &MainWindow::commitData);
 
-    QShortcut *copyPositionShortcut = new QShortcut(tr("Alt+C"), this);
+    QShortcut *copyPositionShortcut = new QShortcut(Qt::ALT + Qt::Key_C, this);
     connect(copyPositionShortcut, &QShortcut::activated,
             mActionHandler, &MapDocumentActionHandler::copyPosition);
 
@@ -1172,7 +1172,7 @@ void MainWindow::zoomNormal()
 void MainWindow::fitInView()
 {
     if (MapView *mapView = mDocumentManager->currentMapView())
-        mapView->fitInView();
+        mapView->fitMapInView();
 }
 
 void MainWindow::setFullScreen(bool fullScreen)

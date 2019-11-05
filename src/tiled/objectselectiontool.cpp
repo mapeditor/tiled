@@ -314,7 +314,7 @@ void ResizeHandle::paint(QPainter *painter,
 ObjectSelectionTool::ObjectSelectionTool(QObject *parent)
     : AbstractObjectTool(tr("Select Objects"),
           QIcon(QLatin1String(":images/22/tool-select-objects.png")),
-          QKeySequence(tr("S")),
+          QKeySequence(Qt::Key_S),
           parent)
     , mSelectionRectangle(new SelectionRectangle)
     , mOriginIndicator(new OriginIndicator)
@@ -725,7 +725,6 @@ void ObjectSelectionTool::languageChanged()
     AbstractObjectTool::languageChanged();
 
     setName(tr("Select Objects"));
-    setShortcut(QKeySequence(tr("S")));
 }
 
 void ObjectSelectionTool::changeEvent(const ChangeEvent &event)

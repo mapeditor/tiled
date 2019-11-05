@@ -233,7 +233,7 @@ Product {
                              "pt_PT",
                              "ru",
                              "tr",
-                             "zh",
+                             "zh_CN",
                              "zh_TW"];
 
             var list = [];

@@ -179,10 +179,10 @@ void AbstractObjectTool::languageChanged()
     mRotateLeft->setToolTip(QCoreApplication::translate("Tiled::StampActions", "Rotate Left"));
     mRotateRight->setToolTip(QCoreApplication::translate("Tiled::StampActions", "Rotate Right"));
 
-    mFlipHorizontal->setShortcut(QKeySequence(QCoreApplication::translate("Tiled::StampActions", "X")));
-    mFlipVertical->setShortcut(QKeySequence(QCoreApplication::translate("Tiled::StampActions", "Y")));
-    mRotateLeft->setShortcut(QKeySequence(QCoreApplication::translate("Tiled::StampActions", "Shift+Z")));
-    mRotateRight->setShortcut(QKeySequence(QCoreApplication::translate("Tiled::StampActions", "Z")));
+    mFlipHorizontal->setShortcut(Qt::Key_X);
+    mFlipVertical->setShortcut(Qt::Key_Y);
+    mRotateLeft->setShortcut(Qt::SHIFT + Qt::Key_Z);
+    mRotateRight->setShortcut(Qt::Key_Z);
 }
 
 void AbstractObjectTool::populateToolBar(QToolBar *toolBar)
@@ -515,16 +515,16 @@ void AbstractObjectTool::showContextMenu(MapObject *clickedObject,
     }
 
     menu.addSeparator();
-    menu.addAction(tr("Flip Horizontally"), this, &AbstractObjectTool::flipHorizontally, QKeySequence(tr("X")));
-    menu.addAction(tr("Flip Vertically"), this, &AbstractObjectTool::flipVertically, QKeySequence(tr("Y")));
+    menu.addAction(tr("Flip Horizontally"), this, &AbstractObjectTool::flipHorizontally, Qt::Key_X);
+    menu.addAction(tr("Flip Vertically"), this, &AbstractObjectTool::flipVertically, Qt::Key_Y);
 
     ObjectGroup *sameObjectGroup = RaiseLowerHelper::sameObjectGroup(selectedObjects);
     if (sameObjectGroup && sameObjectGroup->drawOrder() == ObjectGroup::IndexOrder) {
         menu.addSeparator();
-        menu.addAction(tr("Raise Object"), this, &AbstractObjectTool::raise, QKeySequence(tr("PgUp")));
-        menu.addAction(tr("Lower Object"), this, &AbstractObjectTool::lower, QKeySequence(tr("PgDown")));
-        menu.addAction(tr("Raise Object to Top"), this, &AbstractObjectTool::raiseToTop, QKeySequence(tr("Home")));
-        menu.addAction(tr("Lower Object to Bottom"), this, &AbstractObjectTool::lowerToBottom, QKeySequence(tr("End")));
+        menu.addAction(tr("Raise Object"), this, &AbstractObjectTool::raise, Qt::Key_PageUp);
+        menu.addAction(tr("Lower Object"), this, &AbstractObjectTool::lower, Qt::Key_PageDown);
+        menu.addAction(tr("Raise Object to Top"), this, &AbstractObjectTool::raiseToTop, Qt::Key_Home);
+        menu.addAction(tr("Lower Object to Bottom"), this, &AbstractObjectTool::lowerToBottom, Qt::Key_End);
     }
 
     auto objectGroups = mapDocument()->map()->objectGroups();

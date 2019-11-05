@@ -36,6 +36,7 @@ CreateTileObjectTool::CreateTileObjectTool(QObject *parent)
     QIcon icon(QLatin1String(":images/24/insert-image.png"));
     icon.addFile(QLatin1String(":images/48/insert-image.png"));
     setIcon(icon);
+    setShortcut(Qt::Key_T);
     Utils::setThemeIcon(this, "insert-image");
     languageChangedImpl();
 }
@@ -63,7 +64,6 @@ void CreateTileObjectTool::languageChanged()
 void CreateTileObjectTool::languageChangedImpl()
 {
     setName(tr("Insert Tile"));
-    setShortcut(QKeySequence(tr("T")));
 }
 
 MapObject *CreateTileObjectTool::createNewMapObject()
