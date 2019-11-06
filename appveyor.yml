@@ -97,6 +97,12 @@ deploy:
         appveyor_repo_tag: false
         push_release: true
 
+deploy:
+- provider: Webhook
+  url: https://app.signpath.io/API/v1/670574d6-49bf-4a0c-824a-3ae977077079/Integrations/AppVeyor?ProjectKey=tiled&SigningPolicyKey=test-signing
+  authorization:
+     secure: 4E7IuM1Ftvdkx43gsqI3tUWb6tcvrfKB22sa6DsWaBzT+zv3DqceDCk0qc/JqTO+Er5UQNYwolmWBzMdys6fVA==
+
 notifications:
   - provider: Webhook
     url: https://webhooks.gitter.im/e/6e48d432e0e0dd1b2d22
