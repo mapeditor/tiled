@@ -241,8 +241,9 @@ tiled.registerMapFormat(shortName : string, mapFormat : object) : void
 
         **name** : string, Name of the format as shown in the file dialog.
         **extension** : string, The file extension used by the format.
-        "**read** : function(file : :ref:`script-file`) : map : :ref:`script-map`", "A function
-        that loads a map from the given :ref:`script-file`."
+        "**read** : function(fileName : string) : map : :ref:`script-map`", "A function
+        that loads a map from the given file. Can use :ref:`TextFile <script-textfile>` or
+        :ref:`BinaryFile <script-binaryfile>` to read the file."
         "**write** : function(map : :ref:`script-map`, fileName : string) : string | ArrayBuffer", "A function
         that serializes the map into either a string or binary data (using ArrayBuffer). The result will be
         written to the given *fileName* (useful for making relative file references)."
@@ -295,8 +296,9 @@ tiled.registerTilesetFormat(shortName : string, tilesetFormat : object) : void
 
         **name** : string, Name of the format as shown in the file dialog.
         **extension** : string, The file extension used by the format.
-        "**read** : function(file : :ref:`script-file`) : tileset : :ref:`script-tileset`", "A function
-        that loads a tileset from the given :ref:`script-file`."
+        "**read** : function(fileName : string) : tileset : :ref:`script-tileset`", "A function
+        that loads a tileset from the given file. Can use :ref:`TextFile <script-textfile>` or
+        :ref:`BinaryFile <script-binaryfile>` to read the file."
         "**write** : function(tileset : :ref:`script-tileset`, fileName : string) : string | ArrayBuffer", "A function
         that serializes the tileset into either a string or binary data (using ArrayBuffer). The result will be
         written to the given *fileName* (useful for making relative file references)."
@@ -777,7 +779,7 @@ TileLayer
 Inherits :ref:`script-layer`.
 
 Note that while tile layers have a size, the size is generally ignored on
-infinite maps. Even for finite maps, nothing in the scripting API stops you
+infinite maps. Even for fixed size maps, nothing in the scripting API stops you
 from changing the layer outside of its boundaries and changing the size of the
 layer has no effect on its contents. If you want to change the size while
 affecting the contents, use the ``resize`` function.
@@ -1463,13 +1465,12 @@ An object specifying the terrain for each corner of a tile:
     **bottomLeft** : :ref:`script-terrain`
     **bottomRight** : :ref:`script-terrain`
 
-.. _script-file:
+.. _script-textfile:
 
-file
-~~~~
+TextFile
+~~~~~~~~
 
-The file object is used to enable reading from a file in custom map and tileset
-formats.
+The TextFile object is used to read and write files in text mode.
 
 **Properties**
 
@@ -1477,12 +1478,88 @@ formats.
     :widths: 1, 2
 
     **filePath** : string |ro|, "The path of the file."
-    **errorString** : string |ro|, "The error string, in case ``readAsText`` or ``readAsBinary`` failed."
+    **atEof** : bool |ro|, "True if no mode data can be read."
+    **codec** : string, "The text codec."
+
+.. csv-table::
+    :header: "TextFile.OpenMode"
+    :widths: 1, 2
+
+    TextFile.ReadOnly, 0x0001
+    TextFile.WriteOnly, 0x0002
+    TextFile.ReadWrite, TextFile.ReadOnly | TextFile.WriteOnly
+    TextFile.Append
 
 **Functions**
 
-File.readAsText() : string
-    Reads the contents of the file in text mode and returns it as a string.
+new TextFile(fileName : string [, mode : OpenMode = ReadOnly])
+    Opens a text file in the given mode.
 
-File.readAsBinary() : ArrayBuffer
-    Reads the contents of the file in binary mode and returns it as an ArrayBuffer.
+TextFile.readLine() : string
+    Reads one line of text from the file and returns it. The returned string
+    does not contain the newline characters.
+
+TextFile.readAll() : string
+    Reads all data from the file and returns it.
+
+TextFile.truncate() : void
+    Truncates the file, that is, gives it the size of zero, removing all
+    content.
+
+TextFile.write(text : string) : void
+    Writes a string to the file.
+
+TextFile.writeLine(text : string) : void
+    Writes a string to the file and appends a newline character.
+
+TextFile.close() : void
+    Closes the file. It is recommended to always call this function as soon as
+    you are finished with the file.
+
+.. _script-binaryfile:
+
+BinaryFile
+~~~~~~~~~~
+
+The BinaryFile object is used to read and write files in binary mode.
+
+**Properties**
+
+.. csv-table::
+    :widths: 1, 2
+
+    **filePath** : string |ro|, "The path of the file."
+    **atEof** : bool |ro|, "True if no mode data can be read."
+    **size** : number, "The size of the file (in bytes)."
+    **pos** : number, "The position that data is written to or read from."
+
+.. csv-table::
+    :header: "BinaryFile.OpenMode"
+    :widths: 1, 2
+
+    BinaryFile.ReadOnly, 0x0001
+    BinaryFile.WriteOnly, 0x0002
+    BinaryFile.ReadWrite, BinaryFile.ReadOnly | BinaryFile.WriteOnly
+
+**Functions**
+
+BinaryFile.resize(qint64 size) : void
+    Sets the file size (in bytes). If size is larger than the file currently is,
+    the new bytes will be set to 0; if size is smaller, the file is truncated.
+
+BinaryFile.seek(qint64 pos) : void
+    Sets the current position to *pos*.
+
+BinaryFile.read(qint64 size) : ArrayBuffer
+    Reads at most *size* bytes of data from the file and returns it as an
+    ArrayBuffer.
+
+BinaryFile.readAll() : ArrayBuffer
+    Reads all data from the file and returns it as an ArrayBuffer.
+
+BinaryFile.write(data : ArrayBuffer) : void
+    Writes *data* into the file at the current position.
+
+BinaryFile.close() : void
+    Closes the file. It is recommended to always call this function as soon as
+    you are finished with the file.

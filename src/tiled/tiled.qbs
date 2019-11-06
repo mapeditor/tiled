@@ -408,6 +408,8 @@ QtGuiApplication {
         "scriptedfileformat.h",
         "scriptedtool.cpp",
         "scriptedtool.h",
+        "scriptfile.cpp",
+        "scriptfile.h",
         "scriptmanager.cpp",
         "scriptmanager.h",
         "scriptmodule.cpp",

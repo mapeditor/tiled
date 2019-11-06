@@ -33,29 +33,6 @@
 
 namespace Tiled {
 
-QString ScriptFile::readAsText()
-{
-    QFile file(mFilePath);
-    if (file.open(QIODevice::ReadOnly | QIODevice::Text))
-        return QTextStream(&file).readAll();
-    else
-        mError = file.errorString();
-
-    return {};
-}
-
-QByteArray ScriptFile::readAsBinary()
-{
-    QFile file(mFilePath);
-    if (file.open(QIODevice::ReadOnly))
-        return file.readAll();
-    else
-        mError = file.errorString();
-
-    return {};
-}
-
-
 ScriptedFileFormat::ScriptedFileFormat(const QJSValue &object)
     : mObject(object)
 {
@@ -92,10 +69,8 @@ bool ScriptedFileFormat::supportsFile(const QString &fileName) const
 
 QJSValue ScriptedFileFormat::read(const QString &fileName)
 {
-    ScriptFile file(fileName);
-
     QJSValueList arguments;
-    arguments.append(ScriptManager::instance().engine()->newQObject(&file));
+    arguments.append(fileName);
 
     return mObject.property(QStringLiteral("read")).call(arguments);
 }

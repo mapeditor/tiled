@@ -29,26 +29,6 @@ namespace Tiled {
 
 class EditableAsset;
 
-class ScriptFile : public QObject
-{
-    Q_OBJECT
-
-    Q_PROPERTY(QString filePath MEMBER mFilePath CONSTANT)
-    Q_PROPERTY(QString errorString MEMBER mError CONSTANT)
-
-public:
-    ScriptFile(const QString &filePath)
-        : mFilePath(filePath)
-    {}
-
-    Q_INVOKABLE QString readAsText();
-    Q_INVOKABLE QByteArray readAsBinary();
-
-private:
-    QString mFilePath;
-    QString mError;
-};
-
 class ScriptedFileFormat
 {
 public:
@@ -126,5 +106,3 @@ private:
 };
 
 } // namespace Tiled
-
-Q_DECLARE_METATYPE(Tiled::ScriptFile*)
