@@ -42,6 +42,8 @@ public:
     bool write(EditableAsset *asset, const QString &fileName,
                FileFormat::Options options, QString &error);
 
+    QStringList outputFiles(EditableAsset *asset, const QString &fileName) const;
+
     static bool validateFileFormatObject(const QJSValue &value);
 
 private:
@@ -66,9 +68,7 @@ public:
     QString errorString() const override { return mError; }
 
     // MapFormat interface
-#if 0
     QStringList outputFiles(const Map *map, const QString &fileName) const override;
-#endif
     std::unique_ptr<Map> read(const QString &fileName) override;
     bool write(const Map *map, const QString &fileName, Options options) override;
 

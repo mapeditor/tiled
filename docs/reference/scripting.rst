@@ -241,12 +241,14 @@ tiled.registerMapFormat(shortName : string, mapFormat : object) : void
 
         **name** : string, Name of the format as shown in the file dialog.
         **extension** : string, The file extension used by the format.
-        "**read** : function(fileName : string) : map : :ref:`script-map`", "A function
-        that loads a map from the given file. Can use :ref:`TextFile <script-textfile>` or
+        "**read** : function(fileName : string) : :ref:`script-map`", "A function
+        that reads a map from the given file. Can use :ref:`TextFile <script-textfile>` or
         :ref:`BinaryFile <script-binaryfile>` to read the file."
-        "**write** : function(map : :ref:`script-map`, fileName : string) : string | ArrayBuffer", "A function
-        that serializes the map into either a string or binary data (using ArrayBuffer). The result will be
-        written to the given *fileName* (useful for making relative file references)."
+        "**write** : function(map : :ref:`script-map`, fileName : string) : string | undefined", "A function
+        that writes a map to the given file. Can use :ref:`TextFile <script-textfile>` or
+        :ref:`BinaryFile <script-binaryfile>` to write the file. When a non-empty string is returned, it is shown as error message."
+        "**outputFiles** : function(map : :ref:`script-map`, fileName : string) : [string]", "A function
+        that returns the list of files that will be written when exporting the given map (optional)."
 
     Example that produces a simple JSON representation of a map:
 
@@ -277,7 +279,9 @@ tiled.registerMapFormat(shortName : string, mapFormat : object) : void
                     }
                 }
 
-                return JSON.stringify(m);
+                var file = new TextFile(fileName, TextFile.WriteOnly);
+                file.write(JSON.stringify(m));
+                file.commit();
             },
         }
 
@@ -296,12 +300,12 @@ tiled.registerTilesetFormat(shortName : string, tilesetFormat : object) : void
 
         **name** : string, Name of the format as shown in the file dialog.
         **extension** : string, The file extension used by the format.
-        "**read** : function(fileName : string) : tileset : :ref:`script-tileset`", "A function
-        that loads a tileset from the given file. Can use :ref:`TextFile <script-textfile>` or
+        "**read** : function(fileName : string) : :ref:`script-tileset`", "A function
+        that reads a tileset from the given file. Can use :ref:`TextFile <script-textfile>` or
         :ref:`BinaryFile <script-binaryfile>` to read the file."
-        "**write** : function(tileset : :ref:`script-tileset`, fileName : string) : string | ArrayBuffer", "A function
-        that serializes the tileset into either a string or binary data (using ArrayBuffer). The result will be
-        written to the given *fileName* (useful for making relative file references)."
+        "**write** : function(tileset : :ref:`script-tileset`, fileName : string) : string | undefined", "A function
+        that writes a tileset to the given file. Can use :ref:`TextFile <script-textfile>` or
+        :ref:`BinaryFile <script-binaryfile>` to write the file. When a non-empty string is returned, it is shown as error message."
 
 .. _script-registerTool:
 
@@ -1472,6 +1476,9 @@ TextFile
 
 The TextFile object is used to read and write files in text mode.
 
+When using ``TextFile.WriteOnly``, you need to call ``commit()`` when you're
+done writing otherwise the operation will be aborted without effect.
+
 **Properties**
 
 .. csv-table::
@@ -1512,6 +1519,11 @@ TextFile.write(text : string) : void
 TextFile.writeLine(text : string) : void
     Writes a string to the file and appends a newline character.
 
+TextFile.commit() : void
+    Commits all written text to disk. Should be called when writing to files in
+    WriteOnly mode. Failing to call this function will result in cancelling the
+    operation, unless safe writing to files is disabled.
+
 TextFile.close() : void
     Closes the file. It is recommended to always call this function as soon as
     you are finished with the file.
@@ -1522,6 +1534,9 @@ BinaryFile
 ~~~~~~~~~~
 
 The BinaryFile object is used to read and write files in binary mode.
+
+When using ``BinaryFile.WriteOnly``, you need to call ``commit()`` when you're
+done writing otherwise the operation will be aborted without effect.
 
 **Properties**
 
@@ -1559,6 +1574,11 @@ BinaryFile.readAll() : ArrayBuffer
 
 BinaryFile.write(data : ArrayBuffer) : void
     Writes *data* into the file at the current position.
+
+BinaryFile.commit() : void
+    Commits all written data to disk. Should be called when writing to files in
+    WriteOnly mode. Failing to call this function will result in cancelling the
+    operation, unless safe writing to files is disabled.
 
 BinaryFile.close() : void
     Closes the file. It is recommended to always call this function as soon as

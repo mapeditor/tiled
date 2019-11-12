@@ -28,11 +28,13 @@
 
 #include "scriptfile.h"
 
+#include "savefile.h"
 #include "scriptmanager.h"
 
 #include <QCoreApplication>
 #include <QFile>
 #include <QFileInfo>
+#include <QSaveFile>
 #include <QTextCodec>
 #include <QTextStream>
 
@@ -45,13 +47,17 @@ ScriptBinaryFile::ScriptBinaryFile()
 }
 
 ScriptBinaryFile::ScriptBinaryFile(const QString &filePath, OpenMode mode)
-    : m_file(new QFile(filePath))
 {
     QIODevice::OpenMode m = QIODevice::NotOpen;
     if (mode & ReadOnly)
         m |= QIODevice::ReadOnly;
     if (mode & WriteOnly)
         m |= QIODevice::WriteOnly;
+
+    if (m == QIODevice::WriteOnly && SaveFile::safeSavingEnabled())
+        m_file.reset(new QSaveFile(filePath));
+    else
+        m_file.reset(new QFile(filePath));
 
     if (Q_UNLIKELY(!m_file->open(m))) {
         ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors",
@@ -67,7 +73,7 @@ QString ScriptBinaryFile::filePath() const
 {
     if (checkForClosed())
         return {};
-    return QFileInfo(*m_file).absoluteFilePath();
+    return QFileInfo(m_file->fileName()).absoluteFilePath();
 }
 
 bool ScriptBinaryFile::atEof() const
@@ -131,6 +137,7 @@ QByteArray ScriptBinaryFile::readAll()
 {
     if (checkForClosed())
         return {};
+
     const QByteArray data = m_file->readAll();
     if (Q_UNLIKELY(data.size() == 0 && m_file->error() != QFile::NoError)) {
         ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors",
@@ -154,10 +161,30 @@ void ScriptBinaryFile::write(const QByteArray &data)
     }
 }
 
+void ScriptBinaryFile::commit()
+{
+    if (checkForClosed())
+        return;
+
+    bool ok = true;
+
+    if (auto saveFile = qobject_cast<QSaveFile*>(m_file.get()))
+        ok = saveFile->commit();
+    else
+        ok = m_file->flush();
+
+    if (!ok) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors",
+                                                                         "Could not write to '%1': %2").arg(m_file->fileName(),
+                                                                                                            m_file->errorString()));
+    }
+}
+
 void ScriptBinaryFile::close()
 {
     if (checkForClosed())
         return;
+
     m_file->reset();
 }
 
@@ -180,8 +207,6 @@ ScriptTextFile::ScriptTextFile()
 }
 
 ScriptTextFile::ScriptTextFile(const QString &filePath, OpenMode mode)
-    : m_file(new QFile(filePath))
-    , m_stream(new QTextStream(m_file.get()))
 {
     QIODevice::OpenMode m = QIODevice::Text;
     if (mode & ReadOnly)
@@ -191,11 +216,18 @@ ScriptTextFile::ScriptTextFile(const QString &filePath, OpenMode mode)
     if (mode & Append)
         m |= QIODevice::Append;
 
+    if (m == (QIODevice::WriteOnly & QIODevice::Text) && SaveFile::safeSavingEnabled())
+        m_file.reset(new QSaveFile(filePath));
+    else
+        m_file.reset(new QFile(filePath));
+
     if (Q_UNLIKELY(!m_file->open(m))) {
         ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors",
                                                                          "Unable to open file '%1': %2").arg(filePath,
                                                                                                              m_file->errorString()));
         m_file.reset();
+    } else {
+        m_stream.reset(new QTextStream(m_file.get()));
     }
 }
 
@@ -205,7 +237,7 @@ QString ScriptTextFile::filePath() const
 {
     if (checkForClosed())
         return {};
-    return QFileInfo(*m_file).absoluteFilePath();
+    return QFileInfo(m_file->fileName()).absoluteFilePath();
 }
 
 QString ScriptTextFile::codec() const
@@ -264,6 +296,27 @@ void ScriptTextFile::writeLine(const QString &string)
         return;
     (*m_stream) << string;
     (*m_stream) << '\n';
+}
+
+void ScriptTextFile::commit()
+{
+    if (checkForClosed())
+        return;
+
+    m_stream->flush();
+
+    bool ok = true;
+
+    if (auto saveFile = qobject_cast<QSaveFile*>(m_file.get()))
+        ok = saveFile->commit();
+    else
+        ok = m_file->flush();
+
+    if (!ok) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors",
+                                                                         "Could not write to '%1': %2").arg(m_file->fileName(),
+                                                                                                            m_file->errorString()));
+    }
 }
 
 void ScriptTextFile::close()

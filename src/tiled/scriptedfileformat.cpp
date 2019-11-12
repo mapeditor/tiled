@@ -93,38 +93,42 @@ bool ScriptedFileFormat::write(EditableAsset *asset,
         return false;
     }
 
-    QByteArray bytes;
-    bool isString = resultValue.isString();
-
-    if (!isString && (bytes = qjsvalue_cast<QByteArray>(resultValue)).isNull()) {
-        error = QCoreApplication::translate("Script Errors", "Invalid return value for 'write' (string or ArrayBuffer expected)");
-        return false;
+    if (resultValue.isString()) {
+        error = resultValue.toString();
+        return error.isEmpty();
     }
 
-    SaveFile file(fileName);
-
-    QIODevice::OpenMode mode { QIODevice::WriteOnly };
-    if (isString)
-        mode |= QIODevice::Text;
-
-    if (!file.open(mode)) {
-        error = QCoreApplication::translate("File Errors", "Could not open file for writing.");
-        return false;
-    }
-
-    if (isString) {
-        QTextStream out(file.device());
-        out << resultValue.toString();
-    } else {
-        file.device()->write(bytes);
-    }
-
-    if (file.error() != QFileDevice::NoError || !file.commit()) {
-        error = file.errorString();
-        return false;
-    }
+    if (!resultValue.isUndefined())
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid return value for 'write' (string or undefined expected)"));
 
     return true;
+}
+
+QStringList ScriptedFileFormat::outputFiles(EditableAsset *asset, const QString &fileName) const
+{
+    QJSValue outputFiles = mObject.property(QStringLiteral("outputFiles"));
+    if (!outputFiles.isCallable())
+        return QStringList(fileName);
+
+    QJSValueList arguments;
+    arguments.append(ScriptManager::instance().engine()->newQObject(asset));
+    arguments.append(fileName);
+
+    QJSValue resultValue = outputFiles.call(arguments);
+
+    if (resultValue.isString())
+        return QStringList(resultValue.toString());
+
+    if (resultValue.isArray()) {
+        QStringList result;
+        QJSValueIterator iterator(resultValue);
+        while (iterator.next())
+            result.append(iterator.value().toString());
+        return result;
+    }
+
+    ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid return value for 'outputFiles' (string or array expected)"));
+    return QStringList(fileName);
 }
 
 bool ScriptedFileFormat::validateFileFormatObject(const QJSValue &value)
@@ -168,37 +172,11 @@ ScriptedMapFormat::~ScriptedMapFormat()
     PluginManager::removeObject(this);
 }
 
-#if 0
-// TODO: Currently makes no sense, because 'write' can only return the contents of a single file anyway
 QStringList ScriptedMapFormat::outputFiles(const Map *map, const QString &fileName) const
 {
-    QJSValue outputFiles = mObject.property(QStringLiteral("outputFiles"));
-    if (!outputFiles.isCallable())
-        return MapFormat::outputFiles(map, fileName);
-
     EditableMap editable(map);
-
-    QJSValueList arguments;
-    arguments.append(ScriptManager::instance().engine()->newQObject(&editable));
-    arguments.append(fileName);
-
-    QJSValue resultValue = outputFiles.call(arguments);
-
-    if (resultValue.isString())
-        return QStringList(resultValue.toString());
-
-    if (resultValue.isArray()) {
-        QStringList result;
-        QJSValueIterator iterator(resultValue);
-        while (iterator.next())
-            result.append(iterator.value().toString());
-        return result;
-    }
-
-    ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid return value for 'outputFiles' (string or array expected)"));
-    return QStringList(fileName);
+    return mFormat.outputFiles(&editable, fileName);
 }
-#endif
 
 std::unique_ptr<Map> ScriptedMapFormat::read(const QString &fileName)
 {

@@ -24,7 +24,7 @@
 
 #include <memory>
 
-class QFile;
+class QFileDevice;
 class QTextStream;
 
 namespace Tiled {
@@ -44,6 +44,7 @@ public:
         WriteOnly = 2,
         ReadWrite = ReadOnly | WriteOnly
     };
+    Q_ENUM(OpenMode)
 
     Q_INVOKABLE ScriptBinaryFile(); // workaround for Qt issue
     Q_INVOKABLE ScriptBinaryFile(const QString &filePath,
@@ -60,12 +61,13 @@ public:
     Q_INVOKABLE QByteArray read(qint64 size);
     Q_INVOKABLE QByteArray readAll();
     Q_INVOKABLE void write(const QByteArray &data);
+    Q_INVOKABLE void commit();
     Q_INVOKABLE void close();
 
 private:
     bool checkForClosed() const;
 
-    std::unique_ptr<QFile> m_file;
+    std::unique_ptr<QFileDevice> m_file;
 };
 
 class ScriptTextFile : public QObject
@@ -100,12 +102,13 @@ public:
     Q_INVOKABLE void truncate();
     Q_INVOKABLE void write(const QString &string);
     Q_INVOKABLE void writeLine(const QString &string);
+    Q_INVOKABLE void commit();
     Q_INVOKABLE void close();
 
 private:
     bool checkForClosed() const;
 
-    std::unique_ptr<QFile> m_file;
+    std::unique_ptr<QFileDevice> m_file;
     std::unique_ptr<QTextStream> m_stream;
 };
 
