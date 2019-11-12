@@ -536,6 +536,8 @@ Properties
 Functions
 ~~~~~~~~~
 
+.. _script-asset-macro:
+
 Asset.macro(text : string, callback : function) : value
     Creates a single undo command that wraps all changes applied to this asset
     by the given callback. Recommended to avoid spamming the undo stack with
