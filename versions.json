@@ -5,8 +5,8 @@
         "download": "https://thorbjorn.itch.io/tiled/purchase"
     },
     "snapshot":  {
-        "version": "2019.10.18",
-        "release_notes": "https://thorbjorn.itch.io/tiled/devlog/105206/tiled-13-beta-released",
+        "version": "2019.11.12",
+        "release_notes": "https://thorbjorn.itch.io/tiled/devlog/109568/custom-file-format-scripting-api-changes",
         "download": "https://thorbjorn.itch.io/tiled/purchase"
     }
 }
