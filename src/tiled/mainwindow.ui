@@ -661,7 +661,7 @@
     <string>Fit Map in View</string>
    </property>
    <property name="shortcut">
-    <string notr="true">Ctrl+Shift+J</string>
+    <string notr="true">Ctrl+/</string>
    </property>
   </action>
   <action name="actionForum">
