@@ -1,4 +1,4 @@
-### Tiled 1.3.0 (...)
+### Tiled 1.3.0 (12 November 2019)
 
 * Added support for extending Tiled with JavaScript
 * Added error and warning counts to the status bar
@@ -23,6 +23,7 @@
 * Added shortcuts for next/previous tileset (#1238)
 * Added saving of the last export target and format in the map/tileset file (#1610)
 * Added option to repeat the last export on save (#1610)
+* Added Fit Map in View action (by Mateo de Mayo, #2206)
 * Tile Collision Editor: Added objects list view
 * Changed the Type property from a text box to an editable combo box (#823)
 * Changed animation preview to follow zoom factor for tiles (by Ruslan Gainutdinov, #2050)
@@ -49,6 +50,7 @@
 * Removed option to include a DTD in the saved files
 * Removed the automappingconverter tool
 * snap: Updated from Ubuntu 16.04 to 18.04 (core18, Qt 5.9)
+* Updated Chinese, Portuguese (Portugal), Turkish and Ukrainian translations
 
 ### Tiled 1.2.5 (9 October 2019)
 
