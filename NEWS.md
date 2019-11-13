@@ -1,6 +1,6 @@
 ### Tiled 1.3.0 (12 November 2019)
 
-* Added support for extending Tiled with JavaScript
+* Added support for extending Tiled with JavaScript (#949)
 * Added error and warning counts to the status bar
 * Added Issues view where you can see warnings and errors and interact with them
 * Added configuration of keyboard shortcuts (#215)
