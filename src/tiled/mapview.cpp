@@ -122,8 +122,11 @@ void MapView::setScale(qreal scale)
 
 void MapView::fitMapInView()
 {
+    const QRectF rect = mapScene()->mapBoundingRect();
+    if (rect.isEmpty())
+        return;
+
     // Scale and center map to fit in view
-    QRectF rect = mapScene()->mapBoundingRect();
     centerOn(rect.center());
     setScale(std::min(width() / rect.width(), height() / rect.height()) * 0.95);
 }
