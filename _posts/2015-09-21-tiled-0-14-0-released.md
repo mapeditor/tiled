@@ -12,9 +12,9 @@ topic_id: 769
 
 This feature was [requested a long time ago][2] and came up many times since then. Now, each layer can be set at a custom offset, which primarily enables emulating height and stacking of tiles.
 
-<img src="http://discourse.mapeditor.org/uploads/mapeditor/original/1X/ec895e9061c89ccc120c63a7c7e3e412d23ed277.png" width="690" height="295">
+<img src="https://discourse.mapeditor.org/uploads/mapeditor/original/1X/ec895e9061c89ccc120c63a7c7e3e412d23ed277.png" width="690" height="295">
 
-<a class="attachment" href="http://discourse.mapeditor.org/uploads/mapeditor/original/1X/4a03b7a3566038a78838f0c8a6f3e7c72772d4fb.webm">Tiled-Layer-Offset.webm</a> provides a short video of editing with this feature.
+<a class="attachment" href="https://discourse.mapeditor.org/uploads/mapeditor/original/1X/4a03b7a3566038a78838f0c8a6f3e7c72772d4fb.webm">Tiled-Layer-Offset.webm</a> provides a short video of editing with this feature.
 
 The graphics I've used for these examples are [by Yar][3] (CC-BY 3.0).
 
@@ -26,7 +26,7 @@ While it was always possible for plugins to add custom map formats, the same was
 
 In [Tiled 0.12][4] the object name labels went missing since they interfered with the resizing improvements and did not work well with rotation either. They also did not display for polygons and tile objects. Now, the object names labels are back:
 
-<img src="http://discourse.mapeditor.org/uploads/mapeditor/original/1X/a6a31e8222b41a88df3b840c3ade5f1d9c65c56b.png" width="690" height="236">
+<img src="https://discourse.mapeditor.org/uploads/mapeditor/original/1X/a6a31e8222b41a88df3b840c3ade5f1d9c65c56b.png" width="690" height="236">
 
 You can choose to disable them, to have them only for the selected objects or to show them always. They won't be elided, scaled or rotated like the old labels, making sure they are always readable.
 

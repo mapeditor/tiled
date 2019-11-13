@@ -12,11 +12,11 @@ Before merging the major changes scheduled for Tiled 1.0, it was time to release
 
 Actions were added to create a new layer based on the current selection, either through copying or moving (_Layer > New > Layer via Cut/Copy_). In addition, the _Paste in Place_ action now works for tile layers, pasting a section of tiles at exactly the same spot as it was copied from.
 
-<img src="http://discourse.mapeditor.org/uploads/mapeditor/original/1X/85ec5a011d892ccdf0d833be9a42d1c552c4df12.png" width="690" height="191">
+<img src="https://discourse.mapeditor.org/uploads/mapeditor/original/1X/85ec5a011d892ccdf0d833be9a42d1c552c4df12.png" width="690" height="191">
 
 A new context menu for custom properties includes actions to change the type of the custom property to another, compatible type.
 
-<img src="http://discourse.mapeditor.org/uploads/mapeditor/original/1X/337ef259560eab69e722c5cec4566ff79c5c6787.png" width="620" height="160">
+<img src="https://discourse.mapeditor.org/uploads/mapeditor/original/1X/337ef259560eab69e722c5cec4566ff79c5c6787.png" width="620" height="160">
 
 A context menu action was added to reset the size of tile objects. Useful when you scaled them by accident, or when you want to adjust them after the size of the tile image changed.
 
@@ -28,7 +28,7 @@ While it was already possible to manually change the drawing order of objects fo
 
 The display order of the objects in the Objects view is now reversed, to match the ordering of the layers. This especially makes sense when using manual drawing order, because now the top-most (last drawn) object will be at the top of the list.
 
-<img src="http://discourse.mapeditor.org/uploads/mapeditor/original/1X/41908d9743082eb715f9e7361461bae811cf5c4a.png" width="690" height="265">
+<img src="https://discourse.mapeditor.org/uploads/mapeditor/original/1X/41908d9743082eb715f9e7361461bae811cf5c4a.png" width="690" height="265">
 
 The new [Sticker Knight example](https://github.com/bjorn/tiled/tree/master/examples/sticker-knight) demonstrates how Tiled can be used to build levels without using any tile layer.
 
@@ -40,7 +40,7 @@ It is now possible to export maps to [GameMaker: Studio 1.4](https://www.yoyogam
 
 The `tmxrasterizer` tool shipping with Tiled was improved a bit and is now set up as a thumbnailer for TMX files. When Tiled is installed through the system's package management, this enables thumbnails in supporting file managers like GNOME's Nautilus and PCManFM.
 
-<img src="http://discourse.mapeditor.org/uploads/mapeditor/original/1X/6dba9d0cd1ea1ebc5d175dc376e8a650000a9764.png" width="690" height="348">
+<img src="https://discourse.mapeditor.org/uploads/mapeditor/original/1X/6dba9d0cd1ea1ebc5d175dc376e8a650000a9764.png" width="690" height="348">
 
 (the maps shown here are from [The Mana World](https://www.themanaworld.org/))
 

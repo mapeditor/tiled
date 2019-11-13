@@ -14,7 +14,7 @@ Those who remember the [Tiled 0.14 release announcement](http://forum.mapeditor.
 
 The most important changes regarding this made sure that you can now load maps that refer to files that are for whatever reason no longer accessible. Previously, you'd then have to fall back to correcting the map file by hand. Now Tiled will tell you about the problems it found and allows you to fix them:
 
-<img src="http://discourse.mapeditor.org/uploads/mapeditor/original/1X/58f47c359c2f215c470bce39932e3012fe6dd8c6.png" width="690" height="406">
+<img src="https://discourse.mapeditor.org/uploads/mapeditor/original/1X/58f47c359c2f215c470bce39932e3012fe6dd8c6.png" width="690" height="406">
 
 In addition, you can change any of these references through the Properties view after clicking the relevant items. And when changing a tileset image, you can also change its parameters like tile size, margin and spacing.
 
@@ -22,7 +22,7 @@ In addition, you can change any of these references through the Properties view 
 
 Another important bit of functionality is that you can now choose which plugins are enabled. By default, only the generic plugins for exporting to Lua, JSON, CSV and for enabling Python import/export scripts are loaded. The project-specific plugins were often leading to confusion and now need to be explicitly enabled.
 
-<img src="http://discourse.mapeditor.org/uploads/mapeditor/original/1X/859120859f5d70326b405d168fa31e53630a68fd.png" width="427" height="437">
+<img src="https://discourse.mapeditor.org/uploads/mapeditor/original/1X/859120859f5d70326b405d168fa31e53630a68fd.png" width="427" height="437">
 
 Plugins can be enabled and disabled without restarting Tiled.
 
@@ -30,7 +30,7 @@ Plugins can be enabled and disabled without restarting Tiled.
 
 The status bar got a little more useful, since it now allows you to quickly switch the current layer. If you're not actively changing around your layer stack, this can entirely replace the Layers view:
 
-<img src="http://discourse.mapeditor.org/uploads/mapeditor/original/1X/7fd9602e6569e374f02d70bb2188fc0799feef75.png" width="690" height="80">
+<img src="https://discourse.mapeditor.org/uploads/mapeditor/original/1X/7fd9602e6569e374f02d70bb2188fc0799feef75.png" width="690" height="80">
 
 ### Other Noteworthy Things
 

@@ -14,11 +14,11 @@ The most visible change is surely the customized cross-platform theme, which can
 
 Here we have default gray and customized dark:
 
-<img src="http://discourse.mapeditor.org/uploads/mapeditor/original/1X/6a4f575e753fab490883d68181e286be41e9a5fa.png" width="690" height="449">
+<img src="https://discourse.mapeditor.org/uploads/mapeditor/original/1X/6a4f575e753fab490883d68181e286be41e9a5fa.png" width="690" height="449">
 
 But you can also choose a slight color to change the mood:
 
-<img src="http://discourse.mapeditor.org/uploads/mapeditor/original/1X/f026159bf845e935d36098e528a654b0f500151b.png" width="690" height="449">
+<img src="https://discourse.mapeditor.org/uploads/mapeditor/original/1X/f026159bf845e935d36098e528a654b0f500151b.png" width="690" height="449">
 
 This theme is now the default on Windows and Linux. While I think it already looks awesome, any suggestions for further improvements are very welcome!
 
@@ -28,7 +28,7 @@ Continueing the improvements to custom properties introduced in Tiled 0.16, ther
 
 In addition, string properties can now be multi-line. This makes it much easier to use them for including lists or short scripts.
 
-<img src="http://discourse.mapeditor.org/uploads/mapeditor/original/1X/9bb5f01d892ab8bde777066d124ee95ec6427343.png" width="690" height="214">
+<img src="https://discourse.mapeditor.org/uploads/mapeditor/original/1X/9bb5f01d892ab8bde777066d124ee95ec6427343.png" width="690" height="214">
 
 ## Editing Tools
 
@@ -38,11 +38,11 @@ You can now right-click drag with the Eraser to quickly erase large areas. Creat
 
 Often you need to quickly access the current file in another application, or access related files stored in the same folder. This is especially the case for poor people who need to work with Perforce. I've added "Copy File Path" and "Open Containing Folder" actions to the tab context menu, to make this easier:
 
-<img src="http://discourse.mapeditor.org/uploads/mapeditor/original/1X/ad8eaaa7dbcb3737e6e75a173811b0b8ec7f7b9e.png" width="330" height="82">
+<img src="https://discourse.mapeditor.org/uploads/mapeditor/original/1X/ad8eaaa7dbcb3737e6e75a173811b0b8ec7f7b9e.png" width="330" height="82">
 
 The New Tileset dialog now features a color picker for choosing the transparent color:
 
-<img src="http://discourse.mapeditor.org/uploads/mapeditor/original/1X/65408a190550c9d3721a0059bc839edbd6f34255.png" width="561" height="373">
+<img src="https://discourse.mapeditor.org/uploads/mapeditor/original/1X/65408a190550c9d3721a0059bc839edbd6f34255.png" width="561" height="373">
 
 Finally, it is now possible to drag the tileset view with the middle mouse button as well, a much requested feature.
 
