@@ -1,4 +1,4 @@
-### Tiled 1.3.0 (12 November 2019)
+### Tiled 1.3.0 (13 November 2019)
 
 * Added support for extending Tiled with JavaScript (#949)
 * Added error and warning counts to the status bar
