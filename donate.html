@@ -13,6 +13,22 @@ title: Donate
     <link href="css/base.css" rel="stylesheet" media="screen">
     <link rel="me" href="https://plus.google.com/113047271137781766813" />
     <link rel="publisher" href="https://plus.google.com/104206952440491912596/" />
+    <style type="text/css">
+      .donate-button {
+        border-width: 2px;
+        background-repeat: no-repeat;
+        padding: 140px 8px 8px 8px;
+        margin-bottom: 10px;
+        transition: 0.2s ease-out;
+        box-shadow: 0px 5px 8px rgba(0,0,0,0);
+      }
+
+      .donate-button:hover {
+        box-shadow: 0px 5px 8px rgba(0,0,0,0.25);
+        margin-top: -5px;
+        margin-bottom: 15px;
+      }
+    </style>
 {% seo %}
   </head>
   <body>
@@ -21,7 +37,7 @@ title: Donate
         <li><a href="/"><i class="icon-home"></i> Home</a></li>
         <li><a href="https://discourse.mapeditor.org/"><i class="icon-group"></i> Forum</a></li>
         <li><a href="https://doc.mapeditor.org/"><i class="icon-book"></i> Documentation</a></li>
-        <li class="active"><a href="donate.html"><i class="icon icon-heart"></i> Donate</a></li>
+        <li class="active"><a href="/donate"><i class="icon icon-heart"></i> Donate</a></li>
       </ul>
       <ul class="nav navbar-nav pull-right">
         <li><a href="https://github.com/bjorn/tiled"><i class="icon-github-alt"></i> Tiled on GitHub</a></li>
@@ -155,13 +171,7 @@ title: Donate
       <div class="my-navigation">
         <!--<a class="btn btn-default btn-sm" href="http://blog.mapeditor.org/"><i class="icon-rss"></i> Blog</a>-->
         <a class="btn btn-default btn-sm" href="https://github.com/bjorn/tiled/issues"><i class="icon-exclamation-sign"></i> Issue Tracker</a>
-        <div class="btn-group" style="text-align: left;">
-          <a class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-comments"></i> IRC Channel <span class="caret"></span></a>
-          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="top: 1.9em">
-            <li><a tabindex="-1" href="irc://irc.freenode.net/tiled">Join with IRC client</a></li>
-            <li><a tabindex="-1" href="https://kiwiirc.com/client/irc.freenode.net/tiled" target="_blank">Join with browser</a></li>
-          </ul>
-        </div>
+        <a class="btn btn-default btn-sm" href="https://discord.gg/39wbTv7"><i class="icon-comments"></i> Tiled on Discord</a>
       </div>
     </div>
 
@@ -172,36 +182,46 @@ title: Donate
 
         <h3>Donate</h3>
 
-        <div class="row">
-          <div class="col-md-6">
-            <a href="https://www.patreon.com/bjorn"><div class="well well-sm" style="text-align: center; border-color: #ff945a; border-width: 2px; padding: 7px 7px 7px 7px;">
-              <img src="img/kaGh5_patreon_name_and_message.png" style="width: 200px" alt="Become my patron on Patreon"/>
-              <p>Support Tiled with a monthly donation</p>
+        <p>Please consider setting up a small recurring donation on one of the following platforms.</p>
+
+        <div class="row" style="margin-top: 20px; margin-bottom: 20px;">
+          <div class="col-md-4" style="text-align: center;">
+            <a href="https://github.com/sponsors/bjorn"><div class="well well-sm donate-button" style="border-color: #eb49ac; background-image: url(img/logo-mona.svg); background-position: 50% 35%; background-size: 120px;">
+              <p>Support Tiled on GitHub</p>
+            </div></a>
+            <p style="margin-left: 40px; margin-right: 40px;"><i>Donation will be doubled by GitHub's <a href="https://help.github.com/en/github/supporting-the-open-source-community-with-github-sponsors/about-github-sponsors#about-the-github-sponsors-matching-fund">100% Matching Fund</a>!</i></p>
+          </div>
+          <div class="col-md-4">
+            <a href="https://www.patreon.com/join/bjorn?"><div class="well well-sm donate-button" style="text-align: center; border-color: #fa6853; background-image: url(img/Patreon_Mark_Primary.png); background-position: 50% 35%; background-size: 100px;">
+              <p>Support Tiled on Patreon</p>
             </div></a>
           </div>
-          <div class="col-md-6">
-            <a href="https://bountysource.com/teams/tiled"><div class="well well-sm" style="text-align: center; border-color: #16c374; border-width: 2px;  padding: 18px;">
-              <img src="img/bountysource.png" style="width: 200px; padding-bottom: 6px;" alt="Support me at Bountysource"/>
-              <p>Place bounties on specific features</p>
+          <div class="col-md-4" style="text-align: center;">
+            <a href="https://liberapay.com/Tiled"><div class="well well-sm donate-button" style="border-color: #f6cb0a; background-image: url(img/icon-v2_white-on-yellow.svg); background-position: 50% 35%; background-size: 100px;">
+              <p>Support Tiled on Liberapay</p>
             </div></a>
+            <p style="margin-left: 40px; margin-right: 40px;"><i>Donation is anonymous.</i></p>
           </div>
         </div>
 
         <p>Donations allow me to spend more time on Tiled development, giving you a better tool to work with!</p>
+        <p>As a patron or sponsor, you'll also receive a special role on the <a href="https://discord.gg/39wbTv7">Tiled Discord server</a>!</p>
 
-        <h3>Become a Sponsor</h3>
+        <h3>Sponsor for a Banner or Specific Features</h3>
 
-        <p>As a company or brand, consider becoming a Tiled sponsor! Apart from contributing to Tiled development, it can also gain you publicity on Tiled's front page by linking an image of your choice to your website or product. There are currently three sponsor levels:</p>
+        <p>Companies as well as individuals who'd like extra exposure or who want to push for specific features to get added can sponsor Tiled at the following tiers:</p>
+
         <ul>
-          <li><a href="https://www.patreon.com/bePatron?rid=93578&amp;patAmt=100.0&amp;u=90066&amp;exp=1">$100 / month</a> - Link on Tiled's front page</li>
-          <li><a href="https://www.patreon.com/bePatron?rid=93577&amp;patAmt=200.0&amp;u=90066&amp;exp=1">$200 / month</a> - 8 hours/month dedicated development time</li>
-          <li><a href="https://www.patreon.com/bePatron?rid=93577&amp;patAmt=300.0&amp;u=90066&amp;exp=1">$300 / month</a> - Link on Tiled's front page and 8 hours/month dedicated development time</li>
+          <li><b>$100 / month</b> - <i>Banner Sponsor</i> - Get a banner link on Tiled's front page!</li>
+          <li><b>$200 / month</b> - <i>Feature Sponsor</i> - Get 8 hours/month of dedicated development time!</li>
         </ul>
+
+        <p>The above tiers can be combined if desired. Please choose your tier on either <a href="https://github.com/sponsors/bjorn">GitHub Sponsors</a> (recommended for non-EU sponsors) or <a href="https://www.patreon.com/join/bjorn?">Patreon</a> (EU sponsors)</p>
 
         <p>There is also the option of contracting me to add to Tiled whatever features you need!</p>
 
         <div style="text-align: center;">
-        <a href="https://www.openhub.net/p/tiled-qt/commits/summary"><img alt="Commits" height="32" src="https://www.openhub.net/p/tiled-qt/analyses/latest/commits_spark.png" width="179" /></a><br /><small><a href='https://www.openhub.net/p/tiled-qt' style='text-decoration:none; color:#999;' target='_top'>stats by <img src='https://www.openhub.net/assets/widget_logos/openhublogo-aa7cfb70312072afbc2c92375788dfe929a32d0117ec3295bf6a936529052e5f.png' style='border:none; width:68px; height:13px; vertical-align: baseline;' /></a></small>
+        <a href="https://www.openhub.net/p/tiled-qt/commits/summary"><img alt="Commits" height="32" src="https://www.openhub.net/p/tiled-qt/analyses/latest/commits_spark.png" width="179" /></a><br /><small><a href='https://www.openhub.net/p/tiled-qt' style='text-decoration:none; color:#999;' target='_top'>stats by <img src='https://www.openhub.net/assets/widget_logos/openhublogo-aa7cfb70312072afbc2c92375788dfe929a32d0117ec3295bf6a936529052e5f.png' style='border:none; width:68px; height:13px;' /></a></small>
         </div>
       </div>
 
