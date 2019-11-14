@@ -7,7 +7,7 @@ description: |
   various projections (orthogonal, isometric, hexagonal) and also supports
   building levels with freely positioned, rotated or scaled images or
   annotating them with objects of various shapes.
-license: GPL-2.0-or-later
+license: GPL-2.0
 base: core18
 
 grade: stable
