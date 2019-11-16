@@ -8,33 +8,41 @@ msgstr ""
 "Project-Id-Version: Tiled 1.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-12-21 14:31+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2019-11-18 08:05+0000\n"
+"Last-Translator: Tuomas Lähteenmäki <lahtis@gmail.com>\n"
+"Language-Team: Finnish <https://hosted.weblate.org/projects/tiled/reference/"
+"fi/>\n"
 "Language: fi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.10-dev\n"
 
 #: ../../reference/json-map-format.rst:2
 msgid "JSON Map Format"
-msgstr ""
+msgstr "JSON-karttatiedostomuoto"
 
 #: ../../reference/json-map-format.rst:4
 msgid "Tiled can export maps as JSON files. To do so, simply select \"File > Export As\" and select the JSON file type. You can export json from the command line with the ``--export-map`` option."
 msgstr ""
+"Tiled voi viedä karttoja JSON-tiedostoina. Voit tehdä niin valitsemalla \""
+"Tiedosto > Vie nimellä\" ja valitsemalla JSON-tiedostotyypin. Voit viedä "
+"json komentoriviltä ``--export-map`` vaihtoehdolla."
 
 #: ../../reference/json-map-format.rst:8
 msgid "The fields found in the JSON format differ slightly from those in the :doc:`tmx-map-format`, but the meanings should remain the same."
 msgstr ""
+"JSON-muodossa löydetyt kentät eroavat hiukan seuraavista :doc:`tmx-map-"
+"format`, mutta merkitys pysyy samana."
 
 #: ../../reference/json-map-format.rst:11
 msgid "The following fields can be found in a Tiled JSON file:"
-msgstr ""
+msgstr "Seuraavat kentät löytyvät Tiled JSON-tiedostosta:"
 
 #: ../../reference/json-map-format.rst:14
 msgid "Map"
-msgstr ""
+msgstr "Map"
 
 #: ../../reference/json-map-format.rst:17
 #: ../../reference/json-map-format.rst:82
@@ -43,7 +51,7 @@ msgstr ""
 #: ../../reference/json-map-format.rst:453
 #: ../../reference/json-map-format.rst:493
 msgid "Field"
-msgstr ""
+msgstr "Kenttä"
 
 #: ../../reference/json-map-format.rst:17
 #: ../../reference/json-map-format.rst:82
@@ -52,7 +60,7 @@ msgstr ""
 #: ../../reference/json-map-format.rst:453
 #: ../../reference/json-map-format.rst:493
 msgid "Type"
-msgstr ""
+msgstr "Tyyppi"
 
 #: ../../reference/json-map-format.rst:17
 #: ../../reference/json-map-format.rst:82
@@ -61,11 +69,11 @@ msgstr ""
 #: ../../reference/json-map-format.rst:453
 #: ../../reference/json-map-format.rst:493
 msgid "Description"
-msgstr ""
+msgstr "Kuvaus"
 
 #: ../../reference/json-map-format.rst:19
 msgid "backgroundcolor"
-msgstr ""
+msgstr "backgroundcolor"
 
 #: ../../reference/json-map-format.rst:19
 #: ../../reference/json-map-format.rst:29
@@ -82,17 +90,17 @@ msgstr ""
 #: ../../reference/json-map-format.rst:417
 #: ../../reference/json-map-format.rst:495
 msgid "string"
-msgstr ""
+msgstr "string"
 
 #: ../../reference/json-map-format.rst:19
 msgid "Hex-formatted color (#RRGGBB or #AARRGGBB) (optional)"
-msgstr ""
+msgstr "Hex-muotoiltu väri (#RRGGBB or #AARRGGBB) (valinnainen)"
 
 #: ../../reference/json-map-format.rst:21
 #: ../../reference/json-map-format.rst:88
 #: ../../reference/json-map-format.rst:166
 msgid "height"
-msgstr ""
+msgstr "height"
 
 #: ../../reference/json-map-format.rst:21
 #: ../../reference/json-map-format.rst:27
@@ -121,15 +129,15 @@ msgstr ""
 #: ../../reference/json-map-format.rst:415
 #: ../../reference/json-map-format.rst:497
 msgid "int"
-msgstr ""
+msgstr "Int"
 
 #: ../../reference/json-map-format.rst:21
 msgid "Number of tile rows"
-msgstr ""
+msgstr "Laatta rivien määrä"
 
 #: ../../reference/json-map-format.rst:23
 msgid "infinite"
-msgstr ""
+msgstr "infinite"
 
 #: ../../reference/json-map-format.rst:23
 #: ../../reference/json-map-format.rst:102
@@ -137,16 +145,16 @@ msgstr ""
 #: ../../reference/json-map-format.rst:172
 #: ../../reference/json-map-format.rst:186
 msgid "bool"
-msgstr ""
+msgstr "bool"
 
 #: ../../reference/json-map-format.rst:23
 msgid "Whether the map has infinite dimensions"
-msgstr ""
+msgstr "Onko kartalla ääretön ulottuvuus"
 
 #: ../../reference/json-map-format.rst:25
 #: ../../reference/json-map-format.rst:90
 msgid "layers"
-msgstr ""
+msgstr "layers"
 
 #: ../../reference/json-map-format.rst:25
 #: ../../reference/json-map-format.rst:40
@@ -156,34 +164,36 @@ msgstr ""
 #: ../../reference/json-map-format.rst:402
 #: ../../reference/json-map-format.rst:455
 msgid "array"
-msgstr ""
+msgstr "array"
 
 #: ../../reference/json-map-format.rst:25
 msgid "Array of :ref:`layers <json-layer>`"
-msgstr ""
+msgstr "Taulokon:ref:`kerrokset<json-layer>`"
 
 #: ../../reference/json-map-format.rst:27
 msgid "nextobjectid"
-msgstr ""
+msgstr "nextobjectid"
 
 #: ../../reference/json-map-format.rst:27
 msgid "Auto-increments for each placed object"
-msgstr ""
+msgstr "Automaattiset lisäykset kullekin asetettu objektille"
 
 #: ../../reference/json-map-format.rst:29
 msgid "orientation"
-msgstr ""
+msgstr "orientation"
 
 #: ../../reference/json-map-format.rst:29
 msgid "``orthogonal``, ``isometric``, ``staggered`` or ``hexagonal``"
 msgstr ""
+"' ' ortogonaalinen' ', ' ' isometrinen ' ', ' ' porrastettu ' ' tai ' ' "
+"kuusikulmainen ' '"
 
 #: ../../reference/json-map-format.rst:32
 #: ../../reference/json-map-format.rst:98
 #: ../../reference/json-map-format.rst:178
 #: ../../reference/json-map-format.rst:396
 msgid "properties"
-msgstr ""
+msgstr "properties"
 
 #: ../../reference/json-map-format.rst:32
 #: ../../reference/json-map-format.rst:94
@@ -197,7 +207,7 @@ msgstr ""
 #: ../../reference/json-map-format.rst:410
 #: ../../reference/json-map-format.rst:412
 msgid "object"
-msgstr ""
+msgstr "object"
 
 #: ../../reference/json-map-format.rst:32
 #: ../../reference/json-map-format.rst:178
@@ -205,438 +215,440 @@ msgstr ""
 #: ../../reference/json-map-format.rst:396
 #: ../../reference/json-map-format.rst:398
 msgid "String key-value pairs"
-msgstr ""
+msgstr "Merkkijono avain-arvoparit"
 
 #: ../../reference/json-map-format.rst:34
 msgid "renderorder"
-msgstr ""
+msgstr "renderorder"
 
 #: ../../reference/json-map-format.rst:34
 msgid "Rendering direction (orthogonal maps only)"
-msgstr ""
+msgstr "Renderöinnin suunta (vain ortogonaaliset kartat)"
 
 #: ../../reference/json-map-format.rst:36
 msgid "tiledversion"
-msgstr ""
+msgstr "tiledversion"
 
 #: ../../reference/json-map-format.rst:36
 msgid "The Tiled version used to save the file"
-msgstr ""
+msgstr "Tiled versio, jota käytetään tiedoston tallentamiseen"
 
 #: ../../reference/json-map-format.rst:38
 #: ../../reference/json-map-format.rst:406
 msgid "tileheight"
-msgstr ""
+msgstr "tileheight"
 
 #: ../../reference/json-map-format.rst:38
 msgid "Map grid height"
-msgstr ""
+msgstr "Karttaruudukon korkeus"
 
 #: ../../reference/json-map-format.rst:40
 msgid "tilesets"
-msgstr ""
+msgstr "tilesets"
 
 #: ../../reference/json-map-format.rst:40
 msgid "Array of :ref:`tilesets <json-tileset>`"
-msgstr ""
+msgstr "Array of :ref:`tilesets <json-tileset>`"
 
 #: ../../reference/json-map-format.rst:42
 #: ../../reference/json-map-format.rst:415
 msgid "tilewidth"
-msgstr ""
+msgstr "tilewidth"
 
 #: ../../reference/json-map-format.rst:42
 msgid "Map grid width"
-msgstr ""
+msgstr "Karttaruudukon leveys"
 
 #: ../../reference/json-map-format.rst:44
 #: ../../reference/json-map-format.rst:100
 #: ../../reference/json-map-format.rst:184
 #: ../../reference/json-map-format.rst:417
 msgid "type"
-msgstr ""
+msgstr "type"
 
 #: ../../reference/json-map-format.rst:44
 msgid "``map`` (since 1.0)"
-msgstr ""
+msgstr "``kartta`` (versiosta 1.0)"
 
 #: ../../reference/json-map-format.rst:46
 msgid "version"
-msgstr ""
+msgstr "version"
 
 #: ../../reference/json-map-format.rst:46
 msgid "number"
-msgstr ""
+msgstr "number"
 
 #: ../../reference/json-map-format.rst:46
 msgid "The JSON format version"
-msgstr ""
+msgstr "JSON-muotoinen versio"
 
 #: ../../reference/json-map-format.rst:48
 #: ../../reference/json-map-format.rst:104
 #: ../../reference/json-map-format.rst:188
 msgid "width"
-msgstr ""
+msgstr "width"
 
 #: ../../reference/json-map-format.rst:48
 msgid "Number of tile columns"
-msgstr ""
+msgstr "Laattasarakkeiden lukumäärä"
 
 #: ../../reference/json-map-format.rst:52
 msgid "Map Example"
-msgstr ""
+msgstr "Karttaesimerkki"
 
 #: ../../reference/json-map-format.rst:79
 msgid "Layer"
-msgstr ""
+msgstr "Layer"
 
 #: ../../reference/json-map-format.rst:84
 msgid "data"
-msgstr ""
+msgstr "data"
 
 #: ../../reference/json-map-format.rst:84
 msgid "Array of GIDs. ``tilelayer`` only."
-msgstr ""
+msgstr "GID-taulukko. ``tilelayer`` vain."
 
 #: ../../reference/json-map-format.rst:86
 msgid "draworder"
-msgstr ""
+msgstr "draworder"
 
 #: ../../reference/json-map-format.rst:86
 msgid "``topdown`` (default) or ``index``. ``objectgroup`` only."
-msgstr ""
+msgstr "``topdown`` (oletus) tai ``index``. ``objectgroup`` vain."
 
 #: ../../reference/json-map-format.rst:88
 msgid "Row count. Same as map height for fixed-size maps."
-msgstr ""
+msgstr "Rivimäär. Sama kuin kartan korkeus kiinteille kartoille."
 
 #: ../../reference/json-map-format.rst:90
 msgid "Array of :ref:`layers <json-layer>`. ``group`` on"
-msgstr ""
+msgstr "Taulukko:ref:`layers <json-layer>`. ``group`` on"
 
 #: ../../reference/json-map-format.rst:92
 #: ../../reference/json-map-format.rst:170
 #: ../../reference/json-map-format.rst:394
 #: ../../reference/json-map-format.rst:495
 msgid "name"
-msgstr ""
+msgstr "name"
 
 #: ../../reference/json-map-format.rst:92
 msgid "Name assigned to this layer"
-msgstr ""
+msgstr "Tälle kerrokselle annettu nimi"
 
 #: ../../reference/json-map-format.rst:94
 msgid "objects"
-msgstr ""
+msgstr "objects"
 
 #: ../../reference/json-map-format.rst:94
 msgid "Array of :ref:`objects <json-object>`. ``objectgroup`` only."
-msgstr ""
+msgstr "Joukon :ref:`objects <json-object>`. ``objectgroup`` ainoastaan."
 
 #: ../../reference/json-map-format.rst:96
 msgid "opacity"
-msgstr ""
+msgstr "opacity"
 
 #: ../../reference/json-map-format.rst:96
 #: ../../reference/json-map-format.rst:180
 msgid "float"
-msgstr ""
+msgstr "float"
 
 #: ../../reference/json-map-format.rst:96
 msgid "Value between 0 and 1"
-msgstr ""
+msgstr "Arvo väliltä 0 ja 1"
 
 #: ../../reference/json-map-format.rst:98
 msgid "string key-value pairs."
-msgstr ""
+msgstr "merkkijonon avain-arvo-parit."
 
 #: ../../reference/json-map-format.rst:100
 msgid "``tilelayer``, ``objectgroup``, ``imagelayer`` or ``group``"
-msgstr ""
+msgstr "``laattakerros``, ``objektiryhmä``, ``kuvakerros`` tai ``ryhmä``"
 
 #: ../../reference/json-map-format.rst:102
 #: ../../reference/json-map-format.rst:186
 msgid "visible"
-msgstr ""
+msgstr "visible"
 
 #: ../../reference/json-map-format.rst:102
 msgid "Whether layer is shown or hidden in editor"
-msgstr ""
+msgstr "Onko taso näkyvissä vai piilotettu muokkaimessa"
 
 #: ../../reference/json-map-format.rst:104
 msgid "Column count. Same as map width for fixed-size maps."
-msgstr ""
+msgstr "Sarakkeiden määrä. Sama kuin kiinteäkokoisten karttojen kartan leveys."
 
 #: ../../reference/json-map-format.rst:106
 #: ../../reference/json-map-format.rst:190
 msgid "x"
-msgstr ""
+msgstr "x"
 
 #: ../../reference/json-map-format.rst:106
 msgid "Horizontal layer offset in tiles. Always 0."
-msgstr ""
+msgstr "Vaakatason siirtymä laatoissa. Aina 0."
 
 #: ../../reference/json-map-format.rst:108
 #: ../../reference/json-map-format.rst:192
 msgid "y"
-msgstr ""
+msgstr "y"
 
 #: ../../reference/json-map-format.rst:108
 msgid "Vertical layer offset in tiles. Always 0."
-msgstr ""
+msgstr "Pystytason siirtymä laatoissa. Aina 0."
 
 #: ../../reference/json-map-format.rst:112
 msgid "Tile Layer Example"
-msgstr ""
+msgstr "Esimerkki laattatasosta"
 
 #: ../../reference/json-map-format.rst:133
 msgid "Object Layer Example"
-msgstr ""
+msgstr "Objekti taso esimerkki"
 
 #: ../../reference/json-map-format.rst:157
 msgid "Object"
-msgstr ""
+msgstr "Object"
 
 #: ../../reference/json-map-format.rst:162
 msgid "ellipse"
-msgstr ""
+msgstr "ellipse"
 
 #: ../../reference/json-map-format.rst:162
 msgid "Used to mark an object as an ellipse"
-msgstr ""
+msgstr "Käytetään merkitsemään objektin ellipsi"
 
 #: ../../reference/json-map-format.rst:164
 msgid "gid"
-msgstr ""
+msgstr "gid"
 
 #: ../../reference/json-map-format.rst:164
 msgid "GID, only if object comes from a Tilemap"
-msgstr ""
+msgstr "GID, vain jos objekti tulee laattakartalta"
 
 #: ../../reference/json-map-format.rst:166
 msgid "Height in pixels. Ignored if using a gid."
-msgstr ""
+msgstr "Korkeus kuvapisteinä. Jätetään huomiotta, jos käyttää gid."
 
 #: ../../reference/json-map-format.rst:168
 msgid "id"
-msgstr ""
+msgstr "id"
 
 #: ../../reference/json-map-format.rst:168
 msgid "Incremental id - unique across all objects"
-msgstr ""
+msgstr "Inkrementaalinen id-tunnus - ainutlaatuinen kaikissa kohteissa"
 
 #: ../../reference/json-map-format.rst:170
 msgid "String assigned to name field in editor"
-msgstr ""
+msgstr "Merkkijono, joka on nimetty nimikenttään muokkaimessa"
 
 #: ../../reference/json-map-format.rst:172
 msgid "point"
-msgstr ""
+msgstr "point"
 
 #: ../../reference/json-map-format.rst:172
 msgid "Used to mark an object as a point"
-msgstr ""
+msgstr "Jota käytetään kohteen merkitsemiseen pisteeksi"
 
 #: ../../reference/json-map-format.rst:174
 msgid "polygon"
-msgstr ""
+msgstr "polygon"
 
 #: ../../reference/json-map-format.rst:174
 #: ../../reference/json-map-format.rst:176
 msgid "A list of x,y coordinates in pixels"
-msgstr ""
+msgstr "Luettelo x,y-koordinaateista pikseleinä"
 
 #: ../../reference/json-map-format.rst:176
 msgid "polyline"
-msgstr ""
+msgstr "polyline"
 
 #: ../../reference/json-map-format.rst:180
 msgid "rotation"
-msgstr ""
+msgstr "rotation"
 
 #: ../../reference/json-map-format.rst:180
 msgid "Angle in degrees clockwise"
-msgstr ""
+msgstr "Kulma asteina myötäpäivään"
 
 #: ../../reference/json-map-format.rst:182
 msgid "text"
-msgstr ""
+msgstr "text"
 
 #: ../../reference/json-map-format.rst:184
 msgid "String assigned to type field in editor"
-msgstr ""
+msgstr "Merkkijono määritetty tyyppikenttään muokkaimessa"
 
 #: ../../reference/json-map-format.rst:186
 msgid "Whether object is shown in editor."
-msgstr ""
+msgstr "Näytetäänkö objekti muokkaimessa."
 
 #: ../../reference/json-map-format.rst:188
 msgid "Width in pixels. Ignored if using a gid."
-msgstr ""
+msgstr "Leveys pikseleinä. Jätetään huomiotta, jos käyttää gid."
 
 #: ../../reference/json-map-format.rst:190
 msgid "x coordinate in pixels"
-msgstr ""
+msgstr "x-koordinaatti pikseleinä"
 
 #: ../../reference/json-map-format.rst:192
 msgid "y coordinate in pixels"
-msgstr ""
+msgstr "y-koordinaatti pikseleinä"
 
 #: ../../reference/json-map-format.rst:196
 msgid "Object Example"
-msgstr ""
+msgstr "Objekti esimerkki"
 
 #: ../../reference/json-map-format.rst:218
 msgid "Ellipse Example"
-msgstr ""
+msgstr "Ellipsi esimerkki"
 
 #: ../../reference/json-map-format.rst:236
 msgid "Rectangle Example"
-msgstr ""
+msgstr "Suorakulmion esimerkki"
 
 #: ../../reference/json-map-format.rst:253
 msgid "Point Example"
-msgstr ""
+msgstr "Pisteen esimerkki"
 
 #: ../../reference/json-map-format.rst:271
 msgid "Polygon Example"
-msgstr ""
+msgstr "Polygonin esimerkki"
 
 #: ../../reference/json-map-format.rst:309
 msgid "Polyline Example"
-msgstr ""
+msgstr "Polyline Esimerkki"
 
 #: ../../reference/json-map-format.rst:351
 msgid "Text Example"
-msgstr ""
+msgstr "Teksti esimerkki"
 
 #: ../../reference/json-map-format.rst:375
 msgid "Tileset"
-msgstr ""
+msgstr "Tileset"
 
 #: ../../reference/json-map-format.rst:380
 msgid "columns"
-msgstr ""
+msgstr "columns"
 
 #: ../../reference/json-map-format.rst:380
 msgid "The number of tile columns in the tileset"
-msgstr ""
+msgstr "Laattojen määrä laatasto sarakkeessa"
 
 #: ../../reference/json-map-format.rst:382
 msgid "firstgid"
-msgstr ""
+msgstr "firstgid"
 
 #: ../../reference/json-map-format.rst:382
 msgid "GID corresponding to the first tile in the set"
-msgstr ""
+msgstr "GID joka vastaa sarjassa olevaa ensimmäistä laattaa"
 
 #: ../../reference/json-map-format.rst:384
 msgid "grid"
-msgstr ""
+msgstr "grid"
 
 #: ../../reference/json-map-format.rst:384
 msgid "See :ref:`tmx-grid` (optional)"
-msgstr ""
+msgstr "Katso :ref:`tmx-grid` (valinnainen)"
 
 #: ../../reference/json-map-format.rst:386
 msgid "image"
-msgstr ""
+msgstr "image"
 
 #: ../../reference/json-map-format.rst:386
 msgid "Image used for tiles in this set"
-msgstr ""
+msgstr "Kuva, jota käytetään tämän joukon laatoille"
 
 #: ../../reference/json-map-format.rst:388
 msgid "imagewidth"
-msgstr ""
+msgstr "imagewidth"
 
 #: ../../reference/json-map-format.rst:388
 msgid "Width of source image in pixels"
-msgstr ""
+msgstr "Lähdekuvan leveys pikseleinä"
 
 #: ../../reference/json-map-format.rst:390
 msgid "imageheight"
-msgstr ""
+msgstr "imageheight"
 
 #: ../../reference/json-map-format.rst:390
 msgid "Height of source image in pixels"
-msgstr ""
+msgstr "Lähdekuvan korkeus pikseleinä"
 
 #: ../../reference/json-map-format.rst:392
 msgid "margin"
-msgstr ""
+msgstr "margin"
 
 #: ../../reference/json-map-format.rst:392
 msgid "Buffer between image edge and first tile (pixels)"
-msgstr ""
+msgstr "Puskuri kuvan reunan ja ensimmäisen laatan välillä (pikseliä)"
 
 #: ../../reference/json-map-format.rst:394
 msgid "Name given to this tileset"
-msgstr ""
+msgstr "Tälle laatastolle annettu nimi"
 
 #: ../../reference/json-map-format.rst:398
 msgid "propertytypes"
-msgstr ""
+msgstr "propertytypes"
 
 #: ../../reference/json-map-format.rst:400
 msgid "spacing"
-msgstr ""
+msgstr "spacing"
 
 #: ../../reference/json-map-format.rst:400
 msgid "Spacing between adjacent tiles in image (pixels)"
-msgstr ""
+msgstr "Kuvan vierekkäisten laattojen välinen etäisyys (pikseliä)"
 
 #: ../../reference/json-map-format.rst:402
 msgid "terrains"
-msgstr ""
+msgstr "terrains"
 
 #: ../../reference/json-map-format.rst:402
 msgid "Array of :ref:`terrains <json-terrain>` (optional)"
-msgstr ""
+msgstr "Taulukko:ref:`terrains <json-terrain>` (valinnainen)"
 
 #: ../../reference/json-map-format.rst:404
 msgid "tilecount"
-msgstr ""
+msgstr "tilecount"
 
 #: ../../reference/json-map-format.rst:404
 msgid "The number of tiles in this tileset"
-msgstr ""
+msgstr "Tämän laattaosan laattojen lukumäärä"
 
 #: ../../reference/json-map-format.rst:406
 msgid "Maximum height of tiles in this set"
-msgstr ""
+msgstr "Laattojen enimmäiskorkeus tässä sarjassa"
 
 #: ../../reference/json-map-format.rst:408
 msgid "tileoffset"
-msgstr ""
+msgstr "tileoffset"
 
 #: ../../reference/json-map-format.rst:408
 msgid "See :ref:`tmx-tileoffset` (optional)"
-msgstr ""
+msgstr "Katso :ref:`tmx-tileoffset`(valinnainen)"
 
 #: ../../reference/json-map-format.rst:410
 msgid "tileproperties"
-msgstr ""
+msgstr "tileproperties"
 
 #: ../../reference/json-map-format.rst:410
 msgid "Per-tile properties, indexed by gid as string"
-msgstr ""
+msgstr "Per-laatta ominaisuudet, jotka on indeksoitu gidin mukaan merkkijonoksi"
 
 #: ../../reference/json-map-format.rst:412
 msgid "tiles"
-msgstr ""
+msgstr "tiles"
 
 #: ../../reference/json-map-format.rst:412
 msgid "Mapping from tile ID to :ref:`tile <json-tile>` (optional)"
 msgstr ""
+"Kartoitus laatan tunnisteesta osoitteeseen :ref:`tile <json-tile>` "
+"(valinnainen)"
 
 #: ../../reference/json-map-format.rst:415
 msgid "Maximum width of tiles in this set"
-msgstr ""
+msgstr "Tämän sarjan laattojen enimmäisleveys"
 
 #: ../../reference/json-map-format.rst:417
 msgid "``tileset`` (for tileset files, since 1.0)"
-msgstr ""
+msgstr "``tileset`` (tileset-tiedostoille, versiosta 1.0)"
 
 #: ../../reference/json-map-format.rst:421
 msgid "Tileset Example"
@@ -648,7 +660,7 @@ msgstr ""
 
 #: ../../reference/json-map-format.rst:455
 msgid "terrain"
-msgstr ""
+msgstr "terrain"
 
 #: ../../reference/json-map-format.rst:455
 msgid "index of terrain for each corner of tile"
@@ -665,19 +677,19 @@ msgstr ""
 #: ../../reference/json-map-format.rst:467
 #: ../../reference/json-map-format.rst:500
 msgid "Example:"
-msgstr ""
+msgstr "Esimerkki:"
 
 #: ../../reference/json-map-format.rst:490
 msgid "Terrain"
-msgstr ""
+msgstr "Terrain"
 
 #: ../../reference/json-map-format.rst:495
 msgid "Name of terrain"
-msgstr ""
+msgstr "Maaston nimi"
 
 #: ../../reference/json-map-format.rst:497
 msgid "tile"
-msgstr ""
+msgstr "tile"
 
 #: ../../reference/json-map-format.rst:497
 msgid "Local ID of tile representing terrain"
@@ -685,7 +697,7 @@ msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:2
 msgid "Libraries and Frameworks"
-msgstr ""
+msgstr "Kirjastot ja puitteet"
 
 #: ../../reference/support-for-tmx-maps.rst:4
 msgid "There are many libraries available for reading and/or writing Tiled maps (either stored in the :doc:`tmx-map-format` or the :doc:`json-map-format`) as well as many development frameworks that include support for Tiled maps. This list is divided into two sections:"
@@ -693,7 +705,7 @@ msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:9
 msgid "`Support by Language <#support-by-language>`__"
-msgstr ""
+msgstr "`Tuki kielittäin <#support-by-language>`__"
 
 #: ../../reference/support-for-tmx-maps.rst:10
 msgid "`Support by Framework <#support-by-framework>`__"
@@ -709,7 +721,7 @@ msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:23
 msgid "Support by Language"
-msgstr ""
+msgstr "Kielituki"
 
 #: ../../reference/support-for-tmx-maps.rst:25
 msgid "These libraries typically include only a TMX parser, but no rendering support. They can be used universally and should not require a specific game engine or graphics library."
@@ -717,7 +729,7 @@ msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:30
 msgid "C"
-msgstr ""
+msgstr "C"
 
 #: ../../reference/support-for-tmx-maps.rst:32
 msgid "`TMX <https://github.com/baylej/tmx/>`__ - TMX map loader with Allegro5 and SDL2 examples (BSD)."
@@ -725,7 +737,7 @@ msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:36
 msgid "C++"
-msgstr ""
+msgstr "C++"
 
 #: ../../reference/support-for-tmx-maps.rst:38
 msgid "`C++/Boost <http://www.catnapgames.com/blog/2011/10/10/simple-tmx-tilemap-parser.html>`__ by Tomas Andrle (limited functionality, single cpp file)"
@@ -793,7 +805,7 @@ msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:90
 msgid "D"
-msgstr ""
+msgstr "D"
 
 #: ../../reference/support-for-tmx-maps.rst:92
 msgid "`tiledMap.d <https://gist.github.com/gdm85/9896961>`__ simple single-layer and single-tileset example to load a map and its tileset in `D language <http://dlang.org/>`__. It also contains basic rendering logic using `DSFML <https://github.com/Jebbs/DSFML/>`__"
@@ -825,7 +837,7 @@ msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:112
 msgid "Java"
-msgstr ""
+msgstr "Java"
 
 #: ../../reference/support-for-tmx-maps.rst:114
 msgid "A library for loading TMX files is included with Tiled at `util/java/libtiled-java <https://github.com/bjorn/tiled/tree/master/util/java/libtiled-java>`__."
@@ -845,7 +857,7 @@ msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:126
 msgid "PHP"
-msgstr ""
+msgstr "PHP"
 
 #: ../../reference/support-for-tmx-maps.rst:128
 msgid "`PHP TMX Viewer <https://github.com/sebbu2/php-tmx-viewer>`__ by sebbu : render the map as an image (allow some modifications as well)"
@@ -853,7 +865,7 @@ msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:132
 msgid "Pike"
-msgstr ""
+msgstr "Pike"
 
 #: ../../reference/support-for-tmx-maps.rst:134
 msgid "`TMX parser <https://gitlab.com/tmx-parser/tmx-parser>`__: a simple loader for TMX maps (CSV format only)."
@@ -869,7 +881,7 @@ msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:144
 msgid "Python"
-msgstr ""
+msgstr "Python"
 
 #: ../../reference/support-for-tmx-maps.rst:146
 msgid "`pytmxlib <http://pytmxlib.readthedocs.org/en/latest/>`__: library for programmatic manipulation of TMX maps"
@@ -881,7 +893,7 @@ msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:152
 msgid "Ruby"
-msgstr ""
+msgstr "Ruby"
 
 #: ../../reference/support-for-tmx-maps.rst:154
 msgid "`tmx gem <https://github.com/shawn42/tmx>`__ by erisdiscord"
@@ -889,7 +901,7 @@ msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:157
 msgid "Vala"
-msgstr ""
+msgstr "Vala"
 
 #: ../../reference/support-for-tmx-maps.rst:159
 msgid "`librpg <https://github.com/JumpLink/librpg>`__ A library to load and handle spritesets (own format) and orthogonal TMX maps."
@@ -905,7 +917,7 @@ msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:170
 msgid "AndEngine"
-msgstr ""
+msgstr "AndEngine"
 
 #: ../../reference/support-for-tmx-maps.rst:172
 msgid "`AndEngine <http://www.andengine.org/>`__ by Nicolas Gramlich supports `rendering TMX maps <http://www.andengine.org/blog/2010/07/andengine-tiledmaps-in-the-tmx-format/>`__"
@@ -913,7 +925,7 @@ msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:177
 msgid "Allegro"
-msgstr ""
+msgstr "Allegro"
 
 #: ../../reference/support-for-tmx-maps.rst:179
 msgid "`allegro\\_tiled <https://github.com/dradtke/allegro_tiled>`__ integrates Tiled support with `Allegro 5 <http://alleg.sourceforge.net/>`__."
@@ -921,7 +933,7 @@ msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:184
 msgid "cocos2d"
-msgstr ""
+msgstr "cocos2d"
 
 #: ../../reference/support-for-tmx-maps.rst:186
 msgid "`cocos2d (Python) <http://python.cocos2d.org/>`__ supports loading `Tiled maps <http://python.cocos2d.org/doc/programming_guide/tiled_map.html>`__ through its ``cocos.tiles`` module."
@@ -941,7 +953,7 @@ msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:203
 msgid "Construct 2 - Scirra"
-msgstr ""
+msgstr "Construct 2 - Scirra"
 
 #: ../../reference/support-for-tmx-maps.rst:205
 msgid "`Construct 2 <http://www.scirra.com>`__, since the Beta Release 149, officially supports TMX maps, and importing it by simple dragging the file inside the editor. `Official Note <https://www.scirra.com/construct2/releases/r149>`__"
@@ -949,7 +961,7 @@ msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:211
 msgid "Corona SDK"
-msgstr ""
+msgstr "Corona SDK"
 
 #: ../../reference/support-for-tmx-maps.rst:213
 msgid "`ponytiled <https://github.com/ponywolf/ponytiled>`__ is a simple Tiled Map Loader for Corona SDK (`forum announcement <http://discourse.mapeditor.org/t/new-lua-coronasdk-framework-ponytiled/1826>`__)"
@@ -961,7 +973,7 @@ msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:220
 msgid "Flixel"
-msgstr ""
+msgstr "Flixel"
 
 #: ../../reference/support-for-tmx-maps.rst:222
 msgid "Lithander demonstrated his `Flash TMX parser combined with Flixel rendering <http://blog.pixelpracht.net/?p=59>`__"
@@ -981,7 +993,7 @@ msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:232
 msgid "Godot"
-msgstr ""
+msgstr "Godot"
 
 #: ../../reference/support-for-tmx-maps.rst:234
 msgid "`Tiled Map Importer <https://godotengine.org/asset-library/asset/25>`__ imports each map as Godot scene which can be instanced or inherited (`forum announcement <http://discourse.mapeditor.org/t/importer-plugin-for-godot-engine/1833/1>`__)"
@@ -989,7 +1001,7 @@ msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:240
 msgid "Haxe"
-msgstr ""
+msgstr "Haxe"
 
 #: ../../reference/support-for-tmx-maps.rst:242
 msgid "`HaxePunk <https://github.com/HaxePunk/tiled>`__ Tiled Loader for HaxePunk"
@@ -1552,6 +1564,8 @@ msgstr ""
 #: ../../reference/tmx-map-format.rst:36
 msgid "**tiledversion:** The Tiled version used to save the file (since Tiled 1.0.1). May be a date (for snapshot builds)."
 msgstr ""
+"**tiledversion:** Tiedoston tallentamiseen käytetty versio (versiosta Tiled "
+"1.0.1). Voi olla päivämäärä (snapshot käännöksiin)."
 
 #: ../../reference/tmx-map-format.rst:38
 msgid "**orientation:** Map orientation. Tiled supports \"orthogonal\", \"isometric\", \"staggered\" and \"hexagonal\" (since 0.11)."
@@ -1608,6 +1622,9 @@ msgstr ""
 #: ../../reference/tmx-map-format.rst:73
 msgid "Can contain: :ref:`tmx-properties`, :ref:`tmx-tileset`, :ref:`tmx-layer`, :ref:`tmx-objectgroup`, :ref:`tmx-imagelayer`, :ref:`tmx-group` (since 1.0)"
 msgstr ""
+"Voi sisältää: :ref:`tmx-properties`, :ref:`tmx-tileset`, :ref:`tmx-layer`, "
+":ref:`tmx-objectgroup`, :ref:`tmx-imagelayer`, :ref:`tmx-group` (versiosta "
+"1.0)"
 
 #: ../../reference/tmx-map-format.rst:80
 msgid "<tileset>"
@@ -1656,6 +1673,9 @@ msgstr ""
 #: ../../reference/tmx-map-format.rst:108
 msgid "Can contain: :ref:`tmx-tileoffset`, :ref:`tmx-grid` (since 1.0), :ref:`tmx-properties`, :ref:`tmx-image`, :ref:`tmx-terraintypes`, :ref:`tmx-tileset-tile`, :ref:`tmx-wangsets` (since 1.1)"
 msgstr ""
+"Voi sisältää: :ref:`tmx-tileoffset`, :ref:`tmx-grid` (versiosta 1.0), :ref"
+":`tmx-properties`, :ref:`tmx-image`, :ref:`tmx-terraintypes`, :ref:`tmx-"
+"tileset-tile`, :ref:`tmx-wangsets` (versiosta 1.1)"
 
 #: ../../reference/tmx-map-format.rst:115
 msgid "<tileoffset>"
@@ -1769,6 +1789,8 @@ msgstr ""
 #: ../../reference/tmx-map-format.rst:191
 msgid "**type:** The type of the tile. Refers to an object type and is used by tile objects. (optional) (since 1.0)"
 msgstr ""
+"**type:** Lattojen tyyppi. Viittaa objektityyppiin ja sitä käytetään "
+"laattaobjekteissa. (valinnainen) (versiosta 1.0)"
 
 #: ../../reference/tmx-map-format.rst:193
 msgid "**terrain:** Defines the terrain type of each corner of the tile, given as comma-separated indexes in the terrain types array in the order top-left, top-right, bottom-left, bottom-right. Leaving out a value means that corner has no terrain. (optional)"
@@ -2147,6 +2169,8 @@ msgstr ""
 #: ../../reference/tmx-map-format.rst:505
 msgid "Can contain: :ref:`tmx-properties`, :ref:`tmx-ellipse` (since 0.9), :ref:`tmx-polygon`, :ref:`tmx-polyline`, :ref:`tmx-text` (since 1.0), *image*"
 msgstr ""
+"Voi sisältää: :ref:`tmx-properties`, :ref:`tmx-ellipse` (versiosta 0.9), :ref"
+":`tmx-polygon`, :ref:`tmx-polyline`, :ref:`tmx-text` (versiosta 1.0), *image*"
 
 #: ../../reference/tmx-map-format.rst:512
 msgid "<ellipse>"
