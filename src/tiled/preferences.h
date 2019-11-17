@@ -25,6 +25,7 @@
 #include <QDate>
 #include <QObject>
 
+#include "filesystemwatcher.h"
 #include "map.h"
 #include "objecttypes.h"
 
@@ -245,6 +246,10 @@ private:
     QString stringValue(const char *key, const QString &def = QString()) const;
     int intValue(const char *key, int defaultValue) const;
     qreal realValue(const char *key, qreal defaultValue) const;
+
+    void objectTypesFileChangedOnDisk(const QString &fileName);
+
+    FileSystemWatcher mWatcher;
 
     QSettings *mSettings;
 

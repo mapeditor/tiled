@@ -59,6 +59,7 @@ private:
     void removeSelectedObjectTypes();
     void objectTypeIndexClicked(const QModelIndex &index);
     void applyObjectTypes();
+    void objectTypesChanged();
     void applyPropertyToSelectedTypes(const QString &name, const QVariant &value);
     void removePropertyFromSelectedTypes(const QString &name);
 
@@ -93,6 +94,7 @@ private:
 
     AggregatedProperties mProperties;
     bool mUpdating;
+    bool mSettingPrefObjectTypes;
 
     QAction *mAddObjectTypeAction;
     QAction *mRemoveObjectTypeAction;
