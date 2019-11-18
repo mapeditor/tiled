@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Tiled 1.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-12-21 14:31+0100\n"
-"PO-Revision-Date: 2019-11-18 08:05+0000\n"
+"PO-Revision-Date: 2019-11-19 10:04+0000\n"
 "Last-Translator: Tuomas Lähteenmäki <lahtis@gmail.com>\n"
 "Language-Team: Finnish <https://hosted.weblate.org/projects/tiled/reference/"
 "fi/>\n"
@@ -652,11 +652,11 @@ msgstr "``tileset`` (tileset-tiedostoille, versiosta 1.0)"
 
 #: ../../reference/json-map-format.rst:421
 msgid "Tileset Example"
-msgstr ""
+msgstr "Laataston esimerkki"
 
 #: ../../reference/json-map-format.rst:450
 msgid "Tile (Definition)"
-msgstr ""
+msgstr "Laatta (määritelmä)"
 
 #: ../../reference/json-map-format.rst:455
 msgid "terrain"
@@ -664,7 +664,7 @@ msgstr "terrain"
 
 #: ../../reference/json-map-format.rst:455
 msgid "index of terrain for each corner of tile"
-msgstr ""
+msgstr "maastoindeksi laattakohdan kulmalle"
 
 #: ../../reference/json-map-format.rst:458
 msgid "A tileset that associates information with each tile, like its image path or terrain type, may include a \"tiles\" JSON object. Each key is a local ID of a tile within the tileset."
