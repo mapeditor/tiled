@@ -683,12 +683,12 @@ void ShortcutSettingsPage::importShortcuts()
 
     while (xml.readNextStartElement()) {
         if (xml.name() == QLatin1String("shortcut")) {
-            QStringRef id = xml.attributes().value(QLatin1String("id"));
+            const Id id { xml.attributes().value(QLatin1String("id")).toUtf8() };
 
             while (xml.readNextStartElement()) {
                 if (xml.name() == QLatin1String("key")) {
                     QString keyString = xml.attributes().value(QLatin1String("value")).toString();
-                    result.insert(Id(id.toUtf8()), QKeySequence(keyString));
+                    result.insert(id, QKeySequence(keyString));
                     xml.skipCurrentElement();   // skip out of "key" element
                     xml.skipCurrentElement();   // skip out of "shortcut" element
                     break;
