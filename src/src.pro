@@ -11,8 +11,11 @@ SUBDIRS = \
     tmxrasterizer \
     terraingenerator
 
-minQtVersion(5, 4, 0) {
-    SUBDIRS += \
-        tiledquickplugin \
-        tiledquick
+tiled_quick {
+    minQtVersion(5, 6, 0) {
+        SUBDIRS += tiledquickplugin
+    }
+    minQtVersion(5, 10, 0) {
+        SUBDIRS += tiledquick
+    }
 }
