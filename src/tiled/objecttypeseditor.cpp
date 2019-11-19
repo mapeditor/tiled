@@ -97,8 +97,6 @@ ObjectTypesEditor::ObjectTypesEditor(QWidget *parent)
     , mObjectTypesModel(new ObjectTypesModel(this))
     , mVariantManager(new VariantPropertyManager(this))
     , mGroupManager(new QtGroupPropertyManager(this))
-    , mUpdating(false)
-    , mSettingPrefObjectTypes(false)
 {
     mUi->setupUi(this);
     resize(Utils::dpiScaled(size()));
