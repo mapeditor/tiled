@@ -345,6 +345,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     undoAction->setShortcuts(QKeySequence::Undo);
     redoAction->setShortcuts(redoShortcuts);
 
+    ActionManager::registerAction(undoAction, "Undo");
+    ActionManager::registerAction(redoAction, "Redo");
+
     auto snappingGroup = new QActionGroup(this);
     mUi->actionSnapNothing->setActionGroup(snappingGroup);
     mUi->actionSnapToGrid->setActionGroup(snappingGroup);
