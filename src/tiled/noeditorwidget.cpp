@@ -23,8 +23,12 @@
 
 #include "actionmanager.h"
 #include "documentmanager.h"
+#include "issuescounter.h"
+#include "newsbutton.h"
+#include "newversionbutton.h"
 
 #include <QAction>
+#include <QStatusBar>
 
 namespace Tiled {
 
@@ -33,6 +37,20 @@ NoEditorWidget::NoEditorWidget(QWidget *parent) :
     ui(new Ui::NoEditorWidget)
 {
     ui->setupUi(this);
+
+    // Transfer margin and spacing to the internal layout
+    ui->verticalLayout->setMargin(ui->gridLayout->margin());
+    ui->verticalLayout->setSpacing(ui->gridLayout->spacing());
+    ui->gridLayout->setMargin(0);
+    ui->gridLayout->setSpacing(0);
+
+    // Add a status bar to the bottom
+    auto statusBar = new QStatusBar;
+    statusBar->addPermanentWidget(new NewsButton);
+    statusBar->addPermanentWidget(new NewVersionButton(NewVersionButton::AutoVisible));
+    statusBar->addWidget(new IssuesCounter);
+
+    ui->gridLayout->addWidget(statusBar, 3, 0, 1, 3);
 
     connect(ui->newMapButton, &QPushButton::clicked, this, &NoEditorWidget::newMap);
     connect(ui->newTilesetButton, &QPushButton::clicked, this, &NoEditorWidget::newTileset);
