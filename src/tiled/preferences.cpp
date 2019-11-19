@@ -818,17 +818,12 @@ void Preferences::setObjectTypesFile(const QString &fileName)
     emit stampsDirectoryChanged(fileName);
 }
 
-void Preferences::objectTypesFileChangedOnDisk(const QString &fileName)
+void Preferences::objectTypesFileChangedOnDisk()
 {
     ObjectTypesSerializer objectTypesSerializer;
     ObjectTypes objectTypes;
     bool success = objectTypesSerializer.readObjectTypes(objectTypesFile(), objectTypes);
 
-    if (!fileName.isEmpty())
-        mWatcher.removePath(fileName);
-
     if (success)
         setObjectTypes(objectTypes);
-
-    mWatcher.addPath(fileName);
 }

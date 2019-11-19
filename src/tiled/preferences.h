@@ -247,7 +247,7 @@ private:
     int intValue(const char *key, int defaultValue) const;
     qreal realValue(const char *key, qreal defaultValue) const;
 
-    void objectTypesFileChangedOnDisk(const QString &fileName);
+    void objectTypesFileChangedOnDisk();
 
     FileSystemWatcher mWatcher;
 
