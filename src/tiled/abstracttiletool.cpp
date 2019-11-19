@@ -34,12 +34,13 @@
 
 using namespace Tiled;
 
-AbstractTileTool::AbstractTileTool(const QString &name,
+AbstractTileTool::AbstractTileTool(Id id,
+                                   const QString &name,
                                    const QIcon &icon,
                                    const QKeySequence &shortcut,
                                    BrushItem *brushItem,
                                    QObject *parent)
-    : AbstractTool(name, icon, shortcut, parent)
+    : AbstractTool(id, name, icon, shortcut, parent)
     , mTilePositionMethod(OnTiles)
     , mBrushItem(brushItem)
     , mBrushVisible(false)

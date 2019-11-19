@@ -45,7 +45,8 @@
 using namespace Tiled;
 
 StampBrush::StampBrush(QObject *parent)
-    : AbstractTileTool(tr("Stamp Brush"),
+    : AbstractTileTool("StampTool",
+                       tr("Stamp Brush"),
                        QIcon(QLatin1String(
                                ":images/22/stock-tool-clone.png")),
                        QKeySequence(Qt::Key_B),

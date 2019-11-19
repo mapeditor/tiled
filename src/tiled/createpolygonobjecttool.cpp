@@ -48,7 +48,7 @@
 using namespace Tiled;
 
 CreatePolygonObjectTool::CreatePolygonObjectTool(QObject *parent)
-    : CreateObjectTool(parent)
+    : CreateObjectTool("CreatePolygonObjectTool", parent)
     , mOverlayPolygonObject(new MapObject)
     , mOverlayObjectGroup(new ObjectGroup)
     , mOverlayPolygonItem(nullptr)

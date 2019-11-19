@@ -31,11 +31,12 @@
 
 using namespace Tiled;
 
-AbstractTileSelectionTool::AbstractTileSelectionTool(const QString &name,
+AbstractTileSelectionTool::AbstractTileSelectionTool(Id id,
+                                                     const QString &name,
                                                      const QIcon &icon,
                                                      const QKeySequence &shortcut,
                                                      QObject *parent)
-    : AbstractTileTool(name, icon, shortcut, nullptr, parent)
+    : AbstractTileTool(id, name, icon, shortcut, nullptr, parent)
     , mSelectionMode(Replace)
     , mDefaultMode(Replace)
 {

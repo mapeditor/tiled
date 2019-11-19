@@ -42,7 +42,7 @@ public:
     static ActionManager *instance();
 
     static void registerAction(QAction *action, Id id);
-    static void unregisterAction(Id id);
+    static void unregisterAction(QAction *action, Id id);
 
     static void registerMenu(QMenu *menu, Id id);
     static void unregisterMenu(Id id);

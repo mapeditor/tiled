@@ -44,7 +44,8 @@ public:
     /**
      * Constructs an abstract object tool with the given \a name and \a icon.
      */
-    AbstractObjectTool(const QString &name,
+    AbstractObjectTool(Id id,
+                       const QString &name,
                        const QIcon &icon,
                        const QKeySequence &shortcut,
                        QObject *parent = nullptr);

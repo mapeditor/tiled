@@ -44,7 +44,8 @@
 using namespace Tiled;
 
 TerrainBrush::TerrainBrush(QObject *parent)
-    : AbstractTileTool(tr("Terrain Brush"),
+    : AbstractTileTool("TerrainTool",
+                       tr("Terrain Brush"),
                        QIcon(QLatin1String(
                                ":images/24/terrain-edit.png")),
                        QKeySequence(Qt::Key_T),

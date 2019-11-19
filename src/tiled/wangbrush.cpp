@@ -104,12 +104,13 @@ void WangBrushItem::setInvalidTiles(const QRegion &region)
 }
 
 WangBrush::WangBrush(QObject *parent)
-    : AbstractTileTool(tr("Wang Brush"),
-                      QIcon(QLatin1String(
-                                ":images/24/wangtile-edit.png")),
-                      QKeySequence(Qt::Key_G),
-                      new WangBrushItem,
-                      parent)
+    : AbstractTileTool("WangTool",
+                       tr("Wang Brush"),
+                       QIcon(QLatin1String(
+                                 ":images/24/wangtile-edit.png")),
+                       QKeySequence(Qt::Key_G),
+                       new WangBrushItem,
+                       parent)
     , mEdgeDir(WangId::Top)
     , mWangSet(nullptr)
     , mCurrentColor(0)

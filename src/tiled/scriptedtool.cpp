@@ -35,8 +35,8 @@
 
 namespace Tiled {
 
-ScriptedTool::ScriptedTool(QJSValue object, QObject *parent)
-    : AbstractTileTool(QStringLiteral("<unnamed tool>"), QIcon(), QKeySequence(), nullptr, parent)
+ScriptedTool::ScriptedTool(Id id, QJSValue object, QObject *parent)
+    : AbstractTileTool(id, QStringLiteral("<unnamed tool>"), QIcon(), QKeySequence(), nullptr, parent)
     , mScriptObject(std::move(object))
 {
     const QJSValue nameProperty = mScriptObject.property(QStringLiteral("name"));

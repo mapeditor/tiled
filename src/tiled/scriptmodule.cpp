@@ -58,7 +58,7 @@ ScriptModule::ScriptModule(QObject *parent)
 ScriptModule::~ScriptModule()
 {
     for (const auto &pair : mRegisteredActions)
-        ActionManager::unregisterAction(pair.second->id());
+        ActionManager::unregisterAction(pair.second.get(), pair.first);
 
     IssuesModel::instance().removeIssuesWithContext(this);
 }
@@ -221,12 +221,12 @@ ScriptedAction *ScriptModule::registerAction(const QByteArray &idName, QJSValue 
         return nullptr;
     }
 
-    Id id(idName);
-    auto &action = mRegisteredActions[idName];
+    Id id { idName };
+    auto &action = mRegisteredActions[id];
 
     // Remove any previously registered action with the same name
     if (action) {
-        ActionManager::unregisterAction(id);
+        ActionManager::unregisterAction(action.get(), id);
     } else if (ActionManager::findAction(id)) {
         ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Reserved ID"));
         return nullptr;
@@ -275,9 +275,10 @@ QJSValue ScriptModule::registerTool(const QString &shortName, QJSValue toolObjec
     if (!ScriptedTool::validateToolObject(toolObject))
         return QJSValue();
 
-    auto &tool = mRegisteredTools[shortName];
+    Id id { shortName.toUtf8() };
+    auto &tool = mRegisteredTools[id];
 
-    tool = std::make_unique<ScriptedTool>(toolObject, this);
+    tool = std::make_unique<ScriptedTool>(id, toolObject, this);
     return toolObject;
 }
 

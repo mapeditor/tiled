@@ -312,10 +312,11 @@ void ResizeHandle::paint(QPainter *painter,
 
 
 ObjectSelectionTool::ObjectSelectionTool(QObject *parent)
-    : AbstractObjectTool(tr("Select Objects"),
-          QIcon(QLatin1String(":images/22/tool-select-objects.png")),
-          QKeySequence(Qt::Key_S),
-          parent)
+    : AbstractObjectTool("ObjectSelectionTool",
+                         tr("Select Objects"),
+                         QIcon(QLatin1String(":images/22/tool-select-objects.png")),
+                         QKeySequence(Qt::Key_S),
+                         parent)
     , mSelectionRectangle(new SelectionRectangle)
     , mOriginIndicator(new OriginIndicator)
     , mMousePressed(false)

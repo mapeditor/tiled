@@ -44,7 +44,8 @@ public:
     /**
      * Constructs an abstract tile tool with the given \a name and \a icon.
      */
-    AbstractTileTool(const QString &name,
+    AbstractTileTool(Id id,
+                     const QString &name,
                      const QIcon &icon,
                      const QKeySequence &shortcut,
                      BrushItem *brushItem = nullptr,

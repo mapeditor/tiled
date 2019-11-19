@@ -54,10 +54,11 @@
 using namespace Tiled;
 
 EditPolygonTool::EditPolygonTool(QObject *parent)
-    : AbstractObjectTool(tr("Edit Polygons"),
-          QIcon(QLatin1String(":images/24/tool-edit-polygons.png")),
-          QKeySequence(Qt::Key_O),
-          parent)
+    : AbstractObjectTool("EditPolygonTool",
+                         tr("Edit Polygons"),
+                         QIcon(QLatin1String(":images/24/tool-edit-polygons.png")),
+                         QKeySequence(Qt::Key_O),
+                         parent)
     , mSelectionRectangle(new SelectionRectangle)
     , mMousePressed(false)
     , mHoveredHandle(nullptr)

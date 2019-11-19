@@ -109,9 +109,11 @@ TemplatesDock::TemplatesDock(QWidget *parent)
     auto objectSelectionTool = new ObjectSelectionTool(this);
     auto editPolygonTool = new EditPolygonTool(this);
 
-    // Assign empty shortcuts to avoid collision with the map editor
+    // Assign empty shortcuts and don't register actions for these tools, to
+    // avoid collisions with the map editor and tile collision editor.
     objectSelectionTool->setShortcut(QKeySequence());
     editPolygonTool->setShortcut(QKeySequence());
+    mToolManager->setRegisterActions(false);
 
     editingToolBar->addAction(mUndoAction);
     editingToolBar->addAction(mRedoAction);

@@ -30,7 +30,7 @@
 namespace Tiled {
 
 CreateTextObjectTool::CreateTextObjectTool(QObject *parent)
-    : CreateObjectTool(parent)
+    : CreateObjectTool("CreateTextObjectTool", parent)
 {
     QIcon icon(QLatin1String(":images/24/insert-text.png"));
     icon.addFile(QLatin1String(":images/48/insert-text.png"));

@@ -26,7 +26,8 @@
 using namespace Tiled;
 
 CreateEllipseObjectTool::CreateEllipseObjectTool(QObject *parent)
-    : CreateScalableObjectTool(parent)
+    : CreateScalableObjectTool("CreateEllipseObjectTool",
+                               parent)
 {
     QIcon icon(QLatin1String(":images/24/insert-ellipse.png"));
     icon.addFile(QLatin1String(":images/48/insert-ellipse.png"));

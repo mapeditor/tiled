@@ -78,11 +78,12 @@ static bool isChangedTemplateInstance(MapObject *mapObject)
 }
 
 
-AbstractObjectTool::AbstractObjectTool(const QString &name,
+AbstractObjectTool::AbstractObjectTool(Id id,
+                                       const QString &name,
                                        const QIcon &icon,
                                        const QKeySequence &shortcut,
                                        QObject *parent)
-    : AbstractTool(name, icon, shortcut, parent)
+    : AbstractTool(id, name, icon, shortcut, parent)
     , mMapScene(nullptr)
 {
     QIcon flipHorizontalIcon(QLatin1String(":images/24/flip-horizontal.png"));

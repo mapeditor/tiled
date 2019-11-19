@@ -36,7 +36,8 @@
 using namespace Tiled;
 
 ShapeFillTool::ShapeFillTool(QObject *parent)
-    : AbstractTileFillTool(tr("Shape Fill Tool"),
+    : AbstractTileFillTool("ShapeFillTool",
+                           tr("Shape Fill Tool"),
                            QIcon(QLatin1String(
                                      ":images/22/rectangle-fill.png")),
                            QKeySequence(Qt::Key_P),

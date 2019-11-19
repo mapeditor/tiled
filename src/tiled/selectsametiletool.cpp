@@ -27,7 +27,8 @@
 using namespace Tiled;
 
 SelectSameTileTool::SelectSameTileTool(QObject *parent)
-    : AbstractTileSelectionTool(tr("Select Same Tile"),
+    : AbstractTileSelectionTool("SelectSameTileTool",
+                                tr("Select Same Tile"),
                                 QIcon(QLatin1String(
                                       ":images/22/stock-tool-by-color-select.png")),
                                 QKeySequence(Qt::Key_S),

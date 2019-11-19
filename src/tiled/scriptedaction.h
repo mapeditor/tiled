@@ -35,7 +35,7 @@ class ScriptedAction : public QAction
     Q_PROPERTY(QString icon READ iconFileName WRITE setIconFileName)
 
 public:
-    ScriptedAction(Id idName,
+    ScriptedAction(Id id,
                    const QJSValue &callback,
                    QObject *parent = nullptr);
 

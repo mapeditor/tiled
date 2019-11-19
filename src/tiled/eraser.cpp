@@ -31,7 +31,8 @@
 using namespace Tiled;
 
 Eraser::Eraser(QObject *parent)
-    : AbstractTileTool(tr("Eraser"),
+    : AbstractTileTool("EraserTool",
+                       tr("Eraser"),
                        QIcon(QLatin1String(
                                ":images/22/stock-tool-eraser.png")),
                        QKeySequence(Qt::Key_E),

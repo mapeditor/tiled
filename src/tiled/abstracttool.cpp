@@ -28,9 +28,13 @@
 
 namespace Tiled {
 
-AbstractTool::AbstractTool(const QString &name, const QIcon &icon,
-                           const QKeySequence &shortcut, QObject *parent)
+AbstractTool::AbstractTool(Id id,
+                           const QString &name,
+                           const QIcon &icon,
+                           const QKeySequence &shortcut,
+                           QObject *parent)
     : QObject(parent)
+    , mId(id)
     , mName(name)
     , mIcon(icon)
     , mShortcut(shortcut)

@@ -22,6 +22,7 @@
 #pragma once
 
 #include "changeevents.h"
+#include "id.h"
 
 #include <QCursor>
 #include <QGraphicsSceneMouseEvent>
@@ -58,6 +59,7 @@ class AbstractTool : public QObject
 {
     Q_OBJECT
 
+    Q_PROPERTY(QByteArray id READ idName CONSTANT)
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY changed)
     Q_PROPERTY(QIcon icon READ icon WRITE setIcon NOTIFY changed)
     Q_PROPERTY(QKeySequence shortcut READ shortcut WRITE setShortcut NOTIFY changed)
@@ -69,10 +71,14 @@ public:
     /**
      * Constructs an abstract tool with the given \a name and \a icon.
      */
-    AbstractTool(const QString &name,
+    AbstractTool(Id id,
+                 const QString &name,
                  const QIcon &icon,
                  const QKeySequence &shortcut,
                  QObject *parent = nullptr);
+
+    Id id() const;
+    QByteArray idName() const;
 
     QString name() const;
     void setName(const QString &name);
@@ -201,12 +207,23 @@ private:
     QKeySequence mShortcut;
     QString mStatusInfo;
     QCursor mCursor;
+    Id mId;
     bool mEnabled;
 
     ToolManager *mToolManager;
     MapDocument *mMapDocument;
 };
 
+
+inline Id AbstractTool::id() const
+{
+    return mId;
+}
+
+inline QByteArray AbstractTool::idName() const
+{
+    return mId.name();
+}
 
 inline QString AbstractTool::name() const
 {

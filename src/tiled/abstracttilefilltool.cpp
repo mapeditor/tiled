@@ -29,12 +29,13 @@
 
 using namespace Tiled;
 
-AbstractTileFillTool::AbstractTileFillTool(const QString &name,
+AbstractTileFillTool::AbstractTileFillTool(Id id,
+                                           const QString &name,
                                            const QIcon &icon,
                                            const QKeySequence &shortcut,
                                            BrushItem *brushItem,
                                            QObject *parent)
-    : AbstractTileTool(name, icon, shortcut, brushItem, parent)
+    : AbstractTileTool(id, name, icon, shortcut, brushItem, parent)
     , mFillMethod(TileFill)
     , mStampActions(new StampActions(this))
     , mWangSet(nullptr)

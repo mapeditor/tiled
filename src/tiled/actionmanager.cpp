@@ -31,7 +31,7 @@ namespace Tiled {
 class ActionManagerPrivate
 {
 public:
-    QHash<Id, QAction*> mIdToAction;
+    QMultiHash<Id, QAction*> mIdToActions;
     QHash<Id, QMenu*> mIdToMenu;
 
     QHash<Id, QKeySequence> mDefaultShortcuts;      // for resetting to default
@@ -92,8 +92,8 @@ ActionManager *ActionManager::instance()
 
 void ActionManager::registerAction(QAction *action, Id id)
 {
-    Q_ASSERT_X(!d->mIdToAction.contains(id), "ActionManager::registerAction", "duplicate id");
-    d->mIdToAction.insert(id, action);
+    Q_ASSERT_X(!d->mIdToActions.contains(id, action), "ActionManager::registerAction", "duplicate action");
+    d->mIdToActions.insert(id, action);
     d->mLastKnownShortcuts.insert(id, action->shortcut());
 
     connect(action, &QAction::changed, m_instance, [id,action] {
@@ -121,10 +121,10 @@ void ActionManager::registerAction(QAction *action, Id id)
     emit m_instance->actionsChanged();
 }
 
-void ActionManager::unregisterAction(Id id)
+void ActionManager::unregisterAction(QAction *action, Id id)
 {
-    Q_ASSERT_X(d->mIdToAction.contains(id), "ActionManager::unregisterAction", "unknown id");
-    QAction *action = d->mIdToAction.take(id);
+    Q_ASSERT_X(d->mIdToActions.contains(id, action), "ActionManager::unregisterAction", "unknown action");
+    d->mIdToActions.remove(id, action);
     action->disconnect(m_instance);
     d->mDefaultShortcuts.remove(id);
     d->mLastKnownShortcuts.remove(id);
@@ -145,14 +145,14 @@ void ActionManager::unregisterMenu(Id id)
 
 QAction *ActionManager::action(Id id)
 {
-    auto action = d->mIdToAction.value(id);
+    auto action = d->mIdToActions.value(id);
     Q_ASSERT_X(action, "ActionManager::action", "unknown id");
     return action;
 }
 
 QAction *ActionManager::findAction(Id id)
 {
-    return d->mIdToAction.value(id);
+    return d->mIdToActions.value(id);
 }
 
 QMenu *ActionManager::menu(Id id)
@@ -169,7 +169,7 @@ QMenu *ActionManager::findMenu(Id id)
 
 QList<Id> ActionManager::actions()
 {
-    return d->mIdToAction.keys();
+    return d->mIdToActions.uniqueKeys();
 }
 
 QList<Id> ActionManager::menus()
@@ -181,13 +181,16 @@ void ActionManager::setCustomShortcut(Id id, const QKeySequence &keySequence)
 {
     Q_ASSERT(!d->mResettingShortcut);
 
-    auto a = action(id);
+    const auto actions = d->mIdToActions.values(id);
+    Q_ASSERT_X(!actions.isEmpty(), "ActionManager::setCustomShortcut", "unknown id");
 
     if (!hasCustomShortcut(id))
-        d->mDefaultShortcuts.insert(id, a->shortcut());
+        d->mDefaultShortcuts.insert(id, actions.first()->shortcut());
 
     d->mCustomShortcuts.insert(id, keySequence);
-    applyShortcut(a, keySequence);
+
+    for (QAction *a : actions)
+        applyShortcut(a, keySequence);
 
     auto settings = Preferences::instance()->settings();
     settings->setValue(QLatin1String("CustomShortcuts/") + id.toString(),
@@ -204,10 +207,14 @@ void ActionManager::resetCustomShortcut(Id id)
     if (!hasCustomShortcut(id))
         return;
 
+    const auto actions = d->mIdToActions.values(id);
+    Q_ASSERT_X(!actions.isEmpty(), "ActionManager::resetCustomShortcut", "unknown id");
+
     d->mResettingShortcut = true;
 
-    auto a = action(id);
-    applyShortcut(a, d->mDefaultShortcuts.take(id));
+    const QKeySequence defaultShortcut = d->mDefaultShortcuts.take(id);
+    for (QAction *a : actions)
+        applyShortcut(a, defaultShortcut);
     d->mCustomShortcuts.remove(id);
 
     d->mResettingShortcut = false;
@@ -221,7 +228,8 @@ void ActionManager::resetAllCustomShortcuts()
     QHashIterator<Id, QKeySequence> iterator(d->mDefaultShortcuts);
     while (iterator.hasNext()) {
         iterator.next();
-        if (auto a = findAction(iterator.key()))
+        const auto actions = d->mIdToActions.values(iterator.key());
+        for (QAction *a : actions)
             applyShortcut(a, iterator.value());
     }
     d->mDefaultShortcuts.clear();

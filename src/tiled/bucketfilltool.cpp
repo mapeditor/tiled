@@ -40,7 +40,8 @@
 using namespace Tiled;
 
 BucketFillTool::BucketFillTool(QObject *parent)
-    : AbstractTileFillTool(tr("Bucket Fill Tool"),
+    : AbstractTileFillTool("BucketFillTool",
+                           tr("Bucket Fill Tool"),
                            QIcon(QLatin1String(
                                    ":images/22/stock-tool-bucket-fill.png")),
                            QKeySequence(Qt::Key_F),

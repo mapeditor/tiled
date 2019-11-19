@@ -136,10 +136,10 @@ private:
 
     void setCallback(Issue &issue, QJSValue activated);
 
-    std::map<QByteArray, std::unique_ptr<ScriptedAction>> mRegisteredActions;
+    std::map<Id, std::unique_ptr<ScriptedAction>> mRegisteredActions;
     std::map<QString, std::unique_ptr<ScriptedMapFormat>> mRegisteredMapFormats;
     std::map<QString, std::unique_ptr<ScriptedTilesetFormat>> mRegisteredTilesetFormats;
-    std::map<QString, std::unique_ptr<ScriptedTool>> mRegisteredTools;
+    std::map<Id, std::unique_ptr<ScriptedTool>> mRegisteredTools;
 
     QVector<MenuExtension> mMenuExtensions;
 };

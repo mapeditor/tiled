@@ -30,7 +30,7 @@
 using namespace Tiled;
 
 CreatePointObjectTool::CreatePointObjectTool(QObject *parent)
-    : CreateObjectTool(parent)
+    : CreateObjectTool("CreatePointObjectTool", parent)
 {
     QIcon icon(QLatin1String(":images/24/insert-point.png"));
     icon.addFile(QLatin1String(":images/48/insert-point.png"));

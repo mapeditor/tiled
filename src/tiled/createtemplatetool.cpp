@@ -32,7 +32,7 @@
 using namespace Tiled;
 
 CreateTemplateTool::CreateTemplateTool(QObject *parent)
-    : CreateObjectTool(parent)
+    : CreateObjectTool("CreateTemplateTool", parent)
 {
     QIcon icon(QLatin1String(":images/24/insert-template.png"));
     icon.addFile(QLatin1String(":images/48/insert-template.png"));

@@ -29,8 +29,8 @@
 
 using namespace Tiled;
 
-CreateScalableObjectTool::CreateScalableObjectTool(QObject *parent)
-    : CreateObjectTool(parent)
+CreateScalableObjectTool::CreateScalableObjectTool(Id id, QObject *parent)
+    : CreateObjectTool(id, parent)
 {
 }
 

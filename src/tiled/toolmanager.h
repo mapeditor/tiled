@@ -49,6 +49,8 @@ public:
     ToolManager(QObject *parent = nullptr);
     ~ToolManager() override;
 
+    void setRegisterActions(bool enabled);
+
     void setMapDocument(MapDocument *mapDocument);
 
     QAction *registerTool(AbstractTool *tool);
@@ -89,6 +91,7 @@ signals:
 private slots:
     void actionTriggered(QAction *action);
     void toolChanged();
+    void toolActionChanged();
     void toolEnabledChanged(bool enabled);
     void selectEnabledTool();
 
@@ -97,14 +100,16 @@ private:
     void setSelectedTool(AbstractTool *tool);
 
     QActionGroup *mActionGroup;
-    AbstractTool *mSelectedTool;
-    AbstractTool *mDisabledTool;
-    AbstractTool *mPreviouslyDisabledTool;
-    MapDocument *mMapDocument;
-    Tile *mTile;
-    ObjectTemplate *mObjectTemplate;
+    AbstractTool *mSelectedTool = nullptr;
+    AbstractTool *mDisabledTool = nullptr;
+    AbstractTool *mPreviouslyDisabledTool = nullptr;
+    MapDocument *mMapDocument = nullptr;
+    Tile *mTile = nullptr;
+    ObjectTemplate *mObjectTemplate = nullptr;
 
-    bool mSelectEnabledToolPending;
+    bool mRegisterActions = true;
+    bool mSelectEnabledToolPending = false;
+    bool mUpdatingActionToolTip = false;
 };
 
 /**

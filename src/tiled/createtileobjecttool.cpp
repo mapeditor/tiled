@@ -31,7 +31,7 @@
 using namespace Tiled;
 
 CreateTileObjectTool::CreateTileObjectTool(QObject *parent)
-    : CreateObjectTool(parent)
+    : CreateObjectTool("CreateTileObjectTool", parent)
 {
     QIcon icon(QLatin1String(":images/24/insert-image.png"));
     icon.addFile(QLatin1String(":images/48/insert-image.png"));

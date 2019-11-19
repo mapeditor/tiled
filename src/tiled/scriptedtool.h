@@ -40,7 +40,7 @@ class ScriptedTool : public AbstractTileTool
     Q_PROPERTY(Tiled::EditableMap *preview READ preview WRITE setPreview)
 
 public:
-    explicit ScriptedTool(QJSValue object, QObject *parent = nullptr);
+    explicit ScriptedTool(Id id, QJSValue object, QObject *parent = nullptr);
     ~ScriptedTool() override;
 
     EditableMap *editableMap() const;

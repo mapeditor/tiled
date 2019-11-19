@@ -46,7 +46,8 @@ public:
         WangFill
     };
 
-    AbstractTileFillTool(const QString &name,
+    AbstractTileFillTool(Id id,
+                         const QString &name,
                          const QIcon &icon,
                          const QKeySequence &shortcut,
                          BrushItem *brushItem = nullptr,

@@ -32,7 +32,8 @@
 using namespace Tiled;
 
 TileSelectionTool::TileSelectionTool(QObject *parent)
-    : AbstractTileSelectionTool(tr("Rectangular Select"),
+    : AbstractTileSelectionTool("TileSelectionTool",
+                                tr("Rectangular Select"),
                                 QIcon(QLatin1String(
                                       ":images/22/stock-tool-rect-select.png")),
                                 QKeySequence(Qt::Key_R),

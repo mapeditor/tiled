@@ -29,7 +29,8 @@
 using namespace Tiled;
 
 MagicWandTool::MagicWandTool(QObject *parent)
-    : AbstractTileSelectionTool(tr("Magic Wand"),
+    : AbstractTileSelectionTool("MagicWandTool",
+                                tr("Magic Wand"),
                                 QIcon(QLatin1String(
                                       ":images/22/stock-tool-fuzzy-select-22.png")),
                                 QKeySequence(Qt::Key_W),
