@@ -53,6 +53,9 @@ void Preferences::deleteInstance()
 Preferences::Preferences()
     : mSettings(new QSettings(this))
 {
+    connect(&mWatcher, &FileSystemWatcher::fileChanged,
+            this, &Preferences::objectTypesFileChangedOnDisk);
+
     // Retrieve storage settings
     mSettings->beginGroup(QLatin1String("Storage"));
     mLayerDataFormat = static_cast<Map::LayerDataFormat>
@@ -134,6 +137,8 @@ Preferences::Preferences()
         }
     } else {
         mSettings->remove(QLatin1String("ObjectTypes"));
+
+        mWatcher.addPath(objectTypesFile());
     }
 
     Object::setObjectTypes(objectTypes);
@@ -802,8 +807,22 @@ void Preferences::setObjectTypesFile(const QString &fileName)
     if (mObjectTypesFile == fileName)
         return;
 
+    if (!mObjectTypesFile.isEmpty())
+        mWatcher.removePath(mObjectTypesFile);
+
     mObjectTypesFile = fileName;
     mSettings->setValue(QLatin1String("Storage/ObjectTypesFile"), fileName);
 
+    mWatcher.addPath(mObjectTypesFile);
+
     emit stampsDirectoryChanged(fileName);
+}
+
+void Preferences::objectTypesFileChangedOnDisk()
+{
+    ObjectTypesSerializer objectTypesSerializer;
+    ObjectTypes objectTypes;
+
+    if (objectTypesSerializer.readObjectTypes(objectTypesFile(), objectTypes))
+        setObjectTypes(objectTypes);
 }

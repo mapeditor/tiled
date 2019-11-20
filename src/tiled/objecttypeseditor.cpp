@@ -97,7 +97,6 @@ ObjectTypesEditor::ObjectTypesEditor(QWidget *parent)
     , mObjectTypesModel(new ObjectTypesModel(this))
     , mVariantManager(new VariantPropertyManager(this))
     , mGroupManager(new QtGroupPropertyManager(this))
-    , mUpdating(false)
 {
     mUi->setupUi(this);
     resize(Utils::dpiScaled(size()));
@@ -194,6 +193,9 @@ ObjectTypesEditor::ObjectTypesEditor(QWidget *parent)
 
     mObjectTypesModel->setObjectTypes(Object::objectTypes());
 
+    Preferences *prefs = Preferences::instance();
+    connect(prefs, &Preferences::objectTypesChanged, this, &ObjectTypesEditor::objectTypesChanged);
+
     retranslateUi();
 }
 
@@ -274,7 +276,9 @@ void ObjectTypesEditor::applyObjectTypes()
     auto &objectTypes = mObjectTypesModel->objectTypes();
 
     Preferences *prefs = Preferences::instance();
+    mSettingPrefObjectTypes = true;
     prefs->setObjectTypes(objectTypes);
+    mSettingPrefObjectTypes = false;
 
     QString objectTypesFile = prefs->objectTypesFile();
     QDir objectTypesDir = QFileInfo(objectTypesFile).dir();
@@ -289,6 +293,15 @@ void ObjectTypesEditor::applyObjectTypes()
                               .arg(prefs->objectTypesFile(),
                                    serializer.errorString()));
     }
+}
+
+void ObjectTypesEditor::objectTypesChanged()
+{
+    // ignore signal if ObjectTypesEditor caused it
+    if (mSettingPrefObjectTypes)
+        return;
+
+    mObjectTypesModel->setObjectTypes(Object::objectTypes());
 }
 
 void ObjectTypesEditor::applyPropertyToSelectedTypes(const QString &name, const QVariant &value)
@@ -349,7 +362,11 @@ void ObjectTypesEditor::chooseObjectTypesFile()
     }
 
     prefs->setObjectTypesFile(fileName);
+
+    mSettingPrefObjectTypes = true;
     prefs->setObjectTypes(objectTypes);
+    mSettingPrefObjectTypes = false;
+
     mObjectTypesModel->setObjectTypes(objectTypes);
 }
 
