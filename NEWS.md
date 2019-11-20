@@ -1,3 +1,14 @@
+### Tiled 1.3.1 (20 November 2019)
+
+* Added reloading of object types when changed externally (by Jacob Coughenour, #2674)
+* Added a status bar to the startup screen
+* Made the shortcuts for the tools configurable (#2666)
+* Made Undo/Redo shortcuts configurable (#2669)
+* Fixed importing of keyboard settings (.kms files) (#2671)
+* Fixed small window showing up on startup for a split second
+* Windows: Fixed the shipped version of OpenSSL (fixes new version notification)
+* Tiled Quick: Don't compile/install by default (#2673)
+
 ### Tiled 1.3.0 (13 November 2019)
 
 * Added support for extending Tiled with JavaScript (#949)
