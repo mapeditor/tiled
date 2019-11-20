@@ -1,6 +1,5 @@
 name: tiled
-version: git
-version-script: git describe | cut -c 2-
+adopt-info: tiled
 summary: Your free, easy to use and flexible tile map editor.
 description: |
   Tiled is a free software level editor. It supports editing tile maps in
@@ -35,6 +34,9 @@ parts:
     options:
       - PREFIX=/usr
       - CONFIG+=release
+    override-pull: |
+      snapcraftctl pull
+      snapcraftctl set-version "$(git describe | cut -c 2-)"
     source: .
     build-packages:
     # FIXME: Python plugin compiles and loads, but can't find platform libraries
