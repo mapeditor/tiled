@@ -194,11 +194,12 @@ TilesetEditor::TilesetEditor(QObject *parent)
     mTilesetToolBar->addSeparator();
     mTilesetToolBar->addAction(mDynamicWrappingToggle);
 
-    mMainWindow->statusBar()->addPermanentWidget(mZoomComboBox);
-    mMainWindow->statusBar()->addPermanentWidget(new NewsButton);
-    mMainWindow->statusBar()->addPermanentWidget(new NewVersionButton(NewVersionButton::AutoVisible));
-    mMainWindow->statusBar()->addWidget(new IssuesCounter);
-    mMainWindow->statusBar()->addWidget(mStatusInfoLabel);
+    auto statusBar = mMainWindow->statusBar();
+    statusBar->addPermanentWidget(mZoomComboBox);
+    statusBar->addPermanentWidget(new NewsButton(statusBar));
+    statusBar->addPermanentWidget(new NewVersionButton(NewVersionButton::AutoVisible, statusBar));
+    statusBar->addWidget(new IssuesCounter(statusBar));
+    statusBar->addWidget(mStatusInfoLabel);
 
     mTemplatesDock->setPropertiesDock(mPropertiesDock);
 

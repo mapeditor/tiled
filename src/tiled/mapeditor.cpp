@@ -250,12 +250,13 @@ MapEditor::MapEditor(QObject *parent)
     connect(mLayerComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::activated),
             this, &MapEditor::layerComboActivated);
 
-    mMainWindow->statusBar()->addPermanentWidget(mLayerComboBox);
-    mMainWindow->statusBar()->addPermanentWidget(mZoomComboBox);
-    mMainWindow->statusBar()->addPermanentWidget(new NewsButton);
-    mMainWindow->statusBar()->addPermanentWidget(new NewVersionButton(NewVersionButton::AutoVisible));
-    mMainWindow->statusBar()->addWidget(new IssuesCounter);
-    mMainWindow->statusBar()->addWidget(mStatusInfoLabel);
+    auto statusBar = mMainWindow->statusBar();
+    statusBar->addPermanentWidget(mLayerComboBox);
+    statusBar->addPermanentWidget(mZoomComboBox);
+    statusBar->addPermanentWidget(new NewsButton(statusBar));
+    statusBar->addPermanentWidget(new NewVersionButton(NewVersionButton::AutoVisible, statusBar));
+    statusBar->addWidget(new IssuesCounter(statusBar));
+    statusBar->addWidget(mStatusInfoLabel);
 
     connect(mWidgetStack, &QStackedWidget::currentChanged, this, &MapEditor::currentWidgetChanged);
     connect(mToolManager, &ToolManager::statusInfoChanged, this, &MapEditor::updateStatusInfoLabel);

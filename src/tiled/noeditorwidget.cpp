@@ -46,9 +46,9 @@ NoEditorWidget::NoEditorWidget(QWidget *parent) :
 
     // Add a status bar to the bottom
     auto statusBar = new QStatusBar;
-    statusBar->addPermanentWidget(new NewsButton);
-    statusBar->addPermanentWidget(new NewVersionButton(NewVersionButton::AutoVisible));
-    statusBar->addWidget(new IssuesCounter);
+    statusBar->addPermanentWidget(new NewsButton(statusBar));
+    statusBar->addPermanentWidget(new NewVersionButton(NewVersionButton::AutoVisible, statusBar));
+    statusBar->addWidget(new IssuesCounter(statusBar));
 
     ui->gridLayout->addWidget(statusBar, 3, 0, 1, 3);
 
