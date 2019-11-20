@@ -290,15 +290,31 @@ Product {
         condition: qbs.targetOS.contains("windows") && File.exists(prefix)
 
         prefix: {
-            if (qbs.architecture === "x86_64")
-                return "C:/OpenSSL-Win64/"
-            else
-                return "C:/OpenSSL-Win32/"
+            // Not sure what this check should be exactly, but Qt 5.6.3 was
+            // built against OpenSSL 1.0.2 whereas Qt 5.12.5 was built against
+            // OpenSSL 1.1.1.
+            if (Qt.core.versionMinor >= 12) {
+                if (qbs.architecture === "x86_64")
+                    return "C:/OpenSSL-v111-Win64/"
+                else
+                    return "C:/OpenSSL-v111-Win32/"
+            } else {
+                if (qbs.architecture === "x86_64")
+                    return "C:/OpenSSL-Win64/"
+                else
+                    return "C:/OpenSSL-Win32/"
+            }
         }
-        files: [
-            "libeay32.dll",
-            "ssleay32.dll",
-        ]
+        files: {
+            if (Qt.core.versionMinor >= 12) {
+                if (qbs.architecture === "x86_64")
+                    return [ "libcrypto-1_1-x64.dll", "libssl-1_1-x64.dll" ]
+                else
+                    return [ "libcrypto-1_1.dll", "libssl-1_1.dll" ]
+            } else {
+                return [ "libeay32.dll", "ssleay32.dll" ]
+            }
+        }
         qbs.install: true
         qbs.installDir: ""
     }

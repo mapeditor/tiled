@@ -22,11 +22,11 @@ WindowsInstallerPackage {
     Depends { name: "cpp" }
     Depends { name: "Qt.core" }
 
-    property int bits: {
+    property string bits: {
         if (qbs.architecture === "x86_64")
-            return 64;
-        if (qbs.architecture === "x86")
-            return 32;
+            return "64";
+        else
+            return "32";
     }
 
     targetName: "Tiled-" + project.version + "-win" + bits
@@ -56,9 +56,18 @@ WindowsInstallerPackage {
         if (File.exists(Environment.getEnv("PYTHONHOME")))
             defs.push("Python");
 
-        var openSslDir = "C:\\OpenSSL-Win" + bits;
-        if (File.exists(openSslDir))
-            defs.push("OpenSslDir=" + openSslDir);
+        // Not sure what this check should be exactly, but Qt 5.6.3 was
+        // built against OpenSSL 1.0.2 whereas Qt 5.12.5 was built against
+        // OpenSSL 1.1.1.
+        if (Qt.core.versionMinor >= 12) {
+            var openSslDir = "C:\\OpenSSL-v111-Win" + bits
+            if (File.exists(openSslDir))
+                defs.push("OpenSsl111Dir=" + openSslDir);
+        } else {
+            var openSslDir = "C:\\OpenSSL-Win" + bits
+            if (File.exists(openSslDir))
+                defs.push("OpenSsl102Dir=" + openSslDir);
+        }
 
         return defs;
     }

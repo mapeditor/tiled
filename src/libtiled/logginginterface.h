@@ -118,7 +118,7 @@ public:
     void log(OutputType type, const QString &message);
 
 signals:
-    void issue(const Issue &issue);
+    void issue(const Tiled::Issue &issue);
 
     void info(const QString &message);
     void warning(const QString &message);

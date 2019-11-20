@@ -7,25 +7,25 @@
   <?define WebsiteURL="http://www.mapeditor.org/" ?>
 
   <?ifndef InstallRoot ?>
-  <?error InstallRoot must be defined ?>
+    <?error InstallRoot must be defined ?>
   <?endif?>
   <?ifndef QtDir ?>
-  <?error QtDir must be defined ?>
+    <?error QtDir must be defined ?>
   <?endif?>
   <?ifndef RootDir ?>
-  <?error RootDir must be defined ?>
+    <?error RootDir must be defined ?>
   <?endif?>
   <?ifndef Version ?>
-  <?error Version must be defined ?>
+    <?error Version must be defined ?>
   <?endif?>
   <?ifndef Platform ?>
-  <?error Platform must be defined ?>
+    <?error Platform must be defined ?>
   <?endif?>
 
   <?if $(var.Platform) = x64 ?>
-  <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
+    <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
   <?else ?>
-  <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
+    <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
   <?endif ?>
 
   <Product Name='$(var.ProductName)' Id="*"
@@ -90,25 +90,35 @@
             <File Id="Qt5Widgets_dll" Source="$(var.QtDir)\bin\Qt5Widgets.dll"/>
 
             <?ifdef MingwDir ?>
-            <?if $(var.Platform) = x64 ?>
-            <File Id="libgcc_s_seh_1_dll" Source="$(var.MingwDir)\bin\libgcc_s_seh-1.dll"/>
-            <?else ?>
-            <File Id="libgcc_s_dw2_1_dll" Source="$(var.MingwDir)\bin\libgcc_s_dw2-1.dll"/>
-            <?endif ?>
-            <File Id="libstdc___6_dll" Source="$(var.MingwDir)\bin\libstdc++-6.dll"/>
-            <File Id="libwinpthread_1_dll" Source="$(var.MingwDir)\bin\libwinpthread-1.dll"/>
+              <?if $(var.Platform) = x64 ?>
+                <File Id="libgcc_s_seh_1_dll" Source="$(var.MingwDir)\bin\libgcc_s_seh-1.dll"/>
+              <?else ?>
+                <File Id="libgcc_s_dw2_1_dll" Source="$(var.MingwDir)\bin\libgcc_s_dw2-1.dll"/>
+              <?endif ?>
+              <File Id="libstdc___6_dll" Source="$(var.MingwDir)\bin\libstdc++-6.dll"/>
+              <File Id="libwinpthread_1_dll" Source="$(var.MingwDir)\bin\libwinpthread-1.dll"/>
             <?else?>
               <?ifdef VcUniversalCRT ?>
-              <File Source="$(var.VcInstallDir)\msvcp140.dll"/>
+                <File Source="$(var.VcInstallDir)\msvcp140.dll"/>
               <?else?>
-              <File Source="$(var.VcInstallDir)\redist\$(var.Platform)\Microsoft.VC120.CRT\msvcp120.dll"/>
-              <File Source="$(var.VcInstallDir)\redist\$(var.Platform)\Microsoft.VC120.CRT\msvcr120.dll"/>
+                <File Source="$(var.VcInstallDir)\redist\$(var.Platform)\Microsoft.VC120.CRT\msvcp120.dll"/>
+                <File Source="$(var.VcInstallDir)\redist\$(var.Platform)\Microsoft.VC120.CRT\msvcr120.dll"/>
               <?endif?>
             <?endif?>
 
-            <?ifdef OpenSslDir ?>
-            <File Id="libeay32_dll" Source="$(var.OpenSslDir)\libeay32.dll" />
-            <File Id="ssleay32_dll" Source="$(var.OpenSslDir)\ssleay32.dll" />
+            <?ifdef OpenSsl102Dir ?>
+              <File Id="libeay32_dll" Source="$(var.OpenSsl102Dir)\libeay32.dll" />
+              <File Id="ssleay32_dll" Source="$(var.OpenSsl102Dir)\ssleay32.dll" />
+            <?endif?>
+
+            <?ifdef OpenSsl111Dir ?>
+              <?if $(var.Platform) = x64 ?>
+                <File Id="libcrypto_1_1_dll_x64" Source="$(var.OpenSsl111Dir)\libcrypto-1_1-x64.dll" />
+                <File Id="libssl_1_1_dll_x64" Source="$(var.OpenSsl111Dir)\libssl-1_1-x64.dll" />
+              <?else?>
+                <File Id="libcrypto_1_1_dll" Source="$(var.OpenSsl111Dir)\libcrypto-1_1.dll" />
+                <File Id="libssl_1_1_dll" Source="$(var.OpenSsl111Dir)\libssl-1_1.dll" />
+              <?endif?>
             <?endif?>
 
             <File Id="COPYING" Name="COPYING.txt" Source="$(var.RootDir)\COPYING"/>

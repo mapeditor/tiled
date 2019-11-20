@@ -34,10 +34,10 @@ AbstractTool::AbstractTool(Id id,
                            const QKeySequence &shortcut,
                            QObject *parent)
     : QObject(parent)
-    , mId(id)
     , mName(name)
     , mIcon(icon)
     , mShortcut(shortcut)
+    , mId(id)
     , mEnabled(false)
     , mToolManager(nullptr)
     , mMapDocument(nullptr)
