@@ -1,12 +1,12 @@
 {
     "release": {
-        "version": "1.3.0",
-        "release_notes": "https://www.mapeditor.org/2019/11/13/tiled-1-3-0-released.html",
+        "version": "1.3.1",
+        "release_notes": "https://www.mapeditor.org/2019/11/20/tiled-1-3-1-released.html",
         "download": "https://thorbjorn.itch.io/tiled/purchase"
     },
     "snapshot":  {
-        "version": "2019.11.12",
-        "release_notes": "https://thorbjorn.itch.io/tiled/devlog/109568/custom-file-format-scripting-api-changes",
+        "version": "2019.11.20",
+        "release_notes": "https://thorbjorn.itch.io/tiled/devlog/110821/tiled-131-released",
         "download": "https://thorbjorn.itch.io/tiled/purchase"
     }
 }
