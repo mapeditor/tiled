@@ -93,8 +93,8 @@ private:
     QHash<QString, QtVariantProperty *> mNameToProperty;
 
     AggregatedProperties mProperties;
-    bool mUpdating;
-    bool mSettingPrefObjectTypes;
+    bool mUpdating = false;
+    bool mSettingPrefObjectTypes = false;
 
     QAction *mAddObjectTypeAction;
     QAction *mRemoveObjectTypeAction;

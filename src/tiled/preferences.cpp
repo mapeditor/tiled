@@ -822,8 +822,7 @@ void Preferences::objectTypesFileChangedOnDisk()
 {
     ObjectTypesSerializer objectTypesSerializer;
     ObjectTypes objectTypes;
-    bool success = objectTypesSerializer.readObjectTypes(objectTypesFile(), objectTypes);
 
-    if (success)
+    if (objectTypesSerializer.readObjectTypes(objectTypesFile(), objectTypes))
         setObjectTypes(objectTypes);
 }
