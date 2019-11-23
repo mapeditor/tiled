@@ -59,7 +59,7 @@ static QJsonObject toJson(const ObjectType &objectType, const QDir &fileDir)
 
     QJsonArray propertiesJson;
 
-    QMapIterator<QString,QVariant> it(objectType.defaultProperties);
+    QMapIterator<QString,QVariant> it(objectType.defaultProperties.map());
     while (it.hasNext()) {
         it.next();
 
@@ -138,7 +138,7 @@ static void writeObjectTypesXml(QFileDevice *device,
         writer.writeAttribute(QLatin1String("name"), objectType.name);
         writer.writeAttribute(QLatin1String("color"), objectType.color.name());
 
-        QMapIterator<QString,QVariant> it(objectType.defaultProperties);
+        QMapIterator<QString,QVariant> it(objectType.defaultProperties.map());
         while (it.hasNext()) {
             it.next();
 

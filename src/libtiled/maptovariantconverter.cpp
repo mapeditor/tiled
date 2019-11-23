@@ -341,8 +341,8 @@ QVariant MapToVariantConverter::toVariant(const Properties &properties) const
 {
     QVariantMap variantMap;
 
-    Properties::const_iterator it = properties.constBegin();
-    Properties::const_iterator it_end = properties.constEnd();
+    auto it = properties.map().constBegin();
+    const auto it_end = properties.map().constEnd();
     for (; it != it_end; ++it) {
         const QVariant value = toExportValue(it.value(), mDir);
         variantMap[it.key()] = value;
@@ -355,8 +355,8 @@ QVariant MapToVariantConverter::propertyTypesToVariant(const Properties &propert
 {
     QVariantMap variantMap;
 
-    Properties::const_iterator it = properties.constBegin();
-    Properties::const_iterator it_end = properties.constEnd();
+    auto it = properties.map().constBegin();
+    const auto it_end = properties.map().constEnd();
     for (; it != it_end; ++it)
         variantMap[it.key()] = typeToName(it.value().userType());
 
@@ -763,8 +763,8 @@ void MapToVariantConverter::addProperties(QVariantMap &variantMap,
         QVariantMap propertiesMap;
         QVariantMap propertyTypesMap;
 
-        Properties::const_iterator it = properties.constBegin();
-        Properties::const_iterator it_end = properties.constEnd();
+        auto it = properties.map().constBegin();
+        const auto it_end = properties.map().constEnd();
         for (; it != it_end; ++it) {
             int type = it.value().userType();
             const QVariant value = toExportValue(it.value(), mDir);
@@ -778,8 +778,8 @@ void MapToVariantConverter::addProperties(QVariantMap &variantMap,
     } else {
         QVariantList propertiesVariantList;
 
-        Properties::const_iterator it = properties.constBegin();
-        Properties::const_iterator it_end = properties.constEnd();
+        auto it = properties.map().constBegin();
+        const auto it_end = properties.map().constEnd();
         for (; it != it_end; ++it) {
             int type = it.value().userType();
             const QVariant value = toExportValue(it.value(), mDir);

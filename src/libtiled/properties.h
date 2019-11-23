@@ -45,19 +45,34 @@ struct FilePath {
 /**
  * Collection of properties and their values.
  */
-class TILEDSHARED_EXPORT Properties : public QVariantMap
+class TILEDSHARED_EXPORT Properties
 {
 public:
     Properties() = default;
     Properties(const Properties &) = default;
-    Properties(const QVariantMap &variantMap) : QVariantMap(variantMap) {}
+    Properties(const QVariantMap &variantMap);
 
     Properties &operator=(const Properties &other) = default;
 
+    QVariant &operator[](const QString &key);
+    const QVariant operator[](const QString &key) const;
+
+    inline bool isEmpty() const { return mMap.isEmpty(); }
+    bool contains(const QString &key) const;
+    QVariant value(const QString &key, const QVariant &defaultValue = QVariant()) const;
+    QVariantMap::iterator insert(const QString &key, const QVariant &value);
+    int remove(const QString &key);
+    void clear();
+
     void merge(const Properties &other);
+
+    QVariantMap map() const;
 
     QJsonArray toJson() const;
     static Properties fromJson(const QJsonArray &json);
+
+private:
+    QVariantMap mMap;
 };
 
 class TILEDSHARED_EXPORT AggregatedPropertyData

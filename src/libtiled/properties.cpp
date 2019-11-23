@@ -35,23 +35,68 @@
 
 namespace Tiled {
 
+Properties::Properties(const QVariantMap &variantMap) :
+    mMap(variantMap)
+{
+}
+
+QVariant &Properties::operator[](const QString &key)
+{
+    return mMap[key];
+}
+
+const QVariant Properties::operator[](const QString &key) const
+{
+    return mMap[key];
+}
+
+bool Properties::contains(const QString &key) const
+{
+    return mMap.contains(key);
+}
+
+QVariant Properties::value(const QString &key, const QVariant &defaultValue) const
+{
+    return mMap.value(key, defaultValue);
+}
+
+QVariantMap::iterator Properties::insert(const QString &key, const QVariant &value)
+{
+    return mMap.insert(key, value);
+}
+
+int Properties::remove(const QString &key)
+{
+    return mMap.remove(key);
+}
+
+void Properties::clear()
+{
+    mMap.clear();
+}
+
 void Properties::merge(const Properties &other)
 {
     // Based on QMap::unite, but using insert instead of insertMulti
-    const_iterator it = other.constEnd();
-    const const_iterator b = other.constBegin();
+    QVariantMap::const_iterator it = other.mMap.constEnd();
+    const QVariantMap::const_iterator b = other.mMap.constBegin();
     while (it != b) {
         --it;
         insert(it.key(), it.value());
     }
 }
 
+QVariantMap Properties::map() const
+{
+    return mMap;
+}
+
 QJsonArray Properties::toJson() const
 {
     QJsonArray json;
 
-    const_iterator it = begin();
-    const const_iterator it_end = end();
+    auto it = mMap.constBegin();
+    const auto it_end = mMap.constEnd();
     for (; it != it_end; ++it) {
         const QString &name = it.key();
         const QJsonValue value = QJsonValue::fromVariant(toExportValue(it.value()));
@@ -89,8 +134,8 @@ Properties Properties::fromJson(const QJsonArray &json)
 
 void AggregatedProperties::aggregate(const Properties &properties)
 {
-    auto it = properties.constEnd();
-    const auto b = properties.constBegin();
+    auto it = properties.map().constEnd();
+    const auto b = properties.map().constBegin();
     while (it != b) {
         --it;
 

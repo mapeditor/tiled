@@ -953,8 +953,8 @@ void MapWriterPrivate::writeProperties(QXmlStreamWriter &w,
 
     w.writeStartElement(QLatin1String("properties"));
 
-    Properties::const_iterator it = properties.constBegin();
-    Properties::const_iterator it_end = properties.constEnd();
+    auto it = properties.map().constBegin();
+    auto it_end = properties.map().constEnd();
     for (; it != it_end; ++it) {
         w.writeStartElement(QLatin1String("property"));
         w.writeAttribute(QLatin1String("name"), it.key());
