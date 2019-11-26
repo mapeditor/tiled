@@ -1092,7 +1092,7 @@ void MapDocument::unifyTilesets(Map *map)
         for (Tile *replacementTile : replacement->tiles()) {
             if (Tile *originalTile = tileset->findTile(replacementTile->id())) {
                 Properties properties = replacementTile->properties();
-                properties.merge(originalTile->properties());
+                mergeProperties(properties, originalTile->properties());
                 undoCommands.append(new ChangeProperties(this,
                                                          tr("Tile"),
                                                          replacementTile,

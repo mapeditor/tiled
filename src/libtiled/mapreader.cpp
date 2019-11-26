@@ -528,7 +528,7 @@ void MapReaderPrivate::readTilesetTile(Tileset &tileset)
                 // them in previous versions.
                 Properties p = objectGroup->properties();
                 if (!p.isEmpty()) {
-                    p.merge(tile->properties());
+                    mergeProperties(p, tile->properties());
                     tile->setProperties(p);
                     objectGroup->setProperties(Properties());
                 }

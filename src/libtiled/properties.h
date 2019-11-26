@@ -42,24 +42,6 @@ struct FilePath {
     QUrl url;
 };
 
-/**
- * Collection of properties and their values.
- */
-class TILEDSHARED_EXPORT Properties : public QVariantMap
-{
-public:
-    Properties() = default;
-    Properties(const Properties &) = default;
-    Properties(const QVariantMap &variantMap) : QVariantMap(variantMap) {}
-
-    Properties &operator=(const Properties &other) = default;
-
-    void merge(const Properties &other);
-
-    QJsonArray toJson() const;
-    static Properties fromJson(const QJsonArray &json);
-};
-
 class TILEDSHARED_EXPORT AggregatedPropertyData
 {
 public:
@@ -98,15 +80,21 @@ private:
 };
 
 /**
+ * Collection of properties and their values.
+ */
+using Properties = QVariantMap;
+
+/**
  * Collection of properties with information about the consistency of their
  * presence and value over several property collections.
  */
-class TILEDSHARED_EXPORT AggregatedProperties : public QMap<QString, AggregatedPropertyData>
-{
-public:
-    void aggregate(const Properties &properties);
-};
+using AggregatedProperties = QMap<QString, AggregatedPropertyData>;
 
+TILEDSHARED_EXPORT void aggregateProperties(AggregatedProperties &aggregated, const Properties &properties);
+TILEDSHARED_EXPORT void mergeProperties(Properties &target, const Properties &source);
+
+TILEDSHARED_EXPORT QJsonArray propertiesToJson(const Properties &properties);
+TILEDSHARED_EXPORT Properties propertiesFromJson(const QJsonArray &json);
 
 TILEDSHARED_EXPORT int filePathTypeId();
 

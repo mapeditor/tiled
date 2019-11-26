@@ -584,7 +584,7 @@ int main(int argc, char *argv[])
                 }
 
                 painter.drawPixmap(0, 0, tile->image());
-                properties.merge(tile->properties());
+                mergeProperties(properties, tile->properties());
             }
 
             image = QPixmap::fromImage(tileImage);

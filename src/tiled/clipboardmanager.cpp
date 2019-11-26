@@ -110,12 +110,12 @@ Properties ClipboardManager::properties() const
     const QByteArray data = mimeData->data(QLatin1String(PROPERTIES_MIMETYPE));
     const QJsonDocument document = QJsonDocument::fromBinaryData(data);
 
-    return Properties::fromJson(document.array());
+    return propertiesFromJson(document.array());
 }
 
 void ClipboardManager::setProperties(const Properties &properties)
 {
-    const QJsonDocument document(properties.toJson());
+    const QJsonDocument document(propertiesToJson(properties));
 
     QMimeData *mimeData = new QMimeData;
     mimeData->setData(QLatin1String(PROPERTIES_MIMETYPE), document.toBinaryData());

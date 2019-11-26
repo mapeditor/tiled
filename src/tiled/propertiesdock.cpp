@@ -233,7 +233,7 @@ void PropertiesDock::pasteProperties()
 
     for (Object *object : objects) {
         Properties properties = object->properties();
-        properties.merge(pastedProperties);
+        mergeProperties(properties, pastedProperties);
 
         if (object->properties() != properties) {
             commands.append(new ChangeProperties(mDocument, QString(), object,

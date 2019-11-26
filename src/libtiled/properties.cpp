@@ -35,23 +35,23 @@
 
 namespace Tiled {
 
-void Properties::merge(const Properties &other)
+void mergeProperties(Properties &target, const Properties &source)
 {
     // Based on QMap::unite, but using insert instead of insertMulti
-    const_iterator it = other.constEnd();
-    const const_iterator b = other.constBegin();
+    Properties::const_iterator it = source.constEnd();
+    const Properties::const_iterator b = source.constBegin();
     while (it != b) {
         --it;
-        insert(it.key(), it.value());
+        target.insert(it.key(), it.value());
     }
 }
 
-QJsonArray Properties::toJson() const
+QJsonArray propertiesToJson(const Properties &properties)
 {
     QJsonArray json;
 
-    const_iterator it = begin();
-    const const_iterator it_end = end();
+    Properties::const_iterator it = properties.begin();
+    const Properties::const_iterator it_end = properties.end();
     for (; it != it_end; ++it) {
         const QString &name = it.key();
         const QJsonValue value = QJsonValue::fromVariant(toExportValue(it.value()));
@@ -68,7 +68,7 @@ QJsonArray Properties::toJson() const
     return json;
 }
 
-Properties Properties::fromJson(const QJsonArray &json)
+Properties propertiesFromJson(const QJsonArray &json)
 {
     Properties properties;
 
@@ -87,19 +87,19 @@ Properties Properties::fromJson(const QJsonArray &json)
     return properties;
 }
 
-void AggregatedProperties::aggregate(const Properties &properties)
+void aggregateProperties(AggregatedProperties &aggregated, const Properties &properties)
 {
     auto it = properties.constEnd();
     const auto b = properties.constBegin();
     while (it != b) {
         --it;
 
-        auto pit = find(it.key());
-        if (pit != end()) {
+        auto pit = aggregated.find(it.key());
+        if (pit != aggregated.end()) {
             AggregatedPropertyData &propertyData = pit.value();
             propertyData.aggregate(it.value());
         } else {
-            insert(it.key(), AggregatedPropertyData(it.value()));
+            aggregated.insert(it.key(), AggregatedPropertyData(it.value()));
         }
     }
 }

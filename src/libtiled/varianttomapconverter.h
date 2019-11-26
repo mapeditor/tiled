@@ -35,7 +35,6 @@ class Layer;
 class Map;
 class ObjectGroup;
 class ObjectTemplate;
-class Properties;
 class Tileset;
 class WangColor;
 

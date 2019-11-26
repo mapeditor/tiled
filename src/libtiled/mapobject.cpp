@@ -425,7 +425,7 @@ void MapObject::detachFromTemplate()
     // All non-overridden properties are already synchronized, so we only need
     // to merge the custom properties.
     Properties newProperties = base->properties();
-    newProperties.merge(properties());
+    Tiled::mergeProperties(newProperties, properties());
     setProperties(newProperties);
 
     setObjectTemplate(nullptr);

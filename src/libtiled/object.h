@@ -88,10 +88,10 @@ public:
      * Merges \a properties with the existing properties. Properties with the
      * same name will be overridden.
      *
-     * \sa Properties::merge
+     * \sa Tiled::mergeProperties
      */
     void mergeProperties(const Properties &properties)
-    { mProperties.merge(properties); }
+    { Tiled::mergeProperties(mProperties, properties); }
 
     /**
      * Returns the value of the object's \a name property.

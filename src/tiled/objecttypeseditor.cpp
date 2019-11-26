@@ -395,7 +395,7 @@ void ObjectTypesEditor::importObjectTypes()
 
             if (it != currentTypes.end()) {
                 it->color = type.color;
-                it->defaultProperties.merge(type.defaultProperties);
+                mergeProperties(it->defaultProperties, type.defaultProperties);
             } else {
                 currentTypes.append(type);
             }
@@ -443,7 +443,7 @@ void ObjectTypesEditor::updateProperties()
 
     for (const QModelIndex &index : selectedRows) {
         ObjectType objectType = mObjectTypesModel->objectTypeAt(index);
-        aggregatedProperties.aggregate(objectType.defaultProperties);
+        aggregateProperties(aggregatedProperties, objectType.defaultProperties);
     }
 
     mAddPropertyAction->setEnabled(!selectedRows.isEmpty());

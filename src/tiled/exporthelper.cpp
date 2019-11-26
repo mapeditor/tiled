@@ -139,16 +139,16 @@ void ExportHelper::resolveTypeAndProperties(MapObject *object) const
         for (int i = Object::objectTypes().size() - 1; i >= 0; --i) {
             auto const &type = Object::objectTypes().at(i);
             if (type.name == object->type())
-                properties.merge(type.defaultProperties);
+                mergeProperties(properties, type.defaultProperties);
         }
     }
 
     // Inherit properties from tile
     if (tile)
-        properties.merge(tile->properties());
+        mergeProperties(properties, tile->properties());
 
     // Override with own properties
-    properties.merge(object->properties());
+    mergeProperties(properties, object->properties());
 
     object->setProperties(properties);
 }

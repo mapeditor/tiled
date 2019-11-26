@@ -858,7 +858,7 @@ void AutoMapper::copyMapRegion(const QRegion &region, QPoint offset,
         // Copy any custom properties set on the output layer
         if (!from->properties().isEmpty()) {
             Properties mergedProperties = to->properties();
-            mergedProperties.merge(from->properties());
+            mergeProperties(mergedProperties, from->properties());
 
             if (mergedProperties != to->properties()) {
                 QUndoStack *undoStack = mMapDocument->undoStack();

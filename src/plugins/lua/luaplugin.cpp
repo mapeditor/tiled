@@ -698,7 +698,7 @@ void LuaWriter::writeMapObject(const Tiled::MapObject *mapObject)
     if (const MapObject *base = mapObject->templateObject()) {
         // Include template properties
         Properties props = base->properties();
-        props.merge(mapObject->properties());
+        mergeProperties(props, mapObject->properties());
         writeProperties(props);
     } else {
         writeProperties(mapObject->properties());
