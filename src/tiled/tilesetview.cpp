@@ -1243,9 +1243,10 @@ void TilesetView::leaveEvent(QEvent *event)
  */
 void TilesetView::wheelEvent(QWheelEvent *event)
 {
-    if (event->modifiers() & Qt::ControlModifier &&
-            event->orientation() == Qt::Vertical)
-    {
+    bool wheelZoomsByDefault = !dynamicWrapping() && Preferences::instance()->wheelZoomsByDefault();
+    bool control = event->modifiers() & Qt::ControlModifier;
+
+    if ((wheelZoomsByDefault != control) && event->orientation() == Qt::Vertical) {
         auto hor = horizontalScrollBar();
         auto ver = verticalScrollBar();
 
