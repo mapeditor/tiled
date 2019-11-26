@@ -165,16 +165,17 @@ void MapScene::refreshScene()
         return;
     }
 
-    WorldManager &worldManager = WorldManager::instance();
+    const WorldManager &worldManager = WorldManager::instance();
+    const QString currentMapFile = mMapDocument->canonicalFilePath();
 
-    if (const World *world = worldManager.worldForMap(mMapDocument->fileName())) {
-        const QPoint currentMapPosition = world->mapRect(mMapDocument->fileName()).topLeft();
-        auto const contextMaps = world->contextMaps(mMapDocument->fileName());
+    if (const World *world = worldManager.worldForMap(currentMapFile)) {
+        const QPoint currentMapPosition = world->mapRect(currentMapFile).topLeft();
+        auto const contextMaps = world->contextMaps(currentMapFile);
 
         for (const World::MapEntry &mapEntry : contextMaps) {
             MapDocumentPtr mapDocument;
 
-            if (mapEntry.fileName == mMapDocument->fileName()) {
+            if (mapEntry.fileName == currentMapFile) {
                 mapDocument = mMapDocument->sharedFromThis();
             } else {
                 auto doc = DocumentManager::instance()->loadDocument(mapEntry.fileName);

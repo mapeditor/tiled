@@ -241,6 +241,12 @@ bool World::containsMap(const QString &fileName) const
             return true;
     }
 
+    // Currently patterns can only be used to search for maps in the same
+    // folder as the .world file. It could be useful to support a "prefix" or
+    // "folders" property per pattern to allow referring to other folders.
+    if (QFileInfo(this->fileName).path() != QFileInfo(fileName).path())
+        return false;
+
     for (const World::Pattern &pattern : patterns) {
         QRegularExpressionMatch match = pattern.regexp.match(fileName);
         if (match.hasMatch())
@@ -303,14 +309,11 @@ QVector<World::MapEntry> World::allMaps() const
 
 QVector<World::MapEntry> World::mapsInRect(const QRect &rect) const
 {
-    const QVector<World::MapEntry> all(allMaps());
+    QVector<World::MapEntry> maps(allMaps());
 
-    QVector<World::MapEntry> maps;
-
-    for (const World::MapEntry &mapEntry : all) {
-        if (mapEntry.rect.intersects(rect))
-            maps.append(mapEntry);
-    }
+    maps.erase(std::remove_if(maps.begin(), maps.end(),
+                              [&](const World::MapEntry &mapEntry) { return !mapEntry.rect.intersects(rect); }),
+               maps.end());
 
     return maps;
 }
