@@ -58,6 +58,7 @@ class MapEditor;
 class MapScene;
 class MapView;
 class ObjectTypesEditor;
+class ProjectDock;
 class TilesetDocument;
 class TilesetEditor;
 class Zoomable;
@@ -208,6 +209,7 @@ private:
     Zoomable *mZoomable = nullptr;
     MapDocumentActionHandler *mActionHandler;
     ConsoleDock *mConsoleDock;
+    ProjectDock *mProjectDock;
     IssuesDock *mIssuesDock;
     ObjectTypesEditor *mObjectTypesEditor;
     QSettings mSettings;

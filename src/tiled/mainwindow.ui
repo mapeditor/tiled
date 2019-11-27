@@ -177,11 +177,23 @@
     </property>
     <addaction name="actionTilesetProperties"/>
    </widget>
+   <widget class="QMenu" name="menuProject">
+    <property name="title">
+     <string>&amp;Project</string>
+    </property>
+    <addaction name="actionOpenProject"/>
+    <addaction name="actionSaveProjectAs"/>
+    <addaction name="actionCloseProject"/>
+    <addaction name="separator"/>
+    <addaction name="actionAddFolderToProject"/>
+    <addaction name="actionRefreshProjectFolders"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuView"/>
    <addaction name="menuMap"/>
    <addaction name="menuTileset"/>
+   <addaction name="menuProject"/>
    <addaction name="menuHelp"/>
   </widget>
   <action name="actionOpen">
@@ -653,6 +665,36 @@
   <action name="actionForum">
    <property name="text">
     <string>Community Forum ↗</string>
+   </property>
+  </action>
+  <action name="actionOpenProject">
+   <property name="text">
+    <string>&amp;Open Project...</string>
+   </property>
+  </action>
+  <action name="actionCloseProject">
+   <property name="text">
+    <string>&amp;Close Project</string>
+   </property>
+  </action>
+  <action name="actionClearRecentProjects">
+   <property name="text">
+    <string>Clear Recent Projects</string>
+   </property>
+  </action>
+  <action name="actionAddFolderToProject">
+   <property name="text">
+    <string>Add Folder to Project...</string>
+   </property>
+  </action>
+  <action name="actionSaveProjectAs">
+   <property name="text">
+    <string>Save Project As...</string>
+   </property>
+  </action>
+  <action name="actionRefreshProjectFolders">
+   <property name="text">
+    <string>Refresh Folders</string>
    </property>
   </action>
  </widget>

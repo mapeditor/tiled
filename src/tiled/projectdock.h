@@ -1,6 +1,6 @@
 /*
- * mapsdock.h
- * Copyright 2012, Tim Baker <treectrl@hotmail.com>
+ * projectdock.h
+ * Copyright 2019, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -20,66 +20,78 @@
 
 #pragma once
 
+#include "project.h"
+
 #include <QDockWidget>
 #include <QTreeView>
 
 class QFileSystemModel;
-class QLineEdit;
 
 namespace Tiled {
 
-class MapsView;
+class ProjectView;
+class ProjectModel;
 
-class MapsDock : public QDockWidget
+class ProjectDock : public QDockWidget
 {
     Q_OBJECT
 
 public:
-    MapsDock(QWidget *parent = nullptr);
+    ProjectDock(QWidget *parent = nullptr);
+
+    QString projectFileName() const;
+
+    void openProject();
+    void saveProjectAs();
+    void closeProject();
+    void addFolderToProject();
+    void refreshProjectFolders();
+
+signals:
+    void projectFileNameChanged();
 
 protected:
     void changeEvent(QEvent *e) override;
 
 private:
-    void browse();
-    void editedMapsDirectory();
-    void onMapsDirectoryChanged();
-
     void retranslateUi();
 
-    QLineEdit *mDirectoryEdit;
-    MapsView *mMapsView;
+    Project mProject;
+    ProjectView *mProjectView;
 };
 
 /**
- * Shows the list of files and directories.
+ * Shows the list of files in a project.
  */
-class MapsView : public QTreeView
+class ProjectView : public QTreeView
 {
     Q_OBJECT
 
 public:
-    MapsView(QWidget *parent = nullptr);
+    ProjectView(QWidget *parent = nullptr);
 
     /**
      * Returns a sensible size hint.
      */
     QSize sizeHint() const override;
 
-    QFileSystemModel *model() const { return mFileSystemModel; }
+    void setModel(QAbstractItemModel *model) override;
+
+    ProjectModel *model() const { return mProjectModel; }
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;
 
 private:
-    void onMapsDirectoryChanged();
     void onActivated(const QModelIndex &index);
 
-    void pluginObjectAddedOrRemoved(QObject *object);
-
-    void updateNameFilters();
-
-    QFileSystemModel *mFileSystemModel;
+    ProjectModel *mProjectModel;
 };
+
+
+inline QString ProjectDock::projectFileName() const
+{
+    return mProject.fileName();
+}
 
 } // namespace Tiled

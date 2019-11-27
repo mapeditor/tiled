@@ -29,11 +29,9 @@
 #include <QBoxLayout>
 #include <QCompleter>
 #include <QDirModel>
-#include <QEvent>
 #include <QFileDialog>
 #include <QFileSystemModel>
 #include <QHeaderView>
-#include <QLabel>
 #include <QLineEdit>
 #include <QMouseEvent>
 #include <QPushButton>

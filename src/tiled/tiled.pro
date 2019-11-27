@@ -185,6 +185,9 @@ SOURCES += aboutdialog.cpp \
     pluginlistmodel.cpp \
     pointhandle.cpp \
     preferences.cpp \
+    project.cpp \
+    projectdock.cpp \
+    projectmodel.cpp \
     preferencesdialog.cpp \
     propertiesdock.cpp \
     propertybrowser.cpp \
@@ -412,6 +415,9 @@ HEADERS += aboutdialog.h \
     pointhandle.h \
     preferencesdialog.h \
     preferences.h \
+    project.h \
+    projectdock.h \
+    projectmodel.h \
     propertiesdock.h \
     propertybrowser.h \
     raiselowerhelper.h \

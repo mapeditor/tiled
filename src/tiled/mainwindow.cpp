@@ -38,6 +38,7 @@
 #include "documentmanager.h"
 #include "exportasimagedialog.h"
 #include "exporthelper.h"
+#include "issuescounter.h"
 #include "issuesdock.h"
 #include "languagemanager.h"
 #include "layer.h"
@@ -52,12 +53,14 @@
 #include "mapview.h"
 #include "minimaprenderer.h"
 #include "newmapdialog.h"
+#include "newsbutton.h"
 #include "newtilesetdialog.h"
 #include "objectgroup.h"
 #include "objecttypeseditor.h"
 #include "offsetmapdialog.h"
 #include "donationdialog.h"
 #include "pluginmanager.h"
+#include "projectdock.h"
 #include "resizedialog.h"
 #include "scriptmanager.h"
 #include "templatemanager.h"
@@ -99,8 +102,6 @@
 #include <QtPlatformHeaders\QWindowsWindowFunctions>
 #endif
 
-#include "issuescounter.h"
-#include "newsbutton.h"
 #include "qtcompat_p.h"
 
 using namespace Tiled;
@@ -201,6 +202,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mUi(new Ui::MainWindow)
     , mActionHandler(new MapDocumentActionHandler(this))
     , mConsoleDock(new ConsoleDock(this))
+    , mProjectDock(new ProjectDock(this))
     , mIssuesDock(new IssuesDock(this))
     , mObjectTypesEditor(new ObjectTypesEditor(this))
     , mAutomappingManager(new AutomappingManager(this))
@@ -342,6 +344,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerAction(undoAction, "Undo");
     ActionManager::registerAction(redoAction, "Redo");
 
+    addDockWidget(Qt::LeftDockWidgetArea, mProjectDock);
     addDockWidget(Qt::BottomDockWidgetArea, mConsoleDock);
     addDockWidget(Qt::BottomDockWidgetArea, mIssuesDock);
     tabifyDockWidget(mConsoleDock, mIssuesDock);
@@ -464,7 +467,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mLayerMenu->addSeparator();
     mLayerMenu->addAction(mActionHandler->actionLayerProperties());
 
-    menuBar()->insertMenu(mUi->menuHelp->menuAction(), mLayerMenu);
+    menuBar()->insertMenu(mUi->menuProject->menuAction(), mLayerMenu);
 
     ActionManager::registerMenu(mLayerMenu, "Layer");
     ActionManager::registerMenu(mNewLayerMenu, "NewLayer");
@@ -567,6 +570,12 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionTilesetProperties, &QAction::triggered,
             this, &MainWindow::editTilesetProperties);
 
+    connect(mUi->actionOpenProject, &QAction::triggered, mProjectDock, &ProjectDock::openProject);
+    connect(mUi->actionSaveProjectAs, &QAction::triggered, mProjectDock, &ProjectDock::saveProjectAs);
+    connect(mUi->actionCloseProject, &QAction::triggered, mProjectDock, &ProjectDock::closeProject);
+    connect(mUi->actionAddFolderToProject, &QAction::triggered, mProjectDock, &ProjectDock::addFolderToProject);
+    connect(mUi->actionRefreshProjectFolders, &QAction::triggered, mProjectDock, &ProjectDock::refreshProjectFolders);
+
     connect(mUi->actionDocumentation, &QAction::triggered, this, &MainWindow::openDocumentation);
     connect(mUi->actionForum, &QAction::triggered, this, &MainWindow::openForum);
     connect(mUi->actionDonate, &QAction::triggered, this, &MainWindow::showDonationDialog);
@@ -586,6 +595,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     }
     mUi->menuRecentFiles->insertSeparator(mUi->actionClearRecentFiles);
     mUi->menuRecentFiles->setToolTipsVisible(true);
+
+    connect(mProjectDock, &ProjectDock::projectFileNameChanged, this, &MainWindow::updateWindowTitle);
 
     setThemeIcon(mUi->menuNew, "document-new");
     setThemeIcon(mUi->actionOpen, "document-open");
@@ -607,6 +618,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     setThemeIcon(mUi->actionFitInView, "zoom-fit-best");
     setThemeIcon(mUi->actionResizeMap, "document-page-setup");
     setThemeIcon(mUi->actionMapProperties, "document-properties");
+    setThemeIcon(mUi->actionOpenProject, "document-open");
+    setThemeIcon(mUi->actionSaveProjectAs, "document-save-as");
+    setThemeIcon(mUi->actionCloseProject, "window-close");
+    setThemeIcon(mUi->actionAddFolderToProject, "folder-new");
+    setThemeIcon(mUi->actionRefreshProjectFolders, "view-refresh");
     setThemeIcon(mUi->actionDocumentation, "help-contents");
     setThemeIcon(mUi->actionAbout, "help-about");
 
@@ -1684,12 +1700,18 @@ void MainWindow::readSettings()
 
 void MainWindow::updateWindowTitle()
 {
+    QString projectName = mProjectDock->projectFileName();
+    if (!projectName.isEmpty()) {
+        projectName = QFileInfo(projectName).completeBaseName();
+        projectName = QString(QLatin1String(" (%1)")).arg(projectName);
+    }
+
     if (Document *document = mDocumentManager->currentDocument()) {
-        setWindowTitle(tr("[*]%1").arg(document->displayName()));
+        setWindowTitle(tr("[*]%1%2").arg(document->displayName(), projectName));
         setWindowFilePath(document->fileName());
         setWindowModified(document->isModified());
     } else {
-        setWindowTitle(QString());
+        setWindowTitle(projectName);
         setWindowFilePath(QString());
         setWindowModified(false);
     }
