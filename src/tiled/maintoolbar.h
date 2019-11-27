@@ -47,10 +47,6 @@ private:
     void retranslateUi();
 
     QToolButton *mNewButton;
-    QAction *mOpenAction;
-    QAction *mSaveAction;
-    QAction *mUndoAction;
-    QAction *mRedoAction;
     CommandButton *mCommandButton;
 };
 

@@ -84,27 +84,17 @@ QAction *ToolManager::registerTool(AbstractTool *tool)
 
     tool->setMapDocument(mMapDocument);
 
-    QString toolTip = tool->name();
-    QKeySequence shortcut = tool->shortcut();
-    if (!shortcut.isEmpty()) {
-        toolTip = QString(QLatin1String("%1 (%2)")).arg(toolTip,
-                                                        shortcut.toString());
-    }
-
     QAction *toolAction = new QAction(tool->icon(), tool->name(), this);
-    toolAction->setShortcut(shortcut);
+    toolAction->setShortcut(tool->shortcut());
     toolAction->setData(QVariant::fromValue<AbstractTool*>(tool));
     toolAction->setCheckable(true);
-    toolAction->setToolTip(toolTip);
+    toolAction->setText(tool->name());
     toolAction->setEnabled(tool->isEnabled());
 
     mActionGroup->addAction(toolAction);
 
     connect(tool, &AbstractTool::changed,
             this, &ToolManager::toolChanged);
-
-    connect(toolAction, &QAction::changed,
-            this, &ToolManager::toolActionChanged);
 
     connect(tool, &AbstractTool::enabledChanged,
             this, &ToolManager::toolEnabledChanged);
@@ -195,26 +185,6 @@ void ToolManager::toolChanged()
         action->setIcon(tool->icon());
         action->setShortcut(tool->shortcut());
     }
-}
-
-void ToolManager::toolActionChanged()
-{
-    if (mUpdatingActionToolTip)
-        return;
-
-    auto action = static_cast<QAction*>(sender());
-
-    QString toolTip = action->text();
-    QKeySequence shortcut = action->shortcut();
-
-    if (!shortcut.isEmpty()) {
-        toolTip = QString(QLatin1String("%1 (%2)")).arg(toolTip,
-                                                        shortcut.toString());
-    }
-
-    mUpdatingActionToolTip = true;
-    action->setToolTip(toolTip);
-    mUpdatingActionToolTip = false;
 }
 
 void ToolManager::retranslateTools()

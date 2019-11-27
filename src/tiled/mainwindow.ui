@@ -185,19 +185,11 @@
    <addaction name="menuHelp"/>
   </widget>
   <action name="actionOpen">
-   <property name="icon">
-    <iconset resource="tiled.qrc">
-     <normaloff>:/images/16/document-open.png</normaloff>:/images/16/document-open.png</iconset>
-   </property>
    <property name="text">
     <string>&amp;Open...</string>
    </property>
   </action>
   <action name="actionSave">
-   <property name="icon">
-    <iconset resource="tiled.qrc">
-     <normaloff>:/images/16/document-save.png</normaloff>:/images/16/document-save.png</iconset>
-   </property>
    <property name="text">
     <string>&amp;Save</string>
    </property>
@@ -374,9 +366,6 @@
   <action name="actionOffsetMap">
    <property name="text">
     <string>&amp;Offset Map...</string>
-   </property>
-   <property name="toolTip">
-    <string>Offsets everything in a layer</string>
    </property>
   </action>
   <action name="actionPreferences">

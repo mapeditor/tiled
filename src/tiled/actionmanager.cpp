@@ -39,6 +39,7 @@ public:
     QHash<Id, QKeySequence> mLastKnownShortcuts;    // for detecting shortcut changes
 
     bool mApplyingShortcut = false;
+    bool mApplyingToolTipWithShortcut = false;
     bool mResettingShortcut = false;
 };
 
@@ -64,6 +65,28 @@ static void applyShortcut(QAction *action, const QKeySequence &shortcut)
     d->mApplyingShortcut = true;
     action->setShortcut(shortcut);
     d->mApplyingShortcut = false;
+}
+
+static void updateToolTipWithShortcut(QAction *action)
+{
+    d->mApplyingToolTipWithShortcut = true;
+
+    QString toolTip = action->toolTip();
+
+    // If shortcut present, unset shortut and retrieve stripped text
+    if (toolTip.contains(QLatin1String(" <span "))) {
+        action->setToolTip(QString());
+        toolTip = action->toolTip();
+    }
+
+    if (!action->shortcut().isEmpty()) {
+        toolTip.append(QString::fromLatin1(" <span style=\"color: gray;\">(%1)<span>")
+                       .arg(action->shortcut().toString(QKeySequence::NativeText)));
+    }
+
+    action->setToolTip(toolTip);
+
+    d->mApplyingToolTipWithShortcut = false;
 }
 
 
@@ -97,6 +120,9 @@ void ActionManager::registerAction(QAction *action, Id id)
     d->mLastKnownShortcuts.insert(id, action->shortcut());
 
     connect(action, &QAction::changed, m_instance, [id,action] {
+        if (d->mApplyingToolTipWithShortcut)
+            return;
+
         if (!d->mApplyingShortcut && d->mDefaultShortcuts.contains(id) && d->mLastKnownShortcuts.value(id) != action->shortcut()) {
             // Update remembered default shortcut
             d->mDefaultShortcuts.insert(id, action->shortcut());
@@ -110,6 +136,8 @@ void ActionManager::registerAction(QAction *action, Id id)
 
         d->mLastKnownShortcuts.insert(id, action->shortcut());
 
+        updateToolTipWithShortcut(action);
+
         emit m_instance->actionChanged(id);
     });
 
@@ -117,6 +145,8 @@ void ActionManager::registerAction(QAction *action, Id id)
         d->mDefaultShortcuts.insert(id, action->shortcut());
         applyShortcut(action, d->mCustomShortcuts.value(id));
     }
+
+    updateToolTipWithShortcut(action);
 
     emit m_instance->actionsChanged();
 }

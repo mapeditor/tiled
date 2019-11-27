@@ -20,6 +20,7 @@
 
 #include "objectsdock.h"
 
+#include "actionmanager.h"
 #include "documentmanager.h"
 #include "filteredit.h"
 #include "grouplayer.h"
@@ -111,6 +112,9 @@ ObjectsDock::ObjectsDock(QWidget *parent)
     setWidget(widget);
     retranslateUi();
 
+    ActionManager::registerAction(mActionMoveUp, "MoveObjectsUp");
+    ActionManager::registerAction(mActionMoveDown, "MoveObjectsDown");
+
     connect(DocumentManager::instance(), &DocumentManager::documentAboutToClose,
             this, &ObjectsDock::documentAboutToClose);
 
@@ -168,10 +172,10 @@ void ObjectsDock::retranslateUi()
 
     mFilterEdit->setPlaceholderText(tr("Filter"));
 
-    mActionNewLayer->setToolTip(tr("Add Object Layer"));
-    mActionObjectProperties->setToolTip(tr("Object Properties"));
-    mActionMoveUp->setToolTip(tr("Move Objects Up"));
-    mActionMoveDown->setToolTip(tr("Move Objects Down"));
+    mActionNewLayer->setText(tr("Add Object Layer"));
+    mActionObjectProperties->setText(tr("Object Properties"));
+    mActionMoveUp->setText(tr("Move Objects Up"));
+    mActionMoveDown->setText(tr("Move Objects Down"));
 
     updateActions();
 }

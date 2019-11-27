@@ -20,6 +20,7 @@
 
 #include "tilecollisiondock.h"
 
+#include "actionmanager.h"
 #include "addremovemapobject.h"
 #include "changetileobjectgroup.h"
 #include "createellipseobjecttool.h"
@@ -216,6 +217,11 @@ TileCollisionDock::TileCollisionDock(QWidget *parent)
 
     retranslateUi();
     selectedObjectsChanged();   // disables actions
+
+    ActionManager::registerAction(mActionDuplicateObjects, "DuplicateObjects");
+    ActionManager::registerAction(mActionRemoveObjects, "RemoveObjects");
+    ActionManager::registerAction(mActionMoveUp, "MoveObjectsUp");
+    ActionManager::registerAction(mActionMoveDown, "MoveObjectsDown");
 
     setWidget(widget);
 }
@@ -669,9 +675,9 @@ void TileCollisionDock::retranslateUi()
 
     mActionDuplicateObjects->setText(tr("Duplicate Objects"));
     mActionRemoveObjects->setText(tr("Remove Objects"));
-    mActionMoveUp->setToolTip(tr("Move Objects Up"));
-    mActionMoveDown->setToolTip(tr("Move Objects Down"));
-    mActionObjectProperties->setToolTip(tr("Object Properties"));
+    mActionMoveUp->setText(tr("Move Objects Up"));
+    mActionMoveDown->setText(tr("Move Objects Down"));
+    mActionObjectProperties->setText(tr("Object Properties"));
 }
 
 } // namespace Tiled

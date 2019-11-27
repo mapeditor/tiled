@@ -20,6 +20,7 @@
 
 #include "shapefilltool.h"
 
+#include "actionmanager.h"
 #include "addremovetileset.h"
 #include "brushitem.h"
 #include "geometry.h"
@@ -57,6 +58,9 @@ ShapeFillTool::ShapeFillTool(QObject *parent)
 
     mCircleFill->setIcon(circleFillIcon);
     mCircleFill->setCheckable(true);
+
+    ActionManager::registerAction(mRectFill, "ShapeFillTool.RectangleFill");
+    ActionManager::registerAction(mCircleFill, "ShapeFillTool.CircleFill");
 
     connect(mRectFill, &QAction::triggered,
             [this] { setCurrentShape(Rect); });
@@ -116,8 +120,8 @@ void ShapeFillTool::languageChanged()
 {
     setName(tr("Shape Fill Tool"));
 
-    mRectFill->setToolTip(tr("Rectangle Fill"));
-    mCircleFill->setToolTip(tr("Circle Fill"));
+    mRectFill->setText(tr("Rectangle Fill"));
+    mCircleFill->setText(tr("Circle Fill"));
 
     mStampActions->languageChanged();
 }

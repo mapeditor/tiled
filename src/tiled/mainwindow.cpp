@@ -275,17 +275,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerAction(mUi->actionZoomNormal, "ZoomNormal");
     ActionManager::registerAction(mUi->actionFitInView, "FitInView");
 
-    mMapEditor = new MapEditor;
-    mTilesetEditor = new TilesetEditor;
-
-    connect(mMapEditor, &Editor::enabledStandardActionsChanged, this, &MainWindow::updateActions);
-    connect(mTilesetEditor, &Editor::enabledStandardActionsChanged, this, &MainWindow::updateActions);
-
-    mDocumentManager->setEditor(Document::MapDocumentType, mMapEditor);
-    mDocumentManager->setEditor(Document::TilesetDocumentType, mTilesetEditor);
-
-    setCentralWidget(mDocumentManager->widget());
-
 #ifdef Q_OS_MAC
     MacSupport::addFullscreen(this);
 #endif
@@ -294,9 +283,14 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     Preferences *preferences = Preferences::instance();
 
+    QIcon openIcon(QLatin1String(":images/16/document-open.png"));
+    QIcon saveIcon(QLatin1String(":images/16/document-save.png"));
     QIcon redoIcon(QLatin1String(":images/16/edit-redo.png"));
     QIcon undoIcon(QLatin1String(":images/16/edit-undo.png"));
     QIcon highlightCurrentLayerIcon(QLatin1String("://images/scalable/highlight-current-layer-16.svg"));
+
+    openIcon.addFile(QLatin1String(":images/24/document-open.png"));
+    saveIcon.addFile(QLatin1String(":images/24/document-save.png"));
     highlightCurrentLayerIcon.addFile(QLatin1String("://images/scalable/highlight-current-layer-24.svg"));
 
 #ifndef Q_OS_MAC
@@ -305,19 +299,16 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     setWindowIcon(tiledIcon);
 #endif
 
+    mUi->actionOpen->setIcon(openIcon);
+    mUi->actionSave->setIcon(saveIcon);
+
     QUndoGroup *undoGroup = mDocumentManager->undoGroup();
     QAction *undoAction = undoGroup->createUndoAction(this, tr("Undo"));
     QAction *redoAction = undoGroup->createRedoAction(this, tr("Redo"));
+    redoAction->setPriority(QAction::LowPriority);
     redoAction->setIcon(redoIcon);
     undoAction->setIcon(undoIcon);
     connect(undoGroup, &QUndoGroup::cleanChanged, this, &MainWindow::updateWindowTitle);
-
-    addDockWidget(Qt::BottomDockWidgetArea, mConsoleDock);
-    addDockWidget(Qt::BottomDockWidgetArea, mIssuesDock);
-    tabifyDockWidget(mConsoleDock, mIssuesDock);
-
-    mConsoleDock->setVisible(false);
-    mIssuesDock->setVisible(false);
 
     mUi->actionNewMap->setShortcuts(QKeySequence::New);
     mUi->actionOpen->setShortcuts(QKeySequence::Open);
@@ -347,6 +338,24 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     ActionManager::registerAction(undoAction, "Undo");
     ActionManager::registerAction(redoAction, "Redo");
+
+    addDockWidget(Qt::BottomDockWidgetArea, mConsoleDock);
+    addDockWidget(Qt::BottomDockWidgetArea, mIssuesDock);
+    tabifyDockWidget(mConsoleDock, mIssuesDock);
+
+    mConsoleDock->setVisible(false);
+    mIssuesDock->setVisible(false);
+
+    mMapEditor = new MapEditor;
+    mTilesetEditor = new TilesetEditor;
+
+    connect(mMapEditor, &Editor::enabledStandardActionsChanged, this, &MainWindow::updateActions);
+    connect(mTilesetEditor, &Editor::enabledStandardActionsChanged, this, &MainWindow::updateActions);
+
+    mDocumentManager->setEditor(Document::MapDocumentType, mMapEditor);
+    mDocumentManager->setEditor(Document::TilesetDocumentType, mTilesetEditor);
+
+    setCentralWidget(mDocumentManager->widget());
 
     auto snappingGroup = new QActionGroup(this);
     mUi->actionSnapNothing->setActionGroup(snappingGroup);

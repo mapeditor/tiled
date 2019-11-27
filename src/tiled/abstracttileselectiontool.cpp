@@ -136,10 +136,10 @@ void AbstractTileSelectionTool::modifiersChanged(Qt::KeyboardModifiers modifiers
 
 void AbstractTileSelectionTool::languageChanged()
 {
-    mReplace->setToolTip(tr("Replace Selection"));
-    mAdd->setToolTip(tr("Add Selection"));
-    mSubtract->setToolTip(tr("Subtract Selection"));
-    mIntersect->setToolTip(tr("Intersect Selection"));
+    mReplace->setText(tr("Replace Selection"));
+    mAdd->setText(tr("Add Selection"));
+    mSubtract->setText(tr("Subtract Selection"));
+    mIntersect->setText(tr("Intersect Selection"));
 }
 
 void AbstractTileSelectionTool::populateToolBar(QToolBar *toolBar)
