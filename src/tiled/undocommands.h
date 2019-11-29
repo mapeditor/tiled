@@ -35,7 +35,8 @@ enum UndoCommands {
     Cmd_ChangeTileWangId,
     Cmd_ChangeTilesetTileOffset,
     Cmd_EraseTiles,
-    Cmd_PaintTileLayer
+    Cmd_PaintTileLayer,
+    Cmd_ChangeLayerTintColor
 };
 
 /**

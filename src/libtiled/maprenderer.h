@@ -300,7 +300,7 @@ public:
     };
 
     explicit CellRenderer(QPainter *painter, const MapRenderer *renderer,
-                          CellType cellType = OrthogonalCells);
+                          const QColor &tintColor, CellType cellType = OrthogonalCells);
 
     ~CellRenderer() { flush(); }
 
@@ -316,6 +316,7 @@ private:
     QVector<QPainter::PixmapFragment> mFragments;
     const bool mIsOpenGL;
     const CellType mCellType;
+    const QColor mTintColor;
 };
 
 } // namespace Tiled

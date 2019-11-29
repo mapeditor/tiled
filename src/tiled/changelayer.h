@@ -25,6 +25,7 @@
 #include <QPointF>
 #include <QSize>
 #include <QUndoCommand>
+#include <QColor>
 
 namespace Tiled {
 
@@ -118,6 +119,29 @@ private:
     Layer *mLayer;
     qreal mOldOpacity;
     qreal mNewOpacity;
+};
+
+class SetLayerTintColor : public QUndoCommand
+{
+public:
+    SetLayerTintColor(Document *document,
+                    Layer *layer,
+                    QColor tintColor);
+
+    void undo() override { setTintColor(mOldTintColor); }
+    void redo() override { setTintColor(mNewTintColor); }
+
+    int id() const override { return Cmd_ChangeLayerTintColor; }
+
+    bool mergeWith(const QUndoCommand *other) override;
+
+private:
+    void setTintColor(QColor tintColor);
+
+    Document *mDocument;
+    Layer *mLayer;
+    QColor mOldTintColor;
+    QColor mNewTintColor;
 };
 
 /**

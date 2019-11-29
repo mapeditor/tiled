@@ -776,6 +776,10 @@ static void readLayerAttributes(Layer &layer,
     if (ok)
         layer.setOpacity(opacity);
 
+    const QString color = atts.value(QLatin1String("tintcolor")).toString();
+        if (!color.isEmpty())
+            layer.setTintColor(color);
+
     const int visible = visibleRef.toInt(&ok);
     if (ok)
         layer.setVisible(visible);

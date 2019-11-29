@@ -366,7 +366,7 @@ void MapItem::documentChanged(const ChangeEvent &change)
 {
     switch (change.type) {
     case ChangeEvent::LayerChanged:
-        layerChanged(static_cast<const LayerChangeEvent&>(change).layer);
+        layerChanged(static_cast<const LayerChangeEvent&>(change));
         break;
     case ChangeEvent::MapObjectsAboutToBeRemoved:
         deleteObjectItems(static_cast<const MapObjectsEvent&>(change).mapObjects);
@@ -442,11 +442,15 @@ void MapItem::layerRemoved(Layer *layer)
  * A layer has changed. This can mean that the layer visibility, opacity or
  * offset changed.
  */
-void MapItem::layerChanged(Layer *layer)
+void MapItem::layerChanged(const LayerChangeEvent &change)
 {
+    Layer *layer = change.layer;
     Preferences *prefs = Preferences::instance();
     QGraphicsItem *layerItem = mLayerItems.value(layer);
     Q_ASSERT(layerItem);
+
+    if (change.properties & LayerChangeEvent::TintColorProperty)
+        layerItem->update();
 
     layerItem->setVisible(layer->isVisible());
 

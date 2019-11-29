@@ -33,6 +33,7 @@
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
+#include "objectgroup.h"
 
 #include <QtCore/qmath.h>
 
@@ -311,7 +312,7 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
     const QTransform savedTransform = painter->transform();
     painter->translate(layerPos);
 
-    CellRenderer renderer(painter, this);
+    CellRenderer renderer(painter, this, layer->tintColor());
 
     Map::RenderOrder renderOrder = map()->renderOrder();
 
@@ -391,7 +392,7 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
 
     if (!cell.isEmpty()) {
         const QSizeF size = object->size();
-        CellRenderer(painter, this).render(cell, QPointF(), size,
+        CellRenderer(painter, this, object->objectGroup()->tintColor()).render(cell, QPointF(), size,
                                            CellRenderer::BottomLeft);
 
         if (testFlag(ShowTileObjectOutlines)) {
