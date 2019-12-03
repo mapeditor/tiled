@@ -52,6 +52,7 @@ private:
     IssueFilterModel *mProxyModel;
     FilterEdit *mFilterEdit;
     QListView *mIssuesView;
+    bool mIsVisible = false;
 };
 
 } // namespace Tiled
