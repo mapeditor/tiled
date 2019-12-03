@@ -897,11 +897,16 @@ void DocumentManager::currentIndexChanged()
         changed = isDocumentChangedOnDisk(document);
     }
 
+    QWidget *editorWidget = mNoEditorWidget;
+
     if (editor) {
         editor->setCurrentDocument(document);
-        mEditorStack->setCurrentWidget(editor->editorWidget());
-    } else {
-        mEditorStack->setCurrentWidget(mNoEditorWidget);
+        editorWidget = editor->editorWidget();
+    }
+
+    if (mEditorStack->currentWidget() != editorWidget) {
+        mEditorStack->setCurrentWidget(editorWidget);
+        emit currentEditorChanged(editor);
     }
 
     mFileChangedWarning->setVisible(changed);

@@ -159,6 +159,8 @@ signals:
      */
     void documentAboutToClose(Document *document);
 
+    void currentEditorChanged(Editor *editor);
+
     /**
      * Emitted when an error occurred while reloading the map.
      */

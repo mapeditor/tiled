@@ -75,6 +75,8 @@ public:
 
     QList<QToolBar *> toolBars() const override;
     QList<QDockWidget *> dockWidgets() const override;
+    QList<QWidget*> statusBarWidgets() const override;
+    QList<QWidget*> permanentStatusBarWidgets() const override;
 
     StandardActions enabledStandardActions() const override;
     void performStandardAction(StandardAction action) override;

@@ -29,6 +29,8 @@
 #include "tiled.h"
 #include "tileset.h"
 
+#include <memory>
+
 class QAction;
 class QComboBox;
 class QLabel;
@@ -97,6 +99,8 @@ public:
 
     QList<QToolBar *> toolBars() const override;
     QList<QDockWidget *> dockWidgets() const override;
+    QList<QWidget*> statusBarWidgets() const override;
+    QList<QWidget*> permanentStatusBarWidgets() const override;
 
     StandardActions enabledStandardActions() const override;
     void performStandardAction(StandardAction action) override;
@@ -108,8 +112,6 @@ public:
     Zoomable *zoomable() const override;
 
     void saveDocumentState(MapDocument *mapDocument);
-
-    void showMessage(const QString &text, int timeout = 0);
 
     void setCurrentTileset(const SharedTileset &tileset);
     SharedTileset currentTileset() const;
@@ -173,13 +175,13 @@ private:
     MiniMapDock* mMiniMapDock;
     TileStampsDock *mTileStampsDock;
 
-    TreeViewComboBox *mLayerComboBox;
+    std::unique_ptr<TreeViewComboBox> mLayerComboBox;
     ComboBoxProxyModel *mComboBoxProxyModel;
     ReversingProxyModel *mReversingProxyModel;
 
     Zoomable *mZoomable;
-    QComboBox *mZoomComboBox;
-    QLabel *mStatusInfoLabel;
+    std::unique_ptr<QComboBox> mZoomComboBox;
+    std::unique_ptr<QLabel> mStatusInfoLabel;
 
     StampBrush *mStampBrush;
     BucketFillTool *mBucketFillTool;

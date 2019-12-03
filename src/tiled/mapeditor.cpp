@@ -38,7 +38,6 @@
 #include "editpolygontool.h"
 #include "eraser.h"
 #include "filechangedwarning.h"
-#include "issuescounter.h"
 #include "layerdock.h"
 #include "layermodel.h"
 #include "layeroffsettool.h"
@@ -49,8 +48,6 @@
 #include "mapsdock.h"
 #include "mapview.h"
 #include "minimapdock.h"
-#include "newsbutton.h"
-#include "newversionbutton.h"
 #include "newtilesetdialog.h"
 #include "objectgroup.h"
 #include "objectsdock.h"
@@ -92,11 +89,9 @@
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QQmlEngine>
-#include <QScrollBar>
 #include <QSettings>
 #include <QShortcut>
 #include <QStackedWidget>
-#include <QStatusBar>
 #include <QToolBar>
 
 #include "qtcompat_p.h"
@@ -247,16 +242,8 @@ MapEditor::MapEditor(QObject *parent)
     mLayerComboBox->setModel(mComboBoxProxyModel);
     mLayerComboBox->setMinimumContentsLength(10);
     mLayerComboBox->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-    connect(mLayerComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::activated),
+    connect(mLayerComboBox.get(), static_cast<void (QComboBox::*)(int)>(&QComboBox::activated),
             this, &MapEditor::layerComboActivated);
-
-    auto statusBar = mMainWindow->statusBar();
-    statusBar->addPermanentWidget(mLayerComboBox);
-    statusBar->addPermanentWidget(mZoomComboBox);
-    statusBar->addPermanentWidget(new NewsButton(statusBar));
-    statusBar->addPermanentWidget(new NewVersionButton(NewVersionButton::AutoVisible, statusBar));
-    statusBar->addWidget(new IssuesCounter(statusBar));
-    statusBar->addWidget(mStatusInfoLabel);
 
     connect(mWidgetStack, &QStackedWidget::currentChanged, this, &MapEditor::currentWidgetChanged);
     connect(mToolManager, &ToolManager::statusInfoChanged, this, &MapEditor::updateStatusInfoLabel);
@@ -435,7 +422,7 @@ void MapEditor::setCurrentDocument(Document *document)
 
         if (mapView) {
             mZoomable = mapView->zoomable();
-            mZoomable->setComboBox(mZoomComboBox);
+            mZoomable->setComboBox(mZoomComboBox.get());
         }
 
         connect(mCurrentMapDocument, &MapDocument::currentObjectChanged,
@@ -486,7 +473,7 @@ QWidget *MapEditor::editorWidget() const
 
 QList<QToolBar *> MapEditor::toolBars() const
 {
-    return QList<QToolBar*> {
+    return {
         mMainToolBar,
         mToolsToolBar,
         mToolSpecificToolBar
@@ -495,7 +482,7 @@ QList<QToolBar *> MapEditor::toolBars() const
 
 QList<QDockWidget *> MapEditor::dockWidgets() const
 {
-    return QList<QDockWidget*> {
+    return {
         mPropertiesDock,
         mLayerDock,
         mMapsDock,
@@ -507,6 +494,21 @@ QList<QDockWidget *> MapEditor::dockWidgets() const
         mWangDock,
         mMiniMapDock,
         mTileStampsDock
+    };
+}
+
+QList<QWidget *> MapEditor::statusBarWidgets() const
+{
+    return {
+        mStatusInfoLabel.get()
+    };
+}
+
+QList<QWidget *> MapEditor::permanentStatusBarWidgets() const
+{
+    return {
+        mLayerComboBox.get(),
+        mZoomComboBox.get()
     };
 }
 
@@ -630,11 +632,6 @@ void MapEditor::saveDocumentState(MapDocument *mapDocument)
         QSettings *settings = prefs->settings();
         settings->setValue(QLatin1String(MAPSTATES_KEY), mMapStates);
     }
-}
-
-void MapEditor::showMessage(const QString &text, int timeout)
-{
-    mMainWindow->statusBar()->showMessage(text, timeout);
 }
 
 void MapEditor::setSelectedTool(AbstractTool *tool)

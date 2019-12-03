@@ -50,6 +50,7 @@ class ActionManager;
 class AutomappingManager;
 class ConsoleDock;
 class DocumentManager;
+class Editor;
 class IssuesDock;
 class MapDocument;
 class MapDocumentActionHandler;
@@ -160,6 +161,8 @@ private:
     void documentSaved(Document *document);
     void closeDocument(int index);
 
+    void currentEditorChanged(Editor *editor);
+
     void reloadError(const QString &error);
     void autoMappingError(bool automatic);
     void autoMappingWarning(bool automatic);
@@ -226,6 +229,7 @@ private:
     DocumentManager *mDocumentManager;
     MapEditor *mMapEditor;
     TilesetEditor *mTilesetEditor;
+    QList<QWidget*> mEditorStatusBarWidgets;
 
     QPointer<PreferencesDialog> mPreferencesDialog;
 

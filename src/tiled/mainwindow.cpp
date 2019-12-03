@@ -87,6 +87,7 @@
 #include <QRegExp>
 #include <QSessionManager>
 #include <QShortcut>
+#include <QStatusBar>
 #include <QTextStream>
 #include <QToolBar>
 #include <QToolButton>
@@ -98,6 +99,8 @@
 #include <QtPlatformHeaders\QWindowsWindowFunctions>
 #endif
 
+#include "issuescounter.h"
+#include "newsbutton.h"
 #include "qtcompat_p.h"
 
 using namespace Tiled;
@@ -607,6 +610,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     setThemeIcon(mUi->actionDocumentation, "help-contents");
     setThemeIcon(mUi->actionAbout, "help-about");
 
+    // Set up the status bar (see also currentEditorChanged)
+    auto myStatusBar = statusBar();
+    myStatusBar->addPermanentWidget(new NewsButton(myStatusBar));
+    myStatusBar->addPermanentWidget(new NewVersionButton(NewVersionButton::AutoVisible, myStatusBar));
+    myStatusBar->addWidget(new IssuesCounter(myStatusBar));
 
     // Add the 'Views and Toolbars' submenu. This needs to happen after all
     // the dock widgets and toolbars have been added to the main window.
@@ -655,6 +663,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             this, &MainWindow::reloadError);
     connect(mDocumentManager, &DocumentManager::documentSaved,
             this, &MainWindow::documentSaved);
+    connect(mDocumentManager, &DocumentManager::currentEditorChanged,
+            this, &MainWindow::currentEditorChanged);
 
     connect(mResetToDefaultLayout, &QAction::triggered, this, &MainWindow::resetToDefaultLayout);
 
@@ -1048,7 +1058,7 @@ bool MainWindow::exportDocument(Document *document)
             const Map *map = exportHelper.prepareExportMap(mapDocument->map(), exportMap);
 
             if (exportFormat->write(map, exportFileName, exportHelper.formatOptions())) {
-                mMapEditor->showMessage(tr("Exported to %1").arg(exportFileName), 3000);
+                statusBar()->showMessage(tr("Exported to %1").arg(exportFileName), 3000);
                 return true;
             }
 
@@ -1062,7 +1072,7 @@ bool MainWindow::exportDocument(Document *document)
             const SharedTileset tileset = exportHelper.prepareExportTileset(tilesetDocument->tileset());
 
             if (exportFormat->write(*tileset, exportFileName, exportHelper.formatOptions())) {
-                mMapEditor->showMessage(tr("Exported to %1").arg(exportFileName), 3000);
+                statusBar()->showMessage(tr("Exported to %1").arg(exportFileName), 3000);
                 return true;
             }
 
@@ -1417,7 +1427,7 @@ void MainWindow::autoMappingError(bool automatic)
     QString error = mAutomappingManager->errorString();
     if (!error.isEmpty()) {
         if (automatic) {
-            mMapEditor->showMessage(error, 3000);
+            statusBar()->showMessage(error, 3000);
         } else {
             QMessageBox::critical(this, tr("Automatic Mapping Error"), error);
         }
@@ -1429,7 +1439,7 @@ void MainWindow::autoMappingWarning(bool automatic)
     QString warning = mAutomappingManager->warningString();
     if (!warning.isEmpty()) {
         if (automatic) {
-            mMapEditor->showMessage(warning, 3000);
+            statusBar()->showMessage(warning, 3000);
         } else {
             QMessageBox::warning(this, tr("Automatic Mapping Warning"), warning);
         }
@@ -1857,6 +1867,31 @@ void MainWindow::closeDocument(int index)
 {
     if (confirmSave(mDocumentManager->documents().at(index).data()))
         mDocumentManager->closeDocumentAt(index);
+}
+
+void MainWindow::currentEditorChanged(Editor *editor)
+{
+    for (QWidget *widget : mEditorStatusBarWidgets)
+        statusBar()->removeWidget(widget);
+    mEditorStatusBarWidgets.clear();
+
+    if (!editor)
+        return;
+
+    const auto statusBarWidgets = editor->statusBarWidgets();
+    int index = 1;  // start after the errors/warnings label
+    for (QWidget *widget : statusBarWidgets) {
+        statusBar()->insertWidget(index++, widget);
+        widget->show(); // need to show because removeWidget hides explicitly
+        mEditorStatusBarWidgets.append(widget);
+    }
+
+    const auto permanentStatusBarWidgets = editor->permanentStatusBarWidgets();
+    for (QWidget *widget : permanentStatusBarWidgets) {
+        statusBar()->insertPermanentWidget(index++, widget);
+        widget->show(); // need to show because removeWidget hides explicitly
+        mEditorStatusBarWidgets.append(widget);
+    }
 }
 
 void MainWindow::reloadError(const QString &error)
