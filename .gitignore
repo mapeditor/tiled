@@ -13,6 +13,7 @@ qrc_*
 *.qmlc
 default/
 moc_predefs.h
+*/build-*
 
 # Build artifacts on Windows
 *.dll
