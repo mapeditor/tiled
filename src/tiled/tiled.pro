@@ -154,7 +154,6 @@ SOURCES += aboutdialog.cpp \
     mapobjectitem.cpp \
     mapobjectmodel.cpp \
     mapscene.cpp \
-    mapsdock.cpp \
     mapview.cpp \
     minimap.cpp \
     minimapdock.cpp \
@@ -383,7 +382,6 @@ HEADERS += aboutdialog.h \
     mapobjectitem.h \
     mapobjectmodel.h \
     mapscene.h \
-    mapsdock.h \
     mapview.h \
     minimapdock.h \
     minimap.h \

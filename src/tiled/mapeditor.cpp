@@ -45,7 +45,6 @@
 #include "maintoolbar.h"
 #include "mapdocumentactionhandler.h"
 #include "mapscene.h"
-#include "mapsdock.h"
 #include "mapview.h"
 #include "minimapdock.h"
 #include "newtilesetdialog.h"
@@ -145,7 +144,6 @@ MapEditor::MapEditor(QObject *parent)
     , mLayerDock(new LayerDock(mMainWindow))
     , mWidgetStack(new QStackedWidget(mMainWindow))
     , mCurrentMapDocument(nullptr)
-    , mMapsDock(new MapsDock(mMainWindow))
     , mUndoDock(new UndoDock(mMainWindow))
     , mObjectsDock(new ObjectsDock(mMainWindow))
     , mTemplatesDock(new TemplatesDock(mMainWindow))
@@ -485,7 +483,6 @@ QList<QDockWidget *> MapEditor::dockWidgets() const
     return {
         mPropertiesDock,
         mLayerDock,
-        mMapsDock,
         mUndoDock,
         mObjectsDock,
         mTemplatesDock,
@@ -578,9 +575,7 @@ void MapEditor::resetLayout()
     mMainWindow->addToolBar(mToolSpecificToolBar);
 
     mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mPropertiesDock);
-    mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mMapsDock);
     mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mUndoDock);
-    mMainWindow->tabifyDockWidget(mUndoDock, mMapsDock);
 
     mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mTemplatesDock);
     mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mTileStampsDock);
@@ -600,7 +595,6 @@ void MapEditor::resetLayout()
 
     // These dock widgets may not be immediately useful to many people, so
     // they are hidden by default.
-    mMapsDock->setVisible(false);
     mUndoDock->setVisible(false);
     mTemplatesDock->setVisible(false);
     mWangDock->setVisible(false);

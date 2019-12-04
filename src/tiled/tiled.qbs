@@ -298,8 +298,6 @@ QtGuiApplication {
         "mapobjectmodel.h",
         "mapscene.cpp",
         "mapscene.h",
-        "mapsdock.cpp",
-        "mapsdock.h",
         "mapview.cpp",
         "mapview.h",
         "minimap.cpp",

@@ -136,9 +136,6 @@ public:
 
     bool automappingDrawing() const;
 
-    QString mapsDirectory() const;
-    void setMapsDirectory(const QString &path);
-
     QString stampsDirectory() const;
     void setStampsDirectory(const QString &stampsDirectory);
 
@@ -230,7 +227,6 @@ signals:
 
     void objectTypesChanged();
 
-    void mapsDirectoryChanged();
     void stampsDirectoryChanged(const QString &stampsDirectory);
     void templatesDirectoryChanged(const QString &templatesDirectory);
 
@@ -292,7 +288,6 @@ private:
 
     bool mAutoMapDrawing;
 
-    QString mMapsDirectory;
     QString mStampsDirectory;
     QString mTemplatesDirectory;
     QString mObjectTypesFile;
@@ -447,11 +442,6 @@ inline bool Preferences::useOpenGL() const
 inline bool Preferences::automappingDrawing() const
 {
     return mAutoMapDrawing;
-}
-
-inline QString Preferences::mapsDirectory() const
-{
-    return mMapsDirectory;
 }
 
 inline QDate Preferences::firstRun() const

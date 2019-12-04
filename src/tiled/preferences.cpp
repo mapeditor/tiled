@@ -147,10 +147,6 @@ Preferences::Preferences()
     mAutoMapDrawing = boolValue("WhileDrawing");
     mSettings->endGroup();
 
-    mSettings->beginGroup(QLatin1String("MapsDirectory"));
-    mMapsDirectory = stringValue("Current");
-    mSettings->endGroup();
-
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->setReloadTilesetsOnChange(mReloadTilesetsOnChange);
     tilesetManager->setAnimateTiles(mShowTileAnimations);
@@ -565,16 +561,6 @@ void Preferences::setAutomappingDrawing(bool enabled)
 {
     mAutoMapDrawing = enabled;
     mSettings->setValue(QLatin1String("Automapping/WhileDrawing"), enabled);
-}
-
-void Preferences::setMapsDirectory(const QString &path)
-{
-    if (mMapsDirectory == path)
-        return;
-    mMapsDirectory = path;
-    mSettings->setValue(QLatin1String("MapsDirectory/Current"), path);
-
-    emit mapsDirectoryChanged();
 }
 
 void Preferences::setPatron(bool isPatron)
