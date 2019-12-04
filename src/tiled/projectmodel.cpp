@@ -23,6 +23,8 @@
 #include "containerhelpers.h"
 
 #include <QFileInfo>
+#include <QMimeData>
+#include <QUrl>
 
 namespace Tiled {
 
@@ -68,7 +70,7 @@ QString ProjectModel::filePath(const QModelIndex &index) const
     if (!index.isValid())
         return QString();
 
-    FolderEntry *entry = static_cast<FolderEntry*>(index.internalPointer());
+    FolderEntry *entry = entryForIndex(index);
     return entry->filePath;
 }
 
@@ -88,7 +90,7 @@ QModelIndex ProjectModel::index(int row, int column, const QModelIndex &parent) 
 
 QModelIndex ProjectModel::parent(const QModelIndex &index) const
 {
-    FolderEntry *entry = static_cast<FolderEntry*>(index.internalPointer());
+    FolderEntry *entry = entryForIndex(index);
     return indexForEntry(entry->parent);
 }
 
@@ -111,7 +113,7 @@ QVariant ProjectModel::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
-    FolderEntry *entry = static_cast<FolderEntry*>(index.internalPointer());
+    FolderEntry *entry = entryForIndex(index);
     switch (role) {
     case Qt::DisplayRole:
         return QFileInfo(entry->filePath).fileName();
@@ -122,6 +124,46 @@ QVariant ProjectModel::data(const QModelIndex &index, int role) const
     }
 
     return QVariant();
+}
+
+Qt::ItemFlags ProjectModel::flags(const QModelIndex &index) const
+{
+    Qt::ItemFlags flags = QAbstractItemModel::flags(index);
+
+    if (FolderEntry *entry = entryForIndex(index))
+        if (!QFileInfo(entry->filePath).isDir())
+            flags |= Qt::ItemIsDragEnabled;
+
+    return flags;
+}
+
+QStringList ProjectModel::mimeTypes() const
+{
+    return QStringList(QLatin1String("text/uri-list"));
+}
+
+QMimeData *ProjectModel::mimeData(const QModelIndexList &indexes) const
+{
+    QList<QUrl> urls;
+    for (const QModelIndex &index : indexes) {
+        if (index.column() == 0) {
+            const QFileInfo fileInfo(entryForIndex(index)->filePath);
+            if (!fileInfo.isDir())
+                urls << QUrl::fromLocalFile(fileInfo.filePath());
+        }
+    }
+
+    if (urls.isEmpty())
+        return nullptr;
+
+    QMimeData *data = new QMimeData();
+    data->setUrls(urls);
+    return data;
+}
+
+FolderEntry *ProjectModel::entryForIndex(const QModelIndex &index) const
+{
+    return static_cast<FolderEntry*>(index.internalPointer());
 }
 
 QModelIndex ProjectModel::indexForEntry(FolderEntry *entry) const

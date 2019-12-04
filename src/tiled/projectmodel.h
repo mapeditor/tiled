@@ -51,8 +51,13 @@ public:
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+    Qt::ItemFlags flags(const QModelIndex &index) const override;
+
+    QStringList mimeTypes() const override;
+    QMimeData *mimeData(const QModelIndexList &indexes) const override;
 
 private:
+    FolderEntry *entryForIndex(const QModelIndex &index) const;
     QModelIndex indexForEntry(FolderEntry *entry) const;
 
     Project mProject;

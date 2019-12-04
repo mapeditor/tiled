@@ -61,7 +61,6 @@ public:
     ProjectModel *model() const { return mProjectModel; }
 
 protected:
-    void mousePressEvent(QMouseEvent *event) override;
     void contextMenuEvent(QContextMenuEvent *event) override;
 
 private:
@@ -227,6 +226,7 @@ ProjectView::ProjectView(QWidget *parent)
 {
     setHeaderHidden(true);
     setUniformRowHeights(true);
+    setDragEnabled(true);
     setDefaultDropAction(Qt::MoveAction);
 
     setModel(new ProjectModel(Project()));
@@ -245,14 +245,6 @@ void ProjectView::setModel(QAbstractItemModel *model)
     mProjectModel = qobject_cast<ProjectModel*>(model);
     Q_ASSERT(mProjectModel);
     QTreeView::setModel(model);
-}
-
-void ProjectView::mousePressEvent(QMouseEvent *event)
-{
-    // Prevent drag-and-drop starting when clicking on an unselected item.
-    setDragEnabled(selectionModel()->isSelected(indexAt(event->pos())));
-
-    QTreeView::mousePressEvent(event);
 }
 
 void ProjectView::contextMenuEvent(QContextMenuEvent *event)
