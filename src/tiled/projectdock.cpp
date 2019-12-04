@@ -81,13 +81,6 @@ ProjectDock::ProjectDock(QWidget *parent)
     layout->setMargin(0);
     layout->setSpacing(0);
 
-    // Reopen last used project
-    const auto prefs = Preferences::instance();
-    const auto settings = prefs->settings();
-    const auto lastProjectFileName = settings->value(QLatin1String(LAST_PROJECT_KEY)).toString();
-    if (prefs->openLastFilesOnStartup() && !lastProjectFileName.isEmpty())
-        openProjectFile(lastProjectFileName);
-
     layout->addWidget(mProjectView);
 
     setWidget(widget);
@@ -96,6 +89,17 @@ ProjectDock::ProjectDock(QWidget *parent)
     connect(this, &ProjectDock::projectFileNameChanged, [this] {
         Preferences::instance()->settings()->setValue(QLatin1String(LAST_PROJECT_KEY), projectFileName());
     });
+}
+
+void ProjectDock::openLastProject()
+{
+    mProjectView->model()->updateNameFilters();
+
+    const auto prefs = Preferences::instance();
+    const auto settings = prefs->settings();
+    const auto lastProjectFileName = settings->value(QLatin1String(LAST_PROJECT_KEY)).toString();
+    if (prefs->openLastFilesOnStartup() && !lastProjectFileName.isEmpty())
+        openProjectFile(lastProjectFileName);
 }
 
 void ProjectDock::openProject()
@@ -229,7 +233,7 @@ ProjectView::ProjectView(QWidget *parent)
     setDragEnabled(true);
     setDefaultDropAction(Qt::MoveAction);
 
-    setModel(new ProjectModel(Project()));
+    setModel(new ProjectModel(this));
 
     connect(this, &QAbstractItemView::activated,
             this, &ProjectView::onActivated);

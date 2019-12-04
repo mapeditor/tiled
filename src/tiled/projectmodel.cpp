@@ -33,36 +33,41 @@
 
 namespace Tiled {
 
-class FolderScanner
+class FolderScanner : public QObject
 {
-public:
-    FolderScanner(const QString &folder, const QStringList &nameFilters)
-        : mFolder(folder)
-        , mNameFilters(nameFilters)
-    {}
+    Q_OBJECT
 
-    std::unique_ptr<FolderEntry> scan();
+public:
+    void setNameFilters(const QStringList &nameFilters);
+    void scanFolder(const QString &folder);
+
+signals:
+    void scanFinished(FolderEntry *entry);
 
 private:
-    void scan(FolderEntry &folder);
+    void scan(FolderEntry &folder, QSet<QString> &visitedFolders) const;
 
-    const QString mFolder;
-    const QStringList mNameFilters;
-
-    QSet<QString> mVisitedFolders;
+    QStringList mNameFilters;
 };
 
 
-ProjectModel::ProjectModel(Project project, QObject *parent)
+ProjectModel::ProjectModel(QObject *parent)
     : QAbstractItemModel(parent)
-    , mProject(std::move(project))
 {
+    FolderScanner *scanner = new FolderScanner;
+    scanner->moveToThread(&mScanningThread);
+    connect(&mScanningThread, &QThread::finished, scanner, &QObject::deleteLater);
+    connect(this, &ProjectModel::nameFiltersChanged, scanner, &FolderScanner::setNameFilters);
+    connect(this, &ProjectModel::scanFolder, scanner, &FolderScanner::scanFolder);
+    connect(scanner, &FolderScanner::scanFinished, this, &ProjectModel::folderScanned);
+    mScanningThread.start();
+
     mFileIconProvider.setOptions(QFileIconProvider::DontUseCustomDirectoryIcons);
 
+    updateNameFilters();
     mUpdateNameFiltersTimer.setInterval(100);
     mUpdateNameFiltersTimer.setSingleShot(true);
-    connect(&mUpdateNameFiltersTimer, &QTimer::timeout,
-            this, &ProjectModel::updateNameFilters);
+    connect(&mUpdateNameFiltersTimer, &QTimer::timeout, this, &ProjectModel::updateNameFilters);
 
     connect(PluginManager::instance(), &PluginManager::objectAdded,
             this, &ProjectModel::pluginObjectAddedOrRemoved);
@@ -70,11 +75,25 @@ ProjectModel::ProjectModel(Project project, QObject *parent)
             this, &ProjectModel::pluginObjectAddedOrRemoved);
 }
 
+ProjectModel::~ProjectModel()
+{
+    mFoldersPendingScan.clear();
+    mScanningThread.requestInterruption();
+    mScanningThread.quit();
+    mScanningThread.wait();
+}
+
 void ProjectModel::setProject(Project project)
 {
     beginResetModel();
+
     mProject = std::move(project);
-    scanFolders();
+    mFolders.clear();
+    for (const QString &folder : mProject.folders()) {
+        mFolders.push_back(std::make_unique<FolderEntry>(folder));
+        scheduleFolderScan(folder);
+    }
+
     endResetModel();
 }
 
@@ -85,7 +104,8 @@ void ProjectModel::addFolder(const QString &folder)
     beginInsertRows(QModelIndex(), row, row);
 
     mProject.addFolder(folder);
-    mFolders.push_back(FolderScanner(folder, mNameFilters).scan());
+    mFolders.push_back(std::make_unique<FolderEntry>(folder));
+    scheduleFolderScan(folder);
 
     endInsertRows();
 }
@@ -100,9 +120,8 @@ void ProjectModel::removeFolder(int row)
 
 void ProjectModel::refreshFolders()
 {
-    beginResetModel();
-    scanFolders();
-    endResetModel();
+    for (const auto &folder : mFolders)
+        scheduleFolderScan(folder->filePath);
 }
 
 QString ProjectModel::filePath(const QModelIndex &index) const
@@ -121,7 +140,7 @@ QModelIndex ProjectModel::index(int row, int column, const QModelIndex &parent) 
         if (row < int(entry->entries.size()))
             return createIndex(row, column, entry->entries.at(row).get());
     } else {
-        if (row < int(mProject.folders().size()))
+        if (row < int(mFolders.size()))
             return createIndex(row, column, mFolders.at(row).get());
     }
 
@@ -137,9 +156,9 @@ QModelIndex ProjectModel::parent(const QModelIndex &index) const
 int ProjectModel::rowCount(const QModelIndex &parent) const
 {
     if (!parent.isValid())
-        return mProject.folders().size();
+        return mFolders.size();
 
-    FolderEntry *entry = static_cast<FolderEntry*>(parent.internalPointer());
+    FolderEntry *entry = entryForIndex(parent);
     return entry->entries.size();
 }
 
@@ -155,8 +174,14 @@ QVariant ProjectModel::data(const QModelIndex &index, int role) const
 
     FolderEntry *entry = entryForIndex(index);
     switch (role) {
-    case Qt::DisplayRole:
-        return QFileInfo(entry->filePath).fileName();
+    case Qt::DisplayRole: {
+        QString name = QFileInfo(entry->filePath).fileName();
+        if (!entry->parent && (mScanningFolder == entry->filePath || mFoldersPendingScan.contains(entry->filePath))) {
+            name.append(QLatin1Char(' '));
+            name.append(tr("(Refreshing)"));
+        }
+        return name;
+    }
     case Qt::DecorationRole:
         return mFileIconProvider.icon(QFileInfo(entry->filePath));
     case Qt::ToolTipRole:
@@ -213,7 +238,7 @@ QModelIndex ProjectModel::indexForEntry(FolderEntry *entry) const
 
     const auto &container = entry->parent ? entry->parent->entries : mFolders;
     const auto it = std::find_if(container.begin(), container.end(),
-                                 [entry] (auto &value) { return value.get() == entry; });
+                                 [entry] (const std::unique_ptr<FolderEntry> &value) { return value.get() == entry; });
 
     Q_ASSERT(it != container.end());
     return createIndex(std::distance(container.begin(), it), 0, entry);
@@ -228,6 +253,8 @@ void ProjectModel::pluginObjectAddedOrRemoved(QObject *object)
 
 void ProjectModel::updateNameFilters()
 {
+    mUpdateNameFiltersTimer.stop();
+
     QStringList nameFilters;
 
     const auto fileFormats = PluginManager::objects<FileFormat>();
@@ -241,33 +268,90 @@ void ProjectModel::updateNameFilters()
 
     if (mNameFilters != nameFilters) {
         mNameFilters = nameFilters;
+        emit nameFiltersChanged(nameFilters);
         refreshFolders();
     }
 }
 
-void ProjectModel::scanFolders()
+void ProjectModel::scheduleFolderScan(const QString &folder)
 {
-    // TODO: This process should run in a thread (potentially one job for each folder)
-    mFolders.clear();
+    if (mScanningFolder.isEmpty()) {
+        mScanningFolder = folder;
+        emit scanFolder(mScanningFolder);
+    } else if (!mFoldersPendingScan.contains(folder)) {
+        mFoldersPendingScan.append(folder);
+    }
 
-    for (const QString &folder : mProject.folders())
-        mFolders.push_back(FolderScanner(folder, mNameFilters).scan());
+    emit dataChanged(index(0, 0),
+                     index(mFolders.size() - 1, 0), { Qt::DisplayRole });
+}
+
+void ProjectModel::folderScanned(FolderEntry *resultPointer)
+{
+    const std::unique_ptr<FolderEntry> result { resultPointer };
+
+    Q_ASSERT(!result->parent);
+
+    const auto it = std::find_if(mFolders.begin(), mFolders.end(),
+                                 [&] (const std::unique_ptr<FolderEntry> &value) { return value->filePath == result->filePath; });
+
+    // The folder may have been removed in the meantime
+    if (it == mFolders.end())
+        return;
+
+    // There appears to be no way to reset a subset of the model, so signal the
+    // removal of all previous rows and re-adding of the new rows instead.
+
+    const std::unique_ptr<FolderEntry> &entry = *it;
+    const QModelIndex index = indexForEntry(entry.get());
+
+    beginRemoveRows(index, 0, entry->entries.size() - 1);
+    entry->entries.clear();
+    endRemoveRows();
+
+    beginInsertRows(index, 0, result->entries.size() - 1);
+    entry->entries.swap(result->entries);
+
+    // Fix up parent pointers
+    for (auto &childEntry: entry->entries)
+        childEntry->parent = entry.get();
+
+    endInsertRows();
+
+    if (!mFoldersPendingScan.isEmpty()) {
+        mScanningFolder = mFoldersPendingScan.takeFirst();
+        emit scanFolder(mScanningFolder);
+    } else {
+        mScanningFolder.clear();
+    }
+
+    emit dataChanged(index, index, { Qt::DisplayRole });
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-std::unique_ptr<FolderEntry> FolderScanner::scan()
+void FolderScanner::setNameFilters(const QStringList &nameFilters)
 {
-    auto entry = std::make_unique<FolderEntry>(mFolder);
-    scan(*entry);
-    return entry;
+    mNameFilters = nameFilters;
 }
 
-void FolderScanner::scan(FolderEntry &folder)
+void FolderScanner::scanFolder(const QString &folder)
 {
-    const auto list = QDir(folder.filePath).entryInfoList(mNameFilters,
-                                                          QDir::AllDirs | QDir::Files | QDir::NoDotAndDotDot,
-                                                          QDir::Name | QDir::LocaleAware | QDir::DirsFirst);
+    QSet<QString> visitedFolders;
+    auto entry = std::make_unique<FolderEntry>(folder);
+    scan(*entry, visitedFolders);
+
+    emit scanFinished(entry.release());
+}
+
+void FolderScanner::scan(FolderEntry &folder, QSet<QString> &visitedFolders) const
+{
+    if (QThread::currentThread()->isInterruptionRequested())
+        return;
+
+    constexpr QDir::SortFlags sortFlags { QDir::Name | QDir::LocaleAware | QDir::DirsFirst };
+    constexpr QDir::Filters filters { QDir::AllDirs | QDir::Files | QDir::NoDotAndDotDot };
+    const auto list = QDir(folder.filePath).entryInfoList(mNameFilters, filters, sortFlags);
 
     for (const auto &fileInfo : list) {
         auto entry = std::make_unique<FolderEntry>(fileInfo.filePath(), &folder);
@@ -276,9 +360,9 @@ void FolderScanner::scan(FolderEntry &folder)
             const QString canonicalPath = fileInfo.canonicalFilePath();
 
             // prevent potential endless symlink loop
-            if (!mVisitedFolders.contains(canonicalPath)) {
-                mVisitedFolders.insert(canonicalPath);
-                scan(*entry);
+            if (!visitedFolders.contains(canonicalPath)) {
+                visitedFolders.insert(canonicalPath);
+                scan(*entry, visitedFolders);
             }
 
             // Leave out empty directories
@@ -291,3 +375,5 @@ void FolderScanner::scan(FolderEntry &folder)
 }
 
 } // namespace Tiled
+
+#include "projectmodel.moc"

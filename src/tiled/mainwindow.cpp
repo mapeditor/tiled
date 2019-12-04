@@ -896,6 +896,8 @@ bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
 
 void MainWindow::openLastFiles()
 {
+    mProjectDock->openLastProject();
+
     mSettings.beginGroup(QLatin1String("recentFiles"));
 
     QStringList lastOpenFiles = mSettings.value(

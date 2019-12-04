@@ -37,6 +37,7 @@ public:
 
     QString projectFileName() const;
 
+    void openLastProject();
     void openProject();
     void openProjectFile(const QString &fileName);
     void saveProjectAs();

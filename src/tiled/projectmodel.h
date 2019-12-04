@@ -24,6 +24,7 @@
 
 #include <QAbstractListModel>
 #include <QFileIconProvider>
+#include <QThread>
 #include <QTimer>
 
 #include <memory>
@@ -48,7 +49,10 @@ class ProjectModel : public QAbstractItemModel
     Q_OBJECT
 
 public:
-    explicit ProjectModel(Project project, QObject *parent = nullptr);
+    explicit ProjectModel(QObject *parent = nullptr);
+    ~ProjectModel();
+
+    void updateNameFilters();
 
     void setProject(Project project);
     Project &project();
@@ -72,14 +76,18 @@ public:
     QStringList mimeTypes() const override;
     QMimeData *mimeData(const QModelIndexList &indexes) const override;
 
+signals:
+    void nameFiltersChanged(const QStringList &nameFilters);
+    void scanFolder(const QString &folder);
+
 private:
     FolderEntry *entryForIndex(const QModelIndex &index) const;
     QModelIndex indexForEntry(FolderEntry *entry) const;
 
     void pluginObjectAddedOrRemoved(QObject *object);
-    void updateNameFilters();
 
-    void scanFolders();
+    void scheduleFolderScan(const QString &folder);
+    void folderScanned(FolderEntry *entry);
 
     Project mProject;
     QFileIconProvider mFileIconProvider;
@@ -87,6 +95,10 @@ private:
     QTimer mUpdateNameFiltersTimer;
 
     std::vector<std::unique_ptr<FolderEntry>> mFolders;
+
+    QThread mScanningThread;
+    QString mScanningFolder;
+    QStringList mFoldersPendingScan;
 };
 
 
