@@ -281,7 +281,7 @@ Qt::DropActions LayerModel::supportedDropActions() const
 bool LayerModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
                               int row, int column, const QModelIndex &parent)
 {
-    Q_UNUSED(column);
+    Q_UNUSED(column)
 
     if (!data || action != Qt::MoveAction)
         return false;

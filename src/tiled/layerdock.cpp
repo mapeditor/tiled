@@ -387,7 +387,7 @@ void LayerView::selectedLayersChanged()
 
 void LayerView::layerRemoved(Layer *layer)
 {
-    Q_UNUSED(layer);
+    Q_UNUSED(layer)
 
     // Select "current layer" after layer removal clears selection
     if (mMapDocument->selectedLayers().isEmpty() && mMapDocument->currentLayer())

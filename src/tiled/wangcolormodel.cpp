@@ -108,7 +108,7 @@ int WangColorModel::rowCount(const QModelIndex &parent) const
 
 int WangColorModel::columnCount(const QModelIndex &parent) const
 {
-    Q_UNUSED(parent);
+    Q_UNUSED(parent)
     return 1;
 }
 

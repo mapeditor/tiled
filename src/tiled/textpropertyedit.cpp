@@ -57,7 +57,7 @@ public:
 
     State validate(QString &input, int &pos) const override
     {
-        Q_UNUSED(pos);
+        Q_UNUSED(pos)
         fixup(input);
         return Acceptable;
     }

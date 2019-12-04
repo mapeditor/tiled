@@ -267,8 +267,8 @@ void MapScene::repaintTileset(Tileset *tileset)
 
 void MapScene::tilesetReplaced(int index, Tileset *tileset, Tileset *oldTileset)
 {
-    Q_UNUSED(index);
-    Q_UNUSED(oldTileset);
+    Q_UNUSED(index)
+    Q_UNUSED(oldTileset)
 
     repaintTileset(tileset);
 }
@@ -431,12 +431,12 @@ void MapScene::dropEvent(QGraphicsSceneDragDropEvent *event)
 
 void MapScene::dragLeaveEvent(QGraphicsSceneDragDropEvent *event)
 {
-    Q_UNUSED(event);
+    Q_UNUSED(event)
 }
 
 void MapScene::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
 {
-    Q_UNUSED(event);
+    Q_UNUSED(event)
 }
 
 bool MapScene::eventFilter(QObject *, QEvent *event)
