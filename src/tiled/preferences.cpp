@@ -147,10 +147,6 @@ Preferences::Preferences()
     mAutoMapDrawing = boolValue("WhileDrawing");
     mSettings->endGroup();
 
-    mSettings->beginGroup(QLatin1String("MapsDirectory"));
-    mMapsDirectory = stringValue("Current");
-    mSettings->endGroup();
-
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->setReloadTilesetsOnChange(mReloadTilesetsOnChange);
     tilesetManager->setAnimateTiles(mShowTileAnimations);
@@ -567,16 +563,6 @@ void Preferences::setAutomappingDrawing(bool enabled)
     mSettings->setValue(QLatin1String("Automapping/WhileDrawing"), enabled);
 }
 
-void Preferences::setMapsDirectory(const QString &path)
-{
-    if (mMapsDirectory == path)
-        return;
-    mMapsDirectory = path;
-    mSettings->setValue(QLatin1String("MapsDirectory/Current"), path);
-
-    emit mapsDirectoryChanged();
-}
-
 void Preferences::setPatron(bool isPatron)
 {
     if (mIsPatron == isPatron)
@@ -625,30 +611,49 @@ QString Preferences::fileDialogStartLocation() const
  */
 void Preferences::addRecentFile(const QString &fileName)
 {
+    addToRecentFileList(fileName, "recentFiles/fileNames");
+    emit recentFilesChanged();
+}
+
+QStringList Preferences::recentProjects() const
+{
+    QVariant v = mSettings->value(QLatin1String("Project/RecentProjects"));
+    return v.toStringList();
+}
+
+void Preferences::addRecentProject(const QString &fileName)
+{
+    addToRecentFileList(fileName, "Project/RecentProjects");
+    emit recentProjectsChanged();
+}
+
+void Preferences::addToRecentFileList(const QString &fileName, const char *key)
+{
     // Remember the file by its absolute file path (not the canonical one,
     // which avoids unexpected paths when symlinks are involved).
     const QString absoluteFilePath = QDir::cleanPath(QFileInfo(fileName).absoluteFilePath());
-
     if (absoluteFilePath.isEmpty())
         return;
 
-    QStringList files = recentFiles();
+    QStringList files = mSettings->value(QLatin1String(key)).toStringList();
     files.removeAll(absoluteFilePath);
     files.prepend(absoluteFilePath);
     while (files.size() > MaxRecentFiles)
         files.removeLast();
 
-    mSettings->beginGroup(QLatin1String("recentFiles"));
-    mSettings->setValue(QLatin1String("fileNames"), files);
-    mSettings->endGroup();
-
-    emit recentFilesChanged();
+    mSettings->setValue(QLatin1String(key), files);
 }
 
 void Preferences::clearRecentFiles()
 {
     mSettings->remove(QLatin1String("recentFiles/fileNames"));
     emit recentFilesChanged();
+}
+
+void Preferences::clearRecentProjects()
+{
+    mSettings->remove(QLatin1String("Project/RecentProjects"));
+    emit recentProjectsChanged();
 }
 
 void Preferences::setCheckForUpdates(bool on)

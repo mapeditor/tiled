@@ -51,7 +51,6 @@ class EditPolygonTool;
 class LayerDock;
 class MapDocument;
 class MapView;
-class MapsDock;
 class MiniMapDock;
 class ObjectsDock;
 class PropertiesDock;
@@ -165,7 +164,6 @@ private:
     MapDocument *mCurrentMapDocument;
 
     PropertiesDock *mPropertiesDock;
-    MapsDock *mMapsDock;
     UndoDock *mUndoDock;
     ObjectsDock *mObjectsDock;
     TemplatesDock *mTemplatesDock;

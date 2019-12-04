@@ -38,6 +38,7 @@
 #include "documentmanager.h"
 #include "exportasimagedialog.h"
 #include "exporthelper.h"
+#include "issuescounter.h"
 #include "issuesdock.h"
 #include "languagemanager.h"
 #include "layer.h"
@@ -52,12 +53,14 @@
 #include "mapview.h"
 #include "minimaprenderer.h"
 #include "newmapdialog.h"
+#include "newsbutton.h"
 #include "newtilesetdialog.h"
 #include "objectgroup.h"
 #include "objecttypeseditor.h"
 #include "offsetmapdialog.h"
 #include "donationdialog.h"
 #include "pluginmanager.h"
+#include "projectdock.h"
 #include "resizedialog.h"
 #include "scriptmanager.h"
 #include "templatemanager.h"
@@ -99,8 +102,6 @@
 #include <QtPlatformHeaders\QWindowsWindowFunctions>
 #endif
 
-#include "issuescounter.h"
-#include "newsbutton.h"
 #include "qtcompat_p.h"
 
 using namespace Tiled;
@@ -200,8 +201,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mActionManager(new ActionManager(this))
     , mUi(new Ui::MainWindow)
     , mActionHandler(new MapDocumentActionHandler(this))
-    , mConsoleDock(new ConsoleDock(this))
-    , mIssuesDock(new IssuesDock(this))
     , mObjectTypesEditor(new ObjectTypesEditor(this))
     , mAutomappingManager(new AutomappingManager(this))
     , mDocumentManager(DocumentManager::instance())
@@ -227,21 +226,25 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerAction(mUi->actionAbout, "About");
     ActionManager::registerAction(mUi->actionAboutQt, "AboutQt");
     ActionManager::registerAction(mUi->actionAddExternalTileset, "AddExternalTileset");
+    ActionManager::registerAction(mUi->actionAddFolderToProject, "AddFolderToProject");
     ActionManager::registerAction(mUi->actionAutoMap, "AutoMap");
     ActionManager::registerAction(mUi->actionAutoMapWhileDrawing, "AutoMapWhileDrawing");
-    ActionManager::registerAction(mUi->actionDonate, "Donate");
     ActionManager::registerAction(mUi->actionClearRecentFiles, "ClearRecentFiles");
+    ActionManager::registerAction(mUi->actionClearRecentProjects, "ClearRecentProjects");
     ActionManager::registerAction(mUi->actionClearView, "ClearView");
     ActionManager::registerAction(mUi->actionClose, "Close");
     ActionManager::registerAction(mUi->actionCloseAll, "CloseAll");
+    ActionManager::registerAction(mUi->actionCloseProject, "CloseProject");
     ActionManager::registerAction(mUi->actionCopy, "Copy");
     ActionManager::registerAction(mUi->actionCut, "Cut");
     ActionManager::registerAction(mUi->actionDelete, "Delete");
     ActionManager::registerAction(mUi->actionDocumentation, "Documentation");
+    ActionManager::registerAction(mUi->actionDonate, "Donate");
     ActionManager::registerAction(mUi->actionEditCommands, "EditCommands");
     ActionManager::registerAction(mUi->actionExport, "Export");
     ActionManager::registerAction(mUi->actionExportAs, "ExportAs");
     ActionManager::registerAction(mUi->actionExportAsImage, "ExportAsImage");
+    ActionManager::registerAction(mUi->actionFitInView, "FitInView");
     ActionManager::registerAction(mUi->actionFullScreen, "FullScreen");
     ActionManager::registerAction(mUi->actionHighlightCurrentLayer, "HighlightCurrentLayer");
     ActionManager::registerAction(mUi->actionHighlightHoveredObject, "HighlightHoveredObject");
@@ -255,15 +258,18 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerAction(mUi->actionNoLabels, "NoLabels");
     ActionManager::registerAction(mUi->actionOffsetMap, "OffsetMap");
     ActionManager::registerAction(mUi->actionOpen, "Open");
+    ActionManager::registerAction(mUi->actionOpenProject, "OpenProject");
     ActionManager::registerAction(mUi->actionPaste, "Paste");
     ActionManager::registerAction(mUi->actionPasteInPlace, "PasteInPlace");
     ActionManager::registerAction(mUi->actionPreferences, "Preferences");
     ActionManager::registerAction(mUi->actionQuit, "Quit");
+    ActionManager::registerAction(mUi->actionRefreshProjectFolders, "RefreshProjectFolders");
     ActionManager::registerAction(mUi->actionReload, "Reload");
     ActionManager::registerAction(mUi->actionResizeMap, "ResizeMap");
     ActionManager::registerAction(mUi->actionSave, "Save");
     ActionManager::registerAction(mUi->actionSaveAll, "SaveAll");
     ActionManager::registerAction(mUi->actionSaveAs, "SaveAs");
+    ActionManager::registerAction(mUi->actionSaveProjectAs, "SaveProjectAs");
     ActionManager::registerAction(mUi->actionShowGrid, "ShowGrid");
     ActionManager::registerAction(mUi->actionShowTileAnimations, "ShowTileAnimations");
     ActionManager::registerAction(mUi->actionShowTileCollisionShapes, "ShowTileCollisionShapes");
@@ -274,9 +280,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerAction(mUi->actionSnapToPixels, "SnapToPixels");
     ActionManager::registerAction(mUi->actionTilesetProperties, "TilesetProperties");
     ActionManager::registerAction(mUi->actionZoomIn, "ZoomIn");
-    ActionManager::registerAction(mUi->actionZoomOut, "ZoomOut");
     ActionManager::registerAction(mUi->actionZoomNormal, "ZoomNormal");
-    ActionManager::registerAction(mUi->actionFitInView, "FitInView");
+    ActionManager::registerAction(mUi->actionZoomOut, "ZoomOut");
 
 #ifdef Q_OS_MAC
     MacSupport::addFullscreen(this);
@@ -342,6 +347,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerAction(undoAction, "Undo");
     ActionManager::registerAction(redoAction, "Redo");
 
+    mProjectDock = new ProjectDock(this);   // uses some actions registered above
+    mConsoleDock = new ConsoleDock(this);
+    mIssuesDock = new IssuesDock(this);
+
+    addDockWidget(Qt::LeftDockWidgetArea, mProjectDock);
     addDockWidget(Qt::BottomDockWidgetArea, mConsoleDock);
     addDockWidget(Qt::BottomDockWidgetArea, mIssuesDock);
     tabifyDockWidget(mConsoleDock, mIssuesDock);
@@ -464,7 +474,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mLayerMenu->addSeparator();
     mLayerMenu->addAction(mActionHandler->actionLayerProperties());
 
-    menuBar()->insertMenu(mUi->menuHelp->menuAction(), mLayerMenu);
+    menuBar()->insertMenu(mUi->menuProject->menuAction(), mLayerMenu);
 
     ActionManager::registerMenu(mLayerMenu, "Layer");
     ActionManager::registerMenu(mNewLayerMenu, "NewLayer");
@@ -567,6 +577,13 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionTilesetProperties, &QAction::triggered,
             this, &MainWindow::editTilesetProperties);
 
+    connect(mUi->actionOpenProject, &QAction::triggered, mProjectDock, &ProjectDock::openProject);
+    connect(mUi->actionSaveProjectAs, &QAction::triggered, mProjectDock, &ProjectDock::saveProjectAs);
+    connect(mUi->actionCloseProject, &QAction::triggered, mProjectDock, &ProjectDock::closeProject);
+    connect(mUi->actionAddFolderToProject, &QAction::triggered, mProjectDock, &ProjectDock::addFolderToProject);
+    connect(mUi->actionRefreshProjectFolders, &QAction::triggered, mProjectDock, &ProjectDock::refreshProjectFolders);
+    connect(mUi->actionClearRecentProjects, &QAction::triggered, preferences, &Preferences::clearRecentProjects);
+
     connect(mUi->actionDocumentation, &QAction::triggered, this, &MainWindow::openDocumentation);
     connect(mUi->actionForum, &QAction::triggered, this, &MainWindow::openForum);
     connect(mUi->actionDonate, &QAction::triggered, this, &MainWindow::showDonationDialog);
@@ -585,12 +602,14 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
                  this, &MainWindow::openRecentFile);
     }
     mUi->menuRecentFiles->insertSeparator(mUi->actionClearRecentFiles);
-    mUi->menuRecentFiles->setToolTipsVisible(true);
+
+    connect(mProjectDock, &ProjectDock::projectFileNameChanged, this, &MainWindow::updateWindowTitle);
 
     setThemeIcon(mUi->menuNew, "document-new");
     setThemeIcon(mUi->actionOpen, "document-open");
     setThemeIcon(mUi->menuRecentFiles, "document-open-recent");
     setThemeIcon(mUi->actionClearRecentFiles, "edit-clear");
+    setThemeIcon(mUi->actionClearRecentProjects, "edit-clear");
     setThemeIcon(mUi->actionSave, "document-save");
     setThemeIcon(mUi->actionSaveAs, "document-save-as");
     setThemeIcon(mUi->actionClose, "window-close");
@@ -607,6 +626,12 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     setThemeIcon(mUi->actionFitInView, "zoom-fit-best");
     setThemeIcon(mUi->actionResizeMap, "document-page-setup");
     setThemeIcon(mUi->actionMapProperties, "document-properties");
+    setThemeIcon(mUi->actionOpenProject, "document-open");
+    setThemeIcon(mUi->menuRecentProjects, "document-open-recent");
+    setThemeIcon(mUi->actionSaveProjectAs, "document-save-as");
+    setThemeIcon(mUi->actionCloseProject, "window-close");
+    setThemeIcon(mUi->actionAddFolderToProject, "folder-new");
+    setThemeIcon(mUi->actionRefreshProjectFolders, "view-refresh");
     setThemeIcon(mUi->actionDocumentation, "help-contents");
     setThemeIcon(mUi->actionAbout, "help-about");
 
@@ -709,6 +734,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 #endif
 
     connect(preferences, &Preferences::recentFilesChanged, this, &MainWindow::updateRecentFilesMenu);
+    connect(preferences, &Preferences::recentProjectsChanged, this, &MainWindow::updateRecentProjectsMenu);
 
     QTimer::singleShot(500, this, [this,preferences] {
         if (preferences->shouldShowDonationDialog())
@@ -870,6 +896,8 @@ bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
 
 void MainWindow::openLastFiles()
 {
+    mProjectDock->openLastProject();
+
     mSettings.beginGroup(QLatin1String("recentFiles"));
 
     QStringList lastOpenFiles = mSettings.value(
@@ -1483,6 +1511,13 @@ void MainWindow::openRecentFile()
         openFile(action->data().toString());
 }
 
+void MainWindow::openRecentProject()
+{
+    QAction *action = qobject_cast<QAction *>(sender());
+    if (action)
+        mProjectDock->openProjectFile(action->data().toString());
+}
+
 /**
  * Updates the recent files menu.
  */
@@ -1505,14 +1540,35 @@ void MainWindow::updateRecentFilesMenu()
     mUi->menuRecentFiles->setEnabled(numRecentFiles > 0);
 }
 
+void MainWindow::updateRecentProjectsMenu()
+{
+    auto menu = mUi->menuRecentProjects;
+    menu->clear();
+
+    const QStringList files = Preferences::instance()->recentProjects();
+
+    for (const QString &file : files) {
+        const QFileInfo fileInfo(file);
+        auto action = menu->addAction(fileInfo.fileName(), this, &MainWindow::openRecentProject);
+        action->setData(file);
+        action->setToolTip(fileInfo.filePath());
+    }
+
+    menu->addSeparator();
+    menu->addAction(mUi->actionClearRecentProjects);
+    menu->setEnabled(!files.isEmpty());
+}
+
 void MainWindow::resetToDefaultLayout()
 {
     // Make sure we're not in Clear View mode
     mUi->actionClearView->setChecked(false);
 
     // Reset the Console and Issues dock
+    addDockWidget(Qt::LeftDockWidgetArea, mProjectDock);
     addDockWidget(Qt::BottomDockWidgetArea, mConsoleDock);
     addDockWidget(Qt::BottomDockWidgetArea, mIssuesDock);
+    mProjectDock->setVisible(true);
     mConsoleDock->setVisible(false);
     mIssuesDock->setVisible(false);
     tabifyDockWidget(mConsoleDock, mIssuesDock);
@@ -1525,6 +1581,7 @@ void MainWindow::updateViewsAndToolbarsMenu()
 {
     mViewsAndToolbarsMenu->clear();
 
+    mViewsAndToolbarsMenu->addAction(mProjectDock->toggleViewAction());
     mViewsAndToolbarsMenu->addAction(mConsoleDock->toggleViewAction());
     mViewsAndToolbarsMenu->addAction(mIssuesDock->toggleViewAction());
 
@@ -1672,6 +1729,7 @@ void MainWindow::readSettings()
                                  QByteArray()).toByteArray());
     mSettings.endGroup();
     updateRecentFilesMenu();
+    updateRecentProjectsMenu();
 
     auto &worldManager = WorldManager::instance();
     const QStringList worldFiles = mSettings.value(QLatin1String("LoadedWorlds")).toStringList();
@@ -1684,12 +1742,18 @@ void MainWindow::readSettings()
 
 void MainWindow::updateWindowTitle()
 {
+    QString projectName = mProjectDock->projectFileName();
+    if (!projectName.isEmpty()) {
+        projectName = QFileInfo(projectName).completeBaseName();
+        projectName = QString(QLatin1String(" (%1)")).arg(projectName);
+    }
+
     if (Document *document = mDocumentManager->currentDocument()) {
-        setWindowTitle(tr("[*]%1").arg(document->displayName()));
+        setWindowTitle(tr("[*]%1%2").arg(document->displayName(), projectName));
         setWindowFilePath(document->fileName());
         setWindowModified(document->isModified());
     } else {
-        setWindowTitle(QString());
+        setWindowTitle(projectName);
         setWindowFilePath(QString());
         setWindowModified(false);
     }

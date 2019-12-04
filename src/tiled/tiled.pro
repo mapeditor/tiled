@@ -154,7 +154,6 @@ SOURCES += aboutdialog.cpp \
     mapobjectitem.cpp \
     mapobjectmodel.cpp \
     mapscene.cpp \
-    mapsdock.cpp \
     mapview.cpp \
     minimap.cpp \
     minimapdock.cpp \
@@ -185,6 +184,9 @@ SOURCES += aboutdialog.cpp \
     pluginlistmodel.cpp \
     pointhandle.cpp \
     preferences.cpp \
+    project.cpp \
+    projectdock.cpp \
+    projectmodel.cpp \
     preferencesdialog.cpp \
     propertiesdock.cpp \
     propertybrowser.cpp \
@@ -380,7 +382,6 @@ HEADERS += aboutdialog.h \
     mapobjectitem.h \
     mapobjectmodel.h \
     mapscene.h \
-    mapsdock.h \
     mapview.h \
     minimapdock.h \
     minimap.h \
@@ -412,6 +413,9 @@ HEADERS += aboutdialog.h \
     pointhandle.h \
     preferencesdialog.h \
     preferences.h \
+    project.h \
+    projectdock.h \
+    projectmodel.h \
     propertiesdock.h \
     propertybrowser.h \
     raiselowerhelper.h \
