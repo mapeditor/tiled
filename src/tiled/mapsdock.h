@@ -21,9 +21,7 @@
 #pragma once
 
 #include <QDockWidget>
-#include <QTreeView>
 
-class QFileSystemModel;
 class QLineEdit;
 
 namespace Tiled {
@@ -49,37 +47,6 @@ private:
 
     QLineEdit *mDirectoryEdit;
     MapsView *mMapsView;
-};
-
-/**
- * Shows the list of files and directories.
- */
-class MapsView : public QTreeView
-{
-    Q_OBJECT
-
-public:
-    MapsView(QWidget *parent = nullptr);
-
-    /**
-     * Returns a sensible size hint.
-     */
-    QSize sizeHint() const override;
-
-    QFileSystemModel *model() const { return mFileSystemModel; }
-
-protected:
-    void mousePressEvent(QMouseEvent *event) override;
-
-private:
-    void onMapsDirectoryChanged();
-    void onActivated(const QModelIndex &index);
-
-    void pluginObjectAddedOrRemoved(QObject *object);
-
-    void updateNameFilters();
-
-    QFileSystemModel *mFileSystemModel;
 };
 
 } // namespace Tiled

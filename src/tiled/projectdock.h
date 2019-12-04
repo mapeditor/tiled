@@ -23,16 +23,12 @@
 #include "project.h"
 
 #include <QDockWidget>
-#include <QTreeView>
-
-class QFileSystemModel;
 
 namespace Tiled {
 
 class ProjectView;
-class ProjectModel;
 
-class ProjectDock : public QDockWidget
+class ProjectDock final : public QDockWidget
 {
     Q_OBJECT
 
@@ -42,6 +38,7 @@ public:
     QString projectFileName() const;
 
     void openProject();
+    void openProjectFile(const QString &fileName);
     void saveProjectAs();
     void closeProject();
     void addFolderToProject();
@@ -54,44 +51,16 @@ protected:
     void changeEvent(QEvent *e) override;
 
 private:
+    Project &project() const;
     void retranslateUi();
 
-    Project mProject;
     ProjectView *mProjectView;
-};
-
-/**
- * Shows the list of files in a project.
- */
-class ProjectView : public QTreeView
-{
-    Q_OBJECT
-
-public:
-    ProjectView(QWidget *parent = nullptr);
-
-    /**
-     * Returns a sensible size hint.
-     */
-    QSize sizeHint() const override;
-
-    void setModel(QAbstractItemModel *model) override;
-
-    ProjectModel *model() const { return mProjectModel; }
-
-protected:
-    void mousePressEvent(QMouseEvent *event) override;
-
-private:
-    void onActivated(const QModelIndex &index);
-
-    ProjectModel *mProjectModel;
 };
 
 
 inline QString ProjectDock::projectFileName() const
 {
-    return mProject.fileName();
+    return project().fileName();
 }
 
 } // namespace Tiled

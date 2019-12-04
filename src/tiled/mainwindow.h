@@ -157,6 +157,7 @@ private:
     void showDonationDialog();
     void aboutTiled();
     void openRecentFile();
+    void openRecentProject();
 
     void documentChanged(Document *document);
     void documentSaved(Document *document);
@@ -196,6 +197,7 @@ private:
     void readSettings();
 
     void updateRecentFilesMenu();
+    void updateRecentProjectsMenu();
     void updateViewsAndToolbarsMenu();
 
     void retranslateUi();

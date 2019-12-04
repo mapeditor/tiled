@@ -162,6 +162,9 @@ public:
     QString fileDialogStartLocation() const;
     void addRecentFile(const QString &fileName);
 
+    QStringList recentProjects() const;
+    void addRecentProject(const QString &fileName);
+
     bool openLastFilesOnStartup() const;
 
     bool checkForUpdates() const;
@@ -198,6 +201,7 @@ public slots:
     void setWheelZoomsByDefault(bool mode);
 
     void clearRecentFiles();
+    void clearRecentProjects();
 
 signals:
     void showGridChanged(bool showGrid);
@@ -233,6 +237,7 @@ signals:
     void isPatronChanged();
 
     void recentFilesChanged();
+    void recentProjectsChanged();
 
     void checkForUpdatesChanged(bool on);
     void displayNewsChanged(bool on);
@@ -246,6 +251,8 @@ private:
     QString stringValue(const char *key, const QString &def = QString()) const;
     int intValue(const char *key, int defaultValue) const;
     qreal realValue(const char *key, qreal defaultValue) const;
+
+    void addToRecentFileList(const QString &fileName, const char *key);
 
     void objectTypesFileChangedOnDisk();
 

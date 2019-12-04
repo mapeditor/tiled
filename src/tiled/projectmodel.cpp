@@ -26,16 +26,40 @@
 
 namespace Tiled {
 
-ProjectModel::ProjectModel(QObject *parent)
+ProjectModel::ProjectModel(Project project, QObject *parent)
     : QAbstractItemModel(parent)
+    , mProject(std::move(project))
 {
     mFileIconProvider.setOptions(QFileIconProvider::DontUseCustomDirectoryIcons);
 }
 
-void ProjectModel::setFolders(const std::vector<std::unique_ptr<FolderEntry> > *folders)
+void ProjectModel::setProject(Project project)
 {
     beginResetModel();
-    mFolders = folders;
+    mProject = std::move(project);
+    endResetModel();
+}
+
+void ProjectModel::addFolder(const QString &folder)
+{
+    const int row = int(mProject.folders().size());
+
+    beginInsertRows(QModelIndex(), row, row);
+    mProject.addFolder(folder);
+    endInsertRows();
+}
+
+void ProjectModel::removeFolder(int row)
+{
+    beginRemoveRows(QModelIndex(), row, row);
+    mProject.removeFolder(row);
+    endRemoveRows();
+}
+
+void ProjectModel::refreshFolders()
+{
+    beginResetModel();
+    mProject.refreshFolders();
     endResetModel();
 }
 
@@ -55,8 +79,8 @@ QModelIndex ProjectModel::index(int row, int column, const QModelIndex &parent) 
         if (row < int(entry->entries.size()))
             return createIndex(row, column, entry->entries.at(row).get());
     } else {
-        if (mFolders && row < int(mFolders->size()))
-            return createIndex(row, column, mFolders->at(row).get());
+        if (row < int(mProject.folders().size()))
+            return createIndex(row, column, mProject.folders().at(row).get());
     }
 
     return QModelIndex();
@@ -71,7 +95,7 @@ QModelIndex ProjectModel::parent(const QModelIndex &index) const
 int ProjectModel::rowCount(const QModelIndex &parent) const
 {
     if (!parent.isValid())
-        return mFolders ? mFolders->size() : 0;
+        return mProject.folders().size();
 
     FolderEntry *entry = static_cast<FolderEntry*>(parent.internalPointer());
     return entry->entries.size();
@@ -105,11 +129,12 @@ QModelIndex ProjectModel::indexForEntry(FolderEntry *entry) const
     if (!entry)
         return QModelIndex();
 
-    const std::vector<std::unique_ptr<FolderEntry>> *container = entry->parent ? &entry->parent->entries : mFolders;
-    auto it = std::find_if(container->begin(), container->end(), [entry] (const std::unique_ptr<FolderEntry> &value) { return value.get() == entry; });
+    const auto &container = entry->parent ? entry->parent->entries : mProject.folders();
+    const auto it = std::find_if(container.begin(), container.end(),
+                                 [entry] (auto &value) { return value.get() == entry; });
 
-    Q_ASSERT(it != container->end());
-    return createIndex(std::distance(container->begin(), it), 0, entry);
+    Q_ASSERT(it != container.end());
+    return createIndex(std::distance(container.begin(), it), 0, entry);
 }
 
 } // namespace Tiled

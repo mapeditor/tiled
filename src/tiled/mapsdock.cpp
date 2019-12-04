@@ -35,8 +35,9 @@
 #include <QLineEdit>
 #include <QMouseEvent>
 #include <QPushButton>
+#include <QTreeView>
 
-using namespace Tiled;
+namespace Tiled {
 
 /**
  * Class represents the file system model with disabled dragging of directories.
@@ -57,6 +58,38 @@ public:
         return flags;
     }
 };
+
+/**
+ * Shows the list of files and directories.
+ */
+class MapsView : public QTreeView
+{
+    Q_OBJECT
+
+public:
+    MapsView(QWidget *parent = nullptr);
+
+    /**
+     * Returns a sensible size hint.
+     */
+    QSize sizeHint() const override;
+
+    QFileSystemModel *model() const { return mFileSystemModel; }
+
+protected:
+    void mousePressEvent(QMouseEvent *event) override;
+
+private:
+    void onMapsDirectoryChanged();
+    void onActivated(const QModelIndex &index);
+
+    void pluginObjectAddedOrRemoved(QObject *object);
+
+    void updateNameFilters();
+
+    QFileSystemModel *mFileSystemModel;
+};
+
 
 MapsDock::MapsDock(QWidget *parent)
     : QDockWidget(parent)
@@ -152,7 +185,6 @@ MapsView::MapsView(QWidget *parent)
     setHeaderHidden(true);
     setItemsExpandable(false);
     setUniformRowHeights(true);
-    setDragEnabled(true);
     setDefaultDropAction(Qt::MoveAction);
 
     Preferences *prefs = Preferences::instance();
@@ -198,11 +230,8 @@ QSize MapsView::sizeHint() const
 
 void MapsView::mousePressEvent(QMouseEvent *event)
 {
-    QModelIndex index = indexAt(event->pos());
-    if (index.isValid()) {
-        // Prevent drag-and-drop starting when clicking on an unselected item.
-        setDragEnabled(selectionModel()->isSelected(index));
-    }
+    // Prevent drag-and-drop starting when clicking on an unselected item.
+    setDragEnabled(selectionModel()->isSelected(indexAt(event->pos())));
 
     QTreeView::mousePressEvent(event);
 }
@@ -252,3 +281,7 @@ void MapsView::updateNameFilters()
 
     mFileSystemModel->setNameFilters(nameFilters);
 }
+
+} // namespace Tiled
+
+#include "mapsdock.moc"

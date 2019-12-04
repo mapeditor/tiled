@@ -32,9 +32,14 @@ class ProjectModel : public QAbstractItemModel
     Q_OBJECT
 
 public:
-    explicit ProjectModel(QObject *parent = nullptr);
+    explicit ProjectModel(Project project, QObject *parent = nullptr);
 
-    void setFolders(const std::vector<std::unique_ptr<FolderEntry>> *folders);
+    void setProject(Project project);
+    Project &project();
+
+    void addFolder(const QString &folder);
+    void removeFolder(int row);
+    void refreshFolders();
 
     QString filePath(const QModelIndex &index) const;
 
@@ -50,8 +55,14 @@ public:
 private:
     QModelIndex indexForEntry(FolderEntry *entry) const;
 
-    const std::vector<std::unique_ptr<FolderEntry>> *mFolders = nullptr;
+    Project mProject;
     QFileIconProvider mFileIconProvider;
 };
+
+
+inline Project &ProjectModel::project()
+{
+    return mProject;
+}
 
 } // namespace Tiled

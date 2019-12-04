@@ -115,6 +115,12 @@ void Project::addFolder(const QString &folder)
     mFolders.push_back(std::move(entry));
 }
 
+void Project::removeFolder(int index)
+{
+    Q_ASSERT(index >= 0 && index < mFolders.size());
+    mFolders.erase(mFolders.begin() + index);
+}
+
 void Project::refreshFolders()
 {
     // TODO: This process should run in a thread (potentially one job for each folder)

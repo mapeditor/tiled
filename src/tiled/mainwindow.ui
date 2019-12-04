@@ -53,6 +53,9 @@
       <iconset resource="tiled.qrc">
        <normaloff>:/images/16/document-open-recent.png</normaloff>:/images/16/document-open-recent.png</iconset>
      </property>
+     <property name="toolTipsVisible">
+      <bool>true</bool>
+     </property>
      <addaction name="actionClearRecentFiles"/>
     </widget>
     <widget class="QMenu" name="menuNew">
@@ -181,7 +184,21 @@
     <property name="title">
      <string>&amp;Project</string>
     </property>
+    <widget class="QMenu" name="menuRecentProjects">
+     <property name="title">
+      <string>&amp;Recent Projects</string>
+     </property>
+     <property name="icon">
+      <iconset resource="tiled.qrc">
+       <normaloff>:/images/16/document-open-recent.png</normaloff>:/images/16/document-open-recent.png</iconset>
+     </property>
+     <property name="toolTipsVisible">
+      <bool>true</bool>
+     </property>
+    </widget>
     <addaction name="actionOpenProject"/>
+    <addaction name="menuRecentProjects"/>
+    <addaction name="separator"/>
     <addaction name="actionSaveProjectAs"/>
     <addaction name="actionCloseProject"/>
     <addaction name="separator"/>
@@ -678,6 +695,10 @@
    </property>
   </action>
   <action name="actionClearRecentProjects">
+   <property name="icon">
+    <iconset resource="tiled.qrc">
+     <normaloff>:/images/16/edit-clear.png</normaloff>:/images/16/edit-clear.png</iconset>
+   </property>
    <property name="text">
     <string>Clear Recent Projects</string>
    </property>

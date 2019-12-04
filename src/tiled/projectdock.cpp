@@ -20,21 +20,57 @@
 
 #include "projectdock.h"
 
+#include "actionmanager.h"
 #include "documentmanager.h"
 #include "preferences.h"
 #include "projectmodel.h"
 #include "utils.h"
 
 #include <QBoxLayout>
+#include <QCoreApplication>
 #include <QFileDialog>
 #include <QFileInfo>
+#include <QMenu>
 #include <QMessageBox>
 #include <QMouseEvent>
 #include <QSettings>
-
-using namespace Tiled;
+#include <QStandardPaths>
+#include <QToolBar>
+#include <QTreeView>
 
 static const char * const LAST_PROJECT_KEY = "Project/LastProject";
+
+namespace Tiled {
+
+/**
+ * Shows the list of files in a project.
+ */
+class ProjectView final : public QTreeView
+{
+    Q_OBJECT
+
+public:
+    ProjectView(QWidget *parent = nullptr);
+
+    /**
+     * Returns a sensible size hint.
+     */
+    QSize sizeHint() const override;
+
+    void setModel(QAbstractItemModel *model) override;
+
+    ProjectModel *model() const { return mProjectModel; }
+
+protected:
+    void mousePressEvent(QMouseEvent *event) override;
+    void contextMenuEvent(QContextMenuEvent *event) override;
+
+private:
+    void onActivated(const QModelIndex &index);
+
+    ProjectModel *mProjectModel;
+};
+
 
 ProjectDock::ProjectDock(QWidget *parent)
     : QDockWidget(parent)
@@ -45,20 +81,25 @@ ProjectDock::ProjectDock(QWidget *parent)
     auto widget = new QWidget(this);
     auto layout = new QVBoxLayout(widget);
     layout->setMargin(0);
+    layout->setSpacing(0);
+
+    QToolBar *toolBar = new QToolBar;
+    toolBar->setFloatable(false);
+    toolBar->setMovable(false);
+    toolBar->setIconSize(Utils::smallIconSize());
+
+    toolBar->addAction(ActionManager::action("AddFolderToProject"));
+    toolBar->addAction(ActionManager::action("RefreshProjectFolders"));
 
     // Reopen last used project
     const auto prefs = Preferences::instance();
     const auto settings = prefs->settings();
     const auto lastProjectFileName = settings->value(QLatin1String(LAST_PROJECT_KEY)).toString();
     if (prefs->openLastFilesOnStartup() && !lastProjectFileName.isEmpty())
-        mProject.load(lastProjectFileName);
-
-    auto projectModel = new ProjectModel(this);
-    projectModel->setFolders(mProject.folders());
-
-    mProjectView->setModel(projectModel);
+        openProjectFile(lastProjectFileName);
 
     layout->addWidget(mProjectView);
+    layout->addWidget(toolBar);
 
     setWidget(widget);
     retranslateUi();
@@ -73,12 +114,15 @@ void ProjectDock::openProject()
     const QString projectFilesFilter = tr("Tiled Projects (*.tiled-project)");
     const QString fileName = QFileDialog::getOpenFileName(window(),
                                                           tr("Open Project"),
-                                                          mProject.fileName(),
+                                                          projectFileName(),
                                                           projectFilesFilter,
                                                           nullptr);
-    if (fileName.isEmpty())
-        return;
+    if (!fileName.isEmpty())
+        openProjectFile(fileName);
+}
 
+void ProjectDock::openProjectFile(const QString &fileName)
+{
     Project project;
 
     if (!project.load(fileName)) {
@@ -88,38 +132,58 @@ void ProjectDock::openProject()
         return;
     }
 
-    mProjectView->model()->setFolders(nullptr);
-    std::swap(mProject, project);
-    mProjectView->model()->setFolders(mProject.folders());
+    mProjectView->model()->setProject(std::move(project));
+
+    Preferences::instance()->addRecentProject(fileName);
 
     emit projectFileNameChanged();
 }
 
 void ProjectDock::saveProjectAs()
 {
+    QString fileName = projectFileName();
+    if (fileName.isEmpty()) {
+        const auto recents = Preferences::instance()->recentProjects();
+        if (!recents.isEmpty())
+            fileName = QFileInfo(recents.first()).path();
+        if (fileName.isEmpty())
+            fileName = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+
+        fileName.append(QLatin1Char('/'));
+        fileName.append(QCoreApplication::translate("Tiled::MainWindow", "untitled"));
+        fileName.append(QLatin1String(".tiled-project"));
+    }
+
     const QString projectFilesFilter = tr("Tiled Projects (*.tiled-project)");
-    const QString fileName = QFileDialog::getSaveFileName(window(),
-                                                          tr("Save Project As"),
-                                                          mProject.fileName(),
-                                                          projectFilesFilter,
-                                                          nullptr);
+    fileName = QFileDialog::getSaveFileName(window(),
+                                            tr("Save Project As"),
+                                            fileName,
+                                            projectFilesFilter,
+                                            nullptr);
     if (fileName.isEmpty())
         return;
 
-    if (!mProject.save(fileName)) {
+    if (!fileName.endsWith(QLatin1String(".tiled-project"))) {
+        while (fileName.endsWith(QLatin1String(".")))
+            fileName.chop(1);
+
+        fileName.append(QLatin1String(".tiled-project"));
+    }
+
+    if (!project().save(fileName)) {
         QMessageBox::critical(window(),
                               tr("Error Saving Project"),
                               tr("An error occurred while saving the project."));
     }
+
+    Preferences::instance()->addRecentProject(fileName);
 
     emit projectFileNameChanged();
 }
 
 void ProjectDock::closeProject()
 {
-    mProjectView->model()->setFolders(nullptr);
-    mProject.clear();
-
+    mProjectView->model()->setProject(Project());
     emit projectFileNameChanged();
 }
 
@@ -127,24 +191,21 @@ void ProjectDock::addFolderToProject()
 {
     const QString folder = QFileDialog::getExistingDirectory(window(),
                                                              tr("Choose Folder"),
-                                                             QFileInfo(mProject.fileName()).path());
+                                                             QFileInfo(projectFileName()).path());
 
     if (folder.isEmpty())
         return;
 
-    mProject.addFolder(folder);
-    // FIXME: Should just add the new top-level row, not trigger complete reset
-    mProjectView->model()->setFolders(mProject.folders());
+    mProjectView->model()->addFolder(folder);
 
-    if (!mProject.fileName().isEmpty())
-        mProject.save(mProject.fileName());
+    auto &p = project();
+    if (!p.fileName().isEmpty())
+        p.save(p.fileName());
 }
 
 void ProjectDock::refreshProjectFolders()
 {
-    mProjectView->model()->setFolders(nullptr);
-    mProject.refreshFolders();
-    mProjectView->model()->setFolders(mProject.folders());
+    mProjectView->model()->refreshFolders();
 }
 
 void ProjectDock::changeEvent(QEvent *e)
@@ -159,20 +220,26 @@ void ProjectDock::changeEvent(QEvent *e)
     }
 }
 
+Project &ProjectDock::project() const
+{
+    return mProjectView->model()->project();
+}
+
 void ProjectDock::retranslateUi()
 {
     setWindowTitle(tr("Project"));
 }
 
-///// ///// ///// ///// /////
+///////////////////////////////////////////////////////////////////////////////
 
 ProjectView::ProjectView(QWidget *parent)
     : QTreeView(parent)
 {
     setHeaderHidden(true);
     setUniformRowHeights(true);
-    setDragEnabled(true);
     setDefaultDropAction(Qt::MoveAction);
+
+    setModel(new ProjectModel(Project()));
 
     connect(this, &QAbstractItemView::activated,
             this, &ProjectView::onActivated);
@@ -180,7 +247,7 @@ ProjectView::ProjectView(QWidget *parent)
 
 QSize ProjectView::sizeHint() const
 {
-    return Utils::dpiScaled(QSize(130, 100));
+    return Utils::dpiScaled(QSize(130, 200));
 }
 
 void ProjectView::setModel(QAbstractItemModel *model)
@@ -192,13 +259,33 @@ void ProjectView::setModel(QAbstractItemModel *model)
 
 void ProjectView::mousePressEvent(QMouseEvent *event)
 {
-    QModelIndex index = indexAt(event->pos());
-    if (index.isValid()) {
-        // Prevent drag-and-drop starting when clicking on an unselected item.
-        setDragEnabled(selectionModel()->isSelected(index));
-    }
+    // Prevent drag-and-drop starting when clicking on an unselected item.
+    setDragEnabled(selectionModel()->isSelected(indexAt(event->pos())));
 
     QTreeView::mousePressEvent(event);
+}
+
+void ProjectView::contextMenuEvent(QContextMenuEvent *event)
+{
+    const QModelIndex index = indexAt(event->pos());
+
+    QMenu menu;
+
+    if (index.isValid() && !index.parent().isValid()) {
+        auto removeFolder = menu.addAction(tr("Remove Folder from Project"), [=] {
+            model()->removeFolder(index.row());
+
+            auto &p = model()->project();
+            if (!p.fileName().isEmpty())
+                p.save(p.fileName());
+        });
+        Utils::setThemeIcon(removeFolder, "list-remove");
+    } else {
+        menu.addAction(ActionManager::action("AddFolderToProject"));
+        menu.addAction(ActionManager::action("RefreshProjectFolders"));
+    }
+
+    menu.exec(event->globalPos());
 }
 
 void ProjectView::onActivated(const QModelIndex &index)
@@ -207,3 +294,7 @@ void ProjectView::onActivated(const QModelIndex &index)
     if (!QFileInfo(path).isDir())
         DocumentManager::instance()->openFile(path);
 }
+
+} // namespace Tiled
+
+#include "projectdock.moc"

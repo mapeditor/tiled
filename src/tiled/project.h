@@ -51,9 +51,10 @@ public:
     void clear();
 
     void addFolder(const QString &folder);
+    void removeFolder(int index);
     void refreshFolders();
 
-    const std::vector<std::unique_ptr<FolderEntry>>* folders() const;
+    const std::vector<std::unique_ptr<FolderEntry> > &folders() const;
 
 private:
     void updateNameFilters();
@@ -73,9 +74,9 @@ inline QString Project::fileName() const
     return mFileName;
 }
 
-inline const std::vector<std::unique_ptr<FolderEntry> > *Project::folders() const
+inline const std::vector<std::unique_ptr<FolderEntry> > &Project::folders() const
 {
-    return &mFolders;
+    return mFolders;
 }
 
 } // namespace Tiled
