@@ -428,7 +428,7 @@ void MapView::mouseReleaseEvent(QMouseEvent *event)
 
 void MapView::focusInEvent(QFocusEvent *event)
 {
-    Q_UNUSED(event);
+    Q_UNUSED(event)
     emit focused();
 }
 

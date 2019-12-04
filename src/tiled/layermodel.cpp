@@ -256,10 +256,18 @@ QMimeData *LayerModel::mimeData(const QModelIndexList &indexes) const
     QMimeData *mimeData = new QMimeData;
     QByteArray encodedData;
     QDataStream stream(&encodedData, QIODevice::WriteOnly);
+    QVector<Layer*> layers;
 
-    for (const QModelIndex &index : indexes)
-        if (Layer *layer = toLayer(index))
+    for (const QModelIndex &index : indexes) {
+        if (Layer *layer = toLayer(index)) {
+            // Make sure we only add each layer once
+            if (layers.contains(layer))
+                continue;
+            layers.append(layer);
+
             stream << globalIndex(layer);
+        }
+    }
 
     mimeData->setData(QLatin1String(LAYERS_MIMETYPE), encodedData);
     return mimeData;
@@ -273,7 +281,7 @@ Qt::DropActions LayerModel::supportedDropActions() const
 bool LayerModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
                               int row, int column, const QModelIndex &parent)
 {
-    Q_UNUSED(column);
+    Q_UNUSED(column)
 
     if (!data || action != Qt::MoveAction)
         return false;
@@ -300,10 +308,10 @@ bool LayerModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
     if (layers.isEmpty())
         return false;
 
+    // Correction needed due to reverse sorting (also takes -1 to 0)
+    ++row;
     if (row > rowCount(parent))
-        row = rowCount(parent);
-    if (row == -1)
-        row = groupLayer ? groupLayer->layerCount() : 0;
+        row = 0;
 
     // NOTE: QAbstractItemView::dropEvent already makes sure that we're not
     // dropping onto ourselves (like putting a group layer into itself).
