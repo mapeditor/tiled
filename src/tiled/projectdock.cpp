@@ -35,7 +35,6 @@
 #include <QMouseEvent>
 #include <QSettings>
 #include <QStandardPaths>
-#include <QToolBar>
 #include <QTreeView>
 
 static const char * const LAST_PROJECT_KEY = "Project/LastProject";
@@ -83,14 +82,6 @@ ProjectDock::ProjectDock(QWidget *parent)
     layout->setMargin(0);
     layout->setSpacing(0);
 
-    QToolBar *toolBar = new QToolBar;
-    toolBar->setFloatable(false);
-    toolBar->setMovable(false);
-    toolBar->setIconSize(Utils::smallIconSize());
-
-    toolBar->addAction(ActionManager::action("AddFolderToProject"));
-    toolBar->addAction(ActionManager::action("RefreshProjectFolders"));
-
     // Reopen last used project
     const auto prefs = Preferences::instance();
     const auto settings = prefs->settings();
@@ -99,7 +90,6 @@ ProjectDock::ProjectDock(QWidget *parent)
         openProjectFile(lastProjectFileName);
 
     layout->addWidget(mProjectView);
-    layout->addWidget(toolBar);
 
     setWidget(widget);
     retranslateUi();
@@ -271,21 +261,24 @@ void ProjectView::contextMenuEvent(QContextMenuEvent *event)
 
     QMenu menu;
 
-    if (index.isValid() && !index.parent().isValid()) {
-        auto removeFolder = menu.addAction(tr("Remove Folder from Project"), [=] {
-            model()->removeFolder(index.row());
+    if (index.isValid()) {
+        if (!index.parent().isValid()) {
+            auto removeFolder = menu.addAction(tr("&Remove Folder from Project"), [=] {
+                model()->removeFolder(index.row());
 
-            auto &p = model()->project();
-            if (!p.fileName().isEmpty())
-                p.save(p.fileName());
-        });
-        Utils::setThemeIcon(removeFolder, "list-remove");
+                auto &p = model()->project();
+                if (!p.fileName().isEmpty())
+                    p.save(p.fileName());
+            });
+            Utils::setThemeIcon(removeFolder, "list-remove");
+        }
     } else {
         menu.addAction(ActionManager::action("AddFolderToProject"));
         menu.addAction(ActionManager::action("RefreshProjectFolders"));
     }
 
-    menu.exec(event->globalPos());
+    if (!menu.isEmpty())
+        menu.exec(event->globalPos());
 }
 
 void ProjectView::onActivated(const QModelIndex &index)
