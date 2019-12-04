@@ -20,10 +20,7 @@
 
 #include "project.h"
 
-#include "fileformat.h"
-#include "pluginmanager.h"
 #include "savefile.h"
-#include "utils.h"
 
 #include <QDir>
 #include <QJsonArray>
@@ -40,7 +37,6 @@ static QString relative(const QDir &dir, const QString &fileName)
 
 Project::Project()
 {
-    updateNameFilters();
 }
 
 bool Project::save(const QString &fileName)
@@ -52,7 +48,7 @@ bool Project::save(const QString &fileName)
     QJsonArray folders;
 
     for (auto &folder : mFolders)
-        folders.append(relative(dir, folder->filePath));
+        folders.append(relative(dir, folder));
 
     project.insert(QLatin1String("folders"), folders);
 
@@ -90,95 +86,21 @@ bool Project::load(const QString &fileName)
     QJsonObject project = document.object();
 
     const QJsonArray folders = project.value(QLatin1String("folders")).toArray();
-
-    for (const QJsonValue &folderValue : folders) {
-        const QString filePath = QDir::cleanPath(dir.absoluteFilePath(folderValue.toString()));
-        mFolders.push_back(std::make_unique<FolderEntry>(filePath));
-    }
-
-    refreshFolders();
+    for (const QJsonValue &folderValue : folders)
+        mFolders.append(QDir::cleanPath(dir.absoluteFilePath(folderValue.toString())));
 
     return true;
 }
 
-void Project::clear()
-{
-    mFileName.clear();
-    mFolders.clear();
-}
-
 void Project::addFolder(const QString &folder)
 {
-    auto entry = std::make_unique<FolderEntry>(folder);
-    mVisitedFolders.clear();
-    refreshFolder(*entry);
-    mFolders.push_back(std::move(entry));
+    mFolders.append(folder);
 }
 
 void Project::removeFolder(int index)
 {
     Q_ASSERT(index >= 0 && index < mFolders.size());
-    mFolders.erase(mFolders.begin() + index);
-}
-
-void Project::refreshFolders()
-{
-    // TODO: This process should run in a thread (potentially one job for each folder)
-
-    for (auto &folder : mFolders) {
-        // same child folders are allowed in each top-level folder
-        mVisitedFolders.clear();
-        refreshFolder(*folder);
-    }
-}
-
-void Project::updateNameFilters()
-{
-    QStringList nameFilters;
-
-    const auto fileFormats = PluginManager::objects<FileFormat>();
-    for (FileFormat *format : fileFormats) {
-        if (!(format->capabilities() & FileFormat::Read))
-            continue;
-
-        const QString filter = format->nameFilter();
-        nameFilters.append(Utils::cleanFilterList(filter));
-    }
-
-    if (mNameFilters != nameFilters) {
-        mNameFilters = nameFilters;
-        refreshFolders();
-    }
-}
-
-void Project::refreshFolder(FolderEntry &folder)
-{
-    // erase previously found entries
-    folder.entries.clear();
-
-    const auto list = QDir(folder.filePath).entryInfoList(mNameFilters,
-                                                          QDir::AllDirs | QDir::Files | QDir::NoDotAndDotDot,
-                                                          QDir::Name | QDir::LocaleAware | QDir::DirsFirst);
-
-    for (const auto &fileInfo : list) {
-        auto entry = std::make_unique<FolderEntry>(fileInfo.filePath(), &folder);
-
-        if (fileInfo.isDir()) {
-            const QString canonicalPath = fileInfo.canonicalFilePath();
-
-            // prevent potential endless symlink loop
-            if (!mVisitedFolders.contains(canonicalPath)) {
-                mVisitedFolders.insert(canonicalPath);
-                refreshFolder(*entry);
-            }
-
-            // Leave out empty directories
-            if (entry->entries.empty())
-                continue;
-        }
-
-        folder.entries.push_back(std::move(entry));
-    }
+    mFolders.removeAt(index);
 }
 
 } // namespace Tiled

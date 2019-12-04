@@ -20,61 +20,37 @@
 
 #pragma once
 
-#include <QObject>
-#include <QSet>
-
-#include <memory>
-#include <vector>
+#include <QStringList>
 
 namespace Tiled {
-
-struct FolderEntry
-{
-    explicit FolderEntry(const QString &filePath, FolderEntry *parent = nullptr)
-        : filePath(filePath)
-        , parent(parent)
-    {}
-
-    QString filePath;
-    std::vector<std::unique_ptr<FolderEntry>> entries;
-    FolderEntry *parent = nullptr;
-};
 
 class Project
 {
 public:
     Project();
 
-    QString fileName() const;
+    const QString &fileName() const;
     bool save(const QString &fileName);
     bool load(const QString &fileName);
-    void clear();
 
     void addFolder(const QString &folder);
     void removeFolder(int index);
     void refreshFolders();
 
-    const std::vector<std::unique_ptr<FolderEntry> > &folders() const;
+    const QStringList &folders() const;
 
 private:
-    void updateNameFilters();
-
-    void refreshFolder(FolderEntry &folder);
-
     QString mFileName;
-    std::vector<std::unique_ptr<FolderEntry>> mFolders;
-
-    QStringList mNameFilters;
-    QSet<QString> mVisitedFolders;
+    QStringList mFolders;
 };
 
 
-inline QString Project::fileName() const
+inline const QString &Project::fileName() const
 {
     return mFileName;
 }
 
-inline const std::vector<std::unique_ptr<FolderEntry> > &Project::folders() const
+inline const QStringList &Project::folders() const
 {
     return mFolders;
 }

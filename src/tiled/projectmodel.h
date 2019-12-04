@@ -24,8 +24,24 @@
 
 #include <QAbstractListModel>
 #include <QFileIconProvider>
+#include <QTimer>
+
+#include <memory>
+#include <vector>
 
 namespace Tiled {
+
+struct FolderEntry
+{
+    explicit FolderEntry(const QString &filePath, FolderEntry *parent = nullptr)
+        : filePath(filePath)
+        , parent(parent)
+    {}
+
+    QString filePath;
+    std::vector<std::unique_ptr<FolderEntry>> entries;
+    FolderEntry *parent = nullptr;
+};
 
 class ProjectModel : public QAbstractItemModel
 {
@@ -60,8 +76,17 @@ private:
     FolderEntry *entryForIndex(const QModelIndex &index) const;
     QModelIndex indexForEntry(FolderEntry *entry) const;
 
+    void pluginObjectAddedOrRemoved(QObject *object);
+    void updateNameFilters();
+
+    void scanFolders();
+
     Project mProject;
     QFileIconProvider mFileIconProvider;
+    QStringList mNameFilters;
+    QTimer mUpdateNameFiltersTimer;
+
+    std::vector<std::unique_ptr<FolderEntry>> mFolders;
 };
 
 
