@@ -50,7 +50,7 @@ are troubles. Here are some tips:
 3. Qt Creator for Ubuntu 16.04 has an additional trouble - can't build with installed
 compiler. Follow [the page on Ask Ubuntu](https://askubuntu.com/questions/1062046/how-to-update-qt-from-5-5-1-to-5-9-5-on-ubuntu-16-04) and set the compler correctly.
 
-![qt511 ubuntu](./imgs/qt5 utuntu 16.04 trouble01.png)
+<img alter='qt511 ubuntu' width='600px' src='./imgs/qt5 utuntu 16.04 trouble01.png'></img>
 
 Qt Creator can be downloaded [here](http://download.qt.io/official_releases/qtcreator/4.10/4.10.2/).
 
