@@ -1,5 +1,5 @@
 /*
- * issuesdock.h
+ * project.h
  * Copyright 2019, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
@@ -20,39 +20,39 @@
 
 #pragma once
 
-#include <QDockWidget>
-
-class QListView;
-class QSortFilterProxyModel;
+#include <QStringList>
 
 namespace Tiled {
 
-class FilterEdit;
-class Issue;
-class IssueFilterModel;
-
-/**
- * A dock widget that shows errors and warnings, along with the ability to
- * filter them.
- */
-class IssuesDock : public QDockWidget
+class Project
 {
-    Q_OBJECT
-
 public:
-    IssuesDock(QWidget *parent = nullptr);
+    Project();
 
-protected:
-    void changeEvent(QEvent *e) override;
+    const QString &fileName() const;
+    bool save(const QString &fileName);
+    bool load(const QString &fileName);
+
+    void addFolder(const QString &folder);
+    void removeFolder(int index);
+    void refreshFolders();
+
+    const QStringList &folders() const;
 
 private:
-    void activated(const QModelIndex &index);
-    void retranslateUi();
-
-    IssueFilterModel *mProxyModel;
-    FilterEdit *mFilterEdit;
-    QListView *mIssuesView;
-    bool mIsVisible = false;
+    QString mFileName;
+    QStringList mFolders;
 };
+
+
+inline const QString &Project::fileName() const
+{
+    return mFileName;
+}
+
+inline const QStringList &Project::folders() const
+{
+    return mFolders;
+}
 
 } // namespace Tiled

@@ -136,9 +136,6 @@ public:
 
     bool automappingDrawing() const;
 
-    QString mapsDirectory() const;
-    void setMapsDirectory(const QString &path);
-
     QString stampsDirectory() const;
     void setStampsDirectory(const QString &stampsDirectory);
 
@@ -161,6 +158,9 @@ public:
     QStringList recentFiles() const;
     QString fileDialogStartLocation() const;
     void addRecentFile(const QString &fileName);
+
+    QStringList recentProjects() const;
+    void addRecentProject(const QString &fileName);
 
     bool openLastFilesOnStartup() const;
 
@@ -198,6 +198,7 @@ public slots:
     void setWheelZoomsByDefault(bool mode);
 
     void clearRecentFiles();
+    void clearRecentProjects();
 
 signals:
     void showGridChanged(bool showGrid);
@@ -226,13 +227,13 @@ signals:
 
     void objectTypesChanged();
 
-    void mapsDirectoryChanged();
     void stampsDirectoryChanged(const QString &stampsDirectory);
     void templatesDirectoryChanged(const QString &templatesDirectory);
 
     void isPatronChanged();
 
     void recentFilesChanged();
+    void recentProjectsChanged();
 
     void checkForUpdatesChanged(bool on);
     void displayNewsChanged(bool on);
@@ -246,6 +247,8 @@ private:
     QString stringValue(const char *key, const QString &def = QString()) const;
     int intValue(const char *key, int defaultValue) const;
     qreal realValue(const char *key, qreal defaultValue) const;
+
+    void addToRecentFileList(const QString &fileName, const char *key);
 
     void objectTypesFileChangedOnDisk();
 
@@ -285,7 +288,6 @@ private:
 
     bool mAutoMapDrawing;
 
-    QString mMapsDirectory;
     QString mStampsDirectory;
     QString mTemplatesDirectory;
     QString mObjectTypesFile;
@@ -440,11 +442,6 @@ inline bool Preferences::useOpenGL() const
 inline bool Preferences::automappingDrawing() const
 {
     return mAutoMapDrawing;
-}
-
-inline QString Preferences::mapsDirectory() const
-{
-    return mMapsDirectory;
 }
 
 inline QDate Preferences::firstRun() const

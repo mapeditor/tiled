@@ -50,6 +50,7 @@ class ActionManager;
 class AutomappingManager;
 class ConsoleDock;
 class DocumentManager;
+class Editor;
 class IssuesDock;
 class MapDocument;
 class MapDocumentActionHandler;
@@ -57,6 +58,7 @@ class MapEditor;
 class MapScene;
 class MapView;
 class ObjectTypesEditor;
+class ProjectDock;
 class TilesetDocument;
 class TilesetEditor;
 class Zoomable;
@@ -155,10 +157,13 @@ private:
     void showDonationDialog();
     void aboutTiled();
     void openRecentFile();
+    void openRecentProject();
 
     void documentChanged(Document *document);
     void documentSaved(Document *document);
     void closeDocument(int index);
+
+    void currentEditorChanged(Editor *editor);
 
     void reloadError(const QString &error);
     void autoMappingError(bool automatic);
@@ -192,6 +197,7 @@ private:
     void readSettings();
 
     void updateRecentFilesMenu();
+    void updateRecentProjectsMenu();
     void updateViewsAndToolbarsMenu();
 
     void retranslateUi();
@@ -205,6 +211,7 @@ private:
     Zoomable *mZoomable = nullptr;
     MapDocumentActionHandler *mActionHandler;
     ConsoleDock *mConsoleDock;
+    ProjectDock *mProjectDock;
     IssuesDock *mIssuesDock;
     ObjectTypesEditor *mObjectTypesEditor;
     QSettings mSettings;
@@ -226,6 +233,7 @@ private:
     DocumentManager *mDocumentManager;
     MapEditor *mMapEditor;
     TilesetEditor *mTilesetEditor;
+    QList<QWidget*> mEditorStatusBarWidgets;
 
     QPointer<PreferencesDialog> mPreferencesDialog;
 

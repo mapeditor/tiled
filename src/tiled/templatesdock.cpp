@@ -346,13 +346,13 @@ void TemplatesDock::chooseDirectory()
 
 void TemplatesDock::focusInEvent(QFocusEvent *event)
 {
-    Q_UNUSED(event);
+    Q_UNUSED(event)
     mPropertiesDock->setDocument(mDummyMapDocument.data());
 }
 
 void TemplatesDock::focusOutEvent(QFocusEvent *event)
 {
-    Q_UNUSED(event);
+    Q_UNUSED(event)
 
     if (hasFocus() || !mDummyMapDocument)
         return;

@@ -31,12 +31,9 @@
 #include "changewangsetdata.h"
 #include "documentmanager.h"
 #include "erasetiles.h"
-#include "issuescounter.h"
 #include "maintoolbar.h"
 #include "mapdocument.h"
 #include "mapobject.h"
-#include "newsbutton.h"
-#include "newversionbutton.h"
 #include "objectgroup.h"
 #include "objecttemplate.h"
 #include "preferences.h"
@@ -73,7 +70,6 @@
 #include <QMimeData>
 #include <QSettings>
 #include <QStackedWidget>
-#include <QStatusBar>
 
 #include <functional>
 
@@ -193,13 +189,6 @@ TilesetEditor::TilesetEditor(QObject *parent)
     mTilesetToolBar->addAction(mShowAnimationEditor);
     mTilesetToolBar->addSeparator();
     mTilesetToolBar->addAction(mDynamicWrappingToggle);
-
-    auto statusBar = mMainWindow->statusBar();
-    statusBar->addPermanentWidget(mZoomComboBox);
-    statusBar->addPermanentWidget(new NewsButton(statusBar));
-    statusBar->addPermanentWidget(new NewVersionButton(NewVersionButton::AutoVisible, statusBar));
-    statusBar->addWidget(new IssuesCounter(statusBar));
-    statusBar->addWidget(mStatusInfoLabel);
 
     mTemplatesDock->setPropertiesDock(mPropertiesDock);
 
@@ -423,6 +412,20 @@ QList<QDockWidget *> TilesetEditor::dockWidgets() const
         mTileCollisionDock,
         mTemplatesDock,
         mWangDock
+    };
+}
+
+QList<QWidget *> TilesetEditor::statusBarWidgets() const
+{
+    return {
+        mStatusInfoLabel
+    };
+}
+
+QList<QWidget *> TilesetEditor::permanentStatusBarWidgets() const
+{
+    return {
+        mZoomComboBox
     };
 }
 
