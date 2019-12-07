@@ -40,20 +40,6 @@ libraries have been installed as well as the Qbs build tool:
   + `brew install qbs`
   + `brew link qt5 --force`
 
-NOTE: Follow the steps here can build and run tiled already on Ubuntu. But there
-are troubles. Here are some tips:
-
-1. use tiled/tiled.qbs instead of src/tiled/tiled.qbs
-
-2. [let qt project "tiled" depends on "tilelib"](https://doc.qt.io/qtcreator/creator-project-qmake-libraries.html)
-
-3. Qt Creator for Ubuntu 16.04 has an additional trouble - can't build with installed
-compiler. Follow [the page on Ask Ubuntu](https://askubuntu.com/questions/1062046/how-to-update-qt-from-5-5-1-to-5-9-5-on-ubuntu-16-04) and set the compler correctly.
-
-<img alter='qt511 ubuntu' width='600px' src='./imgs/qt5 utuntu 16.04 trouble01.png'></img>
-
-Qt Creator can be downloaded [here](http://download.qt.io/official_releases/qtcreator/4.10/4.10.2/).
-
 If you want to build the Python plugin, you additionally need to install the
 Python 3 development libraries:
 
@@ -110,3 +96,18 @@ By default, Tiled and its plugins are compiled with an Rpath that allows them
 to find the shared *libtiled* library immediately after being compiled. When
 packaging Tiled for distribution, the Rpath should be disabled by appending
 `projects.Tiled.useRPaths:false` to the qbs command.
+
+### Tips for Ubuntu 16.04
+Follow the steps in the Compiling section can build and run tiled already on Ubuntu.
+But there are troubles. Here are some tips:
+
+1. use tiled/tiled.qbs instead of src/tiled/tiled.qbs
+
+2. [let qt project "tiled" depends on "tilelib"](https://doc.qt.io/qtcreator/creator-project-qmake-libraries.html)
+
+3. Qt Creator for Ubuntu 16.04 has an additional trouble - can't build with installed
+compiler. Follow [the page on Ask Ubuntu](https://askubuntu.com/questions/1062046/how-to-update-qt-from-5-5-1-to-5-9-5-on-ubuntu-16-04) and set the compler correctly.
+
+<img alter='qt511 ubuntu' width='600px' src='./imgs/qt5 utuntu 16.04 trouble01.png'></img>
+
+Qt Creator can be downloaded [here](http://download.qt.io/official_releases/qtcreator/4.10/4.10.2/).
