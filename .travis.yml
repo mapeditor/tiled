@@ -1,4 +1,5 @@
 language: cpp
+cache: ccache
 sudo: required
 dist: xenial
 python: 3.6
@@ -129,6 +130,7 @@ matrix:
       homebrew:
         packages:
           - p7zip
+          - ccache
         update: true
     env:
       - MAKEFLAGS=-j2
@@ -146,7 +148,9 @@ matrix:
     - qbs --version
     - qbs setup-toolchains --detect
     - qbs config defaultProfile xcode
-    - qbs install --install-root install config:release qbs.installPrefix:"" projects.Tiled.version:$TILED_VERSION projects.Tiled.enableZstd:true
+    - ccache -zs
+    - qbs install --install-root install config:release qbs.installPrefix:"" projects.Tiled.version:$TILED_VERSION projects.Tiled.enableZstd:true modules.cpp.compilerWrapper:ccache
+    - ccache -s
     - macdeployqt install/Tiled.app -verbose=2
     - pushd install
     - ruby ../dist/macos/fixup-install-names.rb
