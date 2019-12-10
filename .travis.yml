@@ -147,7 +147,7 @@ matrix:
     - qbs setup-toolchains --detect
     - qbs config defaultProfile xcode
     - qbs install --install-root install config:release qbs.installPrefix:"" projects.Tiled.version:$TILED_VERSION projects.Tiled.enableZstd:true
-    - macdeployqt -verbose=2 install/Tiled.app
+    - macdeployqt install/Tiled.app -verbose=2
     - pushd install
     - ruby ../dist/macos/fixup-install-names.rb
     - ditto -c -k --sequesterRsrc --keepParent Tiled.app ../Tiled-$TILED_VERSION-macos.zip
