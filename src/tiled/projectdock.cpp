@@ -22,22 +22,15 @@
 
 #include "actionmanager.h"
 #include "documentmanager.h"
-#include "preferences.h"
 #include "projectmodel.h"
 #include "utils.h"
 
 #include <QBoxLayout>
-#include <QCoreApplication>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMenu>
-#include <QMessageBox>
 #include <QMouseEvent>
-#include <QSettings>
-#include <QStandardPaths>
 #include <QTreeView>
-
-static const char * const LAST_PROJECT_KEY = "Project/LastProject";
 
 namespace Tiled {
 
@@ -85,106 +78,13 @@ ProjectDock::ProjectDock(QWidget *parent)
 
     setWidget(widget);
     retranslateUi();
-
-    connect(this, &ProjectDock::projectFileNameChanged, [this] {
-        Preferences::instance()->settings()->setValue(QLatin1String(LAST_PROJECT_KEY), projectFileName());
-    });
-}
-
-void ProjectDock::openLastProject()
-{
-    mProjectView->model()->updateNameFilters();
-
-    const auto prefs = Preferences::instance();
-    const auto settings = prefs->settings();
-    const auto lastProjectFileName = settings->value(QLatin1String(LAST_PROJECT_KEY)).toString();
-    if (prefs->openLastFilesOnStartup() && !lastProjectFileName.isEmpty())
-        openProjectFile(lastProjectFileName);
-}
-
-void ProjectDock::openProject()
-{
-    const QString projectFilesFilter = tr("Tiled Projects (*.tiled-project)");
-    const QString fileName = QFileDialog::getOpenFileName(window(),
-                                                          tr("Open Project"),
-                                                          projectFileName(),
-                                                          projectFilesFilter,
-                                                          nullptr);
-    if (!fileName.isEmpty())
-        openProjectFile(fileName);
-}
-
-void ProjectDock::openProjectFile(const QString &fileName)
-{
-    Project project;
-
-    if (!project.load(fileName)) {
-        QMessageBox::critical(window(),
-                              tr("Error Opening Project"),
-                              tr("An error occurred while opening the project."));
-        return;
-    }
-
-    mProjectView->model()->setProject(std::move(project));
-
-    Preferences::instance()->addRecentProject(fileName);
-
-    emit projectFileNameChanged();
-}
-
-void ProjectDock::saveProjectAs()
-{
-    QString fileName = projectFileName();
-    if (fileName.isEmpty()) {
-        const auto recents = Preferences::instance()->recentProjects();
-        if (!recents.isEmpty())
-            fileName = QFileInfo(recents.first()).path();
-        if (fileName.isEmpty())
-            fileName = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-
-        fileName.append(QLatin1Char('/'));
-        fileName.append(QCoreApplication::translate("Tiled::MainWindow", "untitled"));
-        fileName.append(QLatin1String(".tiled-project"));
-    }
-
-    const QString projectFilesFilter = tr("Tiled Projects (*.tiled-project)");
-    fileName = QFileDialog::getSaveFileName(window(),
-                                            tr("Save Project As"),
-                                            fileName,
-                                            projectFilesFilter,
-                                            nullptr);
-    if (fileName.isEmpty())
-        return;
-
-    if (!fileName.endsWith(QLatin1String(".tiled-project"))) {
-        while (fileName.endsWith(QLatin1String(".")))
-            fileName.chop(1);
-
-        fileName.append(QLatin1String(".tiled-project"));
-    }
-
-    if (!project().save(fileName)) {
-        QMessageBox::critical(window(),
-                              tr("Error Saving Project"),
-                              tr("An error occurred while saving the project."));
-    }
-
-    Preferences::instance()->addRecentProject(fileName);
-
-    emit projectFileNameChanged();
-}
-
-void ProjectDock::closeProject()
-{
-    mProjectView->model()->setProject(Project());
-    emit projectFileNameChanged();
 }
 
 void ProjectDock::addFolderToProject()
 {
     const QString folder = QFileDialog::getExistingDirectory(window(),
                                                              tr("Choose Folder"),
-                                                             QFileInfo(projectFileName()).path());
+                                                             QFileInfo(project().fileName()).path());
 
     if (folder.isEmpty())
         return;
@@ -216,6 +116,11 @@ void ProjectDock::changeEvent(QEvent *e)
 Project &ProjectDock::project() const
 {
     return mProjectView->model()->project();
+}
+
+void ProjectDock::setProject(Project project)
+{
+    mProjectView->model()->setProject(std::move(project));
 }
 
 void ProjectDock::retranslateUi()

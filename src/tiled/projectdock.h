@@ -35,33 +35,19 @@ class ProjectDock final : public QDockWidget
 public:
     ProjectDock(QWidget *parent = nullptr);
 
-    QString projectFileName() const;
+    Project &project() const;
+    void setProject(Project project);
 
-    void openLastProject();
-    void openProject();
-    void openProjectFile(const QString &fileName);
-    void saveProjectAs();
-    void closeProject();
     void addFolderToProject();
     void refreshProjectFolders();
-
-signals:
-    void projectFileNameChanged();
 
 protected:
     void changeEvent(QEvent *e) override;
 
 private:
-    Project &project() const;
     void retranslateUi();
 
     ProjectView *mProjectView;
 };
-
-
-inline QString ProjectDock::projectFileName() const
-{
-    return project().fileName();
-}
 
 } // namespace Tiled

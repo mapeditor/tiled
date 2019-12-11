@@ -577,9 +577,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionTilesetProperties, &QAction::triggered,
             this, &MainWindow::editTilesetProperties);
 
-    connect(mUi->actionOpenProject, &QAction::triggered, mProjectDock, &ProjectDock::openProject);
-    connect(mUi->actionSaveProjectAs, &QAction::triggered, mProjectDock, &ProjectDock::saveProjectAs);
-    connect(mUi->actionCloseProject, &QAction::triggered, mProjectDock, &ProjectDock::closeProject);
+    connect(mUi->actionOpenProject, &QAction::triggered, this, &MainWindow::openProject);
+    connect(mUi->actionSaveProjectAs, &QAction::triggered, this, &MainWindow::saveProjectAs);
+    connect(mUi->actionCloseProject, &QAction::triggered, this, &MainWindow::closeProject);
     connect(mUi->actionAddFolderToProject, &QAction::triggered, mProjectDock, &ProjectDock::addFolderToProject);
     connect(mUi->actionRefreshProjectFolders, &QAction::triggered, mProjectDock, &ProjectDock::refreshProjectFolders);
     connect(mUi->actionClearRecentProjects, &QAction::triggered, preferences, &Preferences::clearRecentProjects);
@@ -602,8 +602,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
                  this, &MainWindow::openRecentFile);
     }
     mUi->menuRecentFiles->insertSeparator(mUi->actionClearRecentFiles);
-
-    connect(mProjectDock, &ProjectDock::projectFileNameChanged, this, &MainWindow::updateWindowTitle);
 
     setThemeIcon(mUi->menuNew, "document-new");
     setThemeIcon(mUi->actionOpen, "document-open");
@@ -744,6 +742,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
 MainWindow::~MainWindow()
 {
+    Preferences::instance()->saveSessionNow();
+
     mDocumentManager->closeAllDocuments();
 
     // This needs to happen before deleting the TilesetManager, otherwise
@@ -859,17 +859,34 @@ void MainWindow::newMap()
     mDocumentManager->addDocument(mapDocument);
 }
 
+void MainWindow::initializeSession()
+{
+    auto prefs = Preferences::instance();
+    if (!prefs->restoreSessionOnStartup())
+        return;
+
+    Session session = Session::load(prefs->lastSession());
+
+    // Restore associated project if applicable
+    Project project;
+    if (!session.project().isEmpty() && project.load(session.project())) {
+        mProjectDock->setProject(std::move(project));
+        updateWindowTitle();
+    }
+
+    prefs->switchSession(std::move(session));
+
+    restoreSession();
+}
+
 bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
 {
     if (fileName.isEmpty())
         return false;
 
     // Select existing document if this file is already open
-    int documentIndex = mDocumentManager->findDocument(fileName);
-    if (documentIndex != -1) {
-        mDocumentManager->switchToDocument(documentIndex);
+    if (mDocumentManager->switchToDocument(fileName))
         return true;
-    }
 
     QString error;
     DocumentPtr document = mDocumentManager->loadDocument(fileName, fileFormat, &error);
@@ -892,39 +909,6 @@ bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
 
     Preferences::instance()->addRecentFile(fileName);
     return true;
-}
-
-void MainWindow::openLastFiles()
-{
-    mProjectDock->openLastProject();
-
-    mSettings.beginGroup(QLatin1String("recentFiles"));
-
-    QStringList lastOpenFiles = mSettings.value(
-                QLatin1String("lastOpenFiles")).toStringList();
-    QVariant openCountVariant = mSettings.value(
-                QLatin1String("recentOpenedFiles"));
-
-    // Backwards compatibility mode
-    if (openCountVariant.isValid()) {
-        const QStringList recentFiles = mSettings.value(
-                    QLatin1String("fileNames")).toStringList();
-        int openCount = qMin(openCountVariant.toInt(), recentFiles.size());
-        for (; openCount; --openCount)
-            lastOpenFiles.append(recentFiles.at(openCount - 1));
-        mSettings.remove(QLatin1String("recentOpenedFiles"));
-    }
-
-    for (int i = 0; i < lastOpenFiles.size(); i++)
-        openFile(lastOpenFiles.at(i));
-
-    QString lastActiveDocument =
-            mSettings.value(QLatin1String("lastActive")).toString();
-    int documentIndex = mDocumentManager->findDocument(lastActiveDocument);
-    if (documentIndex != -1)
-        mDocumentManager->switchToDocument(documentIndex);
-
-    mSettings.endGroup();
 }
 
 void MainWindow::openFileDialog()
@@ -1148,10 +1132,131 @@ void MainWindow::closeFile()
         mDocumentManager->closeCurrentDocument();
 }
 
-void MainWindow::closeAllFiles()
+bool MainWindow::closeAllFiles()
 {
-    if (confirmAllSave())
+    if (confirmAllSave()) {
         mDocumentManager->closeAllDocuments();
+        return true;
+    }
+    return false;
+}
+
+void MainWindow::openProject()
+{
+    const QString dir = Preferences::instance()->lastPath(Preferences::ProjectFile);
+    const QString projectFilesFilter = tr("Tiled Projects (*.tiled-project)");
+    const QString fileName = QFileDialog::getOpenFileName(window(),
+                                                          tr("Open Project"),
+                                                          dir,
+                                                          projectFilesFilter,
+                                                          nullptr);
+    if (!fileName.isEmpty())
+        openProjectFile(fileName);
+}
+
+void MainWindow::openProjectFile(const QString &fileName)
+{
+    Project project;
+
+    if (!project.load(fileName)) {
+        QMessageBox::critical(window(),
+                              tr("Error Opening Project"),
+                              tr("An error occurred while opening the project."));
+        return;
+    }
+
+    auto prefs = Preferences::instance();
+    prefs->saveSessionNow();
+
+    if (!closeAllFiles())
+        return;
+
+    Session session = Session::load(Session::defaultFileNameForProject(fileName));
+    session.setProject(fileName);
+
+    mProjectDock->setProject(std::move(project));
+    prefs->addRecentProject(fileName);
+    prefs->switchSession(std::move(session));
+
+    restoreSession();
+    updateWindowTitle();
+    updateActions();
+}
+
+void MainWindow::saveProjectAs()
+{
+    auto prefs = Preferences::instance();
+
+    Project &project = mProjectDock->project();
+    QString fileName = project.fileName();
+    if (fileName.isEmpty()) {
+        const auto recents = prefs->recentProjects();
+        if (!recents.isEmpty())
+            fileName = QFileInfo(recents.first()).path();
+        if (fileName.isEmpty())
+            fileName = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+
+        fileName.append(QLatin1Char('/'));
+        fileName.append(tr("untitled"));
+        fileName.append(QLatin1String(".tiled-project"));
+    }
+
+    const QString projectFilesFilter = tr("Tiled Projects (*.tiled-project)");
+    fileName = QFileDialog::getSaveFileName(window(),
+                                            tr("Save Project As"),
+                                            fileName,
+                                            projectFilesFilter,
+                                            nullptr);
+    if (fileName.isEmpty())
+        return;
+
+    if (!fileName.endsWith(QLatin1String(".tiled-project"))) {
+        while (fileName.endsWith(QLatin1String(".")))
+            fileName.chop(1);
+
+        fileName.append(QLatin1String(".tiled-project"));
+    }
+
+    if (!project.save(fileName)) {
+        QMessageBox::critical(window(),
+                              tr("Error Saving Project"),
+                              tr("An error occurred while saving the project."));
+    }
+
+    prefs->addRecentProject(fileName);
+    prefs->session().setProject(fileName);
+    prefs->saveSessionNow(Session::defaultFileNameForProject(fileName));
+
+    updateWindowTitle();
+    updateActions();
+}
+
+void MainWindow::closeProject()
+{
+    const Project &project = mProjectDock->project();
+    if (project.fileName().isEmpty())
+        return;
+
+    auto prefs = Preferences::instance();
+    prefs->saveSessionNow();
+
+    if (!closeAllFiles())
+        return;
+
+    mProjectDock->setProject(Project{});
+    prefs->switchSession(Session::load(Session::defaultFileName()));
+
+    restoreSession();
+    updateWindowTitle();
+    updateActions();
+}
+
+void MainWindow::restoreSession()
+{
+    const auto &session = Preferences::instance()->session();
+    for (const QString &file : session.openFiles())
+        openFile(file);
+    mDocumentManager->switchToDocument(session.activeFile());
 }
 
 void MainWindow::cut()
@@ -1515,7 +1620,7 @@ void MainWindow::openRecentProject()
 {
     QAction *action = qobject_cast<QAction *>(sender());
     if (action)
-        mProjectDock->openProjectFile(action->data().toString());
+        openProjectFile(action->data().toString());
 }
 
 /**
@@ -1523,7 +1628,7 @@ void MainWindow::openRecentProject()
  */
 void MainWindow::updateRecentFilesMenu()
 {
-    const QStringList files = Preferences::instance()->recentFiles();
+    const QStringList files = Preferences::instance()->session().recentFiles();
     const int numRecentFiles = qMin<int>(files.size(), Preferences::MaxRecentFiles);
 
     for (int i = 0; i < numRecentFiles; ++i) {
@@ -1640,6 +1745,9 @@ void MainWindow::updateActions()
     mUi->actionTilesetProperties->setEnabled(tilesetDocument);
 
     mLayerMenu->menuAction()->setVisible(mapDocument);
+
+    const bool hasProject = !mProjectDock->project().fileName().isEmpty();
+    mUi->actionCloseProject->setEnabled(hasProject);
 }
 
 void MainWindow::updateZoomable()
@@ -1703,17 +1811,6 @@ void MainWindow::writeSettings()
     mSettings.setValue(QLatin1String("state"), saveState());
     mSettings.endGroup();
 
-    mSettings.beginGroup(QLatin1String("recentFiles"));
-    if (Document *document = mDocumentManager->currentDocument())
-        mSettings.setValue(QLatin1String("lastActive"), document->fileName());
-
-    QStringList fileList;
-    for (const auto &document : mDocumentManager->documents())
-        fileList.append(document->fileName());
-
-    mSettings.setValue(QLatin1String("lastOpenFiles"), fileList);
-    mSettings.endGroup();
-
     mDocumentManager->saveState();
 }
 
@@ -1742,7 +1839,7 @@ void MainWindow::readSettings()
 
 void MainWindow::updateWindowTitle()
 {
-    QString projectName = mProjectDock->projectFileName();
+    QString projectName = mProjectDock->project().fileName();
     if (!projectName.isEmpty()) {
         projectName = QFileInfo(projectName).completeBaseName();
         projectName = QString(QLatin1String(" (%1)")).arg(projectName);

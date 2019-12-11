@@ -90,6 +90,7 @@ public:
     int findDocument(Document *document) const;
 
     void switchToDocument(int index);
+    bool switchToDocument(const QString &fileName);
     bool switchToDocument(Document *document);
     void switchToDocument(MapDocument *mapDocument, QPointF viewCenter, qreal scale);
 
@@ -200,6 +201,8 @@ private:
 
     void addToTilesetDocument(const SharedTileset &tileset, MapDocument *mapDocument);
     void removeFromTilesetDocument(const SharedTileset &tileset, MapDocument *mapDocument);
+
+    void updateSession() const;
 
     MapDocument *openMapFile(const QString &path);
     TilesetDocument *openTilesetFile(const QString &path);

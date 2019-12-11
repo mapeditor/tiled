@@ -504,12 +504,11 @@ int main(int argc, char *argv[])
     PluginManager::instance()->loadPlugins();
     ScriptManager::instance().initialize();
 
-    if (!commandLine.filesToOpen().isEmpty()) {
+    w.initializeSession();
+
+    if (!commandLine.filesToOpen().isEmpty())
         for (const QString &fileName : commandLine.filesToOpen())
             w.openFile(fileName);
-    } else if (Preferences::instance()->openLastFilesOnStartup()) {
-        w.openLastFiles();
-    }
 
     return a.exec();
 }

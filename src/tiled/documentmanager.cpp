@@ -407,6 +407,16 @@ void DocumentManager::switchToDocument(int index)
     mTabBar->setCurrentIndex(index);
 }
 
+bool DocumentManager::switchToDocument(const QString &fileName)
+{
+    const int index = findDocument(fileName);
+    if (index != -1) {
+        switchToDocument(index);
+        return true;
+    }
+    return false;
+}
+
 /**
  * Switches to the given \a document, if there is already a tab open for it.
  * \return whether the switch was succesful
@@ -418,7 +428,6 @@ bool DocumentManager::switchToDocument(Document *document)
         switchToDocument(index);
         return true;
     }
-
     return false;
 }
 
@@ -531,6 +540,8 @@ void DocumentManager::insertDocument(int index, const DocumentPtr &document)
 
     if (mBrokenLinksModel->hasBrokenLinks())
         mBrokenLinksWidget->show();
+
+    updateSession();
 
     emit documentOpened(documentPtr);
 }
@@ -816,6 +827,8 @@ void DocumentManager::closeDocumentAt(int index)
             tilesetDocument->disconnect(this);
         }
     }
+
+    updateSession();
 }
 
 /**
@@ -912,6 +925,8 @@ void DocumentManager::currentIndexChanged()
     mFileChangedWarning->setVisible(changed);
 
     mBrokenLinksModel->setDocument(document);
+
+    updateSession();
 
     emit currentDocumentChanged(document);
 }
@@ -1132,6 +1147,20 @@ void DocumentManager::removeFromTilesetDocument(const SharedTileset &tileset, Ma
             emit tilesetDocumentRemoved(tilesetDocument);
         }
     }
+}
+
+void DocumentManager::updateSession() const
+{
+    QStringList fileList;
+    for (const auto &document : mDocuments)
+        fileList.append(document->fileName());
+
+    auto doc = currentDocument();
+    auto prefs = Preferences::instance();
+
+    prefs->session().setOpenFiles(fileList);
+    prefs->session().setActiveFile(doc ? doc->fileName() : QString());
+    prefs->saveSession();
 }
 
 MapDocument *DocumentManager::openMapFile(const QString &path)

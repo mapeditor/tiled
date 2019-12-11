@@ -422,6 +422,8 @@ QtGuiApplication {
         "selectionrectangle.h",
         "selectsametiletool.cpp",
         "selectsametiletool.h",
+        "session.cpp",
+        "session.h",
         "shapefilltool.cpp",
         "shapefilltool.h",
         "shortcutsettingspage.cpp",

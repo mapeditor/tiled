@@ -82,8 +82,8 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
 
     connect(mUi->reloadTilesetImages, &QCheckBox::toggled,
             preferences, &Preferences::setReloadTilesetsOnChanged);
-    connect(mUi->openLastFiles, &QCheckBox::toggled,
-            preferences, &Preferences::setOpenLastFilesOnStartup);
+    connect(mUi->restoreSession, &QCheckBox::toggled,
+            preferences, &Preferences::setRestoreSessionOnStartup);
     connect(mUi->safeSaving, &QCheckBox::toggled,
             preferences, &Preferences::setSafeSavingEnabled);
     connect(mUi->exportOnSave, &QCheckBox::toggled,
@@ -172,7 +172,7 @@ void PreferencesDialog::fromPreferences()
 
     // General
     mUi->reloadTilesetImages->setChecked(prefs->reloadTilesetsOnChange());
-    mUi->openLastFiles->setChecked(prefs->openLastFilesOnStartup());
+    mUi->restoreSession->setChecked(prefs->restoreSessionOnStartup());
     mUi->safeSaving->setChecked(prefs->safeSavingEnabled());
     mUi->exportOnSave->setChecked(prefs->exportOnSave());
 

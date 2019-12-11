@@ -85,6 +85,9 @@ ProjectModel::~ProjectModel()
 
 void ProjectModel::setProject(Project project)
 {
+    if (mUpdateNameFiltersTimer.isActive())
+        updateNameFilters();
+
     beginResetModel();
 
     mProject = std::move(project);

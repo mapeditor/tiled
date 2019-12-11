@@ -28,6 +28,7 @@
 #include "filesystemwatcher.h"
 #include "map.h"
 #include "objecttypes.h"
+#include "session.h"
 
 class QSettings;
 
@@ -123,12 +124,13 @@ public:
     void setObjectTypes(const ObjectTypes &objectTypes);
 
     enum FileType {
-        ObjectTypesFile,
-        ObjectTemplateFile,
-        ImageFile,
         ExportedFile,
         ExternalTileset,
-        WorldFile
+        ImageFile,
+        ObjectTemplateFile,
+        ObjectTypesFile,
+        ProjectFile,
+        WorldFile,
     };
 
     QString lastPath(FileType fileType) const;
@@ -155,14 +157,19 @@ public:
     void setDonationDialogReminder(const QDate &date);
 
     enum { MaxRecentFiles = 12 };
-    QStringList recentFiles() const;
     QString fileDialogStartLocation() const;
     void addRecentFile(const QString &fileName);
 
     QStringList recentProjects() const;
     void addRecentProject(const QString &fileName);
 
-    bool openLastFilesOnStartup() const;
+    QString lastSession() const;
+    void setLastSession(const QString &fileName);
+    Session &session();
+    bool restoreSessionOnStartup() const;
+    void switchSession(Session session);
+    void saveSession();
+    void saveSessionNow(const QString &fileName = QString());
 
     bool checkForUpdates() const;
     void setCheckForUpdates(bool on);
@@ -177,6 +184,8 @@ public:
      * arbitrary values. The naming style for groups and keys is CamelCase.
      */
     QSettings *settings() const;
+
+    static QString dataLocation();
 
 public slots:
     void setShowGrid(bool showGrid);
@@ -193,7 +202,7 @@ public slots:
     void setHighlightHoveredObject(bool highlight);
     void setShowTilesetGrid(bool showTilesetGrid);
     void setAutomappingDrawing(bool enabled);
-    void setOpenLastFilesOnStartup(bool load);
+    void setRestoreSessionOnStartup(bool enabled);
     void setPluginEnabled(const QString &fileName, bool enabled);
     void setWheelZoomsByDefault(bool mode);
 
@@ -238,6 +247,8 @@ signals:
     void checkForUpdatesChanged(bool on);
     void displayNewsChanged(bool on);
 
+    void aboutToSaveSession();
+
 private:
     Preferences();
     ~Preferences() override;
@@ -248,13 +259,15 @@ private:
     int intValue(const char *key, int defaultValue) const;
     qreal realValue(const char *key, qreal defaultValue) const;
 
-    void addToRecentFileList(const QString &fileName, const char *key);
+    void addToRecentFileList(const QString &fileName, QStringList &files);
 
     void objectTypesFileChangedOnDisk();
 
     FileSystemWatcher mWatcher;
 
     QSettings *mSettings;
+    Session mSession;
+    QTimer mSaveSessionTimer;
 
     bool mShowGrid;
     bool mShowTileObjectOutlines;
@@ -269,7 +282,7 @@ private:
     bool mHighlightCurrentLayer;
     bool mHighlightHoveredObject;
     bool mShowTilesetGrid;
-    bool mOpenLastFilesOnStartup;
+    bool mRestoreSessionOnStartup;
     ObjectLabelVisiblity mObjectLabelVisibility;
     bool mLabelForHoveredObject;
     ApplicationStyle mApplicationStyle;
@@ -469,9 +482,14 @@ inline bool Preferences::displayNews() const
     return mDisplayNews;
 }
 
-inline bool Preferences::openLastFilesOnStartup() const
+inline Session &Preferences::session()
 {
-    return mOpenLastFilesOnStartup;
+    return mSession;
+}
+
+inline bool Preferences::restoreSessionOnStartup() const
+{
+    return mRestoreSessionOnStartup;
 }
 
 inline bool Preferences::wheelZoomsByDefault() const

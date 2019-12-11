@@ -211,6 +211,7 @@ SOURCES += aboutdialog.cpp \
     scriptmodule.cpp \
     selectionrectangle.cpp \
     selectsametiletool.cpp \
+    session.cpp \
     shapefilltool.cpp \
     shortcutsettingspage.cpp \
     snaphelper.cpp \
@@ -441,6 +442,7 @@ HEADERS += aboutdialog.h \
     scriptmodule.h \
     selectionrectangle.h \
     selectsametiletool.h \
+    session.h \
     shapefilltool.h \
     shortcutsettingspage.h \
     snaphelper.h \

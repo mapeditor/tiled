@@ -32,6 +32,7 @@
 #include <QFileInfo>
 #include <QSettings>
 #include <QStandardPaths>
+#include <QVariantMap>
 
 using namespace Tiled;
 
@@ -143,6 +144,42 @@ Preferences::Preferences()
 
     Object::setObjectTypes(objectTypes);
 
+    mSaveSessionTimer.setInterval(1000);
+    mSaveSessionTimer.setSingleShot(true);
+    connect(&mSaveSessionTimer, &QTimer::timeout, this, [this] { saveSessionNow(); });
+
+    // For backwards compatibility, import default session from settings
+    if (mSettings->contains(QLatin1String("recentFiles/fileNames")) || mSettings->contains(QLatin1String("MapEditor/MapStates"))) {
+        Session session(Session::defaultFileName());
+
+        mSettings->beginGroup(QLatin1String("recentFiles"));
+        session.setRecentFiles(mSettings->value(QLatin1String("fileNames")).toStringList());
+        session.setOpenFiles(mSettings->value(QLatin1String("lastOpenFiles")).toStringList());
+        session.setActiveFile(mSettings->value(QLatin1String("lastActive")).toString());
+        mSettings->endGroup();
+
+        const QVariantMap mapStates = mSettings->value(QLatin1String("MapEditor/MapStates")).toMap();
+
+        for (auto it = mapStates.begin(); it != mapStates.end(); ++it) {
+            const QString &fileName = it.key();
+            auto mapState = it.value().toMap();
+
+            const QPointF viewCenter = mapState.value(QLatin1String("viewCenter")).toPointF();
+
+            QVariantMap viewCenterVariant;
+            viewCenterVariant.insert(QLatin1String("x"), viewCenter.x());
+            viewCenterVariant.insert(QLatin1String("y"), viewCenter.y());
+            mapState.insert(QLatin1String("viewCenter"), viewCenterVariant);
+
+            session.setFileState(fileName, mapState);
+        }
+
+        if (session.save()) {
+            mSettings->remove(QLatin1String("recentFiles"));
+            mSettings->remove(QLatin1String("MapEditor/MapStates"));
+        }
+    }
+
     mSettings->beginGroup(QLatin1String("Automapping"));
     mAutoMapDrawing = boolValue("WhileDrawing");
     mSettings->endGroup();
@@ -189,7 +226,7 @@ Preferences::Preferences()
 
     // Retrieve startup settings
     mSettings->beginGroup(QLatin1String("Startup"));
-    mOpenLastFilesOnStartup = boolValue("OpenLastFiles", true);
+    mRestoreSessionOnStartup = boolValue("RestorePreviousSession", true);
     mSettings->endGroup();
 }
 
@@ -495,20 +532,23 @@ static QString lastPathKey(Preferences::FileType fileType)
     QString key = QLatin1String("LastPaths/");
 
     switch (fileType) {
-    case Preferences::ObjectTypesFile:
-        key.append(QLatin1String("ObjectTypes"));
-        break;
-    case Preferences::ObjectTemplateFile:
-        key.append(QLatin1String("ObjectTemplates"));
-        break;
-    case Preferences::ImageFile:
-        key.append(QLatin1String("Images"));
-        break;
     case Preferences::ExportedFile:
         key.append(QLatin1String("ExportedFile"));
         break;
     case Preferences::ExternalTileset:
         key.append(QLatin1String("ExternalTileset"));
+        break;
+    case Preferences::ImageFile:
+        key.append(QLatin1String("Images"));
+        break;
+    case Preferences::ObjectTemplateFile:
+        key.append(QLatin1String("ObjectTemplates"));
+        break;
+    case Preferences::ObjectTypesFile:
+        key.append(QLatin1String("ObjectTypes"));
+        break;
+    case Preferences::ProjectFile:
+        key.append(QLatin1String("Project"));
         break;
     case Preferences::WorldFile:
         key.append(QLatin1String("WorldFile"));
@@ -594,16 +634,17 @@ void Preferences::setDonationDialogReminder(const QDate &date)
     mSettings->setValue(QLatin1String("Install/DonationDialogTime"), mDonationDialogTime.toString(Qt::ISODate));
 }
 
-QStringList Preferences::recentFiles() const
-{
-    QVariant v = mSettings->value(QLatin1String("recentFiles/fileNames"));
-    return v.toStringList();
-}
-
 QString Preferences::fileDialogStartLocation() const
 {
-    QStringList files = recentFiles();
-    return (!files.isEmpty()) ? QFileInfo(files.first()).path() : QString();
+    const QString activeFile = mSession.activeFile();
+    if (!activeFile.isEmpty())
+        return QFileInfo(activeFile).path();
+
+    const QStringList files = mSession.recentFiles();
+    if (!files.isEmpty())
+        return QFileInfo(files.first()).path();
+
+    return QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
 }
 
 /**
@@ -611,7 +652,8 @@ QString Preferences::fileDialogStartLocation() const
  */
 void Preferences::addRecentFile(const QString &fileName)
 {
-    addToRecentFileList(fileName, "recentFiles/fileNames");
+    mSession.addRecentFile(fileName);
+    saveSession();
     emit recentFilesChanged();
 }
 
@@ -623,11 +665,53 @@ QStringList Preferences::recentProjects() const
 
 void Preferences::addRecentProject(const QString &fileName)
 {
-    addToRecentFileList(fileName, "Project/RecentProjects");
+    setLastPath(ProjectFile, fileName);
+
+    QStringList files = mSettings->value(QLatin1String("Project/RecentProjects")).toStringList();
+    addToRecentFileList(fileName, files);
+    mSettings->setValue(QLatin1String("Project/RecentProjects"), files);
     emit recentProjectsChanged();
 }
 
-void Preferences::addToRecentFileList(const QString &fileName, const char *key)
+QString Preferences::lastSession() const
+{
+    const QString session = mSettings->value(QLatin1String("Project/LastSession")).toString();
+    return session.isEmpty() ? Session::defaultFileName() : session;
+}
+
+void Preferences::setLastSession(const QString &fileName)
+{
+    mSettings->setValue(QLatin1String("Project/LastSession"), fileName);
+}
+
+void Preferences::switchSession(Session session)
+{
+    mSession = std::move(session);
+    setLastSession(mSession.fileName());
+
+    emit recentFilesChanged();
+}
+
+void Preferences::saveSession()
+{
+    if (!mSaveSessionTimer.isActive())
+        mSaveSessionTimer.start();
+}
+
+void Preferences::saveSessionNow(const QString &fileName)
+{
+    emit aboutToSaveSession();
+
+    mSaveSessionTimer.stop();
+
+    // Set the file name regardless of whether the save succeeded
+    if (!fileName.isEmpty())
+        mSession.setFileName(fileName);
+
+    mSession.save();
+}
+
+void Preferences::addToRecentFileList(const QString &fileName, QStringList& files)
 {
     // Remember the file by its absolute file path (not the canonical one,
     // which avoids unexpected paths when symlinks are involved).
@@ -635,18 +719,15 @@ void Preferences::addToRecentFileList(const QString &fileName, const char *key)
     if (absoluteFilePath.isEmpty())
         return;
 
-    QStringList files = mSettings->value(QLatin1String(key)).toStringList();
     files.removeAll(absoluteFilePath);
     files.prepend(absoluteFilePath);
     while (files.size() > MaxRecentFiles)
         files.removeLast();
-
-    mSettings->setValue(QLatin1String(key), files);
 }
 
 void Preferences::clearRecentFiles()
 {
-    mSettings->remove(QLatin1String("recentFiles/fileNames"));
+    mSession.setRecentFiles(QStringList());
     emit recentFilesChanged();
 }
 
@@ -678,13 +759,13 @@ void Preferences::setDisplayNews(bool on)
     emit displayNewsChanged(on);
 }
 
-void Preferences::setOpenLastFilesOnStartup(bool open)
+void Preferences::setRestoreSessionOnStartup(bool enabled)
 {
-    if (mOpenLastFilesOnStartup == open)
+    if (mRestoreSessionOnStartup == enabled)
         return;
 
-    mOpenLastFilesOnStartup = open;
-    mSettings->setValue(QLatin1String("Startup/OpenLastFiles"), open);
+    mRestoreSessionOnStartup = enabled;
+    mSettings->setValue(QLatin1String("Startup/RestorePreviousSession"), enabled);
 }
 
 void Preferences::setPluginEnabled(const QString &fileName, bool enabled)
@@ -756,7 +837,7 @@ qreal Preferences::realValue(const char *key, qreal defaultValue) const
     return mSettings->value(QLatin1String(key), defaultValue).toReal();
 }
 
-static QString dataLocation()
+QString Preferences::dataLocation()
 {
     return QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
 }

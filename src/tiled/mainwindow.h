@@ -79,6 +79,8 @@ public:
 
     void commitData(QSessionManager &manager);
 
+    void initializeSession();
+
     /**
      * Opens the given file. When opened successfully, the file is added to the
      * list of recent files.
@@ -89,11 +91,6 @@ public:
      * @return whether the file was successfully opened
      */
     bool openFile(const QString &fileName, FileFormat *fileFormat = nullptr);
-
-    /**
-     * Attempt to open the previously opened file.
-     */
-    void openLastFiles();
 
     static MainWindow *instance();
 
@@ -121,7 +118,13 @@ private:
     void exportAsImage();
     void reload();
     void closeFile();
-    void closeAllFiles();
+    bool closeAllFiles();
+
+    void openProject();
+    void openProjectFile(const QString &fileName);
+    void saveProjectAs();
+    void closeProject();
+    void restoreSession();
 
     void cut();
     void copy();

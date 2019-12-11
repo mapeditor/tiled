@@ -44,9 +44,9 @@
            </widget>
           </item>
           <item row="1" column="0">
-           <widget class="QCheckBox" name="openLastFiles">
+           <widget class="QCheckBox" name="restoreSession">
             <property name="text">
-             <string>Open last files on startup</string>
+             <string>Restore previous session on startup</string>
             </property>
            </widget>
           </item>
@@ -451,7 +451,7 @@
  <tabstops>
   <tabstop>tabWidget</tabstop>
   <tabstop>reloadTilesetImages</tabstop>
-  <tabstop>openLastFiles</tabstop>
+  <tabstop>restoreSession</tabstop>
   <tabstop>safeSaving</tabstop>
   <tabstop>exportOnSave</tabstop>
   <tabstop>embedTilesets</tabstop>
