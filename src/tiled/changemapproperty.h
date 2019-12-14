@@ -44,7 +44,8 @@ public:
         BackgroundColor,
         LayerDataFormat,
         CompressionLevel,
-        ChunkSize
+        ChunkSize,
+        ObjectAlignment
     };
 
     /**
@@ -77,7 +78,7 @@ public:
      * Constructs a command that changes the map stagger axis.
      *
      * @param mapDocument       the map document of the map
-     * @param orientation       the new map stagger axis
+     * @param staggerAxis       the new map stagger axis
      */
     ChangeMapProperty(MapDocument *mapDocument, Map::StaggerAxis staggerAxis);
 
@@ -85,7 +86,7 @@ public:
      * Constructs a command that changes the map stagger index.
      *
      * @param mapDocument       the map document of the map
-     * @param orientation       the new map stagger index
+     * @param staggerIndex       the new map stagger index
      */
     ChangeMapProperty(MapDocument *mapDocument, Map::StaggerIndex staggerIndex);
 
@@ -104,6 +105,14 @@ public:
      * @param renderOrder       the new map render order
      */
     ChangeMapProperty(MapDocument *mapDocument, Map::RenderOrder renderOrder);
+
+    /**
+      * Constructs a command that changes the alignment of objects.
+      *
+      * @param mapDocument      the map document of the map
+      * @param objectAlignment  the new alignment of objects
+      */
+    ChangeMapProperty(MapDocument *mapDocument, Map::ObjectAlignment objectAlignment);
 
     /**
      * Constructs a command that changes the layer data format.
@@ -130,6 +139,7 @@ private:
         Map::Orientation mOrientation;
         Map::RenderOrder mRenderOrder;
         Map::LayerDataFormat mLayerDataFormat;
+        Map::ObjectAlignment mObjectAlignment;
     };
 };
 

@@ -100,6 +100,11 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Left Down"), QVariant::fromValue(Map::LeftDown));
     mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Left Up"), QVariant::fromValue(Map::LeftUp));
 
+    mUi->objectAlignment->addItem(QCoreApplication::translate("PreferencesDialog", "Unset"), QVariant::fromValue(Map::Unset));
+    mUi->objectAlignment->addItem(QCoreApplication::translate("PreferencesDialog", "Top Left"), QVariant::fromValue(Map::TopLeft));
+    mUi->objectAlignment->addItem(QCoreApplication::translate("PreferencesDialog", "Bottom Left"), QVariant::fromValue(Map::BottomLeft));
+    mUi->objectAlignment->addItem(QCoreApplication::translate("PreferencesDialog", "Bottom Center"), QVariant::fromValue(Map::BottomCenter));
+
     mUi->orientation->addItem(tr("Orthogonal"), QVariant::fromValue(Map::Orthogonal));
     mUi->orientation->addItem(tr("Isometric"), QVariant::fromValue(Map::Isometric));
     mUi->orientation->addItem(tr("Isometric (Staggered)"), QVariant::fromValue(Map::Staggered));
@@ -158,7 +163,8 @@ MapDocumentPtr NewMapDialog::createMap()
     const auto orientation = comboBoxValue<Map::Orientation>(mUi->orientation);
     const auto layerFormat = comboBoxValue<Map::LayerDataFormat>(mUi->layerFormat);
     const auto renderOrder = comboBoxValue<Map::RenderOrder>(mUi->renderOrder);
-
+    const auto objectAlignment = comboBoxValue<Map::ObjectAlignment>(mUi->objectAlignment);
+    //TODO(Phlo): create object alignment UI stuff.
     std::unique_ptr<Map> map { new Map(orientation,
                                        mapWidth, mapHeight,
                                        tileWidth, tileHeight,
@@ -166,6 +172,7 @@ MapDocumentPtr NewMapDialog::createMap()
 
     map->setLayerDataFormat(layerFormat);
     map->setRenderOrder(renderOrder);
+    map->setObjectAlignment(objectAlignment);
 
     const size_t gigabyte = 1073741824u;
     const size_t memory = size_t(mapWidth) * size_t(mapHeight) * sizeof(Cell);

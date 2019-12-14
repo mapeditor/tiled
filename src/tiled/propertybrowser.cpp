@@ -639,9 +639,16 @@ void PropertyBrowser::addMapProperties()
                         tr("Tile Render Order"),
                         groupProperty);
 
+    QtVariantProperty *objectAlignmentProperty =
+            addProperty(ObjectAlignmentProperty,
+                        QtVariantPropertyManager::enumTypeId(),
+                        tr("Object Alignment"),
+                        groupProperty);
+
     addProperty(CompressionLevelProperty, QVariant::Int, tr("Compression level"), groupProperty);
 
     renderOrderProperty->setAttribute(QLatin1String("enumNames"), mRenderOrderNames);
+    objectAlignmentProperty->setAttribute(QLatin1String("enumNames"), mObjectAlignmentNames);
 
     addProperty(BackgroundColorProperty, QVariant::Color, tr("Background Color"), groupProperty);
     addProperty(groupProperty);
@@ -1027,6 +1034,11 @@ void PropertyBrowser::applyMapValue(PropertyId id, const QVariant &val)
         QSize chunkSize = mMapDocument->map()->chunkSize();
         chunkSize.setHeight(val.toInt());
         command = new ChangeMapProperty(mMapDocument, chunkSize);
+        break;
+    }
+    case ObjectAlignmentProperty: {
+        Map::ObjectAlignment objectAlignment = static_cast<Map::ObjectAlignment>(val.toInt());
+        command = new ChangeMapProperty(mMapDocument, objectAlignment);
         break;
     }
     default:
@@ -1628,6 +1640,7 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[LayerFormatProperty]->setValue(map->layerDataFormat());
         mIdToProperty[CompressionLevelProperty]->setValue(map->compressionLevel());
         mIdToProperty[RenderOrderProperty]->setValue(map->renderOrder());
+        mIdToProperty[ObjectAlignmentProperty]->setValue(map->objectAlignment());
         mIdToProperty[BackgroundColorProperty]->setValue(map->backgroundColor());
         mIdToProperty[ChunkWidthProperty]->setValue(map->chunkSize().width());
         mIdToProperty[ChunkHeightProperty]->setValue(map->chunkSize().height());
@@ -1972,6 +1985,12 @@ void PropertyBrowser::retranslateUi()
     mRenderOrderNames.append(QCoreApplication::translate("PreferencesDialog", "Right Up"));
     mRenderOrderNames.append(QCoreApplication::translate("PreferencesDialog", "Left Down"));
     mRenderOrderNames.append(QCoreApplication::translate("PreferencesDialog", "Left Up"));
+
+    mObjectAlignmentNames.clear();
+    mObjectAlignmentNames.append(QCoreApplication::translate("PreferencesDialog", "Unset"));
+    mObjectAlignmentNames.append(QCoreApplication::translate("PreferencesDialog", "Top Left"));
+    mObjectAlignmentNames.append(QCoreApplication::translate("PreferencesDialog", "Bottom Left"));
+    mObjectAlignmentNames.append(QCoreApplication::translate("PreferencesDialog", "Bottom Center"));
 
     mFlippingFlagNames.clear();
     mFlippingFlagNames.append(tr("Horizontal"));

@@ -276,6 +276,11 @@ std::unique_ptr<Map> MapReaderPrivate::readMap()
     const QString compressionLevelString =
             atts.value(QLatin1String("compressionlevel")).toString();
 
+    const QString objectAlignmentString =
+            atts.value(QLatin1String("objectalignment")).toString();
+    const Map::ObjectAlignment objectAlignment =
+            objectAlignmentFromString(objectAlignmentString);
+
     const int nextLayerId = atts.value(QLatin1String("nextlayerid")).toInt();
     const int nextObjectId = atts.value(QLatin1String("nextobjectid")).toInt();
 
@@ -284,6 +289,7 @@ std::unique_ptr<Map> MapReaderPrivate::readMap()
     mMap->setStaggerAxis(staggerAxis);
     mMap->setStaggerIndex(staggerIndex);
     mMap->setRenderOrder(renderOrder);
+    mMap->setObjectAlignment(objectAlignment);
     mMap->setCompressionLevel(compressionLevelString.toUInt());
     if (nextLayerId)
         mMap->setNextLayerId(nextLayerId);

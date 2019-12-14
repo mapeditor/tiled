@@ -144,7 +144,8 @@ private:
         TemplateProperty,
         CompressionLevelProperty,
         ChunkWidthProperty,
-        ChunkHeightProperty
+        ChunkHeightProperty,
+        ObjectAlignmentProperty
     };
 
     void addMapProperties();
@@ -221,6 +222,7 @@ private:
     QStringList mLayerFormatNames;
     QList<Map::LayerDataFormat> mLayerFormatValues;
     QStringList mRenderOrderNames;
+    QStringList mObjectAlignmentNames;
     QStringList mFlippingFlagNames;
     QStringList mDrawOrderNames;
 };
