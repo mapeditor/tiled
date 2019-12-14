@@ -61,6 +61,12 @@ might be useful for XML-namespacing anyway.*
 -  **nextobjectid:** Stores the next available ID for new objects. This
    number is stored to prevent reuse of the same ID after objects have
    been removed. (since 0.11)
+-  **objectalignment:** Controls the origins for tile and shape objects.
+   Valid values are ``unset``, ``top-left``, ``bottom-left``, and ``bottom-center``.
+   In isometric mode, ``bottom-left`` is treated the same as ``bottom-center``.
+   The default value is ``unset``, for compatibility reasons. With ``unset``, tile
+   objects use ``bottom-left`` in orthogonal mode and ``bottom-center`` in isometric
+   mode, while shape objects use ``top-left`` everywhere. (since 1.4)
 
 The ``tilewidth`` and ``tileheight`` properties determine the general
 grid size of the map. The individual tiles may have different sizes.

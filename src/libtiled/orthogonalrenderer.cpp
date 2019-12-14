@@ -383,6 +383,23 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
 
     const QRectF bounds = object->bounds();
     QRectF rect(bounds);
+    QPointF tileAlignmentOffset = QPointF();
+    switch (map()->objectAlignment()) {
+    case Map::BottomLeft:
+        rect.moveTopLeft(QPointF(rect.x(), rect.y() - rect.height()));
+        tileAlignmentOffset.setY(rect.height());
+        break;
+    case Map::BottomCenter:
+        rect.moveTopLeft(QPointF(rect.x() - rect.width()/2, rect.y() - rect.height()));
+        tileAlignmentOffset.setY(rect.height());
+        break;
+    case Map::TopLeft:
+        tileAlignmentOffset.setY(rect.height());
+        break;
+    case Map::Unset:
+        break;
+    }
+
 
     painter->translate(rect.topLeft());
     rect.moveTopLeft(QPointF(0, 0));
@@ -391,8 +408,8 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
 
     if (!cell.isEmpty()) {
         const QSizeF size = object->size();
-        CellRenderer(painter, this).render(cell, QPointF(), size,
-                                           CellRenderer::BottomLeft);
+
+        CellRenderer(painter, this).render(cell, tileAlignmentOffset, size, CellRenderer::BottomLeft);
 
         if (testFlag(ShowTileObjectOutlines)) {
             QPointF tileOffset;
@@ -400,9 +417,8 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
             if (const Tile *tile = cell.tile())
                 tileOffset = tile->offset();
 
-            QRectF rect(QPointF(tileOffset.x(),
-                                tileOffset.y() - size.height()),
-                        size);
+            rect = QRectF(QPointF(tileOffset.x(), tileOffset.y() - size.height()),
+                          size);
 
             QPen pen(Qt::SolidLine);
             pen.setCosmetic(true);

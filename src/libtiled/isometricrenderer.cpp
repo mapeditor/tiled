@@ -370,7 +370,17 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
 
     if (!cell.isEmpty()) {
         const QSizeF size = object->size();
-        const QPointF pos = pixelToScreenCoords(object->position());
+        QPointF pos = pixelToScreenCoords(object->position());
+
+        switch (map()->objectAlignment()) {
+        case Map::BottomLeft:
+        case Map::BottomCenter:
+            pos.setY(pos.y() + size.height());
+            break;
+        case Map::TopLeft:
+        case Map::Unset:
+            break;
+        }
 
         CellRenderer(painter, this).render(cell, pos, size,
                                            CellRenderer::BottomCenter);
@@ -433,11 +443,22 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
         painter->setPen(pen);
         painter->setRenderHint(QPainter::Antialiasing);
 
+        QRectF bounds(object->bounds());
+        switch (map()->objectAlignment()) {
+        case Map::TopLeft:
+            bounds.moveTopLeft(QPointF(-bounds.width(), -bounds.height()));
+            break;
+        case Map::Unset:
+        case Map::BottomLeft:
+        case Map::BottomCenter:
+            break;
+        }
+
         // TODO: Do something sensible to make null-sized objects usable
 
         switch (object->shape()) {
         case MapObject::Ellipse: {
-            const QPolygonF rect = pixelRectToScreenPolygon(object->bounds());
+            const QPolygonF rect = pixelRectToScreenPolygon(bounds);
             const QPainterPath ellipse = shape(object);
 
             painter->drawPath(ellipse);
@@ -453,11 +474,11 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             break;
         }
         case MapObject::Point:
-            painter->translate(pixelToScreenCoords(object->position()));
+            painter->translate(pixelToScreenCoords(bounds.topLeft()));
             drawPointObject(painter, color);
             break;
         case MapObject::Rectangle: {
-            QPolygonF polygon = pixelRectToScreenPolygon(object->bounds());
+            QPolygonF polygon = pixelRectToScreenPolygon(bounds);
             painter->drawPolygon(polygon);
 
             painter->setPen(colorPen);
@@ -467,7 +488,7 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             break;
         }
         case MapObject::Polygon: {
-            const QPointF &pos = object->position();
+            const QPointF &pos = bounds.topLeft();
             const QPolygonF polygon = object->polygon().translated(pos);
             QPolygonF screenPolygon = pixelToScreenCoords(polygon);
 
@@ -491,7 +512,7 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             break;
         }
         case MapObject::Polyline: {
-            const QPointF &pos = object->position();
+            const QPointF &pos = bounds.topLeft();
             const QPolygonF polygon = object->polygon().translated(pos);
             QPolygonF screenPolygon = pixelToScreenCoords(polygon);
 

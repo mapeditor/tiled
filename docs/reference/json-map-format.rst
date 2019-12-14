@@ -26,6 +26,7 @@ Map
     layers,           array,            "Array of :ref:`Layers <json-layer>`"
     nextlayerid,      int,              "Auto-increments for each layer"
     nextobjectid,     int,              "Auto-increments for each placed object"
+    objectalignment,  string,           "``unset``, ``top-left``, ``bottom-left``, or ``bottom-center``"
     orientation,      string,           "``orthogonal``, ``isometric``, ``staggered`` or ``hexagonal``"
     properties,       array,            "Array of :ref:`Properties <json-property>`"
     renderorder,      string,           "``right-down`` (the default), ``right-up``, ``left-down`` or ``left-up`` (orthogonal maps only)"

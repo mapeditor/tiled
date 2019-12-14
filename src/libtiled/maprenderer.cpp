@@ -240,6 +240,8 @@ CellRenderer::CellRenderer(QPainter *painter, const MapRenderer *renderer, CellT
  * kind of tile has to be drawn. For this reason it is necessary to call
  * flush when finished doing drawCell calls. This function is also called by
  * the destructor so usually an explicit call is not needed.
+ *
+ * This call expects `painter.translate(pos)` to correspond to the Origin point.
  */
 void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &size, Origin origin)
 {
@@ -274,6 +276,7 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &si
     bool flippedVertically = cell.flippedVertically();
 
     QPainter::PixmapFragment fragment;
+    // Calculate the position as if the origin is BottomLeft, and correct it later.
     fragment.x = pos.x() + (offset.x() * scale.width()) + sizeHalf.x();
     fragment.y = pos.y() + (offset.y() * scale.height()) + sizeHalf.y() - size.height();
     fragment.sourceLeft = 0;
@@ -285,6 +288,7 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &si
     fragment.rotation = 0;
     fragment.opacity = 1;
 
+    // Correct the position if the origin is not BottomLeft.
     if (origin == BottomCenter)
         fragment.x -= sizeHalf.x();
 
