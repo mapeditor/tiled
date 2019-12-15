@@ -358,6 +358,22 @@ std::unique_ptr<Map> Map::clone() const
     return o;
 }
 
+QList<MapObject*> Map::syncObjectTemplate(const ObjectTemplate *objectTemplate)
+{
+    QList<MapObject*> changedObjects;
+
+    for (auto layer : objectGroups()) {
+        for (auto o : static_cast<ObjectGroup*>(layer)->objects()) {
+            if (o->objectTemplate() == objectTemplate) {
+                o->syncWithTemplate();
+                changedObjects.append(o);
+            }
+        }
+    }
+
+    return changedObjects;
+}
+
 QList<MapObject*> Map::replaceObjectTemplate(const ObjectTemplate *oldObjectTemplate,
                                              const ObjectTemplate *newObjectTemplate)
 {

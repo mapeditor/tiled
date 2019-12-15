@@ -45,13 +45,17 @@ void TemplateManager::deleteInstance()
 }
 
 TemplateManager::TemplateManager(QObject *parent)
-    : QObject(parent)
+    : QObject(parent),
+      mWatcher(new FileSystemWatcher(this))
 {
+    connect(mWatcher, &FileSystemWatcher::fileChanged,
+            this, &TemplateManager::fileChanged);
 }
 
 TemplateManager::~TemplateManager()
 {
     qDeleteAll(mObjectTemplates);
+    delete mWatcher;
 }
 
 ObjectTemplate *TemplateManager::loadObjectTemplate(const QString &fileName, QString *error)
@@ -61,14 +65,28 @@ ObjectTemplate *TemplateManager::loadObjectTemplate(const QString &fileName, QSt
     if (!objectTemplate) {
         auto newTemplate = readObjectTemplate(fileName, error);
 
-        // This instance will not have an object. It is used to detect broken
-        // template references.
-        if (!newTemplate)
+        if (newTemplate) {
+            mWatcher->addPath(fileName);
+        } else {
+            // This instance will not have an object. It is used to detect broken
+            // template references.
             newTemplate = std::make_unique<ObjectTemplate>(fileName);
+        }
 
         objectTemplate = newTemplate.get();
         mObjectTemplates.insert(fileName, newTemplate.release());
     }
 
     return objectTemplate;
+}
+
+void TemplateManager::fileChanged(const QString &fileName)
+{
+    ObjectTemplate *objectTemplate = findObjectTemplate(fileName);
+
+    // Most likely the file was removed.
+    if (!objectTemplate)
+        return;
+
+    emit objectTemplateChanged(objectTemplate);
 }

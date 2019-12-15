@@ -196,6 +196,7 @@ private:
     void hideChangedWarning();
 
     void tilesetImagesChanged(Tileset *tileset);
+    void objectTemplateChanged(ObjectTemplate *objectTemplate);
 
     bool askForAdjustment(const Tileset &tileset);
 

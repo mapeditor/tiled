@@ -180,6 +180,7 @@ public:
                          QVector<SharedTileset> *missingTilesets = nullptr,
                          QHash<TileLayer *, QRegion> *paintedRegions = nullptr);
 
+    void syncObjectTemplate(const ObjectTemplate *objectTemplate);
     void replaceObjectTemplate(const ObjectTemplate *oldObjectTemplate,
                                const ObjectTemplate *newObjectTemplate);
 
