@@ -943,7 +943,7 @@ void MapReaderPrivate::decodeCSVLayerData(TileLayer &tileLayer,
                                           QRect bounds)
 {
     QString trimText = text.trimmed().toString();
-    QStringList tiles = trimText.split(QLatin1Char(','));
+    QVector<QStringRef> tiles = trimText.splitRef(QLatin1Char(','));
 
     int lengthCheck = bounds.width() * bounds.height();
 
