@@ -942,33 +942,45 @@ void MapReaderPrivate::decodeCSVLayerData(TileLayer &tileLayer,
                                           QStringRef text,
                                           QRect bounds)
 {
-    QString trimText = text.trimmed().toString();
-    QVector<QStringRef> tiles = trimText.splitRef(QLatin1Char(','));
-
-    int lengthCheck = bounds.width() * bounds.height();
-
-    if (tiles.length() != lengthCheck) {
-        xml.raiseError(tr("Corrupt layer data for layer '%1'")
-                       .arg(tileLayer.name()));
-        return;
-    }
-
-    int currentTile = 0;
+    int currentIndex = 0;
 
     for (int y = bounds.top(); y <= bounds.bottom(); y++) {
         for (int x = bounds.left(); x <= bounds.right(); x++) {
-            bool conversionOk;
-            const unsigned gid = tiles.at(currentTile++).toUInt(&conversionOk);
-
-            if (!conversionOk) {
-                xml.raiseError(
-                        tr("Unable to parse tile at (%1,%2) on layer '%3'")
-                               .arg(x + 1).arg(y + 1).arg(tileLayer.name()));
+            // Check if the stream ended early.
+            if (currentIndex >= text.length()) {
+                xml.raiseError(tr("Corrupt layer data for layer '%1'")
+                               .arg(tileLayer.name()));
                 return;
+            }
+
+            // Get the next entry.
+            unsigned int gid = 0;
+            while (currentIndex < text.length()) {
+                auto currentChar =  text[currentIndex];
+                currentIndex++;
+                if (currentChar == QLatin1Char(','))
+                    break;
+                if (currentChar.isSpace())
+                    continue;
+                int value = currentChar.digitValue();
+                if (value != -1)
+                    gid = gid * 10 + value;
+                else {
+                    xml.raiseError(
+                            tr("Unable to parse tile at (%1,%2) on layer '%3': \"%4\"")
+                                   .arg(x + 1).arg(y + 1).arg(tileLayer.name()).arg(currentChar));
+                    return;
+                }
             }
 
             tileLayer.setCell(x, y, cellForGid(gid));
         }
+    }
+    if (currentIndex < text.length()) {
+        // We didn't consume all the data.
+        xml.raiseError(tr("Corrupt layer data for layer '%1'")
+                       .arg(tileLayer.name()));
+        return;
     }
 }
 
@@ -1348,7 +1360,6 @@ void MapReaderPrivate::readProperty(Properties *properties)
 
     properties->insert(propertyName, variant);
 }
-
 
 MapReader::MapReader()
     : d(new MapReaderPrivate(this))
