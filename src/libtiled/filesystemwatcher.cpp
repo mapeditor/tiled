@@ -113,7 +113,7 @@ void FileSystemWatcher::onDirectoryChanged(const QString &path)
 
 void FileSystemWatcher::filesChangedTimeout()
 {
-    const auto changedFiles = mChangedFiles.toList();
+    const auto changedFiles = mChangedFiles.values();
 
     // If the file was replaced, the watcher is automatically removed and needs
     // to be re-added to keep watching it for changes. This happens commonly
