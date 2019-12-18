@@ -311,7 +311,7 @@ public class TMXMapWriter {
                 // todo: move the null check back into the iterator?
                 if (tile != null
                         && (!tile.getProperties().isEmpty()
-                        || !tile.getType().isEmpty()) {
+                        || !tile.getType().isEmpty())) {
                     w.startElement("tile");
                     w.writeAttribute("id", tile.getId());
                     if (!tile.getType().isEmpty()) {
