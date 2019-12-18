@@ -263,7 +263,7 @@ number of Wang tiles using these colors.
 -  **name**: The name of the Wang set.
 -  **tile**: The tile ID of the tile representing this Wang set.
 
-Can contain at most one: :ref:`tmx-wangcornercolor`, :ref:`tmx-wangedgecolor`
+Can contain up to 15 (each): :ref:`tmx-wangcornercolor`, :ref:`tmx-wangedgecolor`
 
 Can contain any number: :ref:`tmx-wangtile`
 
@@ -535,7 +535,7 @@ properties.
 
 Can contain at most one: :ref:`tmx-properties`, :ref:`tmx-ellipse` (since
 0.9), :ref:`tmx-point`, :ref:`tmx-polygon`, :ref:`tmx-polyline`, :ref:`tmx-text`
-(since 1.0), :ref:`tmx-image`
+(since 1.0)
 
 .. _tmx-ellipse:
 
