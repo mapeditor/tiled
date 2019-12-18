@@ -535,9 +535,9 @@ public class TMXMapWriter {
         w.startElement("tile");
         w.writeAttribute("id", tile.getId());
 
-		if (!tile.getType().isEmpty()) {
-			w.writeAttribute("type", tile.getType());
-		}
+        if (!tile.getType().isEmpty()) {
+            w.writeAttribute("type", tile.getType());
+        }
 
         if (!tile.getProperties().isEmpty()) {
             writeProperties(tile.getProperties(), w);
