@@ -309,10 +309,17 @@ public class TMXMapWriter {
             // Write tile properties when necessary.
             for (Tile tile : set) {
                 // todo: move the null check back into the iterator?
-                if (tile != null && !tile.getProperties().isEmpty()) {
+                if (tile != null
+                        && (!tile.getProperties().isEmpty()
+                        || !tile.getType().isEmpty()) {
                     w.startElement("tile");
                     w.writeAttribute("id", tile.getId());
-                    writeProperties(tile.getProperties(), w);
+                    if (!tile.getType().isEmpty()) {
+                        w.writeAttribute("type", tile.getType());
+                    }
+                    if (!tile.getProperties().isEmpty()) {
+                        writeProperties(tile.getProperties(), w);
+                    }
                     w.endElement();
                 }
             }
@@ -324,6 +331,7 @@ public class TMXMapWriter {
             // TODO: This shouldn't be necessary
             for (Tile tile : set) {
                 if (!tile.getProperties().isEmpty()
+                        || !tile.getType().isEmpty()
                         || tile.getSource() != null) {
                     needWrite = true;
                     break;
@@ -526,6 +534,10 @@ public class TMXMapWriter {
     private void writeTile(Tile tile, XMLWriter w, String wp) throws IOException {
         w.startElement("tile");
         w.writeAttribute("id", tile.getId());
+
+		if (!tile.getType().isEmpty()) {
+			w.writeAttribute("type", tile.getType());
+		}
 
         if (!tile.getProperties().isEmpty()) {
             writeProperties(tile.getProperties(), w);
