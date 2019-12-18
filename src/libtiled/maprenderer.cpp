@@ -251,9 +251,19 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &si
         tile = tile->currentFrameTile();
 
     if (!tile || tile->image().isNull()) {
-        QRectF target { pos - QPointF(0, size.height()), size };
-        if (origin == BottomCenter)
-            target.moveLeft(target.left() - size.width() / 2);
+        QRectF target { pos, size };
+
+        switch (origin) {
+        case TopLeft:
+            break;
+        case BottomLeft:
+            target.translate(0.0, -size.height());
+            break;
+        case BottomCenter:
+            target.translate(-size.width() / 2, -size.height());
+            break;
+        }
+
         renderMissingImageMarker(*mPainter, target);
         return;
     }
@@ -276,9 +286,9 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &si
     bool flippedVertically = cell.flippedVertically();
 
     QPainter::PixmapFragment fragment;
-    // Calculate the position as if the origin is BottomLeft, and correct it later.
+    // Calculate the position as if the origin is TopLeft, and correct it later.
     fragment.x = pos.x() + (offset.x() * scale.width()) + sizeHalf.x();
-    fragment.y = pos.y() + (offset.y() * scale.height()) + sizeHalf.y() - size.height();
+    fragment.y = pos.y() + (offset.y() * scale.height()) + sizeHalf.y();
     fragment.sourceLeft = 0;
     fragment.sourceTop = 0;
     fragment.width = imageSize.width();
@@ -288,9 +298,18 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &si
     fragment.rotation = 0;
     fragment.opacity = 1;
 
-    // Correct the position if the origin is not BottomLeft.
-    if (origin == BottomCenter)
+    // Correct the position if the origin is not TopLeft.
+    switch (origin) {
+    case TopLeft:
+        break;
+    case BottomLeft:
+        fragment.y -= size.height();
+        break;
+    case BottomCenter:
         fragment.x -= sizeHalf.x();
+        fragment.y -= size.height();
+        break;
+    }
 
     if (mCellType == HexagonalCells) {
 

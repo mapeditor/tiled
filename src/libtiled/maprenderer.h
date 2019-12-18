@@ -290,6 +290,7 @@ class CellRenderer
 {
 public:
     enum Origin {
+        TopLeft,
         BottomLeft,
         BottomCenter
     };
@@ -304,7 +305,8 @@ public:
 
     ~CellRenderer() { flush(); }
 
-    void render(const Cell &cell, const QPointF &pos, const QSizeF &size, Origin origin);
+    void render(const Cell &cell, const QPointF &pos, const QSizeF &size,
+                Origin origin = TopLeft);
     void flush();
 
 private:

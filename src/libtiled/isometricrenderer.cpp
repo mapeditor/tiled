@@ -96,25 +96,24 @@ QRectF IsometricRenderer::boundingRect(const MapObject *object) const
                                       extraSpace,
                                       extraSpace);
     } else if (!object->cell().isEmpty()) {
-        const QSizeF objectSize { object->size() };
-
-        QSizeF scale { 1.0, 1.0 };
-        QPoint tileOffset;
+        QRectF bounds { pixelToScreenCoords(object->position()), object->size() };
+        bounds.translate(-alignmentOffset(bounds, object->alignment()));
 
         if (const Tile *tile = object->cell().tile()) {
-            QSize imgSize = tile->size();
-            if (!imgSize.isNull()) {
-                scale = QSizeF(objectSize.width() / imgSize.width(),
-                               objectSize.height() / imgSize.height());
+            QPointF tileOffset = tile->offset();
+            const QSize tileSize = tile->size();
+            if (!tileSize.isNull()) {
+                const QSizeF scale {
+                    bounds.width() / tileSize.width(),
+                    bounds.height() / tileSize.height()
+                };
+                tileOffset.rx() *= scale.width();
+                tileOffset.ry() *= scale.height();
             }
-            tileOffset = tile->offset();
+            bounds.translate(tileOffset);
         }
 
-        const QPointF bottomCenter = pixelToScreenCoords(object->position());
-        return QRectF(bottomCenter.x() + (tileOffset.x() * scale.width()) - objectSize.width() / 2,
-                      bottomCenter.y() + (tileOffset.y() * scale.height()) - objectSize.height(),
-                      objectSize.width(),
-                      objectSize.height()).adjusted(-1, -1, 1, 1);
+        return bounds.adjusted(-1, -1, 1, 1);
     } else if (!object->polygon().isEmpty()) {
         qreal extraSpace = qMax(objectLineWidth(), qreal(1));
 
@@ -369,41 +368,25 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
     const Cell &cell = object->cell();
 
     if (!cell.isEmpty()) {
-        const QSizeF size = object->size();
-        QPointF pos = pixelToScreenCoords(object->position());
+        QRectF rect = { pixelToScreenCoords(object->position()), object->size() };
+        rect.translate(-alignmentOffset(rect, object->alignment()));
 
-        switch (map()->objectAlignment()) {
-        case Map::BottomLeft:
-        case Map::BottomCenter:
-            pos.setY(pos.y() + size.height());
-            break;
-        case Map::TopLeft:
-        case Map::Unset:
-            break;
-        }
-
-        CellRenderer(painter, this).render(cell, pos, size,
-                                           CellRenderer::BottomCenter);
+        CellRenderer(painter, this).render(cell, rect.topLeft(), rect.size());
 
         if (testFlag(ShowTileObjectOutlines)) {
-            QPointF tileOffset;
-            QPointF scale(1.0, 1.0);
-
-            if (const Tile *tile = cell.tile()) {
-                tileOffset = tile->offset();
-
-                const QPixmap &image = tile->image();
-                const QSizeF imageSize = image.size();
-
-                if (!imageSize.isEmpty()) {
-                    scale = QPointF(size.width() / imageSize.width(),
-                                    size.height() / imageSize.height());
+            if (const Tile *tile = object->cell().tile()) {
+                QPointF tileOffset = tile->offset();
+                const QSize tileSize = tile->size();
+                if (!tileSize.isNull()) {
+                    const QSizeF scale {
+                        rect.width() / tileSize.width(),
+                        rect.height() / tileSize.height()
+                    };
+                    tileOffset.rx() *= scale.width();
+                    tileOffset.ry() *= scale.height();
                 }
+                rect.translate(tileOffset);
             }
-
-            QRectF rect(QPointF(pos.x() - size.width() / 2 + tileOffset.x() * scale.x(),
-                                pos.y() - size.height() + tileOffset.y() * scale.y()),
-                        size);
 
             pen.setStyle(Qt::SolidLine);
             painter->setRenderHint(QPainter::Antialiasing, false);

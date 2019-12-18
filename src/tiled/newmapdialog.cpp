@@ -164,7 +164,7 @@ MapDocumentPtr NewMapDialog::createMap()
     const auto layerFormat = comboBoxValue<Map::LayerDataFormat>(mUi->layerFormat);
     const auto renderOrder = comboBoxValue<Map::RenderOrder>(mUi->renderOrder);
     const auto objectAlignment = comboBoxValue<Map::ObjectAlignment>(mUi->objectAlignment);
-    //TODO(Phlo): create object alignment UI stuff.
+
     std::unique_ptr<Map> map { new Map(orientation,
                                        mapWidth, mapHeight,
                                        tileWidth, tileHeight,

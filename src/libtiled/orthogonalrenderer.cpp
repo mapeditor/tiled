@@ -74,30 +74,27 @@ QRect OrthogonalRenderer::boundingRect(const QRect &rect) const
 
 QRectF OrthogonalRenderer::boundingRect(const MapObject *object) const
 {
-    const QRectF bounds = object->bounds();
+    QRectF bounds = object->bounds();
+    bounds.translate(-alignmentOffset(bounds, object->alignment()));
 
     QRectF boundingRect;
 
     if (!object->cell().isEmpty()) {
-        const QSizeF objectSize { object->size() };
-
-        QSizeF scale { 1.0, 1.0 };
-        QPoint tileOffset;
-
         if (const Tile *tile = object->cell().tile()) {
-            QSize imgSize = tile->size();
-            if (!imgSize.isNull()) {
-                scale = QSizeF(objectSize.width() / imgSize.width(),
-                               objectSize.height() / imgSize.height());
+            QPointF tileOffset = tile->offset();
+            const QSize tileSize = tile->size();
+            if (!tileSize.isNull()) {
+                const QSizeF scale {
+                    bounds.width() / tileSize.width(),
+                    bounds.height() / tileSize.height()
+                };
+                tileOffset.rx() *= scale.width();
+                tileOffset.ry() *= scale.height();
             }
-            tileOffset = tile->offset();
+            bounds.translate(tileOffset);
         }
 
-        const QPointF bottomLeft = bounds.topLeft();
-        boundingRect = QRectF(bottomLeft.x() + (tileOffset.x() * scale.width()),
-                              bottomLeft.y() + (tileOffset.y() * scale.height()) - objectSize.height(),
-                              objectSize.width(),
-                              objectSize.height()).adjusted(-1, -1, 1, 1);
+        boundingRect = bounds.adjusted(-1, -1, 1, 1);
     } else {
         qreal extraSpace = qMax(objectLineWidth(), qreal(1));
 
@@ -110,10 +107,10 @@ QRectF OrthogonalRenderer::boundingRect(const MapObject *object) const
                                                10 + extraSpace + 1,
                                                10 + extraSpace + 1);
             } else {
-            boundingRect = bounds.adjusted(-extraSpace,
-                                           -extraSpace,
-                                           extraSpace + 1,
-                                           extraSpace + 1);
+                boundingRect = bounds.adjusted(-extraSpace,
+                                               -extraSpace,
+                                               extraSpace + 1,
+                                               extraSpace + 1);
             }
             break;
 
@@ -202,10 +199,7 @@ QPainterPath OrthogonalRenderer::interactionShape(const MapObject *object) const
 
     switch (object->shape()) {
     case MapObject::Rectangle:
-        if (object->isTileObject())
-            path.addRect(boundingRect(object));
-        else
-            path = shape(object);
+        path.addRect(boundingRect(object));
         break;
     case MapObject::Polyline: {
         const QPointF &pos = object->position();
@@ -381,25 +375,8 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
 {
     painter->save();
 
-    const QRectF bounds = object->bounds();
-    QRectF rect(bounds);
-    QPointF tileAlignmentOffset = QPointF();
-    switch (map()->objectAlignment()) {
-    case Map::BottomLeft:
-        rect.moveTopLeft(QPointF(rect.x(), rect.y() - rect.height()));
-        tileAlignmentOffset.setY(rect.height());
-        break;
-    case Map::BottomCenter:
-        rect.moveTopLeft(QPointF(rect.x() - rect.width()/2, rect.y() - rect.height()));
-        tileAlignmentOffset.setY(rect.height());
-        break;
-    case Map::TopLeft:
-        tileAlignmentOffset.setY(rect.height());
-        break;
-    case Map::Unset:
-        break;
-    }
-
+    QRectF rect = object->bounds();
+    rect.translate(-alignmentOffset(rect, object->alignment()));
 
     painter->translate(rect.topLeft());
     rect.moveTopLeft(QPointF(0, 0));
@@ -407,18 +384,22 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
     const Cell &cell = object->cell();
 
     if (!cell.isEmpty()) {
-        const QSizeF size = object->size();
-
-        CellRenderer(painter, this).render(cell, tileAlignmentOffset, size, CellRenderer::BottomLeft);
+        CellRenderer(painter, this).render(cell, QPointF(), rect.size());
 
         if (testFlag(ShowTileObjectOutlines)) {
-            QPointF tileOffset;
-
-            if (const Tile *tile = cell.tile())
-                tileOffset = tile->offset();
-
-            rect = QRectF(QPointF(tileOffset.x(), tileOffset.y() - size.height()),
-                          size);
+            if (const Tile *tile = object->cell().tile()) {
+                QPointF tileOffset = tile->offset();
+                const QSize tileSize = tile->size();
+                if (!tileSize.isNull()) {
+                    const QSizeF scale {
+                        rect.width() / tileSize.width(),
+                        rect.height() / tileSize.height()
+                    };
+                    tileOffset.rx() *= scale.width();
+                    tileOffset.ry() *= scale.height();
+                }
+                rect.translate(tileOffset);
+            }
 
             QPen pen(Qt::SolidLine);
             pen.setCosmetic(true);

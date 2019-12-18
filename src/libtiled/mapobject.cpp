@@ -229,6 +229,22 @@ QRectF MapObject::screenBounds(const MapRenderer &renderer) const
  */
 Alignment MapObject::alignment() const
 {
+    Map::ObjectAlignment objectAlignment = Map::Unset;
+    if (mObjectGroup)
+        if (Map *map = mObjectGroup->map())
+            objectAlignment = map->objectAlignment();
+
+    switch (objectAlignment) {
+    case Map::Unset:
+        break;
+    case Map::TopLeft:
+        return TopLeft;
+    case Map::BottomLeft:
+        return BottomLeft;
+    case Map::BottomCenter:
+        return Bottom;
+    }
+
     if (mCell.isEmpty()) {
         return TopLeft;
     } else if (mObjectGroup) {
