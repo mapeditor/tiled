@@ -26,6 +26,14 @@ interested in what changed between Tiled versions.
 http://mapeditor.org/dtd/1.0/map.dtd. This file is not up-to-date but
 might be useful for XML-namespacing anyway.*
 
+*Note to implementors: When parsing TMX files, follow XML parsing guidelines.
+If an invalid element is found, it should generally be ignored (or cause a
+warning). When there are multiple copies of an element that should only appear
+once, use the first parsed option. Unknown attributes or element tags should
+also be ignored. These behaviors make adding future features easier without breaking
+backwards compatibility, and allows custom variants and additions to work with
+existing tools.*
+
 .. _tmx-map:
 
 <map>
@@ -76,9 +84,10 @@ rendered by Tiled.
 The ``staggered`` orientation refers to an isometric map using staggered
 axes.
 
-Can contain: :ref:`tmx-properties`, :ref:`tmx-tileset`,
-:ref:`tmx-layer`, :ref:`tmx-objectgroup`,
-:ref:`tmx-imagelayer`, :ref:`tmx-group` (since 1.0)
+Can contain at most one: :ref:`tmx-properties`
+
+Can contain any number: :ref:`tmx-tileset`, :ref:`tmx-layer`,
+:ref:`tmx-objectgroup`, :ref:`tmx-imagelayer`, :ref:`tmx-group` (since 1.0)
 
 .. _tmx-tileset:
 
@@ -111,9 +120,14 @@ order of their ``firstgid`` attribute. The first tileset always has a
 not necessarily number their tiles consecutively since gaps can occur
 when removing tiles.
 
-Can contain: :ref:`tmx-tileoffset`, :ref:`tmx-grid` (since 1.0),
-:ref:`tmx-properties`, :ref:`tmx-image`, :ref:`tmx-terraintypes`,
-:ref:`tmx-tileset-tile`, :ref:`tmx-wangsets` (since 1.1)
+Image collection tilesets have no ``<image>`` tag. Instead, each tile has
+an ``<image>`` tag.
+
+Can contain at most one: :ref:`tmx-image`, :ref:`tmx-tileoffset`,
+:ref:`tmx-grid` (since 1.0), :ref:`tmx-properties`, :ref:`tmx-terraintypes`,
+:ref:`tmx-wangsets` (since 1.1),
+
+Can contain any number: :ref:`tmx-tileset-tile`
 
 .. _tmx-tileoffset:
 
@@ -165,7 +179,7 @@ embedded image data, even though the TMX format supports this. It is
 possible to create such maps using ``libtiled`` (Qt/C++) or
 `tmxlib <https://pypi.python.org/pypi/tmxlib>`__ (Python).
 
-Can contain: :ref:`tmx-data`
+Can contain at most one: :ref:`tmx-data`
 
 .. _tmx-terraintypes:
 
@@ -175,7 +189,7 @@ Can contain: :ref:`tmx-data`
 This element defines an array of terrain types, which can be referenced
 from the ``terrain`` attribute of the ``tile`` element.
 
-Can contain: :ref:`tmx-terrain`
+Can contain any number: :ref:`tmx-terrain`
 
 .. _tmx-terrain:
 
@@ -186,7 +200,7 @@ Can contain: :ref:`tmx-terrain`
 -  **tile:** The local tile-id of the tile that represents the terrain
    visually.
 
-Can contain: :ref:`tmx-properties`
+Can contain at most one: :ref:`tmx-properties`
 
 .. _tmx-tileset-tile:
 
@@ -204,7 +218,7 @@ Can contain: :ref:`tmx-properties`
    tile is chosen when it competes with others while editing with the
    terrain tool. (optional)
 
-Can contain: :ref:`tmx-properties`, :ref:`tmx-image` (since
+Can contain at most one: :ref:`tmx-properties`, :ref:`tmx-image` (since
 0.9), :ref:`tmx-objectgroup`, :ref:`tmx-animation`
 
 .. _tmx-animation:
@@ -217,7 +231,7 @@ Contains a list of animation frames.
 Each tile can have exactly one animation associated with it. In the
 future, there could be support for multiple named animations on a tile.
 
-Can contain: :ref:`tmx-frame`
+Can contain any number: :ref:`tmx-frame`
 
 .. _tmx-frame:
 
@@ -236,7 +250,7 @@ Can contain: :ref:`tmx-frame`
 
 Contains the list of Wang sets defined for this tileset.
 
-Can contain: :ref:`tmx-wangset`
+Can contain any number: :ref:`tmx-wangset`
 
 .. _tmx-wangset:
 
@@ -249,7 +263,9 @@ number of Wang tiles using these colors.
 -  **name**: The name of the Wang set.
 -  **tile**: The tile ID of the tile representing this Wang set.
 
-Can contain: :ref:`tmx-wangcornercolor`, :ref:`tmx-wangedgecolor`, :ref:`tmx-wangtile`
+Can contain at most one: :ref:`tmx-wangcornercolor`, :ref:`tmx-wangedgecolor`
+
+Can contain any number: :ref:`tmx-wangtile`
 
 .. _tmx-wangcornercolor:
 
@@ -315,7 +331,7 @@ tiles.
 -  **offsety:** Rendering offset for this layer in pixels. Defaults to 0.
    (since 0.14)
 
-Can contain: :ref:`tmx-properties`, :ref:`tmx-data`
+Can contain at most one: :ref:`tmx-properties`, :ref:`tmx-data`
 
 .. _tmx-data:
 
@@ -344,7 +360,7 @@ find out from which tileset the tile is you need to find the tileset
 with the highest ``firstgid`` that is still lower or equal than the gid.
 The tilesets are always stored with increasing ``firstgid``\ s.
 
-Can contain: :ref:`tmx-tilelayer-tile`, :ref:`tmx-chunk`
+Can contain any number: :ref:`tmx-tilelayer-tile`, :ref:`tmx-chunk`
 
 Tile flipping
 ^^^^^^^^^^^^^
@@ -428,7 +444,7 @@ This is currently added only for infinite maps. The contents of a chunk
 element is same as that of the ``data`` element, except it stores the
 data of the area specified in the attributes.
 
-Can contain: :ref:`tmx-tilelayer-tile`
+Can contain any number: :ref:`tmx-tilelayer-tile`
 
 .. _tmx-tilelayer-tile:
 
@@ -472,7 +488,9 @@ should generally be avoided.
 The object group is in fact a map layer, and is hence called "object
 layer" in Tiled.
 
-Can contain: :ref:`tmx-properties`, :ref:`tmx-object`
+Can contain at most one: :ref:`tmx-properties`
+
+Can contain any number: :ref:`tmx-object`
 
 .. _tmx-object:
 
@@ -515,9 +533,9 @@ properties from the specified template, properties saved with the object
 will have higher priority, i.e. they will override the template
 properties.
 
-Can contain: :ref:`tmx-properties`, :ref:`tmx-ellipse` (since
+Can contain at most one: :ref:`tmx-properties`, :ref:`tmx-ellipse` (since
 0.9), :ref:`tmx-point`, :ref:`tmx-polygon`, :ref:`tmx-polyline`, :ref:`tmx-text`
-(since 1.0), *image*
+(since 1.0), :ref:`tmx-image`
 
 .. _tmx-ellipse:
 
@@ -621,7 +639,7 @@ of the object.
 
 A layer consisting of a single image.
 
-Can contain: :ref:`tmx-properties`, :ref:`tmx-image`
+Can contain at most one: :ref:`tmx-properties`, :ref:`tmx-image`
 
 .. _tmx-group:
 
@@ -644,7 +662,9 @@ A group layer, used to organize the layers of the map in a hierarchy.
 Its attributes ``offsetx``, ``offsety``, ``opacity`` and ``visible``
 recursively affect child layers.
 
-Can contain: :ref:`tmx-properties`, :ref:`tmx-layer`,
+Can contain at most one: :ref:`tmx-properties`
+
+Can contain any number: :ref:`tmx-layer`,
 :ref:`tmx-objectgroup`, :ref:`tmx-imagelayer`, :ref:`tmx-group`
 
 .. _tmx-properties:
@@ -710,7 +730,7 @@ Example of a template file:
      <object name="cactus" gid="31" width="81" height="101"/>
     </template>
 
-Can contain: :ref:`tmx-tileset`, :ref:`tmx-object`
+Can contain at most one: :ref:`tmx-tileset`, :ref:`tmx-object`
 
 --------------
 
