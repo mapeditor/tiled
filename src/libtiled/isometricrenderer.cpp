@@ -523,22 +523,22 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
 
 QPointF IsometricRenderer::pixelToTileCoords(qreal x, qreal y) const
 {
-    const int tileHeight = map()->tileHeight();
+    const qreal tileHeight = map()->tileHeight();
 
     return QPointF(x / tileHeight, y / tileHeight);
 }
 
 QPointF IsometricRenderer::tileToPixelCoords(qreal x, qreal y) const
 {
-    const int tileHeight = map()->tileHeight();
+    const qreal tileHeight = map()->tileHeight();
 
     return QPointF(x * tileHeight, y * tileHeight);
 }
 
 QPointF IsometricRenderer::screenToTileCoords(qreal x, qreal y) const
 {
-    const int tileWidth = map()->tileWidth();
-    const int tileHeight = map()->tileHeight();
+    const qreal tileWidth = map()->tileWidth();
+    const qreal tileHeight = map()->tileHeight();
 
     x -= map()->height() * tileWidth / 2;
     const qreal tileY = y / tileHeight;
@@ -550,9 +550,9 @@ QPointF IsometricRenderer::screenToTileCoords(qreal x, qreal y) const
 
 QPointF IsometricRenderer::tileToScreenCoords(qreal x, qreal y) const
 {
-    const int tileWidth = map()->tileWidth();
-    const int tileHeight = map()->tileHeight();
-    const int originX = map()->height() * tileWidth / 2;
+    const qreal tileWidth = map()->tileWidth();
+    const qreal tileHeight = map()->tileHeight();
+    const qreal originX = map()->height() * tileWidth / 2;
 
     return QPointF((x - y) * tileWidth / 2 + originX,
                    (x + y) * tileHeight / 2);
@@ -560,8 +560,8 @@ QPointF IsometricRenderer::tileToScreenCoords(qreal x, qreal y) const
 
 QPointF IsometricRenderer::screenToPixelCoords(qreal x, qreal y) const
 {
-    const int tileWidth = map()->tileWidth();
-    const int tileHeight = map()->tileHeight();
+    const qreal tileWidth = map()->tileWidth();
+    const qreal tileHeight = map()->tileHeight();
 
     x -= map()->height() * tileWidth / 2;
     const qreal tileY = y / tileHeight;
@@ -573,9 +573,9 @@ QPointF IsometricRenderer::screenToPixelCoords(qreal x, qreal y) const
 
 QPointF IsometricRenderer::pixelToScreenCoords(qreal x, qreal y) const
 {
-    const int tileWidth = map()->tileWidth();
-    const int tileHeight = map()->tileHeight();
-    const int originX = map()->height() * tileWidth / 2;
+    const qreal tileWidth = map()->tileWidth();
+    const qreal tileHeight = map()->tileHeight();
+    const qreal originX = map()->height() * tileWidth / 2;
     const qreal tileY = y / tileHeight;
     const qreal tileX = x / tileHeight;
 
