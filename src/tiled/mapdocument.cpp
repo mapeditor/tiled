@@ -944,14 +944,6 @@ void MapDocument::paintTileLayers(const Map *map, bool mergeable,
     }
 }
 
-void MapDocument::syncObjectTemplate(const ObjectTemplate *objectTemplate)
-{
-    auto changedObjects = mMap->syncObjectTemplate(objectTemplate);
-
-    // Update the objects in the map scene
-    emit changed(MapObjectsChangeEvent(std::move(changedObjects)));
-}
-
 void MapDocument::replaceObjectTemplate(const ObjectTemplate *oldObjectTemplate,
                                         const ObjectTemplate *newObjectTemplate)
 {
