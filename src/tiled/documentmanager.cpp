@@ -38,7 +38,6 @@
 #include "mapview.h"
 #include "noeditorwidget.h"
 #include "preferences.h"
-#include "templatemanager.h"
 #include "terrain.h"
 #include "tilesetdocument.h"
 #include "tilesetdocumentsmodel.h"
@@ -139,9 +138,6 @@ DocumentManager::DocumentManager(QObject *parent)
 
     connect(TilesetManager::instance(), &TilesetManager::tilesetImagesChanged,
             this, &DocumentManager::tilesetImagesChanged);
-
-    connect(TemplateManager::instance(), &TemplateManager::objectTemplateChanged,
-            this, &DocumentManager::objectTemplateChanged);
 
     OpenFile::activated = [this] (const OpenFile &open) {
         openFile(open.file);
@@ -1228,15 +1224,6 @@ void DocumentManager::tilesetImagesChanged(Tileset *tileset)
     }
 
     tileset->syncExpectedColumnsAndRows();
-}
-
-void DocumentManager::objectTemplateChanged(ObjectTemplate *objectTemplate)
-{
-    for (const auto &document : qAsConst(mDocuments)) {
-        if (auto mapDocument = qobject_cast<MapDocument*>(document.data())) {
-            mapDocument->syncObjectTemplate(objectTemplate);
-        }
-    }
 }
 
 /**

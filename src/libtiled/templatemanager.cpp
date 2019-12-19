@@ -25,6 +25,7 @@
 
 #include "objecttemplate.h"
 #include "objecttemplateformat.h"
+#include "logginginterface.h"
 
 using namespace Tiled;
 
@@ -55,7 +56,6 @@ TemplateManager::TemplateManager(QObject *parent)
 TemplateManager::~TemplateManager()
 {
     qDeleteAll(mObjectTemplates);
-    delete mWatcher;
 }
 
 ObjectTemplate *TemplateManager::loadObjectTemplate(const QString &fileName, QString *error)
@@ -88,5 +88,11 @@ void TemplateManager::fileChanged(const QString &fileName)
     if (!objectTemplate)
         return;
 
-    emit objectTemplateChanged(objectTemplate);
+    auto newTemplate = readObjectTemplate(fileName);
+    if (newTemplate) {
+        objectTemplate->setObject(newTemplate->object());
+        emit objectTemplateChanged(objectTemplate);
+    } else {
+        ERROR(tr("Unable to reload template file: %1").arg(fileName));
+    }
 }

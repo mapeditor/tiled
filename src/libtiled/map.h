@@ -412,11 +412,6 @@ public:
     QSet<SharedTileset> usedTilesets() const;
 
     /**
-     * Returns a list of MapObjects to be updated by syncing objectTemplate
-     */
-    QList<MapObject*> syncObjectTemplate(const ObjectTemplate *objectTemplate);
-
-    /**
      * Returns a list of MapObjects to be updated in the map scene
      */
     QList<MapObject*> replaceObjectTemplate(const ObjectTemplate *oldObjectTemplate,
