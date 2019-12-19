@@ -956,7 +956,7 @@ void MapReaderPrivate::decodeCSVLayerData(TileLayer &tileLayer,
             // Get the next entry.
             unsigned int gid = 0;
             while (currentIndex < text.length()) {
-                auto currentChar =  text.at(currentIndex);
+                auto currentChar = text.at(currentIndex);
                 currentIndex++;
                 if (currentChar == QLatin1Char(','))
                     break;
@@ -1360,6 +1360,7 @@ void MapReaderPrivate::readProperty(Properties *properties)
 
     properties->insert(propertyName, variant);
 }
+
 
 MapReader::MapReader()
     : d(new MapReaderPrivate(this))
