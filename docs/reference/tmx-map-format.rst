@@ -74,8 +74,9 @@ existing tools.*
    number is stored to prevent reuse of the same ID after objects have
    been removed. (since 0.11) (defaults to the highest object id in the file
    + 1)
--  **infinite:** Whether this map is infinitely generated. (``0`` for false,
-   ``1`` for true, defaults to 0)
+-  **infinite:** Whether this map is infinite. An infinite map has no fixed
+   size and can grow in all directions. Its layer data is stored in chunks.
+   (``0`` for false, ``1`` for true, defaults to 0)
 
 The ``tilewidth`` and ``tileheight`` properties determine the general
 grid size of the map. The individual tiles may have different sizes.
@@ -360,7 +361,7 @@ Can contain at most one: :ref:`tmx-properties`, :ref:`tmx-data`
 -  **encoding:** The encoding used to encode the tile layer data. When used,
    it can be "base64" and "csv" at the moment. (optional)
 -  **compression:** The compression used to compress the tile layer data.
-   Tiled supports "gzip", "zlib", and "zstd".
+   Tiled supports "gzip", "zlib", and "zstd". (zstd supported since 1.3)
 
 When no encoding or compression is given, the tiles are stored as
 individual XML ``tile`` elements. Next to that, the easiest format to
@@ -710,8 +711,8 @@ Can contain any number: :ref:`tmx-property`
    ``float``, ``bool``, ``color`` or ``file`` (defaults to ``string``)
    (since 0.16, with ``color`` and ``file`` added in 0.17).
 -  **value:** The value of the property. (default string is "", default
-   number is 0, default color is #00000000, default file is "." (the current
-   file's parent directory))
+   number is 0, default boolean is "false", default color is #00000000, default
+   file is "." (the current file's parent directory))
 
 Boolean properties have a value of either "true" or "false".
 
