@@ -639,7 +639,19 @@ of the object.
 
 A layer consisting of a single image.
 
-Can contain at most one: :ref:`tmx-properties`, :ref:`tmx-image`
+Can contain at most one: :ref:`tmx-properties`, :ref:`tmx-imagelayer-image`
+
+.. _tmx-imagelayer-image
+
+<image>
+~~~~~~~
+
+- **source**: The reference to the image file (Tiled supports most common image
+  formats).
+- **trans**: Defines a specific color that is treated as transparent (example
+  value: "#FF00FF" for magenta).  (optional)
+
+This element is a more limited form of the ``image`` element inside a ``tileset``.
 
 .. _tmx-group:
 
