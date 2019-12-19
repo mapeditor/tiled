@@ -17,7 +17,9 @@ In this document we'll go through each element found in this map format.
 The elements are mentioned in the headers and the list of attributes of
 the elements are listed right below, followed by a short explanation.
 Attributes or elements that are deprecated or unsupported by the current
-version of Tiled are formatted in italics.
+version of Tiled are formatted in italics. All optional attributes are
+either marked as optional, or have a default value to imply that they are
+optional.
 
 Have a look at the :doc:`changelog <tmx-changelog>` when you're
 interested in what changed between Tiled versions.
@@ -42,7 +44,7 @@ existing tools.*
 -  **version:** The TMX format version. Was "1.0" so far, and will be
    incremented to match minor Tiled releases.
 -  **tiledversion:** The Tiled version used to save the file (since Tiled
-   1.0.1). May be a date (for snapshot builds).
+   1.0.1). May be a date (for snapshot builds). (optional)
 -  **orientation:** Map orientation. Tiled supports "orthogonal",
    "isometric", "staggered" and "hexagonal" (since 0.11).
 -  **renderorder:** The order in which tiles on tile layers are rendered.
@@ -62,13 +64,18 @@ existing tools.*
    the "even" or "odd" indexes along the staggered axis are shifted.
    (since 0.11)
 -  **backgroundcolor:** The background color of the map. (optional, may
-   include alpha value since 0.15 in the form ``#AARRGGBB``)
+   include alpha value since 0.15 in the form ``#AARRGGBB``. Defaults to
+   fully transparent.)
 -  **nextlayerid:** Stores the next available ID for new layers. This
    number is stored to prevent reuse of the same ID after layers have
-   been removed. (since 1.2)
+   been removed. (since 1.2) (defaults to the highest layer id in the file
+   + 1)
 -  **nextobjectid:** Stores the next available ID for new objects. This
    number is stored to prevent reuse of the same ID after objects have
-   been removed. (since 0.11)
+   been removed. (since 0.11) (defaults to the highest object id in the file
+   + 1)
+-  **infinite:** Whether this map is infinitely generated. (``0`` for false,
+   ``1`` for true, defaults to 0)
 
 The ``tilewidth`` and ``tileheight`` properties determine the general
 grid size of the map. The individual tiles may have different sizes.
@@ -106,9 +113,9 @@ Can contain any number: :ref:`tmx-tileset`, :ref:`tmx-layer`,
 -  **tilewidth:** The (maximum) width of the tiles in this tileset.
 -  **tileheight:** The (maximum) height of the tiles in this tileset.
 -  **spacing:** The spacing in pixels between the tiles in this tileset
-   (applies to the tileset image).
+   (applies to the tileset image, defaults to 0)
 -  **margin:** The margin around the tiles in this tileset (applies to the
-   tileset image).
+   tileset image, defaults to 0)
 -  **tilecount:** The number of tiles in this tileset (since 0.13)
 -  **columns:** The number of tile columns in the tileset. For image
    collection tilesets it is editable and is used when displaying the
@@ -134,8 +141,8 @@ Can contain any number: :ref:`tmx-tileset-tile`
 <tileoffset>
 ~~~~~~~~~~~~
 
--  **x:** Horizontal offset in pixels
--  **y:** Vertical offset in pixels (positive is down)
+-  **x:** Horizontal offset in pixels. (defaults to 0)
+-  **y:** Vertical offset in pixels (positive is down, defaults to 0)
 
 This element is used to specify an offset in pixels, to be applied when
 drawing a tile from the related tileset. When not present, no offset is
@@ -147,7 +154,7 @@ applied.
 ~~~~~~
 
 -  **orientation:** Orientation of the grid for the tiles in this
-   tileset (``orthogonal`` or ``isometric``)
+   tileset (``orthogonal`` or ``isometric``, defaults to ``orthogonal``)
 -  **width:** Width of a grid cell
 -  **height:** Height of a grid cell
 
@@ -166,10 +173,11 @@ rendered.
 -  *id:* Used by some versions of Tiled Java. Deprecated and unsupported
    by Tiled Qt.
 -  **source:** The reference to the tileset image file (Tiled supports most
-   common image formats).
+   common image formats). Only used if the image is not embedded.
 -  **trans:** Defines a specific color that is treated as transparent
    (example value: "#FF00FF" for magenta). Up until Tiled 0.12, this
    value is written out without a ``#`` but this is planned to change.
+   (optional)
 -  **width:** The image width in pixels (optional, used for tile index
    correction when the image changes)
 -  **height:** The image height in pixels (optional)
@@ -216,7 +224,7 @@ Can contain at most one: :ref:`tmx-properties`
    value means that corner has no terrain. (optional)
 -  **probability:** A percentage indicating the probability that this
    tile is chosen when it competes with others while editing with the
-   terrain tool. (optional)
+   terrain tool. (defaults to 0)
 
 Can contain at most one: :ref:`tmx-properties`, :ref:`tmx-image` (since
 0.9), :ref:`tmx-objectgroup`, :ref:`tmx-animation`
@@ -263,6 +271,8 @@ number of Wang tiles using these colors.
 -  **name**: The name of the Wang set.
 -  **tile**: The tile ID of the tile representing this Wang set.
 
+Can contain at most one: :ref:`tmx-properties`
+
 Can contain up to 15 (each): :ref:`tmx-wangcornercolor`, :ref:`tmx-wangedgecolor`
 
 Can contain any number: :ref:`tmx-wangtile`
@@ -278,7 +288,7 @@ A color that can be used to define the corner of a Wang tile.
 -  **color**: The color in ``#RRGGBB`` format (example: ``#c17d11``).
 -  **tile**: The tile ID of the tile representing this color.
 -  **probability**: The relative probability that this color is chosen
-   over others in case of multiple options.
+   over others in case of multiple options. (defaults to 0)
 
 .. _tmx-wangedgecolor:
 
@@ -291,7 +301,7 @@ A color that can be used to define the edge of a Wang tile.
 -  **color**: The color in ``#RRGGBB`` format (example: ``#c17d11``).
 -  **tile**: The tile ID of the tile representing this color.
 -  **probability**: The relative probability that this color is chosen
-   over others in case of multiple options.
+   over others in case of multiple options. (defaults to 0)
 
 .. _tmx-wangtile:
 
@@ -306,6 +316,15 @@ associating it with a certain Wang ID.
    in the format ``0xCECECECE`` (where each C is a corner color and
    each E is an edge color, from right to left clockwise, starting with
    the top edge)
+-  **hflip**: Whether the tile is flipped horizontally. This only affects
+   the tile image, it does not change the meaning of the wangid. See
+   :ref:`Tile flipping <tmx-tile-flipping>` for more info. (defaults to false)
+-  **vflip**: Whether the tile is flipped vertically. This only affects
+   the tile image, it does not change the meaning of the wangid. See
+   :ref:`Tile flipping <tmx-tile-flipping>` for more info. (defaults to false)
+-  **dflip**: Whether the tile is flipped on its diagonal. This only affects
+   the tile image, it does not change the meaning of the wangid. See
+   :ref:`Tile flipping <tmx-tile-flipping>` for more info. (defaults to false)
 
 .. _tmx-layer:
 
@@ -319,7 +338,7 @@ tiles.
 -  **id:** Unique ID of the layer. Each layer that added to a map gets
    a unique id. Even if a layer is deleted, no layer ever gets the same
    ID. Can not be changed in Tiled. (since Tiled 1.2)
--  **name:** The name of the layer.
+-  **name:** The name of the layer. (defaults to "")
 -  *x:* The x coordinate of the layer in tiles. Defaults to 0 and can not be changed in Tiled.
 -  *y:* The y coordinate of the layer in tiles. Defaults to 0 and can not be changed in Tiled.
 -  **width:** The width of the layer in tiles. Always the same as the map width for fixed-size maps.
@@ -339,9 +358,9 @@ Can contain at most one: :ref:`tmx-properties`, :ref:`tmx-data`
 ~~~~~~
 
 -  **encoding:** The encoding used to encode the tile layer data. When used,
-   it can be "base64" and "csv" at the moment.
+   it can be "base64" and "csv" at the moment. (optional)
 -  **compression:** The compression used to compress the tile layer data.
-   Tiled supports "gzip" and "zlib".
+   Tiled supports "gzip", "zlib", and "zstd".
 
 When no encoding or compression is given, the tiles are stored as
 individual XML ``tile`` elements. Next to that, the easiest format to
@@ -466,24 +485,25 @@ should generally be avoided.
 -  **id:** Unique ID of the layer. Each layer that added to a map gets
    a unique id. Even if a layer is deleted, no layer ever gets the same
    ID. Can not be changed in Tiled. (since Tiled 1.2)
--  **name:** The name of the object group.
--  **color:** The color used to display the objects in this group.
+-  **name:** The name of the object group. (defaults to "")
+-  **color:** The color used to display the objects in this group. (defaults
+   to gray ("#a0a0a4"))
 -  *x:* The x coordinate of the object group in tiles. Defaults to 0 and
    can no longer be changed in Tiled.
 -  *y:* The y coordinate of the object group in tiles. Defaults to 0 and
    can no longer be changed in Tiled.
 -  *width:* The width of the object group in tiles. Meaningless.
 -  *height:* The height of the object group in tiles. Meaningless.
--  **opacity:** The opacity of the layer as a value from 0 to 1. Defaults to
-   1.
--  **visible:** Whether the layer is shown (1) or hidden (0). Defaults to 1.
--  **offsetx:** Rendering offset for this object group in pixels. Defaults
-   to 0. (since 0.14)
--  **offsety:** Rendering offset for this object group in pixels. Defaults
-   to 0. (since 0.14)
+-  **opacity:** The opacity of the layer as a value from 0 to 1. (defaults to
+   1)
+-  **visible:** Whether the layer is shown (1) or hidden (0). (defaults to 1)
+-  **offsetx:** Rendering offset for this object group in pixels. (defaults
+   to 0) (since 0.14)
+-  **offsety:** Rendering offset for this object group in pixels. (defaults
+   to 0) (since 0.14)
 -  **draworder:** Whether the objects are drawn according to the order of
    appearance ("index") or sorted by their y-coordinate ("topdown").
-   Defaults to "topdown".
+   (defaults to "topdown")
 
 The object group is in fact a map layer, and is hence called "object
 layer" in Tiled.
@@ -500,18 +520,18 @@ Can contain any number: :ref:`tmx-object`
 -  **id:** Unique ID of the object. Each object that is placed on a map gets
    a unique id. Even if an object was deleted, no object gets the same
    ID. Can not be changed in Tiled. (since Tiled 0.11)
--  **name:** The name of the object. An arbitrary string (defaults to "").
--  **type:** The type of the object. An arbitrary string (defaults to "").
--  **x:** The x coordinate of the object in pixels.
--  **y:** The y coordinate of the object in pixels.
--  **width:** The width of the object in pixels (defaults to 0).
--  **height:** The height of the object in pixels (defaults to 0).
--  **rotation:** The rotation of the object in degrees clockwise around (x, y) (defaults
-   to 0).
--  **gid:** A reference to a tile (optional).
--  **visible:** Whether the object is shown (1) or hidden (0). Defaults to
-   1.
--  **template:** A reference to a :ref:`template file <tmx-template-files>` (optional).
+-  **name:** The name of the object. An arbitrary string. (defaults to "")
+-  **type:** The type of the object. An arbitrary string. (defaults to "")
+-  **x:** The x coordinate of the object in pixels. (defaults to 0)
+-  **y:** The y coordinate of the object in pixels. (defaults to 0)
+-  **width:** The width of the object in pixels. (defaults to 0)
+-  **height:** The height of the object in pixels. (defaults to 0)
+-  **rotation:** The rotation of the object in degrees clockwise around (x, y). 
+   (defaults to 0)
+-  **gid:** A reference to a tile. (optional)
+-  **visible:** Whether the object is shown (1) or hidden (0). (defaults to
+   1)
+-  **template:** A reference to a :ref:`template file <tmx-template-files>`. (optional)
 
 While tile layers are very suitable for anything repetitive aligned to
 the tile grid, sometimes you want to annotate your map with other
@@ -582,26 +602,27 @@ object.
 <text>
 ~~~~~~
 
--  **fontfamily:** The font family used (default: "sans-serif")
+-  **fontfamily:** The font family used (defaults to "sans-serif")
 -  **pixelsize:** The size of the font in pixels (not using points,
    because other sizes in the TMX format are also using pixels)
-   (default: 16)
+   (defaults to 16)
 -  **wrap:** Whether word wrapping is enabled (1) or disabled (0).
-   Defaults to 0.
+   (defaults to 0)
 -  **color:** Color of the text in ``#AARRGGBB`` or ``#RRGGBB`` format
-   (default: #000000)
--  **bold:** Whether the font is bold (1) or not (0). Defaults to 0.
--  **italic:** Whether the font is italic (1) or not (0). Defaults to 0.
+   (defaults to #000000)
+-  **bold:** Whether the font is bold (1) or not (0). (defaults to 0)
+-  **italic:** Whether the font is italic (1) or not (0). (defaults to 0)
 -  **underline:** Whether a line should be drawn below the text (1) or
-   not (0). Defaults to 0.
+   not (0). (defaults to 0)
 -  **strikeout:** Whether a line should be drawn through the text (1) or
-   not (0). Defaults to 0.
+   not (0). (defaults to 0)
 -  **kerning:** Whether kerning should be used while rendering the text
-   (1) or not (0). Default to 1.
+   (1) or not (0). (defaults to 1)
 -  **halign:** Horizontal alignment of the text within the object
-   (``left`` (default), ``center``, ``right`` or ``justify`` (since Tiled 1.2.1))
+   (``left``, ``center``, ``right`` or ``justify``, defaults to ``left``)
+   (since Tiled 1.2.1)
 -  **valign:** Vertical alignment of the text within the object (``top``
-   (default), ``center`` or ``bottom``)
+   , ``center`` or ``bottom``, defaults to ``top``)
 
 Used to mark an object as a text object. Contains the actual text as
 character data.
@@ -624,18 +645,18 @@ of the object.
 -  **id:** Unique ID of the layer. Each layer that added to a map gets
    a unique id. Even if a layer is deleted, no layer ever gets the same
    ID. Can not be changed in Tiled. (since Tiled 1.2)
--  **name:** The name of the image layer.
--  **offsetx:** Rendering offset of the image layer in pixels. Defaults to
-   0. (since 0.15)
--  **offsety:** Rendering offset of the image layer in pixels. Defaults to
-   0. (since 0.15)
--  *x:* The x position of the image layer in pixels. (deprecated since
-   0.15)
--  *y:* The y position of the image layer in pixels. (deprecated since
-   0.15)
--  **opacity:** The opacity of the layer as a value from 0 to 1. Defaults to
-   1.
--  **visible:** Whether the layer is shown (1) or hidden (0). Defaults to 1.
+-  **name:** The name of the image layer. (defaults to "")
+-  **offsetx:** Rendering offset of the image layer in pixels. (defaults to
+   0) (since 0.15)
+-  **offsety:** Rendering offset of the image layer in pixels. (defaults to
+   0) (since 0.15)
+-  *x:* The x position of the image layer in pixels. (defaults to 0, deprecated
+   since 0.15)
+-  *y:* The y position of the image layer in pixels. (defaults to 0, deprecated
+   since 0.15)
+-  **opacity:** The opacity of the layer as a value from 0 to 1. (defaults to
+   1)
+-  **visible:** Whether the layer is shown (1) or hidden (0). (defaults to 1)
 
 A layer consisting of a single image.
 
@@ -649,14 +670,14 @@ Can contain at most one: :ref:`tmx-properties`, :ref:`tmx-image`
 -  **id:** Unique ID of the layer. Each layer that added to a map gets
    a unique id. Even if a layer is deleted, no layer ever gets the same
    ID. Can not be changed in Tiled. (since Tiled 1.2)
--  **name:** The name of the group layer.
--  **offsetx:** Rendering offset of the group layer in pixels. Defaults to
-   0.
--  **offsety:** Rendering offset of the group layer in pixels. Defaults to
-   0.
--  **opacity:** The opacity of the layer as a value from 0 to 1. Defaults to
-   1.
--  **visible:** Whether the layer is shown (1) or hidden (0). Defaults to 1.
+-  **name:** The name of the group layer. (defaults to "")
+-  **offsetx:** Rendering offset of the group layer in pixels. (defaults to
+   0)
+-  **offsety:** Rendering offset of the group layer in pixels. (defaults to
+   0)
+-  **opacity:** The opacity of the layer as a value from 0 to 1. (defaults to
+   1)
+-  **visible:** Whether the layer is shown (1) or hidden (0). (defaults to 1)
 
 A group layer, used to organize the layers of the map in a hierarchy.
 Its attributes ``offsetx``, ``offsety``, ``opacity`` and ``visible``
@@ -672,12 +693,12 @@ Can contain any number: :ref:`tmx-layer`,
 <properties>
 ------------
 
-Can contain: :ref:`tmx-property`
-
 Wraps any number of custom properties. Can be used as a child of the
 ``map``, ``tileset``, ``tile`` (when part of a ``tileset``),
 ``terrain``, ``layer``, ``objectgroup``, ``object``, ``imagelayer`` and
 ``group`` elements.
+
+Can contain any number: :ref:`tmx-property`
 
 .. _tmx-property:
 
@@ -685,10 +706,12 @@ Wraps any number of custom properties. Can be used as a child of the
 ~~~~~~~~~~
 
 -  **name:** The name of the property.
--  **type:** The type of the property. Can be ``string`` (default), ``int``,
-   ``float``, ``bool``, ``color`` or ``file`` (since 0.16, with
-   ``color`` and ``file`` added in 0.17).
--  **value:** The value of the property.
+-  **type:** The type of the property. Can be ``string``, ``int``,
+   ``float``, ``bool``, ``color`` or ``file`` (defaults to ``string``)
+   (since 0.16, with ``color`` and ``file`` added in 0.17).
+-  **value:** The value of the property. (default string is "", default
+   number is 0, default color is #00000000, default file is "." (the current
+   file's parent directory))
 
 Boolean properties have a value of either "true" or "false".
 
