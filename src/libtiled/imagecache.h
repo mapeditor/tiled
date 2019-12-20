@@ -30,6 +30,8 @@
 
 #include "tiled_global.h"
 
+#include <memory>
+#include <QCoreApplication>
 #include <QColor>
 #include <QDateTime>
 #include <QHash>
@@ -56,6 +58,7 @@ uint TILEDSHARED_EXPORT qHash(const TilesheetParameters &key, uint seed = 0) Q_D
 struct LoadedImage
 {
     explicit LoadedImage(const QString &fileName);
+    explicit LoadedImage(QImage &image, const QDateTime &lastModified);
 
     operator const QImage &() const { return image; }
 
@@ -81,19 +84,30 @@ struct CutTiles
     QDateTime lastModified;
 };
 
+struct LoadedMapRender;
+class Map;
+
 class TILEDSHARED_EXPORT ImageCache
 {
+    Q_DECLARE_TR_FUNCTIONS(ImageCache)
+
 public:
     static LoadedImage loadImage(const QString &fileName);
     static QPixmap loadPixmap(const QString &fileName);
     static QVector<QPixmap> cutTiles(const TilesheetParameters &parameters);
 
     static void remove(const QString &fileName);
+    static void purgeSubMaps();
 
 private:
+    static LoadedImage loadMapRender(const QString &fileName);
+    static QImage renderMapToImage(const Map* map);
+
     static QHash<QString, LoadedImage> sLoadedImages;
     static QHash<QString, LoadedPixmap> sLoadedPixmaps;
+    static QHash<QString, LoadedMapRender> sLoadedMapRenders;
     static QHash<TilesheetParameters, CutTiles> sCutTiles;
+    static std::vector<std::unique_ptr<Map>> sLoadedMaps;
 };
 
 } // namespace Tiled

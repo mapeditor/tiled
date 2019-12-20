@@ -58,6 +58,9 @@ TilesetManager::TilesetManager():
 
 TilesetManager::~TilesetManager()
 {
+    // Ensure there aren't any maps held by static objects.
+    ImageCache::purgeSubMaps();
+
     // Assert that there are no remaining tileset instances
     Q_ASSERT(mTilesets.isEmpty());
 }

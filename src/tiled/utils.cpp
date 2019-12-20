@@ -62,7 +62,9 @@ namespace Utils {
  */
 QString readableImageFormatsFilter()
 {
-    return toImageFileFilter(QImageReader::supportedImageFormats());
+    auto imageFormats = QImageReader::supportedImageFormats();
+    imageFormats.append(QByteArray("tmx"));
+    return toImageFileFilter(imageFormats);
 }
 
 /**
