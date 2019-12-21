@@ -84,7 +84,7 @@ bool ImageLayer::loadFromImage(const QImage &image, const QString &source)
 
 bool ImageLayer::loadFromImage(const QUrl &url)
 {
-    return loadFromImage(ImageCache::loadImage(url.toLocalFile()), url);
+    return loadFromImage(ImageCache::loadImage(Tiled::urlToLocalFileOrQrc(url)), url);
 }
 
 bool ImageLayer::isEmpty() const
