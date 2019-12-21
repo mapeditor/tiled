@@ -109,6 +109,11 @@ int filePathTypeId()
     return qMetaTypeId<FilePath>();
 }
 
+int objectRefTypeId()
+{
+    return qMetaTypeId<ObjectRef>();
+}
+
 QString typeToName(int type)
 {
     switch (type) {
@@ -121,6 +126,8 @@ QString typeToName(int type)
     default:
         if (type == filePathTypeId())
             return QStringLiteral("file");
+        if (type == objectRefTypeId())
+            return QStringLiteral("object");
     }
     return QLatin1String(QVariant::typeToName(type));
 }
@@ -135,6 +142,8 @@ int nameToType(const QString &name)
         return QVariant::Color;
     if (name == QLatin1String("file"))
         return filePathTypeId();
+    if (name == QLatin1String("object"))
+        return objectRefTypeId();
 
     return QVariant::nameToType(name.toLatin1().constData());
 }
@@ -159,6 +168,9 @@ QVariant toExportValue(const QVariant &value)
         return filePath.url.toString(QUrl::PreferLocalFile);
     }
 
+    if (type == objectRefTypeId())
+        return value.value<ObjectRef>().id;
+
     return value;
 }
 
@@ -176,6 +188,9 @@ QVariant fromExportValue(const QVariant &value, int type)
             url = QUrl::fromLocalFile(value.toString());
         return QVariant::fromValue(FilePath { url });
     }
+
+    if (type == objectRefTypeId())
+        return QVariant::fromValue(ObjectRef { value.toInt() });
 
     QVariant variant(value);
     variant.convert(type);

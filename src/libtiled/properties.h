@@ -42,6 +42,10 @@ struct FilePath {
     QUrl url;
 };
 
+struct ObjectRef {
+    int id;
+};
+
 class TILEDSHARED_EXPORT AggregatedPropertyData
 {
 public:
@@ -97,6 +101,7 @@ TILEDSHARED_EXPORT QJsonArray propertiesToJson(const Properties &properties);
 TILEDSHARED_EXPORT Properties propertiesFromJson(const QJsonArray &json);
 
 TILEDSHARED_EXPORT int filePathTypeId();
+TILEDSHARED_EXPORT int objectRefTypeId();
 
 TILEDSHARED_EXPORT QString typeToName(int type);
 TILEDSHARED_EXPORT int nameToType(const QString &name);
@@ -110,3 +115,4 @@ TILEDSHARED_EXPORT QVariant fromExportValue(const QVariant &value, int type, con
 } // namespace Tiled
 
 Q_DECLARE_METATYPE(Tiled::FilePath)
+Q_DECLARE_METATYPE(Tiled::ObjectRef)

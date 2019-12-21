@@ -30,6 +30,7 @@ namespace Tiled {
 class FileEdit;
 class TextPropertyEdit;
 class TilesetParametersEdit;
+class ObjectRefEdit;
 
 /**
  * Extension of the QtVariantEditorFactory that adds support for a FileEdit,
@@ -67,6 +68,7 @@ private:
     void fileEditFileUrlChanged(const QUrl &value);
     void textPropertyEditTextChanged(const QString &value);
     void comboBoxPropertyEditTextChanged(const QString &value);
+    void objectRefEditIdChanged(int id);
     void slotEditorDestroyed(QObject *object);
 
     QMap<QtProperty *, QList<FileEdit *> > mCreatedFileEdits;
@@ -80,6 +82,9 @@ private:
 
     QMap<QtProperty *, QList<QComboBox *> > mCreatedComboBoxes;
     QMap<QComboBox *, QtProperty *> mComboBoxToProperty;
+
+    QMap<QtProperty *, QList<ObjectRefEdit *> > mCreatedObjectRefEdits;
+    QMap<ObjectRefEdit *, QtProperty *> mObjectRefEditToProperty;
 };
 
 } // namespace Tiled

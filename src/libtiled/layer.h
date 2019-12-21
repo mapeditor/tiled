@@ -186,6 +186,12 @@ public:
 
     bool canMergeDown() const;
 
+    /**
+     * Returns the chain of parent layer names, including this one, in a file-path style
+     * string.
+     */
+    QString parentsAsPath() const;
+
     virtual bool isEmpty() const = 0;
 
     /**

@@ -24,6 +24,9 @@
 #include "mapdocument.h"
 #include "textpropertyedit.h"
 #include "tilesetdocument.h"
+#include "documentmanager.h"
+#include "objectgroup.h"
+#include "mapobject.h"
 
 #include <QFileInfo>
 
@@ -66,11 +69,10 @@ QVariant VariantPropertyManager::value(const QtProperty *property) const
 
 bool VariantPropertyManager::isPropertyTypeSupported(int propertyType) const
 {
-    if (propertyType == filePathTypeId())
-        return true;
-    if (propertyType == tilesetParametersTypeId())
-        return true;
-    if (propertyType == alignmentTypeId())
+    if (propertyType == filePathTypeId()
+            || propertyType == objectRefTypeId()
+            || propertyType == tilesetParametersTypeId()
+            || propertyType == alignmentTypeId())
         return true;
     return QtVariantPropertyManager::isPropertyTypeSupported(propertyType);
 }
@@ -79,6 +81,8 @@ int VariantPropertyManager::valueType(int propertyType) const
 {
     if (propertyType == filePathTypeId())
         return QVariant::String;
+    if (propertyType == objectRefTypeId())
+        return QVariant::Int;
     if (propertyType == tilesetParametersTypeId())
         return qMetaTypeId<TilesetDocument*>();
     if (propertyType == alignmentTypeId())
@@ -140,6 +144,36 @@ QString VariantPropertyManager::valueText(const QtProperty *property) const
     if (mValues.contains(property)) {
         QVariant value = mValues[property].value;
         int typeId = propertyType(property);
+
+        if (typeId == objectRefTypeId()) {
+            ObjectRef ref = value.value<ObjectRef>();
+
+            if (ref.id == 0)
+                return tr("Unset");
+
+            Document *document = DocumentManager::instance()->currentDocument();
+            if (auto mapDocument = qobject_cast<MapDocument*>(document)) {
+                for (const Layer *layer : mapDocument->map()->objectGroups()) {
+                    for (const MapObject *object : qobject_cast<const ObjectGroup*>(layer)->objects()) {
+                        if (object->id() == ref.id) {
+                            QString label = tr("%1: ").arg(QString::number(object->id()));
+                            if (!object->name().isEmpty()) {
+                                label.append(object->name());
+                                if (!object->type().isEmpty())
+                                    label.append(tr(" (%1)").arg(object->type()));
+                            } else if (!object->type().isEmpty())
+                                label.append(tr("(%1)").arg(object->type()));
+                            else
+                                label.append(tr("Unnamed object"));
+
+                            return label;
+                        }
+                    }
+                }
+            }
+
+            return tr("%1: Object not found").arg(QString::number(ref.id));
+        }
 
         if (typeId == filePathTypeId()) {
             FilePath filePath = value.value<FilePath>();
@@ -280,9 +314,9 @@ void VariantPropertyManager::setAttribute(QtProperty *property,
 void VariantPropertyManager::initializeProperty(QtProperty *property)
 {
     const int type = propertyType(property);
-    if (type == filePathTypeId()) {
-        mValues[property] = Data();
-    } else if (type == tilesetParametersTypeId()) {
+    if (type == filePathTypeId()
+            || type == objectRefTypeId()
+            || type == tilesetParametersTypeId()) {
         mValues[property] = Data();
     } else if (type == QVariant::String) {
         mStringAttributes[property] = StringAttributes();

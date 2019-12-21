@@ -42,6 +42,7 @@
 #include "objectgroup.h"
 #include "objecttemplate.h"
 #include "preferences.h"
+#include "properties.h"
 #include "renamewangset.h"
 #include "replacetileset.h"
 #include "resizemapobject.h"
@@ -572,15 +573,13 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
 
 void PropertyBrowser::resetProperty(QtProperty *property)
 {
-    switch (mVariantManager->propertyType(property)) {
-    case QVariant::Color:
-        // At the moment it is only possible to reset color values
+    auto typeId = mVariantManager->propertyType(property);
+    if (typeId == QVariant::Color)
         mVariantManager->setValue(property, QColor());
-        break;
-
-    default:
+    else if (typeId == objectRefTypeId())
+        mVariantManager->setValue(property, QVariant::fromValue(ObjectRef { 0 }));
+    else
         qWarning() << "Resetting of property type not supported right now";
-    }
 }
 
 void PropertyBrowser::addMapProperties()
