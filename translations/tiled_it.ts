@@ -11,7 +11,7 @@
     <message>
         <location line="+96"/>
         <source>Donate ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>Supporta</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -50,7 +50,7 @@
     <message>
         <location filename="../src/tiled/main.cpp" line="+398"/>
         <source>Export syntax is --export-map [format] &lt;source&gt; &lt;target&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>La sintassi per l&apos;esportazione è --export-map [format] &lt;source&gt; &lt;target&gt;</translation>
     </message>
     <message>
         <location line="-244"/>
@@ -80,7 +80,7 @@
     <message>
         <location line="+9"/>
         <source>Export syntax is --export-tileset [format] &lt;source&gt; &lt;target&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>La sintassi per l&apos;esportazione è --export-tileset [format] &lt;source&gt; &lt;target&gt;</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -90,7 +90,7 @@
     <message>
         <location line="+12"/>
         <source>Failed to export tileset to target file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportazione del tileset nel file di destinazione fallita.</translation>
     </message>
 </context>
 <context>
@@ -129,12 +129,12 @@
     <message>
         <location line="+20"/>
         <source>Arguments:</source>
-        <translation type="unfinished"></translation>
+        <translation>Argomenti:</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Working Directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>Cartella di lavoro:</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -182,12 +182,12 @@
     <message>
         <location line="+70"/>
         <source>Map export formats:</source>
-        <translation type="unfinished"></translation>
+        <translation>Formati di esportazione mappa:</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Tileset export formats:</source>
-        <translation type="unfinished"></translation>
+        <translation>Formati di esportazione tileset:</translation>
     </message>
     <message>
         <location line="-102"/>
@@ -197,12 +197,12 @@
     <message>
         <location line="+5"/>
         <source>Export the map with tilesets embedded</source>
-        <translation type="unfinished"></translation>
+        <translation>Esporta mappa con tileset incorporato</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export the map or tileset with template instances detached</source>
-        <translation type="unfinished"></translation>
+        <translation>Esporta la mappa o il tileset con le istanze del template separate</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -236,7 +236,8 @@
         <location line="+17"/>
         <source>Usage:
   %1 [options] [files...]</source>
-        <translation type="unfinished"></translation>
+        <translation>Utilizzo:
+ %1 [options] [files...]</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -262,7 +263,7 @@
     <message>
         <location filename="../src/plugins/defold/defoldplugin.cpp" line="+79"/>
         <source>Defold files (*.tilemap)</source>
-        <translation type="unfinished"></translation>
+        <translation>Files di Defold (*.tilemap)</translation>
     </message>
 </context>
 <context>
@@ -270,7 +271,7 @@
     <message>
         <location filename="../src/plugins/defoldcollection/defoldcollectionplugin.cpp" line="+137"/>
         <source>Defold collection (*.collection)</source>
-        <translation type="unfinished"></translation>
+        <translation>Collezione Defold (*.collection)</translation>
     </message>
 </context>
 <context>
@@ -278,7 +279,7 @@
     <message>
         <location filename="../src/tiled/donationdialog.ui" line="+14"/>
         <source>Support Tiled Development</source>
-        <translation type="unfinished"></translation>
+        <translation>Supporta lo Sviluppo di Tiled</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -288,7 +289,7 @@
     <message>
         <location line="+25"/>
         <source>Visit https://www.mapeditor.org/donate ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>Visita https://www.mapeditor.org/donate ↗</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -411,7 +412,7 @@
         <location filename="../src/plugins/tbin/tbinplugin.cpp" line="+118"/>
         <location filename="../src/tiled/shortcutsettingspage.cpp" line="-53"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile aprire il file per la lettura</translation>
     </message>
 </context>
 <context>
@@ -692,12 +693,12 @@
     <message>
         <location line="+5"/>
         <source>Load World...</source>
-        <translation type="unfinished"></translation>
+        <translation>Caricamento del Mondo...</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Highlight Hovered Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Evidenzia l&apos;oggetto al passaggio del mouse</translation>
     </message>
     <message>
         <location line="-124"/>
@@ -707,7 +708,7 @@
     <message>
         <location line="-8"/>
         <source>User Manual ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>Manuale Utente</translation>
     </message>
     <message>
         <location line="+19"/>
@@ -732,7 +733,7 @@
     <message>
         <location line="+8"/>
         <source>Paste &amp;in Place</source>
-        <translation type="unfinished"></translation>
+        <translation>Incolla nella stessa posizione</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -787,7 +788,7 @@
     <message>
         <location line="+82"/>
         <source>Snapping</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggancia</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -857,27 +858,27 @@
     <message>
         <location line="+16"/>
         <source>Support Tiled Development</source>
-        <translation type="unfinished"></translation>
+        <translation>Supporta lo Sviluppo di Tiled</translation>
     </message>
     <message>
         <location line="+153"/>
         <source>Show Tile Collision Shapes</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostra le aree di collisione dei Tile</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Fit Map in View</source>
-        <translation type="unfinished"></translation>
+        <translation>Adatta la mappa alla finestra</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Community Forum ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>Community Forum</translation>
     </message>
     <message>
         <location line="-87"/>
         <source>Snap to &amp;Pixels</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggancia al &amp;Pixel</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -887,7 +888,7 @@
     <message>
         <location line="+11"/>
         <source>No Snapping</source>
-        <translation type="unfinished"></translation>
+        <translation>Nessuno</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -897,7 +898,7 @@
     <message>
         <location line="+8"/>
         <source>Clear View</source>
-        <translation type="unfinished"></translation>
+        <translation>Nascondi Pannelli</translation>
     </message>
     <message>
         <location filename="../src/tiled/propertybrowser.cpp" line="+799"/>
@@ -928,7 +929,7 @@
     <message>
         <location line="+17"/>
         <source>Not a template file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Non è un file template</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -999,7 +1000,7 @@ Linea %1, colonna %2</translation>
     <message>
         <location line="-329"/>
         <source>Error reading embedded image for tile %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Errore nella lettura del immagine incorporata sul tile %1</translation>
     </message>
     <message>
         <location line="+324"/>
@@ -1063,7 +1064,7 @@ Linea %1, colonna %2</translation>
     <message>
         <location line="-38"/>
         <source>Fixed</source>
-        <translation type="unfinished"></translation>
+        <translation>Fisse</translation>
     </message>
     <message>
         <location line="+54"/>
@@ -1074,7 +1075,7 @@ Linea %1, colonna %2</translation>
     <message>
         <location line="-42"/>
         <source>Infinite</source>
-        <translation type="unfinished"></translation>
+        <translation>Senza limiti</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1145,7 +1146,7 @@ Linea %1, colonna %2</translation>
     <message>
         <location line="+60"/>
         <source>Embed in map</source>
-        <translation type="unfinished"></translation>
+        <translation>Incorpora nella mappa</translation>
     </message>
     <message>
         <location line="+25"/>
@@ -1332,7 +1333,7 @@ Linea %1, colonna %2</translation>
     <message>
         <location line="+5"/>
         <source>Selected Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Livelli selezionati</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -1469,7 +1470,7 @@ Linea %1, colonna %2</translation>
     <message>
         <location line="+10"/>
         <source>Export Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opzioni di esportazione</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -1479,12 +1480,12 @@ Linea %1, colonna %2</translation>
     <message>
         <location line="+14"/>
         <source>Detach templates</source>
-        <translation type="unfinished"></translation>
+        <translation>Non incorporare i template</translation>
     </message>
     <message>
         <location line="-7"/>
         <source>Embed tilesets</source>
-        <translation type="unfinished"></translation>
+        <translation>Incorpora i tileset</translation>
     </message>
     <message>
         <location line="+82"/>
@@ -1524,7 +1525,7 @@ Linea %1, colonna %2</translation>
     <message>
         <location line="+16"/>
         <source>Display news in status bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostra le news nella barra di stato</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -1534,7 +1535,7 @@ Linea %1, colonna %2</translation>
     <message>
         <location line="+24"/>
         <source>Keyboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Tastiera</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1545,17 +1546,17 @@ Linea %1, colonna %2</translation>
     <message>
         <location line="+106"/>
         <source>Extensions</source>
-        <translation type="unfinished"></translation>
+        <translation>Estensioni</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>Cartella:</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Open...</source>
-        <translation type="unfinished"></translation>
+        <translation>Apri...</translation>
     </message>
     <message>
         <location filename="../src/tiled/preferencesdialog.cpp" line="+64"/>
