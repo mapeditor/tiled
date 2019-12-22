@@ -255,7 +255,8 @@ void PropertiesDock::pasteProperties()
 
 void PropertiesDock::openAddPropertyDialog()
 {
-    AddPropertyDialog dialog(mPropertyBrowser);
+    AddPropertyDialog dialog(mPropertyBrowser->object()->canHaveObjectRefProperty(),
+                             mPropertyBrowser);
     if (dialog.exec() == AddPropertyDialog::Accepted)
         addProperty(dialog.propertyName(), dialog.propertyValue());
 }

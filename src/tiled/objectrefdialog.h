@@ -31,6 +31,8 @@ class ObjectRefDialog;
 
 namespace Tiled {
 
+class MapObject;
+
 class ObjectRefDialog : public QDialog
 {
     Q_OBJECT
@@ -43,6 +45,8 @@ public:
     int id() const;
 
 private:
+    void appendItem(const MapObject *object, QString objectPath);
+
     Ui::ObjectRefDialog *mUi;
     int mId;
 

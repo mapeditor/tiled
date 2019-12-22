@@ -51,24 +51,34 @@ ObjectRefDialog::ObjectRefDialog(QWidget *parent)
 
     Utils::restoreGeometry(this);
 
-    // TODO: This assumes we're looking at a map.
-    if (MapDocument *document = qobject_cast<MapDocument*>(DocumentManager::instance()->currentDocument())) {
-        QTableWidget *tableWidget = mUi->tableWidget;
-
+    QTableWidget *tableWidget = mUi->tableWidget;
+    auto document = DocumentManager::instance()->currentDocument();
+    if (document->type() == Document::MapDocumentType) {
         QStringList headers = {tr("ID"), tr("Name"), tr("Type"), tr("Parent Layer Path")};
         tableWidget->setHorizontalHeaderLabels(headers);
-        tableWidget->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
-        tableWidget->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+        tableWidget->horizontalHeader()->setSectionHidden(3, false);
+    } else {
+        QStringList headers = {tr("ID"), tr("Name"), tr("Type")};
+        tableWidget->setHorizontalHeaderLabels(headers);
+        tableWidget->horizontalHeader()->setSectionHidden(3, true);
+    }
+    tableWidget->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+    tableWidget->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
-        for (const Layer *layer : document->map()->objectGroups()) {
-            for (const MapObject *object : *static_cast<const ObjectGroup*>(layer))
-            {
-                tableWidget->insertRow(tableWidget->rowCount());
-                int index = tableWidget->rowCount() - 1;
-                tableWidget->setItem(index, 0, new QTableWidgetItem(QString::number(object->id())));
-                tableWidget->setItem(index, 1, new QTableWidgetItem(object->name()));
-                tableWidget->setItem(index, 2, new QTableWidgetItem(object->type()));
-                tableWidget->setItem(index, 3, new QTableWidgetItem(layer->parentsAsPath()));
+
+    if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document)) {
+        for (const Layer *layer : mapDocument->map()->objectGroups()) {
+            for (const MapObject *object : *static_cast<const ObjectGroup*>(layer)) {
+                appendItem(object, layer->parentsAsPath());
+            }
+        }
+    } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
+        auto currentSelection = tilesetDocument->currentObject();
+        if (auto currentTile = qobject_cast<Tile*>(currentSelection)) {
+            if (auto objects = currentTile->objectGroup()) {
+                for (MapObject *object : objects->objects()) {
+                    appendItem(object, QString());
+                }
             }
         }
     }
@@ -110,6 +120,18 @@ void ObjectRefDialog::setId(const int id)
 int ObjectRefDialog::id() const
 {
     return mId;
+}
+
+void ObjectRefDialog::appendItem(const MapObject *object, QString objectPath)
+{
+    auto tableWidget = mUi->tableWidget;
+    tableWidget->insertRow(tableWidget->rowCount());
+    int index = tableWidget->rowCount() - 1;
+    tableWidget->setItem(index, 0, new QTableWidgetItem(QString::number(object->id())));
+    tableWidget->setItem(index, 1, new QTableWidgetItem(object->name()));
+    tableWidget->setItem(index, 2, new QTableWidgetItem(object->type()));
+    if (!objectPath.isEmpty())
+        tableWidget->setItem(index, 3, new QTableWidgetItem(objectPath));
 }
 
 void ObjectRefDialog::onTextChanged(const QString &text)

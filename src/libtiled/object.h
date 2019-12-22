@@ -136,6 +136,8 @@ public:
 
     bool isPartOfTileset() const;
 
+    bool canHaveObjectRefProperty() const;
+
     static void setObjectTypes(const ObjectTypes &objectTypes);
     static const ObjectTypes &objectTypes()
     { return mObjectTypes; }
@@ -162,6 +164,20 @@ inline bool Object::isPartOfTileset() const
         return true;
     default:
         return false;
+    }
+}
+
+inline bool Object::canHaveObjectRefProperty() const
+{
+    switch (mTypeId) {
+    case Object::TilesetType:
+    case Object::WangSetType:
+    case Object::WangColorType:
+    case Object::TerrainType:
+    case Object::ObjectTemplateType:
+        return false;
+    default:
+        return true;
     }
 }
 

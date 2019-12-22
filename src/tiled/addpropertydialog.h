@@ -33,7 +33,7 @@ class AddPropertyDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit AddPropertyDialog(QWidget *parent = nullptr);
+    explicit AddPropertyDialog(bool allowObjectRef, QWidget *parent = nullptr);
     ~AddPropertyDialog();
 
     QString propertyName() const;

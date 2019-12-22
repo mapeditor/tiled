@@ -44,6 +44,8 @@ Q_DECLARE_METATYPE(Tiled::AlignmentPropertyType)
 
 namespace Tiled {
 
+
+
 VariantPropertyManager::VariantPropertyManager(QObject *parent)
     : QtVariantPropertyManager(parent)
     , mSuggestionsAttribute(QStringLiteral("suggestions"))
@@ -139,6 +141,20 @@ int VariantPropertyManager::alignmentTypeId()
     return qMetaTypeId<AlignmentPropertyType>();
 }
 
+QString VariantPropertyManager::objectRefLabel(const MapObject *object) const {
+    QString label = tr("%1: ").arg(QString::number(object->id()));
+    if (!object->name().isEmpty()) {
+        label.append(object->name());
+        if (!object->type().isEmpty())
+            label.append(tr(" (%1)").arg(object->type()));
+    } else if (!object->type().isEmpty())
+        label.append(tr("(%1)").arg(object->type()));
+    else
+        label.append(tr("Unnamed object"));
+
+    return label;
+}
+
 QString VariantPropertyManager::valueText(const QtProperty *property) const
 {
     if (mValues.contains(property)) {
@@ -153,20 +169,23 @@ QString VariantPropertyManager::valueText(const QtProperty *property) const
 
             Document *document = DocumentManager::instance()->currentDocument();
             if (auto mapDocument = qobject_cast<MapDocument*>(document)) {
+                // Search all objects in the map.
                 for (const Layer *layer : mapDocument->map()->objectGroups()) {
                     for (const MapObject *object : qobject_cast<const ObjectGroup*>(layer)->objects()) {
                         if (object->id() == ref.id) {
-                            QString label = tr("%1: ").arg(QString::number(object->id()));
-                            if (!object->name().isEmpty()) {
-                                label.append(object->name());
-                                if (!object->type().isEmpty())
-                                    label.append(tr(" (%1)").arg(object->type()));
-                            } else if (!object->type().isEmpty())
-                                label.append(tr("(%1)").arg(object->type()));
-                            else
-                                label.append(tr("Unnamed object"));
-
-                            return label;
+                            return objectRefLabel(object);
+                        }
+                    }
+                }
+            } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
+                // Search all objects in the currently selected tile's object group.
+                auto currentSelection = tilesetDocument->currentObject();
+                if (auto currentTile = qobject_cast<Tile*>(currentSelection)) {
+                    if (auto objects = currentTile->objectGroup()) {
+                        for (const MapObject *object : objects->objects()) {
+                            if (object->id() == ref.id) {
+                                return objectRefLabel(object);
+                            }
                         }
                     }
                 }

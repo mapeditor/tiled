@@ -27,6 +27,8 @@
 
 namespace Tiled {
 
+class MapObject;
+
 /**
  * Extension of the QtVariantPropertyManager that adds support for a filePath
  * data type.
@@ -65,6 +67,7 @@ protected:
 private:
     void slotValueChanged(QtProperty *property, const QVariant &value);
     void slotPropertyDestroyed(QtProperty *property);
+    QString objectRefLabel(const MapObject *object) const;
 
     struct Data {
         QVariant value;
