@@ -47,12 +47,13 @@ AddPropertyDialog::AddPropertyDialog(QWidget *parent)
     QString stringType = typeToName(QVariant::String);
 
     // Add possible types from QVariant
-    mUi->typeBox->addItem(typeToName(QVariant::Bool),   false);
-    mUi->typeBox->addItem(typeToName(QVariant::Color),  QColor());
-    mUi->typeBox->addItem(typeToName(QVariant::Double), 0.0);
-    mUi->typeBox->addItem(typeToName(filePathTypeId()), QVariant::fromValue(FilePath()));
-    mUi->typeBox->addItem(typeToName(QVariant::Int),    0);
-    mUi->typeBox->addItem(stringType,                   QString());
+    mUi->typeBox->addItem(typeToName(QVariant::Bool),    false);
+    mUi->typeBox->addItem(typeToName(QVariant::Color),   QColor());
+    mUi->typeBox->addItem(typeToName(QVariant::Double),  0.0);
+    mUi->typeBox->addItem(typeToName(filePathTypeId()),  QVariant::fromValue(FilePath()));
+    mUi->typeBox->addItem(typeToName(QVariant::Int),     0);
+    mUi->typeBox->addItem(typeToName(objectRefTypeId()), QVariant::fromValue(ObjectRef{0}));
+    mUi->typeBox->addItem(stringType,                    QString());
 
     mUi->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
 
