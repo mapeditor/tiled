@@ -171,6 +171,8 @@ SOURCES += aboutdialog.cpp \
     newversiondialog.cpp \
     noeditorwidget.cpp \
     objectgroupitem.cpp \
+    objectrefdialog.cpp \
+    objectrefedit.cpp \
     objectsdock.cpp \
     objectselectionitem.cpp \
     objectselectiontool.cpp \
@@ -400,6 +402,8 @@ HEADERS += aboutdialog.h \
     newversiondialog.h \
     noeditorwidget.h \
     objectgroupitem.h \
+    objectrefdialog.h \
+    objectrefedit.h \
     objectsdock.h \
     objectselectionitem.h \
     objecttemplatemodel.h \
@@ -510,6 +514,7 @@ FORMS += aboutdialog.ui \
     newtilesetdialog.ui \
     newversiondialog.ui \
     noeditorwidget.ui \
+    objectrefdialog.ui \
     objecttypeseditor.ui \
     offsetmapdialog.ui \
     preferencesdialog.ui \
