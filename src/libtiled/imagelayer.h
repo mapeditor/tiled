@@ -109,6 +109,7 @@ public:
     bool loadFromImage(const QImage &image, const QUrl &source);
     bool loadFromImage(const QImage &image, const QString &source);
     bool loadFromImage(const QUrl &url);
+    bool loadFromImage(ImageReference image);
 
     /**
      * Returns true if no image source has been set.

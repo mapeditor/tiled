@@ -87,6 +87,23 @@ bool ImageLayer::loadFromImage(const QUrl &url)
     return loadFromImage(ImageCache::loadImage(url.toLocalFile()), url);
 }
 
+bool ImageLayer::loadFromImage(ImageReference image)
+{
+    mImageSource = image.source;
+
+    if (!image.hasImage()) {
+        mImage = QPixmap();
+        return false;
+    }
+
+    mImage = image.create();
+    mTransparentColor = image.transparentColor;
+    if (mTransparentColor.isValid()) {
+        const QBitmap mask = mImage.createMaskFromColor(mTransparentColor);
+        mImage.setMask(mask);
+    }
+}
+
 bool ImageLayer::isEmpty() const
 {
     return mImage.isNull();
