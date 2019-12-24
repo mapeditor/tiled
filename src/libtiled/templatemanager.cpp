@@ -27,6 +27,8 @@
 #include "objecttemplateformat.h"
 #include "logginginterface.h"
 
+#include <QFile>
+
 using namespace Tiled;
 
 TemplateManager *TemplateManager::mInstance;
@@ -65,13 +67,14 @@ ObjectTemplate *TemplateManager::loadObjectTemplate(const QString &fileName, QSt
     if (!objectTemplate) {
         auto newTemplate = readObjectTemplate(fileName, error);
 
-        if (newTemplate) {
-            mWatcher->addPath(fileName);
-        } else {
-            // This instance will not have an object. It is used to detect broken
-            // template references.
+        // This instance will not have an object. It is used to detect broken
+        // template references.
+        if (!newTemplate)
             newTemplate = std::make_unique<ObjectTemplate>(fileName);
-        }
+
+        // If the file exists, watch it, regardless of whether the parse was successful.
+        if (QFile::exists(fileName))
+            mWatcher->addPath(fileName);
 
         objectTemplate = newTemplate.get();
         mObjectTemplates.insert(fileName, newTemplate.release());
