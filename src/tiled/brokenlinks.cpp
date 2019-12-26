@@ -30,7 +30,7 @@
 #include "replacetemplate.h"
 #include "replacetileset.h"
 #include "templatemanager.h"
-#include "templatesdock.h"
+#include "docks/templatesdock.h"
 #include "tile.h"
 #include "tilesetchanges.h"
 #include "tilesetdocument.h"

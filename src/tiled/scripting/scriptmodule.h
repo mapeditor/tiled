@@ -22,7 +22,7 @@
 
 #include "documentmanager.h"
 #include "id.h"
-#include "issuesdock.h"
+#include "docks/issuesdock.h"
 
 #include <QJSValue>
 #include <QObject>

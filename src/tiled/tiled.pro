@@ -84,7 +84,7 @@ SOURCES += dialogs/aboutdialog.cpp \
     changewangsetdata.cpp \
     clickablelabel.cpp \
     issuescounter.cpp \
-    issuesdock.cpp \
+    docks/issuesdock.cpp \
     issuesmodel.cpp \
     clipboardmanager.cpp \
     colorbutton.cpp \
@@ -94,7 +94,7 @@ SOURCES += dialogs/aboutdialog.cpp \
     dialogs/commanddialog.cpp \
     commandlineparser.cpp \
     commandmanager.cpp \
-    consoledock.cpp \
+    docks/consoledock.cpp \
     tools/createellipseobjecttool.cpp \
     tools/createobjecttool.cpp \
     tools/createpointobjecttool.cpp \
@@ -139,7 +139,7 @@ SOURCES += dialogs/aboutdialog.cpp \
     imagecolorpickerwidget.cpp \
     imagelayeritem.cpp \
     languagemanager.cpp \
-    layerdock.cpp \
+    docks/layerdock.cpp \
     layeritem.cpp \
     layermodel.cpp \
     tools/layeroffsettool.cpp \
@@ -156,7 +156,7 @@ SOURCES += dialogs/aboutdialog.cpp \
     mapscene.cpp \
     mapview.cpp \
     minimap.cpp \
-    minimapdock.cpp \
+    docks/minimapdock.cpp \
     minimaprenderer.cpp \
     movelayer.cpp \
     movemapobject.cpp \
@@ -171,7 +171,7 @@ SOURCES += dialogs/aboutdialog.cpp \
     dialogs/newversiondialog.cpp \
     noeditorwidget.cpp \
     objectgroupitem.cpp \
-    objectsdock.cpp \
+    docks/objectsdock.cpp \
     objectselectionitem.cpp \
     tools/objectselectiontool.cpp \
     objectsview.cpp \
@@ -185,10 +185,10 @@ SOURCES += dialogs/aboutdialog.cpp \
     pointhandle.cpp \
     preferences.cpp \
     project.cpp \
-    projectdock.cpp \
+    docks/projectdock.cpp \
     projectmodel.cpp \
     dialogs/preferencesdialog.cpp \
-    propertiesdock.cpp \
+    docks/propertiesdock.cpp \
     propertybrowser.cpp \
     raiselowerhelper.cpp \
     regionvaluetype.cpp \
@@ -219,15 +219,15 @@ SOURCES += dialogs/aboutdialog.cpp \
     tools/stampbrush.cpp \
     stylehelper.cpp \
     swaptiles.cpp \
-    templatesdock.cpp \
+    docks/templatesdock.cpp \
     tools/terrainbrush.cpp \
-    terraindock.cpp \
+    docks/terraindock.cpp \
     terrainmodel.cpp \
     terrainview.cpp \
     dialogs/texteditordialog.cpp \
     textpropertyedit.cpp \
     tileanimationeditor.cpp \
-    tilecollisiondock.cpp \
+    docks/tilecollisiondock.cpp \
     tiledapplication.cpp \
     tiledproxystyle.cpp \
     tilelayeredit.cpp \
@@ -236,7 +236,7 @@ SOURCES += dialogs/aboutdialog.cpp \
     tileselectionitem.cpp \
     tools/tileselectiontool.cpp \
     tilesetchanges.cpp \
-    tilesetdock.cpp \
+    docks/tilesetdock.cpp \
     tilesetdocument.cpp \
     tilesetdocumentsmodel.cpp \
     tileseteditor.cpp \
@@ -248,12 +248,12 @@ SOURCES += dialogs/aboutdialog.cpp \
     tilestamp.cpp \
     tilestampmanager.cpp \
     tilestampmodel.cpp \
-    tilestampsdock.cpp \
+    docks/tilestampsdock.cpp \
     tmxmapformat.cpp \
     toolmanager.cpp \
     treeviewcombobox.cpp \
     undocommands.cpp \
-    undodock.cpp \
+    docks/undodock.cpp \
     utils.cpp \
     varianteditorfactory.cpp \
     variantpropertymanager.cpp \
@@ -262,7 +262,7 @@ SOURCES += dialogs/aboutdialog.cpp \
     wangcolorview.cpp \
     wangsetview.cpp \
     wangsetmodel.cpp \
-    wangdock.cpp \
+    docks/wangdock.cpp \
     wangfiller.cpp \
     wangtemplateview.cpp \
     wangtemplatemodel.cpp \
@@ -313,7 +313,7 @@ HEADERS += dialogs/aboutdialog.h \
     changewangsetdata.h \
     clickablelabel.h \
     issuescounter.h \
-    issuesdock.h \
+    docks/issuesdock.h \
     issuesmodel.h \
     clipboardmanager.h \
     colorbutton.h \
@@ -323,7 +323,7 @@ HEADERS += dialogs/aboutdialog.h \
     command.h \
     commandlineparser.h \
     commandmanager.h \
-    consoledock.h \
+    docks/consoledock.h \
     tools/createellipseobjecttool.h \
     tools/createobjecttool.h \
     tools/createpointobjecttool.h \
@@ -368,7 +368,7 @@ HEADERS += dialogs/aboutdialog.h \
     imagecolorpickerwidget.h \
     imagelayeritem.h \
     languagemanager.h \
-    layerdock.h \
+    docks/layerdock.h \
     layeritem.h \
     layermodel.h \
     tools/layeroffsettool.h \
@@ -384,7 +384,7 @@ HEADERS += dialogs/aboutdialog.h \
     mapobjectmodel.h \
     mapscene.h \
     mapview.h \
-    minimapdock.h \
+    docks/minimapdock.h \
     minimap.h \
     minimaprenderer.h \
     movelayer.h \
@@ -400,7 +400,7 @@ HEADERS += dialogs/aboutdialog.h \
     dialogs/newversiondialog.h \
     noeditorwidget.h \
     objectgroupitem.h \
-    objectsdock.h \
+    docks/objectsdock.h \
     objectselectionitem.h \
     objecttemplatemodel.h \
     tools/objectselectiontool.h \
@@ -415,9 +415,9 @@ HEADERS += dialogs/aboutdialog.h \
     dialogs/preferencesdialog.h \
     preferences.h \
     project.h \
-    projectdock.h \
+    docks/projectdock.h \
     projectmodel.h \
-    propertiesdock.h \
+    docks/propertiesdock.h \
     propertybrowser.h \
     raiselowerhelper.h \
     randompicker.h \
@@ -450,15 +450,15 @@ HEADERS += dialogs/aboutdialog.h \
     tools/stampbrush.h \
     stylehelper.h \
     swaptiles.h \
-    templatesdock.h \
+    docks/templatesdock.h \
     tools/terrainbrush.h \
-    terraindock.h \
+    docks/terraindock.h \
     terrainmodel.h \
     terrainview.h \
     dialogs/texteditordialog.h \
     textpropertyedit.h \
     tileanimationeditor.h \
-    tilecollisiondock.h \
+    docks/tilecollisiondock.h \
     tiledapplication.h \
     tiledproxystyle.h \
     tilelayeredit.h \
@@ -467,7 +467,7 @@ HEADERS += dialogs/aboutdialog.h \
     tileselectionitem.h \
     tools/tileselectiontool.h \
     tilesetchanges.h \
-    tilesetdock.h \
+    docks/tilesetdock.h \
     tilesetdocument.h \
     tilesetdocumentsmodel.h \
     tileseteditor.h \
@@ -479,12 +479,12 @@ HEADERS += dialogs/aboutdialog.h \
     tilestamp.h \
     tilestampmanager.h \
     tilestampmodel.h \
-    tilestampsdock.h \
+    docks/tilestampsdock.h \
     tmxmapformat.h \
     toolmanager.h \
     treeviewcombobox.h \
     undocommands.h \
-    undodock.h \
+    docks/undodock.h \
     utils.h \
     varianteditorfactory.h \
     variantpropertymanager.h \
@@ -493,7 +493,7 @@ HEADERS += dialogs/aboutdialog.h \
     wangcolorview.h \
     wangsetview.h \
     wangsetmodel.h \
-    wangdock.h \
+    docks/wangdock.h \
     wangfiller.h \
     wangtemplateview.h \
     wangtemplatemodel.h \

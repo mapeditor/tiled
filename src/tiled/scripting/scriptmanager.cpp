@@ -38,10 +38,10 @@
 #include "scriptedtool.h"
 #include "scriptfile.h"
 #include "scriptmodule.h"
-#include "tilecollisiondock.h"
+#include "docks/tilecollisiondock.h"
 #include "tilelayer.h"
 #include "tilelayeredit.h"
-#include "tilesetdock.h"
+#include "docks/tilesetdock.h"
 #include "tileseteditor.h"
 
 #include <QDir>
