@@ -23,7 +23,7 @@
 
 #include "logginginterface.h"
 #include "preferences.h"
-#include "scriptmanager.h"
+#include "scripting/scriptmanager.h"
 
 #include <QLineEdit>
 #include <QPlainTextEdit>

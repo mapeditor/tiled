@@ -27,7 +27,7 @@
 #include "changeselectedarea.h"
 #include "clipboardmanager.h"
 #include "documentmanager.h"
-#include "erasetiles.h"
+#include "tools/erasetiles.h"
 #include "grouplayer.h"
 #include "map.h"
 #include "mapdocument.h"

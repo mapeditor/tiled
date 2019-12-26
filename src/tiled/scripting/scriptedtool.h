@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include "abstracttiletool.h"
+#include "tools/abstracttiletool.h"
 
 #include <QJSValue>
 

@@ -20,7 +20,7 @@
 
 #include "newversionbutton.h"
 
-#include "newversiondialog.h"
+#include "dialogs/newversiondialog.h"
 #include "preferences.h"
 #include "utils.h"
 

@@ -23,7 +23,7 @@
 
 #include "textpropertyedit.h"
 
-#include "texteditordialog.h"
+#include "dialogs/texteditordialog.h"
 
 #include <QHBoxLayout>
 #include <QLineEdit>

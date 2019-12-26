@@ -27,7 +27,7 @@
 #include "addremovetileset.h"
 #include "containerhelpers.h"
 #include "documentmanager.h"
-#include "erasetiles.h"
+#include "tools/erasetiles.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapobject.h"

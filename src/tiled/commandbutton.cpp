@@ -20,7 +20,7 @@
 
 #include "commandbutton.h"
 #include "commanddatamodel.h"
-#include "commanddialog.h"
+#include "dialogs/commanddialog.h"
 #include "commandmanager.h"
 #include "utils.h"
 

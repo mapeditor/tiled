@@ -20,7 +20,7 @@
 
 #include "propertiesdock.h"
 
-#include "addpropertydialog.h"
+#include "dialogs/addpropertydialog.h"
 #include "changeproperties.h"
 #include "clipboardmanager.h"
 #include "documentmanager.h"

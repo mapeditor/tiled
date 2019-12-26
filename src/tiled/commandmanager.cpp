@@ -21,7 +21,7 @@
 #include "commandmanager.h"
 
 #include "commanddatamodel.h"
-#include "commanddialog.h"
+#include "dialogs/commanddialog.h"
 #include "logginginterface.h"
 #include "pluginmanager.h"
 #include "utils.h"

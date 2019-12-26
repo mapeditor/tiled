@@ -20,7 +20,7 @@
 
 #include "scriptedtool.h"
 
-#include "brushitem.h"
+#include "tools/brushitem.h"
 #include "editablemap.h"
 #include "mapdocument.h"
 #include "pluginmanager.h"

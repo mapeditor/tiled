@@ -20,7 +20,7 @@
 
 #include "tilesetdocument.h"
 
-#include "editabletileset.h"
+#include "scripting/editabletileset.h"
 #include "issuesmodel.h"
 #include "map.h"
 #include "mapdocument.h"

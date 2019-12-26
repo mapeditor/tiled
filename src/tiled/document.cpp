@@ -20,7 +20,7 @@
 
 #include "document.h"
 
-#include "editableasset.h"
+#include "scripting/editableasset.h"
 #include "logginginterface.h"
 #include "object.h"
 #include "tile.h"

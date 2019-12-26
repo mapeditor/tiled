@@ -30,7 +30,7 @@
 #include "changewangcolordata.h"
 #include "changewangsetdata.h"
 #include "documentmanager.h"
-#include "erasetiles.h"
+#include "tools/erasetiles.h"
 #include "maintoolbar.h"
 #include "mapdocument.h"
 #include "mapobject.h"

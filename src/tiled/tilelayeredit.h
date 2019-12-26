@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include "editabletile.h"
+#include "scripting/editabletile.h"
 #include "tilelayer.h"
 
 #include <QObject>

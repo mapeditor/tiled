@@ -21,7 +21,7 @@
 #include "wangbrush.h"
 
 #include "addremovetileset.h"
-#include "brushitem.h"
+#include "tools/brushitem.h"
 #include "containerhelpers.h"
 #include "map.h"
 #include "mapdocument.h"

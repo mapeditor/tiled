@@ -21,7 +21,7 @@
 #include "objecttypeseditor.h"
 #include "ui_objecttypeseditor.h"
 
-#include "addpropertydialog.h"
+#include "dialogs/addpropertydialog.h"
 #include "objecttypesmodel.h"
 #include "utils.h"
 #include "varianteditorfactory.h"

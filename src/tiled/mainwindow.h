@@ -26,7 +26,7 @@
 #include "clipboardmanager.h"
 #include "document.h"
 #include "preferences.h"
-#include "preferencesdialog.h"
+#include "dialogs/preferencesdialog.h"
 
 #include <QMainWindow>
 #include <QPointer>

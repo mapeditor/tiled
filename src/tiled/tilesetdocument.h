@@ -21,7 +21,7 @@
 #pragma once
 
 #include "document.h"
-#include "editabletileset.h"
+#include "scripting/editabletileset.h"
 #include "tileset.h"
 #include "tilesetformat.h"
 

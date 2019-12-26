@@ -20,7 +20,7 @@
 
 #include "tilesetparametersedit.h"
 
-#include "newtilesetdialog.h"
+#include "dialogs/newtilesetdialog.h"
 #include "tileset.h"
 #include "tilesetchanges.h"
 #include "tilesetdocument.h"

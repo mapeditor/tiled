@@ -30,7 +30,7 @@
 #include "mapreader.h"
 #include "pluginmanager.h"
 #include "preferences.h"
-#include "scriptmanager.h"
+#include "scripting/scriptmanager.h"
 #include "stylehelper.h"
 #include "tiledapplication.h"
 #include "tileset.h"

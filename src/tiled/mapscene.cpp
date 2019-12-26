@@ -23,7 +23,7 @@
 
 #include "mapscene.h"
 
-#include "abstracttool.h"
+#include "tools/abstracttool.h"
 #include "addremovemapobject.h"
 #include "containerhelpers.h"
 #include "documentmanager.h"

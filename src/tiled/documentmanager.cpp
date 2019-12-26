@@ -21,11 +21,11 @@
 
 #include "documentmanager.h"
 
-#include "abstracttool.h"
+#include "tools/abstracttool.h"
 #include "adjusttileindexes.h"
 #include "brokenlinks.h"
 #include "containerhelpers.h"
-#include "editableasset.h"
+#include "scripting/editableasset.h"
 #include "editor.h"
 #include "filechangedwarning.h"
 #include "filesystemwatcher.h"

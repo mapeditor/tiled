@@ -24,7 +24,7 @@
 #include "languagemanager.h"
 #include "pluginlistmodel.h"
 #include "preferences.h"
-#include "scriptmanager.h"
+#include "scripting/scriptmanager.h"
 
 #include <QDesktopServices>
 #include <QSortFilterProxyModel>

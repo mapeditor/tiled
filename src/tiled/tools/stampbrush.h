@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "abstracttiletool.h"
+#include "tools/abstracttiletool.h"
 #include "capturestamphelper.h"
 #include "randompicker.h"
 #include "tilelayer.h"

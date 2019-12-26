@@ -20,7 +20,7 @@
 
 #include "toolmanager.h"
 
-#include "abstracttool.h"
+#include "tools/abstracttool.h"
 #include "actionmanager.h"
 #include "preferences.h"
 
