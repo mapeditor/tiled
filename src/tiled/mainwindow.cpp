@@ -42,6 +42,7 @@
 #include "issuesdock.h"
 #include "languagemanager.h"
 #include "layer.h"
+#include "logginginterface.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapdocumentactionhandler.h"
@@ -1564,6 +1565,7 @@ void MainWindow::autoMappingError(bool automatic)
         } else {
             QMessageBox::critical(this, tr("Automatic Mapping Error"), error);
         }
+        ERROR(error);
     }
 }
 
@@ -1576,6 +1578,7 @@ void MainWindow::autoMappingWarning(bool automatic)
         } else {
             QMessageBox::warning(this, tr("Automatic Mapping Warning"), warning);
         }
+        WARNING(warning);
     }
 }
 
