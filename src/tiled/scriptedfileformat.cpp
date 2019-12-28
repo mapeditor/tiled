@@ -61,10 +61,10 @@ QString ScriptedFileFormat::nameFilter() const
 
 bool ScriptedFileFormat::supportsFile(const QString &fileName) const
 {
-    QString extension = mObject.property(QStringLiteral("extension")).toString();
-    extension.prepend(QLatin1Char('.'));
+    QString ext = extension();
+    ext.prepend(QLatin1Char('.'));
 
-    return fileName.endsWith(extension);
+    return fileName.endsWith(ext);
 }
 
 QJSValue ScriptedFileFormat::read(const QString &fileName)
@@ -129,6 +129,16 @@ QStringList ScriptedFileFormat::outputFiles(EditableAsset *asset, const QString 
 
     ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid return value for 'outputFiles' (string or array expected)"));
     return QStringList(fileName);
+}
+
+QString ScriptedFileFormat::name() const
+{
+    return mObject.property(QStringLiteral("name")).toString();
+}
+
+QString ScriptedFileFormat::extension() const
+{
+    return mObject.property(QStringLiteral("extension")).toString();
 }
 
 bool ScriptedFileFormat::validateFileFormatObject(const QJSValue &value)
