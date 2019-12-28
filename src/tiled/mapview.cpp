@@ -127,12 +127,12 @@ void MapView::fitMapInView()
         return;
 
     // Scale and center map to fit in view. For extremely large maps (by pixels), avoid going below
-    // 1% scale. For extremely large maps (by tiles), avoid putting more than 4,000 tiles within the
-    // view. Approximated to 4096 tiles, 64 * 64.
+    // 1% scale. For extremely large maps (by tiles), avoid putting more than 66,000 tiles within the
+    // view. Approximated to 65536 tiles, 256 * 256.
     centerOn(rect.center());
     qreal pixelScale = std::min(width() / rect.width(), height() / rect.height()) * 0.95;
     auto tileSize = mapScene()->mapDocument()->map()->tileSize();
-    qreal minimumScale = std::min(width() / (64.0 * tileSize.width()), height() / (64.0 * tileSize.height()));
+    qreal minimumScale = std::min(width() / (256.0 * tileSize.width()), height() / (256.0 * tileSize.height()));
     qreal scale = std::max(pixelScale, minimumScale);
     setScale(std::max(scale, 0.01));
 }
