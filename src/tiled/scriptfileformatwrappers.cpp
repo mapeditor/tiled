@@ -32,13 +32,6 @@
 
 namespace Tiled {
 
-ScriptTilesetFormatWrapper::ScriptTilesetFormatWrapper()
-{
-    //auto message = QCoreApplication::translate("Script Errors",
-    //                                           "TilesetFormatWrapper cannot be constructed");
-    //ScriptManager::instance().throwError(message);
-}
-
 ScriptTilesetFormatWrapper::ScriptTilesetFormatWrapper(TilesetFormat* format, QObject *parent)
     : QObject(parent)
     , mFormat(format)

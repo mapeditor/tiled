@@ -37,9 +37,7 @@ class ScriptTilesetFormatWrapper : public QObject
     Q_PROPERTY(QString extension READ extension)
 
 public:
-    ScriptTilesetFormatWrapper();
     explicit ScriptTilesetFormatWrapper(TilesetFormat *format, QObject *parent = nullptr);
-    ~ScriptTilesetFormatWrapper() override {}
 
     QString name() const;
     QString extension() const;
@@ -77,5 +75,5 @@ private:
 
 } // namespace Tiled
 
-//Q_DECLARE_METATYPE(Tiled::ScriptTilesetFormatWrapper*)
-//Q_DECLARE_METATYPE(Tiled::ScriptMapFormatWrapper*)
+Q_DECLARE_METATYPE(Tiled::ScriptTilesetFormatWrapper*)
+Q_DECLARE_METATYPE(Tiled::ScriptMapFormatWrapper*)
