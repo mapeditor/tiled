@@ -108,10 +108,10 @@ public:
     Q_INVOKABLE void registerTilesetFormat(const QString &shortName, QJSValue tilesetFormatObject);
     Q_INVOKABLE QJSValue registerTool(const QString &shortName, QJSValue toolObject);
 
-    Q_INVOKABLE QObject *getMapFormat(const QString &shortName) const;
-    Q_INVOKABLE QObject *getMapFormatByFile(const QString &fileName) const;
-    Q_INVOKABLE QObject *getTilesetFormat(const QString &shortName) const;
-    Q_INVOKABLE QObject *getTilesetFormatByFile(const QString &fileName) const;
+    Q_INVOKABLE Tiled::ScriptMapFormatWrapper *getMapFormat(const QString &shortName) const;
+    Q_INVOKABLE Tiled::ScriptMapFormatWrapper *getMapFormatByFile(const QString &fileName) const;
+    Q_INVOKABLE Tiled::ScriptTilesetFormatWrapper *getTilesetFormat(const QString &shortName) const;
+    Q_INVOKABLE Tiled::ScriptTilesetFormatWrapper *getTilesetFormatByFile(const QString &fileName) const;
 
     Q_INVOKABLE void extendMenu(const QByteArray &idName, QJSValue items);
 

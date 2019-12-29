@@ -306,7 +306,7 @@ QJSValue ScriptModule::registerTool(const QString &shortName, QJSValue toolObjec
     return toolObject;
 }
 
-QObject *ScriptModule::getMapFormat(const QString &shortName) const
+Tiled::ScriptMapFormatWrapper *ScriptModule::getMapFormat(const QString &shortName) const
 {
     auto formats = PluginManager::objects<MapFormat>();
     for (auto format : formats) {
@@ -320,7 +320,7 @@ QObject *ScriptModule::getMapFormat(const QString &shortName) const
     return nullptr;
 }
 
-QObject *ScriptModule::getMapFormatByFile(const QString &fileName) const
+Tiled::ScriptMapFormatWrapper *ScriptModule::getMapFormatByFile(const QString &fileName) const
 {
     auto formats = PluginManager::objects<MapFormat>();
     for (auto format : formats) {
@@ -334,7 +334,7 @@ QObject *ScriptModule::getMapFormatByFile(const QString &fileName) const
     return nullptr;
 }
 
-QObject *ScriptModule::getTilesetFormat(const QString &shortName) const
+Tiled::ScriptTilesetFormatWrapper *ScriptModule::getTilesetFormat(const QString &shortName) const
 {
     auto formats = PluginManager::objects<TilesetFormat>();
     for (auto format : formats) {
@@ -348,7 +348,7 @@ QObject *ScriptModule::getTilesetFormat(const QString &shortName) const
     return nullptr;
 }
 
-QObject *ScriptModule::getTilesetFormatByFile(const QString &fileName) const
+Tiled::ScriptTilesetFormatWrapper *ScriptModule::getTilesetFormatByFile(const QString &fileName) const
 {
     auto formats = PluginManager::objects<TilesetFormat>();
     for (auto format : formats) {
