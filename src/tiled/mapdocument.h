@@ -374,7 +374,7 @@ private:
     QList<MapObject*> mSelectedObjects;
     MapObject *mHoveredMapObject;       /**< Map object with mouse on top. */
     std::unique_ptr<MapRenderer> mRenderer;
-    Layer *mCurrentLayer;
+    Layer *mCurrentLayer = nullptr;
     MapObjectModel *mMapObjectModel;
     bool mAllowHidingObjects = true;
     bool mAllowTileObjects = true;

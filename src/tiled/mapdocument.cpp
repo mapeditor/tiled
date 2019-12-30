@@ -83,7 +83,11 @@ MapDocument::MapDocument(std::unique_ptr<Map> map)
 
     createRenderer();
 
-    mCurrentLayer = (mMap->layerCount() == 0) ? nullptr : mMap->layerAt(0);
+    if (mMap->layerCount() > 0) {
+        mCurrentLayer = mMap->layerAt(0);
+        mSelectedLayers.append(mCurrentLayer);
+    }
+
     mLayerModel->setMapDocument(this);
 
     // Forward signals emitted from the layer model
