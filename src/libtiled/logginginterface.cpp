@@ -55,6 +55,7 @@ Issue::Issue(Issue::Severity severity,
     , mContext(context)
     , mId(mNextIssueId++)
 {
+    qRegisterMetaType<Issue>();
 }
 
 void Issue::setCallback(std::function<void ()> callback)
