@@ -106,10 +106,10 @@ public:
      * @return <code>true</code> if loading was successful, otherwise
      *         returns <code>false</code>
      */
-    bool loadFromImage(const QImage &image, const QUrl &source);
+    bool loadFromImage(const QPixmap &image, const QUrl &source);
     bool loadFromImage(const QImage &image, const QString &source);
     bool loadFromImage(const QUrl &url);
-    bool loadFromImage(ImageReference image);
+    bool loadFromImage(const ImageReference &image);
 
     /**
      * Returns true if no image source has been set.
