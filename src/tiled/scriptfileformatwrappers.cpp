@@ -1,6 +1,7 @@
 /*
  * scriptfileformatwrappers.h
- * Copyright 2019, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+ * Copyright 2019, Thorbjørn Lindeijer <bjorn@lindeijer.nl>, Phlosioneer
+ * <mattmdrr2@gmail.com>
  *
  * This file is part of Tiled.
  *
@@ -53,15 +54,21 @@ QString ScriptTilesetFormatWrapper::extension() const
         return QString();
 }
 
-EditableTileset *ScriptTilesetFormatWrapper::read(QString &filename)
+EditableTileset *ScriptTilesetFormatWrapper::read(const QString &filename)
 {
     auto tileset = mFormat->read(filename);
-    auto editable = new EditableTileset(tileset.data());
-    QQmlEngine::setObjectOwnership(editable, QQmlEngine::JavaScriptOwnership);
-    return editable;
+    if (tileset) {
+        auto editable = new EditableTileset(tileset.data());
+        QQmlEngine::setObjectOwnership(editable, QQmlEngine::JavaScriptOwnership);
+        return editable;
+    } else {
+        auto message = QCoreApplication::translate("Script Errors", "Error reading tileset");
+        ScriptManager::instance().throwError(message);
+        return nullptr;
+    }
 }
 
-QString ScriptTilesetFormatWrapper::write(EditableTileset *editable, QString &filename)
+QString ScriptTilesetFormatWrapper::write(const EditableTileset *editable, const QString &filename)
 {
     auto tileset = editable->tileset();
     if (mFormat->write(*tileset, filename))
@@ -70,16 +77,9 @@ QString ScriptTilesetFormatWrapper::write(EditableTileset *editable, QString &fi
         return mFormat->errorString();
 }
 
-bool ScriptTilesetFormatWrapper::supportsFile(QString &filename) const
+bool ScriptTilesetFormatWrapper::supportsFile(const QString &filename) const
 {
     return mFormat->supportsFile(filename);
-}
-
-ScriptMapFormatWrapper::ScriptMapFormatWrapper()
-{
-    auto message = QCoreApplication::translate("Script Errors",
-                                               "MapFormatWrapper cannot be constructed");
-    ScriptManager::instance().throwError(message);
 }
 
 ScriptMapFormatWrapper::ScriptMapFormatWrapper(MapFormat *format, QObject *parent)
@@ -103,15 +103,21 @@ QString ScriptMapFormatWrapper::extension() const
         return QString();
 }
 
-EditableMap *ScriptMapFormatWrapper::read(QString &filename)
+EditableMap *ScriptMapFormatWrapper::read(const QString &filename)
 {
     auto map = mFormat->read(filename);
-    auto editable = new EditableMap(std::move(map));
-    QQmlEngine::setObjectOwnership(editable, QQmlEngine::JavaScriptOwnership);
-    return editable;
+    if (map) {
+        auto editable = new EditableMap(std::move(map));
+        QQmlEngine::setObjectOwnership(editable, QQmlEngine::JavaScriptOwnership);
+        return editable;
+    } else {
+        auto message = QCoreApplication::translate("Script Errors", "Error reading map");
+        ScriptManager::instance().throwError(message);
+        return nullptr;
+    }
 }
 
-QString ScriptMapFormatWrapper::write(EditableMap *editable, QString &filename)
+QString ScriptMapFormatWrapper::write(const EditableMap *editable, const QString &filename)
 {
     auto map = editable->map();
     if (mFormat->write(map, filename))
@@ -120,7 +126,7 @@ QString ScriptMapFormatWrapper::write(EditableMap *editable, QString &filename)
         return mFormat->errorString();
 }
 
-bool ScriptMapFormatWrapper::supportsFile(QString &filename) const
+bool ScriptMapFormatWrapper::supportsFile(const QString &filename) const
 {
     return mFormat->supportsFile(filename);
 }

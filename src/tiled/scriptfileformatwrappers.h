@@ -1,6 +1,7 @@
 /*
  * scriptfileformatwrappers.h
- * Copyright 2019, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+ * Copyright 2019, Thorbjørn Lindeijer <bjorn@lindeijer.nl>, Phlosioneer
+ * <mattmdrr2@gmail.com>
  *
  * This file is part of Tiled.
  *
@@ -42,9 +43,9 @@ public:
     QString name() const;
     QString extension() const;
 
-    Q_INVOKABLE EditableTileset *read(QString &filename);
-    Q_INVOKABLE QString write(EditableTileset *tileset, QString &filename);
-    Q_INVOKABLE bool supportsFile(QString &filename) const;
+    Q_INVOKABLE Tiled::EditableTileset *read(const QString &filename);
+    Q_INVOKABLE QString write(const EditableTileset *tileset, const QString &filename);
+    Q_INVOKABLE bool supportsFile(const QString &filename) const;
 
 private:
     TilesetFormat *mFormat;
@@ -58,16 +59,14 @@ class ScriptMapFormatWrapper : public QObject
     Q_PROPERTY(QString extension READ extension)
 
 public:
-    Q_INVOKABLE ScriptMapFormatWrapper();
-    Q_INVOKABLE explicit ScriptMapFormatWrapper(MapFormat *format, QObject *parent = nullptr);
-    ~ScriptMapFormatWrapper() override {}
+    explicit ScriptMapFormatWrapper(MapFormat *format, QObject *parent = nullptr);
 
     QString name() const;
     QString extension() const;
 
-    Q_INVOKABLE EditableMap *read(QString &filename);
-    Q_INVOKABLE QString write(EditableMap *map, QString &filename);
-    Q_INVOKABLE bool supportsFile(QString &filename) const;
+    Q_INVOKABLE Tiled::EditableMap *read(const QString &filename);
+    Q_INVOKABLE QString write(const EditableMap *map, const QString &filename);
+    Q_INVOKABLE bool supportsFile(const QString &filename) const;
 
 private:
     MapFormat *mFormat;

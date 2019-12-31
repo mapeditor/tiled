@@ -306,9 +306,9 @@ QJSValue ScriptModule::registerTool(const QString &shortName, QJSValue toolObjec
     return toolObject;
 }
 
-Tiled::ScriptMapFormatWrapper *ScriptModule::getMapFormat(const QString &shortName) const
+ScriptMapFormatWrapper *ScriptModule::mapFormat(const QString &shortName) const
 {
-    auto formats = PluginManager::objects<MapFormat>();
+    const auto formats = PluginManager::objects<MapFormat>();
     for (auto format : formats) {
         if (format->shortName() == shortName) {
             auto wrapper = new ScriptMapFormatWrapper(format);
@@ -320,9 +320,9 @@ Tiled::ScriptMapFormatWrapper *ScriptModule::getMapFormat(const QString &shortNa
     return nullptr;
 }
 
-Tiled::ScriptMapFormatWrapper *ScriptModule::getMapFormatByFile(const QString &fileName) const
+ScriptMapFormatWrapper *ScriptModule::mapFormatForFile(const QString &fileName) const
 {
-    auto formats = PluginManager::objects<MapFormat>();
+    const auto formats = PluginManager::objects<MapFormat>();
     for (auto format : formats) {
         if (format->supportsFile(fileName)) {
             auto wrapper = new ScriptMapFormatWrapper(format);
@@ -334,9 +334,9 @@ Tiled::ScriptMapFormatWrapper *ScriptModule::getMapFormatByFile(const QString &f
     return nullptr;
 }
 
-Tiled::ScriptTilesetFormatWrapper *ScriptModule::getTilesetFormat(const QString &shortName) const
+ScriptTilesetFormatWrapper *ScriptModule::tilesetFormat(const QString &shortName) const
 {
-    auto formats = PluginManager::objects<TilesetFormat>();
+    const auto formats = PluginManager::objects<TilesetFormat>();
     for (auto format : formats) {
         if (format->shortName() == shortName) {
             auto wrapper = new ScriptTilesetFormatWrapper(format);
@@ -348,9 +348,9 @@ Tiled::ScriptTilesetFormatWrapper *ScriptModule::getTilesetFormat(const QString 
     return nullptr;
 }
 
-Tiled::ScriptTilesetFormatWrapper *ScriptModule::getTilesetFormatByFile(const QString &fileName) const
+ScriptTilesetFormatWrapper *ScriptModule::tilesetFormatForFile(const QString &fileName) const
 {
-    auto formats = PluginManager::objects<TilesetFormat>();
+    const auto formats = PluginManager::objects<TilesetFormat>();
     for (auto format : formats) {
         if (format->supportsFile(fileName)) {
             auto wrapper = new ScriptTilesetFormatWrapper(format);
