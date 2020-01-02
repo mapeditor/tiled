@@ -6,17 +6,17 @@
     <message>
         <location filename="../src/tiled/aboutdialog.ui" line="+14"/>
         <source>About Tiled</source>
-        <translation type="unfinished"></translation>
+        <translation>टाइल बद्दल</translation>
     </message>
     <message>
         <location line="+96"/>
         <source>Donate ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>दान करा ↗</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>ठीक आहे</translation>
     </message>
     <message>
         <location filename="../src/tiled/aboutdialog.cpp" line="+49"/>
@@ -33,12 +33,12 @@
     <message>
         <location filename="../src/tiled/addpropertydialog.ui" line="+14"/>
         <source>Add Property</source>
-        <translation type="unfinished"></translation>
+        <translation>गुणधर्म जोडा</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Property name</source>
-        <translation type="unfinished"></translation>
+        <translation>गुणधर्म नाव</translation>
     </message>
 </context>
 <context>
@@ -193,12 +193,12 @@
     <message>
         <location line="+5"/>
         <source>Export the map with tilesets embedded</source>
-        <translation type="unfinished"></translation>
+        <translation>एम्बेड केलेल्या टाइलसेटसह नकाशा निर्यात करा</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export the map or tileset with template instances detached</source>
-        <translation type="unfinished"></translation>
+        <translation>टेम्पलेटच्या उदाहरणासह नकाशा किंवा टाइलसेटची निर्यात करा</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -208,7 +208,7 @@
     <message>
         <location line="+10"/>
         <source>Start a new instance, even if an instance is already running</source>
-        <translation type="unfinished"></translation>
+        <translation>एखादी घटना आधीच चालू असेल तरीही नवीन प्रारंभ करा</translation>
     </message>
 </context>
 <context>
@@ -237,12 +237,12 @@
     <message>
         <location line="+2"/>
         <source>Options:</source>
-        <translation type="unfinished"></translation>
+        <translation>पर्याय:</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Display this help</source>
-        <translation type="unfinished"></translation>
+        <translation>ही मदत प्रदर्शित करा</translation>
     </message>
 </context>
 <context>
@@ -250,7 +250,7 @@
     <message>
         <location filename="../src/plugins/csv/csvplugin.cpp" line="+138"/>
         <source>CSV files (*.csv)</source>
-        <translation type="unfinished"></translation>
+        <translation>CSV फायली (* .csv)</translation>
     </message>
 </context>
 <context>
@@ -279,22 +279,22 @@
     <message>
         <location line="+9"/>
         <source>Thanks for using Tiled! Please consider supporting further development with a small monthly donation.</source>
-        <translation type="unfinished"></translation>
+        <translation>टाइल वापरल्याबद्दल धन्यवाद! कृपया लहान मासिक देणगी देऊन पुढील विकासास पाठिंबा देण्याचा विचार करा.</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Visit https://www.mapeditor.org/donate ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>https://www.mapeditor.org/donate वर भेट द्या</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>I&apos;m already a supporter!</source>
-        <translation type="unfinished"></translation>
+        <translation>मी आधीच समर्थक आहे!</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Maybe later</source>
-        <translation type="unfinished"></translation>
+        <translation>कदाचित नंतर</translation>
     </message>
 </context>
 <context>
@@ -302,22 +302,22 @@
     <message>
         <location filename="../src/plugins/droidcraft/droidcraftplugin.cpp" line="+56"/>
         <source>This is not a valid Droidcraft map file!</source>
-        <translation type="unfinished"></translation>
+        <translation>ही वैध Droidraft नकाशा फाइल नाही!</translation>
     </message>
     <message>
         <location line="+45"/>
         <source>The map needs to have exactly one tile layer!</source>
-        <translation type="unfinished"></translation>
+        <translation>नकाशामध्ये अचूक एक टाइलची थर असणे आवश्यक आहे!</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>The layer must have a size of 48 x 48 tiles!</source>
-        <translation type="unfinished"></translation>
+        <translation>थरात 48 x 48 फरशा आकार असणे आवश्यक आहे!</translation>
     </message>
     <message>
         <location line="+38"/>
         <source>Droidcraft map files (*.dat)</source>
-        <translation type="unfinished"></translation>
+        <translation>Droidraft नकाशा फायली (* .dat)</translation>
     </message>
 </context>
 <context>
@@ -325,27 +325,27 @@
     <message>
         <location filename="../src/tiled/exportasimagedialog.ui" line="+14"/>
         <source>Export As Image</source>
-        <translation type="unfinished"></translation>
+        <translation>प्रतिमा म्हणून निर्यात करा</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Location</source>
-        <translation type="unfinished"></translation>
+        <translation>स्थान</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>नाव:</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>&amp;Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp; ब्राउझ करा ...</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>सेटिंग्ज</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -355,17 +355,17 @@
     <message>
         <location line="+10"/>
         <source>Use current &amp;zoom level</source>
-        <translation type="unfinished"></translation>
+        <translation>सद्य आणि झूम स्तर वापरा</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>&amp;Draw tile grid</source>
-        <translation type="unfinished"></translation>
+        <translation>टाइल ग्रिड काढा</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>&amp;Include background color</source>
-        <translation type="unfinished"></translation>
+        <translation>पार्श्वभूमी रंग समाविष्ट करा</translation>
     </message>
 </context>
 <context>
@@ -393,7 +393,7 @@
         <location filename="../src/tiled/scriptedfileformat.cpp" line="+136"/>
         <location filename="../src/tiled/shortcutsettingspage.cpp" line="+722"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>लेखनासाठी फाईल उघडू शकले नाही.</translation>
     </message>
     <message>
         <location filename="../src/libtiled/worldmanager.cpp" line="+127"/>
@@ -407,7 +407,7 @@
         <location filename="../src/plugins/tbin/tbinplugin.cpp" line="+118"/>
         <location filename="../src/tiled/shortcutsettingspage.cpp" line="-53"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished"></translation>
+        <translation>वाचनासाठी फाईल उघडू शकले नाही.</translation>
     </message>
 </context>
 <context>
@@ -755,7 +755,7 @@
     <message>
         <location line="+12"/>
         <source>Clear Recent Files</source>
-        <translation type="unfinished"></translation>
+        <translation>अलीकडील फायली साफ करा</translation>
     </message>
     <message>
         <location line="+92"/>
