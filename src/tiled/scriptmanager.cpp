@@ -80,6 +80,7 @@ ScriptManager::ScriptManager(QObject *parent)
     : QObject(parent)
     , mEngine(new QQmlEngine(this))
     , mModule(new ScriptModule(this))
+    , mTempCount(0)
 {
     qRegisterMetaType<Cell>();
     qRegisterMetaType<EditableAsset*>();
@@ -173,6 +174,13 @@ QJSValue ScriptManager::evaluateFile(const QString &fileName)
     return evaluate(script, fileName);
 }
 
+QString ScriptManager::createTempValue(const QJSValue &value)
+{
+    auto name = QLatin1Char('$') + QString::number(mTempCount++);
+    mEngine->globalObject().setProperty(name, value);
+    return name;
+}
+
 void ScriptManager::loadExtensions()
 {
     QStringList extensionSearchPaths;
@@ -256,6 +264,8 @@ void ScriptManager::reset()
     mWatcher.clear();
     delete mEngine;
     delete mModule;
+
+    mTempCount = 0;
 
     mEngine = new QQmlEngine(this);
     mModule = new ScriptModule(this);

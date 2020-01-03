@@ -121,8 +121,10 @@ void ConsoleDock::executeScript()
     appendScript(script);
 
     const QJSValue result = ScriptManager::instance().evaluate(script);
-    if (!result.isError() && !result.isUndefined())
-        appendInfo(result.toString());
+    if (!result.isError() && !result.isUndefined()) {
+        auto name = ScriptManager::instance().createTempValue(result);
+        appendInfo(name + QStringLiteral(" = ") + result.toString());
+    }
 
     mLineEdit->clear();
 
