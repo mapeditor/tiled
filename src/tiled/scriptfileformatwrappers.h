@@ -29,47 +29,49 @@ class EditableTileset;
 class EditableMap;
 class MapFormat;
 class TilesetFormat;
+class FileFormat;
 
-class ScriptTilesetFormatWrapper : public QObject
+class ScriptFileFormatWrapper : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(QString name READ name)
-    Q_PROPERTY(QString extension READ extension)
+    Q_PROPERTY(bool canRead READ canRead)
+    Q_PROPERTY(bool canWrite READ canWrite)
+public:
+    explicit ScriptFileFormatWrapper(FileFormat *format, QObject *parent = nullptr);
+
+    Q_INVOKABLE bool supportsFile(const QString &filename) const;
+
+    bool canRead() const;
+    bool canWrite() const;
+protected:
+
+    bool assertCanRead() const;
+    bool assertCanWrite() const;
+
+    FileFormat *mFormat;
+};
+
+class ScriptTilesetFormatWrapper : public ScriptFileFormatWrapper
+{
+    Q_OBJECT
 
 public:
     explicit ScriptTilesetFormatWrapper(TilesetFormat *format, QObject *parent = nullptr);
 
-    QString name() const;
-    QString extension() const;
-
     Q_INVOKABLE Tiled::EditableTileset *read(const QString &filename);
-    Q_INVOKABLE QString write(const EditableTileset *tileset, const QString &filename);
-    Q_INVOKABLE bool supportsFile(const QString &filename) const;
-
-private:
-    TilesetFormat *mFormat;
+    Q_INVOKABLE void write(Tiled::EditableTileset *tileset, const QString &filename);
 };
 
-class ScriptMapFormatWrapper : public QObject
+class ScriptMapFormatWrapper : public ScriptFileFormatWrapper
 {
     Q_OBJECT
-
-    Q_PROPERTY(QString name READ name)
-    Q_PROPERTY(QString extension READ extension)
 
 public:
     explicit ScriptMapFormatWrapper(MapFormat *format, QObject *parent = nullptr);
 
-    QString name() const;
-    QString extension() const;
-
     Q_INVOKABLE Tiled::EditableMap *read(const QString &filename);
-    Q_INVOKABLE QString write(const EditableMap *map, const QString &filename);
-    Q_INVOKABLE bool supportsFile(const QString &filename) const;
-
-private:
-    MapFormat *mFormat;
+    Q_INVOKABLE void write(Tiled::EditableMap *map, const QString &filename);
 };
 
 } // namespace Tiled
