@@ -310,11 +310,8 @@ ScriptMapFormatWrapper *ScriptModule::mapFormat(const QString &shortName) const
 {
     const auto formats = PluginManager::objects<MapFormat>();
     for (auto format : formats) {
-        if (format->shortName() == shortName) {
-            auto wrapper = new ScriptMapFormatWrapper(format);
-            QQmlEngine::setObjectOwnership(wrapper, QQmlEngine::JavaScriptOwnership);
-            return wrapper;
-        }
+        if (format->shortName() == shortName)
+            return new ScriptMapFormatWrapper(format);
     }
 
     return nullptr;
@@ -324,11 +321,8 @@ ScriptMapFormatWrapper *ScriptModule::mapFormatForFile(const QString &fileName) 
 {
     const auto formats = PluginManager::objects<MapFormat>();
     for (auto format : formats) {
-        if (format->supportsFile(fileName)) {
-            auto wrapper = new ScriptMapFormatWrapper(format);
-            QQmlEngine::setObjectOwnership(wrapper, QQmlEngine::JavaScriptOwnership);
-            return wrapper;
-        }
+        if (format->supportsFile(fileName))
+            return new ScriptMapFormatWrapper(format);
     }
 
     return nullptr;
@@ -338,11 +332,8 @@ ScriptTilesetFormatWrapper *ScriptModule::tilesetFormat(const QString &shortName
 {
     const auto formats = PluginManager::objects<TilesetFormat>();
     for (auto format : formats) {
-        if (format->shortName() == shortName) {
-            auto wrapper = new ScriptTilesetFormatWrapper(format);
-            QQmlEngine::setObjectOwnership(wrapper, QQmlEngine::JavaScriptOwnership);
-            return wrapper;
-        }
+        if (format->shortName() == shortName)
+            return new ScriptTilesetFormatWrapper(format);
     }
 
     return nullptr;
@@ -352,11 +343,8 @@ ScriptTilesetFormatWrapper *ScriptModule::tilesetFormatForFile(const QString &fi
 {
     const auto formats = PluginManager::objects<TilesetFormat>();
     for (auto format : formats) {
-        if (format->supportsFile(fileName)) {
-            auto wrapper = new ScriptTilesetFormatWrapper(format);
-            QQmlEngine::setObjectOwnership(wrapper, QQmlEngine::JavaScriptOwnership);
-            return wrapper;
-        }
+        if (format->supportsFile(fileName))
+            return new ScriptTilesetFormatWrapper(format);
     }
 
     return nullptr;
