@@ -81,7 +81,7 @@ bool ImageLayer::loadFromImage(const QImage &image, const QString &source)
 
 bool ImageLayer::loadFromImage(const QUrl &url)
 {
-    return loadFromImage(ImageCache::loadPixmap(url.toLocalFile()), url);
+    return loadFromImage(ImageCache::loadPixmap(Tiled::urlToLocalFileOrQrc(url)), url);
 }
 
 bool ImageLayer::loadFromImage(const ImageReference &image)
