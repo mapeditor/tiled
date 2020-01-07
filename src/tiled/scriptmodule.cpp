@@ -131,9 +131,9 @@ QStringList ScriptModule::tilesetFormats() const
     const auto formats = PluginManager::objects<TilesetFormat>();
     QStringList ret;
     ret.reserve(formats.length());
-    for (auto format : formats) {
+    for (auto format : formats)
         ret.append(format->shortName());
-    }
+
     return ret;
 }
 
