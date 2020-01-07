@@ -382,6 +382,8 @@ The tilesets are always stored with increasing ``firstgid``\ s.
 
 Can contain any number: :ref:`tmx-tilelayer-tile`, :ref:`tmx-chunk`
 
+.. _tmx-tile-flipping:
+
 Tile flipping
 ^^^^^^^^^^^^^
 

@@ -120,15 +120,6 @@ TileLayer::TileLayer(const QString &name, QPoint position, QSize size)
 {
 }
 
-static QMargins maxMargins(const QMargins &a,
-                           const QMargins &b)
-{
-    return QMargins(qMax(a.left(), b.left()),
-                    qMax(a.top(), b.top()),
-                    qMax(a.right(), b.right()),
-                    qMax(a.bottom(), b.bottom()));
-}
-
 static QMargins computeDrawMargins(const QSet<SharedTileset> &tilesets)
 {
     int maxTileSize = 0;

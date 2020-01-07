@@ -54,13 +54,6 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-static QString colorToString(const QColor &color)
-{
-    if (color.alpha() != 255)
-        return color.name(QColor::HexArgb);
-    return color.name();
-}
-
 namespace Tiled {
 namespace Internal {
 
