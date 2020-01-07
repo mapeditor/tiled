@@ -449,8 +449,22 @@ void MapItem::layerChanged(const LayerChangeEvent &change)
     QGraphicsItem *layerItem = mLayerItems.value(layer);
     Q_ASSERT(layerItem);
 
-    if (change.properties & LayerChangeEvent::TintColorProperty)
-        layerItem->update();
+    if (change.properties & LayerChangeEvent::TintColorProperty) {
+        switch (layer->layerType()) {
+        case Layer::TileLayerType:
+            layerItem->update();
+            break;
+        case Layer::ObjectGroupType:
+            for (MapObject *mapObject : static_cast<const ObjectGroup&>(*layer)) {
+                if (mapObject->isTileObject())
+                    mObjectItems.value(mapObject)->update();
+            }
+            break;
+        case Layer::ImageLayerType:
+        case Layer::GroupLayerType:
+            break;
+        }
+    }
 
     layerItem->setVisible(layer->isVisible());
 
