@@ -37,6 +37,7 @@
 #include "scriptedfileformat.h"
 #include "scriptedtool.h"
 #include "scriptfile.h"
+#include "scriptfileformatwrappers.h"
 #include "scriptmodule.h"
 #include "tilecollisiondock.h"
 #include "tilelayer.h"
@@ -104,6 +105,8 @@ ScriptManager::ScriptManager(QObject *parent)
     qRegisterMetaType<TileLayerEdit*>();
     qRegisterMetaType<TilesetDock*>();
     qRegisterMetaType<TilesetEditor*>();
+    qRegisterMetaType<ScriptMapFormatWrapper*>();
+    qRegisterMetaType<ScriptTilesetFormatWrapper*>();
 
     connect(&mWatcher, &FileSystemWatcher::filesChanged,
             this, &ScriptManager::scriptFilesChanged);

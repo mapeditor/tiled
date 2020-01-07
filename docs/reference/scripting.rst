@@ -129,6 +129,12 @@ Properties
     **openAssets** : array |ro|, "List of currently opened :ref:`assets <script-asset>`."
     **mapEditor** : :ref:`script-mapeditor`, "Access the editor used when editing maps."
     **tilesetEditor** : :ref:`script-tileseteditor`, "Access the editor used when editing tilesets."
+    **tilesetFormats** : [string] |ro|, "List of supported tileset format names. Use
+    :ref:`tilesetFormat <script-tilesetFormat>` to get the corresponding format object
+    to read and write files. (Since 1.4)"
+    **mapFormats** : [string] |ro|, "List of supported map format names. Use
+    :ref:`mapFormat <script-mapFormat>` to get the corresponding format object to
+    read and write files. (Since 1.4)"
 
 Functions
 ~~~~~~~~~
@@ -432,6 +438,31 @@ tiled.extendMenu(id : string, items : array | object) : void
     The "CustomAction" will need to have been registered before using
     :ref:`tiled.registerAction() <script-registerAction>`.
 
+
+.. _script-tilesetFormat:
+
+tiled.tilesetFormat(shortName : string) : :ref:`script-tilesetformatwrapper`
+    Returns the tileset format object with the given name, or `undefined` if
+    no object was found. See the `tilesetFormats` property for more info.
+
+.. _script-tilesetFormatForFile:
+
+tiled.tilesetFormatForFile(fileName : string) : :ref:`script-tilesetformatwrapper`
+    Returns the tileset format object that can read the given file, or `undefined`
+    if no object was found.
+
+.. _script-mapFormat:
+
+tiled.mapFormat(shortName : string) : :ref:`script-mapformatwrapper`
+    Returns the map format object with the given name, or `undefined` if no object
+    was found. See the `mapFormats` property for more info.
+
+.. _script-mapFormatForFile:
+
+tiled.mapFormatForFile(fileName : string) : :ref:`script-mapformatwrapper`
+    Returns the map format object that can read the given file, or `undefined` if
+    no object was found.
+
 .. _script-tiled-signals:
 
 Signals
@@ -536,6 +567,28 @@ Asset.macro(text : string, callback : function) : value
         })
 
     The returned value is whatever the callback function returned.
+
+.. _script-fileformat:
+
+File Format
+^^^^^^^^^^^
+
+Common functionality for file format readers and writers. (Since 1.4)
+
+Properties
+~~~~~~~~~~
+
+.. csv-table::
+    widths: 1, 2
+
+    **canRead** : bool |ro|, Whether this format supports reading files.
+    **canWrite** : bool |ro|, Whether this format supports writing files.
+
+Functions
+~~~~~~~~~
+
+FileFormat.supportsFile(fileName : string) : bool
+    Returns whether the file is readable by this format.
 
 .. _script-grouplayer:
 
@@ -689,6 +742,27 @@ Properties
     **currentBrush** : :ref:`script-map`, "Get or set the currently used tile brush."
     **currentMapView** : :ref:`script-mapview` |ro|, "Access the current map view."
     **tilesetsView** : :ref:`script-tilesetsview` |ro|, "Access the Tilesets view."
+
+.. _script-mapformatwrapper:
+
+Map Format
+^^^^^^^^^^
+
+This is an object that can read or write map files. (Since 1.4)
+
+Inherits :ref:`script-fileformat`.
+
+Functions
+~~~~~~~~~
+
+MapFormat.read(fileName : string) : :ref:`script-map`
+    Read the given file as a map. This function will throw an error if it
+    is not supported.
+
+MapFormat.write(map : :ref:`script-map`, fileName : string) : string
+    Write the given map to a file. This function will throw an error if it
+    is not supported. If there is an error writing the file, it will return a
+    description of the error; otherwise, it will return "".
 
 .. _script-mapview:
 
@@ -1295,6 +1369,27 @@ Properties
     :widths: 1, 2
 
     **collisionEditor** : :ref:`script-tilecollisioneditor`, "Access the collision editor within the tileset editor."
+
+.. _script-tilesetformatwrapper:
+
+Tileset Format
+^^^^^^^^^^^^^^
+
+This is an object that can read or write tileset files. (Since 1.4)
+
+Inherits :ref:`script-fileformat`.
+
+Functions
+~~~~~~~~~
+
+TilesetFormat.read(fileName : string) : :ref:`script-tileset`
+    Read the given file as a tileset. This function will throw an error if it
+    is not supported.
+
+TilesetFormat.write(tileset : :ref:`script-tileset`, fileName : string) : string
+    Write the given tileset to a file. This function will throw an error if it
+    is not supported. If there is an error writing the file, it will return a
+    description of the error; otherwise, it will return "".
 
 .. _script-tilesetsview:
 
