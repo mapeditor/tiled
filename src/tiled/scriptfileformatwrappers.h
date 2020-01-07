@@ -1,7 +1,6 @@
 /*
  * scriptfileformatwrappers.h
- * Copyright 2019, Thorbjørn Lindeijer <bjorn@lindeijer.nl>, Phlosioneer
- * <mattmdrr2@gmail.com>
+ * Copyright 2019, Phlosioneer <mattmdrr2@gmail.com>
  *
  * This file is part of Tiled.
  *
@@ -37,6 +36,7 @@ class ScriptFileFormatWrapper : public QObject
 
     Q_PROPERTY(bool canRead READ canRead)
     Q_PROPERTY(bool canWrite READ canWrite)
+
 public:
     explicit ScriptFileFormatWrapper(FileFormat *format, QObject *parent = nullptr);
 
@@ -44,8 +44,8 @@ public:
 
     bool canRead() const;
     bool canWrite() const;
-protected:
 
+protected:
     bool assertCanRead() const;
     bool assertCanWrite() const;
 

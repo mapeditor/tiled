@@ -131,11 +131,11 @@ Properties
     **tilesetEditor** : :ref:`script-tileseteditor`, "Access the editor used when editing tilesets."
     **tilesetFormats** : [string] |ro|, "List of tileset format names. Built in
     options are `tsx`, `json`, and `lua` (write-only). Use
-    :ref:`tilesetFormat<script-tilesetFormat>` to get the corresponding format object
+    :ref:`tilesetFormat <script-tilesetFormat>` to get the corresponding format object
     to read and write files. (Since 1.4)"
     **mapFormats** : [string] |ro|, "List of map format names. Built in options
     are `tmx`, `json`, `js`, `gmx` (write-only), and `lua` (write-only). Use
-    :ref:`mapFormat<script-mapFormat>` to get the corresponding format object to
+    :ref:`mapFormat <script-mapFormat>` to get the corresponding format object to
     read and write files. (Since 1.4)"
 
 Functions
@@ -443,27 +443,27 @@ tiled.extendMenu(id : string, items : array | object) : void
 
 .. _script-tilesetFormat:
 
-tiled.tilesetFormat(shortName : string) : TilesetFormat
+tiled.tilesetFormat(shortName : string) : :ref:`script-tilesetformatwrapper`
     Returns the tileset format object with the given name, or `undefined` if
     no object was found. Built in options are `tsx`, `json`, and `lua`. See the
     `tilesetFormats` property for more info.
 
 .. _script-tilesetFormatForFile:
 
-tiled.tilesetFormatForFile(fileName : string) : TilesetFormat
+tiled.tilesetFormatForFile(fileName : string) : :ref:`script-tilesetformatwrapper`
     Returns the tileset format object that can read the given file, or `undefined`
     if no object was found.
 
 .. _script-mapFormat:
 
-tiled.mapFormat(shortName : string) : MapFormat
+tiled.mapFormat(shortName : string) : :ref:`script-mapformatwrapper`
     Returns the map format object with the given name, or `undefined` if no object
     was found. Built in options are `tsx`, `csv`, `gmx`, `json`, `js`, and `lua`.
     See the `mapFormats` property for more info.
 
 .. _script-mapFormatForFile:
 
-tiled.mapFormatForFile(fileName : string) : MapFormat
+tiled.mapFormatForFile(fileName : string) : :ref:`script-mapformatwrapper`
     Returns the map format object that can read the given file, or `undefined` if
     no object was found.
 

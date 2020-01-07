@@ -1,7 +1,6 @@
 /*
  * scriptfileformatwrappers.h
- * Copyright 2019, Thorbjørn Lindeijer <bjorn@lindeijer.nl>, Phlosioneer
- * <mattmdrr2@gmail.com>
+ * Copyright 2019, Phlosioneer <mattmdrr2@gmail.com>
  *
  * This file is part of Tiled.
  *
@@ -71,6 +70,7 @@ bool ScriptFileFormatWrapper::assertCanWrite() const
     return false;
 }
 
+
 ScriptTilesetFormatWrapper::ScriptTilesetFormatWrapper(TilesetFormat* format, QObject *parent)
     : ScriptFileFormatWrapper(format, parent)
 {}
@@ -81,15 +81,13 @@ EditableTileset *ScriptTilesetFormatWrapper::read(const QString &filename)
         return nullptr;
 
     auto tileset = static_cast<TilesetFormat*>(mFormat)->read(filename);
-    if (tileset) {
-        auto editable = new EditableTileset(tileset.data());
-        QQmlEngine::setObjectOwnership(editable, QQmlEngine::JavaScriptOwnership);
-        return editable;
-    } else {
+    if (!tileset) {
         auto message = QCoreApplication::translate("Script Errors", "Error reading tileset");
         ScriptManager::instance().throwError(message);
         return nullptr;
     }
+
+    return new EditableTileset(tileset.data());
 }
 
 void ScriptTilesetFormatWrapper::write(EditableTileset *editable, const QString &filename)
@@ -103,6 +101,7 @@ void ScriptTilesetFormatWrapper::write(EditableTileset *editable, const QString 
         ScriptManager::instance().throwError(mFormat->errorString());
 }
 
+
 ScriptMapFormatWrapper::ScriptMapFormatWrapper(MapFormat *format, QObject *parent)
     : ScriptFileFormatWrapper(format, parent)
 {}
@@ -113,15 +112,13 @@ EditableMap *ScriptMapFormatWrapper::read(const QString &filename)
         return nullptr;
 
     auto map = static_cast<MapFormat*>(mFormat)->read(filename);
-    if (map) {
-        auto editable = new EditableMap(std::move(map));
-        QQmlEngine::setObjectOwnership(editable, QQmlEngine::JavaScriptOwnership);
-        return editable;
-    } else {
+    if (!map) {
         auto message = QCoreApplication::translate("Script Errors", "Error reading map");
         ScriptManager::instance().throwError(message);
         return nullptr;
     }
+
+    return new EditableMap(std::move(map));
 }
 
 void ScriptMapFormatWrapper::write(EditableMap *editable, const QString &filename)
@@ -135,4 +132,4 @@ void ScriptMapFormatWrapper::write(EditableMap *editable, const QString &filenam
         ScriptManager::instance().throwError(mFormat->errorString());
 }
 
-}
+} // namespace Tiled

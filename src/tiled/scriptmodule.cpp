@@ -120,9 +120,9 @@ QStringList ScriptModule::mapFormats() const
     const auto formats = PluginManager::objects<MapFormat>();
     QStringList ret;
     ret.reserve(formats.length());
-    for (auto format : formats) {
+    for (auto format : formats)
         ret.append(format->shortName());
-    }
+
     return ret;
 }
 
