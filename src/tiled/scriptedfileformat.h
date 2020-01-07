@@ -44,9 +44,6 @@ public:
 
     QStringList outputFiles(EditableAsset *asset, const QString &fileName) const;
 
-    QString name() const;
-    QString extension() const;
-
     static bool validateFileFormatObject(const QJSValue &value);
 
 private:
@@ -75,9 +72,6 @@ public:
     std::unique_ptr<Map> read(const QString &fileName) override;
     bool write(const Map *map, const QString &fileName, Options options) override;
 
-    QString name() const { return mFormat.name(); }
-    QString extension() const { return mFormat.extension(); }
-
 private:
     QString mShortName;
     QString mError;
@@ -104,9 +98,6 @@ public:
     // TilesetFormat interface
     SharedTileset read(const QString &fileName) override;
     bool write(const Tileset &tileset, const QString &fileName, Options options = Options()) override;
-
-    QString name() const { return mFormat.name(); }
-    QString extension() const { return mFormat.extension(); }
 
 private:
     QString mShortName;
