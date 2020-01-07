@@ -9,7 +9,11 @@ platform.
 For the scripts to get loaded, they should be placed in ``~/.tiled``.
 Tiled watches this directory for changes, so there is no need to restart
 Tiled after adding or changing scripts (though the directory needs to
-exist when you start Tiled).
+exist when you start Tiled). On linux .tiled is considered a hidden file, use 
+Ctrl+H to show hidden files. On Windows 7 to make a .tiled folder (or a folder 
+starting with a dot) you will have to open command promp (cmd.exe) this should 
+start in your home folder by default, then type "mkdir .tiled" without the quotes 
+to create the folder.
 
 There are several `example scripts`_ available in the repository.
 
