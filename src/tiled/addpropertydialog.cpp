@@ -53,7 +53,7 @@ AddPropertyDialog::AddPropertyDialog(bool allowObjectRef, QWidget *parent)
     mUi->typeBox->addItem(typeToName(filePathTypeId()),  QVariant::fromValue(FilePath()));
     mUi->typeBox->addItem(typeToName(QVariant::Int),     0);
     if (allowObjectRef)
-        mUi->typeBox->addItem(typeToName(objectRefTypeId()), QVariant::fromValue(ObjectRef{0}));
+        mUi->typeBox->addItem(typeToName(objectRefTypeId()), QVariant::fromValue(ObjectRef {}));
     mUi->typeBox->addItem(stringType,                    QString());
 
     mUi->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);

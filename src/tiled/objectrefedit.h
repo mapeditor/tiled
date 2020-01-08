@@ -2,9 +2,6 @@
  * objectrefedit.h
  * Copyright 2019, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
- * Based loosely on the TextPropertyEditor and TextEditor classes from
- * Qt Designer (Copyright (C) 2015 The Qt Company Ltd., LGPLv2.1).
- *
  * This file is part of Tiled.
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -20,7 +17,6 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 
 #pragma once
 
@@ -38,20 +34,22 @@ public:
     explicit ObjectRefEdit(QWidget *parent = nullptr);
 
     int id() const;
-
-public slots:
     void setId(int id);
 
 signals:
     void idChanged(int id);
 
-private slots:
-    void onIdChanged();
+private:
     void onButtonClicked();
 
-private:
-    QLineEdit *mLine;
-    int mId;
+    QLineEdit *mLineEdit;
+    int mId = 0;
 };
+
+
+inline int ObjectRefEdit::id() const
+{
+    return mId;
+}
 
 } // namespace Tiled

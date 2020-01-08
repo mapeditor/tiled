@@ -44,8 +44,6 @@ Q_DECLARE_METATYPE(Tiled::AlignmentPropertyType)
 
 namespace Tiled {
 
-
-
 VariantPropertyManager::VariantPropertyManager(QObject *parent)
     : QtVariantPropertyManager(parent)
     , mSuggestionsAttribute(QStringLiteral("suggestions"))
@@ -141,8 +139,9 @@ int VariantPropertyManager::alignmentTypeId()
     return qMetaTypeId<AlignmentPropertyType>();
 }
 
-QString VariantPropertyManager::objectRefLabel(const MapObject *object) const {
-    QString label = tr("%1: ").arg(QString::number(object->id()));
+QString VariantPropertyManager::objectRefLabel(const MapObject *object) const
+{
+    QString label = tr("%1: ").arg(object->id());
     if (!object->name().isEmpty()) {
         label.append(object->name());
         if (!object->type().isEmpty())

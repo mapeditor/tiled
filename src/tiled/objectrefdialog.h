@@ -41,20 +41,24 @@ public:
     explicit ObjectRefDialog(QWidget *parent = nullptr);
     ~ObjectRefDialog();
 
-    void setId(const int id);
+    void setId(int id);
     int id() const;
 
 private:
-    void appendItem(const MapObject *object, QString objectPath);
+    void appendItem(const MapObject *object, const QString &objectPath);
 
-    Ui::ObjectRefDialog *mUi;
-    int mId;
-
-private slots:
     void onTextChanged(const QString &text);
     void onItemSelectionChanged();
-    void onItemDoubleClicked(QTableWidgetItem * item);
-    void onButtonClicked(bool checked);
+    void onButtonClicked();
+
+    Ui::ObjectRefDialog *mUi;
+    int mId = 0;
 };
+
+
+inline int ObjectRefDialog::id() const
+{
+    return mId;
+}
 
 } // namespace Tiled

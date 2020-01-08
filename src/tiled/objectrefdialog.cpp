@@ -30,63 +30,56 @@
 
 #include <QList>
 #include <QLineEdit>
-#include <QTableWidget>
-#include <QTableWidgetItem>
-#include <QTableWidgetSelectionRange>
+#include <QTreeWidget>
+#include <QTreeWidgetItem>
 #include <QPushButton>
 #include <QHeaderView>
 
 namespace Tiled {
 
-
 ObjectRefDialog::ObjectRefDialog(QWidget *parent)
     : QDialog(parent)
     , mUi(new Ui::ObjectRefDialog)
-    , mId(0)
 {
 #if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 #endif
     mUi->setupUi(this);
+    mUi->lineEdit->setFilteredView(mUi->treeWidget);
 
     Utils::restoreGeometry(this);
 
-    QTableWidget *tableWidget = mUi->tableWidget;
+    QTreeWidget *treeWidget = mUi->treeWidget;
     auto document = DocumentManager::instance()->currentDocument();
     if (document->type() == Document::MapDocumentType) {
-        QStringList headers = {tr("ID"), tr("Name"), tr("Type"), tr("Parent Layer Path")};
-        tableWidget->setHorizontalHeaderLabels(headers);
-        tableWidget->horizontalHeader()->setSectionHidden(3, false);
+        QStringList headers = { tr("ID"), tr("Name"), tr("Type"), tr("Parent Layer Path") };
+        treeWidget->setHeaderLabels(headers);
+        treeWidget->header()->setSectionHidden(3, false);
     } else {
-        QStringList headers = {tr("ID"), tr("Name"), tr("Type")};
-        tableWidget->setHorizontalHeaderLabels(headers);
-        tableWidget->horizontalHeader()->setSectionHidden(3, true);
+        QStringList headers = { tr("ID"), tr("Name"), tr("Type") };
+        treeWidget->setHeaderLabels(headers);
+        treeWidget->header()->setSectionHidden(3, true);
     }
-    tableWidget->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
-    tableWidget->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-
+    treeWidget->header()->setSectionResizeMode(1, QHeaderView::Stretch);
 
     if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document)) {
         for (const Layer *layer : mapDocument->map()->objectGroups()) {
-            for (const MapObject *object : *static_cast<const ObjectGroup*>(layer)) {
+            for (const MapObject *object : *static_cast<const ObjectGroup*>(layer))
                 appendItem(object, layer->parentsAsPath());
-            }
         }
     } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
         auto currentSelection = tilesetDocument->currentObject();
         if (auto currentTile = qobject_cast<Tile*>(currentSelection)) {
-            if (auto objects = currentTile->objectGroup()) {
-                for (MapObject *object : objects->objects()) {
+            if (auto objectGroup = currentTile->objectGroup()) {
+                for (MapObject *object : objectGroup->objects())
                     appendItem(object, QString());
-                }
             }
         }
     }
 
     connect(mUi->lineEdit, &QLineEdit::textChanged, this, &ObjectRefDialog::onTextChanged);
-    connect(mUi->tableWidget, &QTableWidget::itemSelectionChanged, this, &ObjectRefDialog::onItemSelectionChanged);
-    connect(mUi->tableWidget, &QTableWidget::itemDoubleClicked, this, &ObjectRefDialog::onItemDoubleClicked);
-    connect(mUi->pushButton, &QPushButton::clicked, this, &ObjectRefDialog::onButtonClicked);
+    connect(mUi->treeWidget, &QTreeWidget::itemSelectionChanged, this, &ObjectRefDialog::onItemSelectionChanged);
+    connect(mUi->treeWidget, &QTreeWidget::itemDoubleClicked, this, &QDialog::accept);
 }
 
 ObjectRefDialog::~ObjectRefDialog()
@@ -95,92 +88,60 @@ ObjectRefDialog::~ObjectRefDialog()
     delete mUi;
 }
 
-void ObjectRefDialog::setId(const int id)
+void ObjectRefDialog::setId(int id)
 {
     mId = id;
 
-    QLineEdit *lineEdit = mUi->lineEdit;
-    QTableWidget *tableWidget = mUi->tableWidget;
-    tableWidget->clearSelection();
+    mUi->treeWidget->clearSelection();
 
-    QList<QTableWidgetItem *> items =
-            tableWidget->findItems(QString::number(mId), Qt::MatchExactly);
+    const auto items =
+            mUi->treeWidget->findItems(QString::number(mId), Qt::MatchExactly);
 
-    if (items.count() > 0) {
-        for (const QTableWidgetItem *item : items) {
-            if (item->column() == 0) {
-                tableWidget->selectRow(item->row());
-                lineEdit->setText(QStringLiteral(""));
-                break;
-            }
-        }
+    if (!items.isEmpty()) {
+        mUi->treeWidget->setCurrentItem(items.first());
+        mUi->lineEdit->clear();
     }
 }
 
-int ObjectRefDialog::id() const
+void ObjectRefDialog::appendItem(const MapObject *object, const QString &objectPath)
 {
-    return mId;
-}
-
-void ObjectRefDialog::appendItem(const MapObject *object, QString objectPath)
-{
-    auto tableWidget = mUi->tableWidget;
-    tableWidget->insertRow(tableWidget->rowCount());
-    int index = tableWidget->rowCount() - 1;
-    tableWidget->setItem(index, 0, new QTableWidgetItem(QString::number(object->id())));
-    tableWidget->setItem(index, 1, new QTableWidgetItem(object->name()));
-    tableWidget->setItem(index, 2, new QTableWidgetItem(object->type()));
-    if (!objectPath.isEmpty())
-        tableWidget->setItem(index, 3, new QTableWidgetItem(objectPath));
+    new QTreeWidgetItem(mUi->treeWidget, { QString::number(object->id()), object->name(), object->type(), objectPath });
 }
 
 void ObjectRefDialog::onTextChanged(const QString &text)
 {
-    QTableWidget *tableWidget = mUi->tableWidget;
-    tableWidget->clearSelection();
+    auto *treeWidget = mUi->treeWidget;
+    treeWidget->clearSelection();
 
-    QList<QTableWidgetItem *> items =
-            tableWidget->findItems(text, Qt::MatchContains);
+    QSet<QTreeWidgetItem*> matchedItems;
 
-    bool first = true;
-    for(int i = 0; i < tableWidget->rowCount(); ++i)
-    {
-        bool found = false;
-        for (const QTableWidgetItem *match : items) {
-            if (match->row() == i) {
-                found = true;
+    for (int column = 0; column < treeWidget->columnCount(); ++column) {
+        const auto items = treeWidget->findItems(text, Qt::MatchContains, column);
+        for (auto item : items)
+            matchedItems.insert(item);
+    }
 
-                if (first) {
-                    tableWidget->selectRow(i);
-                    first = false;
-                }
-            }
+    bool selectFirst = !text.isEmpty();
+    for (int index = 0; index < treeWidget->topLevelItemCount(); ++index) {
+        auto item = treeWidget->topLevelItem(index);
+        const bool found = matchedItems.contains(item);
+
+        if (found && selectFirst) {
+            item->setSelected(true);
+            selectFirst = false;
         }
-        tableWidget->setRowHidden(i, !found);
+
+        item->setHidden(!found);
     }
 }
 
 void ObjectRefDialog::onItemSelectionChanged()
 {
-    QList<QTableWidgetItem *> items = mUi->tableWidget->selectedItems();
-    if (items.count()) {
-        mId = items.at(0)->text().toInt();
-    } else {
+    const auto items = mUi->treeWidget->selectedItems();
+    if (!items.isEmpty())
+        mId = items.first()->text(0).toInt();
+    else
         mId = 0;
-    }
-}
-
-void ObjectRefDialog::onItemDoubleClicked(QTableWidgetItem * item)
-{
-    Q_UNUSED(item)
-    accept();
-}
-
-void ObjectRefDialog::onButtonClicked(bool checked)
-{
-    Q_UNUSED(checked)
-    mUi->lineEdit->clear();
-    mUi->tableWidget->clearSelection();
 }
 
 } // namespace Tiled

@@ -43,7 +43,7 @@ struct FilePath {
 };
 
 struct ObjectRef {
-    int id;
+    int id = 0;
 };
 
 class TILEDSHARED_EXPORT AggregatedPropertyData

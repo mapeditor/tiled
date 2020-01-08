@@ -2,9 +2,6 @@
  * objectrefedit.cpp
  * Copyright 2019, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
- * Based loosely on the TextPropertyEditor and TextEditor classes from
- * Qt Designer (Copyright (C) 2015 The Qt Company Ltd., LGPLv2.1).
- *
  * This file is part of Tiled.
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -37,13 +34,12 @@ namespace Tiled {
 
 ObjectRefEdit::ObjectRefEdit(QWidget *parent)
     : QWidget(parent)
-    , mLine(new QLineEdit(this))
-    , mId(0)
+    , mLineEdit(new QLineEdit(this))
 {
     QHBoxLayout *layout = new QHBoxLayout(this);
 
     setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed));
-    setFocusProxy(mLine);
+    setFocusProxy(mLineEdit);
 
     QToolButton *button = new QToolButton(this);
     button->setText(tr("..."));
@@ -51,30 +47,24 @@ ObjectRefEdit::ObjectRefEdit(QWidget *parent)
 
     layout->setMargin(0);
     layout->setSpacing(0);
-    layout->addWidget(mLine);
+    layout->addWidget(mLineEdit);
     layout->addWidget(button);
 
-    mLine->setValidator(new QIntValidator(this));
+    mLineEdit->setValidator(new QIntValidator(this));
 
     connect(button, &QToolButton::clicked, this, &ObjectRefEdit::onButtonClicked);
-    connect(mLine, &QLineEdit::editingFinished, this, &ObjectRefEdit::onIdChanged);
-}
-
-int ObjectRefEdit::id() const
-{
-    return mId;
+    connect(mLineEdit, &QLineEdit::editingFinished,
+            [this] { setId(mLineEdit->text().toInt()); });
 }
 
 void ObjectRefEdit::setId(int id)
 {
-    mId = id;
-    mLine->setText(QString::number(id));
-    emit idChanged(mId);
-}
+    if (mId == id)
+        return;
 
-void ObjectRefEdit::onIdChanged()
-{
-    setId(mLine->text().toInt());
+    mId = id;
+    mLineEdit->setText(QString::number(id));
+    emit idChanged(mId);
 }
 
 void ObjectRefEdit::onButtonClicked()
@@ -82,14 +72,8 @@ void ObjectRefEdit::onButtonClicked()
     ObjectRefDialog dialog(this);
     dialog.setId(mId);
 
-    if (dialog.exec() != QDialog::Accepted)
-        return;
-
-    int newId = dialog.id();
-
-    if (newId != mId) {
-        setId(newId);
-    }
+    if (dialog.exec() == QDialog::Accepted)
+        setId(dialog.id());
 }
 
 } // namespace Tiled

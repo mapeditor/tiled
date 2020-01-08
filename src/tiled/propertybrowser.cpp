@@ -577,7 +577,7 @@ void PropertyBrowser::resetProperty(QtProperty *property)
     if (typeId == QVariant::Color)
         mVariantManager->setValue(property, QColor());
     else if (typeId == objectRefTypeId())
-        mVariantManager->setValue(property, QVariant::fromValue(ObjectRef { 0 }));
+        mVariantManager->setValue(property, QVariant::fromValue(ObjectRef {}));
     else
         qWarning() << "Resetting of property type not supported right now";
 }

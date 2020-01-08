@@ -33,6 +33,17 @@ FilterEdit::FilterEdit(QWidget *parent)
 
 bool FilterEdit::event(QEvent *event)
 {
+    if (event->type() == QEvent::KeyPress) {
+        auto key = static_cast<QKeyEvent*>(event)->key();
+
+        if (key == Qt::Key_Escape) {
+            if (!text().isEmpty()) {
+                clear();
+                return true;
+            }
+        }
+    }
+
     if (mFilteredView) {
         switch (event->type()) {
         case QEvent::KeyPress:
@@ -52,12 +63,6 @@ bool FilterEdit::event(QEvent *event)
                 return true;
             }
 
-            if (event->type() == QEvent::KeyPress && key == Qt::Key_Escape) {
-                if (!text().isEmpty()) {
-                    clear();
-                    return true;
-                }
-            }
             break;
         }
         default:
