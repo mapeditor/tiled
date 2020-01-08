@@ -1625,7 +1625,7 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[HexSideLengthProperty]->setValue(map->hexSideLength());
         mIdToProperty[StaggerAxisProperty]->setValue(map->staggerAxis());
         mIdToProperty[StaggerIndexProperty]->setValue(map->staggerIndex());
-        mIdToProperty[LayerFormatProperty]->setValue(map->layerDataFormat());
+        mIdToProperty[LayerFormatProperty]->setValue(mLayerFormatValues.indexOf(map->layerDataFormat()));
         mIdToProperty[CompressionLevelProperty]->setValue(map->compressionLevel());
         mIdToProperty[RenderOrderProperty]->setValue(map->renderOrder());
         mIdToProperty[BackgroundColorProperty]->setValue(map->backgroundColor());
@@ -1949,7 +1949,7 @@ void PropertyBrowser::retranslateUi()
     mLayerFormatNames.clear();
     mLayerFormatValues.clear();
 
-    mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "XML"));
+    mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "XML (deprecated)"));
     mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "Base64 (uncompressed)"));
     mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "Base64 (gzip compressed)"));
     mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "Base64 (zlib compressed)"));
