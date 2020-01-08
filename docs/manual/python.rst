@@ -1,6 +1,14 @@
 Python Scripts
 ==============
 
+.. note::
+
+    Since Tiled 1.3, Tiled can be :doc:`extended using JavaScript
+    </reference/scripting>`. The JavaScript API provides a lot more
+    opportunity for extending Tiled's functionality than just adding custom
+    map formats. It is fully documented and works out of the box on all
+    platforms. It should be preferred over the Python plugin when possible.
+
 Tiled ships with a plugin that enables you to use Python 3 to add
 support for custom map formats. This is nice especially since you don't
 need to compile Tiled yourself and the scripts are easy to deploy to any
@@ -12,6 +20,15 @@ Tiled after adding or changing scripts (though the directory needs to
 exist when you start Tiled).
 
 There are several `example scripts`_ available in the repository.
+
+.. note::
+
+    To create the ``~/.tiled`` folder on Windows, open command prompt
+    (``cmd.exe``), which should  start in your home folder by default, then
+    type ``mkdir .tiled`` to create the folder.
+
+    On Linux, folders starting with a dot are hidden by default. In most file
+    managers you can toggle showing of hidden files using ``Ctrl+H``.
 
 .. note::
 
