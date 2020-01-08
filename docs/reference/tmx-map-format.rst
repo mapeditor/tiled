@@ -76,7 +76,6 @@ existing tools.*
    + 1)
 -  **objectalignment:** Controls the origins for tile and shape objects.
    Valid values are ``unset``, ``top-left``, ``bottom-left``, and ``bottom-center``.
-   In isometric mode, ``bottom-left`` is treated the same as ``bottom-center``.
    The default value is ``unset``, for compatibility reasons. With ``unset``, tile
    objects use ``bottom-left`` in orthogonal mode and ``bottom-center`` in isometric
    mode, while shape objects use ``top-left`` everywhere. (since 1.4)

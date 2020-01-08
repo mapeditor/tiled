@@ -24,6 +24,7 @@
 #include "mapobject.h"
 #include "mapobjectitem.h"
 #include "maprenderer.h"
+#include "objectgroup.h"
 #include "snaphelper.h"
 #include "utils.h"
 
@@ -42,15 +43,19 @@ CreateTextObjectTool::CreateTextObjectTool(QObject *parent)
 
 void CreateTextObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt::KeyboardModifiers modifiers)
 {
-    const MapRenderer *renderer = mapDocument()->renderer();
+    MapObject *newMapObject = mNewMapObjectItem->mapObject();
+    const QPointF halfSize(newMapObject->width() / 2, newMapObject->height() / 2);
+    const QRectF screenBounds { pos - halfSize, newMapObject->size() };
 
-    const MapObject *mapObject = mNewMapObjectItem->mapObject();
-    const QPointF diff(-mapObject->width() / 2, -mapObject->height() / 2);
-    QPointF pixelCoords = renderer->screenToPixelCoords(pos + diff);
+    // These screenBounds assume TopLeft alignment, but the map's object alignment might be different.
+    const QPointF offset = alignmentOffset(screenBounds, newMapObject->alignment(mapDocument()->map()));
+
+    const MapRenderer *renderer = mapDocument()->renderer();
+    QPointF pixelCoords = renderer->screenToPixelCoords(screenBounds.topLeft() + offset);
 
     SnapHelper(renderer, modifiers).snap(pixelCoords);
 
-    mNewMapObjectItem->mapObject()->setPosition(pixelCoords);
+    newMapObject->setPosition(pixelCoords);
     mNewMapObjectItem->syncWithMapObject();
 }
 

@@ -216,23 +216,26 @@ QRectF MapObject::screenBounds(const MapRenderer &renderer) const
 }
 
 /*
+ * Returns the effective alignment for this object on the given \a map.
+ *
  * This is somewhat of a workaround for dealing with the ways different objects
- * align.
+ * align. By default, non-tile objects have top-left alignment, tile objects
+ * have bottom-left alignment on orthogonal maps, and bottom-center alignment
+ * on isometric maps.
  *
- * Traditional rectangle objects have top-left alignment.
- * Tile objects have bottom-left alignment on orthogonal maps, but
- * bottom-center alignment on isometric maps.
- *
- * Eventually, the object alignment should probably be configurable. For
- * backwards compatibility, it will need to be configurable on a per-object
- * level.
+ * The inconsistent alignment is overridden by the objectAlignment property of
+ * the given \a map, when it is not Unset. If no map is provided, the
+ * the map the object is part of is used, if available.
  */
-Alignment MapObject::alignment() const
+Alignment MapObject::alignment(const Map *map) const
 {
     Map::ObjectAlignment objectAlignment = Map::Unset;
-    if (mObjectGroup)
-        if (Map *map = mObjectGroup->map())
-            objectAlignment = map->objectAlignment();
+
+    if (!map && mObjectGroup)
+        map = mObjectGroup->map();
+
+    if (map)
+        objectAlignment = map->objectAlignment();
 
     switch (objectAlignment) {
     case Map::Unset:
@@ -247,10 +250,9 @@ Alignment MapObject::alignment() const
 
     if (mCell.isEmpty()) {
         return TopLeft;
-    } else if (mObjectGroup) {
-        if (Map *map = mObjectGroup->map())
-            if (map->orientation() == Map::Isometric)
-                return Bottom;
+    } else if (map) {
+        if (map->orientation() == Map::Isometric)
+            return Bottom;
     }
     return BottomLeft;
 }
