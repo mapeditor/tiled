@@ -115,7 +115,7 @@ void ConsoleDock::appendScript(const QString &str)
 void ConsoleDock::appendScriptResult(const QString &tempName, const QString &result)
 {
     mPlainTextEdit->appendHtml(QLatin1String("<pre><span style='color:gray'>") + tempName.toHtmlEscaped() +
-                               QLatin1String(" = </span>") + result.toHtmlEscaped() +
+                               QLatin1String("&nbsp;=&nbsp;</span>") + result.toHtmlEscaped() +
                                QLatin1String("</pre>"));
 }
 
