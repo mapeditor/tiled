@@ -44,6 +44,7 @@ private:
     void appendWarning(const QString &str);
     void appendError(const QString &str);
     void appendScript(const QString &str);
+    void appendScriptResult(const QString &tempName, const QString &result);
 
     void executeScript();
 
