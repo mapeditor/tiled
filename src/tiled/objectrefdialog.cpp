@@ -1,5 +1,5 @@
 /*
- * ObjectRefdialog.cpp
+ * objectrefdialog.cpp
  * Copyright 2019, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
@@ -54,7 +54,6 @@ ObjectRefDialog::ObjectRefDialog(QWidget *parent)
     if (document->type() == Document::MapDocumentType) {
         QStringList headers = { tr("ID"), tr("Name"), tr("Type"), tr("Parent Layer Path") };
         treeWidget->setHeaderLabels(headers);
-        treeWidget->header()->setSectionHidden(3, false);
     } else {
         QStringList headers = { tr("ID"), tr("Name"), tr("Type") };
         treeWidget->setHeaderLabels(headers);
@@ -105,7 +104,11 @@ void ObjectRefDialog::setId(int id)
 
 void ObjectRefDialog::appendItem(const MapObject *object, const QString &objectPath)
 {
-    new QTreeWidgetItem(mUi->treeWidget, { QString::number(object->id()), object->name(), object->type(), objectPath });
+    auto item = new QTreeWidgetItem(mUi->treeWidget);
+    item->setData(0, Qt::ItemDataRole::DisplayRole, object->id());
+    item->setData(1, Qt::ItemDataRole::DisplayRole, object->name());
+    item->setData(2, Qt::ItemDataRole::DisplayRole, object->type());
+    item->setData(3, Qt::ItemDataRole::DisplayRole, objectPath);
 }
 
 void ObjectRefDialog::onTextChanged(const QString &text)
