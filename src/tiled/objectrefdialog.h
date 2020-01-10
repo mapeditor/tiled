@@ -24,6 +24,7 @@ class ObjectGroup;
 class QTableWidgetItem;
 
 #include <QDialog>
+#include <QTreeWidget>
 
 namespace Ui {
 class ObjectRefDialog;
@@ -32,6 +33,31 @@ class ObjectRefDialog;
 namespace Tiled {
 
 class MapObject;
+class MapDocument;
+class ObjectsFilterModel;
+
+class ObjectsTreeView : public QTreeView {
+   Q_OBJECT
+
+public:
+    explicit ObjectsTreeView(MapDocument *mapDoc, QWidget *parent);
+
+    MapObject *selectedObject();
+    void setSelectedObject(MapObject *object);
+    void setSelectedObject(int id);
+
+signals:
+    void selectedObjectChanged(MapObject *object);
+    void objectDoubleClicked(MapObject *object);
+
+protected:
+    void selectionChanged(const QItemSelection &selected, const QItemSelection &deselected) override;
+    void mouseDoubleClickEvent(QMouseEvent *event) override;
+
+private:
+    ObjectsFilterModel *mProxyModel;
+    MapDocument *mMapDoc;
+};
 
 class ObjectRefDialog : public QDialog
 {
@@ -49,12 +75,14 @@ private:
 
     void onTextChanged(const QString &text);
     void onItemSelectionChanged();
+    void onObjectSelectionChanged(MapObject *object);
     void onButtonClicked();
 
     Ui::ObjectRefDialog *mUi;
+    ObjectsTreeView *mMapObjectsView;
+    QTreeWidget *mTilesetObjectsView;
     int mId = 0;
 };
-
 
 inline int ObjectRefDialog::id() const
 {

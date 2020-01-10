@@ -25,25 +25,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QTreeWidget" name="treeWidget">
-     <property name="alternatingRowColors">
-      <bool>true</bool>
-     </property>
-     <property name="rootIsDecorated">
-      <bool>false</bool>
-     </property>
-     <property name="uniformRowHeights">
-      <bool>true</bool>
-     </property>
-     <property name="sortingEnabled">
-      <bool>true</bool>
-     </property>
-     <column>
-      <property name="text">
-       <string notr="true">1</string>
-      </property>
-     </column>
-    </widget>
+    <layout class="QVBoxLayout" name="treeViewPlaceholder"/>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">

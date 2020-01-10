@@ -27,58 +27,122 @@
 #include "objectgroup.h"
 #include "mapobject.h"
 #include "utils.h"
+#include "objectsfiltermodel.h"
+#include "iconcheckdelegate.h"
+#include "mapobjectmodel.h"
 
 #include <QList>
 #include <QLineEdit>
-#include <QTreeWidget>
 #include <QTreeWidgetItem>
 #include <QPushButton>
 #include <QHeaderView>
 
 namespace Tiled {
 
+ObjectsTreeView::ObjectsTreeView(MapDocument *mapDoc, QWidget *parent)
+    : QTreeView(parent)
+    , mProxyModel(new ObjectsFilterModel(this))
+    , mMapDoc(mapDoc)
+{
+    mProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
+    mProxyModel->setFilterKeyColumn(-1);
+    mProxyModel->setSourceModel(mapDoc->mapObjectModel());
+    setModel(mProxyModel);
+
+    setSelectionBehavior(QAbstractItemView::SelectRows);
+    setSelectionMode(QAbstractItemView::SingleSelection);
+}
+
+MapObject *ObjectsTreeView::selectedObject()
+{
+    if (selectionModel()->selectedRows().length() == 0)
+        return nullptr;
+    auto proxyIndex = selectionModel()->selectedRows().at(0);
+    auto index = mProxyModel->mapToSource(proxyIndex);
+
+    return mMapDoc->mapObjectModel()->toMapObject(index);
+}
+
+void ObjectsTreeView::setSelectedObject(MapObject *object)
+{
+    auto index = mMapDoc->mapObjectModel()->index(object);
+    selectionModel()->select(index, QItemSelectionModel::Rows);
+}
+
+void ObjectsTreeView::setSelectedObject(int id)
+{
+    for (Layer *layer : mMapDoc->map()->objectGroups()) {
+        for (MapObject *object : *static_cast<ObjectGroup*>(layer)) {
+            if (object->id() == id)
+                setSelectedObject(object);
+        }
+    }
+}
+
+void ObjectsTreeView::selectionChanged(const QItemSelection &selected, const QItemSelection &deselected)
+{
+    QTreeView::selectionChanged(selected, deselected);
+
+    emit selectedObjectChanged(selectedObject());
+}
+
+void ObjectsTreeView::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    QTreeView::mouseDoubleClickEvent(event);
+
+    emit objectDoubleClicked(selectedObject());
+}
+
 ObjectRefDialog::ObjectRefDialog(QWidget *parent)
     : QDialog(parent)
     , mUi(new Ui::ObjectRefDialog)
+    , mMapObjectsView(nullptr)
+    , mTilesetObjectsView(nullptr)
 {
 #if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 #endif
     mUi->setupUi(this);
-    mUi->lineEdit->setFilteredView(mUi->treeWidget);
+    auto document = DocumentManager::instance()->currentDocument();
+    if (document->type() == Document::MapDocumentType) {
+        mMapObjectsView = new ObjectsTreeView(static_cast<MapDocument*>(document), this);
+        mUi->treeViewPlaceholder->addWidget(mMapObjectsView);
+        mUi->lineEdit->setFilteredView(mMapObjectsView);
+
+        connect(mMapObjectsView, &ObjectsTreeView::selectedObjectChanged,
+                this, &ObjectRefDialog::onObjectSelectionChanged);
+        connect(mMapObjectsView, &ObjectsTreeView::objectDoubleClicked,
+                this, &QDialog::accept);
+    } else {
+        Q_ASSERT(document->type() == Document::TilesetDocumentType);
+
+        mTilesetObjectsView = new QTreeWidget;
+        mUi->treeViewPlaceholder->addWidget(mTilesetObjectsView);
+        QStringList headers = { tr("ID"), tr("Name"), tr("Type") };
+        mTilesetObjectsView->setHeaderLabels(headers);
+        mTilesetObjectsView->header()->setSectionResizeMode(1, QHeaderView::Stretch);
+
+        auto tilesetDocument = static_cast<TilesetDocument*>(document);
+        auto currentTile = static_cast<Tile*>(tilesetDocument->currentObject());
+
+        // ObjectRefEdit shouldn't allow object ref properties on the tileset itself, only
+        // on tiles and their objects.
+        Q_ASSERT(currentTile);
+
+        if (auto objectGroup = currentTile->objectGroup()) {
+            for (MapObject *object : objectGroup->objects())
+                appendItem(object, QString());
+        }
+
+        connect(mTilesetObjectsView, &QTreeWidget::itemSelectionChanged,
+                this, &ObjectRefDialog::onItemSelectionChanged);
+        connect(mTilesetObjectsView, &QTreeWidget::itemDoubleClicked,
+                this, &QDialog::accept);
+    }
 
     Utils::restoreGeometry(this);
 
-    QTreeWidget *treeWidget = mUi->treeWidget;
-    auto document = DocumentManager::instance()->currentDocument();
-    if (document->type() == Document::MapDocumentType) {
-        QStringList headers = { tr("ID"), tr("Name"), tr("Type"), tr("Parent Layer Path") };
-        treeWidget->setHeaderLabels(headers);
-    } else {
-        QStringList headers = { tr("ID"), tr("Name"), tr("Type") };
-        treeWidget->setHeaderLabels(headers);
-        treeWidget->header()->setSectionHidden(3, true);
-    }
-    treeWidget->header()->setSectionResizeMode(1, QHeaderView::Stretch);
-
-    if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document)) {
-        for (const Layer *layer : mapDocument->map()->objectGroups()) {
-            for (const MapObject *object : *static_cast<const ObjectGroup*>(layer))
-                appendItem(object, layer->parentsAsPath());
-        }
-    } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
-        auto currentSelection = tilesetDocument->currentObject();
-        if (auto currentTile = qobject_cast<Tile*>(currentSelection)) {
-            if (auto objectGroup = currentTile->objectGroup()) {
-                for (MapObject *object : objectGroup->objects())
-                    appendItem(object, QString());
-            }
-        }
-    }
-
-    connect(mUi->lineEdit, &QLineEdit::textChanged, this, &ObjectRefDialog::onTextChanged);
-    connect(mUi->treeWidget, &QTreeWidget::itemSelectionChanged, this, &ObjectRefDialog::onItemSelectionChanged);
-    connect(mUi->treeWidget, &QTreeWidget::itemDoubleClicked, this, &QDialog::accept);
+    //connect(mUi->lineEdit, &QLineEdit::textChanged, this, &ObjectRefDialog::onTextChanged);
 }
 
 ObjectRefDialog::~ObjectRefDialog()
@@ -91,20 +155,24 @@ void ObjectRefDialog::setId(int id)
 {
     mId = id;
 
-    mUi->treeWidget->clearSelection();
+    mUi->lineEdit->clear();
 
-    const auto items =
-            mUi->treeWidget->findItems(QString::number(mId), Qt::MatchExactly);
+    if (mTilesetObjectsView) {
+        mTilesetObjectsView->clearSelection();
 
-    if (!items.isEmpty()) {
-        mUi->treeWidget->setCurrentItem(items.first());
-        mUi->lineEdit->clear();
+        const auto items =
+                mTilesetObjectsView->findItems(QString::number(mId), Qt::MatchExactly);
+
+        if (!items.isEmpty())
+            mTilesetObjectsView->setCurrentItem(items.first());
+    } else {
+        mMapObjectsView->setSelectedObject(id);
     }
 }
 
 void ObjectRefDialog::appendItem(const MapObject *object, const QString &objectPath)
 {
-    auto item = new QTreeWidgetItem(mUi->treeWidget);
+    auto item = new QTreeWidgetItem(mTilesetObjectsView);
     item->setData(0, Qt::ItemDataRole::DisplayRole, object->id());
     item->setData(1, Qt::ItemDataRole::DisplayRole, object->name());
     item->setData(2, Qt::ItemDataRole::DisplayRole, object->type());
@@ -113,7 +181,7 @@ void ObjectRefDialog::appendItem(const MapObject *object, const QString &objectP
 
 void ObjectRefDialog::onTextChanged(const QString &text)
 {
-    auto *treeWidget = mUi->treeWidget;
+    /*auto *treeWidget = mUi->treeWidget;
     treeWidget->clearSelection();
 
     QSet<QTreeWidgetItem*> matchedItems;
@@ -135,16 +203,25 @@ void ObjectRefDialog::onTextChanged(const QString &text)
         }
 
         item->setHidden(!found);
-    }
+    }*/
 }
 
 void ObjectRefDialog::onItemSelectionChanged()
 {
-    const auto items = mUi->treeWidget->selectedItems();
+    const auto items = mTilesetObjectsView->selectedItems();
     if (!items.isEmpty())
         mId = items.first()->text(0).toInt();
     else
         mId = 0;
 }
 
+void ObjectRefDialog::onObjectSelectionChanged(MapObject *object)
+{
+    if (object)
+        mId = object->id();
+    else
+        mId = 0;
+}
+
 } // namespace Tiled
+

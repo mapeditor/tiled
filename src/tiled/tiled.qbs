@@ -347,6 +347,7 @@ QtGuiApplication {
         "objectselectionitem.h",
         "objectselectiontool.cpp",
         "objectselectiontool.h",
+        "objectsfiltermodel.h",
         "objectsview.cpp",
         "objectsview.h",
         "objecttemplatemodel.cpp",

@@ -27,6 +27,7 @@
 #include "preferences.h"
 #include "reversingproxymodel.h"
 #include "utils.h"
+#include "objectsfiltermodel.h"
 
 #include <QAction>
 #include <QGuiApplication>
@@ -40,44 +41,6 @@ namespace Tiled {
 
 static const char FIRST_COLUMN_WIDTH_KEY[] = "ObjectsDock/FirstSectionSize";
 static const char VISIBLE_COLUMNS_KEY[] = "ObjectsDock/VisibleSections";
-
-class ObjectsFilterModel : public ReversingProxyModel
-{
-    Q_OBJECT
-
-public:
-    ObjectsFilterModel(QObject *parent = nullptr)
-        : ReversingProxyModel(parent)
-    {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
-        setRecursiveFilteringEnabled(true);
-#endif
-    }
-
-#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
-protected:
-    bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
-    {
-        return filterRecursiveAcceptsRow(sourceRow, sourceParent);
-    }
-
-private:
-    bool filterRecursiveAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
-    {
-        if (ReversingProxyModel::filterAcceptsRow(sourceRow, sourceParent))
-            return true;
-
-        const QModelIndex index = sourceModel()->index(sourceRow, 0, sourceParent);
-        const int count = sourceModel()->rowCount(index);
-
-        for (int i = 0; i < count; ++i)
-            if (filterRecursiveAcceptsRow(i, index))
-                return true;
-
-        return false;
-    }
-#endif
-};
 
 ObjectsView::ObjectsView(QWidget *parent)
     : QTreeView(parent)
@@ -450,5 +413,3 @@ void ObjectsView::updateRow(MapObject *object)
 }
 
 } // namespace Tiled
-
-#include "objectsview.moc"

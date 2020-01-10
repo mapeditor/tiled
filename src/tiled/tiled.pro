@@ -406,6 +406,7 @@ HEADERS += aboutdialog.h \
     objectrefedit.h \
     objectsdock.h \
     objectselectionitem.h \
+    objectsfiltermodel.h \
     objecttemplatemodel.h \
     objectselectiontool.h \
     objectsview.h \
