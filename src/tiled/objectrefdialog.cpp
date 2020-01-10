@@ -40,15 +40,31 @@
 
 namespace Tiled {
 
+class ImmutableRoleModel : public ObjectsFilterModel {
+public:
+    ImmutableRoleModel(QObject *parent = nullptr)
+        : ObjectsFilterModel(parent)
+    {}
+
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override
+    {
+        if (role == Qt::CheckStateRole)
+            return QVariant();
+        else
+            return ObjectsFilterModel::data(index, role);
+    }
+};
+
 ObjectsTreeView::ObjectsTreeView(MapDocument *mapDoc, QWidget *parent)
     : QTreeView(parent)
-    , mProxyModel(new ObjectsFilterModel(this))
+    , mProxyModel(new ImmutableRoleModel(this))
     , mMapDoc(mapDoc)
 {
     mProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
     mProxyModel->setFilterKeyColumn(-1);
     mProxyModel->setSourceModel(mapDoc->mapObjectModel());
     setModel(mProxyModel);
+
 
     setSelectionBehavior(QAbstractItemView::SelectRows);
     setSelectionMode(QAbstractItemView::SingleSelection);
