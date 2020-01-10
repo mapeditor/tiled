@@ -52,6 +52,10 @@ ObjectsTreeView::ObjectsTreeView(MapDocument *mapDoc, QWidget *parent)
 
     setSelectionBehavior(QAbstractItemView::SelectRows);
     setSelectionMode(QAbstractItemView::SingleSelection);
+
+    hideColumn(3);
+    header()->setSectionResizeMode(0, QHeaderView::Stretch);
+    header()->moveSection(2, 0);
 }
 
 MapObject *ObjectsTreeView::selectedObject()
