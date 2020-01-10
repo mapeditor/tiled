@@ -65,7 +65,9 @@ MapObject *ObjectsTreeView::selectedObject()
     auto proxyIndex = selectionModel()->selectedRows().at(0);
     auto index = mProxyModel->mapToSource(proxyIndex);
 
-    return mMapDoc->mapObjectModel()->toMapObject(index);
+    auto object = mMapDoc->mapObjectModel()->toMapObject(index);
+    Q_ASSERT(object);
+    return object;
 }
 
 void ObjectsTreeView::setSelectedObject(MapObject *object)
@@ -77,7 +79,7 @@ void ObjectsTreeView::setSelectedObject(MapObject *object)
 
     auto index = mMapDoc->mapObjectModel()->index(object);
     auto proxyIndex = mProxyModel->mapFromSource(index);
-    selectionModel()->select(proxyIndex, QItemSelectionModel::Rows);
+    selectionModel()->select(proxyIndex, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
 }
 
 void ObjectsTreeView::setSelectedObject(int id)
@@ -104,6 +106,14 @@ void ObjectsTreeView::setFilter(const QString &text)
 
 void ObjectsTreeView::selectionChanged(const QItemSelection &selected, const QItemSelection &deselected)
 {
+    if (!selected.indexes().isEmpty() && isLayer(selected.indexes().at(0))) {
+        if (deselected.indexes().isEmpty())
+            selectionModel()->clear();
+        else
+            selectionModel()->select(deselected.indexes().at(0), QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+        return;
+    }
+
     QTreeView::selectionChanged(selected, deselected);
 
     emit selectedObjectChanged(selectedObject());
@@ -113,7 +123,14 @@ void ObjectsTreeView::mouseDoubleClickEvent(QMouseEvent *event)
 {
     QTreeView::mouseDoubleClickEvent(event);
 
+    // TODO: Check if the double-click was on a layer. If it was, ignore it.
     emit objectDoubleClicked(selectedObject());
+}
+
+bool ObjectsTreeView::isLayer(const QModelIndex &proxyIndex)
+{
+    auto index = mProxyModel->mapToSource(proxyIndex);
+    return mMapDoc->mapObjectModel()->toLayer(index);
 }
 
 ObjectRefDialog::ObjectRefDialog(QWidget *parent)

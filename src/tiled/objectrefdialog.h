@@ -57,6 +57,8 @@ protected:
     void mouseDoubleClickEvent(QMouseEvent *event) override;
 
 private:
+    bool isLayer(const QModelIndex &proxyIndex);
+
     ObjectsFilterModel *mProxyModel;
     MapDocument *mMapDoc;
 };
