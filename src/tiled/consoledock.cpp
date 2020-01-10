@@ -114,11 +114,8 @@ void ConsoleDock::appendScript(const QString &str)
 
 void ConsoleDock::appendScriptResult(const QString &tempName, const QString &result)
 {
-    // Text is appended in two steps; the append adds a newline, and the insert
-    // does not.
-    mPlainTextEdit->appendHtml(QLatin1String("<pre style='color:gray'>") + tempName.toHtmlEscaped() +
-                      QLatin1String(" = </pre>"));
-    mPlainTextEdit->textCursor().insertHtml(QLatin1String("<pre>") + result.toHtmlEscaped() +
+    mPlainTextEdit->appendHtml(QLatin1String("<pre><span style='color:gray'>") + tempName.toHtmlEscaped() +
+                               QLatin1String(" = </span>") + result.toHtmlEscaped() +
                                QLatin1String("</pre>"));
 }
 
