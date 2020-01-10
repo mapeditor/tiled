@@ -93,6 +93,11 @@ void ObjectsTreeView::setSelectedObject(int id)
     ERROR(QLatin1String("No object found with id ") + QString::number(id));
 }
 
+void ObjectsTreeView::setFilter(const QString &text)
+{
+    mProxyModel->setFilterFixedString(text);
+}
+
 void ObjectsTreeView::selectionChanged(const QItemSelection &selected, const QItemSelection &deselected)
 {
     QTreeView::selectionChanged(selected, deselected);
@@ -156,7 +161,7 @@ ObjectRefDialog::ObjectRefDialog(QWidget *parent)
 
     Utils::restoreGeometry(this);
 
-    //connect(mUi->lineEdit, &QLineEdit::textChanged, this, &ObjectRefDialog::onTextChanged);
+    connect(mUi->lineEdit, &QLineEdit::textChanged, this, &ObjectRefDialog::onTextChanged);
 }
 
 ObjectRefDialog::~ObjectRefDialog()
@@ -195,29 +200,33 @@ void ObjectRefDialog::appendItem(const MapObject *object, const QString &objectP
 
 void ObjectRefDialog::onTextChanged(const QString &text)
 {
-    /*auto *treeWidget = mUi->treeWidget;
-    treeWidget->clearSelection();
+    if (mTilesetObjectsView) {
+        mTilesetObjectsView->clearSelection();
 
-    QSet<QTreeWidgetItem*> matchedItems;
+        QSet<QTreeWidgetItem*> matchedItems;
 
-    for (int column = 0; column < treeWidget->columnCount(); ++column) {
-        const auto items = treeWidget->findItems(text, Qt::MatchContains, column);
-        for (auto item : items)
-            matchedItems.insert(item);
-    }
-
-    bool selectFirst = !text.isEmpty();
-    for (int index = 0; index < treeWidget->topLevelItemCount(); ++index) {
-        auto item = treeWidget->topLevelItem(index);
-        const bool found = matchedItems.contains(item);
-
-        if (found && selectFirst) {
-            item->setSelected(true);
-            selectFirst = false;
+        for (int column = 0; column < mTilesetObjectsView->columnCount(); ++column) {
+            const auto items = mTilesetObjectsView->findItems(text, Qt::MatchContains, column);
+            for (auto item : items)
+                matchedItems.insert(item);
         }
 
-        item->setHidden(!found);
-    }*/
+        bool selectFirst = !text.isEmpty();
+        for (int index = 0; index < mTilesetObjectsView->topLevelItemCount(); ++index) {
+            auto item = mTilesetObjectsView->topLevelItem(index);
+            const bool found = matchedItems.contains(item);
+
+            if (found && selectFirst) {
+                item->setSelected(true);
+                selectFirst = false;
+            }
+
+            item->setHidden(!found);
+        }
+    } else {
+        mMapObjectsView->setSelectedObject(nullptr);
+        mMapObjectsView->setFilter(text);
+    }
 }
 
 void ObjectRefDialog::onItemSelectionChanged()

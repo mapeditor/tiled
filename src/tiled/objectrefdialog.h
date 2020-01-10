@@ -46,6 +46,8 @@ public:
     void setSelectedObject(MapObject *object);
     void setSelectedObject(int id);
 
+    void setFilter(const QString &text);
+
 signals:
     void selectedObjectChanged(MapObject *object);
     void objectDoubleClicked(MapObject *object);
