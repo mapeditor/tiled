@@ -30,6 +30,7 @@
 #include "objectsfiltermodel.h"
 #include "iconcheckdelegate.h"
 #include "mapobjectmodel.h"
+#include "logginginterface.h"
 
 #include <QList>
 #include <QLineEdit>
@@ -65,18 +66,31 @@ MapObject *ObjectsTreeView::selectedObject()
 
 void ObjectsTreeView::setSelectedObject(MapObject *object)
 {
+    if (!object) {
+        selectionModel()->clear();
+        return;
+    }
+
     auto index = mMapDoc->mapObjectModel()->index(object);
-    selectionModel()->select(index, QItemSelectionModel::Rows);
+    auto proxyIndex = mProxyModel->mapFromSource(index);
+    selectionModel()->select(proxyIndex, QItemSelectionModel::Rows);
 }
 
 void ObjectsTreeView::setSelectedObject(int id)
 {
+    if (id == 0) {
+        selectionModel()->clear();
+        return;
+    }
     for (Layer *layer : mMapDoc->map()->objectGroups()) {
         for (MapObject *object : *static_cast<ObjectGroup*>(layer)) {
-            if (object->id() == id)
+            if (object->id() == id) {
                 setSelectedObject(object);
+                return;
+            }
         }
     }
+    ERROR(QLatin1String("No object found with id ") + QString::number(id));
 }
 
 void ObjectsTreeView::selectionChanged(const QItemSelection &selected, const QItemSelection &deselected)
