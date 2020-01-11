@@ -110,16 +110,11 @@ void ObjectsTreeView::setSelectedObject(int id)
         selectionModel()->clear();
         return;
     }
-    // TODO(Phlo): Switch this to mMapDoc->map()->findObjectById()
-    for (Layer *layer : mMapDoc->map()->objectGroups()) {
-        for (MapObject *object : *static_cast<ObjectGroup*>(layer)) {
-            if (object->id() == id) {
-                setSelectedObject(object);
-                return;
-            }
-        }
-    }
-    ERROR(QLatin1String("No object found with id ") + QString::number(id));
+    auto object = mMapDoc->map()->findObjectById(id);
+    if (object)
+        setSelectedObject(object);
+    else
+        ERROR(QLatin1String("No object found with id ") + QString::number(id));
 }
 
 void ObjectsTreeView::setFilter(const QString &text)

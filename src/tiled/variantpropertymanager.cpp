@@ -168,7 +168,8 @@ QString VariantPropertyManager::valueText(const QtProperty *property) const
                 return tr("Unset");
 
             Document *document = DocumentManager::instance()->currentDocument();
-            if (auto mapDocument = qobject_cast<MapDocument*>(document)) {
+            if (ref.tileId < 0 && document->type() == Document::MapDocumentType) {
+                auto mapDocument = static_cast<MapDocument*>(document);
                 // Search all objects in the map.
                 for (const Layer *layer : mapDocument->map()->objectGroups()) {
                     for (const MapObject *object : qobject_cast<const ObjectGroup*>(layer)->objects()) {
@@ -177,16 +178,13 @@ QString VariantPropertyManager::valueText(const QtProperty *property) const
                         }
                     }
                 }
-            } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
-                // Search all objects in the currently selected tile's object group.
-                auto currentSelection = tilesetDocument->currentObject();
-                if (auto currentTile = qobject_cast<Tile*>(currentSelection)) {
-                    if (auto objects = currentTile->objectGroup()) {
-                        for (const MapObject *object : objects->objects()) {
-                            if (object->id() == ref.id) {
-                                return objectRefLabel(object);
-                            }
-                        }
+            } else if (ref.tileId >= 0) {
+                Q_ASSERT(ref.tileset);
+                auto tile = ref.tileset->findOrCreateTile(ref.tileId);
+                if (tile->objectGroup()) {
+                    for (auto object : tile->objectGroup()->objects()) {
+                        if (object->id() == ref.id)
+                            return objectRefLabel(object);
                     }
                 }
             }
