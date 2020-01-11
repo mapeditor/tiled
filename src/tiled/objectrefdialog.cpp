@@ -52,6 +52,17 @@ public:
         else
             return ObjectsFilterModel::data(index, role);
     }
+
+    Qt::ItemFlags flags(const QModelIndex &index) const override
+    {
+        auto ret = ObjectsFilterModel::flags(index);
+        if (auto mapModel = qobject_cast<MapObjectModel*>(sourceModel())) {
+            auto originalIndex = mapToSource(index);
+            if (mapModel->toLayer(originalIndex))
+                ret &= ~Qt::ItemIsSelectable;
+        }
+        return ret;
+    }
 };
 
 ObjectsTreeView::ObjectsTreeView(MapDocument *mapDoc, QWidget *parent)
@@ -272,6 +283,7 @@ QTreeWidgetItem *ObjectRefDialog::appendItem(Tile *tile)
     item->setData(1, Qt::DisplayRole, QStringLiteral("Tile ") + QString::number(tile->id()));
     item->setData(2, Qt::DisplayRole, tile->type());
     item->setData(0, Qt::UserRole, tile->id());
+    item->setFlags(item->flags() & ~Qt::ItemIsSelectable);
     return item;
 }
 
@@ -310,14 +322,11 @@ void ObjectRefDialog::onItemSelectionChanged()
 {
     const auto items = mTilesetObjectsView->selectedItems();
     if (!items.isEmpty()) {
-        if (items.first()->parent()) {
-            mValue.tileId = items.first()->parent()->data(0, Qt::UserRole).toInt();
-            mValue.id = items.first()->data(0, Qt::UserRole).toInt();
-        } else {
-            // User attempted to select a tile. Reset the selection to its previous
-            // value.
-            setValue(mValue);
-        }
+        // Root items are not selectable.
+        Q_ASSERT(items.first()->parent());
+        mValue.tileId = items.first()->parent()->data(0, Qt::UserRole).toInt();
+        mValue.id = items.first()->data(0, Qt::UserRole).toInt();
+
     } else {
         mValue.id = 0;
         mValue.tileId = -1;
