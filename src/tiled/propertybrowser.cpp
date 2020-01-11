@@ -1888,7 +1888,7 @@ void PropertyBrowser::updateCustomProperties()
                 auto tilesetDocument = static_cast<TilesetDocument*>(document);
                 ObjectRef ref = property->value().value<ObjectRef>();
                 if (!ref.tileset) {
-                    ref.tileset = tilesetDocument->tileset().get();
+                    ref.tileset = tilesetDocument->tileset().data();
                     QVariant copy(property->value());
                     copy.setValue(ref);
                     property->setValue(copy);
