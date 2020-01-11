@@ -178,19 +178,6 @@ bool Layer::canMergeDown() const
     return lowerLayer->canMergeWith(this);
 }
 
-QString Layer::parentsAsPath() const
-{
-    const Layer *current = parentLayer();
-    QString path(name());
-
-    while (current) {
-        path.prepend(current->name() + QLatin1Char('/'));
-        current = current->parentLayer();
-    }
-
-    return path;
-}
-
 /**
  * A helper function for initializing the members of the given instance to
  * those of this layer. Used by subclasses when cloning.
