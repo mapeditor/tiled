@@ -31,6 +31,7 @@ class FileEdit;
 class TextPropertyEdit;
 class TilesetParametersEdit;
 class ObjectRefEdit;
+struct ObjectRef;
 
 /**
  * Extension of the QtVariantEditorFactory that adds support for a FileEdit,
@@ -68,7 +69,7 @@ private:
     void fileEditFileUrlChanged(const QUrl &value);
     void textPropertyEditTextChanged(const QString &value);
     void comboBoxPropertyEditTextChanged(const QString &value);
-    void objectRefEditIdChanged(int id);
+    void objectRefEditValueChanged(const ObjectRef &value);
     void slotEditorDestroyed(QObject *object);
 
     QMap<QtProperty *, QList<FileEdit *> > mCreatedFileEdits;

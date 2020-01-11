@@ -122,12 +122,12 @@ QWidget *VariantEditorFactory::createEditor(QtVariantPropertyManager *manager,
     if (type == objectRefTypeId()) {
         auto editor = new ObjectRefEdit(parent);
         ObjectRef objectRef = manager->value(property).value<ObjectRef>();
-        editor->setId(objectRef.id);
+        editor->setValue(objectRef);
         mCreatedObjectRefEdits[property].append(editor);
         mObjectRefEditToProperty[editor] = property;
 
-        connect(editor, &ObjectRefEdit::idChanged,
-                this, &VariantEditorFactory::objectRefEditIdChanged);
+        connect(editor, &ObjectRefEdit::valueChanged,
+                this, &VariantEditorFactory::objectRefEditValueChanged);
         connect(editor, &QObject::destroyed,
                 this, &VariantEditorFactory::slotEditorDestroyed);
 
@@ -290,7 +290,7 @@ void VariantEditorFactory::comboBoxPropertyEditTextChanged(const QString &value)
     }
 }
 
-void VariantEditorFactory::objectRefEditIdChanged(int id)
+void VariantEditorFactory::objectRefEditValueChanged(const ObjectRef &value)
 {
     auto objectIdEdit = qobject_cast<ObjectRefEdit*>(sender());
     Q_ASSERT(objectIdEdit);
@@ -298,7 +298,7 @@ void VariantEditorFactory::objectRefEditIdChanged(int id)
         QtVariantPropertyManager *manager = propertyManager(property);
         if (!manager)
             return;
-        manager->setValue(property, QVariant::fromValue(ObjectRef { id }));
+        manager->setValue(property, QVariant::fromValue(value));
     }
 }
 

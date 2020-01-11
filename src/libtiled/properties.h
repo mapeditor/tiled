@@ -38,13 +38,22 @@ class QDir;
 
 namespace Tiled {
 
+class Tileset;
+
 struct FilePath {
     QUrl url;
 };
 
 struct ObjectRef {
-    explicit ObjectRef(int id = 0) : id(id) {}
+    explicit ObjectRef(int id = 0, int tileId = -1)
+        : id(id), tileId(tileId), tileset(nullptr) {}
     int id;
+
+    // When tileId < 0, this objectref isn't part of a tileset.
+    int tileId;
+
+    // Cached value; this can be null even when tileId >= 0.
+    Tileset *tileset;
 };
 
 class TILEDSHARED_EXPORT AggregatedPropertyData

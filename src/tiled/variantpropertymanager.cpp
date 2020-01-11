@@ -27,6 +27,7 @@
 #include "documentmanager.h"
 #include "objectgroup.h"
 #include "mapobject.h"
+#include "mapobjectmodel.h"
 
 #include <QFileInfo>
 
@@ -82,7 +83,7 @@ int VariantPropertyManager::valueType(int propertyType) const
     if (propertyType == filePathTypeId())
         return QVariant::String;
     if (propertyType == objectRefTypeId())
-        return QVariant::Int;
+        return QVariant::String;
     if (propertyType == tilesetParametersTypeId())
         return qMetaTypeId<TilesetDocument*>();
     if (propertyType == alignmentTypeId())
@@ -244,6 +245,26 @@ QIcon VariantPropertyManager::valueIcon(const QtProperty *property) const
         if (typeId == tilesetParametersTypeId()) {
             if (TilesetDocument *tilesetDocument = value.value<TilesetDocument*>())
                 filePath = tilesetDocument->tileset()->imageSource().toLocalFile();
+        }
+
+        if (typeId == objectRefTypeId()) {
+            ObjectRef ref = value.value<ObjectRef>();
+            if (ref.id != 0 && ref.tileId < 0) {
+                auto document = DocumentManager::instance()->currentDocument();
+                if (document->type() == Document::MapDocumentType) {
+                    auto mapDocument = static_cast<MapDocument*>(document);
+                    auto object = mapDocument->map()->findObjectById(ref.id);
+                    if (object)
+                        return ObjectIconManager::instance()->iconForObject(object);
+                }
+            } else if (ref.id != 0) {
+                Q_ASSERT(ref.tileset);
+                auto objectGroup = ref.tileset->findOrCreateTile(ref.tileId)->objectGroup();
+                for (auto object : objectGroup->objects()) {
+                    if (object->id() == ref.id)
+                        return ObjectIconManager::instance()->iconForObject(object);
+                }
+            }
         }
 
         // TODO: This assumes the file path is an image reference. It should be

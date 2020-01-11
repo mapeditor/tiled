@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include "properties.h"
+
 #include <QWidget>
 
 class QLineEdit;
@@ -33,23 +35,24 @@ class ObjectRefEdit : public QWidget
 public:
     explicit ObjectRefEdit(QWidget *parent = nullptr);
 
-    int id() const;
-    void setId(int id);
+    const ObjectRef &value() const;
+    void setValue(const ObjectRef &value);
 
 signals:
-    void idChanged(int id);
+    void valueChanged(const ObjectRef &value);
 
 private:
     void onButtonClicked();
+    void onEditFinished();
 
     QLineEdit *mLineEdit;
-    int mId = 0;
+    ObjectRef mValue;
 };
 
 
-inline int ObjectRefEdit::id() const
+inline const ObjectRef &ObjectRefEdit::value() const
 {
-    return mId;
+    return mValue;
 }
 
 } // namespace Tiled

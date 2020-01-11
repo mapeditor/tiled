@@ -32,6 +32,7 @@
 #include "changetileprobability.h"
 #include "changewangcolordata.h"
 #include "changewangsetdata.h"
+#include "documentmanager.h"
 #include "flipmapobjects.h"
 #include "grouplayer.h"
 #include "imagelayer.h"
@@ -1876,8 +1877,24 @@ void PropertyBrowser::updateCustomProperties()
                                                   it.value().userType(),
                                                   it.key(),
                                                   mCustomPropertiesGroup);
-
         property->setValue(it.value());
+
+        // If this is an object ref property in a tileset document, ensure that
+        // the tileset pointer of the object ref is valid.
+        if (property->value().userType() == objectRefTypeId()) {
+            auto document = DocumentManager::instance()->currentDocument();
+            Q_ASSERT(document);
+            if (document->type() == Document::TilesetDocumentType) {
+                auto tilesetDocument = static_cast<TilesetDocument*>(document);
+                ObjectRef ref = property->value().value<ObjectRef>();
+                if (!ref.tileset) {
+                    ref.tileset = tilesetDocument->tileset().get();
+                    QVariant copy(property->value());
+                    copy.setValue(ref);
+                    property->setValue(copy);
+                }
+            }
+        }
         updateCustomPropertyColor(it.key());
     }
 

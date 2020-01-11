@@ -20,8 +20,9 @@
 
 #pragma once
 
-class ObjectGroup;
 class QTableWidgetItem;
+
+#include "properties.h"
 
 #include <QDialog>
 #include <QTreeWidget>
@@ -68,11 +69,11 @@ class ObjectRefDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit ObjectRefDialog(QWidget *parent = nullptr);
+    explicit ObjectRefDialog(const ObjectRef &startingValue, QWidget *parent = nullptr);
     ~ObjectRefDialog();
 
-    void setId(int id);
-    int id() const;
+    void setValue(const ObjectRef &value);
+    const ObjectRef &value() const;
 
 private:
     void appendItem(const MapObject *object, const QString &objectPath);
@@ -85,12 +86,12 @@ private:
     Ui::ObjectRefDialog *mUi;
     ObjectsTreeView *mMapObjectsView;
     QTreeWidget *mTilesetObjectsView;
-    int mId = 0;
+    ObjectRef mValue;
 };
 
-inline int ObjectRefDialog::id() const
+inline const ObjectRef &ObjectRefDialog::value() const
 {
-    return mId;
+    return mValue;
 }
 
 } // namespace Tiled

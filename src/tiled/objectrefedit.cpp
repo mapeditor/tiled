@@ -22,7 +22,6 @@
 #include "objectrefedit.h"
 
 #include "objectrefdialog.h"
-#include "logginginterface.h"
 #include "addpropertydialog.h"
 
 #include <QLineEdit>
@@ -50,30 +49,44 @@ ObjectRefEdit::ObjectRefEdit(QWidget *parent)
     layout->addWidget(mLineEdit);
     layout->addWidget(button);
 
-    mLineEdit->setValidator(new QIntValidator(this));
+    auto regex = QRegExp(QStringLiteral("[0-9]+(:[0-9]+)?"));
+    mLineEdit->setValidator(new QRegExpValidator(regex, this));
 
     connect(button, &QToolButton::clicked, this, &ObjectRefEdit::onButtonClicked);
-    connect(mLineEdit, &QLineEdit::editingFinished,
-            [this] { setId(mLineEdit->text().toInt()); });
+    connect(mLineEdit, &QLineEdit::editingFinished, this, &ObjectRefEdit::onEditFinished);
 }
 
-void ObjectRefEdit::setId(int id)
+void ObjectRefEdit::setValue(const ObjectRef &value)
 {
-    if (mId == id)
-        return;
+    mValue = value;
 
-    mId = id;
-    mLineEdit->setText(QString::number(id));
-    emit idChanged(mId);
+    if (mValue.tileset) {
+        if (mValue.tileId < 0) {
+            mValue.id = 0;
+            mLineEdit->setText(QString::number(0));
+        } else {
+            mLineEdit->setText(QString::number(mValue.tileId) + QLatin1Char(':') + QString::number(mValue.id));
+        }
+    } else {
+        mValue.tileId = -1;
+        mLineEdit->setText(QString::number(mValue.id));
+    }
+    emit valueChanged(mValue);
 }
 
 void ObjectRefEdit::onButtonClicked()
 {
-    ObjectRefDialog dialog(this);
-    dialog.setId(mId);
+    ObjectRefDialog dialog(mValue, this);
 
     if (dialog.exec() == QDialog::Accepted)
-        setId(dialog.id());
+        setValue(dialog.value());
+}
+
+void ObjectRefEdit::onEditFinished()
+{
+    auto newValue = fromExportValue(mLineEdit->text(), objectRefTypeId()).value<ObjectRef>();
+    newValue.tileset = mValue.tileset;
+    setValue(newValue);
 }
 
 } // namespace Tiled
