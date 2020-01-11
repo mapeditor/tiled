@@ -26,6 +26,7 @@ class QTableWidgetItem;
 
 #include <QDialog>
 #include <QTreeWidget>
+#include <QTreeWidgetItem>
 
 namespace Ui {
 class ObjectRefDialog;
@@ -36,6 +37,7 @@ namespace Tiled {
 class MapObject;
 class MapDocument;
 class ImmutableRoleModel;
+class Tile;
 
 class ObjectsTreeView : public QTreeView {
    Q_OBJECT
@@ -76,12 +78,14 @@ public:
     const ObjectRef &value() const;
 
 private:
-    void appendItem(const MapObject *object, const QString &objectPath);
+    QTreeWidgetItem *appendItem(const MapObject *object, QTreeWidgetItem *parent);
+    QTreeWidgetItem *appendItem(Tile *tile);
 
     void onTextChanged(const QString &text);
     void onItemSelectionChanged();
     void onObjectSelectionChanged(MapObject *object);
     void onButtonClicked();
+    void updateTilesetObjectsViewSelection();
 
     Ui::ObjectRefDialog *mUi;
     ObjectsTreeView *mMapObjectsView;
