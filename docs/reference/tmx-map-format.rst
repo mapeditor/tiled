@@ -697,6 +697,11 @@ Color properties are stored in the format ``#AARRGGBB``.
 File properties are stored as paths relative from the location of the
 map file.
 
+Object Reference properties are stored as an integer in map files, and
+as "tileId:objectId" in tileset files. In both cases, "0" means unset.
+"tileId:0" also means unset in tileset files, though Tiled will change
+this value to "0".
+
 When a string property contains newlines, the current version of Tiled
 will write out the value as characters contained inside the ``property``
 element rather than as the ``value`` attribute. It is possible that a
