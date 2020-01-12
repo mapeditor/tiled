@@ -108,8 +108,6 @@ EditableObjectGroup *EditableManager::editableObjectGroup(EditableAsset *asset, 
     if (!objectGroup)
         return nullptr;
 
-    Q_ASSERT(!objectGroup->map());
-
     EditableLayer* &editableLayer = mEditableLayers[objectGroup];
     if (becomesNullValue(editableLayer)) {
         editableLayer = new EditableObjectGroup(asset, objectGroup);

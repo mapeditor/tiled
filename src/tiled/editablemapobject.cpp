@@ -106,8 +106,7 @@ bool EditableMapObject::isSelected() const
 
 EditableObjectGroup *EditableMapObject::layer() const
 {
-    auto editableLayer = EditableManager::instance().editableObjectGroup(asset(), mapObject()->objectGroup());
-    return static_cast<EditableObjectGroup*>(editableLayer);
+    return EditableManager::instance().editableObjectGroup(asset(), mapObject()->objectGroup());
 }
 
 EditableMap *EditableMapObject::map() const
