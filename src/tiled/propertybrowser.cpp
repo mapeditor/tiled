@@ -1891,9 +1891,7 @@ void PropertyBrowser::updateCustomProperties()
                 ObjectRef ref = property->value().value<ObjectRef>();
                 if (!ref.tileset) {
                     ref.tileset = tilesetDocument->tileset().data();
-                    QVariant copy(property->value());
-                    copy.setValue(ref);
-                    property->setValue(copy);
+                    property->setValue(QVariant::fromValue(ref));
                 }
             }
         }

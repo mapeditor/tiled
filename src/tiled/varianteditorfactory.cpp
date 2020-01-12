@@ -22,12 +22,12 @@
 #include "varianteditorfactory.h"
 
 #include "fileedit.h"
+#include "objectrefedit.h"
 #include "textpropertyedit.h"
 #include "tilesetdocument.h"
 #include "tilesetparametersedit.h"
 #include "utils.h"
 #include "variantpropertymanager.h"
-#include "objectrefedit.h"
 
 #include <QComboBox>
 #include <QHBoxLayout>

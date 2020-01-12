@@ -23,8 +23,7 @@
 #include "properties.h"
 
 #include <QWidget>
-
-class QLineEdit;
+#include <QLineEdit>
 
 namespace Tiled {
 

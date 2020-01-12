@@ -20,8 +20,6 @@
 
 #pragma once
 
-class QTableWidgetItem;
-
 #include "properties.h"
 
 #include <QDialog>

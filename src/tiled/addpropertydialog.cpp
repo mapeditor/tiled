@@ -26,7 +26,6 @@
 #include "properties.h"
 #include "utils.h"
 #include "documentmanager.h"
-#include "tilesetdocument.h"
 
 #include <QPushButton>
 #include <QSettings>

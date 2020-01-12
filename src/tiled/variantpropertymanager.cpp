@@ -21,13 +21,13 @@
 
 #include "variantpropertymanager.h"
 
-#include "mapdocument.h"
-#include "textpropertyedit.h"
-#include "tilesetdocument.h"
 #include "documentmanager.h"
-#include "objectgroup.h"
+#include "mapdocument.h"
 #include "mapobject.h"
 #include "mapobjectmodel.h"
+#include "objectgroup.h"
+#include "textpropertyedit.h"
+#include "tilesetdocument.h"
 
 #include <QFileInfo>
 
@@ -171,13 +171,9 @@ QString VariantPropertyManager::valueText(const QtProperty *property) const
             if (ref.tileId < 0 && document->type() == Document::MapDocumentType) {
                 auto mapDocument = static_cast<MapDocument*>(document);
                 // Search all objects in the map.
-                for (const Layer *layer : mapDocument->map()->objectGroups()) {
-                    for (const MapObject *object : qobject_cast<const ObjectGroup*>(layer)->objects()) {
-                        if (object->id() == ref.id) {
-                            return objectRefLabel(object);
-                        }
-                    }
-                }
+                auto object = mapDocument->map()->findObjectById(ref.id);
+                if (object)
+                    return objectRefLabel(object);
             } else if (ref.tileId >= 0) {
                 Q_ASSERT(ref.tileset);
                 auto tile = ref.tileset->findOrCreateTile(ref.tileId);

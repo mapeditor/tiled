@@ -21,13 +21,11 @@
 
 #include "objectrefedit.h"
 
-#include "objectrefdialog.h"
 #include "addpropertydialog.h"
+#include "objectrefdialog.h"
 
-#include <QLineEdit>
 #include <QHBoxLayout>
 #include <QToolButton>
-#include <QIntValidator>
 
 namespace Tiled {
 

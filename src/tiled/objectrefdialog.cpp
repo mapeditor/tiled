@@ -22,20 +22,21 @@
 #include "ui_objectrefdialog.h"
 
 #include "documentmanager.h"
-#include "mapdocument.h"
-#include "map.h"
-#include "objectgroup.h"
-#include "mapobject.h"
-#include "utils.h"
-#include "objectsfiltermodel.h"
 #include "iconcheckdelegate.h"
-#include "mapobjectmodel.h"
 #include "logginginterface.h"
+#include "map.h"
+#include "mapdocument.h"
+#include "mapobject.h"
+#include "mapobjectmodel.h"
+#include "objectsfiltermodel.h"
+#include "objectgroup.h"
+#include "utils.h"
 
-#include <QList>
-#include <QLineEdit>
-#include <QPushButton>
+
 #include <QHeaderView>
+#include <QLineEdit>
+#include <QList>
+#include <QPushButton>
 
 namespace Tiled {
 
@@ -47,6 +48,7 @@ public:
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override
     {
+        // Filter out visibility checkboxes.
         if (role == Qt::CheckStateRole)
             return QVariant();
         else
@@ -55,6 +57,7 @@ public:
 
     Qt::ItemFlags flags(const QModelIndex &index) const override
     {
+        // Make layers unselectable.
         auto ret = ObjectsFilterModel::flags(index);
         if (auto mapModel = qobject_cast<MapObjectModel*>(sourceModel())) {
             auto originalIndex = mapToSource(index);
