@@ -1653,14 +1653,17 @@ done writing otherwise the operation will be aborted without effect.
 
 **Functions**
 
-BinaryFile.resize(qint64 size) : void
+new BinaryFile(filePath : string [, mode : OpenMode = ReadOnly])
+    Opens a binary file in the given mode.
+
+BinaryFile.resize(size : int) : void
     Sets the file size (in bytes). If size is larger than the file currently is,
     the new bytes will be set to 0; if size is smaller, the file is truncated.
 
-BinaryFile.seek(qint64 pos) : void
+BinaryFile.seek(pos : int) : void
     Sets the current position to *pos*.
 
-BinaryFile.read(qint64 size) : ArrayBuffer
+BinaryFile.read(size : int) : ArrayBuffer
     Reads at most *size* bytes of data from the file and returns it as an
     ArrayBuffer.
 
