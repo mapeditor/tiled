@@ -39,6 +39,7 @@
 #include "scriptfile.h"
 #include "scriptfileformatwrappers.h"
 #include "scriptmodule.h"
+#include "scriptxmlfile.h"
 #include "tilecollisiondock.h"
 #include "tilelayer.h"
 #include "tilelayeredit.h"
@@ -51,6 +52,7 @@
 #include <QStandardPaths>
 #include <QTextCodec>
 #include <QtDebug>
+#include <QtXml/QDomDocument>
 
 namespace Tiled {
 
@@ -108,6 +110,11 @@ ScriptManager::ScriptManager(QObject *parent)
     qRegisterMetaType<TilesetEditor*>();
     qRegisterMetaType<ScriptMapFormatWrapper*>();
     qRegisterMetaType<ScriptTilesetFormatWrapper*>();
+    qRegisterMetaType<ScriptXMLFile*>();
+    qRegisterMetaType<ScriptXMLElement*>();
+    qRegisterMetaType<ScriptXMLList*>();
+    qRegisterMetaType<ScriptXMLAttributes*>();
+    qRegisterMetaType<ScriptXMLNode*>();
 
     connect(&mWatcher, &FileSystemWatcher::filesChanged,
             this, &ScriptManager::scriptFilesChanged);
@@ -138,6 +145,8 @@ void ScriptManager::initialize()
     globalObject.setProperty(QStringLiteral("TileLayer"), mEngine->newQMetaObject<EditableTileLayer>());
     globalObject.setProperty(QStringLiteral("TileMap"), mEngine->newQMetaObject<EditableMap>());
     globalObject.setProperty(QStringLiteral("Tileset"), mEngine->newQMetaObject<EditableTileset>());
+    globalObject.setProperty(QStringLiteral("XmlFile"), mEngine->newQMetaObject<ScriptXMLFile>());
+    globalObject.setProperty(QStringLiteral("XmlElement"), mEngine->newQMetaObject<ScriptXMLElement>());
 #endif
 
     loadExtensions();
