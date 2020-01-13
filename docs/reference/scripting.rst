@@ -1678,3 +1678,127 @@ BinaryFile.commit() : void
 BinaryFile.close() : void
     Closes the file. It is recommended to always call this function as soon as
     you are finished with the file.
+
+XmlFile
+~~~~~~~
+
+**Properties**
+
+.. csv-table::
+    :widths: 1, 2
+
+    **root** : XmlFile |ro|, A reference to itself (useful for algorithms)
+    **children** : XmlList |ro|, A special kind of list with all the direct children of this element
+
+**Functions**
+
+new XmlFile(text : string)
+    Creates a new Xml document by parsing `text`.
+
+new XmlFile(source : TextFile)
+    Convenience function; same as `new XmlFile(source.readAll())`
+
+XmlFile.childByName(name : string) : XmlElement
+    Find the first child with the given tag name. Returns null if no
+    child was found.
+
+XmlFile.childrenByName(name : string) : [XmlElement]
+    Find all children with the given tag name.
+
+XmlFile.writeToString() : string
+    Returns this XML document represented as a string.
+
+XmlElement
+~~~~~~~~~~
+
+**Properties**
+
+.. csv-table::
+    :widths: 1, 2
+
+    **root** : XmlFile |ro|, The XML file this element belongs to
+    **children** : XmlList |ro|, A special kind of list with all the direct children of this element
+    **attributes** : XmlAttributes |ro|, The attributes on this element
+    **name** : string, The tag name of this element
+    **parent** : XmlElement or XmlFile |ro|, The direct parent of this element
+    **isTextOnly** : bool |ro|, Whether this element represents text between other elements
+    **value** : string, The text inside this element, or "" if there are child elements
+
+**Functions**
+
+new XmlElement([name : string = ""])
+    Creates a new element with the given name.
+
+XmlList
+~~~~~~~
+
+For technical reasons, we can't use plain JS arrays for XML data.
+
+**Properties**
+
+.. csv-table::
+    :widths: 1, 2
+
+    **length** : int, The length of this list
+
+**Functions**
+
+XmlList.get(index : int) : XmlElement
+    Get the element at the given index.
+
+XmlList.set(index : int, element : XmlElement) : void
+    Replace the element at the given index.
+
+XmlList.insert(index : int, element : XmlElement) : void
+    Insert the element at the given index, shifting the rest up by one.
+
+XmlList.append(element : XmlElement) : void
+    Add a new element to the end of the list.
+
+XmlList.push(element : XmlElement) : void
+    Same as append; provided for convenience.
+
+XmlList.remove(index : int) : void
+    Delete the element at the given index.
+
+XmlList.clear() : void
+    Delete all elements from this list.
+
+XmlList.find(element : XmlElement) : int or undefined
+    Find the index of an element in the list. Uses C++ reference equality
+    (which may be different than XmlElement === XmlElement)
+
+XmlList.toRaw() : [XmlElement]
+    Create a normal array representation of this list. Changes to the array will
+    not change this object.
+
+XmlAttributes
+~~~~~~~~~~~~~
+
+**Properties**
+
+.. csv-table::
+    :widths: 1, 2
+
+    **length** : int, The number of unique attributes
+    **keys** : [string], All the attribute names
+    **values** : [string], All the attribute values
+
+**Functions**
+
+XmlAttributes.get(name : string) : string or undefined
+    Returns the value of the attribute, if it exists. Returns undefined otherwise.
+
+XmlAttributes.set(name : string, value : string) : void
+    Sets the value for the given attribute, creating it if it didn't already exist.
+
+XmlAttributes.remove(name : string) : void
+    Removes the given attribute.
+
+XmlAttributes.merge(other : object) : void
+    Merge all key-value pairs of `other` as attributes. Values will be converted to
+    strings.
+
+XmlAttributes.toRaw() : object
+    The attributes as a plain JS object. Changes to the raw object will not change
+    this object.
