@@ -555,7 +555,7 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
         undoStack->push(new SetProperty(mDocument,
                                         mDocument->currentObjects(),
                                         property->propertyName(),
-                                        val));
+                                        fromDisplayValue(val)));
         return;
     }
 
@@ -577,10 +577,8 @@ void PropertyBrowser::resetProperty(QtProperty *property)
     auto typeId = mVariantManager->propertyType(property);
     if (typeId == QVariant::Color)
         mVariantManager->setValue(property, QColor());
-    else if (typeId == objectRefTypeId()) {
-        ObjectRef newValue;
-        newValue.tileset = mVariantManager->value(property).value<ObjectRef>().tileset;
-        mVariantManager->setValue(property, QVariant::fromValue(newValue));
+    else if (typeId == VariantPropertyManager::displayObjectRefTypeId()) {
+        mVariantManager->setValue(property, toDisplayValue(QVariant::fromValue(ObjectRef())));
     } else
         qWarning() << "Resetting of property type not supported right now";
 }
@@ -1514,8 +1512,9 @@ QtVariantProperty *PropertyBrowser::createCustomProperty(const QString &name, co
     }
 
     mUpdating = true;
-    QtVariantProperty *property = createProperty(CustomProperty, value.userType(), name);
-    property->setValue(value);
+    const QVariant displayValue = toDisplayValue(value);
+    QtVariantProperty *property = createProperty(CustomProperty, displayValue.userType(), name);
+    property->setValue(displayValue);
     mCustomPropertiesGroup->insertSubProperty(property, precedingProperty);
 
     // Collapse custom color properties, to save space
@@ -1549,7 +1548,7 @@ void PropertyBrowser::setCustomPropertyValue(QtVariantProperty *property,
             setCurrentItem(items(property).constFirst());
     } else {
         mUpdating = true;
-        property->setValue(value);
+        property->setValue(toDisplayValue(value));
         mUpdating = false;
     }
 }
@@ -1875,26 +1874,14 @@ void PropertyBrowser::updateCustomProperties()
 
     while (it.hasNext()) {
         it.next();
+
+        const QVariant displayValue = toDisplayValue(it.value());
+
         QtVariantProperty *property = addProperty(CustomProperty,
-                                                  it.value().userType(),
+                                                  displayValue.userType(),
                                                   it.key(),
                                                   mCustomPropertiesGroup);
-        property->setValue(it.value());
-
-        // If this is an object ref property in a tileset document, ensure that
-        // the tileset pointer of the object ref is valid.
-        if (property->value().userType() == objectRefTypeId()) {
-            auto document = DocumentManager::instance()->currentDocument();
-            Q_ASSERT(document);
-            if (document->type() == Document::TilesetDocumentType) {
-                auto tilesetDocument = static_cast<TilesetDocument*>(document);
-                ObjectRef ref = property->value().value<ObjectRef>();
-                if (!ref.tileset) {
-                    ref.tileset = tilesetDocument->tileset().data();
-                    property->setValue(QVariant::fromValue(ref));
-                }
-            }
-        }
+        property->setValue(displayValue);
         updateCustomPropertyColor(it.key());
     }
 
@@ -1940,6 +1927,22 @@ void PropertyBrowser::updateCustomPropertyColor(const QString &name)
 
     property->setNameColor(textColor);
     property->setValueColor(textColor);
+}
+
+QVariant PropertyBrowser::toDisplayValue(const QVariant &value)
+{
+    if (value.userType() == objectRefTypeId())
+        return QVariant::fromValue(DisplayObjectRef { value.value<ObjectRef>(), mMapDocument });
+
+    return value;
+}
+
+QVariant PropertyBrowser::fromDisplayValue(const QVariant &value)
+{
+    if (value.userType() == VariantPropertyManager::displayObjectRefTypeId())
+        return QVariant::fromValue(value.value<DisplayObjectRef>().ref);
+
+    return value;
 }
 
 void PropertyBrowser::retranslateUi()

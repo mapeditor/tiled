@@ -21,10 +21,10 @@
 #pragma once
 
 #include "properties.h"
+#include "variantpropertymanager.h"
 
 #include <QDialog>
-#include <QTreeWidget>
-#include <QTreeWidgetItem>
+#include <QTreeView>
 
 namespace Ui {
 class ObjectRefDialog;
@@ -42,7 +42,7 @@ class ObjectsTreeView : public QTreeView
    Q_OBJECT
 
 public:
-    explicit ObjectsTreeView(MapDocument *mapDoc, QWidget *parent);
+    explicit ObjectsTreeView(MapDocument *mapDocument, QWidget *parent = nullptr);
 
     MapObject *selectedObject();
     void setSelectedObject(MapObject *object);
@@ -62,7 +62,7 @@ private:
     bool isLayer(const QModelIndex &proxyIndex);
 
     ImmutableRoleModel *mProxyModel;
-    MapDocument *mMapDoc;
+    MapDocument *mMapDocument;
 };
 
 class ObjectRefDialog : public QDialog
@@ -70,29 +70,22 @@ class ObjectRefDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit ObjectRefDialog(const ObjectRef &startingValue, QWidget *parent = nullptr);
-    ~ObjectRefDialog();
+    explicit ObjectRefDialog(const DisplayObjectRef &startingValue, QWidget *parent = nullptr);
+    ~ObjectRefDialog() override;
 
-    void setValue(const ObjectRef &value);
-    const ObjectRef &value() const;
+    void setValue(const DisplayObjectRef &value);
+    const DisplayObjectRef &value() const;
 
 private:
-    QTreeWidgetItem *appendItem(const MapObject *object, QTreeWidgetItem *parent);
-    QTreeWidgetItem *appendItem(Tile *tile);
-
     void onTextChanged(const QString &text);
-    void onItemSelectionChanged();
-    void onObjectSelectionChanged(MapObject *object);
-    void onButtonClicked();
-    void updateTilesetObjectsViewSelection();
+    void onSelectedObjectChanged(MapObject *object);
 
     Ui::ObjectRefDialog *mUi;
     ObjectsTreeView *mMapObjectsView;
-    QTreeWidget *mTilesetObjectsView;
-    ObjectRef mValue;
+    DisplayObjectRef mValue;
 };
 
-inline const ObjectRef &ObjectRefDialog::value() const
+inline const DisplayObjectRef &ObjectRefDialog::value() const
 {
     return mValue;
 }

@@ -36,8 +36,6 @@
 
 using namespace Tiled;
 
-std::unique_ptr<ObjectIconManager> ObjectIconManager::mInstance;
-
 ObjectIconManager::ObjectIconManager()
    : mRectangleIcon(QLatin1String(":images/24/object-rectangle.png"))
    , mImageIcon(QLatin1String(":images/24/object-image.png"))
@@ -48,11 +46,10 @@ ObjectIconManager::ObjectIconManager()
    , mPointIcon(QLatin1String(":images/24/object-point.png"))
 {}
 
-const ObjectIconManager *ObjectIconManager::instance()
+const ObjectIconManager &ObjectIconManager::instance()
 {
-    if (!mInstance.get())
-        mInstance.reset(new ObjectIconManager);
-    return mInstance.get();
+    static ObjectIconManager objectIconManager;
+    return objectIconManager;
 }
 
 const QIcon &ObjectIconManager::iconForObject(MapObject *object) const
@@ -173,9 +170,8 @@ QVariant MapObjectModel::data(const QModelIndex &index, int role) const
             }
             break;
         case Qt::DecorationRole:
-            if (index.column() == Name) {
-                return ObjectIconManager::instance()->iconForObject(mapObject);
-            }
+            if (index.column() == Name)
+                return ObjectIconManager::instance().iconForObject(mapObject);
             break;
         case Qt::ForegroundRole:
             if (index.column() == 1) {

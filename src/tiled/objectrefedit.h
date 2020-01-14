@@ -21,6 +21,7 @@
 #pragma once
 
 #include "properties.h"
+#include "variantpropertymanager.h"
 
 #include <QWidget>
 #include <QLineEdit>
@@ -34,22 +35,22 @@ class ObjectRefEdit : public QWidget
 public:
     explicit ObjectRefEdit(QWidget *parent = nullptr);
 
-    const ObjectRef &value() const;
-    void setValue(const ObjectRef &value);
+    const DisplayObjectRef &value() const;
+    void setValue(const DisplayObjectRef &value);
 
 signals:
-    void valueChanged(const ObjectRef &value);
+    void valueChanged(const DisplayObjectRef &value);
 
 private:
     void onButtonClicked();
     void onEditFinished();
 
     QLineEdit *mLineEdit;
-    ObjectRef mValue;
+    DisplayObjectRef mValue;
 };
 
 
-inline const ObjectRef &ObjectRefEdit::value() const
+inline const DisplayObjectRef &ObjectRefEdit::value() const
 {
     return mValue;
 }

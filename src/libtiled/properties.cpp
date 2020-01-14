@@ -169,14 +169,8 @@ QVariant toExportValue(const QVariant &value)
         return filePath.url.toString(QUrl::PreferLocalFile);
     }
 
-    if (type == objectRefTypeId()) {
-        auto ref = value.value<ObjectRef>();
-        if (ref.tileId < 0) {
-            return ref.id;
-        } else {
-            return QString::number(ref.tileId) + QLatin1Char(':') + QString::number(ref.id);
-        }
-    }
+    if (type == objectRefTypeId())
+        return value.value<ObjectRef>().id;
 
     return value;
 }
@@ -196,28 +190,8 @@ QVariant fromExportValue(const QVariant &value, int type)
         return QVariant::fromValue(FilePath { url });
     }
 
-    if (type == objectRefTypeId()) {
-        ObjectRef ret;
-        if (value.type() == QVariant::Int) {
-            ret = ObjectRef { std::max(value.toInt(), 0) };
-        } else {
-            auto refAsString = value.toString();
-            auto halves = refAsString.splitRef(QLatin1Char(':'));
-            if (halves.isEmpty()) {
-                ret = ObjectRef {};
-            } else if (halves.size() == 1) {
-                ret = ObjectRef { std::max(refAsString.toInt(), 0) };
-            } else {
-                auto tileId = halves[0].toInt();
-                auto objectId = halves[1].toInt();
-                if (tileId < 0 || objectId < 0)
-                    ret = ObjectRef {};
-                else
-                    ret = ObjectRef { objectId, tileId };
-            }
-        }
-        return QVariant::fromValue(ret);
-    }
+    if (type == objectRefTypeId())
+        return QVariant::fromValue(ObjectRef { value.toInt() });
 
     QVariant variant(value);
     variant.convert(type);

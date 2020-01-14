@@ -45,6 +45,12 @@ Q_DECLARE_METATYPE(Tiled::AlignmentPropertyType)
 
 namespace Tiled {
 
+MapObject *DisplayObjectRef::object() const
+{
+    return ref.id ? mapDocument->map()->findObjectById(ref.id) : nullptr;
+}
+
+
 VariantPropertyManager::VariantPropertyManager(QObject *parent)
     : QtVariantPropertyManager(parent)
     , mSuggestionsAttribute(QStringLiteral("suggestions"))
@@ -71,7 +77,7 @@ QVariant VariantPropertyManager::value(const QtProperty *property) const
 bool VariantPropertyManager::isPropertyTypeSupported(int propertyType) const
 {
     if (propertyType == filePathTypeId()
-            || propertyType == objectRefTypeId()
+            || propertyType == displayObjectRefTypeId()
             || propertyType == tilesetParametersTypeId()
             || propertyType == alignmentTypeId())
         return true;
@@ -82,7 +88,7 @@ int VariantPropertyManager::valueType(int propertyType) const
 {
     if (propertyType == filePathTypeId())
         return QVariant::String;
-    if (propertyType == objectRefTypeId())
+    if (propertyType == displayObjectRefTypeId())
         return QVariant::String;
     if (propertyType == tilesetParametersTypeId())
         return qMetaTypeId<TilesetDocument*>();
@@ -140,6 +146,11 @@ int VariantPropertyManager::alignmentTypeId()
     return qMetaTypeId<AlignmentPropertyType>();
 }
 
+int VariantPropertyManager::displayObjectRefTypeId()
+{
+    return qMetaTypeId<DisplayObjectRef>();
+}
+
 QString VariantPropertyManager::objectRefLabel(const MapObject *object) const
 {
     QString label = tr("%1: ").arg(object->id());
@@ -161,31 +172,16 @@ QString VariantPropertyManager::valueText(const QtProperty *property) const
         QVariant value = mValues[property].value;
         int typeId = propertyType(property);
 
-        if (typeId == objectRefTypeId()) {
-            ObjectRef ref = value.value<ObjectRef>();
+        if (typeId == displayObjectRefTypeId()) {
+            const auto ref = value.value<DisplayObjectRef>();
 
-            if (ref.id == 0)
+            if (ref.id() == 0)
                 return tr("Unset");
 
-            Document *document = DocumentManager::instance()->currentDocument();
-            if (ref.tileId < 0 && document->type() == Document::MapDocumentType) {
-                auto mapDocument = static_cast<MapDocument*>(document);
-                // Search all objects in the map.
-                auto object = mapDocument->map()->findObjectById(ref.id);
-                if (object)
-                    return objectRefLabel(object);
-            } else if (ref.tileId >= 0) {
-                Q_ASSERT(ref.tileset);
-                auto tile = ref.tileset->findOrCreateTile(ref.tileId);
-                if (tile->objectGroup()) {
-                    for (auto object : tile->objectGroup()->objects()) {
-                        if (object->id() == ref.id)
-                            return objectRefLabel(object);
-                    }
-                }
-            }
+            if (auto object = ref.object())
+                return objectRefLabel(object);
 
-            return tr("%1: Object not found").arg(QString::number(ref.id));
+            return tr("%1: Object not found").arg(QString::number(ref.id()));
         }
 
         if (typeId == filePathTypeId()) {
@@ -241,24 +237,10 @@ QIcon VariantPropertyManager::valueIcon(const QtProperty *property) const
                 filePath = tilesetDocument->tileset()->imageSource().toLocalFile();
         }
 
-        if (typeId == objectRefTypeId()) {
-            ObjectRef ref = value.value<ObjectRef>();
-            if (ref.id != 0 && ref.tileId < 0) {
-                auto document = DocumentManager::instance()->currentDocument();
-                if (document->type() == Document::MapDocumentType) {
-                    auto mapDocument = static_cast<MapDocument*>(document);
-                    auto object = mapDocument->map()->findObjectById(ref.id);
-                    if (object)
-                        return ObjectIconManager::instance()->iconForObject(object);
-                }
-            } else if (ref.id != 0) {
-                Q_ASSERT(ref.tileset);
-                auto objectGroup = ref.tileset->findOrCreateTile(ref.tileId)->objectGroup();
-                for (auto object : objectGroup->objects()) {
-                    if (object->id() == ref.id)
-                        return ObjectIconManager::instance()->iconForObject(object);
-                }
-            }
+        if (typeId == displayObjectRefTypeId()) {
+            const auto ref = value.value<DisplayObjectRef>();
+            if (auto object = ref.object())
+                return ObjectIconManager::instance().iconForObject(object);
         }
 
         // TODO: This assumes the file path is an image reference. It should be
@@ -348,7 +330,7 @@ void VariantPropertyManager::initializeProperty(QtProperty *property)
 {
     const int type = propertyType(property);
     if (type == filePathTypeId()
-            || type == objectRefTypeId()
+            || type == displayObjectRefTypeId()
             || type == tilesetParametersTypeId()) {
         mValues[property] = Data();
     } else if (type == QVariant::String) {

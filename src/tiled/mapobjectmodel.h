@@ -37,9 +37,10 @@ class ObjectGroup;
 class ChangeEvent;
 class MapDocument;
 
-class ObjectIconManager {
+class ObjectIconManager
+{
 public:
-    static const ObjectIconManager *instance();
+    static const ObjectIconManager &instance();
 
     const QIcon &iconForObject(MapObject *object) const;
 
@@ -53,7 +54,6 @@ private:
     const QIcon mEllipseIcon;
     const QIcon mTextIcon;
     const QIcon mPointIcon;
-    static std::unique_ptr<ObjectIconManager> mInstance;
 };
 
 /**

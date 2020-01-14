@@ -47,19 +47,13 @@ AddPropertyDialog::AddPropertyDialog(QWidget *parent)
 
     QString stringType = typeToName(QVariant::String);
 
-    ObjectRef ref;
-    auto document = DocumentManager::instance()->currentDocument();
-    if (document->type() == Document::TilesetDocumentType) {
-        ref.tileset = static_cast<TilesetDocument*>(document)->tileset().data();
-    }
-
     // Add possible types from QVariant
     mUi->typeBox->addItem(typeToName(QVariant::Bool),    false);
     mUi->typeBox->addItem(typeToName(QVariant::Color),   QColor());
     mUi->typeBox->addItem(typeToName(QVariant::Double),  0.0);
     mUi->typeBox->addItem(typeToName(filePathTypeId()),  QVariant::fromValue(FilePath()));
     mUi->typeBox->addItem(typeToName(QVariant::Int),     0);
-    mUi->typeBox->addItem(typeToName(objectRefTypeId()), QVariant::fromValue(ref));
+    mUi->typeBox->addItem(typeToName(objectRefTypeId()), QVariant::fromValue(ObjectRef()));
     mUi->typeBox->addItem(stringType,                    QString());
 
     mUi->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);

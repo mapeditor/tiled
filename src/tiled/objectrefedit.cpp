@@ -54,21 +54,14 @@ ObjectRefEdit::ObjectRefEdit(QWidget *parent)
     connect(mLineEdit, &QLineEdit::editingFinished, this, &ObjectRefEdit::onEditFinished);
 }
 
-void ObjectRefEdit::setValue(const ObjectRef &value)
+void ObjectRefEdit::setValue(const DisplayObjectRef &value)
 {
-    mValue = value;
+    if (mValue == value)
+        return;
 
-    if (mValue.tileset) {
-        if (mValue.tileId < 0) {
-            mValue.id = 0;
-            mLineEdit->setText(QString::number(0));
-        } else {
-            mLineEdit->setText(QString::number(mValue.tileId) + QLatin1Char(':') + QString::number(mValue.id));
-        }
-    } else {
-        mValue.tileId = -1;
-        mLineEdit->setText(QString::number(mValue.id));
-    }
+    mValue = value;
+    mLineEdit->setText(QString::number(mValue.id()));
+
     emit valueChanged(mValue);
 }
 
@@ -83,8 +76,7 @@ void ObjectRefEdit::onButtonClicked()
 void ObjectRefEdit::onEditFinished()
 {
     auto newValue = fromExportValue(mLineEdit->text(), objectRefTypeId()).value<ObjectRef>();
-    newValue.tileset = mValue.tileset;
-    setValue(newValue);
+    setValue(DisplayObjectRef { newValue, mValue.mapDocument });
 }
 
 } // namespace Tiled
