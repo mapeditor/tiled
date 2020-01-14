@@ -27,7 +27,7 @@
 #include "preferences.h"
 #include "reversingproxymodel.h"
 #include "utils.h"
-#include "objectsfiltermodel.h"
+#include "reversingrecursivefiltermodel.h"
 
 #include <QAction>
 #include <QGuiApplication>
@@ -44,7 +44,7 @@ static const char VISIBLE_COLUMNS_KEY[] = "ObjectsDock/VisibleSections";
 
 ObjectsView::ObjectsView(QWidget *parent)
     : QTreeView(parent)
-    , mProxyModel(new ObjectsFilterModel(this))
+    , mProxyModel(new ReversingRecursiveFilterModel(this))
 {
     setMouseTracking(true);
 

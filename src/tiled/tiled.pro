@@ -406,10 +406,9 @@ HEADERS += aboutdialog.h \
     objectrefedit.h \
     objectsdock.h \
     objectselectionitem.h \
-    objectsfiltermodel.h \
-    objecttemplatemodel.h \
     objectselectiontool.h \
     objectsview.h \
+    objecttemplatemodel.h \
     objecttypeseditor.h \
     objecttypesmodel.h \
     offsetlayer.h \
@@ -417,8 +416,8 @@ HEADERS += aboutdialog.h \
     painttilelayer.h \
     pluginlistmodel.h \
     pointhandle.h \
-    preferencesdialog.h \
     preferences.h \
+    preferencesdialog.h \
     project.h \
     projectdock.h \
     projectmodel.h \
@@ -438,6 +437,7 @@ HEADERS += aboutdialog.h \
     resizemapobject.h \
     resizetilelayer.h \
     reversingproxymodel.h \
+    reversingrecursivefiltermodel.h \
     rotatemapobject.h \
     scriptedaction.h \
     scriptedfileformat.h \

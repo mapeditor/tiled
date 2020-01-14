@@ -34,7 +34,7 @@ namespace Tiled {
 
 class MapObject;
 class MapDocument;
-class ImmutableRoleModel;
+class ImmutableMapObjectProxyModel;
 class Tile;
 
 class ObjectsTreeView : public QTreeView
@@ -61,7 +61,7 @@ protected:
 private:
     bool isLayer(const QModelIndex &proxyIndex);
 
-    ImmutableRoleModel *mProxyModel;
+    ImmutableMapObjectProxyModel *mProxyModel;
     MapDocument *mMapDocument;
 };
 

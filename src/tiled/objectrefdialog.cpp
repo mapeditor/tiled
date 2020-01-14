@@ -27,7 +27,7 @@
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "mapobjectmodel.h"
-#include "objectsfiltermodel.h"
+#include "reversingrecursivefiltermodel.h"
 #include "objectgroup.h"
 #include "utils.h"
 
@@ -38,11 +38,11 @@
 
 namespace Tiled {
 
-class ImmutableRoleModel : public ObjectsFilterModel
+class ImmutableMapObjectProxyModel : public ReversingRecursiveFilterModel
 {
 public:
-    ImmutableRoleModel(QObject *parent = nullptr)
-        : ObjectsFilterModel(parent)
+    ImmutableMapObjectProxyModel(QObject *parent = nullptr)
+        : ReversingRecursiveFilterModel(parent)
     {}
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override
@@ -51,26 +51,29 @@ public:
         if (role == Qt::CheckStateRole)
             return QVariant();
 
-        return ObjectsFilterModel::data(index, role);
+        return ReversingRecursiveFilterModel::data(index, role);
     }
 
     Qt::ItemFlags flags(const QModelIndex &index) const override
     {
+        auto flags = ReversingRecursiveFilterModel::flags(index);
+
         // Make layers unselectable.
-        auto ret = ObjectsFilterModel::flags(index);
         if (auto mapModel = qobject_cast<MapObjectModel*>(sourceModel())) {
-            auto originalIndex = mapToSource(index);
-            if (mapModel->toLayer(originalIndex))
-                ret &= ~Qt::ItemIsSelectable;
+            if (mapModel->toLayer(mapToSource(index)))
+                flags &= ~Qt::ItemIsSelectable;
         }
-        return ret;
+
+        flags &= ~(Qt::ItemIsUserCheckable | Qt::ItemIsEditable);
+
+        return flags;
     }
 };
 
 
 ObjectsTreeView::ObjectsTreeView(MapDocument *mapDocument, QWidget *parent)
     : QTreeView(parent)
-    , mProxyModel(new ImmutableRoleModel(this))
+    , mProxyModel(new ImmutableMapObjectProxyModel(this))
     , mMapDocument(mapDocument)
 {
     mProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
