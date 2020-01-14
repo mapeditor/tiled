@@ -77,14 +77,16 @@ ObjectsTreeView::ObjectsTreeView(MapDocument *mapDoc, QWidget *parent)
     mProxyModel->setFilterKeyColumn(-1);
     mProxyModel->setSourceModel(mapDoc->mapObjectModel());
     setModel(mProxyModel);
-
+    expandAll();
 
     setSelectionBehavior(QAbstractItemView::SelectRows);
     setSelectionMode(QAbstractItemView::SingleSelection);
 
-    hideColumn(3);
-    header()->setSectionResizeMode(0, QHeaderView::Stretch);
-    header()->moveSection(2, 0);
+    hideColumn(MapObjectModel::Position);
+    header()->setStretchLastSection(false);
+    header()->setSectionResizeMode(MapObjectModel::Name, QHeaderView::Stretch);
+    header()->setSectionResizeMode(MapObjectModel::Type, QHeaderView::Stretch);
+    header()->setSectionResizeMode(MapObjectModel::Id, QHeaderView::ResizeToContents);
 }
 
 MapObject *ObjectsTreeView::selectedObject()
@@ -109,13 +111,7 @@ void ObjectsTreeView::setSelectedObject(MapObject *object)
     const auto index = mMapDoc->mapObjectModel()->index(object);
     const auto proxyIndex = mProxyModel->mapFromSource(index);
     selectionModel()->select(proxyIndex, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
-
-    Layer *parentLayer = object->objectGroup();
-    while (parentLayer) {
-        const auto index = mMapDoc->mapObjectModel()->index(parentLayer);
-        const auto proxyIndex = mProxyModel->mapFromSource(index);
-        selectionModel()->select(proxyIndex, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
-    }
+    scrollTo(proxyIndex);
 }
 
 void ObjectsTreeView::setSelectedObject(int id)

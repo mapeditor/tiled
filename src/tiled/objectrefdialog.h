@@ -37,7 +37,8 @@ class MapDocument;
 class ImmutableRoleModel;
 class Tile;
 
-class ObjectsTreeView : public QTreeView {
+class ObjectsTreeView : public QTreeView
+{
    Q_OBJECT
 
 public:
