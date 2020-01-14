@@ -175,6 +175,11 @@ MapEditor *ScriptModule::mapEditor() const
     return static_cast<MapEditor*>(DocumentManager::instance()->editor(Document::MapDocumentType));
 }
 
+FilePath ScriptModule::filePath(const QUrl &path) const
+{
+    return { path };
+}
+
 EditableAsset *ScriptModule::open(const QString &fileName) const
 {
     auto documentManager = DocumentManager::instance();

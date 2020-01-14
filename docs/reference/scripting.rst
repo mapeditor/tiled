@@ -463,6 +463,11 @@ tiled.mapFormatForFile(fileName : string) : :ref:`script-mapformatwrapper`
     Returns the map format object that can read the given file, or `undefined` if
     no object was found.
 
+.. _script-tiled-filePath:
+
+tiled.filePath(path : url) : :ref:`script-filepath`
+    Creates a :ref:`script-filepath` object with the given URL.
+
 .. _script-tiled-signals:
 
 Signals
@@ -570,8 +575,8 @@ Asset.macro(text : string, callback : function) : value
 
 .. _script-fileformat:
 
-File Format
-^^^^^^^^^^^
+FileFormat
+^^^^^^^^^^
 
 Common functionality for file format readers and writers. (Since 1.4)
 
@@ -730,8 +735,8 @@ new MapObject([name : string])
 
 .. _script-mapeditor:
 
-Map Editor
-^^^^^^^^^^
+MapEditor
+^^^^^^^^^
 
 Properties
 ~~~~~~~~~~
@@ -745,8 +750,8 @@ Properties
 
 .. _script-mapformatwrapper:
 
-Map Format
-^^^^^^^^^^
+MapFormat
+^^^^^^^^^
 
 This is an object that can read or write map files. (Since 1.4)
 
@@ -766,8 +771,8 @@ MapFormat.write(map : :ref:`script-map`, fileName : string) : string
 
 .. _script-mapview:
 
-Map View
-^^^^^^^^
+MapView
+^^^^^^^
 
 The view displaying the map.
 
@@ -1002,8 +1007,8 @@ Tile.setTerrainAtCorner(corner : :ref:`Corner <script-tile-corner>`, :ref:`scrip
 
 .. _script-tilecollisioneditor:
 
-Tile Collision Editor
-^^^^^^^^^^^^^^^^^^^^^
+TileCollisionEditor
+^^^^^^^^^^^^^^^^^^^
 
 Properties
 ~~~~~~~~~~
@@ -1359,8 +1364,8 @@ Tileset.removeTiles(tiles : [:ref:`script-tile`]) : void
 
 .. _script-tileseteditor:
 
-Tileset Editor
-^^^^^^^^^^^^^^
+TilesetEditor
+^^^^^^^^^^^^^
 
 Properties
 ~~~~~~~~~~
@@ -1372,8 +1377,8 @@ Properties
 
 .. _script-tilesetformatwrapper:
 
-Tileset Format
-^^^^^^^^^^^^^^
+TilesetFormat
+^^^^^^^^^^^^^
 
 This is an object that can read or write tileset files. (Since 1.4)
 
@@ -1393,8 +1398,8 @@ TilesetFormat.write(tileset : :ref:`script-tileset`, fileName : string) : string
 
 .. _script-tilesetsview:
 
-Tilesets View
-^^^^^^^^^^^^^
+TilesetsView
+^^^^^^^^^^^^
 
 Properties
 ~~~~~~~~~~
@@ -1430,6 +1435,20 @@ Alignment
     Qt.AlignBottom, 0x0040
     Qt.AlignVCenter, 0x0080
     Qt.AlignCenter, Qt.AlignVCenter | Qt.AlignHCenter
+
+.. _script-filepath:
+
+FilePath
+~~~~~~~~
+
+
+Used as the value for custom 'file' properties. Can be created with
+:ref:`tiled.filePath <script-tiled-filePath>`.
+
+.. csv-table::
+    :widths: 1, 3
+
+    **url** : url, The URL of the file.
 
 .. _script-font:
 

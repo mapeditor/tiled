@@ -31,6 +31,7 @@
 #include "tiled_global.h"
 
 #include <QJsonArray>
+#include <QObject>
 #include <QUrl>
 #include <QVariantMap>
 
@@ -38,7 +39,12 @@ class QDir;
 
 namespace Tiled {
 
-struct FilePath {
+class TILEDSHARED_EXPORT FilePath
+{
+    Q_GADGET
+    Q_PROPERTY(QUrl url MEMBER url)
+
+public:
     QUrl url;
 };
 

@@ -99,6 +99,8 @@ public:
     TilesetEditor *tilesetEditor() const;
     MapEditor *mapEditor() const;
 
+    Q_INVOKABLE Tiled::FilePath filePath(const QUrl &path) const;
+
     Q_INVOKABLE Tiled::EditableAsset *open(const QString &fileName) const;
     Q_INVOKABLE bool close(Tiled::EditableAsset *asset) const;
     Q_INVOKABLE Tiled::EditableAsset *reload(Tiled::EditableAsset *asset) const;
