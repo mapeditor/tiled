@@ -201,7 +201,7 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
 
     const QString orientation = orientationToString(map.orientation());
     const QString renderOrder = renderOrderToString(map.renderOrder());
-    const QString objectAlignment = objectAlignmentToString(map.objectAlignment());
+    const QString objectAlignment = alignmentToString(map.objectAlignment());
 
     w.writeAttribute(QLatin1String("version"), QLatin1String("1.2"));
     w.writeAttribute(QLatin1String("tiledversion"), QCoreApplication::applicationVersion());
@@ -356,6 +356,11 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
     if (tileset.backgroundColor().isValid()) {
         w.writeAttribute(QLatin1String("backgroundcolor"),
                          colorToString(tileset.backgroundColor()));
+    }
+
+    if (tileset.alignment() != Unspecified) {
+        const QString alignment = alignmentToString(tileset.alignment());
+        w.writeAttribute(QLatin1String("alignment"), alignment);
     }
 
     // Write editor settings when saving external tilesets

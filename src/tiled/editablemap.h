@@ -90,12 +90,18 @@ public:
     };
     Q_ENUM(RenderOrder)
 
-    // Synchronized with Map::ObjectAlignment
+    // Synchronized with Tiled::Alignment
     enum ObjectAlignment {
-        Unset        = 0,
-        TopLeft      = 1,
-        BottomLeft   = 2,
-        BottomCenter = 3
+        Unspecified,
+        TopLeft,
+        Top,
+        TopRight,
+        Left,
+        Center,
+        Right,
+        BottomLeft,
+        Bottom,
+        BottomRight
     };
     Q_ENUM(ObjectAlignment)
 

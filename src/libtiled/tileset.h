@@ -130,6 +130,9 @@ public:
     int margin() const;
     void setMargin(int margin);
 
+    Alignment alignment() const;
+    void setAlignment(Alignment alignment);
+
     QPoint tileOffset() const;
     void setTileOffset(QPoint offset);
 
@@ -259,6 +262,7 @@ private:
     int mTileSpacing;
     int mMargin;
     QPoint mTileOffset;
+    Alignment mAlignment;
     Orientation mOrientation;
     QSize mGridSize;
     int mColumnCount;
@@ -358,6 +362,22 @@ inline int Tileset::tileSpacing() const
 inline int Tileset::margin() const
 {
     return mMargin;
+}
+
+/**
+ * Returns the alignment of the tiles in this tileset.
+ */
+inline Alignment Tileset::alignment() const
+{
+    return mAlignment;
+}
+
+/**
+ * @see alignment
+ */
+inline void Tileset::setAlignment(Alignment alignment)
+{
+    mAlignment = alignment;
 }
 
 /**

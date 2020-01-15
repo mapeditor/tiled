@@ -57,7 +57,7 @@ QVariant MapToVariantConverter::toVariant(const Map &map, const QDir &mapDir)
     mapVariant[QLatin1String("tiledversion")] = QCoreApplication::applicationVersion();
     mapVariant[QLatin1String("orientation")] = orientationToString(map.orientation());
     mapVariant[QLatin1String("renderorder")] = renderOrderToString(map.renderOrder());
-    mapVariant[QLatin1String("objectalignment")] = objectAlignmentToString(map.objectAlignment());
+    mapVariant[QLatin1String("objectalignment")] = alignmentToString(map.objectAlignment());
     mapVariant[QLatin1String("width")] = map.width();
     mapVariant[QLatin1String("height")] = map.height();
     mapVariant[QLatin1String("tilewidth")] = map.tileWidth();
@@ -196,9 +196,12 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
         }
     }
 
-    const QColor bgColor = tileset.backgroundColor();
-    if (bgColor.isValid())
-        tilesetVariant[QLatin1String("backgroundcolor")] = colorToString(bgColor);
+    const QColor &backgroundColor = tileset.backgroundColor();
+    if (backgroundColor.isValid())
+        tilesetVariant[QLatin1String("backgroundcolor")] = colorToString(backgroundColor);
+
+    if (tileset.alignment() != Unspecified)
+        tilesetVariant[QLatin1String("alignment")] = alignmentToString(tileset.alignment());
 
     addProperties(tilesetVariant, tileset.properties());
 

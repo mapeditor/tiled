@@ -112,7 +112,7 @@ public:
       * @param mapDocument      the map document of the map
       * @param objectAlignment  the new alignment of objects
       */
-    ChangeMapProperty(MapDocument *mapDocument, Map::ObjectAlignment objectAlignment);
+    ChangeMapProperty(MapDocument *mapDocument, Alignment objectAlignment);
 
     /**
      * Constructs a command that changes the layer data format.
@@ -139,7 +139,7 @@ private:
         Map::Orientation mOrientation;
         Map::RenderOrder mRenderOrder;
         Map::LayerDataFormat mLayerDataFormat;
-        Map::ObjectAlignment mObjectAlignment;
+        Alignment mObjectAlignment;
     };
 };
 

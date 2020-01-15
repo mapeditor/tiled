@@ -157,6 +157,23 @@ private:
 };
 
 
+class ChangeTilesetAlignment : public QUndoCommand
+{
+public:
+    ChangeTilesetAlignment(TilesetDocument *tilesetDocument,
+                           Alignment alignment);
+
+    void undo() override { swap(); }
+    void redo() override { swap(); }
+
+private:
+    void swap();
+
+    TilesetDocument *mTilesetDocument;
+    Alignment mAlignment;
+};
+
+
 class ChangeTilesetGridSize : public QUndoCommand
 {
 public:

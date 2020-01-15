@@ -191,6 +191,24 @@ void ChangeTilesetOrientation::swap()
 }
 
 
+ChangeTilesetAlignment::ChangeTilesetAlignment(TilesetDocument *tilesetDocument,
+                                               Alignment alignment)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Change Alignment"))
+    , mTilesetDocument(tilesetDocument)
+    , mAlignment(alignment)
+{
+}
+
+void ChangeTilesetAlignment::swap()
+{
+    Tileset &tileset = *mTilesetDocument->tileset();
+
+    Alignment alignment = tileset.alignment();
+    mTilesetDocument->setTilesetAlignment(mAlignment);
+    mAlignment = alignment;
+}
+
+
 ChangeTilesetGridSize::ChangeTilesetGridSize(TilesetDocument *tilesetDocument,
                                              QSize gridSize)
     : QUndoCommand(QCoreApplication::translate("Undo Commands", "Change Grid Size"))

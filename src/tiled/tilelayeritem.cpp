@@ -52,6 +52,7 @@ void TileLayerItem::syncWithTileLayer()
     const MapRenderer *renderer = mMapDocument->renderer();
     QRectF boundingRect = renderer->boundingRect(layerBounds);
 
+    // TODO: Adjust for tile alignment
     QMargins margins = tileLayer()->drawMargins();
     if (const Map *map = tileLayer()->map()) {
         margins.setTop(margins.top() - map->tileHeight());

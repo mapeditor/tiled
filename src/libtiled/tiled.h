@@ -30,6 +30,7 @@
 
 #include "tiled_global.h"
 
+#include <QMetaType>
 #include <QRectF>
 #include <QString>
 #include <QUrl>
@@ -49,6 +50,7 @@ enum RotateDirection {
 };
 
 enum Alignment {
+    Unspecified,
     TopLeft,
     Top,
     TopRight,
@@ -83,4 +85,9 @@ TILEDSHARED_EXPORT QString toFileReference(const QUrl &url, const QDir &dir);
 TILEDSHARED_EXPORT QUrl toUrl(const QString &reference, const QDir &dir);
 TILEDSHARED_EXPORT QString urlToLocalFileOrQrc(const QUrl &url);
 
+TILEDSHARED_EXPORT QString alignmentToString(Alignment);
+TILEDSHARED_EXPORT Alignment alignmentFromString(const QString &);
+
 } // namespace Tiled
+
+Q_DECLARE_METATYPE(Tiled::Alignment);

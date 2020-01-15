@@ -158,6 +158,8 @@ void PropertyBrowser::setDocument(Document *document)
                 this, &PropertyBrowser::tilesetChanged);
         connect(tilesetDocument, &TilesetDocument::tilesetTileOffsetChanged,
                 this, &PropertyBrowser::tilesetChanged);
+        connect(tilesetDocument, &TilesetDocument::tilesetAlignmentChanged,
+                this, &PropertyBrowser::tilesetChanged);
         connect(tilesetDocument, &TilesetDocument::tilesetChanged,
                 this, &PropertyBrowser::tilesetChanged);
 
@@ -281,6 +283,7 @@ void PropertyBrowser::documentChanged(const ChangeEvent &change)
     case ChangeEvent::ObjectGroupChanged:
         if (mObject == static_cast<const ObjectGroupChangeEvent&>(change).objectGroup)
             updateProperties();
+        break;
     default:
         break;
     }
@@ -648,7 +651,7 @@ void PropertyBrowser::addMapProperties()
     addProperty(CompressionLevelProperty, QVariant::Int, tr("Compression level"), groupProperty);
 
     renderOrderProperty->setAttribute(QLatin1String("enumNames"), mRenderOrderNames);
-    objectAlignmentProperty->setAttribute(QLatin1String("enumNames"), mObjectAlignmentNames);
+    objectAlignmentProperty->setAttribute(QLatin1String("enumNames"), mAlignmentNames);
 
     addProperty(BackgroundColorProperty, QVariant::Color, tr("Background Color"), groupProperty);
     addProperty(groupProperty);
@@ -811,6 +814,14 @@ void PropertyBrowser::addTilesetProperties()
 
     QtVariantProperty *nameProperty = addProperty(NameProperty, QVariant::String, tr("Name"), groupProperty);
     nameProperty->setEnabled(mTilesetDocument);
+
+    QtVariantProperty *alignmentProperty =
+            addProperty(AlignmentProperty,
+                        QtVariantPropertyManager::enumTypeId(),
+                        tr("Alignment"),
+                        groupProperty);
+
+    alignmentProperty->setAttribute(QLatin1String("enumNames"), mAlignmentNames);
 
     QtVariantProperty *tileOffsetProperty = addProperty(TileOffsetProperty, QVariant::Point, tr("Drawing Offset"), groupProperty);
     tileOffsetProperty->setEnabled(mTilesetDocument);
@@ -1037,7 +1048,7 @@ void PropertyBrowser::applyMapValue(PropertyId id, const QVariant &val)
         break;
     }
     case ObjectAlignmentProperty: {
-        Map::ObjectAlignment objectAlignment = static_cast<Map::ObjectAlignment>(val.toInt());
+        Alignment objectAlignment = static_cast<Alignment>(val.toInt());
         command = new ChangeMapProperty(mMapDocument, objectAlignment);
         break;
     }
@@ -1319,6 +1330,13 @@ void PropertyBrowser::applyTilesetValue(PropertyId id, const QVariant &val)
         Q_ASSERT(mTilesetDocument);
         undoStack->push(new RenameTileset(mTilesetDocument, val.toString()));
         break;
+    case AlignmentProperty: {
+        Q_ASSERT(mTilesetDocument);
+        auto alignment = static_cast<Alignment>(val.toInt());
+        undoStack->push(new ChangeTilesetAlignment(mTilesetDocument,
+                                                   alignment));
+        break;
+    }
     case TileOffsetProperty:
         Q_ASSERT(mTilesetDocument);
         undoStack->push(new ChangeTilesetTileOffset(mTilesetDocument,
@@ -1741,6 +1759,7 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[BackgroundColorProperty]->setValue(tileset->backgroundColor());
 
         mIdToProperty[NameProperty]->setValue(tileset->name());
+        mIdToProperty[AlignmentProperty]->setValue(tileset->alignment());
         mIdToProperty[TileOffsetProperty]->setValue(tileset->tileOffset());
         mIdToProperty[OrientationProperty]->setValue(tileset->orientation());
         mIdToProperty[GridWidthProperty]->setValue(tileset->gridSize().width());
@@ -1986,11 +2005,17 @@ void PropertyBrowser::retranslateUi()
     mRenderOrderNames.append(QCoreApplication::translate("PreferencesDialog", "Left Down"));
     mRenderOrderNames.append(QCoreApplication::translate("PreferencesDialog", "Left Up"));
 
-    mObjectAlignmentNames.clear();
-    mObjectAlignmentNames.append(QCoreApplication::translate("PreferencesDialog", "Unset"));
-    mObjectAlignmentNames.append(QCoreApplication::translate("PreferencesDialog", "Top Left"));
-    mObjectAlignmentNames.append(QCoreApplication::translate("PreferencesDialog", "Bottom Left"));
-    mObjectAlignmentNames.append(QCoreApplication::translate("PreferencesDialog", "Bottom Center"));
+    mAlignmentNames.clear();
+    mAlignmentNames.append(tr("Unspecified"));
+    mAlignmentNames.append(tr("Top Left"));
+    mAlignmentNames.append(tr("Top"));
+    mAlignmentNames.append(tr("Top Right"));
+    mAlignmentNames.append(tr("Left"));
+    mAlignmentNames.append(tr("Center"));
+    mAlignmentNames.append(tr("Right"));
+    mAlignmentNames.append(tr("Bottom Left"));
+    mAlignmentNames.append(tr("Bottom"));
+    mAlignmentNames.append(tr("Bottom Right"));
 
     mFlippingFlagNames.clear();
     mFlippingFlagNames.append(tr("Horizontal"));

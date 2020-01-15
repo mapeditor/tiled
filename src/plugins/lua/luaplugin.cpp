@@ -211,7 +211,7 @@ void LuaWriter::writeMap(const Map *map)
 
     const QString orientation = orientationToString(map->orientation());
     const QString renderOrder = renderOrderToString(map->renderOrder());
-    const QString objectAlignment = objectAlignmentToString(map->objectAlignment());
+    const QString objectAlignment = alignmentToString(map->objectAlignment());
 
     mWriter.writeKeyAndValue("orientation", orientation);
     mWriter.writeKeyAndValue("renderorder", renderOrder);
@@ -338,6 +338,8 @@ void LuaWriter::writeTileset(const Tileset &tileset,
     const QColor &backgroundColor = tileset.backgroundColor();
     if (backgroundColor.isValid())
         writeColor("backgroundcolor", backgroundColor);
+
+    mWriter.writeKeyAndValue("alignment", alignmentToString(tileset.alignment()));
 
     const QPoint offset = tileset.tileOffset();
     mWriter.writeStartTable("tileoffset");

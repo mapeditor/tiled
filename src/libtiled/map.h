@@ -145,19 +145,6 @@ public:
     };
     Q_ENUM(StaggerIndex)
 
-    /**
-     * Where objects are aligned. For compatibility reasons, the default option
-     * is Unset. Unset aligns tile objects using BottomLeft for orthogonal maps and
-     * BottomCenter for isometric maps, while all other objects use TopLeft.
-     */
-    enum ObjectAlignment {
-        Unset = 0,
-        TopLeft = 1,
-        BottomLeft = 2,
-        BottomCenter = 3
-    };
-    Q_ENUM(ObjectAlignment)
-
     Map();
 
     /**
@@ -200,12 +187,12 @@ public:
     /**
      * Returns the alignment for objects in the map.
      */
-    ObjectAlignment objectAlignment() const { return mObjectAlignment; }
+    Alignment objectAlignment() const { return mObjectAlignment; }
 
     /**
      * Sets the alignment for objects in the map.
      */
-    void setObjectAlignment(ObjectAlignment objectAlignment)
+    void setObjectAlignment(Alignment objectAlignment)
     { mObjectAlignment = objectAlignment; }
 
     /**
@@ -510,7 +497,7 @@ private:
 
     Orientation mOrientation;
     RenderOrder mRenderOrder;
-    ObjectAlignment mObjectAlignment;
+    Alignment mObjectAlignment;
     int mCompressionLevel;
     int mWidth;
     int mHeight;
@@ -711,9 +698,6 @@ TILEDSHARED_EXPORT QString compressionToString(Map::LayerDataFormat);
 
 TILEDSHARED_EXPORT QString renderOrderToString(Map::RenderOrder renderOrder);
 TILEDSHARED_EXPORT Map::RenderOrder renderOrderFromString(const QString &);
-
-TILEDSHARED_EXPORT QString objectAlignmentToString(Map::ObjectAlignment);
-TILEDSHARED_EXPORT Map::ObjectAlignment objectAlignmentFromString(const QString &);
 
 typedef QSharedPointer<Map> SharedMap;
 

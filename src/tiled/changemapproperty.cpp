@@ -119,7 +119,7 @@ ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
 }
 
 ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
-                                     Map::ObjectAlignment objectAlignment)
+                                     Alignment objectAlignment)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Change Object Alignment"))
     , mMapDocument(mapDocument)
@@ -228,7 +228,7 @@ void ChangeMapProperty::swap()
         break;
     }
     case ObjectAlignment: {
-        const Map::ObjectAlignment objectAlignment = map->objectAlignment();
+        const Alignment objectAlignment = map->objectAlignment();
         map->setObjectAlignment(mObjectAlignment);
         mObjectAlignment = objectAlignment;
     }

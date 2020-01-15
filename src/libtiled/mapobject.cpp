@@ -186,7 +186,7 @@ QRectF MapObject::screenBounds(const MapRenderer &renderer) const
                       objectSize.width(),
                       objectSize.height());
 
-        align(bounds, alignment());
+        align(bounds, alignment(renderer.map()));
 
         return bounds;
     } else {
@@ -194,7 +194,7 @@ QRectF MapObject::screenBounds(const MapRenderer &renderer) const
         case MapObject::Ellipse:
         case MapObject::Rectangle: {
             QRectF bounds(this->bounds());
-            align(bounds, alignment());
+            align(bounds, alignment(renderer.map()));
             QPolygonF screenPolygon = renderer.pixelToScreenCoords(bounds);
             return screenPolygon.boundingRect();
         }
@@ -218,43 +218,40 @@ QRectF MapObject::screenBounds(const MapRenderer &renderer) const
 /*
  * Returns the effective alignment for this object on the given \a map.
  *
- * This is somewhat of a workaround for dealing with the ways different objects
- * align. By default, non-tile objects have top-left alignment, tile objects
- * have bottom-left alignment on orthogonal maps, and bottom-center alignment
+ * By default, non-tile objects have top-left alignment, while tile objects
+ * have bottom-left alignment on orthogonal maps and bottom-center alignment
  * on isometric maps.
  *
- * The inconsistent alignment is overridden by the objectAlignment property of
- * the given \a map, when it is not Unset. If no map is provided, the
- * the map the object is part of is used, if available.
+ * For tile objects, the default alignment can be overridden by setting an
+ * alignment on the tileset.
+ *
+ * The alignment can be set on the map for all objects, in which case it
+ * overrides even that of tile objects. If no map is provided, the the map the
+ * object is part of is used, if available.
  */
 Alignment MapObject::alignment(const Map *map) const
 {
-    Map::ObjectAlignment objectAlignment = Map::Unset;
+    Alignment alignment = Unspecified;
+
+    if (Tileset *tileset = mCell.tileset())
+        alignment = tileset->alignment();
 
     if (!map && mObjectGroup)
         map = mObjectGroup->map();
 
-    if (map)
-        objectAlignment = map->objectAlignment();
+    if (map && map->objectAlignment() != Unspecified)
+        alignment = map->objectAlignment();
 
-    switch (objectAlignment) {
-    case Map::Unset:
-        break;
-    case Map::TopLeft:
-        return TopLeft;
-    case Map::BottomLeft:
-        return BottomLeft;
-    case Map::BottomCenter:
-        return Bottom;
-    }
-
-    if (mCell.isEmpty()) {
-        return TopLeft;
-    } else if (map) {
-        if (map->orientation() == Map::Isometric)
+    if (alignment == Unspecified) {
+        if (mCell.isEmpty())
+            return TopLeft;
+        else if (map && map->orientation() == Map::Isometric)
             return Bottom;
+
+        return BottomLeft;
     }
-    return BottomLeft;
+
+    return alignment;
 }
 
 /**

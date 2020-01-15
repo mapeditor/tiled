@@ -292,7 +292,20 @@ void TilesetDocument::setTilesetTileOffset(QPoint tileOffset)
     emit tilesetTileOffsetChanged(mTileset.data());
 
     for (MapDocument *mapDocument : mapDocuments())
-        emit mapDocument->tilesetTileOffsetChanged(mTileset.data());
+        emit mapDocument->tilesetTilePositioningChanged(mTileset.data());
+}
+
+void TilesetDocument::setTilesetAlignment(Alignment alignment)
+{
+    mTileset->setAlignment(alignment);
+
+    // TODO: Invalidate the draw margins of the maps using this tileset, once
+    // they take alignment into account.
+
+    emit tilesetAlignmentChanged(mTileset.data());
+
+    for (MapDocument *mapDocument : mapDocuments())
+        emit mapDocument->tilesetTilePositioningChanged(mTileset.data());
 }
 
 void TilesetDocument::addTiles(const QList<Tile *> &tiles)

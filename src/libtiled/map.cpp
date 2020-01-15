@@ -51,7 +51,7 @@ Map::Map(Orientation orientation,
     Object(MapType),
     mOrientation(orientation),
     mRenderOrder(RightDown),
-    mObjectAlignment(Unset),
+    mObjectAlignment(Unspecified),
     mCompressionLevel(-1),
     mWidth(width),
     mHeight(height),
@@ -531,32 +531,4 @@ Map::RenderOrder Tiled::renderOrderFromString(const QString &string)
         renderOrder = Map::LeftUp;
     }
     return renderOrder;
-}
-
-QString Tiled::objectAlignmentToString(Map::ObjectAlignment objectAlignment)
-{
-    switch (objectAlignment) {
-    case Map::Unset:
-        return QLatin1String("unset");
-    case Map::TopLeft:
-        return QLatin1String("top-left");
-    case Map::BottomLeft:
-        return QLatin1String("bottom-left");
-    case Map::BottomCenter:
-        return QLatin1String("bottom-center");
-    }
-    return QString();
-}
-
-Map::ObjectAlignment Tiled::objectAlignmentFromString(const QString &string)
-{
-    Map::ObjectAlignment objectAlignment = Map::Unset;
-    if (string == QLatin1String("top-left")) {
-        objectAlignment = Map::TopLeft;
-    } else if (string == QLatin1String("bottom-left")) {
-        objectAlignment = Map::BottomLeft;
-    } else if (string == QLatin1String("bottom-center")) {
-        objectAlignment = Map::BottomCenter;
-    }
-    return objectAlignment;
 }
