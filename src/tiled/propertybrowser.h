@@ -144,7 +144,8 @@ private:
         TemplateProperty,
         CompressionLevelProperty,
         ChunkWidthProperty,
-        ChunkHeightProperty
+        ChunkHeightProperty,
+        TintColorProperty
     };
 
     void addMapProperties();

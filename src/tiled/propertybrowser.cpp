@@ -733,6 +733,7 @@ void PropertyBrowser::addLayerProperties(QtProperty *parent)
     opacityProperty->setAttribute(QLatin1String("minimum"), 0.0);
     opacityProperty->setAttribute(QLatin1String("maximum"), 1.0);
     opacityProperty->setAttribute(QLatin1String("singleStep"), 0.1);
+    addProperty(TintColorProperty, QVariant::Color, tr("Tint Color"), parent);
 
     addProperty(OffsetXProperty, QVariant::Double, tr("Horizontal Offset"), parent);
     addProperty(OffsetYProperty, QVariant::Double, tr("Vertical Offset"), parent);
@@ -1173,6 +1174,9 @@ QUndoCommand *PropertyBrowser::applyLayerValueTo(PropertyBrowser::PropertyId id,
     case OpacityProperty:
         command = new SetLayerOpacity(mMapDocument, layer, val.toDouble());
         break;
+    case TintColorProperty:
+        command = new SetLayerTintColor(mMapDocument, layer, val.value<QColor>());
+        break;
     case OffsetXProperty:
     case OffsetYProperty: {
         QPointF offset = layer->offset();
@@ -1587,6 +1591,8 @@ void PropertyBrowser::addProperties()
         setExpanded(items(colorProperty).constFirst(), false);
     if (QtProperty *fontProperty = mIdToProperty.value(FontProperty))
         setExpanded(items(fontProperty).constFirst(), false);
+    if (QtProperty *tintColorProperty = mIdToProperty.value(TintColorProperty))
+        setExpanded(items(tintColorProperty).constFirst(), false);
 
     // Add a node for the custom properties
     mCustomPropertiesGroup = mGroupManager->addProperty(tr("Custom Properties"));
@@ -1696,6 +1702,7 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[VisibleProperty]->setValue(layer->isVisible());
         mIdToProperty[LockedProperty]->setValue(layer->isLocked());
         mIdToProperty[OpacityProperty]->setValue(layer->opacity());
+        mIdToProperty[TintColorProperty]->setValue(layer->tintColor());
         mIdToProperty[OffsetXProperty]->setValue(layer->offset().x());
         mIdToProperty[OffsetYProperty]->setValue(layer->offset().y());
 

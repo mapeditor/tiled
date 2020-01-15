@@ -366,7 +366,7 @@ void MapItem::documentChanged(const ChangeEvent &change)
 {
     switch (change.type) {
     case ChangeEvent::LayerChanged:
-        layerChanged(static_cast<const LayerChangeEvent&>(change).layer);
+        layerChanged(static_cast<const LayerChangeEvent&>(change));
         break;
     case ChangeEvent::MapObjectsAboutToBeRemoved:
         deleteObjectItems(static_cast<const MapObjectsEvent&>(change).mapObjects);
@@ -442,11 +442,15 @@ void MapItem::layerRemoved(Layer *layer)
  * A layer has changed. This can mean that the layer visibility, opacity or
  * offset changed.
  */
-void MapItem::layerChanged(Layer *layer)
+void MapItem::layerChanged(const LayerChangeEvent &change)
 {
+    Layer *layer = change.layer;
     Preferences *prefs = Preferences::instance();
     QGraphicsItem *layerItem = mLayerItems.value(layer);
     Q_ASSERT(layerItem);
+
+    if (change.properties & LayerChangeEvent::TintColorProperty)
+        layerTintColorChanged(layer);
 
     layerItem->setVisible(layer->isVisible());
 
@@ -475,6 +479,27 @@ void MapItem::layerChanged(Layer *layer)
     layerItem->setPos(layer->offset());
 
     updateBoundingRect();   // possible layer offset change
+}
+
+void MapItem::layerTintColorChanged(Layer *layer)
+{
+    switch (layer->layerType()) {
+    case Layer::TileLayerType:
+    case Layer::ImageLayerType:
+        mLayerItems.value(layer)->update();
+        break;
+    case Layer::ObjectGroupType:
+        for (MapObject *mapObject : static_cast<const ObjectGroup&>(*layer)) {
+            if (mapObject->isTileObject())
+                mObjectItems.value(mapObject)->update();
+        }
+        break;
+    case Layer::GroupLayerType:
+        // Recurse into group layers since tint color is inherited
+        for (auto childLayer : static_cast<GroupLayer*>(layer)->layers())
+            layerTintColorChanged(childLayer);
+        break;
+    }
 }
 
 /**

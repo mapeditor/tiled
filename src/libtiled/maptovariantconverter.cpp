@@ -743,6 +743,9 @@ void MapToVariantConverter::addLayerAttributes(QVariantMap &layerVariant,
         layerVariant[QLatin1String("offsety")] = offset.y();
     }
 
+    if (layer.tintColor().isValid())
+        layerVariant[QLatin1String("tintcolor")] = colorToString(layer.tintColor());
+
     addProperties(layerVariant, layer.properties());
 }
 

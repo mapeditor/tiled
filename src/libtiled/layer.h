@@ -55,6 +55,7 @@ class TILEDSHARED_EXPORT Layer : public Object
 
     Q_PROPERTY(QString name READ name)
     Q_PROPERTY(qreal opacity READ opacity)
+    Q_PROPERTY(QColor tintColor READ tintColor WRITE setTintColor)
     Q_PROPERTY(bool visible READ isVisible)
     Q_PROPERTY(bool locked READ isLocked)
     Q_PROPERTY(QPointF offset READ offset)
@@ -82,6 +83,9 @@ public:
     void setId(int id) { mId = id; }
     void resetIds();
 
+    const QColor &tintColor() const { return mTintColor; }
+    void setTintColor(const QColor &tintColor) { mTintColor = tintColor; }
+
     /**
      * Returns the type of this layer.
      */
@@ -107,7 +111,15 @@ public:
      */
     void setOpacity(qreal opacity) { mOpacity = opacity; }
 
+    /**
+     * Returns the effective opacity of this layer
+     */
     qreal effectiveOpacity() const;
+
+    /**
+     * Returns the effective tint color of this layer
+     */
+    QColor effectiveTintColor() const;
 
     /**
      * Returns the visibility of this layer.
@@ -255,6 +267,7 @@ protected:
     int mY;
     QPointF mOffset;
     qreal mOpacity;
+    QColor mTintColor;
     bool mVisible;
     Map *mMap;
     GroupLayer *mParentLayer;
