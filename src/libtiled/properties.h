@@ -55,6 +55,9 @@ struct TILEDSHARED_EXPORT ObjectRef
 
 public:
     int id;
+
+    static int toInt(const ObjectRef &ref) { return ref.id; }
+    static ObjectRef fromInt(int id) { return ObjectRef { id }; }
 };
 
 class TILEDSHARED_EXPORT AggregatedPropertyData

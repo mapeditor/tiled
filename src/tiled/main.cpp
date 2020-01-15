@@ -355,6 +355,9 @@ int main(int argc, char *argv[])
 
     TiledApplication a(argc, argv);
 
+    QMetaType::registerConverter<ObjectRef, int>(&ObjectRef::toInt);
+    QMetaType::registerConverter<int, ObjectRef>(&ObjectRef::fromInt);
+
     a.setOrganizationDomain(QLatin1String("mapeditor.org"));
 #if defined(Q_OS_MAC) || defined(Q_OS_WIN)
     a.setApplicationName(QLatin1String("Tiled"));
