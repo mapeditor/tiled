@@ -468,6 +468,11 @@ tiled.mapFormatForFile(fileName : string) : :ref:`script-mapformatwrapper`
 tiled.filePath(path : url) : :ref:`script-filepath`
     Creates a :ref:`script-filepath` object with the given URL.
 
+.. _script-tiled-objectRef:
+
+tiled.objectRef(id : int) : :ref:`script-objectref`
+    Creates an :ref:`script-objectref` object with the given ID.
+
 .. _script-tiled-signals:
 
 Signals
@@ -1436,11 +1441,29 @@ Alignment
     Qt.AlignVCenter, 0x0080
     Qt.AlignCenter, Qt.AlignVCenter | Qt.AlignHCenter
 
+.. _script-cell:
+
+cell
+~~~~
+
+A cell on a :ref:`script-tilelayer`.
+
+**Properties**
+
+.. csv-table::
+    :widths: 1, 2
+
+    **tileId** : int, "The local tile ID of the tile, or -1 if the cell is empty."
+    **empty** : bool, Whether the cell is empty.
+    **flippedHorizontally** : bool, Whether the tile is flipped horizontally.
+    **flippedVertically** : bool, Whether the tile is flipped vertically.
+    **flippedAntiDiagonally** : bool, Whether the tile is flipped anti-diagonally.
+    **rotatedHexagonal120** : bool, "Whether the tile is rotated by 120 degrees (for hexagonal maps, the anti-diagonal flip is interpreted as a 60-degree rotation)."
+
 .. _script-filepath:
 
 FilePath
 ~~~~~~~~
-
 
 Used as the value for custom 'file' properties. Can be created with
 :ref:`tiled.filePath <script-tiled-filePath>`.
@@ -1466,25 +1489,6 @@ Font
     **strikeOut** : bool, Whether the text is striked through.
     **kerning** : bool, Whether to use kerning when rendering the text.
 
-.. _script-cell:
-
-cell
-~~~~
-
-A cell on a :ref:`script-tilelayer`.
-
-**Properties**
-
-.. csv-table::
-    :widths: 1, 2
-
-    **tileId** : int, "The local tile ID of the tile, or -1 if the cell is empty."
-    **empty** : bool, Whether the cell is empty.
-    **flippedHorizontally** : bool, Whether the tile is flipped horizontally.
-    **flippedVertically** : bool, Whether the tile is flipped vertically.
-    **flippedAntiDiagonally** : bool, Whether the tile is flipped anti-diagonally.
-    **rotatedHexagonal120** : bool, "Whether the tile is rotated by 120 degrees (for hexagonal maps, the anti-diagonal flip is interpreted as a 60-degree rotation)."
-
 .. _script-frames:
 
 Frames
@@ -1497,6 +1501,47 @@ An array of frames, which are objects with the following properties:
 
     **tileId** : int, The local tile ID used to represent the frame.
     **duration** : int, Duration of the frame in milliseconds.
+
+.. _script-objectref:
+
+ObjectRef
+~~~~~~~~~
+
+The value of a property of type 'object', which refers to a
+:ref:`script-mapobject` by its ID. Generally only used as a fallback when an
+object property cannot be resolved to an actual object. Can be created with
+:ref:`tiled.objectRef <script-tiled-objectRef>`.
+
+.. csv-table::
+    :widths: 1, 3
+
+    **id** : int, The ID of the referenced object.
+
+.. _script-point:
+
+point
+~~~~~
+
+``Qt.point(x, y)`` can be used to create a point object.
+
+**Properties**
+
+.. csv-table::
+    :widths: 1, 2
+
+    **x** : number, X coordinate of the point.
+    **y** : number, Y coordinate of the point.
+
+.. _script-polygon:
+
+Polygon
+~~~~~~~
+
+A polygon is not strictly a custom type. It is an array of objects that each
+have an ``x`` and ``y`` property, representing the points of the polygon.
+
+To modify the polygon of a :ref:`script-mapobject`, change or set up the
+polygon array and then assign it to the object.
 
 .. _script-rect:
 
@@ -1527,22 +1572,6 @@ region
 
     **boundingRect** : :ref:`script-rect` |ro|, Bounding rectangle of the region.
 
-
-.. _script-point:
-
-point
-~~~~~
-
-``Qt.point(x, y)`` can be used to create a point object.
-
-**Properties**
-
-.. csv-table::
-    :widths: 1, 2
-
-    **x** : number, X coordinate of the point.
-    **y** : number, Y coordinate of the point.
-
 .. _script-size:
 
 size
@@ -1557,17 +1586,6 @@ size
 
     **width** : number, Width.
     **height** : number, Height.
-
-.. _script-polygon:
-
-Polygon
-~~~~~~~
-
-A polygon is not strictly a custom type. It is an array of objects that each
-have an ``x`` and ``y`` property, representing the points of the polygon.
-
-To modify the polygon of a :ref:`script-mapobject`, change or set up the
-polygon array and then assign it to the object.
 
 .. _script-tileterrains:
 

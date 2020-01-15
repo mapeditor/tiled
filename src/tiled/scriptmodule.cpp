@@ -180,6 +180,11 @@ FilePath ScriptModule::filePath(const QUrl &path) const
     return { path };
 }
 
+ObjectRef ScriptModule::objectRef(int id) const
+{
+    return { id };
+}
+
 EditableAsset *ScriptModule::open(const QString &fileName) const
 {
     auto documentManager = DocumentManager::instance();
