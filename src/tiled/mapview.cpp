@@ -126,9 +126,18 @@ void MapView::fitMapInView()
     if (rect.isEmpty())
         return;
 
-    // Scale and center map to fit in view
+    // Scale and center map to fit in view, while avoiding to go below the
+    // minimum scale. For extremely large maps, avoid putting more than about
+    // 256 * 256 tiles within the view for performance reasons.
+    qreal desiredScale = std::min(width() / rect.width(),
+                                  height() / rect.height()) * 0.95;
+
+    auto tileSize = mMapDocument->map()->tileSize();
+    qreal scale256 = std::min(width() / (256.0 * tileSize.width()),
+                              height() / (256.0 * tileSize.height()));
+
     centerOn(rect.center());
-    setScale(std::min(width() / rect.width(), height() / rect.height()) * 0.95);
+    setScale(std::max(std::max(desiredScale, scale256), 0.015625));
 }
 
 void MapView::adjustScale(qreal scale)

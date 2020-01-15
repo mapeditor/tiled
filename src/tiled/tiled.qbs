@@ -420,6 +420,8 @@ QtGuiApplication {
         "scriptedtool.h",
         "scriptfile.cpp",
         "scriptfile.h",
+        "scriptfileformatwrappers.cpp",
+        "scriptfileformatwrappers.h",
         "scriptmanager.cpp",
         "scriptmanager.h",
         "scriptmodule.cpp",

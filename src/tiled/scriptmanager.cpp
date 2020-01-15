@@ -37,6 +37,7 @@
 #include "scriptedfileformat.h"
 #include "scriptedtool.h"
 #include "scriptfile.h"
+#include "scriptfileformatwrappers.h"
 #include "scriptmodule.h"
 #include "tilecollisiondock.h"
 #include "tilelayer.h"
@@ -80,6 +81,7 @@ ScriptManager::ScriptManager(QObject *parent)
     : QObject(parent)
     , mEngine(new QQmlEngine(this))
     , mModule(new ScriptModule(this))
+    , mTempCount(0)
 {
     qRegisterMetaType<Cell>();
     qRegisterMetaType<EditableAsset*>();
@@ -104,6 +106,8 @@ ScriptManager::ScriptManager(QObject *parent)
     qRegisterMetaType<TileLayerEdit*>();
     qRegisterMetaType<TilesetDock*>();
     qRegisterMetaType<TilesetEditor*>();
+    qRegisterMetaType<ScriptMapFormatWrapper*>();
+    qRegisterMetaType<ScriptTilesetFormatWrapper*>();
 
     connect(&mWatcher, &FileSystemWatcher::filesChanged,
             this, &ScriptManager::scriptFilesChanged);
@@ -171,6 +175,13 @@ QJSValue ScriptManager::evaluateFile(const QString &fileName)
 
     Tiled::INFO(tr("Evaluating '%1'").arg(fileName));
     return evaluate(script, fileName);
+}
+
+QString ScriptManager::createTempValue(const QJSValue &value)
+{
+    auto name = QLatin1Char('$') + QString::number(mTempCount++);
+    mEngine->globalObject().setProperty(name, value);
+    return name;
 }
 
 void ScriptManager::loadExtensions()
@@ -256,6 +267,8 @@ void ScriptManager::reset()
     mWatcher.clear();
     delete mEngine;
     delete mModule;
+
+    mTempCount = 0;
 
     mEngine = new QQmlEngine(this);
     mModule = new ScriptModule(this);

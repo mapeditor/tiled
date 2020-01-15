@@ -1254,9 +1254,14 @@ void MainWindow::closeProject()
 void MainWindow::restoreSession()
 {
     const auto &session = Preferences::instance()->session();
-    for (const QString &file : session.openFiles())
+
+    // Copy values because the session will get changed while restoring it
+    const auto openFiles = session.openFiles();
+    const auto activeFile = session.activeFile();
+
+    for (const QString &file : openFiles)
         openFile(file);
-    mDocumentManager->switchToDocument(session.activeFile());
+    mDocumentManager->switchToDocument(activeFile);
 }
 
 void MainWindow::cut()

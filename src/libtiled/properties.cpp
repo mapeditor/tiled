@@ -149,20 +149,14 @@ int nameToType(const QString &name)
     return QVariant::nameToType(name.toLatin1().constData());
 }
 
-static QString colorToString(const QColor &color)
-{
-    if (!color.isValid())
-        return QString();
-
-    return color.name(QColor::HexArgb);
-}
-
 QVariant toExportValue(const QVariant &value)
 {
     int type = value.userType();
 
-    if (type == QVariant::Color)
-        return colorToString(value.value<QColor>());
+    if (type == QVariant::Color) {
+        const QColor color = value.value<QColor>();
+        return color.isValid() ? color.name(QColor::HexArgb) : QString();
+    }
 
     if (type == filePathTypeId()) {
         const FilePath filePath = value.value<FilePath>();

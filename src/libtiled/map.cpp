@@ -128,15 +128,6 @@ QMargins Map::drawMargins() const
     return mDrawMargins;
 }
 
-static QMargins maxMargins(const QMargins &a,
-                           const QMargins &b)
-{
-    return QMargins(qMax(a.left(), b.left()),
-                    qMax(a.top(), b.top()),
-                    qMax(a.right(), b.right()),
-                    qMax(a.bottom(), b.bottom()));
-}
-
 /**
  * Computes the extra margins due to layer offsets. These need to be taken into
  * account when determining the bounding rect of the map for example.
