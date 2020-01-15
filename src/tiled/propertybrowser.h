@@ -195,8 +195,8 @@ private:
     void updateCustomProperties();
     void updateCustomPropertyColor(const QString &name);
 
-    QVariant toDisplayValue(const QVariant &value);
-    QVariant fromDisplayValue(const QVariant &value);
+    QVariant toDisplayValue(const QVariant &value) const;
+    QVariant fromDisplayValue(const QVariant &value) const;
 
     void retranslateUi();
 

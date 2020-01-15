@@ -72,7 +72,6 @@ const QIcon &ObjectIconManager::iconForObject(MapObject *object) const
 }
 
 
-
 MapObjectModel::MapObjectModel(QObject *parent)
     : QAbstractItemModel(parent)
     , mMapDocument(nullptr)

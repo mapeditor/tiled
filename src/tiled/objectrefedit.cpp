@@ -21,36 +21,38 @@
 
 #include "objectrefedit.h"
 
-#include "addpropertydialog.h"
 #include "objectrefdialog.h"
 
 #include <QHBoxLayout>
+#include <QLineEdit>
 #include <QToolButton>
+
+#include <climits>
 
 namespace Tiled {
 
 ObjectRefEdit::ObjectRefEdit(QWidget *parent)
     : QWidget(parent)
     , mLineEdit(new QLineEdit(this))
+    , mObjectDialogButton(new QToolButton(this))
 {
     QHBoxLayout *layout = new QHBoxLayout(this);
 
     setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed));
     setFocusProxy(mLineEdit);
 
-    QToolButton *button = new QToolButton(this);
-    button->setText(tr("..."));
-    button->setAutoRaise(true);
+    mObjectDialogButton->setText(QStringLiteral("..."));
+    mObjectDialogButton->setAutoRaise(true);
+    mObjectDialogButton->setEnabled(false);
 
     layout->setMargin(0);
     layout->setSpacing(0);
     layout->addWidget(mLineEdit);
-    layout->addWidget(button);
+    layout->addWidget(mObjectDialogButton);
 
-    auto regex = QRegExp(QStringLiteral("[0-9]+(:[0-9]+)?"));
-    mLineEdit->setValidator(new QRegExpValidator(regex, this));
+    mLineEdit->setValidator(new QIntValidator(0, INT_MAX, this));
 
-    connect(button, &QToolButton::clicked, this, &ObjectRefEdit::onButtonClicked);
+    connect(mObjectDialogButton, &QToolButton::clicked, this, &ObjectRefEdit::onButtonClicked);
     connect(mLineEdit, &QLineEdit::editingFinished, this, &ObjectRefEdit::onEditFinished);
 }
 
@@ -61,12 +63,16 @@ void ObjectRefEdit::setValue(const DisplayObjectRef &value)
 
     mValue = value;
     mLineEdit->setText(QString::number(mValue.id()));
+    mObjectDialogButton->setEnabled(mValue.mapDocument);
 
     emit valueChanged(mValue);
 }
 
 void ObjectRefEdit::onButtonClicked()
 {
+    if (!mValue.mapDocument)
+        return;
+
     ObjectRefDialog dialog(mValue, this);
 
     if (dialog.exec() == QDialog::Accepted)

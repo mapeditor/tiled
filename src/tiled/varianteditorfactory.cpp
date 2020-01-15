@@ -70,6 +70,8 @@ ResetWidget::ResetWidget(QtProperty *property, QWidget *editor, QWidget *parent)
     layout->addWidget(editor);
     layout->addWidget(resetButton);
 
+    setFocusProxy(editor);
+
     connect(resetButton, &QToolButton::clicked, this, &ResetWidget::buttonClicked);
 }
 

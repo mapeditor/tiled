@@ -24,7 +24,9 @@
 #include "variantpropertymanager.h"
 
 #include <QWidget>
-#include <QLineEdit>
+
+class QLineEdit;
+class QToolButton;
 
 namespace Tiled {
 
@@ -46,6 +48,7 @@ private:
     void onEditFinished();
 
     QLineEdit *mLineEdit;
+    QToolButton *mObjectDialogButton;
     DisplayObjectRef mValue;
 };
 

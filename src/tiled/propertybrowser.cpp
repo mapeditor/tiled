@@ -1929,7 +1929,7 @@ void PropertyBrowser::updateCustomPropertyColor(const QString &name)
     property->setValueColor(textColor);
 }
 
-QVariant PropertyBrowser::toDisplayValue(const QVariant &value)
+QVariant PropertyBrowser::toDisplayValue(const QVariant &value) const
 {
     if (value.userType() == objectRefTypeId())
         return QVariant::fromValue(DisplayObjectRef { value.value<ObjectRef>(), mMapDocument });
@@ -1937,7 +1937,7 @@ QVariant PropertyBrowser::toDisplayValue(const QVariant &value)
     return value;
 }
 
-QVariant PropertyBrowser::fromDisplayValue(const QVariant &value)
+QVariant PropertyBrowser::fromDisplayValue(const QVariant &value) const
 {
     if (value.userType() == VariantPropertyManager::displayObjectRefTypeId())
         return QVariant::fromValue(value.value<DisplayObjectRef>().ref);
