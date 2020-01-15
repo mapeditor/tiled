@@ -47,7 +47,9 @@ namespace Tiled {
 
 MapObject *DisplayObjectRef::object() const
 {
-    return ref.id ? mapDocument->map()->findObjectById(ref.id) : nullptr;
+    if (!mapDocument || ref.id <= 0)
+        return nullptr;
+    return mapDocument->map()->findObjectById(ref.id);
 }
 
 
@@ -238,7 +240,7 @@ QIcon VariantPropertyManager::valueIcon(const QtProperty *property) const
         }
 
         if (typeId == displayObjectRefTypeId()) {
-            const auto ref = value.value<DisplayObjectRef>();
+            const DisplayObjectRef ref = value.value<DisplayObjectRef>();
             if (auto object = ref.object())
                 return ObjectIconManager::instance().iconForObject(object);
         }

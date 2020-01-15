@@ -147,7 +147,7 @@ JumpToTile::JumpToTile(const Map *map, QPoint tilePos, const Layer *layer)
 }
 
 JumpToObject::JumpToObject(const MapObject *object)
-    : mapFile(object->objectGroup()->map()->fileName)
+    : mapFile(object->map()->fileName)
     , objectId(object->id())
 {
     Q_ASSERT(!mapFile.isEmpty());

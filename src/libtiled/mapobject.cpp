@@ -215,6 +215,11 @@ QRectF MapObject::screenBounds(const MapRenderer &renderer) const
     return QRectF();
 }
 
+Map *MapObject::map() const
+{
+    return mObjectGroup ? mObjectGroup->map() : nullptr;
+}
+
 /*
  * This is somewhat of a workaround for dealing with the ways different objects
  * align.

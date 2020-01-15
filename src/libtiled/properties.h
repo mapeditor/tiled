@@ -42,7 +42,12 @@ struct FilePath {
     QUrl url;
 };
 
-struct ObjectRef {
+struct TILEDSHARED_EXPORT ObjectRef
+{
+    Q_GADGET
+    Q_PROPERTY(int id MEMBER id)
+
+public:
     int id;
 };
 

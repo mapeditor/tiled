@@ -323,7 +323,7 @@ QModelIndex MapObjectModel::index(MapObject *mapObject, int column) const
 {
     Q_ASSERT(mapObject);
     Q_ASSERT(mapObject->objectGroup());
-    Q_ASSERT(mapObject->objectGroup()->map() == mMap);
+    Q_ASSERT(mapObject->map() == mMap);
 
     const int row = mapObject->objectGroup()->objects().indexOf(mapObject);
     return createIndex(row, column, mapObject);

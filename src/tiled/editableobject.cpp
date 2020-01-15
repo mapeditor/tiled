@@ -94,7 +94,7 @@ static Map *mapForObject(Object *object)
     case Object::LayerType:
         return static_cast<Layer*>(object)->map();
     case Object::MapObjectType:
-        return mapForObject(static_cast<MapObject*>(object)->objectGroup());
+        return static_cast<MapObject*>(object)->map();
     case Object::MapType:
         return static_cast<Map*>(object);
     case Object::ObjectTemplateType:
@@ -132,8 +132,10 @@ QVariant EditableObject::toScript(const QVariant &value) const
             }
         }
 
-        auto editable = EditableManager::instance().editableMapObject(asset(), referencedObject);
-        return QVariant::fromValue(editable);
+        if (referencedObject) {
+            auto editable = EditableManager::instance().editableMapObject(asset(), referencedObject);
+            return QVariant::fromValue(editable);
+        }
     }
 
     return value;
@@ -144,13 +146,8 @@ QVariant EditableObject::fromScript(const QVariant &value) const
     if (value.userType() == QMetaType::QVariantMap)
         return fromScript(value.toMap());
 
-    if (auto editableMapObject = value.value<EditableMapObject*>()) {
-        if (editableMapObject->asset() != asset()) {
-            ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Object not from the same asset"));
-            return QVariant();
-        }
+    if (auto editableMapObject = value.value<EditableMapObject*>())
         return QVariant::fromValue(ObjectRef { editableMapObject->id() });
-    }
 
     return value;
 }
