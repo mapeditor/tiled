@@ -111,7 +111,15 @@ public:
      */
     void setOpacity(qreal opacity) { mOpacity = opacity; }
 
+    /**
+     * Returns the effective opacity of this layer
+     */
     qreal effectiveOpacity() const;
+
+    /**
+     * Returns the effective tint color of this layer
+     */
+    QColor effectiveTintColor() const;
 
     /**
      * Returns the visibility of this layer.

@@ -312,7 +312,7 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
     const QTransform savedTransform = painter->transform();
     painter->translate(layerPos);
 
-    CellRenderer renderer(painter, this, layer->tintColor());
+    CellRenderer renderer(painter, this, layer->effectiveTintColor());
 
     Map::RenderOrder renderOrder = map()->renderOrder();
 
@@ -392,7 +392,7 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
 
     if (!cell.isEmpty()) {
         const QSizeF size = object->size();
-        CellRenderer(painter, this, object->objectGroup()->tintColor()).render(cell, QPointF(), size,
+        CellRenderer(painter, this, object->objectGroup()->effectiveTintColor()).render(cell, QPointF(), size,
                                            CellRenderer::BottomLeft);
 
         if (testFlag(ShowTileObjectOutlines)) {

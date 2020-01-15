@@ -115,8 +115,7 @@ void MapRenderer::drawImageLayer(QPainter *painter,
 {
     Q_UNUSED(exposed)
 
-    // TODO: Support layer tint color
-    painter->drawPixmap(QPointF(), imageLayer->image());
+    painter->drawPixmap(QPointF(), tinted(imageLayer->image(), imageLayer->effectiveTintColor()));
 }
 
 void MapRenderer::drawPointObject(QPainter *painter, const QColor &color) const
