@@ -449,22 +449,8 @@ void MapItem::layerChanged(const LayerChangeEvent &change)
     QGraphicsItem *layerItem = mLayerItems.value(layer);
     Q_ASSERT(layerItem);
 
-    if (change.properties & LayerChangeEvent::TintColorProperty) {
-        switch (layer->layerType()) {
-        case Layer::TileLayerType:
-            layerItem->update();
-            break;
-        case Layer::ObjectGroupType:
-            for (MapObject *mapObject : static_cast<const ObjectGroup&>(*layer)) {
-                if (mapObject->isTileObject())
-                    mObjectItems.value(mapObject)->update();
-            }
-            break;
-        case Layer::ImageLayerType:
-        case Layer::GroupLayerType:
-            break;
-        }
-    }
+    if (change.properties & LayerChangeEvent::TintColorProperty)
+        layerTintColorChanged(layer);
 
     layerItem->setVisible(layer->isVisible());
 
@@ -493,6 +479,27 @@ void MapItem::layerChanged(const LayerChangeEvent &change)
     layerItem->setPos(layer->offset());
 
     updateBoundingRect();   // possible layer offset change
+}
+
+void MapItem::layerTintColorChanged(Layer *layer)
+{
+    switch (layer->layerType()) {
+    case Layer::TileLayerType:
+    case Layer::ImageLayerType:
+        mLayerItems.value(layer)->update();
+        break;
+    case Layer::ObjectGroupType:
+        for (MapObject *mapObject : static_cast<const ObjectGroup&>(*layer)) {
+            if (mapObject->isTileObject())
+                mObjectItems.value(mapObject)->update();
+        }
+        break;
+    case Layer::GroupLayerType:
+        // Recurse into group layers since tint color is inherited
+        for (auto childLayer : static_cast<GroupLayer*>(layer)->layers())
+            layerTintColorChanged(childLayer);
+        break;
+    }
 }
 
 /**

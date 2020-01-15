@@ -98,6 +98,7 @@ private:
     void layerAdded(Layer *layer);
     void layerRemoved(Layer *layer);
     void layerChanged(const LayerChangeEvent &change);
+    void layerTintColorChanged(Layer *layer);
 
     void imageLayerChanged(ImageLayer *imageLayer);
 

@@ -39,16 +39,10 @@ namespace Tiled {
 
 static QColor multiplyColors(QColor color1, QColor color2)
 {
-    QColor multiplied;
-
-    multiplied.setRgbF(
-        color1.redF() * color2.redF()
-        ,color1.greenF() * color2.greenF()
-        ,color1.blueF() * color2.blueF()
-        ,color1.alphaF() * color2.alphaF()
-    );
-
-    return multiplied;
+    return QColor::fromRgbF(color1.redF() * color2.redF(),
+                            color1.greenF() * color2.greenF(),
+                            color1.blueF() * color2.blueF(),
+                            color1.alphaF() * color2.alphaF());
 }
 
 Layer::Layer(TypeFlag type, const QString &name, int x, int y) :
@@ -59,7 +53,6 @@ Layer::Layer(TypeFlag type, const QString &name, int x, int y) :
     mX(x),
     mY(y),
     mOpacity(1.0),
-    mTintColor(QColor(255, 255, 255, 255)),
     mVisible(true),
     mMap(nullptr),
     mParentLayer(nullptr),
@@ -103,10 +96,13 @@ qreal Layer::effectiveOpacity() const
  */
 QColor Layer::effectiveTintColor() const
 {
-    auto tintColor = mTintColor;
+    auto tintColor = mTintColor.isValid() ? mTintColor
+                                          : QColor(255, 255, 255, 255);
+
     const Layer *layer = this;
     while ((layer = layer->parentLayer()))
-        tintColor = multiplyColors(tintColor, layer->tintColor());
+        if (layer->tintColor().isValid())
+            tintColor = multiplyColors(tintColor, layer->tintColor());
 
     return tintColor;
 }
