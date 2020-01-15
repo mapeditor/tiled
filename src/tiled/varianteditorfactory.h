@@ -27,7 +27,9 @@ class QComboBox;
 
 namespace Tiled {
 
+class DisplayObjectRef;
 class FileEdit;
+class ObjectRefEdit;
 class TextPropertyEdit;
 class TilesetParametersEdit;
 
@@ -47,7 +49,7 @@ public:
         : QtVariantEditorFactory(parent)
     {}
 
-    ~VariantEditorFactory();
+    ~VariantEditorFactory() override;
 
 signals:
     void resetProperty(QtProperty *property);
@@ -67,6 +69,7 @@ private:
     void fileEditFileUrlChanged(const QUrl &value);
     void textPropertyEditTextChanged(const QString &value);
     void comboBoxPropertyEditTextChanged(const QString &value);
+    void objectRefEditValueChanged(const DisplayObjectRef &value);
     void slotEditorDestroyed(QObject *object);
 
     QMap<QtProperty *, QList<FileEdit *> > mCreatedFileEdits;
@@ -80,6 +83,9 @@ private:
 
     QMap<QtProperty *, QList<QComboBox *> > mCreatedComboBoxes;
     QMap<QComboBox *, QtProperty *> mComboBoxToProperty;
+
+    QMap<QtProperty *, QList<ObjectRefEdit *> > mCreatedObjectRefEdits;
+    QMap<ObjectRefEdit *, QtProperty *> mObjectRefEditToProperty;
 };
 
 } // namespace Tiled

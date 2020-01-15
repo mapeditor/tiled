@@ -70,6 +70,11 @@ protected:
     bool checkReadOnly() const;
 
 private:
+    QVariant toScript(const QVariant &value) const;
+    QVariant fromScript(const QVariant &value) const;
+    QVariantMap toScript(const QVariantMap &value) const;
+    QVariantMap fromScript(const QVariantMap &value) const;
+
     EditableAsset *mAsset;
     Object *mObject;
 };
@@ -82,12 +87,12 @@ inline EditableAsset *EditableObject::asset() const
 
 inline QVariant EditableObject::property(const QString &name) const
 {
-    return mObject->property(name);
+    return toScript(mObject->property(name));
 }
 
 inline QVariantMap EditableObject::properties() const
 {
-    return mObject->properties();
+    return toScript(mObject->properties());
 }
 
 inline Object *EditableObject::object() const

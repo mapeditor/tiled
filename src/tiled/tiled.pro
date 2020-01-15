@@ -171,6 +171,8 @@ SOURCES += aboutdialog.cpp \
     newversiondialog.cpp \
     noeditorwidget.cpp \
     objectgroupitem.cpp \
+    objectrefdialog.cpp \
+    objectrefedit.cpp \
     objectsdock.cpp \
     objectselectionitem.cpp \
     objectselectiontool.cpp \
@@ -401,11 +403,13 @@ HEADERS += aboutdialog.h \
     newversiondialog.h \
     noeditorwidget.h \
     objectgroupitem.h \
+    objectrefdialog.h \
+    objectrefedit.h \
     objectsdock.h \
     objectselectionitem.h \
-    objecttemplatemodel.h \
     objectselectiontool.h \
     objectsview.h \
+    objecttemplatemodel.h \
     objecttypeseditor.h \
     objecttypesmodel.h \
     offsetlayer.h \
@@ -413,8 +417,8 @@ HEADERS += aboutdialog.h \
     painttilelayer.h \
     pluginlistmodel.h \
     pointhandle.h \
-    preferencesdialog.h \
     preferences.h \
+    preferencesdialog.h \
     project.h \
     projectdock.h \
     projectmodel.h \
@@ -434,6 +438,7 @@ HEADERS += aboutdialog.h \
     resizemapobject.h \
     resizetilelayer.h \
     reversingproxymodel.h \
+    reversingrecursivefiltermodel.h \
     rotatemapobject.h \
     scriptedaction.h \
     scriptedfileformat.h \
@@ -512,6 +517,7 @@ FORMS += aboutdialog.ui \
     newtilesetdialog.ui \
     newversiondialog.ui \
     noeditorwidget.ui \
+    objectrefdialog.ui \
     objecttypeseditor.ui \
     offsetmapdialog.ui \
     preferencesdialog.ui \

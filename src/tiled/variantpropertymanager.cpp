@@ -21,7 +21,11 @@
 
 #include "variantpropertymanager.h"
 
+#include "documentmanager.h"
 #include "mapdocument.h"
+#include "mapobject.h"
+#include "mapobjectmodel.h"
+#include "objectgroup.h"
 #include "textpropertyedit.h"
 #include "tilesetdocument.h"
 
@@ -40,6 +44,14 @@ Q_DECLARE_METATYPE(Tiled::TilesetParametersPropertyType)
 Q_DECLARE_METATYPE(Tiled::AlignmentPropertyType)
 
 namespace Tiled {
+
+MapObject *DisplayObjectRef::object() const
+{
+    if (!mapDocument || ref.id <= 0)
+        return nullptr;
+    return mapDocument->map()->findObjectById(ref.id);
+}
+
 
 VariantPropertyManager::VariantPropertyManager(QObject *parent)
     : QtVariantPropertyManager(parent)
@@ -66,11 +78,10 @@ QVariant VariantPropertyManager::value(const QtProperty *property) const
 
 bool VariantPropertyManager::isPropertyTypeSupported(int propertyType) const
 {
-    if (propertyType == filePathTypeId())
-        return true;
-    if (propertyType == tilesetParametersTypeId())
-        return true;
-    if (propertyType == alignmentTypeId())
+    if (propertyType == filePathTypeId()
+            || propertyType == displayObjectRefTypeId()
+            || propertyType == tilesetParametersTypeId()
+            || propertyType == alignmentTypeId())
         return true;
     return QtVariantPropertyManager::isPropertyTypeSupported(propertyType);
 }
@@ -78,6 +89,8 @@ bool VariantPropertyManager::isPropertyTypeSupported(int propertyType) const
 int VariantPropertyManager::valueType(int propertyType) const
 {
     if (propertyType == filePathTypeId())
+        return QVariant::String;
+    if (propertyType == displayObjectRefTypeId())
         return QVariant::String;
     if (propertyType == tilesetParametersTypeId())
         return qMetaTypeId<TilesetDocument*>();
@@ -135,11 +148,43 @@ int VariantPropertyManager::alignmentTypeId()
     return qMetaTypeId<AlignmentPropertyType>();
 }
 
+int VariantPropertyManager::displayObjectRefTypeId()
+{
+    return qMetaTypeId<DisplayObjectRef>();
+}
+
+QString VariantPropertyManager::objectRefLabel(const MapObject *object) const
+{
+    QString label = tr("%1: ").arg(object->id());
+    if (!object->name().isEmpty()) {
+        label.append(object->name());
+        if (!object->type().isEmpty())
+            label.append(tr(" (%1)").arg(object->type()));
+    } else if (!object->type().isEmpty())
+        label.append(tr("(%1)").arg(object->type()));
+    else
+        label.append(tr("Unnamed object"));
+
+    return label;
+}
+
 QString VariantPropertyManager::valueText(const QtProperty *property) const
 {
     if (mValues.contains(property)) {
         QVariant value = mValues[property].value;
         int typeId = propertyType(property);
+
+        if (typeId == displayObjectRefTypeId()) {
+            const auto ref = value.value<DisplayObjectRef>();
+
+            if (ref.id() == 0)
+                return tr("Unset");
+
+            if (auto object = ref.object())
+                return objectRefLabel(object);
+
+            return tr("%1: Object not found").arg(QString::number(ref.id()));
+        }
 
         if (typeId == filePathTypeId()) {
             FilePath filePath = value.value<FilePath>();
@@ -192,6 +237,12 @@ QIcon VariantPropertyManager::valueIcon(const QtProperty *property) const
         if (typeId == tilesetParametersTypeId()) {
             if (TilesetDocument *tilesetDocument = value.value<TilesetDocument*>())
                 filePath = tilesetDocument->tileset()->imageSource().toLocalFile();
+        }
+
+        if (typeId == displayObjectRefTypeId()) {
+            const DisplayObjectRef ref = value.value<DisplayObjectRef>();
+            if (auto object = ref.object())
+                return ObjectIconManager::instance().iconForObject(object);
         }
 
         // TODO: This assumes the file path is an image reference. It should be
@@ -280,9 +331,9 @@ void VariantPropertyManager::setAttribute(QtProperty *property,
 void VariantPropertyManager::initializeProperty(QtProperty *property)
 {
     const int type = propertyType(property);
-    if (type == filePathTypeId()) {
-        mValues[property] = Data();
-    } else if (type == tilesetParametersTypeId()) {
+    if (type == filePathTypeId()
+            || type == displayObjectRefTypeId()
+            || type == tilesetParametersTypeId()) {
         mValues[property] = Data();
     } else if (type == QVariant::String) {
         mStringAttributes[property] = StringAttributes();

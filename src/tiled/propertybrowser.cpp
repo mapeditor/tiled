@@ -32,6 +32,7 @@
 #include "changetileprobability.h"
 #include "changewangcolordata.h"
 #include "changewangsetdata.h"
+#include "documentmanager.h"
 #include "flipmapobjects.h"
 #include "grouplayer.h"
 #include "imagelayer.h"
@@ -42,6 +43,7 @@
 #include "objectgroup.h"
 #include "objecttemplate.h"
 #include "preferences.h"
+#include "properties.h"
 #include "renamewangset.h"
 #include "replacetileset.h"
 #include "resizemapobject.h"
@@ -553,7 +555,7 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
         undoStack->push(new SetProperty(mDocument,
                                         mDocument->currentObjects(),
                                         property->propertyName(),
-                                        val));
+                                        fromDisplayValue(val)));
         return;
     }
 
@@ -572,15 +574,13 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
 
 void PropertyBrowser::resetProperty(QtProperty *property)
 {
-    switch (mVariantManager->propertyType(property)) {
-    case QVariant::Color:
-        // At the moment it is only possible to reset color values
+    auto typeId = mVariantManager->propertyType(property);
+    if (typeId == QVariant::Color)
         mVariantManager->setValue(property, QColor());
-        break;
-
-    default:
+    else if (typeId == VariantPropertyManager::displayObjectRefTypeId()) {
+        mVariantManager->setValue(property, toDisplayValue(QVariant::fromValue(ObjectRef())));
+    } else
         qWarning() << "Resetting of property type not supported right now";
-    }
 }
 
 void PropertyBrowser::addMapProperties()
@@ -1512,8 +1512,9 @@ QtVariantProperty *PropertyBrowser::createCustomProperty(const QString &name, co
     }
 
     mUpdating = true;
-    QtVariantProperty *property = createProperty(CustomProperty, value.userType(), name);
-    property->setValue(value);
+    const QVariant displayValue = toDisplayValue(value);
+    QtVariantProperty *property = createProperty(CustomProperty, displayValue.userType(), name);
+    property->setValue(displayValue);
     mCustomPropertiesGroup->insertSubProperty(property, precedingProperty);
 
     // Collapse custom color properties, to save space
@@ -1547,7 +1548,7 @@ void PropertyBrowser::setCustomPropertyValue(QtVariantProperty *property,
             setCurrentItem(items(property).constFirst());
     } else {
         mUpdating = true;
-        property->setValue(value);
+        property->setValue(toDisplayValue(value));
         mUpdating = false;
     }
 }
@@ -1873,12 +1874,14 @@ void PropertyBrowser::updateCustomProperties()
 
     while (it.hasNext()) {
         it.next();
+
+        const QVariant displayValue = toDisplayValue(it.value());
+
         QtVariantProperty *property = addProperty(CustomProperty,
-                                                  it.value().userType(),
+                                                  displayValue.userType(),
                                                   it.key(),
                                                   mCustomPropertiesGroup);
-
-        property->setValue(it.value());
+        property->setValue(displayValue);
         updateCustomPropertyColor(it.key());
     }
 
@@ -1924,6 +1927,22 @@ void PropertyBrowser::updateCustomPropertyColor(const QString &name)
 
     property->setNameColor(textColor);
     property->setValueColor(textColor);
+}
+
+QVariant PropertyBrowser::toDisplayValue(const QVariant &value) const
+{
+    if (value.userType() == objectRefTypeId())
+        return QVariant::fromValue(DisplayObjectRef { value.value<ObjectRef>(), mMapDocument });
+
+    return value;
+}
+
+QVariant PropertyBrowser::fromDisplayValue(const QVariant &value) const
+{
+    if (value.userType() == VariantPropertyManager::displayObjectRefTypeId())
+        return QVariant::fromValue(value.value<DisplayObjectRef>().ref);
+
+    return value;
 }
 
 void PropertyBrowser::retranslateUi()

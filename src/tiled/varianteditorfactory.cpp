@@ -22,6 +22,7 @@
 #include "varianteditorfactory.h"
 
 #include "fileedit.h"
+#include "objectrefedit.h"
 #include "textpropertyedit.h"
 #include "tilesetdocument.h"
 #include "tilesetparametersedit.h"
@@ -69,6 +70,8 @@ ResetWidget::ResetWidget(QtProperty *property, QWidget *editor, QWidget *parent)
     layout->addWidget(editor);
     layout->addWidget(resetButton);
 
+    setFocusProxy(editor);
+
     connect(resetButton, &QToolButton::clicked, this, &ResetWidget::buttonClicked);
 }
 
@@ -83,6 +86,7 @@ VariantEditorFactory::~VariantEditorFactory()
     qDeleteAll(mFileEditToProperty.keyBegin(), mFileEditToProperty.keyEnd());
     qDeleteAll(mTilesetEditToProperty.keyBegin(), mTilesetEditToProperty.keyEnd());
     qDeleteAll(mTextPropertyEditToProperty.keyBegin(), mTextPropertyEditToProperty.keyEnd());
+    qDeleteAll(mObjectRefEditToProperty.keyBegin(), mObjectRefEditToProperty.keyEnd());
     qDeleteAll(mComboBoxToProperty.keyBegin(), mComboBoxToProperty.keyEnd());
 }
 
@@ -115,6 +119,26 @@ QWidget *VariantEditorFactory::createEditor(QtVariantPropertyManager *manager,
                 this, &VariantEditorFactory::slotEditorDestroyed);
 
         return editor;
+    }
+
+    if (type == VariantPropertyManager::displayObjectRefTypeId()) {
+        auto editor = new ObjectRefEdit(parent);
+        auto objectRef = manager->value(property).value<DisplayObjectRef>();
+        editor->setValue(objectRef);
+        mCreatedObjectRefEdits[property].append(editor);
+        mObjectRefEditToProperty[editor] = property;
+
+        connect(editor, &ObjectRefEdit::valueChanged,
+                this, &VariantEditorFactory::objectRefEditValueChanged);
+        connect(editor, &QObject::destroyed,
+                this, &VariantEditorFactory::slotEditorDestroyed);
+
+        auto resetEditor = new ResetWidget(property, editor, parent);
+
+        connect(resetEditor, &ResetWidget::resetProperty,
+                this, &VariantEditorFactory::resetProperty);
+
+        return resetEditor;
     }
 
     if (type == VariantPropertyManager::tilesetParametersTypeId()) {
@@ -268,8 +292,33 @@ void VariantEditorFactory::comboBoxPropertyEditTextChanged(const QString &value)
     }
 }
 
+void VariantEditorFactory::objectRefEditValueChanged(const DisplayObjectRef &value)
+{
+    auto objectIdEdit = qobject_cast<ObjectRefEdit*>(sender());
+    Q_ASSERT(objectIdEdit);
+    if (QtProperty *property = mObjectRefEditToProperty.value(objectIdEdit)) {
+        QtVariantPropertyManager *manager = propertyManager(property);
+        if (!manager)
+            return;
+        manager->setValue(property, QVariant::fromValue(value));
+    }
+}
+
 void VariantEditorFactory::slotEditorDestroyed(QObject *object)
 {
+    // Check if it was an ObjectRefEdit
+    {
+        ObjectRefEdit *objectIdEdit = static_cast<ObjectRefEdit*>(object);
+
+        if (QtProperty *property = mObjectRefEditToProperty.value(objectIdEdit)) {
+            mObjectRefEditToProperty.remove(objectIdEdit);
+            mCreatedObjectRefEdits[property].removeAll(objectIdEdit);
+            if (mCreatedObjectRefEdits[property].isEmpty())
+                mCreatedObjectRefEdits.remove(property);
+            return;
+        }
+    }
+
     // Check if it was a FileEdit
     {
         FileEdit *fileEdit = static_cast<FileEdit*>(object);
