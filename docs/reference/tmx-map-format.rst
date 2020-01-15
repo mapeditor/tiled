@@ -686,8 +686,8 @@ Wraps any number of custom properties. Can be used as a child of the
 
 -  **name:** The name of the property.
 -  **type:** The type of the property. Can be ``string`` (default), ``int``,
-   ``float``, ``bool``, ``color`` or ``file`` (since 0.16, with
-   ``color`` and ``file`` added in 0.17).
+   ``float``, ``bool``, ``color``, ``file`` or ``object`` (since 0.16, with
+   ``color`` and ``file`` added in 0.17, and ``object`` added in 1.4).
 -  **value:** The value of the property.
 
 Boolean properties have a value of either "true" or "false".
@@ -697,10 +697,10 @@ Color properties are stored in the format ``#AARRGGBB``.
 File properties are stored as paths relative from the location of the
 map file.
 
-Object Reference properties are stored as an integer in map files, and
-as "tileId:objectId" in tileset files. In both cases, "0" means unset.
-"tileId:0" also means unset in tileset files, though Tiled will change
-this value to "0".
+Object properties can reference any object on the same map and are stored as an
+integer (the ID of the referenced object, or 0 when no object is referenced).
+When used on objects in the Tile Collision Editor, they can only refer to
+other objects on the same tile.
 
 When a string property contains newlines, the current version of Tiled
 will write out the value as characters contained inside the ``property``
