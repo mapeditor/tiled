@@ -47,6 +47,11 @@ bool ScriptXmlNode::hasAttribute(const QString &name) const
     return element.hasAttribute(name);
 }
 
+bool ScriptXmlNode::removeAttribute(const QString &name)
+{
+    QDomElement element = mNode.toElement();
+}
+
 QString ScriptXmlNode::tag() const
 {
     QDomElement element = mNode.toElement();
@@ -106,6 +111,11 @@ ScriptXmlNode::NodeType ScriptXmlNode::type() const
 
 QVariantMap ScriptXmlNode::attributes() const
 {
+    if (!mNode.isElement()) {
+        ScriptManager::instance().throwError(QStringLiteral("Node '%1' is not an element node").arg(mNode.nodeName()));
+        return {};
+    }
+
     QVariantMap map;
     auto attributes = mNode.attributes();
     for (int i = 0; i < attributes.length(); i++) {
@@ -160,28 +170,28 @@ ScriptXmlFile *ScriptXmlNode::root() const
 ScriptXmlNode *ScriptXmlNode::firstChild(const QString &tagName)
 {
     if (tagName.isEmpty())
-        return new ScriptXmlNode(mNode.firstChild());
+        return checkIfNull(mNode.firstChild());
     return checkIfNull(mNode.firstChildElement(tagName));
 }
 
 ScriptXmlNode *ScriptXmlNode::lastChild(const QString &tagName) const
 {
     if (tagName.isEmpty())
-        return new ScriptXmlNode(mNode.lastChild());
+        return checkIfNull(mNode.lastChild());
     return checkIfNull(mNode.lastChildElement(tagName));
 }
 
 ScriptXmlNode *ScriptXmlNode::previousSibling(const QString &tagName) const
 {
     if (tagName.isEmpty())
-        return new ScriptXmlNode(mNode.previousSibling());
+        return checkIfNull(mNode.previousSibling());
     return checkIfNull(mNode.previousSiblingElement(tagName));
 }
 
 ScriptXmlNode *ScriptXmlNode::nextSibling(const QString &tagName) const
 {
     if (tagName.isEmpty())
-        return new ScriptXmlNode(mNode.nextSibling());
+        return checkIfNull(mNode.nextSibling());
     return checkIfNull(mNode.nextSiblingElement(tagName));
 }
 

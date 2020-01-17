@@ -142,6 +142,7 @@ void ScriptManager::initialize()
     globalObject.setProperty(QStringLiteral("TileMap"), mEngine->newQMetaObject<EditableMap>());
     globalObject.setProperty(QStringLiteral("Tileset"), mEngine->newQMetaObject<EditableTileset>());
     globalObject.setProperty(QStringLiteral("XmlFile"), mEngine->newQMetaObject<ScriptXmlFile>());
+    globalObject.setProperty(QStringLiteral("XmlNode"), mEngine->newQMetaObject<ScriptXmlNode>());
 #endif
 
     loadExtensions();
