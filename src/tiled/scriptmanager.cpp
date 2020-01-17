@@ -51,6 +51,7 @@
 #include <QStandardPaths>
 #include <QTextCodec>
 #include <QtDebug>
+#include <QCoreApplication>
 
 namespace Tiled {
 
@@ -258,6 +259,13 @@ void ScriptManager::throwError(const QString &message)
 #else
     engine()->throwError(message);
 #endif
+}
+
+void ScriptManager::throwNullArgError(int argNumber)
+{
+    auto message = QCoreApplication::translate("Script Errors",
+                                               "Argument %1 is undefined or the wrong type").arg(argNumber);
+    throwError(message);
 }
 
 void ScriptManager::reset()

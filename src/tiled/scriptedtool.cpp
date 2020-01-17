@@ -89,6 +89,10 @@ EditableMap *ScriptedTool::preview() const
 
 void ScriptedTool::setPreview(EditableMap *editableMap)
 {
+    if (!editableMap) {
+        ScriptManager::instance().throwNullArgError(0);
+        return;
+    }
     // todo: filter any non-tilelayers out of the map?
     auto map = editableMap->map()->clone();
     brushItem()->setMap(SharedMap { map.release() });

@@ -62,6 +62,7 @@ public:
 
     bool checkError(QJSValue value, const QString &program = QString());
     void throwError(const QString &message);
+    void throwNullArgError(int argNumber);
 
     void reset();
 

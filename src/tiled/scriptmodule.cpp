@@ -148,6 +148,10 @@ EditableAsset *ScriptModule::activeAsset() const
 
 bool ScriptModule::setActiveAsset(EditableAsset *asset) const
 {
+    if (!asset) {
+        ScriptManager::instance().throwNullArgError(0);
+        return false;
+    }
     auto documentManager = DocumentManager::instance();
     for (const DocumentPtr &document : documentManager->documents())
         if (document->editable() == asset)
@@ -201,6 +205,10 @@ EditableAsset *ScriptModule::open(const QString &fileName) const
 
 bool ScriptModule::close(EditableAsset *asset) const
 {
+    if (!asset) {
+        ScriptManager::instance().throwNullArgError(0);
+        return false;
+    }
     auto documentManager = DocumentManager::instance();
 
     int index = documentManager->findDocument(asset->document());
@@ -215,6 +223,10 @@ bool ScriptModule::close(EditableAsset *asset) const
 
 EditableAsset *ScriptModule::reload(EditableAsset *asset) const
 {
+    if (!asset) {
+        ScriptManager::instance().throwNullArgError(0);
+        return nullptr;
+    }
     auto documentManager = DocumentManager::instance();
 
     int index = documentManager->findDocument(asset->document());

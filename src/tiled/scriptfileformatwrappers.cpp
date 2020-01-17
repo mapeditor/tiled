@@ -92,6 +92,10 @@ EditableTileset *ScriptTilesetFormatWrapper::read(const QString &filename)
 
 void ScriptTilesetFormatWrapper::write(EditableTileset *editable, const QString &filename)
 {
+    if (!editable) {
+        ScriptManager::instance().throwNullArgError(0);
+        return;
+    }
     if (!assertCanWrite())
         return;
 
@@ -123,6 +127,10 @@ EditableMap *ScriptMapFormatWrapper::read(const QString &filename)
 
 void ScriptMapFormatWrapper::write(EditableMap *editable, const QString &filename)
 {
+    if (!editable) {
+        ScriptManager::instance().throwNullArgError(0);
+        return;
+    }
     if (!assertCanWrite())
         return;
 
