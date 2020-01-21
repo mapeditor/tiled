@@ -183,7 +183,7 @@ void EditableMap::removeLayerAt(int index)
 void EditableMap::removeLayer(EditableLayer *editableLayer)
 {
     if (!editableLayer) {
-        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid argument"));
+        ScriptManager::instance().throwNullArgError(0);
         return;
     }
 
@@ -204,7 +204,7 @@ void EditableMap::insertLayerAt(int index, EditableLayer *editableLayer)
     }
 
     if (!editableLayer) {
-        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid argument"));
+        ScriptManager::instance().throwNullArgError(0);
         return;
     }
 
@@ -228,6 +228,10 @@ void EditableMap::addLayer(EditableLayer *editableLayer)
 
 bool EditableMap::addTileset(EditableTileset *editableTileset)
 {
+    if (!editableTileset) {
+        ScriptManager::instance().throwNullArgError(0);
+        return false;
+    }
     const auto &tileset = editableTileset->tileset()->sharedPointer();
     if (map()->indexOfTileset(tileset) != -1)
         return false;   // can't add existing tileset
@@ -243,6 +247,14 @@ bool EditableMap::addTileset(EditableTileset *editableTileset)
 bool EditableMap::replaceTileset(EditableTileset *oldEditableTileset,
                                  EditableTileset *newEditableTileset)
 {
+    if (!oldEditableTileset) {
+        ScriptManager::instance().throwNullArgError(0);
+        return false;
+    }
+    if (!newEditableTileset) {
+        ScriptManager::instance().throwNullArgError(1);
+        return false;
+    }
     if (oldEditableTileset == newEditableTileset) {
         ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid argument"));
         return false;
@@ -268,6 +280,10 @@ bool EditableMap::replaceTileset(EditableTileset *oldEditableTileset,
 
 bool EditableMap::removeTileset(EditableTileset *editableTileset)
 {
+    if (!editableTileset) {
+        ScriptManager::instance().throwNullArgError(0);
+        return false;
+    }
     Tileset *tileset = editableTileset->tileset();
     int index = map()->indexOfTileset(tileset->sharedPointer());
     if (index == -1)
@@ -308,6 +324,10 @@ QList<QObject *> EditableMap::usedTilesets() const
  */
 void EditableMap::merge(EditableMap *editableMap, bool canJoin)
 {
+    if (!editableMap) {
+        ScriptManager::instance().throwNullArgError(0);
+        return;
+    }
     if (!mapDocument()) {   // todo: support this outside of the undo stack
         ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Merge is currently not supported for detached maps"));
         return;

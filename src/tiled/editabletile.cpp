@@ -216,7 +216,7 @@ void EditableTile::setProbability(qreal probability)
 void EditableTile::setObjectGroup(EditableObjectGroup *editableObjectGroup)
 {
     if (!editableObjectGroup) {
-        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid argument"));
+        ScriptManager::instance().throwNullArgError(0);
         return;
     }
 
