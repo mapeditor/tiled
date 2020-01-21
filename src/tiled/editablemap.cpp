@@ -497,10 +497,6 @@ void EditableMap::setLayerDataFormat(LayerDataFormat value)
 
 void EditableMap::setCurrentLayer(EditableLayer *layer)
 {
-    if (!layer) {
-        ScriptManager::instance().throwNullArgError(0);
-        return;
-    }
     QList<QObject*> layers;
     if (layer)
         layers.append(layer);
