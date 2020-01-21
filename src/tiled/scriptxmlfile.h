@@ -41,7 +41,7 @@ public:
     Q_INVOKABLE QString attribute(const QString &name, const QString &defValue = QString());
     Q_INVOKABLE void setAttribute(const QString &name, const QString &value);
     Q_INVOKABLE bool hasAttribute(const QString &name) const;
-    Q_INVOKABLE bool removeAttribute(const QString &name);
+    Q_INVOKABLE void removeAttribute(const QString &name);
     Q_INVOKABLE Tiled::ScriptXmlNode *firstChild(const QString &tagName = QString());
     Q_INVOKABLE Tiled::ScriptXmlNode *lastChild(const QString &tagName = QString()) const;
     Q_INVOKABLE Tiled::ScriptXmlNode *previousSibling(const QString &tagName = QString()) const;

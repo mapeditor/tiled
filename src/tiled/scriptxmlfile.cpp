@@ -6,7 +6,6 @@
 
 namespace Tiled {
 
-
 ScriptXmlNode::ScriptXmlNode(const QDomNode &node, QObject *parent)
     : QObject(parent)
     , mNode(node)
@@ -47,9 +46,14 @@ bool ScriptXmlNode::hasAttribute(const QString &name) const
     return element.hasAttribute(name);
 }
 
-bool ScriptXmlNode::removeAttribute(const QString &name)
+void ScriptXmlNode::removeAttribute(const QString &name)
 {
     QDomElement element = mNode.toElement();
+    if (element.isNull()) {
+        ScriptManager::instance().throwError(QStringLiteral("Node '%1' is not an element node").arg(mNode.nodeName()));
+        return;
+    }
+    element.removeAttribute(name);
 }
 
 QString ScriptXmlNode::tag() const
@@ -260,6 +264,7 @@ ScriptXmlNode *ScriptXmlNode::removeChild(ScriptXmlNode *oldChild)
     return checkIfNull(mNode.removeChild(oldChild->mNode));
 }
 
+
 ScriptXmlFile::ScriptXmlFile(const QDomDocument &document, QObject *parent)
     : ScriptXmlNode(document, parent)
 {}
@@ -303,4 +308,4 @@ QString ScriptXmlFile::writeToString(int indent) const
     return document().toString(indent);
 }
 
-}
+} // namespace Tiled

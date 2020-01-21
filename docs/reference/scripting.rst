@@ -1776,16 +1776,16 @@ XmlNode.attribute(name : string [, defaultValue : string = ""]) : string
     it returns defaultValue instead. Throws an error if this node is not an Element.
 
 XmlNode.setAttribute(name : string, newValue : string) : void
-    Set the given attribute to a new value, creating it if it didn't already exist.
-    Throws an error if this node is not an Element.
+    Set the attribute with the given name to a new value, creating it if it
+    didn't already exist. Throws an error if this node is not an Element.
 
 XmlNode.hasAttribute(name : string) : bool
-    Checks whether this node has the given attribute set to any value. Throws an
+    Returns whether this node has an attribute with the given name. Throws an
     error if this node is not an Element.
 
-XmlNode.removeAttribute(name : string) : bool
-    If the given attribute exists, it is deleted and this returns true. Otherwise,
-    it returns false. Throws an errof if this node is not an Element.
+XmlNode.removeAttribute(name : string) : void
+    Removes the attribute with the given name from this element. Throws an error
+    if this node is not an Element.
 
 XmlNode.firstChild([tag : string]) : XmlNode
     Returns the first child with the given tag name. Returns `undefined` if the
