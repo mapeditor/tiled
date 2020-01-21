@@ -46,6 +46,9 @@ class TILEDSHARED_EXPORT FilePath
 
 public:
     QUrl url;
+
+    static QString toString(const FilePath &path);
+    static FilePath fromString(const QString &string);
 };
 
 struct TILEDSHARED_EXPORT ObjectRef
@@ -125,6 +128,8 @@ TILEDSHARED_EXPORT QVariant fromExportValue(const QVariant &value, int type);
 
 TILEDSHARED_EXPORT QVariant toExportValue(const QVariant &value, const QDir &dir);
 TILEDSHARED_EXPORT QVariant fromExportValue(const QVariant &value, int type, const QDir &dir);
+
+TILEDSHARED_EXPORT void initializeMetatypes();
 
 } // namespace Tiled
 
