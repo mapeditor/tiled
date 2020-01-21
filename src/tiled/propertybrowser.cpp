@@ -32,6 +32,7 @@
 #include "changetileprobability.h"
 #include "changewangcolordata.h"
 #include "changewangsetdata.h"
+#include "documentmanager.h"
 #include "flipmapobjects.h"
 #include "grouplayer.h"
 #include "imagelayer.h"
@@ -42,6 +43,7 @@
 #include "objectgroup.h"
 #include "objecttemplate.h"
 #include "preferences.h"
+#include "properties.h"
 #include "renamewangset.h"
 #include "replacetileset.h"
 #include "resizemapobject.h"
@@ -444,9 +446,9 @@ void PropertyBrowser::propertyAdded(Object *object, const QString &name)
 {
     if (!objectPropertiesRelevant(mDocument, object))
         return;
-    if (mNameToProperty.contains(name)) {
+    if (QtVariantProperty *property = mNameToProperty.value(name)) {
         if (propertyValueAffected(mObject, object, name))
-            setCustomPropertyValue(mNameToProperty[name], object->property(name));
+            setCustomPropertyValue(property, object->property(name));
     } else {
         QVariant value;
         if (mObject->hasProperty(name))
@@ -454,7 +456,7 @@ void PropertyBrowser::propertyAdded(Object *object, const QString &name)
         else
             value = predefinedPropertyValue(mObject, name);
 
-        createCustomProperty(name, value);
+        createCustomProperty(name, toDisplayValue(value));
     }
     updateCustomPropertyColor(name);
 }
@@ -556,7 +558,7 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
         undoStack->push(new SetProperty(mDocument,
                                         mDocument->currentObjects(),
                                         property->propertyName(),
-                                        val));
+                                        fromDisplayValue(val)));
         return;
     }
 
@@ -575,15 +577,13 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
 
 void PropertyBrowser::resetProperty(QtProperty *property)
 {
-    switch (mVariantManager->propertyType(property)) {
-    case QVariant::Color:
-        // At the moment it is only possible to reset color values
+    auto typeId = mVariantManager->propertyType(property);
+    if (typeId == QVariant::Color)
         mVariantManager->setValue(property, QColor());
-        break;
-
-    default:
+    else if (typeId == VariantPropertyManager::displayObjectRefTypeId()) {
+        mVariantManager->setValue(property, toDisplayValue(QVariant::fromValue(ObjectRef())));
+    } else
         qWarning() << "Resetting of property type not supported right now";
-    }
 }
 
 void PropertyBrowser::addMapProperties()
@@ -736,6 +736,7 @@ void PropertyBrowser::addLayerProperties(QtProperty *parent)
     opacityProperty->setAttribute(QLatin1String("minimum"), 0.0);
     opacityProperty->setAttribute(QLatin1String("maximum"), 1.0);
     opacityProperty->setAttribute(QLatin1String("singleStep"), 0.1);
+    addProperty(TintColorProperty, QVariant::Color, tr("Tint Color"), parent);
 
     addProperty(OffsetXProperty, QVariant::Double, tr("Horizontal Offset"), parent);
     addProperty(OffsetYProperty, QVariant::Double, tr("Vertical Offset"), parent);
@@ -1184,6 +1185,9 @@ QUndoCommand *PropertyBrowser::applyLayerValueTo(PropertyBrowser::PropertyId id,
     case OpacityProperty:
         command = new SetLayerOpacity(mMapDocument, layer, val.toDouble());
         break;
+    case TintColorProperty:
+        command = new SetLayerTintColor(mMapDocument, layer, val.value<QColor>());
+        break;
     case OffsetXProperty:
     case OffsetYProperty: {
         QPointF offset = layer->offset();
@@ -1552,20 +1556,22 @@ void PropertyBrowser::deleteCustomProperty(QtVariantProperty *property)
 void PropertyBrowser::setCustomPropertyValue(QtVariantProperty *property,
                                              const QVariant &value)
 {
-    if (value.userType() != property->valueType()) {
+    const QVariant displayValue = toDisplayValue(value);
+
+    if (displayValue.userType() != property->valueType()) {
         // Re-creating the property is necessary to change its type
         const QString name = property->propertyName();
         const bool wasCurrent = currentItem() && currentItem()->property() == property;
 
         deleteCustomProperty(property);
-        property = createCustomProperty(name, value);
+        property = createCustomProperty(name, displayValue);
         updateCustomPropertyColor(name);
 
         if (wasCurrent)
             setCurrentItem(items(property).constFirst());
     } else {
         mUpdating = true;
-        property->setValue(value);
+        property->setValue(displayValue);
         mUpdating = false;
     }
 }
@@ -1604,6 +1610,8 @@ void PropertyBrowser::addProperties()
         setExpanded(items(colorProperty).constFirst(), false);
     if (QtProperty *fontProperty = mIdToProperty.value(FontProperty))
         setExpanded(items(fontProperty).constFirst(), false);
+    if (QtProperty *tintColorProperty = mIdToProperty.value(TintColorProperty))
+        setExpanded(items(tintColorProperty).constFirst(), false);
 
     // Add a node for the custom properties
     mCustomPropertiesGroup = mGroupManager->addProperty(tr("Custom Properties"));
@@ -1713,6 +1721,7 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[VisibleProperty]->setValue(layer->isVisible());
         mIdToProperty[LockedProperty]->setValue(layer->isLocked());
         mIdToProperty[OpacityProperty]->setValue(layer->opacity());
+        mIdToProperty[TintColorProperty]->setValue(layer->tintColor());
         mIdToProperty[OffsetXProperty]->setValue(layer->offset().x());
         mIdToProperty[OffsetYProperty]->setValue(layer->offset().y());
 
@@ -1892,12 +1901,14 @@ void PropertyBrowser::updateCustomProperties()
 
     while (it.hasNext()) {
         it.next();
+
+        const QVariant displayValue = toDisplayValue(it.value());
+
         QtVariantProperty *property = addProperty(CustomProperty,
-                                                  it.value().userType(),
+                                                  displayValue.userType(),
                                                   it.key(),
                                                   mCustomPropertiesGroup);
-
-        property->setValue(it.value());
+        property->setValue(displayValue);
         updateCustomPropertyColor(it.key());
     }
 
@@ -1943,6 +1954,22 @@ void PropertyBrowser::updateCustomPropertyColor(const QString &name)
 
     property->setNameColor(textColor);
     property->setValueColor(textColor);
+}
+
+QVariant PropertyBrowser::toDisplayValue(const QVariant &value) const
+{
+    if (value.userType() == objectRefTypeId())
+        return QVariant::fromValue(DisplayObjectRef { value.value<ObjectRef>(), mMapDocument });
+
+    return value;
+}
+
+QVariant PropertyBrowser::fromDisplayValue(const QVariant &value) const
+{
+    if (value.userType() == VariantPropertyManager::displayObjectRefTypeId())
+        return QVariant::fromValue(value.value<DisplayObjectRef>().ref);
+
+    return value;
 }
 
 void PropertyBrowser::retranslateUi()

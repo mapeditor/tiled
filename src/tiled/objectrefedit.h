@@ -1,7 +1,6 @@
 /*
- * consoledock.h
- * Copyright 2013, Samuli Tuomola <samuli.tuomola@gmail.com>
- * Copyright 2018-2019, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+ * objectrefedit.h
+ * Copyright 2019, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -21,41 +20,42 @@
 
 #pragma once
 
-#include <QDockWidget>
+#include "properties.h"
+#include "variantpropertymanager.h"
+
+#include <QWidget>
 
 class QLineEdit;
-class QPlainTextEdit;
+class QToolButton;
 
 namespace Tiled {
 
-class ConsoleDock : public QDockWidget
+class ObjectRefEdit : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit ConsoleDock(QWidget *parent = nullptr);
-    ~ConsoleDock();
+    explicit ObjectRefEdit(QWidget *parent = nullptr);
 
-protected:
-    void changeEvent(QEvent *e) override;
+    const DisplayObjectRef &value() const;
+    void setValue(const DisplayObjectRef &value);
+
+signals:
+    void valueChanged(const DisplayObjectRef &value);
 
 private:
-    void appendInfo(const QString &str);
-    void appendWarning(const QString &str);
-    void appendError(const QString &str);
-    void appendScript(const QString &str);
-    void appendScriptResult(const QString &tempName, const QString &result);
+    void onButtonClicked();
+    void onEditFinished();
 
-    void executeScript();
-
-    void moveHistory(int direction);
-
-    void retranslateUi();
-
-    QPlainTextEdit *mPlainTextEdit;
     QLineEdit *mLineEdit;
-    QStringList mHistory;
-    int mHistoryPosition = 0;
+    QToolButton *mObjectDialogButton;
+    DisplayObjectRef mValue;
 };
+
+
+inline const DisplayObjectRef &ObjectRefEdit::value() const
+{
+    return mValue;
+}
 
 } // namespace Tiled

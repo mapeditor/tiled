@@ -21,11 +21,34 @@
 
 #pragma once
 
+#include "properties.h"
+
 #include <QtVariantPropertyManager>
 
 #include <QFileIconProvider>
 
 namespace Tiled {
+
+class MapDocument;
+class MapObject;
+
+class DisplayObjectRef {
+public:
+    explicit DisplayObjectRef(ObjectRef ref = ObjectRef(),
+                              MapDocument *mapDocument = nullptr)
+        : ref(ref)
+        , mapDocument(mapDocument)
+    {}
+
+    bool operator==(const DisplayObjectRef &o) const
+    { return ref.id == o.ref.id && mapDocument == o.mapDocument; }
+
+    int id() const { return ref.id; }
+    MapObject *object() const;
+
+    ObjectRef ref;
+    MapDocument *mapDocument;
+};
 
 /**
  * Extension of the QtVariantPropertyManager that adds support for a filePath
@@ -49,6 +72,7 @@ public:
 
     static int tilesetParametersTypeId();
     static int alignmentTypeId();
+    static int displayObjectRefTypeId();
 
 public slots:
     void setValue(QtProperty *property, const QVariant &val) override;
@@ -65,6 +89,7 @@ protected:
 private:
     void slotValueChanged(QtProperty *property, const QVariant &value);
     void slotPropertyDestroyed(QtProperty *property);
+    QString objectRefLabel(const MapObject *object) const;
 
     struct Data {
         QVariant value;
@@ -98,3 +123,5 @@ private:
 };
 
 } // namespace Tiled
+
+Q_DECLARE_METATYPE(Tiled::DisplayObjectRef)

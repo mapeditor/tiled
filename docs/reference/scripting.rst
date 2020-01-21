@@ -2,6 +2,8 @@
 
    <div class="new">New in Tiled 1.3</div>
 
+.. |ro| replace:: *[read‑only]*
+
 Scripting
 =========
 
@@ -127,6 +129,12 @@ Properties
     **openAssets** : array |ro|, "List of currently opened :ref:`assets <script-asset>`."
     **mapEditor** : :ref:`script-mapeditor`, "Access the editor used when editing maps."
     **tilesetEditor** : :ref:`script-tileseteditor`, "Access the editor used when editing tilesets."
+    **tilesetFormats** : [string] |ro|, "List of supported tileset format names. Use
+    :ref:`tilesetFormat <script-tilesetFormat>` to get the corresponding format object
+    to read and write files. (Since 1.4)"
+    **mapFormats** : [string] |ro|, "List of supported map format names. Use
+    :ref:`mapFormat <script-mapFormat>` to get the corresponding format object to
+    read and write files. (Since 1.4)"
 
 Functions
 ~~~~~~~~~
@@ -430,6 +438,41 @@ tiled.extendMenu(id : string, items : array | object) : void
     The "CustomAction" will need to have been registered before using
     :ref:`tiled.registerAction() <script-registerAction>`.
 
+
+.. _script-tilesetFormat:
+
+tiled.tilesetFormat(shortName : string) : :ref:`script-tilesetformatwrapper`
+    Returns the tileset format object with the given name, or `undefined` if
+    no object was found. See the `tilesetFormats` property for more info.
+
+.. _script-tilesetFormatForFile:
+
+tiled.tilesetFormatForFile(fileName : string) : :ref:`script-tilesetformatwrapper`
+    Returns the tileset format object that can read the given file, or `undefined`
+    if no object was found.
+
+.. _script-mapFormat:
+
+tiled.mapFormat(shortName : string) : :ref:`script-mapformatwrapper`
+    Returns the map format object with the given name, or `undefined` if no object
+    was found. See the `mapFormats` property for more info.
+
+.. _script-mapFormatForFile:
+
+tiled.mapFormatForFile(fileName : string) : :ref:`script-mapformatwrapper`
+    Returns the map format object that can read the given file, or `undefined` if
+    no object was found.
+
+.. _script-tiled-filePath:
+
+tiled.filePath(path : url) : :ref:`script-filepath`
+    Creates a :ref:`script-filepath` object with the given URL.
+
+.. _script-tiled-objectRef:
+
+tiled.objectRef(id : int) : :ref:`script-objectref`
+    Creates an :ref:`script-objectref` object with the given ID.
+
 .. _script-tiled-signals:
 
 Signals
@@ -453,6 +496,304 @@ tiled.assetAboutToBeClosed(asset : :ref:`script-asset`)
 tiled.activeAssetChanged(asset : :ref:`script-asset`)
     The currently active asset has changed.
 
+
+.. _script-action:
+
+Action
+^^^^^^
+
+An action that was registered with :ref:`tiled.registerAction() <script-registerAction>`.
+This class is used to change the properties of the action. It can be added to a menu using
+:ref:`tiled.extendMenu() <script-extendMenu>`.
+
+Properties
+~~~~~~~~~~
+
+.. csv-table::
+    :widths: 1, 2
+
+    **checkable** : bool, Whether the action can be checked.
+    **checked** : bool, Whether the action is checked.
+    **enabled** : bool, Whether the action is enabled.
+    **icon** : string, File name of an icon.
+    **iconVisibleInMenu** : bool, Whether the action should show an icon in a menu.
+    **id** : string |ro|, The ID this action was registered with.
+    **shortcut** : QKeySequence, The shortcut (can be assigned a string like "Ctrl+K").
+    **text** : string, The text used when the action is part of a menu.
+    **visible** : bool, Whether the action is visible.
+
+Functions
+~~~~~~~~~
+
+Action.trigger() : void
+    Triggers the action.
+
+Action.toggle() : void
+    Changes the checked state to its opposite state.
+
+.. _script-asset:
+
+Asset
+^^^^^
+
+Inherits :ref:`script-object`.
+
+Represents any top-level data type that can be saved to a file. Currently
+either a :ref:`script-map` or a :ref:`script-tileset`.
+
+All modifications made to assets and their contained parts create undo
+commands. This includes both modifying functions that are called as well as
+simply assigning to a writable property.
+
+Properties
+~~~~~~~~~~
+
+.. csv-table::
+    :widths: 1, 2
+
+    **fileName** : string |ro|, File name of the asset.
+    **modified** : bool |ro|, Whether the asset was modified after it was saved or loaded.
+    **isTileMap** : bool |ro|, Whether the asset is a :ref:`script-map`.
+    **isTileset** : bool |ro|, Whether the asset is a :ref:`script-tileset`.
+
+Functions
+~~~~~~~~~
+
+.. _script-asset-macro:
+
+Asset.macro(text : string, callback : function) : value
+    Creates a single undo command that wraps all changes applied to this asset
+    by the given callback. Recommended to avoid spamming the undo stack with
+    small steps that the user does not care about.
+
+    Example function that changes visibility of multiple layers in one step:
+
+    .. code:: javascript
+
+        tileMap.macro((visible ? "Show" : "Hide") + " Selected Layers", function() {
+            tileMap.selectedLayers.forEach(function(layer) {
+                layer.visible = visible
+            })
+        })
+
+    The returned value is whatever the callback function returned.
+
+.. _script-fileformat:
+
+FileFormat
+^^^^^^^^^^
+
+Common functionality for file format readers and writers. (Since 1.4)
+
+Properties
+~~~~~~~~~~
+
+.. csv-table::
+    widths: 1, 2
+
+    **canRead** : bool |ro|, Whether this format supports reading files.
+    **canWrite** : bool |ro|, Whether this format supports writing files.
+
+Functions
+~~~~~~~~~
+
+FileFormat.supportsFile(fileName : string) : bool
+    Returns whether the file is readable by this format.
+
+.. _script-grouplayer:
+
+GroupLayer
+^^^^^^^^^^
+
+Inherits :ref:`script-layer`.
+
+Properties
+~~~~~~~~~~
+
+.. csv-table::
+    :widths: 1, 2
+
+    **layerCount** : int |ro|, Number of child layers the group layer has.
+
+Functions
+~~~~~~~~~
+
+new GroupLayer([name : string])
+    Constructs a new group layer.
+
+GroupLayer.layerAt(index : int) : :ref:`script-layer`
+    Returns a reference to the child layer at the given index.
+
+GroupLayer.removeLayerAt(index : int) : void
+    Removes the child layer at the given index. When a reference to the layer
+    still exists and this group layer isn't already standalone, that reference
+    becomes a standalone copy of the layer.
+
+GroupLayer.removeLayer(layer : :ref:`script-layer`) : void
+    Removes the given layer from the group. If this group wasn't standalone,
+    the reference to the layer becomes a standalone copy.
+
+GroupLayer.insertLayerAt(index : int, layer : :ref:`script-layer`) : void
+    Inserts the layer at the given index. The layer can't already be part of
+    a map.
+
+GroupLayer.addLayer(layer : :ref:`script-layer`) : void
+    Adds the layer to the group, above all existing layers. The layer can't
+    already be part of a map.
+
+.. _script-imagelayer:
+
+ImageLayer
+^^^^^^^^^^
+
+Inherits :ref:`script-layer`.
+
+Properties
+~~~~~~~~~~
+
+.. csv-table::
+    :widths: 1, 2
+
+    **transparentColor** : color, Color used as transparent color when rendering the image.
+    **imageSource** : url, Reference to the image rendered by this layer.
+
+.. _script-layer:
+
+Layer
+^^^^^
+
+Inherits :ref:`script-object`.
+
+Properties
+~~~~~~~~~~
+
+.. csv-table::
+    :widths: 1, 2
+
+    **name** : string, Name of the layer.
+    **opacity** : number, "Opacity of the layer, from 0 (fully transparent) to 1 (fully opaque)."
+    **visible** : bool, Whether the layer is visible (affects child layer visibility for group layers).
+    **locked** : bool, Whether the layer is locked (affects whether child layers are locked for group layers).
+    **offset** : :ref:`script-point`, Offset in pixels that is applied when this layer is rendered.
+    **map** : :ref:`script-map`, Map that this layer is part of (or ``null`` in case of a standalone layer).
+    **selected** : bool, Whether the layer is selected.
+    **isTileLayer** : bool |ro|, Whether this layer is a :ref:`script-tilelayer`.
+    **isObjectGroup** : bool |ro|, Whether this layer is an :ref:`script-objectgroup`.
+    **isGroupLayer** : bool |ro|, Whether this layer is a :ref:`script-grouplayer`.
+    **isImageLayer** : bool |ro|, Whether this layer is an :ref:`script-imagelayer`.
+
+.. _script-mapobject:
+
+MapObject
+^^^^^^^^^
+
+Inherits :ref:`script-object`.
+
+Properties
+~~~~~~~~~~
+
+.. csv-table::
+    :widths: 1, 2
+
+    **id** : int |ro|, Unique (map-wide) ID of the object.
+    **shape** : int, :ref:`Shape <script-mapobject-shape>` of the object.
+    **name** : string, Name of the object.
+    **type** : string, Type of the object.
+    **x** : number, X coordinate of the object in pixels.
+    **y** : number, Y coordinate of the object in pixels.
+    **pos** : :ref:`script-point`, Position of the object in pixels.
+    **width** : number, Width of the object in pixels.
+    **height** : number, Height of the object in pixels.
+    **size** : size, Size of the object in pixels (has ``width`` and ``height`` members).
+    **rotation** : number, Rotation of the object in degrees clockwise.
+    **visible** : bool, Whether the object is visible.
+    **polygon** : :ref:`Polygon <script-polygon>`, Polygon of the object.
+    **text** : string, The text of a text object.
+    **font** : :ref:`script-font`, The font of a text object.
+    **textAlignment** : :ref:`script-alignment`, The alignment of a text object.
+    **wordWrap** : bool, Whether the text of a text object wraps based on the width of the object.
+    **textColor** : color, Color of a text object.
+    **tile** : :ref:`script-tile`, Tile of the object.
+    **tileFlippedHorizontally** : bool, Whether the tile is flipped horizontally.
+    **tileFlippedVertically** : bool, Whether the tile is flipped vertically.
+    **selected** : bool, Whether the object is selected.
+    **layer** : :ref:`script-objectgroup` |ro|, Layer this object is part of (or ``null`` in case of a standalone object).
+    **map** : :ref:`script-map` |ro|, Map this object is part of (or ``null`` in case of a standalone object).
+
+.. _script-mapobject-shape:
+
+.. csv-table::
+    :header: "MapObject.Shape"
+
+    MapObject.Rectangle
+    MapObject.Polygon
+    MapObject.Polyline
+    MapObject.Ellipse
+    MapObject.Text
+    MapObject.Point
+
+Functions
+~~~~~~~~~
+
+new MapObject([name : string])
+    Constructs a new map object, which can be added to an :ref:`script-objectgroup`.
+
+.. _script-mapeditor:
+
+MapEditor
+^^^^^^^^^
+
+Properties
+~~~~~~~~~~
+
+.. csv-table::
+    :widths: 1, 2
+
+    **currentBrush** : :ref:`script-map`, "Get or set the currently used tile brush."
+    **currentMapView** : :ref:`script-mapview` |ro|, "Access the current map view."
+    **tilesetsView** : :ref:`script-tilesetsview` |ro|, "Access the Tilesets view."
+
+.. _script-mapformatwrapper:
+
+MapFormat
+^^^^^^^^^
+
+This is an object that can read or write map files. (Since 1.4)
+
+Inherits :ref:`script-fileformat`.
+
+Functions
+~~~~~~~~~
+
+MapFormat.read(fileName : string) : :ref:`script-map`
+    Read the given file as a map. This function will throw an error if it
+    is not supported.
+
+MapFormat.write(map : :ref:`script-map`, fileName : string) : string
+    Write the given map to a file. This function will throw an error if it
+    is not supported. If there is an error writing the file, it will return a
+    description of the error; otherwise, it will return "".
+
+.. _script-mapview:
+
+MapView
+^^^^^^^
+
+The view displaying the map.
+
+Properties
+~~~~~~~~~~
+
+.. csv-table::
+    :widths: 1, 2
+
+    **scale** : number, "Get or set the scale of the view."
+
+Functions
+~~~~~~~~~
+
+MapView.centerOn(x : number, y : number) : void
+    Centers the view at the given location in screen coordinates.
 
 .. _script-object:
 
@@ -508,19 +849,15 @@ Object.setProperties(properties : object) : void
 Object.removeProperty(name : string) : void
     Removes the custom property with the given name.
 
-.. _script-asset:
+.. _script-objectgroup:
 
-Asset
-^^^^^
+ObjectGroup
+^^^^^^^^^^^
 
-Inherits :ref:`script-object`.
+Inherits :ref:`script-layer`.
 
-Represents any top-level data type that can be saved to a file. Currently
-either a :ref:`script-map` or a :ref:`script-tileset`.
-
-All modifications made to assets and their contained parts create undo
-commands. This includes both modifying functions that are called as well as
-simply assigning to a writable property.
+The "ObjectGroup" is a type of layer that can contain objects. It will
+henceforth be referred to as a layer.
 
 Properties
 ~~~~~~~~~~
@@ -528,32 +865,257 @@ Properties
 .. csv-table::
     :widths: 1, 2
 
-    **fileName** : string |ro|, File name of the asset.
-    **modified** : bool |ro|, Whether the asset was modified after it was saved or loaded.
-    **isTileMap** : bool |ro|, Whether the asset is a :ref:`script-map`.
-    **isTileset** : bool |ro|, Whether the asset is a :ref:`script-tileset`.
+    **objects** : [:ref:`script-mapobject`] |ro|, Array of all objects on this layer.
+    **objectCount** : int |ro|, Number of objects on this layer.
+    **color** : color, Color of shape and point objects on this layer (when not set by object type).
 
 Functions
 ~~~~~~~~~
 
-.. _script-asset-macro:
+new ObjectGroup([name : string])
+    Constructs a new object layer, which can be added to a :ref:`script-map`.
 
-Asset.macro(text : string, callback : function) : value
-    Creates a single undo command that wraps all changes applied to this asset
-    by the given callback. Recommended to avoid spamming the undo stack with
-    small steps that the user does not care about.
+ObjectGroup.objectAt(index : int) : :ref:`script-mapobject`
+    Returns a reference to the object at the given index. When the object is
+    removed, the reference turns into a standalone copy of the object.
 
-    Example function that changes visibility of multiple layers in one step:
+ObjectGroup.removeObjectAt(index : int) : void
+    Removes the object at the given index.
 
-    .. code:: javascript
+ObjectGroup.removeObject(object : :ref:`script-mapobject`) : void
+    Removes the given object from this layer. The object reference turns into
+    a standalone copy of the object.
 
-        tileMap.macro((visible ? "Show" : "Hide") + " Selected Layers", function() {
-            tileMap.selectedLayers.forEach(function(layer) {
-                layer.visible = visible
-            })
-        })
+ObjectGroup.insertObjectAt(index : int, object : :ref:`script-mapobject`) : void
+    Inserts the object at the given index. The object can't already be part
+    of a layer.
 
-    The returned value is whatever the callback function returned.
+ObjectGroup.addObject(object : :ref:`script-mapobject`) : void
+    Adds the given object to the layer. The object can't already be part of
+    a layer.
+
+.. _script-selectedarea:
+
+SelectedArea
+^^^^^^^^^^^^
+
+Properties
+~~~~~~~~~~
+
+.. csv-table::
+    :widths: 1, 2
+
+    **boundingRect** : :ref:`script-rect` |ro|, Bounding rectangle of the selected area.
+
+Functions
+~~~~~~~~~
+
+SelectedArea.get() : :ref:`script-region`
+    Returns the selected region.
+
+SelectedArea.set(rect : :ref:`script-rect`) : void
+    Sets the selected area to the given rectangle.
+
+SelectedArea.set(region : :ref:`script-region`) : void
+    Sets the selected area to the given region.
+
+SelectedArea.add(rect : :ref:`script-rect`) : void
+    Adds the given rectangle to the selected area.
+
+SelectedArea.add(region : :ref:`script-region`) : void
+    Adds the given region to the selected area.
+
+SelectedArea.subtract(rect : :ref:`script-rect`) : void
+    Subtracts the given rectangle from the selected area.
+
+SelectedArea.subtract(region : :ref:`script-region`) : void
+    Subtracts the given region from the selected area.
+
+SelectedArea.intersect(rect : :ref:`script-rect`) : void
+    Sets the selected area to the intersection of the current selected area and the given rectangle.
+
+SelectedArea.intersect(region : :ref:`script-region`) : void
+    Sets the selected area to the intersection of the current selected area and the given region.
+
+.. _script-terrain:
+
+Terrain
+^^^^^^^
+
+Inherits :ref:`script-object`.
+
+Properties
+~~~~~~~~~~
+
+.. csv-table::
+    :widths: 1, 2
+
+    **id** : int |ro|, ID of this terrain.
+    **name** : string, Name of the terrain.
+    **imageTile** : :ref:`script-tile`, The tile representing the terrain (needs to be from the same tileset).
+    **tileset** : :ref:`script-tileset` |ro|, The tileset of the terrain.
+
+.. _script-tile:
+
+Tile
+^^^^
+
+Inherits :ref:`script-object`.
+
+Properties
+~~~~~~~~~~
+
+.. csv-table::
+    :widths: 1, 2
+
+    **id** : int |ro|, ID of this tile within its tileset.
+    **width** : int |ro|, Width of the tile in pixels.
+    **height** : int |ro|, Height of the tile in pixels.
+    **size** : size |ro|, Size of the tile in pixels (has ``width`` and ``height`` members).
+    **type** : string, Type of the tile.
+    **imageFileName** : string, File name of the tile image (when the tile is part of an image collection tileset).
+    **terrain** : :ref:`script-tileterrains`, An object specifying the terrain at each corner of the tile.
+    **probability** : number, Probability that the tile gets chosen relative to other tiles.
+    **objectGroup** : :ref:`script-objectgroup`, The :ref:`script-objectgroup` associated with the tile in case collision shapes were defined. Returns ``null`` if no collision shapes were defined for this tile.
+    **frames** : :ref:`[frame] <script-frames>`, This tile's animation as an array of frames.
+    **animated** : bool |ro|, Indicates whether this tile is animated.
+    **tileset** : :ref:`script-tileset` |ro|, The tileset of the tile.
+
+.. _script-tile-flags:
+
+.. csv-table::
+    :header: "Tile.Flags"
+
+    Tile.FlippedHorizontally
+    Tile.FlippedVertically
+    Tile.FlippedAntiDiagonally
+    Tile.RotatedHexagonal120
+
+.. _script-tile-corner:
+
+.. csv-table::
+    :header: "Tile.Corner"
+
+    Tile.TopLeft
+    Tile.TopRight
+    Tile.BottomLeft
+    Tile.BottomRight
+
+Functions
+~~~~~~~~~
+
+Tile.terrainAtCorner(corner : :ref:`Corner <script-tile-corner>`) : :ref:`script-terrain`
+    Returns the terrain used at the given corner.
+
+Tile.setTerrainAtCorner(corner : :ref:`Corner <script-tile-corner>`, :ref:`script-terrain`) : void
+    Sets the terrain used at the given corner.
+
+.. _script-tilecollisioneditor:
+
+TileCollisionEditor
+^^^^^^^^^^^^^^^^^^^
+
+Properties
+~~~~~~~~~~
+
+.. csv-table::
+    :widths: 1, 2
+
+    **selectedObjects** : [:ref:`script-mapobject`], Selected objects.
+    **view** : [:ref:`script-mapview`], The map view used by the Collision Editor.
+
+Functions
+~~~~~~~~~
+
+TileCollisionEditor.focusObject(object : :ref:`script-mapobject`) : void
+    Focuses the given object in the collision editor view and makes sure its
+    visible in its objects list. Does not automatically select the object.
+
+.. _script-tilelayer:
+
+TileLayer
+^^^^^^^^^
+
+Inherits :ref:`script-layer`.
+
+Note that while tile layers have a size, the size is generally ignored on
+infinite maps. Even for fixed size maps, nothing in the scripting API stops you
+from changing the layer outside of its boundaries and changing the size of the
+layer has no effect on its contents. If you want to change the size while
+affecting the contents, use the ``resize`` function.
+
+Properties
+~~~~~~~~~~
+
+.. csv-table::
+    :widths: 1, 2
+
+    **width** : int, Width of the layer in tiles (only relevant for non-infinite maps).
+    **height** : int, Height of the layer in tiles (only relevant for non-infinite maps).
+    **size** : :ref:`script-size`, Size of the layer in tiles (has ``width`` and ``height`` members) (only relevant for non-infinite maps).
+
+Functions
+~~~~~~~~~
+
+new TileLayer([name : string])
+    Constructs a new tile layer, which can be added to a :ref:`script-map`.
+
+TileLayer.region() : region
+    Returns the region of the layer that is covered with tiles.
+
+TileLayer.resize(size : :ref:`script-size`, offset : :ref:`script-point`) : void
+    Resizes the layer, erasing the part of the contents that falls outside of
+    the layer's new size. The offset parameter can be used to shift the contents
+    by a certain distance in tiles before applying the resize.
+
+TileLayer.cellAt(x : int, y : int) : :ref:`script-cell`
+    Returns the value of the cell at the given position. Can be used to query
+    the flags and the tile ID, but does not currently allow getting a tile
+    reference.
+
+TileLayer.flagsAt(x : int, y : int) : int
+    Returns the :ref:`flags <script-tile-flags>` used for the tile at the given
+    position.
+
+TileLayer.tileAt(x : int, y : int) : :ref:`script-tile`
+    Returns the tile used at the given position, or ``null`` for empty spaces.
+
+.. _script-tilelayer-edit:
+
+TileLayer.edit() : :ref:`script-tilelayeredit`
+    Returns an object that enables making modifications to the tile layer.
+
+.. _script-tilelayeredit:
+
+TileLayerEdit
+^^^^^^^^^^^^^
+
+This object enables modifying the tiles on a tile layer. Tile layers can't be
+modified directly for reasons of efficiency. The :ref:`apply() <script-tilelayeredit-apply>`
+function needs to be called when you're done making changes.
+
+An instance of this object is created by calling :ref:`TileLayer.edit() <script-tilelayer-edit>`.
+
+Properties
+~~~~~~~~~~
+
+.. csv-table::
+    :widths: 1, 2
+
+    **target** : :ref:`script-tilelayer` |ro|, The target layer of this edit object.
+    **mergeable** : bool, "Whether applied edits are mergeable with previous edits. Starts out as ``false`` and is automatically set to ``true`` by :ref:`apply() <script-tilelayeredit-apply>`."
+
+Functions
+~~~~~~~~~
+
+TileLayerEdit.setTile(x : int, y : int, tile : :ref:`script-tile` [, flags : int = 0]) : void
+    Sets the tile at the given location, optionally specifying :ref:`tile flags <script-tile-flags>`.
+
+.. _script-tilelayeredit-apply:
+
+TileLayerEdit.apply() : void
+    Applies all changes made through this object. This object can be reused to
+    make further changes.
 
 .. _script-map:
 
@@ -752,243 +1314,6 @@ TileMap.resize(size : :ref:`script-size` [, offset : :ref:`script-point` [, remo
 
     See also :ref:`setSize <script-map-setSize>`.
 
-.. _script-layer:
-
-Layer
-^^^^^
-
-Inherits :ref:`script-object`.
-
-Properties
-~~~~~~~~~~
-
-.. csv-table::
-    :widths: 1, 2
-
-    **name** : string, Name of the layer.
-    **opacity** : number, "Opacity of the layer, from 0 (fully transparent) to 1 (fully opaque)."
-    **visible** : bool, Whether the layer is visible (affects child layer visibility for group layers).
-    **locked** : bool, Whether the layer is locked (affects whether child layers are locked for group layers).
-    **offset** : :ref:`script-point`, Offset in pixels that is applied when this layer is rendered.
-    **map** : :ref:`script-map`, Map that this layer is part of (or ``null`` in case of a standalone layer).
-    **selected** : bool, Whether the layer is selected.
-    **isTileLayer** : bool |ro|, Whether this layer is a :ref:`script-tilelayer`.
-    **isObjectGroup** : bool |ro|, Whether this layer is an :ref:`script-objectgroup`.
-    **isGroupLayer** : bool |ro|, Whether this layer is a :ref:`script-grouplayer`.
-    **isImageLayer** : bool |ro|, Whether this layer is an :ref:`script-imagelayer`.
-
-.. _script-tilelayer:
-
-TileLayer
-^^^^^^^^^
-
-Inherits :ref:`script-layer`.
-
-Note that while tile layers have a size, the size is generally ignored on
-infinite maps. Even for fixed size maps, nothing in the scripting API stops you
-from changing the layer outside of its boundaries and changing the size of the
-layer has no effect on its contents. If you want to change the size while
-affecting the contents, use the ``resize`` function.
-
-Properties
-~~~~~~~~~~
-
-.. csv-table::
-    :widths: 1, 2
-
-    **width** : int, Width of the layer in tiles (only relevant for non-infinite maps).
-    **height** : int, Height of the layer in tiles (only relevant for non-infinite maps).
-    **size** : :ref:`script-size`, Size of the layer in tiles (has ``width`` and ``height`` members) (only relevant for non-infinite maps).
-
-Functions
-~~~~~~~~~
-
-new TileLayer([name : string])
-    Constructs a new tile layer, which can be added to a :ref:`script-map`.
-
-TileLayer.region() : region
-    Returns the region of the layer that is covered with tiles.
-
-TileLayer.resize(size : :ref:`script-size`, offset : :ref:`script-point`) : void
-    Resizes the layer, erasing the part of the contents that falls outside of
-    the layer's new size. The offset parameter can be used to shift the contents
-    by a certain distance in tiles before applying the resize.
-
-TileLayer.cellAt(x : int, y : int) : :ref:`script-cell`
-    Returns the value of the cell at the given position. Can be used to query
-    the flags and the tile ID, but does not currently allow getting a tile
-    reference.
-
-TileLayer.flagsAt(x : int, y : int) : int
-    Returns the :ref:`flags <script-tile-flags>` used for the tile at the given
-    position.
-
-TileLayer.tileAt(x : int, y : int) : :ref:`script-tile`
-    Returns the tile used at the given position, or ``null`` for empty spaces.
-
-.. _script-tilelayer-edit:
-
-TileLayer.edit() : :ref:`script-tilelayeredit`
-    Returns an object that enables making modifications to the tile layer.
-
-.. _script-objectgroup:
-
-ObjectGroup
-^^^^^^^^^^^
-
-Inherits :ref:`script-layer`.
-
-The "ObjectGroup" is a type of layer that can contain objects. It will
-henceforth be referred to as a layer.
-
-Properties
-~~~~~~~~~~
-
-.. csv-table::
-    :widths: 1, 2
-
-    **objects** : [:ref:`script-mapobject`] |ro|, Array of all objects on this layer.
-    **objectCount** : int |ro|, Number of objects on this layer.
-    **color** : color, Color of shape and point objects on this layer (when not set by object type).
-
-Functions
-~~~~~~~~~
-
-new ObjectGroup([name : string])
-    Constructs a new object layer, which can be added to a :ref:`script-map`.
-
-ObjectGroup.objectAt(index : int) : :ref:`script-mapobject`
-    Returns a reference to the object at the given index. When the object is
-    removed, the reference turns into a standalone copy of the object.
-
-ObjectGroup.removeObjectAt(index : int) : void
-    Removes the object at the given index.
-
-ObjectGroup.removeObject(object : :ref:`script-mapobject`) : void
-    Removes the given object from this layer. The object reference turns into
-    a standalone copy of the object.
-
-ObjectGroup.insertObjectAt(index : int, object : :ref:`script-mapobject`) : void
-    Inserts the object at the given index. The object can't already be part
-    of a layer.
-
-ObjectGroup.addObject(object : :ref:`script-mapobject`) : void
-    Adds the given object to the layer. The object can't already be part of
-    a layer.
-
-.. _script-grouplayer:
-
-GroupLayer
-^^^^^^^^^^
-
-Inherits :ref:`script-layer`.
-
-Properties
-~~~~~~~~~~
-
-.. csv-table::
-    :widths: 1, 2
-
-    **layerCount** : int |ro|, Number of child layers the group layer has.
-
-Functions
-~~~~~~~~~
-
-new GroupLayer([name : string])
-    Constructs a new group layer.
-
-GroupLayer.layerAt(index : int) : :ref:`script-layer`
-    Returns a reference to the child layer at the given index.
-
-GroupLayer.removeLayerAt(index : int) : void
-    Removes the child layer at the given index. When a reference to the layer
-    still exists and this group layer isn't already standalone, that reference
-    becomes a standalone copy of the layer.
-
-GroupLayer.removeLayer(layer : :ref:`script-layer`) : void
-    Removes the given layer from the group. If this group wasn't standalone,
-    the reference to the layer becomes a standalone copy.
-
-GroupLayer.insertLayerAt(index : int, layer : :ref:`script-layer`) : void
-    Inserts the layer at the given index. The layer can't already be part of
-    a map.
-
-GroupLayer.addLayer(layer : :ref:`script-layer`) : void
-    Adds the layer to the group, above all existing layers. The layer can't
-    already be part of a map.
-
-.. _script-imagelayer:
-
-ImageLayer
-^^^^^^^^^^
-
-Inherits :ref:`script-layer`.
-
-Properties
-~~~~~~~~~~
-
-.. csv-table::
-    :widths: 1, 2
-
-    **transparentColor** : color, Color used as transparent color when rendering the image.
-    **imageSource** : url, Reference to the image rendered by this layer.
-
-.. _script-mapobject:
-
-MapObject
-^^^^^^^^^
-
-Inherits :ref:`script-object`.
-
-Properties
-~~~~~~~~~~
-
-.. csv-table::
-    :widths: 1, 2
-
-    **id** : int |ro|, Unique (map-wide) ID of the object.
-    **shape** : int, :ref:`Shape <script-mapobject-shape>` of the object.
-    **name** : string, Name of the object.
-    **type** : string, Type of the object.
-    **x** : number, X coordinate of the object in pixels.
-    **y** : number, Y coordinate of the object in pixels.
-    **pos** : :ref:`script-point`, Position of the object in pixels.
-    **width** : number, Width of the object in pixels.
-    **height** : number, Height of the object in pixels.
-    **size** : size, Size of the object in pixels (has ``width`` and ``height`` members).
-    **rotation** : number, Rotation of the object in degrees clockwise.
-    **visible** : bool, Whether the object is visible.
-    **polygon** : :ref:`Polygon <script-polygon>`, Polygon of the object.
-    **text** : string, The text of a text object.
-    **font** : :ref:`script-font`, The font of a text object.
-    **textAlignment** : :ref:`script-alignment`, The alignment of a text object.
-    **wordWrap** : bool, Whether the text of a text object wraps based on the width of the object.
-    **textColor** : color, Color of a text object.
-    **tile** : :ref:`script-tile`, Tile of the object.
-    **tileFlippedHorizontally** : bool, Whether the tile is flipped horizontally.
-    **tileFlippedVertically** : bool, Whether the tile is flipped vertically.
-    **selected** : bool, Whether the object is selected.
-    **layer** : :ref:`script-objectgroup` |ro|, Layer this object is part of (or ``null`` in case of a standalone object).
-    **map** : :ref:`script-map` |ro|, Map this object is part of (or ``null`` in case of a standalone object).
-
-.. _script-mapobject-shape:
-
-.. csv-table::
-    :header: "MapObject.Shape"
-
-    MapObject.Rectangle
-    MapObject.Polygon
-    MapObject.Polyline
-    MapObject.Ellipse
-    MapObject.Text
-    MapObject.Point
-
-Functions
-~~~~~~~~~
-
-new MapObject([name : string])
-    Constructs a new map object, which can be added to an :ref:`script-objectgroup`.
-
 .. _script-tileset:
 
 Tileset
@@ -1068,245 +1393,10 @@ Tileset.addTile() : :ref:`script-tile`
 Tileset.removeTiles(tiles : [:ref:`script-tile`]) : void
     Removes the given tiles from this tileset. Only works for image collection tilesets.
 
-.. _script-tile:
-
-Tile
-^^^^
-
-Inherits :ref:`script-object`.
-
-Properties
-~~~~~~~~~~
-
-.. csv-table::
-    :widths: 1, 2
-
-    **id** : int |ro|, ID of this tile within its tileset.
-    **width** : int |ro|, Width of the tile in pixels.
-    **height** : int |ro|, Height of the tile in pixels.
-    **size** : size |ro|, Size of the tile in pixels (has ``width`` and ``height`` members).
-    **type** : string, Type of the tile.
-    **imageFileName** : string, File name of the tile image (when the tile is part of an image collection tileset).
-    **terrain** : :ref:`script-tileterrains`, An object specifying the terrain at each corner of the tile.
-    **probability** : number, Probability that the tile gets chosen relative to other tiles.
-    **objectGroup** : :ref:`script-objectgroup`, The :ref:`script-objectgroup` associated with the tile in case collision shapes were defined. Returns ``null`` if no collision shapes were defined for this tile.
-    **frames** : :ref:`[frame] <script-frames>`, This tile's animation as an array of frames.
-    **animated** : bool |ro|, Indicates whether this tile is animated.
-    **tileset** : :ref:`script-tileset` |ro|, The tileset of the tile.
-
-.. _script-tile-flags:
-
-.. csv-table::
-    :header: "Tile.Flags"
-
-    Tile.FlippedHorizontally
-    Tile.FlippedVertically
-    Tile.FlippedAntiDiagonally
-    Tile.RotatedHexagonal120
-
-.. _script-tile-corner:
-
-.. csv-table::
-    :header: "Tile.Corner"
-
-    Tile.TopLeft
-    Tile.TopRight
-    Tile.BottomLeft
-    Tile.BottomRight
-
-Functions
-~~~~~~~~~
-
-Tile.terrainAtCorner(corner : :ref:`Corner <script-tile-corner>`) : :ref:`script-terrain`
-    Returns the terrain used at the given corner.
-
-Tile.setTerrainAtCorner(corner : :ref:`Corner <script-tile-corner>`, :ref:`script-terrain`) : void
-    Sets the terrain used at the given corner.
-
-.. _script-terrain:
-
-Terrain
-^^^^^^^
-
-Inherits :ref:`script-object`.
-
-Properties
-~~~~~~~~~~
-
-.. csv-table::
-    :widths: 1, 2
-
-    **id** : int |ro|, ID of this terrain.
-    **name** : string, Name of the terrain.
-    **imageTile** : :ref:`script-tile`, The tile representing the terrain (needs to be from the same tileset).
-    **tileset** : :ref:`script-tileset` |ro|, The tileset of the terrain.
-
-.. _script-tilelayeredit:
-
-TileLayerEdit
-^^^^^^^^^^^^^
-
-This object enables modifying the tiles on a tile layer. Tile layers can't be
-modified directly for reasons of efficiency. The :ref:`apply() <script-tilelayeredit-apply>`
-function needs to be called when you're done making changes.
-
-An instance of this object is created by calling :ref:`TileLayer.edit() <script-tilelayer-edit>`.
-
-Properties
-~~~~~~~~~~
-
-.. csv-table::
-    :widths: 1, 2
-
-    **target** : :ref:`script-tilelayer` |ro|, The target layer of this edit object.
-    **mergeable** : bool, "Whether applied edits are mergeable with previous edits. Starts out as ``false`` and is automatically set to ``true`` by :ref:`apply() <script-tilelayeredit-apply>`."
-
-Functions
-~~~~~~~~~
-
-TileLayerEdit.setTile(x : int, y : int, tile : :ref:`script-tile` [, flags : int = 0]) : void
-    Sets the tile at the given location, optionally specifying :ref:`tile flags <script-tile-flags>`.
-
-.. _script-tilelayeredit-apply:
-
-TileLayerEdit.apply() : void
-    Applies all changes made through this object. This object can be reused to
-    make further changes.
-
-.. _script-selectedarea:
-
-SelectedArea
-^^^^^^^^^^^^
-
-Properties
-~~~~~~~~~~
-
-.. csv-table::
-    :widths: 1, 2
-
-    **boundingRect** : :ref:`script-rect` |ro|, Bounding rectangle of the selected area.
-
-Functions
-~~~~~~~~~
-
-SelectedArea.get() : :ref:`script-region`
-    Returns the selected region.
-
-SelectedArea.set(rect : :ref:`script-rect`) : void
-    Sets the selected area to the given rectangle.
-
-SelectedArea.set(region : :ref:`script-region`) : void
-    Sets the selected area to the given region.
-
-SelectedArea.add(rect : :ref:`script-rect`) : void
-    Adds the given rectangle to the selected area.
-
-SelectedArea.add(region : :ref:`script-region`) : void
-    Adds the given region to the selected area.
-
-SelectedArea.subtract(rect : :ref:`script-rect`) : void
-    Subtracts the given rectangle from the selected area.
-
-SelectedArea.subtract(region : :ref:`script-region`) : void
-    Subtracts the given region from the selected area.
-
-SelectedArea.intersect(rect : :ref:`script-rect`) : void
-    Sets the selected area to the intersection of the current selected area and the given rectangle.
-
-SelectedArea.intersect(region : :ref:`script-region`) : void
-    Sets the selected area to the intersection of the current selected area and the given region.
-
-
-.. |ro| replace:: *[read‑only]*
-
-.. _script-action:
-
-Action
-^^^^^^
-
-An action that was registered with :ref:`tiled.registerAction() <script-registerAction>`.
-This class is used to change the properties of the action. It can be added to a menu using
-:ref:`tiled.extendMenu() <script-extendMenu>`.
-
-Properties
-~~~~~~~~~~
-
-.. csv-table::
-    :widths: 1, 2
-
-    **checkable** : bool, Whether the action can be checked.
-    **checked** : bool, Whether the action is checked.
-    **enabled** : bool, Whether the action is enabled.
-    **icon** : string, File name of an icon.
-    **iconVisibleInMenu** : bool, Whether the action should show an icon in a menu.
-    **id** : string |ro|, The ID this action was registered with.
-    **shortcut** : QKeySequence, The shortcut (can be assigned a string like "Ctrl+K").
-    **text** : string, The text used when the action is part of a menu.
-    **visible** : bool, Whether the action is visible.
-
-Functions
-~~~~~~~~~
-
-Action.trigger() : void
-    Triggers the action.
-
-Action.toggle() : void
-    Changes the checked state to its opposite state.
-
-
-.. _script-mapeditor:
-
-Map Editor
-^^^^^^^^^^
-
-Properties
-~~~~~~~~~~
-
-.. csv-table::
-    :widths: 1, 2
-
-    **currentBrush** : :ref:`script-map`, "Get or set the currently used tile brush."
-    **currentMapView** : :ref:`script-mapview` |ro|, "Access the current map view."
-    **tilesetsView** : :ref:`script-tilesetsview` |ro|, "Access the Tilesets view."
-
-.. _script-mapview:
-
-Map View
-^^^^^^^^
-
-The view displaying the map.
-
-Properties
-~~~~~~~~~~
-
-.. csv-table::
-    :widths: 1, 2
-
-    **scale** : number, "Get or set the scale of the view."
-
-Functions
-~~~~~~~~~
-
-MapView.centerOn(x : number, y : number) : void
-    Centers the view at the given location in screen coordinates.
-
-.. _script-tilesetsview:
-
-Tilesets View
-^^^^^^^^^^^^^
-
-Properties
-~~~~~~~~~~
-
-.. csv-table::
-    :widths: 1, 2
-
-    **currentTileset** : :ref:`script-tileset`, "Access or change the currently displayed tileset."
-
 .. _script-tileseteditor:
 
-Tileset Editor
-^^^^^^^^^^^^^^
+TilesetEditor
+^^^^^^^^^^^^^
 
 Properties
 ~~~~~~~~~~
@@ -1316,10 +1406,31 @@ Properties
 
     **collisionEditor** : :ref:`script-tilecollisioneditor`, "Access the collision editor within the tileset editor."
 
-.. _script-tilecollisioneditor:
+.. _script-tilesetformatwrapper:
 
-Tile Collision Editor
-^^^^^^^^^^^^^^^^^^^^^
+TilesetFormat
+^^^^^^^^^^^^^
+
+This is an object that can read or write tileset files. (Since 1.4)
+
+Inherits :ref:`script-fileformat`.
+
+Functions
+~~~~~~~~~
+
+TilesetFormat.read(fileName : string) : :ref:`script-tileset`
+    Read the given file as a tileset. This function will throw an error if it
+    is not supported.
+
+TilesetFormat.write(tileset : :ref:`script-tileset`, fileName : string) : string
+    Write the given tileset to a file. This function will throw an error if it
+    is not supported. If there is an error writing the file, it will return a
+    description of the error; otherwise, it will return "".
+
+.. _script-tilesetsview:
+
+TilesetsView
+^^^^^^^^^^^^
 
 Properties
 ~~~~~~~~~~
@@ -1327,15 +1438,7 @@ Properties
 .. csv-table::
     :widths: 1, 2
 
-    **selectedObjects** : [:ref:`script-mapobject`], Selected objects.
-    **view** : [:ref:`script-mapview`], The map view used by the Collision Editor.
-
-Functions
-~~~~~~~~~
-
-TileCollisionEditor.focusObject(object : :ref:`script-mapobject`) : void
-    Focuses the given object in the collision editor view and makes sure its
-    visible in its objects list. Does not automatically select the object.
+    **currentTileset** : :ref:`script-tileset`, "Access or change the currently displayed tileset."
 
 .. _script-basic-types:
 
@@ -1364,22 +1467,6 @@ Alignment
     Qt.AlignVCenter, 0x0080
     Qt.AlignCenter, Qt.AlignVCenter | Qt.AlignHCenter
 
-.. _script-font:
-
-Font
-~~~~
-
-.. csv-table::
-    :widths: 1, 2
-
-    **family** : string, The font family.
-    **pixelSize** : int, Font size in pixels.
-    **bold** : bool, Whether the font is bold.
-    **italic** : bool, Whether the font is italic.
-    **underline** : bool, Whether the text is underlined.
-    **strikeOut** : bool, Whether the text is striked through.
-    **kerning** : bool, Whether to use kerning when rendering the text.
-
 .. _script-cell:
 
 cell
@@ -1399,6 +1486,35 @@ A cell on a :ref:`script-tilelayer`.
     **flippedAntiDiagonally** : bool, Whether the tile is flipped anti-diagonally.
     **rotatedHexagonal120** : bool, "Whether the tile is rotated by 120 degrees (for hexagonal maps, the anti-diagonal flip is interpreted as a 60-degree rotation)."
 
+.. _script-filepath:
+
+FilePath
+~~~~~~~~
+
+Used as the value for custom 'file' properties. Can be created with
+:ref:`tiled.filePath <script-tiled-filePath>`.
+
+.. csv-table::
+    :widths: 1, 3
+
+    **url** : url, The URL of the file.
+
+.. _script-font:
+
+Font
+~~~~
+
+.. csv-table::
+    :widths: 1, 2
+
+    **family** : string, The font family.
+    **pixelSize** : int, Font size in pixels.
+    **bold** : bool, Whether the font is bold.
+    **italic** : bool, Whether the font is italic.
+    **underline** : bool, Whether the text is underlined.
+    **strikeOut** : bool, Whether the text is striked through.
+    **kerning** : bool, Whether to use kerning when rendering the text.
+
 .. _script-frames:
 
 Frames
@@ -1411,6 +1527,47 @@ An array of frames, which are objects with the following properties:
 
     **tileId** : int, The local tile ID used to represent the frame.
     **duration** : int, Duration of the frame in milliseconds.
+
+.. _script-objectref:
+
+ObjectRef
+~~~~~~~~~
+
+The value of a property of type 'object', which refers to a
+:ref:`script-mapobject` by its ID. Generally only used as a fallback when an
+object property cannot be resolved to an actual object. Can be created with
+:ref:`tiled.objectRef <script-tiled-objectRef>`.
+
+.. csv-table::
+    :widths: 1, 3
+
+    **id** : int, The ID of the referenced object.
+
+.. _script-point:
+
+point
+~~~~~
+
+``Qt.point(x, y)`` can be used to create a point object.
+
+**Properties**
+
+.. csv-table::
+    :widths: 1, 2
+
+    **x** : number, X coordinate of the point.
+    **y** : number, Y coordinate of the point.
+
+.. _script-polygon:
+
+Polygon
+~~~~~~~
+
+A polygon is not strictly a custom type. It is an array of objects that each
+have an ``x`` and ``y`` property, representing the points of the polygon.
+
+To modify the polygon of a :ref:`script-mapobject`, change or set up the
+polygon array and then assign it to the object.
 
 .. _script-rect:
 
@@ -1441,22 +1598,6 @@ region
 
     **boundingRect** : :ref:`script-rect` |ro|, Bounding rectangle of the region.
 
-
-.. _script-point:
-
-point
-~~~~~
-
-``Qt.point(x, y)`` can be used to create a point object.
-
-**Properties**
-
-.. csv-table::
-    :widths: 1, 2
-
-    **x** : number, X coordinate of the point.
-    **y** : number, Y coordinate of the point.
-
 .. _script-size:
 
 size
@@ -1471,17 +1612,6 @@ size
 
     **width** : number, Width.
     **height** : number, Height.
-
-.. _script-polygon:
-
-Polygon
-~~~~~~~
-
-A polygon is not strictly a custom type. It is an array of objects that each
-have an ``x`` and ``y`` property, representing the points of the polygon.
-
-To modify the polygon of a :ref:`script-mapobject`, change or set up the
-polygon array and then assign it to the object.
 
 .. _script-tileterrains:
 
@@ -1586,14 +1716,17 @@ done writing otherwise the operation will be aborted without effect.
 
 **Functions**
 
-BinaryFile.resize(qint64 size) : void
+new BinaryFile(filePath : string [, mode : OpenMode = ReadOnly])
+    Opens a binary file in the given mode.
+
+BinaryFile.resize(size : int) : void
     Sets the file size (in bytes). If size is larger than the file currently is,
     the new bytes will be set to 0; if size is smaller, the file is truncated.
 
-BinaryFile.seek(qint64 pos) : void
+BinaryFile.seek(pos : int) : void
     Sets the current position to *pos*.
 
-BinaryFile.read(qint64 size) : ArrayBuffer
+BinaryFile.read(size : int) : ArrayBuffer
     Reads at most *size* bytes of data from the file and returns it as an
     ArrayBuffer.
 

@@ -112,6 +112,13 @@ void ConsoleDock::appendScript(const QString &str)
                                QLatin1String("</pre>"));
 }
 
+void ConsoleDock::appendScriptResult(const QString &tempName, const QString &result)
+{
+    mPlainTextEdit->appendHtml(QLatin1String("<pre><span style='color:gray'>") + tempName.toHtmlEscaped() +
+                               QLatin1String("&nbsp;=&nbsp;</span>") + result.toHtmlEscaped() +
+                               QLatin1String("</pre>"));
+}
+
 void ConsoleDock::executeScript()
 {
     const QString script = mLineEdit->text();
@@ -121,8 +128,10 @@ void ConsoleDock::executeScript()
     appendScript(script);
 
     const QJSValue result = ScriptManager::instance().evaluate(script);
-    if (!result.isError() && !result.isUndefined())
-        appendInfo(result.toString());
+    if (!result.isError() && !result.isUndefined()) {
+        auto name = ScriptManager::instance().createTempValue(result);
+        appendScriptResult(name, result.toString());
+    }
 
     mLineEdit->clear();
 

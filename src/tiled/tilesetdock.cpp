@@ -34,6 +34,7 @@
 #include "objectgroup.h"
 #include "preferences.h"
 #include "replacetileset.h"
+#include "scriptmanager.h"
 #include "swaptiles.h"
 #include "terrain.h"
 #include "tile.h"
@@ -880,6 +881,10 @@ SharedTileset TilesetDock::currentTileset() const
 
 void TilesetDock::setCurrentEditableTileset(EditableTileset *tileset)
 {
+    if (!tileset) {
+        ScriptManager::instance().throwNullArgError(0);
+        return;
+    }
     setCurrentTileset(tileset->tileset()->sharedPointer());
 }
 

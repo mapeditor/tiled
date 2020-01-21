@@ -102,6 +102,7 @@ D
 Go
 ~~
 
+-  `github.com/lafriks/go-tiled <https://github.com/lafriks/go-tiled>`__
 -  `github.com/salviati/go-tmx/tmx <https://github.com/salviati/go-tmx>`__
 
 Haskell

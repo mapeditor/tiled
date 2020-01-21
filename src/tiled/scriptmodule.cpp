@@ -31,6 +31,7 @@
 #include "scriptedaction.h"
 #include "scriptedfileformat.h"
 #include "scriptedtool.h"
+#include "scriptfileformatwrappers.h"
 #include "scriptmanager.h"
 #include "tilesetdocument.h"
 #include "tileseteditor.h"
@@ -40,6 +41,7 @@
 #include <QInputDialog>
 #include <QMenu>
 #include <QMessageBox>
+#include <QQmlEngine>
 
 namespace Tiled {
 
@@ -113,6 +115,28 @@ QStringList ScriptModule::menus() const
     return idsToNames(ActionManager::menus());
 }
 
+QStringList ScriptModule::mapFormats() const
+{
+    const auto formats = PluginManager::objects<MapFormat>();
+    QStringList ret;
+    ret.reserve(formats.length());
+    for (auto format : formats)
+        ret.append(format->shortName());
+
+    return ret;
+}
+
+QStringList ScriptModule::tilesetFormats() const
+{
+    const auto formats = PluginManager::objects<TilesetFormat>();
+    QStringList ret;
+    ret.reserve(formats.length());
+    for (auto format : formats)
+        ret.append(format->shortName());
+
+    return ret;
+}
+
 EditableAsset *ScriptModule::activeAsset() const
 {
     auto documentManager = DocumentManager::instance();
@@ -124,6 +148,10 @@ EditableAsset *ScriptModule::activeAsset() const
 
 bool ScriptModule::setActiveAsset(EditableAsset *asset) const
 {
+    if (!asset) {
+        ScriptManager::instance().throwNullArgError(0);
+        return false;
+    }
     auto documentManager = DocumentManager::instance();
     for (const DocumentPtr &document : documentManager->documents())
         if (document->editable() == asset)
@@ -151,6 +179,16 @@ MapEditor *ScriptModule::mapEditor() const
     return static_cast<MapEditor*>(DocumentManager::instance()->editor(Document::MapDocumentType));
 }
 
+FilePath ScriptModule::filePath(const QUrl &path) const
+{
+    return { path };
+}
+
+ObjectRef ScriptModule::objectRef(int id) const
+{
+    return { id };
+}
+
 EditableAsset *ScriptModule::open(const QString &fileName) const
 {
     auto documentManager = DocumentManager::instance();
@@ -167,6 +205,10 @@ EditableAsset *ScriptModule::open(const QString &fileName) const
 
 bool ScriptModule::close(EditableAsset *asset) const
 {
+    if (!asset) {
+        ScriptManager::instance().throwNullArgError(0);
+        return false;
+    }
     auto documentManager = DocumentManager::instance();
 
     int index = documentManager->findDocument(asset->document());
@@ -181,6 +223,10 @@ bool ScriptModule::close(EditableAsset *asset) const
 
 EditableAsset *ScriptModule::reload(EditableAsset *asset) const
 {
+    if (!asset) {
+        ScriptManager::instance().throwNullArgError(0);
+        return nullptr;
+    }
     auto documentManager = DocumentManager::instance();
 
     int index = documentManager->findDocument(asset->document());
@@ -281,6 +327,51 @@ QJSValue ScriptModule::registerTool(const QString &shortName, QJSValue toolObjec
     tool = std::make_unique<ScriptedTool>(id, toolObject, this);
     return toolObject;
 }
+
+ScriptMapFormatWrapper *ScriptModule::mapFormat(const QString &shortName) const
+{
+    const auto formats = PluginManager::objects<MapFormat>();
+    for (auto format : formats) {
+        if (format->shortName() == shortName)
+            return new ScriptMapFormatWrapper(format);
+    }
+
+    return nullptr;
+}
+
+ScriptMapFormatWrapper *ScriptModule::mapFormatForFile(const QString &fileName) const
+{
+    const auto formats = PluginManager::objects<MapFormat>();
+    for (auto format : formats) {
+        if (format->supportsFile(fileName))
+            return new ScriptMapFormatWrapper(format);
+    }
+
+    return nullptr;
+}
+
+ScriptTilesetFormatWrapper *ScriptModule::tilesetFormat(const QString &shortName) const
+{
+    const auto formats = PluginManager::objects<TilesetFormat>();
+    for (auto format : formats) {
+        if (format->shortName() == shortName)
+            return new ScriptTilesetFormatWrapper(format);
+    }
+
+    return nullptr;
+}
+
+ScriptTilesetFormatWrapper *ScriptModule::tilesetFormatForFile(const QString &fileName) const
+{
+    const auto formats = PluginManager::objects<TilesetFormat>();
+    for (auto format : formats) {
+        if (format->supportsFile(fileName))
+            return new ScriptTilesetFormatWrapper(format);
+    }
+
+    return nullptr;
+}
+
 
 static QString toString(QJSValue value)
 {

@@ -767,6 +767,10 @@ static void readLayerAttributes(Layer &layer,
     if (ok)
         layer.setOpacity(opacity);
 
+    const QStringRef tintColor = atts.value(QLatin1String("tintcolor"));
+    if (!tintColor.isEmpty())
+        layer.setTintColor(QColor(tintColor.toString()));
+
     const int visible = visibleRef.toInt(&ok);
     if (ok)
         layer.setVisible(visible);
@@ -1061,21 +1065,7 @@ void MapReaderPrivate::readImageLayerImage(ImageLayer &imageLayer)
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("image"));
 
-    const QXmlStreamAttributes atts = xml.attributes();
-    QString source = atts.value(QLatin1String("source")).toString();
-    QString trans = atts.value(QLatin1String("trans")).toString();
-
-    if (!trans.isEmpty()) {
-        if (!trans.startsWith(QLatin1Char('#')))
-            trans.prepend(QLatin1Char('#'));
-        imageLayer.setTransparentColor(QColor(trans));
-    }
-
-    QUrl sourceUrl = toUrl(source, mPath);
-
-    imageLayer.loadFromImage(sourceUrl);
-
-    xml.skipCurrentElement();
+    imageLayer.loadFromImage(readImage());
 }
 
 std::unique_ptr<MapObject> MapReaderPrivate::readObject()

@@ -40,6 +40,8 @@ class MapEditor;
 class ScriptedAction;
 class ScriptedMapFormat;
 class ScriptedTilesetFormat;
+class ScriptMapFormatWrapper;
+class ScriptTilesetFormatWrapper;
 class ScriptedTool;
 class TilesetEditor;
 
@@ -56,6 +58,8 @@ class ScriptModule : public QObject
 
     Q_PROPERTY(QStringList actions READ actions)
     Q_PROPERTY(QStringList menus READ menus)
+    Q_PROPERTY(QStringList mapFormats READ mapFormats)
+    Q_PROPERTY(QStringList tilesetFormats READ tilesetFormats)
 
     Q_PROPERTY(Tiled::EditableAsset *activeAsset READ activeAsset WRITE setActiveAsset NOTIFY activeAssetChanged)
     Q_PROPERTY(QList<QObject*> openAssets READ openAssets)
@@ -84,6 +88,8 @@ public:
 
     QStringList actions() const;
     QStringList menus() const;
+    QStringList mapFormats() const;
+    QStringList tilesetFormats() const;
 
     EditableAsset *activeAsset() const;
     bool setActiveAsset(EditableAsset *asset) const;
@@ -93,6 +99,9 @@ public:
     TilesetEditor *tilesetEditor() const;
     MapEditor *mapEditor() const;
 
+    Q_INVOKABLE Tiled::FilePath filePath(const QUrl &path) const;
+    Q_INVOKABLE Tiled::ObjectRef objectRef(int id) const;
+
     Q_INVOKABLE Tiled::EditableAsset *open(const QString &fileName) const;
     Q_INVOKABLE bool close(Tiled::EditableAsset *asset) const;
     Q_INVOKABLE Tiled::EditableAsset *reload(Tiled::EditableAsset *asset) const;
@@ -101,6 +110,11 @@ public:
     Q_INVOKABLE void registerMapFormat(const QString &shortName, QJSValue mapFormatObject);
     Q_INVOKABLE void registerTilesetFormat(const QString &shortName, QJSValue tilesetFormatObject);
     Q_INVOKABLE QJSValue registerTool(const QString &shortName, QJSValue toolObject);
+
+    Q_INVOKABLE Tiled::ScriptMapFormatWrapper *mapFormat(const QString &shortName) const;
+    Q_INVOKABLE Tiled::ScriptMapFormatWrapper *mapFormatForFile(const QString &fileName) const;
+    Q_INVOKABLE Tiled::ScriptTilesetFormatWrapper *tilesetFormat(const QString &shortName) const;
+    Q_INVOKABLE Tiled::ScriptTilesetFormatWrapper *tilesetFormatForFile(const QString &fileName) const;
 
     Q_INVOKABLE void extendMenu(const QByteArray &idName, QJSValue items);
 

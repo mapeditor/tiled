@@ -33,6 +33,7 @@
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
+#include "objectgroup.h"
 
 #include <QtMath>
 
@@ -317,7 +318,7 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
     // Determine whether the current row is shifted half a tile to the right
     bool shifted = inUpperHalf ^ inLeftHalf;
 
-    CellRenderer renderer(painter, this);
+    CellRenderer renderer(painter, this, layer->effectiveTintColor());
 
     for (int y = startPos.y() * 2; y - tileHeight * 2 < rect.bottom() * 2;
          y += tileHeight)
@@ -385,7 +386,8 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
         QRectF bounds = { pixelToScreenCoords(object->position()), object->size() };
         bounds.translate(-alignmentOffset(bounds, object->alignment(map())));
 
-        CellRenderer(painter, this).render(cell, bounds.topLeft(), bounds.size());
+        CellRenderer(painter, this, object->objectGroup()->effectiveTintColor())
+                .render(cell, bounds.topLeft(), bounds.size());
 
         if (testFlag(ShowTileObjectOutlines)) {
             if (const Tile *tile = object->cell().tile()) {

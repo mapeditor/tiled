@@ -395,6 +395,7 @@ void PropertiesDock::showContextMenu(const QPoint& pos)
             QVariant::Color,
             QVariant::Double,
             filePathTypeId(),
+            objectRefTypeId(),
             QVariant::Int,
             QVariant::String
         };

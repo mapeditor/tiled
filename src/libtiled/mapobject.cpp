@@ -215,6 +215,11 @@ QRectF MapObject::screenBounds(const MapRenderer &renderer) const
     return QRectF();
 }
 
+Map *MapObject::map() const
+{
+    return mObjectGroup ? mObjectGroup->map() : nullptr;
+}
+
 /*
  * Returns the effective alignment for this object on the given \a map.
  *

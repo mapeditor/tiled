@@ -38,6 +38,7 @@ class TileLayer;
 class Tileset;
 
 class BorderItem;
+class LayerChangeEvent;
 class LayerItem;
 class MapObjectItem;
 class ObjectSelectionItem;
@@ -96,7 +97,8 @@ private:
 
     void layerAdded(Layer *layer);
     void layerRemoved(Layer *layer);
-    void layerChanged(Layer *layer);
+    void layerChanged(const LayerChangeEvent &change);
+    void layerTintColorChanged(Layer *layer);
 
     void imageLayerChanged(ImageLayer *imageLayer);
 

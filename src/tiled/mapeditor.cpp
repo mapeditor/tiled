@@ -56,6 +56,7 @@
 #include "preferences.h"
 #include "propertiesdock.h"
 #include "reversingproxymodel.h"
+#include "scriptmanager.h"
 #include "selectsametiletool.h"
 #include "shapefilltool.h"
 #include "stampbrush.h"
@@ -1013,6 +1014,10 @@ EditableMap *MapEditor::currentBrush() const
 
 void MapEditor::setCurrentBrush(EditableMap *editableMap)
 {
+    if (!editableMap) {
+        ScriptManager::instance().throwNullArgError(0);
+        return;
+    }
     // todo: filter any non-tilelayers out of the map?
     setStamp(TileStamp(editableMap->map()->clone()));
 }

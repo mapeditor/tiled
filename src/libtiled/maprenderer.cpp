@@ -48,6 +48,35 @@
 
 using namespace Tiled;
 
+static QPixmap tinted(const QPixmap &pixmap, const QColor &color)
+{
+    if (!color.isValid() || color == QColor(255, 255, 255, 255))
+        return pixmap;
+
+    QPixmap resultImage = pixmap;
+    QPainter painter(&resultImage);
+
+    QColor fullOpacity = color;
+    fullOpacity.setAlpha(255);
+    // tint the final color (this will will mess up the alpha which we will fix
+    // in the next lines)
+    painter.setCompositionMode(QPainter::CompositionMode_Multiply);
+    painter.fillRect(resultImage.rect(), fullOpacity);
+
+    // apply the original alpha to the final image
+    painter.setCompositionMode(QPainter::CompositionMode_DestinationIn);
+    painter.drawPixmap(0, 0, pixmap);
+
+    // apply the alpha of the tint color so that we can use it to make the image
+    // transparent instead of just increasing or decreasing the tint effect
+    painter.setCompositionMode(QPainter::CompositionMode_DestinationIn);
+    painter.fillRect(resultImage.rect(), color);
+
+    painter.end();
+
+    return resultImage;
+}
+
 MapRenderer::~MapRenderer()
 {}
 
@@ -86,7 +115,7 @@ void MapRenderer::drawImageLayer(QPainter *painter,
 {
     Q_UNUSED(exposed)
 
-    painter->drawPixmap(QPointF(), imageLayer->image());
+    painter->drawPixmap(QPointF(), tinted(imageLayer->image(), imageLayer->effectiveTintColor()));
 }
 
 void MapRenderer::drawPointObject(QPainter *painter, const QColor &color) const
@@ -223,12 +252,13 @@ static bool hasOpenGLEngine(const QPainter *painter)
             type == QPaintEngine::OpenGL2);
 }
 
-CellRenderer::CellRenderer(QPainter *painter, const MapRenderer *renderer, CellType cellType)
+CellRenderer::CellRenderer(QPainter *painter, const MapRenderer *renderer, const QColor &tintColor, CellType cellType)
     : mPainter(painter)
     , mRenderer(renderer)
     , mTile(nullptr)
     , mIsOpenGL(hasOpenGLEngine(painter))
     , mCellType(cellType)
+    , mTintColor(tintColor)
 {
 }
 
@@ -340,7 +370,7 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &si
     const QRectF source(0, 0, fragment.width, fragment.height);
 
     mPainter->setTransform(transform);
-    mPainter->drawPixmap(target, image, source);
+    mPainter->drawPixmap(target, tinted(image, mTintColor), source);
     mPainter->setTransform(oldTransform);
 
     // A bit of a hack to still draw tile collision shapes when requested
@@ -365,7 +395,7 @@ void CellRenderer::flush()
 
     mPainter->drawPixmapFragments(mFragments.constData(),
                                   mFragments.size(),
-                                  mTile->image());
+                                  tinted(mTile->image(), mTintColor));
 
     if (mRenderer->flags().testFlag(ShowTileCollisionShapes)
             && mTile->objectGroup()

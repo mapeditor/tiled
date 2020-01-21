@@ -38,13 +38,6 @@
 
 using namespace Tiled;
 
-static QString colorToString(const QColor &color)
-{
-    if (color.alpha() != 255)
-        return color.name(QColor::HexArgb);
-    return color.name();
-}
-
 QVariant MapToVariantConverter::toVariant(const Map &map, const QDir &mapDir)
 {
     mDir = mapDir;
@@ -752,6 +745,9 @@ void MapToVariantConverter::addLayerAttributes(QVariantMap &layerVariant,
         layerVariant[QLatin1String("offsetx")] = offset.x();
         layerVariant[QLatin1String("offsety")] = offset.y();
     }
+
+    if (layer.tintColor().isValid())
+        layerVariant[QLatin1String("tintcolor")] = colorToString(layer.tintColor());
 
     addProperties(layerVariant, layer.properties());
 }

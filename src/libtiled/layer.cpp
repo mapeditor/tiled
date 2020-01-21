@@ -37,6 +37,14 @@
 
 namespace Tiled {
 
+static QColor multiplyColors(QColor color1, QColor color2)
+{
+    return QColor::fromRgbF(color1.redF() * color2.redF(),
+                            color1.greenF() * color2.greenF(),
+                            color1.blueF() * color2.blueF(),
+                            color1.alphaF() * color2.alphaF());
+}
+
 Layer::Layer(TypeFlag type, const QString &name, int x, int y) :
     Object(LayerType),
     mName(name),
@@ -80,6 +88,23 @@ qreal Layer::effectiveOpacity() const
     while ((layer = layer->parentLayer()))
         opacity *= layer->opacity();
     return opacity;
+}
+
+/**
+ * Returns the effective tint color, which is the tint color multiplied by the
+ * tint color of any parent layers.
+ */
+QColor Layer::effectiveTintColor() const
+{
+    auto tintColor = mTintColor.isValid() ? mTintColor
+                                          : QColor(255, 255, 255, 255);
+
+    const Layer *layer = this;
+    while ((layer = layer->parentLayer()))
+        if (layer->tintColor().isValid())
+            tintColor = multiplyColors(tintColor, layer->tintColor());
+
+    return tintColor;
 }
 
 /**
@@ -194,6 +219,7 @@ Layer *Layer::initializeClone(Layer *clone) const
     clone->mId = mId;
     clone->mOffset = mOffset;
     clone->mOpacity = mOpacity;
+    clone->mTintColor = mTintColor;
     clone->mVisible = mVisible;
     clone->setProperties(properties());
     return clone;

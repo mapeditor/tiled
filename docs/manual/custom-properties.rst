@@ -23,12 +23,13 @@ When you add a property (using the '+' button at the bottom of the
 Properties view), you are prompted for its name and its type. Currently
 Tiled supports the following basic property types:
 
--  **string** (any text, including multi-line text)
+-  **bool** (true or false)
+-  **color** (a 32-bit color value)
+-  **file** (a relative path referencing a file)
 -  **float** (a floating point number)
 -  **int** (a whole number)
--  **bool** (true or false)
--  **file** (a relative path referencing a file)
--  **color** (a 32-bit color value)
+-  **object** (a reference to an object) - *Since Tiled 1.4*
+-  **string** (any text, including multi-line text)
 
 .. figure:: images/properties/add-property.png
    :alt: Add Property Dialog

@@ -184,6 +184,8 @@ public:
     ObjectGroup *objectGroup() const;
     void setObjectGroup(ObjectGroup *objectGroup);
 
+    Map *map() const;
+
     qreal rotation() const;
     void setRotation(qreal rotation);
 

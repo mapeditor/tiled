@@ -491,6 +491,9 @@ std::unique_ptr<Layer> VariantToMapConverter::toLayer(const QVariant &variant)
 
     if (layer) {
         layer->setId(variantMap[QLatin1String("id")].toInt());
+        layer->setOpacity(variantMap[QLatin1String("opacity")].toReal());
+        layer->setVisible(variantMap[QLatin1String("visible")].toBool());
+        layer->setTintColor(variantMap[QLatin1String("tintcolor")].value<QColor>());
         layer->setProperties(extractProperties(variantMap));
 
         const QPointF offset(variantMap[QLatin1String("offsetx")].toDouble(),
@@ -515,12 +518,6 @@ std::unique_ptr<TileLayer> VariantToMapConverter::toTileLayer(const QVariantMap 
                                          variantMap[QLatin1String("x")].toInt(),
                                          variantMap[QLatin1String("y")].toInt(),
                                          width, height));
-
-    const qreal opacity = variantMap[QLatin1String("opacity")].toReal();
-    const bool visible = variantMap[QLatin1String("visible")].toBool();
-
-    tileLayer->setOpacity(opacity);
-    tileLayer->setVisible(visible);
 
     const QString encoding = variantMap[QLatin1String("encoding")].toString();
     const QString compression = variantMap[QLatin1String("compression")].toString();
@@ -575,12 +572,6 @@ std::unique_ptr<ObjectGroup> VariantToMapConverter::toObjectGroup(const QVariant
     ObjectGroupPtr objectGroup(new ObjectGroup(variantMap[QLatin1String("name")].toString(),
                                                variantMap[QLatin1String("x")].toInt(),
                                                variantMap[QLatin1String("y")].toInt()));
-
-    const qreal opacity = variantMap[QLatin1String("opacity")].toReal();
-    const bool visible = variantMap[QLatin1String("visible")].toBool();
-
-    objectGroup->setOpacity(opacity);
-    objectGroup->setVisible(visible);
 
     objectGroup->setColor(variantMap.value(QLatin1String("color")).value<QColor>());
 
@@ -700,12 +691,6 @@ std::unique_ptr<ImageLayer> VariantToMapConverter::toImageLayer(const QVariantMa
                                             variantMap[QLatin1String("x")].toInt(),
                                             variantMap[QLatin1String("y")].toInt()));
 
-    const qreal opacity = variantMap[QLatin1String("opacity")].toReal();
-    const bool visible = variantMap[QLatin1String("visible")].toBool();
-
-    imageLayer->setOpacity(opacity);
-    imageLayer->setVisible(visible);
-
     const QString trans = variantMap[QLatin1String("transparentcolor")].toString();
     if (QColor::isValidColor(trans))
         imageLayer->setTransparentColor(QColor(trans));
@@ -725,13 +710,8 @@ std::unique_ptr<GroupLayer> VariantToMapConverter::toGroupLayer(const QVariantMa
     const QString name = variantMap[QLatin1String("name")].toString();
     const int x = variantMap[QLatin1String("x")].toInt();
     const int y = variantMap[QLatin1String("y")].toInt();
-    const qreal opacity = variantMap[QLatin1String("opacity")].toReal();
-    const bool visible = variantMap[QLatin1String("visible")].toBool();
 
     auto groupLayer = std::make_unique<GroupLayer>(name, x, y);
-
-    groupLayer->setOpacity(opacity);
-    groupLayer->setVisible(visible);
 
     const auto layerVariants = variantMap[QLatin1String("layers")].toList();
     for (const QVariant &layerVariant : layerVariants) {

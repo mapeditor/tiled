@@ -54,8 +54,15 @@ public:
 
     QJSValue evaluateFile(const QString &fileName);
 
+    /**
+     * Create a new global identifier ($0, $1, $2, ...) for the value. Returns
+     * the name of the identifier.
+     */
+    QString createTempValue(const QJSValue &value);
+
     bool checkError(QJSValue value, const QString &program = QString());
     void throwError(const QString &message);
+    void throwNullArgError(int argNumber);
 
     void reset();
 
@@ -72,6 +79,7 @@ private:
     FileSystemWatcher mWatcher;
     QString mExtensionsPath;
     QStringList mExtensionsPaths;
+    int mTempCount;
 
     static std::unique_ptr<ScriptManager> mInstance;
 };

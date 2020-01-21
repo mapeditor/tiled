@@ -30,6 +30,7 @@
 
 #include "tiled_global.h"
 
+#include <QColor>
 #include <QMetaType>
 #include <QRectF>
 #include <QString>
@@ -84,6 +85,22 @@ TILEDSHARED_EXPORT QPointF alignmentOffset(const QRectF &r, Alignment alignment)
 TILEDSHARED_EXPORT QString toFileReference(const QUrl &url, const QDir &dir);
 TILEDSHARED_EXPORT QUrl toUrl(const QString &reference, const QDir &dir);
 TILEDSHARED_EXPORT QString urlToLocalFileOrQrc(const QUrl &url);
+
+inline QString colorToString(const QColor &color)
+{
+    if (color.alpha() != 255)
+        return color.name(QColor::HexArgb);
+    return color.name();
+}
+
+inline QMargins maxMargins(const QMargins &a,
+                           const QMargins &b)
+{
+    return QMargins(qMax(a.left(), b.left()),
+                    qMax(a.top(), b.top()),
+                    qMax(a.right(), b.right()),
+                    qMax(a.bottom(), b.bottom()));
+}
 
 TILEDSHARED_EXPORT QString alignmentToString(Alignment);
 TILEDSHARED_EXPORT Alignment alignmentFromString(const QString &);

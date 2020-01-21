@@ -87,6 +87,7 @@ public:
                          QSize chunkSize);
     void writeMapObject(const Tiled::MapObject *);
 
+    void writeLayerProperties(const Tiled::Layer *);
     void writePolygon(const Tiled::MapObject *);
     void writeTextProperties(const Tiled::MapObject *);
     void writeColor(const char *name, const QColor &color);
@@ -330,7 +331,7 @@ void LuaWriter::writeTileset(const Tileset &tileset,
 
     if (tileset.transparentColor().isValid()) {
         mWriter.writeKeyAndValue("transparentcolor",
-                                tileset.transparentColor().name());
+                                 tileset.transparentColor().name());
     }
 
     const QColor &backgroundColor = tileset.backgroundColor();
@@ -466,19 +467,12 @@ void LuaWriter::writeTileLayer(const TileLayer *tileLayer,
     mWriter.writeStartTable();
 
     mWriter.writeKeyAndValue("type", "tilelayer");
-    mWriter.writeKeyAndValue("id", tileLayer->id());
-    mWriter.writeKeyAndValue("name", tileLayer->name());
     mWriter.writeKeyAndValue("x", tileLayer->x());
     mWriter.writeKeyAndValue("y", tileLayer->y());
     mWriter.writeKeyAndValue("width", tileLayer->width());
     mWriter.writeKeyAndValue("height", tileLayer->height());
-    mWriter.writeKeyAndValue("visible", tileLayer->isVisible());
-    mWriter.writeKeyAndValue("opacity", tileLayer->opacity());
 
-    const QPointF offset = tileLayer->offset();
-    mWriter.writeKeyAndValue("offsetx", offset.x());
-    mWriter.writeKeyAndValue("offsety", offset.y());
-
+    writeLayerProperties(tileLayer);
     writeProperties(tileLayer->properties());
 
     switch (format) {
@@ -572,18 +566,9 @@ void LuaWriter::writeObjectGroup(const ObjectGroup *objectGroup,
         mWriter.writeStartTable(key);
 
     mWriter.writeKeyAndValue("type", "objectgroup");
-    if (objectGroup->id() != 0)
-        mWriter.writeKeyAndValue("id", objectGroup->id());
-    mWriter.writeKeyAndValue("name", objectGroup->name());
-    mWriter.writeKeyAndValue("visible", objectGroup->isVisible());
-    mWriter.writeKeyAndValue("opacity", objectGroup->opacity());
-
-    const QPointF offset = objectGroup->offset();
-    mWriter.writeKeyAndValue("offsetx", offset.x());
-    mWriter.writeKeyAndValue("offsety", offset.y());
-
     mWriter.writeKeyAndValue("draworder", drawOrderToString(objectGroup->drawOrder()));
 
+    writeLayerProperties(objectGroup);
     writeProperties(objectGroup->properties());
 
     mWriter.writeStartTable("objects");
@@ -599,23 +584,16 @@ void LuaWriter::writeImageLayer(const ImageLayer *imageLayer)
     mWriter.writeStartTable();
 
     mWriter.writeKeyAndValue("type", "imagelayer");
-    mWriter.writeKeyAndValue("id", imageLayer->id());
-    mWriter.writeKeyAndValue("name", imageLayer->name());
-    mWriter.writeKeyAndValue("visible", imageLayer->isVisible());
-    mWriter.writeKeyAndValue("opacity", imageLayer->opacity());
-
-    const QPointF offset = imageLayer->offset();
-    mWriter.writeKeyAndValue("offsetx", offset.x());
-    mWriter.writeKeyAndValue("offsety", offset.y());
 
     const QString rel = toFileReference(imageLayer->imageSource(), mDir);
     mWriter.writeKeyAndValue("image", rel);
 
     if (imageLayer->transparentColor().isValid()) {
         mWriter.writeKeyAndValue("transparentcolor",
-                                imageLayer->transparentColor().name());
+                                 imageLayer->transparentColor().name());
     }
 
+    writeLayerProperties(imageLayer);
     writeProperties(imageLayer->properties());
 
     mWriter.writeEndTable();
@@ -629,15 +607,8 @@ void LuaWriter::writeGroupLayer(const GroupLayer *groupLayer,
     mWriter.writeStartTable();
 
     mWriter.writeKeyAndValue("type", "group");
-    mWriter.writeKeyAndValue("id", groupLayer->id());
-    mWriter.writeKeyAndValue("name", groupLayer->name());
-    mWriter.writeKeyAndValue("visible", groupLayer->isVisible());
-    mWriter.writeKeyAndValue("opacity", groupLayer->opacity());
 
-    const QPointF offset = groupLayer->offset();
-    mWriter.writeKeyAndValue("offsetx", offset.x());
-    mWriter.writeKeyAndValue("offsety", offset.y());
-
+    writeLayerProperties(groupLayer);
     writeProperties(groupLayer->properties());
 
     writeLayers(groupLayer->layers(), format, compressionLevel, chunkSize);
@@ -707,6 +678,22 @@ void LuaWriter::writeMapObject(const Tiled::MapObject *mapObject)
     }
 
     mWriter.writeEndTable();
+}
+
+void LuaWriter::writeLayerProperties(const Layer *layer)
+{
+    if (layer->id() != 0)
+        mWriter.writeKeyAndValue("id", layer->id());
+    mWriter.writeKeyAndValue("name", layer->name());
+    mWriter.writeKeyAndValue("visible", layer->isVisible());
+    mWriter.writeKeyAndValue("opacity", layer->opacity());
+
+    const QPointF offset = layer->offset();
+    mWriter.writeKeyAndValue("offsetx", offset.x());
+    mWriter.writeKeyAndValue("offsety", offset.y());
+
+    if (layer->tintColor().isValid())
+        writeColor("tintcolor", layer->tintColor());
 }
 
 void LuaWriter::writePolygon(const MapObject *mapObject)
