@@ -355,6 +355,8 @@ int main(int argc, char *argv[])
 
     TiledApplication a(argc, argv);
 
+    initializeMetatypes();
+
     a.setOrganizationDomain(QLatin1String("mapeditor.org"));
 #if defined(Q_OS_MAC) || defined(Q_OS_WIN)
     a.setApplicationName(QLatin1String("Tiled"));

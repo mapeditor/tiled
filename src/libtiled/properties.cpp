@@ -36,6 +36,20 @@
 
 namespace Tiled {
 
+QString FilePath::toString(const FilePath &path)
+{
+    return path.url.toString(QUrl::PreferLocalFile);
+}
+
+FilePath FilePath::fromString(const QString &string)
+{
+    QUrl url(string);
+    if (url.isRelative())
+        url = QUrl::fromLocalFile(string);
+    return { url };
+}
+
+
 void mergeProperties(Properties &target, const Properties &source)
 {
     // Based on QMap::unite, but using insert instead of insertMulti
@@ -158,13 +172,11 @@ QVariant toExportValue(const QVariant &value)
         return color.isValid() ? color.name(QColor::HexArgb) : QString();
     }
 
-    if (type == filePathTypeId()) {
-        const FilePath filePath = value.value<FilePath>();
-        return filePath.url.toString(QUrl::PreferLocalFile);
-    }
+    if (type == filePathTypeId())
+        return FilePath::toString(value.value<FilePath>());
 
     if (type == objectRefTypeId())
-        return value.value<ObjectRef>().id;
+        return ObjectRef::toInt(value.value<ObjectRef>());
 
     return value;
 }
@@ -177,15 +189,11 @@ QVariant fromExportValue(const QVariant &value, int type)
     if (value.userType() == type)
         return value;
 
-    if (type == filePathTypeId()) {
-        QUrl url(value.toString());
-        if (url.isRelative())
-            url = QUrl::fromLocalFile(value.toString());
-        return QVariant::fromValue(FilePath { url });
-    }
+    if (type == filePathTypeId())
+        return QVariant::fromValue(FilePath::fromString(value.toString()));
 
     if (type == objectRefTypeId())
-        return QVariant::fromValue(ObjectRef { value.toInt() });
+        return QVariant::fromValue(ObjectRef::fromInt(value.toInt()));
 
     QVariant variant(value);
     variant.convert(type);
@@ -210,6 +218,15 @@ QVariant fromExportValue(const QVariant &value, int type, const QDir &dir)
     }
 
     return fromExportValue(value, type);
+}
+
+void initializeMetatypes()
+{
+    QMetaType::registerConverter<ObjectRef, int>(&ObjectRef::toInt);
+    QMetaType::registerConverter<int, ObjectRef>(&ObjectRef::fromInt);
+
+    QMetaType::registerConverter<FilePath, QString>(&FilePath::toString);
+    QMetaType::registerConverter<QString, FilePath>(&FilePath::fromString);
 }
 
 } // namespace Tiled

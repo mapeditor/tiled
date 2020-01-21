@@ -443,9 +443,9 @@ void PropertyBrowser::propertyAdded(Object *object, const QString &name)
 {
     if (!objectPropertiesRelevant(mDocument, object))
         return;
-    if (mNameToProperty.contains(name)) {
+    if (QtVariantProperty *property = mNameToProperty.value(name)) {
         if (propertyValueAffected(mObject, object, name))
-            setCustomPropertyValue(mNameToProperty[name], object->property(name));
+            setCustomPropertyValue(property, object->property(name));
     } else {
         QVariant value;
         if (mObject->hasProperty(name))
@@ -453,7 +453,7 @@ void PropertyBrowser::propertyAdded(Object *object, const QString &name)
         else
             value = predefinedPropertyValue(mObject, name);
 
-        createCustomProperty(name, value);
+        createCustomProperty(name, toDisplayValue(value));
     }
     updateCustomPropertyColor(name);
 }
@@ -1516,9 +1516,8 @@ QtVariantProperty *PropertyBrowser::createCustomProperty(const QString &name, co
     }
 
     mUpdating = true;
-    const QVariant displayValue = toDisplayValue(value);
-    QtVariantProperty *property = createProperty(CustomProperty, displayValue.userType(), name);
-    property->setValue(displayValue);
+    QtVariantProperty *property = createProperty(CustomProperty, value.userType(), name);
+    property->setValue(value);
     mCustomPropertiesGroup->insertSubProperty(property, precedingProperty);
 
     // Collapse custom color properties, to save space
@@ -1539,20 +1538,22 @@ void PropertyBrowser::deleteCustomProperty(QtVariantProperty *property)
 void PropertyBrowser::setCustomPropertyValue(QtVariantProperty *property,
                                              const QVariant &value)
 {
-    if (value.userType() != property->valueType()) {
+    const QVariant displayValue = toDisplayValue(value);
+
+    if (displayValue.userType() != property->valueType()) {
         // Re-creating the property is necessary to change its type
         const QString name = property->propertyName();
         const bool wasCurrent = currentItem() && currentItem()->property() == property;
 
         deleteCustomProperty(property);
-        property = createCustomProperty(name, value);
+        property = createCustomProperty(name, displayValue);
         updateCustomPropertyColor(name);
 
         if (wasCurrent)
             setCurrentItem(items(property).constFirst());
     } else {
         mUpdating = true;
-        property->setValue(toDisplayValue(value));
+        property->setValue(displayValue);
         mUpdating = false;
     }
 }

@@ -89,9 +89,9 @@ bool VariantPropertyManager::isPropertyTypeSupported(int propertyType) const
 int VariantPropertyManager::valueType(int propertyType) const
 {
     if (propertyType == filePathTypeId())
-        return QVariant::String;
+        return propertyType;
     if (propertyType == displayObjectRefTypeId())
-        return QVariant::String;
+        return propertyType;
     if (propertyType == tilesetParametersTypeId())
         return qMetaTypeId<TilesetDocument*>();
     if (propertyType == alignmentTypeId())
