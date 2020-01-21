@@ -259,40 +259,28 @@ std::unique_ptr<Map> MapReaderPrivate::readMap()
                        .arg(orientationString));
     }
 
-    const QString staggerAxisString =
-            atts.value(QLatin1String("staggeraxis")).toString();
-    const Map::StaggerAxis staggerAxis =
-            staggerAxisFromString(staggerAxisString);
-
-    const QString staggerIndexString =
-            atts.value(QLatin1String("staggerindex")).toString();
-    const Map::StaggerIndex staggerIndex =
-            staggerIndexFromString(staggerIndexString);
-
-    const QString renderOrderString =
-            atts.value(QLatin1String("renderorder")).toString();
-    const Map::RenderOrder renderOrder =
-            renderOrderFromString(renderOrderString);
-    const QString compressionLevelString =
-            atts.value(QLatin1String("compressionlevel")).toString();
+    const QString staggerAxis = atts.value(QLatin1String("staggeraxis")).toString();
+    const QString staggerIndex = atts.value(QLatin1String("staggerindex")).toString();
+    const QString renderOrder = atts.value(QLatin1String("renderorder")).toString();
+    const int compressionLevel = atts.value(QLatin1String("compressionlevel")).toInt();
 
     const int nextLayerId = atts.value(QLatin1String("nextlayerid")).toInt();
     const int nextObjectId = atts.value(QLatin1String("nextobjectid")).toInt();
 
     mMap = std::make_unique<Map>(orientation, mapWidth, mapHeight, tileWidth, tileHeight, infinite);
     mMap->setHexSideLength(hexSideLength);
-    mMap->setStaggerAxis(staggerAxis);
-    mMap->setStaggerIndex(staggerIndex);
-    mMap->setRenderOrder(renderOrder);
-    mMap->setCompressionLevel(compressionLevelString.toUInt());
+    mMap->setStaggerAxis(staggerAxisFromString(staggerAxis));
+    mMap->setStaggerIndex(staggerIndexFromString(staggerIndex));
+    mMap->setRenderOrder(renderOrderFromString(renderOrder));
+    mMap->setCompressionLevel(compressionLevel);
     if (nextLayerId)
         mMap->setNextLayerId(nextLayerId);
     if (nextObjectId)
         mMap->setNextObjectId(nextObjectId);
 
-    QStringRef bgColorString = atts.value(QLatin1String("backgroundcolor"));
-    if (!bgColorString.isEmpty())
-        mMap->setBackgroundColor(QColor(bgColorString.toString()));
+    const QString backgroundColor = atts.value(QLatin1String("backgroundcolor")).toString();
+    if (QColor::isValidColor(backgroundColor))
+        mMap->setBackgroundColor(QColor(backgroundColor));
 
     while (xml.readNextStartElement()) {
         if (xml.name() == QLatin1String("editorsettings"))
@@ -386,7 +374,8 @@ SharedTileset MapReaderPrivate::readTileset()
         const int tileSpacing = atts.value(QLatin1String("spacing")).toInt();
         const int margin = atts.value(QLatin1String("margin")).toInt();
         const int columns = atts.value(QLatin1String("columns")).toInt();
-        QStringRef bgColorString = atts.value(QLatin1String("backgroundcolor"));
+        const QString backgroundColor = atts.value(QLatin1String("backgroundcolor")).toString();
+        const QString alignment = atts.value(QLatin1String("objectalignment")).toString();
 
         if (tileWidth < 0 || tileHeight < 0
             || (firstGid == 0 && !mReadingExternalTileset)) {
@@ -398,8 +387,10 @@ SharedTileset MapReaderPrivate::readTileset()
 
             tileset->setColumnCount(columns);
 
-            if (!bgColorString.isEmpty())
-                tileset->setBackgroundColor(QColor(bgColorString.toString()));
+            if (QColor::isValidColor(backgroundColor))
+                tileset->setBackgroundColor(QColor(backgroundColor));
+
+            tileset->setObjectAlignment(alignmentFromString(alignment));
 
             while (xml.readNextStartElement()) {
                 if (xml.name() == QLatin1String("editorsettings")) {

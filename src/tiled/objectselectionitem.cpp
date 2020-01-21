@@ -268,8 +268,8 @@ ObjectSelectionItem::ObjectSelectionItem(MapDocument *mapDocument,
     connect(mapDocument, &MapDocument::hoveredMapObjectChanged,
             this, &ObjectSelectionItem::hoveredMapObjectChanged);
 
-    connect(mapDocument, &MapDocument::tilesetTileOffsetChanged,
-            this, &ObjectSelectionItem::tilesetTileOffsetChanged);
+    connect(mapDocument, &MapDocument::tilesetTilePositioningChanged,
+            this, &ObjectSelectionItem::tilesetTilePositioningChanged);
 
     connect(mapDocument, &MapDocument::tileTypeChanged,
             this, &ObjectSelectionItem::tileTypeChanged);
@@ -476,9 +476,9 @@ void ObjectSelectionItem::objectsAboutToBeRemoved(const QList<MapObject *> &obje
             delete mObjectLabels.take(object);
 }
 
-void ObjectSelectionItem::tilesetTileOffsetChanged(Tileset *tileset)
+void ObjectSelectionItem::tilesetTilePositioningChanged(Tileset *tileset)
 {
-    // Tile offset affects the position of selection outlines and labels
+    // Tile offset and alignment affect the position of selection outlines and labels
     const MapRenderer &renderer = *mMapDocument->renderer();
 
     for (MapObjectLabel *label : qAsConst(mObjectLabels))

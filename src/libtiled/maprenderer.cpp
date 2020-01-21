@@ -270,6 +270,8 @@ CellRenderer::CellRenderer(QPainter *painter, const MapRenderer *renderer, const
  * kind of tile has to be drawn. For this reason it is necessary to call
  * flush when finished doing drawCell calls. This function is also called by
  * the destructor so usually an explicit call is not needed.
+ *
+ * This call expects `painter.translate(pos)` to correspond to the Origin point.
  */
 void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &size, Origin origin)
 {
@@ -279,9 +281,11 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &si
         tile = tile->currentFrameTile();
 
     if (!tile || tile->image().isNull()) {
-        QRectF target { pos - QPointF(0, size.height()), size };
-        if (origin == BottomCenter)
-            target.moveLeft(target.left() - size.width() / 2);
+        QRectF target { pos, size };
+
+        if (origin == BottomLeft)
+            target.translate(0.0, -size.height());
+
         renderMissingImageMarker(*mPainter, target);
         return;
     }
@@ -304,8 +308,9 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &si
     bool flippedVertically = cell.flippedVertically();
 
     QPainter::PixmapFragment fragment;
+    // Calculate the position as if the origin is TopLeft, and correct it later.
     fragment.x = pos.x() + (offset.x() * scale.width()) + sizeHalf.x();
-    fragment.y = pos.y() + (offset.y() * scale.height()) + sizeHalf.y() - size.height();
+    fragment.y = pos.y() + (offset.y() * scale.height()) + sizeHalf.y();
     fragment.sourceLeft = 0;
     fragment.sourceTop = 0;
     fragment.width = imageSize.width();
@@ -315,8 +320,9 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &si
     fragment.rotation = 0;
     fragment.opacity = 1;
 
-    if (origin == BottomCenter)
-        fragment.x -= sizeHalf.x();
+    // Correct the position if the origin is BottomLeft.
+    if (origin == BottomLeft)
+        fragment.y -= size.height();
 
     if (mCellType == HexagonalCells) {
 
@@ -336,8 +342,7 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &si
         // Compensate for the swap of image dimensions
         const qreal halfDiff = sizeHalf.y() - sizeHalf.x();
         fragment.y += halfDiff;
-        if (origin != BottomCenter)
-            fragment.x += halfDiff;
+        fragment.x += halfDiff;
     }
 
     fragment.scaleX = scale.width() * (flippedHorizontally ? -1 : 1);

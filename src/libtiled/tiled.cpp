@@ -25,6 +25,7 @@
 QPointF Tiled::alignmentOffset(const QRectF &r, Tiled::Alignment alignment)
 {
     switch (alignment) {
+    case Unspecified:   break;
     case TopLeft:       break;
     case Top:           return QPointF(r.width() / 2, 0);
     case TopRight:      return QPointF(r.width(), 0);
@@ -93,4 +94,57 @@ QString Tiled::urlToLocalFileOrQrc(const QUrl &url)
 #endif
 
     return url.toLocalFile();
+}
+
+QString Tiled::alignmentToString(Alignment alignment)
+{
+    switch (alignment) {
+    case Unspecified:
+        return QStringLiteral("unspecified");
+    case TopLeft:
+        return QStringLiteral("topleft");
+    case Top:
+        return QStringLiteral("top");
+    case TopRight:
+        return QStringLiteral("topright");
+    case Left:
+        return QStringLiteral("left");
+    case Center:
+        return QStringLiteral("center");
+    case Right:
+        return QStringLiteral("right");
+    case BottomLeft:
+        return QStringLiteral("bottomleft");
+    case Bottom:
+        return QStringLiteral("bottom");
+    case BottomRight:
+        return QStringLiteral("bottomright");
+    }
+    return QString();
+}
+
+Tiled::Alignment Tiled::alignmentFromString(const QString &string)
+{
+    if (string == QLatin1String("unspecified"))
+        return Unspecified;
+    else if (string == QLatin1String("topleft"))
+        return TopLeft;
+    else if (string == QLatin1String("top"))
+        return Top;
+    else if (string == QLatin1String("topright"))
+        return TopRight;
+    else if (string == QLatin1String("left"))
+        return Left;
+    else if (string == QLatin1String("center"))
+        return Center;
+    else if (string == QLatin1String("right"))
+        return Right;
+    else if (string == QLatin1String("bottomleft"))
+        return BottomLeft;
+    else if (string == QLatin1String("bottom"))
+        return Bottom;
+    else if (string == QLatin1String("bottomright"))
+        return BottomRight;
+
+    return Unspecified;
 }

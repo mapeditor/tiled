@@ -89,7 +89,7 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument) {
         connect(mMapDocument, &MapDocument::mapChanged,
                 this, &MapScene::mapChanged);
-        connect(mMapDocument, &MapDocument::tilesetTileOffsetChanged,
+        connect(mMapDocument, &MapDocument::tilesetTilePositioningChanged,
                 this, [this] { update(); });
         connect(mMapDocument, &MapDocument::tileImageSourceChanged,
                 this, [this] { update(); });

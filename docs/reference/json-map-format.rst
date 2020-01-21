@@ -428,6 +428,7 @@ Tileset
     imagewidth,       int,              "Width of source image in pixels"
     margin,           int,              "Buffer between image edge and first tile (pixels)"
     name,             string,           "Name given to this tileset"
+    objectalignment,  string,           "Alignment to use for tile objects (``unspecified`` (default), ``topleft``, ``top``, ``topright``, ``left``, ``center``, ``right``, ``bottomleft``, ``bottom`` or ``bottomright``) (since 1.4)"
     properties,       array,            "Array of :ref:`Properties <json-property>`"
     source,           string,           "The external file that contains this tilesets data"
     spacing,          int,              "Spacing between adjacent tiles in image (pixels)"
@@ -727,6 +728,11 @@ A point on a polygon or a polyline, relative to the position of the object.
 
 Changelog
 ---------
+
+Tiled 1.4
+~~~~~~~~~
+
+* Added ``objectalignment`` to the :ref:`json-tileset` object.
 
 Tiled 1.2
 ~~~~~~~~~

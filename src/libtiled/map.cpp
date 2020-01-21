@@ -329,6 +329,7 @@ std::unique_ptr<Map> Map::clone() const
     o->exportFileName = exportFileName;
     o->exportFormat = exportFormat;
     o->mRenderOrder = mRenderOrder;
+    o->mCompressionLevel = mCompressionLevel;
     o->mHexSideLength = mHexSideLength;
     o->mStaggerAxis = mStaggerAxis;
     o->mStaggerIndex = mStaggerIndex;

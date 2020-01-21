@@ -121,6 +121,12 @@ Can contain any number: :ref:`tmx-tileset`, :ref:`tmx-layer`,
 -  **columns:** The number of tile columns in the tileset. For image
    collection tilesets it is editable and is used when displaying the
    tileset. (since 0.15)
+-  **objectalignment:** Controls the alignment for tile objects.
+   Valid values are ``unspecified``, ``topleft``, ``top``, ``topright``,
+   ``left``, ``center``, ``right``, ``bottomleft``, ``bottom`` and
+   ``bottomright``. The default value is ``unspecified``, for compatibility
+   reasons. When unspecified, tile objects use ``bottomleft`` in orthogonal mode
+   and ``bottom`` in isometric mode. (since 1.4)
 
 If there are multiple ``<tileset>`` elements, they are in ascending
 order of their ``firstgid`` attribute. The first tileset always has a

@@ -31,6 +31,7 @@
 #include "tiled_global.h"
 
 #include <QColor>
+#include <QMetaType>
 #include <QRectF>
 #include <QString>
 #include <QUrl>
@@ -50,6 +51,7 @@ enum RotateDirection {
 };
 
 enum Alignment {
+    Unspecified,
     TopLeft,
     Top,
     TopRight,
@@ -100,4 +102,9 @@ inline QMargins maxMargins(const QMargins &a,
                     qMax(a.bottom(), b.bottom()));
 }
 
+TILEDSHARED_EXPORT QString alignmentToString(Alignment);
+TILEDSHARED_EXPORT Alignment alignmentFromString(const QString &);
+
 } // namespace Tiled
+
+Q_DECLARE_METATYPE(Tiled::Alignment);

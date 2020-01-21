@@ -189,7 +189,7 @@ public:
     qreal rotation() const;
     void setRotation(qreal rotation);
 
-    Alignment alignment() const;
+    Alignment alignment(const Map *map = nullptr) const;
 
     bool isVisible() const;
     void setVisible(bool visible);

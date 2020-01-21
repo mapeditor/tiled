@@ -1337,10 +1337,36 @@ Properties
     **tileSize** : size |ro|, Tile size for tiles in this tileset in pixels (has ``width`` and ``height`` members).
     **tileSpacing** : int |ro|, Spacing between tiles in this tileset in pixels.
     **margin** : int |ro|, Margin around the tileset in pixels (only used at the top and left sides of the tileset image).
+    **objectAlignment** : :ref:`Alignment <script-tileset-alignment>`, "The alignment to use for tile objects (when ``Unspecified``, uses ``Bottom`` alignment on isometric maps and ``BottomLeft`` alignment for all other maps)."
     **tileOffset** : :ref:`script-point`, Offset in pixels that is applied when tiles from this tileset are rendered.
+    **orientation** : :ref:`Orientation <script-tileset-orientation>`, The orientation of this tileset (used when rendering overlays and in the tile collision editor).
     **backgroundColor** : color, Background color for this tileset in the *Tilesets* view.
     **isCollection** : bool, Whether this tileset is a collection of images.
     **selectedTiles** : [:ref:`script-tile`], Selected tiles (in the tileset editor).
+
+.. _script-tileset-alignment:
+
+.. csv-table::
+    :header: "Tileset.Alignment"
+
+    Tileset.Unspecified
+    Tileset.TopLeft
+    Tileset.Top
+    Tileset.TopRight
+    Tileset.Left
+    Tileset.Center
+    Tileset.Right
+    Tileset.BottomLeft
+    Tileset.Bottom
+    Tileset.BottomRight
+
+.. _script-tileset-orientation:
+
+.. csv-table::
+    :header: "Tileset.Orientation"
+
+    Tileset.Orthogonal
+    Tileset.Isometric
 
 Functions
 ~~~~~~~~~

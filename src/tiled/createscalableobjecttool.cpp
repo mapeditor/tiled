@@ -24,6 +24,7 @@
 #include "mapobject.h"
 #include "mapobjectitem.h"
 #include "maprenderer.h"
+#include "objectgroup.h"
 #include "snaphelper.h"
 #include "utils.h"
 
@@ -70,8 +71,15 @@ void CreateScalableObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos,
     objectArea.setWidth(snapSize.x());
     objectArea.setHeight(snapSize.y());
 
+    objectArea = objectArea.normalized();
+
+    // This objectArea assumes TopLeft alignment, but the map's object alignment might be different.
+    MapObject *newMapObject = mNewMapObjectItem->mapObject();
+    const auto offset = alignmentOffset(objectArea, newMapObject->alignment(mapDocument()->map()));
+    objectArea.translate(offset);
+
     // Not using the MapObjectModel because the object is not actually part of
     // the map yet
-    mNewMapObjectItem->mapObject()->setBounds(objectArea.normalized());
+    newMapObject->setBounds(objectArea);
     mNewMapObjectItem->syncWithMapObject();
 }

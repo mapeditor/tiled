@@ -130,6 +130,7 @@ private:
         FlippingProperty,
         DrawOrderProperty,
         FileNameProperty,
+        ObjectAlignmentProperty,
         TileOffsetProperty,
         MarginProperty,
         SpacingProperty,
@@ -225,6 +226,7 @@ private:
     QStringList mLayerFormatNames;
     QList<Map::LayerDataFormat> mLayerFormatValues;
     QStringList mRenderOrderNames;
+    QStringList mAlignmentNames;
     QStringList mFlippingFlagNames;
     QStringList mDrawOrderNames;
 };

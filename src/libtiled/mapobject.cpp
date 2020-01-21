@@ -186,7 +186,7 @@ QRectF MapObject::screenBounds(const MapRenderer &renderer) const
                       objectSize.width(),
                       objectSize.height());
 
-        align(bounds, alignment());
+        align(bounds, alignment(renderer.map()));
 
         return bounds;
     } else {
@@ -194,7 +194,7 @@ QRectF MapObject::screenBounds(const MapRenderer &renderer) const
         case MapObject::Ellipse:
         case MapObject::Rectangle: {
             QRectF bounds(this->bounds());
-            align(bounds, alignment());
+            align(bounds, alignment(renderer.map()));
             QPolygonF screenPolygon = renderer.pixelToScreenCoords(bounds);
             return screenPolygon.boundingRect();
         }
@@ -221,27 +221,35 @@ Map *MapObject::map() const
 }
 
 /*
- * This is somewhat of a workaround for dealing with the ways different objects
- * align.
+ * Returns the effective alignment for this object on the given \a map.
  *
- * Traditional rectangle objects have top-left alignment.
- * Tile objects have bottom-left alignment on orthogonal maps, but
- * bottom-center alignment on isometric maps.
+ * By default, non-tile objects have top-left alignment, while tile objects
+ * have bottom-left alignment on orthogonal maps and bottom-center alignment
+ * on isometric maps.
  *
- * Eventually, the object alignment should probably be configurable. For
- * backwards compatibility, it will need to be configurable on a per-object
- * level.
+ * For tile objects, the default alignment can be overridden by setting an
+ * alignment on the tileset.
  */
-Alignment MapObject::alignment() const
+Alignment MapObject::alignment(const Map *map) const
 {
-    if (mCell.isEmpty()) {
-        return TopLeft;
-    } else if (mObjectGroup) {
-        if (Map *map = mObjectGroup->map())
-            if (map->orientation() == Map::Isometric)
-                return Bottom;
+    Alignment alignment = Unspecified;
+
+    if (Tileset *tileset = mCell.tileset())
+        alignment = tileset->objectAlignment();
+
+    if (!map && mObjectGroup)
+        map = mObjectGroup->map();
+
+    if (alignment == Unspecified) {
+        if (mCell.isEmpty())
+            return TopLeft;
+        else if (map && map->orientation() == Map::Isometric)
+            return Bottom;
+
+        return BottomLeft;
     }
-    return BottomLeft;
+
+    return alignment;
 }
 
 /**

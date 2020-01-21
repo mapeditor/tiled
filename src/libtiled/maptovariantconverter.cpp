@@ -188,9 +188,12 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
         }
     }
 
-    const QColor bgColor = tileset.backgroundColor();
-    if (bgColor.isValid())
-        tilesetVariant[QLatin1String("backgroundcolor")] = colorToString(bgColor);
+    const QColor &backgroundColor = tileset.backgroundColor();
+    if (backgroundColor.isValid())
+        tilesetVariant[QLatin1String("backgroundcolor")] = colorToString(backgroundColor);
+
+    if (tileset.objectAlignment() != Unspecified)
+        tilesetVariant[QLatin1String("objectalignment")] = alignmentToString(tileset.objectAlignment());
 
     addProperties(tilesetVariant, tileset.properties());
 

@@ -77,7 +77,7 @@ public:
      * Constructs a command that changes the map stagger axis.
      *
      * @param mapDocument       the map document of the map
-     * @param orientation       the new map stagger axis
+     * @param staggerAxis       the new map stagger axis
      */
     ChangeMapProperty(MapDocument *mapDocument, Map::StaggerAxis staggerAxis);
 
@@ -85,7 +85,7 @@ public:
      * Constructs a command that changes the map stagger index.
      *
      * @param mapDocument       the map document of the map
-     * @param orientation       the new map stagger index
+     * @param staggerIndex       the new map stagger index
      */
     ChangeMapProperty(MapDocument *mapDocument, Map::StaggerIndex staggerIndex);
 

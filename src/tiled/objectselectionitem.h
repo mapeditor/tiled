@@ -71,7 +71,7 @@ private:
     void updateObjectLabelColors();
     void objectsAdded(const QList<MapObject*> &objects);
     void objectsAboutToBeRemoved(const QList<MapObject*> &objects);
-    void tilesetTileOffsetChanged(Tileset *tileset);
+    void tilesetTilePositioningChanged(Tileset *tileset);
     void tileTypeChanged(Tile *tile);
 
     void objectLabelVisibilityChanged();

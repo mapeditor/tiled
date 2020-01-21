@@ -87,8 +87,9 @@ QRect IsometricRenderer::boundingRect(const QRect &rect) const
 QRectF IsometricRenderer::boundingRect(const MapObject *object) const
 {
     if (object->shape() == MapObject::Text) {
-        const QPointF topLeft = pixelToScreenCoords(object->position());
-        return QRectF(topLeft, object->size());
+        QRectF bounds { pixelToScreenCoords(object->position()), object->size() };
+        bounds.translate(-alignmentOffset(bounds, object->alignment(map())));
+        return bounds;
     } else if (object->shape() == MapObject::Point) {
         const qreal extraSpace = qMax(objectLineWidth() / 2, qreal(1));
         return shape(object).boundingRect()
@@ -97,25 +98,24 @@ QRectF IsometricRenderer::boundingRect(const MapObject *object) const
                                       extraSpace,
                                       extraSpace);
     } else if (!object->cell().isEmpty()) {
-        const QSizeF objectSize { object->size() };
-
-        QSizeF scale { 1.0, 1.0 };
-        QPoint tileOffset;
+        QRectF bounds { pixelToScreenCoords(object->position()), object->size() };
+        bounds.translate(-alignmentOffset(bounds, object->alignment(map())));
 
         if (const Tile *tile = object->cell().tile()) {
-            QSize imgSize = tile->size();
-            if (!imgSize.isNull()) {
-                scale = QSizeF(objectSize.width() / imgSize.width(),
-                               objectSize.height() / imgSize.height());
+            QPointF tileOffset = tile->offset();
+            const QSize tileSize = tile->size();
+            if (!tileSize.isNull()) {
+                const QSizeF scale {
+                    bounds.width() / tileSize.width(),
+                    bounds.height() / tileSize.height()
+                };
+                tileOffset.rx() *= scale.width();
+                tileOffset.ry() *= scale.height();
             }
-            tileOffset = tile->offset();
+            bounds.translate(tileOffset);
         }
 
-        const QPointF bottomCenter = pixelToScreenCoords(object->position());
-        return QRectF(bottomCenter.x() + (tileOffset.x() * scale.width()) - objectSize.width() / 2,
-                      bottomCenter.y() + (tileOffset.y() * scale.height()) - objectSize.height(),
-                      objectSize.width(),
-                      objectSize.height()).adjusted(-1, -1, 1, 1);
+        return bounds.adjusted(-1, -1, 1, 1);
     } else if (!object->polygon().isEmpty()) {
         qreal extraSpace = qMax(objectLineWidth(), qreal(1));
 
@@ -132,7 +132,10 @@ QRectF IsometricRenderer::boundingRect(const MapObject *object) const
     } else {
         // Take the bounding rect of the projected object, and then add a few
         // pixels on all sides to correct for the line width.
-        const QRectF base = pixelRectToScreenPolygon(object->bounds()).boundingRect();
+        QRectF bounds = object->bounds();
+        bounds.translate(-alignmentOffset(bounds, object->alignment(map())));
+
+        const QRectF base = pixelRectToScreenPolygon(bounds).boundingRect();
         const qreal extraSpace = qMax(objectLineWidth() / 2, qreal(1));
 
         return base.adjusted(-extraSpace,
@@ -147,12 +150,18 @@ QPainterPath IsometricRenderer::shape(const MapObject *object) const
 
     switch (object->shape()) {
     case MapObject::Ellipse: {
-        path.addEllipse(object->bounds());
+        QRectF bounds = object->bounds();
+        bounds.translate(-alignmentOffset(bounds, object->alignment(map())));
+
+        path.addEllipse(bounds);
         path = transform().map(path);
         break;
     }
     case MapObject::Rectangle: {
-        QPolygonF polygon = pixelRectToScreenPolygon(object->bounds());
+        QRectF bounds = object->bounds();
+        bounds.translate(-alignmentOffset(bounds, object->alignment(map())));
+
+        QPolygonF polygon = pixelRectToScreenPolygon(bounds);
         polygon.append(polygon.first());
         path.addPolygon(polygon);
         break;
@@ -186,9 +195,13 @@ QPainterPath IsometricRenderer::interactionShape(const MapObject *object) const
     } else {
         switch (object->shape()) {
         case MapObject::Rectangle:
-        case MapObject::Ellipse:
-            path.addPolygon(pixelRectToScreenPolygon(object->bounds()));
+        case MapObject::Ellipse: {
+            QRectF bounds = object->bounds();
+            bounds.translate(-alignmentOffset(bounds, object->alignment(map())));
+
+            path.addPolygon(pixelRectToScreenPolygon(bounds));
             break;
+        }
         case MapObject::Polygon:
         case MapObject::Text:
             path = shape(object);
@@ -370,49 +383,46 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
     const Cell &cell = object->cell();
 
     if (!cell.isEmpty()) {
-        const QSizeF size = object->size();
-        const QPointF pos = pixelToScreenCoords(object->position());
+        QRectF bounds = { pixelToScreenCoords(object->position()), object->size() };
+        bounds.translate(-alignmentOffset(bounds, object->alignment(map())));
 
-        CellRenderer(painter, this, object->objectGroup()->effectiveTintColor()).render(cell, pos, size,
-                                           CellRenderer::BottomCenter);
+        CellRenderer(painter, this, object->objectGroup()->effectiveTintColor())
+                .render(cell, bounds.topLeft(), bounds.size());
 
         if (testFlag(ShowTileObjectOutlines)) {
-            QPointF tileOffset;
-            QPointF scale(1.0, 1.0);
-
-            if (const Tile *tile = cell.tile()) {
-                tileOffset = tile->offset();
-
-                const QPixmap &image = tile->image();
-                const QSizeF imageSize = image.size();
-
-                if (!imageSize.isEmpty()) {
-                    scale = QPointF(size.width() / imageSize.width(),
-                                    size.height() / imageSize.height());
+            if (const Tile *tile = object->cell().tile()) {
+                QPointF tileOffset = tile->offset();
+                const QSize tileSize = tile->size();
+                if (!tileSize.isNull()) {
+                    const QSizeF scale {
+                        bounds.width() / tileSize.width(),
+                        bounds.height() / tileSize.height()
+                    };
+                    tileOffset.rx() *= scale.width();
+                    tileOffset.ry() *= scale.height();
                 }
+                bounds.translate(tileOffset);
             }
-
-            QRectF rect(QPointF(pos.x() - size.width() / 2 + tileOffset.x() * scale.x(),
-                                pos.y() - size.height() + tileOffset.y() * scale.y()),
-                        size);
 
             pen.setStyle(Qt::SolidLine);
             painter->setRenderHint(QPainter::Antialiasing, false);
             painter->setBrush(Qt::NoBrush);
             painter->setPen(pen);
-            painter->drawRect(rect);
+            painter->drawRect(bounds);
             pen.setStyle(Qt::DotLine);
             pen.setColor(color);
             painter->setPen(pen);
-            painter->drawRect(rect);
+            painter->drawRect(bounds);
         }
     } else if (object->shape() == MapObject::Text) {
-        const QPointF pos = pixelToScreenCoords(object->position());
+        QRectF bounds = { pixelToScreenCoords(object->position()), object->size() };
+        bounds.translate(-alignmentOffset(bounds, object->alignment(map())));
+
         const auto& textData = object->textData();
 
         painter->setFont(textData.font);
         painter->setPen(textData.color);
-        painter->drawText(QRectF(pos, object->size()),
+        painter->drawText(bounds,
                           textData.text,
                           textData.textOption());
     } else {
@@ -434,11 +444,14 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
         painter->setPen(pen);
         painter->setRenderHint(QPainter::Antialiasing);
 
+        QRectF bounds = object->bounds();
+        bounds.translate(-alignmentOffset(bounds, object->alignment(map())));
+
         // TODO: Do something sensible to make null-sized objects usable
 
         switch (object->shape()) {
         case MapObject::Ellipse: {
-            const QPolygonF rect = pixelRectToScreenPolygon(object->bounds());
+            const QPolygonF rect = pixelRectToScreenPolygon(bounds);
             const QPainterPath ellipse = shape(object);
 
             painter->drawPath(ellipse);
@@ -458,7 +471,7 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             drawPointObject(painter, color);
             break;
         case MapObject::Rectangle: {
-            QPolygonF polygon = pixelRectToScreenPolygon(object->bounds());
+            QPolygonF polygon = pixelRectToScreenPolygon(bounds);
             painter->drawPolygon(polygon);
 
             painter->setPen(colorPen);

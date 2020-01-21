@@ -24,6 +24,7 @@
 #include "mapobject.h"
 #include "mapobjectitem.h"
 #include "maprenderer.h"
+#include "objectgroup.h"
 #include "snaphelper.h"
 #include "tile.h"
 #include "utils.h"
@@ -43,15 +44,20 @@ CreateTileObjectTool::CreateTileObjectTool(QObject *parent)
 
 void CreateTileObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt::KeyboardModifiers modifiers)
 {
-    const MapRenderer *renderer = mapDocument()->renderer();
-
     const QSize imgSize = mNewMapObjectItem->mapObject()->cell().tile()->size();
-    const QPointF diff(-imgSize.width() / 2, imgSize.height() / 2);
-    QPointF pixelCoords = renderer->screenToPixelCoords(pos + diff);
+    const QPointF halfSize(imgSize.width() / 2, imgSize.height() / 2);
+    const QRectF screenBounds { pos - halfSize, imgSize };
+
+    // These screenBounds assume TopLeft alignment, but the map's object alignment might be different.
+    MapObject *newMapObject = mNewMapObjectItem->mapObject();
+    const QPointF offset = alignmentOffset(screenBounds, newMapObject->alignment(mapDocument()->map()));
+
+    const MapRenderer *renderer = mapDocument()->renderer();
+    QPointF pixelCoords = renderer->screenToPixelCoords(screenBounds.topLeft() + offset);
 
     SnapHelper(renderer, modifiers).snap(pixelCoords);
 
-    mNewMapObjectItem->mapObject()->setPosition(pixelCoords);
+    newMapObject->setPosition(pixelCoords);
     mNewMapObjectItem->syncWithMapObject();
 }
 

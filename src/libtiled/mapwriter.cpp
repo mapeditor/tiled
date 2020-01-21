@@ -349,6 +349,11 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
                          colorToString(tileset.backgroundColor()));
     }
 
+    if (tileset.objectAlignment() != Unspecified) {
+        const QString alignment = alignmentToString(tileset.objectAlignment());
+        w.writeAttribute(QLatin1String("objectalignment"), alignment);
+    }
+
     // Write editor settings when saving external tilesets
     if (firstGid == 0) {
         if (!tileset.exportFileName.isEmpty() || !tileset.exportFormat.isEmpty()) {
