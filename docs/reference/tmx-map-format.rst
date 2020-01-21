@@ -74,15 +74,9 @@ existing tools.*
    number is stored to prevent reuse of the same ID after objects have
    been removed. (since 0.11) (defaults to the highest object id in the file
    + 1)
--  **objectalignment:** Controls the origins for tile and shape objects.
-   Valid values are ``unset``, ``top-left``, ``bottom-left``, and ``bottom-center``.
-   The default value is ``unset``, for compatibility reasons. With ``unset``, tile
-   objects use ``bottom-left`` in orthogonal mode and ``bottom-center`` in isometric
-   mode, while shape objects use ``top-left`` everywhere. (since 1.4)
 -  **infinite:** Whether this map is infinite. An infinite map has no fixed
    size and can grow in all directions. Its layer data is stored in chunks.
    (``0`` for false, ``1`` for true, defaults to 0)
-
 
 The ``tilewidth`` and ``tileheight`` properties determine the general
 grid size of the map. The individual tiles may have different sizes.
@@ -127,6 +121,12 @@ Can contain any number: :ref:`tmx-tileset`, :ref:`tmx-layer`,
 -  **columns:** The number of tile columns in the tileset. For image
    collection tilesets it is editable and is used when displaying the
    tileset. (since 0.15)
+-  **objectalignment:** Controls the alignment for tile objects.
+   Valid values are ``unspecified``, ``topleft``, ``top``, ``topright``,
+   ``left``, ``center``, ``right``, ``bottomleft``, ``bottom`` and
+   ``bottomright``. The default value is ``unspecified``, for compatibility
+   reasons. When unspecified, tile objects use ``bottomleft`` in orthogonal mode
+   and ``bottom`` in isometric mode. (since 1.4)
 
 If there are multiple ``<tileset>`` elements, they are in ascending
 order of their ``firstgid`` attribute. The first tileset always has a

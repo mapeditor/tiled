@@ -4,6 +4,12 @@ TMX Changelog
 Below are described the changes/additions that were made to the
 :doc:`tmx-map-format` for recent versions of Tiled.
 
+Tiled 1.4
+---------
+
+-  Added the ``objectalignment`` attribute to the :ref:`tmx-tileset` element,
+   allowing the tileset to control the alignment used for tile objects.
+
 Tiled 1.2.1
 -----------
 
