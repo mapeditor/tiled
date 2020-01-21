@@ -157,11 +157,11 @@ private:
 };
 
 
-class ChangeTilesetAlignment : public QUndoCommand
+class ChangeTilesetObjectAlignment : public QUndoCommand
 {
 public:
-    ChangeTilesetAlignment(TilesetDocument *tilesetDocument,
-                           Alignment alignment);
+    ChangeTilesetObjectAlignment(TilesetDocument *tilesetDocument,
+                                 Alignment objectAlignment);
 
     void undo() override { swap(); }
     void redo() override { swap(); }
@@ -170,7 +170,7 @@ private:
     void swap();
 
     TilesetDocument *mTilesetDocument;
-    Alignment mAlignment;
+    Alignment mObjectAlignment;
 };
 
 

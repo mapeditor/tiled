@@ -337,7 +337,7 @@ void LuaWriter::writeTileset(const Tileset &tileset,
     if (backgroundColor.isValid())
         writeColor("backgroundcolor", backgroundColor);
 
-    mWriter.writeKeyAndValue("alignment", alignmentToString(tileset.alignment()));
+    mWriter.writeKeyAndValue("objectalignment", alignmentToString(tileset.objectAlignment()));
 
     const QPoint offset = tileset.tileOffset();
     mWriter.writeStartTable("tileoffset");

@@ -230,7 +230,7 @@ Alignment MapObject::alignment(const Map *map) const
     Alignment alignment = Unspecified;
 
     if (Tileset *tileset = mCell.tileset())
-        alignment = tileset->alignment();
+        alignment = tileset->objectAlignment();
 
     if (!map && mObjectGroup)
         map = mObjectGroup->map();

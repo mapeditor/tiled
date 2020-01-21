@@ -158,7 +158,7 @@ void PropertyBrowser::setDocument(Document *document)
                 this, &PropertyBrowser::tilesetChanged);
         connect(tilesetDocument, &TilesetDocument::tilesetTileOffsetChanged,
                 this, &PropertyBrowser::tilesetChanged);
-        connect(tilesetDocument, &TilesetDocument::tilesetAlignmentChanged,
+        connect(tilesetDocument, &TilesetDocument::tilesetObjectAlignmentChanged,
                 this, &PropertyBrowser::tilesetChanged);
         connect(tilesetDocument, &TilesetDocument::tilesetChanged,
                 this, &PropertyBrowser::tilesetChanged);
@@ -809,9 +809,9 @@ void PropertyBrowser::addTilesetProperties()
     nameProperty->setEnabled(mTilesetDocument);
 
     QtVariantProperty *alignmentProperty =
-            addProperty(AlignmentProperty,
+            addProperty(ObjectAlignmentProperty,
                         QtVariantPropertyManager::enumTypeId(),
-                        tr("Alignment"),
+                        tr("Object Alignment"),
                         groupProperty);
 
     alignmentProperty->setAttribute(QLatin1String("enumNames"), mAlignmentNames);
@@ -1318,11 +1318,11 @@ void PropertyBrowser::applyTilesetValue(PropertyId id, const QVariant &val)
         Q_ASSERT(mTilesetDocument);
         undoStack->push(new RenameTileset(mTilesetDocument, val.toString()));
         break;
-    case AlignmentProperty: {
+    case ObjectAlignmentProperty: {
         Q_ASSERT(mTilesetDocument);
-        auto alignment = static_cast<Alignment>(val.toInt());
-        undoStack->push(new ChangeTilesetAlignment(mTilesetDocument,
-                                                   alignment));
+        auto objectAlignment = static_cast<Alignment>(val.toInt());
+        undoStack->push(new ChangeTilesetObjectAlignment(mTilesetDocument,
+                                                         objectAlignment));
         break;
     }
     case TileOffsetProperty:
@@ -1746,7 +1746,7 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[BackgroundColorProperty]->setValue(tileset->backgroundColor());
 
         mIdToProperty[NameProperty]->setValue(tileset->name());
-        mIdToProperty[AlignmentProperty]->setValue(tileset->alignment());
+        mIdToProperty[ObjectAlignmentProperty]->setValue(tileset->objectAlignment());
         mIdToProperty[TileOffsetProperty]->setValue(tileset->tileOffset());
         mIdToProperty[OrientationProperty]->setValue(tileset->orientation());
         mIdToProperty[GridWidthProperty]->setValue(tileset->gridSize().width());

@@ -130,7 +130,7 @@ private:
         FlippingProperty,
         DrawOrderProperty,
         FileNameProperty,
-        AlignmentProperty,
+        ObjectAlignmentProperty,
         TileOffsetProperty,
         MarginProperty,
         SpacingProperty,

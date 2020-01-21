@@ -130,8 +130,8 @@ public:
     int margin() const;
     void setMargin(int margin);
 
-    Alignment alignment() const;
-    void setAlignment(Alignment alignment);
+    Alignment objectAlignment() const;
+    void setObjectAlignment(Alignment objectAlignment);
 
     QPoint tileOffset() const;
     void setTileOffset(QPoint offset);
@@ -262,7 +262,7 @@ private:
     int mTileSpacing;
     int mMargin;
     QPoint mTileOffset;
-    Alignment mAlignment;
+    Alignment mObjectAlignment;
     Orientation mOrientation;
     QSize mGridSize;
     int mColumnCount;
@@ -365,19 +365,19 @@ inline int Tileset::margin() const
 }
 
 /**
- * Returns the alignment of the tiles in this tileset.
+ * Returns the alignment to use for tile objects.
  */
-inline Alignment Tileset::alignment() const
+inline Alignment Tileset::objectAlignment() const
 {
-    return mAlignment;
+    return mObjectAlignment;
 }
 
 /**
- * @see alignment
+ * @see objectAlignment
  */
-inline void Tileset::setAlignment(Alignment alignment)
+inline void Tileset::setObjectAlignment(Alignment objectAlignment)
 {
-    mAlignment = alignment;
+    mObjectAlignment = objectAlignment;
 }
 
 /**

@@ -191,21 +191,21 @@ void ChangeTilesetOrientation::swap()
 }
 
 
-ChangeTilesetAlignment::ChangeTilesetAlignment(TilesetDocument *tilesetDocument,
-                                               Alignment alignment)
-    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Change Alignment"))
+ChangeTilesetObjectAlignment::ChangeTilesetObjectAlignment(TilesetDocument *tilesetDocument,
+                                                           Alignment objectAlignment)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Change Object Alignment"))
     , mTilesetDocument(tilesetDocument)
-    , mAlignment(alignment)
+    , mObjectAlignment(objectAlignment)
 {
 }
 
-void ChangeTilesetAlignment::swap()
+void ChangeTilesetObjectAlignment::swap()
 {
     Tileset &tileset = *mTilesetDocument->tileset();
 
-    Alignment alignment = tileset.alignment();
-    mTilesetDocument->setTilesetAlignment(mAlignment);
-    mAlignment = alignment;
+    Alignment objectAlignment = tileset.objectAlignment();
+    mTilesetDocument->setTilesetObjectAlignment(mObjectAlignment);
+    mObjectAlignment = objectAlignment;
 }
 
 

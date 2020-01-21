@@ -94,7 +94,7 @@ public:
 
     void setTilesetName(const QString &name);
     void setTilesetTileOffset(QPoint tileOffset);
-    void setTilesetAlignment(Alignment alignment);
+    void setTilesetObjectAlignment(Alignment objectAlignment);
 
     void addTiles(const QList<Tile*> &tiles);
     void removeTiles(const QList<Tile*> &tiles);
@@ -133,7 +133,7 @@ signals:
 
     void tilesetNameChanged(Tileset *tileset);
     void tilesetTileOffsetChanged(Tileset *tileset);
-    void tilesetAlignmentChanged(Tileset *tileset);
+    void tilesetObjectAlignmentChanged(Tileset *tileset);
 
     void tileTypeChanged(Tile *tile);
     void tileImageSourceChanged(Tile *tile);

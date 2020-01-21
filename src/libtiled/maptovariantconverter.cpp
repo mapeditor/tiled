@@ -199,8 +199,8 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
     if (backgroundColor.isValid())
         tilesetVariant[QLatin1String("backgroundcolor")] = colorToString(backgroundColor);
 
-    if (tileset.alignment() != Unspecified)
-        tilesetVariant[QLatin1String("alignment")] = alignmentToString(tileset.alignment());
+    if (tileset.objectAlignment() != Unspecified)
+        tilesetVariant[QLatin1String("objectalignment")] = alignmentToString(tileset.objectAlignment());
 
     addProperties(tilesetVariant, tileset.properties());
 

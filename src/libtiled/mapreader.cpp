@@ -375,7 +375,7 @@ SharedTileset MapReaderPrivate::readTileset()
         const int margin = atts.value(QLatin1String("margin")).toInt();
         const int columns = atts.value(QLatin1String("columns")).toInt();
         const QString backgroundColor = atts.value(QLatin1String("backgroundcolor")).toString();
-        const QString alignment = atts.value(QLatin1String("alignment")).toString();
+        const QString alignment = atts.value(QLatin1String("objectalignment")).toString();
 
         if (tileWidth < 0 || tileHeight < 0
             || (firstGid == 0 && !mReadingExternalTileset)) {
@@ -390,7 +390,7 @@ SharedTileset MapReaderPrivate::readTileset()
             if (QColor::isValidColor(backgroundColor))
                 tileset->setBackgroundColor(QColor(backgroundColor));
 
-            tileset->setAlignment(alignmentFromString(alignment));
+            tileset->setObjectAlignment(alignmentFromString(alignment));
 
             while (xml.readNextStartElement()) {
                 if (xml.name() == QLatin1String("editorsettings")) {
