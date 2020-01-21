@@ -132,8 +132,8 @@ Tiled::EditableTile *EditableTileset::addTile()
 
     Tile *tile = new Tile(tileset()->takeNextTileId(), tileset());
 
-    if (tilesetDocument())
-        push(new AddTiles(tilesetDocument(), { tile }));
+    if (auto doc = tilesetDocument())
+        push(new AddTiles(doc, { tile }));
     else
         tileset()->addTiles({ tile });
 
@@ -151,8 +151,8 @@ void EditableTileset::removeTiles(const QList<QObject *> &tiles)
     if (!tilesFromEditables(tiles, plainTiles))
         return;
 
-    if (tilesetDocument()) {
-        push(new RemoveTiles(tilesetDocument(), plainTiles));
+    if (auto doc = tilesetDocument()) {
+        push(new RemoveTiles(doc, plainTiles));
     } else if (!checkReadOnly()) {
         tileset()->removeTiles(plainTiles);
         detachTiles(plainTiles);
@@ -166,8 +166,8 @@ TilesetDocument *EditableTileset::tilesetDocument() const
 
 void EditableTileset::setName(const QString &name)
 {
-    if (tilesetDocument())
-        push(new RenameTileset(tilesetDocument(), name));
+    if (auto doc = tilesetDocument())
+        push(new RenameTileset(doc, name));
     else if (!checkReadOnly())
         tileset()->setName(name);
 }
@@ -179,11 +179,11 @@ void EditableTileset::setImage(const QString &imageFilePath)
         return;
     }
 
-    if (tilesetDocument()) {
+    if (auto doc = tilesetDocument()) {
         TilesetParameters parameters(*tileset());
         parameters.imageSource = QUrl::fromLocalFile(imageFilePath);
 
-        push(new ChangeTilesetParameters(tilesetDocument(), parameters));
+        push(new ChangeTilesetParameters(doc, parameters));
     } else if (!checkReadOnly()) {
         tileset()->setImageSource(imageFilePath);
 
@@ -199,11 +199,11 @@ void EditableTileset::setTileSize(int width, int height)
         return;
     }
 
-    if (tilesetDocument()) {
+    if (auto doc = tilesetDocument()) {
         TilesetParameters parameters(*tileset());
         parameters.tileSize = QSize(width, height);
 
-        push(new ChangeTilesetParameters(tilesetDocument(), parameters));
+        push(new ChangeTilesetParameters(doc, parameters));
     } else if (!checkReadOnly()) {
         tileset()->setTileSize(QSize(width, height));
 
@@ -212,18 +212,34 @@ void EditableTileset::setTileSize(int width, int height)
     }
 }
 
+void EditableTileset::setObjectAlignment(Alignment alignment)
+{
+    if (auto doc = tilesetDocument())
+        push(new ChangeTilesetObjectAlignment(doc, static_cast<Tiled::Alignment>(alignment)));
+    else if (!checkReadOnly())
+        tileset()->setObjectAlignment(static_cast<Tiled::Alignment>(alignment));
+}
+
 void EditableTileset::setTileOffset(QPoint tileOffset)
 {
-    if (tilesetDocument())
-        push(new ChangeTilesetTileOffset(tilesetDocument(), tileOffset));
+    if (auto doc = tilesetDocument())
+        push(new ChangeTilesetTileOffset(doc, tileOffset));
     else if (!checkReadOnly())
         tileset()->setTileOffset(tileOffset);
 }
 
+void EditableTileset::setOrientation(Orientation orientation)
+{
+    if (auto doc = tilesetDocument())
+        push(new ChangeTilesetOrientation(doc, static_cast<Tileset::Orientation>(orientation)));
+    else if (!checkReadOnly())
+        tileset()->setOrientation(static_cast<Tileset::Orientation>(orientation));
+}
+
 void EditableTileset::setBackgroundColor(const QColor &color)
 {
-    if (tilesetDocument())
-        push(new ChangeTilesetBackgroundColor(tilesetDocument(), color));
+    if (auto doc = tilesetDocument())
+        push(new ChangeTilesetBackgroundColor(doc, color));
     else if (!checkReadOnly())
         tileset()->setBackgroundColor(color);
 }
