@@ -459,11 +459,6 @@ void EditableMap::setRenderOrder(RenderOrder value)
         map()->setRenderOrder(static_cast<Map::RenderOrder>(value));
 }
 
-void EditableMap::setObjectAlignment(ObjectAlignment value)
-{
-    push(new ChangeMapProperty(mapDocument(), static_cast<Alignment>(value)));
-}
-
 void EditableMap::setBackgroundColor(const QColor &value)
 {
     if (auto doc = mapDocument())

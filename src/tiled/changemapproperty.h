@@ -44,8 +44,7 @@ public:
         BackgroundColor,
         LayerDataFormat,
         CompressionLevel,
-        ChunkSize,
-        ObjectAlignment
+        ChunkSize
     };
 
     /**
@@ -107,14 +106,6 @@ public:
     ChangeMapProperty(MapDocument *mapDocument, Map::RenderOrder renderOrder);
 
     /**
-      * Constructs a command that changes the alignment of objects.
-      *
-      * @param mapDocument      the map document of the map
-      * @param objectAlignment  the new alignment of objects
-      */
-    ChangeMapProperty(MapDocument *mapDocument, Alignment objectAlignment);
-
-    /**
      * Constructs a command that changes the layer data format.
      *
      * @param mapDocument       the map document of the map
@@ -139,7 +130,6 @@ private:
         Map::Orientation mOrientation;
         Map::RenderOrder mRenderOrder;
         Map::LayerDataFormat mLayerDataFormat;
-        Alignment mObjectAlignment;
     };
 };
 

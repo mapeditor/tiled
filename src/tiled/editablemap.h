@@ -49,7 +49,6 @@ class EditableMap : public EditableAsset
     Q_PROPERTY(StaggerIndex staggerIndex READ staggerIndex WRITE setStaggerIndex)
     Q_PROPERTY(Orientation orientation READ orientation WRITE setOrientation)
     Q_PROPERTY(RenderOrder renderOrder READ renderOrder WRITE setRenderOrder)
-    Q_PROPERTY(ObjectAlignment objectAlignment READ objectAlignment WRITE setObjectAlignment)
     Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor)
     Q_PROPERTY(LayerDataFormat layerDataFormat READ layerDataFormat WRITE setLayerDataFormat)
     Q_PROPERTY(int layerCount READ layerCount)
@@ -90,21 +89,6 @@ public:
     };
     Q_ENUM(RenderOrder)
 
-    // Synchronized with Tiled::Alignment
-    enum ObjectAlignment {
-        Unspecified,
-        TopLeft,
-        Top,
-        TopRight,
-        Left,
-        Center,
-        Right,
-        BottomLeft,
-        Bottom,
-        BottomRight
-    };
-    Q_ENUM(ObjectAlignment)
-
     // Synchronized with Map::StaggerAxis
     enum StaggerAxis {
         StaggerX,
@@ -138,7 +122,6 @@ public:
     StaggerIndex staggerIndex() const;
     Orientation orientation() const;
     RenderOrder renderOrder() const;
-    ObjectAlignment objectAlignment() const;
     QColor backgroundColor() const;
     LayerDataFormat layerDataFormat() const;
     int layerCount() const;
@@ -183,7 +166,6 @@ public:
     void setStaggerIndex(StaggerIndex value);
     void setOrientation(Orientation value);
     void setRenderOrder(RenderOrder value);
-    void setObjectAlignment(ObjectAlignment value);
     void setBackgroundColor(const QColor &value);
     void setLayerDataFormat(LayerDataFormat value);
     void setCurrentLayer(EditableLayer *layer);
@@ -280,11 +262,6 @@ inline EditableMap::Orientation EditableMap::orientation() const
 inline EditableMap::RenderOrder EditableMap::renderOrder() const
 {
     return static_cast<RenderOrder>(map()->renderOrder());
-}
-
-inline EditableMap::ObjectAlignment EditableMap::objectAlignment() const
-{
-    return static_cast<ObjectAlignment>(map()->objectAlignment());
 }
 
 inline QColor EditableMap::backgroundColor() const

@@ -51,7 +51,6 @@ Map::Map(Orientation orientation,
     Object(MapType),
     mOrientation(orientation),
     mRenderOrder(RightDown),
-    mObjectAlignment(Unspecified),
     mCompressionLevel(-1),
     mWidth(width),
     mHeight(height),
@@ -339,7 +338,6 @@ std::unique_ptr<Map> Map::clone() const
     o->exportFileName = exportFileName;
     o->exportFormat = exportFormat;
     o->mRenderOrder = mRenderOrder;
-    o->mObjectAlignment = mObjectAlignment;
     o->mCompressionLevel = mCompressionLevel;
     o->mHexSideLength = mHexSideLength;
     o->mStaggerAxis = mStaggerAxis;

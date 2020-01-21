@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>518</width>
-    <height>534</height>
+    <width>474</width>
+    <height>483</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,6 +23,12 @@
       <string>Map</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_4">
+      <item row="3" column="1">
+       <widget class="QComboBox" name="renderOrder"/>
+      </item>
+      <item row="2" column="1">
+       <widget class="QComboBox" name="layerFormat"/>
+      </item>
       <item row="3" column="0">
        <widget class="QLabel" name="renderOrderLabel">
         <property name="text">
@@ -32,9 +38,6 @@
          <cstring>renderOrder</cstring>
         </property>
        </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QComboBox" name="layerFormat"/>
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="layerFormatLabel">
@@ -56,9 +59,6 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
-       <widget class="QComboBox" name="renderOrder"/>
-      </item>
       <item row="0" column="0">
        <widget class="QLabel" name="label_5">
         <property name="text">
@@ -66,16 +66,6 @@
         </property>
         <property name="buddy">
          <cstring>orientation</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="1">
-       <widget class="QComboBox" name="objectAlignment"/>
-      </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Object alignment</string>
         </property>
        </widget>
       </item>

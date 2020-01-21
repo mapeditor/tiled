@@ -185,17 +185,6 @@ public:
     { mRenderOrder = renderOrder; }
 
     /**
-     * Returns the alignment for objects in the map.
-     */
-    Alignment objectAlignment() const { return mObjectAlignment; }
-
-    /**
-     * Sets the alignment for objects in the map.
-     */
-    void setObjectAlignment(Alignment objectAlignment)
-    { mObjectAlignment = objectAlignment; }
-
-    /**
      * Returns the compression level of this map.
      */
     int compressionLevel() const { return mCompressionLevel; }
@@ -497,7 +486,6 @@ private:
 
     Orientation mOrientation;
     RenderOrder mRenderOrder;
-    Alignment mObjectAlignment;
     int mCompressionLevel;
     int mWidth;
     int mHeight;

@@ -145,8 +145,7 @@ private:
         TemplateProperty,
         CompressionLevelProperty,
         ChunkWidthProperty,
-        ChunkHeightProperty,
-        ObjectAlignmentProperty
+        ChunkHeightProperty
     };
 
     void addMapProperties();

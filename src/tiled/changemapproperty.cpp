@@ -119,17 +119,6 @@ ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
 }
 
 ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
-                                     Alignment objectAlignment)
-    : QUndoCommand(QCoreApplication::translate("Undo Commands",
-                                               "Change Object Alignment"))
-    , mMapDocument(mapDocument)
-    , mProperty(ObjectAlignment)
-    , mObjectAlignment(objectAlignment)
-{
-
-}
-
-ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
                                      Map::LayerDataFormat layerDataFormat)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Change Layer Data Format"))
@@ -226,11 +215,6 @@ void ChangeMapProperty::swap()
         map->setChunkSize(mChunkSize);
         mChunkSize = chunkSize;
         break;
-    }
-    case ObjectAlignment: {
-        const Alignment objectAlignment = map->objectAlignment();
-        map->setObjectAlignment(mObjectAlignment);
-        mObjectAlignment = objectAlignment;
     }
     }
 

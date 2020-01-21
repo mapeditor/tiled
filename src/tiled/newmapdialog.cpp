@@ -100,17 +100,6 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Left Down"), QVariant::fromValue(Map::LeftDown));
     mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Left Up"), QVariant::fromValue(Map::LeftUp));
 
-    mUi->objectAlignment->addItem(QCoreApplication::translate("Tiled::PropertyBrowser", "Unspecified"), QVariant::fromValue(Unspecified));
-    mUi->objectAlignment->addItem(QCoreApplication::translate("Tiled::PropertyBrowser", "Top Left"), QVariant::fromValue(TopLeft));
-    mUi->objectAlignment->addItem(QCoreApplication::translate("Tiled::PropertyBrowser", "Top"), QVariant::fromValue(Top));
-    mUi->objectAlignment->addItem(QCoreApplication::translate("Tiled::PropertyBrowser", "Top Right"), QVariant::fromValue(TopRight));
-    mUi->objectAlignment->addItem(QCoreApplication::translate("Tiled::PropertyBrowser", "Left"), QVariant::fromValue(Left));
-    mUi->objectAlignment->addItem(QCoreApplication::translate("Tiled::PropertyBrowser", "Center"), QVariant::fromValue(Center));
-    mUi->objectAlignment->addItem(QCoreApplication::translate("Tiled::PropertyBrowser", "Right"), QVariant::fromValue(Right));
-    mUi->objectAlignment->addItem(QCoreApplication::translate("Tiled::PropertyBrowser", "Bottom Left"), QVariant::fromValue(BottomLeft));
-    mUi->objectAlignment->addItem(QCoreApplication::translate("Tiled::PropertyBrowser", "Bottom"), QVariant::fromValue(Bottom));
-    mUi->objectAlignment->addItem(QCoreApplication::translate("Tiled::PropertyBrowser", "Bottom Right"), QVariant::fromValue(BottomRight));
-
     mUi->orientation->addItem(tr("Orthogonal"), QVariant::fromValue(Map::Orthogonal));
     mUi->orientation->addItem(tr("Isometric"), QVariant::fromValue(Map::Isometric));
     mUi->orientation->addItem(tr("Isometric (Staggered)"), QVariant::fromValue(Map::Staggered));
@@ -169,7 +158,6 @@ MapDocumentPtr NewMapDialog::createMap()
     const auto orientation = comboBoxValue<Map::Orientation>(mUi->orientation);
     const auto layerFormat = comboBoxValue<Map::LayerDataFormat>(mUi->layerFormat);
     const auto renderOrder = comboBoxValue<Map::RenderOrder>(mUi->renderOrder);
-    const auto objectAlignment = comboBoxValue<Alignment>(mUi->objectAlignment);
 
     std::unique_ptr<Map> map { new Map(orientation,
                                        mapWidth, mapHeight,
@@ -178,7 +166,6 @@ MapDocumentPtr NewMapDialog::createMap()
 
     map->setLayerDataFormat(layerFormat);
     map->setRenderOrder(renderOrder);
-    map->setObjectAlignment(objectAlignment);
 
     const size_t gigabyte = 1073741824u;
     const size_t memory = size_t(mapWidth) * size_t(mapHeight) * sizeof(Cell);

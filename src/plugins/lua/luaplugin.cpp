@@ -211,11 +211,9 @@ void LuaWriter::writeMap(const Map *map)
 
     const QString orientation = orientationToString(map->orientation());
     const QString renderOrder = renderOrderToString(map->renderOrder());
-    const QString objectAlignment = alignmentToString(map->objectAlignment());
 
     mWriter.writeKeyAndValue("orientation", orientation);
     mWriter.writeKeyAndValue("renderorder", renderOrder);
-    mWriter.writeKeyAndValue("objectalignment", objectAlignment);
     mWriter.writeKeyAndValue("width", map->width());
     mWriter.writeKeyAndValue("height", map->height());
     mWriter.writeKeyAndValue("tilewidth", map->tileWidth());

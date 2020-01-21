@@ -57,7 +57,6 @@ QVariant MapToVariantConverter::toVariant(const Map &map, const QDir &mapDir)
     mapVariant[QLatin1String("tiledversion")] = QCoreApplication::applicationVersion();
     mapVariant[QLatin1String("orientation")] = orientationToString(map.orientation());
     mapVariant[QLatin1String("renderorder")] = renderOrderToString(map.renderOrder());
-    mapVariant[QLatin1String("objectalignment")] = alignmentToString(map.objectAlignment());
     mapVariant[QLatin1String("width")] = map.width();
     mapVariant[QLatin1String("height")] = map.height();
     mapVariant[QLatin1String("tilewidth")] = map.tileWidth();

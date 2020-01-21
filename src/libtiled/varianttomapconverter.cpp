@@ -67,7 +67,6 @@ std::unique_ptr<Map> VariantToMapConverter::toMap(const QVariant &variant,
     const QString staggerAxis = variantMap[QLatin1String("staggeraxis")].toString();
     const QString staggerIndex = variantMap[QLatin1String("staggerindex")].toString();
     const QString renderOrder = variantMap[QLatin1String("renderorder")].toString();
-    const QString objectAlignment = variantMap[QLatin1String("objectAlignment")].toString();
 
     const int nextLayerId = variantMap[QLatin1String("nextlayerid")].toInt();
     const int nextObjectId = variantMap[QLatin1String("nextobjectid")].toInt();
@@ -82,7 +81,6 @@ std::unique_ptr<Map> VariantToMapConverter::toMap(const QVariant &variant,
     map->setStaggerAxis(staggerAxisFromString(staggerAxis));
     map->setStaggerIndex(staggerIndexFromString(staggerIndex));
     map->setRenderOrder(renderOrderFromString(renderOrder));
-    map->setObjectAlignment(alignmentFromString(objectAlignment));
     if (nextLayerId)
         map->setNextLayerId(nextLayerId);
     if (nextObjectId)

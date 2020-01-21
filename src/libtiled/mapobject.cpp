@@ -224,10 +224,6 @@ QRectF MapObject::screenBounds(const MapRenderer &renderer) const
  *
  * For tile objects, the default alignment can be overridden by setting an
  * alignment on the tileset.
- *
- * The alignment can be set on the map for all objects, in which case it
- * overrides even that of tile objects. If no map is provided, the the map the
- * object is part of is used, if available.
  */
 Alignment MapObject::alignment(const Map *map) const
 {
@@ -238,9 +234,6 @@ Alignment MapObject::alignment(const Map *map) const
 
     if (!map && mObjectGroup)
         map = mObjectGroup->map();
-
-    if (map && map->objectAlignment() != Unspecified)
-        alignment = map->objectAlignment();
 
     if (alignment == Unspecified) {
         if (mCell.isEmpty())

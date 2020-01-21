@@ -642,16 +642,9 @@ void PropertyBrowser::addMapProperties()
                         tr("Tile Render Order"),
                         groupProperty);
 
-    QtVariantProperty *objectAlignmentProperty =
-            addProperty(ObjectAlignmentProperty,
-                        QtVariantPropertyManager::enumTypeId(),
-                        tr("Object Alignment"),
-                        groupProperty);
-
     addProperty(CompressionLevelProperty, QVariant::Int, tr("Compression level"), groupProperty);
 
     renderOrderProperty->setAttribute(QLatin1String("enumNames"), mRenderOrderNames);
-    objectAlignmentProperty->setAttribute(QLatin1String("enumNames"), mAlignmentNames);
 
     addProperty(BackgroundColorProperty, QVariant::Color, tr("Background Color"), groupProperty);
     addProperty(groupProperty);
@@ -1045,11 +1038,6 @@ void PropertyBrowser::applyMapValue(PropertyId id, const QVariant &val)
         QSize chunkSize = mMapDocument->map()->chunkSize();
         chunkSize.setHeight(val.toInt());
         command = new ChangeMapProperty(mMapDocument, chunkSize);
-        break;
-    }
-    case ObjectAlignmentProperty: {
-        Alignment objectAlignment = static_cast<Alignment>(val.toInt());
-        command = new ChangeMapProperty(mMapDocument, objectAlignment);
         break;
     }
     default:
@@ -1658,7 +1646,6 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[LayerFormatProperty]->setValue(map->layerDataFormat());
         mIdToProperty[CompressionLevelProperty]->setValue(map->compressionLevel());
         mIdToProperty[RenderOrderProperty]->setValue(map->renderOrder());
-        mIdToProperty[ObjectAlignmentProperty]->setValue(map->objectAlignment());
         mIdToProperty[BackgroundColorProperty]->setValue(map->backgroundColor());
         mIdToProperty[ChunkWidthProperty]->setValue(map->chunkSize().width());
         mIdToProperty[ChunkHeightProperty]->setValue(map->chunkSize().height());
