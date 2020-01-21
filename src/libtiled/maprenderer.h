@@ -291,8 +291,7 @@ class CellRenderer
 public:
     enum Origin {
         TopLeft,
-        BottomLeft,
-        BottomCenter
+        BottomLeft
     };
 
     enum CellType {

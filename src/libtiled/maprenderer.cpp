@@ -253,16 +253,8 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &si
     if (!tile || tile->image().isNull()) {
         QRectF target { pos, size };
 
-        switch (origin) {
-        case TopLeft:
-            break;
-        case BottomLeft:
+        if (origin == BottomLeft)
             target.translate(0.0, -size.height());
-            break;
-        case BottomCenter:
-            target.translate(-size.width() / 2, -size.height());
-            break;
-        }
 
         renderMissingImageMarker(*mPainter, target);
         return;
@@ -298,18 +290,9 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &si
     fragment.rotation = 0;
     fragment.opacity = 1;
 
-    // Correct the position if the origin is not TopLeft.
-    switch (origin) {
-    case TopLeft:
-        break;
-    case BottomLeft:
+    // Correct the position if the origin is BottomLeft.
+    if (origin == BottomLeft)
         fragment.y -= size.height();
-        break;
-    case BottomCenter:
-        fragment.x -= sizeHalf.x();
-        fragment.y -= size.height();
-        break;
-    }
 
     if (mCellType == HexagonalCells) {
 
@@ -329,8 +312,7 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &si
         // Compensate for the swap of image dimensions
         const qreal halfDiff = sizeHalf.y() - sizeHalf.x();
         fragment.y += halfDiff;
-        if (origin != BottomCenter)
-            fragment.x += halfDiff;
+        fragment.x += halfDiff;
     }
 
     fragment.scaleX = scale.width() * (flippedHorizontally ? -1 : 1);
