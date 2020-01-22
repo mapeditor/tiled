@@ -308,18 +308,22 @@ void ProjectModel::folderScanned(FolderEntry *resultPointer)
     const std::unique_ptr<FolderEntry> &entry = *it;
     const QModelIndex index = indexForEntry(entry.get());
 
-    beginRemoveRows(index, 0, entry->entries.size() - 1);
-    entry->entries.clear();
-    endRemoveRows();
+    if (!entry->entries.empty()) {
+        beginRemoveRows(index, 0, entry->entries.size() - 1);
+        entry->entries.clear();
+        endRemoveRows();
+    }
 
-    beginInsertRows(index, 0, result->entries.size() - 1);
-    entry->entries.swap(result->entries);
+    if (!result->entries.empty()) {
+        beginInsertRows(index, 0, result->entries.size() - 1);
+        entry->entries.swap(result->entries);
 
-    // Fix up parent pointers
-    for (auto &childEntry: entry->entries)
-        childEntry->parent = entry.get();
+        // Fix up parent pointers
+        for (auto &childEntry: entry->entries)
+            childEntry->parent = entry.get();
 
-    endInsertRows();
+        endInsertRows();
+    }
 
     if (!mFoldersPendingScan.isEmpty()) {
         mScanningFolder = mFoldersPendingScan.takeFirst();
