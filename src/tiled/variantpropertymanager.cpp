@@ -34,14 +34,12 @@
 namespace Tiled {
 
 class TilesetParametersPropertyType {};
-class AlignmentPropertyType {};
 
 } // namespace Tiled
 
 // Needs to be up here rather than at the bottom of the file to make a
 // static_assert in qMetaTypeId work (as of C++11)
 Q_DECLARE_METATYPE(Tiled::TilesetParametersPropertyType)
-Q_DECLARE_METATYPE(Tiled::AlignmentPropertyType)
 
 namespace Tiled {
 
@@ -95,7 +93,7 @@ int VariantPropertyManager::valueType(int propertyType) const
     if (propertyType == tilesetParametersTypeId())
         return qMetaTypeId<TilesetDocument*>();
     if (propertyType == alignmentTypeId())
-        return qMetaTypeId<Qt::Alignment>();
+        return propertyType;
     return QtVariantPropertyManager::valueType(propertyType);
 }
 
@@ -145,7 +143,7 @@ int VariantPropertyManager::tilesetParametersTypeId()
 
 int VariantPropertyManager::alignmentTypeId()
 {
-    return qMetaTypeId<AlignmentPropertyType>();
+    return qMetaTypeId<Qt::Alignment>();
 }
 
 int VariantPropertyManager::displayObjectRefTypeId()
