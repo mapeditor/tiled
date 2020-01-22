@@ -30,6 +30,7 @@
 #include <QFileInfo>
 #include <QMenu>
 #include <QMouseEvent>
+#include <QStandardPaths>
 #include <QTreeView>
 
 namespace Tiled {
@@ -82,9 +83,17 @@ ProjectDock::ProjectDock(QWidget *parent)
 
 void ProjectDock::addFolderToProject()
 {
-    const QString folder = QFileDialog::getExistingDirectory(window(),
-                                                             tr("Choose Folder"),
-                                                             QFileInfo(project().fileName()).path());
+    QString folder = QFileInfo(project().fileName()).path();
+    if (folder.isEmpty()) {
+        if (!project().folders().isEmpty())
+            folder = QFileInfo(project().folders().last()).path();
+        else
+            folder = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+    }
+
+    folder = QFileDialog::getExistingDirectory(window(),
+                                               tr("Choose Folder"),
+                                               folder);
 
     if (folder.isEmpty())
         return;

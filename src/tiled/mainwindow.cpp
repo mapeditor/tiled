@@ -1190,15 +1190,25 @@ void MainWindow::saveProjectAs()
     Project &project = mProjectDock->project();
     QString fileName = project.fileName();
     if (fileName.isEmpty()) {
-        const auto recents = prefs->recentProjects();
-        if (!recents.isEmpty())
-            fileName = QFileInfo(recents.first()).path();
-        if (fileName.isEmpty())
-            fileName = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+        if (!project.folders().isEmpty()) {
+            // Try to suggest a name for the project based on folder location
+            const auto path = fileName = QFileInfo(project.folders().first()).path();
+            fileName = path
+                    + QLatin1Char('/')
+                    + QFileInfo(path).fileName()
+                    + QLatin1String(".tiled-project");
+        } else {
+            // Start in a familiar location otherwise
+            const auto recents = prefs->recentProjects();
+            if (!recents.isEmpty())
+                fileName = QFileInfo(recents.first()).path();
 
-        fileName.append(QLatin1Char('/'));
-        fileName.append(tr("untitled"));
-        fileName.append(QLatin1String(".tiled-project"));
+            if (fileName.isEmpty())
+                fileName = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+
+            fileName.append(QLatin1Char('/'));
+            fileName.append(tr("untitled") + QLatin1String(".tiled-project"));
+        }
     }
 
     const QString projectFilesFilter = tr("Tiled Projects (*.tiled-project)");
@@ -1225,7 +1235,10 @@ void MainWindow::saveProjectAs()
 
     prefs->addRecentProject(fileName);
     prefs->session().setProject(fileName);
-    prefs->saveSessionNow(Session::defaultFileNameForProject(fileName));
+
+    const auto sessionFileName = Session::defaultFileNameForProject(fileName);
+    prefs->saveSessionNow(sessionFileName);
+    prefs->setLastSession(sessionFileName);
 
     updateWindowTitle();
     updateActions();
