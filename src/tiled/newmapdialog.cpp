@@ -73,7 +73,7 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 #endif
 
-    mUi->fixedSizeSpacer->changeSize(qRound(Utils::dpiScaled(mUi->fixedSizeSpacer->sizeHint().width())), 0,
+    mUi->fixedSizeSpacer->changeSize(Utils::dpiScaled(mUi->fixedSizeSpacer->sizeHint().width()), 0,
                                      mUi->fixedSizeSpacer->sizePolicy().horizontalPolicy());
 
     mUi->buttonBox->button(QDialogButtonBox::Save)->setText(tr("Save As..."));

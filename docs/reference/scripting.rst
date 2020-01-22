@@ -20,6 +20,15 @@ On startup, Tiled will execute any script files present in
 scripts directly from :ref:`the console <script-console>`. All scripts share
 a single JavaScript context.
 
+.. warning::
+
+    Most builds of Tiled use Qt 5.12 or later, which support ECMAScript 7.
+    However, the builds for Windows XP and the snap release of Tiled currently
+    rely on Qt 5.6 and Qt 5.9 respectively. ECMAScript 7 features will not
+    work there and some other functionality is missing as well, like
+    interrupting scripts on API usage errors and the creation of new
+    Tiled-specific objects.
+
 .. _script-extensions:
 
 Scripted Extensions

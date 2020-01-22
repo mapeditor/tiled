@@ -567,7 +567,7 @@ void TiledProxyStyle::drawControl(ControlElement element,
         // Don't draw handle for single pixel splitters
         if (option->rect.width() > 1 && option->rect.height() > 1) {
             //draw grips
-            int size = qRound(Utils::dpiScaled(3));
+            int size = Utils::dpiScaled(3);
             int offset = -size / 2 + 1;
 
             if (option->state & State_Horizontal) {
@@ -922,7 +922,7 @@ void TiledProxyStyle::drawComplexControl(ComplexControl control,
             if (scrollBar->subControls & SC_ScrollBarSlider) {
                 QColor sliderColor = getSliderColor(option->palette, isDarkBg);
 
-                int margin = qRound(Utils::dpiScaled(2));
+                int margin = Utils::dpiScaled(2);
 
                 QRect sliderRect = scrollBarSlider.adjusted(margin + 1, margin, -margin - 1, -margin - 1);
                 if (horizontal)
@@ -1041,6 +1041,8 @@ int TiledProxyStyle::pixelMetric(QStyle::PixelMetric metric,
     switch (metric) {
     case PM_MenuBarItemSpacing:
         return 0;                   // no space between menu bar items
+    case PM_MenuPanelWidth:
+        return Utils::dpiScaled(2);
     case PM_TabBarTabShiftHorizontal:
     case PM_TabBarTabShiftVertical:
         return 0;                   // no shifting of tabs
@@ -1071,12 +1073,12 @@ QSize TiledProxyStyle::sizeFromContents(ContentsType type,
     switch (type) {
     case CT_MenuBarItem:            // make the menu bar item itself wider
         if (!size.isEmpty())
-            size += QSize(Utils::dpiScaled(16.),
-                          Utils::dpiScaled(5.));
+            size += QSize(Utils::dpiScaled(16),
+                          Utils::dpiScaled(5));
         break;
     case CT_ItemViewItem:           // give item view items a little more space
         size = QCommonStyle::sizeFromContents(type, option, contentsSize, widget);
-        size += QSize(0, Utils::dpiScaled(2.));
+        size += QSize(0, Utils::dpiScaled(2));
         break;
     case CT_TabBarTab:
         if (const QStyleOptionTab *tab = qstyleoption_cast<const QStyleOptionTab *>(option)) {
@@ -1133,7 +1135,7 @@ QRect TiledProxyStyle::subElementRect(QStyle::SubElement subElement, const QStyl
             bool selected = tab->state & State_Selected;
             int verticalShift = proxy()->pixelMetric(QStyle::PM_TabBarTabShiftVertical, tab, widget);
             int horizontalShift = proxy()->pixelMetric(QStyle::PM_TabBarTabShiftHorizontal, tab, widget);
-            int hpadding = Utils::dpiScaled(4.);       // normally half the PM_TabBarTabHSpace
+            int hpadding = Utils::dpiScaled(4);       // normally half the PM_TabBarTabHSpace
 
             bool verticalTabs = tab->shape == QTabBar::RoundedEast
                     || tab->shape == QTabBar::RoundedWest
@@ -1158,7 +1160,7 @@ QRect TiledProxyStyle::subElementRect(QStyle::SubElement subElement, const QStyl
             QSize size = (subElement == SE_TabBarTabLeftButton) ? tab->leftButtonSize : tab->rightButtonSize;
             int w = size.width();
             int h = size.height();
-            int midHeight = static_cast<int>(qCeil(float(tr.height() - h) / 2));
+            int midHeight = static_cast<int>(qCeil(qreal(tr.height() - h) / 2));
             int midWidth = ((tr.width() - w) / 2);
             bool atTheTop = true;
             switch (tab->shape) {

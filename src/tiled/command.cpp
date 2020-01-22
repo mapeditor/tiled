@@ -20,12 +20,14 @@
 
 #include "command.h"
 
+#include "actionmanager.h"
 #include "commandmanager.h"
 #include "documentmanager.h"
 #include "logginginterface.h"
 #include "mapdocument.h"
 #include "mapobject.h"
 
+#include <QAction>
 #include <QDir>
 #include <QMessageBox>
 #include <QStandardPaths>
@@ -98,11 +100,8 @@ QString Command::replaceVariables(const QString &string, bool quoteValues) const
 
 void Command::execute(bool inTerminal) const
 {
-    if (saveBeforeExecute) {
-        Document *document = DocumentManager::instance()->currentDocument();
-        if (document)
-            document->save(document->fileName());
-    }
+    if (saveBeforeExecute)
+        ActionManager::instance()->action("Save")->trigger();
 
     // Start the process
     new CommandProcess(*this, inTerminal, showOutput);

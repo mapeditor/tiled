@@ -195,7 +195,7 @@ TileCollisionDock::TileCollisionDock(QWidget *parent)
     rightToolBar->addWidget(zoomComboBox);
 
     auto horizontal = new QHBoxLayout;
-    horizontal->setSpacing(qRound(Utils::dpiScaled(5)));
+    horizontal->setSpacing(Utils::dpiScaled(5));
     horizontal->addWidget(toolsToolBar, 1);
     horizontal->addWidget(rightToolBar);
 

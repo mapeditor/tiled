@@ -336,8 +336,8 @@ TileAnimationEditor::TileAnimationEditor(QWidget *parent)
     Utils::restoreGeometry(this);
 
     mUi->horizontalSplitter->setSizes(QList<int>()
-                                      << qRound(Utils::dpiScaled(128))
-                                      << qRound(Utils::dpiScaled(512)));
+                                      << Utils::dpiScaled(128)
+                                      << Utils::dpiScaled(512));
 }
 
 TileAnimationEditor::~TileAnimationEditor()
