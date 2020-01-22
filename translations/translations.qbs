@@ -5,9 +5,11 @@ Product {
     type: "qm"
     files: "*.ts"
 
-    // Disabled languages because they're too outdated
+    // Disabled languages because they're too incomplete
     excludeFiles: [
+        "tiled_hi.ts",
         "tiled_lv.ts",
+        "tiled_mr.ts",
     ]
 
     Depends { name: "Qt.core" }
