@@ -1,3 +1,22 @@
+### Tiled 1.3.2 (22 January 2020)
+
+* Fixed initialization of selected layers (#2719)
+* Fixed stamp action shortcuts not being configurable (#2684)
+* Fixed the tileset view to respect the 'wheel zooms by default' preference
+* Fixed insertion position when using drag-n-drop to rearrange layers
+* Fixed displayed layer data format in Properties
+* Fixed repeating of export when map is saved by a custom command (#2709)
+* Fixed issue when multiple worlds are loaded that use pattern matching
+* Issues view can now be hidden by clicking the status bar counters
+* macOS: Fixed black toolbar when enabling OpenGL rendering (#1839)
+* Windows: Fixed context menus activating first item on release (#2693)
+* Windows installer: Include the 'defoldcollection' plugin (#2677)
+* libtiled: Avoid inheriting Properties from QVariantMap (#2679)
+* docs: Added some notes to Python and JavaScript pages (#2725)
+* Updated Qt from 5.12.5 to 5.12.6
+* Updated Finnish translation (by Tuomas Lähteenmäki and odamite)
+* Updated part of Italian translation (by Katia Piazza)
+
 ### Tiled 1.3.1 (20 November 2019)
 
 * Added reloading of object types when changed externally (by Jacob Coughenour, #2674)
