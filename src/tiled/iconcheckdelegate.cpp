@@ -58,7 +58,7 @@ IconCheckDelegate::IconCheckDelegate(IconType icon,
 
 int IconCheckDelegate::exclusiveSectionWidth()
 {
-    return qRound(Utils::dpiScaled(22));
+    return Utils::dpiScaled(22);
 }
 
 /**

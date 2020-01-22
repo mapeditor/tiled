@@ -69,6 +69,7 @@ void restoreGeometry(QWidget *widget);
 void saveGeometry(QWidget *widget);
 
 qreal defaultDpiScale();
+int dpiScaled(int value);
 qreal dpiScaled(qreal value);
 QSize dpiScaled(QSize value);
 QPoint dpiScaled(QPoint value);

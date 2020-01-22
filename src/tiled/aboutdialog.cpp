@@ -36,7 +36,7 @@ using namespace Tiled;
 AboutDialog::AboutDialog(QWidget *parent): QDialog(parent)
 {
     setupUi(this);
-    logo->setMinimumWidth(qRound(Utils::dpiScaled(logo->minimumWidth())));
+    logo->setMinimumWidth(Utils::dpiScaled(logo->minimumWidth()));
 #if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 #endif

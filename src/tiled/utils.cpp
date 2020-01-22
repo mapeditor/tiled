@@ -171,16 +171,21 @@ qreal dpiScaled(qreal value)
 #endif
 }
 
+int dpiScaled(int value)
+{
+    return qRound(dpiScaled(qreal(value)));
+}
+
 QSize dpiScaled(QSize value)
 {
-    return QSize(qRound(dpiScaled(value.width())),
-                 qRound(dpiScaled(value.height())));
+    return QSize(dpiScaled(value.width()),
+                 dpiScaled(value.height()));
 }
 
 QPoint dpiScaled(QPoint value)
 {
-    return QPoint(qRound(dpiScaled(value.x())),
-                  qRound(dpiScaled(value.y())));
+    return QPoint(dpiScaled(value.x()),
+                  dpiScaled(value.y()));
 }
 
 QRectF dpiScaled(QRectF value)

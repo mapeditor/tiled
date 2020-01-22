@@ -620,7 +620,7 @@ ShortcutSettingsPage::~ShortcutSettingsPage()
 QSize ShortcutSettingsPage::sizeHint() const
 {
     QSize size = QWidget::sizeHint();
-    size.setWidth(qRound(Utils::dpiScaled(500)));
+    size.setWidth(Utils::dpiScaled(500));
     return size;
 }
 
