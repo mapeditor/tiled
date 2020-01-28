@@ -89,6 +89,8 @@ DynamicLibrary {
         "maptovariantconverter.h",
         "mapwriter.cpp",
         "mapwriter.h",
+        "minimaprenderer.cpp",
+        "minimaprenderer.h",
         "object.cpp",
         "object.h",
         "objectgroup.cpp",
