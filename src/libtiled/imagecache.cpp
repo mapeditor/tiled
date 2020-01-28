@@ -199,8 +199,22 @@ void ImageCache::remove(const QString &fileName)
 
 QImage ImageCache::renderMap(const QString &fileName)
 {
+    static QSet<QString> loadingMaps;
+
+    if (loadingMaps.contains(fileName)) {
+        ERROR(QCoreApplication::translate("Tiled::ImageCache",
+                                          "Recursive metatile map detected: %1")
+              .arg(fileName), OpenFile { fileName });
+        return {};
+    }
+
+    loadingMaps.insert(fileName);
+
     QString errorString;
     auto map = Tiled::readMap(fileName, &errorString);
+
+    loadingMaps.remove(fileName);
+
     if (!map) {
         ERROR(QCoreApplication::translate("Tiled::ImageCache",
                                           "Failed to read metatile map %1: %2")
