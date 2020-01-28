@@ -117,6 +117,7 @@ Java
 
 -  A library for loading TMX files is included with Tiled at
    `util/java/libtiled-java <https://github.com/bjorn/tiled/tree/master/util/java/libtiled-java>`__.
+- Liti Engine uses TMX as its map format: `github.com/gurkenlabs/litiengine <https://github.com/gurkenlabs/litiengine>`_
 -  Android-Specific:
 
    -  `AndroidTMXLoader <https://github.com/davidmi/Android-TMX-Loader>`__
