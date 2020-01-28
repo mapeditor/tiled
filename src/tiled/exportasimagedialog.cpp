@@ -148,6 +148,7 @@ void ExportAsImageDialog::accept()
     const bool includeBackgroundColor = mUi->includeBackgroundColor->isChecked();
 
     MiniMapRenderer miniMapRenderer(mMapDocument->map());
+    miniMapRenderer.setGridColor(Preferences::instance()->gridColor());
 
     MiniMapRenderer::RenderFlags renderFlags(MiniMapRenderer::DrawTileLayers |
                                              MiniMapRenderer::DrawMapObjects |

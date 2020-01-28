@@ -1,6 +1,8 @@
 /*
- * imagecache.h
- * Copyright 2018, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+ * minimaprenderer.h
+ * Copyright 2017, Yuriy Natarov <natarur@gmail.com>
+ * Copyright 2012, Christoph Schnackenberg <bluechs@gmx.de>
+ * Copyright 2012-2020, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of libtiled.
  *
@@ -30,59 +32,56 @@
 
 #include "tiled_global.h"
 
-#include <QColor>
-#include <QDateTime>
-#include <QHash>
 #include <QImage>
-#include <QPixmap>
-#include <QString>
 
 namespace Tiled {
 
-struct TILEDSHARED_EXPORT TilesheetParameters
-{
-    QString fileName;
-    int tileWidth;
-    int tileHeight;
-    int spacing;
-    int margin;
-    QColor transparentColor;
-
-    bool operator==(const TilesheetParameters &other) const;
-};
-
-uint TILEDSHARED_EXPORT qHash(const TilesheetParameters &key, uint seed = 0) Q_DECL_NOTHROW;
-
-struct LoadedImage
-{
-    LoadedImage();
-    LoadedImage(QImage image, const QDateTime &lastModified);
-
-    operator const QImage &() const { return image; }
-
-    QImage image;
-    QDateTime lastModified;
-};
-
-struct CutTiles;
-struct LoadedPixmap;
 class Map;
+class MapRenderer;
 
-class TILEDSHARED_EXPORT ImageCache
+class TILEDSHARED_EXPORT MiniMapRenderer
 {
 public:
-    static LoadedImage loadImage(const QString &fileName);
-    static QPixmap loadPixmap(const QString &fileName);
-    static QVector<QPixmap> cutTiles(const TilesheetParameters &parameters);
+    enum RenderFlag {
+        DrawMapObjects          = 0x0001,
+        DrawTileLayers          = 0x0002,
+        DrawImageLayers         = 0x0004,
+        IgnoreInvisibleLayer    = 0x0008,
+        DrawGrid                = 0x0010,
+        DrawBackground          = 0x0020,
+        SmoothPixmapTransform   = 0x0040,
+        IncludeOverhangingTiles = 0x0080
+    };
 
-    static void remove(const QString &fileName);
+    Q_DECLARE_FLAGS(RenderFlags, RenderFlag)
+
+    MiniMapRenderer(const Map *map);
+    ~MiniMapRenderer();
+
+    void setGridColor(const QColor &color);
+
+    QSize mapSize() const;
+
+    QImage render(QSize size, RenderFlags renderFlags) const;
+
+    void renderToImage(QImage &image, RenderFlags renderFlags) const;
 
 private:
-    static QImage renderMap(const QString &fileName);
-
-    static QHash<QString, LoadedImage> sLoadedImages;
-    static QHash<QString, LoadedPixmap> sLoadedPixmaps;
-    static QHash<TilesheetParameters, CutTiles> sCutTiles;
+    const Map *mMap;
+    MapRenderer *mRenderer;
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+    QColor mGridColor = Qt::black;
+#else
+    QColor mGridColor = QColorConstants::Black;
+#endif
 };
 
+
+inline void MiniMapRenderer::setGridColor(const QColor &color)
+{
+    mGridColor = color;
+}
+
 } // namespace Tiled
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::MiniMapRenderer::RenderFlags)
