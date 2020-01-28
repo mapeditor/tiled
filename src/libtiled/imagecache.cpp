@@ -28,15 +28,15 @@
 
 #include "imagecache.h"
 
+#include "logginginterface.h"
 #include "map.h"
 #include "mapreader.h"
-#include "orthogonalrenderer.h"
-#include "logginginterface.h"
-#include "objectgroup.h"
-#include "imagelayer.h"
+#include "minimaprenderer.h"
+
 #include "qtcompat_p.h"
 
 #include <QBitmap>
+#include <QCoreApplication>
 #include <QFileInfo>
 
 namespace Tiled {
@@ -62,38 +62,58 @@ uint qHash(const TilesheetParameters &key, uint seed) Q_DECL_NOTHROW
     return h;
 }
 
-static bool objectLessThan(const MapObject *a, const MapObject *b)
+struct CutTiles
 {
-    return a->y() < b->y();
-}
+    operator const QVector<QPixmap> &() const { return tiles; }
 
-struct LoadedMapRender {
+    QVector<QPixmap> tiles;
+    QDateTime lastModified;
+};
+
+struct LoadedMapRender
+{
     explicit LoadedMapRender(const Map *map, LoadedImage image);
 
     const Map *map;
     LoadedImage image;
 };
 
-LoadedImage::LoadedImage(const QString &fileName)
-    : image(fileName)
-    , lastModified(QFileInfo(fileName).lastModified())
+struct LoadedPixmap
+{
+    explicit LoadedPixmap(const LoadedImage &cachedImage);
+
+    operator const QPixmap &() const { return pixmap; }
+
+    QPixmap pixmap;
+    QDateTime lastModified;
+};
+
+
+LoadedImage::LoadedImage()
+    : LoadedImage(QImage(), QDateTime())
 {}
 
-LoadedImage::LoadedImage(QImage &image, const QDateTime &lastModified)
-    : image(std::move(image)),
-      lastModified(lastModified)
+LoadedImage::LoadedImage(const QString &fileName)
+    : LoadedImage(QImage(fileName), QFileInfo(fileName).lastModified())
 {}
+
+LoadedImage::LoadedImage(QImage image, const QDateTime &lastModified)
+    : image(std::move(image))
+    , lastModified(lastModified)
+{}
+
+
+LoadedMapRender::LoadedMapRender(const Map *map, LoadedImage image)
+    : map(map)
+    , image(image)
+{}
+
 
 LoadedPixmap::LoadedPixmap(const LoadedImage &cachedImage)
     : pixmap(QPixmap::fromImage(cachedImage))
     , lastModified(cachedImage.lastModified)
 {}
 
-
-LoadedMapRender::LoadedMapRender(const Map *map, LoadedImage image)
-    : map(map),
-      image(image)
-{}
 
 QHash<QString, LoadedImage> ImageCache::sLoadedImages;
 QHash<QString, LoadedPixmap> ImageCache::sLoadedPixmaps;
@@ -147,7 +167,6 @@ static CutTiles cutTilesImpl(const TilesheetParameters &p)
     const QImage &image = loadedImage.image;
     const int stopWidth = image.width() - p.tileWidth;
     const int stopHeight = image.height() - p.tileHeight;
-    INFO(QString::number(image.width()) + QLatin1String(" + ") + QString::number(image.height()));
 
     CutTiles result;
     result.lastModified = loadedImage.lastModified;
@@ -234,91 +253,29 @@ LoadedImage ImageCache::loadMapRender(const QString &fileName)
         sLoadedMaps.push_back(reader.readMap(fileName));
         auto map = sLoadedMaps.back().get();
         if (!map) {
-            ERROR(tr("Failed to read metatile map %1: %2")
-                  .arg(fileName).arg(reader.errorString()));
-            // TODO: What to return for an error? This produces a loaded image that
-            // is guaranteed to be invalid, in a hackey way.
-            return LoadedImage(fileName);
+            ERROR(QCoreApplication::translate("Tiled::ImageCache",
+                                              "Failed to read metatile map %1: %2")
+                  .arg(fileName, reader.errorString()));
+
+            return LoadedImage();
         }
 
-        auto rawImage = renderMapToImage(map);
-        LoadedImage image(rawImage, QFileInfo(fileName).lastModified());
+        MiniMapRenderer miniMapRenderer(map);
 
+        const MiniMapRenderer::RenderFlags renderFlags(MiniMapRenderer::DrawTileLayers |
+                                                       MiniMapRenderer::DrawMapObjects |
+                                                       MiniMapRenderer::DrawImageLayers |
+                                                       MiniMapRenderer::IgnoreInvisibleLayer |
+                                                       MiniMapRenderer::DrawBackground);
+        const QSize mapSize = miniMapRenderer.mapSize();
 
+        QImage mapImage = miniMapRenderer.render(mapSize, renderFlags);
+        LoadedImage image(std::move(mapImage), QFileInfo(fileName).lastModified());
 
         it = sLoadedMapRenders.insert(fileName, LoadedMapRender(map, image));
     }
 
     return it->image;
-}
-
-QImage ImageCache::renderMapToImage(const Map *map)
-{
-    QSize mapSize(map->tileWidth() * map->width(),
-                  map->tileHeight() * map->height());
-    QImage image(mapSize, QImage::Format_ARGB32_Premultiplied);
-    if (map->backgroundColor().isValid())
-        image.fill(map->backgroundColor());
-    else
-        image.fill(Qt::transparent);
-
-    QPainter painter(&image);
-    OrthogonalRenderer renderer(map);
-    LayerIterator iterator(map);
-    while (const Layer *layer = iterator.next()) {
-        if (layer->isHidden())
-            continue;
-
-        const auto offset = layer->totalOffset();
-
-        painter.setOpacity(layer->effectiveOpacity());
-        painter.translate(offset);
-
-        switch (layer->layerType()) {
-        case Layer::TileLayerType: {
-            const TileLayer *tileLayer = static_cast<const TileLayer*>(layer);
-            renderer.drawTileLayer(&painter, tileLayer);
-            break;
-        }
-        case Layer::ObjectGroupType: {
-            const ObjectGroup *objectGroup = static_cast<const ObjectGroup*>(layer);
-            QList<MapObject*> objects = objectGroup->objects();
-
-            if (objectGroup->drawOrder() == ObjectGroup::TopDownOrder)
-                std::stable_sort(objects.begin(), objects.end(), objectLessThan);
-
-            for (const MapObject *object : qAsConst(objects)) {
-                if (!object->isVisible())
-                    continue;
-
-                if (object->rotation() != qreal(0)) {
-                    WARNING(QLatin1String("Rotated objects are not supported in metatile maps. Skipping..."));
-                    continue;
-                }
-
-                if (!object->isTileObject()) {
-                    WARNING(QLatin1String("Only tile objects are supported in metatile maps. Skipping..."));
-                    continue;
-                }
-
-                renderer.drawMapObject(&painter, object, QColor());
-            }
-            break;
-        }
-        case Layer::ImageLayerType: {
-            const ImageLayer *imageLayer = static_cast<const ImageLayer*>(layer);
-            renderer.drawImageLayer(&painter, imageLayer);
-            break;
-        }
-        case Layer::GroupLayerType:
-            // Recursion handled by LayerIterator
-            break;
-        }
-
-        painter.translate(-offset);
-    }
-
-    return image;
 }
 
 void ImageCache::purgeSubMaps()
