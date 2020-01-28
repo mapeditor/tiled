@@ -167,14 +167,10 @@ void MiniMapRenderer::renderToImage(QImage& image, RenderFlags renderFlags) cons
     qreal scale = qMin(static_cast<qreal>(image.width()) / mapSize.width(),
                        static_cast<qreal>(image.height()) / mapSize.height());
 
-    if (renderFlags.testFlag(DrawBackground)) {
-        if (mMap->backgroundColor().isValid())
-            image.fill(mMap->backgroundColor());
-        else
-            image.fill(Qt::gray);
-    } else {
+    if (renderFlags.testFlag(DrawBackground) && mMap->backgroundColor().isValid())
+        image.fill(mMap->backgroundColor());
+    else
         image.fill(Qt::transparent);
-    }
 
     QPainter painter(&image);
     painter.setRenderHints(QPainter::SmoothPixmapTransform, renderFlags.testFlag(SmoothPixmapTransform));
