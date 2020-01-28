@@ -37,8 +37,6 @@
 #include <QPixmap>
 #include <QString>
 
-#include <memory>
-
 namespace Tiled {
 
 struct TILEDSHARED_EXPORT TilesheetParameters
@@ -58,7 +56,6 @@ uint TILEDSHARED_EXPORT qHash(const TilesheetParameters &key, uint seed = 0) Q_D
 struct LoadedImage
 {
     LoadedImage();
-    explicit LoadedImage(const QString &fileName);
     LoadedImage(QImage image, const QDateTime &lastModified);
 
     operator const QImage &() const { return image; }
@@ -68,7 +65,6 @@ struct LoadedImage
 };
 
 struct CutTiles;
-struct LoadedMapRender;
 struct LoadedPixmap;
 class Map;
 
@@ -80,16 +76,13 @@ public:
     static QVector<QPixmap> cutTiles(const TilesheetParameters &parameters);
 
     static void remove(const QString &fileName);
-    static void purgeSubMaps();
 
 private:
-    static LoadedImage loadMapRender(const QString &fileName);
+    static QImage renderMap(const QString &fileName);
 
     static QHash<QString, LoadedImage> sLoadedImages;
     static QHash<QString, LoadedPixmap> sLoadedPixmaps;
-    static QHash<QString, LoadedMapRender> sLoadedMapRenders;
     static QHash<TilesheetParameters, CutTiles> sCutTiles;
-    static std::vector<std::unique_ptr<Map>> sLoadedMaps;
 };
 
 } // namespace Tiled

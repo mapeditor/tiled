@@ -20,6 +20,7 @@
 
 #include "utils.h"
 
+#include "mapformat.h"
 #include "preferences.h"
 
 #include <QAction>
@@ -59,12 +60,16 @@ namespace Utils {
 
 /**
  * Returns a file dialog filter that matches all readable image formats.
+ *
+ * This includes all supported map formats, which are rendered to an image when
+ * used in this context.
  */
 QString readableImageFormatsFilter()
 {
-    auto imageFormats = QImageReader::supportedImageFormats();
-    imageFormats.append(QByteArray("tmx"));
-    return toImageFileFilter(imageFormats);
+    auto imageFilter = toImageFileFilter(QImageReader::supportedImageFormats());
+
+    FormatHelper<MapFormat> helper(FileFormat::Read, imageFilter);
+    return helper.filter();
 }
 
 /**
