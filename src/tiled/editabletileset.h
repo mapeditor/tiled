@@ -39,7 +39,10 @@ class EditableTileset : public EditableAsset
     Q_PROPERTY(int tileCount READ tileCount)
     Q_PROPERTY(int tileWidth READ tileWidth WRITE setTileWidth)
     Q_PROPERTY(int tileHeight READ tileHeight WRITE setTileHeight)
-    Q_PROPERTY(QSize tileSize READ tileSize)
+    Q_PROPERTY(QSize tileSize READ tileSize WRITE setTileSize)
+    Q_PROPERTY(int imageWidth READ imageWidth)
+    Q_PROPERTY(int imageHeight READ imageHeight)
+    Q_PROPERTY(QSize imageSize READ imageSize)
     Q_PROPERTY(int tileSpacing READ tileSpacing)
     Q_PROPERTY(int margin READ margin)
     Q_PROPERTY(QPoint tileOffset READ tileOffset WRITE setTileOffset)
@@ -63,6 +66,9 @@ public:
     int tileWidth() const;
     int tileHeight() const;
     QSize tileSize() const;
+    int imageWidth() const;
+    int imageHeight() const;
+    QSize imageSize() const;
     int tileSpacing() const;
     int margin() const;
     QPoint tileOffset() const;
@@ -89,6 +95,7 @@ public slots:
     void setImage(const QString &imageFilePath);
     void setTileWidth(int width);
     void setTileHeight(int height);
+    void setTileSize(QSize size);
     void setTileSize(int width, int height);
     void setTileOffset(QPoint tileOffset);
     void setBackgroundColor(const QColor &color);
@@ -144,6 +151,21 @@ inline QSize EditableTileset::tileSize() const
     return tileset()->tileSize();
 }
 
+inline int EditableTileset::imageWidth() const
+{
+    return tileset()->imageWidth();
+}
+
+inline int EditableTileset::imageHeight() const
+{
+    return tileset()->imageHeight();
+}
+
+inline QSize EditableTileset::imageSize() const
+{
+    return QSize(imageWidth(), imageHeight());
+}
+
 inline int EditableTileset::tileSpacing() const
 {
     return tileset()->tileSpacing();
@@ -176,12 +198,17 @@ inline Tileset *EditableTileset::tileset() const
 
 inline void EditableTileset::setTileWidth(int width)
 {
-    setTileSize(width, tileHeight());
+    setTileSize(QSize(width, tileHeight()));
 }
 
 inline void EditableTileset::setTileHeight(int height)
 {
-    setTileSize(tileWidth(), height);
+    setTileSize(QSize(tileWidth(), height));
+}
+
+inline void EditableTileset::setTileSize(int width, int height)
+{
+    setTileSize(QSize(width, height));
 }
 
 } // namespace Tiled

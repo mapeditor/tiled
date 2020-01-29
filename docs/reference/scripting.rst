@@ -977,7 +977,7 @@ Properties
     **pos** : :ref:`script-point`, Position of the object in pixels.
     **width** : number, Width of the object in pixels.
     **height** : number, Height of the object in pixels.
-    **size** : size, Size of the object in pixels (has ``width`` and ``height`` members).
+    **size** : :ref:`script-size`, Size of the object in pixels.
     **rotation** : number, Rotation of the object in degrees clockwise.
     **visible** : bool, Whether the object is visible.
     **polygon** : :ref:`Polygon <script-polygon>`, Polygon of the object.
@@ -1031,7 +1031,10 @@ Properties
     **tileCount** : int, The number of tiles in this tileset.
     **tileWidth** : int, Tile width for tiles in this tileset in pixels.
     **tileHeight** : int, Tile Height for tiles in this tileset in pixels.
-    **tileSize** : size |ro|, Tile size for tiles in this tileset in pixels (has ``width`` and ``height`` members).
+    **tileSize** : :ref:`script-size`, Tile size for tiles in this tileset in pixels.
+    **imageWidth** : int |ro|, Width of the tileset image in pixels.
+    **imageHeight** : int |ro|, Height of the tileset image in pixels.
+    **imageSize** : :ref:`script-size` |ro|, Size of the tileset image in pixels.
     **tileSpacing** : int |ro|, Spacing between tiles in this tileset in pixels.
     **margin** : int |ro|, Margin around the tileset in pixels (only used at the top and left sides of the tileset image).
     **tileOffset** : :ref:`script-point`, Offset in pixels that is applied when tiles from this tileset are rendered.
@@ -1080,7 +1083,7 @@ Properties
     **id** : int |ro|, ID of this tile within its tileset.
     **width** : int |ro|, Width of the tile in pixels.
     **height** : int |ro|, Height of the tile in pixels.
-    **size** : size |ro|, Size of the tile in pixels (has ``width`` and ``height`` members).
+    **size** : :ref:`script-size` |ro|, Size of the tile in pixels.
     **type** : string, Type of the tile.
     **imageFileName** : string, File name of the tile image (when the tile is part of an image collection tileset).
     **terrain** : :ref:`script-tileterrains`, An object specifying the terrain at each corner of the tile.
