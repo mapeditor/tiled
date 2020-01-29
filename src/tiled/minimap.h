@@ -28,7 +28,6 @@
 #include <QTimer>
 
 namespace Tiled {
-namespace Internal {
 
 class MapDocument;
 
@@ -58,10 +57,9 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
 
-private slots:
+private:
     void redrawTimeout();
 
-private:
     MapDocument *mMapDocument;
     QImage mMapImage;
     QRect mImageRect;
@@ -79,5 +77,4 @@ private:
     void centerViewOnLocalPixel(QPoint centerPos, int delta = 0);
 };
 
-} // namespace Internal
 } // namespace Tiled

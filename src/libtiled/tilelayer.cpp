@@ -33,8 +33,13 @@
 #include "hex.h"
 
 #include <algorithm>
+#include <memory>
+
+#include <QSet>
 
 using namespace Tiled;
+
+Cell Cell::empty;
 
 QRegion Chunk::region(std::function<bool (const Cell &)> condition) const
 {
@@ -90,7 +95,7 @@ void Chunk::removeReferencesToTileset(Tileset *tileset)
 {
     for (int i = 0, i_end = mGrid.size(); i < i_end; ++i) {
         if (mGrid.at(i).tileset() == tileset)
-            mGrid.replace(i, Cell());
+            mGrid.replace(i, Cell::empty);
     }
 }
 
@@ -108,22 +113,11 @@ TileLayer::TileLayer(const QString &name, int x, int y, int width, int height)
     , mHeight(height)
     , mUsedTilesetsDirty(false)
 {
-    Q_ASSERT(width >= 0);
-    Q_ASSERT(height >= 0);
 }
 
 TileLayer::TileLayer(const QString &name, QPoint position, QSize size)
     : TileLayer(name, position.x(), position.y(), size.width(), size.height())
 {
-}
-
-static QMargins maxMargins(const QMargins &a,
-                           const QMargins &b)
-{
-    return QMargins(qMax(a.left(), b.left()),
-                    qMax(a.top(), b.top()),
-                    qMax(a.right(), b.right()),
-                    qMax(a.bottom(), b.bottom()));
 }
 
 static QMargins computeDrawMargins(const QSet<SharedTileset> &tilesets)
@@ -180,7 +174,7 @@ QRegion TileLayer::region(std::function<bool (const Cell &)> condition) const
 void Tiled::TileLayer::setCell(int x, int y, const Cell &cell)
 {
     if (!findChunk(x, y)) {
-        if (cell == mEmptyCell && !cell.checked()) {
+        if (cell == Cell::empty && !cell.checked()) {
             return;
         } else {
             mBounds = mBounds.united(QRect(x - (x & CHUNK_MASK),
@@ -206,25 +200,32 @@ void Tiled::TileLayer::setCell(int x, int y, const Cell &cell)
     _chunk.setCell(x & CHUNK_MASK, y & CHUNK_MASK, cell);
 }
 
-TileLayer *TileLayer::copy(const QRegion &region) const
+std::unique_ptr<TileLayer> TileLayer::copy(const QRegion &region) const
 {
-    const QRect areaBounds = region.boundingRect();
+    const QRect regionBounds = region.boundingRect();
+    const QRegion regionWithContents = region.intersected(mBounds);
 
-    TileLayer *copied = new TileLayer(QString(),
-                                      0, 0,
-                                      areaBounds.width(), areaBounds.height());
+    auto copied = std::make_unique<TileLayer>(QString(),
+                                              0, 0,
+                                              regionBounds.width(), regionBounds.height());
 
-    for (const QRect &rect : region.rects())
+#if QT_VERSION < 0x050800
+    const auto rects = regionWithContents.rects();
+    for (const QRect &rect : rects) {
+#else
+    for (const QRect &rect : regionWithContents) {
+#endif
         for (int x = rect.left(); x <= rect.right(); ++x)
             for (int y = rect.top(); y <= rect.bottom(); ++y)
-                copied->setCell(x - areaBounds.x(),
-                                y - areaBounds.y(),
+                copied->setCell(x - regionBounds.x(),
+                                y - regionBounds.y(),
                                 cellAt(x, y));
+    }
 
     return copied;
 }
 
-void TileLayer::merge(const QPoint &pos, const TileLayer *layer)
+void TileLayer::merge(QPoint pos, const TileLayer *layer)
 {
     // Determine the overlapping area
     QRect area = QRect(pos, QSize(layer->width(), layer->height()));
@@ -240,15 +241,15 @@ void TileLayer::merge(const QPoint &pos, const TileLayer *layer)
     }
 }
 
-void TileLayer::setCells(int x, int y, TileLayer *layer,
-                         const QRegion &mask)
+void TileLayer::setCells(int x, int y, const TileLayer *layer,
+                         const QRegion &area)
 {
-    QRegion area = QRect(x, y, layer->width(), layer->height());
-
-    if (!mask.isEmpty())
-        area &= mask;
-
-    for (const QRect &rect : area.rects())
+#if QT_VERSION < 0x050800
+    const auto rects = area.rects();
+    for (const QRect &rect : rects)
+#else
+    for (const QRect &rect : area)
+#endif
         for (int _x = rect.left(); _x <= rect.right(); ++_x)
             for (int _y = rect.top(); _y <= rect.bottom(); ++_y)
                 setCell(_x, _y, layer->cellAt(_x - x, _y - y));
@@ -262,7 +263,12 @@ void TileLayer::setTiles(const QRegion &area, Tile *tile)
 {
     Q_ASSERT(area.subtracted(QRegion(0, 0, mWidth, mHeight)).isEmpty());
 
-    for (const QRect &rect : area.rects()) {
+#if QT_VERSION < 0x050800
+    const auto rects = area.rects();
+    for (const QRect &rect : rects) {
+#else
+    for (const QRect &rect : area) {
+#endif
         for (int x = rect.left(); x <= rect.right(); ++x) {
             for (int y = rect.top(); y <= rect.bottom(); ++y) {
                 Cell cell = cellAt(x, y);
@@ -273,18 +279,35 @@ void TileLayer::setTiles(const QRegion &area, Tile *tile)
     }
 }
 
-void TileLayer::erase(const QRegion &area)
+void TileLayer::erase(const QRegion &region)
 {
-    const Cell emptyCell;
-    for (const QRect &rect : area.rects())
+    const QRegion regionWithContents = region.intersected(mBounds);
+
+#if QT_VERSION < 0x050800
+    const auto rects = regionWithContents.rects();
+    for (const QRect &rect : rects)
+#else
+    for (const QRect &rect : regionWithContents)
+#endif
         for (int x = rect.left(); x <= rect.right(); ++x)
             for (int y = rect.top(); y <= rect.bottom(); ++y)
-                setCell(x, y, emptyCell);
+                setCell(x, y, Cell::empty);
+}
+
+/**
+ * Clears all tiles from this layer.
+ */
+void TileLayer::clear()
+{
+    mChunks.clear();
+    mBounds = QRect();
+    mUsedTilesets.clear();
+    mUsedTilesetsDirty = false;
 }
 
 void TileLayer::flip(FlipDirection direction)
 {
-    QScopedPointer<TileLayer> newLayer(new TileLayer(QString(), 0, 0, mWidth, mHeight));
+    const auto newLayer = std::make_unique<TileLayer>(QString(), 0, 0, mWidth, mHeight);
 
     Q_ASSERT(direction == FlipHorizontally || direction == FlipVertically);
 
@@ -313,19 +336,20 @@ void TileLayer::flip(FlipDirection direction)
     }
 
     mChunks = newLayer->mChunks;
+    mBounds = newLayer->mBounds;
 }
 
 void TileLayer::flipHexagonal(FlipDirection direction)
 {
-    QScopedPointer<TileLayer> newLayer(new TileLayer(QString(), 0, 0, mWidth, mHeight));
+    const auto newLayer = std::make_unique<TileLayer>(QString(), 0, 0, mWidth, mHeight);
 
     Q_ASSERT(direction == FlipHorizontally || direction == FlipVertically);
 
     // for more info see impl "void TileLayer::rotateHexagonal(RotateDirection direction)"
-    static const char flipMaskH[16] = { 8, 6, 5, 4, 12, 2, 1, 0, 0, 14, 13, 12, 4, 10, 9, 8 }; // [0,15]<=>[8,7]; 2<=>5; 1<=>6; [12,3]<=>[4,11]; 14<=>9; 13<=>10;
-    static const char flipMaskV[16] = { 4, 10, 9, 8, 0, 14, 13, 12, 12, 2, 1, 0, 8, 6, 5, 4 }; // [0,15]<=>[4,11]; 2<=>9; 1<=>10; [12,3]<=>[8,7]; 14<=>5; 13<=>6;
+    static const unsigned char flipMaskH[16] = { 8, 6, 5, 4, 12, 2, 1, 0, 0, 14, 13, 12, 4, 10, 9, 8 }; // [0,15]<=>[8,7]; 2<=>5; 1<=>6; [12,3]<=>[4,11]; 14<=>9; 13<=>10;
+    static const unsigned char flipMaskV[16] = { 4, 10, 9, 8, 0, 14, 13, 12, 12, 2, 1, 0, 8, 6, 5, 4 }; // [0,15]<=>[4,11]; 2<=>9; 1<=>10; [12,3]<=>[8,7]; 14<=>5; 13<=>6;
 
-    const char (&flipMask)[16] = (direction == FlipHorizontally ? flipMaskH : flipMaskV);
+    const unsigned char (&flipMask)[16] = (direction == FlipHorizontally ? flipMaskH : flipMaskV);
 
     QHashIterator<QPoint, Chunk> it(mChunks);
     while (it.hasNext()) {
@@ -362,19 +386,20 @@ void TileLayer::flipHexagonal(FlipDirection direction)
     }
 
     mChunks = newLayer->mChunks;
+    mBounds = newLayer->mBounds;
 }
 
 void TileLayer::rotate(RotateDirection direction)
 {
-    static const char rotateRightMask[8] = { 5, 4, 1, 0, 7, 6, 3, 2 };
-    static const char rotateLeftMask[8]  = { 3, 2, 7, 6, 1, 0, 5, 4 };
+    static const unsigned char rotateRightMask[8] = { 5, 4, 1, 0, 7, 6, 3, 2 };
+    static const unsigned char rotateLeftMask[8]  = { 3, 2, 7, 6, 1, 0, 5, 4 };
 
-    const char (&rotateMask)[8] =
+    const unsigned char (&rotateMask)[8] =
             (direction == RotateRight) ? rotateRightMask : rotateLeftMask;
 
     int newWidth = mHeight;
     int newHeight = mWidth;
-    QScopedPointer<TileLayer> newLayer(new TileLayer(QString(), 0, 0, newWidth, newHeight));
+    const auto newLayer = std::make_unique<TileLayer>(QString(), 0, 0, newWidth, newHeight);
 
     QHashIterator<QPoint, Chunk> it(mChunks);
     while (it.hasNext()) {
@@ -411,6 +436,7 @@ void TileLayer::rotate(RotateDirection direction)
     mWidth = newWidth;
     mHeight = newHeight;
     mChunks = newLayer->mChunks;
+    mBounds = newLayer->mBounds;
 }
 
 void TileLayer::rotateHexagonal(RotateDirection direction, Map *map)
@@ -430,7 +456,7 @@ void TileLayer::rotateHexagonal(RotateDirection direction, Map *map)
 
     int newWidth = topRight.toStaggered(staggerIndex, staggerAxis).x() * 2 + 2;
     int newHeight = bottomRight.toStaggered(staggerIndex, staggerAxis).y() * 2 + 2;
-    QScopedPointer<TileLayer> newLayer(new TileLayer(QString(), 0, 0, newWidth, newHeight));
+    const auto newLayer = std::make_unique<TileLayer>(QString(), 0, 0, newWidth, newHeight);
 
     Hex newCenter(newWidth / 2, newHeight / 2, staggerIndex, staggerAxis);
 
@@ -452,10 +478,10 @@ void TileLayer::rotateHexagonal(RotateDirection direction, Map *map)
 
     */
 
-    static const char rotateRightMask[16] = { 2, 12, 1, 14, 6, 8, 5, 10, 10,  4, 9, 0, 14,  0, 13,  2 }; // [0,15]->2->1->[12,3]->14->13; [8,7]->10->9->[4,11]->6->5;
-    static const char rotateLeftMask[16]  = { 13, 2, 0,  1, 9, 6, 4,  5,  5, 10, 8, 9,  1, 14, 12, 13 }; // [0,15]->13->14->[12,3]->1->2; [8,7]->5->6->[4,11]->9->10;
+    static const unsigned char rotateRightMask[16] = { 2, 12, 1, 14, 6, 8, 5, 10, 10,  4, 9, 0, 14,  0, 13,  2 }; // [0,15]->2->1->[12,3]->14->13; [8,7]->10->9->[4,11]->6->5;
+    static const unsigned char rotateLeftMask[16]  = { 13, 2, 0,  1, 9, 6, 4,  5,  5, 10, 8, 9,  1, 14, 12, 13 }; // [0,15]->13->14->[12,3]->1->2; [8,7]->5->6->[4,11]->9->10;
 
-    const char (&rotateMask)[16] =
+    const unsigned char (&rotateMask)[16] =
             (direction == RotateRight) ? rotateRightMask : rotateLeftMask;
 
     QHashIterator<QPoint, Chunk> it(mChunks);
@@ -499,6 +525,7 @@ void TileLayer::rotateHexagonal(RotateDirection direction, Map *map)
     mWidth = newWidth;
     mHeight = newHeight;
     mChunks = newLayer->mChunks;
+    mBounds = newLayer->mBounds;
 
     QRect filledRect = region().boundingRect();
 
@@ -565,12 +592,12 @@ void TileLayer::replaceReferencesToTileset(Tileset *oldTileset,
         mUsedTilesets.insert(newTileset->sharedPointer());
 }
 
-void TileLayer::resize(const QSize &size, const QPoint &offset)
+void TileLayer::resize(QSize size, QPoint offset)
 {
     if (this->size() == size && offset.isNull())
         return;
 
-    QScopedPointer<TileLayer> newLayer(new TileLayer(QString(), 0, 0, size.width(), size.height()));
+    const auto newLayer = std::make_unique<TileLayer>(QString(), 0, 0, size.width(), size.height());
 
     // Copy over the preserved part
     QRect area = mBounds.translated(offset).intersected(newLayer->rect());
@@ -590,14 +617,14 @@ static int clampWrap(int value, int min, int max)
     return (v < 0 ? (v + 1) % d + d - 1 : v % d) + min;
 }
 
-void TileLayer::offsetTiles(const QPoint &offset,
-                            const QRect &bounds,
+void TileLayer::offsetTiles(QPoint offset,
+                            QRect bounds,
                             bool wrapX, bool wrapY)
 {
     if (offset.isNull())
         return;
 
-    QScopedPointer<TileLayer> newLayer(clone());
+    const std::unique_ptr<TileLayer> newLayer(clone());
 
     for (int y = bounds.top(); y <= bounds.bottom(); ++y) {
         for (int x = bounds.left(); x <= bounds.right(); ++x) {
@@ -617,7 +644,7 @@ void TileLayer::offsetTiles(const QPoint &offset,
             if (bounds.contains(oldX, oldY))
                 newLayer->setCell(x, y, cellAt(oldX, oldY));
             else
-                newLayer->setCell(x, y, Cell());
+                newLayer->setCell(x, y, Cell::empty);
         }
     }
 
@@ -625,9 +652,9 @@ void TileLayer::offsetTiles(const QPoint &offset,
     mBounds = newLayer->mBounds;
 }
 
-void TileLayer::offsetTiles(const QPoint &offset)
+void TileLayer::offsetTiles(QPoint offset)
 {
-    QScopedPointer<TileLayer> newLayer(new TileLayer(QString(), 0, 0, 0, 0));
+    const auto newLayer = std::make_unique<TileLayer>(QString(), 0, 0, 0, 0);
 
     // Process only the allocated chunks
     QHashIterator<QPoint, Chunk> it(mChunks);
@@ -653,16 +680,16 @@ void TileLayer::offsetTiles(const QPoint &offset)
     mBounds = newLayer->mBounds;
 }
 
-bool TileLayer::canMergeWith(Layer *other) const
+bool TileLayer::canMergeWith(const Layer *other) const
 {
     return other->isTileLayer();
 }
 
-Layer *TileLayer::mergedWith(Layer *other) const
+Layer *TileLayer::mergedWith(const Layer *other) const
 {
     Q_ASSERT(canMergeWith(other));
 
-    const TileLayer *o = static_cast<TileLayer*>(other);
+    const TileLayer *o = static_cast<const TileLayer*>(other);
     const QRect unitedRect = rect().united(o->rect());
     const QPoint offset = position() - unitedRect.topLeft();
 
@@ -721,19 +748,72 @@ static bool compareRectPos(const QRect &a, const QRect &b)
  * This function is used to determine the chunks to write when saving a tile
  * layer.
  */
-QVector<QRect> TileLayer::sortedChunksToWrite() const
+QVector<QRect> TileLayer::sortedChunksToWrite(QSize chunkSize) const
 {
     QVector<QRect> chunksToWrite;
-    chunksToWrite.reserve(mChunks.size());
+    QSet<QPoint> existingChunks;
+
+    bool isNativeChunkSize = (chunkSize.width() == CHUNK_SIZE &&
+                              chunkSize.height() == CHUNK_SIZE);
+
+    if (isNativeChunkSize)
+        chunksToWrite.reserve(mChunks.size());
 
     QHashIterator<QPoint, Chunk> it(mChunks);
     while (it.hasNext()) {
-        it.next();
-        if (!it.value().isEmpty()) {
-            const QPoint p = it.key();
+        const Chunk &chunk = it.next().value();
+        if (chunk.isEmpty())
+            continue;
+
+        const QPoint &p = it.key();
+
+        if (isNativeChunkSize) {
+            // If the desired chunk size is equal to our native chunk size,
+            // then we just we just have to iterate our chunk list and return
+            // the bounds of each chunk.
             chunksToWrite.append(QRect(p.x() * CHUNK_SIZE,
                                        p.y() * CHUNK_SIZE,
                                        CHUNK_SIZE, CHUNK_SIZE));
+        } else {
+            // If the desired chunk size is not the native size, we have to do
+            // a bit of extra work and "rearrange" chunks as we iterate our
+            // list. We do this by iterating every cell in a chunk. If it's not
+            // empty, we check what chunk it should go into with the new chunk
+            // size. If that chunk doesn't exist yet, we create it.
+            //
+            // NOTE: Rather than checking every cell in every chunk, we could
+            // also just test which "new" chunks our "old" chunk would
+            // intersect with and return all of those, this would be faster.
+            // However, that way we could end up with completely empty chunks,
+            // so we'll take the slower route and iterate all cells instead to
+            // avoid that.
+            int oldChunkStartX = p.x() * CHUNK_SIZE;
+            int oldChunkStartY = p.y() * CHUNK_SIZE;
+
+            for (int y = 0; y < CHUNK_SIZE; ++y) {
+                for (int x = 0; x < CHUNK_SIZE; ++x) {
+                    const Cell &cell = chunk.cellAt(x, y);
+
+                    if (!cell.isEmpty()) {
+                        int tileX = oldChunkStartX + x;
+                        int tileY = oldChunkStartY + y;
+
+                        // Nasty conditionals because of potentially negative
+                        // chunk start position. Modulo with negative numbers
+                        // is weird and unintuitive in C++...
+                        int moduloX = tileX % chunkSize.width();
+                        int newChunkStartX = tileX - (moduloX < 0 ? moduloX + chunkSize.width() : moduloX);
+                        int moduloY = tileY % chunkSize.height();
+                        int newChunkStartY = tileY - (moduloY < 0 ? moduloY + chunkSize.height() : moduloY);
+                        QPoint startPoint(newChunkStartX, newChunkStartY);
+
+                        if (!existingChunks.contains(startPoint)) {
+                            existingChunks.insert(startPoint);
+                            chunksToWrite.append(QRect(newChunkStartX, newChunkStartY, chunkSize.width(), chunkSize.height()));
+                        }
+                    }
+                }
+            }
         }
     }
 

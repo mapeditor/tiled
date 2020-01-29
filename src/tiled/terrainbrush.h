@@ -30,8 +30,6 @@ namespace Tiled {
 class Tile;
 class Terrain;
 
-namespace Internal {
-
 class MapDocument;
 
 /**
@@ -85,7 +83,7 @@ signals:
     void terrainCaptured(Terrain *terrain);
 
 protected:
-    void tilePositionChanged(const QPoint &tilePos) override;
+    void tilePositionChanged(QPoint tilePos) override;
 
     void mapDocumentChanged(MapDocument *oldDocument,
                             MapDocument *newDocument) override;
@@ -142,5 +140,4 @@ private:
     int mLineReferenceX, mLineReferenceY;
 };
 
-} // namespace Internal
 } // namespace Tiled

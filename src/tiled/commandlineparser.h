@@ -26,7 +26,6 @@
 #include <QVector>
 
 namespace Tiled {
-namespace Internal {
 
 /**
  * C-style callback function taking an arbitrary data pointer.
@@ -145,5 +144,4 @@ private:
     bool mShowHelp;
 };
 
-} // namespace Internal
 } // namespace Tiled

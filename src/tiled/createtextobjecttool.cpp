@@ -24,53 +24,50 @@
 #include "mapobject.h"
 #include "mapobjectitem.h"
 #include "maprenderer.h"
+#include "objectgroup.h"
 #include "snaphelper.h"
 #include "utils.h"
 
 namespace Tiled {
-namespace Internal {
 
 CreateTextObjectTool::CreateTextObjectTool(QObject *parent)
-    : CreateObjectTool(parent)
+    : CreateObjectTool("CreateTextObjectTool", parent)
 {
-    QIcon icon(QLatin1String(":images/24x24/insert-text.png"));
-    icon.addFile(QLatin1String(":images/48x48/insert-text.png"));
+    QIcon icon(QLatin1String(":images/24/insert-text.png"));
+    icon.addFile(QLatin1String(":images/48/insert-text.png"));
     setIcon(icon);
+    setShortcut(Qt::Key_E);
     Utils::setThemeIcon(this, "insert-text");
-    languageChanged();
+    languageChangedImpl();
 }
 
 void CreateTextObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt::KeyboardModifiers modifiers)
 {
-    const MapRenderer *renderer = mapDocument()->renderer();
+    MapObject *newMapObject = mNewMapObjectItem->mapObject();
+    const QPointF halfSize(newMapObject->width() / 2, newMapObject->height() / 2);
+    const QRectF screenBounds { pos - halfSize, newMapObject->size() };
 
-    const MapObject *mapObject = mNewMapObjectItem->mapObject();
-    const QPointF diff(-mapObject->width() / 2, -mapObject->height() / 2);
-    QPointF pixelCoords = renderer->screenToPixelCoords(pos + diff);
+    // These screenBounds assume TopLeft alignment, but the map's object alignment might be different.
+    const QPointF offset = alignmentOffset(screenBounds, newMapObject->alignment(mapDocument()->map()));
+
+    const MapRenderer *renderer = mapDocument()->renderer();
+    QPointF pixelCoords = renderer->screenToPixelCoords(screenBounds.topLeft() + offset);
 
     SnapHelper(renderer, modifiers).snap(pixelCoords);
 
-    mNewMapObjectItem->mapObject()->setPosition(pixelCoords);
+    newMapObject->setPosition(pixelCoords);
     mNewMapObjectItem->syncWithMapObject();
-    mNewMapObjectItem->setZValue(10000); // sync may change it
-}
-
-void CreateTextObjectTool::mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event)
-{
-    if (event->button() == Qt::RightButton)
-        cancelNewMapObject();
-}
-
-void CreateTextObjectTool::mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event)
-{
-    if (event->button() == Qt::LeftButton)
-        finishNewMapObject();
 }
 
 void CreateTextObjectTool::languageChanged()
 {
+    CreateObjectTool::languageChanged();
+    languageChangedImpl();
+}
+
+void CreateTextObjectTool::languageChangedImpl()
+{
     setName(tr("Insert Text"));
-    setShortcut(QKeySequence(tr("E")));
 }
 
 MapObject *CreateTextObjectTool::createNewMapObject()
@@ -85,5 +82,4 @@ MapObject *CreateTextObjectTool::createNewMapObject()
     return newMapObject;
 }
 
-} // namespace Internal
 } // namespace Tiled

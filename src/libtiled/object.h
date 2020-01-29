@@ -28,6 +28,8 @@
 
 #pragma once
 
+#include <QObject>
+
 #include "properties.h"
 #include "objecttypes.h"
 
@@ -36,8 +38,10 @@ namespace Tiled {
 /**
  * The base class for anything that can hold properties.
  */
-class TILEDSHARED_EXPORT Object
+class TILEDSHARED_EXPORT Object : public QObject
 {
+    Q_OBJECT
+
 public:
     enum TypeId {
         LayerType,
@@ -51,7 +55,7 @@ public:
         WangColorType
     };
 
-    Object(TypeId typeId) : mTypeId(typeId) {}
+    explicit Object(TypeId typeId) : mTypeId(typeId) {}
 
     /**
      * Virtual destructor.
@@ -84,10 +88,10 @@ public:
      * Merges \a properties with the existing properties. Properties with the
      * same name will be overridden.
      *
-     * \sa Properties::merge
+     * \sa Tiled::mergeProperties
      */
     void mergeProperties(const Properties &properties)
-    { mProperties.merge(properties); }
+    { Tiled::mergeProperties(mProperties, properties); }
 
     /**
      * Returns the value of the object's \a name property.
@@ -105,6 +109,12 @@ public:
      */
     QString propertyAsString(const QString &name) const
     { return mProperties.value(name).toString(); }
+
+    /**
+     * Returns the type of the object's \a name property, as a string.
+     */
+    QString propertyType(const QString &name) const
+    { return typeToName(mProperties.value(name).userType()); }
 
     /**
      * Returns whether this object has a property with the given \a name.

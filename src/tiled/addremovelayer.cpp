@@ -27,7 +27,6 @@
 #include <QCoreApplication>
 
 namespace Tiled {
-namespace Internal {
 
 AddRemoveLayer::AddRemoveLayer(MapDocument *mapDocument,
                                int index,
@@ -83,5 +82,4 @@ RemoveLayer::RemoveLayer(MapDocument *mapDocument,
     setText(QCoreApplication::translate("Undo Commands", "Remove Layer"));
 }
 
-} // namespace Internal
 } // namespace Tiled

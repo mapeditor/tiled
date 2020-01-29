@@ -21,12 +21,10 @@
 #include "editor.h"
 
 namespace Tiled {
-namespace Internal {
 
 Editor::Editor(QObject *parent)
     : QObject(parent)
 {
 }
 
-} // namespace Internal
 } // namespace Tiled

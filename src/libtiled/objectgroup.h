@@ -30,13 +30,13 @@
 
 #pragma once
 
-#include "tiled_global.h"
-
 #include "layer.h"
 
 #include <QColor>
 #include <QList>
 #include <QMetaType>
+
+#include <memory>
 
 namespace Tiled {
 
@@ -47,6 +47,8 @@ class MapObject;
  */
 class TILEDSHARED_EXPORT ObjectGroup : public Layer
 {
+    Q_OBJECT
+
 public:
     /**
      * Objects within an object group can either be drawn top down (sorted
@@ -60,7 +62,7 @@ public:
         IndexOrder
     };
 
-    ObjectGroup();
+    explicit ObjectGroup(const QString &name = QString());
     ObjectGroup(const QString &name, int x, int y);
 
     ~ObjectGroup() override;
@@ -84,6 +86,7 @@ public:
      * Adds an object to this object group.
      */
     void addObject(MapObject *object);
+    void addObject(std::unique_ptr<MapObject> &&object);
 
     /**
      * Inserts an object at the specified index. This is only used for undoing
@@ -157,8 +160,8 @@ public:
     void offsetObjects(const QPointF &offset, const QRectF &bounds,
                        bool wrapX, bool wrapY);
 
-    bool canMergeWith(Layer *other) const override;
-    Layer *mergedWith(Layer *other) const override;
+    bool canMergeWith(const Layer *other) const override;
+    Layer *mergedWith(const Layer *other) const override;
 
     const QColor &color() const;
     void setColor(const QColor &color);

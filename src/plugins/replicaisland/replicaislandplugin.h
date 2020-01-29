@@ -51,12 +51,12 @@ public:
      */
     ReplicaIslandPlugin();
 
-    Tiled::Map *read(const QString &fileName) override;
+    std::unique_ptr<Tiled::Map> read(const QString &fileName) override;
     QString nameFilter() const override;
     QString shortName() const override;
     bool supportsFile(const QString &fileName) const override;
     QString errorString() const override;
-    bool write(const Tiled::Map *map, const QString &fileName) override;
+    bool write(const Tiled::Map *map, const QString &fileName, Options options) override;
 
 private:
     QString mError;

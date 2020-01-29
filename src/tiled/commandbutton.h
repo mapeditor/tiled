@@ -25,7 +25,6 @@
 class QMenu;
 
 namespace Tiled {
-namespace Internal {
 
 class MainWindow;
 class DocumentManager;
@@ -40,15 +39,13 @@ public:
 protected:
     void changeEvent(QEvent *event) override;
 
-private slots:
+private:
     void runCommand();
     void showDialog();
 
-private:
     void retranslateUi();
 
     QMenu *mMenu;
 };
 
-} // namespace Internal
 } // namespace Tiled

@@ -35,8 +35,8 @@ class Layer;
 class Map;
 class ObjectGroup;
 class ObjectTemplate;
-class Properties;
 class Tileset;
+class WangColor;
 
 /**
  * Converts a QVariant to a Map instance. Meant to be used together with
@@ -60,7 +60,7 @@ public:
      * Returns 0 in case of an error. The error can be obstained using
      * errorString().
      */
-    Map *toMap(const QVariant &variant, const QDir &mapDir);
+    std::unique_ptr<Map> toMap(const QVariant &variant, const QDir &mapDir);
 
     /**
      * Tries to convert the given \a variant to a Tileset instance. The
@@ -77,7 +77,7 @@ public:
      * \a directory is necessary to resolve any relative references to external
      * tilesets.
      */
-    ObjectTemplate *toObjectTemplate(const QVariant &variant, const QDir &directory);
+    std::unique_ptr<ObjectTemplate> toObjectTemplate(const QVariant &variant, const QDir &directory);
 
     /**
      * Returns the last error, if any.
@@ -88,17 +88,21 @@ private:
     Properties toProperties(const QVariant &propertiesVariant,
                             const QVariant &propertyTypesVariant) const;
     SharedTileset toTileset(const QVariant &variant);
-    ObjectTemplate *toObjectTemplate(const QVariant &variant);
-    Layer *toLayer(const QVariant &variant);
-    TileLayer *toTileLayer(const QVariantMap &variantMap);
-    ObjectGroup *toObjectGroup(const QVariantMap &variantMap);
-    MapObject *toMapObject(const QVariantMap &variantMap);
-    ImageLayer *toImageLayer(const QVariantMap &variantMap);
-    GroupLayer *toGroupLayer(const QVariantMap &variantMap);
+    std::unique_ptr<WangSet> toWangSet(const QVariantMap &variantMap, Tileset *tileset);
+    QSharedPointer<WangColor> toWangColor(const QVariantMap &variantMap, bool isEdge);
+    std::unique_ptr<ObjectTemplate> toObjectTemplate(const QVariant &variant);
+    std::unique_ptr<Layer> toLayer(const QVariant &variant);
+    std::unique_ptr<TileLayer> toTileLayer(const QVariantMap &variantMap);
+    std::unique_ptr<ObjectGroup> toObjectGroup(const QVariantMap &variantMap);
+    std::unique_ptr<MapObject> toMapObject(const QVariantMap &variantMap);
+    std::unique_ptr<ImageLayer> toImageLayer(const QVariantMap &variantMap);
+    std::unique_ptr<GroupLayer> toGroupLayer(const QVariantMap &variantMap);
 
     QPolygonF toPolygon(const QVariant &variant) const;
     TextData toTextData(const QVariantMap &variant) const;
 
+    void readMapEditorSettings(Map &map, const QVariantMap &editorSettings);
+    void readTilesetEditorSettings(Tileset &tileset, const QVariantMap &editorSettings);
     bool readTileLayerData(TileLayer &tileLayer,
                            const QVariant &dataVariant,
                            Map::LayerDataFormat layerDataFormat,
@@ -107,7 +111,7 @@ private:
     Properties extractProperties(const QVariantMap &variantMap) const;
 
     Map *mMap;
-    QDir mMapDir;
+    QDir mDir;
     bool mReadingExternalTileset;
     GidMapper mGidMapper;
     QString mError;

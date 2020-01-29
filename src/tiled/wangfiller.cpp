@@ -26,7 +26,6 @@
 #include "wangset.h"
 
 using namespace Tiled;
-using namespace Internal;
 
 static const QPoint aroundTilePoints[] = {
     QPoint( 0, -1),
@@ -99,8 +98,8 @@ Cell WangFiller::findFittingCell(const TileLayer &back,
 
     WangTile wangTile;
     if (!mWangSet->isComplete()) {
-        //goes through all adjacent, empty tiles and sees if the current wangTile
-        //allows them to have at least one fill option.
+        // goes through all adjacent, empty tiles and sees if the current wangTile
+        // allows them to have at least one fill option.
         while (!wangTiles.isEmpty()) {
             wangTile = wangTiles.take();
 
@@ -109,11 +108,11 @@ Cell WangFiller::findFittingCell(const TileLayer &back,
             QPoint adjacentPoints[8];
             getSurroundingPoints(point, mStaggeredRenderer, mStaggerAxis, adjacentPoints);
 
-            //now goes through and checks adjacents, continuing if any can't be filled
+            // now goes through and checks adjacents, continuing if any can't be filled
             for (int i = 0; i < 8; ++i) {
                 QPoint adjacentPoint = adjacentPoints[i];
 
-                //check if the point is empty, otherwise, continue.
+                // check if the point is empty, otherwise, continue.
                 if (!getCell(back, front, fillRegion, adjacentPoint).isEmpty())
                     continue;
 
@@ -140,46 +139,55 @@ Cell WangFiller::findFittingCell(const TileLayer &back,
     return wangTile.makeCell();
 }
 
-TileLayer *WangFiller::fillRegion(const TileLayer &back,
-                                  const QRegion &fillRegion) const
+std::unique_ptr<TileLayer> WangFiller::fillRegion(const TileLayer &back,
+                                                  const QRegion &fillRegion) const
 {
     Q_ASSERT(mWangSet);
 
-    QRect boundingRect = fillRegion.boundingRect();
+    const QRect boundingRect = fillRegion.boundingRect();
 
-    TileLayer *tileLayer = new TileLayer(QString(),
-                                         boundingRect.x(),
-                                         boundingRect.y(),
-                                         boundingRect.width(),
-                                         boundingRect.height());
+    std::unique_ptr<TileLayer> tileLayer { new TileLayer(QString(),
+                                                         boundingRect.x(),
+                                                         boundingRect.y(),
+                                                         boundingRect.width(),
+                                                         boundingRect.height()) };
 
     QVector<WangId> wangIds(tileLayer->width() * tileLayer->height(), 0);
-    for (const QRect &rect : fillRegion.rects()) {
+#if QT_VERSION < 0x050800
+    const auto rects = fillRegion.rects();
+    for (const QRect &rect : rects) {
+#else
+    for (const QRect &rect : fillRegion) {
+#endif
         for (int x = rect.left(); x <= rect.right(); ++x) {
             int index = x - tileLayer->x() + (rect.top() - tileLayer->y()) * tileLayer->width();
             wangIds[index] = wangIdFromSurroundings(back,
                                                     fillRegion,
                                                     QPoint(x, rect.top()));
 
-            index = x - tileLayer->x() + (rect.bottom() - tileLayer->y())*tileLayer->width();
+            index = x - tileLayer->x() + (rect.bottom() - tileLayer->y()) * tileLayer->width();
             wangIds[index] = wangIdFromSurroundings(back,
                                                     fillRegion,
                                                     QPoint(x, rect.bottom()));
         }
         for (int y = rect.top() + 1; y < rect.bottom(); ++y) {
-            int index = rect.left() - tileLayer->x() + (y - tileLayer->y())*tileLayer->width();
+            int index = rect.left() - tileLayer->x() + (y - tileLayer->y()) * tileLayer->width();
             wangIds[index] = wangIdFromSurroundings(back,
                                                     fillRegion,
                                                     QPoint(rect.left(), y));
 
-            index = rect.right() - tileLayer->x() + (y - tileLayer->y())*tileLayer->width();
+            index = rect.right() - tileLayer->x() + (y - tileLayer->y()) * tileLayer->width();
             wangIds[index] = wangIdFromSurroundings(back,
                                                     fillRegion,
                                                     QPoint(rect.right(), y));
         }
     }
 
-    for (const QRect &rect : fillRegion.rects()) {
+#if QT_VERSION < 0x050800
+    for (const QRect &rect : rects) {
+#else
+    for (const QRect &rect : fillRegion) {
+#endif
         for (int y = rect.top(); y <= rect.bottom(); ++y) {
             for (int x = rect.left(); x <= rect.right(); ++x) {
                 QPoint currentPoint(x, y);

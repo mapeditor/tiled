@@ -25,7 +25,6 @@
 class QAction;
 
 namespace Tiled {
-namespace Internal {
 
 class ShapeFillTool : public AbstractTileFillTool
 {
@@ -44,18 +43,18 @@ public:
     void populateToolBar(QToolBar *toolBar) override;
 
 protected:
-    void tilePositionChanged(const QPoint&) override;
+    void tilePositionChanged(QPoint) override;
     void clearConnections(MapDocument *) override {}
 
 private:
     enum ToolBehavior {
-        Free, //nothing has been started
+        Free,   // nothing has been started
         MakingShape
     };
 
     enum Shape {
-        Rect,   //making a rectangle
-        Circle //making a circle
+        Rect,   // making a rectangle
+        Circle  // making a circle
     };
 
     ToolBehavior mToolBehavior;
@@ -69,5 +68,4 @@ private:
     void updateFillOverlay();
 };
 
-}
-}
+} // namespace Tiled

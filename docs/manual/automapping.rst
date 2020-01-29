@@ -155,8 +155,8 @@ true.
 Map Properties
 --------------
 
-There are three different map properties, which can be used to add
-additional information to a **rulefile**:
+The following map properties can be used to customize the behavior of
+the rules in a **rulefile**:
 
 DeleteTiles
    This map property is a boolean property: it can be
@@ -173,6 +173,50 @@ AutomappingRadius
    This map property is a number: 1, 2, 3 ... It
    determines how many tiles around your changes will be checked as well
    for redoing the Automapping at live Automapping.
+
+.. raw:: html
+
+   <div class="new new-prev">Since Tiled 1.2</div>
+
+MatchOutsideMap
+   This map property determines whether rules can match even when their input
+   region falls partially outside of a map. By default it is ``false`` for
+   bounded maps and ``true`` for infinite maps. In some cases it can be useful
+   to enable this also for bounded maps. Tiles outside of the map boundaries
+   are simply considered empty unless one of either **OverflowBorder** or
+   **WrapBorder** are also true.
+
+   Tiled 1.0 and 1.1 behaved as if this property was ``true``, whereas older
+   versions of Tiled have behaved as if this property was ``false``.
+
+.. raw:: html
+
+   <div class="new">New in Tiled 1.3</div>
+
+OverflowBorder
+   This map property customizes the behavior intended by the **MatchOutsideMap**
+   property. When this property is ``true``, tiles outside of the map boundaries
+   are considered as if they were copies of the nearest inbound tiles, effectively
+   "overflowing" the map's borders to the outside region.
+
+   When this property is ``true``, it implies **MatchOutsideMap**. Note that
+   this property has no effect on infinite maps (since there is no notion of border).
+
+.. raw:: html
+
+   <div class="new">New in Tiled 1.3</div>
+
+WrapBorder
+   This map property customizes the behavior intended by the **MatchOutsideMap**
+   property. When this property is ``true``, the map effectively "wraps" around itself,
+   making tiles on one border of the map influence the regions on the other border and
+   vice versa.
+
+   When this property is ``true``, it implies **MatchOutsideMap**. Note that
+   this property has no effect on infinite maps (since there is no notion of border).
+
+   If both **WrapBorder** and **OverflowBorder** are ``true``, **WrapBorder** takes
+   precedence over **OverflowBorder**.
 
 NoOverlappingRules
    This map property is a boolean property:
@@ -199,32 +243,8 @@ StrictEmpty
    it means an empty tile is not allowed at that location.
 
 
-Converting Rules From 0.8 and Below
-===================================
-
-There is a tool **automappingconverter** along in your distribution to
-convert the rules created for previous versions of Tiled to version 0.9
-and later.
-
-If you are compiling tiled from scratch the tool is found in the in
-**/bin/** folder.
-
-The changes for conversion are only layer renaming:
-
-Previous **RuleRegion** will be named **regions**
-
-Previous **RuleSet** will be named **input\_set**
-
-Previous **RuleNotSet** will be named **inputnot\_set**
-
-Previous **Rule\_\*** will be named **output\_\***
-
 Examples
 ========
-
-All of the examples are for version 0.9 and later. If you want to see
-examples for tiled version 0.8 and below, `have a look in this
-archive. <https://github.com/stefanbeller/tiled_examples/zipball/v0.8andbefore>`__
 
 Abstract Input Layer Examples
 -----------------------------

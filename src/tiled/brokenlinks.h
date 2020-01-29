@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include "mapdocument.h"
 #include "tileset.h"
 
 #include <QAbstractListModel>
@@ -37,8 +38,6 @@ namespace Tiled {
 class Tile;
 class Tileset;
 class ObjectTemplate;
-
-namespace Internal {
 
 class Document;
 class TilesetDocument;
@@ -90,15 +89,13 @@ public:
 signals:
     void hasBrokenLinksChanged(bool hasBrokenLinks);
 
-private slots:
+private:
     void tileImageSourceChanged(Tile *tile);
     void tilesetChanged(Tileset *tileset);
 
     void tilesetAdded(int index, Tileset *tileset);
     void tilesetRemoved(Tileset *tileset);
-    void tilesetReplaced(int index, Tileset *newTileset, Tileset *oldTileset);
 
-private:
     void connectToTileset(const SharedTileset &tileset);
     void disconnectFromTileset(const SharedTileset &tileset);
 
@@ -135,14 +132,9 @@ public:
 signals:
     void ignore();
 
-private slots:
+private:
     void clicked(QAbstractButton *button);
     void selectionChanged();
-
-private:
-    void tryFixLinks(const QVector<BrokenLink> &links);
-    void tryFixLink(const BrokenLink &link);
-    bool tryFixLink(const BrokenLink &link, const QString &newFilePath);
 
     BrokenLinksModel *mBrokenLinksModel;
     QSortFilterProxyModel *mProxyModel;
@@ -153,5 +145,45 @@ private:
     QAbstractButton *mLocateButton;
 };
 
-} // namespace Internal
+
+class LinkFixer
+{
+public:
+    LinkFixer(Document *document);
+
+    void tryFixLinks(const QVector<BrokenLink> &links);
+    void tryFixLink(const BrokenLink &link);
+    bool tryFixLink(const BrokenLink &link, const QString &newFilePath);
+
+    static QUrl locateImage(const QString &fileName);
+    static QString locateTileset();
+    static QString locateObjectTemplate();
+
+    void tryFixMapTilesetReference(const SharedTileset &tileset);
+    void tryFixObjectTemplateReference(const ObjectTemplate *objectTemplate);
+
+private:
+    bool tryFixMapTilesetReference(const SharedTileset &tileset, const QString &newFilePath);
+    bool tryFixObjectTemplateReference(const ObjectTemplate *objectTemplate, const QString &newFilePath);
+
+    Document *mDocument;
+};
+
+
+struct LocateTileset
+{
+    QWeakPointer<Tileset> mTileset;
+    QWeakPointer<MapDocument> mMapDocument;
+
+    void operator()() const;
+};
+
+struct LocateObjectTemplate
+{
+    const ObjectTemplate *mObjectTemplate;
+    QWeakPointer<MapDocument> mMapDocument;
+
+    void operator()() const;
+};
+
 } // namespace Tiled

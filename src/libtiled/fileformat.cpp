@@ -33,7 +33,6 @@ namespace Tiled {
 FileFormat::FileFormat(QObject *parent)
     : QObject(parent)
 {
-
 }
 
 FileFormat::Capabilities FileFormat::capabilities() const

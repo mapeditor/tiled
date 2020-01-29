@@ -25,7 +25,6 @@
 #include "tilelayer.h"
 
 namespace Tiled {
-namespace Internal {
 
 class MapDocument;
 
@@ -71,5 +70,4 @@ inline TileLayer *TileLayerItem::tileLayer() const
     return static_cast<TileLayer*>(layer());
 }
 
-} // namespace Internal
 } // namespace Tiled

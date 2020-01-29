@@ -25,7 +25,6 @@
 #include "grouplayer.h"
 
 namespace Tiled {
-namespace Internal {
 
 class GroupLayerItem : public LayerItem
 {
@@ -46,5 +45,4 @@ inline GroupLayer *GroupLayerItem::groupLayer() const
     return static_cast<GroupLayer*>(layer());
 }
 
-} // namespace Internal
 } // namespace Tiled

@@ -23,7 +23,6 @@
 class QUndoCommand;
 
 namespace Tiled {
-namespace Internal {
 
 /**
  * These undo command IDs are used by Qt to determine whether two undo commands
@@ -36,7 +35,8 @@ enum UndoCommands {
     Cmd_ChangeTileWangId,
     Cmd_ChangeTilesetTileOffset,
     Cmd_EraseTiles,
-    Cmd_PaintTileLayer
+    Cmd_PaintTileLayer,
+    Cmd_ChangeLayerTintColor
 };
 
 /**
@@ -55,5 +55,4 @@ public:
 
 bool cloneChildren(const QUndoCommand *command, QUndoCommand *parent);
 
-} // namespace Internal
 } // namespace Tiled

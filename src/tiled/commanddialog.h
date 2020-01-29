@@ -28,7 +28,6 @@ class CommandDialog;
 }
 
 namespace Tiled {
-namespace Internal {
 
 class CommandDataModel;
 
@@ -81,12 +80,13 @@ public:
       */
     CommandDataModel *model() const { return mModel; }
 
-private slots:
+protected:
     /**
       * Displays a context menu for the item at <i>event</i>'s position.
       */
     void contextMenuEvent(QContextMenuEvent *event) override;
 
+private:
     /**
       * Fixes the selection after rows have been removed.
       */
@@ -97,9 +97,7 @@ private slots:
       */
     void removeSelectedCommands();
 
-private:
     CommandDataModel *mModel;
 };
 
-} // namespace Internal
 } // namespace Tiled

@@ -1,7 +1,15 @@
 Python Scripts
 ==============
 
-Tiled ships with a plugin that enables you to use Python 2.7 to add
+.. note::
+
+    Since Tiled 1.3, Tiled can be :doc:`extended using JavaScript
+    </reference/scripting>`. The JavaScript API provides a lot more
+    opportunity for extending Tiled's functionality than just adding custom
+    map formats. It is fully documented and works out of the box on all
+    platforms. It should be preferred over the Python plugin when possible.
+
+Tiled ships with a plugin that enables you to use Python 3 to add
 support for custom map formats. This is nice especially since you don't
 need to compile Tiled yourself and the scripts are easy to deploy to any
 platform.
@@ -13,12 +21,36 @@ exist when you start Tiled).
 
 There are several `example scripts`_ available in the repository.
 
+.. note::
+
+    To create the ``~/.tiled`` folder on Windows, open command prompt
+    (``cmd.exe``), which should  start in your home folder by default, then
+    type ``mkdir .tiled`` to create the folder.
+
+    On Linux, folders starting with a dot are hidden by default. In most file
+    managers you can toggle showing of hidden files using ``Ctrl+H``.
+
+.. note::
+
+    Since Tiled 1.2.4, the Python plugin is disabled by default, because
+    depending on which Python version is installed on the system the loading of
+    this plugin may cause a crash (`#2091`_). To use the Python plugin, first
+    enable it in the Preferences.
+
 .. warning::
 
     On Windows, Python is not installed by default. For the Tiled Python
-    plugin to work, you'll need to install Python 2.7 (get it from
-    https://www.python.org/). On Linux you may also need to install the
-    appropriate package.
+    plugin to work, you'll need to install Python 3.7 (get it from
+    https://www.python.org/).
+
+    On Linux you will also need to install the appropriate package.
+    However, currently Linux builds are done on Ubuntu 16.04 against
+    Python 3.5, and you'd need to install the same version somehow.
+
+    The Python plugin is currently not enabled for macOS releases. We'll
+    need to find out how to build it against Python 3, while macOS only
+    ships with Python 2.7 by default. If you rely on this plugin on
+    macOS you'll need to use Tiled 1.1 for now.
 
 
 Example Export Plugin
@@ -75,7 +107,8 @@ the scripts directory:
                                 line += ';'
                             else:
                                 line += ','
-                            print >>fileHandle, line
+                            print(line, file=fileHandle)
+
 
             return True
 
@@ -108,3 +141,4 @@ methods.
 .. _example scripts: https://github.com/bjorn/tiled/tree/master/src/plugins/python/scripts
 .. _source file: https://github.com/bjorn/tiled/blob/master/src/plugins/python/tiledbinding.py
 .. _open issues related to Python support: https://github.com/bjorn/tiled/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+python+in%3Atitle
+.. _#2091: https://github.com/bjorn/tiled/issues/2091

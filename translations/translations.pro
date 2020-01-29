@@ -21,15 +21,17 @@ LANGUAGES = \
     hu \
     it \
     ja \
+    ko \
     nb \
     nl \
     pl \
     pt \
     pt_PT \
     ru \
+    sv \
     tr \
     uk \
-    zh \
+    zh_CN \
     zh_TW
 
 # Disabled languages because they're too outdated

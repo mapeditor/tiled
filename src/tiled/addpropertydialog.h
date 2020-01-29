@@ -39,10 +39,9 @@ public:
     QString propertyName() const;
     QVariant propertyValue() const;
 
-private slots:
+private:
     void nameChanged(const QString &text);
     void typeChanged(const QString &text);
 
-private:
     Ui::AddPropertyDialog *mUi;
 };

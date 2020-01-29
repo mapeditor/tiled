@@ -24,17 +24,20 @@
 
 namespace Tiled {
 
-namespace Internal {
-
 class CreateRectangleObjectTool : public CreateScalableObjectTool
 {
     Q_OBJECT
+
 public:
     CreateRectangleObjectTool(QObject *parent);
+
     void languageChanged() override;
+
 protected:
     MapObject *createNewMapObject() override;
+
+private:
+    void languageChangedImpl();
 };
 
-}
-}
+} // namespace Tiled

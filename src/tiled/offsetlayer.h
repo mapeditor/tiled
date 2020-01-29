@@ -29,8 +29,6 @@ namespace Tiled {
 
 class Layer;
 
-namespace Internal {
-
 class MapDocument;
 
 /**
@@ -41,7 +39,7 @@ class OffsetLayer : public QUndoCommand
 public:
     OffsetLayer(MapDocument *mapDocument,
                 Layer *layer,
-                const QPoint &offset,
+                QPoint offset,
                 const QRect &bounds,
                 bool xWrap,
                 bool yWrap);
@@ -60,5 +58,4 @@ private:
     QPointF mNewOffset;
 };
 
-} // namespace Internal
 } // namespace Tiled

@@ -23,7 +23,6 @@
 #include <QWidget>
 
 namespace Tiled {
-namespace Internal {
 
 namespace Ui {
 class NoEditorWidget;
@@ -40,14 +39,12 @@ public:
 protected:
     void changeEvent(QEvent *e);
 
-private slots:
+private:
     void newMap();
     void newTileset();
     void openFile();
 
-private:
     Ui::NoEditorWidget *ui;
 };
 
-} // namespace Internal
 } // namespace Tiled

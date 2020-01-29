@@ -60,10 +60,8 @@ public:
      * @return <code>true</code> on success, <code>false</code> when an error
      *         occurred. The error can be retrieved by errorString().
      */
-    virtual bool write(const Tileset &tileset, const QString &fileName) = 0;
-
-private:
-    QPointer<TilesetFormat> mExportFormat;
+    virtual bool write(const Tileset &tileset, const QString &fileName,
+                       Options options = Options()) = 0;
 };
 
 } // namespace Tiled

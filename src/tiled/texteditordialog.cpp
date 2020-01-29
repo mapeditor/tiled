@@ -24,7 +24,6 @@
 #include "utils.h"
 
 namespace Tiled {
-namespace Internal {
 
 TextEditorDialog::TextEditorDialog(QWidget *parent)
     : QDialog(parent)
@@ -32,7 +31,9 @@ TextEditorDialog::TextEditorDialog(QWidget *parent)
 {
     mUi->setupUi(this);
     resize(Utils::dpiScaled(size()));
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+#endif
 
     Utils::restoreGeometry(this);
 }
@@ -65,5 +66,4 @@ void TextEditorDialog::changeEvent(QEvent *e)
     }
 }
 
-} // namespace Internal
 } // namespace Tiled

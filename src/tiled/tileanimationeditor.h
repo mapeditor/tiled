@@ -34,8 +34,6 @@ class Tile;
 class TileAnimationDriver;
 class Tileset;
 
-namespace Internal {
-
 class FrameListModel;
 class TilesetDocument;
 
@@ -62,7 +60,7 @@ protected:
     void showEvent(QShowEvent *) override;
     void hideEvent(QHideEvent *) override;
 
-private slots:
+private:
     void framesEdited();
     void tileAnimationChanged(Tile *tile);
     void currentObjectChanged(Object *object);
@@ -77,8 +75,8 @@ private slots:
 
     void advancePreviewAnimation(int ms);
     void resetPreview();
+    bool updatePreviewPixmap();
 
-private:
     Ui::TileAnimationEditor *mUi;
 
     TilesetDocument *mTilesetDocument;
@@ -92,5 +90,4 @@ private:
     int mPreviewUnusedTime;
 };
 
-} // namespace Internal
 } // namespace Tiled

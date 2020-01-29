@@ -33,7 +33,6 @@
 #include <QStandardPaths>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 CommandDialog::CommandDialog(QWidget *parent)
     : QDialog(parent)
@@ -41,7 +40,9 @@ CommandDialog::CommandDialog(QWidget *parent)
 {
     mUi->setupUi(this);
     resize(Utils::dpiScaled(size()));
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+#endif
 
     setWindowTitle(tr("Edit Commands"));
     Utils::restoreGeometry(this);
@@ -202,10 +203,10 @@ CommandTreeView::CommandTreeView(QWidget *parent)
     // Allow deletion via keyboard
     QShortcut *d = new QShortcut(QKeySequence::Delete, this);
     d->setContext(Qt::WidgetShortcut);
-    connect(d, SIGNAL(activated()), SLOT(removeSelectedCommands()));
+    connect(d, &QShortcut::activated, this, &CommandTreeView::removeSelectedCommands);
 
-    connect(mModel, SIGNAL(rowsRemoved(QModelIndex, int, int)),
-                    SLOT(handleRowsRemoved(QModelIndex, int, int)));
+    connect(mModel, &QAbstractItemModel::rowsRemoved,
+            this, &CommandTreeView::handleRowsRemoved);
 }
 
 void CommandTreeView::contextMenuEvent(QContextMenuEvent *event)

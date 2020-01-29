@@ -24,7 +24,6 @@
 #include "preferences.h"
 
 namespace Tiled {
-namespace Internal {
 
 SnapHelper::SnapHelper(const MapRenderer *renderer,
                        Qt::KeyboardModifiers modifiers)
@@ -63,5 +62,4 @@ void SnapHelper::snap(QPointF &pixelPos) const
     }
 }
 
-} // namespace Internal
 } // namespace Tiled

@@ -43,7 +43,6 @@
 #include <QMenu>
 
 namespace Tiled {
-namespace Internal {
 
 PropertiesDock::PropertiesDock(QWidget *parent)
     : QDockWidget(parent)
@@ -54,22 +53,22 @@ PropertiesDock::PropertiesDock(QWidget *parent)
 
     mActionAddProperty = new QAction(this);
     mActionAddProperty->setEnabled(false);
-    mActionAddProperty->setIcon(QIcon(QLatin1String(":/images/16x16/add.png")));
-    connect(mActionAddProperty, SIGNAL(triggered()),
-            SLOT(addProperty()));
+    mActionAddProperty->setIcon(QIcon(QLatin1String(":/images/16/add.png")));
+    connect(mActionAddProperty, &QAction::triggered,
+            this, &PropertiesDock::openAddPropertyDialog);
 
     mActionRemoveProperty = new QAction(this);
     mActionRemoveProperty->setEnabled(false);
-    mActionRemoveProperty->setIcon(QIcon(QLatin1String(":/images/16x16/remove.png")));
+    mActionRemoveProperty->setIcon(QIcon(QLatin1String(":/images/16/remove.png")));
     mActionRemoveProperty->setShortcuts(QKeySequence::Delete);
     connect(mActionRemoveProperty, &QAction::triggered,
             this, &PropertiesDock::removeProperties);
 
     mActionRenameProperty = new QAction(this);
     mActionRenameProperty->setEnabled(false);
-    mActionRenameProperty->setIcon(QIcon(QLatin1String(":/images/16x16/rename.png")));
-    connect(mActionRenameProperty, SIGNAL(triggered()),
-            SLOT(renameProperty()));
+    mActionRenameProperty->setIcon(QIcon(QLatin1String(":/images/16/rename.png")));
+    connect(mActionRenameProperty, &QAction::triggered,
+            this, &PropertiesDock::renameProperty);
 
     Utils::setThemeIcon(mActionAddProperty, "add");
     Utils::setThemeIcon(mActionRemoveProperty, "remove");
@@ -114,10 +113,10 @@ void PropertiesDock::setDocument(Document *document)
     mPropertyBrowser->setDocument(document);
 
     if (document) {
-        connect(document, SIGNAL(currentObjectChanged(Object*)),
-                SLOT(currentObjectChanged(Object*)));
-        connect(document, SIGNAL(editCurrentObject()),
-                SLOT(bringToFront()));
+        connect(document, &Document::currentObjectChanged,
+                this, &PropertiesDock::currentObjectChanged);
+        connect(document, &Document::editCurrentObject,
+                this, &PropertiesDock::bringToFront);
 
         connect(document, &Document::propertyAdded,
                 this, &PropertiesDock::updateActions);
@@ -135,6 +134,12 @@ void PropertiesDock::bringToFront()
     show();
     raise();
     mPropertyBrowser->setFocus();
+}
+
+void PropertiesDock::selectCustomProperty(const QString &name)
+{
+    bringToFront();
+    mPropertyBrowser->selectCustomProperty(name);
 }
 
 static bool anyObjectHasProperty(const QList<Object*> &objects, const QString &name)
@@ -228,7 +233,7 @@ void PropertiesDock::pasteProperties()
 
     for (Object *object : objects) {
         Properties properties = object->properties();
-        properties.merge(pastedProperties);
+        mergeProperties(properties, pastedProperties);
 
         if (object->properties() != properties) {
             commands.append(new ChangeProperties(mDocument, QString(), object,
@@ -248,7 +253,7 @@ void PropertiesDock::pasteProperties()
     }
 }
 
-void PropertiesDock::addProperty()
+void PropertiesDock::openAddPropertyDialog()
 {
     AddPropertyDialog dialog(mPropertyBrowser);
     if (dialog.exec() == AddPropertyDialog::Accepted)
@@ -309,14 +314,16 @@ void PropertiesDock::renameProperty()
     const QString oldName = item->property()->propertyName();
 
     QInputDialog *dialog = new QInputDialog(mPropertyBrowser);
+    dialog->setAttribute(Qt::WA_DeleteOnClose);
     dialog->setInputMode(QInputDialog::TextInput);
     dialog->setLabelText(tr("Name:"));
     dialog->setTextValue(oldName);
     dialog->setWindowTitle(tr("Rename Property"));
-    dialog->open(this, SLOT(renameProperty(QString)));
+    connect(dialog, &QInputDialog::textValueSelected, this, &PropertiesDock::renamePropertyTo);
+    dialog->open();
 }
 
-void PropertiesDock::renameProperty(const QString &name)
+void PropertiesDock::renamePropertyTo(const QString &name)
 {
     if (name.isEmpty())
         return;
@@ -353,22 +360,22 @@ void PropertiesDock::showContextMenu(const QPoint& pos)
     }
 
     QMenu contextMenu(mPropertyBrowser);
-    QAction *cutAction = contextMenu.addAction(tr("Cu&t"));
-    QAction *copyAction = contextMenu.addAction(tr("&Copy"));
-    QAction *pasteAction = contextMenu.addAction(tr("&Paste"));
+    QAction *cutAction = contextMenu.addAction(tr("Cu&t"), this, &PropertiesDock::cutProperties);
+    QAction *copyAction = contextMenu.addAction(tr("&Copy"), this, &PropertiesDock::copyProperties);
+    QAction *pasteAction = contextMenu.addAction(tr("&Paste"), this, &PropertiesDock::pasteProperties);
     contextMenu.addSeparator();
     QMenu *convertMenu = contextMenu.addMenu(tr("Convert To"));
-    QAction *renameAction = contextMenu.addAction(tr("Rename..."));
-    QAction *removeAction = contextMenu.addAction(tr("Remove"));
+    QAction *renameAction = contextMenu.addAction(tr("Rename..."), this, &PropertiesDock::renameProperty);
+    QAction *removeAction = contextMenu.addAction(tr("Remove"), this, &PropertiesDock::removeProperties);
 
     cutAction->setShortcuts(QKeySequence::Cut);
-    cutAction->setIcon(QIcon(QLatin1String(":/images/16x16/edit-cut.png")));
+    cutAction->setIcon(QIcon(QLatin1String(":/images/16/edit-cut.png")));
     cutAction->setEnabled(customPropertiesSelected && currentObjectHasAllProperties);
     copyAction->setShortcuts(QKeySequence::Copy);
-    copyAction->setIcon(QIcon(QLatin1String(":/images/16x16/edit-copy.png")));
+    copyAction->setIcon(QIcon(QLatin1String(":/images/16/edit-copy.png")));
     copyAction->setEnabled(customPropertiesSelected && currentObjectHasAllProperties);
     pasteAction->setShortcuts(QKeySequence::Paste);
-    pasteAction->setIcon(QIcon(QLatin1String(":/images/16x16/edit-paste.png")));
+    pasteAction->setIcon(QIcon(QLatin1String(":/images/16/edit-paste.png")));
     pasteAction->setEnabled(ClipboardManager::instance()->hasProperties());
     renameAction->setEnabled(mActionRenameProperty->isEnabled());
     renameAction->setIcon(mActionRenameProperty->icon());
@@ -388,6 +395,7 @@ void PropertiesDock::showContextMenu(const QPoint& pos)
             QVariant::Color,
             QVariant::Double,
             filePathTypeId(),
+            objectRefTypeId(),
             QVariant::Int,
             QVariant::String
         };
@@ -416,12 +424,6 @@ void PropertiesDock::showContextMenu(const QPoint& pos)
     }
 
     convertMenu->setEnabled(!convertMenu->actions().isEmpty());
-
-    connect(cutAction, &QAction::triggered, this, &PropertiesDock::cutProperties);
-    connect(copyAction, &QAction::triggered, this, &PropertiesDock::copyProperties);
-    connect(pasteAction, &QAction::triggered, this, &PropertiesDock::pasteProperties);
-    connect(renameAction, &QAction::triggered, this, static_cast<void (PropertiesDock::*)()>(&PropertiesDock::renameProperty));
-    connect(removeAction, &QAction::triggered, this, &PropertiesDock::removeProperties);
 
     const QPoint globalPos = mPropertyBrowser->mapToGlobal(pos);
     const QAction *selectedItem = contextMenu.exec(globalPos);
@@ -493,5 +495,4 @@ void PropertiesDock::retranslateUi()
     mActionRenameProperty->setText(tr("Rename Property"));
 }
 
-} // namespace Internal
 } // namespace Tiled

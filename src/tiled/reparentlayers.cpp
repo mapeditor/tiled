@@ -25,8 +25,9 @@
 #include "mapdocument.h"
 #include "map.h"
 
+#include "qtcompat_p.h"
+
 namespace Tiled {
-namespace Internal {
 
 ReparentLayers::ReparentLayers(MapDocument *mapDocument,
                                const QList<Layer *> &layers,
@@ -39,12 +40,18 @@ ReparentLayers::ReparentLayers(MapDocument *mapDocument,
     , mLayerParent(layerParent)
     , mIndex(index)
 {
+    // Sort layers by global index (visual order)
+    std::sort(mLayers.begin(), mLayers.end(), [] (Layer *a, Layer *b) {
+        return globalIndex(a) < globalIndex(b);
+    });
 }
 
 void ReparentLayers::undo()
 {
     auto layerModel = mMapDocument->layerModel();
-    auto currentLayer = mMapDocument->currentLayer();
+
+    const auto currentLayer = mMapDocument->currentLayer();
+    const auto selectedLayers = mMapDocument->selectedLayers();
 
     for (int i = mUndoInfo.size() - 1; i >= 0; --i) {
         auto& undoInfo = mUndoInfo.at(i);
@@ -57,19 +64,22 @@ void ReparentLayers::undo()
     mUndoInfo.clear();
 
     mMapDocument->setCurrentLayer(currentLayer);
+    mMapDocument->setSelectedLayers(selectedLayers);
 }
 
 void ReparentLayers::redo()
 {
     auto layerModel = mMapDocument->layerModel();
-    auto currentLayer = mMapDocument->currentLayer();
+
+    const auto currentLayer = mMapDocument->currentLayer();
+    const auto selectedLayers = mMapDocument->selectedLayers();
 
     Q_ASSERT(mUndoInfo.isEmpty());
     mUndoInfo.reserve(mLayers.size());
 
     int index = mIndex;
 
-    for (auto layer : mLayers) {
+    for (auto layer : qAsConst(mLayers)) {
         UndoInfo undoInfo;
         undoInfo.parent = layer->parentLayer();
         undoInfo.oldIndex = layer->siblingIndex();
@@ -89,7 +99,7 @@ void ReparentLayers::redo()
     }
 
     mMapDocument->setCurrentLayer(currentLayer);
+    mMapDocument->setSelectedLayers(selectedLayers);
 }
 
-} // namespace Internal
 } // namespace Tiled

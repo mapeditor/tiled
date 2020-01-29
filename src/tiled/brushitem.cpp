@@ -33,7 +33,6 @@
 #include <QUndoStack>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 BrushItem::BrushItem():
     mMapDocument(nullptr)
@@ -108,7 +107,7 @@ void BrushItem::setMap(const SharedMap &map)
 /**
  * Changes the position of the tile layer, if one is set.
  */
-void BrushItem::setTileLayerPosition(const QPoint &pos)
+void BrushItem::setTileLayerPosition(QPoint pos)
 {
     if (!mTileLayer)
         return;

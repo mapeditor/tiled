@@ -42,13 +42,13 @@
 #include <climits>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 TerrainBrush::TerrainBrush(QObject *parent)
-    : AbstractTileTool(tr("Terrain Brush"),
+    : AbstractTileTool("TerrainTool",
+                       tr("Terrain Brush"),
                        QIcon(QLatin1String(
-                               ":images/24x24/terrain-edit.png")),
-                       QKeySequence(tr("T")),
+                               ":images/24/terrain-edit.png")),
+                       QKeySequence(Qt::Key_T),
                        nullptr,
                        parent)
     , mTerrain(nullptr)
@@ -78,13 +78,14 @@ void TerrainBrush::deactivate(MapScene *scene)
     mIsActive = false;
 }
 
-void TerrainBrush::tilePositionChanged(const QPoint &pos)
+void TerrainBrush::tilePositionChanged(QPoint pos)
 {
     switch (mBrushBehavior) {
     case Paint: {
         int x = mPaintX;
         int y = mPaintY;
-        foreach (const QPoint &p, pointsOnLine(x, y, pos.x(), pos.y())) {
+        const auto points = pointsOnLine(x, y, pos.x(), pos.y());
+        for (const QPoint &p : points) {
             updateBrush(p);
             doPaint(true);
         }
@@ -105,33 +106,35 @@ void TerrainBrush::tilePositionChanged(const QPoint &pos)
 
 void TerrainBrush::mousePressed(QGraphicsSceneMouseEvent *event)
 {
-    if (!brushItem()->isVisible())
-        return;
-
-    if (event->button() == Qt::LeftButton) {
-        switch (mBrushBehavior) {
-        case Line:
-            mLineReferenceX = mPaintX;
-            mLineReferenceY = mPaintY;
-            mBrushBehavior = LineStartSet;
-            break;
-        case LineStartSet:
-            doPaint(false);
-            mLineReferenceX = mPaintX;
-            mLineReferenceY = mPaintY;
-            break;
-        case Paint:
-            beginPaint();
-            break;
-        case Free:
-            beginPaint();
-            mBrushBehavior = Paint;
-            break;
-        }
-    } else {
-        if (event->button() == Qt::RightButton)
+    if (brushItem()->isVisible()) {
+        if (event->button() == Qt::LeftButton) {
+            switch (mBrushBehavior) {
+            case Line:
+                mLineReferenceX = mPaintX;
+                mLineReferenceY = mPaintY;
+                mBrushBehavior = LineStartSet;
+                break;
+            case LineStartSet:
+                doPaint(false);
+                mLineReferenceX = mPaintX;
+                mLineReferenceY = mPaintY;
+                break;
+            case Paint:
+                beginPaint();
+                break;
+            case Free:
+                beginPaint();
+                mBrushBehavior = Paint;
+                break;
+            }
+            return;
+        } else if (event->button() == Qt::RightButton && event->modifiers() == Qt::NoModifier) {
             capture();
+            return;
+        }
     }
+
+    AbstractTileTool::mousePressed(event);
 }
 
 void TerrainBrush::mouseReleased(QGraphicsSceneMouseEvent *event)
@@ -165,7 +168,6 @@ void TerrainBrush::modifiersChanged(Qt::KeyboardModifiers modifiers)
 void TerrainBrush::languageChanged()
 {
     setName(tr("Terrain Brush"));
-    setShortcut(QKeySequence(tr("T")));
 }
 
 void TerrainBrush::mapDocumentChanged(MapDocument *oldDocument,
@@ -408,15 +410,18 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
     QRect bounds;
     for (ConsiderationPoint point : transitionList)
         bounds |= QRect(point, point);
+
+    auto staggeredRenderer = dynamic_cast<StaggeredRenderer*>(mapDocument()->renderer());
+
     int margin = terrainTileset ? terrainTileset->maximumTerrainDistance() : 3;
+    if (staggeredRenderer)
+        ++margin;
     bounds.adjust(-margin, -margin, margin, margin);
 
     if (!mapDocument()->map()->infinite())
         bounds = bounds.intersected(currentLayer->rect().translated(-layerPosition));
 
     int initialTiles = transitionList.size();
-
-    auto staggeredRenderer = dynamic_cast<StaggeredRenderer*>(mapDocument()->renderer());
 
     // produce terrain with transitions using a simple, relative naive approach (considers each tile once, and doesn't allow re-consideration if selection was bad)
     while (!transitionList.isEmpty()) {

@@ -1,47 +1,56 @@
 clone_depth: 200
-version: '1.1.{build}'
+version: '1.3.{build}'
+
+cache:
+  - C:\Users\appveyor\.m2
+  - C:\ProgramData\chocolatey\bin -> appveyor.yml
+  - C:\ProgramData\chocolatey\lib -> appveyor.yml
 
 environment:
-  my_secret:
-    secure: +3IhWT10lCSC4GE4gGfWt8WiZdIXuMUfaImgvQUullg=
+  BUTLER_API_KEY:
+    secure: j7JM5L6KeqpnQukzJLsm7J6oV92SpmyEZLSoED1pZ3gQ79VIkdxtbQmTkqUNZPsz
   matrix:
-    - QTDIR: C:\Qt\5.10.1\msvc2013_64
+    - QTDIR: C:\Qt\5.12\mingw73_64
+      PYTHONHOME: C:\Python37-x64
+      MINGW: C:\Qt\Tools\mingw730_64
+      DEFAULT_PROFILE: x86_64-w64-mingw32
       PUSH_RELEASE: true
       TILED_ITCH_CHANNEL: windows-64bit
-    - QTDIR: C:\Qt\5.10.1\mingw53_32
-      MINGW: C:\Qt\Tools\mingw530_32
-      PUSH_RELEASE: true
-      TILED_ITCH_CHANNEL: windows-32bit
     - QTDIR: C:\Qt\5.6\mingw49_32
+      PYTHONHOME: C:\Python37
       MINGW: C:\Qt\Tools\mingw492_32
+      DEFAULT_PROFILE: i686-w64-mingw32
       PUSH_RELEASE: false
       TILED_ITCH_CHANNEL: winxp-32bit
 
 configuration: Release
 
 install:
-  - choco install -y qbs --version 1.11.0
+  - choco install -y qbs --version 1.13.1
   - nuget install secure-file -ExcludeVersion
   - set PATH=%PATH%;%QTDIR%\bin;%MINGW%\bin
 
 build_script:
   - FOR /F "tokens=*" %%i in ('git describe') do SET COMMITNOW=%%i
   - set VERSION_DATE=%DATE:~10,4%.%DATE:~4,2%.%DATE:~7,2%
-  - set TILED_SPARKLE=true
   - if defined APPVEYOR_REPO_TAG_NAME (set TILED_RELEASE=true) else (set TILED_SNAPSHOT=true)
   - if defined TILED_RELEASE set TILED_VERSION=%APPVEYOR_REPO_TAG_NAME:~1%
   - if defined TILED_RELEASE echo Building Tiled %TILED_VERSION%... (from %COMMITNOW%)
   - if defined TILED_SNAPSHOT set TILED_VERSION=%APPVEYOR_BUILD_VERSION%
   - if defined TILED_SNAPSHOT echo Building Tiled snapshot %TILED_VERSION%... (from %COMMITNOW%)
+  - git clone --depth 1 -b master https://github.com/facebook/zstd.git
+  - cd zstd/lib
+  - set CC=gcc
+  - mingw32-make -j2 libzstd.a
+  - cd ../../
   - qbs --version
   - qbs setup-toolchains --detect
-  - qbs setup-qt %QTDIR%\bin\qmake.exe qt
-  - qbs config defaultProfile qt
+  - qbs config defaultProfile %DEFAULT_PROFILE%
   - if defined TILED_RELEASE (set TILED_ITCH_VERSION=%TILED_VERSION%) else (set TILED_ITCH_VERSION=%VERSION_DATE%)
   - if defined TILED_SNAPSHOT (set TILED_ITCH_CHANNEL=%TILED_ITCH_CHANNEL%-snapshot)
   - if not defined APPVEYOR_PULL_REQUEST_NUMBER if [%APPVEYOR_REPO_BRANCH%]==[snapshot] set PUSH_TO_ITCH=true
-  - qbs build --all-products config:release projects.Tiled.windowsInstaller:true
-  - qbs build --all-products config:itch qbs.buildVariant:release projects.Tiled.sparkleEnabled:false projects.Tiled.version:%TILED_ITCH_VERSION%
+  - qbs build --all-products config:release projects.Tiled.windowsInstaller:true projects.Tiled.enableZstd:true
+  - qbs build --all-products config:itch qbs.buildVariant:release projects.Tiled.version:%TILED_ITCH_VERSION% projects.Tiled.enableZstd:true
   - cd util\java
   - mvn --version
   - mvn clean install
@@ -51,7 +60,6 @@ after_build:
   - cd release
   - cd installer*
   - move tiled-*.msi %APPVEYOR_BUILD_FOLDER%
-  - if defined TILED_SNAPSHOT move appcast-win*-snapshots.xml %APPVEYOR_BUILD_FOLDER%
   - cd ..\..
   - cd itch
   - cd archive*
@@ -64,11 +72,6 @@ artifacts:
     path: 'tiled-*.msi'
   - name: Archive
     path: 'tiled-*.7z'
-  - name: AppCast
-    path: 'appcast-win*-snapshots.xml'
-
-cache:
-  - C:\Users\appveyor\.m2
 
 deploy:
   - provider: GitHub
@@ -84,27 +87,37 @@ deploy:
   - provider: FTP
     protocol: sftp
     host: update.mapeditor.org
-    username: bjorn
+    username: update
     password:
-      secure: Hx5YfCOtpeBbftD4qnVCRLUGmMU9nogJTlSxq0xNbJQ=
-    folder: sparkle/snapshots-win
+      secure: YPoSL+S82PCgS5PYbhtxQv0YD7uwZAX9LhjJBBbDGvk=
+    folder: update.mapeditor.org/snapshots-win
     artifact: /.*\.(msi|7z)/
     on:
         branch: snapshot
+        push_release: true
+
+  - provider: Webhook
+    url: https://app.signpath.io/API/v1/670574d6-49bf-4a0c-824a-3ae977077079/Integrations/AppVeyor?ProjectKey=tiled&SigningPolicyKey=test-signing
+    authorization:
+        secure: 4E7IuM1Ftvdkx43gsqI3tUWb6tcvrfKB22sa6DsWaBzT+zv3DqceDCk0qc/JqTO+Er5UQNYwolmWBzMdys6fVA==
+    on:
         appveyor_repo_tag: false
         push_release: true
 
-  - provider: FTP
-    protocol: sftp
-    host: update.mapeditor.org
-    username: bjorn
-    password:
-      secure: Hx5YfCOtpeBbftD4qnVCRLUGmMU9nogJTlSxq0xNbJQ=
-    folder: sparkle
-    artifact: /appcast-win.*-snapshots\.xml/
+  - provider: Webhook
+    url: https://app.signpath.io/API/v1/670574d6-49bf-4a0c-824a-3ae977077079/Integrations/AppVeyor?ProjectKey=tiled&SigningPolicyKey=release-signing
+    authorization:
+        secure: 4E7IuM1Ftvdkx43gsqI3tUWb6tcvrfKB22sa6DsWaBzT+zv3DqceDCk0qc/JqTO+Er5UQNYwolmWBzMdys6fVA==
     on:
         branch: snapshot
-        appveyor_repo_tag: false
+        push_release: true
+
+  - provider: Webhook
+    url: https://app.signpath.io/API/v1/670574d6-49bf-4a0c-824a-3ae977077079/Integrations/AppVeyor?ProjectKey=tiled&SigningPolicyKey=release-signing
+    authorization:
+        secure: 4E7IuM1Ftvdkx43gsqI3tUWb6tcvrfKB22sa6DsWaBzT+zv3DqceDCk0qc/JqTO+Er5UQNYwolmWBzMdys6fVA==
+    on:
+        appveyor_repo_tag: true
         push_release: true
 
 notifications:

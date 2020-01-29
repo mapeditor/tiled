@@ -24,7 +24,6 @@
 #include <QString>
 
 namespace Tiled {
-namespace Internal {
 
 class StyleHelper : public QObject
 {
@@ -51,5 +50,4 @@ private:
     static StyleHelper *mInstance;
 };
 
-} // namespace Internal
 } // namespace Tiled

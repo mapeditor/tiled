@@ -41,31 +41,37 @@ ObjectTemplate::ObjectTemplate()
 ObjectTemplate::ObjectTemplate(const QString &fileName)
     : Object(ObjectTemplateType)
     , mFileName(fileName)
-    , mObject(nullptr)
 {
 }
 
 ObjectTemplate::~ObjectTemplate()
 {
-    setObject(nullptr);
 }
 
 void ObjectTemplate::setObject(const MapObject *object)
 {
-    MapObject *oldObject = mObject;
     Tileset *tileset = nullptr;
 
     if (object) {
         tileset = object->cell().tileset();
-        mObject = object->clone();
+        mObject.reset(object->clone());
         mObject->markAsTemplateBase();
     } else {
-        mObject = nullptr;
+        mObject.reset();
     }
 
-    if (oldObject)
-        delete oldObject;
+    if (tileset)
+        mTileset = tileset->sharedPointer();
+    else
+        mTileset.reset();
+}
 
+void ObjectTemplate::setObject(std::unique_ptr<MapObject> &&object)
+{
+    Q_ASSERT(object);
+    mObject = std::move(object);
+
+    Tileset *tileset = mObject->cell().tileset();
     if (tileset)
         mTileset = tileset->sharedPointer();
     else

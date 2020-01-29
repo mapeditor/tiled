@@ -30,8 +30,6 @@ namespace Tiled {
 class Tile;
 class ObjectTemplate;
 
-namespace Internal {
-
 class AbstractTool;
 class MapDocument;
 
@@ -45,20 +43,26 @@ class MapDocument;
 class ToolManager : public QObject
 {
     Q_OBJECT
+    Q_DISABLE_COPY(ToolManager)
 
 public:
     ToolManager(QObject *parent = nullptr);
     ~ToolManager() override;
 
+    void setRegisterActions(bool enabled);
+
     void setMapDocument(MapDocument *mapDocument);
 
     QAction *registerTool(AbstractTool *tool);
+    void unregisterTool(AbstractTool *tool);
 
     bool selectTool(AbstractTool *tool);
     AbstractTool *selectedTool() const;
 
     template<typename Tool>
     Tool *findTool();
+
+    QAction *findAction(AbstractTool *tool) const;
 
     void retranslateTools();
 
@@ -86,24 +90,25 @@ signals:
 
 private slots:
     void actionTriggered(QAction *action);
+    void toolChanged();
     void toolEnabledChanged(bool enabled);
     void selectEnabledTool();
 
 private:
-    Q_DISABLE_COPY(ToolManager)
-
     AbstractTool *firstEnabledTool() const;
     void setSelectedTool(AbstractTool *tool);
 
     QActionGroup *mActionGroup;
-    AbstractTool *mSelectedTool;
-    AbstractTool *mDisabledTool;
-    AbstractTool *mPreviouslyDisabledTool;
-    MapDocument *mMapDocument;
-    Tile *mTile;
-    ObjectTemplate *mObjectTemplate;
+    AbstractTool *mSelectedTool = nullptr;
+    AbstractTool *mDisabledTool = nullptr;
+    AbstractTool *mPreviouslyDisabledTool = nullptr;
+    MapDocument *mMapDocument = nullptr;
+    Tile *mTile = nullptr;
+    ObjectTemplate *mObjectTemplate = nullptr;
 
-    bool mSelectEnabledToolPending;
+    bool mRegisterActions = true;
+    bool mSelectEnabledToolPending = false;
+    bool mUpdatingActionToolTip = false;
 };
 
 /**
@@ -149,5 +154,4 @@ inline void ToolManager::setObjectTemplate(ObjectTemplate *objectTemplate)
     mObjectTemplate = objectTemplate;
 }
 
-} // namespace Internal
 } // namespace Tiled

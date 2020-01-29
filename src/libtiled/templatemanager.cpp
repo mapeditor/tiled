@@ -21,8 +21,13 @@
 
 #include "templatemanager.h"
 
+#include <memory>
+
 #include "objecttemplate.h"
 #include "objecttemplateformat.h"
+#include "logginginterface.h"
+
+#include <QFile>
 
 using namespace Tiled;
 
@@ -43,8 +48,11 @@ void TemplateManager::deleteInstance()
 }
 
 TemplateManager::TemplateManager(QObject *parent)
-    : QObject(parent)
+    : QObject(parent),
+      mWatcher(new FileSystemWatcher(this))
 {
+    connect(mWatcher, &FileSystemWatcher::fileChanged,
+            this, &TemplateManager::fileChanged);
 }
 
 TemplateManager::~TemplateManager()
@@ -56,15 +64,38 @@ ObjectTemplate *TemplateManager::loadObjectTemplate(const QString &fileName, QSt
 {
     ObjectTemplate *objectTemplate = findObjectTemplate(fileName);
 
-    if (!objectTemplate)
-        objectTemplate = readObjectTemplate(fileName, error);
+    if (!objectTemplate) {
+        auto newTemplate = readObjectTemplate(fileName, error);
 
-    // This instance will not have an object. It is used to detect broken
-    // template references.
-    if (!objectTemplate)
-        objectTemplate = new ObjectTemplate(fileName);
+        // This instance will not have an object. It is used to detect broken
+        // template references.
+        if (!newTemplate)
+            newTemplate = std::make_unique<ObjectTemplate>(fileName);
 
-    mObjectTemplates.insert(fileName, objectTemplate);
+        // If the file exists, watch it, regardless of whether the parse was successful.
+        if (QFile::exists(fileName))
+            mWatcher->addPath(fileName);
+
+        objectTemplate = newTemplate.get();
+        mObjectTemplates.insert(fileName, newTemplate.release());
+    }
 
     return objectTemplate;
+}
+
+void TemplateManager::fileChanged(const QString &fileName)
+{
+    ObjectTemplate *objectTemplate = findObjectTemplate(fileName);
+
+    // Most likely the file was removed.
+    if (!objectTemplate)
+        return;
+
+    auto newTemplate = readObjectTemplate(fileName);
+    if (newTemplate) {
+        objectTemplate->setObject(newTemplate->object());
+        emit objectTemplateChanged(objectTemplate);
+    } else {
+        ERROR(tr("Unable to reload template file: %1").arg(fileName));
+    }
 }

@@ -23,7 +23,6 @@
 #include <QTreeView>
 
 namespace Tiled {
-namespace Internal {
 
 class TilesetDocument;
 class Zoomable;
@@ -46,17 +45,15 @@ protected:
     void wheelEvent(QWheelEvent *event) override;
     void contextMenuEvent(QContextMenuEvent *event) override;
 
-private slots:
+private:
     void editWangSetProperties();
 
     void adjustScale();
 
-private:
     Zoomable *mZoomable;
     TilesetDocument *mTilesetDocument;
 };
 
-} // namespace Internal
 } // namespace Tiled
 
-Q_DECLARE_METATYPE(Tiled::Internal::WangSetView *)
+Q_DECLARE_METATYPE(Tiled::WangSetView *)

@@ -1,134 +1,181 @@
 language: cpp
+cache: ccache
 sudo: required
-dist: trusty
-
+dist: xenial
+python: 3.6
 env:
   global:
-   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
-   #   via the "travis encrypt" command using the project repo's public key
-   - secure: "J8Y+eQD0p5YPOlhBEPFgpZzhRFjXC4phiiFtGV3JaYX34wxCsyyNhMStMqIZTBL4D9lQojfLgXODBDaqT1iSHDe1oonosnyYnGBIJElez247pjuNiSSvcAbYa9RQnwfHe8JFphQHViURbv0OfqpHHyAlHy5b8nrPYWG2xmHA5nY="
-
+  - secure: J8Y+eQD0p5YPOlhBEPFgpZzhRFjXC4phiiFtGV3JaYX34wxCsyyNhMStMqIZTBL4D9lQojfLgXODBDaqT1iSHDe1oonosnyYnGBIJElez247pjuNiSSvcAbYa9RQnwfHe8JFphQHViURbv0OfqpHHyAlHy5b8nrPYWG2xmHA5nY=
+  - secure: VgouZ5cStqlgODwIuLIvIBN5gkmrP95agCS3BorLm7g/iXM4cwuaV+bov9FiSlnzcnWfpsNMsFt5xDU2Oc17N0Kyx531MIA1H5h9xdzj/IhjhLcOOqYeXt3lN2quRE2maIZDSrPVr3eY0o6xdcNkeK0jpX/mgIiSHwXOclXv+6o=
+  - QT_VERSION=5.12.6
+  - QTCREATOR_VERSION=4.10.1
 addons:
   coverity_scan:
     project:
-      name: "bjorn/tiled"
-      description: "A generic tile map editor"
+      name: bjorn/tiled
+      description: A generic tile map editor
     notification_email: bjorn@lindeijer.nl
     build_command_prepend: qmake
     build_command: make
     branch_pattern: coverity_scan
-
 notifications:
   irc:
     channels:
-      - "chat.freenode.net#tiled"
+    - chat.freenode.net#tiled
     on_success: change
     on_failure: always
     use_notice: true
     skip_join: true
-
 matrix:
   include:
-    - os: linux
-      compiler: gcc
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-7
-      env:
-        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
-      before_install:
-        - eval "${MATRIX_EVAL}"
-        - sudo add-apt-repository --yes ppa:beineri/opt-qt-5.10.1-trusty
-        - sudo apt-get update -qq
-        - sudo apt-get -y install qt510base qt510script qt510svg qt510imageformats qt510tools binutils zlib1g-dev
-        - source /opt/qt510/bin/qt510-env.sh
-        - source ./dist/linux/setup-qbs.sh
-      script:
-        - qbs --version
-        - qbs setup-toolchains --detect
-        - qbs setup-qt --detect
-        - qbs config defaultProfile qt-5-10-1
-        - qbs install --install-root Tiled/usr config:release projects.Tiled.version:$TILED_VERSION
-        - cp LICENSE* COPYING *md Tiled/
-      after_success:
-        - wget -c "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" -O linuxdeployqt
-        - chmod a+x linuxdeployqt
-        - unset QTDIR; unset QT_PLUGIN_PATH; unset LD_LIBRARY_PATH
-        - mkdir -p Tiled/usr/plugins/imageformats
-        - cp /opt/qt510/plugins/imageformats/libqsvg.so Tiled/usr/plugins/imageformats/
-        - ./linuxdeployqt ./Tiled/usr/share/applications/org.mapeditor.Tiled.desktop -bundle-non-qt-libs -verbose=2
-        - ./linuxdeployqt ./Tiled/usr/share/applications/org.mapeditor.Tiled.desktop -appimage
-        - find ./Tiled -executable -type f -exec ldd {} \; | grep " => /usr" | cut -d " " -f 2-3 | sort | uniq
-        - mv Tiled-x86_64.AppImage Tiled-$TILED_VERSION-x86_64.AppImage
-      deploy:
-        - provider: releases
-          skip_cleanup: true
-          draft: true
-          tag_name: $TRAVIS_TAG
-          api_key:
-            secure: g8B2MDEElF5v1K1awuhB1C54Fbl2eUmKdfJTPhYC8kYiLoWClgufOPavJOHO+hH5us1LtbCvOa6Z+lrSe9YnuwNcV2MKENQQ4CjpViEI51wpAOM1/WW+C7tDu2BNFKCJjldRrSGttFD2lgVbNYBY7w56/2stZNRBuTfdE8YZEFc=
-          file: Tiled*.AppImage
-          file_glob: true
-          on:
-            repo: bjorn/tiled
-            tags: true
-        - provider: script
-          skip_cleanup: true
-          script: curl --upload-file $(ls Tiled*.AppImage) https://transfer.sh/Tiled.AppImage
-          on:
-            all_branches: true
-        - provider: script
-          skip_cleanup: true
-          on:
-            repo: bjorn/tiled
-            branch: snapshot
-          script: dist/linux/push-to-itch.sh
-    - os: linux
-      compiler: clang
-      env:
-        - QMAKESPEC=linux-clang
-        - MAKEFLAGS=-j2
-      before_install:
-        - sudo add-apt-repository --yes ppa:beineri/opt-qt563-trusty
-        - sudo apt-get update -qq
-        - sudo apt-get -y install qt56base qt56svg qt56tools binutils zlib1g-dev cppcheck xvfb
-        - source /opt/qt56/bin/qt56-env.sh
-        - qmake -version
-      script:
-        - qmake
-        - make
-        - pushd tests/
-        - qmake
-        - make
-        - for test in `find -executable -type f`; do pushd `dirname $test`; xvfb-run -a ./`basename $test`||exit 1; popd; done
-        - popd
-      after_script:
-        - cppcheck --enable=all -q -Isrc/libtiled `git ls-files src/\*.cpp`
-    - os: osx
-      before_install:
-        - brew update
-        - brew install qbs
-      script:
-        - qbs --version
-        - qbs setup-toolchains --detect
-        - qbs setup-qt /usr/local/opt/qt/bin/qmake qt-brew
-        - qbs config profiles.qt-brew.baseProfile xcode-macosx-x86_64
-        - qbs config defaultProfile qt-brew
-        - qbs install --install-root install config:release projects.Tiled.version:$TILED_VERSION
-        - /usr/local/opt/qt/bin/macdeployqt install/Tiled.app
-      deploy:
-        - provider: script
-          skip_cleanup: true
-          on:
-            repo: bjorn/tiled
-            branch: snapshot
-          script: dist/macos/push-to-itch.sh
-
+  - os: linux
+    compiler: gcc
+    addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        packages:
+        - binutils
+        - g++-7
+        - libgl1-mesa-dev
+        - libxkbcommon-x11-0
+        - zlib1g-dev
+        - libzstd-dev
+        - p7zip-full
+    env:
+      - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+      - QT_INSTALL_DIR=~/Qt
+      - QT_BIN=${QT_INSTALL_DIR}/${QT_VERSION}/gcc_64/bin
+      - PATH="${QT_INSTALL_DIR}/Tools/QtCreator/bin:${QT_BIN}:${PATH}"
+    before_install:
+    - eval "${MATRIX_EVAL}"
+    - ./dist/install-qt.sh -d ${QT_INSTALL_DIR} --version ${QT_VERSION} qtbase qtdeclarative qtscript qtsvg qtimageformats qttools icu
+    - ./dist/install-qt.sh -d ${QT_INSTALL_DIR} --version ${QTCREATOR_VERSION} qtcreator
+    script:
+    - qbs --version
+    - qbs setup-toolchains --detect
+    - qbs config defaultProfile gcc
+    - qbs install --install-root Tiled config:release qbs.installPrefix:/usr projects.Tiled.version:$TILED_VERSION projects.Tiled.enableZstd:true
+    - cp LICENSE* COPYING *md Tiled/
+    after_success:
+    - wget -c "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
+      -O linuxdeployqt
+    - chmod a+x linuxdeployqt
+    - unset QTDIR; unset QT_PLUGIN_PATH; unset LD_LIBRARY_PATH
+    - "./linuxdeployqt ./Tiled/usr/share/applications/org.mapeditor.Tiled.desktop
+      -bundle-non-qt-libs -extra-plugins=imageformats/libqsvg.so -exclude-libs=libpython3.5m.so.1
+      -verbose=2"
+    - ./linuxdeployqt --appimage-extract
+    - export PATH=$(readlink -f ./squashfs-root/usr/bin/):$PATH
+    - ./squashfs-root/usr/bin/appimagetool Tiled/
+    - find ./Tiled -executable -type f -exec ldd {} \; | grep " => /usr" | cut -d
+      " " -f 2-3 | sort | uniq
+    - mv Tiled-x86_64.AppImage Tiled-$TILED_VERSION-x86_64.AppImage
+    deploy:
+    - provider: releases
+      skip_cleanup: true
+      draft: true
+      tag_name: "$TRAVIS_TAG"
+      api_key:
+        secure: g8B2MDEElF5v1K1awuhB1C54Fbl2eUmKdfJTPhYC8kYiLoWClgufOPavJOHO+hH5us1LtbCvOa6Z+lrSe9YnuwNcV2MKENQQ4CjpViEI51wpAOM1/WW+C7tDu2BNFKCJjldRrSGttFD2lgVbNYBY7w56/2stZNRBuTfdE8YZEFc=
+      file: Tiled*.AppImage
+      file_glob: true
+      on:
+        repo: bjorn/tiled
+        tags: true
+    - provider: script
+      skip_cleanup: true
+      script: curl --upload-file $(ls Tiled*.AppImage) https://transfer.sh/Tiled.AppImage
+      on:
+        all_branches: true
+    - provider: script
+      skip_cleanup: true
+      on:
+        repo: bjorn/tiled
+        branch: snapshot
+      script: dist/linux/push-to-itch.sh
+  - os: linux
+    compiler: clang
+    addons:
+      apt:
+        packages:
+        - binutils
+        - cppcheck
+        - libgl1-mesa-dev
+        - xvfb
+        - zlib1g-dev
+        - libzstd-dev
+    env:
+    - QMAKESPEC=linux-clang
+    - MAKEFLAGS=-j2
+    before_install:
+    - sudo add-apt-repository --yes ppa:beineri/opt-qt563-xenial
+    - sudo apt-get update -qq
+    - sudo apt-get -y install qt56base qt56svg qt56tools
+    - source /opt/qt56/bin/qt56-env.sh
+    - qmake -version
+    script:
+    - qmake "CONFIG+=tiled_zstd"
+    - make
+    - pushd tests/
+    - qmake "CONFIG+=tiled_zstd"
+    - make
+    - for test in `find -executable -type f`; do pushd `dirname $test`; xvfb-run -a
+      ./`basename $test`||exit 1; popd; done
+    - popd
+    after_script:
+    - cppcheck --enable=all -q -Isrc/libtiled `git ls-files src/\*.cpp`
+  - os: osx
+    addons:
+      homebrew:
+        packages:
+          - p7zip
+          - ccache
+        update: true
+    env:
+      - MAKEFLAGS=-j2
+      - QT_INSTALL_DIR=~/Qt
+      - QT_BIN=${QT_INSTALL_DIR}/${QT_VERSION}/clang_64/bin
+      - PATH="${QT_INSTALL_DIR}/Qt Creator.app/Contents/MacOS:${QT_BIN}:${PATH}"
+    before_install:
+    - ./dist/install-qt.sh -d ${QT_INSTALL_DIR} --version ${QT_VERSION} qtbase qtdeclarative qtscript qtsvg qtimageformats qttools
+    - ./dist/install-qt.sh -d ${QT_INSTALL_DIR} --version ${QTCREATOR_VERSION} qtcreator
+    - git clone --depth 1 -b master https://github.com/facebook/zstd.git
+    - cd zstd/lib
+    - make libzstd.a
+    - cd ../../
+    script:
+    - qbs --version
+    - qbs setup-toolchains --detect
+    - qbs config defaultProfile xcode
+    - ccache -zs
+    - qbs install --install-root install config:release qbs.installPrefix:"" projects.Tiled.version:$TILED_VERSION projects.Tiled.enableZstd:true modules.cpp.compilerWrapper:ccache
+    - ccache -s
+    - macdeployqt install/Tiled.app -verbose=2
+    - pushd install
+    - ruby ../dist/macos/fixup-install-names.rb
+    - ditto -c -k --sequesterRsrc --keepParent Tiled.app ../Tiled-$TILED_VERSION-macos.zip
+    - popd
+    deploy:
+    - provider: releases
+      skip_cleanup: true
+      draft: true
+      tag_name: "$TRAVIS_TAG"
+      api_key:
+        secure: g8B2MDEElF5v1K1awuhB1C54Fbl2eUmKdfJTPhYC8kYiLoWClgufOPavJOHO+hH5us1LtbCvOa6Z+lrSe9YnuwNcV2MKENQQ4CjpViEI51wpAOM1/WW+C7tDu2BNFKCJjldRrSGttFD2lgVbNYBY7w56/2stZNRBuTfdE8YZEFc=
+      file: Tiled-*-macos.zip
+      file_glob: true
+      on:
+        repo: bjorn/tiled
+        tags: true
+    - provider: script
+      skip_cleanup: true
+      on:
+        repo: bjorn/tiled
+        branch: snapshot
+      script: dist/macos/push-to-itch.sh
 before_script:
-  - if [[ "$TRAVIS_TAG" ]]; then export TILED_RELEASE=true ; fi
-  - if [[ "$TRAVIS_TAG" ]]; then export TILED_VERSION=${TRAVIS_TAG:1} ; fi
-  - if [[ "$TRAVIS_TAG" == "" ]]; then export TILED_VERSION=$(date "+%Y.%m.%d") ; fi
-  - if [[ "$TRAVIS_BRANCH" == "snapshot" ]]; then export TILED_SNAPSHOT=true ; fi
+- if [[ "$TRAVIS_TAG" ]]; then export TILED_RELEASE=true ; fi
+- if [[ "$TRAVIS_TAG" ]]; then export TILED_VERSION=${TRAVIS_TAG:1} ; fi
+- if [[ "$TRAVIS_TAG" == "" ]]; then export TILED_VERSION=$(date "+%Y.%m.%d") ; fi
+- if [[ "$TRAVIS_BRANCH" == "snapshot" ]]; then export TILED_SNAPSHOT=true ; fi

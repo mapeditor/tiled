@@ -44,7 +44,6 @@ static const char * const DRAW_GRID_KEY = "SaveAsImage/DrawGrid";
 static const char * const INCLUDE_BACKGROUND_COLOR = "SaveAsImage/IncludeBackgroundColor";
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 QString ExportAsImageDialog::mPath;
 
@@ -59,7 +58,9 @@ ExportAsImageDialog::ExportAsImageDialog(MapDocument *mapDocument,
 {
     mUi->setupUi(this);
     resize(Utils::dpiScaled(size()));
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+#endif
 
     QPushButton *saveButton = mUi->buttonBox->button(QDialogButtonBox::Save);
     saveButton->setText(tr("Export"));
@@ -102,9 +103,9 @@ ExportAsImageDialog::ExportAsImageDialog(MapDocument *mapDocument,
     mUi->drawTileGrid->setChecked(drawTileGrid);
     mUi->includeBackgroundColor->setChecked(includeBackgroundColor);
 
-    connect(mUi->browseButton, SIGNAL(clicked()), SLOT(browse()));
-    connect(mUi->fileNameEdit, SIGNAL(textChanged(QString)),
-            this, SLOT(updateAcceptEnabled()));
+    connect(mUi->browseButton, &QAbstractButton::clicked, this, &ExportAsImageDialog::browse);
+    connect(mUi->fileNameEdit, &QLineEdit::textChanged,
+            this, &ExportAsImageDialog::updateAcceptEnabled);
 
 
     Utils::restoreGeometry(this);
@@ -147,6 +148,7 @@ void ExportAsImageDialog::accept()
     const bool includeBackgroundColor = mUi->includeBackgroundColor->isChecked();
 
     MiniMapRenderer miniMapRenderer(mMapDocument->map());
+    miniMapRenderer.setGridColor(Preferences::instance()->gridColor());
 
     MiniMapRenderer::RenderFlags renderFlags(MiniMapRenderer::DrawTileLayers |
                                              MiniMapRenderer::DrawMapObjects |

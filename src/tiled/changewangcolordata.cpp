@@ -21,106 +21,99 @@
 #include "changewangcolordata.h"
 
 #include "wangcolormodel.h"
+#include "tilesetdocument.h"
 
 using namespace Tiled;
-using namespace Internal;
 
-ChangeWangColorName::ChangeWangColorName(const QString &newName,
-                                         int colorIndex,
-                                         bool isEdge,
-                                         WangColorModel *wangColorModel)
-    : mWangColorModel(wangColorModel)
-    , mIndex(colorIndex)
-    , mIsEdge(isEdge)
+ChangeWangColorName::ChangeWangColorName(TilesetDocument *tilesetDocument,
+                                         WangColor *wangColor,
+                                         const QString &newName)
+    : mTilesetDocument(tilesetDocument)
+    , mWangColor(wangColor)
+    , mOldName(wangColor->name())
     , mNewName(newName)
 {
-    if (isEdge)
-        mOldName = mWangColorModel->wangSet()->edgeColorAt(mIndex)->name();
-    else
-        mOldName = mWangColorModel->wangSet()->cornerColorAt(mIndex)->name();
 }
 
 void ChangeWangColorName::undo()
 {
-    mWangColorModel->setName(mOldName, mIsEdge, mIndex);
+    auto wangColorModel = mTilesetDocument->wangColorModel(mWangColor->wangSet());
+    wangColorModel->setName(mWangColor, mOldName);
 }
 
 void ChangeWangColorName::redo()
 {
-    mWangColorModel->setName(mNewName, mIsEdge, mIndex);
+    auto wangColorModel = mTilesetDocument->wangColorModel(mWangColor->wangSet());
+    wangColorModel->setName(mWangColor, mNewName);
 }
 
-ChangeWangColorImage::ChangeWangColorImage(int newImageId,
-                                           int colorIndex,
-                                           bool isEdge,
-                                           WangColorModel *wangColorModel)
-    : mWangColorModel(wangColorModel)
-    , mIndex(colorIndex)
-    , mIsEdge(isEdge)
+
+ChangeWangColorImage::ChangeWangColorImage(TilesetDocument *tilesetDocument,
+                                           WangColor *wangColor,
+                                           int newImageId,
+                                           QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , mTilesetDocument(tilesetDocument)
+    , mWangColor(wangColor)
+    , mOldImageId(wangColor->imageId())
     , mNewImageId(newImageId)
 {
-    if (isEdge)
-        mOldImageId = mWangColorModel->wangSet()->edgeColorAt(mIndex)->imageId();
-    else
-        mOldImageId = mWangColorModel->wangSet()->cornerColorAt(mIndex)->imageId();
 }
 
 void ChangeWangColorImage::undo()
 {
-    mWangColorModel->setImage(mOldImageId, mIsEdge, mIndex);
+    auto wangColorModel = mTilesetDocument->wangColorModel(mWangColor->wangSet());
+    wangColorModel->setImage(mWangColor, mOldImageId);
 }
 
 void ChangeWangColorImage::redo()
 {
-    mWangColorModel->setImage(mNewImageId, mIsEdge, mIndex);
+    auto wangColorModel = mTilesetDocument->wangColorModel(mWangColor->wangSet());
+    wangColorModel->setImage(mWangColor, mNewImageId);
 }
 
-ChangeWangColorColor::ChangeWangColorColor(const QColor &newColor,
-                                           int colorIndex,
-                                           bool isEdge,
-                                           WangColorModel *wangColorModel)
-    : mWangColorModel(wangColorModel)
-    , mIndex(colorIndex)
-    , mIsEdge(isEdge)
+
+ChangeWangColorColor::ChangeWangColorColor(TilesetDocument *tilesetDocument,
+                                           WangColor *wangColor,
+                                           const QColor &newColor)
+    : mTilesetDocument(tilesetDocument)
+    , mWangColor(wangColor)
+    , mOldColor(wangColor->color())
     , mNewColor(newColor)
 {
-    if (isEdge)
-        mOldColor = mWangColorModel->wangSet()->edgeColorAt(mIndex)->color();
-    else
-        mOldColor = mWangColorModel->wangSet()->cornerColorAt(mIndex)->color();
 }
 
 void ChangeWangColorColor::undo()
 {
-    mWangColorModel->setColor(mOldColor, mIsEdge, mIndex);
+    auto wangColorModel = mTilesetDocument->wangColorModel(mWangColor->wangSet());
+    wangColorModel->setColor(mWangColor, mOldColor);
 }
 
 void ChangeWangColorColor::redo()
 {
-    mWangColorModel->setColor(mNewColor, mIsEdge, mIndex);
+    auto wangColorModel = mTilesetDocument->wangColorModel(mWangColor->wangSet());
+    wangColorModel->setColor(mWangColor, mNewColor);
 }
 
-ChangeWangColorProbability::ChangeWangColorProbability(qreal newProbability,
-                                                       int colorIndex,
-                                                       bool isEdge,
-                                                       WangColorModel *wangColorModel)
-    : mWangColorModel(wangColorModel)
-    , mIndex(colorIndex)
-    , mIsEdge(isEdge)
+
+ChangeWangColorProbability::ChangeWangColorProbability(TilesetDocument *tilesetDocument,
+                                                       WangColor *wangColor,
+                                                       qreal newProbability)
+    : mTilesetDocument(tilesetDocument)
+    , mWangColor(wangColor)
+    , mOldProbability(wangColor->probability())
     , mNewProbability(newProbability)
 {
-    if (mIsEdge)
-        mOldProbability = mWangColorModel->wangSet()->edgeColorAt(mIndex)->probability();
-    else
-        mOldProbability = mWangColorModel->wangSet()->cornerColorAt(mIndex)->probability();
 }
 
 void ChangeWangColorProbability::undo()
 {
-    mWangColorModel->setProbability(mOldProbability, mIsEdge, mIndex);
+    auto wangColorModel = mTilesetDocument->wangColorModel(mWangColor->wangSet());
+    wangColorModel->setProbability(mWangColor, mOldProbability);
 }
 
 void ChangeWangColorProbability::redo()
 {
-    mWangColorModel->setProbability(mNewProbability, mIsEdge, mIndex);
+    auto wangColorModel = mTilesetDocument->wangColorModel(mWangColor->wangSet());
+    wangColorModel->setProbability(mWangColor, mNewProbability);
 }

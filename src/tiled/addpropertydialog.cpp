@@ -25,12 +25,12 @@
 #include "preferences.h"
 #include "properties.h"
 #include "utils.h"
+#include "documentmanager.h"
 
 #include <QPushButton>
 #include <QSettings>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 static const char * const TYPE_KEY = "AddPropertyDialog/PropertyType";
 
@@ -38,7 +38,9 @@ AddPropertyDialog::AddPropertyDialog(QWidget *parent)
     : QDialog(parent)
     , mUi(new Ui::AddPropertyDialog)
 {
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+#endif
 
     mUi->setupUi(this);
     resize(Utils::dpiScaled(size()));
@@ -46,12 +48,13 @@ AddPropertyDialog::AddPropertyDialog(QWidget *parent)
     QString stringType = typeToName(QVariant::String);
 
     // Add possible types from QVariant
-    mUi->typeBox->addItem(typeToName(QVariant::Bool),   false);
-    mUi->typeBox->addItem(typeToName(QVariant::Color),  QColor());
-    mUi->typeBox->addItem(typeToName(QVariant::Double), 0.0);
-    mUi->typeBox->addItem(typeToName(filePathTypeId()), QVariant::fromValue(FilePath()));
-    mUi->typeBox->addItem(typeToName(QVariant::Int),    0);
-    mUi->typeBox->addItem(stringType,                   QString());
+    mUi->typeBox->addItem(typeToName(QVariant::Bool),    false);
+    mUi->typeBox->addItem(typeToName(QVariant::Color),   QColor());
+    mUi->typeBox->addItem(typeToName(QVariant::Double),  0.0);
+    mUi->typeBox->addItem(typeToName(filePathTypeId()),  QVariant::fromValue(FilePath()));
+    mUi->typeBox->addItem(typeToName(QVariant::Int),     0);
+    mUi->typeBox->addItem(typeToName(objectRefTypeId()), QVariant::fromValue(ObjectRef()));
+    mUi->typeBox->addItem(stringType,                    QString());
 
     mUi->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
 

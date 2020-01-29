@@ -26,7 +26,6 @@
 #include <QCoreApplication>
 
 using namespace Tiled;
-using namespace Internal;
 
 ChangeTileWangId::ChangeTileWangId()
     : mTilesetDocument(nullptr)
@@ -36,7 +35,10 @@ ChangeTileWangId::ChangeTileWangId()
     setText(QCoreApplication::translate("Undo Commands", "Change Tile WangId"));
 }
 
-ChangeTileWangId::ChangeTileWangId(TilesetDocument *tilesetDocument, WangSet *wangSet, Tile *tile, WangId wangId)
+ChangeTileWangId::ChangeTileWangId(TilesetDocument *tilesetDocument,
+                                   WangSet *wangSet,
+                                   Tile *tile,
+                                   WangId wangId)
     : mTilesetDocument(tilesetDocument)
     , mWangSet(wangSet)
     , mMergeable(true)
@@ -106,8 +108,8 @@ bool ChangeTileWangId::mergeWith(const QUndoCommand *other)
                                  mWangSet == o->mWangSet))
         return false;
 
-    //suboptimal, could use a map to remove any unnessesary changes if the same tile has
-    //multiple changes.
+    // suboptimal, could use a map to remove any unnessesary changes if the
+    // same tile has multiple changes.
     mChanges += o->mChanges;
 
     mMergeable = o->mMergeable;

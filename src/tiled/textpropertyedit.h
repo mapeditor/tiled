@@ -28,7 +28,6 @@
 class QLineEdit;
 
 namespace Tiled {
-namespace Internal {
 
 QString escapeNewlines(const QString &string);
 
@@ -51,14 +50,12 @@ public slots:
 signals:
     void textChanged(const QString &text);
 
-private slots:
+private:
     void onTextChanged(const QString &text);
     void onButtonClicked();
 
-private:
     QLineEdit *mLineEdit;
     QString mCachedText;
 };
 
-} // namespace Internal
 } // namespace Tiled

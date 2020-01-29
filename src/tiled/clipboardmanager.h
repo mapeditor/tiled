@@ -24,14 +24,14 @@
 
 #include <QObject>
 
+#include <memory>
+
 class QClipboard;
 
 namespace Tiled {
 
 class ObjectGroup;
 class Map;
-
-namespace Internal {
 
 class MapDocument;
 class MapView;
@@ -42,13 +42,16 @@ class MapView;
 class ClipboardManager : public QObject
 {
     Q_OBJECT
+    Q_DISABLE_COPY(ClipboardManager)
+
+    ClipboardManager();
 
 public:
     static ClipboardManager *instance();
     static void deleteInstance();
 
     bool hasMap() const;
-    Map *map() const;
+    std::unique_ptr<Map> map() const;
     void setMap(const Map &map);
 
     bool hasProperties() const;
@@ -74,13 +77,8 @@ signals:
     void hasMapChanged();
     void hasPropertiesChanged();
 
-private slots:
-    void update();
-
 private:
-    ClipboardManager();
-
-    Q_DISABLE_COPY(ClipboardManager)
+    void update();
 
     QClipboard *mClipboard;
     bool mHasMap;
@@ -105,7 +103,6 @@ inline bool ClipboardManager::hasProperties() const
     return mHasProperties;
 }
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(ClipboardManager::PasteFlags)
-
-} // namespace Internal
 } // namespace Tiled
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::ClipboardManager::PasteFlags)

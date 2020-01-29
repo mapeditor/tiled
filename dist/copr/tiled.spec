@@ -145,7 +145,6 @@ fi
 
 %files -f %{name}.lang
 %doc AUTHORS NEWS.md README.md COPYING LICENSE.GPL LICENSE.BSD
-%{_bindir}/automappingconverter
 %{_bindir}/%{name}
 %{_bindir}/terraingenerator
 %{_bindir}/tmxrasterizer
@@ -166,9 +165,9 @@ fi
 # Core plugins
 %{_libdir}/%{name}/plugins/libcsv.so
 %{_libdir}/%{name}/plugins/libjson.so
+%{_libdir}/%{name}/plugins/libjson1.so
 %{_libdir}/%{name}/plugins/liblua.so
 
-%{_mandir}/man1/automappingconverter.1*
 %{_mandir}/man1/%{name}.1*
 %{_mandir}/man1/tmxrasterizer.1*
 %{_mandir}/man1/tmxviewer.1*

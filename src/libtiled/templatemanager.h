@@ -22,6 +22,7 @@
 #pragma once
 
 #include "tiled_global.h"
+#include "filesystemwatcher.h"
 
 #include <QHash>
 #include <QObject>
@@ -42,13 +43,25 @@ public:
     ObjectTemplate *loadObjectTemplate(const QString &fileName,
                                        QString *error = nullptr);
 
+signals:
+    /**
+     * Template has changed and instances need an update.
+     *
+     * Currently emitted from the TemplatesDock, and whenever a template
+     * file changes.
+     */
+    void objectTemplateChanged(ObjectTemplate *objectTemplate);
+
 private:
     Q_DISABLE_COPY(TemplateManager)
 
     TemplateManager(QObject *parent = nullptr);
     ~TemplateManager();
 
+    void fileChanged(const QString &fileName);
+
     QHash<QString, ObjectTemplate*> mObjectTemplates;
+    FileSystemWatcher *mWatcher;
 
     static TemplateManager *mInstance;
 };
@@ -58,4 +71,4 @@ inline ObjectTemplate *TemplateManager::findObjectTemplate(const QString &fileNa
     return mObjectTemplates.value(fileName);
 }
 
-} // namespace Tiled::Internal
+} // namespace Tiled

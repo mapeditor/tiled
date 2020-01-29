@@ -39,10 +39,16 @@ FileSystemWatcher::FileSystemWatcher(QObject *parent) :
     QObject(parent),
     mWatcher(new QFileSystemWatcher(this))
 {
-    connect(mWatcher, SIGNAL(fileChanged(QString)),
-            SLOT(onFileChanged(QString)));
-    connect(mWatcher, SIGNAL(directoryChanged(QString)),
-            SLOT(onDirectoryChanged(QString)));
+    mChangedFilesTimer.setInterval(500);
+    mChangedFilesTimer.setSingleShot(true);
+
+    connect(mWatcher, &QFileSystemWatcher::fileChanged,
+            this, &FileSystemWatcher::onFileChanged);
+    connect(mWatcher, &QFileSystemWatcher::directoryChanged,
+            this, &FileSystemWatcher::onDirectoryChanged);
+
+    connect(&mChangedFilesTimer, &QTimer::timeout,
+            this, &FileSystemWatcher::filesChangedTimeout);
 }
 
 void FileSystemWatcher::addPath(const QString &path)
@@ -79,14 +85,23 @@ void FileSystemWatcher::removePath(const QString &path)
     }
 }
 
+void FileSystemWatcher::clear()
+{
+    const QStringList files = mWatcher->files();
+    if (!files.isEmpty())
+        mWatcher->removePaths(files);
+
+    const QStringList directories = mWatcher->directories();
+    if (!directories.isEmpty())
+        mWatcher->removePaths(directories);
+
+    mWatchCount.clear();
+}
+
 void FileSystemWatcher::onFileChanged(const QString &path)
 {
-    // If the file was replaced, the watcher is automatically removed and needs
-    // to be re-added to keep watching it for changes. This happens commonly
-    // with applications that do atomic saving.
-    if (!mWatcher->files().contains(path))
-        if (QFile::exists(path))
-            mWatcher->addPath(path);
+    mChangedFiles.insert(path);
+    mChangedFilesTimer.start();
 
     emit fileChanged(path);
 }
@@ -94,6 +109,24 @@ void FileSystemWatcher::onFileChanged(const QString &path)
 void FileSystemWatcher::onDirectoryChanged(const QString &path)
 {
     emit directoryChanged(path);
+}
+
+void FileSystemWatcher::filesChangedTimeout()
+{
+    const auto changedFiles = mChangedFiles.values();
+
+    // If the file was replaced, the watcher is automatically removed and needs
+    // to be re-added to keep watching it for changes. This happens commonly
+    // with applications that do atomic saving.
+    for (const QString &path : changedFiles) {
+        if (mWatchCount.contains(path) && !mWatcher->files().contains(path)) {
+            if (QFile::exists(path))
+                mWatcher->addPath(path);
+        }
+    }
+
+    emit filesChanged(changedFiles);
+    mChangedFiles.clear();
 }
 
 } // namespace Tiled

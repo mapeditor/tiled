@@ -28,7 +28,6 @@
 #include <QToolButton>
 
 namespace Tiled {
-namespace Internal {
 
 FileEdit::FileEdit(QWidget *parent)
     : QWidget(parent)
@@ -44,9 +43,8 @@ FileEdit::FileEdit(QWidget *parent)
     mOkTextColor = mLineEdit->palette().color(QPalette::Active, QPalette::Text);
 
     QToolButton *button = new QToolButton(this);
-    button->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred));
-    button->setFixedWidth(20);
     button->setText(QLatin1String("..."));
+    button->setAutoRaise(true);
     layout->addWidget(mLineEdit);
     layout->addWidget(button);
 
@@ -133,5 +131,4 @@ void FileEdit::buttonClicked()
     emit fileUrlChanged(url);
 }
 
-} // namespace Internal
 } // namespace Tiled

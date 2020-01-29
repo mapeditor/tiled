@@ -24,7 +24,7 @@
 
 #include <QCoreApplication>
 
-using namespace Tiled::Internal;
+using namespace Tiled;
 
 ChangeSelectedArea::ChangeSelectedArea(MapDocument *mapDocument,
                                        const QRegion &newSelection,

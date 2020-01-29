@@ -35,8 +35,6 @@ C
 C++
 ~~~
 
--  `C++/Boost <http://www.catnapgames.com/blog/2011/10/10/simple-tmx-tilemap-parser.html>`__
-   by Tomas Andrle (limited functionality, single cpp file)
 -  `C++/TinyXML based tmxparser <https://github.com/sainteos/tmxparser>`__ (BSD)
 -  C++/Qt based libtiled, used by Tiled itself and included at
    `src/libtiled <https://github.com/bjorn/tiled/tree/master/src/libtiled>`__
@@ -62,6 +60,7 @@ C++
    with compressed map support but no external linking required.
    Includes examples for SFML and SDL2 rendering. Currently has full tmx
    support up to 0.16. (Zlib/libpng)
+-  `Tileson <https://github.com/SSBMTonberry/tileson>`__ - A Tiled JSON parser for modern C++ (C++17) by Robin Berg Pettersen (BSD)
 
 C#/.NET
 ~~~~~~~
@@ -86,6 +85,10 @@ C#/.NET
    library for parsing Tiled map TMX files. This library could be used
    with MonoGame and Windows Runtime Universal apps.
 
+Clojure
+~~~~~~~
+- `tile-soup <https://github.com/oakes/tile-soup>`__: Parses and validates a TMX file into a map. Automatically decodes Base64 and CSV formatted data and coerces numbers when necessary. Works on both the JVM and in browsers via ClojureScript.
+
 D
 ~
 
@@ -99,6 +102,7 @@ D
 Go
 ~~
 
+-  `github.com/lafriks/go-tiled <https://github.com/lafriks/go-tiled>`__
 -  `github.com/salviati/go-tmx/tmx <https://github.com/salviati/go-tmx>`__
 
 Haskell
@@ -143,6 +147,10 @@ Processing
 Python
 ~~~~~~
 
+-  `pytiled-parser <https://github.com/Beefy-Swain/pytiled_parser>`__: Python parser
+   for TMX maps
+-  `Arcade <http://arcade.academy>`__: 2D game library that uses pytiled-parser for 
+   easy loading of TMX maps into a game. `Arcade TMX Examples <http://arcade.academy/examples/index.html#tmx-files-tiled-map-editor>`_
 -  `pytmxlib <http://pytmxlib.readthedocs.org/en/latest/>`__: library
    for programmatic manipulation of TMX maps
 -  `python-tmx <http://python-tmx.nongnu.org>`__: a simple library for
@@ -180,6 +188,11 @@ Allegro
    integrates Tiled support with `Allegro
    5 <http://alleg.sourceforge.net/>`__.
 
+Castle Game Engine (Object Pascal)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-  `Castle Game Engine <https://castle-engine.io/>`__ has native support for Tiled maps (see the `CastleTiledMap unit <https://castle-engine.io/apidoc-unstable/html/CastleTiledMap.html>`__)
+
 cocos2d
 ~~~~~~~
 
@@ -214,7 +227,10 @@ Corona SDK
    Tiled Map Loader for Corona SDK (`forum
    announcement <http://discourse.mapeditor.org/t/new-lua-coronasdk-framework-ponytiled/1826>`__)
 -  `Dusk Engine <https://github.com/GymbylCoding/Dusk-Engine>`__ is a
-   fully featured Tiled map game engine for Corona SDK
+   fully featured Tiled map game engine for Corona SDK (no longer maintained, but may still be useful)
+-  `Berry <https://github.com/ldurniat/Berry>`__ is a simple Tiled
+   Map Loader for Corona SDK.
+-  `Qiso <https://qiso.qweb.co.uk>`__ is an isometric engine for Corona SDK that supports loading Tiled maps, and also handles things like path-finding for you.
 
 Flixel
 ~~~~~~
@@ -441,6 +457,7 @@ Unity 3D
    object layers).
 -  `Tiled2Unity <http://www.seanba.com/introtiled2unity.html>`__ exports
    TMX files to Unity with support for (non-simple) collisions.
+-  `UniTiled <https://yjaffal.itch.io/unitiled>`__, a native TMX importer for Unity.
 -  `UniTMX <https://bitbucket.org/PolCPP/unitmx/overview>`__ imports TMX
    files into a mesh.
 -  `X-UniTMX <https://bitbucket.org/Chaoseiro/x-unitmx>`__ supports

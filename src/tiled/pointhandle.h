@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef POINTHANDLE_H
-#define POINTHANDLE_H
+#pragma once
 
 #include <QGraphicsItem>
 
@@ -27,7 +26,6 @@ namespace Tiled {
 
 class MapObject;
 
-namespace Internal {
 
 /**
  * A handle that allows moving around a point of a polygon.
@@ -63,7 +61,4 @@ private:
     bool mHighlighted;
 };
 
-} // namespace Internal
 } // namespace Tiled
-
-#endif // POINTHANDLE_H

@@ -29,8 +29,6 @@ namespace Tiled {
 class GroupLayer;
 class Layer;
 
-namespace Internal {
-
 class MapDocument;
 
 /**
@@ -98,5 +96,4 @@ public:
     { removeLayer(); }
 };
 
-} // namespace Internal
 } // namespace Tiled

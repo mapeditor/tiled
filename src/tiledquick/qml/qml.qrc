@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>qtquickcontrols2.conf</file>
+        <file>DragArea.qml</file>
+        <file>FontAwesome.qml</file>
+        <file>qmldir</file>
+    </qresource>
+</RCC>

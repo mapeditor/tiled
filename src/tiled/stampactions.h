@@ -26,7 +26,6 @@ class QAction;
 class QToolBar;
 
 namespace Tiled {
-namespace Internal {
 
 class StampActions : public QObject
 {
@@ -34,7 +33,6 @@ class StampActions : public QObject
 
 public:
     StampActions(QObject *parent = nullptr);
-    ~StampActions();
 
     void languageChanged();
 
@@ -56,5 +54,4 @@ private:
     QAction *mRotateRight;
 };
 
-} // namespace Internal
 } // namespace Tiled

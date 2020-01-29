@@ -21,9 +21,13 @@
 
 #pragma once
 
-#include <QDockWidget>
-#include <QTreeView>
+#include "mapdocument.h"
+
 #include <QAction>
+#include <QDockWidget>
+#include <QHash>
+#include <QSharedPointer>
+#include <QTreeView>
 
 class QPushButton;
 class QLabel;
@@ -34,10 +38,7 @@ class ObjectTemplate;
 class MapObject;
 class Tile;
 
-namespace Internal {
-
 class AbstractTool;
-class MapDocument;
 class MapScene;
 class MapView;
 class ObjectTemplateModel;
@@ -51,22 +52,24 @@ class TemplatesDock : public QDockWidget
 
 public:
     TemplatesDock(QWidget *parent = nullptr);
-    ~TemplatesDock();
+    ~TemplatesDock() override;
 
     void setPropertiesDock(PropertiesDock *propertiesDock);
+    void setTile(Tile *tile);
 
 signals:
     void currentTemplateChanged(ObjectTemplate *objectTemplate);
-    void templateEdited(const ObjectTemplate *objectTemplate);
-    void setTile(Tile *tile);
     void templateTilesetReplaced();
 
 public slots:
     void openTemplate(const QString &path);
     void bringToFront();
 
-private slots:
-    void setSelectedTool(AbstractTool *tool);
+protected:
+    void focusInEvent(QFocusEvent *event) override;
+    void focusOutEvent(QFocusEvent *event) override;
+
+private:
     void setTemplate(ObjectTemplate *objectTemplate);
     void checkTileset();
 
@@ -76,13 +79,10 @@ private slots:
 
     void chooseDirectory();
 
-protected:
-    void focusInEvent(QFocusEvent *event) override;
-    void focusOutEvent(QFocusEvent *event) override;
-
-private:
     void retranslateUi();
     void fixTileset();
+
+    MapObject *dummyObject() const;
 
     TemplatesView *mTemplatesView;
 
@@ -92,13 +92,14 @@ private:
     QPushButton *mFixTilesetButton;
     QLabel *mDescriptionLabel;
 
-    MapDocument *mDummyMapDocument;
+    MapDocumentPtr mDummyMapDocument;
     MapScene *mMapScene;
     MapView *mMapView;
     ObjectTemplate *mObjectTemplate;
-    MapObject *mObject;
     PropertiesDock *mPropertiesDock;
     ToolManager *mToolManager;
+
+    static QHash<ObjectTemplate*, QWeakPointer<MapDocument>> ourDummyDocuments;
 };
 
 class TemplatesView : public QTreeView
@@ -122,13 +123,12 @@ public slots:
     void onCurrentChanged(const QModelIndex &index);
 
 private:
-    void onTemplatesDirectoryChanged(const QString &templatesDirectory);
+    void onTemplatesDirectoryChanged(const QString &rootPath);
 
-    ObjectTemplateModel *mModel;
+    QSharedPointer<ObjectTemplateModel> mModel;
 };
 
 inline void TemplatesDock::setPropertiesDock(PropertiesDock *propertiesDock)
 { mPropertiesDock = propertiesDock; }
 
-} // namespace Internal
 } // namespace Tiled

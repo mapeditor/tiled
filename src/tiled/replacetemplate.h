@@ -27,8 +27,6 @@ namespace Tiled {
 
 class ObjectTemplate;
 
-namespace Internal {
-
 class MapDocument;
 
 class ReplaceTemplate : public QUndoCommand
@@ -51,5 +49,4 @@ private:
     const ObjectTemplate *mNewObjectTemplate;
 };
 
-} // namespace Internal
 } // namespace Tiled

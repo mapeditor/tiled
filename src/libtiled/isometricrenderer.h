@@ -39,7 +39,7 @@ namespace Tiled {
  * such a way that the map will also be diamond shaped. The X axis points to
  * the bottom right while the Y axis points to the bottom left.
  */
-class TILEDSHARED_EXPORT IsometricRenderer : public MapRenderer
+class TILEDSHARED_EXPORT IsometricRenderer final : public MapRenderer
 {
 public:
     IsometricRenderer(const Map *map) : MapRenderer(map) {}
@@ -50,6 +50,7 @@ public:
 
     QRectF boundingRect(const MapObject *object) const override;
     QPainterPath shape(const MapObject *object) const override;
+    QPainterPath interactionShape(const MapObject *object) const override;
 
     void drawGrid(QPainter *painter, const QRectF &rect, QColor grid) const override;
 
@@ -84,6 +85,7 @@ public:
     QPointF pixelToScreenCoords(qreal x, qreal y) const override;
 
 private:
+    QTransform transform() const;
     QPolygonF pixelRectToScreenPolygon(const QRectF &rect) const;
     QPolygonF tileRectToScreenPolygon(const QRect &rect) const;
 };

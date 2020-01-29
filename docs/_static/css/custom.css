@@ -36,5 +36,21 @@
 
 .new-prev {
     background-color: unset;
-    color: rgb(254, 89, 0);
+    color: gray;
+    border-color: gray;
+}
+
+/* override table no-wrap */
+.wy-table-responsive table td {
+    white-space: normal;
+}
+
+/* override table middle align */
+.rst-content table.docutils td {
+    vertical-align: top;
+}
+
+/* override too much space between line blocks */
+.rst-content .line-block {
+    margin-bottom: 0.5em;
 }

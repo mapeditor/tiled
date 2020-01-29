@@ -27,12 +27,10 @@ namespace Tiled {
 class Tileset;
 class Terrain;
 
-namespace Internal {
-
 class TilesetDocument;
 
 /**
- * A model providing a tree view on the terrain types available on a map.
+ * A model representing the list of terrain types of a tileset.
  */
 class TilesetTerrainModel : public QAbstractListModel
 {
@@ -51,7 +49,7 @@ public:
     TilesetTerrainModel(TilesetDocument *mapDocument,
                         QObject *parent = nullptr);
 
-    ~TilesetTerrainModel();
+    ~TilesetTerrainModel() override;
 
     using QAbstractListModel::index;
     QModelIndex index(Terrain *terrain) const;
@@ -114,5 +112,4 @@ private:
     TilesetDocument *mTilesetDocument;
 };
 
-} // namespace Internal
 } // namespace Tiled

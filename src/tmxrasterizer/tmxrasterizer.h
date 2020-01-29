@@ -30,23 +30,28 @@
 
 #include "layer.h"
 
+#include "map.h"
+#include "mapreader.h"
 #include <QString>
 #include <QStringList>
 
 using namespace Tiled;
+
+class QImage;
+class QPainter;
 
 class TmxRasterizer
 {
 
 public:
     TmxRasterizer();
-    ~TmxRasterizer();
 
     qreal scale() const { return mScale; }
     int tileSize() const { return mTileSize; }
+    int size() const { return mSize; }
     bool useAntiAliasing() const { return mUseAntiAliasing; }
     bool smoothImages() const { return mSmoothImages; }
-    bool IgnoreVisibility() const { return mIgnoreVisibility; }
+    bool ignoreVisibility() const { return mIgnoreVisibility; }
 
     void setScale(qreal scale) { mScale = scale; }
     void setTileSize(int tileSize) { mTileSize = tileSize; }
@@ -57,7 +62,7 @@ public:
 
     void setLayersToHide(QStringList layersToHide) { mLayersToHide = layersToHide; }
 
-    int render(const QString &mapFileName, const QString &imageFileName);
+    int render(const QString &fileName, const QString &imageFileName);
 
 private:
     qreal mScale;
@@ -68,6 +73,9 @@ private:
     bool mIgnoreVisibility;
     QStringList mLayersToHide;
 
-    bool shouldDrawLayer(const Layer *layer);
-
+    void drawMapLayers(MapRenderer &renderer, QPainter &painter, Map &map, QPoint mapOffset = QPoint(0, 0)) const;
+    int renderMap(const QString &mapFileName, const QString &imageFileName);
+    int renderWorld(const QString &worldFileName, const QString &imageFileName);
+    int saveImage(const QString &imageFileName, const QImage &image) const;
+    bool shouldDrawLayer(const Layer *layer) const;
 };

@@ -27,7 +27,6 @@
 #include <QGraphicsItem>
 
 namespace Tiled {
-namespace Internal {
 
 class MapDocument;
 
@@ -51,7 +50,7 @@ public:
     void setMap(const SharedMap &map);
     const SharedMap &map() const;
 
-    void setTileLayerPosition(const QPoint &pos);
+    void setTileLayerPosition(QPoint pos);
 
     void setTileRegion(const QRegion &region);
     const QRegion &tileRegion() const;
@@ -102,5 +101,4 @@ inline const QRegion &BrushItem::tileRegion() const
     return mRegion;
 }
 
-} // namespace Internal
 } // namespace Tiled

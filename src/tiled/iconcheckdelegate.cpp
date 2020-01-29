@@ -27,7 +27,6 @@
 #include <QPainter>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 IconCheckDelegate::IconCheckDelegate(IconType icon,
                                      bool exclusive,
@@ -37,20 +36,20 @@ IconCheckDelegate::IconCheckDelegate(IconType icon,
 {
     switch (icon) {
     case LockedIcon:
-        mCheckedIcon.addFile(QLatin1String(":/images/14x14/locked.png"));
-        mCheckedIcon.addFile(QLatin1String(":/images/16x16/locked.png"));
-        mCheckedIcon.addFile(QLatin1String(":/images/24x24/locked.png"));
-        mUncheckedIcon.addFile(QLatin1String(":/images/14x14/unlocked.png"));
-        mUncheckedIcon.addFile(QLatin1String(":/images/16x16/unlocked.png"));
-        mUncheckedIcon.addFile(QLatin1String(":/images/24x24/unlocked.png"));
+        mCheckedIcon.addFile(QLatin1String(":/images/14/locked.png"));
+        mCheckedIcon.addFile(QLatin1String(":/images/16/locked.png"));
+        mCheckedIcon.addFile(QLatin1String(":/images/24/locked.png"));
+        mUncheckedIcon.addFile(QLatin1String(":/images/14/unlocked.png"));
+        mUncheckedIcon.addFile(QLatin1String(":/images/16/unlocked.png"));
+        mUncheckedIcon.addFile(QLatin1String(":/images/24/unlocked.png"));
         break;
     case VisibilityIcon:
-        mCheckedIcon.addFile(QLatin1String(":/images/14x14/visible.png"));
-        mCheckedIcon.addFile(QLatin1String(":/images/16x16/visible.png"));
-        mCheckedIcon.addFile(QLatin1String(":/images/24x24/visible.png"));
-        mUncheckedIcon.addFile(QLatin1String(":/images/14x14/hidden.png"));
-        mUncheckedIcon.addFile(QLatin1String(":/images/16x16/hidden.png"));
-        mUncheckedIcon.addFile(QLatin1String(":/images/24x24/hidden.png"));
+        mCheckedIcon.addFile(QLatin1String(":/images/14/visible.png"));
+        mCheckedIcon.addFile(QLatin1String(":/images/16/visible.png"));
+        mCheckedIcon.addFile(QLatin1String(":/images/24/visible.png"));
+        mUncheckedIcon.addFile(QLatin1String(":/images/14/hidden.png"));
+        mUncheckedIcon.addFile(QLatin1String(":/images/16/hidden.png"));
+        mUncheckedIcon.addFile(QLatin1String(":/images/24/hidden.png"));
         break;
     }
 
@@ -108,7 +107,7 @@ bool IconCheckDelegate::editorEvent(QEvent *event,
 
     Qt::CheckState state = static_cast<Qt::CheckState>(value.toInt());
     if (flags & Qt::ItemIsUserTristate)
-        state = ((Qt::CheckState)((state + 1) % 3));
+        state = static_cast<Qt::CheckState>((state + 1) % 3);
     else
         state = (state == Qt::Checked) ? Qt::Unchecked : Qt::Checked;
     return model->setData(index, state, Qt::CheckStateRole);
@@ -128,6 +127,17 @@ void IconCheckDelegate::drawCheck(QPainter *painter,
     targetRect.moveCenter(r.center());
 
     painter->drawPixmap(targetRect, pixmap);
+}
+
+void IconCheckDelegate::drawDisplay(QPainter *painter,
+                                    const QStyleOptionViewItem &option,
+                                    const QRect &rect,
+                                    const QString &text) const
+{
+    if (mExclusive) // suppress rendering of selection on top of icon
+        return;
+
+    QItemDelegate::drawDisplay(painter, option, rect, text);
 }
 
 QSize IconCheckDelegate::sizeHint(const QStyleOptionViewItem &option,

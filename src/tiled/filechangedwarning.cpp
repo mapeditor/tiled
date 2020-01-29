@@ -27,7 +27,6 @@
 #include <QPushButton>
 
 namespace Tiled {
-namespace Internal {
 
 FileChangedWarning::FileChangedWarning(QWidget *parent)
     : QWidget(parent)
@@ -48,8 +47,8 @@ FileChangedWarning::FileChangedWarning(QWidget *parent)
     mButtons->button(QDialogButtonBox::Yes)->setText(tr("Reload"));
     mButtons->button(QDialogButtonBox::No)->setText(tr("Ignore"));
 
-    connect(mButtons, SIGNAL(accepted()), SIGNAL(reload()));
-    connect(mButtons, SIGNAL(rejected()), SIGNAL(ignore()));
+    connect(mButtons, &QDialogButtonBox::accepted, this, &FileChangedWarning::reload);
+    connect(mButtons, &QDialogButtonBox::rejected, this, &FileChangedWarning::ignore);
 }
 
 void FileChangedWarning::paintEvent(QPaintEvent *event)
@@ -70,5 +69,4 @@ void FileChangedWarning::paintEvent(QPaintEvent *event)
 
 }
 
-} // namespace Internal
 } // namespace Tiled

@@ -49,6 +49,11 @@ public:
     };
     Q_DECLARE_FLAGS(Capabilities, Capability)
 
+    enum Option {
+        WriteMinimized  = 0x1,
+    };
+    Q_DECLARE_FLAGS(Options, Option)
+
     explicit FileFormat(QObject *parent = nullptr);
 
     /**
@@ -79,8 +84,8 @@ public:
     virtual bool supportsFile(const QString &fileName) const = 0;
 
     /**
-     * Returns the error to be shown to the user if an error occured while
-     * trying to read a map.
+     * Returns the error to be shown to the user if an error occurred while
+     * trying to read or write a file.
      */
     virtual QString errorString() const = 0;
 };
@@ -89,6 +94,7 @@ public:
 
 Q_DECLARE_INTERFACE(Tiled::FileFormat, "org.mapeditor.FileFormat")
 Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::FileFormat::Capabilities)
+Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::FileFormat::Options)
 
 namespace Tiled {
 
@@ -131,5 +137,13 @@ private:
     QList<Format*> mFormats;
     QMap<QString, Format*> mFormatByNameFilter;
 };
+
+template<typename Format>
+Format *findFileFormat(const QString &shortName, FileFormat::Capabilities capabilities = FileFormat::Write)
+{
+    return PluginManager::find<Format>([&](Format *format) {
+        return format->hasCapabilities(capabilities) && format->shortName() == shortName;
+    });
+}
 
 } // namespace Tiled

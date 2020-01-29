@@ -27,7 +27,6 @@
 #include "ui_offsetmapdialog.h"
 
 namespace Tiled {
-namespace Internal {
 
 OffsetMapDialog::OffsetMapDialog(MapDocument *mapDocument, QWidget *parent)
     : QDialog(parent)
@@ -35,7 +34,9 @@ OffsetMapDialog::OffsetMapDialog(MapDocument *mapDocument, QWidget *parent)
     , mMapDocument(mapDocument)
 {
     mUi->setupUi(this);
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+#endif
 
     if (mMapDocument->selectedArea().isEmpty()) {
         setBoundsSelection(WholeMap);
@@ -46,8 +47,8 @@ OffsetMapDialog::OffsetMapDialog(MapDocument *mapDocument, QWidget *parent)
 
     boundsSelectionChanged();   // updates wrap checkboxes
 
-    connect(mUi->boundsSelection, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(boundsSelectionChanged()));
+    connect(mUi->boundsSelection, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+            this, &OffsetMapDialog::boundsSelectionChanged);
 }
 
 OffsetMapDialog::~OffsetMapDialog()
@@ -174,5 +175,4 @@ void OffsetMapDialog::boundsSelectionChanged()
     }
 }
 
-} // namespace Internal
 } // namespace Tiled

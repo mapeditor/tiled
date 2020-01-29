@@ -31,9 +31,12 @@
 #include "tilelayer.h"
 #include "utils.h"
 
+#include <QCoreApplication>
 #include <QMessageBox>
 #include <QPushButton>
 #include <QSettings>
+
+#include <memory>
 
 static const char * const ORIENTATION_KEY = "Map/Orientation";
 static const char * const FIXED_SIZE_KEY = "Map/FixedSize";
@@ -43,7 +46,6 @@ static const char * const TILE_WIDTH_KEY = "Map/TileWidth";
 static const char * const TILE_HEIGHT_KEY = "Map/TileHeight";
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 template<typename Type>
 static Type comboBoxValue(QComboBox *comboBox)
@@ -67,9 +69,11 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     mUi(new Ui::NewMapDialog)
 {
     mUi->setupUi(this);
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+#endif
 
-    mUi->fixedSizeSpacer->changeSize(qRound(Utils::dpiScaled(mUi->fixedSizeSpacer->sizeHint().width())), 0,
+    mUi->fixedSizeSpacer->changeSize(Utils::dpiScaled(mUi->fixedSizeSpacer->sizeHint().width()), 0,
                                      mUi->fixedSizeSpacer->sizePolicy().horizontalPolicy());
 
     mUi->buttonBox->button(QDialogButtonBox::Save)->setText(tr("Save As..."));
@@ -87,6 +91,9 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "CSV"), QVariant::fromValue(Map::CSV));
     mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "Base64 (uncompressed)"), QVariant::fromValue(Map::Base64));
     mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "Base64 (zlib compressed)"), QVariant::fromValue(Map::Base64Zlib));
+#ifdef TILED_ZSTD_SUPPORT
+    mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "Base64 (Zstandard compressed)"), QVariant::fromValue(Map::Base64Zstandard));
+#endif
 
     mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Right Down"), QVariant::fromValue(Map::RightDown));
     mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Right Up"), QVariant::fromValue(Map::RightUp));
@@ -102,7 +109,7 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
         setComboBoxValue(mUi->orientation, Map::Orthogonal);
 
     if (!setComboBoxValue(mUi->layerFormat, prefs->layerDataFormat()))
-        setComboBoxValue(mUi->layerFormat, Map::CSV);
+        setComboBoxValue(mUi->layerFormat, Map::Base64Zstandard);
 
     setComboBoxValue(mUi->renderOrder, prefs->mapRenderOrder());
 
@@ -117,12 +124,12 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     font.setPointSizeF(size - 1);
     mUi->pixelSizeLabel->setFont(font);
 
-    connect(mUi->mapWidth, SIGNAL(valueChanged(int)), SLOT(refreshPixelSize()));
-    connect(mUi->mapHeight, SIGNAL(valueChanged(int)), SLOT(refreshPixelSize()));
-    connect(mUi->tileWidth, SIGNAL(valueChanged(int)), SLOT(refreshPixelSize()));
-    connect(mUi->tileHeight, SIGNAL(valueChanged(int)), SLOT(refreshPixelSize()));
-    connect(mUi->orientation, SIGNAL(currentIndexChanged(int)), SLOT(refreshPixelSize()));
-    connect(mUi->fixedSize, SIGNAL(toggled(bool)), SLOT(updateWidgets(bool)));
+    connect(mUi->mapWidth, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &NewMapDialog::refreshPixelSize);
+    connect(mUi->mapHeight, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &NewMapDialog::refreshPixelSize);
+    connect(mUi->tileWidth, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &NewMapDialog::refreshPixelSize);
+    connect(mUi->tileHeight, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &NewMapDialog::refreshPixelSize);
+    connect(mUi->orientation, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &NewMapDialog::refreshPixelSize);
+    connect(mUi->fixedSize, &QAbstractButton::toggled, this, &NewMapDialog::updateWidgets);
 
     if (fixedSize)
         mUi->fixedSize->setChecked(true);
@@ -137,10 +144,10 @@ NewMapDialog::~NewMapDialog()
     delete mUi;
 }
 
-MapDocument *NewMapDialog::createMap()
+MapDocumentPtr NewMapDialog::createMap()
 {
     if (exec() != QDialog::Accepted)
-        return nullptr;
+        return MapDocumentPtr();
 
     const bool fixedSize = mUi->fixedSize->isChecked();
     const int mapWidth = mUi->mapWidth->value();
@@ -152,10 +159,10 @@ MapDocument *NewMapDialog::createMap()
     const auto layerFormat = comboBoxValue<Map::LayerDataFormat>(mUi->layerFormat);
     const auto renderOrder = comboBoxValue<Map::RenderOrder>(mUi->renderOrder);
 
-    Map *map = new Map(orientation,
-                       mapWidth, mapHeight,
-                       tileWidth, tileHeight,
-                       !fixedSize);
+    std::unique_ptr<Map> map { new Map(orientation,
+                                       mapWidth, mapHeight,
+                                       tileWidth, tileHeight,
+                                       !fixedSize) };
 
     map->setLayerDataFormat(layerFormat);
     map->setRenderOrder(renderOrder);
@@ -165,7 +172,8 @@ MapDocument *NewMapDialog::createMap()
 
     // Add a tile layer to new maps of reasonable size
     if (memory < gigabyte) {
-        map->addLayer(new TileLayer(tr("Tile Layer 1"), 0, 0,
+        map->addLayer(new TileLayer(QCoreApplication::translate("Tiled::MapDocument", "Tile Layer %1").arg(1),
+                                    0, 0,
                                     mapWidth, mapHeight));
     } else {
         const double gigabytes = static_cast<double>(memory) / gigabyte;
@@ -187,7 +195,7 @@ MapDocument *NewMapDialog::createMap()
     s->setValue(QLatin1String(TILE_WIDTH_KEY), tileWidth);
     s->setValue(QLatin1String(TILE_HEIGHT_KEY), tileHeight);
 
-    return new MapDocument(map);
+    return MapDocumentPtr::create(std::move(map));
 }
 
 void NewMapDialog::refreshPixelSize()

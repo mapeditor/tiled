@@ -19,6 +19,7 @@ Tiled Documentation
    manual/using-the-terrain-tool
    manual/using-wang-tiles
    manual/using-infinite-maps
+   manual/worlds
    manual/using-commands
    manual/automapping
    manual/export
@@ -34,3 +35,4 @@ Tiled Documentation
    reference/tmx-map-format
    reference/tmx-changelog
    reference/json-map-format
+   reference/scripting

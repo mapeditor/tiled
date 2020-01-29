@@ -23,6 +23,7 @@
 #include "utils.h"
 
 #include <QAbstractScrollArea>
+#include <QApplication>
 #include <QMainWindow>
 #include <QPainter>
 #include <QPixmapCache>
@@ -32,7 +33,6 @@
 #include <QtMath>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 /*
  * Below there are a lot of helper functions which are copied from various
@@ -42,8 +42,6 @@ using namespace Tiled::Internal;
  * These parts are Copyright (C) 2015 The Qt Company Ltd.
  * Used under the terms of the GNU Lesser General Public License version 2.1
  */
-
-static Q_DECL_CONSTEXPR inline int qt_div_255(int x) { return (x + (x>>8) + 0x80) >> 8; }
 
 // internal helper. Converts an integer value to an unique string token
 template <typename T>
@@ -75,6 +73,25 @@ template <typename T>
     typedef QString ConvertTo;
 };
 
+static QString uniqueName(const QString &key, const QStyleOption *option, QSize size)
+{
+    const QStyleOptionComplex *complexOption = qstyleoption_cast<const QStyleOptionComplex *>(option);
+    QString tmp = key % HexString<uint>(option->state)
+                      % HexString<uint>(option->direction)
+                      % HexString<uint>(complexOption ? uint(complexOption->activeSubControls) : 0u)
+                      % HexString<quint64>(option->palette.cacheKey())
+                      % HexString<uint>(size.width())
+                      % HexString<uint>(size.height());
+
+    if (const QStyleOptionSpinBox *spinBox = qstyleoption_cast<const QStyleOptionSpinBox *>(option)) {
+        tmp = tmp % HexString<uint>(spinBox->buttonSymbols)
+                  % HexString<uint>(spinBox->stepEnabled)
+                  % QLatin1Char(spinBox->frame ? '1' : '0'); ;
+    }
+
+    return tmp;
+}
+
 static QColor mergedColors(const QColor &colorA, const QColor &colorB, int factor = 50)
 {
     const int maxFactor = 100;
@@ -85,48 +102,66 @@ static QColor mergedColors(const QColor &colorA, const QColor &colorB, int facto
     return tmp;
 }
 
-static QPixmap colorizedImage(const QString &fileName, const QColor &color, int rotation = 0)
+static inline QPixmap styleCachePixmap(const QSize &size)
 {
-    QString pixmapName = QLatin1String("$qt_ia-") % fileName % HexString<uint>(color.rgba()) % QString::number(rotation);
-    QPixmap pixmap;
-    if (!QPixmapCache::find(pixmapName, pixmap)) {
-        QImage image(fileName);
-        if (image.format() != QImage::Format_ARGB32_Premultiplied)
-            image = image.convertToFormat( QImage::Format_ARGB32_Premultiplied);
-        int width = image.width();
-        int height = image.height();
-        QRgb source = color.rgba();
-        int sourceRed = qRed(source);
-        int sourceGreen = qGreen(source);
-        int sourceBlue = qBlue(source);
-        for (int y = 0; y < height; ++y)
-        {
-            QRgb *data = reinterpret_cast<QRgb*>(image.scanLine(y));
-            for (int x = 0 ; x < width ; x++) {
-                QRgb col = data[x];
-                int colorDiff = (qBlue(col) - qRed(col));
-                int gray = qGreen(col);
-                int red = gray + qt_div_255(sourceRed * colorDiff);
-                int green = gray + qt_div_255(sourceGreen * colorDiff);
-                int blue = gray + qt_div_255(sourceBlue * colorDiff);
-                int alpha = qt_div_255(qAlpha(col) * qAlpha(source));
-                data[x] = qRgba(std::min(alpha, red),
-                                std::min(alpha, green),
-                                std::min(alpha, blue),
-                                alpha);
-            }
+    const qreal pixelRatio = qApp->devicePixelRatio();
+    QPixmap cachePixmap = QPixmap(size * pixelRatio);
+    cachePixmap.setDevicePixelRatio(pixelRatio);
+    return cachePixmap;
+}
+
+static void qt_fusion_draw_arrow(Qt::ArrowType type, QPainter *painter, const QStyleOption *option, const QRect &rect, const QColor &color)
+{
+    const int arrowWidth = Utils::dpiScaled(14);
+    const int arrowHeight = Utils::dpiScaled(8);
+
+    const int arrowMax = qMin(arrowHeight, arrowWidth);
+    const int rectMax = qMin(rect.height(), rect.width());
+    const int size = qMin(arrowMax, rectMax);
+
+    QPixmap cachePixmap;
+    QString cacheKey = uniqueName(QLatin1String("fusion-arrow"), option, rect.size())
+            % HexString<uint>(type)
+            % HexString<uint>(color.rgba());
+    if (!QPixmapCache::find(cacheKey, &cachePixmap)) {
+        cachePixmap = styleCachePixmap(rect.size());
+        cachePixmap.fill(Qt::transparent);
+        QPainter cachePainter(&cachePixmap);
+
+        QRectF arrowRect;
+        arrowRect.setWidth(size);
+        arrowRect.setHeight(arrowHeight * size / arrowWidth);
+        if (type == Qt::LeftArrow || type == Qt::RightArrow)
+            arrowRect = QRectF(arrowRect.topLeft(), arrowRect.size().transposed());
+        arrowRect.moveTo((rect.width() - arrowRect.width()) / 2.0,
+                         (rect.height() - arrowRect.height()) / 2.0);
+
+        QPolygonF triangle;
+        triangle.reserve(3);
+        switch (type) {
+        case Qt::DownArrow:
+            triangle << arrowRect.topLeft() << arrowRect.topRight() << QPointF(arrowRect.center().x(), arrowRect.bottom());
+            break;
+        case Qt::RightArrow:
+            triangle << arrowRect.topLeft() << arrowRect.bottomLeft() << QPointF(arrowRect.right(), arrowRect.center().y());
+            break;
+        case Qt::LeftArrow:
+            triangle << arrowRect.topRight() << arrowRect.bottomRight() << QPointF(arrowRect.left(), arrowRect.center().y());
+            break;
+        default:
+            triangle << arrowRect.bottomLeft() << arrowRect.bottomRight() << QPointF(arrowRect.center().x(), arrowRect.top());
+            break;
         }
-        if (rotation != 0) {
-            QTransform transform;
-            transform.translate(-image.width()/2, -image.height()/2);
-            transform.rotate(rotation);
-            transform.translate(image.width()/2, image.height()/2);
-            image = image.transformed(transform);
-        }
-        pixmap = QPixmap::fromImage(image);
-        QPixmapCache::insert(pixmapName, pixmap);
+
+        cachePainter.setPen(Qt::NoPen);
+        cachePainter.setBrush(color);
+        cachePainter.setRenderHint(QPainter::Antialiasing);
+        cachePainter.drawPolygon(triangle);
+
+        QPixmapCache::insert(cacheKey, cachePixmap);
     }
-    return pixmap;
+
+    painter->drawPixmap(rect, cachePixmap);
 }
 
 enum Direction {
@@ -335,7 +370,7 @@ void TiledProxyStyle::drawPrimitive(PrimitiveElement element,
             int state = option->state;
 
             QColor pressedColor = mergedColors(option->palette.base().color(),
-                                               option->palette.foreground().color(), 85);
+                                               option->palette.windowText().color(), 85);
             painter->setBrush(Qt::NoBrush);
 
             // Gradient fill
@@ -468,6 +503,8 @@ void TiledProxyStyle::drawPrimitive(PrimitiveElement element,
                 };
                 painter->drawPoints(points, 4);
             }
+
+            painter->restore();
             return;
         }
 
@@ -530,7 +567,7 @@ void TiledProxyStyle::drawControl(ControlElement element,
         // Don't draw handle for single pixel splitters
         if (option->rect.width() > 1 && option->rect.height() > 1) {
             //draw grips
-            int size = qRound(Utils::dpiScaled(3));
+            int size = Utils::dpiScaled(3);
             int offset = -size / 2 + 1;
 
             if (option->state & State_Horizontal) {
@@ -841,7 +878,7 @@ void TiledProxyStyle::drawComplexControl(ComplexControl control,
             QColor alphaOutline = outline;
             alphaOutline.setAlpha(180);
 
-            QColor arrowColor = option->palette.foreground().color();
+            QColor arrowColor = option->palette.windowText().color();
             arrowColor.setAlpha(220);
 
             const QColor bgColor = mPalette.color(QPalette::Base);
@@ -885,7 +922,7 @@ void TiledProxyStyle::drawComplexControl(ComplexControl control,
             if (scrollBar->subControls & SC_ScrollBarSlider) {
                 QColor sliderColor = getSliderColor(option->palette, isDarkBg);
 
-                int margin = qRound(Utils::dpiScaled(2));
+                int margin = Utils::dpiScaled(2);
 
                 QRect sliderRect = scrollBarSlider.adjusted(margin + 1, margin, -margin - 1, -margin - 1);
                 if (horizontal)
@@ -941,20 +978,16 @@ void TiledProxyStyle::drawComplexControl(ComplexControl control,
                     painter->drawLine(pixmapRect.bottomLeft(), pixmapRect.bottomRight());
                 }
 
+                QRect upRect = scrollBarSubLine.adjusted(horizontal ? 0 : 1, horizontal ? 1 : 0, horizontal ? -2 : -1, horizontal ? -1 : -2);
                 painter->setBrush(Qt::NoBrush);
                 painter->setPen(innerContrastLine());
-                painter->drawRect(scrollBarSubLine.adjusted(horizontal ? 0 : 1, horizontal ? 1 : 0 ,  horizontal ? -2 : -1, horizontal ? -1 : -2));
+                painter->drawRect(upRect);
 
                 // Arrows
-                int rotation = 0;
+                Qt::ArrowType arrowType = Qt::UpArrow;
                 if (horizontal)
-                    rotation = option->direction == Qt::LeftToRight ? -90 : 90;
-                QRect upRect = scrollBarSubLine.translated(horizontal ? -2 : -1, 0);
-                QPixmap arrowPixmap = colorizedImage(QLatin1String(":/qt-project.org/styles/commonstyle/images/fusion_arrow.png"), arrowColor, rotation);
-                painter->drawPixmap(QRectF(upRect.center().x() - arrowPixmap.width() / 4.0  + 2.0,
-                                          upRect.center().y() - arrowPixmap.height() / 4.0 + 1.0,
-                                          arrowPixmap.width() / 2.0, arrowPixmap.height() / 2.0),
-                                          arrowPixmap, QRectF(QPoint(0.0, 0.0), arrowPixmap.size()));
+                    arrowType = option->direction == Qt::LeftToRight ? Qt::LeftArrow : Qt::RightArrow;
+                qt_fusion_draw_arrow(arrowType, painter, option, upRect, arrowColor);
             }
 
             // The AddLine (down/right) button
@@ -982,19 +1015,15 @@ void TiledProxyStyle::drawComplexControl(ComplexControl control,
                     painter->drawLine(pixmapRect.topLeft(), pixmapRect.topRight());
                 }
 
+                QRect downRect = scrollBarAddLine.adjusted(1, 1, -1, -1);
                 painter->setPen(innerContrastLine());
                 painter->setBrush(Qt::NoBrush);
-                painter->drawRect(scrollBarAddLine.adjusted(1, 1, -1, -1));
+                painter->drawRect(downRect);
 
-                int rotation = 180;
+                Qt::ArrowType arrowType = Qt::DownArrow;
                 if (horizontal)
-                    rotation = option->direction == Qt::LeftToRight ? 90 : -90;
-                QRect downRect = scrollBarAddLine.translated(-1, 1);
-                QPixmap arrowPixmap = colorizedImage(QLatin1String(":/qt-project.org/styles/commonstyle/images/fusion_arrow.png"), arrowColor, rotation);
-                painter->drawPixmap(QRectF(downRect.center().x() - arrowPixmap.width() / 4.0 + 2.0,
-                                           downRect.center().y() - arrowPixmap.height() / 4.0,
-                                           arrowPixmap.width() / 2.0, arrowPixmap.height() / 2.0),
-                                           arrowPixmap, QRectF(QPoint(0.0, 0.0), arrowPixmap.size()));
+                    arrowType = option->direction == Qt::LeftToRight ? Qt::RightArrow : Qt::LeftArrow;
+                qt_fusion_draw_arrow(arrowType, painter, option, downRect, arrowColor);
             }
         }
         painter->restore();
@@ -1012,9 +1041,15 @@ int TiledProxyStyle::pixelMetric(QStyle::PixelMetric metric,
     switch (metric) {
     case PM_MenuBarItemSpacing:
         return 0;                   // no space between menu bar items
+    case PM_MenuPanelWidth:
+        return Utils::dpiScaled(2);
     case PM_TabBarTabShiftHorizontal:
     case PM_TabBarTabShiftVertical:
         return 0;                   // no shifting of tabs
+    case PM_TabBarTabOverlap:
+        return 1;                   // should not get DPI scaled
+    case PM_TabBarBaseOverlap:
+        return 2;                   // should not get DPI scaled
     default:
         return QProxyStyle::pixelMetric(metric, option, widget);
     }
@@ -1038,12 +1073,12 @@ QSize TiledProxyStyle::sizeFromContents(ContentsType type,
     switch (type) {
     case CT_MenuBarItem:            // make the menu bar item itself wider
         if (!size.isEmpty())
-            size += QSize(Utils::dpiScaled(16.),
-                          Utils::dpiScaled(5.));
+            size += QSize(Utils::dpiScaled(16),
+                          Utils::dpiScaled(5));
         break;
     case CT_ItemViewItem:           // give item view items a little more space
         size = QCommonStyle::sizeFromContents(type, option, contentsSize, widget);
-        size += QSize(0, Utils::dpiScaled(2.));
+        size += QSize(0, Utils::dpiScaled(2));
         break;
     case CT_TabBarTab:
         if (const QStyleOptionTab *tab = qstyleoption_cast<const QStyleOptionTab *>(option)) {
@@ -1100,7 +1135,7 @@ QRect TiledProxyStyle::subElementRect(QStyle::SubElement subElement, const QStyl
             bool selected = tab->state & State_Selected;
             int verticalShift = proxy()->pixelMetric(QStyle::PM_TabBarTabShiftVertical, tab, widget);
             int horizontalShift = proxy()->pixelMetric(QStyle::PM_TabBarTabShiftHorizontal, tab, widget);
-            int hpadding = Utils::dpiScaled(4.);       // normally half the PM_TabBarTabHSpace
+            int hpadding = Utils::dpiScaled(4);       // normally half the PM_TabBarTabHSpace
 
             bool verticalTabs = tab->shape == QTabBar::RoundedEast
                     || tab->shape == QTabBar::RoundedWest
@@ -1125,7 +1160,7 @@ QRect TiledProxyStyle::subElementRect(QStyle::SubElement subElement, const QStyl
             QSize size = (subElement == SE_TabBarTabLeftButton) ? tab->leftButtonSize : tab->rightButtonSize;
             int w = size.width();
             int h = size.height();
-            int midHeight = static_cast<int>(qCeil(float(tr.height() - h) / 2));
+            int midHeight = static_cast<int>(qCeil(qreal(tr.height() - h) / 2));
             int midWidth = ((tr.width() - w) / 2);
             bool atTheTop = true;
             switch (tab->shape) {

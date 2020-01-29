@@ -25,25 +25,24 @@
 #include <QColor>
 
 namespace Tiled {
-namespace Internal {
 
-class WangColorModel;
+class WangColor;
+
+class TilesetDocument;
 
 class ChangeWangColorName : public QUndoCommand
 {
 public:
-    ChangeWangColorName(const QString &newName,
-                        int colorIndex,
-                        bool isEdge,
-                        WangColorModel *wangColorModel);
+    ChangeWangColorName(TilesetDocument *tilesetDocument,
+                        WangColor *wangColor,
+                        const QString &newName);
 
     void undo() override;
     void redo() override;
 
 private:
-    WangColorModel *mWangColorModel;
-    int mIndex;
-    bool mIsEdge;
+    TilesetDocument *mTilesetDocument;
+    WangColor *mWangColor;
     QString mOldName;
     QString mNewName;
 };
@@ -51,18 +50,17 @@ private:
 class ChangeWangColorImage : public QUndoCommand
 {
 public:
-    ChangeWangColorImage(int newImageId,
-                         int colorIndex,
-                         bool isEdge,
-                         WangColorModel *wangColorModel);
+    ChangeWangColorImage(TilesetDocument *tilesetDocument,
+                         WangColor *wangColor,
+                         int newImageId,
+                         QUndoCommand *parent = nullptr);
 
     void undo() override;
     void redo() override;
 
 private:
-    WangColorModel *mWangColorModel;
-    int mIndex;
-    bool mIsEdge;
+    TilesetDocument *mTilesetDocument;
+    WangColor *mWangColor;
     int mOldImageId;
     int mNewImageId;
 };
@@ -70,18 +68,16 @@ private:
 class ChangeWangColorColor : public QUndoCommand
 {
 public:
-    ChangeWangColorColor(const QColor &newColor,
-                         int colorIndex,
-                         bool isEdge,
-                         WangColorModel *wangColorModel);
+    ChangeWangColorColor(TilesetDocument *tilesetDocument,
+                         WangColor *wangColor,
+                         const QColor &newColor);
 
     void undo() override;
     void redo() override;
 
 private:
-    WangColorModel *mWangColorModel;
-    int mIndex;
-    bool mIsEdge;
+    TilesetDocument *mTilesetDocument;
+    WangColor *mWangColor;
     QColor mOldColor;
     QColor mNewColor;
 };
@@ -89,21 +85,18 @@ private:
 class ChangeWangColorProbability : public QUndoCommand
 {
 public:
-    ChangeWangColorProbability(qreal newProbability,
-                               int colorIndex,
-                               bool isEdge,
-                               WangColorModel *wangColorModel);
+    ChangeWangColorProbability(TilesetDocument *tilesetDocument,
+                               WangColor *wangColor,
+                               qreal newProbability);
 
     void undo() override;
     void redo() override;
 
 private:
-    WangColorModel *mWangColorModel;
-    int mIndex;
-    bool mIsEdge;
+    TilesetDocument *mTilesetDocument;
+    WangColor *mWangColor;
     qreal mOldProbability;
     qreal mNewProbability;
 };
 
-} // namespace Internal
 } // namespace Tiled

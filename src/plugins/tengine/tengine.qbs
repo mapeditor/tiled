@@ -1,7 +1,7 @@
 import qbs 1.0
 
 TiledPlugin {
-    cpp.defines: ["TENGINE_LIBRARY"]
+    cpp.defines: base.concat(["TENGINE_LIBRARY"])
 
     files: [
         "plugin.json",

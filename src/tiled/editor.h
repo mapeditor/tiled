@@ -26,7 +26,6 @@ class QToolBar;
 class QDockWidget;
 
 namespace Tiled {
-namespace Internal {
 
 class Document;
 class Zoomable;
@@ -62,6 +61,8 @@ public:
 
     virtual QList<QToolBar*> toolBars() const = 0;
     virtual QList<QDockWidget*> dockWidgets() const = 0;
+    virtual QList<QWidget*> statusBarWidgets() const = 0;
+    virtual QList<QWidget*> permanentStatusBarWidgets() const = 0;
 
     virtual StandardActions enabledStandardActions() const = 0;
     virtual void performStandardAction(StandardAction action) = 0;
@@ -72,7 +73,6 @@ signals:
     void enabledStandardActionsChanged();
 };
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(Editor::StandardActions)
-
-} // namespace Internal
 } // namespace Tiled
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::Editor::StandardActions)

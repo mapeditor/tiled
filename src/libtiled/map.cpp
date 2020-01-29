@@ -41,11 +41,17 @@
 
 using namespace Tiled;
 
+Map::Map():
+    Map(Orthogonal, 0, 0, 0, 0, false)
+{
+}
+
 Map::Map(Orientation orientation,
          int width, int height, int tileWidth, int tileHeight, bool infinite):
     Object(MapType),
     mOrientation(orientation),
     mRenderOrder(RightDown),
+    mCompressionLevel(-1),
     mWidth(width),
     mHeight(height),
     mTileWidth(tileWidth),
@@ -54,8 +60,10 @@ Map::Map(Orientation orientation,
     mHexSideLength(0),
     mStaggerAxis(StaggerY),
     mStaggerIndex(StaggerOdd),
+    mChunkSize(CHUNK_SIZE, CHUNK_SIZE),
     mDrawMarginsDirty(true),
     mLayerDataFormat(Base64Zlib),
+    mNextLayerId(1),
     mNextObjectId(1)
 {
 }
@@ -69,35 +77,47 @@ Map::Map(Orientation orientation,
 {
 }
 
-Map::Map(const Map &map):
-    Object(map),
-    mOrientation(map.mOrientation),
-    mRenderOrder(map.mRenderOrder),
-    mWidth(map.mWidth),
-    mHeight(map.mHeight),
-    mTileWidth(map.mTileWidth),
-    mTileHeight(map.mTileHeight),
-    mInfinite(map.mInfinite),
-    mHexSideLength(map.mHexSideLength),
-    mStaggerAxis(map.mStaggerAxis),
-    mStaggerIndex(map.mStaggerIndex),
-    mBackgroundColor(map.mBackgroundColor),
-    mDrawMargins(map.mDrawMargins),
-    mDrawMarginsDirty(map.mDrawMarginsDirty),
-    mTilesets(map.mTilesets),
-    mLayerDataFormat(map.mLayerDataFormat),
-    mNextObjectId(1)
-{
-    for (const Layer *layer : map.mLayers) {
-        Layer *clone = layer->clone();
-        clone->setMap(this);
-        mLayers.append(clone);
-    }
-}
-
 Map::~Map()
 {
     qDeleteAll(mLayers);
+}
+
+void Map::setWidth(int width)
+{
+    if (width == mWidth)
+        return;
+
+    mWidth = width;
+    emit widthChanged();
+    emit sizeChanged();
+}
+
+void Map::setHeight(int height)
+{
+    if (height == mHeight)
+        return;
+
+    mHeight = height;
+    emit heightChanged();
+    emit sizeChanged();
+}
+
+void Map::setTileWidth(int width)
+{
+    if (width == mTileWidth)
+        return;
+
+    mTileWidth = width;
+    emit tileWidthChanged();
+}
+
+void Map::setTileHeight(int height)
+{
+    if (height == mTileHeight)
+        return;
+
+    mTileHeight = height;
+    emit tileHeightChanged();
 }
 
 QMargins Map::drawMargins() const
@@ -108,15 +128,6 @@ QMargins Map::drawMargins() const
     return mDrawMargins;
 }
 
-static QMargins maxMargins(const QMargins &a,
-                           const QMargins &b)
-{
-    return QMargins(qMax(a.left(), b.left()),
-                    qMax(a.top(), b.top()),
-                    qMax(a.right(), b.right()),
-                    qMax(a.bottom(), b.bottom()));
-}
-
 /**
  * Computes the extra margins due to layer offsets. These need to be taken into
  * account when determining the bounding rect of the map for example.
@@ -125,8 +136,11 @@ QMargins Map::computeLayerOffsetMargins() const
 {
     QMargins offsetMargins;
 
-    for (const Layer *layer : mLayers) {
-        const QPointF offset = layer->offset();
+    for (const Layer *layer : allLayers()) {
+        if (layer->isGroupLayer())
+            continue;
+
+        const QPointF offset = layer->totalOffset();
         offsetMargins = maxMargins(QMargins(qCeil(-offset.x()),
                                             qCeil(-offset.y()),
                                             qCeil(offset.x()),
@@ -173,54 +187,23 @@ void Map::recomputeDrawMargins() const
 int Map::layerCount(Layer::TypeFlag type) const
 {
     int count = 0;
-    LayerIterator iterator(this);
-    while (Layer *layer = iterator.next())
-       if (layer->layerType() == type)
-           count++;
+    LayerIterator iterator(this, type);
+    while (iterator.next())
+       count++;
     return count;
-}
-
-/**
- * Returns the list of all object groups.
- *
- * @deprecated Use the LayerIterator instead.
- */
-QList<ObjectGroup*> Map::objectGroups() const
-{
-    QList<ObjectGroup*> layers;
-    LayerIterator iterator(this);
-    while (Layer *layer = iterator.next())
-        if (ObjectGroup *og = layer->asObjectGroup())
-            layers.append(og);
-    return layers;
-}
-
-/**
- * Returns the list of all tile layers.
- *
- * @deprecated Use the LayerIterator instead.
- */
-QList<TileLayer*> Map::tileLayers() const
-{
-    QList<TileLayer*> layers;
-    LayerIterator iterator(this);
-    while (Layer *layer = iterator.next())
-        if (TileLayer *tl = layer->asTileLayer())
-            layers.append(tl);
-    return layers;
 }
 
 void Map::addLayer(Layer *layer)
 {
-    adoptLayer(layer);
+    adoptLayer(*layer);
     mLayers.append(layer);
 }
 
-int Map::indexOfLayer(const QString &layerName, int layertypes) const
+int Map::indexOfLayer(const QString &layerName, int layerTypes) const
 {
     for (int index = 0; index < mLayers.size(); index++)
         if (layerAt(index)->name() == layerName
-                && (layertypes & layerAt(index)->layerType()))
+                && (layerTypes & layerAt(index)->layerType()))
             return index;
 
     return -1;
@@ -237,15 +220,18 @@ Layer *Map::findLayer(const QString &name, int layerTypes) const
 
 void Map::insertLayer(int index, Layer *layer)
 {
-    adoptLayer(layer);
+    adoptLayer(*layer);
     mLayers.insert(index, layer);
 }
 
-void Map::adoptLayer(Layer *layer)
+void Map::adoptLayer(Layer &layer)
 {
-    layer->setMap(this);
+    if (layer.id() == 0)
+        layer.setId(takeNextLayerId());
 
-    if (ObjectGroup *group = layer->asObjectGroup())
+    layer.setMap(this);
+
+    if (ObjectGroup *group = layer.asObjectGroup())
         initializeObjectIds(*group);
 }
 
@@ -336,6 +322,34 @@ bool Map::isTilesetUsed(const Tileset *tileset) const
     return false;
 }
 
+std::unique_ptr<Map> Map::clone() const
+{
+    auto o = std::make_unique<Map>(mOrientation, mWidth, mHeight, mTileWidth, mTileHeight, mInfinite);
+    o->fileName = fileName;
+    o->exportFileName = exportFileName;
+    o->exportFormat = exportFormat;
+    o->mRenderOrder = mRenderOrder;
+    o->mCompressionLevel = mCompressionLevel;
+    o->mHexSideLength = mHexSideLength;
+    o->mStaggerAxis = mStaggerAxis;
+    o->mStaggerIndex = mStaggerIndex;
+    o->mBackgroundColor = mBackgroundColor;
+    o->mChunkSize = mChunkSize;
+    o->mDrawMargins = mDrawMargins;
+    o->mDrawMarginsDirty = mDrawMarginsDirty;
+    for (const Layer *layer : mLayers) {
+        Layer *clone = layer->clone();
+        clone->setMap(o.get());
+        o->mLayers.append(clone);
+    }
+    o->mTilesets = mTilesets;
+    o->mLayerDataFormat = mLayerDataFormat;
+    o->mNextLayerId = mNextLayerId;
+    o->mNextObjectId = mNextObjectId;
+    o->setProperties(properties());
+    return o;
+}
+
 QList<MapObject*> Map::replaceObjectTemplate(const ObjectTemplate *oldObjectTemplate,
                                              const ObjectTemplate *newObjectTemplate)
 {
@@ -343,8 +357,8 @@ QList<MapObject*> Map::replaceObjectTemplate(const ObjectTemplate *oldObjectTemp
 
     QList<MapObject*> changedObjects;
 
-    for (auto group : objectGroups()) {
-        for (auto o : group->objects()){
+    for (auto layer : objectGroups()) {
+        for (auto o : static_cast<ObjectGroup*>(layer)->objects()) {
             if (o->objectTemplate() == oldObjectTemplate) {
                 o->setObjectTemplate(newObjectTemplate);
                 o->syncWithTemplate();
@@ -362,6 +376,26 @@ void Map::initializeObjectIds(ObjectGroup &objectGroup)
         if (o->id() == 0)
             o->setId(takeNextObjectId());
     }
+}
+
+Layer *Map::findLayerById(int layerId) const
+{
+    for (Layer *layer : allLayers()) {
+        if (layer->id() == layerId)
+            return layer;
+    }
+    return nullptr;
+}
+
+MapObject *Map::findObjectById(int objectId) const
+{
+    for (Layer *layer : objectGroups()) {
+        for (MapObject *mapObject : static_cast<ObjectGroup*>(layer)->objects()) {
+            if (mapObject->id() == objectId)
+                return mapObject;
+        }
+    }
+    return nullptr;
 }
 
 QRegion Map::tileRegion() const
@@ -441,6 +475,23 @@ Map::Orientation Tiled::orientationFromString(const QString &string)
         orientation = Map::Hexagonal;
     }
     return orientation;
+}
+
+QString Tiled::compressionToString(Map::LayerDataFormat layerDataFormat)
+{
+    switch (layerDataFormat) {
+    case Map::XML:
+    case Map::Base64:
+    case Map::CSV:
+        return QString();
+    case Map::Base64Gzip:
+        return QLatin1String("gzip");
+    case Map::Base64Zlib:
+        return QLatin1String("zlib");
+    case Map::Base64Zstandard:
+        return QLatin1String("zstd");
+    }
+    return QString();
 }
 
 QString Tiled::renderOrderToString(Map::RenderOrder renderOrder)

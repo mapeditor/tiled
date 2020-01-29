@@ -45,8 +45,10 @@ SharedTileset readTileset(const QString &fileName, QString *error)
                 *error = QString();
         }
 
-        if (tileset)
+        if (tileset) {
+            tileset->setFileName(fileName);
             tileset->setFormat(format);
+        }
 
         return tileset;
     }
@@ -62,12 +64,16 @@ SharedTileset readTileset(const QString &fileName, QString *error)
             *error = QString();
     }
 
+    if (tileset)
+        tileset->setFileName(fileName);
+
     return tileset;
 }
 
 TilesetFormat *findSupportingTilesetFormat(const QString &fileName)
 {
-    for (TilesetFormat *format : PluginManager::objects<TilesetFormat>())
+    const auto tilesetFormats = PluginManager::objects<TilesetFormat>();
+    for (TilesetFormat *format : tilesetFormats)
         if (format->supportsFile(fileName))
             return format;
     return nullptr;

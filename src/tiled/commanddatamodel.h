@@ -23,12 +23,10 @@
 #include "command.h"
 
 #include <QAbstractTableModel>
-#include <QSettings>
 
 class QMenu;
 
 namespace Tiled {
-namespace Internal {
 
 class CommandDataModel : public QAbstractTableModel
 {
@@ -49,7 +47,7 @@ public:
       */
     void commit();
 
-    Command firstEnabledCommand() const;
+    const Command *firstEnabledCommand() const;
 
     /**
       * Returns a list of all the commands.
@@ -170,10 +168,7 @@ public slots:
     void remove(int commandIndex);
 
 private:
-
-    QSettings mSettings;
     QList<Command> mCommands;
 };
 
-} // namespace Internal
 } // namespace Tiled

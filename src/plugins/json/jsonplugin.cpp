@@ -27,6 +27,7 @@
 
 #include "qjsonparser/json.h"
 
+#include <QCoreApplication>
 #include <QFile>
 #include <QFileInfo>
 #include <QJsonDocument>
@@ -49,11 +50,11 @@ JsonMapFormat::JsonMapFormat(SubFormat subFormat, QObject *parent)
     , mSubFormat(subFormat)
 {}
 
-Tiled::Map *JsonMapFormat::read(const QString &fileName)
+std::unique_ptr<Tiled::Map> JsonMapFormat::read(const QString &fileName)
 {
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        mError = tr("Could not open file for reading.");
+        mError = QCoreApplication::translate("File Errors", "Could not open file for reading.");
         return nullptr;
     }
 
@@ -79,7 +80,7 @@ Tiled::Map *JsonMapFormat::read(const QString &fileName)
     }
 
     Tiled::VariantToMapConverter converter;
-    Tiled::Map *map = converter.toMap(variant, QFileInfo(fileName).dir());
+    auto map = converter.toMap(variant, QFileInfo(fileName).dir());
 
     if (!map)
         mError = converter.errorString();
@@ -87,12 +88,14 @@ Tiled::Map *JsonMapFormat::read(const QString &fileName)
     return map;
 }
 
-bool JsonMapFormat::write(const Tiled::Map *map, const QString &fileName)
+bool JsonMapFormat::write(const Tiled::Map *map,
+                          const QString &fileName,
+                          Options options)
 {
     Tiled::SaveFile file(fileName);
 
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        mError = tr("Could not open file for writing.");
+        mError = QCoreApplication::translate("File Errors", "Could not open file for writing.");
         return false;
     }
 
@@ -100,7 +103,7 @@ bool JsonMapFormat::write(const Tiled::Map *map, const QString &fileName)
     QVariant variant = converter.toVariant(*map, QFileInfo(fileName).dir());
 
     JsonWriter writer;
-    writer.setAutoFormatting(true);
+    writer.setAutoFormatting(!options.testFlag(WriteMinimized));
 
     if (!writer.stringify(variant)) {
         // This can only happen due to coding error
@@ -145,7 +148,7 @@ bool JsonMapFormat::write(const Tiled::Map *map, const QString &fileName)
 QString JsonMapFormat::nameFilter() const
 {
     if (mSubFormat == Json)
-        return tr("Json map files (*.json)");
+        return tr("JSON map files (*.json)");
     else
         return tr("JavaScript map files (*.js)");
 }
@@ -213,7 +216,7 @@ Tiled::SharedTileset JsonTilesetFormat::read(const QString &fileName)
     QFile file(fileName);
 
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        mError = tr("Could not open file for reading.");
+        mError = QCoreApplication::translate("File Errors", "Could not open file for reading.");
         return Tiled::SharedTileset();
     }
 
@@ -233,8 +236,6 @@ Tiled::SharedTileset JsonTilesetFormat::read(const QString &fileName)
 
     if (!tileset)
         mError = converter.errorString();
-    else
-        tileset->setFileName(fileName);
 
     return tileset;
 }
@@ -263,12 +264,13 @@ bool JsonTilesetFormat::supportsFile(const QString &fileName) const
 }
 
 bool JsonTilesetFormat::write(const Tiled::Tileset &tileset,
-                              const QString &fileName)
+                              const QString &fileName,
+                              Options options)
 {
     Tiled::SaveFile file(fileName);
 
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        mError = tr("Could not open file for writing.");
+        mError = QCoreApplication::translate("File Errors", "Could not open file for writing.");
         return false;
     }
 
@@ -276,7 +278,7 @@ bool JsonTilesetFormat::write(const Tiled::Tileset &tileset,
     QVariant variant = converter.toVariant(tileset, QFileInfo(fileName).dir());
 
     JsonWriter writer;
-    writer.setAutoFormatting(true);
+    writer.setAutoFormatting(!options.testFlag(WriteMinimized));
 
     if (!writer.stringify(variant)) {
         // This can only happen due to coding error
@@ -302,7 +304,7 @@ bool JsonTilesetFormat::write(const Tiled::Tileset &tileset,
 
 QString JsonTilesetFormat::nameFilter() const
 {
-    return tr("Json tileset files (*.json)");
+    return tr("JSON tileset files (*.json)");
 }
 
 QString JsonTilesetFormat::shortName() const
@@ -320,12 +322,12 @@ JsonObjectTemplateFormat::JsonObjectTemplateFormat(QObject *parent)
 {
 }
 
-Tiled::ObjectTemplate *JsonObjectTemplateFormat::read(const QString &fileName)
+std::unique_ptr<Tiled::ObjectTemplate> JsonObjectTemplateFormat::read(const QString &fileName)
 {
     QFile file(fileName);
 
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        mError = tr("Could not open file for reading.");
+        mError = QCoreApplication::translate("File Errors", "Could not open file for reading.");
         return nullptr;
     }
 
@@ -340,8 +342,8 @@ Tiled::ObjectTemplate *JsonObjectTemplateFormat::read(const QString &fileName)
     }
 
     Tiled::VariantToMapConverter converter;
-    Tiled::ObjectTemplate *objectTemplate = converter.toObjectTemplate(variant,
-                                                                       QFileInfo(fileName).dir());
+    auto objectTemplate = converter.toObjectTemplate(variant,
+                                                     QFileInfo(fileName).dir());
 
     if (!objectTemplate)
         mError = converter.errorString();
@@ -372,7 +374,7 @@ bool JsonObjectTemplateFormat::write(const Tiled::ObjectTemplate *objectTemplate
     Tiled::SaveFile file(fileName);
 
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        mError = tr("Could not open file for writing.");
+        mError = QCoreApplication::translate("File Errors", "Could not open file for writing.");
         return false;
     }
 
@@ -406,7 +408,7 @@ bool JsonObjectTemplateFormat::write(const Tiled::ObjectTemplate *objectTemplate
 
 QString JsonObjectTemplateFormat::nameFilter() const
 {
-    return tr("Json template files (*.json)");
+    return tr("JSON template files (*.json)");
 }
 
 QString JsonObjectTemplateFormat::shortName() const

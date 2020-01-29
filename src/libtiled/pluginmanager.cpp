@@ -127,17 +127,12 @@ bool PluginManager::loadPlugin(PluginFile *plugin)
 
 bool PluginManager::unloadPlugin(PluginFile *plugin)
 {
-    bool derivedPlugin = qobject_cast<Plugin*>(plugin->instance) != nullptr;
+    if (plugin->instance && !qobject_cast<Plugin*>(plugin->instance))
+        removeObject(plugin->instance);
 
-    if (plugin->loader->unload()) {
-        if (!derivedPlugin)
-            removeObject(plugin->instance);
+    plugin->instance = nullptr;
 
-        plugin->instance = nullptr;
-        return true;
-    } else {
-        return false;
-    }
+    return plugin->loader->unload();
 }
 
 PluginManager *PluginManager::instance()
@@ -172,8 +167,8 @@ void PluginManager::removeObject(QObject *object)
     Q_ASSERT(object);
     Q_ASSERT(mInstance->mObjects.contains(object));
 
-    emit mInstance->objectAboutToBeRemoved(object);
     mInstance->mObjects.removeOne(object);
+    emit mInstance->objectRemoved(object);
 }
 
 void PluginManager::loadPlugins()

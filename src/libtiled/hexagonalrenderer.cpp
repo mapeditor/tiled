@@ -307,7 +307,7 @@ void HexagonalRenderer::drawTileLayer(QPainter *painter,
     if (inLeftHalf)
         startTile.rx()--;
 
-    CellRenderer renderer(painter, CellRenderer::HexagonalCells);
+    CellRenderer renderer(painter, this, CellRenderer::HexagonalCells);
 
     const int endX = map()->infinite() ? layer->bounds().right() - layer->x() + 1 : layer->width();
     const int endY = map()->infinite() ? layer->bounds().bottom() - layer->y() + 1 : layer->height();
@@ -397,7 +397,12 @@ void HexagonalRenderer::drawTileSelection(QPainter *painter,
     painter->setBrush(color);
     painter->setPen(Qt::NoPen);
 
-    foreach (const QRect &r, region.rects()) {
+#if QT_VERSION < 0x050800
+    const auto rects = region.rects();
+    for (const QRect &r : rects) {
+#else
+    for (const QRect &r : region) {
+#endif
         for (int y = r.top(); y <= r.bottom(); ++y) {
             for (int x = r.left(); x <= r.right(); ++x) {
                 const QPolygonF polygon = tileToScreenPolygon(x, y);

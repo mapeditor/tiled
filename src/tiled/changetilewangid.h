@@ -26,7 +26,6 @@
 #include <QUndoCommand>
 
 namespace Tiled {
-namespace Internal {
 
 class TilesetDocument;
 
@@ -41,9 +40,7 @@ public:
         {}
 
         WangIdChange()
-            :from(0)
-            , to(0)
-            , tile(nullptr)
+            : tile(nullptr)
         {}
 
         WangId from;
@@ -53,7 +50,10 @@ public:
 
     ChangeTileWangId();
 
-    ChangeTileWangId(TilesetDocument *tilesetDocument, WangSet *wangSet, Tile *tile, WangId wangId);
+    ChangeTileWangId(TilesetDocument *tilesetDocument,
+                     WangSet *wangSet,
+                     Tile *tile,
+                     WangId wangId);
 
     ChangeTileWangId(TilesetDocument *tilesetDocument,
                      WangSet *wangSet,
@@ -72,5 +72,4 @@ private:
     bool mMergeable;
 };
 
-}
-}
+} // namespace Tiled

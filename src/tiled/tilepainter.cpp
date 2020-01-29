@@ -27,7 +27,6 @@
 #include <QQueue>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 namespace {
 
@@ -103,11 +102,7 @@ void TilePainter::setCells(int x, int y,
                            TileLayer *tileLayer,
                            const QRegion &mask)
 {
-    QRegion region = paintableRegion(x, y,
-                                     tileLayer->width(),
-                                     tileLayer->height());
-    region &= mask;
-
+    QRegion region = paintableRegion(mask);
     if (region.isEmpty())
         return;
 
@@ -122,15 +117,18 @@ void TilePainter::setCells(int x, int y,
 
 void TilePainter::drawCells(int x, int y, TileLayer *tileLayer)
 {
-    const QRegion region = paintableRegion(x, y,
-                                           tileLayer->width(),
-                                           tileLayer->height());
+    const QRegion region = paintableRegion(tileLayer->localBounds().translated(x, y));
     if (region.isEmpty())
         return;
 
     TileLayerChangeWatcher watcher(mMapDocument, mTileLayer);
 
-    for (const QRect &rect : region.rects()) {
+#if QT_VERSION < 0x050800
+    const auto rects = region.rects();
+    for (const QRect &rect : rects) {
+#else
+    for (const QRect &rect : region) {
+#endif
         for (int _y = rect.top(); _y <= rect.bottom(); ++_y) {
             for (int _x = rect.left(); _x <= rect.right(); ++_x) {
                 const Cell &cell = tileLayer->cellAt(_x - x, _y - y);
@@ -164,7 +162,12 @@ void TilePainter::drawStamp(const TileLayer *stamp,
     const int h = stamp->height();
     const QRect regionBounds = region.boundingRect();
 
-    for (const QRect &rect : region.rects()) {
+#if QT_VERSION < 0x050800
+    const auto rects = region.rects();
+    for (const QRect &rect : rects) {
+#else
+    for (const QRect &rect : region) {
+#endif
         for (int _y = rect.top(); _y <= rect.bottom(); ++_y) {
             for (int _x = rect.left(); _x <= rect.right(); ++_x) {
                 const int stampX = (_x - regionBounds.left()) % w;
@@ -193,32 +196,24 @@ void TilePainter::erase(const QRegion &region)
     emit mMapDocument->regionChanged(paintable, mTileLayer);
 }
 
-static QRegion fillRegion(const TileLayer *layer, QPoint fillOrigin,
+static QRegion fillRegion(const TileLayer *layer,
+                          const QRegion &region,
+                          QPoint fillOrigin,
                           Map::Orientation orientation,
                           Map::StaggerAxis staggerAxis,
                           Map::StaggerIndex staggerIndex)
 {
-    // Create that region that will hold the fill
-    QRegion fillRegion;
-    QRect bounds = layer->map()->infinite() ? layer->bounds() : layer->rect();
-
-    // Silently quit if parameters are unsatisfactory
-    if (!bounds.contains(fillOrigin))
-        return fillRegion;
-
-    bounds.translate(-layer->position());
+    // Return empty region when the bounds do not contain the fill origin
+    if (!region.contains(fillOrigin))
+        return QRegion();
 
     // Cache cell that we will match other cells against
     const Cell matchCell = layer->cellAt(fillOrigin);
 
-    int startX = bounds.left();
-    int startY = bounds.top();
-    int endX = bounds.right() + 1;
-    int endY = bounds.bottom() + 1;
-    int layerWidth = endX - startX;
-    int layerHeight = endY - startY;
-
-    int indexOffset = -(startX + startY * layerWidth);
+    const QRect bounds = region.boundingRect();
+    const int width = bounds.width();
+    const int height = bounds.height();
+    const int indexOffset = -(bounds.left() + bounds.top() * width);
 
     const bool isStaggered = orientation == Map::Hexagonal || orientation == Map::Staggered;
 
@@ -228,25 +223,26 @@ static QRegion fillRegion(const TileLayer *layer, QPoint fillOrigin,
 
     // Create an array that will store which cells have been processed
     // This is faster than checking if a given cell is in the region/list
-    QVector<bool> processedCellsVec(layerWidth * layerHeight);
+    QVector<bool> processedCellsVec(width * height);
     bool *processedCells = processedCellsVec.data();
+    QRegion fillRegion;
 
     // Loop through queued positions and fill them, while at the same time
     // checking adjacent positions to see if they should be added
     while (!fillPositions.isEmpty()) {
         const QPoint currentPoint = fillPositions.dequeue();
-        const int startOfLine = currentPoint.y() * layerWidth;
+        const int startOfLine = currentPoint.y() * width;
 
         // Seek as far left as we can
         int left = currentPoint.x();
-        while (left > startX && layer->cellAt(left - 1, currentPoint.y()) == matchCell) {
+        while (left > bounds.left() && layer->cellAt(left - 1, currentPoint.y()) == matchCell) {
             --left;
             processedCells[indexOffset + startOfLine + left] = true;
         }
 
         // Seek as far right as we can
         int right = currentPoint.x();
-        while (right + 1 < endX && layer->cellAt(right + 1, currentPoint.y()) == matchCell) {
+        while (right < bounds.right() && layer->cellAt(right + 1, currentPoint.y()) == matchCell) {
             ++right;
             processedCells[indexOffset + startOfLine + right] = true;
         }
@@ -262,9 +258,9 @@ static QRegion fillRegion(const TileLayer *layer, QPoint fillOrigin,
             if (staggerAxis == Map::StaggerY) {
                 bool rowIsStaggered = ((layer->y() + currentPoint.y()) & 1) ^ staggerIndex;
                 if (rowIsStaggered)
-                    right = qMin(right + 1, endX - 1);
+                    right = qMin(right + 1, bounds.right());
                 else
-                    left = qMax(left - 1, startX);
+                    left = qMax(left - 1, bounds.left());
             } else {
                 leftColumnIsStaggered = ((layer->x() + left) & 1) ^ staggerIndex;
                 rightColumnIsStaggered = ((layer->x() + right) & 1) ^ staggerIndex;
@@ -277,7 +273,7 @@ static QRegion fillRegion(const TileLayer *layer, QPoint fillOrigin,
             bool adjacentCellAdded = false;
 
             for (int x = left; x <= right; ++x) {
-                const int index = y * layerWidth + x;
+                const int index = y * width + x;
 
                 if (!processedCells[indexOffset + index] && layer->cellAt(x, y) == matchCell) {
                     // Do not add the cell to the queue if an adjacent cell was added.
@@ -293,29 +289,29 @@ static QRegion fillRegion(const TileLayer *layer, QPoint fillOrigin,
             }
         };
 
-        if (currentPoint.y() > startY) {
+        if (currentPoint.y() > bounds.top()) {
             int _left = left;
             int _right = right;
 
             if (isStaggered && staggerAxis == Map::StaggerX) {
                 if (!leftColumnIsStaggered)
-                    _left = qMax(left - 1, startX);
+                    _left = qMax(left - 1, bounds.left());
                 if (!rightColumnIsStaggered)
-                    _right = qMin(right + 1, endX - 1);
+                    _right = qMin(right + 1, bounds.right());
             }
 
             findFillPositions(_left, _right, currentPoint.y() - 1);
         }
 
-        if (currentPoint.y() + 1 < endY) {
+        if (currentPoint.y() < bounds.bottom()) {
             int _left = left;
             int _right = right;
 
             if (isStaggered && staggerAxis == Map::StaggerX) {
                 if (leftColumnIsStaggered)
-                    _left = qMax(left - 1, startX);
+                    _left = qMax(left - 1, bounds.left());
                 if (rightColumnIsStaggered)
-                    _right = qMin(right + 1, endX - 1);
+                    _right = qMin(right + 1, bounds.right());
             }
 
             findFillPositions(_left, _right, currentPoint.y() + 1);
@@ -325,22 +321,40 @@ static QRegion fillRegion(const TileLayer *layer, QPoint fillOrigin,
     return fillRegion;
 }
 
-QRegion TilePainter::computePaintableFillRegion(const QPoint &fillOrigin) const
+QRegion TilePainter::computePaintableFillRegion(QPoint fillOrigin) const
 {
-    QRegion region = computeFillRegion(fillOrigin);
-
+    const Map *map = mMapDocument->map();
     const QRegion &selection = mMapDocument->selectedArea();
+
+    QRegion bounds;
+
+    if (map->infinite())
+        bounds = selection.isEmpty() ? mTileLayer->bounds() : selection;
+    else
+        bounds = mTileLayer->rect();
+
+    QRegion region = fillRegion(mTileLayer,
+                                bounds.translated(-mTileLayer->position()),
+                                fillOrigin - mTileLayer->position(),
+                                map->orientation(), map->staggerAxis(), map->staggerIndex());
+
+    region.translate(mTileLayer->position());
+
     if (!selection.isEmpty())
         region &= selection;
 
     return region;
 }
 
-QRegion TilePainter::computeFillRegion(const QPoint &fillOrigin) const
+QRegion TilePainter::computeFillRegion(QPoint fillOrigin) const
 {
-    Map *map = mMapDocument->map();
-    QRegion region = fillRegion(mTileLayer, fillOrigin - mTileLayer->position(),
+    const Map *map = mMapDocument->map();
+    QRegion bounds = map->infinite() ? mTileLayer->bounds() : mTileLayer->rect();
+    QRegion region = fillRegion(mTileLayer,
+                                bounds.translated(-mTileLayer->position()),
+                                fillOrigin - mTileLayer->position(),
                                 map->orientation(), map->staggerAxis(), map->staggerIndex());
+
     return region.translated(mTileLayer->position());
 }
 

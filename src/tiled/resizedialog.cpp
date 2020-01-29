@@ -27,7 +27,7 @@
 
 #include <QSettings>
 
-using namespace Tiled::Internal;
+using namespace Tiled;
 
 static const char * const REMOVE_OBJECTS_KEY = "ResizeMap/RemoveObjects";
 
@@ -37,7 +37,9 @@ ResizeDialog::ResizeDialog(QWidget *parent)
 {
     mUi->setupUi(this);
     resize(Utils::dpiScaled(size()));
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+#endif
 
     Preferences *prefs = Preferences::instance();
     QSettings *s = prefs->settings();
@@ -53,8 +55,8 @@ ResizeDialog::ResizeDialog(QWidget *parent)
     mUi->resizeHelper->setNewSize(QSize(mUi->widthSpinBox->value(),
                                         mUi->heightSpinBox->value()));
 
-    connect(mUi->resizeHelper, SIGNAL(offsetBoundsChanged(QRect)),
-                               SLOT(updateOffsetBounds(QRect)));
+    connect(mUi->resizeHelper, &ResizeHelper::offsetBoundsChanged,
+            this, &ResizeDialog::updateOffsetBounds);
 
     Utils::restoreGeometry(this);
 }
@@ -65,7 +67,7 @@ ResizeDialog::~ResizeDialog()
     delete mUi;
 }
 
-void ResizeDialog::setOldSize(const QSize &size)
+void ResizeDialog::setOldSize(QSize size)
 {
     mUi->resizeHelper->setOldSize(size);
 

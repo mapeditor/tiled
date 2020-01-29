@@ -42,6 +42,8 @@ namespace Tiled {
  */
 class TILEDSHARED_EXPORT Terrain : public Object
 {
+    Q_OBJECT
+
 public:
     Terrain(int id,
             Tileset *tileset,

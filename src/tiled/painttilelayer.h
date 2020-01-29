@@ -22,20 +22,23 @@
 
 #include "undocommands.h"
 
-#include <QHash>
 #include <QRegion>
 #include <QUndoCommand>
+
+#include <memory>
+#include <unordered_map>
 
 namespace Tiled {
 
 class TileLayer;
 
-namespace Internal {
-
 class MapDocument;
 
 /**
  * A command that paints one tile layer on top of another tile layer.
+ *
+ * Can merge with additional commands, even when they paint on different
+ * tile layers.
  */
 class PaintTileLayer : public QUndoCommand
 {
@@ -90,14 +93,14 @@ private:
     {
         void mergeWith(const LayerData &o);
 
-        TileLayer *mSource = nullptr;
-        TileLayer *mErased = nullptr;
+        std::unique_ptr<TileLayer> mSource;
+        std::unique_ptr<TileLayer> mErased;
         int mX, mY;
         QRegion mPaintedRegion;
     };
 
     MapDocument *mMapDocument;
-    QHash<TileLayer*, LayerData> mLayerData;
+    std::unordered_map<TileLayer*, LayerData> mLayerData;
     bool mMergeable;
 };
 
@@ -106,5 +109,4 @@ inline void PaintTileLayer::setMergeable(bool mergeable)
     mMergeable = mergeable;
 }
 
-} // namespace Internal
 } // namespace Tiled

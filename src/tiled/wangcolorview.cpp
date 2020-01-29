@@ -31,7 +31,6 @@
 #include <QSortFilterProxyModel>
 
 using namespace Tiled;
-using namespace Internal;
 
 namespace {
 
@@ -173,7 +172,7 @@ void WangColorView::contextMenuEvent(QContextMenuEvent *event)
     const WangColorModel *wangColorModel = static_cast<WangColorModel *>(filterModel->sourceModel());
     const QModelIndex filterModelIndex = indexAt(event->pos());
 
-    if (!wangColorModel || !wangColorModel->hasTilesetDocument() || !filterModelIndex.isValid())
+    if (!wangColorModel || !filterModelIndex.isValid())
         return;
 
     const QModelIndex index = filterModel->mapToSource(filterModelIndex);
@@ -204,11 +203,8 @@ void WangColorView::colorPicked(const QColor &color)
     if (!mClickedWangColor)
         return;
 
-    if (mClickedWangColor->color() != color) {
-        emit wangColorColorPicked(color,
-                                  mClickedWangColor->isEdge(),
-                                  mClickedWangColor->colorIndex());
-    }
+    if (mClickedWangColor->color() != color)
+        emit wangColorColorPicked(mClickedWangColor.data(), color);
 
     mClickedWangColor.clear();
 }

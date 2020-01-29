@@ -1,0 +1,21 @@
+name: Compile on latest Ubuntu
+
+on: [push, pull_request]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: install dependencies
+      run: |
+        sudo apt update
+        sudo apt install qt5-default libqt5svg5-dev qttools5-dev-tools zlib1g-dev qtdeclarative5-dev qtdeclarative5-private-dev qbs python3-dev
+    - name: setup qbs
+      run: |
+        qbs setup-toolchains --detect
+        qbs setup-qt --detect
+    - name: build
+      run: qbs build profile:qt-5-9-5

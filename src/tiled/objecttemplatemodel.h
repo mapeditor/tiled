@@ -27,15 +27,12 @@ namespace Tiled {
 
 class ObjectTemplate;
 
-namespace Internal {
-
 class ObjectTemplateModel : public QFileSystemModel
 {
     Q_OBJECT
 
 public:
     ObjectTemplateModel(QObject *parent = nullptr);
-    ~ObjectTemplateModel();
 
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 
@@ -44,7 +41,11 @@ public:
     Qt::ItemFlags flags(const QModelIndex &index) const override;
     QStringList mimeTypes() const override;
     QMimeData *mimeData(const QModelIndexList &indexes) const override;
+
+private:
+    void pluginObjectAddedOrRemoved(QObject *object);
+
+    void updateNameFilters();
 };
 
-} // namespace Internal
 } // namespace Tiled

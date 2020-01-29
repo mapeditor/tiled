@@ -20,6 +20,7 @@
 
 #include "utils.h"
 
+#include "mapformat.h"
 #include "preferences.h"
 
 #include <QAction>
@@ -59,10 +60,16 @@ namespace Utils {
 
 /**
  * Returns a file dialog filter that matches all readable image formats.
+ *
+ * This includes all supported map formats, which are rendered to an image when
+ * used in this context.
  */
 QString readableImageFormatsFilter()
 {
-    return toImageFileFilter(QImageReader::supportedImageFormats());
+    auto imageFilter = toImageFileFilter(QImageReader::supportedImageFormats());
+
+    FormatHelper<MapFormat> helper(FileFormat::Read, imageFilter);
+    return helper.filter();
 }
 
 /**
@@ -120,7 +127,7 @@ void restoreGeometry(QWidget *widget)
 {
     Q_ASSERT(!widget->objectName().isEmpty());
 
-    const QSettings *settings = Internal::Preferences::instance()->settings();
+    const QSettings *settings = Preferences::instance()->settings();
 
     const QString key = widget->objectName() + QLatin1String("/Geometry");
     widget->restoreGeometry(settings->value(key).toByteArray());
@@ -139,7 +146,7 @@ void saveGeometry(QWidget *widget)
 {
     Q_ASSERT(!widget->objectName().isEmpty());
 
-    QSettings *settings = Internal::Preferences::instance()->settings();
+    QSettings *settings = Preferences::instance()->settings();
 
     const QString key = widget->objectName() + QLatin1String("/Geometry");
     settings->setValue(key, widget->saveGeometry());
@@ -171,16 +178,21 @@ qreal dpiScaled(qreal value)
 #endif
 }
 
+int dpiScaled(int value)
+{
+    return qRound(dpiScaled(qreal(value)));
+}
+
 QSize dpiScaled(QSize value)
 {
-    return QSize(qRound(dpiScaled(value.width())),
-                 qRound(dpiScaled(value.height())));
+    return QSize(dpiScaled(value.width()),
+                 dpiScaled(value.height()));
 }
 
 QPoint dpiScaled(QPoint value)
 {
-    return QPoint(qRound(dpiScaled(value.x())),
-                  qRound(dpiScaled(value.y())));
+    return QPoint(dpiScaled(value.x()),
+                  dpiScaled(value.y()));
 }
 
 QRectF dpiScaled(QRectF value)
@@ -263,6 +275,9 @@ static void showInFileManager(const QString &fileName)
 
 void addFileManagerActions(QMenu &menu, const QString &fileName)
 {
+    if (fileName.isEmpty())
+        return;
+
     QAction *copyPath = menu.addAction(QCoreApplication::translate("Utils", "Copy File Path"));
     QObject::connect(copyPath, &QAction::triggered, [fileName] {
         QClipboard *clipboard = QApplication::clipboard();

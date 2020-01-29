@@ -23,7 +23,6 @@
 #include <QtSingleApplication>
 
 namespace Tiled {
-namespace Internal {
 
 /**
  * Custom QApplication subclass which handles the QFileOpenEvent, in order
@@ -42,9 +41,8 @@ protected:
 signals:
     void fileOpenRequest(const QString &file);
 
-private slots:
+private:
     void onMessageReceived(const QString &message);
 };
 
-} // namespace Internal
 } // namespace Tiled

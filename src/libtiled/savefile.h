@@ -31,8 +31,9 @@
 #include "tiled_global.h"
 
 #include <QFileDevice>
-#include <QScopedPointer>
 #include <QString>
+
+#include <memory>
 
 namespace Tiled {
 
@@ -57,7 +58,7 @@ public:
     static void setSafeSavingEnabled(bool enabled);
 
 private:
-    QScopedPointer<QFileDevice> mFileDevice;
+    std::unique_ptr<QFileDevice> mFileDevice;
 
     static bool mSafeSavingEnabled;
 };
@@ -65,7 +66,7 @@ private:
 
 inline QFileDevice *SaveFile::device() const
 {
-    return mFileDevice.data();
+    return mFileDevice.get();
 }
 
 inline bool SaveFile::open(QIODevice::OpenMode mode)

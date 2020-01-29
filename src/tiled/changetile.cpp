@@ -26,7 +26,6 @@
 #include <QCoreApplication>
 
 namespace Tiled {
-namespace Internal {
 
 ChangeTileType::ChangeTileType(TilesetDocument *tilesetDocument,
                                const QList<Tile *> &tiles,
@@ -49,5 +48,4 @@ void ChangeTileType::swap()
     }
 }
 
-} // namespace Internal
 } // namespace Tiled

@@ -3,23 +3,26 @@
 # This file is distributed under the same license as the Tiled package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2017.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Tiled 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-12-21 14:31+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2019-01-05 08:07+0000\n"
+"Last-Translator: JuKuSoft.com <info@jukusoft.com>\n"
+"Language-Team: German <https://hosted.weblate.org/projects/tiled/reference/"
+"de/>\n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.4-dev\n"
 "Generated-By: Babel 2.5.1\n"
 
 #: ../../reference/json-map-format.rst:2
 msgid "JSON Map Format"
-msgstr ""
+msgstr "JSON Kartenformat"
 
 #: ../../reference/json-map-format.rst:4
 msgid ""
@@ -27,6 +30,9 @@ msgid ""
 "Export As\" and select the JSON file type. You can export json from the "
 "command line with the ``--export-map`` option."
 msgstr ""
+"Tiled kann Karten als JSON-Dateien exportiern. Wählen Sie dazu einfach \""
+"Datei > Exportieren unter\" und wählen Sie den JSON-Dateityp. Sie können "
+"Json von der Kommandozeile mit der Option ``--export-map`` exportieren."
 
 #: ../../reference/json-map-format.rst:8
 msgid ""
@@ -40,7 +46,7 @@ msgstr ""
 
 #: ../../reference/json-map-format.rst:14
 msgid "Map"
-msgstr ""
+msgstr "Karte"
 
 #: ../../reference/json-map-format.rst:17
 #: ../../reference/json-map-format.rst:82
@@ -49,7 +55,7 @@ msgstr ""
 #: ../../reference/json-map-format.rst:453
 #: ../../reference/json-map-format.rst:493
 msgid "Field"
-msgstr ""
+msgstr "Feld"
 
 #: ../../reference/json-map-format.rst:17
 #: ../../reference/json-map-format.rst:82
@@ -88,17 +94,17 @@ msgstr ""
 #: ../../reference/json-map-format.rst:417
 #: ../../reference/json-map-format.rst:495
 msgid "string"
-msgstr ""
+msgstr "Zeichenkette"
 
 #: ../../reference/json-map-format.rst:19
 msgid "Hex-formatted color (#RRGGBB or #AARRGGBB) (optional)"
-msgstr ""
+msgstr "Hex-formatierte Farbe (#RRGGBB or #AARRGGBB) (optional)"
 
 #: ../../reference/json-map-format.rst:21
 #: ../../reference/json-map-format.rst:88
 #: ../../reference/json-map-format.rst:166
 msgid "height"
-msgstr ""
+msgstr "Höhe"
 
 #: ../../reference/json-map-format.rst:21
 #: ../../reference/json-map-format.rst:27
@@ -127,15 +133,15 @@ msgstr ""
 #: ../../reference/json-map-format.rst:415
 #: ../../reference/json-map-format.rst:497
 msgid "int"
-msgstr ""
+msgstr "Ganzzahl (int)"
 
 #: ../../reference/json-map-format.rst:21
 msgid "Number of tile rows"
-msgstr ""
+msgstr "Anzahl der Tiles-Zeilen"
 
 #: ../../reference/json-map-format.rst:23
 msgid "infinite"
-msgstr ""
+msgstr "unendlich"
 
 #: ../../reference/json-map-format.rst:23
 #: ../../reference/json-map-format.rst:102
@@ -143,16 +149,16 @@ msgstr ""
 #: ../../reference/json-map-format.rst:172
 #: ../../reference/json-map-format.rst:186
 msgid "bool"
-msgstr ""
+msgstr "Boolean (wahr/falsch)"
 
 #: ../../reference/json-map-format.rst:23
 msgid "Whether the map has infinite dimensions"
-msgstr ""
+msgstr "Ob die Karte unendliche Dimensionen hat"
 
 #: ../../reference/json-map-format.rst:25
 #: ../../reference/json-map-format.rst:90
 msgid "layers"
-msgstr ""
+msgstr "Layer"
 
 #: ../../reference/json-map-format.rst:25
 #: ../../reference/json-map-format.rst:40
@@ -162,7 +168,7 @@ msgstr ""
 #: ../../reference/json-map-format.rst:402
 #: ../../reference/json-map-format.rst:455
 msgid "array"
-msgstr ""
+msgstr "Array"
 
 #: ../../reference/json-map-format.rst:25
 msgid "Array of :ref:`layers <json-layer>`"
@@ -178,7 +184,7 @@ msgstr ""
 
 #: ../../reference/json-map-format.rst:29
 msgid "orientation"
-msgstr ""
+msgstr "Ausrichtung"
 
 #: ../../reference/json-map-format.rst:29
 msgid "``orthogonal``, ``isometric``, ``staggered`` or ``hexagonal``"
@@ -215,7 +221,7 @@ msgstr ""
 
 #: ../../reference/json-map-format.rst:34
 msgid "renderorder"
-msgstr ""
+msgstr "Zeichenreihenfolge"
 
 #: ../../reference/json-map-format.rst:34
 msgid "Rendering direction (orthogonal maps only)"
@@ -232,7 +238,7 @@ msgstr ""
 #: ../../reference/json-map-format.rst:38
 #: ../../reference/json-map-format.rst:406
 msgid "tileheight"
-msgstr ""
+msgstr "Tile-Höhe"
 
 #: ../../reference/json-map-format.rst:38
 msgid "Map grid height"
@@ -240,7 +246,7 @@ msgstr ""
 
 #: ../../reference/json-map-format.rst:40
 msgid "tilesets"
-msgstr ""
+msgstr "Tilesets"
 
 #: ../../reference/json-map-format.rst:40
 msgid "Array of :ref:`tilesets <json-tileset>`"
@@ -249,7 +255,7 @@ msgstr ""
 #: ../../reference/json-map-format.rst:42
 #: ../../reference/json-map-format.rst:415
 msgid "tilewidth"
-msgstr ""
+msgstr "Tile-Breite"
 
 #: ../../reference/json-map-format.rst:42
 msgid "Map grid width"
@@ -260,7 +266,7 @@ msgstr ""
 #: ../../reference/json-map-format.rst:184
 #: ../../reference/json-map-format.rst:417
 msgid "type"
-msgstr ""
+msgstr "Typ"
 
 #: ../../reference/json-map-format.rst:44
 msgid "``map`` (since 1.0)"
@@ -268,21 +274,21 @@ msgstr ""
 
 #: ../../reference/json-map-format.rst:46
 msgid "version"
-msgstr ""
+msgstr "Version"
 
 #: ../../reference/json-map-format.rst:46
 msgid "number"
-msgstr ""
+msgstr "Nummer"
 
 #: ../../reference/json-map-format.rst:46
 msgid "The JSON format version"
-msgstr ""
+msgstr "Die JSON-formatierte Version"
 
 #: ../../reference/json-map-format.rst:48
 #: ../../reference/json-map-format.rst:104
 #: ../../reference/json-map-format.rst:188
 msgid "width"
-msgstr ""
+msgstr "Breite"
 
 #: ../../reference/json-map-format.rst:48
 msgid "Number of tile columns"
@@ -290,15 +296,15 @@ msgstr ""
 
 #: ../../reference/json-map-format.rst:52
 msgid "Map Example"
-msgstr ""
+msgstr "Beispielkarte"
 
 #: ../../reference/json-map-format.rst:79
 msgid "Layer"
-msgstr ""
+msgstr "Ebene"
 
 #: ../../reference/json-map-format.rst:84
 msgid "data"
-msgstr ""
+msgstr "Daten"
 
 #: ../../reference/json-map-format.rst:84
 msgid "Array of GIDs. ``tilelayer`` only."
@@ -306,7 +312,7 @@ msgstr ""
 
 #: ../../reference/json-map-format.rst:86
 msgid "draworder"
-msgstr ""
+msgstr "Zeichenreihenfolge"
 
 #: ../../reference/json-map-format.rst:86
 msgid "``topdown`` (default) or ``index``. ``objectgroup`` only."
@@ -325,11 +331,11 @@ msgstr ""
 #: ../../reference/json-map-format.rst:394
 #: ../../reference/json-map-format.rst:495
 msgid "name"
-msgstr ""
+msgstr "Name"
 
 #: ../../reference/json-map-format.rst:92
 msgid "Name assigned to this layer"
-msgstr ""
+msgstr "Name der dieser Ebene zugeordnet ist"
 
 #: ../../reference/json-map-format.rst:94
 msgid "objects"
@@ -350,7 +356,7 @@ msgstr ""
 
 #: ../../reference/json-map-format.rst:96
 msgid "Value between 0 and 1"
-msgstr ""
+msgstr "Wert zwischen 0 und 1"
 
 #: ../../reference/json-map-format.rst:98
 msgid "string key-value pairs."
@@ -371,12 +377,12 @@ msgstr ""
 
 #: ../../reference/json-map-format.rst:104
 msgid "Column count. Same as map width for fixed-size maps."
-msgstr ""
+msgstr "Spaltenanzahl. Selber Wert wie die Kartenbreite für feste Mapgrößen."
 
 #: ../../reference/json-map-format.rst:106
 #: ../../reference/json-map-format.rst:190
 msgid "x"
-msgstr ""
+msgstr "x"
 
 #: ../../reference/json-map-format.rst:106
 msgid "Horizontal layer offset in tiles. Always 0."
@@ -401,7 +407,7 @@ msgstr ""
 
 #: ../../reference/json-map-format.rst:157
 msgid "Object"
-msgstr ""
+msgstr "Objekt"
 
 #: ../../reference/json-map-format.rst:162
 msgid "ellipse"
@@ -425,7 +431,7 @@ msgstr ""
 
 #: ../../reference/json-map-format.rst:168
 msgid "id"
-msgstr ""
+msgstr "ID"
 
 #: ../../reference/json-map-format.rst:168
 msgid "Incremental id - unique across all objects"
@@ -437,7 +443,7 @@ msgstr ""
 
 #: ../../reference/json-map-format.rst:172
 msgid "point"
-msgstr ""
+msgstr "Punkt"
 
 #: ../../reference/json-map-format.rst:172
 msgid "Used to mark an object as a point"
@@ -3626,4 +3632,3 @@ msgstr ""
 
 #~ msgid "value: The value of the property."
 #~ msgstr ""
-

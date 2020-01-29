@@ -26,7 +26,6 @@
 #include <QCoreApplication>
 
 namespace Tiled {
-namespace Internal {
 
 ChangeTileTerrain::ChangeTileTerrain()
     : mTilesetDocument(nullptr)
@@ -40,10 +39,10 @@ ChangeTileTerrain::ChangeTileTerrain(TilesetDocument *tilesetDocument,
                                      Tile *tile, unsigned terrain)
     : mTilesetDocument(tilesetDocument)
     , mTileset(tile->tileset())
+    , mChanges{ { tile, Change(tile->terrain(), terrain) } }
     , mMergeable(true)
 {
     initText();
-    mChanges.insert(tile, Change(tile->terrain(), terrain));
 }
 
 ChangeTileTerrain::ChangeTileTerrain(TilesetDocument *tilesetDocument,
@@ -140,5 +139,4 @@ void ChangeTileTerrain::initText()
                                         "Change Tile Terrain"));
 }
 
-} // namespace Internal
 } // namespace Tiled

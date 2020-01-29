@@ -20,20 +20,26 @@
 
 #include "commanddatamodel.h"
 
-#include <QMenu>
+#include "preferences.h"
+
 #include <QKeySequence>
+#include <QMenu>
 #include <QMimeData>
+#include <QSettings>
+
+#include "qtcompat_p.h"
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 static const char *commandMimeType = "application/x-tiled-commandptr";
 
 CommandDataModel::CommandDataModel(QObject *parent)
     : QAbstractTableModel(parent)
 {
+    auto settings = Preferences::instance()->settings();
+
     // Load command list
-    const QVariant variant = mSettings.value(QLatin1String("commandList"));
+    const QVariant variant = settings->value(QLatin1String("commandList"));
     const QList<QVariant> commands = variant.toList();
     for (const QVariant &commandVariant : commands)
         mCommands.append(Command::fromQVariant(commandVariant));
@@ -42,11 +48,12 @@ CommandDataModel::CommandDataModel(QObject *parent)
     // This is useful on its own and helps demonstrate how to use the commands.
 
     const QString addedDefaultKey = QLatin1String("addedDefaultCommands");
-    const bool addedDefault = mSettings.value(addedDefaultKey, false).toBool();
+    const bool addedDefault = settings->value(addedDefaultKey, false).toBool();
     if (!addedDefault) {
         // Disable default commands by default so user gets an informative
         // warning when clicking the command button for the first time
-        Command command(false);
+        Command command;
+        command.isEnabled = false;
 #ifdef Q_OS_LINUX
         command.executable = QLatin1String("gedit");
         command.arguments = QLatin1String("%mapfile");
@@ -60,26 +67,26 @@ CommandDataModel::CommandDataModel(QObject *parent)
         }
 
         commit();
-        mSettings.setValue(addedDefaultKey, true);
+        settings->setValue(addedDefaultKey, true);
     }
 }
 
 void CommandDataModel::commit()
 {
-    // Save command list
     QList<QVariant> commands;
-    foreach (const Command &command, mCommands)
+    for (const Command &command : qAsConst(mCommands))
         commands.append(command.toQVariant());
-    mSettings.setValue(QLatin1String("commandList"), commands);
+
+    Preferences::instance()->settings()->setValue(QLatin1String("commandList"), commands);
 }
 
-Command CommandDataModel::firstEnabledCommand() const
+const Command *CommandDataModel::firstEnabledCommand() const
 {
     for (const Command &command : mCommands)
         if (command.isEnabled)
-            return command;
+            return &command;
 
-    return Command(false);
+    return nullptr;
 }
 
 bool CommandDataModel::removeRows(int row, int count, const QModelIndex &parent)
@@ -87,7 +94,7 @@ bool CommandDataModel::removeRows(int row, int count, const QModelIndex &parent)
     if (row < 0 || row + count > mCommands.size())
         return false;
 
-    beginRemoveRows(parent, row, row + count);
+    beginRemoveRows(parent, row, row + count - 1);
     mCommands.erase(mCommands.begin() + row, mCommands.begin() + row + count);
     endRemoveRows();
 
@@ -375,9 +382,10 @@ bool CommandDataModel::dropMimeData(const QMimeData *data, Qt::DropAction, int,
 
                 // If a command is dropped elsewhere, create a copy of it
                 if (dstRow == mCommands.size()) {
-                    append(Command(addr->isEnabled,
-                                   tr("%1 (copy)").arg(addr->name),
-                                   addr->executable, addr->arguments));
+                    auto copy = *addr;
+                    copy.name = tr("%1 (copy)").arg(addr->name);
+                    copy.shortcut = QKeySequence();
+                    append(copy);
                     return true;
                 }
             }
@@ -392,7 +400,10 @@ bool CommandDataModel::dropMimeData(const QMimeData *data, Qt::DropAction, int,
         // If text is dropped elsewhere, create a new command
         // Assume the dropped text is the command, not the name
         if (dstRow == mCommands.size()) {
-            append(Command(true, tr("New command"), data->text()));
+            Command newCommand;
+            newCommand.name = tr("New command");
+            newCommand.executable = data->text();
+            append(newCommand);
             return true;
         }
     }
@@ -475,7 +486,11 @@ bool CommandDataModel::move(int commandIndex, int newIndex)
 
     if (commandIndex - newIndex == 1 || newIndex - commandIndex == 1)
         // Swapping is probably more efficient than removing/inserting
+#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
         mCommands.swap(commandIndex, newIndex);
+#else
+        mCommands.swapItemsAt(commandIndex, newIndex);
+#endif
     else {
         const Command command = mCommands.at(commandIndex);
         mCommands.removeAt(commandIndex);

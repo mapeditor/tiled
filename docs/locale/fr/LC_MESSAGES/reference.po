@@ -8,41 +8,50 @@ msgstr ""
 "Project-Id-Version: Tiled 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-12-21 14:31+0100\n"
-"PO-Revision-Date: 2017-10-26 08:22+0000\n"
-"Last-Translator: Bastien LABOUCHE <bastien.labouche@live.fr>\n"
+"PO-Revision-Date: 2019-06-27 21:01+0000\n"
+"Last-Translator: Calvin M.T. <pro@calvinmt.com>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/tiled/reference/"
+"fr/>\n"
 "Language: fr\n"
-"Language-Team: French "
-"<https://hosted.weblate.org/projects/tiled/reference/fr/>\n"
-"Plural-Forms: nplurals=2; plural=n > 1\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 3.7.1-dev\n"
 "Generated-By: Babel 2.5.1\n"
 
 #: ../../reference/json-map-format.rst:2
 msgid "JSON Map Format"
-msgstr ""
+msgstr "Format de carte JSON"
 
 #: ../../reference/json-map-format.rst:4
+#, fuzzy
 msgid ""
 "Tiled can export maps as JSON files. To do so, simply select \"File > "
 "Export As\" and select the JSON file type. You can export json from the "
 "command line with the ``--export-map`` option."
 msgstr ""
+"Tiled peut exporter des cartes sous forme de fichiers JSON. Pour ce faire, "
+"sélectionnez simplement \"File > Export As\" et sélectionnez le type de "
+"fichier JSON. Vous pouvez exporter en json à partir de la ligne de commande "
+"avec l'option ``--export-map``."
 
 #: ../../reference/json-map-format.rst:8
 msgid ""
 "The fields found in the JSON format differ slightly from those in the "
 ":doc:`tmx-map-format`, but the meanings should remain the same."
 msgstr ""
+"Les attributs trouvés en format JSON diffère légèrement de ceux trouvés dans "
+":doc:`tmx-map-format`, mais leurs sens restent les mêmes."
 
 #: ../../reference/json-map-format.rst:11
 msgid "The following fields can be found in a Tiled JSON file:"
 msgstr ""
+"Les attributs suivants peuvent être retrouvés dans un fichier Tiled JSON :"
 
 #: ../../reference/json-map-format.rst:14
 msgid "Map"
-msgstr ""
+msgstr "Carte"
 
 #: ../../reference/json-map-format.rst:17
 #: ../../reference/json-map-format.rst:82
@@ -51,7 +60,7 @@ msgstr ""
 #: ../../reference/json-map-format.rst:453
 #: ../../reference/json-map-format.rst:493
 msgid "Field"
-msgstr ""
+msgstr "Attribut"
 
 #: ../../reference/json-map-format.rst:17
 #: ../../reference/json-map-format.rst:82
@@ -60,7 +69,7 @@ msgstr ""
 #: ../../reference/json-map-format.rst:453
 #: ../../reference/json-map-format.rst:493
 msgid "Type"
-msgstr ""
+msgstr "Type"
 
 #: ../../reference/json-map-format.rst:17
 #: ../../reference/json-map-format.rst:82
@@ -69,11 +78,11 @@ msgstr ""
 #: ../../reference/json-map-format.rst:453
 #: ../../reference/json-map-format.rst:493
 msgid "Description"
-msgstr ""
+msgstr "Description"
 
 #: ../../reference/json-map-format.rst:19
 msgid "backgroundcolor"
-msgstr ""
+msgstr "backgroundcolor"
 
 #: ../../reference/json-map-format.rst:19
 #: ../../reference/json-map-format.rst:29
@@ -90,17 +99,17 @@ msgstr ""
 #: ../../reference/json-map-format.rst:417
 #: ../../reference/json-map-format.rst:495
 msgid "string"
-msgstr ""
+msgstr "string"
 
 #: ../../reference/json-map-format.rst:19
 msgid "Hex-formatted color (#RRGGBB or #AARRGGBB) (optional)"
-msgstr ""
+msgstr "Couleur en hexadécimal (#RRGGBB or #AARRGGBB) (optionnel)"
 
 #: ../../reference/json-map-format.rst:21
 #: ../../reference/json-map-format.rst:88
 #: ../../reference/json-map-format.rst:166
 msgid "height"
-msgstr ""
+msgstr "height"
 
 #: ../../reference/json-map-format.rst:21
 #: ../../reference/json-map-format.rst:27
@@ -129,15 +138,15 @@ msgstr ""
 #: ../../reference/json-map-format.rst:415
 #: ../../reference/json-map-format.rst:497
 msgid "int"
-msgstr ""
+msgstr "int"
 
 #: ../../reference/json-map-format.rst:21
 msgid "Number of tile rows"
-msgstr ""
+msgstr "Nombre de ligne de tuile"
 
 #: ../../reference/json-map-format.rst:23
 msgid "infinite"
-msgstr ""
+msgstr "infinite"
 
 #: ../../reference/json-map-format.rst:23
 #: ../../reference/json-map-format.rst:102
@@ -145,16 +154,16 @@ msgstr ""
 #: ../../reference/json-map-format.rst:172
 #: ../../reference/json-map-format.rst:186
 msgid "bool"
-msgstr ""
+msgstr "bool"
 
 #: ../../reference/json-map-format.rst:23
 msgid "Whether the map has infinite dimensions"
-msgstr ""
+msgstr "Si la carte a des dimensions infinies"
 
 #: ../../reference/json-map-format.rst:25
 #: ../../reference/json-map-format.rst:90
 msgid "layers"
-msgstr ""
+msgstr "layers"
 
 #: ../../reference/json-map-format.rst:25
 #: ../../reference/json-map-format.rst:40
@@ -164,34 +173,34 @@ msgstr ""
 #: ../../reference/json-map-format.rst:402
 #: ../../reference/json-map-format.rst:455
 msgid "array"
-msgstr ""
+msgstr "array"
 
 #: ../../reference/json-map-format.rst:25
 msgid "Array of :ref:`layers <json-layer>`"
-msgstr ""
+msgstr "Tableau de couches (:ref:`layers <json-layer>`)"
 
 #: ../../reference/json-map-format.rst:27
 msgid "nextobjectid"
-msgstr ""
+msgstr "nextobjectid"
 
 #: ../../reference/json-map-format.rst:27
 msgid "Auto-increments for each placed object"
-msgstr ""
+msgstr "Incrémente automatiquement pour chaque objet placé"
 
 #: ../../reference/json-map-format.rst:29
 msgid "orientation"
-msgstr ""
+msgstr "orientation"
 
 #: ../../reference/json-map-format.rst:29
 msgid "``orthogonal``, ``isometric``, ``staggered`` or ``hexagonal``"
-msgstr ""
+msgstr "``orthogonal``, ``isometric``, ``staggered`` ou ``hexagonal``"
 
 #: ../../reference/json-map-format.rst:32
 #: ../../reference/json-map-format.rst:98
 #: ../../reference/json-map-format.rst:178
 #: ../../reference/json-map-format.rst:396
 msgid "properties"
-msgstr ""
+msgstr "properties"
 
 #: ../../reference/json-map-format.rst:32
 #: ../../reference/json-map-format.rst:94
@@ -205,7 +214,7 @@ msgstr ""
 #: ../../reference/json-map-format.rst:410
 #: ../../reference/json-map-format.rst:412
 msgid "object"
-msgstr ""
+msgstr "object"
 
 #: ../../reference/json-map-format.rst:32
 #: ../../reference/json-map-format.rst:178
@@ -217,82 +226,82 @@ msgstr ""
 
 #: ../../reference/json-map-format.rst:34
 msgid "renderorder"
-msgstr ""
+msgstr "renderorder"
 
 #: ../../reference/json-map-format.rst:34
 msgid "Rendering direction (orthogonal maps only)"
-msgstr ""
+msgstr "Direction du rendu (cartes orthogonales uniquement)"
 
 #: ../../reference/json-map-format.rst:36
 msgid "tiledversion"
-msgstr ""
+msgstr "tiledversion"
 
 #: ../../reference/json-map-format.rst:36
 msgid "The Tiled version used to save the file"
-msgstr ""
+msgstr "La version de Tiled utilisée pour sauvegarder le fichier"
 
 #: ../../reference/json-map-format.rst:38
 #: ../../reference/json-map-format.rst:406
 msgid "tileheight"
-msgstr ""
+msgstr "tileheight"
 
 #: ../../reference/json-map-format.rst:38
 msgid "Map grid height"
-msgstr ""
+msgstr "Hauteur de la grille de la carte"
 
 #: ../../reference/json-map-format.rst:40
 msgid "tilesets"
-msgstr ""
+msgstr "tilesets"
 
 #: ../../reference/json-map-format.rst:40
 msgid "Array of :ref:`tilesets <json-tileset>`"
-msgstr ""
+msgstr "Tableau de :ref:`tilesets <json-tileset>`"
 
 #: ../../reference/json-map-format.rst:42
 #: ../../reference/json-map-format.rst:415
 msgid "tilewidth"
-msgstr ""
+msgstr "tilewidth"
 
 #: ../../reference/json-map-format.rst:42
 msgid "Map grid width"
-msgstr ""
+msgstr "Largeur de la grille de la carte"
 
 #: ../../reference/json-map-format.rst:44
 #: ../../reference/json-map-format.rst:100
 #: ../../reference/json-map-format.rst:184
 #: ../../reference/json-map-format.rst:417
 msgid "type"
-msgstr ""
+msgstr "type"
 
 #: ../../reference/json-map-format.rst:44
 msgid "``map`` (since 1.0)"
-msgstr ""
+msgstr "``map`` (depuis la 1.0)"
 
 #: ../../reference/json-map-format.rst:46
 msgid "version"
-msgstr ""
+msgstr "version"
 
 #: ../../reference/json-map-format.rst:46
 msgid "number"
-msgstr ""
+msgstr "nombre"
 
 #: ../../reference/json-map-format.rst:46
 msgid "The JSON format version"
-msgstr ""
+msgstr "La version du format JSON"
 
 #: ../../reference/json-map-format.rst:48
 #: ../../reference/json-map-format.rst:104
 #: ../../reference/json-map-format.rst:188
 msgid "width"
-msgstr ""
+msgstr "width"
 
 #: ../../reference/json-map-format.rst:48
 msgid "Number of tile columns"
-msgstr ""
+msgstr "Nombre de colonne de tuiles"
 
 #: ../../reference/json-map-format.rst:52
 msgid "Map Example"
-msgstr ""
+msgstr "Exemple de carte"
 
 #: ../../reference/json-map-format.rst:79
 msgid "Layer"
@@ -680,15 +689,15 @@ msgstr ""
 #: ../../reference/json-map-format.rst:467
 #: ../../reference/json-map-format.rst:500
 msgid "Example:"
-msgstr ""
+msgstr "Exemple :"
 
 #: ../../reference/json-map-format.rst:490
 msgid "Terrain"
-msgstr ""
+msgstr "Terrain"
 
 #: ../../reference/json-map-format.rst:495
 msgid "Name of terrain"
-msgstr ""
+msgstr "Nom du terrain"
 
 #: ../../reference/json-map-format.rst:497
 msgid "tile"
@@ -724,29 +733,26 @@ msgid "`Support by Framework <#support-by-framework>`__"
 msgstr "`Supportées par le Framework <#support-by-framework>`__"
 
 #: ../../reference/support-for-tmx-maps.rst:12
-#, fuzzy
 msgid ""
 "The first list is for developers who plan on implementing their own "
 "renderer. The second list is for developers already using (or "
 "considering) a particular game engine / graphics library who would rather"
 " pass on having to write their own tile map renderer."
 msgstr ""
-"La première liste est pour les développeurs qui ont planifié "
-"d'implémenter leur propre générateur de rendu. La seconde liste est pour "
-"les développeurs qui ont utilisent déjà (ou envisagent) un moteur de jeu "
-"particulier / des bibliothèques graphiques et qui voudraient plutôt "
-"éviter de devoir écrire leur propre générateur de rendu de carte de "
-"tuile."
+"La première liste est pour les développeurs qui ont planifié d'implémenter "
+"leur propre générateur de rendu. La seconde liste est pour les développeurs "
+"qui utilisent déjà (ou envisagent) un moteur de jeu particulier / des "
+"bibliothèques graphiques et qui voudraient plutôt éviter de devoir écrire "
+"leur propre générateur de rendu de carte de tuile."
 
 #: ../../reference/support-for-tmx-maps.rst:19
-#, fuzzy
 msgid ""
 "For updates to this page please open a pull request or issue `on GitHub "
 "<https://github.com/bjorn/tiled/issues>`__, thanks!"
 msgstr ""
-"*Pour des mises à jours sur cette page, s'il-vous-plaît ouvrez une "
-"requête d'implémentation ou un rapport de bug `sur github "
-"<https://github.com/bjorn/tiled/issues>`__, merci !*"
+"Pour apporter des mises à jours à cette page, veuillez ouvrir une *pull "
+"request* (demande de tirage) ou un rapport de bug `sur github "
+"<https://github.com/bjorn/tiled/issues>`__, merci !"
 
 #: ../../reference/support-for-tmx-maps.rst:23
 msgid "Support by Language"
@@ -768,37 +774,34 @@ msgid "C"
 msgstr "C"
 
 #: ../../reference/support-for-tmx-maps.rst:32
-#, fuzzy
 msgid ""
 "`TMX <https://github.com/baylej/tmx/>`__ - TMX map loader with Allegro5 "
 "and SDL2 examples (BSD)."
 msgstr ""
-"`TMX <https://github.com/baylej/tmx/>`__ - Exemples de chargeurs de carte"
-" TMX et JSON avec Allegro5 et SDL2 (BSD)."
+"`TMX <https://github.com/baylej/tmx/>`__ - Exemples de chargeurs de carte "
+"TMX avec Allegro5 et SDL2 (BSD)."
 
 #: ../../reference/support-for-tmx-maps.rst:36
 msgid "C++"
 msgstr "C++"
 
 #: ../../reference/support-for-tmx-maps.rst:38
-#, fuzzy
 msgid ""
 "`C++/Boost <http://www.catnapgames.com/blog/2011/10/10/simple-tmx-"
 "tilemap-parser.html>`__ by Tomas Andrle (limited functionality, single "
 "cpp file)"
 msgstr ""
-"`C++/Boost <http://www.catnapgames.com/blog/2011/10/10/simple-tmx-"
-"tilemap-parser.html>`__ par Tomas Andrle (fonctionnalités limitées, "
-"simple fichier cpp)"
+"`C++/Boost <http://www.catnapgames.com/blog/2011/10/10/simple-tmx-tilemap-"
+"parser.html>`__ par Tomas Andrle (fonctionnalités limitées, un seul fichier "
+"cpp)"
 
 #: ../../reference/support-for-tmx-maps.rst:40
-#, fuzzy
 msgid ""
 "`C++/TinyXML based tmxparser <https://github.com/sainteos/tmxparser>`__ "
 "(BSD)"
 msgstr ""
-"`C++/TinyXML basé sur l'analyseur tmx "
-"<https://github.com/andrewrk/tmxparser>`__ (BSD)"
+"`Analyseur TMX (tmxparser) basé sur du C++/TinyXML <https://github.com/"
+"andrewrk/tmxparser>`__ (BSD)"
 
 #: ../../reference/support-for-tmx-maps.rst:41
 msgid ""
@@ -828,15 +831,15 @@ msgstr ""
 "<http://jube.github.io/libtmx/index.html>`__."
 
 #: ../../reference/support-for-tmx-maps.rst:50
+#, fuzzy
 msgid ""
 "`TMXParser <https://github.com/solar-storm-studios/TMXParser>`__ General "
 "\\*.tmx tileset data loader. Intended to be used with TSXParser for "
 "external tileset loading. (No internal tileset support)"
 msgstr ""
-"`TMXParser <https://github.com/solar-storm-studios/TMXParser>`__ Général "
-"\\*.tmx chargeur de données de tileset.Prévu pour être utilisé avec "
-"TSXParser pour un chargement extérieur de tileset. (Pas de support "
-"interne de tileset)."
+"`TMXParser <https://github.com/solar-storm-studios/TMXParser>`__ Général \\*"
+".tmx chargeur de données de tileset. Prévu pour être utilisé avec TSXParser "
+"pour un chargement extérieur de tileset. (Pas de support interne de tileset)"
 
 #: ../../reference/support-for-tmx-maps.rst:53
 msgid ""
@@ -920,18 +923,17 @@ msgstr ""
 "générique pour cartes de Tiled 0.9.1. Disponible via NuGet."
 
 #: ../../reference/support-for-tmx-maps.rst:81
-#, fuzzy
 msgid ""
 "`TmxCSharp <https://github.com/gwicksted/TmxCSharp>`__: Useful for multi-"
 "layer orthographic tile engines. No framework dependencies, used with a "
 "custom OpenTK tile engine soon to be open source, tested with Tiled 0.8.1"
 " (multiple output formats). MIT license."
 msgstr ""
-"`TmxCSharp <https://github.com/gwicksted/TmxCSharp>`__: Très utile pour "
-"des moteurs de tuiles orthographiques à niveaux multiples. Aucune "
-"dépendance de framework, utilisé avec un moteur de tuile OpenTK "
-"personnalisé qui sera bientôt open source, testé avec Tiled 0.8.1 "
-"(multiples formats de sortie). Licence MIT."
+"`TmxCSharp <https://github.com/gwicksted/TmxCSharp>`__: Utile pour des "
+"moteurs de tuiles orthographiques multi-couche. Aucune dépendance de "
+"framework, utilisé avec un moteur de tuile OpenTK personnalisé qui sera "
+"bientôt en open source, testé avec Tiled 0.8.1 (formats de sortie multiples)"
+". Licence MIT."
 
 #: ../../reference/support-for-tmx-maps.rst:85
 msgid ""
@@ -981,22 +983,20 @@ msgid "Haskell"
 msgstr "Haskell"
 
 #: ../../reference/support-for-tmx-maps.rst:107
-#, fuzzy
 msgid ""
 "`htiled <http://hackage.haskell.org/package/htiled>`__ (TMX) by "
 "`Christian Rødli Amble <https://github.com/chrra>`__."
 msgstr ""
-"`htiled <http://hackage.haskell.org/package/htiled>`__ par `Christian "
+"`htiled <http://hackage.haskell.org/package/htiled>`__ (TMX) par `Christian "
 "Rødli Amble <https://github.com/chrra>`__."
 
 #: ../../reference/support-for-tmx-maps.rst:109
-#, fuzzy
 msgid ""
 "`aeson-tiled <https://hackage.haskell.org/package/aeson-tiled>`__ (JSON) "
 "by `Schell Scivally <https://github.com/schell>`__."
 msgstr ""
-"`htiled <http://hackage.haskell.org/package/htiled>`__ par `Christian "
-"Rødli Amble <https://github.com/chrra>`__."
+"`aeson-tiled <https://hackage.haskell.org/package/aeson-tiled>`__ (JSON) par "
+"`Schell Scivally <https://github.com/schell>`__."
 
 #: ../../reference/support-for-tmx-maps.rst:112
 msgid "Java"
@@ -1013,7 +1013,6 @@ msgstr ""
 "<https://github.com/bjorn/tiled/tree/master/util/java/libtiled-java>`__."
 
 #: ../../reference/support-for-tmx-maps.rst:116
-#, fuzzy
 msgid "Android-Specific:"
 msgstr "Spécificités Android :"
 
@@ -1028,16 +1027,14 @@ msgstr ""
 "une Bitmap Android (fonctionnalités limitées)"
 
 #: ../../reference/support-for-tmx-maps.rst:121
-#, fuzzy
 msgid ""
 "`libtiled-java port <http://chiselapp.com/user/devnewton/repository"
 "/libtiled-android/index>`__ is a port of the libtiled-java to be used on "
 "Android phones."
 msgstr ""
-"`déclinaison de la libtiled-java "
-"<http://chiselapp.com/user/devnewton/repository/libtiled-"
-"android/index>`__  est une déclinaison de la libtiled-java pour être "
-"utilisé sur les téléphones Android."
+"`libtiled-java port <http://chiselapp.com/user/devnewton/repository/"
+"libtiled-android/index>`__  est une déclinaison de la libtiled-java pour "
+"être utilisé sur les téléphones Android."
 
 #: ../../reference/support-for-tmx-maps.rst:126
 msgid "PHP"
@@ -1202,10 +1199,10 @@ msgid ""
 "Cocos2D. It supports all TMX tilemap types, including staggered iso and "
 "all hex variations. No longer in development."
 msgstr ""
-"`TilemapKit <http://tilemapkit.com>`__ est un cadriciel d'association de "
-"tuiles pour Cocos2D. Il supporte tous les types de cartes de tuiles, cela"
-" inclue les iso échelonnés et toutes les variations hexadécimales. Plus "
-"en développement désormais."
+"`TilemapKit <http://tilemapkit.com>`__ est un framework de tilemapping pour "
+"Cocos2D. Il supporte tous les types de cartes à tuiles TMX, cela inclue les "
+"iso échelonnés et toutes les variations hexadécimales. N'est plus en "
+"développement."
 
 #: ../../reference/support-for-tmx-maps.rst:203
 msgid "Construct 2 - Scirra"
@@ -3730,4 +3727,3 @@ msgstr ""
 
 #~ msgid "value: The value of the property."
 #~ msgstr ""
-

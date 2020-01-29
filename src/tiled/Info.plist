@@ -7,7 +7,7 @@
 	<key>CFBundleExecutable</key>
 	<string>@EXECUTABLE@</string>
 	<key>CFBundleGetInfoString</key>
-	<string>Tiled @FULL_VERSION@, Copyright 2008-2017 Thorbjørn Lindeijer, GNU General Public License</string>
+	<string>Tiled @FULL_VERSION@, Copyright 2008-2019 Thorbjørn Lindeijer, GNU General Public License</string>
 	<key>CFBundleIconFile</key>
 	<string>@ICON@</string>
 	<key>CFBundleIdentifier</key>
@@ -41,24 +41,7 @@
 			</array>
 		</dict>
 	</array>
-	<key>NSAppTransportSecurity</key>
-	<dict>
-		<key>NSExceptionDomains</key>
-		<dict>
-			<key>update.mapeditor.org</key>
-			<dict>
-				<key>NSExceptionAllowsInsecureHTTPLoads</key>
-				<true/>
-			</dict>
-		</dict>
-	</dict>
-	<key>SUFeedURL</key>
-	<string>http://update.mapeditor.org/appcast-osx.xml</string>
 	<key>SUPublicDSAKeyFile</key>
 	<string>dsa_pub.pem</string>
-	<key>SUEnableAutomaticChecks</key>
-	<true/>
-	<key>SUScheduledCheckInterval</key>
-	<integer>86400</integer>
 </dict>
 </plist>

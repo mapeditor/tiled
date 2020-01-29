@@ -31,8 +31,6 @@ namespace Tiled {
 
 class Layer;
 
-namespace Internal {
-
 class MapDocument;
 
 class OffsetMapDialog : public QDialog
@@ -51,10 +49,9 @@ public:
     bool wrapX() const;
     bool wrapY() const;
 
-private slots:
+private:
     void boundsSelectionChanged();
 
-private:
     enum LayerSelection {
         AllVisibleLayers,
         AllLayers,
@@ -75,5 +72,4 @@ private:
     MapDocument *mMapDocument;
 };
 
-} // namespace Internal
 } // namespace Tiled

@@ -29,8 +29,7 @@ namespace Tiled {
 
 class TileLayer;
 
-namespace Internal {
-
+class FilterEdit;
 class TileStamp;
 class TileStampManager;
 class TileStampModel;
@@ -50,7 +49,7 @@ protected:
     void changeEvent(QEvent *e) override;
     void keyPressEvent(QKeyEvent *) override;
 
-private slots:
+private:
     void indexPressed(const QModelIndex &index);
     void currentRowChanged(const QModelIndex &index);
     void showContextMenu(QPoint pos);
@@ -63,7 +62,6 @@ private slots:
 
     void ensureStampVisible(const TileStamp &stamp);
 
-private:
     void retranslateUi();
     void setStampAtIndex(const QModelIndex &index);
 
@@ -71,7 +69,7 @@ private:
     TileStampModel *mTileStampModel;
     QSortFilterProxyModel *mProxyModel;
     TileStampView *mTileStampView;
-    QLineEdit *mFilterEdit;
+    FilterEdit *mFilterEdit;
 
     QAction *mNewStamp;
     QAction *mAddVariation;
@@ -98,5 +96,4 @@ protected:
     bool event(QEvent *event) override;
 };
 
-} // namespace Internal
 } // namespace Tiled

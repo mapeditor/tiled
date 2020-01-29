@@ -24,7 +24,6 @@
 #pragma once
 
 #include "clipboardmanager.h"
-#include "consoledock.h"
 #include "document.h"
 #include "preferences.h"
 #include "preferencesdialog.h"
@@ -47,17 +46,21 @@ class FileFormat;
 class TileLayer;
 class Terrain;
 
-namespace Internal {
-
 class ActionManager;
 class AutomappingManager;
+class ConsoleDock;
 class DocumentManager;
+class Editor;
+class IssuesDock;
 class MapDocument;
 class MapDocumentActionHandler;
+class MapEditor;
 class MapScene;
 class MapView;
 class ObjectTypesEditor;
+class ProjectDock;
 class TilesetDocument;
+class TilesetEditor;
 class Zoomable;
 
 /**
@@ -72,9 +75,11 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow(QWidget *parent = nullptr, Qt::WindowFlags flags = 0);
-    ~MainWindow();
+    ~MainWindow() override;
 
     void commitData(QSessionManager &manager);
+
+    void initializeSession();
 
     /**
      * Opens the given file. When opened successfully, the file is added to the
@@ -85,15 +90,9 @@ public:
      *
      * @return whether the file was successfully opened
      */
-    bool openFile(const QString &fileName, FileFormat *fileFormat);
+    bool openFile(const QString &fileName, FileFormat *fileFormat = nullptr);
 
-    /**
-     * Attempt to open the previously opened file.
-     */
-    void openLastFiles();
-
-public slots:
-    bool openFile(const QString &fileName);
+    static MainWindow *instance();
 
 protected:
     bool event(QEvent *event) override;
@@ -107,18 +106,25 @@ protected:
     void dragEnterEvent(QDragEnterEvent *) override;
     void dropEvent(QDropEvent *) override;
 
-private slots:
+private:
     void newMap();
-    void openFile();
+    void openFileDialog();
     bool saveFile();
     bool saveFileAs();
     void saveAll();
     void export_(); // 'export' is a reserved word
+    bool exportDocument(Document *document);
     void exportAs();
     void exportAsImage();
     void reload();
     void closeFile();
-    void closeAllFiles();
+    bool closeAllFiles();
+
+    void openProject();
+    void openProjectFile(const QString &fileName);
+    void saveProjectAs();
+    void closeProject();
+    void restoreSession();
 
     void cut();
     void copy();
@@ -131,6 +137,7 @@ private slots:
     void zoomIn();
     void zoomOut();
     void zoomNormal();
+    void fitInView();
     void setFullScreen(bool fullScreen);
     void toggleClearView(bool clearView);
     void resetToDefaultLayout();
@@ -149,12 +156,17 @@ private slots:
     void updateZoomable();
     void updateZoomActions();
     void openDocumentation();
-    void becomePatron();
+    void openForum();
+    void showDonationDialog();
     void aboutTiled();
     void openRecentFile();
+    void openRecentProject();
 
     void documentChanged(Document *document);
+    void documentSaved(Document *document);
     void closeDocument(int index);
+
+    void currentEditorChanged(Editor *editor);
 
     void reloadError(const QString &error);
     void autoMappingError(bool automatic);
@@ -164,7 +176,6 @@ private slots:
 
     void ensureHasBorderInFullScreen();
 
-private:
     /**
       * Asks the user whether the given \a mapDocument should be saved, when
       * necessary. If it needs to ask, also makes sure that it is the current
@@ -189,6 +200,7 @@ private:
     void readSettings();
 
     void updateRecentFilesMenu();
+    void updateRecentProjectsMenu();
     void updateViewsAndToolbarsMenu();
 
     void retranslateUi();
@@ -202,6 +214,8 @@ private:
     Zoomable *mZoomable = nullptr;
     MapDocumentActionHandler *mActionHandler;
     ConsoleDock *mConsoleDock;
+    ProjectDock *mProjectDock;
+    IssuesDock *mIssuesDock;
     ObjectTypesEditor *mObjectTypesEditor;
     QSettings mSettings;
 
@@ -220,11 +234,21 @@ private:
 
     AutomappingManager *mAutomappingManager;
     DocumentManager *mDocumentManager;
+    MapEditor *mMapEditor;
+    TilesetEditor *mTilesetEditor;
+    QList<QWidget*> mEditorStatusBarWidgets;
 
     QPointer<PreferencesDialog> mPreferencesDialog;
 
     QMap<QMainWindow*, QByteArray> mMainWindowStates;
+
+    static MainWindow *mInstance;
 };
 
-} // namespace Internal
+inline MainWindow *MainWindow::instance()
+{
+    Q_ASSERT(mInstance);
+    return mInstance;
+}
+
 } // namespace Tiled
