@@ -1152,8 +1152,10 @@ void DocumentManager::removeFromTilesetDocument(const SharedTileset &tileset, Ma
 void DocumentManager::updateSession() const
 {
     QStringList fileList;
-    for (const auto &document : mDocuments)
-        fileList.append(document->fileName());
+    for (const auto &document : mDocuments) {
+        if (!document->fileName().isEmpty())
+            fileList.append(document->fileName());
+    }
 
     auto doc = currentDocument();
     auto prefs = Preferences::instance();

@@ -77,7 +77,7 @@ public:
     void setHandScrolling(bool handScrolling);
 
     using QGraphicsView::centerOn;
-    Q_INVOKABLE void centerOn(qreal x, qreal y) { forceCenterOn(QPointF(x, y)); };
+    Q_INVOKABLE void centerOn(qreal x, qreal y) { forceCenterOn(QPointF(x, y)); }
 
     void forceCenterOn(const QPointF &pos);
 
