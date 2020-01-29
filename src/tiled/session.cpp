@@ -56,12 +56,12 @@ public:
 
     QString resolveFileName(const QString &value) const
     {
-        return mDir.filePath(value);
+        return QDir::cleanPath(mDir.filePath(value));
     }
 
     QString resolveFileName(const QJsonValue &value) const
     {
-        return mDir.filePath(value.toString());
+        return resolveFileName(value.toString());
     }
 
     QStringList resolveFileNames(const QJsonArray &array) const
@@ -94,6 +94,7 @@ bool Session::save() const
     jsonSession.insert(QLatin1String("project"), helper.relativeFileName(mProject));
     jsonSession.insert(QLatin1String("recentFiles"), helper.relativeFileNames(mRecentFiles));
     jsonSession.insert(QLatin1String("openFiles"), helper.relativeFileNames(mOpenFiles));
+    jsonSession.insert(QLatin1String("expandedProjectPaths"), helper.relativeFileNames(mExpandedProjectPaths));
     jsonSession.insert(QLatin1String("activeFile"), helper.relativeFileName(mActiveFile));
 
     QJsonObject fileStates;
@@ -131,6 +132,7 @@ Session Session::load(const QString &fileName)
     session.mProject = helper.resolveFileName(jsonSession.value(QLatin1String("project")));
     session.mRecentFiles = helper.resolveFileNames(jsonSession.value(QLatin1String("recentFiles")).toArray());
     session.mOpenFiles = helper.resolveFileNames(jsonSession.value(QLatin1String("openFiles")).toArray());
+    session.mExpandedProjectPaths = helper.resolveFileNames(jsonSession.value(QLatin1String("expandedProjectPaths")).toArray());
     session.mActiveFile = helper.resolveFileName(jsonSession.value(QLatin1String("activeFile")));
 
     QJsonObject fileStates = jsonSession.value(QLatin1String("fileStates")).toObject();

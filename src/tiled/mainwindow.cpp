@@ -1275,6 +1275,8 @@ void MainWindow::restoreSession()
     for (const QString &file : openFiles)
         openFile(file);
     mDocumentManager->switchToDocument(activeFile);
+
+    mProjectDock->setExpandedPaths(session.expandedProjectPaths());
 }
 
 void MainWindow::cut()

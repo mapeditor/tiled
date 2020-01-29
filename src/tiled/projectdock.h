@@ -41,6 +41,8 @@ public:
     void addFolderToProject();
     void refreshProjectFolders();
 
+    void setExpandedPaths(const QStringList &expandedPaths);
+
 protected:
     void changeEvent(QEvent *e) override;
 

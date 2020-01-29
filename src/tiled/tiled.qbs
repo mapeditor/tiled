@@ -18,9 +18,9 @@ QtGuiApplication {
     property bool qtcRunnable: true
 
     cpp.includePaths: [
-                ".",
-                "../../zstd/lib"
-            ]
+        ".",
+        "../../zstd/lib"
+    ]
 
     cpp.useRPaths: project.useRPaths
     cpp.rpaths: {

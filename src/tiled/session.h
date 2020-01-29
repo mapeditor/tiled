@@ -46,6 +46,9 @@ public:
     QStringList openFiles() const;
     void setOpenFiles(const QStringList &openFiles);
 
+    QStringList expandedProjectPaths() const;
+    void setExpandedProjectPaths(const QStringList &paths);
+
     const QString &activeFile() const;
     void setActiveFile(const QString &fileName);
 
@@ -61,9 +64,9 @@ private:
     QString mProject;
     QStringList mRecentFiles;
     QStringList mOpenFiles;
+    QStringList mExpandedProjectPaths;
     QString mActiveFile;
     QVariantMap mFileStates;
-    bool mChanged = false;
 };
 
 
@@ -105,6 +108,16 @@ inline void Session::setRecentFiles(const QStringList &recentFiles)
 inline void Session::setOpenFiles(const QStringList &openFiles)
 {
     mOpenFiles = openFiles;
+}
+
+inline QStringList Session::expandedProjectPaths() const
+{
+    return mExpandedProjectPaths;
+}
+
+inline void Session::setExpandedProjectPaths(const QStringList &paths)
+{
+    mExpandedProjectPaths = paths;
 }
 
 inline const QString &Session::activeFile() const

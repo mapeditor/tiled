@@ -22,6 +22,7 @@
 
 #include "actionmanager.h"
 #include "documentmanager.h"
+#include "preferences.h"
 #include "projectmodel.h"
 #include "utils.h"
 
@@ -30,6 +31,7 @@
 #include <QFileInfo>
 #include <QMenu>
 #include <QMouseEvent>
+#include <QSet>
 #include <QStandardPaths>
 #include <QTreeView>
 
@@ -54,13 +56,21 @@ public:
 
     ProjectModel *model() const { return mProjectModel; }
 
+    QStringList expandedPaths() const { return mExpandedPaths.values(); }
+    void setExpandedPaths(const QStringList &paths);
+    void addExpandedPath(const QString &path);
+
 protected:
     void contextMenuEvent(QContextMenuEvent *event) override;
 
 private:
     void onActivated(const QModelIndex &index);
+    void onRowsInserted(const QModelIndex &parent);
+
+    void restoreExpanded(const QModelIndex &parent);
 
     ProjectModel *mProjectModel;
+    QSet<QString> mExpandedPaths;
 };
 
 
@@ -79,6 +89,10 @@ ProjectDock::ProjectDock(QWidget *parent)
 
     setWidget(widget);
     retranslateUi();
+
+    auto prefs = Preferences::instance();
+    connect(prefs, &Preferences::aboutToSaveSession,
+            this, [this, prefs] { prefs->session().setExpandedProjectPaths(mProjectView->expandedPaths()); });
 }
 
 void ProjectDock::addFolderToProject()
@@ -99,6 +113,7 @@ void ProjectDock::addFolderToProject()
         return;
 
     mProjectView->model()->addFolder(folder);
+    mProjectView->addExpandedPath(folder);
 
     auto &p = project();
     if (!p.fileName().isEmpty())
@@ -108,6 +123,11 @@ void ProjectDock::addFolderToProject()
 void ProjectDock::refreshProjectFolders()
 {
     mProjectView->model()->refreshFolders();
+}
+
+void ProjectDock::setExpandedPaths(const QStringList &expandedPaths)
+{
+    mProjectView->setExpandedPaths(expandedPaths);
 }
 
 void ProjectDock::changeEvent(QEvent *e)
@@ -147,10 +167,19 @@ ProjectView::ProjectView(QWidget *parent)
     setDragEnabled(true);
     setDefaultDropAction(Qt::MoveAction);
 
-    setModel(new ProjectModel(this));
+    auto model = new ProjectModel(this);
+    setModel(model);
 
     connect(this, &QAbstractItemView::activated,
             this, &ProjectView::onActivated);
+
+    connect(model, &QAbstractItemModel::rowsInserted,
+            this, &ProjectView::onRowsInserted);
+
+    connect(this, &QTreeView::expanded,
+            this, [=] (const QModelIndex &index) { mExpandedPaths.insert(model->filePath(index)); });
+    connect(this, &QTreeView::collapsed,
+            this, [=] (const QModelIndex &index) { mExpandedPaths.remove(model->filePath(index)); });
 }
 
 QSize ProjectView::sizeHint() const
@@ -163,6 +192,20 @@ void ProjectView::setModel(QAbstractItemModel *model)
     mProjectModel = qobject_cast<ProjectModel*>(model);
     Q_ASSERT(mProjectModel);
     QTreeView::setModel(model);
+}
+
+void ProjectView::setExpandedPaths(const QStringList &paths)
+{
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+    mExpandedPaths = paths.toSet();
+#else
+    mExpandedPaths = QSet<QString>(paths.begin(), paths.end());
+#endif
+}
+
+void ProjectView::addExpandedPath(const QString &path)
+{
+    mExpandedPaths.insert(path);
 }
 
 void ProjectView::contextMenuEvent(QContextMenuEvent *event)
@@ -196,6 +239,24 @@ void ProjectView::onActivated(const QModelIndex &index)
     const QString path = model()->filePath(index);
     if (!QFileInfo(path).isDir())
         DocumentManager::instance()->openFile(path);
+}
+
+void ProjectView::onRowsInserted(const QModelIndex &parent)
+{
+    if (parent.isValid())
+        restoreExpanded(parent);
+}
+
+void ProjectView::restoreExpanded(const QModelIndex &parent)
+{
+    const QString path = model()->filePath(parent);
+
+    if (mExpandedPaths.contains(path)) {
+        setExpanded(parent, true);
+
+        for (int row = 0, count = model()->rowCount(parent); row < count; ++row)
+            restoreExpanded(model()->index(row, 0, parent));
+    }
 }
 
 } // namespace Tiled
