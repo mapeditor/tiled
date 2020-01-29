@@ -31,9 +31,11 @@
 #include "preferences.h"
 #include "tile.h"
 #include "utils.h"
+#include "variantpropertymanager.h"
 
 #include <QGuiApplication>
 #include <QTimerEvent>
+#include <QVector2D>
 
 #include "qtcompat_p.h"
 
@@ -243,6 +245,197 @@ void MapObjectLabel::paint(QPainter *painter,
 }
 
 
+class ArrowHead : public QGraphicsItem
+{
+public:
+    static constexpr qreal arrowHeadSize = 7.0;
+
+    ArrowHead(QGraphicsItem *parent)
+        : QGraphicsItem(parent)
+    {
+        setFlags(QGraphicsItem::ItemIgnoresTransformations);
+    }
+
+    void setColor(const QColor &color) { mColor = color; update(); }
+
+    QRectF boundingRect() const override;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override;
+
+private:
+    QColor mColor;
+};
+
+QRectF ArrowHead::boundingRect() const
+{
+    return Utils::dpiScaled(QRectF(-2 * arrowHeadSize,
+                                   -arrowHeadSize,
+                                   2 * arrowHeadSize,
+                                   2 * arrowHeadSize));
+}
+
+void ArrowHead::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
+{
+    constexpr QPointF arrowHead[4] = {
+        QPointF(0.0, 0.0),
+        QPointF(-2 * arrowHeadSize, arrowHeadSize),
+        QPointF(-1.5 * arrowHeadSize, 0.0),
+        QPointF(-2 * arrowHeadSize, -arrowHeadSize)
+    };
+
+    const qreal dpiScale = Utils::defaultDpiScale();
+    painter->scale(dpiScale, dpiScale);
+
+    QPen arrowOutline(Qt::black);
+    arrowOutline.setCosmetic(true);
+
+    painter->setRenderHint(QPainter::Antialiasing);
+    painter->setBrush(mColor);
+    painter->setPen(arrowOutline);
+    painter->drawPolygon(arrowHead, 4);
+}
+
+
+class MapObjectReferenceItem : public QGraphicsItem
+{
+public:
+    MapObjectReferenceItem(MapObject *source,
+                           MapObject *target,
+                           const QString &property,
+                           ObjectSelectionItem *parent)
+        : QGraphicsItem(parent)
+        , mSourceObject(source)
+        , mTargetObject(target)
+        , mArrowHead(new ArrowHead(this))
+        , mProperty(property)
+    {
+        setZValue(-0.5); // below labels but above hover
+        updateColor();
+    }
+
+    MapObject *sourceObject() const { return mSourceObject; }
+    MapObject *targetObject() const { return mTargetObject; }
+    QString property() const { return mProperty; }
+
+    void syncWithSourceObject(const MapRenderer &renderer);
+    void syncWithTargetObject(const MapRenderer &renderer);
+    void updateColor();
+
+    QRectF boundingRect() const override;
+    void paint(QPainter *painter,
+               const QStyleOptionGraphicsItem *,
+               QWidget *) override;
+
+private:
+    void updateArrowRotation();
+
+    static QPointF objectCenter(MapObject *object,
+                                const MapRenderer &renderer);
+
+    QPointF mSourcePos;
+    QPointF mTargetPos;
+    MapObject *mSourceObject;
+    MapObject *mTargetObject;
+    ArrowHead *mArrowHead;
+    QString mProperty;
+    QColor mColor;
+};
+
+void MapObjectReferenceItem::syncWithSourceObject(const MapRenderer &renderer)
+{
+    const QPointF sourcePos = objectCenter(mSourceObject, renderer);
+
+    if (mSourcePos != sourcePos) {
+        prepareGeometryChange();
+        mSourcePos = sourcePos;
+        update();
+        updateArrowRotation();
+    }
+}
+
+void MapObjectReferenceItem::syncWithTargetObject(const MapRenderer &renderer)
+{
+    const QPointF targetPos = objectCenter(mTargetObject, renderer);
+
+    if (mTargetPos != targetPos) {
+        prepareGeometryChange();
+        mTargetPos = targetPos;
+        mArrowHead->setPos(mTargetPos);
+        update();
+        updateArrowRotation();
+    }
+
+    updateColor();  // color is based on target object
+}
+
+void MapObjectReferenceItem::updateColor()
+{
+    const QColor color = mTargetObject->effectiveColor();
+
+    if (mColor != color) {
+        mColor = color;
+        update();
+        mArrowHead->setColor(color);
+    }
+}
+
+void MapObjectReferenceItem::updateArrowRotation()
+{
+    qreal dx = mTargetPos.x() - mSourcePos.x();
+    qreal dy = mTargetPos.y() - mSourcePos.y();
+    mArrowHead->setRotation(std::atan2(dy, dx) * 180 / M_PI);
+}
+
+QRectF MapObjectReferenceItem::boundingRect() const
+{
+    return QRectF(mSourcePos, mTargetPos).normalized().adjusted(-1, -1, 1, 1);
+}
+
+void MapObjectReferenceItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
+{
+    const qreal lineWidth = Preferences::instance()->objectLineWidth();
+
+    const qreal devicePixelRatio = painter->device()->devicePixelRatioF();
+    const qreal dashLength = std::ceil(Utils::dpiScaled(2) * devicePixelRatio);
+
+    QPen pen(mColor, lineWidth, Qt::SolidLine, Qt::RoundCap);
+    pen.setCosmetic(true);
+    pen.setDashPattern({dashLength, dashLength});
+    pen.setDashOffset(static_cast<qreal>(QVector2D(mTargetPos - mSourcePos).length()) * -0.5);
+
+    QPen shadowPen(pen);
+    shadowPen.setColor(Qt::black);
+
+    const ObjectSelectionItem *p = static_cast<ObjectSelectionItem*>(parentItem());
+    const qreal painterScale = p->mapRenderer().painterScale();
+    const qreal shadowDist = (lineWidth == 0 ? 1 : lineWidth) / painterScale;
+    const QPointF shadowOffset = QPointF(shadowDist * 0.5, shadowDist * 0.5);
+
+    const QPointF direction = QVector2D(mTargetPos - mSourcePos).normalized().toPointF();
+    const QPointF offset = direction * ArrowHead::arrowHeadSize / painterScale;
+    const QPointF start = mSourcePos + offset;
+    const QPointF end = mTargetPos - offset;
+
+    painter->setRenderHint(QPainter::Antialiasing);
+
+    painter->setPen(shadowPen);
+    painter->drawLine(start + shadowOffset, end + shadowOffset);
+
+    painter->setPen(pen);
+    painter->drawLine(start, end);
+}
+
+QPointF MapObjectReferenceItem::objectCenter(MapObject *object, const MapRenderer &renderer)
+{
+    QPointF pixelPos = renderer.pixelToScreenCoords(object->position());
+    QRectF bounds = object->screenBounds(renderer);
+
+    // Adjust the bounding box for object rotation
+    bounds = rotateAt(pixelPos, object->rotation()).mapRect(bounds);
+
+    return bounds.center() + object->objectGroup()->totalOffset();
+}
+
+
 ObjectSelectionItem::ObjectSelectionItem(MapDocument *mapDocument,
                                          QGraphicsItem *parent)
     : QGraphicsObject(parent)
@@ -252,6 +445,14 @@ ObjectSelectionItem::ObjectSelectionItem(MapDocument *mapDocument,
 
     connect(mapDocument, &Document::changed,
             this, &ObjectSelectionItem::changeEvent);
+    connect(mapDocument, &Document::propertyAdded,
+            this, &ObjectSelectionItem::propertyAdded);
+    connect(mapDocument, &Document::propertyRemoved,
+            this, &ObjectSelectionItem::propertyRemoved);
+    connect(mapDocument, &Document::propertyChanged,
+            this, &ObjectSelectionItem::propertyChanged);
+    connect(mapDocument, &Document::propertiesChanged,
+            this, &ObjectSelectionItem::propertiesChanged);
 
     connect(mapDocument, &MapDocument::selectedObjectsChanged,
             this, &ObjectSelectionItem::selectedObjectsChanged);
@@ -280,14 +481,21 @@ ObjectSelectionItem::ObjectSelectionItem(MapDocument *mapDocument,
             this, &ObjectSelectionItem::objectLabelVisibilityChanged);
 
     connect(prefs, &Preferences::objectTypesChanged,
-            this, &ObjectSelectionItem::updateObjectLabelColors);
+            this, &ObjectSelectionItem::updateItemColors);
 
     if (objectLabelVisibility() == Preferences::AllObjectLabels)
         addRemoveObjectLabels();
+
+    addRemoveObjectReferences();
 }
 
 ObjectSelectionItem::~ObjectSelectionItem()
 {
+}
+
+const MapRenderer &ObjectSelectionItem::mapRenderer() const
+{
+    return *mMapDocument->renderer();
 }
 
 void ObjectSelectionItem::changeEvent(const ChangeEvent &event)
@@ -307,11 +515,51 @@ void ObjectSelectionItem::changeEvent(const ChangeEvent &event)
         break;
     case ChangeEvent::ObjectGroupChanged:
         if (static_cast<const ObjectGroupChangeEvent&>(event).properties & ObjectGroupChangeEvent::ColorProperty)
-            updateObjectLabelColors();
+            updateItemColors();
         break;
     default:
         break;
     }
+}
+
+void ObjectSelectionItem::propertyAdded(Object *object, const QString &name)
+{
+    if (object->typeId() != Object::MapObjectType)
+        return;
+
+    if (object->property(name).userType() == objectRefTypeId())
+        addRemoveObjectReferences(static_cast<MapObject*>(object));
+}
+
+void ObjectSelectionItem::propertyRemoved(Object *object, const QString &name)
+{
+    Q_UNUSED(name)
+
+    if (object->typeId() != Object::MapObjectType)
+        return;
+
+    if (mReferencesBySourceObject.contains(static_cast<MapObject*>(object)))
+        addRemoveObjectReferences(static_cast<MapObject*>(object));
+}
+
+void ObjectSelectionItem::propertyChanged(Object *object, const QString &name)
+{
+    if (object->typeId() != Object::MapObjectType)
+        return;
+
+    if (object->property(name).userType() == objectRefTypeId() ||
+            mReferencesBySourceObject.contains(static_cast<MapObject*>(object)))
+    {
+        addRemoveObjectReferences(static_cast<MapObject*>(object));
+    }
+}
+
+void ObjectSelectionItem::propertiesChanged(Object *object)
+{
+    if (object->typeId() != Object::MapObjectType)
+        return;
+
+    addRemoveObjectReferences(static_cast<MapObject*>(object));
 }
 
 void ObjectSelectionItem::selectedObjectsChanged()
@@ -380,6 +628,8 @@ void ObjectSelectionItem::layerAdded(Layer *layer)
             mObjectLabels.insert(object, labelItem);
         }
     }
+
+    addRemoveObjectReferences();
 }
 
 void ObjectSelectionItem::layerAboutToBeRemoved(GroupLayer *parentLayer, int index)
@@ -441,17 +691,31 @@ void ObjectSelectionItem::syncOverlayItems(const QList<MapObject*> &objects)
     for (MapObject *object : objects) {
         if (MapObjectOutline *outlineItem = mObjectOutlines.value(object))
             outlineItem->syncWithMapObject(renderer);
+
         if (MapObjectLabel *labelItem = mObjectLabels.value(object))
             labelItem->syncWithMapObject(renderer);
+
+        const auto sourceItems = mReferencesBySourceObject.value(object);
+        for (auto item : sourceItems)
+            item->syncWithSourceObject(renderer);
+
+        const auto targetItems = mReferencesByTargetObject.value(object);
+        for (auto item : targetItems)
+            item->syncWithTargetObject(renderer);
+
         if (mHoveredMapObjectItem && mHoveredMapObjectItem->mapObject() == object)
             mHoveredMapObjectItem->syncWithMapObject();
     }
 }
 
-void ObjectSelectionItem::updateObjectLabelColors()
+void ObjectSelectionItem::updateItemColors() const
 {
-    for (MapObjectLabel *label : qAsConst(mObjectLabels))
+    for (MapObjectLabel *label : mObjectLabels)
         label->updateColor();
+
+    for (const auto &referenceItems : mReferencesBySourceObject)
+        for (MapObjectReferenceItem *item : referenceItems)
+            item->updateColor();
 }
 
 void ObjectSelectionItem::objectsAdded(const QList<MapObject *> &objects)
@@ -467,6 +731,12 @@ void ObjectSelectionItem::objectsAdded(const QList<MapObject *> &objects)
             mObjectLabels.insert(object, labelItem);
         }
     }
+
+    // This could be a tad slow if there are many objects, but currently it is
+    // necessary because the list of added objects could include target
+    // objects. To optimize this, we could instantiate reference items also if
+    // the target was not found and only try to repair those here.
+    addRemoveObjectReferences();
 }
 
 void ObjectSelectionItem::objectsAboutToBeRemoved(const QList<MapObject *> &objects)
@@ -474,6 +744,22 @@ void ObjectSelectionItem::objectsAboutToBeRemoved(const QList<MapObject *> &obje
     if (objectLabelVisibility() == Preferences::AllObjectLabels)
         for (MapObject *object : objects)
             delete mObjectLabels.take(object);
+
+    for (MapObject *object : objects) {
+        auto it = mReferencesBySourceObject.find(object);
+        if (it != mReferencesBySourceObject.end()) {
+            QList<MapObjectReferenceItem*> &items = *it;
+            for (auto item : items) {
+                auto &itemsByTarget = mReferencesByTargetObject[item->targetObject()];
+                itemsByTarget.removeOne(item);
+                if (itemsByTarget.isEmpty())
+                    mReferencesByTargetObject.remove(item->targetObject());
+
+                delete item;
+            }
+            mReferencesBySourceObject.erase(it);
+        }
+    }
 }
 
 void ObjectSelectionItem::tilesetTilePositioningChanged(Tileset *tileset)
@@ -495,12 +781,22 @@ void ObjectSelectionItem::tilesetTilePositioningChanged(Tileset *tileset)
 
 void ObjectSelectionItem::tileTypeChanged(Tile *tile)
 {
-    for (MapObjectLabel *label : qAsConst(mObjectLabels)) {
-        MapObject *object = label->mapObject();
-        if (object->type().isEmpty()) {
-            const auto &cell = object->cell();
-            if (cell.tileset() == tile->tileset() && cell.tileId() == tile->id())
-                label->updateColor();
+    auto isObjectAffected = [tile] (MapObject *object) -> bool {
+        if (!object->type().isEmpty())
+            return false;
+
+        const auto &cell = object->cell();
+        return cell.tileset() == tile->tileset() && cell.tileId() == tile->id();
+    };
+
+    for (MapObjectLabel *label : qAsConst(mObjectLabels))
+        if (isObjectAffected(label->mapObject()))
+            label->updateColor();
+
+    for (auto it = mReferencesByTargetObject.constBegin(), it_end = mReferencesByTargetObject.constEnd(); it != it_end; ++it) {
+        if (isObjectAffected(it.key())) {
+            for (MapObjectReferenceItem *item : it.value())
+                item->updateColor();
         }
     }
 }
@@ -577,6 +873,118 @@ void ObjectSelectionItem::addRemoveObjectOutlines()
 
     qDeleteAll(mObjectOutlines); // delete remaining items
     mObjectOutlines.swap(outlineItems);
+}
+
+void ObjectSelectionItem::addRemoveObjectReferences()
+{
+    QHash<MapObject*, QList<MapObjectReferenceItem*>> referencesBySourceObject;
+    QHash<MapObject*, QList<MapObjectReferenceItem*>> referencesByTargetObject;
+    const MapRenderer &renderer = *mMapDocument->renderer();
+
+    auto ensureReferenceItem = [&] (MapObject *sourceObject, const QString &property, ObjectRef ref) {
+        MapObject *targetObject = DisplayObjectRef(ref, mMapDocument).object();
+        if (!targetObject)
+            return;
+
+        QList<MapObjectReferenceItem*> &items = referencesBySourceObject[sourceObject];
+
+        if (mReferencesBySourceObject.contains(sourceObject)) {
+            QList<MapObjectReferenceItem*> &existingItems = mReferencesBySourceObject[sourceObject];
+            auto it = std::find_if(existingItems.begin(),
+                                   existingItems.end(),
+                                   [=] (MapObjectReferenceItem *item) {
+                return item->targetObject() == targetObject
+                        && item->property() == property;
+            });
+
+            if (it != existingItems.end()) {
+                items.append(*it);
+                referencesByTargetObject[targetObject].append(*it);
+
+                existingItems.erase(it);
+                return;
+            }
+        }
+
+        auto item = new MapObjectReferenceItem(sourceObject, targetObject, property, this);
+        item->syncWithSourceObject(renderer);
+        item->syncWithTargetObject(renderer);
+        items.append(item);
+        referencesByTargetObject[targetObject].append(item);
+    };
+
+    LayerIterator iterator(mMapDocument->map());
+    while (Layer *layer = iterator.next()) {
+        if (layer->isHidden())
+            continue;
+
+        if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
+            for (MapObject *object : objectGroup->objects()) {
+                const auto &props = object->properties();
+                for (auto it = props.cbegin(), it_end = props.cend(); it != it_end; ++it) {
+                    if (it->userType() == objectRefTypeId())
+                        ensureReferenceItem(object, it.key(), it->value<ObjectRef>());
+                }
+            }
+        }
+    }
+
+    // delete remaining items
+    for (const auto &items : mReferencesBySourceObject)
+        qDeleteAll(items);
+
+    mReferencesBySourceObject.swap(referencesBySourceObject);
+    mReferencesByTargetObject.swap(referencesByTargetObject);
+}
+
+void ObjectSelectionItem::addRemoveObjectReferences(MapObject *object)
+{
+    QList<MapObjectReferenceItem*> &items = mReferencesBySourceObject[object];
+    QList<MapObjectReferenceItem*> existingItems;
+    items.swap(existingItems);
+
+    const MapRenderer &renderer = *mMapDocument->renderer();
+
+    auto ensureReferenceItem = [&] (MapObject *sourceObject, const QString &property, ObjectRef ref) {
+        MapObject *targetObject = DisplayObjectRef(ref, mMapDocument).object();
+        if (!targetObject)
+            return;
+
+        auto it = std::find_if(existingItems.begin(),
+                               existingItems.end(),
+                               [=] (MapObjectReferenceItem *item) {
+            return item->targetObject() == targetObject
+                    && item->property() == property;
+        });
+
+        if (it != existingItems.end()) {
+            items.append(*it);
+            existingItems.erase(it);
+            return;
+        }
+
+        auto item = new MapObjectReferenceItem(sourceObject, targetObject, property, this);
+        item->syncWithSourceObject(renderer);
+        item->syncWithTargetObject(renderer);
+        items.append(item);
+        mReferencesByTargetObject[targetObject].append(item);
+    };
+
+    const auto &props = object->properties();
+    for (auto it = props.cbegin(), it_end = props.cend(); it != it_end; ++it) {
+        if (it->userType() == objectRefTypeId())
+            ensureReferenceItem(object, it.key(), it->value<ObjectRef>());
+    }
+
+    // Delete remaining existing items, also removing them from mReferencesByTargetObject
+    for (MapObjectReferenceItem *item : existingItems) {
+        auto &itemsByTarget = mReferencesByTargetObject[item->targetObject()];
+        itemsByTarget.removeOne(item);
+        if (itemsByTarget.isEmpty())
+            mReferencesByTargetObject.remove(item->targetObject());
+
+        delete item;
+    }
 }
 
 } // namespace Tiled

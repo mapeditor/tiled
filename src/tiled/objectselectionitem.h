@@ -39,12 +39,13 @@ class MapDocument;
 class MapObjectItem;
 class MapObjectLabel;
 class MapObjectOutline;
+class MapObjectReferenceItem;
 
 /**
  * A graphics item displaying object selection.
  *
- * Apart from selection outlines, it also displays name labels when
- * appropriate.
+ * Apart from selection outlines, it also displays name labels, hover highlight
+ * and object references.
  */
 class ObjectSelectionItem : public QGraphicsObject
 {
@@ -55,12 +56,18 @@ public:
                         QGraphicsItem *parent = nullptr);
     ~ObjectSelectionItem() override;
 
+    const MapRenderer &mapRenderer() const;
+
     // QGraphicsItem interface
     QRectF boundingRect() const override { return QRectF(); }
     void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *) override {}
 
 private:
     void changeEvent(const ChangeEvent &event);
+    void propertyAdded(Object *object, const QString &name);
+    void propertyRemoved(Object *object, const QString &name);
+    void propertyChanged(Object *object, const QString &name);
+    void propertiesChanged(Object *object);
     void selectedObjectsChanged();
     void hoveredMapObjectChanged(MapObject *object, MapObject *previous);
     void mapChanged();
@@ -68,7 +75,7 @@ private:
     void layerAboutToBeRemoved(GroupLayer *parentLayer, int index);
     void layerChanged(Layer *layer);
     void syncOverlayItems(const QList<MapObject *> &objects);
-    void updateObjectLabelColors();
+    void updateItemColors() const;
     void objectsAdded(const QList<MapObject*> &objects);
     void objectsAboutToBeRemoved(const QList<MapObject*> &objects);
     void tilesetTilePositioningChanged(Tileset *tileset);
@@ -78,10 +85,14 @@ private:
 
     void addRemoveObjectLabels();
     void addRemoveObjectOutlines();
+    void addRemoveObjectReferences();
+    void addRemoveObjectReferences(MapObject *object);
 
     MapDocument *mMapDocument;
     QHash<MapObject*, MapObjectLabel*> mObjectLabels;
     QHash<MapObject*, MapObjectOutline*> mObjectOutlines;
+    QHash<MapObject*, QList<MapObjectReferenceItem*>> mReferencesBySourceObject;
+    QHash<MapObject*, QList<MapObjectReferenceItem*>> mReferencesByTargetObject;
     std::unique_ptr<MapObjectItem> mHoveredMapObjectItem;
 };
 
