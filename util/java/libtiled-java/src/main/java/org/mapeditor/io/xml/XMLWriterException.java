@@ -2,9 +2,9 @@
  * #%L
  * This file is part of libtiled-java.
  * %%
- * Copyright (C) 2004 - 2017 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright (C) 2004 - 2017 Adam Turk <aturk@biggeruniverse.com>
- * Copyright (C) 2016 - 2017 Mike Thomas <mikepthomas@outlook.com>
+ * Copyright (C) 2004 - 2019 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright (C) 2004 - 2019 Adam Turk <aturk@biggeruniverse.com>
+ * Copyright (C) 2016 - 2019 Mike Thomas <mikepthomas@outlook.com>
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -34,11 +34,8 @@ package org.mapeditor.io.xml;
  * an XMLWriterException is thrown if an error occurs while writing the
  * xml-structure of a .tmx file.
  *
- * @author Thorbjørn Lindeijer
- * @author Adam Turk
- * @author Mike Thomas
  * @deprecated
- * @version 1.0.2
+ * @version 1.2.3
  */
 @Deprecated
 public class XMLWriterException extends RuntimeException {
@@ -46,7 +43,7 @@ public class XMLWriterException extends RuntimeException {
     private static final long serialVersionUID = 1629373837269498797L;
 
     /**
-     * <p>Constructor for XMLWriterException.</p>
+     * Constructor for XMLWriterException.
      *
      * @param error a {@link java.lang.String} object.
      */

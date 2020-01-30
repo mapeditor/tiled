@@ -2,9 +2,9 @@
  * #%L
  * This file is part of libtiled-java.
  * %%
- * Copyright (C) 2004 - 2017 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright (C) 2004 - 2017 Adam Turk <aturk@biggeruniverse.com>
- * Copyright (C) 2016 - 2017 Mike Thomas <mikepthomas@outlook.com>
+ * Copyright (C) 2004 - 2019 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright (C) 2004 - 2019 Adam Turk <aturk@biggeruniverse.com>
+ * Copyright (C) 2016 - 2019 Mike Thomas <mikepthomas@outlook.com>
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -72,10 +72,7 @@ import org.xml.sax.SAXException;
  * The standard map reader for TMX files. Supports reading .tmx, .tmx.gz and
  * *.tsx files.
  *
- * @author Thorbjørn Lindeijer
- * @author Adam Turk
- * @author Mike Thomas
- * @version 1.0.2
+ * @version 1.2.3
  */
 public class TMXMapReader {
 
@@ -102,7 +99,7 @@ public class TMXMapReader {
     }
 
     /**
-     * <p>Constructor for TMXMapReader.</p>
+     * Constructor for TMXMapReader.
      */
     public TMXMapReader() {
     }
@@ -792,7 +789,7 @@ public class TMXMapReader {
     }
 
     /**
-     * <p>readMap.</p>
+     * readMap.
      *
      * @param filename a {@link java.lang.String} object.
      * @return a {@link org.mapeditor.core.Map} object.
@@ -823,7 +820,7 @@ public class TMXMapReader {
     }
 
     /**
-     * <p>readMap.</p>
+     * readMap.
      *
      * @param in a {@link java.io.InputStream} object.
      * @return a {@link org.mapeditor.core.Map} object.
@@ -841,7 +838,7 @@ public class TMXMapReader {
     }
 
     /**
-     * <p>readTileset.</p>
+     * readTileset.
      *
      * @param filename a {@link java.lang.String} object.
      * @return a {@link org.mapeditor.core.TileSet} object.
@@ -862,7 +859,7 @@ public class TMXMapReader {
     }
 
     /**
-     * <p>readTileset.</p>
+     * readTileset.
      *
      * @param in a {@link java.io.InputStream} object.
      * @return a {@link org.mapeditor.core.TileSet} object.
@@ -873,7 +870,7 @@ public class TMXMapReader {
     }
 
     /**
-     * <p>accept.</p>
+     * accept.
      *
      * @param pathName a {@link java.io.File} object.
      * @return a boolean.

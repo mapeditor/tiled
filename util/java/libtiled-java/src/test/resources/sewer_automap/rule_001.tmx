@@ -1,27 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE map SYSTEM "http://mapeditor.org/dtd/1.0/map.dtd">
-<map version="1.0" orientation="orthogonal" width="7" height="3" tilewidth="24" tileheight="24">
+<map version="1.2" tiledversion="1.2.3" orientation="orthogonal" renderorder="right-down" width="7" height="3" tilewidth="24" tileheight="24" infinite="0" nextlayerid="4" nextobjectid="1">
  <properties>
   <property name="AutomappingRadius" value="3"/>
   <property name="DeleteTiles" value="yes"/>
  </properties>
- <tileset firstgid="1" name="sewer_tileset" tilewidth="24" tileheight="24">
+ <tileset firstgid="1" name="sewer_tileset" tilewidth="24" tileheight="24" tilecount="72" columns="8">
   <image source="../sewer_tileset.png" trans="ff00ff" width="192" height="217"/>
  </tileset>
- <tileset firstgid="73" name="rules_sewers" tilewidth="24" tileheight="24">
+ <tileset firstgid="73" name="rules_sewers" tilewidth="24" tileheight="24" tilecount="6" columns="3">
   <image source="rules_sewers.png" width="72" height="48"/>
  </tileset>
- <layer name="Regions" width="7" height="3">
+ <layer id="1" name="Regions" width="7" height="3">
   <data encoding="base64" compression="zlib">
    eJxjYMAPPHHQ+AAAJfgA3A==
   </data>
  </layer>
- <layer name="Input_set" width="7" height="3">
+ <layer id="2" name="Input_set" width="7" height="3">
   <data encoding="base64" compression="zlib">
    eJxjYMAPPKG0F5T2JqAeBAAmbADf
   </data>
  </layer>
- <layer name="Output_Ground" width="7" height="3">
+ <layer id="3" name="Output_Ground" width="7" height="3">
   <data encoding="base64" compression="zlib">
    eJxjYMAPeKG0DJRWIqAeBAAMkABM
   </data>

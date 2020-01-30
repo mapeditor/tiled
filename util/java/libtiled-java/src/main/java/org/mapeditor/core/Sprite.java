@@ -2,9 +2,9 @@
  * #%L
  * This file is part of libtiled-java.
  * %%
- * Copyright (C) 2004 - 2017 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright (C) 2004 - 2017 Adam Turk <aturk@biggeruniverse.com>
- * Copyright (C) 2016 - 2017 Mike Thomas <mikepthomas@outlook.com>
+ * Copyright (C) 2004 - 2019 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright (C) 2004 - 2019 Adam Turk <aturk@biggeruniverse.com>
+ * Copyright (C) 2016 - 2019 Mike Thomas <mikepthomas@outlook.com>
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -37,12 +37,9 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * <p>Sprite class.</p>
+ * Sprite class.
  *
- * @author Thorbjørn Lindeijer
- * @author Adam Turk
- * @author Mike Thomas
- * @version 1.0.2
+ * @version 1.2.3
  */
 public class Sprite {
 
@@ -150,7 +147,7 @@ public class Sprite {
     private KeyFrame currentKey = null;
 
     /**
-     * <p>Constructor for Sprite.</p>
+     * Constructor for Sprite.
      */
     public Sprite() {
         frameSize = new Rectangle();
@@ -158,7 +155,7 @@ public class Sprite {
     }
 
     /**
-     * <p>Constructor for Sprite.</p>
+     * Constructor for Sprite.
      *
      * @param frames an array of {@link org.mapeditor.core.Tile} objects.
      */
@@ -167,7 +164,7 @@ public class Sprite {
     }
 
     /**
-     * <p>Constructor for Sprite.</p>
+     * Constructor for Sprite.
      *
      * @param image a {@link java.awt.Image} object.
      * @param fpl a int.
@@ -187,7 +184,7 @@ public class Sprite {
     }
 
     /**
-     * <p>setFrames.</p>
+     * setFrames.
      *
      * @param frames an array of {@link org.mapeditor.core.Tile} objects.
      */
@@ -198,7 +195,7 @@ public class Sprite {
     }
 
     /**
-     * <p>Setter for the field <code>frameSize</code>.</p>
+     * Setter for the field <code>frameSize</code>.
      *
      * @param w a int.
      * @param h a int.
@@ -209,7 +206,7 @@ public class Sprite {
     }
 
     /**
-     * <p>Setter for the field <code>borderWidth</code>.</p>
+     * Setter for the field <code>borderWidth</code>.
      *
      * @param b a int.
      */
@@ -218,7 +215,7 @@ public class Sprite {
     }
 
     /**
-     * <p>Setter for the field <code>fpl</code>.</p>
+     * Setter for the field <code>fpl</code>.
      *
      * @param f a int.
      */
@@ -227,7 +224,7 @@ public class Sprite {
     }
 
     /**
-     * <p>Setter for the field <code>currentFrame</code>.</p>
+     * Setter for the field <code>currentFrame</code>.
      *
      * @param c a float.
      */
@@ -274,7 +271,7 @@ public class Sprite {
     }
 
     /**
-     * <p>Setter for the field <code>totalKeys</code>.</p>
+     * Setter for the field <code>totalKeys</code>.
      *
      * @param t a int.
      */
@@ -283,7 +280,7 @@ public class Sprite {
     }
 
     /**
-     * <p>Getter for the field <code>frameSize</code>.</p>
+     * Getter for the field <code>frameSize</code>.
      *
      * @return a {@link java.awt.Rectangle} object.
      */
@@ -292,21 +289,18 @@ public class Sprite {
     }
 
     /**
-     * <p>getTotalFrames.</p>
+     * getTotalFrames.
      *
      * @return a int.
      */
     public int getTotalFrames() {
-        int total = 0;
-        for (KeyFrame key : keys) {
-            total += key.getTotalFrames();
-        }
-
-        return total;
+        return keys.stream().
+                map(key -> key.getTotalFrames()).
+                reduce(0, Integer::sum);
     }
 
     /**
-     * <p>Getter for the field <code>borderWidth</code>.</p>
+     * Getter for the field <code>borderWidth</code>.
      *
      * @return a int.
      */
@@ -315,7 +309,7 @@ public class Sprite {
     }
 
     /**
-     * <p>Getter for the field <code>currentFrame</code>.</p>
+     * Getter for the field <code>currentFrame</code>.
      *
      * @return a {@link org.mapeditor.core.Tile} object.
      */
@@ -324,7 +318,7 @@ public class Sprite {
     }
 
     /**
-     * <p>getNextKey.</p>
+     * getNextKey.
      *
      * @return a {@link org.mapeditor.core.Sprite.KeyFrame} object.
      */
@@ -341,7 +335,7 @@ public class Sprite {
     }
 
     /**
-     * <p>getPreviousKey.</p>
+     * getPreviousKey.
      *
      * @return a {@link org.mapeditor.core.Sprite.KeyFrame} object.
      */
@@ -351,7 +345,7 @@ public class Sprite {
     }
 
     /**
-     * <p>Getter for the field <code>currentKey</code>.</p>
+     * Getter for the field <code>currentKey</code>.
      *
      * @return a {@link org.mapeditor.core.Sprite.KeyFrame} object.
      */
@@ -360,7 +354,7 @@ public class Sprite {
     }
 
     /**
-     * <p>getFPL.</p>
+     * getFPL.
      *
      * @return a int.
      */
@@ -369,7 +363,7 @@ public class Sprite {
     }
 
     /**
-     * <p>Getter for the field <code>totalKeys</code>.</p>
+     * Getter for the field <code>totalKeys</code>.
      *
      * @return a int.
      */
@@ -378,7 +372,7 @@ public class Sprite {
     }
 
     /**
-     * <p>setKeyFrameTo.</p>
+     * setKeyFrameTo.
      *
      * @param name a {@link java.lang.String} object.
      */
@@ -392,7 +386,7 @@ public class Sprite {
     }
 
     /**
-     * <p>addKey.</p>
+     * addKey.
      *
      * @param k a {@link org.mapeditor.core.Sprite.KeyFrame} object.
      */
@@ -401,7 +395,7 @@ public class Sprite {
     }
 
     /**
-     * <p>removeKey.</p>
+     * removeKey.
      *
      * @param name a {@link java.lang.String} object.
      */
@@ -410,7 +404,7 @@ public class Sprite {
     }
 
     /**
-     * <p>createKey.</p>
+     * createKey.
      *
      * @param name a {@link java.lang.String} object.
      * @param frames an array of {@link org.mapeditor.core.Tile} objects.
@@ -424,7 +418,7 @@ public class Sprite {
     }
 
     /**
-     * <p>iterateFrame.</p>
+     * iterateFrame.
      */
     public void iterateFrame() {
         if (currentKey != null && bPlaying) {
@@ -442,21 +436,21 @@ public class Sprite {
     }
 
     /**
-     * <p>play.</p>
+     * play.
      */
     public void play() {
         bPlaying = true;
     }
 
     /**
-     * <p>stop.</p>
+     * stop.
      */
     public void stop() {
         bPlaying = false;
     }
 
     /**
-     * <p>keyStepBack.</p>
+     * keyStepBack.
      *
      * @param amt a int.
      */
@@ -465,7 +459,7 @@ public class Sprite {
     }
 
     /**
-     * <p>keyStepForward.</p>
+     * keyStepForward.
      *
      * @param amt a int.
      */
@@ -474,7 +468,7 @@ public class Sprite {
     }
 
     /**
-     * <p>getKey.</p>
+     * getKey.
      *
      * @param keyName a {@link java.lang.String} object.
      * @return a {@link org.mapeditor.core.Sprite.KeyFrame} object.
@@ -489,7 +483,7 @@ public class Sprite {
     }
 
     /**
-     * <p>getKey.</p>
+     * getKey.
      *
      * @param i a int.
      * @return a {@link org.mapeditor.core.Sprite.KeyFrame} object.
@@ -499,7 +493,7 @@ public class Sprite {
     }
 
     /**
-     * <p>Getter for the field <code>keys</code>.</p>
+     * Getter for the field <code>keys</code>.
      *
      * @return a {@link java.util.Iterator} object.
      * @throws java.lang.Exception if any.
@@ -509,7 +503,7 @@ public class Sprite {
     }
 
     /**
-     * <p>getCurrentFrameRect.</p>
+     * getCurrentFrameRect.
      *
      * @return a {@link java.awt.Rectangle} object.
      */

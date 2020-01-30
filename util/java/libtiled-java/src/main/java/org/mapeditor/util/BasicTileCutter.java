@@ -2,9 +2,9 @@
  * #%L
  * This file is part of libtiled-java.
  * %%
- * Copyright (C) 2004 - 2017 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright (C) 2004 - 2017 Adam Turk <aturk@biggeruniverse.com>
- * Copyright (C) 2016 - 2017 Mike Thomas <mikepthomas@outlook.com>
+ * Copyright (C) 2004 - 2019 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright (C) 2004 - 2019 Adam Turk <aturk@biggeruniverse.com>
+ * Copyright (C) 2016 - 2019 Mike Thomas <mikepthomas@outlook.com>
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -36,10 +36,7 @@ import java.awt.image.BufferedImage;
  * Cuts tiles from a tileset image according to a regular rectangular pattern.
  * Supports a variable spacing between tiles and a margin around them.
  *
- * @author Thorbjørn Lindeijer
- * @author Adam Turk
- * @author Mike Thomas
- * @version 1.0.2
+ * @version 1.2.3
  */
 public class BasicTileCutter implements TileCutter {
 
@@ -51,7 +48,7 @@ public class BasicTileCutter implements TileCutter {
     private final int tileMargin;
 
     /**
-     * <p>Constructor for BasicTileCutter.</p>
+     * Constructor for BasicTileCutter.
      *
      * @param tileWidth a int.
      * @param tileHeight a int.

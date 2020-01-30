@@ -2,9 +2,9 @@
  * #%L
  * This file is part of libtiled-java.
  * %%
- * Copyright (C) 2004 - 2017 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright (C) 2004 - 2017 Adam Turk <aturk@biggeruniverse.com>
- * Copyright (C) 2016 - 2017 Mike Thomas <mikepthomas@outlook.com>
+ * Copyright (C) 2004 - 2019 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright (C) 2004 - 2019 Adam Turk <aturk@biggeruniverse.com>
+ * Copyright (C) 2016 - 2019 Mike Thomas <mikepthomas@outlook.com>
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -51,20 +51,24 @@ import org.mapeditor.core.Polygon;
  * hexes is aligned with a flat side. I.e. 'left' and 'right' result in hexes
  * with the pointy sides up and down and the first row either aligned left or
  * right:
+ *
  * <pre>
  *   /\
  *  |  |
  *   \/
- * </pre> And 'top' and 'bottom' result in hexes with the pointy sides to the
+ * </pre>
+ *
+ * And 'top' and 'bottom' result in hexes with the pointy sides to the
  * left and right and the first column either aligned top or bottom:
+ *
  * <pre>
  *   __
  *  /  \
  *  \__/
- *
  * </pre>
- * <p>
+ *
  * Here is an example 2x2 map with top alignment:
+ *
  * <pre>
  *   ___
  *  /0,0\___
@@ -74,20 +78,20 @@ import org.mapeditor.core.Polygon;
  *      \___/
  * </pre>
  *
- * <p>
  * The icon width and height refer to the total width and height of a hex (i.e
  * the size of the enclosing rectangle).
  *
- * @author Thorbjørn Lindeijer
- * @author Adam Turk
- * @author Mike Thomas
- * @version 1.0.2
+ * @version 1.2.3
  */
 public class HexagonalRenderer implements MapRenderer {
 
+    /** Constant <code>ALIGN_TOP=1</code> */
     public static final int ALIGN_TOP = 1;
+    /** Constant <code>ALIGN_BOTTOM=2</code> */
     public static final int ALIGN_BOTTOM = 2;
+    /** Constant <code>ALIGN_RIGHT=3</code> */
     public static final int ALIGN_RIGHT = 3;
+    /** Constant <code>ALIGN_LEFT=4</code> */
     public static final int ALIGN_LEFT = 4;
 
     private final Map map;
@@ -104,8 +108,7 @@ public class HexagonalRenderer implements MapRenderer {
     private boolean alignedToBottomOrRight;
 
     /**
-     * <p>
-     * Constructor for IsometricRenderer.</p>
+     * Constructor for IsometricRenderer.
      *
      * @param map a {@link org.mapeditor.core.Map} object.
      */
