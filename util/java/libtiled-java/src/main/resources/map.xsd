@@ -249,7 +249,7 @@ POSSIBILITY OF SUCH DAMAGE.
         <xs:attribute name="id" type="xs:int">
             <xs:annotation>
                 <xs:documentation>
-                    Unique ID of the layer. Each layer that added to a map gets a
+                    Unique ID of the layer. Each layer that is added to a map gets a
                     unique id. Even if a layer is deleted, no layer ever gets the
                     same ID. Can not be changed in Tiled.
 
@@ -418,7 +418,7 @@ POSSIBILITY OF SUCH DAMAGE.
         <xs:attribute name="id" type="xs:int">
             <xs:annotation>
                 <xs:documentation>
-                    Unique ID of the layer. Each layer that added to a map gets a
+                    Unique ID of the layer. Each layer that is added to a map gets a
                     unique id. Even if a layer is deleted, no layer ever gets the
                     same ID. Can not be changed in Tiled. 
 
