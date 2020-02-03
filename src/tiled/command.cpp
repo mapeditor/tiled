@@ -26,11 +26,14 @@
 #include "logginginterface.h"
 #include "mapdocument.h"
 #include "mapobject.h"
+#include "worlddocument.h"
+#include "worldmanager.h"
 
 #include <QAction>
 #include <QDir>
 #include <QMessageBox>
 #include <QStandardPaths>
+#include <QUndoStack>
 
 using namespace Tiled;
 
@@ -100,8 +103,15 @@ QString Command::replaceVariables(const QString &string, bool quoteValues) const
 
 void Command::execute(bool inTerminal) const
 {
-    if (saveBeforeExecute)
+    if (saveBeforeExecute) {
         ActionManager::instance()->action("Save")->trigger();
+
+        if (Document *document = DocumentManager::instance()->currentDocument()) {
+            const World * pWorld = WorldManager::instance().worldForMap(document->fileName());
+            if( pWorld && WorldManager::instance().saveWorld( pWorld->fileName ) )
+                DocumentManager::instance()->ensureWorldDocument( pWorld->fileName )->undoStack()->setClean();
+        }
+    }
 
     // Start the process
     new CommandProcess(*this, inTerminal, showOutput);

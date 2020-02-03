@@ -604,6 +604,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
                 {
                     QMessageBox::critical(this, tr("Error Writing Worldfile"), error);
                 }
+                DocumentManager::instance()->ensureWorldDocument(fileName)->undoStack()->setClean();
                 const auto worldFiles = DocumentManager::instance()->dirtyWorldFiles();
                 mUi->menuSaveWorld->setEnabled(!worldFiles.isEmpty());
             });
