@@ -481,6 +481,8 @@ ObjectSelectionItem::ObjectSelectionItem(MapDocument *mapDocument,
             this, &ObjectSelectionItem::objectLabelVisibilityChanged);
     connect(prefs, &Preferences::showObjectReferencesChanged,
             this, &ObjectSelectionItem::showObjectReferencesChanged);
+    connect(prefs, &Preferences::objectLineWidthChanged,
+            this, &ObjectSelectionItem::objectLineWidthChanged);
 
     connect(prefs, &Preferences::objectTypesChanged,
             this, &ObjectSelectionItem::updateItemColors);
@@ -821,6 +823,14 @@ void ObjectSelectionItem::objectLabelVisibilityChanged()
 void ObjectSelectionItem::showObjectReferencesChanged()
 {
     addRemoveObjectReferences();
+}
+
+void ObjectSelectionItem::objectLineWidthChanged()
+{
+    // Object reference items should redraw when line width is changed
+    for (const auto &items : mReferencesBySourceObject)
+        for (MapObjectReferenceItem *item : items)
+            item->update();
 }
 
 void ObjectSelectionItem::addRemoveObjectLabels()

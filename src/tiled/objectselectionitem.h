@@ -83,6 +83,7 @@ private:
 
     void objectLabelVisibilityChanged();
     void showObjectReferencesChanged();
+    void objectLineWidthChanged();
 
     void addRemoveObjectLabels();
     void addRemoveObjectOutlines();
