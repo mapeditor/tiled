@@ -361,39 +361,6 @@ void ObjectSelectionItem::mapChanged()
     syncOverlayItems(mMapDocument->selectedObjects());
 }
 
-void ObjectSelectionItem::layerAdded(Layer *layer)
-{
-    ObjectGroup *objectGroup = layer->asObjectGroup();
-    if (!objectGroup)
-        return;
-
-    // The layer may already have objects, for example when the addition is the
-    // undo of a removal.
-    if (objectLabelVisibility() == Preferences::AllObjectLabels) {
-        const MapRenderer &renderer = *mMapDocument->renderer();
-
-        for (MapObject *object : *objectGroup) {
-            Q_ASSERT(!mObjectLabels.contains(object));
-
-            MapObjectLabel *labelItem = new MapObjectLabel(object, this);
-            labelItem->syncWithMapObject(renderer);
-            mObjectLabels.insert(object, labelItem);
-        }
-    }
-}
-
-void ObjectSelectionItem::layerAboutToBeRemoved(GroupLayer *parentLayer, int index)
-{
-    auto layer = parentLayer ? parentLayer->layerAt(index) : mMapDocument->map()->layerAt(index);
-    auto objectGroup = layer->asObjectGroup();
-    if (!objectGroup)
-        return;
-
-    if (objectLabelVisibility() == Preferences::AllObjectLabels)
-        for (MapObject *object : *objectGroup)
-            delete mObjectLabels.take(object);
-}
-
 static void collectObjects(const GroupLayer &groupLayer, QList<MapObject*> &objects)
 {
     for (Layer *layer : groupLayer) {
@@ -407,6 +374,45 @@ static void collectObjects(const GroupLayer &groupLayer, QList<MapObject*> &obje
         default:
             break;
         }
+    }
+}
+
+void ObjectSelectionItem::layerAdded(Layer *layer)
+{
+    QList<MapObject*> newObjects;
+
+    if (auto objectGroup = layer->asObjectGroup())
+        newObjects = objectGroup->objects();
+    else if (auto groupLayer = layer->asGroupLayer())
+        collectObjects(*groupLayer, newObjects);
+
+    if (newObjects.isEmpty())
+        return;
+
+    // The layer may already have objects, for example when the addition is the
+    // undo of a removal.
+    if (objectLabelVisibility() == Preferences::AllObjectLabels) {
+        const MapRenderer &renderer = *mMapDocument->renderer();
+
+        for (MapObject *object : qAsConst(newObjects)) {
+            Q_ASSERT(!mObjectLabels.contains(object));
+
+            MapObjectLabel *labelItem = new MapObjectLabel(object, this);
+            labelItem->syncWithMapObject(renderer);
+            mObjectLabels.insert(object, labelItem);
+        }
+    }
+}
+
+void ObjectSelectionItem::layerAboutToBeRemoved(GroupLayer *parentLayer, int index)
+{
+    auto layer = parentLayer ? parentLayer->layerAt(index) : mMapDocument->map()->layerAt(index);
+    if (auto objectGroup = layer->asObjectGroup()) {
+        objectsAboutToBeRemoved(objectGroup->objects());
+    } else if (auto groupLayer = layer->asGroupLayer()) {
+        QList<MapObject*> affectedObjects;
+        collectObjects(*groupLayer, affectedObjects);
+        objectsAboutToBeRemoved(affectedObjects);
     }
 }
 
