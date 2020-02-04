@@ -50,6 +50,7 @@ public:
     bool showTileObjectOutlines() const;
     bool showTileAnimations() const;
     bool showTileCollisionShapes() const;
+    bool showObjectReferences() const;
     bool snapToGrid() const;
     bool snapToFineGrid() const;
     bool snapToPixels() const;
@@ -192,6 +193,7 @@ public slots:
     void setShowTileObjectOutlines(bool enabled);
     void setShowTileAnimations(bool enabled);
     void setShowTileCollisionShapes(bool enabled);
+    void setShowObjectReferences(bool enabled);
     void setSnapToGrid(bool snapToGrid);
     void setSnapToFineGrid(bool snapToFineGrid);
     void setSnapToPixels(bool snapToPixels);
@@ -214,6 +216,7 @@ signals:
     void showTileObjectOutlinesChanged(bool enabled);
     void showTileAnimationsChanged(bool enabled);
     void showTileCollisionShapesChanged(bool enabled);
+    void showObjectReferencesChanged(bool enabled);
     void snapToGridChanged(bool snapToGrid);
     void snapToFineGridChanged(bool snapToFineGrid);
     void snapToPixelsChanged(bool snapToPixels);
@@ -273,6 +276,7 @@ private:
     bool mShowTileObjectOutlines;
     bool mShowTileAnimations;
     bool mShowTileCollisionShapes;
+    bool mShowObjectReferences;
     bool mSnapToGrid;
     bool mSnapToFineGrid;
     bool mSnapToPixels;
@@ -335,6 +339,11 @@ inline bool Preferences::showTileAnimations() const
 inline bool Preferences::showTileCollisionShapes() const
 {
     return mShowTileCollisionShapes;
+}
+
+inline bool Preferences::showObjectReferences() const
+{
+    return mShowObjectReferences;
 }
 
 inline bool Preferences::snapToGrid() const

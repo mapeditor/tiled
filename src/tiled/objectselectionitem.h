@@ -82,6 +82,7 @@ private:
     void tileTypeChanged(Tile *tile);
 
     void objectLabelVisibilityChanged();
+    void showObjectReferencesChanged();
 
     void addRemoveObjectLabels();
     void addRemoveObjectOutlines();

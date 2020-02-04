@@ -158,6 +158,7 @@
     </widget>
     <addaction name="actionShowGrid"/>
     <addaction name="actionShowTileObjectOutlines"/>
+    <addaction name="actionShowObjectReferences"/>
     <addaction name="menuShowObjectNames"/>
     <addaction name="actionShowTileAnimations"/>
     <addaction name="actionShowTileCollisionShapes"/>
@@ -716,6 +717,14 @@
   <action name="actionRefreshProjectFolders">
    <property name="text">
     <string>Refresh Folders</string>
+   </property>
+  </action>
+  <action name="actionShowObjectReferences">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Object &amp;References</string>
    </property>
   </action>
  </widget>

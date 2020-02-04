@@ -274,6 +274,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerAction(mUi->actionShowTileAnimations, "ShowTileAnimations");
     ActionManager::registerAction(mUi->actionShowTileCollisionShapes, "ShowTileCollisionShapes");
     ActionManager::registerAction(mUi->actionShowTileObjectOutlines, "ShowTileObjectOutlines");
+    ActionManager::registerAction(mUi->actionShowObjectReferences, "ShowObjectReferences");
     ActionManager::registerAction(mUi->actionSnapNothing, "SnapNothing");
     ActionManager::registerAction(mUi->actionSnapToFineGrid, "SnapToFineGrid");
     ActionManager::registerAction(mUi->actionSnapToGrid, "SnapToGrid");
@@ -378,6 +379,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     mUi->actionShowGrid->setChecked(preferences->showGrid());
     mUi->actionShowTileObjectOutlines->setChecked(preferences->showTileObjectOutlines());
+    mUi->actionShowObjectReferences->setChecked(preferences->showObjectReferences());
     mUi->actionShowTileAnimations->setChecked(preferences->showTileAnimations());
     mUi->actionShowTileCollisionShapes->setChecked(preferences->showTileCollisionShapes());
     mUi->actionSnapToGrid->setChecked(preferences->snapToGrid());
@@ -506,6 +508,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             preferences, &Preferences::setShowGrid);
     connect(mUi->actionShowTileObjectOutlines, &QAction::toggled,
             preferences, &Preferences::setShowTileObjectOutlines);
+    connect(mUi->actionShowObjectReferences, &QAction::toggled,
+            preferences, &Preferences::setShowObjectReferences);
     connect(mUi->actionShowTileAnimations, &QAction::toggled,
             preferences, &Preferences::setShowTileAnimations);
     connect(mUi->actionShowTileCollisionShapes, &QAction::toggled,

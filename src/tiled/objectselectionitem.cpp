@@ -479,6 +479,8 @@ ObjectSelectionItem::ObjectSelectionItem(MapDocument *mapDocument,
 
     connect(prefs, &Preferences::objectLabelVisibilityChanged,
             this, &ObjectSelectionItem::objectLabelVisibilityChanged);
+    connect(prefs, &Preferences::showObjectReferencesChanged,
+            this, &ObjectSelectionItem::showObjectReferencesChanged);
 
     connect(prefs, &Preferences::objectTypesChanged,
             this, &ObjectSelectionItem::updateItemColors);
@@ -486,7 +488,8 @@ ObjectSelectionItem::ObjectSelectionItem(MapDocument *mapDocument,
     if (objectLabelVisibility() == Preferences::AllObjectLabels)
         addRemoveObjectLabels();
 
-    addRemoveObjectReferences();
+    if (Preferences::instance()->showObjectReferences())
+        addRemoveObjectReferences();
 }
 
 ObjectSelectionItem::~ObjectSelectionItem()
@@ -526,9 +529,12 @@ void ObjectSelectionItem::propertyAdded(Object *object, const QString &name)
 {
     if (object->typeId() != Object::MapObjectType)
         return;
+    if (!Preferences::instance()->showObjectReferences())
+        return;
+    if (object->property(name).userType() != objectRefTypeId())
+        return;
 
-    if (object->property(name).userType() == objectRefTypeId())
-        addRemoveObjectReferences(static_cast<MapObject*>(object));
+    addRemoveObjectReferences(static_cast<MapObject*>(object));
 }
 
 void ObjectSelectionItem::propertyRemoved(Object *object, const QString &name)
@@ -537,26 +543,30 @@ void ObjectSelectionItem::propertyRemoved(Object *object, const QString &name)
 
     if (object->typeId() != Object::MapObjectType)
         return;
+    if (!mReferencesBySourceObject.contains(static_cast<MapObject*>(object)))
+        return;
 
-    if (mReferencesBySourceObject.contains(static_cast<MapObject*>(object)))
-        addRemoveObjectReferences(static_cast<MapObject*>(object));
+    addRemoveObjectReferences(static_cast<MapObject*>(object));
 }
 
 void ObjectSelectionItem::propertyChanged(Object *object, const QString &name)
 {
     if (object->typeId() != Object::MapObjectType)
         return;
+    if (!Preferences::instance()->showObjectReferences())
+        return;
+    if (object->property(name).userType() != objectRefTypeId() &&
+            !mReferencesBySourceObject.contains(static_cast<MapObject*>(object)))
+        return;
 
-    if (object->property(name).userType() == objectRefTypeId() ||
-            mReferencesBySourceObject.contains(static_cast<MapObject*>(object)))
-    {
-        addRemoveObjectReferences(static_cast<MapObject*>(object));
-    }
+    addRemoveObjectReferences(static_cast<MapObject*>(object));
 }
 
 void ObjectSelectionItem::propertiesChanged(Object *object)
 {
     if (object->typeId() != Object::MapObjectType)
+        return;
+    if (!Preferences::instance()->showObjectReferences())
         return;
 
     addRemoveObjectReferences(static_cast<MapObject*>(object));
@@ -629,7 +639,8 @@ void ObjectSelectionItem::layerAdded(Layer *layer)
         }
     }
 
-    addRemoveObjectReferences();
+    if (Preferences::instance()->showObjectReferences())
+        addRemoveObjectReferences();
 }
 
 void ObjectSelectionItem::layerAboutToBeRemoved(GroupLayer *parentLayer, int index)
@@ -736,7 +747,8 @@ void ObjectSelectionItem::objectsAdded(const QList<MapObject *> &objects)
     // necessary because the list of added objects could include target
     // objects. To optimize this, we could instantiate reference items also if
     // the target was not found and only try to repair those here.
-    addRemoveObjectReferences();
+    if (Preferences::instance()->showObjectReferences())
+        addRemoveObjectReferences();
 }
 
 void ObjectSelectionItem::objectsAboutToBeRemoved(const QList<MapObject *> &objects)
@@ -804,6 +816,11 @@ void ObjectSelectionItem::tileTypeChanged(Tile *tile)
 void ObjectSelectionItem::objectLabelVisibilityChanged()
 {
     addRemoveObjectLabels();
+}
+
+void ObjectSelectionItem::showObjectReferencesChanged()
+{
+    addRemoveObjectReferences();
 }
 
 void ObjectSelectionItem::addRemoveObjectLabels()
@@ -913,17 +930,19 @@ void ObjectSelectionItem::addRemoveObjectReferences()
         referencesByTargetObject[targetObject].append(item);
     };
 
-    LayerIterator iterator(mMapDocument->map());
-    while (Layer *layer = iterator.next()) {
-        if (layer->isHidden())
-            continue;
+    if (Preferences::instance()->showObjectReferences()) {
+        LayerIterator iterator(mMapDocument->map());
+        while (Layer *layer = iterator.next()) {
+            if (layer->isHidden())
+                continue;
 
-        if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
-            for (MapObject *object : objectGroup->objects()) {
-                const auto &props = object->properties();
-                for (auto it = props.cbegin(), it_end = props.cend(); it != it_end; ++it) {
-                    if (it->userType() == objectRefTypeId())
-                        ensureReferenceItem(object, it.key(), it->value<ObjectRef>());
+            if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
+                for (MapObject *object : objectGroup->objects()) {
+                    const auto &props = object->properties();
+                    for (auto it = props.cbegin(), it_end = props.cend(); it != it_end; ++it) {
+                        if (it->userType() == objectRefTypeId())
+                            ensureReferenceItem(object, it.key(), it->value<ObjectRef>());
+                    }
                 }
             }
         }
@@ -970,10 +989,12 @@ void ObjectSelectionItem::addRemoveObjectReferences(MapObject *object)
         mReferencesByTargetObject[targetObject].append(item);
     };
 
-    const auto &props = object->properties();
-    for (auto it = props.cbegin(), it_end = props.cend(); it != it_end; ++it) {
-        if (it->userType() == objectRefTypeId())
-            ensureReferenceItem(object, it.key(), it->value<ObjectRef>());
+    if (Preferences::instance()->showObjectReferences()) {
+        const auto &props = object->properties();
+        for (auto it = props.cbegin(), it_end = props.cend(); it != it_end; ++it) {
+            if (it->userType() == objectRefTypeId())
+                ensureReferenceItem(object, it.key(), it->value<ObjectRef>());
+        }
     }
 
     // Delete remaining existing items, also removing them from mReferencesByTargetObject

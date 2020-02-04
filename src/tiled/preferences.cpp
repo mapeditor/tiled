@@ -87,6 +87,7 @@ Preferences::Preferences()
     mShowTileObjectOutlines = boolValue("ShowTileObjectOutlines");
     mShowTileAnimations = boolValue("ShowTileAnimations", true);
     mShowTileCollisionShapes = boolValue("ShowTileCollisionShapes");
+    mShowObjectReferences = boolValue("ShowObjectReferences", true);
     mSnapToGrid = boolValue("SnapToGrid");
     mSnapToFineGrid = boolValue("SnapToFineGrid");
     mSnapToPixels = boolValue("SnapToPixels");
@@ -330,6 +331,18 @@ void Preferences::setShowTileCollisionShapes(bool enabled)
                         mShowTileCollisionShapes);
 
     emit showTileCollisionShapesChanged(enabled);
+}
+
+void Preferences::setShowObjectReferences(bool enabled)
+{
+    if (mShowObjectReferences == enabled)
+        return;
+
+    mShowObjectReferences = enabled;
+    mSettings->setValue(QLatin1String("Interface/ShowObjectReferences"),
+                        mShowObjectReferences);
+
+    emit showObjectReferencesChanged(enabled);
 }
 
 void Preferences::setSnapToGrid(bool snapToGrid)
