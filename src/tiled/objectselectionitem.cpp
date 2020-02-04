@@ -621,10 +621,32 @@ void ObjectSelectionItem::mapChanged()
     syncOverlayItems(mMapDocument->selectedObjects());
 }
 
+static void collectObjects(const GroupLayer &groupLayer, QList<MapObject*> &objects)
+{
+    for (Layer *layer : groupLayer) {
+        switch (layer->layerType()) {
+        case Layer::ObjectGroupType:
+            objects.append(static_cast<ObjectGroup*>(layer)->objects());
+            break;
+        case Layer::GroupLayerType:
+            collectObjects(*static_cast<GroupLayer*>(layer), objects);
+            break;
+        default:
+            break;
+        }
+    }
+}
+
 void ObjectSelectionItem::layerAdded(Layer *layer)
 {
-    ObjectGroup *objectGroup = layer->asObjectGroup();
-    if (!objectGroup)
+    QList<MapObject*> newObjects;
+
+    if (auto objectGroup = layer->asObjectGroup())
+        newObjects = objectGroup->objects();
+    else if (auto groupLayer = layer->asGroupLayer())
+        collectObjects(*groupLayer, newObjects);
+
+    if (newObjects.isEmpty())
         return;
 
     // The layer may already have objects, for example when the addition is the
@@ -632,7 +654,7 @@ void ObjectSelectionItem::layerAdded(Layer *layer)
     if (objectLabelVisibility() == Preferences::AllObjectLabels) {
         const MapRenderer &renderer = *mMapDocument->renderer();
 
-        for (MapObject *object : *objectGroup) {
+        for (MapObject *object : qAsConst(newObjects)) {
             Q_ASSERT(!mObjectLabels.contains(object));
 
             MapObjectLabel *labelItem = new MapObjectLabel(object, this);
@@ -648,28 +670,12 @@ void ObjectSelectionItem::layerAdded(Layer *layer)
 void ObjectSelectionItem::layerAboutToBeRemoved(GroupLayer *parentLayer, int index)
 {
     auto layer = parentLayer ? parentLayer->layerAt(index) : mMapDocument->map()->layerAt(index);
-    auto objectGroup = layer->asObjectGroup();
-    if (!objectGroup)
-        return;
-
-    if (objectLabelVisibility() == Preferences::AllObjectLabels)
-        for (MapObject *object : *objectGroup)
-            delete mObjectLabels.take(object);
-}
-
-static void collectObjects(const GroupLayer &groupLayer, QList<MapObject*> &objects)
-{
-    for (Layer *layer : groupLayer) {
-        switch (layer->layerType()) {
-        case Layer::ObjectGroupType:
-            objects.append(static_cast<ObjectGroup*>(layer)->objects());
-            break;
-        case Layer::GroupLayerType:
-            collectObjects(*static_cast<GroupLayer*>(layer), objects);
-            break;
-        default:
-            break;
-        }
+    if (auto objectGroup = layer->asObjectGroup()) {
+        objectsAboutToBeRemoved(objectGroup->objects());
+    } else if (auto groupLayer = layer->asGroupLayer()) {
+        QList<MapObject*> affectedObjects;
+        collectObjects(*groupLayer, affectedObjects);
+        objectsAboutToBeRemoved(affectedObjects);
     }
 }
 
