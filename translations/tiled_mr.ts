@@ -203,7 +203,7 @@
     <message>
         <location line="+5"/>
         <source>Export the map or tileset with types and properties resolved</source>
-        <translation type="unfinished"></translation>
+        <translation>प्रकार आणि गुणधर्मांचे निराकरण करून नकाशा किंवा टाइलसेटची निर्यात करा</translation>
     </message>
     <message>
         <location line="+10"/>
