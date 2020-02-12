@@ -4,12 +4,12 @@ Java TMX Viewer example
 This is a simple example application showing how to use libtiled-java to load
 and view a Tiled map file.
 
-Trying it out in IntelliJ IDEA
+Opening the project in a modern IDE
 ------------------------------
 
-Open tiled-java.ipr in IntelliJ IDEA and press Run to launch it. It will popup
-a dialog with a field to enter parameters. The map you want to view should be
-entered there.
+Just import this project as a Maven project, specifying the project pom.xml 
+
+file location.
 
 Trying it out from the command line
 -----------------------------------
