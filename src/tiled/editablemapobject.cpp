@@ -167,8 +167,8 @@ void EditableMapObject::setType(QString type)
 
 void EditableMapObject::setPos(QPointF pos)
 {
-    if (asset()) {
-        asset()->push(new MoveMapObject(asset()->document(), mapObject(),
+    if (Document *doc = document()) {
+        asset()->push(new MoveMapObject(doc, mapObject(),
                                         pos, mapObject()->position()));
     } else if (!checkReadOnly()) {
         mapObject()->setPosition(pos);
@@ -214,8 +214,8 @@ void EditableMapObject::setPolygon(QJSValue polygonValue)
         polygon.append(point);
     }
 
-    if (asset()) {
-        asset()->push(new ChangePolygon(asset()->document(),
+    if (Document *doc = document()) {
+        asset()->push(new ChangePolygon(doc,
                                         mapObject(),
                                         polygon,
                                         mapObject()->polygon()));
@@ -252,9 +252,9 @@ void EditableMapObject::setTextColor(const QColor &textColor)
 
 void EditableMapObject::setTile(EditableTile *tile)
 {
-    if (asset()) {
+    if (Document *doc = document()) {
         QList<MapObject *> mapObjects { mapObject() };
-        asset()->push(new ChangeMapObjectsTile(asset()->document(),
+        asset()->push(new ChangeMapObjectsTile(doc,
                                                mapObjects,
                                                tile ? tile->tile() : nullptr));
     } else if (!checkReadOnly()) {
@@ -278,8 +278,8 @@ void EditableMapObject::setTileFlippedHorizontally(bool tileFlippedHorizontally)
     mapObjectCell.cell = mapObject()->cell();
     mapObjectCell.cell.setFlippedHorizontally(tileFlippedHorizontally);
 
-    if (asset()) {
-        asset()->push(new ChangeMapObjectCells(asset()->document(), { mapObjectCell }));
+    if (Document *doc = document()) {
+        asset()->push(new ChangeMapObjectCells(doc, { mapObjectCell }));
     } else if (!checkReadOnly()) {
         mapObject()->setCell(mapObjectCell.cell);
         mapObject()->setPropertyChanged(MapObject::CellProperty);
@@ -293,8 +293,8 @@ void EditableMapObject::setTileFlippedVertically(bool tileFlippedVertically)
     mapObjectCell.cell = mapObject()->cell();
     mapObjectCell.cell.setFlippedVertically(tileFlippedVertically);
 
-    if (asset()) {
-        asset()->push(new ChangeMapObjectCells(asset()->document(), { mapObjectCell }));
+    if (Document *doc = document()) {
+        asset()->push(new ChangeMapObjectCells(doc, { mapObjectCell }));
     } else if (!checkReadOnly()) {
         mapObject()->setCell(mapObjectCell.cell);
         mapObject()->setPropertyChanged(MapObject::CellProperty);
@@ -326,8 +326,8 @@ void EditableMapObject::setSelected(bool selected)
 void EditableMapObject::setMapObjectProperty(MapObject::Property property,
                                              const QVariant &value)
 {
-    if (asset()) {
-        asset()->push(new ChangeMapObject(asset()->document(), mapObject(),
+    if (Document *doc = document()) {
+        asset()->push(new ChangeMapObject(doc, mapObject(),
                                           property, value));
     } else if (!checkReadOnly()) {
         mapObject()->setMapObjectProperty(property, value);

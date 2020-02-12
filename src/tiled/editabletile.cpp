@@ -106,8 +106,8 @@ void EditableTile::setTerrainAtCorner(Corner corner, EditableTerrain *editableTe
     unsigned terrain = setTerrainCorner(tile()->terrain(), corner,
                                         editableTerrain ? editableTerrain->id() : 0xFF);
 
-    if (asset())
-        asset()->push(new ChangeTileTerrain(tileset()->tilesetDocument(), tile(), terrain));
+    if (TilesetDocument *doc = tilesetDocument())
+        asset()->push(new ChangeTileTerrain(doc, tile(), terrain));
     else if (!checkReadOnly())
         tile()->setTerrain(terrain);
 }
@@ -154,22 +154,21 @@ void EditableTile::detachObjectGroup()
 
 void EditableTile::setType(const QString &type)
 {
-    if (asset())
-        asset()->push(new ChangeTileType(tileset()->tilesetDocument(), { tile() }, type));
+    if (TilesetDocument *doc = tilesetDocument())
+        asset()->push(new ChangeTileType(doc, { tile() }, type));
     else if (!checkReadOnly())
         tile()->setType(type);
 }
 
 void EditableTile::setImageFileName(const QString &fileName)
 {
-    if (asset()) {
+    if (TilesetDocument *doc = tilesetDocument()) {
         if (!tileset()->tileset()->isCollection()) {
             ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Tileset needs to be an image collection"));
             return;
         }
 
-        asset()->push(new ChangeTileImageSource(tileset()->tilesetDocument(),
-                                                tile(),
+        asset()->push(new ChangeTileImageSource(doc, tile(),
                                                 QUrl::fromLocalFile(fileName)));
     } else if (!checkReadOnly()) {
         tile()->setImage(ImageCache::loadPixmap(fileName));
@@ -199,16 +198,16 @@ void EditableTile::setTerrain(QJSValue value)
         terrain = value.toUInt();
     }
 
-    if (asset())
-        asset()->push(new ChangeTileTerrain(tileset()->tilesetDocument(), tile(), terrain));
+    if (TilesetDocument *doc = tilesetDocument())
+        asset()->push(new ChangeTileTerrain(doc, tile(), terrain));
     else if (!checkReadOnly())
         tile()->setTerrain(terrain);
 }
 
 void EditableTile::setProbability(qreal probability)
 {
-    if (asset())
-        asset()->push(new ChangeTileProbability(tileset()->tilesetDocument(), { tile() }, probability));
+    if (TilesetDocument *doc = tilesetDocument())
+        asset()->push(new ChangeTileProbability(doc, { tile() }, probability));
     else if (!checkReadOnly())
         tile()->setProbability(probability);
 }
@@ -230,10 +229,8 @@ void EditableTile::setObjectGroup(EditableObjectGroup *editableObjectGroup)
 
     std::unique_ptr<ObjectGroup> og(static_cast<ObjectGroup*>(editableObjectGroup->release()));
 
-    if (asset()) {
-        asset()->push(new ChangeTileObjectGroup(tileset()->tilesetDocument(),
-                                                tile(),
-                                                std::move(og)));
+    if (TilesetDocument *doc = tilesetDocument()) {
+        asset()->push(new ChangeTileObjectGroup(doc, tile(), std::move(og)));
     } else {
         detachObjectGroup();
         tile()->setObjectGroup(std::move(og));
@@ -271,13 +268,15 @@ void EditableTile::setFrames(QJSValue value)
         frames.append(frame);
     }
 
-    if (asset()) {
-        asset()->push(new ChangeTileAnimation(tileset()->tilesetDocument(),
-                                              tile(),
-                                              frames));
-    } else {
+    if (TilesetDocument *doc = tilesetDocument())
+        asset()->push(new ChangeTileAnimation(doc, tile(), frames));
+    else
         tile()->setFrames(frames);
-    }
+}
+
+TilesetDocument *EditableTile::tilesetDocument() const
+{
+    return tileset() ? tileset()->tilesetDocument() : nullptr;
 }
 
 } // namespace Tiled
