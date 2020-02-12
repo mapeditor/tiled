@@ -48,7 +48,6 @@ class ClipboardManager : public QObject
 
 public:
     static ClipboardManager *instance();
-    static void deleteInstance();
 
     bool hasMap() const;
     std::unique_ptr<Map> map() const;
@@ -83,8 +82,6 @@ private:
     QClipboard *mClipboard;
     bool mHasMap;
     bool mHasProperties;
-
-    static ClipboardManager *mInstance;
 };
 
 /**

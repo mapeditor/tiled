@@ -31,11 +31,7 @@
 #include <QLatin1String>
 #include <QMenu>
 
-#include "qtcompat_p.h"
-
 namespace Tiled {
-
-CommandManager *CommandManager::mInstance;
 
 CommandManager::CommandManager()
     : mModel(new CommandDataModel(this))
@@ -49,16 +45,8 @@ CommandManager::~CommandManager()
 
 CommandManager *CommandManager::instance()
 {
-    if (!mInstance)
-        mInstance = new CommandManager;
-
-    return mInstance;
-}
-
-void CommandManager::deleteInstance()
-{
-    delete mInstance;
-    mInstance = nullptr;
+    static CommandManager instance;
+    return &instance;
 }
 
 CommandDataModel *CommandManager::commandDataModel()
@@ -79,9 +67,9 @@ void CommandManager::showDialog()
     dialog.exec();
 }
 
-void CommandManager::populateMenus()
+void CommandManager::populateMenus() const
 {
-    for (QMenu *menu : qAsConst(mMenus)) {
+    for (QMenu *menu : mMenus) {
         menu->clear();
         menu->addActions(mActions);
     }

@@ -1,6 +1,6 @@
 /*
  * mainwindow.cpp
- * Copyright 2008-2015, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2020, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2008, Roderic Morris <roderic@ccs.neu.edu>
  * Copyright 2009-2010, Jeff Bland <jksb@member.fsf.org>
  * Copyright 2009, Dennis Honeyman <arcticuno@gmail.com>
@@ -59,11 +59,8 @@
 #include "objecttypeseditor.h"
 #include "offsetmapdialog.h"
 #include "donationdialog.h"
-#include "pluginmanager.h"
 #include "projectdock.h"
 #include "resizedialog.h"
-#include "scriptmanager.h"
-#include "templatemanager.h"
 #include "terrain.h"
 #include "tile.h"
 #include "tilelayer.h"
@@ -198,7 +195,6 @@ MainWindow *MainWindow::mInstance;
 
 MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     : QMainWindow(parent, flags)
-    , mActionManager(new ActionManager(this))
     , mUi(new Ui::MainWindow)
     , mActionHandler(new MapDocumentActionHandler(this))
     , mObjectTypesEditor(new ObjectTypesEditor(this))
@@ -749,22 +745,7 @@ MainWindow::~MainWindow()
     Preferences::instance()->saveSessionNow();
 
     mDocumentManager->closeAllDocuments();
-
-    // This needs to happen before deleting the TilesetManager, otherwise
-    // tileset references may remain. It also needs to be done before deleting
-    // the Preferences.
-    mDocumentManager->deleteEditor(Document::MapDocumentType);
-    mDocumentManager->deleteEditor(Document::TilesetDocumentType);
-
-    DocumentManager::deleteInstance();
-    TemplateManager::deleteInstance();
-    ScriptManager::deleteInstance();
-    TilesetManager::deleteInstance();
-    Preferences::deleteInstance();
-    LanguageManager::deleteInstance();
-    PluginManager::deleteInstance();
-    ClipboardManager::deleteInstance();
-    CommandManager::deleteInstance();
+    mDocumentManager->deleteEditors();
 
     delete mUi;
 

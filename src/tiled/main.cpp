@@ -1,6 +1,6 @@
 /*
  * main.cpp
- * Copyright 2008-2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2020, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2011, Ben Longbons <b.r.longbons@gmail.com>
  * Copyright 2011, Stefan Beller <stefanbeller@googlemail.com>
  *
@@ -55,9 +55,6 @@
 #endif
 #endif // Q_OS_WIN
 
-#define STRINGIFY(x) #x
-#define AS_STRING(x) STRINGIFY(x)
-
 using namespace Tiled;
 
 namespace {
@@ -103,9 +100,9 @@ private:
     }
 };
 
-static const QtMessageHandler QT_DEFAULT_MESSAGE_HANDLER = qInstallMessageHandler(0);
+static const QtMessageHandler QT_DEFAULT_MESSAGE_HANDLER = qInstallMessageHandler(nullptr);
 
-void messagesToConsole(QtMsgType type, const QMessageLogContext &context, const QString &msg)
+static void messagesToConsole(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
     QString txt;
     switch (type) {
@@ -125,6 +122,12 @@ void messagesToConsole(QtMsgType type, const QMessageLogContext &context, const 
     }
 
     (*QT_DEFAULT_MESSAGE_HANDLER)(type, context, msg);
+}
+
+static void initializePluginsAndExtensions()
+{
+    PluginManager::instance()->loadPlugins();
+    ScriptManager::instance().initialize();
 }
 
 /**
@@ -297,7 +300,7 @@ void CommandLineHandler::setExportMinimized()
 
 void CommandLineHandler::showExportFormats()
 {
-    PluginManager::instance()->loadPlugins();
+    initializePluginsAndExtensions();
 
     QStringList formats;
     const auto mapFormats = PluginManager::objects<MapFormat>();
@@ -348,32 +351,18 @@ int main(int argc, char *argv[])
     QGuiApplication::setFallbackSessionManagementEnabled(false);
 
     // Enable support for highres images (added in Qt 5.1, but off by default)
-    QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+    QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
-    QGuiApplication::setAttribute(Qt::AA_DisableWindowContextHelpButton);
+    QCoreApplication::setAttribute(Qt::AA_DisableWindowContextHelpButton);
+#endif
+
+#ifdef Q_OS_MAC
+    QCoreApplication::setAttribute(Qt::AA_DontShowIconsInMenus);
 #endif
 
     TiledApplication a(argc, argv);
 
     initializeMetatypes();
-
-    a.setOrganizationDomain(QLatin1String("mapeditor.org"));
-#if defined(Q_OS_MAC) || defined(Q_OS_WIN)
-    a.setApplicationName(QLatin1String("Tiled"));
-#else
-    a.setApplicationName(QLatin1String("tiled"));
-#endif
-    a.setApplicationDisplayName(QLatin1String("Tiled"));
-    a.setApplicationVersion(QLatin1String(AS_STRING(TILED_VERSION)));
-
-#ifdef Q_OS_MAC
-    a.setAttribute(Qt::AA_DontShowIconsInMenus);
-#endif
-
-    StyleHelper::initialize();
-
-    LanguageManager *languageManager = LanguageManager::instance();
-    languageManager->installTranslators();
 
     // Add the built-in file formats
     TmxMapFormat tmxMapFormat;
@@ -401,7 +390,7 @@ int main(int argc, char *argv[])
             return 1;
         }
 
-        PluginManager::instance()->loadPlugins();
+        initializePluginsAndExtensions();
 
         int index = 0;
         const QString *filter = commandLine.filesToOpen().length() > 2 ? &commandLine.filesToOpen().at(index++) : nullptr;
@@ -445,7 +434,7 @@ int main(int argc, char *argv[])
             return 1;
         }
 
-        PluginManager::instance()->loadPlugins();
+        initializePluginsAndExtensions();
 
         int index = 0;
         const QString *filter = commandLine.filesToOpen().length() > 2 ? &commandLine.filesToOpen().at(index++) : nullptr;
@@ -492,6 +481,8 @@ int main(int argc, char *argv[])
             return 0;
     }
 
+    StyleHelper::initialize();
+
     MainWindow w;
     w.show();
 
@@ -503,8 +494,7 @@ int main(int argc, char *argv[])
     QObject::connect(&a, &TiledApplication::fileOpenRequest,
                      &w, [&] (const QString &file) { w.openFile(file); });
 
-    PluginManager::instance()->loadPlugins();
-    ScriptManager::instance().initialize();
+    initializePluginsAndExtensions();
 
     w.initializeSession();
 

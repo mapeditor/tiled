@@ -22,6 +22,7 @@
 
 #include "id.h"
 
+#include <QHash>
 #include <QObject>
 
 class QAction;
@@ -37,6 +38,9 @@ class MainWindow;
 class ActionManager : public QObject
 {
     Q_OBJECT
+
+    explicit ActionManager(QObject *parent = nullptr);
+    ~ActionManager();
 
 public:
     static ActionManager *instance();
@@ -69,10 +73,20 @@ signals:
     void actionsChanged();
 
 private:
-    explicit ActionManager(QObject *parent = nullptr);
-    ~ActionManager();
+    void readCustomShortcuts();
+    void applyShortcut(QAction *action, const QKeySequence &shortcut);
+    void updateToolTipWithShortcut(QAction *action);
 
-    friend class Tiled::MainWindow;   // creation
+    QMultiHash<Id, QAction*> mIdToActions;
+    QHash<Id, QMenu*> mIdToMenu;
+
+    QHash<Id, QKeySequence> mDefaultShortcuts;      // for resetting to default
+    QHash<Id, QKeySequence> mCustomShortcuts;
+    QHash<Id, QKeySequence> mLastKnownShortcuts;    // for detecting shortcut changes
+
+    bool mApplyingShortcut = false;
+    bool mApplyingToolTipWithShortcut = false;
+    bool mResettingShortcut = false;
 };
 
 } // namespace Tiled

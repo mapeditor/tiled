@@ -55,18 +55,19 @@
 
 namespace Tiled {
 
-std::unique_ptr<ScriptManager> ScriptManager::mInstance;
+ScriptManager *ScriptManager::mInstance;
 
 ScriptManager &ScriptManager::instance()
 {
     if (!mInstance)
-        mInstance.reset(new ScriptManager);
+        mInstance = new ScriptManager;
     return *mInstance;
 }
 
 void ScriptManager::deleteInstance()
 {
-    mInstance.reset();
+    delete mInstance;
+    mInstance = nullptr;
 }
 
 /*

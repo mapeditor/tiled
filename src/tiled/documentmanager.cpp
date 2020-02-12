@@ -311,13 +311,11 @@ Editor *DocumentManager::editor(Document::DocumentType documentType) const
     return mEditorForType.value(documentType);
 }
 
-void DocumentManager::deleteEditor(Document::DocumentType documentType)
+void DocumentManager::deleteEditors()
 {
-    Q_ASSERT(mEditorForType.contains(documentType));
-    Editor *editor = mEditorForType.take(documentType);
-    if (editor == mMapEditor)
-        mMapEditor = nullptr;
-    delete editor;
+    qDeleteAll(mEditorForType);
+    mEditorForType.clear();
+    mMapEditor = nullptr;
 }
 
 QList<Editor *> DocumentManager::editors() const

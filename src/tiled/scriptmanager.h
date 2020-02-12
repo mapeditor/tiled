@@ -26,8 +26,6 @@
 #include <QObject>
 #include <QStringList>
 
-#include <memory>
-
 class QJSEngine;
 
 namespace Tiled {
@@ -68,6 +66,7 @@ public:
 
 private:
     explicit ScriptManager(QObject *parent = nullptr);
+    ~ScriptManager() = default;
 
     void scriptFilesChanged(const QStringList &scriptFiles);
 
@@ -81,7 +80,7 @@ private:
     QStringList mExtensionsPaths;
     int mTempCount;
 
-    static std::unique_ptr<ScriptManager> mInstance;
+    static ScriptManager *mInstance;
 };
 
 

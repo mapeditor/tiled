@@ -22,6 +22,8 @@
 
 #include <QStringList>
 
+#include <memory>
+
 class QTranslator;
 
 namespace Tiled {
@@ -30,7 +32,6 @@ class LanguageManager
 {
 public:
     static LanguageManager *instance();
-    static void deleteInstance();
 
     /**
      * Installs the translators on the application for Qt and Tiled. Should be
@@ -51,10 +52,8 @@ private:
 
     QString mTranslationsDir;
     QStringList mLanguages;
-    QTranslator *mQtTranslator;
-    QTranslator *mAppTranslator;
-
-    static LanguageManager *mInstance;
+    std::unique_ptr<QTranslator> mQtTranslator;
+    std::unique_ptr<QTranslator> mAppTranslator;
 };
 
 } // namespace Tiled

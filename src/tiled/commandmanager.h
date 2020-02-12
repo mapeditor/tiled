@@ -36,8 +36,6 @@ class CommandManager : public QObject
 public:
     static CommandManager *instance();
 
-    static void deleteInstance();
-
     /**
      * Returns the CommandDataModel instance stored
      */
@@ -46,14 +44,13 @@ public:
     /**
      * Registers a new QMenu with the CommandManager
      */
-    void registerMenu(QMenu* menu);
+    void registerMenu(QMenu *menu);
 
     void updateActions();
 
     void retranslateUi();
 
 public slots:
-
     /**
      * Displays the dialog to edit the commands
      */
@@ -68,9 +65,8 @@ private:
     /**
      * Populates all the menus registered in CommandManager
      */
-    void populateMenus();
+    void populateMenus() const;
 
-    static CommandManager *mInstance;
     CommandDataModel *mModel;
     QList<QMenu*> mMenus;
     QList<QAction*> mActions;

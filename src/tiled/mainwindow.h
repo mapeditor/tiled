@@ -46,7 +46,6 @@ class FileFormat;
 class TileLayer;
 class Terrain;
 
-class ActionManager;
 class AutomappingManager;
 class ConsoleDock;
 class DocumentManager;
@@ -208,7 +207,6 @@ private:
     void exportMapAs(MapDocument *mapDocument);
     void exportTilesetAs(TilesetDocument *tilesetDocument);
 
-    ActionManager *mActionManager;
     Ui::MainWindow *mUi;
     Document *mDocument = nullptr;
     Zoomable *mZoomable = nullptr;
