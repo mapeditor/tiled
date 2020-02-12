@@ -37,6 +37,7 @@ class EditableTileset : public EditableAsset
     Q_PROPERTY(QList<QObject*> tiles READ tiles)
     Q_PROPERTY(QList<QObject*> terrains READ terrains)
     Q_PROPERTY(int tileCount READ tileCount)
+    Q_PROPERTY(int nextTileId READ nextTileId)
     Q_PROPERTY(int tileWidth READ tileWidth WRITE setTileWidth)
     Q_PROPERTY(int tileHeight READ tileHeight WRITE setTileHeight)
     Q_PROPERTY(QSize tileSize READ tileSize WRITE setTileSize)
@@ -87,6 +88,7 @@ public:
     const QString &name() const;
     QString image() const;
     int tileCount() const;
+    int nextTileId() const;
     int tileWidth() const;
     int tileHeight() const;
     QSize tileSize() const;
@@ -160,6 +162,11 @@ inline QString EditableTileset::image() const
 inline int EditableTileset::tileCount() const
 {
     return tileset()->tileCount();
+}
+
+inline int EditableTileset::nextTileId() const
+{
+    return tileset()->nextTileId();
 }
 
 inline int EditableTileset::tileWidth() const

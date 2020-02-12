@@ -27,6 +27,8 @@
 #include "addremovetileset.h"
 #include "containerhelpers.h"
 #include "documentmanager.h"
+#include "editablemanager.h"
+#include "editabletile.h"
 #include "erasetiles.h"
 #include "map.h"
 #include "mapdocument.h"
@@ -373,39 +375,40 @@ void TilesetDock::selectTilesInStamp(const TileStamp &stamp)
     if (mEmittingStampCaptured)
         return;
 
-    QSet<Tile*> processed;
+    QSet<Tile*> tiles;
+
+    for (const TileStampVariation &variation : stamp.variations())
+        for (auto layer : variation.map->tileLayers())
+            for (const Cell &cell : *static_cast<TileLayer*>(layer))
+                if (Tile *tile = cell.tile())
+                    tiles.insert(tile);
+
+    selectTiles(tiles.values());
+}
+
+void TilesetDock::selectTiles(const QList<Tile *> &tiles)
+{
     QHash<QItemSelectionModel*, QItemSelection> selections;
 
-    for (const TileStampVariation &variation : stamp.variations()) {
-        for (auto layer : variation.map->tileLayers()) {
-            for (const Cell &cell : *static_cast<TileLayer*>(layer)) {
-                if (Tile *tile = cell.tile()) {
-                    if (processed.contains(tile))
-                        continue;
+    for (Tile *tile : tiles) {
+        Tileset *tileset = tile->tileset();
+        int tilesetIndex = mTilesets.indexOf(tileset->sharedPointer());
+        if (tilesetIndex != -1) {
+            TilesetView *view = tilesetViewAt(tilesetIndex);
+            if (!view->model()) // Lazily set up the model
+                setupTilesetModel(view, tileset);
 
-                    processed.insert(tile); // avoid spending time on duplicates
-
-                    Tileset *tileset = tile->tileset();
-                    int tilesetIndex = mTilesets.indexOf(tileset->sharedPointer());
-                    if (tilesetIndex != -1) {
-                        TilesetView *view = tilesetViewAt(tilesetIndex);
-                        if (!view->model()) // Lazily set up the model
-                            setupTilesetModel(view, tileset);
-
-                        const TilesetModel *model = view->tilesetModel();
-                        const QModelIndex modelIndex = model->tileIndex(tile);
-                        QItemSelectionModel *selectionModel = view->selectionModel();
-                        selections[selectionModel].select(modelIndex, modelIndex);
-                    }
-                }
-            }
+            const TilesetModel *model = view->tilesetModel();
+            const QModelIndex modelIndex = model->tileIndex(tile);
+            QItemSelectionModel *selectionModel = view->selectionModel();
+            selections[selectionModel].select(modelIndex, modelIndex);
         }
     }
 
     if (!selections.isEmpty()) {
         mSynchronizingSelection = true;
 
-        // Mark captured tiles as selected
+        // Mark tiles as selected
         for (auto i = selections.constBegin(); i != selections.constEnd(); ++i) {
             QItemSelectionModel *selectionModel = i.key();
             const QItemSelection &selection = i.value();
@@ -895,6 +898,49 @@ EditableTileset *TilesetDock::currentEditableTileset() const
         return nullptr;
 
     return mTilesetDocuments.at(index)->editable();
+}
+
+void TilesetDock::setSelectedTiles(const QList<QObject *> &tiles)
+{
+    QList<Tile*> plainTiles;
+
+    for (QObject *objectTile : tiles) {
+        auto editableTile = qobject_cast<EditableTile*>(objectTile);
+        if (!editableTile) {
+            ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Not a tile"));
+            return;
+        }
+        plainTiles.append(editableTile->tile());
+    }
+
+    selectTiles(plainTiles);
+}
+
+QList<QObject *> TilesetDock::selectedTiles() const
+{
+    QList<QObject *> result;
+
+    TilesetView *view = currentTilesetView();
+    if (!view)
+        return result;
+
+    const QItemSelectionModel *s = view->selectionModel();
+    if (!s)
+        return result;
+
+    const QModelIndexList indexes = s->selection().indexes();
+    if (indexes.isEmpty())
+        return result;
+
+    EditableTileset *editableTileset = currentEditableTileset();
+
+    const TilesetModel *model = view->tilesetModel();
+    auto &editableManager = EditableManager::instance();
+    for (const QModelIndex &index : indexes)
+        if (Tile *tile = model->tileAt(index))
+            result.append(editableManager.editableTile(editableTileset, tile));
+
+    return result;
 }
 
 TilesetView *TilesetDock::currentTilesetView() const

@@ -1401,6 +1401,7 @@ Properties
     **tiles**: [:ref:`script-tile`] |ro|, Array of all tiles in this tileset. Note that the index of a tile in this array does not always match with its ID.
     **terrains**: [:ref:`script-terrain`] |ro|, Array of all terrains in this tileset.
     **tileCount** : int, The number of tiles in this tileset.
+    **nextTileId** : int, The ID of the next tile that would be added to this tileset. All existing tiles have IDs that are lower than this ID.
     **tileWidth** : int, Tile width for tiles in this tileset in pixels.
     **tileHeight** : int, Tile Height for tiles in this tileset in pixels.
     **tileSize** : :ref:`script-size`, Tile size for tiles in this tileset in pixels.
@@ -1511,6 +1512,7 @@ Properties
     :widths: 1, 2
 
     **currentTileset** : :ref:`script-tileset`, "Access or change the currently displayed tileset."
+    **selectedTiles** : [:ref:`script-tile`], "A list of the tiles that are selected in the current tileset."
 
 .. _script-basic-types:
 

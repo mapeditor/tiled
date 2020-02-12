@@ -64,6 +64,7 @@ class TilesetDock : public QDockWidget
     Q_OBJECT
 
     Q_PROPERTY(Tiled::EditableTileset *currentTileset READ currentEditableTileset WRITE setCurrentEditableTileset)
+    Q_PROPERTY(QList<QObject*> selectedTiles READ selectedTiles WRITE setSelectedTiles)
 
 public:
     TilesetDock(QWidget *parent = nullptr);
@@ -85,6 +86,9 @@ public:
 
     void setCurrentEditableTileset(EditableTileset *tileset);
     EditableTileset *currentEditableTileset() const;
+
+    void setSelectedTiles(const QList<QObject*> &tiles);
+    QList<QObject*> selectedTiles() const;
 
     void selectTilesInStamp(const TileStamp &);
 
@@ -141,8 +145,10 @@ private:
 
     void swapTiles(Tile *tileA, Tile *tileB);
 
+    void selectTiles(const QList<Tile *> &tiles);
     void setCurrentTile(Tile *tile);
     void setCurrentTiles(TileLayer *tiles);
+
     void retranslateUi();
 
     void onTilesetRowsInserted(const QModelIndex &parent, int first, int last);
