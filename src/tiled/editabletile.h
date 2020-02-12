@@ -30,6 +30,7 @@ namespace Tiled {
 class EditableObjectGroup;
 class EditableTerrain;
 class EditableTileset;
+class TilesetDocument;
 
 class EditableTile : public EditableObject
 {
@@ -103,6 +104,8 @@ public slots:
     void setFrames(QJSValue value);
 
 private:
+    TilesetDocument *tilesetDocument() const;
+
     std::unique_ptr<Tile> mDetachedTile;
     mutable ObjectGroup *mAttachedObjectGroup = nullptr;
 };

@@ -49,25 +49,25 @@ bool EditableObject::isReadOnly() const
 
 void EditableObject::setProperty(const QString &name, const QVariant &value)
 {
-    if (asset())
-        asset()->push(new SetProperty(asset()->document(), { mObject }, name, fromScript(value)));
+    if (Document *doc = document())
+        asset()->push(new SetProperty(doc, { mObject }, name, fromScript(value)));
     else
         mObject->setProperty(name, fromScript(value));
 }
 
 void EditableObject::setProperties(const QVariantMap &properties)
 {
-    if (asset())
-        asset()->push(new ChangeProperties(asset()->document(), QString(), mObject, fromScript(properties)));
+    if (Document *doc = document())
+        asset()->push(new ChangeProperties(doc, QString(), mObject, fromScript(properties)));
     else
         mObject->setProperties(fromScript(properties));
 }
 
 void EditableObject::removeProperty(const QString &name)
 {
-    if (asset())
-        asset()->push(new RemoveProperty(asset()->document(), { mObject }, name));
-    else
+    if (Document *doc = document())
+        asset()->push(new RemoveProperty(doc, { mObject }, name));
+    else if (!checkReadOnly())
         mObject->removeProperty(name);
 }
 

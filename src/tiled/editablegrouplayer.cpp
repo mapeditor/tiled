@@ -57,8 +57,8 @@ void EditableGroupLayer::removeLayerAt(int index)
         return;
     }
 
-    if (asset())
-        asset()->push(new RemoveLayer(mapDocument(), index, groupLayer()));
+    if (MapDocument *doc = mapDocument())
+        asset()->push(new RemoveLayer(doc, index, groupLayer()));
     else if (!checkReadOnly())
         EditableManager::instance().release(groupLayer()->takeLayerAt(index));
 }
@@ -96,8 +96,8 @@ void EditableGroupLayer::insertLayerAt(int index, EditableLayer *editableLayer)
         return;
     }
 
-    if (asset()) {
-        asset()->push(new AddLayer(mapDocument(), index, editableLayer->layer(), groupLayer()));
+    if (MapDocument *doc = mapDocument()) {
+        asset()->push(new AddLayer(doc, index, editableLayer->layer(), groupLayer()));
     } else if (!checkReadOnly()) {
         // ownership moves to the group layer
         groupLayer()->insertLayer(index, editableLayer->release());

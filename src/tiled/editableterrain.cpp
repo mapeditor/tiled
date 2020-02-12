@@ -74,7 +74,7 @@ void EditableTerrain::attach(EditableTileset *tileset)
 
 void EditableTerrain::setName(const QString &name)
 {
-    if (asset())
+    if (document())
         asset()->push(new RenameTerrain(tileset()->tilesetDocument(), terrain()->id(), name));
     else if (!checkReadOnly())
         terrain()->setName(name);
@@ -89,7 +89,7 @@ void EditableTerrain::setImageTile(EditableTile *imageTile)
 
     int tileId = imageTile ? imageTile->id() : -1;
 
-    if (asset())
+    if (document())
         asset()->push(new SetTerrainImage(tileset()->tilesetDocument(), terrain()->id(), tileId));
     else if (!checkReadOnly())
         terrain()->setImageTileId(tileId);
