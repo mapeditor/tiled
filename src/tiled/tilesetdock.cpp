@@ -38,15 +38,16 @@
 #include "replacetileset.h"
 #include "scriptmanager.h"
 #include "swaptiles.h"
+#include "tabbar.h"
 #include "terrain.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tilesetdocument.h"
 #include "tilesetdocumentsmodel.h"
 #include "tilesetformat.h"
+#include "tilesetmanager.h"
 #include "tilesetmodel.h"
 #include "tilesetview.h"
-#include "tilesetmanager.h"
 #include "tilestamp.h"
 #include "tmxmapformat.h"
 #include "utils.h"
@@ -125,30 +126,6 @@ protected:
 };
 
 
-/**
- * Qt excludes OS X when implementing mouse wheel for switching tabs. However,
- * we explicitly want this feature on the tileset tab bar as a possible means
- * of navigation.
- */
-class WheelEnabledTabBar : public QTabBar
-{
-public:
-    explicit WheelEnabledTabBar(QWidget *parent = nullptr)
-       : QTabBar(parent)
-    {}
-
-    void wheelEvent(QWheelEvent *event) override
-    {
-        int index = currentIndex();
-        if (index != -1) {
-            index += event->delta() > 0 ? -1 : 1;
-            if (index >= 0 && index < count())
-                setCurrentIndex(index);
-        }
-    }
-};
-
-
 static void removeTileReferences(MapDocument *mapDocument,
                                  std::function<bool(const Cell &)> condition)
 {
@@ -190,7 +167,7 @@ TilesetDock::TilesetDock(QWidget *parent)
     : QDockWidget(parent)
     , mMapDocument(nullptr)
     , mTilesetDocumentsFilterModel(new TilesetDocumentsFilterModel(this))
-    , mTabBar(new WheelEnabledTabBar)
+    , mTabBar(new TabBar)
     , mSuperViewStack(new QStackedWidget)
     , mViewStack(new QStackedWidget)
     , mToolBar(new QToolBar)

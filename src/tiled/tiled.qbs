@@ -445,6 +445,8 @@ QtGuiApplication {
         "stylehelper.h",
         "swaptiles.cpp",
         "swaptiles.h",
+        "tabbar.cpp",
+        "tabbar.h",
         "templatesdock.cpp",
         "templatesdock.h",
         "terrainbrush.cpp",

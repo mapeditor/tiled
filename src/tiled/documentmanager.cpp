@@ -38,6 +38,7 @@
 #include "mapview.h"
 #include "noeditorwidget.h"
 #include "preferences.h"
+#include "tabbar.h"
 #include "terrain.h"
 #include "tilesetdocument.h"
 #include "tilesetdocumentsmodel.h"
@@ -88,7 +89,7 @@ DocumentManager::DocumentManager(QObject *parent)
     , mTilesetDocumentsModel(new TilesetDocumentsModel(this))
     , mWidget(new QWidget)
     , mNoEditorWidget(new NoEditorWidget(mWidget))
-    , mTabBar(new QTabBar(mWidget))
+    , mTabBar(new TabBar(mWidget))
     , mFileChangedWarning(new FileChangedWarning(mWidget))
     , mBrokenLinksModel(new BrokenLinksModel(this))
     , mBrokenLinksWidget(new BrokenLinksWidget(mBrokenLinksModel, mWidget))
@@ -273,14 +274,10 @@ DocumentManager::DocumentManager(QObject *parent)
             }
         }
     };
-
-    mTabBar->installEventFilter(this);
 }
 
 DocumentManager::~DocumentManager()
 {
-    mTabBar->removeEventFilter(this);
-
     // All documents should be closed gracefully beforehand
     Q_ASSERT(mDocuments.isEmpty());
     Q_ASSERT(mTilesetDocumentsModel->rowCount() == 0);
@@ -1272,25 +1269,6 @@ bool DocumentManager::askForAdjustment(const Tileset &tileset)
                                   QMessageBox::Yes);
 
     return r == QMessageBox::Yes;
-}
-
-bool DocumentManager::eventFilter(QObject *object, QEvent *event)
-{
-    if (object == mTabBar && event->type() == QEvent::MouseButtonRelease) {
-        // middle-click tab closing
-        QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
-
-        if (mouseEvent->button() == Qt::MidButton) {
-            int index = mTabBar->tabAt(mouseEvent->pos());
-
-            if (index != -1) {
-                documentCloseRequested(index);
-                return true;
-            }
-        }
-    }
-
-    return false;
 }
 
 /**

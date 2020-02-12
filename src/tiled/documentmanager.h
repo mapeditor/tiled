@@ -28,6 +28,7 @@
 #include <QList>
 #include <QObject>
 #include <QPointF>
+#include <QPointer>
 #include <QVector>
 
 class QTabWidget;
@@ -130,8 +131,6 @@ public:
 
     void abortMultiDocumentClose();
 
-    bool eventFilter(QObject *object, QEvent *event) override;
-
 signals:
     void documentCreated(Document *document);
     void documentOpened(Document *document);
@@ -210,7 +209,8 @@ private:
     QVector<DocumentPtr> mDocuments;
     TilesetDocumentsModel *mTilesetDocumentsModel;
 
-    QWidget *mWidget;
+    // Pointer becomes null when deleted as part of the UI, to prevent double-deletion
+    QPointer<QWidget> mWidget;
     QWidget *mNoEditorWidget;
     QTabBar *mTabBar;
     FileChangedWarning *mFileChangedWarning;

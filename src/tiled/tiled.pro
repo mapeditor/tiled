@@ -221,6 +221,7 @@ SOURCES += aboutdialog.cpp \
     stampbrush.cpp \
     stylehelper.cpp \
     swaptiles.cpp \
+    tabbar.cpp \
     templatesdock.cpp \
     terrainbrush.cpp \
     terraindock.cpp \
@@ -455,6 +456,7 @@ HEADERS += aboutdialog.h \
     stampbrush.h \
     stylehelper.h \
     swaptiles.h \
+    tabbar.h \
     templatesdock.h \
     terrainbrush.h \
     terraindock.h \
