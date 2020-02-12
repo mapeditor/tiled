@@ -4,7 +4,7 @@
   <?define ProductName = "Tiled" ?>
   <?define Manufacturer = "mapeditor.org" ?>
   <?define UpgradeCode = "F7EEDD05-BBFC-4D6A-9BF6-98D3BA77F327" ?>
-  <?define WebsiteURL="http://www.mapeditor.org/" ?>
+  <?define WebsiteURL="https://www.mapeditor.org/" ?>
 
   <?ifndef InstallRoot ?>
     <?error InstallRoot must be defined ?>
@@ -48,7 +48,7 @@
     <Property Id='DiskPrompt' Value="Tiled Installation [1]" />
 
     <!-- Save the command line value INSTALLDIR and restore it later in the sequence or it will be overwritten by the value saved to the registry during an upgrade -->
-    <!-- http://robmensching.com/blog/posts/2010/5/2/the-wix-toolsets-remember-property-pattern/ -->
+    <!-- https://robmensching.com/blog/posts/2010/5/2/the-wix-toolsets-remember-property-pattern/ -->
     <CustomAction Id='SaveCmdLineValueINSTALLDIR' Property='CMDLINE_INSTALLDIR' Value='[INSTALLDIR]' Execute='firstSequence' />
     <CustomAction Id='SetFromCmdLineValueINSTALLDIR' Property='INSTALLDIR' Value='[CMDLINE_INSTALLDIR]' Execute='firstSequence' />
     <InstallUISequence>

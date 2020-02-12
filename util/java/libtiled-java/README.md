@@ -11,7 +11,7 @@ This small library is BSD licensed. See the LICENSE.BSD file for details.
 * Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
 * Mike Thomas <mikepthomas@outlook.com>
 
-http://www.mapeditor.org/
+https://www.mapeditor.org/
 
 
 ## Building
