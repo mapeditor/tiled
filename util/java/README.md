@@ -5,7 +5,7 @@
 * `libtiled-java` - contains source code for a library that adds support of Tiled maps to your java project.
 * `tmx-viewer-java` - sample project, that uses `libtiled-java` to view Tiled map files.
 
-Every folder contains README.MD related to its contents.
+Every folder contains a `README.md` related to its contents.
 
 
 
@@ -15,7 +15,7 @@ Make sure you have properly installed [Apache Maven](https://maven.apache.org/) 
 
 Open current folder in terminal (cmd, power shell, etc) and run the command:
 
-`mvn package`
+    mvn package
 
 As the command run has completed, check the following folders:
 
