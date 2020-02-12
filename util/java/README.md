@@ -2,10 +2,12 @@
 
 ## Folders description
 
-`libtiled-java` - contains source code for a library that adds support of Tiled maps to your java project.
-`tmx-viewer-java` - sample project, that uses `libtiled-java` to view Tiled map files.
+* `libtiled-java` - contains source code for a library that adds support of Tiled maps to your java project.
+* `tmx-viewer-java` - sample project, that uses `libtiled-java` to view Tiled map files.
 
-Every aforecited folder contains README.MD related to its contents.
+Every folder contains README.MD related to its contents.
+
+
 
 ## Packaging the project
 
