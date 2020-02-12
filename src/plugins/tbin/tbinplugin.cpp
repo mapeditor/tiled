@@ -42,26 +42,26 @@
 
 namespace
 {
-    void tbinToTiledProperties(const tbin::Properties &props, Tiled::Object *obj)
+    void tbinToTiledProperties(const tbin::Properties &props, Tiled::Object &obj)
     {
         for (const auto &prop : props) {
             if (prop.first[0] == '@')
                 continue;
             switch (prop.second.type) {
                 case tbin::PropertyValue::String:
-                    obj->setProperty(QString::fromStdString(prop.first), QString::fromStdString(prop.second.dataStr));
+                    obj.setProperty(QString::fromStdString(prop.first), QString::fromStdString(prop.second.dataStr));
                     break;
 
                 case tbin::PropertyValue::Bool:
-                    obj->setProperty(QString::fromStdString(prop.first), prop.second.data.b);
+                    obj.setProperty(QString::fromStdString(prop.first), prop.second.data.b);
                     break;
 
                 case tbin::PropertyValue::Float:
-                    obj->setProperty(QString::fromStdString(prop.first), prop.second.data.f);
+                    obj.setProperty(QString::fromStdString(prop.first), prop.second.data.f);
                     break;
 
                 case tbin::PropertyValue::Integer:
-                    obj->setProperty(QString::fromStdString(prop.first), prop.second.data.i);
+                    obj.setProperty(QString::fromStdString(prop.first), prop.second.data.i);
                     break;
             }
         }
@@ -134,7 +134,7 @@ std::unique_ptr<Tiled::Map> TbinMapFormat::read(const QString &fileName)
                                            QSize(firstLayer.layerSize.x, firstLayer.layerSize.y),
                                            QSize(firstLayer.tileSize.x, firstLayer.tileSize.y));
 
-        tbinToTiledProperties(tmap.props, map.get());
+        tbinToTiledProperties(tmap.props, *map);
 
         const QDir fileDir(QFileInfo(fileName).dir());
 
@@ -152,7 +152,7 @@ std::unique_ptr<Tiled::Map> TbinMapFormat::read(const QString &fileName)
             tileset->setImageSource(Tiled::toUrl(QString::fromStdString(ttilesheet.image).replace("\\", "/"), fileDir));
             tileset->loadImage();
 
-            tbinToTiledProperties(ttilesheet.props, tileset.data());
+            tbinToTiledProperties(ttilesheet.props, *tileset);
 
             for (const auto &prop : ttilesheet.props) {
                 if (prop.first[0] != '@')
@@ -165,7 +165,7 @@ std::unique_ptr<Tiled::Map> TbinMapFormat::read(const QString &fileName)
                     tbin::Properties dummyProps;
                     dummyProps.insert(std::make_pair(strs[3].toUtf8().constData(), prop.second));
                     Tiled::Tile *tile = tileset->findOrCreateTile(index);
-                    tbinToTiledProperties(dummyProps, tile);
+                    tbinToTiledProperties(dummyProps, *tile);
                 }
                 // TODO: 'AutoTile' ?
                 // Purely for map making. Appears to be similar to terrains
@@ -178,9 +178,9 @@ std::unique_ptr<Tiled::Map> TbinMapFormat::read(const QString &fileName)
             if (tlayer.tileSize.x != firstLayer.tileSize.x || tlayer.tileSize.y != firstLayer.tileSize.y)
                 throw std::invalid_argument(QT_TR_NOOP("Different tile sizes per layer are not supported."));
 
-            std::unique_ptr<Tiled::TileLayer> layer(new Tiled::TileLayer(QString::fromStdString(tlayer.id), 0, 0, tlayer.layerSize.x, tlayer.layerSize.y));
-            tbinToTiledProperties(tlayer.props, layer.get());
-            std::unique_ptr<Tiled::ObjectGroup> objects(new Tiled::ObjectGroup(QString::fromStdString(tlayer.id), 0, 0));
+            auto layer = std::make_unique<Tiled::TileLayer>(QString::fromStdString(tlayer.id), 0, 0, tlayer.layerSize.x, tlayer.layerSize.y);
+            tbinToTiledProperties(tlayer.props, *layer);
+            auto objects = std::make_unique<Tiled::ObjectGroup>(QString::fromStdString(tlayer.id), 0, 0);
             for (std::size_t i = 0; i < tlayer.tiles.size(); ++i) {
                 const tbin::Tile& ttile = tlayer.tiles[i];
                 int ix = static_cast<int>(i % static_cast<std::size_t>(tlayer.layerSize.x));
@@ -213,9 +213,9 @@ std::unique_ptr<Tiled::Map> TbinMapFormat::read(const QString &fileName)
                 layer->setCell(ix, iy, cell);
 
                 if (ttile.props.size() > 0) {
-                    Tiled::MapObject* obj = new Tiled::MapObject("TileData", QString(), QPointF(ix * tlayer.tileSize.x, iy * tlayer.tileSize.y), QSizeF(tlayer.tileSize.x, tlayer.tileSize.y));
-                    tbinToTiledProperties(ttile.props, obj);
-                    objects->addObject(obj);
+                    auto obj = std::make_unique<Tiled::MapObject>("TileData", QString(), QPointF(ix * tlayer.tileSize.x, iy * tlayer.tileSize.y), QSizeF(tlayer.tileSize.x, tlayer.tileSize.y));
+                    tbinToTiledProperties(ttile.props, *obj);
+                    objects->addObject(std::move(obj));
                 }
             }
             map->addLayer(std::move(layer));

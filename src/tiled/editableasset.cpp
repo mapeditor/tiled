@@ -75,7 +75,7 @@ bool EditableAsset::push(QUndoCommand *command)
     return push(std::unique_ptr<QUndoCommand>(command));
 }
 
-bool EditableAsset::push(std::unique_ptr<QUndoCommand> &&command)
+bool EditableAsset::push(std::unique_ptr<QUndoCommand> command)
 {
     if (checkReadOnly())
         return false;

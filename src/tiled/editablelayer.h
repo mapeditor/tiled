@@ -47,7 +47,7 @@ class EditableLayer : public EditableObject
     Q_PROPERTY(bool isImageLayer READ isImageLayer CONSTANT)
 
 public:
-    explicit EditableLayer(std::unique_ptr<Layer> &&layer,
+    explicit EditableLayer(std::unique_ptr<Layer> layer,
                            QObject *parent = nullptr);
 
     EditableLayer(EditableAsset *asset,

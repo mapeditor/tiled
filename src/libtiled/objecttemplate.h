@@ -51,7 +51,7 @@ public:
 
     const MapObject *object() const;
     void setObject(const MapObject *object);
-    void setObject(std::unique_ptr<MapObject> &&object);
+    void setObject(std::unique_ptr<MapObject> object);
 
     const QString &fileName() const;
     void setFileName(const QString &fileName);

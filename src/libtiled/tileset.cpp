@@ -670,7 +670,7 @@ void Tileset::addWangSet(WangSet *wangSet)
     mWangSets.append(wangSet);
 }
 
-void Tileset::addWangSet(std::unique_ptr<WangSet> &&wangSet)
+void Tileset::addWangSet(std::unique_ptr<WangSet> wangSet)
 {
     addWangSet(wangSet.release());
 }

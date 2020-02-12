@@ -53,7 +53,7 @@ public:
     QUndoStack *undoStack() const;
     bool isModified() const;
     bool push(QUndoCommand *command);
-    bool push(std::unique_ptr<QUndoCommand> &&command);
+    bool push(std::unique_ptr<QUndoCommand> command);
 
     Q_INVOKABLE QJSValue macro(const QString &text, QJSValue callback);
 

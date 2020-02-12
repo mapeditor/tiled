@@ -66,7 +66,7 @@ void ObjectTemplate::setObject(const MapObject *object)
         mTileset.reset();
 }
 
-void ObjectTemplate::setObject(std::unique_ptr<MapObject> &&object)
+void ObjectTemplate::setObject(std::unique_ptr<MapObject> object)
 {
     Q_ASSERT(object);
     mObject = std::move(object);

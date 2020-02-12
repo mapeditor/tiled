@@ -62,7 +62,7 @@ void ObjectGroup::addObject(MapObject *object)
     insertObject(mObjects.size(), object);
 }
 
-void ObjectGroup::addObject(std::unique_ptr<MapObject> &&object)
+void ObjectGroup::addObject(std::unique_ptr<MapObject> object)
 {
     addObject(object.release());
 }

@@ -27,7 +27,7 @@
 
 namespace Tiled {
 
-EditableLayer::EditableLayer(std::unique_ptr<Layer> &&layer, QObject *parent)
+EditableLayer::EditableLayer(std::unique_ptr<Layer> layer, QObject *parent)
     : EditableObject(nullptr, layer.get(), parent)
 {
     mDetachedLayer = std::move(layer);
