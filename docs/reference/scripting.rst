@@ -1323,6 +1323,66 @@ TileMap.resize(size : :ref:`script-size` [, offset : :ref:`script-point` [, remo
 
     See also :ref:`setSize <script-map-setSize>`.
 
+.. _script-map-screenToTile:
+
+TileMap.screenToTile(x : number, y : number) : :ref:`script-point`
+        Converts the given position from screen to tile coordinates.
+
+.. _script-map-screenToTile2:
+
+TileMap.screenToTile(position : :ref:`script-point`) : :ref:`script-point`
+        Converts the given position from screen to tile coordinates.
+
+.. _script-map-tileToScreen:
+
+TileMap.tileToScreen(x : number, y : number) : :ref:`script-point`
+        Converts the given position from tile to screen coordinates.
+
+.. _script-map-tileToScreen2:
+
+TileMap.tileToScreen(position : :ref:`script-point`) : :ref:`script-point`
+        Converts the given position from tile to screen coordinates.
+
+.. _script-map-screenToPixel:
+
+TileMap.screenToPixel(x : number, y : number) : :ref:`script-point`
+        Converts the given position from screen to pixel coordinates.
+
+.. _script-map-screenToPixel2:
+
+TileMap.screenToPixel(position : :ref:`script-point`) : :ref:`script-point`
+        Converts the given position from screen to pixel coordinates.
+
+.. _script-map-pixelToScreen:
+
+TileMap.pixelToScreen(x : number, y : number) : :ref:`script-point`
+        Converts the given position from pixel to screen coordinates.
+
+.. _script-map-pixelToScreen2:
+
+TileMap.pixelToScreen(position : :ref:`script-point`) : :ref:`script-point`
+        Converts the given position from pixel to screen coordinates.
+
+.. _script-map-pixelToTile:
+
+TileMap.pixelToTile(x : number, y : number) : :ref:`script-point`
+        Converts the given position from pixel to tile coordinates.
+
+.. _script-map-pixelToTile2:
+
+TileMap.pixelToTile(position : :ref:`script-point`) : :ref:`script-point`
+        Converts the given position from pixel to tile coordinates.
+
+.. _script-map-tileToPixel:
+
+TileMap.tileToPixel(x : number, y : number) : :ref:`script-point`
+        Converts the given position from tile to pixel coordinates.
+
+.. _script-map-tileToPixel2:
+
+TileMap.tileToPixel(position : :ref:`script-point`) : :ref:`script-point`
+        Converts the given position from tile to pixel coordinates.
+
 .. _script-tileset:
 
 Tileset

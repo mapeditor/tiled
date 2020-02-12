@@ -388,6 +388,48 @@ void EditableMap::autoMap(const RegionValueType &region, const QString &rulesFil
         manager.autoMapRegion(region.region());
 }
 
+QPointF EditableMap::screenToTile(qreal x, qreal y) const
+{
+    if (auto renderer = this->renderer())
+        return renderer->screenToTileCoords(x, y);
+    return QPointF(x, y);
+}
+
+QPointF EditableMap::tileToScreen(qreal x, qreal y) const
+{
+    if (auto renderer = this->renderer())
+        return renderer->tileToScreenCoords(x, y);
+    return QPointF(x, y);
+}
+
+QPointF EditableMap::screenToPixel(qreal x, qreal y) const
+{
+    if (auto renderer = this->renderer())
+        return renderer->screenToPixelCoords(x, y);
+    return QPointF(x, y);
+}
+
+QPointF EditableMap::pixelToScreen(qreal x, qreal y) const
+{
+    if (auto renderer = this->renderer())
+        return renderer->pixelToScreenCoords(x, y);
+    return QPointF(x, y);
+}
+
+QPointF EditableMap::pixelToTile(qreal x, qreal y) const
+{
+    if (auto renderer = this->renderer())
+        return renderer->pixelToTileCoords(x, y);
+    return QPointF(x, y);
+}
+
+QPointF EditableMap::tileToPixel(qreal x, qreal y) const
+{
+    if (auto renderer = this->renderer())
+        return renderer->tileToPixelCoords(x, y);
+    return QPointF(x, y);
+}
+
 void EditableMap::setSize(int width, int height)
 {
     if (auto doc = mapDocument()) {
