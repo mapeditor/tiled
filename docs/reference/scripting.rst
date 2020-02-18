@@ -598,7 +598,7 @@ Properties
 ~~~~~~~~~~
 
 .. csv-table::
-    widths: 1, 2
+    :widths: 1, 2
 
     **canRead** : bool |ro|, Whether this format supports reading files.
     **canWrite** : bool |ro|, Whether this format supports writing files.
@@ -775,11 +775,11 @@ Functions
 ~~~~~~~~~
 
 MapFormat.read(fileName : string) : :ref:`script-map`
-    Read the given file as a map. This function will throw an error if it
+    Read the given file as a map. This function will throw an error if reading
     is not supported.
 
 MapFormat.write(map : :ref:`script-map`, fileName : string) : string
-    Write the given map to a file. This function will throw an error if it
+    Write the given map to a file. This function will throw an error if writing
     is not supported. If there is an error writing the file, it will return a
     description of the error; otherwise, it will return "".
 
@@ -1492,11 +1492,11 @@ Functions
 ~~~~~~~~~
 
 TilesetFormat.read(fileName : string) : :ref:`script-tileset`
-    Read the given file as a tileset. This function will throw an error if it
+    Read the given file as a tileset. This function will throw an error if reading
     is not supported.
 
 TilesetFormat.write(tileset : :ref:`script-tileset`, fileName : string) : string
-    Write the given tileset to a file. This function will throw an error if it
+    Write the given tileset to a file. This function will throw an error if writing
     is not supported. If there is an error writing the file, it will return a
     description of the error; otherwise, it will return "".
 
