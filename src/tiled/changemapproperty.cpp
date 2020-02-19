@@ -53,6 +53,10 @@ ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
         setText(QCoreApplication::translate("Undo Commands",
                                             "Change Hex Side Length"));
         break;
+    case CompressionLevel:
+        setText(QCoreApplication::translate("Undo Commands",
+                                            "Change Compression Level"));
+        break;
     default:
         break;
     }

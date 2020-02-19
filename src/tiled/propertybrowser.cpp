@@ -642,7 +642,7 @@ void PropertyBrowser::addMapProperties()
                         tr("Tile Render Order"),
                         groupProperty);
 
-    addProperty(CompressionLevelProperty, QVariant::Int, tr("Compression level"), groupProperty);
+    addProperty(CompressionLevelProperty, QVariant::Int, tr("Compression Level"), groupProperty);
 
     renderOrderProperty->setAttribute(QLatin1String("enumNames"), mRenderOrderNames);
 
