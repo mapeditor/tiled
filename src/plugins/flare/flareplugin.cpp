@@ -95,8 +95,8 @@ std::unique_ptr<Tiled::Map> FlarePlugin::read(const QString &fileName)
             //get map properties
             int epos = line.indexOf(QChar('='));
             if (epos != -1) {
-                QString key = line.left(epos).trimmed();
-                QString value = line.mid(epos + 1, -1).trimmed();
+                const QStringRef key = line.leftRef(epos).trimmed();
+                const QStringRef value = line.midRef(epos + 1, -1).trimmed();
                 if (key == QLatin1String("width"))
                     map->setWidth(value.toInt());
                 else if (key == QLatin1String("height"))
@@ -106,9 +106,9 @@ std::unique_ptr<Tiled::Map> FlarePlugin::read(const QString &fileName)
                 else if (key == QLatin1String("tileheight"))
                     map->setTileHeight(value.toInt());
                 else if (key == QLatin1String("orientation"))
-                    map->setOrientation(orientationFromString(value));
+                    map->setOrientation(orientationFromString(value.toString()));
                 else if (key == QLatin1String("background_color")){
-                    QStringList rgbaList = value.split(',');
+                    QVector<QStringRef> rgbaList = value.split(',');
 
                     if (!rgbaList.isEmpty())
                         backgroundColor.setRed(rgbaList.takeFirst().toInt());
@@ -122,17 +122,17 @@ std::unique_ptr<Tiled::Map> FlarePlugin::read(const QString &fileName)
                     map->setBackgroundColor(backgroundColor);
                 }
                 else
-                    map->setProperty(key, value);
+                    map->setProperty(key.toString(), value.toString());
             }
         } else if (sectionName == QLatin1String("tilesets")) {
             tilesetsSectionFound = true;
             int epos = line.indexOf(QChar('='));
-            QString key = line.left(epos).trimmed();
-            QString value = line.mid(epos + 1, -1).trimmed();
+            const QStringRef key = line.leftRef(epos).trimmed();
+            const QStringRef value = line.midRef(epos + 1, -1).trimmed();
             if (key == QLatin1String("tileset")) {
-                QStringList list = value.split(QChar(','));
+                const QVector<QStringRef> list = value.split(QChar(','));
 
-                QString absoluteSource(list.first());
+                QString absoluteSource(list.first().toString());
                 if (QDir::isRelativePath(absoluteSource))
                     absoluteSource = path + QLatin1Char('/') + absoluteSource;
 
@@ -149,11 +149,11 @@ std::unique_ptr<Tiled::Map> FlarePlugin::read(const QString &fileName)
 
                 if (!ok) {
                     mError = tr("Error loading tileset %1, which expands to %2. Path not found!")
-                            .arg(list[0], absoluteSource);
+                            .arg(list.first().toString(), absoluteSource);
                     return nullptr;
                 } else {
                     if (list.size() > 4)
-                        tileset->setTileOffset(QPoint(list[3].toInt(),list[4].toInt()));
+                        tileset->setTileOffset(QPoint(list[3].toInt(), list[4].toInt()));
 
                     gidMapper.insert(gid, tileset);
                     if (list.size() > 5) {
@@ -172,12 +172,13 @@ std::unique_ptr<Tiled::Map> FlarePlugin::read(const QString &fileName)
             tilelayerSectionFound = true;
             int epos = line.indexOf(QChar('='));
             if (epos != -1) {
-                QString key = line.left(epos).trimmed();
-                QString value = line.mid(epos + 1, -1).trimmed();
+                const QStringRef key = line.leftRef(epos).trimmed();
+                const QStringRef value = line.midRef(epos + 1, -1).trimmed();
 
                 if (key == QLatin1String("type")) {
-                    tilelayer = new TileLayer(value, 0, 0,
-                                              map->width(),map->height());
+                    tilelayer = new TileLayer(value.toString(), 0, 0,
+                                              map->width(),
+                                              map->height());
                     map->addLayer(tilelayer);
                 } else if (key == QLatin1String("format")) {
                     if (value == QLatin1String("dec")) {
@@ -201,7 +202,7 @@ std::unique_ptr<Tiled::Map> FlarePlugin::read(const QString &fileName)
                         }
                     }
                 } else {
-                    tilelayer->setProperty(key, value);
+                    tilelayer->setProperty(key.toString(), value.toString());
                 }
             }
         } else {
@@ -220,18 +221,18 @@ std::unique_ptr<Tiled::Map> FlarePlugin::read(const QString &fileName)
                 continue;
 
             if (startsWith == QChar('#')) {
-                QString name = line.mid(1).trimmed();
+                QString name = line.midRef(1).trimmed().toString();
                 mapobject->setName(name);
             }
 
             int epos = line.indexOf(QChar('='));
             if (epos != -1) {
-                QString key = line.left(epos).trimmed();
-                QString value = line.mid(epos + 1, -1).trimmed();
+                const QStringRef key = line.leftRef(epos).trimmed();
+                const QStringRef value = line.midRef(epos + 1, -1).trimmed();
                 if (key == QLatin1String("type")) {
-                    mapobject->setType(value);
+                    mapobject->setType(value.toString());
                 } else if (key == QLatin1String("location")) {
-                    QStringList loc = value.split(QChar(','));
+                    const QVector<QStringRef> loc = value.split(QChar(','));
                     qreal x,y;
                     qreal w,h;
                     if (map->orientation() == Map::Orthogonal) {
@@ -257,7 +258,7 @@ std::unique_ptr<Tiled::Map> FlarePlugin::read(const QString &fileName)
                     mapobject->setPosition(QPointF(x, y));
                     mapobject->setSize(w, h);
                 } else {
-                    mapobject->setProperty(key, value);
+                    mapobject->setProperty(key.toString(), value.toString());
                 }
             }
         }
