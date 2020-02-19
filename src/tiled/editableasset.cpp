@@ -67,7 +67,9 @@ QUndoStack *EditableAsset::undoStack() const
  */
 bool EditableAsset::isModified() const
 {
-    return !undoStack()->isClean();
+    if (auto stack = undoStack())
+        return !undoStack()->isClean();
+    return false;
 }
 
 bool EditableAsset::push(QUndoCommand *command)
@@ -91,21 +93,33 @@ QJSValue EditableAsset::macro(const QString &text, QJSValue callback)
         return QJSValue();
     }
 
-    undoStack()->beginMacro(text);
+    auto stack = undoStack();
+    if (stack)
+        undoStack()->beginMacro(text);
+
     QJSValue result = callback.call();
     ScriptManager::instance().checkError(result);
-    undoStack()->endMacro();
+
+    if (stack)
+        undoStack()->endMacro();
+
     return result;
 }
 
 void EditableAsset::undo()
 {
-    undoStack()->undo();
+    if (auto stack = undoStack())
+        stack->undo();
+    else
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Undo system not available for this asset"));
 }
 
 void EditableAsset::redo()
 {
-    undoStack()->redo();
+    if (auto stack = undoStack())
+        stack->redo();
+    else
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Undo system not available for this asset"));
 }
 
 } // namespace Tiled

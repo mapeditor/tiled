@@ -527,9 +527,9 @@ Inherits :ref:`script-object`.
 Represents any top-level data type that can be saved to a file. Currently
 either a :ref:`script-map` or a :ref:`script-tileset`.
 
-All modifications made to assets and their contained parts create undo
-commands. This includes both modifying functions that are called as well as
-simply assigning to a writable property.
+For assets that are loaded in the editor, all modifications and modifications
+to their contained parts create undo commands. This includes both modifying
+functions that are called as well as simply assigning to a writable property.
 
 Properties
 ~~~~~~~~~~
@@ -563,6 +563,18 @@ Asset.macro(text : string, callback : function) : value
         })
 
     The returned value is whatever the callback function returned.
+
+.. _script-asset-undo:
+
+Asset.undo() : void
+    Undoes the last applied change. Note that the undo system is only enabled
+    for assets loaded in the editor!
+
+.. _script-asset-redo:
+
+Asset.redo() : void
+    Redoes the last change that was undone. Note that the undo system is only
+    enabled for assets loaded in the editor!
 
 .. _script-map:
 
