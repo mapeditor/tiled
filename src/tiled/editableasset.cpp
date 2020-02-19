@@ -68,7 +68,7 @@ QUndoStack *EditableAsset::undoStack() const
 bool EditableAsset::isModified() const
 {
     if (auto stack = undoStack())
-        return !undoStack()->isClean();
+        return !stack->isClean();
     return false;
 }
 
