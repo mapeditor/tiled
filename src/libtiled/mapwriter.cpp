@@ -206,7 +206,8 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
     w.writeAttribute(QLatin1String("tiledversion"), QCoreApplication::applicationVersion());
     w.writeAttribute(QLatin1String("orientation"), orientation);
     w.writeAttribute(QLatin1String("renderorder"), renderOrder);
-    w.writeAttribute(QLatin1String("compressionlevel"), QString::number(map.compressionLevel()));
+    if (map.compressionLevel() >= 0)
+        w.writeAttribute(QLatin1String("compressionlevel"), QString::number(map.compressionLevel()));
     w.writeAttribute(QLatin1String("width"), QString::number(map.width()));
     w.writeAttribute(QLatin1String("height"), QString::number(map.height()));
     w.writeAttribute(QLatin1String("tilewidth"),
