@@ -54,6 +54,11 @@ void Preferences::deleteInstance()
 Preferences::Preferences()
     : mSettings(new QSettings(this))
 {
+    // Make sure the data directory exists
+    const QDir dataDir { dataLocation() };
+    if (!dataDir.exists())
+        dataDir.mkpath(QStringLiteral("."));
+
     connect(&mWatcher, &FileSystemWatcher::fileChanged,
             this, &Preferences::objectTypesFileChangedOnDisk);
 
