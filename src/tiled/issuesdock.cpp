@@ -196,7 +196,7 @@ IssuesDock::IssuesDock(QWidget *parent)
     toolBarLayout->addWidget(mFilterEdit);
     toolBarLayout->addWidget(showWarningsCheckBox);
     toolBarLayout->addWidget(clearButton);
-    toolBarLayout->setSpacing(10);
+    toolBarLayout->setSpacing(Utils::dpiScaled(7));
 
     auto widget = new QWidget(this);
     auto layout = new QVBoxLayout(widget);

@@ -24,18 +24,45 @@
 #include "logginginterface.h"
 #include "preferences.h"
 #include "scriptmanager.h"
+#include "utils.h"
 
+#include <QCoreApplication>
 #include <QLineEdit>
+#include <QMenu>
 #include <QPlainTextEdit>
+#include <QPushButton>
 #include <QSettings>
 #include <QShortcut>
 #include <QVBoxLayout>
 
 namespace Tiled {
 
+class ConsoleOutputWidget : public QPlainTextEdit
+{
+public:
+    using QPlainTextEdit::QPlainTextEdit;
+
+protected:
+    void contextMenuEvent(QContextMenuEvent *event) override;
+};
+
+void ConsoleOutputWidget::contextMenuEvent(QContextMenuEvent *event)
+{
+    std::unique_ptr<QMenu> menu { createStandardContextMenu(event->pos()) };
+
+    auto clearIcon = QIcon::fromTheme(QStringLiteral("edit-clear"));
+    menu->addSeparator();
+    menu->addAction(clearIcon,
+                    QCoreApplication::translate("Tiled::ConsoleDock", "Clear Console"),
+                    this, &QPlainTextEdit::clear);
+
+    menu->exec(event->globalPos());
+}
+
+
 ConsoleDock::ConsoleDock(QWidget *parent)
     : QDockWidget(parent)
-    , mPlainTextEdit(new QPlainTextEdit)
+    , mPlainTextEdit(new ConsoleOutputWidget)
     , mLineEdit(new QLineEdit)
 {
     setObjectName(QLatin1String("ConsoleDock"));
@@ -62,8 +89,16 @@ ConsoleDock::ConsoleDock(QWidget *parent)
     auto nextShortcut = new QShortcut(Qt::Key_Down, mLineEdit, nullptr, nullptr, Qt::WidgetShortcut);
     connect(nextShortcut, &QShortcut::activated, [this] { moveHistory(1); });
 
+    auto clearButton = new QPushButton(tr("Clear Console"));
+    connect(clearButton, &QPushButton::clicked, mPlainTextEdit, &QPlainTextEdit::clear);
+
+    auto bottomBar = new QHBoxLayout;
+    bottomBar->addWidget(mLineEdit);
+    bottomBar->addWidget(clearButton);
+    bottomBar->setSpacing(Utils::dpiScaled(7));
+
     layout->addWidget(mPlainTextEdit);
-    layout->addWidget(mLineEdit);
+    layout->addLayout(bottomBar);
 
     auto& logger = LoggingInterface::instance();
     connect(&logger, &LoggingInterface::info, this, &ConsoleDock::appendInfo);
