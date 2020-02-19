@@ -120,8 +120,10 @@ std::unique_ptr<Map> VariantToMapConverter::toMap(const QVariant &variant,
             tileset->loadImage();
     }
 
-    const int compressionLevel = variantMap[QLatin1String("compressionlevel")].toInt();
-    map->setCompressionLevel(compressionLevel);
+    bool ok;
+    const int compressionLevel = variantMap[QLatin1String("compressionlevel")].toInt(&ok);
+    if (ok)
+        map->setCompressionLevel(compressionLevel);
 
     return map;
 }

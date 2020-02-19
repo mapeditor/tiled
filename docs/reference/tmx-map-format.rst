@@ -51,6 +51,8 @@ existing tools.*
    Valid values are ``right-down`` (the default), ``right-up``,
    ``left-down`` and ``left-up``. In all cases, the map is drawn
    row-by-row. (only supported for orthogonal maps at the moment)
+-  **compressionlevel:** The compression level to use for tile layer data
+   (defaults to -1, which means to use the algorithm default).
 -  **width:** The map width in tiles.
 -  **height:** The map height in tiles.
 -  **tilewidth:** The width of a tile.
@@ -776,6 +778,6 @@ Can contain at most one: :ref:`tmx-tileset`, :ref:`tmx-object`
 
    Creative Commons License
 
-The **TMX Map Format** by http://www.mapeditor.org is licensed under a
+The **TMX Map Format** by https://www.mapeditor.org is licensed under a
 `Creative Commons Attribution-ShareAlike 3.0 Unported
 License <http://creativecommons.org/licenses/by-sa/3.0/>`__.
