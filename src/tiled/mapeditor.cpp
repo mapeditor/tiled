@@ -100,7 +100,6 @@
 
 static const char SIZE_KEY[] = "MapEditor/Size";
 static const char STATE_KEY[] = "MapEditor/State";
-static const char MAPSTATES_KEY[] = "MapEditor/MapStates";
 
 namespace Tiled {
 
