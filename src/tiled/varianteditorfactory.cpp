@@ -227,8 +227,12 @@ void VariantEditorFactory::slotPropertyChanged(QtProperty *property,
             edit->setText(value.toString());
     }
     else if (mCreatedComboBoxes.contains(property)) {
-        for (QComboBox *comboBox: qAsConst(mCreatedComboBoxes)[property])
+        for (QComboBox *comboBox : qAsConst(mCreatedComboBoxes)[property])
             comboBox->setCurrentText(value.toString());
+    }
+    else if (mCreatedObjectRefEdits.contains(property)) {
+        for (ObjectRefEdit *objectRefEdit : qAsConst(mCreatedObjectRefEdits)[property])
+            objectRefEdit->setValue(value.value<DisplayObjectRef>());
     }
 }
 
