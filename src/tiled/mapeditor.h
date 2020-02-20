@@ -111,6 +111,7 @@ public:
     Zoomable *zoomable() const override;
 
     void saveDocumentState(MapDocument *mapDocument) const;
+    void restoreDocumentState(MapDocument *mapDocument) const;
 
     void setCurrentTileset(const SharedTileset &tileset);
     SharedTileset currentTileset() const;

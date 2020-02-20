@@ -1354,6 +1354,13 @@ void MainWindow::setFullScreen(bool fullScreen)
 
 void MainWindow::toggleClearView(bool clearView)
 {
+    MapView *mapView = nullptr;
+    if (mDocument && mDocument->type() == Document::MapDocumentType) {
+        auto mapEditor = static_cast<MapEditor*>(mDocumentManager->editor(Document::MapDocumentType));
+        mapView = mapEditor->currentMapView();
+        mapView->setResizeAnchor(QGraphicsView::AnchorViewCenter);
+    }
+
     if (clearView) {
         mMainWindowStates.insert(this, saveState());
 
@@ -1382,6 +1389,11 @@ void MainWindow::toggleClearView(bool clearView)
         }
         mMainWindowStates.clear();
     }
+
+    layout()->activate();
+
+    if (mapView)
+        mapView->setResizeAnchor(QGraphicsView::NoAnchor);
 }
 
 bool MainWindow::newTileset(const QString &path)

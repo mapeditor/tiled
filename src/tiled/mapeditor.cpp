@@ -345,25 +345,7 @@ void MapEditor::addDocument(Document *document)
     mWidgetForMap.insert(mapDocument, view);
     mWidgetStack->addWidget(view);
 
-    // restore the previous state for this map
-    const QVariantMap fileState = prefs->session().fileState(document->fileName());
-    if (!fileState.isEmpty()) {
-        qreal scale = fileState.value(QLatin1String("scale")).toReal();
-        if (scale > 0)
-            view->zoomable()->setScale(scale);
-
-        const QVariantMap viewCenterVariant = fileState.value(QLatin1String("viewCenter")).toMap();
-        const QPointF viewCenter(viewCenterVariant.value(QLatin1String("x")).toReal(),
-                                 viewCenterVariant.value(QLatin1String("y")).toReal());
-        view->forceCenterOn(viewCenter);
-
-        int layerIndex = fileState.value(QLatin1String("selectedLayer")).toInt();
-        if (Layer *layer = layerAtGlobalIndex(mapDocument->map(), layerIndex))
-            mapDocument->switchCurrentLayer(layer);
-
-        // suppress fitting map in view upon show event
-        view->setViewInitialized();
-    }
+    restoreDocumentState(mapDocument);
 }
 
 void MapEditor::removeDocument(Document *document)
@@ -616,25 +598,53 @@ void MapEditor::saveDocumentState(MapDocument *mapDocument) const
     if (!mapView)
         return;
 
-    // remember the state of this map before deleting the view
-    if (!mapDocument->fileName().isEmpty()) {
-        QVariantMap fileState;
-        fileState.insert(QLatin1String("scale"), mapView->zoomable()->scale());
+    if (mapDocument->fileName().isEmpty())
+        return;
 
-        const QRect viewportRect = mapView->viewport()->rect();
-        const QPointF viewCenter = mapView->mapToScene(viewportRect).boundingRect().center();
+    QVariantMap fileState;
+    fileState.insert(QLatin1String("scale"), mapView->zoomable()->scale());
 
-        QVariantMap viewCenterVariant;
-        viewCenterVariant.insert(QLatin1String("x"), viewCenter.x());
-        viewCenterVariant.insert(QLatin1String("y"), viewCenter.y());
-        fileState.insert(QLatin1String("viewCenter"), viewCenterVariant);
+    const QRect viewportRect = mapView->viewport()->rect();
+    const QPointF viewCenter = mapView->mapToScene(viewportRect).boundingRect().center();
 
-        fileState.insert(QLatin1String("selectedLayer"), globalIndex(mapDocument->currentLayer()));
+    QVariantMap viewCenterVariant;
+    viewCenterVariant.insert(QLatin1String("x"), viewCenter.x());
+    viewCenterVariant.insert(QLatin1String("y"), viewCenter.y());
+    fileState.insert(QLatin1String("viewCenter"), viewCenterVariant);
 
-        Preferences *prefs = Preferences::instance();
-        prefs->session().setFileState(mapDocument->fileName(), fileState);
-        prefs->saveSession();
-    }
+    fileState.insert(QLatin1String("selectedLayer"), globalIndex(mapDocument->currentLayer()));
+
+    Preferences *prefs = Preferences::instance();
+    prefs->session().setFileState(mapDocument->fileName(), fileState);
+    prefs->saveSession();
+}
+
+void MapEditor::restoreDocumentState(MapDocument *mapDocument) const
+{
+    MapView *mapView = mWidgetForMap.value(mapDocument);
+    if (!mapView)
+        return;
+
+    Preferences *prefs = Preferences::instance();
+    const QVariantMap fileState = prefs->session().fileState(mapDocument->fileName());
+    if (fileState.isEmpty())
+        return;
+
+    qreal scale = fileState.value(QLatin1String("scale")).toReal();
+    if (scale > 0)
+        mapView->zoomable()->setScale(scale);
+
+    const QVariantMap viewCenterVariant = fileState.value(QLatin1String("viewCenter")).toMap();
+    const QPointF viewCenter(viewCenterVariant.value(QLatin1String("x")).toReal(),
+                             viewCenterVariant.value(QLatin1String("y")).toReal());
+    mapView->forceCenterOn(viewCenter);
+
+    int layerIndex = fileState.value(QLatin1String("selectedLayer")).toInt();
+    if (Layer *layer = layerAtGlobalIndex(mapDocument->map(), layerIndex))
+        mapDocument->switchCurrentLayer(layer);
+
+    // suppress fitting map in view upon show event
+    mapView->setViewInitialized();
 }
 
 void MapEditor::setSelectedTool(AbstractTool *tool)
