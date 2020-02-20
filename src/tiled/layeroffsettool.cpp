@@ -56,6 +56,7 @@ void LayerOffsetTool::mouseEntered()
 
 void LayerOffsetTool::mouseLeft()
 {
+    setStatusInfo(QString());
 }
 
 void LayerOffsetTool::activate(MapScene *)

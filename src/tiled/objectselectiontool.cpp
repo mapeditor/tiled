@@ -455,6 +455,7 @@ void ObjectSelectionTool::mouseEntered()
 void ObjectSelectionTool::mouseLeft()
 {
     mapDocument()->setHoveredMapObject(nullptr);
+    AbstractObjectTool::mouseLeft();
 }
 
 void ObjectSelectionTool::mouseMoved(const QPointF &pos,
