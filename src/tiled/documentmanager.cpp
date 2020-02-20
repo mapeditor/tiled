@@ -616,8 +616,7 @@ DocumentPtr DocumentManager::loadDocument(const QString &fileName,
 }
 
 /**
- * Save the given document with the given file name. When saved
- * successfully, the file is added to the list of recent files.
+ * Save the given document with the given file name.
  *
  * @return <code>true</code> on success, <code>false</code> on failure
  */
@@ -633,8 +632,6 @@ bool DocumentManager::saveDocument(Document *document, const QString &fileName)
         QMessageBox::critical(mWidget->window(), QCoreApplication::translate("Tiled::MainWindow", "Error Saving File"), error);
         return false;
     }
-
-    Preferences::instance()->addRecentFile(fileName);
 
     emit documentSaved(document);
 
@@ -793,6 +790,8 @@ void DocumentManager::closeDocumentsToRight(int index)
 /**
  * Closes the document at the given \a index. Will not ask the user whether
  * to save any changes!
+ *
+ * The file is added to the list of recent files.
  */
 void DocumentManager::closeDocumentAt(int index)
 {
@@ -822,6 +821,9 @@ void DocumentManager::closeDocumentAt(int index)
             tilesetDocument->disconnect(this);
         }
     }
+
+    if (!document->fileName().isEmpty())
+        Preferences::instance()->addRecentFile(document->fileName());
 
     updateSession();
 }

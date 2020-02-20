@@ -159,6 +159,7 @@ private:
     void showDonationDialog();
     void aboutTiled();
     void openRecentFile();
+    void reopenClosedFile();
     void openRecentProject();
 
     void documentChanged(Document *document);

@@ -261,16 +261,17 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerAction(mUi->actionQuit, "Quit");
     ActionManager::registerAction(mUi->actionRefreshProjectFolders, "RefreshProjectFolders");
     ActionManager::registerAction(mUi->actionReload, "Reload");
+    ActionManager::registerAction(mUi->actionReopenClosedFile, "ReopenClosedFile");
     ActionManager::registerAction(mUi->actionResizeMap, "ResizeMap");
     ActionManager::registerAction(mUi->actionSave, "Save");
     ActionManager::registerAction(mUi->actionSaveAll, "SaveAll");
     ActionManager::registerAction(mUi->actionSaveAs, "SaveAs");
     ActionManager::registerAction(mUi->actionSaveProjectAs, "SaveProjectAs");
     ActionManager::registerAction(mUi->actionShowGrid, "ShowGrid");
+    ActionManager::registerAction(mUi->actionShowObjectReferences, "ShowObjectReferences");
     ActionManager::registerAction(mUi->actionShowTileAnimations, "ShowTileAnimations");
     ActionManager::registerAction(mUi->actionShowTileCollisionShapes, "ShowTileCollisionShapes");
     ActionManager::registerAction(mUi->actionShowTileObjectOutlines, "ShowTileObjectOutlines");
-    ActionManager::registerAction(mUi->actionShowObjectReferences, "ShowObjectReferences");
     ActionManager::registerAction(mUi->actionSnapNothing, "SnapNothing");
     ActionManager::registerAction(mUi->actionSnapToFineGrid, "SnapToFineGrid");
     ActionManager::registerAction(mUi->actionSnapToGrid, "SnapToGrid");
@@ -481,6 +482,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionNewMap, &QAction::triggered, this, &MainWindow::newMap);
     connect(mUi->actionNewTileset, &QAction::triggered, this, [this] { newTileset(); });
     connect(mUi->actionOpen, &QAction::triggered, this, &MainWindow::openFileDialog);
+    connect(mUi->actionReopenClosedFile, &QAction::triggered, this, &MainWindow::reopenClosedFile);
     connect(mUi->actionClearRecentFiles, &QAction::triggered, preferences, &Preferences::clearRecentFiles);
     connect(mUi->actionSave, &QAction::triggered, this, &MainWindow::saveFile);
     connect(mUi->actionSaveAs, &QAction::triggered, this, &MainWindow::saveFileAs);
@@ -892,7 +894,6 @@ bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
         tilesetDocument->tileset()->syncExpectedColumnsAndRows();
     }
 
-    Preferences::instance()->addRecentFile(fileName);
     return true;
 }
 
@@ -987,8 +988,6 @@ void MainWindow::saveAll()
             QMessageBox::critical(this, tr("Error Saving File"), error);
             return;
         }
-
-        Preferences::instance()->addRecentFile(fileName);
     }
 }
 
@@ -1619,6 +1618,17 @@ void MainWindow::openRecentFile()
     QAction *action = qobject_cast<QAction *>(sender());
     if (action)
         openFile(action->data().toString());
+}
+
+void MainWindow::reopenClosedFile()
+{
+    const auto recentFiles = Preferences::instance()->session().recentFiles();
+    for (const QString &file : recentFiles) {
+        if (mDocumentManager->findDocument(file) == -1) {
+            openFile(file);
+            break;
+        }
+    }
 }
 
 void MainWindow::openRecentProject()

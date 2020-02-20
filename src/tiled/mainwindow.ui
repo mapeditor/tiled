@@ -38,7 +38,7 @@
      <x>0</x>
      <y>0</y>
      <width>553</width>
-     <height>31</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -56,6 +56,8 @@
      <property name="toolTipsVisible">
       <bool>true</bool>
      </property>
+     <addaction name="actionReopenClosedFile"/>
+     <addaction name="separator"/>
      <addaction name="actionClearRecentFiles"/>
     </widget>
     <widget class="QMenu" name="menuNew">
@@ -725,6 +727,14 @@
    </property>
    <property name="text">
     <string>Show Object &amp;References</string>
+   </property>
+  </action>
+  <action name="actionReopenClosedFile">
+   <property name="text">
+    <string>Reopen Closed File</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+T</string>
    </property>
   </action>
  </widget>
