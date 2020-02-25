@@ -98,6 +98,9 @@ public:
     bool isEnabled() const;
     void setEnabled(bool enabled);
 
+    bool isVisible() const;
+    void setVisible(bool visible);
+
     ToolManager *toolManager() const;
     Tile *tile() const;
     ObjectTemplate *objectTemplate() const;
@@ -198,6 +201,7 @@ signals:
     void statusInfoChanged(const QString &statusInfo);
     void cursorChanged(const QCursor &cursor);
     void enabledChanged(bool enabled);
+    void visibleChanged(bool visible);
 
 private:
     friend class ToolManager;
@@ -208,10 +212,11 @@ private:
     QString mStatusInfo;
     QCursor mCursor;
     Id mId;
-    bool mEnabled;
+    bool mEnabled = false;
+    bool mVisible = true;
 
-    ToolManager *mToolManager;
-    MapDocument *mMapDocument;
+    ToolManager *mToolManager = nullptr;
+    MapDocument *mMapDocument = nullptr;
 };
 
 
@@ -254,6 +259,11 @@ inline QCursor AbstractTool::cursor() const
 inline bool AbstractTool::isEnabled() const
 {
     return mEnabled;
+}
+
+inline bool AbstractTool::isVisible() const
+{
+    return mVisible;
 }
 
 /**

@@ -49,6 +49,7 @@
 #include "minimapdock.h"
 #include "newtilesetdialog.h"
 #include "objectgroup.h"
+#include "objectreferencetool.h"
 #include "objectsdock.h"
 #include "objectselectiontool.h"
 #include "objecttemplate.h"
@@ -198,6 +199,7 @@ MapEditor::MapEditor(QObject *parent)
     mToolsToolBar->addAction(mToolManager->registerTool(new SelectSameTileTool(this)));
     mToolsToolBar->addSeparator();
     mToolsToolBar->addAction(mToolManager->registerTool(new ObjectSelectionTool(this)));
+    mToolsToolBar->addAction(mToolManager->registerTool(new ObjectReferenceTool(this)));
     mToolsToolBar->addAction(mToolManager->registerTool(mEditPolygonTool));
     mToolsToolBar->addAction(mToolManager->registerTool(rectangleObjectsTool));
     mToolsToolBar->addAction(mToolManager->registerTool(pointObjectsTool));

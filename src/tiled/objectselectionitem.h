@@ -39,7 +39,7 @@ class MapDocument;
 class MapObjectItem;
 class MapObjectLabel;
 class MapObjectOutline;
-class MapObjectReferenceItem;
+class ObjectReferenceItem;
 
 /**
  * A graphics item displaying object selection.
@@ -93,8 +93,8 @@ private:
     MapDocument *mMapDocument;
     QHash<MapObject*, MapObjectLabel*> mObjectLabels;
     QHash<MapObject*, MapObjectOutline*> mObjectOutlines;
-    QHash<MapObject*, QList<MapObjectReferenceItem*>> mReferencesBySourceObject;
-    QHash<MapObject*, QList<MapObjectReferenceItem*>> mReferencesByTargetObject;
+    QHash<MapObject*, QList<ObjectReferenceItem*>> mReferencesBySourceObject;
+    QHash<MapObject*, QList<ObjectReferenceItem*>> mReferencesByTargetObject;
     std::unique_ptr<MapObjectItem> mHoveredMapObjectItem;
 };
 

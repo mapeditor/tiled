@@ -172,6 +172,8 @@ SOURCES += aboutdialog.cpp \
     objectgroupitem.cpp \
     objectrefdialog.cpp \
     objectrefedit.cpp \
+    objectreferenceitem.cpp \
+    objectreferencetool.cpp \
     objectsdock.cpp \
     objectselectionitem.cpp \
     objectselectiontool.cpp \
@@ -404,6 +406,8 @@ HEADERS += aboutdialog.h \
     objectgroupitem.h \
     objectrefdialog.h \
     objectrefedit.h \
+    objectreferenceitem.h \
+    objectreferencetool.h \
     objectsdock.h \
     objectselectionitem.h \
     objectselectiontool.h \

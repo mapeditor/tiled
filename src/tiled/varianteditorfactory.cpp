@@ -298,9 +298,9 @@ void VariantEditorFactory::comboBoxPropertyEditTextChanged(const QString &value)
 
 void VariantEditorFactory::objectRefEditValueChanged(const DisplayObjectRef &value)
 {
-    auto objectIdEdit = qobject_cast<ObjectRefEdit*>(sender());
-    Q_ASSERT(objectIdEdit);
-    if (QtProperty *property = mObjectRefEditToProperty.value(objectIdEdit)) {
+    auto objectRefEdit = qobject_cast<ObjectRefEdit*>(sender());
+    Q_ASSERT(objectRefEdit);
+    if (QtProperty *property = mObjectRefEditToProperty.value(objectRefEdit)) {
         QtVariantPropertyManager *manager = propertyManager(property);
         if (!manager)
             return;
@@ -312,11 +312,11 @@ void VariantEditorFactory::slotEditorDestroyed(QObject *object)
 {
     // Check if it was an ObjectRefEdit
     {
-        ObjectRefEdit *objectIdEdit = static_cast<ObjectRefEdit*>(object);
+        ObjectRefEdit *objectRefEdit = static_cast<ObjectRefEdit*>(object);
 
-        if (QtProperty *property = mObjectRefEditToProperty.value(objectIdEdit)) {
-            mObjectRefEditToProperty.remove(objectIdEdit);
-            mCreatedObjectRefEdits[property].removeAll(objectIdEdit);
+        if (QtProperty *property = mObjectRefEditToProperty.value(objectRefEdit)) {
+            mObjectRefEditToProperty.remove(objectRefEdit);
+            mCreatedObjectRefEdits[property].removeAll(objectRefEdit);
             if (mCreatedObjectRefEdits[property].isEmpty())
                 mCreatedObjectRefEdits.remove(property);
             return;

@@ -282,6 +282,24 @@ signals:
     void focusMapObjectRequested(MapObject *object);
 
     /**
+     * Emitted when some part of the UI wants the user to pick an object
+     * (currently only used to set an object reference).
+     */
+    void mapObjectPickRequest();
+
+    /**
+     * Emitted to cancel a previously started request for picking an object.
+     */
+    void cancelMapObjectPickRequest();
+
+    /**
+     * Emitted when an object was picked. Response to mapObjectPickRequest.
+     *
+     * \a object can be nullptr if the picking was canceled.
+     */
+    void mapObjectPicked(MapObject *object);
+
+    /**
      * Emitted when the map size or its tile size changes.
      */
     void mapChanged();

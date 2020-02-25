@@ -38,9 +38,6 @@ AbstractTool::AbstractTool(Id id,
     , mIcon(icon)
     , mShortcut(shortcut)
     , mId(id)
-    , mEnabled(false)
-    , mToolManager(nullptr)
-    , mMapDocument(nullptr)
 {
 }
 
@@ -97,6 +94,15 @@ void AbstractTool::setEnabled(bool enabled)
 
     mEnabled = enabled;
     emit enabledChanged(enabled);
+}
+
+void AbstractTool::setVisible(bool visible)
+{
+    if (mVisible == visible)
+        return;
+
+    mVisible = visible;
+    emit visibleChanged(visible);
 }
 
 Tile *AbstractTool::tile() const

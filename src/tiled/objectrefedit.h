@@ -36,6 +36,7 @@ class ObjectRefEdit : public QWidget
 
 public:
     explicit ObjectRefEdit(QWidget *parent = nullptr);
+    ~ObjectRefEdit() override;
 
     const DisplayObjectRef &value() const;
     void setValue(const DisplayObjectRef &value);
@@ -43,12 +44,19 @@ public:
 signals:
     void valueChanged(const DisplayObjectRef &value);
 
+protected:
+    void keyPressEvent(QKeyEvent *event) override;
+
 private:
-    void onButtonClicked();
+    void openObjectRefDialog();
+    void pickObjectOnMap(bool pick);
+
+    void onMapObjectPicked(MapObject *object);
     void onEditFinished();
 
     QLineEdit *mLineEdit;
     QToolButton *mObjectDialogButton;
+    QToolButton *mPickObjectButton;
     DisplayObjectRef mValue;
 };
 

@@ -90,6 +90,7 @@ QAction *ToolManager::registerTool(AbstractTool *tool)
     toolAction->setCheckable(true);
     toolAction->setText(tool->name());
     toolAction->setEnabled(tool->isEnabled());
+    toolAction->setVisible(tool->isVisible());
 
     mActionGroup->addAction(toolAction);
 
@@ -98,15 +99,19 @@ QAction *ToolManager::registerTool(AbstractTool *tool)
 
     connect(tool, &AbstractTool::enabledChanged,
             this, &ToolManager::toolEnabledChanged);
+    connect(tool, &AbstractTool::visibleChanged,
+            this, [=] (bool visible) { toolAction->setVisible(visible); });
 
     // Select the first added tool
-    if (!mSelectedTool && tool->isEnabled()) {
-        setSelectedTool(tool);
-        toolAction->setChecked(true);
-    }
+    if (tool->isVisible()) {
+        if (!mSelectedTool && tool->isEnabled()) {
+            setSelectedTool(tool);
+            toolAction->setChecked(true);
+        }
 
-    if (mRegisterActions)
-        ActionManager::registerAction(toolAction, tool->id());
+        if (mRegisterActions)
+            ActionManager::registerAction(toolAction, tool->id());
+    }
 
     return toolAction;
 }
@@ -287,7 +292,7 @@ AbstractTool *ToolManager::firstEnabledTool() const
     const auto actions = mActionGroup->actions();
     for (QAction *action : actions)
         if (AbstractTool *tool = action->data().value<AbstractTool*>())
-            if (tool->isEnabled())
+            if (tool->isEnabled() && tool->isVisible())
                 return tool;
 
     return nullptr;

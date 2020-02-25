@@ -21,9 +21,12 @@
 
 #include "objectrefedit.h"
 
+#include "mapdocument.h"
+#include "mapobject.h"
 #include "objectrefdialog.h"
 
 #include <QHBoxLayout>
+#include <QKeyEvent>
 #include <QLineEdit>
 #include <QToolButton>
 
@@ -35,25 +38,42 @@ ObjectRefEdit::ObjectRefEdit(QWidget *parent)
     : QWidget(parent)
     , mLineEdit(new QLineEdit(this))
     , mObjectDialogButton(new QToolButton(this))
+    , mPickObjectButton(new QToolButton(this))
 {
     QHBoxLayout *layout = new QHBoxLayout(this);
 
     setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed));
     setFocusProxy(mLineEdit);
 
+    // TODO: These buttons need icons...
+
     mObjectDialogButton->setText(QStringLiteral("..."));
     mObjectDialogButton->setAutoRaise(true);
     mObjectDialogButton->setEnabled(false);
+
+    mPickObjectButton->setText(QStringLiteral("Pick"));
+    mPickObjectButton->setAutoRaise(true);
+    mPickObjectButton->setEnabled(false);
+    mPickObjectButton->setCheckable(true);
+    mPickObjectButton->setFocusPolicy(Qt::StrongFocus);
 
     layout->setMargin(0);
     layout->setSpacing(0);
     layout->addWidget(mLineEdit);
     layout->addWidget(mObjectDialogButton);
+    layout->addWidget(mPickObjectButton);
 
     mLineEdit->setValidator(new QIntValidator(0, INT_MAX, this));
 
-    connect(mObjectDialogButton, &QToolButton::clicked, this, &ObjectRefEdit::onButtonClicked);
+    connect(mObjectDialogButton, &QToolButton::clicked, this, &ObjectRefEdit::openObjectRefDialog);
+    connect(mPickObjectButton, &QToolButton::toggled, this, &ObjectRefEdit::pickObjectOnMap);
     connect(mLineEdit, &QLineEdit::editingFinished, this, &ObjectRefEdit::onEditFinished);
+}
+
+ObjectRefEdit::~ObjectRefEdit()
+{
+    // Make sure we're no longer picking any object
+    mPickObjectButton->setChecked(false);
 }
 
 void ObjectRefEdit::setValue(const DisplayObjectRef &value)
@@ -61,14 +81,34 @@ void ObjectRefEdit::setValue(const DisplayObjectRef &value)
     if (mValue == value)
         return;
 
+    if (mValue.mapDocument)
+        mValue.mapDocument->disconnect(this);
+
     mValue = value;
     mLineEdit->setText(QString::number(mValue.id()));
+
     mObjectDialogButton->setEnabled(mValue.mapDocument);
+    mPickObjectButton->setEnabled(mValue.mapDocument);
+
+    if (mValue.mapDocument) {
+        connect(mValue.mapDocument, &MapDocument::mapObjectPicked,
+                this, &ObjectRefEdit::onMapObjectPicked);
+    }
 
     emit valueChanged(mValue);
 }
 
-void ObjectRefEdit::onButtonClicked()
+void ObjectRefEdit::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Escape && mPickObjectButton->isChecked()) {
+        mPickObjectButton->setChecked(false);
+        return;
+    }
+
+    QWidget::keyPressEvent(event);
+}
+
+void ObjectRefEdit::openObjectRefDialog()
 {
     if (!mValue.mapDocument)
         return;
@@ -77,6 +117,31 @@ void ObjectRefEdit::onButtonClicked()
 
     if (dialog.exec() == QDialog::Accepted)
         setValue(dialog.value());
+}
+
+void ObjectRefEdit::pickObjectOnMap(bool pick)
+{
+    if (!mValue.mapDocument)
+        return;
+
+    if (pick)
+        emit mValue.mapDocument->mapObjectPickRequest();
+    else
+        emit mValue.mapDocument->cancelMapObjectPickRequest();
+}
+
+void ObjectRefEdit::onMapObjectPicked(MapObject *object)
+{
+    if (!mPickObjectButton->isChecked())
+        return;
+
+    mPickObjectButton->setChecked(false);
+    if (object) {
+        setValue(DisplayObjectRef {
+                     ObjectRef { object->id() },
+                     mValue.mapDocument
+                 });
+    }
 }
 
 void ObjectRefEdit::onEditFinished()
