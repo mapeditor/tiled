@@ -167,5 +167,7 @@
         <file>images/scalable/highlight-current-layer-24.svg</file>
         <file>images/scalable/software-update-available-symbolic.svg</file>
         <file>images/scalable/wrap.svg</file>
+        <file>images/scalable/search-object-dialog.svg</file>
+        <file>images/scalable/select-object.svg</file>
     </qresource>
 </RCC>

@@ -24,6 +24,7 @@
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "objectrefdialog.h"
+#include "utils.h"
 
 #include <QHBoxLayout>
 #include <QKeyEvent>
@@ -45,17 +46,21 @@ ObjectRefEdit::ObjectRefEdit(QWidget *parent)
     setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed));
     setFocusProxy(mLineEdit);
 
-    // TODO: These buttons need icons...
-
     mObjectDialogButton->setText(QStringLiteral("..."));
     mObjectDialogButton->setAutoRaise(true);
     mObjectDialogButton->setEnabled(false);
+    mObjectDialogButton->setIconSize(Utils::smallIconSize());
+    mObjectDialogButton->setIcon(QIcon(QStringLiteral("://images/scalable/search-object-dialog.svg")));
+    mObjectDialogButton->setToolTip(tr("Search Object"));
 
     mPickObjectButton->setText(QStringLiteral("Pick"));
     mPickObjectButton->setAutoRaise(true);
     mPickObjectButton->setEnabled(false);
     mPickObjectButton->setCheckable(true);
     mPickObjectButton->setFocusPolicy(Qt::StrongFocus);
+    mPickObjectButton->setIconSize(Utils::smallIconSize());
+    mPickObjectButton->setIcon(QIcon(QStringLiteral("://images/scalable/select-object.svg")));
+    mPickObjectButton->setToolTip(tr("Select Object on Map"));
 
     layout->setMargin(0);
     layout->setSpacing(0);

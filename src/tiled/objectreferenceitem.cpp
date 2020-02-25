@@ -157,7 +157,7 @@ void ObjectReferenceItem::updateArrowRotation()
 
 QRectF ObjectReferenceItem::boundingRect() const
 {
-    return QRectF(mSourcePos, mTargetPos).normalized().adjusted(-1, -1, 1, 1);
+    return QRectF(mSourcePos, mTargetPos).normalized().adjusted(-5, -5, 5, 5);
 }
 
 void ObjectReferenceItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)

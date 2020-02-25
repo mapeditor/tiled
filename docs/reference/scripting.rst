@@ -1729,7 +1729,7 @@ done writing otherwise the operation will be aborted without effect.
     :widths: 1, 2
 
     **filePath** : string |ro|, "The path of the file."
-    **atEof** : bool |ro|, "True if no mode data can be read."
+    **atEof** : bool |ro|, "True if no more data can be read."
     **codec** : string, "The text codec."
 
 .. csv-table::
@@ -1788,7 +1788,7 @@ done writing otherwise the operation will be aborted without effect.
     :widths: 1, 2
 
     **filePath** : string |ro|, "The path of the file."
-    **atEof** : bool |ro|, "True if no mode data can be read."
+    **atEof** : bool |ro|, "True if no more data can be read."
     **size** : number, "The size of the file (in bytes)."
     **pos** : number, "The position that data is written to or read from."
 
