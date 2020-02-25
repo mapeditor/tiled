@@ -54,3 +54,16 @@
 .rst-content .line-block {
     margin-bottom: 0.5em;
 }
+
+.wy-nav-side {
+    overflow: visible;  /* override 'hidden' */
+}
+
+.wy-side-scroll {
+    width: auto;        /* override 320px to make it 300px */
+    overflow-y: hidden; /* suppress scrollbar */
+}
+
+.wy-side-nav-search {
+    margin-bottom: 0px; /* override unfitting margin */
+}
