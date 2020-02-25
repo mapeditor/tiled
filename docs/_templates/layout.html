@@ -238,6 +238,7 @@
 	  apiKey: '3535ea3f554af15b8796f9f9c3339da7',
 	  indexName: 'mapeditor',
 	  inputSelector: '#rtd-search-form > input:first-child',
+	  algoliaOptions: { 'facetFilters': ["version:{{ current_version }}"] },
 	  debug: false // Set debug to true if you want to inspect the dropdown
 	});
 	</script>
