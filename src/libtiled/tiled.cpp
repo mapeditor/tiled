@@ -85,8 +85,11 @@ QString Tiled::urlToLocalFileOrQrc(const QUrl &url)
         return QString();
     }
 
+    if (url.scheme() == QLatin1String("ext"))
+        return url.toString();
+
 #if defined(Q_OS_ANDROID)
-    else if (url.scheme().compare(QLatin1String("assets"), Qt::CaseInsensitive) == 0) {
+    if (url.scheme().compare(QLatin1String("assets"), Qt::CaseInsensitive) == 0) {
         if (url.authority().isEmpty())
             return url.toString();
         return QString();

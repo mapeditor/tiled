@@ -82,7 +82,11 @@ EditableTile *ScriptedTool::editableTile() const
 
 EditableMap *ScriptedTool::preview() const
 {
-    auto editableMap = new EditableMap(brushItem()->map()->clone());
+    const auto &map = brushItem()->map();
+    if (!map)
+        return nullptr;
+
+    auto editableMap = new EditableMap(map->clone());
     QQmlEngine::setObjectOwnership(editableMap, QQmlEngine::JavaScriptOwnership);
     return editableMap;
 }
