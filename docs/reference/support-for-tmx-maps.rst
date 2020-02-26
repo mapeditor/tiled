@@ -486,13 +486,9 @@ Urho3D
 XNA
 ~~~
 
--  `FlatRedBall Engine TMXGlue
-   tool <http://www.flatredball.com/frb/docs/index.php?title=Kain%27s_Tavern#Tiled_Map_Editor.2C_TMX.2C_Glue_and_you.>`__
-   by Domenic Datti loads TMX maps into the FlatRedBall engine, complete
-   with node networks, pathfinding, and shapecollection support via
-   object layers.
--  `TiledMax <http://tiledmax.xpod.be/>`__ by Aimee Bailey, a .NET
-   library for parsing TMX maps without dependencies on Windows or XNA
+-  `FlatRedBall <http://flatredball.com/>`__ Glue tool ships with a
+   `Tiled plugin <http://flatredball.com/documentation/tools/tiled-plugin/>`__
+   that loads TMX maps into the FlatRedBall engine, providing rich integration with its features.
 -  `XTiled <https://bitbucket.org/vinull/xtiled>`__ by Michael C. Neel
    and Dylan Wolf, XNA library for loading and rendering TMX maps
 -  `XNA map loader <https://github.com/zachmu/tiled-xna>`__ by Kevin
