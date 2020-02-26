@@ -20,6 +20,11 @@ On startup, Tiled will execute any script files present in
 scripts directly from :ref:`the console <script-console>`. All scripts share
 a single JavaScript context.
 
+.. note::
+
+    A few example scripts and links to existing Tiled extensions are provided
+    at the Tiled Extensions repository: https://github.com/mapeditor/tiled-extensions
+
 .. warning::
 
     Most builds of Tiled use Qt 5.12 or later, which support ECMAScript 7.
@@ -48,12 +53,6 @@ from the Plugins tab in the :doc:`Preferences dialog </manual/preferences>`.
 An extension can be placed directly in the extensions directory, or in a
 sub-directory. All scripts files found in these directories are executed on
 startup.
-
-.. note::
-
-    If your scripts depend on other scripts that you want to include rather
-    than have them execute directly, they can be nested in another
-    sub-directory.
 
 When any loaded script is changed, the script engine is reinstantiated and the
 scripts are reloaded. This makes it quick to iterate on a script until it
