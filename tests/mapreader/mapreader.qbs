@@ -10,6 +10,7 @@ CppApplication {
     cpp.cxxLanguageVersion: "c++14"
 
     files: [
+        "mapreader.qrc",
         "test_mapreader.cpp",
     ]
 }
