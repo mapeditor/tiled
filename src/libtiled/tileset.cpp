@@ -98,7 +98,6 @@ TilesetFormat *Tileset::format() const
  */
 void Tileset::setTileSize(QSize tileSize)
 {
-    Q_ASSERT(!tileSize.isEmpty());
     mTileWidth = tileSize.width();
     mTileHeight = tileSize.height();
 }
@@ -204,11 +203,11 @@ bool Tileset::loadFromImage(const QImage &image, const QUrl &source)
     }
 
     const QSize tileSize = this->tileSize();
+    if (tileSize.isEmpty())
+        return false;
+
     const int margin = this->margin();
     const int spacing = this->tileSpacing();
-
-    Q_ASSERT(tileSize.width() > 0 && tileSize.height() > 0);
-
     const int stopWidth = image.width() - tileSize.width();
     const int stopHeight = image.height() - tileSize.height();
 
