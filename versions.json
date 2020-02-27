@@ -5,8 +5,8 @@
         "download": "https://thorbjorn.itch.io/tiled/purchase"
     },
     "snapshot":  {
-        "version": "2020.01.22",
-        "release_notes": "https://thorbjorn.itch.io/tiled/devlog/120663/tinting-alignment-and-object-references",
+        "version": "2020.02.12",
+        "release_notes": "https://thorbjorn.itch.io/tiled/devlog/124453/use-maps-as-tilesets-and-show-object-references",
         "download": "https://thorbjorn.itch.io/tiled/purchase"
     }
 }
