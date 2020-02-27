@@ -52,6 +52,8 @@ There are several `example scripts`_ available in the repository.
     ships with Python 2.7 by default. If you rely on this plugin on
     macOS you'll need to use Tiled 1.1 for now.
 
+.. note::
+	When installing Python on Windows, you will need to check the box "Add Python 3.7 to PATH"
 
 Example Export Plugin
 ---------------------
