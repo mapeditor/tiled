@@ -54,6 +54,7 @@ There are several `example scripts`_ available in the repository.
 
 .. note::
 	When installing Python on Windows, you will need to check the box "Add Python 3.7 to PATH"
+.. figure:: images/python-windows.png 
 
 Example Export Plugin
 ---------------------
