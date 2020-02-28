@@ -1034,7 +1034,7 @@ Properties
     **margin** : int |ro|, Margin around the tileset in pixels (only used at the top and left sides of the tileset image).
     **tileOffset** : :ref:`script-point`, Offset in pixels that is applied when tiles from this tileset are rendered.
     **backgroundColor** : color, Background color for this tileset in the *Tilesets* view.
-    **isCollection** : bool, Whether this tileset is a collection of images.
+    **isCollection** : bool |ro|, Whether this tileset is a collection of images (same as checking whether ``image`` is an empty string).
     **selectedTiles** : [:ref:`script-tile`], Selected tiles (in the tileset editor).
 
 Functions
