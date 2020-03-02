@@ -178,6 +178,8 @@ void ScriptBinaryFile::commit()
                                                                          "Could not write to '%1': %2").arg(m_file->fileName(),
                                                                                                             m_file->errorString()));
     }
+
+    close();
 }
 
 void ScriptBinaryFile::close()
@@ -317,6 +319,8 @@ void ScriptTextFile::commit()
                                                                          "Could not write to '%1': %2").arg(m_file->fileName(),
                                                                                                             m_file->errorString()));
     }
+
+    close();
 }
 
 void ScriptTextFile::close()

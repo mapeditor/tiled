@@ -1542,9 +1542,9 @@ TextFile.writeLine(text : string) : void
     Writes a string to the file and appends a newline character.
 
 TextFile.commit() : void
-    Commits all written text to disk. Should be called when writing to files in
-    WriteOnly mode. Failing to call this function will result in cancelling the
-    operation, unless safe writing to files is disabled.
+    Commits all written text to disk and closes the file. Should be called when
+    writing to files in WriteOnly mode. Failing to call this function will
+    result in cancelling the operation, unless safe writing to files is disabled.
 
 TextFile.close() : void
     Closes the file. It is recommended to always call this function as soon as
@@ -1598,9 +1598,10 @@ BinaryFile.write(data : ArrayBuffer) : void
     Writes *data* into the file at the current position.
 
 BinaryFile.commit() : void
-    Commits all written data to disk. Should be called when writing to files in
-    WriteOnly mode. Failing to call this function will result in cancelling the
-    operation, unless safe writing to files is disabled.
+    Commits all written data to disk and closes the file. Should be called when
+    writing to files in WriteOnly mode. Failing to call this function will
+    result in cancelling the operation, unless safe writing to files is
+    disabled.
 
 BinaryFile.close() : void
     Closes the file. It is recommended to always call this function as soon as
