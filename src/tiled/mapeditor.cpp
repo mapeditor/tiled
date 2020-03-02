@@ -1064,4 +1064,8 @@ void MapEditor::setCurrentBrush(EditableMap *editableMap)
     setStamp(TileStamp(editableMap->map()->clone()));
 }
 
+AbstractTool *MapEditor::selectedTool() const {
+    return mSelectedTool;
+}
+
 } // namespace Tiled

@@ -544,4 +544,15 @@ bool World::canBeModified() const
     return patterns.isEmpty();
 }
 
+QString World::displayName() const
+{
+    return displayName(fileName);
+}
+
+QString World::displayName(QString fileName)
+{
+    QString displayName = QFileInfo(fileName).fileName();
+    return displayName;
+}
+
 } // namespace Tiled

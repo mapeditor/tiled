@@ -56,6 +56,8 @@ public:
 
     void languageChanged() override;
 
+    void setTargetMap(MapDocument *document) override;
+
 protected:
 
     void abortMoving();
@@ -66,6 +68,7 @@ protected:
     QPointF mDragStartScenePos;
     QRectF mDragPreviewRect;
     QPoint mDragOffset;
+    QPoint mDraggedMapTopLeft;
     std::unique_ptr<SelectionRectangle> mSelectionRectangle;
 };
 

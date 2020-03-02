@@ -83,6 +83,13 @@ struct TILEDSHARED_EXPORT World
     void clearErrorsAndWarnings() const;
 
     bool canBeModified() const;
+
+    /**
+     * Returns the name with which to display this world. It is the file name without
+     * its path.
+     */
+    QString displayName() const;
+    static QString displayName( QString fileName );
 };
 
 class TILEDSHARED_EXPORT WorldManager : public QObject

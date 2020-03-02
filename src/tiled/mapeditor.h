@@ -124,6 +124,8 @@ public:
     QAction *actionSelectNextTileset() const;
     QAction *actionSelectPreviousTileset() const;
 
+    AbstractTool *selectedTool() const;
+
 private:
     void setSelectedTool(AbstractTool *tool);
     void currentDocumentChanged(Document *document);

@@ -62,6 +62,8 @@ public:
 
     virtual QUndoStack *undoStack() override;
 
+    virtual void setTargetMap(MapDocument *document);
+
 protected:
     /**
      * Overridden to only enable this tool when the currently has a world loaded
@@ -69,20 +71,27 @@ protected:
     void updateEnabledState() override;
 
     void addAnotherMapToWorld();
-    void removeFromWorld();
-    void addToWorld( const QString& fileName );
+    void removeFromWorld(const QString& mapFileName);
+    void addToWorld(const QString& worldFileName);
 
-    QPoint snapPoint(QPoint point) const;
-    bool currentMapCanBeMoved() const;
+    QPoint snapPoint(QPoint point, MapDocument *document) const;
+
+    MapDocument *targetMap() const;
+    bool targetMapCanBeMoved() const;
+    QRect targetMapRect() const;
+    const World *targetConstWorld() const;
+
+    MapDocument *currentMap() const;
     QRect currentMapRect() const;
     const World *currentConstWorld() const;
-    QPoint currentTileSize();
+
     MapScene *mapScene() const { return mMapScene; }
 
     void showContextMenu(QPoint screenPos);
 
     MapScene *mMapScene;
     QPoint mMousePos;
+    MapDocument* mTargetMap;
 };
 
 } // namespace Tiled

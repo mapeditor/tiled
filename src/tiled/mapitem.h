@@ -84,6 +84,9 @@ protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
+    bool isWorldTool() const;
+    void setMapInWorldTool();
+    void clearMapInWorldTool();
 private:
     /**
      * Repaints the specified \a region of the given \a tileLayer. The region
