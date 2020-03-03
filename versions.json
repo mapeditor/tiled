@@ -1,12 +1,12 @@
 {
     "release": {
-        "version": "1.3.2",
-        "release_notes": "https://www.mapeditor.org/2020/01/22/tiled-1-3-2-released.html",
+        "version": "1.3.3",
+        "release_notes": "https://www.mapeditor.org/2020/03/03/tiled-1-3-3-released.html",
         "download": "https://thorbjorn.itch.io/tiled/purchase"
     },
     "snapshot":  {
-        "version": "2020.02.12",
-        "release_notes": "https://thorbjorn.itch.io/tiled/devlog/124453/use-maps-as-tilesets-and-show-object-references",
+        "version": "2020.02.26",
+        "release_notes": "https://thorbjorn.itch.io/tiled/devlog/126932/polishing-and-fixing",
         "download": "https://thorbjorn.itch.io/tiled/purchase"
     }
 }
