@@ -46,7 +46,7 @@ namespace Tiled {
  *
  * It's meant to be used as drop-in replacement for QFileSystemWatcher.
  *
- * Optionally, the 'filesChanged' signal can be used, which triggers at a delay
+ * Optionally, the 'pathsChanged' signal can be used, which triggers at a delay
  * to avoid problems occurring when trying to reload only partially written
  * files, as well as avoiding fast consecutive reloads.
  */
@@ -62,20 +62,27 @@ public:
     void clear();
 
 signals:
+    // Emitted directly
     void fileChanged(const QString &path);
-    void filesChanged(const QStringList &paths);
     void directoryChanged(const QString &path);
+
+    /**
+     * Emitted only after a short delay.
+     *
+     * May includes both files and directories.
+     */
+    void pathsChanged(const QStringList &paths);
 
 private:
     void onFileChanged(const QString &path);
     void onDirectoryChanged(const QString &path);
-    void filesChangedTimeout();
+    void pathsChangedTimeout();
 
     QFileSystemWatcher *mWatcher;
     QMap<QString, int> mWatchCount;
 
-    QSet<QString> mChangedFiles;
-    QTimer mChangedFilesTimer;
+    QSet<QString> mChangedPaths;
+    QTimer mChangedPathsTimer;
 };
 
 } // namespace Tiled
