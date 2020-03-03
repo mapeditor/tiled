@@ -52,8 +52,10 @@ An extension can be placed directly in the extensions directory, or in a
 sub-directory. All scripts files found in these directories are executed on
 startup.
 
-When any loaded script is changed, the script engine is reinstantiated and the
-scripts are reloaded. This makes it quick to iterate on a script until it
+When any loaded script is changed or when any files are added/removed from the
+extensions directory, the script engine is automatically reinstantiated and the
+scripts are reloaded. This way there is no need to restart Tiled when
+installing extensions. It also makes it quick to iterate on a script until it
 works as intended.
 
 Apart from scripts, extensions can include images that can be used as the icon
@@ -826,7 +828,7 @@ Functions
 new TileLayer([name : string])
     Constructs a new tile layer, which can be added to a :ref:`script-map`.
 
-TileLayer.region() : region
+TileLayer.region() : :ref:`script-region`
     Returns the region of the layer that is covered with tiles.
 
 TileLayer.resize(size : :ref:`script-size`, offset : :ref:`script-point`) : void
