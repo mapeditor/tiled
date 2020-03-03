@@ -54,8 +54,10 @@ An extension can be placed directly in the extensions directory, or in a
 sub-directory. All scripts files found in these directories are executed on
 startup.
 
-When any loaded script is changed, the script engine is reinstantiated and the
-scripts are reloaded. This makes it quick to iterate on a script until it
+When any loaded script is changed or when any files are added/removed from the
+extensions directory, the script engine is automatically reinstantiated and the
+scripts are reloaded. This way there is no need to restart Tiled when
+installing extensions. It also makes it quick to iterate on a script until it
 works as intended.
 
 Apart from scripts, extensions can include images that can be used as the icon
@@ -1080,7 +1082,7 @@ Functions
 new TileLayer([name : string])
     Constructs a new tile layer, which can be added to a :ref:`script-map`.
 
-TileLayer.region() : region
+TileLayer.region() : :ref:`script-region`
     Returns the region of the layer that is covered with tiles.
 
 TileLayer.resize(size : :ref:`script-size`, offset : :ref:`script-point`) : void
@@ -1425,7 +1427,7 @@ Properties
     **tileOffset** : :ref:`script-point`, Offset in pixels that is applied when tiles from this tileset are rendered.
     **orientation** : :ref:`Orientation <script-tileset-orientation>`, The orientation of this tileset (used when rendering overlays and in the tile collision editor).
     **backgroundColor** : color, Background color for this tileset in the *Tilesets* view.
-    **isCollection** : bool, Whether this tileset is a collection of images.
+    **isCollection** : bool |ro|, Whether this tileset is a collection of images (same as checking whether ``image`` is an empty string).
     **selectedTiles** : [:ref:`script-tile`], Selected tiles (in the tileset editor).
 
 .. _script-tileset-alignment:
@@ -1763,9 +1765,9 @@ TextFile.writeLine(text : string) : void
     Writes a string to the file and appends a newline character.
 
 TextFile.commit() : void
-    Commits all written text to disk. Should be called when writing to files in
-    WriteOnly mode. Failing to call this function will result in cancelling the
-    operation, unless safe writing to files is disabled.
+    Commits all written text to disk and closes the file. Should be called when
+    writing to files in WriteOnly mode. Failing to call this function will
+    result in cancelling the operation, unless safe writing to files is disabled.
 
 TextFile.close() : void
     Closes the file. It is recommended to always call this function as soon as
@@ -1822,9 +1824,10 @@ BinaryFile.write(data : ArrayBuffer) : void
     Writes *data* into the file at the current position.
 
 BinaryFile.commit() : void
-    Commits all written data to disk. Should be called when writing to files in
-    WriteOnly mode. Failing to call this function will result in cancelling the
-    operation, unless safe writing to files is disabled.
+    Commits all written data to disk and closes the file. Should be called when
+    writing to files in WriteOnly mode. Failing to call this function will
+    result in cancelling the operation, unless safe writing to files is
+    disabled.
 
 BinaryFile.close() : void
     Closes the file. It is recommended to always call this function as soon as

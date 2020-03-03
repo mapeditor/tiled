@@ -50,7 +50,7 @@ WorldManager *WorldManager::mInstance;
 
 WorldManager::WorldManager()
 {
-    connect(&mFileSystemWatcher, &FileSystemWatcher::filesChanged,
+    connect(&mFileSystemWatcher, &FileSystemWatcher::pathsChanged,
             this, &WorldManager::reloadWorldFiles);
 }
 

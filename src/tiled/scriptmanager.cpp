@@ -111,7 +111,7 @@ ScriptManager::ScriptManager(QObject *parent)
     qRegisterMetaType<ScriptMapFormatWrapper*>();
     qRegisterMetaType<ScriptTilesetFormatWrapper*>();
 
-    connect(&mWatcher, &FileSystemWatcher::filesChanged,
+    connect(&mWatcher, &FileSystemWatcher::pathsChanged,
             this, &ScriptManager::scriptFilesChanged);
 
     const QString configLocation { QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation) };
@@ -209,6 +209,8 @@ void ScriptManager::loadExtensions()
 
 void ScriptManager::loadExtension(const QString &path)
 {
+    mWatcher.addPath(path);
+
     const QDir dir(path);
     const QStringList jsFiles = dir.entryList({ QLatin1String("*.js") },
                                               QDir::Files | QDir::Readable);

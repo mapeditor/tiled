@@ -39,16 +39,16 @@ FileSystemWatcher::FileSystemWatcher(QObject *parent) :
     QObject(parent),
     mWatcher(new QFileSystemWatcher(this))
 {
-    mChangedFilesTimer.setInterval(500);
-    mChangedFilesTimer.setSingleShot(true);
+    mChangedPathsTimer.setInterval(500);
+    mChangedPathsTimer.setSingleShot(true);
 
     connect(mWatcher, &QFileSystemWatcher::fileChanged,
             this, &FileSystemWatcher::onFileChanged);
     connect(mWatcher, &QFileSystemWatcher::directoryChanged,
             this, &FileSystemWatcher::onDirectoryChanged);
 
-    connect(&mChangedFilesTimer, &QTimer::timeout,
-            this, &FileSystemWatcher::filesChangedTimeout);
+    connect(&mChangedPathsTimer, &QTimer::timeout,
+            this, &FileSystemWatcher::pathsChangedTimeout);
 }
 
 void FileSystemWatcher::addPath(const QString &path)
@@ -100,33 +100,38 @@ void FileSystemWatcher::clear()
 
 void FileSystemWatcher::onFileChanged(const QString &path)
 {
-    mChangedFiles.insert(path);
-    mChangedFilesTimer.start();
+    mChangedPaths.insert(path);
+    mChangedPathsTimer.start();
 
     emit fileChanged(path);
 }
 
 void FileSystemWatcher::onDirectoryChanged(const QString &path)
 {
+    mChangedPaths.insert(path);
+    mChangedPathsTimer.start();
+
     emit directoryChanged(path);
 }
 
-void FileSystemWatcher::filesChangedTimeout()
+void FileSystemWatcher::pathsChangedTimeout()
 {
-    const auto changedFiles = mChangedFiles.values();
+    const auto changedPaths = mChangedPaths.values();
 
     // If the file was replaced, the watcher is automatically removed and needs
     // to be re-added to keep watching it for changes. This happens commonly
     // with applications that do atomic saving.
-    for (const QString &path : changedFiles) {
+    for (const QString &path : changedPaths) {
         if (mWatchCount.contains(path) && !mWatcher->files().contains(path)) {
             if (QFile::exists(path))
                 mWatcher->addPath(path);
         }
     }
 
-    emit filesChanged(changedFiles);
-    mChangedFiles.clear();
+
+    emit pathsChanged(changedPaths);
+
+    mChangedPaths.clear();
 }
 
 } // namespace Tiled

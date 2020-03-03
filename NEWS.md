@@ -1,3 +1,18 @@
+### Tiled 1.3.3 (3 March 2020)
+
+* Fixed loading of compression level
+* Fixed default value for Hex Side Length property
+* Fixed hiding of status bar text for some tools
+* Fixed removing of object labels when removing a group layer
+* GmxPlugin: Fixed compatibility with GameMaker 1.4.9999
+* Scripting: Made TextFile.commit and BinaryFile.commit close as well
+* Scripting: Fixed crashes when modifying certain new objects
+* Scripting: Fixed potential crash in Asset.macro/undo/redo/isModified
+* Scripting: Fixed potential crash when accessing Tool.preview
+* Scripting: Fixed loading of images from extensions folder
+* Scripting: Reload extensions also when files are added/removed
+* Updated Bulgarian translation (by Любомир Василев)
+
 ### Tiled 1.3.2 (22 January 2020)
 
 * Fixed initialization of selected layers (#2719)

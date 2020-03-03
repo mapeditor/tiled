@@ -126,17 +126,16 @@ bool GmxPlugin::write(const Map *map, const QString &fileName, Options options)
     stream.writeTextElement("height", QString::number(mapPixelHeight));
     stream.writeTextElement("vsnap", QString::number(map->tileHeight()));
     stream.writeTextElement("hsnap", QString::number(map->tileWidth()));
+    stream.writeTextElement("isometric", toString(map->orientation() == Map::Orientation::Isometric));
     writeProperty(stream, map, "speed", 30);
     writeProperty(stream, map, "persistent", false);
-    writeProperty(stream, map, "clearDisplayBuffer", true);
     writeProperty(stream, map, "clearViewBackground", false);
+    writeProperty(stream, map, "clearDisplayBuffer", true);
     writeProperty(stream, map, "code", QString());
 
     // Check if views are defined
     bool enableViews = checkIfViewsDefined(map);
     writeProperty(stream, map, "enableViews", enableViews);
-
-    stream.writeTextElement("isometric", toString(map->orientation() == Map::Orientation::Isometric));
 
     // Write out views
     // Last view in Object layer is the first view in the room
@@ -201,6 +200,9 @@ bool GmxPlugin::write(const Map *map, const QString &fileName, Options options)
             continue;
 
         const ObjectGroup *objectLayer = static_cast<const ObjectGroup*>(layer);
+        const bool locked = !layer->isUnlocked();
+        const int alpha = std::min(static_cast<int>(layer->effectiveOpacity() * 256), 255);
+        const auto color = QString::number(QColor(255, 255, 255, alpha).rgba());
 
         for (const MapObject *object : objectLayer->objects()) {
             const QString type = object->effectiveType();
@@ -270,9 +272,11 @@ bool GmxPlugin::write(const Map *map, const QString &fileName, Options options)
                 stream.writeAttribute("name", name);
             }
 
+            stream.writeAttribute("locked", toString(locked));
             stream.writeAttribute("code", optionalProperty(object, "code", QString()));
             stream.writeAttribute("scaleX", QString::number(scaleX));
             stream.writeAttribute("scaleY", QString::number(scaleY));
+            stream.writeAttribute("colour", color);
             stream.writeAttribute("rotation", QString::number(-object->rotation()));
 
             stream.writeEndElement();
@@ -292,10 +296,14 @@ bool GmxPlugin::write(const Map *map, const QString &fileName, Options options)
         --layerCount;
         QString depth = QString::number(optionalProperty(layer, QLatin1String("depth"),
                                                          layerCount + 1000000));
+        const bool locked = !layer->isUnlocked();
+        const int alpha = std::min(static_cast<int>(layer->effectiveOpacity() * 256), 255);
+        const auto color = QString::number(QColor(255, 255, 255, alpha).rgba());
 
         switch (layer->layerType()) {
         case Layer::TileLayerType: {
             auto tileLayer = static_cast<const TileLayer*>(layer);
+
             for (int y = 0; y < tileLayer->height(); ++y) {
                 for (int x = 0; x < tileLayer->width(); ++x) {
                     const Cell &cell = tileLayer->cellAt(x, y);
@@ -328,7 +336,7 @@ bool GmxPlugin::write(const Map *map, const QString &fileName, Options options)
                             bgName = tileset->name();
 
                             int xInTilesetGrid = tile->id() % tileset->columnCount();
-                            int yInTilesetGrid = (int)(tile->id() / tileset->columnCount());
+                            int yInTilesetGrid = static_cast<int>(tile->id() / tileset->columnCount());
 
                             xo = tileset->margin() + (tileset->tileSpacing() + tileset->tileWidth()) * xInTilesetGrid;
                             yo = tileset->margin() + (tileset->tileSpacing() + tileset->tileHeight()) * yInTilesetGrid;
@@ -345,6 +353,8 @@ bool GmxPlugin::write(const Map *map, const QString &fileName, Options options)
 
                         stream.writeAttribute("id", QString::number(++tileId));
                         stream.writeAttribute("depth", depth);
+                        stream.writeAttribute("locked", toString(locked));
+                        stream.writeAttribute("colour", color);
 
                         stream.writeAttribute("scaleX", QString::number(scaleX));
                         stream.writeAttribute("scaleY", QString::number(scaleY));
@@ -420,6 +430,8 @@ bool GmxPlugin::write(const Map *map, const QString &fileName, Options options)
 
                     stream.writeAttribute("id", QString::number(++tileId));
                     stream.writeAttribute("depth", depth);
+                    stream.writeAttribute("locked", toString(locked));
+                    stream.writeAttribute("colour", color);
 
                     stream.writeAttribute("scaleX", QString::number(scaleX));
                     stream.writeAttribute("scaleY", QString::number(scaleY));
