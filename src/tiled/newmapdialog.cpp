@@ -167,6 +167,14 @@ MapDocumentPtr NewMapDialog::createMap()
     map->setLayerDataFormat(layerFormat);
     map->setRenderOrder(renderOrder);
 
+    // Try to set a somewhat helpful default for the hex side length
+    if (map->orientation() == Map::Hexagonal) {
+        if (map->staggerAxis() == Map::StaggerX)
+            map->setHexSideLength(map->tileWidth() / 2);
+        else
+            map->setHexSideLength(map->tileHeight() / 2);
+    }
+
     const size_t gigabyte = 1073741824u;
     const size_t memory = size_t(mapWidth) * size_t(mapHeight) * sizeof(Cell);
 
