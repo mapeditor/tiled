@@ -148,6 +148,9 @@ void AbstractWorldTool::mouseMoved(const QPointF &pos,
 
 void AbstractWorldTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
+    // Update target map
+    mTargetMap = mapAt(event->scenePos());
+
     if (event->button() == Qt::RightButton)
         showContextMenu(event);
 }
