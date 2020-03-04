@@ -78,7 +78,7 @@ protected:
     QPoint snapPoint(QPoint point, MapDocument *document) const;
 
     MapDocument *targetMap() const { return mTargetMap; }
-    bool targetMapCanBeMoved() const;
+    bool mapCanBeMoved(MapDocument *mapDocument) const;
     QRect mapRect(MapDocument *mapDocument) const;
     const World *constWorld(MapDocument *mapDocument) const;
 

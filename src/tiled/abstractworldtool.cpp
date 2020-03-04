@@ -158,7 +158,9 @@ void AbstractWorldTool::languageChanged()
 
 void AbstractWorldTool::updateEnabledState()
 {
-    setEnabled(mapDocument() && !WorldManager::instance().worlds().isEmpty());
+    bool hasWorlds = !WorldManager::instance().worlds().isEmpty();
+    const World *world = constWorld(mapDocument());
+    setEnabled(mapDocument() && hasWorlds && (world == nullptr || world->canBeModified()));
 }
 
 MapDocument *AbstractWorldTool::mapAt(const QPointF &pos) const
@@ -176,12 +178,14 @@ MapDocument *AbstractWorldTool::mapAt(const QPointF &pos) const
     return nullptr;
 }
 
-bool AbstractWorldTool::targetMapCanBeMoved() const
+bool AbstractWorldTool::mapCanBeMoved(MapDocument *mapDocument) const
 {
-    if (!targetMap())
+    if (!mapDocument)
         return false;
-    return WorldManager::instance().mapCanBeModified(targetMap()->fileName());
+    const World *world = constWorld(mapDocument);
+    return world != nullptr && world->canBeModified();
 }
+
 
 QRect AbstractWorldTool::mapRect(MapDocument *mapDocument) const
 {
@@ -233,8 +237,11 @@ void AbstractWorldTool::showContextMenu(QGraphicsSceneMouseEvent *event)
             });
         }
     } else {
-        const QStringList worlds = WorldManager::instance().loadedWorldFiles();
+        WorldManager &manager = WorldManager::instance();
+        const QStringList worlds = manager.loadedWorldFiles();
         for (const QString &worldFilename : worlds) {
+            if (!manager.worlds()[worldFilename]->canBeModified())
+                continue;
             QAction *addToWorldAction = menu.addAction(tr("Add %1 to World %2")
                                                        .arg(currentDocument->displayName())
                                                        .arg(World::displayName(worldFilename)));

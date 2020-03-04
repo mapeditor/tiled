@@ -119,9 +119,7 @@ void WorldMoveMapTool::keyPressed(QKeyEvent *event)
         return;
     }
     MapDocument *document = targetMap();
-    if (!document)
-        return;
-    if (mDraggingMap)
+    if (!document || !mapCanBeMoved(document) || mDraggingMap)
         return;
 
     const bool moveFast = modifiers & Qt::ShiftModifier;
@@ -138,7 +136,6 @@ void WorldMoveMapTool::keyPressed(QKeyEvent *event)
     QPoint offset = QPoint(document->map()->tileWidth() * static_cast<int>(moveBy.x()),
                            document->map()->tileHeight() * static_cast<int>(moveBy.y()));
     QRect rect = mapRect(document);
-
     rect.setTopLeft(snapPoint(rect.topLeft() + offset, document));
 
     undoStack()->push(new SetMapRectCommand(document->fileName(), rect));
@@ -163,7 +160,7 @@ void WorldMoveMapTool::mouseLeft()
 
 void WorldMoveMapTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
-    if (!targetMapCanBeMoved()) {
+    if (!mapCanBeMoved(targetMap())) {
         AbstractWorldTool::mousePressed(event);
         return;
     }
