@@ -597,13 +597,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
         const auto worldFiles = DocumentManager::instance()->dirtyWorldFiles();
         for (const QString &fileName : worldFiles) {
             QAction *saveAction = mUi->menuSaveWorld->addAction(fileName);
-            connect(saveAction, &QAction::triggered, this, [this,fileName]
-            {
+            connect(saveAction, &QAction::triggered, this, [this,fileName] {
                 QString error;
-                if( !WorldManager::instance().saveWorld(fileName, &error) )
-                {
+                if (!WorldManager::instance().saveWorld(fileName, &error))
                     QMessageBox::critical(this, tr("Error Writing Worldfile"), error);
-                }
+
                 DocumentManager::instance()->ensureWorldDocument(fileName)->undoStack()->setClean();
                 const auto worldFiles = DocumentManager::instance()->dirtyWorldFiles();
                 mUi->menuSaveWorld->setEnabled(!worldFiles.isEmpty());
@@ -614,7 +612,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
         const auto worldFiles = DocumentManager::instance()->dirtyWorldFiles();
         const bool enabled =  worldFiles.size();
         mUi->menuSaveWorld->setVisible(enabled);
-        mUi->menuSaveWorld->setTitle( enabled ? tr("Save World File*") : tr("Save World File"));
+        mUi->menuSaveWorld->setTitle(enabled ? tr("Save World File*") : tr("Save World File"));
     });
     connect(mUi->actionResizeMap, &QAction::triggered, this, &MainWindow::resizeMap);
     connect(mUi->actionOffsetMap, &QAction::triggered, this, &MainWindow::offsetMap);
@@ -1072,9 +1070,8 @@ bool MainWindow::confirmAllSave()
             return false;
     }
 
-    QStringList worldFiles = DocumentManager::instance()->dirtyWorldFiles();
-    for( QString& fileName : worldFiles )
-    {
+    const QStringList worldFiles = DocumentManager::instance()->dirtyWorldFiles();
+    for (const QString &fileName : worldFiles) {
         int ret = QMessageBox::warning(
                 this, tr("Unsaved Changes to world"),
                 tr("There are unsaved changes to your world file. Do you want to save the world now?"),
@@ -1082,10 +1079,9 @@ bool MainWindow::confirmAllSave()
 
         switch (ret) {
         case QMessageBox::Save:
-            if( !WorldManager::instance().saveWorld(fileName) )
-            {
+            if (!WorldManager::instance().saveWorld(fileName))
                 return false;
-            }
+
             DocumentManager::instance()->ensureWorldDocument(fileName)->undoStack()->setClean();
             break;
         case QMessageBox::Discard:

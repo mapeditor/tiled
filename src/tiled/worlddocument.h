@@ -1,6 +1,7 @@
 /*
  * worlddocument.h
- * Copyright 2015-2016, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+ * Copyright 2019, Nils Kübler <nils-kuebler@web.de>
+ * Copyright 2020, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -20,33 +21,39 @@
 
 #pragma once
 
-class WorldManager;
-class QUndoStack;
+#include "document.h"
 
-#include <QObject>
+class WorldManager;
 
 namespace Tiled {
-
-struct World;
 
 /**
  * Represents an editable world document.
  */
-class WorldDocument : public QObject
+class WorldDocument : public Document
 {
     Q_OBJECT
 
 public:
-    WorldDocument(const QString& fileName);
-    virtual ~WorldDocument() override;
+    WorldDocument(const QString &fileName, QObject *parent = nullptr);
 
-    QUndoStack* undoStack() const;
+    // Document interface
+    QString displayName() const override;
+    bool save(const QString &fileName, QString *error) override;
 
-protected:
-    virtual void onWorldReloaded( const QString& filename );
+    FileFormat *writerFormat() const override { return nullptr; }
 
-    QUndoStack* mUndoStack;
-    QString mFileName;
+    // TODO: Expose worlds in script API
+    EditableAsset *editable() override { return nullptr; }
+
+    // Exporting not supported for worlds
+    QString lastExportFileName() const override { return QString(); }
+    void setLastExportFileName(const QString &) override {}
+    FileFormat *exportFormat() const override { return nullptr; }
+    void setExportFormat(FileFormat *) override {}
+
+private:
+    void onWorldReloaded(const QString &filename);
 };
 
 } // namespace Tiled

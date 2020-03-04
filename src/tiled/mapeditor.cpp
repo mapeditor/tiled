@@ -695,14 +695,14 @@ void MapEditor::setSelectedTool(AbstractTool *tool)
 
 void MapEditor::updateActiveUndoStack()
 {
-    QUndoStack* undoStack = DocumentManager::instance()->undoGroup()->activeStack();
-    if(mSelectedTool) {
+    QUndoStack *undoStack = DocumentManager::instance()->undoGroup()->activeStack();
+    if (mSelectedTool) {
         undoStack = mSelectedTool->undoStack();
-        if(!undoStack && mCurrentMapDocument) {
+        if (!undoStack && mCurrentMapDocument) {
             undoStack = mCurrentMapDocument->undoStack();
         }
     }
-    else if(mCurrentMapDocument) {
+    else if (mCurrentMapDocument) {
         undoStack = mCurrentMapDocument->undoStack();
     }
     mUndoDock->setStack(undoStack);

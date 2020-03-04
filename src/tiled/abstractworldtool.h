@@ -71,8 +71,8 @@ protected:
     void updateEnabledState() override;
 
     void addAnotherMapToWorld();
-    void removeFromWorld(const QString& mapFileName);
-    void addToWorld(const QString& worldFileName);
+    void removeFromWorld(const QString &mapFileName);
+    void addToWorld(const QString &worldFileName);
 
     QPoint snapPoint(QPoint point, MapDocument *document) const;
 
@@ -91,7 +91,7 @@ protected:
 
     MapScene *mMapScene;
     QPoint mMousePos;
-    MapDocument* mTargetMap;
+    MapDocument *mTargetMap;
 };
 
 } // namespace Tiled

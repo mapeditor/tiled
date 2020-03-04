@@ -133,7 +133,7 @@ public:
 
     void abortMultiDocumentClose();
 
-    WorldDocument *ensureWorldDocument(const QString& fileName);
+    WorldDocument *ensureWorldDocument(const QString &fileName);
     QStringList dirtyWorldFiles() const;
 
 signals:
@@ -183,7 +183,7 @@ public slots:
     void saveFile();
 
 private:
-    void onWorldUnloaded( const QString& worldFile );
+    void onWorldUnloaded(const QString &worldFile);
 
     void currentIndexChanged();
     void fileNameChanged(const QString &fileName,

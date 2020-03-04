@@ -454,7 +454,7 @@ void DocumentManager::switchToDocument(MapDocument *mapDocument, QPointF viewCen
 void DocumentManager::switchToDocumentAndHandleSimiliarTileset(MapDocument *mapDocument, QPointF viewCenter, qreal scale)
 {
     // Try selecting similar layers and tileset by name to the previously active mapitem
-    SharedTileset newSimilarTileset = nullptr;
+    SharedTileset newSimilarTileset;
 
     if (auto currentMapDocument = qobject_cast<MapDocument*>(currentDocument())) {
         const Layer *currentLayer = currentMapDocument->currentLayer();
@@ -1226,9 +1226,9 @@ TilesetDocument *DocumentManager::openTilesetFile(const QString &path)
     return i == -1 ? nullptr : qobject_cast<TilesetDocument*>(mDocuments.at(i).data());
 }
 
-WorldDocument *DocumentManager::ensureWorldDocument(const QString& fileName)
+WorldDocument *DocumentManager::ensureWorldDocument(const QString &fileName)
 {
-    if(!mWorldDocuments.contains(fileName)) {
+    if (!mWorldDocuments.contains(fileName)) {
         WorldDocument* worldDocument = new WorldDocument(fileName);
         mWorldDocuments.insert(fileName, worldDocument);
         mUndoGroup->addStack(worldDocument->undoStack());
@@ -1239,22 +1239,20 @@ WorldDocument *DocumentManager::ensureWorldDocument(const QString& fileName)
 QStringList DocumentManager::dirtyWorldFiles() const
 {
     QStringList dirtyWorldFiles;
-    QStringList allWorldFiles = WorldManager::instance().loadedWorldFiles();
+    const QStringList allWorldFiles = WorldManager::instance().loadedWorldFiles();
 
-    for(const QString &worldFile : allWorldFiles) {
-        if(!mWorldDocuments.contains(worldFile)) {
+    for (const QString &worldFile : allWorldFiles) {
+        if (!mWorldDocuments.contains(worldFile))
             continue;
-        }
-        if(mWorldDocuments[worldFile]->undoStack()->isClean()) {
+        if (mWorldDocuments[worldFile]->undoStack()->isClean())
             continue;
-        }
         dirtyWorldFiles.append(worldFile);
     }
 
     return dirtyWorldFiles;
 }
 
-void DocumentManager::onWorldUnloaded( const QString& worldFile )
+void DocumentManager::onWorldUnloaded(const QString &worldFile)
 {
     delete mWorldDocuments.take(worldFile);
 }

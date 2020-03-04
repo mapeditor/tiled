@@ -69,9 +69,9 @@ struct TILEDSHARED_EXPORT World
     bool isDirty;
 
     int mapIndex(const QString &fileName) const;
-    bool setMapRect(int mapIndex, const QRect &rect);
-    bool addMap(const QString &fileName, const QRect &rect);
-    bool removeMap(int mapIndex);
+    void setMapRect(int mapIndex, const QRect &rect);
+    void addMap(const QString &fileName, const QRect &rect);
+    void removeMap(int mapIndex);
     bool containsMap(const QString &fileName) const;
     QRect mapRect(const QString &fileName) const;
     QVector<MapEntry> allMaps() const;
@@ -89,7 +89,7 @@ struct TILEDSHARED_EXPORT World
      * its path.
      */
     QString displayName() const;
-    static QString displayName( QString fileName );
+    static QString displayName(const QString &fileName);
 };
 
 class TILEDSHARED_EXPORT WorldManager : public QObject
@@ -121,8 +121,8 @@ public:
 
 signals:
     void worldsChanged();
-    void worldReloaded( const QString& fileName );
-    void worldUnloaded( const QString& fileName );
+    void worldReloaded(const QString &fileName);
+    void worldUnloaded(const QString &fileName);
 
 private:
     void reloadWorldFiles(const QStringList &fileNames);
