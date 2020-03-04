@@ -448,6 +448,52 @@ void DocumentManager::switchToDocument(MapDocument *mapDocument, QPointF viewCen
     view->forceCenterOn(viewCenter);
 }
 
+/**
+ * Switches to the given \a mapDocument, taking tilsets into accout
+ */
+void DocumentManager::switchToDocumentAndHandleSimiliarTileset(MapDocument *mapDocument, QPointF viewCenter, qreal scale)
+{
+    // Try selecting similar layers and tileset by name to the previously active mapitem
+    SharedTileset newSimilarTileset = nullptr;
+
+    if (auto currentMapDocument = qobject_cast<MapDocument*>(currentDocument())) {
+        const Layer *currentLayer = currentMapDocument->currentLayer();
+        const QList<Layer*> selectedLayers = currentMapDocument->selectedLayers();
+
+        if (currentLayer) {
+            Layer *newCurrentLayer = mapDocument->map()->findLayer(currentLayer->name(),
+                                                                   currentLayer->layerType());
+            if (newCurrentLayer)
+                mapDocument->setCurrentLayer(newCurrentLayer);
+        }
+
+        QList<Layer*> newSelectedLayers;
+        for (Layer *selectedLayer : selectedLayers) {
+            Layer *newSelectedLayer = mapDocument->map()->findLayer(selectedLayer->name(),
+                                                                    selectedLayer->layerType());
+            if (newSelectedLayer)
+                newSelectedLayers << newSelectedLayer;
+        }
+        if (!newSelectedLayers.isEmpty())
+            mapDocument->setSelectedLayers(newSelectedLayers);
+
+        Editor *currentEditor = DocumentManager::instance()->currentEditor();
+        if (auto currentMapEditor = qobject_cast<MapEditor*>(currentEditor)) {
+            if (SharedTileset currentTileset = currentMapEditor->currentTileset()) {
+                if (!mapDocument->map()->tilesets().contains(currentTileset))
+                    newSimilarTileset = currentTileset->findSimilarTileset(mapDocument->map()->tilesets());
+            }
+        }
+    }
+
+    DocumentManager::instance()->switchToDocument(mapDocument, viewCenter, scale);
+
+    Editor *newEditor = DocumentManager::instance()->currentEditor();
+    if (auto newMapEditor = qobject_cast<MapEditor*>(newEditor))
+        if (newSimilarTileset)
+            newMapEditor->setCurrentTileset(newSimilarTileset);
+}
+
 void DocumentManager::switchToLeftDocument()
 {
     const int tabCount = mTabBar->count();

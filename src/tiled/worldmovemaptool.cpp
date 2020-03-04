@@ -248,7 +248,9 @@ void WorldMoveMapTool::mouseReleased(QGraphicsSceneMouseEvent *event)
         }
     } else {
         // switch to the document
-        manager->switchToDocument(targetMap(), sceneViewRect.center() - mDraggedMapTopLeft, view->zoomable()->scale());
+        manager->switchToDocumentAndHandleSimiliarTileset(targetMap(),
+                                                          sceneViewRect.center() - mDraggedMapTopLeft,
+                                                          view->zoomable()->scale());
     }
     refreshCursor();
 }
