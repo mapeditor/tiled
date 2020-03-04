@@ -198,13 +198,17 @@ void ObjectReferenceItem::paint(QPainter *painter, const QStyleOptionGraphicsIte
 
 QPointF ObjectReferenceItem::objectCenter(MapObject *object, const MapRenderer &renderer)
 {
-    QPointF pixelPos = renderer.pixelToScreenCoords(object->position());
-    QRectF bounds = object->screenBounds(renderer);
+    QPointF screenPos = renderer.pixelToScreenCoords(object->position());
 
-    // Adjust the bounding box for object rotation
-    bounds = rotateAt(pixelPos, object->rotation()).mapRect(bounds);
+    if (object->shape() != MapObject::Point) {
+        QRectF bounds = object->screenBounds(renderer);
 
-    return bounds.center() + object->objectGroup()->totalOffset();
+        // Adjust the bounding box for object rotation
+        bounds = rotateAt(screenPos, object->rotation()).mapRect(bounds);
+        screenPos = bounds.center();
+    }
+
+    return screenPos + object->objectGroup()->totalOffset();
 }
 
 } // namespace Tiled
