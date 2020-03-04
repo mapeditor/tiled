@@ -212,7 +212,7 @@ DocumentManager::DocumentManager(QObject *parent)
             }
             break;
         }
-        case Document::TilesetDocumentType:
+        case Document::TilesetDocumentType: {
             auto tilesetDocument = static_cast<TilesetDocument*>(doc);
             switch (select.objectType) {
             case Object::MapObjectType:
@@ -246,6 +246,9 @@ DocumentManager::DocumentManager(QObject *parent)
                 // todo: can't access Object pointer
                 break;
             }
+            break;
+        }
+        case Document::WorldDocumentType:
             break;
         }
 

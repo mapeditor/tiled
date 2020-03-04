@@ -147,7 +147,6 @@ std::unique_ptr<World> WorldManager::privateLoadWorld(const QString &fileName,
     QDir dir = QFileInfo(fileName).dir();
     std::unique_ptr<World> world(new World);
 
-    world->isDirty = false;
     world->fileName = QFileInfo(fileName).canonicalFilePath();
 
     const QJsonArray maps = object.value(QLatin1String("maps")).toArray();
@@ -202,7 +201,6 @@ std::unique_ptr<World> WorldManager::privateLoadWorld(const QString &fileName,
 World *WorldManager::addEmptyWorld(const QString &fileName, QString *errorString)
 {
     World *world = new World();
-    world->isDirty = true;
     world->fileName = fileName;
     world->onlyShowAdjacentMaps = false;
 
@@ -300,7 +298,6 @@ bool WorldManager::saveWorld(const QString &fileName, QString *errorString)
     file.write(doc.toJson());
     file.close();
 
-    savingWorld->isDirty = false;
     return true;
 }
 
@@ -392,17 +389,12 @@ bool WorldManager::addMap(const QString &fileName, const QString &mapFileName, c
 
 void World::setMapRect(int mapIndex, const QRect &rect)
 {
-    World::MapEntry &entry = maps[mapIndex];
-    if (entry.rect != rect) {
-        entry.rect = rect;
-        isDirty = true;
-    }
+    maps[mapIndex].rect = rect;
 }
 
 void World::removeMap(int mapIndex)
 {
     maps.removeAt(mapIndex);
-    isDirty = true;
 }
 
 void World::addMap(const QString &fileName, const QRect &rect)
@@ -411,12 +403,11 @@ void World::addMap(const QString &fileName, const QRect &rect)
     entry.rect = rect;
     entry.fileName = fileName;
     maps.append(entry);
-    isDirty = true;
 }
 
 int World::mapIndex(const QString &fileName) const
 {
-    for (int i = 0; i < maps.length(); i++ ) {
+    for (int i = 0; i < maps.length(); i++) {
         if (maps[i].fileName == fileName)
             return i;
     }

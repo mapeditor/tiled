@@ -264,9 +264,6 @@ void MapItem::hoverEnterEvent(QGraphicsSceneHoverEvent *)
         setCursor(Qt::PointingHandCursor);
         mIsHovered = true;
     }
-    if (isWorldTool()) {
-        setMapInWorldTool();
-    }
 }
 
 void MapItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *)
@@ -276,45 +273,21 @@ void MapItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *)
         unsetCursor();
         mIsHovered = false;
     }
-    if (isWorldTool()) {
-        clearMapInWorldTool();
-    }
 }
 
-bool MapItem::isWorldTool() const
+bool MapItem::isWorldToolSelected() const
 {
     Editor *currentEditor = DocumentManager::instance()->currentEditor();
     if (auto currentMapEditor = qobject_cast<MapEditor*>(currentEditor)) {
-        if (auto tool = qobject_cast<AbstractWorldTool*>(currentMapEditor->selectedTool()) ) {
+        if (auto tool = qobject_cast<AbstractWorldTool*>(currentMapEditor->selectedTool()))
             return true;
-        }
     }
     return false;
 }
 
-void MapItem::setMapInWorldTool()
-{
-    Editor *currentEditor = DocumentManager::instance()->currentEditor();
-    if (auto currentMapEditor = qobject_cast<MapEditor*>(currentEditor)) {
-        if (auto tool = qobject_cast<AbstractWorldTool*>(currentMapEditor->selectedTool()) ) {
-            tool->setTargetMap(mMapDocument.data());
-        }
-    }
-}
-
-void MapItem::clearMapInWorldTool()
-{
-    Editor *currentEditor = DocumentManager::instance()->currentEditor();
-    if (auto currentMapEditor = qobject_cast<MapEditor*>(currentEditor)) {
-        if (auto tool = qobject_cast<AbstractWorldTool*>(currentMapEditor->selectedTool()) ) {
-            tool->setTargetMap(nullptr);
-        }
-    }
-}
-
 void MapItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    if (isWorldTool()) {
+    if (isWorldToolSelected()) {
         // the world tool has it's own handling for hovered maps
         QGraphicsItem::mousePressEvent(event);
         return;
@@ -329,7 +302,6 @@ void MapItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
  */
 void MapItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-    clearMapInWorldTool();
     if (mDisplayMode == ReadOnly && event->button() == Qt::LeftButton && isUnderMouse()) {
         MapView *view = static_cast<MapView*>(event->widget()->parent());
         QRectF viewRect { view->viewport()->rect() };

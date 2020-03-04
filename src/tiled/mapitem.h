@@ -65,6 +65,9 @@ public:
             QGraphicsItem *parent = nullptr);
     ~MapItem() override;
 
+    enum { Type = UserType + 3 };
+    int type() const override { return Type; }
+
     MapDocument *mapDocument() const;
 
     void setDisplayMode(DisplayMode displayMode);
@@ -84,10 +87,9 @@ protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
-    bool isWorldTool() const;
-    void setMapInWorldTool();
-    void clearMapInWorldTool();
 private:
+    bool isWorldToolSelected() const;
+
     /**
      * Repaints the specified \a region of the given \a tileLayer. The region
      * is in tile coordinates.

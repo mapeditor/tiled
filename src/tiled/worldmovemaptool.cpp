@@ -121,7 +121,7 @@ void WorldMoveMapTool::keyPressed(QKeyEvent *event)
     MapDocument *document = targetMap();
     if (!document)
         return;
-    if (mMousePressed)
+    if (mDraggingMap)
         return;
 
     const bool moveFast = modifiers & Qt::ShiftModifier;
@@ -137,13 +137,13 @@ void WorldMoveMapTool::keyPressed(QKeyEvent *event)
 
     QPoint offset = QPoint(document->map()->tileWidth() * static_cast<int>(moveBy.x()),
                            document->map()->tileHeight() * static_cast<int>(moveBy.y()));
-    QRect rect = targetMapRect();
+    QRect rect = mapRect(document);
 
     rect.setTopLeft(snapPoint(rect.topLeft() + offset, document));
 
     undoStack()->push(new SetMapRectCommand(document->fileName(), rect));
 
-    if (document == currentMap()) {
+    if (document == mapDocument()) {
         // undo camera movement
         DocumentManager *manager = DocumentManager::instance();
         MapView *view = manager->viewForDocument(mapDocument());
@@ -168,22 +168,17 @@ void WorldMoveMapTool::mousePressed(QGraphicsSceneMouseEvent *event)
         return;
     }
 
-    const MapRenderer *renderer = targetMap()->renderer();
-
     switch (event->button()) {
         case Qt::LeftButton: {
             // initiate drag action
-            mMousePressed = true;
+            mDraggingMap = targetMap();
             mDragStartScenePos = event->scenePos();
-            mDragOffset = QPoint(0,0);
+            mDragOffset = QPoint(0, 0);
 
             // create drag preview rect
-            const QRect mapRect = targetMapRect();
-            mDraggedMapTopLeft = mapRect.topLeft() - currentMapRect().topLeft();
-            const QPointF sizeInPoints = renderer->pixelToScreenCoords(QPointF(mapRect.size().width(), mapRect.size().height()));
-            const QSizeF size(sizeInPoints.x(), sizeInPoints.y());
-
-            mDragPreviewRect = QRectF(mDraggedMapTopLeft, size);
+            const QRect targetMapRect = mapRect(mDraggingMap);
+            mDraggedMapTopLeft = targetMapRect.topLeft() - mapRect(mapDocument()).topLeft();
+            mDragPreviewRect = QRectF(mDraggedMapTopLeft, targetMapRect.size());
 
             // create preview renderer
             mSelectionRectangle->setRectangle(mDragPreviewRect);
@@ -191,7 +186,7 @@ void WorldMoveMapTool::mousePressed(QGraphicsSceneMouseEvent *event)
             break;
         }
         default: {
-            if (!mMousePressed)
+            if (!mDraggingMap)
                 AbstractWorldTool::mousePressed(event);
             break;
         }
@@ -201,19 +196,18 @@ void WorldMoveMapTool::mousePressed(QGraphicsSceneMouseEvent *event)
 }
 
 void WorldMoveMapTool::mouseMoved(const QPointF &pos,
-                                     Qt::KeyboardModifiers modifiers)
+                                  Qt::KeyboardModifiers modifiers)
 {    
     AbstractWorldTool::mouseMoved(pos, modifiers);
 
-    MapDocument *document = targetMap();
-    const World *world = targetConstWorld();
-    if (!world || !document)
+    const World *world = constWorld(mDraggingMap);
+    if (!world || !mDraggingMap)
         return;
 
     // calculate new drag offset
-    const MapRenderer *renderer = document->renderer();
-    QPoint newOffset = renderer->screenToPixelCoords(pos - mDragStartScenePos).toPoint();
-    mDragOffset = snapPoint(newOffset, document);
+    const MapRenderer *renderer = mDraggingMap->renderer();
+    const QPoint newOffset = renderer->screenToPixelCoords(pos - mDragStartScenePos).toPoint();
+    mDragOffset = snapPoint(newOffset, mDraggingMap);
 
     // update preview
     mDragPreviewRect.moveTopLeft(mDraggedMapTopLeft + renderer->pixelToScreenCoords(mDragOffset));
@@ -222,31 +216,32 @@ void WorldMoveMapTool::mouseMoved(const QPointF &pos,
 
 void WorldMoveMapTool::mouseReleased(QGraphicsSceneMouseEvent *event)
 {
-    if (!mMousePressed || event->button() != Qt::LeftButton)
+    if (!mDraggingMap || event->button() != Qt::LeftButton)
         return;
 
     mapScene()->removeItem(mSelectionRectangle.get());
-    mMousePressed = false;
 
     DocumentManager *manager = DocumentManager::instance();
     MapView *view = manager->viewForDocument(mapDocument());
-    QRectF viewRect { view->viewport()->rect() };
-    QRectF sceneViewRect = view->viewportTransform().inverted().mapRect(viewRect);
+    const QRectF viewRect { view->viewport()->rect() };
+    const QRectF sceneViewRect = view->viewportTransform().inverted().mapRect(viewRect);
 
-    QRect rect = targetMapRect();
     if (mDragOffset.x() != 0 || mDragOffset.y() != 0) {
-        rect.setTopLeft(rect.topLeft() + mDragOffset);
-        undoStack()->push(new SetMapRectCommand(targetMap()->fileName(), rect));
-        if (mDraggedMapTopLeft.isNull()) {
+        const QRect newRect = mapRect(mDraggingMap).translated(mDragOffset);
+        undoStack()->push(new SetMapRectCommand(mDraggingMap->fileName(), newRect));
+        if (mDraggingMap == mapDocument()) {
             // undo camera movement
             view->forceCenterOn(sceneViewRect.center() - mDragOffset);
         }
     } else {
         // switch to the document
-        manager->switchToDocumentAndHandleSimiliarTileset(targetMap(),
+        manager->switchToDocumentAndHandleSimiliarTileset(mDraggingMap,
                                                           sceneViewRect.center() - mDraggedMapTopLeft,
                                                           view->zoomable()->scale());
     }
+
+    mDraggingMap = nullptr;
+
     refreshCursor();
 }
 
@@ -258,17 +253,11 @@ void WorldMoveMapTool::languageChanged()
     setShortcut(QKeySequence(tr("N")));
 }
 
-void WorldMoveMapTool::setTargetMap(MapDocument *document)
-{
-    AbstractWorldTool::setTargetMap(document);
-    refreshCursor();
-}
-
 void WorldMoveMapTool::refreshCursor()
 {
     Qt::CursorShape cursorShape = Qt::ArrowCursor;
 
-    if (mMousePressed)
+    if (mDraggingMap)
         cursorShape = Qt::SizeAllCursor;
 
     if (cursor().shape() != cursorShape)
@@ -277,11 +266,11 @@ void WorldMoveMapTool::refreshCursor()
 
 void WorldMoveMapTool::abortMoving()
 {
-    if (!mMousePressed)
+    if (!mDraggingMap)
         return;
 
     mapScene()->removeItem(mSelectionRectangle.get());
-    mMousePressed = false;
+    mDraggingMap = nullptr;
     refreshCursor();
 }
 

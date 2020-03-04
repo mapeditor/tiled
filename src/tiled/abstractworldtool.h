@@ -60,9 +60,7 @@ public:
 
     void languageChanged() override;
 
-    virtual QUndoStack *undoStack() override;
-
-    virtual void setTargetMap(MapDocument *document);
+    QUndoStack *undoStack() override;
 
 protected:
     /**
@@ -70,28 +68,26 @@ protected:
      */
     void updateEnabledState() override;
 
-    void addAnotherMapToWorld();
+
+    MapDocument *mapAt(const QPointF &pos) const;
+
+    void addAnotherMapToWorld(QPoint insertPos);
     void removeFromWorld(const QString &mapFileName);
     void addToWorld(const QString &worldFileName);
 
     QPoint snapPoint(QPoint point, MapDocument *document) const;
 
-    MapDocument *targetMap() const;
+    MapDocument *targetMap() const { return mTargetMap; }
     bool targetMapCanBeMoved() const;
-    QRect targetMapRect() const;
-    const World *targetConstWorld() const;
-
-    MapDocument *currentMap() const;
-    QRect currentMapRect() const;
-    const World *currentConstWorld() const;
+    QRect mapRect(MapDocument *mapDocument) const;
+    const World *constWorld(MapDocument *mapDocument) const;
 
     MapScene *mapScene() const { return mMapScene; }
 
-    void showContextMenu(QPoint screenPos);
+    void showContextMenu(QGraphicsSceneMouseEvent *);
 
-    MapScene *mMapScene;
-    QPoint mMousePos;
-    MapDocument *mTargetMap;
+    MapScene *mMapScene = nullptr;
+    MapDocument *mTargetMap = nullptr;
 };
 
 } // namespace Tiled

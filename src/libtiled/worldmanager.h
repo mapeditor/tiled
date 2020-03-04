@@ -66,7 +66,6 @@ struct TILEDSHARED_EXPORT World
     QVector<MapEntry> maps;
     QVector<Pattern> patterns;
     bool onlyShowAdjacentMaps;
-    bool isDirty;
 
     int mapIndex(const QString &fileName) const;
     void setMapRect(int mapIndex, const QRect &rect);
@@ -117,7 +116,6 @@ public:
     bool mapCanBeModified(const QString &fileName) const;
     bool removeMap(const QString &fileName);
     bool addMap(const QString &fileName, const QString &mapFileName, const QRect &rect);
-
 
 signals:
     void worldsChanged();

@@ -575,7 +575,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
         QString worldFilesFilter = tr("World files (*.world)");
         filter.append(worldFilesFilter);
 
-        MapEditor* mapEditor = static_cast<MapEditor*>(DocumentManager::instance()->editor(Document::DocumentType::MapDocumentType));
+        auto mapEditor = static_cast<MapEditor*>(DocumentManager::instance()->editor(Document::DocumentType::MapDocumentType));
         QString worldFile = QFileDialog::getSaveFileName(mapEditor->editorWidget(), tr("New Map"), lastPath,
                                                          filter, &worldFilesFilter);
         if (worldFile.isEmpty() || QFile::exists(worldFile))
@@ -1546,7 +1546,7 @@ void MainWindow::addExternalTileset()
 
     mSettings.setValue(QLatin1String("lastUsedTilesetFilter"), selectedFilter);
 
-    auto *mapEditor = static_cast<MapEditor*>(mDocumentManager->currentEditor());
+    auto mapEditor = static_cast<MapEditor*>(mDocumentManager->currentEditor());
     mapEditor->addExternalTilesets(fileNames);
 }
 

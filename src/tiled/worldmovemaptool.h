@@ -56,15 +56,12 @@ public:
 
     void languageChanged() override;
 
-    void setTargetMap(MapDocument *document) override;
-
 protected:
-
     void abortMoving();
     void refreshCursor();
 
     // drag state
-    bool mMousePressed;
+    MapDocument *mDraggingMap = nullptr;
     QPointF mDragStartScenePos;
     QRectF mDragPreviewRect;
     QPoint mDragOffset;
