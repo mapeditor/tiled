@@ -162,30 +162,30 @@ QRectF ObjectReferenceItem::boundingRect() const
 
 void ObjectReferenceItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
-    const qreal lineWidth = Preferences::instance()->objectLineWidth();
-
-    const qreal devicePixelRatio = painter->device()->devicePixelRatioF();
-    const qreal dashLength = std::ceil(Utils::dpiScaled(2) * devicePixelRatio);
-
-    QPen pen(mColor, lineWidth, Qt::SolidLine, Qt::RoundCap);
-    pen.setCosmetic(true);
-    pen.setDashPattern({dashLength, dashLength});
-    pen.setDashOffset(static_cast<qreal>(QVector2D(mTargetPos - mSourcePos).length()) * -0.5);
-
-    QPen shadowPen(pen);
-    shadowPen.setColor(QColor(0, 0, 0, qRound(255 * opacity())));
-
     qreal painterScale = 1.0;
     if (auto mapScene = qobject_cast<MapScene*>(scene()))
         painterScale = mapScene->mapDocument()->renderer()->painterScale();
 
-    const qreal shadowDist = (lineWidth == 0 ? 1 : lineWidth) / painterScale;
-    const QPointF shadowOffset = QPointF(shadowDist * 0.5, shadowDist * 0.5);
+    auto lineWidth = Preferences::instance()->objectLineWidth();
+    auto shadowDist = (lineWidth == 0 ? 1 : lineWidth) / painterScale;
+    auto shadowOffset = QPointF(shadowDist * 0.5, shadowDist * 0.5);
+    auto devicePixelRatio = painter->device()->devicePixelRatioF();
+    auto dashLength = std::ceil(Utils::dpiScaled(2) * devicePixelRatio);
+    auto lineLength = static_cast<qreal>(QVector2D(mTargetPos - mSourcePos).length());
+    auto dashOffset = lineLength * -0.5 * painterScale / lineWidth;
 
-    const QPointF direction = QVector2D(mTargetPos - mSourcePos).normalized().toPointF();
-    const QPointF offset = direction * ArrowHead::arrowHeadSize / painterScale;
-    const QPointF start = mSourcePos + offset;
-    const QPointF end = mTargetPos - offset;
+    auto pen = QPen(mColor, lineWidth, Qt::SolidLine, Qt::RoundCap);
+    pen.setCosmetic(true);
+    pen.setDashPattern({dashLength, dashLength});
+    pen.setDashOffset(dashOffset);
+
+    auto shadowPen = pen;
+    shadowPen.setColor(Qt::black);
+
+    auto direction = QVector2D(mTargetPos - mSourcePos).normalized().toPointF();
+    auto offset = direction * ArrowHead::arrowHeadSize / painterScale;
+    auto start = mSourcePos + offset;
+    auto end = mTargetPos - offset;
 
     painter->setRenderHint(QPainter::Antialiasing);
 
