@@ -18,6 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "actionmanager.h"
 #include "changeevents.h"
 #include "documentmanager.h"
 #include "geometry.h"
@@ -43,6 +44,7 @@
 #include <QGraphicsView>
 #include <QKeyEvent>
 #include <QMenu>
+#include <QToolBar>
 #include <QTransform>
 #include <QUndoStack>
 
@@ -90,6 +92,36 @@ WorldMoveMapTool::WorldMoveMapTool(QObject *parent)
           parent)
     , mSelectionRectangle(new SelectionRectangle)
 {
+
+    QIcon moveMapLeftIcon(QLatin1String(":images/24/world-map-move-left.png"));
+    mMoveMapLeftAction = new QAction(this);
+    mMoveMapLeftAction->setIcon(moveMapLeftIcon);
+    mMoveMapLeftAction->setShortcut(Qt::Key_Left);
+    ActionManager::registerAction(mMoveMapLeftAction, "MoveMapLeft");
+    connect(mMoveMapLeftAction, &QAction::triggered, this, &WorldMoveMapTool::moveCurrentMapLeft);
+
+    QIcon moveMapRightIcon(QLatin1String(":images/24/world-map-move-right.png"));
+    mMoveMapRightAction = new QAction(this);
+    mMoveMapRightAction->setIcon(moveMapRightIcon);
+    mMoveMapRightAction->setShortcut(Qt::Key_Right);
+    ActionManager::registerAction(mMoveMapRightAction, "MoveMapRight");
+    connect(mMoveMapRightAction, &QAction::triggered, this, &WorldMoveMapTool::moveCurrentMapRight);
+
+    QIcon moveMapUpIcon(QLatin1String(":images/24/world-map-move-up.png"));
+    mMoveMapUpAction = new QAction(this);
+    mMoveMapUpAction->setIcon(moveMapUpIcon);
+    mMoveMapUpAction->setShortcut(Qt::Key_Up);
+    ActionManager::registerAction(mMoveMapUpAction, "MoveMapUp");
+    connect(mMoveMapUpAction, &QAction::triggered, this, &WorldMoveMapTool::moveCurrentMapUp);
+
+    QIcon moveMapDownIcon(QLatin1String(":images/24/world-map-move-down.png"));
+    mMoveMapDownAction = new QAction(this);
+    mMoveMapDownAction->setIcon(moveMapDownIcon);
+    mMoveMapDownAction->setShortcut(Qt::Key_Down);
+    ActionManager::registerAction(mMoveMapDownAction, "MoveMapDown");
+    connect(mMoveMapDownAction, &QAction::triggered, this, &WorldMoveMapTool::moveCurrentMapDown);
+
+    languageChanged();
 }
 
 WorldMoveMapTool::~WorldMoveMapTool()
@@ -118,7 +150,7 @@ void WorldMoveMapTool::keyPressed(QKeyEvent *event)
         event->ignore();
         return;
     }
-    MapDocument *document = targetMap();
+    MapDocument *document = mapDocument();
     if (!document || !mapCanBeMoved(document) || mDraggingMap)
         return;
 
@@ -132,6 +164,58 @@ void WorldMoveMapTool::keyPressed(QKeyEvent *event)
         if (snapToFineGrid)
             moveBy /= Preferences::instance()->gridFine();
     }
+
+    moveMap(document, moveBy.toPoint());
+}
+
+
+void WorldMoveMapTool::populateToolBar(QToolBar *toolBar)
+{
+    AbstractWorldTool::populateToolBar(toolBar);
+
+    toolBar->addAction(mMoveMapLeftAction);
+    toolBar->addAction(mMoveMapRightAction);
+    toolBar->addAction(mMoveMapUpAction);
+    toolBar->addAction(mMoveMapDownAction);
+
+    mToolBar = toolBar;
+}
+
+void WorldMoveMapTool::updateEnabledState()
+{
+    AbstractWorldTool::updateEnabledState();
+
+    const World *world = constWorld(mapDocument());
+    mMoveMapLeftAction->setEnabled(world != nullptr);
+    mMoveMapRightAction->setEnabled(world != nullptr);
+    mMoveMapUpAction->setEnabled(world != nullptr);
+    mMoveMapDownAction->setEnabled(world != nullptr);
+}
+
+void WorldMoveMapTool::moveCurrentMapLeft()
+{
+    moveMap(mapDocument(), QPoint(-1,0));
+}
+
+void WorldMoveMapTool::moveCurrentMapRight()
+{
+    moveMap(mapDocument(), QPoint(+1,0));
+}
+
+void WorldMoveMapTool::moveCurrentMapUp()
+{
+    moveMap(mapDocument(), QPoint(0,-1));
+}
+
+void WorldMoveMapTool::moveCurrentMapDown()
+{
+    moveMap(mapDocument(), QPoint(0,+1));
+}
+
+void WorldMoveMapTool::moveMap(MapDocument *document, QPoint moveBy)
+{
+    if (!document || !mapCanBeMoved(document) || mDraggingMap)
+        return;
 
     QPoint offset = QPoint(document->map()->tileWidth() * static_cast<int>(moveBy.x()),
                            document->map()->tileHeight() * static_cast<int>(moveBy.y()));
@@ -244,10 +328,15 @@ void WorldMoveMapTool::mouseReleased(QGraphicsSceneMouseEvent *event)
 
 void WorldMoveMapTool::languageChanged()
 {
-    AbstractWorldTool::languageChanged();
-
     setName(tr("World Tool"));
     setShortcut(QKeySequence(tr("N")));
+
+    mMoveMapRightAction->setText(tr("Move Current Map Right"));
+    mMoveMapLeftAction->setText(tr("Move Current Map Left"));
+    mMoveMapUpAction->setText(tr("Move Current Map Up"));
+    mMoveMapDownAction->setText(tr("Move Current Map Down"));
+
+    AbstractWorldTool::languageChanged();
 }
 
 void WorldMoveMapTool::refreshCursor()

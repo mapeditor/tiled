@@ -19,7 +19,7 @@
  */
 
 #include "abstractworldtool.h"
-
+#include "actionmanager.h"
 #include "preferences.h"
 #include "documentmanager.h"
 #include "mapdocument.h"
@@ -27,18 +27,20 @@
 #include "mapscene.h"
 #include "mapeditor.h"
 #include "maprenderer.h"
+#include "mapview.h"
 #include "tile.h"
 #include "utils.h"
 #include "worlddocument.h"
 #include "worldmanager.h"
 
+#include <QAction>
 #include <QFileDialog>
 #include <QKeyEvent>
 #include <QMenu>
 #include <QMessageBox>
 #include <QToolBar>
 #include <QUndoStack>
-
+#include <QObject>
 #include <QtMath>
 
 #include "qtcompat_p.h"
@@ -90,6 +92,16 @@ public:
 
     void redo() override
     {
+        // ensure we're switching to a differnet map in case the current map is removed
+        DocumentManager *manager = DocumentManager::instance();
+        if (manager->currentDocument() && manager->currentDocument()->fileName() == mMapName) {
+            const World *world = WorldManager::instance().worldForMap(mMapName);
+            for (World::MapEntry &entry : world->allMaps())
+                if (entry.fileName != mMapName) {
+                    manager->switchToDocument(entry.fileName);
+                    break;
+                }
+        }
         WorldManager::instance().removeMap(mMapName);
     }
 
@@ -107,10 +119,29 @@ AbstractWorldTool::AbstractWorldTool(Id id,
                                      QObject *parent)
     : AbstractTool(id, name, icon, shortcut, parent)
 {
-    AbstractWorldTool::languageChanged();
-
     WorldManager &worldManager = WorldManager::instance();
     connect(&worldManager, &WorldManager::worldsChanged, this, &AbstractWorldTool::updateEnabledState);
+
+    QIcon addAnotherMapToWorldIcon(QLatin1String(":images/24/world-map-add-other.png"));
+    mAddAnotherMapToWorldAction = new QAction(this);
+    mAddAnotherMapToWorldAction->setIcon(addAnotherMapToWorldIcon);
+    mAddAnotherMapToWorldAction->setShortcut(Qt::SHIFT + Qt::Key_A);
+    ActionManager::registerAction(mAddAnotherMapToWorldAction, "AddAnotherMap");
+    connect(mAddAnotherMapToWorldAction, &QAction::triggered, this, &AbstractWorldTool::addAnotherMapToWorldAtCenter);
+
+    QIcon addMapToWorldIcon(QLatin1String(":images/24/world-map-add-this.png"));
+    mAddMapToWorldAction = new QAction(this);
+    mAddMapToWorldAction->setIcon(addMapToWorldIcon);
+    mAddMapToWorldAction->setShortcut(Qt::SHIFT + Qt::Key_A);
+    ActionManager::registerAction(mAddMapToWorldAction, "AddMap");
+    connect(mAddMapToWorldAction, &QAction::triggered, this, &AbstractWorldTool::addToWorldSelect);
+
+    QIcon removeMapFromWorldIcon(QLatin1String(":images/24/world-map-remove-this.png"));
+    mRemoveMapFromWorldAction = new QAction(this);
+    mRemoveMapFromWorldAction->setIcon(removeMapFromWorldIcon);
+    mRemoveMapFromWorldAction->setShortcut(Qt::SHIFT + Qt::Key_D);
+    ActionManager::registerAction(mRemoveMapFromWorldAction, "RemoveMap");
+    connect(mRemoveMapFromWorldAction, &QAction::triggered, this, &AbstractWorldTool::removeCurrentMapFromWorld);
 }
 
 void AbstractWorldTool::activate(MapScene *scene)
@@ -157,6 +188,9 @@ void AbstractWorldTool::mousePressed(QGraphicsSceneMouseEvent *event)
 
 void AbstractWorldTool::languageChanged()
 {
+    mAddAnotherMapToWorldAction->setText(tr("Add another map to the current world"));
+    mAddMapToWorldAction->setText(tr("Add the current map to a loaded world"));
+    mRemoveMapFromWorldAction->setText(tr("Remove the current map from the current world"));
 }
 
 void AbstractWorldTool::updateEnabledState()
@@ -164,6 +198,11 @@ void AbstractWorldTool::updateEnabledState()
     bool hasWorlds = !WorldManager::instance().worlds().isEmpty();
     const World *world = constWorld(mapDocument());
     setEnabled(mapDocument() && hasWorlds && (world == nullptr || world->canBeModified()));
+
+    // update toolbar actions
+    mAddMapToWorldAction->setEnabled(hasWorlds && world == nullptr);
+    mRemoveMapFromWorldAction->setEnabled(world != nullptr);
+    mAddAnotherMapToWorldAction->setEnabled(world != nullptr);
 }
 
 MapDocument *AbstractWorldTool::mapAt(const QPointF &pos) const
@@ -257,6 +296,15 @@ void AbstractWorldTool::showContextMenu(QGraphicsSceneMouseEvent *event)
     menu.exec(screenPos);
 }
 
+void AbstractWorldTool::addAnotherMapToWorldAtCenter()
+{
+    DocumentManager *manager = DocumentManager::instance();
+    MapView *view = manager->viewForDocument(mapDocument());
+    const QRectF viewRect { view->viewport()->rect() };
+    const QRectF sceneViewRect = view->viewportTransform().inverted().mapRect(viewRect);
+    addAnotherMapToWorld(sceneViewRect.center().toPoint());
+}
+
 void AbstractWorldTool::addAnotherMapToWorld(QPoint insertPos)
 {
     MapDocument *map = mapDocument();
@@ -287,6 +335,11 @@ void AbstractWorldTool::addAnotherMapToWorld(QPoint insertPos)
     undoStack()->push(new AddMapCommand(world->fileName, mapFile, rect));
 }
 
+void AbstractWorldTool::removeCurrentMapFromWorld()
+{
+    removeFromWorld(mapDocument()->fileName());
+}
+
 void AbstractWorldTool::removeFromWorld(const QString &mapFileName)
 {
     undoStack()->push(new RemoveMapCommand(mapFileName));
@@ -303,12 +356,40 @@ void AbstractWorldTool::addToWorld(const QString &worldFileName)
     undoStack->push(new AddMapCommand(worldFileName, document->fileName(), rect));
 }
 
+void AbstractWorldTool::addToWorldSelect()
+{
+    QMenu menu;
+
+    WorldManager &manager = WorldManager::instance();
+    const QStringList worlds = manager.loadedWorldFiles();
+    for (const QString &worldFilename : worlds) {
+        if (!manager.worlds()[worldFilename]->canBeModified())
+            continue;
+        QAction *addToWorldAction = menu.addAction(tr("Add %1 to World %2")
+                                                   .arg(mapDocument()->displayName())
+                                                   .arg(World::displayName(worldFilename)));
+        connect(addToWorldAction, &QAction::triggered, this, [=] {
+            addToWorld(worldFilename);
+        });
+    }
+
+    menu.exec(mToolBar->pos());
+}
+
 QUndoStack *AbstractWorldTool::undoStack()
 {
     const World *world = constWorld(mapDocument());
     if (!world)
         return nullptr;
     return DocumentManager::instance()->ensureWorldDocument(world->fileName)->undoStack();
+}
+
+void AbstractWorldTool::populateToolBar(QToolBar *toolBar)
+{
+    toolBar->addAction(mAddAnotherMapToWorldAction);
+    toolBar->addAction(mAddMapToWorldAction);
+    toolBar->addAction(mRemoveMapFromWorldAction);
+    mToolBar = toolBar;
 }
 
 QPoint AbstractWorldTool::snapPoint(QPoint point, MapDocument *document) const

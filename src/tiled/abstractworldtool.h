@@ -61,6 +61,7 @@ public:
     void languageChanged() override;
 
     QUndoStack *undoStack() override;
+    void populateToolBar(QToolBar*) override;
 
 protected:
     /**
@@ -71,9 +72,12 @@ protected:
 
     MapDocument *mapAt(const QPointF &pos) const;
 
+    void addAnotherMapToWorldAtCenter();
     void addAnotherMapToWorld(QPoint insertPos);
+    void removeCurrentMapFromWorld();
     void removeFromWorld(const QString &mapFileName);
     void addToWorld(const QString &worldFileName);
+    void addToWorldSelect();
 
     QPoint snapPoint(QPoint point, MapDocument *document) const;
 
@@ -88,6 +92,11 @@ protected:
 
     MapScene *mMapScene = nullptr;
     MapDocument *mTargetMap = nullptr;
+    QToolBar *mToolBar = nullptr;
+
+    QAction *mAddAnotherMapToWorldAction;
+    QAction *mAddMapToWorldAction;
+    QAction *mRemoveMapFromWorldAction;
 };
 
 } // namespace Tiled

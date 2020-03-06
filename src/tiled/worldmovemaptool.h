@@ -55,10 +55,23 @@ public:
     void mouseReleased(QGraphicsSceneMouseEvent *event) override;
 
     void languageChanged() override;
+    void populateToolBar(QToolBar*) override;
 
 protected:
+    /**
+     * Overridden to only enable this tool when the currently has a world loaded
+     */
+    void updateEnabledState() override;
+
     void abortMoving();
     void refreshCursor();
+
+    void moveMap(MapDocument *document, QPoint moveBy);
+
+    void moveCurrentMapLeft();
+    void moveCurrentMapRight();
+    void moveCurrentMapUp();
+    void moveCurrentMapDown();
 
     // drag state
     MapDocument *mDraggingMap = nullptr;
@@ -67,6 +80,11 @@ protected:
     QPoint mDragOffset;
     QPoint mDraggedMapTopLeft;
     std::unique_ptr<SelectionRectangle> mSelectionRectangle;
+
+    QAction *mMoveMapRightAction;
+    QAction *mMoveMapLeftAction;
+    QAction *mMoveMapUpAction;
+    QAction *mMoveMapDownAction;
 };
 
 } // namespace Tiled

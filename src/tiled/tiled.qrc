@@ -170,5 +170,12 @@
         <file>images/scalable/wrap.svg</file>
         <file>images/scalable/search-object-dialog.svg</file>
         <file>images/scalable/select-object.svg</file>
+        <file>images/24/world-map-move-down.png</file>
+        <file>images/24/world-map-move-left.png</file>
+        <file>images/24/world-map-move-right.png</file>
+        <file>images/24/world-map-move-up.png</file>
+        <file>images/24/world-map-add-this.png</file>
+        <file>images/24/world-map-add-other.png</file>
+        <file>images/24/world-map-remove-this.png</file>
     </qresource>
 </RCC>
