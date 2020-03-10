@@ -83,11 +83,10 @@ private:
 WorldMoveMapTool::WorldMoveMapTool(QObject *parent)
     : AbstractWorldTool("WorldMoveMapTool", tr("World Tool"),
                         QIcon(QLatin1String(":images/22/world-move-tool.png")),
-                        QKeySequence(tr("N")),
+                        QKeySequence(Qt::Key_N),
                         parent)
     , mSelectionRectangle(new SelectionRectangle)
 {
-
     QIcon moveMapLeftIcon(QLatin1String(":images/24/world-map-move-left.png"));
     mMoveMapLeftAction = new QAction(this);
     mMoveMapLeftAction->setIcon(moveMapLeftIcon);
@@ -322,7 +321,6 @@ void WorldMoveMapTool::mouseReleased(QGraphicsSceneMouseEvent *event)
 void WorldMoveMapTool::languageChanged()
 {
     setName(tr("World Tool"));
-    setShortcut(QKeySequence(tr("N")));
 
     mMoveMapRightAction->setText(tr("Move Current Map Right"));
     mMoveMapLeftAction->setText(tr("Move Current Map Left"));
