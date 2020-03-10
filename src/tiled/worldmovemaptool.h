@@ -26,7 +26,7 @@
 
 namespace Tiled {
 
-class SelectionRectangle;
+class MapItem;
 
 class WorldMoveMapTool : public AbstractWorldTool
 {
@@ -54,11 +54,10 @@ protected:
 
     // drag state
     MapDocument *mDraggingMap = nullptr;
+    MapItem *mDraggingMapItem = nullptr;
     QPointF mDragStartScenePos;
-    QRectF mDragPreviewRect;
+    QPointF mDraggedMapStartPos;
     QPoint mDragOffset;
-    QPoint mDraggedMapTopLeft;
-    std::unique_ptr<SelectionRectangle> mSelectionRectangle;
 };
 
 } // namespace Tiled

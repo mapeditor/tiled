@@ -66,6 +66,8 @@ public:
 
     void setSelectedTool(AbstractTool *tool);
 
+    MapItem *mapItem(MapDocument *mapDocument) const;
+
 signals:
     void mapDocumentChanged(MapDocument *mapDocument);
 
@@ -115,6 +117,14 @@ private:
 inline MapDocument *MapScene::mapDocument() const
 {
     return mMapDocument;
+}
+
+/**
+ * Returns the map item displaying the given map, if any.
+ */
+inline MapItem *MapScene::mapItem(MapDocument *mapDocument) const
+{
+    return mMapItems.value(mapDocument);
 }
 
 } // namespace Tiled
