@@ -20,14 +20,15 @@
 
 #include "abstractworldtool.h"
 #include "actionmanager.h"
-#include "preferences.h"
 #include "documentmanager.h"
-#include "mapdocument.h"
+#include "mainwindow.h"
 #include "map.h"
-#include "mapscene.h"
+#include "mapdocument.h"
 #include "mapeditor.h"
 #include "maprenderer.h"
+#include "mapscene.h"
 #include "mapview.h"
+#include "preferences.h"
 #include "tile.h"
 #include "utils.h"
 #include "worlddocument.h"
@@ -306,25 +307,33 @@ void AbstractWorldTool::addAnotherMapToWorld(QPoint insertPos)
 
     const QDir dir = QFileInfo(map->fileName()).dir();
     const QString lastPath = QDir::cleanPath(dir.absolutePath());
-    QString filter = tr("All Files (*);;");
-    QString mapFilesFilter = tr("Map Files (*.tmx)");
-    filter.append(mapFilesFilter);
+    QString filter = tr("All Files (*)");
+    FormatHelper<MapFormat> helper(FileFormat::ReadWrite, filter);
 
-    auto mapEditor = static_cast<MapEditor*>(DocumentManager::instance()->editor(Document::DocumentType::MapDocumentType));
-    QString mapFile = QFileDialog::getOpenFileName(mapEditor->editorWidget(), tr("Load Map"), lastPath,
-                                                   filter, &mapFilesFilter);
-    if (mapFile.isEmpty())
+    QString fileName = QFileDialog::getOpenFileName(MainWindow::instance(), tr("Load Map"), lastPath,
+                                                    helper.filter());
+    if (fileName.isEmpty())
         return;
 
-    const World *constWorldForSelectedMap =  WorldManager::instance().worldForMap(mapFile);
+    const World *constWorldForSelectedMap = WorldManager::instance().worldForMap(fileName);
     if (constWorldForSelectedMap) {
-        DocumentManager::instance()->openFile(mapFile);
+        DocumentManager::instance()->openFile(fileName);
         return;
     }
 
-    const QRect rect = QRect(snapPoint(insertPos, map), QSize(0, 0));
+    QString error;
+    DocumentPtr document = DocumentManager::instance()->loadDocument(fileName, nullptr, &error);
 
-    undoStack()->push(new AddMapCommand(world->fileName, mapFile, rect));
+    if (!document) {
+        QMessageBox::critical(MainWindow::instance(),
+                              tr("Error Opening File"),
+                              tr("Error opening '%1':\n%2").arg(fileName, error));
+        return;
+    }
+
+    const QRect rect { snapPoint(insertPos, map), QSize(0, 0) };
+
+    undoStack()->push(new AddMapCommand(world->fileName, fileName, rect));
 }
 
 void AbstractWorldTool::removeCurrentMapFromWorld()
