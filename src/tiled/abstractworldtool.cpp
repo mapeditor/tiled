@@ -260,14 +260,14 @@ void AbstractWorldTool::showContextMenu(QGraphicsSceneMouseEvent *event)
         QPoint insertPos = event->scenePos().toPoint();
         insertPos += mapRect(currentDocument).topLeft();
 
-        menu.addAction(QIcon::fromTheme(QLatin1String("add"), QIcon(QLatin1String(":/images/16/add.png"))),
+        menu.addAction(QIcon(QLatin1String(":images/24/world-map-add-other.png")),
                        tr("Add a Map to World \"%2\"")
                        .arg(currentWorld->displayName()),
                        this, [=] { addAnotherMapToWorld(insertPos); });
 
         if (targetDocument != nullptr && targetDocument != currentDocument) {
             const QString targetFilename = targetDocument->fileName();
-            menu.addAction(QIcon::fromTheme(QLatin1String("remove"), QIcon(QLatin1String(":/images/16/remove.png"))),
+            menu.addAction(QIcon(QLatin1String(":images/24/world-map-remove-this.png")),
                            tr("Remove \"%1\" from World \"%2\"")
                            .arg(targetDocument->displayName())
                            .arg(targetWorld->displayName()),
