@@ -22,20 +22,10 @@
 
 #include "abstractworldtool.h"
 
-#include <QList>
-#include <QSet>
-#include <QVector>
-
 #include <memory>
-
-class QGraphicsItem;
 
 namespace Tiled {
 
-class Handle;
-class OriginIndicator;
-class ResizeHandle;
-class RotateHandle;
 class SelectionRectangle;
 
 class WorldMoveMapTool : public AbstractWorldTool

@@ -1242,14 +1242,13 @@ WorldDocument *DocumentManager::ensureWorldDocument(const QString &fileName)
 QStringList DocumentManager::dirtyWorldFiles() const
 {
     QStringList dirtyWorldFiles;
-    const QStringList allWorldFiles = WorldManager::instance().loadedWorldFiles();
 
-    for (const QString &worldFile : allWorldFiles) {
-        if (!mWorldDocuments.contains(worldFile))
+    for (const World *world : WorldManager::instance().worlds()) {
+        if (!mWorldDocuments.contains(world->fileName))
             continue;
-        if (mWorldDocuments[worldFile]->undoStack()->isClean())
+        if (mWorldDocuments[world->fileName]->undoStack()->isClean())
             continue;
-        dirtyWorldFiles.append(worldFile);
+        dirtyWorldFiles.append(world->fileName);
     }
 
     return dirtyWorldFiles;

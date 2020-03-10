@@ -279,7 +279,7 @@ bool MapItem::isWorldToolSelected() const
 {
     Editor *currentEditor = DocumentManager::instance()->currentEditor();
     if (auto currentMapEditor = qobject_cast<MapEditor*>(currentEditor)) {
-        if (auto tool = qobject_cast<AbstractWorldTool*>(currentMapEditor->selectedTool()))
+        if (qobject_cast<AbstractWorldTool*>(currentMapEditor->selectedTool()))
             return true;
     }
     return false;

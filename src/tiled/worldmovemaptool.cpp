@@ -31,8 +31,6 @@
 #include "preferences.h"
 #include "selectionrectangle.h"
 #include "snaphelper.h"
-#include "tile.h"
-#include "tileset.h"
 #include "toolmanager.h"
 #include "utils.h"
 #include "worldmovemaptool.h"
@@ -40,8 +38,6 @@
 #include "zoomable.h"
 
 #include <QApplication>
-#include <QGraphicsItem>
-#include <QGraphicsView>
 #include <QKeyEvent>
 #include <QMenu>
 #include <QToolBar>
@@ -51,7 +47,6 @@
 #include "qtcompat_p.h"
 
 #include <cmath>
-#include <float.h>
 
 using namespace Tiled;
 
@@ -87,9 +82,9 @@ private:
 
 WorldMoveMapTool::WorldMoveMapTool(QObject *parent)
     : AbstractWorldTool("WorldMoveMapTool", tr("World Tool"),
-          QIcon(QLatin1String(":images/22/world-move-tool.png")),
-          QKeySequence(tr("N")),
-          parent)
+                        QIcon(QLatin1String(":images/22/world-move-tool.png")),
+                        QKeySequence(tr("N")),
+                        parent)
     , mSelectionRectangle(new SelectionRectangle)
 {
 
@@ -177,8 +172,6 @@ void WorldMoveMapTool::populateToolBar(QToolBar *toolBar)
     toolBar->addAction(mMoveMapRightAction);
     toolBar->addAction(mMoveMapUpAction);
     toolBar->addAction(mMoveMapDownAction);
-
-    mToolBar = toolBar;
 }
 
 void WorldMoveMapTool::updateEnabledState()

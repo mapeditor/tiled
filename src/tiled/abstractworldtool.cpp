@@ -39,8 +39,8 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QToolBar>
+#include <QToolButton>
 #include <QUndoStack>
-#include <QObject>
 #include <QtMath>
 
 #include "qtcompat_p.h"
@@ -134,7 +134,6 @@ AbstractWorldTool::AbstractWorldTool(Id id,
     mAddMapToWorldAction->setIcon(addMapToWorldIcon);
     mAddMapToWorldAction->setShortcut(Qt::SHIFT + Qt::Key_A);
     ActionManager::registerAction(mAddMapToWorldAction, "AddMap");
-    connect(mAddMapToWorldAction, &QAction::triggered, this, &AbstractWorldTool::addToWorldSelect);
 
     QIcon removeMapFromWorldIcon(QLatin1String(":images/24/world-map-remove-this.png"));
     mRemoveMapFromWorldAction = new QAction(this);
@@ -195,7 +194,7 @@ void AbstractWorldTool::languageChanged()
 
 void AbstractWorldTool::updateEnabledState()
 {
-    bool hasWorlds = !WorldManager::instance().worlds().isEmpty();
+    const bool hasWorlds = !WorldManager::instance().worlds().isEmpty();
     const World *world = constWorld(mapDocument());
     setEnabled(mapDocument() && hasWorlds && (world == nullptr || world->canBeModified()));
 
@@ -261,35 +260,28 @@ void AbstractWorldTool::showContextMenu(QGraphicsSceneMouseEvent *event)
         QPoint insertPos = event->scenePos().toPoint();
         insertPos += mapRect(currentDocument).topLeft();
 
-        QAction *addToWorldAction = menu.addAction(tr("Add a Map to World %2")
-                                                   .arg(currentWorld->displayName()),
-                                                   this, [=] {
-            addAnotherMapToWorld(insertPos);
-        });
-        addToWorldAction->setIcon(QIcon(QLatin1String(":/images/16/add.png")));
+        menu.addAction(QIcon::fromTheme(QLatin1String("add"), QIcon(QLatin1String(":/images/16/add.png"))),
+                       tr("Add a Map to World \"%2\"")
+                       .arg(currentWorld->displayName()),
+                       this, [=] { addAnotherMapToWorld(insertPos); });
 
         if (targetDocument != nullptr && targetDocument != currentDocument) {
-            QAction *removeFromWorldAction = menu.addAction(tr("Remove %1 from World %2")
-                                                            .arg(targetDocument->displayName())
-                                                            .arg(targetWorld->displayName()));
-            removeFromWorldAction->setIcon(QIcon(QLatin1String(":/images/16/remove.png")));
             const QString targetFilename = targetDocument->fileName();
-            connect(removeFromWorldAction, &QAction::triggered, this, [=] {
-                removeFromWorld(targetFilename);
-            });
+            menu.addAction(QIcon::fromTheme(QLatin1String("remove"), QIcon(QLatin1String(":/images/16/remove.png"))),
+                           tr("Remove \"%1\" from World \"%2\"")
+                           .arg(targetDocument->displayName())
+                           .arg(targetWorld->displayName()),
+                           this, [=] { removeFromWorld(targetFilename); });
         }
     } else {
-        WorldManager &manager = WorldManager::instance();
-        const QStringList worlds = manager.loadedWorldFiles();
-        for (const QString &worldFilename : worlds) {
-            if (!manager.worlds()[worldFilename]->canBeModified())
+        for (const World *world : WorldManager::instance().worlds()) {
+            if (!world->canBeModified())
                 continue;
-            QAction *addToWorldAction = menu.addAction(tr("Add %1 to World %2")
-                                                       .arg(currentDocument->displayName())
-                                                       .arg(World::displayName(worldFilename)));
-            connect(addToWorldAction, &QAction::triggered, this, [=] {
-                addToWorld(worldFilename);
-            });
+
+            menu.addAction(tr("Add \"%1\" to World \"%2\"")
+                           .arg(currentDocument->displayName())
+                           .arg(world->displayName()),
+                           this, [this, fileName = world->fileName] { addToWorld(fileName); });
         }
     }
 
@@ -356,26 +348,6 @@ void AbstractWorldTool::addToWorld(const QString &worldFileName)
     undoStack->push(new AddMapCommand(worldFileName, document->fileName(), rect));
 }
 
-void AbstractWorldTool::addToWorldSelect()
-{
-    QMenu menu;
-
-    WorldManager &manager = WorldManager::instance();
-    const QStringList worlds = manager.loadedWorldFiles();
-    for (const QString &worldFilename : worlds) {
-        if (!manager.worlds()[worldFilename]->canBeModified())
-            continue;
-        QAction *addToWorldAction = menu.addAction(tr("Add %1 to World %2")
-                                                   .arg(mapDocument()->displayName())
-                                                   .arg(World::displayName(worldFilename)));
-        connect(addToWorldAction, &QAction::triggered, this, [=] {
-            addToWorld(worldFilename);
-        });
-    }
-
-    menu.exec(mToolBar->pos());
-}
-
 QUndoStack *AbstractWorldTool::undoStack()
 {
     const World *world = constWorld(mapDocument());
@@ -389,7 +361,32 @@ void AbstractWorldTool::populateToolBar(QToolBar *toolBar)
     toolBar->addAction(mAddAnotherMapToWorldAction);
     toolBar->addAction(mAddMapToWorldAction);
     toolBar->addAction(mRemoveMapFromWorldAction);
-    mToolBar = toolBar;
+
+    auto addMapToWorldButton = qobject_cast<QToolButton*>(toolBar->widgetForAction(mAddMapToWorldAction));
+    auto addToWorldMenu = new QMenu(addMapToWorldButton);
+
+    connect(addToWorldMenu, &QMenu::aboutToShow, [=] {
+        addToWorldMenu->clear();
+
+        for (const World *world : WorldManager::instance().worlds()) {
+            if (!world->canBeModified())
+                continue;
+
+            addToWorldMenu->addAction(tr("Add \"%1\" to World \"%2\"")
+                                      .arg(mapDocument()->displayName())
+                                      .arg(world->displayName()),
+                                      this, [this, fileName = world->fileName] { addToWorld(fileName); });
+        }
+    });
+
+    addMapToWorldButton->setPopupMode(QToolButton::InstantPopup);
+    addMapToWorldButton->setMenu(addToWorldMenu);
+
+    // Workaround to make the shortcut for opening the menu work
+    connect(mAddMapToWorldAction, &QAction::triggered, addMapToWorldButton, [=] {
+        addMapToWorldButton->setDown(true);
+        addMapToWorldButton->showMenu();
+    });
 }
 
 QPoint AbstractWorldTool::snapPoint(QPoint point, MapDocument *document) const

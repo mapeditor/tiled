@@ -23,14 +23,10 @@
 #include "abstracttool.h"
 
 class QAction;
-class QUndoStack;
 
 namespace Tiled {
 
-class MapObject;
-class ObjectGroup;
 struct World;
-class MapObjectItem;
 
 /**
  * A convenient base class for tools that work on object layers. Implements
@@ -77,7 +73,6 @@ protected:
     void removeCurrentMapFromWorld();
     void removeFromWorld(const QString &mapFileName);
     void addToWorld(const QString &worldFileName);
-    void addToWorldSelect();
 
     QPoint snapPoint(QPoint point, MapDocument *document) const;
 
@@ -92,7 +87,6 @@ protected:
 
     MapScene *mMapScene = nullptr;
     MapDocument *mTargetMap = nullptr;
-    QToolBar *mToolBar = nullptr;
 
     QAction *mAddAnotherMapToWorldAction;
     QAction *mAddMapToWorldAction;
