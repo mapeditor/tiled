@@ -1239,19 +1239,20 @@ WorldDocument *DocumentManager::ensureWorldDocument(const QString &fileName)
     return mWorldDocuments[fileName];
 }
 
-QStringList DocumentManager::dirtyWorldFiles() const
+bool DocumentManager::isAnyWorldModified() const
 {
-    QStringList dirtyWorldFiles;
+    for (const World *world : WorldManager::instance().worlds())
+        if (isWorldModified(world->fileName))
+            return true;
 
-    for (const World *world : WorldManager::instance().worlds()) {
-        if (!mWorldDocuments.contains(world->fileName))
-            continue;
-        if (mWorldDocuments[world->fileName]->undoStack()->isClean())
-            continue;
-        dirtyWorldFiles.append(world->fileName);
-    }
+    return false;
+}
 
-    return dirtyWorldFiles;
+bool DocumentManager::isWorldModified(const QString &fileName) const
+{
+    if (const auto worldDocument = mWorldDocuments.value(fileName))
+        return !worldDocument->undoStack()->isClean();
+    return false;
 }
 
 void DocumentManager::onWorldUnloaded(const QString &worldFile)

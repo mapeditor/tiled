@@ -550,22 +550,25 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
         if (!WorldManager::instance().loadWorld(worldFile, &errorString)) {
             QMessageBox::critical(this, tr("Error Loading World"), errorString);
         } else {
-            const auto worldFiles = WorldManager::instance().loadedWorldFiles();
+            const auto worldFiles = WorldManager::instance().worlds().keys();
             mSettings.setValue(QLatin1String("LoadedWorlds"), QVariant(worldFiles));
-            mUi->menuUnloadWorld->setEnabled(!worldFiles.isEmpty());
         }
     });
     connect(mUi->menuUnloadWorld, &QMenu::aboutToShow, this, [this] {
         mUi->menuUnloadWorld->clear();
 
-        const auto worldFiles = WorldManager::instance().loadedWorldFiles();
-        for (const QString &fileName : worldFiles) {
-            QAction *unloadAction = mUi->menuUnloadWorld->addAction(fileName);
-            connect(unloadAction, &QAction::triggered, this, [this,fileName] {
+        for (const World *world : WorldManager::instance().worlds()) {
+            QString text = world->fileName;
+            if (mDocumentManager->isWorldModified(world->fileName))
+                text.append(QLatin1Char('*'));
+
+            mUi->menuUnloadWorld->addAction(text, this, [this, fileName = world->fileName] {
+                if (!confirmSaveWorld(fileName))
+                    return;
+
                 WorldManager::instance().unloadWorld(fileName);
-                const auto worldFiles = WorldManager::instance().loadedWorldFiles();
+                const auto worldFiles = WorldManager::instance().worlds().keys();
                 mSettings.setValue(QLatin1String("LoadedWorlds"), QVariant(worldFiles));
-                mUi->menuUnloadWorld->setEnabled(!worldFiles.isEmpty());
             });
         }
     });
@@ -586,18 +589,18 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
         if (!WorldManager::instance().addEmptyWorld(worldFile, &errorString)) {
             QMessageBox::critical(this, tr("Error Creating World"), errorString);
         } else {
-            const auto worldFiles = WorldManager::instance().loadedWorldFiles();
+            const auto worldFiles = WorldManager::instance().worlds().keys();
             mSettings.setValue(QLatin1String("LoadedWorlds"), QVariant(worldFiles));
-            mUi->menuUnloadWorld->setEnabled(!worldFiles.isEmpty());
         }
     });
     connect(mUi->menuSaveWorld, &QMenu::aboutToShow, this, [this] {
         mUi->menuSaveWorld->clear();
 
-        const auto worldFiles = DocumentManager::instance()->dirtyWorldFiles();
-        for (const QString &fileName : worldFiles) {
-            QAction *saveAction = mUi->menuSaveWorld->addAction(fileName);
-            connect(saveAction, &QAction::triggered, this, [this,fileName] {
+        for (const World *world : WorldManager::instance().worlds()) {
+            if (!mDocumentManager->isWorldModified(world->fileName))
+                continue;
+
+            mUi->menuSaveWorld->addAction(world->fileName, this, [this, fileName = world->fileName] {
                 QString error;
                 if (!WorldManager::instance().saveWorld(fileName, &error))
                     QMessageBox::critical(this, tr("Error Writing World File"), error);
@@ -607,7 +610,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
         }
     });
     connect(mUi->menuMap, &QMenu::aboutToShow, this, [this] {
-        mUi->menuSaveWorld->setEnabled(!DocumentManager::instance()->dirtyWorldFiles().isEmpty());
+        mUi->menuUnloadWorld->setEnabled(!WorldManager::instance().worlds().isEmpty());
+        mUi->menuSaveWorld->setEnabled(DocumentManager::instance()->isAnyWorldModified());
     });
     connect(mUi->actionResizeMap, &QAction::triggered, this, &MainWindow::resizeMap);
     connect(mUi->actionOffsetMap, &QAction::triggered, this, &MainWindow::offsetMap);
@@ -633,8 +637,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionDonate, &QAction::triggered, this, &MainWindow::showDonationDialog);
     connect(mUi->actionAbout, &QAction::triggered, this, &MainWindow::aboutTiled);
     connect(mUi->actionAboutQt, &QAction::triggered, qApp, &QApplication::aboutQt);
-
-    mUi->menuUnloadWorld->setEnabled(!WorldManager::instance().worlds().isEmpty());
 
     // Add recent file actions to the recent files menu
     for (auto &action : mRecentFiles) {
@@ -1064,29 +1066,36 @@ bool MainWindow::confirmAllSave()
             return false;
     }
 
-    const QStringList worldFiles = DocumentManager::instance()->dirtyWorldFiles();
-    for (const QString &fileName : worldFiles) {
-        int ret = QMessageBox::warning(
-                this, tr("Unsaved Changes to world"),
-                tr("There are unsaved changes to your world file. Do you want to save the world now?"),
-                QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
-
-        switch (ret) {
-        case QMessageBox::Save:
-            if (!WorldManager::instance().saveWorld(fileName))
-                return false;
-
-            DocumentManager::instance()->ensureWorldDocument(fileName)->undoStack()->setClean();
-            break;
-        case QMessageBox::Discard:
-            break;
-        case QMessageBox::Cancel:
-        default:
+    for (const World *world : WorldManager::instance().worlds())
+        if (!confirmSaveWorld(world->fileName))
             return false;
-        }
-    }
 
     return true;
+}
+
+bool MainWindow::confirmSaveWorld(const QString &fileName)
+{
+    if (!mDocumentManager->isWorldModified(fileName))
+        return true;
+
+    int ret = QMessageBox::warning(
+            this, tr("Unsaved Changes to World"),
+            tr("There are unsaved changes to world \"%1\". Do you want to save the world now?").arg(fileName),
+            QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+
+    switch (ret) {
+    case QMessageBox::Save:
+        if (!WorldManager::instance().saveWorld(fileName))
+            return false;
+
+        DocumentManager::instance()->ensureWorldDocument(fileName)->undoStack()->setClean();
+        return true;
+    case QMessageBox::Discard:
+        return true;
+    case QMessageBox::Cancel:
+    default:
+        return false;
+    }
 }
 
 void MainWindow::export_()
@@ -1923,7 +1932,6 @@ void MainWindow::readSettings()
     const QStringList worldFiles = mSettings.value(QLatin1String("LoadedWorlds")).toStringList();
     for (const QString &fileName : worldFiles)
         worldManager.loadWorld(fileName);
-    mUi->menuUnloadWorld->setEnabled(!worldManager.worlds().isEmpty());
 
     mDocumentManager->restoreState();
 }

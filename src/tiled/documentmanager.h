@@ -134,7 +134,8 @@ public:
     void abortMultiDocumentClose();
 
     WorldDocument *ensureWorldDocument(const QString &fileName);
-    QStringList dirtyWorldFiles() const;
+    bool isAnyWorldModified() const;
+    bool isWorldModified(const QString &fileName) const;
 
 signals:
     void documentCreated(Document *document);

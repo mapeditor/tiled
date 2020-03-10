@@ -108,7 +108,6 @@ public:
     bool saveWorld(const QString &fileName, QString *errorString = nullptr);
 
     const QMap<QString, World*> &worlds() const { return mWorlds; }
-    QStringList loadedWorldFiles() const { return mWorlds.keys(); }
 
     const World *worldForMap(const QString &fileName) const;
 
