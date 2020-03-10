@@ -57,6 +57,7 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QScrollBar>
+#include <QSettings>
 #include <QStackedLayout>
 #include <QTabBar>
 #include <QTabWidget>
@@ -646,18 +647,20 @@ bool DocumentManager::saveDocument(Document *document, const QString &fileName)
  */
 bool DocumentManager::saveDocumentAs(Document *document)
 {
-    QString filter;
+    QSettings *settings = Preferences::instance()->settings();
+
     QString selectedFilter;
     QString fileName = document->fileName();
 
     if (FileFormat *format = document->writerFormat())
         selectedFilter = format->nameFilter();
 
-    auto getSaveFileName = [&,this](const QString &defaultFileName) {
+    auto getSaveFileName = [&](const QString &filter, const QString &defaultFileName) {
         if (fileName.isEmpty()) {
             fileName = Preferences::instance()->fileDialogStartLocation();
             fileName += QLatin1Char('/');
             fileName += defaultFileName;
+            fileName += Utils::firstExtension(selectedFilter);
         }
 
         while (true) {
@@ -688,16 +691,20 @@ bool DocumentManager::saveDocumentAs(Document *document)
     };
 
     if (auto mapDocument = qobject_cast<MapDocument*>(document)) {
+        FormatHelper<MapFormat> helper(FileFormat::ReadWrite);
+
+        if (selectedFilter.isEmpty()) {
+            QString shortName = settings->value(QLatin1String("lastUsedMapFormat")).toString();
+            if (auto format = helper.findFormat(shortName))
+                selectedFilter = format->nameFilter();
+        }
+
         if (selectedFilter.isEmpty())
             selectedFilter = TmxMapFormat().nameFilter();
 
-        FormatHelper<MapFormat> helper(FileFormat::ReadWrite);
-        filter = helper.filter();
-
         auto suggestedFileName = QCoreApplication::translate("Tiled::MainWindow", "untitled");
-        suggestedFileName.append(QLatin1String(".tmx"));
 
-        fileName = getSaveFileName(suggestedFileName);
+        fileName = getSaveFileName(helper.filter(), suggestedFileName);
         if (fileName.isEmpty())
             return false;
 
@@ -705,24 +712,32 @@ bool DocumentManager::saveDocumentAs(Document *document)
         mapDocument->setWriterFormat(format);
         mapDocument->setReaderFormat(format);
 
+        settings->setValue(QLatin1String("lastUsedMapFormat"), format->shortName());
+
     } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
+        FormatHelper<TilesetFormat> helper(FileFormat::ReadWrite);
+
+        if (selectedFilter.isEmpty()) {
+            QString shortName = settings->value(QLatin1String("lastUsedTilesetFormat")).toString();
+            if (auto format = helper.findFormat(shortName))
+                selectedFilter = format->nameFilter();
+        }
+
         if (selectedFilter.isEmpty())
             selectedFilter = TsxTilesetFormat().nameFilter();
-
-        FormatHelper<TilesetFormat> helper(FileFormat::ReadWrite);
-        filter = helper.filter();
 
         auto suggestedFileName = tilesetDocument->tileset()->name().trimmed();
         if (suggestedFileName.isEmpty())
             suggestedFileName = QCoreApplication::translate("Tiled::MainWindow", "untitled");
-        suggestedFileName.append(QLatin1String(".tsx"));
 
-        fileName = getSaveFileName(suggestedFileName);
+        fileName = getSaveFileName(helper.filter(), suggestedFileName);
         if (fileName.isEmpty())
             return false;
 
         TilesetFormat *format = helper.formatByNameFilter(selectedFilter);
         tilesetDocument->setWriterFormat(format);
+
+        settings->setValue(QLatin1String("lastUsedTilesetFormat"), format->shortName());
     }
 
     return saveDocument(document, fileName);

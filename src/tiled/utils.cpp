@@ -118,6 +118,19 @@ bool fileNameMatchesNameFilter(const QString &fileName,
     return false;
 }
 
+QString firstExtension(const QString &nameFilter)
+{
+    QString extension;
+
+    const auto filterList = cleanFilterList(nameFilter);
+    if (!filterList.isEmpty()) {
+        extension = filterList.first();
+        extension.remove(QLatin1Char('*'));
+    }
+
+    return extension;
+}
+
 
 /**
  * Restores a widget's geometry.

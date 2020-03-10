@@ -36,6 +36,7 @@ QString writableImageFormatsFilter();
 QStringList cleanFilterList(const QString &filter);
 bool fileNameMatchesNameFilter(const QString &fileName,
                                const QString &nameFilter);
+QString firstExtension(const QString &nameFilter);
 
 /**
  * Looks up the icon with the specified \a name from the system theme and set

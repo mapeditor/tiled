@@ -129,6 +129,14 @@ public:
     const QList<Format*> &formats() const
     { return mFormats; }
 
+    Format *findFormat(const QString &shortName) const
+    {
+        auto it = std::find_if(mFormats.begin(),
+                               mFormats.end(),
+                               [&] (Format *format) { return format->shortName() == shortName; });
+        return it != mFormats.end() ? *it : nullptr;
+    }
+
     Format *formatByNameFilter(const QString &nameFilter) const
     { return mFormatByNameFilter.value(nameFilter); }
 
