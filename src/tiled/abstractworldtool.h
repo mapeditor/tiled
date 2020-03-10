@@ -61,10 +61,10 @@ public:
 
 protected:
     /**
-     * Overridden to only enable this tool when the currently has a world loaded
+     * Overridden to only enable this tool when the currently has a world
+     * loaded.
      */
     void updateEnabledState() override;
-
 
     MapDocument *mapAt(const QPointF &pos) const;
 
