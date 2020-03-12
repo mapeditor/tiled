@@ -201,8 +201,9 @@ bool GmxPlugin::write(const Map *map, const QString &fileName, Options options)
 
         const ObjectGroup *objectLayer = static_cast<const ObjectGroup*>(layer);
         const bool locked = !layer->isUnlocked();
-        const int alpha = std::min(static_cast<int>(layer->effectiveOpacity() * 256), 255);
-        const auto color = QString::number(QColor(255, 255, 255, alpha).rgba());
+        auto color = layer->effectiveTintColor();
+        color.setAlphaF(color.alphaF() * layer->effectiveOpacity());
+        const auto colorString = QString::number(color.rgba());
 
         for (const MapObject *object : objectLayer->objects()) {
             const QString type = object->effectiveType();
@@ -276,7 +277,7 @@ bool GmxPlugin::write(const Map *map, const QString &fileName, Options options)
             stream.writeAttribute("code", optionalProperty(object, "code", QString()));
             stream.writeAttribute("scaleX", QString::number(scaleX));
             stream.writeAttribute("scaleY", QString::number(scaleY));
-            stream.writeAttribute("colour", color);
+            stream.writeAttribute("colour", colorString);
             stream.writeAttribute("rotation", QString::number(-object->rotation()));
 
             stream.writeEndElement();
@@ -297,8 +298,9 @@ bool GmxPlugin::write(const Map *map, const QString &fileName, Options options)
         QString depth = QString::number(optionalProperty(layer, QLatin1String("depth"),
                                                          layerCount + 1000000));
         const bool locked = !layer->isUnlocked();
-        const int alpha = std::min(static_cast<int>(layer->effectiveOpacity() * 256), 255);
-        const auto color = QString::number(QColor(255, 255, 255, alpha).rgba());
+        auto color = layer->effectiveTintColor();
+        color.setAlphaF(color.alphaF() * layer->effectiveOpacity());
+        const auto colorString = QString::number(color.rgba());
 
         switch (layer->layerType()) {
         case Layer::TileLayerType: {
@@ -354,7 +356,7 @@ bool GmxPlugin::write(const Map *map, const QString &fileName, Options options)
                         stream.writeAttribute("id", QString::number(++tileId));
                         stream.writeAttribute("depth", depth);
                         stream.writeAttribute("locked", toString(locked));
-                        stream.writeAttribute("colour", color);
+                        stream.writeAttribute("colour", colorString);
 
                         stream.writeAttribute("scaleX", QString::number(scaleX));
                         stream.writeAttribute("scaleY", QString::number(scaleY));
@@ -431,7 +433,7 @@ bool GmxPlugin::write(const Map *map, const QString &fileName, Options options)
                     stream.writeAttribute("id", QString::number(++tileId));
                     stream.writeAttribute("depth", depth);
                     stream.writeAttribute("locked", toString(locked));
-                    stream.writeAttribute("colour", color);
+                    stream.writeAttribute("colour", colorString);
 
                     stream.writeAttribute("scaleX", QString::number(scaleX));
                     stream.writeAttribute("scaleY", QString::number(scaleY));
