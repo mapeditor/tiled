@@ -260,7 +260,7 @@ void IsometricRenderHelper::addTilesToNode()
     mTileData.reserve(TilesNode::MaxTileCount);
 
     for (int y = mRect.top(); y <= mRect.bottom(); ++y) {
-        int _x = 0;
+        int _x = mRect.left();
         int _y = y;
 
         while (_x <= mRect.right() && _y >= mRect.top()) {
