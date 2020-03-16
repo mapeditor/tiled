@@ -32,6 +32,7 @@ class MapObject;
 class ObjectGroup;
 class Terrain;
 class Tile;
+class Tileset;
 
 class EditableAsset;
 class EditableLayer;
@@ -66,17 +67,20 @@ public:
     EditableLayer *editableLayer(EditableMap *map, Layer *layer);
     EditableObjectGroup *editableObjectGroup(EditableAsset *asset, ObjectGroup *objectGroup);
     EditableMapObject *editableMapObject(EditableAsset *asset, MapObject *mapObject);
+    EditableTileset *editableTileset(Tileset *tileset);
     EditableTile *editableTile(EditableTileset *tileset, Tile *tile);
     EditableTerrain *editableTerrain(EditableTileset *tileset, Terrain *terrain);
 
 private:
     friend class EditableLayer;
     friend class EditableMapObject;
+    friend class EditableTileset;
     friend class EditableTile;
     friend class EditableTerrain;
 
     QHash<Layer*, EditableLayer*> mEditableLayers;
     QHash<MapObject*, EditableMapObject*> mEditableMapObjects;
+    QHash<Tileset*, EditableTileset*> mEditableTilesets;
     QHash<Tile*, EditableTile*> mEditableTiles;
     QHash<Terrain*, EditableTerrain*> mEditableTerrains;
 

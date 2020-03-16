@@ -36,14 +36,15 @@ namespace Tiled {
 EditableTileset::EditableTileset(const QString &name,
                                  QObject *parent)
     : EditableAsset(nullptr, nullptr, parent)
+    , mTileset(Tileset::create(name, 0, 0))
 {
-    mTileset = Tileset::create(name, 0, 0);
     setObject(mTileset.data());
 }
 
 EditableTileset::EditableTileset(const Tileset *tileset, QObject *parent)
     : EditableAsset(nullptr, const_cast<Tileset*>(tileset), parent)
     , mReadOnly(true)
+    , mTileset(tileset->sharedPointer())    // keep alive
 {
 }
 
@@ -62,6 +63,8 @@ EditableTileset::~EditableTileset()
 {
     detachTiles(tileset()->tiles().values());
     detachTerrains(tileset()->terrains());
+
+    EditableManager::instance().mEditableTilesets.remove(tileset());
 }
 
 EditableTile *EditableTileset::tile(int id)
