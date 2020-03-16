@@ -185,11 +185,11 @@ public:
                           QSGNode *parent,
                           const MapItem *mapItem,
                           const TileLayer *layer,
-                          const QRect &rect) :
+                          const QRect &visibleScreenRect) :
         mRenderer(renderer),
         mParent(parent),
         mLayer(layer),
-        mRect(rect),
+        mVisibleScreenRect(visibleScreenRect),
         mTilesetHelper(mapItem),
         mTileWidth(mapItem->map()->tileWidth()),
         mTileHeight(mapItem->map()->tileHeight())
@@ -204,7 +204,7 @@ private:
     Tiled::MapRenderer *mRenderer;
     QSGNode *mParent;
     const TileLayer *mLayer;
-    const QRect mRect;
+    const QRect mVisibleScreenRect;
     TilesetHelper mTilesetHelper;
     const int mTileWidth;
     const int mTileHeight;
@@ -251,33 +251,86 @@ void IsometricRenderHelper::appendTileData(int x, int y)
     mTileData.append(data);
 }
 
-// TODO: make this function work with a subset of the entire layer rect
+// Mostly copied from IsometricRenderer::drawTileLayer().
 void IsometricRenderHelper::addTilesToNode()
 {
-    if (mRect.isEmpty())
+    if (mVisibleScreenRect.isEmpty())
         return;
+
+    if (mTileWidth <= 0 || mTileHeight <= 1)
+        return;
+
+    QRect rect = mVisibleScreenRect;
+    if (rect.isNull())
+        rect = mRenderer->boundingRect(mLayer->bounds());
+
+    QMargins drawMargins = mLayer->drawMargins();
+    drawMargins.setTop(drawMargins.top() - mTileHeight);
+    drawMargins.setRight(drawMargins.right() - mTileWidth);
+
+    rect.adjust(-drawMargins.right(),
+                -drawMargins.bottom(),
+                drawMargins.left(),
+                drawMargins.top());
+
+    // Determine the tile and pixel coordinates to start at
+    QPointF tilePos = mRenderer->screenToTileCoords(rect.x(), rect.y());
+    QPoint rowItr = QPoint(qFloor(tilePos.x()),
+                           qFloor(tilePos.y()));
+    QPointF startPos = mRenderer->tileToScreenCoords(rowItr);
+    startPos.rx() -= mTileWidth / 2;
+    startPos.ry() += mTileHeight;
+
+    // Compensate for the layer position
+    rowItr -= QPoint(mLayer->x(), mLayer->y());
+
+    /* Determine in which half of the tile the top-left corner of the area we
+     * need to draw is. If we're in the upper half, we need to start one row
+     * up due to those tiles being visible as well. How we go up one row
+     * depends on whether we're in the left or right half of the tile.
+     */
+    const bool inUpperHalf = startPos.y() - rect.y() > mTileHeight / 2;
+    const bool inLeftHalf = rect.x() - startPos.x() < mTileWidth / 2;
+
+    if (inUpperHalf) {
+        if (inLeftHalf) {
+            --rowItr.rx();
+            startPos.rx() -= mTileWidth / 2;
+        } else {
+            --rowItr.ry();
+            startPos.rx() += mTileWidth / 2;
+        }
+        startPos.ry() -= mTileHeight / 2;
+    }
+
+    // Determine whether the current row is shifted half a tile to the right
+    bool shifted = inUpperHalf ^ inLeftHalf;
 
     mTileData.reserve(TilesNode::MaxTileCount);
 
-    for (int y = mRect.top(); y <= mRect.bottom(); ++y) {
-        int _x = mRect.left();
-        int _y = y;
+    for (int y = static_cast<int>(startPos.y() * 2); y - mTileHeight * 2 < rect.bottom() * 2; y += mTileHeight) {
+        QPoint columnItr = rowItr;
 
-        while (_x <= mRect.right() && _y >= mRect.top()) {
-            appendTileData(_x, _y);
-            ++_x;
-            --_y;
+        for (int x = static_cast<int>(startPos.x()); x < rect.right(); x += mTileWidth) {
+            const Cell &cell = mLayer->cellAt(columnItr);
+            if (!cell.isEmpty()) {
+                appendTileData(columnItr.x(), columnItr.y());
+            }
+
+            // Advance to the next column
+            ++columnItr.rx();
+            --columnItr.ry();
         }
-    }
 
-    for (int x = mRect.left() + 1; x <= mRect.right(); ++x) {
-        int _x = x;
-        int _y = mRect.bottom();
-
-        while (_x <= mRect.right() && _y >= mRect.top()) {
-            appendTileData(_x, _y);
-            ++_x;
-            --_y;
+        // Advance to the next row
+        if (!shifted) {
+            ++rowItr.rx();
+            startPos.rx() += mTileWidth / 2;
+            shifted = true;
+        } else {
+            ++rowItr.ry();
+            startPos.rx() -= mTileWidth / 2;
+            shifted = false;
         }
     }
 
@@ -322,7 +375,7 @@ QSGNode *TileLayerItem::updatePaintNode(QSGNode *node,
     if (mLayer->map()->orientation() == Map::Orthogonal)
         drawOrthogonalTileLayer(node, mapItem, mLayer, mVisibleTiles);
     else
-        IsometricRenderHelper(mRenderer, node, mapItem, mLayer, mVisibleTiles).addTilesToNode();
+        IsometricRenderHelper(mRenderer, node, mapItem, mLayer, mapItem->visibleArea().toRect()).addTilesToNode();
 
     return node;
 }
@@ -330,13 +383,15 @@ QSGNode *TileLayerItem::updatePaintNode(QSGNode *node,
 void TileLayerItem::updateVisibleTiles()
 {
     const MapItem *mapItem = static_cast<MapItem*>(parentItem());
-    const QRect rect = mLayer->map()->orientation() == Map::Orthogonal
-            ? mapItem->visibleTileArea(mLayer) : mLayer->bounds();
+    const QRect rect = mapItem->visibleTileArea(mLayer);
 
-    if (mVisibleTiles != rect) {
-        mVisibleTiles = rect;
+    // For isometric rendering, we need to use the visible screen rect,
+    // so the visibleTileArea optimisation doesn't work for us.
+    // If we don't do this, some tiles on the edge of the screen won't be rendered.
+    const bool shouldUpdate = mapItem->map()->orientation() == Map::Isometric || mVisibleTiles != rect;
+    mVisibleTiles = rect;
+    if (shouldUpdate)
         update();
-    }
 }
 
 void TileLayerItem::layerVisibilityChanged()
