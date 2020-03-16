@@ -56,7 +56,8 @@ class Document : public QObject,
 public:
     enum DocumentType {
         MapDocumentType,
-        TilesetDocumentType
+        TilesetDocumentType,
+        WorldDocumentType
     };
 
     Document(DocumentType type,
@@ -117,7 +118,7 @@ public:
     virtual FileFormat *exportFormat() const = 0;
     virtual void setExportFormat(FileFormat *format) = 0;
 
-    virtual void checkIssues() = 0;
+    virtual void checkIssues() {}
 
     static const QHash<QString, Document *> &documentInstances();
 

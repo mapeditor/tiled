@@ -67,6 +67,10 @@ struct TILEDSHARED_EXPORT World
     QVector<Pattern> patterns;
     bool onlyShowAdjacentMaps;
 
+    int mapIndex(const QString &fileName) const;
+    void setMapRect(int mapIndex, const QRect &rect);
+    void addMap(const QString &fileName, const QRect &rect);
+    void removeMap(int mapIndex);
     bool containsMap(const QString &fileName) const;
     QRect mapRect(const QString &fileName) const;
     QVector<MapEntry> allMaps() const;
@@ -76,6 +80,15 @@ struct TILEDSHARED_EXPORT World
     void error(const QString &message) const;
     void warning(const QString &message) const;
     void clearErrorsAndWarnings() const;
+
+    bool canBeModified() const;
+
+    /**
+     * Returns the name with which to display this world. It is the file name without
+     * its path.
+     */
+    QString displayName() const;
+    static QString displayName(const QString &fileName);
 };
 
 class TILEDSHARED_EXPORT WorldManager : public QObject
@@ -89,16 +102,24 @@ public:
     static WorldManager &instance();
     static void deleteInstance();
 
+    World *addEmptyWorld(const QString &fileName, QString *errorString);
     World *loadWorld(const QString &fileName, QString *errorString = nullptr);
     void unloadWorld(const QString &fileName);
+    bool saveWorld(const QString &fileName, QString *errorString = nullptr);
 
     const QMap<QString, World*> &worlds() const { return mWorlds; }
-    QStringList loadedWorldFiles() const { return mWorlds.keys(); }
 
     const World *worldForMap(const QString &fileName) const;
 
+    void setMapRect(const QString &fileName, const QRect &rect);
+    bool mapCanBeModified(const QString &fileName) const;
+    bool removeMap(const QString &fileName);
+    bool addMap(const QString &fileName, const QString &mapFileName, const QRect &rect);
+
 signals:
     void worldsChanged();
+    void worldReloaded(const QString &fileName);
+    void worldUnloaded(const QString &fileName);
 
 private:
     void reloadWorldFiles(const QStringList &fileNames);
@@ -109,6 +130,7 @@ private:
     QMap<QString, World*> mWorlds;
 
     FileSystemWatcher mFileSystemWatcher;
+    QString mIgnoreFileChangeEventForFile;
 
     static WorldManager *mInstance;
 };

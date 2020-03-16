@@ -73,6 +73,7 @@
 #include "utils.h"
 #include "worldmanager.h"
 #include "zoomable.h"
+#include "worlddocument.h"
 
 #ifdef Q_OS_MAC
 #include "macsupport.h"
@@ -248,6 +249,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerAction(mUi->actionLabelsForAllObjects, "LabelsForAllObjects");
     ActionManager::registerAction(mUi->actionLabelsForSelectedObjects, "LabelsForSelectedObjects");
     ActionManager::registerAction(mUi->actionLoadWorld, "LoadWorld");
+    ActionManager::registerAction(mUi->actionNewWorld, "NewWorld");
     ActionManager::registerAction(mUi->actionMapProperties, "MapProperties");
     ActionManager::registerAction(mUi->actionNewMap, "NewMap");
     ActionManager::registerAction(mUi->actionNewTileset, "NewTileset");
@@ -548,24 +550,68 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
         if (!WorldManager::instance().loadWorld(worldFile, &errorString)) {
             QMessageBox::critical(this, tr("Error Loading World"), errorString);
         } else {
-            const auto worldFiles = WorldManager::instance().loadedWorldFiles();
+            const auto worldFiles = WorldManager::instance().worlds().keys();
             mSettings.setValue(QLatin1String("LoadedWorlds"), QVariant(worldFiles));
-            mUi->menuUnloadWorld->setEnabled(!worldFiles.isEmpty());
         }
     });
     connect(mUi->menuUnloadWorld, &QMenu::aboutToShow, this, [this] {
         mUi->menuUnloadWorld->clear();
 
-        const auto worldFiles = WorldManager::instance().loadedWorldFiles();
-        for (const QString &fileName : worldFiles) {
-            QAction *unloadAction = mUi->menuUnloadWorld->addAction(fileName);
-            connect(unloadAction, &QAction::triggered, this, [this,fileName] {
+        for (const World *world : WorldManager::instance().worlds()) {
+            QString text = world->fileName;
+            if (mDocumentManager->isWorldModified(world->fileName))
+                text.append(QLatin1Char('*'));
+
+            mUi->menuUnloadWorld->addAction(text, this, [this, fileName = world->fileName] {
+                if (!confirmSaveWorld(fileName))
+                    return;
+
                 WorldManager::instance().unloadWorld(fileName);
-                const auto worldFiles = WorldManager::instance().loadedWorldFiles();
+                const auto worldFiles = WorldManager::instance().worlds().keys();
                 mSettings.setValue(QLatin1String("LoadedWorlds"), QVariant(worldFiles));
-                mUi->menuUnloadWorld->setEnabled(!worldFiles.isEmpty());
             });
         }
+    });
+    connect(mUi->actionNewWorld, &QAction::triggered, this, [this,preferences]{
+        QString lastPath = preferences->lastPath(Preferences::WorldFile);
+        QString filter = tr("All Files (*);;");
+        QString worldFilesFilter = tr("World files (*.world)");
+        filter.append(worldFilesFilter);
+
+        auto mapEditor = static_cast<MapEditor*>(DocumentManager::instance()->editor(Document::DocumentType::MapDocumentType));
+        QString worldFile = QFileDialog::getSaveFileName(mapEditor->editorWidget(), tr("New Map"), lastPath,
+                                                         filter, &worldFilesFilter);
+        if (worldFile.isEmpty() || QFile::exists(worldFile))
+            return;
+
+        preferences->setLastPath(Preferences::WorldFile, QFileInfo(worldFile).path());
+        QString errorString;
+        if (!WorldManager::instance().addEmptyWorld(worldFile, &errorString)) {
+            QMessageBox::critical(this, tr("Error Creating World"), errorString);
+        } else {
+            const auto worldFiles = WorldManager::instance().worlds().keys();
+            mSettings.setValue(QLatin1String("LoadedWorlds"), QVariant(worldFiles));
+        }
+    });
+    connect(mUi->menuSaveWorld, &QMenu::aboutToShow, this, [this] {
+        mUi->menuSaveWorld->clear();
+
+        for (const World *world : WorldManager::instance().worlds()) {
+            if (!mDocumentManager->isWorldModified(world->fileName))
+                continue;
+
+            mUi->menuSaveWorld->addAction(world->fileName, this, [this, fileName = world->fileName] {
+                QString error;
+                if (!WorldManager::instance().saveWorld(fileName, &error))
+                    QMessageBox::critical(this, tr("Error Writing World File"), error);
+
+                DocumentManager::instance()->ensureWorldDocument(fileName)->undoStack()->setClean();
+            });
+        }
+    });
+    connect(mUi->menuMap, &QMenu::aboutToShow, this, [this] {
+        mUi->menuUnloadWorld->setEnabled(!WorldManager::instance().worlds().isEmpty());
+        mUi->menuSaveWorld->setEnabled(DocumentManager::instance()->isAnyWorldModified());
     });
     connect(mUi->actionResizeMap, &QAction::triggered, this, &MainWindow::resizeMap);
     connect(mUi->actionOffsetMap, &QAction::triggered, this, &MainWindow::offsetMap);
@@ -591,8 +637,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionDonate, &QAction::triggered, this, &MainWindow::showDonationDialog);
     connect(mUi->actionAbout, &QAction::triggered, this, &MainWindow::aboutTiled);
     connect(mUi->actionAboutQt, &QAction::triggered, qApp, &QApplication::aboutQt);
-
-    mUi->menuUnloadWorld->setEnabled(!WorldManager::instance().worlds().isEmpty());
 
     // Add recent file actions to the recent files menu
     for (auto &action : mRecentFiles) {
@@ -1022,7 +1066,36 @@ bool MainWindow::confirmAllSave()
             return false;
     }
 
+    for (const World *world : WorldManager::instance().worlds())
+        if (!confirmSaveWorld(world->fileName))
+            return false;
+
     return true;
+}
+
+bool MainWindow::confirmSaveWorld(const QString &fileName)
+{
+    if (!mDocumentManager->isWorldModified(fileName))
+        return true;
+
+    int ret = QMessageBox::warning(
+            this, tr("Unsaved Changes to World"),
+            tr("There are unsaved changes to world \"%1\". Do you want to save the world now?").arg(fileName),
+            QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+
+    switch (ret) {
+    case QMessageBox::Save:
+        if (!WorldManager::instance().saveWorld(fileName))
+            return false;
+
+        DocumentManager::instance()->ensureWorldDocument(fileName)->undoStack()->setClean();
+        return true;
+    case QMessageBox::Discard:
+        return true;
+    case QMessageBox::Cancel:
+    default:
+        return false;
+    }
 }
 
 void MainWindow::export_()
@@ -1476,7 +1549,7 @@ void MainWindow::addExternalTileset()
 
     mSettings.setValue(QLatin1String("lastUsedTilesetFilter"), selectedFilter);
 
-    auto *mapEditor = static_cast<MapEditor*>(mDocumentManager->currentEditor());
+    auto mapEditor = static_cast<MapEditor*>(mDocumentManager->currentEditor());
     mapEditor->addExternalTilesets(fileNames);
 }
 
@@ -1859,7 +1932,6 @@ void MainWindow::readSettings()
     const QStringList worldFiles = mSettings.value(QLatin1String("LoadedWorlds")).toStringList();
     for (const QString &fileName : worldFiles)
         worldManager.loadWorld(fileName);
-    mUi->menuUnloadWorld->setEnabled(!worldManager.worlds().isEmpty());
 
     mDocumentManager->restoreState();
 }

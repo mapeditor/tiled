@@ -46,6 +46,8 @@
 #include "tmxmapformat.h"
 #include "utils.h"
 #include "wangset.h"
+#include "worlddocument.h"
+#include "worldmanager.h"
 #include "zoomable.h"
 
 #include <QCoreApplication>
@@ -211,7 +213,7 @@ DocumentManager::DocumentManager(QObject *parent)
             }
             break;
         }
-        case Document::TilesetDocumentType:
+        case Document::TilesetDocumentType: {
             auto tilesetDocument = static_cast<TilesetDocument*>(doc);
             switch (select.objectType) {
             case Object::MapObjectType:
@@ -247,6 +249,9 @@ DocumentManager::DocumentManager(QObject *parent)
             }
             break;
         }
+        case Document::WorldDocumentType:
+            break;
+        }
 
         if (obj) {
             doc->setCurrentObject(obj);
@@ -275,6 +280,10 @@ DocumentManager::DocumentManager(QObject *parent)
             }
         }
     };
+
+    WorldManager& worldManager = WorldManager::instance();
+    connect(&worldManager, &WorldManager::worldUnloaded,
+            this, &DocumentManager::onWorldUnloaded);
 }
 
 DocumentManager::~DocumentManager()
@@ -441,6 +450,52 @@ void DocumentManager::switchToDocument(MapDocument *mapDocument, QPointF viewCen
     MapView *view = currentMapView();
     view->zoomable()->setScale(scale);
     view->forceCenterOn(viewCenter);
+}
+
+/**
+ * Switches to the given \a mapDocument, taking tilsets into accout
+ */
+void DocumentManager::switchToDocumentAndHandleSimiliarTileset(MapDocument *mapDocument, QPointF viewCenter, qreal scale)
+{
+    // Try selecting similar layers and tileset by name to the previously active mapitem
+    SharedTileset newSimilarTileset;
+
+    if (auto currentMapDocument = qobject_cast<MapDocument*>(currentDocument())) {
+        const Layer *currentLayer = currentMapDocument->currentLayer();
+        const QList<Layer*> selectedLayers = currentMapDocument->selectedLayers();
+
+        if (currentLayer) {
+            Layer *newCurrentLayer = mapDocument->map()->findLayer(currentLayer->name(),
+                                                                   currentLayer->layerType());
+            if (newCurrentLayer)
+                mapDocument->setCurrentLayer(newCurrentLayer);
+        }
+
+        QList<Layer*> newSelectedLayers;
+        for (Layer *selectedLayer : selectedLayers) {
+            Layer *newSelectedLayer = mapDocument->map()->findLayer(selectedLayer->name(),
+                                                                    selectedLayer->layerType());
+            if (newSelectedLayer)
+                newSelectedLayers << newSelectedLayer;
+        }
+        if (!newSelectedLayers.isEmpty())
+            mapDocument->setSelectedLayers(newSelectedLayers);
+
+        Editor *currentEditor = DocumentManager::instance()->currentEditor();
+        if (auto currentMapEditor = qobject_cast<MapEditor*>(currentEditor)) {
+            if (SharedTileset currentTileset = currentMapEditor->currentTileset()) {
+                if (!mapDocument->map()->tilesets().contains(currentTileset))
+                    newSimilarTileset = currentTileset->findSimilarTileset(mapDocument->map()->tilesets());
+            }
+        }
+    }
+
+    DocumentManager::instance()->switchToDocument(mapDocument, viewCenter, scale);
+
+    Editor *newEditor = DocumentManager::instance()->currentEditor();
+    if (auto newMapEditor = qobject_cast<MapEditor*>(newEditor))
+        if (newSimilarTileset)
+            newMapEditor->setCurrentTileset(newSimilarTileset);
 }
 
 void DocumentManager::switchToLeftDocument()
@@ -917,8 +972,6 @@ void DocumentManager::currentIndexChanged()
 
     if (document) {
         editor = mEditorForType.value(document->type());
-        mUndoGroup->setActiveStack(document->undoStack());
-
         changed = isDocumentChangedOnDisk(document);
     }
 
@@ -1189,6 +1242,37 @@ TilesetDocument *DocumentManager::openTilesetFile(const QString &path)
     openFile(path);
     const int i = findDocument(path);
     return i == -1 ? nullptr : qobject_cast<TilesetDocument*>(mDocuments.at(i).data());
+}
+
+WorldDocument *DocumentManager::ensureWorldDocument(const QString &fileName)
+{
+    if (!mWorldDocuments.contains(fileName)) {
+        WorldDocument* worldDocument = new WorldDocument(fileName);
+        mWorldDocuments.insert(fileName, worldDocument);
+        mUndoGroup->addStack(worldDocument->undoStack());
+    }
+    return mWorldDocuments[fileName];
+}
+
+bool DocumentManager::isAnyWorldModified() const
+{
+    for (const World *world : WorldManager::instance().worlds())
+        if (isWorldModified(world->fileName))
+            return true;
+
+    return false;
+}
+
+bool DocumentManager::isWorldModified(const QString &fileName) const
+{
+    if (const auto worldDocument = mWorldDocuments.value(fileName))
+        return !worldDocument->undoStack()->isClean();
+    return false;
+}
+
+void DocumentManager::onWorldUnloaded(const QString &worldFile)
+{
+    delete mWorldDocuments.take(worldFile);
 }
 
 static bool mayNeedColumnCountAdjustment(const Tileset &tileset)

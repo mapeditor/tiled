@@ -196,6 +196,8 @@ private:
       */
     bool confirmAllSave();
 
+    bool confirmSaveWorld(const QString &fileName);
+
     void writeSettings();
     void readSettings();
 

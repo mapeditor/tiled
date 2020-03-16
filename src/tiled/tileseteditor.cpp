@@ -70,6 +70,7 @@
 #include <QMimeData>
 #include <QSettings>
 #include <QStackedWidget>
+#include <QUndoGroup>
 
 #include <functional>
 
@@ -350,6 +351,10 @@ void TilesetEditor::setCurrentDocument(Document *document)
 {
     TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument*>(document);
     Q_ASSERT(tilesetDocument || !document);
+
+    if (document && DocumentManager::instance()->currentEditor() == this) {
+        DocumentManager::instance()->undoGroup()->setActiveStack(document->undoStack());
+    }
 
     if (mCurrentTilesetDocument == tilesetDocument)
         return;

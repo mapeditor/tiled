@@ -67,6 +67,7 @@
         <file>images/22/plugin.png</file>
         <file>images/22/rectangle-fill.png</file>
         <file>images/22/remove.png</file>
+        <file>images/22/world-move-tool.png</file>
         <file>images/22/stock-tool-bucket-fill.png</file>
         <file>images/22/stock-tool-by-color-select.png</file>
         <file>images/22/stock-tool-clone.png</file>
@@ -169,5 +170,8 @@
         <file>images/scalable/wrap.svg</file>
         <file>images/scalable/search-object-dialog.svg</file>
         <file>images/scalable/select-object.svg</file>
+        <file>images/24/world-map-add-this.png</file>
+        <file>images/24/world-map-add-other.png</file>
+        <file>images/24/world-map-remove-this.png</file>
     </qresource>
 </RCC>
