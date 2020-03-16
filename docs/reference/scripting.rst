@@ -700,7 +700,7 @@ Properties
     **map** : :ref:`script-map`, Map that this layer is part of (or ``null`` in case of a standalone layer).
     **selected** : bool, Whether the layer is selected.
     **isTileLayer** : bool |ro|, Whether this layer is a :ref:`script-tilelayer`.
-    **isObjectGroup** : bool |ro|, Whether this layer is an :ref:`script-objectgroup`.
+    **isObjectLayer** : bool |ro|, Whether this layer is an :ref:`script-objectgroup`.
     **isGroupLayer** : bool |ro|, Whether this layer is a :ref:`script-grouplayer`.
     **isImageLayer** : bool |ro|, Whether this layer is an :ref:`script-imagelayer`.
 

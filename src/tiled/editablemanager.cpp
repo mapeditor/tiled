@@ -133,6 +133,20 @@ EditableMapObject *EditableManager::editableMapObject(EditableAsset *asset, MapO
     return editableMapObject;
 }
 
+EditableTileset *EditableManager::editableTileset(Tileset *tileset)
+{
+    if (!tileset)
+        return nullptr;
+
+    EditableTileset* &editableTileset = mEditableTilesets[tileset];
+    if (becomesNullValue(editableTileset)) {
+        editableTileset = new EditableTileset(tileset);
+        QQmlEngine::setObjectOwnership(editableTileset, QQmlEngine::JavaScriptOwnership);
+    }
+
+    return editableTileset;
+}
+
 EditableTile *EditableManager::editableTile(EditableTileset *tileset, Tile *tile)
 {
     if (!tile)

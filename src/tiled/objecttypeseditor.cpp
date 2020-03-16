@@ -292,7 +292,10 @@ void ObjectTypesEditor::applyObjectTypes()
                               tr("Error writing to %1:\n%2")
                               .arg(prefs->objectTypesFile(),
                                    serializer.errorString()));
+        return;
     }
+
+    prefs->setObjectTypesFileLastSaved(QFileInfo(objectTypesFile).lastModified());
 }
 
 void ObjectTypesEditor::objectTypesChanged()
