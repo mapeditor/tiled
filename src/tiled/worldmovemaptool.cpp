@@ -165,45 +165,48 @@ void WorldMoveMapTool::mouseLeft()
 
 void WorldMoveMapTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
-    if (!mapCanBeMoved(targetMap())) {
-        AbstractWorldTool::mousePressed(event);
+    if (mDraggingMap)
         return;
-    }
 
-    switch (event->button()) {
-    case Qt::LeftButton: {
+    if (event->button() == Qt::LeftButton && mapCanBeMoved(targetMap())) {
         // initiate drag action
         mDraggingMap = targetMap();
         mDraggingMapItem = mapScene()->mapItem(mDraggingMap);
         mDragStartScenePos = event->scenePos();
         mDraggedMapStartPos = mDraggingMapItem->pos();
         mDragOffset = QPoint(0, 0);
-        break;
-    }
-    default:
-        if (!mDraggingMap)
-            AbstractWorldTool::mousePressed(event);
+        refreshCursor();
+        return;
     }
 
-    refreshCursor();
+    AbstractWorldTool::mousePressed(event);
 }
 
 void WorldMoveMapTool::mouseMoved(const QPointF &pos,
                                   Qt::KeyboardModifiers modifiers)
 {    
-    AbstractWorldTool::mouseMoved(pos, modifiers);
-
     const World *world = constWorld(mDraggingMap);
-    if (!world || !mDraggingMap)
+    if (!world || !mDraggingMap) {
+        AbstractWorldTool::mouseMoved(pos, modifiers);
         return;
+    }
 
     // calculate new drag offset
     const MapRenderer *renderer = mDraggingMap->renderer();
     const QPoint newOffset = renderer->screenToPixelCoords(pos - mDragStartScenePos).toPoint();
-    mDragOffset = snapPoint(newOffset, mDraggingMap);
+    mDragOffset = renderer->pixelToScreenCoords(snapPoint(newOffset, mDraggingMap)).toPoint();
 
     // update preview
-    mDraggingMapItem->setPos(mDraggedMapStartPos + renderer->pixelToScreenCoords(mDragOffset));
+    mDraggingMapItem->setPos(mDraggedMapStartPos + mDragOffset);
+    updateSelectionRectangle();
+
+    auto newPos = mapRect(mDraggingMap).topLeft() + mDragOffset;
+
+    setStatusInfo(tr("Move map to %1, %2 (offset: %3, %4)")
+                  .arg(newPos.x())
+                  .arg(newPos.y())
+                  .arg(mDragOffset.x())
+                  .arg(mDragOffset.y()));
 }
 
 void WorldMoveMapTool::mouseReleased(QGraphicsSceneMouseEvent *event)
@@ -235,6 +238,7 @@ void WorldMoveMapTool::mouseReleased(QGraphicsSceneMouseEvent *event)
         }
 
         refreshCursor();
+        setStatusInfo(QString());
         return;
     }
 
@@ -268,8 +272,10 @@ void WorldMoveMapTool::abortMoving()
     mDraggingMapItem->setPos(mDraggedMapStartPos);
     mDraggingMapItem = nullptr;
     mDraggingMap = nullptr;
+    updateSelectionRectangle();
 
     refreshCursor();
+    setStatusInfo(QString());
 }
 
 } // namespace Tiled

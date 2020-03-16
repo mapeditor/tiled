@@ -208,6 +208,8 @@ void MapScene::refreshScene()
         setBackgroundBrush(map->backgroundColor());
     else
         setBackgroundBrush(mDefaultBackgroundColor);
+
+    emit sceneRefreshed();
 }
 
 void MapScene::updateDefaultBackgroundColor()

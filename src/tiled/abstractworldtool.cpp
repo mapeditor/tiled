@@ -29,6 +29,7 @@
 #include "mapscene.h"
 #include "mapview.h"
 #include "preferences.h"
+#include "selectionrectangle.h"
 #include "tile.h"
 #include "utils.h"
 #include "worlddocument.h"
@@ -119,7 +120,10 @@ AbstractWorldTool::AbstractWorldTool(Id id,
                                      const QKeySequence &shortcut,
                                      QObject *parent)
     : AbstractTool(id, name, icon, shortcut, parent)
+    , mSelectionRectangle(new SelectionRectangle)
 {
+    mSelectionRectangle->setVisible(false);
+
     WorldManager &worldManager = WorldManager::instance();
     connect(&worldManager, &WorldManager::worldsChanged, this, &AbstractWorldTool::updateEnabledState);
 
@@ -144,13 +148,19 @@ AbstractWorldTool::AbstractWorldTool(Id id,
     connect(mRemoveMapFromWorldAction, &QAction::triggered, this, &AbstractWorldTool::removeCurrentMapFromWorld);
 }
 
+AbstractWorldTool::~AbstractWorldTool() = default;
+
 void AbstractWorldTool::activate(MapScene *scene)
 {
+    scene->addItem(mSelectionRectangle.get());
+    connect(scene, &MapScene::sceneRefreshed, this, &AbstractWorldTool::updateSelectionRectangle);
     mMapScene = scene;
 }
 
-void AbstractWorldTool::deactivate(MapScene *)
+void AbstractWorldTool::deactivate(MapScene *scene)
 {
+    scene->removeItem(mSelectionRectangle.get());
+    disconnect(scene, &MapScene::sceneRefreshed, this, &AbstractWorldTool::updateSelectionRectangle);
     mMapScene = nullptr;
 }
 
@@ -162,8 +172,7 @@ void AbstractWorldTool::mouseLeft()
 void AbstractWorldTool::mouseMoved(const QPointF &pos,
                                    Qt::KeyboardModifiers)
 {
-    // Update target map
-    mTargetMap = mapAt(pos);
+    setTargetMap(mapAt(pos));
 
     // Take into account the offset of the current layer
     QPointF offsetPos = pos;
@@ -179,8 +188,7 @@ void AbstractWorldTool::mouseMoved(const QPointF &pos,
 
 void AbstractWorldTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
-    // Update target map
-    mTargetMap = mapAt(event->scenePos());
+    setTargetMap(mapAt(event->scenePos()));
 
     if (event->button() == Qt::RightButton)
         showContextMenu(event);
@@ -403,6 +411,25 @@ QPoint AbstractWorldTool::snapPoint(QPoint point, MapDocument *document) const
     point.setX(point.x() - point.x() % document->map()->tileWidth());
     point.setY(point.y() - point.y() % document->map()->tileHeight());
     return point;
+}
+
+void AbstractWorldTool::setTargetMap(MapDocument *mapDocument)
+{
+    mTargetMap = mapDocument;
+    updateSelectionRectangle();
+}
+
+void AbstractWorldTool::updateSelectionRectangle()
+{
+    if (auto item = mMapScene->mapItem(mTargetMap)) {
+        auto rect = mapRect(mTargetMap);
+        rect.moveTo(item->pos().toPoint());
+
+        mSelectionRectangle->setVisible(true);
+        mSelectionRectangle->setRectangle(rect);
+    } else {
+        mSelectionRectangle->setVisible(false);
+    }
 }
 
 } // namespace Tiled

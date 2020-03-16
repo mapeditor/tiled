@@ -28,6 +28,8 @@ namespace Tiled {
 
 struct World;
 
+class SelectionRectangle;
+
 /**
  * A convenient base class for tools that work on object layers. Implements
  * the standard context menu.
@@ -46,6 +48,7 @@ public:
                       const QIcon &icon,
                       const QKeySequence &shortcut,
                       QObject *parent = nullptr);
+    ~AbstractWorldTool() override;
 
     void activate(MapScene *scene) override;
     void deactivate(MapScene *scene) override;
@@ -76,7 +79,10 @@ protected:
 
     QPoint snapPoint(QPoint point, MapDocument *document) const;
 
+    void setTargetMap(MapDocument *mapDocument);
     MapDocument *targetMap() const { return mTargetMap; }
+    void updateSelectionRectangle();
+
     bool mapCanBeMoved(MapDocument *mapDocument) const;
     QRect mapRect(MapDocument *mapDocument) const;
     const World *constWorld(MapDocument *mapDocument) const;
@@ -85,12 +91,15 @@ protected:
 
     void showContextMenu(QGraphicsSceneMouseEvent *);
 
+private:
     MapScene *mMapScene = nullptr;
     MapDocument *mTargetMap = nullptr;
 
     QAction *mAddAnotherMapToWorldAction;
     QAction *mAddMapToWorldAction;
     QAction *mRemoveMapFromWorldAction;
+
+    std::unique_ptr<SelectionRectangle> mSelectionRectangle;
 };
 
 } // namespace Tiled

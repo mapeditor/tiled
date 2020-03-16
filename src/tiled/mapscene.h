@@ -71,6 +71,8 @@ public:
 signals:
     void mapDocumentChanged(MapDocument *mapDocument);
 
+    void sceneRefreshed();
+
 protected:
     bool event(QEvent *event) override;
 
