@@ -818,11 +818,20 @@ void Preferences::setObjectTypesFile(const QString &fileName)
     emit stampsDirectoryChanged(fileName);
 }
 
+void Preferences::setObjectTypesFileLastSaved(const QDateTime &time)
+{
+    mObjectTypesFileLastSaved = time;
+}
+
 void Preferences::objectTypesFileChangedOnDisk()
 {
+    const QFileInfo fileInfo { objectTypesFile() };
+    if (fileInfo.lastModified() == mObjectTypesFileLastSaved)
+        return;
+
     ObjectTypesSerializer objectTypesSerializer;
     ObjectTypes objectTypes;
 
-    if (objectTypesSerializer.readObjectTypes(objectTypesFile(), objectTypes))
+    if (objectTypesSerializer.readObjectTypes(fileInfo.filePath(), objectTypes))
         setObjectTypes(objectTypes);
 }

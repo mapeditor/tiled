@@ -22,7 +22,7 @@
 #pragma once
 
 #include <QColor>
-#include <QDate>
+#include <QDateTime>
 #include <QObject>
 
 #include "filesystemwatcher.h"
@@ -147,6 +147,7 @@ public:
 
     QString objectTypesFile() const;
     void setObjectTypesFile(const QString &filePath);
+    void setObjectTypesFileLastSaved(const QDateTime &time);
 
     QDate firstRun() const;
     int runCount() const;
@@ -289,6 +290,7 @@ private:
     QString mStampsDirectory;
     QString mTemplatesDirectory;
     QString mObjectTypesFile;
+    QDateTime mObjectTypesFileLastSaved;
 
     QDate mFirstRun;
     QDate mDonationDialogTime;
