@@ -80,7 +80,34 @@ axes.
 
 Can contain: :ref:`tmx-properties`, :ref:`tmx-tileset`,
 :ref:`tmx-layer`, :ref:`tmx-objectgroup`,
-:ref:`tmx-imagelayer`, :ref:`tmx-group` (since 1.0)
+:ref:`tmx-imagelayer`, :ref:`tmx-group` (since 1.0),
+:ref:`tmx-editorsettings` (since 1.3)
+
+.. _tmx-editorsettings:
+
+<editorsettings>
+----------------
+
+This element contains various editor-specific settings, which are generally
+not relevant when reading a map.
+
+Can contain: :ref:`tmx-chunksize`, :ref:`tmx-export`
+
+.. _tmx-chunksize:
+
+<chunksize>
+~~~~~~~~~~~
+
+-  **width:** The width of chunks used for infinite maps (default to 16).
+-  **height:** The width of chunks used for infinite maps (default to 16).
+
+.. _tmx-export:
+
+<export>
+~~~~~~~~
+
+-  **target:** The last file this map was exported to.
+-  **format:** The short name of the last format this map was exported as.
 
 .. _tmx-tileset:
 
@@ -518,8 +545,8 @@ will have higher priority, i.e. they will override the template
 properties.
 
 Can contain: :ref:`tmx-properties`, :ref:`tmx-ellipse` (since
-0.9), :ref:`tmx-point`, :ref:`tmx-polygon`, :ref:`tmx-polyline`, :ref:`tmx-text`
-(since 1.0), *image*
+0.9), :ref:`tmx-point` (since 1.1), :ref:`tmx-polygon`, :ref:`tmx-polyline`,
+:ref:`tmx-text` (since 1.0), *image*
 
 .. _tmx-ellipse:
 

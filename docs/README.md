@@ -1,7 +1,7 @@
 To generate the Tiled documentation, you need to install Python 3, Sphinx and
 the ReadTheDocs theme.
 
-On Ubunu the following commands could be used:
+On Ubuntu the following commands could be used:
 
     sudo apt install python3-pip
     pip3 install sphinx
