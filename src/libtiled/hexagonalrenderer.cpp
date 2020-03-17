@@ -266,8 +266,17 @@ void HexagonalRenderer::drawGrid(QPainter *painter, const QRectF &exposed,
     }
 }
 
-void HexagonalRenderer::drawTileLayer(QPainter *painter,
-                                      const TileLayer *layer,
+void HexagonalRenderer::drawTileLayer(QPainter *painter, const TileLayer *layer, const QRectF &exposed) const
+{
+    CellRenderer renderer(painter, this, layer->effectiveTintColor(), CellRenderer::HexagonalCells);
+    auto tileRenderFunction = [&renderer](const Cell &cell, const QPointF &pos, const QSizeF &size) {
+        renderer.render(cell, pos, size, CellRenderer::BottomLeft);
+    };
+    drawTileLayer(layer, tileRenderFunction, exposed);
+}
+
+void HexagonalRenderer::drawTileLayer(const TileLayer *layer,
+                                      const RenderTileCallback renderTileCallback,
                                       const QRectF &exposed) const
 {
     const RenderParams p(map());
@@ -307,8 +316,6 @@ void HexagonalRenderer::drawTileLayer(QPainter *painter,
     if (inLeftHalf)
         startTile.rx()--;
 
-    CellRenderer renderer(painter, this, layer->effectiveTintColor(), CellRenderer::HexagonalCells);
-
     const int endX = map()->infinite() ? layer->bounds().right() - layer->x() + 1 : layer->width();
     const int endY = map()->infinite() ? layer->bounds().bottom() - layer->y() + 1 : layer->height();
 
@@ -331,9 +338,9 @@ void HexagonalRenderer::drawTileLayer(QPainter *painter,
                 const Cell &cell = layer->cellAt(rowTile);
 
                 if (!cell.isEmpty()) {
-                    Tile *tile = cell.tile();
-                    QSize size = tile ? tile->size() : map()->tileSize();
-                    renderer.render(cell, rowPos, size, CellRenderer::BottomLeft);
+                    const Tile *tile = cell.tile();
+                    const QSize size = tile ? tile->size() : map()->tileSize();
+                    renderTileCallback(cell, rowPos, size);
                 }
 
                 rowPos.rx() += p.tileWidth + p.sideLengthX;
@@ -376,9 +383,9 @@ void HexagonalRenderer::drawTileLayer(QPainter *painter,
                 const Cell &cell = layer->cellAt(rowTile);
 
                 if (!cell.isEmpty()) {
-                    Tile *tile = cell.tile();
-                    QSize size = tile ? tile->size() : map()->tileSize();
-                    renderer.render(cell, rowPos, size, CellRenderer::BottomLeft);
+                    const Tile *tile = cell.tile();
+                    const QSize size = tile ? tile->size() : map()->tileSize();
+                    renderTileCallback(cell, rowPos, size);
                 }
 
                 rowPos.rx() += p.tileWidth + p.sideLengthX;

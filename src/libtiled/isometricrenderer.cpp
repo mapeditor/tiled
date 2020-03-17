@@ -266,6 +266,17 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
                                       const TileLayer *layer,
                                       const QRectF &exposed) const
 {
+    CellRenderer renderer(painter, this, layer->effectiveTintColor());
+    auto tileRenderFunction = [&renderer](const Cell &cell, const QPointF &pos, const QSizeF &size) {
+        renderer.render(cell, pos, size, CellRenderer::BottomLeft);
+    };
+    drawTileLayer(layer, tileRenderFunction, exposed);
+}
+
+void IsometricRenderer::drawTileLayer(const TileLayer *layer,
+                                      const RenderTileCallback renderTileCallback,
+                                      const QRectF &exposed) const
+{
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
 
@@ -318,8 +329,6 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
     // Determine whether the current row is shifted half a tile to the right
     bool shifted = inUpperHalf ^ inLeftHalf;
 
-    CellRenderer renderer(painter, this, layer->effectiveTintColor());
-
     for (int y = startPos.y() * 2; y - tileHeight * 2 < rect.bottom() * 2;
          y += tileHeight)
     {
@@ -328,10 +337,9 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
         for (int x = startPos.x(); x < rect.right(); x += tileWidth) {
             const Cell &cell = layer->cellAt(columnItr);
             if (!cell.isEmpty()) {
-                Tile *tile = cell.tile();
-                QSize size = (tile && !tile->image().isNull()) ? tile->size() : map()->tileSize();
-                renderer.render(cell, QPointF(x, (qreal)y / 2), size,
-                                CellRenderer::BottomLeft);
+                const Tile *tile = cell.tile();
+                const QSize size = (tile && !tile->image().isNull()) ? tile->size() : map()->tileSize();
+                renderTileCallback(cell, QPointF(x, (qreal)y / 2), size);
             }
 
             // Advance to the next column

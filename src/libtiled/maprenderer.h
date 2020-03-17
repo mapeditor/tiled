@@ -30,6 +30,8 @@
 
 #include "tiled_global.h"
 
+#include <functional>
+
 #include <QPainter>
 
 namespace Tiled {
@@ -130,6 +132,8 @@ public:
     virtual void drawGrid(QPainter *painter, const QRectF &rect,
                           QColor gridColor = Qt::black) const = 0;
 
+    typedef std::function<void(const Cell &, const QPointF &, const QSizeF &)> RenderTileCallback;
+
     /**
      * Draws the given \a layer using the given \a painter.
      *
@@ -137,6 +141,16 @@ public:
      * only tiles that can be visible in this area will be drawn.
      */
     virtual void drawTileLayer(QPainter *painter, const TileLayer *layer,
+                               const QRectF &exposed = QRectF()) const = 0;
+
+    /**
+     * Draws the given \a layer using the given \a renderTileCallback.
+     *
+     * Optionally, you can pass in the \a exposed rect (of pixels), so that
+     * only tiles that can be visible in this area will be drawn.
+     */
+    virtual void drawTileLayer(const TileLayer *layer,
+                               const RenderTileCallback renderTileCallback,
                                const QRectF &exposed = QRectF()) const = 0;
 
     /**

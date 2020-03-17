@@ -199,7 +199,7 @@ public:
     void addTilesToNode();
 
 private:
-    void appendTileData(int x, int y);
+    void appendTileData(const Cell &cell, const QPointF &screenPos);
 
     Tiled::MapRenderer *mRenderer;
     QSGNode *mParent;
@@ -211,9 +211,8 @@ private:
     QVector<TileData> mTileData;
 };
 
-void IsometricRenderHelper::appendTileData(int x, int y)
+void IsometricRenderHelper::appendTileData(const Cell &cell, const QPointF &screenPos)
 {
-    const Cell &cell = mLayer->cellAt(x, y);
     if (cell.isEmpty())
         return;
 
@@ -238,7 +237,6 @@ void IsometricRenderHelper::appendTileData(int x, int y)
         return;
     }
 
-    const QPointF screenPos = mRenderer->tileToScreenCoords(x, y).toPoint();
     TileData data;
     data.x = screenPos.x() - mTileWidth / 2;
     data.y = screenPos.y() - mTileHeight / 2;
@@ -257,82 +255,10 @@ void IsometricRenderHelper::addTilesToNode()
     if (mVisibleScreenRect.isEmpty())
         return;
 
-    if (mTileWidth <= 0 || mTileHeight <= 1)
-        return;
-
-    QRect rect = mVisibleScreenRect;
-    if (rect.isNull())
-        rect = mRenderer->boundingRect(mLayer->bounds());
-
-    QMargins drawMargins = mLayer->drawMargins();
-    drawMargins.setTop(drawMargins.top() - mTileHeight);
-    drawMargins.setRight(drawMargins.right() - mTileWidth);
-
-    rect.adjust(-drawMargins.right(),
-                -drawMargins.bottom(),
-                drawMargins.left(),
-                drawMargins.top());
-
-    // Determine the tile and pixel coordinates to start at
-    QPointF tilePos = mRenderer->screenToTileCoords(rect.x(), rect.y());
-    QPoint rowItr = QPoint(qFloor(tilePos.x()),
-                           qFloor(tilePos.y()));
-    QPointF startPos = mRenderer->tileToScreenCoords(rowItr);
-    startPos.rx() -= mTileWidth / 2;
-    startPos.ry() += mTileHeight;
-
-    // Compensate for the layer position
-    rowItr -= QPoint(mLayer->x(), mLayer->y());
-
-    /* Determine in which half of the tile the top-left corner of the area we
-     * need to draw is. If we're in the upper half, we need to start one row
-     * up due to those tiles being visible as well. How we go up one row
-     * depends on whether we're in the left or right half of the tile.
-     */
-    const bool inUpperHalf = startPos.y() - rect.y() > mTileHeight / 2;
-    const bool inLeftHalf = rect.x() - startPos.x() < mTileWidth / 2;
-
-    if (inUpperHalf) {
-        if (inLeftHalf) {
-            --rowItr.rx();
-            startPos.rx() -= mTileWidth / 2;
-        } else {
-            --rowItr.ry();
-            startPos.rx() += mTileWidth / 2;
-        }
-        startPos.ry() -= mTileHeight / 2;
-    }
-
-    // Determine whether the current row is shifted half a tile to the right
-    bool shifted = inUpperHalf ^ inLeftHalf;
-
-    mTileData.reserve(TilesNode::MaxTileCount);
-
-    for (int y = static_cast<int>(startPos.y() * 2); y - mTileHeight * 2 < rect.bottom() * 2; y += mTileHeight) {
-        QPoint columnItr = rowItr;
-
-        for (int x = static_cast<int>(startPos.x()); x < rect.right(); x += mTileWidth) {
-            const Cell &cell = mLayer->cellAt(columnItr);
-            if (!cell.isEmpty()) {
-                appendTileData(columnItr.x(), columnItr.y());
-            }
-
-            // Advance to the next column
-            ++columnItr.rx();
-            --columnItr.ry();
-        }
-
-        // Advance to the next row
-        if (!shifted) {
-            ++rowItr.rx();
-            startPos.rx() += mTileWidth / 2;
-            shifted = true;
-        } else {
-            ++rowItr.ry();
-            startPos.rx() -= mTileWidth / 2;
-            shifted = false;
-        }
-    }
+    auto tileRenderFunction = [=](const Cell &cell, const QPointF &pos, const QSizeF &/*size*/) {
+        appendTileData(cell, pos);
+    };
+    mRenderer->drawTileLayer(mLayer, tileRenderFunction, mVisibleScreenRect);
 
     if (!mTileData.isEmpty())
         mParent->appendChildNode(new TilesNode(mTilesetHelper.texture(), mTileData));
