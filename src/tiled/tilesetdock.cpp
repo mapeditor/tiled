@@ -1087,8 +1087,8 @@ void TilesetDock::refreshTilesetMenu()
     const int currentIndex = mTabBar->currentIndex();
 
     for (int i = 0; i < mTabBar->count(); ++i) {
-        QAction *action = mTilesetMenu->addAction(mTabBar->tabText(i));
-        connect(action, &QAction::triggered, [=] { mTabBar->setCurrentIndex(i); });
+        QAction *action = mTilesetMenu->addAction(mTabBar->tabText(i),
+                                                  [=] { mTabBar->setCurrentIndex(i); });
 
         action->setCheckable(true);
         mTilesetActionGroup->addAction(action);
