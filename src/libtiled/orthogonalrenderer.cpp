@@ -268,11 +268,12 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter, const TileLayer *layer
     const QTransform savedTransform = painter->transform();
     painter->translate(layerPos);
 
-    CellRenderer renderer(painter, this, layer->effectiveTintColor(), CellRenderer::HexagonalCells);
+    CellRenderer renderer(painter, this, layer->effectiveTintColor());
     auto tileRenderFunction = [&renderer](const Cell &cell, const QPointF &pos, const QSizeF &size) {
         renderer.render(cell, pos, size, CellRenderer::BottomLeft);
     };
     drawTileLayer(layer, tileRenderFunction, exposed);
+    renderer.flush();
 
     painter->setTransform(savedTransform);
 }
