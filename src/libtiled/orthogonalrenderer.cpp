@@ -279,7 +279,7 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter, const TileLayer *layer
 }
 
 void OrthogonalRenderer::drawTileLayer(const TileLayer *layer,
-                                       const RenderTileCallback renderTileCallback,
+                                       const RenderTileCallback &renderTileCallback,
                                        const QRectF &exposed) const
 {
 

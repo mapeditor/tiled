@@ -56,7 +56,7 @@ public:
                        const QRectF &exposed = QRectF()) const override;
 
     void drawTileLayer(const TileLayer *layer,
-                       const RenderTileCallback renderTileCallback,
+                       const RenderTileCallback &renderTileCallback,
                        const QRectF &exposed = QRectF()) const override;
 
     void drawTileSelection(QPainter *painter,

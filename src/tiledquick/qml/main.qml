@@ -14,20 +14,8 @@ ApplicationWindow {
     height: 720
     minimumWidth: 480
     minimumHeight: 320
-    title: qsTr("Tiled Quick | %1 | %2").arg(mapItem.visibleArea).arg(coordsText)
+    title: qsTr("Tiled Quick")
     visible: true
-
-    property string coordsText: {
-        if (mapLoader.status === Tiled.MapLoader.Null) {
-            return qsTr("No map file loaded")
-        } else if (mapLoader.status === Tiled.MapLoader.Error) {
-            return mapLoader.error
-        } else {
-            var mapRelativeCoords = singleFingerPanArea.mapToItem(mapItem, singleFingerPanArea.mouseX, singleFingerPanArea.mouseY)
-            var tileCoords = mapItem.screenToTileCoords(mapRelativeCoords.x, mapRelativeCoords.y)
-            return Math.floor(tileCoords.x) + ", " + Math.floor(tileCoords.y)
-        }
-    }
 
     FontLoader {
         id: fontAwesomeLoader
@@ -128,11 +116,9 @@ ApplicationWindow {
         id: mapLoader
     }
 
-    Rectangle {
+    Item {
         id: mapView
-        color: "#aaff0000"
         anchors.fill: parent
-        anchors.margins: 100
 
         Item {
             id: mapContainer
@@ -202,6 +188,24 @@ ApplicationWindow {
             containerAnimation.y = mapContainer.y - (newY - oldY)
             containerAnimation.scale = scale
             containerAnimation.start()
+        }
+    }
+
+    footer: Pane {
+        RowLayout {
+            Label {
+                text: {
+                    if (mapLoader.status === Tiled.MapLoader.Null) {
+                        qsTr("No map file loaded")
+                    } else if (mapLoader.status === Tiled.MapLoader.Error) {
+                        mapLoader.error
+                    } else {
+                        var mapRelativeCoords = singleFingerPanArea.mapToItem(mapItem, singleFingerPanArea.mouseX, singleFingerPanArea.mouseY)
+                        var tileCoords = mapItem.screenToTileCoords(mapRelativeCoords.x, mapRelativeCoords.y)
+                        Math.floor(tileCoords.x) + ", " + Math.floor(tileCoords.y)
+                    }
+                }
+            }
         }
     }
 }

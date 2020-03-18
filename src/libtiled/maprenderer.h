@@ -150,7 +150,7 @@ public:
      * only tiles that can be visible in this area will be drawn.
      */
     virtual void drawTileLayer(const TileLayer *layer,
-                               const RenderTileCallback renderTileCallback,
+                               const RenderTileCallback &renderTileCallback,
                                const QRectF &exposed = QRectF()) const = 0;
 
     /**

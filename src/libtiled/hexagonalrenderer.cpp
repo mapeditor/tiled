@@ -276,7 +276,7 @@ void HexagonalRenderer::drawTileLayer(QPainter *painter, const TileLayer *layer,
 }
 
 void HexagonalRenderer::drawTileLayer(const TileLayer *layer,
-                                      const RenderTileCallback renderTileCallback,
+                                      const RenderTileCallback &renderTileCallback,
                                       const QRectF &exposed) const
 {
     const RenderParams p(map());

@@ -274,7 +274,7 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
 }
 
 void IsometricRenderer::drawTileLayer(const TileLayer *layer,
-                                      const RenderTileCallback renderTileCallback,
+                                      const RenderTileCallback &renderTileCallback,
                                       const QRectF &exposed) const
 {
     const int tileWidth = map()->tileWidth();
