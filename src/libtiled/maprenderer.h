@@ -144,13 +144,13 @@ public:
                                const QRectF &exposed = QRectF()) const = 0;
 
     /**
-     * Draws the given \a layer using the given \a renderTileCallback.
+     * Draws the given \a layer using the given \a renderTile callback.
      *
      * Optionally, you can pass in the \a exposed rect (of pixels), so that
      * only tiles that can be visible in this area will be drawn.
      */
     virtual void drawTileLayer(const TileLayer *layer,
-                               const RenderTileCallback &renderTileCallback,
+                               const RenderTileCallback &renderTile,
                                const QRectF &exposed = QRectF()) const = 0;
 
     /**

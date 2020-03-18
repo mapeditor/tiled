@@ -120,7 +120,7 @@ TileLayerItem::TileLayerItem(TileLayer *layer, MapRenderer *renderer,
     : QQuickItem(parent)
     , mLayer(layer)
     , mRenderer(renderer)
-    , mVisibleArea(parent->visibleArea().toAlignedRect())
+    , mVisibleArea(parent->visibleArea())
 {
     setFlag(ItemHasContents);
     layerVisibilityChanged();
@@ -199,7 +199,7 @@ QSGNode *TileLayerItem::updatePaintNode(QSGNode *node,
 void TileLayerItem::updateVisibleTiles()
 {
     const MapItem *mapItem = static_cast<MapItem*>(parentItem());
-    const QRect rect = mapItem->visibleArea().toAlignedRect();
+    const QRectF &rect = mapItem->visibleArea();
 
     if (mVisibleArea != rect) {
         mVisibleArea = rect;

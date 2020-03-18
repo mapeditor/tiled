@@ -274,7 +274,7 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
 }
 
 void IsometricRenderer::drawTileLayer(const TileLayer *layer,
-                                      const RenderTileCallback &renderTileCallback,
+                                      const RenderTileCallback &renderTile,
                                       const QRectF &exposed) const
 {
     const int tileWidth = map()->tileWidth();
@@ -339,7 +339,7 @@ void IsometricRenderer::drawTileLayer(const TileLayer *layer,
             if (!cell.isEmpty()) {
                 const Tile *tile = cell.tile();
                 const QSize size = (tile && !tile->image().isNull()) ? tile->size() : map()->tileSize();
-                renderTileCallback(cell, QPointF(x, (qreal)y / 2), size);
+                renderTile(cell, QPointF(x, (qreal)y / 2), size);
             }
 
             // Advance to the next column

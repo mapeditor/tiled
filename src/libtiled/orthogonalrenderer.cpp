@@ -261,25 +261,19 @@ void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect,
     }
 }
 
-void OrthogonalRenderer::drawTileLayer(QPainter *painter, const TileLayer *layer, const QRectF &exposed) const
+void OrthogonalRenderer::drawTileLayer(QPainter *painter,
+                                       const TileLayer *layer,
+                                       const QRectF &exposed) const
 {
-    const QPointF layerPos(layer->x() * map()->tileWidth(),
-                           layer->y() * map()->tileHeight());
-    const QTransform savedTransform = painter->transform();
-    painter->translate(layerPos);
-
     CellRenderer renderer(painter, this, layer->effectiveTintColor());
     auto tileRenderFunction = [&renderer](const Cell &cell, const QPointF &pos, const QSizeF &size) {
         renderer.render(cell, pos, size, CellRenderer::BottomLeft);
     };
     drawTileLayer(layer, tileRenderFunction, exposed);
-    renderer.flush();
-
-    painter->setTransform(savedTransform);
 }
 
 void OrthogonalRenderer::drawTileLayer(const TileLayer *layer,
-                                       const RenderTileCallback &renderTileCallback,
+                                       const RenderTileCallback &renderTile,
                                        const QRectF &exposed) const
 {
 
@@ -352,7 +346,7 @@ void OrthogonalRenderer::drawTileLayer(const TileLayer *layer,
 
             const Tile *tile = cell.tile();
             const QSize size = (tile && !tile->image().isNull()) ? tile->size() : map()->tileSize();
-            renderTileCallback(cell, QPointF(x * tileWidth, (y + 1) * tileHeight), size);
+            renderTile(cell, layerPos + QPointF(x * tileWidth, (y + 1) * tileHeight), size);
         }
     }
 }
