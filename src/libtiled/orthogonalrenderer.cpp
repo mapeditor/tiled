@@ -265,6 +265,17 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
                                        const TileLayer *layer,
                                        const QRectF &exposed) const
 {
+    CellRenderer renderer(painter, this, layer->effectiveTintColor());
+    auto tileRenderFunction = [&renderer](const Cell &cell, const QPointF &pos, const QSizeF &size) {
+        renderer.render(cell, pos, size, CellRenderer::BottomLeft);
+    };
+    drawTileLayer(layer, tileRenderFunction, exposed);
+}
+
+void OrthogonalRenderer::drawTileLayer(const TileLayer *layer,
+                                       const RenderTileCallback &renderTile,
+                                       const QRectF &exposed) const
+{
 
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
@@ -302,11 +313,6 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
     if (startX > endX || startY > endY)
         return;
 
-    const QTransform savedTransform = painter->transform();
-    painter->translate(layerPos);
-
-    CellRenderer renderer(painter, this, layer->effectiveTintColor());
-
     Map::RenderOrder renderOrder = map()->renderOrder();
 
     int incX = 1, incY = 1;
@@ -338,18 +344,11 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
             if (cell.isEmpty())
                 continue;
 
-            Tile *tile = cell.tile();
-            QSize size = (tile && !tile->image().isNull()) ? tile->size() : map()->tileSize();
-            renderer.render(cell,
-                            QPointF(x * tileWidth, (y + 1) * tileHeight),
-                            size,
-                            CellRenderer::BottomLeft);
+            const Tile *tile = cell.tile();
+            const QSize size = (tile && !tile->image().isNull()) ? tile->size() : map()->tileSize();
+            renderTile(cell, layerPos + QPointF(x * tileWidth, (y + 1) * tileHeight), size);
         }
     }
-
-    renderer.flush();
-
-    painter->setTransform(savedTransform);
 }
 
 void OrthogonalRenderer::drawTileSelection(QPainter *painter,

@@ -22,9 +22,11 @@
 
 #include "tilelayeritem.h"
 
+#include "hexagonalrenderer.h"
 #include "isometricrenderer.h"
 #include "map.h"
 #include "orthogonalrenderer.h"
+#include "staggeredrenderer.h"
 #include "tilelayer.h"
 
 #include <cmath>
@@ -53,34 +55,6 @@ void MapItem::setVisibleArea(const QRectF &visibleArea)
 {
     mVisibleArea = visibleArea;
     emit visibleAreaChanged();
-}
-
-/**
- * Determines the rectangle of visible tiles of the given tile \a layer, based
- * on the visible area of this MapItem instance.
- *
- * Only works for orthogonal maps.
- */
-QRect MapItem::visibleTileArea(const Tiled::TileLayer *layer) const
-{
-    const int tileWidth = mMap->tileWidth();
-    const int tileHeight = mMap->tileHeight();
-
-    QMargins drawMargins = layer->drawMargins();
-    drawMargins.setTop(drawMargins.top() - tileHeight);
-    drawMargins.setRight(drawMargins.right() - tileWidth);
-
-    QRectF rect = visibleArea().adjusted(-drawMargins.right(),
-                                         -drawMargins.bottom(),
-                                         drawMargins.left(),
-                                         drawMargins.top());
-
-    int startX = qMax((int) rect.x() / tileWidth, 0);
-    int startY = qMax((int) rect.y() / tileHeight, 0);
-    int endX = qMin((int) std::ceil(rect.right()) / tileWidth, layer->width() - 1);
-    int endY = qMin((int) std::ceil(rect.bottom()) / tileHeight, layer->height() - 1);
-
-    return QRect(QPoint(startX, startY), QPoint(endX, endY));
 }
 
 QRectF MapItem::boundingRect() const
@@ -182,11 +156,17 @@ void MapItem::refresh()
         return;
 
     switch (mMap->orientation()) {
+    default:
+        mRenderer = std::make_unique<Tiled::OrthogonalRenderer>(mMap);
+        break;
     case Tiled::Map::Isometric:
         mRenderer = std::make_unique<Tiled::IsometricRenderer>(mMap);
         break;
-    default:
-        mRenderer = std::make_unique<Tiled::OrthogonalRenderer>(mMap);
+    case Tiled::Map::Staggered:
+        mRenderer = std::make_unique<Tiled::StaggeredRenderer>(mMap);
+        break;
+    case Tiled::Map::Hexagonal:
+        mRenderer = std::make_unique<Tiled::HexagonalRenderer>(mMap);
         break;
     }
 

@@ -69,7 +69,7 @@ private:
 
     Tiled::TileLayer *mLayer;
     Tiled::MapRenderer *mRenderer;
-    QRect mVisibleTiles;
+    QRectF mVisibleArea;
 };
 
 /**

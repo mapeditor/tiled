@@ -27,8 +27,6 @@
 namespace Tiled {
 class Map;
 class MapRenderer;
-class Tileset;
-class TileLayer;
 } // namespace Tiled
 
 namespace TiledQuick {
@@ -55,7 +53,6 @@ public:
 
     const QRectF &visibleArea() const;
     void setVisibleArea(const QRectF &visibleArea);
-    QRect visibleTileArea(const Tiled::TileLayer *layer) const;
 
     QRectF boundingRect() const;
 

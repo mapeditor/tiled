@@ -89,7 +89,7 @@ struct TilesetHelper
 
         const QSize tilesetSize = mTexture->textureSize();
         const int availableWidth = tilesetSize.width() + tileSpacing - mMargin;
-        mTilesPerRow = availableWidth / mTileHSpace;
+        mTilesPerRow = qMax(availableWidth / mTileHSpace, 1);
     }
 
     void setTextureCoordinates(TileData &data, const Cell &cell) const
@@ -112,179 +112,6 @@ private:
     int mTilesPerRow;
 };
 
-/**
- * Draws an orthogonal tile layer by adding nodes to the scene graph. When
- * sequentially drawn tiles are using the same tileset, they will share a
- * single geometry node.
- */
-static void drawOrthogonalTileLayer(QSGNode *parent,
-                          const MapItem *mapItem,
-                          const TileLayer *layer,
-                          const QRect &rect)
-{
-    TilesetHelper helper(mapItem);
-
-    const Map *map = mapItem->map();
-    const int tileWidth = map->tileWidth();
-    const int tileHeight = map->tileHeight();
-
-    QVector<TileData> tileData;
-    tileData.reserve(TilesNode::MaxTileCount);
-
-    const QRect contentRect = rect.intersected(layer->localBounds());
-
-    for (int y = contentRect.top(); y <= contentRect.bottom(); ++y) {
-        for (int x = contentRect.left(); x <= contentRect.right(); ++x) {
-            const Cell &cell = layer->cellAt(x, y);
-            if (cell.isEmpty())
-                continue;
-
-            Tileset *tileset = cell.tileset();
-
-            if (tileset != helper.tileset() || tileData.size() == TilesNode::MaxTileCount) {
-                if (!tileData.isEmpty()) {
-                    parent->appendChildNode(new TilesNode(helper.texture(),
-                                                          tileData));
-                    tileData.resize(0);
-                }
-
-                helper.setTileset(tileset);
-            }
-
-            if (!helper.texture())
-                continue;
-
-            Tile *tile = cell.tile();
-            if (!tile)
-                continue;   // todo: render "missing tile" marker
-
-            const QSize size = tile->size();
-            const QPoint offset = tileset->tileOffset();
-
-            TileData data;
-            data.x = x * tileWidth + offset.x();
-            data.y = (y + 1) * tileHeight - tileset->tileHeight() + offset.y();
-            data.width = size.width();
-            data.height = size.height();
-            data.flippedHorizontally = cell.flippedHorizontally();
-            data.flippedVertically = cell.flippedVertically();
-            helper.setTextureCoordinates(data, cell);
-            tileData.append(data);
-        }
-    }
-
-    if (!tileData.isEmpty())
-        parent->appendChildNode(new TilesNode(helper.texture(), tileData));
-}
-
-// Avoids passing lots of variables to static free functions.
-class IsometricRenderHelper
-{
-public:
-    IsometricRenderHelper(Tiled::MapRenderer *renderer,
-                          QSGNode *parent,
-                          const MapItem *mapItem,
-                          const TileLayer *layer,
-                          const QRect &rect) :
-        mRenderer(renderer),
-        mParent(parent),
-        mLayer(layer),
-        mRect(rect),
-        mTilesetHelper(mapItem),
-        mTileWidth(mapItem->map()->tileWidth()),
-        mTileHeight(mapItem->map()->tileHeight())
-    {
-    }
-
-    void addTilesToNode();
-
-private:
-    void appendTileData(int x, int y);
-
-    Tiled::MapRenderer *mRenderer;
-    QSGNode *mParent;
-    const TileLayer *mLayer;
-    const QRect mRect;
-    TilesetHelper mTilesetHelper;
-    const int mTileWidth;
-    const int mTileHeight;
-    QVector<TileData> mTileData;
-};
-
-void IsometricRenderHelper::appendTileData(int x, int y)
-{
-    const Cell &cell = mLayer->cellAt(x, y);
-    if (cell.isEmpty())
-        return;
-
-    Tileset *tileset = cell.tileset();
-
-    if (tileset != mTilesetHelper.tileset() || mTileData.size() == TilesNode::MaxTileCount) {
-        if (!mTileData.isEmpty()) {
-            mParent->appendChildNode(new TilesNode(mTilesetHelper.texture(),
-                                                   mTileData));
-            mTileData.resize(0);
-        }
-
-        mTilesetHelper.setTileset(tileset);
-    }
-
-    if (!mTilesetHelper.texture())
-        return;
-
-    Tile *tile = cell.tile();
-    if (!tile) {
-        // todo: render "missing tile" marker
-        return;
-    }
-
-    const QPointF screenPos = mRenderer->tileToScreenCoords(x, y).toPoint();
-    TileData data;
-    data.x = screenPos.x() - mTileWidth / 2;
-    data.y = screenPos.y() - mTileHeight / 2;
-    const QSize size = cell.tile()->size();
-    data.width = size.width();
-    data.height = size.height();
-    data.flippedHorizontally = cell.flippedHorizontally();
-    data.flippedVertically = cell.flippedVertically();
-    mTilesetHelper.setTextureCoordinates(data, cell);
-    mTileData.append(data);
-}
-
-// TODO: make this function work with a subset of the entire layer rect
-void IsometricRenderHelper::addTilesToNode()
-{
-    if (mRect.isEmpty())
-        return;
-
-    mTileData.reserve(TilesNode::MaxTileCount);
-
-    for (int y = mRect.top(); y <= mRect.bottom(); ++y) {
-        int _x = mRect.left();
-        int _y = y;
-
-        while (_x <= mRect.right() && _y >= mRect.top()) {
-            appendTileData(_x, _y);
-            ++_x;
-            --_y;
-        }
-    }
-
-    for (int x = mRect.left() + 1; x <= mRect.right(); ++x) {
-        int _x = x;
-        int _y = mRect.bottom();
-
-        while (_x <= mRect.right() && _y >= mRect.top()) {
-            appendTileData(_x, _y);
-            ++_x;
-            --_y;
-        }
-    }
-
-    if (!mTileData.isEmpty())
-        mParent->appendChildNode(new TilesNode(mTilesetHelper.texture(), mTileData));
-}
-
 } // anonymous namespace
 
 
@@ -293,7 +120,7 @@ TileLayerItem::TileLayerItem(TileLayer *layer, MapRenderer *renderer,
     : QQuickItem(parent)
     , mLayer(layer)
     , mRenderer(renderer)
-    , mVisibleTiles(parent->visibleTileArea(layer))
+    , mVisibleArea(parent->visibleArea())
 {
     setFlag(ItemHasContents);
     layerVisibilityChanged();
@@ -318,11 +145,53 @@ QSGNode *TileLayerItem::updatePaintNode(QSGNode *node,
     node = new QSGNode;
     node->setFlag(QSGNode::OwnedByParent);
 
-    const MapItem *mapItem = static_cast<MapItem*>(parentItem());
-    if (mLayer->map()->orientation() == Map::Orthogonal)
-        drawOrthogonalTileLayer(node, mapItem, mLayer, mVisibleTiles);
-    else
-        IsometricRenderHelper(mRenderer, node, mapItem, mLayer, mVisibleTiles).addTilesToNode();
+    TilesetHelper helper(static_cast<MapItem*>(parentItem()));
+
+    QVector<TileData> tileData;
+    tileData.reserve(TilesNode::MaxTileCount);
+
+    /**
+     * Draws the tiles by adding nodes to the scene graph. When sequentially
+     * drawn tiles are using the same tileset, they will share a single
+     * geometry node.
+     */
+    auto tileRenderFunction = [&](const Cell &cell, const QPointF &pos, const QSizeF &size) {
+        Tileset *tileset = cell.tileset();
+        if (!tileset)
+            return;
+
+        if (tileset != helper.tileset() || tileData.size() == TilesNode::MaxTileCount) {
+            if (!tileData.isEmpty()) {
+                node->appendChildNode(new TilesNode(helper.texture(), tileData));
+                tileData.resize(0);
+            }
+
+            helper.setTileset(tileset);
+        }
+
+        if (!helper.texture())
+            return;
+
+        // todo: render "missing tile" marker
+//        if (!cell.tile()) {
+//            return;
+//        }
+
+        TileData data;
+        data.x = static_cast<float>(pos.x());
+        data.y = static_cast<float>(pos.y() - size.height());
+        data.width = static_cast<float>(size.width());
+        data.height = static_cast<float>(size.height());
+        data.flippedHorizontally = cell.flippedHorizontally();
+        data.flippedVertically = cell.flippedVertically();
+        helper.setTextureCoordinates(data, cell);
+        tileData.append(data);
+    };
+
+    mRenderer->drawTileLayer(mLayer, tileRenderFunction, mVisibleArea);
+
+    if (!tileData.isEmpty())
+        node->appendChildNode(new TilesNode(helper.texture(), tileData));
 
     return node;
 }
@@ -330,11 +199,10 @@ QSGNode *TileLayerItem::updatePaintNode(QSGNode *node,
 void TileLayerItem::updateVisibleTiles()
 {
     const MapItem *mapItem = static_cast<MapItem*>(parentItem());
-    const QRect rect = mLayer->map()->orientation() == Map::Orthogonal
-            ? mapItem->visibleTileArea(mLayer) : mLayer->bounds();
+    const QRectF &rect = mapItem->visibleArea();
 
-    if (mVisibleTiles != rect) {
-        mVisibleTiles = rect;
+    if (mVisibleArea != rect) {
+        mVisibleArea = rect;
         update();
     }
 }
