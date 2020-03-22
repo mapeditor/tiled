@@ -177,9 +177,11 @@ QSGNode *TileLayerItem::updatePaintNode(QSGNode *node,
 //            return;
 //        }
 
+        const auto offset = tileset->tileOffset();
+
         TileData data;
-        data.x = static_cast<float>(pos.x());
-        data.y = static_cast<float>(pos.y() - size.height());
+        data.x = static_cast<float>(pos.x()) + offset.x();
+        data.y = static_cast<float>(pos.y() - size.height()) + offset.y();
         data.width = static_cast<float>(size.width());
         data.height = static_cast<float>(size.height());
         data.flippedHorizontally = cell.flippedHorizontally();
