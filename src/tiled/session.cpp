@@ -21,127 +21,86 @@
 #include "session.h"
 
 #include "preferences.h"
-#include "savefile.h"
+#include "utils.h"
 
-#include <QDir>
-#include <QFile>
 #include <QFileInfo>
-#include <QJsonArray>
-#include <QJsonDocument>
-#include <QJsonObject>
 
 namespace Tiled {
 
-class JsonHelper
+FileHelper::FileHelper(const QString &fileName)
+    : mDir { QFileInfo(fileName).dir() }
+{}
+
+void FileHelper::setFileName(const QString &fileName)
 {
-public:
-    JsonHelper(const QString &fileName)
-        : mDir(QFileInfo(fileName).dir())
-    {}
+    mDir = QFileInfo(fileName).dir();
+}
 
-    QString relativeFileName(const QString &fileName) const
-    {
-        if (fileName.startsWith(mDir.path()))
-            return mDir.relativeFilePath(fileName);
-        return fileName;
-    }
+QStringList FileHelper::relative(const QStringList &fileNames) const
+{
+    QStringList result;
+    for (const QString &fileName : fileNames)
+        result.append(relative(fileName));
+    return result;
+}
 
-    QJsonArray relativeFileNames(const QStringList &fileNames) const
-    {
-        QJsonArray result;
-        for (const QString &fileName : fileNames)
-            result.append(relativeFileName(fileName));
-        return result;
-    }
-
-    QString resolveFileName(const QString &value) const
-    {
-        return QDir::cleanPath(mDir.filePath(value));
-    }
-
-    QString resolveFileName(const QJsonValue &value) const
-    {
-        return resolveFileName(value.toString());
-    }
-
-    QStringList resolveFileNames(const QJsonArray &array) const
-    {
-        QStringList result;
-        for (const QJsonValue &value : array)
-            result.append(resolveFileName(value));
-        return result;
-    }
-
-private:
-    QDir mDir;
-};
+QStringList FileHelper::resolve(const QStringList &fileNames) const
+{
+    QStringList result;
+    for (const QString &fileName : fileNames)
+        result.append(resolve(fileName));
+    return result;
+}
 
 
 Session::Session(const QString &fileName)
-    : mFileName(fileName)
+    : FileHelper            { fileName }
+    , settings              { Utils::jsonSettings(fileName) }
+    , project               { resolve(get<QString>("project")) }
+    , recentFiles           { resolve(get<QStringList>("recentFiles")) }
+    , openFiles             { resolve(get<QStringList>("openFiles")) }
+    , expandedProjectPaths  { resolve(get<QStringList>("expandedProjectPaths")) }
+    , activeFile            { resolve(get<QString>("activeFile")) }
 {
+    const auto states = get<QVariantMap>("fileStates");
+    for (auto it = states.constBegin(); it != states.constEnd(); ++it)
+        fileStates.insert(resolve(it.key()), it.value());
 }
 
-bool Session::save() const
+bool Session::save()
 {
-    SaveFile file(mFileName);
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
-        return false;
+    set("project",              relative(project));
+    set("recentFiles",          relative(recentFiles));
+    set("openFiles",            relative(openFiles));
+    set("expandedProjectPaths", relative(expandedProjectPaths));
+    set("activeFile",           relative(activeFile));
 
-    QJsonObject jsonSession;
-    JsonHelper helper(mFileName);
+    QVariantMap states;
+    for (auto it = fileStates.constBegin(); it != fileStates.constEnd(); ++it)
+        fileStates.insert(relative(it.key()), it.value());
+    set("fileStates", states);
 
-    jsonSession.insert(QLatin1String("project"), helper.relativeFileName(mProject));
-    jsonSession.insert(QLatin1String("recentFiles"), helper.relativeFileNames(mRecentFiles));
-    jsonSession.insert(QLatin1String("openFiles"), helper.relativeFileNames(mOpenFiles));
-    jsonSession.insert(QLatin1String("expandedProjectPaths"), helper.relativeFileNames(mExpandedProjectPaths));
-    jsonSession.insert(QLatin1String("activeFile"), helper.relativeFileName(mActiveFile));
-
-    QJsonObject fileStates;
-    for (auto it = mFileStates.constBegin(); it != mFileStates.constEnd(); ++it) {
-        fileStates.insert(helper.relativeFileName(it.key()),
-                          QJsonValue::fromVariant(it.value()));
-    }
-
-    jsonSession.insert(QLatin1String("fileStates"), fileStates);
-
-    file.device()->write(QJsonDocument(jsonSession).toJson());
-    if (!file.commit())
-        return false;
-
-    return true;
+    settings->sync();
+    return settings->status() == QSettings::NoError;
 }
 
-Session Session::load(const QString &fileName)
+/**
+ * This function "moves" the current session to a new location. It happens for
+ * example when saving a project for the first time or saving it under a
+ * different file name.
+ */
+void Session::setFileName(const QString &fileName)
 {
-    Session session(fileName);
+    auto newSettings = Utils::jsonSettings(fileName);
 
-    QFile file(fileName);
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-        return session;
+    // Copy over all settings
+    const auto keys = settings->allKeys();
+    for (const auto &key : keys)
+        newSettings->setValue(key, settings->value(key));
 
-    QJsonParseError error;
-    QByteArray json = file.readAll();
-    QJsonDocument document(QJsonDocument::fromJson(json, &error));
-    if (error.error != QJsonParseError::NoError)
-        return session;
+    settings = std::move(newSettings);
 
-    QJsonObject jsonSession = document.object();
-    JsonHelper helper(fileName);
-
-    session.mProject = helper.resolveFileName(jsonSession.value(QLatin1String("project")));
-    session.mRecentFiles = helper.resolveFileNames(jsonSession.value(QLatin1String("recentFiles")).toArray());
-    session.mOpenFiles = helper.resolveFileNames(jsonSession.value(QLatin1String("openFiles")).toArray());
-    session.mExpandedProjectPaths = helper.resolveFileNames(jsonSession.value(QLatin1String("expandedProjectPaths")).toArray());
-    session.mActiveFile = helper.resolveFileName(jsonSession.value(QLatin1String("activeFile")));
-
-    QJsonObject fileStates = jsonSession.value(QLatin1String("fileStates")).toObject();
-    for (auto it = fileStates.constBegin(); it != fileStates.constEnd(); ++it) {
-        session.mFileStates.insert(helper.resolveFileName(it.key()),
-                                   it.value().toVariant());
-    }
-
-    return session;
+    FileHelper::setFileName(fileName);
 }
 
 void Session::addRecentFile(const QString &fileName)
@@ -152,10 +111,20 @@ void Session::addRecentFile(const QString &fileName)
     if (absoluteFilePath.isEmpty())
         return;
 
-    mRecentFiles.removeAll(absoluteFilePath);
-    mRecentFiles.prepend(absoluteFilePath);
-    while (mRecentFiles.size() > Preferences::MaxRecentFiles)
-        mRecentFiles.removeLast();
+    recentFiles.removeAll(absoluteFilePath);
+    recentFiles.prepend(absoluteFilePath);
+    while (recentFiles.size() > Preferences::MaxRecentFiles)
+        recentFiles.removeLast();
+}
+
+QVariantMap Session::fileState(const QString &fileName) const
+{
+    return fileStates.value(fileName).toMap();
+}
+
+void Session::setFileState(const QString &fileName, const QVariantMap &fileState)
+{
+    fileStates.insert(fileName, fileState);
 }
 
 QString Session::defaultFileName()

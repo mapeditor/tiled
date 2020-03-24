@@ -896,16 +896,14 @@ void MainWindow::initializeSession()
     if (!prefs->restoreSessionOnStartup())
         return;
 
-    Session session = Session::load(prefs->lastSession());
+    const auto &session { prefs->session() };
 
     // Restore associated project if applicable
     Project project;
-    if (!session.project().isEmpty() && project.load(session.project())) {
+    if (!session.project.isEmpty() && project.load(session.project)) {
         mProjectDock->setProject(std::move(project));
         updateWindowTitle();
     }
-
-    prefs->switchSession(std::move(session));
 
     restoreSession();
 }
@@ -1228,8 +1226,8 @@ void MainWindow::openProjectFile(const QString &fileName)
     if (!closeAllFiles())
         return;
 
-    Session session = Session::load(Session::defaultFileNameForProject(fileName));
-    session.setProject(fileName);
+    Session session { Session::defaultFileNameForProject(fileName) };
+    session.project = fileName;
 
     mProjectDock->setProject(std::move(project));
     prefs->addRecentProject(fileName);
@@ -1291,10 +1289,12 @@ void MainWindow::saveProjectAs()
     }
 
     prefs->addRecentProject(fileName);
-    prefs->session().setProject(fileName);
+    prefs->session().project = fileName;
 
     const auto sessionFileName = Session::defaultFileNameForProject(fileName);
-    prefs->saveSessionNow(sessionFileName);
+    prefs->session().setFileName(sessionFileName);
+
+    prefs->saveSessionNow();
     prefs->setLastSession(sessionFileName);
 
     updateWindowTitle();
@@ -1314,7 +1314,7 @@ void MainWindow::closeProject()
         return;
 
     mProjectDock->setProject(Project{});
-    prefs->switchSession(Session::load(Session::defaultFileName()));
+    prefs->switchSession(Session { Session::defaultFileName() });
 
     restoreSession();
     updateWindowTitle();
@@ -1326,14 +1326,14 @@ void MainWindow::restoreSession()
     const auto &session = Preferences::instance()->session();
 
     // Copy values because the session will get changed while restoring it
-    const auto openFiles = session.openFiles();
-    const auto activeFile = session.activeFile();
+    const auto openFiles = session.openFiles;
+    const auto activeFile = session.activeFile;
 
     for (const QString &file : openFiles)
         openFile(file);
     mDocumentManager->switchToDocument(activeFile);
 
-    mProjectDock->setExpandedPaths(session.expandedProjectPaths());
+    mProjectDock->setExpandedPaths(session.expandedProjectPaths);
 }
 
 void MainWindow::cut()
@@ -1707,7 +1707,7 @@ void MainWindow::openRecentFile()
 
 void MainWindow::reopenClosedFile()
 {
-    const auto recentFiles = Preferences::instance()->session().recentFiles();
+    const auto recentFiles = Preferences::instance()->session().recentFiles;
     for (const QString &file : recentFiles) {
         if (mDocumentManager->findDocument(file) == -1) {
             openFile(file);
@@ -1728,7 +1728,7 @@ void MainWindow::openRecentProject()
  */
 void MainWindow::updateRecentFilesMenu()
 {
-    const QStringList files = Preferences::instance()->session().recentFiles();
+    const QStringList files = Preferences::instance()->session().recentFiles;
     const int numRecentFiles = qMin<int>(files.size(), Preferences::MaxRecentFiles);
 
     for (int i = 0; i < numRecentFiles; ++i) {

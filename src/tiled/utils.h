@@ -21,7 +21,10 @@
 #pragma once
 
 #include <QIcon>
+#include <QSettings>
 #include <QString>
+
+#include <memory>
 
 class QAction;
 class QKeyEvent;
@@ -82,6 +85,8 @@ bool isZoomOutShortcut(QKeyEvent *event);
 bool isResetZoomShortcut(QKeyEvent *event);
 
 void addFileManagerActions(QMenu &menu, const QString &fileName);
+
+std::unique_ptr<QSettings> jsonSettings(const QString &fileName);
 
 } // namespace Utils
 } // namespace Tiled

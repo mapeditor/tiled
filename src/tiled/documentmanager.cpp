@@ -1225,8 +1225,8 @@ void DocumentManager::updateSession() const
     auto doc = currentDocument();
     auto prefs = Preferences::instance();
 
-    prefs->session().setOpenFiles(fileList);
-    prefs->session().setActiveFile(doc ? doc->fileName() : QString());
+    prefs->session().openFiles = fileList;
+    prefs->session().activeFile = doc ? doc->fileName() : QString();
     prefs->saveSession();
 }
 

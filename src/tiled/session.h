@@ -20,124 +20,86 @@
 
 #pragma once
 
+#include <QDir>
+#include <QSettings>
 #include <QStringList>
 #include <QVariantMap>
 
+#include <memory>
+
 namespace Tiled {
 
-class Session
+class FileHelper
 {
 public:
+    FileHelper(const QString &fileName);
+
+    void setFileName(const QString &fileName);
+
+    QString relative(const QString &fileName) const;
+    QStringList relative(const QStringList &fileNames) const;
+
+    QString resolve(const QString &fileName) const;
+    QStringList resolve(const QStringList &fileNames) const;
+
+protected:
+    QDir mDir;
+};
+
+inline QString FileHelper::relative(const QString &fileName) const
+{
+    if (fileName.startsWith(mDir.path()))
+        return mDir.relativeFilePath(fileName);
+    return fileName;
+}
+
+inline QString FileHelper::resolve(const QString &fileName) const
+{
+    if (fileName.isEmpty())
+        return QString();
+    return QDir::cleanPath(mDir.filePath(fileName));
+}
+
+
+class Session : protected FileHelper
+{
+    std::unique_ptr<QSettings> settings;
+
+public:
     explicit Session(const QString &fileName = QString());
+
+    bool save();
 
     QString fileName() const;
     void setFileName(const QString &fileName);
 
-    bool save() const;
-    static Session load(const QString &fileName);
-
-    QString project() const;
-    void setProject(const QString &fileName);
-
-    QStringList recentFiles() const;
-    void setRecentFiles(const QStringList &recentFiles);
     void addRecentFile(const QString &fileName);
-
-    QStringList openFiles() const;
-    void setOpenFiles(const QStringList &openFiles);
-
-    QStringList expandedProjectPaths() const;
-    void setExpandedProjectPaths(const QStringList &paths);
-
-    const QString &activeFile() const;
-    void setActiveFile(const QString &fileName);
 
     QVariantMap fileState(const QString &fileName) const;
     void setFileState(const QString &fileName, const QVariantMap &fileState);
 
+    template <typename T>
+    T get(const char *key, const QVariant &defaultValue = QVariant()) const
+    { return settings->value(QLatin1String(key), defaultValue).value<T>(); }
+
+    template <typename T>
+    void set(const char *key, const T &value) const { settings->setValue(QLatin1String(key), value); }
+
     static QString defaultFileName();
     static QString defaultFileNameForProject(const QString &projectFile);
 
-private:
-    QString mFileName;
-
-    QString mProject;
-    QStringList mRecentFiles;
-    QStringList mOpenFiles;
-    QStringList mExpandedProjectPaths;
-    QString mActiveFile;
-    QVariantMap mFileStates;
+    QString project;
+    QStringList recentFiles;
+    QStringList openFiles;
+    QStringList expandedProjectPaths;
+    QString activeFile;
+    QVariantMap fileStates;
 };
 
 
 inline QString Session::fileName() const
 {
-    return mFileName;
-}
-
-inline void Session::setFileName(const QString &fileName)
-{
-    mFileName = fileName;
-}
-
-inline QString Session::project() const
-{
-    return mProject;
-}
-
-inline void Session::setProject(const QString &fileName)
-{
-    mProject = fileName;
-}
-
-inline QStringList Session::recentFiles() const
-{
-    return mRecentFiles;
-}
-
-inline QStringList Session::openFiles() const
-{
-    return mOpenFiles;
-}
-
-inline void Session::setRecentFiles(const QStringList &recentFiles)
-{
-    mRecentFiles = recentFiles;
-}
-
-inline void Session::setOpenFiles(const QStringList &openFiles)
-{
-    mOpenFiles = openFiles;
-}
-
-inline QStringList Session::expandedProjectPaths() const
-{
-    return mExpandedProjectPaths;
-}
-
-inline void Session::setExpandedProjectPaths(const QStringList &paths)
-{
-    mExpandedProjectPaths = paths;
-}
-
-inline const QString &Session::activeFile() const
-{
-    return mActiveFile;
-}
-
-inline void Session::setActiveFile(const QString &fileName)
-{
-    mActiveFile = fileName;
-}
-
-inline QVariantMap Session::fileState(const QString &fileName) const
-{
-    return mFileStates.value(fileName).toMap();
-}
-
-inline void Session::setFileState(const QString &fileName, const QVariantMap &fileState)
-{
-    mFileStates.insert(fileName, fileState);
+    return settings->fileName();
 }
 
 } // namespace Tiled

@@ -92,7 +92,7 @@ ProjectDock::ProjectDock(QWidget *parent)
 
     auto prefs = Preferences::instance();
     connect(prefs, &Preferences::aboutToSaveSession,
-            this, [this, prefs] { prefs->session().setExpandedProjectPaths(mProjectView->expandedPaths()); });
+            this, [this, prefs] { prefs->session().expandedProjectPaths = mProjectView->expandedPaths(); });
 }
 
 void ProjectDock::addFolderToProject()

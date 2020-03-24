@@ -46,6 +46,11 @@ public:
     static Preferences *instance();
     static void deleteInstance();
 
+private:
+    Preferences();
+    ~Preferences() override;
+
+public:
     bool showGrid() const;
     bool showTileObjectOutlines() const;
     bool showTileAnimations() const;
@@ -117,7 +122,7 @@ public:
     void setLanguage(const QString &language);
 
     bool reloadTilesetsOnChange() const;
-    void setReloadTilesetsOnChanged(bool value);
+    void setReloadTilesetsOnChanged(bool reloadOnChanged);
 
     bool useOpenGL() const;
     void setUseOpenGL(bool useOpenGL);
@@ -156,6 +161,7 @@ public:
     void setPatron(bool isPatron);
 
     bool shouldShowDonationDialog() const;
+    QDate donationDialogTime() const;
     void setDonationDialogReminder(const QDate &date);
 
     enum { MaxRecentFiles = 12 };
@@ -171,7 +177,7 @@ public:
     bool restoreSessionOnStartup() const;
     void switchSession(Session session);
     void saveSession();
-    void saveSessionNow(const QString &fileName = QString());
+    void saveSessionNow();
 
     bool checkForUpdates() const;
     void setCheckForUpdates(bool on);
@@ -254,9 +260,6 @@ signals:
     void aboutToSaveSession();
 
 private:
-    Preferences();
-    ~Preferences() override;
-
     bool boolValue(const char *key, bool def = false) const;
     QColor colorValue(const char *key, const QColor &def = QColor()) const;
     QString stringValue(const char *key, const QString &def = QString()) const;
@@ -273,239 +276,15 @@ private:
     Session mSession;
     QTimer mSaveSessionTimer;
 
-    bool mShowGrid;
-    bool mShowTileObjectOutlines;
-    bool mShowTileAnimations;
-    bool mShowTileCollisionShapes;
-    bool mShowObjectReferences;
-    bool mSnapToGrid;
-    bool mSnapToFineGrid;
-    bool mSnapToPixels;
-    QColor mGridColor;
-    int mGridFine;
-    qreal mObjectLineWidth;
-    bool mHighlightCurrentLayer;
-    bool mHighlightHoveredObject;
-    bool mShowTilesetGrid;
-    bool mRestoreSessionOnStartup;
-    ObjectLabelVisiblity mObjectLabelVisibility;
-    bool mLabelForHoveredObject;
-    ApplicationStyle mApplicationStyle;
-    QColor mBaseColor;
-    QColor mSelectionColor;
-
-    Map::LayerDataFormat mLayerDataFormat;
-    Map::RenderOrder mMapRenderOrder;
-    bool mDtdEnabled;
-    bool mSafeSavingEnabled;
-    bool mExportOnSave;
-    ExportOptions mExportOptions;
-    QString mLanguage;
-    bool mReloadTilesetsOnChange;
-    bool mUseOpenGL;
-
-    bool mAutoMapDrawing;
-
-    QString mStampsDirectory;
-    QString mTemplatesDirectory;
-    QString mObjectTypesFile;
     QDateTime mObjectTypesFileLastSaved;
-
-    QDate mFirstRun;
-    QDate mDonationDialogTime;
-    int mRunCount;
-    bool mIsPatron;
-    bool mCheckForUpdates;
-    bool mDisplayNews;
-    bool mWheelZoomsByDefault;
 
     static Preferences *mInstance;
 };
 
 
-inline bool Preferences::showGrid() const
-{
-    return mShowGrid;
-}
-
-inline bool Preferences::showTileObjectOutlines() const
-{
-    return mShowTileObjectOutlines;
-}
-
-inline bool Preferences::showTileAnimations() const
-{
-    return mShowTileAnimations;
-}
-
-inline bool Preferences::showTileCollisionShapes() const
-{
-    return mShowTileCollisionShapes;
-}
-
-inline bool Preferences::showObjectReferences() const
-{
-    return mShowObjectReferences;
-}
-
-inline bool Preferences::snapToGrid() const
-{
-    return mSnapToGrid;
-}
-
-inline bool Preferences::snapToFineGrid() const
-{
-    return mSnapToFineGrid;
-}
-
-inline bool Preferences::snapToPixels() const
-{
-    return mSnapToPixels;
-}
-
-inline QColor Preferences::gridColor() const
-{
-    return mGridColor;
-}
-
-inline int Preferences::gridFine() const
-{
-    return mGridFine;
-}
-
-inline qreal Preferences::objectLineWidth() const
-{
-    return mObjectLineWidth;
-}
-
-inline bool Preferences::highlightCurrentLayer() const
-{
-    return mHighlightCurrentLayer;
-}
-
-inline bool Preferences::highlightHoveredObject() const
-{
-    return mHighlightHoveredObject;
-}
-
-inline bool Preferences::showTilesetGrid() const
-{
-    return mShowTilesetGrid;
-}
-
-inline Preferences::ObjectLabelVisiblity Preferences::objectLabelVisibility() const
-{
-    return mObjectLabelVisibility;
-}
-
-inline bool Preferences::labelForHoveredObject() const
-{
-    return mLabelForHoveredObject;
-}
-
-inline Preferences::ApplicationStyle Preferences::applicationStyle() const
-{
-    return mApplicationStyle;
-}
-
-inline QColor Preferences::baseColor() const
-{
-    return mBaseColor;
-}
-
-inline QColor Preferences::selectionColor() const
-{
-    return mSelectionColor;
-}
-
-inline Map::LayerDataFormat Preferences::layerDataFormat() const
-{
-    return mLayerDataFormat;
-}
-
-inline Map::RenderOrder Preferences::mapRenderOrder() const
-{
-    return mMapRenderOrder;
-}
-
-inline bool Preferences::safeSavingEnabled() const
-{
-    return mSafeSavingEnabled;
-}
-
-inline bool Preferences::exportOnSave() const
-{
-    return mExportOnSave;
-}
-
-inline Preferences::ExportOptions Preferences::exportOptions() const
-{
-    return mExportOptions;
-}
-
-inline bool Preferences::exportOption(ExportOption option) const
-{
-    return mExportOptions.testFlag(option);
-}
-
-inline QString Preferences::language() const
-{
-    return mLanguage;
-}
-
-inline bool Preferences::reloadTilesetsOnChange() const
-{
-    return mReloadTilesetsOnChange;
-}
-
-inline bool Preferences::useOpenGL() const
-{
-    return mUseOpenGL;
-}
-
-inline bool Preferences::automappingDrawing() const
-{
-    return mAutoMapDrawing;
-}
-
-inline QDate Preferences::firstRun() const
-{
-    return mFirstRun;
-}
-
-inline int Preferences::runCount() const
-{
-    return mRunCount;
-}
-
-inline bool Preferences::isPatron() const
-{
-    return mIsPatron;
-}
-
-inline bool Preferences::checkForUpdates() const
-{
-    return mCheckForUpdates;
-}
-
-inline bool Preferences::displayNews() const
-{
-    return mDisplayNews;
-}
-
 inline Session &Preferences::session()
 {
     return mSession;
-}
-
-inline bool Preferences::restoreSessionOnStartup() const
-{
-    return mRestoreSessionOnStartup;
-}
-
-inline bool Preferences::wheelZoomsByDefault() const
-{
-    return mWheelZoomsByDefault;
 }
 
 inline QSettings *Preferences::settings() const

@@ -52,7 +52,8 @@ void Preferences::deleteInstance()
 }
 
 Preferences::Preferences()
-    : mSettings(new QSettings(this))
+    : mSettings { new QSettings(this) }
+    , mSession { restoreSessionOnStartup() ? lastSession() : Session::defaultFileName() }
 {
     // Make sure the data directory exists
     const QDir dataDir { dataLocation() };
@@ -62,68 +63,12 @@ Preferences::Preferences()
     connect(&mWatcher, &FileSystemWatcher::fileChanged,
             this, &Preferences::objectTypesFileChangedOnDisk);
 
-    // Retrieve storage settings
-    mSettings->beginGroup(QLatin1String("Storage"));
-    mLayerDataFormat = static_cast<Map::LayerDataFormat>
-            (intValue("LayerDataFormat", Map::CSV));
-    mMapRenderOrder = static_cast<Map::RenderOrder>
-            (intValue("MapRenderOrder", Map::RightDown));
-    mDtdEnabled = boolValue("DtdEnabled");
-    mSafeSavingEnabled = boolValue("SafeSavingEnabled", true);
-    mExportOnSave = boolValue("ExportOnSave", false);
-    mReloadTilesetsOnChange = boolValue("ReloadTilesets", true);
-    mStampsDirectory = stringValue("StampsDirectory");
-    mTemplatesDirectory = stringValue("TemplatesDirectory");
-    mObjectTypesFile = stringValue("ObjectTypesFile");
-    mSettings->endGroup();
-
-    mSettings->beginGroup(QLatin1String("Export"));
-    setExportOption(EmbedTilesets, boolValue("EmbedTilesets", false));
-    setExportOption(DetachTemplateInstances, boolValue("DetachTemplateInstances", false));
-    setExportOption(ResolveObjectTypesAndProperties, boolValue("ResolveObjectTypesAndProperties", false));
-    setExportOption(ExportMinimized, boolValue("Minimized", false));
-    mSettings->endGroup();
-
-    SaveFile::setSafeSavingEnabled(mSafeSavingEnabled);
-
-    // Retrieve interface settings
-    mSettings->beginGroup(QLatin1String("Interface"));
-    mShowGrid = boolValue("ShowGrid", true);
-    mShowTileObjectOutlines = boolValue("ShowTileObjectOutlines");
-    mShowTileAnimations = boolValue("ShowTileAnimations", true);
-    mShowTileCollisionShapes = boolValue("ShowTileCollisionShapes");
-    mShowObjectReferences = boolValue("ShowObjectReferences", true);
-    mSnapToGrid = boolValue("SnapToGrid");
-    mSnapToFineGrid = boolValue("SnapToFineGrid");
-    mSnapToPixels = boolValue("SnapToPixels");
-    mGridColor = colorValue("GridColor", Qt::black);
-    mGridFine = intValue("GridFine", 4);
-    mObjectLineWidth = realValue("ObjectLineWidth", 2);
-    mHighlightCurrentLayer = boolValue("HighlightCurrentLayer");
-    mHighlightHoveredObject = boolValue("HighlightHoveredObject", true);
-    mShowTilesetGrid = boolValue("ShowTilesetGrid", true);
-    mLanguage = stringValue("Language");
-    mUseOpenGL = boolValue("OpenGL");
-    mWheelZoomsByDefault = boolValue("WheelZoomsByDefault");
-    mObjectLabelVisibility = static_cast<ObjectLabelVisiblity>
-            (intValue("ObjectLabelVisibility", AllObjectLabels));
-    mLabelForHoveredObject = boolValue("LabelForHoveredObject", false);
-#if defined(Q_OS_MAC)
-    mApplicationStyle = static_cast<ApplicationStyle>
-            (intValue("ApplicationStyle", SystemDefaultStyle));
-#else
-    mApplicationStyle = static_cast<ApplicationStyle>
-            (intValue("ApplicationStyle", TiledStyle));
-#endif
+    SaveFile::setSafeSavingEnabled(safeSavingEnabled());
 
     // Backwards compatibility check since 'FusionStyle' was removed from the
     // preferences dialog.
-    if (mApplicationStyle == FusionStyle)
-        mApplicationStyle = TiledStyle;
-
-    mBaseColor = colorValue("BaseColor", Qt::lightGray);
-    mSelectionColor = colorValue("SelectionColor", QColor(48, 140, 198));
-    mSettings->endGroup();
+    if (applicationStyle() == FusionStyle)
+        setApplicationStyle(TiledStyle);
 
     // Retrieve defined object types
     ObjectTypesSerializer objectTypesSerializer;
@@ -159,9 +104,9 @@ Preferences::Preferences()
         Session session(Session::defaultFileName());
 
         mSettings->beginGroup(QLatin1String("recentFiles"));
-        session.setRecentFiles(mSettings->value(QLatin1String("fileNames")).toStringList());
-        session.setOpenFiles(mSettings->value(QLatin1String("lastOpenFiles")).toStringList());
-        session.setActiveFile(mSettings->value(QLatin1String("lastActive")).toString());
+        session.recentFiles = mSettings->value(QLatin1String("fileNames")).toStringList();
+        session.openFiles = mSettings->value(QLatin1String("lastOpenFiles")).toStringList();
+        session.activeFile = mSettings->value(QLatin1String("lastActive")).toString();
         mSettings->endGroup();
 
         const QVariantMap mapStates = mSettings->value(QLatin1String("MapEditor/MapStates")).toMap();
@@ -186,13 +131,9 @@ Preferences::Preferences()
         }
     }
 
-    mSettings->beginGroup(QLatin1String("Automapping"));
-    mAutoMapDrawing = boolValue("WhileDrawing");
-    mSettings->endGroup();
-
     TilesetManager *tilesetManager = TilesetManager::instance();
-    tilesetManager->setReloadTilesetsOnChange(mReloadTilesetsOnChange);
-    tilesetManager->setAnimateTiles(mShowTileAnimations);
+    tilesetManager->setReloadTilesetsOnChange(reloadTilesetsOnChange());
+    tilesetManager->setAnimateTiles(showTileAnimations());
 
     // Read the lists of enabled and disabled plugins
     const QStringList disabledPlugins = mSettings->value(QLatin1String("Plugins/Disabled")).toStringList();
@@ -205,287 +146,301 @@ Preferences::Preferences()
         pluginManager->setPluginState(fileName, PluginEnabled);
 
     // Keeping track of some usage information
-    mSettings->beginGroup(QLatin1String("Install"));
-    if (mSettings->contains(QLatin1String("PatreonDialogTime"))) {
-        mSettings->setValue(QLatin1String("DonationDialogTime"), mSettings->value(QLatin1String("PatreonDialogTime")));
-        mSettings->remove(QLatin1String("PatreonDialogTime"));
+    if (mSettings->contains(QLatin1String("Install/PatreonDialogTime"))) {
+        mSettings->setValue(QLatin1String("Install/DonationDialogTime"), mSettings->value(QLatin1String("Install/PatreonDialogTime")));
+        mSettings->remove(QLatin1String("Install/PatreonDialogTime"));
     }
-    mFirstRun = mSettings->value(QLatin1String("FirstRun")).toDate();
-    mDonationDialogTime = mSettings->value(QLatin1String("DonationDialogTime")).toDate();
-    mRunCount = intValue("RunCount", 0) + 1;
-    mIsPatron = boolValue("IsPatron");
-    mCheckForUpdates = boolValue("CheckForUpdates", true);
-    mDisplayNews = boolValue("DisplayNews", true);
-    if (!mFirstRun.isValid()) {
-        mFirstRun = QDate::currentDate();
-        mSettings->setValue(QLatin1String("FirstRun"), mFirstRun.toString(Qt::ISODate));
-    }
-    if (!mSettings->contains(QLatin1String("DonationDialogTime"))) {
-        mDonationDialogTime = mFirstRun.addMonths(1);
-        const QDate today(QDate::currentDate());
-        if (mDonationDialogTime.daysTo(today) >= 0)
-            mDonationDialogTime = today.addDays(2);
-        mSettings->setValue(QLatin1String("DonationDialogTime"), mDonationDialogTime.toString(Qt::ISODate));
-    }
-    mSettings->setValue(QLatin1String("RunCount"), mRunCount);
-    mSettings->endGroup();
 
-    // Retrieve startup settings
-    mSettings->beginGroup(QLatin1String("Startup"));
-    mRestoreSessionOnStartup = boolValue("RestorePreviousSession", true);
-    mSettings->endGroup();
+    if (!firstRun().isValid())
+        mSettings->setValue(QLatin1String("Install/FirstRun"), QDate::currentDate().toString(Qt::ISODate));
+
+    if (!mSettings->contains(QLatin1String("Install/DonationDialogTime"))) {
+        QDate donationDialogTime = firstRun().addMonths(1);
+        const QDate today(QDate::currentDate());
+        if (donationDialogTime.daysTo(today) >= 0)
+            donationDialogTime = today.addDays(2);
+        mSettings->setValue(QLatin1String("Install/DonationDialogTime"), donationDialogTime.toString(Qt::ISODate));
+    }
+    mSettings->setValue(QLatin1String("Install/RunCount"), runCount() + 1);
 }
 
 Preferences::~Preferences()
 {
 }
 
+bool Preferences::showGrid() const
+{
+    return boolValue("Interface/ShowGrid", true);
+}
+
+bool Preferences::showTileObjectOutlines() const
+{
+    return boolValue("Interface/ShowTileObjectOutlines");
+}
+
+bool Preferences::showTileAnimations() const
+{
+    return boolValue("Interface/ShowTileAnimations", true);
+}
+
+bool Preferences::showTileCollisionShapes() const
+{
+    return boolValue("Interface/ShowTileCollisionShapes");
+}
+
+bool Preferences::showObjectReferences() const
+{
+    return boolValue("Interface/ShowObjectReferences", true);
+}
+
+bool Preferences::snapToGrid() const
+{
+    return boolValue("Interface/SnapToGrid");
+}
+
+bool Preferences::snapToFineGrid() const
+{
+    return boolValue("Interface/SnapToFineGrid");
+}
+
+bool Preferences::snapToPixels() const
+{
+    return boolValue("Interface/SnapToPixels");
+}
+
+QColor Preferences::gridColor() const
+{
+    return colorValue("Interface/GridColor", Qt::black);
+}
+
+int Preferences::gridFine() const
+{
+    return intValue("Interface/GridFine", 4);
+}
+
+qreal Preferences::objectLineWidth() const
+{
+    return realValue("Interface/ObjectLineWidth", 2);
+}
+
+bool Preferences::highlightCurrentLayer() const
+{
+    return boolValue("Interface/HighlightCurrentLayer");
+}
+
+bool Preferences::highlightHoveredObject() const
+{
+    return boolValue("Interface/HighlightHoveredObject", true);
+}
+
+bool Preferences::showTilesetGrid() const
+{
+    return boolValue("Interface/ShowTilesetGrid", true);
+}
+
+Preferences::ObjectLabelVisiblity Preferences::objectLabelVisibility() const
+{
+    return static_cast<ObjectLabelVisiblity>(intValue("Interface/ObjectLabelVisibility", AllObjectLabels));
+}
+
 void Preferences::setObjectLabelVisibility(ObjectLabelVisiblity visibility)
 {
-    if (mObjectLabelVisibility == visibility)
-        return;
-
-    mObjectLabelVisibility = visibility;
     mSettings->setValue(QLatin1String("Interface/ObjectLabelVisibility"), visibility);
     emit objectLabelVisibilityChanged(visibility);
 }
 
+bool Preferences::labelForHoveredObject() const
+{
+    return boolValue("Interface/LabelForHoveredObject", false);
+}
+
 void Preferences::setLabelForHoveredObject(bool enabled)
 {
-    if (mLabelForHoveredObject == enabled)
-        return;
-
-    mLabelForHoveredObject = enabled;
     mSettings->setValue(QLatin1String("Interface/LabelForHoveredObject"), enabled);
     emit labelForHoveredObjectChanged(enabled);
 }
 
+Preferences::ApplicationStyle Preferences::applicationStyle() const
+{
+#if defined(Q_OS_MAC)
+    return static_cast<ApplicationStyle>(intValue("Interface/ApplicationStyle", SystemDefaultStyle));
+#else
+    return static_cast<ApplicationStyle>(intValue("Interface/ApplicationStyle", TiledStyle));
+#endif
+}
+
 void Preferences::setApplicationStyle(ApplicationStyle style)
 {
-    if (mApplicationStyle == style)
-        return;
-
-    mApplicationStyle = style;
     mSettings->setValue(QLatin1String("Interface/ApplicationStyle"), style);
     emit applicationStyleChanged(style);
 }
 
+QColor Preferences::baseColor() const
+{
+    return colorValue("Interface/BaseColor", Qt::lightGray);
+}
+
 void Preferences::setBaseColor(const QColor &color)
 {
-    if (mBaseColor == color)
-        return;
-
-    mBaseColor = color;
     mSettings->setValue(QLatin1String("Interface/BaseColor"), color.name());
     emit baseColorChanged(color);
 }
 
+QColor Preferences::selectionColor() const
+{
+    return colorValue("Interface/SelectionColor", QColor(48, 140, 198));
+}
+
 void Preferences::setSelectionColor(const QColor &color)
 {
-    if (mSelectionColor == color)
-        return;
-
-    mSelectionColor = color;
     mSettings->setValue(QLatin1String("Interface/SelectionColor"), color.name());
     emit selectionColorChanged(color);
 }
 
+Map::LayerDataFormat Preferences::layerDataFormat() const
+{
+    return static_cast<Map::LayerDataFormat>(intValue("Storage/LayerDataFormat", Map::CSV));
+}
+
 void Preferences::setShowGrid(bool showGrid)
 {
-    if (mShowGrid == showGrid)
-        return;
-
-    mShowGrid = showGrid;
-    mSettings->setValue(QLatin1String("Interface/ShowGrid"), mShowGrid);
-    emit showGridChanged(mShowGrid);
+    mSettings->setValue(QLatin1String("Interface/ShowGrid"), showGrid);
+    emit showGridChanged(showGrid);
 }
 
 void Preferences::setShowTileObjectOutlines(bool enabled)
 {
-    if (mShowTileObjectOutlines == enabled)
-        return;
-
-    mShowTileObjectOutlines = enabled;
-    mSettings->setValue(QLatin1String("Interface/ShowTileObjectOutlines"),
-                        mShowTileObjectOutlines);
-    emit showTileObjectOutlinesChanged(mShowTileObjectOutlines);
+    mSettings->setValue(QLatin1String("Interface/ShowTileObjectOutlines"), enabled);
+    emit showTileObjectOutlinesChanged(enabled);
 }
 
 void Preferences::setShowTileAnimations(bool enabled)
 {
-    if (mShowTileAnimations == enabled)
-        return;
-
-    mShowTileAnimations = enabled;
-    mSettings->setValue(QLatin1String("Interface/ShowTileAnimations"),
-                        mShowTileAnimations);
-
-    TilesetManager *tilesetManager = TilesetManager::instance();
-    tilesetManager->setAnimateTiles(mShowTileAnimations);
-
-    emit showTileAnimationsChanged(mShowTileAnimations);
+    mSettings->setValue(QLatin1String("Interface/ShowTileAnimations"), enabled);
+    TilesetManager::instance()->setAnimateTiles(enabled);
+    emit showTileAnimationsChanged(enabled);
 }
 
 void Preferences::setShowTileCollisionShapes(bool enabled)
 {
-    if (mShowTileCollisionShapes == enabled)
-        return;
-
-    mShowTileCollisionShapes = enabled;
-    mSettings->setValue(QLatin1String("Interface/ShowTileCollisionShapes"),
-                        mShowTileCollisionShapes);
-
+    mSettings->setValue(QLatin1String("Interface/ShowTileCollisionShapes"), enabled);
     emit showTileCollisionShapesChanged(enabled);
 }
 
 void Preferences::setShowObjectReferences(bool enabled)
 {
-    if (mShowObjectReferences == enabled)
-        return;
-
-    mShowObjectReferences = enabled;
-    mSettings->setValue(QLatin1String("Interface/ShowObjectReferences"),
-                        mShowObjectReferences);
-
+    mSettings->setValue(QLatin1String("Interface/ShowObjectReferences"), enabled);
     emit showObjectReferencesChanged(enabled);
 }
 
 void Preferences::setSnapToGrid(bool snapToGrid)
 {
-    if (mSnapToGrid == snapToGrid)
-        return;
-
-    mSnapToGrid = snapToGrid;
-    mSettings->setValue(QLatin1String("Interface/SnapToGrid"), mSnapToGrid);
-    emit snapToGridChanged(mSnapToGrid);
+    mSettings->setValue(QLatin1String("Interface/SnapToGrid"), snapToGrid);
+    emit snapToGridChanged(snapToGrid);
 }
 
 void Preferences::setSnapToFineGrid(bool snapToFineGrid)
 {
-    if (mSnapToFineGrid == snapToFineGrid)
-        return;
-
-    mSnapToFineGrid = snapToFineGrid;
-    mSettings->setValue(QLatin1String("Interface/SnapToFineGrid"), mSnapToFineGrid);
-    emit snapToFineGridChanged(mSnapToFineGrid);
+    mSettings->setValue(QLatin1String("Interface/SnapToFineGrid"), snapToFineGrid);
+    emit snapToFineGridChanged(snapToFineGrid);
 }
 
 void Preferences::setSnapToPixels(bool snapToPixels)
 {
-    if (mSnapToPixels == snapToPixels)
-        return;
-
-    mSnapToPixels = snapToPixels;
-    mSettings->setValue(QLatin1String("Interface/SnapToPixels"), mSnapToPixels);
-    emit snapToPixelsChanged(mSnapToPixels);
+    mSettings->setValue(QLatin1String("Interface/SnapToPixels"), snapToPixels);
+    emit snapToPixelsChanged(snapToPixels);
 }
 
 void Preferences::setGridColor(QColor gridColor)
 {
-    if (mGridColor == gridColor)
-        return;
-
-    mGridColor = gridColor;
-    mSettings->setValue(QLatin1String("Interface/GridColor"), mGridColor.name());
-    emit gridColorChanged(mGridColor);
+    mSettings->setValue(QLatin1String("Interface/GridColor"), gridColor.name());
+    emit gridColorChanged(gridColor);
 }
 
 void Preferences::setGridFine(int gridFine)
 {
-    if (mGridFine == gridFine)
-        return;
-    mGridFine = gridFine;
-    mSettings->setValue(QLatin1String("Interface/GridFine"), mGridFine);
-    emit gridFineChanged(mGridFine);
+    mSettings->setValue(QLatin1String("Interface/GridFine"), gridFine);
+    emit gridFineChanged(gridFine);
 }
 
 void Preferences::setObjectLineWidth(qreal lineWidth)
 {
-    if (mObjectLineWidth == lineWidth)
-        return;
-    mObjectLineWidth = lineWidth;
-    mSettings->setValue(QLatin1String("Interface/ObjectLineWidth"), mObjectLineWidth);
-    emit objectLineWidthChanged(mObjectLineWidth);
+    mSettings->setValue(QLatin1String("Interface/ObjectLineWidth"), lineWidth);
+    emit objectLineWidthChanged(lineWidth);
 }
 
 void Preferences::setHighlightCurrentLayer(bool highlight)
 {
-    if (mHighlightCurrentLayer == highlight)
-        return;
-
-    mHighlightCurrentLayer = highlight;
-    mSettings->setValue(QLatin1String("Interface/HighlightCurrentLayer"),
-                        mHighlightCurrentLayer);
-    emit highlightCurrentLayerChanged(mHighlightCurrentLayer);
+    mSettings->setValue(QLatin1String("Interface/HighlightCurrentLayer"), highlight);
+    emit highlightCurrentLayerChanged(highlight);
 }
 
 void Preferences::setHighlightHoveredObject(bool highlight)
 {
-    if (mHighlightHoveredObject == highlight)
-        return;
-
-    mHighlightHoveredObject = highlight;
-    mSettings->setValue(QLatin1String("Interface/HighlightHoveredObject"),
-                        mHighlightHoveredObject);
-    emit highlightHoveredObjectChanged(mHighlightHoveredObject);
+    mSettings->setValue(QLatin1String("Interface/HighlightHoveredObject"), highlight);
+    emit highlightHoveredObjectChanged(highlight);
 }
 
 void Preferences::setShowTilesetGrid(bool showTilesetGrid)
 {
-    if (mShowTilesetGrid == showTilesetGrid)
-        return;
-
-    mShowTilesetGrid = showTilesetGrid;
-    mSettings->setValue(QLatin1String("Interface/ShowTilesetGrid"),
-                        mShowTilesetGrid);
-    emit showTilesetGridChanged(mShowTilesetGrid);
+    mSettings->setValue(QLatin1String("Interface/ShowTilesetGrid"), showTilesetGrid);
+    emit showTilesetGridChanged(showTilesetGrid);
 }
 
-void Preferences::setLayerDataFormat(Map::LayerDataFormat
-                                     layerDataFormat)
+void Preferences::setLayerDataFormat(Map::LayerDataFormat layerDataFormat)
 {
-    if (mLayerDataFormat == layerDataFormat)
-        return;
+    mSettings->setValue(QLatin1String("Storage/LayerDataFormat"), layerDataFormat);
+}
 
-    mLayerDataFormat = layerDataFormat;
-    mSettings->setValue(QLatin1String("Storage/LayerDataFormat"),
-                        mLayerDataFormat);
+Map::RenderOrder Preferences::mapRenderOrder() const
+{
+    return static_cast<Map::RenderOrder>(intValue("Storage/MapRenderOrder", Map::RightDown));
 }
 
 void Preferences::setMapRenderOrder(Map::RenderOrder mapRenderOrder)
 {
-    if (mMapRenderOrder == mapRenderOrder)
-        return;
+    mSettings->setValue(QLatin1String("Storage/MapRenderOrder"), mapRenderOrder);
+}
 
-    mMapRenderOrder = mapRenderOrder;
-    mSettings->setValue(QLatin1String("Storage/MapRenderOrder"),
-                        mMapRenderOrder);
+bool Preferences::safeSavingEnabled() const
+{
+    return boolValue("SafeSavingEnabled", true);
 }
 
 void Preferences::setSafeSavingEnabled(bool enabled)
 {
-    mSafeSavingEnabled = enabled;
     mSettings->setValue(QLatin1String("Storage/SafeSavingEnabled"), enabled);
     SaveFile::setSafeSavingEnabled(enabled);
 }
 
+bool Preferences::exportOnSave() const
+{
+    return boolValue("Storage/ExportOnSave", false);
+}
+
 void Preferences::setExportOnSave(bool enabled)
 {
-    mExportOnSave = enabled;
     mSettings->setValue(QLatin1String("Storage/ExportOnSave"), enabled);
+}
+
+Preferences::ExportOptions Preferences::exportOptions() const
+{
+    ExportOptions options;
+
+    if (boolValue("Export/EmbedTilesets", false))
+        options |= EmbedTilesets;
+    if (boolValue("Export/DetachTemplateInstances", false))
+        options |= DetachTemplateInstances;
+    if (boolValue("Export/ResolveObjectTypesAndProperties", false))
+        options |= ResolveObjectTypesAndProperties;
+    if (boolValue("Export/Minimized", false))
+        options |= ExportMinimized;
+
+    return options;
 }
 
 void Preferences::setExportOption(Preferences::ExportOption option, bool value)
 {
-#if QT_VERSION >= 0x050700
-    mExportOptions.setFlag(option, value);
-#else
-    if (value)
-        mExportOptions |= option;
-    else
-        mExportOptions &= ~option;
-#endif
-
     switch (option) {
     case EmbedTilesets:
         mSettings->setValue(QLatin1String("Export/EmbedTilesets"), value);
@@ -502,41 +457,53 @@ void Preferences::setExportOption(Preferences::ExportOption option, bool value)
     }
 }
 
+bool Preferences::exportOption(Preferences::ExportOption option) const
+{
+    switch (option) {
+    case EmbedTilesets:
+        return boolValue("Export/EmbedTilesets", false);
+    case DetachTemplateInstances:
+        return boolValue("Export/DetachTemplateInstances", false);
+    case ResolveObjectTypesAndProperties:
+        return boolValue("Export/ResolveObjectTypesAndProperties", false);
+    case ExportMinimized:
+        return boolValue("Export/Minimized", false);
+    }
+    return false;
+}
+
+QString Preferences::language() const
+{
+    return stringValue("Interface/Language");
+}
+
 void Preferences::setLanguage(const QString &language)
 {
-    if (mLanguage == language)
-        return;
-
-    mLanguage = language;
-    mSettings->setValue(QLatin1String("Interface/Language"),
-                        mLanguage);
-
+    mSettings->setValue(QLatin1String("Interface/Language"), language);
     LanguageManager::instance()->installTranslators();
     emit languageChanged();
 }
 
-void Preferences::setReloadTilesetsOnChanged(bool value)
+bool Preferences::reloadTilesetsOnChange() const
 {
-    if (mReloadTilesetsOnChange == value)
-        return;
+    return boolValue("Storage/ReloadTilesets", true);
+}
 
-    mReloadTilesetsOnChange = value;
-    mSettings->setValue(QLatin1String("Storage/ReloadTilesets"),
-                        mReloadTilesetsOnChange);
+void Preferences::setReloadTilesetsOnChanged(bool reloadOnChanged)
+{
+    mSettings->setValue(QLatin1String("Storage/ReloadTilesets"), reloadOnChanged);
+    TilesetManager::instance()->setReloadTilesetsOnChange(reloadOnChanged);
+}
 
-    TilesetManager *tilesetManager = TilesetManager::instance();
-    tilesetManager->setReloadTilesetsOnChange(mReloadTilesetsOnChange);
+bool Preferences::useOpenGL() const
+{
+    return boolValue("Interface/OpenGL");
 }
 
 void Preferences::setUseOpenGL(bool useOpenGL)
 {
-    if (mUseOpenGL == useOpenGL)
-        return;
-
-    mUseOpenGL = useOpenGL;
-    mSettings->setValue(QLatin1String("Interface/OpenGL"), mUseOpenGL);
-
-    emit useOpenGLChanged(mUseOpenGL);
+    mSettings->setValue(QLatin1String("Interface/OpenGL"), useOpenGL);
+    emit useOpenGLChanged(useOpenGL);
 }
 
 void Preferences::setObjectTypes(const ObjectTypes &objectTypes)
@@ -615,52 +582,70 @@ void Preferences::setLastPath(FileType fileType, const QString &path)
     mSettings->setValue(lastPathKey(fileType), path);
 }
 
+bool Preferences::automappingDrawing() const
+{
+    return boolValue("Automapping/WhileDrawing");
+}
+
 void Preferences::setAutomappingDrawing(bool enabled)
 {
-    mAutoMapDrawing = enabled;
     mSettings->setValue(QLatin1String("Automapping/WhileDrawing"), enabled);
+}
+
+QDate Preferences::firstRun() const
+{
+    return mSettings->value(QLatin1String("Install/FirstRun")).toDate();
+}
+
+int Preferences::runCount() const
+{
+    return intValue("Install/RunCount", 0);
+}
+
+bool Preferences::isPatron() const
+{
+    return boolValue("Install/IsPatron");
 }
 
 void Preferences::setPatron(bool isPatron)
 {
-    if (mIsPatron == isPatron)
-        return;
-
-    mIsPatron = isPatron;
     mSettings->setValue(QLatin1String("Install/IsPatron"), isPatron);
-
     emit isPatronChanged();
 }
 
 bool Preferences::shouldShowDonationDialog() const
 {
-    if (mIsPatron)
+    if (isPatron())
         return false;
-    if (mRunCount < 7)
-        return false;
-    if (!mDonationDialogTime.isValid())
+    if (runCount() < 7)
         return false;
 
-    return mDonationDialogTime.daysTo(QDate::currentDate()) >= 0;
+    const QDate dialogTime = donationDialogTime();
+    if (!dialogTime.isValid())
+        return false;
+
+    return dialogTime.daysTo(QDate::currentDate()) >= 0;
+}
+
+QDate Preferences::donationDialogTime() const
+{
+    return mSettings->value(QLatin1String("Install/DonationDialogTime")).toDate();
 }
 
 void Preferences::setDonationDialogReminder(const QDate &date)
 {
     if (date.isValid())
         setPatron(false);
-    mDonationDialogTime = date;
-    mSettings->setValue(QLatin1String("Install/DonationDialogTime"), mDonationDialogTime.toString(Qt::ISODate));
+    mSettings->setValue(QLatin1String("Install/DonationDialogTime"), date.toString(Qt::ISODate));
 }
 
 QString Preferences::fileDialogStartLocation() const
 {
-    const QString activeFile = mSession.activeFile();
-    if (!activeFile.isEmpty())
-        return QFileInfo(activeFile).path();
+    if (!mSession.activeFile.isEmpty())
+        return QFileInfo(mSession.activeFile).path();
 
-    const QStringList files = mSession.recentFiles();
-    if (!files.isEmpty())
-        return QFileInfo(files.first()).path();
+    if (!mSession.recentFiles.isEmpty())
+        return QFileInfo(mSession.recentFiles.first()).path();
 
     return QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
 }
@@ -702,6 +687,11 @@ void Preferences::setLastSession(const QString &fileName)
     mSettings->setValue(QLatin1String("Project/LastSession"), fileName);
 }
 
+bool Preferences::restoreSessionOnStartup() const
+{
+    return boolValue("Startup/RestorePreviousSession", true);
+}
+
 void Preferences::switchSession(Session session)
 {
     mSession = std::move(session);
@@ -716,16 +706,10 @@ void Preferences::saveSession()
         mSaveSessionTimer.start();
 }
 
-void Preferences::saveSessionNow(const QString &fileName)
+void Preferences::saveSessionNow()
 {
     emit aboutToSaveSession();
-
     mSaveSessionTimer.stop();
-
-    // Set the file name regardless of whether the save succeeded
-    if (!fileName.isEmpty())
-        mSession.setFileName(fileName);
-
     mSession.save();
 }
 
@@ -745,7 +729,7 @@ void Preferences::addToRecentFileList(const QString &fileName, QStringList& file
 
 void Preferences::clearRecentFiles()
 {
-    mSession.setRecentFiles(QStringList());
+    mSession.recentFiles.clear();
     emit recentFilesChanged();
 }
 
@@ -755,34 +739,35 @@ void Preferences::clearRecentProjects()
     emit recentProjectsChanged();
 }
 
+bool Preferences::checkForUpdates() const
+{
+    return boolValue("Install/CheckForUpdates", true);
+}
+
 void Preferences::setCheckForUpdates(bool on)
 {
-    if (mCheckForUpdates == on)
-        return;
-
-    mCheckForUpdates = on;
     mSettings->setValue(QLatin1String("Install/CheckForUpdates"), on);
-
     emit checkForUpdatesChanged(on);
+}
+
+bool Preferences::displayNews() const
+{
+    return boolValue("Install/DisplayNews", true);
 }
 
 void Preferences::setDisplayNews(bool on)
 {
-    if (mDisplayNews == on)
-        return;
-
-    mDisplayNews = on;
     mSettings->setValue(QLatin1String("Install/DisplayNews"), on);
-
     emit displayNewsChanged(on);
+}
+
+bool Preferences::wheelZoomsByDefault() const
+{
+    return boolValue("Interface/WheelZoomsByDefault");
 }
 
 void Preferences::setRestoreSessionOnStartup(bool enabled)
 {
-    if (mRestoreSessionOnStartup == enabled)
-        return;
-
-    mRestoreSessionOnStartup = enabled;
     mSettings->setValue(QLatin1String("Startup/RestorePreviousSession"), enabled);
 }
 
@@ -818,10 +803,6 @@ void Preferences::setPluginEnabled(const QString &fileName, bool enabled)
 
 void Preferences::setWheelZoomsByDefault(bool mode)
 {
-    if (mWheelZoomsByDefault == mode)
-        return;
-
-    mWheelZoomsByDefault = mode;
     mSettings->setValue(QLatin1String("Interface/WheelZoomsByDefault"), mode);
 }
 
@@ -862,64 +843,54 @@ QString Preferences::dataLocation()
 
 QString Preferences::stampsDirectory() const
 {
-    if (mStampsDirectory.isEmpty())
+    QString directory = stringValue("Storage/StampsDirectory");
+    if (directory.isEmpty())
         return dataLocation() + QLatin1String("/stamps");
 
-    return mStampsDirectory;
+    return directory;
 }
 
 void Preferences::setStampsDirectory(const QString &stampsDirectory)
 {
-    if (mStampsDirectory == stampsDirectory)
-        return;
-
-    mStampsDirectory = stampsDirectory;
     mSettings->setValue(QLatin1String("Storage/StampsDirectory"), stampsDirectory);
-
     emit stampsDirectoryChanged(stampsDirectory);
 }
 
 QString Preferences::templatesDirectory() const
 {
-    if (mTemplatesDirectory.isEmpty())
+    QString directory = stringValue("Storage/TemplatesDirectory");
+    if (directory.isEmpty())
         return dataLocation() + QLatin1String("/templates");
 
-    return mTemplatesDirectory;
+    return directory;
 }
 
 void Preferences::setTemplatesDirectory(const QString &templatesDirectory)
 {
-    if (mTemplatesDirectory == templatesDirectory)
-        return;
-
-    mTemplatesDirectory = templatesDirectory;
     mSettings->setValue(QLatin1String("Storage/TemplatesDirectory"), templatesDirectory);
-
     emit templatesDirectoryChanged(templatesDirectory);
 }
 
 QString Preferences::objectTypesFile() const
 {
-    if (mObjectTypesFile.isEmpty())
+    QString file = stringValue("Storage/ObjectTypesFile");
+    if (file.isEmpty())
         return dataLocation() + QLatin1String("/objecttypes.xml");
 
-    return mObjectTypesFile;
+    return file;
 }
 
 void Preferences::setObjectTypesFile(const QString &fileName)
 {
-    if (mObjectTypesFile == fileName)
+    QString previousObjectTypesFile = objectTypesFile();
+    if (previousObjectTypesFile == fileName)
         return;
 
-    if (!mObjectTypesFile.isEmpty())
-        mWatcher.removePath(mObjectTypesFile);
+    if (!previousObjectTypesFile.isEmpty())
+        mWatcher.removePath(previousObjectTypesFile);
 
-    mObjectTypesFile = fileName;
     mSettings->setValue(QLatin1String("Storage/ObjectTypesFile"), fileName);
-
-    mWatcher.addPath(mObjectTypesFile);
-
-    emit stampsDirectoryChanged(fileName);
+    mWatcher.addPath(fileName);
 }
 
 void Preferences::setObjectTypesFileLastSaved(const QDateTime &time)

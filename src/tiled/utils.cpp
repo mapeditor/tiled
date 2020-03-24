@@ -31,6 +31,7 @@
 #include <QGuiApplication>
 #include <QImageReader>
 #include <QImageWriter>
+#include <QJsonDocument>
 #include <QKeyEvent>
 #include <QMainWindow>
 #include <QMenu>
@@ -301,6 +302,27 @@ void addFileManagerActions(QMenu &menu, const QString &fileName)
     QObject::connect(openFolder, &QAction::triggered, [fileName] {
         showInFileManager(fileName);
     });
+}
+
+static bool readJsonFile(QIODevice &device, QSettings::SettingsMap &map)
+{
+    QJsonParseError error;
+    map = QJsonDocument::fromJson(device.readAll(), &error).toVariant().toMap();
+    return error.error == QJsonParseError::NoError;
+}
+
+static bool writeJsonFile(QIODevice &device, const QSettings::SettingsMap &map)
+{
+    const auto json = QJsonDocument::fromVariant(map).toJson();
+    return device.write(json) == json.size();
+}
+
+std::unique_ptr<QSettings> jsonSettings(const QString &fileName)
+{
+    static const auto format = QSettings::registerFormat(QStringLiteral("json"),
+                                                         readJsonFile,
+                                                         writeJsonFile);
+    return std::make_unique<QSettings>(fileName, format);
 }
 
 } // namespace Utils
