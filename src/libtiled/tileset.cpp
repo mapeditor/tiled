@@ -857,6 +857,7 @@ SharedTileset Tileset::clone() const
 
     // mFileName stays empty
     c->mTileOffset = mTileOffset;
+    c->mObjectAlignment = mObjectAlignment;
     c->mOrientation = mOrientation;
     c->mGridSize = mGridSize;
     c->mColumnCount = mColumnCount;
