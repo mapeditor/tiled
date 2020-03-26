@@ -896,7 +896,7 @@ void MainWindow::initializeSession()
     if (!prefs->restoreSessionOnStartup())
         return;
 
-    const auto &session { prefs->session() };
+    const auto &session = prefs->session();
 
     // Restore associated project if applicable
     Project project;
