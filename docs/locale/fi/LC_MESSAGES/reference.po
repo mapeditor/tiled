@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Tiled 1.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-12-21 14:31+0100\n"
-"PO-Revision-Date: 2019-11-19 10:04+0000\n"
+"PO-Revision-Date: 2020-03-27 22:46+0000\n"
 "Last-Translator: Tuomas Lähteenmäki <lahtis@gmail.com>\n"
 "Language-Team: Finnish <https://hosted.weblate.org/projects/tiled/reference/"
 "fi/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.10-dev\n"
+"X-Generator: Weblate 4.0-dev\n"
 
 #: ../../reference/json-map-format.rst:2
 msgid "JSON Map Format"
@@ -669,6 +669,9 @@ msgstr "maastoindeksi laattakohdan kulmalle"
 #: ../../reference/json-map-format.rst:458
 msgid "A tileset that associates information with each tile, like its image path or terrain type, may include a \"tiles\" JSON object. Each key is a local ID of a tile within the tileset."
 msgstr ""
+"Laattajoukko, joka yhdistää tiedot jokaiseen ruutuun, kuten sen kuvapolku "
+"tai maastotyyppi, voi sisältää \"laatat\" JSON-objektin. Jokainen avain on "
+"laattajoukon paikallinen tunnus."
 
 #: ../../reference/json-map-format.rst:462
 msgid "For the terrain information, each value is a length-4 array where each element is the index of a :ref:`terrain <json-terrain>` on one corner of the tile. The order of indices is: top-left, top-right, bottom-left, bottom-right."
