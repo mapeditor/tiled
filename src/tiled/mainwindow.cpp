@@ -768,13 +768,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 #ifdef Q_OS_WIN
     connect(preferences, &Preferences::useOpenGLChanged, this, &MainWindow::ensureHasBorderInFullScreen);
 #endif
-#ifdef Q_OS_MAC
-    setUnifiedTitleAndToolBarOnMac(!preferences->useOpenGL());
-    connect(preferences, &Preferences::useOpenGLChanged, this, [this] (bool useOpenGL) {
-        if (useOpenGL)
-            setUnifiedTitleAndToolBarOnMac(false);
-    });
-#endif
 
     connect(preferences, &Preferences::recentFilesChanged, this, &MainWindow::updateRecentFilesMenu);
     connect(preferences, &Preferences::recentProjectsChanged, this, &MainWindow::updateRecentProjectsMenu);
