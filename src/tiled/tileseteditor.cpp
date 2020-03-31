@@ -68,7 +68,6 @@
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QMimeData>
-#include <QSettings>
 #include <QStackedWidget>
 #include <QUndoGroup>
 
@@ -76,10 +75,12 @@
 
 #include <QDebug>
 
-static const char SIZE_KEY[] = "TilesetEditor/Size";
-static const char STATE_KEY[] = "TilesetEditor/State";
-
 namespace Tiled {
+
+namespace preferences {
+static Preference<QSize> tilesetEditorSize { "TilesetEditor/Size" };
+static Preference<QByteArray> tilesetEditorState { "TilesetEditor/State" };
+} // namespace preferences
 
 class TilesetEditorWindow : public QMainWindow
 {
@@ -254,20 +255,18 @@ TilesetEditor::TilesetEditor(QObject *parent)
 
 void TilesetEditor::saveState()
 {
-    QSettings *settings = Preferences::instance()->settings();
-    settings->setValue(QLatin1String(SIZE_KEY), mMainWindow->size());
-    settings->setValue(QLatin1String(STATE_KEY), mMainWindow->saveState());
+    preferences::tilesetEditorSize = mMainWindow->size();
+    preferences::tilesetEditorState = mMainWindow->saveState();
 
     mTileCollisionDock->saveState();
 }
 
 void TilesetEditor::restoreState()
 {
-    QSettings *settings = Preferences::instance()->settings();
-    QSize size = settings->value(QLatin1String(SIZE_KEY)).toSize();
+    QSize size = preferences::tilesetEditorSize;
     if (!size.isEmpty()) {
-        mMainWindow->resize(size.width(), size.height());
-        mMainWindow->restoreState(settings->value(QLatin1String(STATE_KEY)).toByteArray());
+        mMainWindow->resize(size);
+        mMainWindow->restoreState(preferences::tilesetEditorState);
     }
 
     mTileCollisionDock->restoreState();
@@ -284,7 +283,7 @@ void TilesetEditor::addDocument(Document *document)
     Tileset *tileset = tilesetDocument->tileset().data();
 
     QString path = QLatin1String("TilesetEditor/TilesetScale/") + tileset->name();
-    qreal scale = Preferences::instance()->settings()->value(path, 1).toReal();
+    qreal scale = Preferences::instance()->value(path, 1).toReal();
     view->zoomable()->setScale(scale);
 
     view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
@@ -336,11 +335,11 @@ void TilesetEditor::removeDocument(Document *document)
 
     QString path = QLatin1String("TilesetEditor/TilesetScale/") +
             tilesetDocument->tileset()->name();
-    QSettings *settings = Preferences::instance()->settings();
+    auto preferences = Preferences::instance();
     if (view->scale() != 1.0)
-        settings->setValue(path, view->scale());
+        preferences->setValue(path, view->scale());
     else
-        settings->remove(path);
+        preferences->remove(path);
 
     // remove first, to keep it valid while the current widget changes
     mWidgetStack->removeWidget(view);

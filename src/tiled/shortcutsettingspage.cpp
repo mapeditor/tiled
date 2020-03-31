@@ -22,7 +22,6 @@
 #include "ui_shortcutsettingspage.h"
 
 #include "actionmanager.h"
-#include "preferences.h"
 #include "savefile.h"
 #include "utils.h"
 
@@ -30,6 +29,7 @@
 #include <QAction>
 #include <QApplication>
 #include <QCoreApplication>
+#include <QDateTime>
 #include <QFileDialog>
 #include <QItemEditorFactory>
 #include <QKeyEvent>

@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include "preferences.h"
+#include "objecttypes.h"
 #include "properties.h"
 
 #include <QAbstractTableModel>

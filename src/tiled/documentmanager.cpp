@@ -59,7 +59,6 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QScrollBar>
-#include <QSettings>
 #include <QStackedLayout>
 #include <QTabBar>
 #include <QTabWidget>
@@ -702,8 +701,6 @@ bool DocumentManager::saveDocument(Document *document, const QString &fileName)
  */
 bool DocumentManager::saveDocumentAs(Document *document)
 {
-    QSettings *settings = Preferences::instance()->settings();
-
     QString selectedFilter;
     QString fileName = document->fileName();
 
@@ -747,10 +744,10 @@ bool DocumentManager::saveDocumentAs(Document *document)
 
     if (auto mapDocument = qobject_cast<MapDocument*>(document)) {
         FormatHelper<MapFormat> helper(FileFormat::ReadWrite);
+        SessionOption<QString> lastUsedMapFormat { "map.lastUsedFormat" };
 
         if (selectedFilter.isEmpty()) {
-            QString shortName = settings->value(QLatin1String("lastUsedMapFormat")).toString();
-            if (auto format = helper.findFormat(shortName))
+            if (auto format = helper.findFormat(lastUsedMapFormat))
                 selectedFilter = format->nameFilter();
         }
 
@@ -767,14 +764,14 @@ bool DocumentManager::saveDocumentAs(Document *document)
         mapDocument->setWriterFormat(format);
         mapDocument->setReaderFormat(format);
 
-        settings->setValue(QLatin1String("lastUsedMapFormat"), format->shortName());
+        lastUsedMapFormat = format->shortName();
 
     } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
         FormatHelper<TilesetFormat> helper(FileFormat::ReadWrite);
+        SessionOption<QString> lastUsedTilesetFormat { "tileset.lastUsedFormat" };
 
         if (selectedFilter.isEmpty()) {
-            QString shortName = settings->value(QLatin1String("lastUsedTilesetFormat")).toString();
-            if (auto format = helper.findFormat(shortName))
+            if (auto format = helper.findFormat(lastUsedTilesetFormat))
                 selectedFilter = format->nameFilter();
         }
 
@@ -792,7 +789,7 @@ bool DocumentManager::saveDocumentAs(Document *document)
         TilesetFormat *format = helper.formatByNameFilter(selectedFilter);
         tilesetDocument->setWriterFormat(format);
 
-        settings->setValue(QLatin1String("lastUsedTilesetFormat"), format->shortName());
+        lastUsedTilesetFormat = format->shortName();
     }
 
     return saveDocument(document, fileName);

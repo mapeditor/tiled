@@ -31,7 +31,6 @@
 #include <QMainWindow>
 #include <QPointer>
 #include <QSessionManager>
-#include <QSettings>
 
 class QComboBox;
 class QLabel;
@@ -73,7 +72,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr, Qt::WindowFlags flags = 0);
+    MainWindow(QWidget *parent = nullptr, Qt::WindowFlags flags = {});
     ~MainWindow() override;
 
     void commitData(QSessionManager &manager);
@@ -218,7 +217,6 @@ private:
     ProjectDock *mProjectDock;
     IssuesDock *mIssuesDock;
     ObjectTypesEditor *mObjectTypesEditor;
-    QSettings mSettings;
 
     QAction *mRecentFiles[Preferences::MaxRecentFiles];
 
@@ -242,6 +240,8 @@ private:
     QPointer<PreferencesDialog> mPreferencesDialog;
 
     QMap<QMainWindow*, QByteArray> mMainWindowStates;
+
+    Preference<QStringList> mLoadedWorlds { "LoadedWorlds" };
 
     static MainWindow *mInstance;
 };

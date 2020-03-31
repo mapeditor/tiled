@@ -22,17 +22,18 @@
 #include "addpropertydialog.h"
 #include "ui_addpropertydialog.h"
 
-#include "preferences.h"
-#include "properties.h"
-#include "utils.h"
 #include "documentmanager.h"
+#include "properties.h"
+#include "session.h"
+#include "utils.h"
 
 #include <QPushButton>
-#include <QSettings>
 
 using namespace Tiled;
 
-static const char * const TYPE_KEY = "AddPropertyDialog/PropertyType";
+namespace session {
+static SessionOption<QString> propertyType { "property.type", QStringLiteral("string") };
+} // namespace session
 
 AddPropertyDialog::AddPropertyDialog(QWidget *parent)
     : QDialog(parent)
@@ -45,8 +46,6 @@ AddPropertyDialog::AddPropertyDialog(QWidget *parent)
     mUi->setupUi(this);
     resize(Utils::dpiScaled(size()));
 
-    QString stringType = typeToName(QVariant::String);
-
     // Add possible types from QVariant
     mUi->typeBox->addItem(typeToName(QVariant::Bool),    false);
     mUi->typeBox->addItem(typeToName(QVariant::Color),   QColor());
@@ -54,16 +53,12 @@ AddPropertyDialog::AddPropertyDialog(QWidget *parent)
     mUi->typeBox->addItem(typeToName(filePathTypeId()),  QVariant::fromValue(FilePath()));
     mUi->typeBox->addItem(typeToName(QVariant::Int),     0);
     mUi->typeBox->addItem(typeToName(objectRefTypeId()), QVariant::fromValue(ObjectRef()));
-    mUi->typeBox->addItem(stringType,                    QString());
+    mUi->typeBox->addItem(typeToName(QVariant::String),  QString());
 
     mUi->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
 
     // Restore previously used type
-    Preferences *prefs = Preferences::instance();
-    QSettings *s = prefs->settings();
-    QString lastType = s->value(QLatin1String(TYPE_KEY), stringType).toString();
-
-    mUi->typeBox->setCurrentText(lastType);
+    mUi->typeBox->setCurrentText(session::propertyType);
 
     connect(mUi->name, &QLineEdit::textChanged,
             this, &AddPropertyDialog::nameChanged);
@@ -93,7 +88,5 @@ void AddPropertyDialog::nameChanged(const QString &text)
 
 void AddPropertyDialog::typeChanged(const QString &text)
 {
-    Preferences *prefs = Preferences::instance();
-    QSettings *s = prefs->settings();
-    s->setValue(QLatin1String(TYPE_KEY), text);
+    session::propertyType = text;
 }

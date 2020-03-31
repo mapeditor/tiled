@@ -23,7 +23,6 @@
 #include "preferences.h"
 
 #include <QMenu>
-#include <QSettings>
 
 namespace Tiled {
 
@@ -164,9 +163,8 @@ void ActionManager::setCustomShortcut(Id id, const QKeySequence &keySequence)
     for (QAction *a : actions)
         applyShortcut(a, keySequence);
 
-    auto settings = Preferences::instance()->settings();
-    settings->setValue(QLatin1String("CustomShortcuts/") + id.toString(),
-                       keySequence.toString());
+    Preferences::instance()->setValue(QLatin1String("CustomShortcuts/") + id.toString(),
+                                      keySequence.toString());
 }
 
 bool ActionManager::hasCustomShortcut(Id id) const
@@ -191,8 +189,7 @@ void ActionManager::resetCustomShortcut(Id id)
 
     mResettingShortcut = false;
 
-    auto settings = Preferences::instance()->settings();
-    settings->remove(QLatin1String("CustomShortcuts/") + id.toString());
+    Preferences::instance()->remove(QLatin1String("CustomShortcuts/") + id.toString());
 }
 
 void ActionManager::resetAllCustomShortcuts()
@@ -207,8 +204,7 @@ void ActionManager::resetAllCustomShortcuts()
     mDefaultShortcuts.clear();
     mCustomShortcuts.clear();
 
-    auto settings = Preferences::instance()->settings();
-    settings->remove(QLatin1String("CustomShortcuts"));
+    Preferences::instance()->remove(QLatin1String("CustomShortcuts"));
 }
 
 QKeySequence ActionManager::defaultShortcut(Id id)
@@ -248,16 +244,16 @@ void ActionManager::setCustomShortcuts(const QHash<Id, QKeySequence> &shortcuts)
 
 void ActionManager::readCustomShortcuts()
 {
-    const auto settings = Preferences::instance()->settings();
-    settings->beginGroup(QLatin1String("CustomShortcuts"));
+    const auto prefs = Preferences::instance();
+    prefs->beginGroup(QLatin1String("CustomShortcuts"));
 
-    const auto keys = settings->childKeys();
+    const auto keys = prefs->childKeys();
     for (const auto &key : keys) {
-        auto keySequence = QKeySequence::fromString(settings->value(key).toString());
+        auto keySequence = QKeySequence::fromString(prefs->value(key).toString());
         mCustomShortcuts.insert(Id(key.toUtf8()), keySequence);
     }
 
-    settings->endGroup();
+    prefs->endGroup();
 }
 
 void ActionManager::applyShortcut(QAction *action, const QKeySequence &shortcut)

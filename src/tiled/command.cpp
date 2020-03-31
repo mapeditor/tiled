@@ -119,21 +119,21 @@ void Command::execute(bool inTerminal) const
 
 QVariant Command::toQVariant() const
 {
-    QHash<QString, QVariant> hash;
-    hash[QLatin1String("Enabled")] = isEnabled;
-    hash[QLatin1String("Name")] = name;
-    hash[QLatin1String("Command")] = executable;
-    hash[QLatin1String("Arguments")] = arguments;
-    hash[QLatin1String("WorkingDirectory")] = workingDirectory;
-    hash[QLatin1String("Shortcut")] = shortcut;
-    hash[QLatin1String("ShowOutput")] = showOutput;
-    hash[QLatin1String("SaveBeforeExecute")] = saveBeforeExecute;
-    return hash;
+    return QVariantHash {
+        { QLatin1String("Enabled"), isEnabled },
+        { QLatin1String("Name"), name },
+        { QLatin1String("Command"), executable },
+        { QLatin1String("Arguments"), arguments },
+        { QLatin1String("WorkingDirectory"), workingDirectory },
+        { QLatin1String("Shortcut"), shortcut },
+        { QLatin1String("ShowOutput"), showOutput },
+        { QLatin1String("SaveBeforeExecute"), saveBeforeExecute },
+    };
 }
 
 Command Command::fromQVariant(const QVariant &variant)
 {
-    const QHash<QString, QVariant> hash = variant.toHash();
+    const auto hash = variant.toHash();
 
     const QString namePref = QLatin1String("Name");
     const QString executablePref = QLatin1String("Command");

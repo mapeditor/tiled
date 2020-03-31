@@ -35,7 +35,6 @@
 #include <QCoreApplication>
 #include <QDir>
 #include <QFileInfo>
-#include <QSettings>
 #include <QStringList>
 #include <QTextStream>
 

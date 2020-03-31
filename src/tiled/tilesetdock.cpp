@@ -62,7 +62,6 @@
 #include <QMessageBox>
 #include <QMimeData>
 #include <QPushButton>
-#include <QSettings>
 #include <QStackedWidget>
 #include <QStylePainter>
 #include <QToolBar>
@@ -568,7 +567,7 @@ void TilesetDock::createTilesetView(int index, TilesetDocument *tilesetDocument)
     mTabBar->setTabToolTip(index, tileset->fileName());
 
     QString path = QLatin1String("TilesetDock/TilesetScale/") + tileset->name();
-    qreal scale = Preferences::instance()->settings()->value(path, 1).toReal();
+    qreal scale = Preferences::instance()->value(path, 1).toReal();
     view->zoomable()->setScale(scale);
 
     connect(tilesetDocument, &TilesetDocument::fileNameChanged,
@@ -595,11 +594,11 @@ void TilesetDock::deleteTilesetView(int index)
     TilesetView *view = tilesetViewAt(index);
 
     QString path = QLatin1String("TilesetDock/TilesetScale/") + tileset->name();
-    QSettings *settings = Preferences::instance()->settings();
+    auto preferences = Preferences::instance();
     if (view->scale() != 1.0)
-        settings->setValue(path, view->scale());
+        preferences->setValue(path, view->scale());
     else
-        settings->remove(path);
+        preferences->remove(path);
 
     mTilesets.remove(index);
     mTilesetDocuments.removeAt(index);

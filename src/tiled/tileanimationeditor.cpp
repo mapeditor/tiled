@@ -24,6 +24,7 @@
 #include "changetileanimation.h"
 #include "mapobject.h"
 #include "rangeset.h"
+#include "session.h"
 #include "tile.h"
 #include "tileanimationdriver.h"
 #include "tiled.h"
@@ -31,16 +32,12 @@
 #include "tilesetdocument.h"
 #include "utils.h"
 #include "zoomable.h"
-#include "preferences.h"
 
 #include <QAbstractListModel>
 #include <QCloseEvent>
 #include <QShortcut>
 #include <QUndoStack>
 #include <QMimeData>
-#include <QSettings>
-
-static const char * const FRAME_DURATION_KEY = "Animation/FrameDuration";
 
 namespace Tiled {
 
@@ -51,11 +48,7 @@ class FrameListModel : public QAbstractListModel
 public:
     explicit FrameListModel(QObject *parent = nullptr)
         : QAbstractListModel(parent)
-        , mTileset(nullptr)
     {
-        // Restore previously used FrameDuration
-        QSettings *s = Preferences::instance()->settings();
-        mDefaultDuration = s->value(QLatin1String(FRAME_DURATION_KEY), 100).toInt();
     }
 
     int defaultDuration() const;
@@ -79,11 +72,11 @@ public:
     const QVector<Frame> &frames() const;
 
 private:
-    int mDefaultDuration;
+    SessionOption<int> mDefaultDuration { "frame.defaultDuration", 100 };
 
     void addFrame(const Frame &frame);
 
-    const Tileset *mTileset;
+    const Tileset *mTileset = nullptr;
     QVector<Frame> mFrames;
 };
 
@@ -221,10 +214,11 @@ bool FrameListModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
         QByteArray encodedData = data->data(QLatin1String(TILES_MIMETYPE));
         QDataStream stream(&encodedData, QIODevice::ReadOnly);
 
+        const int defaultDuration = mDefaultDuration;
         while (!stream.atEnd()) {
             Frame frame;
             stream >> frame.tileId;
-            frame.duration = mDefaultDuration;
+            frame.duration = defaultDuration;
             newFrames.append(frame);
         }
     }
@@ -275,7 +269,6 @@ const QVector<Frame> &FrameListModel::frames() const
 void FrameListModel::setDefaultFrameTime(int duration)
 {
     mDefaultDuration = duration;
-    Preferences::instance()->settings()->setValue(QLatin1String(FRAME_DURATION_KEY), duration);
 }
 
 
@@ -571,8 +564,8 @@ bool TileAnimationEditor::updatePreviewPixmap()
         const QPixmap &image = tile->image();
         const qreal scale = mUi->tilesetView->zoomable()->scale();
 
-        const int w = image.width() * scale;
-        const int h = image.height() * scale;
+        const int w = qRound(image.width() * scale);
+        const int h = qRound(image.height() * scale);
         mUi->preview->setPixmap(image.scaled(w, h, Qt::KeepAspectRatio));
         return true;
     }

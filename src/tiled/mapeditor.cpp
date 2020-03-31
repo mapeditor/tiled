@@ -92,7 +92,6 @@
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QQmlEngine>
-#include <QSettings>
 #include <QShortcut>
 #include <QStackedWidget>
 #include <QToolBar>
@@ -102,10 +101,12 @@
 
 #include <memory>
 
-static const char SIZE_KEY[] = "MapEditor/Size";
-static const char STATE_KEY[] = "MapEditor/State";
-
 namespace Tiled {
+
+namespace preferences {
+static Preference<QSize> mapEditorSize { "MapEditor/Size" };
+static Preference<QByteArray> mapEditorState { "MapEditor/State" };
+} // namespace preferences
 
 /**
  * A proxy model that makes sure no items are checked or checkable and that
@@ -323,18 +324,16 @@ MapEditor::~MapEditor()
 
 void MapEditor::saveState()
 {
-    QSettings *settings = Preferences::instance()->settings();
-    settings->setValue(QLatin1String(SIZE_KEY), mMainWindow->size());
-    settings->setValue(QLatin1String(STATE_KEY), mMainWindow->saveState());
+    preferences::mapEditorSize = mMainWindow->size();
+    preferences::mapEditorState = mMainWindow->saveState();
 }
 
 void MapEditor::restoreState()
 {
-    QSettings *settings = Preferences::instance()->settings();
-    QSize size = settings->value(QLatin1String(SIZE_KEY)).toSize();
+    QSize size = preferences::mapEditorSize;
     if (!size.isEmpty()) {
-        mMainWindow->resize(size.width(), size.height());
-        mMainWindow->restoreState(settings->value(QLatin1String(STATE_KEY)).toByteArray());
+        mMainWindow->resize(size);
+        mMainWindow->restoreState(preferences::mapEditorState);
     }
 }
 
@@ -620,11 +619,7 @@ void MapEditor::saveDocumentState(MapDocument *mapDocument) const
     const QRect viewportRect = mapView->viewport()->rect();
     const QPointF viewCenter = mapView->mapToScene(viewportRect).boundingRect().center();
 
-    QVariantMap viewCenterVariant;
-    viewCenterVariant.insert(QLatin1String("x"), viewCenter.x());
-    viewCenterVariant.insert(QLatin1String("y"), viewCenter.y());
-    fileState.insert(QLatin1String("viewCenter"), viewCenterVariant);
-
+    fileState.insert(QLatin1String("viewCenter"), toSettingsValue(viewCenter));
     fileState.insert(QLatin1String("selectedLayer"), globalIndex(mapDocument->currentLayer()));
 
     Preferences *prefs = Preferences::instance();
@@ -647,9 +642,7 @@ void MapEditor::restoreDocumentState(MapDocument *mapDocument) const
     if (scale > 0)
         mapView->zoomable()->setScale(scale);
 
-    const QVariantMap viewCenterVariant = fileState.value(QLatin1String("viewCenter")).toMap();
-    const QPointF viewCenter(viewCenterVariant.value(QLatin1String("x")).toReal(),
-                             viewCenterVariant.value(QLatin1String("y")).toReal());
+    const QPointF viewCenter = fromSettingsValue<QPointF>(fileState.value(QLatin1String("viewCenter")));
     mapView->forceCenterOn(viewCenter);
 
     int layerIndex = fileState.value(QLatin1String("selectedLayer")).toInt();

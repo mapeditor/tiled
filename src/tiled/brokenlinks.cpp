@@ -46,7 +46,6 @@
 #include <QImageReader>
 #include <QLabel>
 #include <QMessageBox>
-#include <QSettings>
 #include <QSortFilterProxyModel>
 #include <QStackedLayout>
 #include <QTreeView>

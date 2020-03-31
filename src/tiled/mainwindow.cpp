@@ -36,6 +36,7 @@
 #include "commandmanager.h"
 #include "consoledock.h"
 #include "documentmanager.h"
+#include "donationdialog.h"
 #include "exportasimagedialog.h"
 #include "exporthelper.h"
 #include "issuescounter.h"
@@ -58,7 +59,6 @@
 #include "objectgroup.h"
 #include "objecttypeseditor.h"
 #include "offsetmapdialog.h"
-#include "donationdialog.h"
 #include "projectdock.h"
 #include "resizedialog.h"
 #include "terrain.h"
@@ -71,9 +71,9 @@
 #include "tmxmapformat.h"
 #include "undodock.h"
 #include "utils.h"
+#include "worlddocument.h"
 #include "worldmanager.h"
 #include "zoomable.h"
-#include "worlddocument.h"
 
 #ifdef Q_OS_MAC
 #include "macsupport.h"
@@ -105,6 +105,10 @@
 using namespace Tiled;
 using namespace Tiled::Utils;
 
+namespace preferences {
+static Preference<QByteArray> mainWindowGeometry { "mainwindow/geometry" };
+static Preference<QByteArray> mainWindowState { "mainwindow/state" };
+} // namespace preferences
 
 namespace {
 
@@ -547,12 +551,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
         preferences->setLastPath(Preferences::WorldFile, QFileInfo(worldFile).path());
         QString errorString;
-        if (!WorldManager::instance().loadWorld(worldFile, &errorString)) {
+        if (!WorldManager::instance().loadWorld(worldFile, &errorString))
             QMessageBox::critical(this, tr("Error Loading World"), errorString);
-        } else {
-            const auto worldFiles = WorldManager::instance().worlds().keys();
-            mSettings.setValue(QLatin1String("LoadedWorlds"), QVariant(worldFiles));
-        }
+        else
+            mLoadedWorlds = WorldManager::instance().worlds().keys();
     });
     connect(mUi->menuUnloadWorld, &QMenu::aboutToShow, this, [this] {
         mUi->menuUnloadWorld->clear();
@@ -567,8 +569,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
                     return;
 
                 WorldManager::instance().unloadWorld(fileName);
-                const auto worldFiles = WorldManager::instance().worlds().keys();
-                mSettings.setValue(QLatin1String("LoadedWorlds"), QVariant(worldFiles));
+                mLoadedWorlds = WorldManager::instance().worlds().keys();
             });
         }
     });
@@ -586,12 +587,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
         preferences->setLastPath(Preferences::WorldFile, QFileInfo(worldFile).path());
         QString errorString;
-        if (!WorldManager::instance().addEmptyWorld(worldFile, &errorString)) {
+        if (!WorldManager::instance().addEmptyWorld(worldFile, &errorString))
             QMessageBox::critical(this, tr("Error Creating World"), errorString);
-        } else {
-            const auto worldFiles = WorldManager::instance().worlds().keys();
-            mSettings.setValue(QLatin1String("LoadedWorlds"), QVariant(worldFiles));
-        }
+        else
+            mLoadedWorlds = WorldManager::instance().worlds().keys();
     });
     connect(mUi->menuSaveWorld, &QMenu::aboutToShow, this, [this] {
         mUi->menuSaveWorld->clear();
@@ -941,13 +940,13 @@ bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
 
 void MainWindow::openFileDialog()
 {
-    QString filter = tr("All Files (*)");
-    QString selectedFilter = filter;
+    SessionOption<QString> lastUsedOpenFilter { "file.lastUsedOpenFilter" };
+    QString allFilesFilter = tr("All Files (*)");
+    QString selectedFilter = lastUsedOpenFilter;
+    if (selectedFilter.isEmpty())
+        selectedFilter = allFilesFilter;
 
-    FormatHelper<FileFormat> helper(FileFormat::Read, filter);
-
-    selectedFilter = mSettings.value(QLatin1String("lastUsedOpenFilter"),
-                                     selectedFilter).toString();
+    FormatHelper<FileFormat> helper(FileFormat::Read, allFilesFilter);
 
     auto preferences = Preferences::instance();
     const auto fileNames = QFileDialog::getOpenFileNames(this, tr("Open File"),
@@ -960,7 +959,8 @@ void MainWindow::openFileDialog()
     // When a particular filter was selected, use the associated format
     FileFormat *fileFormat = helper.formatByNameFilter(selectedFilter);
 
-    mSettings.setValue(QLatin1String("lastUsedOpenFilter"), selectedFilter);
+    lastUsedOpenFilter = selectedFilter;
+
     for (const QString &fileName : fileNames)
         openFile(fileName, fileFormat);
 }
@@ -1523,14 +1523,13 @@ void MainWindow::addExternalTileset()
     if (!mapDocument)
         return;
 
+    SessionOption<QString> lastUsedTilesetFilter { "tileset.lastUsedFilter" };
     QString filter = tr("All Files (*)");
-
-    QString selectedFilter = TsxTilesetFormat().nameFilter();
+    QString selectedFilter = lastUsedTilesetFilter;
+    if (selectedFilter.isEmpty())
+        selectedFilter = TsxTilesetFormat().nameFilter();
 
     FormatHelper<TilesetFormat> helper(FileFormat::Read, filter);
-
-    selectedFilter = mSettings.value(QLatin1String("lastUsedTilesetFilter"),
-                                     selectedFilter).toString();
 
     Preferences *prefs = Preferences::instance();
     QString start = prefs->lastPath(Preferences::ExternalTileset);
@@ -1547,7 +1546,7 @@ void MainWindow::addExternalTileset()
     prefs->setLastPath(Preferences::ExternalTileset,
                        QFileInfo(fileNames.last()).path());
 
-    mSettings.setValue(QLatin1String("lastUsedTilesetFilter"), selectedFilter);
+    lastUsedTilesetFilter = selectedFilter;
 
     auto mapEditor = static_cast<MapEditor*>(mDocumentManager->currentEditor());
     mapEditor->addExternalTilesets(fileNames);
@@ -1906,30 +1905,25 @@ void MainWindow::writeSettings()
         setWindowState(windowState() & ~Qt::WindowFullScreen);
 #endif
 
-    mSettings.beginGroup(QLatin1String("mainwindow"));
-    mSettings.setValue(QLatin1String("geometry"), saveGeometry());
-    mSettings.setValue(QLatin1String("state"), saveState());
-    mSettings.endGroup();
+    preferences::mainWindowGeometry = saveGeometry();
+    preferences::mainWindowState = saveState();
 
     mDocumentManager->saveState();
 }
 
 void MainWindow::readSettings()
 {
-    mSettings.beginGroup(QLatin1String("mainwindow"));
-    QByteArray geom = mSettings.value(QLatin1String("geometry")).toByteArray();
+    QByteArray geom = preferences::mainWindowGeometry;
     if (!geom.isEmpty())
         restoreGeometry(geom);
     else
         resize(Utils::dpiScaled(QSize(1200, 700)));
-    restoreState(mSettings.value(QLatin1String("state"),
-                                 QByteArray()).toByteArray());
-    mSettings.endGroup();
+    restoreState(preferences::mainWindowState);
     updateRecentFilesMenu();
     updateRecentProjectsMenu();
 
     auto &worldManager = WorldManager::instance();
-    const QStringList worldFiles = mSettings.value(QLatin1String("LoadedWorlds")).toStringList();
+    const QStringList worldFiles = mLoadedWorlds;
     for (const QString &fileName : worldFiles)
         worldManager.loadWorld(fileName);
 
@@ -1981,9 +1975,9 @@ void MainWindow::retranslateUi()
 
 void MainWindow::exportMapAs(MapDocument *mapDocument)
 {
+    SessionOption<QString> lastUsedExportFilter { "map.lastUsedExportFilter" };
     QString fileName = mapDocument->fileName();
-    QString selectedFilter =
-            mSettings.value(QLatin1String("lastUsedExportFilter")).toString();
+    QString selectedFilter = lastUsedExportFilter;
     auto exportDetails = chooseExportDetails<MapFormat>(fileName,
                                                         mapDocument->lastExportFileName(),
                                                         selectedFilter,
@@ -2032,7 +2026,7 @@ void MainWindow::exportMapAs(MapDocument *mapDocument)
     Preferences *pref = Preferences::instance();
 
     pref->setLastPath(Preferences::ExportedFile, QFileInfo(exportDetails.mFileName).path());
-    mSettings.setValue(QLatin1String("lastUsedExportFilter"), selectedFilter);
+    lastUsedExportFilter = selectedFilter;
 
     auto exportResult = exportDetails.mFormat->write(map,
                                                      exportDetails.mFileName,
@@ -2056,8 +2050,8 @@ void MainWindow::exportTilesetAs(TilesetDocument *tilesetDocument)
         fileName = tilesetDocument->tileset()->name();
     }
 
-    QString selectedFilter =
-            mSettings.value(QLatin1String("lastUsedTilesetExportFilter")).toString();
+    SessionOption<QString> lastUsedTilesetExportFilter { "lastUsedTilesetExportFilter" };
+    QString selectedFilter = lastUsedTilesetExportFilter;
     auto exportDetails = chooseExportDetails<TilesetFormat>(fileName,
                                                             tilesetDocument->lastExportFileName(),
                                                             selectedFilter,
@@ -2068,7 +2062,7 @@ void MainWindow::exportTilesetAs(TilesetDocument *tilesetDocument)
     Preferences *pref = Preferences::instance();
 
     pref->setLastPath(Preferences::ExportedFile, QFileInfo(exportDetails.mFileName).path());
-    mSettings.setValue(QLatin1String("lastUsedTilesetExportFilter"), selectedFilter);
+    lastUsedTilesetExportFilter = selectedFilter;
 
     ExportHelper exportHelper;
     SharedTileset exportTileset = exportHelper.prepareExportTileset(tilesetDocument->tileset());

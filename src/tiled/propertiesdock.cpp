@@ -26,7 +26,6 @@
 #include "documentmanager.h"
 #include "mapdocument.h"
 #include "mapobject.h"
-#include "preferences.h"
 #include "propertybrowser.h"
 #include "terrain.h"
 #include "tile.h"

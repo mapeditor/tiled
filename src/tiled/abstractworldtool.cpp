@@ -28,7 +28,6 @@
 #include "maprenderer.h"
 #include "mapscene.h"
 #include "mapview.h"
-#include "preferences.h"
 #include "selectionrectangle.h"
 #include "tile.h"
 #include "utils.h"

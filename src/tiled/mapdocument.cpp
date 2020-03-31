@@ -49,7 +49,6 @@
 #include "offsetlayer.h"
 #include "orthogonalrenderer.h"
 #include "painttilelayer.h"
-#include "preferences.h"
 #include "rangeset.h"
 #include "reparentlayers.h"
 #include "resizemap.h"

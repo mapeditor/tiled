@@ -24,21 +24,23 @@
 #include <QColor>
 #include <QDateTime>
 #include <QObject>
+#include <QSettings>
 
 #include "filesystemwatcher.h"
 #include "map.h"
 #include "objecttypes.h"
 #include "session.h"
 
-class QSettings;
-
 namespace Tiled {
 
 /**
  * This class holds user preferences and provides a convenient interface to
  * access them.
+ *
+ * Since it derives from QSettings, you can also store/retrieve arbitrary
+ * values. The naming style for groups and keys is CamelCase.
  */
-class Preferences : public QObject
+class Preferences : public QSettings
 {
     Q_OBJECT
 
@@ -187,11 +189,9 @@ public:
 
     bool wheelZoomsByDefault() const;
 
-    /**
-     * Provides access to the QSettings instance to allow storing/retrieving
-     * arbitrary values. The naming style for groups and keys is CamelCase.
-     */
-    QSettings *settings() const;
+    template <typename T>
+    T get(const char *key, const T &defaultValue = T()) const
+    { return value(QLatin1String(key), defaultValue).template value<T>(); }
 
     static QString dataLocation();
 
@@ -260,11 +260,18 @@ signals:
     void aboutToSaveSession();
 
 private:
-    bool boolValue(const char *key, bool def = false) const;
-    QColor colorValue(const char *key, const QColor &def = QColor()) const;
-    QString stringValue(const char *key, const QString &def = QString()) const;
-    int intValue(const char *key, int defaultValue) const;
-    qreal realValue(const char *key, qreal defaultValue) const;
+    template<typename T>
+    void migrateToSession(const char *preferencesKey, const char *sessionKey)
+    {
+        if (mSession.isSet(sessionKey))
+            return;
+
+        const auto value = QSettings::value(QLatin1String(preferencesKey));
+        if (!value.isValid())
+            return;
+
+        mSession.set(sessionKey, value.value<T>());
+    }
 
     void addToRecentFileList(const QString &fileName, QStringList &files);
 
@@ -272,7 +279,6 @@ private:
 
     FileSystemWatcher mWatcher;
 
-    QSettings *mSettings;
     Session mSession;
     QTimer mSaveSessionTimer;
 
@@ -287,9 +293,37 @@ inline Session &Preferences::session()
     return mSession;
 }
 
-inline QSettings *Preferences::settings() const
+
+template<typename T>
+class Preference
 {
-    return mSettings;
+public:
+    Preference(const char * const key, T defaultValue = T())
+        : mKey(key)
+        , mDefault(defaultValue)
+    {}
+
+    inline T get() const;
+    inline void set(const T &value);
+
+    inline operator T() const { return get(); }
+    inline Preference &operator =(const T &value) { set(value); return *this; }
+
+private:
+    const char * const mKey;
+    const T mDefault;
+};
+
+template<typename T>
+T Preference<T>::get() const
+{
+    return Preferences::instance()->get<T>(mKey, mDefault);
+}
+
+template<typename T>
+void Preference<T>::set(const T &value)
+{
+    Preferences::instance()->setValue(QLatin1String(mKey), value);
 }
 
 } // namespace Tiled

@@ -144,4 +144,9 @@ QString Session::defaultFileNameForProject(const QString &projectFile)
     return sessionFile;
 }
 
+Session &Session::current()
+{
+    return Preferences::instance()->session();
+}
+
 } // namespace Tiled

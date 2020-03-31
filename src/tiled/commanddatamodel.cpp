@@ -25,7 +25,6 @@
 #include <QKeySequence>
 #include <QMenu>
 #include <QMimeData>
-#include <QSettings>
 
 #include "qtcompat_p.h"
 
@@ -36,19 +35,17 @@ static const char *commandMimeType = "application/x-tiled-commandptr";
 CommandDataModel::CommandDataModel(QObject *parent)
     : QAbstractTableModel(parent)
 {
-    auto settings = Preferences::instance()->settings();
+    auto preferences = Preferences::instance();
 
     // Load command list
-    const QVariant variant = settings->value(QLatin1String("commandList"));
-    const QList<QVariant> commands = variant.toList();
+    const auto commands = preferences->value(QLatin1String("commandList")).toList();
     for (const QVariant &commandVariant : commands)
         mCommands.append(Command::fromQVariant(commandVariant));
 
     // Add default commands the first time the app has booted up.
     // This is useful on its own and helps demonstrate how to use the commands.
 
-    const QString addedDefaultKey = QLatin1String("addedDefaultCommands");
-    const bool addedDefault = settings->value(addedDefaultKey, false).toBool();
+    Preference<bool> addedDefault { "addedDefaultCommands", false };
     if (!addedDefault) {
         // Disable default commands by default so user gets an informative
         // warning when clicking the command button for the first time
@@ -67,7 +64,7 @@ CommandDataModel::CommandDataModel(QObject *parent)
         }
 
         commit();
-        settings->setValue(addedDefaultKey, true);
+        addedDefault = true;
     }
 }
 
@@ -77,7 +74,7 @@ void CommandDataModel::commit()
     for (const Command &command : qAsConst(mCommands))
         commands.append(command.toQVariant());
 
-    Preferences::instance()->settings()->setValue(QLatin1String("commandList"), commands);
+    Preferences::instance()->setValue(QLatin1String("commandList"), commands);
 }
 
 const Command *CommandDataModel::firstEnabledCommand() const

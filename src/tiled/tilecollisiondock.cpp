@@ -57,7 +57,6 @@
 #include <QComboBox>
 #include <QCoreApplication>
 #include <QMenu>
-#include <QSettings>
 #include <QShortcut>
 #include <QSplitter>
 #include <QStatusBar>
@@ -68,8 +67,10 @@
 
 namespace Tiled {
 
-static const char OBJECTS_VIEW_VISIBILITY[] = "TileCollisionDock/ObjectsViewVisibility";
-static const char COLLISION_DOCK_SPLITTER_STATE[] = "TileCollisionDock/SplitterState";
+namespace preferences {
+static Preference<QVariant> objectsViewVisibility { "TileCollisionDock/ObjectsViewVisibility", TileCollisionDock::Hidden };
+static Preference<QByteArray> splitterState { "TileCollisionDock/SplitterState" };
+} // namespace preferences
 
 TileCollisionDock::TileCollisionDock(QWidget *parent)
     : QDockWidget(parent)
@@ -233,16 +234,14 @@ TileCollisionDock::~TileCollisionDock()
 
 void TileCollisionDock::saveState()
 {
-    QSettings *settings = Preferences::instance()->settings();
-    settings->setValue(QLatin1String(OBJECTS_VIEW_VISIBILITY), QVariant::fromValue(mObjectsViewVisibility).toString());
-    settings->setValue(QLatin1String(COLLISION_DOCK_SPLITTER_STATE), mObjectsViewSplitter->saveState());
+    preferences::objectsViewVisibility = QVariant::fromValue(mObjectsViewVisibility).toString();
+    preferences::splitterState = mObjectsViewSplitter->saveState();
 }
 
 void TileCollisionDock::restoreState()
 {
-    const QSettings *settings = Preferences::instance()->settings();
-    setObjectsViewVisibility(settings->value(QLatin1String(OBJECTS_VIEW_VISIBILITY), Hidden).value<ObjectsViewVisibility>());
-    mObjectsViewSplitter->restoreState(settings->value(QLatin1String(COLLISION_DOCK_SPLITTER_STATE)).toByteArray());
+    setObjectsViewVisibility(preferences::objectsViewVisibility.get().value<ObjectsViewVisibility>());
+    mObjectsViewSplitter->restoreState(preferences::splitterState);
 }
 
 void TileCollisionDock::setTilesetDocument(TilesetDocument *tilesetDocument)

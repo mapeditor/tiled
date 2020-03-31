@@ -38,7 +38,6 @@
 #include <QProcess>
 #include <QRegExp>
 #include <QScreen>
-#include <QSettings>
 
 static QString toImageFileFilter(const QList<QByteArray> &formats)
 {
@@ -141,14 +140,14 @@ void restoreGeometry(QWidget *widget)
 {
     Q_ASSERT(!widget->objectName().isEmpty());
 
-    const QSettings *settings = Preferences::instance()->settings();
+    const auto preferences = Preferences::instance();
 
     const QString key = widget->objectName() + QLatin1String("/Geometry");
-    widget->restoreGeometry(settings->value(key).toByteArray());
+    widget->restoreGeometry(preferences->value(key).toByteArray());
 
     if (QMainWindow *mainWindow = qobject_cast<QMainWindow*>(widget)) {
         const QString stateKey = widget->objectName() + QLatin1String("/State");
-        mainWindow->restoreState(settings->value(stateKey).toByteArray());
+        mainWindow->restoreState(preferences->value(stateKey).toByteArray());
     }
 }
 
@@ -160,14 +159,14 @@ void saveGeometry(QWidget *widget)
 {
     Q_ASSERT(!widget->objectName().isEmpty());
 
-    QSettings *settings = Preferences::instance()->settings();
+    auto preferences = Preferences::instance();
 
     const QString key = widget->objectName() + QLatin1String("/Geometry");
-    settings->setValue(key, widget->saveGeometry());
+    preferences->setValue(key, widget->saveGeometry());
 
     if (QMainWindow *mainWindow = qobject_cast<QMainWindow*>(widget)) {
         const QString stateKey = widget->objectName() + QLatin1String("/State");
-        settings->setValue(stateKey, mainWindow->saveState());
+        preferences->setValue(stateKey, mainWindow->saveState());
     }
 }
 
@@ -313,7 +312,7 @@ static bool readJsonFile(QIODevice &device, QSettings::SettingsMap &map)
 
 static bool writeJsonFile(QIODevice &device, const QSettings::SettingsMap &map)
 {
-    const auto json = QJsonDocument::fromVariant(map).toJson();
+    const auto json = QJsonDocument { QJsonObject::fromVariantMap(map) }.toJson();
     return device.write(json) == json.size();
 }
 
