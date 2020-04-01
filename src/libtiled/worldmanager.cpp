@@ -83,7 +83,7 @@ void WorldManager::reloadWorldFiles(const QStringList &fileNames)
         if (mWorlds.contains(fileName)) {
 
             if (mIgnoreFileChangeEventForFile == fileName) {
-                mIgnoreFileChangeEventForFile = tr("");
+                mIgnoreFileChangeEventForFile.clear();
                 continue;
             }
 
@@ -231,6 +231,14 @@ World *WorldManager::addEmptyWorld(const QString &fileName, QString *errorString
  */
 World *WorldManager::loadWorld(const QString &fileName, QString *errorString)
 {
+    auto world = loadAndStoreWorld(fileName, errorString);
+    if (world)
+        emit worldsChanged();
+    return world;
+}
+
+World *WorldManager::loadAndStoreWorld(const QString &fileName, QString *errorString)
+{
     auto world = privateLoadWorld(fileName, errorString);
     if (!world)
         return nullptr;
@@ -241,9 +249,24 @@ World *WorldManager::loadWorld(const QString &fileName, QString *errorString)
         mFileSystemWatcher.addPath(fileName);
 
     mWorlds.insert(fileName, world.release());
-    emit worldsChanged();
 
     return mWorlds.value(fileName);
+}
+
+/**
+ * Loads all given worlds. Faster than calling loadWorld individually,
+ * because it emits worldsChanged only once.
+ */
+void WorldManager::loadWorlds(const QStringList &fileNames)
+{
+    bool anyWorldLoaded = false;
+
+    for (const QString &fileName : fileNames)
+        if (loadAndStoreWorld(fileName))
+            anyWorldLoaded = true;
+
+    if (anyWorldLoaded)
+        worldsChanged();
 }
 
 bool WorldManager::saveWorld(const QString &fileName, QString *errorString)
@@ -312,6 +335,24 @@ void WorldManager::unloadWorld(const QString &fileName)
         emit worldsChanged();
         emit worldUnloaded(fileName);
     }
+}
+
+/**
+ * Unloads all worlds. Faster than calling unloadWorld for each loaded world,
+ * because it emits worldsChanged only once.
+ */
+void WorldManager::unloadAllWorlds()
+{
+    QMap<QString, World*> worlds;
+    worlds.swap(mWorlds);
+
+    for (World *world : qAsConst(worlds)) {
+        emit worldUnloaded(world->fileName);
+        delete world;
+    }
+
+    mFileSystemWatcher.clear();
+    emit worldsChanged();
 }
 
 const World *WorldManager::worldForMap(const QString &fileName) const

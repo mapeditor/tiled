@@ -575,7 +575,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
         if (!WorldManager::instance().loadWorld(worldFile, &errorString))
             QMessageBox::critical(this, tr("Error Loading World"), errorString);
         else
-            mLoadedWorlds = WorldManager::instance().worlds().keys();
+            Preferences::loadedWorlds = WorldManager::instance().worlds().keys();
     });
     connect(mUi->menuUnloadWorld, &QMenu::aboutToShow, this, [this] {
         mUi->menuUnloadWorld->clear();
@@ -590,7 +590,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
                     return;
 
                 WorldManager::instance().unloadWorld(fileName);
-                mLoadedWorlds = WorldManager::instance().worlds().keys();
+                Preferences::loadedWorlds = WorldManager::instance().worlds().keys();
             });
         }
     });
@@ -611,7 +611,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
         if (!WorldManager::instance().addEmptyWorld(worldFile, &errorString))
             QMessageBox::critical(this, tr("Error Creating World"), errorString);
         else
-            mLoadedWorlds = WorldManager::instance().worlds().keys();
+            Preferences::loadedWorlds = WorldManager::instance().worlds().keys();
     });
     connect(mUi->menuSaveWorld, &QMenu::aboutToShow, this, [this] {
         mUi->menuSaveWorld->clear();
@@ -1232,22 +1232,7 @@ void MainWindow::openProjectFile(const QString &fileName)
         return;
     }
 
-    auto prefs = Preferences::instance();
-    prefs->saveSessionNow();
-
-    if (!closeAllFiles())
-        return;
-
-    Session session { Session::defaultFileNameForProject(fileName) };
-    session.project = fileName;
-
-    mProjectDock->setProject(std::move(project));
-    prefs->addRecentProject(fileName);
-    prefs->switchSession(std::move(session));
-
-    restoreSession();
-    updateWindowTitle();
-    updateActions();
+    switchProject(std::move(project));
 }
 
 void MainWindow::saveProjectAs()
@@ -1319,14 +1304,28 @@ void MainWindow::closeProject()
     if (project.fileName().isEmpty())
         return;
 
+    switchProject(Project{});
+}
+
+void MainWindow::switchProject(Project project)
+{
     auto prefs = Preferences::instance();
     prefs->saveSessionNow();
 
     if (!closeAllFiles())
         return;
 
-    mProjectDock->setProject(Project{});
-    prefs->switchSession(Session { Session::defaultFileName() });
+    WorldManager::instance().unloadAllWorlds();
+
+    Session session { Session::defaultFileNameForProject(project.fileName()) };
+
+    if (!project.fileName().isEmpty()) {
+        session.project = project.fileName();
+        prefs->addRecentProject(project.fileName());
+    }
+
+    mProjectDock->setProject(std::move(project));
+    prefs->switchSession(std::move(session));
 
     restoreSession();
     updateWindowTitle();
@@ -1344,6 +1343,8 @@ void MainWindow::restoreSession()
     for (const QString &file : openFiles)
         openFile(file);
     mDocumentManager->switchToDocument(activeFile);
+
+    WorldManager::instance().loadWorlds(Preferences::loadedWorlds);
 
     mProjectDock->setExpandedPaths(session.expandedProjectPaths);
 }
@@ -1933,11 +1934,6 @@ void MainWindow::readSettings()
     restoreState(preferences::mainWindowState);
     updateRecentFilesMenu();
     updateRecentProjectsMenu();
-
-    auto &worldManager = WorldManager::instance();
-    const QStringList worldFiles = mLoadedWorlds;
-    for (const QString &fileName : worldFiles)
-        worldManager.loadWorld(fileName);
 
     mDocumentManager->restoreState();
 }

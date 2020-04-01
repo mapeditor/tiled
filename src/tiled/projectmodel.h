@@ -50,7 +50,7 @@ class ProjectModel : public QAbstractItemModel
 
 public:
     explicit ProjectModel(QObject *parent = nullptr);
-    ~ProjectModel();
+    ~ProjectModel() override;
 
     void updateNameFilters();
 

@@ -36,6 +36,7 @@
 using namespace Tiled;
 
 SessionOption<bool> Preferences::automappingWhileDrawing { "automapping.whileDrawing", false };
+SessionOption<QStringList> Preferences::loadedWorlds { "loadedWorlds" };
 
 Preferences *Preferences::mInstance;
 
@@ -99,6 +100,8 @@ Preferences::Preferences()
 
     // Migrate some preferences to the session for compatibility
     migrateToSession<bool>("Automapping/WhileDrawing", "automapping.whileDrawing");
+
+    migrateToSession<QStringList>("LoadedWorlds", "loadedWorlds");
 
     migrateToSession<int>("Map/Orientation", "map.orientation");
     migrateToSession<int>("Storage/LayerDataFormat", "map.layerDataFormat");

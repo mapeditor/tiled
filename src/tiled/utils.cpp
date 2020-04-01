@@ -316,12 +316,17 @@ static bool writeJsonFile(QIODevice &device, const QSettings::SettingsMap &map)
     return device.write(json) == json.size();
 }
 
-std::unique_ptr<QSettings> jsonSettings(const QString &fileName)
+QSettings::Format jsonSettingsFormat()
 {
     static const auto format = QSettings::registerFormat(QStringLiteral("json"),
                                                          readJsonFile,
                                                          writeJsonFile);
-    return std::make_unique<QSettings>(fileName, format);
+    return format;
+}
+
+std::unique_ptr<QSettings> jsonSettings(const QString &fileName)
+{
+    return std::make_unique<QSettings>(fileName, jsonSettingsFormat());
 }
 
 } // namespace Utils

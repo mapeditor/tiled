@@ -86,6 +86,7 @@ bool isResetZoomShortcut(QKeyEvent *event);
 
 void addFileManagerActions(QMenu &menu, const QString &fileName);
 
+QSettings::Format jsonSettingsFormat();
 std::unique_ptr<QSettings> jsonSettings(const QString &fileName);
 
 } // namespace Utils

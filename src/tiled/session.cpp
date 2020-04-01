@@ -135,6 +135,9 @@ QString Session::defaultFileName()
 
 QString Session::defaultFileNameForProject(const QString &projectFile)
 {
+    if (projectFile.isEmpty())
+        return defaultFileName();
+
     const QFileInfo fileInfo(projectFile);
 
     QString sessionFile = fileInfo.path();

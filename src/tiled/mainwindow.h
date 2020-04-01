@@ -27,6 +27,7 @@
 #include "document.h"
 #include "preferences.h"
 #include "preferencesdialog.h"
+#include "project.h"
 
 #include <QMainWindow>
 #include <QPointer>
@@ -122,6 +123,7 @@ private:
     void openProjectFile(const QString &fileName);
     void saveProjectAs();
     void closeProject();
+    void switchProject(Project project);
     void restoreSession();
 
     void cut();
@@ -240,8 +242,6 @@ private:
     QPointer<PreferencesDialog> mPreferencesDialog;
 
     QMap<QMainWindow*, QByteArray> mMainWindowStates;
-
-    Preference<QStringList> mLoadedWorlds { "LoadedWorlds" };
 
     static MainWindow *mInstance;
 };

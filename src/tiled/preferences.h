@@ -194,6 +194,7 @@ public:
     static QString dataLocation();
 
     static SessionOption<bool> automappingWhileDrawing;
+    static SessionOption<QStringList> loadedWorlds;
 
 public slots:
     void setShowGrid(bool showGrid);
