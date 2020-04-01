@@ -99,7 +99,7 @@ inline QPointF fromSettingsValue<QPointF>(const QVariant &value)
 {
     const auto map = value.toMap();
     return QPointF(map.value(QLatin1String("x")).toReal(),
-                   map.value(QLatin1String("x")).toReal());
+                   map.value(QLatin1String("y")).toReal());
 }
 
 template<>

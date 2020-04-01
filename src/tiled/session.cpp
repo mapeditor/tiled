@@ -78,7 +78,7 @@ bool Session::save()
 
     QVariantMap states;
     for (auto it = fileStates.constBegin(); it != fileStates.constEnd(); ++it)
-        fileStates.insert(relative(it.key()), it.value());
+        states.insert(relative(it.key()), it.value());
     set("fileStates", states);
 
     settings->sync();
