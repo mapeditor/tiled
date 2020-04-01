@@ -52,6 +52,7 @@ QStringList FileHelper::resolve(const QStringList &fileNames) const
     return result;
 }
 
+QHash<const char*, Session::Callbacks> Session::mChangedCallbacks;
 
 Session::Session(const QString &fileName)
     : FileHelper            { fileName }
@@ -147,6 +148,13 @@ QString Session::defaultFileNameForProject(const QString &projectFile)
 Session &Session::current()
 {
     return Preferences::instance()->session();
+}
+
+void Session::notifySessionChanged()
+{
+    for (const auto &callbacks : qAsConst(mChangedCallbacks))
+        for (const auto &callback : callbacks)
+            callback();
 }
 
 } // namespace Tiled

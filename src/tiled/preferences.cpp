@@ -35,6 +35,8 @@
 
 using namespace Tiled;
 
+SessionOption<bool> Preferences::automappingWhileDrawing { "automapping.whileDrawing", false };
+
 Preferences *Preferences::mInstance;
 
 Preferences *Preferences::instance()
@@ -96,6 +98,8 @@ Preferences::Preferences()
     connect(&mSaveSessionTimer, &QTimer::timeout, this, [this] { saveSessionNow(); });
 
     // Migrate some preferences to the session for compatibility
+    migrateToSession<bool>("Automapping/WhileDrawing", "automapping.whileDrawing");
+
     migrateToSession<int>("Map/Orientation", "map.orientation");
     migrateToSession<int>("Storage/LayerDataFormat", "map.layerDataFormat");
     migrateToSession<int>("Storage/MapRenderOrder", "map.renderOrder");
@@ -613,16 +617,6 @@ void Preferences::setLastPath(FileType fileType, const QString &path)
     setValue(lastPathKey(fileType), path);
 }
 
-bool Preferences::automappingDrawing() const
-{
-    return get("Automapping/WhileDrawing", false);
-}
-
-void Preferences::setAutomappingDrawing(bool enabled)
-{
-    setValue(QLatin1String("Automapping/WhileDrawing"), enabled);
-}
-
 QDate Preferences::firstRun() const
 {
     return get<QDate>("Install/FirstRun");
@@ -727,6 +721,7 @@ void Preferences::switchSession(Session session)
     mSession = std::move(session);
     setLastSession(mSession.fileName());
 
+    Session::notifySessionChanged();
     emit recentFilesChanged();
 }
 

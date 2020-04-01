@@ -707,7 +707,6 @@ void MapWriterPrivate::writeLayerAttributes(QXmlStreamWriter &w,
                          QString::number(width));
         w.writeAttribute(QLatin1String("height"),
                          QString::number(height));
-
     }
 
     if (!layer.isVisible())

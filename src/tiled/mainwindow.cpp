@@ -193,6 +193,26 @@ ExportDetails<Format> chooseExportDetails(const QString &fileName,
     return ExportDetails<Format>(chosenFormat, exportToFileName);
 }
 
+void bindToOption(QAction *checkableAction, SessionOption<bool> &option)
+{
+    checkableAction->setChecked(option);    // Set initial state
+
+    // Update UI when option changes
+    const auto it = option.onChange([&option,checkableAction] {
+        checkableAction->setChecked(option);
+    });
+
+    // Update option when UI changes
+    QObject::connect(checkableAction, &QAction::toggled, [&option] (bool checked) {
+        option = checked;
+    });
+
+    // Disconnect when action is destroyed
+    QObject::connect(checkableAction, &QObject::destroyed, [&option,it] {
+        option.unregister(it);
+    });
+}
+
 } // namespace
 
 
@@ -390,7 +410,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->actionSnapToPixels->setChecked(preferences->snapToPixels());
     mUi->actionHighlightCurrentLayer->setChecked(preferences->highlightCurrentLayer());
     mUi->actionHighlightHoveredObject->setChecked(preferences->highlightHoveredObject());
-    mUi->actionAutoMapWhileDrawing->setChecked(preferences->automappingDrawing());
+
+    bindToOption(mUi->actionAutoMapWhileDrawing, Preferences::automappingWhileDrawing);
 
     mUi->actionHighlightCurrentLayer->setIcon(highlightCurrentLayerIcon);
     mUi->actionHighlightCurrentLayer->setIconVisibleInMenu(false);
@@ -616,8 +637,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionOffsetMap, &QAction::triggered, this, &MainWindow::offsetMap);
     connect(mUi->actionAutoMap, &QAction::triggered,
             mAutomappingManager, &AutomappingManager::autoMap);
-    connect(mUi->actionAutoMapWhileDrawing, &QAction::toggled,
-            preferences, &Preferences::setAutomappingDrawing);
     connect(mUi->actionMapProperties, &QAction::triggered,
             this, &MainWindow::editMapProperties);
 

@@ -85,7 +85,7 @@ void AutomappingManager::autoMapRegion(const QRegion &region)
 
 void AutomappingManager::onRegionEdited(const QRegion &where, Layer *touchedLayer)
 {
-    if (Preferences::instance()->automappingDrawing())
+    if (Preferences::automappingWhileDrawing)
         autoMapInternal(where, touchedLayer);
 }
 

@@ -144,8 +144,6 @@ public:
     QString lastPath(FileType fileType) const;
     void setLastPath(FileType fileType, const QString &path);
 
-    bool automappingDrawing() const;
-
     QString stampsDirectory() const;
     void setStampsDirectory(const QString &stampsDirectory);
 
@@ -195,6 +193,8 @@ public:
 
     static QString dataLocation();
 
+    static SessionOption<bool> automappingWhileDrawing;
+
 public slots:
     void setShowGrid(bool showGrid);
     void setShowTileObjectOutlines(bool enabled);
@@ -210,7 +210,6 @@ public slots:
     void setHighlightCurrentLayer(bool highlight);
     void setHighlightHoveredObject(bool highlight);
     void setShowTilesetGrid(bool showTilesetGrid);
-    void setAutomappingDrawing(bool enabled);
     void setRestoreSessionOnStartup(bool enabled);
     void setPluginEnabled(const QString &fileName, bool enabled);
     void setWheelZoomsByDefault(bool mode);

@@ -21,6 +21,8 @@
 #pragma once
 
 #include <QDir>
+#include <QHash>
+#include <QLinkedList>
 #include <QPointF>
 #include <QSettings>
 #include <QSize>
@@ -132,7 +134,19 @@ public:
     { return fromSettingsValue<T>(settings->value(QLatin1String(key), toSettingsValue(defaultValue))); }
 
     template <typename T>
-    void set(const char *key, const T &value) const { settings->setValue(QLatin1String(key), toSettingsValue(value)); }
+    void set(const char *key, const T &value) const
+    {
+        const auto settingsValue = toSettingsValue(value);
+        if (settings->value(QLatin1String(key)) == settingsValue)
+            return;
+
+        settings->setValue(QLatin1String(key), settingsValue);
+
+        const auto it = Session::mChangedCallbacks.constFind(key);
+        if (it != Session::mChangedCallbacks.constEnd())
+            for (const auto &cb : it.value())
+                cb();
+    }
 
     bool isSet(const char *key) const { return settings->contains(QLatin1String(key)); }
 
@@ -140,12 +154,23 @@ public:
     static QString defaultFileNameForProject(const QString &projectFile);
     static Session &current();
 
+    static void notifySessionChanged();
+
     QString project;
     QStringList recentFiles;
     QStringList openFiles;
     QStringList expandedProjectPaths;
     QString activeFile;
     QVariantMap fileStates;
+
+private:
+    template<typename T> friend class SessionOption;
+
+    using ChangedCallback = std::function<void()>;
+    using Callbacks = QLinkedList<ChangedCallback>;
+    using CallbackIterator = Callbacks::iterator;
+
+    static QHash<const char*, Callbacks> mChangedCallbacks;
 };
 
 inline QString Session::fileName() const
@@ -163,11 +188,14 @@ public:
         , mDefault(defaultValue)
     {}
 
-    inline T get() const;
-    inline void set(const T &value);
+    T get() const;
+    void set(const T &value);
 
-    inline operator T() const { return get(); }
-    inline SessionOption &operator =(const T &value) { set(value); return *this; }
+    operator T() const { return get(); }
+    SessionOption &operator =(const T &value) { set(value); return *this; }
+
+    Session::CallbackIterator onChange(const Session::ChangedCallback &callback);
+    void unregister(Session::CallbackIterator it);
 
 private:
     const char * const mKey;
@@ -183,7 +211,25 @@ T SessionOption<T>::get() const
 template<typename T>
 void SessionOption<T>::set(const T &value)
 {
+    if (get() == value)
+        return;
+
     Session::current().set(mKey, value);
+}
+
+template<typename T>
+Session::CallbackIterator SessionOption<T>::onChange(const Session::ChangedCallback &callback)
+{
+    Session::Callbacks &callbacks = Session::mChangedCallbacks[mKey];
+    callbacks.prepend(callback);
+    return callbacks.begin();
+}
+
+template<typename T>
+void SessionOption<T>::unregister(Session::CallbackIterator it)
+{
+    Session::Callbacks &callbacks = Session::mChangedCallbacks[mKey];
+    callbacks.erase(it);
 }
 
 } // namespace Tiled
