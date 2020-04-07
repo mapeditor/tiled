@@ -21,6 +21,7 @@
 
 #pragma once
 
+#include "session.h"
 #include "tilestamp.h"
 
 #include <QMap>
@@ -84,6 +85,7 @@ private:
     QVector<TileStamp> mQuickStamps;
     QMap<QString, TileStamp> mStampsByName;
     TileStampModel *mTileStampModel;
+    Session::CallbackIterator mRegisteredCb;
 
     const ToolManager &mToolManager;
 };

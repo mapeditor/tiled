@@ -163,12 +163,12 @@ public:
     QString activeFile;
     QVariantMap fileStates;
 
-private:
-    template<typename T> friend class SessionOption;
-
     using ChangedCallback = std::function<void()>;
     using Callbacks = QLinkedList<ChangedCallback>;
     using CallbackIterator = Callbacks::iterator;
+
+private:
+    template<typename T> friend class SessionOption;
 
     static QHash<const char*, Callbacks> mChangedCallbacks;
 };

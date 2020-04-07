@@ -54,7 +54,8 @@ void Preferences::deleteInstance()
 }
 
 Preferences::Preferences()
-    : mSession { restoreSessionOnStartup() ? lastSession() : Session::defaultFileName() }
+    : stampsDirectory("stampsFolder", dataLocation() + QLatin1String("/stamps"))
+    , mSession(restoreSessionOnStartup() ? lastSession() : Session::defaultFileName())
 {
     // Make sure the data directory exists
     const QDir dataDir { dataLocation() };
@@ -102,6 +103,7 @@ Preferences::Preferences()
     migrateToSession<bool>("Automapping/WhileDrawing", "automapping.whileDrawing");
 
     migrateToSession<QStringList>("LoadedWorlds", "loadedWorlds");
+    migrateToSession<QString>("Storage/StampsDirectory", "stampsFolder");
 
     migrateToSession<int>("Map/Orientation", "map.orientation");
     migrateToSession<int>("Storage/LayerDataFormat", "map.layerDataFormat");
@@ -838,21 +840,6 @@ void Preferences::setWheelZoomsByDefault(bool mode)
 QString Preferences::dataLocation()
 {
     return QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
-}
-
-QString Preferences::stampsDirectory() const
-{
-    QString directory = get<QString>("Storage/StampsDirectory");
-    if (directory.isEmpty())
-        return dataLocation() + QLatin1String("/stamps");
-
-    return directory;
-}
-
-void Preferences::setStampsDirectory(const QString &stampsDirectory)
-{
-    setValue(QLatin1String("Storage/StampsDirectory"), stampsDirectory);
-    emit stampsDirectoryChanged(stampsDirectory);
 }
 
 QString Preferences::objectTypesFile() const

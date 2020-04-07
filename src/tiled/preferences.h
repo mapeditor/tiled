@@ -144,9 +144,6 @@ public:
     QString lastPath(FileType fileType) const;
     void setLastPath(FileType fileType, const QString &path);
 
-    QString stampsDirectory() const;
-    void setStampsDirectory(const QString &stampsDirectory);
-
     QString objectTypesFile() const;
     void setObjectTypesFile(const QString &filePath);
     void setObjectTypesFileLastSaved(const QDateTime &time);
@@ -192,6 +189,7 @@ public:
 
     static SessionOption<bool> automappingWhileDrawing;
     static SessionOption<QStringList> loadedWorlds;
+    SessionOption<QString> stampsDirectory;     // can't be static due to default value
 
 public slots:
     void setShowGrid(bool showGrid);
@@ -242,8 +240,6 @@ signals:
     void languageChanged();
 
     void objectTypesChanged();
-
-    void stampsDirectoryChanged(const QString &stampsDirectory);
 
     void isPatronChanged();
 
