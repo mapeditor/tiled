@@ -233,7 +233,7 @@ TileItem::TileItem(const Cell &cell, QPoint position, MapItem *parent)
     , mPosition(position)
 {
     setFlag(ItemHasContents);
-    setZ(position.y() * parent->map()->tileHeight());
+    setZ(position.y() * parent->map().mMap->tileHeight());
 }
 
 QSGNode *TileItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNodeData *)

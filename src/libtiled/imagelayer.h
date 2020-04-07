@@ -45,8 +45,6 @@ namespace Tiled {
  */
 class TILEDSHARED_EXPORT ImageLayer : public Layer
 {
-    Q_OBJECT
-
 public:
     ImageLayer(const QString &name, int x, int y);
     ~ImageLayer() override;

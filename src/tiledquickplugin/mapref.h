@@ -1,6 +1,6 @@
 /*
- * tiledquickplugin.cpp
- * Copyright 2014, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+ * mapref.h
+ * Copyright 2020, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled Quick.
  *
@@ -18,29 +18,30 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "tiledquickplugin.h"
+#pragma once
 
-#include "map.h"
-#include "mapobject.h"
-#include "objectgroup.h"
+#include <QObject>
 
-#include "mapitem.h"
-#include "maploader.h"
-
-#include <qqml.h>
-
-using namespace TiledQuick;
-
-void TiledQuickPlugin::registerTypes(const char *uri)
-{
-    // @uri org.mapeditor.Tiled
-
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    qmlRegisterType<MapRef>();
-#else
-    qmlRegisterAnonymousType<MapRef>(uri, 1);
-#endif
-
-    qmlRegisterType<MapLoader>(uri, 1, 0, "MapLoader");
-    qmlRegisterType<MapItem>(uri, 1, 0, "MapItem");
+namespace Tiled {
+class Map;
 }
+
+namespace TiledQuick {
+
+class MapRef
+{
+    Q_GADGET
+
+public:
+    MapRef(Tiled::Map *map = nullptr)
+        : mMap(map)
+    {}
+
+    Tiled::Map *mMap;
+
+    operator Tiled::Map *() const { return mMap; }
+};
+
+} // namespace TiledQuick
+
+Q_DECLARE_METATYPE(TiledQuick::MapRef)

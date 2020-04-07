@@ -20,14 +20,12 @@
 
 #pragma once
 
+#include "mapref.h"
+
 #include <QObject>
 #include <QUrl>
 
 #include <memory>
-
-namespace Tiled {
-class Map;
-}
 
 namespace TiledQuick {
 
@@ -36,7 +34,7 @@ class MapLoader : public QObject
     Q_OBJECT
 
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
-    Q_PROPERTY(Tiled::Map *map READ map NOTIFY sourceChanged)
+    Q_PROPERTY(TiledQuick::MapRef map READ map NOTIFY sourceChanged)
     Q_PROPERTY(Status status READ status NOTIFY statusChanged)
     Q_PROPERTY(QString error READ error NOTIFY errorChanged)
 
@@ -52,7 +50,7 @@ public:
     ~MapLoader();
 
     QUrl source() const;
-    Tiled::Map *map() const;
+    MapRef map() const;
     Status status() const;
     QString error() const;
 
@@ -73,9 +71,9 @@ private:
 };
 
 
-inline Tiled::Map *MapLoader::map() const
+inline MapRef MapLoader::map() const
 {
-    return m_map.get();
+    return { m_map.get() };
 }
 
 inline MapLoader::Status MapLoader::status() const

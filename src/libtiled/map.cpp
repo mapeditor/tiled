@@ -82,44 +82,6 @@ Map::~Map()
     qDeleteAll(mLayers);
 }
 
-void Map::setWidth(int width)
-{
-    if (width == mWidth)
-        return;
-
-    mWidth = width;
-    emit widthChanged();
-    emit sizeChanged();
-}
-
-void Map::setHeight(int height)
-{
-    if (height == mHeight)
-        return;
-
-    mHeight = height;
-    emit heightChanged();
-    emit sizeChanged();
-}
-
-void Map::setTileWidth(int width)
-{
-    if (width == mTileWidth)
-        return;
-
-    mTileWidth = width;
-    emit tileWidthChanged();
-}
-
-void Map::setTileHeight(int height)
-{
-    if (height == mTileHeight)
-        return;
-
-    mTileHeight = height;
-    emit tileHeightChanged();
-}
-
 QMargins Map::drawMargins() const
 {
     if (mDrawMarginsDirty)

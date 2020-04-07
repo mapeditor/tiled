@@ -219,8 +219,6 @@ inline const Cell &Chunk::cellAt(QPoint point) const
  */
 class TILEDSHARED_EXPORT TileLayer : public Layer
 {
-    Q_OBJECT
-
 public:
     class iterator
     {

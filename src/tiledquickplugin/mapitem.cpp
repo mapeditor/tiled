@@ -41,12 +41,12 @@ MapItem::MapItem(QQuickItem *parent)
 
 MapItem::~MapItem() = default;
 
-void MapItem::setMap(Tiled::Map *map)
+void MapItem::setMap(MapRef map)
 {
-    if (mMap == map)
+    if (mMap == map.mMap)
         return;
 
-    mMap = map;
+    mMap = map.mMap;
     refresh();
     emit mapChanged();
 }

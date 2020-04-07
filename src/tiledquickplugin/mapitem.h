@@ -20,12 +20,13 @@
 
 #pragma once
 
+#include "mapref.h"
+
 #include <QQuickItem>
 
 #include <memory>
 
 namespace Tiled {
-class Map;
 class MapRenderer;
 } // namespace Tiled
 
@@ -41,15 +42,15 @@ class MapItem : public QQuickItem
 {
     Q_OBJECT
 
-    Q_PROPERTY(Tiled::Map *map READ map WRITE setMap NOTIFY mapChanged)
+    Q_PROPERTY(TiledQuick::MapRef map READ map WRITE setMap NOTIFY mapChanged)
     Q_PROPERTY(QRectF visibleArea READ visibleArea WRITE setVisibleArea NOTIFY visibleAreaChanged)
 
 public:
     explicit MapItem(QQuickItem *parent = nullptr);
     ~MapItem();
 
-    Tiled::Map *map() const;
-    void setMap(Tiled::Map *map);
+    MapRef map() const;
+    void setMap(MapRef map);
 
     const QRectF &visibleArea() const;
     void setVisibleArea(const QRectF &visibleArea);
@@ -86,7 +87,7 @@ private:
 inline const QRectF &MapItem::visibleArea() const
 { return mVisibleArea; }
 
-inline Tiled::Map *MapItem::map() const
-{ return mMap; }
+inline MapRef MapItem::map() const
+{ return { mMap }; }
 
 } // namespace TiledQuick

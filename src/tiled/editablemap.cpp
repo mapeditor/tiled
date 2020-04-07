@@ -59,10 +59,6 @@ EditableMap::EditableMap(QObject *parent)
     , mSelectedArea(nullptr)
 {
     mDetachedMap.reset(map());
-
-    connect(map(), &Map::sizeChanged, this, &EditableMap::sizeChanged);
-    connect(map(), &Map::tileWidthChanged, this, &EditableMap::tileWidthChanged);
-    connect(map(), &Map::tileHeightChanged, this, &EditableMap::tileHeightChanged);
 }
 
 EditableMap::EditableMap(MapDocument *mapDocument, QObject *parent)
@@ -70,10 +66,6 @@ EditableMap::EditableMap(MapDocument *mapDocument, QObject *parent)
     , mReadOnly(false)
     , mSelectedArea(new EditableSelectedArea(mapDocument, this))
 {
-    connect(map(), &Map::sizeChanged, this, &EditableMap::sizeChanged);
-    connect(map(), &Map::tileWidthChanged, this, &EditableMap::tileWidthChanged);
-    connect(map(), &Map::tileHeightChanged, this, &EditableMap::tileHeightChanged);
-
     connect(mapDocument, &Document::fileNameChanged, this, &EditableAsset::fileNameChanged);
     connect(mapDocument, &Document::changed, this, &EditableMap::documentChanged);
     connect(mapDocument, &MapDocument::layerAdded, this, &EditableMap::attachLayer);

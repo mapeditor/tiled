@@ -30,6 +30,7 @@ DynamicLibrary {
         "mapitem.h",
         "maploader.cpp",
         "maploader.h",
+        "mapref.h",
         "tiledquickplugin.cpp",
         "tiledquickplugin.h",
         "tilelayeritem.cpp",

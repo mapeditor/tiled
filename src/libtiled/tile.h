@@ -94,8 +94,6 @@ struct Frame
 
 class TILEDSHARED_EXPORT Tile : public Object
 {
-    Q_OBJECT
-
 public:
     Tile(int id, Tileset *tileset);
     Tile(const QPixmap &image, int id, Tileset *tileset);
@@ -265,7 +263,8 @@ inline void Tile::setType(const QString &type)
  */
 inline int Tile::cornerTerrainId(int corner) const
 {
-    unsigned t = (terrain() >> (3 - corner)*8) & 0xFF; return t == 0xFF ? -1 : (int)t;
+    unsigned t = (terrain() >> (3 - corner)*8) & 0xFF;
+    return t == 0xFF ? -1 : int(t);
 }
 
 /**
@@ -338,3 +337,5 @@ inline void Tile::setImageStatus(LoadingStatus status)
 }
 
 } // namespace Tiled
+
+Q_DECLARE_METATYPE(Tiled::Tile*)

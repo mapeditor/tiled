@@ -57,14 +57,6 @@ class Tile;
  */
 class TILEDSHARED_EXPORT Map : public Object
 {
-    Q_OBJECT
-
-    Q_PROPERTY(int width READ width NOTIFY widthChanged)
-    Q_PROPERTY(int height READ height NOTIFY heightChanged)
-    Q_PROPERTY(int tileWidth READ tileWidth NOTIFY tileWidthChanged)
-    Q_PROPERTY(int tileHeight READ tileHeight NOTIFY tileHeightChanged)
-    Q_PROPERTY(QSize size READ size NOTIFY sizeChanged)
-
     class LayerIteratorHelper
     {
     public:
@@ -98,7 +90,6 @@ public:
         Staggered,
         Hexagonal
     };
-    Q_ENUM(Orientation)
 
     /**
      * The different formats in which the tile layer data can be stored.
@@ -111,7 +102,6 @@ public:
         Base64Zstandard = 4,
         CSV             = 5
     };
-    Q_ENUM(LayerDataFormat)
 
     /**
      * The order in which tiles are rendered on screen.
@@ -122,7 +112,6 @@ public:
         LeftDown   = 2,
         LeftUp     = 3
     };
-    Q_ENUM(RenderOrder)
 
     /**
      * Which axis is staggered. Only used by the isometric staggered and
@@ -132,7 +121,6 @@ public:
         StaggerX,
         StaggerY
     };
-    Q_ENUM(StaggerAxis)
 
     /**
      * When staggering, specifies whether the odd or the even rows/columns are
@@ -143,7 +131,6 @@ public:
         StaggerOdd  = 0,
         StaggerEven = 1
     };
-    Q_ENUM(StaggerIndex)
 
     Map();
 
@@ -470,13 +457,6 @@ public:
 
     QRegion tileRegion() const;
 
-signals:
-    void widthChanged();
-    void heightChanged();
-    void tileWidthChanged();
-    void tileHeightChanged();
-    void sizeChanged();
-
 private:
     friend class GroupLayer;    // so it can call adoptLayer
 
@@ -506,6 +486,26 @@ private:
     int mNextObjectId;
 };
 
+
+inline void Map::setWidth(int width)
+{
+    mWidth = width;
+}
+
+inline void Map::setHeight(int height)
+{
+    mHeight = height;
+}
+
+inline void Map::setTileWidth(int width)
+{
+    mTileWidth = width;
+}
+
+inline void Map::setTileHeight(int height)
+{
+    mTileHeight = height;
+}
 
 inline int Map::hexSideLength() const
 {
@@ -691,6 +691,7 @@ typedef QSharedPointer<Map> SharedMap;
 
 } // namespace Tiled
 
+Q_DECLARE_METATYPE(Tiled::Map*)
 Q_DECLARE_METATYPE(Tiled::Map::Orientation)
 Q_DECLARE_METATYPE(Tiled::Map::LayerDataFormat)
 Q_DECLARE_METATYPE(Tiled::Map::RenderOrder)

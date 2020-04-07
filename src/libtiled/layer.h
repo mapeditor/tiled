@@ -51,15 +51,6 @@ class TileLayer;
  */
 class TILEDSHARED_EXPORT Layer : public Object
 {
-    Q_OBJECT
-
-    Q_PROPERTY(QString name READ name)
-    Q_PROPERTY(qreal opacity READ opacity)
-    Q_PROPERTY(QColor tintColor READ tintColor WRITE setTintColor)
-    Q_PROPERTY(bool visible READ isVisible)
-    Q_PROPERTY(bool locked READ isLocked)
-    Q_PROPERTY(QPointF offset READ offset)
-
 public:
     enum TypeFlag {
         TileLayerType   = 0x01,
@@ -419,3 +410,5 @@ TILEDSHARED_EXPORT int globalIndex(Layer *layer);
 TILEDSHARED_EXPORT Layer *layerAtGlobalIndex(const Map *map, int index);
 
 } // namespace Tiled
+
+Q_DECLARE_METATYPE(Tiled::Layer*)

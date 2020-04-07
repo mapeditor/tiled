@@ -47,8 +47,6 @@ class MapObject;
  */
 class TILEDSHARED_EXPORT ObjectGroup : public Layer
 {
-    Q_OBJECT
-
 public:
     /**
      * Objects within an object group can either be drawn top down (sorted

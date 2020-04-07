@@ -65,8 +65,6 @@ typedef QSharedPointer<Tileset> SharedTileset;
  */
 class TILEDSHARED_EXPORT Tileset : public Object
 {
-    Q_OBJECT
-
 public:
     /**
      * The orientation of the tileset determines the projection used in the
@@ -689,4 +687,5 @@ inline LoadingStatus Tileset::imageStatus() const
 
 } // namespace Tiled
 
+Q_DECLARE_METATYPE(Tiled::Tileset*)
 Q_DECLARE_METATYPE(Tiled::SharedTileset)
