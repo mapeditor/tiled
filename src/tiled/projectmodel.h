@@ -63,6 +63,7 @@ public:
 
     QString filePath(const QModelIndex &index) const;
 
+    QModelIndex index(const QString &filePath) const;
     QModelIndex index(int row, int column,
                       const QModelIndex &parent = QModelIndex()) const override;
     QModelIndex parent(const QModelIndex &index) const override;

@@ -2104,6 +2104,8 @@ void MainWindow::documentChanged(Document *document)
     if (document) {
         connect(document, &Document::fileNameChanged,
                 this, &MainWindow::updateWindowTitle);
+
+        mProjectDock->selectFile(document->fileName());
     }
 
     MapDocument *mapDocument = qobject_cast<MapDocument*>(document);

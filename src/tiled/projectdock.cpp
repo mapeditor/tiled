@@ -169,6 +169,13 @@ void ProjectDock::setProject(Project project)
     mProjectView->model()->setProject(std::move(project));
 }
 
+void ProjectDock::selectFile(const QString &filePath)
+{
+    auto index = mProjectView->model()->index(filePath);
+    if (index.isValid())
+        mProjectView->setCurrentIndex(index);
+}
+
 void ProjectDock::retranslateUi()
 {
     setWindowTitle(tr("Project"));

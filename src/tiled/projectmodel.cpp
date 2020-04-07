@@ -51,6 +51,23 @@ private:
 };
 
 
+static FolderEntry *findEntry(const std::vector<std::unique_ptr<FolderEntry>> &entries, const QString &filePath)
+{
+    for (const auto &entry : entries) {
+        if (!filePath.startsWith(entry->filePath))
+            continue;
+
+        if (filePath.length() == entry->filePath.length())
+            return entry.get();
+
+        if (FolderEntry *childEntry = findEntry(entry->entries, filePath))
+            return childEntry;
+    }
+
+    return nullptr;
+}
+
+
 ProjectModel::ProjectModel(QObject *parent)
     : QAbstractItemModel(parent)
 {
@@ -123,8 +140,15 @@ void ProjectModel::removeFolder(int row)
 
 void ProjectModel::refreshFolders()
 {
+    if (mFolders.empty())
+        return;
+
     for (const auto &folder : mFolders)
         scheduleFolderScan(folder->filePath);
+
+    // Display the "Refreshing" label
+    emit dataChanged(index(0, 0),
+                     index(int(mFolders.size() - 1), 0), { Qt::DisplayRole });
 }
 
 QString ProjectModel::filePath(const QModelIndex &index) const
@@ -136,15 +160,22 @@ QString ProjectModel::filePath(const QModelIndex &index) const
     return entry->filePath;
 }
 
+QModelIndex ProjectModel::index(const QString &filePath) const
+{
+    if (FolderEntry *entry = findEntry(mFolders, filePath))
+        return indexForEntry(entry);
+    return QModelIndex();
+}
+
 QModelIndex ProjectModel::index(int row, int column, const QModelIndex &parent) const
 {
     if (parent.isValid()) {
         FolderEntry *entry = entryForIndex(parent);
         if (row < int(entry->entries.size()))
-            return createIndex(row, column, entry->entries.at(row).get());
+            return createIndex(row, column, entry->entries.at(unsigned(row)).get());
     } else {
         if (row < int(mFolders.size()))
-            return createIndex(row, column, mFolders.at(row).get());
+            return createIndex(row, column, mFolders.at(unsigned(row)).get());
     }
 
     return QModelIndex();
@@ -159,10 +190,10 @@ QModelIndex ProjectModel::parent(const QModelIndex &index) const
 int ProjectModel::rowCount(const QModelIndex &parent) const
 {
     if (!parent.isValid())
-        return mFolders.size();
+        return int(mFolders.size());
 
     FolderEntry *entry = entryForIndex(parent);
-    return entry->entries.size();
+    return int(entry->entries.size());
 }
 
 int ProjectModel::columnCount(const QModelIndex &) const
@@ -207,7 +238,7 @@ Qt::ItemFlags ProjectModel::flags(const QModelIndex &index) const
 
 QStringList ProjectModel::mimeTypes() const
 {
-    return QStringList(QLatin1String("text/uri-list"));
+    return { QLatin1String("text/uri-list") };
 }
 
 QMimeData *ProjectModel::mimeData(const QModelIndexList &indexes) const
@@ -244,7 +275,7 @@ QModelIndex ProjectModel::indexForEntry(FolderEntry *entry) const
                                  [entry] (const std::unique_ptr<FolderEntry> &value) { return value.get() == entry; });
 
     Q_ASSERT(it != container.end());
-    return createIndex(std::distance(container.begin(), it), 0, entry);
+    return createIndex(int(std::distance(container.begin(), it)), 0, entry);
 }
 
 void ProjectModel::pluginObjectAddedOrRemoved(QObject *object)
@@ -269,6 +300,8 @@ void ProjectModel::updateNameFilters()
         nameFilters.append(Utils::cleanFilterList(filter));
     }
 
+    nameFilters.removeDuplicates();
+
     if (mNameFilters != nameFilters) {
         mNameFilters = nameFilters;
         emit nameFiltersChanged(nameFilters);
@@ -284,9 +317,6 @@ void ProjectModel::scheduleFolderScan(const QString &folder)
     } else if (!mFoldersPendingScan.contains(folder)) {
         mFoldersPendingScan.append(folder);
     }
-
-    emit dataChanged(index(0, 0),
-                     index(mFolders.size() - 1, 0), { Qt::DisplayRole });
 }
 
 void ProjectModel::folderScanned(FolderEntry *resultPointer)
@@ -303,19 +333,19 @@ void ProjectModel::folderScanned(FolderEntry *resultPointer)
         return;
 
     // There appears to be no way to reset a subset of the model, so signal the
-    // removal of all previous rows and re-adding of the new rows instead.
+    // removal of all previous rows and re-add the new rows instead.
 
     const std::unique_ptr<FolderEntry> &entry = *it;
     const QModelIndex index = indexForEntry(entry.get());
 
     if (!entry->entries.empty()) {
-        beginRemoveRows(index, 0, entry->entries.size() - 1);
+        beginRemoveRows(index, 0, int(entry->entries.size() - 1));
         entry->entries.clear();
         endRemoveRows();
     }
 
     if (!result->entries.empty()) {
-        beginInsertRows(index, 0, result->entries.size() - 1);
+        beginInsertRows(index, 0, int(result->entries.size() - 1));
         entry->entries.swap(result->entries);
 
         // Fix up parent pointers

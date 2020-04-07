@@ -38,6 +38,8 @@ public:
     Project &project() const;
     void setProject(Project project);
 
+    void selectFile(const QString &filePath);
+
     void addFolderToProject();
     void refreshProjectFolders();
 
