@@ -855,21 +855,6 @@ void Preferences::setStampsDirectory(const QString &stampsDirectory)
     emit stampsDirectoryChanged(stampsDirectory);
 }
 
-QString Preferences::templatesDirectory() const
-{
-    QString directory = get<QString>("Storage/TemplatesDirectory");
-    if (directory.isEmpty())
-        return dataLocation() + QLatin1String("/templates");
-
-    return directory;
-}
-
-void Preferences::setTemplatesDirectory(const QString &templatesDirectory)
-{
-    setValue(QLatin1String("Storage/TemplatesDirectory"), templatesDirectory);
-    emit templatesDirectoryChanged(templatesDirectory);
-}
-
 QString Preferences::objectTypesFile() const
 {
     QString file = get<QString>("Storage/ObjectTypesFile");

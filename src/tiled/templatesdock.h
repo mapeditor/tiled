@@ -23,12 +23,10 @@
 
 #include "mapdocument.h"
 
-#include <QAction>
 #include <QDockWidget>
 #include <QHash>
-#include <QSharedPointer>
-#include <QTreeView>
 
+class QAction;
 class QPushButton;
 class QLabel;
 
@@ -41,7 +39,6 @@ class Tile;
 class AbstractTool;
 class MapScene;
 class MapView;
-class ObjectTemplateModel;
 class PropertiesDock;
 class TemplatesView;
 class ToolManager;
@@ -63,9 +60,13 @@ signals:
 
 public slots:
     void openTemplate(const QString &path);
+    void tryOpenTemplate(const QString &filePath);
     void bringToFront();
 
 protected:
+    void dragEnterEvent(QDragEnterEvent *event) override;
+    void dropEvent(QDropEvent *event) override;
+
     void focusInEvent(QFocusEvent *event) override;
     void focusOutEvent(QFocusEvent *event) override;
 
@@ -77,16 +78,11 @@ private:
     void redo();
     void applyChanges();
 
-    void chooseDirectory();
-
     void retranslateUi();
     void fixTileset();
 
     MapObject *dummyObject() const;
 
-    TemplatesView *mTemplatesView;
-
-    QAction *mChooseDirectory;
     QAction *mUndoAction;
     QAction *mRedoAction;
     QPushButton *mFixTilesetButton;
@@ -100,32 +96,6 @@ private:
     ToolManager *mToolManager;
 
     static QHash<ObjectTemplate*, QWeakPointer<MapDocument>> ourDummyDocuments;
-};
-
-class TemplatesView : public QTreeView
-{
-    Q_OBJECT
-
-public:
-    QSize sizeHint() const override;
-    TemplatesView(QWidget *parent = nullptr);
-    void setSelectedTemplate(const QString &path);
-
-signals:
-    void currentTemplateChanged(ObjectTemplate *objectTemplate);
-    void focusInEvent(QFocusEvent *event) override;
-    void focusOutEvent(QFocusEvent *event) override;
-
-protected:
-    void contextMenuEvent(QContextMenuEvent *event) override;
-
-public slots:
-    void onCurrentChanged(const QModelIndex &index);
-
-private:
-    void onTemplatesDirectoryChanged(const QString &rootPath);
-
-    QSharedPointer<ObjectTemplateModel> mModel;
 };
 
 inline void TemplatesDock::setPropertiesDock(PropertiesDock *propertiesDock)

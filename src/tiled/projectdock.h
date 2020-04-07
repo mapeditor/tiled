@@ -43,10 +43,14 @@ public:
 
     void setExpandedPaths(const QStringList &expandedPaths);
 
+signals:
+    void fileSelected(const QString &filePath);
+
 protected:
     void changeEvent(QEvent *e) override;
 
 private:
+    void onCurrentRowChanged(const QModelIndex &current);
     void retranslateUi();
 
     ProjectView *mProjectView;

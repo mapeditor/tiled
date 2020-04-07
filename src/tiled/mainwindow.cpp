@@ -61,6 +61,7 @@
 #include "offsetmapdialog.h"
 #include "projectdock.h"
 #include "resizedialog.h"
+#include "templatesdock.h"
 #include "terrain.h"
 #include "tile.h"
 #include "tilelayer.h"
@@ -393,6 +394,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mDocumentManager->setEditor(Document::TilesetDocumentType, mTilesetEditor);
 
     setCentralWidget(mDocumentManager->widget());
+
+    connect(mProjectDock, &ProjectDock::fileSelected,
+            mMapEditor->templatesDock(), &TemplatesDock::tryOpenTemplate);
+    connect(mProjectDock, &ProjectDock::fileSelected,
+            mTilesetEditor->templatesDock(), &TemplatesDock::tryOpenTemplate);
 
     auto snappingGroup = new QActionGroup(this);
     mUi->actionSnapNothing->setActionGroup(snappingGroup);

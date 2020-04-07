@@ -62,6 +62,8 @@ class TilesetEditor : public Editor
 public:
     explicit TilesetEditor(QObject *parent = nullptr);
 
+    TemplatesDock *templatesDock() const { return mTemplatesDock; }
+
     void saveState() override;
     void restoreState() override;
 

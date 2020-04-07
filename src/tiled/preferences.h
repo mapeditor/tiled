@@ -147,9 +147,6 @@ public:
     QString stampsDirectory() const;
     void setStampsDirectory(const QString &stampsDirectory);
 
-    QString templatesDirectory() const;
-    void setTemplatesDirectory(const QString &path);
-
     QString objectTypesFile() const;
     void setObjectTypesFile(const QString &filePath);
     void setObjectTypesFileLastSaved(const QDateTime &time);
@@ -247,7 +244,6 @@ signals:
     void objectTypesChanged();
 
     void stampsDirectoryChanged(const QString &stampsDirectory);
-    void templatesDirectoryChanged(const QString &templatesDirectory);
 
     void isPatronChanged();
 

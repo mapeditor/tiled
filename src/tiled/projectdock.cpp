@@ -22,8 +22,11 @@
 
 #include "actionmanager.h"
 #include "documentmanager.h"
+#include "mapdocumentactionhandler.h"
+#include "objecttemplate.h"
 #include "preferences.h"
 #include "projectmodel.h"
+#include "templatemanager.h"
 #include "utils.h"
 
 #include <QBoxLayout>
@@ -53,8 +56,9 @@ public:
     QSize sizeHint() const override;
 
     void setModel(QAbstractItemModel *model) override;
-
     ProjectModel *model() const { return mProjectModel; }
+
+    // TODO: Add 'select by file name'
 
     QStringList expandedPaths() const { return mExpandedPaths.values(); }
     void setExpandedPaths(const QStringList &paths);
@@ -93,6 +97,9 @@ ProjectDock::ProjectDock(QWidget *parent)
     auto prefs = Preferences::instance();
     connect(prefs, &Preferences::aboutToSaveSession,
             this, [this, prefs] { prefs->session().expandedProjectPaths = mProjectView->expandedPaths(); });
+
+    connect(mProjectView->selectionModel(), &QItemSelectionModel::currentRowChanged,
+            this, &ProjectDock::onCurrentRowChanged);
 }
 
 void ProjectDock::addFolderToProject()
@@ -142,6 +149,16 @@ void ProjectDock::changeEvent(QEvent *e)
     }
 }
 
+void ProjectDock::onCurrentRowChanged(const QModelIndex &current)
+{
+    if (!current.isValid())
+        return;
+
+    const auto filePath = mProjectView->model()->filePath(current);
+    if (QFileInfo { filePath }.isFile())
+        emit fileSelected(filePath);
+}
+
 Project &ProjectDock::project() const
 {
     return mProjectView->model()->project();
@@ -166,6 +183,7 @@ ProjectView::ProjectView(QWidget *parent)
     setUniformRowHeights(true);
     setDragEnabled(true);
     setDefaultDropAction(Qt::MoveAction);
+    setDragDropMode(QAbstractItemView::DragOnly);
 
     auto model = new ProjectModel(this);
     setModel(model);
@@ -215,7 +233,23 @@ void ProjectView::contextMenuEvent(QContextMenuEvent *event)
     QMenu menu;
 
     if (index.isValid()) {
+        const auto filePath = model()->filePath(index);
+
+        Utils::addFileManagerActions(menu, filePath);
+
+        if (QFileInfo { filePath }.isFile()) {
+            auto objectTemplate = TemplateManager::instance()->loadObjectTemplate(filePath);
+            if (objectTemplate->object()) {
+                menu.addSeparator();
+                auto action = menu.addAction(tr("Select Template Instances"), [objectTemplate] {
+                    MapDocumentActionHandler::instance()->selectAllInstances(objectTemplate);
+                });
+                action->setEnabled(MapDocumentActionHandler::instance()->mapDocument() != nullptr);
+            }
+        }
+
         if (!index.parent().isValid()) {
+            menu.addSeparator();
             auto removeFolder = menu.addAction(tr("&Remove Folder from Project"), [=] {
                 model()->removeFolder(index.row());
 
