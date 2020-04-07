@@ -364,8 +364,8 @@ void PropertiesDock::showContextMenu(const QPoint& pos)
     QAction *pasteAction = contextMenu.addAction(tr("&Paste"), this, &PropertiesDock::pasteProperties);
     contextMenu.addSeparator();
     QMenu *convertMenu = contextMenu.addMenu(tr("Convert To"));
-    QAction *renameAction = contextMenu.addAction(tr("Rename..."), this, &PropertiesDock::renameProperty);
-    QAction *removeAction = contextMenu.addAction(tr("Remove"), this, &PropertiesDock::removeProperties);
+    contextMenu.addAction(mActionRenameProperty);
+    contextMenu.addAction(mActionRemoveProperty);
 
     cutAction->setShortcuts(QKeySequence::Cut);
     cutAction->setIcon(QIcon(QLatin1String(":/images/16/edit-cut.png")));
@@ -376,17 +376,10 @@ void PropertiesDock::showContextMenu(const QPoint& pos)
     pasteAction->setShortcuts(QKeySequence::Paste);
     pasteAction->setIcon(QIcon(QLatin1String(":/images/16/edit-paste.png")));
     pasteAction->setEnabled(ClipboardManager::instance()->hasProperties());
-    renameAction->setEnabled(mActionRenameProperty->isEnabled());
-    renameAction->setIcon(mActionRenameProperty->icon());
-    removeAction->setEnabled(mActionRemoveProperty->isEnabled());
-    removeAction->setShortcuts(mActionRemoveProperty->shortcuts());
-    removeAction->setIcon(mActionRemoveProperty->icon());
 
     Utils::setThemeIcon(cutAction, "edit-cut");
     Utils::setThemeIcon(copyAction, "edit-copy");
     Utils::setThemeIcon(pasteAction, "edit-paste");
-    Utils::setThemeIcon(removeAction, "remove");
-
 
     if (customPropertiesSelected) {
         const int convertTo[] = {
@@ -489,9 +482,13 @@ void PropertiesDock::retranslateUi()
 {
     setWindowTitle(tr("Properties"));
 
-    mActionAddProperty->setText(tr("Add Property"));
-    mActionRemoveProperty->setText(tr("Remove Property"));
-    mActionRenameProperty->setText(tr("Rename Property"));
+    mActionAddProperty->setToolTip(tr("Add Property"));
+
+    mActionRemoveProperty->setText(tr("Remove"));
+    mActionRemoveProperty->setToolTip(tr("Remove Property"));
+
+    mActionRenameProperty->setText(tr("Rename..."));
+    mActionRenameProperty->setToolTip(tr("Rename Property"));
 }
 
 } // namespace Tiled
