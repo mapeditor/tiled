@@ -368,7 +368,7 @@ void TemplatesDock::retranslateUi()
 
 void TemplatesDock::fixTileset()
 {
-    if (mObjectTemplate)
+    if (!mObjectTemplate)
         return;
 
     auto tileset = mObjectTemplate->tileset();
