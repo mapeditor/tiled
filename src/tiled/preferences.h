@@ -186,10 +186,10 @@ public:
     { return value(QLatin1String(key), defaultValue).template value<T>(); }
 
     static QString dataLocation();
+    static QString configLocation();
 
     static SessionOption<bool> automappingWhileDrawing;
     static SessionOption<QStringList> loadedWorlds;
-    SessionOption<QString> stampsDirectory;     // can't be static due to default value
 
 public slots:
     void setShowGrid(bool showGrid);

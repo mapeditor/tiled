@@ -55,6 +55,8 @@ public:
 
     TileStampModel *tileStampModel() const;
 
+    SessionOption<QString> stampsDirectory;
+
 public slots:
     TileStamp createStamp();
     void addVariation(const TileStamp &targetStamp);
@@ -81,6 +83,9 @@ private:
     void stampRenamed(TileStamp stamp);
     void saveStamp(const TileStamp &stamp);
     void deleteStamp(const TileStamp &stamp);
+
+    QString stampFilePath(const QString &name);
+    QString findStampFileName(const QString &name, const QString &currentFileName = QString());
 
     QVector<TileStamp> mQuickStamps;
     QMap<QString, TileStamp> mStampsByName;

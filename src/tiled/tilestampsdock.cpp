@@ -274,12 +274,11 @@ void TileStampsDock::addVariation()
 
 void TileStampsDock::chooseFolder()
 {
-    QString stampsDirectory = Preferences::instance()->stampsDirectory;
-    stampsDirectory = QFileDialog::getExistingDirectory(window(),
-                                                        tr("Choose the Stamps Folder"),
-                                                        stampsDirectory);
-    if (!stampsDirectory.isEmpty())
-        Preferences::instance()->stampsDirectory = stampsDirectory;
+    auto directory = QFileDialog::getExistingDirectory(window(),
+                                                       tr("Choose the Stamps Folder"),
+                                                       mTileStampManager->stampsDirectory);
+    if (!directory.isEmpty())
+        mTileStampManager->stampsDirectory = directory;
 }
 
 void TileStampsDock::ensureStampVisible(const TileStamp &stamp)

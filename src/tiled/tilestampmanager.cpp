@@ -45,40 +45,15 @@
 
 using namespace Tiled;
 
-static QString stampFilePath(const QString &name)
-{
-    const QDir stampsDir(Preferences::instance()->stampsDirectory);
-    return stampsDir.filePath(name);
-}
-
-static QString findStampFileName(const QString &name,
-                                 const QString &currentFileName = QString())
-{
-    const QRegularExpression invalidChars(QLatin1String("[^\\w -]+"));
-    const QDir stampsDir(Preferences::instance()->stampsDirectory);
-
-    QString suggestedFileName = name.toLower().remove(invalidChars);
-    QString fileName = suggestedFileName + QLatin1String(".stamp");
-    if (fileName == currentFileName || !stampsDir.exists(fileName))
-        return fileName;
-
-    int n = 2;
-    do {
-        fileName = suggestedFileName + QString::number(n) + QLatin1String(".stamp");
-        ++n;
-    } while (fileName != currentFileName && stampsDir.exists(fileName));
-
-    return fileName;
-}
-
 TileStampManager::TileStampManager(const ToolManager &toolManager,
                                    QObject *parent)
     : QObject(parent)
+    , stampsDirectory("stampsFolder", Preferences::dataLocation() + QLatin1String("/stamps"))
     , mQuickStamps(quickStampKeys().length())
     , mTileStampModel(new TileStampModel(this))
     , mToolManager(toolManager)
 {
-    mRegisteredCb = Preferences::instance()->stampsDirectory.onChange([this] { stampsDirectoryChanged(); });
+    mRegisteredCb = stampsDirectory.onChange([this] { stampsDirectoryChanged(); });
 
     connect(mTileStampModel, &TileStampModel::stampAdded,
             this, &TileStampManager::stampAdded);
@@ -96,7 +71,7 @@ TileStampManager::~TileStampManager()
 {
     // needs to be over here where the TileStamp type is complete
 
-    Preferences::instance()->stampsDirectory.unregister(mRegisteredCb);
+    stampsDirectory.unregister(mRegisteredCb);
 }
 
 static TileStamp stampFromContext(AbstractTool *selectedTool)
@@ -226,12 +201,12 @@ void TileStampManager::setQuickStamp(int index, TileStamp stamp)
 
 void TileStampManager::loadStamps()
 {
-    const QString stampsDirectory = Preferences::instance()->stampsDirectory;
-    const QDir stampsDir(stampsDirectory);
+    const QDir stampsDir(stampsDirectory,
+                         QLatin1String("*.stamp"),
+                         QDir::Name | QDir::IgnoreCase,
+                         QDir::Files | QDir::Readable);
 
-    QDirIterator iterator(stampsDirectory,
-                          QStringList() << QLatin1String("*.stamp"),
-                          QDir::Files | QDir::Readable);
+    QDirIterator iterator(stampsDir);
     while (iterator.hasNext()) {
         const QString &stampFileName = iterator.next();
 
@@ -310,11 +285,10 @@ void TileStampManager::saveStamp(const TileStamp &stamp)
     Q_ASSERT(!stamp.fileName().isEmpty());
 
     // make sure we have a stamps directory
-    const QString stampsDirectory(Preferences::instance()->stampsDirectory);
     QDir stampsDir(stampsDirectory);
 
     if (!stampsDir.exists() && !stampsDir.mkpath(QLatin1String("."))) {
-        qDebug() << "Failed to create stamps directory" << stampsDirectory;
+        qDebug() << "Failed to create stamps directory" << stampsDirectory.get();
         return;
     }
 
@@ -338,4 +312,29 @@ void TileStampManager::deleteStamp(const TileStamp &stamp)
 
     mStampsByName.remove(stamp.name());
     QFile::remove(stampFilePath(stamp.fileName()));
+}
+
+QString TileStampManager::stampFilePath(const QString &name)
+{
+    return QDir { stampsDirectory }.filePath(name);
+}
+
+QString TileStampManager::findStampFileName(const QString &name,
+                                            const QString &currentFileName)
+{
+    const QRegularExpression invalidChars(QLatin1String("[^\\w -]+"));
+    const QDir stampsDir(stampsDirectory);
+
+    QString suggestedFileName = name.toLower().remove(invalidChars);
+    QString fileName = suggestedFileName + QLatin1String(".stamp");
+    if (fileName == currentFileName || !stampsDir.exists(fileName))
+        return fileName;
+
+    int n = 2;
+    do {
+        fileName = suggestedFileName + QString::number(n) + QLatin1String(".stamp");
+        ++n;
+    } while (fileName != currentFileName && stampsDir.exists(fileName));
+
+    return fileName;
 }

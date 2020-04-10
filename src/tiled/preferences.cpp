@@ -54,8 +54,7 @@ void Preferences::deleteInstance()
 }
 
 Preferences::Preferences()
-    : stampsDirectory("stampsFolder", dataLocation() + QLatin1String("/stamps"))
-    , mSession(restoreSessionOnStartup() ? lastSession() : Session::defaultFileName())
+    : mSession(restoreSessionOnStartup() ? lastSession() : Session::defaultFileName())
 {
     // Make sure the data directory exists
     const QDir dataDir { dataLocation() };
@@ -840,6 +839,11 @@ void Preferences::setWheelZoomsByDefault(bool mode)
 QString Preferences::dataLocation()
 {
     return QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+}
+
+QString Preferences::configLocation()
+{
+    return QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
 }
 
 QString Preferences::objectTypesFile() const
