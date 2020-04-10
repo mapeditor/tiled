@@ -41,6 +41,12 @@ Project::Project()
 
 bool Project::save(const QString &fileName)
 {
+    QString extensionsPath = mExtensionsPath;
+
+    // Initialize extensions path to its default value
+    if (mFileName.isEmpty() && extensionsPath.isEmpty())
+        extensionsPath = QFileInfo(fileName).dir().filePath(QLatin1String("extensions"));
+
     QJsonObject project;
 
     const QDir dir = QFileInfo(fileName).dir();
@@ -51,6 +57,7 @@ bool Project::save(const QString &fileName)
         folders.append(relative(dir, folder));
 
     project.insert(QLatin1String("folders"), folders);
+    project.insert(QLatin1String("extensionsPath"), relative(dir, extensionsPath));
 
     QJsonDocument document(project);
 
@@ -63,6 +70,7 @@ bool Project::save(const QString &fileName)
         return false;
 
     mFileName = fileName;
+    mExtensionsPath = extensionsPath;
     return true;
 }
 
@@ -84,6 +92,8 @@ bool Project::load(const QString &fileName)
     const QDir dir = QFileInfo(fileName).dir();
 
     QJsonObject project = document.object();
+
+    mExtensionsPath = QDir::cleanPath(dir.absoluteFilePath(project.value(QLatin1String("extensionsFolder")).toString(QLatin1String("extensions"))));
 
     const QJsonArray folders = project.value(QLatin1String("folders")).toArray();
     for (const QJsonValue &folderValue : folders)

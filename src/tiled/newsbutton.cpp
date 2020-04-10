@@ -106,7 +106,10 @@ void NewsButton::showNewsMenu()
     auto &feed = NewsFeed::instance();
 
     for (const NewsItem &newsItem : feed.newsItems()) {
-        QAction *action = newsFeedMenu->addAction(newsItem.title);
+        QAction *action = newsFeedMenu->addAction(newsItem.title, [=] {
+            QDesktopServices::openUrl(newsItem.link);
+            NewsFeed::instance().markRead(newsItem);
+        });
 
         if (feed.isUnread(newsItem)) {
             QFont f = action->font();
@@ -116,11 +119,6 @@ void NewsButton::showNewsMenu()
         } else {
             action->setIcon(mReadIcon);
         }
-
-        connect(action, &QAction::triggered, [=] {
-            QDesktopServices::openUrl(newsItem.link);
-            NewsFeed::instance().markRead(newsItem);
-        });
     }
 
     newsFeedMenu->addSeparator();

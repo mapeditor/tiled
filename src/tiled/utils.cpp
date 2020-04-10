@@ -291,14 +291,12 @@ void addFileManagerActions(QMenu &menu, const QString &fileName)
     if (fileName.isEmpty())
         return;
 
-    QAction *copyPath = menu.addAction(QCoreApplication::translate("Utils", "Copy File Path"));
-    QObject::connect(copyPath, &QAction::triggered, [fileName] {
+    menu.addAction(QCoreApplication::translate("Utils", "Copy File Path"), [fileName] {
         QClipboard *clipboard = QApplication::clipboard();
         clipboard->setText(QDir::toNativeSeparators(fileName));
     });
 
-    QAction *openFolder = menu.addAction(QCoreApplication::translate("Utils", "Open Containing Folder..."));
-    QObject::connect(openFolder, &QAction::triggered, [fileName] {
+    menu.addAction(QCoreApplication::translate("Utils", "Open Containing Folder..."), [fileName] {
         showInFileManager(fileName);
     });
 }

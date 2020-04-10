@@ -1,6 +1,6 @@
 /*
- * project.h
- * Copyright 2019, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+ * projectpropertiesdialog.h
+ * Copyright 2020, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -20,39 +20,33 @@
 
 #pragma once
 
-#include <QStringList>
+#include <QDialog>
+
+class QtVariantProperty;
+
+namespace Ui {
+class ProjectPropertiesDialog;
+}
 
 namespace Tiled {
 
-class Project
+class Project;
+
+class ProjectPropertiesDialog : public QDialog
 {
+    Q_OBJECT
+
 public:
-    Project();
+    explicit ProjectPropertiesDialog(Project &project, QWidget *parent = nullptr);
+    ~ProjectPropertiesDialog() override;
 
-    const QString &fileName() const;
-    bool save(const QString &fileName);
-    bool load(const QString &fileName);
-
-    void addFolder(const QString &folder);
-    void removeFolder(int index);
-    const QStringList &folders() const;
-
-    QString mExtensionsPath;
+    void accept() override;
 
 private:
-    QString mFileName;
-    QStringList mFolders;
+    Ui::ProjectPropertiesDialog *ui;
+
+    Project &mProject;
+    QtVariantProperty *mExtensionPathProperty;
 };
-
-
-inline const QString &Project::fileName() const
-{
-    return mFileName;
-}
-
-inline const QStringList &Project::folders() const
-{
-    return mFolders;
-}
 
 } // namespace Tiled

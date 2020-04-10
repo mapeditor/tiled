@@ -494,7 +494,7 @@ int main(int argc, char *argv[])
     QObject::connect(&a, &TiledApplication::fileOpenRequest,
                      &w, [&] (const QString &file) { w.openFile(file); });
 
-    initializePluginsAndExtensions();
+    PluginManager::instance()->loadPlugins();
 
     w.initializeSession();
 

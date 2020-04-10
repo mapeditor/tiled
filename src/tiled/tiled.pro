@@ -190,6 +190,7 @@ SOURCES += aboutdialog.cpp \
     project.cpp \
     projectdock.cpp \
     projectmodel.cpp \
+    projectpropertiesdialog.cpp \
     preferencesdialog.cpp \
     propertiesdock.cpp \
     propertybrowser.cpp \
@@ -427,6 +428,7 @@ HEADERS += aboutdialog.h \
     project.h \
     projectdock.h \
     projectmodel.h \
+    projectpropertiesdialog.h \
     propertiesdock.h \
     propertybrowser.h \
     raiselowerhelper.h \
@@ -529,6 +531,7 @@ FORMS += aboutdialog.ui \
     objecttypeseditor.ui \
     offsetmapdialog.ui \
     preferencesdialog.ui \
+    projectpropertiesdialog.ui \
     resizedialog.ui \
     shortcutsettingspage.ui \
     texteditordialog.ui \

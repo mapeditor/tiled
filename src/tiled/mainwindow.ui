@@ -129,7 +129,7 @@
     </widget>
     <addaction name="actionAddExternalTileset"/>
     <addaction name="separator"/>
-    <addaction name="actionNewWorld" />
+    <addaction name="actionNewWorld"/>
     <addaction name="actionLoadWorld"/>
     <addaction name="menuUnloadWorld"/>
     <addaction name="menuSaveWorld"/>
@@ -214,6 +214,8 @@
     <addaction name="separator"/>
     <addaction name="actionAddFolderToProject"/>
     <addaction name="actionRefreshProjectFolders"/>
+    <addaction name="separator"/>
+    <addaction name="actionProjectProperties"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -758,6 +760,15 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+M</string>
+   </property>
+  </action>
+  <action name="actionProjectProperties">
+   <property name="icon">
+    <iconset resource="tiled.qrc">
+     <normaloff>:/images/16/document-properties.png</normaloff>:/images/16/document-properties.png</iconset>
+   </property>
+   <property name="text">
+    <string>Project &amp;Properties...</string>
    </property>
   </action>
  </widget>

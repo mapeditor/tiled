@@ -60,7 +60,9 @@
 #include "objecttypeseditor.h"
 #include "offsetmapdialog.h"
 #include "projectdock.h"
+#include "projectpropertiesdialog.h"
 #include "resizedialog.h"
+#include "scriptmanager.h"
 #include "templatesdock.h"
 #include "terrain.h"
 #include "tile.h"
@@ -274,10 +276,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerAction(mUi->actionLabelsForAllObjects, "LabelsForAllObjects");
     ActionManager::registerAction(mUi->actionLabelsForSelectedObjects, "LabelsForSelectedObjects");
     ActionManager::registerAction(mUi->actionLoadWorld, "LoadWorld");
-    ActionManager::registerAction(mUi->actionNewWorld, "NewWorld");
     ActionManager::registerAction(mUi->actionMapProperties, "MapProperties");
     ActionManager::registerAction(mUi->actionNewMap, "NewMap");
     ActionManager::registerAction(mUi->actionNewTileset, "NewTileset");
+    ActionManager::registerAction(mUi->actionNewWorld, "NewWorld");
     ActionManager::registerAction(mUi->actionNoLabels, "NoLabels");
     ActionManager::registerAction(mUi->actionOffsetMap, "OffsetMap");
     ActionManager::registerAction(mUi->actionOpen, "Open");
@@ -285,6 +287,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerAction(mUi->actionPaste, "Paste");
     ActionManager::registerAction(mUi->actionPasteInPlace, "PasteInPlace");
     ActionManager::registerAction(mUi->actionPreferences, "Preferences");
+    ActionManager::registerAction(mUi->actionProjectProperties, "ProjectProperties");
     ActionManager::registerAction(mUi->actionQuit, "Quit");
     ActionManager::registerAction(mUi->actionRefreshProjectFolders, "RefreshProjectFolders");
     ActionManager::registerAction(mUi->actionReload, "Reload");
@@ -655,6 +658,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionAddFolderToProject, &QAction::triggered, mProjectDock, &ProjectDock::addFolderToProject);
     connect(mUi->actionRefreshProjectFolders, &QAction::triggered, mProjectDock, &ProjectDock::refreshProjectFolders);
     connect(mUi->actionClearRecentProjects, &QAction::triggered, preferences, &Preferences::clearRecentProjects);
+    connect(mUi->actionProjectProperties, &QAction::triggered, this, &MainWindow::projectProperties);
 
     connect(mUi->actionDocumentation, &QAction::triggered, this, &MainWindow::openDocumentation);
     connect(mUi->actionForum, &QAction::triggered, this, &MainWindow::openForum);
@@ -700,6 +704,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     setThemeIcon(mUi->actionCloseProject, "window-close");
     setThemeIcon(mUi->actionAddFolderToProject, "folder-new");
     setThemeIcon(mUi->actionRefreshProjectFolders, "view-refresh");
+    setThemeIcon(mUi->actionProjectProperties, "document-properties");
     setThemeIcon(mUi->actionDocumentation, "help-contents");
     setThemeIcon(mUi->actionAbout, "help-about");
 
@@ -909,10 +914,7 @@ void MainWindow::newMap()
 
 void MainWindow::initializeSession()
 {
-    auto prefs = Preferences::instance();
-    if (!prefs->restoreSessionOnStartup())
-        return;
-
+    const auto prefs = Preferences::instance();
     const auto &session = prefs->session();
 
     // Restore associated project if applicable
@@ -922,7 +924,13 @@ void MainWindow::initializeSession()
         updateWindowTitle();
     }
 
-    restoreSession();
+    // Script manager initialization is delayed until after the project has
+    // been loaded, to avoid immediately having to reset the engine again after
+    // adding the project's extension path.
+    ScriptManager::instance().initialize();
+
+    if (prefs->restoreSessionOnStartup())
+        restoreSession();
 }
 
 bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
@@ -954,6 +962,11 @@ bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
     }
 
     return true;
+}
+
+Project &MainWindow::project() const
+{
+    return mProjectDock->project();
 }
 
 void MainWindow::openFileDialog()
@@ -1333,6 +1346,8 @@ void MainWindow::switchProject(Project project)
     mProjectDock->setProject(std::move(project));
     prefs->switchSession(std::move(session));
 
+    ScriptManager::instance().refreshExtensionsPaths();
+
     restoreSession();
     updateWindowTitle();
     updateActions();
@@ -1353,6 +1368,12 @@ void MainWindow::restoreSession()
     WorldManager::instance().loadWorlds(Preferences::loadedWorlds);
 
     mProjectDock->setExpandedPaths(session.expandedProjectPaths);
+}
+
+void MainWindow::projectProperties()
+{
+    if (ProjectPropertiesDialog(mProjectDock->project(), this).exec() == QDialog::Accepted)
+        ScriptManager::instance().refreshExtensionsPaths();
 }
 
 void MainWindow::cut()
@@ -1965,14 +1986,12 @@ void MainWindow::updateWindowTitle()
 
 void MainWindow::showDonationDialog()
 {
-    DonationDialog donationDialog(this);
-    donationDialog.exec();
+    DonationDialog(this).exec();
 }
 
 void MainWindow::aboutTiled()
 {
-    AboutDialog aboutDialog(this);
-    aboutDialog.exec();
+    AboutDialog(this).exec();
 }
 
 void MainWindow::retranslateUi()

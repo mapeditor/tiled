@@ -53,6 +53,8 @@ MapObject *DisplayObjectRef::object() const
 
 VariantPropertyManager::VariantPropertyManager(QObject *parent)
     : QtVariantPropertyManager(parent)
+    , mFilterAttribute(QStringLiteral("filter"))
+    , mDirectoryAttribute(QStringLiteral("directory"))
     , mSuggestionsAttribute(QStringLiteral("suggestions"))
     , mMultilineAttribute(QStringLiteral("multiline"))
     , mImageMissingIcon(QStringLiteral("://images/16/image-missing.png"))
@@ -68,7 +70,7 @@ VariantPropertyManager::VariantPropertyManager(QObject *parent)
 QVariant VariantPropertyManager::value(const QtProperty *property) const
 {
     if (mValues.contains(property))
-        return mValues[property].value;
+        return mValues[property];
     if (m_alignValues.contains(property))
         return QVariant::fromValue(m_alignValues.value(property));
     return QtVariantPropertyManager::value(property);
@@ -100,8 +102,9 @@ int VariantPropertyManager::valueType(int propertyType) const
 QStringList VariantPropertyManager::attributes(int propertyType) const
 {
     if (propertyType == filePathTypeId()) {
-        return QStringList {
-            QStringLiteral("filter")
+        return {
+            mFilterAttribute,
+            mDirectoryAttribute
         };
     }
     return QtVariantPropertyManager::attributes(propertyType);
@@ -111,8 +114,10 @@ int VariantPropertyManager::attributeType(int propertyType,
                                           const QString &attribute) const
 {
     if (propertyType == filePathTypeId()) {
-        if (attribute == QLatin1String("filter"))
+        if (attribute == mFilterAttribute)
             return QVariant::String;
+        if (attribute == mDirectoryAttribute)
+            return QVariant::Bool;
         return 0;
     }
     return QtVariantPropertyManager::attributeType(propertyType, attribute);
@@ -121,9 +126,11 @@ int VariantPropertyManager::attributeType(int propertyType,
 QVariant VariantPropertyManager::attributeValue(const QtProperty *property,
                                                 const QString &attribute) const
 {
-    if (mValues.contains(property)) {
-        if (attribute == QLatin1String("filter"))
-            return mValues[property].filter;
+    if (mFilePathAttributes.contains(property)) {
+        if (attribute == mFilterAttribute)
+            return mFilePathAttributes[property].filter;
+        if (attribute == mDirectoryAttribute)
+            return mFilePathAttributes[property].directory;
         return QVariant();
     }
     if (mStringAttributes.contains(property)) {
@@ -169,7 +176,7 @@ QString VariantPropertyManager::objectRefLabel(const MapObject *object) const
 QString VariantPropertyManager::valueText(const QtProperty *property) const
 {
     if (mValues.contains(property)) {
-        QVariant value = mValues[property].value;
+        QVariant value = mValues[property];
         int typeId = propertyType(property);
 
         if (typeId == displayObjectRefTypeId()) {
@@ -222,7 +229,7 @@ QString VariantPropertyManager::valueText(const QtProperty *property) const
 QIcon VariantPropertyManager::valueIcon(const QtProperty *property) const
 {
     if (mValues.contains(property)) {
-        QVariant value = mValues[property].value;
+        QVariant value = mValues[property];
         QString filePath;
         int typeId = propertyType(property);
 
@@ -257,11 +264,10 @@ QIcon VariantPropertyManager::valueIcon(const QtProperty *property) const
 void VariantPropertyManager::setValue(QtProperty *property, const QVariant &value)
 {
     if (mValues.contains(property)) {
-        Data d = mValues[property];
-        if (d.value == value)
+        QVariant &storedValue = mValues[property];
+        if (storedValue == value)
             return;
-        d.value = value;
-        mValues[property] = d;
+        storedValue = value;
         emit propertyChanged(property);
         emit valueChanged(property, value);
         return;
@@ -297,17 +303,22 @@ void VariantPropertyManager::setAttribute(QtProperty *property,
                                           const QString &attribute,
                                           const QVariant &val)
 {
-    if (mValues.contains(property)) {
-        if (attribute == QLatin1String("filter")) {
+    if (mFilePathAttributes.contains(property)) {
+        FilePathAttributes &attributes = mFilePathAttributes[property];
+        if (attribute == mFilterAttribute) {
             if (val.type() != QVariant::String && !val.canConvert(QVariant::String))
                 return;
-            QString str = val.toString();
-            Data d = mValues[property];
-            if (d.filter == str)
+            QString filter = val.toString();
+            if (attributes.filter == filter)
                 return;
-            d.filter = str;
-            mValues[property] = d;
-            emit attributeChanged(property, attribute, str);
+            attributes.filter = filter;
+            emit attributeChanged(property, attribute, filter);
+        } else if (attribute == mDirectoryAttribute) {
+            bool directory = val.toBool();
+            if (attributes.directory == directory)
+                return;
+            attributes.directory = directory;
+            emit attributeChanged(property, attribute, directory);
         }
         return;
     }
@@ -332,7 +343,9 @@ void VariantPropertyManager::initializeProperty(QtProperty *property)
     if (type == filePathTypeId()
             || type == displayObjectRefTypeId()
             || type == tilesetParametersTypeId()) {
-        mValues[property] = Data();
+        mValues[property] = QVariant();
+        if (type == filePathTypeId())
+            mFilePathAttributes[property] = FilePathAttributes();
     } else if (type == QVariant::String) {
         mStringAttributes[property] = StringAttributes();
     } else if (type == alignmentTypeId()) {
@@ -365,6 +378,7 @@ void VariantPropertyManager::initializeProperty(QtProperty *property)
 void VariantPropertyManager::uninitializeProperty(QtProperty *property)
 {
     mValues.remove(property);
+    mFilePathAttributes.remove(property);
     mStringAttributes.remove(property);
     m_alignValues.remove(property);
 

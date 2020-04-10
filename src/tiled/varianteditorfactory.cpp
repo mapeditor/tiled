@@ -111,6 +111,7 @@ QWidget *VariantEditorFactory::createEditor(QtVariantPropertyManager *manager,
         FilePath filePath = manager->value(property).value<FilePath>();
         editor->setFileUrl(filePath.url);
         editor->setFilter(manager->attributeValue(property, QLatin1String("filter")).toString());
+        editor->setIsDirectory(manager->attributeValue(property, QLatin1String("directory")).toBool());
         mCreatedFileEdits[property].append(editor);
         mFileEditToProperty[editor] = property;
 
@@ -245,6 +246,9 @@ void VariantEditorFactory::slotPropertyAttributeChanged(QtProperty *property,
         if (attribute == QLatin1String("filter")) {
             for (FileEdit *edit : qAsConst(mCreatedFileEdits)[property])
                 edit->setFilter(value.toString());
+        } else if (attribute == QLatin1String("directory")) {
+            for (FileEdit *edit : qAsConst(mCreatedFileEdits)[property])
+                edit->setIsDirectory(value.toBool());
         }
     }
     else if (mCreatedComboBoxes.contains(property)) {

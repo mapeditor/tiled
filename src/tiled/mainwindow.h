@@ -91,6 +91,8 @@ public:
      */
     bool openFile(const QString &fileName, FileFormat *fileFormat = nullptr);
 
+    Project &project() const;
+
     static MainWindow *instance();
 
 protected:
@@ -125,6 +127,7 @@ private:
     void closeProject();
     void switchProject(Project project);
     void restoreSession();
+    void projectProperties();
 
     void cut();
     void copy();

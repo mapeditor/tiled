@@ -91,11 +91,13 @@ private:
     void slotPropertyDestroyed(QtProperty *property);
     QString objectRefLabel(const MapObject *object) const;
 
-    struct Data {
-        QVariant value;
+    QMap<const QtProperty *, QVariant> mValues;
+
+    struct FilePathAttributes {
         QString filter;
+        bool directory = false;
     };
-    QMap<const QtProperty *, Data> mValues;
+    QMap<const QtProperty *, FilePathAttributes> mFilePathAttributes;
 
     struct StringAttributes {
         QStringList suggestions;
@@ -116,6 +118,8 @@ private:
     PropertyToPropertyMap m_alignHToProperty;
     PropertyToPropertyMap m_alignVToProperty;
 
+    const QString mFilterAttribute;
+    const QString mDirectoryAttribute;
     const QString mSuggestionsAttribute;
     const QString mMultilineAttribute;
     QIcon mImageMissingIcon;

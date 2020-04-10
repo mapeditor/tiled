@@ -1062,20 +1062,17 @@ void DocumentManager::tabContextMenuRequested(const QPoint &pos)
 
     menu.addSeparator();
 
-    QAction *closeTab = menu.addAction(tr("Close"));
-    closeTab->setIcon(QIcon(QStringLiteral(":/images/16/window-close.png")));
-    Utils::setThemeIcon(closeTab, "window-close");
-    connect(closeTab, &QAction::triggered, [this, index] {
+    QAction *closeTab = menu.addAction(tr("Close"), [this, index] {
         documentCloseRequested(index);
     });
+    closeTab->setIcon(QIcon(QStringLiteral(":/images/16/window-close.png")));
+    Utils::setThemeIcon(closeTab, "window-close");
 
-    QAction *closeOtherTabs = menu.addAction(tr("Close Other Tabs"));
-    connect(closeOtherTabs, &QAction::triggered, [this, index] {
+    menu.addAction(tr("Close Other Tabs"), [this, index] {
         closeOtherDocuments(index);
     });
 
-    QAction *closeTabsToRight = menu.addAction(tr("Close Tabs to the Right"));
-    connect(closeTabsToRight, &QAction::triggered, [this, index] {
+    menu.addAction(tr("Close Tabs to the Right"), [this, index] {
         closeDocumentsToRight(index);
     });
 
