@@ -11,7 +11,7 @@
     <message>
         <location line="+96"/>
         <source>Donate ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>Faire un don ↗</translation>
     </message>
     <message>
         <location line="+7"/>
