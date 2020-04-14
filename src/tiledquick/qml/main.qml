@@ -1,6 +1,7 @@
 import QtQuick 2.10
 import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
+import QtQuick.Window 2.11
 import org.mapeditor.Tiled 1.0 as Tiled
 import Qt.labs.settings 1.0
 import Qt.labs.platform 1.0 as Platform
@@ -118,7 +119,11 @@ ApplicationWindow {
 
     Item {
         id: mapView
-        anchors.fill: parent
+
+        scale: 1 / Screen.devicePixelRatio
+        width: parent.width * Screen.devicePixelRatio
+        height: parent.height * Screen.devicePixelRatio
+        transformOrigin: Item.TopLeft
 
         Item {
             id: mapContainer
