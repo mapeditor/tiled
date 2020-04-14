@@ -1,3 +1,12 @@
+### Tiled 1.3.4 (14 April 2020)
+
+* Fixed automatic reload issues when editing object types (regression in 1.3.1, #2768)
+* Scripting: Added methods to get tileset's image size (backported from 1.4, #2733)
+* Scripting: Fixed map.tilesets when 'Embed tilesets' is enabled
+* Fixed the "Fix Tileset" button in the Template Editor
+* macOS: Disabled unified tool bar to avoid repainting issues (#2667)
+* macOS and Linux: Updated Qt from 5.12.6 to 5.12.7
+
 ### Tiled 1.3.3 (3 March 2020)
 
 * Fixed loading of compression level
