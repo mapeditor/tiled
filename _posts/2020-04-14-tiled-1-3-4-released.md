@@ -24,6 +24,6 @@ Many thanks to those who've reported issues and of course to everybody who suppo
 Update on Tiled 1.4
 -------------------
 
-I don't expect there to be another Tiled 1.3 release, since I'm now fully focused on finishing up Tiled 1.4. Check out the "#snapshot" posts to see what's new and consider installing a development snapshot to try it out. Now is the best time to provide feedback on the new features!
+I don't expect there to be another Tiled 1.3 release, since I'm now fully focused on finishing up Tiled 1.4. Check out the "#snapshot" posts at the [devlog on itch.io](https://thorbjorn.itch.io/tiled/devlog) to see what's new and consider installing a development snapshot to try it out. Now is the best time to provide feedback on the new features!
 
 _Please note that I depend on your support to be able to keep improving this tool. If you have not donated yet, please consider a small monthly donation [through GitHub](https://github.com/sponsors/bjorn) or [other platforms](https://www.mapeditor.org/donate). Thanks!_
