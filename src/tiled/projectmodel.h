@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include "filesystemwatcher.h"
 #include "project.h"
 
 #include <QAbstractListModel>
@@ -81,11 +82,16 @@ signals:
     void nameFiltersChanged(const QStringList &nameFilters);
     void scanFolder(const QString &folder);
 
+    void aboutToRefresh();
+    void refreshed();
+
 private:
     FolderEntry *entryForIndex(const QModelIndex &index) const;
     QModelIndex indexForEntry(FolderEntry *entry) const;
 
     void pluginObjectAddedOrRemoved(QObject *object);
+
+    void pathsChanged(const QStringList &paths);
 
     void scheduleFolderScan(const QString &folder);
     void folderScanned(FolderEntry *entry);
@@ -100,6 +106,7 @@ private:
     QThread mScanningThread;
     QString mScanningFolder;
     QStringList mFoldersPendingScan;
+    FileSystemWatcher mWatcher;
 };
 
 

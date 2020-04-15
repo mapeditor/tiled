@@ -36,6 +36,7 @@
 #include <QFileInfo>
 #include <QMenu>
 #include <QMouseEvent>
+#include <QScrollBar>
 #include <QSet>
 #include <QStandardPaths>
 #include <QTreeView>
@@ -66,6 +67,8 @@ public:
     void setExpandedPaths(const QStringList &paths);
     void addExpandedPath(const QString &path);
 
+    void selectPath(const QString &path);
+
 protected:
     void contextMenuEvent(QContextMenuEvent *event) override;
 
@@ -77,6 +80,8 @@ private:
 
     ProjectModel *mProjectModel;
     QSet<QString> mExpandedPaths;
+    QString mSelectedPath;
+    int mScrollBarValue = 0;
 };
 
 
@@ -172,9 +177,7 @@ void ProjectDock::setProject(Project project)
 
 void ProjectDock::selectFile(const QString &filePath)
 {
-    auto index = mProjectView->model()->index(filePath);
-    if (index.isValid())
-        mProjectView->setCurrentIndex(index);
+    mProjectView->selectPath(filePath);
 }
 
 void ProjectDock::retranslateUi()
@@ -206,6 +209,18 @@ ProjectView::ProjectView(QWidget *parent)
             this, [=] (const QModelIndex &index) { mExpandedPaths.insert(model->filePath(index)); });
     connect(this, &QTreeView::collapsed,
             this, [=] (const QModelIndex &index) { mExpandedPaths.remove(model->filePath(index)); });
+
+    // Reselect a previously selected path and restore scrollbar after refresh
+    connect(model, &ProjectModel::aboutToRefresh,
+            this, [=] {
+        mSelectedPath = model->filePath(currentIndex());
+        mScrollBarValue = verticalScrollBar()->value();
+    });
+    connect(model, &ProjectModel::refreshed,
+            this, [=] {
+        selectPath(mSelectedPath);
+        verticalScrollBar()->setValue(mScrollBarValue);
+    });
 }
 
 QSize ProjectView::sizeHint() const
@@ -232,6 +247,13 @@ void ProjectView::setExpandedPaths(const QStringList &paths)
 void ProjectView::addExpandedPath(const QString &path)
 {
     mExpandedPaths.insert(path);
+}
+
+void ProjectView::selectPath(const QString &path)
+{
+    auto index = model()->index(path);
+    if (index.isValid())
+        setCurrentIndex(index);
 }
 
 void ProjectView::contextMenuEvent(QContextMenuEvent *event)
@@ -283,7 +305,7 @@ void ProjectView::contextMenuEvent(QContextMenuEvent *event)
 void ProjectView::onActivated(const QModelIndex &index)
 {
     const QString path = model()->filePath(index);
-    if (!QFileInfo(path).isDir())
+    if (QFileInfo(path).isFile())
         DocumentManager::instance()->openFile(path);
 }
 

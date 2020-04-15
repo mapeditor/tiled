@@ -67,6 +67,16 @@ static FolderEntry *findEntry(const std::vector<std::unique_ptr<FolderEntry>> &e
     return nullptr;
 }
 
+static void collectDirectories(const FolderEntry &entry, QStringList &filePaths)
+{
+    for (const auto &entry : entry.entries) {
+        if (!entry->entries.empty()) {
+            filePaths.append(entry->filePath);
+            collectDirectories(*entry, filePaths);
+        }
+    }
+}
+
 
 ProjectModel::ProjectModel(QObject *parent)
     : QAbstractItemModel(parent)
@@ -90,6 +100,9 @@ ProjectModel::ProjectModel(QObject *parent)
             this, &ProjectModel::pluginObjectAddedOrRemoved);
     connect(PluginManager::instance(), &PluginManager::objectRemoved,
             this, &ProjectModel::pluginObjectAddedOrRemoved);
+
+    connect(&mWatcher, &FileSystemWatcher::pathsChanged,
+            this, &ProjectModel::pathsChanged);
 }
 
 ProjectModel::~ProjectModel()
@@ -109,10 +122,15 @@ void ProjectModel::setProject(Project project)
 
     mProject = std::move(project);
     mFolders.clear();
+    mFoldersPendingScan.clear();
+
     for (const QString &folder : mProject.folders()) {
         mFolders.push_back(std::make_unique<FolderEntry>(folder));
         scheduleFolderScan(folder);
     }
+
+    mWatcher.clear();
+    mWatcher.addPaths(mProject.folders());
 
     endResetModel();
 }
@@ -162,6 +180,8 @@ QString ProjectModel::filePath(const QModelIndex &index) const
 
 QModelIndex ProjectModel::index(const QString &filePath) const
 {
+    if (filePath.isEmpty())
+        return QModelIndex();
     if (FolderEntry *entry = findEntry(mFolders, filePath))
         return indexForEntry(entry);
     return QModelIndex();
@@ -285,6 +305,16 @@ void ProjectModel::pluginObjectAddedOrRemoved(QObject *object)
             mUpdateNameFiltersTimer.start();
 }
 
+void ProjectModel::pathsChanged(const QStringList &paths)
+{
+    for (const std::unique_ptr<FolderEntry> &entry : mFolders) {
+        if (std::any_of(paths.begin(), paths.end(),
+                        [&entry] (const QString &path) { return path.startsWith(entry->filePath); })) {
+            scheduleFolderScan(entry->filePath);
+        }
+    }
+}
+
 void ProjectModel::updateNameFilters()
 {
     mUpdateNameFiltersTimer.stop();
@@ -322,7 +352,6 @@ void ProjectModel::scheduleFolderScan(const QString &folder)
 void ProjectModel::folderScanned(FolderEntry *resultPointer)
 {
     const std::unique_ptr<FolderEntry> result { resultPointer };
-
     Q_ASSERT(!result->parent);
 
     const auto it = std::find_if(mFolders.begin(), mFolders.end(),
@@ -337,6 +366,17 @@ void ProjectModel::folderScanned(FolderEntry *resultPointer)
 
     const std::unique_ptr<FolderEntry> &entry = *it;
     const QModelIndex index = indexForEntry(entry.get());
+
+    QStringList previousDirectories;
+    QStringList newDirectories;
+    collectDirectories(*entry, previousDirectories);
+    collectDirectories(*result, newDirectories);
+
+    // First add the new paths to avoid needlessly unwatching/watching paths
+    mWatcher.addPaths(newDirectories);
+    mWatcher.removePaths(previousDirectories);
+
+    emit aboutToRefresh();
 
     if (!entry->entries.empty()) {
         beginRemoveRows(index, 0, int(entry->entries.size() - 1));
@@ -354,6 +394,8 @@ void ProjectModel::folderScanned(FolderEntry *resultPointer)
 
         endInsertRows();
     }
+
+    emit refreshed();
 
     if (!mFoldersPendingScan.isEmpty()) {
         mScanningFolder = mFoldersPendingScan.takeFirst();

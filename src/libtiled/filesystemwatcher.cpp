@@ -51,38 +51,54 @@ FileSystemWatcher::FileSystemWatcher(QObject *parent) :
             this, &FileSystemWatcher::pathsChangedTimeout);
 }
 
-void FileSystemWatcher::addPath(const QString &path)
+void FileSystemWatcher::addPaths(const QStringList &paths)
 {
-    // Just silently ignore the request when the file doesn't exist
-    if (!QFile::exists(path))
-        return;
+    QStringList pathsToAdd;
+    pathsToAdd.reserve(paths.size());
 
-    QMap<QString, int>::iterator entry = mWatchCount.find(path);
-    if (entry == mWatchCount.end()) {
-        mWatcher->addPath(path);
-        mWatchCount.insert(path, 1);
-    } else {
-        // Path is already being watched, increment watch count
-        ++entry.value();
+    for (const QString &path : paths) {
+        // Just silently ignore the request when the file doesn't exist
+        if (!QFile::exists(path))
+            continue;
+
+        QMap<QString, int>::iterator entry = mWatchCount.find(path);
+        if (entry == mWatchCount.end()) {
+            pathsToAdd.append(path);
+            mWatchCount.insert(path, 1);
+        } else {
+            // Path is already being watched, increment watch count
+            ++entry.value();
+        }
     }
+
+    if (!pathsToAdd.isEmpty())
+        mWatcher->addPaths(pathsToAdd);
 }
 
-void FileSystemWatcher::removePath(const QString &path)
+void FileSystemWatcher::removePaths(const QStringList &paths)
 {
-    QMap<QString, int>::iterator entry = mWatchCount.find(path);
-    if (entry == mWatchCount.end()) {
-        if (QFile::exists(path))
-            qWarning() << "FileSystemWatcher: Path was never added:" << path;
-        return;
+    QStringList pathsToRemove;
+    pathsToRemove.reserve(paths.size());
+
+    for (const QString &path : paths) {
+        QMap<QString, int>::iterator entry = mWatchCount.find(path);
+        if (entry == mWatchCount.end()) {
+            if (QFile::exists(path))
+                qWarning() << "FileSystemWatcher: Path was never added:" << path;
+            continue;
+        }
+
+        // Decrement watch count
+        --entry.value();
+
+        if (entry.value() == 0) {
+            mWatchCount.erase(entry);
+            pathsToRemove.append(path);
+        }
     }
 
-    // Decrement watch count
-    --entry.value();
-
-    if (entry.value() == 0) {
-        mWatchCount.erase(entry);
-        mWatcher->removePath(path);
-    }
+    if (!pathsToRemove.isEmpty())
+        mWatcher->removePaths(pathsToRemove);
 }
 
 void FileSystemWatcher::clear()

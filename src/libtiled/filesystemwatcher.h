@@ -58,7 +58,9 @@ public:
     explicit FileSystemWatcher(QObject *parent = nullptr);
 
     void addPath(const QString &path);
+    void addPaths(const QStringList &paths);
     void removePath(const QString &path);
+    void removePaths(const QStringList &paths);
     void clear();
 
 signals:
@@ -84,5 +86,15 @@ private:
     QSet<QString> mChangedPaths;
     QTimer mChangedPathsTimer;
 };
+
+inline void FileSystemWatcher::addPath(const QString &path)
+{
+    addPaths(QStringList(path));
+}
+
+inline void FileSystemWatcher::removePath(const QString &path)
+{
+    removePaths(QStringList(path));
+}
 
 } // namespace Tiled
