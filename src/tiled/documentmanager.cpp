@@ -38,6 +38,7 @@
 #include "mapview.h"
 #include "noeditorwidget.h"
 #include "preferences.h"
+#include "session.h"
 #include "tabbar.h"
 #include "terrain.h"
 #include "tilesetdocument.h"
@@ -141,6 +142,9 @@ DocumentManager::DocumentManager(QObject *parent)
 
     connect(TilesetManager::instance(), &TilesetManager::tilesetImagesChanged,
             this, &DocumentManager::tilesetImagesChanged);
+
+    connect(Preferences::instance(), &Preferences::aboutToSwitchSession,
+            this, &DocumentManager::updateSession);
 
     OpenFile::activated = [this] (const OpenFile &open) {
         openFile(open.file);
@@ -591,8 +595,6 @@ void DocumentManager::insertDocument(int index, const DocumentPtr &document)
     if (mBrokenLinksModel->hasBrokenLinks())
         mBrokenLinksWidget->show();
 
-    updateSession();
-
     emit documentOpened(documentPtr);
 }
 
@@ -891,8 +893,6 @@ void DocumentManager::closeDocumentAt(int index)
 
     if (!document->fileName().isEmpty())
         Preferences::instance()->addRecentFile(document->fileName());
-
-    updateSession();
 }
 
 /**
@@ -987,8 +987,6 @@ void DocumentManager::currentIndexChanged()
     mFileChangedWarning->setVisible(changed);
 
     mBrokenLinksModel->setDocument(document);
-
-    updateSession();
 
     emit currentDocumentChanged(document);
 }
@@ -1217,11 +1215,10 @@ void DocumentManager::updateSession() const
     }
 
     auto doc = currentDocument();
-    auto prefs = Preferences::instance();
 
-    prefs->session().openFiles = fileList;
-    prefs->session().activeFile = doc ? doc->fileName() : QString();
-    prefs->saveSession();
+    auto &session = Session::current();
+    session.setOpenFiles(fileList);
+    session.setActiveFile(doc ? doc->fileName() : QString());
 }
 
 MapDocument *DocumentManager::openMapFile(const QString &path)

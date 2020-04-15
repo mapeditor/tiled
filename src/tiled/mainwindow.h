@@ -28,6 +28,7 @@
 #include "preferences.h"
 #include "preferencesdialog.h"
 #include "project.h"
+#include "session.h"
 
 #include <QMainWindow>
 #include <QPointer>
@@ -245,6 +246,8 @@ private:
     QPointer<PreferencesDialog> mPreferencesDialog;
 
     QMap<QMainWindow*, QByteArray> mMainWindowStates;
+
+    SessionOption<QStringList> mLoadedWorlds { "loadedWorlds" };
 
     static MainWindow *mInstance;
 };

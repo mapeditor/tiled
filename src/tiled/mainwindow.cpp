@@ -420,7 +420,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->actionHighlightCurrentLayer->setChecked(preferences->highlightCurrentLayer());
     mUi->actionHighlightHoveredObject->setChecked(preferences->highlightHoveredObject());
 
-    bindToOption(mUi->actionAutoMapWhileDrawing, Preferences::automappingWhileDrawing);
+    bindToOption(mUi->actionAutoMapWhileDrawing, AutomappingManager::automappingWhileDrawing);
 
     mUi->actionHighlightCurrentLayer->setIcon(highlightCurrentLayerIcon);
     mUi->actionHighlightCurrentLayer->setIconVisibleInMenu(false);
@@ -584,7 +584,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
         if (!WorldManager::instance().loadWorld(worldFile, &errorString))
             QMessageBox::critical(this, tr("Error Loading World"), errorString);
         else
-            Preferences::loadedWorlds = WorldManager::instance().worlds().keys();
+            mLoadedWorlds = WorldManager::instance().worlds().keys();
     });
     connect(mUi->menuUnloadWorld, &QMenu::aboutToShow, this, [this] {
         mUi->menuUnloadWorld->clear();
@@ -599,7 +599,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
                     return;
 
                 WorldManager::instance().unloadWorld(fileName);
-                Preferences::loadedWorlds = WorldManager::instance().worlds().keys();
+                mLoadedWorlds = WorldManager::instance().worlds().keys();
             });
         }
     });
@@ -620,7 +620,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
         if (!WorldManager::instance().addEmptyWorld(worldFile, &errorString))
             QMessageBox::critical(this, tr("Error Creating World"), errorString);
         else
-            Preferences::loadedWorlds = WorldManager::instance().worlds().keys();
+            mLoadedWorlds = WorldManager::instance().worlds().keys();
     });
     connect(mUi->menuSaveWorld, &QMenu::aboutToShow, this, [this] {
         mUi->menuSaveWorld->clear();
@@ -810,7 +810,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
 MainWindow::~MainWindow()
 {
-    Preferences::instance()->saveSessionNow();
+    emit Preferences::instance()->aboutToSwitchSession();
 
     mDocumentManager->closeAllDocuments();
     mDocumentManager->deleteEditors();
@@ -914,12 +914,13 @@ void MainWindow::newMap()
 
 void MainWindow::initializeSession()
 {
-    const auto prefs = Preferences::instance();
-    const auto &session = prefs->session();
+    const auto &session = Session::current();
 
     // Restore associated project if applicable
     Project project;
-    if (!session.project.isEmpty() && project.load(session.project)) {
+    bool projectLoaded = !session.project.isEmpty() && project.load(session.project);
+
+    if (projectLoaded) {
         mProjectDock->setProject(std::move(project));
         updateWindowTitle();
     }
@@ -929,7 +930,7 @@ void MainWindow::initializeSession()
     // adding the project's extension path.
     ScriptManager::instance().initialize();
 
-    if (prefs->restoreSessionOnStartup())
+    if (projectLoaded || Preferences::instance()->restoreSessionOnStartup())
         restoreSession();
 }
 
@@ -1304,14 +1305,12 @@ void MainWindow::saveProjectAs()
                               tr("An error occurred while saving the project."));
     }
 
+    Session &session = Session::current();
+    session.setFileName(Session::defaultFileNameForProject(fileName));
+    session.setProject(fileName);
+
     prefs->addRecentProject(fileName);
-    prefs->session().project = fileName;
-
-    const auto sessionFileName = Session::defaultFileNameForProject(fileName);
-    prefs->session().setFileName(sessionFileName);
-
-    prefs->saveSessionNow();
-    prefs->setLastSession(sessionFileName);
+    prefs->setLastSession(session.fileName());
 
     updateWindowTitle();
     updateActions();
@@ -1329,22 +1328,21 @@ void MainWindow::closeProject()
 void MainWindow::switchProject(Project project)
 {
     auto prefs = Preferences::instance();
-    prefs->saveSessionNow();
+    emit prefs->aboutToSwitchSession();
 
     if (!closeAllFiles())
         return;
 
     WorldManager::instance().unloadAllWorlds();
 
-    Session session { Session::defaultFileNameForProject(project.fileName()) };
+    auto &session = Session::switchCurrent(Session::defaultFileNameForProject(project.fileName()));
 
     if (!project.fileName().isEmpty()) {
-        session.project = project.fileName();
+        session.setProject(project.fileName());
         prefs->addRecentProject(project.fileName());
     }
 
     mProjectDock->setProject(std::move(project));
-    prefs->switchSession(std::move(session));
 
     ScriptManager::instance().refreshExtensionsPaths();
 
@@ -1355,7 +1353,7 @@ void MainWindow::switchProject(Project project)
 
 void MainWindow::restoreSession()
 {
-    const auto &session = Preferences::instance()->session();
+    const auto &session = Session::current();
 
     // Copy values because the session will get changed while restoring it
     const auto openFiles = session.openFiles;
@@ -1365,7 +1363,7 @@ void MainWindow::restoreSession()
         openFile(file);
     mDocumentManager->switchToDocument(activeFile);
 
-    WorldManager::instance().loadWorlds(Preferences::loadedWorlds);
+    WorldManager::instance().loadWorlds(mLoadedWorlds);
 
     mProjectDock->setExpandedPaths(session.expandedProjectPaths);
 }
@@ -1746,7 +1744,7 @@ void MainWindow::openRecentFile()
 
 void MainWindow::reopenClosedFile()
 {
-    const auto recentFiles = Preferences::instance()->session().recentFiles;
+    const auto &recentFiles = Session::current().recentFiles;
     for (const QString &file : recentFiles) {
         if (mDocumentManager->findDocument(file) == -1) {
             openFile(file);
@@ -1767,7 +1765,7 @@ void MainWindow::openRecentProject()
  */
 void MainWindow::updateRecentFilesMenu()
 {
-    const QStringList files = Preferences::instance()->session().recentFiles;
+    const auto &files = Session::current().recentFiles;
     const int numRecentFiles = qMin<int>(files.size(), Preferences::MaxRecentFiles);
 
     for (int i = 0; i < numRecentFiles; ++i) {

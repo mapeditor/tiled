@@ -42,6 +42,8 @@
 #include <QJsonDocument>
 #include <QtPlugin>
 
+#include "qtcompat_p.h"
+
 #include <memory>
 
 #ifdef Q_OS_WIN
@@ -66,12 +68,12 @@ class CommandLineHandler : public CommandLineParser
 public:
     CommandLineHandler();
 
-    bool quit;
-    bool showedVersion;
-    bool disableOpenGL;
-    bool exportMap;
-    bool exportTileset;
-    bool newInstance;
+    bool quit = false;
+    bool showedVersion = false;
+    bool disableOpenGL = false;
+    bool exportMap = false;
+    bool exportTileset = false;
+    bool newInstance = false;
     Preferences::ExportOptions exportOptions;
 
 private:
@@ -185,12 +187,6 @@ inline T *findExportFormat(const QString *filter,
 
 
 CommandLineHandler::CommandLineHandler()
-    : quit(false)
-    , showedVersion(false)
-    , disableOpenGL(false)
-    , exportMap(false)
-    , exportTileset(false)
-    , newInstance(false)
 {
     option<&CommandLineHandler::showVersion>(
                 QLatin1Char('v'),
@@ -470,18 +466,33 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    if (!commandLine.filesToOpen().isEmpty() && !commandLine.newInstance) {
-        // Convert files to absolute paths because the already running Tiled
+    QStringList filesToOpen;
+
+    for (const QString &fileName : commandLine.filesToOpen()) {
+        const QFileInfo fileInfo(fileName);
+        const QString filePath = QDir::cleanPath(fileInfo.absoluteFilePath());
+
+        if (fileInfo.suffix() == QLatin1String("tiled-project")) {
+            if (!fileInfo.exists()) {
+                qWarning().noquote() << QCoreApplication::translate("Command line", "Project file '%1' not found.").arg(fileName);
+                return 1;
+            }
+            Preferences::setStartupProject(filePath);
+        } else {
+            filesToOpen.append(filePath);
+        }
+    }
+
+    if (!filesToOpen.isEmpty() && !commandLine.newInstance) {
+        // Files need to be absolute paths because the already running Tiled
         // instance likely does not have the same working directory.
-        QStringList absolutePaths;
-        for (const QString &fileName : commandLine.filesToOpen())
-            absolutePaths.append(QFileInfo(fileName).absoluteFilePath());
-        QJsonDocument doc(QJsonArray::fromStringList(absolutePaths));
+        QJsonDocument doc(QJsonArray::fromStringList(filesToOpen));
         if (a.sendMessage(QLatin1String(doc.toJson())))
             return 0;
     }
 
     StyleHelper::initialize();
+    Session::initialize();
 
     MainWindow w;
     w.show();
@@ -498,9 +509,8 @@ int main(int argc, char *argv[])
 
     w.initializeSession();
 
-    if (!commandLine.filesToOpen().isEmpty())
-        for (const QString &fileName : commandLine.filesToOpen())
-            w.openFile(fileName);
+    for (const QString &fileName : qAsConst(filesToOpen))
+        w.openFile(fileName);
 
     return a.exec();
 }

@@ -26,6 +26,7 @@
 #include "mapdocument.h"
 #include "pluginmanager.h"
 #include "savefile.h"
+#include "session.h"
 #include "tilesetmanager.h"
 
 #include <QDir>
@@ -35,10 +36,8 @@
 
 using namespace Tiled;
 
-SessionOption<bool> Preferences::automappingWhileDrawing { "automapping.whileDrawing", false };
-SessionOption<QStringList> Preferences::loadedWorlds { "loadedWorlds" };
-
 Preferences *Preferences::mInstance;
+QString Preferences::mStartupProject;
 
 Preferences *Preferences::instance()
 {
@@ -54,7 +53,6 @@ void Preferences::deleteInstance()
 }
 
 Preferences::Preferences()
-    : mSession(restoreSessionOnStartup() ? lastSession() : Session::defaultFileName())
 {
     // Make sure the data directory exists
     const QDir dataDir { dataLocation() };
@@ -94,81 +92,6 @@ Preferences::Preferences()
 
     Object::setObjectTypes(objectTypes);
 
-    mSaveSessionTimer.setInterval(1000);
-    mSaveSessionTimer.setSingleShot(true);
-    connect(&mSaveSessionTimer, &QTimer::timeout, this, [this] { saveSessionNow(); });
-
-    // Migrate some preferences to the session for compatibility
-    migrateToSession<bool>("Automapping/WhileDrawing", "automapping.whileDrawing");
-
-    migrateToSession<QStringList>("LoadedWorlds", "loadedWorlds");
-    migrateToSession<QString>("Storage/StampsDirectory", "stampsFolder");
-
-    migrateToSession<int>("Map/Orientation", "map.orientation");
-    migrateToSession<int>("Storage/LayerDataFormat", "map.layerDataFormat");
-    migrateToSession<int>("Storage/MapRenderOrder", "map.renderOrder");
-    migrateToSession<bool>("Map/FixedSize", "map.fixedSize");
-    migrateToSession<int>("Map/Width", "map.width");
-    migrateToSession<int>("Map/Height", "map.height");
-    migrateToSession<int>("Map/TileWidth", "map.tileWidth");
-    migrateToSession<int>("Map/TileHeight", "map.tileHeight");
-
-    migrateToSession<int>("Tileset/Type", "tileset.type");
-    migrateToSession<bool>("Tileset/EmbedInMap", "tileset.embedInMap");
-    migrateToSession<bool>("Tileset/UseTransparentColor", "tileset.useTransparentColor");
-    migrateToSession<QColor>("Tileset/TransparentColor", "tileset.transparentColor");
-    migrateToSession<QSize>("Tileset/TileSize", "tileset.tileSize");
-    migrateToSession<int>("Tileset/Spacing", "tileset.spacing");
-    migrateToSession<int>("Tileset/Margin", "tileset.margin");
-
-    migrateToSession<QString>("AddPropertyDialog/PropertyType", "property.type");
-
-    migrateToSession<QStringList>("Console/History", "console.history");
-
-    migrateToSession<bool>("SaveAsImage/VisibleLayersOnly", "exportAsImage.visibleLayersOnly");
-    migrateToSession<bool>("SaveAsImage/CurrentScale", "exportAsImage.useCurrentScale");
-    migrateToSession<bool>("SaveAsImage/DrawGrid", "exportAsImage.drawTileGrid");
-    migrateToSession<bool>("SaveAsImage/IncludeBackgroundColor", "exportAsImage.includeBackgroundColor");
-
-    migrateToSession<bool>("ResizeMap/RemoveObjects", "resizeMap.removeObjects");
-
-    migrateToSession<int>("Animation/FrameDuration", "frame.defaultDuration");
-
-    migrateToSession<QString>("lastUsedExportFilter", "map.lastUsedExportFilter");
-    migrateToSession<QString>("lastUsedMapFormat", "map.lastUsedFormat");
-    migrateToSession<QString>("lastUsedOpenFilter", "file.lastUsedOpenFilter");
-    migrateToSession<QString>("lastUsedTilesetExportFilter", "tileset.lastUsedExportFilter");
-    migrateToSession<QString>("lastUsedTilesetFilter", "tileset.lastUsedFilter");
-    migrateToSession<QString>("lastUsedTilesetFormat", "tileset.lastUsedFormat");
-
-    // Migrate some preferences that need manual handling
-    if (mSession.fileName() == Session::defaultFileName()) {
-        if (contains(QLatin1String("recentFiles"))) {
-            mSession.recentFiles = get<QStringList>("recentFiles/fileNames");
-            mSession.openFiles = get<QStringList>("recentFiles/lastOpenFiles");
-            mSession.activeFile = get<QString>("recentFiles/lastActive");
-        }
-
-        if (contains(QLatin1String("MapEditor/MapStates"))) {
-            const auto mapStates = get<QVariantMap>("MapEditor/MapStates");
-
-            for (auto it = mapStates.begin(); it != mapStates.end(); ++it) {
-                const QString &fileName = it.key();
-                auto mapState = it.value().toMap();
-
-                const QPointF viewCenter = mapState.value(QLatin1String("viewCenter")).toPointF();
-
-                mapState.insert(QLatin1String("viewCenter"), toSettingsValue(viewCenter));
-
-                mSession.setFileState(fileName, mapState);
-            }
-        }
-
-        if (mSession.save()) {
-            remove(QLatin1String("recentFiles"));
-            remove(QLatin1String("MapEditor/MapStates"));
-        }
-    }
 
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->setReloadTilesetsOnChange(reloadTilesetsOnChange());
@@ -670,11 +593,12 @@ void Preferences::setDonationDialogReminder(const QDate &date)
 
 QString Preferences::fileDialogStartLocation() const
 {
-    if (!mSession.activeFile.isEmpty())
-        return QFileInfo(mSession.activeFile).path();
+    const auto &session = Session::current();
+    if (!session.activeFile.isEmpty())
+        return QFileInfo(session.activeFile).path();
 
-    if (!mSession.recentFiles.isEmpty())
-        return QFileInfo(mSession.recentFiles.first()).path();
+    if (!session.recentFiles.isEmpty())
+        return QFileInfo(session.recentFiles.first()).path();
 
     return QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
 }
@@ -684,8 +608,7 @@ QString Preferences::fileDialogStartLocation() const
  */
 void Preferences::addRecentFile(const QString &fileName)
 {
-    mSession.addRecentFile(fileName);
-    saveSession();
+    Session::current().addRecentFile(fileName);
     emit recentFilesChanged();
 }
 
@@ -704,8 +627,13 @@ void Preferences::addRecentProject(const QString &fileName)
     emit recentProjectsChanged();
 }
 
-QString Preferences::lastSession() const
+QString Preferences::startupSession() const
 {
+    if (!startupProject().isEmpty())
+        return Session::defaultFileNameForProject(startupProject());
+    if (!restoreSessionOnStartup())
+        return Session::defaultFileName();
+
     const auto session = get<QString>("Project/LastSession");
     return session.isEmpty() ? Session::defaultFileName() : session;
 }
@@ -718,28 +646,6 @@ void Preferences::setLastSession(const QString &fileName)
 bool Preferences::restoreSessionOnStartup() const
 {
     return get("Startup/RestorePreviousSession", true);
-}
-
-void Preferences::switchSession(Session session)
-{
-    mSession = std::move(session);
-    setLastSession(mSession.fileName());
-
-    Session::notifySessionChanged();
-    emit recentFilesChanged();
-}
-
-void Preferences::saveSession()
-{
-    if (!mSaveSessionTimer.isActive())
-        mSaveSessionTimer.start();
-}
-
-void Preferences::saveSessionNow()
-{
-    emit aboutToSaveSession();
-    mSaveSessionTimer.stop();
-    mSession.save();
 }
 
 void Preferences::addToRecentFileList(const QString &fileName, QStringList& files)
@@ -758,8 +664,7 @@ void Preferences::addToRecentFileList(const QString &fileName, QStringList& file
 
 void Preferences::clearRecentFiles()
 {
-    mSession.recentFiles.clear();
-    saveSession();
+    Session::current().clearRecentFiles();
     emit recentFilesChanged();
 }
 
@@ -844,6 +749,22 @@ QString Preferences::dataLocation()
 QString Preferences::configLocation()
 {
     return QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
+}
+
+QString Preferences::startupProject()
+{
+    return mStartupProject;
+}
+
+/**
+ * Sets the project to load on startup (passed on command-line).
+ *
+ * Needs to be set before the Session is initialized, because it determines
+ * the location of the session file.
+ */
+void Preferences::setStartupProject(const QString &filePath)
+{
+    mStartupProject = filePath;
 }
 
 QString Preferences::objectTypesFile() const

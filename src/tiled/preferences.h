@@ -29,7 +29,6 @@
 #include "filesystemwatcher.h"
 #include "map.h"
 #include "objecttypes.h"
-#include "session.h"
 
 namespace Tiled {
 
@@ -165,13 +164,9 @@ public:
     QStringList recentProjects() const;
     void addRecentProject(const QString &fileName);
 
-    QString lastSession() const;
+    QString startupSession() const;
     void setLastSession(const QString &fileName);
-    Session &session();
     bool restoreSessionOnStartup() const;
-    void switchSession(Session session);
-    void saveSession();
-    void saveSessionNow();
 
     bool checkForUpdates() const;
     void setCheckForUpdates(bool on);
@@ -188,8 +183,8 @@ public:
     static QString dataLocation();
     static QString configLocation();
 
-    static SessionOption<bool> automappingWhileDrawing;
-    static SessionOption<QStringList> loadedWorlds;
+    static QString startupProject();
+    static void setStartupProject(const QString &filePath);
 
 public slots:
     void setShowGrid(bool showGrid);
@@ -249,41 +244,20 @@ signals:
     void checkForUpdatesChanged(bool on);
     void displayNewsChanged(bool on);
 
-    void aboutToSaveSession();
+    void aboutToSwitchSession();
 
 private:
-    template<typename T>
-    void migrateToSession(const char *preferencesKey, const char *sessionKey)
-    {
-        if (mSession.isSet(sessionKey))
-            return;
-
-        const auto value = QSettings::value(QLatin1String(preferencesKey));
-        if (!value.isValid())
-            return;
-
-        mSession.set(sessionKey, value.value<T>());
-    }
-
     void addToRecentFileList(const QString &fileName, QStringList &files);
 
     void objectTypesFileChangedOnDisk();
 
     FileSystemWatcher mWatcher;
 
-    Session mSession;
-    QTimer mSaveSessionTimer;
-
     QDateTime mObjectTypesFileLastSaved;
 
     static Preferences *mInstance;
+    static QString mStartupProject;
 };
-
-
-inline Session &Preferences::session()
-{
-    return mSession;
-}
 
 
 template<typename T>

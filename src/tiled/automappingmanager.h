@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include "session.h"
+
 #include <QObject>
 #include <QRegion>
 #include <QString>
@@ -60,6 +62,8 @@ public:
      */
     void autoMap();
     void autoMapRegion(const QRegion &region);
+
+    static SessionOption<bool> automappingWhileDrawing;
 
 signals:
     /**

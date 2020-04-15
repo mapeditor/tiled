@@ -27,6 +27,7 @@
 #include <QSettings>
 #include <QSize>
 #include <QStringList>
+#include <QTimer>
 #include <QVariantMap>
 
 #include <memory>
@@ -117,21 +118,31 @@ class Session : protected FileHelper
     std::unique_ptr<QSettings> settings;
 
 public:
-    explicit Session(const QString &fileName = QString());
+    explicit Session(const QString &fileName);
+    ~Session();
 
     bool save();
 
     QString fileName() const;
     void setFileName(const QString &fileName);
 
+    void setProject(const QString &fileName);
+
     void addRecentFile(const QString &fileName);
+    void clearRecentFiles();
+
+    void setOpenFiles(const QStringList &fileNames);
+    void setActiveFile(const QString &fileNames);
 
     QVariantMap fileState(const QString &fileName) const;
     void setFileState(const QString &fileName, const QVariantMap &fileState);
 
     template <typename T>
     T get(const char *key, const T &defaultValue = T()) const
-    { return fromSettingsValue<T>(settings->value(QLatin1String(key), toSettingsValue(defaultValue))); }
+    {
+        return fromSettingsValue<T>(settings->value(QLatin1String(key),
+                                                    toSettingsValue(defaultValue)));
+    }
 
     template <typename T>
     void set(const char *key, const T &value) const
@@ -152,9 +163,10 @@ public:
 
     static QString defaultFileName();
     static QString defaultFileNameForProject(const QString &projectFile);
-    static Session &current();
 
-    static void notifySessionChanged();
+    static Session &initialize();
+    static Session &current();
+    static Session &switchCurrent(const QString &fileName);
 
     QString project;
     QStringList recentFiles;
@@ -170,6 +182,12 @@ public:
 private:
     template<typename T> friend class SessionOption;
 
+    void scheduleSync() { mSyncSettingsTimer.start(); }
+    void sync();
+
+    QTimer mSyncSettingsTimer;
+
+    static std::unique_ptr<Session> mCurrent;
     static QHash<const char*, Callbacks> mChangedCallbacks;
 };
 

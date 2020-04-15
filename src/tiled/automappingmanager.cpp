@@ -36,6 +36,8 @@
 
 using namespace Tiled;
 
+SessionOption<bool> AutomappingManager::automappingWhileDrawing { "automapping.whileDrawing", false };
+
 AutomappingManager::AutomappingManager(QObject *parent)
     : QObject(parent)
     , mMapDocument(nullptr)
@@ -85,7 +87,7 @@ void AutomappingManager::autoMapRegion(const QRegion &region)
 
 void AutomappingManager::onRegionEdited(const QRegion &where, Layer *touchedLayer)
 {
-    if (Preferences::automappingWhileDrawing)
+    if (automappingWhileDrawing)
         autoMapInternal(where, touchedLayer);
 }
 

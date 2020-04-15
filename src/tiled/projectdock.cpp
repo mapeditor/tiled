@@ -26,6 +26,7 @@
 #include "objecttemplate.h"
 #include "preferences.h"
 #include "projectmodel.h"
+#include "session.h"
 #include "templatemanager.h"
 #include "utils.h"
 
@@ -95,9 +96,8 @@ ProjectDock::ProjectDock(QWidget *parent)
     setWidget(widget);
     retranslateUi();
 
-    auto prefs = Preferences::instance();
-    connect(prefs, &Preferences::aboutToSaveSession,
-            this, [this, prefs] { prefs->session().expandedProjectPaths = mProjectView->expandedPaths(); });
+    connect(Preferences::instance(), &Preferences::aboutToSwitchSession,
+            this, [this] { Session::current().expandedProjectPaths = mProjectView->expandedPaths(); });
 
     connect(mProjectView->selectionModel(), &QItemSelectionModel::currentRowChanged,
             this, &ProjectDock::onCurrentRowChanged);

@@ -40,6 +40,7 @@
 #include "worldmanager.h"
 
 #include <QApplication>
+#include <QFileInfo>
 #include <QGraphicsSceneMouseEvent>
 #include <QKeyEvent>
 #include <QMimeData>

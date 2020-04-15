@@ -311,7 +311,7 @@ MapEditor::MapEditor(QObject *parent)
     connect(prefs, &Preferences::languageChanged, this, &MapEditor::retranslateUi);
     connect(prefs, &Preferences::showTileCollisionShapesChanged,
             this, &MapEditor::showTileCollisionShapesChanged);
-    connect(prefs, &Preferences::aboutToSaveSession,
+    connect(prefs, &Preferences::aboutToSwitchSession,
             this, [this] { if (mCurrentMapDocument) saveDocumentState(mCurrentMapDocument); });
 
     connect(&WorldManager::instance(), &WorldManager::worldsChanged,
@@ -622,9 +622,7 @@ void MapEditor::saveDocumentState(MapDocument *mapDocument) const
     fileState.insert(QLatin1String("viewCenter"), toSettingsValue(viewCenter));
     fileState.insert(QLatin1String("selectedLayer"), globalIndex(mapDocument->currentLayer()));
 
-    Preferences *prefs = Preferences::instance();
-    prefs->session().setFileState(mapDocument->fileName(), fileState);
-    prefs->saveSession();
+    Session::current().setFileState(mapDocument->fileName(), fileState);
 }
 
 void MapEditor::restoreDocumentState(MapDocument *mapDocument) const
@@ -633,8 +631,7 @@ void MapEditor::restoreDocumentState(MapDocument *mapDocument) const
     if (!mapView)
         return;
 
-    Preferences *prefs = Preferences::instance();
-    const QVariantMap fileState = prefs->session().fileState(mapDocument->fileName());
+    const QVariantMap fileState = Session::current().fileState(mapDocument->fileName());
     if (fileState.isEmpty())
         return;
 
