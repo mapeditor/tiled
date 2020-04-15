@@ -73,7 +73,7 @@ private:
 
 inline MapRef MapLoader::map() const
 {
-    return { m_map.get() };
+    return m_map.get();
 }
 
 inline MapLoader::Status MapLoader::status() const

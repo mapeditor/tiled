@@ -42,7 +42,7 @@ class MapItem : public QQuickItem
 {
     Q_OBJECT
 
-    Q_PROPERTY(TiledQuick::MapRef map READ map WRITE setMap NOTIFY mapChanged)
+    Q_PROPERTY(TiledQuick::MapRef map READ map WRITE setMap RESET unsetMap NOTIFY mapChanged)
     Q_PROPERTY(QRectF visibleArea READ visibleArea WRITE setVisibleArea NOTIFY visibleAreaChanged)
 
 public:
@@ -51,6 +51,7 @@ public:
 
     MapRef map() const;
     void setMap(MapRef map);
+    void unsetMap();
 
     const QRectF &visibleArea() const;
     void setVisibleArea(const QRectF &visibleArea);
@@ -85,9 +86,18 @@ private:
 };
 
 inline const QRectF &MapItem::visibleArea() const
-{ return mVisibleArea; }
+{
+    return mVisibleArea;
+}
 
 inline MapRef MapItem::map() const
-{ return { mMap }; }
+{
+    return mMap;
+}
+
+inline void MapItem::unsetMap()
+{
+    setMap(nullptr);
+}
 
 } // namespace TiledQuick
