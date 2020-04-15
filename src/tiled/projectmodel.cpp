@@ -69,10 +69,10 @@ static FolderEntry *findEntry(const std::vector<std::unique_ptr<FolderEntry>> &e
 
 static void collectDirectories(const FolderEntry &entry, QStringList &filePaths)
 {
-    for (const auto &entry : entry.entries) {
-        if (!entry->entries.empty()) {
-            filePaths.append(entry->filePath);
-            collectDirectories(*entry, filePaths);
+    for (const auto &childEntry : entry.entries) {
+        if (!childEntry->entries.empty()) {
+            filePaths.append(childEntry->filePath);
+            collectDirectories(*childEntry, filePaths);
         }
     }
 }
