@@ -139,7 +139,7 @@
     <message>
         <location line="+17"/>
         <source>Show output in Console view</source>
-        <translation type="unfinished"></translation>
+        <translation>Voir la sortie dans la console</translation>
     </message>
     <message>
         <location line="+33"/>
