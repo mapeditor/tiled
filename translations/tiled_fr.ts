@@ -177,7 +177,7 @@
     <message>
         <location line="+25"/>
         <source>Minimize the exported file by omitting unnecessary whitespace</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimiser le fichier exporté en omettant les espaces non nécessaires</translation>
     </message>
     <message>
         <location line="+70"/>
@@ -289,17 +289,17 @@
     <message>
         <location line="+25"/>
         <source>Visit https://www.mapeditor.org/donate ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>Visitez https://www.mapeditor.org/donate ↗</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>I&apos;m already a supporter!</source>
-        <translation type="unfinished">Je suis déjà un mécène !</translation>
+        <translation>Je suis déjà mécène !</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Maybe later</source>
-        <translation type="unfinished">Peut-être plus tard</translation>
+        <translation>Peut-être plus tard</translation>
     </message>
 </context>
 <context>
