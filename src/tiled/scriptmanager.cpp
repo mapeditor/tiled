@@ -40,6 +40,7 @@
 #include "scriptedfileformat.h"
 #include "scriptedtool.h"
 #include "scriptfile.h"
+#include "scriptfileinfo.h"
 #include "scriptfileformatwrappers.h"
 #include "scriptmodule.h"
 #include "tilecollisiondock.h"
@@ -125,7 +126,7 @@ ScriptManager::ScriptManager(QObject *parent)
 
 void ScriptManager::initialize()
 {
-    Q_ASSERT(!mEngine && !mModule);
+    Q_ASSERT(!mEngine && !mModule && !mFileInfo);
 
     refreshExtensionsPaths();
     setupEngine();
@@ -265,9 +266,11 @@ void ScriptManager::reset()
 
     delete mEngine;
     delete mModule;
+    delete mFileInfo;
 
     mEngine = nullptr;
     mModule = nullptr;
+    mFileInfo = nullptr;
     mTempCount = 0;
 
     setupEngine();
@@ -278,9 +281,11 @@ void ScriptManager::setupEngine()
 {
     mEngine = new QQmlEngine(this);
     mModule = new ScriptModule(this);
+    mFileInfo = new ScriptFileInfo(this);
 
     QJSValue globalObject = mEngine->globalObject();
     globalObject.setProperty(QStringLiteral("tiled"), mEngine->newQObject(mModule));
+    globalObject.setProperty(QStringLiteral("FileInfo"), mEngine->newQObject(mFileInfo));
 #if QT_VERSION >= 0x050800
     globalObject.setProperty(QStringLiteral("TextFile"), mEngine->newQMetaObject<ScriptTextFile>());
     globalObject.setProperty(QStringLiteral("BinaryFile"), mEngine->newQMetaObject<ScriptBinaryFile>());

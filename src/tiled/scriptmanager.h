@@ -21,6 +21,7 @@
 #pragma once
 
 #include "filesystemwatcher.h"
+#include "scriptfileinfo.h"
 
 #include <QJSValue>
 #include <QObject>
@@ -77,6 +78,7 @@ private:
 
     QJSEngine *mEngine = nullptr;
     ScriptModule *mModule = nullptr;
+    ScriptFileInfo *mFileInfo = nullptr;
     FileSystemWatcher mWatcher;
     QString mExtensionsPath;
     QStringList mExtensionsPaths;
