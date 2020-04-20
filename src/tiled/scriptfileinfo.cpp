@@ -279,12 +279,6 @@ void  ScriptFileInfo::refresh(QString file)
 	return fp.refresh();
 }
 
-void  ScriptFileInfo::setCaching(QString file, bool enable)
-{
-	QFileInfo fp = QFileInfo(file);
-	return fp.setCaching(enable);
-}
-
 qint64  ScriptFileInfo::size(QString file)
 {
 	QFileInfo fp = QFileInfo(file);
