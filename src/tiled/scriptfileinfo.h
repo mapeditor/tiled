@@ -29,6 +29,6 @@ class ScriptFileInfo : public QObject
 public:
 	ScriptFileInfo(QObject *parent = nullptr);
 
-	static QString fileName(const QString &fp);
-    static QString baseName(const QString &fp);
+	Q_INVOKABLE QString fileName(const QString &fp);
+	Q_INVOKABLE QString baseName(const QString &fp);
 };
