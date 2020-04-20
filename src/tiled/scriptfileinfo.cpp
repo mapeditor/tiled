@@ -264,14 +264,14 @@ QString ScriptFileInfo::path(QString file)
 // bool  ScriptFileInfo::permission(QString file, QFile::Permissions permissions)
 // {
 // 	QFileInfo fp = QFileInfo(file);
-// 	return fp.permission();
+// 	return fp.permission(permissions);
 // }
 
-// QFile::Permissions  ScriptFileInfo::permissions(QString file)
-// {
-// 	QFileInfo fp = QFileInfo(file);
-// 	return fp.permissions();
-// }
+uint ScriptFileInfo::permissions(QString file)
+{
+	QFileInfo fp = QFileInfo(file);
+	return fp.permissions();
+}
 
 void  ScriptFileInfo::refresh(QString file)
 {

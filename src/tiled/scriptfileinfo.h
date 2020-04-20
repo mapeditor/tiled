@@ -73,7 +73,7 @@ public:
   Q_INVOKABLE uint  ownerId(QString file);
   Q_INVOKABLE QString path(QString file);
   // Q_INVOKABLE bool  permission(QString file, QFile::Permissions permissions);
-  // Q_INVOKABLE QFile::Permissions  permissions(QString file);
+  Q_INVOKABLE uint  permissions(QString file);
   Q_INVOKABLE void  refresh(QString file);
   Q_INVOKABLE qint64  size(QString file);
   Q_INVOKABLE QString suffix(QString file);
