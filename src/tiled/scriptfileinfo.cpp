@@ -20,306 +20,261 @@
 
 #include "scriptfileinfo.h"
 
+#include <QDir>
+#include <QFileInfo>
 
 ScriptFileInfo::ScriptFileInfo(QObject *parent)
-		: QObject(parent)
+    : QObject(parent)
 {}
 
-QString ScriptFileInfo::absoluteDir(QString file)
+QString ScriptFileInfo::absoluteDir(const QString &file) const
 {
-	QFileInfo fp = QFileInfo(file);
-	QDir dir = fp.dir();
-	return dir.absolutePath();
+    return QFileInfo(file).dir().absolutePath();
 }
 
-QString ScriptFileInfo::absoluteFilePath(QString file)
+QString ScriptFileInfo::absoluteFilePath(const QString &file) const
 {
-	QFileInfo fp = QFileInfo(file);
-	return fp.absoluteFilePath();
+    return QFileInfo(file).absoluteFilePath();
 }
 
-QString ScriptFileInfo::absolutePath(QString file)
+QString ScriptFileInfo::absolutePath(const QString &file) const
 {
-	QFileInfo fp = QFileInfo(file);
-	return fp.absolutePath();
+    return QFileInfo(file).absolutePath();
 }
 
-QString ScriptFileInfo::baseName(QString file)
+QString ScriptFileInfo::baseName(const QString &file) const
 {
-	QFileInfo fp = QFileInfo(file);
-	return fp.baseName();
+    return QFileInfo(file).baseName();
 }
 
-QDateTime ScriptFileInfo::birthTime(QString file)
+QDateTime ScriptFileInfo::birthTime(const QString &file) const
 {
-	QFileInfo fp = QFileInfo(file);
-#if QT_VERSION >= 0x050A00
-	return fp.birthTime();
+    QFileInfo fp = QFileInfo(file);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
+    return fp.birthTime();
 #else
-	return fp.created();
+    return fp.created();
 #endif
 }
 
-QString ScriptFileInfo::bundleName(QString file)
+QString ScriptFileInfo::bundleName(const QString &file) const
 {
-	QFileInfo fp = QFileInfo(file);
-	return fp.bundleName();
+    return QFileInfo(file).bundleName();
 }
 
-bool ScriptFileInfo::caching(QString file)
+bool ScriptFileInfo::caching(const QString &file) const
 {
-	QFileInfo fp = QFileInfo(file);
-	return fp.caching();
+    return QFileInfo(file).caching();
 }
 
-QString ScriptFileInfo::canonicalFilePath(QString file)
+QString ScriptFileInfo::canonicalFilePath(const QString &file) const
 {
-	QFileInfo fp = QFileInfo(file);
-	return fp.canonicalFilePath();
+    return QFileInfo(file).canonicalFilePath();
 }
 
-QString ScriptFileInfo::canonicalPath(QString file)
+QString ScriptFileInfo::canonicalPath(const QString &file) const
 {
-	QFileInfo fp = QFileInfo(file);
-	return fp.canonicalPath();
+    return QFileInfo(file).canonicalPath();
 }
 
-QString ScriptFileInfo::completeBaseName(QString file)
+QString ScriptFileInfo::completeBaseName(const QString &file) const
 {
-	QFileInfo fp = QFileInfo(file);
-	return fp.completeBaseName();
+    return QFileInfo(file).completeBaseName();
 }
 
-QString ScriptFileInfo::completeSuffix(QString file)
+QString ScriptFileInfo::completeSuffix(const QString &file) const
 {
-	QFileInfo fp = QFileInfo(file);
-	return fp.completeSuffix();
+    return QFileInfo(file).completeSuffix();
 }
 
-QString ScriptFileInfo::dir(QString file)
+QString ScriptFileInfo::dir(const QString &file) const
 {
-	QFileInfo fp = QFileInfo(file);
-	QDir dir = fp.dir();
-	return dir.path();
+    return QFileInfo(file).dir().path();
 }
 
-bool  ScriptFileInfo::exists(QString file)
+bool ScriptFileInfo::exists(const QString &file) const
 {
-	QFileInfo fp = QFileInfo(file);
-	return fp.exists();
+    return QFileInfo(file).exists();
 }
 
-QString ScriptFileInfo::fileName(QString file)
+QString ScriptFileInfo::fileName(const QString &file) const
 {
-	QFileInfo fp = QFileInfo(file);
-	return fp.fileName();
+    return QFileInfo(file).fileName();
 }
 
-QString ScriptFileInfo::filePath(QString file)
+QString ScriptFileInfo::filePath(const QString &file) const
 {
-	QFileInfo fp = QFileInfo(file);
-	return fp.filePath();
+    return QFileInfo(file).filePath();
 }
 
 // https://doc.qt.io/qt-5/qfiledevice.html#FileTime-enum
-QDateTime ScriptFileInfo::fileTime(QString file, uint time)
+QDateTime ScriptFileInfo::fileTime(const QString &file, uint time) const
 {
-	QFileInfo fp = QFileInfo(file);
+    QFileInfo fp = QFileInfo(file);
 #if QT_VERSION >= 0x050A00
-	return fp.fileTime((QFile::FileTime)time);
+    return fp.fileTime(static_cast<QFile::FileTime>(time));
 #else
-	switch(time) {
-		case 0: return fp.lastRead();
-		case 1: return fp.created();
-		case 2: return fp.lastModified(); // hmm not really same - QFileDevice::FileMetadataChangeTime ?
-		case 3: return fp.lastModified();
-		default: return fp.lastModified();
-	}
+    switch(time) {
+    case 0: return fp.lastRead();
+    case 1: return fp.created();
+    case 2: return fp.lastModified(); // hmm not really same - QFileDevice::FileMetadataChangeTime ?
+    case 3: return fp.lastModified();
+    default: return fp.lastModified();
+    }
 #endif
 }
 
-QString ScriptFileInfo::group(QString file)
+QString ScriptFileInfo::group(const QString &file) const
 {
-	QFileInfo fp = QFileInfo(file);
-	return fp.group();
+    return QFileInfo(file).group();
 }
 
-uint  ScriptFileInfo::groupId(QString file)
+uint ScriptFileInfo::groupId(const QString &file) const
 {
-	QFileInfo fp = QFileInfo(file);
-	return fp.groupId();
+    return QFileInfo(file).groupId();
 }
 
-bool  ScriptFileInfo::isAbsolute(QString file)
+bool ScriptFileInfo::isAbsolute(const QString &file) const
 {
-	QFileInfo fp = QFileInfo(file);
-	return fp.isAbsolute();
+    return QFileInfo(file).isAbsolute();
 }
 
-bool  ScriptFileInfo::isBundle(QString file)
+bool ScriptFileInfo::isBundle(const QString &file) const
 {
-	QFileInfo fp = QFileInfo(file);
-	return fp.isBundle();
+    return QFileInfo(file).isBundle();
 }
 
-bool  ScriptFileInfo::isDir(QString file)
+bool ScriptFileInfo::isDir(const QString &file) const
 {
-	QFileInfo fp = QFileInfo(file);
-	return fp.isDir();
+    return QFileInfo(file).isDir();
 }
 
-bool  ScriptFileInfo::isExecutable(QString file)
+bool ScriptFileInfo::isExecutable(const QString &file) const
 {
-	QFileInfo fp = QFileInfo(file);
-	return fp.isExecutable();
+    return QFileInfo(file).isExecutable();
 }
 
-bool  ScriptFileInfo::isFile(QString file)
+bool ScriptFileInfo::isFile(const QString &file) const
 {
-	QFileInfo fp = QFileInfo(file);
-	return fp.isFile();
+    return QFileInfo(file).isFile();
 }
 
-bool  ScriptFileInfo::isHidden(QString file)
+bool ScriptFileInfo::isHidden(const QString &file) const
 {
-	QFileInfo fp = QFileInfo(file);
-	return fp.isHidden();
+    return QFileInfo(file).isHidden();
 }
 
-bool  ScriptFileInfo::isNativePath(QString file)
+bool ScriptFileInfo::isNativePath(const QString &file) const
 {
-	QFileInfo fp = QFileInfo(file);
-	return fp.isNativePath();
+    return QFileInfo(file).isNativePath();
 }
 
-bool  ScriptFileInfo::isReadable(QString file)
+bool ScriptFileInfo::isReadable(const QString &file) const
 {
-	QFileInfo fp = QFileInfo(file);
-	return fp.isReadable();
+    return QFileInfo(file).isReadable();
 }
 
-bool  ScriptFileInfo::isRelative(QString file)
+bool ScriptFileInfo::isRelative(const QString &file) const
 {
-	QFileInfo fp = QFileInfo(file);
-	return fp.isRelative();
+    return QFileInfo(file).isRelative();
 }
 
-bool  ScriptFileInfo::isRoot(QString file)
+bool ScriptFileInfo::isRoot(const QString &file) const
 {
-	QFileInfo fp = QFileInfo(file);
-	return fp.isRoot();
+    return QFileInfo(file).isRoot();
 }
 
-#if QT_VERSION >= 0x050E00
-bool  ScriptFileInfo::isShortcut(QString file)
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+bool ScriptFileInfo::isShortcut(const QString &file) const
 {
-	QFileInfo fp = QFileInfo(file);
-	return fp.isShortcut();
+    return QFileInfo(file).isShortcut();
 }
 #endif
 
-bool  ScriptFileInfo::isSymLink(QString file)
+bool ScriptFileInfo::isSymLink(const QString &file) const
 {
-	QFileInfo fp = QFileInfo(file);
-	return fp.isSymLink();
+    return QFileInfo(file).isSymLink();
 }
 
-bool  ScriptFileInfo::isSymbolicLink(QString file)
+bool ScriptFileInfo::isSymbolicLink(const QString &file) const
 {
-	QFileInfo fp = QFileInfo(file);
-#if QT_VERSION >= 0x050E00
-	return fp.isSymbolicLink();
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+    return QFileInfo(file).isSymbolicLink();
 #else
-	return fp.isSymLink();
+    return QFileInfo(file).isSymLink();
 #endif
 }
 
-bool  ScriptFileInfo::isWritable(QString file)
+bool ScriptFileInfo::isWritable(const QString &file) const
 {
-	QFileInfo fp = QFileInfo(file);
-	return fp.isWritable();
+    return QFileInfo(file).isWritable();
 }
 
-QDateTime ScriptFileInfo::lastModified(QString file)
+QDateTime ScriptFileInfo::lastModified(const QString &file) const
 {
-	QFileInfo fp = QFileInfo(file);
-	return fp.lastModified();
+    return QFileInfo(file).lastModified();
 }
 
-QDateTime ScriptFileInfo::lastRead(QString file)
+QDateTime ScriptFileInfo::lastRead(const QString &file) const
 {
-	QFileInfo fp = QFileInfo(file);
-	return fp.lastRead();
+    return QFileInfo(file).lastRead();
 }
 
-bool  ScriptFileInfo::makeAbsolute(QString file)
+bool ScriptFileInfo::makeAbsolute(const QString &file) const
 {
-	QFileInfo fp = QFileInfo(file);
-	return fp.makeAbsolute();
+    return QFileInfo(file).makeAbsolute();
 }
 
-QDateTime ScriptFileInfo::metadataChangeTime(QString file)
+QDateTime ScriptFileInfo::metadataChangeTime(const QString &file) const
 {
-	QFileInfo fp = QFileInfo(file);
-
-#if QT_VERSION >= 0x050A00
-	return fp.metadataChangeTime();
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
+    return QFileInfo(file).metadataChangeTime();
 #else
-	 return fp.lastModified(); // hmm not really same
+    return QFileInfo(file).lastModified(); // hmm not really same
 #endif
-
 }
 
-QString ScriptFileInfo::owner(QString file)
+QString ScriptFileInfo::owner(const QString &file) const
 {
-	QFileInfo fp = QFileInfo(file);
-	return fp.owner();
+    return QFileInfo(file).owner();
 }
 
-uint  ScriptFileInfo::ownerId(QString file)
+uint  ScriptFileInfo::ownerId(const QString &file) const
 {
-	QFileInfo fp = QFileInfo(file);
-	return fp.ownerId();
+    return QFileInfo(file).ownerId();
 }
 
-QString ScriptFileInfo::path(QString file)
+QString ScriptFileInfo::path(const QString &file) const
 {
-	QFileInfo fp = QFileInfo(file);
-	return fp.path();
+    return QFileInfo(file).path();
 }
 
-bool  ScriptFileInfo::permission(QString file, uint permissions)
+bool ScriptFileInfo::permission(const QString &file, uint permissions) const
 {
-	QFileInfo fp = QFileInfo(file);
-	return fp.permission((QFile::Permissions)permissions);
+    return QFileInfo(file).permission(static_cast<QFile::Permissions>(permissions));
 }
 
-uint ScriptFileInfo::permissions(QString file)
+uint ScriptFileInfo::permissions(const QString &file) const
 {
-	QFileInfo fp = QFileInfo(file);
-	return fp.permissions();
+    return QFileInfo(file).permissions();
 }
 
-void  ScriptFileInfo::refresh(QString file)
+void ScriptFileInfo::refresh(const QString &file) const
 {
-	QFileInfo fp = QFileInfo(file);
-	return fp.refresh();
+    return QFileInfo(file).refresh();
 }
 
-qint64  ScriptFileInfo::size(QString file)
+qint64  ScriptFileInfo::size(const QString &file) const
 {
-	QFileInfo fp = QFileInfo(file);
-	return fp.size();
+    return QFileInfo(file).size();
 }
 
-QString ScriptFileInfo::suffix(QString file)
+QString ScriptFileInfo::suffix(const QString &file) const
 {
-	QFileInfo fp = QFileInfo(file);
-	return fp.suffix();
+    return QFileInfo(file).suffix();
 }
 
-QString ScriptFileInfo::symLinkTarget(QString file)
+QString ScriptFileInfo::symLinkTarget(const QString &file) const
 {
-	QFileInfo fp = QFileInfo(file);
-	return fp.symLinkTarget();
+    return QFileInfo(file).symLinkTarget();
 }

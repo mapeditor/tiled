@@ -20,66 +20,61 @@
 
 #pragma once
 
+#include <QDateTime>
 #include <QObject>
-#include <QtCore/qfileinfo.h>
-#include <QtCore/qdir.h>
-#include <QtCore/qfileinfo.h>
-#include <QtCore/qdatetime.h>
 
 class ScriptFileInfo : public QObject
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	ScriptFileInfo(QObject *parent = nullptr);
-  
-  Q_INVOKABLE QString absoluteDir(QString file);
-  Q_INVOKABLE QString absoluteFilePath(QString file);
-  Q_INVOKABLE QString absolutePath(QString file);
-  Q_INVOKABLE QString baseName(QString file);
-  Q_INVOKABLE QDateTime birthTime(QString file);
-  Q_INVOKABLE QString bundleName(QString file);
-  Q_INVOKABLE bool  caching(QString file);
-  Q_INVOKABLE QString canonicalFilePath(QString file);
-  Q_INVOKABLE QString canonicalPath(QString file);
-  Q_INVOKABLE QString completeBaseName(QString file);
-  Q_INVOKABLE QString completeSuffix(QString file);
-  Q_INVOKABLE QString dir(QString file);
-  Q_INVOKABLE bool  exists(QString file);
-  Q_INVOKABLE QString fileName(QString file);
-  Q_INVOKABLE QString filePath(QString file);
-  Q_INVOKABLE QDateTime fileTime(QString file, uint time);
-  Q_INVOKABLE QString group(QString file);
-  Q_INVOKABLE uint  groupId(QString file);
-  Q_INVOKABLE bool  isAbsolute(QString file);
-  Q_INVOKABLE bool  isBundle(QString file);
-  Q_INVOKABLE bool  isDir(QString file);
-  Q_INVOKABLE bool  isExecutable(QString file);
-  Q_INVOKABLE bool  isFile(QString file);
-  Q_INVOKABLE bool  isHidden(QString file);
-  Q_INVOKABLE bool  isNativePath(QString file);
-  Q_INVOKABLE bool  isReadable(QString file);
-  Q_INVOKABLE bool  isRelative(QString file);
-  Q_INVOKABLE bool  isRoot(QString file);
+    ScriptFileInfo(QObject *parent = nullptr);
 
-#if QT_VERSION >= 0x050E00
-  Q_INVOKABLE bool  isShortcut(QString file);
+    Q_INVOKABLE QString absoluteDir(const QString &file) const;
+    Q_INVOKABLE QString absoluteFilePath(const QString &file) const;
+    Q_INVOKABLE QString absolutePath(const QString &file) const;
+    Q_INVOKABLE QString baseName(const QString &file) const;
+    Q_INVOKABLE QDateTime birthTime(const QString &file) const;
+    Q_INVOKABLE QString bundleName(const QString &file) const;
+    Q_INVOKABLE bool caching(const QString &file) const;
+    Q_INVOKABLE QString canonicalFilePath(const QString &file) const;
+    Q_INVOKABLE QString canonicalPath(const QString &file) const;
+    Q_INVOKABLE QString completeBaseName(const QString &file) const;
+    Q_INVOKABLE QString completeSuffix(const QString &file) const;
+    Q_INVOKABLE QString dir(const QString &file) const;
+    Q_INVOKABLE bool exists(const QString &file) const;
+    Q_INVOKABLE QString fileName(const QString &file) const;
+    Q_INVOKABLE QString filePath(const QString &file) const;
+    Q_INVOKABLE QDateTime fileTime(const QString &file, uint time) const;
+    Q_INVOKABLE QString group(const QString &file) const;
+    Q_INVOKABLE uint groupId(const QString &file) const;
+    Q_INVOKABLE bool isAbsolute(const QString &file) const;
+    Q_INVOKABLE bool isBundle(const QString &file) const;
+    Q_INVOKABLE bool isDir(const QString &file) const;
+    Q_INVOKABLE bool isExecutable(const QString &file) const;
+    Q_INVOKABLE bool isFile(const QString &file) const;
+    Q_INVOKABLE bool isHidden(const QString &file) const;
+    Q_INVOKABLE bool isNativePath(const QString &file) const;
+    Q_INVOKABLE bool isReadable(const QString &file) const;
+    Q_INVOKABLE bool isRelative(const QString &file) const;
+    Q_INVOKABLE bool isRoot(const QString &file) const;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+    Q_INVOKABLE bool isShortcut(const QString &file) const;
 #endif
-  
-  Q_INVOKABLE bool  isSymLink(QString file);
-  Q_INVOKABLE bool  isSymbolicLink(QString file);
-  Q_INVOKABLE bool  isWritable(QString file);
-  Q_INVOKABLE QDateTime lastModified(QString file);
-  Q_INVOKABLE QDateTime lastRead(QString file);
-  Q_INVOKABLE bool  makeAbsolute(QString file);
-  Q_INVOKABLE QDateTime metadataChangeTime(QString file);
-  Q_INVOKABLE QString owner(QString file);
-  Q_INVOKABLE uint  ownerId(QString file);
-  Q_INVOKABLE QString path(QString file);
-  Q_INVOKABLE bool  permission(QString file, uint permissions);
-  Q_INVOKABLE uint  permissions(QString file);
-  Q_INVOKABLE void  refresh(QString file);
-  Q_INVOKABLE qint64  size(QString file);
-  Q_INVOKABLE QString suffix(QString file);
-  Q_INVOKABLE QString symLinkTarget(QString file);
+    Q_INVOKABLE bool isSymLink(const QString &file) const;
+    Q_INVOKABLE bool isSymbolicLink(const QString &file) const;
+    Q_INVOKABLE bool isWritable(const QString &file) const;
+    Q_INVOKABLE QDateTime lastModified(const QString &file) const;
+    Q_INVOKABLE QDateTime lastRead(const QString &file) const;
+    Q_INVOKABLE bool makeAbsolute(const QString &file) const;
+    Q_INVOKABLE QDateTime metadataChangeTime(const QString &file) const;
+    Q_INVOKABLE QString owner(const QString &file) const;
+    Q_INVOKABLE uint ownerId(const QString &file) const;
+    Q_INVOKABLE QString path(const QString &file) const;
+    Q_INVOKABLE bool permission(const QString &file, uint permissions) const;
+    Q_INVOKABLE uint permissions(const QString &file) const;
+    Q_INVOKABLE void refresh(const QString &file) const;
+    Q_INVOKABLE qint64 size(const QString &file) const;
+    Q_INVOKABLE QString suffix(const QString &file) const;
+    Q_INVOKABLE QString symLinkTarget(const QString &file) const;
 };
