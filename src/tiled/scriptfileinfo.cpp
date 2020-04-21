@@ -78,7 +78,7 @@ QString ScriptFileInfo::completeSuffix(const QString &file) const
 
 bool ScriptFileInfo::exists(const QString &file) const
 {
-    return QFileInfo(file).exists();
+    return QFileInfo::exists(file);
 }
 
 QString ScriptFileInfo::fileName(const QString &file) const
