@@ -42,7 +42,9 @@ public:
     Q_INVOKABLE bool exists(const QString &file) const;
     Q_INVOKABLE QString fileName(const QString &file) const;
     Q_INVOKABLE QString filePath(const QString &file) const;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
     Q_INVOKABLE QDateTime fileTime(const QString &file, uint time) const;
+#endif
     Q_INVOKABLE QString group(const QString &file) const;
     Q_INVOKABLE uint groupId(const QString &file) const;
     Q_INVOKABLE bool isAbsolute(const QString &file) const;
@@ -64,7 +66,9 @@ public:
     Q_INVOKABLE QDateTime lastModified(const QString &file) const;
     Q_INVOKABLE QDateTime lastRead(const QString &file) const;
     Q_INVOKABLE bool makeAbsolute(const QString &file) const;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
     Q_INVOKABLE QDateTime metadataChangeTime(const QString &file) const;
+#endif
     Q_INVOKABLE QString owner(const QString &file) const;
     Q_INVOKABLE uint ownerId(const QString &file) const;
     Q_INVOKABLE QString path(const QString &file) const;

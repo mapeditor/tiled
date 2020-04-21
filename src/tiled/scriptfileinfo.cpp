@@ -92,21 +92,13 @@ QString ScriptFileInfo::filePath(const QString &file) const
 }
 
 // https://doc.qt.io/qt-5/qfiledevice.html#FileTime-enum
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
 QDateTime ScriptFileInfo::fileTime(const QString &file, uint time) const
 {
     QFileInfo fp = QFileInfo(file);
-#if QT_VERSION >= 0x050A00
     return fp.fileTime(static_cast<QFile::FileTime>(time));
-#else
-    switch(time) {
-    case 0: return fp.lastRead();
-    case 1: return fp.created();
-    case 2: return fp.lastModified(); // hmm not really same - QFileDevice::FileMetadataChangeTime ?
-    case 3: return fp.lastModified();
-    default: return fp.lastModified();
-    }
-#endif
 }
+#endif
 
 QString ScriptFileInfo::group(const QString &file) const
 {
@@ -209,14 +201,12 @@ bool ScriptFileInfo::makeAbsolute(const QString &file) const
     return QFileInfo(file).makeAbsolute();
 }
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
 QDateTime ScriptFileInfo::metadataChangeTime(const QString &file) const
 {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
     return QFileInfo(file).metadataChangeTime();
-#else
-    return QFileInfo(file).lastModified(); // hmm not really same
-#endif
 }
+#endif
 
 QString ScriptFileInfo::owner(const QString &file) const
 {
