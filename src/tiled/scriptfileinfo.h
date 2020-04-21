@@ -62,7 +62,7 @@ public:
   Q_INVOKABLE bool  isRelative(QString file);
   Q_INVOKABLE bool  isRoot(QString file);
 
-#if QT_VERSION >= 0x050D00
+#if QT_VERSION >= 0x050E00
   Q_INVOKABLE bool  isShortcut(QString file);
 #endif
   

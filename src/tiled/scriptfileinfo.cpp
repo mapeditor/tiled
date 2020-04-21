@@ -210,7 +210,7 @@ bool  ScriptFileInfo::isRoot(QString file)
 	return fp.isRoot();
 }
 
-#if QT_VERSION >= 0x050D00
+#if QT_VERSION >= 0x050E00
 bool  ScriptFileInfo::isShortcut(QString file)
 {
 	QFileInfo fp = QFileInfo(file);
