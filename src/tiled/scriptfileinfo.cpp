@@ -117,11 +117,12 @@ QString ScriptFileInfo::filePath(QString file)
 	return fp.filePath();
 }
 
-// QDateTime ScriptFileInfo::fileTime(QString file, QFile::FileTime time)
-// {
-// 	QFileInfo fp = QFileInfo(file);
-// 	return fp.fileTime(time);
-// }
+// https://doc.qt.io/qt-5/qfiledevice.html#FileTime-enum
+QDateTime ScriptFileInfo::fileTime(QString file, uint time)
+{
+	QFileInfo fp = QFileInfo(file);
+	return fp.fileTime((QFile::FileTime)time);
+}
 
 QString ScriptFileInfo::group(QString file)
 {
@@ -261,11 +262,11 @@ QString ScriptFileInfo::path(QString file)
 	return fp.path();
 }
 
-// bool  ScriptFileInfo::permission(QString file, QFile::Permissions permissions)
-// {
-// 	QFileInfo fp = QFileInfo(file);
-// 	return fp.permission(permissions);
-// }
+bool  ScriptFileInfo::permission(QString file, uint permissions)
+{
+	QFileInfo fp = QFileInfo(file);
+	return fp.permission((QFile::Permissions)permissions);
+}
 
 uint ScriptFileInfo::permissions(QString file)
 {

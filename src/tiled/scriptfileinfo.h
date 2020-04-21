@@ -48,7 +48,7 @@ public:
   Q_INVOKABLE bool  exists(QString file);
   Q_INVOKABLE QString fileName(QString file);
   Q_INVOKABLE QString filePath(QString file);
-  // Q_INVOKABLE QDateTime fileTime(QString file, QFile::FileTime time);
+  Q_INVOKABLE QDateTime fileTime(QString file, uint time);
   Q_INVOKABLE QString group(QString file);
   Q_INVOKABLE uint  groupId(QString file);
   Q_INVOKABLE bool  isAbsolute(QString file);
@@ -72,7 +72,7 @@ public:
   Q_INVOKABLE QString owner(QString file);
   Q_INVOKABLE uint  ownerId(QString file);
   Q_INVOKABLE QString path(QString file);
-  // Q_INVOKABLE bool  permission(QString file, QFile::Permissions permissions);
+  Q_INVOKABLE bool  permission(QString file, uint permissions);
   Q_INVOKABLE uint  permissions(QString file);
   Q_INVOKABLE void  refresh(QString file);
   Q_INVOKABLE qint64  size(QString file);
