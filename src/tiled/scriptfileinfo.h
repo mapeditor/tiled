@@ -30,18 +30,15 @@ class ScriptFileInfo : public QObject
 public:
     ScriptFileInfo(QObject *parent = nullptr);
 
-    Q_INVOKABLE QString absoluteDir(const QString &file) const;
     Q_INVOKABLE QString absoluteFilePath(const QString &file) const;
     Q_INVOKABLE QString absolutePath(const QString &file) const;
     Q_INVOKABLE QString baseName(const QString &file) const;
     Q_INVOKABLE QDateTime birthTime(const QString &file) const;
     Q_INVOKABLE QString bundleName(const QString &file) const;
-    Q_INVOKABLE bool caching(const QString &file) const;
     Q_INVOKABLE QString canonicalFilePath(const QString &file) const;
     Q_INVOKABLE QString canonicalPath(const QString &file) const;
     Q_INVOKABLE QString completeBaseName(const QString &file) const;
     Q_INVOKABLE QString completeSuffix(const QString &file) const;
-    Q_INVOKABLE QString dir(const QString &file) const;
     Q_INVOKABLE bool exists(const QString &file) const;
     Q_INVOKABLE QString fileName(const QString &file) const;
     Q_INVOKABLE QString filePath(const QString &file) const;
@@ -73,7 +70,6 @@ public:
     Q_INVOKABLE QString path(const QString &file) const;
     Q_INVOKABLE bool permission(const QString &file, uint permissions) const;
     Q_INVOKABLE uint permissions(const QString &file) const;
-    Q_INVOKABLE void refresh(const QString &file) const;
     Q_INVOKABLE qint64 size(const QString &file) const;
     Q_INVOKABLE QString suffix(const QString &file) const;
     Q_INVOKABLE QString symLinkTarget(const QString &file) const;

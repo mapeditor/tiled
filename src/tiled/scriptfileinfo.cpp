@@ -27,11 +27,6 @@ ScriptFileInfo::ScriptFileInfo(QObject *parent)
     : QObject(parent)
 {}
 
-QString ScriptFileInfo::absoluteDir(const QString &file) const
-{
-    return QFileInfo(file).dir().absolutePath();
-}
-
 QString ScriptFileInfo::absoluteFilePath(const QString &file) const
 {
     return QFileInfo(file).absoluteFilePath();
@@ -49,22 +44,16 @@ QString ScriptFileInfo::baseName(const QString &file) const
 
 QDateTime ScriptFileInfo::birthTime(const QString &file) const
 {
-    QFileInfo fp = QFileInfo(file);
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
-    return fp.birthTime();
+    return QFileInfo(file).birthTime();
 #else
-    return fp.created();
+    return QFileInfo(file).created();
 #endif
 }
 
 QString ScriptFileInfo::bundleName(const QString &file) const
 {
     return QFileInfo(file).bundleName();
-}
-
-bool ScriptFileInfo::caching(const QString &file) const
-{
-    return QFileInfo(file).caching();
 }
 
 QString ScriptFileInfo::canonicalFilePath(const QString &file) const
@@ -85,11 +74,6 @@ QString ScriptFileInfo::completeBaseName(const QString &file) const
 QString ScriptFileInfo::completeSuffix(const QString &file) const
 {
     return QFileInfo(file).completeSuffix();
-}
-
-QString ScriptFileInfo::dir(const QString &file) const
-{
-    return QFileInfo(file).dir().path();
 }
 
 bool ScriptFileInfo::exists(const QString &file) const
@@ -257,11 +241,6 @@ bool ScriptFileInfo::permission(const QString &file, uint permissions) const
 uint ScriptFileInfo::permissions(const QString &file) const
 {
     return QFileInfo(file).permissions();
-}
-
-void ScriptFileInfo::refresh(const QString &file) const
-{
-    return QFileInfo(file).refresh();
 }
 
 qint64  ScriptFileInfo::size(const QString &file) const
