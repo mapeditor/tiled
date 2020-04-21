@@ -885,15 +885,23 @@ void MainWindow::keyReleaseEvent(QKeyEvent *event)
 void MainWindow::dragEnterEvent(QDragEnterEvent *e)
 {
     const QList<QUrl> urls = e->mimeData()->urls();
-    if (!urls.isEmpty() && !urls.at(0).toLocalFile().isEmpty())
+    if (!urls.isEmpty() && !urls.first().toLocalFile().isEmpty())
         e->accept();
 }
 
 void MainWindow::dropEvent(QDropEvent *e)
 {
     const auto urls = e->mimeData()->urls();
-    for (const QUrl &url : urls)
-        openFile(url.toLocalFile());
+    for (const QUrl &url : urls) {
+        const QString localFile = url.toLocalFile();
+        if (localFile.isEmpty())
+            continue;
+
+        if (localFile.endsWith(QLatin1String(".tiled-project")))
+            openProjectFile(localFile);
+        else
+            openFile(localFile);
+    }
 }
 
 void MainWindow::newMap()
