@@ -196,11 +196,6 @@ QDateTime ScriptFileInfo::lastRead(const QString &file) const
     return QFileInfo(file).lastRead();
 }
 
-bool ScriptFileInfo::makeAbsolute(const QString &file) const
-{
-    return QFileInfo(file).makeAbsolute();
-}
-
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
 QDateTime ScriptFileInfo::metadataChangeTime(const QString &file) const
 {

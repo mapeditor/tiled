@@ -65,7 +65,6 @@ public:
     Q_INVOKABLE bool isWritable(const QString &file) const;
     Q_INVOKABLE QDateTime lastModified(const QString &file) const;
     Q_INVOKABLE QDateTime lastRead(const QString &file) const;
-    Q_INVOKABLE bool makeAbsolute(const QString &file) const;
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
     Q_INVOKABLE QDateTime metadataChangeTime(const QString &file) const;
 #endif
