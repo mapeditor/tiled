@@ -227,7 +227,7 @@ bool  ScriptFileInfo::isSymLink(QString file)
 bool  ScriptFileInfo::isSymbolicLink(QString file)
 {
 	QFileInfo fp = QFileInfo(file);
-#if QT_VERSION >= 0x050A00
+#if QT_VERSION >= 0x050E00
 	return fp.isSymbolicLink();
 #else
 	return fp.isSymLink();
