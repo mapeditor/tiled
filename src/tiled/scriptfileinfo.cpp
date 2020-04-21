@@ -133,6 +133,7 @@ QDateTime ScriptFileInfo::fileTime(QString file, uint time)
 		case 1: return fp.created();
 		case 2: return fp.lastModified(); // hmm not really same - QFileDevice::FileMetadataChangeTime ?
 		case 3: return fp.lastModified();
+		default: return fp.lastModified();
 	}
 #endif
 }
