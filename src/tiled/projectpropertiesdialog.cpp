@@ -44,14 +44,20 @@ ProjectPropertiesDialog::ProjectPropertiesDialog(Project &project, QWidget *pare
     ui->propertyBrowser->setFactoryForManager<QtVariantPropertyManager>(variantPropertyManager,
                                                                         variantEditorFactory);
 
-    auto groupProperty = groupPropertyManager->addProperty(tr("Extensions"));
+    auto extensionsGroupProperty = groupPropertyManager->addProperty(tr("Extensions"));
     mExtensionPathProperty = variantPropertyManager->addProperty(filePathTypeId(), tr("Directory"));
     mExtensionPathProperty->setValue(project.mExtensionsPath);
     mExtensionPathProperty->setAttribute(QStringLiteral("directory"), true);
+    extensionsGroupProperty->addSubProperty(mExtensionPathProperty);
 
-    groupProperty->addSubProperty(mExtensionPathProperty);
+    auto automappingGroupProperty = groupPropertyManager->addProperty(tr("Automapping"));
+    mAutomappingRulesFileProperty = variantPropertyManager->addProperty(filePathTypeId(), tr("Rules file"));
+    mAutomappingRulesFileProperty->setValue(project.mAutomappingRulesFile);
+    mAutomappingRulesFileProperty->setAttribute(QStringLiteral("filter"), tr("Automapping Rules File (*.txt)"));
+    automappingGroupProperty->addSubProperty(mAutomappingRulesFileProperty);
 
-    ui->propertyBrowser->addProperty(groupProperty);
+    ui->propertyBrowser->addProperty(extensionsGroupProperty);
+    ui->propertyBrowser->addProperty(automappingGroupProperty);
 }
 
 ProjectPropertiesDialog::~ProjectPropertiesDialog()
@@ -62,6 +68,7 @@ ProjectPropertiesDialog::~ProjectPropertiesDialog()
 void ProjectPropertiesDialog::accept()
 {
     mProject.mExtensionsPath = mExtensionPathProperty->value().toString();
+    mProject.mAutomappingRulesFile = mAutomappingRulesFileProperty->value().toString();
 
     QDialog::accept();
 }

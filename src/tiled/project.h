@@ -38,6 +38,7 @@ public:
     const QStringList &folders() const;
 
     QString mExtensionsPath;
+    QString mAutomappingRulesFile;
 
 private:
     QString mFileName;

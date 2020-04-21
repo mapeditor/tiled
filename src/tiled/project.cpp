@@ -35,6 +35,14 @@ static QString relative(const QDir &dir, const QString &fileName)
     return rel.isEmpty() ? QString(QLatin1String(".")) : rel;
 }
 
+static QString absolute(const QDir &dir, const QString &fileName)
+{
+    if (fileName.isEmpty())
+        return QString();
+
+    return QDir::cleanPath(dir.absoluteFilePath(fileName));
+}
+
 Project::Project()
 {
 }
@@ -58,6 +66,7 @@ bool Project::save(const QString &fileName)
 
     project.insert(QLatin1String("folders"), folders);
     project.insert(QLatin1String("extensionsPath"), relative(dir, extensionsPath));
+    project.insert(QLatin1String("automappingRulesFile"), dir.relativeFilePath(mAutomappingRulesFile));
 
     QJsonDocument document(project);
 
@@ -93,7 +102,8 @@ bool Project::load(const QString &fileName)
 
     QJsonObject project = document.object();
 
-    mExtensionsPath = QDir::cleanPath(dir.absoluteFilePath(project.value(QLatin1String("extensionsFolder")).toString(QLatin1String("extensions"))));
+    mExtensionsPath = absolute(dir, project.value(QLatin1String("extensionsFolder")).toString(QLatin1String("extensions")));
+    mAutomappingRulesFile = absolute(dir, project.value(QLatin1String("automappingRulesFile")).toString());
 
     const QJsonArray folders = project.value(QLatin1String("folders")).toArray();
     for (const QJsonValue &folderValue : folders)
