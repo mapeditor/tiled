@@ -1370,8 +1370,14 @@ void MainWindow::restoreSession()
 
 void MainWindow::projectProperties()
 {
-    if (ProjectPropertiesDialog(mProjectDock->project(), this).exec() == QDialog::Accepted)
+    Project &project = mProjectDock->project();
+
+    if (ProjectPropertiesDialog(project, this).exec() == QDialog::Accepted) {
+        if (!project.fileName().isEmpty())
+            project.save(project.fileName());
+
         ScriptManager::instance().refreshExtensionsPaths();
+    }
 }
 
 void MainWindow::cut()
