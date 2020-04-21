@@ -313,3 +313,8 @@ bool  ScriptFileInfo::rmpath(const QString &file) const
 // {
 //     return QDir().entryList(nameFilters, (QDir::Filter)filter, (QDir::SortFlag)sort);
 // }
+
+QString ScriptFileInfo::relativeFilePath(const QString &dirPath, const QString &filePath) const
+{
+   return QDir(dirPath).relativeFilePath(filePath);
+}

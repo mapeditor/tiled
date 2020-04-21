@@ -90,5 +90,6 @@ public:
     Q_INVOKABLE bool  rename(const QString &oldName, const QString &newName);
     Q_INVOKABLE bool  rmdir(const QString &file) const;
     Q_INVOKABLE bool  rmpath(const QString &file) const;
+    Q_INVOKABLE QString relativeFilePath(const QString &dirPath, const QString &filePath) const;
     // Q_INVOKABLE QStringList entryList(const QStringList &nameFilters, int filter = -1, int sort = -1) const;
 };
