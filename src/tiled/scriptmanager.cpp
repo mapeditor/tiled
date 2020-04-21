@@ -285,8 +285,8 @@ void ScriptManager::setupEngine()
 
     QJSValue globalObject = mEngine->globalObject();
     globalObject.setProperty(QStringLiteral("tiled"), mEngine->newQObject(mModule));
-    globalObject.setProperty(QStringLiteral("FileInfo"), mEngine->newQObject(mFileInfo));
 #if QT_VERSION >= 0x050800
+    globalObject.setProperty(QStringLiteral("FileInfo"), mEngine->newQObject(mFileInfo));
     globalObject.setProperty(QStringLiteral("TextFile"), mEngine->newQMetaObject<ScriptTextFile>());
     globalObject.setProperty(QStringLiteral("BinaryFile"), mEngine->newQMetaObject<ScriptBinaryFile>());
     globalObject.setProperty(QStringLiteral("Layer"), mEngine->newQMetaObject<EditableLayer>());
