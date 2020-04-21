@@ -61,7 +61,11 @@ public:
   Q_INVOKABLE bool  isReadable(QString file);
   Q_INVOKABLE bool  isRelative(QString file);
   Q_INVOKABLE bool  isRoot(QString file);
+
+#if QT_VERSION >= 0x050A00
   Q_INVOKABLE bool  isShortcut(QString file);
+#endif
+  
   Q_INVOKABLE bool  isSymLink(QString file);
   Q_INVOKABLE bool  isSymbolicLink(QString file);
   Q_INVOKABLE bool  isWritable(QString file);

@@ -53,7 +53,11 @@ QString ScriptFileInfo::baseName(QString file)
 QDateTime ScriptFileInfo::birthTime(QString file)
 {
 	QFileInfo fp = QFileInfo(file);
+#if QT_VERSION >= 0x050A00
 	return fp.birthTime();
+#else
+	return fp.created();
+#endif
 }
 
 QString ScriptFileInfo::bundleName(QString file)
@@ -121,7 +125,16 @@ QString ScriptFileInfo::filePath(QString file)
 QDateTime ScriptFileInfo::fileTime(QString file, uint time)
 {
 	QFileInfo fp = QFileInfo(file);
+#if QT_VERSION >= 0x050A00
 	return fp.fileTime((QFile::FileTime)time);
+#else
+	switch(time){
+		case 0: return fp.lastRead();
+		case 1: return fp.created();
+		case 2: return fp.lastModified(); // hmm - QFileDevice::FileMetadataChangeTime ?
+		case 3: return fp.lastModified();
+	}
+#endif
 }
 
 QString ScriptFileInfo::group(QString file)
@@ -196,11 +209,13 @@ bool  ScriptFileInfo::isRoot(QString file)
 	return fp.isRoot();
 }
 
+#if QT_VERSION >= 0x050A00
 bool  ScriptFileInfo::isShortcut(QString file)
 {
 	QFileInfo fp = QFileInfo(file);
 	return fp.isShortcut();
 }
+#endif
 
 bool  ScriptFileInfo::isSymLink(QString file)
 {
@@ -211,7 +226,11 @@ bool  ScriptFileInfo::isSymLink(QString file)
 bool  ScriptFileInfo::isSymbolicLink(QString file)
 {
 	QFileInfo fp = QFileInfo(file);
+#if QT_VERSION >= 0x050A00
 	return fp.isSymbolicLink();
+#else
+	return fp.isSymLink();
+#endif
 }
 
 bool  ScriptFileInfo::isWritable(QString file)
