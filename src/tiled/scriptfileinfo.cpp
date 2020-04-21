@@ -128,10 +128,10 @@ QDateTime ScriptFileInfo::fileTime(QString file, uint time)
 #if QT_VERSION >= 0x050A00
 	return fp.fileTime((QFile::FileTime)time);
 #else
-	switch(time){
+	switch(time) {
 		case 0: return fp.lastRead();
 		case 1: return fp.created();
-		case 2: return fp.lastModified(); // hmm - QFileDevice::FileMetadataChangeTime ?
+		case 2: return fp.lastModified(); // hmm not really same - QFileDevice::FileMetadataChangeTime ?
 		case 3: return fp.lastModified();
 	}
 #endif
@@ -260,7 +260,13 @@ bool  ScriptFileInfo::makeAbsolute(QString file)
 QDateTime ScriptFileInfo::metadataChangeTime(QString file)
 {
 	QFileInfo fp = QFileInfo(file);
+
+#if QT_VERSION >= 0x050A00
 	return fp.metadataChangeTime();
+#else
+	 return fp.lastModified(); // hmm not really same
+#endif
+
 }
 
 QString ScriptFileInfo::owner(QString file)
