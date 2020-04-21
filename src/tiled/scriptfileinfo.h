@@ -76,4 +76,19 @@ public:
     Q_INVOKABLE qint64 size(const QString &file) const;
     Q_INVOKABLE QString suffix(const QString &file) const;
     Q_INVOKABLE QString symLinkTarget(const QString &file) const;
+    
+    Q_INVOKABLE QString toNativeSeparators(const QString &file) const;
+    Q_INVOKABLE QString cleanPath(const QString &file) const;
+    Q_INVOKABLE QString fromNativeSeparators(const QString &file) const;
+    Q_INVOKABLE bool  cd(const QString &file);
+    Q_INVOKABLE uint  count(const QString &file) const;
+    Q_INVOKABLE QString dirName(const QString &file) const;
+    Q_INVOKABLE bool  mkdir(const QString &file) const;
+    Q_INVOKABLE bool  mkpath(const QString &file) const;
+    Q_INVOKABLE bool  remove(const QString &file);
+    Q_INVOKABLE bool  removeRecursively(const QString &file);
+    Q_INVOKABLE bool  rename(const QString &oldName, const QString &newName);
+    Q_INVOKABLE bool  rmdir(const QString &file) const;
+    Q_INVOKABLE bool  rmpath(const QString &file) const;
+    // Q_INVOKABLE QStringList entryList(const QStringList &nameFilters, int filter = -1, int sort = -1) const;
 };

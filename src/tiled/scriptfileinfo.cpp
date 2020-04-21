@@ -242,3 +242,74 @@ QString ScriptFileInfo::symLinkTarget(const QString &file) const
 {
     return QFileInfo(file).symLinkTarget();
 }
+
+QString ScriptFileInfo::cleanPath(const QString &file) const
+{
+    return QDir().cleanPath(file);
+}
+
+QString ScriptFileInfo::fromNativeSeparators(const QString &file) const
+{
+    return QDir().fromNativeSeparators(file);
+}
+
+QString ScriptFileInfo::toNativeSeparators(const QString &file) const
+{
+    return QDir().fromNativeSeparators(file);
+}
+
+bool  ScriptFileInfo::cd(const QString &file)
+{
+    return QDir().cd(file);
+}
+
+uint  ScriptFileInfo::count(const QString &file) const
+{
+    return QDir(file).count();
+}
+
+QString ScriptFileInfo::dirName(const QString &file) const
+{
+    return QDir(file).dirName();
+}
+
+bool  ScriptFileInfo::mkdir(const QString &file) const
+{
+    return QDir().mkdir(file);
+}
+
+bool  ScriptFileInfo::mkpath(const QString &file) const
+{
+    return QDir().mkpath(file);
+}
+
+bool  ScriptFileInfo::remove(const QString &file)
+{
+    return QDir().remove(file);
+}
+
+bool  ScriptFileInfo::removeRecursively(const QString &file)
+{
+    return QDir(file).removeRecursively();
+}
+
+bool  ScriptFileInfo::rename(const QString &oldName, const QString &newName)
+{
+    return QDir().rename(oldName, newName);
+}
+
+bool  ScriptFileInfo::rmdir(const QString &file) const
+{
+    return QDir().rmdir(file);
+}
+
+bool  ScriptFileInfo::rmpath(const QString &file) const
+{
+    return QDir().rmpath(file);
+}
+
+// TODO: need to work out how filter & sort work
+// QStringList ScriptFileInfo::entryList(const QStringList &nameFilters, int filter = -1, int sort = -1) const
+// {
+//     return QDir().entryList(nameFilters, (QDir::Filter)filter, (QDir::SortFlag)sort);
+// }
