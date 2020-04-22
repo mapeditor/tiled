@@ -53,13 +53,13 @@ Map Example
       "properties":[
         {
           "name":"mapProperty1",
-          "type":"one",
-          "value":"string"
+          "type":"string",
+          "value":"one"
         },
         {
           "name":"mapProperty2",
-          "type":"two",
-          "value":"string"
+          "type":"string",
+          "value":"two"
         }],
       "renderorder":"right-down",
       "tileheight":32,
