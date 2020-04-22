@@ -21,6 +21,7 @@
 #include "scriptfileinfo.h"
 
 #include <QDir>
+#include <QFile>
 #include <QFileInfo>
 
 ScriptFileInfo::ScriptFileInfo(QObject *parent)
@@ -245,32 +246,17 @@ QString ScriptFileInfo::symLinkTarget(const QString &file) const
 
 QString ScriptFileInfo::cleanPath(const QString &file) const
 {
-    return QDir().cleanPath(file);
+    return QDir::cleanPath(file);
 }
 
 QString ScriptFileInfo::fromNativeSeparators(const QString &file) const
 {
-    return QDir().fromNativeSeparators(file);
+    return QDir::fromNativeSeparators(file);
 }
 
 QString ScriptFileInfo::toNativeSeparators(const QString &file) const
 {
-    return QDir().fromNativeSeparators(file);
-}
-
-bool  ScriptFileInfo::cd(const QString &file)
-{
-    return QDir().cd(file);
-}
-
-uint  ScriptFileInfo::count(const QString &file) const
-{
-    return QDir(file).count();
-}
-
-QString ScriptFileInfo::dirName(const QString &file) const
-{
-    return QDir(file).dirName();
+    return QDir::toNativeSeparators(file);
 }
 
 bool  ScriptFileInfo::mkdir(const QString &file) const
@@ -285,7 +271,7 @@ bool  ScriptFileInfo::mkpath(const QString &file) const
 
 bool  ScriptFileInfo::remove(const QString &file)
 {
-    return QDir().remove(file);
+    return QFile::remove(file);
 }
 
 bool  ScriptFileInfo::removeRecursively(const QString &file)
@@ -295,7 +281,7 @@ bool  ScriptFileInfo::removeRecursively(const QString &file)
 
 bool  ScriptFileInfo::rename(const QString &oldName, const QString &newName)
 {
-    return QDir().rename(oldName, newName);
+    return  QFile::rename(oldName, newName);
 }
 
 bool  ScriptFileInfo::rmdir(const QString &file) const

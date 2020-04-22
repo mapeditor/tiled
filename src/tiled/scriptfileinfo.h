@@ -80,9 +80,6 @@ public:
     Q_INVOKABLE QString toNativeSeparators(const QString &file) const;
     Q_INVOKABLE QString cleanPath(const QString &file) const;
     Q_INVOKABLE QString fromNativeSeparators(const QString &file) const;
-    Q_INVOKABLE bool  cd(const QString &file);
-    Q_INVOKABLE uint  count(const QString &file) const;
-    Q_INVOKABLE QString dirName(const QString &file) const;
     Q_INVOKABLE bool  mkdir(const QString &file) const;
     Q_INVOKABLE bool  mkpath(const QString &file) const;
     Q_INVOKABLE bool  remove(const QString &file);
