@@ -134,8 +134,14 @@ void ScriptManager::ensureInitialized()
 QJSValue ScriptManager::evaluate(const QString &program,
                                  const QString &fileName, int lineNumber)
 {
+    QJSValue globalObject = mEngine->globalObject();
+    if (!fileName.isEmpty())
+        globalObject.setProperty(QStringLiteral("__filename"), fileName);
+
     QJSValue result = mEngine->evaluate(program, fileName, lineNumber);
     checkError(result, program);
+
+    globalObject.deleteProperty(QStringLiteral("__filename"));
     return result;
 }
 

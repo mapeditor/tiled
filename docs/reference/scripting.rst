@@ -116,6 +116,14 @@ and passing it into the ``disconnect`` function:
 API Reference
 -------------
 
+Global Variables
+^^^^^^^^^^^^^^^^
+
+__filename
+    The file path of the current file being evaluated. Only available during
+    initial evaluation of the file and not when later functions in that file
+    get called. If you need it there, copy the value to local scope.
+
 tiled module
 ^^^^^^^^^^^^
 
