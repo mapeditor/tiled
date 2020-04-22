@@ -26,6 +26,7 @@
 namespace Tiled {
 
 class EditableTile;
+class ScriptImage;
 class TilesetDocument;
 
 class EditableTileset : public EditableAsset
@@ -102,6 +103,9 @@ public:
     Orientation orientation() const;
     QColor backgroundColor() const;
     bool isCollection() const;
+
+    Q_INVOKABLE void loadFromImage(Tiled::ScriptImage *image,
+                                   const QString &source = QString());
 
     Q_INVOKABLE Tiled::EditableTile *tile(int id);
     QList<QObject*> tiles();

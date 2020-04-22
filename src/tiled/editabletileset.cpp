@@ -24,6 +24,7 @@
 #include "editablemanager.h"
 #include "editableterrain.h"
 #include "editabletile.h"
+#include "scriptimage.h"
 #include "scriptmanager.h"
 #include "tilesetchanges.h"
 #include "tilesetdocument.h"
@@ -65,6 +66,12 @@ EditableTileset::~EditableTileset()
     detachTerrains(tileset()->terrains());
 
     EditableManager::instance().mEditableTilesets.remove(tileset());
+}
+
+void EditableTileset::loadFromImage(ScriptImage *image, const QString &source)
+{
+    // WARNING: This function has no undo!
+    tileset()->loadFromImage(image->image(), source);
 }
 
 EditableTile *EditableTileset::tile(int id)

@@ -41,6 +41,7 @@
 #include "scriptedtool.h"
 #include "scriptfile.h"
 #include "scriptfileformatwrappers.h"
+#include "scriptimage.h"
 #include "scriptmodule.h"
 #include "tilecollisiondock.h"
 #include "tilelayer.h"
@@ -110,6 +111,7 @@ ScriptManager::ScriptManager(QObject *parent)
     qRegisterMetaType<TilesetEditor*>();
     qRegisterMetaType<ScriptMapFormatWrapper*>();
     qRegisterMetaType<ScriptTilesetFormatWrapper*>();
+    qRegisterMetaType<ScriptImage*>();
 
     connect(&mWatcher, &FileSystemWatcher::pathsChanged,
             this, &ScriptManager::scriptFilesChanged);
@@ -296,6 +298,7 @@ void ScriptManager::initialize()
     globalObject.setProperty(QStringLiteral("TileLayer"), mEngine->newQMetaObject<EditableTileLayer>());
     globalObject.setProperty(QStringLiteral("TileMap"), mEngine->newQMetaObject<EditableMap>());
     globalObject.setProperty(QStringLiteral("Tileset"), mEngine->newQMetaObject<EditableTileset>());
+    globalObject.setProperty(QStringLiteral("Image"), mEngine->newQMetaObject<ScriptImage>());
 #endif
 
     loadExtensions();

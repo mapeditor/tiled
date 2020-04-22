@@ -30,6 +30,7 @@ namespace Tiled {
 class EditableObjectGroup;
 class EditableTerrain;
 class EditableTileset;
+class ScriptImage;
 class TilesetDocument;
 
 class EditableTile : public EditableObject
@@ -86,6 +87,8 @@ public:
 
     Q_INVOKABLE Tiled::EditableTerrain *terrainAtCorner(Corner corner) const;
     Q_INVOKABLE void setTerrainAtCorner(Corner corner, Tiled::EditableTerrain *editableTerrain);
+
+    Q_INVOKABLE void setImage(Tiled::ScriptImage *image);
 
     Tile *tile() const;
 

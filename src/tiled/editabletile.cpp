@@ -32,6 +32,7 @@
 #include "editabletileset.h"
 #include "imagecache.h"
 #include "objectgroup.h"
+#include "scriptimage.h"
 #include "scriptmanager.h"
 
 #include <QCoreApplication>
@@ -110,6 +111,12 @@ void EditableTile::setTerrainAtCorner(Corner corner, EditableTerrain *editableTe
         asset()->push(new ChangeTileTerrain(doc, tile(), terrain));
     else if (!checkReadOnly())
         tile()->setTerrain(terrain);
+}
+
+void EditableTile::setImage(ScriptImage *image)
+{
+    // WARNING: This function has no undo!
+    tile()->setImage(QPixmap::fromImage(image->image()));
 }
 
 void EditableTile::detach()
