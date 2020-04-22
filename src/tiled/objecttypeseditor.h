@@ -22,7 +22,7 @@
 
 #include "properties.h"
 
-#include <QMainWindow>
+#include <QDialog>
 
 namespace Ui {
 class ObjectTypesEditor;
@@ -38,7 +38,7 @@ namespace Tiled {
 
 class ObjectTypesModel;
 
-class ObjectTypesEditor : public QMainWindow
+class ObjectTypesEditor : public QDialog
 {
     Q_OBJECT
 
@@ -63,7 +63,6 @@ private:
     void applyPropertyToSelectedTypes(const QString &name, const QVariant &value);
     void removePropertyFromSelectedTypes(const QString &name);
 
-    void chooseObjectTypesFile();
     void importObjectTypes();
     void exportObjectTypes();
 

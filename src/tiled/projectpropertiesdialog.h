@@ -47,6 +47,7 @@ private:
 
     Project &mProject;
     QtVariantProperty *mExtensionPathProperty;
+    QtVariantProperty *mObjectTypesFileProperty;
     QtVariantProperty *mAutomappingRulesFileProperty;
 };
 

@@ -129,7 +129,7 @@ static void messagesToConsole(QtMsgType type, const QMessageLogContext &context,
 static void initializePluginsAndExtensions()
 {
     PluginManager::instance()->loadPlugins();
-    ScriptManager::instance().initialize();
+    ScriptManager::instance().ensureInitialized();
 }
 
 /**

@@ -343,6 +343,9 @@ void WorldManager::unloadWorld(const QString &fileName)
  */
 void WorldManager::unloadAllWorlds()
 {
+    if (mWorlds.isEmpty())
+        return;
+
     QMap<QString, World*> worlds;
     worlds.swap(mWorlds);
 

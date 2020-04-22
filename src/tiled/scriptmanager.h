@@ -40,7 +40,7 @@ public:
     static ScriptManager &instance();
     static void deleteInstance();
 
-    void initialize();
+    void ensureInitialized();
 
     const QString &extensionsPath() const;
 
@@ -69,7 +69,8 @@ private:
     ~ScriptManager() = default;
 
     void reset();
-    void setupEngine();
+    void initialize();
+
     void scriptFilesChanged(const QStringList &scriptFiles);
 
     void loadExtensions();

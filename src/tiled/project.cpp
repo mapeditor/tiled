@@ -47,6 +47,13 @@ Project::Project()
 {
 }
 
+bool Project::save()
+{
+    if (!mFileName.isEmpty())
+        return save(mFileName);
+    return false;
+}
+
 bool Project::save(const QString &fileName)
 {
     QString extensionsPath = mExtensionsPath;
@@ -55,20 +62,20 @@ bool Project::save(const QString &fileName)
     if (mFileName.isEmpty() && extensionsPath.isEmpty())
         extensionsPath = QFileInfo(fileName).dir().filePath(QLatin1String("extensions"));
 
-    QJsonObject project;
-
     const QDir dir = QFileInfo(fileName).dir();
 
     QJsonArray folders;
-
     for (auto &folder : mFolders)
         folders.append(relative(dir, folder));
 
-    project.insert(QLatin1String("folders"), folders);
-    project.insert(QLatin1String("extensionsPath"), relative(dir, extensionsPath));
-    project.insert(QLatin1String("automappingRulesFile"), dir.relativeFilePath(mAutomappingRulesFile));
+    const QJsonObject project {
+        { QStringLiteral("folders"), folders },
+        { QStringLiteral("extensionsPath"), relative(dir, extensionsPath) },
+        { QStringLiteral("objectTypesFile"), dir.relativeFilePath(mObjectTypesFile) },
+        { QStringLiteral("automappingRulesFile"), dir.relativeFilePath(mAutomappingRulesFile) }
+    };
 
-    QJsonDocument document(project);
+    const QJsonDocument document(project);
 
     SaveFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
@@ -78,6 +85,7 @@ bool Project::save(const QString &fileName)
     if (!file.commit())
         return false;
 
+    mLastSaved = QFileInfo(fileName).lastModified();
     mFileName = fileName;
     mExtensionsPath = extensionsPath;
     return true;
@@ -90,21 +98,22 @@ bool Project::load(const QString &fileName)
         return false;
 
     QJsonParseError error;
-    QByteArray json = file.readAll();
-    QJsonDocument document(QJsonDocument::fromJson(json, &error));
+    const QByteArray json = file.readAll();
+    const QJsonDocument document(QJsonDocument::fromJson(json, &error));
     if (error.error != QJsonParseError::NoError)
         return false;
 
-    mFolders.clear();
     mFileName = fileName;
 
     const QDir dir = QFileInfo(fileName).dir();
 
-    QJsonObject project = document.object();
+    const QJsonObject project = document.object();
 
     mExtensionsPath = absolute(dir, project.value(QLatin1String("extensionsFolder")).toString(QLatin1String("extensions")));
+    mObjectTypesFile = absolute(dir, project.value(QLatin1String("objectTypesFile")).toString());
     mAutomappingRulesFile = absolute(dir, project.value(QLatin1String("automappingRulesFile")).toString());
 
+    mFolders.clear();
     const QJsonArray folders = project.value(QLatin1String("folders")).toArray();
     for (const QJsonValue &folderValue : folders)
         mFolders.append(QDir::cleanPath(dir.absoluteFilePath(folderValue.toString())));

@@ -49,15 +49,23 @@ ProjectPropertiesDialog::ProjectPropertiesDialog(Project &project, QWidget *pare
     mExtensionPathProperty->setValue(project.mExtensionsPath);
     mExtensionPathProperty->setAttribute(QStringLiteral("directory"), true);
     extensionsGroupProperty->addSubProperty(mExtensionPathProperty);
-
-    auto automappingGroupProperty = groupPropertyManager->addProperty(tr("Automapping"));
-    mAutomappingRulesFileProperty = variantPropertyManager->addProperty(filePathTypeId(), tr("Rules file"));
-    mAutomappingRulesFileProperty->setValue(project.mAutomappingRulesFile);
-    mAutomappingRulesFileProperty->setAttribute(QStringLiteral("filter"), tr("Automapping Rules File (*.txt)"));
-    automappingGroupProperty->addSubProperty(mAutomappingRulesFileProperty);
-
     ui->propertyBrowser->addProperty(extensionsGroupProperty);
-    ui->propertyBrowser->addProperty(automappingGroupProperty);
+
+    auto filesGroupProperty = groupPropertyManager->addProperty(tr("Files"));
+
+    mObjectTypesFileProperty = variantPropertyManager->addProperty(filePathTypeId(), tr("Object types"));
+    mObjectTypesFileProperty->setValue(project.mObjectTypesFile);
+    mObjectTypesFileProperty->setAttribute(QStringLiteral("filter"),
+                                           QCoreApplication::translate("File Types", "Object Types files (*.xml *.json)"));
+    filesGroupProperty->addSubProperty(mObjectTypesFileProperty);
+
+    mAutomappingRulesFileProperty = variantPropertyManager->addProperty(filePathTypeId(), tr("Automapping rules"));
+    mAutomappingRulesFileProperty->setValue(project.mAutomappingRulesFile);
+    mAutomappingRulesFileProperty->setAttribute(QStringLiteral("filter"),
+                                                QCoreApplication::translate("File Types", "Automapping Rules files (*.txt)"));
+    filesGroupProperty->addSubProperty(mAutomappingRulesFileProperty);
+
+    ui->propertyBrowser->addProperty(filesGroupProperty);
 }
 
 ProjectPropertiesDialog::~ProjectPropertiesDialog()
@@ -68,6 +76,7 @@ ProjectPropertiesDialog::~ProjectPropertiesDialog()
 void ProjectPropertiesDialog::accept()
 {
     mProject.mExtensionsPath = mExtensionPathProperty->value().toString();
+    mProject.mObjectTypesFile = mObjectTypesFileProperty->value().toString();
     mProject.mAutomappingRulesFile = mAutomappingRulesFileProperty->value().toString();
 
     QDialog::accept();

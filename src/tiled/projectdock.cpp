@@ -128,9 +128,7 @@ void ProjectDock::addFolderToProject()
     mProjectView->model()->addFolder(folder);
     mProjectView->addExpandedPath(folder);
 
-    auto &p = project();
-    if (!p.fileName().isEmpty())
-        p.save(p.fileName());
+    project().save();
 }
 
 void ProjectDock::refreshProjectFolders()
@@ -286,10 +284,7 @@ void ProjectView::contextMenuEvent(QContextMenuEvent *event)
             menu.addSeparator();
             auto removeFolder = menu.addAction(tr("&Remove Folder from Project"), [=] {
                 model()->removeFolder(index.row());
-
-                auto &p = model()->project();
-                if (!p.fileName().isEmpty())
-                    p.save(p.fileName());
+                model()->project().save();
             });
             Utils::setThemeIcon(removeFolder, "list-remove");
         }

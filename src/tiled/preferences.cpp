@@ -69,29 +69,8 @@ Preferences::Preferences()
     if (applicationStyle() == FusionStyle)
         setApplicationStyle(TiledStyle);
 
-    // Retrieve defined object types
-    ObjectTypesSerializer objectTypesSerializer;
-    ObjectTypes objectTypes;
-    bool success = objectTypesSerializer.readObjectTypes(objectTypesFile(), objectTypes);
-
-    // For backwards compatibilty, read in object types from settings
-    if (!success) {
-        const auto names = get<QStringList>("ObjectTypes/Names");
-        const auto colors = get<QStringList>("ObjectTypes/Colors");
-
-        if (!names.isEmpty()) {
-            const int count = qMin(names.size(), colors.size());
-            for (int i = 0; i < count; ++i)
-                objectTypes.append(ObjectType(names.at(i), QColor(colors.at(i))));
-        }
-    } else {
-        remove(QLatin1String("ObjectTypes"));
-
-        mWatcher.addPath(objectTypesFile());
-    }
-
-    Object::setObjectTypes(objectTypes);
-
+    // Read object types from the default location (custom location moved to project)
+    setObjectTypesFile(QString());
 
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->setReloadTilesetsOnChange(reloadTilesetsOnChange());
@@ -769,24 +748,27 @@ void Preferences::setStartupProject(const QString &filePath)
 
 QString Preferences::objectTypesFile() const
 {
-    QString file = get<QString>("Storage/ObjectTypesFile");
-    if (file.isEmpty())
-        return dataLocation() + QLatin1String("/objecttypes.xml");
-
-    return file;
+    return mObjectTypesFile;
 }
 
 void Preferences::setObjectTypesFile(const QString &fileName)
 {
-    QString previousObjectTypesFile = objectTypesFile();
-    if (previousObjectTypesFile == fileName)
+    QString newObjectTypesFile = fileName;
+    if (newObjectTypesFile.isEmpty())
+        newObjectTypesFile = dataLocation() + QLatin1String("/objecttypes.xml");
+
+    if (mObjectTypesFile == newObjectTypesFile)
         return;
 
-    if (!previousObjectTypesFile.isEmpty())
-        mWatcher.removePath(previousObjectTypesFile);
+    if (!mObjectTypesFile.isEmpty())
+        mWatcher.removePath(mObjectTypesFile);
 
-    setValue(QLatin1String("Storage/ObjectTypesFile"), fileName);
-    mWatcher.addPath(fileName);
+    mObjectTypesFile = newObjectTypesFile;
+    mWatcher.addPath(newObjectTypesFile);
+
+    ObjectTypes objectTypes;
+    ObjectTypesSerializer().readObjectTypes(mObjectTypesFile, objectTypes);
+    setObjectTypes(objectTypes);
 }
 
 void Preferences::setObjectTypesFileLastSaved(const QDateTime &time)
@@ -800,9 +782,7 @@ void Preferences::objectTypesFileChangedOnDisk()
     if (fileInfo.lastModified() == mObjectTypesFileLastSaved)
         return;
 
-    ObjectTypesSerializer objectTypesSerializer;
     ObjectTypes objectTypes;
-
-    if (objectTypesSerializer.readObjectTypes(fileInfo.filePath(), objectTypes))
+    if (ObjectTypesSerializer().readObjectTypes(fileInfo.filePath(), objectTypes))
         setObjectTypes(objectTypes);
 }

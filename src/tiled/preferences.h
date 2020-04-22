@@ -253,6 +253,7 @@ private:
 
     FileSystemWatcher mWatcher;
 
+    QString mObjectTypesFile;
     QDateTime mObjectTypesFileLastSaved;
 
     static Preferences *mInstance;

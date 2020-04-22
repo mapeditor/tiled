@@ -929,6 +929,7 @@ void MainWindow::initializeSession()
     bool projectLoaded = !session.project.isEmpty() && project.load(session.project);
 
     if (projectLoaded) {
+        Preferences::instance()->setObjectTypesFile(project.mObjectTypesFile);
         mProjectDock->setProject(std::move(project));
         updateWindowTitle();
     }
@@ -936,7 +937,7 @@ void MainWindow::initializeSession()
     // Script manager initialization is delayed until after the project has
     // been loaded, to avoid immediately having to reset the engine again after
     // adding the project's extension path.
-    ScriptManager::instance().initialize();
+    ScriptManager::instance().ensureInitialized();
 
     if (projectLoaded || Preferences::instance()->restoreSessionOnStartup())
         restoreSession();
@@ -1350,6 +1351,7 @@ void MainWindow::switchProject(Project project)
         prefs->addRecentProject(project.fileName());
     }
 
+    prefs->setObjectTypesFile(project.mObjectTypesFile);
     mProjectDock->setProject(std::move(project));
 
     ScriptManager::instance().refreshExtensionsPaths();
@@ -1381,8 +1383,8 @@ void MainWindow::projectProperties()
     Project &project = mProjectDock->project();
 
     if (ProjectPropertiesDialog(project, this).exec() == QDialog::Accepted) {
-        if (!project.fileName().isEmpty())
-            project.save(project.fileName());
+        project.save();
+        Preferences::instance()->setObjectTypesFile(project.mObjectTypesFile);
 
         ScriptManager::instance().refreshExtensionsPaths();
     }

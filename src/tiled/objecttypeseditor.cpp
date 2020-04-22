@@ -94,7 +94,7 @@ QSize ColorDelegate::sizeHint(const QStyleOptionViewItem &,
 
 
 ObjectTypesEditor::ObjectTypesEditor(QWidget *parent)
-    : QMainWindow(parent, Qt::Window)
+    : QDialog(parent)
     , mUi(new Ui::ObjectTypesEditor)
     , mObjectTypesModel(new ObjectTypesModel(this))
     , mVariantManager(new VariantPropertyManager(this))
@@ -107,7 +107,9 @@ ObjectTypesEditor::ObjectTypesEditor(QWidget *parent)
     mUi->objectTypesTable->setItemDelegateForColumn(1, new ColorDelegate(this));
 
     QHeaderView *horizontalHeader = mUi->objectTypesTable->horizontalHeader();
-    horizontalHeader->setSectionResizeMode(QHeaderView::Stretch);
+    horizontalHeader->setSectionResizeMode(0, QHeaderView::Stretch);
+    horizontalHeader->setSectionResizeMode(1, QHeaderView::Fixed);
+    horizontalHeader->resizeSection(1, Utils::dpiScaled(50));
 
     mUi->propertiesView->setFactoryForManager(mVariantManager, new VariantEditorFactory(this));
     mUi->propertiesView->setResizeMode(QtTreePropertyBrowser::ResizeToContents);
@@ -139,10 +141,16 @@ ObjectTypesEditor::ObjectTypesEditor(QWidget *parent)
     Utils::setThemeIcon(mAddPropertyAction, "add");
     Utils::setThemeIcon(mRemovePropertyAction, "remove");
 
+    auto stretch = new QWidget;
+    stretch->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+
     QToolBar *objectTypesToolBar = new QToolBar(this);
     objectTypesToolBar->setIconSize(Utils::smallIconSize());
     objectTypesToolBar->addAction(mAddObjectTypeAction);
     objectTypesToolBar->addAction(mRemoveObjectTypeAction);
+    objectTypesToolBar->addWidget(stretch);
+    objectTypesToolBar->addAction(mUi->actionImport);
+    objectTypesToolBar->addAction(mUi->actionExport);
 
     QToolBar *propertiesToolBar = new QToolBar(this);
     propertiesToolBar->setIconSize(Utils::smallIconSize());
@@ -173,8 +181,6 @@ ObjectTypesEditor::ObjectTypesEditor(QWidget *parent)
     connect(mRenamePropertyAction, &QAction::triggered,
             this, &ObjectTypesEditor::renameProperty);
 
-    connect(mUi->actionChooseFile, &QAction::triggered,
-            this, &ObjectTypesEditor::chooseObjectTypesFile);
     connect(mUi->actionImport, &QAction::triggered,
             this, &ObjectTypesEditor::importObjectTypes);
     connect(mUi->actionExport, &QAction::triggered,
@@ -337,44 +343,6 @@ void ObjectTypesEditor::removePropertyFromSelectedTypes(const QString &name)
     applyObjectTypes();
 }
 
-void ObjectTypesEditor::chooseObjectTypesFile()
-{
-    Preferences *prefs = Preferences::instance();
-    const QString startPath = prefs->objectTypesFile();
-
-    const QString fileName =
-            QFileDialog::getOpenFileName(this, tr("Choose Object Types File"),
-                                         startPath,
-                                         tr("Object Types files (*.xml *.json)"),
-                                         nullptr,
-                                         QFileDialog::DontConfirmOverwrite);
-
-    if (fileName.isEmpty())
-        return;
-
-    prefs->setLastPath(Preferences::ObjectTypesFile, fileName);
-
-    ObjectTypes objectTypes;
-
-    if (QFile::exists(fileName)) {
-        ObjectTypesSerializer serializer;
-
-        if (!serializer.readObjectTypes(fileName, objectTypes)) {
-            QMessageBox::critical(this, tr("Error Reading Object Types"),
-                                  serializer.errorString());
-            return;
-        }
-    }
-
-    prefs->setObjectTypesFile(fileName);
-
-    mSettingPrefObjectTypes = true;
-    prefs->setObjectTypes(objectTypes);
-    mSettingPrefObjectTypes = false;
-
-    mObjectTypesModel->setObjectTypes(objectTypes);
-}
-
 void ObjectTypesEditor::importObjectTypes()
 {
     Preferences *prefs = Preferences::instance();
@@ -382,7 +350,7 @@ void ObjectTypesEditor::importObjectTypes()
     const QString fileName =
             QFileDialog::getOpenFileName(this, tr("Import Object Types"),
                                          lastPath,
-                                         tr("Object Types files (*.xml *.json)"));
+                                         QCoreApplication::translate("File Types", "Object Types files (*.xml *.json)"));
     if (fileName.isEmpty())
         return;
 
@@ -407,12 +375,11 @@ void ObjectTypesEditor::importObjectTypes()
         }
 
         mObjectTypesModel->setObjectTypes(currentTypes);
+        applyObjectTypes();
     } else {
         QMessageBox::critical(this, tr("Error Reading Object Types"),
                               serializer.errorString());
     }
-
-    applyObjectTypes();
 }
 
 void ObjectTypesEditor::exportObjectTypes()
@@ -426,7 +393,7 @@ void ObjectTypesEditor::exportObjectTypes()
     const QString fileName =
             QFileDialog::getSaveFileName(this, tr("Export Object Types"),
                                          lastPath,
-                                         tr("Object Types files (*.xml *.json)"));
+                                         QCoreApplication::translate("File Types", "Object Types files (*.xml *.json)"));
     if (fileName.isEmpty())
         return;
 

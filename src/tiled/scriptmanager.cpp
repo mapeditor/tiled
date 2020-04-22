@@ -123,13 +123,12 @@ ScriptManager::ScriptManager(QObject *parent)
     }
 }
 
-void ScriptManager::initialize()
+void ScriptManager::ensureInitialized()
 {
-    Q_ASSERT(!mEngine && !mModule);
-
-    refreshExtensionsPaths();
-    setupEngine();
-    loadExtensions();
+    if (!mEngine) {
+        refreshExtensionsPaths();
+        initialize();
+    }
 }
 
 QJSValue ScriptManager::evaluate(const QString &program,
@@ -270,11 +269,10 @@ void ScriptManager::reset()
     mModule = nullptr;
     mTempCount = 0;
 
-    setupEngine();
-    loadExtensions();
+    initialize();
 }
 
-void ScriptManager::setupEngine()
+void ScriptManager::initialize()
 {
     mEngine = new QQmlEngine(this);
     mModule = new ScriptModule(this);
@@ -293,6 +291,8 @@ void ScriptManager::setupEngine()
     globalObject.setProperty(QStringLiteral("TileMap"), mEngine->newQMetaObject<EditableMap>());
     globalObject.setProperty(QStringLiteral("Tileset"), mEngine->newQMetaObject<EditableTileset>());
 #endif
+
+    loadExtensions();
 }
 
 void ScriptManager::scriptFilesChanged(const QStringList &scriptFiles)

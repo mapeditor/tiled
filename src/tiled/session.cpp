@@ -218,6 +218,10 @@ Session &Session::switchCurrent(const QString &fileName)
 {
     const bool initialSession = !mCurrent;
 
+    // Do nothing if this session is already current
+    if (!initialSession && mCurrent->fileName() == fileName)
+        return *mCurrent;
+
     mCurrent = std::make_unique<Session>(fileName);
     Preferences::instance()->setLastSession(mCurrent->fileName());
 
