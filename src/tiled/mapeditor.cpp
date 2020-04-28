@@ -368,14 +368,11 @@ void MapEditor::addDocument(Document *document)
             view->zoomable()->setScale(scale);
 
         const QPointF viewCenter = mapState.value(QLatin1String("viewCenter")).toPointF();
-        view->forceCenterOn(viewCenter);
+        view->setInitialCenterPos(viewCenter);
 
         int layerIndex = mapState.value(QLatin1String("selectedLayer")).toInt();
         if (Layer *layer = layerAtGlobalIndex(mapDocument->map(), layerIndex))
             mapDocument->switchCurrentLayer(layer);
-
-        // suppress fitting map in view upon show event
-        view->setViewInitialized();
     }
 }
 
