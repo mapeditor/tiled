@@ -32,12 +32,13 @@ install:
 
 build_script:
   - FOR /F "tokens=*" %%i in ('git describe') do SET COMMITNOW=%%i
-  - set VERSION_DATE=%DATE:~10,4%.%DATE:~4,2%.%DATE:~7,2%
   - if defined APPVEYOR_REPO_TAG_NAME (set TILED_RELEASE=true) else (set TILED_SNAPSHOT=true)
   - if defined TILED_RELEASE set TILED_VERSION=%APPVEYOR_REPO_TAG_NAME:~1%
-  - if defined TILED_RELEASE echo Building Tiled %TILED_VERSION%... (from %COMMITNOW%)
-  - if defined TILED_SNAPSHOT set TILED_VERSION=%APPVEYOR_BUILD_VERSION%
-  - if defined TILED_SNAPSHOT echo Building Tiled snapshot %TILED_VERSION%... (from %COMMITNOW%)
+  - if defined TILED_SNAPSHOT set TILED_VERSION=%DATE:~10,4%.%DATE:~4,2%.%DATE:~7,2%
+  - if defined TILED_SNAPSHOT set TILED_MSI_VERSION=%APPVEYOR_BUILD_VERSION%
+  - if defined TILED_SNAPSHOT set TILED_ITCH_CHANNEL=%TILED_ITCH_CHANNEL%-snapshot
+  - if not defined APPVEYOR_PULL_REQUEST_NUMBER if [%APPVEYOR_REPO_BRANCH%]==[snapshot] set PUSH_TO_ITCH=true
+  - echo Building Tiled %TILED_VERSION% (%TILED_ITCH_CHANNEL%) from %COMMITNOW%
   - git clone --depth 1 -b master https://github.com/facebook/zstd.git
   - cd zstd/lib
   - set CC=gcc
@@ -46,11 +47,7 @@ build_script:
   - qbs --version
   - qbs setup-toolchains --detect
   - qbs config defaultProfile %DEFAULT_PROFILE%
-  - if defined TILED_RELEASE (set TILED_ITCH_VERSION=%TILED_VERSION%) else (set TILED_ITCH_VERSION=%VERSION_DATE%)
-  - if defined TILED_SNAPSHOT (set TILED_ITCH_CHANNEL=%TILED_ITCH_CHANNEL%-snapshot)
-  - if not defined APPVEYOR_PULL_REQUEST_NUMBER if [%APPVEYOR_REPO_BRANCH%]==[snapshot] set PUSH_TO_ITCH=true
   - qbs build --all-products config:release projects.Tiled.windowsInstaller:true projects.Tiled.enableZstd:true
-  - qbs build --all-products config:itch qbs.buildVariant:release projects.Tiled.version:%TILED_ITCH_VERSION% projects.Tiled.enableZstd:true
   - cd util\java
   - mvn --version
   - mvn clean install
@@ -60,8 +57,7 @@ after_build:
   - cd release
   - cd installer*
   - move tiled-*.msi %APPVEYOR_BUILD_FOLDER%
-  - cd ..\..
-  - cd itch
+  - cd ..
   - cd archive*
   - move tiled-*.7z %APPVEYOR_BUILD_FOLDER%
   - cd ..\..
