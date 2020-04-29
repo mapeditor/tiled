@@ -84,11 +84,6 @@ matrix:
         tags: true
     - provider: script
       skip_cleanup: true
-      script: curl --upload-file $(ls Tiled*.AppImage) https://transfer.sh/Tiled.AppImage
-      on:
-        all_branches: true
-    - provider: script
-      skip_cleanup: true
       on:
         repo: bjorn/tiled
         branch: snapshot
