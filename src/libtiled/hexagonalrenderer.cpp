@@ -403,8 +403,7 @@ void HexagonalRenderer::drawTileSelection(QPainter *painter,
                                           const QColor &color,
                                           const QRectF &exposed) const
 {
-    painter->setBrush(color);
-    painter->setPen(Qt::NoPen);
+    QPainterPath path;
 
 #if QT_VERSION < 0x050800
     const auto rects = region.rects();
@@ -416,10 +415,21 @@ void HexagonalRenderer::drawTileSelection(QPainter *painter,
             for (int x = r.left(); x <= r.right(); ++x) {
                 const QPolygonF polygon = tileToScreenPolygon(x, y);
                 if (QRectF(polygon.boundingRect()).intersects(exposed))
-                    painter->drawConvexPolygon(polygon);
+                    path.addPolygon(polygon);
             }
         }
     }
+
+    QColor penColor(color);
+    penColor.setAlpha(255);
+
+    QPen pen(penColor);
+    pen.setCosmetic(true);
+
+    painter->setPen(pen);
+    painter->setBrush(color);
+    painter->setRenderHint(QPainter::Antialiasing, true);
+    painter->drawPath(path.simplified());
 }
 
 QPointF HexagonalRenderer::tileToPixelCoords(qreal x, qreal y) const

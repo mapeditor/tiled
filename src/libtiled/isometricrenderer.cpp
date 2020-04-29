@@ -365,8 +365,8 @@ void IsometricRenderer::drawTileSelection(QPainter *painter,
                                           const QColor &color,
                                           const QRectF &exposed) const
 {
-    painter->setBrush(color);
-    painter->setPen(Qt::NoPen);
+    QPainterPath path;
+
 #if QT_VERSION < 0x050800
     const auto rects = region.rects();
     for (const QRect &r : rects) {
@@ -375,8 +375,19 @@ void IsometricRenderer::drawTileSelection(QPainter *painter,
 #endif
         QPolygonF polygon = tileRectToScreenPolygon(r);
         if (QRectF(polygon.boundingRect()).intersects(exposed))
-            painter->drawConvexPolygon(polygon);
+            path.addPolygon(polygon);
     }
+
+    QColor penColor(color);
+    penColor.setAlpha(255);
+
+    QPen pen(penColor);
+    pen.setCosmetic(true);
+
+    painter->setPen(pen);
+    painter->setBrush(color);
+    painter->setRenderHint(QPainter::Antialiasing, true);
+    painter->drawPath(path.simplified());
 }
 
 void IsometricRenderer::drawMapObject(QPainter *painter,

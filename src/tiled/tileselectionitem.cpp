@@ -105,4 +105,7 @@ void TileSelectionItem::updateBoundingRect()
 {
     const QRect b = mMapDocument->selectedArea().boundingRect();
     mBoundingRect = mMapDocument->renderer()->boundingRect(b);
+
+    // Adjust for border drawn at tile selection edges
+    mBoundingRect.adjust(-1, -1, 1, 1);
 }

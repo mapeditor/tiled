@@ -356,16 +356,29 @@ void OrthogonalRenderer::drawTileSelection(QPainter *painter,
                                            const QColor &color,
                                            const QRectF &exposed) const
 {
+    QPainterPath path;
+
 #if QT_VERSION < 0x050800
     const auto rects = region.rects();
     for (const QRect &r : rects) {
 #else
     for (const QRect &r : region) {
 #endif
-        const QRectF toFill = QRectF(boundingRect(r)).intersected(exposed);
-        if (!toFill.isEmpty())
-            painter->fillRect(toFill, color);
+        const QRectF toFill = QRectF(boundingRect(r));
+        if (toFill.intersects(exposed))
+            path.addRect(toFill);
     }
+
+    QColor penColor(color);
+    penColor.setAlpha(255);
+
+    QPen pen(penColor);
+    pen.setCosmetic(true);
+
+    painter->setPen(pen);
+    painter->setBrush(color);
+    painter->setRenderHint(QPainter::Antialiasing, false);
+    painter->drawPath(path.simplified());
 }
 
 void OrthogonalRenderer::drawMapObject(QPainter *painter,

@@ -70,6 +70,10 @@ QRectF WangBrushItem::boundingRect() const
     } else {
         QRect bounds = mInvalidTiles.boundingRect();
         QRectF bounding = mapDocument()->renderer()->boundingRect(bounds);
+
+        // Adjust for border drawn at tile selection edges
+        bounding.adjust(-1, -1, 1, 1);
+
         return bounding;
     }
 }

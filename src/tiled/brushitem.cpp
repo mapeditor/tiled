@@ -234,4 +234,7 @@ void BrushItem::updateBoundingRect()
                          qMin(0, -drawMargins.top()),
                          qMax(0, drawMargins.right()),
                          qMax(0, drawMargins.bottom()));
+
+    // Adjust for border drawn at tile selection edges
+    mBoundingRect.adjust(-1, -1, 1, 1);
 }
