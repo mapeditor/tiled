@@ -180,17 +180,6 @@ IssuesDock::IssuesDock(QWidget *parent)
 
     connect(showWarningsCheckBox, &QCheckBox::toggled, mProxyModel, &IssueFilterModel::setShowWarnings);
     connect(clearButton, &QPushButton::clicked, &IssuesModel::instance(), &IssuesModel::clear);
-    connect(this, &QDockWidget::visibilityChanged, [this] (bool visible) { mIsVisible = visible; });
-    connect(&IssuesModel::instance(), &IssuesModel::counterClicked, this, [this] {
-        // Need to keep own mIsVisible bool, which is false when we're "visible"
-        // only as tab, as opposed to isVisible(), which returns true in that case.
-        if (mIsVisible) {
-            hide();
-        } else {
-            show();
-            raise();
-        }
-    });
 
     auto toolBarLayout = new QHBoxLayout;
     toolBarLayout->addWidget(mFilterEdit);

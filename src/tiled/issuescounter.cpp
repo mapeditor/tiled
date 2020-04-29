@@ -33,7 +33,7 @@
 namespace Tiled {
 
 IssuesCounter::IssuesCounter(QWidget *parent)
-    : QAbstractButton(parent)
+    : QToolButton(parent)
     , mErrorIcon(new QLabel)
     , mErrorCount(new QLabel)
     , mWarningIcon(new QLabel)
@@ -51,6 +51,7 @@ IssuesCounter::IssuesCounter(QWidget *parent)
     layout->addSpacing(spacing);
 
     setLayout(layout);
+    setAutoRaise(true);
 
     updateLabels();
 
@@ -58,10 +59,9 @@ IssuesCounter::IssuesCounter(QWidget *parent)
     connect(&issuesModel, &IssuesModel::rowsInserted, this, &IssuesCounter::updateLabels);
     connect(&issuesModel, &IssuesModel::rowsRemoved, this, &IssuesCounter::updateLabels);
     connect(&issuesModel, &IssuesModel::modelReset, this, &IssuesCounter::updateLabels);
-
-    connect(this, &QAbstractButton::clicked, &issuesModel, &IssuesModel::counterClicked);
 }
 
+// Override paintEvent because we don't want to draw the button's text
 void IssuesCounter::paintEvent(QPaintEvent *event)
 {
     QStylePainter p(this);

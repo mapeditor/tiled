@@ -315,8 +315,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     MacSupport::addFullscreen(this);
 #endif
 
-    setDockOptions(dockOptions() | QMainWindow::GroupedDragging);
-
     Preferences *preferences = Preferences::instance();
 
     QIcon openIcon(QLatin1String(":images/16/document-open.png"));
@@ -712,7 +710,40 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     auto myStatusBar = statusBar();
     myStatusBar->addPermanentWidget(new NewsButton(myStatusBar));
     myStatusBar->addPermanentWidget(new NewVersionButton(NewVersionButton::AutoVisible, myStatusBar));
-    myStatusBar->addWidget(new IssuesCounter(myStatusBar));
+
+    QIcon terminalIcon(QLatin1String("://images/24/terminal.png"));
+    terminalIcon.addFile(QLatin1String("://images/16/terminal.png"));
+    terminalIcon.addFile(QLatin1String("://images/32/terminal.png"));
+
+    auto toggleConsoleAction = mConsoleDock->toggleViewAction();
+    toggleConsoleAction->setIcon(terminalIcon);
+    toggleConsoleAction->setIconVisibleInMenu(false);
+
+    auto consoleToggleButton = new QToolButton;
+    consoleToggleButton->setDefaultAction(toggleConsoleAction);
+    consoleToggleButton->setAutoRaise(true);
+    connect(toggleConsoleAction, &QAction::toggled, this, [this] (bool checked) {
+        if (checked) {
+            mConsoleDock->show();
+            if (!mIssuesDock->isFloating() && tabifiedDockWidgets(mConsoleDock).contains(mIssuesDock))
+                mIssuesDock->hide();
+            mConsoleDock->raise();
+        }
+    });
+
+    auto issuesCounter = new IssuesCounter(myStatusBar);
+    issuesCounter->setDefaultAction(mIssuesDock->toggleViewAction());
+    connect(mIssuesDock->toggleViewAction(), &QAction::toggled, this, [this] (bool checked) {
+        if (checked) {
+            mIssuesDock->show();
+            if (!mConsoleDock->isFloating() && tabifiedDockWidgets(mIssuesDock).contains(mConsoleDock))
+                mConsoleDock->hide();
+            mIssuesDock->raise();
+        }
+    });
+
+    myStatusBar->addWidget(consoleToggleButton);
+    myStatusBar->addWidget(issuesCounter);
 
     // Add the 'Views and Toolbars' submenu. This needs to happen after all
     // the dock widgets and toolbars have been added to the main window.
@@ -1822,7 +1853,10 @@ void MainWindow::resetToDefaultLayout()
     // Make sure we're not in Clear View mode
     mUi->actionClearView->setChecked(false);
 
-    // Reset the Console and Issues dock
+    // Reset the docks
+    mProjectDock->setFloating(false);
+    mConsoleDock->setFloating(false);
+    mIssuesDock->setFloating(false);
     addDockWidget(Qt::LeftDockWidgetArea, mProjectDock);
     addDockWidget(Qt::BottomDockWidgetArea, mConsoleDock);
     addDockWidget(Qt::BottomDockWidgetArea, mIssuesDock);
@@ -2182,7 +2216,7 @@ void MainWindow::currentEditorChanged(Editor *editor)
         return;
 
     const auto statusBarWidgets = editor->statusBarWidgets();
-    int index = 1;  // start after the errors/warnings label
+    int index = 2;  // start after the console and errors/warnings buttons
     for (QWidget *widget : statusBarWidgets) {
         statusBar()->insertWidget(index++, widget);
         widget->show(); // need to show because removeWidget hides explicitly
