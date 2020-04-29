@@ -315,14 +315,18 @@ bool MapView::event(QEvent *e)
     return QGraphicsView::event(e);
 }
 
-void MapView::showEvent(QShowEvent *event)
+void MapView::paintEvent(QPaintEvent *event)
 {
     if (!mViewInitialized) {
-        fitMapInView();
         mViewInitialized = true;
+
+        if (mHasInitialCenterPos)
+            forceCenterOn(mInitialCenterPos);
+        else
+            fitMapInView();
     }
 
-    QGraphicsView::showEvent(event);
+    QGraphicsView::paintEvent(event);
 }
 
 void MapView::hideEvent(QHideEvent *event)

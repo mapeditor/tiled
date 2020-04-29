@@ -640,14 +640,11 @@ void MapEditor::restoreDocumentState(MapDocument *mapDocument) const
         mapView->zoomable()->setScale(scale);
 
     const QPointF viewCenter = fromSettingsValue<QPointF>(fileState.value(QLatin1String("viewCenter")));
-    mapView->forceCenterOn(viewCenter);
+    mapView->setInitialCenterPos(viewCenter);
 
     int layerIndex = fileState.value(QLatin1String("selectedLayer")).toInt();
     if (Layer *layer = layerAtGlobalIndex(mapDocument->map(), layerIndex))
         mapDocument->switchCurrentLayer(layer);
-
-    // suppress fitting map in view upon show event
-    mapView->setViewInitialized();
 }
 
 void MapEditor::setSelectedTool(AbstractTool *tool)
