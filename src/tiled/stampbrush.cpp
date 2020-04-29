@@ -575,9 +575,6 @@ void StampBrush::updatePreview(QPoint tilePos)
     if (mBrushBehavior == Capture) {
         mPreviewMap.clear();
         tileRegion = mCaptureStampHelper.capturedArea(tilePos);
-    } else if (mStamp.isEmpty() && !mIsWangFill) {
-        mPreviewMap.clear();
-        tileRegion = QRect(tilePos, tilePos);
     } else {
         switch (mBrushBehavior) {
         case LineStartSet:
@@ -593,7 +590,6 @@ void StampBrush::updatePreview(QPoint tilePos)
             // while finding the mid point, there is no need to show
             // the (maybe bigger than 1x1) stamp
             mPreviewMap.clear();
-            tileRegion = QRect(tilePos, tilePos);
             break;
         case Line:
         case Free:
@@ -601,11 +597,15 @@ void StampBrush::updatePreview(QPoint tilePos)
             drawPreviewLayer(QVector<QPoint>() << tilePos);
             break;
         }
+
+        if (mPreviewMap)
+            tileRegion = mPreviewMap->tileRegion();
+
+        if (tileRegion.isEmpty())
+            tileRegion = QRect(tilePos, tilePos);
     }
 
-    brushItem()->setMap(mPreviewMap);
-    if (!tileRegion.isEmpty())
-        brushItem()->setTileRegion(tileRegion);
+    brushItem()->setMap(mPreviewMap, tileRegion);
 }
 
 void StampBrush::setRandom(bool value)

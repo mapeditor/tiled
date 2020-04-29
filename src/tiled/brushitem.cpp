@@ -104,6 +104,15 @@ void BrushItem::setMap(const SharedMap &map)
     update();
 }
 
+void BrushItem::setMap(const SharedMap &map, const QRegion &region)
+{
+    mMap = map;
+    mRegion = region;
+
+    updateBoundingRect();
+    update();
+}
+
 /**
  * Changes the position of the tile layer, if one is set.
  */
