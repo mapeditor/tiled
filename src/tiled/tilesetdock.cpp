@@ -401,8 +401,8 @@ void TilesetDock::selectTiles(const QList<Tile *> &tiles)
         else
             currentChanged(currentIndex);
 
-        // If all of the selected tiles are in the same tileset,
-        // switch the current tab to that tileset so the user doesn't need to.
+        // If all of the selected tiles are in the same tileset, switch the
+        // current tab to that tileset.
         if (selections.size() == 1) {
             auto tileset = tiles.first()->tileset()->sharedPointer();
             const int tilesetTabIndex = mTilesets.indexOf(tileset);
