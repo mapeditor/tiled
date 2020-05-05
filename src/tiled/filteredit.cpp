@@ -39,6 +39,7 @@ bool FilterEdit::event(QEvent *event)
         if (key == Qt::Key_Escape) {
             if (!text().isEmpty()) {
                 clear();
+                emit cleared();
                 return true;
             }
         }

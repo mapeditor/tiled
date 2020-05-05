@@ -62,6 +62,14 @@ public:
     void removeFolder(int row);
     void refreshFolders();
 
+    struct Match {
+        int score;
+        int offset;
+        QString path;
+    };
+
+    QVector<Match> findFiles(const QStringList &words) const;
+
     QString filePath(const QModelIndex &index) const;
 
     QModelIndex index(const QString &filePath) const;
@@ -79,6 +87,9 @@ public:
     QMimeData *mimeData(const QModelIndexList &indexes) const override;
 
 signals:
+    void folderAdded(const QString &folder);
+    void folderRemoved(const QString &folder);
+
     void nameFiltersChanged(const QStringList &nameFilters);
     void scanFolder(const QString &folder);
 

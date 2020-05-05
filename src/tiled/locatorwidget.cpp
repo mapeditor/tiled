@@ -1,0 +1,391 @@
+/*
+ * locatorwidget.cpp
+ * Copyright 2020, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+ *
+ * This file is part of Tiled.
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#include "locatorwidget.h"
+
+#include "documentmanager.h"
+#include "filteredit.h"
+#include "mainwindow.h"
+#include "projectmodel.h"
+#include "rangeset.h"
+#include "utils.h"
+
+#include <QAbstractListModel>
+#include <QApplication>
+#include <QKeyEvent>
+#include <QPainter>
+#include <QScrollBar>
+#include <QStaticText>
+#include <QStyledItemDelegate>
+#include <QTreeView>
+#include <QVBoxLayout>
+
+namespace Tiled {
+
+class MatchesModel : public QAbstractListModel
+{
+public:
+    explicit MatchesModel(QObject *parent = nullptr);
+
+    int rowCount(const QModelIndex &parent) const override;
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+
+    const QVector<ProjectModel::Match> &matches() const { return mMatches; }
+    void setMatches(QVector<ProjectModel::Match> matches);
+
+private:
+    QVector<ProjectModel::Match> mMatches;
+};
+
+MatchesModel::MatchesModel(QObject *parent)
+    : QAbstractListModel(parent)
+{}
+
+int MatchesModel::rowCount(const QModelIndex &parent) const
+{
+    return parent.isValid() ? 0 : mMatches.size();
+}
+
+QVariant MatchesModel::data(const QModelIndex &index, int role) const
+{
+    switch (role) {
+    case Qt::DisplayRole: {
+        const ProjectModel::Match &match = mMatches.at(index.row());
+        return match.path.mid(match.offset);
+    }
+    }
+    return QVariant();
+}
+
+void MatchesModel::setMatches(QVector<ProjectModel::Match> matches)
+{
+    beginResetModel();
+    mMatches = std::move(matches);
+    endResetModel();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+// The locations highlighted here should match with the characters found by
+// the "matches" function in projetmodel.cpp
+static RangeSet<int> matchingRanges(const QStringList &words, const QString &string)
+{
+    RangeSet<int> result;
+
+    for (const QString &word : words) {
+        int index = 0;
+
+        for (const QChar c : word) {
+            index = string.indexOf(c, index, Qt::CaseInsensitive);
+            if (index == -1)
+                return {};
+
+            result.insert(index);
+            ++index;
+        }
+    }
+
+    return result;
+}
+
+static QFont scaledFont(const QFont &font, qreal scale)
+{
+    QFont scaled(font);
+    if (font.pixelSize() > 0)
+        scaled.setPixelSize(font.pixelSize() * scale);
+    else
+        scaled.setPointSizeF(font.pointSizeF() * scale);
+    return scaled;
+}
+
+class MatchDelegate : public QStyledItemDelegate
+{
+public:
+    MatchDelegate(QObject *parent = nullptr);
+
+    QSize sizeHint(const QStyleOptionViewItem &option,
+                  const QModelIndex &index) const override;
+
+    void paint(QPainter *painter,
+               const QStyleOptionViewItem &option,
+               const QModelIndex &index) const override;
+
+    void setWords(const QStringList &words) { mWords = words; }
+
+private:
+    class Fonts {
+    public:
+        Fonts(const QFont &base)
+            : small(scaledFont(base, 0.9))
+            , big(scaledFont(base, 1.2))
+        {}
+
+        const QFont small;
+        const QFont big;
+    };
+
+    QStringList mWords;
+};
+
+MatchDelegate::MatchDelegate(QObject *parent)
+    : QStyledItemDelegate(parent)
+{}
+
+QSize MatchDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &) const
+{
+    const Fonts fonts(option.font);
+    const QFontMetrics smallFontMetrics(fonts.small);
+    const QFontMetrics bigFontMetrics(fonts.big);
+
+    const int margin = Utils::dpiScaled(2);
+    return QSize(margin * 2, margin * 2 + bigFontMetrics.height() + smallFontMetrics.lineSpacing());
+}
+
+void MatchDelegate::paint(QPainter *painter,
+                          const QStyleOptionViewItem &option,
+                          const QModelIndex &index) const
+{
+    painter->save();
+
+    QString filePath = index.data().toString();
+    const int lastSlash = filePath.lastIndexOf(QLatin1Char('/'));
+    QString fileName = filePath.mid(lastSlash + 1);
+
+    // TODO: Since we're using HTML to markup the entries we'll need to escape
+    // the filePath and fileName to avoid them introducing any formatting,
+    // however unlikely this may be (QString::toHtmlEscaped).
+    const RangeSet<int> ranges = matchingRanges(mWords, filePath);
+    if (!ranges.isEmpty()) {
+        // Insert back to front to keep the indexes valid
+        RangeSet<int>::Range it = ranges.end();
+        RangeSet<int>::Range begin = ranges.begin();
+
+        do {
+            --it;
+            filePath.insert(it.last() + 1, QStringLiteral("</b>"));
+            filePath.insert(it.first(), QStringLiteral("<b>"));
+
+            if (it.first() > lastSlash) {
+                fileName.insert(it.last() - lastSlash, QStringLiteral("</b>"));
+                fileName.insert(it.first() - lastSlash - 1, QStringLiteral("<b>"));
+            }
+        } while (it != begin);
+    }
+
+    const Fonts fonts(option.font);
+    const QFontMetrics smallFontMetrics(fonts.small);
+    const QFontMetrics bigFontMetrics(fonts.big);
+
+    const int margin = Utils::dpiScaled(2);
+    const auto fileNameRect = option.rect.adjusted(margin, margin, -margin, 0);
+    const auto filePathRect = option.rect.adjusted(margin, margin + bigFontMetrics.height() + smallFontMetrics.leading(), -margin, 0);
+
+    // draw the background (covers selection)
+    QStyle *style = QApplication::style();
+    style->drawPrimitive(QStyle::PE_PanelItemViewItem, &option, painter);
+
+    // adjust text color to state
+    QPalette::ColorGroup cg = option.state & QStyle::State_Enabled
+                          ? QPalette::Normal : QPalette::Disabled;
+    if (cg == QPalette::Normal && !(option.state & QStyle::State_Active))
+        cg = QPalette::Inactive;
+    if (option.state & QStyle::State_Selected) {
+        painter->setPen(option.palette.color(cg, QPalette::HighlightedText));
+    } else {
+        painter->setPen(option.palette.color(cg, QPalette::Text));
+    }
+
+    QTextOption textOption;
+    textOption.setWrapMode(QTextOption::NoWrap);
+
+    QStaticText staticText(fileName);
+    staticText.setTextOption(textOption);
+    staticText.setTextFormat(Qt::RichText);
+    staticText.setTextWidth(fileNameRect.width());
+    staticText.setText(fileName);
+    staticText.prepare(painter->transform(), fonts.big);
+
+    painter->setFont(fonts.big);
+    painter->drawStaticText(fileNameRect.topLeft(), staticText);
+
+    staticText.setText(filePath);
+    staticText.prepare(painter->transform(), fonts.small);
+
+    painter->setOpacity(0.75);
+    painter->setFont(fonts.small);
+    painter->drawStaticText(filePathRect.topLeft(), staticText);
+
+    // draw the focus rect
+    if (option.state & QStyle::State_HasFocus) {
+        QStyleOptionFocusRect o;
+        o.QStyleOption::operator=(option);
+        o.rect = style->subElementRect(QStyle::SE_ItemViewItemFocusRect, &option);
+        o.state |= QStyle::State_KeyboardFocusChange;
+        o.state |= QStyle::State_Item;
+        QPalette::ColorGroup cg = (option.state & QStyle::State_Enabled)
+                ? QPalette::Normal : QPalette::Disabled;
+        o.backgroundColor = option.palette.color(cg, (option.state & QStyle::State_Selected)
+                                                ? QPalette::Highlight : QPalette::Window);
+        style->drawPrimitive(QStyle::PE_FrameFocusRect, &o, painter);
+    }
+
+    painter->restore();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+class ResultsView : public QTreeView
+{
+public:
+    explicit ResultsView(QWidget *parent = nullptr);
+
+    QSize sizeHint() const override;
+
+    void updateMaximumHeight();
+};
+
+ResultsView::ResultsView(QWidget *parent)
+    : QTreeView(parent)
+{
+    setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+}
+
+QSize ResultsView::sizeHint() const
+{
+    return QSize(Utils::dpiScaled(600), Utils::dpiScaled(600));
+}
+
+void ResultsView::updateMaximumHeight()
+{
+    int maximumHeight = 0;
+
+    if (auto m = model()) {
+        int rowCount = m->rowCount();
+        if (rowCount > 0) {
+            const int itemHeight = indexRowSizeHint(m->index(0, 0));
+            maximumHeight = itemHeight * rowCount;
+        }
+    }
+
+    setMaximumHeight(maximumHeight);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+LocatorWidget::LocatorWidget(QWidget *parent)
+    : QFrame(parent, Qt::Popup)
+    , mFilterEdit(new FilterEdit(this))
+    , mResultsView(new ResultsView(this))
+    , mListModel(new MatchesModel(this))
+    , mDelegate(new MatchDelegate(this))
+{
+    setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
+
+    mResultsView->setUniformRowHeights(true);
+    mResultsView->setRootIsDecorated(false);
+    mResultsView->setItemDelegate(mDelegate);
+    mResultsView->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+    mResultsView->setModel(mListModel);
+    mResultsView->setHeaderHidden(true);
+
+    mFilterEdit->setPlaceholderText(tr("Filename"));
+    mFilterEdit->setFilteredView(mResultsView);
+    mFilterEdit->setFont(scaledFont(mFilterEdit->font(), 1.5));
+
+    setFocusProxy(mFilterEdit);
+    mResultsView->setFocusProxy(mFilterEdit);
+
+    auto verticalLayout = new QVBoxLayout;
+    mResultsView->setFrameShape(QFrame::NoFrame);
+    mResultsView->viewport()->setBackgroundRole(QPalette::Window);
+    verticalLayout->addWidget(mFilterEdit);
+    verticalLayout->addWidget(mResultsView);
+    setLayout(verticalLayout);
+
+    connect(mFilterEdit, &QLineEdit::textChanged, this, &LocatorWidget::setFilterText);
+    connect(mFilterEdit, &FilterEdit::cleared, this, &QWidget::hide);
+    connect(mResultsView, &QAbstractItemView::activated, this, [this] (const QModelIndex &index) {
+        const QString file = mListModel->matches().at(index.row()).path;
+        hide();
+        DocumentManager::instance()->openFile(file);
+    });
+}
+
+void LocatorWidget::setVisible(bool visible)
+{
+    QFrame::setVisible(visible);
+
+    if (visible) {
+        setFocus();
+
+        if (!mFilterEdit->text().isEmpty())
+            mFilterEdit->clear();
+        else
+            setFilterText(QString());
+    } else {
+        mListModel->setMatches({});
+    }
+}
+
+void LocatorWidget::setFilterText(const QString &text)
+{
+    // TODO: Only consider previously selected when user explicitly selected it
+    // (rather than leaving at default selected first entry)
+    QString previousSelected;
+
+    const QModelIndex currentIndex = mResultsView->currentIndex();
+    if (currentIndex.isValid())
+        previousSelected = mListModel->data(currentIndex).toString();
+
+    const QStringList words = text.split(QLatin1Char(' '));
+
+    auto projectModel = MainWindow::instance()->projectModel();
+    auto matches = projectModel->findFiles(words);
+
+    std::stable_sort(matches.begin(), matches.end(), [] (const ProjectModel::Match &a, const ProjectModel::Match &b) {
+        if (a.score != b.score)
+            return a.score > b.score;
+        return a.path.midRef(a.offset).compare(b.path.midRef(b.offset), Qt::CaseInsensitive) < 0;
+    });
+
+    mDelegate->setWords(words);
+    mListModel->setMatches(matches);
+
+    mResultsView->updateGeometry();
+    mResultsView->updateMaximumHeight();
+    adjustSize();
+
+    // Restore or introduce selection
+    if (!matches.isEmpty()) {
+        int row = 0;
+
+        if (!previousSelected.isEmpty()) {
+            auto it = std::find_if(matches.cbegin(), matches.cend(), [&] (const ProjectModel::Match &match) {
+                return match.path.midRef(match.offset) == previousSelected;
+            });
+            if (it != matches.cend())
+                row = std::distance(matches.cbegin(), it);
+        }
+
+        mResultsView->setCurrentIndex(mListModel->index(row));
+    }
+}
+
+} // namespace Tiled

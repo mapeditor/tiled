@@ -144,6 +144,7 @@ SOURCES += aboutdialog.cpp \
     layeritem.cpp \
     layermodel.cpp \
     layeroffsettool.cpp \
+    locatorwidget.cpp \
     magicwandtool.cpp \
     main.cpp \
     maintoolbar.cpp \
@@ -381,6 +382,7 @@ HEADERS += aboutdialog.h \
     layeritem.h \
     layermodel.h \
     layeroffsettool.h \
+    locatorwidget.h \
     macsupport.h \
     magicwandtool.h \
     maintoolbar.h \

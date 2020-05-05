@@ -1,6 +1,6 @@
 /*
- * filteredit.h
- * Copyright 2019, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+ * locatorwidget.h
+ * Copyright 2020, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -20,32 +20,31 @@
 
 #pragma once
 
-#include <QLineEdit>
+#include <QFrame>
 
 namespace Tiled {
 
-class FilterEdit : public QLineEdit
+class FilterEdit;
+class MatchDelegate;
+class MatchesModel;
+class ResultsView;
+
+class LocatorWidget : public QFrame
 {
     Q_OBJECT
 
 public:
-    FilterEdit(QWidget *parent = nullptr);
+    explicit LocatorWidget(QWidget *parent = nullptr);
 
-    void setFilteredView(QWidget *view);
-
-    bool event(QEvent *event) override;
-
-signals:
-    bool cleared();
+    void setVisible(bool visible) override;
 
 private:
-    QWidget *mFilteredView = nullptr;
+    void setFilterText(const QString &text);
+
+    FilterEdit *mFilterEdit;
+    ResultsView *mResultsView;
+    MatchesModel *mListModel;
+    MatchDelegate *mDelegate;
 };
-
-
-inline void FilterEdit::setFilteredView(QWidget *view)
-{
-    mFilteredView = view;
-}
 
 } // namespace Tiled
