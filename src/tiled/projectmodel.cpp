@@ -83,7 +83,7 @@ static void findFiles(const FolderEntry &entry, int offset, const QStringList &w
     for (const auto &childEntry : entry.entries) {
         if (childEntry->entries.empty()) {
             const QStringRef relativePath = childEntry->filePath.midRef(offset);
-            int totalScore = Utils::matchingScore(words, relativePath);
+            const int totalScore = Utils::matchingScore(words, relativePath);
 
             if (totalScore > 0) {
                 result.append(ProjectModel::Match {
@@ -201,7 +201,7 @@ QVector<ProjectModel::Match> ProjectModel::findFiles(const QStringList &words) c
 {
     QVector<Match> result;
     for (const auto &entry : mFolders)
-        Tiled::findFiles(*entry, entry->filePath.length() + 1, words, result);
+        Tiled::findFiles(*entry, entry->filePath.lastIndexOf(QLatin1Char('/')) + 1, words, result);
     return result;
 }
 

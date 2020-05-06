@@ -36,10 +36,9 @@ bool FilterEdit::event(QEvent *event)
     if (event->type() == QEvent::KeyPress) {
         auto key = static_cast<QKeyEvent*>(event)->key();
 
-        if (key == Qt::Key_Escape) {
+        if (key == Qt::Key_Escape && mClearTextOnEscape) {
             if (!text().isEmpty()) {
                 clear();
-                emit cleared();
                 return true;
             }
         }

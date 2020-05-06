@@ -253,6 +253,9 @@ public:
     QSize sizeHint() const override;
 
     void updateMaximumHeight();
+
+protected:
+    void keyPressEvent(QKeyEvent *event) override;
 };
 
 ResultsView::ResultsView(QWidget *parent)
@@ -281,6 +284,21 @@ void ResultsView::updateMaximumHeight()
     setMaximumHeight(maximumHeight);
 }
 
+inline void ResultsView::keyPressEvent(QKeyEvent *event)
+{
+    // Make sure the Enter and Return keys activate the current index. This
+    // doesn't happen otherwise on macOS.
+    switch (event->key()) {
+    case Qt::Key_Enter:
+    case Qt::Key_Return:
+        if (currentIndex().isValid())
+            emit activated(currentIndex());
+        return;
+    }
+
+    QTreeView::keyPressEvent(event);
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 LocatorWidget::LocatorWidget(QWidget *parent)
@@ -290,6 +308,7 @@ LocatorWidget::LocatorWidget(QWidget *parent)
     , mListModel(new MatchesModel(this))
     , mDelegate(new MatchDelegate(this))
 {
+    setAttribute(Qt::WA_DeleteOnClose);
     setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
 
     mResultsView->setUniformRowHeights(true);
@@ -301,23 +320,28 @@ LocatorWidget::LocatorWidget(QWidget *parent)
 
     mFilterEdit->setPlaceholderText(tr("Filename"));
     mFilterEdit->setFilteredView(mResultsView);
+    mFilterEdit->setClearTextOnEscape(false);
     mFilterEdit->setFont(scaledFont(mFilterEdit->font(), 1.5));
 
     setFocusProxy(mFilterEdit);
     mResultsView->setFocusProxy(mFilterEdit);
 
-    auto verticalLayout = new QVBoxLayout;
     mResultsView->setFrameShape(QFrame::NoFrame);
     mResultsView->viewport()->setBackgroundRole(QPalette::Window);
+
+    auto margin = Utils::dpiScaled(4);
+    auto verticalLayout = new QVBoxLayout;
+    verticalLayout->setMargin(margin);
+    verticalLayout->setSpacing(margin);
     verticalLayout->addWidget(mFilterEdit);
     verticalLayout->addWidget(mResultsView);
+    verticalLayout->addStretch(0);
     setLayout(verticalLayout);
 
     connect(mFilterEdit, &QLineEdit::textChanged, this, &LocatorWidget::setFilterText);
-    connect(mFilterEdit, &FilterEdit::cleared, this, &QWidget::hide);
     connect(mResultsView, &QAbstractItemView::activated, this, [this] (const QModelIndex &index) {
         const QString file = mListModel->matches().at(index.row()).path;
-        hide();
+        close();
         DocumentManager::instance()->openFile(file);
     });
 }
@@ -333,8 +357,6 @@ void LocatorWidget::setVisible(bool visible)
             mFilterEdit->clear();
         else
             setFilterText(QString());
-    } else {
-        mListModel->setMatches({});
     }
 }
 
@@ -364,7 +386,6 @@ void LocatorWidget::setFilterText(const QString &text)
 
     mResultsView->updateGeometry();
     mResultsView->updateMaximumHeight();
-    adjustSize();
 
     // Restore or introduce selection
     if (!matches.isEmpty()) {
@@ -380,6 +401,9 @@ void LocatorWidget::setFilterText(const QString &text)
 
         mResultsView->setCurrentIndex(mListModel->index(row));
     }
+
+    layout()->activate();
+    resize(sizeHint());
 }
 
 } // namespace Tiled

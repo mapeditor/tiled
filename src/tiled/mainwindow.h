@@ -227,7 +227,7 @@ private:
     ProjectDock *mProjectDock;
     IssuesDock *mIssuesDock;
     ObjectTypesEditor *mObjectTypesEditor;
-    LocatorWidget *mLocatorWidget;
+    QPointer<LocatorWidget> mLocatorWidget;
 
     QAction *mRecentFiles[Preferences::MaxRecentFiles];
 

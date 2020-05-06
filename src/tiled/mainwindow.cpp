@@ -387,8 +387,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mConsoleDock->setVisible(false);
     mIssuesDock->setVisible(false);
 
-    mLocatorWidget = new LocatorWidget(this);
-
     mMapEditor = new MapEditor;
     mTilesetEditor = new TilesetEditor;
 
@@ -844,8 +842,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
         if (preferences->shouldShowDonationDialog())
             showDonationDialog();
     });
-
-    mLocatorWidget->setVisible(false);
 }
 
 MainWindow::~MainWindow()
@@ -1054,11 +1050,15 @@ void MainWindow::openFileDialog()
 
 void MainWindow::openFileInProject()
 {
+    if (mLocatorWidget)
+        return;
+
     const QSize size(qMax(width() / 3, qMin(Utils::dpiScaled(600), width())),
                      qMin(Utils::dpiScaled(600), height() - menuBar()->height()));
     const QPoint localPos((width() - size.width()) / 2, menuBar()->height());
     const QRect rect = QRect(mapToGlobal(localPos), size);
 
+    mLocatorWidget = new LocatorWidget(this);
     mLocatorWidget->move(rect.topLeft());
     mLocatorWidget->setMaximumSize(rect.size());
     mLocatorWidget->show();
