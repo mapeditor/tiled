@@ -37,6 +37,8 @@
 #include <QTreeView>
 #include <QVBoxLayout>
 
+#include <QDebug>
+
 namespace Tiled {
 
 class MatchesModel : public QAbstractListModel
@@ -166,28 +168,43 @@ void MatchDelegate::paint(QPainter *painter,
 
     QString filePath = index.data().toString();
     const int lastSlash = filePath.lastIndexOf(QLatin1Char('/'));
-    QString fileName = filePath.mid(lastSlash + 1);
 
-    // TODO: Since we're using HTML to markup the entries we'll need to escape
-    // the filePath and fileName to avoid them introducing any formatting,
-    // however unlikely this may be (QString::toHtmlEscaped).
-    const RangeSet<int> ranges = matchingRanges(mWords, filePath);
-    if (!ranges.isEmpty()) {
-        // Insert back to front to keep the indexes valid
-        RangeSet<int>::Range it = ranges.end();
-        RangeSet<int>::Range begin = ranges.begin();
+    // Since we're using HTML to markup the entries we'll need to escape the
+    // filePath and fileName to avoid them introducing any formatting, however
+    // unlikely this may be.
+    QString filePathHtml;
+    QString fileNameHtml;
+    int filePathIndex = 0;
 
-        do {
-            --it;
-            filePath.insert(it.last() + 1, QStringLiteral("</b>"));
-            filePath.insert(it.first(), QStringLiteral("<b>"));
+    auto escapedRange = [&] (int first, int last) -> QString {
+        return filePath.mid(first, last - first + 1).toHtmlEscaped();
+    };
 
-            if (it.first() > lastSlash) {
-                fileName.insert(it.last() - lastSlash, QStringLiteral("</b>"));
-                fileName.insert(it.first() - lastSlash - 1, QStringLiteral("<b>"));
-            }
-        } while (it != begin);
+    for (const auto &range : matchingRanges(mWords, filePath)) {
+        if (range.first > filePathIndex)
+            filePathHtml.append(escapedRange(filePathIndex, range.first - 1));
+
+        filePathHtml.append(QStringLiteral("<b>"));
+        filePathHtml.append(escapedRange(range.first, range.second));
+        filePathHtml.append(QStringLiteral("</b>"));
+
+        if (range.second > lastSlash) {
+            const auto first = qMax(range.first, lastSlash + 1);
+            const auto fileNameIndex = qMax(filePathIndex, lastSlash + 1);
+
+            if (first > fileNameIndex)
+                fileNameHtml.append(escapedRange(fileNameIndex, first - 1));
+
+            fileNameHtml.append(QStringLiteral("<b>"));
+            fileNameHtml.append(escapedRange(first, range.second));
+            fileNameHtml.append(QStringLiteral("</b>"));
+        }
+
+        filePathIndex = range.second + 1;
     }
+
+    filePathHtml.append(escapedRange(filePathIndex, filePath.size() - 1));
+    fileNameHtml.append(escapedRange(qMax(filePathIndex, lastSlash + 1), filePath.size() - 1));
 
     const Fonts fonts(option.font);
     const QFontMetrics smallFontMetrics(fonts.small);
@@ -215,17 +232,16 @@ void MatchDelegate::paint(QPainter *painter,
     QTextOption textOption;
     textOption.setWrapMode(QTextOption::NoWrap);
 
-    QStaticText staticText(fileName);
+    QStaticText staticText(fileNameHtml);
     staticText.setTextOption(textOption);
     staticText.setTextFormat(Qt::RichText);
     staticText.setTextWidth(fileNameRect.width());
-    staticText.setText(fileName);
     staticText.prepare(painter->transform(), fonts.big);
 
     painter->setFont(fonts.big);
     painter->drawStaticText(fileNameRect.topLeft(), staticText);
 
-    staticText.setText(filePath);
+    staticText.setText(filePathHtml);
     staticText.prepare(painter->transform(), fonts.small);
 
     painter->setOpacity(0.75);
