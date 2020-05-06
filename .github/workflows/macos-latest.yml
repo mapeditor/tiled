@@ -11,6 +11,7 @@ jobs:
     - uses: actions/checkout@v1
     - name: Install dependencies
       run: |
+        brew update
         brew install qbs
         brew link qt5 --force
     - name: Setup Qbs
