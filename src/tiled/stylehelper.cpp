@@ -76,6 +76,12 @@ static QPalette createPalette(const QColor &windowColor,
     palette.setColor(QPalette::Highlight, highlightColor);
     palette.setColor(QPalette::HighlightedText, highlightIsDark ? Qt::white : Qt::black);
 
+    if (!isLight) {
+        const QColor lightskyblue { 0x87, 0xce, 0xfa };
+        palette.setColor(QPalette::Link, lightskyblue);
+        palette.setColor(QPalette::LinkVisited, lightskyblue);
+    }
+
     return palette;
 }
 
