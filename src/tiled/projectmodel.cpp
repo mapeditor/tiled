@@ -103,7 +103,7 @@ static int matches(const QString &word, const QStringRef &string)
             return 0;
 
         const int sequential = index != 0 && (i == index);
-        const int caseMatch = c.isUpper() && string[i] == c;
+        const int caseMatch = c.isUpper() && string.at(i) == c;
         const int inFileName = i > lastSlash;
 
         score += 1 + sequential + caseMatch + inFileName;
