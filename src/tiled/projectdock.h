@@ -26,6 +26,7 @@
 
 namespace Tiled {
 
+class ProjectModel;
 class ProjectView;
 
 class ProjectDock final : public QDockWidget
@@ -38,6 +39,8 @@ public:
     Project &project() const;
     void setProject(Project project);
 
+    ProjectModel *projectModel() const;
+
     void selectFile(const QString &filePath);
 
     void addFolderToProject();
@@ -46,6 +49,8 @@ public:
     void setExpandedPaths(const QStringList &expandedPaths);
 
 signals:
+    void folderAdded(const QString &path);
+    void folderRemoved(const QString &path);
     void fileSelected(const QString &filePath);
 
 protected:

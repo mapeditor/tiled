@@ -106,6 +106,9 @@ ProjectDock::ProjectDock(QWidget *parent)
 
     connect(mProjectView->selectionModel(), &QItemSelectionModel::currentRowChanged,
             this, &ProjectDock::onCurrentRowChanged);
+
+    connect(mProjectView->model(), &ProjectModel::folderAdded, this, &ProjectDock::folderAdded);
+    connect(mProjectView->model(), &ProjectModel::folderRemoved, this, &ProjectDock::folderRemoved);
 }
 
 void ProjectDock::addFolderToProject()
@@ -171,6 +174,11 @@ Project &ProjectDock::project() const
 void ProjectDock::setProject(Project project)
 {
     mProjectView->model()->setProject(std::move(project));
+}
+
+ProjectModel *ProjectDock::projectModel() const
+{
+    return mProjectView->model();
 }
 
 void ProjectDock::selectFile(const QString &filePath)

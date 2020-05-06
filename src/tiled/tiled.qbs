@@ -278,6 +278,8 @@ QtGuiApplication {
         "layermodel.h",
         "layeroffsettool.cpp",
         "layeroffsettool.h",
+        "locatorwidget.cpp",
+        "locatorwidget.h",
         "magicwandtool.h",
         "magicwandtool.cpp",
         "main.cpp",

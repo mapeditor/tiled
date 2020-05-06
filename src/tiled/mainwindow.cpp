@@ -103,6 +103,7 @@
 #include <QtPlatformHeaders\QWindowsWindowFunctions>
 #endif
 
+#include "locatorwidget.h"
 #include "qtcompat_p.h"
 
 using namespace Tiled;
@@ -283,6 +284,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerAction(mUi->actionNoLabels, "NoLabels");
     ActionManager::registerAction(mUi->actionOffsetMap, "OffsetMap");
     ActionManager::registerAction(mUi->actionOpen, "Open");
+    ActionManager::registerAction(mUi->actionOpenFileInProject, "OpenFileInProject");
     ActionManager::registerAction(mUi->actionOpenProject, "OpenProject");
     ActionManager::registerAction(mUi->actionPaste, "Paste");
     ActionManager::registerAction(mUi->actionPasteInPlace, "PasteInPlace");
@@ -396,6 +398,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     setCentralWidget(mDocumentManager->widget());
 
+    connect(mProjectDock, &ProjectDock::folderAdded, this, &MainWindow::updateActions);
+    connect(mProjectDock, &ProjectDock::folderRemoved, this, &MainWindow::updateActions);
     connect(mProjectDock, &ProjectDock::fileSelected,
             mMapEditor->templatesDock(), &TemplatesDock::tryOpenTemplate);
     connect(mProjectDock, &ProjectDock::fileSelected,
@@ -516,6 +520,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionNewMap, &QAction::triggered, this, &MainWindow::newMap);
     connect(mUi->actionNewTileset, &QAction::triggered, this, [this] { newTileset(); });
     connect(mUi->actionOpen, &QAction::triggered, this, &MainWindow::openFileDialog);
+    connect(mUi->actionOpenFileInProject, &QAction::triggered, this, &MainWindow::openFileInProject);
     connect(mUi->actionReopenClosedFile, &QAction::triggered, this, &MainWindow::reopenClosedFile);
     connect(mUi->actionClearRecentFiles, &QAction::triggered, preferences, &Preferences::clearRecentFiles);
     connect(mUi->actionSave, &QAction::triggered, this, &MainWindow::saveFile);
@@ -963,6 +968,7 @@ void MainWindow::initializeSession()
         Preferences::instance()->setObjectTypesFile(project.mObjectTypesFile);
         mProjectDock->setProject(std::move(project));
         updateWindowTitle();
+        updateActions();
     }
 
     // Script manager initialization is delayed until after the project has
@@ -1010,6 +1016,11 @@ Project &MainWindow::project() const
     return mProjectDock->project();
 }
 
+ProjectModel *MainWindow::projectModel() const
+{
+    return mProjectDock->projectModel();
+}
+
 void MainWindow::openFileDialog()
 {
     SessionOption<QString> lastUsedOpenFilter { "file.lastUsedOpenFilter" };
@@ -1035,6 +1046,22 @@ void MainWindow::openFileDialog()
 
     for (const QString &fileName : fileNames)
         openFile(fileName, fileFormat);
+}
+
+void MainWindow::openFileInProject()
+{
+    if (mLocatorWidget)
+        return;
+
+    const QSize size(qMax(width() / 3, qMin(Utils::dpiScaled(600), width())),
+                     qMin(Utils::dpiScaled(600), height() - menuBar()->height()));
+    const QPoint localPos((width() - size.width()) / 2, menuBar()->height());
+    const QRect rect = QRect(mapToGlobal(localPos), size);
+
+    mLocatorWidget = new LocatorWidget(this);
+    mLocatorWidget->move(rect.topLeft());
+    mLocatorWidget->setMaximumSize(rect.size());
+    mLocatorWidget->show();
 }
 
 static Document *saveAsDocument(Document *document)
@@ -1899,11 +1926,13 @@ void MainWindow::updateActions()
     const auto document = mDocumentManager->currentDocument();
     const auto mapDocument = qobject_cast<const MapDocument*>(document);
     const auto tilesetDocument = qobject_cast<const TilesetDocument*>(document);
+    const bool projectHasFolders = !mProjectDock->project().folders().isEmpty();
 
     Editor::StandardActions standardActions;
     if (editor)
         standardActions = editor->enabledStandardActions();
 
+    mUi->actionOpenFileInProject->setEnabled(projectHasFolders);
     mUi->actionSave->setEnabled(document);
     mUi->actionSaveAs->setEnabled(document);
     mUi->actionSaveAll->setEnabled(document);

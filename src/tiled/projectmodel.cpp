@@ -50,6 +50,7 @@ private:
     QStringList mNameFilters;
 };
 
+///////////////////////////////////////////////////////////////////////////////
 
 static FolderEntry *findEntry(const std::vector<std::unique_ptr<FolderEntry>> &entries, const QString &filePath)
 {
@@ -77,6 +78,27 @@ static void collectDirectories(const FolderEntry &entry, QStringList &filePaths)
     }
 }
 
+static void findFiles(const FolderEntry &entry, int offset, const QStringList &words, QVector<ProjectModel::Match> &result)
+{
+    for (const auto &childEntry : entry.entries) {
+        if (childEntry->entries.empty()) {
+            const QStringRef relativePath = childEntry->filePath.midRef(offset);
+            const int totalScore = Utils::matchingScore(words, relativePath);
+
+            if (totalScore > 0) {
+                result.append(ProjectModel::Match {
+                                   totalScore,
+                                   offset,
+                                   childEntry->filePath
+                               });
+            }
+        } else {
+            findFiles(*childEntry, offset, words, result);
+        }
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
 
 ProjectModel::ProjectModel(QObject *parent)
     : QAbstractItemModel(parent)
@@ -146,14 +168,20 @@ void ProjectModel::addFolder(const QString &folder)
     scheduleFolderScan(folder);
 
     endInsertRows();
+
+    emit folderAdded(folder);
 }
 
 void ProjectModel::removeFolder(int row)
 {
+    const QString folder = mFolders.at(row)->filePath;
+
     beginRemoveRows(QModelIndex(), row, row);
     mProject.removeFolder(row);
     mFolders.erase(mFolders.begin() + row);
     endRemoveRows();
+
+    emit folderRemoved(folder);
 }
 
 void ProjectModel::refreshFolders()
@@ -167,6 +195,14 @@ void ProjectModel::refreshFolders()
     // Display the "Refreshing" label
     emit dataChanged(index(0, 0),
                      index(int(mFolders.size() - 1), 0), { Qt::DisplayRole });
+}
+
+QVector<ProjectModel::Match> ProjectModel::findFiles(const QStringList &words) const
+{
+    QVector<Match> result;
+    for (const auto &entry : mFolders)
+        Tiled::findFiles(*entry, entry->filePath.lastIndexOf(QLatin1Char('/')) + 1, words, result);
+    return result;
 }
 
 QString ProjectModel::filePath(const QModelIndex &index) const
