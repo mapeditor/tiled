@@ -85,28 +85,6 @@ void MatchesModel::setMatches(QVector<ProjectModel::Match> matches)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-// The locations highlighted here should match with the characters found by
-// the "matches" function in projetmodel.cpp
-static RangeSet<int> matchingRanges(const QStringList &words, const QString &string)
-{
-    RangeSet<int> result;
-
-    for (const QString &word : words) {
-        int index = 0;
-
-        for (const QChar c : word) {
-            index = string.indexOf(c, index, Qt::CaseInsensitive);
-            if (index == -1)
-                return {};
-
-            result.insert(index);
-            ++index;
-        }
-    }
-
-    return result;
-}
-
 static QFont scaledFont(const QFont &font, qreal scale)
 {
     QFont scaled(font);
@@ -166,7 +144,7 @@ void MatchDelegate::paint(QPainter *painter,
 {
     painter->save();
 
-    QString filePath = index.data().toString();
+    const QString filePath = index.data().toString();
     const int lastSlash = filePath.lastIndexOf(QLatin1Char('/'));
 
     // Since we're using HTML to markup the entries we'll need to escape the
@@ -180,7 +158,7 @@ void MatchDelegate::paint(QPainter *painter,
         return filePath.mid(first, last - first + 1).toHtmlEscaped();
     };
 
-    for (const auto &range : matchingRanges(mWords, filePath)) {
+    for (const auto &range : Utils::matchingRanges(mWords, &filePath)) {
         if (range.first > filePathIndex)
             filePathHtml.append(escapedRange(filePathIndex, range.first - 1));
 

@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include "rangeset.h"
+
 #include <QIcon>
 #include <QSettings>
 #include <QString>
@@ -40,6 +42,9 @@ QStringList cleanFilterList(const QString &filter);
 bool fileNameMatchesNameFilter(const QString &fileName,
                                const QString &nameFilter);
 QString firstExtension(const QString &nameFilter);
+
+int matchingScore(const QStringList &words, QStringRef string);
+RangeSet<int> matchingRanges(const QStringList &words, QStringRef string);
 
 /**
  * Looks up the icon with the specified \a name from the system theme and set

@@ -78,56 +78,12 @@ static void collectDirectories(const FolderEntry &entry, QStringList &filePaths)
     }
 }
 
-/**
- * Matches the given \a word against the \a string. The match is a fuzzy one,
- * being case-insensitive and allowing any characters to appear between the
- * characters of the given word.
- *
- * @return a score indicating the strength of the match, for sorting purposes.
- * A score of 0 indicates there is no match.
- *
- * TODO: Since a higher score is given for characters appearing in the file
- * name and in sequence, the search should prefer to match characters at the
- * end of the string and sequentially. Currently results are penalized if they
- * contain non-sequential matching characters before the filename.
- */
-static int matches(const QString &word, const QStringRef &string)
-{
-    const int lastSlash = string.lastIndexOf(QLatin1Char('/'));
-    int index = 0;
-    int score = 1;  // empty word matches
-
-    for (const QChar c : word) {
-        int i = string.indexOf(c, index, Qt::CaseInsensitive);
-        if (i == -1)
-            return 0;
-
-        const int sequential = index != 0 && (i == index);
-        const int caseMatch = c.isUpper() && string.at(i) == c;
-        const int inFileName = i > lastSlash;
-
-        score += 1 + sequential + caseMatch + inFileName;
-        index = i + 1;
-    }
-
-    return score;
-}
-
 static void findFiles(const FolderEntry &entry, int offset, const QStringList &words, QVector<ProjectModel::Match> &result)
 {
     for (const auto &childEntry : entry.entries) {
         if (childEntry->entries.empty()) {
             const QStringRef relativePath = childEntry->filePath.midRef(offset);
-
-            int totalScore = 0;
-            for (const QString &word : words) {
-                if (int score = matches(word, relativePath)) {
-                    totalScore += score;
-                } else {
-                    totalScore = 0;
-                    break;
-                }
-            }
+            int totalScore = Utils::matchingScore(words, relativePath);
 
             if (totalScore > 0) {
                 result.append(ProjectModel::Match {

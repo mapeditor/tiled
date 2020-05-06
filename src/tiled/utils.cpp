@@ -39,6 +39,8 @@
 #include <QRegExp>
 #include <QScreen>
 
+#include "qtcompat_p.h"
+
 static QString toImageFileFilter(const QList<QByteArray> &formats)
 {
     QString filter(QCoreApplication::translate("Utils", "Image files"));
@@ -129,6 +131,129 @@ QString firstExtension(const QString &nameFilter)
     }
 
     return extension;
+}
+
+struct Match {
+    int wordIndex;
+    int stringIndex;
+};
+
+/**
+ * Matches the given \a word against the \a string. The match is a fuzzy one,
+ * being case-insensitive and allowing any characters to appear between the
+ * characters of the given word.
+ *
+ * Attempts to make matching indexes sequential.
+ */
+static bool matchingIndexes(const QString &word, QStringRef string, QVarLengthArray<Match, 16> &matchingIndexes)
+{
+    int index = 0;
+
+    for (int i = 0; i < word.size(); ++i) {
+        const QChar c = word.at(i);
+
+        int newIndex = string.indexOf(c, index, Qt::CaseInsensitive);
+        if (newIndex == -1)
+            return false;
+
+        // If the new match is not sequential, check if we can make it
+        // sequential by moving a previous match forward
+        if (newIndex != index) {
+            for (int offset = 1; matchingIndexes.size() >= offset; ++offset) {
+                int backTrackIndex = newIndex - offset;
+                Match &match = matchingIndexes[matchingIndexes.size() - offset];
+
+                const int previousIndex = string.lastIndexOf(string.at(match.stringIndex), backTrackIndex, Qt::CaseInsensitive);
+
+                if (previousIndex == backTrackIndex)
+                    match.stringIndex = previousIndex;
+                else
+                    break;
+            }
+        }
+
+        matchingIndexes.append({ i, newIndex });
+        index = newIndex + 1;
+    }
+
+    return true;
+}
+
+/**
+ * Rates the match between \a word and \a string with a score indicating the
+ * strength of the match, for sorting purposes.
+ *
+ * A score of 0 indicates there is no match.
+ */
+static int matchingScore(const QString &word, QStringRef string)
+{
+    QVarLengthArray<Match, 16> indexes;
+    if (!matchingIndexes(word, string, indexes))
+        return 0;
+
+    int score = 1;  // empty word matches
+    int previousIndex = -1;
+
+    for (const Match &match : qAsConst(indexes)) {
+        const int start = match.stringIndex == 0;
+        const int sequential = match.stringIndex == previousIndex + 1;
+
+        const auto c = word.at(match.wordIndex);
+        const int caseMatch = c.isUpper() && string.at(match.stringIndex) == c;
+
+        score += 1 + start + sequential + caseMatch;
+        previousIndex = match.stringIndex;
+    }
+
+    return score;
+}
+
+static bool matchingRanges(const QString &word, QStringRef string, int offset, RangeSet<int> &result)
+{
+    QVarLengthArray<Match, 16> indexes;
+    if (!matchingIndexes(word, string, indexes))
+        return false;
+
+    for (const Match &match : qAsConst(indexes))
+        result.insert(match.stringIndex + offset);
+
+    return true;
+}
+
+int matchingScore(const QStringList &words, QStringRef string)
+{
+    const QStringRef fileName = string.mid(string.lastIndexOf(QLatin1Char('/')) + 1);
+
+    int totalScore = 0;
+
+    for (const QString &word : words) {
+        if (int score = Utils::matchingScore(word, fileName)) {
+            // Higher score if file name matches
+            totalScore += score * 2;
+        } else if ((score = Utils::matchingScore(word, string))) {
+            totalScore += score;
+        } else {
+            totalScore = 0;
+            break;
+        }
+    }
+
+    return totalScore;
+}
+
+RangeSet<int> matchingRanges(const QStringList &words, QStringRef string)
+{
+    const int startOfFileName = string.lastIndexOf(QLatin1Char('/')) + 1;
+    const QStringRef fileName = string.mid(startOfFileName);
+
+    RangeSet<int> result;
+
+    for (const QString &word : words) {
+        if (!matchingRanges(word, fileName, startOfFileName, result))
+            matchingRanges(word, string, 0, result);
+    }
+
+    return result;
 }
 
 
