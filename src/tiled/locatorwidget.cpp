@@ -130,12 +130,11 @@ MatchDelegate::MatchDelegate(QObject *parent)
 
 QSize MatchDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &) const
 {
-    const Fonts fonts(option.font);
-    const QFontMetrics smallFontMetrics(fonts.small);
-    const QFontMetrics bigFontMetrics(fonts.big);
+    const QFont bigFont = scaledFont(option.font, 1.2);
+    const QFontMetrics bigFontMetrics(bigFont);
 
     const int margin = Utils::dpiScaled(2);
-    return QSize(margin * 2, margin * 2 + bigFontMetrics.height() + smallFontMetrics.lineSpacing());
+    return QSize(margin * 2, margin * 2 + bigFontMetrics.lineSpacing() * 2);
 }
 
 void MatchDelegate::paint(QPainter *painter,
@@ -185,12 +184,11 @@ void MatchDelegate::paint(QPainter *painter,
     fileNameHtml.append(escapedRange(qMax(filePathIndex, lastSlash + 1), filePath.size() - 1));
 
     const Fonts fonts(option.font);
-    const QFontMetrics smallFontMetrics(fonts.small);
     const QFontMetrics bigFontMetrics(fonts.big);
 
     const int margin = Utils::dpiScaled(2);
     const auto fileNameRect = option.rect.adjusted(margin, margin, -margin, 0);
-    const auto filePathRect = option.rect.adjusted(margin, margin + bigFontMetrics.height() + smallFontMetrics.leading(), -margin, 0);
+    const auto filePathRect = option.rect.adjusted(margin, margin + bigFontMetrics.lineSpacing(), -margin, 0);
 
     // draw the background (covers selection)
     QStyle *style = QApplication::style();
