@@ -77,6 +77,7 @@ void setThemeIcon(T *t, const char *name)
 void restoreGeometry(QWidget *widget);
 void saveGeometry(QWidget *widget);
 
+int defaultDpi();
 qreal defaultDpiScale();
 int dpiScaled(int value);
 qreal dpiScaled(qreal value);

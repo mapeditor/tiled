@@ -295,6 +295,20 @@ void saveGeometry(QWidget *widget)
     }
 }
 
+int defaultDpi()
+{
+    static int dpi = []{
+        if (const QScreen *screen = QGuiApplication::primaryScreen())
+            return static_cast<int>(screen->logicalDotsPerInchX());
+#ifdef Q_OS_MAC
+        return 72;
+#else
+        return 96;
+#endif
+    }();
+    return dpi;
+}
+
 qreal defaultDpiScale()
 {
     static qreal scale = []{
