@@ -519,6 +519,11 @@ QAction *TilesetEditor::editCollisionAction() const
     return mTileCollisionDock->toggleViewAction();
 }
 
+QAction *TilesetEditor::editWangSetsAction() const
+{
+    return mWangDock->toggleViewAction();
+}
+
 void TilesetEditor::currentWidgetChanged()
 {
     auto view = static_cast<TilesetView*>(mWidgetStack->currentWidget());
