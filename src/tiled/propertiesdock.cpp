@@ -31,6 +31,7 @@
 #include "tile.h"
 #include "tileset.h"
 #include "utils.h"
+#include "variantpropertymanager.h"
 
 #include <QAction>
 #include <QEvent>
@@ -372,11 +373,23 @@ void PropertiesDock::showContextMenu(const QPoint& pos)
 
                 if (QFileInfo { localFile }.isFile())
                     Utils::addOpenWithSystemEditorAction(contextMenu, filePath.url.toLocalFile());
+            }
+        } else if (value.userType() == objectRefTypeId()) {
+            if (auto mapDocument = qobject_cast<MapDocument*>(mDocument)) {
+                const DisplayObjectRef objectRef(value.value<ObjectRef>(), mapDocument);
 
-                contextMenu.addSeparator();
+                contextMenu.addAction(tr("Go to Object"), [=] {
+                    if (auto object = objectRef.object()) {
+                        objectRef.mapDocument->setSelectedObjects({object});
+                        emit objectRef.mapDocument->focusMapObjectRequested(object);
+                    }
+                })->setEnabled(objectRef.object());
             }
         }
     }
+
+    if (!contextMenu.isEmpty())
+        contextMenu.addSeparator();
 
     QAction *cutAction = contextMenu.addAction(tr("Cu&t"), this, &PropertiesDock::cutProperties);
     QAction *copyAction = contextMenu.addAction(tr("&Copy"), this, &PropertiesDock::copyProperties);
