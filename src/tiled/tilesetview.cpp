@@ -229,11 +229,13 @@ static void paintTerrainOverlay(QPainter *painter,
     painter->restore();
 }
 
-static QTransform tilesetGridTransform(const Tileset &tileset, QPoint tileCenter)
+static void setupTilesetGridTransform(const Tileset &tileset, QTransform &transform, QRect &targetRect)
 {
-    QTransform transform;
-
     if (tileset.orientation() == Tileset::Isometric) {
+        const QPoint tileCenter = targetRect.center();
+        targetRect.setHeight(targetRect.width());
+        targetRect.moveCenter(tileCenter);
+
         const QSize gridSize = tileset.gridSize();
 
         transform.translate(tileCenter.x(), tileCenter.y());
@@ -247,8 +249,6 @@ static QTransform tilesetGridTransform(const Tileset &tileset, QPoint tileCenter
 
         transform.translate(-tileCenter.x(), -tileCenter.y());
     }
-
-    return transform;
 }
 
 static void setWangStyle(QPainter *painter, WangSet *wangSet, int index, bool edge)
@@ -683,7 +683,10 @@ void TileDelegate::drawTerrainOverlay(QPainter *painter,
                                       const QModelIndex &index) const
 {
     painter->save();
-    painter->setTransform(tilesetGridTransform(*tile->tileset(), targetRect.center()), true);
+
+    QTransform transform;
+    setupTilesetGridTransform(*tile->tileset(), transform, targetRect);
+    painter->setTransform(transform, true);
 
     const unsigned terrain = tile->terrain();
 
@@ -721,7 +724,10 @@ void TileDelegate::drawWangOverlay(QPainter *painter,
                                    const QModelIndex &index) const
 {
     painter->save();
-    painter->setTransform(tilesetGridTransform(*tile->tileset(), targetRect.center()), true);
+
+    QTransform transform;
+    setupTilesetGridTransform(*tile->tileset(), transform, targetRect);
+    painter->setTransform(transform, true);
 
     if (WangSet *wangSet = mTilesetView->wangSet()) {
         paintWangOverlay(painter, wangSet->wangIdOfTile(tile),
@@ -1101,8 +1107,10 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
 
         if (mWangBehavior != WholeId) {
             QRect tileRect = visualRect(mHoveredIndex);
-            const auto t = tilesetGridTransform(*tilesetDocument()->tileset(), tileRect.center());
-            const auto mappedPos = t.inverted().map(pos);
+            QTransform transform;
+            setupTilesetGridTransform(*tilesetDocument()->tileset(), transform, tileRect);
+
+            const auto mappedPos = transform.inverted().map(pos);
             QPoint tileLocalPos = mappedPos - tileRect.topLeft();
             QPointF tileLocalPosF((qreal) tileLocalPos.x() / tileRect.width(),
                                   (qreal) tileLocalPos.y() / tileRect.height());
@@ -1161,10 +1169,12 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
         int previousHoverCorner = mHoveredCorner;
 
         if (mHoveredIndex.isValid()) {
-            const QPoint center = visualRect(hoveredIndex).center();
+            QRect tileRect = visualRect(mHoveredIndex);
+            QTransform transform;
+            setupTilesetGridTransform(*tilesetDocument()->tileset(), transform, tileRect);
 
-            const auto t = tilesetGridTransform(*tilesetDocument()->tileset(), center);
-            const auto mappedPos = t.inverted().map(pos);
+            const QPoint center = tileRect.center();
+            const auto mappedPos = transform.inverted().map(pos);
 
             int hoveredCorner = 0;
             if (mappedPos.x() > center.x())
