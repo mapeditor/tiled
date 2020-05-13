@@ -147,11 +147,11 @@ void MiniMapRenderer::renderToImage(QImage& image, RenderFlags renderFlags) cons
     if (image.isNull())
         return;
 
-    bool drawObjects = renderFlags.testFlag(RenderFlag::DrawMapObjects);
-    bool drawTileLayers = renderFlags.testFlag(RenderFlag::DrawTileLayers);
-    bool drawImageLayers = renderFlags.testFlag(RenderFlag::DrawImageLayers);
-    bool drawTileGrid = renderFlags.testFlag(RenderFlag::DrawGrid);
-    bool visibleLayersOnly = renderFlags.testFlag(RenderFlag::IgnoreInvisibleLayer);
+    const bool drawObjects = renderFlags.testFlag(RenderFlag::DrawMapObjects);
+    const bool drawTileLayers = renderFlags.testFlag(RenderFlag::DrawTileLayers);
+    const bool drawImageLayers = renderFlags.testFlag(RenderFlag::DrawImageLayers);
+    const bool drawTileGrid = renderFlags.testFlag(RenderFlag::DrawGrid);
+    const bool visibleLayersOnly = renderFlags.testFlag(RenderFlag::IgnoreInvisibleLayer);
 
     QRect mapBoundingRect = mRenderer->mapBoundingRect();
 
@@ -164,8 +164,8 @@ void MiniMapRenderer::renderToImage(QImage& image, RenderFlags renderFlags) cons
     mapSize.setHeight(mapSize.height() + margins.top() + margins.bottom());
 
     // Determine the largest possible scale
-    qreal scale = qMin(static_cast<qreal>(image.width()) / mapSize.width(),
-                       static_cast<qreal>(image.height()) / mapSize.height());
+    const qreal scale = qMin(static_cast<qreal>(image.width()) / mapSize.width(),
+                             static_cast<qreal>(image.height()) / mapSize.height());
 
     if (renderFlags.testFlag(DrawBackground) && mMap->backgroundColor().isValid())
         image.fill(mMap->backgroundColor());
@@ -176,9 +176,9 @@ void MiniMapRenderer::renderToImage(QImage& image, RenderFlags renderFlags) cons
     painter.setRenderHints(QPainter::SmoothPixmapTransform, renderFlags.testFlag(SmoothPixmapTransform));
 
     // Center the map in the requested size
-    QSize scaledMapSize = mapSize * scale;
-    QPointF centerOffset((image.width() - scaledMapSize.width()) / 2,
-                         (image.height() - scaledMapSize.height()) / 2);
+    const QSize scaledMapSize = mapSize * scale;
+    const QPointF centerOffset((image.width() - scaledMapSize.width()) / 2,
+                               (image.height() - scaledMapSize.height()) / 2);
 
     painter.translate(centerOffset);
     painter.scale(scale, scale);
@@ -252,4 +252,17 @@ void MiniMapRenderer::renderToImage(QImage& image, RenderFlags renderFlags) cons
 
     if (drawTileGrid)
         mRenderer->drawGrid(&painter, mapBoundingRect, mGridColor);
+
+    if (drawObjects && mRenderObjectLabelCallback) {
+        for (const Layer *layer : mMap->objectGroups()) {
+            if (visibleLayersOnly && layer->isHidden())
+                continue;
+
+            const ObjectGroup *objectGroup = static_cast<const ObjectGroup*>(layer);
+
+            for (const MapObject *object : objectGroup->objects())
+                if (object->isVisible())
+                    mRenderObjectLabelCallback(painter, object, *mRenderer);
+        }
+    }
 }
