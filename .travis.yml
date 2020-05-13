@@ -89,11 +89,6 @@ matrix:
         repo: bjorn/tiled
         branch: snapshot
       script: dist/linux/push-to-itch.sh
-    - provider: script
-      skip_cleanup: true
-      script: curl --upload-file $(ls Tiled*.AppImage) https://transfer.sh/Tiled.AppImage
-      on:
-        all_branches: true
   - os: linux
     compiler: clang
     addons:
