@@ -341,7 +341,7 @@ void PropertiesDock::renamePropertyTo(const QString &name)
     undoStack->push(new RenameProperty(mDocument, mDocument->currentObjects(), oldName, name));
 }
 
-void PropertiesDock::showContextMenu(const QPoint& pos)
+void PropertiesDock::showContextMenu(const QPoint &pos)
 {
     const Object *object = mDocument->currentObject();
     if (!object)
@@ -395,9 +395,15 @@ void PropertiesDock::showContextMenu(const QPoint& pos)
     QAction *copyAction = contextMenu.addAction(tr("&Copy"), this, &PropertiesDock::copyProperties);
     QAction *pasteAction = contextMenu.addAction(tr("&Paste"), this, &PropertiesDock::pasteProperties);
     contextMenu.addSeparator();
-    QMenu *convertMenu = contextMenu.addMenu(tr("Convert To"));
-    contextMenu.addAction(mActionRenameProperty);
-    contextMenu.addAction(mActionRemoveProperty);
+    QMenu *convertMenu = nullptr;
+
+    if (customPropertiesSelected) {
+        convertMenu = contextMenu.addMenu(tr("Convert To"));
+        contextMenu.addAction(mActionRemoveProperty);
+        contextMenu.addAction(mActionRenameProperty);
+    } else {
+        contextMenu.addAction(mActionAddProperty);
+    }
 
     cutAction->setShortcuts(QKeySequence::Cut);
     cutAction->setIcon(QIcon(QLatin1String(":/images/16/edit-cut.png")));
@@ -413,7 +419,7 @@ void PropertiesDock::showContextMenu(const QPoint& pos)
     Utils::setThemeIcon(copyAction, "edit-copy");
     Utils::setThemeIcon(pasteAction, "edit-paste");
 
-    if (customPropertiesSelected) {
+    if (convertMenu) {
         const int convertTo[] = {
             QVariant::Bool,
             QVariant::Color,
@@ -445,14 +451,15 @@ void PropertiesDock::showContextMenu(const QPoint& pos)
                 action->setData(toType);
             }
         }
+
+        convertMenu->setEnabled(!convertMenu->actions().isEmpty());
     }
 
-    convertMenu->setEnabled(!convertMenu->actions().isEmpty());
 
     const QPoint globalPos = mPropertyBrowser->mapToGlobal(pos);
     const QAction *selectedItem = contextMenu.exec(globalPos);
 
-    if (selectedItem && selectedItem->parentWidget() == convertMenu) {
+    if (selectedItem && convertMenu && selectedItem->parentWidget() == convertMenu) {
         QUndoStack *undoStack = mDocument->undoStack();
         undoStack->beginMacro(tr("Convert Property/Properties", nullptr, items.size()));
 
@@ -514,7 +521,7 @@ void PropertiesDock::retranslateUi()
 {
     setWindowTitle(tr("Properties"));
 
-    mActionAddProperty->setToolTip(tr("Add Property"));
+    mActionAddProperty->setText(tr("Add Property"));
 
     mActionRemoveProperty->setText(tr("Remove"));
     mActionRemoveProperty->setToolTip(tr("Remove Property"));
