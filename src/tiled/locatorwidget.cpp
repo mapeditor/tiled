@@ -143,8 +143,11 @@ void MatchDelegate::paint(QPainter *painter,
 {
     painter->save();
 
-    const QString filePath = index.data().toString();
+    QString filePath = index.data().toString();
     const int lastSlash = filePath.lastIndexOf(QLatin1Char('/'));
+    const auto ranges = Utils::matchingRanges(mWords, &filePath);
+
+    filePath = QDir::toNativeSeparators(filePath);
 
     // Since we're using HTML to markup the entries we'll need to escape the
     // filePath and fileName to avoid them introducing any formatting, however
@@ -157,7 +160,7 @@ void MatchDelegate::paint(QPainter *painter,
         return filePath.mid(first, last - first + 1).toHtmlEscaped();
     };
 
-    for (const auto &range : Utils::matchingRanges(mWords, &filePath)) {
+    for (const auto &range : ranges) {
         if (range.first > filePathIndex)
             filePathHtml.append(escapedRange(filePathIndex, range.first - 1));
 
@@ -368,7 +371,8 @@ void LocatorWidget::setFilterText(const QString &text)
     if (currentIndex.isValid())
         previousSelected = mListModel->data(currentIndex).toString();
 
-    const QStringList words = text.split(QLatin1Char(' '));
+    const QStringList words = QDir::fromNativeSeparators(text).split(QLatin1Char(' '),
+                                                                     Qt::SkipEmptyParts);
 
     auto projectModel = MainWindow::instance()->projectModel();
     auto matches = projectModel->findFiles(words);
