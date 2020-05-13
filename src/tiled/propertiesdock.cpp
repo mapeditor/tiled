@@ -40,6 +40,7 @@
 #include <QUndoStack>
 #include <QVBoxLayout>
 #include <QMenu>
+#include <QFileInfo>
 
 namespace Tiled {
 
@@ -359,6 +360,24 @@ void PropertiesDock::showContextMenu(const QPoint& pos)
     }
 
     QMenu contextMenu(mPropertyBrowser);
+
+    if (customPropertiesSelected && propertyNames.size() == 1) {
+        const auto value = object->inheritedProperty(propertyNames.first());
+        if (value.userType() == filePathTypeId()) {
+            const FilePath filePath = value.value<FilePath>();
+            const QString localFile = filePath.url.toLocalFile();
+
+            if (!localFile.isEmpty()) {
+                Utils::addOpenContainingFolderAction(contextMenu, localFile);
+
+                if (QFileInfo { localFile }.isFile())
+                    Utils::addOpenWithSystemEditorAction(contextMenu, filePath.url.toLocalFile());
+
+                contextMenu.addSeparator();
+            }
+        }
+    }
+
     QAction *cutAction = contextMenu.addAction(tr("Cu&t"), this, &PropertiesDock::cutProperties);
     QAction *copyAction = contextMenu.addAction(tr("&Copy"), this, &PropertiesDock::copyProperties);
     QAction *pasteAction = contextMenu.addAction(tr("&Paste"), this, &PropertiesDock::pasteProperties);

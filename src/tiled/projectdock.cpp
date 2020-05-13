@@ -31,7 +31,6 @@
 #include "utils.h"
 
 #include <QBoxLayout>
-#include <QDesktopServices>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMenu>
@@ -274,9 +273,7 @@ void ProjectView::contextMenuEvent(QContextMenuEvent *event)
         Utils::addFileManagerActions(menu, filePath);
 
         if (QFileInfo { filePath }.isFile()) {
-            menu.addAction(tr("Open with System Editor"), [=] {
-                QDesktopServices::openUrl(QUrl::fromLocalFile(filePath));
-            });
+            Utils::addOpenWithSystemEditorAction(menu, filePath);
 
             auto objectTemplate = TemplateManager::instance()->loadObjectTemplate(filePath);
             if (objectTemplate->object()) {

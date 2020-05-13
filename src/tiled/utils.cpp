@@ -26,6 +26,7 @@
 #include <QAction>
 #include <QApplication>
 #include <QClipboard>
+#include <QDesktopServices>
 #include <QDir>
 #include <QFileInfo>
 #include <QGuiApplication>
@@ -431,12 +432,23 @@ void addFileManagerActions(QMenu &menu, const QString &fileName)
         return;
 
     menu.addAction(QCoreApplication::translate("Utils", "Copy File Path"), [fileName] {
-        QClipboard *clipboard = QApplication::clipboard();
-        clipboard->setText(QDir::toNativeSeparators(fileName));
+        QApplication::clipboard()->setText(QDir::toNativeSeparators(fileName));
     });
 
+    addOpenContainingFolderAction(menu, fileName);
+}
+
+void addOpenContainingFolderAction(QMenu &menu, const QString &fileName)
+{
     menu.addAction(QCoreApplication::translate("Utils", "Open Containing Folder..."), [fileName] {
         showInFileManager(fileName);
+    });
+}
+
+void addOpenWithSystemEditorAction(QMenu &menu, const QString &fileName)
+{
+    menu.addAction(QCoreApplication::translate("Utils", "Open with System Editor"), [=] {
+        QDesktopServices::openUrl(QUrl::fromLocalFile(fileName));
     });
 }
 

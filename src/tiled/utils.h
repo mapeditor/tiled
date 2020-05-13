@@ -91,6 +91,8 @@ bool isZoomOutShortcut(QKeyEvent *event);
 bool isResetZoomShortcut(QKeyEvent *event);
 
 void addFileManagerActions(QMenu &menu, const QString &fileName);
+void addOpenContainingFolderAction(QMenu &menu, const QString &fileName);
+void addOpenWithSystemEditorAction(QMenu &menu, const QString &fileName);
 
 QSettings::Format jsonSettingsFormat();
 std::unique_ptr<QSettings> jsonSettings(const QString &fileName);
