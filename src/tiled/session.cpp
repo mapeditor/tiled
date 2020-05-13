@@ -68,7 +68,7 @@ Session::Session(const QString &fileName)
 {
     const auto states = get<QVariantMap>("fileStates");
     for (auto it = states.constBegin(); it != states.constEnd(); ++it)
-        fileStates.insert(resolve(it.key()), it.value());
+        fileStates.insert(resolve(it.key()), it.value().toMap());
 
     mSyncSettingsTimer.setInterval(1000);
     mSyncSettingsTimer.setSingleShot(true);
@@ -171,13 +171,23 @@ void Session::setActiveFile(const QString &fileNames)
 
 QVariantMap Session::fileState(const QString &fileName) const
 {
-    return fileStates.value(fileName).toMap();
+    return fileStates.value(fileName);
 }
 
 void Session::setFileState(const QString &fileName, const QVariantMap &fileState)
 {
     fileStates.insert(fileName, fileState);
     scheduleSync();
+}
+
+void Session::setFileStateValue(const QString &fileName, const QString &name, const QVariant &value)
+{
+    auto &state = fileStates[fileName];
+    auto &v = state[name];
+    if (v != value) {
+        v = value;
+        scheduleSync();
+    }
 }
 
 QString Session::defaultFileName()

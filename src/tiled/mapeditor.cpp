@@ -635,14 +635,14 @@ void MapEditor::restoreDocumentState(MapDocument *mapDocument) const
     if (fileState.isEmpty())
         return;
 
-    qreal scale = fileState.value(QLatin1String("scale")).toReal();
+    const qreal scale = fileState.value(QLatin1String("scale")).toReal();
     if (scale > 0)
         mapView->zoomable()->setScale(scale);
 
     const QPointF viewCenter = fromSettingsValue<QPointF>(fileState.value(QLatin1String("viewCenter")));
     mapView->setInitialCenterPos(viewCenter);
 
-    int layerIndex = fileState.value(QLatin1String("selectedLayer")).toInt();
+    const int layerIndex = fileState.value(QLatin1String("selectedLayer")).toInt();
     if (Layer *layer = layerAtGlobalIndex(mapDocument->map(), layerIndex))
         mapDocument->switchCurrentLayer(layer);
 }

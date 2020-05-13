@@ -37,6 +37,7 @@
 #include "preferences.h"
 #include "replacetileset.h"
 #include "scriptmanager.h"
+#include "session.h"
 #include "swaptiles.h"
 #include "tabbar.h"
 #include "terrain.h"
@@ -247,8 +248,12 @@ TilesetDock::TilesetDock(QWidget *parent)
     connect(mSelectNextTileset, &QAction::triggered, this, [this] { mTabBar->setCurrentIndex(mTabBar->currentIndex() + 1); });
     connect(mSelectPreviousTileset, &QAction::triggered, this, [this] { mTabBar->setCurrentIndex(mTabBar->currentIndex() - 1); });
     connect(mDynamicWrappingToggle, &QAction::toggled, this, [this] (bool checked) {
-        if (TilesetView *view = currentTilesetView())
+        if (TilesetView *view = currentTilesetView()) {
             view->setDynamicWrapping(checked);
+
+            const QString fileName = currentTilesetDocument()->externalOrEmbeddedFileName();
+            Session::current().setFileStateValue(fileName, QLatin1String("dynamicWrapping"), checked);
+        }
     });
 
     auto stretch = new QWidget;
@@ -574,9 +579,25 @@ void TilesetDock::createTilesetView(int index, TilesetDocument *tilesetDocument)
     mTabBar->insertTab(index, tileset->name());
     mTabBar->setTabToolTip(index, tileset->fileName());
 
-    QString path = QLatin1String("TilesetDock/TilesetScale/") + tileset->name();
-    qreal scale = Preferences::instance()->value(path, 1).toReal();
-    view->zoomable()->setScale(scale);
+    // Restore state from last time
+    const QString fileName = tilesetDocument->externalOrEmbeddedFileName();
+    const QVariantMap fileState = Session::current().fileState(fileName);
+    if (fileState.isEmpty()) {
+        // Compatibility with Tiled 1.3
+        QString path = QLatin1String("TilesetDock/TilesetScale/") + tileset->name();
+        qreal scale = Preferences::instance()->value(path, 1).toReal();
+        view->zoomable()->setScale(scale);
+    } else {
+        bool ok;
+        const qreal scale = fileState.value(QLatin1String("scaleInDock")).toReal(&ok);
+        if (scale > 0 && ok)
+            view->zoomable()->setScale(scale);
+
+        if (fileState.contains(QLatin1String("dynamicWrapping"))) {
+            const bool dynamicWrapping = fileState.value(QLatin1String("dynamicWrapping")).toBool();
+            view->setDynamicWrapping(dynamicWrapping);
+        }
+    }
 
     connect(tilesetDocument, &TilesetDocument::fileNameChanged,
             this, &TilesetDock::tilesetFileNameChanged);
@@ -601,12 +622,14 @@ void TilesetDock::deleteTilesetView(int index)
     Tileset *tileset = tilesetDocument->tileset().data();
     TilesetView *view = tilesetViewAt(index);
 
-    QString path = QLatin1String("TilesetDock/TilesetScale/") + tileset->name();
+    // Remember the scale
+    const QString fileName = tilesetDocument->externalOrEmbeddedFileName();
+    Session::current().setFileStateValue(fileName, QLatin1String("scaleInDock"), view->scale());
+
+    // Some cleanup for potentially old preferences from Tiled 1.3
+    const QString path = QLatin1String("TilesetDock/TilesetScale/") + tileset->name();
     auto preferences = Preferences::instance();
-    if (view->scale() != 1.0)
-        preferences->setValue(path, view->scale());
-    else
-        preferences->remove(path);
+    preferences->remove(path);
 
     mTilesets.remove(index);
     mTilesetDocuments.removeAt(index);
@@ -864,6 +887,15 @@ SharedTileset TilesetDock::currentTileset() const
         return {};
 
     return mTilesets.at(index);
+}
+
+TilesetDocument *TilesetDock::currentTilesetDocument() const
+{
+    const int index = mTabBar->currentIndex();
+    if (index == -1)
+        return nullptr;
+
+    return mTilesetDocuments.at(index);
 }
 
 void TilesetDock::setCurrentEditableTileset(EditableTileset *tileset)

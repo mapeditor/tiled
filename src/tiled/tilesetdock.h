@@ -83,6 +83,7 @@ public:
 
     void setCurrentTileset(const SharedTileset &tileset);
     SharedTileset currentTileset() const;
+    TilesetDocument *currentTilesetDocument() const;
 
     void setCurrentEditableTileset(EditableTileset *tileset);
     EditableTileset *currentEditableTileset() const;
