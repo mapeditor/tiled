@@ -93,6 +93,7 @@ public:
     QAction *removeTilesAction() const;
     QAction *editTerrainAction() const;
     QAction *editCollisionAction() const;
+    QAction *editWangSetsAction() const;
     QAction *showAnimationEditor() const;
 
     TileAnimationEditor *tileAnimationEditor() const;

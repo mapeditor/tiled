@@ -843,11 +843,11 @@ void TilesetDock::tabContextMenuRequested(const QPoint &pos)
 
     QMenu menu;
 
-    QString fileName = mTilesetDocuments.at(index)->fileName();
-    if (!fileName.isEmpty())
-        Utils::addFileManagerActions(menu, fileName);
+    const QString fileName = mTilesetDocuments.at(index)->fileName();
+    Utils::addFileManagerActions(menu, fileName);
 
-    menu.exec(mTabBar->mapToGlobal(pos));
+    if (!menu.isEmpty())
+        menu.exec(mTabBar->mapToGlobal(pos));
 }
 
 void TilesetDock::setCurrentTileset(const SharedTileset &tileset)
