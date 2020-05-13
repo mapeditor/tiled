@@ -372,7 +372,7 @@ void LocatorWidget::setFilterText(const QString &text)
         previousSelected = mListModel->data(currentIndex).toString();
 
     const QStringList words = QDir::fromNativeSeparators(text).split(QLatin1Char(' '),
-                                                                     Qt::SkipEmptyParts);
+                                                                     QString::SkipEmptyParts);
 
     auto projectModel = MainWindow::instance()->projectModel();
     auto matches = projectModel->findFiles(words);
