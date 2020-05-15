@@ -225,7 +225,7 @@ int matchingScore(const QStringList &words, QStringRef string)
 {
     const QStringRef fileName = string.mid(string.lastIndexOf(QLatin1Char('/')) + 1);
 
-    int totalScore = 0;
+    int totalScore = 1;     // no words matches everything
 
     for (const QString &word : words) {
         if (int score = Utils::matchingScore(word, fileName)) {
