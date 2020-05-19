@@ -246,10 +246,8 @@ Game Maker
 Godot
 ~~~~~
 
--  `Tiled Map
-   Importer <https://godotengine.org/asset-library/asset/25>`__ imports
-   each map as Godot scene which can be instanced or inherited (`forum
-   announcement <http://discourse.mapeditor.org/t/importer-plugin-for-godot-engine/1833/1>`__)
+- `Tiled Map Importer <https://godotengine.org/asset-library/asset/25>`__ imports each map as Godot scene which can be instanced or inherited (`forum announcement <http://discourse.mapeditor.org/t/importer-plugin-for-godot-engine/1833/1>`__).
+- `Tiled To Godot Export <https://github.com/MikeMnD/tiled-to-godot-export>`__ is a Tiled :doc:`JavaScript extension </reference/scripting>` for exporting Tilemaps and Tilesets in Godot 3.2 format (`forum announcement <https://discourse.mapeditor.org/t/tiled-editor-map-and-tileset-integration-with-godot-3-2/4347>`__).
 
 Haxe
 ~~~~
@@ -393,7 +391,7 @@ RPG Maker MV
 ~~~~~~~~~~~~
 
 -  `Tiled
-   Plugin <https://forums.rpgmakerweb.com/index.php?threads/tiled-plugin-version-1-3-0-released.50752/>`__
+   Plugin for RPG Maker MV <https://archeia.itch.io/tiled-plugin-for-rpg-maker-mv>`__
    by `Dr.Yami <http://yami.moe/>`__ & Archeia, from `RPG Maker
    Web <https://forums.rpgmakerweb.com>`__
 
@@ -429,9 +427,6 @@ Sprite Kit Framework
    easy to integrate into any Sprite Kit project. Supports iOS and OSX.
 -  `SKTiled <https://github.com/mfessenden/SKTiled>`__ - A Swift
    framework for working with Tiled assets in SpriteKit.
--  `TilemapKit <http://tilemapkit.com>`__ is a tilemapping framework for
-   Sprite Kit. It supports all TMX tilemap types, including staggered
-   iso and all hex variations. No longer in development.
 -  `JSTileMap <https://github.com/slycrel/JSTileMap>`__ is a lightweight
    SpriteKit implementation of the TMX format supporting iOS 7 and OS X
    10.9 and above.
@@ -442,27 +437,24 @@ TERRA Engine (Delphi/Pascal)
 -  `TERRA Engine <http://pascalgameengine.com/>`__ supports loading and
    rendering of TMX maps.
 
-Unity 3D
-~~~~~~~~
+Unity
+~~~~~
 
+-  `SuperTiled2Unity <https://seanba.itch.io/supertiled2unity>`__ is a collection of C# Unity scripts that can automatically import Tiled map editor files directly into your Unity projects.
+-  `Tiled TMX Importer <https://assetstore.unity.com/packages/tools/sprite-management/tiled-tmx-importer-102928>`__, imports into Unity 2017.2's new native Tilemap system.
+-  `Tiled to
+   Unity <https://assetstore.unity.com/packages/tools/integration/tiled-to-unity-17260>`__ is a
+   3D pipeline for Tiled maps. It uses prefabs as tiles, and can place
+   decorations dynamically on tiles. Supports multiple layers (including
+   object layers).
+-  `UniTiled <https://yjaffal.itch.io/unitiled>`__, a native TMX importer for Unity.
+-  `X-UniTMX <https://bitbucket.org/Chaoseiro/x-unitmx>`__ supports
+   almost all Tiled 0.11 features. Imports TMX/XML files into Sprite
+   Objects or Meshes.
 -  `Orthello
    Pro <http://www.wyrmtale.com/products/unity3d-components/orthello-pro>`__
    (2D framework) offers `Tiled map
    support <http://www.wyrmtale.com/orthello-pro/tilemaps>`__.
--  `Tiled To
-   Unity <https://www.assetstore.unity3d.com/#/content/17260/>`__ is a
-   3D pipeline for Tiled maps. It uses prefabs as tiles, and can place
-   decorations dynamically on tiles. Supports multiple layers (including
-   object layers).
--  `Tiled2Unity <http://www.seanba.com/introtiled2unity.html>`__ exports
-   TMX files to Unity with support for (non-simple) collisions.
--  `UniTiled <https://yjaffal.itch.io/unitiled>`__, a native TMX importer for Unity.
--  `UniTMX <https://bitbucket.org/PolCPP/unitmx/overview>`__ imports TMX
-   files into a mesh.
--  `X-UniTMX <https://bitbucket.org/Chaoseiro/x-unitmx>`__ supports
-   almost all Tiled 0.11 features. Imports TMX/XML files into Sprite
-   Objects or Meshes.
--  `Tiled TMX Importer <https://www.assetstore.unity3d.com/en/#!/content/102928>`__, imports into Unity 2017.2's new native Tilemap system.
 
 Unreal Engine 4
 ~~~~~~~~~~~~~~~
