@@ -266,12 +266,6 @@ bool AutoMapper::setupRuleMapTileLayers()
 
             mInputRules.names.insert(name);
 
-            if (!mInputRules.contains(index))
-                mInputRules.insert(index, InputIndex());
-
-            if (!mInputRules[index].contains(name))
-                mInputRules[index].insert(name, InputConditions());
-
             InputLayer inputLayer;
             inputLayer.tileLayer = tileLayer;
             setupInputLayerProperties(inputLayer);
