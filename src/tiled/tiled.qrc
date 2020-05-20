@@ -173,5 +173,6 @@
         <file>images/scalable/select-object.svg</file>
         <file>images/scalable/software-update-available-symbolic.svg</file>
         <file>images/scalable/wrap.svg</file>
+        <file>images/scalable/replace.svg</file>
     </qresource>
 </RCC>
