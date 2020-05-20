@@ -218,7 +218,7 @@ ScriptTextFile::ScriptTextFile(const QString &filePath, OpenMode mode)
     if (mode & Append)
         m |= QIODevice::Append;
 
-    if ((m & QIODevice::WriteOnly) && SaveFile::safeSavingEnabled())
+    if (m == (QIODevice::Text | QIODevice::WriteOnly) && SaveFile::safeSavingEnabled())
         m_file.reset(new QSaveFile(filePath));
     else
         m_file.reset(new QFile(filePath));
