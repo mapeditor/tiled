@@ -187,7 +187,7 @@ void ScriptBinaryFile::close()
     if (checkForClosed())
         return;
 
-    m_file->reset();
+    m_file.reset();
 }
 
 bool ScriptBinaryFile::checkForClosed() const
