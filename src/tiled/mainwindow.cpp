@@ -1055,8 +1055,10 @@ void MainWindow::openFileInProject()
         return;
 
     const QSize size(qMax(width() / 3, qMin(Utils::dpiScaled(600), width())),
-                     qMin(Utils::dpiScaled(600), height() - menuBar()->height()));
-    const QPoint localPos((width() - size.width()) / 2, menuBar()->height());
+                     qMin(Utils::dpiScaled(600), height()));
+    const int remainingHeight = height() - size.height();
+    const QPoint localPos((width() - size.width()) / 2,
+                          qMin(remainingHeight / 5, Utils::dpiScaled(60)));
     const QRect rect = QRect(mapToGlobal(localPos), size);
 
     mLocatorWidget = new LocatorWidget(this);

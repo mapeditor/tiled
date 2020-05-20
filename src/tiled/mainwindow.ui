@@ -777,7 +777,7 @@
     <string>Open File in &amp;Project...</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+K</string>
+    <string>Ctrl+P</string>
    </property>
   </action>
  </widget>
