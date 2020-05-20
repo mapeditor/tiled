@@ -345,7 +345,7 @@ void Preferences::setMapRenderOrder(Map::RenderOrder mapRenderOrder)
 
 bool Preferences::safeSavingEnabled() const
 {
-    return get("SafeSavingEnabled", true);
+    return get("Storage/SafeSavingEnabled", true);
 }
 
 void Preferences::setSafeSavingEnabled(bool enabled)
