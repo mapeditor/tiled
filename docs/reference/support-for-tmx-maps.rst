@@ -220,18 +220,6 @@ Construct 2 - Scirra
    file inside the editor. `Official
    Note <https://www.scirra.com/construct2/releases/r149>`__
 
-Corona SDK
-~~~~~~~~~~
-
--  `ponytiled <https://github.com/ponywolf/ponytiled>`__ is a simple
-   Tiled Map Loader for Corona SDK (`forum
-   announcement <http://discourse.mapeditor.org/t/new-lua-coronasdk-framework-ponytiled/1826>`__)
--  `Dusk Engine <https://github.com/GymbylCoding/Dusk-Engine>`__ is a
-   fully featured Tiled map game engine for Corona SDK (no longer maintained, but may still be useful)
--  `Berry <https://github.com/ldurniat/Berry>`__ is a simple Tiled
-   Map Loader for Corona SDK.
--  `Qiso <https://qiso.qweb.co.uk>`__ is an isometric engine for Corona SDK that supports loading Tiled maps, and also handles things like path-finding for you.
-
 Flixel
 ~~~~~~
 
@@ -419,6 +407,18 @@ Slick2D
 -  `Slick2D <http://slick.ninjacave.com>`__ supports loading TMX maps
    through
    `TiledMap <http://slick.ninjacave.com/javadoc/org/newdawn/slick/tiled/TiledMap.html>`__.
+
+Solar2D (formerly Corona SDK)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-  `ponytiled <https://github.com/ponywolf/ponytiled>`__ is a simple
+   Tiled Map Loader for Solar2D (`forum
+   announcement <http://discourse.mapeditor.org/t/new-lua-coronasdk-framework-ponytiled/1826>`__)
+-  `Dusk Engine <https://github.com/GymbylCoding/Dusk-Engine>`__ is a
+   fully featured Tiled map game engine for Solar2D (no longer maintained, but may still be useful)
+-  `Berry <https://github.com/ldurniat/Berry>`__ is a simple Tiled
+   Map Loader for Solar2D.
+-  `Qiso <https://qiso.qweb.co.uk>`__ is an isometric engine for Solar2D that supports loading Tiled maps, and also handles things like path-finding for you.
 
 Sprite Kit Framework
 ~~~~~~~~~~~~~~~~~~~~
