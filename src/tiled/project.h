@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include "command.h"
+
 #include <QDateTime>
 #include <QStringList>
 
@@ -44,6 +46,7 @@ public:
     QString mExtensionsPath;
     QString mObjectTypesFile;
     QString mAutomappingRulesFile;
+    QVector<Command> mCommands;
 
 private:
     QDateTime mLastSaved;

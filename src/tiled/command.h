@@ -46,8 +46,8 @@ struct Command
 
     void execute(bool inTerminal = false) const;
 
-    QVariant toQVariant() const;
-    static Command fromQVariant(const QVariant &variant);
+    QVariantHash toVariant() const;
+    static Command fromVariant(const QVariant &variant);
 };
 
 } // namespace Tiled

@@ -24,6 +24,7 @@
 #include "commandmanager.h"
 #include "documentmanager.h"
 #include "logginginterface.h"
+#include "mainwindow.h"
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "worlddocument.h"
@@ -72,16 +73,13 @@ static QString replaceVariables(const QString &string, bool quoteValues = true)
     // Perform variable replacement
     if (Document *document = DocumentManager::instance()->currentDocument()) {
         const QString fileName = document->fileName();
-
-        finalString.replace(QLatin1String("%mapfile"),
-                            replaceString.arg(fileName));
-
         QFileInfo fileInfo(fileName);
-        QString mapPath = fileInfo.absolutePath();
+        const QString mapPath = fileInfo.absolutePath();
+        const QString projectPath = QFileInfo(MainWindow::instance()->project().fileName()).absolutePath();
 
-        finalString.replace(
-            QLatin1String("%mappath"),
-            replaceString.arg(mapPath));
+        finalString.replace(QLatin1String("%mapfile"), replaceString.arg(fileName));
+        finalString.replace(QLatin1String("%mappath"), replaceString.arg(mapPath));
+        finalString.replace(QLatin1String("%projectpath"), replaceString.arg(projectPath));
 
         if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document)) {
             if (const Layer *layer = mapDocument->currentLayer()) {
@@ -151,53 +149,54 @@ void Command::execute(bool inTerminal) const
 /**
  * Stores this command in a QVariant.
  */
-QVariant Command::toQVariant() const
+QVariantHash Command::toVariant() const
 {
     return QVariantHash {
-        { QLatin1String("Enabled"), isEnabled },
-        { QLatin1String("Name"), name },
-        { QLatin1String("Command"), executable },
-        { QLatin1String("Arguments"), arguments },
-        { QLatin1String("WorkingDirectory"), workingDirectory },
-        { QLatin1String("Shortcut"), shortcut },
-        { QLatin1String("ShowOutput"), showOutput },
-        { QLatin1String("SaveBeforeExecute"), saveBeforeExecute },
+        { QStringLiteral("arguments"), arguments },
+        { QStringLiteral("command"), executable },
+        { QStringLiteral("enabled"), isEnabled },
+        { QStringLiteral("name"), name },
+        { QStringLiteral("saveBeforeExecute"), saveBeforeExecute },
+        { QStringLiteral("shortcut"), shortcut },
+        { QStringLiteral("showOutput"), showOutput },
+        { QStringLiteral("workingDirectory"), workingDirectory },
     };
 }
 
 /**
  * Generates a command from a QVariant.
  */
-Command Command::fromQVariant(const QVariant &variant)
+Command Command::fromVariant(const QVariant &variant)
 {
     const auto hash = variant.toHash();
 
-    const QString namePref = QLatin1String("Name");
-    const QString executablePref = QLatin1String("Command");
-    const QString argumentsPref = QLatin1String("Arguments");
-    const QString workingDirectoryPref = QLatin1String("WorkingDirectory");
-    const QString enablePref = QLatin1String("Enabled");
-    const QString shortcutPref = QLatin1String("Shortcut");
-    const QString showOutputPref = QLatin1String("ShowOutput");
-    const QString saveBeforeExecutePref = QLatin1String("SaveBeforeExecute");
+    auto read = [&] (const QString &prop) {
+        if (hash.contains(prop))
+            return hash.value(prop);
+
+        QString oldProp = prop.at(0).toUpper() + prop.mid(1);
+        return hash.value(oldProp);
+    };
+
+    const QVariant arguments = read(QStringLiteral("arguments"));
+    const QVariant enable = read(QStringLiteral("enabled"));
+    const QVariant executable = read(QStringLiteral("command"));
+    const QVariant name = read(QStringLiteral("name"));
+    const QVariant saveBeforeExecute = read(QStringLiteral("saveBeforeExecute"));
+    const QVariant shortcut = read(QStringLiteral("shortcut"));
+    const QVariant showOutput = read(QStringLiteral("showOutput"));
+    const QVariant workingDirectory = read(QStringLiteral("workingDirectory"));
 
     Command command;
-    if (hash.contains(enablePref))
-        command.isEnabled = hash[enablePref].toBool();
-    if (hash.contains(namePref))
-        command.name = hash[namePref].toString();
-    if (hash.contains(executablePref))
-        command.executable = hash[executablePref].toString();
-    if (hash.contains(argumentsPref))
-        command.arguments = hash[argumentsPref].toString();
-    if (hash.contains(workingDirectoryPref))
-        command.workingDirectory = hash[workingDirectoryPref].toString();
-    if (hash.contains(shortcutPref))
-        command.shortcut = hash[shortcutPref].value<QKeySequence>();
-    if (hash.contains(showOutputPref))
-        command.showOutput = hash[showOutputPref].toBool();
-    if (hash.contains(saveBeforeExecutePref))
-        command.saveBeforeExecute = hash[saveBeforeExecutePref].toBool();
+
+    command.arguments = arguments.toString();
+    command.isEnabled = enable.toBool();
+    command.executable = executable.toString();
+    command.name = name.toString();
+    command.saveBeforeExecute = saveBeforeExecute.toBool();
+    command.shortcut = shortcut.value<QKeySequence>();
+    command.showOutput = showOutput.toBool();
+    command.workingDirectory = workingDirectory.toString();
 
     return command;
 }

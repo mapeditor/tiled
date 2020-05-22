@@ -95,6 +95,7 @@ SOURCES += aboutdialog.cpp \
     commanddialog.cpp \
     commandlineparser.cpp \
     commandmanager.cpp \
+    commandsedit.cpp \
     consoledock.cpp \
     createellipseobjecttool.cpp \
     createobjecttool.cpp \
@@ -333,6 +334,7 @@ HEADERS += aboutdialog.h \
     command.h \
     commandlineparser.h \
     commandmanager.h \
+    commandsedit.h \
     consoledock.h \
     createellipseobjecttool.h \
     createobjecttool.h \
@@ -521,6 +523,7 @@ HEADERS += aboutdialog.h \
 FORMS += aboutdialog.ui \
     addpropertydialog.ui \
     commanddialog.ui \
+    commandsedit.ui \
     donationdialog.ui \
     exportasimagedialog.ui \
     imagecolorpickerwidget.ui \

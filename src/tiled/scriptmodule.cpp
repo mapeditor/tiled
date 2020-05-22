@@ -460,7 +460,7 @@ void ScriptModule::trigger(const QByteArray &actionName) const
 
 void ScriptModule::executeCommand(const QString &name, bool inTerminal) const
 {
-    const auto commands = CommandManager::instance()->commands();
+    const auto commands = CommandManager::instance()->allCommands();
 
     for (const Command &command : commands) {
         if (command.name == name) {

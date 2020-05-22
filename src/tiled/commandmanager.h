@@ -1,6 +1,7 @@
 /*
  * commandmanager.h
  * Copyright 2017, Ketan Gupta <ketan19972010@gmail.com>
+ * Copyright 2018-2020, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -41,9 +42,11 @@ class CommandManager : public QObject
 public:
     static CommandManager *instance();
 
-    const Command *firstEnabledCommand() const;
+    bool executeDefaultCommand() const;
 
-    QVector<Command> commands() const;
+    const QVector<Command> &globalCommands() const;
+    const QVector<Command> &projectCommands() const;
+    QVector<Command> allCommands() const;
 
     void registerMenu(QMenu *menu);
 
@@ -65,5 +68,11 @@ private:
     QList<QAction*> mActions;
     QAction *mEditCommandsAction = nullptr;
 };
+
+
+inline QVector<Command> CommandManager::allCommands() const
+{
+    return globalCommands() + projectCommands();
+}
 
 } // namespace Tiled

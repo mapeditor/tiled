@@ -48,24 +48,23 @@ CommandButton::CommandButton(QWidget *parent)
 
 void CommandButton::runCommand()
 {
-    if (auto command = CommandManager::instance()->firstEnabledCommand()) {
-        command->execute();
-    } else {
-        QMessageBox warning(QMessageBox::Warning,
-                            tr("Error Executing Command"),
-                            tr("You do not have any commands setup."),
-                            QMessageBox::Ok,
-                            window());
-
-        const auto editButton = warning.addButton(tr("Edit Commands..."), QMessageBox::ActionRole);
-        warning.setDefaultButton(QMessageBox::Ok);
-        warning.setEscapeButton(QMessageBox::Ok);
-
-        connect(editButton, &QAbstractButton::clicked, CommandManager::instance(), &CommandManager::showDialog);
-
-        warning.exec();
+    if (CommandManager::instance()->executeDefaultCommand())
         return;
-    }
+
+    QMessageBox warning(QMessageBox::Warning,
+                        tr("Error Executing Command"),
+                        tr("You do not have any commands setup."),
+                        QMessageBox::Ok,
+                        window());
+
+    const auto editButton = warning.addButton(tr("Edit Commands..."), QMessageBox::ActionRole);
+    warning.setDefaultButton(QMessageBox::Ok);
+    warning.setEscapeButton(QMessageBox::Ok);
+
+    connect(editButton, &QAbstractButton::clicked,
+            CommandManager::instance(), &CommandManager::showDialog);
+
+    warning.exec();
 }
 
 void CommandButton::changeEvent(QEvent *event)

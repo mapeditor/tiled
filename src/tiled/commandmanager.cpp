@@ -1,6 +1,7 @@
 /*
  * commandmanager.cpp
  * Copyright 2017, Ketan Gupta <ketan19972010@gmail.com>
+ * Copyright 2018-2020, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -23,6 +24,7 @@
 #include "commanddatamodel.h"
 #include "commanddialog.h"
 #include "logginginterface.h"
+#include "mainwindow.h"
 #include "pluginmanager.h"
 #include "preferences.h"
 #include "utils.h"
@@ -44,7 +46,7 @@ CommandManager::CommandManager()
     // Load command list
     const auto commands = preferences->value(QLatin1String("commandList")).toList();
     for (const QVariant &commandVariant : commands)
-        mCommands.append(Command::fromQVariant(commandVariant));
+        mCommands.append(Command::fromVariant(commandVariant));
 
     // Add default commands the first time the app has booted up.
     // This is useful on its own and helps demonstrate how to use the commands.
@@ -78,24 +80,33 @@ CommandManager::~CommandManager()
 {
 }
 
-const Command *CommandManager::firstEnabledCommand() const
-{
-    for (const Command &command : mCommands)
-        if (command.isEnabled)
-            return &command;
-
-    return nullptr;
-}
-
 CommandManager *CommandManager::instance()
 {
     static CommandManager instance;
     return &instance;
 }
 
-QVector<Command> CommandManager::commands() const
+bool CommandManager::executeDefaultCommand() const
+{
+    const auto commands = allCommands();
+    for (const Command &command : commands) {
+        if (command.isEnabled) {
+            command.execute();
+            return true;
+        }
+    }
+    return false;
+}
+
+const QVector<Command> &CommandManager::globalCommands() const
 {
     return mCommands;
+}
+
+const QVector<Command> &CommandManager::projectCommands() const
+{
+    auto &project = MainWindow::instance()->project();
+    return project.mCommands;
 }
 
 /**
@@ -113,12 +124,16 @@ void CommandManager::registerMenu(QMenu *menu)
  */
 void CommandManager::showDialog()
 {
-    CommandDialog dialog(mCommands, QApplication::activeWindow());
+    CommandDialog dialog(QApplication::activeWindow());
     dialog.exec();
 
-    mCommands = dialog.commands();
-
+    mCommands = dialog.globalCommands();
     commit();
+
+    auto &project = MainWindow::instance()->project();
+    project.mCommands = dialog.projectCommands();
+    project.save();
+
     updateActions();
 }
 
@@ -129,7 +144,7 @@ void CommandManager::commit()
 {
     QVariantList commands;
     for (const Command &command : qAsConst(mCommands))
-        commands.append(command.toQVariant());
+        commands.append(command.toVariant());
 
     Preferences::instance()->setValue(QLatin1String("commandList"), commands);
 }
@@ -139,23 +154,36 @@ void CommandManager::updateActions()
     qDeleteAll(mActions);
     mActions.clear();
 
-    for (const Command &command : qAsConst(mCommands)) {
+    auto addAction = [this] (const Command &command) {
         if (!command.isEnabled)
-            continue;
+            return;
 
         QAction *mAction = new QAction(command.name, this);
         mAction->setShortcut(command.shortcut);
-
         connect(mAction, &QAction::triggered, [command] { command.execute(); });
-
         mActions.append(mAction);
-    }
+    };
+
+    auto addSeparator = [this] {
+        QAction *separator = new QAction(this);
+        separator->setSeparator(true);
+        mActions.append(separator);
+    };
+
+    // Add global commands
+    for (const Command &command : qAsConst(mCommands))
+        addAction(command);
+
+    addSeparator();
+
+    // Add project-specific commands
+    const auto &project = MainWindow::instance()->project();
+    for (const Command &command : project.mCommands)
+        addAction(command);
+
+    addSeparator();
 
     // Add Edit Commands action
-    QAction *separator = new QAction(this);
-    separator->setSeparator(true);
-    mActions.append(separator);
-
     mEditCommandsAction = new QAction(this);
     mEditCommandsAction->setIcon(
             QIcon(QLatin1String(":/images/24/system-run.png")));

@@ -1,6 +1,8 @@
 /*
  * commanddialog.h
  * Copyright 2010, Jeff Bland <jksb@member.fsf.org>
+ * Copyright 2017, Ketan Gupta <ketan19972010@gmail.com>
+ * Copyright 2020, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -32,33 +34,23 @@ class CommandDialog;
 namespace Tiled {
 
 class CommandDataModel;
+class CommandsEdit;
 
 class CommandDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    CommandDialog(const QVector<Command> &commands, QWidget *parent = nullptr);
+    CommandDialog(QWidget *parent = nullptr);
     ~CommandDialog();
 
-    const QVector<Command> &commands() const;
-
-public slots:
-    void setShortcut(const QKeySequence &keySequence);
-    void setSaveBeforeExecute(int state);
-    void setShowOutput(int state);
-    void setExecutable(const QString &text);
-    void setArguments(const QString &text);
-    void setWorkingDirectory(const QString &text);
-
-    void updateWidgets(const QModelIndex &current);
-
-    void browseExecutable();
-    void browseWorkingDirectory();
+    const QVector<Command> &globalCommands() const;
+    const QVector<Command> &projectCommands() const;
 
 private:
     Ui::CommandDialog *mUi;
-    CommandDataModel *mModel;
+    CommandsEdit *mGlobalCommandsEdit;
+    CommandsEdit *mProjectCommandsEdit;
 };
 
 class CommandTreeView : public QTreeView

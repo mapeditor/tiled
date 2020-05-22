@@ -1,6 +1,8 @@
 /*
  * commanddialog.cpp
  * Copyright 2010, Jeff Bland <jksb@member.fsf.org>
+ * Copyright 2017, Ketan Gupta <ketan19972010@gmail.com>
+ * Copyright 2020, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -23,21 +25,19 @@
 
 #include "commanddatamodel.h"
 #include "commandmanager.h"
+#include "commandsedit.h"
 #include "utils.h"
 
 #include <QShortcut>
 #include <QMenu>
 #include <QContextMenuEvent>
 #include <QModelIndex>
-#include <QFileDialog>
-#include <QStandardPaths>
 
 using namespace Tiled;
 
-CommandDialog::CommandDialog(const QVector<Command> &commands, QWidget *parent)
+CommandDialog::CommandDialog(QWidget *parent)
     : QDialog(parent)
     , mUi(new Ui::CommandDialog)
-    , mModel(new CommandDataModel(this))
 {
     mUi->setupUi(this);
     resize(Utils::dpiScaled(size()));
@@ -45,46 +45,15 @@ CommandDialog::CommandDialog(const QVector<Command> &commands, QWidget *parent)
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 #endif
 
-    mModel->setCommands(commands);
-    mUi->treeView->setModel(mModel);
+    auto *commandManager = CommandManager::instance();
 
-    // Setup resizing so the command column stretches
-    QHeaderView *h = mUi->treeView->header();
-    h->resizeSection(0, Utils::dpiScaled(200));
-    h->setStretchLastSection(false);
-    h->setSectionResizeMode(CommandDataModel::NameColumn, QHeaderView::Stretch);
-    h->setSectionResizeMode(CommandDataModel::ShortcutColumn, QHeaderView::Fixed);
-    h->setSectionResizeMode(CommandDataModel::EnabledColumn, QHeaderView::ResizeToContents);
+    mGlobalCommandsEdit = new CommandsEdit(commandManager->globalCommands());
+    mProjectCommandsEdit = new CommandsEdit(commandManager->projectCommands());
 
-    setWindowTitle(tr("Edit Commands"));
+    mUi->tabWidget->addTab(mGlobalCommandsEdit, tr("Global Commands"));
+    mUi->tabWidget->addTab(mProjectCommandsEdit, tr("Project Commands"));
+
     Utils::restoreGeometry(this);
-
-    connect(mUi->saveBox, &QCheckBox::stateChanged,
-            this, &CommandDialog::setSaveBeforeExecute);
-
-    connect(mUi->outputBox, &QCheckBox::stateChanged,
-            this, &CommandDialog::setShowOutput);
-
-    connect(mUi->keySequenceEdit, &QKeySequenceEdit::keySequenceChanged,
-            this, &CommandDialog::setShortcut);
-
-    connect(mUi->executableEdit, &QLineEdit::textChanged,
-            this, &CommandDialog::setExecutable);
-
-    connect(mUi->argumentsEdit, &QLineEdit::textChanged,
-            this, &CommandDialog::setArguments);
-
-    connect(mUi->workingDirectoryEdit, &QLineEdit::textChanged,
-            this, &CommandDialog::setWorkingDirectory);
-
-    connect(mUi->treeView->selectionModel(), &QItemSelectionModel::currentChanged,
-            this, &CommandDialog::updateWidgets);
-
-    connect(mUi->exBrowseButton, &QPushButton::clicked,
-            this, &CommandDialog::browseExecutable);
-
-    connect(mUi->wdBrowseButton, &QPushButton::clicked,
-            this, &CommandDialog::browseWorkingDirectory);
 }
 
 CommandDialog::~CommandDialog()
@@ -93,103 +62,14 @@ CommandDialog::~CommandDialog()
     delete mUi;
 }
 
-const QVector<Command> &CommandDialog::commands() const
+const QVector<Command> &CommandDialog::globalCommands() const
 {
-    return mModel->commands();
+    return mGlobalCommandsEdit->commands();
 }
 
-void CommandDialog::setShortcut(const QKeySequence &keySequence)
+const QVector<Command> &CommandDialog::projectCommands() const
 {
-    const QModelIndex &current = mUi->treeView->currentIndex();
-    if (current.row() < mModel->rowCount())
-        mModel->setShortcut(current, keySequence);
-}
-
-void CommandDialog::setSaveBeforeExecute(int state)
-{
-    const QModelIndex &current = mUi->treeView->currentIndex();
-    if (current.row() < mModel->rowCount())
-        mModel->setSaveBeforeExecute(current, state);
-}
-
-void CommandDialog::setShowOutput(int state)
-{
-    const QModelIndex &current = mUi->treeView->currentIndex();
-    if (current.row() < mModel->rowCount())
-        mModel->setShowOutput(current, state);
-}
-
-
-void CommandDialog::setExecutable(const QString &text)
-{
-    const QModelIndex &current = mUi->treeView->currentIndex();
-    if (current.row() < mModel->rowCount())
-        mModel->setExecutable(current, text);
-}
-
-void CommandDialog::setArguments(const QString &text)
-{
-    const QModelIndex &current = mUi->treeView->currentIndex();
-    if (current.row() < mModel->rowCount())
-        mModel->setArguments(current, text);
-}
-
-void CommandDialog::setWorkingDirectory(const QString &text)
-{
-    const QModelIndex &current = mUi->treeView->currentIndex();
-    if (current.row() < mModel->rowCount())
-        mModel->setWorkingDirectory(current, text);
-}
-
-void CommandDialog::updateWidgets(const QModelIndex &current)
-{
-    bool enable = (current.row() < mModel->rowCount() - 1);
-
-    mUi->saveBox->setEnabled(enable);
-    mUi->executableEdit->setEnabled(enable);
-    mUi->argumentsEdit->setEnabled(enable);
-    mUi->workingDirectoryEdit->setEnabled(enable);
-    mUi->exBrowseButton->setEnabled(enable);
-    mUi->wdBrowseButton->setEnabled(enable);
-    mUi->keySequenceEdit->setEnabled(enable);
-    mUi->clearButton->setEnabled(enable);
-    mUi->outputBox->setEnabled(enable);
-
-    if (enable) {
-        const Command command = mModel->command(current);
-        mUi->executableEdit->setText(command.executable);
-        mUi->argumentsEdit->setText(command.arguments);
-        mUi->workingDirectoryEdit->setText(command.workingDirectory);
-        mUi->keySequenceEdit->setKeySequence(command.shortcut);
-        mUi->saveBox->setChecked(command.saveBeforeExecute);
-        mUi->outputBox->setChecked(command.showOutput);
-    } else {
-        mUi->executableEdit->clear();
-        mUi->argumentsEdit->clear();
-        mUi->workingDirectoryEdit->clear();
-        mUi->keySequenceEdit->clear();
-    }
-}
-
-void CommandDialog::browseExecutable()
-{
-    QString caption = tr("Select Executable");
-    QString dir = QStandardPaths::writableLocation(QStandardPaths::ApplicationsLocation);
-    QString executableName = QFileDialog::getOpenFileName(this, caption, dir);
-
-    if (!executableName.isEmpty())
-        mUi->executableEdit->setText(executableName);
-}
-
-void CommandDialog::browseWorkingDirectory()
-{
-    QString caption = tr("Select Working Directory");
-    QString dir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-    QString workingDirectoryName = QFileDialog::getExistingDirectory(this, caption, dir,
-                            QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
-
-    if (!workingDirectoryName.isEmpty())
-        mUi->workingDirectoryEdit->setText(workingDirectoryName);
+    return mProjectCommandsEdit->commands();
 }
 
 
@@ -239,11 +119,8 @@ void CommandTreeView::rowsAboutToBeRemoved(const QModelIndex &parent, int start,
         return;
 
     int selectedRow = currentIndex().row();
-    if (selectedRow >= start && selectedRow <= end && end < model()->rowCount() - 1) {
-        selectionModel()->select(model()->index(end + 1, 0),
-                                 QItemSelectionModel::ClearAndSelect |
-                                 QItemSelectionModel::Rows);
-    }
+    if (selectedRow >= start && selectedRow <= end && end < model()->rowCount() - 1)
+        setCurrentIndex(model()->index(end + 1, 0));
 
     QTreeView::rowsAboutToBeRemoved(parent, start, end);
 }
