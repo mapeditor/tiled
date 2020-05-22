@@ -32,42 +32,42 @@
 #include <QAction>
 #include <QDir>
 #include <QMessageBox>
+#include <QProcess>
 #include <QStandardPaths>
 #include <QUndoStack>
 
 using namespace Tiled;
 
-QString Command::finalWorkingDirectory() const
+namespace Tiled {
+
+class CommandProcess : public QProcess
 {
-    QString finalWorkingDirectory = workingDirectory;
+    Q_OBJECT
 
-    finalWorkingDirectory = replaceVariables(finalWorkingDirectory, false);
+public:
+    CommandProcess(const Command &command, bool inTerminal = false, bool showOutput = true);
 
-    QString finalExecutable = replaceVariables(executable);
-    QFileInfo mFile(finalExecutable);
+private:
+    void consoleOutput();
+    void consoleError();
+    void handleProcessError(QProcess::ProcessError);
 
-    if (!mFile.exists())
-        mFile = QFileInfo(QStandardPaths::findExecutable(finalExecutable));
+    void reportErrorAndDelete(const QString &);
 
-    finalWorkingDirectory.replace(QLatin1String("%executablepath"),
-                                  mFile.absolutePath());
+    QString mName;
+    QString mFinalCommand;
 
-    return finalWorkingDirectory;
-}
+#ifdef Q_OS_MAC
+    QTemporaryFile mFile;
+#endif
+};
 
-QString Command::finalCommand() const
-{
-    QString finalCommand = QString(QLatin1String("%1 %2")).arg(executable, arguments);
 
-    return replaceVariables(finalCommand);
-}
-
-QString Command::replaceVariables(const QString &string, bool quoteValues) const
+static QString replaceVariables(const QString &string, bool quoteValues = true)
 {
     QString finalString = string;
-
-    QString replaceString = (quoteValues) ? QString(QLatin1String("\"%1\"")) :
-                                            QString(QLatin1String("%1"));
+    QString replaceString = quoteValues ? QString(QLatin1String("\"%1\"")) :
+                                          QString(QLatin1String("%1"));
 
     // Perform variable replacement
     if (Document *document = DocumentManager::instance()->currentDocument()) {
@@ -101,6 +101,37 @@ QString Command::replaceVariables(const QString &string, bool quoteValues) const
     return finalString;
 }
 
+} // namespace Tiled
+
+
+QString Command::finalWorkingDirectory() const
+{
+    QString finalWorkingDirectory = replaceVariables(workingDirectory, false);
+    QString finalExecutable = replaceVariables(executable);
+    QFileInfo mFile(finalExecutable);
+
+    if (!mFile.exists())
+        mFile = QFileInfo(QStandardPaths::findExecutable(finalExecutable));
+
+    finalWorkingDirectory.replace(QLatin1String("%executablepath"),
+                                  mFile.absolutePath());
+
+    return finalWorkingDirectory;
+}
+
+/**
+ * Returns the final command with replaced tokens.
+ */
+QString Command::finalCommand() const
+{
+    QString finalCommand = QString(QLatin1String("%1 %2")).arg(executable, arguments);
+    return replaceVariables(finalCommand);
+}
+
+/**
+ * Executes the command in the operating system shell or terminal
+ * application.
+ */
 void Command::execute(bool inTerminal) const
 {
     if (saveBeforeExecute) {
@@ -117,6 +148,9 @@ void Command::execute(bool inTerminal) const
     new CommandProcess(*this, inTerminal, showOutput);
 }
 
+/**
+ * Stores this command in a QVariant.
+ */
 QVariant Command::toQVariant() const
 {
     return QVariantHash {
@@ -131,6 +165,9 @@ QVariant Command::toQVariant() const
     };
 }
 
+/**
+ * Generates a command from a QVariant.
+ */
 Command Command::fromQVariant(const QVariant &variant)
 {
     const auto hash = variant.toHash();
@@ -169,7 +206,6 @@ CommandProcess::CommandProcess(const Command &command, bool inTerminal, bool sho
     : QProcess(DocumentManager::instance())
     , mName(command.name)
     , mFinalCommand(command.finalCommand())
-    , mFinalWorkingDirectory(command.finalWorkingDirectory())
 #ifdef Q_OS_MAC
     , mFile(QDir::tempPath() + QLatin1String("/tiledXXXXXX.command"))
 #endif
@@ -236,8 +272,9 @@ CommandProcess::CommandProcess(const Command &command, bool inTerminal, bool sho
         connect(this, &QProcess::readyReadStandardOutput, this, &CommandProcess::consoleOutput);
     }
 
-    if (!mFinalWorkingDirectory.trimmed().isEmpty())
-        setWorkingDirectory(mFinalWorkingDirectory);
+    const QString finalWorkingDirectory = command.finalWorkingDirectory();
+    if (!finalWorkingDirectory.trimmed().isEmpty())
+        setWorkingDirectory(finalWorkingDirectory);
 
     start(mFinalCommand);
 }
@@ -283,3 +320,5 @@ void CommandProcess::reportErrorAndDelete(const QString &error)
     // Make sure this object gets deleted if the process failed to start
     deleteLater();
 }
+
+#include "command.moc"

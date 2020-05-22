@@ -21,7 +21,6 @@
 #include "scriptmodule.h"
 
 #include "actionmanager.h"
-#include "commanddatamodel.h"
 #include "commandmanager.h"
 #include "editabletileset.h"
 #include "issuesmodel.h"
@@ -461,9 +460,9 @@ void ScriptModule::trigger(const QByteArray &actionName) const
 
 void ScriptModule::executeCommand(const QString &name, bool inTerminal) const
 {
-    auto commandDataModel = CommandManager::instance()->commandDataModel();
+    const auto commands = CommandManager::instance()->commands();
 
-    for (const Command &command : commandDataModel->allCommands()) {
+    for (const Command &command : commands) {
         if (command.name == name) {
             command.execute(inTerminal);
             return;

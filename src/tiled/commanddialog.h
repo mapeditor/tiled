@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include "command.h"
+
 #include <QDialog>
 #include <QTreeView>
 
@@ -36,36 +38,27 @@ class CommandDialog : public QDialog
     Q_OBJECT
 
 public:
-    CommandDialog(QWidget *parent = nullptr);
+    CommandDialog(const QVector<Command> &commands, QWidget *parent = nullptr);
     ~CommandDialog();
 
-    /**
-      * Saves the changes to the users preferences.
-      * Automatically called when the dialog is closed.
-      */
-    void closeEvent(QCloseEvent *event) override;
+    const QVector<Command> &commands() const;
 
 public slots:
     void setShortcut(const QKeySequence &keySequence);
-
     void setSaveBeforeExecute(int state);
-
     void setShowOutput(int state);
-
     void setExecutable(const QString &text);
-
     void setArguments(const QString &text);
-
     void setWorkingDirectory(const QString &text);
 
-    void updateWidgets(const QModelIndex &current, const QModelIndex&);
+    void updateWidgets(const QModelIndex &current);
 
     void browseExecutable();
-
     void browseWorkingDirectory();
 
 private:
     Ui::CommandDialog *mUi;
+    CommandDataModel *mModel;
 };
 
 class CommandTreeView : public QTreeView
@@ -75,29 +68,18 @@ class CommandTreeView : public QTreeView
 public:
     CommandTreeView(QWidget *parent);
 
-    /**
-      * Returns the model used by this view in CommandDataMode form.
-      */
-    CommandDataModel *model() const { return mModel; }
+    void setModel(QAbstractItemModel *model) override;
+    CommandDataModel *model() const;
 
 protected:
-    /**
-      * Displays a context menu for the item at <i>event</i>'s position.
-      */
     void contextMenuEvent(QContextMenuEvent *event) override;
 
+    void rowsAboutToBeRemoved(const QModelIndex &parent, int start, int end) override;
+
 private:
-    /**
-      * Fixes the selection after rows have been removed.
-      */
     void handleRowsRemoved(const QModelIndex &parent, int start, int end);
 
-    /**
-      * Gets the currently selected rows and tells the model to delete them.
-      */
     void removeSelectedCommands();
-
-    CommandDataModel *mModel;
 };
 
 } // namespace Tiled

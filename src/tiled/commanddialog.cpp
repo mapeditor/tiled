@@ -34,15 +34,27 @@
 
 using namespace Tiled;
 
-CommandDialog::CommandDialog(QWidget *parent)
+CommandDialog::CommandDialog(const QVector<Command> &commands, QWidget *parent)
     : QDialog(parent)
     , mUi(new Ui::CommandDialog)
+    , mModel(new CommandDataModel(this))
 {
     mUi->setupUi(this);
     resize(Utils::dpiScaled(size()));
 #if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 #endif
+
+    mModel->setCommands(commands);
+    mUi->treeView->setModel(mModel);
+
+    // Setup resizing so the command column stretches
+    QHeaderView *h = mUi->treeView->header();
+    h->resizeSection(0, Utils::dpiScaled(200));
+    h->setStretchLastSection(false);
+    h->setSectionResizeMode(CommandDataModel::NameColumn, QHeaderView::Stretch);
+    h->setSectionResizeMode(CommandDataModel::ShortcutColumn, QHeaderView::Fixed);
+    h->setSectionResizeMode(CommandDataModel::EnabledColumn, QHeaderView::ResizeToContents);
 
     setWindowTitle(tr("Edit Commands"));
     Utils::restoreGeometry(this);
@@ -81,61 +93,57 @@ CommandDialog::~CommandDialog()
     delete mUi;
 }
 
-void CommandDialog::closeEvent(QCloseEvent *event)
+const QVector<Command> &CommandDialog::commands() const
 {
-    QDialog::closeEvent(event);
-
-    mUi->treeView->model()->commit();
-
-    CommandManager::instance()->updateActions();
+    return mModel->commands();
 }
 
 void CommandDialog::setShortcut(const QKeySequence &keySequence)
 {
     const QModelIndex &current = mUi->treeView->currentIndex();
-    if (current.row() < mUi->treeView->model()->rowCount())
-        mUi->treeView->model()->setShortcut(current, keySequence);
+    if (current.row() < mModel->rowCount())
+        mModel->setShortcut(current, keySequence);
 }
 
 void CommandDialog::setSaveBeforeExecute(int state)
 {
     const QModelIndex &current = mUi->treeView->currentIndex();
-    if (current.row() < mUi->treeView->model()->rowCount())
-        mUi->treeView->model()->setSaveBeforeExecute(current, state);
+    if (current.row() < mModel->rowCount())
+        mModel->setSaveBeforeExecute(current, state);
 }
 
 void CommandDialog::setShowOutput(int state)
 {
     const QModelIndex &current = mUi->treeView->currentIndex();
-    if (current.row() < mUi->treeView->model()->rowCount())
-        mUi->treeView->model()->setShowOutput(current, state);
+    if (current.row() < mModel->rowCount())
+        mModel->setShowOutput(current, state);
 }
 
 
 void CommandDialog::setExecutable(const QString &text)
 {
     const QModelIndex &current = mUi->treeView->currentIndex();
-    if (current.row() < mUi->treeView->model()->rowCount())
-        mUi->treeView->model()->setExecutable(current, text);
+    if (current.row() < mModel->rowCount())
+        mModel->setExecutable(current, text);
 }
 
 void CommandDialog::setArguments(const QString &text)
 {
     const QModelIndex &current = mUi->treeView->currentIndex();
-    if (current.row() < mUi->treeView->model()->rowCount())
-        mUi->treeView->model()->setArguments(current, text);
+    if (current.row() < mModel->rowCount())
+        mModel->setArguments(current, text);
 }
 
 void CommandDialog::setWorkingDirectory(const QString &text)
 {
     const QModelIndex &current = mUi->treeView->currentIndex();
-    if (current.row() < mUi->treeView->model()->rowCount())
-        mUi->treeView->model()->setWorkingDirectory(current, text);
+    if (current.row() < mModel->rowCount())
+        mModel->setWorkingDirectory(current, text);
 }
 
-void CommandDialog::updateWidgets(const QModelIndex &current, const QModelIndex &)
+void CommandDialog::updateWidgets(const QModelIndex &current)
 {
-    bool enable = (current.row() < mUi->treeView->model()->rowCount() - 1);
+    bool enable = (current.row() < mModel->rowCount() - 1);
 
     mUi->saveBox->setEnabled(enable);
     mUi->executableEdit->setEnabled(enable);
@@ -148,7 +156,7 @@ void CommandDialog::updateWidgets(const QModelIndex &current, const QModelIndex 
     mUi->outputBox->setEnabled(enable);
 
     if (enable) {
-        const Command command = mUi->treeView->model()->command(current);
+        const Command command = mModel->command(current);
         mUi->executableEdit->setText(command.executable);
         mUi->argumentsEdit->setText(command.arguments);
         mUi->workingDirectoryEdit->setText(command.workingDirectory);
@@ -184,57 +192,67 @@ void CommandDialog::browseWorkingDirectory()
         mUi->workingDirectoryEdit->setText(workingDirectoryName);
 }
 
+
 CommandTreeView::CommandTreeView(QWidget *parent)
     : QTreeView(parent)
-    , mModel(CommandManager::instance()->commandDataModel())
 {
-    setModel(mModel);
     setRootIsDecorated(false);
-
-    // Setup resizing so the command column stretches
-    setColumnWidth(0, 200);
-    QHeaderView *h = header();
-    h->setStretchLastSection(false);
-    h->setSectionResizeMode(CommandDataModel::NameColumn, QHeaderView::Stretch);
-    h->setSectionResizeMode(CommandDataModel::ShortcutColumn, QHeaderView::Fixed);
-    h->setSectionResizeMode(CommandDataModel::EnabledColumn,
-                            QHeaderView::ResizeToContents);
 
     // Allow deletion via keyboard
     QShortcut *d = new QShortcut(QKeySequence::Delete, this);
     d->setContext(Qt::WidgetShortcut);
     connect(d, &QShortcut::activated, this, &CommandTreeView::removeSelectedCommands);
-
-    connect(mModel, &QAbstractItemModel::rowsRemoved,
-            this, &CommandTreeView::handleRowsRemoved);
 }
 
+void CommandTreeView::setModel(QAbstractItemModel *model)
+{
+    Q_ASSERT(qobject_cast<CommandDataModel*>(model) != nullptr);
+    QTreeView::setModel(model);
+}
+
+/**
+ * Returns the model used by this view casted to CommandDataModel.
+ */
+CommandDataModel *CommandTreeView::model() const
+{
+     return static_cast<CommandDataModel*>(QTreeView::model());
+}
+
+/**
+ * Displays a context menu for the item at <i>event</i>'s position.
+ */
 void CommandTreeView::contextMenuEvent(QContextMenuEvent *event)
 {
-    QModelIndex index = indexAt(event->pos());
+    const QModelIndex index = indexAt(event->pos());
 
     // Generate a run a menu for the index
-    if (QMenu *menu = mModel->contextMenu(this, index))
+    if (QMenu *menu = model()->contextMenu(this, index))
         menu->exec(event->globalPos());
 }
 
-void CommandTreeView::handleRowsRemoved(const QModelIndex &parent, int, int)
+/**
+ * Brings the selection to safety before rows will get removed.
+ */
+void CommandTreeView::rowsAboutToBeRemoved(const QModelIndex &parent, int start, int end)
 {
     if (parent.isValid())
         return;
 
-    // Reselect the same row index of the removed row
-    QItemSelectionModel *sModel = selectionModel();
-    QModelIndex index = sModel->currentIndex();
+    int selectedRow = currentIndex().row();
+    if (selectedRow >= start && selectedRow <= end && end < model()->rowCount() - 1) {
+        selectionModel()->select(model()->index(end + 1, 0),
+                                 QItemSelectionModel::ClearAndSelect |
+                                 QItemSelectionModel::Rows);
+    }
 
-    sModel->select(index.sibling(index.row() + 1,index.column()),
-                   QItemSelectionModel::ClearAndSelect |
-                   QItemSelectionModel::Rows);
+    QTreeView::rowsAboutToBeRemoved(parent, start, end);
 }
 
+/**
+ * Gets the currently selected rows and tells the model to delete them.
+ */
 void CommandTreeView::removeSelectedCommands()
 {
-    QItemSelectionModel *selection = selectionModel();
-    const QModelIndexList indices = selection->selectedRows();
-    mModel->removeRows(indices);
+    const QModelIndexList indices = selectionModel()->selectedRows();
+    model()->removeRows(indices);
 }

@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include "command.h"
+
 #include <QObject>
 
 class QAction;
@@ -33,44 +35,35 @@ class CommandManager : public QObject
 {
     Q_OBJECT
 
+    CommandManager();
+    ~CommandManager() override;
+
 public:
     static CommandManager *instance();
 
-    /**
-     * Returns the CommandDataModel instance stored
-     */
-    CommandDataModel *commandDataModel();
+    const Command *firstEnabledCommand() const;
 
-    /**
-     * Registers a new QMenu with the CommandManager
-     */
+    QVector<Command> commands() const;
+
     void registerMenu(QMenu *menu);
-
-    void updateActions();
 
     void retranslateUi();
 
 public slots:
-    /**
-     * Displays the dialog to edit the commands
-     */
     void showDialog();
 
 private:
     Q_DISABLE_COPY(CommandManager)
 
-    CommandManager();
-    ~CommandManager() override;
+    void commit();
 
-    /**
-     * Populates all the menus registered in CommandManager
-     */
-    void populateMenus() const;
+    void updateActions();
 
     CommandDataModel *mModel;
+    QVector<Command> mCommands;
     QList<QMenu*> mMenus;
     QList<QAction*> mActions;
-    QAction *mEditCommands;
+    QAction *mEditCommandsAction = nullptr;
 };
 
 } // namespace Tiled
