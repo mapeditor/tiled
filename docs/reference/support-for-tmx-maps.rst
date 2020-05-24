@@ -117,6 +117,7 @@ Java
 
 -  A library for loading TMX files is included with Tiled at
    `util/java/libtiled-java <https://github.com/bjorn/tiled/tree/master/util/java/libtiled-java>`__.
+-  `TiledReader <http://www.alexheyman.org/tiledreader/>`__ is a simple TMX reader that conveys the information in Tiled files via a hand-crafted class structure, but does not load image data.
 -  Android-Specific:
 
    -  `AndroidTMXLoader <https://github.com/davidmi/Android-TMX-Loader>`__
@@ -192,6 +193,11 @@ Castle Game Engine (Object Pascal)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 -  `Castle Game Engine <https://castle-engine.io/>`__ has native support for Tiled maps (see the `CastleTiledMap unit <https://castle-engine.io/apidoc-unstable/html/CastleTiledMap.html>`__)
+
+Cell2D
+~~~~~~
+
+-  The Java library `Cell2D <https://www.cell2d.org/>`__ supports Tiled maps via a pipeline that starts with `TiledReader <http://www.alexheyman.org/tiledreader/>`__, but currently has more built-in support for orthogonal maps than for other orientations.
 
 cocos2d
 ~~~~~~~
