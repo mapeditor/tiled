@@ -24,6 +24,7 @@
 #include "command.h"
 
 #include <QObject>
+#include <QVector>
 
 class QAction;
 class QMenu;
