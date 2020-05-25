@@ -24,6 +24,7 @@
 
 #include <QDateTime>
 #include <QStringList>
+#include <QVector>
 
 namespace Tiled {
 
