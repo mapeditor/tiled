@@ -27,6 +27,8 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
+#include "qtcompat_p.h"
+
 namespace Tiled {
 
 static QString relative(const QDir &dir, const QString &fileName)
