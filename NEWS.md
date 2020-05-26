@@ -1,4 +1,4 @@
-### Tiled 1.3.5 (26 Mai 2020)
+### Tiled 1.3.5 (27 May 2020)
 
 * Fixed initialization and restoring of map view (#2779)
 * Fixed skewed tile terrain/Wang overlays for non-square tiles (#1943)
@@ -8,6 +8,7 @@
 * Scripting: Fixed issue when closing/comitting BinaryFile (#2801)
 * Scripting: Fixed "Safe writing of files" when writing with TextFile
 * Updated Qt to 5.12.8 on all platforms except Windows XP and snap releases
+* Small translation updates to Bulgarian, French and Portuguese
 
 ### Tiled 1.3.4 (14 April 2020)
 
