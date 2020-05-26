@@ -74,6 +74,9 @@ CommandManager::CommandManager()
     }
 
     updateActions();
+
+    connect(MainWindow::instance(), &MainWindow::projectChanged,
+            this, &CommandManager::updateActions);
 }
 
 CommandManager::~CommandManager()

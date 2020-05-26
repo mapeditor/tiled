@@ -114,6 +114,9 @@ ScriptManager::ScriptManager(QObject *parent)
     connect(&mWatcher, &FileSystemWatcher::pathsChanged,
             this, &ScriptManager::scriptFilesChanged);
 
+    connect(MainWindow::instance(), &MainWindow::projectChanged,
+            this, &ScriptManager::refreshExtensionsPaths);
+
     const QString configLocation { Preferences::configLocation() };
     if (!configLocation.isEmpty()) {
         mExtensionsPath = QDir{configLocation}.filePath(QStringLiteral("extensions"));
@@ -126,7 +129,9 @@ ScriptManager::ScriptManager(QObject *parent)
 void ScriptManager::ensureInitialized()
 {
     if (!mEngine) {
-        refreshExtensionsPaths();
+        if (mExtensionsPaths.isEmpty())
+            refreshExtensionsPaths();
+
         initialize();
     }
 }

@@ -99,6 +99,9 @@ public:
 
     static MainWindow *instance();
 
+signals:
+    void projectChanged();
+
 protected:
     bool event(QEvent *event) override;
 

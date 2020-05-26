@@ -970,6 +970,8 @@ void MainWindow::initializeSession()
         mProjectDock->setProject(std::move(project));
         updateWindowTitle();
         updateActions();
+
+        emit projectChanged();
     }
 
     // Script manager initialization is delayed until after the project has
@@ -1415,7 +1417,7 @@ void MainWindow::switchProject(Project project)
     prefs->setObjectTypesFile(project.mObjectTypesFile);
     mProjectDock->setProject(std::move(project));
 
-    ScriptManager::instance().refreshExtensionsPaths();
+    emit projectChanged();
 
     restoreSession();
     updateWindowTitle();
