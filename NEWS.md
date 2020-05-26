@@ -7,6 +7,7 @@
 * Fixed Wang Sets toggle to also appear in the Tileset menu
 * Scripting: Fixed issue when closing/comitting BinaryFile (#2801)
 * Scripting: Fixed "Safe writing of files" when writing with TextFile
+* macOS and Linux: Updated Qt to 5.12.8
 
 ### Tiled 1.3.4 (14 April 2020)
 
