@@ -17,7 +17,7 @@ Changelog
 *   Fixed link color on dark theme
 *   Fixed small issue when right-clicking embedded tileset tab
 *   Fixed Wang Sets toggle to also appear in the Tileset menu
-*   Scripting: Fixed issue when closing/comitting BinaryFile ([#2801](https://github.com/bjorn/tiled/issues/2801))
+*   Scripting: Fixed issue when closing/committing BinaryFile ([#2801](https://github.com/bjorn/tiled/issues/2801))
 *   Scripting: Fixed "Safe writing of files" when writing with TextFile
 *   Updated Qt to 5.12.8 on all platforms
 *   Small translation updates to Bulgarian, French and Portuguese
