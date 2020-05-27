@@ -11,7 +11,7 @@
     <message>
         <location line="+96"/>
         <source>Donate ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>Doar ↗</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -50,7 +50,7 @@
     <message>
         <location filename="../src/tiled/main.cpp" line="+398"/>
         <source>Export syntax is --export-map [format] &lt;source&gt; &lt;target&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">A sintaxe de exportação é --export-map [formato] &lt;origem&gt; &lt;alvo&gt;</translation>
     </message>
     <message>
         <location line="-244"/>
@@ -80,7 +80,7 @@
     <message>
         <location line="+9"/>
         <source>Export syntax is --export-tileset [format] &lt;source&gt; &lt;target&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">A sintaxe de exportação é --export-tileset [formato] &lt;origem&gt; &lt;alvo&gt;</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -90,7 +90,7 @@
     <message>
         <location line="+12"/>
         <source>Failed to export tileset to target file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Falha ao exportar tileset para o arquivo de destino.</translation>
     </message>
 </context>
 <context>
@@ -129,7 +129,7 @@
     <message>
         <location line="+20"/>
         <source>Arguments:</source>
-        <translation type="unfinished"></translation>
+        <translation>Argumentos:</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -139,7 +139,7 @@
     <message>
         <location line="+17"/>
         <source>Show output in Console view</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mostrar saída no Console</translation>
     </message>
     <message>
         <location line="+33"/>
@@ -167,27 +167,27 @@
     <message>
         <location line="+5"/>
         <source>Export the specified map file to target</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar o arquivo de mapa especificado para o destino</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export the specified tileset file to target</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar o arquivo de tileset especificado para o destino</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Minimize the exported file by omitting unnecessary whitespace</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimizar o arquivo exportado omitindo espaços em branco desnecessários</translation>
     </message>
     <message>
         <location line="+70"/>
         <source>Map export formats:</source>
-        <translation type="unfinished"></translation>
+        <translation>Formatos de exportação de mapa:</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Tileset export formats:</source>
-        <translation type="unfinished"></translation>
+        <translation>Formatos de exportação de tileset:</translation>
     </message>
     <message>
         <location line="-102"/>
@@ -197,17 +197,17 @@
     <message>
         <location line="+5"/>
         <source>Export the map with tilesets embedded</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar o mapa com tilesets embutidos</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export the map or tileset with template instances detached</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Exportar o mapa ou tileset com instâncias de modelo desanexados</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export the map or tileset with types and properties resolved</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Exportar o mapa ou tileset com tipos e propriedades resolvidas</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -271,7 +271,7 @@
     <message>
         <location filename="../src/plugins/defoldcollection/defoldcollectionplugin.cpp" line="+137"/>
         <source>Defold collection (*.collection)</source>
-        <translation type="unfinished"></translation>
+        <translation>Coleção Defold (*.collection)</translation>
     </message>
 </context>
 <context>
@@ -289,17 +289,18 @@
     <message>
         <location line="+25"/>
         <source>Visit https://www.mapeditor.org/donate ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>Visite
+https://www.mapeditor.org/donate ↗</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>I&apos;m already a supporter!</source>
-        <translation type="unfinished">Já sou um apoiante!</translation>
+        <translation>Já sou um apoiador!</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Maybe later</source>
-        <translation type="unfinished">Talvez mais tarde</translation>
+        <translation>Talvez mais tarde</translation>
     </message>
 </context>
 <context>
@@ -2241,7 +2242,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+4"/>
         <source>Invalid size</source>
-        <translation type="unfinished"></translation>
+        <translation>Tamanho inválido</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -2251,50 +2252,50 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+143"/>
         <source>Not a layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Não é uma camada</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Layer not from this map</source>
-        <translation type="unfinished"></translation>
+        <translation>Camada não é deste mapa</translation>
     </message>
     <message>
         <location line="+21"/>
         <location filename="../src/tiled/tilecollisiondock.cpp" line="+315"/>
         <source>Not an object</source>
-        <translation type="unfinished"></translation>
+        <translation>Não é um objeto</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Object not from this map</source>
-        <translation type="unfinished"></translation>
+        <translation>Objeto não é deste mapa</translation>
     </message>
     <message>
         <location filename="../src/tiled/editablemapobject.cpp" line="+197"/>
         <location filename="../src/tiled/editabletile.cpp" line="+30"/>
         <source>Array expected</source>
-        <translation type="unfinished"></translation>
+        <translation>Um Array foi esperado</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Invalid coordinate</source>
-        <translation type="unfinished"></translation>
+        <translation>Coordenadas inválidas</translation>
     </message>
     <message>
         <location filename="../src/tiled/editableobject.cpp" line="+77"/>
         <source>Asset is read-only</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Asset é somente leitura</translation>
     </message>
     <message>
         <location filename="../src/tiled/editableobjectgroup.cpp" line="-10"/>
         <location filename="../src/tiled/tilecollisiondock.cpp" line="+16"/>
         <source>Object not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Objeto não encontrado</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Object already part of an object layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Objeto já faz parte de uma camada de objeto</translation>
     </message>
     <message>
         <location filename="../src/tiled/editableterrain.cpp" line="+86"/>

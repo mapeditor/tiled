@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: Tiled 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-12-21 14:31+0100\n"
-"PO-Revision-Date: 2019-06-27 21:01+0000\n"
-"Last-Translator: Calvin M.T. <pro@calvinmt.com>\n"
+"PO-Revision-Date: 2020-04-28 09:11+0000\n"
+"Last-Translator: Thomas Herbelin <herbelin.thomas@gmail.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/tiled/reference/"
 "fr/>\n"
 "Language: fr\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 3.7.1-dev\n"
+"X-Generator: Weblate 4.0.2\n"
 "Generated-By: Babel 2.5.1\n"
 
 #: ../../reference/json-map-format.rst:2
@@ -309,7 +309,7 @@ msgstr ""
 
 #: ../../reference/json-map-format.rst:84
 msgid "data"
-msgstr ""
+msgstr "donnée"
 
 #: ../../reference/json-map-format.rst:84
 msgid "Array of GIDs. ``tilelayer`` only."
@@ -336,23 +336,23 @@ msgstr ""
 #: ../../reference/json-map-format.rst:394
 #: ../../reference/json-map-format.rst:495
 msgid "name"
-msgstr ""
+msgstr "nom"
 
 #: ../../reference/json-map-format.rst:92
 msgid "Name assigned to this layer"
-msgstr ""
+msgstr "Nom assigné à cette couche"
 
 #: ../../reference/json-map-format.rst:94
 msgid "objects"
-msgstr ""
+msgstr "objets"
 
 #: ../../reference/json-map-format.rst:94
 msgid "Array of :ref:`objects <json-object>`. ``objectgroup`` only."
-msgstr ""
+msgstr "Tableau de :ref:`objects <json-object>`. Uniquement ``objectgroup``."
 
 #: ../../reference/json-map-format.rst:96
 msgid "opacity"
-msgstr ""
+msgstr "opacité"
 
 #: ../../reference/json-map-format.rst:96
 #: ../../reference/json-map-format.rst:180
@@ -361,7 +361,7 @@ msgstr ""
 
 #: ../../reference/json-map-format.rst:96
 msgid "Value between 0 and 1"
-msgstr ""
+msgstr "Valeur comprise entre 0 et 1"
 
 #: ../../reference/json-map-format.rst:98
 msgid "string key-value pairs."
@@ -374,7 +374,7 @@ msgstr ""
 #: ../../reference/json-map-format.rst:102
 #: ../../reference/json-map-format.rst:186
 msgid "visible"
-msgstr ""
+msgstr "visible"
 
 #: ../../reference/json-map-format.rst:102
 msgid "Whether layer is shown or hidden in editor"
@@ -387,7 +387,7 @@ msgstr ""
 #: ../../reference/json-map-format.rst:106
 #: ../../reference/json-map-format.rst:190
 msgid "x"
-msgstr ""
+msgstr "x"
 
 #: ../../reference/json-map-format.rst:106
 msgid "Horizontal layer offset in tiles. Always 0."
@@ -396,7 +396,7 @@ msgstr ""
 #: ../../reference/json-map-format.rst:108
 #: ../../reference/json-map-format.rst:192
 msgid "y"
-msgstr ""
+msgstr "y"
 
 #: ../../reference/json-map-format.rst:108
 msgid "Vertical layer offset in tiles. Always 0."

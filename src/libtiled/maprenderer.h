@@ -33,6 +33,7 @@
 #include <functional>
 
 #include <QPainter>
+#include <QPainterPath>
 
 namespace Tiled {
 
@@ -61,7 +62,6 @@ class TILEDSHARED_EXPORT MapRenderer
 public:
     MapRenderer(const Map *map)
         : mMap(map)
-        , mFlags(nullptr)
         , mObjectLineWidth(2)
         , mPainterScale(1)
     {}
