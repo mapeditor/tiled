@@ -95,7 +95,7 @@
     <message>
         <location line="+14"/>
         <source>Project file &apos;%1&apos; not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Proje dosyası &apos;%1&apos; bulunamadı.</translation>
     </message>
 </context>
 <context>
@@ -103,7 +103,7 @@
     <message>
         <location filename="../src/tiled/commanddialog.ui" line="+14"/>
         <source>Edit Commands</source>
-        <translation type="unfinished">Komutları Düzenle</translation>
+        <translation>Komutları Düzenle</translation>
     </message>
     <message>
         <location line="+43"/>
@@ -219,48 +219,48 @@
     <message>
         <location filename="../src/tiled/commandsedit.ui" line="+14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Form</translation>
     </message>
     <message>
         <location line="+39"/>
         <source>Executable:</source>
-        <translation type="unfinished">Yürütülebilir:</translation>
+        <translation>Yürütülebilir:</translation>
     </message>
     <message>
         <location line="+14"/>
         <location line="+74"/>
         <source>Browse...</source>
-        <translation type="unfinished">Gözat...</translation>
+        <translation>Gözat...</translation>
     </message>
     <message>
         <location line="-61"/>
         <source>Shortcut:</source>
-        <translation type="unfinished">Kısayol:</translation>
+        <translation>Kısayol:</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Clear</source>
-        <translation type="unfinished">Temizle</translation>
+        <translation>Temizle</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>&amp;Save map before executing</source>
-        <translation type="unfinished">Yürütmeden önce haritayı &amp;kaydet</translation>
+        <translation>Yürütmeden önce haritayı &amp;kaydet</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Arguments:</source>
-        <translation type="unfinished">Argümanlar:</translation>
+        <translation>Argümanlar:</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Working Directory:</source>
-        <translation type="unfinished">Çalışma Dizini:</translation>
+        <translation>Çalışma Dizini:</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Show output in Console view</source>
-        <translation type="unfinished">Konsol görünümünde çıktıyı göster</translation>
+        <translation>Konsol görünümünde çıktıyı göster</translation>
     </message>
 </context>
 <context>
@@ -383,7 +383,7 @@
     <message>
         <location line="+7"/>
         <source>Draw object &amp;names</source>
-        <translation type="unfinished"></translation>
+        <translation>Nesne &amp;adlarını çiz</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -439,12 +439,12 @@
         <location line="+43"/>
         <location filename="../src/tiled/projectpropertiesdialog.cpp" line="+59"/>
         <source>Object Types files (*.xml *.json)</source>
-        <translation type="unfinished">Nesne Türleri dosyaları (*.xml *.json)</translation>
+        <translation>Nesne Türleri dosyaları (*.xml *.json)</translation>
     </message>
     <message>
         <location filename="../src/tiled/projectpropertiesdialog.cpp" line="+6"/>
         <source>Automapping Rules files (*.txt)</source>
-        <translation type="unfinished"></translation>
+        <translation>Automap Kural dosyaları (*.txt)</translation>
     </message>
 </context>
 <context>
@@ -625,7 +625,7 @@
     <message>
         <location line="+5"/>
         <source>Save World</source>
-        <translation type="unfinished"></translation>
+        <translation>Dünyayı Kaydet</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -640,12 +640,12 @@
     <message>
         <location line="+44"/>
         <source>&amp;Project</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Proje</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Recent Projects</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Son projeler</translation>
     </message>
     <message>
         <location line="+31"/>
@@ -745,7 +745,7 @@
     <message>
         <location line="+5"/>
         <source>New World...</source>
-        <translation type="unfinished"></translation>
+        <translation>Yeni Dünya...</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -755,73 +755,73 @@
     <message>
         <location line="+30"/>
         <source>&amp;Open Project...</source>
-        <translation type="unfinished"></translation>
+        <translation>Proje &amp;Aç...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Close Project</source>
-        <translation type="unfinished"></translation>
+        <translation>Projeyi &amp;Kapa</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Clear Recent Projects</source>
-        <translation type="unfinished"></translation>
+        <translation>Son Projeleri Temizle</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Add Folder to Project...</source>
-        <translation type="unfinished"></translation>
+        <translation>Projeye Klasör Ekle...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Save Project As...</source>
-        <translation type="unfinished"></translation>
+        <translation>Projeyi Farklı Kaydet...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Refresh Folders</source>
-        <translation type="unfinished"></translation>
+        <translation>Klasörleri Yenile</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Show Object &amp;References</source>
-        <translation type="unfinished"></translation>
+        <translation>Nesne &amp;Referanslarını Göster</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Reopen Closed File</source>
-        <translation type="unfinished"></translation>
+        <translation>Kapalı Dosyayı Aç</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+T</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+T</translation>
     </message>
     <message>
         <location line="+5"/>
         <location line="+3"/>
         <source>Move Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Haritayı Taşı</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+M</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+M</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Project &amp;Properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>Proje &amp;Özellikleri...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Open File in &amp;Project...</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosyayı &amp;Projede Aç...</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Ctrl+P</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+P</translation>
     </message>
     <message>
         <location line="-232"/>
@@ -1102,7 +1102,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="-26"/>
         <source>Unable to parse tile at (%1,%2) on layer &apos;%3&apos;: &quot;%4&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%3&apos; katmanı (%1,%2) üstündeki desen işlenemedi: &quot;%4&quot;</translation>
     </message>
     <message>
         <location line="+52"/>
@@ -1355,12 +1355,12 @@ Satır %1, sütun %2</translation>
     <message>
         <location filename="../src/tiled/objectrefdialog.ui" line="+14"/>
         <source>Edit Object Reference</source>
-        <translation type="unfinished"></translation>
+        <translation>Nesne Referansını Düzenle</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Filter</source>
-        <translation type="unfinished">Filtrele</translation>
+        <translation>Filtrele</translation>
     </message>
 </context>
 <context>
@@ -1401,32 +1401,32 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+24"/>
         <source>&amp;Import...</source>
-        <translation type="unfinished">&amp;İçe Aktar...</translation>
+        <translation>&amp;İçe Aktar...</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>&amp;Export...</source>
-        <translation type="unfinished">&amp;Dışa Aktar...</translation>
+        <translation>&amp;Dışa Aktar...</translation>
     </message>
     <message>
         <location filename="../src/tiled/objecttypeseditor.ui" line="+56"/>
         <source>Export...</source>
-        <translation type="unfinished"></translation>
+        <translation>Dışa Aktar...</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Export Object Types</source>
-        <translation type="unfinished">Nesne Türlerini Dışa Aktar</translation>
+        <translation>Nesne Türlerini Dışa Aktar</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Import...</source>
-        <translation type="unfinished"></translation>
+        <translation>İçe Aktar...</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Import Object Types</source>
-        <translation type="unfinished">Nesne Türlerini İçe Aktar</translation>
+        <translation>Nesne Türlerini İçe Aktar</translation>
     </message>
 </context>
 <context>
@@ -1527,7 +1527,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location filename="../src/tiled/propertybrowser.cpp" line="-1"/>
         <source>XML (deprecated)</source>
-        <translation type="unfinished"></translation>
+        <translation>XML (eski)</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -1650,7 +1650,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="-103"/>
         <source>Restore previous session on startup</source>
-        <translation type="unfinished"></translation>
+        <translation>Başlangıçta önceki oturumu geri yükle</translation>
     </message>
     <message>
         <location line="+51"/>
@@ -1756,7 +1756,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location filename="../src/tiled/projectpropertiesdialog.ui" line="+14"/>
         <source>Project Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Proje Özellikleri</translation>
     </message>
 </context>
 <context>
@@ -2351,7 +2351,7 @@ Satır %1, sütun %2</translation>
         <location line="+22"/>
         <location line="+8"/>
         <source>Undo system not available for this asset</source>
-        <translation type="unfinished"></translation>
+        <translation>Bu öge için geri-alma sistemi kullanılamaz</translation>
     </message>
     <message>
         <location filename="../src/tiled/editablegrouplayer.cpp" line="+45"/>
@@ -2521,7 +2521,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location filename="../src/tiled/scriptedfileformat.cpp" line="+102"/>
         <source>Invalid return value for &apos;write&apos; (string or undefined expected)</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;write&apos; için geçersiz dönüş değeri (dize veya tanımsız bekleniyor)</translation>
     </message>
     <message>
         <location line="+40"/>
@@ -2599,7 +2599,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+5"/>
         <source>Non-separator item without action</source>
-        <translation>Eylemi olmayan ayırıcı olmayan öge</translation>
+        <translation>Eylemi olmayan ayırıcı-olmayan öge</translation>
     </message>
     <message>
         <location line="+40"/>
@@ -2619,76 +2619,76 @@ Satır %1, sütun %2</translation>
     <message>
         <location filename="../src/tiled/scriptfile.cpp" line="+45"/>
         <source>BinaryFile constructor needs path of file to be opened.</source>
-        <translation type="unfinished"></translation>
+        <translation>BinaryFile oluşturucu için açılacak dosyanın yolu gereklidir.</translation>
     </message>
     <message>
         <location line="+18"/>
         <location line="+164"/>
         <source>Unable to open file &apos;%1&apos;: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1&apos; dosyası açılamadı: %2</translation>
     </message>
     <message>
         <location line="-122"/>
         <source>Could not resize &apos;%1&apos;: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1&apos; yeniden boyutlandırılamadı: %2</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Could not seek &apos;%1&apos;: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1&apos; aranamadı: %2</translation>
     </message>
     <message>
         <location line="+12"/>
         <location line="+15"/>
         <source>Could not read from &apos;%1&apos;: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1&apos; kaynağından okunamadı: %2</translation>
     </message>
     <message>
         <location line="+15"/>
         <location line="+19"/>
         <location line="+141"/>
         <source>Could not write to &apos;%1&apos;: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1&apos; kaynağına yazılamadı: %2</translation>
     </message>
     <message>
         <location line="-120"/>
         <source>Access to BinaryFile object that was already closed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kapatılmış olan BinaryFile nesnesine erişim.</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>TextFile constructor needs path of file to be opened.</source>
-        <translation type="unfinished"></translation>
+        <translation>TextFile oluşturucu için açılacak dosyanın yolu gereklidir.</translation>
     </message>
     <message>
         <location line="+132"/>
         <source>Access to TextFile object that was already closed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kapatılmış olan TextFile nesnesine erişim.</translation>
     </message>
     <message>
         <location filename="../src/tiled/scriptfileformatwrappers.cpp" line="+59"/>
         <source>File format doesn&apos;t support `read`</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosya biçimi `read` i desteklemiyor</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>File format doesn&apos;t support `write`</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosya biçimi `write` i desteklemiyor</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Error reading tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Desen seti okunamadı</translation>
     </message>
     <message>
         <location line="+35"/>
         <source>Error reading map</source>
-        <translation type="unfinished"></translation>
+        <translation>Harita okunamadı</translation>
     </message>
     <message>
         <location filename="../src/tiled/scriptmanager.cpp" line="+266"/>
         <source>Argument %1 is undefined or the wrong type</source>
-        <translation type="unfinished"></translation>
+        <translation>Argüman %1 tanımlı değil veya yanlış türde</translation>
     </message>
 </context>
 <context>
@@ -2843,14 +2843,16 @@ Satır %1, sütun %2</translation>
         <location line="-13"/>
         <source>Duplicate %n Object(s)</source>
         <translation>
-            <numerusform>Nesneyi Çoğalt</numerusform>
+            <numerusform>%n Nesneyi Çoğalt</numerusform>
+            <numerusform>%n Nesneyi Çoğalt</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+2"/>
         <source>Remove %n Object(s)</source>
         <translation>
-            <numerusform>Nesneyi Kaldır</numerusform>
+            <numerusform>%n Nesneyi Kaldır</numerusform>
+            <numerusform>%n Nesneyi Kaldır</numerusform>
         </translation>
     </message>
     <message>
@@ -2907,7 +2909,8 @@ Satır %1, sütun %2</translation>
         <location line="+6"/>
         <source>Move %n Object(s) to Layer</source>
         <translation>
-            <numerusform>Nesneyi Katmana Taşı</numerusform>
+            <numerusform>%n Nesneyi Katmana Taşı</numerusform>
+            <numerusform>%n Nesneyi Katmana Taşı</numerusform>
         </translation>
     </message>
     <message>
@@ -2952,54 +2955,54 @@ Satır %1, sütun %2</translation>
     <message>
         <location filename="../src/tiled/abstractworldtool.cpp" line="+198"/>
         <source>Add another map to the current world</source>
-        <translation type="unfinished"></translation>
+        <translation>Şu anki dünyaya başka bir harita ekle</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add the current map to a loaded world</source>
-        <translation type="unfinished"></translation>
+        <translation>Şu anki dünyayı, yüklü bir dünyaya ekle</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove the current map from the current world</source>
-        <translation type="unfinished"></translation>
+        <translation>Şu anki haritayı şu anki dünyadan kaldır</translation>
     </message>
     <message>
         <location line="+72"/>
         <source>Add a Map to World &quot;%2&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>&quot;%2&quot; Dünyasına Bir Harita Ekle</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Remove &quot;%1&quot; from World &quot;%2&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>&quot;%2&quot; Dünyasından &quot;%1&quot; Ögesini Kaldır</translation>
     </message>
     <message>
         <location line="+10"/>
         <location line="+102"/>
         <source>Add &quot;%1&quot; to World &quot;%2&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>&quot;%2&quot; Dünyasına &quot;%1&quot; Ögesini Ekle</translation>
     </message>
     <message>
         <location line="-74"/>
         <source>All Files (*)</source>
-        <translation type="unfinished">Tüm Dosyalar (*)</translation>
+        <translation>Tüm Dosyalar (*)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Load Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Harita Yükle</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Error Opening File</source>
-        <translation type="unfinished">Dosya Açılamadı</translation>
+        <translation>Dosya Açılamadı</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Error opening &apos;%1&apos;:
 %2</source>
-        <translation type="unfinished">&apos;%1&apos; açılamadı:
+        <translation>&apos;%1&apos; açılamadı:
 %2</translation>
     </message>
 </context>
@@ -3259,7 +3262,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+4"/>
         <source>Edit Commands...</source>
-        <translation type="unfinished">Komutları Düzenle...</translation>
+        <translation>Komutları Düzenle...</translation>
     </message>
     <message>
         <location line="+25"/>
@@ -3351,12 +3354,12 @@ Satır %1, sütun %2</translation>
     <message>
         <location filename="../src/tiled/commanddialog.cpp" line="+53"/>
         <source>Global Commands</source>
-        <translation type="unfinished"></translation>
+        <translation>Genel Komutlar</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Project Commands</source>
-        <translation type="unfinished"></translation>
+        <translation>Proje Komutları</translation>
     </message>
 </context>
 <context>
@@ -3364,7 +3367,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location filename="../src/tiled/commandmanager.cpp" line="+68"/>
         <source>Open in text editor</source>
-        <translation type="unfinished">Yazı editöründe aç</translation>
+        <translation>Metin düzenleyicide aç</translation>
     </message>
     <message>
         <location line="+142"/>
@@ -3420,12 +3423,12 @@ Satır %1, sütun %2</translation>
     <message>
         <location filename="../src/tiled/commandsedit.cpp" line="+163"/>
         <source>Select Executable</source>
-        <translation type="unfinished">Yürütülebilir Şeç</translation>
+        <translation>Yürütülebilir Şeç</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Select Working Directory</source>
-        <translation type="unfinished">Çalışma Dizini Seç</translation>
+        <translation>Çalışma Dizinini Seç</translation>
     </message>
 </context>
 <context>
@@ -3434,7 +3437,7 @@ Satır %1, sütun %2</translation>
         <location filename="../src/tiled/consoledock.cpp" line="+59"/>
         <location line="+36"/>
         <source>Clear Console</source>
-        <translation type="unfinished"></translation>
+        <translation>Konsolu Temizle</translation>
     </message>
     <message>
         <location line="+116"/>
@@ -3619,7 +3622,8 @@ Satır %1, sütun %2</translation>
         <location line="+265"/>
         <source>Move %n Point(s)</source>
         <translation>
-            <numerusform>Noktayı Taşı</numerusform>
+            <numerusform>%n Noktayı Taşı</numerusform>
+            <numerusform>%n Noktayı Taşı</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -3627,7 +3631,8 @@ Satır %1, sütun %2</translation>
         <location line="+94"/>
         <source>Delete %n Node(s)</source>
         <translation>
-            <numerusform>Boğumu Sil</numerusform>
+            <numerusform>%n Boğumu Sil</numerusform>
+            <numerusform>%n Boğumu Sil</numerusform>
         </translation>
     </message>
     <message>
@@ -3731,12 +3736,12 @@ Onu değiştirmek istiyor musunuz?</translation>
     <message>
         <location filename="../src/tiled/fileedit.cpp" line="+48"/>
         <source>Choose</source>
-        <translation type="unfinished"></translation>
+        <translation>Seç</translation>
     </message>
     <message>
         <location line="+84"/>
         <source>Choose a Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Bir Klasör Seç</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -3749,12 +3754,12 @@ Onu değiştirmek istiyor musunuz?</translation>
     <message>
         <location filename="../src/libtiled/imagecache.cpp" line="+205"/>
         <source>Recursive metatile map detected: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Özyinelemeli metadesen haritası algılandı: %1</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Failed to read metatile map %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Metadesen haritası %1 okunamadı: %2</translation>
     </message>
 </context>
 <context>
@@ -3764,12 +3769,14 @@ Onu değiştirmek istiyor musunuz?</translation>
         <source>%n error(s)</source>
         <translation>
             <numerusform>%n hata</numerusform>
+            <numerusform>%n hata</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+1"/>
         <source>%n warning(s)</source>
         <translation>
+            <numerusform>%n uyarı</numerusform>
             <numerusform>%n uyarı</numerusform>
         </translation>
     </message>
@@ -3837,6 +3844,7 @@ Onu değiştirmek istiyor musunuz?</translation>
         <source>Drag Layer(s)</source>
         <translation>
             <numerusform>Katmanı Sürükle</numerusform>
+            <numerusform>Katmanları Sürükle</numerusform>
         </translation>
     </message>
     <message>
@@ -3894,7 +3902,7 @@ Onu değiştirmek istiyor musunuz?</translation>
     <message>
         <location filename="../src/tiled/locatorwidget.cpp" line="+322"/>
         <source>Filename</source>
-        <translation type="unfinished">Dosya Adı</translation>
+        <translation>Dosya Adı</translation>
     </message>
 </context>
 <context>
@@ -4035,17 +4043,17 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+28"/>
         <source>New Map</source>
-        <translation type="unfinished">Yeni Harita</translation>
+        <translation>Yeni Harita</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Error Creating World</source>
-        <translation type="unfinished"></translation>
+        <translation>Dünya Yaratılamadı</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Error Writing World File</source>
-        <translation type="unfinished"></translation>
+        <translation>Dünya Dosyaya Yazılamadı</translation>
     </message>
     <message>
         <location line="+118"/>
@@ -4093,12 +4101,12 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+35"/>
         <source>Unsaved Changes to World</source>
-        <translation type="unfinished"></translation>
+        <translation>Dünyada Kaydedilmemiş Değişiklikler</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>There are unsaved changes to world &quot;%1&quot;. Do you want to save the world now?</source>
-        <translation type="unfinished"></translation>
+        <translation>&quot;%1&quot; dünyasında kaydedilmemiş değişiklikler var. Dünyayı şimdi kaydetmek istiyor musunuz?</translation>
     </message>
     <message>
         <location line="+47"/>
@@ -4120,37 +4128,37 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+56"/>
         <location line="+52"/>
         <source>Tiled Projects (*.tiled-project)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiled Projeleri (*.tiled-project)</translation>
     </message>
     <message>
         <location line="-50"/>
         <source>Open Project</source>
-        <translation type="unfinished"></translation>
+        <translation>Proje Aç</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Error Opening Project</source>
-        <translation type="unfinished"></translation>
+        <translation>Proje Açılamadı</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>An error occurred while opening the project.</source>
-        <translation type="unfinished"></translation>
+        <translation>Proje açılırken bir hata oluştu.</translation>
     </message>
     <message>
         <location line="+37"/>
         <source>Save Project As</source>
-        <translation type="unfinished"></translation>
+        <translation>Projeyi Farklı Kaydet</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Error Saving Project</source>
-        <translation type="unfinished"></translation>
+        <translation>Proje Kaydedilemedi</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>An error occurred while saving the project.</source>
-        <translation type="unfinished"></translation>
+        <translation>Proje kaydedilirken bir hata oluştu.</translation>
     </message>
     <message>
         <location line="+278"/>
@@ -4170,7 +4178,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+277"/>
         <source>[*]%1%2</source>
-        <translation type="unfinished">[*]%1%2</translation>
+        <translation>[*]%1%2</translation>
     </message>
     <message>
         <location line="+25"/>
@@ -4235,7 +4243,8 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+27"/>
         <source>Rotate %n Object(s)</source>
         <translation>
-            <numerusform>Nesneyi Döndür</numerusform>
+            <numerusform>%n Nesneyi Döndür</numerusform>
+            <numerusform>%n Nesneyi Döndür</numerusform>
         </translation>
     </message>
     <message>
@@ -4264,21 +4273,24 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+2"/>
         <source>Group %n Layer(s)</source>
         <translation>
-            <numerusform>Katmanı Grupla</numerusform>
+            <numerusform>%n Katmanı Grupla</numerusform>
+            <numerusform>%n Katmanı Grupla</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+16"/>
         <source>Ungroup %n Layer(s)</source>
         <translation>
-            <numerusform>Katmanı Gruptan Çıkar</numerusform>
+            <numerusform>%n Katmanı Gruptan Çıkar</numerusform>
+            <numerusform>%n Katmanı Gruptan Çıkar</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+46"/>
         <source>Duplicate %n Layer(s)</source>
         <translation>
-            <numerusform>Katmanı Çoğalt</numerusform>
+            <numerusform>%n Katmanı Çoğalt</numerusform>
+            <numerusform>%n Katmanı Çoğalt</numerusform>
         </translation>
     </message>
     <message>
@@ -4295,7 +4307,8 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+98"/>
         <source>Remove %n Layer(s)</source>
         <translation>
-            <numerusform>Katmanı Kaldır</numerusform>
+            <numerusform>%n Katmanı Kaldır</numerusform>
+            <numerusform>%n Katmanı Kaldır</numerusform>
         </translation>
     </message>
     <message>
@@ -4322,35 +4335,40 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+78"/>
         <source>Duplicate %n Object(s)</source>
         <translation>
-            <numerusform>Nesneyi Çoğalt</numerusform>
+            <numerusform>%n Nesneyi Çoğalt</numerusform>
+            <numerusform>%n Nesneyi Çoğalt</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+13"/>
         <source>Remove %n Object(s)</source>
         <translation>
-            <numerusform>Nesneyi Kaldır</numerusform>
+            <numerusform>%n Nesneyi Kaldır</numerusform>
+            <numerusform>%n Nesneyi Kaldır</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+11"/>
         <source>Move %n Object(s) to Layer</source>
         <translation>
-            <numerusform>Nesneyi Katmana Taşı</numerusform>
+            <numerusform>%n Nesneyi Katmana Taşı</numerusform>
+            <numerusform>%n Nesneyi Katmana Taşı</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+38"/>
         <source>Move %n Object(s) Up</source>
         <translation>
-            <numerusform>Nesneyi Yukarı Taşı</numerusform>
+            <numerusform>%n Nesneyi Yukarı Taşı</numerusform>
+            <numerusform>%n Nesneyi Yukarı Taşı</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+36"/>
         <source>Move %n Object(s) Down</source>
         <translation>
-            <numerusform>Nesneyi Aşağı Taşı</numerusform>
+            <numerusform>%n Nesneyi Aşağı Taşı</numerusform>
+            <numerusform>%n Nesneyi Aşağı Taşı</numerusform>
         </translation>
     </message>
 </context>
@@ -4507,14 +4525,16 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+423"/>
         <source>Duplicate %n Object(s)</source>
         <translation>
-            <numerusform>Nesneyi Çoğalt</numerusform>
+            <numerusform>%n Nesneyi Çoğalt</numerusform>
+            <numerusform>%n Nesneyi Çoğalt</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+1"/>
         <source>Remove %n Object(s)</source>
         <translation>
-            <numerusform>Nesneyi Kaldır</numerusform>
+            <numerusform>%n Nesneyi Kaldır</numerusform>
+            <numerusform>%n Nesneyi Kaldır</numerusform>
         </translation>
     </message>
     <message>
@@ -4550,7 +4570,8 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+17"/>
         <source>Add %n Tileset(s)</source>
         <translation>
-            <numerusform>Desen Seti Ekle</numerusform>
+            <numerusform>%n Desen Seti Ekle</numerusform>
+            <numerusform>%n Desen Seti Ekle</numerusform>
         </translation>
     </message>
     <message>
@@ -4789,12 +4810,12 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location filename="../src/tiled/objectrefedit.cpp" line="+54"/>
         <source>Search Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Nesne Ara</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Select Object on Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Haritada Nesne Seç</translation>
     </message>
 </context>
 <context>
@@ -4810,7 +4831,8 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+742"/>
         <source>Move %n Object(s)</source>
         <translation>
-            <numerusform>Nesneyi Taşı</numerusform>
+            <numerusform>%n Nesneyi Taşı</numerusform>
+            <numerusform>%n Nesneyi Taşı</numerusform>
         </translation>
     </message>
     <message>
@@ -4837,14 +4859,16 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+698"/>
         <source>Rotate %n Object(s)</source>
         <translation>
-            <numerusform>Nesneyi Döndür</numerusform>
+            <numerusform>%n Nesneyi Döndür</numerusform>
+            <numerusform>%n Nesneyi Döndür</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+275"/>
         <source>Resize %n Object(s)</source>
         <translation>
-            <numerusform>Nesneyi Boyutlandır</numerusform>
+            <numerusform>%n Nesneyi Boyutlandır</numerusform>
+            <numerusform>%n Nesneyi Boyutlandır</numerusform>
         </translation>
     </message>
 </context>
@@ -4959,7 +4983,8 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+17"/>
         <source>Move %n Object(s) to Layer</source>
         <translation>
-            <numerusform>Nesneyi Katmana Taşı</numerusform>
+            <numerusform>%n Nesneyi Katmana Taşı</numerusform>
+            <numerusform>%n Nesneyi Katmana Taşı</numerusform>
         </translation>
     </message>
 </context>
@@ -4977,12 +5002,12 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location filename="../src/tiled/projectdock.cpp" line="+124"/>
         <source>Choose Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Klasör Seç</translation>
     </message>
     <message>
         <location line="+66"/>
         <source>Project</source>
-        <translation type="unfinished"></translation>
+        <translation>Proje</translation>
     </message>
 </context>
 <context>
@@ -4990,7 +5015,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location filename="../src/tiled/projectmodel.cpp" line="+271"/>
         <source>(Refreshing)</source>
-        <translation type="unfinished"></translation>
+        <translation>(Yenileniyor)</translation>
     </message>
 </context>
 <context>
@@ -4998,27 +5023,27 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location filename="../src/tiled/projectpropertiesdialog.cpp" line="-18"/>
         <source>Extensions</source>
-        <translation type="unfinished">Uzantılar</translation>
+        <translation>Uzantılar</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Dizin</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosyalar</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Object types</source>
-        <translation type="unfinished"></translation>
+        <translation>Nesne türleri</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Automapping rules</source>
-        <translation type="unfinished"></translation>
+        <translation>Automap kuralları</translation>
     </message>
 </context>
 <context>
@@ -5026,12 +5051,12 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location filename="../src/tiled/projectdock.cpp" line="+91"/>
         <source>Select Template Instances</source>
-        <translation type="unfinished"></translation>
+        <translation>Şablon Örneklerini Seç</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>&amp;Remove Folder from Project</source>
-        <translation type="unfinished"></translation>
+        <translation>Klasörü Projeden &amp;Kaldır</translation>
     </message>
 </context>
 <context>
@@ -5041,6 +5066,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Paste Property/Properties</source>
         <translation>
             <numerusform>Özelliği Yapıştır</numerusform>
+            <numerusform>Özellikleri Yapıştır</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -5048,6 +5074,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Remove Property/Properties</source>
         <translation>
             <numerusform>Özelliği Kaldır</numerusform>
+            <numerusform>Özellikleri Kaldır</numerusform>
         </translation>
     </message>
     <message>
@@ -5064,7 +5091,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="-149"/>
         <source>Go to Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Nesneye Git</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -5101,6 +5128,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <source>Convert Property/Properties</source>
         <translation>
             <numerusform>Özelliği Dönüştür</numerusform>
+            <numerusform>Özellikleri Dönüştür</numerusform>
         </translation>
     </message>
     <message>
@@ -5201,7 +5229,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+3"/>
         <source>Compression Level</source>
-        <translation type="unfinished"></translation>
+        <translation>Sıkıştırma Seviyesi</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -5278,7 +5306,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+1"/>
         <source>Alignment</source>
-        <translation>Hizalama</translation>
+        <translation>Hiza</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -5310,7 +5338,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+4"/>
         <source>Tint Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Renk Tonu</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -5373,7 +5401,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+14"/>
         <source>Object Alignment</source>
-        <translation type="unfinished"></translation>
+        <translation>Nesne Hizası</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -5479,52 +5507,52 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+40"/>
         <source>Unspecified</source>
-        <translation type="unfinished"></translation>
+        <translation>Belirtilmemiş</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Top Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Sol Üst</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Top</source>
-        <translation type="unfinished">Üst</translation>
+        <translation>Üst</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Top Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Sağ Üst</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Left</source>
-        <translation type="unfinished">Sol</translation>
+        <translation>Sol</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Center</source>
-        <translation type="unfinished">Merkez</translation>
+        <translation>Merkez</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Right</source>
-        <translation type="unfinished">Sağ</translation>
+        <translation>Sağ</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Bottom Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Sol Alt</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Bottom</source>
-        <translation type="unfinished">Alt</translation>
+        <translation>Alt</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Bottom Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Sağ Alt</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -5552,7 +5580,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location filename="../src/tiled/varianteditorfactory.cpp" line="+66"/>
         <source>Reset</source>
-        <translation type="unfinished"></translation>
+        <translation>Sıfırla</translation>
     </message>
 </context>
 <context>
@@ -5590,7 +5618,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+28"/>
         <source>Extensions paths changed: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Uzantı yolları değişti: %1</translation>
     </message>
 </context>
 <context>
@@ -5749,7 +5777,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location filename="../src/libtiled/templatemanager.cpp" line="+99"/>
         <source>Unable to reload template file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Şablon dosyası yeniden yükleyemiyor: %1</translation>
     </message>
 </context>
 <context>
@@ -5773,7 +5801,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+63"/>
         <source>Template Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Şablon Düzenleyici</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -5992,18 +6020,18 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location filename="../src/tiled/tilesetdock.cpp" line="-289"/>
         <source>All Files (*)</source>
-        <translation type="unfinished">Tüm Dosyalar (*)</translation>
+        <translation>Tüm Dosyalar (*)</translation>
     </message>
     <message>
         <location line="+11"/>
         <location line="+128"/>
         <source>Replace Tileset</source>
-        <translation type="unfinished">Desen Setini Değiştir</translation>
+        <translation>Desen Setini Değiştir</translation>
     </message>
     <message>
         <location line="-113"/>
         <source>Error Reading Tileset</source>
-        <translation type="unfinished">Desen Seti Okunamadı</translation>
+        <translation>Desen Seti Okunamadı</translation>
     </message>
     <message>
         <location line="+38"/>
@@ -6248,32 +6276,32 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location filename="../src/tiled/variantpropertymanager.cpp" line="+163"/>
         <source>%1: </source>
-        <translation type="unfinished"></translation>
+        <translation>%1: </translation>
     </message>
     <message>
         <location line="+4"/>
         <source> (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation> (%1)</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>(%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>(%1)</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Unnamed object</source>
-        <translation type="unfinished">Adsız nesne</translation>
+        <translation>Adsız nesne</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Unset</source>
-        <translation type="unfinished"></translation>
+        <translation>Ayarsız</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>%1: Object not found</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: Nesne bulunamadı</translation>
     </message>
     <message>
         <location line="+25"/>
@@ -6422,7 +6450,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location filename="../src/tiled/worlddocument.cpp" line="+43"/>
         <source>untitled.world</source>
-        <translation type="unfinished"></translation>
+        <translation>adsız.world</translation>
     </message>
 </context>
 <context>
@@ -6467,12 +6495,12 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+89"/>
         <source>World doesn&apos;t support saving</source>
-        <translation type="unfinished"></translation>
+        <translation>Dünya kaydedilmeyi desteklemiyor</translation>
     </message>
     <message>
         <location line="+32"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished">Dosya okumak için açılamadı.</translation>
+        <translation>Dosya okumak için açılamadı.</translation>
     </message>
 </context>
 <context>
@@ -6481,12 +6509,12 @@ Lütfen belirli bir biçim seçin.</translation>
         <location filename="../src/tiled/worldmovemaptool.cpp" line="+84"/>
         <location line="+167"/>
         <source>World Tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Dünya Aracı</translation>
     </message>
     <message>
         <location line="-46"/>
         <source>Move map to %1, %2 (offset: %3, %4)</source>
-        <translation type="unfinished"></translation>
+        <translation>Haritayı %1, %2 (kaydırma: %3, %4) konumuna taşı</translation>
     </message>
 </context>
 <context>
@@ -6665,7 +6693,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+59"/>
         <source>Change Object Alignment</source>
-        <translation type="unfinished"></translation>
+        <translation>Nesne Hizasını Değiştir</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -6746,7 +6774,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+22"/>
         <source>Change Layer Tint Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Katman Renk Tonunu Değiştir</translation>
     </message>
     <message>
         <location line="+30"/>
@@ -6778,28 +6806,32 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+61"/>
         <source>Change %n Object/s Tile</source>
         <translation>
-            <numerusform>Nesnenin Desenini Değiştir</numerusform>
+            <numerusform>%n Nesnenin Desenini Değiştir</numerusform>
+            <numerusform>%n Nesnenin Desenini Değiştir</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+65"/>
         <source>Detach %n Template Instance(s)</source>
         <translation>
-            <numerusform>Şablon Örneğini Ayır</numerusform>
+            <numerusform>%n Şablon Örneğini Ayır</numerusform>
+            <numerusform>%n Şablon Örneğini Ayır</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+39"/>
         <source>Reset %n Instances</source>
         <translation>
-            <numerusform>Örneği Sıfırla</numerusform>
+            <numerusform>%n Örneği Sıfırla</numerusform>
+            <numerusform>%n Örneği Sıfırla</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+53"/>
         <source>Replace %n Object(s) With Template</source>
         <translation>
-            <numerusform>Nesneyi Şablonla Değiştir</numerusform>
+            <numerusform>%n Nesneyi Şablonla Değiştir</numerusform>
+            <numerusform>%n Nesneyi Şablonla Değiştir</numerusform>
         </translation>
     </message>
     <message>
@@ -6878,7 +6910,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+4"/>
         <source>Change Compression Level</source>
-        <translation type="unfinished"></translation>
+        <translation>Sıkıştırma Seviyesini Değiştir</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -6944,7 +6976,8 @@ Lütfen belirli bir biçim seçin.</translation>
         <location filename="../src/tiled/propertybrowser.cpp" line="-922"/>
         <source>Flip %n Object(s)</source>
         <translation>
-            <numerusform>Nesneyi Çevir</numerusform>
+            <numerusform>%n Nesneyi Çevir</numerusform>
+            <numerusform>%n Nesneyi Çevir</numerusform>
         </translation>
     </message>
     <message>
@@ -7028,14 +7061,16 @@ Lütfen belirli bir biçim seçin.</translation>
         <location filename="../src/tiled/mapdocument.cpp" line="-770"/>
         <source>Raise %n Layer(s)</source>
         <translation>
-            <numerusform>Katmanı Yükselt</numerusform>
+            <numerusform>%n Katmanı Yükselt</numerusform>
+            <numerusform>%n Katmanı Yükselt</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+27"/>
         <source>Lower %n Layer(s)</source>
         <translation>
-            <numerusform>Katmanı Alçalt</numerusform>
+            <numerusform>%n Katmanı Alçalt</numerusform>
+            <numerusform>%n Katmanı Alçalt</numerusform>
         </translation>
     </message>
     <message>
@@ -7064,7 +7099,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+7"/>
         <source>Open with System Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Sistem Düzenleyicisiyle Aç</translation>
     </message>
 </context>
 <context>
