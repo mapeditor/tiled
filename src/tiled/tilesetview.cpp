@@ -41,6 +41,7 @@
 #include <QHeaderView>
 #include <QMenu>
 #include <QPainter>
+#include <QPainterPath>
 #include <QPinchGesture>
 #include <QScrollBar>
 #include <QUndoCommand>

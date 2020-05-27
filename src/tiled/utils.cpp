@@ -261,8 +261,8 @@ static void showInFileManager(const QString &fileName)
 #else
     // We cannot select a file here, because xdg-open would open the file
     // instead of the file browser...
-    QProcess::startDetached(QString(QLatin1String("xdg-open \"%1\""))
-                            .arg(QFileInfo(fileName).absolutePath()));
+    QProcess::startDetached(QString(QLatin1String("xdg-open")),
+                            QStringList(QFileInfo(fileName).absolutePath()));
 #endif
 }
 

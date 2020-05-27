@@ -28,7 +28,7 @@ namespace Tiled {
 class SnapHelper
 {
 public:
-    SnapHelper(const MapRenderer *renderer, Qt::KeyboardModifiers modifiers = nullptr);
+    SnapHelper(const MapRenderer *renderer, Qt::KeyboardModifiers modifiers = {});
 
     void toggleSnap();
 

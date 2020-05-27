@@ -26,6 +26,7 @@
 #include <QApplication>
 #include <QMainWindow>
 #include <QPainter>
+#include <QPainterPath>
 #include <QPixmapCache>
 #include <QScrollBar>
 #include <QStringBuilder>
