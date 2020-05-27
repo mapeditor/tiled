@@ -1,12 +1,12 @@
 {
     "release": {
-        "version": "1.3.4",
-        "release_notes": "https://www.mapeditor.org/2020/04/14/tiled-1-3-4-released.html",
+        "version": "1.3.5",
+        "release_notes": "https://www.mapeditor.org/2020/05/27/tiled-1-3-5-released.html",
         "download": "https://thorbjorn.itch.io/tiled/purchase"
     },
     "snapshot":  {
-        "version": "2020.05.07",
-        "release_notes": "https://thorbjorn.itch.io/tiled/devlog/144343/big-update-on-projects-and-polishing",
+        "version": "2020.05.20",
+        "release_notes": "https://thorbjorn.itch.io/tiled/devlog/148021/various-improvements-and-fixes",
         "download": "https://thorbjorn.itch.io/tiled/purchase"
     }
 }
