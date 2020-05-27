@@ -53,6 +53,8 @@ namespace Tiled {
  */
 class ActionsModel : public QAbstractListModel
 {
+    Q_OBJECT
+
 public:
     enum UserRoles {
         HasCustomShortcut = Qt::UserRole,
