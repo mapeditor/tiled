@@ -96,7 +96,7 @@
     <message>
         <location line="+14"/>
         <source>Project file &apos;%1&apos; not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>没有找到项目文件 &apos;%1&apos;.</translation>
     </message>
 </context>
 <context>
@@ -384,7 +384,7 @@
     <message>
         <location line="+7"/>
         <source>Draw object &amp;names</source>
-        <translation type="unfinished"></translation>
+        <translation>绘制对象与名字</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -445,7 +445,7 @@
     <message>
         <location filename="../src/tiled/projectpropertiesdialog.cpp" line="+6"/>
         <source>Automapping Rules files (*.txt)</source>
-        <translation type="unfinished"></translation>
+        <translation>自动映射规则文件 (*.txt)</translation>
     </message>
 </context>
 <context>
@@ -622,7 +622,7 @@
     <message>
         <location line="+9"/>
         <source>Save World</source>
-        <translation type="unfinished"></translation>
+        <translation>保存世界</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -637,12 +637,12 @@
     <message>
         <location line="+44"/>
         <source>&amp;Project</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;项目</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Recent Projects</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;最近项目</translation>
     </message>
     <message>
         <location line="+31"/>
@@ -747,63 +747,63 @@
     <message>
         <location line="+108"/>
         <source>&amp;Open Project...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;打开项目...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Close Project</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;关闭项目</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Clear Recent Projects</source>
-        <translation type="unfinished"></translation>
+        <translation>清除最近打开项目</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Add Folder to Project...</source>
-        <translation type="unfinished"></translation>
+        <translation>添加文件夹到项目...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Save Project As...</source>
-        <translation type="unfinished"></translation>
+        <translation>保存项目为...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Refresh Folders</source>
-        <translation type="unfinished"></translation>
+        <translation>刷新目录</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Show Object &amp;References</source>
-        <translation type="unfinished"></translation>
+        <translation>显示对象&amp;引用</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Reopen Closed File</source>
-        <translation type="unfinished"></translation>
+        <translation>重新打开关闭的文件</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+T</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ctrl+Shift+T</translation>
     </message>
     <message>
         <location line="+5"/>
         <location line="+3"/>
         <source>Move Map</source>
-        <translation type="unfinished"></translation>
+        <translation>移动地图</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+M</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ctrl+Shift+M</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Project &amp;Properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>项目&amp;属性...</translation>
     </message>
     <message>
         <location line="+5"/>
