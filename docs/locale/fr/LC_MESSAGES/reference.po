@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Tiled 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-12-21 14:31+0100\n"
-"PO-Revision-Date: 2020-05-29 11:42+0000\n"
+"PO-Revision-Date: 2020-06-01 07:41+0000\n"
 "Last-Translator: Rhenaud Dubois <rhen33390@gmail.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/tiled/reference/"
 "fr/>\n"
@@ -981,6 +981,9 @@ msgid ""
 "Tiled maps. It also provides general tilemap-related functions and "
 "algorithms."
 msgstr ""
+"`dtiled <https://github.com/rcorre/dtiled>`__ peut charger des cartes Tiled "
+"formatées en JSON. Il fournit aussi des fonctions et algorithmes généraux "
+"liés aux jeux de tuiles."
 
 #: ../../reference/support-for-tmx-maps.rst:100
 msgid "Go"
@@ -2238,37 +2241,46 @@ msgstr ""
 
 #: ../../reference/tmx-changelog.rst:165
 msgid "Tiled 0.9"
-msgstr ""
+msgstr "Tiled 0.9"
 
 #: ../../reference/tmx-changelog.rst:167
 msgid "Per-object visibility flag is saved (defaults to 1):"
 msgstr ""
+"Le drapeau de visibilité de chaque objet est sauvegardé (1 par défaut) :"
 
 #: ../../reference/tmx-changelog.rst:173
 msgid ""
 "Terrain information was added to tileset definitions (this is generally "
 "not very relevant for games):"
 msgstr ""
+"Ajout d'informations sur le terrain dans la description des jeux de tuiles ("
+"ceci est généralement peu relevant pour les jeux) :"
 
 #: ../../reference/tmx-changelog.rst:187
 msgid ""
 "There is preliminary support for a \"staggered\" (isometric) projection "
 "(new value for the ``orientation`` attribute of the ``map`` element)."
 msgstr ""
+"Ajout d'un support préliminaire pour une projection \"échelonnée\" "
+"(isométrique) (nouvelle valeur pour l'attribut ``orientation`` de l'élément "
+"``map``)."
 
 #: ../../reference/tmx-changelog.rst:190
 msgid "A basic image layer type was added:"
-msgstr ""
+msgstr "Un type basique de calque d'images a été ajouté :"
 
 #: ../../reference/tmx-changelog.rst:198
 msgid ""
 "Added ellipse object shape. Same parameters as rectangular objects, but "
 "marked as ellipse with a child element:"
 msgstr ""
+"Ajout d'une forme d'objet elliptique. Elle utilise les mêmes paramètres que "
+"les objets rectangulaires, mais est notée en tant qu'ellipse ayant un "
+"élément fils :"
 
 #: ../../reference/tmx-changelog.rst:207
 msgid "Added map property for specifying the background color:"
-msgstr ""
+msgstr "Ajout d'une propriété de carte qui spécifie la couleur d'arrière-plan :"
 
 #: ../../reference/tmx-changelog.rst:213
 msgid ""
@@ -2277,22 +2289,32 @@ msgid ""
 "Tiled Java or with `pytmxlib <https://github.com/encukou/pytmxlib>`__, "
 "this is not very important to support at the moment):"
 msgstr ""
+"Ajout d'un support initial (pas d'interface graphique) pour des images de "
+"tuiles individuelles et/ou intégrées (le support est peu important pour le "
+"moment car il n'y a aucun moyen d'implémenter ceci dans Tiled Qt, mais c'est "
+"possible dans Taled Java ou avec `pytmxlib <https://github.com/encukou/"
+"pytmxlib>`__) :"
 
 #: ../../reference/tmx-changelog.rst:238
 msgid "Tiled 0.8"
-msgstr ""
+msgstr "Tiled 0.8"
 
 #: ../../reference/tmx-changelog.rst:240
 msgid ""
 "Tilesets can now have custom properties (using the ``properties`` child "
 "element, just like everything else)."
 msgstr ""
+"Les jeux de tuiles peuvent maintenant avoir des propriétés personnalisées ("
+"en utilisant l'élément fils ``properties`` comme tout le reste)."
 
 #: ../../reference/tmx-changelog.rst:243
 msgid ""
 "Tilesets now support defining a drawing offset in pixels, which is to be "
 "used when drawing any tiles from that tileset. Example:"
 msgstr ""
+"Les jeux de tuiles supportent maintenant un décalage de dessin en pixels qui "
+"est utilisé lorsque n'importe quelle tuile de ce jeu de tuiles est dessinée. "
+"Exemple :"
 
 #: ../../reference/tmx-changelog.rst:253
 msgid ""
@@ -2301,14 +2323,18 @@ msgid ""
 "\"anti-diagonal flip\", which swaps the x and y axis when rendering a "
 "tile."
 msgstr ""
+"Ajout du support pour une rotation de tuile en incréments de 90 degrés en "
+"utilisant le troisième bit le plus important de l'id de tuile global. Ce "
+"nouveau bit indique un \"renversement non diagonal\", ce qui échange les "
+"axes x et y lors du rendu de la tuile."
 
 #: ../../reference/tmx-map-format.rst:2
 msgid "TMX Map Format"
-msgstr ""
+msgstr "Format de Carte TMX"
 
 #: ../../reference/tmx-map-format.rst:4
 msgid "**Version 1.1**"
-msgstr ""
+msgstr "**Version 1.1**"
 
 #: ../../reference/tmx-map-format.rst:6
 msgid ""
@@ -2319,12 +2345,21 @@ msgid ""
 "elements. Beside tile layers, it can also contain groups of objects that "
 "can be placed freely."
 msgstr ""
+"Le format de carte TMX (Tile Map XML) utilisé par `Tiled <http://www."
+"mapeditor.org>`__ est un moyen flexible de décrire une carte faite de "
+"tuiles. Il peut décrire des cartes avec n'importe quelle taille de tuile, "
+"n'importe quel nombre de calques, n'importe quel nombre de jeux de sets et "
+"il supporte l'ajout de propriétés customisées pour la majorité des éléments. "
+"Mis à part les calques de tuiles, il peut aussi contenir des groupes "
+"d'objets qui peuvent être placés librement."
 
 #: ../../reference/tmx-map-format.rst:13
 msgid ""
 "Note that there are many :doc:`libraries and frameworks <support-for-tmx-"
 "maps>` available that can work with TMX maps."
 msgstr ""
+"Veuillez noter qu'il y a beaucoup de :doc:`systèmes et bibliothèques "
+"<support-for-tmx-maps>` disponibles qui supportent les cartes TMX."
 
 #: ../../reference/tmx-map-format.rst:16
 msgid ""
@@ -2334,12 +2369,19 @@ msgid ""
 "Attributes or elements that are deprecated or unsupported by the current "
 "version of Tiled are formatted in italics."
 msgstr ""
+"Dans ce document, nous allons énumérer tous les éléments inclus dans ce "
+"format de carte. Les éléments mentionnés dans les en-têtes et la liste des "
+"attributs de ces éléments sont listés ci-dessous, suivi d'une courte "
+"explication. Les attributs et les éléments qui sont obsolètes ou non "
+"supportés par la version courante de Tiled sont en italique."
 
 #: ../../reference/tmx-map-format.rst:22
 msgid ""
 "Have a look at the :doc:`changelog <tmx-changelog>` when you're "
 "interested in what changed between Tiled versions."
 msgstr ""
+"Veuillez regarder les :doc:`notes de versions <tmx-changelog>` si vous êtes "
+"intéressés par les changements entre les différentes versions de Tiled."
 
 #: ../../reference/tmx-map-format.rst:25
 msgid ""
@@ -2347,28 +2389,38 @@ msgid ""
 "http://mapeditor.org/dtd/1.0/map.dtd. This file is not up-to-date but "
 "might be useful for XML-namespacing anyway.*"
 msgstr ""
+"*Un fichier DTD (Définition de Type de Document) est fourni dans "
+"http://mapeditor.org/dtd/1.0/map.dtd. Ce fichier n'est pas à jour mais peut "
+"être utile pour les espaces de noms XML.*"
 
 #: ../../reference/tmx-map-format.rst:32
 msgid "<map>"
-msgstr ""
+msgstr "<map>"
 
 #: ../../reference/tmx-map-format.rst:34
 msgid ""
 "**version:** The TMX format version. Was \"1.0\" so far, and will be "
 "incremented to match minor Tiled releases."
 msgstr ""
+"**version :** La version du format TMX. \"1.0\" jusqu'à présent, et sera "
+"incrémenté pour refléter les sorties mineures de Tiled."
 
 #: ../../reference/tmx-map-format.rst:36
 msgid ""
 "**tiledversion:** The Tiled version used to save the file (since Tiled "
 "1.0.1). May be a date (for snapshot builds)."
 msgstr ""
+"**tiledversion :** La version de Tiled utilisée lors de la sauvegarde du "
+"fichier (depuis Tiled 1.0.1). Peut être une date (pour les versions "
+"instantanées)."
 
 #: ../../reference/tmx-map-format.rst:38
 msgid ""
 "**orientation:** Map orientation. Tiled supports \"orthogonal\", "
 "\"isometric\", \"staggered\" and \"hexagonal\" (since 0.11)."
 msgstr ""
+"**orientation :** L'orientation de la carte. Tiled supporte \"orthogonal\", "
+"\"isometric\", \"staggered\" (échelonné) et \"hexagonal\" (depuis la 0.11)."
 
 #: ../../reference/tmx-map-format.rst:40
 msgid ""
@@ -2377,34 +2429,44 @@ msgid ""
 "down`` and ``left-up``. In all cases, the map is drawn row-by-row. (only "
 "supported for orthogonal maps at the moment)"
 msgstr ""
+"**renderorde r:** L'ordre dans lequel les tuiles d'un calque de tuiles sont "
+"rendus. Les valeurs valides sont ``right-down`` (en bas à droite, par défaut)"
+", ``right-up`` (en haut à droite), ``left-down`` (en bas à gauche) et ``left-"
+"up`` (en haut à droite). Dans tous les cas, la carte est dessinée ligne par "
+"ligne. (seulement supporté pour les cartes orthogonales pour le moment)"
 
 #: ../../reference/tmx-map-format.rst:44
 msgid "**width:** The map width in tiles."
-msgstr ""
+msgstr "**width :** La longueur de la carte en tuiles."
 
 #: ../../reference/tmx-map-format.rst:45
 msgid "**height:** The map height in tiles."
-msgstr ""
+msgstr "**height :** La hauteur de la carte en tuiles."
 
 #: ../../reference/tmx-map-format.rst:46
 msgid "**tilewidth:** The width of a tile."
-msgstr ""
+msgstr "**tilewidth :** La longueur d'une tuile."
 
 #: ../../reference/tmx-map-format.rst:47
 msgid "**tileheight:** The height of a tile."
-msgstr ""
+msgstr "**tileheight :** La hauteur d'une tuile."
 
 #: ../../reference/tmx-map-format.rst:48
 msgid ""
 "**hexsidelength:** Only for hexagonal maps. Determines the width or "
 "height (depending on the staggered axis) of the tile's edge, in pixels."
 msgstr ""
+"**hexsidelength :** Seulement pour les cartes hexagonales. Détermine la "
+"longueur ou hauteur (dépendant de l'axe d'échelonnage) du côté de la tuile, "
+"en pixels."
 
 #: ../../reference/tmx-map-format.rst:51
 msgid ""
 "**staggeraxis:** For staggered and hexagonal maps, determines which axis "
 "(\"x\" or \"y\") is staggered. (since 0.11)"
 msgstr ""
+"**staggeraxis :** Pour les cartes échelonnées ou hexagonales, détermine quel "
+"axe (\"x\" or \"y\") est échelonné. (depuis la 0.11)"
 
 #: ../../reference/tmx-map-format.rst:53
 msgid ""
@@ -2412,12 +2474,18 @@ msgid ""
 "the \"even\" or \"odd\" indexes along the staggered axis are shifted. "
 "(since 0.11)"
 msgstr ""
+"**staggerindex :** Pour les cartes échelonnées ou hexagonales, détermine si "
+"les index \"pairs\" ou \"impairs\" sur l'axe échelonné sont décalés. (depuis "
+"la 0.11)"
 
 #: ../../reference/tmx-map-format.rst:56
 msgid ""
 "**backgroundcolor:** The background color of the map. (optional, may "
 "include alpha value since 0.15 in the form ``#AARRGGBB``)"
 msgstr ""
+"**backgroundcolor :** La couleur d'arrière-plan de la carte. (optionnel, "
+"peut inclure une valeur de transparence depuis la 0.15 de la forme "
+"``#AARRVVBB``)"
 
 #: ../../reference/tmx-map-format.rst:58
 msgid ""
@@ -2425,6 +2493,9 @@ msgid ""
 "number is stored to prevent reuse of the same ID after objects have been "
 "removed. (since 0.11)"
 msgstr ""
+"**nextobjectid :** Stocke le prochain ID disponible pour de nouveaux objets. "
+"Ce nombre est stocké pour empêcher la réutilisation du même ID après que des "
+"objets ont été supprimés. (depuis la 0.11)"
 
 #: ../../reference/tmx-map-format.rst:62
 msgid ""
@@ -2433,6 +2504,10 @@ msgid ""
 "Larger tiles will extend at the top and right (anchored to the bottom "
 "left)."
 msgstr ""
+"Les propriétés ``tilewidth`` et ``tileheight`` déterminent la taille "
+"générale de la grille de la carte. Les tuiles individuelles peuvent avoir "
+"des tailles différentes. Les plus grandes tuiles dépasseront vers le haut et "
+"la droite (ancré en bas à gauche)."
 
 #: ../../reference/tmx-map-format.rst:67
 msgid ""
@@ -2442,6 +2517,11 @@ msgid ""
 "order in which these layers appear is the order in which the layers are "
 "rendered by Tiled."
 msgstr ""
+"Une carte contient trois différents types de calques. Les calques de tuiles "
+"étaient auparavant le seul type de calque, et étaient simplement appelés "
+"``layer``, les calques d'objets ont la balise ``objectgroup`` et les calques "
+"d'images utilisent la balise ``imagelayer``. L'ordre dans lequel ces calques "
+"apparaissent est l'ordre dans lequel ces calques sont rendus par Tiled."
 
 #: ../../reference/tmx-map-format.rst:73
 msgid ""
@@ -2449,16 +2529,21 @@ msgid ""
 " :ref:`tmx-objectgroup`, :ref:`tmx-imagelayer`, :ref:`tmx-group` (since "
 "1.0)"
 msgstr ""
+"Peut contenir : :ref:`tmx-properties`, :ref:`tmx-tileset`, :ref:`tmx-layer`, "
+":ref:`tmx-objectgroup`, :ref:`tmx-imagelayer`, :ref:`tmx-group` (depuis la 1."
+"0)"
 
 #: ../../reference/tmx-map-format.rst:80
 msgid "<tileset>"
-msgstr ""
+msgstr "<tileset>"
 
 #: ../../reference/tmx-map-format.rst:82
 msgid ""
 "**firstgid:** The first global tile ID of this tileset (this global ID "
 "maps to the first tile in this tileset)."
 msgstr ""
+"**firstgid :** Le premier ID de tuile global du jeu de tuiles (cet ID global "
+"correspond à l'ID de la première tuile du jeu de tuiles)."
 
 #: ../../reference/tmx-map-format.rst:84
 msgid ""
@@ -2469,34 +2554,44 @@ msgid ""
 "These two attributes are kept in the TMX map, since they are map "
 "specific.)"
 msgstr ""
+"**source :** Si ce jeu de tuiles est stocké dans un fichier TSX (Tile Set "
+"XML) externe, cet attribut réfère ce fichier. Ce fichier TSX a la même "
+"structure que l'élément ``<tileset>`` décrit ici. (L'attribut firstgid est "
+"manquant et l'attribut source est aussi absent. Ces deux attributs sont "
+"gardés dans la carte TMX car ils sont spécifiques aux cartes.)"
 
 #: ../../reference/tmx-map-format.rst:90
 msgid "**name:** The name of this tileset."
-msgstr ""
+msgstr "**name :** Le nom du jeu de tuiles."
 
 #: ../../reference/tmx-map-format.rst:91
 msgid "**tilewidth:** The (maximum) width of the tiles in this tileset."
-msgstr ""
+msgstr "**tilewidth :** La longueur (maximale) des tuiles de ce jeu de tuiles."
 
 #: ../../reference/tmx-map-format.rst:92
 msgid "**tileheight:** The (maximum) height of the tiles in this tileset."
-msgstr ""
+msgstr "**tileheight :** La hauteur (maximale) des tuiles de ce jeu de tuiles."
 
 #: ../../reference/tmx-map-format.rst:93
 msgid ""
 "**spacing:** The spacing in pixels between the tiles in this tileset "
 "(applies to the tileset image)."
 msgstr ""
+"**spacing :** L'espacement entre les tuiles de ce jeu de tuiles en pixels ("
+"s'applique à l'image du jeu de tuiles)."
 
 #: ../../reference/tmx-map-format.rst:95
 msgid ""
 "**margin:** The margin around the tiles in this tileset (applies to the "
 "tileset image)."
 msgstr ""
+"**margin :** La marge autour des tuiles de ce jeu de tuiles (s'applique à "
+"l'image du jeu de tuiles)."
 
 #: ../../reference/tmx-map-format.rst:97
 msgid "**tilecount:** The number of tiles in this tileset (since 0.13)"
 msgstr ""
+"**tilecount :** Le nombre de tuiles de ce jeu de tuiles (depuis la 0.13)"
 
 #: ../../reference/tmx-map-format.rst:98
 msgid ""
@@ -2504,6 +2599,9 @@ msgid ""
 "collection tilesets it is editable and is used when displaying the "
 "tileset. (since 0.15)"
 msgstr ""
+"**column s:** Le nombre de colonnes de tuiles de ce jeu de tuiles. "
+"Modifiable pour les jeux de tuiles de collection d'images, est utilisé lors "
+"de l'affichage du jeu de tuiles. (depuis la 0.15)"
 
 #: ../../reference/tmx-map-format.rst:102
 msgid ""
@@ -2513,6 +2611,11 @@ msgid ""
 "not necessarily number their tiles consecutively since gaps can occur "
 "when removing tiles."
 msgstr ""
+"S'il y a plusieurs éléments ``<tileset>``, ils sont en ordre ascendant de "
+"leur attribut ``firstgid``. Le premier jeu de tuiles a toujours une valeur "
+"de ``firstgid`` à 1. Depuis Tiled 0.15, les jeux de tuiles de collection "
+"d'images ne numérotent pas forcément leur tuiles de façon consécutives car "
+"des trous peuvent apparaître lors de la suppression de tuiles."
 
 #: ../../reference/tmx-map-format.rst:108
 msgid ""
@@ -2520,18 +2623,21 @@ msgid ""
 ":`tmx-properties`, :ref:`tmx-image`, :ref:`tmx-terraintypes`, :ref:`tmx-"
 "tileset-tile`, :ref:`tmx-wangsets` (since 1.1)"
 msgstr ""
+"Peut contenir : :ref:`tmx-tileoffset`, :ref:`tmx-grid` (depuis la 1.0), :ref"
+":`tmx-properties`, :ref:`tmx-image`, :ref:`tmx-terraintypes`, :ref:`tmx-"
+"tileset-tile`, :ref:`tmx-wangsets` (depuis la 1.1)"
 
 #: ../../reference/tmx-map-format.rst:115
 msgid "<tileoffset>"
-msgstr ""
+msgstr "<tileoffset>"
 
 #: ../../reference/tmx-map-format.rst:117
 msgid "**x:** Horizontal offset in pixels"
-msgstr ""
+msgstr "**x :** Décalage horizontal en pixels"
 
 #: ../../reference/tmx-map-format.rst:118
 msgid "**y:** Vertical offset in pixels (positive is down)"
-msgstr ""
+msgstr "**y :** Décalage vertical en pixels (positif en bas)"
 
 #: ../../reference/tmx-map-format.rst:120
 msgid ""
@@ -2539,24 +2645,29 @@ msgid ""
 "drawing a tile from the related tileset. When not present, no offset is "
 "applied."
 msgstr ""
+"Cet élément est utilisé pour spécifier un décalage en pixels à appliquer "
+"lors du dessin d'une tuile de ce jeu de tuiles. Aucun décalage n'est "
+"appliqué s'il n'est pas présent."
 
 #: ../../reference/tmx-map-format.rst:127
 msgid "<grid>"
-msgstr ""
+msgstr "<grid>"
 
 #: ../../reference/tmx-map-format.rst:129
 msgid ""
 "**orientation:** Orientation of the grid for the tiles in this tileset "
 "(``orthogonal`` or ``isometric``)"
 msgstr ""
+"**orientation :** Orientation de la grille pour les tuiles de ce jeu de "
+"tuiles (``orthogonal`` ou ``isometric``)"
 
 #: ../../reference/tmx-map-format.rst:131
 msgid "**width:** Width of a grid cell"
-msgstr ""
+msgstr "**width :** Longueur d'une cellule de la grille"
 
 #: ../../reference/tmx-map-format.rst:132
 msgid "**height:** Height of a grid cell"
-msgstr ""
+msgstr "**height :** Hauteur d'une cellule de la grille"
 
 #: ../../reference/tmx-map-format.rst:134
 msgid ""
