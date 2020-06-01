@@ -71,6 +71,63 @@ void EditableObject::removeProperty(const QString &name)
         mObject->removeProperty(name);
 }
 
+QVariantMap EditableObject::propertiesIncludingInherited() const
+{
+    auto mergeVariantMaps = [](QVariantMap& dstMap, const QVariantMap& srcMap) {
+        for (auto iter = srcMap.constBegin(); iter != srcMap.constEnd(); ++iter)
+        {
+            dstMap.insert(iter.key(), iter.value());
+        }
+    };
+
+    QVariantMap allProperties;
+    // Insert properties into allProperties in the reverse order that
+    // Object::inheritedProperty searches them, to make sure that the
+    // same precedence is maintained.
+
+    QString objectType;
+    switch (mObject->typeId()) {
+    case Object::MapObjectType:
+    {
+        auto mapObject = static_cast<const MapObject*>(mObject);
+        objectType = mapObject->type();
+        if (objectType.isEmpty())
+            if (const Tile *tile = mapObject->cell().tile())
+                objectType = tile->type();
+        break;
+    }
+    case Object::TileType:
+        objectType = static_cast<const Tile*>(mObject)->type();
+        break;
+    default:
+        break;
+    }
+
+    if (!objectType.isEmpty()) {
+        for (const ObjectType &type : qAsConst(Object::objectTypes())) {
+            if (type.name == objectType)
+                mergeVariantMaps(allProperties, type.defaultProperties);
+        }
+    }
+    
+    if (mObject->typeId() == Object::MapObjectType) {
+        auto mapObject = static_cast<const MapObject*>(mObject);
+
+        if (const Tile *tile = mapObject->cell().tile())
+            mergeVariantMaps(allProperties, tile->properties());
+        
+        if (const MapObject *templateObject = mapObject->templateObject())
+            mergeVariantMaps(allProperties, templateObject->properties());
+    }
+    
+    return allProperties;
+}
+
+QVariant EditableObject::propertyIncludingInherited(const QString &name) const
+{
+    return mObject->inheritedProperty(name);
+}
+
 Document *EditableObject::document() const
 {
     return asset() ? asset()->document() : nullptr;

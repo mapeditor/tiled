@@ -60,6 +60,9 @@ public:
 
     Q_INVOKABLE void removeProperty(const QString &name);
 
+    Q_INVOKABLE QVariantMap propertiesIncludingInherited() const;
+    Q_INVOKABLE QVariant propertyIncludingInherited(const QString &name) const;
+
     Object *object() const;
     Document *document() const;
 
