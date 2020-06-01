@@ -31,6 +31,8 @@
 
 #include <QCoreApplication>
 
+#include "qtcompat_p.h"
+
 namespace Tiled {
 
 EditableObject::EditableObject(EditableAsset *asset,
