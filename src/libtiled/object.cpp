@@ -125,8 +125,7 @@ QVariantMap Object::inheritedProperties() const
         }
     }
     
-    if (typeId() == Object::MapObjectType)
-    {
+    if (typeId() == Object::MapObjectType) {
         auto mapObject = static_cast<const MapObject*>(this);
 
         if (const Tile *tile = mapObject->cell().tile())
