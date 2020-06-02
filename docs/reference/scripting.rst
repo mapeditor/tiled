@@ -881,14 +881,14 @@ Object.setProperties(properties : object) : void
 Object.removeProperty(name : string) : void
     Removes the custom property with the given name.
 
-Object.propertyIncludingInherited(name : string) : variant
+Object.resolvedProperty(name : string) : variant
     Returns the value of the custom property with the given name, or
     ``undefined`` if no such property is set. Includes templates and
     type defaults.
 
 .. _script-object-properties:
 
-Object.propertiesIncludingInherited() : object
+Object.resolvedProperties() : object
     Returns all custom properties set on this object. Modifications to the
     properties will not affect the original object. Includes templates and
     type defaults.
