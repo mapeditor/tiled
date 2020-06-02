@@ -94,6 +94,54 @@ QVariant Object::inheritedProperty(const QString &name) const
     return QVariant();
 }
 
+QVariantMap Object::inheritedProperties() const
+{
+    QVariantMap allProperties;
+    // Insert properties into allProperties in the reverse order that
+    // Object::inheritedProperty searches them, to make sure that the
+    // same precedence is maintained.
+
+    QString objectType;
+    switch (mObject->typeId())
+    {
+    case Object::MapObjectType: {
+        auto mapObject = static_cast<const MapObject*>(mObject);
+        objectType = mapObject->type();
+        if (objectType.isEmpty())
+            if (const Tile *tile = mapObject->cell().tile())
+                objectType = tile->type();
+        break;
+    }
+    case Object::TileType:
+        objectType = static_cast<const Tile*>(mObject)->type();
+        break;
+    default:
+        break;
+    }
+
+    if (!objectType.isEmpty()) {
+        for (const ObjectType &type : qAsConst(mObjectTypes)) {
+            if (type.name == objectType)
+                Tiled::mergeProperties(allProperties, type.defaultProperties);
+        }
+    }
+    
+    if (mObject->typeId() == Object::MapObjectType)
+    {
+        auto mapObject = static_cast<const MapObject*>(mObject);
+
+        if (const Tile *tile = mapObject->cell().tile())
+            Tiled::mergeProperties(allProperties, tile->properties());
+        
+        if (const MapObject *templateObject = mapObject->templateObject())
+            Tiled::mergeProperties(allProperties, templateObject->properties());
+    }
+
+    Tiled::mergeProperties(newProperties, properties());
+    
+    return allProperties;
+}
+
 void Object::setObjectTypes(const ObjectTypes &objectTypes)
 {
     mObjectTypes = objectTypes;

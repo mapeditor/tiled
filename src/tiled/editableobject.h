@@ -60,8 +60,8 @@ public:
 
     Q_INVOKABLE void removeProperty(const QString &name);
 
-    Q_INVOKABLE QVariantMap propertiesIncludingInherited() const;
-    Q_INVOKABLE QVariant propertyIncludingInherited(const QString &name) const;
+    Q_INVOKABLE QVariant resolvedProperty(const QString &name) const;
+    Q_INVOKABLE QVariantMap resolvedProperties() const;
 
     Object *object() const;
     Document *document() const;
@@ -96,6 +96,16 @@ inline QVariant EditableObject::property(const QString &name) const
 inline QVariantMap EditableObject::properties() const
 {
     return toScript(mObject->properties());
+}
+
+inline QVariant EditableObject::resolvedProperty(const QString &name) const
+{
+    return toScript(mObject->inheritedProperty(name));
+}
+
+inline QVariantMap EditableObject::resolvedProperties() const
+{
+    return toScript(mObject->inheritedProperties());
 }
 
 inline Object *EditableObject::object() const
