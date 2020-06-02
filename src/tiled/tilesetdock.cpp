@@ -271,8 +271,6 @@ TilesetDock::TilesetDock(QWidget *parent)
     horizontal->addWidget(mZoomComboBox);
 
     connect(mViewStack, &QStackedWidget::currentChanged,
-            this, &TilesetDock::updateCurrentTiles);
-    connect(mViewStack, &QStackedWidget::currentChanged,
             this, &TilesetDock::currentTilesetChanged);
 
     connect(TilesetManager::instance(), &TilesetManager::tilesetImagesChanged,
@@ -452,14 +450,19 @@ void TilesetDock::dropEvent(QDropEvent *e)
 
 void TilesetDock::currentTilesetChanged()
 {
-    if (const TilesetView *view = currentTilesetView()) {
-        view->zoomable()->setComboBox(mZoomComboBox);
+    TilesetView *view = currentTilesetView();
+    if (!view)
+        return;
 
-        if (const QItemSelectionModel *s = view->selectionModel())
-            setCurrentTile(view->tilesetModel()->tileAt(s->currentIndex()));
+    if (!mSynchronizingSelection)
+        updateCurrentTiles();
 
-        mDynamicWrappingToggle->setChecked(view->dynamicWrapping());
-    }
+    view->zoomable()->setComboBox(mZoomComboBox);
+
+    if (const QItemSelectionModel *s = view->selectionModel())
+        setCurrentTile(view->tilesetModel()->tileAt(s->currentIndex()));
+
+    mDynamicWrappingToggle->setChecked(view->dynamicWrapping());
 }
 
 void TilesetDock::selectionChanged()
