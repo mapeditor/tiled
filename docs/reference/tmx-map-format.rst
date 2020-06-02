@@ -382,9 +382,9 @@ tiles.
 -  **opacity:** The opacity of the layer as a value from 0 to 1. Defaults to 1.
 -  **visible:** Whether the layer is shown (1) or hidden (0). Defaults to 1.
 -  **tintcolor:** A color that is multiplied with any tiles drawn by this layer in ``#AARRGGBB`` or ``#RRGGBB`` format (optional).
--  **offsetx:** Rendering offset for this layer in pixels. Defaults to 0.
+-  **offsetx:** Horizontal offset for this layer in pixels. Defaults to 0.
    (since 0.14)
--  **offsety:** Rendering offset for this layer in pixels. Defaults to 0.
+-  **offsety:** Vertical offset for this layer in pixels. Defaults to 0.
    (since 0.14)
 
 Can contain at most one: :ref:`tmx-properties`, :ref:`tmx-data`
@@ -537,9 +537,9 @@ should generally be avoided.
    1)
 -  **visible:** Whether the layer is shown (1) or hidden (0). (defaults to 1)
 -  **tintcolor:** A color that is multiplied with any tile objects drawn by this layer, in ``#AARRGGBB`` or ``#RRGGBB`` format (optional).
--  **offsetx:** Rendering offset for this object group in pixels. (defaults
+-  **offsetx:** Horizontal offset for this object group in pixels. (defaults
    to 0) (since 0.14)
--  **offsety:** Rendering offset for this object group in pixels. (defaults
+-  **offsety:** Vertical offset for this object group in pixels. (defaults
    to 0) (since 0.14)
 -  **draworder:** Whether the objects are drawn according to the order of
    appearance ("index") or sorted by their y-coordinate ("topdown").
@@ -686,9 +686,9 @@ of the object.
    a unique id. Even if a layer is deleted, no layer ever gets the same
    ID. Can not be changed in Tiled. (since Tiled 1.2)
 -  **name:** The name of the image layer. (defaults to "")
--  **offsetx:** Rendering offset of the image layer in pixels. (defaults to
+-  **offsetx:** Horizontal offset of the image layer in pixels. (defaults to
    0) (since 0.15)
--  **offsety:** Rendering offset of the image layer in pixels. (defaults to
+-  **offsety:** Vertical offset of the image layer in pixels. (defaults to
    0) (since 0.15)
 -  *x:* The x position of the image layer in pixels. (defaults to 0, deprecated
    since 0.15)
@@ -712,9 +712,9 @@ Can contain at most one: :ref:`tmx-properties`, :ref:`tmx-image`
    a unique id. Even if a layer is deleted, no layer ever gets the same
    ID. Can not be changed in Tiled. (since Tiled 1.2)
 -  **name:** The name of the group layer. (defaults to "")
--  **offsetx:** Rendering offset of the group layer in pixels. (defaults to
+-  **offsetx:** Horizontal offset of the group layer in pixels. (defaults to
    0)
--  **offsety:** Rendering offset of the group layer in pixels. (defaults to
+-  **offsety:** Vertical offset of the group layer in pixels. (defaults to
    0)
 -  **opacity:** The opacity of the layer as a value from 0 to 1. (defaults to
    1)
