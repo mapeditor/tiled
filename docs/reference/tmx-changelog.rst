@@ -10,6 +10,11 @@ Tiled 1.4
 -  Added the ``objectalignment`` attribute to the :ref:`tmx-tileset` element,
    allowing the tileset to control the alignment used for tile objects.
 
+-  Added the ``tintcolor`` attribute to the :ref:`tmx-layer`,
+   :ref:`tmx-objectgroup`, :ref:`tmx-imagelayer` and :ref:`tmx-group` elements,
+   allowing for a number of graphical effects like darkening or coloring a
+   layer.
+
 Tiled 1.3
 ---------
 

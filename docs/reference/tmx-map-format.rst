@@ -1,7 +1,7 @@
 TMX Map Format
 ==============
 
-**Version 1.1**
+**Version 1.4**
 
 The TMX (Tile Map XML) map format used by
 `Tiled <http://www.mapeditor.org>`__ is a flexible way to describe a
@@ -381,6 +381,7 @@ tiles.
 -  **height:** The height of the layer in tiles. Always the same as the map height for fixed-size maps.
 -  **opacity:** The opacity of the layer as a value from 0 to 1. Defaults to 1.
 -  **visible:** Whether the layer is shown (1) or hidden (0). Defaults to 1.
+-  **tintcolor:** A color that is multiplied with any tiles drawn by this layer in ``#AARRGGBB`` or ``#RRGGBB`` format (optional).
 -  **offsetx:** Rendering offset for this layer in pixels. Defaults to 0.
    (since 0.14)
 -  **offsety:** Rendering offset for this layer in pixels. Defaults to 0.
@@ -535,6 +536,7 @@ should generally be avoided.
 -  **opacity:** The opacity of the layer as a value from 0 to 1. (defaults to
    1)
 -  **visible:** Whether the layer is shown (1) or hidden (0). (defaults to 1)
+-  **tintcolor:** A color that is multiplied with any tile objects drawn by this layer, in ``#AARRGGBB`` or ``#RRGGBB`` format (optional).
 -  **offsetx:** Rendering offset for this object group in pixels. (defaults
    to 0) (since 0.14)
 -  **offsety:** Rendering offset for this object group in pixels. (defaults
@@ -695,6 +697,7 @@ of the object.
 -  **opacity:** The opacity of the layer as a value from 0 to 1. (defaults to
    1)
 -  **visible:** Whether the layer is shown (1) or hidden (0). (defaults to 1)
+-  **tintcolor:** A color that is multiplied with the image drawn by this layer in ``#AARRGGBB`` or ``#RRGGBB`` format (optional).
 
 A layer consisting of a single image.
 
@@ -716,10 +719,11 @@ Can contain at most one: :ref:`tmx-properties`, :ref:`tmx-image`
 -  **opacity:** The opacity of the layer as a value from 0 to 1. (defaults to
    1)
 -  **visible:** Whether the layer is shown (1) or hidden (0). (defaults to 1)
+-  **tintcolor:** A color that is multiplied with any graphics drawn by any child layers, in ``#AARRGGBB`` or ``#RRGGBB`` format (optional).
 
 A group layer, used to organize the layers of the map in a hierarchy.
-Its attributes ``offsetx``, ``offsety``, ``opacity`` and ``visible``
-recursively affect child layers.
+Its attributes ``offsetx``, ``offsety``, ``opacity``, ``visible`` and
+``tintcolor`` recursively affect child layers.
 
 Can contain at most one: :ref:`tmx-properties`
 

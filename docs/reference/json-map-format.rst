@@ -96,6 +96,7 @@ Layer
     properties,       array,            "Array of :ref:`Properties <json-property>`"
     startx,           int,              "X coordinate where layer content starts (for infinite maps)"
     starty,           int,              "Y coordinate where layer content starts (for infinite maps)"
+    tintcolor,        string,           "Hex-formatted color (#RRGGBB or #AARRGGBB) that is multiplied with any graphics drawn by this layer or any child layers (optional)."
     transparentcolor, string,           "Hex-formatted color (#RRGGBB) (optional). ``imagelayer`` only."
     type,             string,           "``tilelayer``, ``objectgroup``, ``imagelayer`` or ``group``"
     visible,          bool,             "Whether layer is shown or hidden in editor"
@@ -733,6 +734,7 @@ Tiled 1.4
 ~~~~~~~~~
 
 * Added ``objectalignment`` to the :ref:`json-tileset` object.
+* Added ``tintcolor`` to the :ref:`json-layer` object.
 
 Tiled 1.2
 ~~~~~~~~~
