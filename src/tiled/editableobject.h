@@ -100,12 +100,12 @@ inline QVariantMap EditableObject::properties() const
 
 inline QVariant EditableObject::resolvedProperty(const QString &name) const
 {
-    return toScript(mObject->inheritedProperty(name));
+    return toScript(mObject->resolvedProperty(name));
 }
 
 inline QVariantMap EditableObject::resolvedProperties() const
 {
-    return toScript(mObject->inheritedProperties());
+    return toScript(mObject->resolvedProperties());
 }
 
 inline Object *EditableObject::object() const

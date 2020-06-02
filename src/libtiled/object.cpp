@@ -50,7 +50,7 @@ Object::~Object()
  *      - Its tile
  *      - Its type (or the type of its tile)
  */
-QVariant Object::inheritedProperty(const QString &name) const
+QVariant Object::resolvedProperty(const QString &name) const
 {
     if (hasProperty(name))
         return property(name);
@@ -94,11 +94,11 @@ QVariant Object::inheritedProperty(const QString &name) const
     return QVariant();
 }
 
-QVariantMap Object::inheritedProperties() const
+QVariantMap Object::resolvedProperties() const
 {
     QVariantMap allProperties;
     // Insert properties into allProperties in the reverse order that
-    // Object::inheritedProperty searches them, to make sure that the
+    // Object::resolvedProperty searches them, to make sure that the
     // same precedence is maintained.
 
     QString objectType;

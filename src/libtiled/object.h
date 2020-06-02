@@ -95,9 +95,9 @@ public:
     QVariant property(const QString &name) const
     { return mProperties.value(name); }
 
-    QVariant inheritedProperty(const QString &name) const;
+    QVariant resolvedProperty(const QString &name) const;
 
-    QVariantMap inheritedProperties() const;
+    QVariantMap resolvedProperties() const;
 
     /**
      * Returns the value of the object's \a name property, as a string.

@@ -363,7 +363,7 @@ void PropertiesDock::showContextMenu(const QPoint &pos)
     QMenu contextMenu(mPropertyBrowser);
 
     if (customPropertiesSelected && propertyNames.size() == 1) {
-        const auto value = object->inheritedProperty(propertyNames.first());
+        const auto value = object->resolvedProperty(propertyNames.first());
         if (value.userType() == filePathTypeId()) {
             const FilePath filePath = value.value<FilePath>();
             const QString localFile = filePath.url.toLocalFile();
