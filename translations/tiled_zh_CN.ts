@@ -220,7 +220,7 @@
     <message>
         <location filename="../src/tiled/commandsedit.ui" line="+14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">格式</translation>
     </message>
     <message>
         <location line="+39"/>
@@ -231,17 +231,17 @@
         <location line="+14"/>
         <location line="+74"/>
         <source>Browse...</source>
-        <translation type="unfinished">浏览...</translation>
+        <translation>浏览...</translation>
     </message>
     <message>
         <location line="-61"/>
         <source>Shortcut:</source>
-        <translation type="unfinished">快捷键:</translation>
+        <translation>快捷键:</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Clear</source>
-        <translation type="unfinished">清除</translation>
+        <translation>清除</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -251,17 +251,17 @@
     <message>
         <location line="+20"/>
         <source>Arguments:</source>
-        <translation type="unfinished">参数:</translation>
+        <translation>参数:</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Working Directory:</source>
-        <translation type="unfinished">工作目录:</translation>
+        <translation>工作目录:</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Show output in Console view</source>
-        <translation type="unfinished">在控制台显示输出</translation>
+        <translation>在控制台显示输出</translation>
     </message>
 </context>
 <context>
@@ -798,7 +798,7 @@
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+M</source>
-        <translation type="unfinished">Ctrl+Shift+M</translation>
+        <translation>Ctrl+Shift+M</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -808,12 +808,12 @@
     <message>
         <location line="+5"/>
         <source>Open File in &amp;Project...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">在项目中打开文件(&amp;P)...</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Ctrl+P</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+P</translation>
     </message>
     <message>
         <location line="-261"/>
@@ -918,7 +918,7 @@
     <message>
         <location line="+142"/>
         <source>New World...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">新的地图...</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -1103,7 +1103,7 @@ Line %1, column %2</source>
     <message>
         <location line="-26"/>
         <source>Unable to parse tile at (%1,%2) on layer &apos;%3&apos;: &quot;%4&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">无法解析图层&apos;%3&apos;: &quot;%4&quot;位于(%1,%2)的图块</translation>
     </message>
     <message>
         <location line="+52"/>
@@ -1356,7 +1356,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/objectrefdialog.ui" line="+14"/>
         <source>Edit Object Reference</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">编辑对象参考</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -1402,7 +1402,7 @@ Line %1, column %2</source>
     <message>
         <location line="+24"/>
         <source>&amp;Import...</source>
-        <translation type="unfinished">导入(&amp;I)...</translation>
+        <translation>导入(&amp;I)...</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -1417,7 +1417,7 @@ Line %1, column %2</source>
     <message>
         <location line="+3"/>
         <source>Export Object Types</source>
-        <translation type="unfinished">导出对象类型</translation>
+        <translation>导出对象类型</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1427,7 +1427,7 @@ Line %1, column %2</source>
     <message>
         <location line="+3"/>
         <source>Import Object Types</source>
-        <translation type="unfinished">导入对象类型</translation>
+        <translation>导入对象类型</translation>
     </message>
 </context>
 <context>
@@ -1526,7 +1526,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/propertybrowser.cpp" line="-1"/>
         <source>XML (deprecated)</source>
-        <translation type="unfinished"></translation>
+        <translation>XML (不推荐)</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -1649,7 +1649,7 @@ Line %1, column %2</source>
     <message>
         <location line="-103"/>
         <source>Restore previous session on startup</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">启动时恢复之前项目</translation>
     </message>
     <message>
         <location line="+51"/>
@@ -1755,7 +1755,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/projectpropertiesdialog.ui" line="+14"/>
         <source>Project Properties</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">项目属性</translation>
     </message>
 </context>
 <context>
@@ -2350,7 +2350,7 @@ Line %1, column %2</source>
         <location line="+22"/>
         <location line="+8"/>
         <source>Undo system not available for this asset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">撤消对该资源不生效</translation>
     </message>
     <message>
         <location filename="../src/tiled/editablegrouplayer.cpp" line="+45"/>
@@ -2624,7 +2624,7 @@ Line %1, column %2</source>
         <location line="+18"/>
         <location line="+164"/>
         <source>Unable to open file &apos;%1&apos;: %2</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">无法打开文件 &apos;%1&apos;: %2</translation>
     </message>
     <message>
         <location line="-122"/>
