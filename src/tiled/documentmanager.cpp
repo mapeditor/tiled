@@ -130,8 +130,8 @@ DocumentManager::DocumentManager(QObject *parent)
     connect(mTabBar, &QWidget::customContextMenuRequested,
             this, &DocumentManager::tabContextMenuRequested);
 
-    connect(mFileSystemWatcher, &FileSystemWatcher::fileChanged,
-            this, &DocumentManager::fileChanged);
+    connect(mFileSystemWatcher, &FileSystemWatcher::pathsChanged,
+            this, &DocumentManager::filesChanged);
 
     connect(mBrokenLinksModel, &BrokenLinksModel::hasBrokenLinksChanged,
             mBrokenLinksWidget, &BrokenLinksWidget::setVisible);
@@ -1093,6 +1093,12 @@ void DocumentManager::tilesetNameChanged(Tileset *tileset)
     auto *tilesetDocument = findTilesetDocument(tileset->sharedPointer());
     if (tilesetDocument->isEmbedded())
         updateDocumentTab(tilesetDocument);
+}
+
+void DocumentManager::filesChanged(const QStringList &fileNames)
+{
+    for (const QString &fileName : fileNames)
+        fileChanged(fileName);
 }
 
 void DocumentManager::fileChanged(const QString &fileName)

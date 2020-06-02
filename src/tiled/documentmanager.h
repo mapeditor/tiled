@@ -201,6 +201,7 @@ private:
 
     void tilesetNameChanged(Tileset *tileset);
 
+    void filesChanged(const QStringList &fileNames);
     void fileChanged(const QString &fileName);
     void hideChangedWarning();
 
