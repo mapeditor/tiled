@@ -304,8 +304,8 @@ Can contain any number: :ref:`tmx-wangset`
 Defines a list of corner colors and a list of edge colors, and any
 number of Wang tiles using these colors.
 
--  **name**: The name of the Wang set.
--  **tile**: The tile ID of the tile representing this Wang set.
+-  **name:** The name of the Wang set.
+-  **tile:** The tile ID of the tile representing this Wang set.
 
 Can contain at most one: :ref:`tmx-properties`
 
@@ -320,10 +320,10 @@ Can contain any number: :ref:`tmx-wangtile`
 
 A color that can be used to define the corner of a Wang tile.
 
--  **name**: The name of this color.
--  **color**: The color in ``#RRGGBB`` format (example: ``#c17d11``).
--  **tile**: The tile ID of the tile representing this color.
--  **probability**: The relative probability that this color is chosen
+-  **name:** The name of this color.
+-  **color:** The color in ``#RRGGBB`` format (example: ``#c17d11``).
+-  **tile:** The tile ID of the tile representing this color.
+-  **probability:** The relative probability that this color is chosen
    over others in case of multiple options. (defaults to 0)
 
 .. _tmx-wangedgecolor:
@@ -333,10 +333,10 @@ A color that can be used to define the corner of a Wang tile.
 
 A color that can be used to define the edge of a Wang tile.
 
--  **name**: The name of this color.
--  **color**: The color in ``#RRGGBB`` format (example: ``#c17d11``).
--  **tile**: The tile ID of the tile representing this color.
--  **probability**: The relative probability that this color is chosen
+-  **name:** The name of this color.
+-  **color:** The color in ``#RRGGBB`` format (example: ``#c17d11``).
+-  **tile:** The tile ID of the tile representing this color.
+-  **probability:** The relative probability that this color is chosen
    over others in case of multiple options. (defaults to 0)
 
 .. _tmx-wangtile:
@@ -347,18 +347,18 @@ A color that can be used to define the edge of a Wang tile.
 Defines a Wang tile, by referring to a tile in the tileset and
 associating it with a certain Wang ID.
 
--  **tileid**: The tile ID.
--  **wangid**: The Wang ID, which is a 32-bit unsigned integer stored
+-  **tileid:** The tile ID.
+-  **wangid:** The Wang ID, which is a 32-bit unsigned integer stored
    in the format ``0xCECECECE`` (where each C is a corner color and
    each E is an edge color, from right to left clockwise, starting with
    the top edge)
--  **hflip**: Whether the tile is flipped horizontally. This only affects
+-  **hflip:** Whether the tile is flipped horizontally. This only affects
    the tile image, it does not change the meaning of the wangid. See
    :ref:`Tile flipping <tmx-tile-flipping>` for more info. (defaults to false)
--  **vflip**: Whether the tile is flipped vertically. This only affects
+-  **vflip:** Whether the tile is flipped vertically. This only affects
    the tile image, it does not change the meaning of the wangid. See
    :ref:`Tile flipping <tmx-tile-flipping>` for more info. (defaults to false)
--  **dflip**: Whether the tile is flipped on its diagonal. This only affects
+-  **dflip:** Whether the tile is flipped on its diagonal. This only affects
    the tile image, it does not change the meaning of the wangid. See
    :ref:`Tile flipping <tmx-tile-flipping>` for more info. (defaults to false)
 

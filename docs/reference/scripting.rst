@@ -1164,7 +1164,7 @@ Properties
     **height** : int, Height of the map in tiles (only relevant for non-infinite maps).
     **size** : :ref:`script-size` |ro|, Size of the map in tiles (only relevant for non-infinite maps).
     **tileWidth** : int, Tile width (used by tile layers).
-    **tileHeight**: int, Tile height (used by tile layers).
+    **tileHeight** : int, Tile height (used by tile layers).
     **infinite** : bool, Whether this map is infinite.
     **hexSideLength** : int, Length of the side of a hexagonal tile (used by tile layers on hexagonal maps).
     **staggerAxis** : :ref:`StaggerAxis <script-map-staggeraxis>`, "For staggered and hexagonal maps, determines which axis (X or Y) is staggered."
@@ -1419,8 +1419,8 @@ Properties
 
     **name** : string, Name of the tileset.
     **image** : string, The file name of the image used by this tileset. Empty in case of image collection tilesets.
-    **tiles**: [:ref:`script-tile`] |ro|, Array of all tiles in this tileset. Note that the index of a tile in this array does not always match with its ID.
-    **terrains**: [:ref:`script-terrain`] |ro|, Array of all terrains in this tileset.
+    **tiles** : [:ref:`script-tile`] |ro|, Array of all tiles in this tileset. Note that the index of a tile in this array does not always match with its ID.
+    **terrains** : [:ref:`script-terrain`] |ro|, Array of all terrains in this tileset.
     **tileCount** : int, The number of tiles in this tileset.
     **nextTileId** : int, The ID of the next tile that would be added to this tileset. All existing tiles have IDs that are lower than this ID.
     **tileWidth** : int, Tile width for tiles in this tileset in pixels.
