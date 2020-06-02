@@ -57,7 +57,6 @@ TiledApplication::TiledApplication(int &argc, char **argv)
 
 TiledApplication::~TiledApplication()
 {
-    DocumentManager::deleteInstance();
     TemplateManager::deleteInstance();
     ScriptManager::deleteInstance();
     TilesetManager::deleteInstance();

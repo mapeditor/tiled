@@ -228,7 +228,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mActionHandler(new MapDocumentActionHandler(this))
     , mObjectTypesEditor(new ObjectTypesEditor(this))
     , mAutomappingManager(new AutomappingManager(this))
-    , mDocumentManager(DocumentManager::instance())
+    , mDocumentManager(nullptr)
 {
     Q_ASSERT(!mInstance);
     mInstance = this;
@@ -312,6 +312,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerAction(mUi->actionZoomIn, "ZoomIn");
     ActionManager::registerAction(mUi->actionZoomNormal, "ZoomNormal");
     ActionManager::registerAction(mUi->actionZoomOut, "ZoomOut");
+
+    // Created after registering all the main window actions, since the
+    // NoEditorWidget uses some of those actions.
+    mDocumentManager = new DocumentManager(this);
 
 #ifdef Q_OS_MAC
     MacSupport::addFullscreen(this);
@@ -1861,11 +1865,8 @@ void MainWindow::updateRecentFilesMenu()
     mUi->menuRecentFiles->setEnabled(numRecentFiles > 0);
 }
 
-void MainWindow::updateRecentProjectsMenu()
+bool MainWindow::addRecentProjectsActions(QMenu *menu) const
 {
-    auto menu = mUi->menuRecentProjects;
-    menu->clear();
-
     const QStringList files = Preferences::instance()->recentProjects();
 
     for (const QString &file : files) {
@@ -1875,9 +1876,20 @@ void MainWindow::updateRecentProjectsMenu()
         action->setToolTip(fileInfo.filePath());
     }
 
-    menu->addSeparator();
-    menu->addAction(mUi->actionClearRecentProjects);
-    menu->setEnabled(!files.isEmpty());
+    return !files.isEmpty();
+}
+
+void MainWindow::updateRecentProjectsMenu()
+{
+    auto menu = mUi->menuRecentProjects;
+    menu->clear();
+
+    bool enabled = addRecentProjectsActions(menu);
+    if (enabled) {
+        menu->addSeparator();
+        menu->addAction(mUi->actionClearRecentProjects);
+    }
+    menu->setEnabled(enabled);
 }
 
 void MainWindow::resetToDefaultLayout()
@@ -1898,7 +1910,8 @@ void MainWindow::resetToDefaultLayout()
     tabifyDockWidget(mConsoleDock, mIssuesDock);
 
     // Reset the layout of the current editor
-    mDocumentManager->currentEditor()->resetLayout();
+    if (auto editor = mDocumentManager->currentEditor())
+        editor->resetLayout();
 }
 
 void MainWindow::updateViewsAndToolbarsMenu()
@@ -1919,10 +1932,10 @@ void MainWindow::updateViewsAndToolbarsMenu()
         const auto toolBars = editor->toolBars();
         for (auto toolBar : toolBars)
             mViewsAndToolbarsMenu->addAction(toolBar->toggleViewAction());
-
-        mViewsAndToolbarsMenu->addSeparator();
-        mViewsAndToolbarsMenu->addAction(mResetToDefaultLayout);
     }
+
+    mViewsAndToolbarsMenu->addSeparator();
+    mViewsAndToolbarsMenu->addAction(mResetToDefaultLayout);
 }
 
 void MainWindow::updateActions()

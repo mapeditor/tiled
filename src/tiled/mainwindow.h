@@ -97,6 +97,8 @@ public:
     Project &project() const;
     ProjectModel *projectModel() const;
 
+    bool addRecentProjectsActions(QMenu *menu) const;
+
     static MainWindow *instance();
 
 signals:

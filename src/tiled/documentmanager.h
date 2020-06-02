@@ -46,6 +46,7 @@ class BrokenLinksWidget;
 class Document;
 class Editor;
 class FileChangedWarning;
+class MainWindow;
 class MapDocument;
 class MapEditor;
 class MapView;
@@ -65,9 +66,10 @@ class DocumentManager : public QObject
     DocumentManager(QObject *parent = nullptr);
     ~DocumentManager() override;
 
+    friend class MainWindow;
+
 public:
     static DocumentManager *instance();
-    static void deleteInstance();
 
     QWidget *widget() const;
 

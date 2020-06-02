@@ -230,7 +230,7 @@ ProjectView::ProjectView(QWidget *parent)
 
 QSize ProjectView::sizeHint() const
 {
-    return Utils::dpiScaled(QSize(130, 200));
+    return Utils::dpiScaled(QSize(250, 200));
 }
 
 void ProjectView::setModel(QAbstractItemModel *model)
