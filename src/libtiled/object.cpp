@@ -102,8 +102,7 @@ QVariantMap Object::inheritedProperties() const
     // same precedence is maintained.
 
     QString objectType;
-    switch (mObject->typeId())
-    {
+    switch (mObject->typeId()) {
     case Object::MapObjectType: {
         auto mapObject = static_cast<const MapObject*>(mObject);
         objectType = mapObject->type();
