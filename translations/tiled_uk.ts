@@ -95,7 +95,7 @@
     <message>
         <location line="+14"/>
         <source>Project file &apos;%1&apos; not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл проекту «%1» не знайдено.</translation>
     </message>
 </context>
 <context>
@@ -103,7 +103,7 @@
     <message>
         <location filename="../src/tiled/commanddialog.ui" line="+14"/>
         <source>Edit Commands</source>
-        <translation type="unfinished">Редагувати команди</translation>
+        <translation>Редагувати команди</translation>
     </message>
     <message>
         <location line="+43"/>
@@ -219,28 +219,28 @@
     <message>
         <location filename="../src/tiled/commandsedit.ui" line="+14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Від</translation>
     </message>
     <message>
         <location line="+39"/>
         <source>Executable:</source>
-        <translation type="unfinished">Виконуваний файл:</translation>
+        <translation>Файл для виконання:</translation>
     </message>
     <message>
         <location line="+14"/>
         <location line="+74"/>
         <source>Browse...</source>
-        <translation type="unfinished">Огляд...</translation>
+        <translation>Огляд...</translation>
     </message>
     <message>
         <location line="-61"/>
         <source>Shortcut:</source>
-        <translation type="unfinished">Комбінація клавіш:</translation>
+        <translation>Комбінація клавіш:</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Clear</source>
-        <translation type="unfinished">Очистити</translation>
+        <translation>Очистити</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -250,12 +250,12 @@
     <message>
         <location line="+20"/>
         <source>Arguments:</source>
-        <translation type="unfinished">Аргументи:</translation>
+        <translation>Аргументи:</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Working Directory:</source>
-        <translation type="unfinished">Робоча тека:</translation>
+        <translation>Робоча тека:</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -625,7 +625,7 @@
     <message>
         <location line="+5"/>
         <source>Save World</source>
-        <translation type="unfinished"></translation>
+        <translation>Зберегти світ</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -745,7 +745,7 @@
     <message>
         <location line="+5"/>
         <source>New World...</source>
-        <translation type="unfinished"></translation>
+        <translation>Новий світ...</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -770,17 +770,17 @@
     <message>
         <location line="+5"/>
         <source>Add Folder to Project...</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати теку до проекту...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Save Project As...</source>
-        <translation type="unfinished"></translation>
+        <translation>Зберегти проект як...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Refresh Folders</source>
-        <translation type="unfinished"></translation>
+        <translation>Оновити теки</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -795,7 +795,7 @@
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+T</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+T</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -806,7 +806,7 @@
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+M</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+M</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -821,7 +821,7 @@
     <message>
         <location line="+3"/>
         <source>Ctrl+P</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+P</translation>
     </message>
     <message>
         <location line="-232"/>
@@ -1359,7 +1359,7 @@ Line %1, column %2</source>
     <message>
         <location line="+9"/>
         <source>Filter</source>
-        <translation type="unfinished">Фільтр</translation>
+        <translation>Фільтр</translation>
     </message>
 </context>
 <context>
@@ -1410,22 +1410,22 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/objecttypeseditor.ui" line="+56"/>
         <source>Export...</source>
-        <translation type="unfinished"></translation>
+        <translation>Експорт...</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Export Object Types</source>
-        <translation type="unfinished">Експорт типів об&apos;єктів</translation>
+        <translation>Експорт типів об&apos;єктів</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Import...</source>
-        <translation type="unfinished"></translation>
+        <translation>Імпорт...</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Import Object Types</source>
-        <translation type="unfinished">Імпорт типів об&apos;єктів</translation>
+        <translation>Імпорт типів об&apos;єктів</translation>
     </message>
 </context>
 <context>
@@ -1524,7 +1524,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/propertybrowser.cpp" line="-1"/>
         <source>XML (deprecated)</source>
-        <translation type="unfinished"></translation>
+        <translation>XML (застаріле)</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -1682,7 +1682,7 @@ Line %1, column %2</source>
     <message>
         <location line="+24"/>
         <source>Keyboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Клавіатура</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1693,12 +1693,12 @@ Line %1, column %2</source>
     <message>
         <location line="+106"/>
         <source>Extensions</source>
-        <translation type="unfinished"></translation>
+        <translation>Розширення</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>Тека:</translation>
     </message>
     <message>
         <location line="+14"/>
@@ -1753,7 +1753,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/projectpropertiesdialog.ui" line="+14"/>
         <source>Project Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Властивості проекту</translation>
     </message>
 </context>
 <context>
