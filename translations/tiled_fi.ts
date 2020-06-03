@@ -219,7 +219,7 @@
     <message>
         <location filename="../src/tiled/commandsedit.ui" line="+14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Muoto</translation>
     </message>
     <message>
         <location line="+39"/>
@@ -2650,42 +2650,42 @@ Rivi %1, sarake %2</translation>
     <message>
         <location line="-120"/>
         <source>Access to BinaryFile object that was already closed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pääsy Binääritiedosto-objektiin, joka oli jo suljettu.</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>TextFile constructor needs path of file to be opened.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tekstitiedosto konstruktori tarvitsee polun avattavaan tiedostoon.</translation>
     </message>
     <message>
         <location line="+132"/>
         <source>Access to TextFile object that was already closed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pääsy jo suljettuun Tekstitiedosto-objektiin.</translation>
     </message>
     <message>
         <location filename="../src/tiled/scriptfileformatwrappers.cpp" line="+59"/>
         <source>File format doesn&apos;t support `read`</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiedostomuoto ei tue `lukemista`</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>File format doesn&apos;t support `write`</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiedostomuoto ei tue `kirjoitusta`</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Error reading tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Virhe luettaessa laatastoa</translation>
     </message>
     <message>
         <location line="+35"/>
         <source>Error reading map</source>
-        <translation type="unfinished"></translation>
+        <translation>Virhe luettaessa karttaa</translation>
     </message>
     <message>
         <location filename="../src/tiled/scriptmanager.cpp" line="+266"/>
         <source>Argument %1 is undefined or the wrong type</source>
-        <translation type="unfinished"></translation>
+        <translation>Argumenttia %1 ei ole määritetty tai se on väärän tyyppinen</translation>
     </message>
 </context>
 <context>
