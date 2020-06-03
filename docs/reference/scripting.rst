@@ -852,17 +852,22 @@ Object.property(name : string) : variant
     ``undefined`` if no such property is set on the object. Does not include
     inherited values (see :ref:`resolvedProperty <script-object-resolvedProperty>`).
 
-    *Note:* Currently it is not possible to inspect the value of ``file`` properties.
+    ``file`` properties are returned as :ref:`script-filepath`.
+
+    ``object`` properties are returned as :ref:`script-mapobject` when possible,
+    or :ref:`script-objectref` when the object could not be found.
 
 .. _script-object-setProperty:
 
 Object.setProperty(name : string, value : variant) : void
     Sets the value of the custom property with the given name. Supported types
-    are ``bool``, ``number`` and ``string``. When setting a ``number``, the
-    property type will be set to either ``int`` or ``float``, depending on
-    whether it is a whole number.
+    are ``bool``, ``number``, ``string``, :ref:`script-filepath`,
+    :ref:`script-objectref` and :ref:`script-mapobject`.
 
-    *Note:* Support for ``color`` and ``file`` properties is currently missing.
+    When setting a ``number``, the property type will be set to either ``int``
+    or ``float``, depending on whether it is a whole number.
+
+    *Note:* Support for setting ``color`` properties is currently missing.
 
 .. _script-object-properties:
 
