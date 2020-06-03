@@ -96,7 +96,6 @@ public:
     { return mProperties.value(name); }
 
     QVariant resolvedProperty(const QString &name) const;
-
     QVariantMap resolvedProperties() const;
 
     /**
