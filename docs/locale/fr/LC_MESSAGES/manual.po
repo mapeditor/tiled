@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Tiled 1.0\n"
 "Report-Msgid-Bugs-To: bjorn@lindeijer.nl\n"
 "POT-Creation-Date: 2017-12-21 14:31+0100\n"
-"PO-Revision-Date: 2020-06-01 07:41+0000\n"
+"PO-Revision-Date: 2020-06-04 14:41+0000\n"
 "Last-Translator: Rhenaud Dubois <rhen33390@gmail.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/tiled/manual/fr/>"
 "\n"
@@ -21,12 +21,10 @@ msgstr ""
 "Generated-By: Babel 2.5.1\n"
 
 #: ../../manual/automapping.rst:3
-#, fuzzy
 msgid "Automapping"
 msgstr "Automapping"
 
 #: ../../manual/automapping.rst:6
-#, fuzzy
 msgid "What is Automapping?"
 msgstr "Qu'est-ce que l'Automapping ?"
 
@@ -39,7 +37,7 @@ msgid ""
 "rather complex scenario, which would need lots more time if manually "
 "crafted."
 msgstr ""
-"L'Automapping est un outil avancé permettant de rechercher des  combinaisons "
+"L'Automapping est un outil avancé permettant de rechercher des combinaisons "
 "de tuiles dans les calques d'une carte et de remplacer ces parties par "
 "d'autres combinaisons de tuiles. Cela permet à l'utilisateur de dessiner des "
 "structures avec un gain de temps significatif car l'Automapping sera capable "
@@ -47,12 +45,11 @@ msgstr ""
 "s'ils avaient été créés manuellement."
 
 #: ../../manual/automapping.rst:15
-#, fuzzy
 msgid ""
 "So the goal of Automapping is that you only need to draw within one layer"
 " and everything else is setup for you. This brings some advantages:"
 msgstr ""
-"Donc le but de l'Automapping est que vous n'avez qu'à dessiner que dans un "
+"Le but de l'Automapping est donc que vous n'avez qu'à dessiner que dans un "
 "seul calque puis tout sera créé pour vous. Cela apporte quelques avantages :"
 
 #: ../../manual/automapping.rst:18
@@ -73,7 +70,6 @@ msgid "External Links"
 msgstr "Liens Externes"
 
 #: ../../manual/automapping.rst:25
-#, fuzzy
 msgid ""
 "`Automapping explained for Tiled 0.9 and later (YouTube) "
 "<http://www.youtube.com/watch?v=UUi0lD1pxyQ>`__"
@@ -82,7 +78,6 @@ msgstr ""
 "<http://www.youtube.com/watch?v=UUi0lD1pxyQ>`__"
 
 #: ../../manual/automapping.rst:26
-#, fuzzy
 msgid ""
 "`Examples on Automapping "
 "<https://github.com/stefanbeller/tiled_examples>`__"
@@ -90,7 +85,6 @@ msgstr ""
 "`Examples d'Automapping <https://github.com/stefanbeller/tiled_examples>`__"
 
 #: ../../manual/automapping.rst:27
-#, fuzzy
 msgid ""
 "`Tiled Map Editor Tutorial Part Three: AutoMap (YouTube) "
 "<https://youtu.be/A_A6rz7cvG4>`__"
@@ -109,7 +103,7 @@ msgid ""
 "is either"
 msgstr ""
 "La fonctionnalité d'Automapping cherche un fichier texte nommé 'rules.txt' "
-"dans le dossier contenant la carte en cours d'édition. Chaque line dans ce "
+"dans le dossier contenant la carte en cours d'édition. Chaque ligne dans ce "
 "fichier texte est soit"
 
 #: ../../manual/automapping.rst:37
@@ -142,7 +136,6 @@ msgid "An automapping **rulefile** consists of 4 major parts:"
 msgstr "Un **fichier de règles** d'automapping consiste en 4 parties majeures :"
 
 #: ../../manual/automapping.rst:47
-#, fuzzy
 msgid ""
 "The definition of regions describes which locations of the rulemap are "
 "actually used to create Automapping rules."
@@ -192,6 +185,17 @@ msgid ""
 "define a region. So either use any tile or no tile at a coordinate to "
 "indicate if that coordinate belongs to a rule or if it doesn't."
 msgstr ""
+"Il doit y avoir soit un calque de tuiles nommé **regions**, ou il doit y "
+"avoir deux calques de tuiles nommés **regions\\_input** et **regions\\_output"
+"**. En utilisant le calque **regions**, la région définie pour l'entrée et "
+"la sortie est la même. En utilisant les calques **regions\\_input** et **"
+"regions\\_output** différents, cela permet d'avoir des régions différentes "
+"pour la section d'entrée et la section de sortie. Le(s) calque(s) de région "
+"est(sont) seulement utilisé(s) pour baliser des régions dans laquelle une "
+"règle d'Automapping existe. Par conséquent, peu importe les tuiles utilisées "
+"sur ce calque car ces tuiles sont utilisés pour définir une région. Vous "
+"n'avez qu'à donc placer ou ne pas placer de tuile à une coordonnée pour "
+"indiquer si cette coordonnée appartient à une règle ou non."
 
 #: ../../manual/automapping.rst:70
 msgid ""
@@ -200,6 +204,11 @@ msgid ""
 "in between two rules. If the regions are adjacent (coherent) then both "
 "regions are interpreted as one rule."
 msgstr ""
+"Si plusieurs règles sont définies sur un fichier de carte de règles, les "
+"régions ne doivent pas être adjacentes. Cela veut dire qu'il doit y avoir au "
+"moins une tuile d'espace non utilisé entre les deux règles. Si les régions "
+"sont adjacentes (cohérentes) alors les deux régions sont interprétées en "
+"tant qu'une seule règle."
 
 #: ../../manual/automapping.rst:76
 msgid "Multiple Rules in One Rulefile"
@@ -1277,12 +1286,12 @@ msgid ""
 "capture tile stamps from the currently active layer. A tile stamp is "
 "commonly created by selecting one or more tiles in the Tilesets view."
 msgstr ""
-"L'outil le plus basique pour modifier les niveaux de tuiles est la Brosse"
-" Tampon. Elle peut être utilisée pour peindre aussi bien une seule tuile "
-"qu'un \"tampon\" plus large, c'est de là que vient son nom. En utilisant "
-"le clique droit de la souris, elle peut également capturer rapidement un "
-"tampon de tuile de la couche active. Un tampon de tuile est communément "
-"crée en sélectionnant une ou plusieurs tuiles dans la vue \"Tilesets\"."
+"L'outil le plus basique pour modifier les calques de tuiles est la Brosse "
+"Tampon. Elle peut être utilisée pour peindre aussi bien une seule tuile "
+"qu'un \"tampon\" plus large, c'est de là que vient son nom. En utilisant le "
+"clique droit de la souris, elle peut également capturer rapidement un tampon "
+"de tuile du calque actif. Un tampon de tuile est souvent crée en "
+"sélectionnant une ou plusieurs tuiles dans la vue Jeu de Tuiles."
 
 #: ../../manual/editing-tile-layers.rst:23
 msgid "The Stamp Brush has some extra features:"
