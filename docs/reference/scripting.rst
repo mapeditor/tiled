@@ -850,7 +850,7 @@ Functions
 Object.property(name : string) : variant
     Returns the value of the custom property with the given name, or
     ``undefined`` if no such property is set on the object. Does not include
-    templates or type defaults.
+    inherited values (see ``resolvedProperty``).
 
     *Note:* Currently it is not possible to inspect the value of ``file`` properties.
 
@@ -868,8 +868,8 @@ Object.setProperty(name : string, value : variant) : void
 
 Object.properties() : object
     Returns all custom properties set on this object. Modifications to the
-    properties will not affect the original object. Does not include templates
-    or type defaults.
+    properties will not affect the original object. Does not include inherited
+    values (see ``resolvedProperties``).
 
 .. _script-object-setProperties:
 
@@ -883,15 +883,15 @@ Object.removeProperty(name : string) : void
 
 Object.resolvedProperty(name : string) : variant
     Returns the value of the custom property with the given name, or
-    ``undefined`` if no such property is set. Includes templates and
-    type defaults.
+    ``undefined`` if no such property is set. Includes values inherited from
+    object types, templates and tiles where applicable.
 
 .. _script-object-properties:
 
 Object.resolvedProperties() : object
     Returns all custom properties set on this object. Modifications to the
-    properties will not affect the original object. Includes templates and
-    type defaults.
+    properties will not affect the original object. Includes values inherited from
+    object types, templates and tiles where applicable.
 
 .. _script-objectgroup:
 
