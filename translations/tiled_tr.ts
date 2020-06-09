@@ -184,7 +184,7 @@
     <message>
         <location filename="../src/tiled/commandlineparser.cpp" line="+76"/>
         <source>Bad argument %1: lonely hyphen</source>
-        <translation>Yanlış argüman %1: lonely hyphen</translation>
+        <translation>Hatalı argüman %1: yalnız kısa çizgi</translation>
     </message>
     <message>
         <location line="+14"/>
@@ -1868,7 +1868,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+2"/>
         <source>Up Arrow</source>
-        <translation>Üst Ok</translation>
+        <translation>Yukarı Ok</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -1883,7 +1883,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+2"/>
         <source>IBeam</source>
-        <translation>IBeam</translation>
+        <translation>Yazı Çubuğu</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -1898,12 +1898,12 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+2"/>
         <source>Size Backslash</source>
-        <translation>Boyut Ters Çizgisi</translation>
+        <translation>Ters Çizgi Boyut</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Size Slash</source>
-        <translation>Boyut Çizgisi</translation>
+        <translation>Düz Çizgi Boyut</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -1918,12 +1918,12 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+2"/>
         <source>Split Vertical</source>
-        <translation>Dikey Olarak Böl</translation>
+        <translation>Dikey Böl</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Split Horizontal</source>
-        <translation>Yatay Olarak Böl</translation>
+        <translation>Yatay Böl</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -1933,7 +1933,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+2"/>
         <source>Forbidden</source>
-        <translation>Yasaklanmış</translation>
+        <translation>Yasak</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2745,13 +2745,13 @@ Satır %1, sütun %2</translation>
         <location filename="../src/plugins/tbin/tbin/Map.cpp" line="+99"/>
         <location line="+23"/>
         <source>Bad property type</source>
-        <translation>Kötü özellik türü</translation>
+        <translation>Hatalı özellik türü</translation>
     </message>
     <message>
         <location line="+69"/>
         <location line="+68"/>
         <source>Bad layer tile data</source>
-        <translation>Kötü katman desen verisi</translation>
+        <translation>Hatalı katman desen verisi</translation>
     </message>
     <message>
         <location line="+72"/>
