@@ -22,9 +22,11 @@
 #include "ui_noeditorwidget.h"
 
 #include "actionmanager.h"
+#include "documentmanager.h"
+
+#include <QAction>
 
 namespace Tiled {
-namespace Internal {
 
 NoEditorWidget::NoEditorWidget(QWidget *parent) :
     QWidget(parent),
@@ -32,8 +34,15 @@ NoEditorWidget::NoEditorWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    // Transfer margin and spacing to the internal layout
+    ui->verticalLayout->setMargin(ui->gridLayout->margin());
+    ui->verticalLayout->setSpacing(ui->gridLayout->spacing());
+    ui->gridLayout->setMargin(0);
+    ui->gridLayout->setSpacing(0);
+
     connect(ui->newMapButton, &QPushButton::clicked, this, &NoEditorWidget::newMap);
     connect(ui->newTilesetButton, &QPushButton::clicked, this, &NoEditorWidget::newTileset);
+    connect(ui->openFileButton, &QPushButton::clicked, this, &NoEditorWidget::openFile);
 }
 
 NoEditorWidget::~NoEditorWidget()
@@ -55,13 +64,17 @@ void NoEditorWidget::changeEvent(QEvent *e)
 
 void NoEditorWidget::newMap()
 {
-    ActionManager::action("file.new_map")->trigger();
+    ActionManager::action("NewMap")->trigger();
 }
 
 void NoEditorWidget::newTileset()
 {
-    ActionManager::action("file.new_tileset")->trigger();
+    ActionManager::action("NewTileset")->trigger();
 }
 
-} // namespace Internal
+void NoEditorWidget::openFile()
+{
+    DocumentManager::instance()->openFileDialog();
+}
+
 } // namespace Tiled

@@ -69,21 +69,16 @@ Product {
                     "Qt5Core" + postfix,
                     "Qt5Gui" + postfix,
                     "Qt5Network" + postfix,
+                    "Qt5Qml" + postfix,
                     "Qt5Svg" + postfix,
                     "Qt5Widgets" + postfix
                 );
             }
 
-            if (Qt.core.versionMinor < 4) {
-                list.push("Qt5OpenGL" + postfix);
-            }
-
             if (qbs.targetOS.contains("windows")) {
-                if (Qt.core.versionMinor <= 4) {
-                    list.push("icuin53.dll",
-                              "icuuc53.dll",
-                              "icudt53.dll");
-                } else if (Qt.core.versionMinor < 7) {
+                if (Qt.core.versionMinor < 7 &&
+                        !(Qt.core.versionMinor == 6 &&
+                          Qt.core.versionPatch >= 3)) {
                     list.push("icuin54.dll",
                               "icuuc54.dll",
                               "icudt54.dll");
@@ -135,6 +130,24 @@ Product {
     }
 
     Group {
+        name: "Qt Icon Engine Plugins"
+        prefix: FileInfo.joinPaths(Qt.core.pluginPath, "/iconengines/")
+        files: pluginFiles
+        excludeFiles: pluginExcludeFiles
+        qbs.install: true
+        qbs.installDir: "plugins/iconengines"
+    }
+
+    Group {
+        name: "Qt Image Format Plugins"
+        prefix: FileInfo.joinPaths(Qt.core.pluginPath, "/imageformats/")
+        files: pluginFiles
+        excludeFiles: pluginExcludeFiles
+        qbs.install: true
+        qbs.installDir: "plugins/imageformats"
+    }
+
+    Group {
         name: "Qt Platform Plugins"
         prefix: FileInfo.joinPaths(Qt.core.pluginPath, "/platforms/")
         files: pluginFiles
@@ -162,12 +175,12 @@ Product {
     }
 
     Group {
-        name: "Qt Image Format Plugins"
-        prefix: FileInfo.joinPaths(Qt.core.pluginPath, "/imageformats/")
+        name: "Qt Style Plugins"
+        prefix: FileInfo.joinPaths(Qt.core.pluginPath, "/styles/")
         files: pluginFiles
         excludeFiles: pluginExcludeFiles
         qbs.install: true
-        qbs.installDir: "plugins/imageformats"
+        qbs.installDir: "plugins/styles"
     }
 
     Group {
@@ -177,15 +190,6 @@ Product {
         files: pluginFiles
         qbs.install: true
         qbs.installDir: "plugins/xcbglintegrations"
-    }
-
-    Group {
-        name: "Qt Icon Engine Plugins"
-        condition: qbs.targetOS.contains("linux")
-        prefix: FileInfo.joinPaths(Qt.core.pluginPath, "/iconengines/")
-        files: pluginFiles
-        qbs.install: true
-        qbs.installDir: "plugins/iconengines"
     }
 
     Group {
@@ -229,7 +233,7 @@ Product {
                              "pt_PT",
                              "ru",
                              "tr",
-                             "zh",
+                             "zh_CN",
                              "zh_TW"];
 
             var list = [];
@@ -262,17 +266,53 @@ Product {
                 return "C:/windows/SysWOW64/"
         }
         files: {
+            var list = []
             if (qbs.toolchain.contains("mingw")) {
-                return [
-                    "libgcc_s_dw2-1.dll",
-                    "libstdc++-6.dll",
-                    "libwinpthread-1.dll",
-                ]
+                list.push("libstdc++-6.dll",
+                          "libwinpthread-1.dll")
+
+                if (qbs.architecture == "x86_64")
+                    list.push("libgcc_s_seh-1.dll")
+                else
+                    list.push("libgcc_s_dw2-1.dll")
             } else {
-                return [
-                    "MSVCP120.DLL",
-                    "MSVCR120.DLL",
-                ]
+                list.push("MSVCP120.DLL",
+                          "MSVCR120.DLL")
+            }
+            return list
+        }
+        qbs.install: true
+        qbs.installDir: ""
+    }
+
+    Group {
+        name: "OpenSSL DLLs"
+        condition: qbs.targetOS.contains("windows") && File.exists(prefix)
+
+        prefix: {
+            // Not sure what this check should be exactly, but Qt 5.6.3 was
+            // built against OpenSSL 1.0.2 whereas Qt 5.12.5 was built against
+            // OpenSSL 1.1.1.
+            if (Qt.core.versionMinor >= 12) {
+                if (qbs.architecture === "x86_64")
+                    return "C:/OpenSSL-v111-Win64/"
+                else
+                    return "C:/OpenSSL-v111-Win32/"
+            } else {
+                if (qbs.architecture === "x86_64")
+                    return "C:/OpenSSL-Win64/"
+                else
+                    return "C:/OpenSSL-Win32/"
+            }
+        }
+        files: {
+            if (Qt.core.versionMinor >= 12) {
+                if (qbs.architecture === "x86_64")
+                    return [ "libcrypto-1_1-x64.dll", "libssl-1_1-x64.dll" ]
+                else
+                    return [ "libcrypto-1_1.dll", "libssl-1_1.dll" ]
+            } else {
+                return [ "libeay32.dll", "ssleay32.dll" ]
             }
         }
         qbs.install: true

@@ -21,20 +21,27 @@
 #pragma once
 
 #include "document.h"
+#include "editabletileset.h"
 #include "tileset.h"
+#include "tilesetformat.h"
 
 #include <QList>
+#include <QMap>
+
+#include <memory>
+#include <unordered_map>
 
 namespace Tiled {
 
-class TilesetFormat;
-
-namespace Internal {
+class ObjectGroup;
 
 class MapDocument;
+class TilesetDocument;
 class TilesetTerrainModel;
 class TilesetWangSetModel;
 class WangColorModel;
+
+using TilesetDocumentPtr = QSharedPointer<TilesetDocument>;
 
 /**
  * Represents an editable tileset.
@@ -44,8 +51,10 @@ class TilesetDocument : public Document
     Q_OBJECT
 
 public:
-    TilesetDocument(const SharedTileset &tileset, const QString &fileName = QString());
-    ~TilesetDocument();
+    TilesetDocument(const SharedTileset &tileset);
+    ~TilesetDocument() override;
+
+    TilesetDocumentPtr sharedFromThis() { return qSharedPointerCast<TilesetDocument>(Document::sharedFromThis()); }
 
     bool save(const QString &fileName, QString *error = nullptr) override;
 
@@ -56,17 +65,26 @@ public:
      * Loads a tileset and returns a TilesetDocument instance on success.
      * Returns null on error and sets the \a error message.
      */
-    static TilesetDocument *load(const QString &fileName,
-                                 TilesetFormat *format,
-                                 QString *error = nullptr);
+    static TilesetDocumentPtr load(const QString &fileName,
+                                   TilesetFormat *format,
+                                   QString *error = nullptr);
 
     FileFormat *writerFormat() const override;
     void setWriterFormat(TilesetFormat *format);
 
+    QString lastExportFileName() const override;
+    void setLastExportFileName(const QString &fileName) override;
+
+    TilesetFormat *exportFormat() const override;
+    void setExportFormat(FileFormat *format) override;
+
     QString displayName() const override;
+    QString externalOrEmbeddedFileName() const;
 
     void swapTileset(SharedTileset &tileset);
     const SharedTileset &tileset() const;
+
+    EditableTileset *editable() override;
 
     bool isEmbedded() const;
     void setClean();
@@ -76,7 +94,8 @@ public:
     void removeMapDocument(MapDocument *mapDocument);
 
     void setTilesetName(const QString &name);
-    void setTilesetTileOffset(const QPoint &tileOffset);
+    void setTilesetTileOffset(QPoint tileOffset);
+    void setTilesetObjectAlignment(Alignment objectAlignment);
 
     void addTiles(const QList<Tile*> &tiles);
     void removeTiles(const QList<Tile*> &tiles);
@@ -89,11 +108,16 @@ public:
     TilesetTerrainModel *terrainModel() const { return mTerrainModel; }
     TilesetWangSetModel *wangSetModel() const { return mWangSetModel; }
 
-    WangColorModel *wangColorModel() const { return mWangColorModel; }
-    void setWangColorModel(WangColorModel *wangColorModel) { mWangColorModel = wangColorModel; }
+    WangColorModel *wangColorModel(WangSet *wangSet);
 
     void setTileType(Tile *tile, const QString &type);
     void setTileImage(Tile *tile, const QPixmap &image, const QUrl &source);
+    void setTileProbability(Tile *tile, qreal probability);
+    void swapTileObjectGroup(Tile *tile, std::unique_ptr<ObjectGroup> &objectGroup);
+
+    void checkIssues() override;
+
+    static TilesetDocument* findDocumentForTileset(const SharedTileset &tileset);
 
 signals:
     /**
@@ -105,8 +129,12 @@ signals:
      */
     void tilesetChanged(Tileset *tileset);
 
+    void tilesAdded(const QList<Tile*> &tiles);
+    void tilesRemoved(const QList<Tile*> &tiles);
+
     void tilesetNameChanged(Tileset *tileset);
     void tilesetTileOffsetChanged(Tileset *tileset);
+    void tilesetObjectAlignmentChanged(Tileset *tileset);
 
     void tileTypeChanged(Tile *tile);
     void tileImageSourceChanged(Tile *tile);
@@ -139,7 +167,7 @@ signals:
      */
     void selectedTilesChanged();
 
-private slots:
+private:
     void onPropertyAdded(Object *object, const QString &name);
     void onPropertyRemoved(Object *object, const QString &name);
     void onPropertyChanged(Object *object, const QString &name);
@@ -148,15 +176,16 @@ private slots:
     void onTerrainRemoved(Terrain *terrain);
     void onWangSetRemoved(WangSet *wangSet);
 
-private:
     SharedTileset mTileset;
     QList<MapDocument*> mMapDocuments;
 
     TilesetTerrainModel *mTerrainModel;
     TilesetWangSetModel *mWangSetModel;
-    WangColorModel *mWangColorModel;
+    std::unordered_map<WangSet*, std::unique_ptr<WangColorModel>> mWangColorModels;
 
     QList<Tile*> mSelectedTiles;
+
+    static QMap<SharedTileset, TilesetDocument*> sTilesetToDocument;
 };
 
 
@@ -186,5 +215,4 @@ inline const QList<Tile *> &TilesetDocument::selectedTiles() const
     return mSelectedTiles;
 }
 
-} // namespace Internal
 } // namespace Tiled

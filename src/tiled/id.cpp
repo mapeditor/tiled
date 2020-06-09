@@ -27,7 +27,6 @@
 #include <QHash>
 
 namespace Tiled {
-namespace Internal {
 
 class StringHash
 {
@@ -66,9 +65,14 @@ Id::Id(const char *name)
     static QByteArray temp;
     temp.setRawData(name, qstrlen(name));                           // avoid copying data
 
+    if (temp.isEmpty()) {
+        mId = 0;
+        return;
+    }
+
     StringHash sh(temp);
 
-    int id = idFromString.value(sh, 0);
+    uint id = idFromString.value(sh, 0);
 
     if (id == 0) {
         id = firstUnusedId++;
@@ -80,10 +84,19 @@ Id::Id(const char *name)
     mId = id;
 }
 
+Id::Id(const QByteArray &name)
+    : Id(name.constData())
+{
+}
+
 QByteArray Id::name() const
 {
     return stringFromId.value(mId).string;
 }
 
-} // namespace Internal
+QString Id::toString() const
+{
+    return QString::fromUtf8(name());
+}
+
 } // namespace Tiled

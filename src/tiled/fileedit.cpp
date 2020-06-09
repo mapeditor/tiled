@@ -28,7 +28,6 @@
 #include <QToolButton>
 
 namespace Tiled {
-namespace Internal {
 
 FileEdit::FileEdit(QWidget *parent)
     : QWidget(parent)
@@ -44,9 +43,9 @@ FileEdit::FileEdit(QWidget *parent)
     mOkTextColor = mLineEdit->palette().color(QPalette::Active, QPalette::Text);
 
     QToolButton *button = new QToolButton(this);
-    button->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred));
-    button->setFixedWidth(20);
     button->setText(QLatin1String("..."));
+    button->setAutoRaise(true);
+    button->setToolTip(tr("Choose"));
     layout->addWidget(mLineEdit);
     layout->addWidget(button);
 
@@ -113,25 +112,41 @@ void FileEdit::validate()
     const QUrl url(fileUrl());
 
     QColor textColor = mOkTextColor;
-    if (url.isLocalFile() && !QFile::exists(url.toLocalFile()))
-        textColor = mErrorTextColor;
+    if (url.isLocalFile()) {
+        const QString localFile = url.toLocalFile();
+        if (!QFile::exists(localFile) || (mIsDirectory && !QFileInfo(localFile).isDir()))
+            textColor = mErrorTextColor;
+    }
 
     QPalette palette = mLineEdit->palette();
-    palette.setColor(QPalette::Active, QPalette::Text, textColor);
+    palette.setColor(QPalette::Text, textColor);
     mLineEdit->setPalette(palette);
 }
 
 void FileEdit::buttonClicked()
 {
-    QUrl url = QFileDialog::getOpenFileUrl(window(),
-                                           tr("Choose a File"),
-                                           fileUrl(),
-                                           mFilter);
-    if (url.isEmpty())
+    QUrl url;
+
+    if (mIsDirectory) {
+        url = QFileDialog::getExistingDirectoryUrl(window(),
+                                                   tr("Choose a Folder"),
+                                                   fileUrl());
+    } else {
+        url = QFileDialog::getOpenFileUrl(window(),
+                                          tr("Choose a File"),
+                                          fileUrl(),
+                                          mFilter);
+    }
+
+    if (url.isEmpty()) {
+        validate();
         return;
+    }
+
     setFileUrl(url);
+    validate(); // validate even if url didn't change, since directory may have been created
+
     emit fileUrlChanged(url);
 }
 
-} // namespace Internal
 } // namespace Tiled

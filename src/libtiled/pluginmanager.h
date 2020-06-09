@@ -35,6 +35,8 @@
 #include <QObject>
 #include <QString>
 
+#include "qtcompat_p.h"
+
 #include <functional>
 
 class QPluginLoader;
@@ -116,7 +118,7 @@ public:
     {
         QList<T*> results;
         if (mInstance)
-            for (QObject *object : mInstance->mObjects)
+            for (QObject *object : qAsConst(mInstance->mObjects))
                 if (T *result = qobject_cast<T*>(object))
                     results.append(result);
         return results;
@@ -129,9 +131,24 @@ public:
     static void each(std::function<void(T*)> function)
     {
         if (mInstance)
-            for (QObject *object : mInstance->mObjects)
+            for (QObject *object : qAsConst(mInstance->mObjects))
                 if (T *result = qobject_cast<T*>(object))
                     function(result);
+    }
+
+    /**
+     * Calls the given function for each object implementing a given interface,
+     * returning the first one for which `true` is returned.
+     */
+    template<typename T>
+    static T *find(std::function<bool(T*)> function)
+    {
+        if (mInstance)
+            for (QObject *object : qAsConst(mInstance->mObjects))
+                if (T *result = qobject_cast<T*>(object))
+                    if (function(result))
+                        return result;
+        return nullptr;
     }
 
     PluginFile *pluginByFileName(const QString &fileName);
@@ -141,7 +158,7 @@ public:
 
 signals:
     void objectAdded(QObject *object);
-    void objectAboutToBeRemoved(QObject *object);
+    void objectRemoved(QObject *object);
 
 private:
     Q_DISABLE_COPY(PluginManager)

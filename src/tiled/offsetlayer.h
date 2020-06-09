@@ -29,8 +29,6 @@ namespace Tiled {
 
 class Layer;
 
-namespace Internal {
-
 class MapDocument;
 
 /**
@@ -39,18 +37,14 @@ class MapDocument;
 class OffsetLayer : public QUndoCommand
 {
 public:
-    /**
-     * Creates an undo command that offsets the layer at \a index by \a offset,
-     * within \a bounds, and can optionally wrap on the x or y axis.
-     */
     OffsetLayer(MapDocument *mapDocument,
                 Layer *layer,
-                const QPoint &offset,
+                QPoint offset,
                 const QRect &bounds,
                 bool xWrap,
                 bool yWrap);
 
-    ~OffsetLayer();
+    ~OffsetLayer() override;
 
     void undo() override;
     void redo() override;
@@ -64,5 +58,4 @@ private:
     QPointF mNewOffset;
 };
 
-} // namespace Internal
 } // namespace Tiled

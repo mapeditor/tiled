@@ -21,12 +21,11 @@
 
 #pragma once
 
-#include "templategroup.h"
-
 #include <QUndoCommand>
 
 namespace Tiled {
-namespace Internal {
+
+class ObjectTemplate;
 
 class MapDocument;
 
@@ -34,8 +33,8 @@ class ReplaceTemplate : public QUndoCommand
 {
 public:
     ReplaceTemplate(MapDocument *mapDocument,
-                   int index,
-                   TemplateGroup *templateGroup);
+                    const ObjectTemplate *oldObjectTemplate,
+                    const ObjectTemplate *newObjectTemplate);
 
     ~ReplaceTemplate();
 
@@ -46,9 +45,8 @@ private:
     void swap();
 
     MapDocument *mMapDocument;
-    int mIndex;
-    TemplateGroup *mTemplateGroup;
+    const ObjectTemplate *mOldObjectTemplate;
+    const ObjectTemplate *mNewObjectTemplate;
 };
 
-} // namespace Internal
 } // namespace Tiled

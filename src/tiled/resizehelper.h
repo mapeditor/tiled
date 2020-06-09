@@ -30,7 +30,6 @@ class QMouseEvent;
 class QResizeEvent;
 
 namespace Tiled {
-namespace Internal {
 
 /**
  * A special widget designed as an aid for resizing a canvas. Based on a
@@ -51,15 +50,15 @@ public:
     void setMiniMapRenderer(std::function<QImage (QSize)> renderer);
 
 signals:
-    void offsetChanged(const QPoint &offset);
+    void offsetChanged(QPoint offset);
     void offsetXChanged(int value);
     void offsetYChanged(int value);
     void offsetBoundsChanged(const QRect &bounds);
 
 public slots:
-    void setOldSize(const QSize &size);
-    void setNewSize(const QSize &size);
-    void setOffset(const QPoint &offset);
+    void setOldSize(QSize size);
+    void setNewSize(QSize size);
+    void setOffset(QPoint offset);
 
     /** Method to set only the X offset, provided for convenience. */
     void setOffsetX(int x);
@@ -98,5 +97,4 @@ private:
     std::function<QImage(QSize)> mMiniMapRenderer;
 };
 
-} // namespace Internal
 } // namespace Tiled

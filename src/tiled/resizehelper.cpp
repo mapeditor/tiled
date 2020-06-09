@@ -24,7 +24,7 @@
 #include <QPainter>
 #include <QResizeEvent>
 
-using namespace Tiled::Internal;
+using namespace Tiled;
 
 ResizeHelper::ResizeHelper(QWidget *parent)
     : QWidget(parent)
@@ -34,14 +34,14 @@ ResizeHelper::ResizeHelper(QWidget *parent)
     setOldSize(QSize(1, 1));
 }
 
-void ResizeHelper::setOldSize(const QSize &size)
+void ResizeHelper::setOldSize(QSize size)
 {
     mOldSize = size;
     recalculateMinMaxOffset();
     recalculateScale();
 }
 
-void ResizeHelper::setNewSize(const QSize &size)
+void ResizeHelper::setNewSize(QSize size)
 {
     mNewSize = size;
     recalculateMinMaxOffset();
@@ -58,7 +58,7 @@ void ResizeHelper::setOffsetY(int y)
     setOffset(QPoint(mOffset.x(), y));
 }
 
-void ResizeHelper::setOffset(const QPoint &offset)
+void ResizeHelper::setOffset(QPoint offset)
 {
     // Clamp the offset within the offset bounds
     const QPoint newOffset(
@@ -159,7 +159,7 @@ void ResizeHelper::mouseMoveEvent(QMouseEvent *event)
     if (!mDragging)
         return;
 
-    const QPoint &pos = event->pos();
+    const QPoint pos = event->pos();
 
     if (pos != mMouseAnchorPoint) {
         setOffset(mOrigOffset + (pos - mMouseAnchorPoint) / mScale);

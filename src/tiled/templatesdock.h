@@ -21,11 +21,14 @@
 
 #pragma once
 
-#include <QDockWidget>
-#include <QTreeView>
-#include <QAction>
+#include "mapdocument.h"
 
-class QAbstractProxyModel;
+#include <QDockWidget>
+#include <QHash>
+
+class QAction;
+class QPushButton;
+class QLabel;
 
 namespace Tiled {
 
@@ -33,13 +36,9 @@ class ObjectTemplate;
 class MapObject;
 class Tile;
 
-namespace Internal {
-
 class AbstractTool;
-class MapDocument;
 class MapScene;
 class MapView;
-class ObjectTemplateModel;
 class PropertiesDock;
 class TemplatesView;
 class ToolManager;
@@ -50,76 +49,56 @@ class TemplatesDock : public QDockWidget
 
 public:
     TemplatesDock(QWidget *parent = nullptr);
-    ~TemplatesDock();
+    ~TemplatesDock() override;
 
     void setPropertiesDock(PropertiesDock *propertiesDock);
+    void setTile(Tile *tile);
 
 signals:
     void currentTemplateChanged(ObjectTemplate *objectTemplate);
-    void templateEdited(const MapObject *mapObject);
-    void setTile(Tile *tile);
+    void templateTilesetReplaced();
 
-private slots:
-    void setSelectedTool(AbstractTool*tool);
-    void openTemplateGroup();
+public slots:
+    void openTemplate(const QString &path);
+    void tryOpenTemplate(const QString &filePath);
+    void bringToFront();
+
+protected:
+    void dragEnterEvent(QDragEnterEvent *event) override;
+    void dropEvent(QDropEvent *event) override;
+
+    void focusInEvent(QFocusEvent *event) override;
+    void focusOutEvent(QFocusEvent *event) override;
+
+private:
     void setTemplate(ObjectTemplate *objectTemplate);
+    void checkTileset();
 
     void undo();
     void redo();
     void applyChanges();
 
-protected:
-    void focusInEvent(QFocusEvent *event) override;
-    void focusOutEvent(QFocusEvent *event) override;
-
-private:
     void retranslateUi();
+    void fixTileset();
 
-    TemplatesView *mTemplatesView;
+    MapObject *dummyObject() const;
 
-    QAction *mNewTemplateGroup;
-    QAction *mOpenTemplateGroup;
     QAction *mUndoAction;
     QAction *mRedoAction;
+    QPushButton *mFixTilesetButton;
+    QLabel *mDescriptionLabel;
 
-    MapDocument *mDummyMapDocument;
+    MapDocumentPtr mDummyMapDocument;
     MapScene *mMapScene;
     MapView *mMapView;
     ObjectTemplate *mObjectTemplate;
-    MapObject *mObject;
     PropertiesDock *mPropertiesDock;
     ToolManager *mToolManager;
-};
 
-class TemplatesView : public QTreeView
-{
-    Q_OBJECT
-
-public:
-    QSize sizeHint() const override;
-    TemplatesView(QWidget *parent = nullptr);
-
-    void applyTemplateGroups();
-
-signals:
-    void currentTemplateChanged(ObjectTemplate *objectTemplate);
-    void focusInEvent(QFocusEvent *event) override;
-    void focusOutEvent(QFocusEvent *event) override;
-
-protected:
-    void contextMenuEvent(QContextMenuEvent *event) override;
-
-public slots:
-    void updateSelection(const QItemSelection &selected, const QItemSelection &deselected);
-    void selectAllInstances();
-
-private:
-    QAction *mActionSelectAllInstances;
-    ObjectTemplate *mObjectTemplate;
+    static QHash<ObjectTemplate*, QWeakPointer<MapDocument>> ourDummyDocuments;
 };
 
 inline void TemplatesDock::setPropertiesDock(PropertiesDock *propertiesDock)
 { mPropertiesDock = propertiesDock; }
 
-} // namespace Internal
 } // namespace Tiled

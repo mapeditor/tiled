@@ -2,9 +2,9 @@
  * #%L
  * This file is part of libtiled-java.
  * %%
- * Copyright (C) 2004 - 2017 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright (C) 2004 - 2017 Adam Turk <aturk@biggeruniverse.com>
- * Copyright (C) 2016 - 2017 Mike Thomas <mikepthomas@outlook.com>
+ * Copyright (C) 2004 - 2019 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright (C) 2004 - 2019 Adam Turk <aturk@biggeruniverse.com>
+ * Copyright (C) 2016 - 2019 Mike Thomas <mikepthomas@outlook.com>
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -44,17 +44,14 @@ import org.mapeditor.core.TileLayer;
 /**
  * The isometric map renderer.
  *
- * @author Thorbjørn Lindeijer
- * @author Adam Turk
- * @author Mike Thomas
- * @version 1.0.2
+ * @version 1.2.3
  */
 public class IsometricRenderer implements MapRenderer {
 
     private final Map map;
 
     /**
-     * <p>Constructor for IsometricRenderer.</p>
+     * Constructor for IsometricRenderer.
      *
      * @param map a {@link org.mapeditor.core.Map} object.
      */
@@ -99,6 +96,10 @@ public class IsometricRenderer implements MapRenderer {
         drawLoc.x -= tileWidth / 2;
         drawLoc.y -= tileHeight / 2;
 
+        // Add offset from tile layer property
+        drawLoc.x += layer.getOffsetX() != null ? layer.getOffsetX() : 0;
+        drawLoc.y += layer.getOffsetY() != null ? layer.getOffsetY() : 0;
+        
         // Determine area to draw from clipping rectangle
         int tileStepY = tileHeight / 2 == 0 ? 1 : tileHeight / 2;
         int columns = clip.width / tileWidth + 3;
@@ -116,6 +117,10 @@ public class IsometricRenderer implements MapRenderer {
                     if (image == null) {
                         continue;
                     }
+
+                    // Add offset from tileset property
+                    drawLoc.x += tile.getTileSet().getTileoffset() != null ? tile.getTileSet().getTileoffset().getX() : 0;
+                    drawLoc.y += tile.getTileSet().getTileoffset() != null ? tile.getTileSet().getTileoffset().getY() : 0;
 
                     g.drawImage(image, drawLoc.x, drawLoc.y, null);
                 }

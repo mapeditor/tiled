@@ -11,9 +11,9 @@ The preferences are stored in a system-dependent format and location:
 +-------------+-----------------------------------------------------------------+
 | **Windows** | Registry key ``HKEY_CURRENT_USER\SOFTWARE\mapeditor.org\Tiled`` |
 +-------------+-----------------------------------------------------------------+
-| **macOS**   | ``~/Library/Preferences/org.mapeditor.Tiled.plist``             |
+| **macOS**   | :file:`~/Library/Preferences/org.mapeditor.Tiled.plist`         |
 +-------------+-----------------------------------------------------------------+
-| **Linux**   |  ``~/.config/mapeditor.org/tiled.conf``                         |
+| **Linux**   | :file:`~/.config/mapeditor.org/tiled.conf`                      |
 +-------------+-----------------------------------------------------------------+
 
 
@@ -22,7 +22,7 @@ General
 
 .. figure:: images/preferences-general.png
    :alt: General Preferences
-   :scale: 66
+   :scale: 50
    :align: right
 
 Saving and Loading
@@ -49,6 +49,43 @@ Use safe writing of files
     disk space. Unfortunately, it is known to cause issues when saving
     files to a Dropbox folder or a network drive, in which case it helps
     to disable this feature.
+
+.. raw:: html
+
+   <div class="new new-prev">Since Tiled 1.2</div>
+
+.. _export-options:
+
+Export Options
+~~~~~~~~~~~~~~
+
+The following export options are applied each time a map or tileset gets
+exported, without affecting the map or tileset itself.
+
+Embed tilesets
+    All tilesets are embedded in the exported map. Useful for example
+    when you are exporting to JSON and loading an external tileset is
+    not desired.
+
+Detach templates
+    All template instances are detached. Useful when you want to use the
+    templates feature but can't or don't want to load the external
+    template object files.
+
+Resolve object types and properties
+    Stores effective object type and properties with each object.
+    Object properties are inherited from a tile (in case of a tile
+    object) and from the default properties of their type.
+
+Minimize output
+    Omits unnecessary whitespace in the output file. This option is supported
+    for XML (TMX and TSX), JSON and Lua formats.
+
+These options are also available as options when exporting using the
+command-line.
+
+Interface
+---------
 
 Interface
 ~~~~~~~~~
@@ -77,13 +114,47 @@ Hardware accelerated drawing (OpenGL)
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.1</div>
+   <div class="new new-prev">Since Tiled 1.1</div>
 
 Mouse wheel zooms by default
     This option causes the mouse wheel to zoom without the need to hold
     Control (or Command on macOS). It can be a convenient way to
     navigate the map, but it can also interfere with panning on a
     touchpad.
+
+.. raw:: html
+
+   <div class="new">New in Tiled 1.3</div>
+
+Updates
+~~~~~~~
+
+By default, Tiled checks for news and new versions and highlights any updates
+in the status bar. Here you can disable this functionality. It is recommended
+to keep at least one of these enabled.
+
+If you disable displaying of new versions, you can still manually check
+whether a new version is available by opening the *About Tiled* dialog.
+
+.. raw:: html
+
+   <div class="new">New in Tiled 1.3</div>
+
+.. _keyboard-options:
+
+Keyboard
+--------
+
+Here you can add, remove or change the keyboard shortcuts of most available
+actions.
+
+Conflicting keybindings are highlighted in red. They will not work until you
+resolve the conflict.
+
+If you customize multiple shortcuts, it is recommended to use the export
+functionality to save the keybindings somewhere, so that you can easily
+recover that setup or copy it to other Tiled installations.
+
 
 Theme
 -----
@@ -103,30 +174,17 @@ available since it is in some cases preferable to the custom style. The
 base color and selection color can't be changed when using this style,
 as they depend on the system.
 
-Updates
--------
-
-The official macOS builds and the Windows installers of Tiled ship with
-an automatic update check, done by `Sparkle`_ and `WinSparkle`_
-respectively. These solutions also offer to download the new version
-and to upgrade or run the installer afterwards.
-
-You can turn off the update checks or trigger them manually using the
-*Check Now* button.
-
 Plugins
 -------
 
-Here you can choose which plugins are enabled. Currently plugins only
-serve to add support for additional map and/or tileset file formats.
-Some generic plugins are enabled by default, while more specific ones
-need to be manually enabled.
+Here you can choose which plugins are enabled, as well as opening the
+:doc:`scripted extensions </reference/scripting>` folder.
+
+Plugins add support for map and/or tileset file formats. Some generic plugins
+are enabled by default, while more specific ones need to be manually enabled.
 
 There is no need to restart Tiled when enabling or disabling plugins.
 When a plugin fails to load, try hovering its icon to see if the tool
 tip displays a useful error message.
 
 See :doc:`export` for more information about supported file formats.
-
-.. _Sparkle: https://sparkle-project.org/
-.. _WinSparkle: https://winsparkle.org/

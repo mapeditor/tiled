@@ -26,7 +26,6 @@
 #include <QStyle>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 ColorButton::ColorButton(QWidget *parent)
     : QToolButton(parent)

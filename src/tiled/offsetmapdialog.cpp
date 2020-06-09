@@ -27,7 +27,6 @@
 #include "ui_offsetmapdialog.h"
 
 namespace Tiled {
-namespace Internal {
 
 OffsetMapDialog::OffsetMapDialog(MapDocument *mapDocument, QWidget *parent)
     : QDialog(parent)
@@ -35,17 +34,21 @@ OffsetMapDialog::OffsetMapDialog(MapDocument *mapDocument, QWidget *parent)
     , mMapDocument(mapDocument)
 {
     mUi->setupUi(this);
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+#endif
 
-    if (mMapDocument->selectedArea().isEmpty())
-        disableBoundsSelectionCurrentArea();
-    else
-        mUi->boundsSelection->setCurrentIndex(1);
-
-    if (mMapDocument->map()->infinite()) {
-        mUi->wrapX->setEnabled(false);
-        mUi->wrapY->setEnabled(false);
+    if (mMapDocument->selectedArea().isEmpty()) {
+        setBoundsSelection(WholeMap);
+        mUi->boundsSelection->setEnabled(false);
+    } else {
+        setBoundsSelection(CurrentSelectionArea);
     }
+
+    boundsSelectionChanged();   // updates wrap checkboxes
+
+    connect(mUi->boundsSelection, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+            this, &OffsetMapDialog::boundsSelectionChanged);
 }
 
 OffsetMapDialog::~OffsetMapDialog()
@@ -70,30 +73,30 @@ QList<Layer *> OffsetMapDialog::affectedLayers() const
             if (!layer->isGroupLayer())
                 layers.append(layer);
         break;
-    case SelectedLayer:
-        layers.append(mMapDocument->currentLayer());
+    case SelectedLayers:
+        for (Layer *layer : mMapDocument->selectedLayers())
+            if (!layer->isGroupLayer())
+                layers.append(layer);
         break;
     }
 
     return layers;
 }
 
+/**
+ * Returns the bounding rect that is to be affected by the offset operation.
+ *
+ * For infinite maps, when not using the currently selected area, the returned
+ * rect is empty.
+ */
 QRect OffsetMapDialog::affectedBoundingRect() const
 {
     QRect boundingRect;
 
     switch (boundsSelection()) {
     case WholeMap:
-        boundingRect = QRect(QPoint(0, 0), mMapDocument->map()->size());
-
-        if (mMapDocument->map()->infinite()) {
-            LayerIterator iterator(mMapDocument->map());
-
-            while (Layer *layer = iterator.next())
-                if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer))
-                    boundingRect = boundingRect.united(tileLayer->bounds());
-
-        }
+        if (!mMapDocument->map()->infinite())
+            boundingRect = QRect(QPoint(0, 0), mMapDocument->map()->size());
         break;
     case CurrentSelectionArea: {
         const QRegion &selection = mMapDocument->selectedArea();
@@ -118,7 +121,7 @@ OffsetMapDialog::LayerSelection OffsetMapDialog::layerSelection() const
     case 1:
         return AllLayers;
     default:
-        return SelectedLayer;
+        return SelectedLayers;
     }
 }
 
@@ -127,6 +130,18 @@ OffsetMapDialog::BoundsSelection OffsetMapDialog::boundsSelection() const
     if (mUi->boundsSelection->currentIndex() == 0)
         return WholeMap;
     return CurrentSelectionArea;
+}
+
+void OffsetMapDialog::setBoundsSelection(BoundsSelection boundsSelection)
+{
+    switch (boundsSelection) {
+    case WholeMap:
+        mUi->boundsSelection->setCurrentIndex(0);
+        break;
+    case CurrentSelectionArea:
+        mUi->boundsSelection->setCurrentIndex(1);
+        break;
+    }
 }
 
 QPoint OffsetMapDialog::offset() const
@@ -144,11 +159,20 @@ bool OffsetMapDialog::wrapY() const
     return mUi->wrapY->isChecked();
 }
 
-void OffsetMapDialog::disableBoundsSelectionCurrentArea()
+void OffsetMapDialog::boundsSelectionChanged()
 {
-    mUi->boundsSelection->setEnabled(false);
-    mUi->boundsSelection->setCurrentIndex(0);
+    bool wrapEnabled = true;
+
+    if (boundsSelection() == WholeMap && mMapDocument->map()->infinite())
+        wrapEnabled = false;
+
+    mUi->wrapX->setEnabled(wrapEnabled);
+    mUi->wrapY->setEnabled(wrapEnabled);
+
+    if (!wrapEnabled) {
+        mUi->wrapX->setChecked(false);
+        mUi->wrapY->setChecked(false);
+    }
 }
 
-} // namespace Internal
 } // namespace Tiled

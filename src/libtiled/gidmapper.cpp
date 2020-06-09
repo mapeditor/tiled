@@ -59,7 +59,7 @@ GidMapper::GidMapper(const QVector<SharedTileset> &tilesets)
 {
     unsigned firstGid = 1;
     for (const SharedTileset &tileset : tilesets) {
-        insert(firstGid, tileset.data());
+        insert(firstGid, tileset);
         firstGid += tileset->nextTileId();
     }
 }
@@ -91,16 +91,16 @@ Cell GidMapper::gidToCell(unsigned gid, bool &ok) const
         ok = false;
     } else {
         // Find the tileset containing this tile
-        QMap<unsigned, Tileset*>::const_iterator i = mFirstGidToTileset.upperBound(gid);
+        QMap<unsigned, SharedTileset>::const_iterator i = mFirstGidToTileset.upperBound(gid);
         if (i == mFirstGidToTileset.begin()) {
             // Invalid global tile ID, since it lies before the first tileset
             ok = false;
         } else {
             --i; // Navigate one tileset back since upper bound finds the next
             int tileId = gid - i.key();
-            Tileset *tileset = i.value();
+            const SharedTileset &tileset = i.value();
 
-            result.setTile(tileset, tileId);
+            result.setTile(tileset.data(), tileId);
 
             ok = true;
         }
@@ -121,8 +121,8 @@ unsigned GidMapper::cellToGid(const Cell &cell) const
     const Tileset *tileset = cell.tileset();
 
     // Find the first GID for the tileset
-    QMap<unsigned, Tileset*>::const_iterator i = mFirstGidToTileset.begin();
-    QMap<unsigned, Tileset*>::const_iterator i_end = mFirstGidToTileset.end();
+    QMap<unsigned, SharedTileset>::const_iterator i = mFirstGidToTileset.begin();
+    QMap<unsigned, SharedTileset>::const_iterator i_end = mFirstGidToTileset.end();
     while (i != i_end && i.value() != tileset)
         ++i;
 
@@ -149,7 +149,7 @@ unsigned GidMapper::cellToGid(const Cell &cell) const
  */
 QByteArray GidMapper::encodeLayerData(const TileLayer &tileLayer,
                                       Map::LayerDataFormat format,
-                                      QRect bounds) const
+                                      QRect bounds, int compressionLevel) const
 {
     Q_ASSERT(format != Map::XML);
     Q_ASSERT(format != Map::CSV);
@@ -171,9 +171,11 @@ QByteArray GidMapper::encodeLayerData(const TileLayer &tileLayer,
     }
 
     if (format == Map::Base64Gzip)
-        tileData = compress(tileData, Gzip);
+        tileData = compress(tileData, Gzip, compressionLevel);
     else if (format == Map::Base64Zlib)
-        tileData = compress(tileData, Zlib);
+        tileData = compress(tileData, Zlib, compressionLevel);
+    else if (format == Map::Base64Zstandard)
+        tileData = compress(tileData, Zstandard, compressionLevel);
 
     return tileData.toBase64();
 }
@@ -186,14 +188,15 @@ GidMapper::DecodeError GidMapper::decodeLayerData(TileLayer &tileLayer,
     Q_ASSERT(format != Map::XML);
     Q_ASSERT(format != Map::CSV);
 
-    if (bounds.isEmpty())
-        bounds = QRect(0, 0, tileLayer.width(), tileLayer.height());
-
     QByteArray decodedData = QByteArray::fromBase64(layerData);
-    const int size = (bounds.width() * bounds.height()) * 4;
+    const int size = bounds.width() * bounds.height() * 4;
 
-    if (format == Map::Base64Gzip || format == Map::Base64Zlib)
-        decodedData = decompress(decodedData, size);
+    if (format == Map::Base64Gzip)
+        decodedData = decompress(decodedData, size, Gzip);
+    else if (format == Map::Base64Zlib)
+        decodedData = decompress(decodedData, size, Zlib);
+    else if (format == Map::Base64Zstandard)
+        decodedData = decompress(decodedData, size, Zstandard);
 
     if (size != decodedData.length())
         return CorruptLayerData;
@@ -218,7 +221,7 @@ GidMapper::DecodeError GidMapper::decodeLayerData(TileLayer &tileLayer,
         tileLayer.setCell(x, y, result);
 
         x++;
-        if (x == bounds.right() + 1) {
+        if (x > bounds.right()) {
             x = bounds.x();
             y++;
         }

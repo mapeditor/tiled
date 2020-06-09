@@ -31,8 +31,9 @@
 #include "mapobject.h"
 
 #include "map.h"
+#include "maprenderer.h"
 #include "objectgroup.h"
-#include "templategroup.h"
+#include "objecttemplate.h"
 #include "tile.h"
 
 #include <QFontMetricsF>
@@ -73,28 +74,29 @@ QSizeF TextData::textSize() const
 }
 
 
-MapObject::MapObject():
-    MapObject(QString(), QString(), QPointF(), QSizeF(0, 0))
-{
-}
-
 MapObject::MapObject(const QString &name, const QString &type,
                      const QPointF &pos,
                      const QSizeF &size):
     Object(MapObjectType),
     mId(0),
+    mShape(Rectangle),
     mName(name),
     mType(type),
     mPos(pos),
     mSize(size),
-    mShape(Rectangle),
-    mTemplateRef({nullptr, 0}),
+    mObjectTemplate(nullptr),
     mObjectGroup(nullptr),
-    mRotation(0.0f),
+    mRotation(0.0),
     mVisible(true),
-    mChangedProperties(0),
     mTemplateBase(false)
 {
+}
+
+int MapObject::index() const
+{
+    if (mObjectGroup)
+        return mObjectGroup->objects().indexOf(const_cast<MapObject*>(this));
+    return -1;
 }
 
 /**
@@ -119,7 +121,10 @@ void MapObject::setTextData(const TextData &textData)
 }
 
 /**
- * Shortcut to getting a QRectF from position() and size() that uses cell tile if present.
+ * Shortcut to getting a QRectF from position() and size() that uses cell tile
+ * if present.
+ *
+ * \deprecated See problems in comment.
  */
 QRectF MapObject::boundsUseTile() const
 {
@@ -141,28 +146,134 @@ QRectF MapObject::boundsUseTile() const
     return bounds();
 }
 
-/*
- * This is somewhat of a workaround for dealing with the ways different objects
- * align.
- *
- * Traditional rectangle objects have top-left alignment.
- * Tile objects have bottom-left alignment on orthogonal maps, but
- * bottom-center alignment on isometric maps.
- *
- * Eventually, the object alignment should probably be configurable. For
- * backwards compatibility, it will need to be configurable on a per-object
- * level.
- */
-Alignment MapObject::alignment() const
+static void align(QRectF &r, Alignment alignment)
 {
-    if (mCell.isEmpty()) {
-        return TopLeft;
-    } else if (mObjectGroup) {
-        if (Map *map = mObjectGroup->map())
-            if (map->orientation() == Map::Isometric)
-                return Bottom;
+    r.translate(-alignmentOffset(r, alignment));
+}
+
+/**
+ * Returns the bounds of the object in screen space when using the given
+ * \a renderer. Does not take into account rotation!
+ *
+ * This is slightly different from the bounds that should be used when
+ * rendering the object, which are returned by the MapRenderer::boundingRect
+ * function.
+ *
+ * \todo Look into unduplicating this code, which is also present in
+ * objectselectiontool.cpp in very similar form (objectBounds).
+ */
+QRectF MapObject::screenBounds(const MapRenderer &renderer) const
+{
+    if (!mCell.isEmpty()) {
+        // Tile objects can have a tile offset, which is scaled along with the image
+        QSizeF imgSize;
+        QPoint tileOffset;
+
+        if (const Tile *tile = mCell.tile()) {
+            imgSize = tile->size();
+            tileOffset = tile->offset();
+        } else {
+            imgSize = size();
+        }
+
+        const QPointF position = renderer.pixelToScreenCoords(mPos);
+        const QSizeF objectSize = size();
+        const qreal scaleX = imgSize.width() > 0 ? objectSize.width() / imgSize.width() : 0;
+        const qreal scaleY = imgSize.height() > 0 ? objectSize.height() / imgSize.height() : 0;
+
+        QRectF bounds(position.x() + (tileOffset.x() * scaleX),
+                      position.y() + (tileOffset.y() * scaleY),
+                      objectSize.width(),
+                      objectSize.height());
+
+        align(bounds, alignment(renderer.map()));
+
+        return bounds;
+    } else {
+        switch (mShape) {
+        case MapObject::Ellipse:
+        case MapObject::Rectangle: {
+            QRectF bounds(this->bounds());
+            align(bounds, alignment(renderer.map()));
+            QPolygonF screenPolygon = renderer.pixelToScreenCoords(bounds);
+            return screenPolygon.boundingRect();
+        }
+        case MapObject::Point:
+            return renderer.shape(this).boundingRect();
+        case MapObject::Polygon:
+        case MapObject::Polyline: {
+            // Alignment is irrelevant for polygon objects since they have no size
+            const QPolygonF polygon = mPolygon.translated(mPos);
+            QPolygonF screenPolygon = renderer.pixelToScreenCoords(polygon);
+            return screenPolygon.boundingRect();
+        }
+        case MapObject::Text:
+            return renderer.boundingRect(this);
+        }
     }
-    return BottomLeft;
+
+    return QRectF();
+}
+
+Map *MapObject::map() const
+{
+    return mObjectGroup ? mObjectGroup->map() : nullptr;
+}
+
+/*
+ * Returns the effective alignment for this object on the given \a map.
+ *
+ * By default, non-tile objects have top-left alignment, while tile objects
+ * have bottom-left alignment on orthogonal maps and bottom-center alignment
+ * on isometric maps.
+ *
+ * For tile objects, the default alignment can be overridden by setting an
+ * alignment on the tileset.
+ */
+Alignment MapObject::alignment(const Map *map) const
+{
+    Alignment alignment = Unspecified;
+
+    if (Tileset *tileset = mCell.tileset())
+        alignment = tileset->objectAlignment();
+
+    if (!map && mObjectGroup)
+        map = mObjectGroup->map();
+
+    if (alignment == Unspecified) {
+        if (mCell.isEmpty())
+            return TopLeft;
+        else if (map && map->orientation() == Map::Isometric)
+            return Bottom;
+
+        return BottomLeft;
+    }
+
+    return alignment;
+}
+
+/**
+ * A helper function to determine the color of a map object. The color is
+ * determined first of all by the object type, and otherwise by the group
+ * that the object is in. If still no color is defined, it defaults to
+ * gray.
+ */
+QColor MapObject::effectiveColor() const
+{
+    const QString effectiveType = this->effectiveType();
+
+    // See if this object type has a color associated with it
+    for (const ObjectType &type : Object::objectTypes()) {
+        if (type.name.compare(effectiveType, Qt::CaseInsensitive) == 0)
+            return type.color;
+    }
+
+    // If not, get color from object group
+    if (mObjectGroup && mObjectGroup->color().isValid())
+        return mObjectGroup->color();
+
+    // Fallback color
+    return Qt::gray;
 }
 
 QVariant MapObject::mapObjectProperty(Property property) const
@@ -176,10 +287,14 @@ QVariant MapObject::mapObjectProperty(Property property) const
     case TextAlignmentProperty: return QVariant::fromValue(mTextData.alignment);
     case TextWordWrapProperty:  return mTextData.wordWrap;
     case TextColorProperty:     return mTextData.color;
+    case PositionProperty:      return mPos;
     case SizeProperty:          return mSize;
     case RotationProperty:      return mRotation;
     case CellProperty:          Q_ASSERT(false); break;
-    case ShapeProperty:         Q_ASSERT(false); break;
+    case ShapeProperty:         return mShape;
+    case TemplateProperty:      Q_ASSERT(false); break;
+    case CustomProperties:      Q_ASSERT(false); break;
+    case AllProperties:         Q_ASSERT(false); break;
     }
     return QVariant();
 }
@@ -187,20 +302,22 @@ QVariant MapObject::mapObjectProperty(Property property) const
 void MapObject::setMapObjectProperty(Property property, const QVariant &value)
 {
     switch (property) {
-    case NameProperty:          mName = value.toString(); break;
-    case TypeProperty:          mType = value.toString(); break;
-    case VisibleProperty:       mVisible = value.toBool(); break;
+    case NameProperty:          setName(value.toString()); break;
+    case TypeProperty:          setType(value.toString()); break;
+    case VisibleProperty:       setVisible(value.toBool()); break;
     case TextProperty:          mTextData.text = value.toString(); break;
-    case TextFontProperty:
-        mTextData.font = value.value<QFont>();
-        break;
+    case TextFontProperty:      mTextData.font = value.value<QFont>(); break;
     case TextAlignmentProperty: mTextData.alignment = value.value<Qt::Alignment>(); break;
     case TextWordWrapProperty:  mTextData.wordWrap = value.toBool(); break;
     case TextColorProperty:     mTextData.color = value.value<QColor>(); break;
-    case SizeProperty:          mSize = value.toSizeF(); break;
-    case RotationProperty:      mRotation = value.toReal(); break;
+    case PositionProperty:      setPosition(value.toPointF()); break;
+    case SizeProperty:          setSize(value.toSizeF()); break;
+    case RotationProperty:      setRotation(value.toReal()); break;
     case CellProperty:          Q_ASSERT(false); break;
-    case ShapeProperty:         Q_ASSERT(false); break;
+    case ShapeProperty:         setShape(value.value<Shape>()); break;
+    case TemplateProperty:      Q_ASSERT(false); break;
+    case CustomProperties:      Q_ASSERT(false); break;
+    case AllProperties:         Q_ASSERT(false); break;
     }
 }
 
@@ -251,23 +368,36 @@ MapObject *MapObject::clone() const
     o->setRotation(mRotation);
     o->setVisible(mVisible);
     o->setChangedProperties(mChangedProperties);
-    o->setTemplateRef(templateRef());
+    o->setObjectTemplate(mObjectTemplate);
     return o;
+}
+
+void MapObject::copyPropertiesFrom(const MapObject *object)
+{
+    setName(object->name());
+    setSize(object->size());
+    setType(object->type());
+    setTextData(object->textData());
+    setPolygon(object->polygon());
+    setShape(object->shape());
+    setCell(object->cell());
+    setRotation(object->rotation());
+    setVisible(object->isVisible());
+    setProperties(object->properties());
+    setChangedProperties(object->changedProperties());
+    setObjectTemplate(object->objectTemplate());
 }
 
 const MapObject *MapObject::templateObject() const
 {
-    if (auto group = templateGroup())
-        if (auto objectTemplate = group->findTemplate(mTemplateRef.templateId))
-            return objectTemplate->object();
-
+    if (mObjectTemplate)
+        return mObjectTemplate->object();
     return nullptr;
 }
 
 void MapObject::syncWithTemplate()
 {
     const MapObject *base = templateObject();
-
     if (!base)
         return;
 
@@ -298,14 +428,20 @@ void MapObject::syncWithTemplate()
         setVisible(base->isVisible());
 }
 
-bool MapObject::isTemplateInstance() const
+void MapObject::detachFromTemplate()
 {
-    return mTemplateRef.templateGroup;
-}
+    // Can't detach when template object not loaded
+    const MapObject *base = templateObject();
+    if (!base)
+        return;
 
-TemplateGroup *MapObject::templateGroup() const
-{
-    return mTemplateRef.templateGroup;
+    // All non-overridden properties are already synchronized, so we only need
+    // to merge the custom properties.
+    Properties newProperties = base->properties();
+    Tiled::mergeProperties(newProperties, properties());
+    setProperties(newProperties);
+
+    setObjectTemplate(nullptr);
 }
 
 void MapObject::flipRectObject(const QTransform &flipTransform)
@@ -332,7 +468,7 @@ void MapObject::flipPolygonObject(const QTransform &flipTransform)
     QPointF oldBottomLeftPoint = polygonToMapTransform.map(polygonFlip.map(QPointF(0, 0)));
     QPointF newPos = flipTransform.map(oldBottomLeftPoint);
 
-    mPolygon = polygonFlip.map(mPolygon);
+    setPolygon(polygonFlip.map(mPolygon));
     setPosition(newPos);
 }
 

@@ -39,13 +39,13 @@
 #include <QHash>
 #include <QMargins>
 #include <QPoint>
+#include <QSharedPointer>
 #include <QString>
 #include <QVector>
-#include <QSharedPointer>
 
 #include <functional>
 
-inline uint qHash(const QPoint &key, uint seed = 0) Q_DECL_NOTHROW
+inline uint qHash(QPoint key, uint seed = 0) Q_DECL_NOTHROW
 {
     uint h1 = qHash(key.x(), seed);
     uint h2 = qHash(key.y(), seed);
@@ -59,9 +59,20 @@ class Tile;
 /**
  * A cell on a tile layer grid.
  */
-class Cell
+class TILEDSHARED_EXPORT Cell
 {
+    Q_GADGET
+
+    Q_PROPERTY(int tileId READ tileId)
+    Q_PROPERTY(bool empty READ isEmpty)
+    Q_PROPERTY(bool flippedHorizontally READ flippedHorizontally WRITE setFlippedHorizontally)
+    Q_PROPERTY(bool flippedVertically READ flippedVertically WRITE setFlippedVertically)
+    Q_PROPERTY(bool flippedAntiDiagonally READ flippedAntiDiagonally WRITE setFlippedAntiDiagonally)
+    Q_PROPERTY(bool rotatedHexagonal120 READ rotatedHexagonal120 WRITE setRotatedHexagonal120)
+
 public:
+    static Cell empty;
+
     Cell() :
         _tileset(nullptr),
         _tileId(-1),
@@ -74,61 +85,71 @@ public:
         _flags(0)
     {}
 
+    Cell(Tileset *tileset, int tileId) :
+        _tileset(tileset),
+        _tileId(tileId),
+        _flags(0)
+    {}
+
     bool isEmpty() const { return _tileset == nullptr; }
 
     bool operator == (const Cell &other) const
     {
         return _tileset == other._tileset
                 && _tileId == other._tileId
-                && _flags == other._flags;
+                && (_flags & VisualFlags) == (other._flags & VisualFlags);
     }
 
     bool operator != (const Cell &other) const
     {
-        return _tileset != other._tileset
-                || _tileId != other._tileId
-                || _flags != other._flags;
+        return !(*this == other);
     }
 
     Tileset *tileset() const { return _tileset; }
     int tileId() const { return _tileId; }
 
-    bool flippedHorizontally() const { return _flippedHorizontally; }
-    bool flippedVertically() const { return _flippedVertically; }
-    bool flippedAntiDiagonally() const { return _flippedAntiDiagonally; }
-    bool rotatedHexagonal120() const { return _rotatedHexagonal120; }
+    bool flippedHorizontally() const { return _flags & FlippedHorizontally; }
+    bool flippedVertically() const { return _flags & FlippedVertically; }
+    bool flippedAntiDiagonally() const { return _flags & FlippedAntiDiagonally; }
+    bool rotatedHexagonal120() const { return _flags & RotatedHexagonal120; }
 
-    void setFlippedHorizontally(bool f) { _flippedHorizontally = f; }
-    void setFlippedVertically(bool f) { _flippedVertically = f; }
-    void setFlippedAntiDiagonally(bool f) { _flippedAntiDiagonally = f; }
-    void setRotatedHexagonal120(bool f) { _rotatedHexagonal120 = f; }
+    void setFlippedHorizontally(bool v) { v ? _flags |= FlippedHorizontally : _flags &= ~FlippedHorizontally; }
+    void setFlippedVertically(bool v) { v ? _flags |= FlippedVertically : _flags &= ~FlippedVertically; }
+    void setFlippedAntiDiagonally(bool v) { v ? _flags |= FlippedAntiDiagonally : _flags &= ~FlippedAntiDiagonally; }
+    void setRotatedHexagonal120(bool v) { v ? _flags |= RotatedHexagonal120 : _flags &= ~RotatedHexagonal120; }
 
-    bool checked() const { return _checked; }
-    void setChecked(bool checked) { _checked = checked; }
+    bool checked() const { return _flags & Checked; }
+    void setChecked(bool checked) { checked ? _flags |= Checked : _flags &= ~Checked; }
 
     Tile *tile() const;
-    void setTile(Tile *tile);
     void setTile(Tileset *tileset, int tileId);
+    void setTile(Tile *tile);
     bool refersTile(const Tile *tile) const;
 
 private:
+    enum Flags {
+        FlippedHorizontally     = 0x01,
+        FlippedVertically       = 0x02,
+        FlippedAntiDiagonally   = 0x04,
+        RotatedHexagonal120     = 0x08,
+        Checked                 = 0x10,
+        VisualFlags             = FlippedHorizontally | FlippedVertically | FlippedAntiDiagonally | RotatedHexagonal120
+    };
+
     Tileset *_tileset;
     int _tileId;
-    union {
-        int _flags;
-        struct {
-            bool _flippedHorizontally : 1;
-            bool _flippedVertically : 1;
-            bool _flippedAntiDiagonally : 1;
-            bool _rotatedHexagonal120 : 1;
-            bool _checked : 1;
-        };
-    };
+    int _flags;
 };
 
 inline Tile *Cell::tile() const
 {
     return _tileset ? _tileset->findTile(_tileId) : nullptr;
+}
+
+inline void Cell::setTile(Tileset *tileset, int tileId)
+{
+    _tileset = tileset;
+    _tileId = tileId;
 }
 
 inline void Cell::setTile(Tile *tile)
@@ -137,12 +158,6 @@ inline void Cell::setTile(Tile *tile)
         setTile(tile->tileset(), tile->id());
     else
         setTile(nullptr, -1);
-}
-
-inline void Cell::setTile(Tileset *tileset, int tileId)
-{
-    _tileset = tileset;
-    _tileId = tileId;
 }
 
 inline bool Cell::refersTile(const Tile *tile) const
@@ -164,7 +179,7 @@ public:
     QRegion region(std::function<bool (const Cell &)> condition) const;
 
     const Cell &cellAt(int x, int y) const;
-    const Cell &cellAt(const QPoint &point) const;
+    const Cell &cellAt(QPoint point) const;
 
     void setCell(int x, int y, const Cell &cell);
 
@@ -190,7 +205,7 @@ inline const Cell &Chunk::cellAt(int x, int y) const
     return mGrid.at(x + y * CHUNK_SIZE);
 }
 
-inline const Cell &Chunk::cellAt(const QPoint &point) const
+inline const Cell &Chunk::cellAt(QPoint point) const
 {
     return cellAt(point.x(), point.y());
 }
@@ -322,6 +337,10 @@ public:
      */
     TileLayer(const QString &name, int x, int y, int width, int height);
 
+    TileLayer(const QString &name = QString(),
+              QPoint position = QPoint(),
+              QSize size = QSize(0, 0));
+
     /**
      * Returns the width of this layer.
      */
@@ -337,38 +356,34 @@ public:
      */
     QSize size() const { return QSize(mWidth, mHeight); }
 
-    void setSize(const QSize &size);
+    void setSize(QSize size);
 
     /**
-     * Returns the bounds of this layer.
+     * Returns the bounds of this layer in map tile coordinates.
      */
     QRect bounds() const { return mBounds.translated(mX, mY); }
+
+    /**
+     * Returns the bounds of this layer in local tile coordinates.
+     */
+    QRect localBounds() const { return mBounds; }
 
     QRect rect() const { return QRect(mX, mY, mWidth, mHeight); }
 
     QMargins drawMargins() const;
 
     bool contains(int x, int y) const;
-    bool contains(const QPoint &point) const;
+    bool contains(QPoint point) const;
 
     Chunk &chunk(int x, int y);
 
     const Chunk *findChunk(int x, int y) const;
 
-    /**
-     * Calculates the region of cells in this tile layer for which the given
-     * \a condition returns true.
-     */
     QRegion region(std::function<bool (const Cell &)> condition) const;
-
-    /**
-     * Calculates the region occupied by the tiles of this layer. Similar to
-     * Layer::bounds(), but leaves out the regions without tiles.
-     */
     QRegion region() const;
 
     const Cell &cellAt(int x, int y) const;
-    const Cell &cellAt(const QPoint &point) const;
+    const Cell &cellAt(QPoint point) const;
 
     void setCell(int x, int y, const Cell &cell);
 
@@ -376,9 +391,9 @@ public:
      * Returns a copy of the area specified by the given \a region. The
      * caller is responsible for the returned tile layer.
      */
-    TileLayer *copy(const QRegion &region) const;
+    std::unique_ptr<TileLayer> copy(const QRegion &region) const;
 
-    TileLayer *copy(int x, int y, int width, int height) const
+    std::unique_ptr<TileLayer> copy(int x, int y, int width, int height) const
     { return copy(QRegion(x, y, width, height)); }
 
     /**
@@ -386,22 +401,26 @@ public:
      * fall outside of this layer will be lost and empty tiles in the given
      * layer will have no effect.
      */
-    void merge(const QPoint &pos, const TileLayer *layer);
+    void merge(QPoint pos, const TileLayer *layer);
 
     /**
      * Removes all cells in the specified region.
      */
     void erase(const QRegion &region);
 
+    void clear();
+
+    /**
+     * Sets the cells within the given \a area to the cells in the given
+     * \a tileLayer. The tiles in \a tileLayer are offset by \a x and \a y.
+     */
+    void setCells(int x, int y, const TileLayer *tileLayer, const QRegion &area);
+
     /**
      * Sets the cells starting at the given position to the cells in the given
-     * \a tileLayer. Parts that fall outside of this layer will be ignored.
-     *
-     * When a \a mask is given, only cells that fall within this mask are set.
-     * The mask is applied in local coordinates.
+     * \a tileLayer.
      */
-    void setCells(int x, int y, TileLayer *tileLayer,
-                  const QRegion &mask = QRegion());
+    void setCells(int x, int y, const TileLayer *tileLayer);
 
     void setTiles(const QRegion &area, Tile *tile);
 
@@ -466,7 +485,7 @@ public:
      * Resizes this tile layer to \a size, while shifting all tiles by
      * \a offset.
      */
-    void resize(const QSize &size, const QPoint &offset);
+    void resize(QSize size, QPoint offset);
 
     /**
      * Offsets the tiles in this layer within \a bounds by \a offset,
@@ -474,12 +493,19 @@ public:
      *
      * \sa ObjectGroup::offsetObjects()
      */
-    void offsetTiles(const QPoint &offset,
-                     const QRect &bounds,
+    void offsetTiles(QPoint offset,
+                     QRect bounds,
                      bool wrapX, bool wrapY);
 
-    bool canMergeWith(Layer *other) const override;
-    Layer *mergedWith(Layer *other) const override;
+    /**
+     * Offsets the tiles in this layer by \a offset.
+     *
+     * \sa ObjectGroup::offsetObjects()
+     */
+    void offsetTiles(QPoint offset);
+
+    bool canMergeWith(const Layer *other) const override;
+    Layer *mergedWith(const Layer *other) const override;
 
     /**
      * Returns the region where this tile layer and the given tile layer
@@ -500,7 +526,7 @@ public:
     const_iterator begin() const { return const_iterator(mChunks.begin(), mChunks.end()); }
     const_iterator end() const { return const_iterator(mChunks.end(), mChunks.end()); }
 
-    QVector<QRect> sortedChunksToWrite() const;
+    QVector<QRect> sortedChunksToWrite(QSize chunkSize) const;
 
 protected:
     TileLayer *initializeClone(TileLayer *clone) const;
@@ -508,7 +534,6 @@ protected:
 private:
     int mWidth;
     int mHeight;
-    Cell mEmptyCell;
     QHash<QPoint, Chunk> mChunks;
     QRect mBounds;
     mutable QSet<SharedTileset> mUsedTilesets;
@@ -560,7 +585,7 @@ inline void TileLayer::const_iterator::advance()
 /**
  * Sets the size of this layer.
  */
-inline void TileLayer::setSize(const QSize &size)
+inline void TileLayer::setSize(QSize size)
 {
     mWidth = size.width();
     mHeight = size.height();
@@ -571,7 +596,7 @@ inline bool TileLayer::contains(int x, int y) const
     return x >= 0 && y >= 0 && x < mWidth && y < mHeight;
 }
 
-inline bool TileLayer::contains(const QPoint &point) const
+inline bool TileLayer::contains(QPoint point) const
 {
     return contains(point.x(), point.y());
 }
@@ -591,6 +616,10 @@ inline const Chunk* TileLayer::findChunk(int x, int y) const
     return it != mChunks.end() ? &it.value() : nullptr;
 }
 
+/**
+ * Calculates the region occupied by the tiles of this layer. Similar to
+ * Layer::bounds(), but leaves out the regions without tiles.
+ */
 inline QRegion TileLayer::region() const
 {
     return region([] (const Cell &cell) { return !cell.isEmpty(); });
@@ -605,14 +634,22 @@ inline const Cell &TileLayer::cellAt(int x, int y) const
     if (const Chunk *chunk = findChunk(x, y))
         return chunk->cellAt(x & CHUNK_MASK, y & CHUNK_MASK);
     else
-        return mEmptyCell;
+        return Cell::empty;
 }
 
-inline const Cell &TileLayer::cellAt(const QPoint &point) const
+inline const Cell &TileLayer::cellAt(QPoint point) const
 {
     return cellAt(point.x(), point.y());
+}
+
+inline void TileLayer::setCells(int x, int y, const TileLayer *tileLayer)
+{
+    setCells(x, y, tileLayer,
+             QRect(x, y, tileLayer->width(), tileLayer->height()));
 }
 
 typedef QSharedPointer<TileLayer> SharedTileLayer;
 
 } // namespace Tiled
+
+Q_DECLARE_METATYPE(Tiled::Cell)

@@ -30,8 +30,10 @@
 #include "mapscene.h"
 #include "objectgroup.h"
 #include "objectgroupitem.h"
+#include "objectselectiontool.h"
 #include "snaphelper.h"
 #include "tile.h"
+#include "toolmanager.h"
 #include "utils.h"
 
 #include <QApplication>
@@ -39,31 +41,28 @@
 #include <QPalette>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
-CreateObjectTool::CreateObjectTool(QObject *parent)
-    : AbstractObjectTool(QString(),
+CreateObjectTool::CreateObjectTool(Id id, QObject *parent)
+    : AbstractObjectTool(id,
+                         QString(),
                          QIcon(),
-                         QKeySequence(tr("O")),
+                         QKeySequence(),
                          parent)
-    , mNewMapObjectGroup(new ObjectGroup)
-    , mObjectGroupItem(new ObjectGroupItem(mNewMapObjectGroup))
     , mNewMapObjectItem(nullptr)
-    , mOverlayPolygonItem(nullptr)
+    , mNewMapObjectGroup(new ObjectGroup)
+    , mObjectGroupItem(new ObjectGroupItem(mNewMapObjectGroup.get()))
 {
     mObjectGroupItem->setZValue(10000); // same as the BrushItem
 }
 
 CreateObjectTool::~CreateObjectTool()
 {
-    delete mObjectGroupItem;
-    delete mNewMapObjectGroup;
 }
 
 void CreateObjectTool::activate(MapScene *scene)
 {
     AbstractObjectTool::activate(scene);
-    scene->addItem(mObjectGroupItem);
+    scene->addItem(mObjectGroupItem.get());
 }
 
 void CreateObjectTool::deactivate(MapScene *scene)
@@ -71,7 +70,7 @@ void CreateObjectTool::deactivate(MapScene *scene)
     if (mNewMapObjectItem)
         cancelNewMapObject();
 
-    scene->removeItem(mObjectGroupItem);
+    scene->removeItem(mObjectGroupItem.get());
     AbstractObjectTool::deactivate(scene);
 }
 
@@ -80,17 +79,19 @@ void CreateObjectTool::keyPressed(QKeyEvent *event)
     switch (event->key()) {
     case Qt::Key_Enter:
     case Qt::Key_Return:
-        if (mNewMapObjectItem) {
+        if (mState == Preview || mState == CreatingObject) {
             finishNewMapObject();
             return;
         }
         break;
     case Qt::Key_Escape:
-        if (mNewMapObjectItem) {
+        if (mState == CreatingObject) {
             cancelNewMapObject();
-            return;
+        } else {
+            // If we're not currently creating a new object, switch to object selection tool
+            toolManager()->selectTool(toolManager()->findTool<ObjectSelectionTool>());
         }
-        break;
+        return;
     }
 
     AbstractObjectTool::keyPressed(event);
@@ -100,21 +101,40 @@ void CreateObjectTool::mouseEntered()
 {
 }
 
+void CreateObjectTool::mouseLeft()
+{
+    AbstractObjectTool::mouseLeft();
+
+    if (mState == Preview)
+        cancelNewMapObject();
+}
+
 void CreateObjectTool::mouseMoved(const QPointF &pos,
                                   Qt::KeyboardModifiers modifiers)
 {
     AbstractObjectTool::mouseMoved(pos, modifiers);
 
-    if (mNewMapObjectItem) {
+    mLastScenePos = pos;
+    mLastModifiers = modifiers;
+
+    if (mState == Idle)
+        tryCreatePreview(pos, modifiers);
+
+    if (mState == Preview || mState == CreatingObject) {
         QPointF offset = mNewMapObjectItem->mapObject()->objectGroup()->totalOffset();
         mouseMovedWhileCreatingObject(pos - offset, modifiers);
     }
 }
 
+/**
+ * Default implementation starts a new object on left mouse button, and cancels
+ * object creation on right mouse button.
+ */
 void CreateObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
-    if (mNewMapObjectItem) {
-        mousePressedWhileCreatingObject(event);
+    if (event->button() == Qt::RightButton) {
+        if (mState == CreatingObject)
+            cancelNewMapObject();
         return;
     }
 
@@ -123,33 +143,92 @@ void CreateObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
         return;
     }
 
-    ObjectGroup *objectGroup = currentObjectGroup();
-    if (!objectGroup || !objectGroup->isVisible())
-        return;
+    if (mState == Idle)
+        tryCreatePreview(event->scenePos(), event->modifiers());
 
-    const MapRenderer *renderer = mapDocument()->renderer();
-    const QPointF offsetPos = event->scenePos() - objectGroup->totalOffset();
-
-    QPointF pixelCoords = renderer->screenToPixelCoords(offsetPos);
-    SnapHelper(renderer, event->modifiers()).snap(pixelCoords);
-
-    if (startNewMapObject(pixelCoords, objectGroup))
-        mouseMovedWhileCreatingObject(offsetPos, event->modifiers());
+    if (mState == Preview) {
+        mState = CreatingObject;
+        mNewMapObjectItem->setOpacity(1.0);
+    }
 }
 
+/**
+ * Default implementation finishes object placement upon release.
+ */
 void CreateObjectTool::mouseReleased(QGraphicsSceneMouseEvent *event)
 {
-    if (mNewMapObjectItem)
-        mouseReleasedWhileCreatingObject(event);
+    if (event->button() != Qt::LeftButton)
+        return;
+
+    if (mState == CreatingObject)
+        finishNewMapObject();
+    else if (mState == Idle)
+        tryCreatePreview(event->scenePos(), event->modifiers());
+}
+
+void CreateObjectTool::modifiersChanged(Qt::KeyboardModifiers modifiers)
+{
+    AbstractObjectTool::modifiersChanged(modifiers);
+
+    mLastModifiers = modifiers;
+
+    if (mState == Preview || mState == CreatingObject) {
+        // The mouse didn't actually move, but the modifiers do affect the snapping
+        QPointF offset = mNewMapObjectItem->mapObject()->objectGroup()->totalOffset();
+        mouseMovedWhileCreatingObject(mLastScenePos - offset, modifiers);
+    }
+}
+
+void CreateObjectTool::changeEvent(const ChangeEvent &event)
+{
+    AbstractObjectTool::changeEvent(event);
+
+    switch (event.type) {
+    case ChangeEvent::ObjectGroupChanged:
+        objectGroupChanged(static_cast<const ObjectGroupChangeEvent&>(event).objectGroup);
+        break;
+    default:
+        break;
+    }
+}
+
+void CreateObjectTool::updateEnabledState()
+{
+    AbstractObjectTool::updateEnabledState();
+
+    if (!isEnabled())
+        return;
+
+    ObjectGroup *objectGroup = currentObjectGroup();
+    bool canCreate = objectGroup && objectGroup->isVisible() && objectGroup->isUnlocked();
+
+    if (mState == Preview || mState == CreatingObject) {
+        if (!canCreate) {
+            // Make sure we disable the preview when conditions changed
+            cancelNewMapObject();
+        } else {
+            // Synchronize possibly changed object group properties
+            if (mNewMapObjectGroup->color() != objectGroup->color()) {
+                mNewMapObjectGroup->setColor(objectGroup->color());
+                mNewMapObjectItem->syncWithMapObject();
+            }
+
+            auto offset = objectGroup->totalOffset();
+            if (mNewMapObjectGroup->offset() != offset) {
+                mNewMapObjectGroup->setOffset(offset);
+                mObjectGroupItem->setPos(offset);
+
+                // The mouse didn't actually move, but the offset affects the position
+                mouseMovedWhileCreatingObject(mLastScenePos - offset, mLastModifiers);
+            }
+        }
+    }
 }
 
 bool CreateObjectTool::startNewMapObject(const QPointF &pos,
                                          ObjectGroup *objectGroup)
 {
     Q_ASSERT(!mNewMapObjectItem);
-
-    if (!objectGroup->isUnlocked())
-        return false;
 
     MapObject *newMapObject = createNewMapObject();
     if (!newMapObject)
@@ -164,32 +243,66 @@ bool CreateObjectTool::startNewMapObject(const QPointF &pos,
 
     mObjectGroupItem->setPos(mNewMapObjectGroup->offset());
 
-    mNewMapObjectItem = new MapObjectItem(newMapObject, mapDocument(), mObjectGroupItem);
+    mNewMapObjectItem = new MapObjectItem(newMapObject, mapDocument(), mObjectGroupItem.get());
+    mNewMapObjectItem->setOpacity(0.5);
+
+    mState = Preview;
 
     return true;
 }
 
-MapObject *CreateObjectTool::clearNewMapObjectItem()
+/**
+ * Deletes the new map object item, and returns its map object.
+ */
+std::unique_ptr<MapObject> CreateObjectTool::clearNewMapObjectItem()
 {
     Q_ASSERT(mNewMapObjectItem);
 
-    MapObject *newMapObject = mNewMapObjectItem->mapObject();
+    std::unique_ptr<MapObject> newMapObject { mNewMapObjectItem->mapObject() };
 
-    mNewMapObjectGroup->removeObject(newMapObject);
+    mNewMapObjectGroup->removeObject(newMapObject.get());
 
     delete mNewMapObjectItem;
     mNewMapObjectItem = nullptr;
 
-    delete mOverlayPolygonItem;
-    mOverlayPolygonItem = nullptr;
+    mState = Idle;
 
     return newMapObject;
 }
 
+void CreateObjectTool::objectGroupChanged(ObjectGroup *objectGroup)
+{
+    if (objectGroup != currentObjectGroup())
+        return;
+
+    if (mNewMapObjectGroup->color() != objectGroup->color()) {
+        mNewMapObjectGroup->setColor(objectGroup->color());
+
+        if (mNewMapObjectItem)
+            mNewMapObjectItem->syncWithMapObject();
+    }
+}
+
+void CreateObjectTool::tryCreatePreview(const QPointF &scenePos,
+                                        Qt::KeyboardModifiers modifiers)
+{
+    ObjectGroup *objectGroup = currentObjectGroup();
+    if (!objectGroup || !objectGroup->isVisible() || !objectGroup->isUnlocked())
+        return;
+
+    const MapRenderer *renderer = mapDocument()->renderer();
+    const QPointF offsetPos = scenePos - objectGroup->totalOffset();
+
+    QPointF pixelCoords = renderer->screenToPixelCoords(offsetPos);
+    SnapHelper(renderer, modifiers).snap(pixelCoords);
+
+    if (startNewMapObject(pixelCoords, objectGroup))
+        mouseMovedWhileCreatingObject(offsetPos, modifiers);
+}
+
 void CreateObjectTool::cancelNewMapObject()
 {
-    MapObject *newMapObject = clearNewMapObjectItem();
-    delete newMapObject;
+    clearNewMapObjectItem();
 }
 
 void CreateObjectTool::finishNewMapObject()
@@ -202,14 +315,13 @@ void CreateObjectTool::finishNewMapObject()
         return;
     }
 
-    MapObject *newMapObject = mNewMapObjectItem->mapObject();
-    clearNewMapObjectItem();
+    auto newMapObject = clearNewMapObjectItem();
 
-    auto addObjectCommand = new AddMapObject(mapDocument(),
-                                             objectGroup,
-                                             newMapObject);
+    auto addObjectCommand = new AddMapObjects(mapDocument(),
+                                              objectGroup,
+                                              newMapObject.get());
 
-    if (Tileset *tileset = newMapObject->cell().tileset()) {
+    if (Tileset *tileset = newMapObject.get()->cell().tileset()) {
         SharedTileset sharedTileset = tileset->sharedPointer();
 
         // Make sure this tileset is part of the map
@@ -219,20 +331,23 @@ void CreateObjectTool::finishNewMapObject()
 
     mapDocument()->undoStack()->push(addObjectCommand);
 
-    mapDocument()->setSelectedObjects(QList<MapObject*>() << newMapObject);
+    mapDocument()->setSelectedObjects({newMapObject.get()});
+    newMapObject.release();     // now owned by its object group
+
+    mState = Idle;
 }
 
-void CreateObjectTool::mouseMovedWhileCreatingObject(const QPointF &, Qt::KeyboardModifiers)
+/**
+ * Default implementation simply synchronizes the position of the new object
+ * with the mouse position.
+ */
+void CreateObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt::KeyboardModifiers modifiers)
 {
-    // optional override
-}
+    const MapRenderer *renderer = mapDocument()->renderer();
 
-void CreateObjectTool::mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *)
-{
-    // optional override
-}
+    QPointF pixelCoords = renderer->screenToPixelCoords(pos);
+    SnapHelper(renderer, modifiers).snap(pixelCoords);
 
-void CreateObjectTool::mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *)
-{
-    // optional override
+    mNewMapObjectItem->mapObject()->setPosition(pixelCoords);
+    mNewMapObjectItem->syncWithMapObject();
 }

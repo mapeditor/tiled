@@ -25,7 +25,6 @@
 #include <QEvent>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 MiniMapDock::MiniMapDock(QWidget *parent)
     : QDockWidget(parent)

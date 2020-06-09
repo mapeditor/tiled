@@ -28,9 +28,9 @@
 
 #pragma once
 
+#include "objecttemplate.h"
 #include "tiled_global.h"
 #include "tileset.h"
-#include "templategroup.h"
 
 #include <QImage>
 
@@ -42,7 +42,7 @@ class Map;
 
 namespace Internal {
 class MapReaderPrivate;
-}
+} // namespace Internal
 
 /**
  * A fast QXmlStreamReader based reader for the TMX and TSX formats.
@@ -65,13 +65,13 @@ public:
      *
      * The caller takes ownership over the newly created map.
      */
-    Map *readMap(QIODevice *device, const QString &path = QString());
+    std::unique_ptr<Map> readMap(QIODevice *device, const QString &path = QString());
 
     /**
      * Reads a TMX map from the given \a fileName.
      * \overload
      */
-    Map *readMap(const QString &fileName);
+    std::unique_ptr<Map> readMap(const QString &fileName);
 
     /**
      * Reads a TSX tileset from the given \a device. Optionally a \a path can
@@ -95,8 +95,8 @@ public:
      */
     QString errorString() const;
 
-    TemplateGroup *readTemplateGroup(QIODevice *device, const QString &path = QString());
-    TemplateGroup *readTemplateGroup(const QString &fileName);
+    std::unique_ptr<ObjectTemplate> readObjectTemplate(QIODevice *device, const QString &path = QString());
+    std::unique_ptr<ObjectTemplate> readObjectTemplate(const QString &fileName);
 
 protected:
     /**
@@ -116,9 +116,6 @@ protected:
      */
     virtual SharedTileset readExternalTileset(const QString &source,
                                               QString *error);
-
-    virtual TemplateGroup *loadTemplateGroup(const QString &source,
-                                             QString *error);
 
 private:
     Q_DISABLE_COPY(MapReader)

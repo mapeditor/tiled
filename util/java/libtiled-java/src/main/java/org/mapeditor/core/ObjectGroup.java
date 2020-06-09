@@ -2,8 +2,9 @@
  * #%L
  * This file is part of libtiled-java.
  * %%
- * Copyright (C) 2004 - 2016 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright (C) 2004 - 2016 Adam Turk <aturk@biggeruniverse.com>
+ * Copyright (C) 2004 - 2019 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright (C) 2004 - 2019 Adam Turk <aturk@biggeruniverse.com>
+ * Copyright (C) 2016 - 2019 Mike Thomas <mikepthomas@outlook.com>
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -42,10 +43,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 /**
  * A layer containing {@link MapObject map objects}.
  *
- * @author Thorbjørn Lindeijer
- * @author Adam Turk
- * @author Mike Thomas
- * @version 1.0.2
+ * @version 1.2.3
  */
 @XmlAccessorType(XmlAccessType.NONE)
 public class ObjectGroup extends ObjectGroupData implements Cloneable, Iterable<MapObject> {
@@ -58,7 +56,7 @@ public class ObjectGroup extends ObjectGroupData implements Cloneable, Iterable<
     }
 
     /**
-     * <p>Constructor for ObjectGroup.</p>
+     * Constructor for ObjectGroup.
      *
      * @param map the map this object group is part of
      */
@@ -95,12 +93,12 @@ public class ObjectGroup extends ObjectGroupData implements Cloneable, Iterable<
     }
 
     /**
-     * <p>isEmpty.</p>
+     * isEmpty.
      *
      * @return a boolean.
      */
     public boolean isEmpty() {
-        return objects.isEmpty();
+        return getObjects().isEmpty();
     }
 
     /** {@inheritDoc} */
@@ -108,7 +106,7 @@ public class ObjectGroup extends ObjectGroupData implements Cloneable, Iterable<
     public Object clone() throws CloneNotSupportedException {
         ObjectGroup clone = (ObjectGroup) super.clone();
         clone.objects = new LinkedList<>();
-        for (MapObject object : objects) {
+        for (MapObject object : getObjects()) {
             final MapObject objectClone = (MapObject) object.clone();
             clone.objects.add(objectClone);
             objectClone.setObjectGroup(clone);
@@ -117,40 +115,40 @@ public class ObjectGroup extends ObjectGroupData implements Cloneable, Iterable<
     }
 
     /**
-     * <p>addObject.</p>
+     * addObject.
      *
      * @param o a {@link org.mapeditor.core.MapObject} object.
      */
     public void addObject(MapObject o) {
-        objects.add(o);
+        getObjects().add(o);
         o.setObjectGroup(this);
     }
 
     /**
-     * <p>removeObject.</p>
+     * removeObject.
      *
      * @param o a {@link org.mapeditor.core.MapObject} object.
      */
     public void removeObject(MapObject o) {
-        objects.remove(o);
+        getObjects().remove(o);
         o.setObjectGroup(null);
     }
 
     /** {@inheritDoc} */
     @Override
     public Iterator<MapObject> iterator() {
-        return objects.iterator();
+        return getObjects().iterator();
     }
 
     /**
-     * <p>getObjectAt.</p>
+     * getObjectAt.
      *
      * @param x a double.
      * @param y a double.
      * @return a {@link org.mapeditor.core.MapObject} object.
      */
     public MapObject getObjectAt(double x, double y) {
-        for (MapObject obj : objects) {
+        for (MapObject obj : getObjects()) {
             // Attempt to get an object bordering the point that has no width
             if (obj.getWidth() == 0 && obj.getX() + this.x == x) {
                 return obj;
@@ -173,7 +171,7 @@ public class ObjectGroup extends ObjectGroupData implements Cloneable, Iterable<
 
     // This method will work at any zoom level, provided you provide the correct zoom factor. It also adds a one pixel buffer (that doesn't change with zoom).
     /**
-     * <p>getObjectNear.</p>
+     * getObjectNear.
      *
      * @param x a int.
      * @param y a int.
@@ -184,7 +182,7 @@ public class ObjectGroup extends ObjectGroupData implements Cloneable, Iterable<
         Rectangle2D mouse = new Rectangle2D.Double(x - zoom - 1, y - zoom - 1, 2 * zoom + 1, 2 * zoom + 1);
         Shape shape;
 
-        for (MapObject obj : objects) {
+        for (MapObject obj : getObjects()) {
             if (obj.getWidth() == 0 && obj.getHeight() == 0) {
                 shape = new Ellipse2D.Double(obj.getX() * zoom, obj.getY() * zoom, 10 * zoom, 10 * zoom);
             } else {

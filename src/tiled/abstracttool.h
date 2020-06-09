@@ -21,6 +21,9 @@
 
 #pragma once
 
+#include "changeevents.h"
+#include "id.h"
+
 #include <QCursor>
 #include <QGraphicsSceneMouseEvent>
 #include <QIcon>
@@ -32,16 +35,17 @@
 class QEvent;
 class QKeyEvent;
 class QToolBar;
+class QUndoStack;
 
 namespace Tiled {
 
 class Layer;
 class Tile;
-
-namespace Internal {
+class ObjectTemplate;
 
 class MapDocument;
 class MapScene;
+class ToolManager;
 
 /**
  * An abstraction of any kind of tool used to edit the map.
@@ -56,9 +60,10 @@ class AbstractTool : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(QString name READ name WRITE setName)
-    Q_PROPERTY(QIcon icon READ icon WRITE setIcon)
-    Q_PROPERTY(QKeySequence shortcut READ shortcut WRITE setShortcut)
+    Q_PROPERTY(QByteArray id READ idName CONSTANT)
+    Q_PROPERTY(QString name READ name WRITE setName NOTIFY changed)
+    Q_PROPERTY(QIcon icon READ icon WRITE setIcon NOTIFY changed)
+    Q_PROPERTY(QKeySequence shortcut READ shortcut WRITE setShortcut NOTIFY changed)
     Q_PROPERTY(QString statusInfo READ statusInfo WRITE setStatusInfo NOTIFY statusInfoChanged)
     Q_PROPERTY(QCursor cursor READ cursor WRITE setCursor NOTIFY cursorChanged)
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
@@ -67,12 +72,14 @@ public:
     /**
      * Constructs an abstract tool with the given \a name and \a icon.
      */
-    AbstractTool(const QString &name,
+    AbstractTool(Id id,
+                 const QString &name,
                  const QIcon &icon,
                  const QKeySequence &shortcut,
                  QObject *parent = nullptr);
 
-    virtual ~AbstractTool() {}
+    Id id() const;
+    QByteArray idName() const;
 
     QString name() const;
     void setName(const QString &name);
@@ -92,7 +99,12 @@ public:
     bool isEnabled() const;
     void setEnabled(bool enabled);
 
+    bool isVisible() const;
+    void setVisible(bool visible);
+
+    ToolManager *toolManager() const;
     Tile *tile() const;
+    ObjectTemplate *objectTemplate() const;
 
     /**
      * Activates this tool. If the tool plans to add any items to the scene, it
@@ -136,6 +148,14 @@ public:
     virtual void mouseReleased(QGraphicsSceneMouseEvent *event) = 0;
 
     /**
+     * Called when a mouse button is pressed a second time on the scene, after
+     * a short interval.
+     *
+     * By default, this function calls mousePressed.
+     */
+    virtual void mouseDoubleClicked(QGraphicsSceneMouseEvent *event);
+
+    /**
      * Called when the user presses or releases a modifier key resulting
      * in a change of modifier status, and when the tool is enabled with
      * a modifier key pressed.
@@ -149,11 +169,16 @@ public:
 
     virtual void populateToolBar(QToolBar*) {}
 
-public slots:
     void setMapDocument(MapDocument *mapDocument);
-    void setTile(Tile *tile);
+
+    /**
+     * override to use a different undo stack than the one from the document.
+     */
+    virtual QUndoStack* undoStack() { return nullptr; }
 
 protected:
+    virtual void changeEvent(const ChangeEvent &event);
+
     /**
      * Can be used to respond to the map document changing.
      */
@@ -168,7 +193,6 @@ protected:
 
     Layer *currentLayer() const;
 
-protected slots:
     /**
      * By default, this function is called after the current map has changed
      * and when the current layer changes. It can be overridden to implement
@@ -179,31 +203,42 @@ protected slots:
     virtual void updateEnabledState();
 
 signals:
+    void changed();
     void statusInfoChanged(const QString &statusInfo);
     void cursorChanged(const QCursor &cursor);
     void enabledChanged(bool enabled);
+    void visibleChanged(bool visible);
 
 private:
+    friend class ToolManager;
+
     QString mName;
     QIcon mIcon;
     QKeySequence mShortcut;
     QString mStatusInfo;
     QCursor mCursor;
-    bool mEnabled;
-    Tile *mTile;
+    Id mId;
+    bool mEnabled = false;
+    bool mVisible = true;
 
-    MapDocument *mMapDocument;
+    ToolManager *mToolManager = nullptr;
+    MapDocument *mMapDocument = nullptr;
 };
 
+
+inline Id AbstractTool::id() const
+{
+    return mId;
+}
+
+inline QByteArray AbstractTool::idName() const
+{
+    return mId.name();
+}
 
 inline QString AbstractTool::name() const
 {
     return mName;
-}
-
-inline void AbstractTool::setName(const QString &name)
-{
-    mName = name;
 }
 
 inline QIcon AbstractTool::icon() const
@@ -211,20 +246,11 @@ inline QIcon AbstractTool::icon() const
     return mIcon;
 }
 
-inline void AbstractTool::setIcon(const QIcon &icon)
-{
-    mIcon = icon;
-}
-
 inline QKeySequence AbstractTool::shortcut() const
 {
     return mShortcut;
 }
 
-inline void AbstractTool::setShortcut(const QKeySequence &shortcut)
-{
-    mShortcut = shortcut;
-}
 
 inline QString AbstractTool::statusInfo() const
 {
@@ -241,17 +267,20 @@ inline bool AbstractTool::isEnabled() const
     return mEnabled;
 }
 
-inline Tile *AbstractTool::tile() const
+inline bool AbstractTool::isVisible() const
 {
-    return mTile;
+    return mVisible;
 }
 
-inline void AbstractTool::setTile(Tile *tile)
+/**
+ * Returns the ToolManager with which this tool is registered, if any.
+ */
+inline ToolManager *AbstractTool::toolManager() const
 {
-    mTile = tile;
+    return mToolManager;
 }
 
-} // namespace Internal
 } // namespace Tiled
 
-Q_DECLARE_METATYPE(Tiled::Internal::AbstractTool*)
+Q_DECLARE_METATYPE(Tiled::AbstractTool*)
+Q_DECLARE_INTERFACE(Tiled::AbstractTool, "org.mapeditor.AbstractTool")

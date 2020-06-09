@@ -20,36 +20,26 @@
 
 #include "movemapobjecttogroup.h"
 
-#include "mapdocument.h"
-#include "mapobject.h"
-#include "objectgroup.h"
-#include "mapobjectmodel.h"
+#include "addremovemapobject.h"
 
 #include <QCoreApplication>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
-MoveMapObjectToGroup::MoveMapObjectToGroup(MapDocument *mapDocument,
+MoveMapObjectToGroup::MoveMapObjectToGroup(Document *document,
                                            MapObject *mapObject,
                                            ObjectGroup *objectGroup)
-    : mMapDocument(mapDocument)
-    , mMapObject(mapObject)
-    , mOldObjectGroup(mapObject->objectGroup())
-    , mNewObjectGroup(objectGroup)
 {
     setText(QCoreApplication::translate("Undo Commands",
                                         "Move Object to Layer"));
+
+    mRemoveMapObject = new RemoveMapObjects(document, mapObject, this);
+    mAddMapObject = new AddMapObjects(document, objectGroup, mapObject, this);
 }
 
-void MoveMapObjectToGroup::undo()
+MoveMapObjectToGroup::~MoveMapObjectToGroup()
 {
-    mMapDocument->mapObjectModel()->removeObject(mNewObjectGroup, mMapObject);
-    mMapDocument->mapObjectModel()->insertObject(mOldObjectGroup, -1, mMapObject);
-}
-
-void MoveMapObjectToGroup::redo()
-{
-    mMapDocument->mapObjectModel()->removeObject(mOldObjectGroup, mMapObject);
-    mMapDocument->mapObjectModel()->insertObject(mNewObjectGroup, -1, mMapObject);
+    // Make sure the object doesn't get deleted (we don't own it, we just moved it)
+    mRemoveMapObject->releaseObjects();
+    mAddMapObject->releaseObjects();
 }

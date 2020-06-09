@@ -8,7 +8,7 @@ a well-defined terrain type at each of their 4 corners, which seems to
 be the most common method.
 
 To demonstrate how to use this tool we describe the steps necessary to
-reproduce the ``desert.tmx`` example map, which now also includes
+reproduce the :file:`desert.tmx` example map, which now also includes
 terrain information in its tileset.
 
 Create a New Map and Add a Tileset
@@ -17,7 +17,7 @@ Create a New Map and Add a Tileset
 First of all, follow the :ref:`getting-started` instructions to set up
 the map and the tileset.
 
-The ``tmw_desert_spacing.png`` tileset we just set up has 4 different
+The :file:`tmw_desert_spacing.png` tileset we just set up has 4 different
 terrain types. Traditionally editing a map with these tiles meant that
 you had to carefully connect the right transitions to avoid broken
 edges. Now we will define the terrain information for this tileset,
@@ -45,7 +45,7 @@ In this mode, the list of terrain types is displayed and you can mark
 corners of the tiles in your tileset as belonging to a certain terrain
 type. To start with, add each of the 4 terrain types. The fastest way is
 by right-clicking on a tile representing a certain terrain and choosing
-"Add Terrain Type". This automatically sets the tile as the image
+:guilabel:`Add Terrain Type`. This automatically sets the tile as the image
 representing the terrain.
 
 .. figure:: images/terraintool/02-editterraindialog-add.png
@@ -55,18 +55,28 @@ representing the terrain.
 
 Give each of the terrains an appropriate name. Once you're done, select
 the Sand terrain and mark all corners in the tileset with this type of
-terrain. When you're done it should look like this:
+terrain. The result should look like this:
 
 .. figure:: images/terraintool/03-editterraindialog-edit.png
    :alt: Sand Terrain Marked
 
    Sand Terrain Marked
 
+To understand how we did this, we take a look at a single tile that
+transitions between Sand and Dirt. With the Sand terrain selected, we clicked
+and dragged to mark the top-left, top-right and bottom-left corners of this
+tile as "Sand". The bottom-right corner is not yet marked, we'll get to that
+one once we're marking all Dirt corners.
+
+.. figure:: images/terraintool/07-terrain-marked-tile.png
+   :alt: Marked Tile With Sand and Dirt
+
 If you make a mistake, just use Undo (or press ``Ctrl+Z``). Or if you
 notice a mistake later, either use *Erase Terrain* to clear a terrain type
-from a corner or select the correct terrain type and paint over it.
+from a corner or select the correct terrain type and paint over it. Each
+corner can only have one type of terrain associated with it.
 
-Do the same for each of the other terrain types. Eventually you'll have
+Now do the same for each of the other terrain types. Eventually you'll have
 marked all tiles apart from the special objects.
 
 .. figure:: images/terraintool/04-editterraindialog-done.png
@@ -74,8 +84,8 @@ marked all tiles apart from the special objects.
 
    Done Marking Terrain
 
-Now you can disable the *Terrains* mode by clicking the tool bar button
-again.
+Now you can disable the *Terrains* |terrain| mode by clicking the tool bar
+button again.
 
 Editing with the Terrain Brush
 ------------------------------
@@ -144,4 +154,4 @@ your own project. A few things to keep in mind:
    contain transitions that are compatible with this tool on
    `OpenGameArt.org <http://opengameart.org/>`__.
 
-.. |terrain| image:: ../../src/tiled/images/24x24/terrain.png
+.. |terrain| image:: ../../src/tiled/images/24/terrain.png

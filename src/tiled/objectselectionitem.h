@@ -20,56 +20,103 @@
 
 #pragma once
 
+#include "changeevents.h"
+
 #include <QGraphicsObject>
 #include <QHash>
+
+#include <memory>
 
 namespace Tiled {
 
 class GroupLayer;
 class Layer;
 class MapObject;
+class MapRenderer;
 class Tile;
-
-namespace Internal {
+class Tileset;
 
 class MapDocument;
-class MapObjectLabel;
+class MapObjectItem;
 class MapObjectOutline;
+class ObjectReferenceItem;
 
+class MapObjectLabel : public QGraphicsItem
+{
+public:
+    MapObjectLabel(const MapObject *object, QGraphicsItem *parent = nullptr);
+
+    const MapObject *mapObject() const { return mObject; }
+    void syncWithMapObject(const MapRenderer &renderer);
+    void updateColor();
+
+    QRectF boundingRect() const override;
+    void paint(QPainter *painter,
+               const QStyleOptionGraphicsItem *,
+               QWidget *) override;
+
+private:
+    QRectF mBoundingRect;
+    QPointF mTextPos;
+    const MapObject *mObject;
+    QColor mColor;
+};
+
+/**
+ * A graphics item displaying object selection.
+ *
+ * Apart from selection outlines, it also displays name labels, hover highlight
+ * and object references.
+ */
 class ObjectSelectionItem : public QGraphicsObject
 {
     Q_OBJECT
 
 public:
-    ObjectSelectionItem(MapDocument *mapDocument);
+    ObjectSelectionItem(MapDocument *mapDocument,
+                        QGraphicsItem *parent = nullptr);
+    ~ObjectSelectionItem() override;
+
+    const MapRenderer &mapRenderer() const;
 
     // QGraphicsItem interface
     QRectF boundingRect() const override { return QRectF(); }
     void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *) override {}
 
-
-private slots:
+private:
+    void changeEvent(const ChangeEvent &event);
+    void propertyAdded(Object *object, const QString &name);
+    void propertyRemoved(Object *object, const QString &name);
+    void propertyChanged(Object *object, const QString &name);
+    void propertiesChanged(Object *object);
     void selectedObjectsChanged();
+    void hoveredMapObjectChanged(MapObject *object, MapObject *previous);
     void mapChanged();
     void layerAdded(Layer *layer);
     void layerAboutToBeRemoved(GroupLayer *parentLayer, int index);
     void layerChanged(Layer *layer);
     void syncOverlayItems(const QList<MapObject *> &objects);
-    void updateObjectLabelColors();
+    void updateItemColors() const;
     void objectsAdded(const QList<MapObject*> &objects);
-    void objectsRemoved(const QList<MapObject*> &objects);
+    void objectsAboutToBeRemoved(const QList<MapObject*> &objects);
+    void tilesetTilePositioningChanged(Tileset *tileset);
     void tileTypeChanged(Tile *tile);
 
     void objectLabelVisibilityChanged();
+    void showObjectReferencesChanged();
+    void objectLineWidthChanged();
 
-private:
     void addRemoveObjectLabels();
     void addRemoveObjectOutlines();
+    void addRemoveObjectReferences();
+    void addRemoveObjectReferences(MapObject *object);
 
     MapDocument *mMapDocument;
     QHash<MapObject*, MapObjectLabel*> mObjectLabels;
     QHash<MapObject*, MapObjectOutline*> mObjectOutlines;
+    QHash<MapObject*, QList<ObjectReferenceItem*>> mReferencesBySourceObject;
+    QHash<MapObject*, QList<ObjectReferenceItem*>> mReferencesByTargetObject;
+    std::unique_ptr<MapObjectItem> mHoveredMapObjectItem;
 };
 
-} // namespace Internal
 } // namespace Tiled

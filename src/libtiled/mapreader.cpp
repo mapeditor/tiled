@@ -40,7 +40,6 @@
 #include "mapobject.h"
 #include "templatemanager.h"
 #include "tile.h"
-#include "tidmapper.h"
 #include "tilelayer.h"
 #include "tilesetmanager.h"
 #include "terrain.h"
@@ -52,6 +51,8 @@
 #include <QFileInfo>
 #include <QVector>
 #include <QXmlStreamReader>
+
+#include <memory>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -71,9 +72,9 @@ public:
         mReadingExternalTileset(false)
     {}
 
-    Map *readMap(QIODevice *device, const QString &path);
+    std::unique_ptr<Map> readMap(QIODevice *device, const QString &path);
     SharedTileset readTileset(QIODevice *device, const QString &path);
-    TemplateGroup *readTemplateGroup(QIODevice *device, const QString &path);
+    std::unique_ptr<ObjectTemplate> readObjectTemplate(QIODevice *device, const QString &path);
 
     bool openFile(QFile *file);
 
@@ -82,9 +83,11 @@ public:
 private:
     void readUnknownElement();
 
-    Map *readMap();
+    std::unique_ptr<Map> readMap();
+    void readMapEditorSettings(Map &map);
 
     SharedTileset readTileset();
+    void readTilesetEditorSettings(Tileset &tileset);
     void readTilesetTile(Tileset &tileset);
     void readTilesetGrid(Tileset &tileset);
     void readTilesetImage(Tileset &tileset);
@@ -92,12 +95,11 @@ private:
     void readTilesetWangSets(Tileset &tileset);
     ImageReference readImage();
 
-    TemplateGroup *readTemplateGroup();
-    ObjectTemplate *readTemplate();
+    std::unique_ptr<ObjectTemplate> readObjectTemplate();
 
-    Layer *tryReadLayer();
+    std::unique_ptr<Layer> tryReadLayer();
 
-    TileLayer *readTileLayer();
+    std::unique_ptr<TileLayer> readTileLayer();
     void readTileLayerData(TileLayer &tileLayer);
     void readTileLayerRect(TileLayer &tileLayer,
                            Map::LayerDataFormat layerDataFormat,
@@ -120,17 +122,16 @@ private:
      *         empty cell if not found
      */
     Cell cellForGid(unsigned gid);
-    TemplateRef templateRefForTid(unsigned tid);
 
-    ImageLayer *readImageLayer();
+    std::unique_ptr<ImageLayer> readImageLayer();
     void readImageLayerImage(ImageLayer &imageLayer);
 
-    ObjectGroup *readObjectGroup();
-    MapObject *readObject();
+    std::unique_ptr<ObjectGroup> readObjectGroup();
+    std::unique_ptr<MapObject> readObject();
     QPolygonF readPolygon();
     TextData readObjectText();
 
-    GroupLayer *readGroupLayer();
+    std::unique_ptr<GroupLayer> readGroupLayer();
 
     QVector<Frame> readAnimationFrames();
 
@@ -141,9 +142,8 @@ private:
 
     QString mError;
     QDir mPath;
-    QScopedPointer<Map> mMap;
+    std::unique_ptr<Map> mMap;
     GidMapper mGidMapper;
-    TidMapper mTidMapper;
     bool mReadingExternalTileset;
 
     QXmlStreamReader xml;
@@ -152,11 +152,11 @@ private:
 } // namespace Internal
 } // namespace Tiled
 
-Map *MapReaderPrivate::readMap(QIODevice *device, const QString &path)
+std::unique_ptr<Map> MapReaderPrivate::readMap(QIODevice *device, const QString &path)
 {
     mError.clear();
     mPath.setPath(path);
-    Map *map = nullptr;
+    std::unique_ptr<Map> map;
 
     xml.setDevice(device);
 
@@ -188,20 +188,20 @@ SharedTileset MapReaderPrivate::readTileset(QIODevice *device, const QString &pa
     return tileset;
 }
 
-TemplateGroup *MapReaderPrivate::readTemplateGroup(QIODevice *device, const QString &path)
+std::unique_ptr<ObjectTemplate> MapReaderPrivate::readObjectTemplate(QIODevice *device, const QString &path)
 {
     mError.clear();
-    mPath = path;
-    TemplateGroup *templateGroup = nullptr;
+    mPath.setPath(path);
+    std::unique_ptr<ObjectTemplate> objectTemplate;
 
     xml.setDevice(device);
 
-    if (xml.readNextStartElement() && xml.name() == QLatin1String("templategroup"))
-        templateGroup = readTemplateGroup();
+    if (xml.readNextStartElement() && xml.name() == QLatin1String("template"))
+        objectTemplate = readObjectTemplate();
     else
         xml.raiseError(tr("Not a template file."));
 
-    return templateGroup;
+    return objectTemplate;
 }
 
 QString MapReaderPrivate::errorString() const
@@ -237,7 +237,7 @@ void MapReaderPrivate::readUnknownElement()
     xml.skipCurrentElement();
 }
 
-Map *MapReaderPrivate::readMap()
+std::unique_ptr<Map> MapReaderPrivate::readMap()
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("map"));
 
@@ -259,45 +259,41 @@ Map *MapReaderPrivate::readMap()
                        .arg(orientationString));
     }
 
-    const QString staggerAxisString =
-            atts.value(QLatin1String("staggeraxis")).toString();
-    const Map::StaggerAxis staggerAxis =
-            staggerAxisFromString(staggerAxisString);
+    const QString staggerAxis = atts.value(QLatin1String("staggeraxis")).toString();
+    const QString staggerIndex = atts.value(QLatin1String("staggerindex")).toString();
+    const QString renderOrder = atts.value(QLatin1String("renderorder")).toString();
 
-    const QString staggerIndexString =
-            atts.value(QLatin1String("staggerindex")).toString();
-    const Map::StaggerIndex staggerIndex =
-            staggerIndexFromString(staggerIndexString);
+    bool compressionLevelOk;
+    const int compressionLevel = atts.value(QLatin1String("compressionlevel")).toInt(&compressionLevelOk);
 
-    const QString renderOrderString =
-            atts.value(QLatin1String("renderorder")).toString();
-    const Map::RenderOrder renderOrder =
-            renderOrderFromString(renderOrderString);
+    const int nextLayerId = atts.value(QLatin1String("nextlayerid")).toInt();
+    const int nextObjectId = atts.value(QLatin1String("nextobjectid")).toInt();
 
-    const int nextObjectId =
-            atts.value(QLatin1String("nextobjectid")).toInt();
-
-    mMap.reset(new Map(orientation, mapWidth, mapHeight, tileWidth, tileHeight, infinite));
+    mMap = std::make_unique<Map>(orientation, mapWidth, mapHeight, tileWidth, tileHeight, infinite);
     mMap->setHexSideLength(hexSideLength);
-    mMap->setStaggerAxis(staggerAxis);
-    mMap->setStaggerIndex(staggerIndex);
-    mMap->setRenderOrder(renderOrder);
+    mMap->setStaggerAxis(staggerAxisFromString(staggerAxis));
+    mMap->setStaggerIndex(staggerIndexFromString(staggerIndex));
+    mMap->setRenderOrder(renderOrderFromString(renderOrder));
+    if (compressionLevelOk)
+        mMap->setCompressionLevel(compressionLevel);
+    if (nextLayerId)
+        mMap->setNextLayerId(nextLayerId);
     if (nextObjectId)
         mMap->setNextObjectId(nextObjectId);
 
-    QStringRef bgColorString = atts.value(QLatin1String("backgroundcolor"));
-    if (!bgColorString.isEmpty())
-        mMap->setBackgroundColor(QColor(bgColorString.toString()));
+    const QString backgroundColor = atts.value(QLatin1String("backgroundcolor")).toString();
+    if (QColor::isValidColor(backgroundColor))
+        mMap->setBackgroundColor(QColor(backgroundColor));
 
     while (xml.readNextStartElement()) {
-        if (Layer *layer = tryReadLayer())
-            mMap->addLayer(layer);
+        if (xml.name() == QLatin1String("editorsettings"))
+            readMapEditorSettings(*mMap);
+        else if (std::unique_ptr<Layer> layer = tryReadLayer())
+            mMap->addLayer(std::move(layer));
         else if (xml.name() == QLatin1String("properties"))
             mMap->mergeProperties(readProperties());
         else if (xml.name() == QLatin1String("tileset"))
             mMap->addTileset(readTileset());
-        else if (xml.name() == QLatin1String("templategroup"))
-            mMap->addTemplateGroup(readTemplateGroup());
         else
             readUnknownElement();
     }
@@ -314,7 +310,7 @@ Map *MapReaderPrivate::readMap()
         }
 
         // Fix up sizes of tile objects. This is for backwards compatibility.
-        LayerIterator iterator(mMap.data());
+        LayerIterator iterator(mMap.get());
         while (Layer *layer = iterator.next()) {
             if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
                 for (MapObject *object : *objectGroup) {
@@ -330,7 +326,37 @@ Map *MapReaderPrivate::readMap()
         }
     }
 
-    return mMap.take();
+    return std::move(mMap);
+}
+
+void MapReaderPrivate::readMapEditorSettings(Map &map)
+{
+    Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("editorsettings"));
+
+    while (xml.readNextStartElement()) {
+        if (xml.name() == QLatin1String("chunksize")) {
+            const QXmlStreamAttributes atts = xml.attributes();
+
+            int chunkWidth = atts.value(QLatin1String("width")).toInt();
+            int chunkHeight = atts.value(QLatin1String("height")).toInt();
+
+            chunkWidth = chunkWidth == 0 ? CHUNK_SIZE : qMax(CHUNK_SIZE_MIN, chunkWidth);
+            chunkHeight = chunkHeight == 0 ? CHUNK_SIZE : qMax(CHUNK_SIZE_MIN, chunkHeight);
+
+            map.setChunkSize(QSize(chunkWidth, chunkHeight));
+
+            xml.skipCurrentElement();
+        } else if (xml.name() == QLatin1String("export")) {
+            const QXmlStreamAttributes atts = xml.attributes();
+
+            map.exportFileName = QDir::cleanPath(mPath.filePath(atts.value(QLatin1String("target")).toString()));
+            map.exportFormat = atts.value(QLatin1String("format")).toString();
+
+            xml.skipCurrentElement();
+        } else {
+            readUnknownElement();
+        }
+    }
 }
 
 SharedTileset MapReaderPrivate::readTileset()
@@ -351,7 +377,8 @@ SharedTileset MapReaderPrivate::readTileset()
         const int tileSpacing = atts.value(QLatin1String("spacing")).toInt();
         const int margin = atts.value(QLatin1String("margin")).toInt();
         const int columns = atts.value(QLatin1String("columns")).toInt();
-        QStringRef bgColorString = atts.value(QLatin1String("backgroundcolor"));
+        const QString backgroundColor = atts.value(QLatin1String("backgroundcolor")).toString();
+        const QString alignment = atts.value(QLatin1String("objectalignment")).toString();
 
         if (tileWidth < 0 || tileHeight < 0
             || (firstGid == 0 && !mReadingExternalTileset)) {
@@ -363,11 +390,15 @@ SharedTileset MapReaderPrivate::readTileset()
 
             tileset->setColumnCount(columns);
 
-            if (!bgColorString.isEmpty())
-                tileset->setBackgroundColor(QColor(bgColorString.toString()));
+            if (QColor::isValidColor(backgroundColor))
+                tileset->setBackgroundColor(QColor(backgroundColor));
+
+            tileset->setObjectAlignment(alignmentFromString(alignment));
 
             while (xml.readNextStartElement()) {
-                if (xml.name() == QLatin1String("tile")) {
+                if (xml.name() == QLatin1String("editorsettings")) {
+                    readTilesetEditorSettings(*tileset);
+                } else if (xml.name() == QLatin1String("tile")) {
                     readTilesetTile(*tileset);
                 } else if (xml.name() == QLatin1String("tileoffset")) {
                     const QXmlStreamAttributes oa = xml.attributes();
@@ -413,9 +444,27 @@ SharedTileset MapReaderPrivate::readTileset()
     }
 
     if (tileset && !mReadingExternalTileset)
-        mGidMapper.insert(firstGid, tileset.data());
+        mGidMapper.insert(firstGid, tileset);
 
     return tileset;
+}
+
+void MapReaderPrivate::readTilesetEditorSettings(Tileset &tileset)
+{
+    Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("editorsettings"));
+
+    while (xml.readNextStartElement()) {
+        if (xml.name() == QLatin1String("export")) {
+            const QXmlStreamAttributes atts = xml.attributes();
+
+            tileset.exportFileName = QDir::cleanPath(mPath.filePath(atts.value(QLatin1String("target")).toString()));
+            tileset.exportFormat = atts.value(QLatin1String("format")).toString();
+
+            xml.skipCurrentElement();
+        } else {
+            readUnknownElement();
+        }
+    }
 }
 
 void MapReaderPrivate::readTilesetTile(Tileset &tileset)
@@ -449,7 +498,7 @@ void MapReaderPrivate::readTilesetTile(Tileset &tileset)
     // Read tile probability
     QStringRef probability = atts.value(QLatin1String("probability"));
     if (!probability.isEmpty())
-        tile->setProbability(probability.toFloat());
+        tile->setProbability(probability.toDouble());
 
     while (xml.readNextStartElement()) {
         if (xml.name() == QLatin1String("properties")) {
@@ -457,16 +506,29 @@ void MapReaderPrivate::readTilesetTile(Tileset &tileset)
         } else if (xml.name() == QLatin1String("image")) {
             ImageReference imageReference = readImage();
             if (imageReference.hasImage()) {
-                QImage image = imageReference.create();
+                QPixmap image = imageReference.create();
                 if (image.isNull()) {
                     if (imageReference.source.isEmpty())
                         xml.raiseError(tr("Error reading embedded image for tile %1").arg(id));
                 }
-                tileset.setTileImage(tile, QPixmap::fromImage(image),
-                                     imageReference.source);
+                tileset.setTileImage(tile, image, imageReference.source);
             }
         } else if (xml.name() == QLatin1String("objectgroup")) {
-            tile->setObjectGroup(readObjectGroup());
+            std::unique_ptr<ObjectGroup> objectGroup = readObjectGroup();
+            if (objectGroup) {
+                // Migrate properties from the object group to the tile. Since
+                // Tiled 1.1, it is no longer possible to edit the properties
+                // of this implicit object group, but some users may have set
+                // them in previous versions.
+                Properties p = objectGroup->properties();
+                if (!p.isEmpty()) {
+                    mergeProperties(p, tile->properties());
+                    tile->setProperties(p);
+                    objectGroup->setProperties(Properties());
+                }
+
+                tile->setObjectGroup(std::move(objectGroup));
+            }
         } else if (xml.name() == QLatin1String("animation")) {
             tile->setFrames(readAnimationFrames());
         } else {
@@ -563,75 +625,26 @@ ImageReference MapReaderPrivate::readImage()
     return image;
 }
 
-TemplateGroup *MapReaderPrivate::readTemplateGroup()
-{
-    Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("templategroup"));
-
-    const QXmlStreamAttributes atts = xml.attributes();
-    const QString source = atts.value(QLatin1String("source")).toString();
-    const unsigned firstTid = atts.value(QLatin1String("firsttid")).toUInt();
-    const unsigned nextTemplateId = atts.value(QLatin1String("nexttemplateid")).toUInt();
-    const QString name = atts.value(QLatin1String("name")).toString();
-
-    TemplateGroup *templateGroup;
-
-    if (source.isEmpty()) {
-        templateGroup = new TemplateGroup(name);
-
-        templateGroup->setNextTemplateId(nextTemplateId);
-
-        while (xml.readNextStartElement()) {
-            if (xml.name() == QLatin1String("template"))
-                templateGroup->addTemplate(readTemplate());
-            else if (xml.name() == QLatin1String("tileset"))
-                templateGroup->addTileset(readTileset());
-            else
-                readUnknownElement();
-        }
-    } else {
-        const QString absoluteSource = p->resolveReference(source, mPath);
-
-        QString error;
-        templateGroup = p->loadTemplateGroup(absoluteSource, &error);
-
-        if (!templateGroup) { // Couldn't open the file
-            templateGroup = new TemplateGroup();
-            templateGroup->setFileName(absoluteSource);
-            templateGroup->setLoaded(false);
-        }
-
-        xml.skipCurrentElement();
-    }
-
-    if (templateGroup)
-        mTidMapper.insert(firstTid, templateGroup);
-
-    return templateGroup;
-}
-
-ObjectTemplate *MapReaderPrivate::readTemplate()
+std::unique_ptr<ObjectTemplate> MapReaderPrivate::readObjectTemplate()
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("template"));
-    const QXmlStreamAttributes atts = xml.attributes();
 
-    const QString name = atts.value(QLatin1String("name")).toString();
-    const int id = atts.value(QLatin1String("id")).toInt();
-
-    ObjectTemplate *objectTemplate = new ObjectTemplate(id, name);
+    auto objectTemplate = std::make_unique<ObjectTemplate>();
 
     while (xml.readNextStartElement()) {
-        if (xml.name() == QLatin1String("object")) {
+        if (xml.name() == QLatin1String("object"))
             objectTemplate->setObject(readObject());
-        } else {
+        else if (xml.name() == QLatin1String("tileset"))
+            readTileset();
+        else
             readUnknownElement();
-        }
     }
 
     return objectTemplate;
 }
 
 
-Layer *MapReaderPrivate::tryReadLayer()
+std::unique_ptr<Layer> MapReaderPrivate::tryReadLayer()
 {
     Q_ASSERT(xml.isStartElement());
 
@@ -681,9 +694,7 @@ void MapReaderPrivate::readTilesetWangSets(Tileset &tileset)
             QString name = atts.value(QLatin1String("name")).toString();
             int tile = atts.value(QLatin1String("tile")).toInt();
 
-            WangSet *wangSet = new WangSet(&tileset, name, tile);
-
-            tileset.addWangSet(wangSet);
+            auto wangSet = std::make_unique<WangSet>(&tileset, name, tile);
 
             while (xml.readNextStartElement()) {
                 if (xml.name() == QLatin1String("properties")) {
@@ -691,7 +702,7 @@ void MapReaderPrivate::readTilesetWangSets(Tileset &tileset)
                 } else if (xml.name() == QLatin1String("wangtile")) {
                     const QXmlStreamAttributes tileAtts = xml.attributes();
                     int tileId = tileAtts.value(QLatin1String("tileid")).toInt();
-                    unsigned wangId = tileAtts.value(QLatin1String("wangid")).toUInt(nullptr, 16);
+                    WangId wangId = tileAtts.value(QLatin1String("wangid")).toUInt(nullptr, 16);
 
                     if (!wangSet->wangIdIsValid(wangId)) {
                         xml.raiseError(QLatin1String("Invalid wangId given for tileId: ") + QString::number(tileId));
@@ -715,17 +726,18 @@ void MapReaderPrivate::readTilesetWangSets(Tileset &tileset)
                 } else if (xml.name() == QLatin1String("wangedgecolor")
                            || xml.name() == QLatin1String("wangcornercolor")) {
                     const QXmlStreamAttributes wangColorAtts = xml.attributes();
+                    bool isEdge = xml.name() == QLatin1String("wangedgecolor");
                     QString name = wangColorAtts.value(QLatin1String("name")).toString();
                     QColor color = wangColorAtts.value(QLatin1String("color")).toString();
                     int imageId = wangColorAtts.value(QLatin1String("tile")).toInt();
-                    float probability = wangColorAtts.value(QLatin1String("probability")).toFloat();
+                    qreal probability = wangColorAtts.value(QLatin1String("probability")).toDouble();
 
-                    QSharedPointer<WangColor> wc(new WangColor(0,
-                                                               xml.name() == QLatin1String("wangedgecolor"),
-                                                               name,
-                                                               color,
-                                                               imageId,
-                                                               probability));
+                    auto wc = QSharedPointer<WangColor>::create(0,
+                                                                isEdge,
+                                                                name,
+                                                                color,
+                                                                imageId,
+                                                                probability);
                     wangSet->addWangColor(wc);
 
                     xml.skipCurrentElement();
@@ -733,6 +745,8 @@ void MapReaderPrivate::readTilesetWangSets(Tileset &tileset)
                     readUnknownElement();
                 }
             }
+
+            tileset.addWangSet(std::move(wangSet));
         } else {
             readUnknownElement();
         }
@@ -742,14 +756,23 @@ void MapReaderPrivate::readTilesetWangSets(Tileset &tileset)
 static void readLayerAttributes(Layer &layer,
                                 const QXmlStreamAttributes &atts)
 {
+    const QStringRef idRef = atts.value(QLatin1String("id"));
     const QStringRef opacityRef = atts.value(QLatin1String("opacity"));
     const QStringRef visibleRef = atts.value(QLatin1String("visible"));
     const QStringRef lockedRef = atts.value(QLatin1String("locked"));
 
     bool ok;
-    const float opacity = opacityRef.toFloat(&ok);
+    const int id = idRef.toInt(&ok);
+    if (ok)
+        layer.setId(id);
+
+    const qreal opacity = opacityRef.toDouble(&ok);
     if (ok)
         layer.setOpacity(opacity);
+
+    const QStringRef tintColor = atts.value(QLatin1String("tintcolor"));
+    if (!tintColor.isEmpty())
+        layer.setTintColor(QColor(tintColor.toString()));
 
     const int visible = visibleRef.toInt(&ok);
     if (ok)
@@ -765,7 +788,7 @@ static void readLayerAttributes(Layer &layer,
     layer.setOffset(offset);
 }
 
-TileLayer *MapReaderPrivate::readTileLayer()
+std::unique_ptr<TileLayer> MapReaderPrivate::readTileLayer()
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("layer"));
 
@@ -776,7 +799,7 @@ TileLayer *MapReaderPrivate::readTileLayer()
     const int width = atts.value(QLatin1String("width")).toInt();
     const int height = atts.value(QLatin1String("height")).toInt();
 
-    TileLayer *tileLayer = new TileLayer(name, x, y, width, height);
+    auto tileLayer = std::make_unique<TileLayer>(name, x, y, width, height);
     readLayerAttributes(*tileLayer, atts);
 
     while (xml.readNextStartElement()) {
@@ -811,6 +834,8 @@ void MapReaderPrivate::readTileLayerData(TileLayer &tileLayer)
             layerDataFormat = Map::Base64Gzip;
         } else if (compression == QLatin1String("zlib")) {
             layerDataFormat = Map::Base64Zlib;
+        } else if (compression == QLatin1String("zstd")) {
+            layerDataFormat = Map::Base64Zstandard;
         } else {
             xml.raiseError(tr("Compression method '%1' not supported")
                            .arg(compression.toString()));
@@ -823,25 +848,10 @@ void MapReaderPrivate::readTileLayerData(TileLayer &tileLayer)
 
     mMap->setLayerDataFormat(layerDataFormat);
 
-    if (mMap->infinite()) {
-        while (xml.readNext() != QXmlStreamReader::Invalid) {
-            if (xml.isEndElement()) {
-                break;
-            } else if (xml.isStartElement()) {
-                if (xml.name() == QLatin1String("chunk")) {
-                    const QXmlStreamAttributes atts = xml.attributes();
-                    int x = atts.value(QLatin1String("x")).toInt();
-                    int y = atts.value(QLatin1String("y")).toInt();
-                    int width = atts.value(QLatin1String("width")).toInt();
-                    int height = atts.value(QLatin1String("height")).toInt();
-
-                    readTileLayerRect(tileLayer, layerDataFormat, encoding, QRect(x, y, width, height));
-                }
-            }
-        }
-    } else {
-        readTileLayerRect(tileLayer, layerDataFormat, encoding, QRect(0, 0, tileLayer.width(), tileLayer.height()));
-    }
+    readTileLayerRect(tileLayer,
+                      layerDataFormat,
+                      encoding,
+                      QRect(0, 0, tileLayer.width(), tileLayer.height()));
 }
 
 void MapReaderPrivate::readTileLayerRect(TileLayer &tileLayer,
@@ -849,6 +859,9 @@ void MapReaderPrivate::readTileLayerRect(TileLayer &tileLayer,
                                          QStringRef encoding,
                                          QRect bounds)
 {
+    Q_ASSERT(xml.isStartElement() && (xml.name() == QLatin1String("data") ||
+                                      xml.name() == QLatin1String("chunk")));
+
     int x = bounds.x();
     int y = bounds.y();
 
@@ -873,6 +886,16 @@ void MapReaderPrivate::readTileLayerRect(TileLayer &tileLayer,
                 }
 
                 xml.skipCurrentElement();
+            } else if (xml.name() == QLatin1String("chunk")) {
+                const QXmlStreamAttributes atts = xml.attributes();
+                int x = atts.value(QLatin1String("x")).toInt();
+                int y = atts.value(QLatin1String("y")).toInt();
+                int width = atts.value(QLatin1String("width")).toInt();
+                int height = atts.value(QLatin1String("height")).toInt();
+
+                // Recursively call for reading this chunk of data
+                readTileLayerRect(tileLayer, layerDataFormat, encoding,
+                                  QRect(x, y, width, height));
             } else {
                 readUnknownElement();
             }
@@ -917,33 +940,45 @@ void MapReaderPrivate::decodeCSVLayerData(TileLayer &tileLayer,
                                           QStringRef text,
                                           QRect bounds)
 {
-    QString trimText = text.trimmed().toString();
-    QStringList tiles = trimText.split(QLatin1Char(','));
-
-    int lengthCheck = bounds.width() * bounds.height();
-
-    if (tiles.length() != lengthCheck) {
-        xml.raiseError(tr("Corrupt layer data for layer '%1'")
-                       .arg(tileLayer.name()));
-        return;
-    }
-
-    int currentTile = 0;
+    int currentIndex = 0;
 
     for (int y = bounds.top(); y <= bounds.bottom(); y++) {
         for (int x = bounds.left(); x <= bounds.right(); x++) {
-            bool conversionOk;
-            const unsigned gid = tiles.at(currentTile++).toUInt(&conversionOk);
-
-            if (!conversionOk) {
-                xml.raiseError(
-                        tr("Unable to parse tile at (%1,%2) on layer '%3'")
-                               .arg(x + 1).arg(y + 1).arg(tileLayer.name()));
+            // Check if the stream ended early.
+            if (currentIndex >= text.length()) {
+                xml.raiseError(tr("Corrupt layer data for layer '%1'")
+                               .arg(tileLayer.name()));
                 return;
+            }
+
+            // Get the next entry.
+            unsigned int gid = 0;
+            while (currentIndex < text.length()) {
+                auto currentChar = text.at(currentIndex);
+                currentIndex++;
+                if (currentChar == QLatin1Char(','))
+                    break;
+                if (currentChar.isSpace())
+                    continue;
+                int value = currentChar.digitValue();
+                if (value != -1)
+                    gid = gid * 10 + value;
+                else {
+                    xml.raiseError(
+                            tr("Unable to parse tile at (%1,%2) on layer '%3': \"%4\"")
+                                   .arg(x + 1).arg(y + 1).arg(tileLayer.name()).arg(currentChar));
+                    return;
+                }
             }
 
             tileLayer.setCell(x, y, cellForGid(gid));
         }
+    }
+    if (currentIndex < text.length()) {
+        // We didn't consume all the data.
+        xml.raiseError(tr("Corrupt layer data for layer '%1'")
+                       .arg(tileLayer.name()));
+        return;
     }
 }
 
@@ -962,22 +997,7 @@ Cell MapReaderPrivate::cellForGid(unsigned gid)
     return result;
 }
 
-TemplateRef MapReaderPrivate::templateRefForTid(unsigned tid)
-{
-    bool ok;
-    TemplateRef result = mTidMapper.tidToTemplateRef(tid, ok);
-
-    if (!ok) {
-        if (mTidMapper.isEmpty())
-            xml.raiseError(tr("Template used but no template groups specified"));
-        else
-            xml.raiseError(tr("Invalid template: %1").arg(tid));
-    }
-
-    return result;
-}
-
-ObjectGroup *MapReaderPrivate::readObjectGroup()
+std::unique_ptr<ObjectGroup> MapReaderPrivate::readObjectGroup()
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("objectgroup"));
 
@@ -986,7 +1006,7 @@ ObjectGroup *MapReaderPrivate::readObjectGroup()
     const int x = atts.value(QLatin1String("x")).toInt();
     const int y = atts.value(QLatin1String("y")).toInt();
 
-    ObjectGroup *objectGroup = new ObjectGroup(name, x, y);
+    auto objectGroup = std::make_unique<ObjectGroup>(name, x, y);
     readLayerAttributes(*objectGroup, atts);
 
     const QString color = atts.value(QLatin1String("color")).toString();
@@ -997,7 +1017,6 @@ ObjectGroup *MapReaderPrivate::readObjectGroup()
         QString value = atts.value(QLatin1String("draworder")).toString();
         ObjectGroup::DrawOrder drawOrder = drawOrderFromString(value);
         if (drawOrder == ObjectGroup::UnknownOrder) {
-            delete objectGroup;
             xml.raiseError(tr("Invalid draw order: %1").arg(value));
             return nullptr;
         }
@@ -1016,7 +1035,7 @@ ObjectGroup *MapReaderPrivate::readObjectGroup()
     return objectGroup;
 }
 
-ImageLayer *MapReaderPrivate::readImageLayer()
+std::unique_ptr<ImageLayer> MapReaderPrivate::readImageLayer()
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("imagelayer"));
 
@@ -1025,7 +1044,7 @@ ImageLayer *MapReaderPrivate::readImageLayer()
     const int x = atts.value(QLatin1String("x")).toInt();
     const int y = atts.value(QLatin1String("y")).toInt();
 
-    ImageLayer *imageLayer = new ImageLayer(name, x, y);
+    auto imageLayer = std::make_unique<ImageLayer>(name, x, y);
     readLayerAttributes(*imageLayer, atts);
 
     // Image layer pixel position moved from x/y to offsetx/offsety for
@@ -1049,24 +1068,10 @@ void MapReaderPrivate::readImageLayerImage(ImageLayer &imageLayer)
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("image"));
 
-    const QXmlStreamAttributes atts = xml.attributes();
-    QString source = atts.value(QLatin1String("source")).toString();
-    QString trans = atts.value(QLatin1String("trans")).toString();
-
-    if (!trans.isEmpty()) {
-        if (!trans.startsWith(QLatin1Char('#')))
-            trans.prepend(QLatin1Char('#'));
-        imageLayer.setTransparentColor(QColor(trans));
-    }
-
-    QUrl sourceUrl = toUrl(source, mPath);
-
-    imageLayer.loadFromImage(QImage(sourceUrl.toLocalFile()), sourceUrl);
-
-    xml.skipCurrentElement();
+    imageLayer.loadFromImage(readImage());
 }
 
-MapObject *MapReaderPrivate::readObject()
+std::unique_ptr<MapObject> MapReaderPrivate::readObject()
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("object"));
 
@@ -1074,7 +1079,7 @@ MapObject *MapReaderPrivate::readObject()
     const int id = atts.value(QLatin1String("id")).toInt();
     const QString name = atts.value(QLatin1String("name")).toString();
     const unsigned gid = atts.value(QLatin1String("gid")).toUInt();
-    const unsigned tid = atts.value(QLatin1String("tid")).toUInt();
+    const QString templateFileName = atts.value(QLatin1String("template")).toString();
     const qreal x = atts.value(QLatin1String("x")).toDouble();
     const qreal y = atts.value(QLatin1String("y")).toDouble();
     const qreal width = atts.value(QLatin1String("width")).toDouble();
@@ -1085,10 +1090,13 @@ MapObject *MapReaderPrivate::readObject()
     const QPointF pos(x, y);
     const QSizeF size(width, height);
 
-    MapObject *object = new MapObject(name, type, pos, size);
+    auto object = std::make_unique<MapObject>(name, type, pos, size);
 
-    if (tid) // This object is a template instance
-        object->setTemplateRef(templateRefForTid(tid));
+    if (!templateFileName.isEmpty()) { // This object is a template instance
+        const QString absoluteFileName = p->resolveReference(templateFileName, mPath);
+        auto objectTemplate = TemplateManager::instance()->loadObjectTemplate(absoluteFileName);
+        object->setObjectTemplate(objectTemplate);
+    }
 
     object->setId(id);
 
@@ -1154,8 +1162,13 @@ QPolygonF MapReaderPrivate::readPolygon()
 
     const QXmlStreamAttributes atts = xml.attributes();
     const QString points = atts.value(QLatin1String("points")).toString();
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     const QStringList pointsList = points.split(QLatin1Char(' '),
                                                 QString::SkipEmptyParts);
+#else
+    const QStringList pointsList = points.split(QLatin1Char(' '),
+                                                Qt::SkipEmptyParts);
+#endif
 
     QPolygonF polygon;
     bool ok = true;
@@ -1167,10 +1180,10 @@ QPolygonF MapReaderPrivate::readPolygon()
             break;
         }
 
-        const qreal x = point.left(commaPos).toDouble(&ok);
+        const qreal x = point.leftRef(commaPos).toDouble(&ok);
         if (!ok)
             break;
-        const qreal y = point.mid(commaPos + 1).toDouble(&ok);
+        const qreal y = point.midRef(commaPos + 1).toDouble(&ok);
         if (!ok)
             break;
 
@@ -1200,7 +1213,7 @@ TextData MapReaderPrivate::readObjectText()
     TextData textData;
 
     if (atts.hasAttribute(QLatin1String("fontfamily")))
-        textData.font = QFont(atts.value(QLatin1String("fontfamily")).toString());
+        textData.font.setFamily(atts.value(QLatin1String("fontfamily")).toString());
 
     if (atts.hasAttribute(QLatin1String("pixelsize")))
         textData.font.setPixelSize(atts.value(QLatin1String("pixelsize")).toInt());
@@ -1216,13 +1229,15 @@ TextData MapReaderPrivate::readObjectText()
     if (!colorString.isEmpty())
         textData.color = QColor(colorString.toString());
 
-    Qt::Alignment alignment = 0;
+    Qt::Alignment alignment;
 
     QStringRef hAlignString = atts.value(QLatin1String("halign"));
     if (hAlignString == QLatin1String("center"))
         alignment |= Qt::AlignHCenter;
     else if (hAlignString == QLatin1String("right"))
         alignment |= Qt::AlignRight;
+    else if (hAlignString == QLatin1String("justify"))
+        alignment |= Qt::AlignJustify;
     else
         alignment |= Qt::AlignLeft;
 
@@ -1241,7 +1256,7 @@ TextData MapReaderPrivate::readObjectText()
     return textData;
 }
 
-GroupLayer *MapReaderPrivate::readGroupLayer()
+std::unique_ptr<GroupLayer> MapReaderPrivate::readGroupLayer()
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("group"));
 
@@ -1250,12 +1265,12 @@ GroupLayer *MapReaderPrivate::readGroupLayer()
     const int x = atts.value(QLatin1String("x")).toInt();
     const int y = atts.value(QLatin1String("y")).toInt();
 
-    GroupLayer *groupLayer = new GroupLayer(name, x, y);
+    auto groupLayer = std::make_unique<GroupLayer>(name, x, y);
     readLayerAttributes(*groupLayer, atts);
 
     while (xml.readNextStartElement()) {
-        if (Layer *layer = tryReadLayer())
-            groupLayer->addLayer(layer);
+        if (std::unique_ptr<Layer> layer = tryReadLayer())
+            groupLayer->addLayer(std::move(layer));
         else if (xml.name() == QLatin1String("properties"))
             groupLayer->mergeProperties(readProperties());
         else
@@ -1346,12 +1361,12 @@ MapReader::~MapReader()
     delete d;
 }
 
-Map *MapReader::readMap(QIODevice *device, const QString &path)
+std::unique_ptr<Map> MapReader::readMap(QIODevice *device, const QString &path)
 {
     return d->readMap(device, path);
 }
 
-Map *MapReader::readMap(const QString &fileName)
+std::unique_ptr<Map> MapReader::readMap(const QString &fileName)
 {
     QFile file(fileName);
     if (!d->openFile(&file))
@@ -1375,32 +1390,25 @@ SharedTileset MapReader::readTileset(const QString &fileName)
     if (!d->openFile(&file))
         return SharedTileset();
 
-    SharedTileset tileset = readTileset(&file, QFileInfo(fileName).absolutePath());
-    if (tileset)
-        tileset->setFileName(fileName);
-
-    return tileset;
+    return readTileset(&file, QFileInfo(fileName).absolutePath());
 }
 
-TemplateGroup *MapReader::readTemplateGroup(QIODevice *device, const QString &path)
+std::unique_ptr<ObjectTemplate> MapReader::readObjectTemplate(QIODevice *device, const QString &path)
 {
-    TemplateGroup *templateGroup = d->readTemplateGroup(device, path);
-
-    return templateGroup;
+    return d->readObjectTemplate(device, path);
 }
 
-TemplateGroup *MapReader::readTemplateGroup(const QString &fileName)
+std::unique_ptr<ObjectTemplate> MapReader::readObjectTemplate(const QString &fileName)
 {
     QFile file(fileName);
     if (!d->openFile(&file))
         return nullptr;
 
-    TemplateGroup *templateGroup = readTemplateGroup(&file, QFileInfo(fileName).absolutePath());
+    auto objectTemplate = readObjectTemplate(&file, QFileInfo(fileName).absolutePath());
+    if (objectTemplate)
+        objectTemplate->setFileName(fileName);
 
-    if (templateGroup)
-        templateGroup->setFileName(fileName);
-
-    return templateGroup;
+    return objectTemplate;
 }
 
 QString MapReader::errorString() const
@@ -1420,10 +1428,4 @@ SharedTileset MapReader::readExternalTileset(const QString &source,
                                              QString *error)
 {
     return TilesetManager::instance()->loadTileset(source, error);
-}
-
-TemplateGroup *MapReader::loadTemplateGroup(const QString &source,
-                                            QString *error)
-{
-    return TemplateManager::instance()->loadTemplateGroup(source, error);
 }

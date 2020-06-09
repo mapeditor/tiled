@@ -24,12 +24,11 @@
 #include "maprenderer.h"
 
 namespace Tiled {
-namespace Internal {
 
 class SnapHelper
 {
 public:
-    SnapHelper(const MapRenderer *renderer, Qt::KeyboardModifiers modifiers = nullptr);
+    SnapHelper(const MapRenderer *renderer, Qt::KeyboardModifiers modifiers = {});
 
     void toggleSnap();
 
@@ -44,5 +43,4 @@ private:
     bool mSnapToPixels;
 };
 
-} // namespace Internal
 } // namespace Tiled

@@ -21,31 +21,37 @@
 #include "toolmanager.h"
 
 #include "abstracttool.h"
+#include "actionmanager.h"
+#include "preferences.h"
 
 #include <QAction>
-#include <QActionGroup>
 #include <QShortcut>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 ToolManager::ToolManager(QObject *parent)
     : QObject(parent)
     , mActionGroup(new QActionGroup(this))
-    , mSelectedTool(nullptr)
-    , mDisabledTool(nullptr)
-    , mPreviouslyDisabledTool(nullptr)
-    , mMapDocument(nullptr)
-    , mTile(nullptr)
-    , mSelectEnabledToolPending(false)
 {
     mActionGroup->setExclusive(true);
-    connect(mActionGroup, SIGNAL(triggered(QAction*)),
-            this, SLOT(actionTriggered(QAction*)));
+    connect(mActionGroup, &QActionGroup::triggered,
+            this, &ToolManager::actionTriggered);
+
+    connect(Preferences::instance(), &Preferences::languageChanged,
+            this, &ToolManager::retranslateTools);
 }
 
 ToolManager::~ToolManager()
 {
+}
+
+/**
+ * Can be used to disable the registration of actions with the ActionManager.
+ * Should be called before any tools are registered.
+ */
+void ToolManager::setRegisterActions(bool enabled)
+{
+    mRegisterActions = enabled;
 }
 
 /**
@@ -73,51 +79,83 @@ void ToolManager::setMapDocument(MapDocument *mapDocument)
  */
 QAction *ToolManager::registerTool(AbstractTool *tool)
 {
+    Q_ASSERT(!tool->mToolManager);
+    tool->mToolManager = this;
+
     tool->setMapDocument(mMapDocument);
 
     QAction *toolAction = new QAction(tool->icon(), tool->name(), this);
     toolAction->setShortcut(tool->shortcut());
     toolAction->setData(QVariant::fromValue<AbstractTool*>(tool));
     toolAction->setCheckable(true);
-    if (!tool->shortcut().isEmpty()) {
-        toolAction->setToolTip(
-                QString(QLatin1String("%1 (%2)")).arg(tool->name(),
-                                                      tool->shortcut().toString()));
-    } else {
-        toolAction->setToolTip(tool->name());
-    }
-
+    toolAction->setText(tool->name());
     toolAction->setEnabled(tool->isEnabled());
+    toolAction->setVisible(tool->isVisible());
+
     mActionGroup->addAction(toolAction);
 
-    connect(tool, SIGNAL(enabledChanged(bool)),
-            this, SLOT(toolEnabledChanged(bool)));
+    connect(tool, &AbstractTool::changed,
+            this, &ToolManager::toolChanged);
+
+    connect(tool, &AbstractTool::enabledChanged,
+            this, &ToolManager::toolEnabledChanged);
+    connect(tool, &AbstractTool::visibleChanged,
+            this, [=] (bool visible) { toolAction->setVisible(visible); });
 
     // Select the first added tool
-    if (!mSelectedTool && tool->isEnabled()) {
-        setSelectedTool(tool);
-        toolAction->setChecked(true);
+    if (tool->isVisible()) {
+        if (!mSelectedTool && tool->isEnabled()) {
+            setSelectedTool(tool);
+            toolAction->setChecked(true);
+        }
+
+        if (mRegisterActions)
+            ActionManager::registerAction(toolAction, tool->id());
     }
 
     return toolAction;
 }
 
+void ToolManager::unregisterTool(AbstractTool *tool)
+{
+    auto action = findAction(tool);
+    Q_ASSERT(action);
+
+    if (mRegisterActions)
+        ActionManager::unregisterAction(action, tool->id());
+
+    delete action;
+
+    tool->disconnect(this);
+
+    if (mDisabledTool == tool)
+        mDisabledTool = nullptr;
+    if (mPreviouslyDisabledTool == tool)
+        mPreviouslyDisabledTool = nullptr;
+    if (mSelectedTool == tool)
+        mSelectedTool = nullptr;
+
+    selectEnabledTool();
+}
+
 /**
  * Selects the given tool. It should be previously added using registerTool().
+ *
+ * Returns whether the tool was succesfully selected.
  */
-void ToolManager::selectTool(AbstractTool *tool)
+bool ToolManager::selectTool(AbstractTool *tool)
 {
     if (mSelectedTool == tool)
-        return;
+        return true;
 
     if (tool && !tool->isEnabled()) // Refuse to select disabled tools
-        return;
+        return false;
 
     const auto actions = mActionGroup->actions();
     for (QAction *action : actions) {
         if (action->data().value<AbstractTool*>() == tool) {
             action->trigger();
-            return;
+            return true;
         }
     }
 
@@ -125,11 +163,33 @@ void ToolManager::selectTool(AbstractTool *tool)
     for (QAction *action : actions)
         action->setChecked(false);
     setSelectedTool(nullptr);
+    return tool == nullptr;
+}
+
+QAction *ToolManager::findAction(AbstractTool *tool) const
+{
+    const auto actions = mActionGroup->actions();
+    for (QAction *action : actions) {
+        if (action->data().value<AbstractTool*>() == tool)
+            return action;
+    }
+    return nullptr;
 }
 
 void ToolManager::actionTriggered(QAction *action)
 {
     setSelectedTool(action->data().value<AbstractTool*>());
+}
+
+void ToolManager::toolChanged()
+{
+    auto tool = static_cast<AbstractTool*>(sender());
+
+    if (auto action = findAction(tool)) {
+        action->setText(tool->name());
+        action->setIcon(tool->icon());
+        action->setShortcut(tool->shortcut());
+    }
 }
 
 void ToolManager::retranslateTools()
@@ -140,11 +200,7 @@ void ToolManager::retranslateTools()
         AbstractTool *tool = action->data().value<AbstractTool*>();
         tool->languageChanged();
 
-        // Update the text, shortcut and tooltip of the action
         action->setText(tool->name());
-        action->setShortcut(tool->shortcut());
-        action->setToolTip(QString(QLatin1String("%1 (%2)")).arg(
-                tool->name(), tool->shortcut().toString()));
     }
 }
 
@@ -167,23 +223,17 @@ void ToolManager::createShortcuts(QWidget *parent)
             // Make sure the shortcut is only enabled when the action is,
             // because different tools may use the same shortcut.
             shortcut->setEnabled(action->isEnabled());
-            connect(action, &QAction::changed, shortcut, [=]() {
+            connect(action, &QAction::changed, shortcut, [=] {
+                shortcut->setKey(action->shortcut());
                 shortcut->setEnabled(action->isEnabled());
             });
 
             connect(shortcut, &QShortcut::activated, action, &QAction::trigger);
 
-            // Unset the shortcut from the action to avoid ambiguous overloads
-            action->setShortcut(QKeySequence());
+            // Limit the context of the shortcut to avoid ambiguous overloads
+            action->setShortcutContext(Qt::WidgetShortcut);
         }
     }
-}
-
-void ToolManager::setTile(Tile *tile)
-{
-    mTile = tile;
-    if (mSelectedTool)
-        mSelectedTool->setTile(mTile);
 }
 
 void ToolManager::toolEnabledChanged(bool enabled)
@@ -209,8 +259,13 @@ void ToolManager::toolEnabledChanged(bool enabled)
         // all the tools to update their enabled state.
         if (!mSelectEnabledToolPending) {
             mSelectEnabledToolPending = true;
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
             QMetaObject::invokeMethod(this, "selectEnabledTool",
                                       Qt::QueuedConnection);
+#else
+            QMetaObject::invokeMethod(this, &ToolManager::selectEnabledTool,
+                                      Qt::QueuedConnection);
+#endif
         }
     }
 }
@@ -237,7 +292,7 @@ AbstractTool *ToolManager::firstEnabledTool() const
     const auto actions = mActionGroup->actions();
     for (QAction *action : actions)
         if (AbstractTool *tool = action->data().value<AbstractTool*>())
-            if (tool->isEnabled())
+            if (tool->isEnabled() && tool->isVisible())
                 return tool;
 
     return nullptr;
@@ -249,8 +304,8 @@ void ToolManager::setSelectedTool(AbstractTool *tool)
         return;
 
     if (mSelectedTool) {
-        disconnect(mSelectedTool, SIGNAL(statusInfoChanged(QString)),
-                   this, SIGNAL(statusInfoChanged(QString)));
+        disconnect(mSelectedTool, &AbstractTool::statusInfoChanged,
+                   this, &ToolManager::statusInfoChanged);
     }
 
     mSelectedTool = tool;
@@ -258,8 +313,7 @@ void ToolManager::setSelectedTool(AbstractTool *tool)
 
     if (mSelectedTool) {
         emit statusInfoChanged(mSelectedTool->statusInfo());
-        connect(mSelectedTool, SIGNAL(statusInfoChanged(QString)),
-                this, SIGNAL(statusInfoChanged(QString)));
-        tool->setTile(mTile);
+        connect(mSelectedTool, &AbstractTool::statusInfoChanged,
+                this, &ToolManager::statusInfoChanged);
     }
 }

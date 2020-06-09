@@ -22,6 +22,7 @@
 
 #include "undocommands.h"
 
+#include <QHash>
 #include <QRegion>
 #include <QUndoCommand>
 
@@ -29,8 +30,6 @@ namespace Tiled {
 
 class Tile;
 class TileLayer;
-
-namespace Internal {
 
 class MapDocument;
 
@@ -40,7 +39,7 @@ public:
     EraseTiles(MapDocument *mapDocument,
                TileLayer *tileLayer,
                const QRegion &region);
-    ~EraseTiles();
+    ~EraseTiles() override;
 
     /**
      * Sets whether this undo command can be merged with an existing command.
@@ -55,12 +54,17 @@ public:
     bool mergeWith(const QUndoCommand *other) override;
 
 private:
+    struct LayerData
+    {
+        void mergeWith(const LayerData &o);
+
+        TileLayer *mErasedCells = nullptr;
+        QRegion mRegion;
+    };
+
     MapDocument *mMapDocument;
-    TileLayer *mTileLayer;
-    TileLayer *mErasedCells;
-    QRegion mRegion;
+    QHash<TileLayer*, LayerData> mLayerData;
     bool mMergeable;
 };
 
-} // namespace Internal
 } // namespace Tiled

@@ -20,6 +20,8 @@
 
 #include "document.h"
 
+#include "editableasset.h"
+#include "logginginterface.h"
 #include "object.h"
 #include "tile.h"
 
@@ -27,19 +29,30 @@
 #include <QUndoStack>
 
 namespace Tiled {
-namespace Internal {
+
+QHash<QString, Document*> Document::sDocumentInstances;
 
 Document::Document(DocumentType type, const QString &fileName,
                    QObject *parent)
     : QObject(parent)
     , mType(type)
     , mFileName(fileName)
+    , mCanonicalFilePath(QFileInfo(mFileName).canonicalFilePath())
     , mUndoStack(new QUndoStack(this))
-    , mCurrentObject(nullptr)
-    , mIgnoreBrokenLinks(false)
 {
-    connect(mUndoStack, &QUndoStack::cleanChanged,
-            this, &Document::modifiedChanged);
+    if (!mCanonicalFilePath.isEmpty())
+        sDocumentInstances.insert(mCanonicalFilePath, this);
+
+    connect(mUndoStack, &QUndoStack::cleanChanged, this, &Document::modifiedChanged);
+}
+
+Document::~Document()
+{
+    if (!mCanonicalFilePath.isEmpty()) {
+        auto i = sDocumentInstances.find(mCanonicalFilePath);
+        if (i != sDocumentInstances.end() && *i == this)
+            sDocumentInstances.erase(i);
+    }
 }
 
 void Document::setFileName(const QString &fileName)
@@ -48,8 +61,36 @@ void Document::setFileName(const QString &fileName)
         return;
 
     QString oldFileName = mFileName;
+
+    if (!mCanonicalFilePath.isEmpty()) {
+        auto i = sDocumentInstances.find(mCanonicalFilePath);
+        if (i != sDocumentInstances.end() && *i == this)
+            sDocumentInstances.erase(i);
+    }
+
     mFileName = fileName;
+    mCanonicalFilePath = QFileInfo(fileName).canonicalFilePath();
+
+    if (!mCanonicalFilePath.isEmpty())
+        sDocumentInstances.insert(mCanonicalFilePath, this);
+
     emit fileNameChanged(fileName, oldFileName);
+}
+
+void Document::checkFilePathProperties(const Object *object) const
+{
+    auto &props = object->properties();
+
+    for (auto i = props.begin(), i_end = props.end(); i != i_end; ++i) {
+        if (i.value().userType() == filePathTypeId()) {
+            const QString localFile = i.value().value<FilePath>().url.toLocalFile();
+            if (!localFile.isEmpty() && !QFile::exists(localFile)) {
+                WARNING(tr("Custom property '%1' refers to non-existing file '%2'").arg(i.key(), localFile),
+                        SelectCustomProperty { fileName(), i.key(), object},
+                        this);
+            }
+        }
+    }
 }
 
 /**
@@ -57,7 +98,7 @@ void Document::setFileName(const QString &fileName)
  */
 bool Document::isModified() const
 {
-    return !mUndoStack->isClean();
+    return !undoStack()->isClean();
 }
 
 void Document::setCurrentObject(Object *object)
@@ -112,5 +153,9 @@ void Document::setIgnoreBrokenLinks(bool ignoreBrokenLinks)
     emit ignoreBrokenLinksChanged(ignoreBrokenLinks);
 }
 
-} // namespace Internal
+void Document::setChangedOnDisk(bool changedOnDisk)
+{
+    mChangedOnDisk = changedOnDisk;
+}
+
 } // namespace Tiled

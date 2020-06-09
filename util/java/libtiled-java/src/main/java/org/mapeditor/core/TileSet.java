@@ -2,9 +2,9 @@
  * #%L
  * This file is part of libtiled-java.
  * %%
- * Copyright (C) 2004 - 2017 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright (C) 2004 - 2017 Adam Turk <aturk@biggeruniverse.com>
- * Copyright (C) 2016 - 2017 Mike Thomas <mikepthomas@outlook.com>
+ * Copyright (C) 2004 - 2019 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright (C) 2004 - 2019 Adam Turk <aturk@biggeruniverse.com>
+ * Copyright (C) 2016 - 2019 Mike Thomas <mikepthomas@outlook.com>
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -55,20 +55,16 @@ import org.mapeditor.util.BasicTileCutter;
 
 /**
  * todo: Update documentation
- * <p>
+ *
  * TileSet handles operations on tiles as a set, or group. It has several
  * advanced internal functions aimed at reducing unnecessary data replication.
  * A 'tile' is represented internally as two distinct pieces of data. The first
  * and most important is a {@link org.mapeditor.core.Tile} object, and these are
- * held in a {@link java.util.List}.</p>
+ * held in a {@link java.util.List}.
  *
- * <p>
- * The other is the tile image.</p>
+ * The other is the tile image.
  *
- * @author Thorbjørn Lindeijer
- * @author Adam Turk
- * @author Mike Thomas
- * @version 1.0.2
+ * @version 1.2.3
  */
 @XmlRootElement(name = "tileset")
 @XmlAccessorType(XmlAccessType.NONE)
@@ -95,8 +91,8 @@ public class TileSet extends TileSetData implements Iterable<Tile> {
      *
      * @param imgFilename a {@link java.lang.String} object.
      * @param cutter a {@link org.mapeditor.util.TileCutter} object.
-     * @throws java.io.IOException if any.
      * @see TileSet#importTileBitmap(BufferedImage, TileCutter)
+     * @throws java.io.IOException if any.
      */
     public void importTileBitmap(String imgFilename, TileCutter cutter)
             throws IOException {
@@ -219,7 +215,7 @@ public class TileSet extends TileSetData implements Iterable<Tile> {
     }
 
     /**
-     * <p>checkUpdate.</p>
+     * checkUpdate.
      *
      * @throws java.io.IOException if any.
      */
@@ -403,9 +399,7 @@ public class TileSet extends TileSetData implements Iterable<Tile> {
      */
     public void beforeMarshal(Marshaller marshaller) {
         internalTiles = new ArrayList<>();
-        for (java.util.Map.Entry<Integer, Tile> entry : tiles.entrySet()) {
-            internalTiles.add(entry.getValue());
-        }
+        tiles.entrySet().forEach(entry -> internalTiles.add(entry.getValue()));
     }
 
     /**
@@ -417,9 +411,7 @@ public class TileSet extends TileSetData implements Iterable<Tile> {
      */
     public void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
         tiles = new TreeMap<>();
-        for (Tile tile : getInternalTiles()) {
-            tiles.put(tile.getId(), tile);
-        }
+        getInternalTiles().forEach(tile -> tiles.put(tile.getId(), tile));
     }
 
     /** {@inheritDoc} */

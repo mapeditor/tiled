@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include <QMap>
+#include <QHash>
 #include <QUndoCommand>
 
 #include "undocommands.h"
@@ -29,8 +29,6 @@ namespace Tiled {
 
 class Tile;
 class Tileset;
-
-namespace Internal {
 
 class TilesetDocument;
 
@@ -46,7 +44,7 @@ public:
         unsigned to;
     };
 
-    typedef QMap<Tile *, Change> Changes;
+    typedef QHash<Tile *, Change> Changes;
 
     /**
      * Constructs an empty command that changes no terrain. When merged into
@@ -81,5 +79,4 @@ private:
     bool mMergeable;
 };
 
-} // namespace Internal
 } // namespace Tiled

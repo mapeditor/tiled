@@ -1,6 +1,6 @@
 /*
  * capturestamphelper.h
- * Copyright 2017, Your Name <your.name@domain>
+ * Copyright 2017, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -18,15 +18,15 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CAPTURESTAMPHELPER_H
-#define CAPTURESTAMPHELPER_H
+#pragma once
 
 #include "tilestamp.h"
 
 #include <QRect>
 
 namespace Tiled {
-namespace Internal {
+
+class MapDocument;
 
 class CaptureStampHelper
 {
@@ -34,7 +34,7 @@ public:
     CaptureStampHelper();
 
     void beginCapture(QPoint tilePosition);
-    TileStamp endCapture(const TileLayer *tileLayer, QPoint tilePosition);
+    TileStamp endCapture(const MapDocument &mapDocument, QPoint tilePosition);
 
     bool isActive() const { return mActive; }
     void reset();
@@ -46,7 +46,4 @@ private:
     bool mActive;
 };
 
-} // namespace Internal
 } // namespace Tiled
-
-#endif // CAPTURESTAMPHELPER_H

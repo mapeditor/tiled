@@ -56,7 +56,7 @@ properties. There are many kinds of objects:
 
 -  **Rectangle** - for marking custom rectangular areas
 -  **Ellipse** - for marking custom ellipse or circular areas
--  **Point** - for marking exact locations
+-  **Point** - for marking exact locations (since Tiled 1.1)
 -  **Polygon** - for when a rectangle or ellipse doesn't cut it (often a
    collision area)
 -  **Polyline** - can be a path to follow or a wall to collide with
@@ -101,7 +101,7 @@ object you'd like to avoid interacting with.
 
 .. raw:: html
 
-   <div class="new new-prev">New in Tiled 1.0</div>
+   <div class="new new-prev">Since Tiled 1.0</div>
 
 Group Layers
 ------------

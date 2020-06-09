@@ -1,7 +1,7 @@
 import qbs 1.0
 
 TiledPlugin {
-    cpp.defines: ["FLARE_LIBRARY"]
+    cpp.defines: base.concat(["FLARE_LIBRARY"])
 
     files: [
         "flare_global.h",

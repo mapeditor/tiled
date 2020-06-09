@@ -26,8 +26,6 @@ namespace Tiled {
 
 class Tile;
 
-namespace Internal {
-
 class TilesetDocument;
 
 class ChangeTileProbability : public QUndoCommand
@@ -35,11 +33,11 @@ class ChangeTileProbability : public QUndoCommand
 public:
     ChangeTileProbability(TilesetDocument *tilesetDocument,
                           const QList<Tile*> &tiles,
-                          float probability);
+                          qreal probability);
 
     ChangeTileProbability(TilesetDocument *tilesetDocument,
                           const QList<Tile*> &tiles,
-                          const QList<float> &probabilities,
+                          const QList<qreal> &probabilities,
                           QUndoCommand *parent = nullptr);
 
     void undo() override { swap(); }
@@ -50,8 +48,7 @@ private:
 
     TilesetDocument *mTilesetDocument;
     QList<Tile*> mTiles;
-    QList<float> mProbabilities;
+    QList<qreal> mProbabilities;
 };
 
-} // namespace Internal
 } // namespace Tiled

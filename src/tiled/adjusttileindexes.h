@@ -26,8 +26,6 @@ namespace Tiled {
 
 class Tileset;
 
-namespace Internal {
-
 class MapDocument;
 class TilesetDocument;
 
@@ -51,5 +49,4 @@ public:
     AdjustTileMetaData(TilesetDocument *tilesetDocument);
 };
 
-} // namespace Internal
 } // namespace Tiled

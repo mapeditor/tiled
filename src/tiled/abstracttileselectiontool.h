@@ -27,7 +27,6 @@ class QAction;
 class QActionGroup;
 
 namespace Tiled {
-namespace Internal {
 
 class MapDocument;
 
@@ -36,7 +35,8 @@ class AbstractTileSelectionTool : public AbstractTileTool
     Q_OBJECT
 
 public:
-    AbstractTileSelectionTool(const QString &name,
+    AbstractTileSelectionTool(Id id,
+                              const QString &name,
                               const QIcon &icon,
                               const QKeySequence &shortcut,
                               QObject *parent = nullptr);
@@ -58,13 +58,14 @@ protected:
         Intersect
     };
 
-    SelectionMode selectionMode() { return mSelectionMode; }
+    SelectionMode selectionMode() const { return mSelectionMode; }
 
-    QRegion selectedRegion() { return mSelectedRegion; }
+    QRegion selectedRegion() const { return mSelectedRegion; }
     void setSelectedRegion(QRegion region) { mSelectedRegion = region; }
 
-private:
+    void updateBrushVisibility() override;
 
+private:
     SelectionMode mSelectionMode;
     SelectionMode mDefaultMode;
 
@@ -77,5 +78,4 @@ private:
     QActionGroup *mActionGroup;
 };
 
-} // namespace Internal
 } // namespace Tiled

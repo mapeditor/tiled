@@ -1,6 +1,6 @@
 /*
  * brushitem.h
- * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2017, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2010 Stefan Beller <stefanbeller@googlemail.com>
  *
  * This file is part of Tiled.
@@ -21,12 +21,12 @@
 
 #pragma once
 
+#include "map.h"
 #include "tilelayer.h"
 
 #include <QGraphicsItem>
 
 namespace Tiled {
-namespace Internal {
 
 class MapDocument;
 
@@ -47,10 +47,14 @@ public:
     void setTileLayer(const SharedTileLayer &tileLayer, const QRegion &region);
     const SharedTileLayer &tileLayer() const;
 
-    void setTileLayerPosition(const QPoint &pos);
+    void setMap(const SharedMap &map);
+    void setMap(const SharedMap &map, const QRegion &region);
+    const SharedMap &map() const;
+
+    void setTileLayerPosition(QPoint pos);
 
     void setTileRegion(const QRegion &region);
-    QRegion tileRegion() const;
+    const QRegion &tileRegion() const;
 
     void setLayerOffset(const QPointF &offset);
 
@@ -68,17 +72,10 @@ private:
 
     MapDocument *mMapDocument;
     SharedTileLayer mTileLayer;
+    SharedMap mMap;
     QRegion mRegion;
     QRectF mBoundingRect;
 };
-
-/**
- * Clears the tile layer and region set on this item.
- */
-inline void BrushItem::clear()
-{
-    setTileLayer(SharedTileLayer());
-}
 
 /**
  * Returns the current tile layer.
@@ -89,13 +86,20 @@ inline const SharedTileLayer &BrushItem::tileLayer() const
 }
 
 /**
+ * Returns the current map.
+ */
+inline const SharedMap &BrushItem::map() const
+{
+    return mMap;
+}
+
+/**
  * Returns the region of the current tile layer or the region that was set
  * using setTileRegion.
  */
-inline QRegion BrushItem::tileRegion() const
+inline const QRegion &BrushItem::tileRegion() const
 {
     return mRegion;
 }
 
-} // namespace Internal
 } // namespace Tiled

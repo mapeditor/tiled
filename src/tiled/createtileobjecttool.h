@@ -24,7 +24,6 @@
 
 namespace Tiled {
 
-namespace Internal {
 
 class CreateTileObjectTool : public CreateObjectTool
 {
@@ -38,12 +37,11 @@ public:
 protected:
     void mouseMovedWhileCreatingObject(const QPointF &pos,
                                        Qt::KeyboardModifiers modifiers) override;
-    void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event) override;
-    void mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event) override;
 
-    bool startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup) override;
     MapObject *createNewMapObject() override;
+
+private:
+    void languageChangedImpl();
 };
 
-} // namespace Internal
 } // namespace Tiled

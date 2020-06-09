@@ -1,14 +1,9 @@
 !contains(DISABLE_PYTHON_PLUGIN, yes) {
     unix {
-        packagesExist(python-2.7) {
+        packagesExist(python3) {
             HAVE_PYTHON = yes
             CONFIG += link_pkgconfig
-            PKGCONFIG += python-2.7
-        } else:system(python-config --prefix) {
-            # currently here for reference, only 2.7 is tested
-            HAVE_PYTHON = yes
-            QMAKE_CXXFLAGS += `python-config --cflags`
-            QMAKE_LFLAGS += `python-config --ldflags`
+            PKGCONFIG += python3
         }
     }
 

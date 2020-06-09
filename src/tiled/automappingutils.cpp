@@ -30,7 +30,6 @@
 #include <QUndoStack>
 
 namespace Tiled {
-namespace Internal {
 
 void eraseRegionObjectGroup(MapDocument *mapDocument,
                             ObjectGroup *layer,
@@ -60,7 +59,7 @@ void eraseRegionObjectGroup(MapDocument *mapDocument,
 
         const QRect objAlignedRect = objInTileSpace.toAlignedRect();
         if (where.intersects(objAlignedRect))
-            undo->push(new RemoveMapObject(mapDocument, obj));
+            undo->push(new RemoveMapObjects(mapDocument, obj));
     }
 }
 
@@ -96,5 +95,4 @@ const QList<MapObject*> objectsInRegion(const ObjectGroup *layer,
     return ret;
 }
 
-} // namespace Internal
 } // namespace Tiled

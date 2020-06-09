@@ -20,89 +20,173 @@
 
 #include "addremovemapobject.h"
 
+#include "changeevents.h"
+#include "document.h"
 #include "map.h"
-#include "mapdocument.h"
 #include "mapobject.h"
 #include "objectgroup.h"
-#include "mapobjectmodel.h"
 
 #include <QCoreApplication>
 
+#include "qtcompat_p.h"
+
 using namespace Tiled;
-using namespace Tiled::Internal;
 
-AddRemoveMapObject::AddRemoveMapObject(MapDocument *mapDocument,
-                                       ObjectGroup *objectGroup,
-                                       MapObject *mapObject,
-                                       bool ownObject,
-                                       QUndoCommand *parent)
+AddRemoveMapObjects::AddRemoveMapObjects(Document *document,
+                                         const QVector<Entry> &entries,
+                                         bool ownObjects,
+                                         QUndoCommand *parent)
     : QUndoCommand(parent)
-    , mMapDocument(mapDocument)
-    , mMapObject(mapObject)
-    , mObjectGroup(objectGroup)
-    , mIndex(-1)
-    , mOwnsObject(ownObject)
+    , mDocument(document)
+    , mEntries(entries)
+    , mOwnsObjects(ownObjects)
 {
 }
 
-AddRemoveMapObject::~AddRemoveMapObject()
+AddRemoveMapObjects::~AddRemoveMapObjects()
 {
-    if (mOwnsObject)
-        delete mMapObject;
+    if (mOwnsObjects)
+        for (const Entry &entry : qAsConst(mEntries))
+            delete entry.mapObject;
 }
 
-void AddRemoveMapObject::addObject()
+void AddRemoveMapObjects::releaseObjects()
 {
-    mMapDocument->mapObjectModel()->insertObject(mObjectGroup, mIndex,
-                                                 mMapObject);
-
-    auto templateGroup = mMapObject->templateGroup();
-    if (templateGroup)
-        mMapDocument->map()->addTemplateGroup(templateGroup);
-
-    mOwnsObject = false;
+    mOwnsObjects = false;
 }
 
-void AddRemoveMapObject::removeObject()
+QVector<AddRemoveMapObjects::Entry> AddRemoveMapObjects::entries(const QList<MapObject *> &objects)
 {
-    mIndex = mMapDocument->mapObjectModel()->removeObject(mObjectGroup,
-                                                          mMapObject);
-    mOwnsObject = true;
+    QVector<Entry> entries;
+    entries.reserve(objects.size());
+
+    for (MapObject *object : objects)
+        entries.append(Entry { object, object->objectGroup() });
+
+    return entries;
+}
+
+QList<MapObject *> AddRemoveMapObjects::objects(const QVector<Entry> &entries)
+{
+    QList<MapObject*> objects;
+    objects.reserve(entries.size());
+
+    for (const Entry &entry : entries)
+        objects.append(entry.mapObject);
+
+    return objects;
 }
 
 
-AddMapObject::AddMapObject(MapDocument *mapDocument, ObjectGroup *objectGroup,
-                           MapObject *mapObject, QUndoCommand *parent)
-    : AddRemoveMapObject(mapDocument,
-                         objectGroup,
-                         mapObject,
-                         true,
-                         parent)
+AddMapObjects::AddMapObjects(Document *document, ObjectGroup *objectGroup,
+                             MapObject *mapObject, QUndoCommand *parent)
+    : AddRemoveMapObjects(document,
+                          { Entry { mapObject, objectGroup } },
+                          true,
+                          parent)
 {
     setText(QCoreApplication::translate("Undo Commands", "Add Object"));
 }
 
-void AddMapObject::undo()
+AddMapObjects::AddMapObjects(Document *document,
+                             const QVector<AddRemoveMapObjects::Entry> &entries,
+                             QUndoCommand *parent)
+    : AddRemoveMapObjects(document,
+                          entries,
+                          true,
+                          parent)
 {
-    removeObject();
+    setText(QCoreApplication::translate("Undo Commands", "Add Objects"));
+}
+
+void AddMapObjects::undo()
+{
+    MapObjectsEvent mapObjectsEvent { ChangeEvent::MapObjectsAboutToBeRemoved, objects(mEntries) };
+
+    emit mDocument->changed(mapObjectsEvent);
+
+    for (int i = mEntries.size() - 1; i >= 0; --i) {
+        Entry &entry = mEntries[i];
+        emit mDocument->changed(MapObjectEvent(ChangeEvent::MapObjectAboutToBeRemoved, entry.objectGroup, entry.index));
+        entry.objectGroup->removeObjectAt(entry.index);
+        emit mDocument->changed(MapObjectEvent(ChangeEvent::MapObjectRemoved, entry.objectGroup, entry.index));
+    }
+
+    mapObjectsEvent.type = ChangeEvent::MapObjectsRemoved;
+    emit mDocument->changed(mapObjectsEvent);
+
+    mOwnsObjects = true;
+
     QUndoCommand::undo(); // undo child commands
 }
 
-void AddMapObject::redo()
+void AddMapObjects::redo()
 {
     QUndoCommand::redo(); // redo child commands
-    addObject();
+
+    for (Entry &entry : mEntries) {
+        if (entry.index == -1)
+            entry.index = entry.objectGroup->objectCount();
+
+        emit mDocument->changed(MapObjectEvent(ChangeEvent::MapObjectAboutToBeAdded, entry.objectGroup, entry.index));
+        entry.objectGroup->insertObject(entry.index, entry.mapObject);
+        emit mDocument->changed(MapObjectEvent(ChangeEvent::MapObjectAdded, entry.objectGroup, entry.index));
+    }
+
+    emit mDocument->changed(MapObjectsEvent(ChangeEvent::MapObjectsAdded, objects(mEntries)));
+
+    mOwnsObjects = false;
 }
 
 
-RemoveMapObject::RemoveMapObject(MapDocument *mapDocument,
-                                 MapObject *mapObject,
-                                 QUndoCommand *parent)
-    : AddRemoveMapObject(mapDocument,
-                         mapObject->objectGroup(),
-                         mapObject,
-                         false,
-                         parent)
+RemoveMapObjects::RemoveMapObjects(Document *document,
+                                   MapObject *mapObject,
+                                   QUndoCommand *parent)
+    : AddRemoveMapObjects(document,
+                          { Entry { mapObject, mapObject->objectGroup() } },
+                          false,
+                          parent)
 {
     setText(QCoreApplication::translate("Undo Commands", "Remove Object"));
+}
+
+RemoveMapObjects::RemoveMapObjects(Document *document,
+                                   const QList<MapObject *> &mapObjects,
+                                   QUndoCommand *parent)
+    : AddRemoveMapObjects(document,
+                          entries(mapObjects),
+                          false,
+                          parent)
+{
+    setText(QCoreApplication::translate("Undo Commands", "Remove Objects"));
+}
+
+void RemoveMapObjects::undo()
+{
+    for (int i = mEntries.size() - 1; i >= 0; --i) {
+        const Entry &entry = mEntries.at(i);
+        emit mDocument->changed(MapObjectEvent(ChangeEvent::MapObjectAboutToBeAdded, entry.objectGroup, entry.index));
+        entry.objectGroup->insertObject(entry.index, entry.mapObject);
+        emit mDocument->changed(MapObjectEvent(ChangeEvent::MapObjectAdded, entry.objectGroup, entry.index));
+    }
+
+    emit mDocument->changed(MapObjectsEvent(ChangeEvent::MapObjectsAdded, objects(mEntries)));
+
+    mOwnsObjects = false;
+}
+
+void RemoveMapObjects::redo()
+{
+    emit mDocument->changed(MapObjectsEvent(ChangeEvent::MapObjectsAboutToBeRemoved, objects(mEntries)));
+
+    for (Entry &entry : mEntries) {
+        if (entry.index == -1)
+            entry.index = entry.objectGroup->objects().indexOf(entry.mapObject);
+
+        emit mDocument->changed(MapObjectEvent(ChangeEvent::MapObjectAboutToBeRemoved, entry.objectGroup, entry.index));
+        entry.objectGroup->removeObjectAt(entry.index);
+        emit mDocument->changed(MapObjectEvent(ChangeEvent::MapObjectRemoved, entry.objectGroup, entry.index));
+    }
+
+    mOwnsObjects = true;
 }

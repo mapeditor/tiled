@@ -28,43 +28,34 @@
 
 #pragma once
 
+#include "fileformat.h"
+#include "map.h"
 #include "pluginmanager.h"
 
 #include <QObject>
 #include <QStringList>
 #include <QMap>
 
+#include <memory>
+
 namespace Tiled {
 
 class Map;
 
-class TILEDSHARED_EXPORT FileFormat : public QObject
+/**
+ * An interface to be implemented for adding support for a map format to Tiled.
+ * It can implement support for either loading or saving to a certain map
+ * format, or both.
+ */
+class TILEDSHARED_EXPORT MapFormat : public FileFormat
 {
     Q_OBJECT
+    Q_INTERFACES(Tiled::FileFormat)
 
 public:
-    enum Capability {
-        NoCapability    = 0x0,
-        Read            = 0x1,
-        Write           = 0x2,
-        ReadWrite       = Read | Write
-    };
-    Q_DECLARE_FLAGS(Capabilities, Capability)
-
-    explicit FileFormat(QObject *parent = nullptr)
-        : QObject(parent)
+    explicit MapFormat(QObject *parent = nullptr)
+        : FileFormat(parent)
     {}
-
-    /**
-     * Returns whether this format has Read and/or Write capabilities.
-     */
-    virtual Capabilities capabilities() const { return ReadWrite; }
-
-    /**
-     * Returns whether this format has all given capabilities.
-     */
-    bool hasCapabilities(Capabilities caps) const
-    { return (capabilities() & caps) == caps; }
 
     /**
      * Returns the absolute paths for the files that will be written by
@@ -75,49 +66,11 @@ public:
     virtual QStringList outputFiles(const Map *, const QString &fileName) const
     { return QStringList(fileName); }
 
-    /**
-     * Returns name filter for files in this map format.
-     */
-    virtual QString nameFilter() const = 0;
-
-    /**
-     * Returns short name for this map format
-     */
-    virtual QString shortName() const = 0;
-
-    /**
-     * Returns whether this map format supports reading the given file.
-     *
-     * Generally would do a file extension check.
-     */
-    virtual bool supportsFile(const QString &fileName) const = 0;
-
-    /**
-     * Returns the error to be shown to the user if an error occured while
-     * trying to read a map.
-     */
-    virtual QString errorString() const = 0;
-};
-
-
-/**
- * An interface to be implemented for adding support for a map format to Tiled.
- * It can implement support for either loading or saving to a certain map
- * format, or both.
- */
-class TILEDSHARED_EXPORT MapFormat : public FileFormat
-{
-    Q_OBJECT
-
-public:
-    explicit MapFormat(QObject *parent = nullptr)
-        : FileFormat(parent)
-    {}
 
     /**
      * Reads the map and returns a new Map instance, or 0 if reading failed.
      */
-    virtual Map *read(const QString &fileName) = 0;
+    virtual std::unique_ptr<Map> read(const QString &fileName) = 0;
 
     /**
      * Writes the given \a map based on the suggested \a fileName.
@@ -129,13 +82,13 @@ public:
      * @return <code>true</code> on success, <code>false</code> when an error
      *         occurred. The error can be retrieved by errorString().
      */
-    virtual bool write(const Map *map, const QString &fileName) = 0;
+    virtual bool write(const Map *map, const QString &fileName,
+                       Options options = Options()) = 0;
 };
 
 } // namespace Tiled
 
 Q_DECLARE_INTERFACE(Tiled::MapFormat, "org.mapeditor.MapFormat")
-Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::FileFormat::Capabilities)
 
 namespace Tiled {
 
@@ -148,8 +101,11 @@ class TILEDSHARED_EXPORT ReadableMapFormat : public MapFormat
     Q_INTERFACES(Tiled::MapFormat)
 
 public:
+    explicit ReadableMapFormat(QObject *parent = nullptr)
+        : MapFormat(parent)
+    {}
     Capabilities capabilities() const override { return Read; }
-    bool write(const Map *, const QString &) override { return false; }
+    bool write(const Map *, const QString &, Options) override { return false; }
 };
 
 
@@ -162,58 +118,22 @@ class TILEDSHARED_EXPORT WritableMapFormat : public MapFormat
     Q_INTERFACES(Tiled::MapFormat)
 
 public:
+    explicit WritableMapFormat(QObject *parent = nullptr)
+        : MapFormat(parent)
+    {}
+
     Capabilities capabilities() const override { return Write; }
-    Map *read(const QString &) override { return nullptr; }
+    std::unique_ptr<Map> read(const QString &) override { return nullptr; }
     bool supportsFile(const QString &) const override { return false; }
 };
 
 
 /**
- * Convenience class that can be used when implementing file dialogs.
- */
-template<typename Format>
-class FormatHelper
-{
-public:
-    FormatHelper(FileFormat::Capabilities capabilities,
-                 QString initialFilter = QString())
-        : mFilter(std::move(initialFilter))
-    {
-        PluginManager::each<Format>([this,capabilities](Format *format) {
-            if (format->hasCapabilities(capabilities)) {
-                const QString nameFilter = format->nameFilter();
-
-                if (!mFilter.isEmpty())
-                    mFilter += QLatin1String(";;");
-                mFilter += nameFilter;
-
-                mFormats.append(format);
-                mFormatByNameFilter.insert(nameFilter, format);
-            }
-        });
-    }
-
-    const QString &filter() const
-    { return mFilter; }
-
-    const QList<Format*> &formats() const
-    { return mFormats; }
-
-    Format *formatByNameFilter(const QString &nameFilter) const
-    { return mFormatByNameFilter.value(nameFilter); }
-
-private:
-    QString mFilter;
-    QList<Format*> mFormats;
-    QMap<QString, Format*> mFormatByNameFilter;
-};
-
-/**
  * Attempt to read the given map using any of the map formats added
  * to the plugin manager, falling back to the TMX format if none are capable.
  */
-TILEDSHARED_EXPORT Map *readMap(const QString &fileName,
-                                QString *error = nullptr);
+TILEDSHARED_EXPORT std::unique_ptr<Map> readMap(const QString &fileName,
+                                                QString *error = nullptr);
 
 /**
  * Attempts to find a map format supporting the given file.

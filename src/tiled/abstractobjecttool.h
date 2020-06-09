@@ -22,12 +22,12 @@
 
 #include "abstracttool.h"
 
+class QAction;
+
 namespace Tiled {
 
 class MapObject;
 class ObjectGroup;
-
-namespace Internal {
 
 class MapObjectItem;
 
@@ -38,12 +38,14 @@ class MapObjectItem;
 class AbstractObjectTool : public AbstractTool
 {
     Q_OBJECT
+    Q_INTERFACES(Tiled::AbstractTool)
 
 public:
     /**
      * Constructs an abstract object tool with the given \a name and \a icon.
      */
-    AbstractObjectTool(const QString &name,
+    AbstractObjectTool(Id id,
+                       const QString &name,
                        const QIcon &icon,
                        const QKeySequence &shortcut,
                        QObject *parent = nullptr);
@@ -56,6 +58,10 @@ public:
     void mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers) override;
     void mousePressed(QGraphicsSceneMouseEvent *event) override;
 
+    void languageChanged() override;
+
+    void populateToolBar(QToolBar*) override;
+
 protected:
     /**
      * Overridden to only enable this tool when the currently selected layer is
@@ -65,32 +71,38 @@ protected:
 
     MapScene *mapScene() const { return mMapScene; }
     ObjectGroup *currentObjectGroup() const;
-    QList<MapObjectItem*> objectItemsAt(QPointF pos) const;
-    MapObjectItem *topMostObjectItemAt(QPointF pos) const;
+    QList<MapObject*> mapObjectsAt(const QPointF &pos) const;
+    MapObject *topMostMapObjectAt(const QPointF &pos) const;
 
-private slots:
+private:
     void duplicateObjects();
     void removeObjects();
     void resetTileSize();
     void saveSelectedObject();
     void detachSelectedObjects();
+    void replaceObjectsWithTemplate();
     void resetInstances();
     void changeTile();
 
     void flipHorizontally();
     void flipVertically();
+    void rotateLeft();
+    void rotateRight();
 
     void raise();
     void lower();
     void raiseToTop();
     void lowerToBottom();
 
-private:
-    void showContextMenu(MapObjectItem *clickedObject,
+    void showContextMenu(MapObject *clickedObject,
                          QPoint screenPos);
 
     MapScene *mMapScene;
+
+    QAction *mFlipHorizontal;
+    QAction *mFlipVertical;
+    QAction *mRotateLeft;
+    QAction *mRotateRight;
 };
 
-} // namespace Internal
 } // namespace Tiled

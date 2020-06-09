@@ -29,7 +29,6 @@
 #include <QMimeData>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 TilesetModel::TilesetModel(Tileset *tileset, QObject *parent):
     QAbstractListModel(parent),
@@ -60,6 +59,8 @@ int TilesetModel::columnCount(const QModelIndex &parent) const
 {
     if (parent.isValid())
         return 0;
+    if (mColumnCountOverride > 0)
+        return mColumnCountOverride;
     if (mTileset->columnCount())
         return mTileset->columnCount();
     // TODO: Non-table tilesets should use a different model.
@@ -179,9 +180,13 @@ void TilesetModel::tilesetChanged()
     endResetModel();
 }
 
-void TilesetModel::resetModel()
+void TilesetModel::setColumnCountOverride(int columnCount)
 {
+    if (mColumnCountOverride == columnCount)
+        return;
+
     beginResetModel();
+    mColumnCountOverride = columnCount;
     endResetModel();
 }
 

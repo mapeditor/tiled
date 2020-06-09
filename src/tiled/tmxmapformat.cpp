@@ -23,7 +23,6 @@
 #include "map.h"
 #include "mapreader.h"
 #include "mapwriter.h"
-#include "preferences.h"
 #include "tilesetmanager.h"
 
 #include <QBuffer>
@@ -31,31 +30,28 @@
 #include <QXmlStreamReader>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 TmxMapFormat::TmxMapFormat(QObject *parent)
     : MapFormat(parent)
 {
 }
 
-Map *TmxMapFormat::read(const QString &fileName)
+std::unique_ptr<Map> TmxMapFormat::read(const QString &fileName)
 {
     mError.clear();
 
     MapReader reader;
-    Map *map = reader.readMap(fileName);
+    std::unique_ptr<Map> map(reader.readMap(fileName));
     if (!map)
         mError = reader.errorString();
 
     return map;
 }
 
-bool TmxMapFormat::write(const Map *map, const QString &fileName)
+bool TmxMapFormat::write(const Map *map, const QString &fileName, Options options)
 {
-    Preferences *prefs = Preferences::instance();
-
     MapWriter writer;
-    writer.setDtdEnabled(prefs->dtdEnabled());
+    writer.setMinimizeOutput(options.testFlag(WriteMinimized));
 
     bool result = writer.writeMap(map, fileName);
     if (!result)
@@ -77,7 +73,7 @@ QByteArray TmxMapFormat::toByteArray(const Map *map)
     return buffer.data();
 }
 
-Map *TmxMapFormat::fromByteArray(const QByteArray &data)
+std::unique_ptr<Map> TmxMapFormat::fromByteArray(const QByteArray &data)
 {
     mError.clear();
 
@@ -86,7 +82,7 @@ Map *TmxMapFormat::fromByteArray(const QByteArray &data)
     buffer.open(QBuffer::ReadOnly);
 
     MapReader reader;
-    Map *map = reader.readMap(&buffer);
+    std::unique_ptr<Map> map(reader.readMap(&buffer));
     if (!map)
         mError = reader.errorString();
 
@@ -131,12 +127,10 @@ SharedTileset TsxTilesetFormat::read(const QString &fileName)
     return tileset;
 }
 
-bool TsxTilesetFormat::write(const Tileset &tileset, const QString &fileName)
+bool TsxTilesetFormat::write(const Tileset &tileset, const QString &fileName, Options options)
 {
-    Preferences *prefs = Preferences::instance();
-
     MapWriter writer;
-    writer.setDtdEnabled(prefs->dtdEnabled());
+    writer.setMinimizeOutput(options.testFlag(WriteMinimized));
 
     bool result = writer.writeTileset(tileset, fileName);
     if (!result)
@@ -167,31 +161,28 @@ bool TsxTilesetFormat::supportsFile(const QString &fileName) const
     return false;
 }
 
-TgxTemplateGroupFormat::TgxTemplateGroupFormat(QObject *parent)
-    : TemplateGroupFormat(parent)
+XmlObjectTemplateFormat::XmlObjectTemplateFormat(QObject *parent)
+    : ObjectTemplateFormat(parent)
 {
 }
 
-TemplateGroup *TgxTemplateGroupFormat::read(const QString &fileName)
+std::unique_ptr<ObjectTemplate> XmlObjectTemplateFormat::read(const QString &fileName)
 {
     mError.clear();
 
     MapReader reader;
-    TemplateGroup *templateGroup = reader.readTemplateGroup(fileName);
-    if (!templateGroup)
+    auto objectTemplate = reader.readObjectTemplate(fileName);
+    if (!objectTemplate)
         mError = reader.errorString();
 
-    return templateGroup;
+    return objectTemplate;
 }
 
-bool TgxTemplateGroupFormat::write(const TemplateGroup *templateGroup, const QString &fileName)
+bool XmlObjectTemplateFormat::write(const ObjectTemplate *objectTemplate, const QString &fileName)
 {
-    Preferences *prefs = Preferences::instance();
-
     MapWriter writer;
-    writer.setDtdEnabled(prefs->dtdEnabled());
 
-    bool result = writer.writeTemplateGroup(templateGroup, fileName);
+    bool result = writer.writeObjectTemplate(objectTemplate, fileName);
     if (!result)
         mError = writer.errorString();
     else
@@ -200,9 +191,9 @@ bool TgxTemplateGroupFormat::write(const TemplateGroup *templateGroup, const QSt
     return result;
 }
 
-bool TgxTemplateGroupFormat::supportsFile(const QString &fileName) const
+bool XmlObjectTemplateFormat::supportsFile(const QString &fileName) const
 {
-    if (fileName.endsWith(QLatin1String(".tgx"), Qt::CaseInsensitive))
+    if (fileName.endsWith(QLatin1String(".tx"), Qt::CaseInsensitive))
         return true;
 
     if (fileName.endsWith(QLatin1String(".xml"), Qt::CaseInsensitive)) {
@@ -212,7 +203,7 @@ bool TgxTemplateGroupFormat::supportsFile(const QString &fileName) const
             QXmlStreamReader xml;
             xml.setDevice(&file);
 
-            if (xml.readNextStartElement() && xml.name() == QLatin1String("templategroup"))
+            if (xml.readNextStartElement() && xml.name() == QLatin1String("template"))
                 return true;
         }
     }

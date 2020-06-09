@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include "mapdocument.h"
+
 #include <QDialog>
 
 namespace Ui {
@@ -27,9 +29,6 @@ class NewMapDialog;
 }
 
 namespace Tiled {
-namespace Internal {
-
-class MapDocument;
 
 /**
  * A dialog for the creation of a new map.
@@ -46,16 +45,14 @@ public:
      * Shows the dialog and returns the created map. Returns null if the dialog
      * was cancelled.
      */
-    MapDocument *createMap();
+    MapDocumentPtr createMap();
 
-private slots:
+private:
     void refreshPixelSize();
 
     void updateWidgets(bool checked);
 
-private:
     Ui::NewMapDialog *mUi;
 };
 
-} // namespace Internal
 } // namespace Tiled

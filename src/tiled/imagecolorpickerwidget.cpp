@@ -28,7 +28,6 @@
 #include <QMouseEvent>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 ImageColorPickerWidget::ImageColorPickerWidget(QWidget *parent) :
     QFrame(parent, Qt::Popup),
@@ -36,8 +35,8 @@ ImageColorPickerWidget::ImageColorPickerWidget(QWidget *parent) :
 {
     mUi->setupUi(this);
 
-    connect(mUi->imageArea, SIGNAL(mouseMoved(QMouseEvent*)), SLOT(onMouseMove(QMouseEvent*)));
-    connect(mUi->imageArea, SIGNAL(mouseReleased(QMouseEvent*)), SLOT(onMouseRelease(QMouseEvent*)));
+    connect(mUi->imageArea, &ClickableLabel::mouseMoved, this, &ImageColorPickerWidget::onMouseMove);
+    connect(mUi->imageArea, &ClickableLabel::mouseReleased, this, &ImageColorPickerWidget::onMouseRelease);
 
     mPreviewIcon = QPixmap(Utils::dpiScaled(QSize(96, 24)));
     mPreviewIcon.fill(Qt::transparent);

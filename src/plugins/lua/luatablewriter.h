@@ -67,6 +67,9 @@ public:
     void setSuppressNewlines(bool suppressNewlines);
     bool suppressNewlines() const;
 
+    void setMinimize(bool minimize);
+    bool minimize() const;
+
     void prepareNewLine();
 
     bool hasError() const { return m_error; }
@@ -84,12 +87,13 @@ private:
     void write(char c);
 
     QIODevice *m_device;
-    int m_indent;
-    char m_valueSeparator;
-    bool m_suppressNewlines;
-    bool m_newLine;
-    bool m_valueWritten;
-    bool m_error;
+    int m_indent { 0 };
+    char m_valueSeparator { ',' };
+    bool m_suppressNewlines { false };
+    bool m_minimize { false };
+    bool m_newLine { true };
+    bool m_valueWritten { false };
+    bool m_error { false };
 };
 
 inline void LuaTableWriter::writeValue(int value)
@@ -137,5 +141,15 @@ inline void LuaTableWriter::setSuppressNewlines(bool suppressNewlines)
 
 inline bool LuaTableWriter::suppressNewlines() const
 { return m_suppressNewlines; }
+
+/**
+ * Sets whether output should be minimized. This implies suppressing newlines
+ * and in addition will avoid printing unnecessary spaces.
+ */
+inline void LuaTableWriter::setMinimize(bool minimize)
+{ m_minimize = minimize; }
+
+inline bool LuaTableWriter::minimize() const
+{ return m_minimize; }
 
 } // namespace Lua

@@ -25,7 +25,6 @@
 #include <QCoreApplication>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 ChangeProperties::ChangeProperties(Document *document,
                                    const QString &kind,

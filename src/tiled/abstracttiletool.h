@@ -26,10 +26,9 @@ namespace Tiled {
 
 class TileLayer;
 
-namespace Internal {
-
 class BrushItem;
 class MapDocument;
+class TileStamp;
 
 /**
  * A convenient base class for tile based tools.
@@ -37,18 +36,22 @@ class MapDocument;
 class AbstractTileTool : public AbstractTool
 {
     Q_OBJECT
+    Q_INTERFACES(Tiled::AbstractTool)
+
+    Q_PROPERTY(QPoint tilePosition READ tilePosition)
 
 public:
     /**
      * Constructs an abstract tile tool with the given \a name and \a icon.
      */
-    AbstractTileTool(const QString &name,
+    AbstractTileTool(Id id,
+                     const QString &name,
                      const QIcon &icon,
                      const QKeySequence &shortcut,
                      BrushItem *brushItem = nullptr,
                      QObject *parent = nullptr);
 
-    ~AbstractTileTool();
+    ~AbstractTileTool() override;
 
     void activate(MapScene *scene) override;
     void deactivate(MapScene *scene) override;
@@ -56,6 +59,7 @@ public:
     void mouseEntered() override;
     void mouseLeft() override;
     void mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers) override;
+    void mousePressed(QGraphicsSceneMouseEvent *event) override;
 
 protected:
     void mapDocumentChanged(MapDocument *oldDocument,
@@ -71,7 +75,7 @@ protected:
      * New virtual method to implement for tile tools. This method is called
      * on mouse move events, but only when the tile position changes.
      */
-    virtual void tilePositionChanged(const QPoint &tilePos) = 0;
+    virtual void tilePositionChanged(QPoint tilePos) = 0;
 
     /**
      * Updates the status info with the current tile position. When the mouse
@@ -115,9 +119,13 @@ protected:
      */
     TileLayer *currentTileLayer() const;
 
+    virtual void updateBrushVisibility();
+    virtual QList<Layer *> targetLayers() const;
+
+    QList<Layer *> targetLayersForStamp(const TileStamp &stamp) const;
+
 private:
     void setBrushVisible(bool visible);
-    void updateBrushVisibility();
 
     TilePositionMethod mTilePositionMethod;
     BrushItem *mBrushItem;
@@ -125,5 +133,4 @@ private:
     bool mBrushVisible;
 };
 
-} // namespace Internal
 } // namespace Tiled

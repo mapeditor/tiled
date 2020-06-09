@@ -21,12 +21,12 @@
 #pragma once
 
 #include "tileset.h"
+#include "undocommands.h"
 
 #include <QCoreApplication>
 #include <QUndoCommand>
 
 namespace Tiled {
-namespace Internal {
 
 class MapDocument;
 
@@ -47,7 +47,6 @@ protected:
     void addTileset();
     void removeTileset();
 
-private:
     MapDocument *mMapDocument;
     SharedTileset mTileset;
     int mIndex;
@@ -56,7 +55,7 @@ private:
 /**
  * Adds a tileset to a map.
  */
-class AddTileset : public AddRemoveTileset
+class AddTileset : public AddRemoveTileset, public ClonableUndoCommand
 {
 public:
     AddTileset(MapDocument *mapDocument, const SharedTileset &tileset,
@@ -67,6 +66,8 @@ public:
 
     void redo() override
     { addTileset(); }
+
+    AddTileset *clone(QUndoCommand *parent = nullptr) const override;
 };
 
 /**
@@ -84,5 +85,4 @@ public:
     { removeTileset(); }
 };
 
-} // namespace Internal
 } // namespace Tiled

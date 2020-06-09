@@ -23,7 +23,6 @@
 #include <QGraphicsItem>
 
 namespace Tiled {
-namespace Internal {
 
 /**
  * The rectangle used for indicating the dragged area when selecting items.
@@ -44,5 +43,4 @@ private:
     QRectF mRectangle;
 };
 
-} // namespace Internal
 } // namespace Tiled

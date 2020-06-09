@@ -1,18 +1,18 @@
 .. raw:: html
 
-   <div class="new">New in Tiled 1.1</div>
+   <div class="new new-prev">Since Tiled 1.1</div>
 
 Using Wang Tiles
 ================
 
-Wang tiles are similar in concept to Terrains. This is, however, more focused
-on filling larger areas without repetition. One defines the edge and
-corner colors of tiles in a tileset. This information can then be used when
-filling, or brushing to allow for smooth, non-repetitive transitions between
-tiles. In most cases this tiling is random, and based on color probability.
-More info on Wang tiles can be found `here <http://www.cr31.co.uk/stagecast/wang/intro.html>`_.
+Wang tiles are similar in concept to :doc:`Terrains <using-the-terrain-tool>`.
+They are, however, more focused on filling larger areas without repetition.
+One defines the edge and corner colors of tiles in a tileset. This information
+can then be used when filling, or brushing to allow for smooth, non-repetitive
+transitions between tiles. In most cases this tiling is random, and based on
+color probability. More info on Wang tiles can be found `here <http://www.cr31.co.uk/stagecast/wang/intro.html>`_.
 
-To demonstrate how to use Wang tiles, I will describe the steps necessary
+To demonstrate how to use Wang tiles, we will describe the steps necessary
 to recreate ``walkways.tsx`` example tileset.
 
 .. _defining-wang-tile-info:

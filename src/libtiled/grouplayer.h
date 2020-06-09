@@ -24,19 +24,21 @@
 
 #include <QList>
 
+#include <memory>
+
 namespace Tiled {
 
 class TILEDSHARED_EXPORT GroupLayer : public Layer
 {
 public:
     GroupLayer(const QString &name, int x, int y);
-    ~GroupLayer();
+    ~GroupLayer() override;
 
     int layerCount() const;
     Layer *layerAt(int index) const;
     const QList<Layer*> &layers() const { return mLayers; }
 
-    void addLayer(Layer *layer);
+    void addLayer(std::unique_ptr<Layer> layer);
     void insertLayer(int index, Layer *layer);
     Layer *takeLayerAt(int index);
 
@@ -44,8 +46,8 @@ public:
     QSet<SharedTileset> usedTilesets() const override;
     bool referencesTileset(const Tileset *tileset) const override;
     void replaceReferencesToTileset(Tileset *oldTileset, Tileset *newTileset) override;
-    bool canMergeWith(Layer *other) const override;
-    Layer *mergedWith(Layer *other) const override;
+    bool canMergeWith(const Layer *other) const override;
+    Layer *mergedWith(const Layer *other) const override;
     GroupLayer *clone() const override;
 
     // Enable easy iteration over children with range-based for
@@ -59,7 +61,7 @@ protected:
     GroupLayer *initializeClone(GroupLayer *clone) const;
 
 private:
-    void adoptLayer(Layer *layer);
+    void adoptLayer(Layer &layer);
 
     QList<Layer*> mLayers;
 };

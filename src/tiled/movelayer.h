@@ -27,8 +27,6 @@ namespace Tiled {
 class Layer;
 class Map;
 
-namespace Internal {
-
 class MapDocument;
 
 /**
@@ -53,6 +51,8 @@ public:
 
     static bool canMoveUp(const Layer &layer);
     static bool canMoveDown(const Layer &layer);
+    static bool canMoveUp(const QList<Layer *> &layers);
+    static bool canMoveDown(const QList<Layer *> &layers);
 
 private:
     void moveLayer();
@@ -62,5 +62,4 @@ private:
     Direction mDirection;
 };
 
-} // namespace Internal
 } // namespace Tiled

@@ -20,6 +20,9 @@
 
 #include "imagereference.h"
 
+#include "imagecache.h"
+#include "tileset.h"
+
 namespace Tiled {
 
 bool ImageReference::hasImage() const
@@ -27,14 +30,16 @@ bool ImageReference::hasImage() const
     return !source.isEmpty() || !data.isEmpty();
 }
 
-QImage ImageReference::create() const
+QPixmap ImageReference::create() const
 {
     if (source.isLocalFile())
-        return QImage(source.toLocalFile());
+        return ImageCache::loadPixmap(source.toLocalFile());
+    else if (source.scheme() == QLatin1String("qrc"))
+        return ImageCache::loadPixmap(QLatin1Char(':') + source.path());
     else if (!data.isEmpty())
-        return QImage::fromData(data, format);
+        return QPixmap::fromImage(QImage::fromData(data, format));
 
-    return QImage();
+    return QPixmap();
 }
 
 } // namespace Tiled

@@ -27,12 +27,11 @@
 
 class QModelIndex;
 class QPushButton;
+class QTabWidget;
 class QToolBar;
 class QTreeView;
-class QTabWidget;
 
 namespace Tiled {
-namespace Internal {
 
 class Document;
 class HasChildrenFilterModel;
@@ -51,7 +50,7 @@ class WangDock : public QDockWidget
 
 public:
     WangDock(QWidget *parent = nullptr);
-    ~WangDock();
+    ~WangDock() override;
 
     void setDocument(Document *document);
 
@@ -75,8 +74,8 @@ signals:
     void removeWangSetRequested();
 
     void selectWangBrush();
-    //When the color view selection changes.
-    //edges is false if this is a corner color.
+    // When the color view selection changes.
+    // edges is false if this is a corner color.
     void wangColorChanged(int color, bool edge);
 
 public slots:
@@ -88,7 +87,7 @@ public slots:
 protected:
     void changeEvent(QEvent *event) override;
 
-private slots:
+private:
     void activateErase();
     void refreshCurrentWangSet();
     void refreshCurrentWangId();
@@ -100,7 +99,6 @@ private slots:
     void addCornerColor();
     void removeColor();
 
-private:
     void updateAddColorStatus();
     void retranslateUi();
 
@@ -122,6 +120,7 @@ private:
     TilesetDocumentsFilterModel *mTilesetDocumentFilterModel;
     WangColorView *mWangColorView;
     WangColorModel *mWangColorModel;
+    HasChildrenFilterModel *mWangColorFilterModel;
     WangSetModel *mWangSetModel;
     HasChildrenFilterModel *mProxyModel;
     WangTemplateView *mWangTemplateView;
@@ -132,5 +131,4 @@ private:
     bool mInitializing;
 };
 
-} // namespace Internal
 } // namespace Tiled

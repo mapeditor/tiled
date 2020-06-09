@@ -22,14 +22,14 @@
 #include "resizedialog.h"
 #include "ui_resizedialog.h"
 
-#include "preferences.h"
+#include "session.h"
 #include "utils.h"
 
-#include <QSettings>
+using namespace Tiled;
 
-using namespace Tiled::Internal;
-
-static const char * const REMOVE_OBJECTS_KEY = "ResizeMap/RemoveObjects";
+namespace session {
+static SessionOption<bool> removeObjects { "resizeMap.removeObjects", true };
+} // namespace session
 
 ResizeDialog::ResizeDialog(QWidget *parent)
     : QDialog(parent)
@@ -37,14 +37,13 @@ ResizeDialog::ResizeDialog(QWidget *parent)
 {
     mUi->setupUi(this);
     resize(Utils::dpiScaled(size()));
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+#endif
 
-    Preferences *prefs = Preferences::instance();
-    QSettings *s = prefs->settings();
-    bool removeObjects = s->value(QLatin1String(REMOVE_OBJECTS_KEY), true).toBool();
-
-    mUi->removeObjectsCheckBox->setChecked(removeObjects);
-    connect(mUi->removeObjectsCheckBox, &QCheckBox::toggled, this, &ResizeDialog::removeObjectsToggled);
+    mUi->removeObjectsCheckBox->setChecked(session::removeObjects);
+    connect(mUi->removeObjectsCheckBox, &QCheckBox::toggled,
+            [] (bool checked) { session::removeObjects = checked; });
 
     // Initialize the new size of the resizeHelper to the default values of
     // the spin boxes. Otherwise, if the map width or height is default, then
@@ -53,8 +52,8 @@ ResizeDialog::ResizeDialog(QWidget *parent)
     mUi->resizeHelper->setNewSize(QSize(mUi->widthSpinBox->value(),
                                         mUi->heightSpinBox->value()));
 
-    connect(mUi->resizeHelper, SIGNAL(offsetBoundsChanged(QRect)),
-                               SLOT(updateOffsetBounds(QRect)));
+    connect(mUi->resizeHelper, &ResizeHelper::offsetBoundsChanged,
+            this, &ResizeDialog::updateOffsetBounds);
 
     Utils::restoreGeometry(this);
 }
@@ -65,7 +64,7 @@ ResizeDialog::~ResizeDialog()
     delete mUi;
 }
 
-void ResizeDialog::setOldSize(const QSize &size)
+void ResizeDialog::setOldSize(QSize size)
 {
     mUi->resizeHelper->setOldSize(size);
 
@@ -92,13 +91,6 @@ bool ResizeDialog::removeObjects() const
 void ResizeDialog::setMiniMapRenderer(std::function<QImage (QSize)> renderer)
 {
     mUi->resizeHelper->setMiniMapRenderer(renderer);
-}
-
-void ResizeDialog::removeObjectsToggled(bool removeObjects)
-{
-    Preferences *prefs = Preferences::instance();
-    QSettings *s = prefs->settings();
-    s->setValue(QLatin1String(REMOVE_OBJECTS_KEY), removeObjects);
 }
 
 void ResizeDialog::updateOffsetBounds(const QRect &bounds)

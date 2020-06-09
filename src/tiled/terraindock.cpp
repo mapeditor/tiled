@@ -44,10 +44,8 @@
 #include <QTreeView>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 namespace Tiled {
-namespace Internal {
 
 static Terrain *firstTerrain(MapDocument *mapDocument)
 {
@@ -99,7 +97,6 @@ protected:
     bool mEnabled;
 };
 
-} // namespace Internal
 } // namespace Tiled
 
 TerrainDock::TerrainDock(QWidget *parent)
@@ -124,22 +121,24 @@ TerrainDock::TerrainDock(QWidget *parent)
     mTerrainView->setModel(mProxyModel);
     connect(mTerrainView->selectionModel(), &QItemSelectionModel::currentRowChanged,
             this, &TerrainDock::refreshCurrentTerrain);
-    connect(mTerrainView, SIGNAL(pressed(QModelIndex)),
-            SLOT(indexPressed(QModelIndex)));
+    connect(mTerrainView, &QAbstractItemView::pressed,
+            this, &TerrainDock::indexPressed);
+    connect(mTerrainView, &TerrainView::removeTerrainTypeRequested,
+            this, &TerrainDock::removeTerrainTypeRequested);
 
-    connect(mProxyModel, SIGNAL(rowsInserted(QModelIndex,int,int)),
-            this, SLOT(expandRows(QModelIndex,int,int)));
+    connect(mProxyModel, &QAbstractItemModel::rowsInserted,
+            this, &TerrainDock::expandRows);
 
     mEraseTerrainButton = new QPushButton(this);
     mEraseTerrainButton->setIconSize(Utils::smallIconSize());
-    mEraseTerrainButton->setIcon(QIcon(QLatin1String(":images/22x22/stock-tool-eraser.png")));
+    mEraseTerrainButton->setIcon(QIcon(QLatin1String(":images/22/stock-tool-eraser.png")));
     mEraseTerrainButton->setCheckable(true);
     mEraseTerrainButton->setAutoExclusive(true);
 
-    mAddTerrainType->setIcon(QIcon(QStringLiteral(":/images/22x22/add.png")));
-    mRemoveTerrainType->setIcon(QIcon(QStringLiteral(":/images/22x22/remove.png")));
-    mMoveTerrainTypeUp->setIcon(QIcon(QStringLiteral(":/images/24x24/go-up.png")));
-    mMoveTerrainTypeDown->setIcon(QIcon(QStringLiteral(":/images/24x24/go-down.png")));
+    mAddTerrainType->setIcon(QIcon(QStringLiteral(":/images/22/add.png")));
+    mRemoveTerrainType->setIcon(QIcon(QStringLiteral(":/images/22/remove.png")));
+    mMoveTerrainTypeUp->setIcon(QIcon(QStringLiteral(":/images/24/go-up.png")));
+    mMoveTerrainTypeDown->setIcon(QIcon(QStringLiteral(":/images/24/go-down.png")));
 
     Utils::setThemeIcon(mAddTerrainType, "add");
     Utils::setThemeIcon(mRemoveTerrainType, "remove");

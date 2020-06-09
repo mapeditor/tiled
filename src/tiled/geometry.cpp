@@ -20,6 +20,8 @@
 
 #include "geometry.h"
 
+#include <QTransform>
+
 namespace Tiled {
 
 /**
@@ -239,7 +241,14 @@ static bool isCoherentTo(const QRect &rect, const QRegion &region)
 QVector<QRegion> coherentRegions(const QRegion &region)
 {
     QVector<QRegion> result;
-    QVector<QRect> rects = region.rects();
+    QVector<QRect> rects;
+#if QT_VERSION < 0x050800
+    rects = region.rects();
+#else
+    rects.reserve(static_cast<int>(region.end() - region.begin()));
+    for (const QRect &rect : region)
+        rects.append(rect);
+#endif
 
     while (!rects.isEmpty()) {
         QRegion newCoherentRegion = rects.takeLast();
@@ -260,6 +269,19 @@ QVector<QRegion> coherentRegions(const QRegion &region)
         result += newCoherentRegion;
     }
     return result;
+}
+
+/**
+ * Returns a transform that rotates by \a rotation degrees around the given
+ * \a position.
+ */
+QTransform rotateAt(const QPointF &position, qreal rotation)
+{
+    QTransform transform;
+    transform.translate(position.x(), position.y());
+    transform.rotate(rotation);
+    transform.translate(-position.x(), -position.y());
+    return transform;
 }
 
 } // namespace Tiled

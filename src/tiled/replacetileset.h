@@ -25,7 +25,6 @@
 #include <QUndoCommand>
 
 namespace Tiled {
-namespace Internal {
 
 class MapDocument;
 
@@ -47,5 +46,4 @@ private:
     SharedTileset mTileset;
 };
 
-} // namespace Internal
 } // namespace Tiled

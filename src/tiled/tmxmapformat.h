@@ -22,14 +22,13 @@
 
 #include "mapformat.h"
 #include "tilesetformat.h"
-#include "templategroupformat.h"
+#include "objecttemplateformat.h"
 
 namespace Tiled {
 
 class Tileset;
 class MapObject;
 
-namespace Internal {
 
 /**
  * A reader and writer for Tiled's .tmx map format.
@@ -42,9 +41,9 @@ class TmxMapFormat : public MapFormat
 public:
     TmxMapFormat(QObject *parent = nullptr);
 
-    Map *read(const QString &fileName) override;
+    std::unique_ptr<Map> read(const QString &fileName) override;
 
-    bool write(const Map *map, const QString &fileName) override;
+    bool write(const Map *map, const QString &fileName, Options options) override;
 
     /**
      * Converts the given map to a utf8 byte array (in .tmx format). This is
@@ -61,7 +60,7 @@ public:
      *
      * @see toByteArray
      */
-    Map *fromByteArray(const QByteArray &data);
+    std::unique_ptr<Map> fromByteArray(const QByteArray &data);
 
     QString nameFilter() const override { return tr("Tiled map files (*.tmx *.xml)"); }
 
@@ -89,7 +88,7 @@ public:
 
     SharedTileset read(const QString &fileName) override;
 
-    bool write(const Tileset &tileset, const QString &fileName) override;
+    bool write(const Tileset &tileset, const QString &fileName, Options options) override;
 
     QString nameFilter() const override { return tr("Tiled tileset files (*.tsx *.xml)"); }
 
@@ -106,21 +105,21 @@ private:
 /**
  * A reader and writer for Tiled's .tgx template format.
  */
-class TgxTemplateGroupFormat : public TemplateGroupFormat
+class XmlObjectTemplateFormat : public ObjectTemplateFormat
 {
     Q_OBJECT
-    Q_INTERFACES(Tiled::TemplateGroupFormat)
+    Q_INTERFACES(Tiled::ObjectTemplateFormat)
 
 public:
-    TgxTemplateGroupFormat(QObject *parent = nullptr);
+    XmlObjectTemplateFormat(QObject *parent = nullptr);
 
-    TemplateGroup *read(const QString &fileName) override;
+    std::unique_ptr<ObjectTemplate> read(const QString &fileName) override;
 
-    bool write(const TemplateGroup *templateGroup, const QString &fileName) override;
+    bool write(const ObjectTemplate *objectTemplate, const QString &fileName) override;
 
-    QString nameFilter() const override { return tr("Tiled template group files (*.tgx)"); }
+    QString nameFilter() const override { return tr("Tiled template files (*.tx)"); }
 
-    QString shortName() const override { return QLatin1String("tgx"); }
+    QString shortName() const override { return QLatin1String("tx"); }
 
     bool supportsFile(const QString &fileName) const override;
 
@@ -130,5 +129,4 @@ private:
     QString mError;
 };
 
-} // namespace Internal
 } // namespace Tiled

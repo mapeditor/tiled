@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SWAPTILES_H
-#define SWAPTILES_H
+#pragma once
 
 #include "undocommands.h"
 
@@ -28,8 +27,6 @@
 namespace Tiled {
 
 class Tile;
-
-namespace Internal {
 
 class MapDocument;
 
@@ -61,7 +58,4 @@ private:
     Tile *mTile2;
 };
 
-} // namespace Internal
 } // namespace Tiled
-
-#endif // SWAPTILES_H

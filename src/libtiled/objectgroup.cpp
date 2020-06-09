@@ -35,12 +35,14 @@
 #include "mapobject.h"
 #include "tile.h"
 
+#include "qtcompat_p.h"
+
 #include <cmath>
 
 using namespace Tiled;
 
-ObjectGroup::ObjectGroup()
-    : ObjectGroup(QString(), 0, 0)
+ObjectGroup::ObjectGroup(const QString &name)
+    : ObjectGroup(name, 0, 0)
 {
 }
 
@@ -57,10 +59,12 @@ ObjectGroup::~ObjectGroup()
 
 void ObjectGroup::addObject(MapObject *object)
 {
-    mObjects.append(object);
-    object->setObjectGroup(this);
-    if (mMap && object->id() == 0)
-        object->setId(mMap->takeNextObjectId());
+    insertObject(mObjects.size(), object);
+}
+
+void ObjectGroup::addObject(std::unique_ptr<MapObject> object)
+{
+    addObject(object.release());
 }
 
 void ObjectGroup::insertObject(int index, MapObject *object)
@@ -76,8 +80,8 @@ int ObjectGroup::removeObject(MapObject *object)
     const int index = mObjects.indexOf(object);
     Q_ASSERT(index != -1);
 
-    mObjects.removeAt(index);
-    object->setObjectGroup(nullptr);
+    removeObjectAt(index);
+
     return index;
 }
 
@@ -146,7 +150,7 @@ bool ObjectGroup::referencesTileset(const Tileset *tileset) const
 void ObjectGroup::replaceReferencesToTileset(Tileset *oldTileset,
                                              Tileset *newTileset)
 {
-    for (MapObject *object : mObjects) {
+    for (MapObject *object : qAsConst(mObjects)) {
         if (object->cell().tileset() == oldTileset) {
             Cell cell = object->cell();
             cell.setTile(newTileset, cell.tileId());
@@ -159,19 +163,24 @@ void ObjectGroup::offsetObjects(const QPointF &offset,
                                 const QRectF &bounds,
                                 bool wrapX, bool wrapY)
 {
-    for (MapObject *object : mObjects) {
+    if (offset.isNull())
+        return;
+
+    const bool boundsValid = bounds.isValid();
+
+    for (MapObject *object : qAsConst(mObjects)) {
         const QPointF objectCenter = object->bounds().center();
-        if (!bounds.contains(objectCenter))
+        if (boundsValid && !bounds.contains(objectCenter))
             continue;
 
         QPointF newCenter(objectCenter + offset);
 
-        if (wrapX && bounds.width() > 0) {
+        if (wrapX && boundsValid) {
             qreal nx = std::fmod(newCenter.x() - bounds.left(), bounds.width());
             newCenter.setX(bounds.left() + (nx < 0 ? bounds.width() + nx : nx));
         }
 
-        if (wrapY && bounds.height() > 0) {
+        if (wrapY && boundsValid) {
             qreal ny = std::fmod(newCenter.y() - bounds.top(), bounds.height());
             newCenter.setY(bounds.top() + (ny < 0 ? bounds.height() + ny : ny));
         }
@@ -180,16 +189,16 @@ void ObjectGroup::offsetObjects(const QPointF &offset,
     }
 }
 
-bool ObjectGroup::canMergeWith(Layer *other) const
+bool ObjectGroup::canMergeWith(const Layer *other) const
 {
     return other->isObjectGroup();
 }
 
-Layer *ObjectGroup::mergedWith(Layer *other) const
+Layer *ObjectGroup::mergedWith(const Layer *other) const
 {
     Q_ASSERT(canMergeWith(other));
 
-    const ObjectGroup *og = static_cast<ObjectGroup*>(other);
+    const ObjectGroup *og = static_cast<const ObjectGroup*>(other);
 
     ObjectGroup *merged = clone();
     for (const MapObject *mapObject : og->objects())
@@ -247,13 +256,10 @@ QString Tiled::drawOrderToString(ObjectGroup::DrawOrder drawOrder)
     default:
     case ObjectGroup::UnknownOrder:
         return QLatin1String("unknown");
-        break;
     case ObjectGroup::TopDownOrder:
         return QLatin1String("topdown");
-        break;
     case ObjectGroup::IndexOrder:
         return QLatin1String("index");
-        break;
     }
 }
 

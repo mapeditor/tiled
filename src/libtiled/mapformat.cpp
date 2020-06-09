@@ -28,15 +28,16 @@
 
 #include "mapformat.h"
 
+#include "map.h"
 #include "mapreader.h"
 
 namespace Tiled {
 
-Map *readMap(const QString &fileName, QString *error)
+std::unique_ptr<Map> readMap(const QString &fileName, QString *error)
 {
     // Try the first registered map format that claims to support the file
     if (MapFormat *format = findSupportingMapFormat(fileName)) {
-        Map *map = format->read(fileName);
+        std::unique_ptr<Map> map(format->read(fileName));
 
         if (error) {
             if (!map)
@@ -45,12 +46,15 @@ Map *readMap(const QString &fileName, QString *error)
                 *error = QString();
         }
 
+        if (map)
+            map->fileName = fileName;
+
         return map;
     }
 
     // Fall back to default reader (TMX format)
     MapReader reader;
-    Map *map = reader.readMap(fileName);
+    std::unique_ptr<Map> map(reader.readMap(fileName));
 
     if (error) {
         if (!map)
@@ -59,12 +63,16 @@ Map *readMap(const QString &fileName, QString *error)
             *error = QString();
     }
 
+    if (map)
+        map->fileName = fileName;
+
     return map;
 }
 
 MapFormat *findSupportingMapFormat(const QString &fileName)
 {
-    for (MapFormat *format : PluginManager::objects<MapFormat>())
+    const auto mapFormats = PluginManager::objects<MapFormat>();
+    for (MapFormat *format : mapFormats)
         if (format->supportsFile(fileName))
             return format;
     return nullptr;

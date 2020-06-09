@@ -1,7 +1,7 @@
 import qbs 1.0
 
 TiledPlugin {
-    cpp.defines: ["TBIN_LIBRARY"]
+    cpp.defines: base.concat(["TBIN_LIBRARY"])
 
     files: [
         "tbin_global.h",

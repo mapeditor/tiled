@@ -23,7 +23,6 @@
 #include <QProxyStyle>
 
 namespace Tiled {
-namespace Internal {
 
 class TiledProxyStyle : public QProxyStyle
 {
@@ -64,9 +63,9 @@ public:
                          const QWidget *widget) const override;
 
     int styleHint(StyleHint styleHint,
-                  const QStyleOption *option,
-                  const QWidget *widget,
-                  QStyleHintReturn *returnData) const override;
+                  const QStyleOption *option = nullptr,
+                  const QWidget *widget = nullptr,
+                  QStyleHintReturn *returnData = nullptr) const override;
 
     QIcon standardIcon(StandardPixmap standardIcon,
                        const QStyleOption *opt = nullptr,
@@ -86,5 +85,4 @@ inline bool TiledProxyStyle::isDark() const
     return mIsDark;
 }
 
-} // namespace Internal
 } // namespace Tiled

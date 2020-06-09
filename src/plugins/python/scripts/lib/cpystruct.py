@@ -103,7 +103,7 @@ class CpySkeleton(struct.Struct):
             v2 = f(v[j].ljust(sz,'\0'))
             ret += v2.pack()
         elif type(v) == list:
-          print 'pack list' # todo
+          print('pack list') # todo
         else:
           #v = f(v.ljust(sz,'\0'))
           ret += struct.pack(getattr(f, '__fstr'), v)
@@ -125,7 +125,8 @@ class CpySkeleton(struct.Struct):
     rawpos = 0  # position in binary for custom types
     pos = 0  # in case substruct handles multiple values
 
-    if dat.__class__.__name__ in ('file','mmap', 'StringIO'):
+    # readable, e.g. file, mmap, StringIO, BufferedReader
+    if hasattr(dat,'read') and callable(dat.read):
       # this doesn't cover varlen members, for that dat is read directly
       buf = dat.read(len(self))
     else:
@@ -179,6 +180,8 @@ class CpySkeleton(struct.Struct):
           setattr(self, n, unpacked[pos:pos+arlen])
           pos += arlen
         else:
+          #print(f,n,a,v)
+          if f.endswith('s'): v = v.decode()  # strings for py3
           setattr(self, n, v)
           pos += 1
 
@@ -241,7 +244,7 @@ def parseformat(fmt, callscope=None):
       raise Exception('Unexpected comma at '+str(fmt[i]))
 
     fs = ''
-    if fdict.has_key(f):
+    if f in fdict:
       if a.isdigit():
         fs = 's' if fdict[f] == 'c' else fdict[f]
       elif a != '' and not a.isdigit():
@@ -253,7 +256,7 @@ def parseformat(fmt, callscope=None):
     elif type(f) is type(CpySkeleton):
       # might have an alignment issue when mixing endians..
       fs = re.sub('[<>]?','',f.__fstr)
-    elif callscope.f_globals.has_key(f):
+    elif f in callscope.f_globals:
       # resolve references to other CpyStructs
       fmt[i] = (callscope.f_globals[f],n,a,v)
       fs = re.sub('[<>]?','',fmt[i][0].__fstr)

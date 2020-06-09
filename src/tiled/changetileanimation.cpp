@@ -26,7 +26,6 @@
 #include <QCoreApplication>
 
 namespace Tiled {
-namespace Internal {
 
 ChangeTileAnimation::ChangeTileAnimation(TilesetDocument *document,
                                          Tile *tile,
@@ -51,5 +50,4 @@ void ChangeTileAnimation::swap()
     emit mTilesetDocument->tileAnimationChanged(mTile);
 }
 
-} // namespace Internal
 } // namespace Tiled

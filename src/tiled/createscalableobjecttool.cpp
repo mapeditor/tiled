@@ -24,14 +24,14 @@
 #include "mapobject.h"
 #include "mapobjectitem.h"
 #include "maprenderer.h"
+#include "objectgroup.h"
 #include "snaphelper.h"
 #include "utils.h"
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
-CreateScalableObjectTool::CreateScalableObjectTool(QObject *parent)
-    : CreateObjectTool(parent)
+CreateScalableObjectTool::CreateScalableObjectTool(Id id, QObject *parent)
+    : CreateObjectTool(id, parent)
 {
 }
 
@@ -49,7 +49,12 @@ static qreal sign(qreal value)
 void CreateScalableObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt::KeyboardModifiers modifiers)
 {
     const MapRenderer *renderer = mapDocument()->renderer();
-    const QPointF pixelCoords = renderer->screenToPixelCoords(pos);
+    QPointF pixelCoords = renderer->screenToPixelCoords(pos);
+
+    if (state() == Preview) {
+        SnapHelper(renderer, modifiers).snap(pixelCoords);
+        mStartPos = pixelCoords;
+    }
 
     QRectF objectArea(mStartPos, pixelCoords);
 
@@ -66,17 +71,15 @@ void CreateScalableObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos,
     objectArea.setWidth(snapSize.x());
     objectArea.setHeight(snapSize.y());
 
-    mNewMapObjectItem->resizeObject(objectArea.normalized());
-}
+    objectArea = objectArea.normalized();
 
-void CreateScalableObjectTool::mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event)
-{
-    if (event->button() == Qt::RightButton)
-        cancelNewMapObject();
-}
+    // This objectArea assumes TopLeft alignment, but the map's object alignment might be different.
+    MapObject *newMapObject = mNewMapObjectItem->mapObject();
+    const auto offset = alignmentOffset(objectArea, newMapObject->alignment(mapDocument()->map()));
+    objectArea.translate(offset);
 
-void CreateScalableObjectTool::mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event)
-{
-    if (event->button() == Qt::LeftButton)
-        finishNewMapObject();
+    // Not using the MapObjectModel because the object is not actually part of
+    // the map yet
+    newMapObject->setBounds(objectArea);
+    mNewMapObjectItem->syncWithMapObject();
 }

@@ -1,6 +1,6 @@
 /*
  * capturestamphelper.cpp
- * Copyright 2017, Your Name <your.name@domain>
+ * Copyright 2017, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -21,10 +21,12 @@
 #include "capturestamphelper.h"
 
 #include "map.h"
+#include "mapdocument.h"
 #include "tilelayer.h"
 
+#include <memory>
+
 namespace Tiled {
-namespace Internal {
 
 CaptureStampHelper::CaptureStampHelper()
     : mActive(false)
@@ -37,43 +39,57 @@ void CaptureStampHelper::beginCapture(QPoint tilePosition)
     mCaptureStart = tilePosition;
 }
 
-TileStamp CaptureStampHelper::endCapture(const TileLayer *tileLayer, QPoint tilePosition)
+TileStamp CaptureStampHelper::endCapture(const MapDocument &mapDocument, QPoint tilePosition)
 {
     mActive = false;
 
-    if (!tileLayer)
-        return TileStamp();
+    QRect captured = capturedArea(tilePosition);
+    std::unique_ptr<Map> stamp { new Map(mapDocument.map()->orientation(),
+                                         captured.width(),
+                                         captured.height(),
+                                         mapDocument.map()->tileWidth(),
+                                         mapDocument.map()->tileHeight()) };
 
-    // Intersect with the layer and translate to layer coordinates
-    QRect captured = capturedArea(tilePosition).intersected(tileLayer->bounds());
-    if (!captured.isValid())
-        return TileStamp();
+    // Iterate all layers to make sure we're adding layers in the right order
+    LayerIterator it(mapDocument.map(), Layer::TileLayerType);
+    while (auto tileLayer = static_cast<TileLayer*>(it.next())) {
+        if (!mapDocument.selectedLayers().contains(tileLayer))
+            continue;
 
-    captured.translate(-tileLayer->x(), -tileLayer->y());
-    Map *map = tileLayer->map();
-    TileLayer *capture = tileLayer->copy(captured);
-    Map *stamp = new Map(map->orientation(),
-                         capture->width(),
-                         capture->height(),
-                         map->tileWidth(),
-                         map->tileHeight());
+        // Intersect with the layer and translate to layer coordinates
+        QRect capturedFromLayer = captured.intersected(tileLayer->bounds());
+        if (!captured.isValid())
+            continue;
+        capturedFromLayer.translate(-tileLayer->position());
 
-    // Gets if the relative stagger should be the same as the base layer
-    int staggerIndexOffSet;
-    if (tileLayer->map()->staggerAxis() == Map::StaggerX)
-        staggerIndexOffSet = captured.x() % 2;
-    else
-        staggerIndexOffSet = captured.y() % 2;
+        auto capture = tileLayer->copy(capturedFromLayer);
+        capture->setName(tileLayer->name());
+        capture->setPosition(capturedFromLayer.topLeft() - captured.topLeft());
 
-    stamp->setStaggerAxis(map->staggerAxis());
-    stamp->setStaggerIndex((Map::StaggerIndex)((map->staggerIndex() + staggerIndexOffSet) % 2));
+        stamp->addLayer(std::move(capture));
+    }
 
-    // Add tileset references to map
-    stamp->addTilesets(capture->usedTilesets());
+    if (stamp->layerCount() > 0) {
+        auto staggerAxis = mapDocument.map()->staggerAxis();
+        auto staggerIndex = mapDocument.map()->staggerIndex();
 
-    stamp->addLayer(capture);
+        // Gets if the relative stagger should be the same as the base layer
+        int staggerIndexOffSet;
+        if (staggerAxis == Map::StaggerX)
+            staggerIndexOffSet = captured.x() % 2;
+        else
+            staggerIndexOffSet = captured.y() % 2;
 
-    return TileStamp(stamp);
+        stamp->setStaggerAxis(staggerAxis);
+        stamp->setStaggerIndex(static_cast<Map::StaggerIndex>((staggerIndex + staggerIndexOffSet) % 2));
+
+        // Add tileset references to map
+        stamp->addTilesets(stamp->usedTilesets());
+
+        return TileStamp(std::move(stamp));
+    }
+
+    return TileStamp();
 }
 
 void CaptureStampHelper::reset()
@@ -91,5 +107,4 @@ QRect CaptureStampHelper::capturedArea(QPoint tilePosition) const
     return captured;
 }
 
-} // namespace Internal
 } // namespace Tiled

@@ -2,9 +2,9 @@
  * #%L
  * This file is part of libtiled-java.
  * %%
- * Copyright (C) 2004 - 2017 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright (C) 2004 - 2017 Adam Turk <aturk@biggeruniverse.com>
- * Copyright (C) 2016 - 2017 Mike Thomas <mikepthomas@outlook.com>
+ * Copyright (C) 2004 - 2019 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright (C) 2004 - 2019 Adam Turk <aturk@biggeruniverse.com>
+ * Copyright (C) 2016 - 2019 Mike Thomas <mikepthomas@outlook.com>
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -34,6 +34,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
@@ -48,17 +49,14 @@ import org.mapeditor.core.TileLayer;
  * The orthogonal map renderer. This is the most basic map renderer, dealing
  * with maps that use rectangular tiles.
  *
- * @author Thorbjørn Lindeijer
- * @author Adam Turk
- * @author Mike Thomas
- * @version 1.0.2
+ * @version 1.2.3
  */
 public class OrthogonalRenderer implements MapRenderer {
 
     private final Map map;
 
     /**
-     * <p>Constructor for OrthogonalRenderer.</p>
+     * Constructor for OrthogonalRenderer.
      *
      * @param map a {@link org.mapeditor.core.Map} object.
      */
@@ -105,11 +103,17 @@ public class OrthogonalRenderer implements MapRenderer {
                     continue;
                 }
 
-                g.drawImage(
-                        image,
-                        x * tileWidth,
-                        (y + 1) * tileHeight - image.getHeight(null),
-                        null);
+                Point drawLoc = new Point(x * tileWidth, (y + 1) * tileHeight - image.getHeight(null));
+
+                // Add offset from tile layer property
+                drawLoc.x += layer.getOffsetX() != null ? layer.getOffsetX() : 0;
+                drawLoc.y += layer.getOffsetY() != null ? layer.getOffsetY() : 0;
+
+                // Add offset from tileset property
+                drawLoc.x += tile.getTileSet().getTileoffset() != null ? tile.getTileSet().getTileoffset().getX() : 0;
+                drawLoc.y += tile.getTileSet().getTileoffset() != null ? tile.getTileSet().getTileoffset().getY() : 0;
+
+                g.drawImage(image, drawLoc.x, drawLoc.y, null);
             }
         }
 

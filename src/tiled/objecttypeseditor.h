@@ -22,7 +22,7 @@
 
 #include "properties.h"
 
-#include <QMainWindow>
+#include <QDialog>
 
 namespace Ui {
 class ObjectTypesEditor;
@@ -35,17 +35,16 @@ class QtVariantProperty;
 class QtVariantPropertyManager;
 
 namespace Tiled {
-namespace Internal {
 
 class ObjectTypesModel;
 
-class ObjectTypesEditor : public QMainWindow
+class ObjectTypesEditor : public QDialog
 {
     Q_OBJECT
 
 public:
     explicit ObjectTypesEditor(QWidget *parent = nullptr);
-    ~ObjectTypesEditor();
+    ~ObjectTypesEditor() override;
 
 signals:
     void closed();
@@ -54,33 +53,32 @@ protected:
     void closeEvent(QCloseEvent *) override;
     void changeEvent(QEvent *e) override;
 
-private slots:
+private:
     void addObjectType();
     void selectedObjectTypesChanged();
     void removeSelectedObjectTypes();
     void objectTypeIndexClicked(const QModelIndex &index);
     void applyObjectTypes();
-    void applyProperty(const QString &name, const QVariant &value);
-    void removeProperty(const QString &name);
+    void objectTypesChanged();
+    void applyPropertyToSelectedTypes(const QString &name, const QVariant &value);
+    void removePropertyFromSelectedTypes(const QString &name);
 
-    void chooseObjectTypesFile();
     void importObjectTypes();
     void exportObjectTypes();
 
     void updateProperties();
     void propertyValueChanged(QtProperty *property, const QVariant &val);
 
-    void addProperty();
+    void openAddPropertyDialog();
     void addProperty(const QString &name, const QVariant &value = QVariant());
-    void editCustomProperty(const QString &name);
+    void editProperty(const QString &name);
     void removeProperty();
     void renameProperty();
-    void renameProperty(const QString &name);
+    void renamePropertyTo(const QString &name);
 
     void selectFirstType();
     void currentItemChanged(QtBrowserItem *item);
 
-private:
     void retranslateUi();
 
     QtVariantProperty *createProperty(int type,
@@ -94,7 +92,8 @@ private:
     QHash<QString, QtVariantProperty *> mNameToProperty;
 
     AggregatedProperties mProperties;
-    bool mUpdating;
+    bool mUpdating = false;
+    bool mSettingPrefObjectTypes = false;
 
     QAction *mAddObjectTypeAction;
     QAction *mRemoveObjectTypeAction;
@@ -104,5 +103,4 @@ private:
     QAction *mRenamePropertyAction;
 };
 
-} // namespace Internal
 } // namespace Tiled

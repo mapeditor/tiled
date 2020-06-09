@@ -21,34 +21,31 @@
 #include "renamewangset.h"
 
 #include "wangset.h"
-#include "tileset.h"
 #include "tilesetdocument.h"
 #include "tilesetwangsetmodel.h"
 
 #include <QCoreApplication>
 
 using namespace Tiled;
-using namespace Internal;
 
 RenameWangSet::RenameWangSet(TilesetDocument *tilesetDocument,
-                             int index,
+                             WangSet *wangSet,
                              const QString &newName)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Change Wang Set Name"))
-    , mWangSetModel(tilesetDocument->wangSetModel())
-    , mTileset(tilesetDocument->tileset().data())
-    , mIndex(index)
-    , mOldName(mTileset->wangSet(index)->name())
+    , mTilesetDocument(tilesetDocument)
+    , mWangSet(wangSet)
+    , mOldName(wangSet->name())
     , mNewName(newName)
 {
 }
 
 void RenameWangSet::undo()
 {
-    mWangSetModel->setWangSetName(mIndex, mOldName);
+    mTilesetDocument->wangSetModel()->setWangSetName(mWangSet, mOldName);
 }
 
 void RenameWangSet::redo()
 {
-    mWangSetModel->setWangSetName(mIndex, mNewName);
+    mTilesetDocument->wangSetModel()->setWangSetName(mWangSet, mNewName);
 }

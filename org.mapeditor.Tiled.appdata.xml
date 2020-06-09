@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop">
+ <id>org.mapeditor.Tiled.desktop</id>
+ <metadata_license>CC0-1.0</metadata_license>
+ <project_license>GPL-2.0+ and BSD-2-Clause</project_license>
+ <name>Tiled</name>
+ <summary>General purpose map editor</summary>
+ <keywords>
+  <keyword>2D</keyword>
+  <keyword>mapeditor</keyword>
+  <keyword>tool</keyword>
+  <keyword>development</keyword>
+  <keyword>tile</keyword>
+  <keyword>editor</keyword>
+ </keywords>
+ <content_rating type="oars-1.0" />
+ <releases>
+  <release version="2019.07.05" type="development" date="2019-07-05">
+   <url>https://thorbjorn.itch.io/tiled/devlog/89540/select-tile-layers-by-clicking-them</url>
+  </release>
+  <release version="1.2.4" type="stable" date="2019-05-15">
+   <url>https://www.mapeditor.org/2019/05/15/tiled-1-2-4-released.html</url>
+  </release>
+ </releases>
+ <description>
+  <p>
+   Tiled is a general purpose 2D level editor with powerful tile map editing
+   features. It’s built to be easy to use and is suitable for many type of
+   games.
+  </p>
+  <p>
+   The Tiled map format is supported by a large amount of game engines and
+   libraries. In addition, Tiled supports plugins to read and write map formats
+   other than its own map format.
+  </p>
+ </description>
+ <screenshots>
+  <!-- GPL 2 by TMW -->
+  <screenshot type="default" width="800" height="600">
+    <image>https://www.mapeditor.org/img/appdata/screenshot_objects.png</image>
+  </screenshot>
+  <!-- CC BY SA 3.0 By Clint Bellanger -->
+  <screenshot width="800" height="600">
+    <image>https://www.mapeditor.org/img/appdata/screenshot_terrain.png</image>
+  </screenshot>
+ </screenshots>
+ <kudos>
+   <kudo>ModernToolkit</kudo>
+   <kudo>UserDocs</kudo>
+ </kudos>
+ <url type="homepage">https://www.mapeditor.org/</url>
+ <launchable type="desktop-id">org.mapeditor.Tiled.desktop</launchable>
+ <provides>
+   <id>tiled.desktop</id>
+ </provides>
+ <translation type="qt">tiled</translation>
+ <update_contact>tingping@fedoraproject.org</update_contact>
+</component>

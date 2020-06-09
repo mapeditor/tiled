@@ -1,3 +1,5 @@
+%global app_id org.mapeditor.Tiled
+
 Name:           tiled
 Version:        0.18.0
 Epoch:          1
@@ -5,7 +7,7 @@ Release:        1%{?dist}
 Summary:        Tiled Map Editor
 # tiled itself is GPLv2+, libtiled and tmxviewer are BSD
 License:        GPLv2+ and BSD
-URL:            http://www.mapeditor.org
+URL:            https://www.mapeditor.org
 Source0:        https://github.com/bjorn/%{name}/archive/v%{version}/%{name}-%{version}.tar.gz
 
 BuildRequires:  pkgconfig(Qt5Core)
@@ -27,7 +29,7 @@ to view Tiled maps.
 %package plugin-python
 Summary:        Python plugin for Tiled
 License:        GPLv2+
-URL:            http://www.mapeditor.org
+URL:            https://www.mapeditor.org
 Requires:       %{name} = %{epoch}:%{version}-%{release}
 %description plugin-python
 A plugin for tiled which allows to write Python plugins.
@@ -37,7 +39,7 @@ A plugin for tiled which allows to write Python plugins.
 %package plugin-droidcraft
 Summary:        Droidcraft plugin for Tiled
 License:        GPLv2+
-URL:            http://www.mapeditor.org
+URL:            https://www.mapeditor.org
 Requires:       %{name} = %{epoch}:%{version}-%{release}
 %description plugin-droidcraft
 A plugin for tiled which allows to save maps as .dat droidcraft maps.
@@ -47,7 +49,7 @@ A plugin for tiled which allows to save maps as .dat droidcraft maps.
 %package plugin-flare
 Summary:        Flare plugin for Tiled
 License:        GPLv2+
-URL:            http://www.mapeditor.org
+URL:            https://www.mapeditor.org
 Requires:       %{name} = %{epoch}:%{version}-%{release}
 %description plugin-flare
 A plugin for tiled which allows to save maps as .txt flare maps.
@@ -57,7 +59,7 @@ A plugin for tiled which allows to save maps as .txt flare maps.
 %package plugin-replica-island
 Summary:        Replica Island plugin for Tiled
 License:        GPLv2+
-URL:            http://www.mapeditor.org
+URL:            https://www.mapeditor.org
 Requires:       %{name} = %{epoch}:%{version}-%{release}
 %description plugin-replica-island
 A plugin for tiled which allows to save maps as .bin Replica Island maps.
@@ -67,7 +69,7 @@ A plugin for tiled which allows to save maps as .bin Replica Island maps.
 %package plugin-t-engine4
 Summary:        T-Engine4 plugin for Tiled
 License:        GPLv2+
-URL:            http://www.mapeditor.org
+URL:            https://www.mapeditor.org
 Requires:       %{name} = %{epoch}:%{version}-%{release}
 %description plugin-t-engine4
 A plugin for tiled which allows to export maps as .lua T-Engine4 maps.
@@ -77,7 +79,7 @@ A plugin for tiled which allows to export maps as .lua T-Engine4 maps.
 %package plugin-defold
 Summary:        Defold plugin for Tiled
 License:        GPLv2+
-URL:            http://www.mapeditor.org
+URL:            https://www.mapeditor.org
 Requires:       %{name} = %{epoch}:%{version}-%{release}
 %description plugin-defold
 A plugin for tiled which allows to export maps as .tilemap Defold maps.
@@ -87,7 +89,7 @@ A plugin for tiled which allows to export maps as .tilemap Defold maps.
 %package plugin-gmx
 Summary:        GameMaker Studio plugin for Tiled
 License:        GPLv2+
-URL:            http://www.mapeditor.org
+URL:            https://www.mapeditor.org
 Requires:       %{name} = %{epoch}:%{version}-%{release}
 %description plugin-gmx
 A plugin for tiled which allows to export maps as GameMaker Studio room files.
@@ -110,10 +112,10 @@ make install INSTALL_ROOT=%{buildroot}
 find -name ".uic" -or -name ".moc" -or -name ".rcc" | xargs rm -rf
 
 # Validate desktop file
-desktop-file-validate %{buildroot}/%{_datadir}/applications/%{name}.desktop
+desktop-file-validate %{buildroot}/%{_datadir}/applications/%{app_id}.desktop
 
 # Appdata
-install -D -p -m644 %{name}.appdata.xml %{buildroot}/%{_datadir}/appdata/%{name}.appdata.xml
+install -D -p -m644 %{app_id}.appdata.xml %{buildroot}/%{_datadir}/appdata/%{app_id}.appdata.xml
 appstream-util validate-relax --nonet %{buildroot}/%{_datadir}/appdata/*.appdata.xml
 
 # locale files
@@ -143,17 +145,16 @@ fi
 
 %files -f %{name}.lang
 %doc AUTHORS NEWS.md README.md COPYING LICENSE.GPL LICENSE.BSD
-%{_bindir}/automappingconverter
 %{_bindir}/%{name}
 %{_bindir}/terraingenerator
 %{_bindir}/tmxrasterizer
 %{_bindir}/tmxviewer
-%{_datadir}/applications/%{name}.desktop
+%{_datadir}/applications/%{app_id}.desktop
 %{_datadir}/icons/hicolor/*/apps/*%{name}*
 %{_datadir}/icons/hicolor/*/mimetypes/*%{name}*
-%{_datadir}/mime/packages/%{name}.xml
+%{_datadir}/mime/packages/%{app_id}.xml
 %{_datadir}/thumbnailers/%{name}.thumbnailer
-%{_datadir}/appdata/%{name}.appdata.xml
+%{_datadir}/appdata/%{app_id}.appdata.xml
 %dir %{_datadir}/%{name}/
 %dir %{_datadir}/%{name}/translations
 %{_libdir}/lib%{name}.so.*
@@ -164,9 +165,9 @@ fi
 # Core plugins
 %{_libdir}/%{name}/plugins/libcsv.so
 %{_libdir}/%{name}/plugins/libjson.so
+%{_libdir}/%{name}/plugins/libjson1.so
 %{_libdir}/%{name}/plugins/liblua.so
 
-%{_mandir}/man1/automappingconverter.1*
 %{_mandir}/man1/%{name}.1*
 %{_mandir}/man1/tmxrasterizer.1*
 %{_mandir}/man1/tmxviewer.1*

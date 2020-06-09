@@ -7,32 +7,52 @@ DynamicLibrary {
     Depends { name: "Qt"; submodules: "gui"; versionAtLeast: "5.6" }
 
     Properties {
-        condition: !(qbs.toolchain.contains("msvc") ||
-                     (qbs.toolchain.contains("mingw") && Qt.core.versionMinor < 6))
+        condition: !qbs.toolchain.contains("msvc")
         cpp.dynamicLibraries: base.concat(["z"])
     }
 
-    cpp.cxxLanguageVersion: "c++11"
+    cpp.cxxLanguageVersion: "c++14"
     cpp.visibility: "minimal"
-    cpp.defines: [
-        "TILED_LIBRARY",
-        "QT_NO_CAST_FROM_ASCII",
-        "QT_NO_CAST_TO_ASCII",
-        "QT_NO_URL_CAST_FROM_STRING",
-        "_USE_MATH_DEFINES"
-    ]
+    cpp.defines: {
+        var defs = [
+            "TILED_LIBRARY",
+            "QT_NO_CAST_FROM_ASCII",
+            "QT_NO_CAST_TO_ASCII",
+            "QT_NO_URL_CAST_FROM_STRING",
+            "_USE_MATH_DEFINES",
+        ]
+
+        if (project.enableZstd)
+            defs.push("TILED_ZSTD_SUPPORT");
+
+        return defs;
+    }
+
+    cpp.includePaths: [ "../../zstd/lib" ]
 
     Properties {
         condition: qbs.targetOS.contains("macos")
         cpp.cxxFlags: ["-Wno-unknown-pragmas"]
     }
 
-    bundle.isBundle: false
-    cpp.sonamePrefix: qbs.targetOS.contains("darwin") ? "@rpath" : undefined
+    Properties {
+        condition: project.enableZstd
+        cpp.staticLibraries: ["zstd"]
+        cpp.libraryPaths: ["../../zstd/lib"]
+    }
+
+    Properties {
+        condition: qbs.targetOS.contains("darwin")
+        bundle.isBundle: false
+        cpp.sonamePrefix: "@rpath"
+    }
 
     files: [
         "compression.cpp",
         "compression.h",
+        "containerhelpers.h",
+        "fileformat.cpp",
+        "fileformat.h",
         "filesystemwatcher.cpp",
         "filesystemwatcher.h",
         "gidmapper.cpp",
@@ -43,6 +63,8 @@ DynamicLibrary {
         "hex.h",
         "hexagonalrenderer.cpp",
         "hexagonalrenderer.h",
+        "imagecache.cpp",
+        "imagecache.h",
         "imagelayer.cpp",
         "imagelayer.h",
         "imagereference.cpp",
@@ -51,6 +73,7 @@ DynamicLibrary {
         "isometricrenderer.h",
         "layer.cpp",
         "layer.h",
+        "logginginterface.cpp",
         "logginginterface.h",
         "map.cpp",
         "map.h",
@@ -66,12 +89,16 @@ DynamicLibrary {
         "maptovariantconverter.h",
         "mapwriter.cpp",
         "mapwriter.h",
+        "minimaprenderer.cpp",
+        "minimaprenderer.h",
         "object.cpp",
         "object.h",
         "objectgroup.cpp",
         "objectgroup.h",
         "objecttemplate.cpp",
         "objecttemplate.h",
+        "objecttemplateformat.cpp",
+        "objecttemplateformat.h",
         "objecttypes.cpp",
         "objecttypes.h",
         "orthogonalrenderer.cpp",
@@ -86,14 +113,9 @@ DynamicLibrary {
         "savefile.h",
         "staggeredrenderer.cpp",
         "staggeredrenderer.h",
-        "templategroup.cpp",
-        "templategroup.h",
-        "templategroupformat.cpp",
-        "templategroupformat.h",
         "templatemanager.cpp",
         "templatemanager.h",
-        "tidmapper.cpp",
-        "tidmapper.h",
+        "terrain.h",
         "tile.cpp",
         "tileanimationdriver.cpp",
         "tileanimationdriver.h",
@@ -113,6 +135,8 @@ DynamicLibrary {
         "varianttomapconverter.h",
         "wangset.cpp",
         "wangset.h",
+        "worldmanager.cpp",
+        "worldmanager.h",
     ]
 
     Group {
@@ -133,12 +157,11 @@ DynamicLibrary {
     }
 
     Group {
+        condition: !qbs.targetOS.contains("darwin")
         qbs.install: true
         qbs.installDir: {
             if (qbs.targetOS.contains("windows"))
                 return ""
-            else if (qbs.targetOS.contains("darwin"))
-                return "Tiled.app/Contents/Frameworks"
             else
                 return "lib"
         }

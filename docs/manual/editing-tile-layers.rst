@@ -68,7 +68,7 @@ with drawing lines).
 
 .. raw:: html
 
-   <div class="new new-prev">New in Tiled 1.0</div>
+   <div class="new new-prev">Since Tiled 1.0</div>
 
 When holding ``Alt``, the editing operations are also applied at a 180
 degree rotation. This is especially useful when editing strategic maps
@@ -78,7 +78,7 @@ for reducing the edited area.
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.1</div>
+   <div class="new new-prev">Since Tiled 1.1</div>
 
 .. _wang-tool:
 
@@ -116,6 +116,23 @@ When holding ``Shift``, the tool fills the currently selected area
 regardless of its contents. This is useful for filling custom areas that
 have been selected previously using one or more `Selection
 Tools <#selection-tools>`__.
+
+You can also flip and rotate the current stamp as described for the
+:ref:`stamp-tool`.
+
+.. raw:: html
+
+   <div class="new new-prev">Since Tiled 1.1</div>
+
+.. _shape-fill-tool:
+
+Shape Fill Tool
+---------------
+
+Shortcut: ``P``
+
+This tool provides a quick way to fill rectangles or ellipses with a certain
+tile or pattern. Hold ``Shift`` to fill an exact square or circle.
 
 You can also flip and rotate the current stamp as described for the
 :ref:`stamp-tool`.

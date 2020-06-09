@@ -23,15 +23,14 @@
 #include "layer.h"
 
 namespace Tiled {
-namespace Internal {
 
 LayerItem::LayerItem(Layer *layer, QGraphicsItem *parent)
     : QGraphicsItem(parent)
     , mLayer(layer)
 {
+    setAcceptedMouseButtons(Qt::MouseButtons());
     setOpacity(layer->opacity());
     setPos(layer->offset());
 }
 
-} // namespace Internal
 } // namespace Tiled

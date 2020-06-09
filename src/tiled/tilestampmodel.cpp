@@ -23,7 +23,6 @@
 #include "minimaprenderer.h"
 
 namespace Tiled {
-namespace Internal {
 
 TileStampModel::TileStampModel(QObject *parent)
     : QAbstractItemModel(parent)
@@ -94,7 +93,6 @@ bool TileStampModel::setData(const QModelIndex &index, const QVariant &value, in
                 emit stampRenamed(stamp);
                 emit stampChanged(stamp);
                 return true;
-                break;
             default:
                 break;
             }
@@ -213,7 +211,7 @@ bool TileStampModel::removeRows(int row, int count, const QModelIndex &parent)
 
         for (; count > 0; --count) {
             mThumbnailCache.remove(stamp.variations().at(row).map);
-            stamp.deleteVariation(row);
+            delete stamp.takeVariation(row);
         }
         endRemoveRows();
 
@@ -336,5 +334,4 @@ void TileStampModel::clear()
     endResetModel();
 }
 
-} // namespace Internal
 } // namespace Tiled

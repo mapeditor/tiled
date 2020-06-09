@@ -24,14 +24,17 @@
 #include "layermodel.h"
 #include "mapdocument.h"
 
+#include <QCoreApplication>
+
 namespace Tiled {
-namespace Internal {
 
 AddRemoveLayer::AddRemoveLayer(MapDocument *mapDocument,
                                int index,
                                Layer *layer,
-                               GroupLayer *parentLayer)
-    : mMapDocument(mapDocument)
+                               GroupLayer *parentLayer,
+                               QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , mMapDocument(mapDocument)
     , mLayer(layer)
     , mParentLayer(parentLayer)
     , mIndex(index)
@@ -54,5 +57,29 @@ void AddRemoveLayer::removeLayer()
     mLayer = mMapDocument->layerModel()->takeLayerAt(mParentLayer, mIndex);
 }
 
-} // namespace Internal
+AddLayer::AddLayer(MapDocument *mapDocument,
+                   int index, Layer *layer, GroupLayer *parentLayer,
+                   QUndoCommand *parent)
+    : AddRemoveLayer(mapDocument, index, layer, parentLayer, parent)
+{
+    setText(QCoreApplication::translate("Undo Commands", "Add Layer"));
+}
+
+AddLayer *AddLayer::clone(QUndoCommand *parent) const
+{
+    return new AddLayer(mMapDocument,
+                        mIndex,
+                        mLayer ? mLayer->clone() : nullptr,
+                        mParentLayer,
+                        parent);
+}
+
+RemoveLayer::RemoveLayer(MapDocument *mapDocument,
+                         int index, GroupLayer *parentLayer,
+                         QUndoCommand *parent)
+    : AddRemoveLayer(mapDocument, index, nullptr, parentLayer, parent)
+{
+    setText(QCoreApplication::translate("Undo Commands", "Remove Layer"));
+}
+
 } // namespace Tiled

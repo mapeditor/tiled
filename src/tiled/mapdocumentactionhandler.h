@@ -32,8 +32,6 @@ namespace Tiled {
 class ObjectGroup;
 class MapObject;
 
-namespace Internal {
-
 class MapDocument;
 
 /**
@@ -51,7 +49,7 @@ class MapDocumentActionHandler : public QObject
 
 public:
     explicit MapDocumentActionHandler(QObject *parent = nullptr);
-    ~MapDocumentActionHandler();
+    ~MapDocumentActionHandler() override;
 
     static MapDocumentActionHandler *instance() { return mInstance; }
 
@@ -75,14 +73,17 @@ public:
     QAction *actionGroupLayers() const { return mActionGroupLayers; }
     QAction *actionUngroupLayers() const { return mActionUngroupLayers; }
 
-    QAction *actionDuplicateLayer() const { return mActionDuplicateLayer; }
-    QAction *actionMergeLayerDown() const { return mActionMergeLayerDown; }
-    QAction *actionRemoveLayer() const { return mActionRemoveLayer; }
+    QAction *actionDuplicateLayers() const { return mActionDuplicateLayers; }
+    QAction *actionMergeLayersDown() const { return mActionMergeLayersDown; }
+    QAction *actionRemoveLayers() const { return mActionRemoveLayers; }
     QAction *actionSelectPreviousLayer() const { return mActionSelectPreviousLayer; }
     QAction *actionSelectNextLayer() const { return mActionSelectNextLayer; }
-    QAction *actionMoveLayerUp() const { return mActionMoveLayerUp; }
-    QAction *actionMoveLayerDown() const { return mActionMoveLayerDown; }
+    QAction *actionMoveLayersUp() const { return mActionMoveLayersUp; }
+    QAction *actionMoveLayersDown() const { return mActionMoveLayersDown; }
+    QAction *actionToggleSelectedLayers() const { return mActionToggleSelectedLayers; }
+    QAction *actionToggleLockSelectedLayers() const { return mActionToggleLockSelectedLayers; }
     QAction *actionToggleOtherLayers() const { return mActionToggleOtherLayers; }
+    QAction *actionToggleLockOtherLayers() const { return mActionToggleLockOtherLayers; }
     QAction *actionLayerProperties() const { return mActionLayerProperties; }
 
     QAction *actionDuplicateObjects() const { return mActionDuplicateObjects; }
@@ -91,12 +92,9 @@ public:
     QMenu *createNewLayerMenu(QWidget *parent) const;
     QMenu *createGroupLayerMenu(QWidget *parent) const;
 
-signals:
-    void mapDocumentChanged(MapDocument *mapDocument);
-
 public slots:
     void cut();
-    void copy();
+    bool copy();
     void delete_(); // 'delete' is a reserved word
 
     void selectAll();
@@ -118,26 +116,28 @@ public slots:
     void groupLayers();
     void ungroupLayers();
 
-    void duplicateLayer();
-    void mergeLayerDown();
+    void duplicateLayers();
+    void mergeLayersDown();
     void selectPreviousLayer();
     void selectNextLayer();
-    void moveLayerUp();
-    void moveLayerDown();
-    void removeLayer();
+    void moveLayersUp();
+    void moveLayersDown();
+    void removeLayers();
+    void toggleSelectedLayers();
+    void toggleLockSelectedLayers();
     void toggleOtherLayers();
+    void toggleLockOtherLayers();
     void layerProperties();
 
     void duplicateObjects();
     void removeObjects();
     void moveObjectsToGroup(ObjectGroup *);
 
-    void selectAllInstances(const MapObject *);
-
-private slots:
-    void updateActions();
+    void selectAllInstances(const ObjectTemplate *objectTemplate);
 
 private:
+    void updateActions();
+
     MapDocument *mMapDocument;
 
     QAction *mActionSelectAll;
@@ -155,14 +155,17 @@ private:
     QAction *mActionGroupLayers;
     QAction *mActionUngroupLayers;
 
-    QAction *mActionDuplicateLayer;
-    QAction *mActionMergeLayerDown;
-    QAction *mActionRemoveLayer;
+    QAction *mActionDuplicateLayers;
+    QAction *mActionMergeLayersDown;
+    QAction *mActionRemoveLayers;
     QAction *mActionSelectPreviousLayer;
     QAction *mActionSelectNextLayer;
-    QAction *mActionMoveLayerUp;
-    QAction *mActionMoveLayerDown;
+    QAction *mActionMoveLayersUp;
+    QAction *mActionMoveLayersDown;
+    QAction *mActionToggleSelectedLayers;
+    QAction *mActionToggleLockSelectedLayers;
     QAction *mActionToggleOtherLayers;
+    QAction *mActionToggleLockOtherLayers;
     QAction *mActionLayerProperties;
 
     QAction *mActionDuplicateObjects;
@@ -171,5 +174,4 @@ private:
     static MapDocumentActionHandler *mInstance;
 };
 
-} // namespace Internal
 } // namespace Tiled

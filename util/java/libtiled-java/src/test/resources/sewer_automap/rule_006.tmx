@@ -1,37 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" width="7" height="5" tilewidth="24" tileheight="24">
- <tileset firstgid="1" name="sewer_tileset" tilewidth="24" tileheight="24">
+<map version="1.2" tiledversion="1.2.3" orientation="orthogonal" renderorder="right-down" width="7" height="5" tilewidth="24" tileheight="24" infinite="0" nextlayerid="7" nextobjectid="1">
+ <tileset firstgid="1" name="sewer_tileset" tilewidth="24" tileheight="24" tilecount="72" columns="8">
   <image source="../sewer_tileset.png" trans="ff00ff" width="192" height="217"/>
  </tileset>
- <tileset firstgid="73" name="rules_sewers" tilewidth="24" tileheight="24">
+ <tileset firstgid="73" name="rules_sewers" tilewidth="24" tileheight="24" tilecount="6" columns="3">
   <image source="rules_sewers.png" width="72" height="48"/>
  </tileset>
- <layer name="Regions" width="7" height="5">
+ <layer id="1" name="Regions" width="7" height="5">
   <data encoding="base64" compression="zlib">
    eJxjYMAPfKAYnU2JHC4AAAEbA5E=
   </data>
  </layer>
- <layer name="Input_set" width="7" height="5">
+ <layer id="2" name="Input_set" width="7" height="5">
   <data encoding="base64" compression="zlib">
    eJxjYKAMeKLRyOKeWNj4AABbzAG3
   </data>
  </layer>
- <layer name="InputNot_set" width="7" height="5" opacity="0.44">
+ <layer id="3" name="InputNot_set" width="7" height="5" opacity="0.44">
   <data encoding="base64" compression="zlib">
    eJxjYCAfeBLgkwoAKZwAkw==
   </data>
  </layer>
- <layer name="Output_Ground" width="7" height="5" visible="0">
+ <layer id="4" name="Output_Ground" width="7" height="5" visible="0">
   <data encoding="base64" compression="zlib">
    eJxjYKAM8KLRlAAAB9wAGw==
   </data>
  </layer>
- <layer name="Output_Over" width="7" height="5" visible="0">
+ <layer id="5" name="Output_Over" width="7" height="5" visible="0">
   <data encoding="base64" compression="zlib">
    eJxjYCAMeNFoWgEACrQAGw==
   </data>
  </layer>
- <layer name="Output_Over2" width="7" height="5" visible="0">
+ <layer id="6" name="Output_Over2" width="7" height="5" visible="0">
   <data encoding="base64" compression="zlib">
    eJxjYCAM5KG0AhFqKQEAGSQAQA==
   </data>

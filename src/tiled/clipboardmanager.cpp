@@ -39,12 +39,16 @@
 #include <QSet>
 #include <QUndoStack>
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
+#include <QCborArray>
+#include <QCborValue>
+#endif
+
+#include <algorithm>
+
 static const char * const TMX_MIMETYPE = "text/tmx";
 
 using namespace Tiled;
-using namespace Tiled::Internal;
-
-ClipboardManager *ClipboardManager::mInstance;
 
 ClipboardManager::ClipboardManager()
     : mClipboard(QApplication::clipboard())
@@ -61,25 +65,15 @@ ClipboardManager::ClipboardManager()
  */
 ClipboardManager *ClipboardManager::instance()
 {
-    if (!mInstance)
-        mInstance = new ClipboardManager;
-    return mInstance;
-}
-
-/**
- * Deletes the clipboard manager instance if it exists.
- */
-void ClipboardManager::deleteInstance()
-{
-    delete mInstance;
-    mInstance = nullptr;
+    static ClipboardManager instance;
+    return &instance;
 }
 
 /**
  * Retrieves the map from the clipboard. Returns null when there was no map or
  * loading failed.
  */
-Map *ClipboardManager::map() const
+std::unique_ptr<Map> ClipboardManager::map() const
 {
     const QMimeData *mimeData = mClipboard->mimeData();
     const QByteArray data = mimeData->data(QLatin1String(TMX_MIMETYPE));
@@ -107,69 +101,111 @@ Properties ClipboardManager::properties() const
 {
     const QMimeData *mimeData = mClipboard->mimeData();
     const QByteArray data = mimeData->data(QLatin1String(PROPERTIES_MIMETYPE));
-    const QJsonDocument document = QJsonDocument::fromBinaryData(data);
 
-    return Properties::fromJson(document.array());
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+    const QJsonArray array = QJsonDocument::fromBinaryData(data).array();
+#else
+    const QJsonArray array = QCborValue::fromCbor(data).toArray().toJsonArray();
+#endif
+
+    return propertiesFromJson(array);
 }
 
 void ClipboardManager::setProperties(const Properties &properties)
 {
-    const QJsonDocument document(properties.toJson());
-
     QMimeData *mimeData = new QMimeData;
-    mimeData->setData(QLatin1String(PROPERTIES_MIMETYPE), document.toBinaryData());
+
+    const QJsonArray propertiesJson = propertiesToJson(properties);
+    const QJsonDocument document(propertiesJson);
+
     mimeData->setText(QString::fromUtf8(document.toJson()));
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+    mimeData->setData(QLatin1String(PROPERTIES_MIMETYPE), document.toBinaryData());
+#else
+    mimeData->setData(QLatin1String(PROPERTIES_MIMETYPE), QCborArray::fromJsonArray(propertiesJson).toCborValue().toCbor());
+#endif
 
     mClipboard->setMimeData(mimeData);
 }
 
 /**
  * Convenience method to copy the current selection to the clipboard.
- * Deals with either tile selection or object selection.
+ * Copies selected tiles when any tile layer is selected and selected objects
+ * when any object layer is selected.
+ *
+ * @returns whether anything was copied.
  */
-void ClipboardManager::copySelection(const MapDocument *mapDocument)
+bool ClipboardManager::copySelection(const MapDocument &mapDocument)
 {
-    const Layer *currentLayer = mapDocument->currentLayer();
-    if (!currentLayer)
-        return;
+    const Map *map = mapDocument.map();
+    const QRegion &selectedArea = mapDocument.selectedArea();
+    const QList<MapObject*> selectedObjects = mapDocument.selectedObjectsOrdered();
+    const QList<Layer*> &selectedLayers = mapDocument.selectedLayers();
 
-    const Map *map = mapDocument->map();
-    const QRegion &selectedArea = mapDocument->selectedArea();
-    const QList<MapObject*> &selectedObjects = mapDocument->selectedObjects();
-    const TileLayer *tileLayer = dynamic_cast<const TileLayer*>(currentLayer);
-    Layer *copyLayer = nullptr;
-
-    if (!selectedArea.isEmpty() && tileLayer) {
-        const QRegion area = selectedArea.intersected(tileLayer->bounds());
-
-        // Copy the selected part of the layer
-        copyLayer = tileLayer->copy(area.translated(-tileLayer->position()));
-        copyLayer->setPosition(area.boundingRect().topLeft());
-
-    } else if (!selectedObjects.isEmpty()) {
-        // Create a new object group with clones of the selected objects
-        ObjectGroup *objectGroup = new ObjectGroup;
-        for (const MapObject *mapObject : selectedObjects)
-            objectGroup->addObject(mapObject->clone());
-        copyLayer = objectGroup;
-    } else {
-        return;
-    }
+    const QRect selectionBounds = selectedArea.boundingRect();
 
     // Create a temporary map to write to the clipboard
     Map copyMap(map->orientation(),
-                0, 0,
+                selectionBounds.width(),
+                selectionBounds.height(),
                 map->tileWidth(), map->tileHeight());
-
     copyMap.setRenderOrder(map->renderOrder());
 
-    // Resolve the set of tilesets used by this layer
-    foreach (const SharedTileset &tileset, copyLayer->usedTilesets())
-        copyMap.addTileset(tileset);
+    bool tileLayerSelected = std::any_of(selectedLayers.begin(), selectedLayers.end(),
+                                         [] (Layer *layer) { return layer->isTileLayer(); });
 
-    copyMap.addLayer(copyLayer);
+    if (tileLayerSelected) {
+        LayerIterator layerIterator(map);
+        while (Layer *layer = layerIterator.next()) {
+            switch (layer->layerType()) {
+            case Layer::TileLayerType: {
+                if (!selectedLayers.contains(layer))    // ignore unselected tile layers
+                    continue;
 
-    setMap(copyMap);
+                const TileLayer *tileLayer = static_cast<const TileLayer*>(layer);
+                const QRegion area = selectedArea.intersected(tileLayer->bounds());
+                if (area.isEmpty())                     // nothing to copy
+                    continue;
+
+                // Copy the selected part of the layer
+                auto copyLayer = tileLayer->copy(area.translated(-tileLayer->position()));
+                copyLayer->setName(tileLayer->name());
+                copyLayer->setPosition(area.boundingRect().topLeft());
+
+                copyMap.addLayer(std::move(copyLayer));
+                break;
+            }
+            case Layer::ObjectGroupType: // todo: maybe it makes to group selected objects by layer
+            case Layer::ImageLayerType:
+            case Layer::GroupLayerType:
+                break;  // nothing to do
+            }
+        }
+    }
+
+    if (!selectedObjects.isEmpty()) {
+        bool objectGroupSelected = std::any_of(selectedLayers.begin(), selectedLayers.end(),
+                                               [] (Layer *layer) { return layer->isObjectGroup(); });
+
+        if (objectGroupSelected) {
+            // Create a new object group with clones of the selected objects
+            ObjectGroup *objectGroup = new ObjectGroup;
+            for (const MapObject *mapObject : selectedObjects)
+                objectGroup->addObject(mapObject->clone());
+            copyMap.addLayer(objectGroup);
+        }
+    }
+
+    if (copyMap.layerCount() > 0) {
+        // Resolve the set of tilesets used by the created map
+        copyMap.addTilesets(copyMap.usedTilesets());
+
+        setMap(copyMap);
+        return true;
+    }
+
+    return false;
 }
 
 /**
@@ -194,6 +230,7 @@ void ClipboardManager::pasteObjectGroup(const ObjectGroup *objectGroup,
     if (!(flags & PasteInPlace)) {
         // Determine where to insert the objects
         const MapRenderer *renderer = mapDocument->renderer();
+        // FIXME: This is not the visual center
         const QPointF center = objectGroup->objectsBoundingRect().center();
 
         // Take the mouse position if the mouse is on the view, otherwise
@@ -210,11 +247,9 @@ void ClipboardManager::pasteObjectGroup(const ObjectGroup *objectGroup,
         SnapHelper(renderer).snap(insertPos);
     }
 
-    QUndoStack *undoStack = mapDocument->undoStack();
-    QList<MapObject*> pastedObjects;
-    pastedObjects.reserve(objectGroup->objectCount());
+    QVector<AddMapObjects::Entry> objectsToAdd;
+    objectsToAdd.reserve(objectGroup->objectCount());
 
-    undoStack->beginMacro(tr("Paste Objects"));
     for (const MapObject *mapObject : objectGroup->objects()) {
         if (flags & PasteNoTileObjects && !mapObject->cell().isEmpty())
             continue;
@@ -222,14 +257,14 @@ void ClipboardManager::pasteObjectGroup(const ObjectGroup *objectGroup,
         MapObject *objectClone = mapObject->clone();
         objectClone->resetId();
         objectClone->setPosition(objectClone->position() + insertPos);
-        pastedObjects.append(objectClone);
-        undoStack->push(new AddMapObject(mapDocument,
-                                         currentObjectGroup,
-                                         objectClone));
+        objectsToAdd.append(AddMapObjects::Entry { objectClone, currentObjectGroup });
     }
-    undoStack->endMacro();
 
-    mapDocument->setSelectedObjects(pastedObjects);
+    auto command = new AddMapObjects(mapDocument, objectsToAdd);
+    command->setText(tr("Paste Objects"));
+
+    mapDocument->undoStack()->push(command);
+    mapDocument->setSelectedObjects(AddMapObjects::objects(objectsToAdd));
 }
 
 void ClipboardManager::update()

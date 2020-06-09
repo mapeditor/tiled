@@ -28,8 +28,6 @@ namespace Tiled {
 class GroupLayer;
 class Layer;
 
-namespace Internal {
-
 class MapDocument;
 
 /**
@@ -49,7 +47,7 @@ public:
 
 private:
     MapDocument * const mMapDocument;
-    QList<Layer *> const mLayers;
+    QList<Layer *> mLayers;
     GroupLayer * const mLayerParent;
     int const mIndex;
 
@@ -60,5 +58,4 @@ private:
     QVector<UndoInfo> mUndoInfo;
 };
 
-} // namespace Internal
 } // namespace Tiled

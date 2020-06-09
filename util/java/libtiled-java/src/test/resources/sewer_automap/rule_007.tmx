@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" width="7" height="7" tilewidth="24" tileheight="24">
- <tileset firstgid="1" name="sewer_tileset" tilewidth="24" tileheight="24">
+<map version="1.2" tiledversion="1.2.3" orientation="orthogonal" renderorder="right-down" width="7" height="7" tilewidth="24" tileheight="24" infinite="0" nextlayerid="6" nextobjectid="1">
+ <tileset firstgid="1" name="sewer_tileset" tilewidth="24" tileheight="24" tilecount="72" columns="8">
   <image source="../sewer_tileset.png" trans="ff00ff" width="192" height="217"/>
  </tileset>
- <tileset firstgid="73" name="rules_sewers" tilewidth="24" tileheight="24">
+ <tileset firstgid="73" name="rules_sewers" tilewidth="24" tileheight="24" tilecount="6" columns="3">
   <image source="rules_sewers.png" width="72" height="48"/>
  </tileset>
- <layer name="Regions" width="7" height="7">
+ <layer id="1" name="Regions" width="7" height="7">
   <data encoding="base64" compression="zlib">
    eJxjYMAPfKAYnU1Ijp5mAgDb0wTB
   </data>
  </layer>
- <layer name="Input_set" width="7" height="7">
+ <layer id="2" name="Input_set" width="7" height="7">
   <data encoding="base64" compression="zlib">
    eJxjYKAMeKPRtNaHDQAAdfQBLQ==
   </data>
  </layer>
- <layer name="InputNot_set" width="7" height="7">
+ <layer id="3" name="InputNot_set" width="7" height="7">
   <data encoding="base64" compression="zlib">
    eJxjYMAPvKEYnc2AxsbGx2cmLj4++3ABAGBjA4U=
   </data>
  </layer>
- <layer name="InputNot_set" width="7" height="7" visible="0">
+ <layer id="4" name="InputNot_set" width="7" height="7" visible="0">
   <data encoding="base64" compression="zlib">
    eJxjYCAMPNFodHFcfELmEeITax4A5OQCSQ==
   </data>
  </layer>
- <layer name="Output_Ground" width="7" height="7" visible="0">
+ <layer id="5" name="Output_Ground" width="7" height="7" visible="0">
   <data encoding="base64" compression="zlib">
    eJxjYKAMSEJpaRL1aUJpbQrtBwEAMlQAiQ==
   </data>

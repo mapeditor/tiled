@@ -24,8 +24,12 @@
 
 #include <QDateTime>
 #include <QObject>
+#include <QPointer>
+#include <QSharedPointer>
 #include <QString>
 #include <QVariant>
+
+#include <memory>
 
 class QUndoStack;
 
@@ -35,12 +39,14 @@ class FileFormat;
 class Object;
 class Tile;
 
-namespace Internal {
+class ChangeEvent;
+class EditableAsset;
 
 /**
  * Keeps track of a file and its undo history.
  */
-class Document : public QObject
+class Document : public QObject,
+                 public QEnableSharedFromThis<Document>
 {
     Q_OBJECT
 
@@ -51,16 +57,18 @@ public:
     enum DocumentType {
         MapDocumentType,
         TilesetDocumentType,
-        TemplateGroupDocumentType
+        WorldDocumentType
     };
 
     Document(DocumentType type,
              const QString &fileName = QString(),
              QObject *parent = nullptr);
+    ~Document() override;
 
     DocumentType type() const { return mType; }
 
     QString fileName() const;
+    QString canonicalFilePath() const;
 
     /**
      * Returns the name with which to display this document. It is the file name
@@ -87,6 +95,8 @@ public:
     QUndoStack *undoStack() const;
     bool isModified() const;
 
+    Q_INVOKABLE virtual Tiled::EditableAsset *editable() = 0;
+
     Object *currentObject() const { return mCurrentObject; }
     void setCurrentObject(Object *object);
 
@@ -99,7 +109,21 @@ public:
     bool ignoreBrokenLinks() const;
     void setIgnoreBrokenLinks(bool ignoreBrokenLinks);
 
+    bool changedOnDisk() const;
+    void setChangedOnDisk(bool changedOnDisk);
+
+    virtual QString lastExportFileName() const = 0;
+    virtual void setLastExportFileName(const QString &fileName) = 0;
+
+    virtual FileFormat *exportFormat() const = 0;
+    virtual void setExportFormat(FileFormat *format) = 0;
+
+    virtual void checkIssues() {}
+
+    static const QHash<QString, Document *> &documentInstances();
+
 signals:
+    void changed(const ChangeEvent &change);
     void saved();
 
     void fileNameChanged(const QString &fileName,
@@ -123,20 +147,37 @@ signals:
 protected:
     void setFileName(const QString &fileName);
 
-    DocumentType mType;
-    QString mFileName;
-    QUndoStack *mUndoStack;
+    void checkFilePathProperties(const Object *object) const;
+
     QDateTime mLastSaved;
 
-    Object *mCurrentObject;             /**< Current properties object. */
+    Object *mCurrentObject = nullptr;   /**< Current properties object. */
 
-    bool mIgnoreBrokenLinks;
+    std::unique_ptr<EditableAsset> mEditable;
+
+private:
+    const DocumentType mType;
+
+    QString mFileName;
+    QString mCanonicalFilePath;
+
+    QUndoStack * const mUndoStack;
+
+    bool mChangedOnDisk = false;
+    bool mIgnoreBrokenLinks = false;
+
+    static QHash<QString, Document*> sDocumentInstances;
 };
 
 
 inline QString Document::fileName() const
 {
     return mFileName;
+}
+
+inline QString Document::canonicalFilePath() const
+{
+    return mCanonicalFilePath;
 }
 
 /**
@@ -153,5 +194,16 @@ inline bool Document::ignoreBrokenLinks() const
     return mIgnoreBrokenLinks;
 }
 
-} // namespace Internal
+inline bool Document::changedOnDisk() const
+{
+    return mChangedOnDisk;
+}
+
+inline const QHash<QString, Document *> &Document::documentInstances()
+{
+    return sDocumentInstances;
+}
+
+using DocumentPtr = QSharedPointer<Document>;
+
 } // namespace Tiled

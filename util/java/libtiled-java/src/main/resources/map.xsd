@@ -54,6 +54,7 @@ POSSIBILITY OF SUCH DAMAGE.
     </xs:annotation>
 
     <xs:element name="map" type="Map"/>
+    <xs:element name="template" type="Template"/>
     <xs:element name="tileset" type="TileSet"/>
 
     <xs:complexType name="Animation">
@@ -70,6 +71,49 @@ POSSIBILITY OF SUCH DAMAGE.
         <xs:sequence>
             <xs:element name="frame" type="Frame" maxOccurs="unbounded"/>
         </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="Chunk">
+        <xs:annotation>
+            <xs:documentation source="http://doc.mapeditor.org/reference/tmx-map-format/#chunk">
+                This is currently added only for infinite maps. The contents of a
+                chunk element is same as that of the data element, except it
+                stores the 'data' of the area specified in the attributes.
+            </xs:documentation>
+        </xs:annotation>
+
+        <xs:sequence>
+            <xs:element name="tile" type="Tile" maxOccurs="unbounded"/>
+        </xs:sequence>
+
+        <xs:attribute name="x" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    The x coordinate of the chunk in tiles.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="y" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    The y coordinate of the chunk in tiles.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="width" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    The width of the chunk in tiles.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="height" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    The height of the chunk in tiles.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
     </xs:complexType>
 
     <xs:complexType name="Data">
@@ -152,6 +196,39 @@ POSSIBILITY OF SUCH DAMAGE.
         </xs:attribute>
     </xs:complexType>
 
+    <xs:complexType name="Grid">
+        <xs:annotation>
+            <xs:documentation source="http://doc.mapeditor.org/reference/tmx-map-format/#grid">
+                This element is only used in case of isometric orientation, and
+                determines how tile overlays for terrain and collision
+                information are rendered.
+            </xs:documentation>
+        </xs:annotation>
+
+        <xs:attribute name="orientation" type="Orientation">
+            <xs:annotation>
+                <xs:documentation>
+                    Orientation of the grid for the tiles in this tileset
+                    (orthogonal or isometric)
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="width" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    Width of a grid cell
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="height" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    Height of a grid cell
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
     <xs:complexType name="Group">
         <xs:annotation>
             <xs:documentation source="http://doc.mapeditor.org/reference/tmx-map-format/#group">
@@ -169,6 +246,17 @@ POSSIBILITY OF SUCH DAMAGE.
             <xs:element name="group" type="Group" maxOccurs="unbounded"/>
         </xs:sequence>
 
+        <xs:attribute name="id" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    Unique ID of the layer. Each layer that is added to a map gets a
+                    unique id. Even if a layer is deleted, no layer ever gets the
+                    same ID. Can not be changed in Tiled.
+
+                    @since 1.2
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
         <xs:attribute name="name" type="xs:string">
             <xs:annotation>
                 <xs:documentation>
@@ -327,6 +415,17 @@ POSSIBILITY OF SUCH DAMAGE.
             <xs:element name="properties" type="Properties" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
 
+        <xs:attribute name="id" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    Unique ID of the layer. Each layer that is added to a map gets a
+                    unique id. Even if a layer is deleted, no layer ever gets the
+                    same ID. Can not be changed in Tiled. 
+
+                    @since 1.2
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
         <xs:attribute name="name" type="xs:string" use="required">
             <xs:annotation>
                 <xs:documentation>
@@ -507,6 +606,15 @@ POSSIBILITY OF SUCH DAMAGE.
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
+        <xs:attribute name="infinite" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    Infinite maps give you independence from bounds of the map.
+
+                    @since 1.1
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
         <xs:attribute name="hexsidelength" type="xs:int">
             <xs:annotation>
                 <xs:documentation>
@@ -544,6 +652,17 @@ POSSIBILITY OF SUCH DAMAGE.
                     alpha value since 0.15 in the form `#AARRGGBB`)
 
                     @since 0.9
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="nextlayerid" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    Stores the next available ID for new layers. This number is
+                    stored to prevent reuse of the same ID after layers have been
+                    removed.
+
+                    @since 1.2
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
@@ -681,6 +800,13 @@ POSSIBILITY OF SUCH DAMAGE.
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
+        <xs:attribute name="template" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    A reference to a template file (optional).
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
     </xs:complexType>
 
     <xs:complexType name="ObjectGroup">
@@ -797,6 +923,21 @@ POSSIBILITY OF SUCH DAMAGE.
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="Template">
+        <xs:annotation>
+            <xs:documentation source="http://doc.mapeditor.org/reference/tmx-map-format/#template">
+                The template root element contains the saved map object and a
+                tileset element that points to an external tileset, if the
+                object is a tile object.
+            </xs:documentation>
+        </xs:annotation>
+
+        <xs:sequence>
+            <xs:element name="tileset" type="TileSet"/>
+            <xs:element name="object" type="Object"/>
+        </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="Terrain">
@@ -1075,6 +1216,13 @@ POSSIBILITY OF SUCH DAMAGE.
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
+            <xs:element name="grid" type="Grid">
+                <xs:annotation>
+                    <xs:documentation>
+                        @since 1.0
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
             <xs:element name="properties" type="Properties">
                 <xs:annotation>
                     <xs:documentation>
@@ -1091,6 +1239,13 @@ POSSIBILITY OF SUCH DAMAGE.
                 </xs:annotation>
             </xs:element>
             <xs:element name="tile" type="Tile" maxOccurs="unbounded"/>
+            <xs:element name="wangsets" type="WangSets">
+                <xs:annotation>
+                    <xs:documentation>
+                        @since 1.1
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
         </xs:sequence>
 
         <xs:attribute name="firstgid" type="xs:int">
@@ -1167,6 +1322,151 @@ POSSIBILITY OF SUCH DAMAGE.
                     displaying the tileset.
 
                     @since 0.15
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="WangCornerColor">
+        <xs:annotation>
+            <xs:documentation source="http://doc.mapeditor.org/reference/tmx-map-format/#wangcornercolor">
+                A color that can be used to define the corner of a Wang tile.
+            </xs:documentation>
+        </xs:annotation>
+
+        <xs:attribute name="name" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    The name of this color.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="color" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    The color in `#RRGGBB` format (example: `#c17d11`).
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="tile" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    The tile ID of the tile representing this color.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="probability" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    The relative probability that this color is chosen over
+                    others in case of multiple options.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="WangEdgeColor">
+        <xs:annotation>
+            <xs:documentation source="http://doc.mapeditor.org/reference/tmx-map-format/#wangedgecolor">
+                A color that can be used to define the edge of a Wang tile.
+            </xs:documentation>
+        </xs:annotation>
+
+        <xs:attribute name="name" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    The name of this color.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="color" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    The color in `#RRGGBB` format (example: `#c17d11`).
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="tile" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    The tile ID of the tile representing this color.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="probability" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    The relative probability that this color is chosen over
+                    others in case of multiple options.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="WangSet">
+        <xs:annotation>
+            <xs:documentation source="http://doc.mapeditor.org/reference/tmx-map-format/#wangset">
+                Defines a list of corner colors and a list of edge colors, and
+                any number of Wang tiles using these colors.
+            </xs:documentation>
+        </xs:annotation>
+
+        <xs:sequence>
+            <xs:element name="wangcornercolor" type="WangCornerColor" maxOccurs="unbounded"/>
+            <xs:element name="wangedgecolor" type="WangEdgeColor" maxOccurs="unbounded"/>
+            <xs:element name="wangtile" type="WangTile" maxOccurs="unbounded"/>
+        </xs:sequence>
+
+        <xs:attribute name="name" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    The name of the Wang set.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="tile" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    The tile ID of the tile representing this Wang set.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="WangSets">
+        <xs:annotation>
+            <xs:documentation source="http://doc.mapeditor.org/reference/tmx-map-format/#wangsets">
+                Contains the list of Wang sets defined for this tileset.
+            </xs:documentation>
+        </xs:annotation>
+
+        <xs:sequence>
+            <xs:element name="wangset" type="WangSet" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="WangTile">
+        <xs:annotation>
+            <xs:documentation source="http://doc.mapeditor.org/reference/tmx-map-format/#wangtile">
+                Defines a Wang tile, by referring to a tile in the tileset and
+                associating it with a certain Wang ID.
+            </xs:documentation>
+        </xs:annotation>
+
+        <xs:attribute name="tileid" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    The tile ID.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="wangid" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    The Wang ID, which is a 32-bit unsigned integer stored in
+                    the format 0xCECECECE (where each C is a corner color and
+                    each E is an edge color, from right to left clockwise,
+                    starting with the top edge)
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
