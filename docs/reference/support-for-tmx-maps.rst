@@ -454,6 +454,10 @@ Unity
    3D pipeline for Tiled maps. It uses prefabs as tiles, and can place
    decorations dynamically on tiles. Supports multiple layers (including
    object layers).
+-  `Tuesday <https://github.com/ShreveportArcade/Tuesday>`__: A generic
+   C# serializer and deserializer plus a set of Unity editor
+   scripts that allow you to drag and drop TMX files into your scene,
+   make edits, and save back out as TMX files. MIT license.
 -  `UniTiled <https://yjaffal.itch.io/unitiled>`__, a native TMX importer for Unity.
 -  `X-UniTMX <https://bitbucket.org/Chaoseiro/x-unitmx>`__ supports
    almost all Tiled 0.11 features. Imports TMX/XML files into Sprite
