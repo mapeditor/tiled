@@ -448,6 +448,10 @@ Unity 3D
    TMX files to Unity with support for (non-simple) collisions.
 -  `UniTMX <https://bitbucket.org/PolCPP/unitmx/overview>`__ imports TMX
    files into a mesh.
+-  `Tuesday <https://github.com/ShreveportArcade/Tuesday>`__: A generic 
+   C# serializer and deserializer plus a set of Unity editor 
+   scripts that allow you to drag and drop TMX files into your scene, 
+   make edits, and save back out as TMX files. MIT license.
 -  `X-UniTMX <https://bitbucket.org/Chaoseiro/x-unitmx>`__ supports
    almost all Tiled 0.10 features. Imports TMX/XML files into Sprite
    Objects or Meshes.
