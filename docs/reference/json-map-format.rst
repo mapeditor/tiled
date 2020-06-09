@@ -20,6 +20,7 @@ Map
     :widths: 1, 1, 4
 
     backgroundcolor,  string,           "Hex-formatted color (#RRGGBB or #AARRGGBB) (optional)"
+    compressionlevel, int,              "The compression level to use for tile layer data (defaults to -1, which means to use the algorithm default)"
     height,           int,              "Number of tile rows"
     hexsidelength,    int,              "Length of the side of a hex tile in pixels (hexagonal maps only)"
     infinite,         bool,             "Whether the map has infinite dimensions"
@@ -80,7 +81,7 @@ Layer
     :widths: 1, 1, 4
 
     chunks,           array,            "Array of :ref:`chunks <json-chunk>` (optional). ``tilelayer`` only."
-    compression,      string,           "``zlib``, ``gzip`` or empty (default). ``tilelayer`` only."
+    compression,      string,           "``zlib``, ``gzip``, ``zstd`` (since Tiled 1.3) or empty (default). ``tilelayer`` only."
     data,             array or string,  "Array of ``unsigned int`` (GIDs) or base64-encoded data. ``tilelayer`` only."
     draworder,        string,           "``topdown`` (default) or ``index``. ``objectgroup`` only."
     encoding,         string,           "``csv`` (default) or ``base64``. ``tilelayer`` only."
@@ -735,6 +736,19 @@ Tiled 1.4
 
 * Added ``objectalignment`` to the :ref:`json-tileset` object.
 * Added ``tintcolor`` to the :ref:`json-layer` object.
+
+Tiled 1.3
+~~~~~~~~~
+
+* Added an ``editorsettings`` property to top-level :ref:`json-map` and
+  :ref:`json-tileset` objects, which is used to store editor specific settings
+  that are generally not relevant when loading a map or tileset.
+
+* Added support for Zstandard compression for tile layer data
+  (``"compression": "zstd"`` on :ref:`tile layer objects <json-layer>`).
+
+* Added the ``compressionlevel`` property to the :ref:`json-map` object,
+  which stores the compression level to use for compressed tile layer data.
 
 Tiled 1.2
 ~~~~~~~~~

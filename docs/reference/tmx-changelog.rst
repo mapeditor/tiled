@@ -19,7 +19,13 @@ Tiled 1.3
 ---------
 
 -  Added an :ref:`tmx-editorsettings` element, which is used to store editor
-   specific options that are generally not relevant when loading a map.
+   specific settings that are generally not relevant when loading a map.
+
+-  Added support for Zstandard compression for tile layer data
+   (``compression="zstd"`` on :ref:`tmx-data` elements).
+
+-  Added the ``compressionlevel`` attribute to the :ref:`tmx-map` element,
+   which stores the compression level to use for compressed tile layer data.
 
 Tiled 1.2.1
 -----------

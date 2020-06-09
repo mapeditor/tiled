@@ -397,7 +397,8 @@ Can contain at most one: :ref:`tmx-properties`, :ref:`tmx-data`
 -  **encoding:** The encoding used to encode the tile layer data. When used,
    it can be "base64" and "csv" at the moment. (optional)
 -  **compression:** The compression used to compress the tile layer data.
-   Tiled supports "gzip", "zlib", and "zstd". (zstd supported since 1.3)
+   Tiled supports "gzip", "zlib" and (as a compile-time option since Tiled 1.3)
+   "zstd".
 
 When no encoding or compression is given, the tiles are stored as
 individual XML ``tile`` elements. Next to that, the easiest format to
