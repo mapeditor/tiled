@@ -141,7 +141,7 @@
     <message>
         <location line="+25"/>
         <source>Minimize the exported file by omitting unnecessary whitespace</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimer eksportert filstørrelse ved å utelate unødvendige blanktegn</translation>
     </message>
     <message>
         <location line="+70"/>
@@ -791,7 +791,7 @@
     <message>
         <location line="+5"/>
         <source>Reopen Closed File</source>
-        <translation type="unfinished"></translation>
+        <translation>Åpne lukket fil igjen</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -982,17 +982,17 @@
     <message>
         <location line="+158"/>
         <source>Show Tile Collision Shapes</source>
-        <translation type="unfinished"></translation>
+        <translation>Vis fliskollisjonsformer</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Fit Map in View</source>
-        <translation type="unfinished"></translation>
+        <translation>Tilpass kart i visning</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Community Forum ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>Gemenskapsforum ↗</translation>
     </message>
     <message>
         <location line="-92"/>
@@ -2840,9 +2840,9 @@ Linje %1, kolonne %2</translation>
     <message numerus="yes">
         <location line="-13"/>
         <source>Duplicate %n Object(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Dupliser %n objekt</numerusform>
+            <numerusform>Dupliser %n objekter</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -3027,12 +3027,12 @@ Linje %1, kolonne %2</translation>
     <message>
         <location filename="../src/tiled/automapper.cpp" line="+140"/>
         <source>Ignoring unknown property &apos;%2&apos; = &apos;%3&apos; (rule map &apos;%1&apos;)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ser bort fra ukjent egenskap &apos;%2&apos; = &apos;%3&apos; (regelkart &apos;%1&apos;)</translation>
     </message>
     <message>
         <location line="+40"/>
         <source>Ignoring unknown property &apos;%2&apos; = &apos;%3&apos; on layer &apos;%4&apos; (rule map &apos;%1&apos;)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ser bort fra ukjent egenskap &apos;%2&apos; = &apos;%3&apos; på lag &apos;%4&apos; (regelkart &apos;%1&apos;)</translation>
     </message>
     <message>
         <location line="+29"/>
@@ -3096,7 +3096,7 @@ Linje %1, kolonne %2</translation>
     <message>
         <location line="+24"/>
         <source>No rules file found at &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ingen regler funnet i &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -3756,7 +3756,7 @@ Do you want to replace it?</source>
     <message>
         <location line="+14"/>
         <source>Failed to read metatile map %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Klarte ikke å lese metafliskart %1: %2</translation>
     </message>
 </context>
 <context>
@@ -4103,7 +4103,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+1"/>
         <source>There are unsaved changes to world &quot;%1&quot;. Do you want to save the world now?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Det er ulagrede endringer i verden &quot;%1&quot;. Ønsker du å lagre verdenen nå?</translation>
     </message>
     <message>
         <location line="+47"/>
@@ -4761,7 +4761,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location filename="../src/tiled/newsbutton.cpp" line="+54"/>
         <source>Devlog</source>
-        <translation type="unfinished"></translation>
+        <translation>Utviklingslogg</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -5600,17 +5600,17 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+12"/>
         <source>At line %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>På linje %1: %2</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>Resetting script engine</source>
-        <translation type="unfinished"></translation>
+        <translation>Tilbakestiller skriptmotor</translation>
     </message>
     <message>
         <location line="+39"/>
         <source>Script files changed: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Skriptfiler endret: %1</translation>
     </message>
     <message>
         <location line="+28"/>
@@ -5894,7 +5894,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+20"/>
         <source>Objects list</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Objektliste</translation>
     </message>
     <message>
         <location line="+380"/>
@@ -6078,12 +6078,12 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+1"/>
         <source>Select Next Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Velg neste flissett</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Select Previous Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Velg forrige forrige flissett</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -6112,12 +6112,12 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+203"/>
         <source>Failed to load tileset image &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Klarte ikke å laste inn flissettbilde &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Failed to load tile image &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Klarte ikke å laste inn flisbilde &apos;%1&apos;</translation>
     </message>
 </context>
 <context>
@@ -6487,17 +6487,17 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+8"/>
         <source>World contained no valid maps or patterns: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Verdenen inneholdt ingen gyldige kart eller mønstre: %1</translation>
     </message>
     <message>
         <location line="+89"/>
         <source>World doesn&apos;t support saving</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Verdenen støtter ikke lagring.</translation>
     </message>
     <message>
         <location line="+32"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunne ikke åpne fil for lesing.</translation>
     </message>
 </context>
 <context>
