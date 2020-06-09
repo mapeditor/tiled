@@ -41,6 +41,7 @@
 #include "scriptedtool.h"
 #include "scriptfile.h"
 #include "scriptfileformatwrappers.h"
+#include "scriptfileinfo.h"
 #include "scriptmodule.h"
 #include "tilecollisiondock.h"
 #include "tilelayer.h"
@@ -302,6 +303,8 @@ void ScriptManager::initialize()
     globalObject.setProperty(QStringLiteral("TileMap"), mEngine->newQMetaObject<EditableMap>());
     globalObject.setProperty(QStringLiteral("Tileset"), mEngine->newQMetaObject<EditableTileset>());
 #endif
+
+    registerFileInfo(mEngine);
 
     loadExtensions();
 }

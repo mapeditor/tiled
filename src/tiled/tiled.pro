@@ -214,6 +214,7 @@ SOURCES += aboutdialog.cpp \
     scriptedtool.cpp \
     scriptfile.cpp \
     scriptfileformatwrappers.cpp \
+    scriptfileinfo.cpp \
     scriptmanager.cpp \
     scriptmodule.cpp \
     selectionrectangle.cpp \
@@ -456,6 +457,7 @@ HEADERS += aboutdialog.h \
     scriptedtool.h \
     scriptfile.h \
     scriptfileformatwrappers.h \
+    scriptfileinfo.h \
     scriptmanager.h \
     scriptmodule.h \
     selectionrectangle.h \
