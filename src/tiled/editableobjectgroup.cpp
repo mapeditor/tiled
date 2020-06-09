@@ -103,9 +103,9 @@ void EditableObjectGroup::insertObjectAt(int index, EditableMapObject *editableM
     }
 
     if (auto doc = document()) {
-        asset()->push(new AddMapObjects(doc,
-                                        objectGroup(),
-                                        editableMapObject->mapObject()));
+        AddRemoveMapObjects::Entry entry { editableMapObject->mapObject(), objectGroup() };
+        entry.index = index;
+        asset()->push(new AddMapObjects(doc, { entry }));
     } else {
         objectGroup()->insertObject(index, editableMapObject->mapObject());
         editableMapObject->release();   // now owned by the object group
