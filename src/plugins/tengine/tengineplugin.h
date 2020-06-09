@@ -29,8 +29,8 @@
 
 namespace Tengine {
 // ASCII characters between decimals 32 and 126 should be ok
-const int ASCII_MIN = 32;
-const int ASCII_MAX = 126;
+const char ASCII_MIN = 32;
+const char ASCII_MAX = 126;
 
 class TENGINESHARED_EXPORT TenginePlugin : public Tiled::WritableMapFormat
 {
@@ -40,7 +40,7 @@ class TENGINESHARED_EXPORT TenginePlugin : public Tiled::WritableMapFormat
 public:
     TenginePlugin();
 
-    bool write(const Tiled::Map *map, const QString &fileName) override;
+    bool write(const Tiled::Map *map, const QString &fileName, Options options) override;
     QString nameFilter() const override;
     QString shortName() const override;
     QString errorString() const override;

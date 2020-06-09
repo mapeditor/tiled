@@ -29,17 +29,14 @@ namespace Tiled {
 class Tileset;
 class Tile;
 
-namespace Internal {
-
 class TilesetDocument;
-class TilesetWangSetModel;
 
-class ChangeWangSetEdges : public QUndoCommand
+class ChangeWangSetEdgeCount : public QUndoCommand
 {
 public:
-    ChangeWangSetEdges(TilesetDocument *TilesetDocument,
-                       int index,
-                       int newValue);
+    ChangeWangSetEdgeCount(TilesetDocument *TilesetDocument,
+                           WangSet *wangSet,
+                           int newValue);
 
     void undo() override;
     void redo() override;
@@ -51,19 +48,18 @@ private:
     };
 
     TilesetDocument *mTilesetDocument;
-    TilesetWangSetModel *mWangSetModel;
-    int mIndex;
+    WangSet *mWangSet;
     int mOldValue;
     int mNewValue;
-    QList<WangColorChange> mRemovedWangColors;
+    QVector<WangColorChange> mRemovedWangColors;
 };
 
-class ChangeWangSetCorners : public QUndoCommand
+class ChangeWangSetCornerCount : public QUndoCommand
 {
 public:
-    ChangeWangSetCorners(TilesetDocument *TilesetDocument,
-                       int index,
-                       int newValue);
+    ChangeWangSetCornerCount(TilesetDocument *TilesetDocument,
+                             WangSet *wangSet,
+                             int newValue);
 
     void undo() override;
     void redo() override;
@@ -75,18 +71,17 @@ private:
     };
 
     TilesetDocument *mTilesetDocument;
-    TilesetWangSetModel *mWangSetModel;
-    int mIndex;
+    WangSet *mWangSet;
     int mOldValue;
     int mNewValue;
-    QList<WangColorChange> mRemovedWangColors;
+    QVector<WangColorChange> mRemovedWangColors;
 };
 
 class RemoveWangSetColor : public QUndoCommand
 {
 public:
     RemoveWangSetColor(TilesetDocument *tilesetDocumnet,
-                       int index,
+                       WangSet *wangSet,
                        int color,
                        bool isEdge);
 
@@ -95,13 +90,12 @@ public:
 
 private:
     TilesetDocument *mTilesetDocument;
-    TilesetWangSetModel *mWangSetModel;
-    int mIndex;
+    WangSet *mWangSet;
     int mColor;
     bool mIsEdge;
     QSharedPointer<WangColor> mRemovedWangColor;
-    //When removing a color when there are two, both are actually removed,
-    //this stores the extra if needed, and is null otherwise.
+    // When removing a color when there are two, both are actually removed,
+    // this stores the extra if needed, and is null otherwise.
     QSharedPointer<WangColor> mExtraWangColor;
 };
 
@@ -109,17 +103,18 @@ class SetWangSetImage : public QUndoCommand
 {
 public:
     SetWangSetImage(TilesetDocument *tilesetDocument,
-                    int index,
-                    int tileId);
+                    WangSet *wangSet,
+                    int tileId,
+                    QUndoCommand *parent = nullptr);
 
     void undo() override;
     void redo() override;
+
 private:
-    TilesetWangSetModel *mWangSetModel;
-    int mIndex;
+    TilesetDocument *mTilesetDocument;
+    WangSet *mWangSet;
     int mOldImageTileId;
     int mNewImageTileId;
 };
 
-} // namespace Internal
 } // namespace Tiled

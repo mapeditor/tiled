@@ -22,9 +22,18 @@
 #include "ui_noeditorwidget.h"
 
 #include "actionmanager.h"
+#include "documentmanager.h"
+#include "mainwindow.h"
+#include "stylehelper.h"
+#include "tiledproxystyle.h"
+#include "utils.h"
+
+#include <QAction>
+#include <QApplication>
+#include <QGraphicsOpacityEffect>
+#include <QMenu>
 
 namespace Tiled {
-namespace Internal {
 
 NoEditorWidget::NoEditorWidget(QWidget *parent) :
     QWidget(parent),
@@ -32,8 +41,27 @@ NoEditorWidget::NoEditorWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    connect(ui->newMapButton, &QPushButton::clicked, this, &NoEditorWidget::newMap);
-    connect(ui->newTilesetButton, &QPushButton::clicked, this, &NoEditorWidget::newTileset);
+    auto opacityEffect = new QGraphicsOpacityEffect(this);
+    opacityEffect->setOpacity(0.25);
+    ui->logo->setGraphicsEffect(opacityEffect);
+
+    ui->versionLabel->setText(QString(QLatin1String("%1 %2")).arg(QGuiApplication::applicationDisplayName(), QGuiApplication::applicationVersion()));
+
+    connect(ui->openProjectButton, &QToolButton::clicked, ActionManager::action("OpenProject"), &QAction::trigger);
+    connect(ui->saveProjectButton, &QToolButton::clicked, ActionManager::action("SaveProjectAs"), &QAction::trigger);
+    connect(ui->addFolderToProjectButton, &QToolButton::clicked, ActionManager::action("AddFolderToProject"), &QAction::trigger);
+
+    connect(ui->newMapButton, &QToolButton::clicked, this, &NoEditorWidget::newMap);
+    connect(ui->newTilesetButton, &QToolButton::clicked, this, &NoEditorWidget::newTileset);
+    connect(ui->openFileButton, &QToolButton::clicked, this, &NoEditorWidget::openFile);
+
+    Preferences *preferences = Preferences::instance();
+    connect(preferences, &Preferences::recentProjectsChanged, this, &NoEditorWidget::updateRecentProjectsMenu);
+
+    connect(StyleHelper::instance(), &StyleHelper::styleApplied, this, &NoEditorWidget::adjustToStyle);
+
+    updateRecentProjectsMenu();
+    adjustToStyle();
 }
 
 NoEditorWidget::~NoEditorWidget()
@@ -46,7 +74,7 @@ void NoEditorWidget::changeEvent(QEvent *e)
     QWidget::changeEvent(e);
     switch (e->type()) {
     case QEvent::LanguageChange:
-        ui->retranslateUi(this);
+        retranslateUi();
         break;
     default:
         break;
@@ -55,13 +83,57 @@ void NoEditorWidget::changeEvent(QEvent *e)
 
 void NoEditorWidget::newMap()
 {
-    ActionManager::action("file.new_map")->trigger();
+    ActionManager::action("NewMap")->trigger();
 }
 
 void NoEditorWidget::newTileset()
 {
-    ActionManager::action("file.new_tileset")->trigger();
+    ActionManager::action("NewTileset")->trigger();
 }
 
-} // namespace Internal
+void NoEditorWidget::openFile()
+{
+    DocumentManager::instance()->openFileDialog();
+}
+
+void NoEditorWidget::retranslateUi()
+{
+    ui->retranslateUi(this);
+
+    ui->openProjectButton->setText(ActionManager::action("OpenProject")->text());
+    ui->saveProjectButton->setText(ActionManager::action("SaveProjectAs")->text());
+    ui->addFolderToProjectButton->setText(ActionManager::action("AddFolderToProject")->text());
+}
+
+void NoEditorWidget::updateRecentProjectsMenu()
+{
+    auto menu = ui->openProjectButton->menu();
+    if (!menu)
+        menu = new QMenu(this);
+
+    menu->clear();
+
+    bool enabled = MainWindow::instance()->addRecentProjectsActions(menu);
+
+    if (enabled) {
+        ui->openProjectButton->setMenu(menu);
+    } else {
+        ui->openProjectButton->setMenu(nullptr);
+        delete menu;
+    }
+
+    ui->openProjectButton->setPopupMode(enabled ? QToolButton::MenuButtonPopup
+                                                : QToolButton::DelayedPopup);
+}
+
+void NoEditorWidget::adjustToStyle()
+{
+    if (auto *style = qobject_cast<TiledProxyStyle*>(QApplication::style())) {
+        if (style->isDark())
+            ui->logo->setPixmap(QPixmap(QString::fromUtf8(":/images/about-tiled-logo-white.png")));
+        else
+            ui->logo->setPixmap(QPixmap(QString::fromUtf8(":/images/about-tiled-logo.png")));
+    }
+}
+
 } // namespace Tiled

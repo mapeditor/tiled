@@ -27,7 +27,6 @@ class TextEditorDialog;
 }
 
 namespace Tiled {
-namespace Internal {
 
 class TextEditorDialog : public QDialog
 {
@@ -47,5 +46,4 @@ private:
     Ui::TextEditorDialog *mUi;
 };
 
-} // namespace Internal
 } // namespace Tiled

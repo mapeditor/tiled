@@ -30,6 +30,7 @@
 
 class QAction;
 class QComboBox;
+class QLabel;
 class QMainWindow;
 class QStackedWidget;
 class QToolBar;
@@ -40,9 +41,8 @@ class Terrain;
 class Tile;
 class Tileset;
 
-namespace Internal {
-
 class PropertiesDock;
+class TemplatesDock;
 class TerrainDock;
 class TileAnimationEditor;
 class TileCollisionDock;
@@ -57,8 +57,12 @@ class TilesetEditor : public Editor
 {
     Q_OBJECT
 
+    Q_PROPERTY(Tiled::TileCollisionDock *collisionEditor READ collisionEditor)
+
 public:
     explicit TilesetEditor(QObject *parent = nullptr);
+
+    TemplatesDock *templatesDock() const { return mTemplatesDock; }
 
     void saveState() override;
     void restoreState() override;
@@ -73,9 +77,13 @@ public:
 
     QList<QToolBar *> toolBars() const override;
     QList<QDockWidget *> dockWidgets() const override;
+    QList<QWidget*> statusBarWidgets() const override;
+    QList<QWidget*> permanentStatusBarWidgets() const override;
 
     StandardActions enabledStandardActions() const override;
     void performStandardAction(StandardAction action) override;
+
+    void resetLayout() override;
 
     TilesetView *currentTilesetView() const;
     Tileset *currentTileset() const;
@@ -85,21 +93,27 @@ public:
     QAction *removeTilesAction() const;
     QAction *editTerrainAction() const;
     QAction *editCollisionAction() const;
+    QAction *editWangSetsAction() const;
     QAction *showAnimationEditor() const;
 
     TileAnimationEditor *tileAnimationEditor() const;
+    TileCollisionDock *collisionEditor() const;
 
 signals:
     void currentTileChanged(Tile *tile);
 
-private slots:
+private:
     void currentWidgetChanged();
 
     void selectionChanged();
     void currentChanged(const QModelIndex &index);
     void indexPressed(const QModelIndex &index);
 
+    void saveDocumentState(TilesetDocument *tilesetDocument) const;
+    void restoreDocumentState(TilesetDocument *tilesetDocument) const;
+
     void tilesetChanged();
+    void selectedTilesChanged();
     void updateTilesetView(Tileset *tileset);
 
     void openAddTilesDialog();
@@ -110,6 +124,7 @@ private slots:
     void currentTerrainChanged(const Terrain *terrain);
 
     void setEditCollision(bool editCollision);
+    void hasSelectedCollisionObjectsChanged();
 
     void setEditWang(bool editWang);
 
@@ -126,11 +141,10 @@ private slots:
     void removeWangSet();
     void setWangSetImage(Tile *tile);
     void setWangColorImage(Tile *tile, bool isEdge, int index);
-    void setWangColorColor(QColor color, bool isEdge, int index);
+    void setWangColorColor(WangColor *wangColor, const QColor &color);
 
     void onAnimationEditorClosed();
 
-private:
     void setCurrentTile(Tile *tile);
 
     void retranslateUi();
@@ -143,19 +157,23 @@ private:
     QAction *mAddTiles;
     QAction *mRemoveTiles;
     QAction *mShowAnimationEditor;
+    QAction *mDynamicWrappingToggle;
 
     PropertiesDock *mPropertiesDock;
     UndoDock *mUndoDock;
     TerrainDock *mTerrainDock;
     TileCollisionDock *mTileCollisionDock;
+    TemplatesDock *mTemplatesDock;
     WangDock *mWangDock;
     QComboBox *mZoomComboBox;
+    QLabel *mStatusInfoLabel;
     TileAnimationEditor *mTileAnimationEditor;
 
     QHash<TilesetDocument*, TilesetView*> mViewForTileset;
     TilesetDocument *mCurrentTilesetDocument;
 
     Tile *mCurrentTile;
+    bool mSettingSelectedTiles = false;
 };
 
 inline QAction *TilesetEditor::addTilesAction() const
@@ -178,5 +196,11 @@ inline TileAnimationEditor *TilesetEditor::tileAnimationEditor() const
     return mTileAnimationEditor;
 }
 
-} // namespace Internal
+inline TileCollisionDock *TilesetEditor::collisionEditor() const
+{
+    return mTileCollisionDock;
+}
+
 } // namespace Tiled
+
+Q_DECLARE_METATYPE(Tiled::TilesetEditor*)

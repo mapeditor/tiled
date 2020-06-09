@@ -20,14 +20,16 @@
  */
 
 #include "templatemanager.h"
-#include "templategroupformat.h"
+
+#include <memory>
+
+#include "objecttemplate.h"
+#include "objecttemplateformat.h"
+#include "logginginterface.h"
+
+#include <QFile>
 
 using namespace Tiled;
-
-TemplateManager::TemplateManager(QObject *parent)
-    : QObject(parent)
-{
-}
 
 TemplateManager *TemplateManager::mInstance;
 
@@ -45,35 +47,55 @@ void TemplateManager::deleteInstance()
     mInstance = nullptr;
 }
 
-TemplateGroup *TemplateManager::findTemplateGroup(const QString &fileName)
+TemplateManager::TemplateManager(QObject *parent)
+    : QObject(parent),
+      mWatcher(new FileSystemWatcher(this))
 {
-    for (auto *group : mTemplateGroups) {
-        if (group->fileName() == fileName)
-            return group;
+    connect(mWatcher, &FileSystemWatcher::fileChanged,
+            this, &TemplateManager::fileChanged);
+}
+
+TemplateManager::~TemplateManager()
+{
+    qDeleteAll(mObjectTemplates);
+}
+
+ObjectTemplate *TemplateManager::loadObjectTemplate(const QString &fileName, QString *error)
+{
+    ObjectTemplate *objectTemplate = findObjectTemplate(fileName);
+
+    if (!objectTemplate) {
+        auto newTemplate = readObjectTemplate(fileName, error);
+
+        // This instance will not have an object. It is used to detect broken
+        // template references.
+        if (!newTemplate)
+            newTemplate = std::make_unique<ObjectTemplate>(fileName);
+
+        // If the file exists, watch it, regardless of whether the parse was successful.
+        if (QFile::exists(fileName))
+            mWatcher->addPath(fileName);
+
+        objectTemplate = newTemplate.get();
+        mObjectTemplates.insert(fileName, newTemplate.release());
     }
 
-    return nullptr;
+    return objectTemplate;
 }
 
-TemplateGroup *TemplateManager::loadTemplateGroup(const QString &fileName, QString *error)
+void TemplateManager::fileChanged(const QString &fileName)
 {
-    TemplateGroup *templateGroup = findTemplateGroup(fileName);
+    ObjectTemplate *objectTemplate = findObjectTemplate(fileName);
 
-    if (!templateGroup) {
-        templateGroup = readTemplateGroup(fileName, error);
-        // This templateGroup is specifically read for a certian map and is not part of the templates model
-        if (templateGroup)
-            templateGroup->setEmbedded(false);
+    // Most likely the file was removed.
+    if (!objectTemplate)
+        return;
+
+    auto newTemplate = readObjectTemplate(fileName);
+    if (newTemplate) {
+        objectTemplate->setObject(newTemplate->object());
+        emit objectTemplateChanged(objectTemplate);
+    } else {
+        ERROR(tr("Unable to reload template file: %1").arg(fileName));
     }
-
-    return templateGroup;
 }
-
-const ObjectTemplate *TemplateManager::findTemplate(const QString &fileName, unsigned templateId)
-{
-    TemplateGroup *group = findTemplateGroup(fileName);
-    if (!group)
-        return nullptr;
-    return group->findTemplate(templateId);;
-}
-

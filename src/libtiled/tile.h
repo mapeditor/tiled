@@ -36,6 +36,8 @@
 #include <QSharedPointer>
 #include <QUrl>
 
+#include <memory>
+
 namespace Tiled {
 
 class ObjectGroup;
@@ -128,12 +130,12 @@ public:
     inline unsigned terrain() const;
     void setTerrain(unsigned terrain);
 
-    float probability() const;
-    void setProbability(float probability);
+    qreal probability() const;
+    void setProbability(qreal probability);
 
     ObjectGroup *objectGroup() const;
-    void setObjectGroup(ObjectGroup *objectGroup);
-    ObjectGroup *swapObjectGroup(ObjectGroup *objectGroup);
+    void setObjectGroup(std::unique_ptr<ObjectGroup> objectGroup);
+    void swapObjectGroup(std::unique_ptr<ObjectGroup> &objectGroup);
 
     const QVector<Frame> &frames() const;
     void setFrames(const QVector<Frame> &frames);
@@ -155,8 +157,8 @@ private:
     LoadingStatus mImageStatus;
     QString mType;
     unsigned mTerrain;
-    float mProbability;
-    ObjectGroup *mObjectGroup;
+    qreal mProbability;
+    std::unique_ptr<ObjectGroup> mObjectGroup;
 
     QVector<Frame> mFrames;
     int mCurrentFrameIndex;
@@ -261,7 +263,8 @@ inline void Tile::setType(const QString &type)
  */
 inline int Tile::cornerTerrainId(int corner) const
 {
-    unsigned t = (terrain() >> (3 - corner)*8) & 0xFF; return t == 0xFF ? -1 : (int)t;
+    unsigned t = (terrain() >> (3 - corner)*8) & 0xFF;
+    return t == 0xFF ? -1 : int(t);
 }
 
 /**
@@ -283,7 +286,7 @@ inline unsigned Tile::terrain() const
 /**
  * Returns the relative probability of this tile appearing while painting.
  */
-inline float Tile::probability() const
+inline qreal Tile::probability() const
 {
     return mProbability;
 }
@@ -291,7 +294,7 @@ inline float Tile::probability() const
 /**
  * Set the relative probability of this tile appearing while painting.
  */
-inline void Tile::setProbability(float probability)
+inline void Tile::setProbability(qreal probability)
 {
     mProbability = probability;
 }
@@ -302,7 +305,7 @@ inline void Tile::setProbability(float probability)
  */
 inline ObjectGroup *Tile::objectGroup() const
 {
-    return mObjectGroup;
+    return mObjectGroup.get();
 }
 
 inline const QVector<Frame> &Tile::frames() const
@@ -334,3 +337,5 @@ inline void Tile::setImageStatus(LoadingStatus status)
 }
 
 } // namespace Tiled
+
+Q_DECLARE_METATYPE(Tiled::Tile*)

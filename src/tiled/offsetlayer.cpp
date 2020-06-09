@@ -21,6 +21,7 @@
 
 #include "offsetlayer.h"
 
+#include "changeevents.h"
 #include "imagelayer.h"
 #include "layermodel.h"
 #include "map.h"
@@ -31,12 +32,20 @@
 
 #include <QCoreApplication>
 
-using namespace Tiled;
-using namespace Tiled::Internal;
+#include "qtcompat_p.h"
 
+using namespace Tiled;
+
+/**
+ * Creates an undo command that offsets the layer at \a index by \a offset,
+ * within \a bounds, and can optionally wrap on the x or y axis.
+ *
+ * If \a bounds is empty, the \a offset is applied everywhere and the wrapping
+ * is ignored.
+ */
 OffsetLayer::OffsetLayer(MapDocument *mapDocument,
                          Layer *layer,
-                         const QPoint &offset,
+                         QPoint offset,
                          const QRect &bounds,
                          bool wrapX,
                          bool wrapY)
@@ -50,11 +59,14 @@ OffsetLayer::OffsetLayer(MapDocument *mapDocument,
     switch (mOriginalLayer->layerType()) {
     case Layer::TileLayerType:
         mOffsetLayer = layer->clone();
-        static_cast<TileLayer*>(mOffsetLayer)->offsetTiles(offset, bounds, wrapX, wrapY);
+        if (bounds.isEmpty())
+            static_cast<TileLayer*>(mOffsetLayer)->offsetTiles(offset);
+        else
+            static_cast<TileLayer*>(mOffsetLayer)->offsetTiles(offset, bounds, wrapX, wrapY);
         break;
     case Layer::ObjectGroupType:
         mOffsetLayer = layer->clone();
-        // fall through
+        Q_FALLTHROUGH();
     case Layer::ImageLayerType:
     case Layer::GroupLayerType: {
         // These layers need offset and bounds converted to pixel units
@@ -89,10 +101,12 @@ void OffsetLayer::undo()
 {
     Q_ASSERT(mDone);
     LayerModel *layerModel = mMapDocument->layerModel();
-    if (mOffsetLayer)
+    if (mOffsetLayer) {
         layerModel->replaceLayer(mOffsetLayer, mOriginalLayer);
-    else
-        layerModel->setLayerOffset(mOriginalLayer, mOldOffset);
+    } else {
+        mOriginalLayer->setOffset(mOldOffset);
+        emit mMapDocument->changed(LayerChangeEvent(mOriginalLayer, LayerChangeEvent::OffsetProperty));
+    }
     mDone = false;
 }
 
@@ -100,9 +114,11 @@ void OffsetLayer::redo()
 {
     Q_ASSERT(!mDone);
     LayerModel *layerModel = mMapDocument->layerModel();
-    if (mOffsetLayer)
+    if (mOffsetLayer) {
         layerModel->replaceLayer(mOriginalLayer, mOffsetLayer);
-    else
-        layerModel->setLayerOffset(mOriginalLayer, mNewOffset);
+    } else {
+        mOriginalLayer->setOffset(mNewOffset);
+        emit mMapDocument->changed(LayerChangeEvent(mOriginalLayer, LayerChangeEvent::OffsetProperty));
+    }
     mDone = true;
 }

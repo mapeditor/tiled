@@ -22,23 +22,24 @@
 #pragma once
 
 #include <QColor>
-#include <QDate>
+#include <QDateTime>
 #include <QObject>
+#include <QSettings>
 
+#include "filesystemwatcher.h"
 #include "map.h"
 #include "objecttypes.h"
-#include "templategroupdocument.h"
-
-class QSettings;
 
 namespace Tiled {
-namespace Internal {
 
 /**
  * This class holds user preferences and provides a convenient interface to
  * access them.
+ *
+ * Since it derives from QSettings, you can also store/retrieve arbitrary
+ * values. The naming style for groups and keys is CamelCase.
  */
-class Preferences : public QObject
+class Preferences : public QSettings
 {
     Q_OBJECT
 
@@ -46,18 +47,26 @@ public:
     static Preferences *instance();
     static void deleteInstance();
 
-    bool showGrid() const { return mShowGrid; }
-    bool showTileObjectOutlines() const { return mShowTileObjectOutlines; }
-    bool showTileAnimations() const { return mShowTileAnimations; }
-    bool snapToGrid() const { return mSnapToGrid; }
-    bool snapToFineGrid() const { return mSnapToFineGrid; }
-    bool snapToPixels() const { return mSnapToPixels; }
-    QColor gridColor() const { return mGridColor; }
-    int gridFine() const { return mGridFine; }
-    qreal objectLineWidth() const { return mObjectLineWidth; }
+private:
+    Preferences();
+    ~Preferences() override;
 
-    bool highlightCurrentLayer() const { return mHighlightCurrentLayer; }
-    bool showTilesetGrid() const { return mShowTilesetGrid; }
+public:
+    bool showGrid() const;
+    bool showTileObjectOutlines() const;
+    bool showTileAnimations() const;
+    bool showTileCollisionShapes() const;
+    bool showObjectReferences() const;
+    bool snapToGrid() const;
+    bool snapToFineGrid() const;
+    bool snapToPixels() const;
+    QColor gridColor() const;
+    int gridFine() const;
+    qreal objectLineWidth() const;
+
+    bool highlightCurrentLayer() const;
+    bool highlightHoveredObject() const;
+    bool showTilesetGrid() const;
 
     enum ObjectLabelVisiblity {
         NoObjectLabels,
@@ -67,6 +76,9 @@ public:
 
     ObjectLabelVisiblity objectLabelVisibility() const;
     void setObjectLabelVisibility(ObjectLabelVisiblity visiblity);
+
+    bool labelForHoveredObject() const;
+    void setLabelForHoveredObject(bool enabled);
 
     enum ApplicationStyle {
         SystemDefaultStyle,
@@ -89,47 +101,51 @@ public:
     Map::RenderOrder mapRenderOrder() const;
     void setMapRenderOrder(Map::RenderOrder mapRenderOrder);
 
-    bool dtdEnabled() const;
-    void setDtdEnabled(bool enabled);
-
     bool safeSavingEnabled() const;
     void setSafeSavingEnabled(bool enabled);
+
+    bool exportOnSave() const;
+    void setExportOnSave(bool enabled);
+
+    enum ExportOption {
+        EmbedTilesets                   = 0x1,
+        DetachTemplateInstances         = 0x2,
+        ResolveObjectTypesAndProperties = 0x4,
+        ExportMinimized                 = 0x8,
+    };
+    Q_DECLARE_FLAGS(ExportOptions, ExportOption)
+
+    ExportOptions exportOptions() const;
+    void setExportOption(ExportOption option, bool value);
+    bool exportOption(ExportOption option) const;
 
     QString language() const;
     void setLanguage(const QString &language);
 
     bool reloadTilesetsOnChange() const;
-    void setReloadTilesetsOnChanged(bool value);
+    void setReloadTilesetsOnChanged(bool reloadOnChanged);
 
-    bool useOpenGL() const { return mUseOpenGL; }
+    bool useOpenGL() const;
     void setUseOpenGL(bool useOpenGL);
 
     void setObjectTypes(const ObjectTypes &objectTypes);
 
     enum FileType {
-        ObjectTypesFile,
-        TemplateDocumentsFile,
-        ImageFile,
         ExportedFile,
-        ExternalTileset
+        ExternalTileset,
+        ImageFile,
+        ObjectTemplateFile,
+        ObjectTypesFile,
+        ProjectFile,
+        WorldFile,
     };
 
     QString lastPath(FileType fileType) const;
     void setLastPath(FileType fileType, const QString &path);
 
-    bool automappingDrawing() const { return mAutoMapDrawing; }
-
-    QString mapsDirectory() const;
-    void setMapsDirectory(const QString &path);
-
-    QString stampsDirectory() const;
-    void setStampsDirectory(const QString &stampsDirectory);
-
     QString objectTypesFile() const;
     void setObjectTypesFile(const QString &filePath);
-
-    QString templateDocumentsFile() const;
-    void setTemplateDocumentsFile(const QString &filePath);
+    void setObjectTypesFileLastSaved(const QDateTime &time);
 
     QDate firstRun() const;
     int runCount() const;
@@ -137,31 +153,45 @@ public:
     bool isPatron() const;
     void setPatron(bool isPatron);
 
-    bool shouldShowPatreonDialog() const;
-    void setPatreonDialogReminder(const QDate &date);
+    bool shouldShowDonationDialog() const;
+    QDate donationDialogTime() const;
+    void setDonationDialogReminder(const QDate &date);
 
-    enum { MaxRecentFiles = 8 };
-    QStringList recentFiles() const;
+    enum { MaxRecentFiles = 12 };
     QString fileDialogStartLocation() const;
     void addRecentFile(const QString &fileName);
 
-    bool openLastFilesOnStartup() const;
+    QStringList recentProjects() const;
+    void addRecentProject(const QString &fileName);
+
+    QString startupSession() const;
+    void setLastSession(const QString &fileName);
+    bool restoreSessionOnStartup() const;
 
     bool checkForUpdates() const;
     void setCheckForUpdates(bool on);
 
+    bool displayNews() const;
+    void setDisplayNews(bool on);
+
     bool wheelZoomsByDefault() const;
 
-    /**
-     * Provides access to the QSettings instance to allow storing/retrieving
-     * arbitrary values. The naming style for groups and keys is CamelCase.
-     */
-    QSettings *settings() const { return mSettings; }
+    template <typename T>
+    T get(const char *key, const T &defaultValue = T()) const
+    { return value(QLatin1String(key), defaultValue).template value<T>(); }
+
+    static QString dataLocation();
+    static QString configLocation();
+
+    static QString startupProject();
+    static void setStartupProject(const QString &filePath);
 
 public slots:
     void setShowGrid(bool showGrid);
     void setShowTileObjectOutlines(bool enabled);
     void setShowTileAnimations(bool enabled);
+    void setShowTileCollisionShapes(bool enabled);
+    void setShowObjectReferences(bool enabled);
     void setSnapToGrid(bool snapToGrid);
     void setSnapToFineGrid(bool snapToFineGrid);
     void setSnapToPixels(bool snapToPixels);
@@ -169,18 +199,21 @@ public slots:
     void setGridFine(int gridFine);
     void setObjectLineWidth(qreal lineWidth);
     void setHighlightCurrentLayer(bool highlight);
+    void setHighlightHoveredObject(bool highlight);
     void setShowTilesetGrid(bool showTilesetGrid);
-    void setAutomappingDrawing(bool enabled);
-    void setOpenLastFilesOnStartup(bool load);
+    void setRestoreSessionOnStartup(bool enabled);
     void setPluginEnabled(const QString &fileName, bool enabled);
     void setWheelZoomsByDefault(bool mode);
 
     void clearRecentFiles();
+    void clearRecentProjects();
 
 signals:
     void showGridChanged(bool showGrid);
     void showTileObjectOutlinesChanged(bool enabled);
     void showTileAnimationsChanged(bool enabled);
+    void showTileCollisionShapesChanged(bool enabled);
+    void showObjectReferencesChanged(bool enabled);
     void snapToGridChanged(bool snapToGrid);
     void snapToFineGridChanged(bool snapToFineGrid);
     void snapToPixelsChanged(bool snapToPixels);
@@ -188,8 +221,10 @@ signals:
     void gridFineChanged(int gridFine);
     void objectLineWidthChanged(qreal lineWidth);
     void highlightCurrentLayerChanged(bool highlight);
+    void highlightHoveredObjectChanged(bool highlight);
     void showTilesetGridChanged(bool showTilesetGrid);
     void objectLabelVisibilityChanged(ObjectLabelVisiblity);
+    void labelForHoveredObjectChanged(bool enabled);
 
     void applicationStyleChanged(ApplicationStyle);
     void baseColorChanged(const QColor &baseColor);
@@ -201,124 +236,63 @@ signals:
 
     void objectTypesChanged();
 
-    void mapsDirectoryChanged();
-    void stampsDirectoryChanged(const QString &stampsDirectory);
-
     void isPatronChanged();
 
     void recentFilesChanged();
+    void recentProjectsChanged();
 
-    void checkForUpdatesChanged();
+    void checkForUpdatesChanged(bool on);
+    void displayNewsChanged(bool on);
+
+    void aboutToSwitchSession();
 
 private:
-    Preferences();
-    ~Preferences();
+    void addToRecentFileList(const QString &fileName, QStringList &files);
 
-    bool boolValue(const char *key, bool def = false) const;
-    QColor colorValue(const char *key, const QColor &def = QColor()) const;
-    QString stringValue(const char *key, const QString &def = QString()) const;
-    int intValue(const char *key, int defaultValue) const;
-    qreal realValue(const char *key, qreal defaultValue) const;
+    void objectTypesFileChangedOnDisk();
 
-    QSettings *mSettings;
+    FileSystemWatcher mWatcher;
 
-    bool mShowGrid;
-    bool mShowTileObjectOutlines;
-    bool mShowTileAnimations;
-    bool mSnapToGrid;
-    bool mSnapToFineGrid;
-    bool mSnapToPixels;
-    QColor mGridColor;
-    int mGridFine;
-    qreal mObjectLineWidth;
-    bool mHighlightCurrentLayer;
-    bool mShowTilesetGrid;
-    bool mOpenLastFilesOnStartup;
-    ObjectLabelVisiblity mObjectLabelVisibility;
-    ApplicationStyle mApplicationStyle;
-    QColor mBaseColor;
-    QColor mSelectionColor;
-
-    Map::LayerDataFormat mLayerDataFormat;
-    Map::RenderOrder mMapRenderOrder;
-    bool mDtdEnabled;
-    bool mSafeSavingEnabled;
-    QString mLanguage;
-    bool mReloadTilesetsOnChange;
-    bool mUseOpenGL;
-
-    bool mAutoMapDrawing;
-
-    QString mMapsDirectory;
-    QString mStampsDirectory;
     QString mObjectTypesFile;
-    QString mTemplateDocumentsFile;
-
-    QDate mFirstRun;
-    QDate mPatreonDialogTime;
-    int mRunCount;
-    bool mIsPatron;
-    bool mCheckForUpdates;
-    bool mWheelZoomsByDefault;
+    QDateTime mObjectTypesFileLastSaved;
 
     static Preferences *mInstance;
+    static QString mStartupProject;
 };
 
 
-inline Preferences::ApplicationStyle Preferences::applicationStyle() const
+template<typename T>
+class Preference
 {
-    return mApplicationStyle;
+public:
+    Preference(const char * const key, T defaultValue = T())
+        : mKey(key)
+        , mDefault(defaultValue)
+    {}
+
+    inline T get() const;
+    inline void set(const T &value);
+
+    inline operator T() const { return get(); }
+    inline Preference &operator =(const T &value) { set(value); return *this; }
+
+private:
+    const char * const mKey;
+    const T mDefault;
+};
+
+template<typename T>
+T Preference<T>::get() const
+{
+    return Preferences::instance()->get<T>(mKey, mDefault);
 }
 
-inline QColor Preferences::baseColor() const
+template<typename T>
+void Preference<T>::set(const T &value)
 {
-    return mBaseColor;
+    Preferences::instance()->setValue(QLatin1String(mKey), value);
 }
 
-inline QColor Preferences::selectionColor() const
-{
-    return mSelectionColor;
-}
-
-inline bool Preferences::safeSavingEnabled() const
-{
-    return mSafeSavingEnabled;
-}
-
-inline Preferences::ObjectLabelVisiblity Preferences::objectLabelVisibility() const
-{
-    return mObjectLabelVisibility;
-}
-
-inline QDate Preferences::firstRun() const
-{
-    return mFirstRun;
-}
-
-inline int Preferences::runCount() const
-{
-    return mRunCount;
-}
-
-inline bool Preferences::isPatron() const
-{
-    return mIsPatron;
-}
-
-inline bool Preferences::checkForUpdates() const
-{
-    return mCheckForUpdates;
-}
-
-inline bool Preferences::openLastFilesOnStartup() const
-{
-    return mOpenLastFilesOnStartup;
-}
-
-inline bool Preferences::wheelZoomsByDefault() const
-{
-    return mWheelZoomsByDefault;
-}
-
-} // namespace Internal
 } // namespace Tiled
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::Preferences::ExportOptions)

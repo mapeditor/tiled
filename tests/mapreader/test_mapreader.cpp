@@ -19,12 +19,12 @@ private slots:
 void test_MapReader::loadMap()
 {
     MapReader reader;
-    Map *map = reader.readMap("../data/mapobject.tmx");
+    auto map = reader.readMap("../data/mapobject.tmx");
 
     // TODO: Also test tilesets (internal and external), properties and tile
     // layer data.
 
-    QVERIFY(map);
+    QVERIFY(map.get());
     QCOMPARE(map->layerCount(), 2);
     QCOMPARE(map->width(), 100);
     QCOMPARE(map->height(), 80);

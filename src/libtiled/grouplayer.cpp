@@ -22,6 +22,8 @@
 
 #include "map.h"
 
+#include "qtcompat_p.h"
+
 namespace Tiled {
 
 GroupLayer::GroupLayer(const QString &name, int x, int y):
@@ -34,26 +36,26 @@ GroupLayer::~GroupLayer()
     qDeleteAll(mLayers);
 }
 
-void GroupLayer::addLayer(Layer *layer)
+void GroupLayer::addLayer(std::unique_ptr<Layer> layer)
 {
-    adoptLayer(layer);
-    mLayers.append(layer);
+    adoptLayer(*layer);
+    mLayers.append(layer.release());
 }
 
 void GroupLayer::insertLayer(int index, Layer *layer)
 {
-    adoptLayer(layer);
+    adoptLayer(*layer);
     mLayers.insert(index, layer);
 }
 
-void GroupLayer::adoptLayer(Layer *layer)
+void GroupLayer::adoptLayer(Layer &layer)
 {
-    layer->setParentLayer(this);
+    layer.setParentLayer(this);
 
     if (map())
         map()->adoptLayer(layer);
     else
-        layer->setMap(nullptr);
+        layer.setMap(nullptr);
 }
 
 Layer *GroupLayer::takeLayerAt(int index)
@@ -95,7 +97,7 @@ void GroupLayer::replaceReferencesToTileset(Tileset *oldTileset, Tileset *newTil
         layer->replaceReferencesToTileset(oldTileset, newTileset);
 }
 
-bool GroupLayer::canMergeWith(Layer *) const
+bool GroupLayer::canMergeWith(const Layer *) const
 {
     // Merging group layers would be possible, but duplicating all child layers
     // is not the right approach.
@@ -103,7 +105,7 @@ bool GroupLayer::canMergeWith(Layer *) const
     return false;
 }
 
-Layer *GroupLayer::mergedWith(Layer *) const
+Layer *GroupLayer::mergedWith(const Layer *) const
 {
     return nullptr;
 }
@@ -118,10 +120,10 @@ void GroupLayer::setMap(Map *map)
     Layer::setMap(map);
 
     if (map) {
-        for (Layer *layer : mLayers)
-            map->adoptLayer(layer);
+        for (Layer *layer : qAsConst(mLayers))
+            map->adoptLayer(*layer);
     } else {
-        for (Layer *layer : mLayers)
+        for (Layer *layer : qAsConst(mLayers))
             layer->setMap(nullptr);
     }
 }
@@ -130,7 +132,7 @@ GroupLayer *GroupLayer::initializeClone(GroupLayer *clone) const
 {
     Layer::initializeClone(clone);
     for (const Layer *layer : mLayers)
-        clone->addLayer(layer->clone());
+        clone->addLayer(std::unique_ptr<Layer>{ layer->clone() });
     return clone;
 }
 

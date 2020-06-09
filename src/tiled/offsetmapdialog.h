@@ -31,8 +31,6 @@ namespace Tiled {
 
 class Layer;
 
-namespace Internal {
-
 class MapDocument;
 
 class OffsetMapDialog : public QDialog
@@ -42,7 +40,7 @@ class OffsetMapDialog : public QDialog
 public:
     OffsetMapDialog(MapDocument *mapDocument, QWidget *parent = nullptr);
 
-    ~OffsetMapDialog();
+    ~OffsetMapDialog() override;
 
     QList<Layer*> affectedLayers() const;
     QRect affectedBoundingRect() const;
@@ -52,10 +50,12 @@ public:
     bool wrapY() const;
 
 private:
+    void boundsSelectionChanged();
+
     enum LayerSelection {
         AllVisibleLayers,
         AllLayers,
-        SelectedLayer
+        SelectedLayers
     };
 
     enum BoundsSelection {
@@ -64,13 +64,12 @@ private:
     };
 
     LayerSelection layerSelection() const;
-    BoundsSelection boundsSelection() const;
 
-    void disableBoundsSelectionCurrentArea();
+    BoundsSelection boundsSelection() const;
+    void setBoundsSelection(BoundsSelection boundsSelection);
 
     Ui::OffsetMapDialog *mUi;
     MapDocument *mMapDocument;
 };
 
-} // namespace Internal
 } // namespace Tiled

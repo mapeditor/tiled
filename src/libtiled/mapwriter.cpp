@@ -37,8 +37,7 @@
 #include "mapobject.h"
 #include "imagelayer.h"
 #include "objectgroup.h"
-#include "templategroup.h"
-#include "tidmapper.h"
+#include "objecttemplate.h"
 #include "savefile.h"
 #include "tile.h"
 #include "tiled.h"
@@ -55,13 +54,6 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-static QString colorToString(const QColor &color)
-{
-    if (color.alpha() != 255)
-        return color.name(QColor::HexArgb);
-    return color.name();
-}
-
 namespace Tiled {
 namespace Internal {
 
@@ -70,29 +62,28 @@ class MapWriterPrivate
     Q_DECLARE_TR_FUNCTIONS(MapReader)
 
 public:
-    MapWriterPrivate();
-
     void writeMap(const Map *map, QIODevice *device,
                   const QString &path);
 
     void writeTileset(const Tileset &tileset, QIODevice *device,
                       const QString &path);
 
-    void writeTemplateGroup(const TemplateGroup *templateGroup, QIODevice *device,
-                            const QString &path);
+    void writeObjectTemplate(const ObjectTemplate *objectTemplate, QIODevice *device,
+                             const QString &path);
 
     bool openFile(SaveFile *file);
 
     QString mError;
-    Map::LayerDataFormat mLayerDataFormat;
-    bool mDtdEnabled;
+    Map::LayerDataFormat mLayerDataFormat { Map::Base64Zlib };
+    int mCompressionlevel { -1 };
+    bool mDtdEnabled { false };
+    bool mMinimize { false };
+    QSize mChunkSize { CHUNK_SIZE, CHUNK_SIZE };
 
 private:
     void writeMap(QXmlStreamWriter &w, const Map &map);
     void writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
                       unsigned firstGid);
-    void writeTemplateGroup(QXmlStreamWriter &w, const TemplateGroup &templateGroup,
-                            unsigned firstTid);
     void writeLayers(QXmlStreamWriter &w, const QList<Layer *> &layers);
     void writeTileLayer(QXmlStreamWriter &w, const TileLayer &tileLayer);
     void writeTileLayerData(QXmlStreamWriter &w, const TileLayer &tileLayer, QRect bounds);
@@ -100,62 +91,43 @@ private:
     void writeObjectGroup(QXmlStreamWriter &w, const ObjectGroup &objectGroup);
     void writeObject(QXmlStreamWriter &w, const MapObject &mapObject);
     void writeObjectText(QXmlStreamWriter &w, const TextData &textData);
-    void writeTemplate(QXmlStreamWriter &w, const ObjectTemplate &objectTemplate);
     void writeImageLayer(QXmlStreamWriter &w, const ImageLayer &imageLayer);
     void writeGroupLayer(QXmlStreamWriter &w, const GroupLayer &groupLayer);
     void writeProperties(QXmlStreamWriter &w,
                          const Properties &properties);
 
-    QDir mMapDir;     // The directory in which the map is being saved
+    QDir mDir;      // The directory in which the file is being saved
     GidMapper mGidMapper;
-    TidMapper mTidMapper;
-    bool mUseAbsolutePaths;
+    bool mUseAbsolutePaths { false };
 };
 
 } // namespace Internal
 } // namespace Tiled
 
 
-MapWriterPrivate::MapWriterPrivate()
-    : mLayerDataFormat(Map::Base64Zlib)
-    , mDtdEnabled(false)
-    , mUseAbsolutePaths(false)
-{
-}
-
 bool MapWriterPrivate::openFile(SaveFile *file)
 {
     if (!file->open(QIODevice::WriteOnly | QIODevice::Text)) {
-        mError = tr("Could not open file for writing.");
+        mError = QCoreApplication::translate("File Errors", "Could not open file for writing.");
         return false;
     }
 
     return true;
 }
 
-namespace {
-
-class AutoFormattingWriter : public QXmlStreamWriter
-{
-public:
-    explicit AutoFormattingWriter(QIODevice *device)
-        : QXmlStreamWriter(device)
-    {
-        setAutoFormatting(true);
-        setAutoFormattingIndent(1);
-    }
-};
-
-} // anonymous namespace
-
 void MapWriterPrivate::writeMap(const Map *map, QIODevice *device,
                                 const QString &path)
 {
-    mMapDir = QDir(path);
+    mDir = QDir(path);
     mUseAbsolutePaths = path.isEmpty();
     mLayerDataFormat = map->layerDataFormat();
+    mCompressionlevel = map->compressionLevel();
+    mChunkSize = map->chunkSize();
 
-    AutoFormattingWriter writer(device);
+    QXmlStreamWriter writer(device);
+    writer.setAutoFormatting(!mMinimize);
+    writer.setAutoFormattingIndent(1);
+
     writer.writeStartDocument();
 
     if (mDtdEnabled) {
@@ -171,10 +143,13 @@ void MapWriterPrivate::writeMap(const Map *map, QIODevice *device,
 void MapWriterPrivate::writeTileset(const Tileset &tileset, QIODevice *device,
                                     const QString &path)
 {
-    mMapDir = QDir(path);
+    mDir = QDir(path);
     mUseAbsolutePaths = path.isEmpty();
 
-    AutoFormattingWriter writer(device);
+    QXmlStreamWriter writer(device);
+    writer.setAutoFormatting(!mMinimize);
+    writer.setAutoFormattingIndent(1);
+
     writer.writeStartDocument();
 
     if (mDtdEnabled) {
@@ -187,45 +162,30 @@ void MapWriterPrivate::writeTileset(const Tileset &tileset, QIODevice *device,
     writer.writeEndDocument();
 }
 
-void MapWriterPrivate::writeTemplateGroup(const TemplateGroup *templateGroup, QIODevice *device,
-                                          const QString &path)
+void MapWriterPrivate::writeObjectTemplate(const ObjectTemplate *objectTemplate, QIODevice *device,
+                                           const QString &path)
 {
-    mMapDir = QDir(path);
+    mDir = QDir(path);
     mUseAbsolutePaths = path.isEmpty();
 
-    AutoFormattingWriter writer(device);
-    writer.writeStartDocument();
-    writer.writeStartElement(QLatin1String("templategroup"));
+    QXmlStreamWriter writer(device);
+    writer.setAutoFormatting(!mMinimize);
+    writer.setAutoFormattingIndent(1);
 
-    writer.writeAttribute(QLatin1String("name"), templateGroup->name());
-    writer.writeAttribute(QLatin1String("nexttemplateid"),
-                          QString::number(templateGroup->nextTemplateId()));
+    writer.writeStartDocument();
+    writer.writeStartElement(QLatin1String("template"));
 
     mGidMapper.clear();
-    unsigned firstGid = 1;
-    for (const SharedTileset &tileset : templateGroup->tilesets()) {
+    if (Tileset *tileset = objectTemplate->object()->cell().tileset()) {
+        unsigned firstGid = 1;
+        mGidMapper.insert(firstGid, tileset->sharedPointer());
         writeTileset(writer, *tileset, firstGid);
-        mGidMapper.insert(firstGid, tileset.data());
-        firstGid += tileset->nextTileId();
     }
 
-    for (const ObjectTemplate *objectTemplate: templateGroup->templates())
-        writeTemplate(writer, *objectTemplate);
+    writeObject(writer, *objectTemplate->object());
 
     writer.writeEndElement();
     writer.writeEndDocument();
-}
-
-void MapWriterPrivate::writeTemplate(QXmlStreamWriter &w, const ObjectTemplate &objectTemplate)
-{
-    w.writeStartElement(QLatin1String("template"));
-
-    w.writeAttribute(QLatin1String("name"), objectTemplate.name());
-    w.writeAttribute(QLatin1String("id"), QString::number(objectTemplate.id()));
-
-    writeObject(w, *objectTemplate.object());
-
-    w.writeEndElement();
 }
 
 void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
@@ -235,10 +195,12 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
     const QString orientation = orientationToString(map.orientation());
     const QString renderOrder = renderOrderToString(map.renderOrder());
 
-    w.writeAttribute(QLatin1String("version"), QLatin1String("1.0"));
+    w.writeAttribute(QLatin1String("version"), QLatin1String("1.4"));
     w.writeAttribute(QLatin1String("tiledversion"), QCoreApplication::applicationVersion());
     w.writeAttribute(QLatin1String("orientation"), orientation);
     w.writeAttribute(QLatin1String("renderorder"), renderOrder);
+    if (map.compressionLevel() >= 0)
+        w.writeAttribute(QLatin1String("compressionlevel"), QString::number(map.compressionLevel()));
     w.writeAttribute(QLatin1String("width"), QString::number(map.width()));
     w.writeAttribute(QLatin1String("height"), QString::number(map.height()));
     w.writeAttribute(QLatin1String("tilewidth"),
@@ -265,8 +227,32 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
                          colorToString(map.backgroundColor()));
     }
 
+    w.writeAttribute(QLatin1String("nextlayerid"),
+                     QString::number(map.nextLayerId()));
     w.writeAttribute(QLatin1String("nextobjectid"),
                      QString::number(map.nextObjectId()));
+
+    if (map.chunkSize() != QSize(CHUNK_SIZE, CHUNK_SIZE) || !map.exportFileName.isEmpty() || !map.exportFormat.isEmpty()) {
+        w.writeStartElement(QLatin1String("editorsettings"));
+
+        if (map.chunkSize() != QSize(CHUNK_SIZE, CHUNK_SIZE)) {
+            w.writeStartElement(QLatin1String("chunksize"));
+            w.writeAttribute(QLatin1String("width"), QString::number(map.chunkSize().width()));
+            w.writeAttribute(QLatin1String("height"), QString::number(map.chunkSize().height()));
+            w.writeEndElement();
+        }
+
+        if (!map.exportFileName.isEmpty() || !map.exportFormat.isEmpty()) {
+            w.writeStartElement(QLatin1String("export"));
+            if (!map.exportFileName.isEmpty())
+                w.writeAttribute(QLatin1String("target"), mDir.relativeFilePath(map.exportFileName));
+            if (!map.exportFormat.isEmpty())
+                w.writeAttribute(QLatin1String("format"), map.exportFormat);
+            w.writeEndElement();
+        }
+
+        w.writeEndElement();    // </editorsettings>
+    }
 
     writeProperties(w, map.properties());
 
@@ -274,29 +260,8 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
     unsigned firstGid = 1;
     for (const SharedTileset &tileset : map.tilesets()) {
         writeTileset(w, *tileset, firstGid);
-        mGidMapper.insert(firstGid, tileset.data());
+        mGidMapper.insert(firstGid, tileset);
         firstGid += tileset->nextTileId();
-    }
-
-    mTidMapper.clear();
-    unsigned firstTid = 1;
-
-    QSet<TemplateGroup*> templateGroups;
-    for (ObjectGroup *group : map.objectGroups())
-        for (MapObject *object : group->objects())
-            if (object->isTemplateInstance())
-                templateGroups.insert(object->templateGroup());
-
-    for (TemplateGroup *templateGroup : templateGroups) {
-        writeTemplateGroup(w, *templateGroup, firstTid);
-        mTidMapper.insert(firstTid, templateGroup);
-
-        // When a template group is not loaded, reserve enough space
-        // to enable loading when the templateGroup is fixed
-        if (templateGroup->loaded())
-            firstTid += templateGroup->nextTemplateId();
-        else
-            firstTid += templateGroup->maxId() + 1;
     }
 
     writeLayers(w, map.layers());
@@ -331,7 +296,7 @@ static bool includeTile(const Tile *tile)
         return true;
     if (tile->terrain() != 0xFFFFFFFF)
         return true;
-    if (tile->probability() != 1.f)
+    if (tile->probability() != 1.0)
         return true;
 
     return false;
@@ -341,19 +306,25 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
                                     unsigned firstGid)
 {
     w.writeStartElement(QLatin1String("tileset"));
-    if (firstGid > 0)
+
+    if (firstGid > 0) {
         w.writeAttribute(QLatin1String("firstgid"), QString::number(firstGid));
 
-    const QString &fileName = tileset.fileName();
-    if (!fileName.isEmpty()) {
-        QString source = fileName;
-        if (!mUseAbsolutePaths)
-            source = mMapDir.relativeFilePath(source);
-        w.writeAttribute(QLatin1String("source"), source);
+        const QString &fileName = tileset.fileName();
+        if (!fileName.isEmpty()) {
+            QString source = fileName;
+            if (!mUseAbsolutePaths)
+                source = mDir.relativeFilePath(source);
+            w.writeAttribute(QLatin1String("source"), source);
 
-        // Tileset is external, so no need to write any of the stuff below
-        w.writeEndElement();
-        return;
+            // Tileset is external, so no need to write any of the stuff below
+            w.writeEndElement();
+            return;
+        }
+    } else {
+        // Include version in external tilesets
+        w.writeAttribute(QLatin1String("version"), QLatin1String("1.4"));
+        w.writeAttribute(QLatin1String("tiledversion"), QCoreApplication::applicationVersion());
     }
 
     w.writeAttribute(QLatin1String("name"), tileset.name());
@@ -377,6 +348,23 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
     if (tileset.backgroundColor().isValid()) {
         w.writeAttribute(QLatin1String("backgroundcolor"),
                          colorToString(tileset.backgroundColor()));
+    }
+
+    if (tileset.objectAlignment() != Unspecified) {
+        const QString alignment = alignmentToString(tileset.objectAlignment());
+        w.writeAttribute(QLatin1String("objectalignment"), alignment);
+    }
+
+    // Write editor settings when saving external tilesets
+    if (firstGid == 0) {
+        if (!tileset.exportFileName.isEmpty() || !tileset.exportFormat.isEmpty()) {
+            w.writeStartElement(QLatin1String("editorsettings"));
+            w.writeStartElement(QLatin1String("export"));
+            w.writeAttribute(QLatin1String("target"), mDir.relativeFilePath(tileset.exportFileName));
+            w.writeAttribute(QLatin1String("format"), tileset.exportFormat);
+            w.writeEndElement();
+            w.writeEndElement();
+        }
     }
 
     const QPoint offset = tileset.tileOffset();
@@ -406,7 +394,7 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
         if (mUseAbsolutePaths)
             source = imageSource.toString(QUrl::PreferLocalFile);
         else
-            source = toFileReference(imageSource, mMapDir);
+            source = toFileReference(imageSource, mDir);
         w.writeAttribute(QLatin1String("source"), source);
 
         const QColor transColor = tileset.transparentColor();
@@ -449,7 +437,7 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
                 w.writeAttribute(QLatin1String("type"), tile->type());
             if (tile->terrain() != 0xFFFFFFFF)
                 w.writeAttribute(QLatin1String("terrain"), makeTerrainAttribute(tile));
-            if (tile->probability() != 1.f)
+            if (tile->probability() != 1.0)
                 w.writeAttribute(QLatin1String("probability"), QString::number(tile->probability()));
             if (!tile->properties().isEmpty())
                 writeProperties(w, tile->properties());
@@ -481,7 +469,7 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
                     if (mUseAbsolutePaths)
                         source = tile->imageSource().toString(QUrl::PreferLocalFile);
                     else
-                        source = toFileReference(tile->imageSource(), mMapDir);
+                        source = toFileReference(tile->imageSource(), mDir);
                     w.writeAttribute(QLatin1String("source"), source);
                 }
 
@@ -544,7 +532,8 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
                 }
             }
 
-            for (const WangTile &wangTile : ws->wangTiles()) {
+            const auto wangTiles = ws->sortedWangTiles();
+            for (const WangTile &wangTile : wangTiles) {
                 w.writeStartElement(QLatin1String("wangtile"));
                 w.writeAttribute(QLatin1String("tileid"), QString::number(wangTile.tile()->id()));
                 w.writeAttribute(QLatin1String("wangid"),
@@ -570,25 +559,6 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
     }
 
     w.writeEndElement();
-}
-
-void MapWriterPrivate::writeTemplateGroup(QXmlStreamWriter &w, const TemplateGroup &templateGroup,
-                                          unsigned firstTid)
-{
-    w.writeStartElement(QLatin1String("templategroup"));
-    if (firstTid > 0)
-        w.writeAttribute(QLatin1String("firsttid"), QString::number(firstTid));
-
-    const QString &fileName = templateGroup.fileName();
-    if (!fileName.isEmpty()) {
-        QString source = fileName;
-        if (!mUseAbsolutePaths)
-            source = mMapDir.relativeFilePath(source);
-        w.writeAttribute(QLatin1String("source"), source);
-
-        w.writeEndElement();
-        return;
-    }
 }
 
 void MapWriterPrivate::writeLayers(QXmlStreamWriter &w, const QList<Layer*> &layers)
@@ -621,19 +591,20 @@ void MapWriterPrivate::writeTileLayer(QXmlStreamWriter &w,
     QString encoding;
     QString compression;
 
-    if (mLayerDataFormat == Map::Base64
-            || mLayerDataFormat == Map::Base64Gzip
-            || mLayerDataFormat == Map::Base64Zlib) {
-
+    switch (mLayerDataFormat) {
+    case Map::XML:
+        break;
+    case Map::Base64:
+    case Map::Base64Gzip:
+    case Map::Base64Zlib:
+    case Map::Base64Zstandard:
         encoding = QLatin1String("base64");
-
-        if (mLayerDataFormat == Map::Base64Gzip)
-            compression = QLatin1String("gzip");
-        else if (mLayerDataFormat == Map::Base64Zlib)
-            compression = QLatin1String("zlib");
-
-    } else if (mLayerDataFormat == Map::CSV)
+        compression = compressionToString(mLayerDataFormat);
+        break;
+    case Map::CSV:
         encoding = QLatin1String("csv");
+        break;
+    }
 
     w.writeStartElement(QLatin1String("data"));
     if (!encoding.isEmpty())
@@ -642,7 +613,8 @@ void MapWriterPrivate::writeTileLayer(QXmlStreamWriter &w,
         w.writeAttribute(QLatin1String("compression"), compression);
 
     if (tileLayer.map()->infinite()) {
-        for (const QRect &rect : tileLayer.sortedChunksToWrite()) {
+        const auto chunks = tileLayer.sortedChunksToWrite(mChunkSize);
+        for (const QRect &rect : chunks) {
             w.writeStartElement(QLatin1String("chunk"));
             w.writeAttribute(QLatin1String("x"), QString::number(rect.x()));
             w.writeAttribute(QLatin1String("y"), QString::number(rect.y()));
@@ -679,32 +651,42 @@ void MapWriterPrivate::writeTileLayerData(QXmlStreamWriter &w,
     } else if (mLayerDataFormat == Map::CSV) {
         QString chunkData;
 
+        if (!mMinimize)
+            chunkData.append(QLatin1Char('\n'));
+
         for (int y = bounds.top(); y <= bounds.bottom(); y++) {
             for (int x = bounds.left(); x <= bounds.right(); x++) {
                 const unsigned gid = mGidMapper.cellToGid(tileLayer.cellAt(x, y));
                 chunkData.append(QString::number(gid));
                 if (x != bounds.right() || y != bounds.bottom())
-                    chunkData.append(QLatin1String(","));
+                    chunkData.append(QLatin1Char(','));
             }
-            chunkData.append(QLatin1String("\n"));
+            if (!mMinimize)
+                chunkData.append(QLatin1Char('\n'));
         }
 
-        w.writeCharacters(QLatin1String("\n"));
         w.writeCharacters(chunkData);
     } else {
         QByteArray chunkData = mGidMapper.encodeLayerData(tileLayer,
                                                           mLayerDataFormat,
-                                                          bounds);
+                                                          bounds,
+                                                          mCompressionlevel);
 
-        w.writeCharacters(QLatin1String("\n   "));
+        if (!mMinimize)
+            w.writeCharacters(QLatin1String("\n   "));
+
         w.writeCharacters(QString::fromLatin1(chunkData));
-        w.writeCharacters(QLatin1String("\n  "));
+
+        if (!mMinimize)
+            w.writeCharacters(QLatin1String("\n  "));
     }
 }
 
 void MapWriterPrivate::writeLayerAttributes(QXmlStreamWriter &w,
                                             const Layer &layer)
 {
+    if (layer.id() != 0)
+        w.writeAttribute(QLatin1String("id"), QString::number(layer.id()));
     if (!layer.name().isEmpty())
         w.writeAttribute(QLatin1String("name"), layer.name());
 
@@ -725,7 +707,6 @@ void MapWriterPrivate::writeLayerAttributes(QXmlStreamWriter &w,
                          QString::number(width));
         w.writeAttribute(QLatin1String("height"),
                          QString::number(height));
-
     }
 
     if (!layer.isVisible())
@@ -734,6 +715,10 @@ void MapWriterPrivate::writeLayerAttributes(QXmlStreamWriter &w,
         w.writeAttribute(QLatin1String("locked"), QLatin1String("1"));
     if (opacity != qreal(1))
         w.writeAttribute(QLatin1String("opacity"), QString::number(opacity));
+    if (layer.tintColor().isValid()) {
+        w.writeAttribute(QLatin1String("tintcolor"),
+                         colorToString(layer.tintColor()));
+    }
 
     const QPointF offset = layer.offset();
     if (!offset.isNull()) {
@@ -784,9 +769,11 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
     if (!mapObject.isTemplateBase())
         w.writeAttribute(QLatin1String("id"), QString::number(id));
 
-    if (isTemplateInstance) {
-        unsigned tid = mTidMapper.templateRefToTid(mapObject.templateRef());
-        w.writeAttribute(QLatin1String("tid"), QString::number(tid));
+    if (const ObjectTemplate *objectTemplate = mapObject.objectTemplate()) {
+        QString fileName = objectTemplate->fileName();
+        if (!mUseAbsolutePaths)
+            fileName = mDir.relativeFilePath(fileName);
+        w.writeAttribute(QLatin1String("template"), fileName);
     }
 
     if (shouldWrite(!name.isEmpty(), isTemplateInstance, mapObject.propertyChanged(MapObject::NameProperty)))
@@ -897,6 +884,8 @@ void MapWriterPrivate::writeObjectText(QXmlStreamWriter &w, const TextData &text
             w.writeAttribute(QLatin1String("halign"), QLatin1String("center"));
         else if (textData.alignment.testFlag(Qt::AlignRight))
             w.writeAttribute(QLatin1String("halign"), QLatin1String("right"));
+        else if (textData.alignment.testFlag(Qt::AlignJustify))
+            w.writeAttribute(QLatin1String("halign"), QLatin1String("justify"));
     }
 
     if (!textData.alignment.testFlag(Qt::AlignTop)) {
@@ -922,7 +911,7 @@ void MapWriterPrivate::writeImageLayer(QXmlStreamWriter &w,
         w.writeStartElement(QLatin1String("image"));
 
         QString source = mUseAbsolutePaths ? imageSource.toString(QUrl::PreferLocalFile)
-                                           : toFileReference(imageSource, mMapDir);
+                                           : toFileReference(imageSource, mDir);
 
         w.writeAttribute(QLatin1String("source"), source);
 
@@ -978,7 +967,7 @@ void MapWriterPrivate::writeProperties(QXmlStreamWriter &w,
             w.writeAttribute(QLatin1String("type"), typeName);
 
         QVariant exportValue = mUseAbsolutePaths ? toExportValue(it.value())
-                                                 : toExportValue(it.value(), mMapDir);
+                                                 : toExportValue(it.value(), mDir);
         QString value = exportValue.toString();
 
         if (value.contains(QLatin1Char('\n')))
@@ -998,10 +987,7 @@ MapWriter::MapWriter()
 {
 }
 
-MapWriter::~MapWriter()
-{
-    delete d;
-}
+MapWriter::~MapWriter() = default;
 
 void MapWriter::writeMap(const Map *map, QIODevice *device,
                          const QString &path)
@@ -1057,19 +1043,19 @@ bool MapWriter::writeTileset(const Tileset &tileset, const QString &fileName)
     return true;
 }
 
-void MapWriter::writeTemplateGroup(const TemplateGroup *templateGroup, QIODevice *device,
-                                   const QString &path)
+void MapWriter::writeObjectTemplate(const ObjectTemplate *objectTemplate, QIODevice *device,
+                                    const QString &path)
 {
-    d->writeTemplateGroup(templateGroup, device, path);
+    d->writeObjectTemplate(objectTemplate, device, path);
 }
 
-bool MapWriter::writeTemplateGroup(const TemplateGroup *templateGroup, const QString &fileName)
+bool MapWriter::writeObjectTemplate(const ObjectTemplate *objectTemplate, const QString &fileName)
 {
     SaveFile file(fileName);
     if (!d->openFile(&file))
         return false;
 
-    writeTemplateGroup(templateGroup, file.device(), QFileInfo(fileName).absolutePath());
+    writeObjectTemplate(objectTemplate, file.device(), QFileInfo(fileName).absolutePath());
 
     if (file.error() != QFileDevice::NoError) {
         d->mError = file.errorString();
@@ -1097,4 +1083,14 @@ void MapWriter::setDtdEnabled(bool enabled)
 bool MapWriter::isDtdEnabled() const
 {
     return d->mDtdEnabled;
+}
+
+void MapWriter::setMinimizeOutput(bool enabled)
+{
+    d->mMinimize = enabled;
+}
+
+bool MapWriter::minimizeOutput() const
+{
+    return d->mMinimize;
 }

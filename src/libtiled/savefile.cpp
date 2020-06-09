@@ -38,14 +38,14 @@ bool SaveFile::mSafeSavingEnabled = true;
 SaveFile::SaveFile(const QString &name)
 {
     if (mSafeSavingEnabled)
-        mFileDevice.reset(new QSaveFile(name));
+        mFileDevice = std::make_unique<QSaveFile>(name);
     else
-        mFileDevice.reset(new QFile(name));
+        mFileDevice = std::make_unique<QFile>(name);
 }
 
 bool SaveFile::commit()
 {
-    if (auto saveFile = qobject_cast<QSaveFile*>(mFileDevice.data()))
+    if (auto saveFile = qobject_cast<QSaveFile*>(mFileDevice.get()))
         return saveFile->commit();
 
     return mFileDevice->error() == QFileDevice::NoError;

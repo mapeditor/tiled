@@ -1,6 +1,6 @@
 /*
  * mapscene.h
- * Copyright 2008-2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2017, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2008, Roderic Morris <roderic@ccs.neu.edu>
  * Copyright 2009, Edward Hutchins <eah1@yahoo.com>
  * Copyright 2010, Jeff Bland <jksb@member.fsf.org>
@@ -24,15 +24,14 @@
 #pragma once
 
 #include "mapdocument.h"
+#include "mapitem.h"
 
 #include <QColor>
 #include <QGraphicsScene>
-#include <QMap>
-#include <QSet>
+#include <QHash>
 
 namespace Tiled {
 
-class ImageLayer;
 class Layer;
 class MapObject;
 class ObjectGroup;
@@ -40,15 +39,12 @@ class Tile;
 class TileLayer;
 class Tileset;
 
-namespace Internal {
-
 class AbstractTool;
 class LayerItem;
 class MapDocument;
 class MapObjectItem;
 class MapScene;
 class ObjectGroupItem;
-class ObjectSelectionItem;
 
 /**
  * A graphics scene that represents the contents of a map.
@@ -58,159 +54,79 @@ class MapScene : public QGraphicsScene
     Q_OBJECT
 
 public:
-    /**
-     * Constructor.
-     */
     MapScene(QObject *parent);
+    ~MapScene() override;
 
-    /**
-     * Destructor.
-     */
-    ~MapScene();
-
-    /**
-     * Returns the map document this scene is displaying.
-     */
-    MapDocument *mapDocument() const { return mMapDocument; }
-
-    /**
-     * Sets the map this scene displays.
-     */
+    MapDocument *mapDocument() const;
     void setMapDocument(MapDocument *map);
 
-    /**
-     * Returns whether the tile grid is visible.
-     */
-    bool isGridVisible() const { return mGridVisible; }
+    void setShowTileCollisionShapes(bool enabled);
 
-    /**
-     * Returns the set of selected map object items.
-     */
-    const QSet<MapObjectItem*> &selectedObjectItems() const
-    { return mSelectedObjectItems; }
+    QRectF mapBoundingRect() const;
 
-    /**
-     * Sets the set of selected map object items. This translates to a call to
-     * MapDocument::setSelectedObjects.
-     */
-    void setSelectedObjectItems(const QSet<MapObjectItem*> &items);
-
-    /**
-     * Returns the MapObjectItem associated with the given \a mapObject.
-     */
-    MapObjectItem *itemForObject(MapObject *object) const
-    { return mObjectItems.value(object); }
-
-    /**
-     * Enables the selected tool at this map scene.
-     * Therefore it tells that tool, that this is the active map scene.
-     */
-    void enableSelectedTool();
-    void disableSelectedTool();
-
-    /**
-     * Sets the currently selected tool.
-     */
     void setSelectedTool(AbstractTool *tool);
 
+    MapItem *mapItem(MapDocument *mapDocument) const;
+
 signals:
-    void selectedObjectItemsChanged();
+    void mapDocumentChanged(MapDocument *mapDocument);
+
+    void sceneRefreshed();
 
 protected:
-    /**
-     * QGraphicsScene::drawForeground override that draws the tile grid.
-     */
-    void drawForeground(QPainter *painter, const QRectF &rect) override;
-
-    /**
-     * Override for handling enter and leave events.
-     */
     bool event(QEvent *event) override;
 
     void keyPressEvent(QKeyEvent *event) override;
     void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
     void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
+    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
 
     void dragEnterEvent(QGraphicsSceneDragDropEvent *event) override;
     void dropEvent(QGraphicsSceneDragDropEvent *event) override;
     void dragLeaveEvent(QGraphicsSceneDragDropEvent *event) override;
     void dragMoveEvent(QGraphicsSceneDragDropEvent *event) override;
 
-private slots:
-    void setGridVisible(bool visible);
-    void setObjectLineWidth(qreal lineWidth);
-    void setShowTileObjectOutlines(bool enabled);
-
-    /**
-     * Sets whether the current layer should be highlighted.
-     */
-    void setHighlightCurrentLayer(bool highlightCurrentLayer);
-
-    /**
-     * Refreshes the map scene.
-     */
+private:
     void refreshScene();
-
-    /**
-     * Repaints the specified region. The region is in tile coordinates.
-     */
-    void repaintRegion(const QRegion &region, Layer *layer);
-
-    void currentLayerChanged();
 
     void mapChanged();
     void repaintTileset(Tileset *tileset);
-    void tileLayerChanged(TileLayer *tileLayer, MapDocument::TileLayerChangeFlags flags);
 
-    void layerAdded(Layer *layer);
-    void layerRemoved(Layer *layer);
-    void layerChanged(Layer *layer);
-
-    void objectGroupChanged(ObjectGroup *objectGroup);
-    void imageLayerChanged(ImageLayer *imageLayer);
-
-    void adaptToTilesetTileSizeChanges(Tileset *tileset);
-    void adaptToTileSizeChanges(Tile *tile);
-
-    void tilesetReplaced(int index, Tileset *tileset);
-
-    void objectsInserted(ObjectGroup *objectGroup, int first, int last);
-    void objectsRemoved(const QList<MapObject*> &objects);
-    void objectsChanged(const QList<MapObject*> &objects);
-    void objectsIndexChanged(ObjectGroup *objectGroup, int first, int last);
-
-    void updateSelectedObjectItems();
-    void syncAllObjectItems();
-
-private:
-    void createLayerItems(const QList<Layer *> &layers);
-    LayerItem *createLayerItem(Layer *layer);
+    void tilesetReplaced(int index, Tileset *tileset, Tileset *oldTileset);
 
     void updateDefaultBackgroundColor();
     void updateSceneRect();
-    void updateCurrentLayerHighlight();
+
+    MapItem *takeOrCreateMapItem(const MapDocumentPtr &mapDocument,
+                                 MapItem::DisplayMode displayMode);
 
     bool eventFilter(QObject *object, QEvent *event) override;
 
-    MapDocument *mMapDocument;
-    AbstractTool *mSelectedTool;
-    AbstractTool *mActiveTool;
-    bool mGridVisible;
-    qreal mObjectLineWidth;
-    bool mShowTileObjectOutlines;
-    bool mHighlightCurrentLayer;
-    bool mUnderMouse;
-    Qt::KeyboardModifiers mCurrentModifiers;
+    MapDocument *mMapDocument = nullptr;
+    QHash<MapDocument*, MapItem*> mMapItems;
+    AbstractTool *mSelectedTool = nullptr;
+    bool mUnderMouse = false;
+    bool mShowTileCollisionShapes = false;
+    Qt::KeyboardModifiers mCurrentModifiers = Qt::NoModifier;
     QPointF mLastMousePos;
-    QMap<Layer*, LayerItem*> mLayerItems;
-    QGraphicsRectItem *mDarkRectangle;
     QColor mDefaultBackgroundColor;
-    ObjectSelectionItem *mObjectSelectionItem;
-
-    QMap<MapObject*, MapObjectItem*> mObjectItems;
-    QSet<MapObjectItem*> mSelectedObjectItems;
 };
 
-} // namespace Internal
+/**
+ * Returns the map document this scene is displaying.
+ */
+inline MapDocument *MapScene::mapDocument() const
+{
+    return mMapDocument;
+}
+
+/**
+ * Returns the map item displaying the given map, if any.
+ */
+inline MapItem *MapScene::mapItem(MapDocument *mapDocument) const
+{
+    return mMapItems.value(mapDocument);
+}
+
 } // namespace Tiled

@@ -20,15 +20,18 @@
 
 #pragma once
 
+#include "addremovemapobject.h"
+
 #include <QPolygonF>
 #include <QUndoCommand>
+
+#include <memory>
 
 namespace Tiled {
 
 class MapObject;
 
-namespace Internal {
-
+class Document;
 class MapDocument;
 
 /**
@@ -40,11 +43,11 @@ class MapDocument;
 class ChangePolygon : public QUndoCommand
 {
 public:
-    ChangePolygon(MapDocument *mapDocument,
+    ChangePolygon(Document *document,
                   MapObject *mapObject,
                   const QPolygonF &oldPolygon);
 
-    ChangePolygon(MapDocument *mapDocument,
+    ChangePolygon(Document *document,
                   MapObject *mapObject,
                   const QPolygonF &newPolygon,
                   const QPolygonF &oldPolygon);
@@ -53,7 +56,7 @@ public:
     void redo() override;
 
 private:
-    MapDocument *mMapDocument;
+    Document *mDocument;
     MapObject *mMapObject;
 
     QPolygonF mOldPolygon;
@@ -61,6 +64,7 @@ private:
     bool mOldChangeState;
 };
 
+// TODO: Merge into ChangePolygon
 class TogglePolygonPolyline : public QUndoCommand
 {
 public:
@@ -81,6 +85,7 @@ public:
     SplitPolyline(MapDocument *mapDocument,
                   MapObject *mapObject,
                   int edgeIndex);
+    ~SplitPolyline() override;
 
     void undo() override;
     void redo() override;
@@ -89,11 +94,10 @@ private:
     MapDocument *mMapDocument;
     MapObject *mFirstPolyline;
     MapObject *mSecondPolyline;
+    std::unique_ptr<AddMapObjects> mAddSecondPolyline;
 
     int mEdgeIndex;
-    int mObjectIndex;
     bool mOldChangeState;
 };
 
-} // namespace Internal
 } // namespace Tiled

@@ -29,8 +29,6 @@ namespace Tiled {
 class Layer;
 class TileLayer;
 
-namespace Internal {
-
 class MapDocument;
 
 /**
@@ -45,8 +43,8 @@ public:
      */
     ResizeTileLayer(MapDocument *mapDocument,
                     TileLayer *layer,
-                    const QSize &size,
-                    const QPoint &offset,
+                    QSize size,
+                    QPoint offset,
                     QUndoCommand *parent = nullptr);
 
     ~ResizeTileLayer();
@@ -61,5 +59,4 @@ private:
     TileLayer *mResizedLayer;
 };
 
-} // namespace Internal
 } // namespace Tiled

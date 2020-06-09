@@ -4,6 +4,7 @@ type = QT
 
 [tiled.master]
 file_filter = translations/tiled_<lang>.ts
+minimum_perc = 0
 source_file = translations/tiled_en.ts
 source_lang = en
-
+type = QT

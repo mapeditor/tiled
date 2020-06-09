@@ -29,20 +29,63 @@
 
 #include "objecttemplate.h"
 
+#include "objecttemplateformat.h"
+
 namespace Tiled {
 
 ObjectTemplate::ObjectTemplate()
-    : ObjectTemplate(0, QString())
+    : ObjectTemplate(QString())
 {
 }
 
-ObjectTemplate::ObjectTemplate(unsigned id, QString name)
+ObjectTemplate::ObjectTemplate(const QString &fileName)
     : Object(ObjectTemplateType)
-    , mObject(nullptr)
-    , mId(id)
-    , mName(name)
-    , mTemplateGroup(nullptr)
+    , mFileName(fileName)
 {
+}
+
+ObjectTemplate::~ObjectTemplate()
+{
+}
+
+void ObjectTemplate::setObject(const MapObject *object)
+{
+    Tileset *tileset = nullptr;
+
+    if (object) {
+        tileset = object->cell().tileset();
+        mObject.reset(object->clone());
+        mObject->markAsTemplateBase();
+    } else {
+        mObject.reset();
+    }
+
+    if (tileset)
+        mTileset = tileset->sharedPointer();
+    else
+        mTileset.reset();
+}
+
+void ObjectTemplate::setObject(std::unique_ptr<MapObject> object)
+{
+    Q_ASSERT(object);
+    mObject = std::move(object);
+
+    Tileset *tileset = mObject->cell().tileset();
+    if (tileset)
+        mTileset = tileset->sharedPointer();
+    else
+        mTileset.reset();
+}
+
+void ObjectTemplate::setFormat(ObjectTemplateFormat *format)
+{
+    mFormat = format;
+}
+
+ObjectTemplateFormat *ObjectTemplate::format() const
+{
+    return mFormat;
 }
 
 } // namespace Tiled

@@ -36,7 +36,6 @@
 #include <QWheelEvent>
 
 using namespace Tiled;
-using namespace Internal;
 
 namespace {
 /* The delegate for drawing the wang tile templates
@@ -275,8 +274,8 @@ void WangTemplateDelegate::paint(QPainter *painter,
 
 QSize WangTemplateDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    Q_UNUSED(option);
-    Q_UNUSED(index);
+    Q_UNUSED(option)
+    Q_UNUSED(index)
 
     return QSize(32 * mWangTemplateView->scale(),
                  32 * mWangTemplateView->scale());
@@ -384,6 +383,5 @@ void WangTemplateView::wheelEvent(QWheelEvent *event)
 
 void WangTemplateView::adjustScale()
 {
-    if (WangTemplateModel *model = wangTemplateModel())
-        model->resetModel();
+    scheduleDelayedItemsLayout();
 }

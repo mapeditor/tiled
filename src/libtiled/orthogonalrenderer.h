@@ -47,11 +47,16 @@ public:
 
     QRectF boundingRect(const MapObject *object) const override;
     QPainterPath shape(const MapObject *object) const override;
+    QPainterPath interactionShape(const MapObject *object) const override;
 
     void drawGrid(QPainter *painter, const QRectF &rect,
                   QColor gridColor) const override;
 
     void drawTileLayer(QPainter *painter, const TileLayer *layer,
+                       const QRectF &exposed = QRectF()) const override;
+
+    void drawTileLayer(const TileLayer *layer,
+                       const RenderTileCallback &renderTile,
                        const QRectF &exposed = QRectF()) const override;
 
     void drawTileSelection(QPainter *painter,

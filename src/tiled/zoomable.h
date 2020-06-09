@@ -29,7 +29,6 @@ class QPinchGesture;
 class QRegExpValidator;
 
 namespace Tiled {
-namespace Internal {
 
 /**
  * This class represents something zoomable. Is has a zoom factor and methods
@@ -81,17 +80,15 @@ public slots:
     void zoomOut();
     void resetZoom();
 
-private slots:
-    void comboActivated(int index);
-    void comboEdited();
-
 signals:
     void scaleChanged(qreal scale);
 
 private:
+    void comboActivated(int index);
+    void comboEdited();
+
     void syncComboBox();
 
-private:
     qreal mScale;
     qreal mGestureStartScale;
     QVector<qreal> mZoomFactors;
@@ -100,5 +97,4 @@ private:
     QRegExpValidator *mComboValidator;
 };
 
-} // namespace Internal
 } // namespace Tiled

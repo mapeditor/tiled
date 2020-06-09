@@ -2,9 +2,9 @@
  * #%L
  * This file is part of libtiled-java.
  * %%
- * Copyright (C) 2004 - 2017 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright (C) 2004 - 2017 Adam Turk <aturk@biggeruniverse.com>
- * Copyright (C) 2016 - 2017 Mike Thomas <mikepthomas@outlook.com>
+ * Copyright (C) 2004 - 2019 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright (C) 2004 - 2019 Adam Turk <aturk@biggeruniverse.com>
+ * Copyright (C) 2016 - 2019 Mike Thomas <mikepthomas@outlook.com>
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -38,11 +38,8 @@ import java.util.Stack;
  * A simple helper class to write an XML file.
  * Based on http://www.xmlsoft.org/html/libxml-xmlwriter.html
  *
- * @author Thorbjørn Lindeijer
- * @author Adam Turk
- * @author Mike Thomas
  * @deprecated
- * @version 1.0.2
+ * @version 1.2.3
  */
 @Deprecated
 public class XMLWriter {
@@ -57,7 +54,7 @@ public class XMLWriter {
     private boolean bDocumentOpen;
 
     /**
-     * <p>Constructor for XMLWriter.</p>
+     * Constructor for XMLWriter.
      *
      * @param writer a {@link java.io.Writer} object.
      */
@@ -67,7 +64,7 @@ public class XMLWriter {
     }
 
     /**
-     * <p>setIndent.</p>
+     * setIndent.
      *
      * @param bIndent a boolean.
      */
@@ -77,7 +74,7 @@ public class XMLWriter {
     }
 
     /**
-     * <p>Setter for the field <code>indentString</code>.</p>
+     * Setter for the field <code>indentString</code>.
      *
      * @param indentString a {@link java.lang.String} object.
      */
@@ -86,7 +83,7 @@ public class XMLWriter {
     }
 
     /**
-     * <p>startDocument.</p>
+     * startDocument.
      *
      * @throws java.io.IOException if any.
      */
@@ -95,7 +92,7 @@ public class XMLWriter {
     }
 
     /**
-     * <p>startDocument.</p>
+     * startDocument.
      *
      * @param version a {@link java.lang.String} object.
      * @throws java.io.IOException if any.
@@ -107,7 +104,7 @@ public class XMLWriter {
     }
 
     /**
-     * <p>writeDocType.</p>
+     * writeDocType.
      *
      * @param name a {@link java.lang.String} object.
      * @param pubId a {@link java.lang.String} object.
@@ -140,7 +137,7 @@ public class XMLWriter {
     }
 
     /**
-     * <p>startElement.</p>
+     * startElement.
      *
      * @param name a {@link java.lang.String} object.
      * @throws java.io.IOException if any.
@@ -165,7 +162,7 @@ public class XMLWriter {
     }
 
     /**
-     * <p>endDocument.</p>
+     * endDocument.
      *
      * @throws java.io.IOException if any.
      */
@@ -179,7 +176,7 @@ public class XMLWriter {
     }
 
     /**
-     * <p>endElement.</p>
+     * endElement.
      *
      * @throws java.io.IOException if any.
      */
@@ -202,7 +199,7 @@ public class XMLWriter {
     }
 
     /**
-     * <p>writeAttribute.</p>
+     * writeAttribute.
      *
      * @param name a {@link java.lang.String} object.
      * @param content a {@link java.lang.String} object.
@@ -222,7 +219,7 @@ public class XMLWriter {
     }
 
     /**
-     * <p>writeAttribute.</p>
+     * writeAttribute.
      *
      * @param name a {@link java.lang.String} object.
      * @param content a int.
@@ -235,7 +232,7 @@ public class XMLWriter {
     }
 
     /**
-     * <p>writeAttribute.</p>
+     * writeAttribute.
      *
      * @param name a {@link java.lang.String} object.
      * @param content a float.
@@ -248,7 +245,7 @@ public class XMLWriter {
     }
 
     /**
-     * <p>writeAttribute.</p>
+     * writeAttribute.
      *
      * @param name a {@link java.lang.String} object.
      * @param content a double.
@@ -261,7 +258,7 @@ public class XMLWriter {
     }
 
     /**
-     * <p>writeCDATA.</p>
+     * writeCDATA.
      *
      * @param content a {@link java.lang.String} object.
      * @throws java.io.IOException if any.
@@ -277,7 +274,7 @@ public class XMLWriter {
     }
 
     /**
-     * <p>writeComment.</p>
+     * writeComment.
      *
      * @param content a {@link java.lang.String} object.
      * @throws java.io.IOException if any.
@@ -293,7 +290,7 @@ public class XMLWriter {
     }
 
     /**
-     * <p>writeElement.</p>
+     * writeElement.
      *
      * @param name a {@link java.lang.String} object.
      * @param content a {@link java.lang.String} object.

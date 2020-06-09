@@ -29,22 +29,25 @@
 #include "maprenderer.h"
 #include "minimaprenderer.h"
 #include "objectgroup.h"
+#include "objectselectionitem.h"
 #include "preferences.h"
+#include "session.h"
 #include "tilelayer.h"
 #include "utils.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QImageWriter>
-#include <QSettings>
-
-static const char * const VISIBLE_ONLY_KEY = "SaveAsImage/VisibleLayersOnly";
-static const char * const CURRENT_SCALE_KEY = "SaveAsImage/CurrentScale";
-static const char * const DRAW_GRID_KEY = "SaveAsImage/DrawGrid";
-static const char * const INCLUDE_BACKGROUND_COLOR = "SaveAsImage/IncludeBackgroundColor";
 
 using namespace Tiled;
-using namespace Tiled::Internal;
+
+namespace session {
+static SessionOption<bool> visibleLayersOnly { "exportAsImage.visibleLayersOnly", true };
+static SessionOption<bool> useCurrentScale { "exportAsImage.useCurrentScale", true };
+static SessionOption<bool> drawTileGrid { "exportAsImage.drawTileGrid", false };
+static SessionOption<bool> drawObjectLabels { "exportAsImage.drawObjectLabels", false };
+static SessionOption<bool> includeBackgroundColor { "exportAsImage.includeBackgroundColor", false };
+} // namespace session
 
 QString ExportAsImageDialog::mPath;
 
@@ -59,7 +62,9 @@ ExportAsImageDialog::ExportAsImageDialog(MapDocument *mapDocument,
 {
     mUi->setupUi(this);
     resize(Utils::dpiScaled(size()));
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+#endif
 
     QPushButton *saveButton = mUi->buttonBox->button(QDialogButtonBox::Save);
     saveButton->setText(tr("Export"));
@@ -86,25 +91,15 @@ ExportAsImageDialog::ExportAsImageDialog(MapDocument *mapDocument,
 
     mUi->fileNameEdit->setText(suggestion);
 
-    // Restore previously used settings
-    QSettings *s = Preferences::instance()->settings();
-    const bool visibleLayersOnly =
-            s->value(QLatin1String(VISIBLE_ONLY_KEY), true).toBool();
-    const bool useCurrentScale =
-            s->value(QLatin1String(CURRENT_SCALE_KEY), true).toBool();
-    const bool drawTileGrid =
-            s->value(QLatin1String(DRAW_GRID_KEY), false).toBool();
-    const bool includeBackgroundColor =
-            s->value(QLatin1String(INCLUDE_BACKGROUND_COLOR), false).toBool();
+    mUi->visibleLayersOnly->setChecked(session::visibleLayersOnly);
+    mUi->currentZoomLevel->setChecked(session::useCurrentScale);
+    mUi->drawTileGrid->setChecked(session::drawTileGrid);
+    mUi->drawObjectLabels->setChecked(session::drawObjectLabels);
+    mUi->includeBackgroundColor->setChecked(session::includeBackgroundColor);
 
-    mUi->visibleLayersOnly->setChecked(visibleLayersOnly);
-    mUi->currentZoomLevel->setChecked(useCurrentScale);
-    mUi->drawTileGrid->setChecked(drawTileGrid);
-    mUi->includeBackgroundColor->setChecked(includeBackgroundColor);
-
-    connect(mUi->browseButton, SIGNAL(clicked()), SLOT(browse()));
-    connect(mUi->fileNameEdit, SIGNAL(textChanged(QString)),
-            this, SLOT(updateAcceptEnabled()));
+    connect(mUi->browseButton, &QAbstractButton::clicked, this, &ExportAsImageDialog::browse);
+    connect(mUi->fileNameEdit, &QLineEdit::textChanged,
+            this, &ExportAsImageDialog::updateAcceptEnabled);
 
 
     Utils::restoreGeometry(this);
@@ -141,24 +136,45 @@ void ExportAsImageDialog::accept()
             return;
     }
 
-    const bool visibleLayersOnly = mUi->visibleLayersOnly->isChecked();
-    const bool useCurrentScale = mUi->currentZoomLevel->isChecked();
-    const bool drawTileGrid = mUi->drawTileGrid->isChecked();
-    const bool includeBackgroundColor = mUi->includeBackgroundColor->isChecked();
+    session::visibleLayersOnly = mUi->visibleLayersOnly->isChecked();
+    session::useCurrentScale = mUi->currentZoomLevel->isChecked();
+    session::drawTileGrid = mUi->drawTileGrid->isChecked();
+    session::drawObjectLabels = mUi->drawObjectLabels->isChecked();
+    session::includeBackgroundColor = mUi->includeBackgroundColor->isChecked();
 
     MiniMapRenderer miniMapRenderer(mMapDocument->map());
+    miniMapRenderer.setGridColor(Preferences::instance()->gridColor());
+
+    if (session::drawObjectLabels) {
+        miniMapRenderer.setRenderObjectLabelCallback([] (QPainter &painter, const MapObject *object, const MapRenderer &renderer) {
+            if (object->name().isEmpty())
+                return;
+
+            MapObjectLabel label { object };
+            label.syncWithMapObject(renderer);
+
+            const auto invertScale = 1 / renderer.painterScale();
+            painter.save();
+            painter.translate(label.pos());
+            painter.scale(invertScale, invertScale);
+
+            label.paint(&painter, nullptr, nullptr);
+
+            painter.restore();
+        });
+    }
 
     MiniMapRenderer::RenderFlags renderFlags(MiniMapRenderer::DrawTileLayers |
                                              MiniMapRenderer::DrawMapObjects |
                                              MiniMapRenderer::DrawImageLayers);
 
-    if (visibleLayersOnly)
+    if (session::visibleLayersOnly)
         renderFlags |= MiniMapRenderer::IgnoreInvisibleLayer;
-    if (drawTileGrid)
+    if (session::drawTileGrid)
         renderFlags |= MiniMapRenderer::DrawGrid;
-    if (includeBackgroundColor)
+    if (session::includeBackgroundColor)
         renderFlags |= MiniMapRenderer::DrawBackground;
-    if (useCurrentScale && smoothTransform(mCurrentScale))
+    if (session::useCurrentScale && smoothTransform(mCurrentScale))
         renderFlags |= MiniMapRenderer::SmoothPixmapTransform;
 
     MapRenderer *renderer = mMapDocument->renderer();
@@ -169,7 +185,7 @@ void ExportAsImageDialog::accept()
     imageSize.setWidth(imageSize.width() + margins.left() + margins.right());
     imageSize.setHeight(imageSize.height() + margins.top() + margins.bottom());
 
-    if (useCurrentScale)
+    if (session::useCurrentScale)
         imageSize *= mCurrentScale;
 
     try {
@@ -203,13 +219,6 @@ void ExportAsImageDialog::accept()
     }
 
     mPath = QFileInfo(fileName).path();
-
-    // Store settings for next time
-    QSettings *s = Preferences::instance()->settings();
-    s->setValue(QLatin1String(VISIBLE_ONLY_KEY), visibleLayersOnly);
-    s->setValue(QLatin1String(CURRENT_SCALE_KEY), useCurrentScale);
-    s->setValue(QLatin1String(DRAW_GRID_KEY), drawTileGrid);
-    s->setValue(QLatin1String(INCLUDE_BACKGROUND_COLOR), includeBackgroundColor);
 
     QDialog::accept();
 }

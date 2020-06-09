@@ -36,7 +36,8 @@ namespace Tiled {
 
 enum CompressionMethod {
     Gzip,
-    Zlib
+    Zlib,
+    Zstandard
 };
 
 /**
@@ -52,7 +53,8 @@ enum CompressionMethod {
  * @return the uncompressed data, or a null QByteArray if decompressing failed
  */
 QByteArray TILEDSHARED_EXPORT decompress(const QByteArray &data,
-                                         int expectedSize = 1024);
+                                         int expectedSize,
+                                         CompressionMethod method = Zlib);
 
 /**
  * Compresses the give data in either gzip or zlib format. Returns a null
@@ -64,6 +66,7 @@ QByteArray TILEDSHARED_EXPORT decompress(const QByteArray &data,
  * @return the compressed data, or a null QByteArray if compression failed
  */
 QByteArray TILEDSHARED_EXPORT compress(const QByteArray &data,
-                                       CompressionMethod method = Zlib);
+                                       CompressionMethod method,
+                                       int compressionLevel = -1);
 
 } // namespace Tiled

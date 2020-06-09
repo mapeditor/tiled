@@ -25,7 +25,6 @@
 #include "ui_aboutdialog.h"
 
 namespace Tiled {
-namespace Internal {
 
 class AboutDialog : public QDialog, private Ui::AboutDialog
 {
@@ -34,9 +33,8 @@ class AboutDialog : public QDialog, private Ui::AboutDialog
 public:
     AboutDialog(QWidget *parent = nullptr);
 
-private slots:
+private:
     void donate();
 };
 
-} // namespace Internal
 } // namespace Tiled

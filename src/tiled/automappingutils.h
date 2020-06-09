@@ -27,8 +27,6 @@ namespace Tiled {
 class MapObject;
 class ObjectGroup;
 
-namespace Internal {
-
 class MapDocument;
 
 const QList<MapObject*> objectsInRegion(const ObjectGroup *layer,
@@ -40,5 +38,4 @@ void eraseRegionObjectGroup(MapDocument *mapDocument,
 
 QRegion tileRegionOfObjectGroup(const ObjectGroup *layer);
 
-} // namespace Internal
 } // namespace Tiled

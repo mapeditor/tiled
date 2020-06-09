@@ -24,8 +24,10 @@
 #include <QPinchGesture>
 
 namespace Tiled {
-namespace Internal {
 
+class MapObject;
+
+class MapDocument;
 class MapScene;
 class Zoomable;
 
@@ -39,6 +41,8 @@ class Zoomable;
 class MapView : public QGraphicsView
 {
     Q_OBJECT
+
+    Q_PROPERTY(qreal scale READ scale WRITE setScale)
 
 public:
     /**
@@ -57,19 +61,30 @@ public:
     MapView(QWidget *parent = nullptr, Mode mode = StaticContents);
     ~MapView() override;
 
+    void setInitialCenterPos(const QPointF &center);
+
     void setScene(MapScene *scene);
     MapScene *mapScene() const;
 
     Zoomable *zoomable() const { return mZoomable; }
 
+    qreal scale() const;
+    void setScale(qreal scale);
+
+    void fitMapInView();
+
     bool handScrolling() const { return mHandScrolling; }
     void setHandScrolling(bool handScrolling);
+
+    using QGraphicsView::centerOn;
+    Q_INVOKABLE void centerOn(qreal x, qreal y) { forceCenterOn(QPointF(x, y)); }
 
     void forceCenterOn(const QPointF &pos);
 
 protected:
     bool event(QEvent *event) override;
 
+    void paintEvent(QPaintEvent *event) override;
     void hideEvent(QHideEvent *) override;
     void resizeEvent(QResizeEvent *event) override;
 
@@ -85,24 +100,38 @@ protected:
 
     void handlePinchGesture(QPinchGesture *pinch);
 
-    void adjustCenterFromMousePosition(QPoint &mousePos);
+    void adjustCenterFromMousePosition(QPoint mousePos);
 
 signals:
     void focused();
 
-private slots:
+private:
     void adjustScale(qreal scale);
     void setUseOpenGL(bool useOpenGL);
     void updateSceneRect(const QRectF &sceneRect);
     void updateSceneRect(const QRectF &sceneRect, const QTransform &transform);
+    void focusMapObject(MapObject *mapObject);
 
-private:
+    void setMapDocument(MapDocument *mapDocument);
+
+    MapDocument *mMapDocument = nullptr;
     QPoint mLastMousePos;
     QPointF mLastMouseScenePos;
-    bool mHandScrolling;
+    bool mHandScrolling = false;
+    bool mViewInitialized = false;
+    bool mHasInitialCenterPos = false;
+    QPointF mInitialCenterPos;
     Mode mMode;
     Zoomable *mZoomable;
 };
 
-} // namespace Internal
+
+inline void MapView::setInitialCenterPos(const QPointF &center)
+{
+    mInitialCenterPos = center;
+    mHasInitialCenterPos = true;
+}
+
 } // namespace Tiled
+
+Q_DECLARE_METATYPE(Tiled::MapView*)

@@ -32,11 +32,13 @@
 #include "tileset.h"
 #include "objectgroup.h"
 
-#include <QFileInfo>
+#include <QCoreApplication>
 #include <QDir>
-#include <QSettings>
+#include <QFileInfo>
 #include <QStringList>
 #include <QTextStream>
+
+#include <memory>
 
 using namespace Tiled;
 
@@ -46,17 +48,17 @@ FlarePlugin::FlarePlugin()
 {
 }
 
-Tiled::Map *FlarePlugin::read(const QString &fileName)
+std::unique_ptr<Tiled::Map> FlarePlugin::read(const QString &fileName)
 {
     QFile file(fileName);
 
     if (!file.open (QIODevice::ReadOnly)) {
-        mError = tr("Could not open file for reading.");
+        mError = QCoreApplication::translate("File Errors", "Could not open file for reading.");
         return nullptr;
     }
 
-    // default to values of the original flare alpha game.
-    QScopedPointer<Map> map(new Map(Map::Isometric, 256, 256, 64, 32));
+    // default to values of the original Flare alpha game.
+    auto map = std::make_unique<Map>(Map::Isometric, 256, 256, 64, 32);
 
     QTextStream stream (&file);
     QString line;
@@ -92,8 +94,8 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
             //get map properties
             int epos = line.indexOf(QChar('='));
             if (epos != -1) {
-                QString key = line.left(epos).trimmed();
-                QString value = line.mid(epos + 1, -1).trimmed();
+                const QStringRef key = line.leftRef(epos).trimmed();
+                const QStringRef value = line.midRef(epos + 1, -1).trimmed();
                 if (key == QLatin1String("width"))
                     map->setWidth(value.toInt());
                 else if (key == QLatin1String("height"))
@@ -103,9 +105,9 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
                 else if (key == QLatin1String("tileheight"))
                     map->setTileHeight(value.toInt());
                 else if (key == QLatin1String("orientation"))
-                    map->setOrientation(orientationFromString(value));
+                    map->setOrientation(orientationFromString(value.toString()));
                 else if (key == QLatin1String("background_color")){
-                    QStringList rgbaList = value.split(',');
+                    QVector<QStringRef> rgbaList = value.split(',');
 
                     if (!rgbaList.isEmpty())
                         backgroundColor.setRed(rgbaList.takeFirst().toInt());
@@ -119,17 +121,17 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
                     map->setBackgroundColor(backgroundColor);
                 }
                 else
-                    map->setProperty(key, value);
+                    map->setProperty(key.toString(), value.toString());
             }
         } else if (sectionName == QLatin1String("tilesets")) {
             tilesetsSectionFound = true;
             int epos = line.indexOf(QChar('='));
-            QString key = line.left(epos).trimmed();
-            QString value = line.mid(epos + 1, -1).trimmed();
+            const QStringRef key = line.leftRef(epos).trimmed();
+            const QStringRef value = line.midRef(epos + 1, -1).trimmed();
             if (key == QLatin1String("tileset")) {
-                QStringList list = value.split(QChar(','));
+                const QVector<QStringRef> list = value.split(QChar(','));
 
-                QString absoluteSource(list.first());
+                QString absoluteSource(list.first().toString());
                 if (QDir::isRelativePath(absoluteSource))
                     absoluteSource = path + QLatin1Char('/') + absoluteSource;
 
@@ -146,13 +148,13 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
 
                 if (!ok) {
                     mError = tr("Error loading tileset %1, which expands to %2. Path not found!")
-                            .arg(list[0], absoluteSource);
+                            .arg(list.first().toString(), absoluteSource);
                     return nullptr;
                 } else {
                     if (list.size() > 4)
-                        tileset->setTileOffset(QPoint(list[3].toInt(),list[4].toInt()));
+                        tileset->setTileOffset(QPoint(list[3].toInt(), list[4].toInt()));
 
-                    gidMapper.insert(gid, tileset.data());
+                    gidMapper.insert(gid, tileset);
                     if (list.size() > 5) {
                         gid += list[5].toInt();
                     } else {
@@ -169,12 +171,13 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
             tilelayerSectionFound = true;
             int epos = line.indexOf(QChar('='));
             if (epos != -1) {
-                QString key = line.left(epos).trimmed();
-                QString value = line.mid(epos + 1, -1).trimmed();
+                const QStringRef key = line.leftRef(epos).trimmed();
+                const QStringRef value = line.midRef(epos + 1, -1).trimmed();
 
                 if (key == QLatin1String("type")) {
-                    tilelayer = new TileLayer(value, 0, 0,
-                                              map->width(),map->height());
+                    tilelayer = new TileLayer(value.toString(), 0, 0,
+                                              map->width(),
+                                              map->height());
                     map->addLayer(tilelayer);
                 } else if (key == QLatin1String("format")) {
                     if (value == QLatin1String("dec")) {
@@ -198,7 +201,7 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
                         }
                     }
                 } else {
-                    tilelayer->setProperty(key, value);
+                    tilelayer->setProperty(key.toString(), value.toString());
                 }
             }
         } else {
@@ -217,23 +220,23 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
                 continue;
 
             if (startsWith == QChar('#')) {
-                QString name = line.mid(1).trimmed();
+                QString name = line.midRef(1).trimmed().toString();
                 mapobject->setName(name);
             }
 
             int epos = line.indexOf(QChar('='));
             if (epos != -1) {
-                QString key = line.left(epos).trimmed();
-                QString value = line.mid(epos + 1, -1).trimmed();
+                const QStringRef key = line.leftRef(epos).trimmed();
+                const QStringRef value = line.midRef(epos + 1, -1).trimmed();
                 if (key == QLatin1String("type")) {
-                    mapobject->setType(value);
+                    mapobject->setType(value.toString());
                 } else if (key == QLatin1String("location")) {
-                    QStringList loc = value.split(QChar(','));
-                    float x,y;
-                    int w,h;
+                    const QVector<QStringRef> loc = value.split(QChar(','));
+                    qreal x,y;
+                    qreal w,h;
                     if (map->orientation() == Map::Orthogonal) {
-                        x = loc[0].toFloat() * map->tileWidth();
-                        y = loc[1].toFloat() * map->tileHeight();
+                        x = loc[0].toDouble() * map->tileWidth();
+                        y = loc[1].toDouble() * map->tileHeight();
                         if (loc.size() > 3) {
                             w = loc[2].toInt() * map->tileWidth();
                             h = loc[3].toInt() * map->tileHeight();
@@ -242,8 +245,8 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
                             h = map->tileHeight();
                         }
                     } else {
-                        x = loc[0].toFloat() * map->tileHeight();
-                        y = loc[1].toFloat() * map->tileHeight();
+                        x = loc[0].toDouble() * map->tileHeight();
+                        y = loc[1].toDouble() * map->tileHeight();
                         if (loc.size() > 3) {
                             w = loc[2].toInt() * map->tileHeight();
                             h = loc[3].toInt() * map->tileHeight();
@@ -254,7 +257,7 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
                     mapobject->setPosition(QPointF(x, y));
                     mapobject->setSize(w, h);
                 } else {
-                    mapobject->setProperty(key, value);
+                    mapobject->setProperty(key.toString(), value.toString());
                 }
             }
         }
@@ -267,7 +270,7 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
         return nullptr;
     }
 
-    return map.take();
+    return map;
 }
 
 bool FlarePlugin::supportsFile(const QString &fileName) const
@@ -290,12 +293,14 @@ QString FlarePlugin::errorString() const
     return mError;
 }
 
-bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
+bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName, Options options)
 {
+    Q_UNUSED(options)
+
     SaveFile file(fileName);
 
     if (!file.open(QFile::WriteOnly | QFile::Text)) {
-        mError = tr("Could not open file for writing.");
+        mError = QCoreApplication::translate("File Errors", "Could not open file for writing.");
         return false;
     }
 

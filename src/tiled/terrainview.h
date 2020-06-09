@@ -26,7 +26,6 @@
 #include <QTreeView>
 
 namespace Tiled {
-namespace Internal {
 
 class TilesetDocument;
 class Zoomable;
@@ -51,22 +50,24 @@ public:
      */
     Terrain *terrainAt(const QModelIndex &index) const;
 
+signals:
+    void removeTerrainTypeRequested();
+
 protected:
     bool event(QEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
     void contextMenuEvent(QContextMenuEvent *event) override;
+    void keyPressEvent(QKeyEvent *event) override;
 
-private slots:
+private:
     void editTerrainProperties();
 
     void adjustScale();
 
-private:
     Zoomable *mZoomable;
     TilesetDocument *mTilesetDocument;
 };
 
-} // namespace Internal
 } // namespace Tiled
 
-Q_DECLARE_METATYPE(Tiled::Internal::TerrainView *)
+Q_DECLARE_METATYPE(Tiled::TerrainView *)

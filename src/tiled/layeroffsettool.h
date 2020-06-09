@@ -24,17 +24,18 @@
 #include "abstracttool.h"
 
 namespace Tiled {
-namespace Internal {
 
 class LayerOffsetTool : public AbstractTool
 {
     Q_OBJECT
+    Q_INTERFACES(Tiled::AbstractTool)
 
 public:
     explicit LayerOffsetTool(QObject *parent = nullptr);
 
     void activate(MapScene *) override;
     void deactivate(MapScene *) override;
+    void keyPressed(QKeyEvent *) override;
     void mouseEntered() override;
     void mouseLeft() override;
     void mouseMoved(const QPointF &pos,
@@ -48,17 +49,26 @@ public:
 protected slots:
     void updateEnabledState() override;
 
+protected:
+    void mapDocumentChanged(MapDocument *oldDocument,
+                            MapDocument *newDocument) override;
+
 private:
     void startDrag(const QPointF &pos);
+    void abortDrag();
     void finishDrag();
+
+    struct DraggingLayer {
+        Layer *layer;
+        QPointF oldOffset;
+    };
 
     bool mMousePressed;
     bool mDragging;
     bool mApplyingChange;
-    QPointF mMouseScreenStart;
+    QPoint mMouseScreenStart;
     QPointF mMouseSceneStart;
-    QPointF mOldOffset;
+    QVector<DraggingLayer> mDraggingLayers;
 };
 
-} // namespace Internal
 } // namespace Tiled

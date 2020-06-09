@@ -27,7 +27,6 @@
 #include <QCoreApplication>
 
 namespace Tiled {
-namespace Internal {
 
 RenameTileset::RenameTileset(TilesetDocument *tilesetDocument,
                              const QString &newName)
@@ -120,20 +119,14 @@ void ChangeTilesetParameters::apply(const TilesetParameters &parameters)
 {
     Tileset &tileset = *mTilesetDocument->tileset();
 
-    const QUrl oldImageSource = tileset.imageSource();
-
     tileset.setImageSource(parameters.imageSource);
     tileset.setTransparentColor(parameters.transparentColor);
     tileset.setTileSize(parameters.tileSize);
     tileset.setTileSpacing(parameters.tileSpacing);
     tileset.setMargin(parameters.margin);
 
-    auto tilesetManager = TilesetManager::instance();
-
-    if (oldImageSource != tileset.imageSource())
-        tilesetManager->tilesetImageSourceChanged(tileset, oldImageSource);
     if (tileset.loadImage())
-        emit tilesetManager->tilesetImagesChanged(&tileset);
+        emit TilesetManager::instance()->tilesetImagesChanged(&tileset);
 
     emit mTilesetDocument->tilesetChanged(&tileset);
 }
@@ -198,6 +191,24 @@ void ChangeTilesetOrientation::swap()
 }
 
 
+ChangeTilesetObjectAlignment::ChangeTilesetObjectAlignment(TilesetDocument *tilesetDocument,
+                                                           Alignment objectAlignment)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Change Object Alignment"))
+    , mTilesetDocument(tilesetDocument)
+    , mObjectAlignment(objectAlignment)
+{
+}
+
+void ChangeTilesetObjectAlignment::swap()
+{
+    Tileset &tileset = *mTilesetDocument->tileset();
+
+    Alignment objectAlignment = tileset.objectAlignment();
+    mTilesetDocument->setTilesetObjectAlignment(mObjectAlignment);
+    mObjectAlignment = objectAlignment;
+}
+
+
 ChangeTilesetGridSize::ChangeTilesetGridSize(TilesetDocument *tilesetDocument,
                                              QSize gridSize)
     : QUndoCommand(QCoreApplication::translate("Undo Commands", "Change Grid Size"))
@@ -217,5 +228,4 @@ void ChangeTilesetGridSize::swap()
     emit mTilesetDocument->tilesetChanged(&tileset);
 }
 
-} // namespace Internal
 } // namespace Tiled

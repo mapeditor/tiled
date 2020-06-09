@@ -26,11 +26,10 @@
 #include <QCoreApplication>
 
 namespace Tiled {
-namespace Internal {
 
 ChangeTileProbability::ChangeTileProbability(TilesetDocument *tilesetDocument,
                                              const QList<Tile*>& tiles,
-                                             float probability)
+                                             qreal probability)
     : mTilesetDocument(tilesetDocument)
     , mTiles(tiles)
 {
@@ -44,7 +43,7 @@ ChangeTileProbability::ChangeTileProbability(TilesetDocument *tilesetDocument,
 
 ChangeTileProbability::ChangeTileProbability(TilesetDocument *tilesetDocument,
                                              const QList<Tile *> &tiles,
-                                             const QList<float> &probabilities,
+                                             const QList<qreal> &probabilities,
                                              QUndoCommand *parent)
     : QUndoCommand(parent)
     , mTilesetDocument(tilesetDocument)
@@ -60,13 +59,11 @@ void ChangeTileProbability::swap()
 {
     for (int i = 0; i < mTiles.size(); ++ i) {
         Tile *tile = mTiles[i];
-        float probability = tile->probability();
-        tile->setProbability(mProbabilities[i]);
+        qreal probability = tile->probability();
+        mTilesetDocument->setTileProbability(tile, mProbabilities[i]);
         mProbabilities[i] = probability;
-        emit mTilesetDocument->tileProbabilityChanged(tile);
     }
 }
 
-} // namespace Internal
 } // namespace Tiled
 

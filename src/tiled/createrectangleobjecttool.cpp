@@ -24,22 +24,27 @@
 #include "utils.h"
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 CreateRectangleObjectTool::CreateRectangleObjectTool(QObject *parent)
-    : CreateScalableObjectTool(parent)
+    : CreateScalableObjectTool("CreateRectangleObjectTool", parent)
 {
-    QIcon icon(QLatin1String(":images/24x24/insert-rectangle.png"));
-    icon.addFile(QLatin1String(":images/48x48/insert-rectangle.png"));
+    QIcon icon(QLatin1String(":images/24/insert-rectangle.png"));
+    icon.addFile(QLatin1String(":images/48/insert-rectangle.png"));
     setIcon(icon);
+    setShortcut(Qt::Key_R);
     Utils::setThemeIcon(this, "insert-rectangle");
-    languageChanged();
+    languageChangedImpl();
 }
 
 void CreateRectangleObjectTool::languageChanged()
 {
+    CreateScalableObjectTool::languageChanged();
+    languageChangedImpl();
+}
+
+void CreateRectangleObjectTool::languageChangedImpl()
+{
     setName(tr("Insert Rectangle"));
-    setShortcut(QKeySequence(tr("R")));
 }
 
 MapObject *CreateRectangleObjectTool::createNewMapObject()

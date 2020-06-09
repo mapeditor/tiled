@@ -53,12 +53,14 @@
 #include <QPalette>
 #include <QScreen>
 
+#ifndef Q_OS_MAC
 static qreal defaultDpiScale()
 {
     if (const QScreen *screen = QGuiApplication::primaryScreen())
         return screen->logicalDotsPerInchX() / 96.0;
     return 1.0;
 }
+#endif
 
 static qreal dpiScaled(qreal value)
 {
@@ -627,7 +629,7 @@ void QtTreePropertyBrowserPrivate::propertyInserted(QtBrowserItem *index, QtBrow
     m_indexToItem[index] = newItem;
 
     newItem->setFlags(newItem->flags() | Qt::ItemIsEditable);
-    m_treeWidget->setItemExpanded(newItem, true);
+    newItem->setExpanded(true);
 
     updateItem(newItem);
 }

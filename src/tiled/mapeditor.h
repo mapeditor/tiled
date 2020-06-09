@@ -29,6 +29,9 @@
 #include "tiled.h"
 #include "tileset.h"
 
+#include <memory>
+
+class QAction;
 class QComboBox;
 class QLabel;
 class QMainWindow;
@@ -38,34 +41,31 @@ class QToolButton;
 
 namespace Tiled {
 
-class MapObject;
 class Terrain;
-
-namespace Internal {
 
 class AbstractTool;
 class BucketFillTool;
+class ComboBoxProxyModel;
+class EditableMap;
 class EditPolygonTool;
 class LayerDock;
 class MapDocument;
-class MapDocumentActionHandler;
-class MapsDock;
 class MapView;
 class MiniMapDock;
 class ObjectsDock;
-class TemplatesDock;
 class PropertiesDock;
 class ReversingProxyModel;
 class ShapeFillTool;
 class StampBrush;
+class TemplatesDock;
 class TerrainBrush;
 class TerrainDock;
-class TilesetDock;
 class TileStamp;
 class TileStampManager;
+class TileStampsDock;
+class TilesetDock;
 class ToolManager;
 class TreeViewComboBox;
-class UncheckableItemsModel;
 class UndoDock;
 class WangBrush;
 class WangDock;
@@ -75,9 +75,16 @@ class MapEditor : public Editor
 {
     Q_OBJECT
 
+    Q_PROPERTY(Tiled::TilesetDock *tilesetsView READ tilesetDock)
+    Q_PROPERTY(Tiled::EditableMap *currentBrush READ currentBrush WRITE setCurrentBrush)
+    Q_PROPERTY(Tiled::MapView *currentMapView READ currentMapView)
+
 public:
     explicit MapEditor(QObject *parent = nullptr);
-    ~MapEditor();
+    ~MapEditor() override;
+
+    TilesetDock *tilesetDock() const { return mTilesetDock; }
+    TemplatesDock *templatesDock() const { return mTemplatesDock; }
 
     void saveState() override;
     void restoreState() override;
@@ -92,28 +99,41 @@ public:
 
     QList<QToolBar *> toolBars() const override;
     QList<QDockWidget *> dockWidgets() const override;
+    QList<QWidget*> statusBarWidgets() const override;
+    QList<QWidget*> permanentStatusBarWidgets() const override;
 
     StandardActions enabledStandardActions() const override;
     void performStandardAction(StandardAction action) override;
+
+    void resetLayout() override;
 
     MapView *viewForDocument(MapDocument *mapDocument) const;
     MapView *currentMapView() const;
     Zoomable *zoomable() const override;
 
-    void showMessage(const QString &text, int timeout = 0);
+    void saveDocumentState(MapDocument *mapDocument) const;
+    void restoreDocumentState(MapDocument *mapDocument) const;
 
-public slots:
+    void setCurrentTileset(const SharedTileset &tileset);
+    SharedTileset currentTileset() const;
+
+    EditableMap *currentBrush() const;
+    void setCurrentBrush(EditableMap *editableMap);
+
+    void addExternalTilesets(const QStringList &fileNames);
+
+    QAction *actionSelectNextTileset() const;
+    QAction *actionSelectPreviousTileset() const;
+
+    AbstractTool *selectedTool() const;
+
+private:
     void setSelectedTool(AbstractTool *tool);
+    void currentDocumentChanged(Document *document);
+    void updateActiveUndoStack();
 
     void paste(ClipboardManager::PasteFlags flags);
 
-    void flipHorizontally() { flip(FlipHorizontally); }
-    void flipVertically() { flip(FlipVertically); }
-    void rotateLeft() { rotate(RotateLeft); }
-    void rotateRight() { rotate(RotateRight); }
-
-    void flip(FlipDirection direction);
-    void rotate(RotateDirection direction);
     void setRandom(bool value);
     void setWangFill(bool value);
 
@@ -122,12 +142,8 @@ public slots:
 
     void selectWangBrush();
 
-    void addExternalTilesets(const QStringList &fileNames);
     void filesDroppedOnTilesetDock(const QStringList &fileNames);
 
-    void updateTemplateInstances(const MapObject *mapObject);
-
-private slots:
     void currentWidgetChanged();
 
     void cursorChanged(const QCursor &cursor);
@@ -137,9 +153,9 @@ private slots:
     void layerComboActivated();
     void updateLayerComboIndex();
 
-private:
     void setupQuickStamps();
     void retranslateUi();
+    void showTileCollisionShapesChanged(bool enabled);
 
     void handleExternalTilesetsAndImages(const QStringList &fileNames,
                                          bool handleImages);
@@ -154,7 +170,6 @@ private:
     MapDocument *mCurrentMapDocument;
 
     PropertiesDock *mPropertiesDock;
-    MapsDock *mMapsDock;
     UndoDock *mUndoDock;
     ObjectsDock *mObjectsDock;
     TemplatesDock *mTemplatesDock;
@@ -162,15 +177,15 @@ private:
     TerrainDock *mTerrainDock;
     WangDock *mWangDock;
     MiniMapDock* mMiniMapDock;
-    QDockWidget *mTileStampsDock;
+    TileStampsDock *mTileStampsDock;
 
-    TreeViewComboBox *mLayerComboBox;
-    UncheckableItemsModel *mUncheckableProxyModel;
+    std::unique_ptr<TreeViewComboBox> mLayerComboBox;
+    ComboBoxProxyModel *mComboBoxProxyModel;
     ReversingProxyModel *mReversingProxyModel;
 
     Zoomable *mZoomable;
-    QComboBox *mZoomComboBox;
-    QLabel *mStatusInfoLabel;
+    std::unique_ptr<QComboBox> mZoomComboBox;
+    std::unique_ptr<QLabel> mStatusInfoLabel;
 
     StampBrush *mStampBrush;
     BucketFillTool *mBucketFillTool;
@@ -187,8 +202,6 @@ private:
     MapView *mViewWithTool;
 
     TileStampManager *mTileStampManager;
-
-    QVariantMap mMapStates;
 };
 
 
@@ -202,5 +215,4 @@ inline MapView *MapEditor::currentMapView() const
     return viewForDocument(mCurrentMapDocument);
 }
 
-} // namespace Internal
 } // namespace Tiled

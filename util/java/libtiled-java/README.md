@@ -1,0 +1,29 @@
+# libtiled - Java library to work with Tiled maps
+
+This is a small library meant to make it easy to use Tiled maps in your Java
+project. It is based on the Java version of Tiled.
+
+This small library is BSD licensed. See the LICENSE.BSD file for details.
+
+## Authors
+
+* Adam Turk <aturk@biggeruniverse.com>
+* Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+* Mike Thomas <mikepthomas@outlook.com>
+
+https://www.mapeditor.org/
+
+
+## Building
+
+To make libtiled.jar, install [Apache Maven](http://maven.apache.org/) and run the following command:
+
+    mvn clean install
+
+To run all unit-tests, run the following command:
+
+    mvn test -P release-profile
+
+To generate reports and documentation, run:
+
+    mvn site

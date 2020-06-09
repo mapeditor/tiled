@@ -29,10 +29,6 @@
  */
 package org.mapeditor.io;
 
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -62,12 +58,12 @@ import org.mapeditor.core.TileSet;
 public class JaxbTest {
     @Test
     public void loadMap() throws JAXBException, URISyntaxException, IOException {
-        URL url = getUrlFromResources("desert/desert.tmx");
+        URL url = getUrlFromResources("isometric_grass_and_water/isometric_grass_and_water.tmx");
 
         MapReader reader = new MapReader();
         Map map = reader.readMap(url.getFile());
 
-        assertEquals("1.0", map.getVersion());
+        assertEquals("1.2", map.getVersion());
 
         TileLayer layer = (TileLayer) map.getLayers().get(0);
         Data data = layer.getData();
@@ -90,12 +86,6 @@ public class JaxbTest {
             }
         }
 
-        ObjectMapper mapper = new ObjectMapper();
-        JaxbAnnotationModule module = new JaxbAnnotationModule();
-        mapper.registerModule(module);
-        mapper.setSerializationInclusion(Include.NON_NULL);
-        System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(map));
-
         JAXBContext context = JAXBContext.newInstance(Map.class);
         Marshaller marshaller = context.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
@@ -108,12 +98,6 @@ public class JaxbTest {
 
         MapReader reader = new MapReader();
         TileSet tileSet = reader.readTileset(url.getFile());
-
-        ObjectMapper mapper = new ObjectMapper();
-        JaxbAnnotationModule module = new JaxbAnnotationModule();
-        mapper.registerModule(module);
-        mapper.setSerializationInclusion(Include.NON_NULL);
-        System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(tileSet));
 
         JAXBContext context = JAXBContext.newInstance(TileSet.class);
         Marshaller marshaller = context.createMarshaller();

@@ -20,13 +20,12 @@
 
 #pragma once
 
-#include "preferences.h"
+#include "objecttypes.h"
 #include "properties.h"
 
 #include <QAbstractTableModel>
 
 namespace Tiled {
-namespace Internal {
 
 class ObjectTypesModel : public QAbstractTableModel
 {
@@ -65,5 +64,4 @@ private:
     ObjectTypes mObjectTypes;
 };
 
-} // namespace Internal
 } // namespace Tiled

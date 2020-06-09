@@ -30,8 +30,6 @@ namespace Tiled {
 class Object;
 class Tileset;
 
-namespace Internal {
-
 class Document;
 class PropertyBrowser;
 
@@ -49,26 +47,26 @@ public:
 
 public slots:
     void bringToFront();
+    void selectCustomProperty(const QString &name);
 
 protected:
     bool event(QEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
 
-private slots:
+private:
     void currentObjectChanged(Object *object);
     void updateActions();
 
     void cutProperties();
     bool copyProperties();
     void pasteProperties();
-    void addProperty();
+    void openAddPropertyDialog();
     void addProperty(const QString &name, const QVariant &value);
     void removeProperties();
     void renameProperty();
-    void renameProperty(const QString &name);
-    void showContextMenu(const QPoint& pos);
+    void renamePropertyTo(const QString &name);
+    void showContextMenu(const QPoint &pos);
 
-private:
     void retranslateUi();
 
     Document *mDocument;
@@ -78,5 +76,4 @@ private:
     QAction *mActionRenameProperty;
 };
 
-} // namespace Internal
 } // namespace Tiled

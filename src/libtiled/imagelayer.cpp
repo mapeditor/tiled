@@ -28,6 +28,8 @@
  */
 
 #include "imagelayer.h"
+
+#include "imagecache.h"
 #include "map.h"
 
 #include <QBitmap>
@@ -49,20 +51,17 @@ void ImageLayer::resetImage()
     mImageSource.clear();
 }
 
-bool ImageLayer::loadFromImage(const QImage &image, const QUrl &source)
+bool ImageLayer::loadFromImage(const QPixmap &image, const QUrl &source)
 {
     mImageSource = source;
+    mImage = image;
 
-    if (image.isNull()) {
-        mImage = QPixmap();
+    if (image.isNull())
         return false;
-    }
-
-    mImage = QPixmap::fromImage(image);
 
     if (mTransparentColor.isValid()) {
-        const QImage mask = image.createMaskFromColor(mTransparentColor.rgb());
-        mImage.setMask(QBitmap::fromImage(mask));
+        const QBitmap mask = image.createMaskFromColor(mTransparentColor.rgb());
+        mImage.setMask(mask);
     }
 
     return true;
@@ -76,7 +75,19 @@ bool ImageLayer::loadFromImage(const QImage &image, const QUrl &source)
 bool ImageLayer::loadFromImage(const QImage &image, const QString &source)
 {
     const QUrl url(source);
-    return loadFromImage(image, url.isRelative() ? QUrl::fromLocalFile(source) : url);
+    return loadFromImage(QPixmap::fromImage(image), url.isRelative() ? QUrl::fromLocalFile(source)
+                                                                     : url);
+}
+
+bool ImageLayer::loadFromImage(const QUrl &url)
+{
+    return loadFromImage(ImageCache::loadPixmap(Tiled::urlToLocalFileOrQrc(url)), url);
+}
+
+bool ImageLayer::loadFromImage(const ImageReference &image)
+{
+    setTransparentColor(image.transparentColor);
+    return loadFromImage(image.create(), image.source);
 }
 
 bool ImageLayer::isEmpty() const

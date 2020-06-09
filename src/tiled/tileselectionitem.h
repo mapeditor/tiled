@@ -26,8 +26,7 @@ namespace Tiled {
 
 class Layer;
 
-namespace Internal {
-
+class ChangeEvent;
 class MapDocument;
 
 /**
@@ -38,7 +37,8 @@ class TileSelectionItem : public QGraphicsObject
     Q_OBJECT
 
 public:
-    TileSelectionItem(MapDocument *mapDocument);
+    TileSelectionItem(MapDocument *mapDocument,
+                      QGraphicsItem *parent = nullptr);
 
     // QGraphicsItem
     QRectF boundingRect() const override;
@@ -47,20 +47,17 @@ public:
                const QStyleOptionGraphicsItem *option,
                QWidget *widget = nullptr) override;
 
-private slots:
+private:
+    void documentChanged(const ChangeEvent &change);
     void selectionChanged(const QRegion &newSelection,
                           const QRegion &oldSelection);
 
-    void layerChanged(Layer *layer);
-
     void currentLayerChanged(Layer *layer);
 
-private:
     void updateBoundingRect();
 
     MapDocument *mMapDocument;
     QRectF mBoundingRect;
 };
 
-} // namespace Internal
 } // namespace Tiled

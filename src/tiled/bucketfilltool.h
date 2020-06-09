@@ -23,15 +23,12 @@
 #pragma once
 
 #include "abstracttilefilltool.h"
-#include "randompicker.h"
 #include "tilelayer.h"
 #include "tilestamp.h"
 
 namespace Tiled {
 
 class WangSet;
-
-namespace Internal {
 
 class MapDocument;
 class StampActions;
@@ -47,7 +44,7 @@ class BucketFillTool : public AbstractTileFillTool
 
 public:
     BucketFillTool(QObject *parent = nullptr);
-    ~BucketFillTool();
+    ~BucketFillTool() override;
 
     void mousePressed(QGraphicsSceneMouseEvent *event) override;
 
@@ -56,17 +53,25 @@ public:
     void languageChanged() override;
 
 protected:
-    void tilePositionChanged(const QPoint &tilePos) override;
+    void tilePositionChanged(QPoint tilePos) override;
     void clearConnections(MapDocument *mapDocument) override;
 
-private slots:
+private:
     void clearOverlay();
 
-private:
     bool mLastShiftStatus;
+
+    /**
+     * The active fill method during the last call of tilePositionChanged().
+     *
+     * This variable is needed to detect if the fill method was changed during
+     * mFillOverlay being brushed at an area.
+     */
+    FillMethod mLastFillMethod;
+
+    QRegion mFillRegion;
 
     void makeConnections();
 };
 
-} // namespace Internal
 } // namespace Tiled

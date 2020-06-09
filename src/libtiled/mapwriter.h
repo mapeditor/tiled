@@ -34,18 +34,20 @@
 
 #include <QString>
 
+#include <memory>
+
 class QIODevice;
 
 namespace Tiled {
 
 class Map;
-class Tileset;
 class MapObject;
-class TemplateGroup;
+class ObjectTemplate;
+class Tileset;
 
 namespace Internal {
 class MapWriterPrivate;
-}
+} // namespace Internal
 
 /**
  * A QXmlStreamWriter based writer for the TMX and TSX formats.
@@ -94,10 +96,10 @@ public:
      */
     bool writeTileset(const Tileset &tileset, const QString &fileName);
 
-    void writeTemplateGroup(const TemplateGroup *templateGroup, QIODevice *device,
-                            const QString &path = QString());
+    void writeObjectTemplate(const ObjectTemplate *objectTemplate, QIODevice *device,
+                             const QString &path = QString());
 
-    bool writeTemplateGroup(const TemplateGroup *templateGroup, const QString &fileName);
+    bool writeObjectTemplate(const ObjectTemplate *objectTemplate, const QString &fileName);
 
     /**
      * Returns the error message for the last occurred error.
@@ -110,10 +112,16 @@ public:
     void setDtdEnabled(bool enabled);
     bool isDtdEnabled() const;
 
+    /**
+     * Sets whether the XML output is minimized.
+     */
+    void setMinimizeOutput(bool enabled);
+    bool minimizeOutput() const;
+
 private:
     Q_DISABLE_COPY(MapWriter)
 
-    Internal::MapWriterPrivate *d;
+    std::unique_ptr<Internal::MapWriterPrivate> d;
 };
 
 } // namespace Tiled

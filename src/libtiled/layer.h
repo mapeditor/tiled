@@ -67,6 +67,17 @@ public:
     Layer(TypeFlag type, const QString &name, int x, int y);
 
     /**
+     * The layer ID can be used to unique identify this layer of the map. It
+     * stays the same regardless of whether the layer is moved or renamed.
+     */
+    int id() const { return mId; }
+    void setId(int id) { mId = id; }
+    void resetIds();
+
+    const QColor &tintColor() const { return mTintColor; }
+    void setTintColor(const QColor &tintColor) { mTintColor = tintColor; }
+
+    /**
      * Returns the type of this layer.
      */
     TypeFlag layerType() const { return mLayerType; }
@@ -84,14 +95,22 @@ public:
     /**
      * Returns the opacity of this layer.
      */
-    float opacity() const { return mOpacity; }
+    qreal opacity() const { return mOpacity; }
 
     /**
      * Sets the opacity of this layer.
      */
-    void setOpacity(float opacity) { mOpacity = opacity; }
+    void setOpacity(qreal opacity) { mOpacity = opacity; }
 
-    float effectiveOpacity() const;
+    /**
+     * Returns the effective opacity of this layer
+     */
+    qreal effectiveOpacity() const;
+
+    /**
+     * Returns the effective tint color of this layer
+     */
+    QColor effectiveTintColor() const;
 
     /**
      * Returns the visibility of this layer.
@@ -168,6 +187,8 @@ public:
 
     QPointF totalOffset() const;
 
+    bool canMergeDown() const;
+
     virtual bool isEmpty() const = 0;
 
     /**
@@ -190,7 +211,7 @@ public:
     /**
      * Returns whether this layer can merge together with the \a other layer.
      */
-    virtual bool canMergeWith(Layer *other) const = 0;
+    virtual bool canMergeWith(const Layer *other) const = 0;
 
     /**
      * Returns a newly allocated layer that is the result of merging this layer
@@ -199,7 +220,7 @@ public:
      *
      * Should only be called when canMergeWith returns true.
      */
-    virtual Layer *mergedWith(Layer *other) const = 0;
+    virtual Layer *mergedWith(const Layer *other) const = 0;
 
     /**
      * Returns a duplicate of this layer. The caller is responsible for the
@@ -231,11 +252,13 @@ protected:
     Layer *initializeClone(Layer *clone) const;
 
     QString mName;
+    int mId;
     TypeFlag mLayerType;
     int mX;
     int mY;
     QPointF mOffset;
-    float mOpacity;
+    qreal mOpacity;
+    QColor mTintColor;
     bool mVisible;
     Map *mMap;
     GroupLayer *mParentLayer;
@@ -264,8 +287,9 @@ inline QPointF Layer::offset() const
 
 
 /**
- * An iterator for iterating over the layers of a map. When iterating forward,
- * group layers are traversed after their children.
+ * An iterator for iterating over the layers of a map, in the order in which
+ * they are drawn. When iterating forward, group layers are traversed after
+ * their children.
  *
  * Modifying the layer hierarchy while an iterator is active will lead to
  * undefined results!
@@ -273,7 +297,7 @@ inline QPointF Layer::offset() const
 class TILEDSHARED_EXPORT LayerIterator
 {
 public:
-    LayerIterator(const Map *map);
+    LayerIterator(const Map *map, int layerTypes = Layer::AnyLayerType);
     LayerIterator(Layer *start);
 
     Layer *currentLayer() const;
@@ -289,20 +313,30 @@ public:
     void toFront();
     void toBack();
 
+    // Allow use as general iterator and in range-based for loops
+    bool operator==(const LayerIterator &other) const;
+    bool operator!=(const LayerIterator &other) const;
+    LayerIterator &operator++();
+    LayerIterator operator++(int);
+    Layer *operator*() const;
+    Layer *operator->() const;
+
 private:
     const Map *mMap;
     Layer *mCurrentLayer;
     int mSiblingIndex;
+    int mLayerTypes;
 };
 
 
 /**
  * Iterate the given map, starting from the first layer.
  */
-inline LayerIterator::LayerIterator(const Map *map)
+inline LayerIterator::LayerIterator(const Map *map, int layerTypes)
     : mMap(map)
     , mCurrentLayer(nullptr)
     , mSiblingIndex(-1)
+    , mLayerTypes(layerTypes)
 {}
 
 /**
@@ -312,6 +346,7 @@ inline LayerIterator::LayerIterator(Layer *start)
     : mMap(start ? start->map() : nullptr)
     , mCurrentLayer(start)
     , mSiblingIndex(start ? start->siblingIndex() : -1)
+    , mLayerTypes(Layer::AnyLayerType)
 {}
 
 inline Layer *LayerIterator::currentLayer() const
@@ -342,8 +377,38 @@ inline bool LayerIterator::hasParent() const
     return mCurrentLayer && mCurrentLayer->parentLayer();
 }
 
+inline bool LayerIterator::operator!=(const LayerIterator &other) const
+{
+    return !(*this == other);
+}
+
+inline LayerIterator &LayerIterator::operator++()
+{
+    next();
+    return *this;
+}
+
+inline LayerIterator LayerIterator::operator++(int)
+{
+    LayerIterator it = *this;
+    next();
+    return it;
+}
+
+inline Layer *LayerIterator::operator*() const
+{
+    return mCurrentLayer;
+}
+
+inline Layer *LayerIterator::operator->() const
+{
+    return mCurrentLayer;
+}
+
 
 TILEDSHARED_EXPORT int globalIndex(Layer *layer);
 TILEDSHARED_EXPORT Layer *layerAtGlobalIndex(const Map *map, int index);
 
 } // namespace Tiled
+
+Q_DECLARE_METATYPE(Tiled::Layer*)

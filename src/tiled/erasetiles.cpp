@@ -26,50 +26,59 @@
 #include <QCoreApplication>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 EraseTiles::EraseTiles(MapDocument *mapDocument,
                        TileLayer *tileLayer,
                        const QRegion &region)
     : mMapDocument(mapDocument)
-    , mTileLayer(tileLayer)
-    , mRegion(region)
     , mMergeable(false)
 {
     setText(QCoreApplication::translate("Undo Commands", "Erase"));
 
+    auto &data = mLayerData[tileLayer];
+    data.mRegion = region;
+
     // Store the tiles that are to be erased
-    const QRegion r = mRegion.translated(-mTileLayer->x(), -mTileLayer->y());
-    mErasedCells = mTileLayer->copy(r);
+    const QRegion r = region.translated(-tileLayer->position());
+    data.mErasedCells = tileLayer->copy(r).release();
 }
 
 EraseTiles::~EraseTiles()
 {
-    delete mErasedCells;
+    for (LayerData &data : mLayerData)
+        delete data.mErasedCells;
 }
 
 void EraseTiles::undo()
 {
-    const QRect bounds = mRegion.boundingRect();
-    TilePainter painter(mMapDocument, mTileLayer);
-    painter.drawCells(bounds.x(), bounds.y(), mErasedCells);
+    QHashIterator<TileLayer*, LayerData> it(mLayerData);
+    while (it.hasNext()) {
+        const LayerData &data = it.next().value();
+        const QRect bounds = data.mRegion.boundingRect();
+        TilePainter painter(mMapDocument, it.key());
+        painter.drawCells(bounds.x(), bounds.y(), data.mErasedCells);
+    }
 }
 
 void EraseTiles::redo()
 {
-    TilePainter painter(mMapDocument, mTileLayer);
-    painter.erase(mRegion);
+    QHashIterator<TileLayer*, LayerData> it(mLayerData);
+    while (it.hasNext()) {
+        const LayerData &data = it.next().value();
+        TilePainter painter(mMapDocument, it.key());
+        painter.erase(data.mRegion);
+    }
 }
 
-bool EraseTiles::mergeWith(const QUndoCommand *other)
+void EraseTiles::LayerData::mergeWith(const EraseTiles::LayerData &o)
 {
-    const EraseTiles *o = static_cast<const EraseTiles*>(other);
-    if (!(mMapDocument == o->mMapDocument &&
-          mTileLayer == o->mTileLayer &&
-          o->mMergeable))
-        return false;
+    if (!mErasedCells) {
+        mErasedCells = o.mErasedCells->clone();
+        mRegion = o.mRegion;
+        return;
+    }
 
-    const QRegion combinedRegion = mRegion.united(o->mRegion);
+    const QRegion combinedRegion = mRegion.united(o.mRegion);
     if (mRegion != combinedRegion) {
         const QRect bounds = mRegion.boundingRect();
         const QRect combinedBounds = combinedRegion.boundingRect();
@@ -81,11 +90,26 @@ bool EraseTiles::mergeWith(const QUndoCommand *other)
         }
 
         // Copy the newly erased tiles over
-        const QRect otherBounds = o->mRegion.boundingRect();
+        const QRect otherBounds = o.mRegion.boundingRect();
         const QPoint pos = otherBounds.topLeft() - combinedBounds.topLeft();
-        mErasedCells->merge(pos, o->mErasedCells);
+        mErasedCells->merge(pos, o.mErasedCells);
 
         mRegion = combinedRegion;
+    }
+}
+
+bool EraseTiles::mergeWith(const QUndoCommand *other)
+{
+    const EraseTiles *o = static_cast<const EraseTiles*>(other);
+    if (!(mMapDocument == o->mMapDocument && o->mMergeable))
+        return false;
+    if (!cloneChildren(other, this))
+        return false;
+
+    QHashIterator<TileLayer*, LayerData> it(o->mLayerData);
+    while (it.hasNext()) {
+        it.next();
+        mLayerData[it.key()].mergeWith(it.value());
     }
 
     return true;

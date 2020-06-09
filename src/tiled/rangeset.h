@@ -20,10 +20,11 @@
 
 #pragma once
 
+#include <QDebug>
+
 #include <map>
 
 namespace Tiled {
-namespace Internal {
 
 /**
  * Logically, a set, but implemented as a set of ranges. This class is only
@@ -159,6 +160,33 @@ public:
     }
 
     /**
+     * Translate the ranges in this set by the given \a offset.
+     */
+    RangeSet<Int> translated(Int offset) const
+    {
+        RangeSet<Int> translated;
+
+        for (const auto &range : mMap) {
+            translated.mMap.insert(std::make_pair(range.first + offset,
+                                                  range.second + offset));
+        }
+
+        return translated;
+    }
+
+    /**
+     * Merges the given \a other set into this one.
+     */
+    void merge(const RangeSet<Int> &other)
+    {
+        // This could be done more efficiently
+        for (const auto &range : other) {
+            for (int i = range.first; i <= range.second; ++i)
+                insert(i);
+        }
+    }
+
+    /**
      * Removes all ranges from this set.
      */
     void clear()
@@ -185,5 +213,17 @@ public:
     }
 };
 
-} // namespace Internal
+template<typename Int>
+QDebug operator<<(QDebug debug, const RangeSet<Int> &rangeSet)
+{
+    const bool oldSetting = debug.autoInsertSpaces();
+    debug.nospace() << "RangeSet(";
+    for (const auto &range : rangeSet) {
+        debug << '(' << range.first << ", " << range.second << ')';
+    }
+    debug << ')';
+    debug.setAutoInsertSpaces(oldSetting);
+    return debug.maybeSpace();
+}
+
 } // namespace Tiled

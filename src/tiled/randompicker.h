@@ -25,7 +25,12 @@
 #include <random>
 
 namespace Tiled {
-namespace Internal {
+
+inline std::default_random_engine &globalRandomEngine()
+{
+    static std::default_random_engine engine(std::random_device{}());
+    return engine;
+}
 
 /**
  * A class that helps pick random things that each have a probability
@@ -37,7 +42,6 @@ class RandomPicker
 public:
     RandomPicker()
         : mSum(0.0)
-        , mRandomEngine(std::random_device{}())
     {}
 
     void add(const T &value, Real probability = 1.0)
@@ -58,7 +62,7 @@ public:
         Q_ASSERT(!isEmpty());
 
         std::uniform_real_distribution<Real> dis(0, mSum);
-        const Real random = dis(mRandomEngine);
+        const Real random = dis(globalRandomEngine());
         const auto it = mThresholds.lowerBound(random);
         if (it != mThresholds.end())
             return it.value();
@@ -72,7 +76,7 @@ public:
         Q_ASSERT(!isEmpty());
 
         std::uniform_real_distribution<Real> dis(0, mSum);
-        const Real random = dis(mRandomEngine);
+        const Real random = dis(globalRandomEngine());
         const auto it = mThresholds.lowerBound(random);
 
         if (it != mThresholds.end())
@@ -90,8 +94,6 @@ public:
 private:
     Real mSum;
     QMap<Real, T> mThresholds;
-    mutable std::default_random_engine mRandomEngine;
 };
 
-} // namespace Internal
 } // namespace Tiled

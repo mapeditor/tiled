@@ -21,14 +21,15 @@
 
 #pragma once
 
-#include "document.h"
-#include "tileset.h"
+#include "mapdocument.h"
+#include "tilesetdocument.h"
 
+#include <QHash>
 #include <QList>
 #include <QObject>
-#include <QPair>
 #include <QPointF>
-#include <QSet>
+#include <QPointer>
+#include <QVector>
 
 class QTabWidget;
 class QUndoGroup;
@@ -39,20 +40,19 @@ namespace Tiled {
 
 class FileSystemWatcher;
 
-namespace Internal {
-
 class AbstractTool;
 class BrokenLinksModel;
 class BrokenLinksWidget;
 class Document;
 class Editor;
 class FileChangedWarning;
+class MainWindow;
 class MapDocument;
 class MapEditor;
-class MapScene;
 class MapView;
 class TilesetDocument;
 class TilesetDocumentsModel;
+class WorldDocument;
 
 /**
  * This class controls the open documents.
@@ -61,19 +61,21 @@ class DocumentManager : public QObject
 {
     Q_OBJECT
 
+    Q_PROPERTY(Document *currentDocument READ currentDocument NOTIFY currentDocumentChanged)
+
+    DocumentManager(QObject *parent = nullptr);
+    ~DocumentManager() override;
+
+    friend class MainWindow;
+
 public:
     static DocumentManager *instance();
-    static void deleteInstance();
 
-    /**
-     * Returns the document manager widget. It contains the different map views
-     * and a tab bar to switch between them.
-     */
     QWidget *widget() const;
 
     void setEditor(Document::DocumentType documentType, Editor *editor);
     Editor *editor(Document::DocumentType documentType) const;
-    void deleteEditor(Document::DocumentType documentType);
+    void deleteEditors();
     QList<Editor*> editors() const;
 
     Editor *currentEditor() const;
@@ -81,132 +83,74 @@ public:
     void saveState();
     void restoreState();
 
-    /**
-     * Returns the undo group that combines the undo stacks of all opened map
-     * documents.
-     *
-     * @see Document::undoStack()
-     */
-    QUndoGroup *undoGroup() const { return mUndoGroup; }
+    QUndoGroup *undoGroup() const;
 
-    /**
-     * Returns the current map document, or 0 when there is none.
-     */
     Document *currentDocument() const;
 
-    /**
-     * Returns the map view of the current document, or 0 when there is none.
-     */
     MapView *currentMapView() const;
-
     MapView *viewForDocument(MapDocument *mapDocument) const;
 
-    /**
-     * Returns the number of map documents.
-     */
-    int documentCount() const { return mDocuments.size(); }
-
-    /**
-     * Searches for a document with the given \a fileName and returns its
-     * index. Returns -1 when the document isn't open.
-     */
     int findDocument(const QString &fileName) const;
+    int findDocument(Document *document) const;
 
-    /**
-     * Switches to the map document at the given \a index.
-     */
     void switchToDocument(int index);
+    bool switchToDocument(const QString &fileName);
     bool switchToDocument(Document *document);
+    void switchToDocument(MapDocument *mapDocument, QPointF viewCenter, qreal scale);
+    void switchToDocumentAndHandleSimiliarTileset(MapDocument *mapDocument, QPointF viewCenter, qreal scale);
 
-    /**
-     * Adds the new or opened \a document to the document manager.
-     */
-    void addDocument(Document *document);
+    void addDocument(const DocumentPtr &document);
+    void insertDocument(int index, const DocumentPtr &document);
 
     bool isDocumentModified(Document *document) const;
-    bool isDocumentChangedOnDisk(Document *document) const;
+
+    DocumentPtr loadDocument(const QString &fileName,
+                             FileFormat *fileFormat = nullptr,
+                             QString *error = nullptr);
 
     bool saveDocument(Document *document, const QString &fileName);
     bool saveDocumentAs(Document *document);
 
-    /**
-     * Closes the current map document. Will not ask the user whether to save
-     * any changes!
-     */
     void closeCurrentDocument();
-
-    /**
-     * Closes all documents except the one pointed to by index.
-     */
-    void closeOtherDocuments(int index);
-
-    /**
-     * Closes all documents whose tabs are to the right of the index.
-     */
-    void closeDocumentsToRight(int index);
-
-    /**
-     * Closes the document at the given \a index. Will not ask the user whether
-     * to save any changes!
-     */
-    void closeDocumentAt(int index);
-
-    /**
-     * Reloads the current document. Will not ask the user whether to save any
-     * changes!
-     *
-     * \sa reloadDocumentAt()
-     */
-    bool reloadCurrentDocument();
-
-    /**
-     * Reloads the document at the given \a index. It will lose any undo
-     * history and current selections. Will not ask the user whether to save
-     * any changes!
-     *
-     * Returns whether the map loaded successfully.
-     */
-    bool reloadDocumentAt(int index);
-
-    /**
-     * Close all documents. Will not ask the user whether to save any changes!
-     */
     void closeAllDocuments();
 
-    void checkTilesetColumns(MapDocument *mapDocument);
+    void closeOtherDocuments(int index);
+    void closeDocumentsToRight(int index);
+    void closeDocumentAt(int index);
 
-    /**
-     * Returns all open map documents.
-     */
-    const QList<Document*> &documents() const { return mDocuments; }
+    bool reloadCurrentDocument();
+    bool reloadDocumentAt(int index);
+
+    void checkTilesetColumns(MapDocument *mapDocument);
+    bool checkTilesetColumns(TilesetDocument *tilesetDocument);
+
+    const QVector<DocumentPtr> &documents() const;
 
     TilesetDocumentsModel *tilesetDocumentsModel() const;
 
     TilesetDocument *findTilesetDocument(const SharedTileset &tileset) const;
     TilesetDocument *findTilesetDocument(const QString &fileName) const;
 
-    /**
-     * Opens the document for the given \a tileset.
-     */
     void openTileset(const SharedTileset &tileset);
 
-    /**
-     * Centers the current map on the tile coordinates \a x, \a y.
-     */
-    void centerMapViewOn(qreal x, qreal y);
-    void centerMapViewOn(const QPointF &pos)
-    { centerMapViewOn(pos.x(), pos.y()); }
-
-    /**
-     * Unsets a flag to stop closeOtherDocuments() and closeDocumentsToRight()
-     * when Cancel is pressed
-     */
     void abortMultiDocumentClose();
 
+    WorldDocument *ensureWorldDocument(const QString &fileName);
+    bool isAnyWorldModified() const;
+    bool isWorldModified(const QString &fileName) const;
+
 signals:
-    void fileOpenRequested();
+    void documentCreated(Document *document);
+    void documentOpened(Document *document);
+    void documentAboutToBeSaved(Document *document);
+    void documentSaved(Document *document);
+
+    void fileOpenDialogRequested();
     void fileOpenRequested(const QString &path);
     void fileSaveRequested();
+    void templateOpenRequested(const QString &path);
+    void selectCustomPropertyRequested(const QString &name);
+    void templateTilesetReplaced();
 
     /**
      * Emitted when the current displayed map document changed.
@@ -223,6 +167,8 @@ signals:
      */
     void documentAboutToClose(Document *document);
 
+    void currentEditorChanged(Editor *editor);
+
     /**
      * Emitted when an error occurred while reloading the map.
      */
@@ -235,46 +181,48 @@ public slots:
     void switchToLeftDocument();
     void switchToRightDocument();
 
-    void openFile();
+    void openFileDialog();
     void openFile(const QString &path);
     void saveFile();
 
-private slots:
+private:
+    void onWorldUnloaded(const QString &worldFile);
+
     void currentIndexChanged();
     void fileNameChanged(const QString &fileName,
                          const QString &oldFileName);
-    void modifiedChanged();
     void updateDocumentTab(Document *document);
-    void documentSaved();
+    void onDocumentSaved();
     void documentTabMoved(int from, int to);
     void tabContextMenuRequested(const QPoint &pos);
 
     void tilesetAdded(int index, Tileset *tileset);
     void tilesetRemoved(Tileset *tileset);
-    void tilesetReplaced(int index, Tileset *tileset, Tileset *oldTileset);
 
     void tilesetNameChanged(Tileset *tileset);
 
+    void filesChanged(const QStringList &fileNames);
     void fileChanged(const QString &fileName);
     void hideChangedWarning();
 
     void tilesetImagesChanged(Tileset *tileset);
-
-private:
-    DocumentManager(QObject *parent = nullptr);
-    ~DocumentManager();
 
     bool askForAdjustment(const Tileset &tileset);
 
     void addToTilesetDocument(const SharedTileset &tileset, MapDocument *mapDocument);
     void removeFromTilesetDocument(const SharedTileset &tileset, MapDocument *mapDocument);
 
-    bool eventFilter(QObject *object, QEvent *event) override;
+    void updateSession() const;
 
-    QList<Document*> mDocuments;
+    MapDocument *openMapFile(const QString &path);
+    TilesetDocument *openTilesetFile(const QString &path);
+
+    QVector<DocumentPtr> mDocuments;
+    QMap<QString, WorldDocument*> mWorldDocuments;
     TilesetDocumentsModel *mTilesetDocumentsModel;
 
-    QWidget *mWidget;
+    // Pointer becomes null when deleted as part of the UI, to prevent double-deletion
+    QPointer<QWidget> mWidget;
     QWidget *mNoEditorWidget;
     QTabBar *mTabBar;
     FileChangedWarning *mFileChangedWarning;
@@ -287,19 +235,34 @@ private:
 
     QUndoGroup *mUndoGroup;
     FileSystemWatcher *mFileSystemWatcher;
-    QSet<Document*> mDocumentsChangedOnDisk;
-
-    QMap<SharedTileset, TilesetDocument*> mTilesetToDocument;
 
     static DocumentManager *mInstance;
 
     bool mMultiDocumentClose;
 };
 
+/**
+ * Returns the undo group that combines the undo stacks of all opened
+ * documents.
+ *
+ * @see Document::undoStack()
+ */
+inline QUndoGroup *DocumentManager::undoGroup() const
+{
+    return mUndoGroup;
+}
+
+/**
+ * Returns all open documents.
+ */
+inline const QVector<DocumentPtr> &DocumentManager::documents() const
+{
+    return mDocuments;
+}
+
 inline TilesetDocumentsModel *DocumentManager::tilesetDocumentsModel() const
 {
     return mTilesetDocumentsModel;
 }
 
-} // namespace Tiled::Internal
 } // namespace Tiled

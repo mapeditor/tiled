@@ -25,52 +25,60 @@
 #include <QVariant>
 
 #include "gidmapper.h"
-#include "tidmapper.h"
 
 namespace Tiled {
 
 class GroupLayer;
+class ObjectTemplate;
+class WangColor;
+class WangSet;
 struct TextData;
 
 /**
  * Converts Map instances to QVariant. Meant to be used together with
  * JsonWriter.
+ *
+ * The 'version' is interpreted as follows:
+ *  1: The JSON format used by Tiled 1.1 and earlier
+ *  2: The simplified JSON format used from Tiled 1.2 onwards
  */
 class TILEDSHARED_EXPORT MapToVariantConverter
 {
 public:
-    MapToVariantConverter() {}
+    explicit MapToVariantConverter(int version = 2)
+        : mVersion(version)
+    {}
 
     /**
-     * Converts the given \s map to a QVariant. The \a mapDir is used to
+     * Converts the given \a map to a QVariant. The \a mapDir is used to
      * construct relative paths to external resources.
      */
     QVariant toVariant(const Map &map, const QDir &mapDir);
 
     /**
-     * Converts the given \s tileset to a QVariant. The \a directory is used to
+     * Converts the given \a tileset to a QVariant. The \a directory is used to
      * construct relative paths to external resources.
      */
     QVariant toVariant(const Tileset &tileset, const QDir &directory);
-    QVariant toVariant(const TemplateGroup &templateGroup, const QDir &directory);
+    QVariant toVariant(const ObjectTemplate &objectTemplate, const QDir &directory);
 
 private:
     QVariant toVariant(const Tileset &tileset, int firstGid) const;
-    QVariant toVariant(const TemplateGroup &templateGroup, int firstTid) const;
     QVariant toVariant(const Properties &properties) const;
     QVariant propertyTypesToVariant(const Properties &properties) const;
-    QVariant toVariant(const QList<Layer*> &layers, Map::LayerDataFormat format) const;
-    QVariant toVariant(const TileLayer &tileLayer, Map::LayerDataFormat format) const;
+    QVariant toVariant(const WangSet &wangSet) const;
+    QVariant toVariant(const WangColor &wangColor) const;
+    QVariant toVariant(const QList<Layer*> &layers, Map::LayerDataFormat format, int compressionLevel, QSize chunkSize) const;
+    QVariant toVariant(const TileLayer &tileLayer, Map::LayerDataFormat format, int compressionLevel, QSize chunkSize) const;
     QVariant toVariant(const ObjectGroup &objectGroup) const;
     QVariant toVariant(const MapObject &object) const;
-    QVariant toVariant(const ObjectTemplate &objectTemplate) const;
     QVariant toVariant(const TextData &textData) const;
     QVariant toVariant(const ImageLayer &imageLayer) const;
-    QVariant toVariant(const GroupLayer &groupLayer, Map::LayerDataFormat format) const;
+    QVariant toVariant(const GroupLayer &groupLayer, Map::LayerDataFormat format, int compressionLevel, QSize chunkSize) const;
 
     void addTileLayerData(QVariantMap &variant,
                           const TileLayer &tileLayer,
-                          Map::LayerDataFormat format,
+                          Map::LayerDataFormat format, int compressionLevel,
                           const QRect &bounds) const;
 
     void addLayerAttributes(QVariantMap &layerVariant,
@@ -79,9 +87,9 @@ private:
     void addProperties(QVariantMap &variantMap,
                        const Properties &properties) const;
 
-    QDir mMapDir;
+    int mVersion;
+    QDir mDir;
     GidMapper mGidMapper;
-    TidMapper mTidMapper;
 };
 
 } // namespace Tiled

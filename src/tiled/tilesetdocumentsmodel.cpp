@@ -28,7 +28,6 @@
 #include <algorithm>
 
 namespace Tiled {
-namespace Internal {
 
 TilesetDocumentsModel::TilesetDocumentsModel(QObject *parent)
     : QAbstractListModel(parent)
@@ -42,11 +41,11 @@ int TilesetDocumentsModel::rowCount(const QModelIndex &parent) const
 
 QVariant TilesetDocumentsModel::data(const QModelIndex &index, int role) const
 {
-    TilesetDocument *document = mTilesetDocuments.at(index.row());
+    const auto &document = mTilesetDocuments.at(index.row());
 
     switch (role) {
     case TilesetDocumentRole:
-        return QVariant::fromValue(document);
+        return QVariant::fromValue(document.data());
     case TilesetRole:
         return QVariant::fromValue(document->tileset());
     case Qt::DisplayRole:
@@ -61,7 +60,7 @@ QVariant TilesetDocumentsModel::data(const QModelIndex &index, int role) const
 void TilesetDocumentsModel::insert(int index, TilesetDocument *tilesetDocument)
 {
     beginInsertRows(QModelIndex(), index, index);
-    mTilesetDocuments.insert(index, tilesetDocument);
+    mTilesetDocuments.insert(index, tilesetDocument->sharedFromThis());
     endInsertRows();
 
     connect(tilesetDocument, &TilesetDocument::tilesetNameChanged,
@@ -73,7 +72,7 @@ void TilesetDocumentsModel::insert(int index, TilesetDocument *tilesetDocument)
 void TilesetDocumentsModel::remove(int index)
 {
     beginRemoveRows(QModelIndex(), index, index);
-    TilesetDocument *tilesetDocument = mTilesetDocuments.takeAt(index);
+    auto tilesetDocument = mTilesetDocuments.takeAt(index);
     endRemoveRows();
 
     tilesetDocument->disconnect(this);
@@ -82,7 +81,7 @@ void TilesetDocumentsModel::remove(int index)
 void TilesetDocumentsModel::tilesetNameChanged(Tileset *tileset)
 {
     for (int i = 0; i < mTilesetDocuments.size(); ++i) {
-        TilesetDocument *doc = mTilesetDocuments.at(i);
+        const auto &doc = mTilesetDocuments.at(i);
         if (doc->tileset() == tileset) {
             const QModelIndex dataIndex = index(i, 0, QModelIndex());
             emit dataChanged(dataIndex, dataIndex, { Qt::DisplayRole });
@@ -135,5 +134,4 @@ bool TilesetDocumentsFilterModel::filterAcceptsRow(int sourceRow, const QModelIn
     return accepted;
 }
 
-} // namespace Internal
 } // namespace Tiled

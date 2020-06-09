@@ -61,7 +61,7 @@ Background Color
 
 .. raw:: html
 
-   <div class="new new-prev">New in Tiled 1.0</div>
+   <div class="new new-prev">Since Tiled 1.0</div>
 
 Orientation
    When the tileset contains isometric tiles, you can set this to
@@ -94,7 +94,7 @@ ID
 
 .. raw:: html
 
-   <div class="new new-prev">New in Tiled 1.0</div>
+   <div class="new new-prev">Since Tiled 1.0</div>
 
 Type
    This property refers to custom types defined in the :ref:`Object Types Editor <predefining-properties>`.
@@ -123,7 +123,7 @@ the :ref:`terrain-tool`. See the section about
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.1</div>
+   <div class="new new-prev">Since Tiled 1.1</div>
 
 .. _wang-sets:
 
@@ -196,11 +196,11 @@ The following steps allow to add or edit a tile animation:
 A preview of the animation shows in the bottom left corner.
 
 .. |tile-collision-editor-icon|
-   image:: ../../src/tiled/images/48x48/tile-collision-editor.png
+   image:: ../../src/tiled/images/48/tile-collision-editor.png
       :scale: 50
 
 .. |tile-animation-editor-icon|
-   image:: ../../src/tiled/images/24x24/animation-edit.png
+   image:: ../../src/tiled/images/24/animation-edit.png
 
 .. _Tiled2Unity: http://www.seanba.com/Tiled2Unity
 .. _Mega Dad Adventures: http://www.seanba.com/megadadadventures.html

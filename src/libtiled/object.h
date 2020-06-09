@@ -44,7 +44,6 @@ public:
         MapObjectType,
         MapType,
         ObjectTemplateType,
-        TemplateGroupType,
         TerrainType,
         TilesetType,
         TileType,
@@ -52,12 +51,7 @@ public:
         WangColorType
     };
 
-    Object(TypeId typeId) : mTypeId(typeId) {}
-
-    Object(const Object &object) :
-        mTypeId(object.mTypeId),
-        mProperties(object.mProperties)
-    {}
+    explicit Object(TypeId typeId) : mTypeId(typeId) {}
 
     /**
      * Virtual destructor.
@@ -90,10 +84,10 @@ public:
      * Merges \a properties with the existing properties. Properties with the
      * same name will be overridden.
      *
-     * \sa Properties::merge
+     * \sa Tiled::mergeProperties
      */
     void mergeProperties(const Properties &properties)
-    { mProperties.merge(properties); }
+    { Tiled::mergeProperties(mProperties, properties); }
 
     /**
      * Returns the value of the object's \a name property.
@@ -101,7 +95,8 @@ public:
     QVariant property(const QString &name) const
     { return mProperties.value(name); }
 
-    QVariant inheritedProperty(const QString &name) const;
+    QVariant resolvedProperty(const QString &name) const;
+    QVariantMap resolvedProperties() const;
 
     /**
      * Returns the value of the object's \a name property, as a string.
@@ -111,6 +106,12 @@ public:
      */
     QString propertyAsString(const QString &name) const
     { return mProperties.value(name).toString(); }
+
+    /**
+     * Returns the type of the object's \a name property, as a string.
+     */
+    QString propertyType(const QString &name) const
+    { return typeToName(mProperties.value(name).userType()); }
 
     /**
      * Returns whether this object has a property with the given \a name.

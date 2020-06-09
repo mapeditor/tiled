@@ -29,8 +29,6 @@ namespace Tiled {
 
 class Terrain;
 
-namespace Internal {
-
 class TilesetDocument;
 class Zoomable;
 
@@ -64,6 +62,9 @@ public:
     qreal scale() const;
 
     bool drawGrid() const { return mDrawGrid; }
+
+    void setDynamicWrapping(bool enabled);
+    bool dynamicWrapping() const;
 
     void setModel(QAbstractItemModel *model) override;
 
@@ -146,8 +147,9 @@ protected:
     void leaveEvent(QEvent *) override;
     void wheelEvent(QWheelEvent *event) override;
     void contextMenuEvent(QContextMenuEvent *event) override;
+    void resizeEvent(QResizeEvent *event) override;
 
-private slots:
+private:
     void addTerrainType();
     void selectTerrainImage();
     void selectWangSetImage();
@@ -157,8 +159,8 @@ private slots:
     void setDrawGrid(bool drawGrid);
 
     void adjustScale();
+    void refreshColumnCount();
 
-private:
     void applyTerrain();
     void finishTerrainChange();
     void applyWangId();
@@ -172,25 +174,31 @@ private:
         Edge     //Assigning color to edges
     };
 
+    enum WrapBehavior {
+        WrapDefault,
+        WrapDynamic,
+        WrapFixed,
+    };
+
     Zoomable *mZoomable;
-    TilesetDocument *mTilesetDocument;
+    TilesetDocument *mTilesetDocument = nullptr;
     bool mDrawGrid;
-
-    bool mMarkAnimatedTiles;
-    bool mEditTerrain;
-    bool mEditWangSet;
-    WangBehavior mWangBehavior;
-    bool mEraseTerrain;
-    const Terrain *mTerrain;
-    WangSet *mWangSet;
-    WangId mWangId;
-    int mWangColor;
+    bool mMarkAnimatedTiles = true;
+    bool mEditTerrain = false;
+    bool mEditWangSet = false;
+    WrapBehavior mWrapBehavior = WrapDefault;
+    WangBehavior mWangBehavior = WholeId;
+    bool mEraseTerrain = false;
+    const Terrain *mTerrain = nullptr;
+    WangSet *mWangSet = nullptr;
+    WangId mWangId = 0;
+    int mWangColorIndex = 0;
     QModelIndex mHoveredIndex;
-    int mHoveredCorner;
-    bool mTerrainChanged;
-    bool mWangIdChanged;
+    int mHoveredCorner = 0;
+    bool mTerrainChanged = false;
+    bool mWangIdChanged = false;
 
-    bool mHandScrolling;
+    bool mHandScrolling = false;
     QPoint mLastMousePos;
 
     const QIcon mImageMissingIcon;
@@ -206,7 +214,6 @@ inline bool TilesetView::markAnimatedTiles() const
     return mMarkAnimatedTiles;
 }
 
-} // namespace Internal
 } // namespace Tiled
 
-Q_DECLARE_METATYPE(Tiled::Internal::TilesetView *)
+Q_DECLARE_METATYPE(Tiled::TilesetView *)

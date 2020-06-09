@@ -21,12 +21,15 @@
 
 #pragma once
 
+#include "tiled_global.h"
+#include "filesystemwatcher.h"
+
+#include <QHash>
 #include <QObject>
 
-#include "tiled_global.h"
-#include "templategroup.h"
-
 namespace Tiled {
+
+class ObjectTemplate;
 
 class TILEDSHARED_EXPORT TemplateManager : public QObject
 {
@@ -36,27 +39,36 @@ public:
     static TemplateManager *instance();
     static void deleteInstance();
 
-    TemplateGroup *findTemplateGroup(const QString &fileName);
-    TemplateGroup *loadTemplateGroup(const QString &fileName, QString *error);
-    const ObjectTemplate *findTemplate(const QString &fileName, unsigned templateId);
+    ObjectTemplate *findObjectTemplate(const QString &fileName);
+    ObjectTemplate *loadObjectTemplate(const QString &fileName,
+                                       QString *error = nullptr);
 
-    void setTemplateGroups(TemplateGroups templateGroups);
-    void addTemplateGroup(TemplateGroup *templateGroup);
+signals:
+    /**
+     * Template has changed and instances need an update.
+     *
+     * Currently emitted from the TemplatesDock, and whenever a template
+     * file changes.
+     */
+    void objectTemplateChanged(ObjectTemplate *objectTemplate);
 
 private:
     Q_DISABLE_COPY(TemplateManager)
 
     TemplateManager(QObject *parent = nullptr);
+    ~TemplateManager();
 
-    TemplateGroups mTemplateGroups;
+    void fileChanged(const QString &fileName);
+
+    QHash<QString, ObjectTemplate*> mObjectTemplates;
+    FileSystemWatcher *mWatcher;
 
     static TemplateManager *mInstance;
 };
 
-inline void TemplateManager::setTemplateGroups(TemplateGroups templateGroups)
-{ mTemplateGroups = templateGroups; }
+inline ObjectTemplate *TemplateManager::findObjectTemplate(const QString &fileName)
+{
+    return mObjectTemplates.value(fileName);
+}
 
-inline void TemplateManager::addTemplateGroup(TemplateGroup *templateGroup)
-{ mTemplateGroups.append(templateGroup); }
-
-} // namespace Tiled::Internal
+} // namespace Tiled

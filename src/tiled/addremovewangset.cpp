@@ -28,7 +28,6 @@
 #include <QCoreApplication>
 
 using namespace Tiled;
-using namespace Internal;
 
 AddRemoveWangSet::AddRemoveWangSet(TilesetDocument *tilesetDocument,
                                    int index,

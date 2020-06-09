@@ -27,18 +27,16 @@ namespace Tiled {
 
 class MapObject;
 
-namespace Internal {
-
-class MapDocument;
+class Document;
 
 class ResizeMapObject : public QUndoCommand
 {
 public:
-    ResizeMapObject(MapDocument *mapDocument,
+    ResizeMapObject(Document *document,
                     MapObject *mapObject,
                     const QSizeF &oldSize);
 
-    ResizeMapObject(MapDocument *mapDocument,
+    ResizeMapObject(Document *document,
                     MapObject *mapObject,
                     const QSizeF &newSize,
                     const QSizeF &oldSize);
@@ -47,12 +45,11 @@ public:
     void redo() override;
 
 private:
-    MapDocument *mMapDocument;
+    Document *mDocument;
     MapObject *mMapObject;
     QSizeF mOldSize;
     QSizeF mNewSize;
     bool mOldChangeState;
 };
 
-} // namespace Internal
 } // namespace Tiled

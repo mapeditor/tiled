@@ -27,26 +27,21 @@ namespace Tiled {
 class MapObject;
 class ObjectGroup;
 
-namespace Internal {
-
-class MapDocument;
+class AddMapObjects;
+class Document;
+class RemoveMapObjects;
 
 class MoveMapObjectToGroup : public QUndoCommand
 {
 public:
-    MoveMapObjectToGroup(MapDocument *mapDocument,
+    MoveMapObjectToGroup(Document *document,
                          MapObject *mapObject,
                          ObjectGroup *objectGroup);
-
-    void undo() override;
-    void redo() override;
+    ~MoveMapObjectToGroup() override;
 
 private:
-    MapDocument *mMapDocument;
-    MapObject *mMapObject;
-    ObjectGroup *mOldObjectGroup;
-    ObjectGroup *mNewObjectGroup;
+    RemoveMapObjects *mRemoveMapObject;
+    AddMapObjects *mAddMapObject;
 };
 
-} // namespace Internal
 } // namespace Tiled

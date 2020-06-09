@@ -29,17 +29,53 @@
 #include "maprenderer.h"
 
 #include "imagelayer.h"
+#include "isometricrenderer.h"
+#include "map.h"
 #include "mapobject.h"
+#include "orthogonalrenderer.h"
 #include "tile.h"
 #include "tilelayer.h"
+#include "objectgroup.h"
 
 #include <QPaintEngine>
 #include <QPainter>
 #include <QVector2D>
 
+#include "qtcompat_p.h"
+
 #include <cmath>
+#include <memory>
 
 using namespace Tiled;
+
+static QPixmap tinted(const QPixmap &pixmap, const QColor &color)
+{
+    if (!color.isValid() || color == QColor(255, 255, 255, 255))
+        return pixmap;
+
+    QPixmap resultImage = pixmap;
+    QPainter painter(&resultImage);
+
+    QColor fullOpacity = color;
+    fullOpacity.setAlpha(255);
+    // tint the final color (this will will mess up the alpha which we will fix
+    // in the next lines)
+    painter.setCompositionMode(QPainter::CompositionMode_Multiply);
+    painter.fillRect(resultImage.rect(), fullOpacity);
+
+    // apply the original alpha to the final image
+    painter.setCompositionMode(QPainter::CompositionMode_DestinationIn);
+    painter.drawPixmap(0, 0, pixmap);
+
+    // apply the alpha of the tint color so that we can use it to make the image
+    // transparent instead of just increasing or decreasing the tint effect
+    painter.setCompositionMode(QPainter::CompositionMode_DestinationIn);
+    painter.fillRect(resultImage.rect(), color);
+
+    painter.end();
+
+    return resultImage;
+}
 
 MapRenderer::~MapRenderer()
 {}
@@ -49,13 +85,37 @@ QRectF MapRenderer::boundingRect(const ImageLayer *imageLayer) const
     return QRectF(QPointF(), imageLayer->image().size());
 }
 
+QPainterPath MapRenderer::pointShape(const QPointF &position) const
+{
+    QPainterPath path;
+
+    const qreal radius = 10.0;
+    const qreal sweep = 235.0;
+    const qreal startAngle = 90.0 - sweep / 2;
+    QRectF rectangle(-radius, -radius, radius * 2, radius * 2);
+    path.moveTo(radius * cos(startAngle * M_PI / 180.0), -radius * sin(startAngle * M_PI / 180.0));
+    path.arcTo(rectangle, startAngle, sweep);
+    path.lineTo(0, 2 * radius);
+    path.closeSubpath();
+
+    QPainterPath hole;
+    const qreal smallRadius = radius / 2.0;
+    hole.addEllipse(QRectF(-smallRadius, -smallRadius, smallRadius * 2, smallRadius * 2));
+    path = path.subtracted(hole);
+
+    path.translate(pixelToScreenCoords(position) +
+                   QPointF(0, -2 * radius));
+
+    return path;
+}
+
 void MapRenderer::drawImageLayer(QPainter *painter,
                                  const ImageLayer *imageLayer,
                                  const QRectF &exposed)
 {
     Q_UNUSED(exposed)
 
-    painter->drawPixmap(QPointF(), imageLayer->image());
+    painter->drawPixmap(QPointF(), tinted(imageLayer->image(), imageLayer->effectiveTintColor()));
 }
 
 void MapRenderer::drawPointObject(QPainter *painter, const QColor &color) const
@@ -80,9 +140,9 @@ void MapRenderer::drawPointObject(QPainter *painter, const QColor &color) const
 
     QPainterPath path;
 
-    const float radius = 10.f;
-    const float sweep = 235.f;
-    const float startAngle = 90.f - sweep / 2;
+    const qreal radius = 10.0;
+    const qreal sweep = 235.0;
+    const qreal startAngle = 90.0 - sweep / 2;
     QRectF rectangle(-radius, -radius, radius * 2, radius * 2);
     path.moveTo(radius * cos(startAngle * M_PI / 180.0), -radius * sin(startAngle * M_PI / 180.0));
     path.arcTo(rectangle, startAngle, sweep);
@@ -101,11 +161,11 @@ void MapRenderer::drawPointObject(QPainter *painter, const QColor &color) const
 
     const QBrush opaqueBrush(color);
     painter->setBrush(opaqueBrush);
-    const float smallRadius = radius / 3;
-    painter->drawEllipse(-smallRadius, -smallRadius, smallRadius * 2, smallRadius * 2);
+    const qreal smallRadius = radius / 3.0;
+    painter->drawEllipse(QRectF(-smallRadius, -smallRadius, smallRadius * 2, smallRadius * 2));
 }
 
-QPainterPath MapRenderer::pointShape(const MapObject *object) const
+QPainterPath MapRenderer::pointInteractionShape(const MapObject *object) const
 {
     Q_ASSERT(object->shape() == MapObject::Point);
     QPainterPath path;
@@ -116,10 +176,14 @@ QPainterPath MapRenderer::pointShape(const MapObject *object) const
 
 void MapRenderer::setFlag(RenderFlag flag, bool enabled)
 {
+#if QT_VERSION >= 0x050700
+    mFlags.setFlag(flag, enabled);
+#else
     if (enabled)
         mFlags |= flag;
     else
         mFlags &= ~flag;
+#endif
 }
 
 /**
@@ -148,7 +212,7 @@ QPen MapRenderer::makeGridPen(const QPaintDevice *device, QColor color) const
     const qreal devicePixelRatio = device->devicePixelRatioF();
 
 #ifdef Q_OS_MAC
-    const qreal dpiScale = 1.0f;
+    const qreal dpiScale = 1.0;
 #else
     const qreal dpiScale = device->logicalDpiX() / 96.0;
 #endif
@@ -188,11 +252,13 @@ static bool hasOpenGLEngine(const QPainter *painter)
             type == QPaintEngine::OpenGL2);
 }
 
-CellRenderer::CellRenderer(QPainter *painter, const CellType cellType)
+CellRenderer::CellRenderer(QPainter *painter, const MapRenderer *renderer, const QColor &tintColor, CellType cellType)
     : mPainter(painter)
+    , mRenderer(renderer)
     , mTile(nullptr)
     , mIsOpenGL(hasOpenGLEngine(painter))
     , mCellType(cellType)
+    , mTintColor(tintColor)
 {
 }
 
@@ -204,6 +270,8 @@ CellRenderer::CellRenderer(QPainter *painter, const CellType cellType)
  * kind of tile has to be drawn. For this reason it is necessary to call
  * flush when finished doing drawCell calls. This function is also called by
  * the destructor so usually an explicit call is not needed.
+ *
+ * This call expects `painter.translate(pos)` to correspond to the Origin point.
  */
 void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &size, Origin origin)
 {
@@ -213,14 +281,18 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &si
         tile = tile->currentFrameTile();
 
     if (!tile || tile->image().isNull()) {
-        QRectF target { pos - QPointF(0, size.height()), size };
-        if (origin == BottomCenter)
-            target.moveLeft(target.left() - size.width() / 2);
+        QRectF target { pos, size };
+
+        if (origin == BottomLeft)
+            target.translate(0.0, -size.height());
+
         renderMissingImageMarker(*mPainter, target);
         return;
     }
 
-    if (mTile != tile)
+    // The USHRT_MAX limit is rather arbitrary but avoids a crash in
+    // drawPixmapFragments for a large number of fragments.
+    if (mTile != tile || mFragments.size() == USHRT_MAX)
         flush();
 
     const QPixmap &image = tile->image();
@@ -236,8 +308,9 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &si
     bool flippedVertically = cell.flippedVertically();
 
     QPainter::PixmapFragment fragment;
+    // Calculate the position as if the origin is TopLeft, and correct it later.
     fragment.x = pos.x() + (offset.x() * scale.width()) + sizeHalf.x();
-    fragment.y = pos.y() + (offset.y() * scale.height()) + sizeHalf.y() - size.height();
+    fragment.y = pos.y() + (offset.y() * scale.height()) + sizeHalf.y();
     fragment.sourceLeft = 0;
     fragment.sourceTop = 0;
     fragment.width = imageSize.width();
@@ -247,8 +320,9 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &si
     fragment.rotation = 0;
     fragment.opacity = 1;
 
-    if (origin == BottomCenter)
-        fragment.x -= sizeHalf.x();
+    // Correct the position if the origin is BottomLeft.
+    if (origin == BottomLeft)
+        fragment.y -= size.height();
 
     if (mCellType == HexagonalCells) {
 
@@ -268,8 +342,7 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &si
         // Compensate for the swap of image dimensions
         const qreal halfDiff = sizeHalf.y() - sizeHalf.x();
         fragment.y += halfDiff;
-        if (origin != BottomCenter)
-            fragment.x += halfDiff;
+        fragment.x += halfDiff;
     }
 
     fragment.scaleX = scale.width() * (flippedHorizontally ? -1 : 1);
@@ -297,8 +370,19 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &si
     const QRectF source(0, 0, fragment.width, fragment.height);
 
     mPainter->setTransform(transform);
-    mPainter->drawPixmap(target, image, source);
+    mPainter->drawPixmap(target, tinted(image, mTintColor), source);
     mPainter->setTransform(oldTransform);
+
+    // A bit of a hack to still draw tile collision shapes when requested
+    if (mRenderer->flags().testFlag(ShowTileCollisionShapes)
+            && tile->objectGroup()
+            && !tile->objectGroup()->objects().isEmpty()) {
+        mTile = tile;
+        mFragments.append(fragment);
+        paintTileCollisionShapes();
+        mTile = nullptr;
+        mFragments.resize(0);
+    }
 }
 
 /**
@@ -311,8 +395,92 @@ void CellRenderer::flush()
 
     mPainter->drawPixmapFragments(mFragments.constData(),
                                   mFragments.size(),
-                                  mTile->image());
+                                  tinted(mTile->image(), mTintColor));
+
+    if (mRenderer->flags().testFlag(ShowTileCollisionShapes)
+            && mTile->objectGroup()
+            && !mTile->objectGroup()->objects().isEmpty()) {
+        paintTileCollisionShapes();
+    }
 
     mTile = nullptr;
     mFragments.resize(0);
+}
+
+/**
+ * Returns a transform that rotates by \a rotation degrees around the given
+ * \a position.
+ */
+static QTransform rotateAt(const QPointF &position, qreal rotation)
+{
+    QTransform transform;
+    transform.translate(position.x(), position.y());
+    transform.rotate(rotation);
+    transform.translate(-position.x(), -position.y());
+    return transform;
+}
+
+void CellRenderer::paintTileCollisionShapes()
+{
+    const Tileset *tileset = mTile->tileset();
+    const Map map(tileset->orientation() == Tileset::Orthogonal ? Map::Orthogonal
+                                                                : Map::Isometric,
+                  QSize(1, 1),
+                  tileset->gridSize());
+
+    std::unique_ptr<MapRenderer> renderer;
+
+    const bool isIsometric = tileset->orientation() == Tileset::Isometric;
+    if (isIsometric)
+        renderer = std::make_unique<IsometricRenderer>(&map);
+    else
+        renderer = std::make_unique<OrthogonalRenderer>(&map);
+
+    const qreal lineWidth = mRenderer->objectLineWidth();
+    const qreal shadowDist = (lineWidth == 0 ? 1 : lineWidth) / mRenderer->painterScale();
+    const QPointF shadowOffset = QPointF(shadowDist * 0.5, shadowDist * 0.5);
+
+    QPen shadowPen(Qt::black);
+    shadowPen.setCosmetic(true);
+    shadowPen.setJoinStyle(Qt::RoundJoin);
+    shadowPen.setCapStyle(Qt::RoundCap);
+    shadowPen.setWidthF(lineWidth);
+    shadowPen.setStyle(Qt::DotLine);
+
+    mPainter->setRenderHint(QPainter::Antialiasing);
+
+    for (const auto &fragment : qAsConst(mFragments)) {
+        QTransform tileTransform;
+        tileTransform.translate(fragment.x, fragment.y);
+        tileTransform.rotate(fragment.rotation);
+        tileTransform.scale(fragment.scaleX, fragment.scaleY);
+        tileTransform.translate(-fragment.width * 0.5, -fragment.height * 0.5);
+
+        if (isIsometric)
+            tileTransform.translate(0, fragment.height - tileset->gridSize().height());
+
+        for (MapObject *object : mTile->objectGroup()->objects()) {
+            QColor penColor = object->effectiveColor();
+            QColor brushColor = penColor;
+            brushColor.setAlpha(50);
+            QPen colorPen(shadowPen);
+            colorPen.setColor(penColor);
+
+            mPainter->setPen(colorPen);
+            mPainter->setBrush(brushColor);
+
+            auto transform = rotateAt(renderer->pixelToScreenCoords(object->position()),
+                                      object->rotation());
+            transform *= tileTransform;
+
+            const auto shape = transform.map(renderer->shape(object));
+
+            mPainter->strokePath(shape.translated(shadowOffset), shadowPen);
+
+            if (object->shape() == MapObject::Polyline)
+                mPainter->strokePath(shape, colorPen);
+            else
+                mPainter->drawPath(shape);
+        }
+    }
 }

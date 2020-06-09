@@ -21,29 +21,36 @@
 #include "automappingmanager.h"
 
 #include "automapperwrapper.h"
+#include "logginginterface.h"
+#include "mainwindow.h"
 #include "map.h"
 #include "mapdocument.h"
-#include "tilelayer.h"
-#include "tmxmapformat.h"
 #include "preferences.h"
+#include "project.h"
+#include "tilelayer.h"
 
+#include <QDir>
 #include <QFileInfo>
-#include <QScopedPointer>
+#include <QFileSystemWatcher>
 #include <QTextStream>
 
+#include "qtcompat_p.h"
+
 using namespace Tiled;
-using namespace Tiled::Internal;
+
+SessionOption<bool> AutomappingManager::automappingWhileDrawing { "automapping.whileDrawing", false };
 
 AutomappingManager::AutomappingManager(QObject *parent)
     : QObject(parent)
     , mMapDocument(nullptr)
     , mLoaded(false)
 {
+    connect(&mWatcher, &QFileSystemWatcher::fileChanged,
+            this, &AutomappingManager::onFileChanged);
 }
 
 AutomappingManager::~AutomappingManager()
 {
-    cleanUp();
 }
 
 void AutomappingManager::autoMap()
@@ -51,30 +58,45 @@ void AutomappingManager::autoMap()
     if (!mMapDocument)
         return;
 
-    Map *map = mMapDocument->map();
+    QRegion region = mMapDocument->selectedArea();
 
-    QRect bounds;
+    if (region.isEmpty()) {
+        Map *map = mMapDocument->map();
 
-    if (map->infinite()) {
-        LayerIterator iterator(map);
+        if (map->infinite()) {
+            LayerIterator iterator(map);
 
-        while (Layer *layer = iterator.next()) {
-            if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer))
-                bounds = bounds.united(tileLayer->bounds());
+            QRect bounds;
+            while (Layer *layer = iterator.next()) {
+                if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer))
+                    bounds = bounds.united(tileLayer->bounds());
+            }
+            region = bounds;
+        } else {
+            int w = map->width();
+            int h = map->height();
+            region = QRect(0, 0, w, h);
         }
-    } else {
-        int w = map->width();
-        int h = map->height();
-        bounds = QRect(0, 0, w, h);
     }
 
-    autoMapInternal(bounds, nullptr);
+    autoMapInternal(region, nullptr);
 }
 
-void AutomappingManager::autoMap(const QRegion &where, Layer *touchedLayer)
+void AutomappingManager::autoMapRegion(const QRegion &region)
 {
-    if (Preferences::instance()->automappingDrawing())
+    autoMapInternal(region, nullptr);
+}
+
+void AutomappingManager::onRegionEdited(const QRegion &where, Layer *touchedLayer)
+{
+    if (automappingWhileDrawing)
         autoMapInternal(where, touchedLayer);
+}
+
+void AutomappingManager::onMapFileNameChanged()
+{
+    if (!mRulesFileOverride)
+        refreshRulesFile();
 }
 
 void AutomappingManager::autoMapInternal(const QRegion &where,
@@ -88,9 +110,7 @@ void AutomappingManager::autoMapInternal(const QRegion &where,
     const bool automatic = touchedLayer != nullptr;
 
     if (!mLoaded) {
-        const QString mapPath = QFileInfo(mMapDocument->fileName()).path();
-        const QString rulesFileName = mapPath + QLatin1String("/rules.txt");
-        if (loadFile(rulesFileName)) {
+        if (loadFile(mRulesFile)) {
             mLoaded = true;
         } else {
             emit errorsOccurred(automatic);
@@ -99,14 +119,11 @@ void AutomappingManager::autoMapInternal(const QRegion &where,
     }
 
     QVector<AutoMapper*> passedAutoMappers;
-    if (touchedLayer) {
-        foreach (AutoMapper *a, mAutoMappers) {
-            if (a->ruleLayerNameUsed(touchedLayer->name()))
-                passedAutoMappers.append(a);
-        }
-    } else {
-        passedAutoMappers = mAutoMappers;
+    for (auto &a : qAsConst(mAutoMappers)) {
+        if (!touchedLayer || a->ruleLayerNameUsed(touchedLayer->name()))
+            passedAutoMappers.append(a.get());
     }
+
     if (!passedAutoMappers.isEmpty()) {
         // use a copy of the region, so each automapper can manipulate it and the
         // following automappers do see the impact
@@ -114,11 +131,11 @@ void AutomappingManager::autoMapInternal(const QRegion &where,
 
         QUndoStack *undoStack = mMapDocument->undoStack();
         undoStack->beginMacro(tr("Apply AutoMap rules"));
-        AutoMapperWrapper *aw = new AutoMapperWrapper(mMapDocument, passedAutoMappers, &region);
+        AutoMapperWrapper *aw = new AutoMapperWrapper(mMapDocument, std::move(passedAutoMappers), &region);
         undoStack->push(aw);
         undoStack->endMacro();
     }
-    foreach (AutoMapper *automapper, mAutoMappers) {
+    for (auto &automapper : qAsConst(mAutoMappers)) {
         mWarning += automapper->warningString();
         mError += automapper->errorString();
     }
@@ -133,19 +150,27 @@ void AutomappingManager::autoMapInternal(const QRegion &where,
 bool AutomappingManager::loadFile(const QString &filePath)
 {
     bool ret = true;
-    const QString absPath = QFileInfo(filePath).path();
+    const QDir absPath = QFileInfo(filePath).dir();
     QFile rulesFile(filePath);
 
     if (!rulesFile.exists()) {
-        mError += tr("No rules file found at:\n%1").arg(filePath)
-                  + QLatin1Char('\n');
+        QString error = tr("No rules file found at '%1'").arg(filePath);
+        ERROR(error);
+
+        mError += error;
+        mError += QLatin1Char('\n');
         return false;
     }
     if (!rulesFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        mError += tr("Error opening rules file:\n%1").arg(filePath)
-                  + QLatin1Char('\n');
+        QString error = tr("Error opening rules file '%1'").arg(filePath);
+        ERROR(error);
+
+        mError += error;
+        mError += QLatin1Char('\n');
         return false;
     }
+
+    mWatcher.addPath(filePath);
 
     QTextStream in(&rulesFile);
     QString line = in.readLine();
@@ -157,35 +182,47 @@ bool AutomappingManager::loadFile(const QString &filePath)
                 || rulePath.startsWith(QLatin1String("//")))
             continue;
 
-        if (QFileInfo(rulePath).isRelative())
-            rulePath = absPath + QLatin1Char('/') + rulePath;
+        QFileInfo rulePathInfo(rulePath);
 
-        if (!QFileInfo(rulePath).exists()) {
-            mError += tr("File not found:\n%1").arg(rulePath) + QLatin1Char('\n');
+        if (rulePathInfo.isRelative()) {
+            rulePath = absPath.filePath(rulePath);
+            rulePathInfo.setFile(rulePath);
+        }
+
+        if (!rulePathInfo.exists()) {
+            QString error = tr("File not found: '%1' (referenced by '%2')")
+                    .arg(rulePath, filePath);
+            ERROR(error);
+
+            mError += error;
+            mError += QLatin1Char('\n');
             ret = false;
             continue;
         }
         if (rulePath.endsWith(QLatin1String(".tmx"), Qt::CaseInsensitive)) {
-            TmxMapFormat tmxFormat;
-
-            QScopedPointer<Map> rules(tmxFormat.read(rulePath));
+            QString errorString;
+            std::unique_ptr<Map> rules { readMap(rulePath, &errorString) };
 
             if (!rules) {
-                mError += tr("Opening rules map failed:\n%1").arg(
-                        tmxFormat.errorString()) + QLatin1Char('\n');
+                QString error = tr("Opening rules map '%1' failed: %2")
+                        .arg(rulePath, errorString);
+                ERROR(error);
+
+                mError += error;
+                mError += QLatin1Char('\n');
                 ret = false;
                 continue;
             }
 
-            AutoMapper *autoMapper = new AutoMapper(mMapDocument, rules.take(), rulePath);
+            std::unique_ptr<AutoMapper> autoMapper { new AutoMapper(mMapDocument, std::move(rules), rulePath) };
 
             mWarning += autoMapper->warningString();
-            const QString error = autoMapper->errorString(); 
+            const QString error = autoMapper->errorString();
             if (error.isEmpty()) {
-                mAutoMappers.append(autoMapper);
+                mAutoMappers.push_back(std::move(autoMapper));
+                mWatcher.addPath(rulePath);
             } else {
                 mError += error;
-                delete autoMapper;
             }
         }
         if (rulePath.endsWith(QLatin1String(".txt"), Qt::CaseInsensitive)) {
@@ -196,24 +233,57 @@ bool AutomappingManager::loadFile(const QString &filePath)
     return ret;
 }
 
-void AutomappingManager::setMapDocument(MapDocument *mapDocument)
+/**
+ * The rules file is determind based on the map location, but can be overridden
+ * by passing \a rulesFile.
+ */
+void AutomappingManager::setMapDocument(MapDocument *mapDocument, const QString &rulesFile)
 {
-    cleanUp();
     if (mMapDocument)
         mMapDocument->disconnect(this);
 
     mMapDocument = mapDocument;
 
     if (mMapDocument) {
-        connect(mMapDocument, SIGNAL(regionEdited(QRegion,Layer*)),
-                this, SLOT(autoMap(QRegion,Layer*)));
+        connect(mMapDocument, &MapDocument::fileNameChanged,
+                this, &AutomappingManager::onMapFileNameChanged);
+        connect(mMapDocument, &MapDocument::regionEdited,
+                this, &AutomappingManager::onRegionEdited);
     }
 
-    mLoaded = false;
+    refreshRulesFile(rulesFile);
+}
+
+void AutomappingManager::refreshRulesFile(const QString &ruleFileOverride)
+{
+    mRulesFileOverride = !ruleFileOverride.isEmpty();
+    QString rulesFile = ruleFileOverride;
+
+    if (rulesFile.isEmpty() && mMapDocument) {
+        const QString mapPath = QFileInfo(mMapDocument->fileName()).path();
+        rulesFile = mapPath + QLatin1String("/rules.txt");
+
+        if (!QFileInfo::exists(rulesFile)) {
+            auto &project = MainWindow::instance()->project();
+            rulesFile = project.mAutomappingRulesFile;
+        }
+    }
+
+    if (mRulesFile != rulesFile) {
+        mRulesFile = rulesFile;
+        cleanUp();
+    }
 }
 
 void AutomappingManager::cleanUp()
 {
-    qDeleteAll(mAutoMappers);
     mAutoMappers.clear();
+    mLoaded = false;
+    if (!mWatcher.files().isEmpty())
+        mWatcher.removePaths(mWatcher.files());
+}
+
+void AutomappingManager::onFileChanged()
+{
+    cleanUp();
 }

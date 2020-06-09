@@ -26,7 +26,6 @@
 #include <QCoreApplication>
 
 namespace Tiled {
-namespace Internal {
 
 AddRemoveTiles::AddRemoveTiles(TilesetDocument *tilesetDocument,
                                const QList<Tile *> &tiles,
@@ -71,5 +70,4 @@ RemoveTiles::RemoveTiles(TilesetDocument *tilesetDocument,
     setText(QCoreApplication::translate("Undo Commands", "Remove Tiles"));
 }
 
-} // namespace Internal
 } // namespace Tiled

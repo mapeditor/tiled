@@ -27,65 +27,76 @@
 #include <QMap>
 #include <QPoint>
 
+#include <memory>
+
 namespace Tiled {
 
 class StaggeredRenderer;
 
-namespace Internal {
-
 /**
  * WangFiller provides functions for choosing cells based on a surrounding map
  * and a wangSet.
+ *
  * Optionally when choosing cells, this will look at adjacent cells
  * to ensure that they will be able to be filled based on the chosen cell.
  */
 class WangFiller
 {
 public:
-    explicit WangFiller(WangSet *wangSet,  //the map we are filling to is infinite.
+    explicit WangFiller(WangSet *wangSet,
                         StaggeredRenderer *staggeredRenderer = nullptr,
                         Map::StaggerAxis staggerAxis = Map::StaggerX);
 
     WangSet *wangSet() const { return mWangSet; }
     void setWangSet(WangSet *wangSet);
 
-    /* finds a cell from the attached wangSet which fits
-     * the given surroundings.
-     * If lookForward is true, this will only choose a cell
-     * which allows all empty adjacent cells to also
-     * be filled. If non exist, then no cell will be choosen.
-     * */
+    /**
+     * Finds a cell from the attached wangSet which fits the given
+     * surroundings.
+     *
+     * If \a lookForward is true, this will only choose a cell which allows all
+     * empty adjacent cells to also be filled. If non exist, then no cell will
+     * be choosen.
+     */
     Cell findFittingCell(const TileLayer &back,
                          const TileLayer &front,
                          const QRegion &fillRegion,
                          QPoint point) const;
 
-    /* Returns a tilelayer which has fillRegion filled with wang methods.
-     * If lookForward is true, this will only choose a cell
-     * which allows all empty adjacent cells to also
-     * be filled. If non exist, then no cell will be choosen.
-     * */
-    TileLayer *fillRegion(const TileLayer &back,
-                          const QRegion &fillRegion) const;
+    /**
+     * Returns a tilelayer which has \a fillRegion filled with Wang methods.
+     *
+     * If \a lookForward is true, this will only choose a cell which allows all
+     * empty adjacent cells to also be filled. If non exist, then no cell will
+     * be choosen.
+     */
+    std::unique_ptr<TileLayer> fillRegion(const TileLayer &back,
+                                          const QRegion &fillRegion) const;
 
 private:
-    //gets a cell from either the back or front, based on
-    //the fill region. Point, front, and fillRegion
-    //are relative to back.
+    /**
+     * Returns a cell from either the \a back or \a front, based on the
+     * \a fillRegion. \a point, \a front, and \a fillRegion are relative to
+     * \a back.
+     */
     const Cell &getCell(const TileLayer &back,
                         const TileLayer &front,
                         const QRegion &fillRegion,
                         QPoint point) const;
 
-    //gets a wangId based on front and back.
-    //adjacent cells are gotten from getCell()
+    /**
+     * Returns a wangId based on \a front and \a back. Adjacent cells are
+     * obtained using getCell().
+     */
     WangId wangIdFromSurroundings(const TileLayer &back,
                                   const TileLayer &front,
                                   const QRegion &fillRegion,
                                   QPoint point) const;
 
-    //gets a wangId based on cells from back which are not in the fillRegion
-    //point and fillRegion is relative to back.
+    /**
+     * Returns a wangId based on cells from \a back which are not in the
+     * \a fillRegion. \a point and \a fillRegion are relative to \a back.
+     */
     WangId wangIdFromSurroundings(const TileLayer &back,
                                   const QRegion &fillRegion,
                                   QPoint point) const;
@@ -95,5 +106,4 @@ private:
     Map::StaggerAxis mStaggerAxis;
 };
 
-} // namespace Internal
 } // namespace Tiled

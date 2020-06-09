@@ -1,0 +1,35 @@
+name: Compile on latest macOS
+
+on: [push, pull_request]
+
+jobs:
+  build:
+
+    runs-on: macOS-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install dependencies
+      run: |
+        brew update
+        brew install qbs
+        brew link qt5 --force
+    - name: Setup Qbs
+      run: |
+        qbs setup-toolchains --detect
+        qbs config defaultProfile xcode
+    - name: Build
+      run: |
+        export TILED_VERSION=$(git describe | cut -c 2-)
+        qbs build config:release qbs.installPrefix:"" projects.Tiled.version:$TILED_VERSION
+    - name: Package
+      run: |
+        qbs install --install-root install config:release
+        macdeployqt install/Tiled.app -verbose=2
+        pushd install
+        ruby ../dist/macos/fixup-install-names.rb
+        popd
+    - uses: actions/upload-artifact@v1
+      with:
+        name: Tiled.app
+        path: install/Tiled.app

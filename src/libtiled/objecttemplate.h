@@ -30,63 +30,52 @@
 #pragma once
 
 #include "mapobject.h"
-#include "object.h"
+#include "tileset.h"
+
+#include <QPointer>
+
+#include <memory>
 
 namespace Tiled {
 
-class TemplateGroup;
+class ObjectTemplateFormat;
 
 class TILEDSHARED_EXPORT ObjectTemplate : public Object
 {
 public:
     ObjectTemplate();
-    ObjectTemplate(unsigned id, QString name);
+    ObjectTemplate(const QString &fileName);
+    ~ObjectTemplate();
 
     const MapObject *object() const;
     void setObject(const MapObject *object);
+    void setObject(std::unique_ptr<MapObject> object);
 
-    unsigned id() const;
-    void setId(unsigned id);
+    const QString &fileName() const;
+    void setFileName(const QString &fileName);
 
-    const QString &name() const;
-    void setName(const QString &name);
+    void setFormat(ObjectTemplateFormat *format);
+    ObjectTemplateFormat *format() const;
 
-    TemplateGroup *templateGroup() const;
-    void setTemplateGroup(TemplateGroup *templateGroup);
+    const SharedTileset &tileset() const;
 
 private:
-    MapObject *mObject;
-    unsigned mId;
-    QString mName;
-    TemplateGroup *mTemplateGroup;
+    QString mFileName;
+    QPointer<ObjectTemplateFormat> mFormat;
+    std::unique_ptr<MapObject> mObject;
+    SharedTileset mTileset;
 };
 
 inline const MapObject *ObjectTemplate::object() const
-{ return mObject; }
+{ return mObject.get(); }
 
-inline void ObjectTemplate::setObject(const MapObject *object)
-{
-    delete mObject;
-    mObject = object->clone();
-    mObject->markAsTemplateBase();
-}
+inline const QString &ObjectTemplate::fileName() const
+{ return mFileName; }
 
-inline unsigned ObjectTemplate::id() const
-{ return mId; }
+inline void ObjectTemplate::setFileName(const QString &fileName)
+{ mFileName = fileName; }
 
-inline void ObjectTemplate::setId(unsigned id)
-{ mId = id; }
-
-inline const QString &ObjectTemplate::name() const
-{ return mName; }
-
-inline void ObjectTemplate::setName(const QString &name)
-{ mName = name; }
-
-inline TemplateGroup *ObjectTemplate::templateGroup() const
-{ return mTemplateGroup; }
-
-inline void ObjectTemplate::setTemplateGroup(TemplateGroup *templateGroup)
-{ mTemplateGroup = templateGroup; }
+inline const SharedTileset &ObjectTemplate::tileset() const
+{ return mTileset; }
 
 } // namespace Tiled

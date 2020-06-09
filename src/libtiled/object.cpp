@@ -31,6 +31,8 @@
 #include "mapobject.h"
 #include "tile.h"
 
+#include "qtcompat_p.h"
+
 namespace Tiled {
 
 ObjectTypes Object::mObjectTypes;
@@ -48,7 +50,7 @@ Object::~Object()
  *      - Its tile
  *      - Its type (or the type of its tile)
  */
-QVariant Object::inheritedProperty(const QString &name) const
+QVariant Object::resolvedProperty(const QString &name) const
 {
     if (hasProperty(name))
         return property(name);
@@ -82,7 +84,7 @@ QVariant Object::inheritedProperty(const QString &name) const
     }
 
     if (!objectType.isEmpty()) {
-        for (const ObjectType &type : mObjectTypes) {
+        for (const ObjectType &type : qAsConst(mObjectTypes)) {
             if (type.name == objectType)
                 if (type.defaultProperties.contains(name))
                     return type.defaultProperties.value(name);
@@ -90,6 +92,52 @@ QVariant Object::inheritedProperty(const QString &name) const
     }
 
     return QVariant();
+}
+
+QVariantMap Object::resolvedProperties() const
+{
+    QVariantMap allProperties;
+    // Insert properties into allProperties in the reverse order that
+    // Object::resolvedProperty searches them, to make sure that the
+    // same precedence is maintained.
+
+    QString objectType;
+    switch (typeId()) {
+    case Object::MapObjectType: {
+        auto mapObject = static_cast<const MapObject*>(this);
+        objectType = mapObject->type();
+        if (objectType.isEmpty())
+            if (const Tile *tile = mapObject->cell().tile())
+                objectType = tile->type();
+        break;
+    }
+    case Object::TileType:
+        objectType = static_cast<const Tile*>(this)->type();
+        break;
+    default:
+        break;
+    }
+
+    if (!objectType.isEmpty()) {
+        for (const ObjectType &type : qAsConst(mObjectTypes)) {
+            if (type.name == objectType)
+                Tiled::mergeProperties(allProperties, type.defaultProperties);
+        }
+    }
+    
+    if (typeId() == Object::MapObjectType) {
+        auto mapObject = static_cast<const MapObject*>(this);
+
+        if (const Tile *tile = mapObject->cell().tile())
+            Tiled::mergeProperties(allProperties, tile->properties());
+        
+        if (const MapObject *templateObject = mapObject->templateObject())
+            Tiled::mergeProperties(allProperties, templateObject->properties());
+    }
+
+    Tiled::mergeProperties(allProperties, properties());
+    
+    return allProperties;
 }
 
 void Object::setObjectTypes(const ObjectTypes &objectTypes)

@@ -30,7 +30,6 @@ class NewTilesetDialog;
 }
 
 namespace Tiled {
-namespace Internal {
 
 /**
  * A dialog for the creation of a new tileset, or for editing the parameters
@@ -58,7 +57,7 @@ public:
 
     bool editTilesetParameters(TilesetParameters &parameters);
 
-private slots:
+private:
     void browse();
     void nameEdited(const QString &name);
     void tilesetTypeChanged(int index);
@@ -68,7 +67,6 @@ private slots:
     void pickColorFromImage();
     void colorSelected(QColor);
 
-private:
     void setMode(Mode mode);
 
     Mode mMode;
@@ -78,5 +76,4 @@ private:
     SharedTileset mNewTileset;
 };
 
-} // namespace Internal
 } // namespace Tiled

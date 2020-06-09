@@ -22,12 +22,12 @@
 
 #include <QUndoCommand>
 
+#include <memory>
+
 namespace Tiled {
 
 class ObjectGroup;
 class Tile;
-
-namespace Internal {
 
 class TilesetDocument;
 
@@ -40,10 +40,8 @@ public:
      */
     ChangeTileObjectGroup(TilesetDocument *tilesetDocument,
                           Tile *tile,
-                          ObjectGroup *objectGroup,
+                          std::unique_ptr<ObjectGroup> objectGroup,
                           QUndoCommand *parent = nullptr);
-
-    ~ChangeTileObjectGroup();
 
     void undo() override { swap(); }
     void redo() override { swap(); }
@@ -53,8 +51,7 @@ private:
 
     TilesetDocument *mTilesetDocument;
     Tile *mTile;
-    ObjectGroup *mObjectGroup;
+    std::unique_ptr<ObjectGroup> mObjectGroup;
 };
 
-} // namespace Internal
 } // namespace Tiled

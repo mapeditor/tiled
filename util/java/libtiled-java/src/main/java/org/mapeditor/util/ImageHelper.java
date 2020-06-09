@@ -2,9 +2,9 @@
  * #%L
  * This file is part of libtiled-java.
  * %%
- * Copyright (C) 2004 - 2017 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright (C) 2004 - 2017 Adam Turk <aturk@biggeruniverse.com>
- * Copyright (C) 2016 - 2017 Mike Thomas <mikepthomas@outlook.com>
+ * Copyright (C) 2004 - 2019 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright (C) 2004 - 2019 Adam Turk <aturk@biggeruniverse.com>
+ * Copyright (C) 2016 - 2019 Mike Thomas <mikepthomas@outlook.com>
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -42,10 +42,7 @@ import javax.imageio.ImageIO;
 /**
  * This class provides functions to help out with saving/loading images.
  *
- * @author Thorbjørn Lindeijer
- * @author Adam Turk
- * @author Mike Thomas
- * @version 1.0.2
+ * @version 1.2.3
  */
 public class ImageHelper {
 
@@ -80,8 +77,8 @@ public class ImageHelper {
      *
      * @param imageData The byte array of the data to convert.
      * @return Image The image instance created from the byte array
-     * @throws java.io.IOException if any.
      * @see java.awt.Toolkit#createImage(byte[] imagedata)
+     * @throws java.io.IOException if any.
      */
     public static BufferedImage bytesToImage(byte[] imageData) throws IOException {
         Toolkit toolkit = Toolkit.getDefaultToolkit();

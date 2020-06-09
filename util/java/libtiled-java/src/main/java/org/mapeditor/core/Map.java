@@ -2,9 +2,9 @@
  * #%L
  * This file is part of libtiled-java.
  * %%
- * Copyright (C) 2004 - 2017 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright (C) 2004 - 2017 Adam Turk <aturk@biggeruniverse.com>
- * Copyright (C) 2016 - 2017 Mike Thomas <mikepthomas@outlook.com>
+ * Copyright (C) 2004 - 2019 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright (C) 2004 - 2019 Adam Turk <aturk@biggeruniverse.com>
+ * Copyright (C) 2016 - 2019 Mike Thomas <mikepthomas@outlook.com>
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -41,10 +41,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * The Map class is the focal point of the <code>org.mapeditor.core</code>
  * package.
  *
- * @author Thorbjørn Lindeijer
- * @author Adam Turk
- * @author Mike Thomas
- * @version 1.0.2
+ * @version 1.2.3
  */
 @XmlRootElement(name = "map")
 @XmlAccessorType(XmlAccessType.NONE)
@@ -53,7 +50,7 @@ public class Map extends MapData implements Iterable<MapLayer> {
     private String filename;
 
     /**
-     * <p>Constructor for Map.</p>
+     * Constructor for Map.
      */
     public Map() {
         super();
@@ -61,7 +58,7 @@ public class Map extends MapData implements Iterable<MapLayer> {
     }
 
     /**
-     * <p>Constructor for Map.</p>
+     * Constructor for Map.
      *
      * @param width the map width in tiles.
      * @param height the map height in tiles.
@@ -115,7 +112,7 @@ public class Map extends MapData implements Iterable<MapLayer> {
     }
 
     /**
-     * <p>addLayer.</p>
+     * addLayer.
      *
      * @param layer a {@link org.mapeditor.core.MapLayer} object.
      * @return a {@link org.mapeditor.core.MapLayer} object.
@@ -127,7 +124,7 @@ public class Map extends MapData implements Iterable<MapLayer> {
     }
 
     /**
-     * <p>setLayer.</p>
+     * setLayer.
      *
      * @param index a int.
      * @param layer a {@link org.mapeditor.core.TileLayer} object.
@@ -138,7 +135,7 @@ public class Map extends MapData implements Iterable<MapLayer> {
     }
 
     /**
-     * <p>insertLayer.</p>
+     * insertLayer.
      *
      * @param index a int.
      * @param layer a {@link org.mapeditor.core.TileLayer} object.
@@ -321,7 +318,7 @@ public class Map extends MapData implements Iterable<MapLayer> {
     }
 
     /**
-     * <p>Getter for the field <code>filename</code>.</p>
+     * Getter for the field <code>filename</code>.
      *
      * @return a {@link java.lang.String} object.
      */
@@ -330,7 +327,7 @@ public class Map extends MapData implements Iterable<MapLayer> {
     }
 
     /**
-     * <p>Setter for the field <code>filename</code>.</p>
+     * Setter for the field <code>filename</code>.
      *
      * @param filename a {@link java.lang.String} object.
      */

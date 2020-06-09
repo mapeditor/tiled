@@ -23,7 +23,6 @@
 #include "abstracttiletool.h"
 
 namespace Tiled {
-namespace Internal {
 
 /**
  * Implements a simple eraser tool.
@@ -41,7 +40,7 @@ public:
     void languageChanged() override;
 
 protected:
-    void tilePositionChanged(const QPoint &tilePos) override;
+    void tilePositionChanged(QPoint tilePos) override;
 
 private:
     void doErase(bool continuation);
@@ -58,5 +57,4 @@ private:
     QPoint mStart;
 };
 
-} // namespace Internal
 } // namespace Tiled

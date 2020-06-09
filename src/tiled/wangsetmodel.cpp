@@ -36,7 +36,6 @@
 #include <QPalette>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 WangSetModel::WangSetModel(QAbstractItemModel *tilesetDocumentModel,
                            QObject *parent):
@@ -108,7 +107,7 @@ int WangSetModel::rowCount(const QModelIndex &parent) const
 
 int WangSetModel::columnCount(const QModelIndex &parent) const
 {
-    Q_UNUSED(parent);
+    Q_UNUSED(parent)
     return 1;
 }
 

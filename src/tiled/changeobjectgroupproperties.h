@@ -27,9 +27,8 @@
 #include <QUndoCommand>
 
 namespace Tiled {
-namespace Internal {
 
-class MapDocument;
+class Document;
 
 class ChangeObjectGroupProperties : public QUndoCommand
 {
@@ -41,7 +40,7 @@ public:
      * @param objectGroup     the object group in to modify
      * @param newColor        the new color to apply
      */
-    ChangeObjectGroupProperties(MapDocument *mapDocument,
+    ChangeObjectGroupProperties(Document *document,
                                 ObjectGroup *objectGroup,
                                 const QColor &newColor,
                                 ObjectGroup::DrawOrder newDrawOrder);
@@ -50,7 +49,7 @@ public:
     void redo() override;
 
 private:
-    MapDocument *mMapDocument;
+    Document *mDocument;
     ObjectGroup *mObjectGroup;
     const QColor mUndoColor;
     const QColor mRedoColor;
@@ -58,5 +57,4 @@ private:
     ObjectGroup::DrawOrder mRedoDrawOrder;
 };
 
-} // namespace Internal
 } // namespace Tiled

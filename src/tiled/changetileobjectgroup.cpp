@@ -27,31 +27,23 @@
 #include <QCoreApplication>
 
 namespace Tiled {
-namespace Internal {
 
 ChangeTileObjectGroup::ChangeTileObjectGroup(TilesetDocument *tilesetDocument,
                                              Tile *tile,
-                                             ObjectGroup *objectGroup,
+                                             std::unique_ptr<ObjectGroup> objectGroup,
                                              QUndoCommand *parent)
     : QUndoCommand(QCoreApplication::translate(
                        "Undo Commands", "Change Tile Collision"),
                    parent)
     , mTilesetDocument(tilesetDocument)
     , mTile(tile)
-    , mObjectGroup(objectGroup)
+    , mObjectGroup(std::move(objectGroup))
 {
-}
-
-ChangeTileObjectGroup::~ChangeTileObjectGroup()
-{
-    delete mObjectGroup;
 }
 
 void ChangeTileObjectGroup::swap()
 {
-    mObjectGroup = mTile->swapObjectGroup(mObjectGroup);
-    emit mTilesetDocument->tileObjectGroupChanged(mTile);
+    mTilesetDocument->swapTileObjectGroup(mTile, mObjectGroup);
 }
 
-} // namespace Internal
 } // namespace Tiled

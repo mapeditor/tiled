@@ -23,7 +23,6 @@
 #include <QLabel>
 
 namespace Tiled {
-namespace Internal {
 
 class ClickableLabel : public QLabel
 {
@@ -44,4 +43,3 @@ protected:
 };
 
 } // namespace Tiled
-} // namespace Internal

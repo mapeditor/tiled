@@ -24,12 +24,12 @@
 #include <QIcon>
 
 namespace Tiled {
-namespace Internal {
 
 /**
- * Delegate for drawing an eye icon in LayerView when the layer is visible.
+ * Delegate for drawing an icon in LayerView and ObjectsView for displaying
+ * visibility and locked state.
  */
-class IconCheckDelegate: public QItemDelegate
+class IconCheckDelegate : public QItemDelegate
 {
 public:
     enum IconType {
@@ -37,16 +37,36 @@ public:
         LockedIcon
     };
 
-    explicit IconCheckDelegate(IconType icon, QObject *parent = nullptr);
+    explicit IconCheckDelegate(IconType icon,
+                               bool exclusive,
+                               QObject *parent = nullptr);
+
+    static int exclusiveSectionWidth();
+
+    bool editorEvent(QEvent *event,
+                     QAbstractItemModel *model,
+                     const QStyleOptionViewItem &option,
+                     const QModelIndex &index) override;
 
 protected:
-    void drawCheck(QPainter *painter, const QStyleOptionViewItem &option,
-                   const QRect &rect, Qt::CheckState state) const override;
+    void drawCheck(QPainter *painter,
+                   const QStyleOptionViewItem &option,
+                   const QRect &rect,
+                   Qt::CheckState state) const override;
+
+    void drawDisplay(QPainter *painter,
+                     const QStyleOptionViewItem &option,
+                     const QRect &rect,
+                     const QString &text) const override;
+
+    QSize sizeHint(const QStyleOptionViewItem &option,
+                   const QModelIndex &index) const override;
+
 
 private:
     QIcon mCheckedIcon;
     QIcon mUncheckedIcon;
+    bool mExclusive;
 };
 
-} // namespace Internal
 } // namespace Tiled

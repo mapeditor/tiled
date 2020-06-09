@@ -2,9 +2,9 @@
  * #%L
  * This file is part of libtiled-java.
  * %%
- * Copyright (C) 2004 - 2017 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright (C) 2004 - 2017 Adam Turk <aturk@biggeruniverse.com>
- * Copyright (C) 2016 - 2017 Mike Thomas <mikepthomas@outlook.com>
+ * Copyright (C) 2004 - 2019 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright (C) 2004 - 2019 Adam Turk <aturk@biggeruniverse.com>
+ * Copyright (C) 2016 - 2019 Mike Thomas <mikepthomas@outlook.com>
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -67,10 +67,7 @@ import org.mapeditor.io.xml.XMLWriter;
 /**
  * A writer for Tiled's TMX map format.
  *
- * @author Thorbjørn Lindeijer
- * @author Adam Turk
- * @author Mike Thomas
- * @version 1.0.2
+ * @version 1.2.3
  */
 public class TMXMapWriter {
 
@@ -139,7 +136,7 @@ public class TMXMapWriter {
     }
 
     /**
-     * <p>writeMap.</p>
+     * writeMap.
      *
      * @param map a {@link org.mapeditor.core.Map} object.
      * @param out a {@link java.io.OutputStream} object.
@@ -157,7 +154,7 @@ public class TMXMapWriter {
     }
 
     /**
-     * <p>writeTileset.</p>
+     * writeTileset.
      *
      * @param set a {@link org.mapeditor.core.TileSet} object.
      * @param out a {@link java.io.OutputStream} object.
@@ -217,7 +214,7 @@ public class TMXMapWriter {
         w.endElement();
     }
 
-    private static void writeProperties(Properties props, XMLWriter w) throws
+    private void writeProperties(Properties props, XMLWriter w) throws
             IOException {
         if (props != null && !props.isEmpty()) {
             final Set<Object> propertyKeys = new TreeSet<>();
@@ -309,10 +306,17 @@ public class TMXMapWriter {
             // Write tile properties when necessary.
             for (Tile tile : set) {
                 // todo: move the null check back into the iterator?
-                if (tile != null && !tile.getProperties().isEmpty()) {
+                if (tile != null
+                        && (!tile.getProperties().isEmpty()
+                        || !tile.getType().isEmpty())) {
                     w.startElement("tile");
                     w.writeAttribute("id", tile.getId());
-                    writeProperties(tile.getProperties(), w);
+                    if (!tile.getType().isEmpty()) {
+                        w.writeAttribute("type", tile.getType());
+                    }
+                    if (!tile.getProperties().isEmpty()) {
+                        writeProperties(tile.getProperties(), w);
+                    }
                     w.endElement();
                 }
             }
@@ -324,6 +328,7 @@ public class TMXMapWriter {
             // TODO: This shouldn't be necessary
             for (Tile tile : set) {
                 if (!tile.getProperties().isEmpty()
+                        || !tile.getType().isEmpty()
                         || tile.getSource() != null) {
                     needWrite = true;
                     break;
@@ -347,30 +352,43 @@ public class TMXMapWriter {
         w.endElement();
     }
 
-    private static void writeObjectGroup(ObjectGroup o, XMLWriter w, String wp)
+    private void writeObjectGroup(ObjectGroup o, XMLWriter w, String wp)
             throws IOException {
+        w.startElement("objectgroup");
+
+        if (o.getColor() != null && o.getColor().isEmpty()) {
+            w.writeAttribute("color", o.getColor());
+        }
+        if (o.getDraworder() != null && !o.getDraworder().equalsIgnoreCase("topdown")) {
+            w.writeAttribute("draworder", o.getDraworder());
+        }
+        writeLayerAttributes(o, w);
+        writeProperties(o.getProperties(), w);
+
         Iterator<MapObject> itr = o.getObjects().iterator();
         while (itr.hasNext()) {
             writeMapObject(itr.next(), w, wp);
         }
+
+        w.endElement();
     }
 
     /**
-     * Writes this layer to an XMLWriter. This should be done <b>after</b> the
-     * first global ids for the tilesets are determined, in order for the right
-     * gids to be written to the layer data.
+     * Writes all the standard layer attributes to the XML writer.
+     * @param l the map layer to write attributes
+     * @param w the {@code XMLWriter} instance to write to.
+     * @throws IOException if an error occurs while writing.
      */
-    private void writeMapLayer(TileLayer l, XMLWriter w, String wp) throws IOException {
+    private void writeLayerAttributes(MapLayer l, XMLWriter w) throws IOException {
         Rectangle bounds = l.getBounds();
-
-        w.startElement("layer");
-
         w.writeAttribute("name", l.getName());
-        if (bounds.width != 0) {
-            w.writeAttribute("width", bounds.width);
-        }
-        if (bounds.height != 0) {
-            w.writeAttribute("height", bounds.height);
+        if (l instanceof TileLayer) {
+            if (bounds.width != 0) {
+                w.writeAttribute("width", bounds.width);
+            }
+            if (bounds.height != 0) {
+                w.writeAttribute("height", bounds.height);
+            }
         }
         if (bounds.x != 0) {
             w.writeAttribute("x", bounds.x);
@@ -388,6 +406,25 @@ public class TMXMapWriter {
             w.writeAttribute("opacity", opacity);
         }
 
+        if (l.getOffsetX() != null && l.getOffsetX() != 0) {
+            w.writeAttribute("offsetx", l.getOffsetX());
+        }
+        if (l.getOffsetY() != null && l.getOffsetY() != 0) {
+            w.writeAttribute("offsety", l.getOffsetY());
+        }
+    }
+
+    /**
+     * Writes this layer to an XMLWriter. This should be done <b>after</b> the
+     * first global ids for the tilesets are determined, in order for the right
+     * gids to be written to the layer data.
+     */
+    private void writeMapLayer(TileLayer l, XMLWriter w, String wp) throws IOException {
+        Rectangle bounds = l.getBounds();
+
+        w.startElement("layer");
+
+        writeLayerAttributes(l, w);
         writeProperties(l.getProperties(), w);
 
         final TileLayer tl = l;
@@ -495,6 +532,10 @@ public class TMXMapWriter {
         w.startElement("tile");
         w.writeAttribute("id", tile.getId());
 
+        if (!tile.getType().isEmpty()) {
+            w.writeAttribute("type", tile.getType());
+        }
+
         if (!tile.getProperties().isEmpty()) {
             writeProperties(tile.getProperties(), w);
         }
@@ -535,7 +576,7 @@ public class TMXMapWriter {
         w.endElement();
     }
 
-    private static void writeMapObject(MapObject mapObject, XMLWriter w, String wp)
+    private void writeMapObject(MapObject mapObject, XMLWriter w, String wp)
             throws IOException {
         w.startElement("object");
         w.writeAttribute("name", mapObject.getName());
@@ -552,6 +593,13 @@ public class TMXMapWriter {
         }
         if (mapObject.getHeight() != 0) {
             w.writeAttribute("height", mapObject.getHeight());
+        }
+
+        if (mapObject.getTile() != null) {
+            Tile t = mapObject.getTile();
+            w.writeAttribute("gid", firstGidPerTileset.get(t.getTileSet()) + t.getId());
+        } else if (mapObject.getGid() != null) {
+            w.writeAttribute("gid", mapObject.getGid());
         }
 
         writeProperties(mapObject.getProperties(), w);
@@ -643,7 +691,7 @@ public class TMXMapWriter {
     }
 
     /**
-     * <p>accept.</p>
+     * accept.
      *
      * @param pathName a {@link java.io.File} object.
      * @return a boolean.

@@ -1,32 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE map SYSTEM "http://mapeditor.org/dtd/1.0/map.dtd">
-<map version="1.0" orientation="orthogonal" width="4" height="4" tilewidth="24" tileheight="24">
+<map version="1.2" tiledversion="1.2.3" orientation="orthogonal" renderorder="right-down" width="4" height="4" tilewidth="24" tileheight="24" infinite="0" nextlayerid="5" nextobjectid="2">
  <properties>
   <property name="NoOverlappingRules" value="1"/>
  </properties>
- <tileset firstgid="1" name="sewer_tileset" tilewidth="24" tileheight="24">
+ <tileset firstgid="1" name="sewer_tileset" tilewidth="24" tileheight="24" tilecount="72" columns="8">
   <image source="../sewer_tileset.png" trans="ff00ff" width="192" height="217"/>
  </tileset>
- <tileset firstgid="73" name="rules_sewers" tilewidth="24" tileheight="24">
+ <tileset firstgid="73" name="rules_sewers" tilewidth="24" tileheight="24" tilecount="6" columns="3">
   <image source="rules_sewers.png" width="72" height="48"/>
  </tileset>
- <layer name="regions_input" width="4" height="4">
+ <layer id="1" name="regions_input" width="4" height="4">
   <data encoding="base64" compression="zlib">
    eJxjYCAMfKAYGwAAD7AAmQ==
   </data>
  </layer>
- <layer name="regions_output" width="4" height="4">
+ <layer id="2" name="regions_output" width="4" height="4">
   <data encoding="base64" compression="zlib">
    eJxjYMAEPljEcAEADVAATQ==
   </data>
  </layer>
- <layer name="input_Over" width="4" height="4">
+ <layer id="3" name="input_Over" width="4" height="4">
   <data encoding="base64" compression="zlib">
    eJxjYCAMWICYF4ccAAHoABI=
   </data>
  </layer>
- <objectgroup name="output_GroundEffects" width="4" height="4">
-  <object name="1" type="Effect" x="24" y="24" width="24" height="24">
+ <objectgroup id="4" name="output_GroundEffects">
+  <object id="1" name="1" type="Effect" x="24" y="24" width="24" height="24">
    <properties>
     <property name="predefined Value" value=""/>
    </properties>

@@ -23,7 +23,8 @@
 #include <QTreeView>
 
 namespace Tiled {
-namespace Internal {
+
+class WangColor;
 
 class WangColorView : public QTreeView
 {
@@ -31,21 +32,19 @@ class WangColorView : public QTreeView
 
 public:
     WangColorView(QWidget *parent);
+    ~WangColorView() override;
 
 protected:
     void contextMenuEvent(QContextMenuEvent *event) override;
 
 signals:
-    void wangColorColorPicked(QColor color, bool isEdge, int index);
-
-private slots:
-    void pickColor();
-    void colorPicked(QColor color);
+    void wangColorColorPicked(WangColor *wangColor, const QColor &color);
 
 private:
-    bool mLastPickedForColorWasEdge;
-    int mLastPickedForColorIndex;
+    void pickColor();
+    void colorPicked(const QColor &color);
+
+    QSharedPointer<WangColor> mClickedWangColor;
 };
 
-}
-}
+} // namespace Tiled

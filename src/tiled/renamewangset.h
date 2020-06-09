@@ -24,30 +24,25 @@
 
 namespace Tiled {
 
-class Tileset;
-
-namespace Internal {
+class WangSet;
 
 class TilesetDocument;
-class TilesetWangSetModel;
 
 class RenameWangSet : public QUndoCommand
 {
 public:
     RenameWangSet(TilesetDocument *tilesetDocument,
-                  int index,
+                  WangSet *wangSet,
                   const QString &newName);
 
     void undo() override;
     void redo() override;
 
 private:
-    TilesetWangSetModel *mWangSetModel;
-    Tileset *mTileset;
-    int mIndex;
+    TilesetDocument *mTilesetDocument;
+    WangSet *mWangSet;
     QString mOldName;
     QString mNewName;
 };
 
-} // namespace Internal
 } // namespace Tiled

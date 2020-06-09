@@ -253,12 +253,23 @@ The dice icon is based on an SVG by Steaphan Greene that I found on Wikipedia:
 http://en.wikipedia.org/wiki/File:2-Dice-Icon.svg
 
 Inkscape icons by Barbara Muraus, Jakub Steiner and Josh Andler (CC-BY-SA 3.0)
-* src/tiled/images/14x14/hidden.png
-* src/tiled/images/14x14/visible.png
-* src/tiled/images/16x16/hidden.png
-* src/tiled/images/16x16/visible.png
-* src/tiled/images/24x24/hidden.png
-* src/tiled/images/24x24/visible.png
+* src/tiled/images/14/hidden.png
+* src/tiled/images/14/visible.png
+* src/tiled/images/16/hidden.png
+* src/tiled/images/16/visible.png
+* src/tiled/images/24/hidden.png
+* src/tiled/images/24/visible.png
+
+Icons from the Elementary icon theme (GPLv3)
+* src/tiled/images/scalable/edit-delete-symbolic.svg
+* src/tiled/images/scalable/edit-undo-symbolic.svg
+* src/tiled/images/scalable/software-update-available-symbolic.svg
+* src/tiled/images/16/dialog-error.png
+* src/tiled/images/16/dialog-warning.png
+* src/tiled/images/24/dialog-error.png
+* src/tiled/images/24/dialog-warning.png
+* src/tiled/images/32/dialog-error.png
+* src/tiled/images/32/dialog-warning.png
 
 
 Tilesets:

@@ -25,18 +25,18 @@
 #include "mapdocument.h"
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 SelectSameTileTool::SelectSameTileTool(QObject *parent)
-    : AbstractTileSelectionTool(tr("Select Same Tile"),
+    : AbstractTileSelectionTool("SelectSameTileTool",
+                                tr("Select Same Tile"),
                                 QIcon(QLatin1String(
-                                      ":images/22x22/stock-tool-by-color-select.png")),
-                                QKeySequence(tr("S")),
+                                      ":images/22/stock-tool-by-color-select.png")),
+                                QKeySequence(Qt::Key_S),
                                 parent)
 {
 }
 
-void SelectSameTileTool::tilePositionChanged(const QPoint &tilePos)
+void SelectSameTileTool::tilePositionChanged(QPoint tilePos)
 {
     // Make sure that a tile layer is selected and contains current tile pos.
     TileLayer *tileLayer = currentTileLayer();
@@ -55,7 +55,6 @@ void SelectSameTileTool::tilePositionChanged(const QPoint &tilePos)
 void SelectSameTileTool::languageChanged()
 {
     setName(tr("Select Same Tile"));
-    setShortcut(QKeySequence(tr("S")));
 
     AbstractTileSelectionTool::languageChanged();
 }

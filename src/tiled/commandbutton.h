@@ -22,10 +22,7 @@
 
 #include <QToolButton>
 
-class QMenu;
-
 namespace Tiled {
-namespace Internal {
 
 class MainWindow;
 class DocumentManager;
@@ -40,15 +37,10 @@ public:
 protected:
     void changeEvent(QEvent *event) override;
 
-private slots:
-    void runCommand();
-    void showDialog();
-
 private:
-    void retranslateUi();
+    void runCommand();
 
-    QMenu *mMenu;
+    void retranslateUi();
 };
 
-} // namespace Internal
 } // namespace Tiled
