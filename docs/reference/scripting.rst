@@ -661,7 +661,7 @@ FileInfo.fileName(filePath : string) : string
     Returns the last component of ``filePath``, that is, everything after the last '/' character.
 
 FileInfo.fromNativeSeparators(filePath : string) : string
-    On Windows, returns ``filePath`` with all '\' characters replaced by '/'. On other operating systems, it returns the input unmodified.
+    On Windows, returns ``filePath`` with all '\\\\' characters replaced by '/'. On other operating systems, it returns the input unmodified.
 
 FileInfo.isAbsolutePath(filePath : string) : boolean
     Returns true if `filePath` is an absolute path and false if it is a relative one.
@@ -679,7 +679,7 @@ FileInfo.suffix(filePath : string) : string
     Returns the file suffix of ``filePath`` from (but not including) the first '.' character.
 
 FileInfo.toNativeSeparators(filePath : string) : string
-    On Windows, returns ``filePath`` with all '/' characters replaced by '\'. On other operating systems, it returns the input unmodified.
+    On Windows, returns ``filePath`` with all '/' characters replaced by '\\\\'. On other operating systems, it returns the input unmodified.
 
 .. _script-grouplayer:
 
