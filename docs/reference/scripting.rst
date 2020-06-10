@@ -630,6 +630,57 @@ Functions
 FileFormat.supportsFile(fileName : string) : bool
     Returns whether the file is readable by this format.
 
+.. _script-fileinfo:
+
+FileInfo
+^^^^^^^^
+
+Offers various operations on file paths, such as turning absolute paths into relative ones, splitting a path into its components, and so on.
+
+Functions
+~~~~~~~~~
+
+FileInfo.baseName(filePath : string) : string
+    Returns the file name of ``filePath`` up to (but not including) the first '.' character.
+
+FileInfo.canonicalPath(filePath : string) : string
+    Returns a canonicalized ``filePath``, i.e. an absolute path without symbolic links or redundant "." or ".." elements. On Windows, drive substitutions are also resolved.
+
+    It is recommended to use ``canonicalPath`` in only those cases where canonical paths are really necessary. In most cases, ``cleanPath`` should be enough.
+
+FileInfo.cleanPath(filePath : string) : string
+    Returns ``filePath`` without redundant separators and with resolved occurrences of `.` and `..` components. For instance, ``/usr/local//../bin/`` becomes ``/usr/bin``.
+
+FileInfo.completeBaseName(filePath: string) : string
+    Returns the file name of ``filePath`` up to (but not including) the last '.' character.
+
+FileInfo.completeSuffix(filePath : string) : string
+    Returns the file suffix of ``filePath`` from (but not including) the last '.' character.
+
+FileInfo.fileName(filePath : string) : string
+    Returns the last component of ``filePath``, that is, everything after the last '/' character.
+
+FileInfo.fromNativeSeparators(filePath : string) : string
+    On Windows, returns ``filePath`` with all '\\\\' characters replaced by '/'. On other operating systems, it returns the input unmodified.
+
+FileInfo.isAbsolutePath(filePath : string) : boolean
+    Returns true if `filePath` is an absolute path and false if it is a relative one.
+
+FileInfo.joinPaths(...paths) : string
+    Concatenates the given paths using the '/' character.
+
+FileInfo.path(filePath : string) : string
+    Returns the part of ``filePath`` that is not the file name, that is, everything up to (but not including) the last '/' character. If ``filePath`` is just a file name, then '.' is returned. If ``filePath`` ends with a '/' character, then the file name is assumed to be empty for the purpose of the above definition.
+
+FileInfo.relativePath(dirPath : string, filePath : string) : string
+    Returns the path to ``filePath`` relative to the directory ``dirPath``. If necessary, '..' components are inserted.
+
+FileInfo.suffix(filePath : string) : string
+    Returns the file suffix of ``filePath`` from (but not including) the first '.' character.
+
+FileInfo.toNativeSeparators(filePath : string) : string
+    On Windows, returns ``filePath`` with all '/' characters replaced by '\\\\'. On other operating systems, it returns the input unmodified.
+
 .. _script-grouplayer:
 
 GroupLayer

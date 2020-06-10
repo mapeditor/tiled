@@ -32,6 +32,7 @@
 * Scripting: Added support for custom "file" properties
 * Scripting: Added checks for nullptr arguments (by Phlosioneer, #2736)
 * Scripting: Added some missing tileset related properties
+* Scripting: Added FileInfo API with various file path operations
 * Scripting: Provide access to registered file formats (by Phlosioneer, #2716)
 * Scripting: Enabled scripted formats to be used on the command-line
 * Scripting: Introduced \__filename global value (with konsumer)
