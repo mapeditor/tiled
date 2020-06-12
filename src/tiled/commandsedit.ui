@@ -10,9 +10,6 @@
     <height>291</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>Form</string>
-  </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
     <widget class="Tiled::CommandTreeView" name="treeView">
