@@ -58,10 +58,11 @@ void LuaTableWriter::writeStartReturnTable()
     m_valueWritten = false;
 }
 
-void LuaTableWriter::writeStartTable(const QByteArray &name)
+void LuaTableWriter::writeStartTable(const char *name)
 {
     prepareNewLine();
-    write(name + (m_minimize ? "={" : " = {"));
+    write(name);
+    write(m_minimize ? "={" : " = {");
     ++m_indent;
     m_newLine = false;
     m_valueWritten = false;

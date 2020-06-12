@@ -79,7 +79,7 @@ public:
                             QRect bounds,
                             int compressionLevel);
     void writeObjectGroup(const Tiled::ObjectGroup *,
-                          const QByteArray &key = QByteArray());
+                          const char *key = nullptr);
     void writeImageLayer(const Tiled::ImageLayer *);
     void writeGroupLayer(const Tiled::GroupLayer *,
                          Tiled::Map::LayerDataFormat,
@@ -262,8 +262,16 @@ void LuaWriter::writeProperties(const Properties &properties)
     Properties::const_iterator it = properties.constBegin();
     Properties::const_iterator it_end = properties.constEnd();
     for (; it != it_end; ++it) {
-        const QVariant value = toExportValue(it.value(), mDir);
-        mWriter.writeQuotedKeyAndValue(it.key(), value);
+        if (it.value().userType() == objectRefTypeId()) {
+            mWriter.writeStartTable(it.key());
+            mWriter.setSuppressNewlines(true);
+            mWriter.writeKeyAndValue("id", it.value().value<ObjectRef>().id);
+            mWriter.writeEndTable();
+            mWriter.setSuppressNewlines(false);
+        } else {
+            const QVariant value = toExportValue(it.value(), mDir);
+            mWriter.writeQuotedKeyAndValue(it.key(), value);
+        }
     }
 
     mWriter.writeEndTable();
@@ -558,12 +566,12 @@ void LuaWriter::writeTileLayerData(const TileLayer *tileLayer,
 }
 
 void LuaWriter::writeObjectGroup(const ObjectGroup *objectGroup,
-                                 const QByteArray &key)
+                                 const char *key)
 {
-    if (key.isEmpty())
-        mWriter.writeStartTable();
-    else
+    if (key)
         mWriter.writeStartTable(key);
+    else
+        mWriter.writeStartTable();
 
     mWriter.writeKeyAndValue("type", "objectgroup");
     mWriter.writeKeyAndValue("draworder", drawOrderToString(objectGroup->drawOrder()));

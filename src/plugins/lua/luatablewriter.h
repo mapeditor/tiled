@@ -41,7 +41,8 @@ public:
 
     void writeStartTable();
     void writeStartReturnTable();
-    void writeStartTable(const QByteArray &name);
+    void writeStartTable(const char *name);
+    void writeStartTable(const QString &name);
     void writeEndTable();
 
     void writeValue(int value);
@@ -95,6 +96,9 @@ private:
     bool m_valueWritten { false };
     bool m_error { false };
 };
+
+inline void LuaTableWriter::writeStartTable(const QString &name)
+{ writeStartTable(quote(name).toUtf8().constData()); }
 
 inline void LuaTableWriter::writeValue(int value)
 { writeUnquotedValue(QByteArray::number(value)); }
