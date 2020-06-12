@@ -239,16 +239,22 @@ bool AutomappingManager::loadFile(const QString &filePath)
  */
 void AutomappingManager::setMapDocument(MapDocument *mapDocument, const QString &rulesFile)
 {
-    if (mMapDocument)
-        mMapDocument->disconnect(this);
+    if (mMapDocument != mapDocument) {
+        if (mMapDocument)
+            mMapDocument->disconnect(this);
 
-    mMapDocument = mapDocument;
+        mMapDocument = mapDocument;
 
-    if (mMapDocument) {
-        connect(mMapDocument, &MapDocument::fileNameChanged,
-                this, &AutomappingManager::onMapFileNameChanged);
-        connect(mMapDocument, &MapDocument::regionEdited,
-                this, &AutomappingManager::onRegionEdited);
+        if (mMapDocument) {
+            connect(mMapDocument, &MapDocument::fileNameChanged,
+                    this, &AutomappingManager::onMapFileNameChanged);
+            connect(mMapDocument, &MapDocument::regionEdited,
+                    this, &AutomappingManager::onRegionEdited);
+        }
+
+        // Cleanup needed because AutoMapper instances hold a pointer to the
+        // MapDocument they apply to.
+        cleanUp();
     }
 
     refreshRulesFile(rulesFile);

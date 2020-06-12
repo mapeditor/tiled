@@ -29,7 +29,7 @@ Map
     nextobjectid,     int,              "Auto-increments for each placed object"
     orientation,      string,           "``orthogonal``, ``isometric``, ``staggered`` or ``hexagonal``"
     properties,       array,            "Array of :ref:`Properties <json-property>`"
-    renderorder,      string,           "``right-down`` (the default), ``right-up``, ``left-down`` or ``left-up`` (orthogonal maps only)"
+    renderorder,      string,           "``right-down`` (the default), ``right-up``, ``left-down`` or ``left-up`` (currently only supported for orthogonal maps)"
     staggeraxis,      string,           "``x`` or ``y`` (staggered / hexagonal maps only)"
     staggerindex,     string,           "``odd`` or ``even`` (staggered / hexagonal maps only)"
     tiledversion,     string,           "The Tiled version used to save the file"
