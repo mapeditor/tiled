@@ -5,6 +5,7 @@
  * Copyright (C) 2004 - 2019 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright (C) 2004 - 2019 Adam Turk <aturk@biggeruniverse.com>
  * Copyright (C) 2016 - 2019 Mike Thomas <mikepthomas@outlook.com>
+ * Copyright (C) 2020 Adam Hornacek <adam.hornacek@icloud.com>
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -37,6 +38,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.FilteredImageSource;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -94,13 +96,23 @@ public class TileSet extends TileSetData implements Iterable<Tile> {
      * @see TileSet#importTileBitmap(BufferedImage, TileCutter)
      * @throws java.io.IOException if any.
      */
-    public void importTileBitmap(String imgFilename, TileCutter cutter)
-            throws IOException {
+    public void importTileBitmap(String imgFilename, TileCutter cutter) throws IOException {
         setTilesetImageFilename(imgFilename);
+        importTileBitmap(new File(imgFilename).toURI().toURL(), cutter);
+    }
 
-        Image image = ImageIO.read(new File(imgFilename));
+    /**
+     * Creates a tileset from a tileset image file.
+     *
+     * @param imgUrl an url to the tileset image
+     * @param cutter a {@link org.mapeditor.util.TileCutter} object.
+     * @see TileSet#importTileBitmap(BufferedImage, TileCutter)
+     * @throws java.io.IOException if any.
+     */
+    public void importTileBitmap(final URL imgUrl, final TileCutter cutter) throws IOException {
+        Image image = ImageIO.read(imgUrl);
         if (image == null) {
-            throw new IOException("Failed to load " + tilebmpFile);
+            throw new IOException("Failed to load " + imgUrl);
         }
 
         Toolkit tk = Toolkit.getDefaultToolkit();

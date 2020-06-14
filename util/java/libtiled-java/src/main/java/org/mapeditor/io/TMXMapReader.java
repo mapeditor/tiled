@@ -5,16 +5,17 @@
  * Copyright (C) 2004 - 2019 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright (C) 2004 - 2019 Adam Turk <aturk@biggeruniverse.com>
  * Copyright (C) 2016 - 2019 Mike Thomas <mikepthomas@outlook.com>
+ * Copyright (C) 2020 Adam Hornacek <adam.hornacek@icloud.com>
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -39,7 +40,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -60,6 +61,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.mapeditor.core.*;
 import org.mapeditor.util.BasicTileCutter;
 import org.mapeditor.util.ImageHelper;
+import org.mapeditor.util.URLHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -76,22 +78,22 @@ import org.xml.sax.SAXException;
  */
 public class TMXMapReader {
 
-    public static long FLIPPED_HORIZONTALLY_FLAG = 0xFFFFFFFF80000000L;
-    public static long FLIPPED_VERTICALLY_FLAG = 0xFFFFFFFF40000000L;
-    public static long FLIPPED_DIAGONALLY_FLAG = 0xFFFFFFFF20000000L;
+    public static final long FLIPPED_HORIZONTALLY_FLAG = 0xFFFFFFFF80000000L;
+    public static final long FLIPPED_VERTICALLY_FLAG = 0xFFFFFFFF40000000L;
+    public static final long FLIPPED_DIAGONALLY_FLAG = 0xFFFFFFFF20000000L;
 
-    public static long ALL_FLAGS = FLIPPED_HORIZONTALLY_FLAG
+    public static final long ALL_FLAGS = FLIPPED_HORIZONTALLY_FLAG
             | FLIPPED_VERTICALLY_FLAG
             | FLIPPED_DIAGONALLY_FLAG;
 
     private Map map;
-    private String xmlPath;
+    private URL xmlPath;
     private String error;
     private final EntityResolver entityResolver = new MapEntityResolver();
     private TreeMap<Integer, TileSet> tilesetPerFirstGid;
     public final TMXMapReaderSettings settings = new TMXMapReaderSettings();
-    private final HashMap<String, TileSet> cachedTilesets = new HashMap<>();
-    private final HashMap<Class, Unmarshaller> cachedUnmarshallers = new HashMap<>();
+    private final java.util.Map<String, TileSet> cachedTilesets = new HashMap<>();
+    private final java.util.Map<Class<?>, Unmarshaller> cachedUnmarshallers = new HashMap<>();
 
     public static final class TMXMapReaderSettings {
 
@@ -108,7 +110,7 @@ public class TMXMapReader {
         return error;
     }
 
-    private static String makeUrl(String filename) throws MalformedURLException {
+    private static String makeUrl(String filename) {
         final String url;
         if (filename.indexOf("://") > 0 || filename.startsWith("file:")) {
             url = filename;
@@ -159,18 +161,23 @@ public class TMXMapReader {
         return element.getValue();
     }
 
-    private BufferedImage unmarshalImage(Node t, String baseDir) throws IOException {
+    private BufferedImage unmarshalImage(Node t, URL baseDir) throws IOException {
         BufferedImage img = null;
 
         String source = getAttributeValue(t, "source");
 
         if (source != null) {
+            URL url;
             if (checkRoot(source)) {
-                source = makeUrl(source);
+                url = new URL(makeUrl(source));
             } else {
-                source = makeUrl(baseDir + source);
+                try {
+                    url = URLHelper.resolve(baseDir, source);
+                } catch (URISyntaxException e) {
+                    throw new IOException(e);
+                }
             }
-            img = ImageIO.read(new URL(source));
+            img = ImageIO.read(url);
         } else {
             NodeList nl = t.getChildNodes();
 
@@ -192,8 +199,7 @@ public class TMXMapReader {
         return img;
     }
 
-    private TileSet unmarshalTilesetFile(InputStream in, String filename)
-            throws Exception {
+    private TileSet unmarshalTilesetFile(InputStream in, URL file) throws Exception {
         TileSet set = null;
         Node tsNode;
 
@@ -203,11 +209,9 @@ public class TMXMapReader {
             //builder.setErrorHandler(new XMLErrorHandler());
             Document tsDoc = builder.parse(in, ".");
 
-            String xmlPathSave = xmlPath;
-            filename = replacePathSeparator(filename);
-            if (filename.indexOf(File.separatorChar) >= 0) {
-                xmlPath = filename.substring(0,
-                        filename.lastIndexOf(File.separatorChar) + 1);
+            URL xmlPathSave = xmlPath;
+            if (file.getPath().contains("/")) {
+                xmlPath = URLHelper.getParent(file);
             }
 
             NodeList tsNodeList = tsDoc.getElementsByTagName("tileset");
@@ -219,13 +223,12 @@ public class TMXMapReader {
                 if (set.getSource() != null) {
                     System.out.println("Recursive external tilesets are not supported.");
                 }
-                set.setSource(filename);
+                set.setSource(file.toString());
             }
 
             xmlPath = xmlPathSave;
         } catch (SAXException e) {
-            error = "Failed while loading " + filename + ": "
-                    + e.getLocalizedMessage();
+            error = "Failed while loading " + file + ": " + e.getLocalizedMessage();
         }
 
         return set;
@@ -237,9 +240,9 @@ public class TMXMapReader {
         String source = set.getSource();
         if (source != null) {
             source = replacePathSeparator(source);
-            String filename = xmlPath + source;
-            InputStream in = new URL(makeUrl(filename)).openStream();
-            TileSet ext = unmarshalTilesetFile(in, filename);
+            URL url = URLHelper.resolve(xmlPath, source);
+            InputStream in = url.openStream();
+            TileSet ext = unmarshalTilesetFile(in, url);
 
             if (ext == null) {
                 error = "Tileset " + source + " was not loaded correctly!";
@@ -289,10 +292,12 @@ public class TMXMapReader {
                         // case.
                         hasTilesetImage = true;
 
-                        // FIXME: importTileBitmap does not fully support URLs
-                        String sourcePath = imgSource;
+                        URL sourcePath;
                         if (!new File(imgSource).isAbsolute()) {
-                            sourcePath = xmlPath + imgSource;
+                            imgSource = replacePathSeparator(imgSource);
+                            sourcePath = URLHelper.resolve(xmlPath, imgSource);
+                        } else {
+                            sourcePath = new URL(makeUrl(imgSource));
                         }
 
                         if (transStr != null) {
@@ -373,7 +378,7 @@ public class TMXMapReader {
                 String source = getAttributeValue(child, "source");
                 if (source != null) {
                     if (!new File(source).isAbsolute()) {
-                        source = xmlPath + source;
+                        source = URLHelper.resolve(xmlPath, source).toString();
                     }
                     obj.setImageSource(source);
                 }
@@ -444,8 +449,7 @@ public class TMXMapReader {
         }
     }
 
-    private Tile unmarshalTile(TileSet set, Node t, String baseDir)
-            throws Exception {
+    private Tile unmarshalTile(TileSet set, Node t, URL baseDir) throws Exception {
         Tile tile = null;
         NodeList children = t.getChildNodes();
         boolean isAnimated = false;
@@ -773,7 +777,7 @@ public class TMXMapReader {
             DocumentBuilder builder = factory.newDocumentBuilder();
             builder.setEntityResolver(entityResolver);
             InputSource insrc = new InputSource(in);
-            insrc.setSystemId(xmlPath);
+            insrc.setSystemId(xmlPath.toString());
             insrc.setEncoding("UTF-8");
             doc = builder.parse(insrc);
         } catch (SAXException e) {
@@ -791,32 +795,41 @@ public class TMXMapReader {
     /**
      * readMap.
      *
+     * @param url an url to the map file.
+     * @return a {@link org.mapeditor.core.Map} object.
+     * @throws java.lang.Exception if any.
+     */
+    public Map readMap(final URL url) throws Exception {
+        if (url == null) {
+            throw new IllegalArgumentException("Cannot read map from null URL");
+        }
+        xmlPath = URLHelper.getParent(url);
+
+        InputStream is = url.openStream();
+
+        // Wrap with GZIP decoder for .tmx.gz files
+        if (url.toString().endsWith(".gz")) {
+            is = new GZIPInputStream(is);
+        }
+
+        Map unmarshalledMap = unmarshal(is);
+        unmarshalledMap.setFilename(url.toString());
+
+        map = null;
+
+        return unmarshalledMap;
+    }
+
+    /**
+     * readMap.
+     *
      * @param filename a {@link java.lang.String} object.
      * @return a {@link org.mapeditor.core.Map} object.
      * @throws java.lang.Exception if any.
      */
     public Map readMap(String filename) throws Exception {
         filename = replacePathSeparator(filename);
-        xmlPath = filename.substring(0,
-                filename.lastIndexOf(File.separatorChar) + 1);
-
-        String xmlFile = makeUrl(filename);
-        //xmlPath = makeUrl(xmlPath);
-
-        URL url = new URL(xmlFile);
-        InputStream is = url.openStream();
-
-        // Wrap with GZIP decoder for .tmx.gz files
-        if (filename.endsWith(".gz")) {
-            is = new GZIPInputStream(is);
-        }
-
-        Map unmarshalledMap = unmarshal(is);
-        unmarshalledMap.setFilename(filename);
-
-        map = null;
-
-        return unmarshalledMap;
+        return readMap(new URL(makeUrl(filename)));
     }
 
     /**
@@ -827,8 +840,7 @@ public class TMXMapReader {
      * @throws java.lang.Exception if any.
      */
     public Map readMap(InputStream in) throws Exception {
-        //xmlPath = makeUrl(".");
-        xmlPath = System.getProperty("user.dir") + File.separatorChar;
+        xmlPath = new URL(makeUrl(System.getProperty("user.dir") + File.separatorChar));
 
         Map unmarshalledMap = unmarshal(in);
 
@@ -846,16 +858,11 @@ public class TMXMapReader {
      */
     public TileSet readTileset(String filename) throws Exception {
         filename = replacePathSeparator(filename);
-        String xmlFile = filename;
 
-        xmlPath = filename.substring(0,
-                filename.lastIndexOf(File.separatorChar) + 1);
+        URL url = new URL(makeUrl(filename));
+        xmlPath = URLHelper.getParent(url);
 
-        xmlFile = makeUrl(xmlFile);
-        xmlPath = makeUrl(xmlPath);
-
-        URL url = new URL(xmlFile);
-        return unmarshalTilesetFile(url.openStream(), filename);
+        return unmarshalTilesetFile(url.openStream(), url);
     }
 
     /**
@@ -866,7 +873,7 @@ public class TMXMapReader {
      * @throws java.lang.Exception if any.
      */
     public TileSet readTileset(InputStream in) throws Exception {
-        return unmarshalTilesetFile(in, ".");
+        return unmarshalTilesetFile(in, new File(".").toURI().toURL());
     }
 
     /**
