@@ -83,7 +83,7 @@ public class URLHelper {
             String urlStr = url.toString();
             int jarPathStart = urlStr.lastIndexOf(JAR_PATH_SEPARATOR_CHAR);
             String withinJarPath = urlStr.substring(jarPathStart + 1);
-            return new URL(urlStr.substring(0, jarPathStart + 1) + new URI(withinJarPath).resolve(path));
+            return new URL(urlStr.substring(0, jarPathStart + 1) + new URI(withinJarPath).resolve(urlPath));
         } else {
             return url.toURI().resolve(urlPath).toURL();
         }
