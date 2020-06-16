@@ -497,7 +497,7 @@
     <message>
         <location line="+15"/>
         <source>JSON map files (*.json)</source>
-        <translation>Archivos de mapa JSON (*json)</translation>
+        <translation>Archivos de mapa JSON (*.json)</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -507,12 +507,12 @@
     <message>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+15"/>
         <source>JSON map files [Tiled 1.1] (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Archivos de mapa JSON [Tiled 1.1] (*.json)</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>JavaScript map files [Tiled 1.1] (*.js)</source>
-        <translation type="unfinished"></translation>
+        <translation>Archivos de mapa JavaScript [Tiled 1.1] (*.js)</translation>
     </message>
 </context>
 <context>
@@ -539,7 +539,7 @@
     <message>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+14"/>
         <source>JSON template files [Tiled 1.1] (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Archivos de plantilla de JSON [Tiled 1.1] (*.json)</translation>
     </message>
 </context>
 <context>
@@ -566,7 +566,7 @@
     <message>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+14"/>
         <source>JSON tileset files [Tiled 1.1] (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Archivos de conjuto de patrones JSON [Tiled 1.1] (*.json)</translation>
     </message>
 </context>
 <context>
