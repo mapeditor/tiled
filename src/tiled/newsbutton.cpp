@@ -25,6 +25,7 @@
 #include "utils.h"
 
 #include <QDesktopServices>
+#include <QEvent>
 #include <QMenu>
 #include <QPainter>
 
@@ -50,11 +51,6 @@ NewsButton::NewsButton(QWidget *parent)
     setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
     setAutoRaise(true);
-#ifdef TILED_SNAPSHOT
-    setText(tr("Devlog"));
-#else
-    setText(tr("News"));
-#endif
     setToolTip(feed.errorString());
 
     connect(&feed, &NewsFeed::refreshed,
@@ -66,6 +62,19 @@ NewsButton::NewsButton(QWidget *parent)
             this, &NewsButton::showNewsMenu);
 
     refreshButton();
+    retranslateUi();
+}
+
+void NewsButton::changeEvent(QEvent *event)
+{
+    QToolButton::changeEvent(event);
+    switch (event->type()) {
+    case QEvent::LanguageChange:
+        retranslateUi();
+        break;
+    default:
+        break;
+    }
 }
 
 void NewsButton::refreshButton()
@@ -138,6 +147,15 @@ void NewsButton::showNewsMenu()
     newsFeedMenu->exec();
 
     setDown(false);
+}
+
+void NewsButton::retranslateUi()
+{
+#ifdef TILED_SNAPSHOT
+    setText(tr("Devlog"));
+#else
+    setText(tr("News"));
+#endif
 }
 
 } // namespace Tiled

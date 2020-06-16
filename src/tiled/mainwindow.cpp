@@ -2097,6 +2097,8 @@ void MainWindow::retranslateUi()
     mNewLayerMenu->setTitle(tr("&New"));
     mGroupLayerMenu->setTitle(tr("&Group"));
     mViewsAndToolbarsAction->setText(tr("Views and Toolbars"));
+    mResetToDefaultLayout->setText(tr("Reset to Default Layout"));
+    mShowObjectTypesEditor->setText(tr("Object Types Editor"));
     mActionHandler->retranslateUi();
     CommandManager::instance()->retranslateUi();
 }

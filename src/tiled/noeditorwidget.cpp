@@ -62,6 +62,7 @@ NoEditorWidget::NoEditorWidget(QWidget *parent) :
 
     updateRecentProjectsMenu();
     adjustToStyle();
+    retranslateUi();
 }
 
 NoEditorWidget::~NoEditorWidget()
@@ -74,6 +75,7 @@ void NoEditorWidget::changeEvent(QEvent *e)
     QWidget::changeEvent(e);
     switch (e->type()) {
     case QEvent::LanguageChange:
+        ui->retranslateUi(this);
         retranslateUi();
         break;
     default:
@@ -98,8 +100,6 @@ void NoEditorWidget::openFile()
 
 void NoEditorWidget::retranslateUi()
 {
-    ui->retranslateUi(this);
-
     ui->openProjectButton->setText(ActionManager::action("OpenProject")->text());
     ui->saveProjectButton->setText(ActionManager::action("SaveProjectAs")->text());
     ui->addFolderToProjectButton->setText(ActionManager::action("AddFolderToProject")->text());
