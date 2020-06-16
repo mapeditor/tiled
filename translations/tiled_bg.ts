@@ -1103,8 +1103,7 @@ Line %1, column %2</source>
     <message>
         <location line="-333"/>
         <source>Error reading embedded image for tile %1</source>
-        <translation>Грешка при зареждането на вградено изображение за плочка:
-„%1“</translation>
+        <translation>Грешка при зареждането на вградено изображение за плочката %1</translation>
     </message>
     <message>
         <location line="+328"/>
@@ -1327,22 +1326,22 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/noeditorwidget.ui" line="+40"/>
         <source>&lt;font size=&quot;+2&quot;&gt;No Open Files&lt;/font&gt;</source>
-        <translation type="unfinished">&lt;font size=&quot;+2&quot;&gt;Няма отворени файлове&lt;/font&gt;</translation>
+        <translation>&lt;font size=&quot;+2&quot;&gt;Няма отворени файлове&lt;/font&gt;</translation>
     </message>
     <message>
         <location line="+110"/>
         <source>Open File...</source>
-        <translation type="unfinished">Отваряне на файл…</translation>
+        <translation>Отваряне на файл…</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>New Map...</source>
-        <translation type="unfinished">Нова карта…</translation>
+        <translation>Нова карта…</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>New Tileset...</source>
-        <translation type="unfinished">Нов плочен набор…</translation>
+        <translation>Нов плочен набор…</translation>
     </message>
 </context>
 <context>
