@@ -1,6 +1,6 @@
 .. raw:: html
 
-   <div class="new">New in Tiled 1.3</div>
+   <div class="new new-prev">Since Tiled 1.3</div>
 
 .. |ro| replace:: *[read‑only]*
 
@@ -1111,6 +1111,17 @@ Tile.terrainAtCorner(corner : :ref:`Corner <script-tile-corner>`) : :ref:`script
 
 Tile.setTerrainAtCorner(corner : :ref:`Corner <script-tile-corner>`, :ref:`script-terrain`) : void
     Sets the terrain used at the given corner.
+
+    As an example, suppose you had a sand terrain added to your tileset, here's how you could apply it to the top-left corner of the first 10 tiles in the tileset:
+
+    .. code:: javascript
+
+        var tileset = tiled.activeAsset
+        var sand = tileset.terrains[0]
+        tileset.macro("Change Terrain", function() {
+           for (let i = 0; i < 10; ++i)
+              tileset.tiles[i].setTerrainAtCorner(Tile.TopLeft, sand);
+        })
 
 .. _script-tilecollisioneditor:
 

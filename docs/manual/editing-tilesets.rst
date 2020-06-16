@@ -228,6 +228,6 @@ A preview of the animation shows in the bottom left corner.
    - Support multiple named animations per tile (`#986 <https://github.com/bjorn/tiled/issues/986>`__)
 
    If you like any of these plans, please help me getting around to it
-   faster by `becoming a patron <https://www.patreon.com/bjorn>`__. The
+   faster by `sponsoring Tiled development <https://www.mapeditor.org/donate>`__. The
    more support I receive the more time I can afford to spend improving
    Tiled!

@@ -33,6 +33,7 @@ Tiled supports the following basic property types:
 
 .. figure:: images/properties/add-property.png
    :alt: Add Property Dialog
+   :scale: 66
 
    Add Property Dialog
 
@@ -76,13 +77,14 @@ menu.
 
 .. figure:: images/properties/object-types-editor.png
    :alt: Object Types Editor
+   :scale: 66
 
    Object Types Editor
 
-By default, Tiled stores these object types in the user settings.
-However, since you'll often want to share them with other people in your
-project, you can export your object types or change the storage location
-of the object types file. A simple XML or JSON file with
+By default, Tiled stores these object types globally. However, since you'll
+often want to share them with other people in your project, you can export
+your object types or change the storage location of the object types file
+:doc:`for your project <projects>`. A simple XML or JSON file with
 self-explanatory contents is used to store your object types.
 
 The color not only affects the rendering of the various shapes of
@@ -148,6 +150,6 @@ those values if you need to.
    needing to configure Tiled to use the right object type definitions.
 
    If you like any of these plans, please help me getting around to it
-   faster by `becoming a patron <https://www.patreon.com/bjorn>`__. The
+   faster by `sponsoring Tiled development <https://www.mapeditor.org/donate>`__. The
    more support I receive the more time I can afford to spend improving
    Tiled!

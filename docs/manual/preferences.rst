@@ -124,7 +124,7 @@ Mouse wheel zooms by default
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.3</div>
+   <div class="new new-prev">Since Tiled 1.3</div>
 
 Updates
 ~~~~~~~
@@ -138,7 +138,7 @@ whether a new version is available by opening the *About Tiled* dialog.
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.3</div>
+   <div class="new new-prev">Since Tiled 1.3</div>
 
 .. _keyboard-options:
 
