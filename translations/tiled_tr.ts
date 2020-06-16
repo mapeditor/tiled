@@ -1327,22 +1327,22 @@ Satır %1, sütun %2</translation>
     <message>
         <location filename="../src/tiled/noeditorwidget.ui" line="+40"/>
         <source>&lt;font size=&quot;+2&quot;&gt;No Open Files&lt;/font&gt;</source>
-        <translation type="unfinished">&lt;font size=&quot;+2&quot;&gt;Açık Dosya Yok&lt;/font&gt;</translation>
+        <translation>&lt;font size=&quot;+2&quot;&gt;Açık Dosya Yok&lt;/font&gt;</translation>
     </message>
     <message>
         <location line="+110"/>
         <source>Open File...</source>
-        <translation type="unfinished">Dosya Aç...</translation>
+        <translation>Dosya Aç...</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>New Map...</source>
-        <translation type="unfinished">Yeni Harita...</translation>
+        <translation>Yeni Harita...</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>New Tileset...</source>
-        <translation type="unfinished">Yeni Desen Seti...</translation>
+        <translation>Yeni Desen Seti...</translation>
     </message>
 </context>
 <context>
@@ -3029,12 +3029,12 @@ Satır %1, sütun %2</translation>
     <message>
         <location filename="../src/tiled/automapper.cpp" line="+140"/>
         <source>Ignoring unknown property &apos;%2&apos; = &apos;%3&apos; (rule map &apos;%1&apos;)</source>
-        <translation>Bilinmeyen &apos;%2&apos; = &apos;%3&apos; özelliği  yok sayılıyor (kural haritası &apos;%1&apos;)</translation>
+        <translation>Bilinmeyen &apos;%2&apos; = &apos;%3&apos; özelliği yok sayılıyor (kural haritası &apos;%1&apos;)</translation>
     </message>
     <message>
         <location line="+40"/>
         <source>Ignoring unknown property &apos;%2&apos; = &apos;%3&apos; on layer &apos;%4&apos; (rule map &apos;%1&apos;)</source>
-        <translation>&apos;%4&apos; katmanındaki bilinmeyen &apos;%2&apos; = &apos;%3&apos; özelliği  yok sayılıyor (kural haritası &apos;%1&apos;)</translation>
+        <translation>&apos;%4&apos; katmanındaki bilinmeyen &apos;%2&apos; = &apos;%3&apos; özelliği yok sayılıyor (kural haritası &apos;%1&apos;)</translation>
     </message>
     <message>
         <location line="+29"/>
@@ -3080,7 +3080,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+3"/>
         <source>No input_&lt;name&gt; layer found!</source>
-        <translation>input_&lt;name&gt;  katmanı bulunamadı!</translation>
+        <translation>input_&lt;name&gt; katmanı bulunamadı!</translation>
     </message>
     <message>
         <location line="+3"/>
