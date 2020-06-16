@@ -30,9 +30,9 @@ package org.mapeditor.util;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.LinkedList;
 
 /**
  * Helper class containing util methods for jar protocol URLs.
@@ -44,6 +44,7 @@ public class URLHelper {
     private static final String URL_SEPARATOR = "" + URL_SEPARATOR_CHAR;
     private static final String PARENT_DIR = "..";
     private static final String CURRENT_DIR = ".";
+    private static final char JAR_PATH_SEPARATOR_CHAR = '!';
 
     private URLHelper() {
     }
@@ -55,19 +56,10 @@ public class URLHelper {
         if (url == null) {
             throw new IllegalArgumentException("Url cannot be null");
         }
-        if (JAR_PROTOCOL.equals(url.getProtocol())) {
-            String urlStr = url.toString();
-            if (isDirectory(url)) {
-                return new URL(urlStr.substring(0, urlStr.lastIndexOf(URL_SEPARATOR_CHAR, urlStr.length() - 2) + 1));
-            } else {
-                return new URL(urlStr.substring(0, urlStr.lastIndexOf(URL_SEPARATOR_CHAR) + 1));
-            }
+        if (isDirectory(url)) {
+            return resolve(url, PARENT_DIR);
         } else {
-            if (isDirectory(url)) {
-                return url.toURI().resolve(PARENT_DIR).toURL();
-            } else {
-                return url.toURI().resolve(CURRENT_DIR).toURL();
-            }
+            return resolve(url, CURRENT_DIR);
         }
     }
 
@@ -88,25 +80,10 @@ public class URLHelper {
 
         String urlPath = path.replace(File.separatorChar, URL_SEPARATOR_CHAR);
         if (JAR_PROTOCOL.equals(url.getProtocol())) {
-            String resultUrl;
-            if (isDirectory(url)) {
-                resultUrl = url.toString() + urlPath;
-            } else {
-                resultUrl = getParent(url) + urlPath;
-            }
-            String[] segments = resultUrl.split(URL_SEPARATOR);
-            LinkedList<String> result = new LinkedList<>();
-            for (String segment : segments) {
-                if (PARENT_DIR.equals(segment)) {
-                    if (result.isEmpty()) {
-                        throw new IllegalArgumentException("Cannot resolve URL " + url + " for path " + urlPath);
-                    }
-                    result.removeLast();
-                } else if (!CURRENT_DIR.equals(segment)) {
-                    result.addLast(segment);
-                }
-            }
-            return new URL(String.join(URL_SEPARATOR, result));
+            String urlStr = url.toString();
+            int jarPathStart = urlStr.lastIndexOf(JAR_PATH_SEPARATOR_CHAR);
+            String withinJarPath = urlStr.substring(jarPathStart + 1);
+            return new URL(urlStr.substring(0, jarPathStart + 1) + new URI(withinJarPath).resolve(path));
         } else {
             return url.toURI().resolve(urlPath).toURL();
         }
