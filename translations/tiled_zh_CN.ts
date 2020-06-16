@@ -218,12 +218,7 @@
 <context>
     <name>CommandsEdit</name>
     <message>
-        <location filename="../src/tiled/commandsedit.ui" line="+14"/>
-        <source>Form</source>
-        <translation>格式</translation>
-    </message>
-    <message>
-        <location line="+39"/>
+        <location filename="../src/tiled/commandsedit.ui" line="+50"/>
         <source>Executable:</source>
         <translation>可执行文件:</translation>
     </message>
@@ -785,23 +780,13 @@
         <translation>重新打开关闭的文件</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Ctrl+Shift+T</source>
-        <translation>Ctrl+Shift+T</translation>
-    </message>
-    <message>
-        <location line="+5"/>
+        <location line="+8"/>
         <location line="+3"/>
         <source>Move Map</source>
         <translation>移动地图</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Ctrl+Shift+M</source>
-        <translation>Ctrl+Shift+M</translation>
-    </message>
-    <message>
-        <location line="+9"/>
+        <location line="+12"/>
         <source>Project &amp;Properties...</source>
         <translation>项目&amp;属性...</translation>
     </message>
@@ -811,12 +796,7 @@
         <translation>在项目中打开文件(&amp;P)...</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Ctrl+P</source>
-        <translation>Ctrl+P</translation>
-    </message>
-    <message>
-        <location line="-261"/>
+        <location line="-258"/>
         <source>&amp;Export</source>
         <translation>导出(&amp;E)</translation>
     </message>
@@ -1341,6 +1321,29 @@ Line %1, column %2</source>
         <location filename="../src/tiled/newtilesetdialog.cpp" line="-2"/>
         <source>Edit Tileset</source>
         <translation>编辑图块集</translation>
+    </message>
+</context>
+<context>
+    <name>NoEditorWidget</name>
+    <message>
+        <location filename="../src/tiled/noeditorwidget.ui" line="+40"/>
+        <source>&lt;font size=&quot;+2&quot;&gt;No Open Files&lt;/font&gt;</source>
+        <translation type="unfinished">&lt;font size=&quot;+2&quot;&gt;没有打开的文件&lt;/font&gt;</translation>
+    </message>
+    <message>
+        <location line="+110"/>
+        <source>Open File...</source>
+        <translation type="unfinished">打开文件...</translation>
+    </message>
+    <message>
+        <location line="+27"/>
+        <source>New Map...</source>
+        <translation type="unfinished">创建新地图...</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>New Tileset...</source>
+        <translation type="unfinished">新建图块集...</translation>
     </message>
 </context>
 <context>
@@ -2508,7 +2511,7 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+54"/>
-        <location filename="../src/tiled/tilesetdock.cpp" line="+888"/>
+        <location filename="../src/tiled/tilesetdock.cpp" line="+891"/>
         <source>Not a tile</source>
         <translation>不是图块</translation>
     </message>
@@ -2685,7 +2688,7 @@ Line %1, column %2</source>
         <translation>读取地图时发生错误</translation>
     </message>
     <message>
-        <location filename="../src/tiled/scriptmanager.cpp" line="+266"/>
+        <location filename="../src/tiled/scriptmanager.cpp" line="+267"/>
         <source>Argument %1 is undefined or the wrong type</source>
         <translation>参数 %1 类型错误或未定义</translation>
     </message>
@@ -3432,11 +3435,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/consoledock.cpp" line="+59"/>
         <location line="+36"/>
+        <location line="+118"/>
         <source>Clear Console</source>
         <translation>清除控制台</translation>
     </message>
     <message>
-        <location line="+116"/>
+        <location line="-2"/>
         <source>Console</source>
         <translation>控制台</translation>
     </message>
@@ -3528,7 +3532,7 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::DocumentManager</name>
     <message>
-        <location filename="../src/tiled/documentmanager.cpp" line="+655"/>
+        <location filename="../src/tiled/documentmanager.cpp" line="+653"/>
         <source>Unrecognized file format.</source>
         <translation>无法识别的文件格式。</translation>
     </message>
@@ -3563,7 +3567,7 @@ Line %1, column %2</source>
         <translation>关闭右侧标签页</translation>
     </message>
     <message>
-        <location line="+281"/>
+        <location line="+287"/>
         <source>Tileset Columns Changed</source>
         <translation>图块集列已变更</translation>
     </message>
@@ -3922,9 +3926,9 @@ Do you want to replace it?</source>
     <name>Tiled::MainWindow</name>
     <message>
         <location filename="../src/tiled/abstractobjecttool.cpp" line="-261"/>
-        <location filename="../src/tiled/documentmanager.cpp" line="-596"/>
+        <location filename="../src/tiled/documentmanager.cpp" line="-602"/>
         <location line="+26"/>
-        <location filename="../src/tiled/mainwindow.cpp" line="+1354"/>
+        <location filename="../src/tiled/mainwindow.cpp" line="+1358"/>
         <source>untitled</source>
         <translation>未命名</translation>
     </message>
@@ -3960,14 +3964,14 @@ Do you want to replace it?</source>
         <translation>当文件被加载的时候，Tiled可能无法自动识别出来。所以你确定要保存成此扩展名吗？</translation>
     </message>
     <message>
-        <location filename="../src/tiled/mainwindow.cpp" line="-993"/>
-        <location line="+889"/>
+        <location filename="../src/tiled/mainwindow.cpp" line="-997"/>
+        <location line="+893"/>
         <location line="+614"/>
         <source>All Files (*)</source>
         <translation>全部文件 (*)</translation>
     </message>
     <message>
-        <location line="-1481"/>
+        <location line="-1485"/>
         <source>Export As...</source>
         <translation>导出为...</translation>
     </message>
@@ -3994,7 +3998,7 @@ Please select specific format.</source>
         <translation>未知的文件扩展名.</translation>
     </message>
     <message>
-        <location line="+150"/>
+        <location line="+154"/>
         <source>Undo</source>
         <translation>撤销</translation>
     </message>
@@ -4005,12 +4009,12 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="+150"/>
-        <location line="+1590"/>
+        <location line="+1599"/>
         <source>&amp;Layer</source>
         <translation>图层(&amp;L)</translation>
     </message>
     <message>
-        <location line="-1506"/>
+        <location line="-1515"/>
         <location line="+34"/>
         <source>All Files (*);;</source>
         <translation>全部文件 (*);;</translation>
@@ -4048,22 +4052,24 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="+118"/>
-        <location line="+1330"/>
+        <location line="+1339"/>
         <source>Views and Toolbars</source>
         <translation>视图和工具栏</translation>
     </message>
     <message>
-        <location line="-1327"/>
+        <location line="-1336"/>
+        <location line="+1337"/>
         <source>Reset to Default Layout</source>
         <translation>重置默认布局</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="-1335"/>
+        <location line="+1336"/>
         <source>Object Types Editor</source>
         <translation>对象类型编辑器</translation>
     </message>
     <message>
-        <location line="+239"/>
+        <location line="-1097"/>
         <source>Error Opening File</source>
         <translation>打开文件出错</translation>
     </message>
@@ -4167,7 +4173,7 @@ Please select specific format.</source>
         <translation>自动映射告警</translation>
     </message>
     <message>
-        <location line="+277"/>
+        <location line="+286"/>
         <source>[*]%1%2</source>
         <translation>[*]%1%2</translation>
     </message>
@@ -4182,7 +4188,7 @@ Please select specific format.</source>
         <translation>编组(&amp;G)</translation>
     </message>
     <message>
-        <location line="+30"/>
+        <location line="+32"/>
         <source>Some export files already exist:</source>
         <translation>某些导出文件已经存在:</translation>
     </message>
@@ -4740,7 +4746,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::NewsButton</name>
     <message>
-        <location filename="../src/tiled/newsbutton.cpp" line="+54"/>
+        <location filename="../src/tiled/newsbutton.cpp" line="+155"/>
         <source>Devlog</source>
         <translation>开发日志</translation>
     </message>
@@ -4750,7 +4756,7 @@ Please select specific format.</source>
         <translation>最新消息</translation>
     </message>
     <message>
-        <location line="+70"/>
+        <location line="-22"/>
         <source>View All Posts</source>
         <translation>显示所有帖子</translation>
     </message>
@@ -4758,29 +4764,6 @@ Please select specific format.</source>
         <location line="+2"/>
         <source>News Archive</source>
         <translation>历史消息</translation>
-    </message>
-</context>
-<context>
-    <name>Tiled::NoEditorWidget</name>
-    <message>
-        <location filename="../src/tiled/noeditorwidget.ui" line="+19"/>
-        <source>&lt;font size=&quot;+2&quot;&gt;No Open Files&lt;/font&gt;</source>
-        <translation>&lt;font size=&quot;+2&quot;&gt;没有打开的文件&lt;/font&gt;</translation>
-    </message>
-    <message>
-        <location line="+28"/>
-        <source>New Map...</source>
-        <translation>创建新地图...</translation>
-    </message>
-    <message>
-        <location line="+7"/>
-        <source>New Tileset...</source>
-        <translation>新建图块集...</translation>
-    </message>
-    <message>
-        <location line="+11"/>
-        <source>Open File...</source>
-        <translation>打开文件...</translation>
     </message>
 </context>
 <context>
@@ -4833,7 +4816,7 @@ Please select specific format.</source>
         <translation>%1) %2</translation>
     </message>
     <message numerus="yes">
-        <location line="+698"/>
+        <location line="+707"/>
         <source>Rotate %n Object(s)</source>
         <translation>
             <numerusform>旋转 %n 个对象</numerusform>
@@ -5582,7 +5565,7 @@ Please select specific format.</source>
         <translation>重置脚本引擎</translation>
     </message>
     <message>
-        <location line="+39"/>
+        <location line="+41"/>
         <source>Script files changed: %1</source>
         <translation>脚本文件已更改：%1</translation>
     </message>

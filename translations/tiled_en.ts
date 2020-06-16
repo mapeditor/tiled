@@ -212,12 +212,7 @@
 <context>
     <name>CommandsEdit</name>
     <message>
-        <location filename="../src/tiled/commandsedit.ui" line="+14"/>
-        <source>Form</source>
-        <translation>Form</translation>
-    </message>
-    <message>
-        <location line="+39"/>
+        <location filename="../src/tiled/commandsedit.ui" line="+50"/>
         <source>Executable:</source>
         <translation>Executable:</translation>
     </message>
@@ -786,23 +781,13 @@
         <translation>Reopen Closed File</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Ctrl+Shift+T</source>
-        <translation>Ctrl+Shift+T</translation>
-    </message>
-    <message>
-        <location line="+5"/>
+        <location line="+8"/>
         <location line="+3"/>
         <source>Move Map</source>
         <translation>Move Map</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Ctrl+Shift+M</source>
-        <translation>Ctrl+Shift+M</translation>
-    </message>
-    <message>
-        <location line="+9"/>
+        <location line="+12"/>
         <source>Project &amp;Properties...</source>
         <translation>Project &amp;Properties...</translation>
     </message>
@@ -812,12 +797,7 @@
         <translation>Open File in &amp;Project...</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Ctrl+P</source>
-        <translation>Ctrl+P</translation>
-    </message>
-    <message>
-        <location line="-232"/>
+        <location line="-229"/>
         <source>&amp;Never</source>
         <translation></translation>
     </message>
@@ -1330,6 +1310,29 @@ Line %1, column %2</source>
         <location filename="../src/tiled/newtilesetdialog.cpp" line="-2"/>
         <source>Edit Tileset</source>
         <translation>Edit Tileset</translation>
+    </message>
+</context>
+<context>
+    <name>NoEditorWidget</name>
+    <message>
+        <location filename="../src/tiled/noeditorwidget.ui" line="+40"/>
+        <source>&lt;font size=&quot;+2&quot;&gt;No Open Files&lt;/font&gt;</source>
+        <translation type="unfinished">&lt;font size=&quot;+2&quot;&gt;No Open Files&lt;/font&gt;</translation>
+    </message>
+    <message>
+        <location line="+110"/>
+        <source>Open File...</source>
+        <translation type="unfinished">Open File...</translation>
+    </message>
+    <message>
+        <location line="+27"/>
+        <source>New Map...</source>
+        <translation type="unfinished">New Map...</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>New Tileset...</source>
+        <translation type="unfinished">New Tileset...</translation>
     </message>
 </context>
 <context>
@@ -2495,7 +2498,7 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+54"/>
-        <location filename="../src/tiled/tilesetdock.cpp" line="+888"/>
+        <location filename="../src/tiled/tilesetdock.cpp" line="+891"/>
         <source>Not a tile</source>
         <translation>Not a tile</translation>
     </message>
@@ -2672,7 +2675,7 @@ Line %1, column %2</source>
         <translation>Error reading map</translation>
     </message>
     <message>
-        <location filename="../src/tiled/scriptmanager.cpp" line="+266"/>
+        <location filename="../src/tiled/scriptmanager.cpp" line="+267"/>
         <source>Argument %1 is undefined or the wrong type</source>
         <translation>Argument %1 is undefined or the wrong type</translation>
     </message>
@@ -3422,11 +3425,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/consoledock.cpp" line="+59"/>
         <location line="+36"/>
+        <location line="+118"/>
         <source>Clear Console</source>
         <translation>Clear Console</translation>
     </message>
     <message>
-        <location line="+116"/>
+        <location line="-2"/>
         <source>Console</source>
         <translation>Console</translation>
     </message>
@@ -3518,7 +3522,7 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::DocumentManager</name>
     <message>
-        <location filename="../src/tiled/documentmanager.cpp" line="+655"/>
+        <location filename="../src/tiled/documentmanager.cpp" line="+653"/>
         <source>Unrecognized file format.</source>
         <translation>Unrecognized file format.</translation>
     </message>
@@ -3553,7 +3557,7 @@ Line %1, column %2</source>
         <translation>Close Tabs to the Right</translation>
     </message>
     <message>
-        <location line="+281"/>
+        <location line="+287"/>
         <source>Tileset Columns Changed</source>
         <translation>Tileset Columns Changed</translation>
     </message>
@@ -3917,9 +3921,9 @@ Do you want to replace it?</translation>
     <name>Tiled::MainWindow</name>
     <message>
         <location filename="../src/tiled/abstractobjecttool.cpp" line="-261"/>
-        <location filename="../src/tiled/documentmanager.cpp" line="-596"/>
+        <location filename="../src/tiled/documentmanager.cpp" line="-602"/>
         <location line="+26"/>
-        <location filename="../src/tiled/mainwindow.cpp" line="+1354"/>
+        <location filename="../src/tiled/mainwindow.cpp" line="+1358"/>
         <source>untitled</source>
         <translation>untitled</translation>
     </message>
@@ -3955,14 +3959,14 @@ Do you want to replace it?</translation>
         <translation>Tiled may not automatically recognize your file when loading. Are you sure you want to save with this extension?</translation>
     </message>
     <message>
-        <location filename="../src/tiled/mainwindow.cpp" line="-993"/>
-        <location line="+889"/>
+        <location filename="../src/tiled/mainwindow.cpp" line="-997"/>
+        <location line="+893"/>
         <location line="+614"/>
         <source>All Files (*)</source>
         <translation>All Files (*)</translation>
     </message>
     <message>
-        <location line="-1481"/>
+        <location line="-1485"/>
         <source>Export As...</source>
         <translation>Export As...</translation>
     </message>
@@ -3989,7 +3993,7 @@ Please select specific format.</translation>
         <translation>The given filename does not have any known file extension.</translation>
     </message>
     <message>
-        <location line="+150"/>
+        <location line="+154"/>
         <source>Undo</source>
         <translation>Undo</translation>
     </message>
@@ -4000,12 +4004,12 @@ Please select specific format.</translation>
     </message>
     <message>
         <location line="+150"/>
-        <location line="+1590"/>
+        <location line="+1599"/>
         <source>&amp;Layer</source>
         <translation>&amp;Layer</translation>
     </message>
     <message>
-        <location line="-1506"/>
+        <location line="-1515"/>
         <location line="+34"/>
         <source>All Files (*);;</source>
         <translation>All Files (*);;</translation>
@@ -4043,22 +4047,24 @@ Please select specific format.</translation>
     </message>
     <message>
         <location line="+118"/>
-        <location line="+1330"/>
+        <location line="+1339"/>
         <source>Views and Toolbars</source>
         <translation>Views and Toolbars</translation>
     </message>
     <message>
-        <location line="-1327"/>
+        <location line="-1336"/>
+        <location line="+1337"/>
         <source>Reset to Default Layout</source>
         <translation>Reset to Default Layout</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="-1335"/>
+        <location line="+1336"/>
         <source>Object Types Editor</source>
         <translation>Object Types Editor</translation>
     </message>
     <message>
-        <location line="+239"/>
+        <location line="-1097"/>
         <source>Error Opening File</source>
         <translation>Error Opening File</translation>
     </message>
@@ -4162,7 +4168,7 @@ Please select specific format.</translation>
         <translation>AutoMapping Warning</translation>
     </message>
     <message>
-        <location line="+277"/>
+        <location line="+286"/>
         <source>[*]%1%2</source>
         <translation>[*]%1%2</translation>
     </message>
@@ -4177,7 +4183,7 @@ Please select specific format.</translation>
         <translation>&amp;Group</translation>
     </message>
     <message>
-        <location line="+30"/>
+        <location line="+32"/>
         <source>Some export files already exist:</source>
         <translation>Some export files already exist:</translation>
     </message>
@@ -4748,7 +4754,7 @@ Please select specific format.</translation>
 <context>
     <name>Tiled::NewsButton</name>
     <message>
-        <location filename="../src/tiled/newsbutton.cpp" line="+54"/>
+        <location filename="../src/tiled/newsbutton.cpp" line="+155"/>
         <source>Devlog</source>
         <translation>Devlog</translation>
     </message>
@@ -4758,7 +4764,7 @@ Please select specific format.</translation>
         <translation>News</translation>
     </message>
     <message>
-        <location line="+70"/>
+        <location line="-22"/>
         <source>View All Posts</source>
         <translation>View All Posts</translation>
     </message>
@@ -4766,29 +4772,6 @@ Please select specific format.</translation>
         <location line="+2"/>
         <source>News Archive</source>
         <translation>News Archive</translation>
-    </message>
-</context>
-<context>
-    <name>Tiled::NoEditorWidget</name>
-    <message>
-        <location filename="../src/tiled/noeditorwidget.ui" line="+19"/>
-        <source>&lt;font size=&quot;+2&quot;&gt;No Open Files&lt;/font&gt;</source>
-        <translation>&lt;font size=&quot;+2&quot;&gt;No Open Files&lt;/font&gt;</translation>
-    </message>
-    <message>
-        <location line="+28"/>
-        <source>New Map...</source>
-        <translation>New Map...</translation>
-    </message>
-    <message>
-        <location line="+7"/>
-        <source>New Tileset...</source>
-        <translation>New Tileset...</translation>
-    </message>
-    <message>
-        <location line="+11"/>
-        <source>Open File...</source>
-        <translation>Open File...</translation>
     </message>
 </context>
 <context>
@@ -4842,7 +4825,7 @@ Please select specific format.</translation>
         <translation>%1) %2</translation>
     </message>
     <message numerus="yes">
-        <location line="+698"/>
+        <location line="+707"/>
         <source>Rotate %n Object(s)</source>
         <translation>
             <numerusform>Rotate Object</numerusform>
@@ -5597,7 +5580,7 @@ Please select specific format.</translation>
         <translation>Resetting script engine</translation>
     </message>
     <message>
-        <location line="+39"/>
+        <location line="+41"/>
         <source>Script files changed: %1</source>
         <translation>Script files changed: %1</translation>
     </message>

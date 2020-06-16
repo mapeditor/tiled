@@ -217,12 +217,7 @@
 <context>
     <name>CommandsEdit</name>
     <message>
-        <location filename="../src/tiled/commandsedit.ui" line="+14"/>
-        <source>Form</source>
-        <translation>Skjema</translation>
-    </message>
-    <message>
-        <location line="+39"/>
+        <location filename="../src/tiled/commandsedit.ui" line="+50"/>
         <source>Executable:</source>
         <translation type="unfinished">Kjørbar fil:</translation>
     </message>
@@ -794,23 +789,13 @@
         <translation>Åpne lukket fil igjen</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Ctrl+Shift+T</source>
-        <translation>Ctrl+Shift+T</translation>
-    </message>
-    <message>
-        <location line="+5"/>
+        <location line="+8"/>
         <location line="+3"/>
         <source>Move Map</source>
         <translation>Flytt kart</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Ctrl+Shift+M</source>
-        <translation>Ctrl+Shift+M</translation>
-    </message>
-    <message>
-        <location line="+9"/>
+        <location line="+12"/>
         <source>Project &amp;Properties...</source>
         <translation>Prosjekt&amp;egenskaper…</translation>
     </message>
@@ -820,12 +805,7 @@
         <translation>Åpne fil i &amp;prosjekt…</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Ctrl+P</source>
-        <translation>Ctrl+P</translation>
-    </message>
-    <message>
-        <location line="-232"/>
+        <location line="-229"/>
         <source>&amp;Never</source>
         <translation>&amp;Aldri</translation>
     </message>
@@ -1340,6 +1320,29 @@ Linje %1, kolonne %2</translation>
         <location filename="../src/tiled/newtilesetdialog.cpp" line="-2"/>
         <source>Edit Tileset</source>
         <translation>Rediger Rutebrett</translation>
+    </message>
+</context>
+<context>
+    <name>NoEditorWidget</name>
+    <message>
+        <location filename="../src/tiled/noeditorwidget.ui" line="+40"/>
+        <source>&lt;font size=&quot;+2&quot;&gt;No Open Files&lt;/font&gt;</source>
+        <translation type="unfinished">&lt;font size=&quot;+2&quot;&gt;Ingen åpne filer&lt;/font&gt;</translation>
+    </message>
+    <message>
+        <location line="+110"/>
+        <source>Open File...</source>
+        <translation type="unfinished">Åpne fil…</translation>
+    </message>
+    <message>
+        <location line="+27"/>
+        <source>New Map...</source>
+        <translation type="unfinished">Nytt kart…</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>New Tileset...</source>
+        <translation type="unfinished">Nytt flisesett…</translation>
     </message>
 </context>
 <context>
@@ -2507,7 +2510,7 @@ Linje %1, kolonne %2</translation>
     </message>
     <message>
         <location line="+54"/>
-        <location filename="../src/tiled/tilesetdock.cpp" line="+888"/>
+        <location filename="../src/tiled/tilesetdock.cpp" line="+891"/>
         <source>Not a tile</source>
         <translation type="unfinished">Ikke en flis</translation>
     </message>
@@ -2684,7 +2687,7 @@ Linje %1, kolonne %2</translation>
         <translation>Kunne ikke lese kart</translation>
     </message>
     <message>
-        <location filename="../src/tiled/scriptmanager.cpp" line="+266"/>
+        <location filename="../src/tiled/scriptmanager.cpp" line="+267"/>
         <source>Argument %1 is undefined or the wrong type</source>
         <translation>Argumentet «%1» er udefinert, eller av feil type</translation>
     </message>
@@ -3434,11 +3437,12 @@ Linje %1, kolonne %2</translation>
     <message>
         <location filename="../src/tiled/consoledock.cpp" line="+59"/>
         <location line="+36"/>
+        <location line="+118"/>
         <source>Clear Console</source>
         <translation>Tøm konsoll</translation>
     </message>
     <message>
-        <location line="+116"/>
+        <location line="-2"/>
         <source>Console</source>
         <translation>Konsoll</translation>
     </message>
@@ -3530,7 +3534,7 @@ Linje %1, kolonne %2</translation>
 <context>
     <name>Tiled::DocumentManager</name>
     <message>
-        <location filename="../src/tiled/documentmanager.cpp" line="+655"/>
+        <location filename="../src/tiled/documentmanager.cpp" line="+653"/>
         <source>Unrecognized file format.</source>
         <translation type="unfinished">Ukjent filformat.</translation>
     </message>
@@ -3565,7 +3569,7 @@ Linje %1, kolonne %2</translation>
         <translation type="unfinished">Lukk faner til høyre</translation>
     </message>
     <message>
-        <location line="+281"/>
+        <location line="+287"/>
         <source>Tileset Columns Changed</source>
         <translation type="unfinished">Rutebrettkolonner Forandret</translation>
     </message>
@@ -3928,9 +3932,9 @@ Do you want to replace it?</source>
     <name>Tiled::MainWindow</name>
     <message>
         <location filename="../src/tiled/abstractobjecttool.cpp" line="-261"/>
-        <location filename="../src/tiled/documentmanager.cpp" line="-596"/>
+        <location filename="../src/tiled/documentmanager.cpp" line="-602"/>
         <location line="+26"/>
-        <location filename="../src/tiled/mainwindow.cpp" line="+1354"/>
+        <location filename="../src/tiled/mainwindow.cpp" line="+1358"/>
         <source>untitled</source>
         <translation type="unfinished">ukjent tittel</translation>
     </message>
@@ -3966,14 +3970,14 @@ Do you want to replace it?</source>
         <translation type="unfinished">Det er ikke sikkert Tiled kan gjenkjenne filen din under lasting. Er du sikker på at du vil lagre med dette filetternavnet?</translation>
     </message>
     <message>
-        <location filename="../src/tiled/mainwindow.cpp" line="-993"/>
-        <location line="+889"/>
+        <location filename="../src/tiled/mainwindow.cpp" line="-997"/>
+        <location line="+893"/>
         <location line="+614"/>
         <source>All Files (*)</source>
         <translation type="unfinished">Alle Filer (*)</translation>
     </message>
     <message>
-        <location line="-1481"/>
+        <location line="-1485"/>
         <source>Export As...</source>
         <translation type="unfinished">Eksporter Som...</translation>
     </message>
@@ -4000,7 +4004,7 @@ Vennligst velgt et spesifikt format.</translation>
         <translation type="unfinished">Det gitte filnavnet har ikke en kjent filtype.</translation>
     </message>
     <message>
-        <location line="+150"/>
+        <location line="+154"/>
         <source>Undo</source>
         <translation type="unfinished">Angre</translation>
     </message>
@@ -4011,12 +4015,12 @@ Vennligst velgt et spesifikt format.</translation>
     </message>
     <message>
         <location line="+150"/>
-        <location line="+1590"/>
+        <location line="+1599"/>
         <source>&amp;Layer</source>
         <translation type="unfinished">&amp;Lag</translation>
     </message>
     <message>
-        <location line="-1506"/>
+        <location line="-1515"/>
         <location line="+34"/>
         <source>All Files (*);;</source>
         <translation type="unfinished">Alle filer (*);;</translation>
@@ -4054,22 +4058,24 @@ Vennligst velgt et spesifikt format.</translation>
     </message>
     <message>
         <location line="+118"/>
-        <location line="+1330"/>
+        <location line="+1339"/>
         <source>Views and Toolbars</source>
         <translation type="unfinished">Oversikt og Verktøyslinjer</translation>
     </message>
     <message>
-        <location line="-1327"/>
+        <location line="-1336"/>
+        <location line="+1337"/>
         <source>Reset to Default Layout</source>
         <translation type="unfinished">Tilbakestill til forvalgt oppsett</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="-1335"/>
+        <location line="+1336"/>
         <source>Object Types Editor</source>
         <translation type="unfinished">Objekttype-editor</translation>
     </message>
     <message>
-        <location line="+239"/>
+        <location line="-1097"/>
         <source>Error Opening File</source>
         <translation type="unfinished">Feil ved åpning av fil</translation>
     </message>
@@ -4173,7 +4179,7 @@ Vennligst velgt et spesifikt format.</translation>
         <translation type="unfinished">Automatisk Kartleggingsadvarsel</translation>
     </message>
     <message>
-        <location line="+277"/>
+        <location line="+286"/>
         <source>[*]%1%2</source>
         <translation type="unfinished">[*]%1%2</translation>
     </message>
@@ -4188,7 +4194,7 @@ Vennligst velgt et spesifikt format.</translation>
         <translation type="unfinished">&amp;Grupper</translation>
     </message>
     <message>
-        <location line="+30"/>
+        <location line="+32"/>
         <source>Some export files already exist:</source>
         <translation type="unfinished">Noen eksportfiler finnes allerede:</translation>
     </message>
@@ -4759,7 +4765,7 @@ Vennligst velgt et spesifikt format.</translation>
 <context>
     <name>Tiled::NewsButton</name>
     <message>
-        <location filename="../src/tiled/newsbutton.cpp" line="+54"/>
+        <location filename="../src/tiled/newsbutton.cpp" line="+155"/>
         <source>Devlog</source>
         <translation>Utviklingslogg</translation>
     </message>
@@ -4769,7 +4775,7 @@ Vennligst velgt et spesifikt format.</translation>
         <translation type="unfinished">Nyheter</translation>
     </message>
     <message>
-        <location line="+70"/>
+        <location line="-22"/>
         <source>View All Posts</source>
         <translation>Vis alle poster</translation>
     </message>
@@ -4777,29 +4783,6 @@ Vennligst velgt et spesifikt format.</translation>
         <location line="+2"/>
         <source>News Archive</source>
         <translation type="unfinished">Nyhetsarkiv</translation>
-    </message>
-</context>
-<context>
-    <name>Tiled::NoEditorWidget</name>
-    <message>
-        <location filename="../src/tiled/noeditorwidget.ui" line="+19"/>
-        <source>&lt;font size=&quot;+2&quot;&gt;No Open Files&lt;/font&gt;</source>
-        <translation type="unfinished">&lt;font size=&quot;+2&quot;&gt;Ingen åpne filer&lt;/font&gt;</translation>
-    </message>
-    <message>
-        <location line="+28"/>
-        <source>New Map...</source>
-        <translation type="unfinished">Nytt kart…</translation>
-    </message>
-    <message>
-        <location line="+7"/>
-        <source>New Tileset...</source>
-        <translation type="unfinished">Nytt flisesett…</translation>
-    </message>
-    <message>
-        <location line="+11"/>
-        <source>Open File...</source>
-        <translation type="unfinished">Åpne fil…</translation>
     </message>
 </context>
 <context>
@@ -4853,7 +4836,7 @@ Vennligst velgt et spesifikt format.</translation>
         <translation type="unfinished">%1) %2</translation>
     </message>
     <message numerus="yes">
-        <location line="+698"/>
+        <location line="+707"/>
         <source>Rotate %n Object(s)</source>
         <translation>
             <numerusform>Roter %n objekt</numerusform>
@@ -5608,7 +5591,7 @@ Vennligst velgt et spesifikt format.</translation>
         <translation>Tilbakestiller skriptmotor</translation>
     </message>
     <message>
-        <location line="+39"/>
+        <location line="+41"/>
         <source>Script files changed: %1</source>
         <translation type="unfinished">Skriptfiler endret: %1</translation>
     </message>

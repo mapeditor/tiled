@@ -218,12 +218,7 @@
 <context>
     <name>CommandsEdit</name>
     <message>
-        <location filename="../src/tiled/commandsedit.ui" line="+14"/>
-        <source>Form</source>
-        <translation>Form</translation>
-    </message>
-    <message>
-        <location line="+39"/>
+        <location filename="../src/tiled/commandsedit.ui" line="+50"/>
         <source>Executable:</source>
         <translation>Uitvoerbaar bestand:</translation>
     </message>
@@ -779,23 +774,13 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Ctrl+Shift+T</source>
-        <translation>Ctrl+Shift+T</translation>
-    </message>
-    <message>
-        <location line="+5"/>
+        <location line="+8"/>
         <location line="+3"/>
         <source>Move Map</source>
         <translation>Map Verplaatsen</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Ctrl+Shift+M</source>
-        <translation>Ctrl+Shift+M</translation>
-    </message>
-    <message>
-        <location line="+9"/>
+        <location line="+12"/>
         <source>Project &amp;Properties...</source>
         <translation>Project &amp;Eigenschappen...</translation>
     </message>
@@ -805,12 +790,7 @@
         <translation>Bestand in &amp;Project Openen...</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Ctrl+P</source>
-        <translation>Ctrl+P</translation>
-    </message>
-    <message>
-        <location line="-248"/>
+        <location line="-245"/>
         <source>Save All</source>
         <translation>Alles Opslaan</translation>
     </message>
@@ -1340,6 +1320,29 @@ Regel %1, colom %2</translation>
         <location filename="../src/tiled/newtilesetdialog.cpp" line="-2"/>
         <source>Edit Tileset</source>
         <translation>Tileset Bewerken</translation>
+    </message>
+</context>
+<context>
+    <name>NoEditorWidget</name>
+    <message>
+        <location filename="../src/tiled/noeditorwidget.ui" line="+40"/>
+        <source>&lt;font size=&quot;+2&quot;&gt;No Open Files&lt;/font&gt;</source>
+        <translation type="unfinished">&lt;font size=&quot;+2&quot;&gt;Geen Open Bestanden&lt;/font&gt;</translation>
+    </message>
+    <message>
+        <location line="+110"/>
+        <source>Open File...</source>
+        <translation type="unfinished">Bestand Openen...</translation>
+    </message>
+    <message>
+        <location line="+27"/>
+        <source>New Map...</source>
+        <translation type="unfinished">Nieuwe Map...</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>New Tileset...</source>
+        <translation type="unfinished">Nieuwe Tileset...</translation>
     </message>
 </context>
 <context>
@@ -2507,7 +2510,7 @@ Regel %1, colom %2</translation>
     </message>
     <message>
         <location line="+54"/>
-        <location filename="../src/tiled/tilesetdock.cpp" line="+888"/>
+        <location filename="../src/tiled/tilesetdock.cpp" line="+891"/>
         <source>Not a tile</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2684,7 +2687,7 @@ Regel %1, colom %2</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tiled/scriptmanager.cpp" line="+266"/>
+        <location filename="../src/tiled/scriptmanager.cpp" line="+267"/>
         <source>Argument %1 is undefined or the wrong type</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3433,11 +3436,12 @@ Regel %1, colom %2</translation>
     <message>
         <location filename="../src/tiled/consoledock.cpp" line="+59"/>
         <location line="+36"/>
+        <location line="+118"/>
         <source>Clear Console</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+116"/>
+        <location line="-2"/>
         <source>Console</source>
         <translation>Console</translation>
     </message>
@@ -3529,7 +3533,7 @@ Regel %1, colom %2</translation>
 <context>
     <name>Tiled::DocumentManager</name>
     <message>
-        <location filename="../src/tiled/documentmanager.cpp" line="+655"/>
+        <location filename="../src/tiled/documentmanager.cpp" line="+653"/>
         <source>Unrecognized file format.</source>
         <translation>Onbekend bestandsformaat.</translation>
     </message>
@@ -3564,7 +3568,7 @@ Regel %1, colom %2</translation>
         <translation>Tabs Rechts Sluiten</translation>
     </message>
     <message>
-        <location line="+281"/>
+        <location line="+287"/>
         <source>Tileset Columns Changed</source>
         <translation>Tileset Kolommen Veranderd</translation>
     </message>
@@ -3928,9 +3932,9 @@ Moet het bestand vervangen worden?</translation>
     <name>Tiled::MainWindow</name>
     <message>
         <location filename="../src/tiled/abstractobjecttool.cpp" line="-261"/>
-        <location filename="../src/tiled/documentmanager.cpp" line="-596"/>
+        <location filename="../src/tiled/documentmanager.cpp" line="-602"/>
         <location line="+26"/>
-        <location filename="../src/tiled/mainwindow.cpp" line="+1354"/>
+        <location filename="../src/tiled/mainwindow.cpp" line="+1358"/>
         <source>untitled</source>
         <translation>naamloos</translation>
     </message>
@@ -3966,14 +3970,14 @@ Moet het bestand vervangen worden?</translation>
         <translation>Tiled herkent uw bestand mogelijk niet automatisch bij het laden. Weet u zeker dat u wilt opslaan met deze extensie?</translation>
     </message>
     <message>
-        <location filename="../src/tiled/mainwindow.cpp" line="-993"/>
-        <location line="+889"/>
+        <location filename="../src/tiled/mainwindow.cpp" line="-997"/>
+        <location line="+893"/>
         <location line="+614"/>
         <source>All Files (*)</source>
         <translation>Alle Bestanden (*)</translation>
     </message>
     <message>
-        <location line="-1481"/>
+        <location line="-1485"/>
         <source>Export As...</source>
         <translation>Exporteren Als...</translation>
     </message>
@@ -4000,7 +4004,7 @@ Kies een specifiek bestandsformaat.</translation>
         <translation>De gegeven bestandsnaam heeft geen bekende extensie.</translation>
     </message>
     <message>
-        <location line="+150"/>
+        <location line="+154"/>
         <source>Undo</source>
         <translation>Ongedaan Maken</translation>
     </message>
@@ -4011,12 +4015,12 @@ Kies een specifiek bestandsformaat.</translation>
     </message>
     <message>
         <location line="+150"/>
-        <location line="+1590"/>
+        <location line="+1599"/>
         <source>&amp;Layer</source>
         <translation>&amp;Laag</translation>
     </message>
     <message>
-        <location line="-1506"/>
+        <location line="-1515"/>
         <location line="+34"/>
         <source>All Files (*);;</source>
         <translation type="unfinished"></translation>
@@ -4054,22 +4058,24 @@ Kies een specifiek bestandsformaat.</translation>
     </message>
     <message>
         <location line="+118"/>
-        <location line="+1330"/>
+        <location line="+1339"/>
         <source>Views and Toolbars</source>
         <translation>Vensters en Toolbalken</translation>
     </message>
     <message>
-        <location line="-1327"/>
+        <location line="-1336"/>
+        <location line="+1337"/>
         <source>Reset to Default Layout</source>
         <translation>Terug naar de Standaardlayout</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="-1335"/>
+        <location line="+1336"/>
         <source>Object Types Editor</source>
         <translation>Object Types Editor</translation>
     </message>
     <message>
-        <location line="+239"/>
+        <location line="-1097"/>
         <source>Error Opening File</source>
         <translation>Fout Tijdens Openen</translation>
     </message>
@@ -4172,7 +4178,7 @@ Kies een specifiek bestandsformaat.</translation>
         <translation>Automatisch Mappen Waarschuwing</translation>
     </message>
     <message>
-        <location line="+277"/>
+        <location line="+286"/>
         <source>[*]%1%2</source>
         <translation>[*]%1%2</translation>
     </message>
@@ -4187,7 +4193,7 @@ Kies een specifiek bestandsformaat.</translation>
         <translation>&amp;Groeperen</translation>
     </message>
     <message>
-        <location line="+30"/>
+        <location line="+32"/>
         <source>Some export files already exist:</source>
         <translation>De volgende export bestanden bestaan al:</translation>
     </message>
@@ -4759,7 +4765,7 @@ Kies een specifiek bestandsformaat.</translation>
 <context>
     <name>Tiled::NewsButton</name>
     <message>
-        <location filename="../src/tiled/newsbutton.cpp" line="+54"/>
+        <location filename="../src/tiled/newsbutton.cpp" line="+155"/>
         <source>Devlog</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4769,7 +4775,7 @@ Kies een specifiek bestandsformaat.</translation>
         <translation>Nieuws</translation>
     </message>
     <message>
-        <location line="+70"/>
+        <location line="-22"/>
         <source>View All Posts</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4777,29 +4783,6 @@ Kies een specifiek bestandsformaat.</translation>
         <location line="+2"/>
         <source>News Archive</source>
         <translation>Nieuws Archief</translation>
-    </message>
-</context>
-<context>
-    <name>Tiled::NoEditorWidget</name>
-    <message>
-        <location filename="../src/tiled/noeditorwidget.ui" line="+19"/>
-        <source>&lt;font size=&quot;+2&quot;&gt;No Open Files&lt;/font&gt;</source>
-        <translation>&lt;font size=&quot;+2&quot;&gt;Geen Open Bestanden&lt;/font&gt;</translation>
-    </message>
-    <message>
-        <location line="+28"/>
-        <source>New Map...</source>
-        <translation>Nieuwe Map...</translation>
-    </message>
-    <message>
-        <location line="+7"/>
-        <source>New Tileset...</source>
-        <translation>Nieuwe Tileset...</translation>
-    </message>
-    <message>
-        <location line="+11"/>
-        <source>Open File...</source>
-        <translation>Bestand Openen...</translation>
     </message>
 </context>
 <context>
@@ -4853,7 +4836,7 @@ Kies een specifiek bestandsformaat.</translation>
         <translation>%1): %2</translation>
     </message>
     <message numerus="yes">
-        <location line="+698"/>
+        <location line="+707"/>
         <source>Rotate %n Object(s)</source>
         <translation>
             <numerusform>Object Draaien</numerusform>
@@ -5020,7 +5003,7 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location filename="../src/tiled/projectpropertiesdialog.cpp" line="-18"/>
         <source>Extensions</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Extensies</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -5608,7 +5591,7 @@ Kies een specifiek bestandsformaat.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+39"/>
+        <location line="+41"/>
         <source>Script files changed: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7202,7 +7185,7 @@ Kies een specifiek bestandsformaat.</translation>
         <location line="+19"/>
         <location filename="../src/tiledquick/qml/main.qml" line="+46"/>
         <source>Open...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Openen...</translation>
     </message>
     <message>
         <location line="+65"/>

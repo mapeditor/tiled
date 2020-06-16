@@ -217,12 +217,7 @@
 <context>
     <name>CommandsEdit</name>
     <message>
-        <location filename="../src/tiled/commandsedit.ui" line="+14"/>
-        <source>Form</source>
-        <translation>Formulaire</translation>
-    </message>
-    <message>
-        <location line="+39"/>
+        <location filename="../src/tiled/commandsedit.ui" line="+50"/>
         <source>Executable:</source>
         <translation>Exécutable :</translation>
     </message>
@@ -793,23 +788,13 @@
         <translation>Réouvrir un Fichier Fermé</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Ctrl+Shift+T</source>
-        <translation>Ctrl+Maj+T</translation>
-    </message>
-    <message>
-        <location line="+5"/>
+        <location line="+8"/>
         <location line="+3"/>
         <source>Move Map</source>
         <translation>Bouger la Carte</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Ctrl+Shift+M</source>
-        <translation>Ctrl+Maj+M</translation>
-    </message>
-    <message>
-        <location line="+9"/>
+        <location line="+12"/>
         <source>Project &amp;Properties...</source>
         <translation>&amp;Propriétés du Projet...</translation>
     </message>
@@ -819,12 +804,7 @@
         <translation>Ouvrir un Fichier dans le &amp;Projet...</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Ctrl+P</source>
-        <translation>Ctrl+P</translation>
-    </message>
-    <message>
-        <location line="-232"/>
+        <location line="-229"/>
         <source>&amp;Never</source>
         <translation>Jamais (&amp;N)</translation>
     </message>
@@ -1339,6 +1319,29 @@ Ligne %1, colonne %2</translation>
         <location filename="../src/tiled/newtilesetdialog.cpp" line="-2"/>
         <source>Edit Tileset</source>
         <translation>Éditer le Jeu de Tuiles</translation>
+    </message>
+</context>
+<context>
+    <name>NoEditorWidget</name>
+    <message>
+        <location filename="../src/tiled/noeditorwidget.ui" line="+40"/>
+        <source>&lt;font size=&quot;+2&quot;&gt;No Open Files&lt;/font&gt;</source>
+        <translation type="unfinished">&lt;font size=&quot;+2&quot;&gt;Aucun Fichier Ouvert&lt;/font&gt;</translation>
+    </message>
+    <message>
+        <location line="+110"/>
+        <source>Open File...</source>
+        <translation type="unfinished">Ouvrir un Fichier...</translation>
+    </message>
+    <message>
+        <location line="+27"/>
+        <source>New Map...</source>
+        <translation type="unfinished">Nouvelle Carte...</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>New Tileset...</source>
+        <translation type="unfinished">Nouveau Jeu de Tuiles...</translation>
     </message>
 </context>
 <context>
@@ -2506,7 +2509,7 @@ Ligne %1, colonne %2</translation>
     </message>
     <message>
         <location line="+54"/>
-        <location filename="../src/tiled/tilesetdock.cpp" line="+888"/>
+        <location filename="../src/tiled/tilesetdock.cpp" line="+891"/>
         <source>Not a tile</source>
         <translation>Ceci n&apos;est pas une tuile</translation>
     </message>
@@ -2683,7 +2686,7 @@ Ligne %1, colonne %2</translation>
         <translation>Erreur lors de la lecture de carte</translation>
     </message>
     <message>
-        <location filename="../src/tiled/scriptmanager.cpp" line="+266"/>
+        <location filename="../src/tiled/scriptmanager.cpp" line="+267"/>
         <source>Argument %1 is undefined or the wrong type</source>
         <translation>L&apos;argument %1 est un undefined ou du mauvais type</translation>
     </message>
@@ -3433,11 +3436,12 @@ Ligne %1, colonne %2</translation>
     <message>
         <location filename="../src/tiled/consoledock.cpp" line="+59"/>
         <location line="+36"/>
+        <location line="+118"/>
         <source>Clear Console</source>
         <translation>Vider la Console</translation>
     </message>
     <message>
-        <location line="+116"/>
+        <location line="-2"/>
         <source>Console</source>
         <translation>Console</translation>
     </message>
@@ -3529,7 +3533,7 @@ Ligne %1, colonne %2</translation>
 <context>
     <name>Tiled::DocumentManager</name>
     <message>
-        <location filename="../src/tiled/documentmanager.cpp" line="+655"/>
+        <location filename="../src/tiled/documentmanager.cpp" line="+653"/>
         <source>Unrecognized file format.</source>
         <translation>Format de fichier non reconnu.</translation>
     </message>
@@ -3564,7 +3568,7 @@ Ligne %1, colonne %2</translation>
         <translation>Fermer les Onglets à Droite</translation>
     </message>
     <message>
-        <location line="+281"/>
+        <location line="+287"/>
         <source>Tileset Columns Changed</source>
         <translation>Nombre de Colonnes du Jeu de Tuiles Modifiées</translation>
     </message>
@@ -3928,9 +3932,9 @@ Voulez-vous le remplacer ?</translation>
     <name>Tiled::MainWindow</name>
     <message>
         <location filename="../src/tiled/abstractobjecttool.cpp" line="-261"/>
-        <location filename="../src/tiled/documentmanager.cpp" line="-596"/>
+        <location filename="../src/tiled/documentmanager.cpp" line="-602"/>
         <location line="+26"/>
-        <location filename="../src/tiled/mainwindow.cpp" line="+1354"/>
+        <location filename="../src/tiled/mainwindow.cpp" line="+1358"/>
         <source>untitled</source>
         <translation>sans titre</translation>
     </message>
@@ -3966,14 +3970,14 @@ Voulez-vous le remplacer ?</translation>
         <translation>Tiled pourrait être incapable de reconnaître automatiquement votre fichier lors de son prochain chargement. Êtes-vous sûr de vouloir le sauvegarder avec cette extension ?</translation>
     </message>
     <message>
-        <location filename="../src/tiled/mainwindow.cpp" line="-993"/>
-        <location line="+889"/>
+        <location filename="../src/tiled/mainwindow.cpp" line="-997"/>
+        <location line="+893"/>
         <location line="+614"/>
         <source>All Files (*)</source>
         <translation>Tous les Fichiers (*)</translation>
     </message>
     <message>
-        <location line="-1481"/>
+        <location line="-1485"/>
         <source>Export As...</source>
         <translation>Exporter en tant que...</translation>
     </message>
@@ -4000,7 +4004,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <translation>Le fichier donné ne possède aucune extension connue.</translation>
     </message>
     <message>
-        <location line="+150"/>
+        <location line="+154"/>
         <source>Undo</source>
         <translation>Annuler</translation>
     </message>
@@ -4011,12 +4015,12 @@ Veuillez sélectionner un format spécifique.</translation>
     </message>
     <message>
         <location line="+150"/>
-        <location line="+1590"/>
+        <location line="+1599"/>
         <source>&amp;Layer</source>
         <translation>Calques (&amp;L)</translation>
     </message>
     <message>
-        <location line="-1506"/>
+        <location line="-1515"/>
         <location line="+34"/>
         <source>All Files (*);;</source>
         <translation>Tous les Fichiers (*);;</translation>
@@ -4054,22 +4058,24 @@ Veuillez sélectionner un format spécifique.</translation>
     </message>
     <message>
         <location line="+118"/>
-        <location line="+1330"/>
+        <location line="+1339"/>
         <source>Views and Toolbars</source>
         <translation>Vues et Barres d&apos;Outils</translation>
     </message>
     <message>
-        <location line="-1327"/>
+        <location line="-1336"/>
+        <location line="+1337"/>
         <source>Reset to Default Layout</source>
         <translation>Remise à Zéro à la Mise en Page Par Défaut</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="-1335"/>
+        <location line="+1336"/>
         <source>Object Types Editor</source>
         <translation>Éditeur de Types d&apos;Objet</translation>
     </message>
     <message>
-        <location line="+239"/>
+        <location line="-1097"/>
         <source>Error Opening File</source>
         <translation>Erreur à l&apos;Ouverture du Fichier</translation>
     </message>
@@ -4173,7 +4179,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <translation>Avertissement de Création de Carte Automatique</translation>
     </message>
     <message>
-        <location line="+277"/>
+        <location line="+286"/>
         <source>[*]%1%2</source>
         <translation>[*]%1%2</translation>
     </message>
@@ -4188,7 +4194,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <translation>&amp;Groupe</translation>
     </message>
     <message>
-        <location line="+30"/>
+        <location line="+32"/>
         <source>Some export files already exist:</source>
         <translation>Certains fichiers exportés existent déjà :</translation>
     </message>
@@ -4759,7 +4765,7 @@ Veuillez sélectionner un format spécifique.</translation>
 <context>
     <name>Tiled::NewsButton</name>
     <message>
-        <location filename="../src/tiled/newsbutton.cpp" line="+54"/>
+        <location filename="../src/tiled/newsbutton.cpp" line="+155"/>
         <source>Devlog</source>
         <translation>Historique de Développement</translation>
     </message>
@@ -4769,7 +4775,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <translation>Nouvelles</translation>
     </message>
     <message>
-        <location line="+70"/>
+        <location line="-22"/>
         <source>View All Posts</source>
         <translation>Voir Tous les Posts</translation>
     </message>
@@ -4777,29 +4783,6 @@ Veuillez sélectionner un format spécifique.</translation>
         <location line="+2"/>
         <source>News Archive</source>
         <translation>Archive des Nouvelles</translation>
-    </message>
-</context>
-<context>
-    <name>Tiled::NoEditorWidget</name>
-    <message>
-        <location filename="../src/tiled/noeditorwidget.ui" line="+19"/>
-        <source>&lt;font size=&quot;+2&quot;&gt;No Open Files&lt;/font&gt;</source>
-        <translation>&lt;font size=&quot;+2&quot;&gt;Aucun Fichier Ouvert&lt;/font&gt;</translation>
-    </message>
-    <message>
-        <location line="+28"/>
-        <source>New Map...</source>
-        <translation>Nouvelle Carte...</translation>
-    </message>
-    <message>
-        <location line="+7"/>
-        <source>New Tileset...</source>
-        <translation>Nouveau Jeu de Tuiles...</translation>
-    </message>
-    <message>
-        <location line="+11"/>
-        <source>Open File...</source>
-        <translation>Ouvrir un Fichier...</translation>
     </message>
 </context>
 <context>
@@ -4853,7 +4836,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <translation>%1) %2</translation>
     </message>
     <message numerus="yes">
-        <location line="+698"/>
+        <location line="+707"/>
         <source>Rotate %n Object(s)</source>
         <translation>
             <numerusform>Pivoter %n Objet</numerusform>
@@ -5608,7 +5591,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <translation>Réinitialisation du moteur de script</translation>
     </message>
     <message>
-        <location line="+39"/>
+        <location line="+41"/>
         <source>Script files changed: %1</source>
         <translation>Fichiers de script changés : %1</translation>
     </message>
