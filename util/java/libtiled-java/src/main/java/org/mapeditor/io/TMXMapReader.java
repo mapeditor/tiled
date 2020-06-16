@@ -40,6 +40,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
@@ -110,14 +111,12 @@ public class TMXMapReader {
         return error;
     }
 
-    private static String makeUrl(String filename) {
-        final String url;
+    private static URL makeUrl(final String filename) throws MalformedURLException {
         if (filename.indexOf("://") > 0 || filename.startsWith("file:")) {
-            url = filename;
+            return new URL(filename);
         } else {
-            url = new File(filename).toURI().toString();
+            return new File(filename).toURI().toURL();
         }
-        return url;
     }
 
     private static String getAttributeValue(Node node, String attribname) {
@@ -169,7 +168,7 @@ public class TMXMapReader {
         if (source != null) {
             URL url;
             if (checkRoot(source)) {
-                url = new URL(makeUrl(source));
+                url = makeUrl(source);
             } else {
                 try {
                     url = URLHelper.resolve(baseDir, source);
@@ -297,7 +296,7 @@ public class TMXMapReader {
                             imgSource = replacePathSeparator(imgSource);
                             sourcePath = URLHelper.resolve(xmlPath, imgSource);
                         } else {
-                            sourcePath = new URL(makeUrl(imgSource));
+                            sourcePath = makeUrl(imgSource);
                         }
 
                         if (transStr != null) {
@@ -829,7 +828,7 @@ public class TMXMapReader {
      */
     public Map readMap(String filename) throws Exception {
         filename = replacePathSeparator(filename);
-        return readMap(new URL(makeUrl(filename)));
+        return readMap(makeUrl(filename));
     }
 
     /**
@@ -840,7 +839,7 @@ public class TMXMapReader {
      * @throws java.lang.Exception if any.
      */
     public Map readMap(InputStream in) throws Exception {
-        xmlPath = new URL(makeUrl(System.getProperty("user.dir") + File.separatorChar));
+        xmlPath = makeUrl(System.getProperty("user.dir") + File.separatorChar);
 
         Map unmarshalledMap = unmarshal(in);
 
@@ -859,7 +858,7 @@ public class TMXMapReader {
     public TileSet readTileset(String filename) throws Exception {
         filename = replacePathSeparator(filename);
 
-        URL url = new URL(makeUrl(filename));
+        URL url = makeUrl(filename);
         xmlPath = URLHelper.getParent(url);
 
         return unmarshalTilesetFile(url.openStream(), url);

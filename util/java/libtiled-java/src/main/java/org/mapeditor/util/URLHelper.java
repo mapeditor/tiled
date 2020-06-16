@@ -56,11 +56,11 @@ public class URLHelper {
             throw new IllegalArgumentException("Url cannot be null");
         }
         if (JAR_PROTOCOL.equals(url.getProtocol())) {
+            String urlStr = url.toString();
             if (isDirectory(url)) {
-                String urlStr = url.toString();
                 return new URL(urlStr.substring(0, urlStr.lastIndexOf(URL_SEPARATOR_CHAR, urlStr.length() - 2) + 1));
             } else {
-                return new URL(url.toString().substring(0, url.toString().lastIndexOf(URL_SEPARATOR_CHAR) + 1));
+                return new URL(urlStr.substring(0, urlStr.lastIndexOf(URL_SEPARATOR_CHAR) + 1));
             }
         } else {
             if (isDirectory(url)) {
