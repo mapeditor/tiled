@@ -129,8 +129,8 @@ Debugging Your Script
 ---------------------
 
 Any errors that happen while parsing or running the script are printed
-to the Debug Console, which can be enabled in *View > Views and Toolbars
-> Debug Console*.
+to the Console, which can be enabled in *View > Views and Toolbars
+> Console*.
 
 API Reference
 -------------

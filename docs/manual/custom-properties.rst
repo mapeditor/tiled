@@ -43,6 +43,14 @@ get quoted in JSON and Lua exports.
 
 .. raw:: html
 
+   <div class="new">New in Tiled 1.4</div>
+
+The context menu for custom file properties provides a quick way to open the
+file in its preferred editor. For object references, there is an action to
+quickly jump to the referenced object.
+
+.. raw:: html
+
    <div class="new new-prev">Since Tiled 1.0</div>
 
 .. _tile-property-inheritance:
@@ -126,9 +134,6 @@ those values if you need to.
    -  **Enumerations**, where you can predefine all possible values and it
       forms a combo box
       (`#1211 <https://github.com/bjorn/tiled/issues/1211>`__).
-   -  **Object references**, which would allow easily linking objects
-      together and Tiled could display such connections
-      (`#707 <https://github.com/bjorn/tiled/issues/707>`__).
    -  **Array properties**, which would be properties having a list of
       values (`#1493 <https://github.com/bjorn/tiled/issues/1493>`__).
    -  **Dictionary properties**, which would be properties that can contain
@@ -143,11 +148,6 @@ those values if you need to.
    support for **predefining the properties for each data type**. So
    defining which custom properties are valid for maps, tilesets, layers,
    etc. (`#1410 <https://github.com/bjorn/tiled/issues/1410>`__)
-
-   Finally, the predefined properties would work very well together with
-   explicit **support for projects**. Then you could switch between
-   different projects or get started on an existing project, without
-   needing to configure Tiled to use the right object type definitions.
 
    If you like any of these plans, please help me getting around to it
    faster by `sponsoring Tiled development <https://www.mapeditor.org/donate>`__. The
