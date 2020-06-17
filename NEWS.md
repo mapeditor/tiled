@@ -1,4 +1,4 @@
-### Tiled 1.4.0 (...)
+### Tiled 1.4.0 (17 June 2020)
 
 * Added support for projects (#1665)
 * Added object reference property type (with Steve Le Roy Harris and Phlosioneer, #707)
@@ -22,9 +22,12 @@
 * Optimized loading of CSV tile layer data (by Phlosioneer, #2701)
 * Improved map positioning when toggling 'Clear View'
 * Remember the preferred format used for saving
+* Normalize rotation values when rotating objects (#2775)
 * Removed the Maps view (replaced by Project view)
 * Removed file system hierarchy from Templates view (replaced by Project view)
+* Fixed potential crash when triggering AutoMap (#2766)
 * Fixed the status bar placement to be always at the bottom of the window
+* Fixed potential issue with automatic reloading of files (#1904)
 * Fixed issue where image layer images cannot be loaded from Qt resource files (by obeezzy, #2711)
 * GmxPlugin: Added support for layer tint color
 * Scripting: Assign global variables to console script evaluations (by Phlosioneer, #2724)
@@ -32,10 +35,12 @@
 * Scripting: Added support for custom "file" properties
 * Scripting: Added checks for nullptr arguments (by Phlosioneer, #2736)
 * Scripting: Added some missing tileset related properties
-* Scripting: Added FileInfo API with various file path operations
+* Scripting: Added FileInfo API with various file path operations (with David Konsumer, #2822)
 * Scripting: Provide access to registered file formats (by Phlosioneer, #2716)
 * Scripting: Enabled scripted formats to be used on the command-line
+* Scripting: Added functions to access inherited properties (by Bill Clark, #2813)
 * Scripting: Introduced \__filename global value (with konsumer)
+* Scripting: Fixed ObjectGroup.insertObjectAt to use the index
 * docs: Clarify "can contain" documentation and error handling (by Phlosioneer, #2702)
 * docs: Document all optional attributes, update some docs (by Phlosioneer, #2705)
 * docs: Alphabetize scripting API reference (by Phlosioneer, #2720)
@@ -43,6 +48,9 @@
 * docs: Enabled Algolia powered search
 * libtiled-java: Big update to support newer TMX attributes (by Mike Thomas, #1925)
 * libtiled-java: Fixed writing of the tile type (by Phlosioneer, #2704)
+* libtiled-java: Enable loading of maps from jar files (by Phlosioneer, #2704)
+* Updated Bulgarian, Chinese (Simplified), Czech, Finnish, French, Norwegian Bokmål, Portuguese (Portugal) and Turkish translations
+
 
 ### Tiled 1.3.5 (27 May 2020)
 
