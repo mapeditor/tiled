@@ -1326,22 +1326,22 @@ Rivi %1, sarake %2</translation>
     <message>
         <location filename="../src/tiled/noeditorwidget.ui" line="+40"/>
         <source>&lt;font size=&quot;+2&quot;&gt;No Open Files&lt;/font&gt;</source>
-        <translation type="unfinished">&lt;font size=&quot;+2&quot;&gt;Ei avattuja tiedostoja&lt;/font&gt;</translation>
+        <translation>&lt;font size=&quot;+2&quot;&gt;Ei avattuja tiedostoja&lt;/font&gt;</translation>
     </message>
     <message>
         <location line="+110"/>
         <source>Open File...</source>
-        <translation type="unfinished">Avaa tiedosto...</translation>
+        <translation>Avaa tiedosto...</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>New Map...</source>
-        <translation type="unfinished">Uusi kenttä...</translation>
+        <translation>Uusi kenttä...</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>New Tileset...</source>
-        <translation type="unfinished">Uusi laatasto...</translation>
+        <translation>Uusi laatasto...</translation>
     </message>
 </context>
 <context>
