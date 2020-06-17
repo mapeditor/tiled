@@ -1328,22 +1328,22 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/noeditorwidget.ui" line="+40"/>
         <source>&lt;font size=&quot;+2&quot;&gt;No Open Files&lt;/font&gt;</source>
-        <translation type="unfinished">&lt;font size=&quot;+2&quot;&gt;没有打开的文件&lt;/font&gt;</translation>
+        <translation>&lt;font size=&quot;+2&quot;&gt;没有打开的文件&lt;/font&gt;</translation>
     </message>
     <message>
         <location line="+110"/>
         <source>Open File...</source>
-        <translation type="unfinished">打开文件...</translation>
+        <translation>打开文件...</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>New Map...</source>
-        <translation type="unfinished">创建新地图...</translation>
+        <translation>创建新地图...</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>New Tileset...</source>
-        <translation type="unfinished">新建图块集...</translation>
+        <translation>新建图块集...</translation>
     </message>
 </context>
 <context>
