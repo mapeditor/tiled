@@ -48,9 +48,9 @@ Place a rectangle by clicking-and-dragging in any direction. Holding
 ``Shift`` makes it square and holding ``Ctrl`` snaps its size to the
 tile size.
 
-If the rectangle is empty (width and height are both 0), it is rendered
-as a small square around its position. This is mainly to keep it visible
-and selectable.
+Rectangle objects have their origin in the top-left. However, if the rectangle
+is empty (width and height are both 0), it is rendered as a small square
+around its position. This is mainly to keep it visible and selectable.
 
 .. raw:: html
 
@@ -135,9 +135,8 @@ special information, like a chest with defined contents or an NPC with
 defined script.
 
 To place a tile object, first select the tile you want to place in the
-Tilesets view. Then use the Left mouse button on the map to start
-placing the object, move to position it based on the preview and release
-to finish placing the object.
+*Tilesets* view. Then use the Left mouse button on the map to start placing
+the object, move to position it and release to finish placing the object.
 
 .. raw:: html
 
@@ -145,8 +144,20 @@ to finish placing the object.
 
 To change the tile used by existing tile objects, select all the objects
 you want to change using the :ref:`select-objects-tool` tool and then
-right-click on a tile in the Tilesets view, and choose *Replace Tile of
+right-click on a tile in the *Tilesets* view, and choose *Replace Tile of
 Selected Objects*.
+
+.. raw:: html
+
+   <div class="new">New in Tiled 1.4</div>
+
+You can customize the alignment of tile objects using the *Object Alignment*
+property on the *Tileset*. For compatibility reasons this property is set to
+*Unspecified* by default, in which case tile objects are bottom-left aligned
+in all orientations except on *Isometric* maps, where they are bottom-center
+aligned. Setting this property to *Top Left* makes the alignment of tile
+objects consistent with that of :ref:`rectangle objects
+<insert-rectangle-tool>`.
 
 .. raw:: html
 

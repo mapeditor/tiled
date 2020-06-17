@@ -1,9 +1,10 @@
 Export Formats
 ==============
 
-While there are many :doc:`libraries and frameworks </reference/support-for-tmx-maps>`
-that work directly with Tiled maps, Tiled also supports a number of
-additional file and export formats.
+While there are many :doc:`libraries and frameworks
+</reference/support-for-tmx-maps>` that work directly with Tiled maps, Tiled
+also supports a number of additional file and export formats, as well as
+:ref:`exporting a map to an image <export-as-image>`.
 
 Exporting can be done by clicking *File > Export*. When triggering the
 menu action multiple times, Tiled will only ask for the file name the
@@ -276,14 +277,35 @@ These plugins are disabled by default. They can be enabled in *Edit > Preference
 JavaScript
 ~~~~~~~~~~
 
-It is possible to add custom export formats using :doc:`scripting </reference/scripting>`
-(by calling :ref:`tiled.registerMapFormat <script-registerMapFormat>`).
+It is possible to add custom export formats using :doc:`scripting
+</reference/scripting>` (by calling :ref:`tiled.registerMapFormat
+<script-registerMapFormat>` or :ref:`tiled.registerTilesetFormat
+<script-registerTilesetFormat>`).
 
 Python Scripts
 ~~~~~~~~~~~~~~
 
 It is also possible to write :doc:`Python scripts <python>` to add
 support for importing or exporting custom map formats.
+
+.. _export-as-image:
+
+Export as Image
+---------------
+
+Maps can be exported as image. Tiled supports most common image formats.
+Choose *File -> Export as Image...* to open the relevant dialog.
+
+Since exporting a map can in some cases result in a huge image, a *Use current
+zoom level* option is provided to allow exporting the map at the size it's
+currently displayed at.
+
+For repeatedly converting a map to an image, manually triggering this export
+isn't very convenient. For this purpose, a tool called ``tmxrasterizer`` ships
+with Tiled, which contrary to its name is able to render any supported map
+format to an image. It is also able to render :doc:`entire worlds <worlds>` to
+an image. On Linux this tool can be set up for generating thumbnail previews
+of maps in the file manager.
 
 
 .. _LÖVE: https://love2d.org/
