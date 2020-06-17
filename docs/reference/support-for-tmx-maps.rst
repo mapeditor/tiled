@@ -244,6 +244,11 @@ Godot
 - `Tiled Map Importer <https://godotengine.org/asset-library/asset/25>`__ imports each map as Godot scene which can be instanced or inherited (`forum announcement <http://discourse.mapeditor.org/t/importer-plugin-for-godot-engine/1833/1>`__).
 - `Tiled To Godot Export <https://github.com/MikeMnD/tiled-to-godot-export>`__ is a Tiled :doc:`JavaScript extension </reference/scripting>` for exporting Tilemaps and Tilesets in Godot 3.2 format (`forum announcement <https://discourse.mapeditor.org/t/tiled-editor-map-and-tileset-integration-with-godot-3-2/4347>`__).
 
+Grid Engine
+~~~~~~~~~~~
+
+- Planimeter's `Grid Engine <https://www.planimeter.org/grid-sdk/>`__ supports Tiled Lua-exported maps.
+
 Haxe
 ~~~~
 
