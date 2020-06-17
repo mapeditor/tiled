@@ -1327,22 +1327,22 @@ Regel %1, colom %2</translation>
     <message>
         <location filename="../src/tiled/noeditorwidget.ui" line="+40"/>
         <source>&lt;font size=&quot;+2&quot;&gt;No Open Files&lt;/font&gt;</source>
-        <translation type="unfinished">&lt;font size=&quot;+2&quot;&gt;Geen Open Bestanden&lt;/font&gt;</translation>
+        <translation>&lt;font size=&quot;+2&quot;&gt;Geen Open Bestanden&lt;/font&gt;</translation>
     </message>
     <message>
         <location line="+110"/>
         <source>Open File...</source>
-        <translation type="unfinished">Bestand Openen...</translation>
+        <translation>Bestand Openen...</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>New Map...</source>
-        <translation type="unfinished">Nieuwe Map...</translation>
+        <translation>Nieuwe Map...</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>New Tileset...</source>
-        <translation type="unfinished">Nieuwe Tileset...</translation>
+        <translation>Nieuwe Tileset...</translation>
     </message>
 </context>
 <context>
@@ -5003,7 +5003,7 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location filename="../src/tiled/projectpropertiesdialog.cpp" line="-18"/>
         <source>Extensions</source>
-        <translation type="unfinished">Extensies</translation>
+        <translation>Extensies</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -7185,7 +7185,7 @@ Kies een specifiek bestandsformaat.</translation>
         <location line="+19"/>
         <location filename="../src/tiledquick/qml/main.qml" line="+46"/>
         <source>Open...</source>
-        <translation type="unfinished">Openen...</translation>
+        <translation>Openen...</translation>
     </message>
     <message>
         <location line="+65"/>
