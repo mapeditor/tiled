@@ -106,7 +106,7 @@ Many smaller improvements and bugfixes could not be mentioned. Here is the full 
 - snap: Updated from Ubuntu 16.04 to 18.04 (core18, Qt 5.9)
 - Updated Chinese, Portuguese (Portugal), Turkish and Ukrainian translations
 
-Thanks to everybody who contributed to this release with bug reports,suggestions, patches or translation updates!
+Thanks to everybody who contributed to this release with bug reports, suggestions, patches or translation updates!
 
 ## A Look Ahead
 

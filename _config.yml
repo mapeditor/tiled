@@ -1,4 +1,4 @@
-gems:
+plugins:
   - jekyll-seo-tag
   - jekyll-redirect-from
 title: Tiled Map Editor
