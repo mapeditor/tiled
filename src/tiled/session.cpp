@@ -246,6 +246,11 @@ Session &Session::switchCurrent(const QString &fileName)
     return *mCurrent;
 }
 
+void Session::deinitialize()
+{
+    mCurrent.reset();
+}
+
 template<typename T>
 static void migrateToSession(const char *preferencesKey, const char *sessionKey)
 {

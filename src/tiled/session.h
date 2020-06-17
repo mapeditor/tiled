@@ -168,6 +168,7 @@ public:
     static Session &initialize();
     static Session &current();
     static Session &switchCurrent(const QString &fileName);
+    static void deinitialize();
 
     QString project;
     QStringList recentFiles;
