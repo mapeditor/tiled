@@ -1326,22 +1326,22 @@ Linha %1, coluna %2</translation>
     <message>
         <location filename="../src/tiled/noeditorwidget.ui" line="+40"/>
         <source>&lt;font size=&quot;+2&quot;&gt;No Open Files&lt;/font&gt;</source>
-        <translation type="unfinished">&lt;font size=&quot;+2&quot;&gt;Sem Ficheiros Abertos&lt;/font&gt;</translation>
+        <translation>&lt;font size=&quot;+2&quot;&gt;Sem Ficheiros Abertos&lt;/font&gt;</translation>
     </message>
     <message>
         <location line="+110"/>
         <source>Open File...</source>
-        <translation type="unfinished">Abrir Ficheiro...</translation>
+        <translation>Abrir Ficheiro...</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>New Map...</source>
-        <translation type="unfinished">Novo Mapa...</translation>
+        <translation>Novo Mapa...</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>New Tileset...</source>
-        <translation type="unfinished">Novo Tileset...</translation>
+        <translation>Novo Tileset...</translation>
     </message>
 </context>
 <context>
