@@ -48,7 +48,7 @@
 * docs: Enabled Algolia powered search
 * libtiled-java: Big update to support newer TMX attributes (by Mike Thomas, #1925)
 * libtiled-java: Fixed writing of the tile type (by Phlosioneer, #2704)
-* libtiled-java: Enable loading of maps from jar files (by Phlosioneer, #2704)
+* libtiled-java: Enable loading of maps from jar files (by Adam Hornáček, #2829)
 * Updated Bulgarian, Chinese (Simplified), Czech, Finnish, French, Norwegian Bokmål, Portuguese (Portugal) and Turkish translations
 
 
