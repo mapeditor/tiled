@@ -28,6 +28,7 @@
 #include "logginginterface.h"
 
 #include <QFile>
+#include <QFileInfo>
 
 using namespace Tiled;
 
@@ -51,8 +52,8 @@ TemplateManager::TemplateManager(QObject *parent)
     : QObject(parent),
       mWatcher(new FileSystemWatcher(this))
 {
-    connect(mWatcher, &FileSystemWatcher::fileChanged,
-            this, &TemplateManager::fileChanged);
+    connect(mWatcher, &FileSystemWatcher::pathsChanged,
+            this, &TemplateManager::pathsChanged);
 }
 
 TemplateManager::~TemplateManager()
@@ -83,19 +84,26 @@ ObjectTemplate *TemplateManager::loadObjectTemplate(const QString &fileName, QSt
     return objectTemplate;
 }
 
-void TemplateManager::fileChanged(const QString &fileName)
+void TemplateManager::pathsChanged(const QStringList &paths)
 {
-    ObjectTemplate *objectTemplate = findObjectTemplate(fileName);
+    for (const QString &fileName : paths) {
+        ObjectTemplate *objectTemplate = findObjectTemplate(fileName);
 
-    // Most likely the file was removed.
-    if (!objectTemplate)
-        return;
+        // Most likely the file was removed.
+        if (!objectTemplate)
+            continue;
 
-    auto newTemplate = readObjectTemplate(fileName);
-    if (newTemplate) {
-        objectTemplate->setObject(newTemplate->object());
-        emit objectTemplateChanged(objectTemplate);
-    } else {
-        ERROR(tr("Unable to reload template file: %1").arg(fileName));
+        // Check whether we were the ones saving this file.
+        if (objectTemplate->lastSaved() == QFileInfo(fileName).lastModified())
+            continue;
+
+        auto newTemplate = readObjectTemplate(fileName);
+        if (newTemplate) {
+            objectTemplate->setObject(newTemplate->object());
+            objectTemplate->setFormat(newTemplate->format());
+            emit objectTemplateChanged(objectTemplate);
+        } else if (objectTemplate->object()) {  // only report error if it had loaded fine before
+            ERROR(tr("Unable to reload template file: %1").arg(fileName));
+        }
     }
 }

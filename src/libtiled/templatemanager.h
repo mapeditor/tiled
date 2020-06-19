@@ -58,7 +58,7 @@ private:
     TemplateManager(QObject *parent = nullptr);
     ~TemplateManager();
 
-    void fileChanged(const QString &fileName);
+    void pathsChanged(const QStringList &paths);
 
     QHash<QString, ObjectTemplate*> mObjectTemplates;
     FileSystemWatcher *mWatcher;

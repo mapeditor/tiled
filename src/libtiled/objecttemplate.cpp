@@ -31,6 +31,8 @@
 
 #include "objecttemplateformat.h"
 
+#include <QFileInfo>
+
 namespace Tiled {
 
 ObjectTemplate::ObjectTemplate()
@@ -86,6 +88,20 @@ void ObjectTemplate::setFormat(ObjectTemplateFormat *format)
 ObjectTemplateFormat *ObjectTemplate::format() const
 {
     return mFormat;
+}
+
+bool ObjectTemplate::save()
+{
+    if (!mFormat)
+        return false;
+    if (mFileName.isEmpty())
+        return false;
+
+    const bool result = mFormat->write(this, mFileName);
+
+    mLastSaved = QFileInfo(mFileName).lastModified();
+
+    return result;
 }
 
 } // namespace Tiled
