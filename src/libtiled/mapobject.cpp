@@ -37,6 +37,7 @@
 #include "tile.h"
 
 #include <QFontMetricsF>
+#include <QPainterPath>
 #include <qmath.h>
 
 namespace Tiled {

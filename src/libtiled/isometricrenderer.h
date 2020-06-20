@@ -30,6 +30,8 @@
 
 #include "maprenderer.h"
 
+#include <QPainterPath>
+
 namespace Tiled {
 
 /**

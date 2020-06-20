@@ -36,6 +36,7 @@
 
 #include <QVector2D>
 #include <QtCore/qmath.h>
+#include <QPainterPath>
 
 #include <limits>
 
