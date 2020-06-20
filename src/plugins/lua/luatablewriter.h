@@ -97,9 +97,6 @@ private:
     bool m_error { false };
 };
 
-inline void LuaTableWriter::writeStartTable(const QString &name)
-{ writeStartTable(quote(name).toUtf8().constData()); }
-
 inline void LuaTableWriter::writeValue(int value)
 { writeUnquotedValue(QByteArray::number(value)); }
 
