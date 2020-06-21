@@ -268,8 +268,8 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
                                        const QRectF &exposed) const
 {
     CellRenderer renderer(painter, this, layer->effectiveTintColor());
-    auto tileRenderFunction = [&renderer](const Cell &cell, const QPointF &pos, const QSizeF &size) {
-        renderer.render(cell, pos, size, CellRenderer::BottomLeft);
+    auto tileRenderFunction = [&renderer](const Cell &cell, const QPoint &/*tilePos*/, const QPointF &screenPos, const QSizeF &size) {
+        renderer.render(cell, screenPos, size, CellRenderer::BottomLeft);
     };
     drawTileLayer(layer, tileRenderFunction, exposed);
 }
@@ -348,7 +348,7 @@ void OrthogonalRenderer::drawTileLayer(const TileLayer *layer,
 
             const Tile *tile = cell.tile();
             const QSize size = (tile && !tile->image().isNull()) ? tile->size() : map()->tileSize();
-            renderTile(cell, layerPos + QPointF(x * tileWidth, (y + 1) * tileHeight), size);
+            renderTile(cell, QPoint(x, y), layerPos + QPointF(x * tileWidth, (y + 1) * tileHeight), size);
         }
     }
 }

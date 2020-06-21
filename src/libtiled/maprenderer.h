@@ -132,7 +132,7 @@ public:
     virtual void drawGrid(QPainter *painter, const QRectF &rect,
                           QColor gridColor = Qt::black) const = 0;
 
-    typedef std::function<void(const Cell &, const QPointF &, const QSizeF &)> RenderTileCallback;
+    typedef std::function<void(const Cell &, const QPoint &, const QPointF &, const QSizeF &)> RenderTileCallback;
 
     /**
      * Draws the given \a layer using the given \a painter.
@@ -145,6 +145,15 @@ public:
 
     /**
      * Draws the given \a layer using the given \a renderTile callback.
+     *
+     * The callback takes four arguments:
+     *
+     * \list
+     * \li \c cell - The Cell that is being rendered.
+     * \li \c tilePos - The tile position of the cell being rendered.
+     * \li \c screenPos - The screen position of the cell being rendered.
+     * \li \c size - The size of the cell being rendered.
+     * \endlist
      *
      * Optionally, you can pass in the \a exposed rect (of pixels), so that
      * only tiles that can be visible in this area will be drawn.
