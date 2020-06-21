@@ -273,7 +273,7 @@ CellRenderer::CellRenderer(QPainter *painter, const MapRenderer *renderer, const
  *
  * This call expects `painter.translate(pos)` to correspond to the Origin point.
  */
-void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &size, Origin origin)
+void CellRenderer::render(const Cell &cell, const QPointF &screenPos, const QSizeF &size, Origin origin)
 {
     const Tile *tile = cell.tile();
 
@@ -281,7 +281,7 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &si
         tile = tile->currentFrameTile();
 
     if (!tile || tile->image().isNull()) {
-        QRectF target { pos, size };
+        QRectF target { screenPos, size };
 
         if (origin == BottomLeft)
             target.translate(0.0, -size.height());
@@ -309,8 +309,8 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &si
 
     QPainter::PixmapFragment fragment;
     // Calculate the position as if the origin is TopLeft, and correct it later.
-    fragment.x = pos.x() + (offset.x() * scale.width()) + sizeHalf.x();
-    fragment.y = pos.y() + (offset.y() * scale.height()) + sizeHalf.y();
+    fragment.x = screenPos.x() + (offset.x() * scale.width()) + sizeHalf.x();
+    fragment.y = screenPos.y() + (offset.y() * scale.height()) + sizeHalf.y();
     fragment.sourceLeft = 0;
     fragment.sourceTop = 0;
     fragment.width = imageSize.width();

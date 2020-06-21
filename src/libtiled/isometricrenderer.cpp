@@ -267,8 +267,8 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
                                       const QRectF &exposed) const
 {
     CellRenderer renderer(painter, this, layer->effectiveTintColor());
-    auto tileRenderFunction = [&renderer](const Cell &cell, const QPointF &pos, const QSizeF &size) {
-        renderer.render(cell, pos, size, CellRenderer::BottomLeft);
+    auto tileRenderFunction = [&renderer](const Cell &cell, const QPoint &/*tilePos*/, const QPointF &screenPos, const QSizeF &size) {
+        renderer.render(cell, screenPos, size, CellRenderer::BottomLeft);
     };
     drawTileLayer(layer, tileRenderFunction, exposed);
 }
@@ -339,7 +339,7 @@ void IsometricRenderer::drawTileLayer(const TileLayer *layer,
             if (!cell.isEmpty()) {
                 const Tile *tile = cell.tile();
                 const QSize size = (tile && !tile->image().isNull()) ? tile->size() : map()->tileSize();
-                renderTile(cell, QPointF(x, (qreal)y / 2), size);
+                renderTile(cell, columnItr, QPointF(x, (qreal)y / 2), size);
             }
 
             // Advance to the next column

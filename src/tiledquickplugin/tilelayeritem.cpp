@@ -155,7 +155,7 @@ QSGNode *TileLayerItem::updatePaintNode(QSGNode *node,
      * drawn tiles are using the same tileset, they will share a single
      * geometry node.
      */
-    auto tileRenderFunction = [&](const Cell &cell, const QPointF &pos, const QSizeF &size) {
+    auto tileRenderFunction = [&](const Cell &cell, const QPoint &/*tilePos*/, const QPointF &screenPos, const QSizeF &size) {
         Tileset *tileset = cell.tileset();
         if (!tileset)
             return;
@@ -180,8 +180,8 @@ QSGNode *TileLayerItem::updatePaintNode(QSGNode *node,
         const auto offset = tileset->tileOffset();
 
         TileData data;
-        data.x = static_cast<float>(pos.x()) + offset.x();
-        data.y = static_cast<float>(pos.y() - size.height()) + offset.y();
+        data.x = static_cast<float>(screenPos.x()) + offset.x();
+        data.y = static_cast<float>(screenPos.y() - size.height()) + offset.y();
         data.width = static_cast<float>(size.width());
         data.height = static_cast<float>(size.height());
         data.flippedHorizontally = cell.flippedHorizontally();
