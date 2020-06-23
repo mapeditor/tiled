@@ -80,6 +80,11 @@ DocumentManager *DocumentManager::instance()
     return mInstance;
 }
 
+DocumentManager *DocumentManager::maybeInstance()
+{
+    return mInstance;
+}
+
 DocumentManager::DocumentManager(QObject *parent)
     : QObject(parent)
     , mTilesetDocumentsModel(new TilesetDocumentsModel(this))

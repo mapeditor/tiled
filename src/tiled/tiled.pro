@@ -191,6 +191,7 @@ SOURCES += aboutdialog.cpp \
     preferences.cpp \
     project.cpp \
     projectdock.cpp \
+    projectmanager.cpp \
     projectmodel.cpp \
     projectpropertiesdialog.cpp \
     preferencesdialog.cpp \
@@ -432,6 +433,7 @@ HEADERS += aboutdialog.h \
     preferencesdialog.h \
     project.h \
     projectdock.h \
+    projectmanager.h \
     projectmodel.h \
     projectpropertiesdialog.h \
     propertiesdock.h \

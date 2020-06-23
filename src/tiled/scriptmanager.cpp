@@ -30,11 +30,11 @@
 #include "editabletilelayer.h"
 #include "editabletileset.h"
 #include "logginginterface.h"
-#include "mainwindow.h"
 #include "mapeditor.h"
 #include "mapview.h"
 #include "preferences.h"
 #include "project.h"
+#include "projectmanager.h"
 #include "regionvaluetype.h"
 #include "scriptedaction.h"
 #include "scriptedfileformat.h"
@@ -115,7 +115,7 @@ ScriptManager::ScriptManager(QObject *parent)
     connect(&mWatcher, &FileSystemWatcher::pathsChanged,
             this, &ScriptManager::scriptFilesChanged);
 
-    connect(MainWindow::instance(), &MainWindow::projectChanged,
+    connect(ProjectManager::instance(), &ProjectManager::projectChanged,
             this, &ScriptManager::refreshExtensionsPaths);
 
     const QString configLocation { Preferences::configLocation() };
@@ -323,7 +323,7 @@ void ScriptManager::refreshExtensionsPaths()
         extensionsPaths.append(mExtensionsPath);
 
     // Add extensions path from project
-    auto &projectExtensionsPath = MainWindow::instance()->project().mExtensionsPath;
+    auto &projectExtensionsPath = ProjectManager::instance()->project().mExtensionsPath;
     if (!projectExtensionsPath.isEmpty()) {
         const QFileInfo info(projectExtensionsPath);
         if (info.exists() && info.isDir())

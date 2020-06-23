@@ -24,9 +24,9 @@
 #include "commanddatamodel.h"
 #include "commanddialog.h"
 #include "logginginterface.h"
-#include "mainwindow.h"
 #include "pluginmanager.h"
 #include "preferences.h"
+#include "projectmanager.h"
 #include "utils.h"
 
 #include <QApplication>
@@ -75,7 +75,7 @@ CommandManager::CommandManager()
 
     updateActions();
 
-    connect(MainWindow::instance(), &MainWindow::projectChanged,
+    connect(ProjectManager::instance(), &ProjectManager::projectChanged,
             this, &CommandManager::updateActions);
 }
 
@@ -108,7 +108,7 @@ const QVector<Command> &CommandManager::globalCommands() const
 
 const QVector<Command> &CommandManager::projectCommands() const
 {
-    auto &project = MainWindow::instance()->project();
+    auto &project = ProjectManager::instance()->project();
     return project.mCommands;
 }
 
@@ -133,7 +133,7 @@ void CommandManager::showDialog()
     mCommands = dialog.globalCommands();
     commit();
 
-    auto &project = MainWindow::instance()->project();
+    auto &project = ProjectManager::instance()->project();
     project.mCommands = dialog.projectCommands();
     project.save();
 
@@ -180,7 +180,7 @@ void CommandManager::updateActions()
     addSeparator();
 
     // Add project-specific commands
-    const auto &project = MainWindow::instance()->project();
+    const auto &project = ProjectManager::instance()->project();
     for (const Command &command : project.mCommands)
         addAction(command);
 

@@ -70,6 +70,7 @@ class DocumentManager : public QObject
 
 public:
     static DocumentManager *instance();
+    static DocumentManager *maybeInstance();
 
     QWidget *widget() const;
 

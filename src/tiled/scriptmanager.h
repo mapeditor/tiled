@@ -32,6 +32,11 @@ namespace Tiled {
 
 class ScriptModule;
 
+/**
+ * Singleton for managing the script engine and module.
+ *
+ * Dependencies: ProjectManager, DocumentManager (optional)
+ */
 class ScriptManager : public QObject
 {
     Q_OBJECT

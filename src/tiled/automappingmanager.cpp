@@ -22,11 +22,11 @@
 
 #include "automapperwrapper.h"
 #include "logginginterface.h"
-#include "mainwindow.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "preferences.h"
 #include "project.h"
+#include "projectmanager.h"
 #include "tilelayer.h"
 
 #include <QDir>
@@ -270,7 +270,7 @@ void AutomappingManager::refreshRulesFile(const QString &ruleFileOverride)
         rulesFile = mapPath + QLatin1String("/rules.txt");
 
         if (!QFileInfo::exists(rulesFile)) {
-            auto &project = MainWindow::instance()->project();
+            auto &project = ProjectManager::instance()->project();
             rulesFile = project.mAutomappingRulesFile;
         }
     }

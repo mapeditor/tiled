@@ -1,6 +1,6 @@
 /*
- * projectdock.h
- * Copyright 2019, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+ * projectmanager.h
+ * Copyright 2020, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -22,40 +22,49 @@
 
 #include "project.h"
 
-#include <QDockWidget>
+#include <QObject>
 
 namespace Tiled {
 
 class ProjectModel;
-class ProjectView;
 
-class ProjectDock final : public QDockWidget
+/**
+ * Singleton for managing the current project.
+ *
+ * No dependencies.
+ */
+class ProjectManager : public QObject
 {
     Q_OBJECT
 
 public:
-    ProjectDock(QWidget *parent = nullptr);
+    explicit ProjectManager(QObject *parent = nullptr);
 
-    void selectFile(const QString &filePath);
+    static ProjectManager *instance();
 
-    void addFolderToProject();
-    void refreshProjectFolders();
+    void setProject(Project project);
+    Project &project();
 
-    void setExpandedPaths(const QStringList &expandedPaths);
+    ProjectModel *projectModel();
 
 signals:
-    void folderAdded(const QString &path);
-    void folderRemoved(const QString &path);
-    void fileSelected(const QString &filePath);
-
-protected:
-    void changeEvent(QEvent *e) override;
+    void projectChanged();
 
 private:
-    void onCurrentRowChanged(const QModelIndex &current);
-    void retranslateUi();
+    ProjectModel *mProjectModel;
 
-    ProjectView *mProjectView;
+    static ProjectManager *ourInstance;
 };
+
+
+inline ProjectManager *ProjectManager::instance()
+{
+    return ourInstance;
+}
+
+inline ProjectModel *ProjectManager::projectModel()
+{
+    return mProjectModel;
+}
 
 } // namespace Tiled

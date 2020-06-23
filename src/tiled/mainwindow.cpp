@@ -60,6 +60,7 @@
 #include "objecttypeseditor.h"
 #include "offsetmapdialog.h"
 #include "projectdock.h"
+#include "projectmanager.h"
 #include "projectpropertiesdialog.h"
 #include "resizedialog.h"
 #include "scriptmanager.h"
@@ -971,11 +972,9 @@ void MainWindow::initializeSession()
 
     if (projectLoaded) {
         Preferences::instance()->setObjectTypesFile(project.mObjectTypesFile);
-        mProjectDock->setProject(std::move(project));
+        ProjectManager::instance()->setProject(std::move(project));
         updateWindowTitle();
         updateActions();
-
-        emit projectChanged();
     }
 
     // Script manager initialization is delayed until after the project has
@@ -1016,16 +1015,6 @@ bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
     }
 
     return true;
-}
-
-Project &MainWindow::project() const
-{
-    return mProjectDock->project();
-}
-
-ProjectModel *MainWindow::projectModel() const
-{
-    return mProjectDock->projectModel();
 }
 
 void MainWindow::openFileDialog()
@@ -1335,7 +1324,7 @@ void MainWindow::saveProjectAs()
 {
     auto prefs = Preferences::instance();
 
-    Project &project = mProjectDock->project();
+    Project &project = ProjectManager::instance()->project();
     QString fileName = project.fileName();
     if (fileName.isEmpty()) {
         if (!project.folders().isEmpty()) {
@@ -1394,7 +1383,7 @@ void MainWindow::saveProjectAs()
 
 void MainWindow::closeProject()
 {
-    const Project &project = mProjectDock->project();
+    const Project &project = ProjectManager::instance()->project();
     if (project.fileName().isEmpty())
         return;
 
@@ -1419,9 +1408,7 @@ void MainWindow::switchProject(Project project)
     }
 
     prefs->setObjectTypesFile(project.mObjectTypesFile);
-    mProjectDock->setProject(std::move(project));
-
-    emit projectChanged();
+    ProjectManager::instance()->setProject(std::move(project));
 
     restoreSession();
     updateWindowTitle();
@@ -1447,7 +1434,7 @@ void MainWindow::restoreSession()
 
 void MainWindow::projectProperties()
 {
-    Project &project = mProjectDock->project();
+    Project &project = ProjectManager::instance()->project();
 
     if (ProjectPropertiesDialog(project, this).exec() == QDialog::Accepted) {
         project.save();
@@ -1944,7 +1931,8 @@ void MainWindow::updateActions()
     const auto document = mDocumentManager->currentDocument();
     const auto mapDocument = qobject_cast<const MapDocument*>(document);
     const auto tilesetDocument = qobject_cast<const TilesetDocument*>(document);
-    const bool projectHasFolders = !mProjectDock->project().folders().isEmpty();
+    const auto &project = ProjectManager::instance()->project();
+    const bool projectHasFolders = !project.folders().isEmpty();
 
     Editor::StandardActions standardActions;
     if (editor)
@@ -1980,7 +1968,7 @@ void MainWindow::updateActions()
 
     mLayerMenu->menuAction()->setVisible(mapDocument);
 
-    const bool hasProject = !mProjectDock->project().fileName().isEmpty();
+    const bool hasProject = !project.fileName().isEmpty();
     mUi->actionCloseProject->setEnabled(hasProject);
 }
 
@@ -2062,7 +2050,7 @@ void MainWindow::readSettings()
 
 void MainWindow::updateWindowTitle()
 {
-    QString projectName = mProjectDock->project().fileName();
+    QString projectName = ProjectManager::instance()->project().fileName();
     if (!projectName.isEmpty()) {
         projectName = QFileInfo(projectName).completeBaseName();
         projectName = QString(QLatin1String(" (%1)")).arg(projectName);

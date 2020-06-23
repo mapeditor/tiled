@@ -1,6 +1,6 @@
 /*
- * tiledapplication.h
- * Copyright 2011-2020, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * projectmanager.cpp
+ * Copyright 2020, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -18,34 +18,34 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#pragma once
-
 #include "projectmanager.h"
 
-#include <QtSingleApplication>
+#include "projectmodel.h"
 
 namespace Tiled {
 
-class ProjectManager;
+ProjectManager *ProjectManager::ourInstance;
 
-class TiledApplication : public QtSingleApplication
+ProjectManager::ProjectManager(QObject *parent)
+    : QObject(parent)
+    , mProjectModel(new ProjectModel(this))
 {
-    Q_OBJECT
+    Q_ASSERT(!ourInstance);
+    ourInstance = this;
+}
 
-public:
-    TiledApplication(int &argc, char **argv);
-    ~TiledApplication() override;
+/**
+ * Replaces the current project with the given \a project.
+ */
+void ProjectManager::setProject(Project project)
+{
+    mProjectModel->setProject(std::move(project));
+    emit projectChanged();
+}
 
-protected:
-    bool event(QEvent *) override;
-
-signals:
-    void fileOpenRequest(const QString &file);
-
-private:
-    void onMessageReceived(const QString &message);
-
-    ProjectManager mProjectManager;
-};
+Project &ProjectManager::project()
+{
+    return mProjectModel->project();
+}
 
 } // namespace Tiled

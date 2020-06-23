@@ -22,13 +22,14 @@
 
 #include "documentmanager.h"
 #include "filteredit.h"
-#include "mainwindow.h"
+#include "projectmanager.h"
 #include "projectmodel.h"
 #include "rangeset.h"
 #include "utils.h"
 
 #include <QAbstractListModel>
 #include <QApplication>
+#include <QDir>
 #include <QKeyEvent>
 #include <QPainter>
 #include <QScrollBar>
@@ -374,7 +375,7 @@ void LocatorWidget::setFilterText(const QString &text)
     const QStringList words = QDir::fromNativeSeparators(text).split(QLatin1Char(' '),
                                                                      QString::SkipEmptyParts);
 
-    auto projectModel = MainWindow::instance()->projectModel();
+    auto projectModel = ProjectManager::instance()->projectModel();
     auto matches = projectModel->findFiles(words);
 
     std::stable_sort(matches.begin(), matches.end(), [] (const ProjectModel::Match &a, const ProjectModel::Match &b) {

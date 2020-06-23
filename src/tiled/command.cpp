@@ -24,9 +24,9 @@
 #include "commandmanager.h"
 #include "documentmanager.h"
 #include "logginginterface.h"
-#include "mainwindow.h"
 #include "mapdocument.h"
 #include "mapobject.h"
+#include "projectmanager.h"
 #include "worlddocument.h"
 #include "worldmanager.h"
 
@@ -75,7 +75,7 @@ static QString replaceVariables(const QString &string, bool quoteValues = true)
         const QString fileName = document->fileName();
         QFileInfo fileInfo(fileName);
         const QString mapPath = fileInfo.absolutePath();
-        const QString projectPath = QFileInfo(MainWindow::instance()->project().fileName()).absolutePath();
+        const QString projectPath = QFileInfo(ProjectManager::instance()->project().fileName()).absolutePath();
 
         finalString.replace(QLatin1String("%mapfile"), replaceString.arg(fileName));
         finalString.replace(QLatin1String("%mappath"), replaceString.arg(mapPath));

@@ -383,6 +383,8 @@ QtGuiApplication {
         "project.h",
         "projectdock.cpp",
         "projectdock.h",
+        "projectmanager.cpp",
+        "projectmanager.h",
         "projectmodel.cpp",
         "projectmodel.h",
         "projectpropertiesdialog.cpp",
