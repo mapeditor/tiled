@@ -116,28 +116,28 @@ bool CommandLineParser::parse(const QStringList &arguments)
 
 void CommandLineParser::showHelp() const
 {
-    qWarning().noquote() << tr("Usage:\n  %1 [options] [files...]").arg(mCurrentProgramName)
-                         << "\n\n"
-                         << tr("Options:");
+    qInfo().noquote() << tr("Usage:\n  %1 [options] [files...]").arg(mCurrentProgramName)
+                      << "\n\n"
+                      << tr("Options:");
 
-    qWarning("  -h %-*s : %s", mLongestArgument, "--help", qUtf8Printable(tr("Display this help")));
+    qInfo("  -h %-*s : %s", mLongestArgument, "--help", qUtf8Printable(tr("Display this help")));
 
     for (const Option &option : mOptions) {
         if (!option.shortName.isNull()) {
-            qWarning("  -%c %-*s : %s",
-                     option.shortName.toLatin1(),
-                     mLongestArgument,
-                     qUtf8Printable(option.longName),
-                     qUtf8Printable(option.help));
+            qInfo("  -%c %-*s : %s",
+                  option.shortName.toLatin1(),
+                  mLongestArgument,
+                  qUtf8Printable(option.longName),
+                  qUtf8Printable(option.help));
         } else {
-            qWarning("     %-*s : %s",
-                     mLongestArgument,
-                     qUtf8Printable(option.longName),
-                     qUtf8Printable(option.help));
+            qInfo("     %-*s : %s",
+                  mLongestArgument,
+                  qUtf8Printable(option.longName),
+                  qUtf8Printable(option.help));
         }
     }
 
-    qWarning();
+    qInfo();
 }
 
 bool CommandLineParser::handleLongOption(const QString &longName)
