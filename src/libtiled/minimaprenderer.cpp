@@ -76,7 +76,14 @@ MiniMapRenderer::~MiniMapRenderer()
 
 QSize MiniMapRenderer::mapSize() const
 {
-    return mRenderer->mapBoundingRect().size();
+    QRect mapBoundingRect = mRenderer->mapBoundingRect();
+    QSize mapSize = mapBoundingRect.size();
+
+    QMargins margins = mMap->computeLayerOffsetMargins();
+    mapSize.setWidth(mapSize.width() + margins.left() + margins.right());
+    mapSize.setHeight(mapSize.height() + margins.top() + margins.bottom());
+
+    return mapSize;
 }
 
 QImage MiniMapRenderer::render(QSize size, RenderFlags renderFlags) const
@@ -140,7 +147,7 @@ static void extendMapRect(QRect &mapBoundingRect, const MapRenderer &renderer)
     mapBoundingRect = rect.toAlignedRect();
 }
 
-void MiniMapRenderer::renderToImage(QImage& image, RenderFlags renderFlags) const
+void MiniMapRenderer::renderToImage(QImage &image, RenderFlags renderFlags) const
 {
     if (!mMap)
         return;
