@@ -343,9 +343,11 @@ void MapItem::documentChanged(const ChangeEvent &change)
     case ChangeEvent::LayerChanged:
         layerChanged(static_cast<const LayerChangeEvent&>(change));
         break;
-    case ChangeEvent::MapObjectsAboutToBeRemoved:
-        deleteObjectItems(static_cast<const MapObjectsEvent&>(change).mapObjects);
+    case ChangeEvent::MapObjectAboutToBeRemoved: {
+        auto &e = static_cast<const MapObjectEvent&>(change);
+        deleteObjectItem(e.objectGroup->objectAt(e.index));
         break;
+    }
     case ChangeEvent::MapObjectsChanged:
         syncObjectItems(static_cast<const MapObjectsChangeEvent&>(change).mapObjects);
         break;
@@ -563,15 +565,11 @@ void MapItem::objectsInserted(ObjectGroup *objectGroup, int first, int last)
 /**
  * Removes the map object items related to the given objects.
  */
-void MapItem::deleteObjectItems(const QList<MapObject*> &objects)
+void MapItem::deleteObjectItem(MapObject *object)
 {
-    for (MapObject *o : objects) {
-        auto i = mObjectItems.find(o);
-        Q_ASSERT(i != mObjectItems.end());
-
-        delete i.value();
-        mObjectItems.erase(i);
-    }
+    auto item = mObjectItems.take(object);
+    Q_ASSERT(item);
+    delete item;
 }
 
 /**
