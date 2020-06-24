@@ -935,7 +935,7 @@ void TilesetDock::setCurrentTileset(const SharedTileset &tileset)
 
 SharedTileset TilesetDock::currentTileset() const
 {
-    const int index = mTabBar->currentIndex();
+    const int index = mViewStack->currentIndex();
     if (index == -1)
         return {};
 
@@ -944,7 +944,7 @@ SharedTileset TilesetDock::currentTileset() const
 
 TilesetDocument *TilesetDock::currentTilesetDocument() const
 {
-    const int index = mTabBar->currentIndex();
+    const int index = mViewStack->currentIndex();
     if (index == -1)
         return nullptr;
 
