@@ -61,8 +61,6 @@ public:
     MapView(QWidget *parent = nullptr, Mode mode = StaticContents);
     ~MapView() override;
 
-    void setInitialCenterPos(const QPointF &center);
-
     void setScene(MapScene *scene);
     MapScene *mapScene() const;
 
@@ -124,13 +122,6 @@ private:
     Mode mMode;
     Zoomable *mZoomable;
 };
-
-
-inline void MapView::setInitialCenterPos(const QPointF &center)
-{
-    mInitialCenterPos = center;
-    mHasInitialCenterPos = true;
-}
 
 } // namespace Tiled
 

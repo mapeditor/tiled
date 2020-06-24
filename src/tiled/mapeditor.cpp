@@ -640,7 +640,7 @@ void MapEditor::restoreDocumentState(MapDocument *mapDocument) const
         mapView->zoomable()->setScale(scale);
 
     const QPointF viewCenter = fromSettingsValue<QPointF>(fileState.value(QLatin1String("viewCenter")));
-    mapView->setInitialCenterPos(viewCenter);
+    mapView->forceCenterOn(viewCenter);
 
     const int layerIndex = fileState.value(QLatin1String("selectedLayer")).toInt();
     if (Layer *layer = layerAtGlobalIndex(mapDocument->map(), layerIndex))
