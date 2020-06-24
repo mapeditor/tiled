@@ -549,6 +549,27 @@ QVector<World::MapEntry> World::contextMaps(const QString &fileName) const
     return allMaps();
 }
 
+QString World::firstMap() const
+{
+    if (!maps.isEmpty())
+        return maps.first().fileName;
+
+    if (!patterns.isEmpty()) {
+        const QDir dir(QFileInfo(fileName).dir());
+        const QStringList entries = dir.entryList(QDir::Files | QDir::Readable);
+
+        for (const World::Pattern &pattern : patterns) {
+            for (const QString &fileName : entries) {
+                QRegularExpressionMatch match = pattern.regexp.match(fileName);
+                if (match.hasMatch())
+                    return dir.filePath(fileName);
+            }
+        }
+    }
+
+    return QString();
+}
+
 void World::error(const QString &message) const
 {
     ERROR(message, [fileName = this->fileName] { QDesktopServices::openUrl(QUrl::fromLocalFile(fileName)); }, this);

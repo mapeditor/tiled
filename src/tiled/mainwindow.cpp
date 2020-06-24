@@ -995,6 +995,20 @@ bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
     if (mDocumentManager->switchToDocument(fileName))
         return true;
 
+    // HACK: World files can't open as document, but we can instead open the
+    // first map in the world.
+    if (fileName.endsWith(QLatin1String(".world"))) {
+        QString errorString;
+        World *world = WorldManager::instance().loadWorld(fileName, &errorString);
+        if (!world) {
+            QMessageBox::critical(this, tr("Error Loading World"), errorString);
+            return false;
+        } else {
+            mLoadedWorlds = WorldManager::instance().worlds().keys();
+            return openFile(world->firstMap());
+        }
+    }
+
     QString error;
     DocumentPtr document = mDocumentManager->loadDocument(fileName, fileFormat, &error);
 

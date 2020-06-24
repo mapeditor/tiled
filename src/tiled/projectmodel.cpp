@@ -366,6 +366,10 @@ void ProjectModel::updateNameFilters()
         nameFilters.append(Utils::cleanFilterList(filter));
     }
 
+    // HACK: Needed to display world files in the project, since they do not
+    // have a registered FileFormat.
+    nameFilters.append(QLatin1String("*.world"));
+
     nameFilters.removeDuplicates();
 
     if (mNameFilters != nameFilters) {
