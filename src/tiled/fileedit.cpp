@@ -21,6 +21,8 @@
 
 #include "fileedit.h"
 
+#include "tiled.h"
+
 #include <QFileDialog>
 #include <QFocusEvent>
 #include <QHBoxLayout>
@@ -71,10 +73,7 @@ void FileEdit::setFileUrl(const QUrl &url)
 QUrl FileEdit::fileUrl() const
 {
     const QString path = mLineEdit->text();
-    QUrl url(path);
-    if (url.isRelative())
-        url = QUrl::fromLocalFile(path);
-    return url;
+    return Tiled::toUrl(path);
 }
 
 void FileEdit::focusInEvent(QFocusEvent *e)

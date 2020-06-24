@@ -43,10 +43,7 @@ QString FilePath::toString(const FilePath &path)
 
 FilePath FilePath::fromString(const QString &string)
 {
-    QUrl url(string);
-    if (url.isRelative())
-        url = QUrl::fromLocalFile(string);
-    return { url };
+    return { Tiled::toUrl(string) };
 }
 
 

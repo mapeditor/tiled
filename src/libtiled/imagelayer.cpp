@@ -74,9 +74,7 @@ bool ImageLayer::loadFromImage(const QPixmap &image, const QUrl &source)
  */
 bool ImageLayer::loadFromImage(const QImage &image, const QString &source)
 {
-    const QUrl url(source);
-    return loadFromImage(QPixmap::fromImage(image), url.isRelative() ? QUrl::fromLocalFile(source)
-                                                                     : url);
+    return loadFromImage(QPixmap::fromImage(image), Tiled::toUrl(source));
 }
 
 bool ImageLayer::loadFromImage(const QUrl &url)

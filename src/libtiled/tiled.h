@@ -82,7 +82,8 @@ static const char PROPERTIES_MIMETYPE[] = "application/vnd.properties.list";
 TILEDSHARED_EXPORT QPointF alignmentOffset(const QRectF &r, Alignment alignment);
 
 TILEDSHARED_EXPORT QString toFileReference(const QUrl &url, const QDir &dir);
-TILEDSHARED_EXPORT QUrl toUrl(const QString &reference, const QDir &dir);
+TILEDSHARED_EXPORT QUrl toUrl(const QString &filePathOrUrl, const QDir &dir);
+TILEDSHARED_EXPORT QUrl toUrl(const QString &filePathOrUrl);
 TILEDSHARED_EXPORT QString urlToLocalFileOrQrc(const QUrl &url);
 
 inline QString colorToString(const QColor &color)
