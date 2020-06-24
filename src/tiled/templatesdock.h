@@ -60,7 +60,7 @@ signals:
 
 public slots:
     void openTemplate(const QString &path);
-    void tryOpenTemplate(const QString &filePath);
+    bool tryOpenTemplate(const QString &filePath);
     void bringToFront();
 
 protected:

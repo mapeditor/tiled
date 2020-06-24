@@ -1013,6 +1013,13 @@ bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
     DocumentPtr document = mDocumentManager->loadDocument(fileName, fileFormat, &error);
 
     if (!document) {
+        // HACK: Templates can't open as documents, but we can instead show
+        // them in the Template Editor.
+        if (mMapEditor->templatesDock()->tryOpenTemplate(fileName)) {
+            mMapEditor->templatesDock()->bringToFront();
+            return true;
+        }
+
         QMessageBox::critical(this,
                               tr("Error Opening File"),
                               tr("Error opening '%1':\n%2").arg(fileName, error));

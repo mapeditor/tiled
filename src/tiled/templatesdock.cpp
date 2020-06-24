@@ -165,11 +165,14 @@ void TemplatesDock::openTemplate(const QString &path)
     setTemplate(TemplateManager::instance()->loadObjectTemplate(path));
 }
 
-void TemplatesDock::tryOpenTemplate(const QString &filePath)
+bool TemplatesDock::tryOpenTemplate(const QString &filePath)
 {
     auto objectTemplate = TemplateManager::instance()->loadObjectTemplate(filePath);
-    if (objectTemplate->object())
+    if (objectTemplate->object()) {
         setTemplate(objectTemplate);
+        return true;
+    }
+    return false;
 }
 
 void TemplatesDock::bringToFront()
