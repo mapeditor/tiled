@@ -107,7 +107,7 @@ private:
     void tilesetReplaced(int index, Tileset *tileset);
 
     void objectsInserted(ObjectGroup *objectGroup, int first, int last);
-    void deleteObjectItems(const QList<MapObject*> &objects);
+    void deleteObjectItem(MapObject *object);
     void syncObjectItems(const QList<MapObject*> &objects);
     void objectsIndexChanged(ObjectGroup *objectGroup, int first, int last);
 
