@@ -140,6 +140,8 @@ public:
     bool isAnyWorldModified() const;
     bool isWorldModified(const QString &fileName) const;
 
+    QString fileDialogStartLocation() const;
+
 signals:
     void documentCreated(Document *document);
     void documentOpened(Document *document);

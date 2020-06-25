@@ -1048,9 +1048,8 @@ void MainWindow::openFileDialog()
 
     FormatHelper<FileFormat> helper(FileFormat::Read, allFilesFilter);
 
-    auto preferences = Preferences::instance();
     const auto fileNames = QFileDialog::getOpenFileNames(this, tr("Open File"),
-                                                         preferences->fileDialogStartLocation(),
+                                                         mDocumentManager->fileDialogStartLocation(),
                                                          helper.filter(),
                                                          &selectedFilter);
     if (fileNames.isEmpty())

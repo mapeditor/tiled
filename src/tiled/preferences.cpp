@@ -570,18 +570,6 @@ void Preferences::setDonationDialogReminder(const QDate &date)
     setValue(QLatin1String("Install/DonationDialogTime"), date.toString(Qt::ISODate));
 }
 
-QString Preferences::fileDialogStartLocation() const
-{
-    const auto &session = Session::current();
-    if (!session.activeFile.isEmpty())
-        return QFileInfo(session.activeFile).path();
-
-    if (!session.recentFiles.isEmpty())
-        return QFileInfo(session.recentFiles.first()).path();
-
-    return QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-}
-
 /**
  * Adds the given file to the recent files list.
  */
