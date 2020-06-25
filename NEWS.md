@@ -1,3 +1,16 @@
+### Tiled 1.4.1 (25 June 2020)
+
+* When opening a .world file, load the world and open its first map
+* When opening an object template, show it in the Template Editor
+* Fixed crash on trying to export using the command-line (#2842)
+* Fixed crash when deleting multiple objects with manual drawing order (#2844)
+* Fixed potential crash when removing a tileset
+* Fixed potential scaling happening for maps used as tilesets (#2843)
+* Fixed positioning of map view when switching between maps in a world
+* Fixed file dialog start location
+* Scripting: Fixed issues with absolute file paths on Windows (#2841)
+* Lua plugin: Fixed syntax used for object properties (#2839)
+
 ### Tiled 1.4.0 (17 June 2020)
 
 * Added support for projects (#1665)
