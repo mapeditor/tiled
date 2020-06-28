@@ -31,4 +31,4 @@ Many thanks to all who've reported issues and of course to everybody who support
 
 _If you enjoy using Tiled and have not donated yet, please consider a small monthly donation [through GitHub](https://github.com/sponsors/bjorn) or [other platforms](https://www.mapeditor.org/donate). I depend on your support to be able to keep improving this tool!_
 
-[tiled-1-4]: {{ site.baseurl }}{% post_url 2020-06-17-tiled-1-4-0-released %}
+[tiled-1-4]: {{ site.baseurl }}{% post_url 2020-06-20-tiled-1-4-0-released %}
