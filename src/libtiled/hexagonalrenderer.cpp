@@ -270,80 +270,67 @@ void HexagonalRenderer::drawTileLayer(QPainter *painter,
                                       const TileLayer *layer,
                                       const QRectF &exposed) const
 {
-    CellRenderer renderer(painter, this, layer->effectiveTintColor(), CellRenderer::HexagonalCells);
-    auto tileRenderFunction = [&renderer](const Cell &cell, const QPoint &/*tilePos*/, const QPointF &screenPos, const QSizeF &size) {
-        renderer.render(cell, screenPos, size, CellRenderer::BottomLeft);
-    };
-    drawTileLayer(layer, tileRenderFunction, exposed);
-}
-
-void HexagonalRenderer::drawTileLayer(const TileLayer *layer,
-                                      const RenderTileCallback &renderTile,
-                                      const QRectF &exposed) const
-{
-    const RenderParams p(map());
-
-    QRect rect = exposed.toAlignedRect();
-
-    if (rect.isNull())
-        rect = boundingRect(layer->bounds());
+    QRect rect = boundingRect(layer->bounds());
+    if (!exposed.isNull())
+        rect &= exposed.toAlignedRect();
 
     QMargins drawMargins = layer->drawMargins();
-    drawMargins.setBottom(drawMargins.bottom() + p.tileHeight);
-    drawMargins.setRight(drawMargins.right() - p.tileWidth);
+    drawMargins.setBottom(drawMargins.bottom() + map()->tileHeight());
+    drawMargins.setRight(drawMargins.right() - map()->tileWidth());
 
     rect.adjust(-drawMargins.right(),
                 -drawMargins.bottom(),
                 drawMargins.left(),
                 drawMargins.top());
 
+    CellRenderer renderer(painter, this, layer->effectiveTintColor(), CellRenderer::HexagonalCells);
+
+    auto tileRenderFunction = [layer, &renderer, this](QPoint tilePos, const QPointF &screenPos) {
+        const Cell &cell = layer->cellAt(tilePos);
+        if (!cell.isEmpty()) {
+            const Tile *tile = cell.tile();
+            const QSize size = tile ? tile->size() : map()->tileSize();
+            renderer.render(cell, screenPos, size, CellRenderer::BottomLeft);
+        }
+    };
+
+    drawTileLayer(tileRenderFunction, rect);
+}
+
+void HexagonalRenderer::drawTileLayer(const RenderTileCallback &renderTile,
+                                      const QRectF &exposed) const
+{
+    const RenderParams p(map());
+
     // Determine the tile and pixel coordinates to start at
-    QPoint startTile = screenToTileCoords(rect.topLeft()).toPoint();
-
-    // Compensate for the layer position
-    startTile -= layer->position();
-
-    QPoint startPos = tileToScreenCoords(startTile + layer->position()).toPoint();
+    QPoint startTile = screenToTileCoords(exposed.topLeft()).toPoint();
+    QPoint startPos = tileToScreenCoords(startTile).toPoint();
 
     /* Determine in which half of the tile the top-left corner of the area we
      * need to draw is. If we're in the upper half, we need to start one row
      * up due to those tiles being visible as well. How we go up one row
      * depends on whether we're in the left or right half of the tile.
      */
-    const bool inUpperHalf = rect.y() - startPos.y() < p.sideOffsetY;
-    const bool inLeftHalf = rect.x() - startPos.x() < p.sideOffsetX;
+    const bool inUpperHalf = exposed.y() - startPos.y() < p.sideOffsetY;
+    const bool inLeftHalf = exposed.x() - startPos.x() < p.sideOffsetX;
 
     if (inUpperHalf)
         startTile.ry()--;
     if (inLeftHalf)
         startTile.rx()--;
 
-    const int endX = map()->infinite() ? layer->bounds().right() - layer->x() + 1 : layer->width();
-    const int endY = map()->infinite() ? layer->bounds().bottom() - layer->y() + 1 : layer->height();
-
     if (p.staggerX) {
-        if (!map()->infinite()) {
-            startTile.setX(qMax(-1, startTile.x()));
-            startTile.setY(qMax(-1, startTile.y()));
-        }
-
-        startPos = tileToScreenCoords(startTile + layer->position()).toPoint();
+        startPos = tileToScreenCoords(startTile).toPoint();
         startPos.ry() += p.tileHeight;
 
-        bool staggeredRow = p.doStaggerX(startTile.x() + layer->x());
+        bool staggeredRow = p.doStaggerX(startTile.x());
 
-        for (; startPos.y() < rect.bottom() && startTile.y() < endY;) {
+        while (startPos.y() < exposed.bottom()) {
             QPoint rowTile = startTile;
             QPoint rowPos = startPos;
 
-            for (; rowPos.x() < rect.right() && rowTile.x() < endX; rowTile.rx() += 2) {
-                const Cell &cell = layer->cellAt(rowTile);
-
-                if (!cell.isEmpty()) {
-                    const Tile *tile = cell.tile();
-                    const QSize size = tile ? tile->size() : map()->tileSize();
-                    renderTile(cell, rowTile, rowPos, size);
-                }
+            for (; rowPos.x() < exposed.right(); rowTile.rx() += 2) {
+                renderTile(rowTile, rowPos);
 
                 rowPos.rx() += p.tileWidth + p.sideLengthX;
             }
@@ -362,33 +349,22 @@ void HexagonalRenderer::drawTileLayer(const TileLayer *layer,
             startPos.ry() += p.rowHeight;
         }
     } else {
-        if (!map()->infinite()) {
-            startTile.setX(qMax(0, startTile.x()));
-            startTile.setY(qMax(0, startTile.y()));
-        }
-
-        startPos = tileToScreenCoords(startTile + layer->position()).toPoint();
+        startPos = tileToScreenCoords(startTile).toPoint();
         startPos.ry() += p.tileHeight;
 
         // Odd row shifting is applied in the rendering loop, so un-apply it here
-        if (p.doStaggerY(startTile.y() + layer->y()))
+        if (p.doStaggerY(startTile.y()))
             startPos.rx() -= p.columnWidth;
 
-        for (; startPos.y() < rect.bottom() && startTile.y() < endY; startTile.ry()++) {
+        for (; startPos.y() < exposed.bottom(); startTile.ry()++) {
             QPoint rowTile = startTile;
             QPoint rowPos = startPos;
 
-            if (p.doStaggerY(startTile.y() + layer->y()))
+            if (p.doStaggerY(startTile.y()))
                 rowPos.rx() += p.columnWidth;
 
-            for (; rowPos.x() < rect.right() && rowTile.x() < endX; rowTile.rx()++) {
-                const Cell &cell = layer->cellAt(rowTile);
-
-                if (!cell.isEmpty()) {
-                    const Tile *tile = cell.tile();
-                    const QSize size = tile ? tile->size() : map()->tileSize();
-                    renderTile(cell, rowTile, rowPos, size);
-                }
+            for (; rowPos.x() < exposed.right(); rowTile.rx()++) {
+                renderTile(rowTile, rowPos);
 
                 rowPos.rx() += p.tileWidth + p.sideLengthX;
             }
