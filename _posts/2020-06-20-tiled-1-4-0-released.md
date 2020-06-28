@@ -5,6 +5,7 @@ author:
   name: Thorbjørn Lindeijer
   twitter: thorbjorn81
 tags: release
+topic_id: 4584
 ---
 
 At long last I can announce the immediate release of Tiled 1.4.0! The biggest
