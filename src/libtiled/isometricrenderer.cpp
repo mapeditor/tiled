@@ -266,26 +266,15 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
                                       const TileLayer *layer,
                                       const QRectF &exposed) const
 {
-    CellRenderer renderer(painter, this, layer->effectiveTintColor());
-    auto tileRenderFunction = [&renderer](const Cell &cell, const QPoint &/*tilePos*/, const QPointF &screenPos, const QSizeF &size) {
-        renderer.render(cell, screenPos, size, CellRenderer::BottomLeft);
-    };
-    drawTileLayer(layer, tileRenderFunction, exposed);
-}
-
-void IsometricRenderer::drawTileLayer(const TileLayer *layer,
-                                      const RenderTileCallback &renderTile,
-                                      const QRectF &exposed) const
-{
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
 
     if (tileWidth <= 0 || tileHeight <= 1)
         return;
 
-    QRect rect = exposed.toAlignedRect();
-    if (rect.isNull())
-        rect = boundingRect(layer->bounds());
+    QRect rect = boundingRect(layer->bounds());
+    if (!exposed.isNull())
+        rect &= exposed.toAlignedRect();
 
     QMargins drawMargins = layer->drawMargins();
     drawMargins.setTop(drawMargins.top() - tileHeight);
@@ -296,24 +285,44 @@ void IsometricRenderer::drawTileLayer(const TileLayer *layer,
                 drawMargins.left(),
                 drawMargins.top());
 
+    CellRenderer renderer(painter, this, layer->effectiveTintColor());
+
+    auto tileRenderFunction = [layer, &renderer, this](QPoint tilePos, const QPointF &screenPos) {
+        const Cell &cell = layer->cellAt(tilePos - layer->position());
+        if (!cell.isEmpty()) {
+            const Tile *tile = cell.tile();
+            const QSize size = (tile && !tile->image().isNull()) ? tile->size() : map()->tileSize();
+            renderer.render(cell, screenPos, size, CellRenderer::BottomLeft);
+        }
+    };
+
+    drawTileLayer(tileRenderFunction, rect);
+}
+
+void IsometricRenderer::drawTileLayer(const RenderTileCallback &renderTile,
+                                      const QRectF &exposed) const
+{
+    const int tileWidth = map()->tileWidth();
+    const int tileHeight = map()->tileHeight();
+
+    if (tileWidth <= 0 || tileHeight <= 1)
+        return;
+
     // Determine the tile and pixel coordinates to start at
-    QPointF tilePos = screenToTileCoords(rect.x(), rect.y());
+    QPointF tilePos = screenToTileCoords(exposed.x(), exposed.y());
     QPoint rowItr = QPoint(qFloor(tilePos.x()),
                            qFloor(tilePos.y()));
     QPointF startPos = tileToScreenCoords(rowItr);
     startPos.rx() -= tileWidth / 2;
     startPos.ry() += tileHeight;
 
-    // Compensate for the layer position
-    rowItr -= QPoint(layer->x(), layer->y());
-
     /* Determine in which half of the tile the top-left corner of the area we
      * need to draw is. If we're in the upper half, we need to start one row
      * up due to those tiles being visible as well. How we go up one row
      * depends on whether we're in the left or right half of the tile.
      */
-    const bool inUpperHalf = startPos.y() - rect.y() > tileHeight / 2;
-    const bool inLeftHalf = rect.x() - startPos.x() < tileWidth / 2;
+    const bool inUpperHalf = startPos.y() - exposed.y() > tileHeight / 2;
+    const bool inLeftHalf = exposed.x() - startPos.x() < tileWidth / 2;
 
     if (inUpperHalf) {
         if (inLeftHalf) {
@@ -329,18 +338,13 @@ void IsometricRenderer::drawTileLayer(const TileLayer *layer,
     // Determine whether the current row is shifted half a tile to the right
     bool shifted = inUpperHalf ^ inLeftHalf;
 
-    for (int y = startPos.y() * 2; y - tileHeight * 2 < rect.bottom() * 2;
+    for (int y = startPos.y() * 2; y - tileHeight * 2 < exposed.bottom() * 2;
          y += tileHeight)
     {
         QPoint columnItr = rowItr;
 
-        for (int x = startPos.x(); x < rect.right(); x += tileWidth) {
-            const Cell &cell = layer->cellAt(columnItr);
-            if (!cell.isEmpty()) {
-                const Tile *tile = cell.tile();
-                const QSize size = (tile && !tile->image().isNull()) ? tile->size() : map()->tileSize();
-                renderTile(cell, columnItr, QPointF(x, (qreal)y / 2), size);
-            }
+        for (int x = startPos.x(); x < exposed.right(); x += tileWidth) {
+            renderTile(columnItr, QPointF(x, (qreal)y / 2));
 
             // Advance to the next column
             ++columnItr.rx();

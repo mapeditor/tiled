@@ -267,20 +267,9 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
                                        const TileLayer *layer,
                                        const QRectF &exposed) const
 {
-    CellRenderer renderer(painter, this, layer->effectiveTintColor());
-    auto tileRenderFunction = [&renderer](const Cell &cell, const QPoint &/*tilePos*/, const QPointF &screenPos, const QSizeF &size) {
-        renderer.render(cell, screenPos, size, CellRenderer::BottomLeft);
-    };
-    drawTileLayer(layer, tileRenderFunction, exposed);
-}
-
-void OrthogonalRenderer::drawTileLayer(const TileLayer *layer,
-                                       const RenderTileCallback &renderTile,
-                                       const QRectF &exposed) const
-{
-
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
+
     if (tileWidth <= 0 || tileHeight <= 0)
         return;
 
@@ -288,10 +277,6 @@ void OrthogonalRenderer::drawTileLayer(const TileLayer *layer,
                            layer->y() * tileHeight);
 
     QRect bounds = layer->localBounds();
-    int startX = bounds.left();
-    int startY = bounds.top();
-    int endX = bounds.right();
-    int endY = bounds.bottom();
 
     if (!exposed.isNull()) {
         QMargins drawMargins = layer->drawMargins();
@@ -305,11 +290,39 @@ void OrthogonalRenderer::drawTileLayer(const TileLayer *layer,
 
         rect.translate(-layerPos);
 
-        startX = qMax(qFloor(rect.x() / tileWidth), startX);
-        startY = qMax(qFloor(rect.y() / tileHeight), startY);
-        endX = qMin(qCeil(rect.right()) / tileWidth, endX);
-        endY = qMin(qCeil(rect.bottom()) / tileHeight, endY);
+        bounds.setLeft(qMax(qFloor(rect.x() / tileWidth), bounds.left()));
+        bounds.setTop(qMax(qFloor(rect.y() / tileHeight), bounds.top()));
+        bounds.setRight(qMin(qCeil(rect.right()) / tileWidth, bounds.right()));
+        bounds.setBottom(qMin(qCeil(rect.bottom()) / tileHeight, bounds.bottom()));
     }
+
+    CellRenderer renderer(painter, this, layer->effectiveTintColor());
+
+    auto tileRenderFunction = [layer, &renderer, this, layerPos](QPoint tilePos, const QPointF &screenPos) {
+        const Cell &cell = layer->cellAt(tilePos);
+        if (!cell.isEmpty()) {
+            const Tile *tile = cell.tile();
+            const QSize size = (tile && !tile->image().isNull()) ? tile->size() : map()->tileSize();
+            renderer.render(cell, screenPos + layerPos, size, CellRenderer::BottomLeft);
+        }
+    };
+
+    drawTileLayer(tileRenderFunction, boundingRect(bounds));
+}
+
+void OrthogonalRenderer::drawTileLayer(const RenderTileCallback &renderTile,
+                                       const QRectF &exposed) const
+{
+    const int tileWidth = map()->tileWidth();
+    const int tileHeight = map()->tileHeight();
+
+    if (tileWidth <= 0 || tileHeight <= 0)
+        return;
+
+    int startX = qFloor(exposed.x() / tileWidth);
+    int startY = qFloor(exposed.y() / tileHeight);
+    int endX = qCeil(exposed.right()) / tileWidth;
+    int endY = qCeil(exposed.bottom()) / tileHeight;
 
     // Return immediately when there is nothing to draw
     if (startX > endX || startY > endY)
@@ -340,17 +353,9 @@ void OrthogonalRenderer::drawTileLayer(const TileLayer *layer,
     endX += incX;
     endY += incY;
 
-    for (int y = startY; y != endY; y += incY) {
-        for (int x = startX; x != endX; x += incX) {
-            const Cell &cell = layer->cellAt(x, y);
-            if (cell.isEmpty())
-                continue;
-
-            const Tile *tile = cell.tile();
-            const QSize size = (tile && !tile->image().isNull()) ? tile->size() : map()->tileSize();
-            renderTile(cell, QPoint(x, y), layerPos + QPointF(x * tileWidth, (y + 1) * tileHeight), size);
-        }
-    }
+    for (int y = startY; y != endY; y += incY)
+        for (int x = startX; x != endX; x += incX)
+            renderTile(QPoint(x, y), QPointF(x * tileWidth, (y + 1) * tileHeight));
 }
 
 void OrthogonalRenderer::drawTileSelection(QPainter *painter,

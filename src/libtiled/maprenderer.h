@@ -132,7 +132,7 @@ public:
     virtual void drawGrid(QPainter *painter, const QRectF &rect,
                           QColor gridColor = Qt::black) const = 0;
 
-    typedef std::function<void(const Cell &, const QPoint &, const QPointF &, const QSizeF &)> RenderTileCallback;
+    typedef std::function<void(QPoint, const QPointF &)> RenderTileCallback;
 
     /**
      * Draws the given \a layer using the given \a painter.
@@ -158,9 +158,8 @@ public:
      * Optionally, you can pass in the \a exposed rect (of pixels), so that
      * only tiles that can be visible in this area will be drawn.
      */
-    virtual void drawTileLayer(const TileLayer *layer,
-                               const RenderTileCallback &renderTile,
-                               const QRectF &exposed = QRectF()) const = 0;
+    virtual void drawTileLayer(const RenderTileCallback &renderTile,
+                               const QRectF &exposed) const = 0;
 
     /**
      * Draws the tile selection given by \a region in the specified \a color.

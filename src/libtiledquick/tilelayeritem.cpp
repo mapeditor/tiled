@@ -155,7 +155,8 @@ QSGNode *TileLayerItem::updatePaintNode(QSGNode *node,
      * drawn tiles are using the same tileset, they will share a single
      * geometry node.
      */
-    auto tileRenderFunction = [&](const Cell &cell, const QPoint &/*tilePos*/, const QPointF &screenPos, const QSizeF &size) {
+    auto tileRenderFunction = [&](QPoint tilePos, const QPointF &screenPos) {
+        const Cell &cell = mLayer->cellAt(tilePos);
         Tileset *tileset = cell.tileset();
         if (!tileset)
             return;
@@ -178,6 +179,8 @@ QSGNode *TileLayerItem::updatePaintNode(QSGNode *node,
 //        }
 
         const auto offset = tileset->tileOffset();
+        const auto tile = tileset->findTile(cell.tileId());
+        const QSize size = (tile && !tile->image().isNull()) ? tile->size() : mRenderer->map()->tileSize();
 
         TileData data;
         data.x = static_cast<float>(screenPos.x()) + offset.x();
@@ -190,7 +193,7 @@ QSGNode *TileLayerItem::updatePaintNode(QSGNode *node,
         tileData.append(data);
     };
 
-    mRenderer->drawTileLayer(mLayer, tileRenderFunction, mVisibleArea);
+    mRenderer->drawTileLayer(tileRenderFunction, mVisibleArea);
 
     if (!tileData.isEmpty())
         node->appendChildNode(new TilesNode(helper.texture(), tileData));
@@ -201,7 +204,19 @@ QSGNode *TileLayerItem::updatePaintNode(QSGNode *node,
 void TileLayerItem::updateVisibleTiles()
 {
     const MapItem *mapItem = static_cast<MapItem*>(parentItem());
-    const QRectF &rect = mapItem->visibleArea();
+
+    QRectF rect = mapItem->visibleArea();
+
+    QMargins drawMargins = mLayer->drawMargins();
+    drawMargins.setTop(drawMargins.top() - mRenderer->map()->tileHeight());
+    drawMargins.setRight(drawMargins.right() - mRenderer->map()->tileWidth());
+
+    rect.adjust(-drawMargins.right(),
+                -drawMargins.bottom(),
+                drawMargins.left(),
+                drawMargins.top());
+
+    rect &= mRenderer->boundingRect(mLayer->localBounds());
 
     if (mVisibleArea != rect) {
         mVisibleArea = rect;
