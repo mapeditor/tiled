@@ -186,26 +186,26 @@ QVector<QPoint> pointsOnLine(int x0, int y0, int x1, int y1)
         qSwap(y0, y1);
     }
 
+    const bool gentle = qAbs(y1 - y0) * 2 <= x1 - x0;
+    if (gentle)
+        (y1 > y0) ? ++y1 : --y1;
+
     const int deltax = x1 - x0;
     const int deltay = qAbs(y1 - y0);
-    int error = deltax / 2;
-    int ystep;
+    const int ystep = (y0 < y1) ? 1 : -1;
+
+    int error = gentle ? deltax : deltax / 2;
     int y = y0;
 
-    if (y0 < y1)
-        ystep = 1;
-    else
-        ystep = -1;
-
-    for (int x = x0; x < x1 + 1 ; x++) {
+    for (int x = x0; x < x1 + 1; ++x) {
         if (steep)
             ret += QPoint(y, x);
         else
             ret += QPoint(x, y);
         error = error - deltay;
         if (error < 0) {
-             y = y + ystep;
-             error = error + deltax;
+            y = y + ystep;
+            error = error + deltax;
         }
     }
 
