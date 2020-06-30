@@ -215,8 +215,10 @@ QPainterPath OrthogonalRenderer::interactionShape(const MapObject *object) const
     case MapObject::Polygon:
     case MapObject::Ellipse:
     case MapObject::Text:
-    case MapObject::Point:
         path = shape(object);
+        break;
+    case MapObject::Point:
+        path = pointInteractionShape(object);
         break;
     }
 
