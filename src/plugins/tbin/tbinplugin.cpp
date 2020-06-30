@@ -113,7 +113,7 @@ TbinMapFormat::TbinMapFormat(QObject *)
 
 std::unique_ptr<Tiled::Map> TbinMapFormat::read(const QString &fileName)
 {
-    std::ifstream file( fileName.toStdString(), std::ios::in | std::ios::binary );
+    std::ifstream file( fileName.toLocal8Bit(), std::ios::in | std::ios::binary );
     if (!file) {
         mError = QCoreApplication::translate("File Errors", "Could not open file for reading.");
         return nullptr;
@@ -148,7 +148,7 @@ std::unique_ptr<Tiled::Map> TbinMapFormat::read(const QString &fileName)
             if (ttilesheet.margin.x != ttilesheet.margin.y)
                 throw std::invalid_argument(QT_TR_NOOP("Tilesheet must have equal margins."));
 
-            auto tileset = Tiled::Tileset::create(ttilesheet.id.c_str(), ttilesheet.tileSize.x, ttilesheet.tileSize.y, ttilesheet.spacing.x, ttilesheet.margin.x);
+            auto tileset = Tiled::Tileset::create(QString::fromStdString(ttilesheet.id), ttilesheet.tileSize.x, ttilesheet.tileSize.y, ttilesheet.spacing.x, ttilesheet.margin.x);
             tileset->setImageSource(Tiled::toUrl(QString::fromStdString(ttilesheet.image).replace("\\", "/"), fileDir));
             tileset->loadImage();
 
@@ -273,7 +273,7 @@ bool TbinMapFormat::write(const Tiled::Map *map, const QString &fileName, Option
         }
 
         std::vector< Tiled::ObjectGroup* > objGroups;
-        std::map< std::string, tbin::Layer* > tileLayerIdMap;
+        std::map<QString, tbin::Layer* > tileLayerIdMap;
         tmap.layers.reserve(static_cast<std::size_t>(map->layers().size()));
         for (Tiled::Layer* rawLayer : map->layers()) {
             if (Tiled::ObjectGroup* layer = rawLayer->asObjectGroup()) {
@@ -326,7 +326,7 @@ bool TbinMapFormat::write(const Tiled::Map *map, const QString &fileName, Option
                 }
                 tiledToTbinProperties(layer->properties(), tlayer.props);
                 tmap.layers.push_back(std::move(tlayer));
-                tileLayerIdMap[tmap.layers.back().id] = &tmap.layers.back();
+                tileLayerIdMap[layer->name()] = &tmap.layers.back();
             }
             else {
                 throw std::invalid_argument(QT_TR_NOOP("Only object and tile layers supported."));
@@ -336,7 +336,7 @@ bool TbinMapFormat::write(const Tiled::Map *map, const QString &fileName, Option
         for (Tiled::ObjectGroup* objs : objGroups) {
             const auto groupName = objs->name();
 
-            tbin::Layer* tiles = tileLayerIdMap[groupName.toStdString()];
+            tbin::Layer* tiles = tileLayerIdMap[groupName];
             if (!tiles) {
                 Tiled::WARNING(QString(QLatin1String("tBIN: Ignoring object layer \"%1\" without matching tile layer.")).arg(groupName),
                                Tiled::SelectLayer { objs });
@@ -377,7 +377,7 @@ bool TbinMapFormat::write(const Tiled::Map *map, const QString &fileName, Option
             }
         }
 
-        std::ofstream file(fileName.toStdString(), std::ios::trunc | std::ios::binary);
+        std::ofstream file(fileName.toLocal8Bit(), std::ios::trunc | std::ios::binary);
         if (!file) {
             mError = tr("Could not open file for writing");
             return false;
@@ -406,7 +406,7 @@ QString TbinMapFormat::shortName() const
 
 bool TbinMapFormat::supportsFile(const QString &fileName) const
 {
-    std::ifstream file(fileName.toStdString(), std::ios::in | std::ios::binary);
+    std::ifstream file(fileName.toLocal8Bit(), std::ios::in | std::ios::binary);
     if (!file)
         return false;
 
