@@ -607,7 +607,14 @@ QString Preferences::startupSession() const
 
 void Preferences::setLastSession(const QString &fileName)
 {
-    setValue(QLatin1String("Project/LastSession"), fileName);
+    // Don't store the path to the default session, since this path may vary
+    // between restarts. For example the snap release includes the build
+    // number in the path and trying to save to a session file for a different
+    // version doesn't work.
+    if (fileName == Session::defaultFileName())
+        setValue(QLatin1String("Project/LastSession"), QString());
+    else
+        setValue(QLatin1String("Project/LastSession"), fileName);
 }
 
 bool Preferences::restoreSessionOnStartup() const

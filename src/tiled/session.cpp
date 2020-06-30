@@ -213,7 +213,21 @@ QString Session::defaultFileNameForProject(const QString &projectFile)
 Session &Session::initialize()
 {
     Q_ASSERT(!mCurrent);
-    return switchCurrent(Preferences::instance()->startupSession());
+    auto &session = switchCurrent(Preferences::instance()->startupSession());
+
+    // Workaround for users facing issue #2852, bringing their default session
+    // to the right location.
+    if (session.project.isEmpty()) {
+        if (QFileInfo(session.fileName()).fileName() == QLatin1String("default.tiled-session")) {
+            const QString defaultName = defaultFileName();
+            if (session.fileName() != defaultName) {
+                session.setFileName(defaultName);
+                Preferences::instance()->setLastSession(defaultName);
+            }
+        }
+    }
+
+    return session;
 }
 
 Session &Session::current()
