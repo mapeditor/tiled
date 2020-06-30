@@ -206,14 +206,12 @@ rendered.
 -  **format:** Used for embedded images, in combination with a ``data``
    child element. Valid values are file extensions like ``png``,
    ``gif``, ``jpg``, ``bmp``, etc.
--  *id:* Used by some versions of Tiled Java. Deprecated and unsupported
-   by Tiled Qt.
+-  *id:* Used by some versions of Tiled Java. Deprecated and unsupported.
 -  **source:** The reference to the tileset image file (Tiled supports most
    common image formats). Only used if the image is not embedded.
 -  **trans:** Defines a specific color that is treated as transparent
-   (example value: "#FF00FF" for magenta). Up until Tiled 0.12, this
-   value is written out without a ``#`` but this is planned to change.
-   (optional)
+   (example value: "#FF00FF" for magenta). Including the "#" is optional
+   and Tiled leaves it out for compatibility reasons. (optional)
 -  **width:** The image width in pixels (optional, used for tile index
    correction when the image changes)
 -  **height:** The image height in pixels (optional)

@@ -72,16 +72,16 @@ the following variables:
     the current maps full path.
 
 ``%mappath``
-    the full folder path in which the map is located. (since Tiled 0.18)
+    the full folder path in which the map is located.
 
 ``%objecttype``
-    the type of the currently selected object, if any. (since Tiled 0.12)
+    the type of the currently selected object, if any.
 
 ``%objectid``
-    the ID of the currently selected object, if any. (since Tiled 0.17)
+    the ID of the currently selected object, if any.
 
 ``%layername``
-    the name of the currently selected layer. (since Tiled 0.17)
+    the name of the currently selected layer.
 
 For the working directory field, you can additionally use the following
 variable:
