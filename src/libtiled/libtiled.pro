@@ -20,6 +20,13 @@ win32 {
     LIBS += -lz
 }
 
+# On Linux we support linking to system Zstandard install
+linux:contains(SYSTEM_ZSTD, yes) {
+    CONFIG += link_pkgconfig
+    PKGCONFIG += libzstd
+    DEFINES += TILED_ZSTD_SUPPORT
+}
+
 DEFINES += QT_NO_CAST_FROM_ASCII \
     QT_NO_CAST_TO_ASCII
 DEFINES += TILED_LIBRARY

@@ -33,21 +33,24 @@ parts:
     qt-version: qt5
     options:
       - PREFIX=/usr
+      - SYSTEM_ZSTD=yes
       - CONFIG+=release
     override-pull: |
       snapcraftctl pull
       snapcraftctl set-version "$(git describe | cut -c 2-)"
     source: .
     build-packages:
+      - pkg-config
     # FIXME: Python plugin compiles and loads, but can't find platform libraries
-    #  - pkg-config
     #  - python-dev
       - qttools5-dev-tools
       - qtdeclarative5-dev
       - zlib1g-dev
+      - libzstd-dev
     stage-packages:
       - libqt5quick5
     #  - libpython2.7
+      - libzstd1
     after: [desktop-qt5]
 
   desktop-qt5:
