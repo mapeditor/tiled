@@ -132,6 +132,11 @@ bool TmxRasterizer::shouldDrawLayer(const Layer *layer) const
     if (mLayersToHide.contains(layer->name(), Qt::CaseInsensitive))
         return false;
 
+    if (!mLayersToShow.empty()) {
+       if (!mLayersToShow.contains(layer->name(), Qt::CaseInsensitive))
+           return false;
+    }
+
     if (mIgnoreVisibility)
         return true;
 
@@ -230,7 +235,7 @@ int TmxRasterizer::renderWorld(const QString &worldFileName,
                  qUtf8Printable(errorString));
         return 1;
     }
-    
+
     auto const maps = world->allMaps();
     if (maps.isEmpty()) {
         qWarning("Error: The world file to rasterize contains no maps : \"%s\"",

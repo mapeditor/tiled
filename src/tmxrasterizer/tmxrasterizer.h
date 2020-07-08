@@ -61,6 +61,7 @@ public:
     void setIgnoreVisibility(bool IgnoreVisibility) { mIgnoreVisibility = IgnoreVisibility; }
 
     void setLayersToHide(QStringList layersToHide) { mLayersToHide = layersToHide; }
+    void setLayersToShow(QStringList layersToShow) { mLayersToShow = layersToShow; }
 
     int render(const QString &fileName, const QString &imageFileName);
 
@@ -72,6 +73,7 @@ private:
     bool mSmoothImages;
     bool mIgnoreVisibility;
     QStringList mLayersToHide;
+    QStringList mLayersToShow;
 
     void drawMapLayers(MapRenderer &renderer, QPainter &painter, Map &map, QPoint mapOffset = QPoint(0, 0)) const;
     int renderMap(const QString &mapFileName, const QString &imageFileName);
