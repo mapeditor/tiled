@@ -107,6 +107,7 @@ private:
     void beginCapture();
     void endCapture();
 
+    void updateBrushBehavior();
     void updatePreview();
     void updatePreview(QPoint tilePos);
 
@@ -139,6 +140,7 @@ private:
      * This stores the current behavior.
      */
     BrushBehavior mBrushBehavior;
+    Qt::KeyboardModifiers mModifiers;
 
     /**
      * The starting position needed for drawing lines and circles.

@@ -155,6 +155,22 @@ void StampBrush::mousePressed(QGraphicsSceneMouseEvent *event)
 void StampBrush::mouseReleased(QGraphicsSceneMouseEvent *event)
 {
     switch (mBrushBehavior) {
+    case LineStartSet:
+        if (event->button() == Qt::LeftButton) {
+            if (mStampReference != tilePosition()) {
+                doPaint();
+                mBrushBehavior = Line;
+            }
+        }
+        break;
+    case CircleMidSet:
+        if (event->button() == Qt::LeftButton) {
+            if (mStampReference != tilePosition()) {
+                doPaint();
+                updateBrushBehavior();
+            }
+        }
+        break;
     case Capture:
         if (event->button() == Qt::RightButton) {
             endCapture();
@@ -177,13 +193,18 @@ void StampBrush::mouseReleased(QGraphicsSceneMouseEvent *event)
 
 void StampBrush::modifiersChanged(Qt::KeyboardModifiers modifiers)
 {
-    if (mStamp.isEmpty() && !mIsWangFill)
-        return;
+    mModifiers = modifiers;
 
+    if (!mStamp.isEmpty() || mIsWangFill)
+        updateBrushBehavior();
+}
+
+void StampBrush::updateBrushBehavior()
+{
     BrushBehavior brushBehavior = mBrushBehavior;
 
-    if (modifiers & Qt::ShiftModifier) {
-        if (modifiers & Qt::ControlModifier) {
+    if (mModifiers & Qt::ShiftModifier) {
+        if (mModifiers & Qt::ControlModifier) {
             if (brushBehavior == LineStartSet) {
                 brushBehavior = CircleMidSet;
             } else if (brushBehavior != CircleMidSet) {
