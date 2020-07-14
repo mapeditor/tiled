@@ -183,7 +183,7 @@ void AbstractTileTool::updateStatusInfo()
             }
         }
 
-        setStatusInfo(QString(QLatin1String("%1, %2 [%3]"))
+        setStatusInfo(QStringLiteral("%1, %2 [%3]")
                       .arg(mTilePosition.x())
                       .arg(mTilePosition.y())
                       .arg(tileIdString));

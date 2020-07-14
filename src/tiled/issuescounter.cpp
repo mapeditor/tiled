@@ -109,7 +109,7 @@ void IssuesCounter::updateLabels()
     const QString errorText = tr("%n error(s)", "", errorCount);
     const QString warningText = tr("%n warning(s)", "", warningCount);
 
-    setToolTip(QString(QLatin1String("%1, %2")).arg(errorText, warningText));
+    setToolTip(QStringLiteral("%1, %2").arg(errorText, warningText));
 }
 
 } // namespace Tiled

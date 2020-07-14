@@ -180,9 +180,9 @@ QString LuaTableWriter::quote(const QString &str)
 
     for (const QChar c : str) {
         switch (c.unicode()) {
-        case '\\':  quoted.append(QLatin1String("\\\\"));  break;
-        case '"':   quoted.append(QLatin1String("\\\""));  break;
-        case '\n':  quoted.append(QLatin1String("\\n"));   break;
+        case '\\':  quoted.append(QStringLiteral("\\\\"));  break;
+        case '"':   quoted.append(QStringLiteral("\\\""));  break;
+        case '\n':  quoted.append(QStringLiteral("\\n"));   break;
         default:    quoted.append(c);
         }
     }

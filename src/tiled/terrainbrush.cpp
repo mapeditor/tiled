@@ -307,7 +307,7 @@ static unsigned short bottomEdge(const Tile *tile)
 static unsigned short leftEdge(const Tile *tile)
 {
     unsigned t = terrain(tile);
-    return((t >> 16) & 0xFF00) | ((t >> 8) & 0xFF);
+    return ((t >> 16) & 0xFF00) | ((t >> 8) & 0xFF);
 }
 
 static unsigned short rightEdge(const Tile *tile)

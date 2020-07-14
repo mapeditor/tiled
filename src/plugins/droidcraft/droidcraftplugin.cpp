@@ -149,7 +149,7 @@ QString DroidcraftPlugin::nameFilter() const
 
 QString DroidcraftPlugin::shortName() const
 {
-    return QLatin1String("droidcraft");
+    return QStringLiteral("droidcraft");
 }
 
 QString DroidcraftPlugin::errorString() const

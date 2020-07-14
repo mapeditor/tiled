@@ -131,12 +131,12 @@ static void writeObjectTypesXml(QFileDevice *device,
     writer.setAutoFormattingIndent(1);
 
     writer.writeStartDocument();
-    writer.writeStartElement(QLatin1String("objecttypes"));
+    writer.writeStartElement(QStringLiteral("objecttypes"));
 
     for (const ObjectType &objectType : objectTypes) {
-        writer.writeStartElement(QLatin1String("objecttype"));
-        writer.writeAttribute(QLatin1String("name"), objectType.name);
-        writer.writeAttribute(QLatin1String("color"), objectType.color.name());
+        writer.writeStartElement(QStringLiteral("objecttype"));
+        writer.writeAttribute(QStringLiteral("name"), objectType.name);
+        writer.writeAttribute(QStringLiteral("color"), objectType.color.name());
 
         QMapIterator<QString,QVariant> it(objectType.defaultProperties);
         while (it.hasNext()) {
@@ -144,13 +144,13 @@ static void writeObjectTypesXml(QFileDevice *device,
 
             int type = it.value().userType();
 
-            writer.writeStartElement(QLatin1String("property"));
-            writer.writeAttribute(QLatin1String("name"), it.key());
-            writer.writeAttribute(QLatin1String("type"), typeToName(type));
+            writer.writeStartElement(QStringLiteral("property"));
+            writer.writeAttribute(QStringLiteral("name"), it.key());
+            writer.writeAttribute(QStringLiteral("type"), typeToName(type));
 
             if (!it.value().isNull()) {
                 const QString value = toExportValue(it.value(), fileDir).toString();
-                writer.writeAttribute(QLatin1String("default"), value);
+                writer.writeAttribute(QStringLiteral("default"), value);
             }
 
             writer.writeEndElement();

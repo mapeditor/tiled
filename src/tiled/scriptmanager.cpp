@@ -236,7 +236,7 @@ bool ScriptManager::checkError(QJSValue value, const QString &program)
         errorString.append(QLatin1Char('\n'));
 
         for (const auto &entry : stackEntries) {
-            errorString.append(QLatin1String("  "));
+            errorString.append(QStringLiteral("  "));
             errorString.append(entry);
             errorString.append(QLatin1Char('\n'));
         }

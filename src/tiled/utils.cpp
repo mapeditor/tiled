@@ -45,13 +45,13 @@
 static QString toImageFileFilter(const QList<QByteArray> &formats)
 {
     QString filter(QCoreApplication::translate("Utils", "Image files"));
-    filter += QLatin1String(" (");
+    filter += QStringLiteral(" (");
     bool first = true;
     for (const QByteArray &format : formats) {
         if (!first)
             filter += QLatin1Char(' ');
         first = false;
-        filter += QLatin1String("*.");
+        filter += QStringLiteral("*.");
         filter += QString::fromLatin1(format.toLower());
     }
     filter += QLatin1Char(')');
@@ -405,13 +405,13 @@ static void showInFileManager(const QString &fileName)
 #if defined(Q_OS_WIN)
     QStringList param;
     if (!QFileInfo(fileName).isDir())
-        param += QLatin1String("/select,");
+        param += QStringLiteral("/select,");
     param += QDir::toNativeSeparators(fileName);
     QProcess::startDetached(QLatin1String("explorer.exe"), param);
 #elif defined(Q_OS_MAC)
     QStringList scriptArgs;
     scriptArgs << QLatin1String("-e")
-               << QString::fromLatin1("tell application \"Finder\" to reveal POSIX file \"%1\"")
+               << QStringLiteral("tell application \"Finder\" to reveal POSIX file \"%1\"")
                                      .arg(fileName);
     QProcess::execute(QLatin1String("/usr/bin/osascript"), scriptArgs);
     scriptArgs.clear();
@@ -421,7 +421,7 @@ static void showInFileManager(const QString &fileName)
 #else
     // We cannot select a file here, because xdg-open would open the file
     // instead of the file browser...
-    QProcess::startDetached(QString(QLatin1String("xdg-open")),
+    QProcess::startDetached(QStringLiteral("xdg-open"),
                             QStringList(QFileInfo(fileName).absolutePath()));
 #endif
 }

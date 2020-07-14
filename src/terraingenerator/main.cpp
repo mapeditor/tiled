@@ -354,9 +354,9 @@ int main(int argc, char *argv[])
 {
     QGuiApplication a(argc, argv);
 
-    a.setOrganizationDomain(QLatin1String("mapeditor.org"));
-    a.setApplicationName(QLatin1String("TerrainGenerator"));
-    a.setApplicationVersion(QLatin1String("1.0"));
+    a.setOrganizationDomain(QStringLiteral("mapeditor.org"));
+    a.setApplicationName(QStringLiteral("TerrainGenerator"));
+    a.setApplicationVersion(QStringLiteral("1.0"));
 
     CommandLineOptions options;
 

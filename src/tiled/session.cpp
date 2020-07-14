@@ -205,7 +205,7 @@ QString Session::defaultFileNameForProject(const QString &projectFile)
     QString sessionFile = fileInfo.path();
     sessionFile += QLatin1Char('/');
     sessionFile += fileInfo.completeBaseName();
-    sessionFile += QLatin1String(".tiled-session");
+    sessionFile += QStringLiteral(".tiled-session");
 
     return sessionFile;
 }

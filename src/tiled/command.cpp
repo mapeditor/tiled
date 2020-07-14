@@ -67,8 +67,8 @@ private:
 static QString replaceVariables(const QString &string, bool quoteValues = true)
 {
     QString finalString = string;
-    QString replaceString = quoteValues ? QString(QLatin1String("\"%1\"")) :
-                                          QString(QLatin1String("%1"));
+    QString replaceString = quoteValues ? QStringLiteral("\"%1\"") :
+                                          QStringLiteral("%1");
 
     // Perform variable replacement
     if (Document *document = DocumentManager::instance()->currentDocument()) {
@@ -122,7 +122,7 @@ QString Command::finalWorkingDirectory() const
  */
 QString Command::finalCommand() const
 {
-    QString finalCommand = QString(QLatin1String("%1 %2")).arg(executable, arguments);
+    QString finalCommand = QStringLiteral("%1 %2").arg(executable, arguments);
     return replaceVariables(finalCommand);
 }
 
@@ -242,8 +242,8 @@ CommandProcess::CommandProcess(const Command &command, bool inTerminal, bool sho
         mFile.close();
 
         // Add execute permission to the file
-        int chmodRet = QProcess::execute(QString(QLatin1String(
-                                     "chmod +x \"%1\"")).arg(mFile.fileName()));
+        int chmodRet = QProcess::execute(QStringLiteral(
+                                     "chmod +x \"%1\"").arg(mFile.fileName()));
         if (chmodRet != 0) {
             reportErrorAndDelete(tr("Unable to add executable permissions to %1")
                                  .arg(mFile.fileName()));
@@ -253,7 +253,7 @@ CommandProcess::CommandProcess(const Command &command, bool inTerminal, bool sho
         // Use open command to launch the command in the terminal
         // -W makes it not return immediately
         // -n makes it open a new instance of terminal if it is open already
-        mFinalCommand = QString(QLatin1String("open -W -n \"%1\""))
+        mFinalCommand = QStringLiteral("open -W -n \"%1\"")
                                                          .arg(mFile.fileName());
 #endif
     }

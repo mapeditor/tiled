@@ -81,7 +81,7 @@ QString DefoldPlugin::nameFilter() const
 
 QString DefoldPlugin::shortName() const
 {
-    return QLatin1String("defold");
+    return QStringLiteral("defold");
 }
 
 QString DefoldPlugin::errorString() const

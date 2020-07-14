@@ -142,7 +142,7 @@ QString LuaMapFormat::nameFilter() const
 
 QString LuaMapFormat::shortName() const
 {
-    return QLatin1String("lua");
+    return QStringLiteral("lua");
 }
 
 QString LuaMapFormat::errorString() const
@@ -187,7 +187,7 @@ QString LuaTilesetFormat::nameFilter() const
 
 QString LuaTilesetFormat::shortName() const
 {
-    return QLatin1String("lua");
+    return QStringLiteral("lua");
 }
 
 QString LuaTilesetFormat::errorString() const

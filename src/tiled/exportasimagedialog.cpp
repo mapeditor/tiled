@@ -83,10 +83,10 @@ ExportAsImageDialog::ExportAsImageDialog(MapDocument *mapDocument,
 
         suggestion += QLatin1Char('/');
         suggestion += baseName;
-        suggestion += QLatin1String(".png");
+        suggestion += QStringLiteral(".png");
     } else {
         suggestion += QLatin1Char('/');
-        suggestion += QLatin1String("map.png");
+        suggestion += QStringLiteral("map.png");
     }
 
     mUi->fileNameEdit->setText(suggestion);

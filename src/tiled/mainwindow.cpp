@@ -156,7 +156,7 @@ ExportDetails<Format> chooseExportDetails(const QString &fileName,
         QString lastExportedFilePath = pref->lastPath(Preferences::ExportedFile);
 
         suggestedFilename = lastExportedFilePath
-                            + QLatin1String("/") + baseName
+                            + QLatin1Char('/') + baseName
                             + QLatin1Char('.') + extension;
     }
 
@@ -1378,10 +1378,10 @@ void MainWindow::saveProjectAs()
         return;
 
     if (!fileName.endsWith(QLatin1String(".tiled-project"))) {
-        while (fileName.endsWith(QLatin1String(".")))
+        while (fileName.endsWith(QLatin1Char('.')))
             fileName.chop(1);
 
-        fileName.append(QLatin1String(".tiled-project"));
+        fileName.append(QStringLiteral(".tiled-project"));
     }
 
     if (!project.save(fileName)) {
@@ -2073,7 +2073,7 @@ void MainWindow::updateWindowTitle()
     QString projectName = ProjectManager::instance()->project().fileName();
     if (!projectName.isEmpty()) {
         projectName = QFileInfo(projectName).completeBaseName();
-        projectName = QString(QLatin1String(" (%1)")).arg(projectName);
+        projectName = QStringLiteral(" (%1)").arg(projectName);
     }
 
     if (Document *document = mDocumentManager->currentDocument()) {

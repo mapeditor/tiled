@@ -144,7 +144,7 @@ void IssueDelegate::paint(QPainter *painter,
 
         painter->setFont(smallFont);
         painter->drawText(opt.rect.adjusted(Utils::dpiScaled(4), 0, Utils::dpiScaled(-4), 0),
-                          QString(QLatin1String("(%1)")).arg(occurrences),
+                          QStringLiteral("(%1)").arg(occurrences),
                           QStyle::visualAlignment(opt.direction, Qt::AlignRight | Qt::AlignVCenter));
     }
 }

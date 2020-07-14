@@ -913,9 +913,9 @@ QString Tileset::orientationToString(Tileset::Orientation orientation)
 {
     switch (orientation) {
     case Tileset::Orthogonal:
-        return QLatin1String("orthogonal");
+        return QStringLiteral("orthogonal");
     case Tileset::Isometric:
-        return QLatin1String("isometric");
+        return QStringLiteral("isometric");
     }
     return QString();
 }

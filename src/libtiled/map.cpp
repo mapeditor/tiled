@@ -437,9 +437,9 @@ QString Tiled::staggerAxisToString(Map::StaggerAxis staggerAxis)
 {
     switch (staggerAxis) {
     case Map::StaggerY:
-        return QLatin1String("y");
+        return QStringLiteral("y");
     case Map::StaggerX:
-        return QLatin1String("x");
+        return QStringLiteral("x");
     }
     return QString();
 }
@@ -456,9 +456,9 @@ QString Tiled::staggerIndexToString(Map::StaggerIndex staggerIndex)
 {
     switch (staggerIndex) {
     case Map::StaggerOdd:
-        return QLatin1String("odd");
+        return QStringLiteral("odd");
     case Map::StaggerEven:
-        return QLatin1String("even");
+        return QStringLiteral("even");
     }
     return QString();
 }
@@ -475,15 +475,15 @@ QString Tiled::orientationToString(Map::Orientation orientation)
 {
     switch (orientation) {
     case Map::Unknown:
-        return QLatin1String("unknown");
+        return QStringLiteral("unknown");
     case Map::Orthogonal:
-        return QLatin1String("orthogonal");
+        return QStringLiteral("orthogonal");
     case Map::Isometric:
-        return QLatin1String("isometric");
+        return QStringLiteral("isometric");
     case Map::Staggered:
-        return QLatin1String("staggered");
+        return QStringLiteral("staggered");
     case Map::Hexagonal:
-        return QLatin1String("hexagonal");
+        return QStringLiteral("hexagonal");
     }
     return QString();
 }
@@ -511,11 +511,11 @@ QString Tiled::compressionToString(Map::LayerDataFormat layerDataFormat)
     case Map::CSV:
         return QString();
     case Map::Base64Gzip:
-        return QLatin1String("gzip");
+        return QStringLiteral("gzip");
     case Map::Base64Zlib:
-        return QLatin1String("zlib");
+        return QStringLiteral("zlib");
     case Map::Base64Zstandard:
-        return QLatin1String("zstd");
+        return QStringLiteral("zstd");
     }
     return QString();
 }
@@ -524,13 +524,13 @@ QString Tiled::renderOrderToString(Map::RenderOrder renderOrder)
 {
     switch (renderOrder) {
     case Map::RightDown:
-        return QLatin1String("right-down");
+        return QStringLiteral("right-down");
     case Map::RightUp:
-        return QLatin1String("right-up");
+        return QStringLiteral("right-up");
     case Map::LeftDown:
-        return QLatin1String("left-down");
+        return QStringLiteral("left-down");
     case Map::LeftUp:
-        return QLatin1String("left-up");
+        return QStringLiteral("left-up");
     }
     return QString();
 }

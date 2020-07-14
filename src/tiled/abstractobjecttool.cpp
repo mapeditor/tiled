@@ -172,7 +172,7 @@ void AbstractObjectTool::mouseMoved(const QPointF &pos,
     const QPointF tilePosF = mapDocument()->renderer()->screenToTileCoords(offsetPos);
     const int x = qFloor(tilePosF.x());
     const int y = qFloor(tilePosF.y());
-    setStatusInfo(QString(QLatin1String("%1, %2 (%3, %4)")).arg(x).arg(y).arg(pixelPos.x()).arg(pixelPos.y()));
+    setStatusInfo(QStringLiteral("%1, %2 (%3, %4)").arg(x).arg(y).arg(pixelPos.x()).arg(pixelPos.y()));
 }
 
 void AbstractObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
@@ -289,7 +289,7 @@ static QString saveObjectTemplate(const MapObject *mapObject)
         suggestedFileName += mapObject->name();
     else
         suggestedFileName += QCoreApplication::translate("Tiled::MainWindow", "untitled");
-    suggestedFileName += QLatin1String(".tx");
+    suggestedFileName += QStringLiteral(".tx");
 
     QWidget *parent = DocumentManager::instance()->widget()->window();
     QString fileName = QFileDialog::getSaveFileName(parent,

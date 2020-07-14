@@ -45,7 +45,7 @@ NoEditorWidget::NoEditorWidget(QWidget *parent) :
     opacityEffect->setOpacity(0.25);
     ui->logo->setGraphicsEffect(opacityEffect);
 
-    ui->versionLabel->setText(QString(QLatin1String("%1 %2")).arg(QGuiApplication::applicationDisplayName(), QGuiApplication::applicationVersion()));
+    ui->versionLabel->setText(QStringLiteral("%1 %2").arg(QGuiApplication::applicationDisplayName(), QGuiApplication::applicationVersion()));
 
     connect(ui->openProjectButton, &QToolButton::clicked, ActionManager::action("OpenProject"), &QAction::trigger);
     connect(ui->saveProjectButton, &QToolButton::clicked, ActionManager::action("SaveProjectAs"), &QAction::trigger);

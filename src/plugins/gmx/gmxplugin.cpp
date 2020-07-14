@@ -75,7 +75,7 @@ static void writeProperty(QXmlStreamWriter &writer,
 static QString sanitizeName(QString name)
 {
     static const QRegularExpression regexp(QLatin1String("[^a-zA-Z0-9]"));
-    return name.replace(regexp, QLatin1String("_"));
+    return name.replace(regexp, QStringLiteral("_"));
 }
 
 static bool checkIfViewsDefined(const Map *map)
@@ -440,7 +440,7 @@ bool GmxPlugin::write(const Map *map, const QString &fileName, Options options)
 
                     stream.writeEndElement();
                 } else {
-                    Tiled::WARNING(QString(QLatin1String("GMX plugin: Ignoring non-tile object %1 without type.")).arg(object->id()),
+                    Tiled::WARNING(QStringLiteral("GMX plugin: Ignoring non-tile object %1 without type.").arg(object->id()),
                                    Tiled::JumpToObject { object });
                 }
             }
@@ -449,7 +449,7 @@ bool GmxPlugin::write(const Map *map, const QString &fileName, Options options)
 
         case Layer::ImageLayerType:
             // todo: maybe export as backgrounds?
-            Tiled::WARNING(QString(QLatin1String("GMX plugin: Ignoring image layer \"%1\" (not currently supported).")).arg(layer->name()),
+            Tiled::WARNING(QStringLiteral("GMX plugin: Ignoring image layer \"%1\" (not currently supported).").arg(layer->name()),
                            Tiled::SelectLayer { layer });
             break;
 
@@ -492,5 +492,5 @@ QString GmxPlugin::nameFilter() const
 
 QString GmxPlugin::shortName() const
 {
-    return QLatin1String("gmx");
+    return QStringLiteral("gmx");
 }

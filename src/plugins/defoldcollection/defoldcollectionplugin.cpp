@@ -139,7 +139,7 @@ QString DefoldCollectionPlugin::nameFilter() const
 
 QString DefoldCollectionPlugin::shortName() const
 {
-    return QLatin1String("defoldcollection");
+    return QStringLiteral("defoldcollection");
 }
 
 QString DefoldCollectionPlugin::errorString() const

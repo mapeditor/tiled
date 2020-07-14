@@ -214,7 +214,7 @@ QString TilesetDocument::displayName() const
 
     if (isEmbedded()) {
         displayName = mMapDocuments.first()->displayName();
-        displayName += QLatin1String("#");
+        displayName += QLatin1Char('#');
         displayName += mTileset->name();
     } else {
         displayName = QFileInfo(fileName()).fileName();
@@ -231,7 +231,7 @@ QString TilesetDocument::externalOrEmbeddedFileName() const
 
     if (isEmbedded()) {
         result = mMapDocuments.first()->fileName();
-        result += QLatin1String("#");
+        result += QLatin1Char('#');
         result += mTileset->name();
     } else {
         result = fileName();

@@ -34,7 +34,7 @@ namespace Tiled {
 static QString relative(const QDir &dir, const QString &fileName)
 {
     QString rel = dir.relativeFilePath(fileName);
-    return rel.isEmpty() ? QString(QLatin1String(".")) : rel;
+    return rel.isEmpty() ? QStringLiteral(".") : rel;
 }
 
 static QString absolute(const QDir &dir, const QString &fileName)

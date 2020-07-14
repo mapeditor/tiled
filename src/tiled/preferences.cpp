@@ -459,25 +459,25 @@ static QString lastPathKey(Preferences::FileType fileType)
 
     switch (fileType) {
     case Preferences::ExportedFile:
-        key.append(QLatin1String("ExportedFile"));
+        key.append(QStringLiteral("ExportedFile"));
         break;
     case Preferences::ExternalTileset:
-        key.append(QLatin1String("ExternalTileset"));
+        key.append(QStringLiteral("ExternalTileset"));
         break;
     case Preferences::ImageFile:
-        key.append(QLatin1String("Images"));
+        key.append(QStringLiteral("Images"));
         break;
     case Preferences::ObjectTemplateFile:
-        key.append(QLatin1String("ObjectTemplates"));
+        key.append(QStringLiteral("ObjectTemplates"));
         break;
     case Preferences::ObjectTypesFile:
-        key.append(QLatin1String("ObjectTypes"));
+        key.append(QStringLiteral("ObjectTypes"));
         break;
     case Preferences::ProjectFile:
-        key.append(QLatin1String("Project"));
+        key.append(QStringLiteral("Project"));
         break;
     case Preferences::WorldFile:
-        key.append(QLatin1String("WorldFile"));
+        key.append(QStringLiteral("WorldFile"));
         break;
     }
 

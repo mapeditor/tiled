@@ -64,7 +64,7 @@ public:
 
     QString nameFilter() const override { return tr("Tiled map files (*.tmx *.xml)"); }
 
-    QString shortName() const override { return QLatin1String("tmx"); }
+    QString shortName() const override { return QStringLiteral("tmx"); }
 
     bool supportsFile(const QString &fileName) const override;
 
@@ -92,7 +92,7 @@ public:
 
     QString nameFilter() const override { return tr("Tiled tileset files (*.tsx *.xml)"); }
 
-    QString shortName() const override { return QLatin1String("tsx"); }
+    QString shortName() const override { return QStringLiteral("tsx"); }
 
     bool supportsFile(const QString &fileName) const override;
 
@@ -119,7 +119,7 @@ public:
 
     QString nameFilter() const override { return tr("Tiled template files (*.tx)"); }
 
-    QString shortName() const override { return QLatin1String("tx"); }
+    QString shortName() const override { return QStringLiteral("tx"); }
 
     bool supportsFile(const QString &fileName) const override;
 
