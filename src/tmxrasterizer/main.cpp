@@ -74,6 +74,9 @@ int main(int argc, char *argv[])
                           { "hide-layer",
                             QCoreApplication::translate("main", "Specifies a layer to omit from the output image. Can be repeated to hide multiple layers."),
                             QCoreApplication::translate("main", "name") },
+                          { "show-layer",
+                            QCoreApplication::translate("main", "If used only specified layers are shown. Can be repeated to show multiple specified layers only."),
+                            QCoreApplication::translate("main", "name") },
                       });
     parser.addPositionalArgument("map|world", QCoreApplication::translate("main", "Map or world file to render."));
     parser.addPositionalArgument("image", QCoreApplication::translate("main", "Image file to output."));
@@ -94,6 +97,7 @@ int main(int argc, char *argv[])
     w.setSmoothImages(!parser.isSet(QLatin1String("no-smoothing")));
     w.setIgnoreVisibility(parser.isSet(QLatin1String("ignore-visibility")));
     w.setLayersToHide(parser.values(QLatin1String("hide-layer")));
+    w.setLayersToShow(parser.values(QLatin1String("show-layer")));
 
     if (parser.isSet(QLatin1String("size"))) {
         bool ok;
