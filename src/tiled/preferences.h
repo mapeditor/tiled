@@ -78,6 +78,12 @@ public:
     ObjectLabelVisiblity objectLabelVisibility() const;
     void setObjectLabelVisibility(ObjectLabelVisiblity visiblity);
 
+    enum ObjectSelectionBehavior {
+        IgnoreLayer,
+        PreferSelectedLayers,
+        PreferHighlightedLayers
+    };
+
     bool labelForHoveredObject() const;
     void setLabelForHoveredObject(bool enabled);
 

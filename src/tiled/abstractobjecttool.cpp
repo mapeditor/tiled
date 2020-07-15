@@ -79,6 +79,9 @@ static bool isChangedTemplateInstance(MapObject *mapObject)
     return false;
 }
 
+Preference<AbstractObjectTool::SelectionBehavior> AbstractObjectTool::ourSelectionBehavior {
+    "AbstractObjectTool/SelectionBehavior", AbstractObjectTool::PreferHighlightedLayers
+};
 
 AbstractObjectTool::AbstractObjectTool(Id id,
                                        const QString &name,
@@ -222,15 +225,39 @@ MapObject *AbstractObjectTool::topMostMapObjectAt(const QPointF &pos) const
 {
     const QList<QGraphicsItem *> &items = mapScene()->items(pos);
 
+    const auto behavior = ourSelectionBehavior.get();
+    const bool preferSelected = behavior == PreferSelectedLayers ||
+            (behavior == PreferHighlightedLayers && Preferences::instance()->highlightCurrentLayer());
+
+    MapObject *topMost = nullptr;
+
     for (QGraphicsItem *item : items) {
         if (!item->isEnabled())
             continue;
 
         MapObjectItem *objectItem = qgraphicsitem_cast<MapObjectItem*>(item);
-        if (objectItem && objectItem->mapObject()->objectGroup()->isUnlocked())
-            return objectItem->mapObject();
+        if (!objectItem)
+            continue;
+
+        auto mapObject = objectItem->mapObject();
+        if (!mapObject->objectGroup()->isUnlocked())
+            continue;
+
+        // Return immediately when we don't care if the layer is selected
+        if (!preferSelected)
+            return mapObject;
+
+        // Return this object instead of the top-most one if it is from a selected layer
+        for (Layer *layer : mapDocument()->selectedLayers()) {
+            if (layer->isParentOrSelf(mapObject->objectGroup()))
+                return mapObject;
+        }
+
+        if (!topMost)
+            topMost = mapObject;
     }
-    return nullptr;
+
+    return topMost;
 }
 
 void AbstractObjectTool::duplicateObjects()

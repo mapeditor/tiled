@@ -21,6 +21,7 @@
 #include "preferencesdialog.h"
 #include "ui_preferencesdialog.h"
 
+#include "abstractobjecttool.h"
 #include "languagemanager.h"
 #include "pluginlistmodel.h"
 #include "preferences.h"
@@ -60,12 +61,15 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     mUi->languageCombo->model()->sort(0);
     mUi->languageCombo->insertItem(0, tr("System default"));
 
-    mUi->styleCombo->addItems(QStringList()
-                              << QApplication::translate("PreferencesDialog", "Native")
-                              << QApplication::translate("PreferencesDialog", "Tiled Fusion"));
+    mUi->styleCombo->addItems({ QApplication::translate("PreferencesDialog", "Native"),
+                                QApplication::translate("PreferencesDialog", "Tiled Fusion") });
 
     mUi->styleCombo->setItemData(0, Preferences::SystemDefaultStyle);
     mUi->styleCombo->setItemData(1, Preferences::TiledStyle);
+
+    mUi->objectSelectionBehaviorCombo->addItems({ tr("Select From Any Layer"),
+                                                  tr("Prefer Selected Layers"),
+                                                  tr("Prefer Highlighted Layers") });
 
     PluginListModel *pluginListModel = new PluginListModel(this);
     QSortFilterProxyModel *pluginProxyModel = new QSortFilterProxyModel(this);
@@ -117,6 +121,8 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
 
     connect(mUi->styleCombo, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
             this, &PreferencesDialog::styleComboChanged);
+    connect(mUi->objectSelectionBehaviorCombo, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+            this, [] (int index) { AbstractObjectTool::ourSelectionBehavior = static_cast<AbstractObjectTool::SelectionBehavior>(index); });
     connect(mUi->baseColor, &ColorButton::colorChanged,
             preferences, &Preferences::setBaseColor);
     connect(mUi->selectionColor, &ColorButton::colorChanged,
@@ -205,6 +211,7 @@ void PreferencesDialog::fromPreferences()
         styleComboIndex = 1;
 
     mUi->styleCombo->setCurrentIndex(styleComboIndex);
+    mUi->objectSelectionBehaviorCombo->setCurrentIndex(AbstractObjectTool::ourSelectionBehavior);
     mUi->baseColor->setColor(prefs->baseColor());
     mUi->selectionColor->setColor(prefs->selectionColor());
     bool systemStyle = prefs->applicationStyle() == Preferences::SystemDefaultStyle;
@@ -220,6 +227,10 @@ void PreferencesDialog::retranslateUi()
 
     mUi->styleCombo->setItemText(0, QApplication::translate("PreferencesDialog", "Native"));
     mUi->styleCombo->setItemText(1, QApplication::translate("PreferencesDialog", "Tiled Fusion"));
+
+    mUi->objectSelectionBehaviorCombo->setItemText(0, tr("Select From Any Layer"));
+    mUi->objectSelectionBehaviorCombo->setItemText(1, tr("Prefer Selected Layers"));
+    mUi->objectSelectionBehaviorCombo->setItemText(2, tr("Prefer Highlighted Layers"));
 }
 
 void PreferencesDialog::styleComboChanged()
