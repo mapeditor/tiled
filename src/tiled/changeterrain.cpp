@@ -52,9 +52,10 @@ void RenameTerrain::redo()
 }
 
 
-SetTerrainImage::SetTerrainImage(TilesetDocument *tilesetDocument, int terrainId, int tileId)
+SetTerrainImage::SetTerrainImage(TilesetDocument *tilesetDocument, int terrainId, int tileId, QUndoCommand *parent)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
-                                               "Change Terrain Image"))
+                                               "Change Terrain Image"),
+                   parent)
     , mTerrainModel(tilesetDocument->terrainModel())
     , mTerrainId(terrainId)
     , mOldImageTileId(tilesetDocument->tileset()->terrain(terrainId)->imageTileId())

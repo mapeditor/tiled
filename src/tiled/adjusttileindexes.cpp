@@ -22,6 +22,7 @@
 
 #include "changemapobject.h"
 #include "changeproperties.h"
+#include "changeterrain.h"
 #include "changetileanimation.h"
 #include "changetileobjectgroup.h"
 #include "changetileprobability.h"
@@ -34,6 +35,7 @@
 #include "mapobject.h"
 #include "objectgroup.h"
 #include "painttilelayer.h"
+#include "terrain.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tilesetdocument.h"
@@ -251,6 +253,14 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
     while (resetIterator.hasNext()) {
         applyMetaData(resetIterator.next(),
                       Properties(), -1, 1.0, nullptr, QVector<Frame>());
+    }
+
+    // Translate tile references in terrains
+    for (Terrain *terrain : tileset.terrains()) {
+        if (Tile *fromTile = terrain->imageTile())
+            if (Tile *newTile = adjustTile(fromTile))
+                if (fromTile != newTile)
+                    new SetTerrainImage(tilesetDocument, terrain->id(), newTile->id(), this);
     }
 
     // Translate tile references in Wang sets and Wang colors
