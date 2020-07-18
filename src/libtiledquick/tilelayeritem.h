@@ -23,6 +23,7 @@
 #include <QQuickItem>
 
 #include "tilelayer.h"
+#include "tiledquick_global.h"
 
 namespace Tiled {
 class MapRenderer;
@@ -35,7 +36,7 @@ class MapItem;
 /**
  * A graphical item displaying a tile layer in a Qt Quick scene.
  */
-class TileLayerItem : public QQuickItem
+class TILEDQUICK_SHARED_EXPORT TileLayerItem : public QQuickItem
 {
     Q_OBJECT
 

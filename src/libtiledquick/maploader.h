@@ -21,6 +21,7 @@
 #pragma once
 
 #include "mapref.h"
+#include "tiledquick_global.h"
 
 #include <QObject>
 #include <QUrl>
@@ -29,7 +30,7 @@
 
 namespace TiledQuick {
 
-class MapLoader : public QObject
+class TILEDQUICK_SHARED_EXPORT MapLoader : public QObject
 {
     Q_OBJECT
 

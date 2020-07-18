@@ -22,13 +22,15 @@
 
 #include <QObject>
 
+#include "tiledquick_global.h"
+
 namespace Tiled {
 class Map;
 }
 
 namespace TiledQuick {
 
-class MapRef
+class TILEDQUICK_SHARED_EXPORT MapRef
 {
     Q_GADGET
 

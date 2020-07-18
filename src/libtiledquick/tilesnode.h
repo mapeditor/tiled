@@ -23,6 +23,8 @@
 #include <QSGGeometryNode>
 #include <QSGTextureMaterial>
 
+#include "tiledquick_global.h"
+
 namespace TiledQuick {
 
 struct TileData {
@@ -36,7 +38,7 @@ struct TileData {
     bool flippedVertically;
 };
 
-class TilesNode : public QSGGeometryNode
+class TILEDQUICK_SHARED_EXPORT TilesNode : public QSGGeometryNode
 {
 public:
     enum {
