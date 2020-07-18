@@ -77,6 +77,9 @@ int main(int argc, char *argv[])
                           { "show-layer",
                             QCoreApplication::translate("main", "If used only specified layers are shown. Can be repeated to show multiple specified layers only."),
                             QCoreApplication::translate("main", "name") },
+                          { "advance-animations",
+                            QCoreApplication::translate("main", "If used tile animations are advanced by the specified duration."),
+                            QCoreApplication::translate("main", "duration") }
                       });
     parser.addPositionalArgument("map|world", QCoreApplication::translate("main", "Map or world file to render."));
     parser.addPositionalArgument("image", QCoreApplication::translate("main", "Image file to output."));
@@ -124,6 +127,15 @@ int main(int argc, char *argv[])
             qWarning().noquote() << QCoreApplication::translate("main", "Invalid scale specified: \"%1\"").arg(parser.value(QLatin1String("scale")));
             exit(1);
         }
+    }
+
+    if (parser.isSet(QLatin1String("advance-animations"))) {
+      bool ok;
+      w.setAdvanceAnimations(parser.value(QLatin1String("advance-animations")).toDouble(&ok));
+      if (!ok || w.advanceAnimations() <= 0.0) {
+        qWarning().noquote() << QCoreApplication::translate("main", "Invalid advance-animations specified: \"%1\"").arg(parser.value(QLatin1String("advance-animations")));
+            exit(1);
+      }
     }
 
     return w.render(fileToOpen, fileToSave);

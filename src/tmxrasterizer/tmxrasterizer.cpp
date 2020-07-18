@@ -31,6 +31,7 @@
 #include "hexagonalrenderer.h"
 #include "imagelayer.h"
 #include "isometricrenderer.h"
+#include "tilesetmanager.h"
 #include "map.h"
 #include "mapformat.h"
 #include "mapreader.h"
@@ -66,6 +67,7 @@ TmxRasterizer::TmxRasterizer():
     mScale(1.0),
     mTileSize(0),
     mSize(0),
+    mAdvanceAnimations(0),
     mUseAntiAliasing(false),
     mSmoothImages(true),
     mIgnoreVisibility(false)
@@ -181,6 +183,10 @@ int TmxRasterizer::renderMap(const QString &mapFileName,
         xScale = yScale = mScale;
     }
 
+    if (mAdvanceAnimations > 0) {
+        TilesetManager::instance()->advanceTileAnimations(mAdvanceAnimations);
+    }
+
     QMargins margins = map->computeLayerOffsetMargins();
     mapSize.setWidth(mapSize.width() + margins.left() + margins.right());
     mapSize.setHeight(mapSize.height() + margins.top() + margins.bottom());
@@ -288,8 +294,12 @@ int TmxRasterizer::renderWorld(const QString &worldFileName,
                     qUtf8Printable(errorString));
             continue;
         }
+        if (mAdvanceAnimations > 0) {
+            TilesetManager::instance()->advanceTileAnimations(mAdvanceAnimations);
+        }
         std::unique_ptr<MapRenderer> renderer = createRenderer(*map);
         drawMapLayers(*renderer, painter, *map, mapEntry.rect.topLeft());
+        TilesetManager::instance()->resetTileAnimations();
     }
 
     return saveImage(imageFileName, image);
