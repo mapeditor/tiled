@@ -60,12 +60,12 @@
     <message>
         <location line="+11"/>
         <source>Non-unique file extension. Can&apos;t determine correct export format.</source>
-        <translation>Extensão de arquivo não-exclusivo. Não é possível determinar o formato de exportação correto.</translation>
+        <translation>Extensão de ficheiro não-exclusivo. Não é possível determinar o formato de exportação correto.</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>No exporter found for target file.</source>
-        <translation>Nenhum exportador encontrado para arquivo de destino.</translation>
+        <translation>Nenhum exportador encontrado para ficheiro de destino.</translation>
     </message>
     <message>
         <location line="+230"/>
@@ -75,7 +75,7 @@
     <message>
         <location line="+13"/>
         <source>Failed to export map to target file.</source>
-        <translation>Falha ao exportar mapa para arquivo alvo.</translation>
+        <translation>Falha ao exportar mapa para ficheiro alvo.</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -485,14 +485,14 @@ https://www.mapeditor.org/donate ↗</translation>
         <location filename="../src/plugins/json/jsonplugin.cpp" line="-252"/>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="-252"/>
         <source>Error parsing file.</source>
-        <translation>Erro ao analisar o arquivo.</translation>
+        <translation>Erro ao analisar o ficheiro.</translation>
     </message>
     <message>
         <location line="+58"/>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+58"/>
         <source>Error while writing file:
 %1</source>
-        <translation>Erro ao escrever no arquivo:
+        <translation>Erro ao escrever no ficheiro:
 %1</translation>
     </message>
     <message>
@@ -522,14 +522,14 @@ https://www.mapeditor.org/donate ↗</translation>
         <location filename="../src/plugins/json/jsonplugin.cpp" line="+187"/>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+187"/>
         <source>Error parsing file.</source>
-        <translation type="unfinished">Erro ao analisar o arquivo.</translation>
+        <translation>Erro ao analisar o ficheiro.</translation>
     </message>
     <message>
         <location line="+57"/>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+57"/>
         <source>Error while writing file:
 %1</source>
-        <translation type="unfinished">Erro ao escrever no arquivo:
+        <translation>Erro ao escrever no ficheiro:
 %1</translation>
     </message>
     <message>
@@ -549,14 +549,14 @@ https://www.mapeditor.org/donate ↗</translation>
         <location filename="../src/plugins/json/jsonplugin.cpp" line="-182"/>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="-182"/>
         <source>Error parsing file.</source>
-        <translation>Erro ao analisar o arquivo.</translation>
+        <translation>Erro ao analisar o ficheiro.</translation>
     </message>
     <message>
         <location line="+64"/>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+64"/>
         <source>Error while writing file:
 %1</source>
-        <translation>Erro ao escrever no arquivo:
+        <translation>Erro ao escrever no ficheiro:
 %1</translation>
     </message>
     <message>
@@ -1018,12 +1018,12 @@ https://www.mapeditor.org/donate ↗</translation>
     <message>
         <location filename="../src/libtiled/mapreader.cpp" line="+166"/>
         <source>Not a map file.</source>
-        <translation>Arquivo de mapa inválido.</translation>
+        <translation>Ficheiro de mapa inválido.</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>Not a tileset file.</source>
-        <translation>Arquivo de tileset inválido.</translation>
+        <translation>Ficheiro de tileset inválido.</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -1042,12 +1042,12 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+10"/>
         <source>File not found: %1</source>
-        <translation>Arquivo não encontrado: %1</translation>
+        <translation>Ficheiro não encontrado: %1</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Unable to read file: %1</source>
-        <translation>Não foi possível ler o arquivo: %1</translation>
+        <translation>Não foi possível ler o ficheiro: %1</translation>
     </message>
     <message>
         <location line="+33"/>
@@ -1371,17 +1371,17 @@ Linha %1, coluna %2</translation>
     <message>
         <location filename="../src/libtiled/objecttypes.cpp" line="+251"/>
         <source>Could not open file for writing.</source>
-        <translation>Não foi possível abrir o arquivo para escrita.</translation>
+        <translation>Não foi possível abrir o ficheiro para escrita.</translation>
     </message>
     <message>
         <location line="+33"/>
         <source>Could not open file.</source>
-        <translation>Não foi possível abrir o arquivo.</translation>
+        <translation>Não foi possível abrir o ficheiro.</translation>
     </message>
     <message>
         <location line="-89"/>
         <source>File doesn&apos;t contain object types.</source>
-        <translation>O arquivo não contém tipos de objetos.</translation>
+        <translation>O ficheiro não contém tipos de objetos.</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -2232,12 +2232,12 @@ Linha %1, coluna %2</translation>
     <message>
         <location filename="../src/plugins/replicaisland/replicaislandplugin.cpp" line="-183"/>
         <source>Cannot open Replica Island map file!</source>
-        <translation>Não foi possivel abrir o arquivo de mapa do Replica Island!</translation>
+        <translation>Não foi possivel abrir o ficheiro de mapa do Replica Island!</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Can&apos;t parse file header!</source>
-        <translation>Não foi possivel analisar o cabeçalho do arquivo!</translation>
+        <translation>Não foi possivel analisar o cabeçalho do ficheiro!</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -2252,12 +2252,12 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+20"/>
         <source>File ended in middle of layer!</source>
-        <translation>Fim de arquivo no meio da camada!</translation>
+        <translation>Fim de ficheiro no meio da camada!</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>Unexpected data at end of file!</source>
-        <translation>Dados não esperados no fim do arquivo!</translation>
+        <translation>Dados não esperados no fim do ficheiro!</translation>
     </message>
     <message>
         <location line="+64"/>
@@ -7067,7 +7067,7 @@ Por favor selecione o formato específico.</translation>
     <message>
         <location line="+387"/>
         <source>Copy File Path</source>
-        <translation type="unfinished">Caminho do Arquivo de Cópia</translation>
+        <translation>Caminho do Ficheiro de Cópia</translation>
     </message>
     <message>
         <location line="+9"/>
