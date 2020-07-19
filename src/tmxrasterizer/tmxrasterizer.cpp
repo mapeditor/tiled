@@ -183,9 +183,8 @@ int TmxRasterizer::renderMap(const QString &mapFileName,
         xScale = yScale = mScale;
     }
 
-    if (mAdvanceAnimations > 0) {
+    if (mAdvanceAnimations > 0) 
         TilesetManager::instance()->advanceTileAnimations(mAdvanceAnimations);
-    }
 
     QMargins margins = map->computeLayerOffsetMargins();
     mapSize.setWidth(mapSize.width() + margins.left() + margins.right());
@@ -294,9 +293,9 @@ int TmxRasterizer::renderWorld(const QString &worldFileName,
                     qUtf8Printable(errorString));
             continue;
         }
-        if (mAdvanceAnimations > 0) {
+        if (mAdvanceAnimations > 0) 
             TilesetManager::instance()->advanceTileAnimations(mAdvanceAnimations);
-        }
+        
         std::unique_ptr<MapRenderer> renderer = createRenderer(*map);
         drawMapLayers(*renderer, painter, *map, mapEntry.rect.topLeft());
         TilesetManager::instance()->resetTileAnimations();

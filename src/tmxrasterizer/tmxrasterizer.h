@@ -49,7 +49,7 @@ public:
     qreal scale() const { return mScale; }
     int tileSize() const { return mTileSize; }
     int size() const { return mSize; }
-    int advanceAnimations() const {return mAdvanceAnimations; }
+    int advanceAnimations() const { return mAdvanceAnimations; }
     bool useAntiAliasing() const { return mUseAntiAliasing; }
     bool smoothImages() const { return mSmoothImages; }
     bool ignoreVisibility() const { return mIgnoreVisibility; }
@@ -58,14 +58,12 @@ public:
     void setTileSize(int tileSize) { mTileSize = tileSize; }
     void setSize(int size) { mSize = size; }
     void setAdvanceAnimations(int duration) { mAdvanceAnimations = duration; }
-
     void setAntiAliasing(bool useAntiAliasing) { mUseAntiAliasing = useAntiAliasing; }
     void setSmoothImages(bool smoothImages) { mSmoothImages = smoothImages; }
     void setIgnoreVisibility(bool IgnoreVisibility) { mIgnoreVisibility = IgnoreVisibility; }
 
     void setLayersToHide(QStringList layersToHide) { mLayersToHide = layersToHide; }
     void setLayersToShow(QStringList layersToShow) { mLayersToShow = layersToShow; }
-    
 
     int render(const QString &fileName, const QString &imageFileName);
 

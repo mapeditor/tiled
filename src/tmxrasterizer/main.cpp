@@ -130,12 +130,12 @@ int main(int argc, char *argv[])
     }
 
     if (parser.isSet(QLatin1String("advance-animations"))) {
-      bool ok;
-      w.setAdvanceAnimations(parser.value(QLatin1String("advance-animations")).toDouble(&ok));
-      if (!ok || w.advanceAnimations() <= 0.0) {
-        qWarning().noquote() << QCoreApplication::translate("main", "Invalid advance-animations specified: \"%1\"").arg(parser.value(QLatin1String("advance-animations")));
+        bool ok;
+        w.setAdvanceAnimations(parser.value(QLatin1String("advance-animations")).toInt(&ok));
+        if (!ok || w.advanceAnimations() < 0) {
+            qWarning().noquote() << QCoreApplication::translate("main", "Invalid advance-animations specified: \"%1\"").arg(parser.value(QLatin1String("advance-animations")));
             exit(1);
-      }
+        }
     }
 
     return w.render(fileToOpen, fileToSave);
