@@ -21,6 +21,7 @@ Project {
         "dist/win/installer.qbs",
         "docs",
         "src/libtiled",
+        "src/libtiledquick",
         "src/plugins",
         "src/qtpropertybrowser",
         "src/qtsingleapplication",

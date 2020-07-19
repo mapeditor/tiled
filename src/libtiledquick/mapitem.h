@@ -21,6 +21,7 @@
 #pragma once
 
 #include "mapref.h"
+#include "tiledquick_global.h"
 
 #include <QQuickItem>
 
@@ -38,7 +39,7 @@ class TileLayerItem;
 /**
  * A declarative item that displays a map.
  */
-class MapItem : public QQuickItem
+class TILEDQUICK_SHARED_EXPORT MapItem : public QQuickItem
 {
     Q_OBJECT
 
