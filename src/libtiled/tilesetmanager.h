@@ -71,6 +71,8 @@ public:
 
     void setAnimateTiles(bool enabled);
     bool animateTiles() const;
+
+    void advanceTileAnimations(int ms);
     void resetTileAnimations();
 
     void tilesetImageSourceChanged(const Tileset &tileset,
@@ -90,8 +92,6 @@ signals:
 
 private:
     void filesChanged(const QStringList &fileNames);
-
-    void advanceTileAnimations(int ms);
 
     /**
      * The list of loaded tilesets (weak references).
