@@ -53,6 +53,7 @@
 #include "zoomable.h"
 
 #include <QActionGroup>
+#include <QBitmap>
 #include <QCloseEvent>
 #include <QComboBox>
 #include <QCoreApplication>
@@ -116,6 +117,7 @@ TileCollisionDock::TileCollisionDock(QWidget *parent)
     toolsToolBar->addAction(mToolManager->registerTool(ellipseObjectsTool));
     toolsToolBar->addAction(mToolManager->registerTool(polygonObjectsTool));
     toolsToolBar->addAction(mToolManager->registerTool(templatesTool));
+    toolsToolBar->addSeparator();
     toolsToolBar->addAction(autoDetectMask);
 
     mActionDuplicateObjects = new QAction(this);
@@ -241,43 +243,23 @@ TileCollisionDock::~TileCollisionDock()
 }
 
 /**
- * @brief TileCollisionDock::autoDetectMask
- *
- * Automatically detect the extents of the tile and append a simple rectanglular collision mask.
+ * Automatically detect the extents of the tile and append a simple
+ * rectanglular collision mask.
  */
 void TileCollisionDock::autoDetectMask()
 {
-    // Iterate over the pixels, looking for empty rows
-    // sourced from: https://stackoverflow.com/a/3722160/2431627
-    QImage image = mTile->image().toImage();
-    int left = image.width(), right = 0, top = image.height(), bottom = 0;
-    for (int y = 0; y < image.height(); ++y) {
-        QRgb *row = (QRgb*)image.scanLine(y);
-        bool rowFilled = false;
-        for (int x = 0; x < image.width(); ++x) {
-            if (qAlpha(row[x])) {
-                rowFilled = true;
-                right = std::max(right, x);
-                if (left > x) {
-                    left = x;
-                    x = right; // shortcut to only search for new right bound from here
-                }
-            }
-        }
-        if (rowFilled) {
-            top = std::min(top, y);
-            bottom = y;
-        }
-    }
+    const QPixmap &pixmap = mTile->image();
+    const QRect content = pixmap.hasAlphaChannel() ? QRegion(pixmap.mask()).boundingRect()
+                                                   : pixmap.rect();
 
     // Create a group for collision objects if none exists
     if (!mTile->objectGroup())
         mTile->setObjectGroup(std::make_unique<ObjectGroup>());
 
-    // Create the rectangular collision mask
-    MapObject* newObject = new MapObject;
-    newObject->setBounds(QRect(QPoint(left, top), QPoint(right, bottom)));
-    newObject->setShape(MapObject::Shape::Rectangle);
+    // Create the rectangular collision shape
+    MapObject *newObject = new MapObject(QString(), QString(),
+                                         content.topLeft(),
+                                         content.size());
     mTile->objectGroup()->addObject(newObject);
 
     // Update the UI

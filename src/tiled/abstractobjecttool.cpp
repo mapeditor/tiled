@@ -39,6 +39,7 @@
 #include "tmxmapformat.h"
 #include "utils.h"
 
+#include <QAction>
 #include <QFileDialog>
 #include <QKeyEvent>
 #include <QMenu>
@@ -255,68 +256,51 @@ void AbstractObjectTool::removeObjects()
 }
 
 /**
- * @brief AbstractObjectTool::applyCollisionsToSelection
- *
- * Add the selected collision masks for the currently selected tile - the last selected tile - to
- * all selected tiles.
+ * Adds the selected collision shapes for the currently selected tile - the
+ * last selected tile - to all selected tiles.
  */
-void AbstractObjectTool::applyCollisionsToSelection()
+void AbstractObjectTool::applyCollisionsToSelectedTiles()
 {
-    // The selected Collision Masks
-    QList<MapObject*> selectedObjects = mapDocument()->selectedObjects();
+    auto document = DocumentManager::instance()->currentDocument();
+    auto tilesetDocument = qobject_cast<TilesetDocument*>(document);
+    if (!tilesetDocument)
+        return;
 
-    if (auto document = DocumentManager::instance()->currentDocument()) {
-        if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
-            if (Tile *currentTile = dynamic_cast<Tile *>(tilesetDocument->currentObject())) {
+    const auto currentTile = dynamic_cast<Tile *>(tilesetDocument->currentObject());
+    if (!currentTile)
+        return;
 
-                // Ask the user if they want to append or overwrite the collision mask
-                QMessageBox msgBox;
-                msgBox.setIcon(QMessageBox::Information);
-                msgBox.setWindowTitle(tr("Overwrite Collision Masks?"));
-                msgBox.setText(tr("Should Collision Masks be appended to, or replace, selected tiles' masks?"));
-                msgBox.addButton(tr("Append"), QMessageBox::ActionRole);
-                QPushButton *overwriteBtn = msgBox.addButton(tr("Replace"), QMessageBox::ActionRole);
-                QPushButton *abortButton = msgBox.addButton(QMessageBox::Cancel);
-                msgBox.setDefaultButton(overwriteBtn);
-                msgBox.exec();
+    // Ask the user if they want to append or overwrite the collision mask
+    QMessageBox messageBox(QMessageBox::Information,
+                           tr("Overwrite Collision Masks?"),
+                           tr("Should Collision Masks be appended to, or replace, selected tiles' masks?"));
+    messageBox.addButton(tr("Append"), QMessageBox::ActionRole);
+    QPushButton *overwriteButton = messageBox.addButton(tr("Replace"), QMessageBox::ActionRole);
+    QPushButton *abortButton = messageBox.addButton(QMessageBox::Cancel);
+    messageBox.setDefaultButton(overwriteButton);
+    messageBox.exec();
+    if (messageBox.clickedButton() == abortButton)
+        return;
 
-                if (msgBox.clickedButton() != abortButton) {
+    // The selected collision objects
+    const auto &selectedObjects = mapDocument()->selectedObjects();
 
-                    QList<Tile *>selectedTiles = tilesetDocument->selectedTiles();
+    // Add each collision object to each selected tile apart from the current one
+    for (Tile *tile : tilesetDocument->selectedTiles()) {
+        if (tile == currentTile)
+            continue;
 
-                    // Add each collision object to each selected tile, as long as the tile is not the current one
-                    for (Tile* tile : selectedTiles) {
+        // Set a new group for collision objects if none exists or when overwriting
+        if (!tile->objectGroup() || messageBox.clickedButton() == overwriteButton)
+            tile->setObjectGroup(std::make_unique<ObjectGroup>());
 
-                        // Ignore the currently selected tile
-                        if (tile != currentTile) {
+        auto highestOjectId = tile->objectGroup()->highestObjectId();
 
-                            // If we should overwrite, then remove all objects prior to adding the new ones
-                            if (msgBox.clickedButton() == overwriteBtn) {
-                                if (tile->objectGroup()) {
-                                    for (MapObject *object : tile->objectGroup()->objects()) {
-                                        tile->objectGroup()->removeObject(object);
-                                    }
-                                    tile->objectGroup()->resetObjectIds();
-                                }
-                            }
-
-                            // Create a group for collision objects if none exists
-                            if (!tile->objectGroup())
-                                tile->setObjectGroup(std::make_unique<ObjectGroup>());
-
-                            // Copy across the selected collision mask shapes
-                            for (MapObject* object : selectedObjects) {
-                                MapObject* newObject = new MapObject;
-                                newObject->copyPropertiesFrom(object);
-                                QPointF position = QPointF(object->position().x(), object->position().y());
-                                newObject->setPosition(position);
-                                newObject->setId(tile->objectGroup()->highestObjectId() + 1);
-                                tile->objectGroup()->addObject(newObject);
-                            }
-                        }
-                    }
-                }
-            }
+        // Copy across the selected collision shapes
+        for (MapObject *object : selectedObjects) {
+            MapObject *newObject = object->clone();
+            newObject->setId(++highestOjectId);
+            tile->objectGroup()->addObject(newObject);
         }
     }
 }
@@ -531,11 +515,13 @@ void AbstractObjectTool::showContextMenu(MapObject *clickedObject,
     QAction *removeAction = menu.addAction(tr("Remove %n Object(s)", "", selectedObjects.size()),
                                            this, &AbstractObjectTool::removeObjects);
 
-    // Allow the currently selected collision mask to be applied to all selected tiles in the tileset editor
-    if (auto document = DocumentManager::instance()->currentDocument())
-        if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document))
-            if (tilesetDocument->selectedTiles().count() > 1)
-                menu.addAction(tr("Apply Collision(s) to Selection"), this, &AbstractObjectTool::applyCollisionsToSelection);
+    // Allow the currently selected collision shapes to be applied to all selected tiles in the tileset editor
+    if (auto document = DocumentManager::instance()->currentDocument()) {
+        if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
+            auto action = menu.addAction(tr("Apply Collision(s) to Selected Tiles"), this, &AbstractObjectTool::applyCollisionsToSelectedTiles);
+            action->setEnabled(tilesetDocument->selectedTiles().count() > 1);
+        }
+    }
 
     duplicateAction->setIcon(QIcon(QLatin1String(":/images/16/stock-duplicate-16.png")));
     removeAction->setIcon(QIcon(QLatin1String(":/images/16/edit-delete.png")));
