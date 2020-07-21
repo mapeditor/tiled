@@ -262,7 +262,7 @@ void TileCollisionDock::autoDetectMask()
                                          content.size());
 
     ObjectGroup *objectGroup = static_cast<ObjectGroup*>(mDummyMapDocument->map()->layerAt(1));
-    mDummyMapDocument->undoStack()->push(new AddMapObjects(mDummyMapDocument.get(), objectGroup, newObject));
+    mDummyMapDocument->undoStack()->push(new AddMapObjects(mDummyMapDocument.data(), objectGroup, newObject));
 }
 
 void TileCollisionDock::saveState()
