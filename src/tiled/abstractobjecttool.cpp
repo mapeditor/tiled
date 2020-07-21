@@ -44,7 +44,6 @@
 #include <QKeyEvent>
 #include <QMenu>
 #include <QMessageBox>
-#include <QPushButton>
 #include <QToolBar>
 #include <QUndoStack>
 
