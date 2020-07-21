@@ -707,7 +707,7 @@ void TileCollisionDock::retranslateUi()
 {
     setWindowTitle(QCoreApplication::translate("Tiled::MainWindow", "Tile Collision Editor"));
 
-    mActionAutoDetectMask->setText(tr("Detect Bouding Box"));
+    mActionAutoDetectMask->setText(tr("Detect Bounding Box"));
 
     mActionDuplicateObjects->setText(tr("Duplicate Objects"));
     mActionRemoveObjects->setText(tr("Remove Objects"));
