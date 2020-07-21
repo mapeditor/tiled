@@ -245,7 +245,7 @@ TileCollisionDock::~TileCollisionDock()
 
 /**
  * Automatically detect the extents of the tile and append a simple
- * rectanglular collision mask.
+ * rectangular collision mask.
  */
 void TileCollisionDock::autoDetectMask()
 {
@@ -263,6 +263,7 @@ void TileCollisionDock::autoDetectMask()
 
     ObjectGroup *objectGroup = static_cast<ObjectGroup*>(mDummyMapDocument->map()->layerAt(1));
     mDummyMapDocument->undoStack()->push(new AddMapObjects(mDummyMapDocument.data(), objectGroup, newObject));
+    mDummyMapDocument->setSelectedObjects({ newObject });
 }
 
 void TileCollisionDock::saveState()

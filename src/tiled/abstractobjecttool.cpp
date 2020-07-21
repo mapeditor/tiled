@@ -40,7 +40,6 @@
 #include "tmxmapformat.h"
 #include "utils.h"
 
-#include <QAction>
 #include <QFileDialog>
 #include <QKeyEvent>
 #include <QMenu>
@@ -260,7 +259,7 @@ void AbstractObjectTool::removeObjects()
  * Adds the selected collision shapes for the currently selected tile - the
  * last selected tile - to all selected tiles.
  */
-void AbstractObjectTool::applyCollisionsToSelectedTiles()
+void AbstractObjectTool::applyCollisionsToSelectedTiles(bool replace)
 {
     auto document = DocumentManager::instance()->currentDocument();
     auto tilesetDocument = qobject_cast<TilesetDocument*>(document);
@@ -269,18 +268,6 @@ void AbstractObjectTool::applyCollisionsToSelectedTiles()
 
     const auto currentTile = dynamic_cast<Tile *>(tilesetDocument->currentObject());
     if (!currentTile)
-        return;
-
-    // Ask the user if they want to append or overwrite the collision mask
-    QMessageBox messageBox(QMessageBox::Information,
-                           tr("Overwrite Collision Masks?"),
-                           tr("Should Collision Masks be appended to, or replace, selected tiles' masks?"));
-    messageBox.addButton(tr("Append"), QMessageBox::ActionRole);
-    QPushButton *overwriteButton = messageBox.addButton(tr("Replace"), QMessageBox::ActionRole);
-    QPushButton *abortButton = messageBox.addButton(QMessageBox::Cancel);
-    messageBox.setDefaultButton(overwriteButton);
-    messageBox.exec();
-    if (messageBox.clickedButton() == abortButton)
         return;
 
     auto undoStack = tilesetDocument->undoStack();
@@ -296,8 +283,8 @@ void AbstractObjectTool::applyCollisionsToSelectedTiles()
 
         std::unique_ptr<ObjectGroup> objectGroup;
 
-        // Create a new group for collision objects if none exists or when overwriting
-        if (!tile->objectGroup() || messageBox.clickedButton() == overwriteButton)
+        // Create a new group for collision objects if none exists or when replacing
+        if (!tile->objectGroup() || replace)
             objectGroup = std::make_unique<ObjectGroup>();
         else
             objectGroup.reset(tile->objectGroup()->clone());
@@ -528,16 +515,19 @@ void AbstractObjectTool::showContextMenu(MapObject *clickedObject,
     QAction *removeAction = menu.addAction(tr("Remove %n Object(s)", "", selectedObjects.size()),
                                            this, &AbstractObjectTool::removeObjects);
 
+    duplicateAction->setIcon(QIcon(QLatin1String(":/images/16/stock-duplicate-16.png")));
+    removeAction->setIcon(QIcon(QLatin1String(":/images/16/edit-delete.png")));
+
     // Allow the currently selected collision shapes to be applied to all selected tiles in the tileset editor
     if (auto document = DocumentManager::instance()->currentDocument()) {
         if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
-            auto action = menu.addAction(tr("Apply Collision(s) to Selected Tiles"), this, &AbstractObjectTool::applyCollisionsToSelectedTiles);
-            action->setEnabled(tilesetDocument->selectedTiles().count() > 1);
+            menu.addSeparator();
+            auto collisionMenu = menu.addMenu(tr("Apply Collision(s) to Selected Tiles"));
+            collisionMenu->setEnabled(tilesetDocument->selectedTiles().count() > 1);
+            collisionMenu->addAction(tr("Replace Existing Objects"), this, [this] { applyCollisionsToSelectedTiles(true); });
+            collisionMenu->addAction(tr("Add Objects"), this, [this] { applyCollisionsToSelectedTiles(false); });
         }
     }
-
-    duplicateAction->setIcon(QIcon(QLatin1String(":/images/16/stock-duplicate-16.png")));
-    removeAction->setIcon(QIcon(QLatin1String(":/images/16/edit-delete.png")));
 
     bool anyTileObjectSelected = std::any_of(selectedObjects.begin(),
                                              selectedObjects.end(),
