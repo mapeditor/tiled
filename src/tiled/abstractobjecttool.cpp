@@ -23,6 +23,7 @@
 #include "actionmanager.h"
 #include "addremovetileset.h"
 #include "changemapobject.h"
+#include "changetileobjectgroup.h"
 #include "documentmanager.h"
 #include "mapdocument.h"
 #include "map.h"
@@ -253,6 +254,56 @@ void AbstractObjectTool::removeObjects()
     mapDocument()->removeObjects(mapDocument()->selectedObjects());
 }
 
+/**
+ * Adds the selected collision shapes for the currently selected tile - the
+ * last selected tile - to all selected tiles.
+ */
+void AbstractObjectTool::applyCollisionsToSelectedTiles(bool replace)
+{
+    auto document = DocumentManager::instance()->currentDocument();
+    auto tilesetDocument = qobject_cast<TilesetDocument*>(document);
+    if (!tilesetDocument)
+        return;
+
+    const auto currentTile = dynamic_cast<Tile *>(tilesetDocument->currentObject());
+    if (!currentTile)
+        return;
+
+    auto undoStack = tilesetDocument->undoStack();
+    undoStack->beginMacro(tr("Apply Collision Shapes"));
+
+    // The selected collision objects
+    const auto &selectedObjects = mapDocument()->selectedObjects();
+
+    // Add each collision object to each selected tile apart from the current one
+    for (Tile *tile : tilesetDocument->selectedTiles()) {
+        if (tile == currentTile)
+            continue;
+
+        std::unique_ptr<ObjectGroup> objectGroup;
+
+        // Create a new group for collision objects if none exists or when replacing
+        if (!tile->objectGroup() || replace)
+            objectGroup = std::make_unique<ObjectGroup>();
+        else
+            objectGroup.reset(tile->objectGroup()->clone());
+
+        // Copy across the selected collision shapes
+        auto highestOjectId = objectGroup->highestObjectId();
+        for (MapObject *object : selectedObjects) {
+            MapObject *newObject = object->clone();
+            newObject->setId(++highestOjectId);
+            objectGroup->addObject(newObject);
+        }
+
+        undoStack->push(new ChangeTileObjectGroup(tilesetDocument,
+                                                  tile,
+                                                  std::move(objectGroup)));
+    }
+
+    undoStack->endMacro();
+}
+
 void AbstractObjectTool::resetTileSize()
 {
     QList<QUndoCommand*> commands;
@@ -465,6 +516,17 @@ void AbstractObjectTool::showContextMenu(MapObject *clickedObject,
 
     duplicateAction->setIcon(QIcon(QLatin1String(":/images/16/stock-duplicate-16.png")));
     removeAction->setIcon(QIcon(QLatin1String(":/images/16/edit-delete.png")));
+
+    // Allow the currently selected collision shapes to be applied to all selected tiles in the tileset editor
+    if (auto document = DocumentManager::instance()->currentDocument()) {
+        if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
+            menu.addSeparator();
+            auto collisionMenu = menu.addMenu(tr("Apply Collision(s) to Selected Tiles"));
+            collisionMenu->setEnabled(tilesetDocument->selectedTiles().count() > 1);
+            collisionMenu->addAction(tr("Replace Existing Objects"), this, [this] { applyCollisionsToSelectedTiles(true); });
+            collisionMenu->addAction(tr("Add Objects"), this, [this] { applyCollisionsToSelectedTiles(false); });
+        }
+    }
 
     bool anyTileObjectSelected = std::any_of(selectedObjects.begin(),
                                              selectedObjects.end(),

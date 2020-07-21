@@ -95,6 +95,7 @@ public slots:
     void pasteInPlace();
     void paste(ClipboardManager::PasteFlags flags);
     void delete_(Operation operation = Delete);
+    void autoDetectMask();
 
 protected:
     void changeEvent(QEvent *e) override;
@@ -134,6 +135,7 @@ private:
     QAction *mObjectsViewShowRightAction;
     QAction *mObjectsViewShowBottomAction;
     ToolManager *mToolManager;
+    QAction *mActionAutoDetectMask;
     QAction *mActionDuplicateObjects;
     QAction *mActionRemoveObjects;
     QAction *mActionMoveUp;
