@@ -23,6 +23,7 @@
 #include "actionmanager.h"
 #include "addremovetileset.h"
 #include "changemapobject.h"
+#include "changetileobjectgroup.h"
 #include "documentmanager.h"
 #include "mapdocument.h"
 #include "map.h"
@@ -282,6 +283,9 @@ void AbstractObjectTool::applyCollisionsToSelectedTiles()
     if (messageBox.clickedButton() == abortButton)
         return;
 
+    auto undoStack = tilesetDocument->undoStack();
+    undoStack->beginMacro(tr("Apply Collision Shapes"));
+
     // The selected collision objects
     const auto &selectedObjects = mapDocument()->selectedObjects();
 
@@ -290,19 +294,28 @@ void AbstractObjectTool::applyCollisionsToSelectedTiles()
         if (tile == currentTile)
             continue;
 
-        // Set a new group for collision objects if none exists or when overwriting
-        if (!tile->objectGroup() || messageBox.clickedButton() == overwriteButton)
-            tile->setObjectGroup(std::make_unique<ObjectGroup>());
+        std::unique_ptr<ObjectGroup> objectGroup;
 
-        auto highestOjectId = tile->objectGroup()->highestObjectId();
+        // Create a new group for collision objects if none exists or when overwriting
+        if (!tile->objectGroup() || messageBox.clickedButton() == overwriteButton)
+            objectGroup = std::make_unique<ObjectGroup>();
+        else
+            objectGroup.reset(tile->objectGroup()->clone());
 
         // Copy across the selected collision shapes
+        auto highestOjectId = objectGroup->highestObjectId();
         for (MapObject *object : selectedObjects) {
             MapObject *newObject = object->clone();
             newObject->setId(++highestOjectId);
-            tile->objectGroup()->addObject(newObject);
+            objectGroup->addObject(newObject);
         }
+
+        undoStack->push(new ChangeTileObjectGroup(tilesetDocument,
+                                                  tile,
+                                                  std::move(objectGroup)));
     }
+
+    undoStack->endMacro();
 }
 
 void AbstractObjectTool::resetTileSize()

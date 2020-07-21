@@ -174,5 +174,7 @@
         <file>images/scalable/software-update-available-symbolic.svg</file>
         <file>images/scalable/wrap.svg</file>
         <file>images/scalable/replace.svg</file>
+        <file>images/24/detect-bounding-box.png</file>
+        <file>images/48/detect-bounding-box.png</file>
     </qresource>
 </RCC>

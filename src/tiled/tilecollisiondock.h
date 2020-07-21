@@ -135,6 +135,7 @@ private:
     QAction *mObjectsViewShowRightAction;
     QAction *mObjectsViewShowBottomAction;
     ToolManager *mToolManager;
+    QAction *mActionAutoDetectMask;
     QAction *mActionDuplicateObjects;
     QAction *mActionRemoveObjects;
     QAction *mActionMoveUp;
