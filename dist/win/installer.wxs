@@ -334,6 +334,14 @@
                   <File Id="map_window1.png" Source="$(var.RootDir)\examples\sticker-knight\map\window1.png" />
                   <File Id="map_window2.png" Source="$(var.RootDir)\examples\sticker-knight\map\window2.png" />
                   <File Id="map_window3.png" Source="$(var.RootDir)\examples\sticker-knight\map\window3.png" />
+                  <File Id="map_objs.tsx" Source="$(var.RootDir)\examples\sticker-knight\map\objs.tsx" />
+                </Component>
+              </Directory>
+              <Directory Id="sticker_knight_map_templates" Name="templates">
+                <Component Id="StickerKnightExampleMapTemplates" Guid="{5DA0A837-561F-4772-AD8F-2831D19B3B86}">
+                  <File Id="map_templates_block.tx" Source="$(var.RootDir)\examples\sticker-knight\map\templates\block.tx" />
+                  <File Id="map_templates_diamond.tx" Source="$(var.RootDir)\examples\sticker-knight\map\templates\diamond.tx" />
+                  <File Id="map_templates_hero.tx" Source="$(var.RootDir)\examples\sticker-knight\map\templates\hero.tx" />
                 </Component>
               </Directory>
               <Directory Id="sticker_knight_ui" Name="ui">

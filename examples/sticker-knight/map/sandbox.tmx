@@ -1,194 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="79" height="45" tilewidth="32" tileheight="32" backgroundcolor="#27b99a" nextobjectid="203">
- <tileset firstgid="1" name="objs" tilewidth="384" tileheight="332" tilecount="62" columns="0">
-  <tile id="0">
-   <image width="160" height="192" source="alter.png"/>
-  </tile>
-  <tile id="1">
-   <image width="96" height="64" source="blobBlue.png"/>
-  </tile>
-  <tile id="2">
-   <image width="96" height="64" source="blobGreen.png"/>
-  </tile>
-  <tile id="3">
-   <image width="64" height="64" source="blue.png"/>
-  </tile>
-  <tile id="4">
-   <image width="96" height="128" source="bombStroked.png"/>
-  </tile>
-  <tile id="5">
-   <image width="64" height="64" source="castleWall.png"/>
-  </tile>
-  <tile id="6">
-   <image width="384" height="128" source="cloud.png"/>
-  </tile>
-  <tile id="7">
-   <image width="128" height="192" source="column1.png"/>
-  </tile>
-  <tile id="8">
-   <image width="128" height="192" source="column2.png"/>
-  </tile>
-  <tile id="9">
-   <image width="160" height="192" source="doorBlueStroked.png"/>
-  </tile>
-  <tile id="10">
-   <image width="160" height="192" source="doorGreenStroke.png"/>
-  </tile>
-  <tile id="11">
-   <image width="160" height="192" source="doorRedStroked.png"/>
-  </tile>
-  <tile id="12">
-   <image width="160" height="192" source="doorStroked.png"/>
-  </tile>
-  <tile id="13">
-   <image width="64" height="64" source="earthWall.png"/>
-  </tile>
-  <tile id="14">
-   <image width="160" height="192" source="exit.png"/>
-  </tile>
-  <tile id="15">
-   <image width="192" height="192" source="flare.png"/>
-  </tile>
-  <tile id="16">
-   <image width="64" height="64" source="gemBlueStroked.png"/>
-  </tile>
-  <tile id="17">
-   <image width="64" height="64" source="gemRedStroked.png"/>
-  </tile>
-  <tile id="18">
-   <image width="224" height="32" source="grassLarge.png"/>
-  </tile>
-  <tile id="19">
-   <image width="160" height="32" source="grassSmall.png"/>
-  </tile>
-  <tile id="20">
-   <image width="64" height="64" source="grey.png"/>
-  </tile>
-  <tile id="21">
-   <image width="128" height="160" source="hero.png"/>
-  </tile>
-  <tile id="22">
-   <image width="96" height="64" source="keyGreenStroked.png"/>
-  </tile>
-  <tile id="23">
-   <image width="96" height="64" source="keyRedStroked.png"/>
-  </tile>
-  <tile id="24">
-   <image width="96" height="64" source="keyYellowStroked.png"/>
-  </tile>
-  <tile id="25">
-   <image width="192" height="64" source="platform1.png"/>
-  </tile>
-  <tile id="26">
-   <image width="192" height="64" source="platform2.png"/>
-  </tile>
-  <tile id="27">
-   <image width="192" height="64" source="platform3.png"/>
-  </tile>
-  <tile id="28">
-   <image width="192" height="64" source="platform4.png"/>
-  </tile>
-  <tile id="29">
-   <image width="256" height="96" source="platformBase1.png"/>
-  </tile>
-  <tile id="30">
-   <image width="256" height="96" source="platformBase2.png"/>
-  </tile>
-  <tile id="31">
-   <image width="256" height="96" source="platformBase3.png"/>
-  </tile>
-  <tile id="32">
-   <image width="256" height="96" source="platformBase4.png"/>
-  </tile>
-  <tile id="33">
-   <image width="128" height="96" source="platformBlock1.png"/>
-  </tile>
-  <tile id="34">
-   <image width="128" height="96" source="platformBlock2.png"/>
-  </tile>
-  <tile id="35">
-   <image width="128" height="96" source="platformBlock3.png"/>
-  </tile>
-  <tile id="36">
-   <image width="128" height="96" source="platformBlock4.png"/>
-  </tile>
-  <tile id="37">
-   <image width="96" height="64" source="platformConnector1.png"/>
-  </tile>
-  <tile id="38">
-   <image width="96" height="64" source="platformConnector2.png"/>
-  </tile>
-  <tile id="39">
-   <image width="96" height="64" source="platformConnector3.png"/>
-  </tile>
-  <tile id="40">
-   <image width="96" height="64" source="platformConnector4.png"/>
-  </tile>
-  <tile id="41">
-   <image width="96" height="96" source="pushBlock1.png"/>
-  </tile>
-  <tile id="42">
-   <image width="96" height="96" source="pushBlock2.png"/>
-  </tile>
-  <tile id="43">
-   <image width="96" height="96" source="pushBlock3.png"/>
-  </tile>
-  <tile id="44">
-   <image width="64" height="64" source="shadow.png"/>
-  </tile>
-  <tile id="45">
-   <image width="93" height="93" source="shieldStroked.png"/>
-  </tile>
-  <tile id="46">
-   <image width="160" height="128" source="sign.png"/>
-  </tile>
-  <tile id="48">
-   <image width="192" height="96" source="swordStroked.png"/>
-  </tile>
-  <tile id="49">
-   <image width="96" height="96" source="torch.png"/>
-  </tile>
-  <tile id="50">
-   <image width="128" height="32" source="trap.png"/>
-  </tile>
-  <tile id="51">
-   <image width="128" height="96" source="wallDecor1.png"/>
-  </tile>
-  <tile id="52">
-   <image width="128" height="96" source="wallDecor2.png"/>
-  </tile>
-  <tile id="53">
-   <image width="160" height="128" source="wallDecor3.png"/>
-  </tile>
-  <tile id="54">
-   <image width="65" height="64" source="window1.png"/>
-  </tile>
-  <tile id="55">
-   <image width="64" height="64" source="window2.png"/>
-  </tile>
-  <tile id="56">
-   <image width="56" height="59" source="window3.png"/>
-  </tile>
-  <tile id="57">
-   <image width="135" height="115" source="backgroundArch.png"/>
-  </tile>
-  <tile id="58">
-   <image width="380" height="140" source="backgroundMountain.png"/>
-  </tile>
-  <tile id="59">
-   <image width="129" height="332" source="backgroundTower.png"/>
-  </tile>
-  <tile id="60">
-   <image width="109" height="177" source="backgroundTree.png"/>
-  </tile>
-  <tile id="61">
-   <image width="64" height="64" source="earthWall2.png"/>
-  </tile>
-  <tile id="62">
-   <image width="133" height="160" source="skeleton.png"/>
-  </tile>
- </tileset>
- <objectgroup name="parallax">
+<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="79" height="45" tilewidth="32" tileheight="32" infinite="0" backgroundcolor="#27b99a" nextlayerid="10" nextobjectid="203">
+ <tileset firstgid="1" source="objs.tsx"/>
+ <objectgroup id="1" name="parallax">
   <object id="95" gid="7" x="-16.2424" y="452.394" width="384" height="128"/>
   <object id="90" gid="16" x="146.97" y="693.727" width="192" height="192"/>
   <object id="91" gid="2147483655" x="373.939" y="627.121" width="384" height="128"/>
@@ -203,14 +16,14 @@
   <object id="110" gid="60" x="1771.52" y="976.697" width="129" height="332"/>
   <object id="113" gid="60" x="847.515" y="823.788" width="129" height="332"/>
  </objectgroup>
- <objectgroup name="background">
+ <objectgroup id="2" name="background">
   <object id="1" gid="14" x="0" y="1440" width="2528" height="385"/>
   <object id="79" gid="14" x="448" y="1087" width="512" height="320"/>
   <object id="169" gid="62" x="1216" y="991" width="256" height="160"/>
   <object id="172" gid="62" x="992" y="1023" width="256" height="160"/>
   <object id="177" gid="62" x="512" y="735" width="256" height="160"/>
  </objectgroup>
- <objectgroup name="ground">
+ <objectgroup id="3" name="ground">
   <object id="2" gid="31" x="0" y="1087" width="256" height="96">
    <properties>
     <property name="bodyType" value="static"/>
@@ -333,7 +146,7 @@
   <object id="187" gid="52" x="1280" y="991" width="128" height="96"/>
   <object id="188" gid="52" x="544" y="735" width="128" height="96"/>
  </objectgroup>
- <objectgroup name="castle">
+ <objectgroup id="4" name="castle">
   <object id="25" gid="33" x="1952" y="1023" width="256" height="96"/>
   <object id="26" gid="33" x="1952" y="959" width="256" height="96"/>
   <object id="27" gid="33" x="1952" y="895" width="256" height="96"/>
@@ -364,7 +177,7 @@
   <object id="158" gid="29" x="1984" y="223" width="192" height="64" rotation="-270"/>
   <object id="159" gid="29" x="1952" y="415" width="192" height="64" rotation="-90"/>
  </objectgroup>
- <objectgroup name="castledeco">
+ <objectgroup id="5" name="castledeco">
   <object id="54" gid="55" x="2063" y="698" width="65" height="64"/>
   <object id="55" gid="55" x="2063" y="557" width="65" height="64"/>
   <object id="57" type="exit" gid="13" x="2016" y="991" width="160" height="192">
@@ -373,7 +186,7 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup name="shading" opacity="0.36">
+ <objectgroup id="6" name="shading" opacity="0.36">
   <object id="78" gid="45" x="1952" y="991" width="32" height="512"/>
   <object id="80" gid="45" x="448" y="991" width="32" height="256"/>
   <object id="89" gid="45" x="928" y="991" width="32" height="256"/>
@@ -392,33 +205,21 @@
   <object id="198" gid="45" x="2496" y="1440" width="32" height="448"/>
   <object id="199" gid="45" x="0" y="1440" width="32" height="448"/>
  </objectgroup>
- <objectgroup name="game">
-  <object id="58" name="hero" type="hero" gid="22" x="45" y="979.5" width="128" height="160"/>
-  <object id="111" name="block" gid="44" x="594" y="571" width="96" height="96">
-   <properties>
-    <property name="bodyType" value="dynamic"/>
-    <property name="density" type="float" value="2"/>
-    <property name="friction" type="float" value="0.45"/>
-   </properties>
-  </object>
-  <object id="182" name="block" gid="44" x="1344" y="799" width="96" height="96">
-   <properties>
-    <property name="bodyType" value="dynamic"/>
-    <property name="density" type="float" value="2"/>
-    <property name="friction" type="float" value="0.45"/>
-   </properties>
-  </object>
-  <object id="190" type="coin" gid="17" x="238" y="947.5" width="64" height="64"/>
-  <object id="191" type="coin" gid="17" x="352" y="860.5" width="64" height="64"/>
-  <object id="192" type="coin" gid="17" x="481" y="950.5" width="64" height="64"/>
-  <object id="200" type="coin" gid="17" x="1583.45" y="829.318" width="64" height="64"/>
-  <object id="201" type="coin" gid="17" x="1826.45" y="832.318" width="64" height="64"/>
-  <object id="202" type="coin" gid="17" x="1697.45" y="742.318" width="64" height="64"/>
+ <objectgroup id="7" name="game">
+  <object id="58" template="templates/hero.tx" x="45" y="979.5"/>
+  <object id="111" template="templates/block.tx" x="594" y="571"/>
+  <object id="182" template="templates/block.tx" x="1344" y="799"/>
+  <object id="190" template="templates/diamond.tx" x="238" y="947.5"/>
+  <object id="191" template="templates/diamond.tx" x="352" y="860.5"/>
+  <object id="192" template="templates/diamond.tx" x="481" y="950.5"/>
+  <object id="200" template="templates/diamond.tx" x="1583.45" y="829.318"/>
+  <object id="201" template="templates/diamond.tx" x="1826.45" y="832.318"/>
+  <object id="202" template="templates/diamond.tx" x="1697.45" y="742.318"/>
  </objectgroup>
- <objectgroup name="above">
+ <objectgroup id="8" name="above">
   <object id="118" gid="19" x="481" y="997" width="224" height="32"/>
  </objectgroup>
- <objectgroup name="bounds" visible="0">
+ <objectgroup id="9" name="bounds" visible="0">
   <object id="197" x="2496" y="0" width="32" height="992">
    <properties>
     <property name="bodyType" value="static"/>
