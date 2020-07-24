@@ -4002,7 +4002,8 @@ Má se přepsat?</translation>
         <location line="+1"/>
         <source>Non-unique file extension.
 Please select specific format.</source>
-        <translation>Přípona souboru není unikátní. Prosím vyberte formát ručně.</translation>
+        <translation>Přípona souboru není unikátní.
+Prosím vyberte formát ručně.</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -7166,7 +7167,7 @@ Please select specific format.</source>
     <message>
         <location line="+2"/>
         <source>Ignore all layer visibility flags in the map file, and render all layers in the output (default is to omit invisible layers).</source>
-        <translation>Ignoruj nastavenou viditelnost všech vrstev v mapě; vykresli všechny vrstvy. (Normálně se skryté vrstvy nevykreslují.)</translation>
+        <translation>Ignoruj nastavenou viditelnost všech vrstev v mapě; vykresli všechny vrstvy (normálně se skryté vrstvy nevykreslují).</translation>
     </message>
     <message>
         <location line="+2"/>
