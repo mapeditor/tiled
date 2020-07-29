@@ -41,7 +41,7 @@ using namespace Tiled;
 
 namespace session {
 static SessionOption<Map::Orientation> mapOrientation { "map.orientation", Map::Orthogonal };
-static SessionOption<Map::LayerDataFormat> layerDataFormat { "map.layerDataFormat", Map::Base64Zstandard };
+static SessionOption<Map::LayerDataFormat> layerDataFormat { "map.layerDataFormat", Map::CSV };
 static SessionOption<Map::RenderOrder> renderOrder { "map.renderOrder", Map::RightDown };
 static SessionOption<bool> fixedSize { "map.fixedSize", true };
 static SessionOption<int> mapWidth { "map.width", 100 };
@@ -102,7 +102,7 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
         setComboBoxValue(mUi->orientation, Map::Orthogonal);
 
     if (!setComboBoxValue<Map::LayerDataFormat>(mUi->layerFormat, session::layerDataFormat))
-        setComboBoxValue(mUi->layerFormat, Map::Base64Zstandard);
+        setComboBoxValue(mUi->layerFormat, Map::CSV);
 
     setComboBoxValue<Map::RenderOrder>(mUi->renderOrder, session::renderOrder);
 
