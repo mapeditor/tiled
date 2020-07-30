@@ -397,6 +397,7 @@
       <ComponentRef Id='AutomappingExample' />
       <ComponentRef Id='StickerKnightExample' />
       <ComponentRef Id='StickerKnightExampleMap' />
+      <ComponentRef Id='StickerKnightExampleMapTemplates' />
       <ComponentRef Id='StickerKnightExampleUi' />
       <ComponentRef Id='PythonPluginExample' />
       <ComponentRef Id='PythonPluginExampleLib' />
