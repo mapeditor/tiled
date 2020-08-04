@@ -231,126 +231,126 @@
               <File Source="$(var.QtDir)\translations\qt_zh_TW.qm"/>
             </Component>
           </Directory>
-          <Directory Id="examples" Name="examples">
+          <Directory Id="examples" Name="examples" FileSource="$(var.RootDir)\examples">
             <Component Id="Examples" Guid="{AC8FD854-A03C-475D-AE66-64428B43C8D7}">
-              <File Source="$(var.RootDir)\examples\buch-outdoor.png" />
-              <File Source="$(var.RootDir)\examples\desert.tmx" />
-              <File Source="$(var.RootDir)\examples\desert.tsx" />
-              <File Source="$(var.RootDir)\examples\hexagonal-mini.tmx" />
-              <File Source="$(var.RootDir)\examples\hexmini.png" />
-              <File Source="$(var.RootDir)\examples\isometric_grass_and_water.png" />
-              <File Source="$(var.RootDir)\examples\isometric_grass_and_water.tmx" />
-              <File Source="$(var.RootDir)\examples\orthogonal-outside.tmx" />
-              <File Source="$(var.RootDir)\examples\perspective_walls.png" />
-              <File Source="$(var.RootDir)\examples\perspective_walls.tmx" />
-              <File Source="$(var.RootDir)\examples\perspective_walls.tsx" />
-              <File Source="$(var.RootDir)\examples\sewers.tmx" />
-              <File Source="$(var.RootDir)\examples\sewer_tileset.png" />
-              <File Source="$(var.RootDir)\examples\tmw_desert_spacing.png" />
+              <File Name="buch-outdoor.png" />
+              <File Name="desert.tmx" />
+              <File Name="desert.tsx" />
+              <File Name="hexagonal-mini.tmx" />
+              <File Name="hexmini.png" />
+              <File Name="isometric_grass_and_water.png" />
+              <File Name="isometric_grass_and_water.tmx" />
+              <File Name="orthogonal-outside.tmx" />
+              <File Name="perspective_walls.png" />
+              <File Name="perspective_walls.tmx" />
+              <File Name="perspective_walls.tsx" />
+              <File Name="sewers.tmx" />
+              <File Name="sewer_tileset.png" />
+              <File Name="tmw_desert_spacing.png" />
             </Component>
             <Directory Id="dir835E6648DA39D15AFC143959CBD1FC79" Name="sewer_automap">
               <Component Id="AutomappingExample" Guid="{46E8AEB0-C49F-430E-AA2C-210D3FE52198}">
-                <File Source="$(var.RootDir)\examples\sewer_automap\rules.txt" />
-                <File Source="$(var.RootDir)\examples\sewer_automap\rules_sewers.png" />
-                <File Source="$(var.RootDir)\examples\sewer_automap\rule_001.tmx" />
-                <File Source="$(var.RootDir)\examples\sewer_automap\rule_002.tmx" />
-                <File Source="$(var.RootDir)\examples\sewer_automap\rule_003.tmx" />
-                <File Source="$(var.RootDir)\examples\sewer_automap\rule_004.tmx" />
-                <File Source="$(var.RootDir)\examples\sewer_automap\rule_005.tmx" />
-                <File Source="$(var.RootDir)\examples\sewer_automap\rule_006.tmx" />
-                <File Source="$(var.RootDir)\examples\sewer_automap\rule_007.tmx" />
-                <File Source="$(var.RootDir)\examples\sewer_automap\rule_008.tmx" />
-                <File Source="$(var.RootDir)\examples\sewer_automap\rule_009.tmx" />
-                <File Id="automap_sewers.tmx" Source="$(var.RootDir)\examples\sewer_automap\sewers.tmx" />
+                <File Name="rules.txt" />
+                <File Name="rules_sewers.png" />
+                <File Name="rule_001.tmx" />
+                <File Name="rule_002.tmx" />
+                <File Name="rule_003.tmx" />
+                <File Name="rule_004.tmx" />
+                <File Name="rule_005.tmx" />
+                <File Name="rule_006.tmx" />
+                <File Name="rule_007.tmx" />
+                <File Name="rule_008.tmx" />
+                <File Name="rule_009.tmx" />
+                <File Id="automap_sewers.tmx" Name="sewers.tmx" />
               </Component>
             </Directory>
             <Directory Id="sticker_knight" Name="sticker-knight">
               <Component Id="StickerKnightExample" Guid="{6487C380-733E-42CD-8560-81046F945377}">
-                <File Source="$(var.RootDir)\examples\sticker-knight\preview.png" />
-                <File Source="$(var.RootDir)\examples\sticker-knight\README.md" />
-                <File Source="$(var.RootDir)\examples\sticker-knight\sprites.png" />
+                <File Name="preview.png" />
+                <File Name="README.md" />
+                <File Name="sprites.png" />
               </Component>
               <Directory Id="sticker_knight_map" Name="map">
                 <Component Id="StickerKnightExampleMap" Guid="{0CAE3CFE-7F15-4F08-9153-955E66F48623}">
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\alter.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\backgroundArch.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\backgroundMountain.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\backgroundTower.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\backgroundTree.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\blobBlue.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\blobGreen.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\blue.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\bombStroked.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\castleWall.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\cloud.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\column1.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\column2.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\doorBlueStroked.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\doorGreenStroke.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\doorRedStroked.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\doorStroked.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\earthWall.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\earthWall2.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\exit.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\flare.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\gemBlueStroked.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\gemRedStroked.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\grassLarge.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\grassSmall.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\grey.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\hero.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\keyGreenStroked.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\keyRedStroked.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\keyYellowStroked.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\platform1.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\platform2.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\platform3.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\platform4.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\platformBase1.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\platformBase2.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\platformBase3.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\platformBase4.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\platformBlock1.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\platformBlock2.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\platformBlock3.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\platformBlock4.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\platformConnector1.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\platformConnector2.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\platformConnector3.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\platformConnector4.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\pushBlock1.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\pushBlock2.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\pushBlock3.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\sandbox.tmx" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\sandbox2.tmx" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\shadow.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\shieldStroked.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\sign.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\skeleton.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\swordStroked.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\torch.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\trap.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\wallDecor1.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\wallDecor2.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\wallDecor3.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\window1.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\window2.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\map\window3.png" />
+                  <File Name="alter.png" />
+                  <File Name="backgroundArch.png" />
+                  <File Name="backgroundMountain.png" />
+                  <File Name="backgroundTower.png" />
+                  <File Name="backgroundTree.png" />
+                  <File Name="blobBlue.png" />
+                  <File Name="blobGreen.png" />
+                  <File Name="blue.png" />
+                  <File Name="bombStroked.png" />
+                  <File Name="castleWall.png" />
+                  <File Name="cloud.png" />
+                  <File Name="column1.png" />
+                  <File Name="column2.png" />
+                  <File Name="doorBlueStroked.png" />
+                  <File Name="doorGreenStroke.png" />
+                  <File Name="doorRedStroked.png" />
+                  <File Name="doorStroked.png" />
+                  <File Name="earthWall.png" />
+                  <File Name="earthWall2.png" />
+                  <File Name="exit.png" />
+                  <File Name="flare.png" />
+                  <File Name="gemBlueStroked.png" />
+                  <File Name="gemRedStroked.png" />
+                  <File Name="grassLarge.png" />
+                  <File Name="grassSmall.png" />
+                  <File Name="grey.png" />
+                  <File Name="hero.png" />
+                  <File Name="keyGreenStroked.png" />
+                  <File Name="keyRedStroked.png" />
+                  <File Name="keyYellowStroked.png" />
+                  <File Name="platform1.png" />
+                  <File Name="platform2.png" />
+                  <File Name="platform3.png" />
+                  <File Name="platform4.png" />
+                  <File Name="platformBase1.png" />
+                  <File Name="platformBase2.png" />
+                  <File Name="platformBase3.png" />
+                  <File Name="platformBase4.png" />
+                  <File Name="platformBlock1.png" />
+                  <File Name="platformBlock2.png" />
+                  <File Name="platformBlock3.png" />
+                  <File Name="platformBlock4.png" />
+                  <File Name="platformConnector1.png" />
+                  <File Name="platformConnector2.png" />
+                  <File Name="platformConnector3.png" />
+                  <File Name="platformConnector4.png" />
+                  <File Name="pushBlock1.png" />
+                  <File Name="pushBlock2.png" />
+                  <File Name="pushBlock3.png" />
+                  <File Name="sandbox.tmx" />
+                  <File Name="sandbox2.tmx" />
+                  <File Name="shadow.png" />
+                  <File Name="shieldStroked.png" />
+                  <File Name="sign.png" />
+                  <File Name="skeleton.png" />
+                  <File Name="swordStroked.png" />
+                  <File Name="torch.png" />
+                  <File Name="trap.png" />
+                  <File Name="wallDecor1.png" />
+                  <File Name="wallDecor2.png" />
+                  <File Name="wallDecor3.png" />
+                  <File Name="window1.png" />
+                  <File Name="window2.png" />
+                  <File Name="window3.png" />
                 </Component>
               </Directory>
               <Directory Id="sticker_knight_ui" Name="ui">
                 <Component Id="StickerKnightExampleUi" Guid="{C8569B5C-20AF-482D-B46C-F20794BF646D}">
-                  <File Source="$(var.RootDir)\examples\sticker-knight\ui\backgroundSet.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\ui\block.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\ui\buttonHelp.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\ui\buttonStart.png" />
-                  <File Id="ui_cloud.png" Source="$(var.RootDir)\examples\sticker-knight\ui\cloud.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\ui\gem.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\ui\heart.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\ui\helpBackground.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\ui\shield.png" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\ui\title.json" />
-                  <File Source="$(var.RootDir)\examples\sticker-knight\ui\title.png" />
+                  <File Name="backgroundSet.png" />
+                  <File Name="block.png" />
+                  <File Name="buttonHelp.png" />
+                  <File Name="buttonStart.png" />
+                  <File Id="ui_cloud.png" Name="cloud.png" />
+                  <File Name="gem.png" />
+                  <File Name="heart.png" />
+                  <File Name="helpBackground.png" />
+                  <File Name="shield.png" />
+                  <File Name="title.json" />
+                  <File Name="title.png" />
                 </Component>
               </Directory>
             </Directory>
