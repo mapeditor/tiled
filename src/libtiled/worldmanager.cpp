@@ -231,9 +231,12 @@ World *WorldManager::addEmptyWorld(const QString &fileName, QString *errorString
  */
 World *WorldManager::loadWorld(const QString &fileName, QString *errorString)
 {
-    auto world = loadAndStoreWorld(fileName, errorString);
-    if (world)
-        emit worldsChanged();
+    auto world = mWorlds.value(fileName);
+    if (!world) {
+        world = loadAndStoreWorld(fileName, errorString);
+        if (world)
+            emit worldsChanged();
+    }
     return world;
 }
 

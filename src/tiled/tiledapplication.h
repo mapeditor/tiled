@@ -26,8 +26,6 @@
 
 namespace Tiled {
 
-class ProjectManager;
-
 class TiledApplication : public QtSingleApplication
 {
     Q_OBJECT
