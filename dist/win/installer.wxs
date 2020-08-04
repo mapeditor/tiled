@@ -44,6 +44,9 @@
     <Property Id="ARPURLINFOABOUT" Value="$(var.WebsiteURL)" />
     <Property Id="ARPNOREPAIR" Value="yes" Secure="yes" />      <!-- Remove repair -->
 
+    <Property Id="INSTALLSHORTCUT" Value="1" Admin="yes" Secure="yes" />
+    <SetProperty Id="INSTALLSHORTCUT" Value="{}" After="AppSearch">INSTALLSHORTCUT=0</SetProperty>
+
     <Media Id='1' Cabinet='files.cab' EmbedCab='yes' DiskPrompt="CD-ROM #1" CompressionLevel="high" />
     <Property Id='DiskPrompt' Value="Tiled Installation [1]" />
 
@@ -75,7 +78,6 @@
           <Component Id='MainExecutable' Guid='{4DC82B82-E1A7-4829-92CC-2BEB40E361BD}'>
             <File Source='$(var.InstallRoot)\tiled.exe' KeyPath='yes' Checksum='yes'>
               <Shortcut Id="startmenuTiled" Directory="ProgramMenuFolder" Name="Tiled" WorkingDirectory='INSTALLDIR' Icon="tiled.exe" IconIndex="0" Advertise="yes" />
-              <Shortcut Id="desktopTiled" Directory="DesktopFolder" Name="Tiled" WorkingDirectory='INSTALLDIR' Icon="tiled.exe" IconIndex="0" Advertise="yes" />
             </File>
             <File Source="$(var.InstallRoot)\terraingenerator.exe" />
             <File Source="$(var.InstallRoot)\tiled.dll" />
@@ -378,11 +380,18 @@
         </Component>
       </Directory>
 
-      <Directory Id="DesktopFolder" Name="Desktop" />
+      <Directory Id="DesktopFolder" Name="Desktop">
+        <Component Id='DesktopShortcut' Guid='*'>
+          <Condition>INSTALLSHORTCUT</Condition>
+          <Shortcut Id="desktopTiled" Name="Tiled" Target="[INSTALLDIR]tiled.exe" WorkingDirectory='INSTALLDIR' Icon="tiled.exe" IconIndex="0" />
+          <RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+        </Component>
+      </Directory>
     </Directory>
 
     <Feature Id='Complete' Level='1' Title="Tiled" Description="The complete package." ConfigurableDirectory='INSTALLDIR' AllowAdvertise='no' Absent='disallow'>
       <ComponentRef Id='MainExecutable' />
+      <ComponentRef Id='DesktopShortcut' />
       <ComponentRef Id='Plugins' />
       <ComponentRef Id='Translations' />
       <ComponentRef Id='Examples' />
@@ -406,7 +415,7 @@
     <CustomAction Id='LaunchApplication' FileKey='tiled.exe' ExeCommand='' Return='asyncNoWait' />
 
     <Property Id="WIXUI_INSTALLDIR">INSTALLDIR</Property>
-    <UIRef Id="WixUI_InstallDir" />
+    <UIRef Id="Custom_InstallDir" />
     <UIRef Id="WixUI_ErrorProgressText" />
 
     <Icon Id="tiled.exe" SourceFile="$(var.InstallRoot)\tiled.exe" />

@@ -77,7 +77,11 @@ WindowsInstallerPackage {
         "WixUIExtension"
     ]
 
-    files: ["installer.wxs"]
+    files: [
+        "Custom_InstallDir.wxs",
+        "Custom_InstallDirDlg.wxs",
+        "installer.wxs"
+    ]
 
     // This is a clever hack to make the rule that compiles the installer
     // depend on all installables, since that rule implicitly depends on
