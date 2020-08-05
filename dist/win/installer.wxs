@@ -414,7 +414,10 @@
     <CustomAction Id="SetARPINSTALLLOCATION" Property="ARPINSTALLLOCATION" Value="[INSTALLDIR]" />
     <CustomAction Id='LaunchApplication' FileKey='tiled.exe' ExeCommand='' Return='asyncNoWait' />
 
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOX">1</Property>
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT">Launch $(var.ProductName)</Property>
     <Property Id="WIXUI_INSTALLDIR">INSTALLDIR</Property>
+
     <UIRef Id="Custom_InstallDir" />
     <UIRef Id="WixUI_ErrorProgressText" />
 
@@ -427,7 +430,6 @@
     <InstallExecuteSequence>
       <!-- Determine the install location after the install path has been validated by the installer -->
       <Custom Action="SetARPINSTALLLOCATION" After="InstallValidate"></Custom>
-      <Custom Action='LaunchApplication' After='InstallFinalize'>NOT Installed</Custom>
     </InstallExecuteSequence>
 
   </Product>
