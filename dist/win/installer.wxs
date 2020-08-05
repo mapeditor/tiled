@@ -338,13 +338,13 @@
                   <File Name="window3.png" />
                   <File Name="objs.tsx" />
                 </Component>
-              </Directory>
-              <Directory Id="sticker_knight_map_templates" Name="templates">
-                <Component Id="StickerKnightExampleMapTemplates" Guid="{5DA0A837-561F-4772-AD8F-2831D19B3B86}">
-                  <File Name="block.tx" />
-                  <File Name="diamond.tx" />
-                  <File Name="hero.tx" />
-                </Component>
+                <Directory Id="sticker_knight_map_templates" Name="templates">
+                  <Component Id="StickerKnightExampleMapTemplates" Guid="{5DA0A837-561F-4772-AD8F-2831D19B3B86}">
+                    <File Name="block.tx" />
+                    <File Name="diamond.tx" />
+                    <File Name="hero.tx" />
+                  </Component>
+                </Directory>
               </Directory>
               <Directory Id="sticker_knight_ui" Name="ui">
                 <Component Id="StickerKnightExampleUi" Guid="{C8569B5C-20AF-482D-B46C-F20794BF646D}">
