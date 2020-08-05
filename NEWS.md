@@ -1,3 +1,24 @@
+### Tiled 1.4.2 (5 August 2020)
+
+* Reverted the default layer data format back to CSV (was changed to Zstd by accident in 1.4.0)
+* Added ability to draw lines using click+drag (in addition to click and click) when holding Shift
+* Improved positioning when adding maps to world via context menu
+* Disable instead of hide the "Save As Template" action when using embedded tilesets
+* Made Ctrl turn off snapping if Snap to Fine Grid is enabled (#2061)
+* Set minimum value of tile width and height to 1
+* Fixed Select Same Tile tool behavior for empty tiles
+* Fixed clickability of the dot in point objects
+* Fixed adjusting of terrain images when tileset width changes
+* Worlds: Fixed potential data loss when opening .world file
+* tmxrasterizer: Added --show-layer option (by Matthias Varnholt, #2858)
+* tmxrasterizer: Added parameter to advance animations (by Sean Ballew, #2868)
+* Scripting: Initialize tile layer size to map size upon add (#2879)
+* Windows installer: Made creation of the desktop shortcut optional
+* Windows installer: Made the launching of Tiled optional
+* Updated Qt to 5.12.9 on all platforms except Windows XP and snap releases
+* snap: Fixed issues with storing the default session (#2852)
+* snap: Enabled support for Zstandard (#2850)
+
 ### Tiled 1.4.1 (25 June 2020)
 
 * When opening a .world file, load the world and open its first map
