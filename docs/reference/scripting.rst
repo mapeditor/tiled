@@ -718,9 +718,15 @@ GroupLayer.insertLayerAt(index : int, layer : :ref:`script-layer`) : void
     Inserts the layer at the given index. The layer can't already be part of
     a map.
 
+    When adding a :ref:`script-tilelayer` to a map, the layer's width and
+    height are automatically initialized to the size of the map (since Tiled 1.4.2).
+
 GroupLayer.addLayer(layer : :ref:`script-layer`) : void
     Adds the layer to the group, above all existing layers. The layer can't
     already be part of a map.
+
+    When adding a :ref:`script-tilelayer` to a map, the layer's width and
+    height are automatically initialized to the size of the map (since Tiled 1.4.2).
 
 .. _script-imagelayer:
 
