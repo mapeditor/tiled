@@ -210,6 +210,14 @@ void EditableMap::insertLayerAt(int index, EditableLayer *editableLayer)
         return;
     }
 
+    // If this map has a valid size but the tile layer that's getting added
+    // doesn't, default the layer's size to the map size.
+    if (editableLayer->isTileLayer()) {
+        auto editableTileLayer = static_cast<EditableTileLayer*>(editableLayer);
+        if (editableTileLayer->size().isNull() && !size().isNull())
+            editableTileLayer->setSize(size());
+    }
+
     if (auto doc = mapDocument()) {
         push(new AddLayer(doc, index, editableLayer->layer(), nullptr));
     } else if (!checkReadOnly()) {
