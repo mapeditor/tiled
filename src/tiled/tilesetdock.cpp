@@ -717,6 +717,10 @@ void TilesetDock::replaceTileset()
         return;
     }
 
+    // Don't try to replace a tileset with itself
+    if (tileset == sharedTileset)
+        return;
+
     QUndoCommand *command = new ReplaceTileset(mMapDocument,
                                                mapTilesetIndex,
                                                tileset);
