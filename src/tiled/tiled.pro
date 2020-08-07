@@ -40,8 +40,8 @@ macx {
     QMAKE_RPATHDIR =
 }
 
-# On Linux we support linking to system Zstandard install
-linux:contains(SYSTEM_ZSTD, yes) {
+# Support linking to system Zstandard install
+unix:contains(SYSTEM_ZSTD, yes) {
     DEFINES += TILED_ZSTD_SUPPORT
 }
 
