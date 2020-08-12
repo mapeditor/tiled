@@ -66,11 +66,10 @@ public:
     void insertWangSet(int index, WangSet *wangSet);
     WangSet *takeWangSetAt(int index);
     void setWangSetName(WangSet *wangSet, const QString &name);
-    void setWangSetEdges(WangSet *wangSet, int value);
-    void setWangSetCorners(WangSet *wangSet, int value);
+    void setWangSetColorCount(WangSet *wangSet, int value);
     void setWangSetImage(WangSet *wangSet, int tileId);
     void insertWangColor(WangSet *wangSet, const QSharedPointer<WangColor> &wangColor);
-    void removeWangColorAt(WangSet *wangSet, int color, bool isEdge);
+    void removeWangColorAt(WangSet *wangSet, int color);
 
 signals:
     void wangSetAboutToBeAdded(Tileset *tileset);

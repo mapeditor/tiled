@@ -22,13 +22,13 @@
 
 #include "wangcolormodel.h"
 
-#include <QStyledItemDelegate>
-#include <QContextMenuEvent>
+#include <QAbstractProxyModel>
 #include <QColorDialog>
+#include <QContextMenuEvent>
+#include <QLineEdit>
 #include <QMenu>
 #include <QPainter>
-#include <QLineEdit>
-#include <QSortFilterProxyModel>
+#include <QStyledItemDelegate>
 
 using namespace Tiled;
 
@@ -88,37 +88,33 @@ void WangColorDelegate::paint(QPainter *painter,
     if (!image.isNull())
         painter->drawPixmap(imageRect, image);
 
-    if (index.parent().isValid()) {
-        painter->save();
+    painter->save();
 
-        QColor darkerColor = brush.color().darker(150);
-        painter->setPen(QPen(darkerColor));
-        if (mWangColorView->selectionModel()->currentIndex() == index) {
-            painter->setBrush(QBrush(darkerColor));
-            painter->setOpacity(0.5);
-        } else {
-            painter->setBrush(Qt::NoBrush);
-        }
-
-        painter->drawRect(rect.adjusted(0, 0, -1, -1));
-
-        painter->restore();
+    QColor darkerColor = brush.color().darker(150);
+    painter->setPen(QPen(darkerColor));
+    if (mWangColorView->selectionModel()->currentIndex() == index) {
+        painter->setBrush(QBrush(darkerColor));
+        painter->setOpacity(0.5);
+    } else {
+        painter->setBrush(Qt::NoBrush);
     }
+
+    painter->drawRect(rect.adjusted(0, 0, -1, -1));
+
+    painter->restore();
 
     if (!text.isEmpty()) {
         QPoint textPos;
-        if (index.parent().isValid() && !image.isNull())
+        if (!image.isNull())
             textPos = QPoint(imageRect.right() + 6,
                              rect.center().y() + (fontMetrics.height() / 2) + 2);
         else
             textPos = QPoint(rect.left() + 6,
                              rect.center().y() + (fontMetrics.height() / 2) + 2);
 
-        if (index.parent().isValid()) {
-            painter->setBrush(QBrush(brush.color().lighter()));
-            painter->drawRect(QRect(textPos + QPoint(-2, -fontMetrics.height() - 2),
-                                    QPoint(rect.right(), textPos.y() + 2)));
-        }
+        painter->setBrush(QBrush(brush.color().lighter()));
+        painter->drawRect(QRect(textPos + QPoint(-2, -fontMetrics.height() - 2),
+                                QPoint(rect.right(), textPos.y() + 2)));
 
         painter->setPen(QPen(Qt::black));
         painter->setFont(font);
@@ -168,14 +164,14 @@ WangColorView::~WangColorView()
 
 void WangColorView::contextMenuEvent(QContextMenuEvent *event)
 {
-    const QSortFilterProxyModel *filterModel = static_cast<QSortFilterProxyModel *>(model());
-    const WangColorModel *wangColorModel = static_cast<WangColorModel *>(filterModel->sourceModel());
+    const QAbstractProxyModel *proxyModel = static_cast<QAbstractProxyModel *>(model());
+    const WangColorModel *wangColorModel = static_cast<WangColorModel *>(proxyModel->sourceModel());
     const QModelIndex filterModelIndex = indexAt(event->pos());
 
     if (!wangColorModel || !filterModelIndex.isValid())
         return;
 
-    const QModelIndex index = filterModel->mapToSource(filterModelIndex);
+    const QModelIndex index = proxyModel->mapToSource(filterModelIndex);
     mClickedWangColor = wangColorModel->wangColorAt(index);
 
     QMenu menu;

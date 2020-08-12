@@ -136,11 +136,11 @@ private:
 
     void currentWangSetChanged(WangSet *wangSet);
     void currentWangIdChanged(WangId wangId);
-    void wangColorChanged(int color, bool edge);
+    void wangColorChanged(int color);
     void addWangSet();
     void removeWangSet();
     void setWangSetImage(Tile *tile);
-    void setWangColorImage(Tile *tile, bool isEdge, int index);
+    void setWangColorImage(Tile *tile, int index);
     void setWangColorColor(WangColor *wangColor, const QColor &color);
 
     void onAnimationEditorClosed();

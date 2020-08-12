@@ -31,21 +31,20 @@
 
 using namespace Tiled;
 
-ChangeWangSetEdgeCount::ChangeWangSetEdgeCount(TilesetDocument *tilesetDocument,
-                                               WangSet *wangSet,
-                                               int newValue)
+ChangeWangSetColorCount::ChangeWangSetColorCount(TilesetDocument *tilesetDocument,
+                                                 WangSet *wangSet,
+                                                 int newValue)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
-                                               "Change Wang Set edge count"))
-
+                                               "Change Wang Set Color Count"))
     , mTilesetDocument(tilesetDocument)
     , mWangSet(wangSet)
-    , mOldValue(wangSet->edgeColorCount())
+    , mOldValue(wangSet->colorCount())
     , mNewValue(newValue)
 {
     // when edge size changes, all tiles with wangIds need to be updated.
     if (mNewValue < mOldValue) {
         // when the size is reduced, some wang assignments can be lost.
-        const QList<Tile *> &changedTiles = wangSet->tilesChangedOnSetEdgeColors(mNewValue);
+        const QList<Tile *> changedTiles = wangSet->tilesChangedOnSetColorCount(mNewValue);
 
         if (!changedTiles.isEmpty()) {
             QVector<ChangeTileWangId::WangIdChange> changes;
@@ -59,7 +58,7 @@ ChangeWangSetEdgeCount::ChangeWangSetEdgeCount(TilesetDocument *tilesetDocument,
         for (int i = mOldValue; i > mNewValue; --i) {
             WangColorChange w;
             w.index = i;
-            w.wangColor = wangSet->edgeColorAt(i);
+            w.wangColor = wangSet->colorAt(i);
 
             mRemovedWangColors.append(w);
         }
@@ -67,126 +66,49 @@ ChangeWangSetEdgeCount::ChangeWangSetEdgeCount(TilesetDocument *tilesetDocument,
         if (mNewValue == 1) {
             WangColorChange w;
             w.index = 1;
-            w.wangColor = wangSet->edgeColorAt(1);
+            w.wangColor = wangSet->colorAt(1);
 
             mRemovedWangColors.append(w);
         }
     }
 }
 
-void ChangeWangSetEdgeCount::undo()
+void ChangeWangSetColorCount::undo()
 {
-    mTilesetDocument->wangSetModel()->setWangSetEdges(mWangSet, mOldValue);
+    mTilesetDocument->wangSetModel()->setWangSetColorCount(mWangSet, mOldValue);
 
     for (const WangColorChange &w : qAsConst(mRemovedWangColors)) {
-        WangColor *wangColor = mWangSet->edgeColorAt(w.index).data();
-        wangColor->setName(w.wangColor->name());
-        wangColor->setImageId(w.wangColor->imageId());
-        wangColor->setColor(w.wangColor->color());
-        wangColor->setProbability(w.wangColor->probability());
+        WangColor &wangColor = *mWangSet->colorAt(w.index);
+        wangColor.setName(w.wangColor->name());
+        wangColor.setImageId(w.wangColor->imageId());
+        wangColor.setColor(w.wangColor->color());
+        wangColor.setProbability(w.wangColor->probability());
     }
 
     QUndoCommand::undo();
 }
 
-void ChangeWangSetEdgeCount::redo()
+void ChangeWangSetColorCount::redo()
 {
-    mTilesetDocument->wangSetModel()->setWangSetEdges(mWangSet, mNewValue);
+    mTilesetDocument->wangSetModel()->setWangSetColorCount(mWangSet, mNewValue);
 
     QUndoCommand::redo();
 }
 
 
-ChangeWangSetCornerCount::ChangeWangSetCornerCount(TilesetDocument *tilesetDocument,
-                                                   WangSet *wangSet,
-                                                   int newValue)
-    : QUndoCommand(QCoreApplication::translate("Undo Commands",
-                                               "Change Wang Set corner count"))
-    , mTilesetDocument(tilesetDocument)
-    , mWangSet(wangSet)
-    , mOldValue(wangSet->cornerColorCount())
-    , mNewValue(newValue)
-{
-    // when corner size changes, all tiles with wangIds need to be updated.
-    if (mNewValue < mOldValue) {
-        // when the size is reduced, some wang assignments can be lost.
-        const QList<Tile *> &changedTiles = wangSet->tilesChangedOnSetCornerColors(mNewValue);
-
-        if (!changedTiles.isEmpty()) {
-            QVector<ChangeTileWangId::WangIdChange> changes;
-
-            for (Tile *tile : changedTiles)
-                changes.append(ChangeTileWangId::WangIdChange(wangSet->wangIdOfTile(tile), 0, tile));
-
-            new ChangeTileWangId(mTilesetDocument, wangSet, changes, this);
-        }
-
-        for (int i = mOldValue; i > mNewValue; --i) {
-            WangColorChange w;
-            w.index = i;
-            w.wangColor = wangSet->cornerColorAt(i);
-
-            mRemovedWangColors.append(w);
-        }
-
-        if (mNewValue == 1) {
-            WangColorChange w;
-            w.index = 1;
-            w.wangColor = wangSet->cornerColorAt(1);
-
-            mRemovedWangColors.append(w);
-        }
-    }
-}
-
-void ChangeWangSetCornerCount::undo()
-{
-    mTilesetDocument->wangSetModel()->setWangSetCorners(mWangSet, mOldValue);
-
-    for (const WangColorChange &w : qAsConst(mRemovedWangColors)) {
-        WangColor *wangColor = mWangSet->cornerColorAt(w.index).data();
-        wangColor->setName(w.wangColor->name());
-        wangColor->setImageId(w.wangColor->imageId());
-        wangColor->setColor(w.wangColor->color());
-        wangColor->setProbability(w.wangColor->probability());
-    }
-
-    QUndoCommand::undo();
-}
-
-void ChangeWangSetCornerCount::redo()
-{
-    mTilesetDocument->wangSetModel()->setWangSetCorners(mWangSet, mNewValue);
-
-    QUndoCommand::redo();
-}
-
-
-RemoveWangSetColor::RemoveWangSetColor(TilesetDocument *tilesetDocumnet, WangSet *wangSet, int color, bool isEdge)
+RemoveWangSetColor::RemoveWangSetColor(TilesetDocument *tilesetDocumnet, WangSet *wangSet, int color)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Remove Wang Color"))
     , mTilesetDocument(tilesetDocumnet)
     , mWangSet(wangSet)
     , mColor(color)
-    , mIsEdge(isEdge)
 {
-    if (mIsEdge) {
-        mRemovedWangColor = wangSet->edgeColorAt(mColor);
+    mRemovedWangColor = wangSet->colorAt(mColor);
 
-        if (wangSet->edgeColorCount() == 2)
-            mExtraWangColor = wangSet->edgeColorAt((mColor << 1) % 3);
-        else
-            mExtraWangColor = QSharedPointer<WangColor>();
-    } else {
-        mRemovedWangColor = wangSet->cornerColorAt(mColor);
+    if (wangSet->colorCount() == 2)
+        mExtraWangColor = wangSet->colorAt(color == 1 ? 2 : 1);
 
-        if (wangSet->cornerColorCount() == 2)
-            mExtraWangColor = wangSet->cornerColorAt((mColor << 1) % 3);
-        else
-            mExtraWangColor = QSharedPointer<WangColor>();
-    }
-
-    QList<Tile *> changedTiles = wangSet->tilesChangedOnRemoveColor(mColor, mIsEdge);
+    const QList<Tile *> changedTiles = wangSet->tilesChangedOnRemoveColor(mColor);
 
     if (!changedTiles.isEmpty()) {
         QVector<ChangeTileWangId::WangIdChange> changes;
@@ -195,22 +117,12 @@ RemoveWangSetColor::RemoveWangSetColor(TilesetDocument *tilesetDocumnet, WangSet
             WangId oldWangId = wangSet->wangIdOfTile(tile);
             WangId changedWangId = oldWangId;
 
-            if (mIsEdge) {
-                for (int i = 0; i < 4; ++i) {
-                    int edgeColor = changedWangId.edgeColor(i);
-                    if (edgeColor && (edgeColor == mColor || wangSet->edgeColorCount() == 2))
-                        changedWangId.setEdgeColor(i, 0);
-                    else if (edgeColor > mColor)
-                        changedWangId.setEdgeColor(i, edgeColor - 1);
-                }
-            } else {
-                for (int i = 0; i < 4; ++i) {
-                    int cornerColor = changedWangId.cornerColor(i);
-                    if (cornerColor && (cornerColor == mColor || wangSet->cornerColorCount() == 2))
-                        changedWangId.setCornerColor(i, 0);
-                    else if (cornerColor > mColor)
-                        changedWangId.setCornerColor(i, cornerColor - 1);
-                }
+            for (int i = 0; i < WangId::NumIndexes; ++i) {
+                int color = changedWangId.indexColor(i);
+                if (color && (color == mColor || wangSet->colorCount() == 2))
+                    changedWangId.setIndexColor(i, 0);
+                else if (color > mColor)
+                    changedWangId.setIndexColor(i, color - 1);
             }
 
             changes.append(ChangeTileWangId::WangIdChange(oldWangId,
@@ -243,7 +155,7 @@ void RemoveWangSetColor::undo()
 
 void RemoveWangSetColor::redo()
 {
-    mTilesetDocument->wangSetModel()->removeWangColorAt(mWangSet, mColor, mIsEdge);
+    mTilesetDocument->wangSetModel()->removeWangColorAt(mWangSet, mColor);
 
     QUndoCommand::redo();
 }

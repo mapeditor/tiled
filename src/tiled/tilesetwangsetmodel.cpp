@@ -152,17 +152,10 @@ void TilesetWangSetModel::setWangSetName(WangSet *wangSet, const QString &name)
     emitWangSetChange(wangSet);
 }
 
-void TilesetWangSetModel::setWangSetEdges(WangSet *wangSet, int value)
+void TilesetWangSetModel::setWangSetColorCount(WangSet *wangSet, int value)
 {
     Q_ASSERT(wangSet->tileset() == mTilesetDocument->tileset().data());
-    wangSet->setEdgeColorCount(value);
-    emitWangSetChange(wangSet);
-}
-
-void TilesetWangSetModel::setWangSetCorners(WangSet *wangSet, int value)
-{
-    Q_ASSERT(wangSet->tileset() == mTilesetDocument->tileset().data());
-    wangSet->setCornerColorCount(value);
+    wangSet->setColorCount(value);
     emitWangSetChange(wangSet);
 }
 
@@ -180,16 +173,14 @@ void TilesetWangSetModel::insertWangColor(WangSet *wangSet, const QSharedPointer
     emitWangSetChange(wangSet);
 }
 
-void TilesetWangSetModel::removeWangColorAt(WangSet *wangSet, int color, bool isEdge)
+void TilesetWangSetModel::removeWangColorAt(WangSet *wangSet, int color)
 {
     Q_ASSERT(wangSet->tileset() == mTilesetDocument->tileset().data());
 
-    if (isEdge && wangSet->edgeColorCount() == 2)
-        wangSet->setEdgeColorCount(1);
-    else if (!isEdge && wangSet->cornerColorCount() == 2)
-        wangSet->setCornerColorCount(1);
+    if (wangSet->colorCount() == 2)
+        wangSet->setColorCount(1);
     else
-        wangSet->removeWangColorAt(color, isEdge);
+        wangSet->removeWangColorAt(color);
 
     emitWangSetChange(wangSet);
 }

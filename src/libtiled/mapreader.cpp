@@ -696,13 +696,36 @@ void MapReaderPrivate::readTilesetWangSets(Tileset &tileset)
 
             auto wangSet = std::make_unique<WangSet>(&tileset, name, tile);
 
+            // For backwards-compatibility
+            QVector<int> cornerColors;
+            QVector<int> edgeColors;
+
             while (xml.readNextStartElement()) {
+                const bool isCorner = xml.name() == QLatin1String("wangcornercolor");
+                const bool isEdge = xml.name() == QLatin1String("wangedgecolor");
+
                 if (xml.name() == QLatin1String("properties")) {
                     wangSet->mergeProperties(readProperties());
                 } else if (xml.name() == QLatin1String("wangtile")) {
                     const QXmlStreamAttributes tileAtts = xml.attributes();
                     int tileId = tileAtts.value(QLatin1String("tileid")).toInt();
                     WangId wangId = tileAtts.value(QLatin1String("wangid")).toUInt(nullptr, 16);
+
+                    // Backwards compatibility with TMX 1.4:
+                    // If the wang set was using explicit corner and edge colors,
+                    // map the WangId to the unified colors.
+                    if (!cornerColors.isEmpty() || !edgeColors.isEmpty()) {
+                        for (int i = 0; i < 4; ++i) {
+                            int color = wangId.cornerColor(i);
+                            if (color > 0 && color <= cornerColors.size())
+                                wangId.setCornerColor(i, cornerColors.at(color - 1));
+                        }
+                        for (int i = 0; i < 4; ++i) {
+                            int color = wangId.edgeColor(i);
+                            if (color > 0 && color <= edgeColors.size())
+                                wangId.setEdgeColor(i, edgeColors.at(color - 1));
+                        }
+                    }
 
                     if (!wangSet->wangIdIsValid(wangId)) {
                         xml.raiseError(QLatin1String("Invalid wangId given for tileId: ") + QString::number(tileId));
@@ -723,22 +746,24 @@ void MapReaderPrivate::readTilesetWangSets(Tileset &tileset)
                     wangSet->addWangTile(wangTile);
 
                     xml.skipCurrentElement();
-                } else if (xml.name() == QLatin1String("wangedgecolor")
-                           || xml.name() == QLatin1String("wangcornercolor")) {
+                } else if (xml.name() == QLatin1String("wangcolor") || isCorner || isEdge) {
                     const QXmlStreamAttributes wangColorAtts = xml.attributes();
-                    bool isEdge = xml.name() == QLatin1String("wangedgecolor");
                     QString name = wangColorAtts.value(QLatin1String("name")).toString();
                     QColor color = wangColorAtts.value(QLatin1String("color")).toString();
                     int imageId = wangColorAtts.value(QLatin1String("tile")).toInt();
                     qreal probability = wangColorAtts.value(QLatin1String("probability")).toDouble();
 
                     auto wc = QSharedPointer<WangColor>::create(0,
-                                                                isEdge,
                                                                 name,
                                                                 color,
                                                                 imageId,
                                                                 probability);
                     wangSet->addWangColor(wc);
+
+                    if (isCorner)
+                        cornerColors.append(wc->colorIndex());
+                    if (isEdge)
+                        edgeColors.append(wc->colorIndex());
 
                     xml.skipCurrentElement();
                 } else {

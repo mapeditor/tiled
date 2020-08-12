@@ -27,6 +27,7 @@
 
 class QModelIndex;
 class QPushButton;
+class QSortFilterProxyModel;
 class QTabWidget;
 class QToolBar;
 class QTreeView;
@@ -75,14 +76,13 @@ signals:
 
     void selectWangBrush();
     // When the color view selection changes.
-    // edges is false if this is a corner color.
-    void wangColorChanged(int color, bool edge);
+    void wangColorChanged(int color);
 
 public slots:
     void setCurrentWangSet(WangSet *wangSet);
     void onCurrentWangIdChanged(WangId wangId);
     void onWangIdUsedChanged(WangId wangId);
-    void onColorCaptured(int color, bool isEdge);
+    void onColorCaptured(int color);
 
 protected:
     void changeEvent(QEvent *event) override;
@@ -95,8 +95,7 @@ private:
     void wangSetChanged();
     void indexPressed(const QModelIndex &index);
     void expandRows(const QModelIndex &parent, int first, int last);
-    void addEdgeColor();
-    void addCornerColor();
+    void addColor();
     void removeColor();
 
     void updateAddColorStatus();
@@ -108,8 +107,7 @@ private:
     QToolBar *mWangColorToolBar;
     QAction *mAddWangSet;
     QAction *mRemoveWangSet;
-    QAction *mAddEdgeColor;
-    QAction *mAddCornerColor;
+    QAction *mAddColor;
     QAction *mRemoveColor;
 
     Document *mDocument;
@@ -120,7 +118,7 @@ private:
     TilesetDocumentsFilterModel *mTilesetDocumentFilterModel;
     WangColorView *mWangColorView;
     WangColorModel *mWangColorModel;
-    HasChildrenFilterModel *mWangColorFilterModel;
+    QSortFilterProxyModel *mWangColorFilterModel;
     WangSetModel *mWangSetModel;
     HasChildrenFilterModel *mProxyModel;
     WangTemplateView *mWangTemplateView;

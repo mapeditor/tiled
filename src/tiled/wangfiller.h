@@ -53,10 +53,6 @@ public:
     /**
      * Finds a cell from the attached wangSet which fits the given
      * surroundings.
-     *
-     * If \a lookForward is true, this will only choose a cell which allows all
-     * empty adjacent cells to also be filled. If non exist, then no cell will
-     * be choosen.
      */
     Cell findFittingCell(const TileLayer &back,
                          const TileLayer &front,
@@ -65,10 +61,6 @@ public:
 
     /**
      * Returns a tilelayer which has \a fillRegion filled with Wang methods.
-     *
-     * If \a lookForward is true, this will only choose a cell which allows all
-     * empty adjacent cells to also be filled. If non exist, then no cell will
-     * be choosen.
      */
     std::unique_ptr<TileLayer> fillRegion(const TileLayer &back,
                                           const QRegion &fillRegion) const;

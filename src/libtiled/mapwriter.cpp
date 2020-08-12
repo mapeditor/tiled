@@ -502,25 +502,10 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
             w.writeAttribute(QStringLiteral("name"), ws->name());
             w.writeAttribute(QStringLiteral("tile"), QString::number(ws->imageTileId()));
 
-            if (ws->edgeColorCount() > 1) {
-                for (int i = 1; i <= ws->edgeColorCount(); ++i) {
-                    if (WangColor *wc = ws->edgeColorAt(i).data()) {
-                        w.writeStartElement(QStringLiteral("wangedgecolor"));
-
-                        w.writeAttribute(QStringLiteral("name"), wc->name());
-                        w.writeAttribute(QStringLiteral("color"), colorToString(wc->color()));
-                        w.writeAttribute(QStringLiteral("tile"), QString::number(wc->imageId()));
-                        w.writeAttribute(QStringLiteral("probability"), QString::number(wc->probability()));
-
-                        w.writeEndElement();
-                    }
-                }
-            }
-
-            if (ws->cornerColorCount() > 1) {
-                for (int i = 1; i <= ws->cornerColorCount(); ++i) {
-                    if (WangColor *wc = ws->cornerColorAt(i).data()) {
-                        w.writeStartElement(QStringLiteral("wangcornercolor"));
+            if (ws->colorCount() > 1) {
+                for (int i = 1; i <= ws->colorCount(); ++i) {
+                    if (WangColor *wc = ws->colorAt(i).data()) {
+                        w.writeStartElement(QStringLiteral("wangcolor"));
 
                         w.writeAttribute(QStringLiteral("name"), wc->name());
                         w.writeAttribute(QStringLiteral("color"), colorToString(wc->color()));

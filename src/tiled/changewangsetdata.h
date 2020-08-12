@@ -31,12 +31,12 @@ class Tile;
 
 class TilesetDocument;
 
-class ChangeWangSetEdgeCount : public QUndoCommand
+class ChangeWangSetColorCount : public QUndoCommand
 {
 public:
-    ChangeWangSetEdgeCount(TilesetDocument *TilesetDocument,
-                           WangSet *wangSet,
-                           int newValue);
+    ChangeWangSetColorCount(TilesetDocument *TilesetDocument,
+                            WangSet *wangSet,
+                            int newValue);
 
     void undo() override;
     void redo() override;
@@ -82,8 +82,7 @@ class RemoveWangSetColor : public QUndoCommand
 public:
     RemoveWangSetColor(TilesetDocument *tilesetDocumnet,
                        WangSet *wangSet,
-                       int color,
-                       bool isEdge);
+                       int color);
 
     void undo() override;
     void redo() override;
@@ -92,7 +91,6 @@ private:
     TilesetDocument *mTilesetDocument;
     WangSet *mWangSet;
     int mColor;
-    bool mIsEdge;
     QSharedPointer<WangColor> mRemovedWangColor;
     // When removing a color when there are two, both are actually removed,
     // this stores the extra if needed, and is null otherwise.

@@ -104,15 +104,14 @@ WangDock::WangDock(QWidget *parent)
     , mWangColorToolBar(new QToolBar(this))
     , mAddWangSet(new QAction(this))
     , mRemoveWangSet(new QAction(this))
-    , mAddEdgeColor(new QAction(this))
-    , mAddCornerColor(new QAction(this))
+    , mAddColor(new QAction(this))
     , mRemoveColor(new QAction(this))
     , mDocument(nullptr)
     , mCurrentWangSet(nullptr)
     , mCurrentWangId(0)
     , mTilesetDocumentFilterModel(new TilesetDocumentsFilterModel(this))
     , mWangColorModel(nullptr)
-    , mWangColorFilterModel(new HasChildrenFilterModel(this))
+    , mWangColorFilterModel(new QSortFilterProxyModel(this))
     , mWangSetModel(new WangSetModel(mTilesetDocumentFilterModel, this))
     , mProxyModel(new HasChildrenFilterModel(this))
     , mWangTemplateModel(new WangTemplateModel(nullptr, this))
@@ -136,10 +135,8 @@ WangDock::WangDock(QWidget *parent)
     mRemoveWangSet->setIcon(QIcon(QStringLiteral(":/images/22/remove.png")));
     mRemoveWangSet->setEnabled(false);
 
-    mAddEdgeColor->setIcon(QIcon(QStringLiteral(":/images/22/add-edge.png")));
-    mAddEdgeColor->setEnabled(false);
-    mAddCornerColor->setIcon(QIcon(QStringLiteral(":/images/22/add-corner.png")));
-    mAddCornerColor->setEnabled(false);
+    mAddColor->setIcon(QIcon(QStringLiteral(":/images/22/add-edge.png")));
+    mAddColor->setEnabled(false);
     mRemoveColor->setIcon(QIcon(QStringLiteral(":/images/22/remove.png")));
     mRemoveColor->setEnabled(false);
 
@@ -162,14 +159,11 @@ WangDock::WangDock(QWidget *parent)
     mWangColorToolBar->setMovable(false);
     mWangColorToolBar->setIconSize(Utils::smallIconSize());
 
-    mWangColorToolBar->addAction(mAddEdgeColor);
-    mWangColorToolBar->addAction(mAddCornerColor);
+    mWangColorToolBar->addAction(mAddColor);
     mWangColorToolBar->addAction(mRemoveColor);
 
-    connect(mAddEdgeColor, &QAction::triggered,
-            this, &WangDock::addEdgeColor);
-    connect(mAddCornerColor, &QAction::triggered,
-            this, &WangDock::addCornerColor);
+    connect(mAddColor, &QAction::triggered,
+            this, &WangDock::addColor);
     connect(mRemoveColor, &QAction::triggered,
             this, &WangDock::removeColor);
 
@@ -178,8 +172,6 @@ WangDock::WangDock(QWidget *parent)
 
     connect(mWangTemplateView->selectionModel(), &QItemSelectionModel::currentChanged,
             this, &WangDock::refreshCurrentWangId);
-
-    mWangColorFilterModel->setEnabled(true);
 
     mWangColorView = new WangColorView(w);
     mWangColorView->setModel(mWangColorFilterModel);
@@ -372,31 +364,25 @@ void WangDock::refreshCurrentWangColor()
 {
     QItemSelectionModel *selectionModel = mWangColorView->selectionModel();
 
-    if (!selectionModel->currentIndex().isValid()
-            || !selectionModel->currentIndex().parent().isValid()) {
+    if (!selectionModel->currentIndex().isValid()) {
         mEraseWangIdsButton->setChecked(true);
-        emit wangColorChanged(0, true);
+        emit wangColorChanged(0);
         mRemoveColor->setEnabled(false);
         return;
     }
 
-    QModelIndex index = static_cast<HasChildrenFilterModel*>(mWangColorView->model())->mapToSource(selectionModel->currentIndex());
+    QModelIndex index = static_cast<QAbstractProxyModel*>(mWangColorView->model())->mapToSource(selectionModel->currentIndex());
 
-    bool edgeColor = mWangColorModel->isEdgeColorAt(index);
     int color = mWangColorModel->colorAt(index);
 
     mEraseWangIdsButton->setChecked(false);
 
-    WangColor *currentWangColor;
-    if (edgeColor)
-        currentWangColor = mCurrentWangSet->edgeColorAt(color).data();
-    else
-        currentWangColor = mCurrentWangSet->cornerColorAt(color).data();
+    WangColor *currentWangColor = mCurrentWangSet->colorAt(color).data();
 
     mDocument->setCurrentObject(currentWangColor);
     mRemoveColor->setEnabled(true);
 
-    emit wangColorChanged(color, edgeColor);
+    emit wangColorChanged(color);
     emit selectWangBrush();
 }
 
@@ -426,25 +412,14 @@ void WangDock::expandRows(const QModelIndex &parent, int first, int last)
         mWangSetView->expand(mProxyModel->index(row, 0, parent));
 }
 
-void WangDock::addEdgeColor()
+void WangDock::addColor()
 {
     Q_ASSERT(mCurrentWangSet);
 
     if (TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument*>(mDocument)) {
-        tilesetDocument->undoStack()->push(new ChangeWangSetEdgeCount(tilesetDocument,
-                                                                      mCurrentWangSet,
-                                                                      mCurrentWangSet->edgeColorCount() + 1));
-    }
-}
-
-void WangDock::addCornerColor()
-{
-    Q_ASSERT(mCurrentWangSet);
-
-    if (TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument*>(mDocument)) {
-        tilesetDocument->undoStack()->push(new ChangeWangSetCornerCount(tilesetDocument,
-                                                                        mCurrentWangSet,
-                                                                        mCurrentWangSet->cornerColorCount() + 1));
+        tilesetDocument->undoStack()->push(new ChangeWangSetColorCount(tilesetDocument,
+                                                                       mCurrentWangSet,
+                                                                       mCurrentWangSet->colorCount() + 1));
     }
 }
 
@@ -454,16 +429,14 @@ void WangDock::removeColor()
 
     QItemSelectionModel *selectionModel = mWangColorView->selectionModel();
 
-    QModelIndex index = static_cast<HasChildrenFilterModel*>(mWangColorView->model())->mapToSource(selectionModel->currentIndex());
+    QModelIndex index = static_cast<QAbstractProxyModel*>(mWangColorView->model())->mapToSource(selectionModel->currentIndex());
 
     int color = mWangColorModel->colorAt(index);
-    bool isEdge = mWangColorModel->isEdgeColorAt(index);
 
     if (TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument*>(mDocument)) {
         tilesetDocument->undoStack()->push(new RemoveWangSetColor(tilesetDocument,
                                                                   mCurrentWangSet,
-                                                                  color,
-                                                                  isEdge));
+                                                                  color));
     }
 }
 
@@ -507,8 +480,7 @@ void WangDock::setCurrentWangSet(WangSet *wangSet)
 
         hideTemplateColorView();
 
-        mAddEdgeColor->setEnabled(false);
-        mAddCornerColor->setEnabled(false);
+        mAddColor->setEnabled(false);
     }
 
     if (wangSet && !mInitializing)
@@ -535,8 +507,7 @@ void WangDock::activateErase()
 
 void WangDock::updateAddColorStatus()
 {
-    mAddEdgeColor->setEnabled(mCurrentWangSet->edgeColorCount() < 15);
-    mAddCornerColor->setEnabled(mCurrentWangSet->cornerColorCount() < 15);
+    mAddColor->setEnabled(mCurrentWangSet->colorCount() < 15);
 }
 
 void WangDock::retranslateUi()
@@ -546,8 +517,7 @@ void WangDock::retranslateUi()
     mEraseWangIdsButton->setText(tr("Erase WangIds"));
     mAddWangSet->setText(tr("Add Wang Set"));
     mRemoveWangSet->setText(tr("Remove Wang Set"));
-    mAddEdgeColor->setText(tr("Add Edge Color"));
-    mAddCornerColor->setText(tr("Add Corner Color"));
+    mAddColor->setText(tr("Add Color"));
     mRemoveColor->setText(tr("Remove Color"));
 
     mTemplateAndColorView->setTabText(0, tr("Patterns"));
@@ -574,17 +544,12 @@ void WangDock::onWangIdUsedChanged(WangId wangId)
         mWangTemplateView->update(index);
 }
 
-void WangDock::onColorCaptured(int color, bool isEdge)
+void WangDock::onColorCaptured(int color)
 {
-    QModelIndex index;
-
-    if (isEdge)
-        index = mWangColorModel->edgeIndex(color);
-    else
-        index = mWangColorModel->cornerIndex(color);
+    const QModelIndex index = mWangColorModel->colorIndex(color);
 
     if (index.isValid()) {
-        mWangColorView->setCurrentIndex(static_cast<HasChildrenFilterModel*>(mWangColorView->model())->mapFromSource(index));
+        mWangColorView->setCurrentIndex(static_cast<QAbstractProxyModel*>(mWangColorView->model())->mapFromSource(index));
     } else {
         mWangColorView->selectionModel()->clearCurrentIndex();
         mWangColorView->selectionModel()->clearSelection();

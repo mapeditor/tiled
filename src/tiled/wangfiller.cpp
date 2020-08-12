@@ -121,7 +121,7 @@ Cell WangFiller::findFittingCell(const TileLayer &back,
                                                                fillRegion,
                                                                adjacentPoint);
                 WangId wangId = wangTile.wangId();
-                adjacentWangId.updateToAdjacent(wangId, (i + 4) % 8);
+                adjacentWangId.updateToAdjacent(wangId, WangId::oppositeIndex(i));
 
                 if (!mWangSet->wildWangIdIsUsed(adjacentWangId)) {
                     continueFlag = true;
@@ -215,7 +215,7 @@ std::unique_ptr<TileLayer> WangFiller::fillRegion(const TileLayer &back,
                             int index = p.y() * tileLayer->width() + p.x();
 
                             WangId adjacentWangId = wangIds[index];
-                            adjacentWangId.updateToAdjacent(wangTile.wangId(), (i + 4) % 8);
+                            adjacentWangId.updateToAdjacent(wangTile.wangId(), WangId::oppositeIndex(i));
 
                             if (!mWangSet->wildWangIdIsUsed(adjacentWangId)) {
                                 fill = wangTiles.isEmpty();
@@ -237,7 +237,7 @@ std::unique_ptr<TileLayer> WangFiller::fillRegion(const TileLayer &back,
                                 continue;
                             p -= tileLayer->position();
                             int index = p.y() * tileLayer->width() + p.x();
-                            wangIds[index].updateToAdjacent(wangTile.wangId(), (i + 4) % 8);
+                            wangIds[index].updateToAdjacent(wangTile.wangId(), WangId::oppositeIndex(i));
                         }
                         break;
                     }

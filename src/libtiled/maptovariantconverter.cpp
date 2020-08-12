@@ -367,23 +367,12 @@ QVariant MapToVariantConverter::toVariant(const WangSet &wangSet) const
     wangSetVariant[QStringLiteral("name")] = wangSet.name();
     wangSetVariant[QStringLiteral("tile")] = wangSet.imageTileId();
 
-    QVariantList edgeColorVariants;
-    if (wangSet.edgeColorCount() > 1) {
-        for (int i = 1; i <= wangSet.edgeColorCount(); ++i) {
-            if (WangColor *wc = wangSet.edgeColorAt(i).data())
-                edgeColorVariants.append(toVariant(*wc));
-        }
+    QVariantList colorVariants;
+    if (wangSet.colorCount() > 1) {
+        for (int i = 1; i <= wangSet.colorCount(); ++i)
+            colorVariants.append(toVariant(*wangSet.colorAt(i)));
     }
-    wangSetVariant[QStringLiteral("edgecolors")] = edgeColorVariants;
-
-    QVariantList cornerColorVariants;
-    if (wangSet.cornerColorCount() > 1) {
-        for (int i = 1; i <= wangSet.cornerColorCount(); ++i) {
-            if (WangColor *wc = wangSet.cornerColorAt(i).data())
-                cornerColorVariants.append(toVariant(*wc));
-        }
-    }
-    wangSetVariant[QStringLiteral("cornercolors")] = cornerColorVariants;
+    wangSetVariant[QStringLiteral("colors")] = colorVariants;
 
     QVariantList wangTileVariants;
     const auto wangTiles = wangSet.sortedWangTiles();
@@ -391,7 +380,7 @@ QVariant MapToVariantConverter::toVariant(const WangSet &wangSet) const
         QVariantMap wangTileVariant;
 
         QVariantList wangIdVariant;
-        for (int i = 0; i < 8; ++i)
+        for (int i = 0; i < WangId::NumIndexes; ++i)
             wangIdVariant.append(QVariant(wangTile.wangId().indexColor(i)));
 
         wangTileVariant[QStringLiteral("wangid")] = wangIdVariant;

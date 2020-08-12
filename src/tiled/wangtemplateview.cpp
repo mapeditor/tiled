@@ -75,18 +75,23 @@ static void paintTemplateTile(QPainter *painter,
     painter->setBrush(Qt::red);
     painter->setPen(QPen(Qt::gray, 1));
 
+    // TODO: When we support WangSet type (Edges, Corners, etc.) this will need
+    // adjustment, or we can use a unified rendering approach.
+    const bool paintCorners = wangSet->colorCount() > 1;
+    const bool paintEdges = wangSet->colorCount() > 1;
+
     //paints corners
-    if (wangSet->cornerColorCount() > 1) {
+    if (paintCorners) {
         QPolygon p;
 
-        if (wangSet->edgeColorCount() > 1) {
+        if (paintEdges) {
             //top right
             p.append(QPoint(centeredRect.right()/3, centeredRect.top()/3));
             p.append(QPoint(centeredRect.right()/3, centeredRect.top()));
             p.append(centeredRect.topRight());
             p.append(QPoint(centeredRect.right(), centeredRect.top()/3));
 
-            painter->setBrush(wangSet->cornerColorAt(wangId.cornerColor(0))->color());
+            painter->setBrush(wangSet->colorAt(wangId.indexColor(WangId::TopRight))->color());
             painter->drawPolygon(p);
             p.clear();
             //bot right
@@ -95,7 +100,7 @@ static void paintTemplateTile(QPainter *painter,
             p.append(centeredRect.bottomRight());
             p.append(QPoint(centeredRect.right(), centeredRect.bottom()/3));
 
-            painter->setBrush(wangSet->cornerColorAt(wangId.cornerColor(1))->color());
+            painter->setBrush(wangSet->colorAt(wangId.indexColor(WangId::BottomRight))->color());
             painter->drawPolygon(p);
             p.clear();
             //bot left
@@ -104,7 +109,7 @@ static void paintTemplateTile(QPainter *painter,
             p.append(centeredRect.bottomLeft());
             p.append(QPoint(centeredRect.left(), centeredRect.bottom()/3));
 
-            painter->setBrush(wangSet->cornerColorAt(wangId.cornerColor(2))->color());
+            painter->setBrush(wangSet->colorAt(wangId.indexColor(WangId::BottomLeft))->color());
             painter->drawPolygon(p);
             p.clear();
             //top left
@@ -113,7 +118,7 @@ static void paintTemplateTile(QPainter *painter,
             p.append(centeredRect.topLeft());
             p.append(QPoint(centeredRect.left(), centeredRect.top()/3));
 
-            painter->setBrush(wangSet->cornerColorAt(wangId.cornerColor(3))->color());
+            painter->setBrush(wangSet->colorAt(wangId.indexColor(WangId::TopLeft))->color());
             painter->drawPolygon(p);
         } else {
             //top right
@@ -122,7 +127,7 @@ static void paintTemplateTile(QPainter *painter,
             p.append(centeredRect.topRight());
             p.append(QPoint(centeredRect.right(), 0));
 
-            painter->setBrush(wangSet->cornerColorAt(wangId.cornerColor(0))->color());
+            painter->setBrush(wangSet->colorAt(wangId.indexColor(WangId::TopRight))->color());
             painter->drawPolygon(p);
             p.clear();
             //bottom right
@@ -131,7 +136,7 @@ static void paintTemplateTile(QPainter *painter,
             p.append(centeredRect.bottomRight());
             p.append(QPoint(centeredRect.right(), 0));
 
-            painter->setBrush(wangSet->cornerColorAt(wangId.cornerColor(1))->color());
+            painter->setBrush(wangSet->colorAt(wangId.indexColor(WangId::BottomRight))->color());
             painter->drawPolygon(p);
             p.clear();
             //bottom left
@@ -140,7 +145,7 @@ static void paintTemplateTile(QPainter *painter,
             p.append(centeredRect.bottomLeft());
             p.append(QPoint(centeredRect.left(), 0));
 
-            painter->setBrush(wangSet->cornerColorAt(wangId.cornerColor(2))->color());
+            painter->setBrush(wangSet->colorAt(wangId.indexColor(WangId::BottomLeft))->color());
             painter->drawPolygon(p);
             p.clear();
             //top left
@@ -149,17 +154,17 @@ static void paintTemplateTile(QPainter *painter,
             p.append(centeredRect.topLeft());
             p.append(QPoint(centeredRect.left(), 0));
 
-            painter->setBrush(wangSet->cornerColorAt(wangId.cornerColor(3))->color());
+            painter->setBrush(wangSet->colorAt(wangId.indexColor(WangId::TopLeft))->color());
             painter->drawPolygon(p);
             p.clear();
         }
     }
 
     //paints edges
-    if (wangSet->edgeColorCount() > 1) {
+    if (paintEdges) {
         QPolygon p;
 
-        if (wangSet->cornerColorCount() > 1) {
+        if (paintCorners) {
             //top
             p.append(QPoint(0, 0));
             p.append(QPoint(centeredRect.left()/3, centeredRect.top()/3));
@@ -167,7 +172,7 @@ static void paintTemplateTile(QPainter *painter,
             p.append(QPoint(centeredRect.right()/3, centeredRect.top()));
             p.append(QPoint(centeredRect.right()/3, centeredRect.top()/3));
 
-            painter->setBrush(wangSet->edgeColorAt(wangId.edgeColor(0))->color());
+            painter->setBrush(wangSet->colorAt(wangId.indexColor(WangId::Top))->color());
             painter->drawPolygon(p);
             p.clear();
 
@@ -178,7 +183,7 @@ static void paintTemplateTile(QPainter *painter,
             p.append(QPoint(centeredRect.right(), centeredRect.bottom()/3));
             p.append(QPoint(centeredRect.right()/3, centeredRect.bottom()/3));
 
-            painter->setBrush(wangSet->edgeColorAt(wangId.edgeColor(1))->color());
+            painter->setBrush(wangSet->colorAt(wangId.indexColor(WangId::Right))->color());
             painter->drawPolygon(p);
             p.clear();
             //bottom
@@ -188,7 +193,7 @@ static void paintTemplateTile(QPainter *painter,
             p.append(QPoint(centeredRect.left()/3, centeredRect.bottom()));
             p.append(QPoint(centeredRect.left()/3, centeredRect.bottom()/3));
 
-            painter->setBrush(wangSet->edgeColorAt(wangId.edgeColor(2))->color());
+            painter->setBrush(wangSet->colorAt(wangId.indexColor(WangId::Bottom))->color());
             painter->drawPolygon(p);
             p.clear();
             //left
@@ -198,7 +203,7 @@ static void paintTemplateTile(QPainter *painter,
             p.append(QPoint(centeredRect.left(), centeredRect.bottom()/3));
             p.append(QPoint(centeredRect.left()/3, centeredRect.bottom()/3));
 
-            painter->setBrush(wangSet->edgeColorAt(wangId.edgeColor(3))->color());
+            painter->setBrush(wangSet->colorAt(wangId.indexColor(WangId::Left))->color());
             painter->drawPolygon(p);
         } else {
             //top
@@ -206,7 +211,7 @@ static void paintTemplateTile(QPainter *painter,
             p.append(centeredRect.topLeft());
             p.append(centeredRect.topRight());
 
-            painter->setBrush(wangSet->edgeColorAt(wangId.edgeColor(0))->color());
+            painter->setBrush(wangSet->colorAt(wangId.indexColor(WangId::Top))->color());
             painter->drawPolygon(p);
             p.clear();
             //right
@@ -214,7 +219,7 @@ static void paintTemplateTile(QPainter *painter,
             p.append(centeredRect.bottomRight());
             p.append(centeredRect.topRight());
 
-            painter->setBrush(wangSet->edgeColorAt(wangId.edgeColor(1))->color());
+            painter->setBrush(wangSet->colorAt(wangId.indexColor(WangId::Right))->color());
             painter->drawPolygon(p);
             p.clear();
             //bottom
@@ -222,7 +227,7 @@ static void paintTemplateTile(QPainter *painter,
             p.append(centeredRect.bottomRight());
             p.append(centeredRect.bottomLeft());
 
-            painter->setBrush(wangSet->edgeColorAt(wangId.edgeColor(2))->color());
+            painter->setBrush(wangSet->colorAt(wangId.indexColor(WangId::Bottom))->color());
             painter->drawPolygon(p);
             p.clear();
             //left
@@ -230,10 +235,10 @@ static void paintTemplateTile(QPainter *painter,
             p.append(centeredRect.topLeft());
             p.append(centeredRect.bottomLeft());
 
-            painter->setBrush(wangSet->edgeColorAt(wangId.edgeColor(3))->color());
+            painter->setBrush(wangSet->colorAt(wangId.indexColor(WangId::Left))->color());
             painter->drawPolygon(p);
         }
-    } else if (wangSet->cornerColorCount() <= 1) {
+    } else if (!paintCorners) {
         painter->drawRect(centeredRect);
     }
 

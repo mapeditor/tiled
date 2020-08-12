@@ -38,14 +38,11 @@ int WangTemplateModel::rowCount(const QModelIndex &parent) const
     if (!mWangSet)
         return 0;
 
-    int rows = mWangSet->edgeColorCount() * mWangSet->cornerColorCount();
-    rows *= rows;
-    rows *= rows;
-    rows &= ~(1 << 31);
+    const unsigned rows = mWangSet->completeSetSize();
 
     // arbitrary large cap on how many rows can be displayed.
     // could eventually be moved to pagination...
-    return std::min(rows, 0xffff);
+    return static_cast<int>(std::min<unsigned>(rows, 0xffff));
 }
 
 QVariant WangTemplateModel::data(const QModelIndex &index, int role) const
@@ -77,32 +74,23 @@ QModelIndex WangTemplateModel::wangIdIndex(WangId wangId) const
 
     Q_ASSERT(mWangSet->wangIdIsValid(wangId));
 
-    int edges = mWangSet->edgeColorCount();
-    int corners = mWangSet->cornerColorCount();
+    const int colors = mWangSet->colorCount();
 
     //as this is a model of template tiles, a valid wangId can't have wildcards
-    if (edges > 1) {
-        if (wangId.hasEdgeWildCards())
+    if (colors > 1) {
+        if (wangId.hasWildCards())
             return QModelIndex();
 
-        wangId = wangId - 0x01010101;
-    }
-    if (corners > 1) {
-        if (wangId.hasCornerWildCards())
-            return QModelIndex();
-
-        wangId = wangId - 0x10101010;
+        wangId = wangId - 0x11111111;
     }
 
+    // TODO: When we support WangSet type (Edges, Corners, etc.) this will need adjustment.
     int row = 0;
-    int cornerEdgePermutations = edges * corners;
+    int cornerEdgePermutations = colors * colors;
 
-    for (int i = 0; i < 8; ++i) {
-        int belowPermutations = qPow(cornerEdgePermutations, i/2) * ((i&1)? edges : 1);
-        if (i&1)
-            row += wangId.cornerColor(i/2) * belowPermutations;
-        else
-            row += wangId.edgeColor(i/2) * belowPermutations;
+    for (int i = 0; i < WangId::NumIndexes; ++i) {
+        int belowPermutations = qPow(cornerEdgePermutations, i/2) * ((i&1)? colors : 1);
+        row += wangId.indexColor(i) * belowPermutations;
     }
 
     return index(row, 0);

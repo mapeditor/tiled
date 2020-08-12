@@ -49,37 +49,96 @@ unsigned wangTileToTileInfo(const WangTile &wangTile)
             | (wangTile.flippedAntiDiagonally() << 27);
 }
 
+/**
+ * These return the color of the edge of the WangId.
+ * 0 being the top edge:
+ *
+ *       |0|
+ *      3|.|1
+ *       |2|
+ */
 int WangId::edgeColor(int index) const
 {
+    Q_ASSERT(index >= 0 && index < 4);
     return indexColor(index * 2);
 }
 
+/**
+ * These return the color of the corner of the WangId.
+ * 0 being the top right corner:
+ *
+ *      3| |0
+ *       |.|
+ *      2| |1
+ */
 int WangId::cornerColor(int index) const
 {
+    Q_ASSERT(index >= 0 && index < 4);
     return indexColor(index * 2 + 1);
 }
 
+/**
+ * Returns the color of a certain index 0 - 7.
+ *
+ *      7|0|1
+ *      6|.|2
+ *      5|4|3
+ */
 int WangId::indexColor(int index) const
 {
+    Q_ASSERT(index >= 0 && index < NumIndexes);
     return (mId >> (index * 4)) & 0xf;
 }
 
 void WangId::setEdgeColor(int index, unsigned value)
 {
+    Q_ASSERT(index >= 0 && index < 4);
     setIndexColor(index * 2, value);
 }
 
 void WangId::setCornerColor(int index, unsigned value)
 {
+    Q_ASSERT(index >= 0 && index < 4);
     setIndexColor(index * 2 + 1, value);
 }
 
+/**
+ * Sets the color of a certain grid index:
+ *
+ *      y
+ *    x 0|1|2
+ *      1|.|.
+ *      2|.|.
+ */
+void WangId::setGridColor(int x, int y, unsigned value)
+{
+    const int index = indexByGrid(x, y);
+    if (index < NumIndexes)
+        setIndexColor(index, value);
+}
+
+/**
+ * Sets the color of a certain index 0 - 7.
+ *
+ *      7|0|1
+ *      6|.|2
+ *      5|4|3
+ */
 void WangId::setIndexColor(int index, unsigned value)
 {
+    Q_ASSERT(index >= 0 && index < NumIndexes);
     mId &= ~(0xf << (index * 4));
     mId |= (value & 0xf) << (index * 4);
 }
 
+/**
+ * Matches this WangId's edges/corners with an \a adjacent one.
+ * Where \a position is 0-7 with 0 being top, and 7 being top left:
+ *
+ *      7|0|1
+ *      6|.|2
+ *      5|4|3
+ */
 void WangId::updateToAdjacent(WangId adjacent, int position)
 {
     int index = position / 2;
@@ -94,31 +153,33 @@ void WangId::updateToAdjacent(WangId adjacent, int position)
     }
 }
 
-bool WangId::hasEdgeWildCards() const
+/**
+ * Returns true if one or more indexes have no color.
+ */
+bool WangId::hasWildCards() const
 {
-    for (int i = 0; i < 4; ++i) {
-        if (!edgeColor(i))
+    for (int i = 0; i < NumIndexes; ++i) {
+        if (!indexColor(i))
             return true;
     }
 
     return false;
 }
 
-bool WangId::hasCornerWildCards() const
+/**
+ * Gives a list of wangId variations of this one
+ * where every 0 is a wildCard (can be 0 - colorCount)
+ */
+WangIdVariations WangId::variations(int colorCount) const
 {
-    for (int i = 0; i < 4; ++i) {
-        if (!cornerColor(i))
-            return true;
-    }
-
-    return false;
+    return WangIdVariations(colorCount, mId);
 }
 
-WangIdVariations WangId::variations(int edgeColors, int cornerColors) const
-{
-    return WangIdVariations(edgeColors, cornerColors, mId);
-}
-
+/**
+ * Rotates the wang Id clockwise by (90 * rotations) degrees.
+ * Meaning with one rotation, the top edge becomes the right edge,
+ * and the top right corner, becomes the top bottom.
+ */
 void WangId::rotate(int rotations)
 {
     if (rotations < 0)
@@ -126,18 +187,21 @@ void WangId::rotate(int rotations)
     else
         rotations %= 4;
 
-    unsigned rotated = mId << rotations*8;
+    unsigned rotated = mId << rotations * 8;
     rotated = rotated | (mId >> ((4 - rotations) * 8));
 
     mId = rotated;
 }
 
+/**
+ * Flips the wang Id horizontally.
+ */
 void WangId::flipHorizontally()
 {
     WangId newWangId = mId;
 
-    newWangId.setEdgeColor(1, edgeColor(3));
-    newWangId.setEdgeColor(3, edgeColor(1));
+    newWangId.setIndexColor(WangId::Right, indexColor(WangId::Left));
+    newWangId.setIndexColor(WangId::Left, indexColor(WangId::Right));
 
     for (int i = 0; i < 4; ++i)
         newWangId.setCornerColor(i, cornerColor(3-i));
@@ -145,34 +209,40 @@ void WangId::flipHorizontally()
     mId = newWangId;
 }
 
+/**
+ * Flips the wang Id vertically.
+ */
 void WangId::flipVertically()
 {
     flipHorizontally();
     rotate(2);
 }
 
-WangIdVariations::iterator::iterator(int edgeColors, int cornerColors, WangId wangId)
+WangId::Index WangId::indexByGrid(int x, int y)
+{
+    Q_ASSERT(x >= 0 && x < 3);
+    Q_ASSERT(y >= 0 && y < 3);
+
+    const Index map[3][3] = {
+        { TopLeft,      Top,        TopRight },
+        { Left,         NumIndexes, Right },
+        { BottomLeft,   Bottom,     BottomRight },
+    };
+
+    return map[y][x];
+}
+
+
+WangIdVariations::iterator::iterator(int colorCount, WangId wangId)
     : mCurrent(wangId)
     , mMax(wangId)
-    , mEdgeColors(edgeColors)
-    , mCornerColors(cornerColors)
+    , mColorCount(colorCount)
 {
-    if (mEdgeColors > 1) {
-        for (int i = 0; i < 4; ++i) {
-            if (!wangId.edgeColor(i)) {
-                mZeroSpots.append(i*2);
-
-                mMax.setEdgeColor(i, mEdgeColors);
-            }
-        }
-    }
-
-    if (mCornerColors > 1) {
-        for (int i = 0; i < 4; ++i) {
-            if (!wangId.cornerColor(i)) {
-                mZeroSpots.append(i*2 + 1);
-
-                mMax.setCornerColor(i, mCornerColors);
+    if (mColorCount > 1) {
+        for (int i = 0; i < WangId::NumIndexes; ++i) {
+            if (!wangId.indexColor(i)) {
+                mZeroSpots.append(i);
+                mMax.setIndexColor(i, mColorCount);
             }
         }
     }
@@ -193,7 +263,7 @@ WangIdVariations::iterator &WangIdVariations::iterator::operator ++()
     while (true) {
         mCurrent.setIndexColor(currentSpot, mCurrent.indexColor(currentSpot) + 1);
 
-        if (mCurrent.indexColor(currentSpot) > ((currentSpot & 1) ? mCornerColors : mEdgeColors)) {
+        if (mCurrent.indexColor(currentSpot) > mColorCount) {
             mCurrent.setIndexColor(currentSpot, 0);
             if (++index >= mZeroSpots.size())
                 break;
@@ -210,25 +280,21 @@ WangIdVariations::iterator WangIdVariations::end() const
 {
     WangId id = mWangId;
 
-    if (mEdgeColors > 1) {
-        for (int i = 0; i < 4; ++i) {
-            if (!id.edgeColor(i))
-                id.setEdgeColor(i, mEdgeColors);
-        }
-    }
-    if (mCornerColors > 1) {
-        for (int i = 0; i < 4; ++i) {
-            if (!id.cornerColor(i))
-                id.setCornerColor(i, mCornerColors);
+    if (mColorCount > 1) {
+        for (int i = 0; i < WangId::NumIndexes; ++i) {
+            if (!id.indexColor(i))
+                id.setIndexColor(i, mColorCount);
         }
     }
 
     id = id + 1;
 
-    return iterator(mEdgeColors, mCornerColors, id);
+    return iterator(mColorCount, id);
 }
 
-void WangTile::translate(int map[])
+// performs a translation (either flipping or rotating) based on a one to
+// one map of size 8 (from 0 - 7)
+void WangTile::translate(const int map[])
 {
     int mask = (mFlippedHorizontally << 2)
             | (mFlippedVertically << 1)
@@ -243,7 +309,7 @@ void WangTile::translate(int map[])
 
 void WangTile::rotateRight()
 {
-    int map[] = {5, 4, 1, 0, 7, 6, 3, 2};
+    const int map[] = { 5, 4, 1, 0, 7, 6, 3, 2 };
     mWangId.rotate(1);
 
     translate(map);
@@ -251,7 +317,7 @@ void WangTile::rotateRight()
 
 void WangTile::rotateLeft()
 {
-    int map[] = {3, 2, 7, 6, 1, 0, 5, 4};
+    const int map[] = { 3, 2, 7, 6, 1, 0, 5, 4 };
     mWangId.rotate(3);
 
     translate(map);
@@ -259,7 +325,7 @@ void WangTile::rotateLeft()
 
 void WangTile::flipHorizontally()
 {
-    int map[] = {4, 3, 6, 1, 0, 7, 2, 5};
+    const int map[] = { 4, 3, 6, 1, 0, 7, 2, 5 };
     mWangId.flipHorizontally();
 
     translate(map);
@@ -267,7 +333,7 @@ void WangTile::flipHorizontally()
 
 void WangTile::flipVertically()
 {
-    int map[] = {2, 5, 0, 7, 6, 1, 4, 3};
+    const int map[] = { 2, 5, 0, 7, 6, 1, 4, 3 };
     mWangId.flipVertically();
 
     translate(map);
@@ -288,13 +354,12 @@ Cell WangTile::makeCell() const
 
 
 WangColor::WangColor()
-    : WangColor(0, true, QString(), Qt::red, -1)
+    : WangColor(0, QString(), Qt::red, -1)
 {}
 
-WangColor::WangColor(int colorIndex, bool isEdge, const QString &name, const QColor &color, int imageId, qreal probability)
+WangColor::WangColor(int colorIndex, const QString &name, const QColor &color, int imageId, qreal probability)
     : Object(WangColorType)
     , mColorIndex(colorIndex)
-    , mIsEdge(isEdge)
     , mName(name)
     , mColor(color)
     , mImageId(imageId)
@@ -332,160 +397,86 @@ WangSet::WangSet(Tileset *tileset,
     Q_ASSERT(tileset);
 }
 
-int WangSet::edgeColorCount() const
-{
-    return qMax(1, mEdgeColors.size());
-}
-
-int WangSet::cornerColorCount() const
-{
-    return qMax(1, mCornerColors.size());
-}
-
-void WangSet::setEdgeColorCount(int n)
+/**
+ * Sets the color count.
+ *
+ * This can make wangIds already in the set invalid, so should only be used
+ * from ChangeWangSetColorCount.
+ */
+void WangSet::setColorCount(int n)
 {
     Q_ASSERT(n > 0 && n <= 15);
 
-    if (n == edgeColorCount())
+    if (n == colorCount())
         return;
 
     if (n == 1) {
-        mEdgeColors.clear();
+        mColors.clear();
         return;
     }
 
-    if (n < edgeColorCount()) {
-        mEdgeColors.resize(n);
+    if (n < colorCount()) {
+        mColors.resize(n);
     } else {
-        while (mEdgeColors.size() != n) {
-            const QColor &color = defaultWangColors[mEdgeColors.size()];
-            mEdgeColors.append(QSharedPointer<WangColor>::create(mEdgeColors.size() + 1,
-                                                                 true,
-                                                                 QString(),
-                                                                 color));
-            mEdgeColors.last()->mWangSet = this;
+        while (mColors.size() < n) {
+            const QColor &color = defaultWangColors[mColors.size()];
+            mColors.append(QSharedPointer<WangColor>::create(mColors.size() + 1,
+                                                             QString(),
+                                                             color));
+            mColors.last()->mWangSet = this;
         }
     }
 }
 
-void WangSet::setCornerColorCount(int n)
-{
-    Q_ASSERT(n > 0 && n <= 15);
-
-    if (n == cornerColorCount())
-        return;
-
-    if (n == 1) {
-        mCornerColors.clear();
-        return;
-    }
-
-    if (n < cornerColorCount()) {
-        mCornerColors.resize(n);
-    } else {
-        while (mCornerColors.size() != n) {
-            const QColor &color = defaultWangColors[mCornerColors.size()];
-            mCornerColors.append(QSharedPointer<WangColor>::create(mCornerColors.size() + 1,
-                                                                   false,
-                                                                   QString(),
-                                                                   color));
-            mCornerColors.last()->mWangSet = this;
-        }
-    }
-}
-
+/**
+ * Inserts a given wangColor into the wangSet.
+ * If the color is greater than current count, it must only be one greater.
+ * For use in an undo command (does not adjust currently assigned tiles).
+ */
 void WangSet::insertWangColor(const QSharedPointer<WangColor> &wangColor)
 {
-    if (wangColor->isEdge())
-        insertEdgeWangColor(wangColor);
-    else
-        insertCornerWangColor(wangColor);
+    Q_ASSERT(colorCount() + 1 >= wangColor->colorIndex());
+
+    wangColor->mWangSet = this;
+    mColors.insert(wangColor->colorIndex() - 1, wangColor);
+
+    for (int i = wangColor->colorIndex(); i < colorCount(); ++i)
+        mColors.at(i)->setColorIndex(i + 1);
 }
 
-
+/**
+ * Adds a \a wangColor to the set.
+ * The Wang colors color index may be changed.
+ */
 void WangSet::addWangColor(const QSharedPointer<WangColor> &wangColor)
 {
-    if (wangColor->isEdge()) {
-        wangColor->setColorIndex(mEdgeColors.size() + 1);
-        insertEdgeWangColor(wangColor);
-    } else {
-        wangColor->setColorIndex(mCornerColors.size() + 1);
-        insertCornerWangColor(wangColor);
-    }
+    wangColor->setColorIndex(mColors.size() + 1);
+    insertWangColor(wangColor);
 }
 
-void WangSet::insertEdgeWangColor(const QSharedPointer<WangColor> &wangColor)
+/**
+ * Removes a given \a color.
+ *
+ * This can make wangIds invalid, so should only be used from
+ * changewangsetdata.h
+ */
+void WangSet::removeWangColorAt(int color)
 {
-    Q_ASSERT(edgeColorCount() + 1 >= wangColor->colorIndex());
+    Q_ASSERT(colorCount() > 1 && color <= colorCount() - 1);
 
-    wangColor->mWangSet = this;
-    mEdgeColors.insert(wangColor->colorIndex() - 1, wangColor);
+    mColors.at(color - 1)->mWangSet = nullptr;
+    mColors.removeAt(color - 1);
 
-    for (int i = wangColor->colorIndex(); i < edgeColorCount(); ++i)
-        mEdgeColors.at(i)->setColorIndex(i + 1);
+    for (int i = color - 1; i < colorCount(); ++i)
+        mColors.at(i)->setColorIndex(i + 1);
 }
 
-void WangSet::insertCornerWangColor(const QSharedPointer<WangColor> &wangColor)
-{
-    Q_ASSERT(cornerColorCount() + 1 >= wangColor->colorIndex());
-
-    wangColor->mWangSet = this;
-    mCornerColors.insert(wangColor->colorIndex() - 1, wangColor);
-
-    for (int i = wangColor->colorIndex(); i < cornerColorCount(); ++i)
-        mCornerColors.at(i)->setColorIndex(i + 1);
-}
-
-void WangSet::removeWangColorAt(int color, bool isEdge)
-{
-    if (isEdge)
-        removeEdgeWangColor(color);
-    else
-        removeCornerWangColor(color);
-}
-
-void WangSet::removeEdgeWangColor(int color)
-{
-    Q_ASSERT(edgeColorCount() > 1 && color <= edgeColorCount() - 1);
-
-    mEdgeColors.at(color - 1)->mWangSet = nullptr;
-    mEdgeColors.removeAt(color - 1);
-
-    for (int i = color - 1; i < edgeColorCount(); ++i)
-        mEdgeColors.at(i)->setColorIndex(i + 1);
-}
-
-void WangSet::removeCornerWangColor(int color)
-{
-    Q_ASSERT(cornerColorCount() > 1 && color <= cornerColorCount() - 1);
-
-    mCornerColors.at(color - 1)->mWangSet = nullptr;
-    mCornerColors.removeAt(color - 1);
-
-    for (int i = color - 1; i < cornerColorCount(); ++i)
-        mCornerColors.at(i)->setColorIndex(i + 1);
-}
-
-const QSharedPointer<WangColor> &WangSet::edgeColorAt(int index) const
-{
-    Q_ASSERT(index > 0 && index <= edgeColorCount());
-
-    return mEdgeColors.at(index - 1);
-}
-
-const QSharedPointer<WangColor> &WangSet::cornerColorAt(int index) const
-{
-    Q_ASSERT(index > 0 && index <= cornerColorCount());
-
-    return mCornerColors.at(index - 1);
-}
-
-QList<Tile *> WangSet::tilesChangedOnSetEdgeColors(int newEdgeColors) const
+QList<Tile *> WangSet::tilesChangedOnSetColorCount(int newColorCount) const
 {
     QList<Tile *> tiles;
 
     for (auto i = mTileInfoToWangId.cbegin(); i != mTileInfoToWangId.cend(); ++i) {
-        if (!wangIdIsValid(i.value(), newEdgeColors, cornerColorCount())) {
+        if (!wangIdIsValid(i.value(), newColorCount)) {
             int tileId = i.key() & 0x1fffffff;
             tiles.append(mTileset->findTile(tileId));
         }
@@ -494,42 +485,21 @@ QList<Tile *> WangSet::tilesChangedOnSetEdgeColors(int newEdgeColors) const
     return tiles;
 }
 
-QList<Tile *> WangSet::tilesChangedOnSetCornerColors(int newCornerColors) const
+QList<Tile *> WangSet::tilesChangedOnRemoveColor(int color) const
 {
     QList<Tile *> tiles;
 
     for (auto i = mTileInfoToWangId.cbegin(); i != mTileInfoToWangId.cend(); ++i) {
-        if (!wangIdIsValid(i.value(), edgeColorCount(), newCornerColors)) {
-            int tileId = i.key() & 0x1fffffff;
-            tiles.append(mTileset->findTile(tileId));
-        }
-    }
-
-    return tiles;
-}
-
-QList<Tile *> WangSet::tilesChangedOnRemoveColor(int color, bool isEdge) const
-{
-    QList<Tile *> tiles;
-
-    for (auto i = mTileInfoToWangId.cbegin(); i != mTileInfoToWangId.cend(); ++i) {
-        for (int j = 0; j < 4; ++j) {
-            int c = isEdge? i.value().edgeColor(j) : i.value().cornerColor(j);
+        for (int j = 0; j < 8; ++j) {
+            int c = i.value().indexColor(j);
             int tileId = i.key() & 0x1fffffff;
             if (c >= color) {
                 tiles.append(mTileset->findTile(tileId));
                 break;
             }
-            if (isEdge) {
-                if (edgeColorCount() == 2 && c) {
-                    tiles.append(mTileset->findTile(tileId));
-                    break;
-                }
-            } else {
-                if (cornerColorCount() == 2 && c) {
-                    tiles.append(mTileset->findTile(tileId));
-                    break;
-                }
+            if (colorCount() == 2 && c) {
+                tiles.append(mTileset->findTile(tileId));
+                break;
             }
         }
     }
@@ -537,16 +507,14 @@ QList<Tile *> WangSet::tilesChangedOnRemoveColor(int color, bool isEdge) const
     return tiles;
 }
 
-void WangSet::addTile(Tile *tile, WangId wangId)
-{
-    addWangTile(WangTile(tile, wangId));
-}
-
-void WangSet::addCell(const Cell &cell, WangId wangId)
-{
-    addWangTile(WangTile(cell, wangId));
-}
-
+/**
+ * Adds a \a wangTile to the wang set.
+ *
+ * If the given WangTile is already in the set with a different wangId, then
+ * that reference is removed, and replaced with the new wangId. If the wangId
+ * provided is zero then the wangTile is removed if already in the set. Updates
+ * the UniqueFullWangIdCount.
+ */
 void WangSet::addWangTile(const WangTile &wangTile)
 {
     Q_ASSERT(wangTile.tile()->tileset() == mTileset);
@@ -565,9 +533,7 @@ void WangSet::addWangTile(const WangTile &wangTile)
     if (wangTile.wangId() == 0)
         return;
 
-    if ((edgeColorCount() <= 1 || !wangTile.wangId().hasEdgeWildCards())
-            && (cornerColorCount() <= 1 || !wangTile.wangId().hasCornerWildCards())
-            && !mWangIdToWangTile.contains(wangTile.wangId()))
+    if (!wangTile.wangId().hasWildCards() && !mWangIdToWangTile.contains(wangTile.wangId()))
         ++mUniqueFullWangIdCount;
 
     mWangIdToWangTile.insert(wangTile.wangId(), wangTile);
@@ -585,11 +551,14 @@ void WangSet::removeWangTile(const WangTile &wangTile)
 
     if (wangId
             && !mWangIdToWangTile.contains(wangId)
-            && (edgeColorCount() <= 1 || !wangId.hasEdgeWildCards())
-            && (cornerColorCount() <= 1 || !wangId.hasCornerWildCards()))
+            && !wangId.hasWildCards())
         --mUniqueFullWangIdCount;
 }
 
+/**
+ * Returns a sorted list of the wangTiles in this set.
+ * Sorted by tileId.
+ */
 QList<WangTile> WangSet::sortedWangTiles() const
 {
     QList<WangTile> wangTiles = mWangIdToWangTile.values();
@@ -597,6 +566,10 @@ QList<WangTile> WangSet::sortedWangTiles() const
     return wangTiles;
 }
 
+/**
+ * Finds all the tiles which match the given \a wangId, where zeros in the id
+ * are treated as wild cards, and can be any color.
+ */
 QList<WangTile> WangSet::findMatchingWangTiles(WangId wangId) const
 {
     if (wangId == 0)
@@ -604,7 +577,7 @@ QList<WangTile> WangSet::findMatchingWangTiles(WangId wangId) const
 
     QList<WangTile> list;
 
-    for (WangId id : wangId.variations(edgeColorCount(), cornerColorCount())) {
+    for (WangId id : wangId.variations(colorCount())) {
         auto i = mWangIdToWangTile.find(id);
         while (i != mWangIdToWangTile.end() && i.key() == id) {
             list.append(i.value());
@@ -615,42 +588,63 @@ QList<WangTile> WangSet::findMatchingWangTiles(WangId wangId) const
     return list;
 }
 
-WangId WangSet::wangIdFromSurrounding(WangId surroundingWangIds[]) const
+/**
+ * Returns a WangId matching that of the provided \a surroundingWangIds.
+ *
+ * This is based off a provided array, { 0, 1, 2, 3, 4, 5, 6, 7 },
+ * which corresponds to:
+ *
+ *      7|0|1
+ *      6|X|2
+ *      5|4|3
+ */
+WangId WangSet::wangIdFromSurrounding(const WangId surroundingWangIds[]) const
 {
     unsigned id = 0;
 
-    if (edgeColorCount() > 1) {
-        for (int i = 0; i < 4; ++i)
-            id |= (surroundingWangIds[i*2].edgeColor((2 + i) % 4)) << (i*8);
-    }
+    // Edges
+    for (int i = 0; i < 4; ++i)
+        id |= (surroundingWangIds[i*2].edgeColor((2 + i) % 4)) << (i*8);
 
-    if (cornerColorCount() > 1) {
-        for (int i = 0; i < 4; ++i) {
-            int color = surroundingWangIds[i*2 + 1].cornerColor((2 + i) % 4);
+    // Corners
+    for (int i = 0; i < 4; ++i) {
+        int color = surroundingWangIds[i*2 + 1].cornerColor((2 + i) % 4);
 
-            if (!color)
-                color = surroundingWangIds[i*2].cornerColor((1 + i) % 4);
+        if (!color)
+            color = surroundingWangIds[i*2].cornerColor((1 + i) % 4);
 
-            if (!color)
-                color = surroundingWangIds[(i*2 + 2) % 8].cornerColor((3 + i) % 4);
+        if (!color)
+            color = surroundingWangIds[(i*2 + 2) % 8].cornerColor((3 + i) % 4);
 
-            id |= color << (4 + i*8);
-        }
+        id |= color << (4 + i*8);
     }
 
     return id;
 }
 
+/**
+ * Returns a wangId matching that of the provided surrounding tiles.
+ *
+ * This is based off a provided array, { 0, 1, 2, 3, 4, 5, 6, 7 },
+ * which corresponds to:
+ *
+ *      7|0|1
+ *      6|X|2
+ *      5|4|3
+ */
 WangId WangSet::wangIdFromSurrounding(const Cell surroundingCells[]) const
 {
     WangId wangIds[8];
 
-    for (int i = 0; i < 8; ++i)
+    for (int i = 0; i < WangId::NumIndexes; ++i)
         wangIds[i] = wangIdOfCell(surroundingCells[i]);
 
     return wangIdFromSurrounding(wangIds);
 }
 
+/**
+ * Returns a list of all the tiles with a WangId.
+ */
 QList<Tile *> WangSet::tilesWithWangId() const
 {
     QList<Tile *> tiles;
@@ -661,38 +655,35 @@ QList<Tile *> WangSet::tilesWithWangId() const
     return tiles;
 }
 
+/**
+ * Returns the WangId of a given \a tile.
+ */
 WangId WangSet::wangIdOfTile(const Tile *tile) const
 {
     if (tile->tileset() == mTileset)
         return mTileInfoToWangId.value(tile->id());
-    else
-        return WangId();
+    return WangId();
 }
 
 WangId WangSet::wangIdOfCell(const Cell &cell) const
 {
     if (cell.tileset() == mTileset)
         return mTileInfoToWangId.value(cellToTileInfo(cell));
-    else
-        return WangId();
+    return WangId();
 }
 
+/**
+ * The probability of a given wang tile of being selected.
+ */
 qreal WangSet::wangTileProbability(const WangTile &wangTile) const
 {
     qreal probability = 1.0;
     WangId wangId = wangTile.wangId();
 
-    if (edgeColorCount() > 1) {
-        for (int i = 0; i < 4; ++i) {
-            if (int color = wangId.edgeColor(i))
-                probability *= edgeColorAt(color)->probability();
-        }
-    }
-
-    if (cornerColorCount() > 1) {
-        for (int i = 0; i < 4; ++i) {
-            if (int color = wangId.cornerColor(i))
-                probability *= cornerColorAt(color)->probability();
+    if (colorCount() > 1) {
+        for (int i = 0; i < WangId::NumIndexes; ++i) {
+            if (int color = wangId.indexColor(i))
+                probability *= colorAt(color)->probability();
         }
     }
 
@@ -702,35 +693,41 @@ qreal WangSet::wangTileProbability(const WangTile &wangTile) const
     return probability;
 }
 
+/**
+ * Returns whether or not the given wangId is valid in the contex of the
+ * current wangSet
+ */
 bool WangSet::wangIdIsValid(WangId wangId) const
 {
-    return wangIdIsValid(wangId, edgeColorCount(), cornerColorCount());
+    return wangIdIsValid(wangId, colorCount());
 }
 
-bool WangSet::wangIdIsValid(WangId wangId, int edgeCount, int cornerCount)
+bool WangSet::wangIdIsValid(WangId wangId, int colorCount)
 {
-    for (int i = 0; i < 4; ++i) {
-        if (wangId.edgeColor(i) > edgeCount
-                || wangId.cornerColor(i) > cornerCount)
+    for (int i = 0; i < WangId::NumIndexes; ++i) {
+        if (wangId.indexColor(i) > colorCount)
             return false;
 
-        if (edgeCount <= 1)
-            if (wangId.edgeColor(i))
-                return false;
-
-        if (cornerCount <= 1)
-            if (wangId.cornerColor(i))
+        if (colorCount <= 1)
+            if (wangId.indexColor(i))
                 return false;
     }
 
     return true;
 }
 
+/**
+ * Returns whether the given \a wangId is assigned to a WangTile.
+ */
 bool WangSet::wangIdIsUsed(WangId wangId) const
 {
     return mWangIdToWangTile.contains(wangId);
 }
 
+/**
+ * Returns true if the given wangId is assigned to a tile,
+ * or any variations of the 0 spots are.
+ */
 bool WangSet::wildWangIdIsUsed(WangId wangId) const
 {
     if (isEmpty())
@@ -738,7 +735,7 @@ bool WangSet::wildWangIdIsUsed(WangId wangId) const
     if (!wangId)
         return true;
 
-    for (WangId id : wangId.variations(edgeColorCount(), cornerColorCount())) {
+    for (WangId id : wangId.variations(colorCount())) {
         if (wangIdIsUsed(id))
             return true;
     }
@@ -746,25 +743,40 @@ bool WangSet::wildWangIdIsUsed(WangId wangId) const
     return false;
 }
 
+/**
+ * Returns whether every template wangTile is filled.
+ */
 bool WangSet::isComplete() const
 {
     return mUniqueFullWangIdCount == completeSetSize();
 }
 
+/**
+ * Returns the amount of tiles expected in a complete tileset.
+ */
 unsigned WangSet::completeSetSize() const
 {
-    return qPow(edgeColorCount(), 4) * qPow(cornerColorCount(), 4);
+    // TODO: When we support WangSet type (Edges, Corners, etc.) this will need adjustment.
+    unsigned c = static_cast<unsigned>(colorCount());
+    return c * c * c * c * c * c * c * c;
 }
 
+/**
+ * Returns the Nth WangId starting at 0x11111111
+ * and, when C is the number of colors, ending at 0xCCCCCCCC.
+ *
+ * Note this does NOT include wildcards (no zeros).
+ */
 WangId WangSet::templateWangIdAt(unsigned n) const
 {
-    unsigned wangId = 0;
     //number of permutations of a corner and edge together.
-    int cornerEdgePermutations = edgeColorCount() * cornerColorCount();
+    const int cornerEdgePermutations = colorCount() * colorCount();
+
+    unsigned wangId = 0;
 
     for (int i = 7; i >= 0; --i) {
         //this is the number of permutations possible bellow this point in the wangId
-        int belowPermutations = qPow(cornerEdgePermutations, i/2) * ((i&1)? edgeColorCount() : 1);
+        int belowPermutations = qPow(cornerEdgePermutations, i/2) * ((i&1) ? colorCount() : 1);
         int value = n / belowPermutations;
         n -= value * belowPermutations;
 
@@ -773,11 +785,15 @@ WangId WangSet::templateWangIdAt(unsigned n) const
 
     //before this is like a base 10 range (0 - 9) where we want (1 - 10) for each digit
     wangId += 0x11111111;
+
     //If edges/corners don't have variations then those spots should be wild.
-    if (edgeColorCount() <= 1)
-        wangId &= 0xf0f0f0f0;
-    if (cornerColorCount() <= 1)
-        wangId &= 0x0f0f0f0f;
+    // TODO: When we support WangSet type (Edges, Corners, etc.) this will need adjustment.
+//    if (edgeColorCount() <= 1)
+//        wangId &= 0xf0f0f0f0;
+//    if (cornerColorCount() <= 1)
+//        wangId &= 0x0f0f0f0f;
+    if (colorCount() <= 1)
+        wangId &= 0x00000000;
 
     return wangId;
 }
@@ -788,28 +804,15 @@ WangSet *WangSet::clone(Tileset *tileset) const
     WangSet *c = new WangSet(tileset, mName, mImageTileId);
 
     c->mUniqueFullWangIdCount = mUniqueFullWangIdCount;
-    c->mEdgeColors = mEdgeColors;
-    c->mCornerColors = mCornerColors;
+    c->mColors = mColors;
     c->mWangIdToWangTile = mWangIdToWangTile;
     c->mTileInfoToWangId = mTileInfoToWangId;
     c->setProperties(properties());
 
     // Avoid sharing Wang colors
-    for (QSharedPointer<WangColor> &wangColor : c->mEdgeColors) {
+    for (QSharedPointer<WangColor> &wangColor : c->mColors) {
         const auto properties = wangColor->properties();
         wangColor = QSharedPointer<WangColor>::create(wangColor->colorIndex(),
-                                                      wangColor->isEdge(),
-                                                      wangColor->name(),
-                                                      wangColor->color(),
-                                                      wangColor->imageId(),
-                                                      wangColor->probability());
-        wangColor->setProperties(properties);
-        wangColor->mWangSet = c;
-    }
-    for (QSharedPointer<WangColor> &wangColor : c->mCornerColors) {
-        const auto properties = wangColor->properties();
-        wangColor = QSharedPointer<WangColor>::create(wangColor->colorIndex(),
-                                                      wangColor->isEdge(),
                                                       wangColor->name(),
                                                       wangColor->color(),
                                                       wangColor->imageId(),

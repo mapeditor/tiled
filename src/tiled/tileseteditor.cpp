@@ -1031,16 +1031,10 @@ void TilesetEditor::currentWangIdChanged(WangId wangId)
     view->setWangId(wangId);
 }
 
-void TilesetEditor::wangColorChanged(int color, bool edge)
+void TilesetEditor::wangColorChanged(int color)
 {
-    TilesetView *view = currentTilesetView();
-    if (!view)
-        return;
-
-    if (edge)
-        view->setWangEdgeColor(color);
-    else
-        view->setWangCornerColor(color);
+    if (TilesetView *view = currentTilesetView())
+        view->setWangColor(color);
 }
 
 void TilesetEditor::addWangSet()
@@ -1090,10 +1084,10 @@ void TilesetEditor::setWangSetImage(Tile *tile)
                                                                    tile->id()));
 }
 
-void TilesetEditor::setWangColorImage(Tile *tile, bool isEdge, int index)
+void TilesetEditor::setWangColorImage(Tile *tile, int index)
 {
     WangSet *wangSet = mWangDock->currentWangSet();
-    WangColor *wangColor = isEdge ? wangSet->edgeColorAt(index).data() : wangSet->cornerColorAt(index).data();
+    WangColor *wangColor = wangSet->colorAt(index).data();
     mCurrentTilesetDocument->undoStack()->push(new ChangeWangColorImage(mCurrentTilesetDocument,
                                                                         wangColor,
                                                                         tile->id()));

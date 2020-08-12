@@ -273,13 +273,7 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
         }
 
         // WangColor tile images
-        for (const QSharedPointer<WangColor> &wangColor : wangSet->edgeColors()) {
-            if (Tile *fromTile = tileset.findTile(wangColor->imageId()))
-                if (Tile *newTile = adjustTile(fromTile))
-                    if (fromTile != newTile)
-                        new ChangeWangColorImage(tilesetDocument, wangColor.data(), newTile->id(), this);
-        }
-        for (const QSharedPointer<WangColor> &wangColor : wangSet->cornerColors()) {
+        for (const QSharedPointer<WangColor> &wangColor : wangSet->colors()) {
             if (Tile *fromTile = tileset.findTile(wangColor->imageId()))
                 if (Tile *newTile = adjustTile(fromTile))
                     if (fromTile != newTile)

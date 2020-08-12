@@ -917,17 +917,13 @@ void PropertyBrowser::addWangSetProperties()
 {
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Wang Set"));
     QtVariantProperty *nameProperty = addProperty(NameProperty, QVariant::String, tr("Name"), groupProperty);
-    QtVariantProperty *edgeProperty = addProperty(EdgeCountProperty, QVariant::Int, tr("Edge Count"), groupProperty);
-    QtVariantProperty *cornerProperty = addProperty(CornerCountProperty, QVariant::Int, tr("Corner Count"), groupProperty);
+    QtVariantProperty *colorCountProperty = addProperty(ColorCountProperty, QVariant::Int, tr("Color Count"), groupProperty);
 
-    edgeProperty->setAttribute(QLatin1String("minimum"), 1);
-    edgeProperty->setAttribute(QLatin1String("maximum"), 15);
-    cornerProperty->setAttribute(QLatin1String("minimum"), 1);
-    cornerProperty->setAttribute(QLatin1String("maximum"), 15);
+    colorCountProperty->setAttribute(QLatin1String("minimum"), 1);
+    colorCountProperty->setAttribute(QLatin1String("maximum"), 15);
 
     nameProperty->setEnabled(mTilesetDocument);
-    edgeProperty->setEnabled(mTilesetDocument);
-    cornerProperty->setEnabled(mTilesetDocument);
+    colorCountProperty->setEnabled(mTilesetDocument);
 
     addProperty(groupProperty);
 }
@@ -1430,15 +1426,10 @@ void PropertyBrowser::applyWangSetValue(PropertyId id, const QVariant &val)
                                                        wangSet,
                                                        val.toString()));
         break;
-    case EdgeCountProperty:
-        mDocument->undoStack()->push(new ChangeWangSetEdgeCount(mTilesetDocument,
-                                                                wangSet,
-                                                                val.toInt()));
-        break;
-    case CornerCountProperty:
-        mDocument->undoStack()->push(new ChangeWangSetCornerCount(mTilesetDocument,
-                                                                  wangSet,
-                                                                  val.toInt()));
+    case ColorCountProperty:
+        mDocument->undoStack()->push(new ChangeWangSetColorCount(mTilesetDocument,
+                                                                 wangSet,
+                                                                 val.toInt()));
         break;
     default:
         break;
@@ -1797,8 +1788,7 @@ void PropertyBrowser::updateProperties()
     case Object::WangSetType: {
         const WangSet *wangSet = static_cast<const WangSet*>(mObject);
         mIdToProperty[NameProperty]->setValue(wangSet->name());
-        mIdToProperty[EdgeCountProperty]->setValue(wangSet->edgeColorCount());
-        mIdToProperty[CornerCountProperty]->setValue(wangSet->cornerColorCount());
+        mIdToProperty[ColorCountProperty]->setValue(wangSet->colorCount());
         break;
     }
     case Object::WangColorType: {

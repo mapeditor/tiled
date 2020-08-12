@@ -403,13 +403,26 @@ std::unique_ptr<WangSet> VariantToMapConverter::toWangSet(const QVariantMap &var
 
     wangSet->setProperties(extractProperties(variantMap));
 
-    const QVariantList edgeColorVariants = variantMap[QStringLiteral("edgecolors")].toList();
-    for (const QVariant &edgeColorVariant : edgeColorVariants)
-        wangSet->addWangColor(toWangColor(edgeColorVariant.toMap(), true));
+    const QVariantList colorVariants = variantMap[QStringLiteral("colors")].toList();
+    for (const QVariant &colorVariant : colorVariants)
+        wangSet->addWangColor(toWangColor(colorVariant.toMap()));
 
+    // For backwards-compatibility
+    QVector<int> cornerColors;
+    QVector<int> edgeColors;
+
+    const QVariantList edgeColorVariants = variantMap[QStringLiteral("edgecolors")].toList();
+    for (const QVariant &edgeColorVariant : edgeColorVariants) {
+        auto wc = toWangColor(edgeColorVariant.toMap());
+        wangSet->addWangColor(wc);
+        edgeColors.append(wc->colorIndex());
+    }
     const QVariantList cornerColorVariants = variantMap[QStringLiteral("cornercolors")].toList();
-    for (const QVariant &cornerColorVariant : cornerColorVariants)
-        wangSet->addWangColor(toWangColor(cornerColorVariant.toMap(), false));
+    for (const QVariant &cornerColorVariant : cornerColorVariants) {
+        auto wc = toWangColor(cornerColorVariant.toMap());
+        wangSet->addWangColor(wc);
+        cornerColors.append(wc->colorIndex());
+    }
 
     const QVariantList wangTileVariants = variantMap[QStringLiteral("wangtiles")].toList();
     for (const QVariant &wangTileVariant : wangTileVariants) {
@@ -420,8 +433,24 @@ std::unique_ptr<WangSet> VariantToMapConverter::toWangSet(const QVariantMap &var
 
         WangId wangId;
         bool ok = true;
-        for (int i = 0; i < 8 && ok; ++i)
+        for (int i = 0; i < WangId::NumIndexes && ok; ++i)
             wangId.setIndexColor(i, wangIdVariant[i].toUInt(&ok));
+
+        // Backwards compatibility with version 1.4:
+        // If the wang set was using explicit corner and edge colors,
+        // map the WangId to the unified colors.
+        if (!cornerColors.isEmpty() || !edgeColors.isEmpty()) {
+            for (int i = 0; i < 4; ++i) {
+                int color = wangId.cornerColor(i);
+                if (color > 0 && color <= cornerColors.size())
+                    wangId.setCornerColor(i, cornerColors.at(color - 1));
+            }
+            for (int i = 0; i < 4; ++i) {
+                int color = wangId.edgeColor(i);
+                if (color > 0 && color <= edgeColors.size())
+                    wangId.setEdgeColor(i, edgeColors.at(color - 1));
+            }
+        }
 
         if (!ok || !wangSet->wangIdIsValid(wangId)) {
             mError = QStringLiteral("Invalid wangId given for tileId: ") + QString::number(tileId);
@@ -445,8 +474,7 @@ std::unique_ptr<WangSet> VariantToMapConverter::toWangSet(const QVariantMap &var
     return wangSet;
 }
 
-QSharedPointer<WangColor> VariantToMapConverter::toWangColor(const QVariantMap &variantMap,
-                                                             bool isEdge)
+QSharedPointer<WangColor> VariantToMapConverter::toWangColor(const QVariantMap &variantMap)
 {
     const QString name = variantMap[QStringLiteral("name")].toString();
     const QColor color = variantMap[QStringLiteral("color")].toString();
@@ -454,7 +482,6 @@ QSharedPointer<WangColor> VariantToMapConverter::toWangColor(const QVariantMap &
     const qreal probability = variantMap[QStringLiteral("probability")].toDouble();
 
     return QSharedPointer<WangColor>::create(0,
-                                             isEdge,
                                              name,
                                              color,
                                              imageId,
