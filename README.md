@@ -17,6 +17,7 @@ be used in any map. Tilesets can be modified at any time.
 [![Snap Status](https://build.snapcraft.io/badge/bjorn/tiled.svg)](https://build.snapcraft.io/user/bjorn/tiled)
 [![Bountysource](https://www.bountysource.com/badge/tracker?tracker_id=52019)](https://www.bountysource.com/trackers/52019-tiled?utm_source=52019&utm_medium=shield&utm_campaign=TRACKER_BADGE)
 [![Translation status](https://hosted.weblate.org/widgets/tiled/-/shields-badge.svg)](https://hosted.weblate.org/engage/tiled/?utm_source=widget)
+[![Open Source Helpers](https://www.codetriage.com/bjorn/tiled/badges/users.svg)](https://www.codetriage.com/bjorn/tiled)
 
 About the Qt Version
 -------------------------------------------------------------------------------
