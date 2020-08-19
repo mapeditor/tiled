@@ -546,7 +546,7 @@ void WangBrush::updateBrush()
                 for (int i = 0; i < 8; i += 2)
                     r += QRect(adjacentPositions[i], QSize(1, 1));
 
-                if (mBrushMode == PaintCorner)
+                if (mBrushMode == PaintCorner || mBrushMode == PaintEdgeAndCorner)
                     for (int i = 1; i < 8; i += 2)
                         r += QRect(adjacentPositions[i], QSize(1, 1));
 
@@ -568,15 +568,15 @@ void WangBrush::updateBrush()
             if (!wangId)
                 continue;
 
-            if (mBrushMode == PaintEdge) {
+            // Mark the opposite side or corner of the adjacent tile
+            if (isCorner || (mBrushMode == PaintEdge || mBrushMode == PaintEdgeAndCorner)) {
                 wangId.setIndexColor(WangId::oppositeIndex(i), mCurrentColor);
-            } else {
-                if (isCorner) {
-                    wangId.setIndexColor(WangId::oppositeIndex(i), mCurrentColor);
-                } else {
-                    wangId.setIndexColor((i + 3) % WangId::NumIndexes, mCurrentColor);
-                    wangId.setIndexColor((i + 5) % WangId::NumIndexes, mCurrentColor);
-                }
+            }
+
+            // Mark the touching corners of the adjacent tile
+            if (!isCorner && (mBrushMode == PaintCorner || mBrushMode == PaintEdgeAndCorner)) {
+                wangId.setIndexColor((i + 3) % WangId::NumIndexes, mCurrentColor);
+                wangId.setIndexColor((i + 5) % WangId::NumIndexes, mCurrentColor);
             }
 
             const Cell &cell = findMatchingWangTile(mWangSet, wangId).makeCell();
@@ -587,7 +587,7 @@ void WangBrush::updateBrush()
                 for (int j = 0; j < 8; j += 2)
                     r += QRect(adjacentPositions[j], QSize(1, 1));
 
-                if (mBrushMode == PaintCorner)
+                if (mBrushMode == PaintCorner || mBrushMode == PaintEdgeAndCorner)
                     for (int j = 1; j < 8; j += 2)
                         r += QRect(adjacentPositions[j], QSize(1, 1));
 
