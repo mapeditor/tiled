@@ -219,7 +219,7 @@
     <message>
         <location filename="../src/tiled/commandsedit.ui" line="+50"/>
         <source>Executable:</source>
-        <translation type="unfinished">Körbar fil:</translation>
+        <translation>Exekverbar fil:</translation>
     </message>
     <message>
         <location line="+14"/>
