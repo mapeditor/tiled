@@ -645,7 +645,7 @@
     <message>
         <location line="+5"/>
         <source>&amp;Save</source>
-        <translation>&amp;Salvar</translation>
+        <translation>&amp;Gravar</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -951,7 +951,7 @@
     <message>
         <location line="+12"/>
         <source>Save &amp;As...</source>
-        <translation>Salvar &amp;Como...</translation>
+        <translation>Gravar &amp;Como...</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -2271,7 +2271,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+8"/>
         <source>Can&apos;t save non-tile layer!</source>
-        <translation>Impossível salvar camada não tile!</translation>
+        <translation>Impossível gravar camada não tile!</translation>
     </message>
     <message>
         <location line="+23"/>
@@ -2521,17 +2521,17 @@ Linha %1, coluna %2</translation>
     <message>
         <location filename="../src/tiled/scriptedfileformat.cpp" line="+102"/>
         <source>Invalid return value for &apos;write&apos; (string or undefined expected)</source>
-        <translation>Valor de retorno inválido para &apos;write&apos; (esperado string ou indefinido)</translation>
+        <translation>Valor de retorno inválido para &apos;write&apos; (esperado cadeia ou indefinido)</translation>
     </message>
     <message>
         <location line="+40"/>
         <source>Invalid file format object (requires string &apos;name&apos; property)</source>
-        <translation>Objeto formato de ficheiro inválido (requer propriedade string &apos;name&apos;)</translation>
+        <translation>Objeto formato de ficheiro inválido (requer propriedade cadeia &apos;name&apos;)</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Invalid file format object (requires string &apos;extension&apos; property)</source>
-        <translation>Objeto formato de ficheiro inválido (requer propriedade string &apos;extension&apos;)</translation>
+        <translation>Objeto formato de ficheiro inválido (requer propriedade cadeia &apos;extension&apos;)</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -2541,12 +2541,12 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="-22"/>
         <source>Invalid return value for &apos;outputFiles&apos; (string or array expected)</source>
-        <translation>Valor de retorno inválido para &apos;outputFiles&apos; (esperado string ou array)</translation>
+        <translation>Valor de retorno inválido para &apos;outputFiles&apos; (esperado cadeia ou array)</translation>
     </message>
     <message>
         <location filename="../src/tiled/scriptedtool.cpp" line="+215"/>
         <source>Invalid tool object (requires string &apos;name&apos; property)</source>
-        <translation>Objeto ferramenta inválido (requer propriedade string &apos;name&apos;)</translation>
+        <translation>Objeto ferramenta inválido (requer propriedade cadeia &apos;name&apos;)</translation>
     </message>
     <message>
         <location filename="../src/tiled/scriptmodule.cpp" line="+215"/>
@@ -3575,7 +3575,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+1"/>
         <source>The number of tile columns in the tileset &apos;%1&apos; appears to have changed from %2 to %3. Do you want to adjust tile references?</source>
-        <translation>O número de colunas de tiles no tileset &apos;%1&apos; parecem ter mudado de %2 para %3. Deseja ajustar as referências dos tiles?</translation>
+        <translation>A quantidade de colunas de tiles no tileset &apos;%1&apos; parecem ter mudado de %2 para %3. Deseja ajustar as referências dos tiles?</translation>
     </message>
 </context>
 <context>
@@ -4066,7 +4066,7 @@ Por favor, selecione um formato específico.</translation>
         <location line="-1336"/>
         <location line="+1337"/>
         <source>Reset to Default Layout</source>
-        <translation>Reinicializar para Layout Padrão</translation>
+        <translation>Reinicializar para Layout Predefinido</translation>
     </message>
     <message>
         <location line="-1335"/>
@@ -4974,7 +4974,7 @@ Por favor, selecione um formato específico.</translation>
         <location filename="../src/tiled/preferencesdialog.cpp" line="-161"/>
         <location line="+158"/>
         <source>System default</source>
-        <translation>Padrão do Sistema</translation>
+        <translation>Predefinição do Sistema</translation>
     </message>
 </context>
 <context>
@@ -5639,7 +5639,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+7"/>
         <source>Reset shortcut to default</source>
-        <translation>Reinicializar atalho para padrão</translation>
+        <translation>Reinicializar atalho para predefinição</translation>
     </message>
 </context>
 <context>
@@ -5854,7 +5854,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location filename="../src/tiled/tileanimationeditor.cpp" line="-49"/>
         <source>Delete Frames</source>
-        <translation>Eliminar Quadros</translation>
+        <translation>Apagar Quadros</translation>
     </message>
 </context>
 <context>
@@ -6445,7 +6445,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+37"/>
         <source>World: Invalid number of captures in &apos;%1&apos;, 2 captures expected</source>
-        <translation>Mundo: Número de capturas inválido em &apos;%1&apos;, esperadas 2 capturas</translation>
+        <translation>Mundo: Quantidade de capturas inválida em &apos;%1&apos;, esperadas 2 capturas</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -7092,7 +7092,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+5"/>
         <source>The scale of the output image (default: 1).</source>
-        <translation>Escala da imagem produzida (padrão: 1).</translation>
+        <translation>Escala da imagem produzida (predefinição: 1).</translation>
     </message>
     <message>
         <location line="+1"/>
