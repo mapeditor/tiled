@@ -461,7 +461,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &points)
             new TileLayer(QString(), bounds.topLeft(), bounds.size())
         };
 
-        WangFiller wangFiller(mWangSet,
+        WangFiller wangFiller(*mWangSet,
                               dynamic_cast<StaggeredRenderer *>(mapDocument()->renderer()),
                               mapDocument()->map()->staggerAxis());
 

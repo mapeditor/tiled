@@ -43,15 +43,12 @@ class StaggeredRenderer;
 class WangFiller
 {
 public:
-    explicit WangFiller(WangSet *wangSet,
-                        StaggeredRenderer *staggeredRenderer = nullptr,
+    explicit WangFiller(const WangSet &wangSet,
+                        const StaggeredRenderer *staggeredRenderer = nullptr,
                         Map::StaggerAxis staggerAxis = Map::StaggerX);
 
-    WangSet *wangSet() const { return mWangSet; }
-    void setWangSet(WangSet *wangSet);
-
     /**
-     * Finds a cell from the attached wangSet which fits the given
+     * Finds a cell from the attached WangSet which fits the given
      * surroundings.
      */
     Cell findFittingCell(const TileLayer &back,
@@ -60,7 +57,7 @@ public:
                          QPoint point) const;
 
     /**
-     * Returns a tilelayer which has \a fillRegion filled with Wang methods.
+     * Returns a TileLayer which has \a fillRegion filled with Wang methods.
      */
     std::unique_ptr<TileLayer> fillRegion(const TileLayer &back,
                                           const QRegion &fillRegion) const;
@@ -93,9 +90,9 @@ private:
                                   const QRegion &fillRegion,
                                   QPoint point) const;
 
-    WangSet *mWangSet;
-    StaggeredRenderer *mStaggeredRenderer;
-    Map::StaggerAxis mStaggerAxis;
+    const WangSet &mWangSet;
+    const StaggeredRenderer * const mStaggeredRenderer;
+    const Map::StaggerAxis mStaggerAxis;
 };
 
 } // namespace Tiled

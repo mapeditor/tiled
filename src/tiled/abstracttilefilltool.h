@@ -33,7 +33,6 @@ class WangSet;
 
 class MapDocument;
 class StampActions;
-class WangFiller;
 
 class AbstractTileFillTool : public AbstractTileTool
 {
