@@ -38,8 +38,6 @@
 
 namespace Tiled {
 
-class WangIdVariations;
-
 class TILEDSHARED_EXPORT WangId
 {
 public:
@@ -74,8 +72,7 @@ public:
     void updateToAdjacent(WangId adjacent, int position);
 
     bool hasWildCards() const;
-
-    WangIdVariations variations(int colorCount) const;
+    unsigned mask() const;
 
     void rotate(int rotations);
     void flipHorizontally();
@@ -93,41 +90,6 @@ inline WangId::Index WangId::oppositeIndex(int index)
     return static_cast<Index>((index + 4) % NumIndexes);
 }
 
-
-class TILEDSHARED_EXPORT WangIdVariations
-{
-public:
-    class iterator
-    {
-    public:
-        iterator(int colorCount, WangId wangId = 0);
-        iterator &operator++();
-        iterator operator++(int)
-        { iterator vI = *this; ++(*this); return vI; }
-        bool operator==(iterator other) { return mCurrent == other.mCurrent; }
-        bool operator!=(iterator other) { return mCurrent != other.mCurrent; }
-        const WangId operator*() const { return mCurrent; }
-        const WangId operator->() const { return mCurrent; }
-
-    private:
-        WangId mCurrent;
-        WangId mMax;
-        QList<int> mZeroSpots;
-        const int mColorCount;
-    };
-
-    WangIdVariations(int colorCount, WangId wangId = 0)
-        : mWangId(wangId)
-        , mColorCount(colorCount)
-    {}
-
-    iterator begin() const { return iterator(mColorCount, mWangId); }
-    iterator end() const;
-
-private:
-    WangId mWangId;
-    int mColorCount;
-};
 
 /**
  * Class for holding info about rotation and flipping.
@@ -276,8 +238,6 @@ public:
 
     WangId wangIdFromSurrounding(const WangId surroundingWangIds[]) const;
     WangId wangIdFromSurrounding(const Cell surroundingCells[]) const;
-
-    QList<Tile *> tilesWithWangId() const;
 
     WangId wangIdOfTile(const Tile *tile) const;
     WangId wangIdOfCell(const Cell &cell) const;

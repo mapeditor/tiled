@@ -167,12 +167,16 @@ bool WangId::hasWildCards() const
 }
 
 /**
- * Gives a list of wangId variations of this one
- * where every 0 is a wildCard (can be 0 - colorCount)
+ * Returns a mask that is 0 for any indexes that have no color defined.
  */
-WangIdVariations WangId::variations(int colorCount) const
+unsigned WangId::mask() const
 {
-    return WangIdVariations(colorCount, mId);
+    unsigned mask = 0;
+    for (int i = 0; i < NumIndexes; ++i) {
+        if (indexColor(i))
+            mask |= 0xf << (i * 4);
+    }
+    return mask;
 }
 
 /**
@@ -232,65 +236,6 @@ WangId::Index WangId::indexByGrid(int x, int y)
     return map[y][x];
 }
 
-
-WangIdVariations::iterator::iterator(int colorCount, WangId wangId)
-    : mCurrent(wangId)
-    , mMax(wangId)
-    , mColorCount(colorCount)
-{
-    if (mColorCount > 1) {
-        for (int i = 0; i < WangId::NumIndexes; ++i) {
-            if (!wangId.indexColor(i)) {
-                mZeroSpots.append(i);
-                mMax.setIndexColor(i, mColorCount);
-            }
-        }
-    }
-}
-
-WangIdVariations::iterator &WangIdVariations::iterator::operator ++()
-{
-    if (mCurrent == mMax) {
-        mCurrent = mCurrent + 1;
-        return *this;
-    }
-
-    if (mZeroSpots.isEmpty())
-        return *this;
-
-    int index = 0;
-    int currentSpot = mZeroSpots[0];
-    while (true) {
-        mCurrent.setIndexColor(currentSpot, mCurrent.indexColor(currentSpot) + 1);
-
-        if (mCurrent.indexColor(currentSpot) > mColorCount) {
-            mCurrent.setIndexColor(currentSpot, 0);
-            if (++index >= mZeroSpots.size())
-                break;
-            currentSpot = mZeroSpots[index];
-        } else {
-            break;
-        }
-    }
-
-    return *this;
-}
-
-WangIdVariations::iterator WangIdVariations::end() const
-{
-    WangId id = mWangId;
-
-    if (mColorCount > 1) {
-        for (int i = 0; i < WangId::NumIndexes; ++i) {
-            if (!id.indexColor(i))
-                id.setIndexColor(i, mColorCount);
-        }
-    }
-
-    id = id + 1;
-
-    return iterator(mColorCount, id);
-}
 
 // performs a translation (either flipping or rotating) based on a one to
 // one map of size 8 (from 0 - 7)
@@ -512,12 +457,10 @@ void WangSet::addWangTile(const WangTile &wangTile)
     Q_ASSERT(wangIdIsValid(wangTile.wangId()));
 
     if (WangId previousWangId = mTileInfoToWangId.value(wangTileToTileInfo(wangTile))) {
-        if (wangTile.wangId() == 0) {
-            removeWangTile(wangTile);
-            return;
-        }
+        // return when the same tile is already part of this set with the same WangId
         if (previousWangId == wangTile.wangId())
             return;
+
         removeWangTile(wangTile);
     }
 
@@ -563,17 +506,13 @@ QList<WangTile> WangSet::sortedWangTiles() const
  */
 QList<WangTile> WangSet::findMatchingWangTiles(WangId wangId) const
 {
-    if (wangId == 0)
-        return mWangIdToWangTile.values();
-
     QList<WangTile> list;
 
-    for (WangId id : wangId.variations(colorCount())) {
-        auto i = mWangIdToWangTile.find(id);
-        while (i != mWangIdToWangTile.end() && i.key() == id) {
-            list.append(i.value());
-            ++i;
-        }
+    const unsigned mask = wangId.mask();
+
+    for (const WangTile &wangTile : mWangIdToWangTile) {
+        if ((wangTile.wangId() & mask) == wangId)
+            list.append(wangTile);
     }
 
     return list;
@@ -634,28 +573,22 @@ WangId WangSet::wangIdFromSurrounding(const Cell surroundingCells[]) const
 }
 
 /**
- * Returns a list of all the tiles with a WangId.
- */
-QList<Tile *> WangSet::tilesWithWangId() const
-{
-    QList<Tile *> tiles;
-
-    for (const WangTile &wangTile : mWangIdToWangTile)
-        tiles.append(wangTile.tile());
-
-    return tiles;
-}
-
-/**
  * Returns the WangId of a given \a tile.
+ *
+ * The tile is expected to be from the tileset to which this WangSet belongs.
  */
 WangId WangSet::wangIdOfTile(const Tile *tile) const
 {
-    if (tile->tileset() == mTileset)
-        return mTileInfoToWangId.value(tile->id());
-    return WangId();
+    Q_ASSERT(tile->tileset() == mTileset);
+    return mTileInfoToWangId.value(tile->id());
 }
 
+/**
+ * Returns the WangId of a given \a cell.
+ *
+ * If the cell refers to a different tileset than the one to which this WangSet
+ * belongs, an empty WangId is returned.
+ */
 WangId WangSet::wangIdOfCell(const Cell &cell) const
 {
     if (cell.tileset() == mTileset)
@@ -714,13 +647,10 @@ bool WangSet::wangIdIsUsed(WangId wangId) const
  */
 bool WangSet::wildWangIdIsUsed(WangId wangId) const
 {
-    if (isEmpty())
-        return false;
-    if (!wangId)
-        return true;
+    const unsigned mask = wangId.mask();
 
-    for (WangId id : wangId.variations(colorCount())) {
-        if (wangIdIsUsed(id))
+    for (const WangTile &wangTile : mWangIdToWangTile) {
+        if ((wangTile.wangId() & mask) == wangId)
             return true;
     }
 
