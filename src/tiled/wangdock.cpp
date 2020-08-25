@@ -103,6 +103,7 @@ WangDock::WangDock(QWidget *parent)
     , mWangSetToolBar(new QToolBar(this))
     , mWangColorToolBar(new QToolBar(this))
     , mAddWangSet(new QAction(this))
+    , mDuplicateWangSet(new QAction(this))
     , mRemoveWangSet(new QAction(this))
     , mAddColor(new QAction(this))
     , mRemoveColor(new QAction(this))
@@ -132,6 +133,8 @@ WangDock::WangDock(QWidget *parent)
             this, &WangDock::expandRows);
 
     mAddWangSet->setIcon(QIcon(QStringLiteral(":/images/22/add.png")));
+    mDuplicateWangSet->setIcon(QIcon(QStringLiteral(":/images/16/stock-duplicate-16.png")));
+    mDuplicateWangSet->setEnabled(false);
     mRemoveWangSet->setIcon(QIcon(QStringLiteral(":/images/22/remove.png")));
     mRemoveWangSet->setEnabled(false);
 
@@ -148,12 +151,12 @@ WangDock::WangDock(QWidget *parent)
     mWangSetToolBar->setIconSize(Utils::smallIconSize());
 
     mWangSetToolBar->addAction(mAddWangSet);
+    mWangSetToolBar->addAction(mDuplicateWangSet);
     mWangSetToolBar->addAction(mRemoveWangSet);
 
-    connect(mAddWangSet, &QAction::triggered,
-            this, &WangDock::addWangSetRequested);
-    connect(mRemoveWangSet, &QAction::triggered,
-            this, &WangDock::removeWangSetRequested);
+    connect(mAddWangSet, &QAction::triggered, this, &WangDock::addWangSetRequested);
+    connect(mDuplicateWangSet, &QAction::triggered, this, &WangDock::duplicateWangSetRequested);
+    connect(mRemoveWangSet, &QAction::triggered, this, &WangDock::removeWangSetRequested);
 
     mWangColorToolBar->setFloatable(false);
     mWangColorToolBar->setMovable(false);
@@ -486,6 +489,7 @@ void WangDock::setCurrentWangSet(WangSet *wangSet)
     if (wangSet && !mInitializing)
         mDocument->setCurrentObject(wangSet);
 
+    mDuplicateWangSet->setEnabled(wangSet);
     mRemoveWangSet->setEnabled(wangSet);
 
     emit currentWangSetChanged(mCurrentWangSet);
@@ -516,6 +520,7 @@ void WangDock::retranslateUi()
 
     mEraseWangIdsButton->setText(tr("Erase WangIds"));
     mAddWangSet->setText(tr("Add Wang Set"));
+    mDuplicateWangSet->setText(tr("Duplicate Wang Set"));
     mRemoveWangSet->setText(tr("Remove Wang Set"));
     mAddColor->setText(tr("Add Color"));
     mRemoveColor->setText(tr("Remove Color"));

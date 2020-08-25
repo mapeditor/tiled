@@ -72,6 +72,7 @@ signals:
     void currentWangIdChanged(WangId wangId);
 
     void addWangSetRequested();
+    void duplicateWangSetRequested();
     void removeWangSetRequested();
 
     void selectWangBrush();
@@ -106,6 +107,7 @@ private:
     QToolBar *mWangSetToolBar;
     QToolBar *mWangColorToolBar;
     QAction *mAddWangSet;
+    QAction *mDuplicateWangSet;
     QAction *mRemoveWangSet;
     QAction *mAddColor;
     QAction *mRemoveColor;

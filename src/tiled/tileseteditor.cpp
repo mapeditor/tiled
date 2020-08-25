@@ -227,6 +227,7 @@ TilesetEditor::TilesetEditor(QObject *parent)
     connect(mWangDock, &WangDock::currentWangIdChanged, this, &TilesetEditor::currentWangIdChanged);
     connect(mWangDock, &WangDock::wangColorChanged, this, &TilesetEditor::wangColorChanged);
     connect(mWangDock, &WangDock::addWangSetRequested, this, &TilesetEditor::addWangSet);
+    connect(mWangDock, &WangDock::duplicateWangSetRequested, this, &TilesetEditor::duplicateWangSet);
     connect(mWangDock, &WangDock::removeWangSetRequested, this, &TilesetEditor::removeWangSet);
     connect(mWangDock->wangColorView(), &WangColorView::wangColorColorPicked,
             this, &TilesetEditor::setWangColorColor);
@@ -1050,6 +1051,25 @@ void TilesetEditor::addWangSet()
                                                               wangSet));
 
     mWangDock->editWangSetName(wangSet);
+}
+
+void TilesetEditor::duplicateWangSet()
+{
+    Tileset *tileset = currentTileset();
+    if (!tileset)
+        return;
+
+    WangSet *wangSet = mWangDock->currentWangSet();
+    if (!wangSet)
+        return;
+
+    WangSet *duplicate = wangSet->clone(tileset);
+    duplicate->setName(QCoreApplication::translate("Tiled::MapDocument", "Copy of %1").arg(duplicate->name()));
+
+    mCurrentTilesetDocument->undoStack()->push(new AddWangSet(mCurrentTilesetDocument,
+                                                              duplicate));
+
+    mWangDock->editWangSetName(duplicate);
 }
 
 void TilesetEditor::removeWangSet()
