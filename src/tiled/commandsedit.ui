@@ -98,7 +98,7 @@
      <item row="5" column="0" colspan="3">
       <widget class="QCheckBox" name="saveBox">
        <property name="text">
-        <string>&amp;Save map before executing</string>
+        <string>&amp;Save before executing</string>
        </property>
       </widget>
      </item>
