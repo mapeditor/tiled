@@ -55,8 +55,7 @@ int WangColorModel::rowCount(const QModelIndex &parent) const
     if (!mWangSet || parent.isValid())
         return 0;
 
-    int n = mWangSet->colorCount();
-    return (n == 1) ? 0 : n;
+    return mWangSet->colorCount();
 }
 
 int WangColorModel::columnCount(const QModelIndex &parent) const

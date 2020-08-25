@@ -92,9 +92,6 @@ private:
     WangSet *mWangSet;
     int mColor;
     QSharedPointer<WangColor> mRemovedWangColor;
-    // When removing a color when there are two, both are actually removed,
-    // this stores the extra if needed, and is null otherwise.
-    QSharedPointer<WangColor> mExtraWangColor;
 };
 
 class SetWangSetImage : public QUndoCommand

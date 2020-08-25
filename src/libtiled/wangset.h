@@ -55,8 +55,7 @@ public:
         NumIndexes,
     };
 
-    WangId() : mId(0) {}
-    WangId(unsigned id) : mId(id) {}
+    WangId(unsigned id = 0) : mId(id) {}
 
     operator unsigned() const { return mId; }
     inline void setId(unsigned id) { mId = id; }
@@ -362,7 +361,7 @@ inline Tile *WangSet::imageTile() const
 
 inline int WangSet::colorCount() const
 {
-    return qMax(1, mColors.size());
+    return mColors.size();
 }
 
 inline const QSharedPointer<WangColor> &WangSet::colorAt(int index) const

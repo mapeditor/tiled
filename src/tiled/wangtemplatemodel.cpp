@@ -41,7 +41,6 @@ int WangTemplateModel::rowCount(const QModelIndex &parent) const
     const unsigned rows = mWangSet->completeSetSize();
 
     // arbitrary large cap on how many rows can be displayed.
-    // could eventually be moved to pagination...
     return static_cast<int>(std::min<unsigned>(rows, 0xffff));
 }
 
@@ -58,11 +57,11 @@ WangId WangTemplateModel::wangIdAt(const QModelIndex &index) const
     if (!index.isValid())
         return 0;
 
-    const int idIndex = index.row();
-
-    if (WangSet *set = wangSet())
+    if (WangSet *set = wangSet()) {
+        const int idIndex = index.row();
         if (idIndex < rowCount())
             return set->templateWangIdAt(idIndex);
+    }
 
     return 0;
 }

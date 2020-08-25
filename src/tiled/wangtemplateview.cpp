@@ -77,8 +77,8 @@ static void paintTemplateTile(QPainter *painter,
 
     // TODO: When we support WangSet type (Edges, Corners, etc.) this will need
     // adjustment, or we can use a unified rendering approach.
-    const bool paintCorners = wangSet->colorCount() > 1;
-    const bool paintEdges = wangSet->colorCount() > 1;
+    const bool paintCorners = wangSet->colorCount() > 0;
+    const bool paintEdges = wangSet->colorCount() > 0;
 
     //paints corners
     if (paintCorners) {
@@ -251,7 +251,7 @@ void WangTemplateDelegate::paint(QPainter *painter,
 {
     const WangTemplateModel *model = static_cast<const WangTemplateModel*>(index.model());
     const WangId wangId = model->wangIdAt(index);
-    if(wangId == 0)
+    if (!wangId)
         return;
 
     painter->setClipRect(option.rect);

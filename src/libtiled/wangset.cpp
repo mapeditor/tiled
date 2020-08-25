@@ -405,15 +405,10 @@ WangSet::WangSet(Tileset *tileset,
  */
 void WangSet::setColorCount(int n)
 {
-    Q_ASSERT(n > 0 && n <= 15);
+    Q_ASSERT(n >= 0 && n <= 15);
 
     if (n == colorCount())
         return;
-
-    if (n == 1) {
-        mColors.clear();
-        return;
-    }
 
     if (n < colorCount()) {
         mColors.resize(n);
@@ -462,7 +457,7 @@ void WangSet::addWangColor(const QSharedPointer<WangColor> &wangColor)
  */
 void WangSet::removeWangColorAt(int color)
 {
-    Q_ASSERT(colorCount() > 1 && color <= colorCount() - 1);
+    Q_ASSERT(color > 0 && color - 1 < colorCount());
 
     mColors.at(color - 1)->mWangSet = nullptr;
     mColors.removeAt(color - 1);
@@ -490,14 +485,10 @@ QList<Tile *> WangSet::tilesChangedOnRemoveColor(int color) const
     QList<Tile *> tiles;
 
     for (auto i = mTileInfoToWangId.cbegin(); i != mTileInfoToWangId.cend(); ++i) {
-        for (int j = 0; j < 8; ++j) {
+        for (int j = 0; j < WangId::NumIndexes; ++j) {
             int c = i.value().indexColor(j);
             int tileId = i.key() & 0x1fffffff;
             if (c >= color) {
-                tiles.append(mTileset->findTile(tileId));
-                break;
-            }
-            if (colorCount() == 2 && c) {
                 tiles.append(mTileset->findTile(tileId));
                 break;
             }
@@ -680,11 +671,9 @@ qreal WangSet::wangTileProbability(const WangTile &wangTile) const
     qreal probability = 1.0;
     WangId wangId = wangTile.wangId();
 
-    if (colorCount() > 1) {
-        for (int i = 0; i < WangId::NumIndexes; ++i) {
-            if (int color = wangId.indexColor(i))
-                probability *= colorAt(color)->probability();
-        }
+    for (int i = 0; i < WangId::NumIndexes; ++i) {
+        if (int color = wangId.indexColor(i))
+            probability *= colorAt(color)->probability();
     }
 
     if (Tile *tile = wangTile.tile())
@@ -704,14 +693,9 @@ bool WangSet::wangIdIsValid(WangId wangId) const
 
 bool WangSet::wangIdIsValid(WangId wangId, int colorCount)
 {
-    for (int i = 0; i < WangId::NumIndexes; ++i) {
+    for (int i = 0; i < WangId::NumIndexes; ++i)
         if (wangId.indexColor(i) > colorCount)
             return false;
-
-        if (colorCount <= 1)
-            if (wangId.indexColor(i))
-                return false;
-    }
 
     return true;
 }
@@ -769,15 +753,16 @@ unsigned WangSet::completeSetSize() const
  */
 WangId WangSet::templateWangIdAt(unsigned n) const
 {
-    //number of permutations of a corner and edge together.
-    const int cornerEdgePermutations = colorCount() * colorCount();
+    if (colorCount() <= 0)
+        return 0;
 
     unsigned wangId = 0;
 
     for (int i = 7; i >= 0; --i) {
         //this is the number of permutations possible bellow this point in the wangId
-        int belowPermutations = qPow(cornerEdgePermutations, i/2) * ((i&1) ? colorCount() : 1);
-        int value = n / belowPermutations;
+        const int belowPermutations = qPow(colorCount(), i);
+        const int value = n / belowPermutations;
+
         n -= value * belowPermutations;
 
         wangId |= value << i * 4;
@@ -785,15 +770,6 @@ WangId WangSet::templateWangIdAt(unsigned n) const
 
     //before this is like a base 10 range (0 - 9) where we want (1 - 10) for each digit
     wangId += 0x11111111;
-
-    //If edges/corners don't have variations then those spots should be wild.
-    // TODO: When we support WangSet type (Edges, Corners, etc.) this will need adjustment.
-//    if (edgeColorCount() <= 1)
-//        wangId &= 0xf0f0f0f0;
-//    if (cornerColorCount() <= 1)
-//        wangId &= 0x0f0f0f0f;
-    if (colorCount() <= 1)
-        wangId &= 0x00000000;
 
     return wangId;
 }

@@ -62,14 +62,6 @@ ChangeWangSetColorCount::ChangeWangSetColorCount(TilesetDocument *tilesetDocumen
 
             mRemovedWangColors.append(w);
         }
-
-        if (mNewValue == 1) {
-            WangColorChange w;
-            w.index = 1;
-            w.wangColor = wangSet->colorAt(1);
-
-            mRemovedWangColors.append(w);
-        }
     }
 }
 
@@ -105,9 +97,6 @@ RemoveWangSetColor::RemoveWangSetColor(TilesetDocument *tilesetDocumnet, WangSet
 {
     mRemovedWangColor = wangSet->colorAt(mColor);
 
-    if (wangSet->colorCount() == 2)
-        mExtraWangColor = wangSet->colorAt(color == 1 ? 2 : 1);
-
     const QList<Tile *> changedTiles = wangSet->tilesChangedOnRemoveColor(mColor);
 
     if (!changedTiles.isEmpty()) {
@@ -118,8 +107,8 @@ RemoveWangSetColor::RemoveWangSetColor(TilesetDocument *tilesetDocumnet, WangSet
             WangId changedWangId = oldWangId;
 
             for (int i = 0; i < WangId::NumIndexes; ++i) {
-                int color = changedWangId.indexColor(i);
-                if (color && (color == mColor || wangSet->colorCount() == 2))
+                const int color = changedWangId.indexColor(i);
+                if (color == mColor)
                     changedWangId.setIndexColor(i, 0);
                 else if (color > mColor)
                     changedWangId.setIndexColor(i, color - 1);
@@ -136,19 +125,7 @@ RemoveWangSetColor::RemoveWangSetColor(TilesetDocument *tilesetDocumnet, WangSet
 
 void RemoveWangSetColor::undo()
 {
-    TilesetWangSetModel *wangSetModel = mTilesetDocument->wangSetModel();
-
-    if (mExtraWangColor) {
-        if (mRemovedWangColor->colorIndex() > mExtraWangColor->colorIndex()) {
-            wangSetModel->insertWangColor(mWangSet, mExtraWangColor);
-            wangSetModel->insertWangColor(mWangSet, mRemovedWangColor);
-        } else {
-            wangSetModel->insertWangColor(mWangSet, mRemovedWangColor);
-            wangSetModel->insertWangColor(mWangSet, mExtraWangColor);
-        }
-    } else {
-        wangSetModel->insertWangColor(mWangSet, mRemovedWangColor);
-    }
+    mTilesetDocument->wangSetModel()->insertWangColor(mWangSet, mRemovedWangColor);
 
     QUndoCommand::undo();
 }

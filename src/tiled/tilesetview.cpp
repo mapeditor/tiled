@@ -275,8 +275,8 @@ static void paintWangOverlay(QPainter *painter,
 
     // TODO: When we support WangSet type (Edges, Corners, etc.) this will need
     // adjustment, or we can use a unified rendering approach.
-    const bool paintCorners = wangSet->colorCount() > 1;
-    const bool paintEdges = wangSet->colorCount() > 1;
+    const bool paintCorners = wangSet->colorCount() > 0;
+    const bool paintEdges = wangSet->colorCount() > 0;
 
     if (paintEdges) {
         if (paintCorners) {

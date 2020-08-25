@@ -919,7 +919,7 @@ void PropertyBrowser::addWangSetProperties()
     QtVariantProperty *nameProperty = addProperty(NameProperty, QVariant::String, tr("Name"), groupProperty);
     QtVariantProperty *colorCountProperty = addProperty(ColorCountProperty, QVariant::Int, tr("Color Count"), groupProperty);
 
-    colorCountProperty->setAttribute(QLatin1String("minimum"), 1);
+    colorCountProperty->setAttribute(QLatin1String("minimum"), 0);
     colorCountProperty->setAttribute(QLatin1String("maximum"), 15);
 
     nameProperty->setEnabled(mTilesetDocument);

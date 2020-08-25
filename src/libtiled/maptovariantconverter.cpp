@@ -368,10 +368,8 @@ QVariant MapToVariantConverter::toVariant(const WangSet &wangSet) const
     wangSetVariant[QStringLiteral("tile")] = wangSet.imageTileId();
 
     QVariantList colorVariants;
-    if (wangSet.colorCount() > 1) {
-        for (int i = 1; i <= wangSet.colorCount(); ++i)
-            colorVariants.append(toVariant(*wangSet.colorAt(i)));
-    }
+    for (int i = 1; i <= wangSet.colorCount(); ++i)
+        colorVariants.append(toVariant(*wangSet.colorAt(i)));
     wangSetVariant[QStringLiteral("colors")] = colorVariants;
 
     QVariantList wangTileVariants;

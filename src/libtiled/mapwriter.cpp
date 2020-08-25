@@ -502,18 +502,16 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
             w.writeAttribute(QStringLiteral("name"), ws->name());
             w.writeAttribute(QStringLiteral("tile"), QString::number(ws->imageTileId()));
 
-            if (ws->colorCount() > 1) {
-                for (int i = 1; i <= ws->colorCount(); ++i) {
-                    if (WangColor *wc = ws->colorAt(i).data()) {
-                        w.writeStartElement(QStringLiteral("wangcolor"));
+            for (int i = 1; i <= ws->colorCount(); ++i) {
+                if (WangColor *wc = ws->colorAt(i).data()) {
+                    w.writeStartElement(QStringLiteral("wangcolor"));
 
-                        w.writeAttribute(QStringLiteral("name"), wc->name());
-                        w.writeAttribute(QStringLiteral("color"), colorToString(wc->color()));
-                        w.writeAttribute(QStringLiteral("tile"), QString::number(wc->imageId()));
-                        w.writeAttribute(QStringLiteral("probability"), QString::number(wc->probability()));
+                    w.writeAttribute(QStringLiteral("name"), wc->name());
+                    w.writeAttribute(QStringLiteral("color"), colorToString(wc->color()));
+                    w.writeAttribute(QStringLiteral("tile"), QString::number(wc->imageId()));
+                    w.writeAttribute(QStringLiteral("probability"), QString::number(wc->probability()));
 
-                        w.writeEndElement();
-                    }
+                    w.writeEndElement();
                 }
             }
 
