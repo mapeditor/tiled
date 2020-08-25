@@ -3,17 +3,17 @@ TMX Map Format
 
 **Version 1.4**
 
-The TMX (Tile Map XML) map format used by
-`Tiled <http://www.mapeditor.org>`__ is a flexible way to describe a
+TMX and TSX are `Tiled <http://www.mapeditor.org>`__'s own formats for storing
+tile maps and tilesets, based on XML. TMX provides a flexible way to describe a
 tile based map. It can describe maps with any tile size, any amount of
 layers, any number of tile sets and it allows custom properties to be
 set on most elements. Beside tile layers, it can also contain groups of
 objects that can be placed freely.
 
 Note that there are many :doc:`libraries and frameworks <support-for-tmx-maps>`
-available that can work with TMX maps.
+available that can work with TMX maps and TSX tilesets.
 
-In this document we'll go through each element found in this map format.
+In this document we'll go through each element found in these file formats.
 The elements are mentioned in the headers and the list of attributes of
 the elements are listed right below, followed by a short explanation.
 Attributes or elements that are deprecated or unsupported by the current
@@ -21,20 +21,21 @@ version of Tiled are formatted in italics. All optional attributes are
 either marked as optional, or have a default value to imply that they are
 optional.
 
-Have a look at the :doc:`changelog <tmx-changelog>` when you're
-interested in what changed between Tiled versions.
+Have a look at the :doc:`changelog <tmx-changelog>` when you're interested
+in what changed between Tiled versions.
 
-*A DTD-file (Document Type Definition) is served at
-http://mapeditor.org/dtd/1.0/map.dtd. This file is not up-to-date but
-might be useful for XML-namespacing anyway.*
+.. note::
 
-*Note to implementors: When parsing TMX files, follow XML parsing guidelines.
-If an invalid element is found, it should generally be ignored (or cause a
-warning). When there are multiple copies of an element that should only appear
-once, use the first parsed option. Unknown attributes or element tags should
-also be ignored. These behaviors make adding future features easier without breaking
-backwards compatibility, and allows custom variants and additions to work with
-existing tools.*
+    A DTD-file (Document Type Definition) is served at
+    http://mapeditor.org/dtd/1.0/map.dtd. This file is not up-to-date but might
+    be useful for XML-namespacing anyway.
+
+.. note::
+
+    For compatibility reasons, it is recommended to ignore unknown elements and
+    attributes (or raise a warning). This makes it easier to add features
+    without breaking backwards compatibility, and allows custom variants and
+    additions to work with existing tools.
 
 .. _tmx-map:
 
