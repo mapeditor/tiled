@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include "grid.h"
 #include "map.h"
 #include "wangset.h"
 
@@ -43,9 +44,17 @@ class StaggeredRenderer;
 class WangFiller
 {
 public:
+    struct CellInfo {
+        WangId desired;
+        WangId mask;
+
+        bool operator==(const CellInfo &other) const {
+            return desired == other.desired && mask == other.mask;
+        }
+    };
+
     explicit WangFiller(const WangSet &wangSet,
-                        const StaggeredRenderer *staggeredRenderer = nullptr,
-                        Map::StaggerAxis staggerAxis = Map::StaggerX);
+                        const StaggeredRenderer *staggeredRenderer = nullptr);
 
     /**
      * Finds a cell from the attached WangSet which fits the given
@@ -53,24 +62,28 @@ public:
      */
     Cell findFittingCell(const TileLayer &back,
                          const TileLayer &front,
-                         const QRegion &fillRegion,
+                         const QRegion &region,
                          QPoint point) const;
 
     /**
-     * Returns a TileLayer which has \a fillRegion filled with Wang methods.
+     * Fills the given \a region in the \a target layer with Wang methods.
      */
-    std::unique_ptr<TileLayer> fillRegion(const TileLayer &back,
-                                          const QRegion &fillRegion) const;
+    void fillRegion(TileLayer &target, const TileLayer &back, const QRegion &region) const;
+
+    /**
+     * Fills the given \a region in the \a target layer with Wang methods,
+     * based on the desired \a wangIds.
+     */
+    void fillRegion(TileLayer &target, const TileLayer &back, Grid<CellInfo> wangIds, const QRegion &region) const;
 
 private:
     /**
      * Returns a cell from either the \a back or \a front, based on the
-     * \a fillRegion. \a point, \a front, and \a fillRegion are relative to
-     * \a back.
+     * \a region. \a point, \a front, and \a region are relative to \a back.
      */
     const Cell &getCell(const TileLayer &back,
                         const TileLayer &front,
-                        const QRegion &fillRegion,
+                        const QRegion &region,
                         QPoint point) const;
 
     /**
@@ -79,20 +92,19 @@ private:
      */
     WangId wangIdFromSurroundings(const TileLayer &back,
                                   const TileLayer &front,
-                                  const QRegion &fillRegion,
+                                  const QRegion &region,
                                   QPoint point) const;
 
     /**
      * Returns a wangId based on cells from \a back which are not in the
-     * \a fillRegion. \a point and \a fillRegion are relative to \a back.
+     * \a region. \a point and \a region are relative to \a back.
      */
     WangId wangIdFromSurroundings(const TileLayer &back,
-                                  const QRegion &fillRegion,
+                                  const QRegion &region,
                                   QPoint point) const;
 
     const WangSet &mWangSet;
     const StaggeredRenderer * const mStaggeredRenderer;
-    const Map::StaggerAxis mStaggerAxis;
 };
 
 } // namespace Tiled

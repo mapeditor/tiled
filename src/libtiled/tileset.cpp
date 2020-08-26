@@ -591,7 +591,7 @@ void Tileset::recalculateTerrainDistances()
             if (!hasByteEqualTo(tile->terrain(), i))
                 continue;
 
-            // This tile has transitions, add the transitions as neightbours (distance 1)
+            // This tile has transitions, add the transitions as neighbours (distance 1)
             int tl = tile->cornerTerrainId(0);
             int tr = tile->cornerTerrainId(1);
             int bl = tile->cornerTerrainId(2);

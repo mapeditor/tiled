@@ -293,7 +293,7 @@ MapEditor::MapEditor(QObject *parent)
     connect(mWangDock, &WangDock::selectWangBrush,
             this, &MapEditor::selectWangBrush);
     connect(mWangDock, &WangDock::wangColorChanged,
-            mWangBrush, &WangBrush::wangColorChanged);
+            mWangBrush, &WangBrush::setColor);
     connect(mWangBrush, &WangBrush::colorCaptured,
             mWangDock, &WangDock::onColorCaptured);
 

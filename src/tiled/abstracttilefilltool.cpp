@@ -286,11 +286,9 @@ void AbstractTileFillTool::wangFill(TileLayer &tileLayerToFill,
         return;
 
     WangFiller wangFiller(*mWangSet,
-                          dynamic_cast<StaggeredRenderer *>(mapDocument()->renderer()),
-                          mapDocument()->map()->staggerAxis());
+                          dynamic_cast<StaggeredRenderer *>(mapDocument()->renderer()));
 
-    auto stamp = wangFiller.fillRegion(backgroundTileLayer, region);
-    tileLayerToFill.setCells(0, 0, stamp.get());
+    wangFiller.fillRegion(tileLayerToFill, backgroundTileLayer, region);
 }
 
 void AbstractTileFillTool::fillWithStamp(Map &map,

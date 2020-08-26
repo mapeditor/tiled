@@ -28,10 +28,11 @@
 #include "tilelayer.h"
 #include "wangset.h"
 
+#include <QDebug>
 #include <QStack>
 #include <QtMath>
 
-using namespace Tiled;
+namespace Tiled {
 
 unsigned cellToTileInfo(const Cell &cell)
 {
@@ -141,13 +142,11 @@ void WangId::setIndexColor(int index, unsigned value)
  */
 void WangId::updateToAdjacent(WangId adjacent, int position)
 {
-    int index = position / 2;
-    bool isCorner = position & 1;
+    setIndexColor(position, adjacent.indexColor(oppositeIndex(position)));
 
-    if (isCorner) {
-        setCornerColor(index, adjacent.cornerColor((index + 2) % 4));
-    } else {
-        setEdgeColor(index, adjacent.edgeColor((index + 2) % 4));
+    const bool isCorner = position & 1;
+    if (!isCorner) {
+        const int index = position / 2;
         setCornerColor(index, adjacent.cornerColor((index + 1) % 4));
         setCornerColor((index + 3) % 4, adjacent.cornerColor((index + 2) % 4));
     }
@@ -295,6 +294,20 @@ Cell WangTile::makeCell() const
     cell.setFlippedAntiDiagonally(mFlippedAntiDiagonally);
 
     return cell;
+}
+
+QDebug operator<<(QDebug debug, WangId wangId)
+{
+    const bool oldSetting = debug.autoInsertSpaces();
+    debug.nospace() << "WangId(";
+    for (int i = 0; i < WangId::NumIndexes; ++i) {
+        if (i > 0)
+            debug << ",";
+        debug << wangId.indexColor(i);
+    }
+    debug << ')';
+    debug.setAutoInsertSpaces(oldSetting);
+    return debug.maybeSpace();
 }
 
 
@@ -729,3 +742,5 @@ WangSet *WangSet::clone(Tileset *tileset) const
 
     return c;
 }
+
+} // namespace Tiled

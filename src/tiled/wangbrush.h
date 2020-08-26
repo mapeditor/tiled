@@ -59,8 +59,7 @@ signals:
     void colorCaptured(int color);
 
 public slots:
-    void wangColorChanged(int color);
-    void wangSetChanged(WangSet *wangSet);
+    void wangSetChanged(const WangSet *wangSet);
 
 private:
     enum BrushBehavior {
@@ -86,7 +85,7 @@ private:
     QPoint mPaintPoint;
     WangId::Index mWangIndex;
 
-    WangSet *mWangSet;
+    const WangSet *mWangSet;
     int mCurrentColor;
     BrushMode mBrushMode;
     bool mIsTileMode;

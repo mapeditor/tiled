@@ -80,6 +80,8 @@ public:
 
     static Index indexByGrid(int x, int y);
     static Index oppositeIndex(int index);
+    static Index nextIndex(int index);
+    static Index previousIndex(int index);
 
 private:
     unsigned mId;
@@ -89,6 +91,18 @@ inline WangId::Index WangId::oppositeIndex(int index)
 {
     return static_cast<Index>((index + 4) % NumIndexes);
 }
+
+inline WangId::Index WangId::nextIndex(int index)
+{
+    return static_cast<Index>((index + 1) % NumIndexes);
+}
+
+inline WangId::Index WangId::previousIndex(int index)
+{
+    return static_cast<Index>((index + NumIndexes - 1) % NumIndexes);
+}
+
+TILEDSHARED_EXPORT QDebug operator<<(QDebug debug, WangId wangId);
 
 
 /**
@@ -100,8 +114,7 @@ public:
     WangTile() : WangTile(nullptr, 0)
     {}
 
-    WangTile(Tile *tile,
-             WangId wangId):
+    WangTile(Tile *tile, WangId wangId):
         mTile(tile),
         mWangId(wangId),
         mFlippedHorizontally(false),

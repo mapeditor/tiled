@@ -462,8 +462,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &points)
         };
 
         WangFiller wangFiller(*mWangSet,
-                              dynamic_cast<StaggeredRenderer *>(mapDocument()->renderer()),
-                              mapDocument()->map()->staggerAxis());
+                              dynamic_cast<StaggeredRenderer *>(mapDocument()->renderer()));
 
         for (const QPoint &p : points) {
             Cell cell = wangFiller.findFittingCell(*tileLayer,
