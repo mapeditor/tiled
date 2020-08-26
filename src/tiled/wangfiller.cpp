@@ -20,6 +20,7 @@
 
 #include "wangfiller.h"
 
+#include "grid.h"
 #include "randompicker.h"
 #include "staggeredrenderer.h"
 #include "tilelayer.h"
@@ -149,7 +150,8 @@ std::unique_ptr<TileLayer> WangFiller::fillRegion(const TileLayer &back,
                                                          boundingRect.width(),
                                                          boundingRect.height()) };
 
-    QVector<WangId> wangIds(tileLayer->width() * tileLayer->height(), 0);
+    Grid<WangId> wangIds;
+
 #if QT_VERSION < 0x050800
     const auto rects = fillRegion.rects();
     for (const QRect &rect : rects) {
@@ -157,26 +159,12 @@ std::unique_ptr<TileLayer> WangFiller::fillRegion(const TileLayer &back,
     for (const QRect &rect : fillRegion) {
 #endif
         for (int x = rect.left(); x <= rect.right(); ++x) {
-            int index = x - tileLayer->x() + (rect.top() - tileLayer->y()) * tileLayer->width();
-            wangIds[index] = wangIdFromSurroundings(back,
-                                                    fillRegion,
-                                                    QPoint(x, rect.top()));
-
-            index = x - tileLayer->x() + (rect.bottom() - tileLayer->y()) * tileLayer->width();
-            wangIds[index] = wangIdFromSurroundings(back,
-                                                    fillRegion,
-                                                    QPoint(x, rect.bottom()));
+            wangIds.set(x, rect.top(), wangIdFromSurroundings(back, fillRegion, QPoint(x, rect.top())));
+            wangIds.set(x, rect.bottom(), wangIdFromSurroundings(back, fillRegion, QPoint(x, rect.bottom())));
         }
         for (int y = rect.top() + 1; y < rect.bottom(); ++y) {
-            int index = rect.left() - tileLayer->x() + (y - tileLayer->y()) * tileLayer->width();
-            wangIds[index] = wangIdFromSurroundings(back,
-                                                    fillRegion,
-                                                    QPoint(rect.left(), y));
-
-            index = rect.right() - tileLayer->x() + (y - tileLayer->y()) * tileLayer->width();
-            wangIds[index] = wangIdFromSurroundings(back,
-                                                    fillRegion,
-                                                    QPoint(rect.right(), y));
+            wangIds.set(rect.left(), y, wangIdFromSurroundings(back, fillRegion, QPoint(rect.left(), y)));
+            wangIds.set(rect.right(), y, wangIdFromSurroundings(back, fillRegion, QPoint(rect.right(), y)));
         }
     }
 
@@ -188,9 +176,7 @@ std::unique_ptr<TileLayer> WangFiller::fillRegion(const TileLayer &back,
         for (int y = rect.top(); y <= rect.bottom(); ++y) {
             for (int x = rect.left(); x <= rect.right(); ++x) {
                 const QPoint currentPoint(x, y);
-                const int currentIndex = (currentPoint.y() - tileLayer->y()) * tileLayer->width() + (currentPoint.x() - tileLayer->x());
-
-                const auto wangTilesList = mWangSet.findMatchingWangTiles(wangIds[currentIndex]);
+                const auto wangTilesList = mWangSet.findMatchingWangTiles(wangIds.get(currentPoint));
                 RandomPicker<WangTile> wangTiles;
 
                 for (const WangTile &wangTile : wangTilesList)
@@ -208,15 +194,12 @@ std::unique_ptr<TileLayer> WangFiller::fillRegion(const TileLayer &back,
                             QPoint p = adjacentPoints[i];
                             if (!fillRegion.contains(p) || !tileLayer->cellAt(p - tileLayer->position()).isEmpty())
                                 continue;
-                            p -= tileLayer->position();
-                            int index = p.y() * tileLayer->width() + p.x();
 
-                            WangId adjacentWangId = wangIds[index];
+                            WangId adjacentWangId = wangIds.get(p);
                             adjacentWangId.updateToAdjacent(wangTile.wangId(), WangId::oppositeIndex(i));
 
                             if (!mWangSet.wildWangIdIsUsed(adjacentWangId)) {
                                 fill = wangTiles.isEmpty();
-
                                 break;
                             }
                         }
@@ -232,9 +215,10 @@ std::unique_ptr<TileLayer> WangFiller::fillRegion(const TileLayer &back,
                             QPoint p = adjacentPoints[i];
                             if (!fillRegion.contains(p) || !tileLayer->cellAt(p - tileLayer->position()).isEmpty())
                                 continue;
-                            p -= tileLayer->position();
-                            int index = p.y() * tileLayer->width() + p.x();
-                            wangIds[index].updateToAdjacent(wangTile.wangId(), WangId::oppositeIndex(i));
+
+                            WangId adjacentWangId = wangIds.get(p);
+                            adjacentWangId.updateToAdjacent(wangTile.wangId(), WangId::oppositeIndex(i));
+                            wangIds.set(p, adjacentWangId);
                         }
                         break;
                     }
@@ -251,12 +235,11 @@ const Cell &WangFiller::getCell(const TileLayer &back,
                                 const QRegion &fillRegion,
                                 QPoint point) const
 {
-    if (!fillRegion.contains(point))
-        return back.cellAt(point);
-    else
+    if (fillRegion.contains(point))
         return front.cellAt(point.x() - front.x(), point.y() - front.y());
+    else
+        return back.cellAt(point);
 }
-
 
 WangId WangFiller::wangIdFromSurroundings(const TileLayer &back,
                                           const TileLayer &front,

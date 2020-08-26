@@ -48,6 +48,7 @@ HEADERS += $$PWD/compression.h \
     $$PWD/filesystemwatcher.h \
     $$PWD/fileformat.h \
     $$PWD/gidmapper.h \
+    $$PWD/grid.h \
     $$PWD/grouplayer.h \
     $$PWD/hex.h \
     $$PWD/hexagonalrenderer.h \

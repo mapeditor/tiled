@@ -57,6 +57,7 @@ DynamicLibrary {
         "filesystemwatcher.h",
         "gidmapper.cpp",
         "gidmapper.h",
+        "grid.h",
         "grouplayer.cpp",
         "grouplayer.h",
         "hex.cpp",
