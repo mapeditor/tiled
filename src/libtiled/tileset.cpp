@@ -816,6 +816,7 @@ void Tileset::swap(Tileset &other)
     std::swap(mTileSpacing, other.mTileSpacing);
     std::swap(mMargin, other.mMargin);
     std::swap(mTileOffset, other.mTileOffset);
+    std::swap(mObjectAlignment, other.mObjectAlignment);
     std::swap(mOrientation, other.mOrientation);
     std::swap(mGridSize, other.mGridSize);
     std::swap(mColumnCount, other.mColumnCount);
