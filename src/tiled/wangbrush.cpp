@@ -404,15 +404,13 @@ void WangBrush::captureHoverColor()
 
     const QPoint mousePoint = mPaintPoint - tileLayer->position();
     const Cell &cell = tileLayer->cellAt(mousePoint);
+    const WangId wangId = mWangSet->wangIdOfCell(cell);
+    const int newColor = wangId.indexColor(mWangIndex);
 
-    if (const WangId wangId = mWangSet->wangIdOfCell(cell)) {
-        const int newColor = wangId.indexColor(mWangIndex);
-
-        if (newColor && newColor != mCurrentColor) {
-            mCurrentColor = newColor;
-            emit colorCaptured(newColor);
-            updateBrush();
-        }
+    if (newColor != mCurrentColor) {
+        setColor(newColor);
+        emit colorCaptured(newColor);
+        updateBrush();
     }
 }
 
