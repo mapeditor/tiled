@@ -26,6 +26,7 @@
 #include "abstracttool.h"
 #include "addremovemapobject.h"
 #include "containerhelpers.h"
+#include "debugdrawitem.h"
 #include "documentmanager.h"
 #include "map.h"
 #include "mapobject.h"
@@ -70,6 +71,11 @@ MapScene::MapScene(QObject *parent)
     // Install an event filter so that we can get key events on behalf of the
     // active tool without having to have the current focus.
     qApp->installEventFilter(this);
+
+#ifdef QT_DEBUG
+    mDebugDrawItem = new DebugDrawItem;
+    addItem(mDebugDrawItem);
+#endif
 }
 
 MapScene::~MapScene()

@@ -40,6 +40,7 @@ class TileLayer;
 class Tileset;
 
 class AbstractTool;
+class DebugDrawItem;
 class LayerItem;
 class MapDocument;
 class MapObjectItem;
@@ -67,6 +68,8 @@ public:
     void setSelectedTool(AbstractTool *tool);
 
     MapItem *mapItem(MapDocument *mapDocument) const;
+
+    DebugDrawItem *debugDrawItem() const;
 
 signals:
     void mapDocumentChanged(MapDocument *mapDocument);
@@ -106,6 +109,7 @@ private:
     MapDocument *mMapDocument = nullptr;
     QHash<MapDocument*, MapItem*> mMapItems;
     AbstractTool *mSelectedTool = nullptr;
+    DebugDrawItem *mDebugDrawItem = nullptr;
     bool mUnderMouse = false;
     bool mShowTileCollisionShapes = false;
     Qt::KeyboardModifiers mCurrentModifiers = Qt::NoModifier;
@@ -127,6 +131,11 @@ inline MapDocument *MapScene::mapDocument() const
 inline MapItem *MapScene::mapItem(MapDocument *mapDocument) const
 {
     return mMapItems.value(mapDocument);
+}
+
+inline DebugDrawItem *MapScene::debugDrawItem() const
+{
+    return mDebugDrawItem;
 }
 
 } // namespace Tiled

@@ -111,6 +111,7 @@ SOURCES += aboutdialog.cpp \
     createtemplatetool.cpp \
     createtextobjecttool.cpp \
     createtileobjecttool.cpp \
+    debugdrawitem.cpp \
     document.cpp \
     documentmanager.cpp \
     donationdialog.cpp \
@@ -352,6 +353,7 @@ HEADERS += aboutdialog.h \
     createtemplatetool.h \
     createtextobjecttool.h \
     createtileobjecttool.h \
+    debugdrawitem.h \
     document.h \
     documentmanager.h \
     donationdialog.h \

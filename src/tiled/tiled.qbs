@@ -192,6 +192,8 @@ QtGuiApplication {
         "createtextobjecttool.h",
         "createtileobjecttool.cpp",
         "createtileobjecttool.h",
+        "debugdrawitem.cpp",
+        "debugdrawitem.h",
         "document.cpp",
         "document.h",
         "documentmanager.cpp",
