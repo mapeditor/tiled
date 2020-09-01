@@ -50,9 +50,6 @@ public:
                        const QKeySequence &shortcut,
                        QObject *parent = nullptr);
 
-    void activate(MapScene *scene) override;
-    void deactivate(MapScene *scene) override;
-
     void keyPressed(QKeyEvent *event) override;
     void mouseLeft() override;
     void mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers) override;
@@ -69,7 +66,6 @@ protected:
      */
     void updateEnabledState() override;
 
-    MapScene *mapScene() const { return mMapScene; }
     ObjectGroup *currentObjectGroup() const;
     QList<MapObject*> mapObjectsAt(const QPointF &pos) const;
     MapObject *topMostMapObjectAt(const QPointF &pos) const;
@@ -97,8 +93,6 @@ private:
 
     void showContextMenu(MapObject *clickedObject,
                          QPoint screenPos);
-
-    MapScene *mMapScene;
 
     QAction *mFlipHorizontal;
     QAction *mFlipVertical;

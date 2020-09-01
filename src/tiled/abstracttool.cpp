@@ -115,6 +115,16 @@ ObjectTemplate *AbstractTool::objectTemplate() const
     return toolManager()->objectTemplate();
 }
 
+void AbstractTool::activate(MapScene *scene)
+{
+    mMapScene = scene;
+}
+
+void AbstractTool::deactivate(MapScene *)
+{
+    mMapScene = nullptr;
+}
+
 void AbstractTool::keyPressed(QKeyEvent *event)
 {
     event->ignore();

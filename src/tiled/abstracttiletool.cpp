@@ -59,11 +59,13 @@ AbstractTileTool::~AbstractTileTool()
 void AbstractTileTool::activate(MapScene *scene)
 {
     scene->addItem(mBrushItem);
+    AbstractTool::activate(scene);
 }
 
 void AbstractTileTool::deactivate(MapScene *scene)
 {
     scene->removeItem(mBrushItem);
+    AbstractTool::deactivate(scene);
 }
 
 void AbstractTileTool::mouseEntered()

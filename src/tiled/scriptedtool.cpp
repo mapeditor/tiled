@@ -105,7 +105,6 @@ void ScriptedTool::setPreview(EditableMap *editableMap)
 void ScriptedTool::activate(MapScene *scene)
 {
     AbstractTileTool::activate(scene);
-    mScene = scene;
     call(QStringLiteral("activated"));
 }
 
@@ -113,7 +112,6 @@ void ScriptedTool::deactivate(MapScene *scene)
 {
     AbstractTileTool::deactivate(scene);
     call(QStringLiteral("deactivated"));
-    mScene = nullptr;
 }
 
 void ScriptedTool::keyPressed(QKeyEvent *keyEvent)
