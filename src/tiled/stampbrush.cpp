@@ -464,16 +464,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &points)
         WangFiller wangFiller(*mWangSet,
                               dynamic_cast<StaggeredRenderer *>(mapDocument()->renderer()));
 
-        for (const QPoint &p : points) {
-            Cell cell = wangFiller.findFittingCell(*tileLayer,
-                                                   *previewLayer,
-                                                   paintedRegion,
-                                                   p);
-
-            previewLayer->setCell(p.x() - bounds.left(),
-                                  p.y() - bounds.top(),
-                                  cell);
-        }
+        wangFiller.fillRegion(*previewLayer, *tileLayer, paintedRegion);
 
         preview->addLayer(std::move(previewLayer));
         preview->addTileset(mWangSet->tileset()->sharedPointer());
