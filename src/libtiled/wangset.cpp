@@ -514,24 +514,6 @@ QList<WangTile> WangSet::sortedWangTiles() const
 }
 
 /**
- * Finds all the tiles which match the given \a wangId, where zeros in the id
- * are treated as wild cards, and can be any color.
- */
-QList<WangTile> WangSet::findMatchingWangTiles(WangId wangId) const
-{
-    QList<WangTile> list;
-
-    const unsigned mask = wangId.mask();
-
-    for (const WangTile &wangTile : mWangIdToWangTile) {
-        if ((wangTile.wangId() & mask) == wangId)
-            list.append(wangTile);
-    }
-
-    return list;
-}
-
-/**
  * Returns a WangId matching that of the provided \a surroundingWangIds.
  *
  * This is based off a provided array, { 0, 1, 2, 3, 4, 5, 6, 7 },

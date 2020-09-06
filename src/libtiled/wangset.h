@@ -243,8 +243,6 @@ public:
     void addCell(const Cell &cell, WangId wangId);
     void addWangTile(const WangTile &wangTile);
 
-    QList<WangTile> findMatchingWangTiles(WangId wangId) const;
-
     const QMultiHash<WangId, WangTile> &wangTilesByWangId() const { return mWangIdToWangTile; }
 
     QList<WangTile> sortedWangTiles() const;

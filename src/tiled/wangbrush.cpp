@@ -666,7 +666,7 @@ void WangBrush::updateBrush()
     }
 
     const WangFiller wangFiller{ *mWangSet, staggeredRenderer };
-    wangFiller.fillRegion(*stamp, *currentLayer, std::move(grid), region);
+    wangFiller.fillRegion(*stamp, *currentLayer, region, std::move(grid));
 
     static_cast<WangBrushItem*>(brushItem())->setInvalidTiles();
 

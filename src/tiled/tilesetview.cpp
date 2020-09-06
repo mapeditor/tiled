@@ -709,25 +709,27 @@ void TileDelegate::drawWangOverlay(QPainter *painter,
                                    QRect targetRect,
                                    const QModelIndex &index) const
 {
+    WangSet *wangSet = mTilesetView->wangSet();
+    if (!wangSet)
+        return;
+
     painter->save();
 
     QTransform transform;
     setupTilesetGridTransform(*tile->tileset(), transform, targetRect);
     painter->setTransform(transform, true);
 
-    if (WangSet *wangSet = mTilesetView->wangSet()) {
-        paintWangOverlay(painter, wangSet->wangIdOfTile(tile),
+    paintWangOverlay(painter, wangSet->wangIdOfTile(tile),
+                     wangSet,
+                     targetRect);
+
+    if (mTilesetView->hoveredIndex() == index) {
+        qreal opacity = painter->opacity();
+        painter->setOpacity(0.9);
+        paintWangOverlay(painter, mTilesetView->wangId(),
                          wangSet,
                          targetRect);
-
-        if (mTilesetView->hoveredIndex() == index) {
-            qreal opacity = painter->opacity();
-            painter->setOpacity(0.9);
-            paintWangOverlay(painter, mTilesetView->wangId(),
-                             wangSet,
-                             targetRect);
-            painter->setOpacity(opacity);
-        }
+        painter->setOpacity(opacity);
     }
 
     painter->restore();

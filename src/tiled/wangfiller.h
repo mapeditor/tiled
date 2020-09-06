@@ -57,44 +57,12 @@ public:
                         const StaggeredRenderer *staggeredRenderer = nullptr);
 
     /**
-     * Finds a cell from the attached WangSet which fits the given
-     * surroundings.
-     */
-    Cell findFittingCell(const TileLayer &back,
-                         const TileLayer &front,
-                         const QRegion &region,
-                         QPoint point) const;
-
-    /**
-     * Fills the given \a region in the \a target layer with Wang methods.
-     */
-    void fillRegion(TileLayer &target, const TileLayer &back, const QRegion &region) const;
-
-    /**
      * Fills the given \a region in the \a target layer with Wang methods,
      * based on the desired \a wangIds.
      */
-    void fillRegion(TileLayer &target, const TileLayer &back, Grid<CellInfo> wangIds, const QRegion &region) const;
+    void fillRegion(TileLayer &target, const TileLayer &back, const QRegion &region, Grid<CellInfo> wangIds = {}) const;
 
 private:
-    /**
-     * Returns a cell from either the \a back or \a front, based on the
-     * \a region. \a point, \a front, and \a region are relative to \a back.
-     */
-    const Cell &getCell(const TileLayer &back,
-                        const TileLayer &front,
-                        const QRegion &region,
-                        QPoint point) const;
-
-    /**
-     * Returns a wangId based on \a front and \a back. Adjacent cells are
-     * obtained using getCell().
-     */
-    WangId wangIdFromSurroundings(const TileLayer &back,
-                                  const TileLayer &front,
-                                  const QRegion &region,
-                                  QPoint point) const;
-
     /**
      * Returns a wangId based on cells from \a back which are not in the
      * \a region. \a point and \a region are relative to \a back.
