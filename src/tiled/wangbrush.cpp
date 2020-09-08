@@ -433,8 +433,7 @@ void WangBrush::beginPaint()
 void WangBrush::doPaint(bool mergeable)
 {
     TileLayer *stamp = brushItem()->tileLayer().data();
-
-    if (!stamp || stamp->isEmpty())
+    if (!stamp)
         return;
 
     // This method shouldn't be called when current layer is not a tile layer
@@ -665,13 +664,14 @@ void WangBrush::updateBrush()
         }
     }
 
-    const WangFiller wangFiller{ *mWangSet, staggeredRenderer };
+    WangFiller wangFiller{ *mWangSet, mapDocument()->renderer() };
+    wangFiller.setErasingEnabled(mCurrentColor == 0);
     wangFiller.fillRegion(*stamp, *currentLayer, region, std::move(grid));
 
     static_cast<WangBrushItem*>(brushItem())->setInvalidTiles();
 
     // Translate to map coordinate space and normalize stamp
-    QRegion brushRegion = stamp->region();
+    QRegion brushRegion = stamp->region([] (const Cell &cell) { return cell.checked(); });
     brushRegion.translate(currentLayer->position());
     QRect brushRect = brushRegion.boundingRect();
     stamp->setPosition(brushRect.topLeft());

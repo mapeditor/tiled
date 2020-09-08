@@ -40,9 +40,10 @@ static const QPoint aroundTilePoints[] = {
 };
 
 WangFiller::WangFiller(const WangSet &wangSet,
-                       const StaggeredRenderer *staggeredRenderer)
+                       const MapRenderer *mapRenderer)
     : mWangSet(wangSet)
-    , mStaggeredRenderer(staggeredRenderer)
+    , mMapRenderer(mapRenderer)
+    , mStaggeredRenderer(dynamic_cast<const StaggeredRenderer*>(mapRenderer))
 {
 }
 
@@ -99,41 +100,6 @@ static void updateToAdjacent(WangFiller::CellInfo &info, WangId adjacent, int po
     }
 }
 
-static WangTile findBestMatch(const WangSet &wangSet, WangFiller::CellInfo info)
-{
-    const unsigned maskedWangId = info.desired & info.mask;
-
-    RandomPicker<WangTile> matches;
-    int lowestPenalty = INT_MAX;
-
-    // TODO: this is a slow linear search, perhaps we could use a better find algorithm...
-    for (const WangTile &wangTile : wangSet.wangTilesByWangId()) {
-        if ((wangTile.wangId() & info.mask) != maskedWangId)
-            continue;
-
-        int penalty = 0;
-        for (int i = 0; i < WangId::NumIndexes; ++i)
-            if (wangTile.wangId().indexColor(i) != info.desired.indexColor(i))
-                ++penalty;
-
-        // add tile to the candidate list
-        if (penalty <= lowestPenalty) {
-            if (penalty < lowestPenalty) {
-                matches.clear();
-                lowestPenalty = penalty;
-            }
-
-            matches.add(wangTile, wangSet.wangTileProbability(wangTile));
-        }
-    }
-
-    // choose a candidate at random, with consideration for probability
-    if (!matches.isEmpty())
-        return matches.pick();
-
-    return WangTile();
-}
-
 void WangFiller::fillRegion(TileLayer &target,
                             const TileLayer &back,
                             const QRegion &region,
@@ -175,15 +141,18 @@ void WangFiller::fillRegion(TileLayer &target,
 #endif
         for (int y = rect.top(); y <= rect.bottom(); ++y) {
             for (int x = rect.left(); x <= rect.right(); ++x) {
-                const WangTile wangTile = findBestMatch(mWangSet, grid.get(x, y));
-                if (!wangTile.tile()) {
+                WangTile wangTile;
+                if (!findBestMatch(mWangSet, grid.get(x, y), wangTile)) {
                     // TODO: error feedback
                     continue;
                 }
 
+                auto cell = wangTile.makeCell();
+                cell.setChecked(true);
+
                 target.setCell(x - target.x(),
                                y - target.y(),
-                               wangTile.makeCell());
+                               cell);
 
                 // Adjust the desired WangIds for the surrounding tiles based on the placed one
                 QPoint adjacentPoints[8];
@@ -191,7 +160,7 @@ void WangFiller::fillRegion(TileLayer &target,
 
                 for (int i = 0; i < 8; ++i) {
                     const QPoint p = adjacentPoints[i];
-                    if (!target.cellAt(p - target.position()).isEmpty())
+                    if (target.cellAt(p - target.position()).checked())
                         continue;
 
                     CellInfo adjacentInfo = grid.get(p);
@@ -217,4 +186,47 @@ WangId WangFiller::wangIdFromSurroundings(const TileLayer &back,
     }
 
     return mWangSet.wangIdFromSurrounding(surroundingCells);
+}
+
+bool WangFiller::findBestMatch(const WangSet &wangSet, WangFiller::CellInfo info, WangTile &result) const
+{
+    const unsigned maskedWangId = info.desired & info.mask;
+
+    RandomPicker<WangTile> matches;
+    int lowestPenalty = INT_MAX;
+
+    auto processCandidate = [&] (const WangTile &wangTile) {
+        if ((wangTile.wangId() & info.mask) != maskedWangId)
+            return;
+
+        int penalty = 0;
+        for (int i = 0; i < WangId::NumIndexes; ++i)
+            if (wangTile.wangId().indexColor(i) != info.desired.indexColor(i))
+                ++penalty;
+
+        // add tile to the candidate list
+        if (penalty <= lowestPenalty) {
+            if (penalty < lowestPenalty) {
+                matches.clear();
+                lowestPenalty = penalty;
+            }
+
+            matches.add(wangTile, wangSet.wangTileProbability(wangTile));
+        }
+    };
+
+    // TODO: this is a slow linear search, perhaps we could use a better find algorithm...
+    for (const WangTile &wangTile : wangSet.wangTilesByWangId())
+        processCandidate(wangTile);
+
+    if (mErasingEnabled)
+        processCandidate(WangTile());
+
+    // choose a candidate at random, with consideration for probability
+    if (!matches.isEmpty()) {
+        result = matches.pick();
+        return true;
+    }
+
+    return false;
 }

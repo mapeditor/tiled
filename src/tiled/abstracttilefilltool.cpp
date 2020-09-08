@@ -285,8 +285,7 @@ void AbstractTileFillTool::wangFill(TileLayer &tileLayerToFill,
     if (!mWangSet)
         return;
 
-    WangFiller wangFiller(*mWangSet,
-                          dynamic_cast<StaggeredRenderer *>(mapDocument()->renderer()));
+    WangFiller wangFiller(*mWangSet, mapDocument()->renderer());
 
     wangFiller.fillRegion(tileLayerToFill, backgroundTileLayer, region);
 }
