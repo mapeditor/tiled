@@ -297,11 +297,11 @@ bool WorldManager::saveWorld(const QString &fileName, QString *errorString)
         QFileInfo mapFile = QFileInfo(map.fileName);
 
         QString relativeFileName = QDir::cleanPath(dir.relativeFilePath(map.fileName));
-        jsonMap.insert(QLatin1String("fileName"), QJsonValue::fromVariant(relativeFileName));
-        jsonMap.insert(QLatin1String("x"), QJsonValue::fromVariant(map.rect.x()));
-        jsonMap.insert(QLatin1String("y"), QJsonValue::fromVariant(map.rect.y()));
-        jsonMap.insert(QLatin1String("width"), QJsonValue::fromVariant(map.rect.width()));
-        jsonMap.insert(QLatin1String("height"), QJsonValue::fromVariant(map.rect.height()));
+        jsonMap.insert(QLatin1String("fileName"), relativeFileName);
+        jsonMap.insert(QLatin1String("x"), map.rect.x());
+        jsonMap.insert(QLatin1String("y"), map.rect.y());
+        jsonMap.insert(QLatin1String("width"), map.rect.width());
+        jsonMap.insert(QLatin1String("height"), map.rect.height());
         maps.push_back(jsonMap);
     }
 
@@ -309,8 +309,8 @@ bool WorldManager::saveWorld(const QString &fileName, QString *errorString)
 
     QJsonObject document;
     document.insert(QLatin1String("maps"), maps);
-    document.insert(QLatin1String("type"), QJsonValue::fromVariant(QLatin1String("world")));
-    document.insert(QLatin1String("onlyShowAdjacentMaps"), QJsonValue::fromVariant(savingWorld->onlyShowAdjacentMaps));
+    document.insert(QLatin1String("type"), QLatin1String("world"));
+    document.insert(QLatin1String("onlyShowAdjacentMaps"), savingWorld->onlyShowAdjacentMaps);
 
     QJsonDocument doc(document);
 
