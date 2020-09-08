@@ -85,8 +85,7 @@ static void updateToAdjacent(WangFiller::CellInfo &info, WangId adjacent, int po
     info.desired.setIndexColor(position, adjacent.indexColor(adjacentPosition));
     info.mask.setIndexColor(position, 0xf);
 
-    const bool isCorner = position & 1;
-    if (!isCorner) {
+    if (!WangId::isCorner(position)) {
         const int cornerA = WangId::nextIndex(position);
         const int cornerB = WangId::previousIndex(position);
         const int adjacentCornerA = WangId::previousIndex(adjacentPosition);
@@ -134,41 +133,77 @@ void WangFiller::fillRegion(TileLayer &target,
         }
     }
 
+    // Determine the bounds of the affected area
+    QRect bounds = region.boundingRect();
+    int margin = mWangSet.maximumColorDistance() + (mStaggeredRenderer != nullptr);
+    bounds.adjust(-margin, -margin, margin, margin);
+
+    // Keep a list of points that need correction
+    QVector<QPoint> corrections;
+
+    auto resolve = [&] (int x, int y) {
+        WangTile wangTile;
+        if (!findBestMatch(target, grid, QPoint(x, y), wangTile)) {
+            // TODO: error feedback
+            return;
+        }
+
+        auto cell = wangTile.makeCell();
+        cell.setChecked(true);
+
+        target.setCell(x - target.x(),
+                       y - target.y(),
+                       cell);
+
+        // Adjust the desired WangIds for the surrounding tiles based on the placed one
+        QPoint adjacentPoints[8];
+        getSurroundingPoints(QPoint(x, y), mStaggeredRenderer, adjacentPoints);
+
+        for (int i = 0; i < 8; ++i) {
+            const QPoint p = adjacentPoints[i];
+            if (target.cellAt(p - target.position()).checked())
+                continue;
+
+            CellInfo adjacentInfo = grid.get(p);
+            updateToAdjacent(adjacentInfo, wangTile.wangId(), WangId::oppositeIndex(i));
+
+            // Check if we may need to reconsider a tile outside of our starting region
+            if (!WangId::isCorner(i) && mCorrectionsEnabled && bounds.contains(p) && !region.contains(p)) {
+                const WangId currentWangId = mWangSet.wangIdOfCell(back.cellAt(p));
+
+                if ((currentWangId & adjacentInfo.mask) != (adjacentInfo.desired & adjacentInfo.mask)) {
+                    corrections.append(p);
+
+                    // Synchronize desired WangId with current tile, keeping the masked indexes
+                    for (int i = 0; i < WangId::NumIndexes; ++i)
+                        if (!adjacentInfo.mask.indexColor(i))
+                            adjacentInfo.desired.setIndexColor(i, currentWangId.indexColor(i));
+                }
+            }
+
+            grid.set(p, adjacentInfo);
+        }
+    };
+
+    // First process the initial region
 #if QT_VERSION < 0x050800
     for (const QRect &rect : rects) {
 #else
     for (const QRect &rect : region) {
 #endif
-        for (int y = rect.top(); y <= rect.bottom(); ++y) {
-            for (int x = rect.left(); x <= rect.right(); ++x) {
-                WangTile wangTile;
-                if (!findBestMatch(mWangSet, grid.get(x, y), wangTile)) {
-                    // TODO: error feedback
-                    continue;
-                }
+        for (int y = rect.top(); y <= rect.bottom(); ++y)
+            for (int x = rect.left(); x <= rect.right(); ++x)
+                resolve(x, y);
+    }
 
-                auto cell = wangTile.makeCell();
-                cell.setChecked(true);
-
-                target.setCell(x - target.x(),
-                               y - target.y(),
-                               cell);
-
-                // Adjust the desired WangIds for the surrounding tiles based on the placed one
-                QPoint adjacentPoints[8];
-                getSurroundingPoints(QPoint(x, y), mStaggeredRenderer, adjacentPoints);
-
-                for (int i = 0; i < 8; ++i) {
-                    const QPoint p = adjacentPoints[i];
-                    if (target.cellAt(p - target.position()).checked())
-                        continue;
-
-                    CellInfo adjacentInfo = grid.get(p);
-                    updateToAdjacent(adjacentInfo, wangTile.wangId(), WangId::oppositeIndex(i));
-                    grid.set(p, adjacentInfo);
-                }
-            }
-        }
+    // Process each batch of added correction points while avoiding to move
+    // around or allocate memory.
+    QVector<QPoint> processing;
+    while (!corrections.isEmpty()) {
+        processing.swap(corrections);
+        for (const QPoint &p : processing)
+            resolve(p.x(), p.y());
+        processing.clear();
     }
 }
 
@@ -188,8 +223,12 @@ WangId WangFiller::wangIdFromSurroundings(const TileLayer &back,
     return mWangSet.wangIdFromSurrounding(surroundingCells);
 }
 
-bool WangFiller::findBestMatch(const WangSet &wangSet, WangFiller::CellInfo info, WangTile &result) const
+bool WangFiller::findBestMatch(const TileLayer &target,
+                               const Grid<CellInfo> &grid,
+                               QPoint position,
+                               WangTile &result) const
 {
+    const CellInfo info = grid.get(position);
     const unsigned maskedWangId = info.desired & info.mask;
 
     RandomPicker<WangTile> matches;
@@ -199,32 +238,83 @@ bool WangFiller::findBestMatch(const WangSet &wangSet, WangFiller::CellInfo info
         if ((wangTile.wangId() & info.mask) != maskedWangId)
             return;
 
-        int penalty = 0;
-        for (int i = 0; i < WangId::NumIndexes; ++i)
-            if (wangTile.wangId().indexColor(i) != info.desired.indexColor(i))
-                ++penalty;
+        int totalPenalty = 0;
 
-        // add tile to the candidate list
-        if (penalty <= lowestPenalty) {
-            if (penalty < lowestPenalty) {
+        for (int i = 0; i < WangId::NumIndexes; ++i) {
+            const int desiredColor = info.desired.indexColor(i);
+            const int candidateColor = wangTile.wangId().indexColor(i);
+
+            if (candidateColor != desiredColor) {
+                int penalty = mWangSet.transitionPenalty(desiredColor, candidateColor);
+
+                // If there is no path to the desired color, this isn't a useful transition
+                if (penalty < 0) {
+                    if (mCorrectionsEnabled) {
+                        // When we're doing corrections, we'd rather not choose
+                        // this candidate at all because it's impossible to
+                        // transition to the desired color.
+                        return;
+                    } else {
+                        penalty = mWangSet.maximumColorDistance() + 1;
+                    }
+                }
+
+                totalPenalty += penalty;
+            }
+        }
+
+        // Add tile to the candidate list
+        if (totalPenalty <= lowestPenalty) {
+            if (totalPenalty < lowestPenalty) {
                 matches.clear();
-                lowestPenalty = penalty;
+                lowestPenalty = totalPenalty;
             }
 
-            matches.add(wangTile, wangSet.wangTileProbability(wangTile));
+            matches.add(wangTile, mWangSet.wangTileProbability(wangTile));
         }
     };
 
     // TODO: this is a slow linear search, perhaps we could use a better find algorithm...
-    for (const WangTile &wangTile : wangSet.wangTilesByWangId())
+    for (const WangTile &wangTile : mWangSet.wangTilesByWangId())
         processCandidate(wangTile);
 
     if (mErasingEnabled)
         processCandidate(WangTile());
 
-    // choose a candidate at random, with consideration for probability
-    if (!matches.isEmpty()) {
-        result = matches.pick();
+    // Choose a candidate at random, with consideration for probability
+    while (!matches.isEmpty()) {
+        result = matches.take();
+
+        // Check if we will be able to place any Wang tile next to this
+        // candidate. This can be a relatively expensive check, that we'll only
+        // do when we're not making corrections and when the WangSet is not
+        // complete.
+        if (!mCorrectionsEnabled && !mWangSet.isComplete()) {
+            bool discard = false;
+
+            // Adjust the desired WangIds for the surrounding tiles based on
+            // the to be placed one.
+            QPoint adjacentPoints[8];
+            getSurroundingPoints(position, mStaggeredRenderer, adjacentPoints);
+
+            for (int i = 0; i < 8; ++i) {
+                const QPoint p = adjacentPoints[i];
+                if (target.cellAt(p - target.position()).checked())
+                    continue;
+
+                CellInfo adjacentInfo = grid.get(p);
+                updateToAdjacent(adjacentInfo, result.wangId(), WangId::oppositeIndex(i));
+
+                if (!mWangSet.wangIdIsUsed(adjacentInfo.desired, adjacentInfo.mask)) {
+                    discard = true;
+                    break;
+                }
+            }
+
+            if (discard)
+                continue;
+        }
+
         return true;
     }
 

@@ -32,6 +32,8 @@
 #include <QStack>
 #include <QtMath>
 
+#include "qtcompat_p.h"
+
 namespace Tiled {
 
 unsigned cellToTileInfo(const Cell &cell)
@@ -144,8 +146,7 @@ void WangId::updateToAdjacent(WangId adjacent, int position)
 {
     setIndexColor(position, adjacent.indexColor(oppositeIndex(position)));
 
-    const bool isCorner = position & 1;
-    if (!isCorner) {
+    if (!isCorner(position)) {
         const int index = position / 2;
         setCornerColor(index, adjacent.cornerColor((index + 1) % 4));
         setCornerColor((index + 3) % 4, adjacent.cornerColor((index + 2) % 4));
@@ -176,6 +177,24 @@ unsigned WangId::mask() const
             mask |= 0xf << (i * 4);
     }
     return mask;
+}
+
+bool WangId::hasCornerWithColor(int value) const
+{
+    for (int i = 0; i < 4; ++i) {
+        if (cornerColor(i) == value)
+            return true;
+    }
+    return false;
+}
+
+bool WangId::hasEdgeWithColor(int value) const
+{
+    for (int i = 0; i < 4; ++i) {
+        if (edgeColor(i) == value)
+            return true;
+    }
+    return false;
 }
 
 /**
@@ -395,6 +414,8 @@ void WangSet::insertWangColor(const QSharedPointer<WangColor> &wangColor)
 
     for (int i = wangColor->colorIndex(); i < colorCount(); ++i)
         mColors.at(i)->setColorIndex(i + 1);
+
+    mColorDistancesDirty = true;
 }
 
 /**
@@ -422,6 +443,8 @@ void WangSet::removeWangColorAt(int color)
 
     for (int i = color - 1; i < colorCount(); ++i)
         mColors.at(i)->setColorIndex(i + 1);
+
+    mColorDistancesDirty = true;
 }
 
 QList<Tile *> WangSet::tilesChangedOnSetColorCount(int newColorCount) const
@@ -485,6 +508,8 @@ void WangSet::addWangTile(const WangTile &wangTile)
 
     mWangIdToWangTile.insert(wangTile.wangId(), wangTile);
     mTileInfoToWangId.insert(wangTileToTileInfo(wangTile), wangTile.wangId());
+
+    mColorDistancesDirty = true;
 }
 
 void WangSet::removeWangTile(const WangTile &wangTile)
@@ -500,6 +525,95 @@ void WangSet::removeWangTile(const WangTile &wangTile)
             && !mWangIdToWangTile.contains(wangId)
             && !wangId.hasWildCards())
         --mUniqueFullWangIdCount;
+
+    mColorDistancesDirty = true;
+}
+
+/**
+ * Calculates the distances between Wang colors.
+ *
+ * Distance between colors is the minimum number of tiles required before one
+ * color may meet another. Colors that have no transition path have a distance
+ * of -1.
+ */
+void WangSet::recalculateColorDistances()
+{
+    int maximumDistance = 1;
+
+    for (int i = 1; i <= colorCount(); ++i) {
+        WangColor &color = *colorAt(i);
+        QVector<int> distance(colorCount() + 1, -1);
+
+        // Check all tiles for transitions to other Wang colors
+        for (const WangTile &tile : qAsConst(mWangIdToWangTile)) {
+
+            // Don't consider edges and corners to be connected. This helps
+            // avoid seeing transitions to "no color" for edge or corner
+            // based sets.
+
+            if (tile.wangId().hasCornerWithColor(i)) {
+                for (int index = 0; index < 4; ++index)
+                    distance[tile.wangId().cornerColor(index)] = 1;
+            }
+
+            if (tile.wangId().hasEdgeWithColor(i)) {
+                for (int index = 0; index < 4; ++index)
+                    distance[tile.wangId().edgeColor(index)] = 1;
+            }
+        }
+
+        // Color has at least one tile of its own type
+        distance[i] = 0;
+
+        color.mDistanceToColor = distance;
+    }
+
+    // Calculate indirect transition distances
+    bool newConnections;
+    do {
+        newConnections = false;
+
+        // For each combination of colors
+        for (int i = 1; i <= colorCount(); ++i) {
+            WangColor &colorI = *colorAt(i);
+
+            for (int j = 1; j <= colorCount(); ++j) {
+                if (i == j)
+                    continue;
+
+                WangColor &colorJ = *colorAt(j);
+
+                // Scan through each color, and see if we have any in common
+                for (int t = 0; t <= colorCount(); ++t) {
+                    const int d0 = colorI.distanceToColor(t);
+                    const int d1 = colorJ.distanceToColor(t);
+                    if (d0 == -1 || d1 == -1)
+                        continue;
+
+                    // We have found a common connection
+                    int d = colorI.distanceToColor(j);
+                    Q_ASSERT(colorJ.distanceToColor(i) == d);
+
+                    // If the new path is shorter, record the new distance
+                    if (d == -1 || d0 + d1 < d) {
+                        d = d0 + d1;
+                        colorI.mDistanceToColor[j] = d;
+                        colorJ.mDistanceToColor[i] = d;
+                        maximumDistance = qMax(maximumDistance, d);
+
+                        // We're making progress, flag for another iteration...
+                        newConnections = true;
+                    }
+                }
+            }
+        }
+
+        // Repeat while we are still making new connections (could take a
+        // number of iterations for distant terrain types to connect)
+    } while (newConnections);
+
+    mMaximumColorDistance = maximumDistance;
+    mColorDistancesDirty = false;
 }
 
 /**
@@ -630,26 +744,45 @@ bool WangSet::wangIdIsValid(WangId wangId, int colorCount)
 
 /**
  * Returns whether the given \a wangId is assigned to a WangTile.
+ *
+ * When \a mask is given, returns whether there is a WangId assigned to a
+ * WangTile matching the part of the \a wangId indicated by the mask.
  */
-bool WangSet::wangIdIsUsed(WangId wangId) const
+bool WangSet::wangIdIsUsed(WangId wangId, WangId mask) const
 {
-    return mWangIdToWangTile.contains(wangId);
-}
+    if (mask == 0xffffffff)
+        return mWangIdToWangTile.contains(wangId);
 
-/**
- * Returns true if the given wangId is assigned to a tile,
- * or any variations of the 0 spots are.
- */
-bool WangSet::wildWangIdIsUsed(WangId wangId) const
-{
-    const unsigned mask = wangId.mask();
+    const unsigned maskedWangId = wangId & mask;
 
-    for (const WangTile &wangTile : mWangIdToWangTile) {
-        if ((wangTile.wangId() & mask) == wangId)
+    for (const WangTile &wangTile : mWangIdToWangTile)
+        if ((wangTile.wangId() & mask) == maskedWangId)
             return true;
-    }
 
     return false;
+}
+
+int WangSet::transitionPenalty(int colorA, int colorB) const
+{
+    if (mColorDistancesDirty)
+        const_cast<WangSet*>(this)->recalculateColorDistances();
+
+    // Do some magic, since we don't have a transition array for no-terrain
+    if (colorA == 0 && colorB == 0)
+        return 0;
+
+    if (colorA == 0)
+        return colorAt(colorB)->mDistanceToColor[colorA];
+
+    return colorAt(colorA)->mDistanceToColor[colorB];
+}
+
+int WangSet::maximumColorDistance() const
+{
+    if (mColorDistancesDirty)
+        const_cast<WangSet*>(this)->recalculateColorDistances();
+
+    return mMaximumColorDistance;
 }
 
 /**
@@ -708,11 +841,15 @@ WangSet *WangSet::clone(Tileset *tileset) const
     c->mColors = mColors;
     c->mWangIdToWangTile = mWangIdToWangTile;
     c->mTileInfoToWangId = mTileInfoToWangId;
+    c->mMaximumColorDistance = mMaximumColorDistance;
+    c->mColorDistancesDirty = mColorDistancesDirty;
     c->setProperties(properties());
 
     // Avoid sharing Wang colors
     for (QSharedPointer<WangColor> &wangColor : c->mColors) {
         const auto properties = wangColor->properties();
+        const auto distanceToColor = wangColor->mDistanceToColor;
+
         wangColor = QSharedPointer<WangColor>::create(wangColor->colorIndex(),
                                                       wangColor->name(),
                                                       wangColor->color(),
@@ -720,6 +857,7 @@ WangSet *WangSet::clone(Tileset *tileset) const
                                                       wangColor->probability());
         wangColor->setProperties(properties);
         wangColor->mWangSet = c;
+        wangColor->mDistanceToColor = distanceToColor;
     }
 
     return c;

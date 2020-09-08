@@ -192,7 +192,7 @@ void WangBrush::setColor(int color)
         for (const auto &wangTile : mWangSet->wangTilesByWangId()) {
             for (int i = 0; i < WangId::NumIndexes; ++i) {
                 if (wangTile.wangId().indexColor(i) == color) {
-                    const bool isCorner = i & 1;
+                    const bool isCorner = WangId::isCorner(i);
                     usedAsCorner |= isCorner;
                     usedAsEdge |= !isCorner;
                 }
@@ -550,7 +550,7 @@ void WangBrush::updateBrush()
         grid.set(mPaintPoint, center);
 
         for (int i = 0; i < 8; ++i) {
-            const bool isCorner = i & 1;
+            const bool isCorner = WangId::isCorner(i);
             if (mBrushMode == PaintEdge && isCorner)
                 continue;
 
@@ -581,10 +581,8 @@ void WangBrush::updateBrush()
 
         auto brushMode = mBrushMode;
 
-        if (brushMode == PaintEdgeAndCorner) {
-            const bool isCorner = mWangIndex & 1;
-            brushMode = isCorner ? PaintCorner : PaintEdge;
-        }
+        if (brushMode == PaintEdgeAndCorner)
+            brushMode = WangId::isCorner(mWangIndex) ? PaintCorner : PaintEdge;
 
         switch (brushMode) {
         case PaintCorner: {
@@ -666,6 +664,7 @@ void WangBrush::updateBrush()
 
     WangFiller wangFiller{ *mWangSet, mapDocument()->renderer() };
     wangFiller.setErasingEnabled(mCurrentColor == 0);
+    wangFiller.setCorrectionsEnabled(true);
     wangFiller.fillRegion(*stamp, *currentLayer, region, std::move(grid));
 
     static_cast<WangBrushItem*>(brushItem())->setInvalidTiles();

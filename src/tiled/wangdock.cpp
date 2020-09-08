@@ -300,7 +300,7 @@ void WangDock::setDocument(Document *document)
         mTemplateAndColorView->tabBar()->show();
 
         /*
-         * Removing a wangset usually changes the selected wangset without the
+         * Removing a WangSet usually changes the selected WangSet without the
          * selection changing rows, so we can't rely on the currentRowChanged
          * signal.
          */

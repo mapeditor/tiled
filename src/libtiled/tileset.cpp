@@ -569,15 +569,22 @@ int Tileset::maximumTerrainDistance() const
     return mMaximumTerrainDistance;
 }
 
+// some fancy expressions which can search for a value in each byte of a word simultaneously
+inline bool hasZeroByte(int value)
+{
+    return (value - 0x01010101UL) & ~value & 0x80808080UL;
+}
+
+inline bool hasByteEqualTo(int value, int byteValue)
+{
+    return hasZeroByte(value ^ (~0UL / 255 * byteValue));
+}
+
 /**
  * Calculates the transition distance matrix for all terrain types.
  */
 void Tileset::recalculateTerrainDistances()
 {
-    // some fancy macros which can search for a value in each byte of a word simultaneously
-    #define hasZeroByte(dword) (((dword) - 0x01010101UL) & ~(dword) & 0x80808080UL)
-    #define hasByteEqualTo(dword, value) (hasZeroByte((dword) ^ (~0UL/255 * (value))))
-
     // Terrain distances are the number of transitions required before one terrain may meet another
     // Terrains that have no transition path have a distance of -1
     int maximumDistance = 1;
@@ -606,10 +613,10 @@ void Tileset::recalculateTerrainDistances()
                 distance[tl + 1] = 1;
                 distance[br + 1] = 1;
             }
-
-            // terrain has at least one tile of its own type
-            distance[i + 1] = 0;
         }
+
+        // terrain has at least one tile of its own type
+        distance[i + 1] = 0;
 
         type->setTransitionDistances(distance);
     }

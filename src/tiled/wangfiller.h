@@ -57,6 +57,7 @@ public:
     explicit WangFiller(const WangSet &wangSet, const MapRenderer *mapRenderer);
 
     void setErasingEnabled(bool enabled) { mErasingEnabled = enabled; }
+    void setCorrectionsEnabled(bool enabled) { mCorrectionsEnabled = enabled; }
 
     /**
      * Fills the given \a region in the \a target layer with Wang methods,
@@ -73,14 +74,16 @@ private:
                                   const QRegion &region,
                                   QPoint point) const;
 
-    bool findBestMatch(const WangSet &wangSet,
-                       WangFiller::CellInfo info,
+    bool findBestMatch(const TileLayer &target,
+                       const Grid<CellInfo> &grid,
+                       QPoint position,
                        WangTile &result) const;
 
     const WangSet &mWangSet;
     const MapRenderer * const mMapRenderer;
     const StaggeredRenderer * const mStaggeredRenderer;
     bool mErasingEnabled = false;
+    bool mCorrectionsEnabled = false;
 };
 
 } // namespace Tiled

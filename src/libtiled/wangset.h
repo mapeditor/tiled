@@ -74,6 +74,9 @@ public:
     bool hasWildCards() const;
     unsigned mask() const;
 
+    bool hasCornerWithColor(int value) const;
+    bool hasEdgeWithColor(int value) const;
+
     void rotate(int rotations);
     void flipHorizontally();
     void flipVertically();
@@ -82,6 +85,7 @@ public:
     static Index oppositeIndex(int index);
     static Index nextIndex(int index);
     static Index previousIndex(int index);
+    static bool isCorner(int index);
 
 private:
     unsigned mId;
@@ -100,6 +104,11 @@ inline WangId::Index WangId::nextIndex(int index)
 inline WangId::Index WangId::previousIndex(int index)
 {
     return static_cast<Index>((index + NumIndexes - 1) % NumIndexes);
+}
+
+inline bool WangId::isCorner(int index)
+{
+    return index & 1;
 }
 
 TILEDSHARED_EXPORT QDebug operator<<(QDebug debug, WangId wangId);
@@ -193,6 +202,8 @@ public:
 
     WangSet *wangSet() const { return mWangSet; }
 
+    int distanceToColor(int targetColor) const;
+
 private:
     friend class WangSet;
 
@@ -204,7 +215,17 @@ private:
     QColor mColor;
     int mImageId;
     qreal mProbability;
+
+    QVector<int> mDistanceToColor;
 };
+
+/**
+ * Returns the transition penalty(/distance) from this color to another.
+ */
+inline int WangColor::distanceToColor(int targetColor) const
+{
+    return mDistanceToColor.at(targetColor);
+}
 
 /**
  * Represents a Wang set.
@@ -259,9 +280,10 @@ public:
 
     static bool wangIdIsValid(WangId wangId, int colorCount);
 
-    bool wangIdIsUsed(WangId wangId) const;
+    bool wangIdIsUsed(WangId wangId, WangId mask = 0xffffffff) const;
 
-    bool wildWangIdIsUsed(WangId wangId) const;
+    int transitionPenalty(int colorA, int colorB) const;
+    int maximumColorDistance() const;
 
     bool isEmpty() const;
     bool isComplete() const;
@@ -269,14 +291,12 @@ public:
 
     WangId templateWangIdAt(unsigned n) const;
 
-    /* Returns a clone of this wangset
-     */
     WangSet *clone(Tileset *tileset) const;
 
 private:
     void removeWangTile(const WangTile &wangTile);
 
-    void removeWangColor(int color);
+    void recalculateColorDistances();
 
     Tileset *mTileset;
     QString mName;
@@ -292,6 +312,9 @@ private:
     // Tile info being the tileId, with the last three bits (32, 31, 30)
     // being info on flip (horizontal, vertical, and antidiagonal)
     QHash<unsigned, WangId> mTileInfoToWangId;
+
+    int mMaximumColorDistance = 0;
+    bool mColorDistancesDirty = true;
 };
 
 
