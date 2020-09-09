@@ -280,7 +280,7 @@ void IsometricRenderer::drawTileLayer(const TileLayer *layer,
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
 
-    if (tileWidth <= 0 || tileHeight <= 1)
+    if (tileWidth < 1 || tileHeight < 1)
         return;
 
     QRect rect = exposed.toAlignedRect();

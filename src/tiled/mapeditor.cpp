@@ -920,7 +920,7 @@ void MapEditor::handleExternalTilesetsAndImages(const QStringList &fileNames,
 
         if (handleImages) {
             // Check if the file is a supported image format
-            QImage image(fileName);
+            const QImage image(fileName);
             if (!image.isNull()) {
                 tileset = newTileset(fileName, image);
                 if (tileset)
@@ -928,6 +928,9 @@ void MapEditor::handleExternalTilesetsAndImages(const QStringList &fileNames,
                 continue;
             }
         }
+
+        if (!tilesetFormat)
+            error = tr("Unrecognized tileset format.");
 
         if (fileNames.size() == 1) {
             QMessageBox::critical(mMainWindow, tr("Error Reading Tileset"), error);
