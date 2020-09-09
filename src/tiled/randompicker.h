@@ -63,11 +63,11 @@ public:
 
         std::uniform_real_distribution<Real> dis(0, mSum);
         const Real random = dis(globalRandomEngine());
-        const auto it = mThresholds.lowerBound(random);
-        if (it != mThresholds.end())
-            return it.value();
-        else
-            return (mThresholds.end() - 1).value();
+        auto it = mThresholds.lowerBound(random);
+        if (it == mThresholds.end())
+            --it;
+
+        return it.value();
     }
 
     //same as pick, but removes the selected element.
@@ -77,12 +77,13 @@ public:
 
         std::uniform_real_distribution<Real> dis(0, mSum);
         const Real random = dis(globalRandomEngine());
-        const auto it = mThresholds.lowerBound(random);
+        auto it = mThresholds.lowerBound(random);
+        if (it == mThresholds.end())
+            --it;
 
-        if (it != mThresholds.end())
-            return mThresholds.take(it.key());
-        else
-            return mThresholds.take((it - 1).key());
+        const T result = it.value();
+        mThresholds.erase(it);
+        return result;
     }
 
     void clear()
