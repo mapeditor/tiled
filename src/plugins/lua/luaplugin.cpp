@@ -35,6 +35,7 @@
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
+#include "wangset.h"
 
 #include <QCoreApplication>
 #include <QDir>
@@ -67,6 +68,7 @@ public:
     void writeTileset(const Tiled::Tileset &,
                       unsigned firstGid,
                       bool embedded = true);
+    void writeWangSet(const Tiled::WangSet &);
     void writeLayers(const QList<Tiled::Layer*> &layers,
                      Tiled::Map::LayerDataFormat format,
                      int compressionLevel,
@@ -377,6 +379,11 @@ void LuaWriter::writeTileset(const Tileset &tileset,
     }
     mWriter.writeEndTable();
 
+    mWriter.writeStartTable("wangsets");
+    for (int i = 0; i < tileset.wangSetCount(); ++i)
+        writeWangSet(*tileset.wangSet(i));
+    mWriter.writeEndTable();
+
     mWriter.writeKeyAndValue("tilecount", tileset.tileCount());
     mWriter.writeStartTable("tiles");
     for (const Tile *tile : tileset.tiles()) {
@@ -440,6 +447,58 @@ void LuaWriter::writeTileset(const Tileset &tileset,
 
     if (!embedded)
         mWriter.writeEndDocument();
+}
+
+void LuaWriter::writeWangSet(const WangSet &wangSet)
+{
+    mWriter.writeStartTable();
+
+    mWriter.writeKeyAndValue("name", wangSet.name());
+    mWriter.writeKeyAndValue("tile", wangSet.imageTileId());
+
+    writeProperties(wangSet.properties());
+
+    mWriter.writeStartTable("colors");
+    for (int i = 1; i <= wangSet.colorCount(); ++i) {
+        const WangColor &wangColor = *wangSet.colorAt(i);
+        mWriter.writeStartTable();
+
+        writeColor("color", wangColor.color());
+        mWriter.writeKeyAndValue("name", wangColor.name());
+        mWriter.writeKeyAndValue("probability", wangColor.probability());
+        mWriter.writeKeyAndValue("tile", wangColor.imageId());
+
+        writeProperties(wangColor.properties());
+
+        mWriter.writeEndTable();
+    }
+    mWriter.writeEndTable();
+
+    mWriter.writeStartTable("wangtiles");
+    const auto wangTiles = wangSet.sortedWangTiles();
+    for (const WangTile &wangTile : wangTiles) {
+        mWriter.writeStartTable();
+
+        mWriter.writeStartTable("wangid");
+        mWriter.setSuppressNewlines(true);
+        for (int i = 0; i < WangId::NumIndexes; ++i)
+            mWriter.writeValue(wangTile.wangId().indexColor(i));
+        mWriter.writeEndTable();
+        mWriter.setSuppressNewlines(false);
+
+        mWriter.writeKeyAndValue("tileid", wangTile.tile()->id());
+        if (wangTile.flippedHorizontally())
+            mWriter.writeKeyAndValue("hflip", wangTile.flippedHorizontally());
+        if (wangTile.flippedVertically())
+            mWriter.writeKeyAndValue("vflip", wangTile.flippedVertically());
+        if (wangTile.flippedAntiDiagonally())
+            mWriter.writeKeyAndValue("dflip", wangTile.flippedAntiDiagonally());
+
+        mWriter.writeEndTable();
+    }
+    mWriter.writeEndTable();
+
+    mWriter.writeEndTable();
 }
 
 void LuaWriter::writeLayers(const QList<Layer *> &layers,
