@@ -49,7 +49,6 @@ class TILEDSHARED_EXPORT Grid
 public:
     static const int CHUNK_SIZE = 1 << CHUNK_BITS;
     static const int CHUNK_MASK = CHUNK_SIZE - 1;
-    static const T EMPTY;
 
     /**
      * A Chunk is a CHUNK_SIZE x CHUNK_SIZE piece of the grid.
@@ -70,7 +69,7 @@ public:
         bool isEmpty() const
         {
             for (const T &value : mValues)
-                if (value != EMPTY)
+                if (value != T())
                     return false;
 
             return true;
@@ -90,6 +89,8 @@ public:
      */
     const T &get(int x, int y) const
     {
+        static const T EMPTY;
+
         if (const Chunk *chunk = findChunk(x, y))
             return chunk->get(x & CHUNK_MASK, y & CHUNK_MASK);
         else
@@ -109,7 +110,7 @@ public:
         Chunk *chunk = findChunk(x, y);
 
         if (!chunk) {
-            if (value == EMPTY) {
+            if (value == T()) {
                 return;
             } else {
                 mBounds = mBounds.united(QRect(x - (x & CHUNK_MASK),
@@ -166,8 +167,5 @@ private:
     QHash<QPoint, Chunk> mChunks;
     QRect mBounds;
 };
-
-template <typename T, int CHUNK_BITS>
-const T Grid<T, CHUNK_BITS>::EMPTY;
 
 } // namespace Tiled
