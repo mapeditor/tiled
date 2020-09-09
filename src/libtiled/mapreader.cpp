@@ -483,16 +483,26 @@ void MapReaderPrivate::readTilesetTile(Tileset &tileset)
 
     tile->setType(atts.value(QLatin1String("type")).toString());
 
-    // Read tile quadrant terrain ids
-    QStringRef terrain = atts.value(QLatin1String("terrain"));
-    if (!terrain.isEmpty()) {
+    // Read tile quadrant terrain ids as Wang IDs. This is possible because the
+    // terrain types (loaded as WangSet) are always stored before the tiles.
+    const QStringRef terrain = atts.value(QLatin1String("terrain"));
+    if (!terrain.isEmpty() && tileset.wangSetCount() > 0) {
         QVector<QStringRef> quadrants = terrain.split(QLatin1Char(','));
+        WangId wangId;
         if (quadrants.size() == 4) {
             for (int i = 0; i < 4; ++i) {
-                int t = quadrants[i].isEmpty() ? -1 : quadrants[i].toInt();
-                tile->setCornerTerrainId(i, t);
+                int c = quadrants[i].isEmpty() ? 0 : quadrants[i].toInt() + 1;
+                switch (i) {
+                case 0: wangId.setIndexColor(WangId::TopLeft, c); break;
+                case 1: wangId.setIndexColor(WangId::TopRight, c); break;
+                case 2: wangId.setIndexColor(WangId::BottomLeft, c); break;
+                case 3: wangId.setIndexColor(WangId::BottomRight, c); break;
+                }
             }
         }
+
+        if (wangId)
+            tileset.wangSet(0)->addTile(tile, wangId);
     }
 
     // Read tile probability
@@ -664,17 +674,22 @@ void MapReaderPrivate::readTilesetTerrainTypes(Tileset &tileset)
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("terraintypes"));
 
+    auto wangSet = std::make_unique<WangSet>(&tileset, tr("Converted Terrains"), -1);
+    int colorCount = 0;
+
     while (xml.readNextStartElement()) {
         if (xml.name() == QLatin1String("terrain")) {
-            const QXmlStreamAttributes atts = xml.attributes();
-            QString name = atts.value(QLatin1String("name")).toString();
-            int tile = atts.value(QLatin1String("tile")).toInt();
+            wangSet->setColorCount(++colorCount);
+            const auto &wc = wangSet->colorAt(colorCount);
 
-            Terrain *terrain = tileset.addTerrain(name, tile);
+            const QXmlStreamAttributes atts = xml.attributes();
+
+            wc->setName(atts.value(QLatin1String("name")).toString());
+            wc->setImageId(atts.value(QLatin1String("tile")).toInt());
 
             while (xml.readNextStartElement()) {
                 if (xml.name() == QLatin1String("properties"))
-                    terrain->mergeProperties(readProperties());
+                    wc->mergeProperties(readProperties());
                 else
                     readUnknownElement();
             }
@@ -682,6 +697,9 @@ void MapReaderPrivate::readTilesetTerrainTypes(Tileset &tileset)
             readUnknownElement();
         }
     }
+
+    if (wangSet->colorCount() > 0)
+        tileset.addWangSet(std::move(wangSet));
 }
 
 void MapReaderPrivate::readTilesetWangSets(Tileset &tileset)
@@ -766,14 +784,20 @@ void MapReaderPrivate::readTilesetWangSets(Tileset &tileset)
                                                                 color,
                                                                 imageId,
                                                                 probability);
+
+                    while (xml.readNextStartElement()) {
+                        if (xml.name() == QLatin1String("properties"))
+                            wc->mergeProperties(readProperties());
+                        else
+                            readUnknownElement();
+                    }
+
                     wangSet->addWangColor(wc);
 
                     if (isCorner)
                         cornerColors.append(wc->colorIndex());
                     if (isEdge)
                         edgeColors.append(wc->colorIndex());
-
-                    xml.skipCurrentElement();
                 } else {
                     readUnknownElement();
                 }

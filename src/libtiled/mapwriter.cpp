@@ -511,6 +511,8 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
                     w.writeAttribute(QStringLiteral("tile"), QString::number(wc->imageId()));
                     w.writeAttribute(QStringLiteral("probability"), QString::number(wc->probability()));
 
+                    writeProperties(w, wc->properties());
+
                     w.writeEndElement();
                 }
             }

@@ -481,11 +481,15 @@ QSharedPointer<WangColor> VariantToMapConverter::toWangColor(const QVariantMap &
     const int imageId = variantMap[QStringLiteral("tile")].toInt();
     const qreal probability = variantMap[QStringLiteral("probability")].toDouble();
 
-    return QSharedPointer<WangColor>::create(0,
-                                             name,
-                                             color,
-                                             imageId,
-                                             probability);
+    auto wangColor = QSharedPointer<WangColor>::create(0,
+                                                       name,
+                                                       color,
+                                                       imageId,
+                                                       probability);
+
+    wangColor->setProperties(extractProperties(variantMap));
+
+    return wangColor;
 }
 
 std::unique_ptr<ObjectTemplate> VariantToMapConverter::toObjectTemplate(const QVariant &variant)

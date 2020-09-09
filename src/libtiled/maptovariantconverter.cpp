@@ -403,6 +403,7 @@ QVariant MapToVariantConverter::toVariant(const WangColor &wangColor) const
     colorVariant[QStringLiteral("name")] = wangColor.name();
     colorVariant[QStringLiteral("probability")] = wangColor.probability();
     colorVariant[QStringLiteral("tile")] = wangColor.imageId();
+    addProperties(colorVariant, wangColor.properties());
     return colorVariant;
 }
 
