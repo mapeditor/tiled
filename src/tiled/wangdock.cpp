@@ -109,7 +109,6 @@ WangDock::WangDock(QWidget *parent)
     , mRemoveColor(new QAction(this))
     , mDocument(nullptr)
     , mCurrentWangSet(nullptr)
-    , mCurrentWangId(0)
     , mTilesetDocumentFilterModel(new TilesetDocumentsFilterModel(this))
     , mWangColorModel(nullptr)
     , mWangColorFilterModel(new QSortFilterProxyModel(this))
@@ -511,7 +510,7 @@ void WangDock::activateErase()
 
 void WangDock::updateAddColorStatus()
 {
-    mAddColor->setEnabled(mCurrentWangSet->colorCount() < 15);
+    mAddColor->setEnabled(mCurrentWangSet->colorCount() < WangId::MAX_COLOR_COUNT);
 }
 
 void WangDock::retranslateUi()

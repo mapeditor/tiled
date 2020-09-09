@@ -50,7 +50,7 @@ ChangeWangSetColorCount::ChangeWangSetColorCount(TilesetDocument *tilesetDocumen
             QVector<ChangeTileWangId::WangIdChange> changes;
 
             for (Tile *tile : changedTiles)
-                changes.append(ChangeTileWangId::WangIdChange(wangSet->wangIdOfTile(tile), 0, tile));
+                changes.append(ChangeTileWangId::WangIdChange(wangSet->wangIdOfTile(tile), WangId(), tile));
 
             new ChangeTileWangId(mTilesetDocument, wangSet, changes, this);
         }

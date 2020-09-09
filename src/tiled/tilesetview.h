@@ -189,7 +189,7 @@ private:
     bool mEraseTerrain = false;
     const Terrain *mTerrain = nullptr;
     WangSet *mWangSet = nullptr;
-    WangId mWangId = 0;
+    WangId mWangId;
     int mWangColorIndex = 0;
     QModelIndex mHoveredIndex;
     int mHoveredCorner = 0;

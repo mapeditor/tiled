@@ -28,7 +28,7 @@
 
 using namespace Tiled;
 
-static const QPoint aroundTilePoints[] = {
+static const QPoint aroundTilePoints[WangId::NumIndexes] = {
     QPoint( 0, -1),
     QPoint( 1, -1),
     QPoint( 1,  0),
@@ -83,7 +83,7 @@ static void updateToAdjacent(WangFiller::CellInfo &info, WangId adjacent, int po
     const int adjacentPosition = WangId::oppositeIndex(position);
 
     info.desired.setIndexColor(position, adjacent.indexColor(adjacentPosition));
-    info.mask.setIndexColor(position, 0xf);
+    info.mask.setIndexColor(position, WangId::INDEX_MASK);
 
     if (!WangId::isCorner(position)) {
         const int cornerA = WangId::nextIndex(position);
@@ -92,10 +92,10 @@ static void updateToAdjacent(WangFiller::CellInfo &info, WangId adjacent, int po
         const int adjacentCornerB = WangId::nextIndex(adjacentPosition);
 
         info.desired.setIndexColor(cornerA, adjacent.indexColor(adjacentCornerA));
-        info.mask.setIndexColor(cornerA, 0xf);
+        info.mask.setIndexColor(cornerA, WangId::INDEX_MASK);
 
         info.desired.setIndexColor(cornerB, adjacent.indexColor(adjacentCornerB));
-        info.mask.setIndexColor(cornerB, 0xf);
+        info.mask.setIndexColor(cornerB, WangId::INDEX_MASK);
     }
 }
 
@@ -117,7 +117,7 @@ void WangFiller::fillRegion(TileLayer &target,
                     // When we're not making corrections, require the borders
                     // to match already placed tiles.
                     if (!mCorrectionsEnabled)
-                        info.mask.setIndexColor(i, 0xf);
+                        info.mask.setIndexColor(i, WangId::INDEX_MASK);
                 }
             }
         }
@@ -236,7 +236,7 @@ bool WangFiller::findBestMatch(const TileLayer &target,
                                WangTile &result) const
 {
     const CellInfo info = grid.get(position);
-    const unsigned maskedWangId = info.desired & info.mask;
+    const quint64 maskedWangId = info.desired & info.mask;
 
     RandomPicker<WangTile> matches;
     int lowestPenalty = INT_MAX;
@@ -301,10 +301,10 @@ bool WangFiller::findBestMatch(const TileLayer &target,
 
             // Adjust the desired WangIds for the surrounding tiles based on
             // the to be placed one.
-            QPoint adjacentPoints[8];
+            QPoint adjacentPoints[WangId::NumIndexes];
             getSurroundingPoints(position, mStaggeredRenderer, adjacentPoints);
 
-            for (int i = 0; i < 8; ++i) {
+            for (int i = 0; i < WangId::NumIndexes; ++i) {
                 const QPoint p = adjacentPoints[i];
                 if (target.cellAt(p - target.position()).checked())
                     continue;

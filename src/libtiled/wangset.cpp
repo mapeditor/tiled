@@ -62,7 +62,7 @@ static unsigned wangTileToTileInfo(const WangTile &wangTile)
  */
 int WangId::edgeColor(int index) const
 {
-    Q_ASSERT(index >= 0 && index < 4);
+    Q_ASSERT(index >= 0 && index < NumEdges);
     return indexColor(index * 2);
 }
 
@@ -76,7 +76,7 @@ int WangId::edgeColor(int index) const
  */
 int WangId::cornerColor(int index) const
 {
-    Q_ASSERT(index >= 0 && index < 4);
+    Q_ASSERT(index >= 0 && index < NumCorners);
     return indexColor(index * 2 + 1);
 }
 
@@ -90,18 +90,18 @@ int WangId::cornerColor(int index) const
 int WangId::indexColor(int index) const
 {
     Q_ASSERT(index >= 0 && index < NumIndexes);
-    return (mId >> (index * 4)) & 0xf;
+    return (mId >> (index * BITS_PER_INDEX)) & INDEX_MASK;
 }
 
 void WangId::setEdgeColor(int index, unsigned value)
 {
-    Q_ASSERT(index >= 0 && index < 4);
+    Q_ASSERT(index >= 0 && index < NumEdges);
     setIndexColor(index * 2, value);
 }
 
 void WangId::setCornerColor(int index, unsigned value)
 {
-    Q_ASSERT(index >= 0 && index < 4);
+    Q_ASSERT(index >= 0 && index < NumCorners);
     setIndexColor(index * 2 + 1, value);
 }
 
@@ -130,8 +130,8 @@ void WangId::setGridColor(int x, int y, unsigned value)
 void WangId::setIndexColor(int index, unsigned value)
 {
     Q_ASSERT(index >= 0 && index < NumIndexes);
-    mId &= ~(0xf << (index * 4));
-    mId |= (value & 0xf) << (index * 4);
+    mId &= ~(INDEX_MASK << (index * BITS_PER_INDEX));
+    mId |= quint64(value & INDEX_MASK) << (index * BITS_PER_INDEX);
 }
 
 /**
@@ -147,9 +147,9 @@ void WangId::updateToAdjacent(WangId adjacent, int position)
     setIndexColor(position, adjacent.indexColor(oppositeIndex(position)));
 
     if (!isCorner(position)) {
-        const int index = position / 2;
-        setCornerColor(index, adjacent.cornerColor((index + 1) % 4));
-        setCornerColor((index + 3) % 4, adjacent.cornerColor((index + 2) % 4));
+        const int cornerIndex = position / 2;
+        setCornerColor(cornerIndex, adjacent.cornerColor((cornerIndex + 1) % NumCorners));
+        setCornerColor((cornerIndex + 3) % NumCorners, adjacent.cornerColor((cornerIndex + 2) % NumCorners));
     }
 }
 
@@ -169,19 +169,19 @@ bool WangId::hasWildCards() const
 /**
  * Returns a mask that is 0 for any indexes that have no color defined.
  */
-unsigned WangId::mask() const
+quint64 WangId::mask() const
 {
-    unsigned mask = 0;
+    quint64 mask = 0;
     for (int i = 0; i < NumIndexes; ++i) {
         if (indexColor(i))
-            mask |= 0xf << (i * 4);
+            mask |= INDEX_MASK << (i * BITS_PER_INDEX);
     }
     return mask;
 }
 
 bool WangId::hasCornerWithColor(int value) const
 {
-    for (int i = 0; i < 4; ++i) {
+    for (int i = 0; i < NumCorners; ++i) {
         if (cornerColor(i) == value)
             return true;
     }
@@ -190,7 +190,7 @@ bool WangId::hasCornerWithColor(int value) const
 
 bool WangId::hasEdgeWithColor(int value) const
 {
-    for (int i = 0; i < 4; ++i) {
+    for (int i = 0; i < NumEdges; ++i) {
         if (edgeColor(i) == value)
             return true;
     }
@@ -209,8 +209,8 @@ void WangId::rotate(int rotations)
     else
         rotations %= 4;
 
-    unsigned rotated = mId << rotations * 8;
-    rotated = rotated | (mId >> ((4 - rotations) * 8));
+    unsigned rotated = mId << (rotations * BITS_PER_INDEX * 2);
+    rotated = rotated | (mId >> ((4 - rotations) * BITS_PER_INDEX * 2));
 
     mId = rotated;
 }
@@ -225,8 +225,8 @@ void WangId::flipHorizontally()
     newWangId.setIndexColor(WangId::Right, indexColor(WangId::Left));
     newWangId.setIndexColor(WangId::Left, indexColor(WangId::Right));
 
-    for (int i = 0; i < 4; ++i)
-        newWangId.setCornerColor(i, cornerColor(3-i));
+    for (int i = 0; i < NumCorners; ++i)
+        newWangId.setCornerColor(i, cornerColor(NumCorners - 1 - i));
 
     mId = newWangId;
 }
@@ -252,6 +252,71 @@ WangId::Index WangId::indexByGrid(int x, int y)
     };
 
     return map[y][x];
+}
+
+/**
+ * Creates a WangId based on the 32-bit value, which uses 4 bits per index.
+ * Provided for compatibility.
+ */
+WangId WangId::fromUint(unsigned id)
+{
+    quint64 id64 = 0;
+    for (int i = 0; i < NumIndexes; ++i) {
+        const quint64 color = (id >> (i * 4)) & 0xF;
+        id64 |= color << (i * BITS_PER_INDEX);
+    }
+    return id64;
+}
+
+/**
+ * Converts the WangId to a 32-bit value, using 4 bits per index.
+ * Provided for compatibility.
+ */
+unsigned WangId::toUint() const
+{
+    unsigned id = 0;
+    for (int i = 0; i < NumIndexes; ++i) {
+        const unsigned color = (mId >> (i * BITS_PER_INDEX)) & INDEX_MASK;
+        id |= color << (i * 4);
+    }
+    return id;
+}
+
+WangId WangId::fromString(QStringRef string, bool *ok)
+{
+    WangId id;
+
+    const auto parts = string.split(QLatin1Char(','));
+    if (parts.size() == NumIndexes) {
+        for (int i = 0; i < NumIndexes; ++i) {
+            unsigned color = parts[i].toUInt(ok);
+            if (ok && !(*ok))
+                return id;
+
+            if (color > WangId::MAX_COLOR_COUNT) {
+                if (ok)
+                    *ok = false;
+                return id;
+            }
+
+            id.setIndexColor(i, color);
+        }
+    } else if (ok) {
+        *ok = false;
+    }
+
+    return id;
+}
+
+QString WangId::toString() const
+{
+    QString result;
+    for (int i = 0; i < NumIndexes; ++i ) {
+        if (i > 0)
+            result += QLatin1Char(',');
+        result += QString::number(indexColor(i));
+    }
+    return result;
 }
 
 
@@ -318,13 +383,7 @@ Cell WangTile::makeCell() const
 QDebug operator<<(QDebug debug, WangId wangId)
 {
     const bool oldSetting = debug.autoInsertSpaces();
-    debug.nospace() << "WangId(";
-    for (int i = 0; i < WangId::NumIndexes; ++i) {
-        if (i > 0)
-            debug << ",";
-        debug << wangId.indexColor(i);
-    }
-    debug << ')';
+    debug.nospace() << "WangId(" << wangId.toString() << ')';
     debug.setAutoInsertSpaces(oldSetting);
     return debug.maybeSpace();
 }
@@ -344,7 +403,7 @@ WangColor::WangColor(int colorIndex, const QString &name, const QColor &color, i
 {}
 
 
-static const QColor defaultWangColors[] =  {
+static const QColor defaultWangColors[] = {
     QColor(255, 0, 0),
     QColor(0, 255, 0),
     QColor(0, 0, 255),
@@ -382,7 +441,7 @@ WangSet::WangSet(Tileset *tileset,
  */
 void WangSet::setColorCount(int n)
 {
-    Q_ASSERT(n >= 0 && n <= 15);
+    Q_ASSERT(n >= 0 && n <= WangId::MAX_COLOR_COUNT);
 
     if (n == colorCount())
         return;
@@ -391,7 +450,12 @@ void WangSet::setColorCount(int n)
         mColors.resize(n);
     } else {
         while (mColors.size() < n) {
-            const QColor &color = defaultWangColors[mColors.size()];
+            QColor color;
+            if (mColors.size() < 16)
+                color = defaultWangColors[mColors.size()];
+            else
+                color = QColor(rand() % 256, rand() % 256, rand() % 256);
+
             mColors.append(QSharedPointer<WangColor>::create(mColors.size() + 1,
                                                              QString(),
                                                              color));
@@ -639,23 +703,23 @@ QList<WangTile> WangSet::sortedWangTiles() const
  */
 WangId WangSet::wangIdFromSurrounding(const WangId surroundingWangIds[]) const
 {
-    unsigned id = 0;
+    quint64 id = 0;
 
     // Edges
-    for (int i = 0; i < 4; ++i)
-        id |= (surroundingWangIds[i*2].edgeColor((2 + i) % 4)) << (i*8);
+    for (int i = 0; i < WangId::NumEdges; ++i)
+        id |= quint64(surroundingWangIds[i*2].edgeColor((2 + i) % WangId::NumEdges)) << (i * WangId::BITS_PER_INDEX * 2);
 
     // Corners
-    for (int i = 0; i < 4; ++i) {
-        int color = surroundingWangIds[i*2 + 1].cornerColor((2 + i) % 4);
+    for (int i = 0; i < WangId::NumCorners; ++i) {
+        int color = surroundingWangIds[i*2 + 1].cornerColor((2 + i) % WangId::NumCorners);
 
         if (!color)
-            color = surroundingWangIds[i*2].cornerColor((1 + i) % 4);
+            color = surroundingWangIds[i*2].cornerColor((1 + i) % WangId::NumCorners);
 
         if (!color)
-            color = surroundingWangIds[(i*2 + 2) % 8].cornerColor((3 + i) % 4);
+            color = surroundingWangIds[(i*2 + 2) % WangId::NumIndexes].cornerColor((3 + i) % WangId::NumCorners);
 
-        id |= color << (4 + i*8);
+        id |= quint64(color) << (WangId::BITS_PER_INDEX + i * WangId::BITS_PER_INDEX * 2);
     }
 
     return id;
@@ -673,7 +737,7 @@ WangId WangSet::wangIdFromSurrounding(const WangId surroundingWangIds[]) const
  */
 WangId WangSet::wangIdFromSurrounding(const Cell surroundingCells[]) const
 {
-    WangId wangIds[8];
+    WangId wangIds[WangId::NumIndexes];
 
     for (int i = 0; i < WangId::NumIndexes; ++i)
         wangIds[i] = wangIdOfCell(surroundingCells[i]);
@@ -750,10 +814,10 @@ bool WangSet::wangIdIsValid(WangId wangId, int colorCount)
  */
 bool WangSet::wangIdIsUsed(WangId wangId, WangId mask) const
 {
-    if (mask == 0xffffffff)
+    if (mask == WangId::FULL_MASK)
         return mWangIdToWangTile.contains(wangId);
 
-    const unsigned maskedWangId = wangId & mask;
+    const quint64 maskedWangId = wangId & mask;
 
     for (const WangTile &wangTile : mWangIdToWangTile)
         if ((wangTile.wangId() & mask) == maskedWangId)
@@ -812,22 +876,22 @@ unsigned WangSet::completeSetSize() const
 WangId WangSet::templateWangIdAt(unsigned n) const
 {
     if (colorCount() <= 0)
-        return 0;
+        return {};
 
-    unsigned wangId = 0;
+    quint64 wangId = 0;
 
-    for (int i = 7; i >= 0; --i) {
+    for (int i = WangId::NumIndexes - 1; i >= 0; --i) {
         //this is the number of permutations possible bellow this point in the wangId
         const int belowPermutations = qPow(colorCount(), i);
         const int value = n / belowPermutations;
 
         n -= value * belowPermutations;
 
-        wangId |= value << i * 4;
+        wangId |= quint64(value) << i * WangId::BITS_PER_INDEX;
     }
 
     //before this is like a base 10 range (0 - 9) where we want (1 - 10) for each digit
-    wangId += 0x11111111;
+    wangId += Q_UINT64_C(0x0101010101010101);
 
     return wangId;
 }

@@ -527,19 +527,19 @@ void WangBrush::updateBrush()
         case PaintCorner:
             for (int i = 0; i < 4; ++i) {
                 center.desired.setCornerColor(i, mCurrentColor);
-                center.mask.setCornerColor(i, 0xf);
+                center.mask.setCornerColor(i, WangId::INDEX_MASK);
             }
             break;
         case PaintEdge:
             for (int i = 0; i < 4; ++i) {
                 center.desired.setEdgeColor(i, mCurrentColor);
-                center.mask.setEdgeColor(i, 0xf);
+                center.mask.setEdgeColor(i, WangId::INDEX_MASK);
             }
             break;
         case PaintEdgeAndCorner:
             for (int i = 0; i < WangId::NumIndexes; ++i) {
                 center.desired.setIndexColor(i, mCurrentColor);
-                center.mask.setIndexColor(i, 0xf);
+                center.mask.setIndexColor(i, WangId::INDEX_MASK);
             }
             break;
         case Idle:
@@ -561,15 +561,15 @@ void WangBrush::updateBrush()
             // Mark the opposite side or corner of the adjacent tile
             if (isCorner || (mBrushMode == PaintEdge || mBrushMode == PaintEdgeAndCorner)) {
                 adjacent.desired.setIndexColor(WangId::oppositeIndex(i), mCurrentColor);
-                adjacent.mask.setIndexColor(WangId::oppositeIndex(i), 0xf);
+                adjacent.mask.setIndexColor(WangId::oppositeIndex(i), WangId::INDEX_MASK);
             }
 
             // Mark the touching corners of the adjacent tile
             if (!isCorner && (mBrushMode == PaintCorner || mBrushMode == PaintEdgeAndCorner)) {
                 adjacent.desired.setIndexColor((i + 3) % WangId::NumIndexes, mCurrentColor);
                 adjacent.desired.setIndexColor((i + 5) % WangId::NumIndexes, mCurrentColor);
-                adjacent.mask.setIndexColor((i + 3) % WangId::NumIndexes, 0xf);
-                adjacent.mask.setIndexColor((i + 5) % WangId::NumIndexes, 0xf);
+                adjacent.mask.setIndexColor((i + 3) % WangId::NumIndexes, WangId::INDEX_MASK);
+                adjacent.mask.setIndexColor((i + 5) % WangId::NumIndexes, WangId::INDEX_MASK);
             }
 
             region += QRect(p, QSize(1, 1));
@@ -606,7 +606,7 @@ void WangBrush::updateBrush()
                 WangFiller::CellInfo adjacent;
                 adjacent.desired = mWangSet->wangIdOfCell(currentLayer->cellAt(p));
                 adjacent.desired.setCornerColor((i + 2) % 4, mCurrentColor);
-                adjacent.mask.setCornerColor((i + 2) % 4, 0xf);
+                adjacent.mask.setCornerColor((i + 2) % 4, WangId::INDEX_MASK);
 
                 grid.set(p, adjacent);
             }
@@ -643,14 +643,14 @@ void WangBrush::updateBrush()
                 WangFiller::CellInfo info;
                 info.desired = mWangSet->wangIdOfCell(currentLayer->cellAt(mPaintPoint));
                 info.desired.setIndexColor(mWangIndex, mCurrentColor);
-                info.mask.setIndexColor(mWangIndex, 0xf);
+                info.mask.setIndexColor(mWangIndex, WangId::INDEX_MASK);
                 grid.set(mPaintPoint, info);
             }
             {
                 WangFiller::CellInfo info;
                 info.desired = mWangSet->wangIdOfCell(currentLayer->cellAt(dirPoint));
                 info.desired.setIndexColor(WangId::oppositeIndex(mWangIndex), mCurrentColor);
-                info.mask.setIndexColor(WangId::oppositeIndex(mWangIndex), 0xf);
+                info.mask.setIndexColor(WangId::oppositeIndex(mWangIndex), WangId::INDEX_MASK);
                 grid.set(dirPoint, info);
             }
 

@@ -55,7 +55,7 @@ QVariant WangTemplateModel::data(const QModelIndex &index, int role) const
 WangId WangTemplateModel::wangIdAt(const QModelIndex &index) const
 {
     if (!index.isValid())
-        return 0;
+        return {};
 
     if (WangSet *set = wangSet()) {
         const int idIndex = index.row();
@@ -63,7 +63,7 @@ WangId WangTemplateModel::wangIdAt(const QModelIndex &index) const
             return set->templateWangIdAt(idIndex);
     }
 
-    return 0;
+    return {};
 }
 
 QModelIndex WangTemplateModel::wangIdIndex(WangId wangId) const

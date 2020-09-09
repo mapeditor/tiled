@@ -41,22 +41,31 @@ namespace Tiled {
 class TILEDSHARED_EXPORT WangId
 {
 public:
+    constexpr static unsigned BITS_PER_INDEX = 8;
+    constexpr static quint64 INDEX_MASK = 0xFF;
+    constexpr static quint64 FULL_MASK = Q_UINT64_C(0xFFFFFFFFFFFFFFFF);
+    constexpr static int MAX_COLOR_COUNT = (1 << BITS_PER_INDEX) - 1;
+
     enum Index {
-        Top = 0,
-        TopRight = 1,
-        Right = 2,
+        Top         = 0,
+        TopRight    = 1,
+        Right       = 2,
         BottomRight = 3,
-        Bottom = 4,
-        BottomLeft = 5,
-        Left = 6,
-        TopLeft = 7,
-        NumIndexes,
+        Bottom      = 4,
+        BottomLeft  = 5,
+        Left        = 6,
+        TopLeft     = 7,
+
+        NumCorners  = 4,
+        NumEdges    = 4,
+        NumIndexes  = 8,
     };
 
-    WangId(unsigned id = 0) : mId(id) {}
+    WangId(quint64 id = 0) : mId(id) {}
+    WangId(unsigned id) = delete;
 
-    operator unsigned() const { return mId; }
-    inline void setId(unsigned id) { mId = id; }
+    operator quint64() const { return mId; }
+    inline void setId(quint64 id) { mId = id; }
 
     int edgeColor(int index) const;
     int cornerColor(int index) const;
@@ -72,7 +81,7 @@ public:
     void updateToAdjacent(WangId adjacent, int position);
 
     bool hasWildCards() const;
-    unsigned mask() const;
+    quint64 mask() const;
 
     bool hasCornerWithColor(int value) const;
     bool hasEdgeWithColor(int value) const;
@@ -87,8 +96,14 @@ public:
     static Index previousIndex(int index);
     static bool isCorner(int index);
 
+    static WangId fromUint(unsigned id);
+    unsigned toUint() const;
+
+    static WangId fromString(QStringRef string, bool *ok = nullptr);
+    QString toString() const;
+
 private:
-    unsigned mId;
+    quint64 mId;
 };
 
 inline WangId::Index WangId::oppositeIndex(int index)
@@ -120,7 +135,7 @@ TILEDSHARED_EXPORT QDebug operator<<(QDebug debug, WangId wangId);
 class TILEDSHARED_EXPORT WangTile
 {
 public:
-    WangTile() : WangTile(nullptr, 0)
+    WangTile() : WangTile(nullptr, WangId())
     {}
 
     WangTile(Tile *tile, WangId wangId):
@@ -280,7 +295,7 @@ public:
 
     static bool wangIdIsValid(WangId wangId, int colorCount);
 
-    bool wangIdIsUsed(WangId wangId, WangId mask = 0xffffffff) const;
+    bool wangIdIsUsed(WangId wangId, WangId mask = WangId::FULL_MASK) const;
 
     int transitionPenalty(int colorA, int colorB) const;
     int maximumColorDistance() const;
@@ -302,7 +317,7 @@ private:
     QString mName;
     int mImageTileId;
 
-    // How many unique, full wangIds are active in this set.
+    // How many unique, full WangIds are active in this set.
     // Where full means the id has no wildcards
     unsigned mUniqueFullWangIdCount;
 

@@ -484,9 +484,9 @@ void MapReaderPrivate::readTilesetTile(Tileset &tileset)
     tile->setType(atts.value(QLatin1String("type")).toString());
 
     // Read tile quadrant terrain ids
-    QString terrain = atts.value(QLatin1String("terrain")).toString();
+    QStringRef terrain = atts.value(QLatin1String("terrain"));
     if (!terrain.isEmpty()) {
-        QStringList quadrants = terrain.split(QLatin1String(","));
+        QVector<QStringRef> quadrants = terrain.split(QLatin1Char(','));
         if (quadrants.size() == 4) {
             for (int i = 0; i < 4; ++i) {
                 int t = quadrants[i].isEmpty() ? -1 : quadrants[i].toInt();
@@ -691,8 +691,8 @@ void MapReaderPrivate::readTilesetWangSets(Tileset &tileset)
     while (xml.readNextStartElement()) {
         if (xml.name() == QLatin1String("wangset")) {
             const QXmlStreamAttributes atts = xml.attributes();
-            QString name = atts.value(QLatin1String("name")).toString();
-            int tile = atts.value(QLatin1String("tile")).toInt();
+            const QString name = atts.value(QLatin1String("name")).toString();
+            const int tile = atts.value(QLatin1String("tile")).toInt();
 
             auto wangSet = std::make_unique<WangSet>(&tileset, name, tile);
 
@@ -708,33 +708,41 @@ void MapReaderPrivate::readTilesetWangSets(Tileset &tileset)
                     wangSet->mergeProperties(readProperties());
                 } else if (xml.name() == QLatin1String("wangtile")) {
                     const QXmlStreamAttributes tileAtts = xml.attributes();
-                    int tileId = tileAtts.value(QLatin1String("tileid")).toInt();
-                    WangId wangId = tileAtts.value(QLatin1String("wangid")).toUInt(nullptr, 16);
+                    const int tileId = tileAtts.value(QLatin1String("tileid")).toInt();
+                    const QStringRef wangIdString = tileAtts.value(QLatin1String("wangid"));
+
+                    bool ok = true;
+                    WangId wangId;
+                    if (wangIdString.contains(QLatin1Char(',')))
+                        wangId = WangId::fromString(wangIdString, &ok);
+                    else
+                        wangId = WangId::fromUint(wangIdString.toUInt(nullptr, 16));
 
                     // Backwards compatibility with TMX 1.4:
                     // If the wang set was using explicit corner and edge colors,
                     // map the WangId to the unified colors.
                     if (!cornerColors.isEmpty() || !edgeColors.isEmpty()) {
-                        for (int i = 0; i < 4; ++i) {
+                        for (int i = 0; i < WangId::NumCorners; ++i) {
                             int color = wangId.cornerColor(i);
                             if (color > 0 && color <= cornerColors.size())
                                 wangId.setCornerColor(i, cornerColors.at(color - 1));
                         }
-                        for (int i = 0; i < 4; ++i) {
+                        for (int i = 0; i < WangId::NumEdges; ++i) {
                             int color = wangId.edgeColor(i);
                             if (color > 0 && color <= edgeColors.size())
                                 wangId.setEdgeColor(i, edgeColors.at(color - 1));
                         }
                     }
 
-                    if (!wangSet->wangIdIsValid(wangId)) {
-                        xml.raiseError(QLatin1String("Invalid wangId given for tileId: ") + QString::number(tileId));
+                    if (!wangSet->wangIdIsValid(wangId) || !ok) {
+                        xml.raiseError(QStringLiteral("Invalid wangId \"%1\" given for tileId %2").arg(wangIdString,
+                                                                                                       QString::number(tileId)));
                         return;
                     }
 
-                    bool fH = tileAtts.value(QLatin1String("hflip")).toInt();
-                    bool fV = tileAtts.value(QLatin1String("vflip")).toInt();
-                    bool fA = tileAtts.value(QLatin1String("dflip")).toInt();
+                    const bool fH = tileAtts.value(QLatin1String("hflip")).toInt();
+                    const bool fV = tileAtts.value(QLatin1String("vflip")).toInt();
+                    const bool fA = tileAtts.value(QLatin1String("dflip")).toInt();
 
                     Tile *tile = tileset.findOrCreateTile(tileId);
 
@@ -748,10 +756,10 @@ void MapReaderPrivate::readTilesetWangSets(Tileset &tileset)
                     xml.skipCurrentElement();
                 } else if (xml.name() == QLatin1String("wangcolor") || isCorner || isEdge) {
                     const QXmlStreamAttributes wangColorAtts = xml.attributes();
-                    QString name = wangColorAtts.value(QLatin1String("name")).toString();
-                    QColor color = wangColorAtts.value(QLatin1String("color")).toString();
-                    int imageId = wangColorAtts.value(QLatin1String("tile")).toInt();
-                    qreal probability = wangColorAtts.value(QLatin1String("probability")).toDouble();
+                    const QString name = wangColorAtts.value(QLatin1String("name")).toString();
+                    const QColor color = wangColorAtts.value(QLatin1String("color")).toString();
+                    const int imageId = wangColorAtts.value(QLatin1String("tile")).toInt();
+                    const qreal probability = wangColorAtts.value(QLatin1String("probability")).toDouble();
 
                     auto wc = QSharedPointer<WangColor>::create(0,
                                                                 name,

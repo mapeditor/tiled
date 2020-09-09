@@ -1020,7 +1020,7 @@ void TilesetView::setWangId(WangId wangId)
 void TilesetView::setWangColor(int color)
 {
     if (!color)
-        setWangId(0);
+        setWangId(WangId());
 
     // TODO: Later on the WangColor or the WangSet should probably have a
     // property determining this behavior.
@@ -1087,9 +1087,11 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
         const QModelIndex previousHoveredIndex = mHoveredIndex;
         mHoveredIndex = hoveredIndex;
 
-        WangId wangId = mWangId;
+        WangId wangId;
 
-        if (mWangBehavior != WholeId) {
+        if (mWangBehavior == WholeId) {
+            wangId = mWangId;
+        } else {
             QRect tileRect = visualRect(mHoveredIndex);
             QTransform transform;
             setupTilesetGridTransform(*tilesetDocument()->tileset(), transform, tileRect);
@@ -1099,7 +1101,6 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
             QPointF tileLocalPosF((qreal) tileLocalPos.x() / tileRect.width(),
                                   (qreal) tileLocalPos.y() / tileRect.height());
 
-            wangId = 0;
             switch (mWangBehavior) {
             case WholeId:
                 break;  // can't happen due to check above

@@ -4,6 +4,14 @@ TMX Changelog
 Below are described the changes/additions that were made to the
 :doc:`tmx-map-format` for recent versions of Tiled.
 
+Tiled 1.5
+---------
+
+-  The ``wangid`` attribute on the :ref:`tmx-wangtile` element is now stored as
+   a comma-separated list of values, instead of a 32-bit unsigned integer in
+   hex format. This is because the number of colors supported in a Wang set was
+   increased from 15 to 255.
+
 Tiled 1.4
 ---------
 

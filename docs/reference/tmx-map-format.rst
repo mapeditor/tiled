@@ -347,10 +347,13 @@ Defines a Wang tile, by referring to a tile in the tileset and
 associating it with a certain Wang ID.
 
 -  **tileid:** The tile ID.
--  **wangid:** The Wang ID, which is a 32-bit unsigned integer stored
-   in the format ``0xCECECECE`` (where each C is a corner color and
-   each E is an edge color, from right to left clockwise, starting with
-   the top edge)
+-  **wangid:** "The Wang ID, given by a comma-separated list of indexes
+   (starting from 1, because 0 means _unset_) referring to the Wang colors in
+   the Wang set in the following order: top, top right, right, bottom right,
+   bottom, bottom left, left, top left (since Tiled 1.5). Before Tiled 1.5, the
+   Wang ID was saved as a 32-bit unsigned integer stored in the format
+   ``0xCECECECE`` (where each C is a corner color and each E is an edge color,
+   in reverse order)."
 -  **hflip:** Whether the tile is flipped horizontally. This only affects
    the tile image, it does not change the meaning of the wangid. See
    :ref:`Tile flipping <tmx-tile-flipping>` for more info. (defaults to false)
