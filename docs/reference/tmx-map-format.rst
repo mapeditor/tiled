@@ -308,35 +308,24 @@ number of Wang tiles using these colors.
 
 Can contain at most one: :ref:`tmx-properties`
 
-Can contain up to 15 (each): :ref:`tmx-wangcornercolor`, :ref:`tmx-wangedgecolor`
+Can contain up to 255: :ref:`tmx-wangcolor` (since Tiled 1.5)
 
 Can contain any number: :ref:`tmx-wangtile`
 
-.. _tmx-wangcornercolor:
+.. _tmx-wangcolor:
 
-<wangcornercolor>
-'''''''''''''''''
+<wangcolor>
+'''''''''''
 
-A color that can be used to define the corner of a Wang tile.
-
--  **name:** The name of this color.
--  **color:** The color in ``#RRGGBB`` format (example: ``#c17d11``).
--  **tile:** The tile ID of the tile representing this color.
--  **probability:** The relative probability that this color is chosen
-   over others in case of multiple options. (defaults to 0)
-
-.. _tmx-wangedgecolor:
-
-<wangedgecolor>
-'''''''''''''''''
-
-A color that can be used to define the edge of a Wang tile.
+A color that can be used to define the corner and/or edge of a Wang tile.
 
 -  **name:** The name of this color.
 -  **color:** The color in ``#RRGGBB`` format (example: ``#c17d11``).
 -  **tile:** The tile ID of the tile representing this color.
 -  **probability:** The relative probability that this color is chosen
    over others in case of multiple options. (defaults to 0)
+
+Can contain at most one: :ref:`tmx-properties`
 
 .. _tmx-wangtile:
 
@@ -740,8 +729,8 @@ Can contain any number: :ref:`tmx-layer`,
 
 Wraps any number of custom properties. Can be used as a child of the
 ``map``, ``tileset``, ``tile`` (when part of a ``tileset``),
-``terrain``, ``layer``, ``objectgroup``, ``object``, ``imagelayer`` and
-``group`` elements.
+``terrain``, ``wangset``, ``wangcolor``, ``layer``, ``objectgroup``,
+``object``, ``imagelayer`` and ``group`` elements.
 
 Can contain any number: :ref:`tmx-property`
 
