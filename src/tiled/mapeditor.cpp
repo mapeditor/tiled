@@ -63,8 +63,6 @@
 #include "stampbrush.h"
 #include "templatesdock.h"
 #include "terrain.h"
-#include "terrainbrush.h"
-#include "terraindock.h"
 #include "tile.h"
 #include "tileselectiontool.h"
 #include "tilesetdock.h"
@@ -153,7 +151,6 @@ MapEditor::MapEditor(QObject *parent)
     , mObjectsDock(new ObjectsDock(mMainWindow))
     , mTemplatesDock(new TemplatesDock(mMainWindow))
     , mTilesetDock(new TilesetDock(mMainWindow))
-    , mTerrainDock(new TerrainDock(mMainWindow))
     , mWangDock(new WangDock(mMainWindow))
     , mMiniMapDock(new MiniMapDock(mMainWindow))
     , mLayerComboBox(new TreeViewComboBox)
@@ -179,7 +176,6 @@ MapEditor::MapEditor(QObject *parent)
     mToolSpecificToolBar->setObjectName(QLatin1String("toolSpecificToolBar"));
 
     mStampBrush = new StampBrush(this);
-    mTerrainBrush = new TerrainBrush(this);
     mWangBrush = new WangBrush(this);
     mBucketFillTool = new BucketFillTool(this);
     mEditPolygonTool = new EditPolygonTool(this);
@@ -193,7 +189,6 @@ MapEditor::MapEditor(QObject *parent)
     CreateObjectTool *textObjectsTool = new CreateTextObjectTool(this);
 
     mToolsToolBar->addAction(mToolManager->registerTool(mStampBrush));
-    mToolsToolBar->addAction(mToolManager->registerTool(mTerrainBrush));
     mToolsToolBar->addAction(mToolManager->registerTool(mWangBrush));
     mToolsToolBar->addAction(mToolManager->registerTool(mBucketFillTool));
     mToolsToolBar->addAction(mToolManager->registerTool(mShapeFillTool));
@@ -274,13 +269,6 @@ MapEditor::MapEditor(QObject *parent)
     connect(mStampBrush, &StampBrush::wangFillChanged, this, &MapEditor::setWangFill);
     connect(mBucketFillTool, &BucketFillTool::wangFillChanged, this, &MapEditor::setWangFill);
     connect(mShapeFillTool, &ShapeFillTool::wangFillChanged, this, &MapEditor::setWangFill);
-
-    connect(mTerrainDock, &TerrainDock::currentTerrainChanged,
-            mTerrainBrush, &TerrainBrush::setTerrain);
-    connect(mTerrainDock, &TerrainDock::selectTerrainBrush,
-            this, &MapEditor::selectTerrainBrush);
-    connect(mTerrainBrush, &TerrainBrush::terrainCaptured,
-            mTerrainDock, &TerrainDock::setCurrentTerrain);
 
     connect(mWangDock, &WangDock::currentWangSetChanged,
             mBucketFillTool, &BucketFillTool::setWangSet);
@@ -400,7 +388,6 @@ void MapEditor::setCurrentDocument(Document *document)
     mUndoDock->setStack(document ? document->undoStack() : nullptr);
     mObjectsDock->setMapDocument(mapDocument);
     mTilesetDock->setMapDocument(mapDocument);
-    mTerrainDock->setDocument(mapDocument);
     mWangDock->setDocument(mapDocument);
     mMiniMapDock->setMapDocument(mapDocument);
 
@@ -483,7 +470,6 @@ QList<QDockWidget *> MapEditor::dockWidgets() const
         mObjectsDock,
         mTemplatesDock,
         mTilesetDock,
-        mTerrainDock,
         mWangDock,
         mMiniMapDock,
         mTileStampsDock
@@ -583,10 +569,8 @@ void MapEditor::resetLayout()
     mMainWindow->tabifyDockWidget(mMiniMapDock, mObjectsDock);
     mMainWindow->tabifyDockWidget(mObjectsDock, mLayerDock);
 
-    mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mTerrainDock);
     mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mWangDock);
     mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mTilesetDock);
-    mMainWindow->tabifyDockWidget(mTerrainDock, mWangDock);
     mMainWindow->tabifyDockWidget(mWangDock, mTilesetDock);
 
     // These dock widgets may not be immediately useful to many people, so
@@ -807,11 +791,6 @@ void MapEditor::setStamp(const TileStamp &stamp)
         mToolManager->selectTool(mStampBrush);
 
     mTilesetDock->selectTilesInStamp(stamp);
-}
-
-void MapEditor::selectTerrainBrush()
-{
-    mToolManager->selectTool(mTerrainBrush);
 }
 
 void MapEditor::selectWangBrush()

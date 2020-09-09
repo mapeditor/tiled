@@ -236,10 +236,7 @@ SOURCES += aboutdialog.cpp \
     swaptiles.cpp \
     tabbar.cpp \
     templatesdock.cpp \
-    terrainbrush.cpp \
-    terraindock.cpp \
     terrainmodel.cpp \
-    terrainview.cpp \
     texteditordialog.cpp \
     textpropertyedit.cpp \
     tileanimationeditor.cpp \
@@ -481,10 +478,7 @@ HEADERS += aboutdialog.h \
     swaptiles.h \
     tabbar.h \
     templatesdock.h \
-    terrainbrush.h \
-    terraindock.h \
     terrainmodel.h \
-    terrainview.h \
     texteditordialog.h \
     textpropertyedit.h \
     tileanimationeditor.h \

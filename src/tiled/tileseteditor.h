@@ -91,7 +91,6 @@ public:
 
     QAction *addTilesAction() const;
     QAction *removeTilesAction() const;
-    QAction *editTerrainAction() const;
     QAction *editCollisionAction() const;
     QAction *editWangSetsAction() const;
     QAction *showAnimationEditor() const;
@@ -130,10 +129,6 @@ private:
 
     void updateAddRemoveActions();
 
-    void addTerrainType();
-    void removeTerrainType();
-    void setTerrainImage(Tile *tile);
-
     void currentWangSetChanged(WangSet *wangSet);
     void currentWangIdChanged(WangId wangId);
     void wangColorChanged(int color);
@@ -162,7 +157,6 @@ private:
 
     PropertiesDock *mPropertiesDock;
     UndoDock *mUndoDock;
-    TerrainDock *mTerrainDock;
     TileCollisionDock *mTileCollisionDock;
     TemplatesDock *mTemplatesDock;
     WangDock *mWangDock;
