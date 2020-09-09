@@ -753,7 +753,7 @@ void MapReaderPrivate::readTilesetWangSets(Tileset &tileset)
                     }
 
                     if (!wangSet->wangIdIsValid(wangId) || !ok) {
-                        xml.raiseError(QStringLiteral("Invalid wangId \"%1\" given for tileId %2").arg(wangIdString,
+                        xml.raiseError(QStringLiteral("Invalid wangId \"%1\" given for tileId %2").arg(wangIdString.toString(),
                                                                                                        QString::number(tileId)));
                         return;
                     }
