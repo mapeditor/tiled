@@ -36,7 +36,7 @@
 
 namespace Tiled {
 
-unsigned cellToTileInfo(const Cell &cell)
+static unsigned cellToTileInfo(const Cell &cell)
 {
     return cell.tileId()
             | (cell.flippedHorizontally() << 29)
@@ -44,7 +44,7 @@ unsigned cellToTileInfo(const Cell &cell)
             | (cell.flippedAntiDiagonally() << 27);
 }
 
-unsigned wangTileToTileInfo(const WangTile &wangTile)
+static unsigned wangTileToTileInfo(const WangTile &wangTile)
 {
     return wangTile.tile()->id()
             | (wangTile.flippedHorizontally() << 29)

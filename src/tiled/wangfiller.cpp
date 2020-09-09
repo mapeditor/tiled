@@ -110,9 +110,16 @@ void WangFiller::fillRegion(TileLayer &target,
         const WangId source = wangIdFromSurroundings(back, region, QPoint(x, y));
         CellInfo info = grid.get(x, y);
         for (int i = 0; i < WangId::NumIndexes; ++i) {
-            if (!info.mask.indexColor(i))
-                if (int color = source.indexColor(i))
+            if (!info.mask.indexColor(i)) {
+                if (int color = source.indexColor(i)) {
                     info.desired.setIndexColor(i, color);
+
+                    // When we're not making corrections, require the borders
+                    // to match already placed tiles.
+                    if (!mCorrectionsEnabled)
+                        info.mask.setIndexColor(i, 0xf);
+                }
+            }
         }
         grid.set(x, y, info);
     };
