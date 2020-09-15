@@ -256,7 +256,7 @@ static void setWangStyle(QPainter *painter, WangSet *wangSet, int index)
 {
     const QColor c = wangSet->colorAt(index)->color();
 
-    painter->setBrush(QColor(c.red(), c.green(), c.blue(), 200));
+    painter->setBrush(QColor(c.red(), c.green(), c.blue(), c.alpha() * 0.3));
     setCosmeticPen(painter, c, 2);
 }
 
