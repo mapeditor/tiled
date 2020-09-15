@@ -269,28 +269,50 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
 
     tileset->setProperties(extractProperties(variantMap));
 
-    // Read terrains
+    // Read terrains as a WangSet
     QVariantList terrainsVariantList = variantMap[QStringLiteral("terrains")].toList();
-    for (int i = 0; i < terrainsVariantList.count(); ++i) {
-        QVariantMap terrainMap = terrainsVariantList[i].toMap();
-        Terrain *terrain = tileset->addTerrain(terrainMap[QStringLiteral("name")].toString(),
-                                               terrainMap[QStringLiteral("tile")].toInt());
-        terrain->setProperties(extractProperties(terrainMap));
+    WangSet *terrainWangSet = nullptr;
+    if (!terrainsVariantList.isEmpty()) {
+        auto wangSet = std::make_unique<WangSet>(tileset.data(), tr("Converted Terrains"), -1);
+        wangSet->setColorCount(terrainsVariantList.size());
+
+        for (int i = 0; i < terrainsVariantList.count(); ++i) {
+            QVariantMap terrainMap = terrainsVariantList[i].toMap();
+
+            const auto &wc = wangSet->colorAt(i + 1);
+            wc->setName(terrainMap[QStringLiteral("name")].toString());
+            wc->setImageId(terrainMap[QStringLiteral("tile")].toInt());
+            wc->setProperties(extractProperties(terrainMap));
+        }
+
+        terrainWangSet = wangSet.get();
+        tileset->addWangSet(std::move(wangSet));
     }
 
     // Reads tile information (everything except the properties)
     auto readTile = [&](Tile *tile, const QVariantMap &tileVar) {
-        bool ok;
+        bool ok = true;
 
         tile->setType(tileVar[QStringLiteral("type")].toString());
 
+        // Read tile terrain ids as Wang IDs.
         QList<QVariant> terrains = tileVar[QStringLiteral("terrain")].toList();
-        if (terrains.count() == 4) {
-            for (int i = 0; i < 4; ++i) {
-                int terrainId = terrains.at(i).toInt(&ok);
-                if (ok && terrainId >= 0 && terrainId < tileset->terrainCount())
-                    tile->setCornerTerrainId(i, terrainId);
+        if (terrains.count() == 4 && terrainWangSet) {
+            WangId wangId;
+            for (int i = 0; i < 4 && ok; ++i) {
+                const int c = terrains.at(i).toInt(&ok) + 1;
+                if (ok) {
+                    switch (i) {
+                    case 0: wangId.setIndexColor(WangId::TopLeft, c); break;
+                    case 1: wangId.setIndexColor(WangId::TopRight, c); break;
+                    case 2: wangId.setIndexColor(WangId::BottomLeft, c); break;
+                    case 3: wangId.setIndexColor(WangId::BottomRight, c); break;
+                    }
+                }
             }
+
+            if (terrainWangSet->wangIdIsValid(wangId) && ok)
+                terrainWangSet->addTile(tile, wangId);
         }
 
         qreal probability = tileVar[QStringLiteral("probability")].toDouble(&ok);
