@@ -22,11 +22,8 @@
 
 #include "actionmanager.h"
 #include "addremovemapobject.h"
-#include "addremoveterrain.h"
 #include "addremovetiles.h"
 #include "addremovewangset.h"
-#include "changeterrain.h"
-#include "changetileterrain.h"
 #include "changewangcolordata.h"
 #include "changewangsetdata.h"
 #include "documentmanager.h"
@@ -40,7 +37,6 @@
 #include "propertiesdock.h"
 #include "session.h"
 #include "templatesdock.h"
-#include "terrain.h"
 #include "tile.h"
 #include "tileanimationeditor.h"
 #include "tilecollisiondock.h"
@@ -279,8 +275,6 @@ void TilesetEditor::addDocument(Document *document)
     TilesetModel *tilesetModel = new TilesetModel(tileset, view);
     view->setModel(tilesetModel);
 
-    connect(tilesetDocument, &TilesetDocument::tileTerrainChanged,
-            tilesetModel, &TilesetModel::tilesChanged);
     connect(tilesetDocument, &TilesetDocument::tileWangSetChanged,
             tilesetModel, &TilesetModel::tilesChanged);
     connect(tilesetDocument, &TilesetDocument::tileImageSourceChanged,
@@ -868,31 +862,6 @@ void TilesetEditor::removeTiles()
 
     // todo: make sure any current brushes are no longer referring to removed tiles
     setCurrentTile(nullptr);
-}
-
-void TilesetEditor::setEditTerrain(bool editTerrain)
-{
-    if (TilesetView *view = currentTilesetView())
-        view->setEditTerrain(editTerrain);
-
-    if (editTerrain) {
-        mTileCollisionDock->setVisible(false);
-        mWangDock->setVisible(false);
-    }
-}
-
-void TilesetEditor::currentTerrainChanged(const Terrain *terrain)
-{
-    TilesetView *view = currentTilesetView();
-    if (!view)
-        return;
-
-    if (terrain) {
-        view->setTerrain(terrain);
-        view->setEraseTerrain(false);
-    } else {
-        view->setEraseTerrain(true);
-    }
 }
 
 void TilesetEditor::setEditCollision(bool editCollision)

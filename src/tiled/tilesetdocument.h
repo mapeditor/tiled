@@ -37,7 +37,6 @@ class ObjectGroup;
 
 class MapDocument;
 class TilesetDocument;
-class TilesetTerrainModel;
 class TilesetWangSetModel;
 class WangColorModel;
 
@@ -105,7 +104,6 @@ public:
 
     QList<Object*> currentObjects() const override;
 
-    TilesetTerrainModel *terrainModel() const { return mTerrainModel; }
     TilesetWangSetModel *wangSetModel() const { return mWangSetModel; }
 
     WangColorModel *wangColorModel(WangSet *wangSet);
@@ -140,15 +138,13 @@ signals:
     void tileImageSourceChanged(Tile *tile);
 
     /**
-     * Notifies tileset models about changes to tile terrain information.
+     * Notifies tileset models about changes to tile Wang information.
      * All the \a tiles need to be from the same tileset.
      */
-    void tileTerrainChanged(const QList<Tile*> &tiles);
-
     void tileWangSetChanged(const QList<Tile*> &tiles);
 
     /**
-     * Emitted when the terrain probability of a tile changed.
+     * Emitted when the probability of a tile changed.
      */
     void tileProbabilityChanged(Tile *tile);
 
@@ -173,13 +169,11 @@ private:
     void onPropertyChanged(Object *object, const QString &name);
     void onPropertiesChanged(Object *object);
 
-    void onTerrainRemoved(Terrain *terrain);
     void onWangSetRemoved(WangSet *wangSet);
 
     SharedTileset mTileset;
     QList<MapDocument*> mMapDocuments;
 
-    TilesetTerrainModel *mTerrainModel;
     TilesetWangSetModel *mWangSetModel;
     std::unordered_map<WangSet*, std::unique_ptr<WangColorModel>> mWangColorModels;
 

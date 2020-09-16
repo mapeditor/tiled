@@ -24,7 +24,6 @@
 #include "editableimagelayer.h"
 #include "editablemap.h"
 #include "editableobjectgroup.h"
-#include "editableterrain.h"
 #include "editabletile.h"
 #include "editabletilelayer.h"
 #include "editabletileset.h"
@@ -161,22 +160,6 @@ EditableTile *EditableManager::editableTile(EditableTileset *tileset, Tile *tile
     }
 
     return editableTile;
-}
-
-EditableTerrain *EditableManager::editableTerrain(EditableTileset *tileset, Terrain *terrain)
-{
-    if (!terrain)
-        return nullptr;
-
-    Q_ASSERT(terrain->tileset() == tileset->tileset());
-
-    EditableTerrain* &editableTerrain = mEditableTerrains[terrain];
-    if (becomesNullValue(editableTerrain)) {
-        editableTerrain = new EditableTerrain(tileset, terrain);
-        QQmlEngine::setObjectOwnership(editableTerrain, QQmlEngine::JavaScriptOwnership);
-    }
-
-    return editableTerrain;
 }
 
 } // namespace Tiled

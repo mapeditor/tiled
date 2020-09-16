@@ -1045,24 +1045,6 @@ SelectedArea.intersect(rect : :ref:`script-rect`) : void
 SelectedArea.intersect(region : :ref:`script-region`) : void
     Sets the selected area to the intersection of the current selected area and the given region.
 
-.. _script-terrain:
-
-Terrain
-^^^^^^^
-
-Inherits :ref:`script-object`.
-
-Properties
-~~~~~~~~~~
-
-.. csv-table::
-    :widths: 1, 2
-
-    **id** : int |ro|, ID of this terrain.
-    **name** : string, Name of the terrain.
-    **imageTile** : :ref:`script-tile`, The tile representing the terrain (needs to be from the same tileset).
-    **tileset** : :ref:`script-tileset` |ro|, The tileset of the terrain.
-
 .. _script-tile:
 
 Tile
@@ -1082,7 +1064,6 @@ Properties
     **size** : :ref:`script-size` |ro|, Size of the tile in pixels.
     **type** : string, Type of the tile.
     **imageFileName** : string, File name of the tile image (when the tile is part of an image collection tileset).
-    **terrain** : :ref:`script-tileterrains`, An object specifying the terrain at each corner of the tile.
     **probability** : number, Probability that the tile gets chosen relative to other tiles.
     **objectGroup** : :ref:`script-objectgroup`, The :ref:`script-objectgroup` associated with the tile in case collision shapes were defined. Returns ``null`` if no collision shapes were defined for this tile.
     **frames** : :ref:`[frame] <script-frames>`, This tile's animation as an array of frames.
@@ -1098,36 +1079,6 @@ Properties
     Tile.FlippedVertically
     Tile.FlippedAntiDiagonally
     Tile.RotatedHexagonal120
-
-.. _script-tile-corner:
-
-.. csv-table::
-    :header: "Tile.Corner"
-
-    Tile.TopLeft
-    Tile.TopRight
-    Tile.BottomLeft
-    Tile.BottomRight
-
-Functions
-~~~~~~~~~
-
-Tile.terrainAtCorner(corner : :ref:`Corner <script-tile-corner>`) : :ref:`script-terrain`
-    Returns the terrain used at the given corner.
-
-Tile.setTerrainAtCorner(corner : :ref:`Corner <script-tile-corner>`, :ref:`script-terrain`) : void
-    Sets the terrain used at the given corner.
-
-    As an example, suppose you had a sand terrain added to your tileset, here's how you could apply it to the top-left corner of the first 10 tiles in the tileset:
-
-    .. code:: javascript
-
-        var tileset = tiled.activeAsset
-        var sand = tileset.terrains[0]
-        tileset.macro("Change Terrain", function() {
-           for (let i = 0; i < 10; ++i)
-              tileset.tiles[i].setTerrainAtCorner(Tile.TopLeft, sand);
-        })
 
 .. _script-tilecollisioneditor:
 
@@ -1509,7 +1460,6 @@ Properties
     **name** : string, Name of the tileset.
     **image** : string, The file name of the image used by this tileset. Empty in case of image collection tilesets.
     **tiles** : [:ref:`script-tile`] |ro|, Array of all tiles in this tileset. Note that the index of a tile in this array does not always match with its ID.
-    **terrains** : [:ref:`script-terrain`] |ro|, Array of all terrains in this tileset.
     **tileCount** : int, The number of tiles in this tileset.
     **nextTileId** : int, The ID of the next tile that would be added to this tileset. All existing tiles have IDs that are lower than this ID.
     **tileWidth** : int, Tile width for tiles in this tileset in pixels.
@@ -1796,20 +1746,6 @@ size
 
     **width** : number, Width.
     **height** : number, Height.
-
-.. _script-tileterrains:
-
-Terrains
-~~~~~~~~
-
-An object specifying the terrain for each corner of a tile:
-
-.. csv-table::
-
-    **topLeft** : :ref:`script-terrain`
-    **topRight** : :ref:`script-terrain`
-    **bottomLeft** : :ref:`script-terrain`
-    **bottomRight** : :ref:`script-terrain`
 
 .. _script-textfile:
 

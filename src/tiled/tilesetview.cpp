@@ -21,12 +21,10 @@
 #include "tilesetview.h"
 
 #include "changeevents.h"
-#include "changetileterrain.h"
 #include "changetilewangid.h"
 #include "map.h"
 #include "preferences.h"
 #include "stylehelper.h"
-#include "terrain.h"
 #include "tile.h"
 #include "tileset.h"
 #include "tilesetdocument.h"
@@ -56,183 +54,6 @@ using namespace Tiled;
 
 namespace {
 
-/**
- * The delegate for drawing tile items in the tileset view.
- */
-class TileDelegate : public QAbstractItemDelegate
-{
-public:
-    TileDelegate(TilesetView *tilesetView, QObject *parent = nullptr)
-        : QAbstractItemDelegate(parent)
-        , mTilesetView(tilesetView)
-    { }
-
-    void paint(QPainter *painter, const QStyleOptionViewItem &option,
-               const QModelIndex &index) const override;
-
-    QSize sizeHint(const QStyleOptionViewItem &option,
-                   const QModelIndex &index) const override;
-
-private:
-    void drawFilmStrip(QPainter *painter, QRect targetRect) const;
-    void drawTerrainOverlay(QPainter *painter,
-                            const Tile *tile,
-                            QRect targetRect,
-                            const QBrush &highlight,
-                            const QModelIndex &index) const;
-    void drawWangOverlay(QPainter *painter,
-                         const Tile *tile,
-                         QRect targetRect,
-                         const QModelIndex &index) const;
-
-    TilesetView *mTilesetView;
-};
-
-enum Corners
-{
-    TopLeft = 1,
-    TopRight = 2,
-    BottomLeft = 4,
-    BottomRight = 8
-};
-
-/**
- * Returns a mask of the corners of a certain tile's \a terrain that contain
- * the given \a terrainTypeId.
- */
-static unsigned terrainCorners(unsigned terrain, int terrainTypeId)
-{
-    const unsigned terrainIndex = terrainTypeId >= 0 ? terrainTypeId : 0xFF;
-
-    return (((terrain >> 24) & 0xFF) == terrainIndex ? TopLeft : 0) |
-            (((terrain >> 16) & 0xFF) == terrainIndex ? TopRight : 0) |
-            (((terrain >> 8) & 0xFF) == terrainIndex ? BottomLeft : 0) |
-            ((terrain & 0xFF) == terrainIndex ? BottomRight : 0);
-}
-
-static unsigned invertCorners(unsigned corners)
-{
-    return corners ^ (TopLeft | TopRight | BottomLeft | BottomRight);
-}
-
-
-static void paintCorners(QPainter *painter,
-                         unsigned corners,
-                         const QRect &rect)
-{
-    const int hx = rect.width() / 2;
-    const int hy = rect.height() / 2;
-
-    switch (corners) {
-    case TopLeft:
-        painter->drawPie(rect.translated(-hx, -hy), -90 * 16, 90 * 16);
-        break;
-    case TopRight:
-        painter->drawPie(rect.translated(hx, -hy), 180 * 16, 90 * 16);
-        break;
-    case TopRight | TopLeft:
-        painter->drawRect(rect.x(), rect.y(), rect.width(), hy);
-        break;
-    case BottomLeft:
-        painter->drawPie(rect.translated(-hx, hy), 0, 90 * 16);
-        break;
-    case BottomLeft | TopLeft:
-        painter->drawRect(rect.x(), rect.y(), hx, rect.height());
-        break;
-    case BottomLeft | TopRight:
-        painter->drawPie(rect.translated(-hx, hy), 0, 90 * 16);
-        painter->drawPie(rect.translated(hx, -hy), 180 * 16, 90 * 16);
-        break;
-    case BottomLeft | TopRight | TopLeft: {
-        QPainterPath fill, ellipse;
-        fill.addRect(rect);
-        ellipse.addEllipse(rect.translated(hx, hy));
-        painter->drawPath(fill.subtracted(ellipse));
-        break;
-    }
-    case BottomRight:
-        painter->drawPie(rect.translated(hx, hy), 90 * 16, 90 * 16);
-        break;
-    case BottomRight | TopLeft:
-        painter->drawPie(rect.translated(-hx, -hy), -90 * 16, 90 * 16);
-        painter->drawPie(rect.translated(hx, hy), 90 * 16, 90 * 16);
-        break;
-    case BottomRight | TopRight:
-        painter->drawRect(rect.x() + hx, rect.y(), hx, rect.height());
-        break;
-    case BottomRight | TopRight | TopLeft: {
-        QPainterPath fill, ellipse;
-        fill.addRect(rect);
-        ellipse.addEllipse(rect.translated(-hx, hy));
-        painter->drawPath(fill.subtracted(ellipse));
-        break;
-    }
-    case BottomRight | BottomLeft:
-        painter->drawRect(rect.x(), rect.y() + hy, rect.width(), hy);
-        break;
-    case BottomRight | BottomLeft | TopLeft: {
-        QPainterPath fill, ellipse;
-        fill.addRect(rect);
-        ellipse.addEllipse(rect.translated(hx, -hy));
-        painter->drawPath(fill.subtracted(ellipse));
-        break;
-    }
-    case BottomRight | BottomLeft | TopRight: {
-        QPainterPath fill, ellipse;
-        fill.addRect(rect);
-        ellipse.addEllipse(rect.translated(-hx, -hy));
-        painter->drawPath(fill.subtracted(ellipse));
-        break;
-    }
-    case BottomRight | BottomLeft | TopRight | TopLeft:
-        painter->drawRect(rect);
-        break;
-    }
-}
-
-static void setCosmeticPen(QPainter *painter, const QBrush &brush, qreal width)
-{
-    const qreal devicePixelRatio = painter->device()->devicePixelRatioF();
-
-    QPen pen(brush, width * devicePixelRatio);
-    pen.setCosmetic(true);
-    painter->setPen(pen);
-}
-
-static void paintTerrainOverlay(QPainter *painter,
-                                unsigned terrain,
-                                int terrainTypeId,
-                                const QRect &rect,
-                                const QColor &color)
-{
-    painter->save();
-    painter->setClipRect(rect);
-    painter->setRenderHint(QPainter::Antialiasing);
-
-    // Draw the "any terrain" background
-    painter->setBrush(QColor(128, 128, 128, 100));
-    setCosmeticPen(painter, Qt::gray, 2);
-    paintCorners(painter, invertCorners(terrainCorners(terrain, -1)), rect);
-
-    if (terrainTypeId != -1) {
-        const unsigned corners = terrainCorners(terrain, terrainTypeId);
-
-        // Draw the shadow
-        painter->translate(1, 1);
-        painter->setBrush(Qt::NoBrush);
-        setCosmeticPen(painter, Qt::black, 2);
-        paintCorners(painter, corners, rect);
-
-        // Draw the foreground
-        painter->translate(-1, -1);
-        painter->setBrush(QColor(color.red(), color.green(), color.blue(), 100));
-        setCosmeticPen(painter, color, 2);
-        paintCorners(painter, corners, rect);
-    }
-
-    painter->restore();
-}
-
 static void setupTilesetGridTransform(const Tileset &tileset, QTransform &transform, QRect &targetRect)
 {
     if (tileset.orientation() == Tileset::Isometric) {
@@ -254,6 +75,33 @@ static void setupTilesetGridTransform(const Tileset &tileset, QTransform &transf
         transform.translate(-tileCenter.x(), -tileCenter.y());
     }
 }
+
+/**
+ * The delegate for drawing tile items in the tileset view.
+ */
+class TileDelegate : public QAbstractItemDelegate
+{
+public:
+    TileDelegate(TilesetView *tilesetView, QObject *parent = nullptr)
+        : QAbstractItemDelegate(parent)
+        , mTilesetView(tilesetView)
+    { }
+
+    void paint(QPainter *painter, const QStyleOptionViewItem &option,
+               const QModelIndex &index) const override;
+
+    QSize sizeHint(const QStyleOptionViewItem &option,
+                   const QModelIndex &index) const override;
+
+private:
+    void drawFilmStrip(QPainter *painter, QRect targetRect) const;
+    void drawWangOverlay(QPainter *painter,
+                         const Tile *tile,
+                         QRect targetRect,
+                         const QModelIndex &index) const;
+
+    TilesetView *mTilesetView;
+};
 
 void TileDelegate::paint(QPainter *painter,
                          const QStyleOptionViewItem &option,
@@ -323,9 +171,6 @@ void TileDelegate::paint(QPainter *painter,
         painter->setOpacity(opacity);
     }
 
-    if (mTilesetView->isEditTerrain())
-        drawTerrainOverlay(painter, tile, targetRect, highlight, index);
-
     if (mTilesetView->isEditWangSet())
         drawWangOverlay(painter, tile, targetRect, index);
 }
@@ -394,48 +239,6 @@ void TileDelegate::drawFilmStrip(QPainter *painter, QRect targetRect) const
     for (qreal x = (step - hole.width()) / 2; x < strip.right(); x += step) {
         hole.moveTo(x, margin);
         painter->drawRoundedRect(hole, 25, 25, Qt::RelativeSize);
-    }
-
-    painter->restore();
-}
-
-void TileDelegate::drawTerrainOverlay(QPainter *painter,
-                                      const Tile *tile,
-                                      QRect targetRect,
-                                      const QBrush &highlight,
-                                      const QModelIndex &index) const
-{
-    painter->save();
-
-    QTransform transform;
-    setupTilesetGridTransform(*tile->tileset(), transform, targetRect);
-    painter->setTransform(transform, true);
-
-    const unsigned terrain = tile->terrain();
-
-    paintTerrainOverlay(painter, terrain,
-                        mTilesetView->terrainId(), targetRect,
-                        highlight.color());
-
-    // Overlay with terrain corner indication when hovered
-    if (index == mTilesetView->hoveredIndex()) {
-        QPoint pos;
-        switch (mTilesetView->hoveredCorner()) {
-        case 0: pos = targetRect.topLeft(); break;
-        case 1: pos = targetRect.topRight(); break;
-        case 2: pos = targetRect.bottomLeft(); break;
-        case 3: pos = targetRect.bottomRight(); break;
-        }
-
-        painter->save();
-        painter->setBrush(highlight);
-        painter->setClipRect(targetRect);
-        painter->setRenderHint(QPainter::Antialiasing);
-        setCosmeticPen(painter, highlight.color().darker(), 2);
-        painter->drawEllipse(pos,
-                             targetRect.width() / 3,
-                             targetRect.height() / 3);
-        painter->restore();
     }
 
     painter->restore();
@@ -687,16 +490,6 @@ void TilesetView::keyPressEvent(QKeyEvent *event)
     return QTableView::keyPressEvent(event);
 }
 
-void TilesetView::setEditTerrain(bool enabled)
-{
-    if (mEditTerrain == enabled)
-        return;
-
-    mEditTerrain = enabled;
-    setMouseTracking(true);
-    viewport()->update();
-}
-
 void TilesetView::setEditWangSet(bool enabled)
 {
     if (mEditWangSet == enabled)
@@ -705,25 +498,6 @@ void TilesetView::setEditWangSet(bool enabled)
     mEditWangSet = enabled;
     setMouseTracking(true);
     viewport()->update();
-}
-
-/**
- * The id of the terrain currently being specified. Returns -1 when no terrain
- * is set (used for erasing terrain info).
- */
-int TilesetView::terrainId() const
-{
-     return mTerrain ? mTerrain->id() : -1;
-}
-
-void TilesetView::setTerrain(const Terrain *terrain)
-{
-    if (mTerrain == terrain)
-        return;
-
-    mTerrain = terrain;
-    if (mEditTerrain)
-        viewport()->update();
 }
 
 void TilesetView::setWangSet(WangSet *wangSet)
@@ -783,13 +557,6 @@ void TilesetView::mousePressEvent(QMouseEvent *event)
     if (event->button() == Qt::MidButton && isActiveWindow()) {
         mLastMousePos = event->globalPos();
         setHandScrolling(true);
-        return;
-    }
-
-    if (mEditTerrain) {
-        if (event->button() == Qt::LeftButton)
-            applyTerrain();
-
         return;
     }
 
@@ -898,46 +665,6 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
         return;
     }
 
-    if (mEditTerrain) {
-        const QPoint pos = event->pos();
-        const QModelIndex hoveredIndex = indexAt(pos);
-        const QModelIndex previousHoveredIndex = mHoveredIndex;
-        mHoveredIndex = hoveredIndex;
-        int previousHoverCorner = mHoveredCorner;
-
-        if (mHoveredIndex.isValid()) {
-            QRect tileRect = visualRect(mHoveredIndex);
-            QTransform transform;
-            setupTilesetGridTransform(*tilesetDocument()->tileset(), transform, tileRect);
-
-            const QPoint center = tileRect.center();
-            const auto mappedPos = transform.inverted().map(pos);
-
-            int hoveredCorner = 0;
-            if (mappedPos.x() > center.x())
-                hoveredCorner += 1;
-            if (mappedPos.y() > center.y())
-                hoveredCorner += 2;
-
-            mHoveredCorner = hoveredCorner;
-        }
-
-        if (previousHoveredIndex != mHoveredIndex) {
-            if (previousHoveredIndex.isValid())
-                update(previousHoveredIndex);
-            if (mHoveredIndex.isValid())
-                update(mHoveredIndex);
-        } else if (previousHoverCorner != mHoveredCorner) {
-            if (mHoveredIndex.isValid())
-                update(mHoveredIndex);
-        }
-
-        if (event->buttons() & Qt::LeftButton)
-            applyTerrain();
-
-        return;
-    }
-
     QTableView::mouseMoveEvent(event);
 }
 
@@ -945,13 +672,6 @@ void TilesetView::mouseReleaseEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::MidButton) {
         setHandScrolling(false);
-        return;
-    }
-
-    if (mEditTerrain) {
-        if (event->button() == Qt::LeftButton)
-            finishTerrainChange();
-
         return;
     }
 
@@ -1042,21 +762,7 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
     QIcon propIcon(QLatin1String(":images/16/document-properties.png"));
 
     if (tile) {
-        if (mEditTerrain) {
-            // Select this tile to make sure it is clear that only a single
-            // tile is being used.
-            selectionModel()->setCurrentIndex(index,
-                                              QItemSelectionModel::SelectCurrent |
-                                              QItemSelectionModel::Clear);
-
-            QAction *addTerrain = menu.addAction(tr("Add Terrain Type"));
-            connect(addTerrain, &QAction::triggered, this, &TilesetView::addTerrainType);
-
-            if (mTerrain) {
-                QAction *setImage = menu.addAction(tr("Set Terrain Image"));
-                connect(setImage, &QAction::triggered, this, &TilesetView::selectTerrainImage);
-            }
-        } else if (mEditWangSet) {
+        if (mEditWangSet) {
             selectionModel()->setCurrentIndex(index,
                                               QItemSelectionModel::SelectCurrent |
                                               QItemSelectionModel::Clear);
@@ -1123,18 +829,6 @@ void TilesetView::onChange(const ChangeEvent &change)
     default:
         break;
     }
-}
-
-void TilesetView::addTerrainType()
-{
-    if (Tile *tile = currentTile())
-        emit createNewTerrain(tile);
-}
-
-void TilesetView::selectTerrainImage()
-{
-    if (Tile *tile = currentTile())
-        emit terrainImageSelected(tile);
 }
 
 void TilesetView::selectWangSetImage()
@@ -1206,37 +900,6 @@ void TilesetView::refreshColumnCount()
     const int scaledTileSize = std::max<int>(tileWidth * scale(), 1) + gridSpace;
     const int columnCount = std::max(maxSize.width() / scaledTileSize, 1);
     tilesetModel()->setColumnCountOverride(columnCount);
-}
-
-void TilesetView::applyTerrain()
-{
-    if (!mHoveredIndex.isValid())
-        return;
-
-    Tile *tile = tilesetModel()->tileAt(mHoveredIndex);
-    if (!tile)
-        return;
-
-    unsigned terrain = setTerrainCorner(tile->terrain(),
-                                        mHoveredCorner,
-                                        mEraseTerrain ? 0xFF : terrainId());
-
-    if (terrain == tile->terrain())
-        return;
-
-    QUndoCommand *command = new ChangeTileTerrain(mTilesetDocument, tile, terrain);
-    mTilesetDocument->undoStack()->push(command);
-    mTerrainChanged = true;
-}
-
-void TilesetView::finishTerrainChange()
-{
-    if (!mTerrainChanged)
-        return;
-
-    // Prevent further merging since mouse was released
-    mTilesetDocument->undoStack()->push(new ChangeTileTerrain);
-    mTerrainChanged = false;
 }
 
 void TilesetView::applyWangId()

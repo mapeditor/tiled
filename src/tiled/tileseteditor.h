@@ -37,13 +37,11 @@ class QToolBar;
 
 namespace Tiled {
 
-class Terrain;
 class Tile;
 class Tileset;
 
 class PropertiesDock;
 class TemplatesDock;
-class TerrainDock;
 class TileAnimationEditor;
 class TileCollisionDock;
 class TilesetDocument;
@@ -118,9 +116,6 @@ private:
     void openAddTilesDialog();
     void addTiles(const QList<QUrl> &urls);
     void removeTiles();
-
-    void setEditTerrain(bool editTerrain);
-    void currentTerrainChanged(const Terrain *terrain);
 
     void setEditCollision(bool editCollision);
     void hasSelectedCollisionObjectsChanged();

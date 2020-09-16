@@ -27,8 +27,6 @@
 
 namespace Tiled {
 
-class Terrain;
-
 class ChangeEvent;
 class TilesetDocument;
 class Zoomable;
@@ -82,34 +80,8 @@ public:
     void setMarkAnimatedTiles(bool enabled);
     bool markAnimatedTiles() const;
 
-    /**
-     * Returns whether terrain editing is enabled.
-     * \sa terrainId
-     */
-    bool isEditTerrain() const { return mEditTerrain; }
-
-    /**
-     * Sets whether terrain editing is enabled.
-     * \sa setTerrain
-     */
-    void setEditTerrain(bool enabled);
-
     void setEditWangSet(bool enabled);
     bool isEditWangSet() const { return mEditWangSet; }
-
-    /**
-     * Sets whether terrain editing is in "erase" mode.
-     * \sa setEditTerrain
-     */
-    void setEraseTerrain(bool erase) { mEraseTerrain = erase; }
-    bool isEraseTerrain() const { return mEraseTerrain; }
-
-    int terrainId() const;
-
-    /**
-     * Sets the terrain to paint on the tiles.
-     */
-    void setTerrain(const Terrain *terrain);
 
     WangSet *wangSet() const { return mWangSet; }
     void setWangSet(WangSet *wangSet);
@@ -127,8 +99,6 @@ public:
     void updateBackgroundColor();
 
 signals:
-    void createNewTerrain(Tile *tile);
-    void terrainImageSelected(Tile *tile);
     void wangSetImageSelected(Tile *tile);
     void wangColorImageSelected(Tile *tile, int index);
     void wangIdUsedChanged(WangId wangId);
@@ -150,8 +120,6 @@ protected:
 private:
     void onChange(const ChangeEvent &change);
 
-    void addTerrainType();
-    void selectTerrainImage();
     void selectWangSetImage();
     void selectWangColorImage();
     void editTileProperties();
@@ -161,8 +129,6 @@ private:
     void adjustScale();
     void refreshColumnCount();
 
-    void applyTerrain();
-    void finishTerrainChange();
     void applyWangId();
     void finishWangIdChange();
     Tile *currentTile() const;
@@ -187,18 +153,14 @@ private:
     TilesetDocument *mTilesetDocument = nullptr;
     bool mDrawGrid;
     bool mMarkAnimatedTiles = true;
-    bool mEditTerrain = false;
     bool mEditWangSet = false;
     WrapBehavior mWrapBehavior = WrapDefault;
     WangBehavior mWangBehavior = WholeId;
-    bool mEraseTerrain = false;
-    const Terrain *mTerrain = nullptr;
     WangSet *mWangSet = nullptr;
     WangId mWangId;
     int mWangColorIndex = 0;
     QModelIndex mHoveredIndex;
     int mHoveredCorner = 0;
-    bool mTerrainChanged = false;
     bool mWangIdChanged = false;
 
     bool mHandScrolling = false;

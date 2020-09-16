@@ -25,7 +25,6 @@
 #include "editablemapobject.h"
 #include "editableobjectgroup.h"
 #include "editableselectedarea.h"
-#include "editableterrain.h"
 #include "editabletile.h"
 #include "editabletilelayer.h"
 #include "editabletileset.h"
@@ -93,7 +92,6 @@ ScriptManager::ScriptManager(QObject *parent)
     qRegisterMetaType<EditableMapObject*>();
     qRegisterMetaType<EditableObjectGroup*>();
     qRegisterMetaType<EditableSelectedArea*>();
-    qRegisterMetaType<EditableTerrain*>();
     qRegisterMetaType<EditableTile*>();
     qRegisterMetaType<EditableTileLayer*>();
     qRegisterMetaType<EditableTileset*>();
@@ -297,7 +295,6 @@ void ScriptManager::initialize()
     globalObject.setProperty(QStringLiteral("Layer"), mEngine->newQMetaObject<EditableLayer>());
     globalObject.setProperty(QStringLiteral("MapObject"), mEngine->newQMetaObject<EditableMapObject>());
     globalObject.setProperty(QStringLiteral("ObjectGroup"), mEngine->newQMetaObject<EditableObjectGroup>());
-    globalObject.setProperty(QStringLiteral("Terrain"), mEngine->newQMetaObject<EditableTerrain>());
     globalObject.setProperty(QStringLiteral("Tile"), mEngine->newQMetaObject<EditableTile>());
     globalObject.setProperty(QStringLiteral("TileLayer"), mEngine->newQMetaObject<EditableTileLayer>());
     globalObject.setProperty(QStringLiteral("TileMap"), mEngine->newQMetaObject<EditableMap>());

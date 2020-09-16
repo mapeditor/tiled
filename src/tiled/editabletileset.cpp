@@ -22,12 +22,10 @@
 
 #include "addremovetiles.h"
 #include "editablemanager.h"
-#include "editableterrain.h"
 #include "editabletile.h"
 #include "scriptmanager.h"
 #include "tilesetchanges.h"
 #include "tilesetdocument.h"
-#include "tilesetterrainmodel.h"
 
 #include <QCoreApplication>
 
@@ -56,13 +54,11 @@ EditableTileset::EditableTileset(TilesetDocument *tilesetDocument,
     connect(tilesetDocument, &TilesetDocument::tilesAdded, this, &EditableTileset::attachTiles);
     connect(tilesetDocument, &TilesetDocument::tilesRemoved, this, &EditableTileset::detachTiles);
     connect(tilesetDocument, &TilesetDocument::tileObjectGroupChanged, this, &EditableTileset::tileObjectGroupChanged);
-    connect(tilesetDocument->terrainModel(), &TilesetTerrainModel::terrainAdded, this, &EditableTileset::terrainAdded);
 }
 
 EditableTileset::~EditableTileset()
 {
     detachTiles(tileset()->tiles().values());
-    detachTerrains(tileset()->terrains());
 
     EditableManager::instance().mEditableTilesets.remove(tileset());
 }
@@ -86,15 +82,6 @@ QList<QObject*> EditableTileset::tiles()
     for (Tile *tile : tileset()->tiles())
         tiles.append(editableManager.editableTile(this, tile));
     return tiles;
-}
-
-QList<QObject *> EditableTileset::terrains()
-{
-    auto &editableManager = EditableManager::instance();
-    QList<QObject*> terrains;
-    for (Terrain *terrain : tileset()->terrains())
-        terrains.append(editableManager.editableTerrain(this, terrain));
-    return terrains;
 }
 
 QList<QObject *> EditableTileset::selectedTiles()
@@ -286,17 +273,6 @@ void EditableTileset::detachTiles(const QList<Tile *> &tiles)
     }
 }
 
-void EditableTileset::detachTerrains(const QList<Terrain *> &terrains)
-{
-    const auto &editableManager = EditableManager::instance();
-    for (Terrain *terrain: terrains) {
-        if (auto editable = editableManager.find(terrain)) {
-            Q_ASSERT(editable->tileset() == this);
-            editable->detach();
-        }
-    }
-}
-
 void EditableTileset::tileObjectGroupChanged(Tile *tile)
 {
     Q_ASSERT(tile->tileset() == tileset());
@@ -304,12 +280,6 @@ void EditableTileset::tileObjectGroupChanged(Tile *tile)
     if (auto editable = EditableManager::instance().find(tile))
         if (editable->attachedObjectGroup() != tile->objectGroup())
             editable->detachObjectGroup();
-}
-
-void EditableTileset::terrainAdded(Tileset *tileset, int terrainId)
-{
-    if (auto editable = EditableManager::instance().find(tileset->terrain(terrainId)))
-        editable->attach(this);
 }
 
 } // namespace Tiled

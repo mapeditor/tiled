@@ -22,11 +22,9 @@
 
 #include "changemapobject.h"
 #include "changeproperties.h"
-#include "changeterrain.h"
 #include "changetileanimation.h"
 #include "changetileobjectgroup.h"
 #include "changetileprobability.h"
-#include "changetileterrain.h"
 #include "changetilewangid.h"
 #include "changewangcolordata.h"
 #include "changewangsetdata.h"
@@ -35,7 +33,6 @@
 #include "mapobject.h"
 #include "objectgroup.h"
 #include "painttilelayer.h"
-#include "terrain.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tilesetdocument.h"
@@ -163,7 +160,6 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
     // Adjust tile meta data
     QList<Tile*> tilesChangingProbability;
     QList<qreal> tileProbabilities;
-    ChangeTileTerrain::Changes terrainChanges;
     QSet<Tile*> tilesToReset;
 
     auto adjustAnimationFrames = [&](const QVector<Frame> &frames) -> QVector<Frame> {
@@ -179,7 +175,6 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
 
     auto applyMetaData = [&](Tile *toTile,
                              const Properties &properties,
-                             unsigned terrain,
                              qreal probability,
                              std::unique_ptr<ObjectGroup> objectGroup,
                              const QVector<Frame> &frames)
@@ -190,11 +185,6 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
                                  toTile,
                                  properties,
                                  this);
-        }
-
-        if (terrain != toTile->terrain()) {
-            terrainChanges.insert(toTile, ChangeTileTerrain::Change(toTile->terrain(),
-                                                                    terrain));
         }
 
         if (probability != toTile->probability()) {
@@ -229,7 +219,6 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
 
         applyMetaData(toTile,
                       fromTile->properties(),
-                      fromTile->terrain(),
                       fromTile->probability(),
                       std::move(objectGroup),
                       adjustAnimationFrames(fromTile->frames()));
@@ -252,15 +241,7 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
     QSetIterator<Tile*> resetIterator(tilesToReset);
     while (resetIterator.hasNext()) {
         applyMetaData(resetIterator.next(),
-                      Properties(), -1, 1.0, nullptr, QVector<Frame>());
-    }
-
-    // Translate tile references in terrains
-    for (Terrain *terrain : tileset.terrains()) {
-        if (Tile *fromTile = terrain->imageTile())
-            if (Tile *newTile = adjustTile(fromTile))
-                if (fromTile != newTile)
-                    new SetTerrainImage(tilesetDocument, terrain->id(), newTile->id(), this);
+                      Properties(), 1.0, nullptr, QVector<Frame>());
     }
 
     // Translate tile references in Wang sets and Wang colors
@@ -314,9 +295,6 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
                                   tileProbabilities,
                                   this);
     }
-
-    if (!terrainChanges.isEmpty())
-        new ChangeTileTerrain(tilesetDocument, terrainChanges, this);
 }
 
 } // namespace Tiled
