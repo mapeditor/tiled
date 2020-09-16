@@ -37,10 +37,6 @@
 
 using namespace Tiled;
 
-//value between 0 and 0.5 to control the dead zone with edge mode.
-static const double MIDDLE_DEAD_ZONE = 0.25;
-static const double EDGE_DEAD_ZONE = 0.2;
-
 class WangBrushItem : public BrushItem
 {
 public:
@@ -234,45 +230,33 @@ void WangBrush::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers)
         wangIndex = WangId::TopLeft;
         break;
     case PaintEdge: {
-        // Checks when painting which would avoid change.
-        if (mBrushBehavior == Paint && tilePos == mPaintPoint) {
-            if (std::abs(tileLocalPos.x() - 0.5) < MIDDLE_DEAD_ZONE
-                    && std::abs(tileLocalPos.y() - 0.5) < MIDDLE_DEAD_ZONE)
-                return;
+        // Keep at the current index and adjust only based on tile position
+        // changes, when one of the coordinates stayed the same.
+        if (mBrushBehavior == Paint && (tilePos.x() == mPaintPoint.x() || tilePos.y() == mPaintPoint.y())) {
+            wangIndex = mWangIndex;
 
-            switch (wangIndex) {
-            case WangId::Top:
-                if (tileLocalPos.y() < EDGE_DEAD_ZONE)
-                    return;
-                break;
-            case WangId::Right:
-                if (tileLocalPos.x() > 1 - EDGE_DEAD_ZONE)
-                    return;
-                break;
-            case WangId::Bottom:
-                if (tileLocalPos.y() > 1 - EDGE_DEAD_ZONE)
-                    return;
-                break;
-            case WangId::Left:
-                if (tileLocalPos.x() < EDGE_DEAD_ZONE)
-                    return;
-                break;
-            default:
-                break;
-            }
-        }
-
-        // calculate new edge
-        if (tileLocalPos.y() > tileLocalPos.x()) {
-            if (tileLocalPos.y() > 1 - tileLocalPos.x())
-                wangIndex = WangId::Bottom;
-            else
+            if (tilePos.x() > mPaintPoint.x())
                 wangIndex = WangId::Left;
-        } else {
-            if (tileLocalPos.y() > 1 - tileLocalPos.x())
+            else if (tilePos.x() < mPaintPoint.x())
                 wangIndex = WangId::Right;
-            else
+            else if (tilePos.y() > mPaintPoint.y())
                 wangIndex = WangId::Top;
+            else if (tilePos.y() < mPaintPoint.y())
+                wangIndex = WangId::Bottom;
+
+        } else {
+            // Calculate new edge
+            if (tileLocalPos.y() > tileLocalPos.x()) {
+                if (tileLocalPos.y() > 1 - tileLocalPos.x())
+                    wangIndex = WangId::Bottom;
+                else
+                    wangIndex = WangId::Left;
+            } else {
+                if (tileLocalPos.y() > 1 - tileLocalPos.x())
+                    wangIndex = WangId::Right;
+                else
+                    wangIndex = WangId::Top;
+            }
         }
         break;
     }
