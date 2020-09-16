@@ -61,10 +61,23 @@ public:
         NumIndexes  = 8,
     };
 
-    WangId(quint64 id = 0) : mId(id) {}
-    WangId(unsigned id) = delete;
+    enum Masks : quint64 {
+        MaskTop         = INDEX_MASK << (BITS_PER_INDEX * Top),
+        MaskTopRight    = INDEX_MASK << (BITS_PER_INDEX * TopRight),
+        MaskRight       = INDEX_MASK << (BITS_PER_INDEX * Right),
+        MaskBottomRight = INDEX_MASK << (BITS_PER_INDEX * BottomRight),
+        MaskBottom      = INDEX_MASK << (BITS_PER_INDEX * Bottom),
+        MaskBottomLeft  = INDEX_MASK << (BITS_PER_INDEX * BottomLeft),
+        MaskLeft        = INDEX_MASK << (BITS_PER_INDEX * Left),
+        MaskTopLeft     = INDEX_MASK << (BITS_PER_INDEX * TopLeft),
 
-    operator quint64() const { return mId; }
+        MaskEdges       = MaskTop | MaskRight | MaskBottom | MaskLeft,
+        MaskCorners     = MaskTopRight | MaskBottomRight | MaskBottomLeft | MaskTopLeft,
+    };
+
+    constexpr WangId(quint64 id = 0) : mId(id) {}
+
+    constexpr operator quint64() const { return mId; }
     inline void setId(quint64 id) { mId = id; }
 
     int edgeColor(int index) const;
@@ -84,11 +97,13 @@ public:
     bool hasCornerWildCards() const;
     bool hasEdgeWildCards() const;
     quint64 mask() const;
+    quint64 mask(int value) const;
 
     bool hasCornerWithColor(int value) const;
     bool hasEdgeWithColor(int value) const;
 
     void rotate(int rotations);
+    WangId rotated(int rotations) const;
     void flipHorizontally();
     void flipVertically();
 

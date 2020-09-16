@@ -32,6 +32,7 @@
 #include "tilesetdocument.h"
 #include "tilesetmodel.h"
 #include "utils.h"
+#include "wangoverlay.h"
 #include "zoomable.h"
 
 #include <QAbstractItemDelegate>
@@ -113,6 +114,7 @@ static unsigned invertCorners(unsigned corners)
 {
     return corners ^ (TopLeft | TopRight | BottomLeft | BottomRight);
 }
+
 
 static void paintCorners(QPainter *painter,
                          unsigned corners,
@@ -251,272 +253,6 @@ static void setupTilesetGridTransform(const Tileset &tileset, QTransform &transf
 
         transform.translate(-tileCenter.x(), -tileCenter.y());
     }
-}
-
-static void setWangStyle(QPainter *painter, WangSet *wangSet, int index)
-{
-    const QColor c = wangSet->colorAt(index)->color();
-
-    painter->setBrush(QColor(c.red(), c.green(), c.blue(), c.alpha() * 0.3));
-    setCosmeticPen(painter, c, 2);
-}
-
-static void paintWangOverlay(QPainter *painter,
-                             WangId wangId,
-                             WangSet *wangSet,
-                             const QRect &rect)
-{
-    painter->save();
-    painter->setClipRect(rect);
-    painter->setRenderHint(QPainter::Antialiasing);
-
-    //arbitrary fraction, could be made constant.
-    int thicknessW = rect.width()/6;
-    int thicknessH = rect.height()/6;
-
-    // TODO: When we support WangSet type (Edges, Corners, etc.) this will need
-    // adjustment, or we can use a unified rendering approach.
-    const bool paintCorners = wangSet->colorCount() > 0;
-    const bool paintEdges = wangSet->colorCount() > 0;
-
-    if (paintEdges) {
-        if (paintCorners) {
-            QRect wRect;
-            int edge;
-
-            edge = wangId.indexColor(WangId::Top);
-            if (edge > 0) {
-                setWangStyle(painter, wangSet, edge);
-
-                wRect = QRect(QPoint(rect.left() + rect.width()/3, rect.top()),
-                              QPoint(rect.right() - rect.width()/3, rect.top() + thicknessH));
-                painter->drawRect(wRect);
-            }
-
-            edge = wangId.indexColor(WangId::Right);
-            if (edge > 0) {
-                setWangStyle(painter, wangSet, edge);
-
-                wRect = QRect(QPoint(rect.right() - thicknessW, rect.top() + rect.height()/3),
-                              QPoint(rect.right(), rect.bottom() - rect.height()/3));
-                painter->drawRect(wRect);
-            }
-
-            edge = wangId.indexColor(WangId::Bottom);
-            if (edge > 0) {
-                setWangStyle(painter, wangSet, edge);
-
-                wRect = QRect(QPoint(rect.left() + rect.width()/3, rect.bottom() - thicknessH),
-                              QPoint(rect.right() - rect.width()/3, rect.bottom()));
-                painter->drawRect(wRect);
-            }
-
-            edge = wangId.indexColor(WangId::Left);
-            if (edge > 0) {
-                setWangStyle(painter, wangSet, edge);
-
-                wRect = QRect(QPoint(rect.left(), rect.top() + rect.height()/3),
-                              QPoint(rect.left() + thicknessW, rect.bottom() - rect.height()/3));
-                painter->drawRect(wRect);
-            }
-        } else {
-            int edge;
-
-            edge = wangId.indexColor(WangId::Top);
-            if (edge > 0) {
-                setWangStyle(painter, wangSet, edge);
-
-                const QPoint points[] = {
-                    rect.topLeft(),
-                    rect.topRight(),
-                    rect.topRight() + QPoint(-thicknessW, thicknessH),
-                    rect.topLeft() + QPoint(thicknessW, thicknessH)
-                };
-
-                painter->drawPolygon(points, 4);
-            }
-
-            edge = wangId.indexColor(WangId::Right);
-            if (edge > 0) {
-                setWangStyle(painter, wangSet, edge);
-
-                const QPoint points[] = {
-                    rect.topRight(),
-                    rect.bottomRight(),
-                    rect.bottomRight() + QPoint(-thicknessW, -thicknessH),
-                    rect.topRight() + QPoint(-thicknessW, thicknessH)
-                };
-
-                painter->drawPolygon(points, 4);
-            }
-
-            edge = wangId.indexColor(WangId::Bottom);
-            if (edge > 0) {
-                setWangStyle(painter, wangSet, edge);
-
-                const QPoint points[] = {
-                    rect.bottomRight(),
-                    rect.bottomLeft(),
-                    rect.bottomLeft() + QPoint(thicknessW, -thicknessH),
-                    rect.bottomRight() + QPoint(-thicknessW, -thicknessH)
-                };
-
-                painter->drawPolygon(points, 4);
-            }
-
-            edge = wangId.indexColor(WangId::Left);
-            if (edge > 0) {
-                setWangStyle(painter, wangSet, edge);
-
-                const QPoint points[] = {
-                    rect.topLeft(),
-                    rect.bottomLeft(),
-                    rect.bottomLeft() + QPoint(thicknessW, -thicknessH),
-                    rect.topLeft() + QPoint(thicknessW, thicknessH)
-                };
-
-                painter->drawPolygon(points, 4);
-            }
-        }
-    }
-
-    if (paintCorners) {
-        if (paintEdges) {
-            int corner;
-
-            corner = wangId.indexColor(WangId::TopRight);
-            if (corner > 0) {
-                setWangStyle(painter, wangSet, corner);
-
-                const QPoint points[] = {
-                    rect.topRight(),
-                    QPoint(rect.right(), rect.top() + rect.height()/3),
-                    QPoint(rect.right() - thicknessW, rect.top() + rect.height()/3),
-                    rect.topRight() + QPoint(-thicknessW, thicknessH),
-                    QPoint(rect.right() - rect.width()/3, rect.top() + thicknessH),
-                    QPoint(rect.right() - rect.width()/3, rect.top())
-                };
-
-                painter->drawPolygon(points, 6);
-            }
-
-            corner = wangId.indexColor(WangId::BottomRight);
-            if (corner > 0) {
-                setWangStyle(painter, wangSet, corner);
-
-                const QPoint points[] = {
-                    rect.bottomRight(),
-                    QPoint(rect.right(), rect.bottom() - rect.height()/3),
-                    QPoint(rect.right() - thicknessW, rect.bottom() - rect.height()/3),
-                    rect.bottomRight() + QPoint(-thicknessW, -thicknessH),
-                    QPoint(rect.right() - rect.width()/3, rect.bottom() - thicknessH),
-                    QPoint(rect.right() - rect.width()/3, rect.bottom())
-                };
-
-                painter->drawPolygon(points, 6);
-            }
-
-            corner = wangId.indexColor(WangId::BottomLeft);
-            if (corner > 0) {
-                setWangStyle(painter, wangSet, corner);
-
-                const QPoint points[] = {
-                    rect.bottomLeft(),
-                    QPoint(rect.left(), rect.bottom() - rect.height()/3),
-                    QPoint(rect.left() + thicknessW, rect.bottom() - rect.height()/3),
-                    rect.bottomLeft() + QPoint(thicknessW, -thicknessH),
-                    QPoint(rect.left() + rect.width()/3, rect.bottom() - thicknessH),
-                    QPoint(rect.left() + rect.width()/3, rect.bottom()),
-                };
-
-                painter->drawPolygon(points, 6);
-            }
-
-            corner = wangId.indexColor(WangId::TopLeft);
-            if (corner > 0) {
-                setWangStyle(painter, wangSet, corner);
-
-                const QPoint points[] = {
-                    rect.topLeft(),
-                    QPoint(rect.left(), rect.top() + rect.height()/3),
-                    QPoint(rect.left() + thicknessW, rect.top() + rect.height()/3),
-                    rect.topLeft() + QPoint(thicknessW, thicknessH),
-                    QPoint(rect.left() + rect.width()/3, rect.top() + thicknessH),
-                    QPoint(rect.left() + rect.width()/3, rect.top())
-                };
-
-                painter->drawPolygon(points, 6);
-            }
-        } else {
-            int corner;
-
-            corner = wangId.indexColor(WangId::TopRight);
-            if (corner > 0) {
-                setWangStyle(painter, wangSet, corner);
-
-                const QPoint points[] = {
-                    rect.topRight(),
-                    QPoint(rect.right(), rect.center().y()),
-                    QPoint(rect.right() - thicknessW, rect.center().y()),
-                    rect.topRight() + QPoint(-thicknessW, thicknessH),
-                    QPoint(rect.center().x(), rect.top() + thicknessH),
-                    QPoint(rect.center().x(), rect.top())
-                };
-
-                painter->drawPolygon(points, 6);
-            }
-
-            corner = wangId.indexColor(WangId::BottomRight);
-            if (corner > 0) {
-                setWangStyle(painter, wangSet, corner);
-
-                const QPoint points[] = {
-                    rect.bottomRight(),
-                    QPoint(rect.right(), rect.center().y()),
-                    QPoint(rect.right() - thicknessW, rect.center().y()),
-                    rect.bottomRight() + QPoint(-thicknessW, -thicknessH),
-                    QPoint(rect.center().x(), rect.bottom() - thicknessH),
-                    QPoint(rect.center().x(), rect.bottom()),
-                };
-
-                painter->drawPolygon(points, 6);
-            }
-
-            corner = wangId.indexColor(WangId::TopLeft);
-            if (corner > 0) {
-                setWangStyle(painter, wangSet, corner);
-
-                const QPoint points[] = {
-                    rect.topLeft(),
-                    QPoint(rect.left(), rect.center().y()),
-                    QPoint(rect.left() + thicknessW, rect.center().y()),
-                    rect.topLeft() + QPoint(thicknessW, thicknessH),
-                    QPoint(rect.center().x(), rect.top() + thicknessH),
-                    QPoint(rect.center().x(), rect.top())
-                };
-
-                painter->drawPolygon(points, 6);
-            }
-
-            corner = wangId.indexColor(WangId::BottomLeft);
-            if (corner > 0) {
-                setWangStyle(painter, wangSet, corner);
-
-                const QPoint points[] = {
-                    rect.bottomLeft(),
-                    QPoint(rect.left(), rect.center().y()),
-                    QPoint(rect.left() + thicknessW, rect.center().y()),
-                    rect.bottomLeft() + QPoint(thicknessW, -thicknessH),
-                    QPoint(rect.center().x(), rect.bottom() - thicknessH),
-                    QPoint(rect.center().x(), rect.bottom())
-                };
-
-                painter->drawPolygon(points, 6);
-            }
-        }
-    }
-
-    painter->restore();
 }
 
 void TileDelegate::paint(QPainter *painter,
@@ -721,14 +457,14 @@ void TileDelegate::drawWangOverlay(QPainter *painter,
     painter->setTransform(transform, true);
 
     paintWangOverlay(painter, wangSet->wangIdOfTile(tile),
-                     wangSet,
+                     *wangSet,
                      targetRect);
 
     if (mTilesetView->hoveredIndex() == index) {
         qreal opacity = painter->opacity();
         painter->setOpacity(0.9);
         paintWangOverlay(painter, mTilesetView->wangId(),
-                         wangSet,
+                         *wangSet,
                          targetRect);
         painter->setOpacity(opacity);
     }
@@ -737,7 +473,6 @@ void TileDelegate::drawWangOverlay(QPainter *painter,
 }
 
 } // anonymous namespace
-
 
 TilesetView::TilesetView(QWidget *parent)
     : QTableView(parent)

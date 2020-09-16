@@ -548,6 +548,8 @@ QtGuiApplication {
         "wangdock.h",
         "wangfiller.cpp",
         "wangfiller.h",
+        "wangoverlay.cpp",
+        "wangoverlay.h",
         "wangsetmodel.cpp",
         "wangsetmodel.h",
         "wangsetview.cpp",

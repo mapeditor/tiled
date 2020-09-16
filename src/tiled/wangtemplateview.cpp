@@ -1,6 +1,7 @@
 /*
  * wangtemplateview.cpp
  * Copyright 2017, Benjamin Trotter <bdtrotte@ucsc.edu>
+ * Copyright 2020, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -22,8 +23,9 @@
 
 #include "stylehelper.h"
 #include "utils.h"
-#include "wangtemplatemodel.h"
+#include "wangoverlay.h"
 #include "wangset.h"
+#include "wangtemplatemodel.h"
 #include "zoomable.h"
 
 #include <QAbstractItemDelegate>
@@ -38,8 +40,10 @@
 using namespace Tiled;
 
 namespace {
-/* The delegate for drawing the wang tile templates
- * */
+
+/**
+ * The delegate for drawing the Wang tile templates.
+ */
 class WangTemplateDelegate : public QAbstractItemDelegate
 {
 public:
@@ -58,193 +62,6 @@ private:
     WangTemplateView *mWangTemplateView;
 };
 
-static void paintTemplateTile(QPainter *painter,
-                              WangId wangId,
-                              WangSet *wangSet,
-                              const QRect &rect)
-{
-    painter->save();
-
-    QRect centeredRect = rect.translated(-rect.center());
-    centeredRect.adjust(2,2,-2,-2);
-
-    painter->translate(rect.center());
-    painter->setClipRect(centeredRect);
-    painter->setRenderHint(QPainter::Antialiasing);
-
-    painter->setBrush(Qt::red);
-    painter->setPen(QPen(Qt::gray, 1));
-
-    // TODO: When we support WangSet type (Edges, Corners, etc.) this will need
-    // adjustment, or we can use a unified rendering approach.
-    const bool paintCorners = !wangId.hasCornerWildCards();
-    const bool paintEdges = !wangId.hasEdgeWildCards();
-
-    //paints corners
-    if (paintCorners) {
-        QPolygon p;
-
-        if (paintEdges) {
-            //top right
-            p.append(QPoint(centeredRect.right()/3, centeredRect.top()/3));
-            p.append(QPoint(centeredRect.right()/3, centeredRect.top()));
-            p.append(centeredRect.topRight());
-            p.append(QPoint(centeredRect.right(), centeredRect.top()/3));
-
-            painter->setBrush(wangSet->colorAt(wangId.indexColor(WangId::TopRight))->color());
-            painter->drawPolygon(p);
-            p.clear();
-            //bot right
-            p.append(QPoint(centeredRect.right()/3, centeredRect.bottom()/3));
-            p.append(QPoint(centeredRect.right()/3, centeredRect.bottom()));
-            p.append(centeredRect.bottomRight());
-            p.append(QPoint(centeredRect.right(), centeredRect.bottom()/3));
-
-            painter->setBrush(wangSet->colorAt(wangId.indexColor(WangId::BottomRight))->color());
-            painter->drawPolygon(p);
-            p.clear();
-            //bot left
-            p.append(QPoint(centeredRect.left()/3, centeredRect.bottom()/3));
-            p.append(QPoint(centeredRect.left()/3, centeredRect.bottom()));
-            p.append(centeredRect.bottomLeft());
-            p.append(QPoint(centeredRect.left(), centeredRect.bottom()/3));
-
-            painter->setBrush(wangSet->colorAt(wangId.indexColor(WangId::BottomLeft))->color());
-            painter->drawPolygon(p);
-            p.clear();
-            //top left
-            p.append(QPoint(centeredRect.left()/3, centeredRect.top()/3));
-            p.append(QPoint(centeredRect.left()/3, centeredRect.top()));
-            p.append(centeredRect.topLeft());
-            p.append(QPoint(centeredRect.left(), centeredRect.top()/3));
-
-            painter->setBrush(wangSet->colorAt(wangId.indexColor(WangId::TopLeft))->color());
-            painter->drawPolygon(p);
-        } else {
-            //top right
-            p.append(QPoint(0, 0));
-            p.append(QPoint(0, centeredRect.top()));
-            p.append(centeredRect.topRight());
-            p.append(QPoint(centeredRect.right(), 0));
-
-            painter->setBrush(wangSet->colorAt(wangId.indexColor(WangId::TopRight))->color());
-            painter->drawPolygon(p);
-            p.clear();
-            //bottom right
-            p.append(QPoint(0, 0));
-            p.append(QPoint(0, centeredRect.bottom()));
-            p.append(centeredRect.bottomRight());
-            p.append(QPoint(centeredRect.right(), 0));
-
-            painter->setBrush(wangSet->colorAt(wangId.indexColor(WangId::BottomRight))->color());
-            painter->drawPolygon(p);
-            p.clear();
-            //bottom left
-            p.append(QPoint(0, 0));
-            p.append(QPoint(0, centeredRect.bottom()));
-            p.append(centeredRect.bottomLeft());
-            p.append(QPoint(centeredRect.left(), 0));
-
-            painter->setBrush(wangSet->colorAt(wangId.indexColor(WangId::BottomLeft))->color());
-            painter->drawPolygon(p);
-            p.clear();
-            //top left
-            p.append(QPoint(0, 0));
-            p.append(QPoint(0, centeredRect.top()));
-            p.append(centeredRect.topLeft());
-            p.append(QPoint(centeredRect.left(), 0));
-
-            painter->setBrush(wangSet->colorAt(wangId.indexColor(WangId::TopLeft))->color());
-            painter->drawPolygon(p);
-            p.clear();
-        }
-    }
-
-    //paints edges
-    if (paintEdges) {
-        QPolygon p;
-
-        if (paintCorners) {
-            //top
-            p.append(QPoint(0, 0));
-            p.append(QPoint(centeredRect.left()/3, centeredRect.top()/3));
-            p.append(QPoint(centeredRect.left()/3, centeredRect.top()));
-            p.append(QPoint(centeredRect.right()/3, centeredRect.top()));
-            p.append(QPoint(centeredRect.right()/3, centeredRect.top()/3));
-
-            painter->setBrush(wangSet->colorAt(wangId.indexColor(WangId::Top))->color());
-            painter->drawPolygon(p);
-            p.clear();
-
-            //right
-            p.append(QPoint(0, 0));
-            p.append(QPoint(centeredRect.right()/3, centeredRect.top()/3));
-            p.append(QPoint(centeredRect.right(), centeredRect.top()/3));
-            p.append(QPoint(centeredRect.right(), centeredRect.bottom()/3));
-            p.append(QPoint(centeredRect.right()/3, centeredRect.bottom()/3));
-
-            painter->setBrush(wangSet->colorAt(wangId.indexColor(WangId::Right))->color());
-            painter->drawPolygon(p);
-            p.clear();
-            //bottom
-            p.append(QPoint(0, 0));
-            p.append(QPoint(centeredRect.right()/3, centeredRect.bottom()/3));
-            p.append(QPoint(centeredRect.right()/3, centeredRect.bottom()));
-            p.append(QPoint(centeredRect.left()/3, centeredRect.bottom()));
-            p.append(QPoint(centeredRect.left()/3, centeredRect.bottom()/3));
-
-            painter->setBrush(wangSet->colorAt(wangId.indexColor(WangId::Bottom))->color());
-            painter->drawPolygon(p);
-            p.clear();
-            //left
-            p.append(QPoint(0, 0));
-            p.append(QPoint(centeredRect.left()/3, centeredRect.top()/3));
-            p.append(QPoint(centeredRect.left(), centeredRect.top()/3));
-            p.append(QPoint(centeredRect.left(), centeredRect.bottom()/3));
-            p.append(QPoint(centeredRect.left()/3, centeredRect.bottom()/3));
-
-            painter->setBrush(wangSet->colorAt(wangId.indexColor(WangId::Left))->color());
-            painter->drawPolygon(p);
-        } else {
-            //top
-            p.append(QPoint(0, 0));
-            p.append(centeredRect.topLeft());
-            p.append(centeredRect.topRight());
-
-            painter->setBrush(wangSet->colorAt(wangId.indexColor(WangId::Top))->color());
-            painter->drawPolygon(p);
-            p.clear();
-            //right
-            p.append(QPoint(0, 0));
-            p.append(centeredRect.bottomRight());
-            p.append(centeredRect.topRight());
-
-            painter->setBrush(wangSet->colorAt(wangId.indexColor(WangId::Right))->color());
-            painter->drawPolygon(p);
-            p.clear();
-            //bottom
-            p.append(QPoint(0, 0));
-            p.append(centeredRect.bottomRight());
-            p.append(centeredRect.bottomLeft());
-
-            painter->setBrush(wangSet->colorAt(wangId.indexColor(WangId::Bottom))->color());
-            painter->drawPolygon(p);
-            p.clear();
-            //left
-            p.append(QPoint(0, 0));
-            p.append(centeredRect.topLeft());
-            p.append(centeredRect.bottomLeft());
-
-            painter->setBrush(wangSet->colorAt(wangId.indexColor(WangId::Left))->color());
-            painter->drawPolygon(p);
-        }
-    } else if (!paintCorners) {
-        painter->drawRect(centeredRect);
-    }
-
-    painter->restore();
-}
-
 void WangTemplateDelegate::paint(QPainter *painter,
                                  const QStyleOptionViewItem &option,
                                  const QModelIndex &index) const
@@ -257,11 +74,9 @@ void WangTemplateDelegate::paint(QPainter *painter,
     painter->setClipRect(option.rect);
 
     if (WangSet *wangSet = mWangTemplateView->wangSet())
-        paintTemplateTile(painter, wangId,
-                      wangSet,
-                      option.rect);
+        paintWangOverlay(painter, wangId, *wangSet, option.rect, false);
 
-    //Highlight currently selected tile.
+    // Highlight currently selected tile.
     if (mWangTemplateView->currentIndex() == index) {
         QColor high = option.palette.highlight().color();
         painter->setBrush(Qt::NoBrush);
@@ -269,7 +84,7 @@ void WangTemplateDelegate::paint(QPainter *painter,
         painter->drawRect(option.rect);
     }
 
-    //Shade tile if used already
+    // Shade tile if used already
     if (mWangTemplateView->wangIdIsUsed(wangId)) {
         painter->setBrush(QColor(0,0,0,100));
         painter->setPen(Qt::NoPen);
@@ -323,11 +138,8 @@ void WangTemplateView::updateBackgroundColor()
 
 WangSet *WangTemplateView::wangSet() const
 {
-    WangTemplateModel *model = wangTemplateModel();
-    if (model)
-        return model->wangSet();
-    else
-        return nullptr;
+    const WangTemplateModel *model = wangTemplateModel();
+    return model ? model->wangSet() : nullptr;
 }
 
 bool WangTemplateView::wangIdIsUsed(WangId wangId) const

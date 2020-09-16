@@ -277,6 +277,7 @@ SOURCES += aboutdialog.cpp \
     wangsetmodel.cpp \
     wangdock.cpp \
     wangfiller.cpp \
+    wangoverlay.cpp \
     wangtemplatemodel.cpp \
     wangtemplateview.cpp \
     worlddocument.cpp \
@@ -519,6 +520,7 @@ HEADERS += aboutdialog.h \
     wangsetmodel.h \
     wangdock.h \
     wangfiller.h \
+    wangoverlay.h \
     wangtemplatemodel.h \
     wangtemplateview.h \
     worlddocument.h \

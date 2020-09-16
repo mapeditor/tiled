@@ -202,6 +202,19 @@ quint64 WangId::mask() const
     return mask;
 }
 
+/**
+ * Returns a mask that is 0 for any indexes that don't match the given color.
+ */
+quint64 WangId::mask(int value) const
+{
+    quint64 mask = 0;
+    for (int i = 0; i < NumIndexes; ++i) {
+        if (indexColor(i) == value)
+            mask |= INDEX_MASK << (i * BITS_PER_INDEX);
+    }
+    return mask;
+}
+
 bool WangId::hasCornerWithColor(int value) const
 {
     for (int i = 0; i < NumCorners; ++i) {
@@ -227,15 +240,23 @@ bool WangId::hasEdgeWithColor(int value) const
  */
 void WangId::rotate(int rotations)
 {
+    *this = rotated(rotations);
+}
+
+/**
+ * @see rotate
+ */
+WangId WangId::rotated(int rotations) const
+{
     if (rotations < 0)
         rotations = 4 + (rotations % 4);
     else
         rotations %= 4;
 
-    unsigned rotated = mId << (rotations * BITS_PER_INDEX * 2);
+    quint64 rotated = mId << (rotations * BITS_PER_INDEX * 2);
     rotated = rotated | (mId >> ((4 - rotations) * BITS_PER_INDEX * 2));
 
-    mId = rotated;
+    return rotated;
 }
 
 /**
