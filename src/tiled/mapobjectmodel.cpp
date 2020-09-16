@@ -562,6 +562,7 @@ void MapObjectModel::documentChanged(const ChangeEvent &change)
         break;
     }
     case ChangeEvent::ObjectGroupChanged:
+    case ChangeEvent::WangSetChanged:
         break;
     }
 }

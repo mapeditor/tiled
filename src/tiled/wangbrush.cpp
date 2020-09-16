@@ -116,12 +116,6 @@ WangBrush::WangBrush(QObject *parent)
                        QKeySequence(Qt::Key_G),
                        new WangBrushItem,
                        parent)
-    , mWangIndex(WangId::Top)
-    , mWangSet(nullptr)
-    , mCurrentColor(0)
-    , mBrushMode(Idle)
-    , mIsTileMode(false)
-    , mBrushBehavior(Free)
 {
 }
 
@@ -185,28 +179,17 @@ void WangBrush::setColor(int color)
 {
     mCurrentColor = color;
 
-    bool usedAsCorner = false;
-    bool usedAsEdge = false;
-
-    if (mWangSet && color > 0 && color <= mWangSet->colorCount()) {
-        for (const auto &wangTile : mWangSet->wangTilesByWangId()) {
-            for (int i = 0; i < WangId::NumIndexes; ++i) {
-                if (wangTile.wangId().indexColor(i) == color) {
-                    const bool isCorner = WangId::isCorner(i);
-                    usedAsCorner |= isCorner;
-                    usedAsEdge |= !isCorner;
-                }
-            }
-        }
-    }
-
-    // TODO: Some other way to switch this
-    if (usedAsEdge == usedAsCorner)
-        mBrushMode = PaintEdgeAndCorner;
-    else if (usedAsEdge)
-        mBrushMode = PaintEdge;
-    else
+    switch (mWangSet->type()) {
+    case WangSet::Corner:
         mBrushMode = PaintCorner;
+        break;
+    case WangSet::Edge:
+        mBrushMode = PaintEdge;
+        break;
+    case WangSet::Mixed:
+        mBrushMode = PaintEdgeAndCorner;
+        break;
+    }
 }
 
 void WangBrush::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers)

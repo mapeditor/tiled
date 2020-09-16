@@ -139,6 +139,7 @@ private:
         IdProperty,
         ColorCountProperty,
         WangColorProbabilityProperty,
+        WangSetTypeProperty,
         CustomProperty,
         InfiniteProperty,
         TemplateProperty,
@@ -228,6 +229,7 @@ private:
     QStringList mAlignmentNames;
     QStringList mFlippingFlagNames;
     QStringList mDrawOrderNames;
+    QStringList mWangSetTypeNames;
 };
 
 /**

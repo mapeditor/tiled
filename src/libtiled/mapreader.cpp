@@ -674,7 +674,7 @@ void MapReaderPrivate::readTilesetTerrainTypes(Tileset &tileset)
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("terraintypes"));
 
-    auto wangSet = std::make_unique<WangSet>(&tileset, tr("Converted Terrains"), -1);
+    auto wangSet = std::make_unique<WangSet>(&tileset, tr("Converted Terrains"), WangSet::Corner, -1);
     int colorCount = 0;
 
     while (xml.readNextStartElement()) {
@@ -710,9 +710,10 @@ void MapReaderPrivate::readTilesetWangSets(Tileset &tileset)
         if (xml.name() == QLatin1String("wangset")) {
             const QXmlStreamAttributes atts = xml.attributes();
             const QString name = atts.value(QLatin1String("name")).toString();
+            const WangSet::Type type = wangSetTypeFromString(atts.value(QLatin1String("type")).toString());
             const int tile = atts.value(QLatin1String("tile")).toInt();
 
-            auto wangSet = std::make_unique<WangSet>(&tileset, name, tile);
+            auto wangSet = std::make_unique<WangSet>(&tileset, name, type, tile);
 
             // For backwards-compatibility
             QVector<int> cornerColors;

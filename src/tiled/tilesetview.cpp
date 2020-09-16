@@ -20,6 +20,7 @@
 
 #include "tilesetview.h"
 
+#include "changeevents.h"
 #include "changetileterrain.h"
 #include "changetilewangid.h"
 #include "map.h"
@@ -778,7 +779,13 @@ TilesetView::TilesetView(QWidget *parent)
 
 void TilesetView::setTilesetDocument(TilesetDocument *tilesetDocument)
 {
+    if (mTilesetDocument)
+        mTilesetDocument->disconnect(this);
+
     mTilesetDocument = tilesetDocument;
+
+    if (mTilesetDocument)
+        connect(mTilesetDocument, &Document::changed, this, &TilesetView::onChange);
 }
 
 QSize TilesetView::sizeHint() const
@@ -1015,16 +1022,16 @@ void TilesetView::setWangId(WangId wangId)
 }
 
 /**
- * Sets the wangColor, and changes WangBehavior to edges/corners.
+ * Sets the wangColor, and changes WangBehavior depending on the type of the
+ * WangSet.
  */
 void TilesetView::setWangColor(int color)
 {
     if (!color)
         setWangId(WangId());
 
-    // TODO: Later on the WangColor or the WangSet should probably have a
-    // property determining this behavior.
-    mWangBehavior = EdgeAndCorner;
+    // When a specific color is set, we no longer set the whole ID.
+    mWangBehavior = wangBehaviorFromWangSetType(mWangSet->type());
 
     Q_ASSERT(color <= mWangSet->colorCount());
 
@@ -1364,6 +1371,25 @@ void TilesetView::resizeEvent(QResizeEvent *event)
     refreshColumnCount();
 }
 
+void TilesetView::onChange(const ChangeEvent &change)
+{
+    switch (change.type) {
+    case ChangeEvent::WangSetChanged: {
+        auto &wangSetChange = static_cast<const WangSetChangeEvent&>(change);
+        if (mEditWangSet && wangSetChange.wangSet == mWangSet &&
+                (wangSetChange.properties & WangSetChangeEvent::TypeProperty)) {
+            viewport()->update();
+
+            if (mWangBehavior != WholeId)
+                mWangBehavior = wangBehaviorFromWangSetType(mWangSet->type());
+        }
+        break;
+    }
+    default:
+        break;
+    }
+}
+
 void TilesetView::addTerrainType()
 {
     if (Tile *tile = currentTile())
@@ -1554,4 +1580,16 @@ void TilesetView::updateBackgroundColor()
     QPalette p = palette();
     p.setColor(QPalette::Base, base);
     setPalette(p);
+}
+
+TilesetView::WangBehavior TilesetView::wangBehaviorFromWangSetType(WangSet::Type type)
+{
+    switch (type) {
+    case WangSet::Corner:
+        return Corner;
+    case WangSet::Edge:
+        return Edge;
+    default:
+        return EdgeAndCorner;
+    }
 }

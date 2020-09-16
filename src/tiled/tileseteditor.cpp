@@ -955,7 +955,7 @@ void TilesetEditor::addWangSet()
     if (!tileset)
         return;
 
-    WangSet *wangSet = new WangSet(tileset, QString(), -1);
+    WangSet *wangSet = new WangSet(tileset, QString(), WangSet::Mixed, -1);
     wangSet->setName(tr("New Wang Set"));
 
     mCurrentTilesetDocument->undoStack()->push(new AddWangSet(mCurrentTilesetDocument,

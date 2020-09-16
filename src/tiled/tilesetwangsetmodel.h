@@ -20,13 +20,13 @@
 
 #pragma once
 
+#include "wangset.h"
+
 #include <QAbstractItemModel>
 
 namespace Tiled {
 
 class Tileset;
-class WangSet;
-class WangColor;
 
 class TilesetDocument;
 
@@ -66,6 +66,7 @@ public:
     void insertWangSet(int index, WangSet *wangSet);
     WangSet *takeWangSetAt(int index);
     void setWangSetName(WangSet *wangSet, const QString &name);
+    void setWangSetType(WangSet *wangSet, WangSet::Type type);
     void setWangSetColorCount(WangSet *wangSet, int value);
     void setWangSetImage(WangSet *wangSet, int tileId);
     void insertWangColor(WangSet *wangSet, const QSharedPointer<WangColor> &wangColor);

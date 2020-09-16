@@ -158,10 +158,33 @@ void WangId::updateToAdjacent(WangId adjacent, int position)
  */
 bool WangId::hasWildCards() const
 {
-    for (int i = 0; i < NumIndexes; ++i) {
+    for (int i = 0; i < NumIndexes; ++i)
         if (!indexColor(i))
             return true;
-    }
+
+    return false;
+}
+
+/**
+ * Returns true if one or more corners have no color.
+ */
+bool WangId::hasCornerWildCards() const
+{
+    for (int i = 0; i < NumCorners; ++i)
+        if (!cornerColor(i))
+            return true;
+
+    return false;
+}
+
+/**
+ * Returns true if one or more edges have no color.
+ */
+bool WangId::hasEdgeWildCards() const
+{
+    for (int i = 0; i < NumEdges; ++i)
+        if (!edgeColor(i))
+            return true;
 
     return false;
 }
@@ -423,12 +446,13 @@ static const QColor defaultWangColors[] = {
 
 WangSet::WangSet(Tileset *tileset,
                  const QString &name,
-                 int imageTileId):
-    Object(Object::WangSetType),
-    mTileset(tileset),
-    mName(name),
-    mImageTileId(imageTileId),
-    mUniqueFullWangIdCount(0)
+                 Type type,
+                 int imageTileId)
+    : Object(Object::WangSetType)
+    , mTileset(tileset)
+    , mName(name)
+    , mType(type)
+    , mImageTileId(imageTileId)
 {
     Q_ASSERT(tileset);
 }
@@ -860,11 +884,18 @@ bool WangSet::isComplete() const
 /**
  * Returns the amount of tiles expected in a complete tileset.
  */
-unsigned WangSet::completeSetSize() const
+quint64 WangSet::completeSetSize() const
 {
-    // TODO: When we support WangSet type (Edges, Corners, etc.) this will need adjustment.
-    unsigned c = static_cast<unsigned>(colorCount());
-    return c * c * c * c * c * c * c * c;
+    quint64 c = static_cast<quint64>(colorCount());
+
+    switch (mType) {
+    case Corner:
+    case Edge:
+        return c * c * c * c;
+    case Mixed:
+    default:
+        return c * c * c * c * c * c * c * c;
+    }
 }
 
 /**
@@ -878,20 +909,41 @@ WangId WangSet::templateWangIdAt(unsigned n) const
     if (colorCount() <= 0)
         return {};
 
-    quint64 wangId = 0;
+    WangId wangId;
 
-    for (int i = WangId::NumIndexes - 1; i >= 0; --i) {
-        //this is the number of permutations possible bellow this point in the wangId
-        const int belowPermutations = qPow(colorCount(), i);
-        const int value = n / belowPermutations;
+    switch (mType) {
+    case Corner:
+        for (int i = WangId::NumCorners - 1; i >= 0; --i) {
+            const int belowPermutations = qPow(colorCount(), i);
+            const int value = n / belowPermutations;
 
-        n -= value * belowPermutations;
+            n -= value * belowPermutations;
 
-        wangId |= quint64(value) << i * WangId::BITS_PER_INDEX;
+            wangId.setCornerColor(i, value + 1);
+        }
+        break;
+    case Edge:
+        for (int i = WangId::NumEdges - 1; i >= 0; --i) {
+            //this is the number of permutations possible bellow this point in the wangId
+            const int belowPermutations = qPow(colorCount(), i);
+            const int value = n / belowPermutations;
+
+            n -= value * belowPermutations;
+
+            wangId.setEdgeColor(i, value + 1);
+        }
+        break;
+    case Mixed:
+        for (int i = WangId::NumIndexes - 1; i >= 0; --i) {
+            const int belowPermutations = qPow(colorCount(), i);
+            const int value = n / belowPermutations;
+
+            n -= value * belowPermutations;
+
+            wangId.setIndexColor(i, value + 1);
+        }
+        break;
     }
-
-    //before this is like a base 10 range (0 - 9) where we want (1 - 10) for each digit
-    wangId += Q_UINT64_C(0x0101010101010101);
 
     return wangId;
 }
@@ -899,7 +951,7 @@ WangId WangSet::templateWangIdAt(unsigned n) const
 WangSet *WangSet::clone(Tileset *tileset) const
 {
     // Caller is responsible for adding the WangSet to this tileset
-    WangSet *c = new WangSet(tileset, mName, mImageTileId);
+    WangSet *c = new WangSet(tileset, mName, mType, mImageTileId);
 
     c->mUniqueFullWangIdCount = mUniqueFullWangIdCount;
     c->mColors = mColors;
@@ -925,6 +977,31 @@ WangSet *WangSet::clone(Tileset *tileset) const
     }
 
     return c;
+}
+
+QString wangSetTypeToString(WangSet::Type type)
+{
+    switch (type) {
+    case WangSet::Corner:
+        return QStringLiteral("corner");
+    case WangSet::Edge:
+        return QStringLiteral("edge");
+    case WangSet::Mixed:
+        return QStringLiteral("mixed");
+    }
+    return QString();
+}
+
+WangSet::Type wangSetTypeFromString(const QString &string)
+{
+    WangSet::Type type = WangSet::Mixed;
+
+    if (string == QLatin1String("edge"))
+        type = WangSet::Edge;
+    else if (string == QLatin1String("corner"))
+        type = WangSet::Corner;
+
+    return type;
 }
 
 } // namespace Tiled

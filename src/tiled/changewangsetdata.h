@@ -31,6 +31,24 @@ class Tile;
 
 class TilesetDocument;
 
+class ChangeWangSetType : public QUndoCommand
+{
+public:
+    ChangeWangSetType(TilesetDocument *tilesetDocument,
+                      WangSet *wangSet,
+                      WangSet::Type newType,
+                      QUndoCommand *parent = nullptr);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    TilesetDocument *mTilesetDocument;
+    WangSet *mWangSet;
+    const WangSet::Type mOldType;
+    const WangSet::Type mNewType;
+};
+
 class ChangeWangSetColorCount : public QUndoCommand
 {
 public:
@@ -49,31 +67,8 @@ private:
 
     TilesetDocument *mTilesetDocument;
     WangSet *mWangSet;
-    int mOldValue;
-    int mNewValue;
-    QVector<WangColorChange> mRemovedWangColors;
-};
-
-class ChangeWangSetCornerCount : public QUndoCommand
-{
-public:
-    ChangeWangSetCornerCount(TilesetDocument *TilesetDocument,
-                             WangSet *wangSet,
-                             int newValue);
-
-    void undo() override;
-    void redo() override;
-
-private:
-    struct WangColorChange {
-        QSharedPointer<WangColor> wangColor;
-        int index;
-    };
-
-    TilesetDocument *mTilesetDocument;
-    WangSet *mWangSet;
-    int mOldValue;
-    int mNewValue;
+    const int mOldValue;
+    const int mNewValue;
     QVector<WangColorChange> mRemovedWangColors;
 };
 
@@ -90,7 +85,7 @@ public:
 private:
     TilesetDocument *mTilesetDocument;
     WangSet *mWangSet;
-    int mColor;
+    const int mColor;
     QSharedPointer<WangColor> mRemovedWangColor;
 };
 
@@ -108,8 +103,8 @@ public:
 private:
     TilesetDocument *mTilesetDocument;
     WangSet *mWangSet;
-    int mOldImageTileId;
-    int mNewImageTileId;
+    const int mOldImageTileId;
+    const int mNewImageTileId;
 };
 
 } // namespace Tiled

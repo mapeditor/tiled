@@ -77,8 +77,8 @@ static void paintTemplateTile(QPainter *painter,
 
     // TODO: When we support WangSet type (Edges, Corners, etc.) this will need
     // adjustment, or we can use a unified rendering approach.
-    const bool paintCorners = wangSet->colorCount() > 0;
-    const bool paintEdges = wangSet->colorCount() > 0;
+    const bool paintCorners = !wangId.hasCornerWildCards();
+    const bool paintEdges = !wangId.hasEdgeWildCards();
 
     //paints corners
     if (paintCorners) {

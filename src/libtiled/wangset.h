@@ -81,6 +81,8 @@ public:
     void updateToAdjacent(WangId adjacent, int position);
 
     bool hasWildCards() const;
+    bool hasCornerWildCards() const;
+    bool hasEdgeWildCards() const;
     quint64 mask() const;
 
     bool hasCornerWithColor(int value) const;
@@ -248,8 +250,15 @@ inline int WangColor::distanceToColor(int targetColor) const
 class TILEDSHARED_EXPORT WangSet : public Object
 {
 public:
+    enum Type {
+        Corner,
+        Edge,
+        Mixed
+    };
+
     WangSet(Tileset *tileset,
             const QString &name,
+            Type type,
             int imageTileId);
 
     Tileset *tileset() const;
@@ -257,6 +266,9 @@ public:
 
     QString name() const;
     void setName(const QString &name);
+
+    Type type() const;
+    void setType(Type type);
 
     int imageTileId() const;
     void setImageTileId(int imageTileId);
@@ -302,7 +314,7 @@ public:
 
     bool isEmpty() const;
     bool isComplete() const;
-    unsigned completeSetSize() const;
+    quint64 completeSetSize() const;
 
     WangId templateWangIdAt(unsigned n) const;
 
@@ -315,11 +327,12 @@ private:
 
     Tileset *mTileset;
     QString mName;
+    Type mType;
     int mImageTileId;
 
     // How many unique, full WangIds are active in this set.
     // Where full means the id has no wildcards
-    unsigned mUniqueFullWangIdCount;
+    quint64 mUniqueFullWangIdCount = 0;
 
     QVector<QSharedPointer<WangColor>> mColors;
     QMultiHash<WangId, WangTile> mWangIdToWangTile;
@@ -351,6 +364,20 @@ inline QString WangSet::name() const
 inline void WangSet::setName(const QString &name)
 {
     mName = name;
+}
+
+inline WangSet::Type WangSet::type() const
+{
+    return mType;
+}
+
+/**
+ * Changes the type of this Wang set. Does not modify any WangIds to make sure
+ * they adhere to the type!
+ */
+inline void WangSet::setType(WangSet::Type type)
+{
+    mType = type;
 }
 
 inline int WangSet::imageTileId() const
@@ -394,6 +421,9 @@ inline bool WangSet::isEmpty() const
 {
     return mWangIdToWangTile.isEmpty();
 }
+
+TILEDSHARED_EXPORT QString wangSetTypeToString(WangSet::Type type);
+TILEDSHARED_EXPORT WangSet::Type wangSetTypeFromString(const QString &);
 
 } // namespace Tiled
 

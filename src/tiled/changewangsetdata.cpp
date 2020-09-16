@@ -20,16 +20,41 @@
 
 #include "changewangsetdata.h"
 
+#include "changeevents.h"
+#include "changetilewangid.h"
 #include "tileset.h"
 #include "tilesetdocument.h"
 #include "tilesetwangsetmodel.h"
-#include "changetilewangid.h"
 
 #include <QCoreApplication>
 
 #include "qtcompat_p.h"
 
 using namespace Tiled;
+
+ChangeWangSetType::ChangeWangSetType(TilesetDocument *tilesetDocument,
+                                     WangSet *wangSet,
+                                     WangSet::Type newType,
+                                     QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , mTilesetDocument(tilesetDocument)
+    , mWangSet(wangSet)
+    , mOldType(wangSet->type())
+    , mNewType(newType)
+{
+    setText(QCoreApplication::translate("Undo Commands", "Change Wang Set Type"));
+}
+
+void ChangeWangSetType::undo()
+{
+    mTilesetDocument->wangSetModel()->setWangSetType(mWangSet, mOldType);
+}
+
+void ChangeWangSetType::redo()
+{
+    mTilesetDocument->wangSetModel()->setWangSetType(mWangSet, mNewType);
+}
+
 
 ChangeWangSetColorCount::ChangeWangSetColorCount(TilesetDocument *tilesetDocument,
                                                  WangSet *wangSet,

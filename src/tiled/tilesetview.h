@@ -29,6 +29,7 @@ namespace Tiled {
 
 class Terrain;
 
+class ChangeEvent;
 class TilesetDocument;
 class Zoomable;
 
@@ -147,6 +148,8 @@ protected:
     void resizeEvent(QResizeEvent *event) override;
 
 private:
+    void onChange(const ChangeEvent &change);
+
     void addTerrainType();
     void selectTerrainImage();
     void selectWangSetImage();
@@ -177,6 +180,8 @@ private:
         WrapDynamic,
         WrapFixed,
     };
+
+    static WangBehavior wangBehaviorFromWangSetType(WangSet::Type type);
 
     Zoomable *mZoomable;
     TilesetDocument *mTilesetDocument = nullptr;

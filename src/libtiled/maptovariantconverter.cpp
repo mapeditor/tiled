@@ -365,6 +365,7 @@ QVariant MapToVariantConverter::toVariant(const WangSet &wangSet) const
     QVariantMap wangSetVariant;
 
     wangSetVariant[QStringLiteral("name")] = wangSet.name();
+    wangSetVariant[QStringLiteral("type")] = wangSetTypeToString(wangSet.type());
     wangSetVariant[QStringLiteral("tile")] = wangSet.imageTileId();
 
     QVariantList colorVariants;

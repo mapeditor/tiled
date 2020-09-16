@@ -38,10 +38,8 @@ int WangTemplateModel::rowCount(const QModelIndex &parent) const
     if (!mWangSet)
         return 0;
 
-    const unsigned rows = mWangSet->completeSetSize();
-
     // arbitrary large cap on how many rows can be displayed.
-    return static_cast<int>(std::min<unsigned>(rows, 0xffff));
+    return static_cast<int>(std::min<quint64>(0xffff, mWangSet->completeSetSize()));
 }
 
 QVariant WangTemplateModel::data(const QModelIndex &index, int role) const
@@ -74,22 +72,41 @@ QModelIndex WangTemplateModel::wangIdIndex(WangId wangId) const
     Q_ASSERT(mWangSet->wangIdIsValid(wangId));
 
     const int colors = mWangSet->colorCount();
+    int row = 0;
+    int multiplier = 1;
 
-    //as this is a model of template tiles, a valid wangId can't have wildcards
-    if (colors > 1) {
+    switch (mWangSet->type()) {
+    case WangSet::Corner:
+        // As this is a model of template tiles, a valid WangId can't have wildcards
+        if (wangId.hasCornerWildCards())
+            return QModelIndex();
+
+        for (int i = 0; i < WangId::NumCorners; ++i) {
+            row += (wangId.cornerColor(i) - 1) * multiplier;
+            multiplier *= colors;
+        }
+
+        break;
+    case WangSet::Edge:
+        if (wangId.hasEdgeWildCards())
+            return QModelIndex();
+
+        for (int i = 0; i < WangId::NumEdges; ++i) {
+            row += (wangId.edgeColor(i) - 1) * multiplier;
+            multiplier *= colors;
+        }
+
+        break;
+    case WangSet::Mixed:
         if (wangId.hasWildCards())
             return QModelIndex();
 
-        wangId = wangId - 0x11111111;
-    }
+        for (int i = 0; i < WangId::NumIndexes; ++i) {
+            row += (wangId.indexColor(i) - 1) * multiplier;
+            multiplier *= colors;
+        }
 
-    // TODO: When we support WangSet type (Edges, Corners, etc.) this will need adjustment.
-    int row = 0;
-    int cornerEdgePermutations = colors * colors;
-
-    for (int i = 0; i < WangId::NumIndexes; ++i) {
-        int belowPermutations = qPow(cornerEdgePermutations, i/2) * ((i&1)? colors : 1);
-        row += wangId.indexColor(i) * belowPermutations;
+        break;
     }
 
     return index(row, 0);

@@ -917,7 +917,13 @@ void PropertyBrowser::addWangSetProperties()
 {
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Wang Set"));
     QtVariantProperty *nameProperty = addProperty(NameProperty, QVariant::String, tr("Name"), groupProperty);
+    QtVariantProperty *typeProperty = addProperty(WangSetTypeProperty,
+                                                  QtVariantPropertyManager::enumTypeId(),
+                                                  tr("Type"),
+                                                  groupProperty);
     QtVariantProperty *colorCountProperty = addProperty(ColorCountProperty, QVariant::Int, tr("Color Count"), groupProperty);
+
+    typeProperty->setAttribute(QLatin1String("enumNames"), mWangSetTypeNames);
 
     colorCountProperty->setAttribute(QLatin1String("minimum"), 0);
     colorCountProperty->setAttribute(QLatin1String("maximum"), WangId::MAX_COLOR_COUNT);
@@ -1426,6 +1432,13 @@ void PropertyBrowser::applyWangSetValue(PropertyId id, const QVariant &val)
                                                        wangSet,
                                                        val.toString()));
         break;
+    case WangSetTypeProperty: {
+        auto type = static_cast<WangSet::Type>(val.toInt());
+        mDocument->undoStack()->push(new ChangeWangSetType(mTilesetDocument,
+                                                           wangSet,
+                                                           type));
+        break;
+    }
     case ColorCountProperty:
         mDocument->undoStack()->push(new ChangeWangSetColorCount(mTilesetDocument,
                                                                  wangSet,
@@ -1788,6 +1801,7 @@ void PropertyBrowser::updateProperties()
     case Object::WangSetType: {
         const WangSet *wangSet = static_cast<const WangSet*>(mObject);
         mIdToProperty[NameProperty]->setValue(wangSet->name());
+        mIdToProperty[WangSetTypeProperty]->setValue(wangSet->type());
         mIdToProperty[ColorCountProperty]->setValue(wangSet->colorCount());
         break;
     }
@@ -2031,6 +2045,11 @@ void PropertyBrowser::retranslateUi()
     mDrawOrderNames.clear();
     mDrawOrderNames.append(tr("Top Down"));
     mDrawOrderNames.append(tr("Manual"));
+
+    mWangSetTypeNames.clear();
+    mWangSetTypeNames.append(tr("Corner"));
+    mWangSetTypeNames.append(tr("Edge"));
+    mWangSetTypeNames.append(tr("Mixed"));
 
     removeProperties();
     addProperties();

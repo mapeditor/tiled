@@ -25,6 +25,7 @@
 #include "wangset.h"
 #include "tileset.h"
 #include "tile.h"
+#include "changeevents.h"
 
 using namespace Tiled;
 
@@ -150,6 +151,13 @@ void TilesetWangSetModel::setWangSetName(WangSet *wangSet, const QString &name)
     Q_ASSERT(wangSet->tileset() == mTilesetDocument->tileset().data());
     wangSet->setName(name);
     emitWangSetChange(wangSet);
+}
+
+void TilesetWangSetModel::setWangSetType(WangSet *wangSet, WangSet::Type type)
+{
+    Q_ASSERT(wangSet->tileset() == mTilesetDocument->tileset().data());
+    wangSet->setType(type);
+    emit mTilesetDocument->changed(WangSetChangeEvent(wangSet, WangSetChangeEvent::TypeProperty));
 }
 
 void TilesetWangSetModel::setWangSetColorCount(WangSet *wangSet, int value)

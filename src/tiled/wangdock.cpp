@@ -542,7 +542,7 @@ QModelIndex WangDock::wangSetIndex(WangSet *wangSet) const
 
 void WangDock::onWangIdUsedChanged(WangId wangId)
 {
-    const QModelIndex &index = mWangTemplateModel->wangIdIndex(wangId);
+    const QModelIndex index = mWangTemplateModel->wangIdIndex(wangId);
 
     if (index.isValid())
         mWangTemplateView->update(index);

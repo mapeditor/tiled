@@ -500,6 +500,7 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
             w.writeStartElement(QStringLiteral("wangset"));
 
             w.writeAttribute(QStringLiteral("name"), ws->name());
+            w.writeAttribute(QStringLiteral("type"), wangSetTypeToString(ws->type()));
             w.writeAttribute(QStringLiteral("tile"), QString::number(ws->imageTileId()));
 
             for (int i = 1; i <= ws->colorCount(); ++i) {
